@@ -1,0 +1,1 @@
+add_library(libommpfritt test.cpp)
