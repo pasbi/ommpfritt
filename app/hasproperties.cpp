@@ -1,5 +1,5 @@
 #include "hasproperties.h"
-
+#include "external/json.hpp"
 
 HasProperties::~HasProperties()
 {
@@ -20,3 +20,21 @@ std::vector<HasProperties::PropertyKey> HasProperties::property_keys() const
   }
   return keys;
 }
+
+const HasProperties::PropertyMap& HasProperties::property_map() const
+{
+  return m_properties;
+}
+
+
+nlohmann::json HasProperties::PropertyMap::to_json() const
+{
+  nlohmann::json o;
+  for (const auto& item : *this) {
+    const auto& key = item.first;
+    const auto& property = item.second;
+    o[key] = property->to_json();
+  }
+  return o;
+}
+

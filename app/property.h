@@ -4,7 +4,8 @@
 #include <string>
 #include <typeinfo>
 #include <unordered_set>
-#include "types.h"
+#include "objecttransformation.h"
+#include "external/json.hpp"
 
 namespace py = pybind11;
 template<typename ValueT> class TypedProperty;
@@ -22,6 +23,31 @@ class Object;
 #define DISABLE_DANGEROUS_PROPERTY_TYPES \
   DISABLE_DANGEROUS_PROPERTY_TYPE(const char*)
 
+
+namespace {
+// template<typename T>
+// nlohmann::json to_json_value(const T& value)
+// {
+//   return value;
+// }
+
+// nlohmann::json to_json_value(const ObjectTransformation& t)
+// {
+//   return {};
+// }
+
+// nlohmann::json to_json_value(const Object*& t)
+// {
+//   return {};
+// }
+
+// nlohmann::json to_json_value(const std::string& t)
+// {
+//   return {};
+// }
+
+
+}  // namespace
 
 class Property
 {
@@ -49,12 +75,13 @@ public:
   virtual void set_py_object(const py::object& value) = 0;
   virtual py::object get_py_object() const = 0;
   virtual std::type_index type_index() const = 0;
+  virtual nlohmann::json to_json() const = 0;
 };
 
 template<typename ValueT>
 class TypedProperty : public Property
 {
-protected:
+public:
   TypedProperty(ValueT defaultValue)
     : Property()
     , m_value(defaultValue)
@@ -94,7 +121,7 @@ public:
   //   m_value = value.cast<ValueT>();
   // }
 
-  std::type_index type_index() const
+  std::type_index type_index() const override
   {
     return std::type_index(typeid(ValueT));
   }
@@ -104,28 +131,40 @@ private:
   const ValueT m_defaultValue;
 };
 
-class IntegerProperty : public TypedProperty<int>
+template<typename T>
+class SimpleTypeProperty : public TypedProperty<T>
 {
 public:
-  explicit IntegerProperty(const int& defaultValue);
+  using TypedProperty<T>::TypedProperty;
+  nlohmann::json to_json() const
+  {
+    return TypedProperty<T>::value();
+  }
 };
 
-class FloatProperty : public TypedProperty<double>
+class IntegerProperty : public SimpleTypeProperty<int>
 {
 public:
-  explicit FloatProperty(const double& defaultValue);
+  using SimpleTypeProperty<int>::SimpleTypeProperty;
 };
 
-class StringProperty : public TypedProperty<std::string>
+class FloatProperty : public SimpleTypeProperty<double>
 {
 public:
-  explicit StringProperty(const std::string& defaultValue);
+  using SimpleTypeProperty<double>::SimpleTypeProperty;
+};
+
+class StringProperty : public SimpleTypeProperty<std::string>
+{
+public:
+  using SimpleTypeProperty<std::string>::SimpleTypeProperty;
 };
 
 class TransformationProperty : public TypedProperty<ObjectTransformation>
 {
 public:
-  explicit TransformationProperty(const ObjectTransformation& defaultValue);
+  using TypedProperty<ObjectTransformation>::TypedProperty;
+  nlohmann::json to_json() const override;
 };
 
 class ReferenceProperty : public TypedProperty<Object*>
@@ -134,12 +173,11 @@ public:
   ReferenceProperty();
   static bool is_referenced(const Object* candidate);
   void set_value(Object* value) override;
+  nlohmann::json to_json() const override;
 
 private:
   static std::unordered_set<const Object*> m_references;
 };
-
-
 
 template<typename ValueT>
 py::object TypedProperty<ValueT>::get_py_object() const

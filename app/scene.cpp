@@ -48,5 +48,8 @@ bool Scene::load(const nlohmann::json& data)
 
 nlohmann::json Scene::save() const
 {
-  return {};
+  m_root->update_ids();
+  return {
+    { "root", m_root->to_json() }
+  };
 }

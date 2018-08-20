@@ -29,6 +29,7 @@ add_executable(ommpfritt
   main.cpp
   mainwindow.cpp
   object.cpp
+  objecttransformation.cpp
   objectview.cpp
   project.cpp
   property.cpp

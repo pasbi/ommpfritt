@@ -1,6 +1,12 @@
 #include "property.h"
 #include <algorithm>
 #include <assert.h>
+#include "object.h"
+
+nlohmann::json TransformationProperty::to_json() const
+{
+  return value().to_json();
+}
 
 std::unordered_set<const Object*> ReferenceProperty::m_references;
 
@@ -37,26 +43,10 @@ void ReferenceProperty::set_value(Object* reference)
   }
 }
 
-IntegerProperty::IntegerProperty(const int& defaultValue)
-  : TypedProperty<int>(defaultValue)
+nlohmann::json ReferenceProperty::to_json() const
 {
+  return value() ? nlohmann::json(value()->id()) : nlohmann::json();
 }
-
-FloatProperty::FloatProperty(const double& defaultValue)
-  : TypedProperty<double>(defaultValue)
-{
-}
-
-StringProperty::StringProperty(const std::string& defaultValue)
-  : TypedProperty<std::string>(defaultValue)
-{
-}
-
-TransformationProperty::TransformationProperty(const ObjectTransformation& defaultValue)
-  : TypedProperty<ObjectTransformation>(defaultValue)
-{
-}
-
 
 template<>
 py::object TypedProperty<Object*>::get_py_object() const
@@ -68,3 +58,4 @@ template<>
 void TypedProperty<Object*>::set_py_object(const py::object& value)
 {
 }
+

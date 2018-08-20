@@ -2,7 +2,8 @@
 
 #include <vector>
 #include <memory>
-#include "types.h"
+#include "external/json_fwd.hpp"
+#include "objecttransformation.h"
 #include "hasproperties.h"
 
 class Property;
@@ -27,11 +28,19 @@ public:
   void set_transformation(const ObjectTransformation& transformation);
   void set_global_transformation(const ObjectTransformation& globalTransformation);
 
+  /**
+   * @brief updates the id of this object and all its children recursively.
+   * @details ids become invalid when the scene tree is modified. Call this method to update them.
+   */
+  void update_ids() const;
+  size_t id() const;
+
   Tag& add_tag(std::unique_ptr<Tag> tag);
   std::unique_ptr<Tag> remove_tag(Tag& tag);
 
   Scene& scene() const;
-
+  virtual nlohmann::json to_json() const;
+  
   template<typename T>
   T& create_child()
   {
@@ -48,9 +57,9 @@ public:
 
   void reset_parent(Object& new_parent);
 
-  static ObjectTransformation translation(const Float& dx, const Float dy);
-  static ObjectTransformation rotation(const Float& r);
-  static ObjectTransformation scalation(const Float& sx, const Float sy);
+  static ObjectTransformation translation(const double& dx, const double dy);
+  static ObjectTransformation rotation(const double& r);
+  static ObjectTransformation scalation(const double& sx, const double sy);
   static ObjectTransformation identity();
 
   static const std::string TRANSFORMATION_PROPERTY_KEY;
@@ -67,4 +76,7 @@ private:
   Scene& m_scene;
 
   friend class ObjectView;
+
+  mutable size_t m_id;
+  void update_ids(size_t& last_id) const;
 };

@@ -1,5 +1,6 @@
 #include "tag.h"
 #include "object.h"
+#include "external/json.hpp"
 #include <memory>
 
 const std::string Tag::NAME_PROPERTY_KEY = "name";
@@ -29,4 +30,11 @@ Scene& Tag::scene() const
 bool Tag::run()
 {
   return false;
+}
+
+nlohmann::json Tag::to_json() const
+{
+  return {
+    { "properties", property_map().to_json() }
+  };
 }

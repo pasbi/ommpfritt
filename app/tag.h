@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "hasproperties.h"
+#include "external/json_fwd.hpp"
 
 class Object;
 class Scene;
@@ -17,6 +18,8 @@ public:
 
   static const std::string NAME_PROPERTY_KEY;
   Scene& scene() const;
+
+  nlohmann::json to_json() const;
 
 protected:
   DEFINE_CLASSNAME("tag")

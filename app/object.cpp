@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <algorithm>
+#include <map>
 
 #include "tag.h"
 #include "scene.h"
@@ -147,7 +148,7 @@ void Object::reset_parent(Object& new_parent)
   new_parent.adopt(m_parent->repudiate(*this));
 }
 
-ObjectTransformation Object::translation(const Float& dx, const Float dy)
+ObjectTransformation Object::translation(const double& dx, const double dy)
 {
   ObjectTransformation t = identity();
   t.at(0, 2) = dx;
@@ -155,7 +156,7 @@ ObjectTransformation Object::translation(const Float& dx, const Float dy)
   return t;
 }
 
-ObjectTransformation Object::rotation(const Float& alpha)
+ObjectTransformation Object::rotation(const double& alpha)
 {
   ObjectTransformation t = identity();
   t.at(0, 0) = cos(alpha);
@@ -165,7 +166,7 @@ ObjectTransformation Object::rotation(const Float& alpha)
   return t;
 }
 
-ObjectTransformation Object::scalation(const Float& sx, const Float sy)
+ObjectTransformation Object::scalation(const double& sx, const double sy)
 {
   ObjectTransformation t = identity();
   t.at(0, 0) = sx;
@@ -178,4 +179,46 @@ ObjectTransformation Object::identity()
   ObjectTransformation t;
   t.eye();
   return t;
+}
+
+nlohmann::json Object::to_json() const
+{
+  std::vector<nlohmann::json> children;
+  for (const auto& object : m_children) {
+    children.push_back(object->to_json());
+  }
+
+  std::vector<nlohmann::json> tags;
+  for (const auto& tag : m_tags) {
+    tags.push_back(tag->to_json());
+  }
+
+  std::vector<std::unique_ptr<Object>> m_children;
+  return {
+    { "properties", property_map().to_json() },
+    { "children", children },
+    { "tags", tags },
+    { "id", m_id }
+  };
+}
+
+void Object::update_ids() const
+{
+  size_t current_id = 0;
+  update_ids(current_id);
+}
+
+void Object::update_ids(size_t& last_id) const
+{
+  last_id += 1;
+  m_id = last_id;
+
+  for (const auto& child : m_children) {
+    child->update_ids(last_id);
+  }
+}
+
+size_t Object::id() const
+{
+  return m_id;
 }

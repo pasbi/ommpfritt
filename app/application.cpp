@@ -110,6 +110,7 @@ bool Application::can_close()
       return false;
     default:
       LOG(FATAL) << "Unexpected response code: " << response;
+      return false;
     }
   } else {
     LOG(INFO) << "everything is saved. Ready to close.";
@@ -195,6 +196,7 @@ bool Application::save_as()
     return false;
   default:
     LOG(FATAL) << "Unexpected response code: " << response;
+    return false;
   }
 }
 
@@ -233,6 +235,7 @@ bool Application::load()
     return false;
   default:
     LOG(FATAL) << "Unexpected response code: " << response;
+    return false;
   }
 
 }
