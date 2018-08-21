@@ -4,6 +4,8 @@
 #include "hasproperties.h"
 #include "external/json_fwd.hpp"
 
+namespace omm {
+
 class Object;
 class Scene;
 
@@ -27,3 +29,5 @@ protected:
 private:
   Object& m_owner;
 };
+
+}  // namespace omm

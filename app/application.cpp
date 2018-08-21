@@ -4,25 +4,46 @@
 #include <gtkmm/filechooserdialog.h>
 #include "application.h"
 #include "mainwindow.h"
+#include "addobjectcommand.h"
 
 namespace {
 constexpr auto FILE_ENDING = ".omm";
 }
 
-Application::Application(int argc, char* argv[])
+omm::Application::Application(int argc, char* argv[])
   : Gtk::Application(argc, argv, "org.ommpfritt")
+  , m_menu(create_main_menu())
 {
 }
 
 
-void Application::on_startup()
+void omm::Application::on_startup()
 { 
   Gtk::Application::on_startup();
   create_main_menu();
 }
 
-void Application::create_main_menu()
+Glib::RefPtr<Gio::Menu> omm::Application::create_main_menu()
 {
+  const auto refBuilder = Gtk::Builder::create();
+
+  Glib::ustring ui_info =
+#include "mainmenu.xml"
+  ;
+
+  try {
+    refBuilder->add_from_string(ui_info);
+  } catch (const Glib::Error& ex) {
+    LOG(FATAL) << "Building menus failed: " << ex.what();
+  }
+
+  //Get the menubar and the app menu, and add them to the application:
+  const auto object = refBuilder->get_object("menu-example");
+  const auto menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
+  assert(menu);
+
+  set_menubar(menu);
+  
   add_action("quit", [this]() {
     if (can_close()) {
       LOG(INFO) << "Quit application.";
@@ -52,30 +73,37 @@ void Application::create_main_menu()
   add_action("save", [this]() { save(); });
   add_action("save_as", [this]() { save_as(); });
 
-  auto m_refBuilder = Gtk::Builder::create();
+  add_action("undo", [this]() {
+    m_project.undo();
+    update_undo_redo_enabled();
+  });
 
-  Glib::ustring ui_info =
-#include "mainmenu.xml"
-  ;
+  add_action("redo", [this]() {
+    m_project.redo();
+    update_undo_redo_enabled();
+  });
 
-  try {
-    m_refBuilder->add_from_string(ui_info);
-  } catch (const Glib::Error& ex) {
-    LOG(FATAL) << "Building menus failed: " << ex.what();
-  }
+  add_action("add_empty", [this]() {
+    Scene& scene = m_project.scene();
+    auto object = std::make_unique<omm::Object>(scene);
+    auto command = std::make_unique<AddObjectCommand>(scene, std::move(object));
+    m_project.submit(std::move(command));
+  });
 
-  //Get the menubar and the app menu, and add them to the application:
-  auto object = m_refBuilder->get_object("menu-example");
-  auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
-  assert(gmenu);
-  set_menubar(gmenu);
+  return menu;
+
 }
 
-void Application::on_activate()
+void omm::Application::on_activate()
 {
 }
 
-bool Application::can_close()
+void omm::Application::update_undo_redo_enabled()
+{ 
+
+}
+
+bool omm::Application::can_close()
 {
   LOG(INFO) << "Trying to close ...";
   if (m_project.has_pending_changes()) {
@@ -118,12 +146,12 @@ bool Application::can_close()
   }
 }
 
-Gtk::Window& Application::top_window()
+Gtk::Window& omm::Application::top_window()
 {
   return *get_windows()[0];
 }
 
-bool Application::save_(const std::string& filename)
+bool omm::Application::save_(const std::string& filename)
 {
   if (!m_project.save_as(filename)) {
     LOG(WARNING) << "Error saving project as '" << filename << "'.";
@@ -141,7 +169,7 @@ bool Application::save_(const std::string& filename)
   }
 }
 
-bool Application::save()
+bool omm::Application::save()
 {
   LOG(INFO) << "Trying to save ...";
   const std::string filename = m_project.filename();
@@ -168,7 +196,7 @@ void add_ending(std::string& s, const std::string& ending)
 
 }  // namespace
 
-bool Application::save_as()
+bool omm::Application::save_as()
 {
   LOG(INFO) << "Trying to save as ...";
   Gtk::FileChooserDialog dialog("Save as", Gtk::FILE_CHOOSER_ACTION_SAVE);
@@ -201,13 +229,13 @@ bool Application::save_as()
 }
 
 
-void Application::reset()
+void omm::Application::reset()
 {
   LOG(INFO) << "reset project.";
   m_project.reset();
 }
 
-bool Application::load()
+bool omm::Application::load()
 {
   Gtk::FileChooserDialog dialog("Open", Gtk::FILE_CHOOSER_ACTION_OPEN);
   dialog.add_button("_Open", Gtk::RESPONSE_OK);

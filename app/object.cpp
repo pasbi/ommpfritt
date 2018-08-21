@@ -8,10 +8,9 @@
 #include "scene.h"
 #include "property.h"
 
-const std::string Object::TRANSFORMATION_PROPERTY_KEY = "transformation";
-const std::string Object::NAME_PROPERTY_KEY = "name";
-const std::string Object::THE_ANSWER_KEY = "ans";
-
+const std::string omm::Object::TRANSFORMATION_PROPERTY_KEY = "transformation";
+const std::string omm::Object::NAME_PROPERTY_KEY = "name";
+const std::string omm::Object::THE_ANSWER_KEY = "ans";
 
 namespace {
 template<typename T> 
@@ -36,9 +35,9 @@ std::unique_ptr<T> extract(std::vector<std::unique_ptr<T>>& container, T& obj)
   return std::move(uptr);
 }
 
-}
+}  // namespace
 
-Object::Object(Scene& scene)
+omm::Object::Object(omm::Scene& scene)
   : m_parent(nullptr)
   , m_scene(scene)
 {
@@ -50,16 +49,16 @@ Object::Object(Scene& scene)
                 std::make_unique<IntegerProperty>(42) );
 }
 
-Object::~Object()
+omm::Object::~Object()
 {
 }
 
-ObjectTransformation Object::transformation() const
+omm::ObjectTransformation omm::Object::transformation() const
 {
   return property(TRANSFORMATION_PROPERTY_KEY).cast<ObjectTransformation>().value();
 }
 
-ObjectTransformation Object::global_transformation() const
+omm::ObjectTransformation omm::Object::global_transformation() const
 {
   assert(this != nullptr);
 
@@ -70,12 +69,12 @@ ObjectTransformation Object::global_transformation() const
   }
 }
 
-void Object::set_transformation(const ObjectTransformation& transformation)
+void omm::Object::set_transformation(const omm::ObjectTransformation& transformation)
 {
   property(TRANSFORMATION_PROPERTY_KEY).cast<ObjectTransformation>().set_value(transformation);
 }
 
-void Object::set_global_transformation(const ObjectTransformation& global_transformation)
+void omm::Object::set_global_transformation(const omm::ObjectTransformation& global_transformation)
 {
   ObjectTransformation local_transformation;
   if (is_root()) {
@@ -90,28 +89,28 @@ void Object::set_global_transformation(const ObjectTransformation& global_transf
   set_transformation(local_transformation);
 }
 
-bool Object::is_root() const
+bool omm::Object::is_root() const
 {
   return m_parent == nullptr;
 }
 
-Object& Object::parent() const
+omm::Object& omm::Object::parent() const
 {
   assert(!is_root());
   return *m_parent;
 }
 
-void Object::transform(const ObjectTransformation& transformation)
+void omm::Object::transform(const omm::ObjectTransformation& transformation)
 {
   set_transformation(transformation * this->transformation());
 }
 
-Scene& Object::scene() const
+omm::Scene& omm::Object::scene() const
 {
   return m_scene;
 }
 
-Object& Object::adopt(std::unique_ptr<Object> object)
+omm::Object& omm::Object::adopt(std::unique_ptr<Object> object)
 {
   assert(&object->scene() == &scene());
   assert(object->is_root());
@@ -123,7 +122,7 @@ Object& Object::adopt(std::unique_ptr<Object> object)
   return oref;
 }
 
-std::unique_ptr<Object> Object::repudiate(Object& object)
+std::unique_ptr<omm::Object> omm::Object::repudiate(Object& object)
 {
   const ObjectTransformation gt = object.global_transformation();
   object.m_parent = nullptr;
@@ -132,23 +131,23 @@ std::unique_ptr<Object> Object::repudiate(Object& object)
   return optr;
 }
 
-Tag& Object::add_tag(std::unique_ptr<Tag> tag)
+omm::Tag& omm::Object::add_tag(std::unique_ptr<Tag> tag)
 {
   return emplace(m_tags, std::move(tag));
 }
 
-std::unique_ptr<Tag> Object::remove_tag(Tag& tag)
+std::unique_ptr<omm::Tag> omm::Object::remove_tag(Tag& tag)
 {
   return extract(m_tags, tag);
 }
 
-void Object::reset_parent(Object& new_parent)
+void omm::Object::reset_parent(omm::Object& new_parent)
 {
   assert(!is_root()); // use Object::adopt for roots.
   new_parent.adopt(m_parent->repudiate(*this));
 }
 
-ObjectTransformation Object::translation(const double& dx, const double dy)
+omm::ObjectTransformation omm::Object::translation(const double& dx, const double dy)
 {
   ObjectTransformation t = identity();
   t.at(0, 2) = dx;
@@ -156,7 +155,7 @@ ObjectTransformation Object::translation(const double& dx, const double dy)
   return t;
 }
 
-ObjectTransformation Object::rotation(const double& alpha)
+omm::ObjectTransformation omm::Object::rotation(const double& alpha)
 {
   ObjectTransformation t = identity();
   t.at(0, 0) = cos(alpha);
@@ -166,7 +165,7 @@ ObjectTransformation Object::rotation(const double& alpha)
   return t;
 }
 
-ObjectTransformation Object::scalation(const double& sx, const double sy)
+omm::ObjectTransformation omm::Object::scalation(const double& sx, const double sy)
 {
   ObjectTransformation t = identity();
   t.at(0, 0) = sx;
@@ -174,14 +173,14 @@ ObjectTransformation Object::scalation(const double& sx, const double sy)
   return t;
 }
 
-ObjectTransformation Object::identity()
+omm::ObjectTransformation omm::Object::identity()
 {
   ObjectTransformation t;
   t.eye();
   return t;
 }
 
-nlohmann::json Object::to_json() const
+nlohmann::json omm::Object::to_json() const
 {
   std::vector<nlohmann::json> children;
   for (const auto& object : m_children) {
@@ -202,13 +201,13 @@ nlohmann::json Object::to_json() const
   };
 }
 
-void Object::update_ids() const
+void omm::Object::update_ids() const
 {
   size_t current_id = 0;
   update_ids(current_id);
 }
 
-void Object::update_ids(size_t& last_id) const
+void omm::Object::update_ids(size_t& last_id) const
 {
   last_id += 1;
   m_id = last_id;
@@ -218,7 +217,7 @@ void Object::update_ids(size_t& last_id) const
   }
 }
 
-size_t Object::id() const
+size_t omm::Object::id() const
 {
   return m_id;
 }

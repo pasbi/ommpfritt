@@ -5,6 +5,7 @@
 #include "view.h"
 #include "object.h"
 
+namespace omm {
 
 class Object;
 
@@ -22,3 +23,5 @@ public:
   py::object create_tag();
 
 };
+
+}  // namespace omm

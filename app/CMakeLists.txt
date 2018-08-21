@@ -22,6 +22,7 @@ include_directories(${glog_INCLUDE_DIRS})
 
 
 add_executable(ommpfritt
+  addobjectcommand.cpp
   application.cpp
   command.cpp
   commandstack.cpp
@@ -37,6 +38,7 @@ add_executable(ommpfritt
   propertyview.cpp
   python.cpp
   scene.cpp
+  scenecommand.cpp
   tag.cpp
   tagview.cpp
   view.cpp

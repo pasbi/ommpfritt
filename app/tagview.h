@@ -5,6 +5,8 @@
 #include <string>
 #include "tag.h"
 
+namespace omm {
+
 class TagView : public View<Tag>
 {
 public:
@@ -13,3 +15,5 @@ public:
 
   void remove();
 };
+
+}  // namespace omm

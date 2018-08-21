@@ -5,48 +5,48 @@
 #include "object.h"
 #include "external/json.hpp"
 
-Scene* Scene::m_current = nullptr;
+omm::Scene* omm::Scene::m_current = nullptr;
 
-Scene::Scene()
+omm::Scene::Scene()
   : m_root(std::make_unique<RootObject>(*this))
 {
   m_current = this;
 }
 
-Scene::~Scene()
+omm::Scene::~Scene()
 {
   if (m_current == this) {
     m_current = nullptr;
   }
 }
 
-Scene::RootObject& Scene::root()
+omm::Scene::RootObject& omm::Scene::root()
 {
   return *m_root;
 }
 
-ObjectView Scene::root_view()
+omm::ObjectView omm::Scene::root_view()
 {
   return ObjectView(*m_root);
 }
 
-Scene* Scene::currentInstance()
+omm::Scene* omm::Scene::currentInstance()
 {
   return m_current;
 }
 
-void Scene::reset()
+void omm::Scene::reset()
 {
   // ...
 }
 
-bool Scene::load(const nlohmann::json& data)
+bool omm::Scene::load(const nlohmann::json& data)
 {
   return true;
   //m_root = ...
 }
 
-nlohmann::json Scene::save() const
+nlohmann::json omm::Scene::save() const
 {
   m_root->update_ids();
   return {

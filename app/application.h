@@ -5,6 +5,8 @@
 
 #include "project.h"
 
+namespace omm {
+
 class Application : public Gtk::Application
 {
 public:
@@ -18,10 +20,14 @@ public:
   bool can_close();
   bool load();
   void reset();
+  void update_undo_redo_enabled();
   Gtk::Window& top_window();
 
 private:
-  void create_main_menu();
+  Glib::RefPtr<Gio::Menu> create_main_menu();
+  const Glib::RefPtr<Gio::Menu> m_menu;
 
   Project m_project;
 };
+
+}  // namespace omm

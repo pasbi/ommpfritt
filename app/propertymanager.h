@@ -4,6 +4,8 @@
 #include <vector>
 #include <functional>
 
+namespace omm {
+
 class PropertyView;
 
 class PropertyManager
@@ -16,3 +18,5 @@ public:
 
   PropertyView property(const std::string& key);
 };
+
+}  // namespace omm

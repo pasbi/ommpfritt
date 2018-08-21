@@ -1,12 +1,12 @@
 #include "objectview.h"
 #include "tagview.h"
 
-ObjectView::ObjectView(Object& object)
+omm::ObjectView::ObjectView(omm::Object& object)
   : View(object)
 {
 }
 
-py::object ObjectView::children()
+py::object omm::ObjectView::children()
 {
   throw_if_no_target();
 
@@ -17,7 +17,7 @@ py::object ObjectView::children()
   return py::cast(children);
 }
 
-py::object ObjectView::parent()
+py::object omm::ObjectView::parent()
 {
   throw_if_no_target();
 
@@ -32,7 +32,7 @@ py::object ObjectView::parent()
   }
 }
 
-py::object ObjectView::tags()
+py::object omm::ObjectView::tags()
 {
   throw_if_no_target();
 
@@ -43,7 +43,7 @@ py::object ObjectView::tags()
   return py::cast(tags);
 }
 
-void ObjectView::remove()
+void omm::ObjectView::remove()
 {
   throw_if_no_target();
 
@@ -55,7 +55,7 @@ void ObjectView::remove()
   m_target = nullptr;
 }
 
-py::object ObjectView::create_child()
+py::object omm::ObjectView::create_child()
 {
   throw_if_no_target();
 
@@ -63,7 +63,7 @@ py::object ObjectView::create_child()
   return py::cast(ObjectView(object));
 }
 
-py::object ObjectView::create_tag()
+py::object omm::ObjectView::create_tag()
 {
   throw_if_no_target();
 

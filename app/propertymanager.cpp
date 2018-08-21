@@ -3,8 +3,8 @@
 #include <set>
 
 namespace {
-  using KeyTypeMap = std::map<HasProperties::PropertyKey, std::type_index>;
-  KeyTypeMap get_keys_and_types(const HasProperties& item)
+  using KeyTypeMap = std::map<omm::HasProperties::PropertyKey, std::type_index>;
+  KeyTypeMap get_keys_and_types(const omm::HasProperties& item)
   {
     KeyTypeMap keys_and_types;
     for ( const std::string& key : item.property_keys() )
@@ -32,12 +32,13 @@ namespace {
 
 }  // namespace
 
-PropertyManager::PropertyManager()
+omm::PropertyManager::PropertyManager()
 {
 
 }
 
-void PropertyManager::select(const std::vector<std::reference_wrapper<HasProperties>>& selection)
+using HasPropertiesRef = std::reference_wrapper<omm::HasProperties>;
+void omm::PropertyManager::select( const std::vector<HasPropertiesRef>& selection)
 {
   // select properties with same name and type
 

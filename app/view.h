@@ -5,6 +5,8 @@
 
 namespace py = pybind11;
 
+namespace omm {
+
 template<typename HasPropertiesT>
 class View
 {
@@ -38,3 +40,4 @@ protected:
   HasPropertiesT* m_target;
 };
 
+}  // namespace omm

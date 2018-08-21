@@ -11,6 +11,8 @@
 #define DEFINE_CLASSNAME(CLASSNAME) \
   std::string class_name() const override { return CLASSNAME; }
 
+namespace omm {
+
 class HasProperties
 {
 public:
@@ -40,3 +42,4 @@ private:
   
 };
 
+}  // namespace omm

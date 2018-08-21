@@ -3,36 +3,36 @@
 #include "external/json.hpp"
 #include <memory>
 
-const std::string Tag::NAME_PROPERTY_KEY = "name";
+const std::string omm::Tag::NAME_PROPERTY_KEY = "name";
 
-Tag::Tag(Object& owner)
+omm::Tag::Tag(omm::Object& owner)
   : m_owner(owner)
 {
   add_property( NAME_PROPERTY_KEY,
                 std::make_unique<StringProperty>("<Unnamed Tag>") );
 }
 
-Tag::~Tag()
+omm::Tag::~Tag()
 {
   
 }
 
-Object& Tag::owner() const
+omm::Object& omm::Tag::owner() const
 {
   return m_owner;
 }
 
-Scene& Tag::scene() const
+omm::Scene& omm::Tag::scene() const
 {
   return m_owner.scene();
 }
 
-bool Tag::run()
+bool omm::Tag::run()
 {
   return false;
 }
 
-nlohmann::json Tag::to_json() const
+nlohmann::json omm::Tag::to_json() const
 {
   return {
     { "properties", property_map().to_json() }

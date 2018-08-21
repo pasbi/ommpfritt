@@ -2,6 +2,8 @@
 
 #include <string>
 
+namespace omm {
+
 class Scene;
 
 class Python
@@ -16,3 +18,5 @@ public:
   bool run(Scene& scene, const std::string code);
   static Python& instance();
 };
+
+}  // namespace omm

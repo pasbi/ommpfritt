@@ -7,6 +7,8 @@
 #include "objectview.h"
 #include "external/json_fwd.hpp"
 
+namespace omm {
+
 class Object;
 
 class Scene
@@ -30,3 +32,6 @@ private:
   std::unique_ptr<RootObject> m_root;
   static Scene* m_current;
 };
+
+}  // namespace omm
+

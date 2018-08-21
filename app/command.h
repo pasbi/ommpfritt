@@ -2,6 +2,8 @@
 #include <memory>
 #include <string>
 
+namespace omm {
+
 class Command
 {
 public:
@@ -19,8 +21,11 @@ public:
    *  an empty unique_ptr if merge was successfull.
    */
   virtual std::unique_ptr<Command> merge(std::unique_ptr<Command> other);
+  std::string label() const;
 
 private:
   const std::string m_label;
 
 };
+
+}  // namespace omm

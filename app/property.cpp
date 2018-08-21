@@ -3,33 +3,33 @@
 #include <assert.h>
 #include "object.h"
 
-nlohmann::json TransformationProperty::to_json() const
+nlohmann::json omm::TransformationProperty::to_json() const
 {
   return value().to_json();
 }
 
-std::unordered_set<const Object*> ReferenceProperty::m_references;
+std::unordered_set<const omm::Object*> omm::ReferenceProperty::m_references;
 
-Property::Property()
+omm::Property::Property()
 {
 }
 
-Property::~Property()
+omm::Property::~Property()
 {
 
 }
 
-ReferenceProperty::ReferenceProperty()
+omm::ReferenceProperty::ReferenceProperty()
   : TypedProperty<Object*>(nullptr)
 {
 }
 
-bool ReferenceProperty::is_referenced(const Object* candidate)
+bool omm::ReferenceProperty::is_referenced(const omm::Object* candidate)
 {
   return std::find(m_references.begin(), m_references.end(), candidate) != m_references.end();
 }
 
-void ReferenceProperty::set_value(Object* reference)
+void omm::ReferenceProperty::set_value(omm::Object* reference)
 {
   const Object* oldReference = value();
   if (oldReference != nullptr) {
@@ -43,19 +43,19 @@ void ReferenceProperty::set_value(Object* reference)
   }
 }
 
-nlohmann::json ReferenceProperty::to_json() const
+nlohmann::json omm::ReferenceProperty::to_json() const
 {
   return value() ? nlohmann::json(value()->id()) : nlohmann::json();
 }
 
 template<>
-py::object TypedProperty<Object*>::get_py_object() const
+py::object omm::TypedProperty<omm::Object*>::get_py_object() const
 {
   return py::object();
 }
 
 template<>
-void TypedProperty<Object*>::set_py_object(const py::object& value)
+void omm::TypedProperty<omm::Object*>::set_py_object(const py::object& value)
 {
 }
 

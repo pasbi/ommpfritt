@@ -8,6 +8,9 @@
 #include "external/json.hpp"
 
 namespace py = pybind11;
+
+namespace omm {
+
 template<typename ValueT> class TypedProperty;
 class Object;
 
@@ -190,3 +193,5 @@ void TypedProperty<ValueT>::set_py_object(const py::object& value)
 {
   m_value = value.cast<ValueT>();
 }
+
+}  // namespace omm

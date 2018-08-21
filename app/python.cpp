@@ -9,34 +9,34 @@
 namespace py = pybind11;
 using namespace pybind11::literals;
 
-Python::Python(ConstructorTag)
+omm::Python::Python(ConstructorTag)
 {
 }
 
 PYBIND11_EMBEDDED_MODULE(ommpfritt, m) {
-    py::class_<Scene>(m, "Scene")
-      .def("current", &Scene::currentInstance, py::return_value_policy::reference)
-      .def("root", &Scene::root_view)
+    py::class_<omm::Scene>(m, "Scene")
+      .def("current", &omm::Scene::currentInstance, py::return_value_policy::reference)
+      .def("root", &omm::Scene::root_view)
       ;
 
-    py::class_<ObjectView>(m, "Object")
-      .def("property", &ObjectView::get_property)
-      .def("set_property", &ObjectView::set_property)
-      .def("children", &ObjectView::children)
-      .def("parent", &ObjectView::parent)
-      .def("tags", &ObjectView::tags)
-      .def("remove", &ObjectView::remove)
+    py::class_<omm::ObjectView>(m, "Object")
+      .def("property", &omm::ObjectView::get_property)
+      .def("set_property", &omm::ObjectView::set_property)
+      .def("children", &omm::ObjectView::children)
+      .def("parent", &omm::ObjectView::parent)
+      .def("tags", &omm::ObjectView::tags)
+      .def("remove", &omm::ObjectView::remove)
       ;
 
-    py::class_<TagView>(m, "Tag")
-      .def("property", &TagView::get_property)
-      .def("set_property", &TagView::set_property)
-      .def("owner", &TagView::owner)
-      .def("remove", &TagView::remove)
+    py::class_<omm::TagView>(m, "Tag")
+      .def("property", &omm::TagView::get_property)
+      .def("set_property", &omm::TagView::set_property)
+      .def("owner", &omm::TagView::owner)
+      .def("remove", &omm::TagView::remove)
       ;
 }
 
-bool Python::run(Scene& scene, const std::string code)
+bool omm::Python::run(omm::Scene& scene, const std::string code)
 {
   py::scoped_interpreter guard {};
 
@@ -51,7 +51,7 @@ bool Python::run(Scene& scene, const std::string code)
   return false;
 }
 
-Python& Python::instance()
+omm::Python& omm::Python::instance()
 {
   static std::unique_ptr<Python> instance(nullptr);
   if (instance == nullptr) {

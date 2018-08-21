@@ -6,6 +6,8 @@
 #include "objecttransformation.h"
 #include "hasproperties.h"
 
+namespace omm {
+  
 class Property;
 class Tag;
 class Scene;
@@ -13,7 +15,7 @@ class Scene;
 class Object : public HasProperties
 {
 public:
-  Object(Scene& scene);
+  explicit Object(Scene& scene);
   virtual ~Object();
 
   bool is_root() const;
@@ -66,7 +68,6 @@ public:
   static const std::string NAME_PROPERTY_KEY;
   static const std::string THE_ANSWER_KEY;
 
-protected:
   DEFINE_CLASSNAME("object")
 
 private:
@@ -80,3 +81,5 @@ private:
   mutable size_t m_id;
   void update_ids(size_t& last_id) const;
 };
+
+}  // namespace omm

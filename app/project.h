@@ -6,6 +6,8 @@
 #include "scene.h"
 #include "commandstack.h"
 
+namespace omm {
+
 class Project : public CommandStack
 {
 public:
@@ -16,10 +18,10 @@ public:
   bool load_from(const std::string& filename);
   void reset();
 
-  bool has_pending_changes() const;
   void submit(std::unique_ptr<Command> command) override;
 
   std::string filename() const;
+  Scene& scene();
 
 private:
   Scene m_scene;
@@ -29,7 +31,8 @@ private:
    * is set in `save_as` and `load_from`
    */
   std::string m_filename;
-  bool m_has_pending_changes;
 
 
 };
+
+}  // namespace omm

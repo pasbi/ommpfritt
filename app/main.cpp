@@ -9,7 +9,7 @@ int main (int argc, char *argv[])
 {
   google::InitGoogleLogging(argv[0]);
 
-  Application app(argc, argv);
-  MainWindow window;
+  omm::Application app(argc, argv);
+  omm::MainWindow window;
   return app.run(window);
 }
