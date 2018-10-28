@@ -7,50 +7,47 @@
 #include "python/objectview.h"
 #include "external/json_fwd.hpp"
 #include <QAbstractItemModel>
-
+#include <unordered_set>
 
 namespace omm
 {
 
+class Scene;
+
+class AbstractObjectTreeAdapter
+{
+protected:
+  virtual void beginInsertObjects(Object& parent, int start, int end) {}
+  virtual void endInsertObjects() {}
+
+  friend class Scene;
+};
+
 class Object;
 
-class Scene : public QAbstractItemModel
+class Scene
 {
-  Q_OBJECT
-
 public:
-  using RootObject = Object;
   Scene();
   ~Scene();
 
-  RootObject& root();
-  const RootObject& root() const;
   ObjectView root_view();
 
   static Scene* currentInstance();
+  Object& root() const;
 
   void reset();
   bool load(const nlohmann::json& data);
   nlohmann::json save() const;
 
-  QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
-  QModelIndex parent(const QModelIndex& index) const override;
-  int rowCount(const QModelIndex& parent) const override;
-  int columnCount(const QModelIndex& parent) const override;
-  QVariant data(const QModelIndex& index, int role) const override;
-
-  Object& object_at(const QModelIndex& index) const;
-
-  QModelIndex index_of(Object& object) const;
-  Qt::ItemFlags flags(const QModelIndex &index) const;
-
-
   void insert_object(std::unique_ptr<Object> object, Object& parent);
-  QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
+  void register_object_tree_adapter(AbstractObjectTreeAdapter& adapter);
+  void unregister_object_tree_adapter(AbstractObjectTreeAdapter& adapter);
 
 private:
-  std::unique_ptr<RootObject> m_root;
+  std::unique_ptr<Object> m_root;
+  std::unordered_set<AbstractObjectTreeAdapter*> m_adapters;
   static Scene* m_current;
 };
 

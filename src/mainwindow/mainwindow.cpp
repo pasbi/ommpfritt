@@ -12,7 +12,7 @@
 #include "mainwindow/application.h"
 
 #include "managers/propertymanager.h"
-#include "managers/objectmanager.h"
+#include "managers/objectmanager/objectmanager.h"
 
 namespace omm
 {

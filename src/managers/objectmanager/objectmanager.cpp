@@ -1,4 +1,4 @@
-#include "managers/objectmanager.h"
+#include "managers/objectmanager/objectmanager.h"
 
 #include <glog/logging.h>
 #include <QTreeView>
@@ -11,11 +11,21 @@ namespace omm
 
 ObjectManager::ObjectManager(Scene& scene)
   : Manager(scene)
+  , m_object_tree_adapter(scene.root())
 {
   setWindowTitle(tr("object manager"));
+
+  scene.register_object_tree_adapter(m_object_tree_adapter);
+
   auto tree_view = std::make_unique<QTreeView>();
-  tree_view->setModel(&scene);
+  tree_view->setModel(&m_object_tree_adapter);
+
   setWidget(tree_view.release());
+}
+
+ObjectManager::~ObjectManager()
+{
+  m_scene.unregister_object_tree_adapter(m_object_tree_adapter);
 }
 
 }  // namespace omm

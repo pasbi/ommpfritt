@@ -1,5 +1,4 @@
 file (GLOB SOURCES
-  "objecttreemodel.cpp"
   "project.cpp"
   "scene.cpp"
 )

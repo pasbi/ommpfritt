@@ -3,6 +3,8 @@
 #include "managers/manager.h"
 #include <glog/logging.h>
 
+#include "managers/objectmanager/objecttreeadapter.h"
+
 namespace omm
 {
 
@@ -11,10 +13,10 @@ class ObjectManager : public Manager
   Q_OBJECT
 public:
   explicit ObjectManager(omm::Scene& scene);
+  ~ObjectManager();
 
-public Q_SLOTS:
-  void print_begin() { ; }
-  void print_end() { ; }
+private:
+  ObjectTreeAdapter m_object_tree_adapter;
 
 };
 

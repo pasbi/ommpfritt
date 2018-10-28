@@ -10,7 +10,7 @@
 #include "commands/addobjectcommand.h"
 #include "managers/manager.h"
 #include "managers/propertymanager.h"
-#include "managers/objectmanager.h"
+#include "managers/objectmanager/objectmanager.h"
 
 namespace {
 constexpr auto FILE_ENDING = ".omm";
