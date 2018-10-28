@@ -1,6 +1,15 @@
- #include "manager.h"
+#include "managers/manager.h"
 
-omm::Manager::Manager(Scene& scene)
-  : m_scene(scene)
+namespace omm
 {
+
+class MainWindow;
+
+Manager::Manager(const QString& title, Scene& scene)
+  : QDockWidget(title)
+  , m_scene(scene)
+{
+  setAttribute(Qt::WA_DeleteOnClose);
 }
+
+}  // namespace omm

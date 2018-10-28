@@ -33,8 +33,11 @@ namespace {
 
 }  // namespace
 
-omm::PropertyManager::PropertyManager(Scene& scene)
-  : Manager(scene)
+namespace omm
+{
+
+PropertyManager::PropertyManager(Scene& scene)
+  : Manager(tr("Properties"), scene)
 {
   setWindowTitle(tr("property manager"));
 }
@@ -53,3 +56,5 @@ void omm::PropertyManager::select( const std::vector<HasPropertiesRef>& selectio
   }
 
 }
+
+}  // namespace omm

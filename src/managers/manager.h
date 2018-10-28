@@ -4,15 +4,14 @@
 #include <memory>
 #include <QDockWidget>
 
+#include "mainwindow/mainwindow.h"
+
 namespace omm
 {
 
+class MainWindow;
 class Scene;
 
-/**
- * @brief Manager is the abstract base class for e.g., ObjectManager or PropertyManager.
- * A manager is usually closely tied to the ui, i.e., it creates a (dockable) window.
- */
 class Manager : public QDockWidget
 {
   Q_OBJECT
@@ -21,7 +20,7 @@ public:
   Manager(Manager&&) = delete;
 
 protected:
-  explicit Manager(Scene& scene);
+  explicit Manager(const QString& title, Scene& scene);
 
   Scene& m_scene;
 };

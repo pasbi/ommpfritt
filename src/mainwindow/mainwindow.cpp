@@ -19,17 +19,9 @@ namespace omm
 
 MainWindow::MainWindow(Application& app)
 {
-  setMenuBar(std::make_unique<MainMenuBar>(app).release());
+  setMenuBar(std::make_unique<MainMenuBar>(app, *this).release());
 
   setDockNestingEnabled(true);
-
-  auto object_manager = std::make_unique<ObjectManager>(app.project().scene());
-  object_manager->show();
-  addDockWidget(Qt::RightDockWidgetArea, object_manager.release());
-
-  auto property_manager = std::make_unique<PropertyManager>(app.project().scene());
-  property_manager->show();
-  addDockWidget(Qt::RightDockWidgetArea, property_manager.release());
 
   setCentralWidget(std::make_unique<Viewport>(app.project()).release());
 }
