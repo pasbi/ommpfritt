@@ -3,7 +3,6 @@ cmake_minimum_required (VERSION 2.6)
 project (ommpfritt)
 
 set (CMAKE_AUTOMOC ON)
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set (OMMPFRITT_VERSION_MAJOR 1)
 set (OMMPFRITT_VERSION_MINOR 0)
 

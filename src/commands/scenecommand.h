@@ -2,18 +2,18 @@
 
 #include "command.h"
 
-namespace omm {
+// namespace omm {
 
-class Scene;
+// class Scene;
 
-class SceneCommand : public Command
-{
-protected:
-  explicit SceneCommand(const std::string& label, Scene& scene);
-  Scene& scene() const;
+// class SceneCommand : public Command
+// {
+// protected:
+//   explicit SceneCommand(const std::string& label, Scene& scene);
+//   Scene& scene() const;
 
-private:
-  Scene& m_scene;
-};
+// private:
+//   Scene& m_scene;
+// };
 
-}  // namespace omm
+// }  // namespace omm

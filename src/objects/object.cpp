@@ -8,11 +8,9 @@
 #include "scene/scene.h"
 #include "properties/property.h"
 
-const std::string omm::Object::TRANSFORMATION_PROPERTY_KEY = "transformation";
-const std::string omm::Object::NAME_PROPERTY_KEY = "name";
-const std::string omm::Object::THE_ANSWER_KEY = "ans";
+namespace
+{
 
-namespace {
 template<typename T> 
 T& emplace(std::vector<std::unique_ptr<T>>& container, std::unique_ptr<T> obj)
 {
@@ -37,7 +35,15 @@ std::unique_ptr<T> extract(std::vector<std::unique_ptr<T>>& container, T& obj)
 
 }  // namespace
 
-omm::Object::Object(omm::Scene& scene)
+namespace omm
+{
+
+const std::string Object::TRANSFORMATION_PROPERTY_KEY = "transformation";
+const std::string Object::NAME_PROPERTY_KEY = "name";
+const std::string Object::THE_ANSWER_KEY = "ans";
+
+
+Object::Object(Scene& scene)
   : m_parent(nullptr)
   , m_scene(scene)
 {
@@ -49,16 +55,16 @@ omm::Object::Object(omm::Scene& scene)
                 std::make_unique<IntegerProperty>(42) );
 }
 
-omm::Object::~Object()
+Object::~Object()
 {
 }
 
-omm::ObjectTransformation omm::Object::transformation() const
+ObjectTransformation Object::transformation() const
 {
   return property(TRANSFORMATION_PROPERTY_KEY).cast<ObjectTransformation>().value();
 }
 
-omm::ObjectTransformation omm::Object::global_transformation() const
+ObjectTransformation Object::global_transformation() const
 {
   assert(this != nullptr);
 
@@ -69,12 +75,12 @@ omm::ObjectTransformation omm::Object::global_transformation() const
   }
 }
 
-void omm::Object::set_transformation(const omm::ObjectTransformation& transformation)
+void Object::set_transformation(const ObjectTransformation& transformation)
 {
   property(TRANSFORMATION_PROPERTY_KEY).cast<ObjectTransformation>().set_value(transformation);
 }
 
-void omm::Object::set_global_transformation(const omm::ObjectTransformation& global_transformation)
+void Object::set_global_transformation(const ObjectTransformation& global_transformation)
 {
   ObjectTransformation local_transformation;
   if (is_root()) {
@@ -89,28 +95,28 @@ void omm::Object::set_global_transformation(const omm::ObjectTransformation& glo
   set_transformation(local_transformation);
 }
 
-bool omm::Object::is_root() const
+bool Object::is_root() const
 {
   return m_parent == nullptr;
 }
 
-omm::Object& omm::Object::parent() const
+Object& Object::parent() const
 {
   assert(!is_root());
   return *m_parent;
 }
 
-void omm::Object::transform(const omm::ObjectTransformation& transformation)
+void Object::transform(const ObjectTransformation& transformation)
 {
   set_transformation(transformation * this->transformation());
 }
 
-omm::Scene& omm::Object::scene() const
+Scene& Object::scene() const
 {
   return m_scene;
 }
 
-omm::Object& omm::Object::adopt(std::unique_ptr<Object> object)
+Object& Object::adopt(std::unique_ptr<Object> object)
 {
   assert(&object->scene() == &scene());
   assert(object->is_root());
@@ -122,7 +128,7 @@ omm::Object& omm::Object::adopt(std::unique_ptr<Object> object)
   return oref;
 }
 
-std::unique_ptr<omm::Object> omm::Object::repudiate(Object& object)
+std::unique_ptr<Object> Object::repudiate(Object& object)
 {
   const ObjectTransformation gt = object.global_transformation();
   object.m_parent = nullptr;
@@ -131,23 +137,23 @@ std::unique_ptr<omm::Object> omm::Object::repudiate(Object& object)
   return optr;
 }
 
-omm::Tag& omm::Object::add_tag(std::unique_ptr<Tag> tag)
+Tag& Object::add_tag(std::unique_ptr<Tag> tag)
 {
   return emplace(m_tags, std::move(tag));
 }
 
-std::unique_ptr<omm::Tag> omm::Object::remove_tag(Tag& tag)
+std::unique_ptr<Tag> Object::remove_tag(Tag& tag)
 {
   return extract(m_tags, tag);
 }
 
-void omm::Object::reset_parent(omm::Object& new_parent)
+void Object::reset_parent(Object& new_parent)
 {
   assert(!is_root()); // use Object::adopt for roots.
   new_parent.adopt(m_parent->repudiate(*this));
 }
 
-omm::ObjectTransformation omm::Object::translation(const double& dx, const double dy)
+ObjectTransformation Object::translation(const double& dx, const double dy)
 {
   ObjectTransformation t = identity();
   t.at(0, 2) = dx;
@@ -155,7 +161,7 @@ omm::ObjectTransformation omm::Object::translation(const double& dx, const doubl
   return t;
 }
 
-omm::ObjectTransformation omm::Object::rotation(const double& alpha)
+ObjectTransformation Object::rotation(const double& alpha)
 {
   ObjectTransformation t = identity();
   t.at(0, 0) = cos(alpha);
@@ -165,7 +171,7 @@ omm::ObjectTransformation omm::Object::rotation(const double& alpha)
   return t;
 }
 
-omm::ObjectTransformation omm::Object::scalation(const double& sx, const double sy)
+ObjectTransformation Object::scalation(const double& sx, const double sy)
 {
   ObjectTransformation t = identity();
   t.at(0, 0) = sx;
@@ -173,14 +179,14 @@ omm::ObjectTransformation omm::Object::scalation(const double& sx, const double 
   return t;
 }
 
-omm::ObjectTransformation omm::Object::identity()
+ObjectTransformation Object::identity()
 {
   ObjectTransformation t;
   t.eye();
   return t;
 }
 
-nlohmann::json omm::Object::to_json() const
+nlohmann::json Object::to_json() const
 {
   std::vector<nlohmann::json> children;
   for (const auto& object : m_children) {
@@ -201,13 +207,13 @@ nlohmann::json omm::Object::to_json() const
   };
 }
 
-void omm::Object::update_ids() const
+void Object::update_ids() const
 {
   size_t current_id = 0;
   update_ids(current_id);
 }
 
-void omm::Object::update_ids(size_t& last_id) const
+void Object::update_ids(size_t& last_id) const
 {
   last_id += 1;
   m_id = last_id;
@@ -217,7 +223,29 @@ void omm::Object::update_ids(size_t& last_id) const
   }
 }
 
-size_t omm::Object::id() const
+size_t Object::id() const
 {
   return m_id;
 }
+
+std::vector<std::reference_wrapper<Object>> Object::children()
+{
+  std::vector<std::reference_wrapper<Object>> refs;
+  static const auto f = [](std::unique_ptr<Object>& uptr) -> std::reference_wrapper<Object> {
+    return *uptr;
+  };
+  std::transform(m_children.begin(), m_children.end(), std::back_inserter(refs), f);
+  return refs;
+}
+
+size_t Object::n_children() const
+{
+  return m_children.size();
+}
+
+Object& Object::child(size_t i) const
+{
+  return *m_children[i];
+}
+
+}  // namespace omm

@@ -1,18 +1,22 @@
 #include "project.h"
 #include <fstream>
 #include "external/json.hpp"
+#include "commands/command.h"
 
-omm::Project::Project()
+namespace omm
+{
+
+Project::Project()
 {
 
 }
 
-omm::Project::~Project()
+Project::~Project()
 {
 
 }
 
-bool omm::Project::save_as(const std::string &filename)
+bool Project::save_as(const std::string &filename)
 {
   const auto json = m_scene.save();
   std::ofstream ofstream(filename);
@@ -23,7 +27,7 @@ bool omm::Project::save_as(const std::string &filename)
     ofstream << json.dump(2);
 #endif
     LOG(INFO) << "Saved current scene to '" << filename << "'";
-    set_has_no_pending_changes();
+    set_has_pending_changes(false);
     m_filename = filename;
     return true;
   } else {
@@ -32,13 +36,13 @@ bool omm::Project::save_as(const std::string &filename)
   }
 }
 
-bool omm::Project::load_from(const std::string &filename)
+bool Project::load_from(const std::string &filename)
 {
   std::ifstream ifstream(filename);
   if (ifstream) {
     nlohmann::json json(ifstream);
     if (m_scene.load(json)) {
-      set_has_no_pending_changes();
+      set_has_pending_changes(false);
       m_filename = filename;
       return true;
     } else {
@@ -51,22 +55,40 @@ bool omm::Project::load_from(const std::string &filename)
   }
 }
 
-void omm::Project::reset()
+void Project::reset()
 {
+  set_has_pending_changes(false);
   m_scene.reset();
 }
 
-void omm::Project::submit(std::unique_ptr<omm::Command> command)
-{
-  CommandStack::submit(std::move(command));
-}
-
-std::string omm::Project::filename() const
+std::string Project::filename() const
 {
   return m_filename;
 }
 
-omm::Scene& omm::Project::scene()
+Scene& Project::scene()
 {
   return m_scene;
 }
+
+void Project::set_has_pending_changes(bool v)
+{
+  m_has_pending_changes = v;
+}
+
+bool Project::has_pending_changes() const
+{
+  return m_has_pending_changes;
+}
+
+void Project::submit(std::unique_ptr<Command> command)
+{
+  m_undo_stack.push(command.release());
+}
+
+QUndoStack& Project::undo_stack()
+{
+  return m_undo_stack;
+}
+
+}  // namespace omm

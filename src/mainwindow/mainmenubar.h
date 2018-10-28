@@ -1,3 +1,5 @@
+#pragma once
+
 #include <QMenuBar>
 
 namespace omm
@@ -12,6 +14,7 @@ public:
 
 private:
   void make_file_menu();
+  void make_create_menu();
   Application& m_app;
 };
 

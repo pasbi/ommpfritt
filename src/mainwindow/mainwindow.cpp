@@ -5,27 +5,33 @@
 
 #include <QMenu>
 #include <QMenuBar>
+#include <QDockWidget>
 
+#include "mainwindow/viewport.h"
 #include "mainwindow/mainmenubar.h"
+#include "mainwindow/application.h"
+
+#include "managers/propertymanager.h"
+#include "managers/objectmanager.h"
 
 namespace omm
 {
 
 MainWindow::MainWindow(Application& app)
 {
-  QMenuBar* mb = new MainMenuBar(app); //std::make_unique<MainMenuBar>(app).release();
-  setMenuBar(mb);
+  setMenuBar(std::make_unique<MainMenuBar>(app).release());
 
-  // // MainMenu
+  setDockNestingEnabled(true);
 
-  // for (auto menu : mb->children()) {
-  //   LOG(INFO) << menu->objectName().toStdString();
-  //   for (auto action : menu->children()) {
-  //     LOG(INFO) << "  " << action->objectName().toStdString();
-  //   }
-  // }
+  auto object_manager = std::make_unique<ObjectManager>(app.project().scene());
+  object_manager->show();
+  addDockWidget(Qt::RightDockWidgetArea, object_manager.release());
 
-  // LOG(INFO) << "xxx " << mb->objectName().toStdString();
+  auto property_manager = std::make_unique<PropertyManager>(app.project().scene());
+  property_manager->show();
+  addDockWidget(Qt::RightDockWidgetArea, property_manager.release());
+
+  setCentralWidget(std::make_unique<Viewport>(app.project()).release());
 }
 
 }  // namespace omm

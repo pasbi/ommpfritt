@@ -36,7 +36,7 @@ namespace {
 omm::PropertyManager::PropertyManager(Scene& scene)
   : Manager(scene)
 {
-
+  setWindowTitle(tr("property manager"));
 }
 
 using HasPropertiesRef = std::reference_wrapper<omm::HasProperties>;

@@ -1,12 +1,10 @@
 file (GLOB SOURCES
   main.cpp
-  application.cpp
 )
 
 add_subdirectory(commands)
 add_subdirectory(mainwindow)
 add_subdirectory(managers)
-add_subdirectory(managerviews)
 add_subdirectory(objects)
 add_subdirectory(properties)
 add_subdirectory(python)

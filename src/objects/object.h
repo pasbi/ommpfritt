@@ -6,7 +6,8 @@
 #include "objecttransformation.h"
 #include "properties/hasproperties.h"
 
-namespace omm {
+namespace omm
+{
 
 class Property;
 class Tag;
@@ -42,20 +43,22 @@ public:
 
   Scene& scene() const;
   virtual nlohmann::json to_json() const;
+  std::vector<std::reference_wrapper<Object>> children();
+  Object& child(size_t i) const;
+  size_t n_children() const;
 
-  template<typename T>
-  T& create_child()
+  template<typename T> T& create_child()
   {
     std::unique_ptr<T> object = std::make_unique<T>(scene());
     return static_cast<T&>(adopt(std::move(object)));
   }
 
-  template<typename T>
-  T& create_tag()
+  template<typename T> T& create_tag()
   {
     std::unique_ptr<T> tag = std::make_unique<T>(*this);
     return static_cast<T&>(add_tag(std::move(tag)));
   }
+
 
   void reset_parent(Object& new_parent);
 

@@ -1,22 +1,20 @@
-#include "command.h"
+#include "commands/command.h"
+#include "scene/project.h"
 
-omm::Command::Command(const std::string& label)
-  : m_label(label)
-{
-}
-
-omm::Command::~Command()
+namespace omm
 {
 
+Command::Command(Project& project, const QString& text)
+  : QUndoCommand(text)
+  , m_project(project)
+{
+
 }
 
-std::unique_ptr<omm::Command> omm::Command::merge(std::unique_ptr<omm::Command> other)
+Scene& Command::scene()
 {
-  // do not merge.
-  return other;
+  return m_project.scene();
 }
 
-std::string omm::Command::label() const
-{
-  return m_label;
-}
+}  // namespace omm
+

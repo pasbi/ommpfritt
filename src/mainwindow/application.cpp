@@ -101,6 +101,7 @@ bool Application::save()
 
 bool Application::save_as()
 {
+  LOG(INFO) << m_main_window;
   const QString filename =
     QFileDialog::getSaveFileName( m_main_window,
                                   tr("Save project as ..."),
@@ -137,5 +138,17 @@ bool Application::load()
     return false;
   }
 }
+
+
+Project& Application::project()
+{
+  return m_project;
+}
+
+const Project& Application::project() const
+{
+  return m_project;
+}
+
 
 }  // namespace omm

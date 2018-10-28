@@ -1,20 +1,21 @@
 #pragma once
 
-#include "scene/sceneobjectmodel.h"
-
 #include "managers/manager.h"
+#include <glog/logging.h>
 
 namespace omm
 {
 
 class ObjectManager : public Manager
 {
+  Q_OBJECT
 public:
   explicit ObjectManager(omm::Scene& scene);
 
-private:
-  // Gtk::TreeView m_tree_view;
-  SceneObjectModel m_columns;
+public Q_SLOTS:
+  void print_begin() { ; }
+  void print_end() { ; }
+
 };
 
 }  // namespace omm

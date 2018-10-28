@@ -26,6 +26,14 @@ public:
   void new_project();
   void set_main_window(MainWindow& main_window);
 
+  template<typename CommandT, typename... Args> void submit(Args&&... args)
+  {
+    m_project.submit(std::make_unique<CommandT>(project(), std::forward<Args>(args)...));
+  }
+
+  Project& project();
+  const Project& project() const;
+
 private:
   QApplication& m_app;
   MainWindow* m_main_window;

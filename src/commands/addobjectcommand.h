@@ -1,15 +1,18 @@
 #pragma once
 
-#include "scenecommand.h"
+#include <memory>
+#include "command.h"
 
-namespace omm {
+namespace omm
+{
 
 class Object;
 
-class AddObjectCommand : public SceneCommand
+class AddObjectCommand : public Command
 {
 public:
-  AddObjectCommand(Scene& scene, std::unique_ptr<Object> object);
+  AddObjectCommand(Project& project, std::unique_ptr<Object> object);
+
   void undo() override;
   void redo() override;
 

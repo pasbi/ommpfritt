@@ -1,6 +1,6 @@
 #include <glog/logging.h>
 
-#include "application.h"
+#include "mainwindow/application.h"
 #include "ommpfrittconfig.h"
 #include <QApplication>
 
@@ -13,6 +13,7 @@ int main (int argc, char *argv[])
   omm::Application app(qt_app);
 
   omm::MainWindow window(app);
+  app.set_main_window(window);
   window.show();
 
   return qt_app.exec();

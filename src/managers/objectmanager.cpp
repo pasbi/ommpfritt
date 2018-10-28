@@ -1,13 +1,21 @@
-#include <glog/logging.h>
-
 #include "managers/objectmanager.h"
-#include "scene/sceneobjectmodel.h"
 
-omm::ObjectManager::ObjectManager(omm::Scene& scene)
-  : Manager(scene)
-  , m_columns(scene)
+#include <glog/logging.h>
+#include <QTreeView>
+#include <QTimer>
+
+#include "scene/scene.h"
+
+namespace omm
 {
-  // Glib::RefPtr<Gtk::TreeStore> tree_model = Gtk::TreeStore::create(m_columns);
-  // m_tree_view.set_model(tree_model);
-  // add(m_tree_view);
+
+ObjectManager::ObjectManager(Scene& scene)
+  : Manager(scene)
+{
+  setWindowTitle(tr("object manager"));
+  auto tree_view = std::make_unique<QTreeView>();
+  tree_view->setModel(&scene);
+  setWidget(tree_view.release());
 }
+
+}  // namespace omm
