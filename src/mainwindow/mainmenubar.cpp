@@ -3,11 +3,12 @@
 #include <memory>
 #include <QAction>
 #include <QMenu>
-#include <QMainWindow>
+#include <QApplication>
 
+#include "mainwindow/mainwindow.h"
 #include "mainwindow/application.h"
 #include "commands/addobjectcommand.h"
-#include "managers/objectmanager/objectmanager.h"
+#include "managers/manager.h"
 
 namespace
 {
@@ -48,10 +49,15 @@ void MainMenuBar::make_create_menu()
 void MainMenuBar::make_window_menu()
 {
   auto window_menu = addMenu(tr("&Window"));
-
-  action(window_menu, tr("&object manager"), this, &MainMenuBar::show_manager<ObjectManager>);
-  action(window_menu, tr("&property manager"), this, &MainMenuBar::show_manager<PropertyManager>);
-
+  for (auto& manager_creator : MainWindow::manager_creators) {
+    const auto label = qApp->translate("Manager", manager_creator.first.c_str());
+    action(window_menu, label, [this, &manager_creator](){
+      auto manager = manager_creator.second(m_app.project().scene());
+      auto& ref = *manager;
+      m_main_window.addDockWidget(Qt::TopDockWidgetArea, manager.release());
+      ref.setFloating(true);
+    });
+  }
 }
 
 MainMenuBar::MainMenuBar(Application& app, MainWindow& main_window)

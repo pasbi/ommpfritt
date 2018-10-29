@@ -21,6 +21,7 @@ ObjectManager::ObjectManager(Scene& scene)
   tree_view->setModel(&m_object_tree_adapter);
 
   setWidget(tree_view.release());
+  setObjectName(TYPE());
 }
 
 ObjectManager::~ObjectManager()

@@ -12,9 +12,11 @@ int main (int argc, char *argv[])
   QApplication qt_app(argc, argv);
   omm::Application app(qt_app);
 
+  QCoreApplication::setOrganizationName("omm");
+  QCoreApplication::setApplicationName("ommpfritt");
+
   omm::MainWindow window(app);
   app.set_main_window(window);
   window.show();
-
   return qt_app.exec();
 }

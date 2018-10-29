@@ -11,6 +11,8 @@ namespace omm
 class ObjectManager : public Manager
 {
   Q_OBJECT
+  DECLARE_MANAGER_TYPE(ObjectManager)
+
 public:
   explicit ObjectManager(omm::Scene& scene);
   ~ObjectManager();

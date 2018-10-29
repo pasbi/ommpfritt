@@ -45,5 +45,4 @@ ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 find_package(Qt5Widgets CONFIG REQUIRED)
 target_link_libraries(ommpfritt Qt5::Widgets)
 
-
 add_subdirectory(src)
