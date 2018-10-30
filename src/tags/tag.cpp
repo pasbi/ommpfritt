@@ -16,7 +16,7 @@ omm::Tag::Tag(omm::Object& owner)
 
 omm::Tag::~Tag()
 {
-  
+
 }
 
 omm::Object& omm::Tag::owner() const
@@ -36,7 +36,6 @@ bool omm::Tag::run()
 
 nlohmann::json omm::Tag::to_json() const
 {
-  return {
-    { "properties", property_map().to_json() }
-  };
+  auto json = HasProperties::to_json();
+  return json;
 }

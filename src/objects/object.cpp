@@ -199,12 +199,12 @@ nlohmann::json Object::to_json() const
   }
 
   std::vector<std::unique_ptr<Object>> m_children;
-  return {
-    { "properties", property_map().to_json() },
-    { "children", children },
-    { "tags", tags },
-    { "id", m_id }
-  };
+
+  auto json = HasProperties::to_json();
+  json["children"] = children;
+  json["tags"] = tags;
+  json["id"] = m_id;
+  return json;
 }
 
 void Object::update_ids() const

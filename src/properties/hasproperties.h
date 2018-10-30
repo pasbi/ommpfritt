@@ -26,13 +26,9 @@ public:
 
   virtual ~HasProperties();
 
-  Property& property(const Key& key) const
-  {
-    return *m_properties.at(key);
-  }
-
-  std::unordered_set<Key> property_keys() const;
-  const PropertyMap& property_map() const;
+  Property& property(const Key& key) const;
+  std::vector<Key> property_keys() const;
+  nlohmann::json to_json() const;
 
 protected:
   void add_property(const Key& key, std::unique_ptr<Property> property);
@@ -40,6 +36,7 @@ protected:
 
 private:
   PropertyMap m_properties;
+  std::vector<Key> m_property_keys;
 
 };
 

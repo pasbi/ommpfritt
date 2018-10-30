@@ -13,20 +13,16 @@ void HasProperties::add_property( const HasProperties::Key& key,
 {
   assert(m_properties.count(key) == 0);
   m_properties[key] = std::move(property);
+  m_property_keys.push_back(key);
 }
 
-std::unordered_set<HasProperties::Key> HasProperties::property_keys() const
+std::vector<HasProperties::Key> HasProperties::property_keys() const
 {
-  std::unordered_set<Key> keys;
+  std::vector<Key> keys;
   keys.reserve(m_properties.size());
-  std::transform( m_properties.begin(), m_properties.end(), std::inserter(keys, keys.begin()),
+  std::transform( m_properties.begin(), m_properties.end(), std::back_inserter(keys),
                   [](const auto& value) { return value.first; } );
   return keys;
-}
-
-const HasProperties::PropertyMap& HasProperties::property_map() const
-{
-  return m_properties;
 }
 
 nlohmann::json HasProperties::PropertyMap::to_json() const
@@ -38,6 +34,18 @@ nlohmann::json HasProperties::PropertyMap::to_json() const
     o[key] = property->to_json();
   }
   return o;
+}
+
+Property& HasProperties::property(const Key& key) const
+{
+  return *m_properties.at(key);
+}
+
+nlohmann::json HasProperties::to_json() const
+{
+  return {
+    { "properties:", m_properties.to_json() }
+  };
 }
 
 }  // namespace omm

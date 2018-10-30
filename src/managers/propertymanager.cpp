@@ -8,16 +8,17 @@ namespace
 
 using Key = omm::HasProperties::Key;
 
-std::unordered_set<Key>
+std::vector<Key>
 get_key_intersection(const std::unordered_set<omm::HasProperties*>& selection)
 {
   if (selection.size() == 0) {
-    return std::unordered_set<Key>();
+    return std::vector<Key>();
   }
 
   using selection_iterator = typename std::decay<decltype(selection)>::type::const_iterator;
   const auto has_key = [](const selection_iterator& it, const Key& key) {
-    return (*it)->property_keys().count(key) == 1;  // TODO optimize
+    auto&& property_keys = (*it)->property_keys();
+    return std::find(property_keys.begin(), property_keys.end(), key) != property_keys.end();
   };
 
   const auto get_type = [](const selection_iterator& it, const Key& key) {
@@ -34,24 +35,14 @@ get_key_intersection(const std::unordered_set<omm::HasProperties*>& selection)
     }
   };
 
-  static const auto erase_if_not = [](auto& container, auto predicate) {
-    for (auto container_it = container.begin(); container_it != container.end(); ) {
-      if (predicate(*container_it)) {
-        ++container_it;
-      } else {
-        container_it = container.erase(container_it);
-      }
-    }
-  };
-
   // select properties with same name and type
   auto keys = (*selection.begin())->property_keys();
   for (selection_iterator it = std::next(selection.begin()); it != selection.end(); ++it)
   {
     const auto predicate = [&it, has_key_of_same_type](const Key& key) {
-      return has_key_of_same_type(it, key);
+      return !has_key_of_same_type(it, key);
     };
-    erase_if_not(keys, predicate);
+    keys.erase(std::remove_if(keys.begin(), keys.end(), predicate), keys.end());
   }
 
   return keys;
