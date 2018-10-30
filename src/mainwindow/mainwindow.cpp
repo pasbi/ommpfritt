@@ -42,7 +42,6 @@ omm::MainWindow::creator_map register_managers()
   return map;
 }
 
-
 }  // namespace
 
 namespace omm

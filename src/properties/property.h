@@ -93,7 +93,6 @@ public:
   {
   }
 
-  
 public:
   virtual void set_value(ValueT value)
   {

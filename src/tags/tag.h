@@ -3,13 +3,14 @@
 #include <memory>
 #include "properties/hasproperties.h"
 #include "external/json_fwd.hpp"
+#include "objects/selectable.h"
 
 namespace omm {
 
 class Object;
 class Scene;
 
-class Tag : public HasProperties
+class Tag : public HasProperties, public Selectable
 {
 public:
   explicit Tag(Object& owner);

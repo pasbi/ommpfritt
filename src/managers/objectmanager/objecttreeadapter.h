@@ -3,13 +3,13 @@
 #include <QAbstractItemModel>
 #include "scene/scene.h"
 
+class QItemSelection;
+
 namespace omm
 {
 
 class Scene;
-
 class Object;
-
 
 class ObjectTreeAdapter : public QAbstractItemModel, public AbstractObjectTreeAdapter
 {
@@ -38,7 +38,6 @@ public:
 
 private:
   Object& m_root;
-
 };
 
 }  // namespace omm

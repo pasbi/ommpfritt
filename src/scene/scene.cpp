@@ -58,16 +58,15 @@ void Scene::insert_object(std::unique_ptr<Object> object, Object& parent)
 {
   size_t n = parent.children().size();
 
-  for (auto&& adapter : m_adapters) {
-    adapter->beginInsertObjects(parent, n, n);
-  }
+  AdapterRegister<AbstractObjectTreeAdapter>::for_each(
+    [&parent, n] (auto* adapter) { adapter->beginInsertObjects(parent, n, n); }
+  );
 
   parent.adopt(std::move(object));
 
-  for (auto&& adapter : m_adapters) {
-    adapter->endInsertObjects();
-  }
-
+  AdapterRegister<AbstractObjectTreeAdapter>::for_each(
+    [] (auto* adapter) { adapter->endInsertObjects(); }
+  );
 }
 
 Object& Scene::root() const
@@ -75,16 +74,13 @@ Object& Scene::root() const
   return *m_root;
 }
 
-void Scene::register_object_tree_adapter(AbstractObjectTreeAdapter& adapter)
+void Scene::selection_changed()
 {
-  assert(m_adapters.count(&adapter) == 0);
-  m_adapters.insert(&adapter);
-}
+  const auto selected_objects = m_root->get_selected_children_and_tags();
 
-void Scene::unregister_object_tree_adapter(AbstractObjectTreeAdapter& adapter)
-{
-  assert(m_adapters.count(&adapter) == 1);
-  m_adapters.erase(m_adapters.find(&adapter));
+  AdapterRegister<AbstractPropertyAdapter>::for_each(
+    [selected_objects](auto* adapter) { adapter->set_selection(selected_objects); }
+  );
 }
 
 

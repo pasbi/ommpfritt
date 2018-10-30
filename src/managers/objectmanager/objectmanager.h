@@ -20,6 +20,7 @@ public:
 private:
   ObjectTreeAdapter m_object_tree_adapter;
 
+  void on_selection_changed(const QItemSelection& selection, const QItemSelection& old_selection);
 };
 
 }  // namespace omm

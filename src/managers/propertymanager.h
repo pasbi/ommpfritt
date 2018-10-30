@@ -5,24 +5,24 @@
 
 #include "properties/hasproperties.h"
 #include "managers/manager.h"
+#include "scene/scene.h"
 
 namespace omm
 {
 
 class PropertyView;
 
-class PropertyManager : public omm::Manager
+class PropertyManager : public Manager, public AbstractPropertyAdapter
 {
   Q_OBJECT
   DECLARE_MANAGER_TYPE(PropertyManager)
 
 public:
-  explicit PropertyManager(omm::Scene& scene);
+  explicit PropertyManager(Scene& scene);
+  ~PropertyManager();
 
-  void select(const std::vector<std::reference_wrapper<HasProperties>>& selection);
-  std::vector<HasProperties::PropertyKey> keys();
-
-  PropertyView property(const std::string& key);
+  void set_selection(const std::unordered_set<HasProperties*>& selection) override;
+  PropertyView property(const HasProperties::Key& key);
 };
 
 }  // namespace omm

@@ -248,4 +248,26 @@ Object& Object::child(size_t i) const
   return *m_children[i];
 }
 
+std::unordered_set<HasProperties*> Object::get_selected_children_and_tags()
+{
+  std::unordered_set<HasProperties*> selection;
+
+  if (is_selected()) {
+    selection.insert(this);
+  }
+
+  for (auto& tag : m_tags) {
+    if (tag->is_selected()) {
+      selection.insert(tag.get());
+    }
+  }
+
+  for (auto& child : m_children) {
+    const auto child_selection = child->get_selected_children_and_tags();
+    selection.insert(child_selection.begin(), child_selection.end());
+  }
+
+  return selection;
+}
+
 }  // namespace omm

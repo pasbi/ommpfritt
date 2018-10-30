@@ -5,6 +5,7 @@
 #include "external/json_fwd.hpp"
 #include "objecttransformation.h"
 #include "properties/hasproperties.h"
+#include "objects/selectable.h"
 
 namespace omm
 {
@@ -13,7 +14,7 @@ class Property;
 class Tag;
 class Scene;
 
-class Object : public HasProperties
+class Object : public HasProperties, public Selectable
 {
 public:
   explicit Object(Scene& scene);
@@ -46,6 +47,8 @@ public:
   std::vector<std::reference_wrapper<Object>> children();
   Object& child(size_t i) const;
   size_t n_children() const;
+
+  std::unordered_set<HasProperties*> get_selected_children_and_tags();
 
   template<typename T> T& create_child()
   {

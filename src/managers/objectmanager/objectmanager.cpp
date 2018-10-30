@@ -15,10 +15,13 @@ ObjectManager::ObjectManager(Scene& scene)
 {
   setWindowTitle(tr("object manager"));
 
-  scene.register_object_tree_adapter(m_object_tree_adapter);
+  m_scene.AdapterRegister<AbstractObjectTreeAdapter>::register_adapter(m_object_tree_adapter);
 
   auto tree_view = std::make_unique<QTreeView>();
   tree_view->setModel(&m_object_tree_adapter);
+
+  connect( tree_view->selectionModel(), &QItemSelectionModel::selectionChanged,
+           this, &ObjectManager::on_selection_changed );
 
   setWidget(tree_view.release());
   setObjectName(TYPE());
@@ -26,7 +29,23 @@ ObjectManager::ObjectManager(Scene& scene)
 
 ObjectManager::~ObjectManager()
 {
-  m_scene.unregister_object_tree_adapter(m_object_tree_adapter);
+  m_scene.AdapterRegister<AbstractObjectTreeAdapter>::unregister_adapter(m_object_tree_adapter);
+}
+
+void ObjectManager::on_selection_changed( const QItemSelection& selection,
+                                          const QItemSelection& old_selection )
+{
+  for (auto& index : old_selection.indexes()) {
+    if (!selection.contains(index)) {
+      m_object_tree_adapter.object_at(index).deselect();
+    }
+  }
+
+  for (auto& index : selection.indexes()) {
+    m_object_tree_adapter.object_at(index).select();
+  }
+
+  m_scene.selection_changed();
 }
 
 }  // namespace omm

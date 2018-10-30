@@ -14,18 +14,51 @@ namespace omm
 
 class Scene;
 
+template<typename AdapterT> class AdapterRegister
+{
+public:
+  void register_adapter(AdapterT& adapter)
+  {
+    assert(m_adapters.count(&adapter) == 0);
+    m_adapters.insert(&adapter);
+  }
+
+  void unregister_adapter(AdapterT& adapter)
+  {
+    assert(m_adapters.count(&adapter) == 1);
+    m_adapters.erase(m_adapters.find(&adapter));
+  }
+
+  template<typename F> void for_each(F f)
+  {
+    std::for_each(m_adapters.begin(), m_adapters.end(), f);
+  }
+
+private:
+  std::unordered_set<AdapterT*> m_adapters;
+};
+
 class AbstractObjectTreeAdapter
 {
-protected:
-  virtual void beginInsertObjects(Object& parent, int start, int end) {}
-  virtual void endInsertObjects() {}
+public:
+  virtual void beginInsertObjects(Object& parent, int start, int end) = 0;
+  virtual void endInsertObjects() = 0;
 
   friend class Scene;
+};
+
+class AbstractPropertyAdapter
+{
+public:
+  virtual void set_selection(const std::unordered_set<HasProperties*>& selection) = 0;
 };
 
 class Object;
 
 class Scene
+  : public AdapterRegister<AbstractObjectTreeAdapter>
+  , public AdapterRegister<AbstractPropertyAdapter>
+
 {
 public:
   Scene();
@@ -41,13 +74,10 @@ public:
   nlohmann::json save() const;
 
   void insert_object(std::unique_ptr<Object> object, Object& parent);
-
-  void register_object_tree_adapter(AbstractObjectTreeAdapter& adapter);
-  void unregister_object_tree_adapter(AbstractObjectTreeAdapter& adapter);
+  void selection_changed();
 
 private:
   std::unique_ptr<Object> m_root;
-  std::unordered_set<AbstractObjectTreeAdapter*> m_adapters;
   static Scene* m_current;
 };
 

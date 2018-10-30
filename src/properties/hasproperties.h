@@ -11,13 +11,14 @@
 #define DEFINE_CLASSNAME(CLASSNAME) \
   std::string class_name() const override { return CLASSNAME; }
 
-namespace omm {
+namespace omm
+{
 
 class HasProperties
 {
 public:
-  using PropertyKey = std::string;
-  class PropertyMap : public std::map<PropertyKey, std::unique_ptr<Property>>
+  using Key = std::string;
+  class PropertyMap : public std::map<Key, std::unique_ptr<Property>>
   {
   public:
     nlohmann::json to_json() const;
@@ -25,21 +26,21 @@ public:
 
   virtual ~HasProperties();
 
-  Property& property(const PropertyKey& key) const
+  Property& property(const Key& key) const
   {
     return *m_properties.at(key);
   }
 
-  std::vector<PropertyKey> property_keys() const;
+  std::unordered_set<Key> property_keys() const;
   const PropertyMap& property_map() const;
 
 protected:
-  void add_property(const PropertyKey& key, std::unique_ptr<Property> property);
+  void add_property(const Key& key, std::unique_ptr<Property> property);
   virtual std::string class_name() const = 0;
 
 private:
   PropertyMap m_properties;
-  
+
 };
 
 }  // namespace omm

@@ -1,9 +1,10 @@
 #include "managers/objectmanager/objecttreeadapter.h"
+
+#include <QItemSelection>
 #include <glog/logging.h>
+
 #include "objects/object.h"
 #include "scene/scene.h"
-
-
 
 namespace omm
 {
@@ -126,6 +127,5 @@ void ObjectTreeAdapter::endInsertObjects()
 {
   endInsertRows();
 }
-
 
 }  // namespace omm
