@@ -7,6 +7,7 @@
 #include <typeinfo>
 #include "property.h"
 #include "external/json_fwd.hpp"
+#include "orderedmap.h"
 
 #define DEFINE_CLASSNAME(CLASSNAME) \
   std::string class_name() const override { return CLASSNAME; }
@@ -18,16 +19,11 @@ class HasProperties
 {
 public:
   using Key = std::string;
-  class PropertyMap : public std::map<Key, std::unique_ptr<Property>>
-  {
-  public:
-    nlohmann::json to_json() const;
-  };
-
+  using PropertyMap = OrderedMap<Key, std::unique_ptr<Property>>;
   virtual ~HasProperties();
 
   Property& property(const Key& key) const;
-  std::vector<Key> property_keys() const;
+  const std::vector<Key>& property_keys() const;
   nlohmann::json to_json() const;
 
 protected:
@@ -36,8 +32,6 @@ protected:
 
 private:
   PropertyMap m_properties;
-  std::vector<Key> m_property_keys;
-
 };
 
 }  // namespace omm
