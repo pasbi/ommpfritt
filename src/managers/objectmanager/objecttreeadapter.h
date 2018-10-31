@@ -11,7 +11,7 @@ namespace omm
 class Scene;
 class Object;
 
-class ObjectTreeAdapter : public QAbstractItemModel, public AbstractObjectTreeAdapter
+class ObjectTreeAdapter : public QAbstractItemModel, public AbstractObjectTreeObserver
 {
   Q_OBJECT
 

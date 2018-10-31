@@ -7,12 +7,14 @@
 #include "managers/manager.h"
 #include "scene/scene.h"
 
+class QTabWidget;
+
 namespace omm
 {
 
 class PropertyView;
 
-class PropertyManager : public Manager, public AbstractPropertyAdapter
+class PropertyManager : public Manager, public AbstractPropertyObserver
 {
   Q_OBJECT
   DECLARE_MANAGER_TYPE(PropertyManager)
@@ -23,6 +25,10 @@ public:
 
   void set_selection(const std::unordered_set<HasProperties*>& selection) override;
   PropertyView property(const HasProperties::Key& key);
+  void clear();
+
+private:
+  QTabWidget& m_tabs;
 };
 
 }  // namespace omm

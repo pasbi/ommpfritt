@@ -9,7 +9,7 @@
 #include "mainwindow/mainwindow.h"
 #include "commands/addobjectcommand.h"
 #include "managers/manager.h"
-#include "managers/propertymanager.h"
+#include "managers/propertymanager/propertymanager.h"
 #include "managers/objectmanager/objectmanager.h"
 
 namespace {

@@ -4,60 +4,37 @@
 #include <memory>
 #include <vector>
 #include <stdint.h>
-#include "python/objectview.h"
-#include "external/json_fwd.hpp"
 #include <QAbstractItemModel>
 #include <unordered_set>
+#include "python/objectview.h"
+#include "external/json_fwd.hpp"
+#include "observerregister.h"
 
 namespace omm
 {
 
 class Scene;
 
-template<typename AdapterT> class AdapterRegister
+class AbstractObjectTreeObserver
 {
-public:
-  void register_adapter(AdapterT& adapter)
-  {
-    assert(m_adapters.count(&adapter) == 0);
-    m_adapters.insert(&adapter);
-  }
-
-  void unregister_adapter(AdapterT& adapter)
-  {
-    assert(m_adapters.count(&adapter) == 1);
-    m_adapters.erase(m_adapters.find(&adapter));
-  }
-
-  template<typename F> void for_each(F f)
-  {
-    std::for_each(m_adapters.begin(), m_adapters.end(), f);
-  }
-
-private:
-  std::unordered_set<AdapterT*> m_adapters;
-};
-
-class AbstractObjectTreeAdapter
-{
-public:
+protected:
   virtual void beginInsertObjects(Object& parent, int start, int end) = 0;
   virtual void endInsertObjects() = 0;
-
   friend class Scene;
 };
 
-class AbstractPropertyAdapter
+class AbstractPropertyObserver
 {
-public:
+protected:
   virtual void set_selection(const std::unordered_set<HasProperties*>& selection) = 0;
+  friend class Scene;
 };
 
 class Object;
 
 class Scene
-  : public AdapterRegister<AbstractObjectTreeAdapter>
-  , public AdapterRegister<AbstractPropertyAdapter>
+  : public ObserverRegister<AbstractObjectTreeObserver>
+  , public ObserverRegister<AbstractPropertyObserver>
 
 {
 public:

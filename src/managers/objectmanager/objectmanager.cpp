@@ -15,7 +15,7 @@ ObjectManager::ObjectManager(Scene& scene)
 {
   setWindowTitle(tr("object manager"));
 
-  m_scene.AdapterRegister<AbstractObjectTreeAdapter>::register_adapter(m_object_tree_adapter);
+  m_scene.ObserverRegister<AbstractObjectTreeObserver>::register_observer(m_object_tree_adapter);
 
   auto tree_view = std::make_unique<QTreeView>();
   tree_view->setModel(&m_object_tree_adapter);
@@ -29,7 +29,7 @@ ObjectManager::ObjectManager(Scene& scene)
 
 ObjectManager::~ObjectManager()
 {
-  m_scene.AdapterRegister<AbstractObjectTreeAdapter>::unregister_adapter(m_object_tree_adapter);
+  m_scene.ObserverRegister<AbstractObjectTreeObserver>::unregister_observer(m_object_tree_adapter);
 }
 
 void ObjectManager::on_selection_changed( const QItemSelection& selection,

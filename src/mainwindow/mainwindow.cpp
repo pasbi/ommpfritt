@@ -13,7 +13,7 @@
 #include "mainwindow/mainmenubar.h"
 #include "mainwindow/application.h"
 
-#include "managers/propertymanager.h"
+#include "managers/propertymanager/propertymanager.h"
 #include "managers/objectmanager/objectmanager.h"
 
 namespace

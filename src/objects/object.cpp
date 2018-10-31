@@ -11,7 +11,7 @@
 namespace
 {
 
-template<typename T> 
+template<typename T>
 T& emplace(std::vector<std::unique_ptr<T>>& container, std::unique_ptr<T> obj)
 {
   T& ref = *obj;
@@ -42,17 +42,22 @@ const std::string Object::TRANSFORMATION_PROPERTY_KEY = "transformation";
 const std::string Object::NAME_PROPERTY_KEY = "name";
 const std::string Object::THE_ANSWER_KEY = "ans";
 
-
 Object::Object(Scene& scene)
   : m_parent(nullptr)
   , m_scene(scene)
 {
-  add_property( TRANSFORMATION_PROPERTY_KEY,
-                std::make_unique<TransformationProperty>(Object::identity()) );
-  add_property( NAME_PROPERTY_KEY,
-                std::make_unique<StringProperty>("<Unnamed Object>") );
-  add_property( THE_ANSWER_KEY,
-                std::make_unique<IntegerProperty>(42) );
+  add_property<TransformationProperty>( TRANSFORMATION_PROPERTY_KEY,
+                                        QObject::tr("transformation").toStdString(),
+                                        QObject::tr("object").toStdString(),
+                                        Object::identity() );
+  add_property<StringProperty>( NAME_PROPERTY_KEY,
+                                QObject::tr("Name").toStdString(),
+                                QObject::tr("object").toStdString(),
+                                "<Unnamed Object>" );
+  add_property<IntegerProperty>( THE_ANSWER_KEY,
+                                 QObject::tr("The Answer").toStdString(),
+                                 QObject::tr("special").toStdString(),
+                                 42 );
 }
 
 Object::~Object()

@@ -1,6 +1,7 @@
 #include "tags/tag.h"
 
 #include <memory>
+#include <QObject>
 
 #include "objects/object.h"
 #include "external/json.hpp"
@@ -10,8 +11,10 @@ const std::string omm::Tag::NAME_PROPERTY_KEY = "name";
 omm::Tag::Tag(omm::Object& owner)
   : m_owner(owner)
 {
-  add_property( NAME_PROPERTY_KEY,
-                std::make_unique<StringProperty>("<Unnamed Tag>") );
+  add_property<StringProperty>( NAME_PROPERTY_KEY,
+                                QObject::tr("Name").toStdString(),
+                                QObject::tr("Tag").toStdString(),
+                                "<Unnamed Tag>" );
 }
 
 omm::Tag::~Tag()

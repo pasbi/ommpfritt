@@ -28,6 +28,12 @@ public:
 
 protected:
   void add_property(const Key& key, std::unique_ptr<Property> property);
+
+  template<typename PropertyT, typename... Args> void add_property(const Key& key, Args&&... args)
+  {
+    add_property(key, std::make_unique<PropertyT>(std::forward<Args>(args)...));
+  }
+
   virtual std::string class_name() const = 0;
 
 private:

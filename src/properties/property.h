@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include "objects/objecttransformation.h" //TODO remove that include
 #include "external/json.hpp"
+#include "observerregister.h"
 
 namespace py = pybind11;
 
@@ -56,7 +57,7 @@ namespace {
 class Property
 {
 public:
-  Property();
+  Property(const std::string& label, const std::string& category);
   virtual ~Property();
 
   template<typename ValueT> bool is_type() const
@@ -80,14 +81,27 @@ public:
   virtual py::object get_py_object() const = 0;
   virtual std::type_index type_index() const = 0;
   virtual nlohmann::json to_json() const = 0;
+  std::string label() const;
+  std::string category() const;
+
+private:
+  const std::string m_label;
+  const std::string m_category;
+};
+
+class AbstractTypedPropertyObserver
+{
+protected:
+  virtual void on_value_changed() = 0;
+  template<typename ValueT> friend class TypedProperty;
 };
 
 template<typename ValueT>
-class TypedProperty : public Property
+class TypedProperty : public Property, public ObserverRegister<AbstractTypedPropertyObserver>
 {
 public:
-  TypedProperty(ValueT defaultValue)
-    : Property()
+  TypedProperty(const std::string& label, const std::string& category, ValueT defaultValue)
+    : Property(label, category)
     , m_value(defaultValue)
     , m_defaultValue(defaultValue)
   {
@@ -173,7 +187,7 @@ public:
 class ReferenceProperty : public TypedProperty<Object*>
 {
 public:
-  ReferenceProperty();
+  ReferenceProperty(const std::string& label, const std::string& category);
   static bool is_referenced(const Object* candidate);
   void set_value(Object* value) override;
   nlohmann::json to_json() const override;
