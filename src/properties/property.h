@@ -4,6 +4,8 @@
 #include <string>
 #include <typeinfo>
 #include <unordered_set>
+#include <glog/logging.h>
+
 #include "objects/objecttransformation.h" //TODO remove that include
 #include "external/json.hpp"
 #include "observerregister.h"
@@ -21,9 +23,9 @@ class Object;
                 "Forbidden Property Type '"#T"'.");
 
 // Disable some T in TypedProperty<T>
-// Without this guard, it was easy to accidentally use the 
+// Without this guard, it was easy to accidentally use the
 // TypedProperty<const char*> acidentally when you actually want
-// TypedProperty<std::string>. It's hard to notice and things will 
+// TypedProperty<std::string>. It's hard to notice and things will
 // break at strange places so debugging it becomes ugly.
 #define DISABLE_DANGEROUS_PROPERTY_TYPES \
   DISABLE_DANGEROUS_PROPERTY_TYPE(const char*)
@@ -100,6 +102,8 @@ template<typename ValueT>
 class TypedProperty : public Property, public ObserverRegister<AbstractTypedPropertyObserver>
 {
 public:
+  using value_type = ValueT;
+
   TypedProperty(const std::string& label, const std::string& category, ValueT defaultValue)
     : Property(label, category)
     , m_value(defaultValue)
@@ -110,6 +114,7 @@ public:
 public:
   virtual void set_value(ValueT value)
   {
+    LOG(INFO) << "set_value: " << value;
     m_value = value;
   }
 
@@ -143,10 +148,14 @@ public:
     return std::type_index(typeid(ValueT));
   }
 
+  static const std::type_index TYPE_INDEX;
+
 private:
   ValueT m_value;
   const ValueT m_defaultValue;
 };
+
+template<typename ValueT> const std::type_index TypedProperty<ValueT>::TYPE_INDEX = std::type_index(typeid(ValueT));
 
 template<typename T>
 class SimpleTypeProperty : public TypedProperty<T>

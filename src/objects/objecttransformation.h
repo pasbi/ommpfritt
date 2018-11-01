@@ -14,4 +14,6 @@ public:
   nlohmann::json to_json() const;
 };
 
+std::ostringstream& operator<<(std::ostringstream& ostream, const ObjectTransformation& t);
+
 }  // namespace omm

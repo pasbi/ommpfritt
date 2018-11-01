@@ -48,8 +48,7 @@ void ReferenceProperty::set_value(Object* reference)
 {
   const Object* oldReference = value();
   if (oldReference != nullptr) {
-    assert(is_referenced(oldReference
-      ));
+    assert(is_referenced(oldReference));
     m_references.erase(oldReference);
   }
   TypedProperty<Object*>::set_value(reference);

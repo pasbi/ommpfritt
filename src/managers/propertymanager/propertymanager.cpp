@@ -5,47 +5,46 @@
 #include <QTabWidget>
 
 #include "managers/propertymanager/propertymanagertab.h"
+#include "propertywidgets/propertywidget.h"
+#include "common.h"
 
 namespace
 {
 
 using Key = omm::HasProperties::Key;
+using SetOfHasProperties = std::unordered_set<omm::HasProperties*>;
+using SetOfProperties = omm::AbstractPropertyWidget::SetOfProperties;
 
 std::vector<Key>
-get_key_intersection(const std::unordered_set<omm::HasProperties*>& selection)
+get_key_intersection(const SetOfHasProperties& selection)
 {
   if (selection.size() == 0) {
     return std::vector<Key>();
   }
 
-  using selection_iterator = typename std::decay<decltype(selection)>::type::const_iterator;
-  const auto has_key = [](const selection_iterator& it, const Key& key) {
-    auto&& property_keys = (*it)->property_keys();
+  const auto* the_entity = *selection.begin();
+  auto keys = the_entity->property_keys();
+  std::unordered_map<Key, std::type_index> types;
+  types.reserve(keys.size());
+  for (auto&& key : keys) {
+    types.insert(std::make_pair(key, the_entity->property(key).type_index()));
+  }
+
+  const auto has_key = [](const omm::HasProperties* entity, const Key& key) {
+    auto&& property_keys = entity->property_keys();
     return std::find(property_keys.begin(), property_keys.end(), key) != property_keys.end();
   };
 
-  const auto get_type = [](const selection_iterator& it, const Key& key) {
-    return (*it)->property(key).type_index();
+  const auto key_same_type = [types](const omm::HasProperties* entity, const Key& key) {
+    return types.at(key) == entity->property(key).type_index();
   };
 
-  const auto has_key_of_same_type = [has_key, get_type]( const selection_iterator& it,
-                                                         const Key& key )
-  {
-    if (has_key(it, key)) {
-      return get_type(it, key) == get_type(std::prev(it), key);  // same type?
-    } else {
-      return false;  // not even that key.
-    }
-  };
 
-  // select properties with same name and type
-  auto keys = (*selection.begin())->property_keys();
-  for (selection_iterator it = std::next(selection.begin()); it != selection.end(); ++it)
-  {
-    const auto predicate = [&it, has_key_of_same_type](const Key& key) {
-      return !has_key_of_same_type(it, key);
+  for (auto it = std::next(selection.begin()); it != selection.end(); ++it) {
+    const auto not_has_key_of_same_type = [&it, &has_key, &key_same_type](const Key& key) {
+      return !has_key(*it, key) || !key_same_type(*it, key);
     };
-    keys.erase(std::remove_if(keys.begin(), keys.end(), predicate), keys.end());
+    keys.erase(std::remove_if(keys.begin(), keys.end(), not_has_key_of_same_type), keys.end());
   }
 
   return keys;
@@ -64,34 +63,29 @@ void split_key(const std::string& key, std::string& tab_name, std::string& prope
   }
 }
 
-std::vector<omm::Property*>
-collect_properties( const omm::HasProperties::Key& key,
-                    const std::unordered_set<omm::HasProperties*>& selection )
+auto collect_properties( const omm::HasProperties::Key& key,
+                         const SetOfHasProperties& selection )
 {
-  std::vector<omm::Property*> collection;
+  std::unordered_set<omm::Property*> collection;
   collection.reserve(selection.size());
   const auto f = [key](omm::HasProperties* entity) {
     return &entity->property(key);
   };
-  std::transform(selection.begin(), selection.end(), std::back_inserter(collection), f);
-  return collection;
+
+  return transform<omm::Property*>(selection, f);
 }
 
-template<typename T, typename F> T& transfer(std::unique_ptr<T> object, F consumer)
-{
-  T& ref = *object;
-  consumer(std::move(object));
-  return ref;
-}
-
-std::string get_tab_label(const std::vector<omm::Property*>& properties)
+std::string get_tab_label(const SetOfProperties& properties)
 {
   assert(properties.size() > 0);
-  const auto tab_label = properties.front()->category();
+  const auto tab_label = (*properties.begin())->category();
 #ifndef NDEBUG
   for (auto&& property : properties) {
     assert(property != nullptr);
-    assert(tab_label == property->category());
+    if (tab_label != property->category()) {
+      LOG(WARNING) << "category is not consistent: "
+                   << "'" << tab_label << "' != '" << property->category() << "'.";
+    }
   }
 #endif
   return tab_label;
@@ -104,9 +98,10 @@ namespace omm
 
 PropertyManager::PropertyManager(Scene& scene)
   : Manager(tr("Properties"), scene)
-  , m_tabs(transfer(std::make_unique<QTabWidget>(), [this](std::unique_ptr<QTabWidget> tabs) {
-    this->setWidget(tabs.release());
-  }))
+  , m_tabs(transfer( std::make_unique<QTabWidget>(),
+                     [this](std::unique_ptr<QTabWidget> tabs) {
+                        this->setWidget(tabs.release());
+                      } ) )
 {
   setWindowTitle(tr("property manager"));
   setObjectName(TYPE());
@@ -118,7 +113,7 @@ PropertyManager::~PropertyManager()
   m_scene.ObserverRegister<AbstractPropertyObserver>::unregister_observer(*this);
 }
 
-void PropertyManager::set_selection(const std::unordered_set<HasProperties*>& selection)
+void PropertyManager::set_selection(const SetOfHasProperties& selection)
 {
   const auto key_intersection = get_key_intersection(selection);
   clear();

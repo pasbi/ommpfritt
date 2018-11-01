@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QWidget>
-#include <vector>
+#include <unordered_set>
 
 namespace omm
 {
@@ -12,7 +12,7 @@ class PropertyManagerTab : public QWidget
 {
 public:
   explicit PropertyManagerTab();
-  void add_properties(const std::vector<Property*>& properties);
+  void add_properties(const std::unordered_set<Property*>& properties);
 };
 
 }  // namespace omm

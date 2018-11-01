@@ -3,10 +3,12 @@
 #include <assert.h>
 #include <algorithm>
 #include <map>
+#include <functional>
 
 #include "tags/tag.h"
 #include "scene/scene.h"
 #include "properties/property.h"
+#include "common.h"
 
 namespace
 {
@@ -235,12 +237,10 @@ size_t Object::id() const
 
 std::vector<std::reference_wrapper<Object>> Object::children()
 {
-  std::vector<std::reference_wrapper<Object>> refs;
-  static const auto f = [](std::unique_ptr<Object>& uptr) -> std::reference_wrapper<Object> {
-    return *uptr;
+  static const auto f = [](const std::unique_ptr<Object>& uptr) {
+    return std::reference_wrapper<Object>(*uptr);
   };
-  std::transform(m_children.begin(), m_children.end(), std::back_inserter(refs), f);
-  return refs;
+  return ::transform<std::reference_wrapper<Object>>(m_children, f);
 }
 
 size_t Object::n_children() const

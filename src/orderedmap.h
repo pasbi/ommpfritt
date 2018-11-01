@@ -14,8 +14,9 @@ public:
 
   bool insert(const KeyT& key, ValueT&& value)
   {
-    const auto info = m_values.insert(std::make_pair(key, std::forward<ValueT>(value)));
-    const bool was_inserted = info.second;
+    bool was_inserted;
+    std::tie(std::ignore, was_inserted)
+      = m_values.insert(std::make_pair(key, std::forward<ValueT>(value)));
     if (was_inserted) {
       m_keys.push_back(key);
       return true;
