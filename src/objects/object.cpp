@@ -14,10 +14,13 @@ namespace
 {
 
 template<typename T>
-T& emplace(std::vector<std::unique_ptr<T>>& container, std::unique_ptr<T> obj)
+T& insert(std::vector<std::unique_ptr<T>>& container, std::unique_ptr<T> obj, size_t pos)
 {
+  auto pos_it = container.begin();
+  std::advance(pos_it, pos);
+
   T& ref = *obj;
-  container.push_back(std::move(obj));
+  container.insert(pos_it, std::move(obj));
   return ref;
 }
 
@@ -123,16 +126,27 @@ Scene& Object::scene() const
   return m_scene;
 }
 
-Object& Object::adopt(std::unique_ptr<Object> object)
+Object& Object::adopt(std::unique_ptr<Object> object, size_t pos)
 {
   assert(&object->scene() == &scene());
   assert(object->is_root());
   const ObjectTransformation gt = object->global_transformation();
 
   object->m_parent = this;
-  Object& oref = emplace(m_children, std::move(object));
+  Object& oref = insert(m_children, std::move(object), pos);
   oref.set_global_transformation(gt);
   return oref;
+}
+
+std::vector<std::reference_wrapper<Object>>
+Object::adopt(std::vector<std::unique_ptr<Object>> objects, size_t pos)
+{
+  std::vector<std::reference_wrapper<Object>> refs;
+  refs.reserve(objects.size());
+  for (size_t i = 0; i < objects.size(); ++i) {
+    refs.push_back(adopt(std::move(objects[i]), pos + i));
+  }
+  return refs;
 }
 
 std::unique_ptr<Object> Object::repudiate(Object& object)
@@ -146,7 +160,7 @@ std::unique_ptr<Object> Object::repudiate(Object& object)
 
 Tag& Object::add_tag(std::unique_ptr<Tag> tag)
 {
-  return emplace(m_tags, std::move(tag));
+  return insert(m_tags, std::move(tag), m_tags.size());
 }
 
 std::unique_ptr<Tag> Object::remove_tag(Tag& tag)

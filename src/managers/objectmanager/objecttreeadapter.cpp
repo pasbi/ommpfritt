@@ -3,8 +3,10 @@
 #include <QItemSelection>
 #include <glog/logging.h>
 
+#include "objectmimedata.h"
 #include "objects/object.h"
 #include "scene/scene.h"
+#include "common.h"
 
 namespace omm
 {
@@ -52,15 +54,39 @@ int ObjectTreeAdapter::columnCount(const QModelIndex& parent) const
   return 3;
 }
 
+bool ObjectTreeAdapter::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+  if (!index.isValid() || role != Qt::EditRole) {
+    return false;
+  }
+
+  switch (index.column()) {
+  case 0:
+    object_at(index).property(Object::NAME_PROPERTY_KEY).cast<std::string>().set_value(
+      value.toString().toStdString()
+    );
+    return true;
+  }
+
+  return false;
+}
+
 QVariant ObjectTreeAdapter::data(const QModelIndex& index, int role) const
 {
   if (!index.isValid()) {
     return QVariant();
-  } else if (role != Qt::DisplayRole) {
-    return QVariant();
-  } else {
-    return QString("abc %1 %2").arg(index.row()).arg(index.column());
   }
+
+  switch (index.column()) {
+  case 0:
+    switch (role) {
+    case Qt::DisplayRole:
+      return QString::fromStdString(
+        object_at(index).property(Object::NAME_PROPERTY_KEY).cast<std::string>().value()
+      );
+    }
+  }
+  return QVariant();
 }
 
 Object& ObjectTreeAdapter::object_at(const QModelIndex& index) const
@@ -112,10 +138,21 @@ QVariant ObjectTreeAdapter::headerData(int section, Qt::Orientation orientation,
 Qt::ItemFlags ObjectTreeAdapter::flags(const QModelIndex &index) const
 {
   if (!index.isValid()) {
-    return 0;
-  } else {
+    return Qt::ItemIsDropEnabled;
+  }
+
+  switch (index.column()) {
+  case 0:
+    return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled
+            | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+  default:
     return QAbstractItemModel::flags(index);
   }
+}
+
+Qt::DropActions ObjectTreeAdapter::supportedDragActions() const
+{
+  return Qt::LinkAction | Qt::MoveAction | Qt::CopyAction;
 }
 
 void ObjectTreeAdapter::beginInsertObjects(Object& parent, int start, int end)
@@ -126,6 +163,63 @@ void ObjectTreeAdapter::beginInsertObjects(Object& parent, int start, int end)
 void ObjectTreeAdapter::endInsertObjects()
 {
   endInsertRows();
+}
+
+bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction action,
+                                         int row, int column, const QModelIndex &parent ) const
+{
+  return data->hasFormat(ObjectMimeData::MIME_TYPE)
+      && qobject_cast<const ObjectMimeData*>(data) != nullptr;
+}
+
+bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction action,
+                                      int row, int column, const QModelIndex &parent )
+{
+  if (!canDropMimeData(data, action, row, column, parent)) {
+    return false;
+  }
+
+  auto object_mime_data = qobject_cast<const ObjectMimeData*>(data);
+  if (object_mime_data == nullptr) {
+    return false;
+  }
+
+  // TODO capsulate into undo/redo action
+  const auto repudiate = [](Object& object) {
+    assert(!object.is_root());
+    return object.parent().repudiate(object);
+  };
+
+  auto dragged_objects = ::transform<std::unique_ptr<Object>>( object_mime_data->objects,
+                                                               repudiate );
+  Object& drop_target = object_at(parent);
+
+  if (row == -1) {
+    row = drop_target.n_children();
+  }
+  drop_target.adopt(std::move(dragged_objects), row);
+
+  return true;
+}
+
+QStringList ObjectTreeAdapter::mimeTypes() const
+{
+  return { ObjectMimeData::MIME_TYPE };
+}
+
+QMimeData* ObjectTreeAdapter::mimeData(const QModelIndexList &indexes) const
+{
+  if (indexes.isEmpty()) {
+    return nullptr;
+  } else {
+    using ObjectRef = std::reference_wrapper<Object>;
+    const auto f = [this](const QModelIndex& index) {
+      return ObjectRef(object_at(index));
+    };
+
+    const auto objects = ::transform<ObjectRef, std::vector>(indexes, f);
+    return std::make_unique<ObjectMimeData>(objects).release();
+  }
 }
 
 }  // namespace omm

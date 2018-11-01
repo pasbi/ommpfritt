@@ -20,6 +20,8 @@ ObjectManager::ObjectManager(Scene& scene)
   auto tree_view = std::make_unique<QTreeView>();
   tree_view->setSelectionMode(QAbstractItemView::ExtendedSelection);
   tree_view->setModel(&m_object_tree_adapter);
+  tree_view->setDragEnabled(true);
+  tree_view->viewport()->setAcceptDrops(true);
 
   connect( tree_view->selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &ObjectManager::on_selection_changed );

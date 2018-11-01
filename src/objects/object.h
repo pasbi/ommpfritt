@@ -23,7 +23,10 @@ public:
   bool is_root() const;
   Object& parent() const;
 
-  Object& adopt(std::unique_ptr<Object> object);
+  Object& adopt(std::unique_ptr<Object> object, size_t pos = 0);
+  std::vector<std::reference_wrapper<Object>>
+  adopt(std::vector<std::unique_ptr<Object>> objects, size_t pos = 0);
+
   std::unique_ptr<Object> repudiate(Object& object);
 
   void transform(const ObjectTransformation& transformation);
@@ -61,7 +64,6 @@ public:
     std::unique_ptr<T> tag = std::make_unique<T>(*this);
     return static_cast<T&>(add_tag(std::move(tag)));
   }
-
 
   void reset_parent(Object& new_parent);
 

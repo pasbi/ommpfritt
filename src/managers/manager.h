@@ -29,7 +29,6 @@ public:
 protected:
   explicit Manager(const QString& title, Scene& scene);
 
-
   Scene& m_scene;
 };
 
