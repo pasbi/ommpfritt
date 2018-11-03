@@ -43,7 +43,7 @@ public:
 
   void beginInsertObjects(Object& parent, int start, int end) override;
   void endInsertObjects() override;
-  void beginMoveObject(Object& object, Object& new_parent, int pos) override;
+  void beginMoveObject(const ObjectTreeContext& context) override;
   void endMoveObject() override;
   Scene& scene();
 

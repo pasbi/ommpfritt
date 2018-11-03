@@ -24,7 +24,7 @@ public:
   bool is_root() const;
   Object& parent() const;
 
-  Object& adopt(std::unique_ptr<Object> object, size_t pos = 0);
+  Object& adopt(std::unique_ptr<Object> object, const Object* predecessor = nullptr);
 
   std::unique_ptr<Object> repudiate(Object& object);
 
@@ -50,6 +50,8 @@ public:
   Object& child(size_t i) const;
   size_t n_children() const;
   size_t row() const;
+  const Object* predecessor() const;
+  size_t insert_position(const Object* child_before_position) const;
 
   std::unordered_set<HasProperties*> get_selected_children_and_tags();
 
@@ -89,5 +91,7 @@ private:
   mutable size_t m_id;
   void update_ids(size_t& last_id) const;
 };
+
+std::ostream& operator<<(std::ostream& ostream, const Object& object);
 
 }  // namespace omm

@@ -127,14 +127,15 @@ Scene& Object::scene() const
   return m_scene;
 }
 
-Object& Object::adopt(std::unique_ptr<Object> object, size_t pos)
+Object& Object::adopt(std::unique_ptr<Object> object, const Object* predecessor)
 {
   assert(&object->scene() == &scene());
   assert(object->is_root());
   const ObjectTransformation gt = object->global_transformation();
+  assert(predecessor == nullptr || &predecessor->parent() == this);
+  const size_t pos = insert_position(predecessor);
 
   object->m_parent = this;
-  assert(pos <= n_children());
   Object& oref = insert(m_children, std::move(object), pos);
   oref.set_global_transformation(gt);
   return oref;
@@ -290,6 +291,34 @@ size_t Object::row() const
     }
   }
   assert(false);
+}
+
+const Object* Object::predecessor() const
+{
+  assert(!is_root());
+  const auto pos = row();
+  if (pos == 0) {
+    return nullptr;
+  } else {
+    return &parent().child(pos - 1);
+  }
+}
+
+size_t Object::insert_position(const Object* child_before_position) const
+{
+  if (child_before_position == nullptr) {
+    return 0;
+  } else {
+    assert(&child_before_position->parent() == this);
+    return child_before_position->row() + 1;
+  }
+}
+
+std::ostream& operator<<(std::ostream& ostream, const Object& object)
+{
+  ostream << object.class_name()
+          << "[" << object.property<std::string>(Object::NAME_PROPERTY_KEY).value() << "]";
+  return ostream;
 }
 
 }  // namespace omm

@@ -16,6 +16,7 @@ Scene::Scene(Project& project)
   : m_root(std::make_unique<Object>(*this))
   , m_project(project)
 {
+  m_root->property<std::string>(Object::NAME_PROPERTY_KEY).value() = "_root_";
   m_current = this;
 }
 
@@ -84,33 +85,33 @@ void Scene::selection_changed()
   );
 }
 
-bool Scene::move_object(Object& subject, Object& new_parent, size_t pos, direction)
+bool Scene::move_object(const ObjectTreeContext& context)
 {
-  assert(!subject.is_root());
+  assert(!context.subject.get().is_root());
+  Object& old_parent = context.subject.get().parent();
 
-  Object& old_parent = subject.parent();
+  // TODO this method should return void. replace the return false with asserts.
+  // the view is responsible for not violating them.
 
-  const auto old_pos = subject.row();
-  if (&subject == &new_parent) {
+  // make sure that subject does not become its own parent
+  if (&context.parent.get() == &context.subject.get()) {
+    LOG(WARNING) << "prevented parent cycle";
     return false;
-  } else if (&old_parent == &new_parent) {
-    if (old_pos == pos || old_pos+1 == pos) {
-      return false;
-    }
+  }
+
+  // make sure that the move is no noop. (would crash)
+  if (   context.sibling_before == context.subject.get().predecessor()
+      || context.sibling_before == &context.subject.get()) {
+    LOG(WARNING) << "prevented move noop";
+    return false;
   }
 
   ObserverRegister<AbstractObjectTreeObserver>::for_each(
-    [&subject, &new_parent, pos](auto* observer) {
-      observer->beginMoveObject(subject, new_parent, pos);
+    [&context](auto* observer) {
+      observer->beginMoveObject(context);
     }
   );
-  if (direction == down) {
-    pos -= 1;
-  }
-  // if (pos > subject.row()) {
-  //   pos -= 1;
-  // }
-  new_parent.adopt(old_parent.repudiate(subject), pos);
+  context.parent.get().adopt(old_parent.repudiate(context.subject), context.sibling_before);
   ObserverRegister<AbstractObjectTreeObserver>::for_each(
     [](auto* observer) { observer->endMoveObject(); }
   );
@@ -120,6 +121,25 @@ bool Scene::move_object(Object& subject, Object& new_parent, size_t pos, directi
 Project& Scene::project()
 {
   return m_project;
+}
+
+ObjectTreeContext::ObjectTreeContext(Object& subject)
+  : subject(subject)
+  , parent(subject.parent())
+  , sibling_before(subject.predecessor())
+{
+}
+
+ObjectTreeContext::ObjectTreeContext(Object& subject, Object& parent, const Object* sibling_before)
+  : subject(subject)
+  , parent(parent)
+  , sibling_before(sibling_before)
+{
+}
+
+size_t ObjectTreeContext::insert_position() const
+{
+  return parent.get().insert_position(sibling_before);
 }
 
 }  // namespace omm

@@ -156,11 +156,13 @@ void ObjectTreeAdapter::endInsertObjects()
   endInsertRows();
 }
 
-
-void ObjectTreeAdapter::beginMoveObject(Object& object, Object& new_parent, int pos)
+void ObjectTreeAdapter::beginMoveObject(const ObjectTreeContext& context)
 {
-  assert(!object.is_root());
-  beginMoveRows(index_of(object.parent()), object.row(), object.row(), index_of(new_parent), pos);
+  assert(!context.subject.get().is_root());
+  Object& old_parent = context.subject.get().parent();
+  const auto old_pos = context.subject.get().row();
+  beginMoveRows( index_of(old_parent), old_pos, old_pos,
+                 index_of(context.parent), context.insert_position());
 }
 
 void ObjectTreeAdapter::endMoveObject()

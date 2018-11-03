@@ -23,7 +23,7 @@ public:
   virtual ~HasProperties();
 
   Property& property(const Key& key) const;
-  template<typename ValueT> Property& property(const Key& key) const
+  template<typename ValueT> TypedProperty<ValueT>& property(const Key& key) const
   {
     return property(key).cast<ValueT>();
   }
