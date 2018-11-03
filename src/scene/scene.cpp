@@ -12,8 +12,9 @@ namespace omm
 
 Scene* Scene::m_current = nullptr;
 
-Scene::Scene()
+Scene::Scene(Project& project)
   : m_root(std::make_unique<Object>(*this))
+  , m_project(project)
 {
   m_current = this;
 }
@@ -83,5 +84,42 @@ void Scene::selection_changed()
   );
 }
 
+bool Scene::move_object(Object& subject, Object& new_parent, size_t pos, direction)
+{
+  assert(!subject.is_root());
+
+  Object& old_parent = subject.parent();
+
+  const auto old_pos = subject.row();
+  if (&subject == &new_parent) {
+    return false;
+  } else if (&old_parent == &new_parent) {
+    if (old_pos == pos || old_pos+1 == pos) {
+      return false;
+    }
+  }
+
+  ObserverRegister<AbstractObjectTreeObserver>::for_each(
+    [&subject, &new_parent, pos](auto* observer) {
+      observer->beginMoveObject(subject, new_parent, pos);
+    }
+  );
+  if (direction == down) {
+    pos -= 1;
+  }
+  // if (pos > subject.row()) {
+  //   pos -= 1;
+  // }
+  new_parent.adopt(old_parent.repudiate(subject), pos);
+  ObserverRegister<AbstractObjectTreeObserver>::for_each(
+    [](auto* observer) { observer->endMoveObject(); }
+  );
+  return true;
+}
+
+Project& Scene::project()
+{
+  return m_project;
+}
 
 }  // namespace omm

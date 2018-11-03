@@ -1,5 +1,8 @@
 #pragma once
 
+#include <functional>
+#include <memory>
+
 /*
  * passes ownership of `object` to `consumer` and returns a reference to `object`
  */
@@ -30,3 +33,12 @@ auto transform(const ContainerS<S>& ss, F&& mapper)
                   std::inserter(ts, std::end(ts)), std::forward<F>(mapper) );
   return ts;
 }
+
+namespace omm
+{
+
+class Object;
+using ObjectRef = std::reference_wrapper<Object>;
+using ObjectRefs = std::vector<ObjectRef>;
+
+}  // namespace omm

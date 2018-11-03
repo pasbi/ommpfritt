@@ -6,7 +6,9 @@
 #include "objectmimedata.h"
 #include "objects/object.h"
 #include "scene/scene.h"
+#include "scene/project.h"
 #include "common.h"
+#include "commands/reparentobjectcommand.h"
 
 namespace omm
 {
@@ -27,6 +29,7 @@ QModelIndex ObjectTreeAdapter::index(int row, int column, const QModelIndex& par
   }
 
   const auto& parent_item = object_at(parent);
+  assert(&parent_item != nullptr);
   return createIndex(row, column, &parent_item.child(row));
 }
 
@@ -91,33 +94,21 @@ QVariant ObjectTreeAdapter::data(const QModelIndex& index, int role) const
 
 Object& ObjectTreeAdapter::object_at(const QModelIndex& index) const
 {
-  if (!index.isValid()) {
-    return m_root;
-  } else {
+  if (index.isValid()) {
+    assert(index.internalPointer() != nullptr);
     return *static_cast<Object*>(index.internalPointer());
+  } else {
+    return m_root;
   }
 }
 
 QModelIndex ObjectTreeAdapter::index_of(Object& object) const
 {
-  static const auto get_row = [](const Object& object) -> size_t
-  {
-    assert (!object.is_root());
-
-    const std::vector<std::reference_wrapper<Object>> siblings = object.parent().children();
-    for (size_t i = 0; i < siblings.size(); ++i) {
-      if (&siblings[i].get() == &object) {
-        return i;
-      }
-    }
-
-    assert(false);
-  };
-
   if (object.is_root()) {
     return QModelIndex();
   } else {
-    return createIndex(get_row(object), 0, &object);
+    assert(&object != nullptr);
+    return createIndex(object.row(), 0, &object);
   }
 }
 
@@ -165,6 +156,19 @@ void ObjectTreeAdapter::endInsertObjects()
   endInsertRows();
 }
 
+
+void ObjectTreeAdapter::beginMoveObject(Object& object, Object& new_parent, int pos)
+{
+  assert(!object.is_root());
+  beginMoveRows(index_of(object.parent()), object.row(), object.row(), index_of(new_parent), pos);
+}
+
+void ObjectTreeAdapter::endMoveObject()
+{
+  endMoveRows();
+}
+
+
 bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction action,
                                          int row, int column, const QModelIndex &parent ) const
 {
@@ -184,20 +188,13 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
     return false;
   }
 
-  // TODO capsulate into undo/redo action
-  const auto repudiate = [](Object& object) {
-    assert(!object.is_root());
-    return object.parent().repudiate(object);
-  };
-
-  auto dragged_objects = ::transform<std::unique_ptr<Object>>( object_mime_data->objects,
-                                                               repudiate );
   Object& drop_target = object_at(parent);
-
-  if (row == -1) {
-    row = drop_target.n_children();
-  }
-  drop_target.adopt(std::move(dragged_objects), row);
+  const size_t pos = row < 0 ? drop_target.n_children() : row;
+  Project& project = scene().project();
+  project.submit(std::make_unique<ReparentObjectCommand>( project,
+                                                          object_mime_data->objects,
+                                                          drop_target,
+                                                          pos ) );
 
   return true;
 }
@@ -212,7 +209,6 @@ QMimeData* ObjectTreeAdapter::mimeData(const QModelIndexList &indexes) const
   if (indexes.isEmpty()) {
     return nullptr;
   } else {
-    using ObjectRef = std::reference_wrapper<Object>;
     const auto f = [this](const QModelIndex& index) {
       return ObjectRef(object_at(index));
     };
@@ -220,6 +216,11 @@ QMimeData* ObjectTreeAdapter::mimeData(const QModelIndexList &indexes) const
     const auto objects = ::transform<ObjectRef, std::vector>(indexes, f);
     return std::make_unique<ObjectMimeData>(objects).release();
   }
+}
+
+Scene& ObjectTreeAdapter::scene()
+{
+  return m_root.scene();
 }
 
 }  // namespace omm

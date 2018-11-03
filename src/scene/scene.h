@@ -20,6 +20,8 @@ class AbstractObjectTreeObserver
 protected:
   virtual void beginInsertObjects(Object& parent, int start, int end) = 0;
   virtual void endInsertObjects() = 0;
+  virtual void beginMoveObject(Object& object, Object& new_parent, int pos) = 0;
+  virtual void endMoveObject() = 0;
   friend class Scene;
 };
 
@@ -31,6 +33,7 @@ protected:
 };
 
 class Object;
+class Project;
 
 class Scene
   : public ObserverRegister<AbstractObjectTreeObserver>
@@ -38,7 +41,7 @@ class Scene
 
 {
 public:
-  Scene();
+  Scene(Project& project);
   ~Scene();
 
   ObjectView root_view();
@@ -51,10 +54,13 @@ public:
   nlohmann::json save() const;
 
   void insert_object(std::unique_ptr<Object> object, Object& parent);
+  bool move_object(Object& subject, Object& new_parent, size_t pos);
   void selection_changed();
+  Project& project();
 
 private:
   std::unique_ptr<Object> m_root;
+  Project& m_project;
   static Scene* m_current;
 };
 

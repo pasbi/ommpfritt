@@ -4,7 +4,7 @@
 namespace omm
 {
 
-ObjectMimeData::ObjectMimeData(const std::vector<std::reference_wrapper<Object>>& objects)
+ObjectMimeData::ObjectMimeData(const ObjectRefs& objects)
   : objects(objects)
 {
 }

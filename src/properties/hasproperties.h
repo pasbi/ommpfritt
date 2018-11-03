@@ -23,6 +23,10 @@ public:
   virtual ~HasProperties();
 
   Property& property(const Key& key) const;
+  template<typename ValueT> Property& property(const Key& key) const
+  {
+    return property(key).cast<ValueT>();
+  }
   const std::vector<Key>& property_keys() const;
   nlohmann::json to_json() const;
 

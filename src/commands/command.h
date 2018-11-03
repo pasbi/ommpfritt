@@ -11,7 +11,7 @@ class Scene;
 class Command : public QUndoCommand
 {
 protected:
-  Command(Project& scene, const QString& label);
+  Command(Project& scene, const std::string& label);
   Project& m_project;
   Scene& scene();
 };

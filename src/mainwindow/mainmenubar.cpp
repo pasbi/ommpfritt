@@ -60,22 +60,23 @@ void MainMenuBar::make_window_menu()
   }
 }
 
+void MainMenuBar::make_edit_menu()
+{
+  auto edit_menu = addMenu(tr("&Edit"));
+
+  QUndoStack& undo_stack = m_app.project().undo_stack();
+  edit_menu->addAction(undo_stack.createUndoAction(nullptr));
+  edit_menu->addAction(undo_stack.createRedoAction(nullptr));
+}
+
 MainMenuBar::MainMenuBar(Application& app, MainWindow& main_window)
   : m_app(app)
   , m_main_window(main_window)
 {
   make_file_menu();
+  make_edit_menu();
   make_create_menu();
   make_window_menu();
-}
-
-template<typename ManagerT> void MainMenuBar::show_manager()
-{
-  auto manager = std::make_unique<ManagerT>(m_app.project().scene());
-  manager->show();
-  auto& ref = *manager;
-  m_main_window.addDockWidget(Qt::TopDockWidgetArea, manager.release());
-  ref.setFloating(true);
 }
 
 }  // namespace omm

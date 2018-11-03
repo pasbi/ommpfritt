@@ -1,6 +1,7 @@
 file (GLOB SOURCES
   "addobjectcommand.cpp"
-  "scenecommand.cpp"
   "command.cpp"
+  "reparentobjectcommand.cpp"
+  "scenecommand.cpp"
 )
 target_sources(ommpfritt PRIVATE ${SOURCES})

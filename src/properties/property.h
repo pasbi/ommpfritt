@@ -114,7 +114,6 @@ public:
 public:
   virtual void set_value(ValueT value)
   {
-    LOG(INFO) << "set_value: " << value;
     m_value = value;
   }
 

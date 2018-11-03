@@ -7,13 +7,12 @@ namespace omm
 {
 
 Project::Project()
+  : m_scene(*this)
 {
-
 }
 
 Project::~Project()
 {
-
 }
 
 bool Project::save_as(const std::string &filename)

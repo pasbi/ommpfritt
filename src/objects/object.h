@@ -6,6 +6,7 @@
 #include "objecttransformation.h"
 #include "properties/hasproperties.h"
 #include "objects/selectable.h"
+#include "common.h"
 
 namespace omm
 {
@@ -24,8 +25,6 @@ public:
   Object& parent() const;
 
   Object& adopt(std::unique_ptr<Object> object, size_t pos = 0);
-  std::vector<std::reference_wrapper<Object>>
-  adopt(std::vector<std::unique_ptr<Object>> objects, size_t pos = 0);
 
   std::unique_ptr<Object> repudiate(Object& object);
 
@@ -47,9 +46,10 @@ public:
 
   Scene& scene() const;
   virtual nlohmann::json to_json() const;
-  std::vector<std::reference_wrapper<Object>> children();
+  ObjectRefs children();
   Object& child(size_t i) const;
   size_t n_children() const;
+  size_t row() const;
 
   std::unordered_set<HasProperties*> get_selected_children_and_tags();
 

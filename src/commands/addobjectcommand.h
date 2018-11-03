@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "command.h"
+#include "commands/command.h"
 
 namespace omm
 {

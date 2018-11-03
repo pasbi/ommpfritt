@@ -20,6 +20,7 @@ T& insert(std::vector<std::unique_ptr<T>>& container, std::unique_ptr<T> obj, si
   std::advance(pos_it, pos);
 
   T& ref = *obj;
+  assert(obj.get() != nullptr);
   container.insert(pos_it, std::move(obj));
   return ref;
 }
@@ -133,20 +134,10 @@ Object& Object::adopt(std::unique_ptr<Object> object, size_t pos)
   const ObjectTransformation gt = object->global_transformation();
 
   object->m_parent = this;
+  assert(pos <= n_children());
   Object& oref = insert(m_children, std::move(object), pos);
   oref.set_global_transformation(gt);
   return oref;
-}
-
-std::vector<std::reference_wrapper<Object>>
-Object::adopt(std::vector<std::unique_ptr<Object>> objects, size_t pos)
-{
-  std::vector<std::reference_wrapper<Object>> refs;
-  refs.reserve(objects.size());
-  for (size_t i = 0; i < objects.size(); ++i) {
-    refs.push_back(adopt(std::move(objects[i]), pos + i));
-  }
-  return refs;
 }
 
 std::unique_ptr<Object> Object::repudiate(Object& object)
@@ -249,12 +240,12 @@ size_t Object::id() const
   return m_id;
 }
 
-std::vector<std::reference_wrapper<Object>> Object::children()
+ObjectRefs Object::children()
 {
   static const auto f = [](const std::unique_ptr<Object>& uptr) {
-    return std::reference_wrapper<Object>(*uptr);
+    return ObjectRef(*uptr);
   };
-  return ::transform<std::reference_wrapper<Object>>(m_children, f);
+  return ::transform<ObjectRef>(m_children, f);
 }
 
 size_t Object::n_children() const
@@ -287,6 +278,18 @@ std::unordered_set<HasProperties*> Object::get_selected_children_and_tags()
   }
 
   return selection;
+}
+
+size_t Object::row() const
+{
+  assert (!is_root());
+  const auto siblings = parent().children();
+  for (size_t i = 0; i < siblings.size(); ++i) {
+    if (&siblings[i].get() == this) {
+      return i;
+    }
+  }
+  assert(false);
 }
 
 }  // namespace omm

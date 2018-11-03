@@ -2,23 +2,27 @@
 #include "objects/object.h"
 #include "scene/scene.h"
 
-namespace {
+namespace
+{
+
 std::string get_command_label(const omm::Object& object)
 {
-  std::ostringstream ostr;
-  ostr << "Add " << object.class_name();
-  return ostr.str();
+  return QObject::tr("Add %1").arg(object.class_name().c_str()).toStdString();
 }
+
 }  // namespace
 
 namespace omm
 {
 
 AddObjectCommand::AddObjectCommand(Project& project, std::unique_ptr<omm::Object> object)
-  : Command(project, QString::fromStdString(get_command_label(*object)))
+  : Command(project, get_command_label(*object))
   , m_owned_object(std::move(object))
   , m_object_reference(*m_owned_object)
 {
+  static int i = 0;
+  const auto name = std::string(1, char('a' + (i++)));
+  m_owned_object->property(Object::NAME_PROPERTY_KEY).cast<std::string>().set_value(name);
 }
 
 void AddObjectCommand::redo()

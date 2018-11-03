@@ -4,8 +4,8 @@
 namespace omm
 {
 
-Command::Command(Project& project, const QString& text)
-  : QUndoCommand(text)
+Command::Command(Project& project, const std::string& label)
+  : QUndoCommand(QString::fromStdString(label))
   , m_project(project)
 {
 
