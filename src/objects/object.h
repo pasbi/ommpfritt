@@ -25,7 +25,6 @@ public:
   Object& parent() const;
 
   Object& adopt(std::unique_ptr<Object> object, const Object* predecessor = nullptr);
-
   std::unique_ptr<Object> repudiate(Object& object);
 
   void transform(const ObjectTransformation& transformation);
@@ -46,6 +45,8 @@ public:
 
   Scene& scene() const;
   virtual nlohmann::json to_json() const;
+  static std::unique_ptr<Object> from_json(const nlohmann::json& json, Scene& scene);
+  std::unique_ptr<Object> copy() const;
   ObjectRefs children();
   Object& child(size_t i) const;
   size_t n_children() const;
@@ -79,6 +80,7 @@ public:
   static const std::string THE_ANSWER_KEY;
 
   DEFINE_CLASSNAME("object")
+
 
 private:
   std::vector<std::unique_ptr<Tag>> m_tags;

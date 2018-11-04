@@ -8,18 +8,19 @@
 #include "scene/scene.h"
 #include "scene/project.h"
 #include "common.h"
-#include "commands/reparentobjectcommand.h"
+#include "commands/moveobjectscommand.h"
+#include "commands/copyobjectscommand.h"
 
 namespace
 {
 
-bool can_move_drop_objects(const std::vector<omm::ObjectTreeContext>& contextes)
+bool can_move_drop_objects(const std::vector<omm::MoveObjectTreeContext>& contextes)
 {
-  const auto is_strictly_valid = [](const omm::ObjectTreeContext& context) {
+  const auto is_strictly_valid = [](const omm::MoveObjectTreeContext& context) {
     return context.is_strictly_valid();
   };
 
-  const auto is_valid = [](const omm::ObjectTreeContext& context) {
+  const auto is_valid = [](const omm::MoveObjectTreeContext& context) {
     return context.is_valid();
   };
 
@@ -27,6 +28,31 @@ bool can_move_drop_objects(const std::vector<omm::ObjectTreeContext>& contextes)
   return std::all_of(contextes.begin(), contextes.end(), is_valid)
       && std::any_of(contextes.begin(), contextes.end(), is_strictly_valid);
 }
+
+template<typename ContextT> std::vector<ContextT>
+make_contextes( const omm::ObjectTreeAdapter& adapter,
+                const QMimeData* data, int row, const QModelIndex& parent )
+{
+  std::vector<ContextT> contextes;
+
+  auto object_mime_data = qobject_cast<const omm::ObjectMimeData*>(data);
+  if (object_mime_data == nullptr) {
+    return contextes;
+  }
+
+  omm::Object& new_parent = adapter.object_at(parent);
+  const size_t pos = row < 0 ? new_parent.n_children() : row;
+
+  contextes.reserve(object_mime_data->objects.size());
+  const omm::Object* predecessor = (pos == 0) ? nullptr : &new_parent.child(pos - 1);
+  for (omm::Object& subject : object_mime_data->objects) {
+    contextes.emplace_back(subject, new_parent, predecessor);
+    predecessor = &subject;
+  }
+
+  return contextes;
+}
+
 
 }  // namespace
 
@@ -166,17 +192,38 @@ Qt::DropActions ObjectTreeAdapter::supportedDragActions() const
   return Qt::LinkAction | Qt::MoveAction | Qt::CopyAction;
 }
 
-void ObjectTreeAdapter::beginInsertObjects(Object& parent, int start, int end)
+Qt::DropActions ObjectTreeAdapter::supportedDropActions() const
 {
-  beginInsertRows(index_of(parent), start, end);
+  return Qt::MoveAction | Qt::CopyAction;
 }
 
-void ObjectTreeAdapter::endInsertObjects()
+void ObjectTreeAdapter::beginInsertObject(Object& parent, int row)
+{
+  beginInsertRows(index_of(parent), row, row);
+}
+
+void ObjectTreeAdapter::beginInsertObject(const CopyObjectTreeContext& context)
+{
+  beginInsertObject(context.parent, context.get_insert_position());
+}
+
+void ObjectTreeAdapter::endInsertObject()
 {
   endInsertRows();
 }
 
-void ObjectTreeAdapter::beginMoveObject(const ObjectTreeContext& context)
+void ObjectTreeAdapter::beginRemoveObject(const Object& object)
+{
+  const auto row = object.row();
+  beginRemoveRows(index_of(object.parent()), row, row);
+}
+
+void ObjectTreeAdapter::endRemoveObject()
+{
+  endRemoveRows();
+}
+
+void ObjectTreeAdapter::beginMoveObject(const MoveObjectTreeContext& context)
 {
   assert(!context.subject.get().is_root());
   Object& old_parent = context.subject.get().parent();
@@ -203,21 +250,40 @@ void ObjectTreeAdapter::endMoveObject()
 bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction action,
                                          int row, int column, const QModelIndex &parent ) const
 {
-  const auto new_contextes = make_new_contextes(data, row, parent);
-  return data->hasFormat(ObjectMimeData::MIME_TYPE)
-      && qobject_cast<const ObjectMimeData*>(data) != nullptr
-      && can_move_drop_objects(new_contextes);
+  switch (action) {
+  case Qt::MoveAction:
+    return data->hasFormat(ObjectMimeData::MIME_TYPE)
+        && qobject_cast<const ObjectMimeData*>(data) != nullptr
+        && can_move_drop_objects(make_contextes<MoveObjectTreeContext>(*this, data, row, parent));
+  case Qt::CopyAction:
+    return data->hasFormat(ObjectMimeData::MIME_TYPE)
+        && qobject_cast<const ObjectMimeData*>(data) != nullptr;
+  default:
+    return false;
+  }
 }
 
 bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction action,
                                       int row, int column, const QModelIndex &parent )
 {
+
   if (!canDropMimeData(data, action, row, column, parent)) {
     return false;
   } else {
-    const auto new_contextes = make_new_contextes(data, row, parent);
     Project& project = scene().project();
-    project.submit(std::make_unique<ReparentObjectCommand>(project, new_contextes));
+    std::unique_ptr<Command> command;
+    switch (action) {
+    case Qt::MoveAction: {
+      auto move_contextes = make_contextes<MoveObjectTreeContext>(*this, data, row, parent);
+      project.submit(std::make_unique<MoveObjectsCommand>(project, move_contextes));
+      break;
+    }
+    case Qt::CopyAction: {
+      auto copy_contextes = make_contextes<CopyObjectTreeContext>(*this, data, row, parent);
+      project.submit(std::make_unique<CopyObjectsCommand>(project, std::move(copy_contextes)));
+      break;
+    }
+    }
     return true;
   }
 }
@@ -243,30 +309,6 @@ QMimeData* ObjectTreeAdapter::mimeData(const QModelIndexList &indexes) const
 Scene& ObjectTreeAdapter::scene() const
 {
   return m_root.scene();
-}
-
-std::vector<omm::ObjectTreeContext>
-ObjectTreeAdapter::make_new_contextes( const QMimeData* data,
-                                       int row, const QModelIndex& parent ) const
-{
-  std::vector<omm::ObjectTreeContext> new_contextes;
-
-  auto object_mime_data = qobject_cast<const omm::ObjectMimeData*>(data);
-  if (object_mime_data == nullptr) {
-    return new_contextes;
-  }
-
-  omm::Object& new_parent = object_at(parent);
-  const size_t pos = row < 0 ? new_parent.n_children() : row;
-
-  new_contextes.reserve(object_mime_data->objects.size());
-  const omm::Object* predecessor = (pos == 0) ? nullptr : &new_parent.child(pos - 1);
-  for (omm::Object& subject : object_mime_data->objects) {
-    new_contextes.emplace_back(subject, new_parent, predecessor);
-    predecessor = &subject;
-  }
-
-  return new_contextes;
 }
 
 }  // namespace ommmake_new_contextes

@@ -6,9 +6,12 @@
 #include "objects/object.h"
 #include "external/json.hpp"
 
-const std::string omm::Tag::NAME_PROPERTY_KEY = "name";
+namespace omm
+{
 
-omm::Tag::Tag(omm::Object& owner)
+const std::string Tag::NAME_PROPERTY_KEY = "name";
+
+Tag::Tag(Object& owner)
   : m_owner(owner)
 {
   add_property<StringProperty>( NAME_PROPERTY_KEY,
@@ -17,28 +20,35 @@ omm::Tag::Tag(omm::Object& owner)
                                 "<Unnamed Tag>" );
 }
 
-omm::Tag::~Tag()
+Tag::~Tag()
 {
 
 }
 
-omm::Object& omm::Tag::owner() const
+Object& Tag::owner() const
 {
   return m_owner;
 }
 
-omm::Scene& omm::Tag::scene() const
+Scene& Tag::scene() const
 {
   return m_owner.scene();
 }
 
-bool omm::Tag::run()
+bool Tag::run()
 {
   return false;
 }
 
-nlohmann::json omm::Tag::to_json() const
+nlohmann::json Tag::to_json() const
 {
   auto json = HasProperties::to_json();
   return json;
 }
+
+std::unique_ptr<Tag> from_json(const nlohmann::json& json, Object& owner)
+{
+  return std::make_unique<Tag>(owner);
+}
+
+}  // namespace omm

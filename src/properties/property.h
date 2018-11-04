@@ -86,6 +86,8 @@ public:
   std::string label() const;
   std::string category() const;
 
+  static std::unique_ptr<Property> from_json(const nlohmann::json& json);
+
 private:
   const std::string m_label;
   const std::string m_category;
@@ -167,30 +169,10 @@ public:
   }
 };
 
-class IntegerProperty : public SimpleTypeProperty<int>
-{
-public:
-  using SimpleTypeProperty<int>::SimpleTypeProperty;
-};
-
-class FloatProperty : public SimpleTypeProperty<double>
-{
-public:
-  using SimpleTypeProperty<double>::SimpleTypeProperty;
-};
-
-class StringProperty : public SimpleTypeProperty<std::string>
-{
-public:
-  using SimpleTypeProperty<std::string>::SimpleTypeProperty;
-};
-
-class TransformationProperty : public TypedProperty<ObjectTransformation>
-{
-public:
-  using TypedProperty<ObjectTransformation>::TypedProperty;
-  nlohmann::json to_json() const override;
-};
+using IntegerProperty = SimpleTypeProperty<int>;
+using FloatProperty = SimpleTypeProperty<double>;
+using StringProperty = SimpleTypeProperty<std::string>;
+using TransformationProperty = SimpleTypeProperty<ObjectTransformation>;
 
 class ReferenceProperty : public TypedProperty<Object*>
 {

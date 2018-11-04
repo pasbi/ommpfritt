@@ -21,6 +21,7 @@ ObjectManager::ObjectManager(Scene& scene)
   tree_view->setSelectionMode(QAbstractItemView::ExtendedSelection);
   tree_view->setModel(&m_object_tree_adapter);
   tree_view->setDragEnabled(true);
+  tree_view->setDefaultDropAction(Qt::MoveAction);
   tree_view->viewport()->setAcceptDrops(true);
 
   connect( tree_view->selectionModel(), &QItemSelectionModel::selectionChanged,

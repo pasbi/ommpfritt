@@ -23,6 +23,7 @@ public:
   Scene& scene() const;
 
   nlohmann::json to_json() const;
+  static std::unique_ptr<Tag> from_json(const nlohmann::json& json);
 
 protected:
   DEFINE_CLASSNAME("tag")

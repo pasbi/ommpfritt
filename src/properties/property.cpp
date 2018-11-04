@@ -6,11 +6,6 @@
 namespace omm
 {
 
-nlohmann::json TransformationProperty::to_json() const
-{
-  return value().to_json();
-}
-
 std::unordered_set<const Object*> ReferenceProperty::m_references;
 
 Property::Property(const std::string& label, const std::string& category)
@@ -71,6 +66,11 @@ py::object TypedProperty<Object*>::get_py_object() const
 template<>
 void TypedProperty<Object*>::set_py_object(const py::object& value)
 {
+}
+
+std::unique_ptr<Property> Property::from_json(const nlohmann::json& json)
+{
+  return std::make_unique<StringProperty>("label", "category", "value");
 }
 
 }  // namespace omm

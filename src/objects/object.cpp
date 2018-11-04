@@ -321,4 +321,14 @@ std::ostream& operator<<(std::ostream& ostream, const Object& object)
   return ostream;
 }
 
+std::unique_ptr<Object> Object::from_json(const nlohmann::json& json, Scene& scene)
+{
+  return std::make_unique<Object>(scene);
+}
+
+std::unique_ptr<Object> Object::copy() const
+{
+  return from_json(to_json(), scene());
+}
+
 }  // namespace omm

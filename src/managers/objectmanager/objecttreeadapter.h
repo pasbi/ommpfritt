@@ -27,6 +27,7 @@ public:
   QVariant data(const QModelIndex& index, int role) const override;
   bool setData(const QModelIndex& index, const QVariant& value, int role) override;
   Qt::DropActions supportedDragActions() const override;
+  Qt::DropActions supportedDropActions() const override;
   bool canDropMimeData( const QMimeData *data, Qt::DropAction action,
                         int row, int column, const QModelIndex &parent ) const override;
   bool dropMimeData( const QMimeData *data, Qt::DropAction action,
@@ -41,16 +42,19 @@ public:
 
   QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-  void beginInsertObjects(Object& parent, int start, int end) override;
-  void endInsertObjects() override;
-  void beginMoveObject(const ObjectTreeContext& context) override;
+  void beginInsertObject(Object& parent, int row) override;
+  void beginInsertObject(const CopyObjectTreeContext& context) override;
+  void endInsertObject() override;
+  void beginMoveObject(const MoveObjectTreeContext& context) override;
   void endMoveObject() override;
+  void beginRemoveObject(const Object& object) override;
+  void endRemoveObject() override;
   Scene& scene() const;
 
 private:
   Object& m_root;
 
-  std::vector<omm::ObjectTreeContext>
+  std::vector<omm::MoveObjectTreeContext>
   make_new_contextes(const QMimeData* data, int row, const QModelIndex& parent) const;
   bool m_last_move_was_noop;
 };
