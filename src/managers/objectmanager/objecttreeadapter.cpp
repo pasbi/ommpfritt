@@ -180,14 +180,15 @@ void ObjectTreeAdapter::beginMoveObject(const ObjectTreeContext& context)
 {
   assert(!context.subject.get().is_root());
   Object& old_parent = context.subject.get().parent();
+  Object& new_parent = context.parent.get();
   const auto old_pos = context.subject.get().row();
   const auto new_pos = context.get_insert_position();
 
-  if (old_pos == new_pos) {
+  if (old_pos == new_pos && &old_parent == &new_parent) {
     m_last_move_was_noop = true;
   } else {
     beginMoveRows( index_of(old_parent), old_pos, old_pos,
-                   index_of(context.parent), context.get_insert_position());
+                   index_of(new_parent), context.get_insert_position());
     m_last_move_was_noop = false;
   }
 }

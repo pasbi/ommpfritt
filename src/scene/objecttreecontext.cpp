@@ -5,9 +5,7 @@ namespace omm
 {
 
 ObjectTreeContext::ObjectTreeContext(Object& subject)
-  : subject(subject)
-  , parent(subject.parent())
-  , sibling_before(subject.predecessor())
+  : ObjectTreeContext(subject, subject.parent(), subject.predecessor())
 {
 }
 
@@ -36,7 +34,11 @@ bool ObjectTreeContext::move_into_itself() const
 
 bool ObjectTreeContext::move_before_itself() const
 {
-  return sibling_before == subject.get().predecessor();
+  const bool parent_does_not_change = &parent.get() == &subject.get().parent();
+  const bool predecessor_did_not_change = sibling_before == subject.get().predecessor();
+
+  // the `parent_does_not_change test` is only required if `sibling_before == nullptr`.
+  return parent_does_not_change && predecessor_did_not_change;
 }
 
 bool ObjectTreeContext::move_after_itself() const
