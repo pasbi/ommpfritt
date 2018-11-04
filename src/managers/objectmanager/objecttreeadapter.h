@@ -45,10 +45,13 @@ public:
   void endInsertObjects() override;
   void beginMoveObject(const ObjectTreeContext& context) override;
   void endMoveObject() override;
-  Scene& scene();
+  Scene& scene() const;
 
 private:
   Object& m_root;
+
+  std::vector<omm::ObjectTreeContext>
+  make_new_contextes(const QMimeData* data, int row, const QModelIndex& parent) const;
 };
 
 }  // namespace omm

@@ -133,7 +133,7 @@ Object& Object::adopt(std::unique_ptr<Object> object, const Object* predecessor)
   assert(object->is_root());
   const ObjectTransformation gt = object->global_transformation();
   assert(predecessor == nullptr || &predecessor->parent() == this);
-  const size_t pos = insert_position(predecessor);
+  const size_t pos = get_insert_position(predecessor);
 
   object->m_parent = this;
   Object& oref = insert(m_children, std::move(object), pos);
@@ -304,7 +304,7 @@ const Object* Object::predecessor() const
   }
 }
 
-size_t Object::insert_position(const Object* child_before_position) const
+size_t Object::get_insert_position(const Object* child_before_position) const
 {
   if (child_before_position == nullptr) {
     return 0;
@@ -314,11 +314,65 @@ size_t Object::insert_position(const Object* child_before_position) const
   }
 }
 
+bool Object::is_ancestor_of(const Object& descendant) const
+{
+  const Object* descendant_ = &descendant;
+  while (true) {
+    LOG(INFO) << "  check " << *this << " == " << *descendant_;
+    if (descendant_ == this) {
+      LOG(INFO) << *this << " is ancestor of " << descendant << ": true;";
+      return true;
+    }
+    if (descendant_->is_root()) {
+      break;
+    }
+    descendant_ = &descendant_->parent();
+  }
+  LOG(INFO) << *this << " is ancestor of " << descendant << ": false;";
+  return false;
+}
+
 std::ostream& operator<<(std::ostream& ostream, const Object& object)
 {
   ostream << object.class_name()
           << "[" << object.property<std::string>(Object::NAME_PROPERTY_KEY).value() << "]";
   return ostream;
+}
+
+
+bool operator<(const Object& a, const Object& b)
+{
+  LOG(INFO) << "XXX";
+  if (a.is_ancestor_of(b)) {
+    LOG(INFO) << "XXX";
+    return true;
+  } else if (b.is_ancestor_of(a)) {
+    LOG(INFO) << "XXX";
+    return false;
+  }
+
+LOG(INFO) << "XXX";
+  assert(!a.is_root() && !b.is_root()); // otherwise, a was ancestor of b or vice versa
+
+LOG(INFO) << "XXX";
+  const auto child_of_lca = [](const Object* x, const Object& y) {
+    // find x which is children on the way to a, b and have a common parent
+    while (!x->parent().is_ancestor_of(y)) {
+      LOG(INFO) << "XXX";
+      assert(!x->is_root());
+      x = &x->parent();
+      LOG(INFO) << "XXX";
+    }
+    LOG(INFO) << "XXX";
+    return x;
+  };
+
+LOG(INFO) << "XXX";
+  const Object& a_ = *child_of_lca(&a, b);
+  const Object& b_ = *child_of_lca(&b, a);
+
+  assert(&a_.parent() == &b_.parent());
+  return a.row() < b.row();
 }
 
 }  // namespace omm

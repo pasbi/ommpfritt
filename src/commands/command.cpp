@@ -11,7 +11,7 @@ Command::Command(Project& project, const std::string& label)
 
 }
 
-Scene& Command::scene()
+Scene& Command::scene() const
 {
   return m_project.scene();
 }

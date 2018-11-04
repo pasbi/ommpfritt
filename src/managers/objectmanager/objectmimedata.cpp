@@ -1,6 +1,12 @@
 #include "managers/objectmanager/objectmimedata.h"
 #include <glog/logging.h>
 
+namespace
+{
+
+
+}  // namespace
+
 namespace omm
 {
 

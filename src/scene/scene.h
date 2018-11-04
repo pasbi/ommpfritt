@@ -9,22 +9,12 @@
 #include "python/objectview.h"
 #include "external/json_fwd.hpp"
 #include "observerregister.h"
+#include "scene/objecttreecontext.h"
 
 namespace omm
 {
 
 class Scene;
-
-class ObjectTreeContext
-{
-public:
-  explicit ObjectTreeContext(Object& subject);
-  explicit ObjectTreeContext(Object& subject, Object& parent, const Object* sibling_before);
-  std::reference_wrapper<Object> subject;
-  std::reference_wrapper<Object> parent;
-  const Object* sibling_before;
-  size_t insert_position() const;
-};
 
 class AbstractObjectTreeObserver
 {
@@ -49,7 +39,6 @@ class Project;
 class Scene
   : public ObserverRegister<AbstractObjectTreeObserver>
   , public ObserverRegister<AbstractPropertyObserver>
-
 {
 public:
   Scene(Project& project);
@@ -65,7 +54,8 @@ public:
   nlohmann::json save() const;
 
   void insert_object(std::unique_ptr<Object> object, Object& parent);
-  bool move_object(const ObjectTreeContext& new_context);
+  void move_object(const ObjectTreeContext& new_context);
+  bool can_move_object(const ObjectTreeContext& new_context) const;
   void selection_changed();
   Project& project();
 

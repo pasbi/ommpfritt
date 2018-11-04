@@ -51,7 +51,7 @@ public:
   size_t n_children() const;
   size_t row() const;
   const Object* predecessor() const;
-  size_t insert_position(const Object* child_before_position) const;
+  size_t get_insert_position(const Object* child_before_position) const;
 
   std::unordered_set<HasProperties*> get_selected_children_and_tags();
 
@@ -68,6 +68,7 @@ public:
   }
 
   void reset_parent(Object& new_parent);
+  bool is_ancestor_of(const Object& descendant) const;
 
   static ObjectTransformation translation(const double& dx, const double dy);
   static ObjectTransformation rotation(const double& r);
@@ -93,5 +94,6 @@ private:
 };
 
 std::ostream& operator<<(std::ostream& ostream, const Object& object);
+bool operator<(const Object& a, const Object& b);
 
 }  // namespace omm

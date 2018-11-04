@@ -2,6 +2,7 @@
 
 #include <QMimeData>
 #include "common.h"
+#include "scene/objecttreecontext.h"
 
 namespace omm
 {
@@ -15,7 +16,7 @@ class ObjectMimeData : public QMimeData
 public:
   const ObjectRefs objects;
 
-  static constexpr auto MIME_TYPE = "application/objecttree-drag-drop-object";
+  static constexpr auto MIME_TYPE = "application/object_contexts";
 
   ObjectMimeData(const ObjectRefs& object);
   bool hasFormat(const QString& mimeType) const override;

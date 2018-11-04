@@ -10,6 +10,11 @@
 #include "common.h"
 #include "commands/reparentobjectcommand.h"
 
+namespace
+{
+
+}  // namespace
+
 namespace omm
 {
 
@@ -162,7 +167,7 @@ void ObjectTreeAdapter::beginMoveObject(const ObjectTreeContext& context)
   Object& old_parent = context.subject.get().parent();
   const auto old_pos = context.subject.get().row();
   beginMoveRows( index_of(old_parent), old_pos, old_pos,
-                 index_of(context.parent), context.insert_position());
+                 index_of(context.parent), context.get_insert_position());
 }
 
 void ObjectTreeAdapter::endMoveObject()
@@ -170,12 +175,14 @@ void ObjectTreeAdapter::endMoveObject()
   endMoveRows();
 }
 
-
 bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction action,
                                          int row, int column, const QModelIndex &parent ) const
 {
+  const auto new_contextes = make_new_contextes(data, row, parent);
+
   return data->hasFormat(ObjectMimeData::MIME_TYPE)
-      && qobject_cast<const ObjectMimeData*>(data) != nullptr;
+      && qobject_cast<const ObjectMimeData*>(data) != nullptr
+      && !new_contextes.empty();
 }
 
 bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction action,
@@ -183,22 +190,12 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
 {
   if (!canDropMimeData(data, action, row, column, parent)) {
     return false;
+  } else {
+    const auto new_contextes = make_new_contextes(data, row, parent);
+    Project& project = scene().project();
+    project.submit(std::make_unique<ReparentObjectCommand>(project, new_contextes));
+    return true;
   }
-
-  auto object_mime_data = qobject_cast<const ObjectMimeData*>(data);
-  if (object_mime_data == nullptr) {
-    return false;
-  }
-
-  Object& drop_target = object_at(parent);
-  const size_t pos = row < 0 ? drop_target.n_children() : row;
-  Project& project = scene().project();
-  project.submit(std::make_unique<ReparentObjectCommand>( project,
-                                                          object_mime_data->objects,
-                                                          drop_target,
-                                                          pos ) );
-
-  return true;
 }
 
 QStringList ObjectTreeAdapter::mimeTypes() const
@@ -214,15 +211,54 @@ QMimeData* ObjectTreeAdapter::mimeData(const QModelIndexList &indexes) const
     const auto f = [this](const QModelIndex& index) {
       return ObjectRef(object_at(index));
     };
-
     const auto objects = ::transform<ObjectRef, std::vector>(indexes, f);
     return std::make_unique<ObjectMimeData>(objects).release();
   }
 }
 
-Scene& ObjectTreeAdapter::scene()
+Scene& ObjectTreeAdapter::scene() const
 {
   return m_root.scene();
 }
 
-}  // namespace omm
+std::vector<omm::ObjectTreeContext>
+ObjectTreeAdapter::make_new_contextes( const QMimeData* data,
+                                       int row, const QModelIndex& parent ) const
+{
+  std::vector<omm::ObjectTreeContext> new_contextes;
+
+  auto object_mime_data = qobject_cast<const omm::ObjectMimeData*>(data);
+  if (object_mime_data == nullptr) {
+    return new_contextes;
+  }
+
+  omm::Object& new_parent = object_at(parent);
+  const size_t pos = row < 0 ? new_parent.n_children() : row;
+
+  new_contextes.reserve(object_mime_data->objects.size());
+  const omm::Object* predecessor = (pos == 0) ? nullptr : &new_parent.child(pos - 1);
+  for (omm::Object& subject : object_mime_data->objects) {
+    new_contextes.emplace_back(subject, new_parent, predecessor);
+    predecessor = &subject;
+  }
+
+  const auto context_is_not_valid = [this](const ObjectTreeContext& context) {
+    const bool cannot_move = !scene().can_move_object(context);
+    LOG(INFO) << "can move object: " << context.subject << " " << !cannot_move;
+    return cannot_move;
+  };
+
+  new_contextes.erase( std::remove_if( new_contextes.begin(), new_contextes.end(),
+                                       context_is_not_valid ),
+                       new_contextes.end()                                         );
+
+  const auto compare_context = [this](const ObjectTreeContext& a, const ObjectTreeContext& b) {
+    return !(a.subject < b.subject);
+  };
+
+  std::sort(new_contextes.begin(), new_contextes.end(), compare_context);
+  LOG(INFO) << "valid contextes: " << new_contextes.size();
+  return new_contextes;
+}
+
+}  // namespace ommmake_new_contextes

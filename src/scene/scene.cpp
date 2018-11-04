@@ -85,26 +85,31 @@ void Scene::selection_changed()
   );
 }
 
-bool Scene::move_object(const ObjectTreeContext& context)
+bool Scene::can_move_object(const ObjectTreeContext& context) const
 {
-  assert(!context.subject.get().is_root());
+  if (context.subject.get().is_root()) {
+    LOG(INFO) << "cannot move root";
+    return false; // cannot move root
+  } else if (&context.parent.get() == &context.subject.get()) {
+    LOG(INFO) << "subject cannot become its own parent (illogical)";
+    return false; // subject cannot become its own parent (illogical)
+  } else if (context.sibling_before == context.subject.get().predecessor()) {
+    LOG(INFO) << "cannot move object before itself (noop) "
+              << *context.sibling_before << " " << *context.subject.get().predecessor();
+    return false; // cannot move object before itself (noop)
+  } else if (context.sibling_before == &context.subject.get()) {
+    LOG(INFO) << "cannot move object after itself (noop)";
+    return false; // cannot move object after itself (noop)
+  } else {
+    return true; // can move object
+  }
+}
+
+void Scene::move_object(const ObjectTreeContext& context)
+{
+  assert(can_move_object(context));
   Object& old_parent = context.subject.get().parent();
 
-  // TODO this method should return void. replace the return false with asserts.
-  // the view is responsible for not violating them.
-
-  // make sure that subject does not become its own parent
-  if (&context.parent.get() == &context.subject.get()) {
-    LOG(WARNING) << "prevented parent cycle";
-    return false;
-  }
-
-  // make sure that the move is no noop. (would crash)
-  if (   context.sibling_before == context.subject.get().predecessor()
-      || context.sibling_before == &context.subject.get()) {
-    LOG(WARNING) << "prevented move noop";
-    return false;
-  }
 
   ObserverRegister<AbstractObjectTreeObserver>::for_each(
     [&context](auto* observer) {
@@ -115,31 +120,11 @@ bool Scene::move_object(const ObjectTreeContext& context)
   ObserverRegister<AbstractObjectTreeObserver>::for_each(
     [](auto* observer) { observer->endMoveObject(); }
   );
-  return true;
 }
 
 Project& Scene::project()
 {
   return m_project;
-}
-
-ObjectTreeContext::ObjectTreeContext(Object& subject)
-  : subject(subject)
-  , parent(subject.parent())
-  , sibling_before(subject.predecessor())
-{
-}
-
-ObjectTreeContext::ObjectTreeContext(Object& subject, Object& parent, const Object* sibling_before)
-  : subject(subject)
-  , parent(parent)
-  , sibling_before(sibling_before)
-{
-}
-
-size_t ObjectTreeContext::insert_position() const
-{
-  return parent.get().insert_position(sibling_before);
 }
 
 }  // namespace omm
