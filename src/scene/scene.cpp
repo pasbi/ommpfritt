@@ -85,36 +85,13 @@ void Scene::selection_changed()
   );
 }
 
-bool Scene::can_move_object(const ObjectTreeContext& context) const
-{
-  if (context.subject.get().is_root()) {
-    LOG(INFO) << "cannot move root";
-    return false; // cannot move root
-  } else if (&context.parent.get() == &context.subject.get()) {
-    LOG(INFO) << "subject cannot become its own parent (illogical)";
-    return false; // subject cannot become its own parent (illogical)
-  } else if (context.sibling_before == context.subject.get().predecessor()) {
-    LOG(INFO) << "cannot move object before itself (noop) "
-              << *context.sibling_before << " " << *context.subject.get().predecessor();
-    return false; // cannot move object before itself (noop)
-  } else if (context.sibling_before == &context.subject.get()) {
-    LOG(INFO) << "cannot move object after itself (noop)";
-    return false; // cannot move object after itself (noop)
-  } else {
-    return true; // can move object
-  }
-}
-
 void Scene::move_object(const ObjectTreeContext& context)
 {
-  assert(can_move_object(context));
+  assert(context.is_valid());
   Object& old_parent = context.subject.get().parent();
 
-
   ObserverRegister<AbstractObjectTreeObserver>::for_each(
-    [&context](auto* observer) {
-      observer->beginMoveObject(context);
-    }
+    [&context](auto* observer) { observer->beginMoveObject(context); }
   );
   context.parent.get().adopt(old_parent.repudiate(context.subject), context.sibling_before);
   ObserverRegister<AbstractObjectTreeObserver>::for_each(

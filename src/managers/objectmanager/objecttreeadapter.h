@@ -52,6 +52,7 @@ private:
 
   std::vector<omm::ObjectTreeContext>
   make_new_contextes(const QMimeData* data, int row, const QModelIndex& parent) const;
+  bool m_last_move_was_noop;
 };
 
 }  // namespace omm

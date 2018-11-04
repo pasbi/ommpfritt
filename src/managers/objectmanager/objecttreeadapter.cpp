@@ -13,6 +13,21 @@
 namespace
 {
 
+bool can_move_drop_objects(const std::vector<omm::ObjectTreeContext>& contextes)
+{
+  const auto is_strictly_valid = [](const omm::ObjectTreeContext& context) {
+    return context.is_strictly_valid();
+  };
+
+  const auto is_valid = [](const omm::ObjectTreeContext& context) {
+    return context.is_valid();
+  };
+
+  // all contextes may be moved and at least one move is no noop
+  return std::all_of(contextes.begin(), contextes.end(), is_valid)
+      && std::any_of(contextes.begin(), contextes.end(), is_strictly_valid);
+}
+
 }  // namespace
 
 namespace omm
@@ -166,23 +181,31 @@ void ObjectTreeAdapter::beginMoveObject(const ObjectTreeContext& context)
   assert(!context.subject.get().is_root());
   Object& old_parent = context.subject.get().parent();
   const auto old_pos = context.subject.get().row();
-  beginMoveRows( index_of(old_parent), old_pos, old_pos,
-                 index_of(context.parent), context.get_insert_position());
+  const auto new_pos = context.get_insert_position();
+
+  if (old_pos == new_pos) {
+    m_last_move_was_noop = true;
+  } else {
+    beginMoveRows( index_of(old_parent), old_pos, old_pos,
+                   index_of(context.parent), context.get_insert_position());
+    m_last_move_was_noop = false;
+  }
 }
 
 void ObjectTreeAdapter::endMoveObject()
 {
-  endMoveRows();
+  if (!m_last_move_was_noop) {
+    endMoveRows();
+  }
 }
 
 bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction action,
                                          int row, int column, const QModelIndex &parent ) const
 {
   const auto new_contextes = make_new_contextes(data, row, parent);
-
   return data->hasFormat(ObjectMimeData::MIME_TYPE)
       && qobject_cast<const ObjectMimeData*>(data) != nullptr
-      && !new_contextes.empty();
+      && can_move_drop_objects(new_contextes);
 }
 
 bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction action,
@@ -242,22 +265,6 @@ ObjectTreeAdapter::make_new_contextes( const QMimeData* data,
     predecessor = &subject;
   }
 
-  const auto context_is_not_valid = [this](const ObjectTreeContext& context) {
-    const bool cannot_move = !scene().can_move_object(context);
-    LOG(INFO) << "can move object: " << context.subject << " " << !cannot_move;
-    return cannot_move;
-  };
-
-  new_contextes.erase( std::remove_if( new_contextes.begin(), new_contextes.end(),
-                                       context_is_not_valid ),
-                       new_contextes.end()                                         );
-
-  const auto compare_context = [this](const ObjectTreeContext& a, const ObjectTreeContext& b) {
-    return !(a.subject < b.subject);
-  };
-
-  std::sort(new_contextes.begin(), new_contextes.end(), compare_context);
-  LOG(INFO) << "valid contextes: " << new_contextes.size();
   return new_contextes;
 }
 

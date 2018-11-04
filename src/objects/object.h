@@ -68,7 +68,6 @@ public:
   }
 
   void reset_parent(Object& new_parent);
-  bool is_ancestor_of(const Object& descendant) const;
 
   static ObjectTransformation translation(const double& dx, const double dy);
   static ObjectTransformation rotation(const double& r);
@@ -94,6 +93,5 @@ private:
 };
 
 std::ostream& operator<<(std::ostream& ostream, const Object& object);
-bool operator<(const Object& a, const Object& b);
 
 }  // namespace omm
