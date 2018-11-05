@@ -3,11 +3,6 @@
 #include "scene/project.h"
 #include "scene/objecttreecontext.h"
 
-namespace
-{
-
-}  // namespace
-
 namespace omm
 {
 

@@ -118,7 +118,7 @@ void Scene::remove_object(CopyObjectTreeContext& context)
     [&context](auto* observer) { observer->beginRemoveObject(context.subject); }
   );
   assert(context.predecessor == context.subject.reference().predecessor());
-  context.capture(context.parent.repudiate(context.subject));
+  context.subject.capture(context.parent.get().repudiate(context.subject));
   ObserverRegister<AbstractObjectTreeObserver>::for_each(
     [](auto* observer) { observer->endRemoveObject(); }
   );

@@ -3,29 +3,37 @@
 #include <functional>
 #include <memory>
 #include <glog/logging.h>
-#include "objects/object.h"
 
 namespace omm
 {
-
-class Object;
 
 template<typename T>
 class MaybeOwner
 {
 public:
-  MaybeOwner(std::unique_ptr<T>&& own) : m_owned(std::move(own)), m_ref(*m_owned) {}
-  MaybeOwner(T& reference) : MaybeOwner(reference.copy()) {}
+  MaybeOwner(const MaybeOwner<T>&& other) = delete;
+  MaybeOwner(MaybeOwner<T>&& other) : m_ref(other.m_ref), m_owned(std::move(other.m_owned)) { }
+  MaybeOwner(std::unique_ptr<T> own) : m_owned(std::move(own)), m_ref(*m_owned) { }
+  MaybeOwner(T& reference) : MaybeOwner(reference.copy()) { }
   operator T&() const { return m_ref; }
   T& reference() const { return *this; }
   bool owns() const { return !!m_owned.get(); }
   auto release() { assert(owns()); return std::move(m_owned); }
-  T& capture(std::unique_ptr<T>&& own) { assert(!owns()); m_owned == own; return *this; }
+  T& capture(std::unique_ptr<T> own)
+  {
+    assert(!owns());
+    assert(&reference() == &*own);
+    m_owned = std::move(own);
+    assert(owns());
+    return *this;
+  }
 
 private:
-  std::reference_wrapper<T> m_ref;
   std::unique_ptr<T> m_owned;
+  std::reference_wrapper<T> m_ref;
 };
+
+class Object;
 
 /**
  * @brief Describes the context of an object in the object tree
@@ -33,8 +41,6 @@ private:
  *  describe some context which is not necessarily consistent with the tree. This is useful to
  *  model future or past contexts.
  */
-
-
 class AbstractObjectTreeContext
 {
 public:
