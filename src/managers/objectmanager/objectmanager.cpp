@@ -2,8 +2,8 @@
 
 #include <glog/logging.h>
 #include <QTreeView>
-#include <QTimer>
 
+#include "managers/objectmanager/objecttreeview.h"
 #include "scene/scene.h"
 
 namespace omm
@@ -17,12 +17,8 @@ ObjectManager::ObjectManager(Scene& scene)
 
   m_scene.ObserverRegister<AbstractObjectTreeObserver>::register_observer(m_object_tree_adapter);
 
-  auto tree_view = std::make_unique<QTreeView>();
-  tree_view->setSelectionMode(QAbstractItemView::ExtendedSelection);
-  tree_view->setModel(&m_object_tree_adapter);
-  tree_view->setDragEnabled(true);
-  tree_view->setDefaultDropAction(Qt::MoveAction);
-  tree_view->viewport()->setAcceptDrops(true);
+  auto tree_view = std::make_unique<ObjectTreeView>();
+  tree_view->set_model(m_object_tree_adapter);
 
   connect( tree_view->selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &ObjectManager::on_selection_changed );

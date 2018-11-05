@@ -7,10 +7,10 @@
 namespace omm
 {
 
-class CopyObjectsCommand : public Command
+class RemoveObjectsCommand : public Command
 {
 public:
-  CopyObjectsCommand(Project& project, std::vector<OwningObjectTreeContext> contextes);
+  RemoveObjectsCommand(Project& project, const ObjectRefs& objects);
 
   void undo() override;
   void redo() override;

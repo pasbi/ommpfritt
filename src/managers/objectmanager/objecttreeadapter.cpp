@@ -53,7 +53,6 @@ make_contextes( const omm::ObjectTreeAdapter& adapter,
   return contextes;
 }
 
-
 }  // namespace
 
 namespace omm
@@ -202,7 +201,7 @@ void ObjectTreeAdapter::beginInsertObject(Object& parent, int row)
   beginInsertRows(index_of(parent), row, row);
 }
 
-void ObjectTreeAdapter::beginInsertObject(const CopyObjectTreeContext& context)
+void ObjectTreeAdapter::beginInsertObject(const OwningObjectTreeContext& context)
 {
   beginInsertObject(context.parent, context.get_insert_position());
 }
@@ -279,7 +278,7 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
       break;
     }
     case Qt::CopyAction: {
-      auto copy_contextes = make_contextes<CopyObjectTreeContext>(*this, data, row, parent);
+      auto copy_contextes = make_contextes<OwningObjectTreeContext>(*this, data, row, parent);
       project.submit(std::make_unique<CopyObjectsCommand>(project, std::move(copy_contextes)));
       break;
     }

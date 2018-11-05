@@ -7,15 +7,19 @@ namespace omm
 {
 
 CopyObjectsCommand
-::CopyObjectsCommand(Project& project, std::vector<CopyObjectTreeContext>&& contextes)
+::CopyObjectsCommand(Project& project, std::vector<OwningObjectTreeContext> contextes)
   : Command(project, QObject::tr("copy").toStdString())
   , m_contextes(std::move(contextes))
 {
+  std::for_each(m_contextes.begin(), m_contextes.end(), [](auto& context) {
+    context.subject.capture_by_copy();
+  });
 }
 
 void CopyObjectsCommand::redo()
 {
   for (auto&& context : m_contextes) {
+    assert(context.subject.owns());
     m_project.scene().insert_object(context);
   }
 }
@@ -23,6 +27,7 @@ void CopyObjectsCommand::redo()
 void CopyObjectsCommand::undo()
 {
   for (auto&& it = m_contextes.rbegin(); it != m_contextes.rend(); ++it) {
+    assert(!it->subject.owns());
     m_project.scene().remove_object(*it);
   }
 }

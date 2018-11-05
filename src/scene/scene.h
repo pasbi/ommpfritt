@@ -20,7 +20,7 @@ class AbstractObjectTreeObserver
 {
 protected:
   virtual void beginInsertObject(Object& parent, int row) = 0;
-  virtual void beginInsertObject(const CopyObjectTreeContext& context) = 0;
+  virtual void beginInsertObject(const OwningObjectTreeContext& context) = 0;
   virtual void endInsertObject() = 0;
   virtual void beginMoveObject(const MoveObjectTreeContext& new_context) = 0;
   virtual void endMoveObject() = 0;
@@ -57,9 +57,9 @@ public:
   nlohmann::json save() const;
 
   void insert_object(std::unique_ptr<Object> object, Object& parent);
-  void insert_object(CopyObjectTreeContext& context);
+  void insert_object(OwningObjectTreeContext& context);
   void move_object(MoveObjectTreeContext context);
-  void remove_object(CopyObjectTreeContext& context);
+  void remove_object(OwningObjectTreeContext& context);
   bool can_move_object(const MoveObjectTreeContext& new_context) const;
   void selection_changed();
   Project& project();

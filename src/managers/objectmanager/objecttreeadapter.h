@@ -43,7 +43,7 @@ public:
   QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
   void beginInsertObject(Object& parent, int row) override;
-  void beginInsertObject(const CopyObjectTreeContext& context) override;
+  void beginInsertObject(const OwningObjectTreeContext& context) override;
   void endInsertObject() override;
   void beginMoveObject(const MoveObjectTreeContext& context) override;
   void endMoveObject() override;

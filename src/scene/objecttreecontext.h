@@ -14,11 +14,19 @@ public:
   MaybeOwner(const MaybeOwner<T>&& other) = delete;
   MaybeOwner(MaybeOwner<T>&& other) : m_ref(other.m_ref), m_owned(std::move(other.m_owned)) { }
   MaybeOwner(std::unique_ptr<T> own) : m_owned(std::move(own)), m_ref(*m_owned) { }
-  MaybeOwner(T& reference) : MaybeOwner(reference.copy()) { }
+  MaybeOwner(T& reference) : m_ref(reference) { }
   operator T&() const { return m_ref; }
   T& reference() const { return *this; }
   bool owns() const { return !!m_owned.get(); }
   auto release() { assert(owns()); return std::move(m_owned); }
+
+  T& capture_by_copy()
+  {
+    m_owned = m_ref.get().copy();
+    m_ref = *m_owned;
+    return m_ref;
+  }
+
   T& capture(std::unique_ptr<T> own)
   {
     assert(!owns());
@@ -118,13 +126,7 @@ private:
   bool moves_after_itself() const;
 };
 
-class CopyObjectTreeContext : public ObjectTreeContext<MaybeOwner>
-{
-public:
-  using ObjectTreeContext<MaybeOwner>::ObjectTreeContext;
-};
-
-
+using OwningObjectTreeContext = ObjectTreeContext<MaybeOwner>;
 
 
 }  // namespace omm

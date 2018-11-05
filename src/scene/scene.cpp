@@ -99,7 +99,7 @@ void Scene::move_object(MoveObjectTreeContext context)
   );
 }
 
-void Scene::insert_object(CopyObjectTreeContext& context)
+void Scene::insert_object(OwningObjectTreeContext& context)
 {
   assert(context.subject.owns());
   ObserverRegister<AbstractObjectTreeObserver>::for_each(
@@ -111,7 +111,7 @@ void Scene::insert_object(CopyObjectTreeContext& context)
   );
 }
 
-void Scene::remove_object(CopyObjectTreeContext& context)
+void Scene::remove_object(OwningObjectTreeContext& context)
 {
   assert(!context.subject.owns());
   ObserverRegister<AbstractObjectTreeObserver>::for_each(
