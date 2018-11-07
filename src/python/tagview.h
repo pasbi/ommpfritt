@@ -12,9 +12,6 @@ class TagView : public View<Tag>
 {
 public:
   TagView(Tag& tag);
-  py::object owner();
-
-  void remove();
 };
 
 }  // namespace omm

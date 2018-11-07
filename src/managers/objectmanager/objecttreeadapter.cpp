@@ -5,11 +5,10 @@
 
 #include "objectmimedata.h"
 #include "objects/object.h"
-#include "scene/scene.h"
-#include "scene/project.h"
 #include "common.h"
 #include "commands/moveobjectscommand.h"
 #include "commands/copyobjectscommand.h"
+#include "properties/typedproperty.h"
 
 namespace
 {
@@ -58,8 +57,8 @@ make_contextes( const omm::ObjectTreeAdapter& adapter,
 namespace omm
 {
 
-ObjectTreeAdapter::ObjectTreeAdapter(Object& root_object)
-  : m_root(root_object)
+ObjectTreeAdapter::ObjectTreeAdapter(Scene& scene)
+  : m_scene(scene)
 {
 }
 
@@ -143,7 +142,7 @@ Object& ObjectTreeAdapter::object_at(const QModelIndex& index) const
     assert(index.internalPointer() != nullptr);
     return *static_cast<Object*>(index.internalPointer());
   } else {
-    return m_root;
+    return m_scene.root();
   }
 }
 
@@ -269,17 +268,16 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
   if (!canDropMimeData(data, action, row, column, parent)) {
     return false;
   } else {
-    Project& project = scene().project();
     std::unique_ptr<Command> command;
     switch (action) {
     case Qt::MoveAction: {
       auto move_contextes = make_contextes<MoveObjectTreeContext>(*this, data, row, parent);
-      project.submit(std::make_unique<MoveObjectsCommand>(project, move_contextes));
+      m_scene.submit<MoveObjectsCommand>(move_contextes);
       break;
     }
     case Qt::CopyAction: {
       auto copy_contextes = make_contextes<OwningObjectTreeContext>(*this, data, row, parent);
-      project.submit(std::make_unique<CopyObjectsCommand>(project, std::move(copy_contextes)));
+      m_scene.submit<CopyObjectsCommand>(std::move(copy_contextes));
       break;
     }
     }
@@ -307,7 +305,7 @@ QMimeData* ObjectTreeAdapter::mimeData(const QModelIndexList &indexes) const
 
 Scene& ObjectTreeAdapter::scene() const
 {
-  return m_root.scene();
+  return m_scene;
 }
 
 }  // namespace ommmake_new_contextes

@@ -1,7 +1,6 @@
 #include "commands/moveobjectscommand.h"
 #include "objects/object.h"
-#include "scene/project.h"
-#include "scene/objecttreecontext.h"
+#include "scene/scene.h"
 
 namespace
 {
@@ -19,8 +18,8 @@ namespace omm
 {
 
 MoveObjectsCommand
-::MoveObjectsCommand(Project& project, const std::vector<MoveObjectTreeContext>& new_contextes)
-  : Command(project, QObject::tr("reparent").toStdString())
+::MoveObjectsCommand(Scene& scene, const std::vector<MoveObjectTreeContext>& new_contextes)
+  : Command(scene, QObject::tr("reparent").toStdString())
   , m_old_contextes(::transform<MoveObjectTreeContext>(new_contextes, make_old_context))
   , m_new_contextes(new_contextes)
 {
@@ -29,14 +28,14 @@ MoveObjectsCommand
 void MoveObjectsCommand::redo()
 {
   for (const auto& context : m_new_contextes) {
-    m_project.scene().move_object(context);
+    scene.move_object(context);
   }
 }
 
 void MoveObjectsCommand::undo()
 {
   for (auto&& it = m_old_contextes.crbegin(); it != m_old_contextes.crend(); ++it) {
-    m_project.scene().move_object(*it);
+    scene.move_object(*it);
   }
 }
 

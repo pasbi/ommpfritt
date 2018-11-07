@@ -4,7 +4,7 @@
 
 namespace omm
 {
-  Viewport::Viewport(Project& project, QWidget* parent)
+  Viewport::Viewport(Scene& scene, QWidget* parent)
     : QWidget(parent)
   {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

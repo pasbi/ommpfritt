@@ -5,9 +5,12 @@
 #include <map>
 #include <functional>
 
+#include <QObject>
+
 #include "tags/tag.h"
-#include "scene/scene.h"
-#include "properties/property.h"
+#include "properties/transformationproperty.h"
+#include "properties/stringproperty.h"
+#include "properties/integerproperty.h"
 #include "common.h"
 
 namespace
@@ -48,22 +51,25 @@ const std::string Object::TRANSFORMATION_PROPERTY_KEY = "transformation";
 const std::string Object::NAME_PROPERTY_KEY = "name";
 const std::string Object::THE_ANSWER_KEY = "ans";
 
-Object::Object(Scene& scene)
+Object::Object()
   : m_parent(nullptr)
-  , m_scene(scene)
 {
-  add_property<TransformationProperty>( TRANSFORMATION_PROPERTY_KEY,
-                                        QObject::tr("transformation").toStdString(),
-                                        QObject::tr("object").toStdString(),
-                                        Object::identity() );
-  add_property<StringProperty>( NAME_PROPERTY_KEY,
-                                QObject::tr("Name").toStdString(),
-                                QObject::tr("object").toStdString(),
-                                "<Unnamed Object>" );
-  add_property<IntegerProperty>( THE_ANSWER_KEY,
-                                 QObject::tr("The Answer").toStdString(),
-                                 QObject::tr("special").toStdString(),
-                                 42 );
+
+  add_property( TRANSFORMATION_PROPERTY_KEY,
+                std::make_unique<TransformationProperty>(Object::identity()) )
+    .set_label(QObject::tr("transformation").toStdString())
+    .set_category(QObject::tr("object").toStdString());
+
+  add_property( NAME_PROPERTY_KEY,
+                std::make_unique<StringProperty>("<unnamed object>") )
+    .set_label(QObject::tr("Name").toStdString())
+    .set_category(QObject::tr("object").toStdString());
+
+  add_property( THE_ANSWER_KEY,
+                std::make_unique<IntegerProperty>(42) )
+    .set_label(QObject::tr("The Answer").toStdString())
+    .set_category(QObject::tr("special").toStdString());
+
 }
 
 Object::~Object()
@@ -122,14 +128,8 @@ void Object::transform(const ObjectTransformation& transformation)
   set_transformation(transformation * this->transformation());
 }
 
-Scene& Object::scene() const
-{
-  return m_scene;
-}
-
 Object& Object::adopt(std::unique_ptr<Object> object, const Object* predecessor)
 {
-  assert(&object->scene() == &scene());
   assert(object->is_root());
   const ObjectTransformation gt = object->global_transformation();
   assert(predecessor == nullptr || &predecessor->parent() == this);
@@ -199,49 +199,7 @@ ObjectTransformation Object::identity()
   return t;
 }
 
-nlohmann::json Object::to_json() const
-{
-  std::vector<nlohmann::json> children;
-  for (const auto& object : m_children) {
-    children.push_back(object->to_json());
-  }
-
-  std::vector<nlohmann::json> tags;
-  for (const auto& tag : m_tags) {
-    tags.push_back(tag->to_json());
-  }
-
-  std::vector<std::unique_ptr<Object>> m_children;
-
-  auto json = HasProperties::to_json();
-  json["children"] = children;
-  json["tags"] = tags;
-  json["id"] = m_id;
-  return json;
-}
-
-void Object::update_ids() const
-{
-  size_t current_id = 0;
-  update_ids(current_id);
-}
-
-void Object::update_ids(size_t& last_id) const
-{
-  last_id += 1;
-  m_id = last_id;
-
-  for (const auto& child : m_children) {
-    child->update_ids(last_id);
-  }
-}
-
-size_t Object::id() const
-{
-  return m_id;
-}
-
-ObjectRefs Object::children()
+ObjectRefs Object::children() const
 {
   static const auto f = [](const std::unique_ptr<Object>& uptr) {
     return ObjectRef(*uptr);
@@ -321,14 +279,21 @@ std::ostream& operator<<(std::ostream& ostream, const Object& object)
   return ostream;
 }
 
-std::unique_ptr<Object> Object::from_json(const nlohmann::json& json, Scene& scene)
-{
-  return std::make_unique<Object>(scene);
-}
-
 std::unique_ptr<Object> Object::copy() const
 {
-  return from_json(to_json(), scene());
+  return nullptr;
+}
+
+std::string Object::type() const
+{
+  return "Object";
+}
+
+void Object::register_objects()
+{
+#define REGISTER_OBJECT(TYPE) Object::register_type<TYPE>(#TYPE);
+  REGISTER_OBJECT(Object);
+#undef REGISTER_OBJECT
 }
 
 }  // namespace omm

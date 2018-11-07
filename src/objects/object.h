@@ -5,6 +5,7 @@
 #include "external/json_fwd.hpp"
 #include "objecttransformation.h"
 #include "properties/hasproperties.h"
+#include "abstractfactory.h"
 #include "objects/selectable.h"
 #include "common.h"
 
@@ -15,15 +16,21 @@ class Property;
 class Tag;
 class Scene;
 
-class Object : public HasProperties, public Selectable
+class Object
+  : public HasProperties
+  , public Selectable
+  , public AbstractFactory<std::string, Object>
 {
 public:
-  explicit Object(Scene& scene);
+  explicit Object();
   virtual ~Object();
 
   bool is_root() const;
   Object& parent() const;
 
+  // TODO add Object& adopt(std::unique_ptr<Object>) overload which inserts at end.
+  // this is required to make deserialization work
+  //  remove =nullptr default argument
   Object& adopt(std::unique_ptr<Object> object, const Object* predecessor = nullptr);
   std::unique_ptr<Object> repudiate(Object& object);
 
@@ -33,21 +40,11 @@ public:
   void set_transformation(const ObjectTransformation& transformation);
   void set_global_transformation(const ObjectTransformation& globalTransformation);
 
-  /**
-   * @brief updates the id of this object and all its children recursively.
-   * @details ids become invalid when the scene tree is modified. Call this method to update them.
-   */
-  void update_ids() const;
-  size_t id() const;
-
   Tag& add_tag(std::unique_ptr<Tag> tag);
   std::unique_ptr<Tag> remove_tag(Tag& tag);
 
-  Scene& scene() const;
-  virtual nlohmann::json to_json() const;
-  static std::unique_ptr<Object> from_json(const nlohmann::json& json, Scene& scene);
   std::unique_ptr<Object> copy() const;
-  ObjectRefs children();
+  ObjectRefs children() const;
   Object& child(size_t i) const;
   size_t n_children() const;
   size_t row() const;
@@ -55,18 +52,6 @@ public:
   size_t get_insert_position(const Object* child_before_position) const;
 
   std::unordered_set<HasProperties*> get_selected_children_and_tags();
-
-  template<typename T> T& create_child()
-  {
-    std::unique_ptr<T> object = std::make_unique<T>(scene());
-    return static_cast<T&>(adopt(std::move(object)));
-  }
-
-  template<typename T> T& create_tag()
-  {
-    std::unique_ptr<T> tag = std::make_unique<T>(*this);
-    return static_cast<T&>(add_tag(std::move(tag)));
-  }
 
   void reset_parent(Object& new_parent);
 
@@ -79,19 +64,17 @@ public:
   static const std::string NAME_PROPERTY_KEY;
   static const std::string THE_ANSWER_KEY;
 
-  DEFINE_CLASSNAME("object")
+  DEFINE_CLASSNAME("object") // TODO remove
 
+  static void register_objects();
+  std::string type() const override;
 
 private:
   std::vector<std::unique_ptr<Tag>> m_tags;
   std::vector<std::unique_ptr<Object>> m_children;
   Object* m_parent;
-  Scene& m_scene;
 
   friend class ObjectView;
-
-  mutable size_t m_id;
-  void update_ids(size_t& last_id) const;
 };
 
 std::ostream& operator<<(std::ostream& ostream, const Object& object);

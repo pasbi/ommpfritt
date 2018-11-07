@@ -10,6 +10,7 @@ add_subdirectory(properties)
 add_subdirectory(propertywidgets)
 add_subdirectory(python)
 add_subdirectory(scene)
+add_subdirectory(serializers)
 add_subdirectory(tags)
 
 target_sources(ommpfritt PRIVATE ${SOURCES})

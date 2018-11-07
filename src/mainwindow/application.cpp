@@ -29,7 +29,7 @@ void Application::set_main_window(MainWindow& main_window)
   m_main_window = &main_window;
 }
 
-void Application::new_project()
+void Application::new_scene()
 {
 
 }
@@ -50,7 +50,7 @@ void Application::update_undo_redo_enabled()
 
 bool Application::can_close()
 {
-  if (m_project.has_pending_changes()) {
+  if (m_scene.has_pending_changes()) {
     const auto decision =
       QMessageBox::question( m_main_window,
                              tr("Question."),
@@ -76,11 +76,11 @@ bool Application::can_close()
 
 bool Application::save(const std::string& filename)
 {
-  if (!m_project.save_as(filename)) {
-    LOG(WARNING) << "Error saving project as '" << filename << "'.";
+  if (!m_scene.save_as(filename)) {
+    LOG(WARNING) << "Error saving scene as '" << filename << "'.";
     QMessageBox::critical( m_main_window,
                            tr("Error."),
-                           tr("The project could not be saved at '%1'.")
+                           tr("The scene could not be saved at '%1'.")
                             .arg(QString::fromStdString(filename)),
                            QMessageBox::Ok, QMessageBox::Ok );
     return false;
@@ -91,7 +91,7 @@ bool Application::save(const std::string& filename)
 
 bool Application::save()
 {
-  const std::string filename = m_project.filename();
+  const std::string filename = m_scene.filename();
   if (filename.empty()) {
     return save_as();
   } else {
@@ -104,50 +104,50 @@ bool Application::save_as()
   LOG(INFO) << m_main_window;
   const QString filename =
     QFileDialog::getSaveFileName( m_main_window,
-                                  tr("Save project as ..."),
-                                  QString::fromStdString(m_project.filename()) );
+                                  tr("Save scene as ..."),
+                                  QString::fromStdString(m_scene.filename()) );
   if (filename.isEmpty()) {
     return false;
   } else {
-    return m_project.save_as(filename.toStdString());
+    return m_scene.save_as(filename.toStdString());
   }
 }
 
 void Application::reset()
 {
-  LOG(INFO) << "reset project.";
-  m_project.reset();
+  LOG(INFO) << "reset scene.";
+  m_scene.reset();
 }
 
 bool Application::load()
 {
   const QString filename =
     QFileDialog::getOpenFileName( m_main_window,
-                                  tr("Load project ..."),
-                                  QString::fromStdString(m_project.filename()) );
+                                  tr("Load scene ..."),
+                                  QString::fromStdString(m_scene.filename()) );
 
   if (filename.isEmpty()) {
     return false;
-  } else if (m_project.load_from(filename.toStdString())) {
+  } else if (m_scene.load_from(filename.toStdString())) {
     return true;
   } else {
     QMessageBox::critical( m_main_window,
                            tr("Error."),
-                           tr("Loading project from '%1' failed.").arg(filename),
+                           tr("Loading scene from '%1' failed.").arg(filename),
                            QMessageBox::Ok );
     return false;
   }
 }
 
 
-Project& Application::project()
+Scene& Application::scene()
 {
-  return m_project;
+  return m_scene;
 }
 
-const Project& Application::project() const
+const Scene& Application::scene() const
 {
-  return m_project;
+  return m_scene;
 }
 
 

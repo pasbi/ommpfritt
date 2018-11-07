@@ -7,7 +7,6 @@
 
 #include "menuhelper.h"
 #include "managers/objectmanager/objecttreeadapter.h"
-#include "scene/project.h"
 #include "commands/removeobjectscommand.h"
 
 namespace
@@ -83,8 +82,7 @@ ObjectRefs ObjectTreeView::selection() const
 
 void ObjectTreeView::remove_selected() const
 {
-  Project& project = model().scene().project();
-  project.submit(std::make_unique<RemoveObjectsCommand>(project, selection()));
+  model().scene().submit<RemoveObjectsCommand>(selection());
 }
 
 

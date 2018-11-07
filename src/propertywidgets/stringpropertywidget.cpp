@@ -3,6 +3,7 @@
 #include <QLineEdit>
 
 #include "propertywidgets/multivalueedit.h"
+#include "properties/typedproperty.h"
 
 
 namespace omm
@@ -60,6 +61,11 @@ void StringPropertyWidget::on_value_changed()
   m_line_edit->set_values(
     ::transform<std::string>(m_properties, [](auto property) { return property->value(); })
   );
+}
+
+std::string StringPropertyWidget::type() const
+{
+  return "StringPropertyWidget";
 }
 
 }  // namespace omm

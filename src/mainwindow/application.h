@@ -1,7 +1,7 @@
 #pragma once
 
-#include "scene/project.h"
 #include <QObject>
+#include "scene/scene.h"
 
 class QApplication;
 
@@ -12,7 +12,7 @@ class MainWindow;
 
 class Application : public QObject
 {
-  Q_OBJECT
+  Q_OBJECT  // TODO remove, test if file->save still works
 public:
   Application(QApplication& app);
   bool save();
@@ -23,21 +23,17 @@ public:
   void reset();
   void quit();
   void update_undo_redo_enabled();
-  void new_project();
   void set_main_window(MainWindow& main_window);
+  void new_scene();
 
-  template<typename CommandT, typename... Args> void submit(Args&&... args)
-  {
-    m_project.submit(std::make_unique<CommandT>(project(), std::forward<Args>(args)...));
-  }
 
-  Project& project();
-  const Project& project() const;
+  Scene& scene();
+  const Scene& scene() const;
 
 private:
   QApplication& m_app;
   MainWindow* m_main_window;
-  Project m_project;
+  Scene m_scene;
 
 };
 

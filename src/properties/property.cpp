@@ -3,14 +3,16 @@
 #include <assert.h>
 #include "objects/object.h"
 
+#include "properties/floatproperty.h"
+#include "properties/integerproperty.h"
+#include "properties/referenceproperty.h"
+#include "properties/stringproperty.h"
+#include "properties/transformationproperty.h"
+
 namespace omm
 {
 
-std::unordered_set<const Object*> ReferenceProperty::m_references;
-
-Property::Property(const std::string& label, const std::string& category)
-  : m_label(label)
-  , m_category(category)
+Property::Property()
 {
 }
 
@@ -29,48 +31,29 @@ std::string Property::category() const
   return m_category;
 }
 
-ReferenceProperty::ReferenceProperty(const std::string& label, const std::string& category)
-  : TypedProperty<Object*>(label, category, nullptr)
+Property& Property::set_label(const std::string& label)
 {
+  m_label = label;
+  return *this;
 }
 
-bool ReferenceProperty::is_referenced(const Object* candidate)
+Property& Property::set_category(const std::string& category)
 {
-  return std::find(m_references.begin(), m_references.end(), candidate) != m_references.end();
+  m_category = category;
+  return *this;
 }
 
-void ReferenceProperty::set_value(Object* reference)
+void Property::register_properties()
 {
-  const Object* oldReference = value();
-  if (oldReference != nullptr) {
-    assert(is_referenced(oldReference));
-    m_references.erase(oldReference);
-  }
-  TypedProperty<Object*>::set_value(reference);
-  if (reference != nullptr) {
-    m_references.emplace(reference);
-  }
-}
+#define REGISTER_PROPERTY(TYPE) Property::register_type<TYPE>(#TYPE);
 
-nlohmann::json ReferenceProperty::to_json() const
-{
-  return value() ? nlohmann::json(value()->id()) : nlohmann::json();
-}
+  REGISTER_PROPERTY(IntegerProperty);
+  REGISTER_PROPERTY(FloatProperty);
+  REGISTER_PROPERTY(StringProperty);
+  REGISTER_PROPERTY(TransformationProperty);
+  // REGISTER_PROPERTY(ReferenceProperty);
 
-template<>
-py::object TypedProperty<Object*>::get_py_object() const
-{
-  return py::object();
-}
-
-template<>
-void TypedProperty<Object*>::set_py_object(const py::object& value)
-{
-}
-
-std::unique_ptr<Property> Property::from_json(const nlohmann::json& json)
-{
-  return std::make_unique<StringProperty>("label", "category", "value");
+#undef REGISTER_PROPERTY
 }
 
 }  // namespace omm

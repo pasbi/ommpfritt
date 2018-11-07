@@ -3,9 +3,11 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include <unordered_set>
 #include <stdint.h>
 #include <QAbstractItemModel>
-#include <unordered_set>
+#include <QUndoStack>
+
 #include "python/objectview.h"
 #include "external/json_fwd.hpp"
 #include "observerregister.h"
@@ -15,6 +17,7 @@ namespace omm
 {
 
 class Scene;
+class Command;
 
 class AbstractObjectTreeObserver
 {
@@ -44,7 +47,7 @@ class Scene
   , public ObserverRegister<AbstractPropertyObserver>
 {
 public:
-  Scene(Project& project);
+  Scene();
   ~Scene();
 
   ObjectView root_view();
@@ -52,9 +55,12 @@ public:
   static Scene* currentInstance();
   Object& root() const;
 
+  /**
+   * @return returns the old root
+   */
+  std::unique_ptr<Object> replace_root(std::unique_ptr<Object> new_root);
+
   void reset();
-  bool load(const nlohmann::json& data);
-  nlohmann::json save() const;
 
   void insert_object(std::unique_ptr<Object> object, Object& parent);
   void insert_object(OwningObjectTreeContext& context);
@@ -62,13 +68,32 @@ public:
   void remove_object(OwningObjectTreeContext& context);
   bool can_move_object(const MoveObjectTreeContext& new_context) const;
   void selection_changed();
-  Project& project();
 
+  bool save_as(const std::string& filename);
+  bool load_from(const std::string& filename);
+
+  std::string filename() const;
+  template<typename CommandT, typename... Args> void submit(Args... args)
+  {
+    submit(std::make_unique<CommandT>(*this, std::forward<Args>(args)...));
+  }
+
+  bool has_pending_changes() const;
+  QUndoStack& undo_stack();
 
 private:
+  void submit(std::unique_ptr<Command> command);
+  void set_has_pending_changes(bool v);
   std::unique_ptr<Object> m_root;
-  Project& m_project;
   static Scene* m_current;
+
+  /**
+   * holds the last filename this scene was associated to.
+   * is set in `save_as` and `load_from`
+   */
+  std::string m_filename;
+  bool m_has_pending_changes = false;
+  QUndoStack m_undo_stack;
 };
 
 }  // namespace omm

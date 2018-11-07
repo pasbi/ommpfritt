@@ -1,17 +1,22 @@
 #pragma once
 
 #include <QWidget>
-#include "properties/property.h"
+#include "properties/typedproperty.h"
 #include "common.h"
 
 namespace omm
 {
 
-class AbstractPropertyWidget : public QWidget
+class AbstractPropertyWidget
+  : public QWidget
+  , public AbstractFactory< std::string, AbstractPropertyWidget,
+                            const std::unordered_set<Property*>& >
 {
 public:
   using SetOfProperties = std::unordered_set<Property*>;
   virtual ~AbstractPropertyWidget();
+  static void register_propertywidgets();
+
 protected:
   virtual std::string label() const = 0;
   void set_default_layout(std::unique_ptr<QWidget> other);
@@ -59,5 +64,6 @@ public:
 protected:
   std::unordered_set<property_type*> m_properties;
 };
+
 
 }  // namespace omm

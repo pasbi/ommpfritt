@@ -16,8 +16,7 @@ class ObjectTreeAdapter : public QAbstractItemModel, public AbstractObjectTreeOb
   Q_OBJECT
 
 public:
-  using RootObject = Object;
-  explicit ObjectTreeAdapter(Object& root_object);
+  explicit ObjectTreeAdapter(Scene& scene);
   ~ObjectTreeAdapter();
 
   QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
@@ -49,10 +48,11 @@ public:
   void endMoveObject() override;
   void beginRemoveObject(const Object& object) override;
   void endRemoveObject() override;
+
   Scene& scene() const;
 
 private:
-  Object& m_root;
+  Scene& m_scene;
 
   std::vector<omm::MoveObjectTreeContext>
   make_new_contextes(const QMimeData* data, int row, const QModelIndex& parent) const;

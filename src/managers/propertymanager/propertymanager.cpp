@@ -23,20 +23,20 @@ get_key_intersection(const SetOfHasProperties& selection)
   }
 
   const auto* the_entity = *selection.begin();
-  auto keys = the_entity->property_keys();
-  std::unordered_map<Key, std::type_index> types;
+  auto keys = the_entity->properties().keys();
+  std::unordered_map<Key, std::string> types;
   types.reserve(keys.size());
   for (auto&& key : keys) {
-    types.insert(std::make_pair(key, the_entity->property(key).type_index()));
+    types.insert(std::make_pair(key, the_entity->property(key).type()));
   }
 
   const auto has_key = [](const omm::HasProperties* entity, const Key& key) {
-    auto&& property_keys = entity->property_keys();
+    auto&& property_keys = entity->properties().keys();
     return std::find(property_keys.begin(), property_keys.end(), key) != property_keys.end();
   };
 
   const auto key_same_type = [types](const omm::HasProperties* entity, const Key& key) {
-    return types.at(key) == entity->property(key).type_index();
+    return types.at(key) == entity->property(key).type();
   };
 
 
@@ -129,7 +129,7 @@ void PropertyManager::set_selection(const SetOfHasProperties& selection)
     tabs.at(tab_label)->add_properties(properties);
   }
 
-  for (auto&& tab_label : tabs) {
+  for (auto&& tab_label : tabs.keys()) {
     m_tabs.addTab(tabs.at(tab_label).release(), QString::fromStdString(tab_label));
   }
 }

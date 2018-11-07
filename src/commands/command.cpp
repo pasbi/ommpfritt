@@ -1,19 +1,17 @@
+#include <glog/logging.h>
+
+#include "scene/scene.h"
+
 #include "commands/command.h"
-#include "scene/project.h"
+
 
 namespace omm
 {
 
-Command::Command(Project& project, const std::string& label)
+Command::Command(Scene& sceneX, const std::string& label)
   : QUndoCommand(QString::fromStdString(label))
-  , m_project(project)
+  , scene(sceneX)
 {
-
-}
-
-Scene& Command::scene() const
-{
-  return m_project.scene();
 }
 
 }  // namespace omm

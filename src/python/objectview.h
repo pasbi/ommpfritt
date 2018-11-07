@@ -19,8 +19,6 @@ public:
   py::object parent();
   py::object tags();
   void remove();
-  py::object create_child();
-  py::object create_tag();
 
 };
 

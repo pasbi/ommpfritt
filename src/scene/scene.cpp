@@ -6,15 +6,17 @@
 
 #include "object.h"
 #include "external/json.hpp"
+#include "properties/typedproperty.h"
+#include "serializers/abstractserializer.h"
+#include "commands/command.h"
 
 namespace omm
 {
 
 Scene* Scene::m_current = nullptr;
 
-Scene::Scene(Project& project)
-  : m_root(std::make_unique<Object>(*this))
-  , m_project(project)
+Scene::Scene()
+  : m_root(std::make_unique<Object>())
 {
   m_root->property<std::string>(Object::NAME_PROPERTY_KEY).value() = "_root_";
   m_current = this;
@@ -35,25 +37,6 @@ ObjectView Scene::root_view()
 Scene* Scene::currentInstance()
 {
   return m_current;
-}
-
-void Scene::reset()
-{
-  // ...
-}
-
-bool Scene::load(const nlohmann::json& data)
-{
-  return true;
-  //m_root = ...
-}
-
-nlohmann::json Scene::save() const
-{
-  m_root->update_ids();
-  return {
-    { "root", m_root->to_json() }
-  };
 }
 
 void Scene::insert_object(std::unique_ptr<Object> object, Object& parent)
@@ -124,9 +107,79 @@ void Scene::remove_object(OwningObjectTreeContext& context)
   );
 }
 
-Project& Scene::project()
+bool Scene::save_as(const std::string &filename)
 {
-  return m_project;
+  std::ofstream ofstream(filename);
+  if (ofstream) {
+    auto serializer = Serializing::AbstractSerializer::make("JSONSerializer", *this);
+    serializer->serialize(ofstream);
+
+    LOG(INFO) << "Saved current scene to '" << filename << "'";
+    set_has_pending_changes(false);
+    m_filename = filename;
+    return true;
+  } else {
+    LOG(ERROR) << "Failed to open ofstream at '" << filename << "'";
+    return false;
+  }
 }
+
+bool Scene::load_from(const std::string &filename)
+{
+  std::ifstream ifstream(filename);
+  if (ifstream) {
+    auto deserializer = Serializing::AbstractDeserializer::make("JSONDeserializer", *this);
+    deserializer->deserialize(ifstream);
+
+    // TODO load aux_scene. If no error occured, swap with m_scene.
+
+    set_has_pending_changes(false);
+    m_filename = filename;
+    return true;
+  } else {
+    LOG(ERROR) << "Failed to open '" << filename << "'.";
+    return false;
+  }
+}
+
+void Scene::reset()
+{
+  set_has_pending_changes(false);
+  //
+}
+
+std::string Scene::filename() const
+{
+  return m_filename;
+}
+
+void Scene::set_has_pending_changes(bool v)
+{
+  m_has_pending_changes = v;
+}
+
+bool Scene::has_pending_changes() const
+{
+  return m_has_pending_changes;
+}
+
+void Scene::submit(std::unique_ptr<Command> command)
+{
+  m_undo_stack.push(command.release());
+  set_has_pending_changes(true);
+}
+
+QUndoStack& Scene::undo_stack()
+{
+  return m_undo_stack;
+}
+
+std::unique_ptr<Object> Scene::replace_root(std::unique_ptr<Object> new_root)
+{
+  auto old_root = std::move(m_root);
+  m_root = std::move(new_root);
+  return old_root;
+}
+
 
 }  // namespace omm

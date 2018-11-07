@@ -57,7 +57,7 @@ MainWindow::MainWindow(Application& app)
 
   setDockNestingEnabled(true);
 
-  setCentralWidget(std::make_unique<Viewport>(app.project()).release());
+  setCentralWidget(std::make_unique<Viewport>(app.scene()).release());
 
   restore_state();
 }
@@ -109,7 +109,7 @@ std::unique_ptr<Manager> MainWindow::make_manager(const std::string& type)
 {
   const auto it = manager_creators.find(type);
   assert(it != manager_creators.end());
-  return it->second(m_app.project().scene());
+  return it->second(m_app.scene());
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

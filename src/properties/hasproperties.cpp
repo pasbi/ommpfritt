@@ -8,37 +8,23 @@ HasProperties::~HasProperties()
 {
 }
 
-void HasProperties::add_property( const HasProperties::Key& key,
-                                       std::unique_ptr<Property> property )
+Property& HasProperties::add_property(const Key& key, std::unique_ptr<Property> property)
 {
+  Property& ref = *property;
   bool was_inserted = m_properties.insert(key, std::move(property));
   assert(was_inserted);
   (void) was_inserted;
+  return ref;
 }
 
-const std::vector<HasProperties::Key>& HasProperties::property_keys() const
+const PropertyMap& HasProperties::properties() const
 {
-  return m_properties.keys();
+  return m_properties;
 }
 
 Property& HasProperties::property(const Key& key) const
 {
   return *m_properties.at(key);
-}
-
-nlohmann::json HasProperties::to_json() const
-{
-  nlohmann::json keys = m_properties.keys();
-  nlohmann::json values;
-
-  for (const auto& key : m_properties) {
-    values[key] = m_properties.at(key)->to_json();
-  }
-
-  return {
-    { "properties", values },
-    { "property_order", keys }
-  };
 }
 
 }  // namespace omm

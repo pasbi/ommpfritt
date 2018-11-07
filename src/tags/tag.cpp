@@ -5,19 +5,19 @@
 
 #include "objects/object.h"
 #include "external/json.hpp"
+#include "properties/stringproperty.h"
 
 namespace omm
 {
 
 const std::string Tag::NAME_PROPERTY_KEY = "name";
 
-Tag::Tag(Object& owner)
-  : m_owner(owner)
+Tag::Tag()
 {
-  add_property<StringProperty>( NAME_PROPERTY_KEY,
-                                QObject::tr("Name").toStdString(),
-                                QObject::tr("Tag").toStdString(),
-                                "<Unnamed Tag>" );
+  add_property( NAME_PROPERTY_KEY,
+                std::make_unique<StringProperty>("<unnamed tag>") )
+    .set_label(QObject::tr("Name").toStdString())
+    .set_category(QObject::tr("tag").toStdString());
 }
 
 Tag::~Tag()
@@ -25,30 +25,21 @@ Tag::~Tag()
 
 }
 
-Object& Tag::owner() const
-{
-  return m_owner;
-}
-
-Scene& Tag::scene() const
-{
-  return m_owner.scene();
-}
-
 bool Tag::run()
 {
   return false;
 }
 
-nlohmann::json Tag::to_json() const
+void Tag::register_tags()
 {
-  auto json = HasProperties::to_json();
-  return json;
+#define REGISTER_TAG(TYPE) Tag::register_type<TYPE>(#TYPE);
+  REGISTER_TAG(Tag);
+#undef REGISTER_TAG
 }
 
-std::unique_ptr<Tag> from_json(const nlohmann::json& json, Object& owner)
+std::string Tag::type() const
 {
-  return std::make_unique<Tag>(owner);
+  return "Object";
 }
 
 }  // namespace omm

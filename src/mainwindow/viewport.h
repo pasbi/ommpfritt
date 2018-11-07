@@ -5,12 +5,12 @@
 namespace omm
 {
 
-class Project;
+class Scene;
 
 class Viewport : public QWidget
 {
 public:
-  Viewport(Project& project, QWidget* parent = nullptr);
+  Viewport(Scene& scene, QWidget* parent = nullptr);
 protected:
   void paintEvent(QPaintEvent* event);
 };

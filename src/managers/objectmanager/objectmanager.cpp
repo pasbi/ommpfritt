@@ -11,7 +11,7 @@ namespace omm
 
 ObjectManager::ObjectManager(Scene& scene)
   : Manager(tr("Objects"), scene)
-  , m_object_tree_adapter(scene.root())
+  , m_object_tree_adapter(scene)
 {
   setWindowTitle(tr("object manager"));
 

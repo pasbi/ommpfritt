@@ -54,19 +54,3 @@ void omm::ObjectView::remove()
   }
   m_target = nullptr;
 }
-
-py::object omm::ObjectView::create_child()
-{
-  throw_if_no_target();
-
-  Object& object = m_target->create_child<Object>();
-  return py::cast(ObjectView(object));
-}
-
-py::object omm::ObjectView::create_tag()
-{
-  throw_if_no_target();
-
-  Tag& tag = m_target->create_tag<Tag>();
-  return py::cast(TagView(tag));
-}

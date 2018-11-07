@@ -7,11 +7,12 @@ namespace omm
 {
 
 class Object;
+class Scene;
 
 class AddObjectCommand : public Command
 {
 public:
-  AddObjectCommand(Project& project, std::unique_ptr<Object> object);
+  AddObjectCommand(Scene& scene, std::unique_ptr<Object> object);
 
   void undo() override;
   void redo() override;
