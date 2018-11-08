@@ -8,6 +8,7 @@
 #include "property.h"
 #include "external/json_fwd.hpp"
 #include "properties/propertymap.h"
+#include "serializers/serializable.h"
 
 #define DEFINE_CLASSNAME(CLASSNAME) \
   std::string class_name() const override { return CLASSNAME; }
@@ -15,7 +16,7 @@
 namespace omm
 {
 
-class HasProperties
+class HasProperties : public Serializable
 {
 public:
   virtual ~HasProperties();
@@ -26,9 +27,14 @@ public:
     return property(key).cast<ValueT>();
   }
   const PropertyMap& properties() const;
-  Property& add_property(const Key& key, std::unique_ptr<Property> property);
 
-  virtual std::string class_name() const = 0;
+  virtual std::string class_name() const = 0; // TODO
+
+  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
+  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+
+protected:
+  Property& add_property(const Key& key, std::unique_ptr<Property> property);
 
 private:
   PropertyMap m_properties;

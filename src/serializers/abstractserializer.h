@@ -1,88 +1,55 @@
 #pragma once
 
 #include <iosfwd>
+#include <sstream>
 #include "abstractfactory.h"
 #include "properties/propertymap.h"
+#include "serializers/serializable.h"
 
 namespace omm
 {
 
-class Scene;
+class ObjectTransformation;
 class Object;
-class Property;
-class Tag;
-class HasProperties;
+class Scene;
 
-namespace Serializing
-{
-
-using Key = std::string;
-constexpr auto PROPERTIES_KEY = "properties";
-constexpr auto CHILDREN_KEY = "children";
-constexpr auto TAGS_KEY = "children";
-constexpr auto TYPE_KEY = "type";
-
-
-class AbstractSerializer : public AbstractFactory<std::string, AbstractSerializer, Scene&>
+class AbstractSerializer : public AbstractFactory<std::string, AbstractSerializer>
 {
 public:
-  explicit AbstractSerializer(const Scene& scene);
-  virtual ~AbstractSerializer();
-  std::ostream& serialize(std::ostream& ostream);
+  using Pointer = Serializable::Pointer;
+  virtual std::ostream& serialize(const Scene& scene, std::ostream& ostream) = 0;
+
+  // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
+  virtual void start_array(size_t size, const Pointer& pointer) = 0;
+  virtual void end_array() = 0;
+  virtual void set_value(int value, const Pointer& pointer) = 0;
+  virtual void set_value(double value, const Pointer& pointer) = 0;
+  virtual void set_value(const std::string& value, const Pointer& pointer) = 0;
+  virtual void set_value(const ObjectTransformation& value, const Pointer& pointer) = 0;
+  virtual void set_value(const Object* value, const Pointer& pointer) = 0;
+
   static void register_serializers();
 
-protected:
-  virtual void serialize( const Property& property, const PropertyMap::key_type& property_key,
-                          const Key& key ) = 0;
-  virtual void start_array(size_t size, const Key& key) = 0;
-  virtual void end_array() = 0;
-  virtual void set_type(const std::string& type, const Key& key) = 0;
-
-private:
-  virtual void serialize(const Object& object, const Key& key);
-  virtual void serialize(const Tag& tag, const Key& key);
-  virtual void serialize(const HasProperties& has_properties, const Key& key);
-
-private:
-  const Scene& m_scene;
+  static constexpr auto ROOT_POINTER = "root";
 };
 
-class AbstractDeserializer : public AbstractFactory<std::string, AbstractDeserializer, Scene&>
+class AbstractDeserializer : public AbstractFactory<std::string, AbstractDeserializer>
 {
 public:
-  explicit AbstractDeserializer(Scene& scene);
-  virtual ~AbstractDeserializer();
-  virtual void load(const std::string& filename) = 0;
-  std::istream& deserialize(std::istream& istream);
+  using Pointer = Serializable::Pointer;
+  virtual std::istream& deserialize(Scene& scene, std::istream& istream) = 0;
+
+  // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
+  virtual size_t array_size(const Pointer& pointer) = 0;
+  virtual int  get_int(const Pointer& pointer) = 0;
+  virtual double  get_double(const Pointer& pointer) = 0;
+  virtual std::string  get_string(const Pointer& pointer) = 0;
+  virtual ObjectTransformation get_object_transformation(const Pointer& pointer) = 0;
+  virtual Object* get_object_reference(const Pointer& pointer) = 0;
+
   static void register_deserializers();
 
-protected:
-  /**
-   * @brief deserialize the property and its property key at key
-   */
-  virtual void deserialize( Property& property, PropertyMap::key_type& property_key,
-                            const Key& key ) = 0;
-
-  /**
-   * @return the size of the array at key
-   */
-  virtual size_t array_size(const Key& key) = 0;
-
-  /**
-   * @return returns the type of the next object at key
-   */
-  virtual std::string get_type(const Key& key) = 0;
-
-private:
-  void deserialize(HasProperties& has_properties, const Key& key);
-  std::unique_ptr<Object> deserialize_object(const Key& key);
-  std::unique_ptr<Tag> deserialize_tag(const Key& key);
-
-private:
-  Scene& m_scene;
 };
-
-}  // namespace Serializing
 
 }  // namespace omm
 

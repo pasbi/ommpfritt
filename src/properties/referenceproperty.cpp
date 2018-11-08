@@ -16,7 +16,7 @@ bool ReferenceProperty::is_referenced(const Object* candidate)
   return std::find(m_references.begin(), m_references.end(), candidate) != m_references.end();
 }
 
-void ReferenceProperty::set_value(Object* reference)
+void ReferenceProperty::set_value(Object* const& reference)
 {
   const Object* oldReference = value();
   if (oldReference != nullptr) {
@@ -37,6 +37,15 @@ std::string ReferenceProperty::type() const
 std::string ReferenceProperty::widget_type() const
 {
   return "ReferencePropertyWidget";
+}
+
+void ReferenceProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+{
+  Property::deserialize(deserializer, root);
+  set_value(deserializer.get_object_reference(
+    make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
+  set_default_value(deserializer.get_object_reference(
+    make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
 }
 
 }   // namespace omm

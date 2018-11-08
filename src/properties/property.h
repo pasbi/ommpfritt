@@ -10,6 +10,7 @@
 #include "external/json.hpp"
 #include "observerregister.h"
 #include "abstractfactory.h"
+#include "serializers/serializable.h"
 
 namespace py = pybind11;
 
@@ -31,7 +32,7 @@ class Object;
 #define DISABLE_DANGEROUS_PROPERTY_TYPES \
   DISABLE_DANGEROUS_PROPERTY_TYPE(const char*)
 
-class Property : public AbstractFactory<std::string, Property>
+class Property : public AbstractFactory<std::string, Property>, public Serializable
 {
 public:
   Property();
@@ -63,6 +64,10 @@ public:
   virtual std::string widget_type() const = 0;
 
   static void register_properties();
+
+  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
+  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+
 
 private:
   std::string m_label;

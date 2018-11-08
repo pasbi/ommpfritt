@@ -111,8 +111,7 @@ bool Scene::save_as(const std::string &filename)
 {
   std::ofstream ofstream(filename);
   if (ofstream) {
-    auto serializer = Serializing::AbstractSerializer::make("JSONSerializer", *this);
-    serializer->serialize(ofstream);
+    AbstractSerializer::make("JSONSerializer")->serialize(*this, ofstream);
 
     LOG(INFO) << "Saved current scene to '" << filename << "'";
     set_has_pending_changes(false);
@@ -128,8 +127,7 @@ bool Scene::load_from(const std::string &filename)
 {
   std::ifstream ifstream(filename);
   if (ifstream) {
-    auto deserializer = Serializing::AbstractDeserializer::make("JSONDeserializer", *this);
-    deserializer->deserialize(ifstream);
+    AbstractDeserializer::make("JSONDeserializer")->deserialize(*this, ifstream);
 
     // TODO load aux_scene. If no error occured, swap with m_scene.
 

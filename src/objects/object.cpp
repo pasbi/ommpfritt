@@ -16,6 +16,9 @@
 namespace
 {
 
+static constexpr auto CHILDREN_POINTER = "children";
+static constexpr auto TYPE_POINTER = "type";
+
 template<typename T>
 T& insert(std::vector<std::unique_ptr<T>>& container, std::unique_ptr<T> obj, size_t pos)
 {
@@ -295,5 +298,49 @@ void Object::register_objects()
   REGISTER_OBJECT(Object);
 #undef REGISTER_OBJECT
 }
+
+void Object::serialize(AbstractSerializer& serializer, const Pointer& root) const
+{
+  HasProperties::serialize(serializer, root);
+
+  const auto children_key = make_pointer(root, CHILDREN_POINTER);
+  serializer.start_array(n_children(), children_key);
+  for (size_t i = 0; i < n_children(); ++i) {
+    const auto& child = this->child(i);
+    const auto child_pointer = make_pointer(children_key, i);
+    serializer.set_value(child.type(), make_pointer(child_pointer, TYPE_POINTER));
+    child.serialize(serializer, child_pointer);
+  }
+  serializer.end_array();
+
+  // const auto tags_key = make_pointer(key, TAGS_KEY);
+  // serializer.start_array(object.n_tags(), children_key);
+  // for (const Object& tag : object.tags()) {
+  //   tag.serialize(serializer, tags_key);
+  // }
+  // serializer.end_array();
+}
+
+void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+{
+  HasProperties::deserialize(deserializer, root);
+
+  const auto children_key = make_pointer(root, CHILDREN_POINTER);
+  size_t n_children = deserializer.array_size(children_key);
+  for (size_t i = 0; i < n_children; ++i) {
+    const auto child_pointer = make_pointer(children_key, i);
+    const auto child_type = deserializer.get_string(make_pointer(child_pointer, TYPE_POINTER));
+    auto child = Object::make(child_type);
+    child->deserialize(deserializer, child_pointer);
+    adopt(std::move(child));
+  }
+
+  // const auto tags_key = make_pointer(key, TAGS_KEY);
+  // size_t n_tags = array_size(tags_key);
+  // for (size_t i = 0; i < n_tags; ++i) {
+  //   object->add_tag(deserialize_tag(tags_key));
+  // }
+}
+
 
 }  // namespace omm

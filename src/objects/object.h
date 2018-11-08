@@ -8,6 +8,7 @@
 #include "abstractfactory.h"
 #include "objects/selectable.h"
 #include "common.h"
+#include "serializers/serializable.h"
 
 namespace omm
 {
@@ -68,6 +69,9 @@ public:
 
   static void register_objects();
   std::string type() const override;
+
+  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
+  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
 
 private:
   std::vector<std::unique_ptr<Tag>> m_tags;

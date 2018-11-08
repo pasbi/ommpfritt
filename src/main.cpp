@@ -17,8 +17,8 @@ int main (int argc, char *argv[])
   omm::AbstractPropertyWidget::register_propertywidgets();
   omm::Object::register_objects();
   omm::Tag::register_tags();
-  omm::Serializing::AbstractSerializer::register_serializers();
-  omm::Serializing::AbstractDeserializer::register_deserializers();
+  omm::AbstractSerializer::register_serializers();
+  omm::AbstractDeserializer::register_deserializers();
 
   google::InitGoogleLogging(argv[0]);
   QApplication qt_app(argc, argv);

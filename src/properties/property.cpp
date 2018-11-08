@@ -43,6 +43,19 @@ Property& Property::set_category(const std::string& category)
   return *this;
 }
 
+void Property::serialize(AbstractSerializer& serializer, const Pointer& root) const
+{
+  serializer.set_value(m_label, make_pointer(root, "label"));
+  serializer.set_value(m_category, make_pointer(root, "category"));
+}
+
+void Property
+::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+{
+  m_label = deserializer.get_string(make_pointer(root, "label"));
+  m_category = deserializer.get_string(make_pointer( root, "category" ));
+}
+
 void Property::register_properties()
 {
 #define REGISTER_PROPERTY(TYPE) Property::register_type<TYPE>(#TYPE);
