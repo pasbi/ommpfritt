@@ -49,6 +49,11 @@ public:
 
   static void register_deserializers();
 
+  class DeserializeError : public std::runtime_error
+  {
+
+  };
+
 };
 
 }  // namespace omm

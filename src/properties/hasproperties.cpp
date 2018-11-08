@@ -62,9 +62,13 @@ void HasProperties::deserialize(AbstractDeserializer& deserializer, const Pointe
     const auto property_type =
       deserializer.get_string(make_pointer(property_pointer, PROPERTY_TYPE_POINTER));
 
-    auto property = Property::make(property_type);
-    property->deserialize(deserializer, property_pointer);
-    add_property(property_key, std::move(property));
+    if (properties().contains(property_key)) {
+      assert(property_type == property(property_key).type());
+    } else {
+      add_property(property_key, Property::make(property_type));
+    }
+
+    property(property_key).deserialize(deserializer, property_pointer);
   }
 }
 

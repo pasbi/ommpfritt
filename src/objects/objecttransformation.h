@@ -9,10 +9,9 @@ namespace omm
 class ObjectTransformation : public arma::Mat<double>::fixed<3, 3>
 {
 public:
-  ObjectTransformation(const nlohmann::json& json) {} // TODO
-  using arma::Mat<double>::fixed<3, 3>::fixed;
-
-  nlohmann::json to_json() const;
+  static constexpr auto N_ROWS = 3;
+  static constexpr auto N_COLS = 3;
+  using arma::Mat<double>::fixed<N_ROWS, N_COLS>::fixed;
 };
 
 std::ostringstream& operator<<(std::ostringstream& ostream, const ObjectTransformation& t);

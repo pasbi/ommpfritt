@@ -32,12 +32,12 @@ std::ostream& JSONSerializer::serialize(const Scene& scene, std::ostream& ostrea
 
 void JSONSerializer::start_array(size_t size, const Pointer& pointer)
 {
-
+  // no action required
 }
 
 void JSONSerializer::end_array()
 {
-
+  // no action required
 }
 
 void JSONSerializer::set_value(int value, const Pointer& pointer)
@@ -57,7 +57,13 @@ void JSONSerializer::set_value(const std::string& value, const Pointer& pointer)
 
 void JSONSerializer::set_value(const ObjectTransformation& value, const Pointer& pointer)
 {
-  m_store[ptr(pointer)] = "otr";
+  auto& matrix_json = m_store[ptr(pointer)];
+  for (size_t i_row = 0; i_row < ObjectTransformation::N_ROWS; ++i_row) {
+    auto& row = matrix_json[i_row];
+    for (size_t i_col = 0; i_col < ObjectTransformation::N_COLS; ++i_col) {
+      row[i_col] = value(i_row, i_col);
+    }
+  }
 }
 
 void JSONSerializer::set_value(const Object* value, const Pointer& pointer)
@@ -72,36 +78,49 @@ std::string JSONSerializer::type() const
 
 std::istream& JSONDeserializer::deserialize(Scene& scene, std::istream& istream)
 {
-  // TODO: load store from istream
-  AbstractDeserializer::deserialize(scene, istream);
   istream >> m_store;
+  LOG(INFO) << m_store;
+  AbstractDeserializer::deserialize(scene, istream);
   return istream;
 }
 
 
 size_t JSONDeserializer::array_size(const Pointer& pointer)
 {
-  return 0;
+  const auto array = m_store[ptr(pointer)];
+  LOG(INFO) << std::setfill(' ') << std::setw(4) << array;
+  assert(array.is_array() || array.is_null());
+  return array.size();
 }
 
-int  JSONDeserializer::get_int(const Pointer& pointer)
+int JSONDeserializer::get_int(const Pointer& pointer)
 {
-  return 0;
+  return m_store[ptr(pointer)];
 }
 
-double  JSONDeserializer::get_double(const Pointer& pointer)
+double JSONDeserializer::get_double(const Pointer& pointer)
 {
-  return 0.0;
+  return m_store[ptr(pointer)];
 }
 
-std::string  JSONDeserializer::get_string(const Pointer& pointer)
+std::string JSONDeserializer::get_string(const Pointer& pointer)
 {
-  return "";
+  return m_store[ptr(pointer)];
 }
 
 ObjectTransformation JSONDeserializer::get_object_transformation(const Pointer& pointer)
 {
-  return ObjectTransformation();
+  const auto& matrix_json = m_store[ptr(pointer)];
+  ObjectTransformation transformation;
+  assert(matrix_json.is_array() && matrix_json.size() == ObjectTransformation::N_ROWS);
+  for (size_t i_row = 0; i_row < ObjectTransformation::N_ROWS; ++i_row) {
+    const auto& row = matrix_json[i_row];
+    assert(matrix_json.is_array() && matrix_json.size() == ObjectTransformation::N_COLS);
+    for (size_t i_col = 0; i_col < ObjectTransformation::N_COLS; ++i_col) {
+      transformation(i_row, i_col) = row[i_col];
+    }
+  }
+  return transformation;
 }
 
 Object* JSONDeserializer::get_object_reference(const Pointer& pointer)
