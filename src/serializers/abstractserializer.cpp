@@ -21,7 +21,6 @@ std::ostream& AbstractSerializer::serialize(const Scene& scene, std::ostream& os
 
 std::istream& AbstractDeserializer::deserialize(Scene& scene, std::istream& istream)
 {
-  LOG(INFO) << "XXX";
   // load data in overridden function
   scene.root().deserialize(*this, AbstractSerializer::ROOT_POINTER);
   return istream;

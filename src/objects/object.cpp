@@ -144,6 +144,13 @@ Object& Object::adopt(std::unique_ptr<Object> object, const Object* predecessor)
   return oref;
 }
 
+Object& Object::adopt(std::unique_ptr<Object> object)
+{
+  const size_t n = n_children();
+  const Object* predecessor = n == 0 ? nullptr : &child(n-1);
+  return adopt(std::move(object), predecessor);
+}
+
 std::unique_ptr<Object> Object::repudiate(Object& object)
 {
   const ObjectTransformation gt = object.global_transformation();

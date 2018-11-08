@@ -10,7 +10,6 @@ namespace
 
 auto ptr(const omm::Serializable::Pointer& pointer)
 {
-  LOG(INFO) << "pointer: " << pointer;
   return nlohmann::json::json_pointer(pointer);
 }
 
@@ -79,7 +78,6 @@ std::string JSONSerializer::type() const
 std::istream& JSONDeserializer::deserialize(Scene& scene, std::istream& istream)
 {
   istream >> m_store;
-  LOG(INFO) << m_store;
   AbstractDeserializer::deserialize(scene, istream);
   return istream;
 }
@@ -88,7 +86,6 @@ std::istream& JSONDeserializer::deserialize(Scene& scene, std::istream& istream)
 size_t JSONDeserializer::array_size(const Pointer& pointer)
 {
   const auto array = m_store[ptr(pointer)];
-  LOG(INFO) << std::setfill(' ') << std::setw(4) << array;
   assert(array.is_array() || array.is_null());
   return array.size();
 }

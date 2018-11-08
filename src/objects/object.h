@@ -29,10 +29,8 @@ public:
   bool is_root() const;
   Object& parent() const;
 
-  // TODO add Object& adopt(std::unique_ptr<Object>) overload which inserts at end.
-  // this is required to make deserialization work
-  //  remove =nullptr default argument
-  Object& adopt(std::unique_ptr<Object> object, const Object* predecessor = nullptr);
+  Object& adopt(std::unique_ptr<Object> object, const Object* predecessor);
+  Object& adopt(std::unique_ptr<Object> object);
   std::unique_ptr<Object> repudiate(Object& object);
 
   void transform(const ObjectTransformation& transformation);
