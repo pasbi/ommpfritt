@@ -26,9 +26,6 @@ public:
   static void register_tags();
   std::string type() const override;
 
-protected:
-  DEFINE_CLASSNAME("tag")
-
 };
 
 }  // namespace omm

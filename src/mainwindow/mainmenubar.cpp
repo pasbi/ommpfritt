@@ -11,11 +11,6 @@
 #include "managers/manager.h"
 #include "menuhelper.h"
 
-namespace
-{
-
-}  // namespace
-
 namespace omm
 {
 

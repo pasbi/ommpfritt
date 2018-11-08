@@ -10,9 +10,6 @@
 #include "properties/propertymap.h"
 #include "serializers/serializable.h"
 
-#define DEFINE_CLASSNAME(CLASSNAME) \
-  std::string class_name() const override { return CLASSNAME; }
-
 namespace omm
 {
 
@@ -27,8 +24,6 @@ public:
     return property(key).cast<ValueT>();
   }
   const PropertyMap& properties() const;
-
-  virtual std::string class_name() const = 0; // TODO
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;

@@ -277,7 +277,7 @@ size_t Object::get_insert_position(const Object* child_before_position) const
 
 std::ostream& operator<<(std::ostream& ostream, const Object& object)
 {
-  ostream << object.class_name()
+  ostream << object.type()
           << "[" << object.property<std::string>(Object::NAME_PROPERTY_KEY).value() << "]";
   return ostream;
 }

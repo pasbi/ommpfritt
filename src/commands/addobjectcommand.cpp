@@ -8,7 +8,7 @@ namespace
 
 std::string get_command_label(const omm::Object& object)
 {
-  return QObject::tr("Add %1").arg(object.class_name().c_str()).toStdString();
+  return QObject::tr("Add %1").arg(object.type().c_str()).toStdString();
 }
 
 }  // namespace

@@ -65,8 +65,6 @@ public:
   static const std::string NAME_PROPERTY_KEY;
   static const std::string THE_ANSWER_KEY;
 
-  DEFINE_CLASSNAME("object") // TODO remove
-
   static void register_objects();
   std::string type() const override;
 

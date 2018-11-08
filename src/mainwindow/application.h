@@ -12,7 +12,7 @@ class MainWindow;
 
 class Application : public QObject
 {
-  Q_OBJECT  // TODO remove, test if file->save still works
+  Q_OBJECT
 public:
   Application(QApplication& app);
   bool save();
