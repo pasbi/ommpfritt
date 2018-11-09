@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <map>
 #include <functional>
-
 #include <QObject>
 
 #include "tags/tag.h"
@@ -12,6 +11,7 @@
 #include "properties/stringproperty.h"
 #include "properties/integerproperty.h"
 #include "common.h"
+#include "serializers/jsonserializer.h"
 
 namespace
 {
@@ -346,7 +346,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
 
 std::unique_ptr<Object> Object::copy() const
 {
-  return nullptr;
+  return Serializable::copy<Object, JSONSerializer, JSONDeserializer>(Object::make(type()), *this);
 }
 
 }  // namespace omm

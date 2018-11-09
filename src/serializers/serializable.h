@@ -19,12 +19,6 @@ public:
   virtual void serialize(AbstractSerializer&, const Pointer&) const = 0;
   virtual void deserialize(AbstractDeserializer&, const Pointer&) = 0;
 
-  template<typename T, typename Deserializer, typename Serializer>
-  std::unique_ptr<T> copy() const
-  {
-    return nullptr;
-  }
-
 
   template<typename PointerT> static auto make_pointer(const PointerT& pointer)
   {
@@ -40,13 +34,29 @@ public:
     }
   }
 
-
   template<typename PointerT, typename... PointerTs>
   static auto make_pointer(const PointerT& pointer, const PointerTs&... pointers)
   {
     std::string lhs = make_pointer<PointerT>(pointer);
     std::string rhs = make_pointer<PointerTs...>(pointers...);
     return lhs + rhs;
+  }
+
+protected:
+  template<typename T, typename Serializer, typename Deserializer>
+  static std::unique_ptr<T> copy(std::unique_ptr<T> copy, const T& self)
+  {
+    static constexpr auto POINTER = "copy";
+    std::stringstream stream;
+    {
+      Serializer serializer(stream);
+      self.serialize(serializer, POINTER);
+    }
+    {
+      Deserializer deserializer(stream);
+      copy->deserialize(deserializer, POINTER);
+    }
+    return copy;
   }
 };
 
