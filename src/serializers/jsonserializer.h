@@ -9,7 +9,8 @@ namespace omm
 class JSONSerializer : public AbstractSerializer
 {
 public:
-  std::ostream& serialize(const Scene& scene, std::ostream& ostream) override;
+  explicit JSONSerializer(std::ostream& ostream);
+  ~JSONSerializer();
 
   void start_array(size_t size, const Pointer& pointer) override;
   void end_array() override;
@@ -18,17 +19,17 @@ public:
   void set_value(const std::string& value, const Pointer& pointer) override;
   void set_value(const ObjectTransformation& value, const Pointer& pointer) override;
   void set_value(const Object* value, const Pointer& pointer) override;
-
   std::string type() const override;
 
 private:
   nlohmann::json m_store;
+  std::ostream& m_ostream;
 };
 
 class JSONDeserializer : public AbstractDeserializer
 {
 public:
-  std::istream& deserialize(Scene& scene, std::istream& istream) override;
+  explicit JSONDeserializer(std::istream& istream);
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
   size_t array_size(const Pointer& pointer) override;

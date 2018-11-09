@@ -289,11 +289,6 @@ std::ostream& operator<<(std::ostream& ostream, const Object& object)
   return ostream;
 }
 
-std::unique_ptr<Object> Object::copy() const
-{
-  return nullptr;
-}
-
 std::string Object::type() const
 {
   return "Object";
@@ -349,5 +344,9 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   // }
 }
 
+std::unique_ptr<Object> Object::copy() const
+{
+  return nullptr;
+}
 
 }  // namespace omm

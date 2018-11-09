@@ -14,8 +14,17 @@ class Serializable
 {
 public:
   using Pointer = std::string;
+  using ByteArray = std::vector<char>;
+
   virtual void serialize(AbstractSerializer&, const Pointer&) const = 0;
   virtual void deserialize(AbstractDeserializer&, const Pointer&) = 0;
+
+  template<typename T, typename Deserializer, typename Serializer>
+  std::unique_ptr<T> copy() const
+  {
+    return nullptr;
+  }
+
 
   template<typename PointerT> static auto make_pointer(const PointerT& pointer)
   {

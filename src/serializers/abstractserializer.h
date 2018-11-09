@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iosfwd>
-#include <sstream>
 #include "abstractfactory.h"
 #include "properties/propertymap.h"
 #include "serializers/serializable.h"
@@ -13,11 +12,13 @@ class ObjectTransformation;
 class Object;
 class Scene;
 
-class AbstractSerializer : public AbstractFactory<std::string, AbstractSerializer>
+class AbstractSerializer
+  : public AbstractFactory<std::string, AbstractSerializer, std::ostream&>
 {
 public:
   using Pointer = Serializable::Pointer;
-  virtual std::ostream& serialize(const Scene& scene, std::ostream& ostream) = 0;
+  explicit AbstractSerializer(std::ostream& stream);
+  virtual ~AbstractSerializer();
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
   virtual void start_array(size_t size, const Pointer& pointer) = 0;
@@ -29,15 +30,15 @@ public:
   virtual void set_value(const Object* value, const Pointer& pointer) = 0;
 
   static void register_serializers();
-
-  static constexpr auto ROOT_POINTER = "root";
 };
 
-class AbstractDeserializer : public AbstractFactory<std::string, AbstractDeserializer>
+class AbstractDeserializer
+  : public AbstractFactory<std::string, AbstractDeserializer, std::istream&>
 {
 public:
   using Pointer = Serializable::Pointer;
-  virtual std::istream& deserialize(Scene& scene, std::istream& istream) = 0;
+  explicit AbstractDeserializer(std::istream& stream);
+  virtual ~AbstractDeserializer();
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
   virtual size_t array_size(const Pointer& pointer) = 0;
@@ -53,7 +54,6 @@ public:
   {
 
   };
-
 };
 
 }  // namespace omm

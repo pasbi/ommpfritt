@@ -10,6 +10,13 @@
 #include "serializers/abstractserializer.h"
 #include "commands/command.h"
 
+namespace
+{
+
+constexpr auto ROOT_POINTER = "root";
+
+}
+
 namespace omm
 {
 
@@ -111,7 +118,8 @@ bool Scene::save_as(const std::string &filename)
 {
   std::ofstream ofstream(filename);
   if (ofstream) {
-    AbstractSerializer::make("JSONSerializer")->serialize(*this, ofstream);
+    auto serializer = AbstractSerializer::make("JSONSerializer", static_cast<std::ostream&>(ofstream));
+    root().serialize(*serializer, ROOT_POINTER);
 
     LOG(INFO) << "Saved current scene to '" << filename << "'";
     set_has_pending_changes(false);
@@ -127,7 +135,8 @@ bool Scene::load_from(const std::string &filename)
 {
   std::ifstream ifstream(filename);
   if (ifstream) {
-    AbstractDeserializer::make("JSONDeserializer")->deserialize(*this, ifstream);
+    auto deserializer = AbstractDeserializer::make("JSONDeserializer", static_cast<std::istream&>(ifstream));
+    root().deserialize(*deserializer, ROOT_POINTER);
 
     // TODO load aux_scene. If no error occured, swap with m_scene.
 
@@ -178,6 +187,5 @@ std::unique_ptr<Object> Scene::replace_root(std::unique_ptr<Object> new_root)
   m_root = std::move(new_root);
   return old_root;
 }
-
 
 }  // namespace omm

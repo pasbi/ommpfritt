@@ -13,17 +13,13 @@
 namespace omm
 {
 
-std::ostream& AbstractSerializer::serialize(const Scene& scene, std::ostream& ostream)
+
+AbstractSerializer::AbstractSerializer(std::ostream& stream)
 {
-  scene.root().serialize(*this, ROOT_POINTER);
-  return ostream;
 }
 
-std::istream& AbstractDeserializer::deserialize(Scene& scene, std::istream& istream)
+AbstractSerializer::~AbstractSerializer()
 {
-  // load data in overridden function
-  scene.root().deserialize(*this, AbstractSerializer::ROOT_POINTER);
-  return istream;
 }
 
 void AbstractSerializer::register_serializers()
@@ -31,6 +27,15 @@ void AbstractSerializer::register_serializers()
 #define REGISTER_SERIALIZER(TYPE) AbstractSerializer::register_type<TYPE>(#TYPE);
   REGISTER_SERIALIZER(JSONSerializer);
 #undef REGISTER_SERIALIZER
+}
+
+
+AbstractDeserializer::AbstractDeserializer(std::istream& stream)
+{
+}
+
+AbstractDeserializer::~AbstractDeserializer()
+{
 }
 
 void AbstractDeserializer::register_deserializers()

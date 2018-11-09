@@ -18,15 +18,19 @@ auto ptr(const omm::Serializable::Pointer& pointer)
 namespace omm
 {
 
-std::ostream& JSONSerializer::serialize(const Scene& scene, std::ostream& ostream)
+JSONSerializer::JSONSerializer(std::ostream& ostream)
+  : AbstractSerializer(ostream)
+  , m_ostream(ostream)
 {
-  AbstractSerializer::serialize(scene, ostream);
+}
+
+JSONSerializer::~JSONSerializer()
+{
 #ifdef NDEBUG
-  ostream << m_store;
+  m_ostream << m_store;
 #else
-  ostream << std::setw(4) << m_store;
+  m_ostream << std::setw(4) << m_store;
 #endif
-  return ostream;
 }
 
 void JSONSerializer::start_array(size_t size, const Pointer& pointer)
@@ -75,13 +79,13 @@ std::string JSONSerializer::type() const
   return "JSONSerializer";
 }
 
-std::istream& JSONDeserializer::deserialize(Scene& scene, std::istream& istream)
+
+
+JSONDeserializer::JSONDeserializer(std::istream& istream)
+  : AbstractDeserializer(istream)
 {
   istream >> m_store;
-  AbstractDeserializer::deserialize(scene, istream);
-  return istream;
 }
-
 
 size_t JSONDeserializer::array_size(const Pointer& pointer)
 {
