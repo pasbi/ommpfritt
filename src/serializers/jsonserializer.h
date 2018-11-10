@@ -18,7 +18,7 @@ public:
   void set_value(double value, const Pointer& pointer) override;
   void set_value(const std::string& value, const Pointer& pointer) override;
   void set_value(const ObjectTransformation& value, const Pointer& pointer) override;
-  void set_value(const Object* value, const Pointer& pointer) override;
+  void set_value(const Serializable::IdType& id, const Pointer& pointer) override;
   std::string type() const override;
 
 private:
@@ -37,7 +37,7 @@ public:
   double  get_double(const Pointer& pointer) override;
   std::string  get_string(const Pointer& pointer) override;
   ObjectTransformation get_object_transformation(const Pointer& pointer) override;
-  Object* get_object_reference(const Pointer& pointer) override;
+  Serializable::IdType get_id(const Pointer& pointer) override;
 
   std::string type() const override;
 

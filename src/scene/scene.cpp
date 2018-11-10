@@ -14,6 +14,10 @@ namespace
 {
 
 constexpr auto ROOT_POINTER = "root";
+std::unique_ptr<omm::Object> make_root()
+{
+  return std::make_unique<omm::Object>();
+}
 
 }
 
@@ -23,7 +27,7 @@ namespace omm
 Scene* Scene::m_current = nullptr;
 
 Scene::Scene()
-  : m_root(std::make_unique<Object>())
+  : m_root(make_root())
 {
   m_root->property<std::string>(Object::NAME_PROPERTY_KEY).value() = "_root_";
   m_current = this;
@@ -118,7 +122,8 @@ bool Scene::save_as(const std::string &filename)
 {
   std::ofstream ofstream(filename);
   if (ofstream) {
-    auto serializer = AbstractSerializer::make("JSONSerializer", static_cast<std::ostream&>(ofstream));
+    auto serializer = AbstractSerializer::make( "JSONSerializer",
+                                                static_cast<std::ostream&>(ofstream) );
     root().serialize(*serializer, ROOT_POINTER);
 
     LOG(INFO) << "Saved current scene to '" << filename << "'";
@@ -135,10 +140,17 @@ bool Scene::load_from(const std::string &filename)
 {
   std::ifstream ifstream(filename);
   if (ifstream) {
-    auto deserializer = AbstractDeserializer::make("JSONDeserializer", static_cast<std::istream&>(ifstream));
-    root().deserialize(*deserializer, ROOT_POINTER);
-
-    // TODO load aux_scene. If no error occured, swap with m_scene.
+    auto deserializer = AbstractDeserializer::make( "JSONDeserializer",
+                                                    static_cast<std::istream&>(ifstream) );
+    try {
+      auto new_root = make_root();
+      new_root->deserialize(*deserializer, ROOT_POINTER);
+      replace_root(std::move(new_root));
+    } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
+      LOG(ERROR) << "Failed to deserialize file at '" << filename << "'.";
+      LOG(INFO) << deserialize_error.what();
+      return false;
+    }
 
     set_has_pending_changes(false);
     m_filename = filename;
@@ -152,7 +164,7 @@ bool Scene::load_from(const std::string &filename)
 void Scene::reset()
 {
   set_has_pending_changes(false);
-  //
+  replace_root(make_root());
 }
 
 std::string Scene::filename() const

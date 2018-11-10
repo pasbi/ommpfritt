@@ -45,6 +45,7 @@ Property& Property::set_category(const std::string& category)
 
 void Property::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
+  Serializable::serialize(serializer, root);
   serializer.set_value(m_label, make_pointer(root, "label"));
   serializer.set_value(m_category, make_pointer(root, "category"));
 }
@@ -52,6 +53,7 @@ void Property::serialize(AbstractSerializer& serializer, const Pointer& root) co
 void Property
 ::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
+  Serializable::deserialize(deserializer, root);
   m_label = deserializer.get_string(make_pointer(root, "label"));
   m_category = deserializer.get_string(make_pointer( root, "category" ));
 }
@@ -64,7 +66,7 @@ void Property::register_properties()
   REGISTER_PROPERTY(FloatProperty);
   REGISTER_PROPERTY(StringProperty);
   REGISTER_PROPERTY(TransformationProperty);
-  // REGISTER_PROPERTY(ReferenceProperty);
+  REGISTER_PROPERTY(ReferenceProperty);
 
 #undef REGISTER_PROPERTY
 }

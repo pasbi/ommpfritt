@@ -37,14 +37,6 @@ public:
 
   std::string type() const override = 0;
 
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override
-  {
-    Property::serialize(serializer, root);
-    serializer.set_value(m_value, make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
-    serializer.set_value( m_default_value,
-                          make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
-  }
-
 private:
   ValueT m_value;
   ValueT m_default_value;

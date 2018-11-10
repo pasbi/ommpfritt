@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iosfwd>
+#include <unordered_map>
+
 #include "abstractfactory.h"
 #include "properties/propertymap.h"
 #include "serializers/serializable.h"
@@ -9,8 +11,8 @@ namespace omm
 {
 
 class ObjectTransformation;
-class Object;
 class Scene;
+class ReferenceProperty;
 
 class AbstractSerializer
   : public AbstractFactory<std::string, AbstractSerializer, std::ostream&>
@@ -27,8 +29,7 @@ public:
   virtual void set_value(double value, const Pointer& pointer) = 0;
   virtual void set_value(const std::string& value, const Pointer& pointer) = 0;
   virtual void set_value(const ObjectTransformation& value, const Pointer& pointer) = 0;
-  virtual void set_value(const Object* value, const Pointer& pointer) = 0;
-
+  virtual void set_value(const Serializable::IdType& id, const Pointer& pointer) = 0;
   static void register_serializers();
 };
 
@@ -46,14 +47,26 @@ public:
   virtual double  get_double(const Pointer& pointer) = 0;
   virtual std::string  get_string(const Pointer& pointer) = 0;
   virtual ObjectTransformation get_object_transformation(const Pointer& pointer) = 0;
-  virtual Object* get_object_reference(const Pointer& pointer) = 0;
+  virtual Serializable::IdType get_id(const Pointer& pointer) = 0;
+
+  void register_reference(const Serializable::IdType& id, Serializable& reference);
+  void register_reference_property( ReferenceProperty& reference_property,
+                                    const Serializable::IdType& id );
 
   static void register_deserializers();
 
   class DeserializeError : public std::runtime_error
   {
-
+  public:
+    using runtime_error::runtime_error;
   };
+
+private:
+  // maps old stored hash to new ref
+  std::unordered_map<Serializable::IdType, Serializable*> m_id_to_reference;
+
+  // maps new property to old hash
+  std::unordered_map<ReferenceProperty*, Serializable::IdType> m_reference_property_to_id;
 };
 
 }  // namespace omm

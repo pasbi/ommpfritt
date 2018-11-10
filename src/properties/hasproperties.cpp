@@ -37,6 +37,7 @@ Property& HasProperties::property(const Key& key) const
 
 void HasProperties::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
+  Serializable::serialize(serializer, root);
   const auto properties_pointer = make_pointer(root, PROPERTIES_POINTER);
   serializer.start_array(m_properties.size(), properties_pointer);
   for (size_t i = 0; i < m_properties.size(); ++i) {
@@ -52,6 +53,7 @@ void HasProperties::serialize(AbstractSerializer& serializer, const Pointer& roo
 
 void HasProperties::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
+  Serializable::deserialize(deserializer, root);
   const auto properties_pointer = make_pointer(root, PROPERTIES_POINTER);
   size_t n_properties = deserializer.array_size(properties_pointer);
   for (size_t i = 0; i < n_properties; ++i) {
