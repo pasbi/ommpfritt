@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <memory>
+#include <vector>
 
 /*
  * passes ownership of `object` to `consumer` and returns a reference to `object`
@@ -13,11 +14,21 @@ template<typename T, typename F> T& transfer(std::unique_ptr<T> object, F consum
   return ref;
 }
 
+template<typename T, template<typename...> class Container> void reserve(Container<T>& c, size_t)
+{
+  // for most containers, reserving is a no op.
+}
+
+template<typename T> void reserve(std::vector<T>& c, size_t n)
+{
+  c.reserve(n);
+}
+
 template<typename T, typename S, template<typename...> class Container, typename F>
 auto transform(const Container<S>& ss, F&& mapper)
 {
   Container<T> ts;
-  ts.reserve(ss.size());
+  reserve(ts, ss.size());
   std::transform( std::begin(ss), std::end(ss),
                   std::inserter(ts, std::end(ts)), std::forward<F>(mapper) );
   return ts;
@@ -28,7 +39,7 @@ template< typename T, template<typename...> class ContainerT,
 auto transform(const ContainerS<S>& ss, F&& mapper)
 {
   ContainerT<T> ts;
-  ts.reserve(ss.size());
+  reserve(ts, ss.size());
   std::transform( std::begin(ss), std::end(ss),
                   std::inserter(ts, std::end(ts)), std::forward<F>(mapper) );
   return ts;

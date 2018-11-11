@@ -50,18 +50,12 @@ public:
   const Object* predecessor() const;
   size_t get_insert_position(const Object* child_before_position) const;
 
-  std::unordered_set<HasProperties*> get_selected_children_and_tags();
+  std::set<HasProperties*> get_selected_children_and_tags();
 
   void reset_parent(Object& new_parent);
 
-  static ObjectTransformation translation(const double& dx, const double dy);
-  static ObjectTransformation rotation(const double& r);
-  static ObjectTransformation scalation(const double& sx, const double sy);
-  static ObjectTransformation identity();
-
   static const std::string TRANSFORMATION_PROPERTY_KEY;
   static const std::string NAME_PROPERTY_KEY;
-  static const std::string THE_ANSWER_KEY;
 
   static void register_objects();
   std::string type() const override;

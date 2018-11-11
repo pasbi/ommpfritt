@@ -23,7 +23,7 @@ public:
   explicit PropertyManager(Scene& scene);
   ~PropertyManager();
 
-  void set_selection(const std::unordered_set<HasProperties*>& selection) override;
+  void set_selection(const std::set<HasProperties*>& selection) override;
   PropertyView property(const HasProperties::Key& key);
   void clear();
 

@@ -22,7 +22,7 @@ private:
   void set_default_value(const ReferenceType& value) override;
 
 private:
-  static std::unordered_set<ReferenceType> m_references;
+  static std::set<ReferenceType> m_references;
 };
 
 }  // namespace omm

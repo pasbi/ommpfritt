@@ -14,8 +14,10 @@ class StringPropertyWidget::LineEdit : public QLineEdit, public MultiValueEdit<s
 public:
   explicit LineEdit();
   void set_value(const value_type& value) override;
-  void set_inconsistent_value() override;
   value_type value() const override;
+
+protected:
+  void set_inconsistent_value() override;
 };
 
 StringPropertyWidget::LineEdit::LineEdit()
@@ -48,9 +50,7 @@ StringPropertyWidget::StringPropertyWidget(const SetOfProperties& properties)
   set_default_layout(std::move(line_edit));
 
   connect(m_line_edit, &QLineEdit::textChanged, [this](const QString& text) {
-    for (auto property : m_properties) {
-      property->set_value(text.toStdString());
-    }
+    set_properties_value(text.toStdString());
   });
 
   on_value_changed();
@@ -58,9 +58,7 @@ StringPropertyWidget::StringPropertyWidget(const SetOfProperties& properties)
 
 void StringPropertyWidget::on_value_changed()
 {
-  m_line_edit->set_values(
-    ::transform<std::string>(m_properties, [](auto property) { return property->value(); })
-  );
+  m_line_edit->set_values(get_properties_values());
 }
 
 std::string StringPropertyWidget::type() const

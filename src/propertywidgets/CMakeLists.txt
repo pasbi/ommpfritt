@@ -1,6 +1,8 @@
 file (GLOB SOURCES
+  "abstracttransformationedit.cpp"
+  "numericpropertywidget.cpp"
   "propertywidget.cpp"
-  "integerpropertywidget.cpp"
+  "spinboxtransformationedit.cpp"
   "stringpropertywidget.cpp"
   "transformationpropertywidget.cpp"
 )

@@ -12,7 +12,7 @@ namespace
 {
 
 using Key = omm::HasProperties::Key;
-using SetOfHasProperties = std::unordered_set<omm::HasProperties*>;
+using SetOfHasProperties = std::set<omm::HasProperties*>;
 using SetOfProperties = omm::AbstractPropertyWidget::SetOfProperties;
 
 std::vector<Key>
@@ -66,8 +66,7 @@ void split_key(const std::string& key, std::string& tab_name, std::string& prope
 auto collect_properties( const omm::HasProperties::Key& key,
                          const SetOfHasProperties& selection )
 {
-  std::unordered_set<omm::Property*> collection;
-  collection.reserve(selection.size());
+  std::set<omm::Property*> collection;
   const auto f = [key](omm::HasProperties* entity) {
     return &entity->property(key);
   };
@@ -130,7 +129,9 @@ void PropertyManager::set_selection(const SetOfHasProperties& selection)
   }
 
   for (auto&& tab_label : tabs.keys()) {
-    m_tabs.addTab(tabs.at(tab_label).release(), QString::fromStdString(tab_label));
+    auto& tab = tabs.at(tab_label);
+    tab->end_add_properties();
+    m_tabs.addTab(tab.release(), QString::fromStdString(tab_label));
   }
 }
 

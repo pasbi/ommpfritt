@@ -12,6 +12,7 @@ class StringPropertyWidget : public PropertyWidget<std::string>
 {
 public:
   explicit StringPropertyWidget(const SetOfProperties& properties);
+
 protected:
   void on_value_changed() override;
   std::string type() const override;

@@ -3,7 +3,6 @@
 #include <pybind11/embed.h>
 #include <string>
 #include <typeinfo>
-#include <unordered_set>
 #include <glog/logging.h>
 
 #include "objects/objecttransformation.h" //TODO remove that include

@@ -5,13 +5,18 @@
 namespace omm
 {
 
+class AbstractTransformationEdit;
+
 class TransformationPropertyWidget : public PropertyWidget<ObjectTransformation>
 {
 public:
-  using PropertyWidget<ObjectTransformation>::PropertyWidget;
-protected:
-  void on_value_changed() override {}
+  explicit TransformationPropertyWidget(const SetOfProperties& properties);
   std::string type() const override;
+
+protected:
+  void on_value_changed() override;
+
+  AbstractTransformationEdit* m_transformation_edit;
 };
 
 }  // namespace omm

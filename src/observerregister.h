@@ -1,6 +1,6 @@
 #pragma once
 
-#include <unordered_set>
+#include <set>
 
 template<typename ObserverT> class ObserverRegister
 {
@@ -23,5 +23,5 @@ public:
   }
 
 private:
-  std::unordered_set<ObserverT*> m_observers;
+  std::set<ObserverT*> m_observers;
 };

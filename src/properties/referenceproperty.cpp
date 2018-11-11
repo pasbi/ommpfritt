@@ -4,7 +4,7 @@
 namespace omm
 {
 
-std::unordered_set<ReferenceProperty::ReferenceType> ReferenceProperty::m_references;
+std::set<ReferenceProperty::ReferenceType> ReferenceProperty::m_references;
 
 ReferenceProperty::ReferenceProperty()
   : TypedProperty(nullptr)

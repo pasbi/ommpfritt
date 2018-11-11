@@ -4,14 +4,14 @@
 #include <QLayout>
 #include <glog/logging.h>
 #include "properties/typedproperty.h"
-#include "propertywidgets/integerpropertywidget.h"
+#include "propertywidgets/numericpropertywidget.h"
 #include "propertywidgets/stringpropertywidget.h"
 #include "propertywidgets/objecttransformationpropertywidget.h"
 
 namespace
 {
 
-std::string get_property_index(const std::unordered_set<omm::Property*>& properties)
+std::string get_property_index(const std::set<omm::Property*>& properties)
 {
   assert(properties.size() > 0);
   const auto type = (*properties.begin())->type();
@@ -30,7 +30,9 @@ namespace omm
 
 PropertyManagerTab::PropertyManagerTab()
 {
-  setLayout(new QVBoxLayout());
+  auto layout = std::make_unique<QVBoxLayout>();
+  m_layout = layout.get();
+  setLayout(layout.release());
 }
 
 void PropertyManagerTab::add_properties(const AbstractPropertyWidget::SetOfProperties& properties)
@@ -38,7 +40,12 @@ void PropertyManagerTab::add_properties(const AbstractPropertyWidget::SetOfPrope
   assert(properties.size() > 0);
   const auto widget_type = (*properties.begin())->widget_type();
   auto widget = AbstractPropertyWidget::make(widget_type, properties);
-  layout()->addWidget(widget.release());
+  m_layout->addWidget(widget.release());
+}
+
+void PropertyManagerTab::end_add_properties()
+{
+  m_layout->addStretch();
 }
 
 }  // namespace omm

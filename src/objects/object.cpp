@@ -10,6 +10,7 @@
 #include "properties/transformationproperty.h"
 #include "properties/stringproperty.h"
 #include "properties/integerproperty.h"
+#include "properties/floatproperty.h"
 #include "common.h"
 #include "serializers/jsonserializer.h"
 
@@ -52,14 +53,13 @@ namespace omm
 
 const std::string Object::TRANSFORMATION_PROPERTY_KEY = "transformation";
 const std::string Object::NAME_PROPERTY_KEY = "name";
-const std::string Object::THE_ANSWER_KEY = "ans";
 
 Object::Object()
   : m_parent(nullptr)
 {
 
   add_property( TRANSFORMATION_PROPERTY_KEY,
-                std::make_unique<TransformationProperty>(Object::identity()) )
+                std::make_unique<TransformationProperty>(ObjectTransformation::identity()) )
     .set_label(QObject::tr("transformation").toStdString())
     .set_category(QObject::tr("object").toStdString());
 
@@ -68,10 +68,15 @@ Object::Object()
     .set_label(QObject::tr("Name").toStdString())
     .set_category(QObject::tr("object").toStdString());
 
-  add_property( THE_ANSWER_KEY,
+  add_property( "ans",
                 std::make_unique<IntegerProperty>(42) )
     .set_label(QObject::tr("The Answer").toStdString())
     .set_category(QObject::tr("special").toStdString());
+
+  add_property( "pi",
+                std::make_unique<FloatProperty>(3.141) )
+    .set_label(QObject::tr("pi").toStdString())
+    .set_category(QObject::tr("object").toStdString());
 
 }
 
@@ -107,7 +112,7 @@ void Object::set_global_transformation(const ObjectTransformation& global_transf
     local_transformation = global_transformation;
   } else {
     try {
-      local_transformation = parent().global_transformation().i() * global_transformation;
+      local_transformation = parent().global_transformation().inverted() * global_transformation;
     } catch (const std::runtime_error& e) {
       assert(false);
     }
@@ -176,39 +181,6 @@ void Object::reset_parent(Object& new_parent)
   new_parent.adopt(m_parent->repudiate(*this));
 }
 
-ObjectTransformation Object::translation(const double& dx, const double dy)
-{
-  ObjectTransformation t = identity();
-  t.at(0, 2) = dx;
-  t.at(1, 2) = dy;
-  return t;
-}
-
-ObjectTransformation Object::rotation(const double& alpha)
-{
-  ObjectTransformation t = identity();
-  t.at(0, 0) = cos(alpha);
-  t.at(1, 1) = t.at(0, 0);
-  t.at(0, 1) = sin(alpha);
-  t.at(1, 0) = -t.at(0, 1);
-  return t;
-}
-
-ObjectTransformation Object::scalation(const double& sx, const double sy)
-{
-  ObjectTransformation t = identity();
-  t.at(0, 0) = sx;
-  t.at(1, 1) = sy;
-  return t;
-}
-
-ObjectTransformation Object::identity()
-{
-  ObjectTransformation t;
-  t.eye();
-  return t;
-}
-
 ObjectRefs Object::children() const
 {
   static const auto f = [](const std::unique_ptr<Object>& uptr) {
@@ -227,9 +199,9 @@ Object& Object::child(size_t i) const
   return *m_children[i];
 }
 
-std::unordered_set<HasProperties*> Object::get_selected_children_and_tags()
+std::set<HasProperties*> Object::get_selected_children_and_tags()
 {
-  std::unordered_set<HasProperties*> selection;
+  std::set<HasProperties*> selection;
 
   if (is_selected()) {
     selection.insert(this);

@@ -95,7 +95,7 @@ void JSONSerializer::set_value(const ObjectTransformation& value, const Pointer&
   for (size_t i_row = 0; i_row < ObjectTransformation::N_ROWS; ++i_row) {
     auto& row = matrix_json[i_row];
     for (size_t i_col = 0; i_col < ObjectTransformation::N_COLS; ++i_col) {
-      row[i_col] = value(i_row, i_col);
+      row[i_col] = value.element(i_row, i_col);
     }
   }
 }
@@ -146,7 +146,7 @@ ObjectTransformation JSONDeserializer::get_object_transformation(const Pointer& 
   for (size_t i_row = 0; i_row < ObjectTransformation::N_ROWS; ++i_row) {
     for (size_t i_col = 0; i_col < ObjectTransformation::N_COLS; ++i_col) {
       const auto element_pointer = Serializable::make_pointer(pointer, i_row, i_col);
-      transformation(i_row, i_col) = get_t<double>(m_store, element_pointer);
+      transformation.set_element(i_row, i_col, get_t<double>(m_store, element_pointer));
     }
   }
   return transformation;

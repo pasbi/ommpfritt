@@ -3,7 +3,7 @@
 #include <map>
 #include <memory>
 #include <vector>
-#include <unordered_set>
+#include <set>
 #include <stdint.h>
 #include <QAbstractItemModel>
 #include <QUndoStack>
@@ -35,7 +35,7 @@ protected:
 class AbstractPropertyObserver
 {
 protected:
-  virtual void set_selection(const std::unordered_set<HasProperties*>& selection) = 0;
+  virtual void set_selection(const std::set<HasProperties*>& selection) = 0;
   friend class Scene;
 };
 
