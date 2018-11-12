@@ -11,7 +11,7 @@ namespace omm
 class StringPropertyWidget : public PropertyWidget<std::string>
 {
 public:
-  explicit StringPropertyWidget(const SetOfProperties& properties);
+  explicit StringPropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
 
 protected:
   void on_value_changed() override;

@@ -50,6 +50,7 @@ private:
 std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t);
 bool operator<(const ObjectTransformation& a, const ObjectTransformation& b);
 bool operator==(const ObjectTransformation& a, const ObjectTransformation& b);
+bool operator!=(const ObjectTransformation& a, const ObjectTransformation& b);
 ObjectTransformation operator*(const ObjectTransformation& a, const ObjectTransformation& b);
 
 }  // namespace omm

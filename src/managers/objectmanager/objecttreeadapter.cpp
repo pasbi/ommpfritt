@@ -272,12 +272,12 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
     switch (action) {
     case Qt::MoveAction: {
       auto move_contextes = make_contextes<MoveObjectTreeContext>(*this, data, row, parent);
-      m_scene.submit<MoveObjectsCommand>(move_contextes);
+      m_scene.submit<MoveObjectsCommand>(m_scene, move_contextes);
       break;
     }
     case Qt::CopyAction: {
       auto copy_contextes = make_contextes<OwningObjectTreeContext>(*this, data, row, parent);
-      m_scene.submit<CopyObjectsCommand>(std::move(copy_contextes));
+      m_scene.submit<CopyObjectsCommand>(m_scene, std::move(copy_contextes));
       break;
     }
     }

@@ -10,8 +10,7 @@ template<typename T>
 class NumericPropertyWidget : public PropertyWidget<T>
 {
 public:
-  using SetOfProperties = typename PropertyWidget<T>::SetOfProperties;
-  explicit NumericPropertyWidget(const SetOfProperties& properties);
+  explicit NumericPropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
 
 protected:
   void on_value_changed() override;

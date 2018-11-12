@@ -82,7 +82,8 @@ ObjectRefs ObjectTreeView::selection() const
 
 void ObjectTreeView::remove_selected() const
 {
-  model().scene().submit<RemoveObjectsCommand>(selection());
+  Scene& scene = model().scene();
+  scene.submit<RemoveObjectsCommand>(scene, selection());
 }
 
 

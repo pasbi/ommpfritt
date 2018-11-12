@@ -19,23 +19,24 @@ namespace omm
 
 MoveObjectsCommand
 ::MoveObjectsCommand(Scene& scene, const std::vector<MoveObjectTreeContext>& new_contextes)
-  : Command(scene, QObject::tr("reparent").toStdString())
+  : Command(QObject::tr("reparent").toStdString())
   , m_old_contextes(::transform<MoveObjectTreeContext>(new_contextes, make_old_context))
   , m_new_contextes(new_contextes)
+  , m_scene(scene)
 {
 }
 
 void MoveObjectsCommand::redo()
 {
   for (const auto& context : m_new_contextes) {
-    scene.move_object(context);
+    m_scene.move_object(context);
   }
 }
 
 void MoveObjectsCommand::undo()
 {
   for (auto&& it = m_old_contextes.crbegin(); it != m_old_contextes.crend(); ++it) {
-    scene.move_object(*it);
+    m_scene.move_object(*it);
   }
 }
 

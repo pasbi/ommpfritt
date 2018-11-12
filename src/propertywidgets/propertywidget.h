@@ -3,6 +3,8 @@
 #include <QWidget>
 #include "properties/typedproperty.h"
 #include "common.h"
+#include "scene/scene.h"
+#include "commands/propertycommand.h"
 
 namespace omm
 {
@@ -10,11 +12,10 @@ namespace omm
 class AbstractPropertyWidget
   : public QWidget
   , public AbstractFactory< std::string, AbstractPropertyWidget,
-                            const std::set<Property*>& >
+                            Scene&, const Property::SetOfProperties& >
 {
 public:
-  using SetOfProperties = std::set<Property*>;
-  explicit AbstractPropertyWidget(const SetOfProperties& properties);
+  explicit AbstractPropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
   virtual ~AbstractPropertyWidget();
   static void register_propertywidgets();
 
@@ -22,35 +23,21 @@ protected:
   virtual std::string label() const;
   void set_default_layout(std::unique_ptr<QWidget> other);
   std::unique_ptr<QWidget> make_label_widget() const;
+  Scene& scene() const { return m_scene; }
 
 private:
   const std::string m_label;
+  Scene& m_scene;
 };
-
-namespace detail
-{
-
-template<typename ValueT>
-auto cast_all(const AbstractPropertyWidget::SetOfProperties& properties)
-{
-  return transform< omm::TypedProperty<ValueT>*,
-                    omm::Property*,
-                    std::set
-                    >(properties, [](omm::Property* property) {
-    return &property->cast<ValueT>();
-  });
-}
-
-}
 
 template<typename ValueT>
 class PropertyWidget : public AbstractPropertyWidget, public AbstractTypedPropertyObserver
 {
 public:
   using property_type = TypedProperty<ValueT>;
-  explicit PropertyWidget(const SetOfProperties& properties)
-    : AbstractPropertyWidget(properties)
-    , m_properties(detail::cast_all<ValueT>(properties))
+  explicit PropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
+    : AbstractPropertyWidget(scene, properties)
+    , m_properties(Property::cast_all<ValueT>(properties))
   {
     for (auto&& property : m_properties) {
       property->ObserverRegister<AbstractTypedPropertyObserver>::register_observer(*this);
@@ -67,9 +54,7 @@ public:
 protected:
   void set_properties_value(const ValueT& value)
   {
-    for (auto property : m_properties) {
-      property->set_value(value);
-    }
+    scene().submit<PropertiesCommand<ValueT>>(m_properties, value);
   }
 
   auto get_properties_values() const

@@ -10,7 +10,7 @@ class AbstractTransformationEdit;
 class TransformationPropertyWidget : public PropertyWidget<ObjectTransformation>
 {
 public:
-  explicit TransformationPropertyWidget(const SetOfProperties& properties);
+  explicit TransformationPropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
   std::string type() const override;
 
 protected:

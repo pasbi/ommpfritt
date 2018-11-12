@@ -8,9 +8,8 @@
 namespace omm
 {
 
-Command::Command(Scene& sceneX, const std::string& label)
+Command::Command(const std::string& label)
   : QUndoCommand(QString::fromStdString(label))
-  , scene(sceneX)
 {
 }
 

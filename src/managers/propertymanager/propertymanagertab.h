@@ -8,13 +8,14 @@ class QVBoxLayout;
 namespace omm
 {
 
+class Scene;
 class Property;
 
 class PropertyManagerTab : public QWidget
 {
 public:
   explicit PropertyManagerTab();
-  void add_properties(const std::set<Property*>& properties);
+  void add_properties(Scene& scene, const std::set<Property*>& properties);
   void end_add_properties();
 
 private:

@@ -17,6 +17,7 @@ public:
 
 private:
   std::vector<OwningObjectTreeContext> m_contextes;
+  Scene& m_scene;
 };
 
 }  // namespace

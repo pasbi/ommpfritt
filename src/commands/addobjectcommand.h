@@ -20,6 +20,7 @@ public:
 private:
   std::unique_ptr<Object> m_owned_object;
   Object& m_object_reference;
+  Scene& m_scene;
 };
 
 }  // namespace omm

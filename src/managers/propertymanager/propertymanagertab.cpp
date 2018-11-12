@@ -35,11 +35,11 @@ PropertyManagerTab::PropertyManagerTab()
   setLayout(layout.release());
 }
 
-void PropertyManagerTab::add_properties(const AbstractPropertyWidget::SetOfProperties& properties)
+void PropertyManagerTab::add_properties(Scene& scene, const Property::SetOfProperties& properties)
 {
   assert(properties.size() > 0);
   const auto widget_type = (*properties.begin())->widget_type();
-  auto widget = AbstractPropertyWidget::make(widget_type, properties);
+  auto widget = AbstractPropertyWidget::make(widget_type, scene, properties);
   m_layout->addWidget(widget.release());
 }
 

@@ -42,8 +42,9 @@ StringPropertyWidget::LineEdit::value_type StringPropertyWidget::LineEdit::value
 }
 
 
-StringPropertyWidget::StringPropertyWidget(const SetOfProperties& properties)
-  : PropertyWidget(properties)
+StringPropertyWidget
+::StringPropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
+  : PropertyWidget(scene, properties)
 {
   auto line_edit = std::make_unique<LineEdit>();
   m_line_edit = line_edit.get();
@@ -58,7 +59,9 @@ StringPropertyWidget::StringPropertyWidget(const SetOfProperties& properties)
 
 void StringPropertyWidget::on_value_changed()
 {
+  m_line_edit->blockSignals(true);
   m_line_edit->set_values(get_properties_values());
+  m_line_edit->blockSignals(false);
 }
 
 std::string StringPropertyWidget::type() const

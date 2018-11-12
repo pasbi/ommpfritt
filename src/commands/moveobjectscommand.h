@@ -16,6 +16,7 @@ public:
 private:
   const std::vector<MoveObjectTreeContext> m_new_contextes;
   const std::vector<MoveObjectTreeContext> m_old_contextes;
+  Scene& m_scene;
 };
 
 }  // namespace omm

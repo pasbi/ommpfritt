@@ -37,8 +37,6 @@ AbstractDeserializer::AbstractDeserializer(std::istream& stream)
 
 AbstractDeserializer::~AbstractDeserializer()
 {
-  LOG(INFO) << m_reference_property_to_id.size();
-  LOG(INFO) << m_id_to_reference.size();
   for (const auto& property_id : m_reference_property_to_id) {
     auto* property = property_id.first;
     const auto id = property_id.second;

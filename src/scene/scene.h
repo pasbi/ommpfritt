@@ -73,9 +73,9 @@ public:
   bool load_from(const std::string& filename);
 
   std::string filename() const;
-  template<typename CommandT, typename... Args> void submit(Args... args)
+  template<typename CommandT, typename... Args> void submit(Args&&... args)
   {
-    submit(std::make_unique<CommandT>(*this, std::forward<Args>(args)...));
+    submit(std::make_unique<CommandT>(std::forward<Args>(args)...));
   }
 
   bool has_pending_changes() const;

@@ -71,4 +71,18 @@ void Property::register_properties()
 #undef REGISTER_PROPERTY
 }
 
+std::string Property::get_label(const SetOfProperties& properties)
+{
+  assert(properties.size() > 0);
+  const auto label = (*properties.begin())->label();
+#ifndef NDEBUG
+  for (const auto& property : properties) {
+    if (property->label() != label) {
+      LOG(WARNING) << "Inconsistent label: '" << label << "' != '" << property->label() << "'.";
+    }
+  }
+#endif
+  return label;
+}
+
 }  // namespace omm

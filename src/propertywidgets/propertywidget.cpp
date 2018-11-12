@@ -7,30 +7,13 @@
 #include "propertywidgets/stringpropertywidget.h"
 #include "propertywidgets/transformationpropertywidget.h"
 
-namespace
-{
-
-std::string get_label(const omm::AbstractPropertyWidget::SetOfProperties& properties)
-{
-  assert(properties.size() > 0);
-  const auto label = (*properties.begin())->label();
-#ifndef NDEBUG
-  for (const auto& property : properties) {
-    if (property->label() != label) {
-      LOG(WARNING) << "Inconsistent label: '" << label << "' != '" << property->label() << "'.";
-    }
-  }
-#endif
-  return label;
-}
-
-}  // namespace
-
 namespace omm
 {
 
-AbstractPropertyWidget::AbstractPropertyWidget(const SetOfProperties& properties)
-  : m_label(get_label(properties))
+AbstractPropertyWidget
+::AbstractPropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
+  : m_label(Property::get_label(properties))
+  , m_scene(scene)
 {
 
 }

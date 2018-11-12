@@ -45,6 +45,18 @@ auto transform(const ContainerS<S>& ss, F&& mapper)
   return ts;
 }
 
+template<typename T, template<typename...> class ContainerT, typename F>
+auto is_uniform(const ContainerT<T>& container, F&& mapper = [](const auto& f) { return f; })
+{
+  const auto& first = mapper(*std::begin(container));
+  for (const auto& v : container) {
+    if (mapper(v) != first) {
+      return false;
+    }
+  }
+  return true;
+}
+
 namespace omm
 {
 

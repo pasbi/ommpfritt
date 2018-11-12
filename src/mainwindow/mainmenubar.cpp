@@ -27,7 +27,8 @@ void MainMenuBar::make_create_menu()
 {
   auto& create_menu = *addMenu(tr("&Create"));
   action(create_menu, tr("&empty"), [this]() {
-    m_app.scene().submit<AddObjectCommand>(std::make_unique<Object>());
+    Scene& scene = m_app.scene();
+    scene.submit<AddObjectCommand>(scene, std::make_unique<Object>());
   });
 }
 

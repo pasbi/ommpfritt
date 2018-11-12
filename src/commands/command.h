@@ -11,10 +11,10 @@ class Scene;
 class Command : public QUndoCommand
 {
 protected:
-  Command(Scene& scene, const std::string& label);
+  Command(const std::string& label);
 
-public:
-  Scene& scene;
+protected:
+  static constexpr int PROPERTY_COMMAND_ID = 1;
 };
 
 }  // namespace omm

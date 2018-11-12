@@ -128,15 +128,20 @@ void ObjectTransformation::set_element(int row, int column, double value)
 
 std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t)
 {
-  ostream << "[[" << t.element(0, 0) << t.element(0, 1) << t.element(0, 2) << "],";
-  ostream << " [" << t.element(1, 0) << t.element(1, 1) << t.element(1, 2) << "],";
-  ostream << " [" << t.element(2, 0) << t.element(2, 1) << t.element(2, 2) << "]]";
+  ostream << "[[" << t.element(0, 0) << ", " << t.element(0, 1) << ", " << t.element(0, 2) << "],";
+  ostream << " [" << t.element(1, 0) << ", " << t.element(1, 1) << ", " << t.element(1, 2) << "],";
+  ostream << " [" << t.element(2, 0) << ", " << t.element(2, 1) << ", " << t.element(2, 2) << "]]";
   return ostream;
 }
 
 bool operator==(const ObjectTransformation& lhs, const ObjectTransformation& rhs)
 {
   return arma::all(arma::all(lhs.m_matrix == rhs.m_matrix));
+}
+
+bool operator!=(const ObjectTransformation& lhs, const ObjectTransformation& rhs)
+{
+  return !(lhs == rhs);
 }
 
 bool operator<(const ObjectTransformation& lhs, const ObjectTransformation& rhs)

@@ -52,9 +52,9 @@ protected:
   }
 };
 
-template<typename T>
-NumericPropertyWidget<T>::NumericPropertyWidget(const SetOfProperties& properties)
-  : PropertyWidget<T>(properties)
+template<typename T> NumericPropertyWidget<T>
+::NumericPropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
+  : PropertyWidget<T>(scene, properties)
 {
   auto spinbox = std::make_unique<SpinBox>();
   m_spinbox = spinbox.get();
@@ -69,10 +69,11 @@ NumericPropertyWidget<T>::NumericPropertyWidget(const SetOfProperties& propertie
   on_value_changed();
 }
 
-template<typename T>
-void NumericPropertyWidget<T>::on_value_changed()
+template<typename T> void NumericPropertyWidget<T>::on_value_changed()
 {
+  m_spinbox->blockSignals(true);
   m_spinbox->set_values(NumericPropertyWidget<T>::get_properties_values());
+  m_spinbox->blockSignals(true);
 }
 
 template class NumericPropertyWidget<int>;

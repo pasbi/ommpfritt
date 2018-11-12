@@ -4,12 +4,14 @@
 #include <string>
 #include <typeinfo>
 #include <glog/logging.h>
+#include <set>
 
 #include "objects/objecttransformation.h" //TODO remove that include
 #include "external/json.hpp"
 #include "observerregister.h"
 #include "abstractfactory.h"
 #include "serializers/serializable.h"
+#include "common.h"
 
 namespace py = pybind11;
 
@@ -34,6 +36,8 @@ class Object;
 class Property : public AbstractFactory<std::string, Property>, public Serializable
 {
 public:
+  using SetOfProperties = std::set<Property*>;
+
   Property();
   virtual ~Property();
 
@@ -67,6 +71,22 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
 
+  static std::string get_label(const SetOfProperties& properties);
+
+  template<typename ValueT> static auto cast_all(const SetOfProperties& properties)
+  {
+    return ::transform<TypedProperty<ValueT>*>(properties, [](Property* property) {
+      return &property->cast<ValueT>();
+    });
+  }
+
+  template<typename ValueT>
+  static SetOfProperties cast_all(const std::set<TypedProperty<ValueT>*>& properties)
+  {
+    return ::transform<Property*>(properties, [](auto* property) {
+      return static_cast<Property*>(property);
+    });
+  }
 
 private:
   std::string m_label;

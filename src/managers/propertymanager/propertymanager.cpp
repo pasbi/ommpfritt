@@ -13,10 +13,8 @@ namespace
 
 using Key = omm::HasProperties::Key;
 using SetOfHasProperties = std::set<omm::HasProperties*>;
-using SetOfProperties = omm::AbstractPropertyWidget::SetOfProperties;
 
-std::vector<Key>
-get_key_intersection(const SetOfHasProperties& selection)
+std::vector<Key> get_key_intersection(const SetOfHasProperties& selection)
 {
   if (selection.size() == 0) {
     return std::vector<Key>();
@@ -63,8 +61,7 @@ void split_key(const std::string& key, std::string& tab_name, std::string& prope
   }
 }
 
-auto collect_properties( const omm::HasProperties::Key& key,
-                         const SetOfHasProperties& selection )
+auto collect_properties(const omm::HasProperties::Key& key, const SetOfHasProperties& selection)
 {
   std::set<omm::Property*> collection;
   const auto f = [key](omm::HasProperties* entity) {
@@ -74,7 +71,7 @@ auto collect_properties( const omm::HasProperties::Key& key,
   return transform<omm::Property*>(selection, f);
 }
 
-std::string get_tab_label(const SetOfProperties& properties)
+std::string get_tab_label(const omm::Property::SetOfProperties& properties)
 {
   assert(properties.size() > 0);
   const auto tab_label = (*properties.begin())->category();
@@ -125,7 +122,7 @@ void PropertyManager::set_selection(const SetOfHasProperties& selection)
     if (!tabs.contains(tab_label)) {
       tabs.insert(tab_label, std::make_unique<PropertyManagerTab>());
     }
-    tabs.at(tab_label)->add_properties(properties);
+    tabs.at(tab_label)->add_properties(m_scene, properties);
   }
 
   for (auto&& tab_label : tabs.keys()) {

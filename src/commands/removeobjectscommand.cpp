@@ -23,8 +23,9 @@ namespace omm
 
 RemoveObjectsCommand
 ::RemoveObjectsCommand(Scene& scene, const ObjectRefs& objects)
-  : Command(scene, QObject::tr("remove").toStdString())
+  : Command(QObject::tr("remove").toStdString())
   , m_contextes(std::move(make_contextes(objects)))
+  , m_scene(scene)
 {
 }
 
@@ -33,7 +34,7 @@ void RemoveObjectsCommand::redo()
   for (auto&& context : m_contextes) {
     assert(!context.subject.owns());
     assert(!context.subject.reference().is_root());
-    scene.remove_object(context);
+    m_scene.remove_object(context);
   }
 }
 
@@ -41,7 +42,7 @@ void RemoveObjectsCommand::undo()
 {
   for (auto&& it = m_contextes.rbegin(); it != m_contextes.rend(); ++it) {
     assert(it->subject.owns());
-    scene.insert_object(*it);
+    m_scene.insert_object(*it);
   }
 }
 
