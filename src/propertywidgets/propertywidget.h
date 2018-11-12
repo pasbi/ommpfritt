@@ -35,6 +35,7 @@ class PropertyWidget : public AbstractPropertyWidget, public AbstractTypedProper
 {
 public:
   using property_type = TypedProperty<ValueT>;
+  using value_type = typename property_type::value_type;
   explicit PropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
     : AbstractPropertyWidget(scene, properties)
     , m_properties(Property::cast_all<ValueT>(properties))

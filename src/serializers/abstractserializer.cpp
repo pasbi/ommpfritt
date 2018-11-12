@@ -54,7 +54,7 @@ void AbstractDeserializer::register_deserializers()
 
 
 void AbstractDeserializer::register_reference( const Serializable::IdType& id,
-                                               Serializable& reference )
+                                               HasProperties& reference )
 {
   m_id_to_reference[id] = &reference;
 }

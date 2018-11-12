@@ -23,10 +23,12 @@ public:
   {
     return property(key).cast<ValueT>();
   }
+
   const PropertyMap& properties() const;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+  virtual std::string name() const = 0;
 
 protected:
   Property& add_property(const Key& key, std::unique_ptr<Property> property);

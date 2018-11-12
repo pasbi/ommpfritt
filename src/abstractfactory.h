@@ -36,9 +36,6 @@ public:
   template<typename... Args_>
   static std::unique_ptr<GeneralT> make(const Key& key, Args_&&... args)
   {
-    // constexpr bool template_argument_is_valid = std::is_same< std::decay_t<Args_>...,
-    //                                                           std::decay_t<Args >... >::value;
-    // static_assert(template_argument_is_valid, "Args_ and Args must be same.");
     return m_creator_map.at(key)(std::forward<Args>(args)...);
   }
 

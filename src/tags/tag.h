@@ -25,6 +25,7 @@ public:
   static const std::string NAME_PROPERTY_KEY;
   static void register_tags();
   std::string type() const override;
+  std::string name() const override;
 
 };
 

@@ -59,6 +59,7 @@ public:
 
   static void register_objects();
   std::string type() const override;
+  std::string name() const override;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;

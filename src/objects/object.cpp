@@ -11,6 +11,7 @@
 #include "properties/stringproperty.h"
 #include "properties/integerproperty.h"
 #include "properties/floatproperty.h"
+#include "properties/referenceproperty.h"
 #include "common.h"
 #include "serializers/jsonserializer.h"
 
@@ -68,6 +69,8 @@ Object::Object()
     .set_label(QObject::tr("Name").toStdString())
     .set_category(QObject::tr("object").toStdString());
 
+  // add some mockup properties for testing purposes
+
   add_property( "ans",
                 std::make_unique<IntegerProperty>(42) )
     .set_label(QObject::tr("The Answer").toStdString())
@@ -76,6 +79,11 @@ Object::Object()
   add_property( "pi",
                 std::make_unique<FloatProperty>(3.141) )
     .set_label(QObject::tr("pi").toStdString())
+    .set_category(QObject::tr("object").toStdString());
+
+  add_property( "buddy",
+                std::make_unique<ReferenceProperty>() )
+    .set_label(QObject::tr("buddy").toStdString())
     .set_category(QObject::tr("object").toStdString());
 
 }
@@ -319,6 +327,11 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
 std::unique_ptr<Object> Object::copy() const
 {
   return Serializable::copy<Object, JSONSerializer, JSONDeserializer>(Object::make(type()), *this);
+}
+
+std::string Object::name() const
+{
+  return property<std::string>(NAME_PROPERTY_KEY).value();
 }
 
 }  // namespace omm

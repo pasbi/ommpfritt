@@ -6,6 +6,7 @@
 #include "propertywidgets/numericpropertywidget.h"
 #include "propertywidgets/stringpropertywidget.h"
 #include "propertywidgets/transformationpropertywidget.h"
+#include "propertywidgets/referencepropertywidget.h"
 
 namespace omm
 {
@@ -43,9 +44,9 @@ void AbstractPropertyWidget::register_propertywidgets()
   REGISTER_PROPERTYWIDGET(FloatPropertyWidget);
   REGISTER_PROPERTYWIDGET(StringPropertyWidget);
   REGISTER_PROPERTYWIDGET(TransformationPropertyWidget);
-  // REGISTER_PROPERTY(ReferenceProperty);
+  REGISTER_PROPERTYWIDGET(ReferencePropertyWidget);
 
-#undef REGISTER_PROPERTY
+#undef REGISTER_PROPERTYWIDGET
 }
 
 std::string AbstractPropertyWidget::label() const

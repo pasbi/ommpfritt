@@ -4,9 +4,10 @@
 
 namespace
 {
-  static constexpr auto PROPERTIES_POINTER = "properties";
-  static constexpr auto PROPERTY_TYPE_POINTER = "type";
-  static constexpr auto PROPERTY_KEY_POINTER = "key";
+  constexpr auto PROPERTIES_POINTER = "properties";
+  constexpr auto PROPERTY_TYPE_POINTER = "type";
+  constexpr auto PROPERTY_KEY_POINTER = "key";
+  constexpr auto ID_POINTER = "id";
 }  // namespace
 
 namespace omm
@@ -38,6 +39,9 @@ Property& HasProperties::property(const Key& key) const
 void HasProperties::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   Serializable::serialize(serializer, root);
+  const auto id_pointer = make_pointer(root, ID_POINTER);
+  serializer.set_value(identify(), id_pointer);
+
   const auto properties_pointer = make_pointer(root, PROPERTIES_POINTER);
   serializer.start_array(m_properties.size(), properties_pointer);
   for (size_t i = 0; i < m_properties.size(); ++i) {
@@ -54,6 +58,11 @@ void HasProperties::serialize(AbstractSerializer& serializer, const Pointer& roo
 void HasProperties::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   Serializable::deserialize(deserializer, root);
+
+  const auto id_pointer = make_pointer(root, ID_POINTER);
+  const auto id = deserializer.get_id(id_pointer);
+  deserializer.register_reference(id, *this);
+
   const auto properties_pointer = make_pointer(root, PROPERTIES_POINTER);
   size_t n_properties = deserializer.array_size(properties_pointer);
   for (size_t i = 0; i < n_properties; ++i) {
