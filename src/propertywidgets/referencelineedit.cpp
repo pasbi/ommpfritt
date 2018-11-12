@@ -74,4 +74,9 @@ bool ReferenceLineEdit::can_drop(const QMimeData& mime_data) const
   return false;
 }
 
+void ReferenceLineEdit::mouseDoubleClickEvent(QMouseEvent* event)
+{
+  set_value(nullptr);
+}
+
 }  // namespace omm

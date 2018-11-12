@@ -95,10 +95,9 @@ private:
 
 class AbstractTypedPropertyObserver
 {
-protected:
+public:
   virtual void on_value_changed() = 0;
   template<typename ValueT> friend class TypedProperty;
 };
-
 
 }  // namespace omm

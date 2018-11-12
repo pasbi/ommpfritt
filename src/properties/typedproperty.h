@@ -25,7 +25,15 @@ public:
 
 public:
   virtual ValueT value() const { return m_value; }
-  virtual void set_value(const ValueT& value) { m_value = value; }
+  virtual void set_value(const ValueT& value)
+  {
+    if (m_value != value) {
+      m_value = value;
+      ObserverRegister::for_each([](auto* observer) {
+        observer->on_value_changed();
+      });
+    }
+  }
 
   virtual ValueT default_value() const { return m_default_value; }
   virtual void set_default_value(const ValueT& value) { m_default_value = value; }

@@ -19,14 +19,16 @@ bool ReferenceProperty::is_referenced(const ReferenceType& candidate)
 
 void ReferenceProperty::set_value(const ReferenceType& reference)
 {
-  const auto old_reference = value();
-  if (old_reference != nullptr) {
-    assert(is_referenced(old_reference));
-    m_references.erase(old_reference);
-  }
-  TypedProperty::set_value(reference);
-  if (reference != nullptr) {
-    m_references.emplace(reference);
+  if (value() != reference) {
+    const auto old_reference = value();
+    if (old_reference != nullptr) {
+      assert(is_referenced(old_reference));
+      m_references.erase(old_reference);
+    }
+    TypedProperty::set_value(reference);
+    if (reference != nullptr) {
+      m_references.emplace(reference);
+    }
   }
 }
 
