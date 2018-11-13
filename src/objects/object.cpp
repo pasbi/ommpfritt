@@ -334,4 +334,24 @@ std::string Object::name() const
   return property<std::string>(NAME_PROPERTY_KEY).value();
 }
 
+void Object::render(AbstractRenderer& renderer) const
+{
+  if (bounding_box().intersect(renderer.region()).is_empty()) {
+    for (const auto& child : m_children) {
+      child->render(renderer);
+    }
+  }
+}
+
+AbstractRenderer::Region Object::bounding_box() const
+{
+  const auto globale_position = global_transformation().translation();
+  auto bounding_box = AbstractRenderer::Region(globale_position);
+  for (const auto& child : m_children) {
+    bounding_box = bounding_box.merge(child->bounding_box());
+  }
+  return bounding_box;
+}
+
+
 }  // namespace omm

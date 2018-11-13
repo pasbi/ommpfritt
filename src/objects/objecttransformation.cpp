@@ -23,7 +23,7 @@ ObjectTransformation::ObjectTransformation(const Parameters& parameters)
            * rotation(parameters.rotation).m_matrix;
 }
 
-ObjectTransformation ObjectTransformation::translated(const Vector2D& translation_vector) const
+ObjectTransformation ObjectTransformation::translated(const arma::vec2& translation_vector) const
 {
   return *this * translation(translation_vector);
 }
@@ -38,12 +38,12 @@ ObjectTransformation ObjectTransformation::sheared(double shear) const
   return *this * shearing(shear);
 }
 
-ObjectTransformation ObjectTransformation::scaled(const Vector2D& scale_vector) const
+ObjectTransformation ObjectTransformation::scaled(const arma::vec2& scale_vector) const
 {
   return *this * scalation(scale_vector);
 }
 
-ObjectTransformation ObjectTransformation::translation(const Vector2D& translation_vector)
+ObjectTransformation ObjectTransformation::translation(const arma::vec2& translation_vector)
 {
   ObjectTransformation t = identity();
   t.m_matrix.at(0, 2) = translation_vector(0);
@@ -61,7 +61,7 @@ ObjectTransformation ObjectTransformation::rotation(double angle)
   return t;
 }
 
-ObjectTransformation ObjectTransformation::scalation(const Vector2D& scale_vector)
+ObjectTransformation ObjectTransformation::scalation(const arma::vec2& scale_vector)
 {
   ObjectTransformation t = identity();
   t.m_matrix(0, 0) = scale_vector(0);
@@ -109,6 +109,11 @@ ObjectTransformation::Parameters ObjectTransformation::parameters() const
   parameters.scale_vector = { p, r };
   parameters.shear = q;
   return parameters;
+}
+
+arma::vec2 ObjectTransformation::translation() const
+{
+  return arma::vec2{ m_matrix(0, 2), m_matrix(1, 2) };
 }
 
 ObjectTransformation ObjectTransformation::inverted() const

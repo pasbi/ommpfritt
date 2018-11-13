@@ -9,6 +9,7 @@
 #include "objects/selectable.h"
 #include "common.h"
 #include "serializers/serializable.h"
+#include "renderers/abstractrenderer.h"
 
 namespace omm
 {
@@ -63,6 +64,8 @@ public:
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+  virtual void render(AbstractRenderer& renderer) const;
+  virtual AbstractRenderer::Region bounding_box() const;
 
 private:
   std::vector<std::unique_ptr<Tag>> m_tags;

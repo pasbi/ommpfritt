@@ -9,34 +9,34 @@ namespace omm
 class ObjectTransformation
 {
 public:
-  using Vector2D = arma::vec::fixed<2>;
   static constexpr auto N_ROWS = 3;
   static constexpr auto N_COLS = 3;
   struct Parameters
   {
-    Vector2D translation_vector;
+    arma::vec2 translation_vector;
     double rotation;
-    Vector2D scale_vector;
+    arma::vec2 scale_vector;
     double shear;
   };
 
   explicit ObjectTransformation();
   explicit ObjectTransformation(const Parameters& parameters);
-  ObjectTransformation translated(const Vector2D& translation_vector) const;
+  ObjectTransformation translated(const arma::vec2& translation_vector) const;
   ObjectTransformation rotated(double angle) const;
-  ObjectTransformation scaled(const Vector2D& scale_vector) const;
+  ObjectTransformation scaled(const arma::vec2& scale_vector) const;
   ObjectTransformation sheared(double shear) const;
   ObjectTransformation inverted() const;
 
-  static ObjectTransformation translation(const Vector2D& translation_vector);
+  static ObjectTransformation translation(const arma::vec2& translation_vector);
   static ObjectTransformation rotation(double angle);
-  static ObjectTransformation scalation(const Vector2D& scale_vector);
+  static ObjectTransformation scalation(const arma::vec2& scale_vector);
   static ObjectTransformation shearing(double shear);
   static ObjectTransformation identity();
 
   Parameters parameters() const;
   double element(int row, int column) const;
   void set_element(int row, int column, double value);
+  arma::vec2 translation() const;
 
 private:
   explicit ObjectTransformation(const arma::mat::fixed<N_ROWS, N_COLS>& matrix);
