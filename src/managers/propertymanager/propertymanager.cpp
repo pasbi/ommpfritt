@@ -101,12 +101,12 @@ PropertyManager::PropertyManager(Scene& scene)
 {
   setWindowTitle(tr("property manager"));
   setObjectName(TYPE());
-  m_scene.ObserverRegister<AbstractPropertyObserver>::register_observer(*this);
+  m_scene.ObserverRegister<AbstractSelectionObserver>::register_observer(*this);
 }
 
 PropertyManager::~PropertyManager()
 {
-  m_scene.ObserverRegister<AbstractPropertyObserver>::unregister_observer(*this);
+  m_scene.ObserverRegister<AbstractSelectionObserver>::unregister_observer(*this);
 }
 
 void PropertyManager::set_selection(const SetOfHasProperties& selection)

@@ -14,7 +14,7 @@ namespace omm
 
 class PropertyView;
 
-class PropertyManager : public Manager, public AbstractPropertyObserver
+class PropertyManager : public Manager, public AbstractSelectionObserver
 {
   Q_OBJECT
   DECLARE_MANAGER_TYPE(PropertyManager)

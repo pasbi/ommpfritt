@@ -11,6 +11,7 @@ class ObjectTreeAdapter;
 
 class ObjectTreeView : public QTreeView
 {
+  Q_OBJECT
 public:
   explicit ObjectTreeView();
   void set_model(ObjectTreeAdapter& model);
@@ -18,8 +19,12 @@ public:
   void remove_selected() const;
   ObjectRefs selection() const;
 
+Q_SIGNALS:
+  void mouse_released();
+
 protected:
-  void contextMenuEvent(QContextMenuEvent *event);
+  void contextMenuEvent(QContextMenuEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent* event) override;
   void populate_menu(QMenu& menu, const Object& subject) const;
 
 };

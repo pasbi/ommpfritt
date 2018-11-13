@@ -18,10 +18,14 @@ ReferenceLineEdit::ReferenceLineEdit()
 
 void ReferenceLineEdit::set_value(const value_type& value)
 {
-  if (value == nullptr) {
-    setText(tr("< no reference >"));
-  } else {
-    setText(QString::fromStdString(value->name()));
+  if (m_value != value) {
+    m_value = value;
+    if (value == nullptr) {
+      setText(tr("< no reference >"));
+    } else {
+      setText(QString::fromStdString(value->name()));
+    }
+    Q_EMIT reference_changed(value);
   }
 }
 
@@ -48,10 +52,7 @@ void ReferenceLineEdit::dropEvent(QDropEvent* event)
   } else {
     const auto& object_mime_data = *qobject_cast<const ObjectMimeData*>(&mime_data);
     HasProperties* reference = &object_mime_data.objects.front().get();
-    if (m_value != reference) {
-      m_value = reference;
-      Q_EMIT reference_changed(reference);
-    }
+    set_value(reference);
   }
 }
 

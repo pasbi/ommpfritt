@@ -38,7 +38,6 @@ ObjectTreeView::ObjectTreeView()
 
 void ObjectTreeView::contextMenuEvent(QContextMenuEvent *event)
 {
-
   auto object = object_at(*this, event->pos());
   if (object == nullptr) {
     event->ignore();
@@ -53,6 +52,11 @@ void ObjectTreeView::contextMenuEvent(QContextMenuEvent *event)
     menu.release();
     event->accept();
   }
+}
+
+void ObjectTreeView::mouseReleaseEvent(QMouseEvent *event)
+{
+  Q_EMIT mouse_released();
 }
 
 

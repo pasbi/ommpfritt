@@ -32,7 +32,7 @@ protected:
   friend class Scene;
 };
 
-class AbstractPropertyObserver
+class AbstractSelectionObserver
 {
 protected:
   virtual void set_selection(const std::set<HasProperties*>& selection) = 0;
@@ -44,7 +44,7 @@ class Project;
 
 class Scene
   : public ObserverRegister<AbstractObjectTreeObserver>
-  , public ObserverRegister<AbstractPropertyObserver>
+  , public ObserverRegister<AbstractSelectionObserver>
 {
 public:
   Scene();

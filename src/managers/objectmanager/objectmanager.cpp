@@ -23,6 +23,10 @@ ObjectManager::ObjectManager(Scene& scene)
   connect( tree_view->selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &ObjectManager::on_selection_changed );
 
+  connect( tree_view.get(), &ObjectTreeView::mouse_released, [this]() {
+    m_scene.selection_changed();
+  });
+
   setWidget(tree_view.release());
   setObjectName(TYPE());
 }
@@ -44,8 +48,6 @@ void ObjectManager::on_selection_changed( const QItemSelection& selection,
   for (auto& index : selection.indexes()) {
     m_object_tree_adapter.object_at(index).select();
   }
-
-  m_scene.selection_changed();
 }
 
 }  // namespace omm

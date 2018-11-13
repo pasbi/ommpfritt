@@ -74,7 +74,7 @@ void Scene::selection_changed()
 {
   const auto selected_objects = m_root->get_selected_children_and_tags();
 
-  ObserverRegister<AbstractPropertyObserver>::for_each(
+  ObserverRegister<AbstractSelectionObserver>::for_each(
     [selected_objects](auto* observer) { observer->set_selection(selected_objects); }
   );
 }
