@@ -14,7 +14,7 @@ public:
   explicit StringPropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
 
 protected:
-  void on_value_changed() override;
+  void on_property_value_changed() override;
   std::string type() const override;
 
 private:

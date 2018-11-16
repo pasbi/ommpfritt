@@ -1,7 +1,11 @@
 #pragma once
 
-#include <armadillo>
 #include <string>
+#include <stack>
+
+#include "geometry/objecttransformation.h"
+#include "geometry/boundingbox.h"
+#include "geometry/point.h"
 
 namespace omm
 {
@@ -12,48 +16,21 @@ class Scene;
 class AbstractRenderer
 {
 public:
-  class Region
-  {
-  public:
-    Region(const arma::vec2& point);
-    Region(const arma::vec2& top_left, const arma::vec2& top_right);
-
-    Region merge(const Region& other) const;
-    Region intersect(const Region& other) const;
-    bool contains(const Region& other) const;
-    bool contains(const arma::vec2& point) const;
-    bool is_empty() const;
-
-    arma::vec2 top_left() const;
-    arma::vec2 top_right() const;
-    arma::vec2 bottom_left() const;
-    arma::vec2 bottom_right() const;
-
-  private:
-    arma::vec2 m_top_left;
-    arma::vec2 m_bottom_right;
-  };
-
-  explicit AbstractRenderer(const Region& region);
+  explicit AbstractRenderer(const BoundingBox& bounding_box);
   void render(const Scene& scene);
-  const Region& region() const;
+  const BoundingBox& bounding_box() const;
 
-protected:
-  class Point
-  {
-  public:
-    arma::vec2 position;
-    arma::vec2 left_tangent;
-    arma::vec2 right_tangent;
-  };
-
-
+public:
   virtual void start_group(const std::string& name) {}
   virtual void end_group() {}
   virtual void draw_spline(const std::vector<Point>& points, const Style& style) = 0;
+  virtual void push_transformation(const ObjectTransformation& transformation);
+  virtual void pop_transformation();
+  virtual ObjectTransformation current_transformation() const;
 
 private:
-  const Region m_region;
+  const BoundingBox m_bounding_box;
+  std::stack<ObjectTransformation> m_transformation_stack;
 };
 
 }  // namespace omm

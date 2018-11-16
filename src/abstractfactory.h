@@ -2,6 +2,10 @@
 
 #include <map>
 #include <memory>
+#include <algorithm>
+#include <set>
+
+#include "common.h"
 
 template<typename T>
 class get_first_var_template
@@ -43,6 +47,14 @@ public:
   {
     static_assert(sizeof...(Args) == 0, "Expected zero arguments.");
     return m_creator_map.at(key)();
+  }
+
+  static std::set<Key> keys()
+  {
+    std::set<Key> keys;
+    std::transform( m_creator_map.begin(), m_creator_map.end(),
+                    std::inserter(keys, keys.end()), [](const auto& pair) { return pair.first; } );
+    return keys;
   }
 
 public:

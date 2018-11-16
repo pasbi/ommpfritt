@@ -54,13 +54,13 @@ void Scene::insert_object(std::unique_ptr<Object> object, Object& parent)
 {
   size_t n = parent.children().size();
 
-  ObserverRegister<AbstractObjectTreeObserver>::for_each(
+  Observed<AbstractObjectTreeObserver>::for_each(
     [&parent, n] (auto* observer) { observer->beginInsertObject(parent, n); }
   );
 
   parent.adopt(std::move(object));
 
-  ObserverRegister<AbstractObjectTreeObserver>::for_each(
+  Observed<AbstractObjectTreeObserver>::for_each(
     [] (auto* observer) { observer->endInsertObject(); }
   );
 }
@@ -74,7 +74,7 @@ void Scene::selection_changed()
 {
   const auto selected_objects = m_root->get_selected_children_and_tags();
 
-  ObserverRegister<AbstractSelectionObserver>::for_each(
+  Observed<AbstractSelectionObserver>::for_each(
     [selected_objects](auto* observer) { observer->set_selection(selected_objects); }
   );
 }
@@ -84,11 +84,11 @@ void Scene::move_object(MoveObjectTreeContext context)
   assert(context.is_valid());
   Object& old_parent = context.subject.get().parent();
 
-  ObserverRegister<AbstractObjectTreeObserver>::for_each(
+  Observed<AbstractObjectTreeObserver>::for_each(
     [&context](auto* observer) { observer->beginMoveObject(context); }
   );
   context.parent.get().adopt(old_parent.repudiate(context.subject), context.predecessor);
-  ObserverRegister<AbstractObjectTreeObserver>::for_each(
+  Observed<AbstractObjectTreeObserver>::for_each(
     [](auto* observer) { observer->endMoveObject(); }
   );
 }
@@ -96,11 +96,11 @@ void Scene::move_object(MoveObjectTreeContext context)
 void Scene::insert_object(OwningObjectTreeContext& context)
 {
   assert(context.subject.owns());
-  ObserverRegister<AbstractObjectTreeObserver>::for_each(
+  Observed<AbstractObjectTreeObserver>::for_each(
     [&context](auto* observer) { observer->beginInsertObject(context); }
   );
   context.parent.get().adopt(context.subject.release(), context.predecessor);
-  ObserverRegister<AbstractObjectTreeObserver>::for_each(
+  Observed<AbstractObjectTreeObserver>::for_each(
     [](auto* observer) { observer->endInsertObject(); }
   );
 }
@@ -108,12 +108,12 @@ void Scene::insert_object(OwningObjectTreeContext& context)
 void Scene::remove_object(OwningObjectTreeContext& context)
 {
   assert(!context.subject.owns());
-  ObserverRegister<AbstractObjectTreeObserver>::for_each(
+  Observed<AbstractObjectTreeObserver>::for_each(
     [&context](auto* observer) { observer->beginRemoveObject(context.subject); }
   );
   assert(context.predecessor == context.subject.reference().predecessor());
   context.subject.capture(context.parent.get().repudiate(context.subject));
-  ObserverRegister<AbstractObjectTreeObserver>::for_each(
+  Observed<AbstractObjectTreeObserver>::for_each(
     [](auto* observer) { observer->endRemoveObject(); }
   );
 }

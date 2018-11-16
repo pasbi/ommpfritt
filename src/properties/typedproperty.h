@@ -15,7 +15,7 @@ namespace TypedPropertyDetail
 } // namespace TypedPropertyDetail
 
 template<typename ValueT>
-class TypedProperty : public Property, public ObserverRegister<AbstractTypedPropertyObserver>
+class TypedProperty : public Property
 {
 public:
   using value_type = ValueT;
@@ -29,8 +29,8 @@ public:
   {
     if (m_value != value) {
       m_value = value;
-      ObserverRegister::for_each([](auto* observer) {
-        observer->on_value_changed();
+      Observed<AbstractPropertyObserver>::for_each([](auto* observer) {
+        observer->on_property_value_changed();
       });
     }
   }

@@ -3,7 +3,7 @@
 #include <glog/logging.h>
 #include <typeinfo>
 
-#include "objects/objecttransformation.h"
+#include "geometry/objecttransformation.h"
 #include "serializers/serializable.h"
 
 namespace

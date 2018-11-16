@@ -13,6 +13,7 @@ class AbstractPropertyWidget
   : public QWidget
   , public AbstractFactory< std::string, AbstractPropertyWidget,
                             Scene&, const Property::SetOfProperties& >
+  , public AbstractPropertyObserver
 {
 public:
   explicit AbstractPropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
@@ -31,7 +32,7 @@ private:
 };
 
 template<typename ValueT>
-class PropertyWidget : public AbstractPropertyWidget, public AbstractTypedPropertyObserver
+class PropertyWidget : public AbstractPropertyWidget
 {
 public:
   using property_type = TypedProperty<ValueT>;
@@ -41,14 +42,14 @@ public:
     , m_properties(Property::cast_all<ValueT>(properties))
   {
     for (auto&& property : m_properties) {
-      property->ObserverRegister<AbstractTypedPropertyObserver>::register_observer(*this);
+      property->Observed<AbstractPropertyObserver>::register_observer(*this);
     }
   }
 
   virtual ~PropertyWidget()
   {
     for (auto&& property : m_properties) {
-      property->ObserverRegister<AbstractTypedPropertyObserver>::unregister_observer(*this);
+      property->Observed<AbstractPropertyObserver>::unregister_observer(*this);
     }
   }
 

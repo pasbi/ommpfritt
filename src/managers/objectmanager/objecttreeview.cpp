@@ -57,8 +57,8 @@ void ObjectTreeView::contextMenuEvent(QContextMenuEvent *event)
 void ObjectTreeView::mouseReleaseEvent(QMouseEvent *event)
 {
   Q_EMIT mouse_released();
+  QTreeView::mouseReleaseEvent(event);
 }
-
 
 void ObjectTreeView::set_model(ObjectTreeAdapter& model)
 {
@@ -89,6 +89,5 @@ void ObjectTreeView::remove_selected() const
   Scene& scene = model().scene();
   scene.submit<RemoveObjectsCommand>(scene, selection());
 }
-
 
 }  // namespace

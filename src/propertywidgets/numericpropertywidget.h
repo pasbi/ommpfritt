@@ -13,7 +13,7 @@ public:
   explicit NumericPropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
 
 protected:
-  void on_value_changed() override;
+  void on_property_value_changed() override;
 
 private:
   class SpinBox;

@@ -23,6 +23,8 @@ Property& HasProperties::add_property(const Key& key, std::unique_ptr<Property> 
   bool was_inserted = m_properties.insert(key, std::move(property));
   assert(was_inserted);
   (void) was_inserted;
+
+  ref.register_observer(*this);
   return ref;
 }
 
@@ -81,6 +83,10 @@ void HasProperties::deserialize(AbstractDeserializer& deserializer, const Pointe
 
     property(property_key).deserialize(deserializer, property_pointer);
   }
+}
+
+void HasProperties::on_property_value_changed()
+{
 }
 
 }  // namespace omm

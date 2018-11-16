@@ -14,6 +14,9 @@
 #include "properties/referenceproperty.h"
 #include "common.h"
 #include "serializers/jsonserializer.h"
+#include "renderers/style.h"
+
+#include "objects/ellipse.h"
 
 namespace
 {
@@ -71,20 +74,20 @@ Object::Object()
 
   // add some mockup properties for testing purposes
 
-  add_property( "ans",
-                std::make_unique<IntegerProperty>(42) )
-    .set_label(QObject::tr("The Answer").toStdString())
-    .set_category(QObject::tr("special").toStdString());
+  // add_property( "ans",
+  //               std::make_unique<IntegerProperty>(42) )
+  //   .set_label(QObject::tr("The Answer").toStdString())
+  //   .set_category(QObject::tr("special").toStdString());
 
-  add_property( "pi",
-                std::make_unique<FloatProperty>(3.141) )
-    .set_label(QObject::tr("pi").toStdString())
-    .set_category(QObject::tr("object").toStdString());
+  // add_property( "pi",
+  //               std::make_unique<FloatProperty>(3.141) )
+  //   .set_label(QObject::tr("pi").toStdString())
+  //   .set_category(QObject::tr("object").toStdString());
 
-  add_property( "buddy",
-                std::make_unique<ReferenceProperty>() )
-    .set_label(QObject::tr("buddy").toStdString())
-    .set_category(QObject::tr("object").toStdString());
+  // add_property( "buddy",
+  //               std::make_unique<ReferenceProperty>() )
+  //   .set_label(QObject::tr("buddy").toStdString())
+  //   .set_category(QObject::tr("object").toStdString());
 
 }
 
@@ -104,7 +107,7 @@ ObjectTransformation Object::global_transformation() const
   if (is_root()) {
     return transformation();
   } else {
-    return parent().global_transformation() * transformation();
+    return parent().global_transformation().apply(transformation());
   }
 }
 
@@ -120,7 +123,8 @@ void Object::set_global_transformation(const ObjectTransformation& global_transf
     local_transformation = global_transformation;
   } else {
     try {
-      local_transformation = parent().global_transformation().inverted() * global_transformation;
+      local_transformation =
+        parent().global_transformation().inverted().apply(global_transformation);
     } catch (const std::runtime_error& e) {
       assert(false);
     }
@@ -141,7 +145,7 @@ Object& Object::parent() const
 
 void Object::transform(const ObjectTransformation& transformation)
 {
-  set_transformation(transformation * this->transformation());
+  set_transformation(transformation.apply(this->transformation()));
 }
 
 Object& Object::adopt(std::unique_ptr<Object> object, const Object* predecessor)
@@ -278,6 +282,7 @@ void Object::register_objects()
 {
 #define REGISTER_OBJECT(TYPE) Object::register_type<TYPE>(#TYPE);
   REGISTER_OBJECT(Object);
+  REGISTER_OBJECT(Ellipse);
 #undef REGISTER_OBJECT
 }
 
@@ -334,24 +339,46 @@ std::string Object::name() const
   return property<std::string>(NAME_PROPERTY_KEY).value();
 }
 
-void Object::render(AbstractRenderer& renderer) const
+void Object::render_recursive(AbstractRenderer& renderer) const
 {
-  if (bounding_box().intersect(renderer.region()).is_empty()) {
+  render(renderer);
+  // if (bounding_box().intersect(renderer.bounding_box()).is_empty()) {
     for (const auto& child : m_children) {
-      child->render(renderer);
+      renderer.push_transformation(child->transformation());
+      child->render_recursive(renderer);
+      renderer.pop_transformation();
     }
-  }
+  // }
 }
 
-AbstractRenderer::Region Object::bounding_box() const
+void Object::render(AbstractRenderer&) const
 {
-  const auto globale_position = global_transformation().translation();
-  auto bounding_box = AbstractRenderer::Region(globale_position);
-  for (const auto& child : m_children) {
-    bounding_box = bounding_box.merge(child->bounding_box());
-  }
-  return bounding_box;
+  return;
 }
 
+BoundingBox Object::bounding_box() const
+{
+  return BoundingBox({ arma::vec2{0, 0} });
+}
+
+BoundingBox Object::recursive_bounding_box() const
+{
+  auto bounding_box = this->bounding_box();
+
+  for (const auto& child : m_children) {
+    bounding_box = bounding_box.merge(child->recursive_bounding_box());
+  }
+  return transformation().apply(bounding_box);
+}
+
+Style Object::style() const
+{
+  // collect style from style tags
+  // style tags can be combined (e.g., enable stroke in style A and fill in style B.
+  // combine them to have both stroke and fill.
+  // if there is no style tag, return "default" style (maybe only simple stroke).
+
+  return Style(); // TODO
+}
 
 }  // namespace omm

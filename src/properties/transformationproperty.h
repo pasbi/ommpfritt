@@ -1,6 +1,7 @@
 #pragma once
 
 #include "properties/typedproperty.h"
+#include "geometry/objecttransformation.h"
 
 namespace omm
 {

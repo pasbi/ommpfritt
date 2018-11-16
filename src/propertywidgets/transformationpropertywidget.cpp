@@ -16,10 +16,10 @@ TransformationPropertyWidget
   QObject::connect( m_transformation_edit, &AbstractTransformationEdit::value_changed,
                     [this](const auto& value) { set_properties_value(value); } );
 
-  on_value_changed();
+  on_property_value_changed();
 }
 
-void TransformationPropertyWidget::on_value_changed()
+void TransformationPropertyWidget::on_property_value_changed()
 {
   m_transformation_edit->blockSignals(true);
   m_transformation_edit->set_values(get_properties_values());

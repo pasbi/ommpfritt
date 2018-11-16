@@ -2,6 +2,8 @@
 
 #include <armadillo>
 #include "external/json_fwd.hpp"
+#include "geometry/point.h"
+#include "geometry/boundingbox.h"
 
 namespace omm
 {
@@ -18,6 +20,7 @@ public:
     arma::vec2 scale_vector;
     double shear;
   };
+  using mat_type = arma::mat::fixed<N_ROWS, N_COLS>;
 
   explicit ObjectTransformation();
   explicit ObjectTransformation(const Parameters& parameters);
@@ -38,19 +41,21 @@ public:
   void set_element(int row, int column, double value);
   arma::vec2 translation() const;
 
+  arma::vec2 apply_to_position(const arma::vec2& position) const;
+  arma::vec2 apply_to_direction(const arma::vec2& direction) const;
+  BoundingBox apply(const BoundingBox& bb) const;
+  ObjectTransformation apply(const ObjectTransformation& t) const;
+  Point apply(const Point& point) const;
+  const mat_type& matrix() const;
+
 private:
   explicit ObjectTransformation(const arma::mat::fixed<N_ROWS, N_COLS>& matrix);
-  arma::mat::fixed<N_ROWS, N_COLS> m_matrix;
-
-  friend ObjectTransformation operator*(const ObjectTransformation&, const ObjectTransformation&);
-  friend bool operator==(const ObjectTransformation&, const ObjectTransformation&);
-
+  mat_type m_matrix;
 };
 
 std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t);
 bool operator<(const ObjectTransformation& a, const ObjectTransformation& b);
 bool operator==(const ObjectTransformation& a, const ObjectTransformation& b);
 bool operator!=(const ObjectTransformation& a, const ObjectTransformation& b);
-ObjectTransformation operator*(const ObjectTransformation& a, const ObjectTransformation& b);
 
 }  // namespace omm

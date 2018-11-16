@@ -23,7 +23,7 @@ AddObjectCommand::AddObjectCommand(Scene& scene, std::unique_ptr<omm::Object> ob
   , m_scene(scene)
 {
   static int i = 0;
-  const auto name = std::string(1, char('a' + (i++)));
+  const auto name = m_object_reference.type() + " " + std::to_string(i++);
   m_owned_object->property(Object::NAME_PROPERTY_KEY).cast<std::string>().set_value(name);
 }
 

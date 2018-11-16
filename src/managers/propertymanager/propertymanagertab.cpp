@@ -6,7 +6,7 @@
 #include "properties/typedproperty.h"
 #include "propertywidgets/numericpropertywidget.h"
 #include "propertywidgets/stringpropertywidget.h"
-#include "propertywidgets/objecttransformationpropertywidget.h"
+#include "propertywidgets/transformationpropertywidget.h"
 
 namespace
 {

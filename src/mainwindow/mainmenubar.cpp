@@ -26,10 +26,12 @@ void MainMenuBar::make_file_menu()
 void MainMenuBar::make_create_menu()
 {
   auto& create_menu = *addMenu(tr("&Create"));
-  action(create_menu, tr("&empty"), [this]() {
-    Scene& scene = m_app.scene();
-    scene.submit<AddObjectCommand>(scene, std::make_unique<Object>());
-  });
+  for (const auto& key : Object::keys())
+  {
+    action(create_menu, QString::fromStdString(key), [this, key]() {
+      m_app.scene().submit<AddObjectCommand>(m_app.scene(), Object::make(key));
+    });
+  }
 }
 
 void MainMenuBar::make_window_menu()

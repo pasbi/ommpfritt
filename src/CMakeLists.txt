@@ -3,6 +3,7 @@ file (GLOB SOURCES
 )
 
 add_subdirectory(commands)
+add_subdirectory(geometry)
 add_subdirectory(mainwindow)
 add_subdirectory(managers)
 add_subdirectory(objects)

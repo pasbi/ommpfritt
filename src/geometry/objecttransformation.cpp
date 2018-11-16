@@ -1,9 +1,27 @@
-#include "objects/objecttransformation.h"
-#include "external/json.hpp"
+#include <assert.h>
+
+#include "geometry/objecttransformation.h"
+
+namespace
+{
+
+arma::vec2 apply_to_non_homogenous( const omm::ObjectTransformation::mat_type& matrix,
+                                    const arma::vec2& vector,
+                                    const double third_component )
+{
+  auto homogenous_coordinates = arma::vec3 { vector[0], vector[1], third_component };
+  homogenous_coordinates = matrix * homogenous_coordinates;
+
+  // assert kind of vector did not change (direction maps to direction, position maps to position)
+  assert(homogenous_coordinates[2] == third_component);
+
+  return { homogenous_coordinates[0], homogenous_coordinates[1] };
+}
+
+}  // namespace
 
 namespace omm
 {
-
 ObjectTransformation::ObjectTransformation(const arma::mat::fixed<N_ROWS, N_COLS>& matrix)
   : m_matrix(matrix)
 {
@@ -25,22 +43,22 @@ ObjectTransformation::ObjectTransformation(const Parameters& parameters)
 
 ObjectTransformation ObjectTransformation::translated(const arma::vec2& translation_vector) const
 {
-  return *this * translation(translation_vector);
+  return apply(translation(translation_vector));
 }
 
 ObjectTransformation ObjectTransformation::rotated(double angle) const
 {
-  return *this * rotation(angle);
+  return apply(rotation(angle));
 }
 
 ObjectTransformation ObjectTransformation::sheared(double shear) const
 {
-  return *this * shearing(shear);
+  return apply(shearing(shear));
 }
 
 ObjectTransformation ObjectTransformation::scaled(const arma::vec2& scale_vector) const
 {
-  return *this * scalation(scale_vector);
+  return apply(scalation(scale_vector));
 }
 
 ObjectTransformation ObjectTransformation::translation(const arma::vec2& translation_vector)
@@ -141,7 +159,7 @@ std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t)
 
 bool operator==(const ObjectTransformation& lhs, const ObjectTransformation& rhs)
 {
-  return arma::all(arma::all(lhs.m_matrix == rhs.m_matrix));
+  return arma::all(arma::all(lhs.matrix() == rhs.matrix()));
 }
 
 bool operator!=(const ObjectTransformation& lhs, const ObjectTransformation& rhs)
@@ -165,9 +183,42 @@ bool operator<(const ObjectTransformation& lhs, const ObjectTransformation& rhs)
   return false; // matrices are equal
 }
 
-ObjectTransformation operator*(const ObjectTransformation& a, const ObjectTransformation& b)
+arma::vec2 ObjectTransformation::apply_to_position(const arma::vec2& position) const
 {
-  return ObjectTransformation(a.m_matrix * b.m_matrix);
+  return apply_to_non_homogenous(m_matrix, position, 1.0);
+}
+
+arma::vec2 ObjectTransformation::apply_to_direction(const arma::vec2& direction) const
+{
+  return apply_to_non_homogenous(m_matrix, direction, 0.0);
+}
+
+BoundingBox ObjectTransformation::apply(const BoundingBox& bb) const
+{
+  const auto top_left = apply_to_position(bb.top_left());
+  const auto top_right = apply_to_position(bb.top_right());
+  const auto bottom_left = apply_to_position(bb.bottom_left());
+  const auto bottom_right = apply_to_position(bb.bottom_right());
+
+  return BoundingBox({top_left, top_right, bottom_left, bottom_right});
+}
+
+ObjectTransformation ObjectTransformation::apply(const ObjectTransformation& t) const
+{
+  return ObjectTransformation(m_matrix * t.m_matrix);
+}
+
+Point ObjectTransformation::apply(const Point& point) const
+{
+  Point p(apply_to_position(point.position));
+  p.left_tangent = apply_to_direction(point.left_tangent);
+  p.right_tangent = apply_to_direction(point.right_tangent);
+  return p;
+}
+
+const ObjectTransformation::mat_type& ObjectTransformation::matrix() const
+{
+  return m_matrix;
 }
 
 }  // namespace omm

@@ -1,6 +1,6 @@
 file (GLOB SOURCES
-  "ellipse.cpp"
-  "object.cpp"
-  "selectable.cpp"
+  "boundingbox.cpp"
+  "objecttransformation.cpp"
+  "point.cpp"
 )
 target_sources(ommpfritt PRIVATE ${SOURCES})

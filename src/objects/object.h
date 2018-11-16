@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 #include "external/json_fwd.hpp"
-#include "objecttransformation.h"
+#include "geometry/objecttransformation.h"
 #include "properties/hasproperties.h"
 #include "abstractfactory.h"
 #include "objects/selectable.h"
@@ -23,6 +23,7 @@ class Object
   , public Selectable
   , public AbstractFactory<std::string, Object>
 {
+  // TODO factor out the abstract object form the actual `Empty Object` implementation
 public:
   explicit Object();
   virtual ~Object();
@@ -65,13 +66,15 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual void render(AbstractRenderer& renderer) const;
-  virtual AbstractRenderer::Region bounding_box() const;
+  void render_recursive(AbstractRenderer& renderer) const;
+  virtual BoundingBox bounding_box() const;
+  BoundingBox recursive_bounding_box() const;
+  Style style() const;
 
 private:
   std::vector<std::unique_ptr<Tag>> m_tags;
   std::vector<std::unique_ptr<Object>> m_children;
   Object* m_parent;
-
   friend class ObjectView;
 };
 

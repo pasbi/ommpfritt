@@ -10,7 +10,7 @@
 
 #include "python/objectview.h"
 #include "external/json_fwd.hpp"
-#include "observerregister.h"
+#include "observed.h"
 #include "scene/objecttreecontext.h"
 
 namespace omm
@@ -43,8 +43,8 @@ class Object;
 class Project;
 
 class Scene
-  : public ObserverRegister<AbstractObjectTreeObserver>
-  , public ObserverRegister<AbstractSelectionObserver>
+  : public Observed<AbstractObjectTreeObserver>
+  , public Observed<AbstractSelectionObserver>
 {
 public:
   Scene();

@@ -66,10 +66,10 @@ template<typename T> NumericPropertyWidget<T>
   QObject::connect( m_spinbox,
                     static_cast<void(SpinBox::Base::*)(T)>(&SpinBox::Base::valueChanged),
                     set_properties_value );
-  on_value_changed();
+  on_property_value_changed();
 }
 
-template<typename T> void NumericPropertyWidget<T>::on_value_changed()
+template<typename T> void NumericPropertyWidget<T>::on_property_value_changed()
 {
   m_spinbox->blockSignals(true);
   m_spinbox->set_values(NumericPropertyWidget<T>::get_properties_values());

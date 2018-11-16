@@ -14,7 +14,7 @@ public:
   std::string type() const override;
 
 protected:
-  void on_value_changed() override;
+  void on_property_value_changed() override;
 
   AbstractTransformationEdit* m_transformation_edit;
 };

@@ -3,7 +3,7 @@
 #include <string>
 #include "propertywidgets/propertywidget.h"
 #include "propertywidgets/multivalueedit.h"
-#include "objects/objecttransformation.h"
+#include "geometry/objecttransformation.h"
 
 namespace omm
 {

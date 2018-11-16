@@ -19,10 +19,10 @@ ReferencePropertyWidget
     set_properties_value(reference);
   });
 
-  on_value_changed();
+  on_property_value_changed();
 }
 
-void ReferencePropertyWidget::on_value_changed()
+void ReferencePropertyWidget::on_property_value_changed()
 {
   m_line_edit->blockSignals(true);
   m_line_edit->set_values(get_properties_values());

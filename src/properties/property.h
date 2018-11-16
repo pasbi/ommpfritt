@@ -6,9 +6,8 @@
 #include <glog/logging.h>
 #include <set>
 
-#include "objects/objecttransformation.h" //TODO remove that include
 #include "external/json.hpp"
-#include "observerregister.h"
+#include "observed.h"
 #include "abstractfactory.h"
 #include "serializers/serializable.h"
 #include "common.h"
@@ -18,22 +17,32 @@ namespace py = pybind11;
 namespace omm
 {
 
-template<typename ValueT> class TypedProperty;
-class Object;
-
 #define DISABLE_DANGEROUS_PROPERTY_TYPE(T) \
-  static_assert(!std::is_same<ValueT, T>(), \
-                "Forbidden Property Type '"#T"'.");
+  static_assert(!std::is_same<ValueT, T>(), "Forbidden Property Type '"#T"'.");
 
 // Disable some T in TypedProperty<T>
-// Without this guard, it was easy to accidentally use the
-// TypedProperty<const char*> acidentally when you actually want
-// TypedProperty<std::string>. It's hard to notice and things will
-// break at strange places so debugging it becomes ugly.
+// Without this guard, it was easy to accidentally use e.g.
+// TypedProperty<const char*> when you actually want
+// TypedProperty<std::string>. It's hard to notice, things will
+// break at strange places and debugging it becomes ugly.
+// If you encounter such an evil twin ET for your type T, add it to the following list like I did
+// for `const char*`.
 #define DISABLE_DANGEROUS_PROPERTY_TYPES \
   DISABLE_DANGEROUS_PROPERTY_TYPE(const char*)
 
-class Property : public AbstractFactory<std::string, Property>, public Serializable
+template<typename ValueT> class TypedProperty;
+class Object;
+
+class AbstractPropertyObserver
+{
+public:
+  virtual void on_property_value_changed() = 0;
+};
+
+class Property
+  : public AbstractFactory<std::string, Property>
+  , public Serializable
+  , public Observed<AbstractPropertyObserver>
 {
 public:
   using SetOfProperties = std::set<Property*>;
@@ -91,13 +100,6 @@ public:
 private:
   std::string m_label;
   std::string m_category;
-};
-
-class AbstractTypedPropertyObserver
-{
-public:
-  virtual void on_value_changed() = 0;
-  template<typename ValueT> friend class TypedProperty;
 };
 
 }  // namespace omm

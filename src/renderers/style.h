@@ -5,7 +5,6 @@ namespace omm
 
 class Style
 {
-
 };
 
 }  // namespace omm

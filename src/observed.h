@@ -2,7 +2,7 @@
 
 #include <set>
 
-template<typename ObserverT> class ObserverRegister
+template<typename ObserverT> class Observed
 {
 public:
   void register_observer(ObserverT& observer)
