@@ -17,14 +17,27 @@ public:
 
   explicit ObjectTransformation();
   explicit ObjectTransformation(const Mat& mat);
+
   void set_translation(const arma::vec2& translation_vector);
+  void translate(const arma::vec2& translation_vector);
+  ObjectTransformation translated(const arma::vec2& translation_vector) const;
   arma::vec2 translation() const;
+
   void set_rotation(const double& angle);
+  void rotate(const double& angle);
+  ObjectTransformation rotated(const double& angle) const;
   double rotation() const;
+
   void set_scalation(const arma::vec2& scale_vector);
+  void scale(const arma::vec2& scale_vector);
+  ObjectTransformation scaled(const arma::vec2& scale_vector) const;
   arma::vec2 scalation() const;
+
   void set_shearing(const double& shear);
+  void shear(const double& shear);
+  ObjectTransformation sheared(const double& shear) const;
   double shearing() const;
+
   ObjectTransformation inverted() const;
 
   Mat to_mat() const;

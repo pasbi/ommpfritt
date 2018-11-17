@@ -58,19 +58,6 @@ void Property
   m_category = deserializer.get_string(make_pointer( root, "category" ));
 }
 
-void Property::register_properties()
-{
-#define REGISTER_PROPERTY(TYPE) Property::register_type<TYPE>(#TYPE);
-
-  REGISTER_PROPERTY(IntegerProperty);
-  REGISTER_PROPERTY(FloatProperty);
-  REGISTER_PROPERTY(StringProperty);
-  REGISTER_PROPERTY(TransformationProperty);
-  REGISTER_PROPERTY(ReferenceProperty);
-
-#undef REGISTER_PROPERTY
-}
-
 std::string Property::get_label(const SetOfProperties& properties)
 {
   assert(properties.size() > 0);

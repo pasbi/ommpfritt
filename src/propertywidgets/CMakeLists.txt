@@ -2,6 +2,7 @@ file (GLOB SOURCES
   "abstracttransformationedit.cpp"
   "numericpropertywidget.cpp"
   "propertywidget.cpp"
+  "propertywidgetregister.cpp"
   "referencepropertywidget.cpp"
   "referencelineedit.cpp"
   "spinboxtransformationedit.cpp"

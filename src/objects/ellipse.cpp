@@ -22,7 +22,6 @@ Ellipse::Ellipse()
 
 void Ellipse::render(AbstractRenderer& renderer) const
 {
-  LOG(INFO) << "draw ellipse";
   const size_t n = 10;
   const auto rx = property<double>("rx").value();
   const auto ry = property<double>("ry").value();

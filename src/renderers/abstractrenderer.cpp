@@ -32,10 +32,15 @@ void AbstractRenderer::pop_transformation()
 ObjectTransformation AbstractRenderer::current_transformation() const
 {
   if (m_transformation_stack.size() == 0) {
-    return ObjectTransformation();   // TODO implement viewport translation, scaling, etc. here!
+    return m_base_transformation;
   } else {
     return m_transformation_stack.top();
   }
+}
+
+void AbstractRenderer::set_base_transformation(const ObjectTransformation& base_transformation)
+{
+  m_base_transformation = base_transformation;
 }
 
 }  // namespace omm

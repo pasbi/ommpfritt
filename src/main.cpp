@@ -13,12 +13,12 @@
 
 int main (int argc, char *argv[])
 {
-  omm::Property::register_properties();
-  omm::AbstractPropertyWidget::register_propertywidgets();
-  omm::Object::register_objects();
-  omm::Tag::register_tags();
-  omm::AbstractSerializer::register_serializers();
-  omm::AbstractDeserializer::register_deserializers();
+  omm::register_properties();
+  omm::register_propertywidgets();
+  omm::register_objects();
+  omm::register_tags();
+  omm::register_serializers();
+  omm::register_deserializers();
 
   google::InitGoogleLogging(argv[0]);
   QApplication qt_app(argc, argv);

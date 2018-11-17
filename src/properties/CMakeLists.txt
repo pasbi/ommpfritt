@@ -3,6 +3,7 @@ file (GLOB SOURCES
   "hasproperties.cpp"
   "integerproperty.cpp"
   "property.cpp"
+  "propertyregister.cpp"
   "referenceproperty.cpp"
   "stringproperty.cpp"
   "transformationproperty.cpp"

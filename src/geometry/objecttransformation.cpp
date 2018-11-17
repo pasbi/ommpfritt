@@ -56,6 +56,55 @@ void ObjectTransformation::set_scalation(const arma::vec2& scale_vector)
   m_scalation = scale_vector;
 }
 
+void ObjectTransformation::translate(const arma::vec2& translation_vector)
+{
+  m_translation += translation_vector;
+}
+
+void ObjectTransformation::rotate(const double& angle)
+{
+  m_rotation += angle;
+}
+
+void ObjectTransformation::shear(const double& shear)
+{
+  m_shearing += shear;
+}
+
+void ObjectTransformation::scale(const arma::vec2& scale_vector)
+{
+  m_scalation(0) *= scale_vector(0);
+  m_scalation(1) *= scale_vector(1);
+}
+
+ObjectTransformation ObjectTransformation::translated(const arma::vec2& translation_vector) const
+{
+  auto translated = *this;
+  translated.translated(translation_vector);
+  return translated;
+}
+
+ObjectTransformation ObjectTransformation::rotated(const double& angle) const
+{
+  auto rotated = *this;
+  rotated.rotated(angle);
+  return rotated;
+}
+
+ObjectTransformation ObjectTransformation::sheared(const double& shear) const
+{
+  auto sheared = *this;
+  sheared.sheared(shear);
+  return sheared;
+}
+
+ObjectTransformation ObjectTransformation::scaled(const arma::vec2& scale_vector) const
+{
+  auto scaled = *this;
+  scaled.scaled(scale_vector);
+  return scaled;
+}
+
 ObjectTransformation::Mat ObjectTransformation::to_mat() const
 {
   const Mat translation = { { 1, 0, m_translation(0) },

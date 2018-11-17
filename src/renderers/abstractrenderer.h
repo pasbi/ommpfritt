@@ -21,6 +21,7 @@ public:
   const BoundingBox& bounding_box() const;
 
 public:
+  void set_base_transformation(const ObjectTransformation& base_transformation);
   virtual void start_group(const std::string& name) {}
   virtual void end_group() {}
   virtual void draw_spline(const std::vector<Point>& points, const Style& style) = 0;
@@ -30,6 +31,7 @@ public:
 
 private:
   const BoundingBox m_bounding_box;
+  ObjectTransformation m_base_transformation;
   std::stack<ObjectTransformation> m_transformation_stack;
 };
 

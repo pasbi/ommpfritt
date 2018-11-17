@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <QWidget>
-#include <chrono>
 #include <QTimer>
 
 namespace omm
@@ -17,7 +16,6 @@ public:
 
 protected:
   void paintEvent(QPaintEvent* event);
-  void mouseDoubleClickEvent(QMouseEvent* event) override;
 
 private:
   Scene& m_scene;

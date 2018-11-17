@@ -23,14 +23,6 @@ AbstractSerializer::~AbstractSerializer()
 {
 }
 
-void AbstractSerializer::register_serializers()
-{
-#define REGISTER_SERIALIZER(TYPE) AbstractSerializer::register_type<TYPE>(#TYPE);
-  REGISTER_SERIALIZER(JSONSerializer);
-#undef REGISTER_SERIALIZER
-}
-
-
 AbstractDeserializer::AbstractDeserializer(std::istream& stream)
 {
 }
@@ -44,14 +36,6 @@ AbstractDeserializer::~AbstractDeserializer()
     property->set_value(reference);
   }
 }
-
-void AbstractDeserializer::register_deserializers()
-{
-#define REGISTER_DESERIALIZER(TYPE) AbstractDeserializer::register_type<TYPE>(#TYPE);
-  REGISTER_DESERIALIZER(JSONDeserializer);
-#undef REGISTER_DESERIALIZER
-}
-
 
 void AbstractDeserializer::register_reference( const Serializable::IdType& id,
                                                HasProperties& reference )

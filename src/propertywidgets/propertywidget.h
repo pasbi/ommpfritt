@@ -18,7 +18,6 @@ class AbstractPropertyWidget
 public:
   explicit AbstractPropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
   virtual ~AbstractPropertyWidget();
-  static void register_propertywidgets();
 
 protected:
   virtual std::string label() const;
@@ -68,5 +67,6 @@ private:
   std::set<property_type*> m_properties;
 };
 
+void register_propertywidgets();
 
 }  // namespace omm

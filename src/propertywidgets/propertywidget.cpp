@@ -36,19 +36,6 @@ std::unique_ptr<QWidget> AbstractPropertyWidget::make_label_widget() const
   return std::make_unique<QLabel>(QString::fromStdString(label()));
 }
 
-void AbstractPropertyWidget::register_propertywidgets()
-{
-#define REGISTER_PROPERTYWIDGET(TYPE) AbstractPropertyWidget::register_type<TYPE>(#TYPE);
-
-  REGISTER_PROPERTYWIDGET(IntegerPropertyWidget);
-  REGISTER_PROPERTYWIDGET(FloatPropertyWidget);
-  REGISTER_PROPERTYWIDGET(StringPropertyWidget);
-  REGISTER_PROPERTYWIDGET(TransformationPropertyWidget);
-  REGISTER_PROPERTYWIDGET(ReferencePropertyWidget);
-
-#undef REGISTER_PROPERTYWIDGET
-}
-
 std::string AbstractPropertyWidget::label() const
 {
   return m_label;

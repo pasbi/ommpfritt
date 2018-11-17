@@ -23,7 +23,6 @@ class Object
   , public Selectable
   , public AbstractFactory<std::string, Object>
 {
-  // TODO factor out the abstract object form the actual `Empty Object` implementation
 public:
   explicit Object();
   virtual ~Object();
@@ -59,15 +58,13 @@ public:
   static const std::string TRANSFORMATION_PROPERTY_KEY;
   static const std::string NAME_PROPERTY_KEY;
 
-  static void register_objects();
-  std::string type() const override;
   std::string name() const override;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-  virtual void render(AbstractRenderer& renderer) const;
+  virtual void render(AbstractRenderer& renderer) const = 0;
   void render_recursive(AbstractRenderer& renderer) const;
-  virtual BoundingBox bounding_box() const;
+  virtual BoundingBox bounding_box() const = 0;
   BoundingBox recursive_bounding_box() const;
   Style style() const;
 
@@ -78,6 +75,7 @@ private:
   friend class ObjectView;
 };
 
+void register_objects();
 std::ostream& operator<<(std::ostream& ostream, const Object& object);
 
 }  // namespace omm

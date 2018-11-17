@@ -4,7 +4,7 @@
 #include <assert.h>
 #include <QDebug>
 
-#include "object.h"
+#include "objects/empty.h"
 #include "external/json.hpp"
 #include "properties/typedproperty.h"
 #include "serializers/abstractserializer.h"
@@ -14,9 +14,10 @@ namespace
 {
 
 constexpr auto ROOT_POINTER = "root";
-std::unique_ptr<omm::Object> make_root()
+
+auto make_root()
 {
-  return std::make_unique<omm::Object>();
+  return std::make_unique<omm::Empty>();
 }
 
 }

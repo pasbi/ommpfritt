@@ -30,13 +30,6 @@ bool Tag::run()
   return false;
 }
 
-void Tag::register_tags()
-{
-#define REGISTER_TAG(TYPE) Tag::register_type<TYPE>(#TYPE);
-  REGISTER_TAG(Tag);
-#undef REGISTER_TAG
-}
-
 std::string Tag::type() const
 {
   return "Object";

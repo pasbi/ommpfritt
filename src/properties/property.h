@@ -75,8 +75,6 @@ public:
   Property& set_category(const std::string& category);
   virtual std::string widget_type() const = 0;
 
-  static void register_properties();
-
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
 
@@ -101,5 +99,7 @@ private:
   std::string m_label;
   std::string m_category;
 };
+
+void register_properties();
 
 }  // namespace omm

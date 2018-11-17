@@ -32,11 +32,7 @@ void Viewport::paintEvent(QPaintEvent* event)
   ViewportRenderer(painter, render_box).render(m_scene);
 }
 
-void Viewport::mouseDoubleClickEvent(QMouseEvent* event)
 {
-  // TODO remove this function once viewport auto update works reliably.
-  update();
-  QWidget::mouseDoubleClickEvent(event);
 }
 
 }  // namespace omm

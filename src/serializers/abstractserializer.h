@@ -31,7 +31,6 @@ public:
   virtual void set_value(const std::string& value, const Pointer& pointer) = 0;
   virtual void set_value(const ObjectTransformation& value, const Pointer& pointer) = 0;
   virtual void set_value(const Serializable::IdType& id, const Pointer& pointer) = 0;
-  static void register_serializers();
 };
 
 class AbstractDeserializer
@@ -54,7 +53,6 @@ public:
   void register_reference_property( ReferenceProperty& reference_property,
                                     const Serializable::IdType& id );
 
-  static void register_deserializers();
 
   class DeserializeError : public std::runtime_error
   {
@@ -69,6 +67,9 @@ private:
   // maps new property to old hash
   std::unordered_map<ReferenceProperty*, Serializable::IdType> m_reference_property_to_id;
 };
+
+void register_serializers();
+void register_deserializers();
 
 }  // namespace omm
 

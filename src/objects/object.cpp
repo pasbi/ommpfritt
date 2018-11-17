@@ -16,8 +16,6 @@
 #include "serializers/jsonserializer.h"
 #include "renderers/style.h"
 
-#include "objects/ellipse.h"
-
 namespace
 {
 
@@ -273,19 +271,6 @@ std::ostream& operator<<(std::ostream& ostream, const Object& object)
   return ostream;
 }
 
-std::string Object::type() const
-{
-  return "Object";
-}
-
-void Object::register_objects()
-{
-#define REGISTER_OBJECT(TYPE) Object::register_type<TYPE>(#TYPE);
-  REGISTER_OBJECT(Object);
-  REGISTER_OBJECT(Ellipse);
-#undef REGISTER_OBJECT
-}
-
 void Object::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   HasProperties::serialize(serializer, root);
@@ -349,16 +334,6 @@ void Object::render_recursive(AbstractRenderer& renderer) const
       renderer.pop_transformation();
     }
   // }
-}
-
-void Object::render(AbstractRenderer&) const
-{
-  return;
-}
-
-BoundingBox Object::bounding_box() const
-{
-  return BoundingBox({ arma::vec2{0, 0} });
 }
 
 BoundingBox Object::recursive_bounding_box() const
