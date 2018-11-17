@@ -56,23 +56,22 @@ SpinBoxTransformationEdit::SpinBoxTransformationEdit()
 
 void SpinBoxTransformationEdit::set_value(const ObjectTransformation& value)
 {
-  const auto parameters = value.parameters();
-  m_xposition_spinbox->setValue(parameters.translation_vector(0));
-  m_yposition_spinbox->setValue(parameters.translation_vector(1));
-  m_xscale_spinbox->setValue(parameters.scale_vector(0));
-  m_yscale_spinbox->setValue(parameters.scale_vector(1));
-  m_shear_spinbox->setValue(parameters.shear);
-  m_rotation_spinbox->setValue(parameters.rotation * 180.0 / M_PI);
+  m_xposition_spinbox->setValue(value.translation()(0));
+  m_yposition_spinbox->setValue(value.translation()(1));
+  m_xscale_spinbox->setValue(value.scalation()(0));
+  m_yscale_spinbox->setValue(value.scalation()(1));
+  m_shear_spinbox->setValue(value.shearing());
+  m_rotation_spinbox->setValue(value.rotation() * 180.0 / M_PI);
 }
 
 ObjectTransformation SpinBoxTransformationEdit::value() const
 {
-  ObjectTransformation::Parameters parameters;
-  parameters.translation_vector = { m_xposition_spinbox->value(), m_yposition_spinbox->value() };
-  parameters.scale_vector = { m_xscale_spinbox->value(), m_yscale_spinbox->value() };
-  parameters.shear = m_shear_spinbox->value();
-  parameters.rotation = m_rotation_spinbox->value() * M_PI / 180.0;
-  return ObjectTransformation(parameters);
+  ObjectTransformation t;
+  t.set_translation({ m_xposition_spinbox->value(), m_yposition_spinbox->value() });
+  t.set_scalation({ m_xscale_spinbox->value(), m_yscale_spinbox->value() });
+  t.set_shearing(m_shear_spinbox->value());
+  t.set_rotation(m_rotation_spinbox->value() * M_PI / 180.0);
+  return t;
 }
 
 void SpinBoxTransformationEdit::set_inconsistent_value()

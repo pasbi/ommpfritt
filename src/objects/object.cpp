@@ -63,7 +63,7 @@ Object::Object()
 {
 
   add_property( TRANSFORMATION_PROPERTY_KEY,
-                std::make_unique<TransformationProperty>(ObjectTransformation::identity()) )
+                std::make_unique<TransformationProperty>(ObjectTransformation()) )
     .set_label(QObject::tr("transformation").toStdString())
     .set_category(QObject::tr("object").toStdString());
 

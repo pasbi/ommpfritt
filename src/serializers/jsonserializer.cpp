@@ -95,7 +95,8 @@ void JSONSerializer::set_value(const ObjectTransformation& value, const Pointer&
   for (size_t i_row = 0; i_row < ObjectTransformation::N_ROWS; ++i_row) {
     auto& row = matrix_json[i_row];
     for (size_t i_col = 0; i_col < ObjectTransformation::N_COLS; ++i_col) {
-      row[i_col] = value.element(i_row, i_col);
+      const auto matrix = value.to_mat();
+      row[i_col] = matrix(i_row, i_col);
     }
   }
 }
@@ -142,14 +143,14 @@ std::string JSONDeserializer::get_string(const Pointer& pointer)
 
 ObjectTransformation JSONDeserializer::get_object_transformation(const Pointer& pointer)
 {
-  ObjectTransformation transformation;
+  ObjectTransformation::Mat mat;
   for (size_t i_row = 0; i_row < ObjectTransformation::N_ROWS; ++i_row) {
     for (size_t i_col = 0; i_col < ObjectTransformation::N_COLS; ++i_col) {
       const auto element_pointer = Serializable::make_pointer(pointer, i_row, i_col);
-      transformation.set_element(i_row, i_col, get_t<double>(m_store, element_pointer));
+      mat(i_row, i_col) = get_t<double>(m_store, element_pointer);
     }
   }
-  return transformation;
+  return ObjectTransformation(mat);
 }
 
 Serializable::IdType JSONDeserializer::get_id(const Pointer& pointer)

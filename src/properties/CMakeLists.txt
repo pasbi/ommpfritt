@@ -8,5 +8,5 @@ file (GLOB SOURCES
   "transformationproperty.cpp"
   "typedproperty.cpp"
 )
-target_sources(ommpfritt PRIVATE ${SOURCES})
+target_sources(libommpfritt PRIVATE ${SOURCES})
 

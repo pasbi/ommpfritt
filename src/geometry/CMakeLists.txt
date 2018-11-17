@@ -3,4 +3,4 @@ file (GLOB SOURCES
   "objecttransformation.cpp"
   "point.cpp"
 )
-target_sources(ommpfritt PRIVATE ${SOURCES})
+target_sources(libommpfritt PRIVATE ${SOURCES})

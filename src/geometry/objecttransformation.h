@@ -13,44 +13,35 @@ class ObjectTransformation
 public:
   static constexpr auto N_ROWS = 3;
   static constexpr auto N_COLS = 3;
-  struct Parameters
-  {
-    arma::vec2 translation_vector;
-    double rotation;
-    arma::vec2 scale_vector;
-    double shear;
-  };
-  using mat_type = arma::mat::fixed<N_ROWS, N_COLS>;
+  using Mat = arma::mat::fixed<N_ROWS, N_COLS>;
 
   explicit ObjectTransformation();
-  explicit ObjectTransformation(const Parameters& parameters);
-  ObjectTransformation translated(const arma::vec2& translation_vector) const;
-  ObjectTransformation rotated(double angle) const;
-  ObjectTransformation scaled(const arma::vec2& scale_vector) const;
-  ObjectTransformation sheared(double shear) const;
+  explicit ObjectTransformation(const Mat& mat);
+  void set_translation(const arma::vec2& translation_vector);
+  arma::vec2 translation() const;
+  void set_rotation(const double& angle);
+  double rotation() const;
+  void set_scalation(const arma::vec2& scale_vector);
+  arma::vec2 scalation() const;
+  void set_shearing(const double& shear);
+  double shearing() const;
   ObjectTransformation inverted() const;
 
-  static ObjectTransformation translation(const arma::vec2& translation_vector);
-  static ObjectTransformation rotation(double angle);
-  static ObjectTransformation scalation(const arma::vec2& scale_vector);
-  static ObjectTransformation shearing(double shear);
-  static ObjectTransformation identity();
-
-  Parameters parameters() const;
-  double element(int row, int column) const;
-  void set_element(int row, int column, double value);
-  arma::vec2 translation() const;
+  Mat to_mat() const;
+  void set_mat(const Mat& mat);
 
   arma::vec2 apply_to_position(const arma::vec2& position) const;
   arma::vec2 apply_to_direction(const arma::vec2& direction) const;
   BoundingBox apply(const BoundingBox& bb) const;
   ObjectTransformation apply(const ObjectTransformation& t) const;
   Point apply(const Point& point) const;
-  const mat_type& matrix() const;
+  ObjectTransformation normalized() const;
 
 private:
-  explicit ObjectTransformation(const arma::mat::fixed<N_ROWS, N_COLS>& matrix);
-  mat_type m_matrix;
+  arma::vec2 m_translation;
+  arma::vec2 m_scalation;
+  double m_shearing;
+  double m_rotation;
 };
 
 std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t);

@@ -4,5 +4,5 @@ file (GLOB SOURCES
   "mainwindow.cpp"
   "viewport.cpp"
 )
-target_sources(ommpfritt PRIVATE ${SOURCES})
+target_sources(libommpfritt PRIVATE ${SOURCES})
 

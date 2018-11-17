@@ -10,7 +10,7 @@ namespace
 
 auto to_transformation(const omm::ObjectTransformation& transformation)
 {
-  const auto& m = transformation.matrix();
+  const auto& m = transformation.to_mat();
   return QTransform( m.at(0, 0), m.at(1, 0), m.at(2, 0),
                      m.at(0, 1), m.at(1, 1), m.at(2, 1),
                      m.at(0, 2), m.at(1, 2), m.at(2, 2) );

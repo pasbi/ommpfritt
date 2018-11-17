@@ -6,4 +6,4 @@ file (GLOB SOURCES
   "objecttreeview.cpp"
 )
 
-target_sources(ommpfritt PRIVATE ${SOURCES})
+target_sources(libommpfritt PRIVATE ${SOURCES})

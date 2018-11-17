@@ -5,7 +5,7 @@
 namespace
 {
 
-arma::vec2 apply_to_non_homogenous( const omm::ObjectTransformation::mat_type& matrix,
+arma::vec2 apply_to_non_homogenous( const omm::ObjectTransformation::Mat& matrix,
                                     const arma::vec2& vector,
                                     const double third_component )
 {
@@ -22,144 +22,125 @@ arma::vec2 apply_to_non_homogenous( const omm::ObjectTransformation::mat_type& m
 
 namespace omm
 {
-ObjectTransformation::ObjectTransformation(const arma::mat::fixed<N_ROWS, N_COLS>& matrix)
-  : m_matrix(matrix)
+
+ ObjectTransformation::ObjectTransformation()
+  : m_translation({ 0, 0 })
+  , m_scalation({ 1, 1 })
+  , m_shearing(0)
+  , m_rotation(0)
 {
 }
 
-ObjectTransformation::ObjectTransformation()
+ObjectTransformation::ObjectTransformation(const Mat& mat)
 {
-  m_matrix.eye();
+  set_mat(mat);
 }
 
-ObjectTransformation::ObjectTransformation(const Parameters& parameters)
-  : ObjectTransformation()
+void ObjectTransformation::set_translation(const arma::vec2& translation_vector)
 {
-  m_matrix = translation(parameters.translation_vector).m_matrix
-           * scalation(parameters.scale_vector).m_matrix
-           * shearing(parameters.shear).m_matrix
-           * rotation(parameters.rotation).m_matrix;
+  m_translation = translation_vector;
 }
 
-ObjectTransformation ObjectTransformation::translated(const arma::vec2& translation_vector) const
+void ObjectTransformation::set_rotation(const double& angle)
 {
-  return apply(translation(translation_vector));
+  m_rotation = angle;
 }
 
-ObjectTransformation ObjectTransformation::rotated(double angle) const
+void ObjectTransformation::set_shearing(const double& shear)
 {
-  return apply(rotation(angle));
+  m_shearing = shear;
 }
 
-ObjectTransformation ObjectTransformation::sheared(double shear) const
+void ObjectTransformation::set_scalation(const arma::vec2& scale_vector)
 {
-  return apply(shearing(shear));
+  m_scalation = scale_vector;
 }
 
-ObjectTransformation ObjectTransformation::scaled(const arma::vec2& scale_vector) const
+ObjectTransformation::Mat ObjectTransformation::to_mat() const
 {
-  return apply(scalation(scale_vector));
+  const Mat translation = { { 1, 0, m_translation(0) },
+                            { 0, 1, m_translation(1) },
+                            { 0, 0, 1                } };
+  const Mat rotation = { { cos(m_rotation), -sin(m_rotation), 0 },
+                         { sin(m_rotation),  cos(m_rotation), 0 },
+                         { 0,                0,               1 } };
+  const Mat scalation = { { m_scalation(0), 0,              0 },
+                          { 0,              m_scalation(1), 0 },
+                          { 0,              0,              1 } };
+  const Mat shearing = { { 1,          0, 0 },
+                         { m_shearing, 1, 0 },
+                         { 0,          0, 1 } };
+
+  return translation * rotation * scalation * shearing;
 }
 
-ObjectTransformation ObjectTransformation::translation(const arma::vec2& translation_vector)
+void ObjectTransformation::set_mat(const Mat& mat)
 {
-  ObjectTransformation t = identity();
-  t.m_matrix.at(0, 2) = translation_vector(0);
-  t.m_matrix.at(1, 2) = translation_vector(1);
-  return t;
-}
+  const double a = mat(0, 0);
+  const double b = mat(0, 1);
+  const double c = mat(1, 0);
+  const double d = mat(1, 1);
 
-ObjectTransformation ObjectTransformation::rotation(double angle)
-{
-  ObjectTransformation t = identity();
-  t.m_matrix(0, 0) = cos(angle);
-  t.m_matrix(1, 1) = t.m_matrix(0, 0);
-  t.m_matrix(0, 1) = sin(angle);
-  t.m_matrix(1, 0) = -t.m_matrix(0, 1);
-  return t;
-}
+  m_translation = { mat(0, 2), mat(1, 2) };
 
-ObjectTransformation ObjectTransformation::scalation(const arma::vec2& scale_vector)
-{
-  ObjectTransformation t = identity();
-  t.m_matrix(0, 0) = scale_vector(0);
-  t.m_matrix(1, 1) = scale_vector(1);
-  return t;
-}
-
-ObjectTransformation ObjectTransformation::shearing(double shear)
-{
-  ObjectTransformation t = identity();
-  t.m_matrix(1, 0) = shear;
-  return t;
-}
-
-ObjectTransformation ObjectTransformation::identity()
-{
-  return ObjectTransformation();
-}
-
-ObjectTransformation::Parameters ObjectTransformation::parameters() const
-{
-  const double a = m_matrix(0, 0);
-  const double b = m_matrix(0, 1);
-  const double c = m_matrix(0, 2);
-  const double d = m_matrix(1, 0);
-  const double e = m_matrix(1, 1);
-  const double f = m_matrix(1, 2);
-  const double g = m_matrix(2, 0);
-  const double h = m_matrix(2, 1);
-  const double i = m_matrix(2, 2);
-  assert(g == 0);
-  assert(h == 0);
-  assert(i == 1);
+  assert(mat(2, 0) == 0);
+  assert(mat(2, 1) == 0);
+  assert(mat(2, 2) == 1);
 
   // https://math.stackexchange.com/a/78165/355947
-  const double det = a*e - b*d;
-  const double p = sqrt(pow(a, 2.0) + pow(b, 2.0));
-  const double r = det / p;
-  const double q = (a*d + b*e) / det;
-  const double phi = atan2(b, a);
+  // translation * scalation * shearing * rotation
+  // const double det = a*e - b*d;
+  // const double p = sqrt(pow(a, 2.0) + pow(b, 2.0));
+  // const double r = det / p;
+  // const double q = (a*d + b*e) / det;
+  // m_scalation = { p, r };
+  // m_shearing = q;
+  // m_rotation = atan2(b, a);
 
-  Parameters parameters;
-  parameters.translation_vector = { c, f };
-  parameters.rotation = phi;
-  parameters.scale_vector = { p, r };
-  parameters.shear = q;
-  return parameters;
+
+  // translation * rotation * scalation * shearing
+  const auto n = sqrt(pow(b, 2.0) + pow(d, 2.0));
+  m_rotation = -atan2(b, d);
+  m_scalation(1) = n;
+  m_scalation(0) = (a*d - b*c) / n;
+  m_shearing = (a*b + c*d) / pow(n, 2.0);
 }
 
 arma::vec2 ObjectTransformation::translation() const
 {
-  return arma::vec2{ m_matrix(0, 2), m_matrix(1, 2) };
+  return m_translation;
 }
 
-ObjectTransformation ObjectTransformation::inverted() const
+double ObjectTransformation::rotation() const
 {
-  return ObjectTransformation(m_matrix.i());
+  return m_rotation;
 }
 
-double ObjectTransformation::element(int row, int column) const
+arma::vec2 ObjectTransformation::scalation() const
 {
-  return m_matrix(row, column);
+  return m_scalation;
 }
 
-void ObjectTransformation::set_element(int row, int column, double value)
+double ObjectTransformation::shearing() const
 {
-  m_matrix(row, column) = value;
+  return m_shearing;
 }
 
 std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t)
 {
-  ostream << "[[" << t.element(0, 0) << ", " << t.element(0, 1) << ", " << t.element(0, 2) << "],";
-  ostream << " [" << t.element(1, 0) << ", " << t.element(1, 1) << ", " << t.element(1, 2) << "],";
-  ostream << " [" << t.element(2, 0) << ", " << t.element(2, 1) << ", " << t.element(2, 2) << "]]";
+  ostream << "[ t(" << t.translation()(0) << ", " << t.translation()(1);
+  ostream << ") s(" << t.scalation()(0) << ", " << t.scalation()(1);
+  ostream << ") sh(" << t.shearing();
+  ostream << ") r(" << t.rotation() * 180 / M_PI << ") ]";
   return ostream;
 }
 
 bool operator==(const ObjectTransformation& lhs, const ObjectTransformation& rhs)
 {
-  return arma::all(arma::all(lhs.matrix() == rhs.matrix()));
+  return arma::all(lhs.translation() == rhs.translation())
+      && arma::all(lhs.scalation() == rhs.scalation())
+      && lhs.rotation() == rhs.rotation()
+      && lhs.shearing() == rhs.shearing();
 }
 
 bool operator!=(const ObjectTransformation& lhs, const ObjectTransformation& rhs)
@@ -169,28 +150,33 @@ bool operator!=(const ObjectTransformation& lhs, const ObjectTransformation& rhs
 
 bool operator<(const ObjectTransformation& lhs, const ObjectTransformation& rhs)
 {
-  for (int i = 0; i < ObjectTransformation::N_ROWS; ++i) {
-    for (int j = 0; j < ObjectTransformation::N_COLS; ++j) {
-      const auto a = lhs.element(i, j);
-      const auto b = rhs.element(i, j);
-      if (a > b) {
-        return false;
-      } else if (a < b) {
-        return true;
-      }
+  const std::vector<double> diffs = {
+    lhs.translation()(0) - rhs.translation()(0),
+    lhs.translation()(1) - rhs.translation()(1),
+    lhs.scalation()(0) - rhs.scalation()(0),
+    lhs.scalation()(1) - rhs.scalation()(1),
+    lhs.rotation() - rhs.rotation(),
+    lhs.shearing() - rhs.shearing()
+  };
+
+  for (auto d : diffs) {
+    if (d < 0) {
+      return true;
+    } else if (d > 0) {
+      return false;
     }
   }
-  return false; // matrices are equal
+  return false;
 }
 
 arma::vec2 ObjectTransformation::apply_to_position(const arma::vec2& position) const
 {
-  return apply_to_non_homogenous(m_matrix, position, 1.0);
+  return apply_to_non_homogenous(to_mat(), position, 1.0);
 }
 
 arma::vec2 ObjectTransformation::apply_to_direction(const arma::vec2& direction) const
 {
-  return apply_to_non_homogenous(m_matrix, direction, 0.0);
+  return apply_to_non_homogenous(to_mat(), direction, 0.0);
 }
 
 BoundingBox ObjectTransformation::apply(const BoundingBox& bb) const
@@ -205,7 +191,7 @@ BoundingBox ObjectTransformation::apply(const BoundingBox& bb) const
 
 ObjectTransformation ObjectTransformation::apply(const ObjectTransformation& t) const
 {
-  return ObjectTransformation(m_matrix * t.m_matrix);
+  return ObjectTransformation(to_mat() * t.to_mat());
 }
 
 Point ObjectTransformation::apply(const Point& point) const
@@ -216,9 +202,19 @@ Point ObjectTransformation::apply(const Point& point) const
   return p;
 }
 
-const ObjectTransformation::mat_type& ObjectTransformation::matrix() const
+ObjectTransformation ObjectTransformation::inverted() const
 {
-  return m_matrix;
+  return ObjectTransformation(to_mat().i());
+}
+
+ObjectTransformation ObjectTransformation::normalized() const
+{
+  ObjectTransformation normalized = *this;
+  if (normalized.scalation()(0) < 0) {
+    normalized.set_scalation(-normalized.scalation());
+    normalized.set_rotation(normalized.rotation() + M_PI);
+  }
+  return normalized;
 }
 
 }  // namespace omm

@@ -2,6 +2,8 @@ file (GLOB SOURCES
   main.cpp
 )
 
+target_sources(ommpfritt PRIVATE ${SOURCES})
+
 add_subdirectory(commands)
 add_subdirectory(geometry)
 add_subdirectory(mainwindow)
@@ -14,5 +16,3 @@ add_subdirectory(renderers)
 add_subdirectory(scene)
 add_subdirectory(serializers)
 add_subdirectory(tags)
-
-target_sources(ommpfritt PRIVATE ${SOURCES})
