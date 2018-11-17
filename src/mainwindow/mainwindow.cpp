@@ -9,7 +9,7 @@
 #include <QSettings>
 #include <QCloseEvent>
 
-#include "mainwindow/viewport.h"
+#include "mainwindow/viewport/viewport.h"
 #include "mainwindow/mainmenubar.h"
 #include "mainwindow/application.h"
 

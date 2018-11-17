@@ -5,22 +5,14 @@
 #include <QTimer>
 
 #include "geometry/objecttransformation.h"
+#include "mainwindow/viewport/mousepancontroller.h"
 
 namespace omm
 {
 
 class Scene;
 
-class MousePanArea : public QWidget
-{
-public:
-  void init();
-  arma::vec2 delta(arma::vec2 pos);
-private:
-  arma::vec2 m_last_position;
-};
-
-class Viewport : public MousePanArea
+class Viewport : public QWidget
 {
 public:
   Viewport(Scene& scene);
@@ -34,7 +26,7 @@ private:
   Scene& m_scene;
   std::unique_ptr<QTimer> m_timer;
   ObjectTransformation m_viewport_transformation;
-  arma::vec2 m_last_position;
+  MousePanController m_pan_controller;
 };
 
 }  // namespace omm

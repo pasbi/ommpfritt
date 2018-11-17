@@ -61,6 +61,7 @@ template<typename T> NumericPropertyWidget<T>
   this->set_default_layout(std::move(spinbox));
 
   const auto set_properties_value = [this](T value) {
+    LOG(INFO) << "set properties values " << value;
     this->set_properties_value(value);
   };
   QObject::connect( m_spinbox,
@@ -73,7 +74,7 @@ template<typename T> void NumericPropertyWidget<T>::on_property_value_changed()
 {
   m_spinbox->blockSignals(true);
   m_spinbox->set_values(NumericPropertyWidget<T>::get_properties_values());
-  m_spinbox->blockSignals(true);
+  m_spinbox->blockSignals(false);
 }
 
 template class NumericPropertyWidget<int>;

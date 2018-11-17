@@ -1,4 +1,4 @@
-#include "mainwindow/viewport.h"
+#include "mainwindow/viewport/viewport.h"
 
 #include <glog/logging.h>
 #include <QPainter>
@@ -32,6 +32,7 @@ namespace omm
 Viewport::Viewport(Scene& scene)
   : m_scene(scene)
   , m_timer(std::make_unique<QTimer>())
+  , m_pan_controller([this](const arma::vec2& pos) { set_cursor_position(*this, pos); })
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   connect(&*m_timer, &QTimer::timeout, [this]() {
@@ -60,7 +61,7 @@ void Viewport::paintEvent(QPaintEvent* event)
 
 void Viewport::mousePressEvent(QMouseEvent* event)
 {
-  MousePanArea::init();
+  m_pan_controller.init(point2vec(event->pos()));
 
   if (event->modifiers() & Qt::AltModifier) {
     event->accept();
@@ -72,41 +73,15 @@ void Viewport::mousePressEvent(QMouseEvent* event)
 void Viewport::mouseMoveEvent(QMouseEvent* event)
 {
   if (event->modifiers() & Qt::AltModifier ) {
-    const auto delta = MousePanArea::delta(point2vec(event->pos()));
+    const auto widget_size = arma::vec2{ static_cast<double>(width()),
+                                         static_cast<double>(height()) };
+    const auto cursor_position = point2vec(event->pos());
+    const auto delta = m_pan_controller.delta(cursor_position, widget_size);
     m_viewport_transformation.translate(delta);
     event->accept();
   } else {
     QWidget::mouseMoveEvent(event);
   }
-}
-
-void MousePanArea::init()
-{
-  m_last_position = point2vec(QWidget::mapFromGlobal(cursor().pos()));
-}
-
-arma::vec2 MousePanArea::delta(arma::vec2 new_position)
-{
-  auto cursor = QWidget::cursor();
-  const decltype(m_last_position) delta = new_position - m_last_position;
-
-  const auto infinity_pan_shift = [](double& coordinate, const double max) {
-    while (coordinate >= max) {
-      coordinate -= max;
-    }
-    while (coordinate <= 0) {
-      coordinate += max;
-    }
-  };
-
-  infinity_pan_shift(new_position(0), width());
-  infinity_pan_shift(new_position(1), height());
-
-  cursor.setPos(QWidget::mapToGlobal(QPoint(new_position(0), new_position(1))));
-  // QWidget::setCursor(cursor);
-  m_last_position = new_position;
-
-  return delta;
 }
 
 }  // namespace omm
