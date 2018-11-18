@@ -12,33 +12,13 @@
 #include "external/json_fwd.hpp"
 #include "observed.h"
 #include "scene/objecttreecontext.h"
+#include "scene/abstractselectionobserver.h"
+#include "scene/abstractobjecttreeobserver.h"
 
 namespace omm
 {
 
-class Scene;
 class Command;
-
-class AbstractObjectTreeObserver
-{
-protected:
-  virtual void beginInsertObject(Object& parent, int row) = 0;
-  virtual void beginInsertObject(const OwningObjectTreeContext& context) = 0;
-  virtual void endInsertObject() = 0;
-  virtual void beginMoveObject(const MoveObjectTreeContext& new_context) = 0;
-  virtual void endMoveObject() = 0;
-  virtual void beginRemoveObject(const Object& object) = 0;
-  virtual void endRemoveObject() = 0;
-  friend class Scene;
-};
-
-class AbstractSelectionObserver
-{
-protected:
-  virtual void set_selection(const std::set<HasProperties*>& selection) = 0;
-  friend class Scene;
-};
-
 class Object;
 class Project;
 
@@ -67,6 +47,8 @@ public:
   void move_object(MoveObjectTreeContext context);
   void remove_object(OwningObjectTreeContext& context);
   bool can_move_object(const MoveObjectTreeContext& new_context) const;
+
+  std::set<HasProperties*> selection() const;
   void selection_changed();
 
   bool save_as(const std::string& filename);

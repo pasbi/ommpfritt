@@ -71,9 +71,14 @@ Object& Scene::root() const
   return *m_root;
 }
 
+std::set<HasProperties*> Scene::selection() const
+{
+  return m_root->get_selected_children_and_tags();
+}
+
 void Scene::selection_changed()
 {
-  const auto selected_objects = m_root->get_selected_children_and_tags();
+  const auto selected_objects = selection();
 
   Observed<AbstractSelectionObserver>::for_each(
     [selected_objects](auto* observer) { observer->set_selection(selected_objects); }
