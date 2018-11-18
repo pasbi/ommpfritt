@@ -9,7 +9,7 @@ class Empty : public Object
 {
 public:
   explicit Empty();
-  void render(AbstractRenderer& renderer) const override;
+  void render(AbstractRenderer& renderer, const Style& style) const override;
   BoundingBox bounding_box() const override;
   std::string type() const override;
 };

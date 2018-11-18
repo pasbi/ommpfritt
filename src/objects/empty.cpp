@@ -4,10 +4,10 @@ namespace omm
 {
 
 Empty::Empty()
-{  
+{
 }
 
-void Empty::render(AbstractRenderer&) const
+void Empty::render(AbstractRenderer&, const Style&) const
 {
   return;
 }

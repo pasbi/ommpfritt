@@ -62,11 +62,10 @@ public:
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-  virtual void render(AbstractRenderer& renderer) const = 0;
-  void render_recursive(AbstractRenderer& renderer) const;
+  virtual void render(AbstractRenderer& renderer, const Style& style) const = 0;
+  void render_recursive(AbstractRenderer& renderer, const Style& default_style) const;
   virtual BoundingBox bounding_box() const = 0;
   BoundingBox recursive_bounding_box() const;
-  Style style() const;
 
 private:
   std::vector<std::unique_ptr<Tag>> m_tags;

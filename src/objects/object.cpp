@@ -48,6 +48,12 @@ std::unique_ptr<T> extract(std::vector<std::unique_ptr<T>>& container, T& obj)
   return std::move(uptr);
 }
 
+std::vector<omm::Style*> find_styles(const omm::Object& object)
+{
+  // TODO find style tags
+  return { };
+}
+
 }  // namespace
 
 namespace omm
@@ -324,13 +330,20 @@ std::string Object::name() const
   return property<std::string>(NAME_PROPERTY_KEY).value();
 }
 
-void Object::render_recursive(AbstractRenderer& renderer) const
+void Object::render_recursive(AbstractRenderer& renderer, const Style& default_style) const
 {
-  render(renderer);
+  const auto styles = find_styles(*this);
+  for (const auto& style : styles) {
+    render(renderer, *style);
+  }
+  if (styles.size() == 0) {
+    render(renderer, default_style);
+  }
+
   // if (bounding_box().intersect(renderer.bounding_box()).is_empty()) {
     for (const auto& child : m_children) {
       renderer.push_transformation(child->transformation());
-      child->render_recursive(renderer);
+      child->render_recursive(renderer, default_style);
       renderer.pop_transformation();
     }
   // }
@@ -344,16 +357,6 @@ BoundingBox Object::recursive_bounding_box() const
     bounding_box = bounding_box.merge(child->recursive_bounding_box());
   }
   return transformation().apply(bounding_box);
-}
-
-Style Object::style() const
-{
-  // collect style from style tags
-  // style tags can be combined (e.g., enable stroke in style A and fill in style B.
-  // combine them to have both stroke and fill.
-  // if there is no style tag, return "default" style (maybe only simple stroke).
-
-  return Style(); // TODO
 }
 
 }  // namespace omm

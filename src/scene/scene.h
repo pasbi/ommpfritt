@@ -14,6 +14,7 @@
 #include "scene/objecttreecontext.h"
 #include "scene/abstractselectionobserver.h"
 #include "scene/abstractobjecttreeobserver.h"
+#include "scene/stylepool.h"
 
 namespace omm
 {
@@ -62,11 +63,14 @@ public:
 
   bool has_pending_changes() const;
   QUndoStack& undo_stack();
+  StylePool& style_pool();
+  const StylePool& style_pool() const;
 
 private:
   void submit(std::unique_ptr<Command> command);
   void set_has_pending_changes(bool v);
   std::unique_ptr<Object> m_root;
+  StylePool m_style_pool;
   static Scene* m_current;
 
   /**

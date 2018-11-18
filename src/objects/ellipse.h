@@ -13,7 +13,7 @@ class Ellipse : public Object
 {
 public:
   explicit Ellipse();
-  void render(AbstractRenderer& renderer) const override;
+  void render(AbstractRenderer& renderer, const Style& style) const override;
   BoundingBox bounding_box() const override;
   std::string type() const override;
 

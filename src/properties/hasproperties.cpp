@@ -13,6 +13,15 @@ namespace
 namespace omm
 {
 
+HasProperties::HasProperties()
+{
+}
+
+HasProperties::HasProperties(HasProperties&& other)
+  : m_properties(std::move(other.m_properties))
+{
+}
+
 HasProperties::~HasProperties()
 {
 }

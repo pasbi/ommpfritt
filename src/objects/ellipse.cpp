@@ -20,7 +20,7 @@ Ellipse::Ellipse()
     .set_category(QObject::tr("ellipse").toStdString());
 }
 
-void Ellipse::render(AbstractRenderer& renderer) const
+void Ellipse::render(AbstractRenderer& renderer, const Style& style) const
 {
   const size_t n = 10;
   const auto rx = property<double>("rx").value();
@@ -33,7 +33,7 @@ void Ellipse::render(AbstractRenderer& renderer) const
     const double y = sin(i * 2.0/n * M_PI) * ry;
     points.push_back(Point(arma::vec2 { x, y }));
   }
-  renderer.draw_spline(points, style());
+  renderer.draw_spline(points, style);
 }
 
 BoundingBox Ellipse::bounding_box() const

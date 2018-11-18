@@ -1,0 +1,32 @@
+#include "scene/stylepool.h"
+
+namespace
+{
+
+std::unique_ptr<omm::Style> make_default_style()
+{
+  auto default_style = std::make_unique<omm::Style>();
+  default_style->is_pen_active = true;
+  default_style->pen_color = omm::Color::BLACK;
+  default_style->pen_width = 2.0;
+  default_style->is_brush_active = false;
+  return default_style;
+}
+
+}  // namespace
+
+namespace omm
+{
+
+StylePool::StylePool()
+  : m_default_style(make_default_style())
+{
+
+}
+
+const Style& StylePool::default_style() const
+{
+  return *m_default_style;
+}
+
+}  // namespace omm

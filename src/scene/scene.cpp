@@ -206,4 +206,14 @@ std::unique_ptr<Object> Scene::replace_root(std::unique_ptr<Object> new_root)
   return old_root;
 }
 
+StylePool& Scene::style_pool()
+{
+  return m_style_pool;
+}
+
+const StylePool& Scene::style_pool() const
+{
+  return m_style_pool;
+}
+
 }  // namespace omm

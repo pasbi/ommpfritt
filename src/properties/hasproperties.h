@@ -17,6 +17,8 @@ namespace omm
 class HasProperties : public Serializable, public AbstractPropertyObserver
 {
 public:
+  explicit HasProperties();
+  HasProperties(HasProperties&& other);
   virtual ~HasProperties();
   using Key = PropertyMap::key_type;
   Property& property(const Key& key) const;
