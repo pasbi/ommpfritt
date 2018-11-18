@@ -35,7 +35,13 @@ const PropertyMap& HasProperties::properties() const
 
 Property& HasProperties::property(const Key& key) const
 {
+  assert(has_property(key));
   return *m_properties.at(key);
+}
+
+bool HasProperties::has_property(const Key& key) const
+{
+  return m_properties.contains(key);
 }
 
 void HasProperties::serialize(AbstractSerializer& serializer, const Pointer& root) const

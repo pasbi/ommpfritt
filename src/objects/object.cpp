@@ -95,7 +95,7 @@ Object::~Object()
 
 ObjectTransformation Object::transformation() const
 {
-  return property(TRANSFORMATION_PROPERTY_KEY).cast<ObjectTransformation>().value();
+  return property<ObjectTransformation>(TRANSFORMATION_PROPERTY_KEY).value();
 }
 
 ObjectTransformation Object::global_transformation() const
@@ -111,7 +111,7 @@ ObjectTransformation Object::global_transformation() const
 
 void Object::set_transformation(const ObjectTransformation& transformation)
 {
-  property(TRANSFORMATION_PROPERTY_KEY).cast<ObjectTransformation>().set_value(transformation);
+  property<ObjectTransformation>(TRANSFORMATION_PROPERTY_KEY).set_value(transformation);
 }
 
 void Object::set_global_transformation(const ObjectTransformation& global_transformation)

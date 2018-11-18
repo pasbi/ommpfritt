@@ -61,7 +61,6 @@ template<typename T> NumericPropertyWidget<T>
   this->set_default_layout(std::move(spinbox));
 
   const auto set_properties_value = [this](T value) {
-    LOG(INFO) << "set properties values " << value;
     this->set_properties_value(value);
   };
   QObject::connect( m_spinbox,

@@ -109,7 +109,7 @@ bool ObjectTreeAdapter::setData(const QModelIndex& index, const QVariant& value,
 
   switch (index.column()) {
   case 0:
-    object_at(index).property(Object::NAME_PROPERTY_KEY).cast<std::string>().set_value(
+    object_at(index).property<std::string>(Object::NAME_PROPERTY_KEY).set_value(
       value.toString().toStdString()
     );
     return true;
@@ -129,7 +129,7 @@ QVariant ObjectTreeAdapter::data(const QModelIndex& index, int role) const
     switch (role) {
     case Qt::DisplayRole:
       return QString::fromStdString(
-        object_at(index).property(Object::NAME_PROPERTY_KEY).cast<std::string>().value()
+        object_at(index).property<std::string>(Object::NAME_PROPERTY_KEY).value()
       );
     }
   }

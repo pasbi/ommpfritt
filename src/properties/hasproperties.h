@@ -20,9 +20,18 @@ public:
   virtual ~HasProperties();
   using Key = PropertyMap::key_type;
   Property& property(const Key& key) const;
+
   template<typename ValueT> TypedProperty<ValueT>& property(const Key& key) const
   {
-    return property(key).cast<ValueT>();
+    assert(has_property<ValueT>(key));
+    return *this->property(key).cast<ValueT>();
+  }
+
+  bool has_property(const Key& key) const;
+
+  template<typename ValueT> bool has_property(const Key& key) const
+  {
+    return this->has_property(key) && this->property(key).is_type<ValueT>();
   }
 
   const PropertyMap& properties() const;
