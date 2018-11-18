@@ -30,9 +30,6 @@ ViewportRenderer::ViewportRenderer(QPainter& painter, const BoundingBox& boundin
   : AbstractRenderer(bounding_box)
   , m_painter(painter)
 {
-  painter.fillRect( bounding_box.top() + 10, bounding_box.left() + 10,
-                    bounding_box.width() - 20, bounding_box.height() - 20,
-                    Qt::white );
 }
 
 void ViewportRenderer::push_transformation(const ObjectTransformation& transformation)
@@ -60,7 +57,6 @@ void ViewportRenderer::draw_spline(const std::vector<Point>& points, const Style
   }
 
   m_painter.strokePath(path, QPen());
-  m_painter.fillRect(QRect(0, 0, 10, 10), Qt::red);
 }
 
 }  // namespace omm

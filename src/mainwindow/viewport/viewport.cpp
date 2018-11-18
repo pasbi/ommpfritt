@@ -24,6 +24,10 @@ void set_cursor_position(QWidget& widget, const arma::vec2& pos)
   widget.setCursor(cursor);
 }
 
+// coordinate system of QWidget's canvas goes top-down and left-to-right
+// I think bottom-up and left-to-right is more intuitive.
+const auto TOP_RIGHT = omm::ObjectTransformation().scaled({1, -1});
+
 }  // namespace
 
 namespace omm
@@ -33,6 +37,7 @@ Viewport::Viewport(Scene& scene)
   : m_scene(scene)
   , m_timer(std::make_unique<QTimer>())
   , m_pan_controller([this](const arma::vec2& pos) { set_cursor_position(*this, pos); })
+  , m_viewport_transformation(TOP_RIGHT)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   connect(&*m_timer, &QTimer::timeout, [this]() {
@@ -45,6 +50,7 @@ Viewport::Viewport(Scene& scene)
 void Viewport::paintEvent(QPaintEvent* event)
 {
   QPainter painter(this);
+  painter.setRenderHint(QPainter::Antialiasing);
   painter.fillRect(rect(), Qt::gray);
 
   const auto width = static_cast<double>(this->width());
