@@ -80,28 +80,28 @@ void ObjectTransformation::scale(const arma::vec2& scale_vector)
 ObjectTransformation ObjectTransformation::translated(const arma::vec2& translation_vector) const
 {
   auto translated = *this;
-  translated.translated(translation_vector);
+  translated.translate(translation_vector);
   return translated;
 }
 
 ObjectTransformation ObjectTransformation::rotated(const double& angle) const
 {
   auto rotated = *this;
-  rotated.rotated(angle);
+  rotated.rotate(angle);
   return rotated;
 }
 
 ObjectTransformation ObjectTransformation::sheared(const double& shear) const
 {
   auto sheared = *this;
-  sheared.sheared(shear);
+  sheared.shear(shear);
   return sheared;
 }
 
 ObjectTransformation ObjectTransformation::scaled(const arma::vec2& scale_vector) const
 {
   auto scaled = *this;
-  scaled.scaled(scale_vector);
+  scaled.scale(scale_vector);
   return scaled;
 }
 
@@ -145,7 +145,6 @@ void ObjectTransformation::set_mat(const Mat& mat)
   // m_scalation = { p, r };
   // m_shearing = q;
   // m_rotation = atan2(b, a);
-
 
   // translation * rotation * scalation * shearing
   const auto n = sqrt(pow(b, 2.0) + pow(d, 2.0));
