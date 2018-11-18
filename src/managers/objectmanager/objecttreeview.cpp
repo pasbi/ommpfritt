@@ -56,8 +56,8 @@ void ObjectTreeView::contextMenuEvent(QContextMenuEvent *event)
 
 void ObjectTreeView::mouseReleaseEvent(QMouseEvent *event)
 {
-  Q_EMIT mouse_released();
   QTreeView::mouseReleaseEvent(event);
+  Q_EMIT mouse_released();
 }
 
 void ObjectTreeView::set_model(ObjectTreeAdapter& model)
