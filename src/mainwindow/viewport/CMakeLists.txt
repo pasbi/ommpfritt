@@ -1,5 +1,5 @@
 file (GLOB SOURCES
-  "grabbable.cpp"
+  "handle.cpp"
   "mousepancontroller.cpp"
   "viewport.cpp"
 )
