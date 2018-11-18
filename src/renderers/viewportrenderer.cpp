@@ -4,6 +4,7 @@
 #include <glog/logging.h>
 #include <QTransform>
 #include <QPainter>
+#include <QDebug>
 
 namespace
 {

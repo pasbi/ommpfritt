@@ -2,18 +2,17 @@
 #include <glog/logging.h>
 
 #include "objects/object.h"
-#include "renderers/style.h"
-#include "mainwindow/viewport/styles.h"
+#include "mainwindow/viewport/subhandle.h"
 
 namespace
 {
 
-void draw_arrow(omm::AbstractRenderer& renderer, const omm::Style& style)
+auto make_sub_handles()
 {
-  constexpr double LENGTH = 100;
-  omm::Point center({0, 0});
-  omm::Point tip({LENGTH, 0});
-  renderer.draw_spline({ center, tip }, style);
+  std::vector<std::unique_ptr<omm::SubHandle>> sub_handles;
+  sub_handles.push_back(std::make_unique<omm::AxisHandle>(omm::AxisHandle::Axis::X));
+  sub_handles.push_back(std::make_unique<omm::AxisHandle>(omm::AxisHandle::Axis::Y));
+  return sub_handles;
 }
 
 }  // namespace
@@ -22,11 +21,8 @@ namespace omm
 {
 
 Handle::Handle(const std::set<Object*>& selection)
-  : m_objects(selection)
-{
-}
-
-Handle::Handle()
+  : m_sub_handles(make_sub_handles())
+  , m_objects(selection)
 {
 }
 
@@ -46,15 +42,13 @@ void Handle::mouse_release()
 
 void Handle::draw(AbstractRenderer& renderer) const
 {
-  const auto transformation = this->transformation();
-  {
+  if (objects().size() > 0) {
+    Style style;
+    const auto transformation = this->transformation();
     renderer.push_transformation(transformation);
-    draw_arrow(renderer, X_STYLE);
-    renderer.pop_transformation();
-  }
-  {
-    renderer.push_transformation(transformation.rotated(M_PI/2.0));
-    draw_arrow(renderer, Y_STYLE);
+    for (const auto& sub_handle : m_sub_handles) {
+      sub_handle->draw(renderer);
+    }
     renderer.pop_transformation();
   }
 }
