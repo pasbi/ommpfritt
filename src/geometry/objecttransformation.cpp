@@ -1,4 +1,6 @@
 #include <assert.h>
+#include <cmath>
+#include <glog/logging.h>
 
 #include "geometry/objecttransformation.h"
 
@@ -132,9 +134,14 @@ void ObjectTransformation::set_mat(const Mat& mat)
 
   m_translation = { mat(0, 2), mat(1, 2) };
 
-  assert(mat(2, 0) == 0);
-  assert(mat(2, 1) == 0);
-  assert(mat(2, 2) == 1);
+  const auto equal_or_nan = [](double v, double r) {
+    return v == r || std::isnan(v);
+  };
+
+  // TODO NaN can occur if scaling is 0.
+  assert(equal_or_nan(mat(2, 0), 0));
+  assert(equal_or_nan(mat(2, 1), 0));
+  assert(equal_or_nan(mat(2, 2), 1));
 
   // https://math.stackexchange.com/a/78165/355947
   // translation * scalation * shearing * rotation
