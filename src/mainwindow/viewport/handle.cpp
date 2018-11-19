@@ -7,11 +7,11 @@
 namespace
 {
 
-auto make_sub_handles()
+auto make_sub_handles(omm::Handle& handle)
 {
   std::vector<std::unique_ptr<omm::SubHandle>> sub_handles;
-  sub_handles.push_back(std::make_unique<omm::AxisHandle>(omm::AxisHandle::Axis::X));
-  sub_handles.push_back(std::make_unique<omm::AxisHandle>(omm::AxisHandle::Axis::Y));
+  sub_handles.push_back(std::make_unique<omm::AxisHandle>(handle, omm::AxisHandle::Axis::X));
+  sub_handles.push_back(std::make_unique<omm::AxisHandle>(handle, omm::AxisHandle::Axis::Y));
   return sub_handles;
 }
 
@@ -21,7 +21,7 @@ namespace omm
 {
 
 Handle::Handle(const std::set<Object*>& selection)
-  : m_sub_handles(make_sub_handles())
+  : m_sub_handles(make_sub_handles(*this))
   , m_objects(selection)
 {
 }
@@ -93,6 +93,13 @@ ObjectTransformation GlobalOrientedHandle::transformation() const
 arma::vec2 Handle::map_to_handle_local(const arma::vec2& pos) const
 {
   return transformation().inverted().apply_to_position(pos);
+}
+
+void Handle::transform_objects(const ObjectTransformation& transformation) const
+{
+  for (auto* object : objects()) {
+    object->set_global_transformation(transformation.apply(object->global_transformation()));
+  }
 }
 
 }  // namespace omm

@@ -30,14 +30,15 @@ public:
 
   void mouse_release();
   void draw(AbstractRenderer& renderer) const;
+  void transform_objects(const ObjectTransformation& transformation) const;
 
 protected:
   virtual ObjectTransformation transformation() const = 0;
   const std::set<Object*>& objects() const;
-  std::vector<std::unique_ptr<SubHandle>> m_sub_handles;
+  const std::vector<std::unique_ptr<SubHandle>> m_sub_handles;
 
 private:
-  std::set<Object*> m_objects;
+  const std::set<Object*> m_objects;
   arma::vec2 map_to_handle_local(const arma::vec2& pos) const;
 };
 

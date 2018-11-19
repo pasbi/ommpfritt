@@ -23,7 +23,7 @@ Color Color::clamped() const
 Color Color::RED = Color(1.0, 0.0, 0.0, 1.0);
 Color Color::GREEN = Color(0.0, 1.0, 0.0, 1.0);
 Color Color::BLUE = Color(0.0, 0.0, 1.0, 1.0);
-Color Color::YELLOW = Color(0.0, 1.0, 1.0, 1.0);
+Color Color::YELLOW = Color(1.0, 1.0, 0.0, 1.0);
 Color Color::BLACK = Color(0.0, 0.0, 0.0, 1.0);
 Color Color::WHITE = Color(1.0, 1.0, 1.0, 1.0);
 }  // namespace omm

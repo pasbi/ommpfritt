@@ -121,8 +121,9 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
 
   if (event->modifiers() == Qt::NoModifier)
   {
-    if (m_handle->mouse_move(
-      delta, viewport_transformation().inverted().apply_to_position(cursor_position) ))
+    if (m_handle->mouse_move( viewport_transformation().inverted().apply_to_direction(delta),
+                              viewport_transformation().inverted().apply_to_position(
+                                cursor_position) ))
     {
       event->accept();
       return;
