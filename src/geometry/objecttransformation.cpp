@@ -272,4 +272,9 @@ ObjectTransformation ObjectTransformation::normalized() const
   return normalized;
 }
 
+bool ObjectTransformation::contains_nan() const
+{
+  return to_mat().has_nan();
+}
+
 }  // namespace omm

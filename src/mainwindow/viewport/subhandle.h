@@ -12,9 +12,9 @@ class SubHandle
 {
 public:
   virtual void draw(AbstractRenderer& renderer) const = 0;
-  void click(const arma::vec2& pos);
-  void hover(const arma::vec2& pos);
-  void release();
+  bool mouse_press(const arma::vec2& pos);
+  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos);
+  void mouse_release();
 
 protected:
   virtual bool contains(const arma::vec2& point) const = 0;
@@ -22,8 +22,8 @@ protected:
   bool is_active() const;
 
 private:
-  bool m_is_hovered;
-  bool m_is_active;
+  bool m_is_hovered = false;
+  bool m_is_active = false;
 };
 
 class AxisHandle : public SubHandle

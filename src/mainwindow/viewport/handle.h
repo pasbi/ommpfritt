@@ -21,7 +21,7 @@ public:
   /**
    * @brief returns true if any grabbable was moved
    */
-  bool mouse_move(const arma::vec2& delta);
+  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos);
 
   /**
    * @brief returns true if any grabbable was hit
@@ -38,6 +38,7 @@ protected:
 
 private:
   std::set<Object*> m_objects;
+  arma::vec2 map_to_handle_local(const arma::vec2& pos) const;
 };
 
 class GlobalOrientedHandle : public Handle

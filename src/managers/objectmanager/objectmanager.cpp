@@ -44,7 +44,6 @@ void ObjectManager::on_selection_changed( const QItemSelection& selection,
       m_object_tree_adapter.object_at(index).deselect();
     }
   }
-
   for (auto& index : selection.indexes()) {
     m_object_tree_adapter.object_at(index).select();
   }

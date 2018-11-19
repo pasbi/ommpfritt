@@ -61,6 +61,7 @@ Viewport::Viewport(Scene& scene)
   m_timer->start();
 
   m_scene.Observed<AbstractSelectionObserver>::register_observer(*this);
+  setMouseTracking(true);
 }
 
 Viewport::~Viewport()
@@ -79,11 +80,8 @@ void Viewport::paintEvent(QPaintEvent* event)
   const BoundingBox render_box({ { 0, 0 },
                                  { width, height } });
   ViewportRenderer renderer(painter, render_box);
-  auto viewport_transformation = m_viewport_transformation;
-  viewport_transformation.set_translation(  viewport_transformation.translation()
-                                          + arma::vec2{ width/2, height/2} );
 
-  renderer.set_base_transformation(viewport_transformation);
+  renderer.set_base_transformation(viewport_transformation());
   renderer.render(m_scene);
 
   m_handle->draw(renderer);
@@ -91,12 +89,13 @@ void Viewport::paintEvent(QPaintEvent* event)
 
 void Viewport::mousePressEvent(QMouseEvent* event)
 {
-  m_pan_controller.init(point2vec(event->pos()));
+  const arma::vec2 cursor_position = point2vec(event->pos());
+  m_pan_controller.init(cursor_position);
 
   if (event->modifiers() & Qt::AltModifier) {
     event->accept();
   }  else if (event->modifiers() == Qt::NoModifier) {
-    if (m_handle->mouse_press(point2vec(event->pos()))) {
+    if (m_handle->mouse_press(viewport_transformation().inverted().apply_to_position(cursor_position))) {
       event->accept();
     }
   } else {
@@ -109,18 +108,28 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
   const auto widget_size = arma::vec2{ static_cast<double>(width()),
                                        static_cast<double>(height()) };
   const auto cursor_position = point2vec(event->pos());
-  const auto delta = m_pan_controller.delta(cursor_position, widget_size);
-
-  if (event->modifiers() & Qt::AltModifier ) {
-    m_viewport_transformation.translate(delta);
-    event->accept();
-  } else if (event->modifiers() == Qt::NoModifier) {
-    if (m_handle->mouse_move(delta)) {
+  arma::vec2 delta { 0.0, 0.0 };
+  if (event->buttons() == Qt::LeftButton)
+  {
+    delta = m_pan_controller.delta(cursor_position, widget_size);
+    if (event->modifiers() & Qt::AltModifier) {
+      m_viewport_transformation.translate(delta);
       event->accept();
+      return;
     }
-  } else {
-    QWidget::mouseMoveEvent(event);
   }
+
+  if (event->modifiers() == Qt::NoModifier)
+  {
+    if (m_handle->mouse_move(
+      delta, viewport_transformation().inverted().apply_to_position(cursor_position) ))
+    {
+      event->accept();
+      return;
+    }
+  }
+
+  QWidget::mouseMoveEvent(event);
 }
 
 void Viewport::mouseReleaseEvent(QMouseEvent* event)
@@ -134,5 +143,11 @@ void Viewport::set_selection(const std::set<HasProperties*>& selection)
   m_handle = make_handle(selection);
 }
 
+ObjectTransformation Viewport::viewport_transformation() const
+{
+  const auto center = arma::vec2{ static_cast<double>(width()) / 2.0,
+                                  static_cast<double>(height()) / 2.0 };
+  return m_viewport_transformation.translated(center);
+}
 
 }  // namespace omm

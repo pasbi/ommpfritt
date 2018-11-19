@@ -33,6 +33,7 @@ private:
   ObjectTransformation m_viewport_transformation;
   MousePanController m_pan_controller;
   std::unique_ptr<Handle> m_handle;
+  ObjectTransformation viewport_transformation() const;
 };
 
 }  // namespace omm

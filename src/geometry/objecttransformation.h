@@ -49,6 +49,7 @@ public:
   ObjectTransformation apply(const ObjectTransformation& t) const;
   Point apply(const Point& point) const;
   ObjectTransformation normalized() const;
+  bool contains_nan() const;
 
 private:
   arma::vec2 m_translation;

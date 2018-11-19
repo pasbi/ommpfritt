@@ -18,19 +18,23 @@ void draw_arrow( omm::AbstractRenderer& renderer, const omm::Style& style,
 namespace omm
 {
 
-void SubHandle::click(const arma::vec2& pos)
+bool SubHandle::mouse_press(const arma::vec2& pos)
 {
   if (contains(pos)) {
     m_is_active = true;
+    return true;
+  } else {
+    return false;
   }
 }
 
-void SubHandle::hover(const arma::vec2& pos)
+bool SubHandle::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
 {
-  m_is_hovered = contains(pos);
+  m_is_hovered = !m_is_active && contains(pos);
+  return m_is_active;
 }
 
-void SubHandle::release()
+void SubHandle::mouse_release()
 {
   m_is_active = false;
 }
@@ -55,7 +59,7 @@ void AxisHandle::draw(AbstractRenderer& renderer) const
 {
   Style style;
   style.is_pen_active = true;
-  if (is_hovered() && is_active()) {
+  if (is_hovered() || is_active()) {
     style.pen_color = m_base_color.shaded(1.0);
   } else {
     style.pen_color = m_base_color.shaded(0.8);
@@ -66,7 +70,22 @@ void AxisHandle::draw(AbstractRenderer& renderer) const
 
 bool AxisHandle::contains(const arma::vec2& point) const
 {
-  return false;
+  constexpr double eps = 10;
+  arma::vec2 o { 0.0, 0.0 };
+  arma::vec2 v = point;
+  const arma::vec2 s = m_tip_position;
+
+  // project v onto the line through o and s
+  v = o + arma::dot(v-o, s-o) / arma::dot(s-o, s-o) * s;
+
+  // clamp v between o and s
+  const arma::vec2 min = arma::min(o, s);
+  const arma::vec2 max = arma::max(o, s);
+  for (auto i : {0, 1}) {
+    v(i) = std::max(static_cast<double>(min(i)), std::min(v(i), static_cast<double>(max(i))));
+  }
+
+  return arma::norm(point - v) < eps;
 }
 
 
