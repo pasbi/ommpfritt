@@ -15,6 +15,24 @@ auto make_sub_handles(omm::Handle& handle)
   return sub_handles;
 }
 
+auto filter_selection(std::set<omm::Object*> selection)
+{
+  const auto has_descendant = [selection](omm::Object* subject) {
+    const auto is_descendant = [subject](omm::Object* descendat_candidate) {
+      return descendat_candidate != subject && descendat_candidate->is_descendant_of(*subject);
+    };
+    return std::any_of(selection.begin(), selection.end(), is_descendant);
+  };
+
+  decltype(selection) marked_for_deletion;
+  std::copy_if( selection.begin(), selection.end(),
+                std::inserter(marked_for_deletion, marked_for_deletion.end()), has_descendant );
+  for (omm::Object* object : marked_for_deletion) {
+    selection.erase(object);
+  }
+  return selection;
+}
+
 }  // namespace
 
 namespace omm
@@ -22,7 +40,7 @@ namespace omm
 
 Handle::Handle(const std::set<Object*>& selection)
   : m_sub_handles(make_sub_handles(*this))
-  , m_objects(selection)
+  , m_objects(filter_selection(selection))
 {
 }
 

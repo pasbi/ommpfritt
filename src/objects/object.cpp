@@ -359,4 +359,15 @@ BoundingBox Object::recursive_bounding_box() const
   return transformation().apply(bounding_box);
 }
 
+bool Object::is_descendant_of(const Object& subject) const
+{
+  if (&subject == this) {
+    return true;
+  } else if (subject.is_root()) {
+    return false;
+  } else {
+    return is_descendant_of(subject.parent());
+  }
+}
+
 }  // namespace omm

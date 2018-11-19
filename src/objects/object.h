@@ -50,6 +50,7 @@ public:
   size_t row() const;
   const Object* predecessor() const;
   size_t get_insert_position(const Object* child_before_position) const;
+  bool is_descendant_of(const Object& subject) const;
 
   std::set<HasProperties*> get_selected_children_and_tags();
 
