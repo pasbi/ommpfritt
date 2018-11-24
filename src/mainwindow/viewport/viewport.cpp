@@ -26,7 +26,8 @@ void set_cursor_position(QWidget& widget, const arma::vec2& pos)
   widget.setCursor(cursor);
 }
 
-std::unique_ptr<omm::Handle> make_handle(const std::set<omm::HasProperties*>& selection)
+std::unique_ptr<omm::Handle>
+make_handle(omm::Scene& scene, const std::set<omm::HasProperties*>& selection)
 {
   std::set<omm::Object*> objects;
   for (auto hp : selection) {
@@ -34,7 +35,7 @@ std::unique_ptr<omm::Handle> make_handle(const std::set<omm::HasProperties*>& se
       objects.insert(dynamic_cast<omm::Object*>(hp));
     }
   }
-  return std::make_unique<omm::GlobalOrientedHandle>(objects);
+  return std::make_unique<omm::GlobalOrientedHandle>(scene, objects);
 }
 
 // coordinate system of QWidget's canvas goes top-down and left-to-right
@@ -50,7 +51,7 @@ Viewport::Viewport(Scene& scene)
   : m_scene(scene)
   , m_timer(std::make_unique<QTimer>())
   , m_pan_controller([this](const arma::vec2& pos) { set_cursor_position(*this, pos); })
-  , m_handle(make_handle(scene.selection()))
+  , m_handle(make_handle(scene, scene.selection()))
   , m_viewport_transformation(TOP_RIGHT)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -143,7 +144,7 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
 
 void Viewport::set_selection(const std::set<HasProperties*>& selection)
 {
-  m_handle = make_handle(selection);
+  m_handle = make_handle(m_scene, selection);
 }
 
 ObjectTransformation Viewport::viewport_transformation() const

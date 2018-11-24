@@ -16,7 +16,7 @@ class AbstractRenderer;
 class Handle
 {
 public:
-  explicit Handle(const std::set<Object*>& selection = {});
+  explicit Handle(Scene& scene, const std::set<Object*>& selection);
 
   /**
    * @brief returns true if any grabbable was moved
@@ -38,6 +38,7 @@ protected:
   const std::vector<std::unique_ptr<SubHandle>> m_sub_handles;
 
 private:
+  Scene& m_scene;
   const std::set<Object*> m_objects;
   arma::vec2 map_to_handle_local(const arma::vec2& pos) const;
 };

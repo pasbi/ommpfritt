@@ -5,6 +5,8 @@
 #include "mainwindow/viewport/axishandle.h"
 #include "mainwindow/viewport/circlehandle.h"
 #include "mainwindow/viewport/scalehandle.h"
+#include "scene/scene.h"
+#include "commands/objectstransformationcommand.h"
 
 namespace
 {
@@ -44,8 +46,9 @@ auto filter_selection(std::set<omm::Object*> selection)
 namespace omm
 {
 
-Handle::Handle(const std::set<Object*>& selection)
-  : m_sub_handles(make_sub_handles(*this))
+Handle::Handle(Scene& scene, const std::set<Object*>& selection)
+  : m_scene(scene)
+  , m_sub_handles(make_sub_handles(*this))
   , m_objects(filter_selection(selection))
 {
 }
@@ -130,12 +133,8 @@ void Handle::transform_objects(const ObjectTransformation& transformation) const
   const ObjectTransformation::Mat h = this->transformation().to_mat();
   const ObjectTransformation::Mat h_inv = h.i();
   const ObjectTransformation::Mat t = transformation.to_mat();
-  for (auto* object : objects()) {
-    auto o = object->global_transformation().to_mat();
-    const ObjectTransformation::Mat on = h * t * h_inv * o;
 
-    object->set_global_transformation(ObjectTransformation(on));
-  }
+  m_scene.submit<ObjectsTransformationCommand>(objects(), ObjectTransformation(h * t * h_inv));
 }
 
 }  // namespace omm
