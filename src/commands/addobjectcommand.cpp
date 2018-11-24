@@ -42,6 +42,9 @@ void AddObjectCommand::undo()
     LOG(FATAL) << "Command already owns object. Obtaining ownership again is absurd.";
   } else {
     m_owned_object = m_scene.root().repudiate(m_object_reference);
+
+    // important. else, handle or property manager might point to dangling objects
+    m_scene.clear_selection();
   }
 }
 

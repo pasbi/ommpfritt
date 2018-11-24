@@ -71,9 +71,22 @@ Object& Scene::root() const
   return *m_root;
 }
 
-std::set<HasProperties*> Scene::selection() const
+std::set<omm::HasProperties*> Scene::selection() const
 {
+  LOG(INFO) << "selection";
   return m_root->get_selected_children_and_tags();
+}
+
+std::set<Object*> Scene::selected_objects() const
+{
+  std::set<omm::Object*> objects;
+  for (auto s : selection()) {
+    const auto object = dynamic_cast<omm::Object*>(s);
+    if (object != nullptr) {
+      objects.insert(object);
+    }
+  }
+  return objects;
 }
 
 void Scene::selection_changed()
@@ -83,6 +96,14 @@ void Scene::selection_changed()
   Observed<AbstractSelectionObserver>::for_each(
     [selected_objects](auto* observer) { observer->set_selection(selected_objects); }
   );
+}
+
+void Scene::clear_selection()
+{
+  for (auto& o : selected_objects()) {
+    o->set_selected(false);
+  }
+  selection_changed();
 }
 
 void Scene::move_object(MoveObjectTreeContext context)

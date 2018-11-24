@@ -50,6 +50,8 @@ public:
   bool can_move_object(const MoveObjectTreeContext& new_context) const;
 
   std::set<HasProperties*> selection() const;
+  std::set<Object*> selected_objects() const;
+  void clear_selection();
   void selection_changed();
 
   bool save_as(const std::string& filename);

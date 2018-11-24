@@ -36,6 +36,8 @@ void RemoveObjectsCommand::redo()
     assert(!context.subject.reference().is_root());
     m_scene.remove_object(context);
   }
+  // important. else, handle or property manager might point to dangling objects
+  m_scene.clear_selection();
 }
 
 void RemoveObjectsCommand::undo()
