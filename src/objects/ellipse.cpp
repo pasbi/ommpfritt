@@ -11,11 +11,11 @@ namespace omm
 Ellipse::Ellipse()
 {
   add_property( "rx",
-                std::make_unique<FloatProperty>(1.0) )
+                std::make_unique<FloatProperty>(100.0) )
     .set_label(QObject::tr("rx").toStdString())
     .set_category(QObject::tr("ellipse").toStdString());
   add_property( "ry",
-                std::make_unique<FloatProperty>(1.0) )
+                std::make_unique<FloatProperty>(100.0) )
     .set_label(QObject::tr("ry").toStdString())
     .set_category(QObject::tr("ellipse").toStdString());
 }

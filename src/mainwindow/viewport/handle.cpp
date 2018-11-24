@@ -2,7 +2,9 @@
 #include <glog/logging.h>
 
 #include "objects/object.h"
-#include "mainwindow/viewport/subhandle.h"
+#include "mainwindow/viewport/axishandle.h"
+#include "mainwindow/viewport/circlehandle.h"
+#include "mainwindow/viewport/scalehandle.h"
 
 namespace
 {
@@ -10,8 +12,12 @@ namespace
 auto make_sub_handles(omm::Handle& handle)
 {
   std::vector<std::unique_ptr<omm::SubHandle>> sub_handles;
-  sub_handles.push_back(std::make_unique<omm::AxisHandle>(handle, omm::AxisHandle::Axis::X));
-  sub_handles.push_back(std::make_unique<omm::AxisHandle>(handle, omm::AxisHandle::Axis::Y));
+  sub_handles.push_back(std::make_unique<omm::XTranslateHandle>(handle));
+  sub_handles.push_back(std::make_unique<omm::YTranslateHandle>(handle));
+  sub_handles.push_back(std::make_unique<omm::XScaleHandle>(handle));
+  sub_handles.push_back(std::make_unique<omm::YScaleHandle>(handle));
+  sub_handles.push_back(std::make_unique<omm::ScaleHandle>(handle));
+  sub_handles.push_back(std::make_unique<omm::CircleHandle>(handle));
   return sub_handles;
 }
 
@@ -46,15 +52,19 @@ Handle::Handle(const std::set<Object*>& selection)
 
 bool Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
 {
+  bool hit_something = false;
   if (objects().size() > 0) {
     const auto handle_local_pos = map_to_handle_local(pos);
     for (const auto& sub_handle : m_sub_handles) {
-      if (sub_handle->mouse_move(delta, handle_local_pos)) {
-        return true;
+      sub_handle->mouse_move(delta, handle_local_pos, !hit_something);
+      switch (sub_handle->status()) {
+      case SubHandle::Status::Active:
+      case SubHandle::Status::Hovered:
+        hit_something = true;
       }
     }
   }
-  return false;
+  return hit_something;
 }
 
 bool Handle::mouse_press(const arma::vec2& pos)
@@ -62,7 +72,8 @@ bool Handle::mouse_press(const arma::vec2& pos)
   if (objects().size() > 0) {
     const auto handle_local_pos = map_to_handle_local(pos);
     for (const auto& sub_handle : m_sub_handles) {
-      if (sub_handle->mouse_press(handle_local_pos)) {
+      sub_handle->mouse_press(handle_local_pos);
+      if (sub_handle->status() == SubHandle::Status::Active) {
         return true;
       }
     }
@@ -104,7 +115,8 @@ ObjectTransformation GlobalOrientedHandle::transformation() const
   const auto add = [](const arma::vec2& accu, const Object* object) -> arma::vec2 {
     return accu + object->global_transformation().translation();
   };
-  const auto sum_pos = std::accumulate(objects().begin(), objects().end(), arma::vec2(), add);
+  const auto sum_pos = std::accumulate( objects().begin(), objects().end(),
+                                        arma::vec2({0.0, 0.0}), add );
   return ObjectTransformation().translated(sum_pos / objects().size());
 }
 
@@ -115,8 +127,14 @@ arma::vec2 Handle::map_to_handle_local(const arma::vec2& pos) const
 
 void Handle::transform_objects(const ObjectTransformation& transformation) const
 {
+  const ObjectTransformation::Mat h = this->transformation().to_mat();
+  const ObjectTransformation::Mat h_inv = h.i();
+  const ObjectTransformation::Mat t = transformation.to_mat();
   for (auto* object : objects()) {
-    object->set_global_transformation(transformation.apply(object->global_transformation()));
+    auto o = object->global_transformation().to_mat();
+    const ObjectTransformation::Mat on = h * t * h_inv * o;
+
+    object->set_global_transformation(ObjectTransformation(on));
   }
 }
 

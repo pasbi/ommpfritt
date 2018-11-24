@@ -39,6 +39,8 @@ public:
   double shearing() const;
 
   ObjectTransformation inverted() const;
+  static ObjectTransformation find_transformation( const ObjectTransformation& from,
+                                                   const ObjectTransformation& to );
 
   Mat to_mat() const;
   void set_mat(const Mat& mat);

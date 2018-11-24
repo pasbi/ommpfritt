@@ -1,4 +1,6 @@
 file (GLOB SOURCES
+  "axishandle.cpp"
+  "circlehandle.cpp"
   "handle.cpp"
   "mousepancontroller.cpp"
   "viewport.cpp"

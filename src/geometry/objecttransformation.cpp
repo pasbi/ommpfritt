@@ -277,4 +277,11 @@ bool ObjectTransformation::contains_nan() const
   return to_mat().has_nan();
 }
 
+
+ObjectTransformation ObjectTransformation::find_transformation( const ObjectTransformation& from,
+                                                                const ObjectTransformation& to )
+{
+  return to.apply(from.inverted());
+}
+
 }  // namespace omm

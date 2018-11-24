@@ -95,7 +95,9 @@ void Viewport::mousePressEvent(QMouseEvent* event)
   if (event->modifiers() & Qt::AltModifier) {
     event->accept();
   }  else if (event->modifiers() == Qt::NoModifier) {
-    if (m_handle->mouse_press(viewport_transformation().inverted().apply_to_position(cursor_position))) {
+    const auto pos = viewport_transformation().inverted().apply_to_position(cursor_position);
+    if (m_handle->mouse_press(pos))
+    {
       event->accept();
     }
   } else {
