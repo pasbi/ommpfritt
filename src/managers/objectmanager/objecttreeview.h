@@ -2,6 +2,7 @@
 
 #include <QTreeView>
 #include "common.h"
+#include "managers/objectmanager/tagsitemdelegate.h"
 
 namespace omm
 {
@@ -28,6 +29,7 @@ protected:
 private:
   void remove_selected() const;
   void attach_tag_to_selected(const std::string& tag_class) const;
+  std::unique_ptr<TagsItemDelegate> m_tags_item_delegate;
 
 };
 

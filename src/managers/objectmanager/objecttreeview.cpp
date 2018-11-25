@@ -31,11 +31,13 @@ namespace omm
 {
 
 ObjectTreeView::ObjectTreeView()
+  : m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this))
 {
   setSelectionMode(QAbstractItemView::ExtendedSelection);
   setDragEnabled(true);
   setDefaultDropAction(Qt::MoveAction);
   viewport()->setAcceptDrops(true);
+  setItemDelegateForColumn(2, m_tags_item_delegate.get());
 }
 
 void ObjectTreeView::contextMenuEvent(QContextMenuEvent *event)

@@ -1,10 +1,12 @@
 #include "aspects/selectable.h"
+#include <glog/logging.h>
 
 namespace omm
 {
 
 void Selectable::set_selected(bool is_selected)
 {
+  LOG(INFO) << "set selected " << this << " " << is_selected;
   m_is_selected = is_selected;
 }
 

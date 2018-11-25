@@ -73,7 +73,6 @@ Object& Scene::root() const
 
 std::set<omm::PropertyOwner*> Scene::selection() const
 {
-  LOG(INFO) << "selection";
   return m_root->get_selected_children_and_tags();
 }
 
@@ -100,6 +99,7 @@ void Scene::selection_changed()
 
 void Scene::clear_selection()
 {
+  LOG(INFO) << "CLEAR";
   for (auto& o : selected_objects()) {
     o->set_selected(false);
   }

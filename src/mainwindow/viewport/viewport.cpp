@@ -147,4 +147,9 @@ ObjectTransformation Viewport::viewport_transformation() const
   return m_viewport_transformation.translated(center);
 }
 
+Scene& Viewport::scene() const
+{
+  return m_scene;
+}
+
 }  // namespace omm

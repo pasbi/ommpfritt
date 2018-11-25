@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <QIcon>
 #include "aspects/propertyowner.h"
 #include "external/json_fwd.hpp"
 #include "aspects/selectable.h"
@@ -24,6 +25,7 @@ public:
 
   static const std::string NAME_PROPERTY_KEY;
   std::string name() const override;
+  virtual QIcon icon() const = 0;
 
 };
 

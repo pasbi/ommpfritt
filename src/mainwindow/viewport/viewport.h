@@ -19,6 +19,7 @@ class Viewport : public QWidget, public AbstractSelectionObserver
 public:
   Viewport(Scene& scene);
   ~Viewport();
+  Scene& scene() const;
 
 protected:
   void paintEvent(QPaintEvent* event);
