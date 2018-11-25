@@ -128,6 +128,7 @@ QVariant ObjectTreeAdapter::data(const QModelIndex& index, int role) const
   case 0:
     switch (role) {
     case Qt::DisplayRole:
+    case Qt::EditRole:
       return QString::fromStdString(
         object_at(index).property<std::string>(Object::NAME_PROPERTY_KEY).value()
       );
