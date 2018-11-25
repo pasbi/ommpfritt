@@ -23,14 +23,14 @@ public:
   std::unique_ptr<T> copy() const
   {
     std::stringstream stream;
-    auto serializer = CopyCreatableDetail::make_copy_serialzier(stream);
-    auto deserializer = CopyCreatableDetail::make_copy_deserialzier(stream);
-    auto copy = this->make(this->type());
     static constexpr auto POINTER = "copy";
     {
+      auto serializer = CopyCreatableDetail::make_copy_serialzier(stream);
       this->serialize(*serializer, POINTER);
     }
+    auto copy = this->make(this->type());
     {
+      auto deserializer = CopyCreatableDetail::make_copy_deserialzier(stream);
       copy->deserialize(*deserializer, POINTER);
     }
     return copy;
