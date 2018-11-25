@@ -4,7 +4,6 @@
 #include <glog/logging.h>
 #include <QTransform>
 #include <QPainter>
-#include <QDebug>
 
 namespace
 {
@@ -37,7 +36,7 @@ auto make_pen(const omm::Style& style)
 
 auto make_brush(const omm::Style& style)
 {
-  QBrush brush;
+  QBrush brush(Qt::SolidPattern);
   brush.setColor(to_qcolor(style.brush_color));
   return brush;
 }
@@ -77,11 +76,11 @@ void ViewportRenderer::draw_spline(const std::vector<Point>& points, const Style
                   to_qpoint(points.at(i).position)  );
   }
 
-  if (style.is_pen_active) {
-    m_painter.strokePath(path, make_pen(style));
-  }
   if (style.is_brush_active) {
     m_painter.fillPath(path, make_brush(style));
+  }
+  if (style.is_pen_active) {
+    m_painter.strokePath(path, make_pen(style));
   }
 }
 

@@ -1,5 +1,6 @@
 file (GLOB SOURCES
   "addobjectcommand.cpp"
+  "attachtagcommand.cpp"
   "command.cpp"
   "copyobjectscommand.cpp"
   "moveobjectscommand.cpp"

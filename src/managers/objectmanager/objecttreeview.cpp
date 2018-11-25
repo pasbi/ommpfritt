@@ -8,6 +8,8 @@
 #include "menuhelper.h"
 #include "managers/objectmanager/objecttreeadapter.h"
 #include "commands/removeobjectscommand.h"
+#include "tags/tag.h"
+#include "commands/attachtagcommand.h"
 
 namespace
 {
@@ -73,21 +75,26 @@ ObjectTreeAdapter& ObjectTreeView::model() const
 void ObjectTreeView::populate_menu(QMenu& menu, const Object& subject) const
 {
   action(menu, tr("&remove"), *this, &ObjectTreeView::remove_selected);
-}
-
-ObjectRefs ObjectTreeView::selection() const
-{
-  const auto object_at = [this](const QModelIndex& index) -> Object& {
-    return model().object_at(index);
-  };
-  const auto indexes = selectionModel()->selectedRows();
-  return ::transform<ObjectRef, std::vector>(indexes, object_at);
+  auto tag_menu = std::make_unique<QMenu>(tr("&attach tag"));
+  for (const auto& key : Tag::keys()) {
+    action(*tag_menu, QString::fromStdString(key), [this, key](){
+      attach_tag_to_selected(key);
+    });
+  }
+  menu.addMenu(tag_menu.release());
 }
 
 void ObjectTreeView::remove_selected() const
 {
-  Scene& scene = model().scene();
-  scene.submit<RemoveObjectsCommand>(scene, selection());
+  auto& scene = model().scene();
+  scene.submit<RemoveObjectsCommand>(scene);
 }
 
-}  // namespace
+void ObjectTreeView::attach_tag_to_selected(const std::string& tag_class) const
+{
+  auto tag = Tag::make(tag_class);
+  auto& scene = model().scene();
+  scene.submit<AttachTagCommand>(scene, std::move(tag));
+}
+
+}  // namespace omm

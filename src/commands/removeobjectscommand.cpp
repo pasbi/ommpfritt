@@ -5,13 +5,12 @@
 namespace
 {
 
-auto make_contextes(const omm::ObjectRefs objects)
+auto make_contextes(const std::set<omm::Object*>& selection)
 {
   std::vector<omm::OwningObjectTreeContext> contextes;
-  contextes.reserve(objects.size());
-  for (omm::Object& object : objects) {
-    assert(!object.is_root());
-    contextes.emplace_back(object);
+  contextes.reserve(selection.size());
+  for (auto object : selection) {
+    contextes.emplace_back(*object);
   }
   return contextes;
 }
@@ -21,10 +20,9 @@ auto make_contextes(const omm::ObjectRefs objects)
 namespace omm
 {
 
-RemoveObjectsCommand
-::RemoveObjectsCommand(Scene& scene, const ObjectRefs& objects)
+RemoveObjectsCommand::RemoveObjectsCommand(Scene& scene)
   : Command(QObject::tr("remove").toStdString())
-  , m_contextes(std::move(make_contextes(objects)))
+  , m_contextes(std::move(make_contextes(scene.selected_objects())))
   , m_scene(scene)
 {
 }

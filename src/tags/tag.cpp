@@ -6,6 +6,7 @@
 #include "objects/object.h"
 #include "external/json.hpp"
 #include "properties/stringproperty.h"
+#include "serializers/jsonserializer.h"
 
 namespace omm
 {
@@ -20,24 +21,16 @@ Tag::Tag()
     .set_category(QObject::tr("tag").toStdString());
 }
 
-Tag::~Tag()
-{
-
-}
-
-bool Tag::run()
-{
-  return false;
-}
-
-std::string Tag::type() const
-{
-  return "Object";
-}
+Tag::~Tag() { }
 
 std::string Tag::name() const
 {
   return property<std::string>(NAME_PROPERTY_KEY).value();
+}
+
+std::unique_ptr<Tag> Tag::copy() const
+{
+  return Serializable::copy<Tag, JSONSerializer, JSONDeserializer>(Tag::make(type()), *this);
 }
 
 }  // namespace omm

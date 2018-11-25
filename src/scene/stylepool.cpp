@@ -9,7 +9,8 @@ std::unique_ptr<omm::Style> make_default_style()
   default_style->is_pen_active = true;
   default_style->pen_color = omm::Color::BLACK;
   default_style->pen_width = 2.0;
-  default_style->is_brush_active = false;
+  default_style->is_brush_active = true;
+  default_style->brush_color = omm::Color::BLUE;
   return default_style;
 }
 

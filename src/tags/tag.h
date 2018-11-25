@@ -20,11 +20,11 @@ public:
   explicit Tag();
   virtual ~Tag();
 
-  virtual bool run();
+  virtual bool run() { return true; }
 
   static const std::string NAME_PROPERTY_KEY;
-  std::string type() const override;
   std::string name() const override;
+  std::unique_ptr<Tag> copy() const;
 
 };
 

@@ -3,19 +3,18 @@
 #include <QObject>
 
 #include "properties/floatproperty.h"
-#include "renderers/style.h"
 
 namespace omm
 {
 
+class Style;
+
 Ellipse::Ellipse()
 {
-  add_property( "rx",
-                std::make_unique<FloatProperty>(100.0) )
+  add_property( "rx", std::make_unique<FloatProperty>(100.0) )
     .set_label(QObject::tr("rx").toStdString())
     .set_category(QObject::tr("ellipse").toStdString());
-  add_property( "ry",
-                std::make_unique<FloatProperty>(100.0) )
+  add_property( "ry", std::make_unique<FloatProperty>(100.0) )
     .set_label(QObject::tr("ry").toStdString())
     .set_category(QObject::tr("ellipse").toStdString());
 }

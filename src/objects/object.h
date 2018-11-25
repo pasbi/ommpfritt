@@ -33,6 +33,14 @@ public:
   Object& adopt(std::unique_ptr<Object> object, const Object* predecessor);
   Object& adopt(std::unique_ptr<Object> object);
   std::unique_ptr<Object> repudiate(Object& object);
+  ObjectRefs children() const;
+  Object& child(size_t i) const;
+  size_t row() const;
+  const Object* predecessor() const;
+  size_t n_children() const;
+  size_t get_insert_position(const Object* child_before_position) const;
+  bool is_descendant_of(const Object& subject) const;
+  void reset_parent(Object& new_parent);
 
   void transform(const ObjectTransformation& transformation);
   ObjectTransformation transformation() const;
@@ -40,26 +48,19 @@ public:
   void set_transformation(const ObjectTransformation& transformation);
   void set_global_transformation(const ObjectTransformation& globalTransformation);
 
+  Tag& add_tag(std::unique_ptr<Tag> tag, const Tag* predecessor);
   Tag& add_tag(std::unique_ptr<Tag> tag);
   std::unique_ptr<Tag> remove_tag(Tag& tag);
+  size_t n_tags() const;
+  size_t get_insert_position(const Tag* tag_before_position) const;
+  Tag& tag(size_t i) const;
 
   std::unique_ptr<Object> copy() const;
-  ObjectRefs children() const;
-  Object& child(size_t i) const;
-  size_t n_children() const;
-  size_t row() const;
-  const Object* predecessor() const;
-  size_t get_insert_position(const Object* child_before_position) const;
-  bool is_descendant_of(const Object& subject) const;
-
   std::set<HasProperties*> get_selected_children_and_tags();
-
-  void reset_parent(Object& new_parent);
+  std::string name() const override;
 
   static const std::string TRANSFORMATION_PROPERTY_KEY;
   static const std::string NAME_PROPERTY_KEY;
-
-  std::string name() const override;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;

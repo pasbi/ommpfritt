@@ -1,4 +1,4 @@
-#include "tags/tag.h"
+#include "tags/styletag.h"
 
 namespace omm
 {
@@ -6,7 +6,7 @@ namespace omm
 void register_tags()
 {
 #define REGISTER_TAG(TYPE) Tag::register_type<TYPE>(#TYPE);
-  // REGISTER_TAG(Tag);
+  REGISTER_TAG(StyleTag);
 #undef REGISTER_TAG
 }
 

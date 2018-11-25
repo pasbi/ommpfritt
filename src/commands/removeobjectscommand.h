@@ -10,7 +10,7 @@ namespace omm
 class RemoveObjectsCommand : public Command
 {
 public:
-  RemoveObjectsCommand(Scene& scene, const ObjectRefs& objects);
+  RemoveObjectsCommand(Scene& scene);
 
   void undo() override;
   void redo() override;

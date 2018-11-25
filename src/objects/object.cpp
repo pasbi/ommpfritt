@@ -181,9 +181,27 @@ std::unique_ptr<Object> Object::repudiate(Object& object)
   return optr;
 }
 
+Tag& Object::add_tag(std::unique_ptr<Tag> tag, const Tag* predecessor)
+{
+  const auto pos = get_insert_position(predecessor);
+  return insert(m_tags, std::move(tag), pos);
+}
+
 Tag& Object::add_tag(std::unique_ptr<Tag> tag)
 {
-  return insert(m_tags, std::move(tag), m_tags.size());
+  const auto n = n_tags();
+  const Tag* predecessor = n == 0 ? nullptr : &this->tag(n-1);
+  return add_tag(std::move(tag), predecessor);
+}
+
+Tag& Object::tag(size_t i) const
+{
+  return *m_tags[i];
+}
+
+size_t Object::n_tags() const
+{
+  return m_tags.size();
 }
 
 std::unique_ptr<Tag> Object::remove_tag(Tag& tag)
@@ -267,6 +285,21 @@ size_t Object::get_insert_position(const Object* child_before_position) const
   } else {
     assert(&child_before_position->parent() == this);
     return child_before_position->row() + 1;
+  }
+}
+
+size_t Object::get_insert_position(const Tag* tag_before_position) const
+{
+  if (tag_before_position == nullptr) {
+    return 0;
+  } else {
+    for (size_t i = 0; i < m_tags.size(); ++i) {
+      if (tag_before_position == &*m_tags[i]) {
+        return i + 1;
+      }
+    }
+    assert(false);
+    return 0;
   }
 }
 

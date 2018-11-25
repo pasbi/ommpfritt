@@ -1,4 +1,5 @@
 file (GLOB SOURCES
+  "styletag.cpp"
   "tag.cpp"
   "tagregister.cpp"
 )
