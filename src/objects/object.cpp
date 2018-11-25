@@ -22,32 +22,6 @@ namespace
 static constexpr auto CHILDREN_POINTER = "children";
 static constexpr auto TYPE_POINTER = "type";
 
-template<typename T>
-T& insert(std::vector<std::unique_ptr<T>>& container, std::unique_ptr<T> obj, size_t pos)
-{
-  auto pos_it = container.begin();
-  std::advance(pos_it, pos);
-
-  T& ref = *obj;
-  assert(obj.get() != nullptr);
-  container.insert(pos_it, std::move(obj));
-  return ref;
-}
-
-template<typename T>
-std::unique_ptr<T> extract(std::vector<std::unique_ptr<T>>& container, T& obj)
-{
-  const auto it = std::find_if( std::begin(container),
-                                std::end(container),
-                                [&obj](const std::unique_ptr<T>& a) {
-    return a.get() == &obj;
-  });
-  assert(it != std::end(container));
-  std::unique_ptr<T> uptr = std::move(*it);
-  container.erase(it);
-  return std::move(uptr);
-}
-
 std::vector<omm::Style*> find_styles(const omm::Object& object)
 {
   // TODO find style tags
@@ -63,7 +37,7 @@ const std::string Object::TRANSFORMATION_PROPERTY_KEY = "transformation";
 const std::string Object::NAME_PROPERTY_KEY = "name";
 
 Object::Object()
-  : m_parent(nullptr)
+  : TreeElement(nullptr)
 {
 
   add_property( TRANSFORMATION_PROPERTY_KEY,
@@ -136,171 +110,31 @@ void Object::set_global_transformation(const ObjectTransformation& global_transf
   set_transformation(local_transformation);
 }
 
-bool Object::is_root() const
-{
-  return m_parent == nullptr;
-}
-
-Object& Object::parent() const
-{
-  assert(!is_root());
-  return *m_parent;
-}
-
 void Object::transform(const ObjectTransformation& transformation)
 {
   set_transformation(transformation.apply(this->transformation()));
 }
 
-Object& Object::adopt(std::unique_ptr<Object> object, const Object* predecessor)
+std::set<PropertyOwner*> Object::get_selected_children_and_tags()
 {
-  assert(object->is_root());
-  const ObjectTransformation gt = object->global_transformation();
-  assert(predecessor == nullptr || &predecessor->parent() == this);
-  const size_t pos = get_insert_position(predecessor);
-
-  object->m_parent = this;
-  Object& oref = insert(m_children, std::move(object), pos);
-  oref.set_global_transformation(gt);
-  return oref;
-}
-
-Object& Object::adopt(std::unique_ptr<Object> object)
-{
-  const size_t n = n_children();
-  const Object* predecessor = n == 0 ? nullptr : &child(n-1);
-  return adopt(std::move(object), predecessor);
-}
-
-std::unique_ptr<Object> Object::repudiate(Object& object)
-{
-  const ObjectTransformation gt = object.global_transformation();
-  object.m_parent = nullptr;
-  std::unique_ptr<Object> optr = extract(m_children, object);
-  object.set_global_transformation(gt);
-  return optr;
-}
-
-Tag& Object::add_tag(std::unique_ptr<Tag> tag, const Tag* predecessor)
-{
-  const auto pos = get_insert_position(predecessor);
-  return insert(m_tags, std::move(tag), pos);
-}
-
-Tag& Object::add_tag(std::unique_ptr<Tag> tag)
-{
-  const auto n = n_tags();
-  const Tag* predecessor = n == 0 ? nullptr : &this->tag(n-1);
-  return add_tag(std::move(tag), predecessor);
-}
-
-Tag& Object::tag(size_t i) const
-{
-  return *m_tags[i];
-}
-
-size_t Object::n_tags() const
-{
-  return m_tags.size();
-}
-
-std::unique_ptr<Tag> Object::remove_tag(Tag& tag)
-{
-  return extract(m_tags, tag);
-}
-
-void Object::reset_parent(Object& new_parent)
-{
-  assert(!is_root()); // use Object::adopt for roots.
-  new_parent.adopt(m_parent->repudiate(*this));
-}
-
-ObjectRefs Object::children() const
-{
-  static const auto f = [](const std::unique_ptr<Object>& uptr) {
-    return ObjectRef(*uptr);
-  };
-  return ::transform<ObjectRef>(m_children, f);
-}
-
-size_t Object::n_children() const
-{
-  return m_children.size();
-}
-
-Object& Object::child(size_t i) const
-{
-  return *m_children[i];
-}
-
-std::set<HasProperties*> Object::get_selected_children_and_tags()
-{
-  std::set<HasProperties*> selection;
+  std::set<PropertyOwner*> selection;
 
   if (is_selected()) {
     selection.insert(this);
   }
 
-  for (auto& tag : m_tags) {
+  for (auto& tag : tags()) {
     if (tag->is_selected()) {
-      selection.insert(tag.get());
+      selection.insert(tag);
     }
   }
 
-  for (auto& child : m_children) {
+  for (auto& child : children()) {
     const auto child_selection = child->get_selected_children_and_tags();
     selection.insert(child_selection.begin(), child_selection.end());
   }
 
   return selection;
-}
-
-size_t Object::row() const
-{
-  assert (!is_root());
-  const auto siblings = parent().children();
-  for (size_t i = 0; i < siblings.size(); ++i) {
-    if (&siblings[i].get() == this) {
-      return i;
-    }
-  }
-  assert(false);
-}
-
-const Object* Object::predecessor() const
-{
-  assert(!is_root());
-  const auto pos = row();
-  if (pos == 0) {
-    return nullptr;
-  } else {
-    return &parent().child(pos - 1);
-  }
-}
-
-size_t Object::get_insert_position(const Object* child_before_position) const
-{
-  if (child_before_position == nullptr) {
-    return 0;
-  } else {
-    assert(&child_before_position->parent() == this);
-    return child_before_position->row() + 1;
-  }
-}
-
-size_t Object::get_insert_position(const Tag* tag_before_position) const
-{
-  if (tag_before_position == nullptr) {
-    return 0;
-  } else {
-    for (size_t i = 0; i < m_tags.size(); ++i) {
-      if (tag_before_position == &*m_tags[i]) {
-        return i + 1;
-      }
-    }
-    assert(false);
-    return 0;
-  }
 }
 
 std::ostream& operator<<(std::ostream& ostream, const Object& object)
@@ -312,7 +146,7 @@ std::ostream& operator<<(std::ostream& ostream, const Object& object)
 
 void Object::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
-  HasProperties::serialize(serializer, root);
+  PropertyOwner::serialize(serializer, root);
 
   const auto children_key = make_pointer(root, CHILDREN_POINTER);
   serializer.start_array(n_children(), children_key);
@@ -334,7 +168,7 @@ void Object::serialize(AbstractSerializer& serializer, const Pointer& root) cons
 
 void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
-  HasProperties::deserialize(deserializer, root);
+  PropertyOwner::deserialize(deserializer, root);
 
   const auto children_key = make_pointer(root, CHILDREN_POINTER);
   size_t n_children = deserializer.array_size(children_key);
@@ -353,11 +187,6 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   // }
 }
 
-std::unique_ptr<Object> Object::copy() const
-{
-  return Serializable::copy<Object, JSONSerializer, JSONDeserializer>(Object::make(type()), *this);
-}
-
 std::string Object::name() const
 {
   return property<std::string>(NAME_PROPERTY_KEY).value();
@@ -374,7 +203,7 @@ void Object::render_recursive(AbstractRenderer& renderer, const Style& default_s
   }
 
   // if (bounding_box().intersect(renderer.bounding_box()).is_empty()) {
-    for (const auto& child : m_children) {
+    for (const auto& child : children()) {
       renderer.push_transformation(child->transformation());
       child->render_recursive(renderer, default_style);
       renderer.pop_transformation();
@@ -386,21 +215,10 @@ BoundingBox Object::recursive_bounding_box() const
 {
   auto bounding_box = this->bounding_box();
 
-  for (const auto& child : m_children) {
+  for (const auto& child : children()) {
     bounding_box = bounding_box.merge(child->recursive_bounding_box());
   }
   return transformation().apply(bounding_box);
-}
-
-bool Object::is_descendant_of(const Object& subject) const
-{
-  if (&subject == this) {
-    return true;
-  } else if (subject.is_root()) {
-    return false;
-  } else {
-    return is_descendant_of(subject.parent());
-  }
 }
 
 }  // namespace omm

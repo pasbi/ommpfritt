@@ -4,6 +4,7 @@ file (GLOB SOURCES
 
 target_sources(ommpfritt PRIVATE ${SOURCES})
 
+add_subdirectory(aspects)
 add_subdirectory(color)
 add_subdirectory(commands)
 add_subdirectory(geometry)

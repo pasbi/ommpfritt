@@ -3,7 +3,7 @@
 #include <vector>
 #include <functional>
 
-#include "properties/hasproperties.h"
+#include "aspects/propertyowner.h"
 #include "managers/manager.h"
 #include "scene/scene.h"
 
@@ -23,8 +23,8 @@ public:
   explicit PropertyManager(Scene& scene);
   ~PropertyManager();
 
-  void set_selection(const std::set<HasProperties*>& selection) override;
-  PropertyView property(const HasProperties::Key& key);
+  void set_selection(const std::set<PropertyOwner*>& selection) override;
+  PropertyView property(const PropertyOwner::Key& key);
   void clear();
 
 private:

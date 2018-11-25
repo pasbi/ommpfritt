@@ -5,11 +5,11 @@
 namespace omm
 {
 
-class HasProperties;
-class ReferenceProperty : public TypedProperty<HasProperties*>
+class PropertyOwner;
+class ReferenceProperty : public TypedProperty<PropertyOwner*>
 {
 public:
-  using ReferenceType = HasProperties*;
+  using ReferenceType = PropertyOwner*;
   /**
    * @brief creates a ReferenceProperty with no (aka nullptr) reference
    * @details the constructor does not take an argument because the default reference is nullptr

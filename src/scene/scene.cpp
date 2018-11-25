@@ -71,7 +71,7 @@ Object& Scene::root() const
   return *m_root;
 }
 
-std::set<omm::HasProperties*> Scene::selection() const
+std::set<omm::PropertyOwner*> Scene::selection() const
 {
   LOG(INFO) << "selection";
   return m_root->get_selected_children_and_tags();

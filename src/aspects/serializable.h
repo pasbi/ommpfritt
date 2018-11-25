@@ -3,6 +3,7 @@
 #include <sstream>
 #include <glog/logging.h>
 #include <assert.h>
+#include <memory>
 
 namespace omm
 {
@@ -41,23 +42,6 @@ public:
     std::string lhs = make_pointer<PointerT>(pointer);
     std::string rhs = make_pointer<PointerTs...>(pointers...);
     return lhs + rhs;
-  }
-
-protected:
-  template<typename T, typename Serializer, typename Deserializer>
-  static std::unique_ptr<T> copy(std::unique_ptr<T> copy, const T& self)
-  {
-    static constexpr auto POINTER = "copy";
-    std::stringstream stream;
-    {
-      Serializer serializer(stream);
-      self.serialize(serializer, POINTER);
-    }
-    {
-      Deserializer deserializer(stream);
-      copy->deserialize(deserializer, POINTER);
-    }
-    return copy;
   }
 };
 

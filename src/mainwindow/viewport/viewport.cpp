@@ -135,7 +135,7 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
   QWidget::mouseReleaseEvent(event);
 }
 
-void Viewport::set_selection(const std::set<HasProperties*>&)
+void Viewport::set_selection(const std::set<PropertyOwner*>&)
 {
   m_handle = make_handle(m_scene);
 }

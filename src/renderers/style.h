@@ -1,12 +1,12 @@
 #pragma once
 
-#include "properties/hasproperties.h"
+#include "aspects/propertyowner.h"
 #include "color/color.h"
 
 namespace omm
 {
 
-class Style : public HasProperties
+class Style : public PropertyOwner
 {
 public:
   explicit Style();

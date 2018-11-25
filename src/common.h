@@ -3,6 +3,8 @@
 #include <functional>
 #include <memory>
 #include <vector>
+#include <assert.h>
+#include <algorithm>
 
 /*
  * passes ownership of `object` to `consumer` and returns a reference to `object`
@@ -55,6 +57,32 @@ auto is_uniform(const ContainerT<T>& container, F&& mapper = [](const auto& f) {
     }
   }
   return true;
+}
+
+template<typename T, template<typename...> class ContainerT>
+T& insert(ContainerT<std::unique_ptr<T>>& container, std::unique_ptr<T> obj, size_t pos)
+{
+  auto pos_it = container.begin();
+  std::advance(pos_it, pos);
+
+  T& ref = *obj;
+  assert(obj.get() != nullptr);
+  container.insert(pos_it, std::move(obj));
+  return ref;
+}
+
+template<typename T, template<typename...> class ContainerT>
+std::unique_ptr<T> extract(ContainerT<std::unique_ptr<T>>& container, T& obj)
+{
+  const auto it = std::find_if( std::begin(container),
+                                std::end(container),
+                                [&obj](const std::unique_ptr<T>& a) {
+    return a.get() == &obj;
+  });
+  assert(it != std::end(container));
+  std::unique_ptr<T> uptr = std::move(*it);
+  container.erase(it);
+  return std::move(uptr);
 }
 
 namespace omm

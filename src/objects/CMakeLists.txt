@@ -3,6 +3,5 @@ file (GLOB SOURCES
   "empty.cpp"
   "object.cpp"
   "objectregister.cpp"
-  "selectable.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})

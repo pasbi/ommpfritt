@@ -1,21 +1,21 @@
 #pragma once
 
 #include <pybind11/embed.h>
-#include "properties/hasproperties.h"
+#include "aspects/propertyowner.h"
 
 namespace py = pybind11;
 
 namespace omm
 {
 
-template<typename HasPropertiesT>
+template<typename PropertyOwnerT>
 class View
 {
 public:
-  explicit View(HasPropertiesT& target)
+  explicit View(PropertyOwnerT& target)
     : m_target(&target)
   {
-    static_assert(std::is_base_of<HasProperties, HasPropertiesT>::value);
+    static_assert(std::is_base_of<PropertyOwner, PropertyOwnerT>::value);
   }
 
   py::object get_property(const std::string& key)
@@ -38,7 +38,7 @@ protected:
     }
   }
 
-  HasPropertiesT* m_target;
+  PropertyOwnerT* m_target;
 };
 
 }  // namespace omm

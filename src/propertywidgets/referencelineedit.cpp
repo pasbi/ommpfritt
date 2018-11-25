@@ -51,7 +51,7 @@ void ReferenceLineEdit::dropEvent(QDropEvent* event)
     event->ignore();
   } else {
     const auto& object_mime_data = *qobject_cast<const ObjectMimeData*>(&mime_data);
-    HasProperties* reference = &object_mime_data.objects.front().get();
+    PropertyOwner* reference = &object_mime_data.objects.front().get();
     set_value(reference);
   }
 }

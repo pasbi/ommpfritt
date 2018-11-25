@@ -28,9 +28,4 @@ std::string Tag::name() const
   return property<std::string>(NAME_PROPERTY_KEY).value();
 }
 
-std::unique_ptr<Tag> Tag::copy() const
-{
-  return Serializable::copy<Tag, JSONSerializer, JSONDeserializer>(Tag::make(type()), *this);
-}
-
 }  // namespace omm

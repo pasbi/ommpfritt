@@ -1,4 +1,4 @@
-#include "hasproperties.h"
+#include "aspects/propertyowner.h"
 #include "external/json.hpp"
 #include "serializers/abstractserializer.h"
 
@@ -13,20 +13,20 @@ namespace
 namespace omm
 {
 
-HasProperties::HasProperties()
+PropertyOwner::PropertyOwner()
 {
 }
 
-HasProperties::HasProperties(HasProperties&& other)
+PropertyOwner::PropertyOwner(PropertyOwner&& other)
   : m_properties(std::move(other.m_properties))
 {
 }
 
-HasProperties::~HasProperties()
+PropertyOwner::~PropertyOwner()
 {
 }
 
-Property& HasProperties::add_property(const Key& key, std::unique_ptr<Property> property)
+Property& PropertyOwner::add_property(const Key& key, std::unique_ptr<Property> property)
 {
   Property& ref = *property;
   bool was_inserted = m_properties.insert(key, std::move(property));
@@ -37,23 +37,23 @@ Property& HasProperties::add_property(const Key& key, std::unique_ptr<Property> 
   return ref;
 }
 
-const PropertyMap& HasProperties::properties() const
+const PropertyMap& PropertyOwner::properties() const
 {
   return m_properties;
 }
 
-Property& HasProperties::property(const Key& key) const
+Property& PropertyOwner::property(const Key& key) const
 {
   assert(has_property(key));
   return *m_properties.at(key);
 }
 
-bool HasProperties::has_property(const Key& key) const
+bool PropertyOwner::has_property(const Key& key) const
 {
   return m_properties.contains(key);
 }
 
-void HasProperties::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void PropertyOwner::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   Serializable::serialize(serializer, root);
   const auto id_pointer = make_pointer(root, ID_POINTER);
@@ -72,7 +72,7 @@ void HasProperties::serialize(AbstractSerializer& serializer, const Pointer& roo
   serializer.end_array();
 }
 
-void HasProperties::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void PropertyOwner::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   Serializable::deserialize(deserializer, root);
 
@@ -100,7 +100,7 @@ void HasProperties::deserialize(AbstractDeserializer& deserializer, const Pointe
   }
 }
 
-void HasProperties::on_property_value_changed()
+void PropertyOwner::on_property_value_changed()
 {
 }
 

@@ -16,7 +16,7 @@ AbstractObjectTreeContext::AbstractObjectTreeContext(Object& subject)
 
 size_t AbstractObjectTreeContext::get_insert_position() const
 {
-  return parent.get().get_insert_position(predecessor);
+  return parent.get().TreeElement::get_insert_position(predecessor);
 }
 
 bool MoveObjectTreeContext::is_root() const

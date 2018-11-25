@@ -9,7 +9,7 @@
 #include "external/json.hpp"
 #include "observed.h"
 #include "abstractfactory.h"
-#include "serializers/serializable.h"
+#include "aspects/serializable.h"
 #include "common.h"
 
 namespace py = pybind11;
@@ -41,7 +41,7 @@ public:
 
 class Property
   : public AbstractFactory<std::string, Property>
-  , public Serializable
+  , public virtual Serializable
   , public Observed<AbstractPropertyObserver>
 {
 public:
@@ -75,8 +75,8 @@ public:
   Property& set_category(const std::string& category);
   virtual std::string widget_type() const = 0;
 
-  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+  void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const;
+  void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root);
 
   static std::string get_label(const SetOfProperties& properties);
 

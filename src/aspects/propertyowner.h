@@ -6,20 +6,22 @@
 #include <memory>
 #include <typeinfo>
 #include "properties/property.h"
+#include "orderedmap.h"
 #include "external/json_fwd.hpp"
-#include "properties/propertymap.h"
-#include "serializers/serializable.h"
+#include "aspects/serializable.h"
 #include "properties/typedproperty.h"
 
 namespace omm
 {
 
-class HasProperties : public Serializable, public AbstractPropertyObserver
+using PropertyMap = OrderedMap<std::string, std::unique_ptr<Property>>;
+
+class PropertyOwner : public virtual Serializable, public AbstractPropertyObserver
 {
 public:
-  explicit HasProperties();
-  HasProperties(HasProperties&& other);
-  virtual ~HasProperties();
+  explicit PropertyOwner();
+  PropertyOwner(PropertyOwner&& other);
+  virtual ~PropertyOwner();
   using Key = PropertyMap::key_type;
   Property& property(const Key& key) const;
 

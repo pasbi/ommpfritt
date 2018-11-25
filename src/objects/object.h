@@ -4,11 +4,13 @@
 #include <memory>
 #include "external/json_fwd.hpp"
 #include "geometry/objecttransformation.h"
-#include "properties/hasproperties.h"
+#include "aspects/propertyowner.h"
 #include "abstractfactory.h"
-#include "objects/selectable.h"
+#include "aspects/selectable.h"
+#include "aspects/tagowner.h"
+#include "aspects/treeelement.h"
 #include "common.h"
-#include "serializers/serializable.h"
+#include "aspects/copycreatable.h"
 #include "renderers/abstractrenderer.h"
 
 namespace omm
@@ -19,28 +21,16 @@ class Tag;
 class Scene;
 
 class Object
-  : public HasProperties
+  : public PropertyOwner
   , public Selectable
-  , public AbstractFactory<std::string, Object>
+  , public virtual Serializable
+  , public TagOwner
+  , public TreeElement<Object>
+  , public CopyCreatable<Object>
 {
 public:
   explicit Object();
   virtual ~Object();
-
-  bool is_root() const;
-  Object& parent() const;
-
-  Object& adopt(std::unique_ptr<Object> object, const Object* predecessor);
-  Object& adopt(std::unique_ptr<Object> object);
-  std::unique_ptr<Object> repudiate(Object& object);
-  ObjectRefs children() const;
-  Object& child(size_t i) const;
-  size_t row() const;
-  const Object* predecessor() const;
-  size_t n_children() const;
-  size_t get_insert_position(const Object* child_before_position) const;
-  bool is_descendant_of(const Object& subject) const;
-  void reset_parent(Object& new_parent);
 
   void transform(const ObjectTransformation& transformation);
   ObjectTransformation transformation() const;
@@ -48,15 +38,7 @@ public:
   void set_transformation(const ObjectTransformation& transformation);
   void set_global_transformation(const ObjectTransformation& globalTransformation);
 
-  Tag& add_tag(std::unique_ptr<Tag> tag, const Tag* predecessor);
-  Tag& add_tag(std::unique_ptr<Tag> tag);
-  std::unique_ptr<Tag> remove_tag(Tag& tag);
-  size_t n_tags() const;
-  size_t get_insert_position(const Tag* tag_before_position) const;
-  Tag& tag(size_t i) const;
-
-  std::unique_ptr<Object> copy() const;
-  std::set<HasProperties*> get_selected_children_and_tags();
+  std::set<PropertyOwner*> get_selected_children_and_tags();
   std::string name() const override;
 
   static const std::string TRANSFORMATION_PROPERTY_KEY;
@@ -70,9 +52,6 @@ public:
   BoundingBox recursive_bounding_box() const;
 
 private:
-  std::vector<std::unique_ptr<Tag>> m_tags;
-  std::vector<std::unique_ptr<Object>> m_children;
-  Object* m_parent;
   friend class ObjectView;
 };
 

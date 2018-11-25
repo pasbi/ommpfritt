@@ -4,7 +4,7 @@
 #include <typeinfo>
 
 #include "geometry/objecttransformation.h"
-#include "serializers/serializable.h"
+#include "aspects/serializable.h"
 
 namespace
 {

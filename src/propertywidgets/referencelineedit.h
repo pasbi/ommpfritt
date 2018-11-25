@@ -2,18 +2,18 @@
 
 #include <QLineEdit>
 #include "propertywidgets/multivalueedit.h"
-#include "properties/hasproperties.h"
+#include "aspects/propertyowner.h"
 
 class QMimeData;
 
 namespace omm
 {
 
-class HasProperties;
+class PropertyOwner;
 
 class ReferenceLineEdit
   : public QLineEdit
-  , public MultiValueEdit<HasProperties*>
+  , public MultiValueEdit<PropertyOwner*>
 {
   Q_OBJECT
 public:
@@ -22,7 +22,7 @@ public:
   value_type value() const override;
 
 Q_SIGNALS:
-  void reference_changed(HasProperties* reference);
+  void reference_changed(PropertyOwner* reference);
 
 protected:
   void set_inconsistent_value() override;
@@ -32,7 +32,7 @@ protected:
 
 private:
   bool can_drop(const QMimeData& mime_data) const;
-  HasProperties* m_value;
+  PropertyOwner* m_value;
 };
 
 }  // namespace omm

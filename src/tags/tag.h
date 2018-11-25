@@ -1,10 +1,10 @@
 #pragma once
 
 #include <memory>
-#include "properties/hasproperties.h"
+#include "aspects/propertyowner.h"
 #include "external/json_fwd.hpp"
-#include "objects/selectable.h"
-#include "abstractfactory.h"
+#include "aspects/selectable.h"
+#include "aspects/copycreatable.h"
 
 namespace omm {
 
@@ -12,9 +12,9 @@ class Object;
 class Scene;
 
 class Tag
-  : public HasProperties
+  : public PropertyOwner
   , public Selectable
-  , public AbstractFactory<std::string, Tag>
+  , public CopyCreatable<Tag>
 {
 public:
   explicit Tag();
@@ -24,7 +24,6 @@ public:
 
   static const std::string NAME_PROPERTY_KEY;
   std::string name() const override;
-  std::unique_ptr<Tag> copy() const;
 
 };
 

@@ -1,6 +1,5 @@
 file (GLOB SOURCES
   "floatproperty.cpp"
-  "hasproperties.cpp"
   "integerproperty.cpp"
   "property.cpp"
   "propertyregister.cpp"
