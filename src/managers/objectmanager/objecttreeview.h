@@ -3,6 +3,7 @@
 #include <QTreeView>
 #include "common.h"
 #include "managers/objectmanager/tagsitemdelegate.h"
+#include "scene/abstractselectionobserver.h"
 
 namespace omm
 {
@@ -10,13 +11,15 @@ namespace omm
 class Object;
 class ObjectTreeAdapter;
 
-class ObjectTreeView : public QTreeView
+class ObjectTreeView : public QTreeView, public AbstractSelectionObserver
 {
   Q_OBJECT
 public:
   explicit ObjectTreeView();
-  void set_model(ObjectTreeAdapter& model);
-  ObjectTreeAdapter& model() const;
+  ~ObjectTreeView();
+  void set_model(ObjectTreeAdapter* model);
+  ObjectTreeAdapter* model() const;
+  void set_selection(const std::set<PropertyOwner*>& selection) override;
 
 Q_SIGNALS:
   void mouse_released();
@@ -30,6 +33,7 @@ private:
   void remove_selected() const;
   void attach_tag_to_selected(const std::string& tag_class) const;
   std::unique_ptr<TagsItemDelegate> m_tags_item_delegate;
+  void set_selection(const std::set<PropertyOwner*>& selection, Object& root);
 
 };
 

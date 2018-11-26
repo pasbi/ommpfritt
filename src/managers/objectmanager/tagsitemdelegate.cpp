@@ -25,7 +25,7 @@ int tag_at(int pos_x)
 auto tags(omm::ObjectTreeView& view, const QModelIndex& index)
 {
   if (index.isValid()) {
-    return view.model().object_at(index).tags();
+    return view.model()->object_at(index).tags();
   } else {
     return std::vector<omm::Tag*>();
   }
@@ -84,10 +84,10 @@ bool TagsItemDelegate::editorEvent( QEvent *event, QAbstractItemModel *model,
     const auto tags = ::tags(m_view, index);
     if (tag_i >= 0 && tag_i < tags.size()) {
       if (!(mouse_event->modifiers() & Qt::ShiftModifier)) {
-        m_view.model().scene().clear_selection();
+        m_view.model()->scene().clear_selection();
       }
       Tag& tag = *tags[tag_i];
-      tag.set_selected(!tag.is_selected());
+      tag.set_selected(mouse_event->modifiers() & Qt::ShiftModifier ? !tag.is_selected() : true);
       event->accept();
       m_view.update();
     }

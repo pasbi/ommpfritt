@@ -99,9 +99,11 @@ void Scene::selection_changed()
 
 void Scene::clear_selection()
 {
-  LOG(INFO) << "CLEAR";
-  for (auto& o : selected_objects()) {
+  for (auto& o : root().all_descendants()) {
     o->set_selected(false);
+    for (auto& t : o->tags()) {
+      t->set_selected(false);
+    }
   }
   selection_changed();
 }

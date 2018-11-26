@@ -121,6 +121,17 @@ template<typename T> bool TreeElement<T>::is_descendant_of(const T& subject) con
   }
 }
 
+template<typename T> std::set<T*> TreeElement<T>::all_descendants() const
+{
+  const auto children = this->children();
+  std::set<T*> all_descendants(children.begin(), children.end());
+  for (const auto& child : children) {
+    const auto child_descendants = child->all_descendants();
+    all_descendants.insert(child_descendants.begin(), child_descendants.end());
+  }
+  return all_descendants;
+}
+
 template class TreeElement<Object>;
 
 }  // namespace omm

@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <set>
 
 namespace omm
 {
@@ -25,6 +26,7 @@ public:
   size_t get_insert_position(const T* child_before_position) const;
   bool is_descendant_of(const T& subject) const;
   void reset_parent(T& new_parent);
+  std::set<T*> all_descendants() const;
 
 private:
   std::vector<std::unique_ptr<T>> m_children;

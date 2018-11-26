@@ -15,6 +15,7 @@ protected:
   virtual void endMoveObject() = 0;
   virtual void beginRemoveObject(const Object& object) = 0;
   virtual void endRemoveObject() = 0;
+  // virtual void selection_changed() = 0;
   friend class Scene;
 };
 

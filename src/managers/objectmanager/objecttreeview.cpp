@@ -17,7 +17,7 @@ namespace
 const omm::Object* object_at(const omm::ObjectTreeView& view, const QPoint& pos)
 {
   const auto index = view.indexAt(pos);
-  const auto& object = view.model().object_at(index);
+  const auto& object = view.model()->object_at(index);
   if (object.is_root()) {
     return nullptr;
   } else {
@@ -38,6 +38,11 @@ ObjectTreeView::ObjectTreeView()
   setDefaultDropAction(Qt::MoveAction);
   viewport()->setAcceptDrops(true);
   setItemDelegateForColumn(2, m_tags_item_delegate.get());
+}
+
+ObjectTreeView::~ObjectTreeView()
+{
+  set_model(nullptr); // unregister observer
 }
 
 void ObjectTreeView::contextMenuEvent(QContextMenuEvent *event)
@@ -64,14 +69,20 @@ void ObjectTreeView::mouseReleaseEvent(QMouseEvent *event)
   Q_EMIT mouse_released();
 }
 
-void ObjectTreeView::set_model(ObjectTreeAdapter& model)
+void ObjectTreeView::set_model(ObjectTreeAdapter* model)
 {
-  QTreeView::setModel(&model);
+  if (this->model()) {
+    this->model()->scene().Observed<AbstractSelectionObserver>::unregister_observer(*this);
+  }
+  QTreeView::setModel(model);
+  if (this->model()) {
+    this->model()->scene().Observed<AbstractSelectionObserver>::register_observer(*this);
+  }
 }
 
-ObjectTreeAdapter& ObjectTreeView::model() const
+ObjectTreeAdapter* ObjectTreeView::model() const
 {
-  return static_cast<ObjectTreeAdapter&>(*QTreeView::model());
+  return static_cast<ObjectTreeAdapter*>(QTreeView::model());
 }
 
 void ObjectTreeView::populate_menu(QMenu& menu, const Object& subject) const
@@ -88,15 +99,34 @@ void ObjectTreeView::populate_menu(QMenu& menu, const Object& subject) const
 
 void ObjectTreeView::remove_selected() const
 {
-  auto& scene = model().scene();
+  auto& scene = model()->scene();
   scene.submit<RemoveObjectsCommand>(scene);
 }
 
 void ObjectTreeView::attach_tag_to_selected(const std::string& tag_class) const
 {
   auto tag = Tag::make(tag_class);
-  auto& scene = model().scene();
+  auto& scene = model()->scene();
   scene.submit<AttachTagCommand>(scene, std::move(tag));
+}
+
+void ObjectTreeView::set_selection(const std::set<PropertyOwner*>& selection, Object& root)
+{
+  assert(root.is_selected() == selection.count(static_cast<PropertyOwner*>(&root)));
+  const QModelIndex index = model()->index_of(root);
+  if (root.is_selected()) {
+    selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Select);
+  } else {
+    selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Deselect);
+  }
+  for (auto child : root.children()) {
+    set_selection(selection, *child);
+  }
+};
+
+void ObjectTreeView::set_selection(const std::set<PropertyOwner*>& selection)
+{
+  set_selection(selection, model()->scene().root());
 }
 
 }  // namespace omm
