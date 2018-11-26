@@ -55,6 +55,7 @@ void TagsItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &opt
   const auto rect = QRect(QPoint(), icon_size());
   for (const auto& tag : tags(m_view, index))
   {
+    painter->setClipRect(rect);
     tag->icon().paint(painter, rect);
     if (tag->is_selected()) {
       painter->drawRect(rect);
