@@ -6,7 +6,7 @@
 namespace omm
 {
 
-class Style : public PropertyOwner
+class Style : public PropertyOwner<AbstractPropertyOwner::Kind::Style>
 {
 public:
   explicit Style();

@@ -9,11 +9,11 @@ class QMimeData;
 namespace omm
 {
 
-class PropertyOwner;
+class AbstractPropertyOwner;
 
 class ReferenceLineEdit
   : public QLineEdit
-  , public MultiValueEdit<PropertyOwner*>
+  , public MultiValueEdit<AbstractPropertyOwner*>
 {
   Q_OBJECT
 public:
@@ -22,7 +22,7 @@ public:
   value_type value() const override;
 
 Q_SIGNALS:
-  void reference_changed(PropertyOwner* reference);
+  void reference_changed(AbstractPropertyOwner* reference);
 
 protected:
   void set_inconsistent_value() override;
@@ -32,7 +32,7 @@ protected:
 
 private:
   bool can_drop(const QMimeData& mime_data) const;
-  PropertyOwner* m_value;
+  AbstractPropertyOwner* m_value;
 };
 
 }  // namespace omm

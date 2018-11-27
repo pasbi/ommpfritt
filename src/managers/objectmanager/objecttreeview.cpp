@@ -110,9 +110,9 @@ void ObjectTreeView::attach_tag_to_selected(const std::string& tag_class) const
   scene.submit<AttachTagCommand>(scene, std::move(tag));
 }
 
-void ObjectTreeView::set_selection(const std::set<PropertyOwner*>& selection, Object& root)
+void ObjectTreeView::set_selection(const std::set<AbstractPropertyOwner*>& selection, Object& root)
 {
-  assert(root.is_selected() == selection.count(static_cast<PropertyOwner*>(&root)));
+  assert(root.is_selected() == selection.count(static_cast<AbstractPropertyOwner*>(&root)));
   const QModelIndex index = model()->index_of(root);
   if (root.is_selected()) {
     selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Select);
@@ -124,7 +124,7 @@ void ObjectTreeView::set_selection(const std::set<PropertyOwner*>& selection, Ob
   }
 };
 
-void ObjectTreeView::set_selection(const std::set<PropertyOwner*>& selection)
+void ObjectTreeView::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
   set_selection(selection, model()->scene().root());
 }

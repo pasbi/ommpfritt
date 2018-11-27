@@ -30,15 +30,15 @@ private:
   Scene& m_scene;
 };
 
-template<typename ValueT>
+template<typename PropertyT>
 class PropertyWidget : public AbstractPropertyWidget
 {
 public:
-  using property_type = TypedProperty<ValueT>;
+  using property_type = PropertyT;
   using value_type = typename property_type::value_type;
   explicit PropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
     : AbstractPropertyWidget(scene, properties)
-    , m_properties(Property::cast_all<ValueT>(properties))
+    , m_properties(Property::cast_all<property_type>(properties))
   {
     for (auto&& property : m_properties) {
       property->Observed<AbstractPropertyObserver>::register_observer(*this);
@@ -53,14 +53,15 @@ public:
   }
 
 protected:
-  void set_properties_value(const ValueT& value)
+  void set_properties_value(const value_type& value)
   {
-    scene().submit<PropertiesCommand<ValueT>>(m_properties, value);
+    using CommandType = PropertiesCommand<property_type>;
+    scene().submit<CommandType>(m_properties, value);
   }
 
   auto get_properties_values() const
   {
-    return ::transform<ValueT>(m_properties, [](auto property) { return property->value(); });
+    return ::transform<value_type>(m_properties, [](auto property) { return property->value(); });
   }
 
 private:

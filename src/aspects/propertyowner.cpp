@@ -13,47 +13,36 @@ namespace
 namespace omm
 {
 
-PropertyOwner::PropertyOwner()
+AbstractPropertyOwner::AbstractPropertyOwner()
 {
 }
 
-PropertyOwner::PropertyOwner(PropertyOwner&& other)
+AbstractPropertyOwner::AbstractPropertyOwner(AbstractPropertyOwner&& other)
   : m_properties(std::move(other.m_properties))
 {
 }
 
-PropertyOwner::~PropertyOwner()
+AbstractPropertyOwner::~AbstractPropertyOwner()
 {
 }
 
-Property& PropertyOwner::add_property(const Key& key, std::unique_ptr<Property> property)
-{
-  Property& ref = *property;
-  bool was_inserted = m_properties.insert(key, std::move(property));
-  assert(was_inserted);
-  (void) was_inserted;
-
-  ref.register_observer(*this);
-  return ref;
-}
-
-const PropertyMap& PropertyOwner::properties() const
+const PropertyMap& AbstractPropertyOwner::properties() const
 {
   return m_properties;
 }
 
-Property& PropertyOwner::property(const Key& key) const
+Property& AbstractPropertyOwner::property(const Key& key) const
 {
   assert(has_property(key));
   return *m_properties.at(key);
 }
 
-bool PropertyOwner::has_property(const Key& key) const
+bool AbstractPropertyOwner::has_property(const Key& key) const
 {
   return m_properties.contains(key);
 }
 
-void PropertyOwner::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void AbstractPropertyOwner::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   Serializable::serialize(serializer, root);
   const auto id_pointer = make_pointer(root, ID_POINTER);
@@ -72,7 +61,7 @@ void PropertyOwner::serialize(AbstractSerializer& serializer, const Pointer& roo
   serializer.end_array();
 }
 
-void PropertyOwner::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   Serializable::deserialize(deserializer, root);
 
@@ -100,8 +89,43 @@ void PropertyOwner::deserialize(AbstractDeserializer& deserializer, const Pointe
   }
 }
 
-void PropertyOwner::on_property_value_changed()
+Property& AbstractPropertyOwner::add_property(const Key& key, std::unique_ptr<Property> property)
+{
+  Property& ref = *property;
+  bool was_inserted = m_properties.insert(key, std::move(property));
+  assert(was_inserted);
+  (void) was_inserted;
+
+  ref.register_observer(*this);
+  return ref;
+}
+
+void AbstractPropertyOwner::on_property_value_changed()
 {
 }
 
 }  // namespace omm
+
+omm::AbstractPropertyOwner::Kind
+operator|(omm::AbstractPropertyOwner::Kind a, omm::AbstractPropertyOwner::Kind b)
+{
+  using enum_t = omm::AbstractPropertyOwner::Kind;
+  using underlying = std::underlying_type_t<enum_t>;
+  return static_cast<enum_t>(static_cast<underlying>(a) | static_cast<underlying>(a));
+}
+
+omm::AbstractPropertyOwner::Kind
+operator&(omm::AbstractPropertyOwner::Kind a, omm::AbstractPropertyOwner::Kind b)
+{
+  using enum_t = omm::AbstractPropertyOwner::Kind;
+  using underlying = std::underlying_type_t<enum_t>;
+  return static_cast<enum_t>(static_cast<underlying>(a) & static_cast<underlying>(a));
+}
+
+bool operator!(omm::AbstractPropertyOwner::Kind a)
+{
+  using enum_t = omm::AbstractPropertyOwner::Kind;
+  using underlying = std::underlying_type_t<enum_t>;
+  return !static_cast<underlying>(a);
+}
+

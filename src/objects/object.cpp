@@ -50,6 +50,24 @@ Object::Object()
     .set_label(QObject::tr("Name").toStdString())
     .set_category(QObject::tr("object").toStdString());
 
+  add_property("style_ref", std::make_unique<ReferenceProperty>())
+    .set_label("style").set_category("object");
+  property<ReferenceProperty>("style_ref").set_allowed_kinds(AbstractPropertyOwner::Kind::Style);
+
+  add_property("tag_ref", std::make_unique<ReferenceProperty>())
+    .set_label("tag").set_category("object");
+  property<ReferenceProperty>("tag_ref").set_allowed_kinds(AbstractPropertyOwner::Kind::Tag);
+
+  add_property("object_ref", std::make_unique<ReferenceProperty>())
+    .set_label("object").set_category("object");
+  property<ReferenceProperty>("object_ref").set_allowed_kinds(AbstractPropertyOwner::Kind::Object);
+
+  add_property("any_ref", std::make_unique<ReferenceProperty>())
+    .set_label("any").set_category("object");
+  property<ReferenceProperty>("any_ref").set_allowed_kinds( AbstractPropertyOwner::Kind::Object
+                                                          | AbstractPropertyOwner::Kind::Tag
+                                                          | AbstractPropertyOwner::Kind::Style );
+
   // add some mockup properties for testing purposes
 
   // add_property( "ans",
@@ -75,7 +93,7 @@ Object::~Object()
 
 ObjectTransformation Object::transformation() const
 {
-  return property<ObjectTransformation>(TRANSFORMATION_PROPERTY_KEY).value();
+  return property<TransformationProperty>(TRANSFORMATION_PROPERTY_KEY).value();
 }
 
 ObjectTransformation Object::global_transformation() const
@@ -91,7 +109,7 @@ ObjectTransformation Object::global_transformation() const
 
 void Object::set_transformation(const ObjectTransformation& transformation)
 {
-  property<ObjectTransformation>(TRANSFORMATION_PROPERTY_KEY).set_value(transformation);
+  property<TransformationProperty>(TRANSFORMATION_PROPERTY_KEY).set_value(transformation);
 }
 
 void Object::set_global_transformation(const ObjectTransformation& global_transformation)
@@ -115,32 +133,9 @@ void Object::transform(const ObjectTransformation& transformation)
   set_transformation(transformation.apply(this->transformation()));
 }
 
-std::set<PropertyOwner*> Object::get_selected_children_and_tags()
-{
-  std::set<PropertyOwner*> selection;
-
-  if (is_selected()) {
-    selection.insert(this);
-  }
-
-  for (auto& tag : tags()) {
-    if (tag->is_selected()) {
-      selection.insert(tag);
-    }
-  }
-
-  for (auto& child : children()) {
-    const auto child_selection = child->get_selected_children_and_tags();
-    selection.insert(child_selection.begin(), child_selection.end());
-  }
-
-  return selection;
-}
-
 std::ostream& operator<<(std::ostream& ostream, const Object& object)
 {
-  ostream << object.type()
-          << "[" << object.property<std::string>(Object::NAME_PROPERTY_KEY).value() << "]";
+  ostream << object.type() << "[" << object.name() << "]";
   return ostream;
 }
 
@@ -189,7 +184,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
 
 std::string Object::name() const
 {
-  return property<std::string>(NAME_PROPERTY_KEY).value();
+  return property<StringProperty>(NAME_PROPERTY_KEY).value();
 }
 
 void Object::render_recursive(AbstractRenderer& renderer, const Style& default_style) const

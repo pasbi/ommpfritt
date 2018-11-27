@@ -26,7 +26,7 @@ protected:
   void mousePressEvent(QMouseEvent* event) override;
   void mouseMoveEvent(QMouseEvent* event) override;
   void mouseReleaseEvent(QMouseEvent* event) override;
-  void set_selection(const std::set<PropertyOwner*>& selection) override;
+  void set_selection(const std::set<AbstractPropertyOwner*>& selection) override;
 
 private:
   Scene& m_scene;

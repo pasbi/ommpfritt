@@ -18,7 +18,8 @@ namespace omm
 {
 
 #define DISABLE_DANGEROUS_PROPERTY_TYPE(T) \
-  static_assert(!std::is_same<ValueT, T>(), "Forbidden Property Type '"#T"'.");
+  static_assert( !std::is_same<typename PropertyT::value_type, T>(), \
+                 "Forbidden Property Type '"#T"'." );
 
 // Disable some T in TypedProperty<T>
 // Without this guard, it was easy to accidentally use e.g.
@@ -50,21 +51,21 @@ public:
   Property();
   virtual ~Property();
 
-  template<typename ValueT> bool is_type() const
+  template<typename PropertyT> bool is_type() const
   {
-    return cast<ValueT>() != nullptr;
+    return cast<PropertyT>() != nullptr;
   }
 
-  template<typename ValueT> const TypedProperty<ValueT>* cast() const
+  template<typename PropertyT> const PropertyT* cast() const
   {
     DISABLE_DANGEROUS_PROPERTY_TYPES
-    return dynamic_cast<const TypedProperty<ValueT>*>(this);
+    return dynamic_cast<const PropertyT*>(this);
   }
 
-  template<typename ValueT> TypedProperty<ValueT>* cast()
+  template<typename PropertyT> PropertyT* cast()
   {
     DISABLE_DANGEROUS_PROPERTY_TYPES
-    return dynamic_cast<TypedProperty<ValueT>*>(this);
+    return dynamic_cast<PropertyT*>(this);
   }
 
   virtual void set_py_object(const py::object& value) = 0;
@@ -80,15 +81,15 @@ public:
 
   static std::string get_label(const SetOfProperties& properties);
 
-  template<typename ValueT> static auto cast_all(const SetOfProperties& properties)
+  template<typename PropertyT> static auto cast_all(const SetOfProperties& properties)
   {
-    return ::transform<TypedProperty<ValueT>*>(properties, [](Property* property) {
-      return property->cast<ValueT>();
+    return ::transform<PropertyT*>(properties, [](Property* property) {
+      return property->cast<PropertyT>();
     });
   }
 
-  template<typename ValueT>
-  static SetOfProperties cast_all(const std::set<TypedProperty<ValueT>*>& properties)
+  template<typename PropertyT>
+  static SetOfProperties cast_all(const std::set<PropertyT*>& properties)
   {
     return ::transform<Property*>(properties, [](auto* property) {
       return static_cast<Property*>(property);

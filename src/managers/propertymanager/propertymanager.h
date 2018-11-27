@@ -23,8 +23,8 @@ public:
   explicit PropertyManager(Scene& scene);
   ~PropertyManager();
 
-  void set_selection(const std::set<PropertyOwner*>& selection) override;
-  PropertyView property(const PropertyOwner::Key& key);
+  void set_selection(const std::set<AbstractPropertyOwner*>& selection) override;
+  PropertyView property(const AbstractPropertyOwner::Key& key);
   void clear();
 
 private:

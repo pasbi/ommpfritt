@@ -25,7 +25,7 @@ Tag::~Tag() { }
 
 std::string Tag::name() const
 {
-  return property<std::string>(NAME_PROPERTY_KEY).value();
+  return property<StringProperty>(NAME_PROPERTY_KEY).value();
 }
 
 }  // namespace omm

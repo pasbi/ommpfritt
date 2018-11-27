@@ -9,8 +9,6 @@
 #include "objects/object.h"
 #include "properties/referenceproperty.h"
 
-#include "serializers/jsonserializer.h"
-
 namespace omm
 {
 
@@ -38,7 +36,7 @@ AbstractDeserializer::~AbstractDeserializer()
 }
 
 void AbstractDeserializer::register_reference( const Serializable::IdType& id,
-                                               PropertyOwner& reference )
+                                               AbstractPropertyOwner& reference )
 {
   m_id_to_reference[id] = &reference;
 }

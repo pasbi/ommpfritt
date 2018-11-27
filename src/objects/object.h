@@ -21,7 +21,7 @@ class Tag;
 class Scene;
 
 class Object
-  : public PropertyOwner
+  : public PropertyOwner<AbstractPropertyOwner::Kind::Object>
   , public Selectable
   , public virtual Serializable
   , public TagOwner
@@ -38,7 +38,6 @@ public:
   void set_transformation(const ObjectTransformation& transformation);
   void set_global_transformation(const ObjectTransformation& globalTransformation);
 
-  std::set<PropertyOwner*> get_selected_children_and_tags();
   std::string name() const override;
 
   static const std::string TRANSFORMATION_PROPERTY_KEY;

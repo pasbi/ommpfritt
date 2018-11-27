@@ -5,13 +5,13 @@
 namespace omm
 {
 
-class PropertyOwner;
+class AbstractPropertyOwner;
 class Scene;
 
 class AbstractSelectionObserver
 {
 protected:
-  virtual void set_selection(const std::set<PropertyOwner*>& selection) = 0;
+  virtual void set_selection(const std::set<AbstractPropertyOwner*>& selection) = 0;
   friend class Scene;
 };
 

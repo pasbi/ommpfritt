@@ -22,8 +22,8 @@ Ellipse::Ellipse()
 void Ellipse::render(AbstractRenderer& renderer, const Style& style) const
 {
   const size_t n = 10;
-  const auto rx = property<double>("rx").value();
-  const auto ry = property<double>("ry").value();
+  const auto rx = property<FloatProperty>("rx").value();
+  const auto ry = property<FloatProperty>("ry").value();
 
   std::vector<Point> points;
   points.reserve(n+1);
@@ -37,8 +37,8 @@ void Ellipse::render(AbstractRenderer& renderer, const Style& style) const
 
 BoundingBox Ellipse::bounding_box() const
 {
-  const auto rx = property<double>("rx").value();
-  const auto ry = property<double>("ry").value();
+  const auto rx = property<FloatProperty>("rx").value();
+  const auto ry = property<FloatProperty>("ry").value();
   return BoundingBox({
     arma::vec2 { -rx, -ry },
     arma::vec2 { rx, ry }

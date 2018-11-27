@@ -1,7 +1,7 @@
 #include "commands/addobjectcommand.h"
 #include "objects/object.h"
 #include "scene/scene.h"
-#include "properties/typedproperty.h"
+#include "properties/stringproperty.h"
 
 namespace
 {
@@ -24,7 +24,7 @@ AddObjectCommand::AddObjectCommand(Scene& scene, std::unique_ptr<omm::Object> ob
 {
   static int i = 0;
   const auto name = m_object_reference.type() + " " + std::to_string(i++);
-  m_owned_object->property<std::string>(Object::NAME_PROPERTY_KEY).set_value(name);
+  m_owned_object->property<StringProperty>(Object::NAME_PROPERTY_KEY).set_value(name);
 }
 
 void AddObjectCommand::redo()

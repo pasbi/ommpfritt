@@ -65,4 +65,19 @@ void ReferenceProperty::set_default_value(const ReferenceType& value)
   TypedProperty::set_default_value(value);
 }
 
+bool ReferenceProperty::is_allowed(AbstractPropertyOwner::Kind candidate) const
+{
+  return !!(allowed_kinds() & candidate);
+}
+
+AbstractPropertyOwner::Kind ReferenceProperty::allowed_kinds() const
+{
+  return m_allowed_kinds;
+}
+
+void ReferenceProperty::set_allowed_kinds(AbstractPropertyOwner::Kind allowed_kinds)
+{
+  m_allowed_kinds = allowed_kinds;
+}
+
 }   // namespace omm

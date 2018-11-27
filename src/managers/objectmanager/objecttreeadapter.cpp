@@ -8,7 +8,7 @@
 #include "common.h"
 #include "commands/moveobjectscommand.h"
 #include "commands/copyobjectscommand.h"
-#include "properties/typedproperty.h"
+#include "properties/stringproperty.h"
 
 namespace
 {
@@ -109,7 +109,7 @@ bool ObjectTreeAdapter::setData(const QModelIndex& index, const QVariant& value,
 
   switch (index.column()) {
   case 0:
-    object_at(index).property<std::string>(Object::NAME_PROPERTY_KEY).set_value(
+    object_at(index).property<StringProperty>(Object::NAME_PROPERTY_KEY).set_value(
       value.toString().toStdString()
     );
     return true;
@@ -130,7 +130,7 @@ QVariant ObjectTreeAdapter::data(const QModelIndex& index, int role) const
     case Qt::DisplayRole:
     case Qt::EditRole:
       return QString::fromStdString(
-        object_at(index).property<std::string>(Object::NAME_PROPERTY_KEY).value()
+        object_at(index).property<StringProperty>(Object::NAME_PROPERTY_KEY).value()
       );
     }
   }

@@ -11,8 +11,8 @@
 namespace
 {
 
-using Key = omm::PropertyOwner::Key;
-using SetOfPropertyOwner = std::set<omm::PropertyOwner*>;
+using Key = omm::AbstractPropertyOwner::Key;
+using SetOfPropertyOwner = std::set<omm::AbstractPropertyOwner*>;
 
 std::vector<Key> get_key_intersection(const SetOfPropertyOwner& selection)
 {
@@ -28,12 +28,12 @@ std::vector<Key> get_key_intersection(const SetOfPropertyOwner& selection)
     types.insert(std::make_pair(key, the_entity->property(key).type()));
   }
 
-  const auto has_key = [](const omm::PropertyOwner* entity, const Key& key) {
+  const auto has_key = [](const omm::AbstractPropertyOwner* entity, const Key& key) {
     auto&& property_keys = entity->properties().keys();
     return std::find(property_keys.begin(), property_keys.end(), key) != property_keys.end();
   };
 
-  const auto key_same_type = [types](const omm::PropertyOwner* entity, const Key& key) {
+  const auto key_same_type = [types](const omm::AbstractPropertyOwner* entity, const Key& key) {
     return types.at(key) == entity->property(key).type();
   };
 
@@ -61,10 +61,11 @@ void split_key(const std::string& key, std::string& tab_name, std::string& prope
   }
 }
 
-auto collect_properties(const omm::PropertyOwner::Key& key, const SetOfPropertyOwner& selection)
+auto
+collect_properties(const omm::AbstractPropertyOwner::Key& key, const SetOfPropertyOwner& selection)
 {
-  std::set<omm::Property*> collection;
-  const auto f = [key](omm::PropertyOwner* entity) {
+  std::set<omm::AbstractPropertyOwner*> collection;
+  const auto f = [key](omm::AbstractPropertyOwner* entity) {
     return &entity->property(key);
   };
 

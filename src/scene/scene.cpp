@@ -6,7 +6,7 @@
 
 #include "objects/empty.h"
 #include "external/json.hpp"
-#include "properties/typedproperty.h"
+#include "properties/stringproperty.h"
 #include "serializers/abstractserializer.h"
 #include "commands/command.h"
 
@@ -20,7 +20,9 @@ auto make_root()
   return std::make_unique<omm::Empty>();
 }
 
-}
+template<typename T> bool is_selected(const T* t) { return t->is_selected(); }
+
+}  // namespace
 
 namespace omm
 {
@@ -30,7 +32,7 @@ Scene* Scene::m_current = nullptr;
 Scene::Scene()
   : m_root(make_root())
 {
-  m_root->property<std::string>(Object::NAME_PROPERTY_KEY).value() = "_root_";
+  m_root->property<StringProperty>(Object::NAME_PROPERTY_KEY).value() = "_root_";
   m_current = this;
 }
 
@@ -71,21 +73,40 @@ Object& Scene::root() const
   return *m_root;
 }
 
-std::set<omm::PropertyOwner*> Scene::selection() const
+std::set<Tag*> Scene::selected_tags(const std::set<Object*>& objects) const
 {
-  return m_root->get_selected_children_and_tags();
+  std::set<Tag*> selection;
+  for (const auto object : objects) {
+    const auto tags = object->tags();
+    std::copy_if( tags.begin(), tags.end(),
+                  std::inserter(selection, selection.end()), is_selected<Tag> );
+  }
+  return selection;
+}
+
+std::set<Tag*> Scene::selected_tags() const
+{
+  return selected_tags(selected_objects());
 }
 
 std::set<Object*> Scene::selected_objects() const
 {
-  std::set<omm::Object*> objects;
-  for (auto s : selection()) {
-    const auto object = dynamic_cast<omm::Object*>(s);
-    if (object != nullptr) {
-      objects.insert(object);
-    }
-  }
-  return objects;
+  const auto all = root().all_descendants();
+  std::decay_t<decltype(all)> selected;
+  std::copy_if( all.begin(), all.end(),
+                std::inserter(selected, selected.end()), is_selected<Object> );
+  return selected;
+}
+
+std::set<AbstractPropertyOwner*> Scene::selection() const
+{
+  std::set<AbstractPropertyOwner*> selection;
+  const auto selected_objects = this->selected_objects();
+  const auto selected_tags = this->selected_tags(selected_objects);
+  selection.insert(selected_objects.begin(), selected_objects.end());
+  selection.insert(selected_tags.begin(), selected_tags.end());
+  // TODO add selected styles
+  return selection;
 }
 
 void Scene::selection_changed()

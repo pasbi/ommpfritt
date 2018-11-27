@@ -38,45 +38,54 @@ public:
 namespace omm
 {
 
-template<typename T>
-class NumericPropertyWidget<T>::SpinBox : public ::SpinBox<T>, public MultiValueEdit<T>
+template<typename NumericPropertyT>
+class NumericPropertyWidget<NumericPropertyT>::SpinBox
+  : public ::SpinBox<typename NumericPropertyT::value_type>
+  , public MultiValueEdit<typename NumericPropertyT::value_type>
 {
 public:
+  using value_type = typename NumericPropertyT::value_type;
   explicit SpinBox() {}
-  void set_value(const T& value) override { ::SpinBox<T>::setValue(value); }
-  T value() const override { return SpinBox::value(); }
+  void set_value(const value_type& value) override
+  {
+    ::SpinBox<value_type>::setValue(value);
+  }
+
+  value_type value() const override { return SpinBox::value(); }
 
 protected:
   void set_inconsistent_value() override {
-    NumericPropertyWidget<T>::SpinBox::lineEdit()->setText("");
+    NumericPropertyWidget<NumericPropertyT>::SpinBox::lineEdit()->setText("");
   }
 };
 
-template<typename T> NumericPropertyWidget<T>
+template<typename NumericPropertyT> NumericPropertyWidget<NumericPropertyT>
 ::NumericPropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
-  : PropertyWidget<T>(scene, properties)
+  : PropertyWidget<NumericPropertyT>(scene, properties)
 {
   auto spinbox = std::make_unique<SpinBox>();
   m_spinbox = spinbox.get();
   this->set_default_layout(std::move(spinbox));
 
-  const auto set_properties_value = [this](T value) {
+  const auto set_properties_value = [this](const value_type& value) {
     this->set_properties_value(value);
   };
+  using value_changed_type = void(SpinBox::Base::*)(value_type);
   QObject::connect( m_spinbox,
-                    static_cast<void(SpinBox::Base::*)(T)>(&SpinBox::Base::valueChanged),
+                    static_cast<value_changed_type>(&SpinBox::Base::valueChanged),
                     set_properties_value );
   on_property_value_changed();
 }
 
-template<typename T> void NumericPropertyWidget<T>::on_property_value_changed()
+template<typename NumericPropertyT>
+void NumericPropertyWidget<NumericPropertyT>::on_property_value_changed()
 {
   m_spinbox->blockSignals(true);
-  m_spinbox->set_values(NumericPropertyWidget<T>::get_properties_values());
+  m_spinbox->set_values(NumericPropertyWidget<NumericPropertyT>::get_properties_values());
   m_spinbox->blockSignals(false);
 }
 
-template class NumericPropertyWidget<int>;
-template class NumericPropertyWidget<double>;
+template class NumericPropertyWidget<IntegerProperty>;
+template class NumericPropertyWidget<FloatProperty>;
 
 } // namespace omm

@@ -19,7 +19,7 @@ public:
   ~ObjectTreeView();
   void set_model(ObjectTreeAdapter* model);
   ObjectTreeAdapter* model() const;
-  void set_selection(const std::set<PropertyOwner*>& selection) override;
+  void set_selection(const std::set<AbstractPropertyOwner*>& selection) override;
 
 Q_SIGNALS:
   void mouse_released();
@@ -33,7 +33,7 @@ private:
   void remove_selected() const;
   void attach_tag_to_selected(const std::string& tag_class) const;
   std::unique_ptr<TagsItemDelegate> m_tags_item_delegate;
-  void set_selection(const std::set<PropertyOwner*>& selection, Object& root);
+  void set_selection(const std::set<AbstractPropertyOwner*>& selection, Object& root);
 
 };
 

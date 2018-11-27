@@ -12,7 +12,7 @@ namespace omm
 class ObjectTransformation;
 class Scene;
 class ReferenceProperty;
-class PropertyOwner;
+class AbstractPropertyOwner;
 
 class AbstractSerializer
   : public AbstractFactory<std::string, AbstractSerializer, std::ostream&>
@@ -48,7 +48,7 @@ public:
   virtual ObjectTransformation get_object_transformation(const Pointer& pointer) = 0;
   virtual Serializable::IdType get_id(const Pointer& pointer) = 0;
 
-  void register_reference(const Serializable::IdType& id, PropertyOwner& reference);
+  void register_reference(const Serializable::IdType& id, AbstractPropertyOwner& reference);
   void register_reference_property( ReferenceProperty& reference_property,
                                     const Serializable::IdType& id );
 
@@ -61,7 +61,7 @@ public:
 
 private:
   // maps old stored hash to new ref
-  std::unordered_map<Serializable::IdType, PropertyOwner*> m_id_to_reference;
+  std::unordered_map<Serializable::IdType, AbstractPropertyOwner*> m_id_to_reference;
 
   // maps new property to old hash
   std::unordered_map<ReferenceProperty*, Serializable::IdType> m_reference_property_to_id;
