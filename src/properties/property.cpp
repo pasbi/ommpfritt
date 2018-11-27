@@ -72,4 +72,9 @@ std::string Property::get_label(const SetOfProperties& properties)
   return label;
 }
 
+bool Property::is_compatible(const Property& other) const
+{
+  return type() == other.type();
+}
+
 }  // namespace omm

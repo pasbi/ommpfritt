@@ -17,7 +17,7 @@ class ReferenceLineEdit
 {
   Q_OBJECT
 public:
-  explicit ReferenceLineEdit();
+  explicit ReferenceLineEdit(AbstractPropertyOwner::Kind allowed_kinds);
   void set_value(const value_type& value) override;
   value_type value() const override;
 
@@ -33,6 +33,7 @@ protected:
 private:
   bool can_drop(const QMimeData& mime_data) const;
   AbstractPropertyOwner* m_value;
+  AbstractPropertyOwner::Kind m_allowed_kinds;
 };
 
 }  // namespace omm

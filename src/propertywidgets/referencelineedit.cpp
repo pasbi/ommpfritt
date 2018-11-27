@@ -4,13 +4,14 @@
 #include <QMimeData>
 
 #include "properties/referenceproperty.h"
-#include "managers/objectmanager/objectmimedata.h"
+#include "scene/propertyownermimedata.h"
 #include "objects/object.h"
 
 namespace omm
 {
 
-ReferenceLineEdit::ReferenceLineEdit()
+ReferenceLineEdit::ReferenceLineEdit(AbstractPropertyOwner::Kind allowed_kinds)
+  : m_allowed_kinds(allowed_kinds)
 {
   connect(this, &QLineEdit::textChanged, [this]() { setPlaceholderText(""); });
   setReadOnly(true);
@@ -51,8 +52,8 @@ void ReferenceLineEdit::dropEvent(QDropEvent* event)
   if (!can_drop(mime_data)) {
     event->ignore();
   } else {
-    const auto& object_mime_data = *qobject_cast<const ObjectMimeData*>(&mime_data);
-    AbstractPropertyOwner * reference = &object_mime_data.objects.front().get();
+    const auto& property_owner_mime_data = *qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
+    AbstractPropertyOwner* reference = property_owner_mime_data.items(m_allowed_kinds).front();
     set_value(reference);
   }
 }
@@ -64,11 +65,11 @@ ReferenceLineEdit::value_type ReferenceLineEdit::value() const
 
 bool ReferenceLineEdit::can_drop(const QMimeData& mime_data) const
 {
-  if (mime_data.hasFormat(ObjectMimeData::MIME_TYPE))
+  if (mime_data.hasFormat(PropertyOwnerMimeData::MIME_TYPE))
   {
-    const auto object_mime_data = qobject_cast<const ObjectMimeData*>(&mime_data);
-    if (object_mime_data != nullptr) {
-      if (object_mime_data->objects.size() == 1) {
+    const auto property_owner_mime_data = qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
+    if (property_owner_mime_data != nullptr) {
+      if (property_owner_mime_data->items(m_allowed_kinds).size() == 1) {
         return true;
       }
     }

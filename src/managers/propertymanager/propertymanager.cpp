@@ -22,10 +22,9 @@ std::vector<Key> get_key_intersection(const SetOfPropertyOwner& selection)
 
   const auto* the_entity = *selection.begin();
   auto keys = the_entity->properties().keys();
-  std::unordered_map<Key, std::string> types;
-  types.reserve(keys.size());
+  std::unordered_map<Key, omm::Property*> the_properties;
   for (auto&& key : keys) {
-    types.insert(std::make_pair(key, the_entity->property(key).type()));
+    the_properties.insert(std::make_pair(key, &the_entity->property(key)));
   }
 
   const auto has_key = [](const omm::AbstractPropertyOwner* entity, const Key& key) {
@@ -33,10 +32,10 @@ std::vector<Key> get_key_intersection(const SetOfPropertyOwner& selection)
     return std::find(property_keys.begin(), property_keys.end(), key) != property_keys.end();
   };
 
-  const auto key_same_type = [types](const omm::AbstractPropertyOwner* entity, const Key& key) {
-    return types.at(key) == entity->property(key).type();
+  const auto
+  key_same_type = [the_properties](const omm::AbstractPropertyOwner* entity, const Key& key) {
+    return the_properties.at(key)->is_compatible(entity->property(key));
   };
-
 
   for (auto it = std::next(selection.begin()); it != selection.end(); ++it) {
     const auto not_has_key_of_same_type = [&it, &has_key, &key_same_type](const Key& key) {

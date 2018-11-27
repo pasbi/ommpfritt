@@ -27,6 +27,7 @@ public:
   bool is_allowed(AbstractPropertyOwner::Kind candidate) const;
   AbstractPropertyOwner::Kind allowed_kinds() const;
   void set_allowed_kinds(AbstractPropertyOwner::Kind allowed_kinds);
+  bool is_compatible(const Property& other) const override;
 
 private:
   // default is always nullptr

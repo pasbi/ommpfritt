@@ -55,14 +55,15 @@ public:
 protected:
   void set_properties_value(const value_type& value)
   {
-    using CommandType = PropertiesCommand<property_type>;
-    scene().submit<CommandType>(m_properties, value);
+    scene().submit<PropertiesCommand<property_type>>(m_properties, value);
   }
 
   auto get_properties_values() const
   {
     return ::transform<value_type>(m_properties, [](auto property) { return property->value(); });
   }
+
+  const std::set<property_type*>& properties() const { return m_properties; }
 
 private:
   std::set<property_type*> m_properties;

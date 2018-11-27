@@ -4,6 +4,20 @@
 #include "propertywidgets/referencelineedit.h"
 #include "properties/typedproperty.h"
 
+namespace
+{
+
+template<typename SetOfProperties>
+omm::AbstractPropertyOwner::Kind get_allowed_kinds(SetOfProperties&& properties)
+{
+  const auto f = [](const auto property) { return property->allowed_kinds(); };
+  const auto allowed_kindss = ::transform<omm::AbstractPropertyOwner::Kind>(properties, f);
+  assert(::is_uniform(allowed_kindss));
+  return *allowed_kindss.begin();
+}
+
+}  // namespace
+
 namespace omm
 {
 
@@ -11,7 +25,7 @@ ReferencePropertyWidget
 ::ReferencePropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
   : PropertyWidget(scene, properties)
 {
-  auto line_edit = std::make_unique<ReferenceLineEdit>();
+  auto line_edit = std::make_unique<ReferenceLineEdit>(get_allowed_kinds(this->properties()));
   m_line_edit = line_edit.get();
   set_default_layout(std::move(line_edit));
 

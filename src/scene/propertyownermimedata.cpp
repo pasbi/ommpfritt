@@ -1,0 +1,79 @@
+#include "scene/propertyownermimedata.h"
+#include <glog/logging.h>
+#include "objects/object.h"
+#include "tags/tag.h"
+#include "renderers/style.h"
+
+namespace
+{
+
+std::vector<omm::AbstractPropertyOwner*>
+filter( const std::vector<omm::AbstractPropertyOwner*> items,
+        omm::AbstractPropertyOwner::Kind kinds)
+{
+  std::vector<omm::AbstractPropertyOwner*> filtered;
+  for (omm::AbstractPropertyOwner* item : items) {
+    if (!!(item->kind() & kinds)) {
+      filtered.push_back(item);
+    }
+  }
+  return filtered;
+}
+
+template<typename ItemType>
+std::vector<ItemType*> filter(const std::vector<omm::AbstractPropertyOwner*> items)
+{
+  const auto filtered = filter(items, ItemType::KIND);
+  return ::transform<ItemType*>(filtered, [](auto item) { return static_cast<ItemType*>(item); });
+}
+
+}  // namespace
+
+namespace omm
+{
+
+PropertyOwnerMimeData::PropertyOwnerMimeData(const std::vector<AbstractPropertyOwner*>& items)
+  : m_items(items)
+{
+}
+
+bool PropertyOwnerMimeData::hasFormat(const QString& mimeType) const
+{
+  return mimeType == MIME_TYPE;
+}
+
+QStringList PropertyOwnerMimeData::formats() const
+{
+  return { MIME_TYPE };
+}
+
+QVariant PropertyOwnerMimeData::retrieveData(const QString &mimeType, QVariant::Type type) const
+{
+  (void) mimeType;
+  (void) type;
+  LOG(FATAL) << "This function shall not be called.";
+  assert(false);
+}
+
+std::vector<Object*> PropertyOwnerMimeData::objects() const
+{
+  return filter<Object>(m_items);
+}
+
+std::vector<Tag*> PropertyOwnerMimeData::tags() const
+{
+  return filter<Tag>(m_items);
+}
+
+std::vector<Style*> PropertyOwnerMimeData::styles() const
+{
+  return filter<Style>(m_items);
+}
+
+std::vector<AbstractPropertyOwner*>
+PropertyOwnerMimeData::items(AbstractPropertyOwner::Kind kinds) const
+{
+  return filter(m_items, kinds);
+}
+
+}  // namespace omm

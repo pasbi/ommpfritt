@@ -3,7 +3,7 @@
 #include <QItemSelection>
 #include <glog/logging.h>
 
-#include "objectmimedata.h"
+#include "scene/propertyownermimedata.h"
 #include "objects/object.h"
 #include "common.h"
 #include "commands/moveobjectscommand.h"
@@ -13,7 +13,7 @@
 namespace
 {
 
-bool can_move_drop_objects(const std::vector<omm::MoveObjectTreeContext>& contextes)
+bool can_move_drop_items(const std::vector<omm::MoveObjectTreeContext>& contextes)
 {
   const auto is_strictly_valid = [](const omm::MoveObjectTreeContext& context) {
     return context.is_strictly_valid();
@@ -34,19 +34,19 @@ make_contextes( const omm::ObjectTreeAdapter& adapter,
 {
   std::vector<ContextT> contextes;
 
-  auto object_mime_data = qobject_cast<const omm::ObjectMimeData*>(data);
-  if (object_mime_data == nullptr) {
+  auto property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
+  if (property_owner_mime_data == nullptr || property_owner_mime_data->objects().size() == 0) {
     return contextes;
   }
 
   omm::Object& new_parent = adapter.object_at(parent);
   const size_t pos = row < 0 ? new_parent.n_children() : row;
 
-  contextes.reserve(object_mime_data->objects.size());
+  contextes.reserve(property_owner_mime_data->objects().size());
   const omm::Object* predecessor = (pos == 0) ? nullptr : &new_parent.child(pos - 1);
-  for (omm::Object& subject : object_mime_data->objects) {
-    contextes.emplace_back(subject, new_parent, predecessor);
-    predecessor = &subject;
+  for (omm::Object* subject : property_owner_mime_data->objects()) {
+    contextes.emplace_back(*subject, new_parent, predecessor);
+    predecessor = subject;
   }
 
   return contextes;
@@ -251,12 +251,12 @@ bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction a
 {
   switch (action) {
   case Qt::MoveAction:
-    return data->hasFormat(ObjectMimeData::MIME_TYPE)
-        && qobject_cast<const ObjectMimeData*>(data) != nullptr
-        && can_move_drop_objects(make_contextes<MoveObjectTreeContext>(*this, data, row, parent));
+    return data->hasFormat(PropertyOwnerMimeData::MIME_TYPE)
+        && qobject_cast<const PropertyOwnerMimeData*>(data) != nullptr
+        && can_move_drop_items(make_contextes<MoveObjectTreeContext>(*this, data, row, parent));
   case Qt::CopyAction:
-    return data->hasFormat(ObjectMimeData::MIME_TYPE)
-        && qobject_cast<const ObjectMimeData*>(data) != nullptr;
+    return data->hasFormat(PropertyOwnerMimeData::MIME_TYPE)
+        && qobject_cast<const PropertyOwnerMimeData*>(data) != nullptr;
   default:
     return false;
   }
@@ -288,7 +288,7 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
 
 QStringList ObjectTreeAdapter::mimeTypes() const
 {
-  return { ObjectMimeData::MIME_TYPE };
+  return { PropertyOwnerMimeData::MIME_TYPE };
 }
 
 QMimeData* ObjectTreeAdapter::mimeData(const QModelIndexList &indexes) const
@@ -297,10 +297,11 @@ QMimeData* ObjectTreeAdapter::mimeData(const QModelIndexList &indexes) const
     return nullptr;
   } else {
     const auto f = [this](const QModelIndex& index) {
-      return ObjectRef(object_at(index));
+      // TODO also return selected tags ans styles
+      return &object_at(index);
     };
-    const auto objects = ::transform<ObjectRef, std::vector>(indexes, f);
-    return std::make_unique<ObjectMimeData>(objects).release();
+    const auto items = ::transform<AbstractPropertyOwner*, std::vector>(indexes, f);
+    return std::make_unique<PropertyOwnerMimeData>(items).release();
   }
 }
 

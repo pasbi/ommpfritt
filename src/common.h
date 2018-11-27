@@ -47,8 +47,8 @@ auto transform(const ContainerS<S>& ss, F&& mapper)
   return ts;
 }
 
-template<typename T, template<typename...> class ContainerT, typename F>
-auto is_uniform(const ContainerT<T>& container, F&& mapper = [](const auto& f) { return f; })
+template<typename Ts, typename F>
+auto is_uniform(const Ts& container, F&& mapper)
 {
   const auto& first = mapper(*std::begin(container));
   for (const auto& v : container) {
@@ -57,6 +57,12 @@ auto is_uniform(const ContainerT<T>& container, F&& mapper = [](const auto& f) {
     }
   }
   return true;
+}
+
+template<typename Ts>
+auto is_uniform(const Ts& container)
+{
+  return is_uniform<Ts>(container, [](const auto& f) { return f; });
 }
 
 template<typename T, template<typename...> class ContainerT>
@@ -88,8 +94,8 @@ std::unique_ptr<T> extract(ContainerT<std::unique_ptr<T>>& container, T& obj)
 namespace omm
 {
 
-class Object;
-using ObjectRef = std::reference_wrapper<Object>;
-using ObjectRefs = std::vector<ObjectRef>;
+class Object;  // TODO deprecated
+using ObjectRef = std::reference_wrapper<Object>;  // TODO deprecated
+using ObjectRefs = std::vector<ObjectRef>;  // TODO deprecated
 
 }  // namespace omm

@@ -96,6 +96,8 @@ public:
     });
   }
 
+  virtual bool is_compatible(const Property& other) const;
+
 private:
   std::string m_label;
   std::string m_category;
