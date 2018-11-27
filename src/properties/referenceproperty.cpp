@@ -4,7 +4,7 @@
 namespace omm
 {
 
-std::set<ReferenceProperty::ReferenceType> ReferenceProperty::m_references;
+std::map<ReferenceProperty::ReferenceType, size_t> ReferenceProperty::m_references;
 
 ReferenceProperty::ReferenceProperty()
   : TypedProperty(nullptr)
@@ -14,21 +14,16 @@ ReferenceProperty::ReferenceProperty()
 
 bool ReferenceProperty::is_referenced(const ReferenceType& candidate)
 {
-  return std::find(m_references.begin(), m_references.end(), candidate) != m_references.end();
+  return m_references.count(candidate) == 1;
 }
 
-void ReferenceProperty::set_value(const ReferenceType& reference)
+void ReferenceProperty::set_value(const ReferenceType& new_reference)
 {
-  if (value() != reference) {
+  if (value() != new_reference) {
     const auto old_reference = value();
-    if (old_reference != nullptr) {
-      assert(is_referenced(old_reference));
-      m_references.erase(old_reference);
-    }
-    TypedProperty::set_value(reference);
-    if (reference != nullptr) {
-      m_references.emplace(reference);
-    }
+    increment_reference_count(old_reference, -1);
+    TypedProperty::set_value(new_reference);
+    increment_reference_count(new_reference, 1);
   }
 }
 
@@ -78,6 +73,34 @@ AbstractPropertyOwner::Kind ReferenceProperty::allowed_kinds() const
 void ReferenceProperty::set_allowed_kinds(AbstractPropertyOwner::Kind allowed_kinds)
 {
   m_allowed_kinds = allowed_kinds;
+}
+
+void ReferenceProperty::increment_reference_count(ReferenceType reference, int n)
+{
+  if (reference == nullptr) {
+    // no reason to count references to nullptr
+    return;
+  }
+
+  if (n < 0) {
+    // avoid size_t underflow
+    assert(reference_count(reference) >= -n);
+  }
+
+  if (m_references.count(reference) == 1) {
+    m_references[reference] += n;
+  } else {
+    m_references[reference] = n;
+  }
+}
+
+size_t ReferenceProperty::reference_count(ReferenceType reference)
+{
+  if (m_references.count(reference)) {
+    return m_references[reference] > 0;
+  } else {
+    return false;
+  }
 }
 
 }   // namespace omm
