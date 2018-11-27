@@ -18,13 +18,14 @@ ReferenceLineEdit::ReferenceLineEdit()
 
 void ReferenceLineEdit::set_value(const value_type& value)
 {
-  if (m_value != value) {
-    m_value = value;
-    if (value == nullptr) {
-      setText(tr("< no reference >"));
-    } else {
-      setText(QString::fromStdString(value->name()));
-    }
+  bool value_has_changed = m_value != value;
+  m_value = value;
+  if (value == nullptr) {
+    setText(tr("< no reference >"));
+  } else {
+    setText(QString::fromStdString(value->name()));
+  }
+  if (value_has_changed) {
     Q_EMIT reference_changed(value);
   }
 }
