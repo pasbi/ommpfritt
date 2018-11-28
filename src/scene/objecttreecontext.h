@@ -11,14 +11,15 @@ template<typename T>
 class MaybeOwner
 {
 public:
-  MaybeOwner(const MaybeOwner<T>&& other) = delete;
-  MaybeOwner(MaybeOwner<T>&& other) : m_ref(other.m_ref), m_owned(std::move(other.m_owned)) { }
+  MaybeOwner(const MaybeOwner<T>& other) = delete;
+  MaybeOwner(MaybeOwner<T>&& other) = default;
   MaybeOwner(std::unique_ptr<T> own) : m_owned(std::move(own)), m_ref(*m_owned) { }
   MaybeOwner(T& reference) : m_ref(reference) { }
   operator T&() const { return m_ref; }
   T& reference() const { return *this; }
   bool owns() const { return !!m_owned.get(); }
   auto release() { assert(owns()); return std::move(m_owned); }
+  MaybeOwner& operator=(MaybeOwner&& other) = default;
 
   T& capture_by_copy()
   {

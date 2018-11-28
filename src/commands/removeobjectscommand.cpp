@@ -1,4 +1,6 @@
 #include "commands/removeobjectscommand.h"
+
+#include <algorithm>
 #include "objects/object.h"
 #include "scene/scene.h"
 
@@ -12,6 +14,16 @@ auto make_contextes(const std::set<omm::Object*>& selection)
   for (auto object : selection) {
     contextes.emplace_back(*object);
   }
+
+  // assert that to-be-inserted objects' predecessor is already in the tree,
+  // i.e., insert the predecessor first.
+  std::sort(contextes.begin(), contextes.end(), [](const auto& lhs, const auto& rhs) {
+    if (lhs.predecessor == &rhs.get_subject()) {
+      return false;
+    } else {
+      return true;
+    }
+  });
   return contextes;
 }
 
@@ -42,7 +54,11 @@ void RemoveObjectsCommand::undo()
 {
   for (auto&& it = m_contextes.rbegin(); it != m_contextes.rend(); ++it) {
     assert(it->subject.owns());
-    m_scene.insert_object(*it);
+    OwningObjectTreeContext& context = *it;
+
+    // if predecessor is not null, it must had been inserted in the object tree.
+    assert(context.predecessor == nullptr || !context.predecessor->is_root());
+    m_scene.insert_object(context);
   }
 }
 
