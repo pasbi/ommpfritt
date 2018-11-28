@@ -91,6 +91,14 @@ std::unique_ptr<T> extract(ContainerT<std::unique_ptr<T>>& container, T& obj)
   return std::move(uptr);
 }
 
+template<typename Ts, typename Predicate>
+Ts filter_if(const Ts& ts, const Predicate& p)
+{
+  Ts filtered;
+  std::copy_if(ts.begin(), ts.end(), std::inserter(filtered, filtered.end()), p);
+  return filtered;
+}
+
 namespace omm
 {
 

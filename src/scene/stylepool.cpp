@@ -30,4 +30,9 @@ const Style& StylePool::default_style() const
   return *m_default_style;
 }
 
+std::set<Style*> StylePool::styles() const
+{
+  return ::transform<Style*, std::set>(m_styles, [](const auto& up) { return up.get(); });
+}
+
 }  // namespace omm

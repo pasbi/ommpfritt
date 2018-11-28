@@ -49,10 +49,14 @@ public:
   void remove_object(OwningObjectTreeContext& context);
   bool can_move_object(const MoveObjectTreeContext& new_context) const;
 
+  std::set<Object*> objects() const;
+  std::set<Object*> selected_objects() const;
+  std::set<Tag*> tags(const std::set<Object*>& objects) const;
+  std::set<Tag*> tags() const;
   std::set<Tag*> selected_tags(const std::set<Object*>& objects) const;
   std::set<Tag*> selected_tags() const;
-  std::set<Object*> selected_objects() const;
   std::set<AbstractPropertyOwner*> selection() const;
+
   void clear_selection();
   void selection_changed();
 

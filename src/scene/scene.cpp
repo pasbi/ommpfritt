@@ -73,29 +73,39 @@ Object& Scene::root() const
   return *m_root;
 }
 
+std::set<Object*> Scene::objects() const
+{
+  return root().all_descendants();
+}
+
+std::set<Tag*> Scene::tags(const std::set<Object*>& objects) const
+{
+  std::set<Tag*> tags;
+  for (const auto object : objects) {
+    const auto object_tags = object->tags();
+    tags.insert(object_tags.begin(), object_tags.end());
+  }
+  return tags;
+}
+
+std::set<Tag*> Scene::tags() const
+{
+  return tags(objects());
+}
+
 std::set<Tag*> Scene::selected_tags(const std::set<Object*>& objects) const
 {
-  std::set<Tag*> selection;
-  for (const auto object : objects) {
-    const auto tags = object->tags();
-    std::copy_if( tags.begin(), tags.end(),
-                  std::inserter(selection, selection.end()), is_selected<Tag> );
-  }
-  return selection;
+  return ::filter_if(tags(objects), is_selected<Tag>);
 }
 
 std::set<Tag*> Scene::selected_tags() const
 {
-  return selected_tags(selected_objects());
+  return ::filter_if(tags(), is_selected<Tag>);
 }
 
 std::set<Object*> Scene::selected_objects() const
 {
-  const auto all = root().all_descendants();
-  std::decay_t<decltype(all)> selected;
-  std::copy_if( all.begin(), all.end(),
-                std::inserter(selected, selected.end()), is_selected<Object> );
-  return selected;
+  return ::filter_if(objects(), is_selected<Object>);
 }
 
 std::set<AbstractPropertyOwner*> Scene::selection() const
