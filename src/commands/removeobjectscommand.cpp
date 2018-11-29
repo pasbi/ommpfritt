@@ -19,9 +19,9 @@ auto make_contextes(const std::set<omm::Object*>& selection)
   // i.e., insert the predecessor first.
   std::sort(contextes.begin(), contextes.end(), [](const auto& lhs, const auto& rhs) {
     if (lhs.predecessor == &rhs.get_subject()) {
-      return false;
-    } else {
       return true;
+    } else {
+      return false;
     }
   });
   return contextes;

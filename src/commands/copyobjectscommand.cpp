@@ -11,9 +11,12 @@ CopyObjectsCommand
   , m_contextes(std::move(contextes))
   , m_scene(scene)
 {
-  std::for_each(m_contextes.begin(), m_contextes.end(), [](auto& context) {
+  const Object* predecessor = m_contextes.front().predecessor;
+  for (auto& context : m_contextes) {
     context.subject.capture_by_copy();
-  });
+    context.predecessor = predecessor;
+    predecessor = &context.subject.reference();
+  }
 }
 
 void CopyObjectsCommand::redo()

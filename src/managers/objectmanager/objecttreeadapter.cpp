@@ -28,6 +28,21 @@ bool can_move_drop_items(const std::vector<omm::MoveObjectTreeContext>& contexte
       && std::any_of(contextes.begin(), contextes.end(), is_strictly_valid);
 }
 
+void remove_internal_children(std::vector<omm::Object*>& objects)
+{
+  auto has_parent = [&objects](const omm::Object* subject) {
+    for (auto* potential_descendant : objects) {
+      if (potential_descendant != subject && potential_descendant->is_descendant_of(*subject))
+      {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  objects.erase(std::remove_if(objects.begin(), objects.end(), has_parent), objects.end());
+}
+
 template<typename ContextT> std::vector<ContextT>
 make_contextes( const omm::ObjectTreeAdapter& adapter,
                 const QMimeData* data, int row, const QModelIndex& parent )
