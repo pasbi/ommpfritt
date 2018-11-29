@@ -57,9 +57,11 @@ make_contextes( const omm::ObjectTreeAdapter& adapter,
   omm::Object& new_parent = adapter.object_at(parent);
   const size_t pos = row < 0 ? new_parent.n_children() : row;
 
-  contextes.reserve(property_owner_mime_data->objects().size());
+  auto objects = property_owner_mime_data->objects();
+  remove_internal_children(objects);
+  contextes.reserve(objects.size());
   const omm::Object* predecessor = (pos == 0) ? nullptr : &new_parent.child(pos - 1);
-  for (omm::Object* subject : property_owner_mime_data->objects()) {
+  for (omm::Object* subject : objects) {
     contextes.emplace_back(*subject, new_parent, predecessor);
     predecessor = subject;
   }
