@@ -81,7 +81,6 @@ void Scene::insert_object(std::unique_ptr<Object> object, Object& parent)
   );
 
   invalidate_getter_cache();
-  invalidate_selected_getter_cache();
 }
 
 Object& Scene::root() const
@@ -89,18 +88,20 @@ Object& Scene::root() const
   return *m_root;
 }
 
-bool Scene::is_referenced(const AbstractPropertyOwner& candidate) const
+std::set<ReferenceProperty*>
+Scene::find_reference_holders(const AbstractPropertyOwner& candidate) const
 {
-  for (const auto property_owner : property_owners()) {
-    const auto& properties = property_owner->properties();
-    for (const auto& key : properties.keys()) {
-      const auto* reference_property = properties.at(key)->cast<ReferenceProperty>();
+  std::set<ReferenceProperty*> reference_holders;
+  for (const auto& property_owner : property_owners()) {
+    const auto& property_map = property_owner->properties();
+    for (const auto& key : property_map.keys()) {
+      auto* reference_property = property_map.at(key)->cast<ReferenceProperty>();
       if (reference_property != nullptr && reference_property->value() == &candidate) {
-        return true;
+        reference_holders.insert(reference_property);
       }
     }
   }
-  return false;
+  return reference_holders;
 }
 
 void Scene::selection_changed()
@@ -110,8 +111,6 @@ void Scene::selection_changed()
   Observed<AbstractSelectionObserver>::for_each(
     [selected_objects](auto* observer) { observer->set_selection(selected_objects); }
   );
-
-  invalidate_selected_getter_cache();
 }
 
 void Scene::clear_selection()
@@ -139,7 +138,6 @@ void Scene::move_object(MoveObjectTreeContext context)
   );
 
   invalidate_getter_cache();
-  invalidate_selected_getter_cache();
 }
 
 void Scene::insert_object(OwningObjectTreeContext& context)
@@ -154,7 +152,6 @@ void Scene::insert_object(OwningObjectTreeContext& context)
   );
 
   invalidate_getter_cache();
-  invalidate_selected_getter_cache();
 }
 
 void Scene::remove_object(OwningObjectTreeContext& context)
@@ -169,7 +166,6 @@ void Scene::remove_object(OwningObjectTreeContext& context)
   );
 
   invalidate_getter_cache();
-  invalidate_selected_getter_cache();
 }
 
 bool Scene::save_as(const std::string &filename)
@@ -268,25 +264,11 @@ void Scene::invalidate_getter_cache() const
 {
   objects.invalidate();
   tags.invalidate();
-  property_owners.invalidate();
-}
-
-void Scene::invalidate_selected_getter_cache() const
-{
-  selected_objects.invalidate();
-  selected_tags.invalidate();
-  selection.invalidate();
 }
 
 template<> std::set<Object*> Scene::TGetter<Object>::compute() const
 {
   return m_self.root().all_descendants();
-
-}
-
-template<> std::set<Object*> Scene::SelectedTGetter<Object>::compute() const
-{
-  return ::filter_if(m_self.objects(), is_selected<Object>);
 }
 
 template<> std::set<Tag*> Scene::TGetter<Tag>::compute() const
@@ -298,23 +280,27 @@ template<> std::set<Tag*> Scene::TGetter<Tag>::compute() const
   return tags;
 }
 
-template<> std::set<Tag*> Scene::SelectedTGetter<Tag>::compute() const
+std::set<Object*> Scene::selected_objects() const
 {
-  return ::filter_if(m_self.tags(), is_selected<Tag>);
+  return ::filter_if(objects(), is_selected<Object>);
 }
 
-template<> std::set<AbstractPropertyOwner*> Scene::TGetter<AbstractPropertyOwner>::compute() const
+std::set<Tag*> Scene::selected_tags() const
+{
+  return ::filter_if(tags(), is_selected<Tag>);
+}
+
+std::set<AbstractPropertyOwner*> Scene::property_owners() const
+{
+  // TODO add styles
+  return merge(std::set<AbstractPropertyOwner*>(), objects(), tags());
+}
+
+std::set<AbstractPropertyOwner*> Scene::selection() const
 {
   // TODO add selected styles
   return merge( std::set<AbstractPropertyOwner*>(),
-                m_self.selected_objects(), m_self.selected_tags());
-}
-
-template<>
-std::set<AbstractPropertyOwner*> Scene::SelectedTGetter<AbstractPropertyOwner>::compute() const
-{
-  // TODO add styles
-  return merge(std::set<AbstractPropertyOwner*>(), m_self.objects(), m_self.tags());
+                selected_objects(), selected_tags());
 }
 
 }  // namespace omm

@@ -32,9 +32,9 @@ auto make_contextes(const std::set<omm::Object*>& selection)
 namespace omm
 {
 
-RemoveObjectsCommand::RemoveObjectsCommand(Scene& scene)
+RemoveObjectsCommand::RemoveObjectsCommand(Scene& scene, const std::set<omm::Object*>& objects)
   : Command(QObject::tr("remove").toStdString())
-  , m_contextes(std::move(make_contextes(scene.selected_objects())))
+  , m_contextes(std::move(make_contextes(objects)))
   , m_scene(scene)
 {
 }
@@ -44,7 +44,7 @@ void RemoveObjectsCommand::redo()
   for (auto&& context : m_contextes) {
     assert(!context.subject.owns());
     assert(!context.subject.reference().is_root());
-    assert(!m_scene.is_referenced(context.subject));
+    assert(m_scene.find_reference_holders(context.subject).size() == 0);
     m_scene.remove_object(context);
   }
   // important. else, handle or property manager might point to dangling objects

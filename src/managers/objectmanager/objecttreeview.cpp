@@ -4,12 +4,15 @@
 #include <glog/logging.h>
 #include <QMenu>
 #include <QContextMenuEvent>
+#include <QMessageBox>
 
 #include "menuhelper.h"
 #include "managers/objectmanager/objecttreeadapter.h"
 #include "commands/removeobjectscommand.h"
 #include "tags/tag.h"
+#include "commands/propertycommand.h"
 #include "commands/attachtagcommand.h"
+#include "properties/referenceproperty.h"
 
 namespace
 {
@@ -97,10 +100,44 @@ void ObjectTreeView::populate_menu(QMenu& menu, const Object& subject) const
   menu.addMenu(tag_menu.release());
 }
 
-void ObjectTreeView::remove_selected() const
+void ObjectTreeView::remove_selected()
 {
   auto& scene = model()->scene();
-  scene.submit<RemoveObjectsCommand>(scene);
+  const auto selection = scene.selected_objects();
+  std::map<const Object*, std::set<ReferenceProperty*>> reference_holder_map;
+  for (const Object* reference : selection) {
+    const auto reference_holders = scene.find_reference_holders(*reference);
+    if (reference_holders.size() > 0) {
+      reference_holder_map.insert(std::make_pair(reference, reference_holders));
+    }
+  }
+
+  if (reference_holder_map.size() > 0) {
+    const auto message = tr("There are %1 objects being referenced by other objects.\n"
+                            "Remove the refrenced objects anyway?")
+                          .arg(reference_holder_map.size());
+    const auto decision = QMessageBox::warning( this, tr("Warning"), message,
+                                                QMessageBox::YesToAll | QMessageBox::Cancel );
+    switch (decision) {
+    case QMessageBox::YesToAll:
+    {
+      const auto f = [](std::set<ReferenceProperty*> accu, const auto& v) {
+        accu.insert(v.second.begin(), v.second.end());
+        return accu;
+      };
+      const auto properties = std::accumulate( reference_holder_map.begin(),
+                                               reference_holder_map.end(),
+                                               std::set<ReferenceProperty*>(), f );
+      scene.submit<PropertiesCommand<ReferenceProperty>>(properties, nullptr);
+      break;
+    }
+    case QMessageBox::Cancel:
+      return;
+    default:
+      assert(false);
+    }
+  }
+  scene.submit<RemoveObjectsCommand>(scene, selection);
 }
 
 void ObjectTreeView::attach_tag_to_selected(const std::string& tag_class) const

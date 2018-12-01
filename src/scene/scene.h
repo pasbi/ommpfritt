@@ -58,23 +58,16 @@ public:
     std::set<T*> compute() const override;
   };
 
-  template<class T>
-  class SelectedTGetter : public CachedGetter<std::set<T*>, Scene&>
-  {
-  public:
-    explicit SelectedTGetter(Scene& scene) : CachedGetter<std::set<T*>, Scene&>(scene) {}
-    std::set<T*> compute() const override;
-  };
-
   const TGetter<Object> objects = TGetter<Object>(*this);
-  const SelectedTGetter<Object> selected_objects = SelectedTGetter<Object>(*this);
   const TGetter<Tag> tags = TGetter<Tag>(*this);
-  const SelectedTGetter<Tag> selected_tags = SelectedTGetter<Tag>(*this);
-  const TGetter<AbstractPropertyOwner> selection = TGetter<AbstractPropertyOwner>(*this);
-  const SelectedTGetter<AbstractPropertyOwner> property_owners
-    = SelectedTGetter<AbstractPropertyOwner>(*this);
 
-  bool is_referenced(const AbstractPropertyOwner& candidate) const;
+  std::set<Object*> selected_objects() const;
+  std::set<Tag*> selected_tags() const;
+  std::set<AbstractPropertyOwner*> property_owners() const;
+  std::set<AbstractPropertyOwner*> selection() const;
+
+  std::set<ReferenceProperty*>
+  find_reference_holders(const AbstractPropertyOwner& candidate) const;
 
   void clear_selection();
   void selection_changed();
@@ -109,7 +102,6 @@ private:
   QUndoStack m_undo_stack;
 
   void invalidate_getter_cache() const;
-  void invalidate_selected_getter_cache() const;
 };
 
 }  // namespace omm

@@ -30,7 +30,7 @@ protected:
   void populate_menu(QMenu& menu, const Object& subject) const;
 
 private:
-  void remove_selected() const;
+  void remove_selected();
   void attach_tag_to_selected(const std::string& tag_class) const;
   std::unique_ptr<TagsItemDelegate> m_tags_item_delegate;
   void set_selection(const std::set<AbstractPropertyOwner*>& selection, Object& root);
