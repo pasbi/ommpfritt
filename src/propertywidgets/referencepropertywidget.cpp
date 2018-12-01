@@ -25,7 +25,8 @@ ReferencePropertyWidget
 ::ReferencePropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
   : PropertyWidget(scene, properties)
 {
-  auto line_edit = std::make_unique<ReferenceLineEdit>(get_allowed_kinds(this->properties()));
+  auto line_edit = std::make_unique<ReferenceLineEdit>( scene,
+                                                        get_allowed_kinds(this->properties()) );
   m_line_edit = line_edit.get();
   set_default_layout(std::move(line_edit));
 

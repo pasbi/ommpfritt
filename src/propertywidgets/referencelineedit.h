@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QLineEdit>
+#include <QComboBox>
 #include "propertywidgets/multivalueedit.h"
 #include "aspects/propertyowner.h"
 
@@ -12,12 +12,12 @@ namespace omm
 class AbstractPropertyOwner;
 
 class ReferenceLineEdit
-  : public QLineEdit
+  : public QComboBox
   , public MultiValueEdit<AbstractPropertyOwner*>
 {
   Q_OBJECT
 public:
-  explicit ReferenceLineEdit(AbstractPropertyOwner::Kind allowed_kinds);
+  explicit ReferenceLineEdit(const Scene& scene, AbstractPropertyOwner::Kind allowed_kinds);
   void set_value(const value_type& value) override;
   value_type value() const override;
 
@@ -34,6 +34,7 @@ private:
   bool can_drop(const QMimeData& mime_data) const;
   AbstractPropertyOwner* m_value;
   AbstractPropertyOwner::Kind m_allowed_kinds;
+  std::vector<AbstractPropertyOwner*> m_possible_references;
 };
 
 }  // namespace omm

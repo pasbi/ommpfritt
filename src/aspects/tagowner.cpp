@@ -6,7 +6,6 @@ namespace omm
 
 TagOwner::~TagOwner()
 {
-  
 }
 
 Tag& TagOwner::add_tag(std::unique_ptr<Tag> tag, const Tag* predecessor)

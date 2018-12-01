@@ -2,30 +2,60 @@
 
 #include <QDragEnterEvent>
 #include <QMimeData>
+#include <QLineEdit>
 
 #include "properties/referenceproperty.h"
 #include "scene/propertyownermimedata.h"
 #include "objects/object.h"
+#include "scene/scene.h"
 
 namespace omm
 {
 
-ReferenceLineEdit::ReferenceLineEdit(AbstractPropertyOwner::Kind allowed_kinds)
-  : m_allowed_kinds(allowed_kinds)
+std::vector<omm::AbstractPropertyOwner*>
+candidates(const Scene& scene, omm::AbstractPropertyOwner::Kind kind)
 {
-  connect(this, &QLineEdit::textChanged, [this]() { setPlaceholderText(""); });
-  setReadOnly(true);
+  std::vector<omm::AbstractPropertyOwner*> candidates = { nullptr };
+  auto merge = [&candidates](const auto& ts) {
+    candidates.insert(candidates.end(), ts.begin(), ts.end());
+  };
+  if (!!(kind & omm::AbstractPropertyOwner::Kind::Object)) {
+    merge(scene.objects());
+  }
+  if (!!(kind & omm::AbstractPropertyOwner::Kind::Object)) {
+    merge(scene.tags());
+  }
+  if (!!(kind & omm::AbstractPropertyOwner::Kind::Object)) {
+    merge(scene.style_pool().styles());
+  }
+  return candidates;
+}
+
+ReferenceLineEdit::ReferenceLineEdit(const Scene& scene, AbstractPropertyOwner::Kind allowed_kinds)
+  : m_allowed_kinds(allowed_kinds)
+  , m_possible_references(candidates(scene, allowed_kinds))
+{
+  setEditable(false);
+  setAcceptDrops(true);
+  for (auto candidate : m_possible_references) {
+    if (candidate) {
+      addItem(QString::fromStdString(candidate->name()));
+    } else {
+      addItem(tr("< none >"));
+    }
+  }
+  connect( this, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+           [this](int index) { set_value(m_possible_references[index]); } );
 }
 
 void ReferenceLineEdit::set_value(const value_type& value)
 {
   bool value_has_changed = m_value != value;
   m_value = value;
-  if (value == nullptr) {
-    setText(tr("< no reference >"));
-  } else {
-    setText(QString::fromStdString(value->name()));
-  }
+  const auto it = std::find(m_possible_references.begin(), m_possible_references.end(), value);
+  assert(it != m_possible_references.end());
+  setCurrentIndex(std::distance(m_possible_references.begin(), it));
+
   if (value_has_changed) {
     Q_EMIT reference_changed(value);
   }
@@ -33,8 +63,7 @@ void ReferenceLineEdit::set_value(const value_type& value)
 
 void ReferenceLineEdit::set_inconsistent_value()
 {
-  setPlaceholderText(tr("<multiple values>"));
-  clear();
+  setEditText(tr("<multiple values>"));
 }
 
 void ReferenceLineEdit::dragEnterEvent(QDragEnterEvent* event)
