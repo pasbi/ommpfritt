@@ -17,9 +17,9 @@ public:
     m_observers.erase(m_observers.find(&observer));
   }
 
-  template<typename F> void for_each(F f)
+  template<typename F> void for_each(F&& f)
   {
-    std::for_each(m_observers.begin(), m_observers.end(), f);
+    std::for_each(m_observers.begin(), m_observers.end(), std::forward<F>(f));
   }
 
 private:

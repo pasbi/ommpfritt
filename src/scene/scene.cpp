@@ -43,8 +43,7 @@ namespace omm
 
 Scene* Scene::m_current = nullptr;
 
-Scene::Scene()
-  : m_root(make_root())
+Scene::Scene() : m_root(make_root())
 {
   m_root->property<StringProperty>(Object::NAME_PROPERTY_KEY).value() = "_root_";
   m_current = this;
@@ -80,48 +79,14 @@ void Scene::insert_object(std::unique_ptr<Object> object, Object& parent)
   Observed<AbstractObjectTreeObserver>::for_each(
     [] (auto* observer) { observer->endInsertObject(); }
   );
+
+  invalidate_getter_cache();
+  invalidate_selected_getter_cache();
 }
 
 Object& Scene::root() const
 {
   return *m_root;
-}
-
-std::set<Object*> Scene::objects() const
-{
-  return root().all_descendants();
-}
-
-std::set<Tag*> Scene::tags() const
-{
-  std::set<Tag*> tags;
-  for (const auto object : objects()) {
-    const auto object_tags = object->tags();
-    tags.insert(object_tags.begin(), object_tags.end());
-  }
-  return tags;
-}
-
-std::set<Tag*> Scene::selected_tags() const
-{
-  return ::filter_if(tags(), is_selected<Tag>);
-}
-
-std::set<Object*> Scene::selected_objects() const
-{
-  return ::filter_if(objects(), is_selected<Object>);
-}
-
-std::set<AbstractPropertyOwner*> Scene::selection() const
-{
-  // TODO add selected styles
-  return merge(std::set<AbstractPropertyOwner*>(), selected_objects(), selected_tags());
-}
-
-std::set<AbstractPropertyOwner*> Scene::property_owners() const
-{
-  // TODO add selected styles
-  return merge(std::set<AbstractPropertyOwner*>(), objects(), tags());
 }
 
 bool Scene::is_referenced(const AbstractPropertyOwner& candidate) const
@@ -145,6 +110,8 @@ void Scene::selection_changed()
   Observed<AbstractSelectionObserver>::for_each(
     [selected_objects](auto* observer) { observer->set_selection(selected_objects); }
   );
+
+  invalidate_selected_getter_cache();
 }
 
 void Scene::clear_selection()
@@ -170,6 +137,9 @@ void Scene::move_object(MoveObjectTreeContext context)
   Observed<AbstractObjectTreeObserver>::for_each(
     [](auto* observer) { observer->endMoveObject(); }
   );
+
+  invalidate_getter_cache();
+  invalidate_selected_getter_cache();
 }
 
 void Scene::insert_object(OwningObjectTreeContext& context)
@@ -182,6 +152,9 @@ void Scene::insert_object(OwningObjectTreeContext& context)
   Observed<AbstractObjectTreeObserver>::for_each(
     [](auto* observer) { observer->endInsertObject(); }
   );
+
+  invalidate_getter_cache();
+  invalidate_selected_getter_cache();
 }
 
 void Scene::remove_object(OwningObjectTreeContext& context)
@@ -194,6 +167,9 @@ void Scene::remove_object(OwningObjectTreeContext& context)
   Observed<AbstractObjectTreeObserver>::for_each(
     [](auto* observer) { observer->endRemoveObject(); }
   );
+
+  invalidate_getter_cache();
+  invalidate_selected_getter_cache();
 }
 
 bool Scene::save_as(const std::string &filename)
@@ -286,6 +262,59 @@ StylePool& Scene::style_pool()
 const StylePool& Scene::style_pool() const
 {
   return m_style_pool;
+}
+
+void Scene::invalidate_getter_cache() const
+{
+  objects.invalidate();
+  tags.invalidate();
+  property_owners.invalidate();
+}
+
+void Scene::invalidate_selected_getter_cache() const
+{
+  selected_objects.invalidate();
+  selected_tags.invalidate();
+  selection.invalidate();
+}
+
+template<> std::set<Object*> Scene::TGetter<Object>::compute() const
+{
+  return m_self.root().all_descendants();
+
+}
+
+template<> std::set<Object*> Scene::SelectedTGetter<Object>::compute() const
+{
+  return ::filter_if(m_self.objects(), is_selected<Object>);
+}
+
+template<> std::set<Tag*> Scene::TGetter<Tag>::compute() const
+{
+  std::set<Tag*> tags;
+  for (const auto object : m_self.objects()) {
+    tags = merge(tags, object->tags());
+  }
+  return tags;
+}
+
+template<> std::set<Tag*> Scene::SelectedTGetter<Tag>::compute() const
+{
+  return ::filter_if(m_self.tags(), is_selected<Tag>);
+}
+
+template<> std::set<AbstractPropertyOwner*> Scene::TGetter<AbstractPropertyOwner>::compute() const
+{
+  // TODO add selected styles
+  return merge( std::set<AbstractPropertyOwner*>(),
+                m_self.selected_objects(), m_self.selected_tags());
+}
+
+template<>
+std::set<AbstractPropertyOwner*> Scene::SelectedTGetter<AbstractPropertyOwner>::compute() const
+{
+  // TODO add styles
+  return merge(std::set<AbstractPropertyOwner*>(), m_self.objects(), m_self.tags());
 }
 
 }  // namespace omm

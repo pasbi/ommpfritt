@@ -15,6 +15,7 @@
 #include "scene/abstractselectionobserver.h"
 #include "scene/abstractobjecttreeobserver.h"
 #include "scene/stylepool.h"
+#include "scene/cachedgetter.h"
 
 namespace omm
 {
@@ -49,12 +50,29 @@ public:
   void remove_object(OwningObjectTreeContext& context);
   bool can_move_object(const MoveObjectTreeContext& new_context) const;
 
-  std::set<Object*> objects() const;
-  std::set<Object*> selected_objects() const;
-  std::set<Tag*> tags() const;
-  std::set<Tag*> selected_tags() const;
-  std::set<AbstractPropertyOwner*> selection() const;
-  std::set<AbstractPropertyOwner*> property_owners() const;
+  template<class T>
+  class TGetter : public CachedGetter<std::set<T*>, Scene&>
+  {
+  public:
+    explicit TGetter(Scene& scene) : CachedGetter<std::set<T*>, Scene&>(scene) {}
+    std::set<T*> compute() const override;
+  };
+
+  template<class T>
+  class SelectedTGetter : public CachedGetter<std::set<T*>, Scene&>
+  {
+  public:
+    explicit SelectedTGetter(Scene& scene) : CachedGetter<std::set<T*>, Scene&>(scene) {}
+    std::set<T*> compute() const override;
+  };
+
+  const TGetter<Object> objects = TGetter<Object>(*this);
+  const SelectedTGetter<Object> selected_objects = SelectedTGetter<Object>(*this);
+  const TGetter<Tag> tags = TGetter<Tag>(*this);
+  const SelectedTGetter<Tag> selected_tags = SelectedTGetter<Tag>(*this);
+  const TGetter<AbstractPropertyOwner> selection = TGetter<AbstractPropertyOwner>(*this);
+  const SelectedTGetter<AbstractPropertyOwner> property_owners
+    = SelectedTGetter<AbstractPropertyOwner>(*this);
 
   bool is_referenced(const AbstractPropertyOwner& candidate) const;
 
@@ -89,6 +107,9 @@ private:
   std::string m_filename;
   bool m_has_pending_changes = false;
   QUndoStack m_undo_stack;
+
+  void invalidate_getter_cache() const;
+  void invalidate_selected_getter_cache() const;
 };
 
 }  // namespace omm
