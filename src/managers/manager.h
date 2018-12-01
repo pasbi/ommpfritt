@@ -4,6 +4,7 @@
 #include <QDockWidget>
 
 #include "mainwindow/mainwindow.h"
+#include "abstractfactory.h"
 
 namespace omm
 {
@@ -16,14 +17,12 @@ namespace omm
 class MainWindow;
 class Scene;
 
-class Manager : public QDockWidget
+class Manager : public QDockWidget, public AbstractFactory<std::string, Manager, Scene&>
 {
   Q_OBJECT
 public:
   Manager(const Manager&) = delete;
   Manager(Manager&&) = delete;
-
-  virtual std::string type() const = 0;
 
 protected:
   explicit Manager(const QString& title, Scene& scene);

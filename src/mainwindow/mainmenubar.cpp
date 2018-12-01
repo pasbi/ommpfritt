@@ -37,10 +37,9 @@ void MainMenuBar::make_create_menu()
 void MainMenuBar::make_window_menu()
 {
   auto& window_menu = *addMenu(tr("&Window"));
-  for (auto& manager_creator : MainWindow::manager_creators) {
-    const auto label = qApp->translate("Manager", manager_creator.first.c_str());
-    action(window_menu, label, [this, &manager_creator]() {
-      auto manager = manager_creator.second(m_app.scene());
+  for (auto& key : Manager::keys()) {
+    action(window_menu, QString::fromStdString(key), [this, key]() {
+      auto manager = Manager::make(key, m_app.scene());
       auto& ref = *manager;
       m_main_window.addDockWidget(Qt::TopDockWidgetArea, manager.release());
       ref.setFloating(true);

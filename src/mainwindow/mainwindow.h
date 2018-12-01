@@ -19,10 +19,6 @@ public:
   ~MainWindow();
   void restore_state();
   void save_state();
-  std::unique_ptr<Manager> make_manager(const std::string& type);
-
-  using creator_map = std::map<std::string, std::unique_ptr<Manager>(*)(Scene&)>;
-  static const creator_map manager_creators;
 
 protected:
   void closeEvent(QCloseEvent *event);

@@ -2,7 +2,6 @@
 
 #include <QMenuBar>
 
-
 namespace omm
 {
 

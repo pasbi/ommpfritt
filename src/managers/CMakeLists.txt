@@ -1,5 +1,6 @@
 file (GLOB SOURCES
   "manager.cpp"
+  "managerregister.cpp"
 )
 
 target_sources(libommpfritt PRIVATE ${SOURCES})
