@@ -30,13 +30,9 @@ class AttachTagCommand::TagContext
 public:
   TagContext(Object& object, std::unique_ptr<Tag> tag);
 
-  void attach_tag();
-  void detach_tag();
-
-private:
-  Object* m_owner;
-  std::unique_ptr<Tag> m_owned;
-  Tag* m_reference;
+  Object* tag_owner;
+  std::unique_ptr<Tag> owned;
+  Tag* reference;
 };
 
 

@@ -79,7 +79,16 @@ void ObjectTreeView::set_model(ObjectTreeAdapter* model)
   }
   QTreeView::setModel(model);
   if (this->model()) {
-    this->model()->scene().Observed<AbstractSelectionObserver>::register_observer(*this);
+    auto& scene = this->model()->scene();
+    scene.Observed<AbstractSelectionObserver>::register_observer(*this);
+    connect(selectionModel(), &QItemSelectionModel::selectionChanged, [&scene](){
+      for (Tag* tag : scene.selected_tags()) {
+        tag->deselect();
+      }
+      // for (Style* style : scene->selected_styles()) {
+      //   tag->deselect();
+      // }
+    });
   }
 }
 

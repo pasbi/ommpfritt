@@ -8,17 +8,10 @@ TagOwner::~TagOwner()
 {
 }
 
-Tag& TagOwner::add_tag(std::unique_ptr<Tag> tag, const Tag* predecessor)
+Tag& TagOwner::attach_tag(std::unique_ptr<Tag> tag, const Tag* predecessor)
 {
   const auto pos = get_insert_position(predecessor);
   return insert(m_tags, std::move(tag), pos);
-}
-
-Tag& TagOwner::add_tag(std::unique_ptr<Tag> tag)
-{
-  const auto n = n_tags();
-  const Tag* predecessor = n == 0 ? nullptr : &this->tag(n-1);
-  return add_tag(std::move(tag), predecessor);
 }
 
 Tag& TagOwner::tag(size_t i) const
@@ -31,7 +24,7 @@ size_t TagOwner::n_tags() const
   return m_tags.size();
 }
 
-std::unique_ptr<Tag> TagOwner::remove_tag(Tag& tag)
+std::unique_ptr<Tag> TagOwner::detach_tag(Tag& tag)
 {
   return extract(m_tags, tag);
 }

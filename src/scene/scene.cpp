@@ -303,4 +303,27 @@ std::set<AbstractPropertyOwner*> Scene::selection() const
                 selected_objects(), selected_tags());
 }
 
+Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag)
+{
+  const auto n = owner.n_tags();
+  const Tag* predecessor = n == 0 ? nullptr : &owner.tag(n-1);
+  return attach_tag(owner, std::move(tag), predecessor);
+}
+
+Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag, const Tag* predecessor)
+{
+  Tag& ref = owner.attach_tag(std::move(tag), predecessor);
+  invalidate_getter_cache();
+  return ref;
+}
+
+std::unique_ptr<Tag> Scene::detach_tag(Object& owner, Tag& tag)
+{
+  auto ref = owner.detach_tag(tag);
+  invalidate_getter_cache();
+  return ref;
+}
+
+
+
 }  // namespace omm

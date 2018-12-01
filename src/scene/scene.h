@@ -50,6 +50,10 @@ public:
   void remove_object(OwningObjectTreeContext& context);
   bool can_move_object(const MoveObjectTreeContext& new_context) const;
 
+  Tag& attach_tag(Object& owner, std::unique_ptr<Tag> tag, const Tag* predecessor);
+  Tag& attach_tag(Object& owner, std::unique_ptr<Tag> tag);
+  std::unique_ptr<Tag> detach_tag(Object& owner, Tag& tag);
+
   template<class T>
   class TGetter : public CachedGetter<std::set<T*>, Scene&>
   {
@@ -85,6 +89,7 @@ public:
   QUndoStack& undo_stack();
   StylePool& style_pool();
   const StylePool& style_pool() const;
+  void invalidate_getter_cache() const;
 
 private:
   void submit(std::unique_ptr<Command> command);
@@ -101,7 +106,6 @@ private:
   bool m_has_pending_changes = false;
   QUndoStack m_undo_stack;
 
-  void invalidate_getter_cache() const;
 };
 
 }  // namespace omm
