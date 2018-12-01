@@ -36,7 +36,7 @@ void MoveObjectsCommand::redo()
 void MoveObjectsCommand::undo()
 {
   for (const auto& context : m_old_contextes) {
-    m_scene.move_object(*it);
+    m_scene.move_object(context);
   }
 }
 

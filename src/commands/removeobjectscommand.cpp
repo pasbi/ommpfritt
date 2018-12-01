@@ -47,7 +47,7 @@ void RemoveObjectsCommand::redo()
     m_scene.remove_object(context);
   }
   // important. else, handle or property manager might point to dangling objects
-  m_scene.clear_selection();
+  m_scene.selection_changed();
 }
 
 void RemoveObjectsCommand::undo()
@@ -60,6 +60,7 @@ void RemoveObjectsCommand::undo()
     assert(context.predecessor == nullptr || !context.predecessor->is_root());
     m_scene.insert_object(context);
   }
+  m_scene.selection_changed();
 }
 
 }  // namespace omm

@@ -33,6 +33,7 @@ void AddObjectCommand::redo()
     LOG(FATAL) << "Command cannot give away non-owned object.";
   } else {
     m_scene.insert_object(std::move(m_owned_object), m_scene.root());
+    m_scene.selection_changed();
   }
 }
 
@@ -44,7 +45,7 @@ void AddObjectCommand::undo()
     m_owned_object = m_scene.root().repudiate(m_object_reference);
 
     // important. else, handle or property manager might point to dangling objects
-    m_scene.clear_selection();
+    m_scene.selection_changed();
   }
 }
 
