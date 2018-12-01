@@ -21,7 +21,7 @@ public:
     constexpr bool template_argument_is_valid = std::is_same< std::decay_t<mapped_type_>,
                                                               std::decay_t<mapped_type > >::value;
     static_assert(template_argument_is_valid, "mapped_type_ and mapped_type must be same.");
-    
+
     bool was_inserted;
     std::tie(std::ignore, was_inserted)
       = m_values.insert(std::make_pair(key, std::forward<mapped_type_>(value)));

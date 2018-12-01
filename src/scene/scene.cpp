@@ -9,6 +9,7 @@
 #include "properties/stringproperty.h"
 #include "serializers/abstractserializer.h"
 #include "commands/command.h"
+#include "properties/referenceproperty.h"
 
 namespace
 {
@@ -21,6 +22,19 @@ auto make_root()
 }
 
 template<typename T> bool is_selected(const T* t) { return t->is_selected(); }
+
+template<typename SetA, typename SetB> SetA merge(SetA&& a, SetB&& b)
+{
+  a.insert(b.begin(), b.end());
+  return a;
+}
+
+template<typename SetA, typename SetB, typename... Sets>
+SetA merge(SetA&& a, SetB&& b, Sets&&... sets)
+{
+  return merge(merge(a, b), std::forward<Sets>(sets)...);
+}
+
 
 }  // namespace
 
@@ -78,24 +92,14 @@ std::set<Object*> Scene::objects() const
   return root().all_descendants();
 }
 
-std::set<Tag*> Scene::tags(const std::set<Object*>& objects) const
+std::set<Tag*> Scene::tags() const
 {
   std::set<Tag*> tags;
-  for (const auto object : objects) {
+  for (const auto object : objects()) {
     const auto object_tags = object->tags();
     tags.insert(object_tags.begin(), object_tags.end());
   }
   return tags;
-}
-
-std::set<Tag*> Scene::tags() const
-{
-  return tags(objects());
-}
-
-std::set<Tag*> Scene::selected_tags(const std::set<Object*>& objects) const
-{
-  return ::filter_if(tags(objects), is_selected<Tag>);
 }
 
 std::set<Tag*> Scene::selected_tags() const
@@ -110,13 +114,28 @@ std::set<Object*> Scene::selected_objects() const
 
 std::set<AbstractPropertyOwner*> Scene::selection() const
 {
-  std::set<AbstractPropertyOwner*> selection;
-  const auto selected_objects = this->selected_objects();
-  const auto selected_tags = this->selected_tags(selected_objects);
-  selection.insert(selected_objects.begin(), selected_objects.end());
-  selection.insert(selected_tags.begin(), selected_tags.end());
   // TODO add selected styles
-  return selection;
+  return merge(std::set<AbstractPropertyOwner*>(), selected_objects(), selected_tags());
+}
+
+std::set<AbstractPropertyOwner*> Scene::property_owners() const
+{
+  // TODO add selected styles
+  return merge(std::set<AbstractPropertyOwner*>(), objects(), tags());
+}
+
+bool Scene::is_referenced(const AbstractPropertyOwner& candidate) const
+{
+  for (const auto property_owner : property_owners()) {
+    const auto& properties = property_owner->properties();
+    for (const auto& key : properties.keys()) {
+      const auto* reference_property = properties.at(key)->cast<ReferenceProperty>();
+      if (reference_property != nullptr && reference_property->value() == &candidate) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 void Scene::selection_changed()

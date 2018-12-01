@@ -12,6 +12,7 @@ class ReferenceProperty : public TypedProperty<AbstractPropertyOwner*>
 {
 public:
   using ReferenceType = AbstractPropertyOwner*;
+
   /**
    * @brief creates a ReferenceProperty with no (aka nullptr) reference
    * @details the constructor does not take an argument because the default reference is nullptr

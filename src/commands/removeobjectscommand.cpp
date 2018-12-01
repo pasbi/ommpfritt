@@ -44,6 +44,7 @@ void RemoveObjectsCommand::redo()
   for (auto&& context : m_contextes) {
     assert(!context.subject.owns());
     assert(!context.subject.reference().is_root());
+    assert(!m_scene.is_referenced(context.subject));
     m_scene.remove_object(context);
   }
   // important. else, handle or property manager might point to dangling objects

@@ -51,11 +51,12 @@ public:
 
   std::set<Object*> objects() const;
   std::set<Object*> selected_objects() const;
-  std::set<Tag*> tags(const std::set<Object*>& objects) const;
   std::set<Tag*> tags() const;
-  std::set<Tag*> selected_tags(const std::set<Object*>& objects) const;
   std::set<Tag*> selected_tags() const;
   std::set<AbstractPropertyOwner*> selection() const;
+  std::set<AbstractPropertyOwner*> property_owners() const;
+
+  bool is_referenced(const AbstractPropertyOwner& candidate) const;
 
   void clear_selection();
   void selection_changed();
