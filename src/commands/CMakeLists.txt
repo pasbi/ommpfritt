@@ -4,8 +4,9 @@ file (GLOB SOURCES
   "command.cpp"
   "copyobjectscommand.cpp"
   "moveobjectscommand.cpp"
+  "newstylecommand.cpp"
+  "objectstransformationcommand.cpp"
   "propertycommand.cpp"
   "removeobjectscommand.cpp"
-  "objectstransformationcommand.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})

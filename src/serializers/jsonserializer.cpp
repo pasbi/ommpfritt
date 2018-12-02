@@ -79,6 +79,11 @@ void JSONSerializer::set_value(int value, const Pointer& pointer)
   m_store[ptr(pointer)] = value;
 }
 
+void JSONSerializer::set_value(bool value, const Pointer& pointer)
+{
+  m_store[ptr(pointer)] = value;
+}
+
 void JSONSerializer::set_value(double value, const Pointer& pointer)
 {
   m_store[ptr(pointer)] = value;
@@ -106,6 +111,11 @@ void JSONSerializer::set_value(const Serializable::IdType& id, const Pointer& po
   m_store[ptr(pointer)] = id;
 }
 
+void JSONSerializer::set_value(const Color& color, const Pointer& pointer)
+{
+  m_store[ptr(pointer)] = { color.red(), color.blue(), color.green(), color.alpha() };
+}
+
 std::string JSONSerializer::type() const
 {
   return "JSONSerializer";
@@ -131,6 +141,11 @@ int JSONDeserializer::get_int(const Pointer& pointer)
   return get_t<int>(m_store, pointer);
 }
 
+bool JSONDeserializer::get_bool(const Pointer& pointer)
+{
+  return get_t<bool>(m_store, pointer);
+}
+
 double JSONDeserializer::get_double(const Pointer& pointer)
 {
   return get_t<double>(m_store, pointer);
@@ -139,6 +154,16 @@ double JSONDeserializer::get_double(const Pointer& pointer)
 std::string JSONDeserializer::get_string(const Pointer& pointer)
 {
   return get_t<std::string>(m_store, pointer);
+}
+
+Color JSONDeserializer::get_color(const Pointer& pointer)
+{
+  arma::vec4 color;
+  for (size_t i = 0; i < color.n_elem; ++i) {
+    const auto element_pointer = Serializable::make_pointer(pointer, i);
+    color[i] = get_t<double>(m_store, element_pointer);
+  }
+  return color;
 }
 
 ObjectTransformation JSONDeserializer::get_object_transformation(const Pointer& pointer)

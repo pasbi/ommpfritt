@@ -1,9 +1,13 @@
 #include "renderers/viewportrenderer.h"
-#include "renderers/style.h"
 
 #include <glog/logging.h>
 #include <QTransform>
 #include <QPainter>
+
+#include "renderers/style.h"
+#include "properties/colorproperty.h"
+#include "properties/floatproperty.h"
+#include "properties/boolproperty.h"
 
 namespace
 {
@@ -21,23 +25,25 @@ auto to_qpoint(const arma::vec2& point)
   return QPointF(point[0], point[1]);
 }
 
-auto to_qcolor(const omm::Color& color)
+auto to_qcolor(omm::Color color)
 {
-  return QColor(255 * color(0), 255 * color(1), 255 * color(2), 255 * color(3));
+  color = color.clamped() * 255.0;
+  return QColor(color.red(), color.green(), color.blue(), color.alpha());
 }
 
 auto make_pen(const omm::Style& style)
 {
   QPen pen;
-  pen.setWidth(style.pen_width);
-  pen.setColor(to_qcolor(style.pen_color));
+  pen.setWidth(style.property<omm::FloatProperty>(omm::Style::PEN_WIDTH_KEY).value());
+  pen.setColor(to_qcolor(style.property<omm::ColorProperty>(omm::Style::PEN_COLOR_KEY).value()));
   return pen;
 }
 
 auto make_brush(const omm::Style& style)
 {
   QBrush brush(Qt::SolidPattern);
-  brush.setColor(to_qcolor(style.brush_color));
+  const auto color = style.property<omm::ColorProperty>(omm::Style::BRUSH_COLOR_KEY).value();
+  brush.setColor(to_qcolor(color));
   return brush;
 }
 
@@ -76,10 +82,10 @@ void ViewportRenderer::draw_spline(const std::vector<Point>& points, const Style
                   to_qpoint(points.at(i).position)  );
   }
 
-  if (style.is_brush_active) {
+  if (style.property<BoolProperty>(Style::BRUSH_IS_ACTIVE_KEY).value()) {
     m_painter.fillPath(path, make_brush(style));
   }
-  if (style.is_pen_active) {
+  if (style.property<BoolProperty>(Style::PEN_IS_ACTIVE_KEY).value()) {
     m_painter.strokePath(path, make_pen(style));
   }
 }

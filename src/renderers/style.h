@@ -10,14 +10,13 @@ class Style : public PropertyOwner<AbstractPropertyOwner::Kind::Style>
 {
 public:
   explicit Style();
-  bool is_pen_active;
-  Color pen_color;
-  double pen_width;
-
-  bool is_brush_active;
-  Color brush_color;
-
   std::string name() const override;
+
+  static constexpr auto PEN_IS_ACTIVE_KEY = "pen/active";
+  static constexpr auto PEN_COLOR_KEY = "pen/color";
+  static constexpr auto PEN_WIDTH_KEY = "pen/width";
+  static constexpr auto BRUSH_IS_ACTIVE_KEY = "brush/active";
+  static constexpr auto BRUSH_COLOR_KEY = "brush/color";
 };
 
 }  // namespace omm

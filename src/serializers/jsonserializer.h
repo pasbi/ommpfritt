@@ -2,6 +2,7 @@
 
 #include "serializers/abstractserializer.h"
 #include "external/json.hpp"
+#include "color/color.h"
 
 namespace omm
 {
@@ -15,10 +16,12 @@ public:
   void start_array(size_t size, const Pointer& pointer) override;
   void end_array() override;
   void set_value(int value, const Pointer& pointer) override;
+  void set_value(bool value, const Pointer& pointer) override;
   void set_value(double value, const Pointer& pointer) override;
   void set_value(const std::string& value, const Pointer& pointer) override;
   void set_value(const ObjectTransformation& value, const Pointer& pointer) override;
   void set_value(const Serializable::IdType& id, const Pointer& pointer) override;
+  void set_value(const Color& color, const Pointer& pointer) override;
   std::string type() const override;
 
 private:
@@ -33,9 +36,11 @@ public:
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
   size_t array_size(const Pointer& pointer) override;
-  int  get_int(const Pointer& pointer) override;
-  double  get_double(const Pointer& pointer) override;
-  std::string  get_string(const Pointer& pointer) override;
+  int get_int(const Pointer& pointer) override;
+  double get_double(const Pointer& pointer) override;
+  bool get_bool(const Pointer& pointer) override;
+  std::string get_string(const Pointer& pointer) override;
+  Color get_color(const Pointer& pointer) override;
   ObjectTransformation get_object_transformation(const Pointer& pointer) override;
   Serializable::IdType get_id(const Pointer& pointer) override;
 

@@ -1,4 +1,6 @@
 file (GLOB SOURCES
+  "boolproperty.cpp"
+  "colorproperty.cpp"
   "floatproperty.cpp"
   "integerproperty.cpp"
   "property.cpp"

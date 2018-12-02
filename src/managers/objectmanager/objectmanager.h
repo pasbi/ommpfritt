@@ -14,7 +14,7 @@ class ObjectManager : public Manager
   DECLARE_MANAGER_TYPE(ObjectManager)
 
 public:
-  explicit ObjectManager(omm::Scene& scene);
+  explicit ObjectManager(Scene& scene);
   ~ObjectManager();
 
 private:

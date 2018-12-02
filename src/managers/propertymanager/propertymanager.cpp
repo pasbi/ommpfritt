@@ -47,19 +47,6 @@ std::vector<Key> get_key_intersection(const SetOfPropertyOwner& selection)
   return keys;
 }
 
-void split_key(const std::string& key, std::string& tab_name, std::string& property_name)
-{
-  constexpr auto character = '/';
-  size_t pos = key.find(character);
-  if (pos == std::string::npos) {
-    tab_name = "";
-    property_name = key;
-  } else {
-    tab_name = key.substr(0, pos);
-    property_name = key.substr(pos + 1);
-  }
-}
-
 auto
 collect_properties(const omm::AbstractPropertyOwner::Key& key, const SetOfPropertyOwner& selection)
 {

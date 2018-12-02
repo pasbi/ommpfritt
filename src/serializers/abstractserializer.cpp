@@ -27,6 +27,7 @@ AbstractDeserializer::AbstractDeserializer(std::istream& stream)
 
 AbstractDeserializer::~AbstractDeserializer()
 {
+  // polish reference properties
   for (const auto& property_id : m_reference_property_to_id) {
     auto* property = property_id.first;
     const auto id = property_id.second;

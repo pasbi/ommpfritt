@@ -1,6 +1,9 @@
 #include "mainwindow/viewport/axishandle.h"
 #include "renderers/abstractrenderer.h"
 #include "mainwindow/viewport/handle.h"
+#include "properties/boolproperty.h"
+#include "properties/colorproperty.h"
+#include "properties/floatproperty.h"
 
 namespace
 {
@@ -13,10 +16,10 @@ void draw_arrow( omm::AbstractRenderer& renderer, const omm::Style& style,
 
 void set_pen_color(omm::Style& style, const omm::Color& color)
 {
-  style.is_pen_active = true;
-  style.is_brush_active = false;
-  style.pen_color = color;
-  style.pen_width = 2.0;
+  style.property<omm::BoolProperty>(omm::Style::PEN_IS_ACTIVE_KEY).set_value(true);
+  style.property<omm::BoolProperty>(omm::Style::BRUSH_IS_ACTIVE_KEY).set_value(false);
+  style.property<omm::ColorProperty>(omm::Style::PEN_COLOR_KEY).set_value(color);
+  style.property<omm::FloatProperty>(omm::Style::PEN_WIDTH_KEY).set_value(2.0);
 }
 
 arma::vec2 project_onto_axis(const arma::vec2 v, const arma::vec2& axis_direction)

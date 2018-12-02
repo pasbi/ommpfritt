@@ -5,13 +5,26 @@
 namespace omm
 {
 
-class Color : public arma::vec4
+class Color : private arma::vec4
 {
 public:
-  explicit Color(double r, double g, double b, double a = 1.0);
-  using arma::vec4::vec4;
-  Color shaded(const double amount) const;
+  Color(double r, double g, double b, double a = 1.0);
+  Color(const arma::vec3& vec3, double a = 1.0);
+  Color(const arma::vec4& vec4);
+
+  Color operator%(const Color& other) const;
+  Color operator+(const Color& other) const;
+  Color operator*(double other) const;
+
   Color clamped() const;
+  double& red() { return (*this)[0]; }
+  double& green() { return (*this)[1]; }
+  double& blue() { return (*this)[2]; }
+  double& alpha() { return (*this)[3]; }
+  double red() const { return (*this)[0]; }
+  double green() const { return (*this)[1]; }
+  double blue() const { return (*this)[2]; }
+  double alpha() const { return (*this)[3]; }
 
   static Color RED;
   static Color GREEN;
@@ -19,6 +32,13 @@ public:
   static Color YELLOW;
   static Color BLACK;
   static Color WHITE;
+
+private:
+  using base_type = arma::vec4;
+  friend bool operator==(const Color& a, const Color& b);
 };
+
+bool operator==(const Color& a, const Color& b);
+bool operator!=(const Color& a, const Color& b);
 
 }  // namespace

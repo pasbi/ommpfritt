@@ -77,10 +77,12 @@ namespace omm
 ObjectTreeAdapter::ObjectTreeAdapter(Scene& scene)
   : m_scene(scene)
 {
+  m_scene.Observed<AbstractObjectTreeObserver>::register_observer(*this);
 }
 
 ObjectTreeAdapter::~ObjectTreeAdapter()
 {
+  m_scene.Observed<AbstractObjectTreeObserver>::unregister_observer(*this);
 }
 
 QModelIndex ObjectTreeAdapter::index(int row, int column, const QModelIndex& parent) const

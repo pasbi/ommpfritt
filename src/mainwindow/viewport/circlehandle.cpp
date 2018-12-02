@@ -1,6 +1,8 @@
 #include "mainwindow/viewport/circlehandle.h"
 #include "renderers/abstractrenderer.h"
 #include "mainwindow/viewport/handle.h"
+#include "properties/boolproperty.h"
+#include "properties/colorproperty.h"
 
 namespace
 {
@@ -26,16 +28,16 @@ namespace omm
 void CircleHandle::draw(AbstractRenderer& renderer) const
 {
   Style style;
-  style.is_pen_active = true;
+  style.property<BoolProperty>(Style::PEN_IS_ACTIVE_KEY).set_value(true);
   switch (status()) {
-    case Status::Active:
-    style.pen_color = Color::WHITE;
+  case Status::Active:
+    style.property<ColorProperty>(Style::PEN_COLOR_KEY).set_value(Color::WHITE);
     break;
-    case Status::Hovered:
-    style.pen_color = Color(0.2, 0.3, 1.0);
+  case Status::Hovered:
+    style.property<ColorProperty>(Style::PEN_COLOR_KEY).set_value(Color(0.2, 0.3, 1.0));
     break;
-    case Status::Inactive:
-    style.pen_color = Color(0.0, 0.0, 1.0);
+  case Status::Inactive:
+    style.property<ColorProperty>(Style::PEN_COLOR_KEY).set_value(Color(0.0, 0.0, 1.0));
     break;
   }
   draw_circle(renderer, style);
