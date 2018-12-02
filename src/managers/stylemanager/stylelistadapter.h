@@ -19,12 +19,15 @@ public:
   explicit StyleListAdapter(Scene& scene);
   ~StyleListAdapter();
 
-  int rowCount(const QModelIndex& parent) const override;
+  int rowCount(const QModelIndex& parent = QModelIndex()) const override;
   QVariant data(const QModelIndex& index, int role) const override;
   Scene& scene() const;
 
   void beginInsertObject(int row) override;
   void endInsertObject() override;
+
+  Qt::ItemFlags flags(const QModelIndex &index) const;
+
 
 private:
   Scene& m_scene;

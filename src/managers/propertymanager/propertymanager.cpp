@@ -6,15 +6,15 @@
 
 #include "managers/propertymanager/propertymanagertab.h"
 #include "propertywidgets/propertywidget.h"
+#include "aspects/propertyowner.h"
 #include "common.h"
 
 namespace
 {
 
 using Key = omm::AbstractPropertyOwner::Key;
-using SetOfPropertyOwner = std::set<omm::AbstractPropertyOwner*>;
 
-std::vector<Key> get_key_intersection(const SetOfPropertyOwner& selection)
+std::vector<Key> get_key_intersection(const omm::SetOfPropertyOwner& selection)
 {
   if (selection.size() == 0) {
     return std::vector<Key>();
@@ -47,8 +47,8 @@ std::vector<Key> get_key_intersection(const SetOfPropertyOwner& selection)
   return keys;
 }
 
-auto
-collect_properties(const omm::AbstractPropertyOwner::Key& key, const SetOfPropertyOwner& selection)
+auto collect_properties( const omm::AbstractPropertyOwner::Key& key,
+                         const omm::SetOfPropertyOwner& selection )
 {
   std::set<omm::AbstractPropertyOwner*> collection;
   const auto f = [key](omm::AbstractPropertyOwner* entity) {

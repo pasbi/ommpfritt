@@ -13,6 +13,7 @@
 #include "commands/propertycommand.h"
 #include "commands/attachtagcommand.h"
 #include "properties/referenceproperty.h"
+#include "renderers/style.h"
 
 namespace
 {
@@ -85,9 +86,9 @@ void ObjectTreeView::set_model(ObjectTreeAdapter* model)
       for (Tag* tag : scene.selected_tags()) {
         tag->deselect();
       }
-      // for (Style* style : scene->selected_styles()) {
-      //   tag->deselect();
-      // }
+      for (Style* style : scene.selected_styles()) {
+        style->deselect();
+      }
     });
   }
 }
@@ -156,7 +157,7 @@ void ObjectTreeView::attach_tag_to_selected(const std::string& tag_class) const
   scene.submit<AttachTagCommand>(scene, std::move(tag));
 }
 
-void ObjectTreeView::set_selection(const std::set<AbstractPropertyOwner*>& selection, Object& root)
+void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection, Object& root)
 {
   assert(root.is_selected() == selection.count(static_cast<AbstractPropertyOwner*>(&root)));
   const QModelIndex index = model()->index_of(root);
@@ -170,7 +171,7 @@ void ObjectTreeView::set_selection(const std::set<AbstractPropertyOwner*>& selec
   }
 };
 
-void ObjectTreeView::set_selection(const std::set<AbstractPropertyOwner*>& selection)
+void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection)
 {
   set_selection(selection, model()->scene().root());
 }

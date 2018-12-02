@@ -284,9 +284,9 @@ std::set<Style*> Scene::styles() const
   return ::transform<Style*, std::set>(m_styles, [](auto&& style) { return style.get(); });
 }
 
-Style* Scene::style(size_t i) const
+Style& Scene::style(size_t i) const
 {
-  return m_styles[i].get();
+  return *m_styles[i].get();
 }
 
 std::set<Object*> Scene::selected_objects() const

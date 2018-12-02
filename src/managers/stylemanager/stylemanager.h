@@ -17,6 +17,8 @@ public:
 
   StyleListAdapter m_style_list_adapter;
 
+private:
+  void on_selection_changed(const QItemSelection& selection, const QItemSelection& old_selection);
 };
 
 }  // namespace omm

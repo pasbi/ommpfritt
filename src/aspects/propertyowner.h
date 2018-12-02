@@ -15,6 +15,7 @@ namespace omm
 {
 
 using PropertyMap = OrderedMap<std::string, std::unique_ptr<Property>>;
+using SetOfPropertyOwner = std::set<omm::AbstractPropertyOwner*>;
 
 class AbstractPropertyOwner : public virtual Serializable, public AbstractPropertyObserver
 {

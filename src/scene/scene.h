@@ -73,7 +73,7 @@ public:
   void insert_style(std::unique_ptr<Style> style);
   std::unique_ptr<Style> remove_style(Style& style);
   std::set<Style*> styles() const;
-  Style* style(size_t i) const;
+  Style& style(size_t i) const;
   std::set<Style*> selected_styles() const;
   Style& default_style() const;
 private:
