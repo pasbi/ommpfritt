@@ -20,6 +20,7 @@ namespace
 {
 
 static constexpr auto CHILDREN_POINTER = "children";
+static constexpr auto TAGS_POINTER = "tags";
 static constexpr auto TYPE_POINTER = "type";
 
 std::vector<omm::Style*> find_styles(const omm::Object& object)
@@ -137,43 +138,50 @@ void Object::serialize(AbstractSerializer& serializer, const Pointer& root) cons
 {
   PropertyOwner::serialize(serializer, root);
 
-  const auto children_key = make_pointer(root, CHILDREN_POINTER);
-  serializer.start_array(n_children(), children_key);
+  const auto children_pointer = make_pointer(root, CHILDREN_POINTER);
+  serializer.start_array(n_children(), children_pointer);
   for (size_t i = 0; i < n_children(); ++i) {
     const auto& child = this->child(i);
-    const auto child_pointer = make_pointer(children_key, i);
+    const auto child_pointer = make_pointer(children_pointer, i);
     serializer.set_value(child.type(), make_pointer(child_pointer, TYPE_POINTER));
     child.serialize(serializer, child_pointer);
   }
   serializer.end_array();
 
-  // const auto tags_key = make_pointer(key, TAGS_KEY);
-  // serializer.start_array(object.n_tags(), children_key);
-  // for (const Object& tag : object.tags()) {
-  //   tag.serialize(serializer, tags_key);
-  // }
-  // serializer.end_array();
+  const auto tags_pointer = make_pointer(root, TAGS_POINTER);
+  serializer.start_array(n_tags(), tags_pointer);
+  for (size_t i = 0; i < n_tags(); ++i) {
+    const auto& tag = this->tag(i);
+    const auto tag_pointer = make_pointer(tags_pointer, i);
+    serializer.set_value(tag.type(), make_pointer(tag_pointer, TYPE_POINTER));
+    tag.serialize(serializer, tag_pointer);
+  }
+  serializer.end_array();
 }
 
 void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   PropertyOwner::deserialize(deserializer, root);
 
-  const auto children_key = make_pointer(root, CHILDREN_POINTER);
-  size_t n_children = deserializer.array_size(children_key);
+  const auto children_pointer = make_pointer(root, CHILDREN_POINTER);
+  size_t n_children = deserializer.array_size(children_pointer);
   for (size_t i = 0; i < n_children; ++i) {
-    const auto child_pointer = make_pointer(children_key, i);
+    const auto child_pointer = make_pointer(children_pointer, i);
     const auto child_type = deserializer.get_string(make_pointer(child_pointer, TYPE_POINTER));
     auto child = Object::make(child_type);
     child->deserialize(deserializer, child_pointer);
     adopt(std::move(child));
   }
 
-  // const auto tags_key = make_pointer(key, TAGS_KEY);
-  // size_t n_tags = array_size(tags_key);
-  // for (size_t i = 0; i < n_tags; ++i) {
-  //   object->add_tag(deserialize_tag(tags_key));
-  // }
+  const auto tags_pointer = make_pointer(root, TAGS_POINTER);
+  size_t n_tags = deserializer.array_size(tags_pointer);
+  for (size_t i = 0; i < n_tags; ++i) {
+    const auto tag_pointer = make_pointer(tags_pointer, i);
+    const auto tag_type = deserializer.get_string(make_pointer(tag_pointer, TYPE_POINTER));
+    auto tag = Tag::make(tag_type);
+    tag->deserialize(deserializer, tag_pointer);
+    attach_tag(std::move(tag));
+  }
 }
 
 void Object::render_recursive(AbstractRenderer& renderer, const Style& default_style) const

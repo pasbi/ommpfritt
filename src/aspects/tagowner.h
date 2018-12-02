@@ -12,6 +12,7 @@ class TagOwner
 public:
   virtual ~TagOwner();
   Tag& attach_tag(std::unique_ptr<Tag> tag, const Tag* predecessor);
+  Tag& attach_tag(std::unique_ptr<Tag> tag);
   std::unique_ptr<Tag> detach_tag(Tag& tag);
   size_t n_tags() const;
   size_t get_insert_position(const Tag* tag_before_position) const;

@@ -50,14 +50,24 @@ Scene& StyleListAdapter::scene() const
   return m_scene;
 }
 
-void StyleListAdapter::beginInsertObject(int row)
+void StyleListAdapter::beginInsertStyles(int row)
 {
   beginInsertRows(QModelIndex(), row, row);
 }
 
-void StyleListAdapter::endInsertObject()
+void StyleListAdapter::endInsertStyles()
 {
   endInsertRows();
+}
+
+void StyleListAdapter::beginResetStyles()
+{
+  beginResetModel();
+}
+
+void StyleListAdapter::endResetStyles()
+{
+  endResetModel();
 }
 
 }  // namespace omm

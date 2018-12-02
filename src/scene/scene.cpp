@@ -17,6 +17,7 @@ namespace
 {
 
 constexpr auto ROOT_POINTER = "root";
+constexpr auto STYLES_POINTER = "styles";
 
 auto make_root()
 {
@@ -191,6 +192,12 @@ bool Scene::save_as(const std::string &filename)
                                                 static_cast<std::ostream&>(ofstream) );
     root().serialize(*serializer, ROOT_POINTER);
 
+    serializer->start_array(m_styles.size(), Serializable::make_pointer(STYLES_POINTER));
+    for (size_t i = 0; i < m_styles.size(); ++i) {
+      m_styles[i]->serialize(*serializer, Serializable::make_pointer(STYLES_POINTER, i));
+    }
+    serializer->end_array();
+
     LOG(INFO) << "Saved current scene to '" << filename << "'";
     set_has_pending_changes(false);
     m_filename = filename;
@@ -205,20 +212,50 @@ bool Scene::load_from(const std::string &filename)
 {
   std::ifstream ifstream(filename);
   if (ifstream) {
-    auto deserializer = AbstractDeserializer::make( "JSONDeserializer",
-                                                    static_cast<std::istream&>(ifstream) );
+    bool success = true;
+
+    Observed<AbstractStyleListObserver>::for_each([this](auto* observer) {
+      observer->beginResetStyles();
+    });
+    Observed<AbstractObjectTreeObserver>::for_each([this](auto* observer) {
+      observer->beginResetObjects();
+    });
+
     try {
+      auto deserializer = AbstractDeserializer::make( "JSONDeserializer",
+                                                      static_cast<std::istream&>(ifstream) );
       auto new_root = make_root();
       new_root->deserialize(*deserializer, ROOT_POINTER);
+
+      const size_t n_styles = deserializer->array_size(Serializable::make_pointer(STYLES_POINTER));
+      m_styles.reserve(n_styles);
+      for (size_t i = 0; i < n_styles; ++i) {
+        const auto style_pointer = Serializable::make_pointer(STYLES_POINTER, i);
+        auto style = std::make_unique<Style>();
+        style->deserialize(*deserializer, style_pointer);
+        m_styles.push_back(std::move(style));
+      }
+
       replace_root(std::move(new_root));
+
     } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
       LOG(ERROR) << "Failed to deserialize file at '" << filename << "'.";
       LOG(INFO) << deserialize_error.what();
-      return false;
+      success = false;
     }
 
     set_has_pending_changes(false);
     m_filename = filename;
+    tags.invalidate();
+    objects.invalidate();
+
+    Observed<AbstractStyleListObserver>::for_each([](auto* observer) {
+      observer->endResetStyles();
+    });
+    Observed<AbstractObjectTreeObserver>::for_each([](auto* observer) {
+      observer->endResetObjects();
+    });
+
     return true;
   } else {
     LOG(ERROR) << "Failed to open '" << filename << "'.";
@@ -346,11 +383,11 @@ Style& Scene::default_style() const
 void Scene::insert_style(std::unique_ptr<Style> style)
 {
   Observed<AbstractStyleListObserver>::for_each([this](auto* observer){
-    observer->beginInsertObject(m_styles.size());
+    observer->beginInsertStyles(m_styles.size());
   });
   m_styles.push_back(std::move(style));
   Observed<AbstractStyleListObserver>::for_each([](auto* observer){
-    observer->endInsertObject();
+    observer->endInsertStyles();
   });
   selection_changed();
 }

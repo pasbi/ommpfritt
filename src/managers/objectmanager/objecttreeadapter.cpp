@@ -329,4 +329,14 @@ Scene& ObjectTreeAdapter::scene() const
   return m_scene;
 }
 
+void ObjectTreeAdapter::beginResetObjects()
+{
+  beginResetModel();
+}
+
+void ObjectTreeAdapter::endResetObjects()
+{
+  endResetModel();
+}
+
 }  // namespace ommmake_new_contextes

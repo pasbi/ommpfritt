@@ -14,6 +14,11 @@ Tag& TagOwner::attach_tag(std::unique_ptr<Tag> tag, const Tag* predecessor)
   return insert(m_tags, std::move(tag), pos);
 }
 
+Tag& TagOwner::attach_tag(std::unique_ptr<Tag> tag)
+{
+  return insert(m_tags, std::move(tag), m_tags.size());
+}
+
 Tag& TagOwner::tag(size_t i) const
 {
   return *m_tags[i];

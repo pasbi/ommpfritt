@@ -48,6 +48,8 @@ public:
   void endMoveObject() override;
   void beginRemoveObject(const Object& object) override;
   void endRemoveObject() override;
+  void beginResetObjects() override;
+  void endResetObjects() override;
   Scene& scene() const;
 
 private:

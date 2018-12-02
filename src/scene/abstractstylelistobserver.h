@@ -8,12 +8,10 @@ class Scene;
 class AbstractStyleListObserver
 {
 protected:
-  virtual void beginInsertObject(int row) = 0;
-  virtual void endInsertObject() = 0;
-  // virtual void beginMoveObject(const MoveObjectTreeContext& new_context) = 0;
-  // virtual void endMoveObject() = 0;
-  // virtual void beginRemoveObject(const Object& object) = 0;
-  // virtual void endRemoveObject() = 0;
+  virtual void beginInsertStyles(int row) = 0;
+  virtual void endInsertStyles() = 0;
+  virtual void beginResetStyles() = 0;
+  virtual void endResetStyles() = 0;
   friend class Scene;
 };
 

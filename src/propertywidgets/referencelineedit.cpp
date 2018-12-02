@@ -54,6 +54,7 @@ void ReferenceLineEdit::set_value(const value_type& value)
   bool value_has_changed = m_value != value;
   m_value = value;
   const auto it = std::find(m_possible_references.begin(), m_possible_references.end(), value);
+
   assert(it != m_possible_references.end());
   setCurrentIndex(std::distance(m_possible_references.begin(), it));
 

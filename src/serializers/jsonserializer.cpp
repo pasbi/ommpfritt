@@ -113,7 +113,7 @@ void JSONSerializer::set_value(const Serializable::IdType& id, const Pointer& po
 
 void JSONSerializer::set_value(const Color& color, const Pointer& pointer)
 {
-  m_store[ptr(pointer)] = { color.red(), color.blue(), color.green(), color.alpha() };
+  m_store[ptr(pointer)] = { color.red(), color.green(), color.blue(), color.alpha() };
 }
 
 std::string JSONSerializer::type() const
