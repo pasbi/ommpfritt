@@ -35,7 +35,7 @@ void StyleListView::contextMenuEvent(QContextMenuEvent *event)
   auto menu = std::make_unique<QMenu>();
 
   action(*menu, tr("&new"), [this](){
-    m_scene.submit<NewStyleCommand>(m_scene.style_pool(), std::make_unique<Style>());
+    m_scene.submit<NewStyleCommand>(m_scene, std::make_unique<Style>());
   });
 
   menu->move(event->globalPos());

@@ -8,7 +8,7 @@ class QItemSelection;
 namespace omm
 {
 
-class StylePool;
+class Scene;
 class Object;
 
 class StyleListAdapter : public QAbstractListModel, public AbstractStyleListObserver
@@ -16,18 +16,18 @@ class StyleListAdapter : public QAbstractListModel, public AbstractStyleListObse
   Q_OBJECT
 
 public:
-  explicit StyleListAdapter(StylePool& style_pool);
+  explicit StyleListAdapter(Scene& scene);
   ~StyleListAdapter();
 
   int rowCount(const QModelIndex& parent) const override;
   QVariant data(const QModelIndex& index, int role) const override;
-  StylePool& style_pool() const;
+  Scene& scene() const;
 
   void beginInsertObject(int row) override;
   void endInsertObject() override;
 
 private:
-  StylePool& m_style_pool;
+  Scene& m_scene;
 };
 
 }  // namespace omm

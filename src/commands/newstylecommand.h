@@ -6,17 +6,17 @@
 namespace omm
 {
 
-class StylePool;
+class Scene;
 class NewStyleCommand : public Command
 {
 
 public:
-  NewStyleCommand(StylePool& style_pool, std::unique_ptr<Style> style);
+  NewStyleCommand(Scene& scene, std::unique_ptr<Style> style);
   void undo();
   void redo();
 
 private:
-  StylePool& m_style_pool;
+  Scene& m_scene;
   std::unique_ptr<Style> m_owned;
   Style& m_reference;
 };

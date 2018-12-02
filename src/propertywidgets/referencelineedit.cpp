@@ -8,6 +8,7 @@
 #include "scene/propertyownermimedata.h"
 #include "objects/object.h"
 #include "scene/scene.h"
+#include "renderers/style.h"
 
 namespace omm
 {
@@ -22,11 +23,11 @@ candidates(const Scene& scene, omm::AbstractPropertyOwner::Kind kind)
   if (!!(kind & omm::AbstractPropertyOwner::Kind::Object)) {
     merge(scene.objects());
   }
-  if (!!(kind & omm::AbstractPropertyOwner::Kind::Object)) {
+  if (!!(kind & omm::AbstractPropertyOwner::Kind::Tag)) {
     merge(scene.tags());
   }
-  if (!!(kind & omm::AbstractPropertyOwner::Kind::Object)) {
-    merge(scene.style_pool().styles());
+  if (!!(kind & omm::AbstractPropertyOwner::Kind::Style)) {
+    merge(scene.styles());
   }
   return candidates;
 }

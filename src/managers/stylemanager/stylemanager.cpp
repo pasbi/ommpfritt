@@ -6,7 +6,7 @@ namespace omm
 
 StyleManager::StyleManager(Scene& scene)
   : Manager(tr("Styles"), scene)
-  , m_style_list_adapter(scene.style_pool())
+  , m_style_list_adapter(scene)
 {
   setWindowTitle(tr("style manager"));
 

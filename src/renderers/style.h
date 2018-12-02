@@ -1,12 +1,13 @@
 #pragma once
 
 #include "aspects/propertyowner.h"
+#include "aspects/selectable.h"
 #include "color/color.h"
 
 namespace omm
 {
 
-class Style : public PropertyOwner<AbstractPropertyOwner::Kind::Style>
+class Style : public PropertyOwner<AbstractPropertyOwner::Kind::Style>, public Selectable
 {
 public:
   explicit Style();

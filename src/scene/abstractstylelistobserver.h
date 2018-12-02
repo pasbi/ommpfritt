@@ -14,7 +14,7 @@ protected:
   // virtual void endMoveObject() = 0;
   // virtual void beginRemoveObject(const Object& object) = 0;
   // virtual void endRemoveObject() = 0;
-  friend class StylePool;
+  friend class Scene;
 };
 
 }  // namespace omm

@@ -7,9 +7,11 @@
 #include "objects/empty.h"
 #include "external/json.hpp"
 #include "properties/stringproperty.h"
+#include "properties/boolproperty.h"
 #include "serializers/abstractserializer.h"
 #include "commands/command.h"
 #include "properties/referenceproperty.h"
+#include "renderers/style.h"
 
 namespace
 {
@@ -35,6 +37,13 @@ SetA merge(SetA&& a, SetB&& b, Sets&&... sets)
   return merge(merge(a, b), std::forward<Sets>(sets)...);
 }
 
+std::unique_ptr<omm::Style> make_default_style()
+{
+  auto default_style = std::make_unique<omm::Style>();
+  default_style->property<omm::BoolProperty>(omm::Style::PEN_IS_ACTIVE_KEY).set_value(true);
+  default_style->property<omm::BoolProperty>(omm::Style::BRUSH_IS_ACTIVE_KEY).set_value(true);
+  return default_style;
+}
 
 }  // namespace
 
@@ -43,7 +52,9 @@ namespace omm
 
 Scene* Scene::m_current = nullptr;
 
-Scene::Scene() : m_root(make_root())
+Scene::Scene()
+  : m_root(make_root())
+  , m_default_style(make_default_style())
 {
   m_root->property<StringProperty>(Object::NAME_PROPERTY_KEY).value() = "_root_";
   m_current = this;
@@ -80,7 +91,8 @@ void Scene::insert_object(std::unique_ptr<Object> object, Object& parent)
     [] (auto* observer) { observer->endInsertObject(); }
   );
 
-  invalidate_getter_cache();
+  objects.invalidate();
+  tags.invalidate();
 }
 
 Object& Scene::root() const
@@ -137,7 +149,8 @@ void Scene::move_object(MoveObjectTreeContext context)
     [](auto* observer) { observer->endMoveObject(); }
   );
 
-  invalidate_getter_cache();
+  objects.invalidate();
+  tags.invalidate();
 }
 
 void Scene::insert_object(OwningObjectTreeContext& context)
@@ -151,7 +164,8 @@ void Scene::insert_object(OwningObjectTreeContext& context)
     [](auto* observer) { observer->endInsertObject(); }
   );
 
-  invalidate_getter_cache();
+  objects.invalidate();
+  tags.invalidate();
 }
 
 void Scene::remove_object(OwningObjectTreeContext& context)
@@ -165,7 +179,8 @@ void Scene::remove_object(OwningObjectTreeContext& context)
     [](auto* observer) { observer->endRemoveObject(); }
   );
 
-  invalidate_getter_cache();
+  objects.invalidate();
+  tags.invalidate();
 }
 
 bool Scene::save_as(const std::string &filename)
@@ -250,22 +265,6 @@ std::unique_ptr<Object> Scene::replace_root(std::unique_ptr<Object> new_root)
   return old_root;
 }
 
-StylePool& Scene::style_pool()
-{
-  return m_style_pool;
-}
-
-const StylePool& Scene::style_pool() const
-{
-  return m_style_pool;
-}
-
-void Scene::invalidate_getter_cache() const
-{
-  objects.invalidate();
-  tags.invalidate();
-}
-
 template<> std::set<Object*> Scene::TGetter<Object>::compute() const
 {
   return m_self.root().all_descendants();
@@ -280,6 +279,16 @@ template<> std::set<Tag*> Scene::TGetter<Tag>::compute() const
   return tags;
 }
 
+std::set<Style*> Scene::styles() const
+{
+  return ::transform<Style*, std::set>(m_styles, [](auto&& style) { return style.get(); });
+}
+
+Style* Scene::style(size_t i) const
+{
+  return m_styles[i].get();
+}
+
 std::set<Object*> Scene::selected_objects() const
 {
   return ::filter_if(objects(), is_selected<Object>);
@@ -290,17 +299,20 @@ std::set<Tag*> Scene::selected_tags() const
   return ::filter_if(tags(), is_selected<Tag>);
 }
 
+std::set<Style*> Scene::selected_styles() const
+{
+  return ::filter_if(styles(), is_selected<Style>);
+}
+
 std::set<AbstractPropertyOwner*> Scene::property_owners() const
 {
-  // TODO add styles
-  return merge(std::set<AbstractPropertyOwner*>(), objects(), tags());
+  return merge(std::set<AbstractPropertyOwner*>(), objects(), tags(), styles());
 }
 
 std::set<AbstractPropertyOwner*> Scene::selection() const
 {
-  // TODO add selected styles
   return merge( std::set<AbstractPropertyOwner*>(),
-                selected_objects(), selected_tags());
+                selected_objects(), selected_tags(), selected_styles());
 }
 
 Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag)
@@ -313,17 +325,41 @@ Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag)
 Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag, const Tag* predecessor)
 {
   Tag& ref = owner.attach_tag(std::move(tag), predecessor);
-  invalidate_getter_cache();
+  tags.invalidate();
+  selection_changed();
   return ref;
 }
 
 std::unique_ptr<Tag> Scene::detach_tag(Object& owner, Tag& tag)
 {
   auto ref = owner.detach_tag(tag);
-  invalidate_getter_cache();
+  tags.invalidate();
+  selection_changed();
   return ref;
 }
 
+Style& Scene::default_style() const
+{
+  return *m_default_style;
+}
 
+void Scene::insert_style(std::unique_ptr<Style> style)
+{
+  Observed<AbstractStyleListObserver>::for_each([this](auto* observer){
+    observer->beginInsertObject(m_styles.size());
+  });
+  m_styles.push_back(std::move(style));
+  Observed<AbstractStyleListObserver>::for_each([](auto* observer){
+    observer->endInsertObject();
+  });
+  selection_changed();
+}
+
+std::unique_ptr<Style> Scene::remove_style(Style& style)
+{
+  auto ref = ::extract(m_styles, style);
+  selection_changed();
+  return ref;
+}
 
 }  // namespace omm

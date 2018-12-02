@@ -11,7 +11,7 @@ AbstractRenderer::AbstractRenderer(const BoundingBox& bounding_box)
 
 void AbstractRenderer::render(const Scene& scene)
 {
-  scene.root().render_recursive(*this, scene.style_pool().default_style());
+  scene.root().render_recursive(*this, scene.default_style());
 }
 
 const BoundingBox& AbstractRenderer::bounding_box() const

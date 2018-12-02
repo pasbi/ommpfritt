@@ -1,22 +1,23 @@
 #include "managers/stylemanager/stylelistadapter.h"
+#include "renderers/style.h"
 
 namespace omm
 {
 
-StyleListAdapter::StyleListAdapter(StylePool& style_pool)
-  : m_style_pool(style_pool)
+StyleListAdapter::StyleListAdapter(Scene& scene)
+  : m_scene(scene)
 {
-  m_style_pool.Observed<AbstractStyleListObserver>::register_observer(*this);
+  m_scene.Observed<AbstractStyleListObserver>::register_observer(*this);
 }
 
 StyleListAdapter::~StyleListAdapter()
 {
-  m_style_pool.Observed<AbstractStyleListObserver>::unregister_observer(*this);
+  m_scene.Observed<AbstractStyleListObserver>::unregister_observer(*this);
 }
 
 int StyleListAdapter::rowCount(const QModelIndex& parent) const
 {
-  return m_style_pool.styles().size();
+  return m_scene.styles().size();
 }
 
 QVariant StyleListAdapter::data(const QModelIndex& index, int role) const
@@ -28,14 +29,14 @@ QVariant StyleListAdapter::data(const QModelIndex& index, int role) const
   switch (role) {
   case Qt::DisplayRole:
   case Qt::EditRole:
-    return QString::fromStdString(m_style_pool.styles()[index.row()]->name());
+    return QString::fromStdString(m_scene.style(index.row())->name());
   }
   return QVariant();
 }
 
-StylePool& StyleListAdapter::style_pool() const
+Scene& StyleListAdapter::scene() const
 {
-  return m_style_pool;
+  return m_scene;
 }
 
 void StyleListAdapter::beginInsertObject(int row)
