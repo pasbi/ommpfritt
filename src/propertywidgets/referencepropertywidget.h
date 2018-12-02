@@ -15,6 +15,7 @@ class ReferencePropertyWidget : public PropertyWidget<ReferenceProperty>
 {
 public:
   explicit ReferencePropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
+  ~ReferencePropertyWidget();
 
 protected:
   void on_property_value_changed() override;

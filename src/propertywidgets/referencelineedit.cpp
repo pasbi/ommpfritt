@@ -29,6 +29,7 @@ candidates(const Scene& scene, omm::AbstractPropertyOwner::Kind kind)
   if (!!(kind & omm::AbstractPropertyOwner::Kind::Style)) {
     merge(scene.styles());
   }
+
   return candidates;
 }
 
@@ -49,12 +50,15 @@ ReferenceLineEdit::ReferenceLineEdit(const Scene& scene, AbstractPropertyOwner::
            [this](int index) { set_value(m_possible_references[index]); } );
 }
 
+ReferenceLineEdit::~ReferenceLineEdit()
+{
+}
+
 void ReferenceLineEdit::set_value(const value_type& value)
 {
   bool value_has_changed = m_value != value;
   m_value = value;
   const auto it = std::find(m_possible_references.begin(), m_possible_references.end(), value);
-
   assert(it != m_possible_references.end());
   setCurrentIndex(std::distance(m_possible_references.begin(), it));
 

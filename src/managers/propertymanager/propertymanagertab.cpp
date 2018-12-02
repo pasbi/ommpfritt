@@ -35,6 +35,10 @@ PropertyManagerTab::PropertyManagerTab()
   setLayout(layout.release());
 }
 
+PropertyManagerTab::~PropertyManagerTab()
+{
+}
+
 void PropertyManagerTab::add_properties(Scene& scene, const Property::SetOfProperties& properties)
 {
   assert(properties.size() > 0);

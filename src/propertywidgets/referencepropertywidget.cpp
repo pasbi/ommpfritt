@@ -37,6 +37,10 @@ ReferencePropertyWidget
   on_property_value_changed();
 }
 
+ReferencePropertyWidget::~ReferencePropertyWidget()
+{
+}
+
 void ReferencePropertyWidget::on_property_value_changed()
 {
   m_line_edit->blockSignals(true);

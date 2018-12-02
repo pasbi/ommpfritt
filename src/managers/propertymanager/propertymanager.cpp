@@ -121,10 +121,10 @@ void PropertyManager::set_selection(const SetOfPropertyOwner& selection)
 
 void PropertyManager::clear()
 {
-  for (int i = 0; i < m_tabs.count(); ++i) {
-    delete m_tabs.widget(i);
+  while (m_tabs.count()) {
+    delete m_tabs.widget(0);
   }
-  m_tabs.clear();
+  assert(m_tabs.count() == 0);
 }
 
 }  // namespace omm

@@ -18,6 +18,7 @@ class ReferenceLineEdit
   Q_OBJECT
 public:
   explicit ReferenceLineEdit(const Scene& scene, AbstractPropertyOwner::Kind allowed_kinds);
+  ~ReferenceLineEdit();
   void set_value(const value_type& value) override;
   value_type value() const override;
 
