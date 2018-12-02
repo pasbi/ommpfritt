@@ -21,9 +21,4 @@ Style::Style()
     .set_label("color").set_category("brush");
 }
 
-std::string Style::name() const
-{
-  return "Style";
-}
-
 }  // namespace omm

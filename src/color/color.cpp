@@ -1,6 +1,7 @@
-#include <glog/logging.h>
-
 #include "color/color.h"
+
+#include <assert.h>
+#include <glog/logging.h>
 
 namespace omm
 {
@@ -56,6 +57,19 @@ bool operator==(const Color& a, const Color& b)
 bool operator!=(const Color& a, const Color& b)
 {
   return !(a == b);
+}
+
+bool operator<(const Color& a, const Color& b)
+{
+  assert(a.n_elem == b.n_elem);
+  for (size_t i = 0; i < a.n_elem; ++i) {
+    if (a[i] < b[i]) {
+      return true;
+    } else if (a[i] > b[i]) {
+      return false;
+    }
+  }
+  return false;
 }
 
 }  // namespace omm

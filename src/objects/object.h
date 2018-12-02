@@ -38,10 +38,7 @@ public:
   void set_transformation(const ObjectTransformation& transformation);
   void set_global_transformation(const ObjectTransformation& globalTransformation);
 
-  std::string name() const override;
-
   static const std::string TRANSFORMATION_PROPERTY_KEY;
-  static const std::string NAME_PROPERTY_KEY;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;

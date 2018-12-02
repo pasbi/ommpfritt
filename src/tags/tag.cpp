@@ -11,21 +11,10 @@
 namespace omm
 {
 
-const std::string Tag::NAME_PROPERTY_KEY = "name";
-
 Tag::Tag()
 {
-  add_property( NAME_PROPERTY_KEY,
-                std::make_unique<StringProperty>("<unnamed tag>") )
-    .set_label(QObject::tr("Name").toStdString())
-    .set_category(QObject::tr("tag").toStdString());
 }
 
 Tag::~Tag() { }
-
-std::string Tag::name() const
-{
-  return property<StringProperty>(NAME_PROPERTY_KEY).value();
-}
 
 }  // namespace omm

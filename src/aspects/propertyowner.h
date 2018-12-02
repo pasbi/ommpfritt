@@ -5,11 +5,14 @@
 #include <map>
 #include <memory>
 #include <typeinfo>
+
 #include "properties/property.h"
 #include "orderedmap.h"
 #include "external/json_fwd.hpp"
 #include "aspects/serializable.h"
 #include "properties/typedproperty.h"
+#include "properties/stringproperty.h"
+
 
 namespace omm
 {
@@ -44,9 +47,11 @@ public:
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-  virtual std::string name() const = 0;
+  virtual std::string name() const;
   virtual void on_property_value_changed() override;
   virtual Kind kind() const = 0;
+
+  static const std::string NAME_PROPERTY_KEY;
 
 protected:
   Property& add_property(const Key& key, std::unique_ptr<Property> property);

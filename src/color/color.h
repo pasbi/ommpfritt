@@ -36,9 +36,11 @@ public:
 private:
   using base_type = arma::vec4;
   friend bool operator==(const Color& a, const Color& b);
+  friend bool operator<(const Color& a, const Color& b);
 };
 
 bool operator==(const Color& a, const Color& b);
 bool operator!=(const Color& a, const Color& b);
+bool operator<(const Color& a, const Color& b);
 
 }  // namespace

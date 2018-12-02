@@ -1,6 +1,6 @@
 #pragma once
 
-#include "aspects/serializable.h"
+#include "aspects/copyable.h"
 #include "abstractfactory.h"
 
 namespace omm
@@ -16,24 +16,13 @@ std::unique_ptr<AbstractDeserializer> make_copy_deserialzier(std::istream& istre
 
 template<typename T, typename... CtorArgs>
 class CopyCreatable
-  : public virtual Serializable
+  : public Copyable<T>
   , public AbstractFactory<std::string, T, CtorArgs...>
 {
 public:
   std::unique_ptr<T> copy() const
   {
-    std::stringstream stream;
-    static constexpr auto POINTER = "copy";
-    {
-      auto serializer = CopyCreatableDetail::make_copy_serialzier(stream);
-      this->serialize(*serializer, POINTER);
-    }
-    auto copy = this->make(this->type());
-    {
-      auto deserializer = CopyCreatableDetail::make_copy_deserialzier(stream);
-      copy->deserialize(*deserializer, POINTER);
-    }
-    return copy;
+    return Copyable<T>::copy(this->make(this->type()));
   }
 };
 

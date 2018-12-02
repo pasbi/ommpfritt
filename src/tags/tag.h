@@ -22,9 +22,6 @@ public:
   virtual ~Tag();
 
   virtual bool run() { return true; }
-
-  static const std::string NAME_PROPERTY_KEY;
-  std::string name() const override;
   virtual QIcon icon() const = 0;
 
 };

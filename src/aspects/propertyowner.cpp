@@ -1,4 +1,7 @@
 #include "aspects/propertyowner.h"
+
+#include <QObject>
+
 #include "external/json.hpp"
 #include "serializers/abstractserializer.h"
 
@@ -13,8 +16,15 @@ namespace
 namespace omm
 {
 
+const std::string AbstractPropertyOwner::NAME_PROPERTY_KEY = "name";
+
+
 AbstractPropertyOwner::AbstractPropertyOwner()
 {
+  add_property( NAME_PROPERTY_KEY,
+              std::make_unique<StringProperty>("<unnamed object>") )
+  .set_label(QObject::tr("Name").toStdString())
+  .set_category(QObject::tr("basic").toStdString());
 }
 
 AbstractPropertyOwner::AbstractPropertyOwner(AbstractPropertyOwner&& other)
@@ -102,6 +112,11 @@ Property& AbstractPropertyOwner::add_property(const Key& key, std::unique_ptr<Pr
 
 void AbstractPropertyOwner::on_property_value_changed()
 {
+}
+
+std::string AbstractPropertyOwner::name() const
+{
+  return property<StringProperty>(NAME_PROPERTY_KEY).value();
 }
 
 }  // namespace omm

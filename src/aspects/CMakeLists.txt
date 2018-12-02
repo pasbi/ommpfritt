@@ -1,5 +1,5 @@
 file (GLOB SOURCES
-  "copycreatable.cpp"
+  "copyable.cpp"
   "propertyowner.cpp"
   "serializable.cpp"
   "selectable.cpp"

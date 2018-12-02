@@ -10,6 +10,9 @@ NewStyleCommand::NewStyleCommand(Scene& scene, std::unique_ptr<Style> style)
   , m_owned(std::move(style))
   , m_reference(*m_owned)
 {
+  static int i = 0;
+  const auto name = "Style " + std::to_string(i++);
+  m_reference.property<StringProperty>(AbstractPropertyOwner::NAME_PROPERTY_KEY).set_value(name);
 }
 
 void NewStyleCommand::undo()

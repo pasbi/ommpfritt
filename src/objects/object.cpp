@@ -34,7 +34,6 @@ namespace omm
 {
 
 const std::string Object::TRANSFORMATION_PROPERTY_KEY = "transformation";
-const std::string Object::NAME_PROPERTY_KEY = "name";
 
 Object::Object()
   : TreeElement(nullptr)
@@ -43,11 +42,6 @@ Object::Object()
   add_property( TRANSFORMATION_PROPERTY_KEY,
                 std::make_unique<TransformationProperty>(ObjectTransformation()) )
     .set_label(QObject::tr("transformation").toStdString())
-    .set_category(QObject::tr("object").toStdString());
-
-  add_property( NAME_PROPERTY_KEY,
-                std::make_unique<StringProperty>("<unnamed object>") )
-    .set_label(QObject::tr("Name").toStdString())
     .set_category(QObject::tr("object").toStdString());
 
   add_property("style_ref", std::make_unique<ReferenceProperty>())
@@ -180,11 +174,6 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   // for (size_t i = 0; i < n_tags; ++i) {
   //   object->add_tag(deserialize_tag(tags_key));
   // }
-}
-
-std::string Object::name() const
-{
-  return property<StringProperty>(NAME_PROPERTY_KEY).value();
 }
 
 void Object::render_recursive(AbstractRenderer& renderer, const Style& default_style) const

@@ -4,7 +4,7 @@
 namespace omm
 {
 
-namespace CopyCreatableDetail
+namespace CopyableDetail
 {
 
 std::unique_ptr<AbstractSerializer> make_copy_serialzier(std::ostream& ostream)
@@ -17,6 +17,6 @@ std::unique_ptr<AbstractDeserializer> make_copy_deserialzier(std::istream& istre
   return AbstractDeserializer::make("JSONDeserializer", istream);
 }
 
-}  // namespace CopyCreatableDetail
+}  // namespace CopyableDetail
 
 }  // omm
