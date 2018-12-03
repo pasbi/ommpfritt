@@ -4,9 +4,7 @@
 #include <QLayout>
 #include <glog/logging.h>
 #include "properties/typedproperty.h"
-#include "propertywidgets/numericpropertywidget.h"
-#include "propertywidgets/stringpropertywidget.h"
-#include "propertywidgets/transformationpropertywidget.h"
+#include "propertywidgets/propertywidget.h"
 
 namespace
 {

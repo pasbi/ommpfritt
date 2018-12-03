@@ -4,10 +4,10 @@
 #include "propertywidgets/propertywidget.h"
 #include "properties/stringproperty.h"
 
-class QLineEdit;
-
 namespace omm
 {
+
+class LineEdit;
 
 class StringPropertyWidget : public PropertyWidget<StringProperty>
 {
@@ -19,7 +19,6 @@ protected:
   std::string type() const override;
 
 private:
-  class LineEdit;
   LineEdit* m_line_edit;
 };
 

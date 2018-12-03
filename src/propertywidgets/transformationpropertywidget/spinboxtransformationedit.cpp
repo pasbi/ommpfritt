@@ -1,4 +1,4 @@
-#include "propertywidgets/spinboxtransformationedit.h"
+#include "propertywidgets/transformationpropertywidget/spinboxtransformationedit.h"
 
 #include <QDoubleSpinBox>
 #include <QLabel>

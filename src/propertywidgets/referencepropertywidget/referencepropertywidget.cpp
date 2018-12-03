@@ -1,7 +1,7 @@
-#include "propertywidgets/referencepropertywidget.h"
+#include "propertywidgets/referencepropertywidget/referencepropertywidget.h"
 
 #include "propertywidgets/multivalueedit.h"
-#include "propertywidgets/referencelineedit.h"
+#include "propertywidgets/referencepropertywidget/referencelineedit.h"
 #include "properties/typedproperty.h"
 
 namespace

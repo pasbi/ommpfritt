@@ -8,6 +8,8 @@ class QLineEdit;
 namespace omm
 {
 
+class CheckBox;
+
 class BoolPropertyWidget : public PropertyWidget<BoolProperty>
 {
 public:
@@ -18,7 +20,6 @@ protected:
   std::string type() const override;
 
 private:
-  class CheckBox;
   CheckBox* m_checkbox;
 };
 

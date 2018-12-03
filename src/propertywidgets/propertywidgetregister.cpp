@@ -1,10 +1,10 @@
-#include "propertywidgets/boolpropertywidget.h"
-#include "propertywidgets/colorpropertywidget.h"
 #include "propertywidgets/propertywidget.h"
-#include "propertywidgets/numericpropertywidget.h"
-#include "propertywidgets/stringpropertywidget.h"
-#include "propertywidgets/transformationpropertywidget.h"
-#include "propertywidgets/referencepropertywidget.h"
+#include "propertywidgets/boolpropertywidget/boolpropertywidget.h"
+#include "propertywidgets/colorpropertywidget/colorpropertywidget.h"
+#include "propertywidgets/numericpropertywidget/numericpropertywidget.h"
+#include "propertywidgets/stringpropertywidget/stringpropertywidget.h"
+#include "propertywidgets/transformationpropertywidget/transformationpropertywidget.h"
+#include "propertywidgets/referencepropertywidget/referencepropertywidget.h"
 
 namespace omm
 {

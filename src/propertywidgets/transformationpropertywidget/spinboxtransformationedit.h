@@ -1,6 +1,6 @@
 #pragma once
 
-#include "propertywidgets/abstracttransformationedit.h"
+#include "propertywidgets/transformationpropertywidget/abstracttransformationedit.h"
 
 class QDoubleSpinBox;
 

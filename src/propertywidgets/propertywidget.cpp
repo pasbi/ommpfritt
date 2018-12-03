@@ -3,11 +3,6 @@
 #include <QBoxLayout>
 #include <QLabel>
 
-#include "propertywidgets/numericpropertywidget.h"
-#include "propertywidgets/stringpropertywidget.h"
-#include "propertywidgets/transformationpropertywidget.h"
-#include "propertywidgets/referencepropertywidget.h"
-
 namespace omm
 {
 

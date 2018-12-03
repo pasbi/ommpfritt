@@ -2,6 +2,7 @@
 
 #include "propertywidgets/propertywidget.h"
 #include "propertywidgets/multivalueedit.h"
+#include "propertywidgets/numericpropertywidget/spinbox.h"
 #include "properties/integerproperty.h"
 #include "properties/floatproperty.h"
 
@@ -19,8 +20,7 @@ protected:
   void on_property_value_changed() override;
 
 private:
-  class SpinBox;
-  SpinBox* m_spinbox;
+  SpinBox<value_type>* m_spinbox;
 };
 
 class IntegerPropertyWidget : public NumericPropertyWidget<IntegerProperty>

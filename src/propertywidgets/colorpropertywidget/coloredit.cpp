@@ -1,4 +1,4 @@
-#include "propertywidgets/coloredit.h"
+#include "propertywidgets/colorpropertywidget/coloredit.h"
 #include <QColorDialog>
 #include <QPaintEvent>
 #include <QPainter>

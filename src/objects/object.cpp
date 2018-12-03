@@ -65,20 +65,20 @@ Object::Object()
 
   // add some mockup properties for testing purposes
 
-  // add_property( "ans",
-  //               std::make_unique<IntegerProperty>(42) )
-  //   .set_label(QObject::tr("The Answer").toStdString())
-  //   .set_category(QObject::tr("special").toStdString());
+  add_property( "ans",
+                std::make_unique<IntegerProperty>(42) )
+    .set_label(QObject::tr("The Answer").toStdString())
+    .set_category(QObject::tr("special").toStdString());
 
-  // add_property( "pi",
-  //               std::make_unique<FloatProperty>(3.141) )
-  //   .set_label(QObject::tr("pi").toStdString())
-  //   .set_category(QObject::tr("object").toStdString());
+  add_property( "pi",
+                std::make_unique<FloatProperty>(3.141) )
+    .set_label(QObject::tr("pi").toStdString())
+    .set_category(QObject::tr("object").toStdString());
 
-  // add_property( "buddy",
-  //               std::make_unique<ReferenceProperty>() )
-  //   .set_label(QObject::tr("buddy").toStdString())
-  //   .set_category(QObject::tr("object").toStdString());
+  add_property( "buddy",
+                std::make_unique<ReferenceProperty>() )
+    .set_label(QObject::tr("buddy").toStdString())
+    .set_category(QObject::tr("object").toStdString());
 
 }
 

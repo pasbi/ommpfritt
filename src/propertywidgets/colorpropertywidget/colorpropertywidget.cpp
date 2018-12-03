@@ -1,6 +1,6 @@
-#include "propertywidgets/colorpropertywidget.h"
+#include "propertywidgets/colorpropertywidget/colorpropertywidget.h"
 #include "properties/typedproperty.h"
-#include "propertywidgets/coloredit.h"
+#include "propertywidgets/colorpropertywidget/coloredit.h"
 
 namespace omm
 {

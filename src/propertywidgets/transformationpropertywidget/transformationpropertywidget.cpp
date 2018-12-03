@@ -1,5 +1,5 @@
-#include "propertywidgets/transformationpropertywidget.h"
-#include "propertywidgets/spinboxtransformationedit.h"
+#include "propertywidgets/transformationpropertywidget/transformationpropertywidget.h"
+#include "propertywidgets/transformationpropertywidget/spinboxtransformationedit.h"
 #include "propertywidgets/multivalueedit.h"
 
 namespace omm
