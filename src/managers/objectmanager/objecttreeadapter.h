@@ -19,6 +19,8 @@ public:
   explicit ObjectTreeAdapter(Scene& scene);
   ~ObjectTreeAdapter();
 
+  using item_type = Object;
+
   QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
   QModelIndex parent(const QModelIndex& index) const override;
   int rowCount(const QModelIndex& parent) const override;

@@ -70,4 +70,19 @@ void StyleListAdapter::endResetStyles()
   endResetModel();
 }
 
+bool StyleListAdapter::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+  if (!index.isValid() || role != Qt::EditRole) {
+    return false;
+  }
+
+  assert(index.column() == 0);
+  assert(!index.parent().isValid());
+
+  auto& style = m_scene.style(index.row());
+  auto& name_property = style.property<StringProperty>(Object::NAME_PROPERTY_KEY);
+  name_property.set_value(value.toString().toStdString());
+  return true;
+}
+
 }  // namespace omm

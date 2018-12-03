@@ -1,36 +1,16 @@
 #include "managers/objectmanager/objectmanager.h"
+#include "managers/objectmanager/objecttreeview.h"
 
 #include <glog/logging.h>
-#include <QTreeView>
-
-#include "managers/objectmanager/objecttreeview.h"
-#include "scene/scene.h"
 
 namespace omm
 {
 
 ObjectManager::ObjectManager(Scene& scene)
-  : Manager(tr("Objects"), scene)
-  , m_object_tree_adapter(scene)
+  : ItemManager(tr("Objects"), scene)
 {
   setWindowTitle(tr("object manager"));
-
-  auto tree_view = std::make_unique<ObjectTreeView>();
-  tree_view->set_model(&m_object_tree_adapter);
-
-  connect( tree_view->selectionModel(), &QItemSelectionModel::selectionChanged,
-           this, &ObjectManager::on_selection_changed );
-
-  connect( tree_view.get(), &ObjectTreeView::mouse_released, [this]() {
-    m_scene.selection_changed();
-  });
-
-  setWidget(tree_view.release());
   setObjectName(TYPE());
-}
-
-ObjectManager::~ObjectManager()
-{
 }
 
 void ObjectManager::on_selection_changed( const QItemSelection& selection,
@@ -38,11 +18,11 @@ void ObjectManager::on_selection_changed( const QItemSelection& selection,
 {
   for (auto& index : old_selection.indexes()) {
     if (!selection.contains(index)) {
-      m_object_tree_adapter.object_at(index).deselect();
+      m_item_model.object_at(index).deselect();
     }
   }
   for (auto& index : selection.indexes()) {
-    m_object_tree_adapter.object_at(index).select();
+    m_item_model.object_at(index).select();
   }
 }
 

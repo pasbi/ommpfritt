@@ -1,5 +1,7 @@
 file (GLOB SOURCES
+  "itemmanager.cpp"
   "manager.cpp"
+  "manageritemview.cpp"
   "managerregister.cpp"
 )
 

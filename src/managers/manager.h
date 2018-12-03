@@ -23,6 +23,7 @@ class Manager : public QDockWidget, public AbstractFactory<std::string, Manager,
 public:
   Manager(const Manager&) = delete;
   Manager(Manager&&) = delete;
+  virtual ~Manager() {}
 
 protected:
   explicit Manager(const QString& title, Scene& scene);

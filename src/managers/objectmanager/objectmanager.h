@@ -1,26 +1,23 @@
 #pragma once
 
-#include "managers/manager.h"
-#include <glog/logging.h>
-
+#include "managers/itemmanager.h"
 #include "managers/objectmanager/objecttreeadapter.h"
 
 namespace omm
 {
 
-class ObjectManager : public Manager
+class ObjectTreeView;
+
+class ObjectManager : public ItemManager<ObjectTreeView, ObjectTreeAdapter>
 {
-  Q_OBJECT
   DECLARE_MANAGER_TYPE(ObjectManager)
 
 public:
   explicit ObjectManager(Scene& scene);
-  ~ObjectManager();
 
-private:
-  ObjectTreeAdapter m_object_tree_adapter;
-
-  void on_selection_changed(const QItemSelection& selection, const QItemSelection& old_selection);
+protected:
+  void on_selection_changed( const QItemSelection& selection,
+                             const QItemSelection& old_selection ) override;
 };
 
 }  // namespace omm

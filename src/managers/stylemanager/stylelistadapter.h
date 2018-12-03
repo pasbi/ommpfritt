@@ -16,11 +16,14 @@ class StyleListAdapter : public QAbstractListModel, public AbstractStyleListObse
   Q_OBJECT
 
 public:
+  using item_type = Style;
+
   explicit StyleListAdapter(Scene& scene);
   ~StyleListAdapter();
 
   int rowCount(const QModelIndex& parent = QModelIndex()) const override;
   QVariant data(const QModelIndex& index, int role) const override;
+  bool setData(const QModelIndex& index, const QVariant& value, int role) override;
   Scene& scene() const;
 
   void beginInsertStyles(int row) override;
