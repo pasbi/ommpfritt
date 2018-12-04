@@ -215,34 +215,43 @@ Qt::DropActions ObjectTreeAdapter::supportedDropActions() const
   return Qt::MoveAction | Qt::CopyAction;
 }
 
-void ObjectTreeAdapter::beginInsertObject(Object& parent, int row)
+std::unique_ptr<AbstractObjectTreeObserver::AbstractInserterGuard>
+ObjectTreeAdapter::acquire_inserter_guard(Object& parent, int row)
 {
-  beginInsertRows(index_of(parent), row, row);
+  class InserterGuard : public AbstractInserterGuard
+  {
+  public:
+    InserterGuard(ObjectTreeAdapter& model, const QModelIndex& parent, int row) : m_model(model)
+    {
+      m_model.beginInsertRows(parent, row, row);
+    }
+    ~InserterGuard() { m_model.endInsertRows(); }
+  private:
+    ObjectTreeAdapter& m_model;
+  };
+  return std::make_unique<InserterGuard>(*this, index_of(parent), row);
 }
 
-void ObjectTreeAdapter::beginInsertObject(const OwningObjectTreeContext& context)
+std::unique_ptr<AbstractObjectTreeObserver::AbstractMoverGuard>
+ObjectTreeAdapter::acquire_mover_guard(const MoveObjectTreeContext& context)
 {
-  beginInsertObject(context.parent, context.get_insert_position());
-}
+  class MoverGuard : public AbstractMoverGuard
+  {
+  public:
+    MoverGuard(ObjectTreeAdapter& model, const QModelIndex& old_parent, const int old_pos,
+               const QModelIndex& new_parent, const int new_pos)
+      : m_model(model)
+    {
+        m_model.beginMoveRows(old_parent, old_pos, old_pos, new_parent, new_pos);
+    }
 
-void ObjectTreeAdapter::endInsertObject()
-{
-  endInsertRows();
-}
+    ~MoverGuard() { m_model.endMoveRows(); }
+  private:
+    ObjectTreeAdapter& m_model;
+  };
 
-void ObjectTreeAdapter::beginRemoveObject(const Object& object)
-{
-  const auto row = object.row();
-  beginRemoveRows(index_of(object.parent()), row, row);
-}
+  struct NoopMoverGuard : AbstractMoverGuard { NoopMoverGuard() {}; ~NoopMoverGuard() {} };
 
-void ObjectTreeAdapter::endRemoveObject()
-{
-  endRemoveRows();
-}
-
-void ObjectTreeAdapter::beginMoveObject(const MoveObjectTreeContext& context)
-{
   assert(!context.subject.get().is_root());
   Object& old_parent = context.subject.get().parent();
   Object& new_parent = context.parent.get();
@@ -250,19 +259,45 @@ void ObjectTreeAdapter::beginMoveObject(const MoveObjectTreeContext& context)
   const auto new_pos = context.get_insert_position();
 
   if (old_pos == new_pos && &old_parent == &new_parent) {
-    m_last_move_was_noop = true;
+    return std::make_unique<NoopMoverGuard>();
   } else {
-    beginMoveRows( index_of(old_parent), old_pos, old_pos,
-                   index_of(new_parent), context.get_insert_position());
-    m_last_move_was_noop = false;
+    return std::make_unique<MoverGuard>( *this, index_of(old_parent), old_pos,
+                                         index_of(new_parent), context.get_insert_position() );
   }
 }
 
-void ObjectTreeAdapter::endMoveObject()
+std::unique_ptr<AbstractObjectTreeObserver::AbstractRemoverGuard>
+ObjectTreeAdapter::acquire_remover_guard(const Object& object)
 {
-  if (!m_last_move_was_noop) {
-    endMoveRows();
-  }
+  class RemoverGuard : public AbstractRemoverGuard
+  {
+  public:
+    RemoverGuard(ObjectTreeAdapter& model, const QModelIndex& parent, int row) : m_model(model)
+    {
+      m_model.beginRemoveRows(parent, row, row);
+    }
+    ~RemoverGuard() { m_model.endRemoveRows(); }
+  private:
+    ObjectTreeAdapter& m_model;
+  };
+  return std::make_unique<RemoverGuard>(*this, index_of(object.parent()), object.row());
+}
+
+std::unique_ptr<AbstractObjectTreeObserver::AbstractReseterGuard>
+ObjectTreeAdapter::acquire_reseter_guard()
+{
+  class ReseterGuard : public AbstractReseterGuard
+  {
+  public:
+    ReseterGuard(ObjectTreeAdapter& model) : m_model(model)
+    {
+      m_model.beginResetModel();
+    }
+    ~ReseterGuard() { m_model.endResetModel(); }
+  private:
+    ObjectTreeAdapter& m_model;
+  };
+  return std::make_unique<ReseterGuard>(*this);
 }
 
 bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction action,
@@ -327,16 +362,6 @@ QMimeData* ObjectTreeAdapter::mimeData(const QModelIndexList &indexes) const
 Scene& ObjectTreeAdapter::scene() const
 {
   return m_scene;
-}
-
-void ObjectTreeAdapter::beginResetObjects()
-{
-  beginResetModel();
-}
-
-void ObjectTreeAdapter::endResetObjects()
-{
-  endResetModel();
 }
 
 }  // namespace ommmake_new_contextes

@@ -43,15 +43,20 @@ public:
 
   QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-  void beginInsertObject(Object& parent, int row) override;
-  void beginInsertObject(const OwningObjectTreeContext& context) override;
-  void endInsertObject() override;
-  void beginMoveObject(const MoveObjectTreeContext& context) override;
-  void endMoveObject() override;
-  void beginRemoveObject(const Object& object) override;
-  void endRemoveObject() override;
-  void beginResetObjects() override;
-  void endResetObjects() override;
+  friend class AbstractInserterGuard;
+  std::unique_ptr<AbstractInserterGuard>
+  acquire_inserter_guard(Object& parent, int row) override;
+
+  friend class AbstractMoverGuard;
+  std::unique_ptr<AbstractMoverGuard>
+  acquire_mover_guard(const MoveObjectTreeContext& context) override;
+
+  friend class AbstractRemoverGuard;
+  std::unique_ptr<AbstractRemoverGuard> acquire_remover_guard(const Object& object) override;
+
+  friend class AbstractReseterGuard;
+  std::unique_ptr<AbstractReseterGuard> acquire_reseter_guard() override;
+
   Scene& scene() const;
 
 private:

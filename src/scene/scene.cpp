@@ -82,15 +82,14 @@ void Scene::insert_object(std::unique_ptr<Object> object, Object& parent)
 {
   size_t n = parent.children().size();
 
-  Observed<AbstractObjectTreeObserver>::for_each(
-    [&parent, n] (auto* observer) { observer->beginInsertObject(parent, n); }
-  );
+  {
+    using Guard = std::unique_ptr<AbstractObjectTreeObserver::AbstractInserterGuard>;
+    const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
+      [&parent, n] (auto* observer) { return observer->acquire_inserter_guard(parent, n); }
+    );
 
-  parent.adopt(std::move(object));
-
-  Observed<AbstractObjectTreeObserver>::for_each(
-    [] (auto* observer) { observer->endInsertObject(); }
-  );
+    parent.adopt(std::move(object));
+  }
 
   objects.invalidate();
   tags.invalidate();
@@ -142,13 +141,13 @@ void Scene::move_object(MoveObjectTreeContext context)
   assert(context.is_valid());
   Object& old_parent = context.subject.get().parent();
 
-  Observed<AbstractObjectTreeObserver>::for_each(
-    [&context](auto* observer) { observer->beginMoveObject(context); }
-  );
-  context.parent.get().adopt(old_parent.repudiate(context.subject), context.predecessor);
-  Observed<AbstractObjectTreeObserver>::for_each(
-    [](auto* observer) { observer->endMoveObject(); }
-  );
+  {
+    using Guard = std::unique_ptr<AbstractObjectTreeObserver::AbstractMoverGuard>;
+    const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
+      [&context](auto* observer) { return observer->acquire_mover_guard(context); }
+    );
+    context.parent.get().adopt(old_parent.repudiate(context.subject), context.predecessor);
+  }
 
   objects.invalidate();
   tags.invalidate();
@@ -157,13 +156,16 @@ void Scene::move_object(MoveObjectTreeContext context)
 void Scene::insert_object(OwningObjectTreeContext& context)
 {
   assert(context.subject.owns());
-  Observed<AbstractObjectTreeObserver>::for_each(
-    [&context](auto* observer) { observer->beginInsertObject(context); }
-  );
-  context.parent.get().adopt(context.subject.release(), context.predecessor);
-  Observed<AbstractObjectTreeObserver>::for_each(
-    [](auto* observer) { observer->endInsertObject(); }
-  );
+
+  {
+    using Guard = std::unique_ptr<AbstractObjectTreeObserver::AbstractInserterGuard>;
+    const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
+      [&context] (auto* observer) {
+        return observer->acquire_inserter_guard(context.parent, context.get_insert_position());
+      }
+    );
+    context.parent.get().adopt(context.subject.release(), context.predecessor);
+  }
 
   objects.invalidate();
   tags.invalidate();
@@ -172,13 +174,14 @@ void Scene::insert_object(OwningObjectTreeContext& context)
 void Scene::remove_object(OwningObjectTreeContext& context)
 {
   assert(!context.subject.owns());
-  Observed<AbstractObjectTreeObserver>::for_each(
-    [&context](auto* observer) { observer->beginRemoveObject(context.subject); }
-  );
-  context.subject.capture(context.parent.get().repudiate(context.subject));
-  Observed<AbstractObjectTreeObserver>::for_each(
-    [](auto* observer) { observer->endRemoveObject(); }
-  );
+
+  {
+    using Guard = std::unique_ptr<AbstractObjectTreeObserver::AbstractRemoverGuard>;
+    const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
+      [&context](auto* observer) { return observer->acquire_remover_guard(context.subject); }
+    );
+    context.subject.capture(context.parent.get().repudiate(context.subject));
+  }
 
   objects.invalidate();
   tags.invalidate();
@@ -217,15 +220,19 @@ bool Scene::load_from(const std::string &filename)
     Observed<AbstractStyleListObserver>::for_each([this](auto* observer) {
       observer->beginResetStyles();
     });
-    Observed<AbstractObjectTreeObserver>::for_each([this](auto* observer) {
-      observer->beginResetObjects();
-    });
 
     try {
       auto deserializer = AbstractDeserializer::make( "JSONDeserializer",
                                                       static_cast<std::istream&>(ifstream) );
       auto new_root = make_root();
       new_root->deserialize(*deserializer, ROOT_POINTER);
+      {
+        using ObjectGuard = std::unique_ptr<AbstractObjectTreeObserver::AbstractReseterGuard>;
+        const auto object_guards = Observed<AbstractObjectTreeObserver>::transform<ObjectGuard>(
+          [this](auto* observer) { return observer->acquire_reseter_guard(); }
+        );
+        replace_root(std::move(new_root));
+      }
 
       const size_t n_styles = deserializer->array_size(Serializable::make_pointer(STYLES_POINTER));
       m_styles.reserve(n_styles);
@@ -235,8 +242,6 @@ bool Scene::load_from(const std::string &filename)
         style->deserialize(*deserializer, style_pointer);
         m_styles.push_back(std::move(style));
       }
-
-      replace_root(std::move(new_root));
 
     } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
       LOG(ERROR) << "Failed to deserialize file at '" << filename << "'.";
@@ -251,9 +256,6 @@ bool Scene::load_from(const std::string &filename)
 
     Observed<AbstractStyleListObserver>::for_each([](auto* observer) {
       observer->endResetStyles();
-    });
-    Observed<AbstractObjectTreeObserver>::for_each([](auto* observer) {
-      observer->endResetObjects();
     });
 
     return true;

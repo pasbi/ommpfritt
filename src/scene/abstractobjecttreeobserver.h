@@ -7,16 +7,24 @@ class Scene;
 
 class AbstractObjectTreeObserver
 {
+public:
+  struct AbstractInserterGuard { virtual ~AbstractInserterGuard() = default; };
+  struct AbstractMoverGuard { virtual ~AbstractMoverGuard() = default; };
+  struct AbstractRemoverGuard { virtual ~AbstractRemoverGuard() = default; };
+  struct AbstractReseterGuard { virtual ~AbstractReseterGuard() = default; };
+
+
 protected:
-  virtual void beginInsertObject(Object& parent, int row) = 0;
-  virtual void beginInsertObject(const OwningObjectTreeContext& context) = 0;
-  virtual void endInsertObject() = 0;
-  virtual void beginMoveObject(const MoveObjectTreeContext& new_context) = 0;
-  virtual void endMoveObject() = 0;
-  virtual void beginRemoveObject(const Object& object) = 0;
-  virtual void endRemoveObject() = 0;
-  virtual void beginResetObjects() = 0;
-  virtual void endResetObjects() = 0;
+  virtual std::unique_ptr<AbstractInserterGuard>
+  acquire_inserter_guard(Object& parent, int row) = 0;
+
+  virtual std::unique_ptr<AbstractMoverGuard>
+  acquire_mover_guard(const MoveObjectTreeContext& context) = 0;
+
+  virtual std::unique_ptr<AbstractRemoverGuard> acquire_remover_guard(const Object& object) = 0;
+
+  virtual std::unique_ptr<AbstractReseterGuard> acquire_reseter_guard() = 0;
+
   friend class Scene;
 };
 

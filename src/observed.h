@@ -1,6 +1,8 @@
 #pragma once
 
 #include <set>
+#include <type_traits>
+#include "common.h"
 
 template<typename ObserverT> class Observed
 {
@@ -20,6 +22,11 @@ public:
   template<typename F> void for_each(F&& f)
   {
     std::for_each(m_observers.begin(), m_observers.end(), std::forward<F>(f));
+  }
+
+  template<typename Result, typename F> auto transform(F&& f)
+  {
+    return ::transform<Result>(m_observers, std::forward<F>(f));
   }
 
 private:
