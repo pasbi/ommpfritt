@@ -23,14 +23,13 @@ ItemManager<ItemViewT, ItemModelT>::ItemManager(const QString& title, Scene& sce
            this, &ItemManager::on_selection_changed );
 
   view->installEventFilter(this);
-
   setWidget(view.release());
 }
 
 template<typename ItemViewT, typename ItemModelT> bool
 ItemManager<ItemViewT, ItemModelT>::eventFilter(QObject* object, QEvent* event)
 {
-  if (event->type() == QEvent::MouseButtonRelease) {
+  if (object == widget() && event->type() == QEvent::MouseButtonRelease) {
     m_scene.selection_changed();
   }
   return Manager::eventFilter(object, event);

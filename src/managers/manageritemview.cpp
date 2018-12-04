@@ -128,6 +128,13 @@ bool ManagerItemView<ItemViewT, ItemModelT>
   return ::remove_selection<RemoveCommand>(*this, this->model()->scene(), selection);
 }
 
+template<typename ItemViewT, typename ItemModelT>
+void ManagerItemView<ItemViewT, ItemModelT>::mouseReleaseEvent(QMouseEvent* e)
+{
+  e->ignore();
+  ItemViewT::mouseReleaseEvent(e);
+}
+
 template class ManagerItemView<QListView, StyleListAdapter>;
 template class ManagerItemView<QTreeView, ObjectTreeAdapter>;
 

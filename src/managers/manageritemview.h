@@ -5,6 +5,7 @@
 class QMenu;
 class QModelIndex;
 class QContextMenuEvent;
+class QMouseEvent;
 
 namespace omm
 {
@@ -26,6 +27,7 @@ public:
 protected:
   virtual void populate_menu(QMenu& menu, const QModelIndex& index) const = 0;
   void contextMenuEvent(QContextMenuEvent *event);
+  void mouseReleaseEvent(QMouseEvent* e);
 };
 
 }  // namespace omm
