@@ -209,26 +209,28 @@ bool Scene::load_from(const std::string &filename)
 {
   std::ifstream ifstream(filename);
   if (ifstream) {
-    bool success = true;
+    bool success = false;
 
-    Observed<AbstractStyleListObserver>::for_each([this](auto* observer) {
-      observer->beginResetStyles();
-    });
-
-    try {
+    try
+    {
       auto deserializer = AbstractDeserializer::make( "JSONDeserializer",
                                                       static_cast<std::istream&>(ifstream) );
+
+      using ObjectGuard = std::unique_ptr<AbstractObjectTreeObserver::AbstractReseterGuard>;
+      const auto object_guards = Observed<AbstractObjectTreeObserver>::transform<ObjectGuard>(
+        [this](auto* observer) { return observer->acquire_reseter_guard(); }
+      );
+
+      using StyleGuard = std::unique_ptr<AbstractStyleListObserver::AbstractReseterGuard>;
+      const auto style_guards = Observed<AbstractStyleListObserver>::transform<StyleGuard>(
+        [this](auto* observer) { return observer->acquire_reseter_guard(); }
+      );
+
       auto new_root = make_root();
       new_root->deserialize(*deserializer, ROOT_POINTER);
-      {
-        using ObjectGuard = std::unique_ptr<AbstractObjectTreeObserver::AbstractReseterGuard>;
-        const auto object_guards = Observed<AbstractObjectTreeObserver>::transform<ObjectGuard>(
-          [this](auto* observer) { return observer->acquire_reseter_guard(); }
-        );
-        replace_root(std::move(new_root));
-      }
 
-      const size_t n_styles = deserializer->array_size(Serializable::make_pointer(STYLES_POINTER));
+      const auto n_styles = deserializer->array_size(Serializable::make_pointer(STYLES_POINTER));
+      m_styles.clear();
       m_styles.reserve(n_styles);
       for (size_t i = 0; i < n_styles; ++i) {
         const auto style_pointer = Serializable::make_pointer(STYLES_POINTER, i);
@@ -237,22 +239,19 @@ bool Scene::load_from(const std::string &filename)
         m_styles.push_back(std::move(style));
       }
 
+      replace_root(std::move(new_root));
+      success = true;
+      set_has_pending_changes(false);
+      m_filename = filename;
+      tags.invalidate();
+      objects.invalidate();
+
+      return true;
     } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
       LOG(ERROR) << "Failed to deserialize file at '" << filename << "'.";
       LOG(INFO) << deserialize_error.what();
-      success = false;
     }
-
-    set_has_pending_changes(false);
-    m_filename = filename;
-    tags.invalidate();
-    objects.invalidate();
-
-    Observed<AbstractStyleListObserver>::for_each([](auto* observer) {
-      observer->endResetStyles();
-    });
-
-    return true;
+    return false;
   } else {
     LOG(ERROR) << "Failed to open '" << filename << "'.";
     return false;
@@ -378,46 +377,44 @@ Style& Scene::default_style() const
 
 void Scene::insert_style(std::unique_ptr<Style> style)
 {
-  Observed<AbstractStyleListObserver>::for_each([this](auto* observer){
-    observer->beginInsertStyle(m_styles.size());
-  });
+  using Guard = std::unique_ptr<AbstractStyleListObserver::AbstractInserterGuard>;
+  const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
+    [this](auto* observer){ return observer->acquire_inserter_guard(m_styles.size()); }
+  );
   m_styles.push_back(std::move(style));
-  Observed<AbstractStyleListObserver>::for_each([](auto* observer){
-    observer->endInsertStyle();
-  });
   selection_changed();
 }
 
 void Scene::insert_style(OwningListContext<Style>& style)
 {
   size_t position = style.predecessor == nullptr ? 0 : this->position(*style.predecessor) + 1;
-  Observed<AbstractStyleListObserver>::for_each([this, position](auto* observer){
-    observer->beginInsertStyle(position);
-  });
+  using Guard = std::unique_ptr<AbstractStyleListObserver::AbstractInserterGuard>;
+  const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
+    [this, position](auto* observer){ return observer->acquire_inserter_guard(position); }
+  );
   m_styles.insert(m_styles.begin() + position, style.subject.release());
-  Observed<AbstractStyleListObserver>::for_each([](auto* observer){
-    observer->endInsertStyle();
-  });
   selection_changed();
 }
 
 void Scene::remove_style(OwningListContext<Style>& style_context)
 {
   const size_t position = this->position(style_context.subject);
-  Observed<AbstractStyleListObserver>::for_each([this, position](auto* observer){
-    observer->beginRemoveStyle(position);
-  });
+  using Guard = std::unique_ptr<AbstractStyleListObserver::AbstractRemoverGuard>;
+  const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
+    [this, position](auto* observer){ return observer->acquire_remover_guard(position); }
+  );
   style_context.subject.capture(::extract(m_styles, style_context.subject.reference()));
-  Observed<AbstractStyleListObserver>::for_each([](auto* observer){
-    observer->endRemoveStyle();
-  });
   selection_changed();
 }
 
 std::unique_ptr<Style> Scene::remove_style(Style& style)
 {
+  const size_t position = this->position(style);
+  using Guard = std::unique_ptr<AbstractStyleListObserver::AbstractRemoverGuard>;
+  const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
+    [this, position](auto* observer){ return observer->acquire_remover_guard(position); }
+  );
   return ::extract(m_styles, style);
-  assert(false);
 }
 
 size_t Scene::position(const Style& style) const

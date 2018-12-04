@@ -50,34 +50,58 @@ Scene& StyleListAdapter::scene() const
   return m_scene;
 }
 
-void StyleListAdapter::beginInsertStyle(int row)
+std::unique_ptr<AbstractStyleListObserver::AbstractInserterGuard>
+StyleListAdapter::acquire_inserter_guard(int row)
 {
-  beginInsertRows(QModelIndex(), row, row);
+  class InserterGuard : public AbstractInserterGuard
+  {
+  public:
+    InserterGuard(StyleListAdapter& model, int row) : m_model(model)
+    {
+      m_model.beginInsertRows(QModelIndex(), row, row);
+    }
+    ~InserterGuard() { m_model.endInsertRows(); }
+  private:
+    StyleListAdapter& m_model;
+  };
+  return std::make_unique<InserterGuard>(*this, row);
 }
 
-void StyleListAdapter::endInsertStyle()
+  // friend class AbstractMoverGuard;
+  // std::unique_ptr<AbstractMoverGuard> acquire_mover_guard() override;
+
+std::unique_ptr<AbstractStyleListObserver::AbstractRemoverGuard>
+StyleListAdapter::acquire_remover_guard(int row)
 {
-  endInsertRows();
+  class RemoverGuard : public AbstractRemoverGuard
+  {
+  public:
+    RemoverGuard(StyleListAdapter& model, int row) : m_model(model)
+    {
+      m_model.beginRemoveRows(QModelIndex(), row, row);
+    }
+    ~RemoverGuard() { m_model.endRemoveRows(); }
+  private:
+    StyleListAdapter& m_model;
+  };
+  return std::make_unique<RemoverGuard>(*this, row);
 }
 
-void StyleListAdapter::beginResetStyles()
+std::unique_ptr<AbstractStyleListObserver::AbstractReseterGuard>
+StyleListAdapter::acquire_reseter_guard()
 {
-  beginResetModel();
-}
-
-void StyleListAdapter::endResetStyles()
-{
-  endResetModel();
-}
-
-void StyleListAdapter::beginRemoveStyle(int row)
-{
-  beginRemoveRows(QModelIndex(), row, row);
-}
-
-void StyleListAdapter::endRemoveStyle()
-{
-  endRemoveRows();
+  class ReseterGuard : public AbstractReseterGuard
+  {
+  public:
+    ReseterGuard(StyleListAdapter& model) : m_model(model)
+    {
+      m_model.beginResetModel();
+    }
+    ~ReseterGuard() { m_model.endResetModel(); }
+  private:
+    StyleListAdapter& m_model;
+  };
+  return std::make_unique<ReseterGuard>(*this);
 }
 
 bool StyleListAdapter::setData(const QModelIndex& index, const QVariant& value, int role)
