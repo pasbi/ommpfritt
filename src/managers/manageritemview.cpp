@@ -6,6 +6,7 @@
 #include "renderers/style.h"
 #include "commands/propertycommand.h"
 #include "commands/removeobjectscommand.h"
+#include "commands/removestylescommand.h"
 #include "properties/referenceproperty.h"
 
 #include "managers/stylemanager/stylelistview.h"
@@ -132,5 +133,7 @@ template class ManagerItemView<QTreeView, ObjectTreeAdapter>;
 
 template bool ManagerItemView<QTreeView, ObjectTreeAdapter>
 ::remove_selection<RemoveObjectsCommand>(const std::set<Object*>& selection);
+template bool ManagerItemView<QListView, StyleListAdapter>
+::remove_selection<RemoveStylesCommand>(const std::set<Style*>& selection);
 
 }  // namespace omm

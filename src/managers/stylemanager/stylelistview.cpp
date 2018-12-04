@@ -3,16 +3,22 @@
 #include "menuhelper.h"
 #include "managers/stylemanager/stylelistview.h"
 #include "commands/newstylecommand.h"
+#include "commands/removestylescommand.h"
 
 namespace omm
 {
 
 void StyleListView::populate_menu(QMenu& menu, const QModelIndex& index) const
 {
-  action(menu, tr("&new"), [this](){
-    Scene& scene = model()->scene();
+  Scene& scene = model()->scene();
+  action(menu, tr("&new"), [&scene](){
     scene.submit<NewStyleCommand>(scene, scene.default_style().copy());
   });
+
+  if (index.isValid()) {
+    action(menu, tr("&remove"), *this, &StyleListView::remove_selection);
+  }
+
 }
 
 void StyleListView::set_selection(const SetOfPropertyOwner& selection)
@@ -27,6 +33,12 @@ void StyleListView::set_selection(const SetOfPropertyOwner& selection)
       selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Deselect);
     }
   }
+}
+
+void StyleListView::remove_selection()
+{
+  auto& scene = model()->scene();
+  ManagerItemView::remove_selection<RemoveStylesCommand>(scene.selected_styles());
 }
 
 }  // namespace

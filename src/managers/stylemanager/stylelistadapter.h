@@ -26,10 +26,12 @@ public:
   bool setData(const QModelIndex& index, const QVariant& value, int role) override;
   Scene& scene() const;
 
-  void beginInsertStyles(int row) override;
-  void endInsertStyles() override;
+  void beginInsertStyle(int row) override;
+  void endInsertStyle() override;
   void beginResetStyles() override;
   void endResetStyles() override;
+  void beginRemoveStyle(int row) override;
+  void endRemoveStyle() override;
 
   Qt::ItemFlags flags(const QModelIndex &index) const;
 

@@ -383,20 +383,56 @@ Style& Scene::default_style() const
 void Scene::insert_style(std::unique_ptr<Style> style)
 {
   Observed<AbstractStyleListObserver>::for_each([this](auto* observer){
-    observer->beginInsertStyles(m_styles.size());
+    observer->beginInsertStyle(m_styles.size());
   });
   m_styles.push_back(std::move(style));
   Observed<AbstractStyleListObserver>::for_each([](auto* observer){
-    observer->endInsertStyles();
+    observer->endInsertStyle();
+  });
+  selection_changed();
+}
+
+void Scene::insert_style(OwningListContext<Style>& style)
+{
+  size_t position = style.predecessor == nullptr ? 0 : this->position(*style.predecessor) + 1;
+  Observed<AbstractStyleListObserver>::for_each([this, position](auto* observer){
+    observer->beginInsertStyle(position);
+  });
+  m_styles.insert(m_styles.begin() + position, style.subject.release());
+  Observed<AbstractStyleListObserver>::for_each([](auto* observer){
+    observer->endInsertStyle();
+  });
+  selection_changed();
+}
+
+void Scene::remove_style(OwningListContext<Style>& style_context)
+{
+  const size_t position = this->position(style_context.subject);
+  Observed<AbstractStyleListObserver>::for_each([this, position](auto* observer){
+    observer->beginRemoveStyle(position);
+  });
+  style_context.subject.capture(::extract(m_styles, style_context.subject.reference()));
+  Observed<AbstractStyleListObserver>::for_each([](auto* observer){
+    observer->endRemoveStyle();
   });
   selection_changed();
 }
 
 std::unique_ptr<Style> Scene::remove_style(Style& style)
 {
-  auto ref = ::extract(m_styles, style);
-  selection_changed();
-  return ref;
+  return ::extract(m_styles, style);
+  assert(false);
 }
+
+size_t Scene::position(const Style& style) const
+{
+  for (size_t i = 0; i < m_styles.size(); ++i) {
+    if (m_styles[i].get() == &style) {
+      return i;
+    }
+  }
+  assert(false);
+}
+
 
 }  // namespace omm

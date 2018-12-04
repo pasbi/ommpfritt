@@ -8,5 +8,6 @@ file (GLOB SOURCES
   "objectstransformationcommand.cpp"
   "propertycommand.cpp"
   "removeobjectscommand.cpp"
+  "removestylescommand.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})

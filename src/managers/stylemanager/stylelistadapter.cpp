@@ -50,12 +50,12 @@ Scene& StyleListAdapter::scene() const
   return m_scene;
 }
 
-void StyleListAdapter::beginInsertStyles(int row)
+void StyleListAdapter::beginInsertStyle(int row)
 {
   beginInsertRows(QModelIndex(), row, row);
 }
 
-void StyleListAdapter::endInsertStyles()
+void StyleListAdapter::endInsertStyle()
 {
   endInsertRows();
 }
@@ -68,6 +68,16 @@ void StyleListAdapter::beginResetStyles()
 void StyleListAdapter::endResetStyles()
 {
   endResetModel();
+}
+
+void StyleListAdapter::beginRemoveStyle(int row)
+{
+  beginRemoveRows(QModelIndex(), row, row);
+}
+
+void StyleListAdapter::endRemoveStyle()
+{
+  endRemoveRows();
 }
 
 bool StyleListAdapter::setData(const QModelIndex& index, const QVariant& value, int role)

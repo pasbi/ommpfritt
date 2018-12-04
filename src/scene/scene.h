@@ -16,6 +16,7 @@
 #include "scene/abstractobjecttreeobserver.h"
 #include "scene/abstractstylelistobserver.h"
 #include "scene/cachedgetter.h"
+#include "scene/listcontext.h"
 
 namespace omm
 {
@@ -71,11 +72,14 @@ public:
   // === Styles  ====
 public:
   void insert_style(std::unique_ptr<Style> style);
-  std::unique_ptr<Style> remove_style(Style& style);
+  void insert_style(OwningListContext<Style>& style);
+  std::unique_ptr<Style> remove_style(Style& style);  // TODO remove?
+  void remove_style(OwningListContext<Style>& style);
   std::set<Style*> styles() const;
   Style& style(size_t i) const;
   std::set<Style*> selected_styles() const;
   Style& default_style() const;
+  size_t position(const Style& style) const;
 private:
   std::unique_ptr<Style> m_default_style;
   std::vector<std::unique_ptr<Style>> m_styles;
