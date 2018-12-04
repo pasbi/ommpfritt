@@ -141,13 +141,11 @@ void Scene::move_object(MoveObjectTreeContext context)
   assert(context.is_valid());
   Object& old_parent = context.subject.get().parent();
 
-  {
-    using Guard = std::unique_ptr<AbstractObjectTreeObserver::AbstractMoverGuard>;
-    const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
-      [&context](auto* observer) { return observer->acquire_mover_guard(context); }
-    );
-    context.parent.get().adopt(old_parent.repudiate(context.subject), context.predecessor);
-  }
+  using Guard = std::unique_ptr<AbstractObjectTreeObserver::AbstractMoverGuard>;
+  const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
+    [&context](auto* observer) { return observer->acquire_mover_guard(context); }
+  );
+  context.parent.get().adopt(old_parent.repudiate(context.subject), context.predecessor);
 
   objects.invalidate();
   tags.invalidate();
@@ -157,15 +155,13 @@ void Scene::insert_object(OwningObjectTreeContext& context)
 {
   assert(context.subject.owns());
 
-  {
-    using Guard = std::unique_ptr<AbstractObjectTreeObserver::AbstractInserterGuard>;
-    const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
-      [&context] (auto* observer) {
-        return observer->acquire_inserter_guard(context.parent, context.get_insert_position());
-      }
-    );
-    context.parent.get().adopt(context.subject.release(), context.predecessor);
-  }
+  using Guard = std::unique_ptr<AbstractObjectTreeObserver::AbstractInserterGuard>;
+  const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
+    [&context] (auto* observer) {
+      return observer->acquire_inserter_guard(context.parent, context.get_insert_position());
+    }
+  );
+  context.parent.get().adopt(context.subject.release(), context.predecessor);
 
   objects.invalidate();
   tags.invalidate();
@@ -175,13 +171,11 @@ void Scene::remove_object(OwningObjectTreeContext& context)
 {
   assert(!context.subject.owns());
 
-  {
-    using Guard = std::unique_ptr<AbstractObjectTreeObserver::AbstractRemoverGuard>;
-    const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
-      [&context](auto* observer) { return observer->acquire_remover_guard(context.subject); }
-    );
-    context.subject.capture(context.parent.get().repudiate(context.subject));
-  }
+  using Guard = std::unique_ptr<AbstractObjectTreeObserver::AbstractRemoverGuard>;
+  const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
+    [&context](auto* observer) { return observer->acquire_remover_guard(context.subject); }
+  );
+  context.subject.capture(context.parent.get().repudiate(context.subject));
 
   objects.invalidate();
   tags.invalidate();
