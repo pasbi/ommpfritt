@@ -11,7 +11,7 @@ template<typename T>
 class TreeElement
 {
 public:
-  TreeElement(T* parent);
+  explicit TreeElement(T* parent);
   virtual ~TreeElement();
   bool is_root() const;
   T& parent() const;
