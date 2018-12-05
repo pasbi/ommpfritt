@@ -362,4 +362,4 @@ Scene& ObjectTreeAdapter::scene() const
   return m_scene;
 }
 
-}  // namespace ommmake_new_contextes
+}  // namespace omm
