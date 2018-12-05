@@ -215,10 +215,10 @@ Qt::DropActions ObjectTreeAdapter::supportedDropActions() const
   return Qt::MoveAction | Qt::CopyAction;
 }
 
-std::unique_ptr<AbstractObjectTreeObserver::AbstractInserterGuard>
+std::unique_ptr<AbstractRAIIGuard>
 ObjectTreeAdapter::acquire_inserter_guard(Object& parent, int row)
 {
-  class InserterGuard : public AbstractInserterGuard
+  class InserterGuard : public AbstractRAIIGuard
   {
   public:
     InserterGuard(ObjectTreeAdapter& model, const QModelIndex& parent, int row) : m_model(model)
@@ -232,10 +232,10 @@ ObjectTreeAdapter::acquire_inserter_guard(Object& parent, int row)
   return std::make_unique<InserterGuard>(*this, index_of(parent), row);
 }
 
-std::unique_ptr<AbstractObjectTreeObserver::AbstractMoverGuard>
+std::unique_ptr<AbstractRAIIGuard>
 ObjectTreeAdapter::acquire_mover_guard(const MoveObjectTreeContext& context)
 {
-  class MoverGuard : public AbstractMoverGuard
+  class MoverGuard : public AbstractRAIIGuard
   {
   public:
     MoverGuard(ObjectTreeAdapter& model, const QModelIndex& old_parent, const int old_pos,
@@ -250,8 +250,6 @@ ObjectTreeAdapter::acquire_mover_guard(const MoveObjectTreeContext& context)
     ObjectTreeAdapter& m_model;
   };
 
-  struct NoopMoverGuard : AbstractMoverGuard { NoopMoverGuard() {}; ~NoopMoverGuard() {} };
-
   assert(!context.subject.get().is_root());
   Object& old_parent = context.subject.get().parent();
   Object& new_parent = context.parent.get();
@@ -259,17 +257,17 @@ ObjectTreeAdapter::acquire_mover_guard(const MoveObjectTreeContext& context)
   const auto new_pos = context.get_insert_position();
 
   if (old_pos == new_pos && &old_parent == &new_parent) {
-    return std::make_unique<NoopMoverGuard>();
+    return nullptr;
   } else {
     return std::make_unique<MoverGuard>( *this, index_of(old_parent), old_pos,
                                          index_of(new_parent), context.get_insert_position() );
   }
 }
 
-std::unique_ptr<AbstractObjectTreeObserver::AbstractRemoverGuard>
+std::unique_ptr<AbstractRAIIGuard>
 ObjectTreeAdapter::acquire_remover_guard(const Object& object)
 {
-  class RemoverGuard : public AbstractRemoverGuard
+  class RemoverGuard : public AbstractRAIIGuard
   {
   public:
     RemoverGuard(ObjectTreeAdapter& model, const QModelIndex& parent, int row) : m_model(model)
@@ -283,10 +281,10 @@ ObjectTreeAdapter::acquire_remover_guard(const Object& object)
   return std::make_unique<RemoverGuard>(*this, index_of(object.parent()), object.row());
 }
 
-std::unique_ptr<AbstractObjectTreeObserver::AbstractReseterGuard>
+std::unique_ptr<AbstractRAIIGuard>
 ObjectTreeAdapter::acquire_reseter_guard()
 {
-  class ReseterGuard : public AbstractReseterGuard
+  class ReseterGuard : public AbstractRAIIGuard
   {
   public:
     ReseterGuard(ObjectTreeAdapter& model) : m_model(model)

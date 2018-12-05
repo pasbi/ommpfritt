@@ -50,10 +50,10 @@ Scene& StyleListAdapter::scene() const
   return m_scene;
 }
 
-std::unique_ptr<AbstractStyleListObserver::AbstractInserterGuard>
+std::unique_ptr<AbstractRAIIGuard>
 StyleListAdapter::acquire_inserter_guard(int row)
 {
-  class InserterGuard : public AbstractInserterGuard
+  class InserterGuard : public AbstractRAIIGuard
   {
   public:
     InserterGuard(StyleListAdapter& model, int row) : m_model(model)
@@ -67,13 +67,13 @@ StyleListAdapter::acquire_inserter_guard(int row)
   return std::make_unique<InserterGuard>(*this, row);
 }
 
-  // friend class AbstractMoverGuard;
-  // std::unique_ptr<AbstractMoverGuard> acquire_mover_guard() override;
+  // friend class AbstractRAIIGuard;
+  // std::unique_ptr<AbstractRAIIGuard> acquire_mover_guard() override;
 
-std::unique_ptr<AbstractStyleListObserver::AbstractRemoverGuard>
+std::unique_ptr<AbstractRAIIGuard>
 StyleListAdapter::acquire_remover_guard(int row)
 {
-  class RemoverGuard : public AbstractRemoverGuard
+  class RemoverGuard : public AbstractRAIIGuard
   {
   public:
     RemoverGuard(StyleListAdapter& model, int row) : m_model(model)
@@ -87,10 +87,10 @@ StyleListAdapter::acquire_remover_guard(int row)
   return std::make_unique<RemoverGuard>(*this, row);
 }
 
-std::unique_ptr<AbstractStyleListObserver::AbstractReseterGuard>
+std::unique_ptr<AbstractRAIIGuard>
 StyleListAdapter::acquire_reseter_guard()
 {
-  class ReseterGuard : public AbstractReseterGuard
+  class ReseterGuard : public AbstractRAIIGuard
   {
   public:
     ReseterGuard(StyleListAdapter& model) : m_model(model)

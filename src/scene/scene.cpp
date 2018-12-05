@@ -46,6 +46,8 @@ std::unique_ptr<omm::Style> make_default_style()
   return default_style;
 }
 
+using Guard = std::unique_ptr<AbstractRAIIGuard>;
+
 }  // namespace
 
 namespace omm
@@ -83,8 +85,7 @@ void Scene::insert_object(std::unique_ptr<Object> object, Object& parent)
   size_t n = parent.children().size();
 
   {
-    using Guard = std::unique_ptr<AbstractObjectTreeObserver::AbstractInserterGuard>;
-    const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
+      const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
       [&parent, n] (auto* observer) { return observer->acquire_inserter_guard(parent, n); }
     );
 
@@ -141,7 +142,6 @@ void Scene::move_object(MoveObjectTreeContext context)
   assert(context.is_valid());
   Object& old_parent = context.subject.get().parent();
 
-  using Guard = std::unique_ptr<AbstractObjectTreeObserver::AbstractMoverGuard>;
   const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
     [&context](auto* observer) { return observer->acquire_mover_guard(context); }
   );
@@ -155,7 +155,6 @@ void Scene::insert_object(OwningObjectTreeContext& context)
 {
   assert(context.subject.owns());
 
-  using Guard = std::unique_ptr<AbstractObjectTreeObserver::AbstractInserterGuard>;
   const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
     [&context] (auto* observer) {
       return observer->acquire_inserter_guard(context.parent, context.get_insert_position());
@@ -171,7 +170,6 @@ void Scene::remove_object(OwningObjectTreeContext& context)
 {
   assert(!context.subject.owns());
 
-  using Guard = std::unique_ptr<AbstractObjectTreeObserver::AbstractRemoverGuard>;
   const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
     [&context](auto* observer) { return observer->acquire_remover_guard(context.subject); }
   );
@@ -216,13 +214,11 @@ bool Scene::load_from(const std::string &filename)
       auto deserializer = AbstractDeserializer::make( "JSONDeserializer",
                                                       static_cast<std::istream&>(ifstream) );
 
-      using ObjectGuard = std::unique_ptr<AbstractObjectTreeObserver::AbstractReseterGuard>;
-      const auto object_guards = Observed<AbstractObjectTreeObserver>::transform<ObjectGuard>(
+      const auto object_guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
         [this](auto* observer) { return observer->acquire_reseter_guard(); }
       );
 
-      using StyleGuard = std::unique_ptr<AbstractStyleListObserver::AbstractReseterGuard>;
-      const auto style_guards = Observed<AbstractStyleListObserver>::transform<StyleGuard>(
+      const auto style_guards = Observed<AbstractStyleListObserver>::transform<Guard>(
         [this](auto* observer) { return observer->acquire_reseter_guard(); }
       );
 
@@ -377,7 +373,6 @@ Style& Scene::default_style() const
 
 void Scene::insert_style(std::unique_ptr<Style> style)
 {
-  using Guard = std::unique_ptr<AbstractStyleListObserver::AbstractInserterGuard>;
   const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
     [this](auto* observer){ return observer->acquire_inserter_guard(m_styles.size()); }
   );
@@ -388,7 +383,6 @@ void Scene::insert_style(std::unique_ptr<Style> style)
 void Scene::insert_style(OwningListContext<Style>& style)
 {
   size_t position = style.predecessor == nullptr ? 0 : this->position(*style.predecessor) + 1;
-  using Guard = std::unique_ptr<AbstractStyleListObserver::AbstractInserterGuard>;
   const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
     [this, position](auto* observer){ return observer->acquire_inserter_guard(position); }
   );
@@ -399,7 +393,6 @@ void Scene::insert_style(OwningListContext<Style>& style)
 void Scene::remove_style(OwningListContext<Style>& style_context)
 {
   const size_t position = this->position(style_context.subject);
-  using Guard = std::unique_ptr<AbstractStyleListObserver::AbstractRemoverGuard>;
   const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
     [this, position](auto* observer){ return observer->acquire_remover_guard(position); }
   );
@@ -410,7 +403,6 @@ void Scene::remove_style(OwningListContext<Style>& style_context)
 std::unique_ptr<Style> Scene::remove_style(Style& style)
 {
   const size_t position = this->position(style);
-  using Guard = std::unique_ptr<AbstractStyleListObserver::AbstractRemoverGuard>;
   const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
     [this, position](auto* observer){ return observer->acquire_remover_guard(position); }
   );

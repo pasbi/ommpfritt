@@ -43,19 +43,15 @@ public:
 
   QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-  friend class AbstractInserterGuard;
-  std::unique_ptr<AbstractInserterGuard>
+  friend class AbstractRAIIGuard;
+  std::unique_ptr<AbstractRAIIGuard>
   acquire_inserter_guard(Object& parent, int row) override;
 
-  friend class AbstractMoverGuard;
-  std::unique_ptr<AbstractMoverGuard>
+  std::unique_ptr<AbstractRAIIGuard>
   acquire_mover_guard(const MoveObjectTreeContext& context) override;
 
-  friend class AbstractRemoverGuard;
-  std::unique_ptr<AbstractRemoverGuard> acquire_remover_guard(const Object& object) override;
-
-  friend class AbstractReseterGuard;
-  std::unique_ptr<AbstractReseterGuard> acquire_reseter_guard() override;
+  std::unique_ptr<AbstractRAIIGuard> acquire_remover_guard(const Object& object) override;
+  std::unique_ptr<AbstractRAIIGuard> acquire_reseter_guard() override;
 
   Scene& scene() const;
 
