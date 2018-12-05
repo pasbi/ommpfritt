@@ -1,7 +1,7 @@
 #pragma once
 
 #include <set>
-#include "scene/listcontext.h"
+#include "scene/contextes.h"
 #include "commands/command.h"
 
 namespace omm
@@ -18,7 +18,7 @@ public:
   void redo() override;
 
 private:
-  std::vector<OwningListContext<Style>> m_contextes;
+  std::vector<StyleListOwningContext> m_contextes;
   Scene& m_scene;
 };
 

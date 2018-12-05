@@ -11,12 +11,11 @@
 #include "python/objectview.h"
 #include "external/json_fwd.hpp"
 #include "observed.h"
-#include "scene/objecttreecontext.h"
+#include "scene/contextes.h"
 #include "scene/abstractselectionobserver.h"
 #include "scene/abstractobjecttreeobserver.h"
 #include "scene/abstractstylelistobserver.h"
 #include "scene/cachedgetter.h"
-#include "scene/listcontext.h"
 
 namespace omm
 {
@@ -50,10 +49,10 @@ public:
   // === Objects ====
 public:
   void insert_object(std::unique_ptr<Object> object, Object& parent);
-  void insert_object(OwningObjectTreeContext& context);
-  void move_object(MoveObjectTreeContext context);
-  void remove_object(OwningObjectTreeContext& context);
-  bool can_move_object(const MoveObjectTreeContext& new_context) const;
+  void insert_object(ObjectTreeOwningContext& context);
+  void move_object(ObjectTreeMoveContext context);
+  void remove_object(ObjectTreeOwningContext& context);
+  bool can_move_object(const ObjectTreeMoveContext& new_context) const;
   const TGetter<Object> objects = TGetter<Object>(*this);
   std::set<Object*> selected_objects() const;
   std::unique_ptr<Object> replace_root(std::unique_ptr<Object> new_root);
@@ -72,9 +71,9 @@ public:
   // === Styles  ====
 public:
   void insert_style(std::unique_ptr<Style> style);
-  void insert_style(OwningListContext<Style>& style);
+  void insert_style(StyleListOwningContext& style);
   std::unique_ptr<Style> remove_style(Style& style);  // TODO remove?
-  void remove_style(OwningListContext<Style>& style);
+  void remove_style(StyleListOwningContext& style);
   std::set<Style*> styles() const;
   Style& style(size_t i) const;
   std::set<Style*> selected_styles() const;

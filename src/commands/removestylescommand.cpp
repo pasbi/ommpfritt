@@ -8,7 +8,7 @@ namespace
 // TODO same as RemoveObjectsCommand.cpp:make_contextes()
 auto make_contextes(omm::Scene& scene, const std::set<omm::Style*>& selection)
 {
-  std::vector<omm::OwningListContext<omm::Style>> contextes;
+  std::vector<omm::StyleListOwningContext> contextes;
   contextes.reserve(selection.size());
   for (auto style : selection) {
     size_t position = scene.position(*style);

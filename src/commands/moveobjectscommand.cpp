@@ -5,9 +5,9 @@
 namespace
 {
 
-omm::MoveObjectTreeContext make_old_context(const omm::MoveObjectTreeContext& new_context)
+omm::ObjectTreeMoveContext make_old_context(const omm::ObjectTreeMoveContext& new_context)
 {
-  return omm::MoveObjectTreeContext(new_context.subject);
+  return omm::ObjectTreeMoveContext(new_context.subject);
 }
 
 }  // namespace
@@ -18,9 +18,9 @@ namespace omm
 {
 
 MoveObjectsCommand
-::MoveObjectsCommand(Scene& scene, const std::vector<MoveObjectTreeContext>& new_contextes)
+::MoveObjectsCommand(Scene& scene, const std::vector<ObjectTreeMoveContext>& new_contextes)
   : Command(QObject::tr("reparent").toStdString())
-  , m_old_contextes(::transform<MoveObjectTreeContext>(new_contextes, make_old_context))
+  , m_old_contextes(::transform<ObjectTreeMoveContext>(new_contextes, make_old_context))
   , m_new_contextes(new_contextes)
   , m_scene(scene)
 {

@@ -8,14 +8,23 @@
 namespace omm
 {
 
+class Scene;
+
 class Style
   : public PropertyOwner<AbstractPropertyOwner::Kind::Style>
   , public Selectable
   , public virtual Serializable
-  , public SimpleCopyable<Style>
+  , public Copyable<Style>
 {
 public:
-  explicit Style();
+  explicit Style(Scene* scene = nullptr);
+  size_t row() const;
+  std::unique_ptr<Style> copy() const override;
+
+private:
+  Scene* const m_scene;
+
+public:
   static constexpr auto PEN_IS_ACTIVE_KEY = "pen/active";
   static constexpr auto PEN_COLOR_KEY = "pen/color";
   static constexpr auto PEN_WIDTH_KEY = "pen/width";

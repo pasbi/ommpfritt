@@ -1,7 +1,7 @@
 #pragma once
 
 #include "commands/command.h"
-#include "scene/objecttreecontext.h"
+#include "scene/contextes.h"
 
 namespace omm
 {
@@ -9,13 +9,13 @@ namespace omm
 class CopyObjectsCommand : public Command
 {
 public:
-  CopyObjectsCommand(Scene& scene, std::vector<OwningObjectTreeContext> contextes);
+  CopyObjectsCommand(Scene& scene, std::vector<ObjectTreeOwningContext> contextes);
 
   void undo() override;
   void redo() override;
 
 private:
-  std::vector<OwningObjectTreeContext> m_contextes;
+  std::vector<ObjectTreeOwningContext> m_contextes;
   Scene& m_scene;
 };
 

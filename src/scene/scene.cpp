@@ -137,7 +137,7 @@ void Scene::clear_selection()
   selection_changed();
 }
 
-void Scene::move_object(MoveObjectTreeContext context)
+void Scene::move_object(ObjectTreeMoveContext context)
 {
   assert(context.is_valid());
   Object& old_parent = context.subject.get().parent();
@@ -151,7 +151,7 @@ void Scene::move_object(MoveObjectTreeContext context)
   tags.invalidate();
 }
 
-void Scene::insert_object(OwningObjectTreeContext& context)
+void Scene::insert_object(ObjectTreeOwningContext& context)
 {
   assert(context.subject.owns());
 
@@ -166,7 +166,7 @@ void Scene::insert_object(OwningObjectTreeContext& context)
   tags.invalidate();
 }
 
-void Scene::remove_object(OwningObjectTreeContext& context)
+void Scene::remove_object(ObjectTreeOwningContext& context)
 {
   assert(!context.subject.owns());
 
@@ -380,7 +380,7 @@ void Scene::insert_style(std::unique_ptr<Style> style)
   selection_changed();
 }
 
-void Scene::insert_style(OwningListContext<Style>& style)
+void Scene::insert_style(StyleListOwningContext& style)
 {
   size_t position = style.predecessor == nullptr ? 0 : this->position(*style.predecessor) + 1;
   const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
@@ -390,7 +390,7 @@ void Scene::insert_style(OwningListContext<Style>& style)
   selection_changed();
 }
 
-void Scene::remove_style(OwningListContext<Style>& style_context)
+void Scene::remove_style(StyleListOwningContext& style_context)
 {
   const size_t position = this->position(style_context.subject);
   const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(

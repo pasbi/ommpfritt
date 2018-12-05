@@ -48,7 +48,7 @@ public:
   acquire_inserter_guard(Object& parent, int row) override;
 
   std::unique_ptr<AbstractRAIIGuard>
-  acquire_mover_guard(const MoveObjectTreeContext& context) override;
+  acquire_mover_guard(const ObjectTreeMoveContext& context) override;
 
   std::unique_ptr<AbstractRAIIGuard> acquire_remover_guard(const Object& object) override;
   std::unique_ptr<AbstractRAIIGuard> acquire_reseter_guard() override;
@@ -58,7 +58,7 @@ public:
 private:
   Scene& m_scene;
 
-  std::vector<omm::MoveObjectTreeContext>
+  std::vector<omm::ObjectTreeMoveContext>
   make_new_contextes(const QMimeData* data, int row, const QModelIndex& parent) const;
   bool m_last_move_was_noop;
 };

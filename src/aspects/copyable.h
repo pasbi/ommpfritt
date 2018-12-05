@@ -37,14 +37,4 @@ protected:
   }
 };
 
-template<typename T>
-class SimpleCopyable : public Copyable<T>
-{
-public:
-  std::unique_ptr<T> copy() const override
-  {
-    return Copyable<T>::copy(std::make_unique<T>());
-  }
-};
-
 }  // omm

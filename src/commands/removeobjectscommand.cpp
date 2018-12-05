@@ -9,7 +9,7 @@ namespace
 
 auto make_contextes(const std::set<omm::Object*>& selection)
 {
-  std::vector<omm::OwningObjectTreeContext> contextes;
+  std::vector<omm::ObjectTreeOwningContext> contextes;
   contextes.reserve(selection.size());
   for (auto object : selection) {
     contextes.emplace_back(*object);
@@ -55,7 +55,7 @@ void RemoveObjectsCommand::undo()
 {
   for (auto&& it = m_contextes.rbegin(); it != m_contextes.rend(); ++it) {
     assert(it->subject.owns());
-    OwningObjectTreeContext& context = *it;
+    ObjectTreeOwningContext& context = *it;
 
     // if predecessor is not null, it must had been inserted in the object tree.
     assert(context.predecessor == nullptr || !context.predecessor->is_root());

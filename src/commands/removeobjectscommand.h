@@ -4,7 +4,7 @@
 
 #include "commands/command.h"
 #include "common.h"
-#include "scene/objecttreecontext.h"
+#include "scene/contextes.h"
 
 namespace omm
 {
@@ -20,7 +20,7 @@ public:
   void redo() override;
 
 private:
-  std::vector<OwningObjectTreeContext> m_contextes;
+  std::vector<ObjectTreeOwningContext> m_contextes;
   Scene& m_scene;
 };
 

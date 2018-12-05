@@ -13,13 +13,13 @@
 namespace
 {
 
-bool can_move_drop_items(const std::vector<omm::MoveObjectTreeContext>& contextes)
+bool can_move_drop_items(const std::vector<omm::ObjectTreeMoveContext>& contextes)
 {
-  const auto is_strictly_valid = [](const omm::MoveObjectTreeContext& context) {
+  const auto is_strictly_valid = [](const omm::ObjectTreeMoveContext& context) {
     return context.is_strictly_valid();
   };
 
-  const auto is_valid = [](const omm::MoveObjectTreeContext& context) {
+  const auto is_valid = [](const omm::ObjectTreeMoveContext& context) {
     return context.is_valid();
   };
 
@@ -233,7 +233,7 @@ ObjectTreeAdapter::acquire_inserter_guard(Object& parent, int row)
 }
 
 std::unique_ptr<AbstractRAIIGuard>
-ObjectTreeAdapter::acquire_mover_guard(const MoveObjectTreeContext& context)
+ObjectTreeAdapter::acquire_mover_guard(const ObjectTreeMoveContext& context)
 {
   class MoverGuard : public AbstractRAIIGuard
   {
@@ -305,7 +305,7 @@ bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction a
   case Qt::MoveAction:
     return data->hasFormat(PropertyOwnerMimeData::MIME_TYPE)
         && qobject_cast<const PropertyOwnerMimeData*>(data) != nullptr
-        && can_move_drop_items(make_contextes<MoveObjectTreeContext>(*this, data, row, parent));
+        && can_move_drop_items(make_contextes<ObjectTreeMoveContext>(*this, data, row, parent));
   case Qt::CopyAction:
     return data->hasFormat(PropertyOwnerMimeData::MIME_TYPE)
         && qobject_cast<const PropertyOwnerMimeData*>(data) != nullptr;
@@ -324,12 +324,12 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
     std::unique_ptr<Command> command;
     switch (action) {
     case Qt::MoveAction: {
-      auto move_contextes = make_contextes<MoveObjectTreeContext>(*this, data, row, parent);
+      auto move_contextes = make_contextes<ObjectTreeMoveContext>(*this, data, row, parent);
       m_scene.submit<MoveObjectsCommand>(m_scene, move_contextes);
       break;
     }
     case Qt::CopyAction: {
-      auto copy_contextes = make_contextes<OwningObjectTreeContext>(*this, data, row, parent);
+      auto copy_contextes = make_contextes<ObjectTreeOwningContext>(*this, data, row, parent);
       m_scene.submit<CopyObjectsCommand>(m_scene, std::move(copy_contextes));
       break;
     }

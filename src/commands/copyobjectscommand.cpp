@@ -6,7 +6,7 @@ namespace omm
 {
 
 CopyObjectsCommand
-::CopyObjectsCommand(Scene& scene, std::vector<OwningObjectTreeContext> contextes)
+::CopyObjectsCommand(Scene& scene, std::vector<ObjectTreeOwningContext> contextes)
   : Command(QObject::tr("copy").toStdString())
   , m_contextes(std::move(contextes))
   , m_scene(scene)

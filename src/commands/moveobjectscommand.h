@@ -1,7 +1,7 @@
 #pragma once
 
 #include "commands/command.h"
-#include "scene/objecttreecontext.h"
+#include "scene/contextes.h"
 
 namespace omm
 {
@@ -9,13 +9,13 @@ namespace omm
 class MoveObjectsCommand : public Command
 {
 public:
-  MoveObjectsCommand(Scene& scene, const std::vector<MoveObjectTreeContext>& new_contextes);
+  MoveObjectsCommand(Scene& scene, const std::vector<ObjectTreeMoveContext>& new_contextes);
   void redo();
   void undo();
 
 private:
-  const std::vector<MoveObjectTreeContext> m_new_contextes;
-  const std::vector<MoveObjectTreeContext> m_old_contextes;
+  const std::vector<ObjectTreeMoveContext> m_new_contextes;
+  const std::vector<ObjectTreeMoveContext> m_old_contextes;
   Scene& m_scene;
 };
 
