@@ -12,12 +12,12 @@ namespace omm
 class Scene;
 class Object;
 
-class StyleListAdapter : public ItemModelAdapter<Style, AbstractStyleListObserver>
+class StyleListAdapter : public ItemModelAdapter<AbstractStyleListObserver>
 {
   Q_OBJECT  // TODO remove
 
 public:
-  using ItemModelAdapter<Style, AbstractStyleListObserver>::ItemModelAdapter;
+  using ItemModelAdapter<AbstractStyleListObserver>::ItemModelAdapter;
 
   int rowCount(const QModelIndex& parent = QModelIndex()) const override;
   QVariant data(const QModelIndex& index, int role) const override;

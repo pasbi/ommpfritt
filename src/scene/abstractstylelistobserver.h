@@ -2,6 +2,8 @@
 
 #include "abstractraiiguard.h"
 
+class QAbstractListModel;
+
 namespace omm
 {
 
@@ -9,6 +11,9 @@ class Scene;
 
 class AbstractStyleListObserver
 {
+public:
+  using item_model = QAbstractListModel;
+  using item_type = Style;
 protected:
   virtual std::unique_ptr<AbstractRAIIGuard> acquire_inserter_guard(int row) = 0;
   // virtual std::unique_ptr<AbstractMoverGuard> acquire_mover_guard() = 0;

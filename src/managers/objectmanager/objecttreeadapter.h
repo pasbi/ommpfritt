@@ -12,12 +12,13 @@ namespace omm
 class Scene;
 class Object;
 
-class ObjectTreeAdapter : public ItemModelAdapter<Object, AbstractObjectTreeObserver>
+class ObjectTreeAdapter
+  : public ItemModelAdapter<AbstractObjectTreeObserver>
 {
   Q_OBJECT  // TODO remove
 
 public:
-  using ItemModelAdapter<Object, AbstractObjectTreeObserver>::ItemModelAdapter;
+  using ItemModelAdapter<AbstractObjectTreeObserver>::ItemModelAdapter;
   QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
   QModelIndex parent(const QModelIndex& index) const override;
   int rowCount(const QModelIndex& parent) const override;

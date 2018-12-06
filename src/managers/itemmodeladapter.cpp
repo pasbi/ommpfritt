@@ -26,9 +26,9 @@ bool can_move_drop_items(const std::vector<typename omm::Contextes<T>::Move>& co
       && std::any_of(contextes.begin(), contextes.end(), is_strictly_valid);
 }
 
-template<typename ContextT, typename ObserverT>
+template<typename ContextT, typename ItemModelAdapterT>
 typename std::enable_if<ContextT::is_tree_context, std::vector<ContextT>>::type
-make_contextes( const omm::ItemModelAdapter<typename ContextT::item_type, ObserverT>& adapter,
+make_contextes( const ItemModelAdapterT& adapter,
                 const QMimeData* data, int row, const QModelIndex& parent )
 {
   std::vector<ContextT> contextes;
@@ -37,7 +37,6 @@ make_contextes( const omm::ItemModelAdapter<typename ContextT::item_type, Observ
   auto property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
   auto items = property_owner_mime_data->items<T>();
   if (property_owner_mime_data == nullptr || items.size() == 0) {
-  if (property_owner_mime_data == nullptr || property_owner_mime_data->objects().size() == 0) {
     return contextes;
   }
 
@@ -55,9 +54,9 @@ make_contextes( const omm::ItemModelAdapter<typename ContextT::item_type, Observ
   return contextes;
 }
 
-template<typename ContextT, typename ObserverT>
+template<typename ContextT, typename ItemModelAdapterT>
 typename std::enable_if<!ContextT::is_tree_context, std::vector<ContextT>>::type
-make_contextes( const omm::ItemModelAdapter<typename ContextT::item_type, ObserverT>& adapter,
+make_contextes( const ItemModelAdapterT& adapter,
                 const QMimeData* data, int row, const QModelIndex& parent )
 {
   std::vector<ContextT> contextes;
@@ -87,41 +86,42 @@ make_contextes( const omm::ItemModelAdapter<typename ContextT::item_type, Observ
 namespace omm
 {
 
-template<typename T, typename ObserverT>
-ItemModelAdapter<T, ObserverT>::ItemModelAdapter(Scene& scene)
+template<typename ObserverT>
+ItemModelAdapter<ObserverT>::ItemModelAdapter(Scene& scene)
   : m_scene(scene)
 {
   m_scene.Observed<ObserverT>::register_observer(*this);
 }
 
-template<typename T, typename ObserverT>
-ItemModelAdapter<T, ObserverT>::~ItemModelAdapter()
+template<typename ObserverT>
+ItemModelAdapter<ObserverT>::~ItemModelAdapter()
 {
   m_scene.Observed<ObserverT>::unregister_observer(*this);
 }
 
-template<typename T, typename ObserverT> Qt::DropActions
-ItemModelAdapter<T, ObserverT>::supportedDragActions() const
+template<typename ObserverT> Qt::DropActions
+ItemModelAdapter<ObserverT>::supportedDragActions() const
 {
   return Qt::LinkAction | Qt::MoveAction | Qt::CopyAction;
 }
 
-template<typename T, typename ObserverT> Qt::DropActions
-ItemModelAdapter<T, ObserverT>::supportedDropActions() const
+template<typename ObserverT> Qt::DropActions
+ItemModelAdapter<ObserverT>::supportedDropActions() const
 {
   return Qt::MoveAction | Qt::CopyAction;
 }
 
-template<typename T, typename ObserverT> bool ItemModelAdapter<T, ObserverT>
+template<typename ObserverT> bool ItemModelAdapter<ObserverT>
 ::canDropMimeData( const QMimeData *data, Qt::DropAction action,
                    int row, int column, const QModelIndex &parent ) const
 {
-  using Context = typename Contextes<T>::Move;
+  using item_type = typename ObserverT::item_type;
+  using Context = typename Contextes<item_type>::Move;
   switch (action) {
   case Qt::MoveAction:
     return data->hasFormat(PropertyOwnerMimeData::MIME_TYPE)
         && qobject_cast<const PropertyOwnerMimeData*>(data) != nullptr
-        && can_move_drop_items<T>(make_contextes<Context, ObserverT>(*this, data, row, parent));
+        && can_move_drop_items<item_type>(make_contextes<Context>(*this, data, row, parent));
   case Qt::CopyAction:
     return data->hasFormat(PropertyOwnerMimeData::MIME_TYPE)
         && qobject_cast<const PropertyOwnerMimeData*>(data) != nullptr;
@@ -130,25 +130,26 @@ template<typename T, typename ObserverT> bool ItemModelAdapter<T, ObserverT>
   }
 }
 
-template<typename T, typename ObserverT>
-bool ItemModelAdapter<T, ObserverT>::dropMimeData( const QMimeData *data, Qt::DropAction action,
-                                      int row, int column, const QModelIndex &parent )
+template<typename ObserverT>
+bool ItemModelAdapter<ObserverT>::dropMimeData( const QMimeData *data, Qt::DropAction action,
+                                                int row, int column, const QModelIndex &parent )
 {
-  using MoveContext = typename Contextes<T>::Move;
-  using OwningContext = typename Contextes<T>::Owning;
+  using item_type = typename ObserverT::item_type;
+  using MoveContext = typename Contextes<item_type>::Move;
+  using OwningContext = typename Contextes<item_type>::Owning;
   if (!canDropMimeData(data, action, row, column, parent)) {
     return false;
   } else {
     std::unique_ptr<Command> command;
     switch (action) {
     case Qt::MoveAction: {
-      auto move_contextes = make_contextes<MoveContext, ObserverT>(*this, data, row, parent);
-      m_scene.submit<MoveCommand<T>>(m_scene, move_contextes);
+      auto move_contextes = make_contextes<MoveContext>(*this, data, row, parent);
+      m_scene.submit<MoveCommand<item_type>>(m_scene, move_contextes);
       break;
     }
     case Qt::CopyAction: {
-      auto copy_contextes = make_contextes<OwningContext, ObserverT>(*this, data, row, parent);
-      m_scene.submit<CopyCommand<T>>(m_scene, std::move(copy_contextes));
+      auto copy_contextes = make_contextes<OwningContext>(*this, data, row, parent);
+      m_scene.submit<CopyCommand<item_type>>(m_scene, std::move(copy_contextes));
       break;
     }
     }
@@ -156,14 +157,14 @@ bool ItemModelAdapter<T, ObserverT>::dropMimeData( const QMimeData *data, Qt::Dr
   }
 }
 
-template<typename T, typename ObserverT>
-QStringList ItemModelAdapter<T, ObserverT>::mimeTypes() const
+template<typename ObserverT>
+QStringList ItemModelAdapter<ObserverT>::mimeTypes() const
 {
   return { PropertyOwnerMimeData::MIME_TYPE };
 }
 
-template<typename T, typename ObserverT>
-QMimeData* ItemModelAdapter<T, ObserverT>::mimeData(const QModelIndexList &indexes) const
+template<typename ObserverT>
+QMimeData* ItemModelAdapter<ObserverT>::mimeData(const QModelIndexList &indexes) const
 {
   if (indexes.isEmpty()) {
     return nullptr;
@@ -177,13 +178,13 @@ QMimeData* ItemModelAdapter<T, ObserverT>::mimeData(const QModelIndexList &index
   }
 }
 
-template<typename T, typename ObserverT>
-Scene& ItemModelAdapter<T, ObserverT>::scene() const
+template<typename ObserverT>
+Scene& ItemModelAdapter<ObserverT>::scene() const
 {
   return m_scene;
 }
 
-template class ItemModelAdapter<Object, AbstractObjectTreeObserver>;
-template class ItemModelAdapter<Style, AbstractStyleListObserver>;
+template class ItemModelAdapter<AbstractObjectTreeObserver>;
+template class ItemModelAdapter<AbstractStyleListObserver>;
 
 }  // namespace omm

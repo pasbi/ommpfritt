@@ -2,6 +2,8 @@
 
 #include "abstractraiiguard.h"
 
+class QAbstractItemModel;
+
 namespace omm
 {
 
@@ -9,6 +11,9 @@ class Scene;
 
 class AbstractObjectTreeObserver
 {
+public:
+  using item_model = QAbstractItemModel;
+  using item_type = Object;
 protected:
   virtual std::unique_ptr<AbstractRAIIGuard> acquire_inserter_guard(Object& parent, int row) = 0;
 

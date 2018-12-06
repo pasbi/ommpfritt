@@ -1,17 +1,19 @@
 #pragma once
 
-#include <QAbstractListModel>
+#include <QAbstractItemModel>
 
 namespace omm
 {
 
 class Scene;
 
-template<typename T, typename ObserverT>
-class ItemModelAdapter : public QAbstractListModel, public ObserverT
+template<typename ObserverT>
+class ItemModelAdapter : public ObserverT::item_model, public ObserverT
 {
+  static_assert( std::is_base_of<QAbstractItemModel, typename ObserverT::item_model>::value,
+                 "BaseModel must be derived from QAbstractItemModel" );
 public:
-  using item_type = T;
+  using item_type = typename ObserverT::item_type;
   explicit ItemModelAdapter(Scene& scene);
   virtual ~ItemModelAdapter();
   Qt::DropActions supportedDragActions() const override;
@@ -23,7 +25,7 @@ public:
   QStringList mimeTypes() const override;
   QMimeData* mimeData(const QModelIndexList &indexes) const override;
   Scene& scene() const;
-  virtual T& item_at(const QModelIndex& index) const = 0;
+  virtual item_type& item_at(const QModelIndex& index) const = 0;
 
 private:
   Scene& m_scene;
