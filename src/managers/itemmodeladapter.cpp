@@ -35,6 +35,8 @@ make_contextes( const omm::ItemModelAdapter<typename ContextT::item_type, Observ
   using T = typename ContextT::item_type;
 
   auto property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
+  auto items = property_owner_mime_data->items<T>();
+  if (property_owner_mime_data == nullptr || items.size() == 0) {
   if (property_owner_mime_data == nullptr || property_owner_mime_data->objects().size() == 0) {
     return contextes;
   }
@@ -42,7 +44,6 @@ make_contextes( const omm::ItemModelAdapter<typename ContextT::item_type, Observ
   T& new_parent = adapter.item_at(parent);
   const size_t pos = row < 0 ? new_parent.n_children() : row;
 
-  auto items = property_owner_mime_data->items<T>();
   ContextT::remove_internal_children(items);
   contextes.reserve(items.size());
   const T* predecessor = (pos == 0) ? nullptr : &new_parent.child(pos - 1);
@@ -63,11 +64,13 @@ make_contextes( const omm::ItemModelAdapter<typename ContextT::item_type, Observ
   using T = typename ContextT::item_type;
 
   auto property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
-  if (property_owner_mime_data == nullptr || property_owner_mime_data->objects().size() == 0) {
+  auto items = property_owner_mime_data->items<T>();
+  if (property_owner_mime_data == nullptr || items.size() == 0) {
     return contextes;
   }
 
-  auto items = property_owner_mime_data->items<T>();
+  LOG(INFO) << "List";
+  LOG(INFO) << items.size();
   ContextT::remove_internal_children(items);
   contextes.reserve(items.size());
   const T* predecessor = nullptr; // TODO
@@ -75,7 +78,7 @@ make_contextes( const omm::ItemModelAdapter<typename ContextT::item_type, Observ
     contextes.emplace_back(*subject, predecessor);
     predecessor = subject;
   }
-
+  LOG(INFO) << contextes.size();
   return contextes;
 }
 

@@ -38,9 +38,9 @@ SetA merge(SetA&& a, SetB&& b, Sets&&... sets)
   return merge(merge(a, b), std::forward<Sets>(sets)...);
 }
 
-std::unique_ptr<omm::Style> make_default_style()
+std::unique_ptr<omm::Style> make_default_style(omm::Scene* scene)
 {
-  auto default_style = std::make_unique<omm::Style>();
+  auto default_style = std::make_unique<omm::Style>(scene);
   default_style->property<omm::BoolProperty>(omm::Style::PEN_IS_ACTIVE_KEY).set_value(true);
   default_style->property<omm::BoolProperty>(omm::Style::BRUSH_IS_ACTIVE_KEY).set_value(true);
   return default_style;
@@ -57,7 +57,7 @@ Scene* Scene::m_current = nullptr;
 
 Scene::Scene()
   : m_root(make_root())
-  , m_default_style(make_default_style())
+  , m_default_style(make_default_style(this))
 {
   m_root->property<StringProperty>(Object::NAME_PROPERTY_KEY).value() = "_root_";
   m_current = this;
