@@ -18,11 +18,11 @@ void ObjectManager::on_selection_changed( const QItemSelection& selection,
 {
   for (auto& index : old_selection.indexes()) {
     if (!selection.contains(index)) {
-      m_item_model.object_at(index).deselect();
+      m_item_model.item_at(index).deselect();
     }
   }
   for (auto& index : selection.indexes()) {
-    m_item_model.object_at(index).select();
+    m_item_model.item_at(index).select();
   }
 }
 

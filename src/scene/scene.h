@@ -48,10 +48,10 @@ public:
 
   // === Objects ====
 public:
-  void insert_object(std::unique_ptr<Object> object, Object& parent);
-  void insert_object(ObjectTreeOwningContext& context);
-  void move_object(ObjectTreeMoveContext context);
-  void remove_object(ObjectTreeOwningContext& context);
+  void insert(std::unique_ptr<Object> object, Object& parent);
+  void insert(ObjectTreeOwningContext& context);
+  void move(ObjectTreeMoveContext context);
+  void remove(ObjectTreeOwningContext& context);
   bool can_move_object(const ObjectTreeMoveContext& new_context) const;
   const TGetter<Object> objects = TGetter<Object>(*this);
   std::set<Object*> selected_objects() const;
@@ -70,10 +70,11 @@ public:
 
   // === Styles  ====
 public:
-  void insert_style(std::unique_ptr<Style> style);
-  void insert_style(StyleListOwningContext& style);
-  std::unique_ptr<Style> remove_style(Style& style);  // TODO remove?
-  void remove_style(StyleListOwningContext& style);
+  void insert(std::unique_ptr<Style> style);
+  void insert(StyleListOwningContext& context);
+  std::unique_ptr<Style> remove(Style& style);  // TODO remove?
+  void remove(StyleListOwningContext& style);
+  void move(StyleListMoveContext& context);
   std::set<Style*> styles() const;
   Style& style(size_t i) const;
   std::set<Style*> selected_styles() const;

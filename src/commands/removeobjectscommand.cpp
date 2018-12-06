@@ -45,7 +45,7 @@ void RemoveObjectsCommand::redo()
     assert(!context.subject.owns());
     assert(!context.subject.reference().is_root());
     assert(m_scene.find_reference_holders(context.subject).size() == 0);
-    m_scene.remove_object(context);
+    m_scene.remove(context);
   }
   // important. else, handle or property manager might point to dangling objects
   m_scene.selection_changed();
@@ -59,7 +59,7 @@ void RemoveObjectsCommand::undo()
 
     // if predecessor is not null, it must had been inserted in the object tree.
     assert(context.predecessor == nullptr || !context.predecessor->is_root());
-    m_scene.insert_object(context);
+    m_scene.insert(context);
   }
   m_scene.selection_changed();
 }

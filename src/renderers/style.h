@@ -20,6 +20,7 @@ public:
   explicit Style(Scene* scene = nullptr);
   size_t row() const;
   std::unique_ptr<Style> copy() const override;
+  const Style* predecessor() const;  // TODO factor out into ListElement
 
 private:
   Scene* const m_scene;

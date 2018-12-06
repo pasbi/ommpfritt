@@ -25,7 +25,7 @@ int tag_at(int pos_x)
 auto tags(omm::ObjectTreeView& view, const QModelIndex& index)
 {
   if (index.isValid()) {
-    return view.model()->object_at(index).tags();
+    return view.model()->item_at(index).tags();
   } else {
     return std::vector<omm::Tag*>();
   }

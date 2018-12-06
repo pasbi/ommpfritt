@@ -10,22 +10,6 @@
 #include "commands/attachtagcommand.h"
 #include "renderers/style.h"
 
-namespace
-{
-
-const omm::Object* object_at(const omm::ObjectTreeView& view, const QPoint& pos)
-{
-  const auto index = view.indexAt(pos);
-  const auto& object = view.model()->object_at(index);
-  if (object.is_root()) {
-    return nullptr;
-  } else {
-    return &object;
-  }
-}
-
-}  // namespace
-
 namespace omm
 {
 
@@ -37,7 +21,7 @@ ObjectTreeView::ObjectTreeView()
 
 void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
 {
-  auto* object = &model()->object_at(index);
+  auto* object = &model()->item_at(index);
   if (object->is_root()) {
     object = nullptr;
   }

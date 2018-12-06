@@ -32,7 +32,7 @@ void AddObjectCommand::redo()
   if (!m_owned) {
     LOG(FATAL) << "Command cannot give away non-owned object.";
   } else {
-    m_scene.insert_object(std::move(m_owned), m_scene.root());
+    m_scene.insert(std::move(m_owned), m_scene.root());
     m_scene.selection_changed();
   }
 }

@@ -3,6 +3,7 @@
 #include <functional>
 #include <assert.h>
 #include <memory>
+#include <algorithm>
 #include <glog/logging.h>
 #include "maybeowner.h"
 #include "aspects/treeelement.h"
@@ -14,6 +15,7 @@ template<typename T, template<typename...> class Wrapper>
 class ListContext
 {
 public:
+  using item_type = T;
   ListContext(T& subject, const T* predecessor)
     : subject(subject), predecessor(predecessor)
   {
@@ -48,6 +50,13 @@ public:
       return this->predecessor->row() + 1;
     }
   }
+
+  static void remove_internal_children(std::vector<T*>& objects)
+  {
+    // nothing to do. List items don't have children.
+  }
+
+  static constexpr bool is_tree_context = false;
 };
 
 template<typename T, template<typename...> class Wrapper>
@@ -70,6 +79,25 @@ public:
    * @brief the parent of `subject`
    */
   std::reference_wrapper<T> parent;
+
+
+  static void remove_internal_children(std::vector<T*>& objects)
+  {
+    auto has_parent = [&objects](const T* subject) {
+      // TODO replace with std::any_of
+      for (auto* potential_descendant : objects) {
+        if (potential_descendant != subject && potential_descendant->is_descendant_of(*subject))
+        {
+          return true;
+        }
+      }
+      return false;
+    };
+
+    objects.erase(std::remove_if(objects.begin(), objects.end(), has_parent), objects.end());
+  }
+
+  static constexpr bool is_tree_context = true;
 };
 
 template<typename T, template<typename, template<typename...> class > class StructureT>
@@ -154,9 +182,11 @@ private:
   bool is_root() const { return this->get_subject().is_root(); }
 };
 
+
 class Object;
 using ObjectTreeOwningContext = OwningContext<Object, TreeContext>;
 using ObjectTreeMoveContext = TreeMoveContext<Object>;
+
 
 class Style;
 using StyleListOwningContext = OwningContext<Style, ListContext>;
@@ -165,5 +195,20 @@ using StyleListMoveContext = ListMoveContext<Style>;
 class Tag;
 using TagListOwningContext = OwningContext<Tag, ListContext>;
 using TagListMoveContext = ListMoveContext<Tag>;
+
+template<typename T>
+struct Contextes;
+
+template<> struct Contextes<Object>
+{
+  using Move = ObjectTreeMoveContext;
+  using Owning = ObjectTreeOwningContext;
+};
+
+template<> struct Contextes<Style>
+{
+  using Move = StyleListMoveContext;
+  using Owning = StyleListOwningContext;
+};
 
 }  // namespace omm

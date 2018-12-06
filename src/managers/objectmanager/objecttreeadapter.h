@@ -2,6 +2,7 @@
 
 #include <QAbstractItemModel>
 #include "scene/scene.h"
+#include "managers/itemmodeladapter.h"
 
 class QItemSelection;
 
@@ -11,36 +12,21 @@ namespace omm
 class Scene;
 class Object;
 
-class ObjectTreeAdapter : public QAbstractItemModel, public AbstractObjectTreeObserver
+class ObjectTreeAdapter : public ItemModelAdapter<Object, AbstractObjectTreeObserver>
 {
-  Q_OBJECT
+  Q_OBJECT  // TODO remove
 
 public:
-  explicit ObjectTreeAdapter(Scene& scene);
-  ~ObjectTreeAdapter();
-
-  using item_type = Object;
-
+  using ItemModelAdapter<Object, AbstractObjectTreeObserver>::ItemModelAdapter;
   QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
   QModelIndex parent(const QModelIndex& index) const override;
   int rowCount(const QModelIndex& parent) const override;
   int columnCount(const QModelIndex& parent) const override;
   QVariant data(const QModelIndex& index, int role) const override;
   bool setData(const QModelIndex& index, const QVariant& value, int role) override;
-  Qt::DropActions supportedDragActions() const override;
-  Qt::DropActions supportedDropActions() const override;
-  bool canDropMimeData( const QMimeData *data, Qt::DropAction action,
-                        int row, int column, const QModelIndex &parent ) const override;
-  bool dropMimeData( const QMimeData *data, Qt::DropAction action,
-                     int row, int column, const QModelIndex &parent ) override;
-  QStringList mimeTypes() const override;
-  QMimeData* mimeData(const QModelIndexList &indexes) const override;
-
-  Object& object_at(const QModelIndex& index) const;
-
+  Object& item_at(const QModelIndex& index) const override;
   QModelIndex index_of(Object& object) const;
   Qt::ItemFlags flags(const QModelIndex &index) const;
-
   QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
   friend class AbstractRAIIGuard;
@@ -53,14 +39,6 @@ public:
   std::unique_ptr<AbstractRAIIGuard> acquire_remover_guard(const Object& object) override;
   std::unique_ptr<AbstractRAIIGuard> acquire_reseter_guard() override;
 
-  Scene& scene() const;
-
-private:
-  Scene& m_scene;
-
-  std::vector<omm::ObjectTreeMoveContext>
-  make_new_contextes(const QMimeData* data, int row, const QModelIndex& parent) const;
-  bool m_last_move_was_noop;
 };
 
 }  // namespace omm

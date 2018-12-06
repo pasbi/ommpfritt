@@ -45,7 +45,7 @@ void RemoveStylesCommand::undo()
     auto& context = *it;
 
     // if predecessor is not null, it must had been inserted in the object tree.
-    m_scene.insert_style(context);
+    m_scene.insert(context);
   }
   m_scene.selection_changed();
 }
@@ -55,7 +55,7 @@ void RemoveStylesCommand::redo()
   for (auto&& context : m_contextes) {
     assert(!context.subject.owns());
     assert(m_scene.find_reference_holders(context.subject).size() == 0);
-    m_scene.remove_style(context);
+    m_scene.remove(context);
   }
   // important. else, handle or property manager might point to dangling objects
   m_scene.selection_changed();

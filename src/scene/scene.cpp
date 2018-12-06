@@ -80,7 +80,7 @@ Scene* Scene::currentInstance()
   return m_current;
 }
 
-void Scene::insert_object(std::unique_ptr<Object> object, Object& parent)
+void Scene::insert(std::unique_ptr<Object> object, Object& parent)
 {
   size_t n = parent.children().size();
 
@@ -137,7 +137,7 @@ void Scene::clear_selection()
   selection_changed();
 }
 
-void Scene::move_object(ObjectTreeMoveContext context)
+void Scene::move(ObjectTreeMoveContext context)
 {
   assert(context.is_valid());
   Object& old_parent = context.subject.get().parent();
@@ -151,7 +151,7 @@ void Scene::move_object(ObjectTreeMoveContext context)
   tags.invalidate();
 }
 
-void Scene::insert_object(ObjectTreeOwningContext& context)
+void Scene::insert(ObjectTreeOwningContext& context)
 {
   assert(context.subject.owns());
 
@@ -166,7 +166,7 @@ void Scene::insert_object(ObjectTreeOwningContext& context)
   tags.invalidate();
 }
 
-void Scene::remove_object(ObjectTreeOwningContext& context)
+void Scene::remove(ObjectTreeOwningContext& context)
 {
   assert(!context.subject.owns());
 
@@ -371,7 +371,7 @@ Style& Scene::default_style() const
   return *m_default_style;
 }
 
-void Scene::insert_style(std::unique_ptr<Style> style)
+void Scene::insert(std::unique_ptr<Style> style)
 {
   const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
     [this](auto* observer){ return observer->acquire_inserter_guard(m_styles.size()); }
@@ -380,7 +380,7 @@ void Scene::insert_style(std::unique_ptr<Style> style)
   selection_changed();
 }
 
-void Scene::insert_style(StyleListOwningContext& style)
+void Scene::insert(StyleListOwningContext& style)
 {
   size_t position = style.predecessor == nullptr ? 0 : this->position(*style.predecessor) + 1;
   const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
@@ -390,7 +390,7 @@ void Scene::insert_style(StyleListOwningContext& style)
   selection_changed();
 }
 
-void Scene::remove_style(StyleListOwningContext& style_context)
+void Scene::remove(StyleListOwningContext& style_context)
 {
   const size_t position = this->position(style_context.subject);
   const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
@@ -400,7 +400,7 @@ void Scene::remove_style(StyleListOwningContext& style_context)
   selection_changed();
 }
 
-std::unique_ptr<Style> Scene::remove_style(Style& style)
+std::unique_ptr<Style> Scene::remove(Style& style)
 {
   const size_t position = this->position(style);
   const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
@@ -419,5 +419,9 @@ size_t Scene::position(const Style& style) const
   assert(false);
 }
 
+void Scene::move(StyleListMoveContext& context)
+{
+
+}
 
 }  // namespace omm

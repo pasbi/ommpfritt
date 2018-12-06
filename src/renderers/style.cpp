@@ -2,6 +2,7 @@
 #include "properties/boolproperty.h"
 #include "properties/colorproperty.h"
 #include "properties/floatproperty.h"
+#include "scene/scene.h"
 
 namespace omm
 {
@@ -24,12 +25,22 @@ Style::Style(Scene* scene) : m_scene(scene)
 size_t Style::row() const
 {
   assert(m_scene != nullptr);
-  return 0;
+  return m_scene->position(*this);
 }
 
 std::unique_ptr<Style> Style::copy() const
 {
   return Copyable<Style>::copy(std::make_unique<Style>(m_scene));
+}
+
+const Style* Style::predecessor() const
+{
+  const auto row = this->row();
+  if (row == 0) {
+    return nullptr;
+  } else {
+    return &m_scene->style(row - 1);
+  }
 }
 
 }  // namespace omm

@@ -18,13 +18,13 @@ NewStyleCommand::NewStyleCommand(Scene& scene, std::unique_ptr<Style> style)
 void NewStyleCommand::undo()
 {
   assert(!m_owned);
-  m_owned = m_scene.remove_style(m_reference);
+  m_owned = m_scene.remove(m_reference);
 }
 
 void NewStyleCommand::redo()
 {
   assert(m_owned);
-  m_scene.insert_style(std::move(m_owned));
+  m_scene.insert(std::move(m_owned));
 }
 
 

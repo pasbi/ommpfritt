@@ -76,4 +76,19 @@ PropertyOwnerMimeData::items(AbstractPropertyOwner::Kind kinds) const
   return filter(m_items, kinds);
 }
 
+template<> std::vector<Object*> PropertyOwnerMimeData::items<Object>() const
+{
+  return objects();
+}
+
+template<> std::vector<Style*> PropertyOwnerMimeData::items<Style>() const
+{
+  return styles();
+}
+
+template<> std::vector<Tag*> PropertyOwnerMimeData::items<Tag>() const
+{
+  return tags();
+}
+
 }  // namespace omm
