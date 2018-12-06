@@ -15,8 +15,6 @@ class Object;
 class ObjectTreeAdapter
   : public ItemModelAdapter<AbstractObjectTreeObserver>
 {
-  Q_OBJECT  // TODO remove
-
 public:
   using ItemModelAdapter<AbstractObjectTreeObserver>::ItemModelAdapter;
   QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;

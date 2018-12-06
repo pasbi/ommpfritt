@@ -14,8 +14,6 @@ class Object;
 
 class StyleListAdapter : public ItemModelAdapter<AbstractStyleListObserver>
 {
-  Q_OBJECT  // TODO remove
-
 public:
   using ItemModelAdapter<AbstractStyleListObserver>::ItemModelAdapter;
 

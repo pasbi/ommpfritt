@@ -68,8 +68,6 @@ make_contextes( const ItemModelAdapterT& adapter,
     return contextes;
   }
 
-  LOG(INFO) << "List";
-  LOG(INFO) << items.size();
   ContextT::remove_internal_children(items);
   contextes.reserve(items.size());
   const T* predecessor = nullptr; // TODO

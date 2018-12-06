@@ -16,7 +16,6 @@ class PropertyView;
 
 class PropertyManager : public Manager, public AbstractSelectionObserver
 {
-  Q_OBJECT  // TODO remove?
   DECLARE_MANAGER_TYPE(PropertyManager)
 
 public:
