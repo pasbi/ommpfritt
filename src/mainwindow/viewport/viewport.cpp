@@ -21,7 +21,7 @@ arma::vec2 point2vec(const QPoint& p)
 
 std::unique_ptr<omm::Handle> make_handle(omm::Scene& scene)
 {
-  return std::make_unique<omm::GlobalOrientedHandle>(scene, scene.selected_objects());
+  return std::make_unique<omm::GlobalOrientedHandle>(scene, scene.object_tree.selected_items());
 }
 
 void set_cursor_position(QWidget& widget, const arma::vec2& pos)

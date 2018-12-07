@@ -12,7 +12,7 @@ namespace omm
 AttachTagCommand::AttachTagCommand(Scene& scene, std::unique_ptr<Tag> tag)
   : Command(QObject::tr("Attach Tag").toStdString())
   , m_scene(scene)
-  , m_contextes( ::transform<TagContext, std::vector>( scene.selected_objects(),
+  , m_contextes( ::transform<TagContext, std::vector>( scene.object_tree.selected_items(),
                                                        [&tag](Object* object) {
     return TagContext(*object, tag->copy());
   }))

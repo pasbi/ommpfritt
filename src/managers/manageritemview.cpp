@@ -122,11 +122,13 @@ ItemModelT* ManagerItemView<ItemViewT, ItemModelT>::model() const
 }
 
 template<typename ItemViewT, typename ItemModelT>
-template<typename RemoveCommand, typename PropertyOwner>
+template<typename RemoveCommand, typename StructureT>
 bool ManagerItemView<ItemViewT, ItemModelT>
-::remove_selection(const std::set<PropertyOwner*>& selection)
+::remove_selection(const std::set<item_type*>& selection)
 {
-  return ::remove_selection<RemoveCommand>(*this, this->model()->scene(), selection);
+  // TODO needs specialization probably
+  // return ::remove_selection<RemoveCommand>(*this, this->model()->scene(), selection);
+  return false;
 }
 
 template<typename ItemViewT, typename ItemModelT>
@@ -140,8 +142,8 @@ template class ManagerItemView<QListView, StyleListAdapter>;
 template class ManagerItemView<QTreeView, ObjectTreeAdapter>;
 
 template bool ManagerItemView<QTreeView, ObjectTreeAdapter>
-::remove_selection<RemoveObjectsCommand>(const std::set<Object*>& selection);
+::remove_selection<RemoveObjectsCommand, Tree<Object>>(const std::set<Object*>& selection);
 template bool ManagerItemView<QListView, StyleListAdapter>
-::remove_selection<RemoveStylesCommand>(const std::set<Style*>& selection);
+::remove_selection<RemoveStylesCommand, List<Style>>(const std::set<Style*>& selection);
 
 }  // namespace omm

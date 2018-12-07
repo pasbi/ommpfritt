@@ -12,7 +12,7 @@ void StyleListView::populate_menu(QMenu& menu, const QModelIndex& index) const
 {
   Scene& scene = model()->scene();
   action(menu, tr("&new"), [&scene](){
-    scene.submit<NewStyleCommand>(scene, scene.default_style().copy());
+    scene.submit<NewStyleCommand>(scene.styles, scene.default_style().copy());
   });
 
   if (index.isValid()) {

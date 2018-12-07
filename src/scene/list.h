@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <set>
 #include "scene/contextes_fwd.h"
 #include "scene/structure.h"
 #include "scene/abstractstructureobserver.h"
@@ -14,6 +15,7 @@ class List : public Structure<T>, public Observed<AbstractStructureObserver<List
 {
 public:
   using observer_type = AbstractStructureObserver<List<T>>;
+  using observed_type = Observed<observer_type>;
 
   void insert(std::unique_ptr<T> t);
   void insert(ListOwningContext<T>& context);

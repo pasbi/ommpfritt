@@ -29,7 +29,7 @@ void MainMenuBar::make_create_menu()
   for (const auto& key : Object::keys())
   {
     action(create_menu, QString::fromStdString(key), [this, key]() {
-      m_app.scene().submit<AddObjectCommand>(m_app.scene(), Object::make(key));
+      m_app.scene().submit<AddObjectCommand>(m_app.scene().object_tree, Object::make(key));
     });
   }
 }

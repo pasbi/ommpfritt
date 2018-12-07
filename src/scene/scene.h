@@ -16,7 +16,6 @@
 #include "scene/cachedgetter.h"
 #include "scene/list.h"
 #include "scene/tree.h"
-
 namespace omm
 {
 
@@ -24,14 +23,22 @@ class Command;
 class Object;
 class Project;
 
+template<typename T> struct SceneStructure;
+template<> struct SceneStructure<Object> { using type = Tree<Object>; };
+template<> struct SceneStructure<Style> { using type = List<Style>; };
+
 class Scene
   : public Observed<AbstractSelectionObserver>
-  , public List<Style>
-  , public Tree<Object>
 {
 public:
   Scene();
   ~Scene();
+
+  List<Style> styles;          // TODO make non-assignable
+  Tree<Object> object_tree;    // TODO make non-assignable
+
+  template<typename ItemT> typename SceneStructure<ItemT>::type& structure();
+  template<typename ItemT> const typename SceneStructure<ItemT>::type& structure() const;
 
   ObjectView root_view();
 

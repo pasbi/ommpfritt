@@ -16,13 +16,14 @@ template<typename ItemViewT, typename ItemModelT>
 class ManagerItemView : public ItemViewT, public AbstractSelectionObserver
 {
 public:
+  using item_type = typename ItemModelT::item_type;
   explicit ManagerItemView();
   virtual ~ManagerItemView();
   void set_model(ItemModelT* model);
   ItemModelT* model() const;
 
-  template<typename RemoveCommand, typename PropertyOwner=typename ItemModelT::item_type>
-  bool remove_selection(const std::set<PropertyOwner*>& selection);
+  template<typename RemoveCommand, typename StructureT>
+  bool remove_selection(const std::set<item_type*>& selection);
 
 protected:
   virtual void populate_menu(QMenu& menu, const QModelIndex& index) const = 0;

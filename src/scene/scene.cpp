@@ -24,8 +24,6 @@ auto make_root()
   return std::make_unique<omm::Empty>();
 }
 
-template<typename T> bool is_selected(const T* t) { return t->is_selected(); }
-
 template<typename SetA, typename SetB> SetA merge(SetA&& a, SetB&& b)
 {
   a.insert(b.begin(), b.end());
@@ -46,8 +44,6 @@ std::unique_ptr<omm::Style> make_default_style(omm::Scene* scene)
   return default_style;
 }
 
-using Guard = std::unique_ptr<AbstractRAIIGuard>;
-
 }  // namespace
 
 namespace omm
@@ -56,10 +52,10 @@ namespace omm
 Scene* Scene::m_current = nullptr;
 
 Scene::Scene()
-  : m_root(make_root())
+  : object_tree(make_root())
   , m_default_style(make_default_style(this))
 {
-  m_root->property<StringProperty>(Object::NAME_PROPERTY_KEY).value() = "_root_";
+  object_tree.root().property<StringProperty>(Object::NAME_PROPERTY_KEY).value() = "_root_";
   m_current = this;
 }
 
@@ -70,30 +66,9 @@ Scene::~Scene()
   }
 }
 
-ObjectView Scene::root_view()
-{
-  return ObjectView(*m_root);
-}
-
 Scene* Scene::currentInstance()
 {
   return m_current;
-}
-
-void Scene::insert(std::unique_ptr<Object> object, Object& parent)
-{
-  size_t n = parent.children().size();
-
-  {
-      const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
-      [&parent, n] (auto* observer) { return observer->acquire_inserter_guard(parent, n); }
-    );
-
-    parent.adopt(std::move(object));
-  }
-
-  objects.invalidate();
-  tags.invalidate();
 }
 
 std::set<ReferenceProperty*>
@@ -123,7 +98,7 @@ void Scene::selection_changed()
 
 void Scene::clear_selection()
 {
-  for (auto& o : root().all_descendants()) {
+  for (auto& o : object_tree.items()) {
     o->set_selected(false);
     for (auto& t : o->tags()) {
       t->set_selected(false);
@@ -134,83 +109,86 @@ void Scene::clear_selection()
 
 bool Scene::save_as(const std::string &filename)
 {
-  std::ofstream ofstream(filename);
-  if (ofstream) {
-    auto serializer = AbstractSerializer::make( "JSONSerializer",
-                                                static_cast<std::ostream&>(ofstream) );
-    root().serialize(*serializer, ROOT_POINTER);
+  // std::ofstream ofstream(filename);
+  // if (ofstream) {
+  //   auto serializer = AbstractSerializer::make( "JSONSerializer",
+  //                                               static_cast<std::ostream&>(ofstream) );
+  //   root().serialize(*serializer, ROOT_POINTER);
 
-    serializer->start_array(m_styles.size(), Serializable::make_pointer(STYLES_POINTER));
-    for (size_t i = 0; i < m_styles.size(); ++i) {
-      m_styles[i]->serialize(*serializer, Serializable::make_pointer(STYLES_POINTER, i));
-    }
-    serializer->end_array();
+  //   serializer->start_array(m_styles.size(), Serializable::make_pointer(STYLES_POINTER));
+  //   for (size_t i = 0; i < m_styles.size(); ++i) {
+  //     m_styles[i]->serialize(*serializer, Serializable::make_pointer(STYLES_POINTER, i));
+  //   }
+  //   serializer->end_array();
 
-    LOG(INFO) << "Saved current scene to '" << filename << "'";
-    set_has_pending_changes(false);
-    m_filename = filename;
-    return true;
-  } else {
-    LOG(ERROR) << "Failed to open ofstream at '" << filename << "'";
-    return false;
-  }
+  //   LOG(INFO) << "Saved current scene to '" << filename << "'";
+  //   set_has_pending_changes(false);
+  //   m_filename = filename;
+  //   return true;
+  // } else {
+  //   LOG(ERROR) << "Failed to open ofstream at '" << filename << "'";
+  //   return false;
+  // }
+  return false;
 }
 
 bool Scene::load_from(const std::string &filename)
 {
-  std::ifstream ifstream(filename);
-  if (ifstream) {
-    bool success = false;
+  // std::ifstream ifstream(filename);
+  // if (ifstream) {
+  //   bool success = false;
 
-    try
-    {
-      auto deserializer = AbstractDeserializer::make( "JSONDeserializer",
-                                                      static_cast<std::istream&>(ifstream) );
+  //   try
+  //   {
+  //     auto deserializer = AbstractDeserializer::make( "JSONDeserializer",
+  //                                                     static_cast<std::istream&>(ifstream) );
 
-      const auto object_guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
-        [this](auto* observer) { return observer->acquire_reseter_guard(); }
-      );
+  //     const auto object_guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
+  //       [this](auto* observer) { return observer->acquire_reseter_guard(); }
+  //     );
 
-      const auto style_guards = Observed<AbstractStyleListObserver>::transform<Guard>(
-        [this](auto* observer) { return observer->acquire_reseter_guard(); }
-      );
+  //     const auto style_guards = Observed<AbstractStyleListObserver>::transform<Guard>(
+  //       [this](auto* observer) { return observer->acquire_reseter_guard(); }
+  //     );
 
-      auto new_root = make_root();
-      new_root->deserialize(*deserializer, ROOT_POINTER);
+  //     auto new_root = make_root();
+  //     new_root->deserialize(*deserializer, ROOT_POINTER);
 
-      const auto n_styles = deserializer->array_size(Serializable::make_pointer(STYLES_POINTER));
-      m_styles.clear();
-      m_styles.reserve(n_styles);
-      for (size_t i = 0; i < n_styles; ++i) {
-        const auto style_pointer = Serializable::make_pointer(STYLES_POINTER, i);
-        auto style = std::make_unique<Style>();
-        style->deserialize(*deserializer, style_pointer);
-        m_styles.push_back(std::move(style));
-      }
+  //     const auto n_styles = deserializer->array_size(Serializable::make_pointer(STYLES_POINTER));
+  //     m_styles.clear();
+  //     m_styles.reserve(n_styles);
+  //     for (size_t i = 0; i < n_styles; ++i) {
+  //       const auto style_pointer = Serializable::make_pointer(STYLES_POINTER, i);
+  //       auto style = std::make_unique<Style>();
+  //       style->deserialize(*deserializer, style_pointer);
+  //       m_styles.push_back(std::move(style));
+  //     }
 
-      replace_root(std::move(new_root));
-      success = true;
-      set_has_pending_changes(false);
-      m_filename = filename;
-      tags.invalidate();
-      objects.invalidate();
+  //     replace_root(std::move(new_root));
+  //     success = true;
+  //     set_has_pending_changes(false);
+  //     m_filename = filename;
+  //     tags.invalidate();
+  //     objects.invalidate();
 
-      return true;
-    } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
-      LOG(ERROR) << "Failed to deserialize file at '" << filename << "'.";
-      LOG(INFO) << deserialize_error.what();
-    }
-    return false;
-  } else {
-    LOG(ERROR) << "Failed to open '" << filename << "'.";
-    return false;
-  }
+  //     return true;
+  //   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
+  //     LOG(ERROR) << "Failed to deserialize file at '" << filename << "'.";
+  //     LOG(INFO) << deserialize_error.what();
+  //   }
+  //   return false;
+  // } else {
+  //   LOG(ERROR) << "Failed to open '" << filename << "'.";
+  //   return false;
+  // }
+  return false;
 }
 
 void Scene::reset()
 {
   set_has_pending_changes(false);
-  replace_root(make_root());
+  object_tree.replace_root(make_root());
+  // TODO reset styles
 }
 
 std::string Scene::filename() const
@@ -241,7 +219,7 @@ QUndoStack& Scene::undo_stack()
 template<> std::set<Tag*> Scene::TGetter<Tag>::compute() const
 {
   std::set<Tag*> tags;
-  for (const auto object : m_self.objects()) {
+  for (const auto object : m_self.object_tree.items()) {
     tags = merge(tags, object->tags());
   }
   return tags;
@@ -249,18 +227,20 @@ template<> std::set<Tag*> Scene::TGetter<Tag>::compute() const
 
 std::set<Tag*> Scene::selected_tags() const
 {
-  return ::filter_if(tags(), is_selected<Tag>);
+  // TODO same in Tree, List
+  const auto is_selected = [](const auto* t) { return t->is_selected(); };
+  return ::filter_if(tags(), is_selected);
 }
 
 std::set<AbstractPropertyOwner*> Scene::property_owners() const
 {
-  return merge(std::set<AbstractPropertyOwner*>(), objects(), tags(), styles());
+  return merge(std::set<AbstractPropertyOwner*>(), object_tree.items(), tags(), styles.items());
 }
 
 std::set<AbstractPropertyOwner*> Scene::selection() const
 {
   return merge( std::set<AbstractPropertyOwner*>(),
-                selected_objects(), selected_tags(), selected_styles());
+                object_tree.selected_items(), selected_tags(), styles.selected_items());
 }
 
 Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag)
@@ -291,9 +271,29 @@ Style& Scene::default_style() const
   return *m_default_style;
 }
 
-void Scene::move(StyleListMoveContext& context)
-{
+// void Scene::move(StyleListMoveContext& context)
+// {
 
+// }
+
+template<> typename SceneStructure<Object>::type& Scene::structure<Object>()
+{
+  return object_tree;
+}
+
+template<> const typename SceneStructure<Object>::type& Scene::structure<Object>() const
+{
+  return object_tree;
+}
+
+template<> typename SceneStructure<Style>::type& Scene::structure<Style>()
+{
+  return styles;
+}
+
+template<> const typename SceneStructure<Style>::type& Scene::structure<Style>() const
+{
+  return styles;
 }
 
 }  // namespace omm

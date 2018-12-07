@@ -5,7 +5,7 @@ namespace omm
 {
 
 StyleListAdapter::StyleListAdapter(Scene& scene)
-  : ItemModelAdapter(scene, scene)
+  : ItemModelAdapter(scene, scene.styles)
 {
 }
 

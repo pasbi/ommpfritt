@@ -1,8 +1,23 @@
-#include "scence/tree.h"
+#include "scene/tree.h"
 #include "scene/contextes.h"
+
+namespace
+{
+// TODO same in List
+using Guard = std::unique_ptr<AbstractRAIIGuard>;
+}  // namespace
 
 namespace omm
 {
+
+template<typename T> Tree<T>::Tree(std::unique_ptr<T> root)
+  : m_root(std::move(root))
+{
+}
+
+template<typename T> Tree<T>::~Tree()
+{
+}
 
 template<typename T> T& Tree<T>::root() const
 {
@@ -14,7 +29,7 @@ template<typename T> void Tree<T>::move(TreeMoveContext<T> context)
   assert(context.is_valid());
   Object& old_parent = context.subject.get().parent();
 
-  const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
+  const auto guards = observed_type::template transform<Guard>(
     [&context](auto* observer) { return observer->acquire_mover_guard(context); }
   );
   context.parent.get().adopt(old_parent.repudiate(context.subject), context.predecessor);
@@ -27,7 +42,7 @@ template<typename T> void Tree<T>::insert(TreeOwningContext<T>& context)
 {
   assert(context.subject.owns());
 
-  const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
+  const auto guards = observed_type::template transform<Guard>(
     [&context] (auto* observer) {
       return observer->acquire_inserter_guard(context.parent, context.get_insert_position());
     }
@@ -38,11 +53,27 @@ template<typename T> void Tree<T>::insert(TreeOwningContext<T>& context)
   // tags.invalidate();  // TODO
 }
 
+template<typename T> void Tree<T>::insert(std::unique_ptr<T> item, T& parent)
+{
+  size_t n = parent.children().size();
+
+  {
+    const auto guards = observed_type::template transform<Guard>(
+      [&parent, n] (auto* observer) { return observer->acquire_inserter_guard(parent, n); }
+    );
+
+    parent.adopt(std::move(item));
+  }
+
+  items.invalidate();
+  // tags.invalidate();  // TODO
+}
+
 template<typename T> void Tree<T>::remove(TreeOwningContext<T>& context)
 {
   assert(!context.subject.owns());
 
-  const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
+  const auto guards = observed_type::template transform<Guard>(
     [&context](auto* observer) { return observer->acquire_remover_guard(context.subject); }
   );
   context.subject.capture(context.parent.get().repudiate(context.subject));
@@ -52,7 +83,7 @@ template<typename T> void Tree<T>::remove(TreeOwningContext<T>& context)
 }
 
 template<typename T>
-std::unique_ptr<Object> Tree<T>::replace_root(std::unique_ptr<T> new_root)
+std::unique_ptr<T> Tree<T>::replace_root(std::unique_ptr<T> new_root)
 {
   auto old_root = std::move(m_root);
   m_root = std::move(new_root);
@@ -61,17 +92,21 @@ std::unique_ptr<Object> Tree<T>::replace_root(std::unique_ptr<T> new_root)
 
 template<typename T> std::set<T*> Tree<T>::TGetter::compute() const
 {
-  return m_self.root().all_descendants();
+  return Tree<T>::TGetter::m_self.root().all_descendants();
 }
 
-template<typename T>  std::set<T*> Tree<T>::selected_objects() const
+template<typename T>  std::set<T*> Tree<T>::selected_items() const
 {
-  return ::filter_if(objects(), is_selected<Object>);
+  // TODO same in List, Scene
+  const auto is_selected = [](const auto* t) { return t->is_selected(); };
+  return ::filter_if(items(), is_selected);
 }
 
 template<typename T> const T* Tree<T>::predecessor(const T& sibling) const
 {
   return sibling.predecessor();  // TODO move implementation from T to here.
 }
+
+template class Tree<Object>;
 
 }  // namespace

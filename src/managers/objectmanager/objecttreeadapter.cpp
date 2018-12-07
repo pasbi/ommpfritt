@@ -14,7 +14,7 @@ namespace omm
 {
 
 ObjectTreeAdapter::ObjectTreeAdapter(Scene& scene)
-  : ItemModelAdapter(scene, scene)
+  : ItemModelAdapter(scene, scene.object_tree)
 {
 
 }
