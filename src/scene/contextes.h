@@ -1,7 +1,7 @@
 #pragma once
 
 #include <functional>
-#include <assert.h>
+#include <cassert>
 #include <memory>
 #include <algorithm>
 #include <glog/logging.h>
@@ -25,6 +25,7 @@ public:
   // ListContext(T& subject)
   //   : ListContext(subject, subject.predecessor())
   // {
+  // TODO remove
   // }
 
   Wrapper<T> subject;
@@ -36,21 +37,6 @@ public:
    * @details the parent of `predecessor` must be `parent`.
    */
   const T* predecessor;
-
-  /**
-   * @brief returns the position at which subject must be inserted into the list of parent's
-   *  children such that it comes after `predecessor` or at first if `predecessor` is
-   *  nullptr.
-   * @return the position.
-   */
-  size_t get_insert_position() const
-  {
-    if (this->predecessor == nullptr) {
-      return 0;
-    } else {
-      return this->predecessor->row() + 1;
-    }
-  }
 
   static void remove_internal_children(std::vector<T*>& objects)
   {
@@ -81,21 +67,27 @@ public:
    */
   std::reference_wrapper<T> parent;
 
-
-  static void remove_internal_children(std::vector<T*>& objects)
+  /**
+   * @brief returns the position at which subject must be inserted into the list of parent's
+   *  children such that it comes after `predecessor` or at first if `predecessor` is
+   *  nullptr.
+   * @return the position.
+   */
+  size_t get_insert_position() const
   {
-    auto has_parent = [&objects](const T* subject) {
-      // TODO replace with std::any_of
-      for (auto* potential_descendant : objects) {
-        if (potential_descendant != subject && potential_descendant->is_descendant_of(*subject))
-        {
-          return true;
-        }
-      }
-      return false;
+    return this->predecessor == nullptr ? 0 : this->predecessor->position() + 1;
+  }
+
+  static void remove_internal_children(std::vector<T*>& items)
+  {
+    const auto has_parent = [&items](const T* subject) {
+      const auto predicate = [subject](const T* potential_descendant) {
+        return potential_descendant != subject && potential_descendant->is_descendant_of(*subject);
+      };
+      return std::any_of(items.begin(), items.end(), predicate);
     };
 
-    objects.erase(std::remove_if(objects.begin(), objects.end(), has_parent), objects.end());
+    items.erase(std::remove_if(items.begin(), items.end(), has_parent), items.end());
   }
 
   static constexpr bool is_tree_context = true;

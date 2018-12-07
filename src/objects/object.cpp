@@ -1,6 +1,6 @@
 #include "objects/object.h"
 
-#include <assert.h>
+#include <cassert>
 #include <algorithm>
 #include <map>
 #include <functional>

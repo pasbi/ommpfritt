@@ -20,7 +20,7 @@ template<typename T> T& TreeElement<T>::adopt(std::unique_ptr<T> object, const T
   assert(object->is_root());
   // const ObjectTransformation gt = object->global_transformation();  // TODO
   assert(predecessor == nullptr || &predecessor->parent() == this);
-  const size_t pos = get_insert_position(predecessor);
+  const size_t pos = predecessor == nullptr ? 0 : predecessor->position() + 1;
 
   object->m_parent = &get();
   T& oref = insert(m_children, std::move(object), pos);
@@ -76,40 +76,6 @@ template<typename T> T& TreeElement<T>::parent() const
   return *m_parent;
 }
 
-template<typename T> size_t TreeElement<T>::row() const
-{
-  assert (!is_root());
-  const auto siblings = parent().children();
-  for (size_t i = 0; i < siblings.size(); ++i) {
-    if (siblings[i] == &get()) {
-      return i;
-    }
-  }
-  assert(false);
-}
-
-template<typename T> const T* TreeElement<T>::predecessor() const
-{
-  assert(!is_root());
-  const auto pos = row();
-  if (pos == 0) {
-    return nullptr;
-  } else {
-    return &parent().child(pos - 1);
-  }
-}
-
-template<typename T>
-size_t TreeElement<T>::get_insert_position(const T* child_before_position) const
-{
-  if (child_before_position == nullptr) {
-    return 0;
-  } else {
-    assert(&child_before_position->parent() == this);
-    return child_before_position->row() + 1;
-  }
-}
-
 template<typename T> bool TreeElement<T>::is_descendant_of(const T& subject) const
 {
   if (&subject == this) {
@@ -130,6 +96,15 @@ template<typename T> std::set<T*> TreeElement<T>::all_descendants() const
     all_descendants.insert(child_descendants.begin(), child_descendants.end());
   }
   return all_descendants;
+}
+
+template<typename T> size_t TreeElement<T>::position() const
+{
+  assert (!is_root());
+  const auto siblings = parent().children();
+  const auto it = std::find(siblings.begin(), siblings.end(), this);
+  assert(it != siblings.end());
+  return std::distance(it, siblings.begin());
 }
 
 template class TreeElement<Object>;

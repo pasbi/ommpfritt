@@ -1,7 +1,7 @@
 #include "scene.h"
 #include <random>
 #include <glog/logging.h>
-#include <assert.h>
+#include <cassert>
 #include <QDebug>
 
 #include "objects/empty.h"

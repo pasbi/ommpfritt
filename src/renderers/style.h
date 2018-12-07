@@ -4,7 +4,6 @@
 #include "aspects/selectable.h"
 #include "color/color.h"
 #include "aspects/copycreatable.h"
-#include "aspects/listelement.h"
 
 namespace omm
 {

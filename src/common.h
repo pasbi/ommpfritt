@@ -3,7 +3,7 @@
 #include <functional>
 #include <memory>
 #include <vector>
-#include <assert.h>
+#include <cassert>
 #include <algorithm>
 
 /*

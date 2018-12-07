@@ -1,7 +1,7 @@
 #include "application.h"
 
 #include <glog/logging.h>
-#include <assert.h>
+#include <cassert>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QApplication>

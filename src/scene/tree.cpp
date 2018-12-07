@@ -34,7 +34,7 @@ template<typename T> void Tree<T>::move(TreeMoveContext<T> context)
   );
   context.parent.get().adopt(old_parent.repudiate(context.subject), context.predecessor);
 
-  items.invalidate();
+  m_item_cache_is_dirty = true;
   // tags.invalidate();  // TODO
 }
 
@@ -49,7 +49,7 @@ template<typename T> void Tree<T>::insert(TreeOwningContext<T>& context)
   );
   context.parent.get().adopt(context.subject.release(), context.predecessor);
 
-  items.invalidate();
+  m_item_cache_is_dirty = true;
   // tags.invalidate();  // TODO
 }
 
@@ -65,7 +65,7 @@ template<typename T> void Tree<T>::insert(std::unique_ptr<T> item, T& parent)
     parent.adopt(std::move(item));
   }
 
-  items.invalidate();
+  m_item_cache_is_dirty = true;
   // tags.invalidate();  // TODO
 }
 
@@ -78,7 +78,7 @@ template<typename T> void Tree<T>::remove(TreeOwningContext<T>& context)
   );
   context.subject.capture(context.parent.get().repudiate(context.subject));
 
-  items.invalidate();
+  m_item_cache_is_dirty = true;
   // tags.invalidate();  // TODO
 }
 
@@ -90,21 +90,29 @@ std::unique_ptr<T> Tree<T>::replace_root(std::unique_ptr<T> new_root)
   return old_root;
 }
 
-template<typename T> std::set<T*> Tree<T>::TGetter::compute() const
+template<typename T> std::set<T*> Tree<T>::items() const
 {
-  return Tree<T>::TGetter::m_self.root().all_descendants();
+  if (m_item_cache_is_dirty) {
+    m_item_cache_is_dirty = false;
+    m_item_cache = root().all_descendants();
+  }
+  return m_item_cache;
 }
 
-template<typename T>  std::set<T*> Tree<T>::selected_items() const
+template<typename T> size_t Tree<T>::position(const T& item) const
 {
-  // TODO same in List, Scene
-  const auto is_selected = [](const auto* t) { return t->is_selected(); };
-  return ::filter_if(items(), is_selected);
+  return item.position();
 }
 
 template<typename T> const T* Tree<T>::predecessor(const T& sibling) const
 {
-  return sibling.predecessor();  // TODO move implementation from T to here.
+  assert(!sibling.is_root());
+  const auto pos = position(sibling);
+  if (pos == 0) {
+    return nullptr;
+  } else {
+    return &sibling.parent().child(pos - 1);
+  }
 }
 
 template class Tree<Object>;

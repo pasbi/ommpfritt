@@ -22,11 +22,11 @@ public:
   std::unique_ptr<T> remove(T& t); // TODO remove?
   void remove(ListOwningContext<T>& t);
   void move(ListMoveContext<T>& context);
-  std::set<T*> items() const;
   T& item(size_t i) const;
-  std::set<T*> selected_items() const;
-  size_t position(const T& item) const;
+
+  std::set<T*> items() const override;
   const T* predecessor(const T& sibling) const override;
+  size_t position(const T& item) const;
 
 private:
   std::vector<std::unique_ptr<Style>> m_items;

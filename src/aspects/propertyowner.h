@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glog/logging.h>
-#include <assert.h>
+#include <cassert>
 #include <map>
 #include <memory>
 #include <typeinfo>

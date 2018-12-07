@@ -1,4 +1,4 @@
-#include <assert.h>
+#include <cassert>
 #include <cmath>
 #include <glog/logging.h>
 

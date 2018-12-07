@@ -22,13 +22,6 @@ template<typename T> T& List<T>::item(size_t i) const
   return *m_items[i].get();
 }
 
-template<typename T> std::set<T*> List<T>::selected_items() const
-{
-  // TODO same in Tree
-  const auto is_selected = [](const auto* t) { return t->is_selected(); };
-  return ::filter_if(items(), is_selected);
-}
-
 template<typename T> void List<T>::insert(std::unique_ptr<T> item)
 {
   const auto guards = observed_type::template transform<Guard>(

@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 #include <set>
-#include <stdint.h>
+#include <cstdint>
 #include <QAbstractItemModel>
 #include <QUndoStack>
 

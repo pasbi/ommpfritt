@@ -1,6 +1,6 @@
 #include "properties/property.h"
 #include <algorithm>
-#include <assert.h>
+#include <cassert>
 #include "objects/object.h"
 
 #include "properties/floatproperty.h"

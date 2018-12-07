@@ -1,6 +1,6 @@
 #include "color/color.h"
 
-#include <assert.h>
+#include <cassert>
 #include <glog/logging.h>
 
 namespace omm

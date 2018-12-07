@@ -20,13 +20,12 @@ public:
   std::unique_ptr<T> repudiate(T& repudiatee);
   std::vector<T*> children() const;
   T& child(size_t i) const;
-  size_t row() const;
   const T* predecessor() const;
   size_t n_children() const;
-  size_t get_insert_position(const T* child_before_position) const;
   bool is_descendant_of(const T& subject) const;
   void reset_parent(T& new_parent);
   std::set<T*> all_descendants() const;
+  size_t position() const;
 
 private:
   std::vector<std::unique_ptr<T>> m_children;

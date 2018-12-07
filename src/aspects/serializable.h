@@ -2,7 +2,7 @@
 
 #include <sstream>
 #include <glog/logging.h>
-#include <assert.h>
+#include <cassert>
 #include <memory>
 
 namespace omm
