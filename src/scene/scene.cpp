@@ -96,11 +96,6 @@ void Scene::insert(std::unique_ptr<Object> object, Object& parent)
   tags.invalidate();
 }
 
-Object& Scene::root() const
-{
-  return *m_root;
-}
-
 std::set<ReferenceProperty*>
 Scene::find_reference_holders(const AbstractPropertyOwner& candidate) const
 {
@@ -135,48 +130,6 @@ void Scene::clear_selection()
     }
   }
   selection_changed();
-}
-
-void Scene::move(ObjectTreeMoveContext context)
-{
-  assert(context.is_valid());
-  Object& old_parent = context.subject.get().parent();
-
-  const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
-    [&context](auto* observer) { return observer->acquire_mover_guard(context); }
-  );
-  context.parent.get().adopt(old_parent.repudiate(context.subject), context.predecessor);
-
-  objects.invalidate();
-  tags.invalidate();
-}
-
-void Scene::insert(ObjectTreeOwningContext& context)
-{
-  assert(context.subject.owns());
-
-  const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
-    [&context] (auto* observer) {
-      return observer->acquire_inserter_guard(context.parent, context.get_insert_position());
-    }
-  );
-  context.parent.get().adopt(context.subject.release(), context.predecessor);
-
-  objects.invalidate();
-  tags.invalidate();
-}
-
-void Scene::remove(ObjectTreeOwningContext& context)
-{
-  assert(!context.subject.owns());
-
-  const auto guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
-    [&context](auto* observer) { return observer->acquire_remover_guard(context.subject); }
-  );
-  context.subject.capture(context.parent.get().repudiate(context.subject));
-
-  objects.invalidate();
-  tags.invalidate();
 }
 
 bool Scene::save_as(const std::string &filename)
@@ -285,19 +238,6 @@ QUndoStack& Scene::undo_stack()
 {
   return m_undo_stack;
 }
-
-std::unique_ptr<Object> Scene::replace_root(std::unique_ptr<Object> new_root)
-{
-  auto old_root = std::move(m_root);
-  m_root = std::move(new_root);
-  return old_root;
-}
-
-template<> std::set<Object*> Scene::TGetter<Object>::compute() const
-{
-  return m_self.root().all_descendants();
-}
-
 template<> std::set<Tag*> Scene::TGetter<Tag>::compute() const
 {
   std::set<Tag*> tags;
@@ -307,29 +247,9 @@ template<> std::set<Tag*> Scene::TGetter<Tag>::compute() const
   return tags;
 }
 
-std::set<Style*> Scene::styles() const
-{
-  return ::transform<Style*, std::set>(m_styles, [](auto&& style) { return style.get(); });
-}
-
-Style& Scene::style(size_t i) const
-{
-  return *m_styles[i].get();
-}
-
-std::set<Object*> Scene::selected_objects() const
-{
-  return ::filter_if(objects(), is_selected<Object>);
-}
-
 std::set<Tag*> Scene::selected_tags() const
 {
   return ::filter_if(tags(), is_selected<Tag>);
-}
-
-std::set<Style*> Scene::selected_styles() const
-{
-  return ::filter_if(styles(), is_selected<Style>);
 }
 
 std::set<AbstractPropertyOwner*> Scene::property_owners() const
@@ -369,54 +289,6 @@ std::unique_ptr<Tag> Scene::detach_tag(Object& owner, Tag& tag)
 Style& Scene::default_style() const
 {
   return *m_default_style;
-}
-
-void Scene::insert(std::unique_ptr<Style> style)
-{
-  const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
-    [this](auto* observer){ return observer->acquire_inserter_guard(m_styles.size()); }
-  );
-  m_styles.push_back(std::move(style));
-  selection_changed();
-}
-
-void Scene::insert(StyleListOwningContext& style)
-{
-  size_t position = style.predecessor == nullptr ? 0 : this->position(*style.predecessor) + 1;
-  const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
-    [this, position](auto* observer){ return observer->acquire_inserter_guard(position); }
-  );
-  m_styles.insert(m_styles.begin() + position, style.subject.release());
-  selection_changed();
-}
-
-void Scene::remove(StyleListOwningContext& style_context)
-{
-  const size_t position = this->position(style_context.subject);
-  const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
-    [this, position](auto* observer){ return observer->acquire_remover_guard(position); }
-  );
-  style_context.subject.capture(::extract(m_styles, style_context.subject.reference()));
-  selection_changed();
-}
-
-std::unique_ptr<Style> Scene::remove(Style& style)
-{
-  const size_t position = this->position(style);
-  const auto guards = Observed<AbstractStyleListObserver>::transform<Guard>(
-    [this, position](auto* observer){ return observer->acquire_remover_guard(position); }
-  );
-  return ::extract(m_styles, style);
-}
-
-size_t Scene::position(const Style& style) const
-{
-  for (size_t i = 0; i < m_styles.size(); ++i) {
-    if (m_styles[i].get() == &style) {
-      return i;
-    }
-  }
-  assert(false);
 }
 
 void Scene::move(StyleListMoveContext& context)

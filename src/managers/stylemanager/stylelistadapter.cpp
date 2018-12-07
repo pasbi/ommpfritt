@@ -4,10 +4,15 @@
 namespace omm
 {
 
+StyleListAdapter::StyleListAdapter(Scene& scene)
+  : ItemModelAdapter(scene, scene)
+{
+}
+
 int StyleListAdapter::rowCount(const QModelIndex& parent) const
 {
   assert(!parent.isValid());
-  return scene().styles().size();
+  return structure().items().size();
 }
 
 QVariant StyleListAdapter::data(const QModelIndex& index, int role) const
@@ -21,7 +26,7 @@ QVariant StyleListAdapter::data(const QModelIndex& index, int role) const
   switch (role) {
   case Qt::DisplayRole:
   case Qt::EditRole:
-    return QString::fromStdString(scene().style(index.row()).name());
+    return QString::fromStdString(structure().item(index.row()).name());
   }
   return QVariant();
 }
@@ -96,7 +101,7 @@ bool StyleListAdapter::setData(const QModelIndex& index, const QVariant& value, 
   assert(index.column() == 0);
   assert(!index.parent().isValid());
 
-  auto& style = scene().style(index.row());
+  auto& style = structure().item(index.row());
   auto& name_property = style.property<StringProperty>(Object::NAME_PROPERTY_KEY);
   name_property.set_value(value.toString().toStdString());
   return true;
@@ -106,7 +111,7 @@ Style& StyleListAdapter::item_at(const QModelIndex& index) const
 {
   assert(index.isValid());
   assert(!index.parent().isValid());
-  return scene().style(index.row());
+  return structure().item(index.row());
 }
 
 }  // namespace omm

@@ -2,17 +2,24 @@
 #include "objects/object.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
+#include "scene/tree.h"
+#include "scene/list.h"
 
 namespace
 {
 
-template<typename T> using Context = typename omm::MoveCommand<T>::Context;
+template<typename Structure>
+using Context = typename omm::MoveCommand<Structure>::Context;
 
-template<typename T> Context<T>
-make_old_context(const Context<T>& new_context)
+
+template<typename Structure>
+auto make_old_contextes( const Structure& structure,
+                         const std::vector<Context<Structure>>& new_contextes )
 {
-  // TODO better use general Context ctor here than defining a special Context ctor
-  return Context<T>(new_context.subject);
+  const auto make_old_context = [&structure](const auto& new_context) {
+    return Context<Structure>(new_context.subject, structure.predecessor(new_context.subject));
+  };
+  return ::transform<Context<Structure>>(new_contextes, make_old_context);
 }
 
 }  // namespace
@@ -20,30 +27,30 @@ make_old_context(const Context<T>& new_context)
 namespace omm
 {
 
-template<typename T> MoveCommand<T>
-::MoveCommand(Scene& scene, const std::vector<Context>& new_contextes)
+template<typename Structure> MoveCommand<Structure>
+::MoveCommand(Structure& structure, const std::vector<Context>& new_contextes)
   : Command(QObject::tr("reparent").toStdString())
-  , m_old_contextes(::transform<Context>(new_contextes, make_old_context<T>))
+  , m_old_contextes(make_old_contextes(structure, new_contextes))
   , m_new_contextes(new_contextes)
-  , m_scene(scene)
+  , m_structure(structure)
 {
 }
 
-template<typename T> void MoveCommand<T>::MoveCommand::redo()
+template<typename Structure> void MoveCommand<Structure>::redo()
 {
   for (auto& context : m_new_contextes) {
-    m_scene.move(context);
+    m_structure.move(context);
   }
 }
 
-template<typename T> void MoveCommand<T>::MoveCommand::undo()
+template<typename Structure> void MoveCommand<Structure>::undo()
 {
   for (auto& context : m_old_contextes) {
-    m_scene.move(context);
+    m_structure.move(context);
   }
 }
 
-template class MoveCommand<Object>;
-template class MoveCommand<Style>;
+template class MoveCommand<Tree<Object>>;
+template class MoveCommand<List<Style>>;
 
 }  // namespace omm

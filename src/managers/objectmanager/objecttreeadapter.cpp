@@ -13,6 +13,12 @@
 namespace omm
 {
 
+ObjectTreeAdapter::ObjectTreeAdapter(Scene& scene)
+  : ItemModelAdapter(scene, scene)
+{
+
+}
+
 QModelIndex ObjectTreeAdapter::index(int row, int column, const QModelIndex& parent) const
 {
   if (!hasIndex(row, column, parent)) {
@@ -90,7 +96,7 @@ Object& ObjectTreeAdapter::item_at(const QModelIndex& index) const
     assert(index.internalPointer() != nullptr);
     return *static_cast<Object*>(index.internalPointer());
   } else {
-    return scene().root();
+    return structure().root();
   }
 }
 

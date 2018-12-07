@@ -7,7 +7,8 @@
 namespace omm
 {
 
-Style::Style(Scene* scene) : m_scene(scene)
+Style::Style(Scene* scene)
+  : m_scene(scene)
 {
   add_property(PEN_IS_ACTIVE_KEY, std::make_unique<BoolProperty>(false))
     .set_label("active").set_category("pen");
@@ -22,25 +23,9 @@ Style::Style(Scene* scene) : m_scene(scene)
     .set_label("color").set_category("brush");
 }
 
-size_t Style::row() const
-{
-  assert(m_scene != nullptr);
-  return m_scene->position(*this);
-}
-
 std::unique_ptr<Style> Style::copy() const
 {
   return Copyable<Style>::copy(std::make_unique<Style>(m_scene));
-}
-
-const Style* Style::predecessor() const
-{
-  const auto row = this->row();
-  if (row == 0) {
-    return nullptr;
-  } else {
-    return &m_scene->style(row - 1);
-  }
 }
 
 }  // namespace omm

@@ -8,18 +8,19 @@ namespace omm
 {
 
 class Style;
+template<typename> class List;
 
 class RemoveStylesCommand : public Command
 {
 public:
-  RemoveStylesCommand(Scene& scene, const std::set<omm::Style*>& styles);
+  RemoveStylesCommand(List<Style>& structure, const std::set<omm::Style*>& styles);
 
   void undo() override;
   void redo() override;
 
 private:
   std::vector<StyleListOwningContext> m_contextes;
-  Scene& m_scene;
+  List<Style>& m_structure;
 };
 
 }  // namespace omm

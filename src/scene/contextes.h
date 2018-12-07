@@ -5,8 +5,9 @@
 #include <memory>
 #include <algorithm>
 #include <glog/logging.h>
-#include "maybeowner.h"
 #include "aspects/treeelement.h"
+#include "scene/structure.h"
+#include "scene/contextes_fwd.h"
 
 namespace omm
 {
@@ -21,10 +22,10 @@ public:
   {
   }
 
-  ListContext(T& subject)
-    : ListContext(subject, subject.predecessor())
-  {
-  }
+  // ListContext(T& subject)
+  //   : ListContext(subject, subject.predecessor())
+  // {
+  // }
 
   Wrapper<T> subject;
   T& get_subject() const { return subject; }
@@ -70,8 +71,8 @@ public:
     assert(this->predecessor == nullptr || &this->predecessor->parent() == &this->parent.get());
   }
 
-  TreeContext(T& subject)
-    : ListContext<T, Wrapper>(subject, subject.predecessor()), parent(subject.parent())
+  TreeContext(T& subject, const T* predecessor)
+    : ListContext<T, Wrapper>(subject, predecessor), parent(subject.parent())
   {
   }
 
@@ -100,11 +101,11 @@ public:
   static constexpr bool is_tree_context = true;
 };
 
-template<typename T, template<typename, template<typename...> class > class StructureT>
-class MoveContext : public StructureT<T, std::reference_wrapper>
+template<typename T, template<typename, template<typename...> class > class ContextT>
+class MoveContext : public ContextT<T, std::reference_wrapper>
 {
 public:
-  using StructureT<T, std::reference_wrapper>::StructureT;
+  using ContextT<T, std::reference_wrapper>::ContextT;
   /**
    * @brief returns whether the context does produce illogical states
    *  in order to return true, all of the following conditions must be true:
@@ -120,16 +121,19 @@ public:
    *    - context must be valid (@code is_valid())
    *    - predecessor and predecessor of subject must be different objects
    */
-  virtual bool is_strictly_valid() const = 0;
+  virtual bool is_strictly_valid(const Structure<T>&) const = 0;
 
 protected:
-  bool same_predecessor() const { return this->predecessor == this->get_subject().predecessor(); }
-  bool subject_is_predecessor() const { return this->predecessor == &this->get_subject(); }
+  bool same_predecessor(const Structure<T>& structure) const
+  {
+    return this->predecessor == structure.predecessor(this->get_subject());
+  }
+
+  bool subject_is_predecessor() const
+  {
+    return this->predecessor == &this->get_subject();
+  }
 };
-
-template<typename T, template<typename, template<typename...> class > class StructureT>
-using OwningContext = StructureT<T, MaybeOwner>;
-
 
 template<typename T>
 class TreeMoveContext : public MoveContext<T, TreeContext>
@@ -141,9 +145,9 @@ public:
     return !is_root() && !moves_into_itself() && !this->subject_is_predecessor();
   }
 
-  bool is_strictly_valid() const override
+  bool is_strictly_valid(const Structure<T>& structure) const override
   {
-    return is_valid() && !moves_before_itself();
+    return is_valid() && !moves_before_itself(structure);
   }
 
 private:
@@ -154,12 +158,13 @@ private:
     return &this->parent.get() == &this->get_subject();
   }
 
-  bool moves_before_itself() const
+  bool moves_before_itself(const Structure<T>& structure) const
   {
-    const bool parent_does_not_change = &this->parent.get() == &this->get_subject().parent();
+    const bool parent_does_not_change = &this->parent.get()
+                                     == structure.predecessor(this->get_subject());
 
     // the `parent_does_not_change` test is only required if `predecessor == nullptr`.
-    return parent_does_not_change && this->same_predecessor();
+    return parent_does_not_change && this->same_predecessor(structure);
   }
 };
 
@@ -173,42 +178,13 @@ public:
     return !this->subject_is_predecessor();
   }
 
-  bool is_strictly_valid() const override
+  bool is_strictly_valid(const Structure<T>& structure) const override
   {
-    return is_valid() && !this->same_predecessor();
+    return is_valid() && !this->same_predecessor(structure);
   }
 
 private:
   bool is_root() const { return this->get_subject().is_root(); }
-};
-
-
-class Object;
-using ObjectTreeOwningContext = OwningContext<Object, TreeContext>;
-using ObjectTreeMoveContext = TreeMoveContext<Object>;
-
-
-class Style;
-using StyleListOwningContext = OwningContext<Style, ListContext>;
-using StyleListMoveContext = ListMoveContext<Style>;
-
-class Tag;
-using TagListOwningContext = OwningContext<Tag, ListContext>;
-using TagListMoveContext = ListMoveContext<Tag>;
-
-template<typename T>
-struct Contextes;
-
-template<> struct Contextes<Object>
-{
-  using Move = ObjectTreeMoveContext;
-  using Owning = ObjectTreeOwningContext;
-};
-
-template<> struct Contextes<Style>
-{
-  using Move = StyleListMoveContext;
-  using Owning = StyleListOwningContext;
 };
 
 }  // namespace omm

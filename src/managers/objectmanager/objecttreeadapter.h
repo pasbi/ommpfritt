@@ -3,6 +3,9 @@
 #include <QAbstractItemModel>
 #include "scene/scene.h"
 #include "managers/itemmodeladapter.h"
+#include "scene/tree.h"
+#include "scene/abstractstructureobserver.h"
+#include "objects/object.h"
 
 class QItemSelection;
 
@@ -12,11 +15,10 @@ namespace omm
 class Scene;
 class Object;
 
-class ObjectTreeAdapter
-  : public ItemModelAdapter<AbstractObjectTreeObserver>
+class ObjectTreeAdapter : public ItemModelAdapter<Tree<Object>, QAbstractItemModel>
 {
 public:
-  using ItemModelAdapter<AbstractObjectTreeObserver>::ItemModelAdapter;
+  explicit ObjectTreeAdapter(Scene& scene);
   QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
   QModelIndex parent(const QModelIndex& index) const override;
   int rowCount(const QModelIndex& parent) const override;

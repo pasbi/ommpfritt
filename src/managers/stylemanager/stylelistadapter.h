@@ -9,13 +9,10 @@ class QItemSelection;
 namespace omm
 {
 
-class Scene;
-class Object;
-
-class StyleListAdapter : public ItemModelAdapter<AbstractStyleListObserver>
+class StyleListAdapter : public ItemModelAdapter<List<Style>, QAbstractListModel>
 {
 public:
-  using ItemModelAdapter<AbstractStyleListObserver>::ItemModelAdapter;
+  explicit StyleListAdapter(Scene& scene);
 
   int rowCount(const QModelIndex& parent = QModelIndex()) const override;
   QVariant data(const QModelIndex& index, int role) const override;

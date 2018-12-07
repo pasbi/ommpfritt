@@ -1,20 +1,25 @@
 #pragma once
 
 #include <QAbstractItemModel>
+#include "scene/structure.h"
+#include "scene/abstractstructureobserver.h"
+#include "objects/object.h"
+#include "scene/tree.h"
+#include "scene/list.h"
 
 namespace omm
 {
 
 class Scene;
 
-template<typename ObserverT>
-class ItemModelAdapter : public ObserverT::item_model, public ObserverT
+template<typename StructureT, typename ItemModel>
+class ItemModelAdapter : public ItemModel, public AbstractStructureObserver<StructureT>
 {
-  static_assert( std::is_base_of<QAbstractItemModel, typename ObserverT::item_model>::value,
-                 "BaseModel must be derived from QAbstractItemModel" );
+  static_assert( std::is_base_of<QAbstractItemModel, ItemModel>::value,
+                 "ItemModel must be derived from QAbstractItemModel" );
 public:
-  using item_type = typename ObserverT::item_type;
-  explicit ItemModelAdapter(Scene& scene);
+  using item_type = typename StructureT::item_type;
+  explicit ItemModelAdapter(Scene& scene, StructureT& structure);
   virtual ~ItemModelAdapter();
   Qt::DropActions supportedDragActions() const override;
   Qt::DropActions supportedDropActions() const override;
@@ -24,11 +29,13 @@ public:
                       int row, int column, const QModelIndex &parent ) override;
   QStringList mimeTypes() const override;
   QMimeData* mimeData(const QModelIndexList &indexes) const override;
-  Scene& scene() const;
+  StructureT& structure() const;
   virtual item_type& item_at(const QModelIndex& index) const = 0;
+  Scene& scene() const;
 
 private:
   Scene& m_scene;
+  StructureT& m_structure;
 };
 
 }  // namespace omm

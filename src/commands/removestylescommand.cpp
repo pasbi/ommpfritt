@@ -1,18 +1,18 @@
 #include "commands/removestylescommand.h"
-#include "scene/scene.h"
+#include "scene/list.h"
 #include "renderers/style.h"
 
 namespace
 {
 
 // TODO same as RemoveObjectsCommand.cpp:make_contextes()
-auto make_contextes(omm::Scene& scene, const std::set<omm::Style*>& selection)
+auto make_contextes(omm::List<omm::Style>& structure, const std::set<omm::Style*>& selection)
 {
   std::vector<omm::StyleListOwningContext> contextes;
   contextes.reserve(selection.size());
   for (auto style : selection) {
-    size_t position = scene.position(*style);
-    contextes.emplace_back(*style, position == 0 ? nullptr : &scene.style(position-1));
+    size_t position = structure.position(*style);
+    contextes.emplace_back(*style, position == 0 ? nullptr : &structure.item(position-1));
   }
 
   // assert that to-be-inserted objects' predecessor is already in the tree,
@@ -32,9 +32,10 @@ auto make_contextes(omm::Scene& scene, const std::set<omm::Style*>& selection)
 namespace omm
 {
 
-RemoveStylesCommand::RemoveStylesCommand(Scene& scene, const std::set<omm::Style*>& styles)
+RemoveStylesCommand
+::RemoveStylesCommand(List<Style>& structure, const std::set<omm::Style*>& styles)
   : Command(QObject::tr("remove").toStdString())
-  , m_scene(scene), m_contextes(make_contextes(scene, styles))
+  , m_structure(structure), m_contextes(make_contextes(structure, styles))
 {
 }
 
@@ -45,20 +46,20 @@ void RemoveStylesCommand::undo()
     auto& context = *it;
 
     // if predecessor is not null, it must had been inserted in the object tree.
-    m_scene.insert(context);
+    m_structure.insert(context);
   }
-  m_scene.selection_changed();
+  // m_structure.selection_changed();  // TODO
 }
 
 void RemoveStylesCommand::redo()
 {
   for (auto&& context : m_contextes) {
     assert(!context.subject.owns());
-    assert(m_scene.find_reference_holders(context.subject).size() == 0);
-    m_scene.remove(context);
+    // assert(m_structure.find_reference_holders(context.subject).size() == 0);  // TODO
+    m_structure.remove(context);
   }
   // important. else, handle or property manager might point to dangling objects
-  m_scene.selection_changed();
+  // m_structure.selection_changed();  // TODO
 }
 
 }  // namespace omm

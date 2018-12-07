@@ -6,15 +6,18 @@
 #include "scene/scene.h"
 #include "commands/movecommand.h"
 #include "commands/copycommand.h"
+#include <QAbstractItemModel>
+#include <QAbstractListModel>
 
 namespace
 {
 
-template<typename T>
-bool can_move_drop_items(const std::vector<typename omm::Contextes<T>::Move>& contextes)
+template<typename T, typename StructureT> bool
+can_move_drop_items( StructureT& structure,
+                     const std::vector<typename omm::Contextes<T>::Move>& contextes )
 {
-  const auto is_strictly_valid = [](const typename omm::Contextes<T>::Move& context) {
-    return context.is_strictly_valid();
+  const auto is_strictly_valid = [&structure](const typename omm::Contextes<T>::Move& context) {
+    return context.is_strictly_valid(structure);
   };
 
   const auto is_valid = [](const typename omm::Contextes<T>::Move& context) {
@@ -84,42 +87,43 @@ make_contextes( const ItemModelAdapterT& adapter,
 namespace omm
 {
 
-template<typename ObserverT>
-ItemModelAdapter<ObserverT>::ItemModelAdapter(Scene& scene)
+template<typename StructureT, typename ItemModel>
+ItemModelAdapter<StructureT, ItemModel>::ItemModelAdapter(Scene& scene, StructureT& structure)
   : m_scene(scene)
+  , m_structure(structure)
 {
-  m_scene.Observed<ObserverT>::register_observer(*this);
+  m_structure.Observed<AbstractStructureObserver<StructureT>>::register_observer(*this);
 }
 
-template<typename ObserverT>
-ItemModelAdapter<ObserverT>::~ItemModelAdapter()
+template<typename StructureT, typename ItemModel>
+ItemModelAdapter<StructureT, ItemModel>::~ItemModelAdapter()
 {
-  m_scene.Observed<ObserverT>::unregister_observer(*this);
+  m_structure.Observed<AbstractStructureObserver<StructureT>>::unregister_observer(*this);
 }
 
-template<typename ObserverT> Qt::DropActions
-ItemModelAdapter<ObserverT>::supportedDragActions() const
+template<typename StructureT, typename ItemModel> Qt::DropActions
+ItemModelAdapter<StructureT, ItemModel>::supportedDragActions() const
 {
   return Qt::LinkAction | Qt::MoveAction | Qt::CopyAction;
 }
 
-template<typename ObserverT> Qt::DropActions
-ItemModelAdapter<ObserverT>::supportedDropActions() const
+template<typename StructureT, typename ItemModel> Qt::DropActions
+ItemModelAdapter<StructureT, ItemModel>::supportedDropActions() const
 {
   return Qt::MoveAction | Qt::CopyAction;
 }
 
-template<typename ObserverT> bool ItemModelAdapter<ObserverT>
+template<typename StructureT, typename ItemModel> bool ItemModelAdapter<StructureT, ItemModel>
 ::canDropMimeData( const QMimeData *data, Qt::DropAction action,
                    int row, int column, const QModelIndex &parent ) const
 {
-  using item_type = typename ObserverT::item_type;
   using Context = typename Contextes<item_type>::Move;
   switch (action) {
   case Qt::MoveAction:
     return data->hasFormat(PropertyOwnerMimeData::MIME_TYPE)
         && qobject_cast<const PropertyOwnerMimeData*>(data) != nullptr
-        && can_move_drop_items<item_type>(make_contextes<Context>(*this, data, row, parent));
+        && can_move_drop_items<item_type>( m_structure,
+                                           make_contextes<Context>(*this, data, row, parent) );
   case Qt::CopyAction:
     return data->hasFormat(PropertyOwnerMimeData::MIME_TYPE)
         && qobject_cast<const PropertyOwnerMimeData*>(data) != nullptr;
@@ -128,11 +132,11 @@ template<typename ObserverT> bool ItemModelAdapter<ObserverT>
   }
 }
 
-template<typename ObserverT>
-bool ItemModelAdapter<ObserverT>::dropMimeData( const QMimeData *data, Qt::DropAction action,
-                                                int row, int column, const QModelIndex &parent )
+template<typename StructureT, typename ItemModel> bool
+ItemModelAdapter<StructureT, ItemModel>
+::dropMimeData( const QMimeData *data, Qt::DropAction action,
+                int row, int column, const QModelIndex &parent )
 {
-  using item_type = typename ObserverT::item_type;
   using MoveContext = typename Contextes<item_type>::Move;
   using OwningContext = typename Contextes<item_type>::Owning;
   if (!canDropMimeData(data, action, row, column, parent)) {
@@ -142,12 +146,12 @@ bool ItemModelAdapter<ObserverT>::dropMimeData( const QMimeData *data, Qt::DropA
     switch (action) {
     case Qt::MoveAction: {
       auto move_contextes = make_contextes<MoveContext>(*this, data, row, parent);
-      m_scene.submit<MoveCommand<item_type>>(m_scene, move_contextes);
+      m_scene.submit<MoveCommand<StructureT>>(m_structure, move_contextes);
       break;
     }
     case Qt::CopyAction: {
       auto copy_contextes = make_contextes<OwningContext>(*this, data, row, parent);
-      m_scene.submit<CopyCommand<item_type>>(m_scene, std::move(copy_contextes));
+      m_scene.submit<CopyCommand<StructureT>>(m_structure, std::move(copy_contextes));
       break;
     }
     }
@@ -155,14 +159,14 @@ bool ItemModelAdapter<ObserverT>::dropMimeData( const QMimeData *data, Qt::DropA
   }
 }
 
-template<typename ObserverT>
-QStringList ItemModelAdapter<ObserverT>::mimeTypes() const
+template<typename StructureT, typename ItemModel>
+QStringList ItemModelAdapter<StructureT, ItemModel>::mimeTypes() const
 {
   return { PropertyOwnerMimeData::MIME_TYPE };
 }
 
-template<typename ObserverT>
-QMimeData* ItemModelAdapter<ObserverT>::mimeData(const QModelIndexList &indexes) const
+template<typename StructureT, typename ItemModel>
+QMimeData* ItemModelAdapter<StructureT, ItemModel>::mimeData(const QModelIndexList &indexes) const
 {
   if (indexes.isEmpty()) {
     return nullptr;
@@ -176,13 +180,21 @@ QMimeData* ItemModelAdapter<ObserverT>::mimeData(const QModelIndexList &indexes)
   }
 }
 
-template<typename ObserverT>
-Scene& ItemModelAdapter<ObserverT>::scene() const
+template<typename StructureT, typename ItemModel>
+StructureT& ItemModelAdapter<StructureT, ItemModel>::structure() const
+{
+  return m_structure;
+}
+
+template<typename StructureT, typename ItemModel>
+Scene& ItemModelAdapter<StructureT, ItemModel>::scene() const
 {
   return m_scene;
 }
 
-template class ItemModelAdapter<AbstractObjectTreeObserver>;
-template class ItemModelAdapter<AbstractStyleListObserver>;
+
+
+template class ItemModelAdapter<Tree<Object>, QAbstractItemModel>;
+template class ItemModelAdapter<List<Style>, QAbstractListModel>;
 
 }  // namespace omm

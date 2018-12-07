@@ -7,12 +7,12 @@ namespace omm
 {
 
 class Object;
-class Scene;
+template<typename> class Tree;
 
 class AddObjectCommand : public Command
 {
 public:
-  AddObjectCommand(Scene& scene, std::unique_ptr<Object> object);
+  AddObjectCommand(Tree<Object>& structure, std::unique_ptr<Object> object);
 
   void undo() override;
   void redo() override;
@@ -20,7 +20,7 @@ public:
 private:
   std::unique_ptr<Object> m_owned;
   Object& m_reference;
-  Scene& m_scene;
+  Tree<Object>& m_structure;
 };
 
 }  // namespace omm

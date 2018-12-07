@@ -41,34 +41,38 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
 
 void ObjectTreeView::remove_selection()
 {
-  auto& scene = model()->scene();
-  ManagerItemView::remove_selection<RemoveObjectsCommand>(scene.selected_objects());
+  // TODO
+  // auto& scene = model()->scene();
+  // ManagerItemView::remove_selection<RemoveObjectsCommand>(scene.selected_objects());
 }
 
 void ObjectTreeView::attach_tag_to_selected(const std::string& tag_class) const
 {
-  auto tag = Tag::make(tag_class);
-  auto& scene = model()->scene();
-  scene.submit<AttachTagCommand>(scene, std::move(tag));
+  // TODO
+  // auto tag = Tag::make(tag_class);
+  // auto& scene = model()->scene();
+  // scene.submit<AttachTagCommand>(scene, std::move(tag));
 }
 
 void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection, Object& root)
 {
-  assert(root.is_selected() == selection.count(static_cast<AbstractPropertyOwner*>(&root)));
-  const QModelIndex index = model()->index_of(root);
-  if (root.is_selected()) {
-    selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Select);
-  } else {
-    selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Deselect);
-  }
-  for (auto child : root.children()) {
-    set_selection(selection, *child);
-  }
+  // TODO
+  // assert(root.is_selected() == selection.count(static_cast<AbstractPropertyOwner*>(&root)));
+  // const QModelIndex index = model()->index_of(root);
+  // if (root.is_selected()) {
+  //   selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Select);
+  // } else {
+  //   selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Deselect);
+  // }
+  // for (auto child : root.children()) {
+  //   set_selection(selection, *child);
+  // }
 };
 
 void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection)
 {
-  set_selection(selection, model()->scene().root());
+  // TODO
+  // set_selection(selection, model()->scene().root());
 }
 
 }  // namespace omm

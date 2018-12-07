@@ -1,18 +1,19 @@
 #include "commands/copycommand.h"
 #include "objects/object.h"
 #include "renderers/style.h"
-#include "scene/scene.h"
+#include "scene/tree.h"
+#include "scene/list.h"
 
 namespace omm
 {
 
-template<typename T>
-CopyCommand<T>::CopyCommand(Scene& scene, std::vector<Context> contextes)
+template<typename Structure>
+CopyCommand<Structure>::CopyCommand(Structure& structure, std::vector<Context> contextes)
   : Command(QObject::tr("copy").toStdString())
   , m_contextes(std::move(contextes))
-  , m_scene(scene)
+  , m_structure(structure)
 {
-  const T* predecessor = m_contextes.front().predecessor;
+  const auto* predecessor = m_contextes.front().predecessor;
   for (auto& context : m_contextes) {
     context.subject.capture_by_copy();
     context.predecessor = predecessor;
@@ -20,23 +21,23 @@ CopyCommand<T>::CopyCommand(Scene& scene, std::vector<Context> contextes)
   }
 }
 
-template<typename T> void CopyCommand<T>::redo()
+template<typename Structure> void CopyCommand<Structure>::redo()
 {
   for (auto&& context : m_contextes) {
     assert(context.subject.owns());
-    m_scene.insert(context);
+    m_structure.insert(context);
   }
 }
 
-template<typename T> void CopyCommand<T>::undo()
+template<typename Structure> void CopyCommand<Structure>::undo()
 {
   for (auto&& it = m_contextes.rbegin(); it != m_contextes.rend(); ++it) {
     assert(!it->subject.owns());
-    m_scene.remove(*it);
+    m_structure.remove(*it);
   }
 }
 
-template class CopyCommand<Object>;
-template class CopyCommand<Style>;
+template class CopyCommand<Tree<Object>>;
+template class CopyCommand<List<Style>>;
 
 }  // namespace omm

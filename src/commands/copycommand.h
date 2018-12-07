@@ -6,19 +6,19 @@
 namespace omm
 {
 
-template<typename T>
+template<typename Structure>
 class CopyCommand : public Command
 {
 public:
-  using Context = typename Contextes<T>::Owning;
-  CopyCommand(Scene& scene, std::vector<Context> contextes);
+  using Context = typename Contextes<typename Structure::item_type>::Owning;
+  CopyCommand(Structure& structure, std::vector<Context> contextes);
 
   void undo() override;
   void redo() override;
 
 private:
   std::vector<Context> m_contextes;
-  Scene& m_scene;
+  Structure& m_structure;
 };
 
 }  // namespace

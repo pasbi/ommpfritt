@@ -80,22 +80,23 @@ ManagerItemView<ItemViewT, ItemModelT>::~ManagerItemView()
 template<typename ItemViewT, typename ItemModelT>
 void ManagerItemView<ItemViewT, ItemModelT>::set_model(ItemModelT* model)
 {
-  if (this->model()) {
-    this->model()->scene().Observed<AbstractSelectionObserver>::unregister_observer(*this);
-  }
+  // TODO
+  // if (this->model()) {
+  //   this->model()->structure().Observed<AbstractSelectionObserver>::unregister_observer(*this);
+  // }
   ItemViewT::setModel(model);
-  if (this->model()) {
-    auto& scene = this->model()->scene();
-    scene.Observed<AbstractSelectionObserver>::register_observer(*this);
-    QObject::connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [&scene]() {
-      for (Tag* tag : scene.selected_tags()) {
-        tag->deselect();
-      }
-      for (Style* style : scene.selected_styles()) {
-        style->deselect();
-      }
-    });
-  }
+  // if (this->model()) {
+  //   this->model()->structure().Observed<AbstractSelectionObserver>::register_observer(*this);
+
+    // QObject::connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [&scene]() {
+    //   for (Tag* tag : scene.selected_tags()) {
+    //     tag->deselect();
+    //   }
+    //   for (Style* style : scene.selected_styles()) {
+    //     style->deselect();
+    //   }
+    // });
+  // }
 }
 
 template<typename ItemViewT, typename ItemModelT>

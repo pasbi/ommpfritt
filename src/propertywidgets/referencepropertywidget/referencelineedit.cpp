@@ -21,13 +21,13 @@ candidates(const Scene& scene, omm::AbstractPropertyOwner::Kind kind)
     candidates.insert(candidates.end(), ts.begin(), ts.end());
   };
   if (!!(kind & omm::AbstractPropertyOwner::Kind::Object)) {
-    merge(scene.objects());
+    merge(scene.Tree<Object>::items());
   }
   if (!!(kind & omm::AbstractPropertyOwner::Kind::Tag)) {
     merge(scene.tags());
   }
   if (!!(kind & omm::AbstractPropertyOwner::Kind::Style)) {
-    merge(scene.styles());
+    merge(scene.List<Style>::items());
   }
 
   return candidates;

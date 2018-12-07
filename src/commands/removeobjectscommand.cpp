@@ -2,17 +2,18 @@
 
 #include <algorithm>
 #include "objects/object.h"
-#include "scene/scene.h"
+#include "scene/tree.h"
 
 namespace
 {
 
-auto make_contextes(const std::set<omm::Object*>& selection)
+auto make_contextes( const omm::Tree<omm::Object>& structure,
+                     const std::set<omm::Object*>& selection )
 {
   std::vector<omm::ObjectTreeOwningContext> contextes;
   contextes.reserve(selection.size());
   for (auto object : selection) {
-    contextes.emplace_back(*object);
+    contextes.emplace_back(*object, structure.predecessor(*object));
   }
 
   // assert that to-be-inserted objects' predecessor is already in the tree,
@@ -32,10 +33,11 @@ auto make_contextes(const std::set<omm::Object*>& selection)
 namespace omm
 {
 
-RemoveObjectsCommand::RemoveObjectsCommand(Scene& scene, const std::set<omm::Object*>& objects)
+RemoveObjectsCommand
+::RemoveObjectsCommand(Tree<Object>& structure, const std::set<omm::Object*>& objects)
   : Command(QObject::tr("remove").toStdString())
-  , m_contextes(std::move(make_contextes(objects)))
-  , m_scene(scene)
+  , m_contextes(std::move(make_contextes(structure, objects)))
+  , m_structure(structure)
 {
 }
 
@@ -44,11 +46,11 @@ void RemoveObjectsCommand::redo()
   for (auto&& context : m_contextes) {
     assert(!context.subject.owns());
     assert(!context.subject.reference().is_root());
-    assert(m_scene.find_reference_holders(context.subject).size() == 0);
-    m_scene.remove(context);
+    // assert(m_structure.find_reference_holders(context.subject).size() == 0);  // TODO
+    m_structure.remove(context);
   }
   // important. else, handle or property manager might point to dangling objects
-  m_scene.selection_changed();
+  // m_structure.selection_changed();  // TODO
 }
 
 void RemoveObjectsCommand::undo()
@@ -59,9 +61,9 @@ void RemoveObjectsCommand::undo()
 
     // if predecessor is not null, it must had been inserted in the object tree.
     assert(context.predecessor == nullptr || !context.predecessor->is_root());
-    m_scene.insert(context);
+    m_structure.insert(context);
   }
-  m_scene.selection_changed();
+  // m_structure.selection_changed();  // TODO
 }
 
 }  // namespace omm

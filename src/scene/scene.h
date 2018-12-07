@@ -13,9 +13,9 @@
 #include "observed.h"
 #include "scene/contextes.h"
 #include "scene/abstractselectionobserver.h"
-#include "scene/abstractobjecttreeobserver.h"
-#include "scene/abstractstylelistobserver.h"
 #include "scene/cachedgetter.h"
+#include "scene/list.h"
+#include "scene/tree.h"
 
 namespace omm
 {
@@ -25,9 +25,9 @@ class Object;
 class Project;
 
 class Scene
-  : public Observed<AbstractObjectTreeObserver>
-  , public Observed<AbstractSelectionObserver>
-  , public Observed<AbstractStyleListObserver>
+  : public Observed<AbstractSelectionObserver>
+  , public List<Style>
+  , public Tree<Object>
 {
 public:
   Scene();
@@ -46,20 +46,6 @@ public:
     std::set<T*> compute() const override;
   };
 
-  // === Objects ====
-public:
-  void insert(std::unique_ptr<Object> object, Object& parent);
-  void insert(ObjectTreeOwningContext& context);
-  void move(ObjectTreeMoveContext context);
-  void remove(ObjectTreeOwningContext& context);
-  bool can_move_object(const ObjectTreeMoveContext& new_context) const;
-  const TGetter<Object> objects = TGetter<Object>(*this);
-  std::set<Object*> selected_objects() const;
-  std::unique_ptr<Object> replace_root(std::unique_ptr<Object> new_root);
-  Object& root() const;
-private:
-  std::unique_ptr<Object> m_root;
-
   // === Tags  ======
 public:
   Tag& attach_tag(Object& owner, std::unique_ptr<Tag> tag, const Tag* predecessor);
@@ -70,19 +56,9 @@ public:
 
   // === Styles  ====
 public:
-  void insert(std::unique_ptr<Style> style);
-  void insert(StyleListOwningContext& context);
-  std::unique_ptr<Style> remove(Style& style);  // TODO remove?
-  void remove(StyleListOwningContext& style);
-  void move(StyleListMoveContext& context);
-  std::set<Style*> styles() const;
-  Style& style(size_t i) const;
-  std::set<Style*> selected_styles() const;
   Style& default_style() const;
-  size_t position(const Style& style) const;
 private:
   std::unique_ptr<Style> m_default_style;
-  std::vector<std::unique_ptr<Style>> m_styles;
 
   // === Objects, Tags and Styles ===
 public:

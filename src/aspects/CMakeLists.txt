@@ -1,5 +1,6 @@
 file (GLOB SOURCES
   "copyable.cpp"
+  "listelement.cpp"
   "propertyowner.cpp"
   "serializable.cpp"
   "selectable.cpp"

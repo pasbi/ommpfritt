@@ -17,14 +17,15 @@ StyleManager::StyleManager(Scene& scene)
 void StyleManager::on_selection_changed( const QItemSelection& selection,
                                          const QItemSelection& old_selection )
 {
-  for (auto& index : old_selection.indexes()) {
-    if (!selection.contains(index)) {
-      m_scene.style(index.row()).deselect();
-    }
-  }
-  for (auto& index : selection.indexes()) {
-    m_scene.style(index.row()).select();
-  }
+  // TODO
+  // for (auto& index : old_selection.indexes()) {
+  //   if (!selection.contains(index)) {
+  //     m_scene.style(index.row()).deselect();
+  //   }
+  // }
+  // for (auto& index : selection.indexes()) {
+  //   m_scene.style(index.row()).select();
+  // }
 }
 
 }  // namespace omm
