@@ -19,15 +19,6 @@ auto make_contextes( const StructureT& structure,
     contextes.emplace_back(*item, structure.predecessor(*item));
   }
 
-  // assert that to-be-inserted objects' predecessor is already in the tree,
-  // i.e., insert the predecessor first.
-  std::sort(contextes.begin(), contextes.end(), [](const auto& lhs, const auto& rhs) {
-    if (lhs.predecessor == &rhs.get_subject()) {
-      return true;
-    } else {
-      return false;
-    }
-  });
   return contextes;
 }
 

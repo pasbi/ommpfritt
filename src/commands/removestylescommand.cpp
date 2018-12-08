@@ -15,15 +15,6 @@ auto make_contextes(omm::List<omm::Style>& structure, const std::set<omm::Style*
     contextes.emplace_back(*style, position == 0 ? nullptr : &structure.item(position-1));
   }
 
-  // assert that to-be-inserted objects' predecessor is already in the tree,
-  // i.e., insert the predecessor first.
-  std::sort(contextes.begin(), contextes.end(), [](const auto& lhs, const auto& rhs) {
-    if (lhs.predecessor == &rhs.subject.reference()) {
-      return true;
-    } else {
-      return false;
-    }
-  });
   return contextes;
 }
 

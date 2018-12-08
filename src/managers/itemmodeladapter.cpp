@@ -87,6 +87,36 @@ make_contextes( const ItemModelAdapterT& adapter,
   return contextes;
 }
 
+bool model_index_tree_position_compare(QModelIndex a, QModelIndex b)
+{
+  assert(a.isValid());
+  assert(b.isValid());
+
+  bool a_and_b_are_siblings = false;
+
+  const auto find_ancestors = [](QModelIndex index) {
+    std::vector<QModelIndex> ancestors;
+    while (index.isValid()) {
+      ancestors.push_back(index);
+      index = index.parent();
+    }
+    return ancestors;
+  };
+
+  std::vector<QModelIndex> a_descendants = find_ancestors(a);
+  std::vector<QModelIndex> b_descendants = find_ancestors(b);
+
+  for (const auto& a : a_descendants) {
+    for (const auto& b : b_descendants) {
+      if (a.parent() == b.parent()) {
+        return a.row() < b.row();
+      }
+    }
+  }
+  assert(false);
+}
+
+
 }  // namespace
 
 namespace omm
@@ -180,7 +210,10 @@ QMimeData* ItemModelAdapter<StructureT, ItemModel>::mimeData(const QModelIndexLi
       // TODO also return selected tags ans styles
       return &this->item_at(index);
     };
-    const auto items = ::transform<AbstractPropertyOwner*, std::vector>(indexes, f);
+
+    auto sorted_indexes = indexes;
+    std::sort(sorted_indexes.begin(), sorted_indexes.end(), model_index_tree_position_compare);
+    const auto items = ::transform<AbstractPropertyOwner*, std::vector>(sorted_indexes, f);
     return std::make_unique<PropertyOwnerMimeData>(items).release();
   }
 }
@@ -196,8 +229,6 @@ Scene& ItemModelAdapter<StructureT, ItemModel>::scene() const
 {
   return m_scene;
 }
-
-
 
 template class ItemModelAdapter<Tree<Object>, QAbstractItemModel>;
 template class ItemModelAdapter<List<Style>, QAbstractListModel>;
