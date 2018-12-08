@@ -100,7 +100,10 @@ template<typename T> void List<T>::move(ListMoveContext<T>& context)
   const auto guards = observed_type::template transform<Guard>(
     [&context](auto* observer) { return observer->acquire_mover_guard(context); }
   );
-  insert(remove(context.subject), context.predecessor);
+
+  std::unique_ptr<T> item = ::extract(m_items, context.subject.get());
+  const auto pos = context.predecessor == nullptr ? 0 : position(*context.predecessor) + 1;
+  m_items.insert(m_items.begin() + pos, std::move(item));
 }
 
 template class List<Style>;

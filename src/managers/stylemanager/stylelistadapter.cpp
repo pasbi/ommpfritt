@@ -98,10 +98,9 @@ StyleListAdapter::acquire_mover_guard(const StyleListMoveContext& context)
   class MoverGuard : public AbstractRAIIGuard
   {
   public:
-    MoverGuard(StyleListAdapter& model, const int old_pos, const int new_pos)
+    MoverGuard(StyleListAdapter& model, int old_pos, int new_pos)
       : m_model(model)
     {
-      LOG(INFO) << "beginMoveRows " << old_pos << " " << new_pos;
       m_model.beginMoveRows(QModelIndex(), old_pos, old_pos, QModelIndex(), new_pos);
     }
 
