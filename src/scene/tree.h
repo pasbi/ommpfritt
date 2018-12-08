@@ -34,7 +34,7 @@ public:
 public:
   void insert(TreeOwningContext<T>& context);
   void insert(std::unique_ptr<T> object, T& parent);
-  void move(TreeMoveContext<T> context);
+  void move(TreeMoveContext<T>& context);
   void remove(TreeOwningContext<T>& context);
   bool can_move_object(const TreeMoveContext<T>& new_context) const;
   std::unique_ptr<T> replace_root(std::unique_ptr<T> new_root);

@@ -24,7 +24,7 @@ template<typename T> T& Tree<T>::root() const
   return *m_root;
 }
 
-template<typename T> void Tree<T>::move(TreeMoveContext<T> context)
+template<typename T> void Tree<T>::move(TreeMoveContext<T>& context)
 {
   assert(context.is_valid());
   Object& old_parent = context.subject.get().parent();
