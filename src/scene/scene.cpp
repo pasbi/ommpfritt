@@ -109,78 +109,64 @@ void Scene::clear_selection()
 
 bool Scene::save_as(const std::string &filename)
 {
-  // std::ofstream ofstream(filename);
-  // if (ofstream) {
-  //   auto serializer = AbstractSerializer::make( "JSONSerializer",
-  //                                               static_cast<std::ostream&>(ofstream) );
-  //   root().serialize(*serializer, ROOT_POINTER);
+  std::ofstream ofstream(filename);
+  if (!ofstream) {
+    LOG(ERROR) << "Failed to open ofstream at '" << filename << "'";
+    return false;
+  }
 
-  //   serializer->start_array(m_styles.size(), Serializable::make_pointer(STYLES_POINTER));
-  //   for (size_t i = 0; i < m_styles.size(); ++i) {
-  //     m_styles[i]->serialize(*serializer, Serializable::make_pointer(STYLES_POINTER, i));
-  //   }
-  //   serializer->end_array();
+  auto serializer = AbstractSerializer::make( "JSONSerializer",
+                                              static_cast<std::ostream&>(ofstream) );
+  object_tree.root().serialize(*serializer, ROOT_POINTER);
 
-  //   LOG(INFO) << "Saved current scene to '" << filename << "'";
-  //   set_has_pending_changes(false);
-  //   m_filename = filename;
-  //   return true;
-  // } else {
-  //   LOG(ERROR) << "Failed to open ofstream at '" << filename << "'";
-  //   return false;
-  // }
-  return false;
+  serializer->start_array(styles.items().size(), Serializable::make_pointer(STYLES_POINTER));
+  for (size_t i = 0; i < styles.items().size(); ++i) {
+    styles.item(i).serialize(*serializer, Serializable::make_pointer(STYLES_POINTER, i));
+  }
+  serializer->end_array();
+
+  LOG(INFO) << "Saved current scene to '" << filename << "'";
+  set_has_pending_changes(false);
+  m_filename = filename;
+  return true;
 }
 
 bool Scene::load_from(const std::string &filename)
 {
-  // std::ifstream ifstream(filename);
-  // if (ifstream) {
-  //   bool success = false;
+  std::ifstream ifstream(filename);
+  if (!ifstream) {
+    LOG(ERROR) << "Failed to open '" << filename << "'.";
+    return false;
+  }
 
-  //   try
-  //   {
-  //     auto deserializer = AbstractDeserializer::make( "JSONDeserializer",
-  //                                                     static_cast<std::istream&>(ifstream) );
+  try
+  {
+    auto deserializer = AbstractDeserializer::make( "JSONDeserializer",
+                                                    static_cast<std::istream&>(ifstream) );
 
-  //     const auto object_guards = Observed<AbstractObjectTreeObserver>::transform<Guard>(
-  //       [this](auto* observer) { return observer->acquire_reseter_guard(); }
-  //     );
+    auto new_root = make_root();
+    new_root->deserialize(*deserializer, ROOT_POINTER);
 
-  //     const auto style_guards = Observed<AbstractStyleListObserver>::transform<Guard>(
-  //       [this](auto* observer) { return observer->acquire_reseter_guard(); }
-  //     );
+    const auto n_styles = deserializer->array_size(Serializable::make_pointer(STYLES_POINTER));
+    std::vector<std::unique_ptr<Style>> styles;
+    styles.reserve(n_styles);
+    for (size_t i = 0; i < n_styles; ++i) {
+      const auto style_pointer = Serializable::make_pointer(STYLES_POINTER, i);
+      auto style = std::make_unique<Style>();
+      style->deserialize(*deserializer, style_pointer);
+      styles.push_back(std::move(style));
+    }
 
-  //     auto new_root = make_root();
-  //     new_root->deserialize(*deserializer, ROOT_POINTER);
+    object_tree.replace_root(std::move(new_root));
+    this->styles.set(std::move(styles));
+    set_has_pending_changes(false);
+    m_filename = filename;
 
-  //     const auto n_styles = deserializer->array_size(Serializable::make_pointer(STYLES_POINTER));
-  //     m_styles.clear();
-  //     m_styles.reserve(n_styles);
-  //     for (size_t i = 0; i < n_styles; ++i) {
-  //       const auto style_pointer = Serializable::make_pointer(STYLES_POINTER, i);
-  //       auto style = std::make_unique<Style>();
-  //       style->deserialize(*deserializer, style_pointer);
-  //       m_styles.push_back(std::move(style));
-  //     }
-
-  //     replace_root(std::move(new_root));
-  //     success = true;
-  //     set_has_pending_changes(false);
-  //     m_filename = filename;
-  //     tags.invalidate();
-  //     objects.invalidate();
-
-  //     return true;
-  //   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
-  //     LOG(ERROR) << "Failed to deserialize file at '" << filename << "'.";
-  //     LOG(INFO) << deserialize_error.what();
-  //   }
-  //   return false;
-  // } else {
-  //   LOG(ERROR) << "Failed to open '" << filename << "'.";
-  //   return false;
-  // }
+    return true;
+  } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
+    LOG(ERROR) << "Failed to deserialize file at '" << filename << "'.";
+    LOG(INFO) << deserialize_error.what();
+  }
   return false;
 }
 

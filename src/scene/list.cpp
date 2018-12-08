@@ -106,6 +106,17 @@ template<typename T> void List<T>::move(ListMoveContext<T>& context)
   m_items.insert(m_items.begin() + pos, std::move(item));
 }
 
+template<typename T>
+std::vector<std::unique_ptr<T>> List<T>::set(std::vector<std::unique_ptr<T>> items)
+{
+  const auto style_guards = observed_type::template transform<Guard>(
+    [this](auto* observer) { return observer->acquire_reseter_guard(); }
+  );
+  auto old_items = std::move(m_items);
+  m_items = std::move(items);
+  return old_items;
+}
+
 template class List<Style>;
 
 }  // namespace omm

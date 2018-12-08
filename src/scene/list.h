@@ -25,6 +25,7 @@ public:
   void remove(ListOwningContext<T>& t);
   void move(ListMoveContext<T>& context);
   T& item(size_t i) const;
+  std::vector<std::unique_ptr<T>> set(std::vector<std::unique_ptr<T>> items);
 
   std::set<T*> items() const override;
   const T* predecessor(const T& sibling) const override;

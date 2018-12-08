@@ -85,8 +85,12 @@ template<typename T> void Tree<T>::remove(TreeOwningContext<T>& context)
 template<typename T>
 std::unique_ptr<T> Tree<T>::replace_root(std::unique_ptr<T> new_root)
 {
+  const auto guards = observed_type::template transform<Guard>(
+    [this](auto* observer) { return observer->acquire_reseter_guard(); }
+  );
   auto old_root = std::move(m_root);
   m_root = std::move(new_root);
+  m_item_cache_is_dirty = true;
   return old_root;
 }
 
