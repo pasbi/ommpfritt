@@ -22,13 +22,12 @@ public:
   void set_model(ItemModelT* model);
   ItemModelT* model() const;
 
-  template<typename RemoveCommand, typename StructureT>
-  bool remove_selection(const std::set<item_type*>& selection);
+  bool remove_selection();
 
 protected:
   virtual void populate_menu(QMenu& menu, const QModelIndex& index) const = 0;
-  void contextMenuEvent(QContextMenuEvent *event);
-  void mouseReleaseEvent(QMouseEvent* e);
+  void contextMenuEvent(QContextMenuEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent* e) override;
 };
 
 }  // namespace omm

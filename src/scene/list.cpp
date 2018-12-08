@@ -66,7 +66,6 @@ template<typename T> std::unique_ptr<T> List<T>::remove(T& item)
 
 template<typename T> size_t List<T>::position(const T& item) const
 {
-  LOG(INFO) << &item;
   const auto it = std::find_if(m_items.begin(), m_items.end(), [&item](const auto& uptr) {
     return uptr.get() == &item;
   });

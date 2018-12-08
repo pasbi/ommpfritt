@@ -1,5 +1,6 @@
 #include "aspects/selectable.h"
 #include <glog/logging.h>
+#include <cassert>
 
 namespace omm
 {
@@ -16,12 +17,12 @@ bool Selectable::is_selected() const
 
 void Selectable::select()
 {
-  m_is_selected = true;
+  set_selected(true);
 }
 
 void Selectable::deselect()
 {
-  m_is_selected = false;
+  set_selected(false);
 }
 
 }  // namespace omm

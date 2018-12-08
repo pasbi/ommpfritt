@@ -19,6 +19,7 @@ class ItemModelAdapter : public ItemModel, public AbstractStructureObserver<Stru
                  "ItemModel must be derived from QAbstractItemModel" );
 public:
   using item_type = typename StructureT::item_type;
+  using structure_type = StructureT;
   explicit ItemModelAdapter(Scene& scene, StructureT& structure);
   virtual ~ItemModelAdapter();
   Qt::DropActions supportedDragActions() const override;

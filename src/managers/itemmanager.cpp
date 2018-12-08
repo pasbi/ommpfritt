@@ -7,6 +7,8 @@
 #include "managers/stylemanager/stylelistadapter.h"
 #include "managers/objectmanager/objecttreeview.h"
 #include "managers/objectmanager/objecttreeadapter.h"
+#include "renderers/style.h"
+#include "objects/object.h"
 
 namespace omm
 {
@@ -33,6 +35,20 @@ ItemManager<ItemViewT, ItemModelT>::eventFilter(QObject* object, QEvent* event)
     m_scene.selection_changed();
   }
   return Manager::eventFilter(object, event);
+}
+
+template<typename ItemViewT, typename ItemModelT> void
+ItemManager<ItemViewT, ItemModelT>::on_selection_changed( const QItemSelection& selection,
+                                                          const QItemSelection& old_selection )
+{
+  for (auto& index : old_selection.indexes()) {
+    if (!selection.contains(index)) {
+      m_item_model.item_at(index).deselect();
+    }
+  }
+  for (auto& index : selection.indexes()) {
+    m_item_model.item_at(index).select();
+  }
 }
 
 template class ItemManager<ObjectTreeView, ObjectTreeAdapter>;

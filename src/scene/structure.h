@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glog/logging.h>
 #include "observed.h"
 
 namespace omm
@@ -9,6 +10,7 @@ template<typename T> class Structure
 {
 public:
   using item_type = T;
+  Structure() {}
   virtual ~Structure() {}
 
   virtual std::set<T*> items() const = 0;
@@ -22,8 +24,11 @@ public:
   }
 
 private:
-  // we don't want to assign anything
+  // we don't want to assign copy or move
   const Structure<T>& operator=(const Structure<T>&) = delete;
+  const Structure<T>& operator=(Structure<T>&&) = delete;
+  Structure<T>(const Structure<T>&) = delete;
+  Structure<T>(Structure<T>&&) = delete;
 };
 
 }  // namespace omm

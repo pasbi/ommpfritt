@@ -14,10 +14,6 @@ class ObjectManager : public ItemManager<ObjectTreeView, ObjectTreeAdapter>
 
 public:
   explicit ObjectManager(Scene& scene);
-
-protected:
-  void on_selection_changed( const QItemSelection& selection,
-                             const QItemSelection& old_selection ) override;
 };
 
 }  // namespace omm

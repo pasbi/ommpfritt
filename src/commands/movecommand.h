@@ -6,19 +6,19 @@
 namespace omm
 {
 
-template<typename Structure>
+template<typename StructureT>
 class MoveCommand : public Command
 {
 public:
-  using Context = typename Contextes<typename Structure::item_type>::Move;
-  MoveCommand(Structure& structure, const std::vector<Context>& new_contextes);
+  using context_type = typename Contextes<typename StructureT::item_type>::Move;
+  MoveCommand(StructureT& structure, const std::vector<context_type>& new_contextes);
   void redo();
   void undo();
 
 private:
-  std::vector<Context> m_new_contextes;
-  std::vector<Context> m_old_contextes;
-  Structure& m_structure;
+  std::vector<context_type> m_new_contextes;
+  std::vector<context_type> m_old_contextes;
+  StructureT& m_structure;
 };
 
 }  // namespace omm

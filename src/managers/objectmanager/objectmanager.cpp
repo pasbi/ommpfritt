@@ -13,17 +13,4 @@ ObjectManager::ObjectManager(Scene& scene)
   setObjectName(TYPE());
 }
 
-void ObjectManager::on_selection_changed( const QItemSelection& selection,
-                                          const QItemSelection& old_selection )
-{
-  for (auto& index : old_selection.indexes()) {
-    if (!selection.contains(index)) {
-      m_item_model.item_at(index).deselect();
-    }
-  }
-  for (auto& index : selection.indexes()) {
-    m_item_model.item_at(index).select();
-  }
-}
-
 }  // namespace omm

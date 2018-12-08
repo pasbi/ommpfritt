@@ -14,18 +14,4 @@ StyleManager::StyleManager(Scene& scene)
   setObjectName(TYPE());
 }
 
-void StyleManager::on_selection_changed( const QItemSelection& selection,
-                                         const QItemSelection& old_selection )
-{
-  // TODO
-  // for (auto& index : old_selection.indexes()) {
-  //   if (!selection.contains(index)) {
-  //     m_scene.style(index.row()).deselect();
-  //   }
-  // }
-  // for (auto& index : selection.indexes()) {
-  //   m_scene.style(index.row()).select();
-  // }
-}
-
 }  // namespace omm

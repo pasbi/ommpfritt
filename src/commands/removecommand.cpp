@@ -1,19 +1,22 @@
-#include "commands/removeobjectscommand.h"
+#include "commands/removecommand.h"
 
 #include <algorithm>
-#include "objects/object.h"
 #include "scene/tree.h"
+#include "scene/list.h"
+#include "objects/object.h"
+#include "renderers/style.h"
 
 namespace
 {
 
-auto make_contextes( const omm::Tree<omm::Object>& structure,
-                     const std::set<omm::Object*>& selection )
+template<typename StructureT>
+auto make_contextes( const StructureT& structure,
+                     const std::set<typename StructureT::item_type*>& selection )
 {
-  std::vector<omm::ObjectTreeOwningContext> contextes;
+  std::vector<typename omm::Contextes<typename StructureT::item_type>::Owning> contextes;
   contextes.reserve(selection.size());
-  for (auto object : selection) {
-    contextes.emplace_back(*object, structure.predecessor(*object));
+  for (auto item : selection) {
+    contextes.emplace_back(*item, structure.predecessor(*item));
   }
 
   // assert that to-be-inserted objects' predecessor is already in the tree,
@@ -33,19 +36,19 @@ auto make_contextes( const omm::Tree<omm::Object>& structure,
 namespace omm
 {
 
-RemoveObjectsCommand
-::RemoveObjectsCommand(Tree<Object>& structure, const std::set<omm::Object*>& objects)
+template<typename StructureT>
+RemoveCommand<StructureT>::RemoveCommand(StructureT& structure, const std::set<item_type*>& items)
   : Command(QObject::tr("remove").toStdString())
-  , m_contextes(std::move(make_contextes(structure, objects)))
+  , m_contextes(std::move(make_contextes(structure, items)))
   , m_structure(structure)
 {
 }
 
-void RemoveObjectsCommand::redo()
+template<typename StructureT> void RemoveCommand<StructureT>::redo()
 {
   for (auto&& context : m_contextes) {
     assert(!context.subject.owns());
-    assert(!context.subject.reference().is_root());
+    // assert(!context.subject.reference().is_root()); // TODO
     // assert(m_structure.find_reference_holders(context.subject).size() == 0);  // TODO
     m_structure.remove(context);
   }
@@ -53,17 +56,20 @@ void RemoveObjectsCommand::redo()
   // m_structure.selection_changed();  // TODO
 }
 
-void RemoveObjectsCommand::undo()
+template<typename StructureT> void RemoveCommand<StructureT>::undo()
 {
   for (auto&& it = m_contextes.rbegin(); it != m_contextes.rend(); ++it) {
     assert(it->subject.owns());
-    ObjectTreeOwningContext& context = *it;
+    auto& context = *it;
 
     // if predecessor is not null, it must had been inserted in the object tree.
-    assert(context.predecessor == nullptr || !context.predecessor->is_root());
+    // assert(context.predecessor == nullptr || !context.predecessor->is_root()); // TODO
     m_structure.insert(context);
   }
   // m_structure.selection_changed();  // TODO
 }
+
+template class RemoveCommand<Tree<Object>>;
+template class RemoveCommand<List<Style>>;
 
 }  // namespace omm

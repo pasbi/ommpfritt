@@ -10,6 +10,7 @@ public:
   void select();
   void deselect();
   bool is_selected() const;
+
 private:
   bool m_is_selected = false;
 };

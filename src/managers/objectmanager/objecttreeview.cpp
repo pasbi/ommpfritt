@@ -5,7 +5,6 @@
 
 #include "menuhelper.h"
 #include "managers/objectmanager/objecttreeadapter.h"
-#include "commands/removeobjectscommand.h"
 #include "tags/tag.h"
 #include "commands/attachtagcommand.h"
 #include "renderers/style.h"
@@ -28,7 +27,7 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
 
   if (object != nullptr)
   {
-    action(menu, tr("&remove"), *this, &ObjectTreeView::remove_selection);
+    action(menu, tr("&remove"), *this, &ManagerItemView::remove_selection);
     auto tag_menu = std::make_unique<QMenu>(tr("&attach tag"));
     for (const auto& key : Tag::keys()) {
       action(*tag_menu, QString::fromStdString(key), [this, key](){
@@ -39,16 +38,8 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
   }
 }
 
-void ObjectTreeView::remove_selection()
-{
-  // TODO
-  // auto& scene = model()->scene();
-  // ManagerItemView::remove_selection<RemoveObjectsCommand>(scene.selected_objects());
-}
-
 void ObjectTreeView::attach_tag_to_selected(const std::string& tag_class) const
 {
-  // TODO
   // auto tag = Tag::make(tag_class);
   // auto& scene = model()->scene();
   // scene.submit<AttachTagCommand>(scene, std::move(tag));
@@ -56,6 +47,7 @@ void ObjectTreeView::attach_tag_to_selected(const std::string& tag_class) const
 
 void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection, Object& root)
 {
+  LOG(INFO) << "set selection";
   // TODO
   // assert(root.is_selected() == selection.count(static_cast<AbstractPropertyOwner*>(&root)));
   // const QModelIndex index = model()->index_of(root);
@@ -71,8 +63,7 @@ void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection, Object& 
 
 void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection)
 {
-  // TODO
-  // set_selection(selection, model()->scene().root());
+  set_selection(selection, model()->structure().root());
 }
 
 }  // namespace omm

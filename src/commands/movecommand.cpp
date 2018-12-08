@@ -8,18 +8,18 @@
 namespace
 {
 
-template<typename Structure>
-using Context = typename omm::MoveCommand<Structure>::Context;
+template<typename StructureT>
+using context_type = typename omm::MoveCommand<StructureT>::context_type;
 
-
-template<typename Structure>
-auto make_old_contextes( const Structure& structure,
-                         const std::vector<Context<Structure>>& new_contextes )
+template<typename StructureT>
+auto make_old_contextes( const StructureT& structure,
+                         const std::vector<context_type<StructureT>>& new_contextes )
 {
   const auto make_old_context = [&structure](const auto& new_context) {
-    return Context<Structure>(new_context.subject, structure.predecessor(new_context.subject));
+    return context_type<StructureT>( new_context.subject,
+                                     structure.predecessor(new_context.subject) );
   };
-  return ::transform<Context<Structure>>(new_contextes, make_old_context);
+  return ::transform<context_type<StructureT>>(new_contextes, make_old_context);
 }
 
 }  // namespace
@@ -27,8 +27,8 @@ auto make_old_contextes( const Structure& structure,
 namespace omm
 {
 
-template<typename Structure> MoveCommand<Structure>
-::MoveCommand(Structure& structure, const std::vector<Context>& new_contextes)
+template<typename StructureT> MoveCommand<StructureT>
+::MoveCommand(StructureT& structure, const std::vector<context_type>& new_contextes)
   : Command(QObject::tr("reparent").toStdString())
   , m_old_contextes(make_old_contextes(structure, new_contextes))
   , m_new_contextes(new_contextes)
@@ -36,14 +36,14 @@ template<typename Structure> MoveCommand<Structure>
 {
 }
 
-template<typename Structure> void MoveCommand<Structure>::redo()
+template<typename StructureT> void MoveCommand<StructureT>::redo()
 {
   for (auto& context : m_new_contextes) {
     m_structure.move(context);
   }
 }
 
-template<typename Structure> void MoveCommand<Structure>::undo()
+template<typename StructureT> void MoveCommand<StructureT>::undo()
 {
   for (auto& context : m_old_contextes) {
     m_structure.move(context);

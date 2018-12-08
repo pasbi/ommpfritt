@@ -16,11 +16,11 @@
 #include "scene/cachedgetter.h"
 #include "scene/list.h"
 #include "scene/tree.h"
+
 namespace omm
 {
 
 class Command;
-class Object;
 class Project;
 
 template<typename T> struct SceneStructure;
@@ -34,8 +34,8 @@ public:
   Scene();
   ~Scene();
 
-  List<Style> styles;          // TODO make non-assignable
-  Tree<Object> object_tree;    // TODO make non-assignable
+  List<Style> styles;
+  Tree<Object> object_tree;
 
   template<typename ItemT> typename SceneStructure<ItemT>::type& structure();
   template<typename ItemT> const typename SceneStructure<ItemT>::type& structure() const;

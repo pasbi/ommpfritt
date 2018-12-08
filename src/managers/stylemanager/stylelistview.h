@@ -14,7 +14,6 @@ class StyleListView : public ManagerItemView<QListView, StyleListAdapter>
 {
 public:
   void set_selection(const SetOfPropertyOwner& selection) override;
-  void remove_selection();
 
 protected:
   void populate_menu(QMenu& menu, const QModelIndex& index) const override;

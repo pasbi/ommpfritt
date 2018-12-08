@@ -5,8 +5,7 @@
 #include <QMenu>
 #include "renderers/style.h"
 #include "commands/propertycommand.h"
-#include "commands/removeobjectscommand.h"
-#include "commands/removestylescommand.h"
+#include "commands/removecommand.h"
 #include "properties/referenceproperty.h"
 
 #include "managers/stylemanager/stylelistview.h"
@@ -17,11 +16,18 @@
 namespace
 {
 
-template<typename RemoveCommand, typename PropertyOwner> bool
-remove_selection(QWidget& parent, omm::Scene& scene, const std::set<PropertyOwner*>& selection)
+template<typename StructureT>
+bool remove_selection(QWidget& parent, omm::Scene& scene)
 {
-  std::map<const PropertyOwner*, std::set<omm::ReferenceProperty*>> reference_holder_map;
-  for (const PropertyOwner* reference : selection) {
+  using item_type = typename StructureT::item_type;
+  static_assert( std::is_base_of<omm::AbstractPropertyOwner, item_type>::value,
+                 "item_type must be a property owner." );
+
+  StructureT& structure = scene.structure<item_type>();
+  const auto selection = structure.selected_items();
+
+  std::map<const item_type*, std::set<omm::ReferenceProperty*>> reference_holder_map;
+  for (const item_type* reference : selection) {
     const auto reference_holders = scene.find_reference_holders(*reference);
     if (reference_holders.size() > 0) {
       reference_holder_map.insert(std::make_pair(reference, reference_holders));
@@ -53,7 +59,8 @@ remove_selection(QWidget& parent, omm::Scene& scene, const std::set<PropertyOwne
       assert(false);
     }
   }
-  scene.submit<RemoveCommand>(scene, selection);
+
+  scene.submit<omm::RemoveCommand<StructureT>>(structure, selection);
   return true;
 }
 
@@ -121,14 +128,10 @@ ItemModelT* ManagerItemView<ItemViewT, ItemModelT>::model() const
   return static_cast<ItemModelT*>(ItemViewT::model());
 }
 
-template<typename ItemViewT, typename ItemModelT>
-template<typename RemoveCommand, typename StructureT>
-bool ManagerItemView<ItemViewT, ItemModelT>
-::remove_selection(const std::set<item_type*>& selection)
+template<typename ItemViewT, typename ItemModelT> bool
+ManagerItemView<ItemViewT, ItemModelT>::remove_selection()
 {
-  // TODO needs specialization probably
-  // return ::remove_selection<RemoveCommand>(*this, this->model()->scene(), selection);
-  return false;
+  return ::remove_selection<typename ItemModelT::structure_type>(*this, this->model()->scene());
 }
 
 template<typename ItemViewT, typename ItemModelT>
@@ -140,10 +143,5 @@ void ManagerItemView<ItemViewT, ItemModelT>::mouseReleaseEvent(QMouseEvent* e)
 
 template class ManagerItemView<QListView, StyleListAdapter>;
 template class ManagerItemView<QTreeView, ObjectTreeAdapter>;
-
-template bool ManagerItemView<QTreeView, ObjectTreeAdapter>
-::remove_selection<RemoveObjectsCommand, Tree<Object>>(const std::set<Object*>& selection);
-template bool ManagerItemView<QListView, StyleListAdapter>
-::remove_selection<RemoveStylesCommand, List<Style>>(const std::set<Style*>& selection);
 
 }  // namespace omm
