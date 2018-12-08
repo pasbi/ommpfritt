@@ -78,13 +78,10 @@ T& insert(ContainerT<std::unique_ptr<T>>& container, std::unique_ptr<T> obj, siz
 }
 
 template<typename T, template<typename...> class ContainerT>
-std::unique_ptr<T> extract(ContainerT<std::unique_ptr<T>>& container, T& obj)
+std::unique_ptr<T> extract(ContainerT<std::unique_ptr<T>>& container, const T& obj)
 {
-  const auto it = std::find_if( std::begin(container),
-                                std::end(container),
-                                [&obj](const std::unique_ptr<T>& a) {
-    return a.get() == &obj;
-  });
+  const auto is_obj = [&obj] (const std::unique_ptr<T>& a) { return a.get() == &obj; };
+  const auto it = std::find_if(std::begin(container), std::end(container), is_obj);
   assert(it != std::end(container));
   std::unique_ptr<T> uptr = std::move(*it);
   container.erase(it);
