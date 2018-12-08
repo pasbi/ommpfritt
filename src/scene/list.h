@@ -19,6 +19,7 @@ public:
   constexpr static bool is_tree = false;
 
   void insert(std::unique_ptr<T> t);
+  void insert(std::unique_ptr<T> t, const T* predecessor);
   void insert(ListOwningContext<T>& context);
   std::unique_ptr<T> remove(T& t); // TODO remove?
   void remove(ListOwningContext<T>& t);

@@ -21,8 +21,8 @@ public:
   friend class AbstractRAIIGuard;
   std::unique_ptr<AbstractRAIIGuard> acquire_inserter_guard(int row) override;
 
-  // friend class AbstractMoverGuard;
-  // std::unique_ptr<AbstractMoverGuard> acquire_mover_guard() override;
+  std::unique_ptr<AbstractRAIIGuard>
+  acquire_mover_guard(const StyleListMoveContext& context) override;
 
   std::unique_ptr<AbstractRAIIGuard> acquire_remover_guard(int row) override;
   std::unique_ptr<AbstractRAIIGuard> acquire_reseter_guard() override;

@@ -31,6 +31,16 @@ template<typename T> void List<T>::insert(std::unique_ptr<T> item)
   // selection_changed();  // TODO
 }
 
+template<typename T> void List<T>::insert(std::unique_ptr<T> item, const T* predecessor)
+{
+  const auto guards = observed_type::template transform<Guard>(
+    [this](auto* observer){ return observer->acquire_inserter_guard(m_items.size()); }
+  );
+  const auto it = m_items.begin() + (predecessor == nullptr ? 0 : position(*predecessor) + 1);
+  m_items.insert(it, std::move(item));
+  // selection_changed();  // TODO
+}
+
 template<typename T> void List<T>::insert(ListOwningContext<T>& context)
 {
   const size_t position = context.predecessor == nullptr ? 0
@@ -86,7 +96,11 @@ template<typename T> const T* List<T>::predecessor(const T& item) const
 
 template<typename T> void List<T>::move(ListMoveContext<T>& context)
 {
-  // TODO
+  assert(context.is_valid());
+  const auto guards = observed_type::template transform<Guard>(
+    [&context](auto* observer) { return observer->acquire_mover_guard(context); }
+  );
+  insert(remove(context.subject), context.predecessor);
 }
 
 template class List<Style>;

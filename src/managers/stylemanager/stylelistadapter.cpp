@@ -92,6 +92,35 @@ StyleListAdapter::acquire_reseter_guard()
   return std::make_unique<ReseterGuard>(*this);
 }
 
+std::unique_ptr<AbstractRAIIGuard>
+StyleListAdapter::acquire_mover_guard(const StyleListMoveContext& context)
+{
+  class MoverGuard : public AbstractRAIIGuard
+  {
+  public:
+    MoverGuard(StyleListAdapter& model, const int old_pos, const int new_pos)
+      : m_model(model)
+    {
+      LOG(INFO) << "beginMoveRows " << old_pos << " " << new_pos;
+      m_model.beginMoveRows(QModelIndex(), old_pos, old_pos, QModelIndex(), new_pos);
+    }
+
+    ~MoverGuard() { m_model.endMoveRows(); }
+  private:
+    StyleListAdapter& m_model;
+  };
+
+  const auto old_pos = scene().styles.position(context.subject);
+  const auto new_pos = ( context.predecessor == nullptr
+                            ? 0 : scene().styles.position(*context.predecessor) + 1 );
+
+  if (old_pos == new_pos) {
+    return nullptr;
+  } else {
+    return std::make_unique<MoverGuard>(*this, old_pos, new_pos);
+  }
+}
+
 bool StyleListAdapter::setData(const QModelIndex& index, const QVariant& value, int role)
 {
   if (!index.isValid() || role != Qt::EditRole) {

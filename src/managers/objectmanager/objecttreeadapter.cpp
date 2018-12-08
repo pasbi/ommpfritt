@@ -184,7 +184,7 @@ ObjectTreeAdapter::acquire_mover_guard(const ObjectTreeMoveContext& context)
     return nullptr;
   } else {
     return std::make_unique<MoverGuard>( *this, index_of(old_parent), old_pos,
-                                         index_of(new_parent), context.get_insert_position() );
+                                         index_of(new_parent), new_pos );
   }
 }
 
