@@ -18,13 +18,12 @@ template<typename T> TreeElement<T>::~TreeElement()
 template<typename T> T& TreeElement<T>::adopt(std::unique_ptr<T> object, const T* predecessor)
 {
   assert(object->is_root());
-  // const ObjectTransformation gt = object->global_transformation();  // TODO
+  auto guard = object->acquire_set_parent_guard();
   assert(predecessor == nullptr || &predecessor->parent() == this);
   const size_t pos = predecessor == nullptr ? 0 : predecessor->position() + 1;
 
   object->m_parent = &get();
   T& oref = insert(m_children, std::move(object), pos);
-  // oref.set_global_transformation(gt);  // TODO
   return oref;
 }
 
@@ -37,10 +36,9 @@ template<typename T> T& TreeElement<T>::adopt(std::unique_ptr<T> object)
 
 template<typename T> std::unique_ptr<T> TreeElement<T>::repudiate(T& object)
 {
-  // const ObjectTransformation gt = object.global_transformation();    // TODO
+  auto guard = object.acquire_set_parent_guard();
   object.m_parent = nullptr;
   std::unique_ptr<T> optr = extract(m_children, object);
-  // object.set_global_transformation(gt);    // TODO
   return optr;
 }
 

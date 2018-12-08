@@ -213,4 +213,21 @@ BoundingBox Object::recursive_bounding_box() const
   return transformation().apply(bounding_box);
 }
 
+std::unique_ptr<AbstractRAIIGuard> Object::acquire_set_parent_guard()
+{
+  class SetParentGuard : public AbstractRAIIGuard
+  {
+  public:
+    explicit SetParentGuard(Object& self)
+      : m_self(self), m_global_transformation(m_self.global_transformation()) { }
+
+    ~SetParentGuard() { m_self.set_global_transformation(m_global_transformation); }
+
+  private:
+    Object& m_self;
+    const ObjectTransformation m_global_transformation;
+  };
+  return std::make_unique<SetParentGuard>(*this);
+}
+
 }  // namespace omm

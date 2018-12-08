@@ -174,7 +174,7 @@ void Scene::reset()
 {
   set_has_pending_changes(false);
   object_tree.replace_root(make_root());
-  // TODO reset styles
+  styles.set(std::vector<std::unique_ptr<Style>> {});
 }
 
 std::string Scene::filename() const

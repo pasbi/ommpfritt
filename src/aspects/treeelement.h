@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <set>
+#include "abstractraiiguard.h"
 
 namespace omm
 {
@@ -26,6 +27,7 @@ public:
   void reset_parent(T& new_parent);
   std::set<T*> all_descendants() const;
   size_t position() const;
+  virtual std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() = 0;
 
 private:
   std::vector<std::unique_ptr<T>> m_children;

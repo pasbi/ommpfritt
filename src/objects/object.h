@@ -46,6 +46,7 @@ public:
   void render_recursive(AbstractRenderer& renderer, const Style& default_style) const;
   virtual BoundingBox bounding_box() const = 0;
   BoundingBox recursive_bounding_box() const;
+  std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() override;
 
 private:
   friend class ObjectView;
