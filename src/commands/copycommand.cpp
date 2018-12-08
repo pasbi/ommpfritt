@@ -17,7 +17,7 @@ CopyCommand<Structure>::CopyCommand(Structure& structure, std::vector<Context> c
   for (auto& context : m_contextes) {
     context.subject.capture_by_copy();
     context.predecessor = predecessor;
-    predecessor = &context.subject.reference();
+    predecessor = &context.subject.get();
   }
 }
 

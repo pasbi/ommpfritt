@@ -15,7 +15,7 @@ public:
   MaybeOwner(std::unique_ptr<T> own) : m_owned(std::move(own)), m_ref(*m_owned) { }
   MaybeOwner(T& reference) : m_ref(reference) { }
   operator T&() const { return m_ref; }
-  T& reference() const { return *this; }
+  T& get() const { return *this; }
   bool owns() const { return !!m_owned.get(); }
   auto release() { assert(owns()); return std::move(m_owned); }
   MaybeOwner& operator=(MaybeOwner&& other) = default;
@@ -30,7 +30,7 @@ public:
   T& capture(std::unique_ptr<T> own)
   {
     assert(!owns());
-    assert(&reference() == &*own);
+    assert(&get() == &*own);
     m_owned = std::move(own);
     assert(owns());
     return *this;

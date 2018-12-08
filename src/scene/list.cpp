@@ -61,7 +61,7 @@ template<typename T> void List<T>::remove(ListOwningContext<T>& context)
       return observer->acquire_remover_guard(position(context.subject));
     }
   );
-  context.subject.capture(::extract(m_items, context.subject.reference()));
+  context.subject.capture(::extract(m_items, context.subject.get()));
   // selection_changed();  // TODO
 }
 
