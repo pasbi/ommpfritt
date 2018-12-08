@@ -25,6 +25,7 @@ template<typename Structure> void CopyCommand<Structure>::redo()
 {
   for (auto&& context : m_contextes) {
     assert(context.subject.owns());
+    assert(context.is_sane());
     m_structure.insert(context);
   }
 }
@@ -33,6 +34,7 @@ template<typename Structure> void CopyCommand<Structure>::undo()
 {
   for (auto&& it = m_contextes.rbegin(); it != m_contextes.rend(); ++it) {
     assert(!it->subject.owns());
+    assert(it->is_sane());
     m_structure.remove(*it);
   }
 }

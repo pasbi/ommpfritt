@@ -43,6 +43,8 @@ public:
     // nothing to do. List items don't have children.
   }
 
+  virtual bool is_sane() const { return true; }
+
   static constexpr bool is_tree_context = false;
 };
 
@@ -54,7 +56,6 @@ public:
   TreeContext(T& subject, T& parent, const T* predecessor)
     : ListContext<T, Wrapper>(subject, predecessor), parent(parent)
   {
-    assert(this->predecessor == nullptr || &this->predecessor->parent() == &this->parent.get());
   }
 
   TreeContext(T& subject, const T* predecessor)
@@ -88,6 +89,11 @@ public:
     };
 
     items.erase(std::remove_if(items.begin(), items.end(), has_parent), items.end());
+  }
+
+  bool is_sane() const override
+  {
+    return this->predecessor == nullptr || &this->predecessor->parent() == &this->parent.get();
   }
 
   static constexpr bool is_tree_context = true;
