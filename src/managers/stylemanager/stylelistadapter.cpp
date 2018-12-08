@@ -35,7 +35,7 @@ Qt::ItemFlags StyleListAdapter::flags(const QModelIndex &index) const
 {
   assert(!index.parent().isValid());
   return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled
-            | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;  // TODO item never has children
+            | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemNeverHasChildren;
 }
 
 std::unique_ptr<AbstractRAIIGuard>

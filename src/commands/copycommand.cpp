@@ -13,6 +13,7 @@ CopyCommand<Structure>::CopyCommand(Structure& structure, std::vector<Context> c
   , m_contextes(std::move(contextes))
   , m_structure(structure)
 {
+  LOG(INFO) << m_contextes.size();
   const auto* predecessor = m_contextes.front().predecessor;
   for (auto& context : m_contextes) {
     context.subject.capture_by_copy();

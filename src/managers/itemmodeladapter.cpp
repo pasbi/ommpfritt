@@ -62,23 +62,28 @@ typename std::enable_if<!ContextT::is_tree_context, std::vector<ContextT>>::type
 make_contextes( const ItemModelAdapterT& adapter,
                 const QMimeData* data, int row, const QModelIndex& parent )
 {
-  std::vector<ContextT> contextes;
+  if (parent.isValid()) {
+    return std::vector<ContextT>(); // it's a list, not a tree.
+  }
+
   using T = typename ContextT::item_type;
 
   auto property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
   auto items = property_owner_mime_data->items<T>();
   if (property_owner_mime_data == nullptr || items.size() == 0) {
-    return contextes;
+    return std::vector<ContextT>();
   }
 
   ContextT::remove_internal_children(items);
+
+  std::vector<ContextT> contextes;
   contextes.reserve(items.size());
-  const T* predecessor = nullptr; // TODO
+  const size_t pos = row < 0 ? adapter.rowCount() : row;
+  const T* predecessor = (pos == 0) ? nullptr : &adapter.item_at(adapter.index(pos-1, 0, parent));
   for (T* subject : items) {
     contextes.emplace_back(*subject, predecessor);
     predecessor = subject;
   }
-  LOG(INFO) << contextes.size();
   return contextes;
 }
 

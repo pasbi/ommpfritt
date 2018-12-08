@@ -26,6 +26,7 @@ class Tree : public Structure<T>, public Observed<AbstractStructureObserver<Tree
 public:
   using observer_type = AbstractStructureObserver<Tree<T>>;
   using observed_type = Observed<observer_type>;
+  constexpr static bool is_tree = true;
 
   Tree(std::unique_ptr<T> root);
   ~Tree();

@@ -33,7 +33,8 @@ template<typename T> void List<T>::insert(std::unique_ptr<T> item)
 
 template<typename T> void List<T>::insert(ListOwningContext<T>& context)
 {
-  const size_t position = nullptr ? 0 : this->position(*context.predecessor) + 1;
+  const size_t position = context.predecessor == nullptr ? 0
+                                                         : this->position(*context.predecessor)+1;
   const auto guards = observed_type::template transform<Guard>(
     [this, position](auto* observer) {
       return observer->acquire_inserter_guard(position);
@@ -65,12 +66,13 @@ template<typename T> std::unique_ptr<T> List<T>::remove(T& item)
 
 template<typename T> size_t List<T>::position(const T& item) const
 {
-  const auto pos = std::find_if(m_items.begin(), m_items.end(), [&item](const auto& uptr) {
+  LOG(INFO) << &item;
+  const auto it = std::find_if(m_items.begin(), m_items.end(), [&item](const auto& uptr) {
     return uptr.get() == &item;
   });
 
-  assert(pos != m_items.end());
-  return std::distance(pos, m_items.begin());
+  assert(it != m_items.end());
+  return std::distance(m_items.begin(), it);
 }
 
 template<typename T> const T* List<T>::predecessor(const T& item) const

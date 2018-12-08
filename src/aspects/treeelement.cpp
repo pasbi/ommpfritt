@@ -104,7 +104,7 @@ template<typename T> size_t TreeElement<T>::position() const
   const auto siblings = parent().children();
   const auto it = std::find(siblings.begin(), siblings.end(), this);
   assert(it != siblings.end());
-  return std::distance(it, siblings.begin());
+  return std::distance(siblings.begin(), it);
 }
 
 template class TreeElement<Object>;

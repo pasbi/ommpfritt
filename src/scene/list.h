@@ -16,6 +16,7 @@ class List : public Structure<T>, public Observed<AbstractStructureObserver<List
 public:
   using observer_type = AbstractStructureObserver<List<T>>;
   using observed_type = Observed<observer_type>;
+  constexpr static bool is_tree = false;
 
   void insert(std::unique_ptr<T> t);
   void insert(ListOwningContext<T>& context);
