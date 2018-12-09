@@ -19,6 +19,7 @@ public:
   bool owns() const { return !!m_owned.get(); }
   auto release() { assert(owns()); return std::move(m_owned); }
   MaybeOwner& operator=(MaybeOwner&& other) = default;
+  T* operator ->() { return &m_ref.get(); }
 
   T& capture_by_copy()
   {
