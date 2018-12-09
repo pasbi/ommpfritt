@@ -65,4 +65,9 @@ void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection)
   set_selection(selection, model()->structure().root());
 }
 
+AbstractPropertyOwner::Kind ObjectTreeView::displayed_kinds() const
+{
+  return AbstractPropertyOwner::Kind::Object | AbstractPropertyOwner::Kind::Tag;
+}
+
 }  // namespace omm

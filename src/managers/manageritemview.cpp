@@ -141,6 +141,12 @@ void ManagerItemView<ItemViewT, ItemModelT>::mouseReleaseEvent(QMouseEvent* e)
   ItemViewT::mouseReleaseEvent(e);
 }
 
+template<typename ItemViewT, typename ItemModelT>
+AbstractPropertyOwner::Kind ManagerItemView<ItemViewT, ItemModelT>::displayed_kinds() const
+{
+  return AbstractPropertyOwner::Kind::None;
+}
+
 template class ManagerItemView<QListView, StyleListAdapter>;
 template class ManagerItemView<QTreeView, ObjectTreeAdapter>;
 

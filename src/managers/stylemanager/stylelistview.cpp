@@ -18,7 +18,6 @@ void StyleListView::populate_menu(QMenu& menu, const QModelIndex& index) const
   if (index.isValid()) {
     action(menu, tr("&remove"), *this, &ManagerItemView::remove_selection);
   }
-
 }
 
 void StyleListView::set_selection(const SetOfPropertyOwner& selection)
@@ -34,6 +33,11 @@ void StyleListView::set_selection(const SetOfPropertyOwner& selection)
   //     selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Deselect);
   //   }
   // }
+}
+
+AbstractPropertyOwner::Kind StyleListView::displayed_kinds() const
+{
+  return AbstractPropertyOwner::Kind::Style;
 }
 
 }  // namespace

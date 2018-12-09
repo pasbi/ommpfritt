@@ -1,6 +1,7 @@
 #pragma once
 
 #include "scene/abstractselectionobserver.h"
+#include "aspects/propertyowner.h"
 
 class QMenu;
 class QModelIndex;
@@ -21,6 +22,7 @@ public:
   virtual ~ManagerItemView();
   void set_model(ItemModelT* model);
   ItemModelT* model() const;
+  virtual AbstractPropertyOwner::Kind displayed_kinds() const;
 
   bool remove_selection();
 
