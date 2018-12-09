@@ -52,7 +52,8 @@ namespace omm
 Scene* Scene::m_current = nullptr;
 
 Scene::Scene()
-  : object_tree(make_root())
+  : object_tree(*this, make_root())
+  , styles(*this)
   , m_default_style(make_default_style(this))
 {
   object_tree.root().property<StringProperty>(Object::NAME_PROPERTY_KEY).value() = "_root_";
@@ -87,10 +88,15 @@ Scene::find_reference_holders(const AbstractPropertyOwner& candidate) const
   return reference_holders;
 }
 
+void Scene::invalidate()
+{
+  tags.invalidate();
+  selection_changed();
+}
+
 void Scene::selection_changed()
 {
   const auto selected_objects = selection();
-
   Observed<AbstractSelectionObserver>::for_each(
     [selected_objects](auto* observer) { observer->set_selection(selected_objects); }
   );
@@ -104,7 +110,7 @@ void Scene::clear_selection()
       t->set_selected(false);
     }
   }
-  selection_changed();
+  invalidate();
 }
 
 bool Scene::save_as(const std::string &filename)
@@ -239,16 +245,14 @@ Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag)
 Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag, const Tag* predecessor)
 {
   Tag& ref = owner.attach_tag(std::move(tag), predecessor);
-  tags.invalidate();
-  selection_changed();
+  invalidate();
   return ref;
 }
 
 std::unique_ptr<Tag> Scene::detach_tag(Object& owner, Tag& tag)
 {
   auto ref = owner.detach_tag(tag);
-  tags.invalidate();
-  selection_changed();
+  invalidate();
   return ref;
 }
 
@@ -256,11 +260,6 @@ Style& Scene::default_style() const
 {
   return *m_default_style;
 }
-
-// void Scene::move(StyleListMoveContext& context)
-// {
-
-// }
 
 template<> typename SceneStructure<Object>::type& Scene::structure<Object>()
 {

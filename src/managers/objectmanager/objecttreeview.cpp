@@ -40,15 +40,14 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
 
 void ObjectTreeView::attach_tag_to_selected(const std::string& tag_class) const
 {
-  // auto tag = Tag::make(tag_class);
-  // auto& scene = model()->scene();
-  // scene.submit<AttachTagCommand>(scene, std::move(tag));
+  auto tag = Tag::make(tag_class);
+  auto& scene = model()->scene();
+  scene.submit<AttachTagCommand>(scene, std::move(tag));
 }
 
 void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection, Object& root)
 {
-  LOG(INFO) << "set selection";
-  // TODO
+  // LOG(INFO) << "set selection";
   // assert(root.is_selected() == selection.count(static_cast<AbstractPropertyOwner*>(&root)));
   // const QModelIndex index = model()->index_of(root);
   // if (root.is_selected()) {

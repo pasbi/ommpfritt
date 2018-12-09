@@ -6,6 +6,7 @@
 #include "scene/contextes_fwd.h"
 #include "scene/structure.h"
 #include "scene/abstractstructureobserver.h"
+#include "observed.h"
 
 namespace omm
 {
@@ -17,6 +18,7 @@ public:
   using observer_type = AbstractStructureObserver<List<T>>;
   using observed_type = Observed<observer_type>;
   constexpr static bool is_tree = false;
+  using Structure<T>::Structure;
 
   void insert(std::unique_ptr<T> t, const T* predecessor);
   void insert(ListOwningContext<T>& context);
@@ -31,6 +33,8 @@ public:
 
   T& insert(std::unique_ptr<T> t) override;
   std::unique_ptr<T> remove(T& t) override;
+
+  void invalidate();
 
 private:
   std::vector<std::unique_ptr<Style>> m_items;

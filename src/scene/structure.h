@@ -1,30 +1,34 @@
 #pragma once
 
 #include <glog/logging.h>
-#include "observed.h"
+#include <set>
+#include <memory>
 
 namespace omm
 {
+
+class Scene;
 
 template<typename T> class Structure
 {
 public:
   using item_type = T;
-  Structure() {}
-  virtual ~Structure() {}
+  Structure(Scene& scene);
+  virtual ~Structure();
 
   virtual std::set<T*> items() const = 0;
   virtual size_t position(const T& item) const = 0;
   virtual const T* predecessor(const T& sibling) const = 0;
 
-  std::set<T*> selected_items() const
-  {
-    const auto is_selected = [](const auto* t) { return t->is_selected(); };
-    return ::filter_if(items(), is_selected);
-  }
+  std::set<T*> selected_items() const;
 
   virtual T& insert(std::unique_ptr<T> t) = 0;
   virtual std::unique_ptr<T> remove(T& t) = 0;
+
+  virtual void invalidate() = 0;
+
+protected:
+  void invalidate_recursive();
 
 private:
   // we don't want to assign copy or move
@@ -32,6 +36,8 @@ private:
   const Structure<T>& operator=(Structure<T>&&) = delete;
   Structure<T>(const Structure<T>&) = delete;
   Structure<T>(Structure<T>&&) = delete;
+
+  Scene& m_scene;
 };
 
 }  // namespace omm

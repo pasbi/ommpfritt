@@ -28,7 +28,7 @@ public:
   using observed_type = Observed<observer_type>;
   constexpr static bool is_tree = true;
 
-  Tree(std::unique_ptr<T> root);
+  Tree(Scene& scene, std::unique_ptr<T> root);
   ~Tree();
 
 public:
@@ -45,6 +45,7 @@ public:
 
   T& insert(std::unique_ptr<T> t) override;
   std::unique_ptr<T> remove(T& t) override;
+  void invalidate() override;
 
 private:
   std::unique_ptr<T> m_root;

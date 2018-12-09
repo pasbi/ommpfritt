@@ -78,6 +78,7 @@ public:
 public:
   void clear_selection();
   void selection_changed();
+  void invalidate();
 
   // === Save/Load ====
 public:
