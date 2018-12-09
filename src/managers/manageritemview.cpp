@@ -87,23 +87,17 @@ ManagerItemView<ItemViewT, ItemModelT>::~ManagerItemView()
 template<typename ItemViewT, typename ItemModelT>
 void ManagerItemView<ItemViewT, ItemModelT>::set_model(ItemModelT* model)
 {
-  // TODO
-  // if (this->model()) {
-  //   this->model()->structure().Observed<AbstractSelectionObserver>::unregister_observer(*this);
-  // }
+  if (this->model()) {
+    this->model()->scene().Observed<AbstractSelectionObserver>::unregister_observer(*this);
+  }
   ItemViewT::setModel(model);
-  // if (this->model()) {
-  //   this->model()->structure().Observed<AbstractSelectionObserver>::register_observer(*this);
-
-    // QObject::connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [&scene]() {
-    //   for (Tag* tag : scene.selected_tags()) {
-    //     tag->deselect();
-    //   }
-    //   for (Style* style : scene.selected_styles()) {
-    //     style->deselect();
-    //   }
-    // });
-  // }
+  if (this->model()) {
+    this->model()->scene().Observed<AbstractSelectionObserver>::register_observer(*this);
+    QObject::connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [this]() {
+      const auto all_but_managed = AbstractPropertyOwner::Kind::All & ~displayed_kinds();
+      this->model()->scene().clear_selection(all_but_managed);
+    });
+  }
 }
 
 template<typename ItemViewT, typename ItemModelT>

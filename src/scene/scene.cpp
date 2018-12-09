@@ -44,6 +44,15 @@ std::unique_ptr<omm::Style> make_default_style(omm::Scene* scene)
   return default_style;
 }
 
+template<typename SelectablesT>
+void deselect_all(const SelectablesT& selectables)
+{
+  using selectable_type = std::remove_pointer_t<std::decay_t<typename SelectablesT::value_type>>;
+  static constexpr bool is_selectable = std::is_base_of<omm::Selectable, selectable_type>::value;
+  static_assert( is_selectable, "SelectableT must be a container of Selectable" );
+  std::for_each(selectables.begin(), selectables.end(), std::mem_fn(&omm::Selectable::deselect));
+}
+
 }  // namespace
 
 namespace omm
@@ -96,9 +105,9 @@ void Scene::invalidate()
 
 void Scene::selection_changed()
 {
-  const auto selected_objects = selection();
+  const auto selection = this->selection();
   Observed<AbstractSelectionObserver>::for_each(
-    [selected_objects](auto* observer) { observer->set_selection(selected_objects); }
+    [selection](auto* observer) { observer->set_selection(selection); }
   );
 }
 

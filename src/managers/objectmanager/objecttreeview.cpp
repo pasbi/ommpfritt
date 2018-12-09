@@ -47,17 +47,16 @@ void ObjectTreeView::attach_tag_to_selected(const std::string& tag_class) const
 
 void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection, Object& root)
 {
-  // LOG(INFO) << "set selection";
-  // assert(root.is_selected() == selection.count(static_cast<AbstractPropertyOwner*>(&root)));
-  // const QModelIndex index = model()->index_of(root);
-  // if (root.is_selected()) {
-  //   selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Select);
-  // } else {
-  //   selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Deselect);
-  // }
-  // for (auto child : root.children()) {
-  //   set_selection(selection, *child);
-  // }
+  assert(root.is_selected() == selection.count(static_cast<AbstractPropertyOwner*>(&root)));
+  const QModelIndex index = model()->index_of(root);
+  if (root.is_selected()) {
+    selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Select);
+  } else {
+    selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Deselect);
+  }
+  for (auto child : root.children()) {
+    set_selection(selection, *child);
+  }
 };
 
 void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection)
