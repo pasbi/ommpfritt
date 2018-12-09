@@ -47,6 +47,9 @@ public:
     }
   }
 
+protected:
+  item_type& item() { return m_item.get(); }
+
 private:
   MaybeOwner<item_type> m_item;
   StructureT& m_structure;

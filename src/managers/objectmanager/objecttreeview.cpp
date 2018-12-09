@@ -5,8 +5,9 @@
 
 #include "menuhelper.h"
 #include "managers/objectmanager/objecttreeadapter.h"
-#include "tags/tag.h"
-#include "commands/attachtagcommand.h"
+#include "commands/addtagcommand.h"
+#include "scene/contextes.h"
+#include "commands/removecommand.h"
 #include "renderers/style.h"
 
 namespace omm
@@ -35,25 +36,20 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
       action(menu, tr("&remove"), *this, &ManagerItemView::remove_selection);
       auto tag_menu = std::make_unique<QMenu>(tr("&attach tag"));
       for (const auto& key : Tag::keys()) {
-        action(*tag_menu, QString::fromStdString(key), [this, key](){
-          attach_tag_to_selected(key);
+        action(*tag_menu, QString::fromStdString(key), [this, key, object](){
+          model()->scene().submit<AddTagCommand>(*object, Tag::make(key));
         });
       }
       menu.addMenu(tag_menu.release());
       break;
     }
     case 2:
-      action(menu, tr("&remove"), *this, &ObjectTreeView::remove_selected_tags);
+      action(menu, tr("&remove"), [this, object]() {
+        remove_selected_tags(*object);
+      });
       break;
     }
   }
-}
-
-void ObjectTreeView::attach_tag_to_selected(const std::string& tag_class) const
-{
-  auto tag = Tag::make(tag_class);
-  auto& scene = model()->scene();
-  scene.submit<AttachTagCommand>(scene, std::move(tag));
 }
 
 void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection, Object& root)
@@ -80,12 +76,15 @@ AbstractPropertyOwner::Kind ObjectTreeView::displayed_kinds() const
   return AbstractPropertyOwner::Kind::Object;
 }
 
-void ObjectTreeView::remove_selected_tags()
+void ObjectTreeView::remove_selected_tags(Object& object) const
 {
   auto& scene = model()->scene();
-  for (Tag* tag : scene.selected_tags()) {
-    tag->owner()->tags.remove(*tag);
-  }
+  auto selection = scene.selected_tags();
+  selection = ::filter_if(selection, [&object](const auto* tag) {
+    return tag->owner() == &object;
+  });
+  using remove_command_type = RemoveCommand<List<Tag>>;
+  model()->scene().submit<remove_command_type>(object.tags, selection);
   scene.invalidate();
 }
 

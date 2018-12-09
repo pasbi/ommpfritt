@@ -47,4 +47,10 @@ template<> struct Contextes<Style>
   using Owning = StyleListOwningContext;
 };
 
+template<> struct Contextes<Tag>
+{
+  using Move = TagListMoveContext;
+  using Owning = TagListOwningContext;
+};
+
 }  // namespace omm

@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "scene/tree.h"
 #include "scene/list.h"
+#include "tags/tag.h"
 #include "objects/object.h"
 #include "renderers/style.h"
 
@@ -62,5 +63,6 @@ template<typename StructureT> void RemoveCommand<StructureT>::undo()
 
 template class RemoveCommand<Tree<Object>>;
 template class RemoveCommand<List<Style>>;
+template class RemoveCommand<List<Tag>>;
 
 }  // namespace omm

@@ -10,6 +10,7 @@ namespace omm
 {
 
 class Object;
+class Tag;
 template<typename> class Tree;
 
 template<typename StructureT>
