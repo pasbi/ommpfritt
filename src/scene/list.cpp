@@ -32,15 +32,14 @@ template<typename T> void List<T>::insert(std::unique_ptr<T> item, const T* pred
   const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
     [this](auto* observer){ return observer->acquire_inserter_guard(m_items.size()); }
   );
-  const auto it = m_items.begin() + (predecessor == nullptr ? 0 : position(*predecessor) + 1);
+  const auto it = m_items.begin() + this->insert_position(predecessor);
   m_items.insert(it, std::move(item));
   this->invalidate_recursive();
 }
 
 template<typename T> void List<T>::insert(ListOwningContext<T>& context)
 {
-  const size_t position = context.predecessor == nullptr ? 0
-                                                         : this->position(*context.predecessor)+1;
+  const size_t position = this->insert_position(context.predecessor);
   const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
     [this, position](auto* observer) {
       return observer->acquire_inserter_guard(position);
@@ -100,8 +99,7 @@ template<typename T> void List<T>::move(ListMoveContext<T>& context)
   );
 
   std::unique_ptr<T> item = ::extract(m_items, context.subject.get());
-  const auto pos = context.predecessor == nullptr ? 0 : position(*context.predecessor) + 1;
-  m_items.insert(m_items.begin() + pos, std::move(item));
+  m_items.insert(m_items.begin() + this->insert_position(context.predecessor), std::move(item));
   this->invalidate_recursive();
 }
 

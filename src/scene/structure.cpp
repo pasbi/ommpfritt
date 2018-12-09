@@ -22,6 +22,15 @@ template<typename T> void Structure<T>::invalidate_recursive()
   m_scene.invalidate();
 }
 
+template<typename T> size_t Structure<T>::insert_position(const T* predecessor) const
+{
+  if (predecessor == nullptr) {
+    return 0;
+  } else {
+    return position(*predecessor) + 1;
+  }
+}
+
 template class Structure<Object>;
 template class Structure<Style>;
 

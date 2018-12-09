@@ -110,8 +110,7 @@ StyleListAdapter::acquire_mover_guard(const StyleListMoveContext& context)
   };
 
   const auto old_pos = scene().styles.position(context.subject);
-  const auto new_pos = ( context.predecessor == nullptr
-                            ? 0 : scene().styles.position(*context.predecessor) + 1 );
+  const auto new_pos = scene().styles.insert_position(context.predecessor);
 
   if (old_pos == new_pos) {
     return nullptr;

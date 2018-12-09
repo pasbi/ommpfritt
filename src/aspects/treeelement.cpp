@@ -15,13 +15,10 @@ template<typename T> TreeElement<T>::~TreeElement()
 {
 }
 
-template<typename T> T& TreeElement<T>::adopt(std::unique_ptr<T> object, const T* predecessor)
+template<typename T> T& TreeElement<T>::adopt(std::unique_ptr<T> object, const size_t pos)
 {
   assert(object->is_root());
   auto guard = object->acquire_set_parent_guard();
-  assert(predecessor == nullptr || &predecessor->parent() == this);
-  const size_t pos = predecessor == nullptr ? 0 : predecessor->position() + 1;
-
   object->m_parent = &get();
   T& oref = insert(m_children, std::move(object), pos);
   return oref;
@@ -29,9 +26,7 @@ template<typename T> T& TreeElement<T>::adopt(std::unique_ptr<T> object, const T
 
 template<typename T> T& TreeElement<T>::adopt(std::unique_ptr<T> object)
 {
-  const size_t n = n_children();
-  const T* predecessor = n == 0 ? nullptr : &child(n-1);
-  return adopt(std::move(object), predecessor);
+  return adopt(std::move(object), n_children());
 }
 
 template<typename T> std::unique_ptr<T> TreeElement<T>::repudiate(T& object)

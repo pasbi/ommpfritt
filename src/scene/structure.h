@@ -19,6 +19,7 @@ public:
   virtual std::set<T*> items() const = 0;
   virtual size_t position(const T& item) const = 0;
   virtual const T* predecessor(const T& sibling) const = 0;
+  size_t insert_position(const T* predecessor) const;
 
   std::set<T*> selected_items() const;
 

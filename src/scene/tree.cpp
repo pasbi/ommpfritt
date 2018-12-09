@@ -27,7 +27,8 @@ template<typename T> void Tree<T>::move(TreeMoveContext<T>& context)
   const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
     [&context](auto* observer) { return observer->acquire_mover_guard(context); }
   );
-  context.parent.get().adopt(old_parent.repudiate(context.subject), context.predecessor);
+  const auto pos = this->insert_position(context.predecessor);
+  context.parent.get().adopt(old_parent.repudiate(context.subject), pos);
 
   this->invalidate_recursive();
 }
@@ -37,11 +38,13 @@ template<typename T> void Tree<T>::insert(TreeOwningContext<T>& context)
   assert(context.subject.owns());
 
   const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [&context] (auto* observer) {
-      return observer->acquire_inserter_guard(context.parent, context.get_insert_position());
+    [&context, this] (auto* observer) {
+      const auto pos = this->insert_position(context.predecessor);
+      return observer->acquire_inserter_guard(context.parent, pos);
     }
   );
-  context.parent.get().adopt(context.subject.release(), context.predecessor);
+  const auto pos = this->insert_position(context.predecessor);
+  context.parent.get().adopt(context.subject.release(), pos);
 
   this->invalidate_recursive();
 }

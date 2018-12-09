@@ -68,17 +68,6 @@ public:
    */
   std::reference_wrapper<T> parent;
 
-  /**
-   * @brief returns the position at which subject must be inserted into the list of parent's
-   *  children such that it comes after `predecessor` or at first if `predecessor` is
-   *  nullptr.
-   * @return the position.
-   */
-  size_t get_insert_position() const
-  {
-    return this->predecessor == nullptr ? 0 : this->predecessor->position() + 1;
-  }
-
   static void remove_internal_children(std::vector<T*>& items)
   {
     const auto has_parent = [&items](const T* subject) {

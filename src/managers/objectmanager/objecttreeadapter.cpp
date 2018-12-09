@@ -178,7 +178,7 @@ ObjectTreeAdapter::acquire_mover_guard(const ObjectTreeMoveContext& context)
   Object& old_parent = context.subject.get().parent();
   Object& new_parent = context.parent.get();
   const auto old_pos = scene().object_tree.position(context.subject);
-  const auto new_pos = context.get_insert_position();
+  const auto new_pos = scene().object_tree.insert_position(context.predecessor);
 
   if (old_pos == new_pos && &old_parent == &new_parent) {
     return nullptr;
