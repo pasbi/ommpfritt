@@ -15,7 +15,8 @@ public:
   explicit View(PropertyOwnerT& target)
     : m_target(&target)
   {
-    static_assert(std::is_base_of<AbstractPropertyOwner, PropertyOwnerT>::value);
+    static_assert( std::is_base_of<AbstractPropertyOwner, PropertyOwnerT>::value,
+                   "PropertyOwnerT must be derived from AbstractPropertyOwner." );
   }
 
   py::object get_property(const std::string& key)

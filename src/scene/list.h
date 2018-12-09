@@ -35,7 +35,7 @@ public:
   T& insert(std::unique_ptr<T> t) override;
   std::unique_ptr<T> remove(T& t) override;
 
-  void invalidate();
+  void invalidate() override;
 
 private:
   std::vector<std::unique_ptr<T>> m_items;

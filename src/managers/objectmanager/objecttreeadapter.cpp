@@ -25,9 +25,7 @@ QModelIndex ObjectTreeAdapter::index(int row, int column, const QModelIndex& par
     return QModelIndex();
   }
 
-  const auto& parent_item = item_at(parent);
-  assert(&parent_item != nullptr);
-  return createIndex(row, column, &parent_item.child(row));
+  return createIndex(row, column, &item_at(parent).child(row));
 }
 
 QModelIndex ObjectTreeAdapter::parent(const QModelIndex& index) const
@@ -105,7 +103,6 @@ QModelIndex ObjectTreeAdapter::index_of(Object& object) const
   if (object.is_root()) {
     return QModelIndex();
   } else {
-    assert(&object != nullptr);
     return createIndex(scene().object_tree.position(object), 0, &object);
   }
 }

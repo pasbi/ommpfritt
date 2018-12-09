@@ -94,8 +94,6 @@ ObjectTransformation Object::transformation() const
 
 ObjectTransformation Object::global_transformation() const
 {
-  assert(this != nullptr);
-
   if (is_root()) {
     return transformation();
   } else {

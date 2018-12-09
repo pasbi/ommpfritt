@@ -27,8 +27,8 @@ public:
   bool setData(const QModelIndex& index, const QVariant& value, int role) override;
   Object& item_at(const QModelIndex& index) const override;
   QModelIndex index_of(Object& object) const;
-  Qt::ItemFlags flags(const QModelIndex &index) const;
-  QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+  Qt::ItemFlags flags(const QModelIndex &index) const override;
+  QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
   friend class AbstractRAIIGuard;
   std::unique_ptr<AbstractRAIIGuard>

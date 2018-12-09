@@ -12,8 +12,8 @@ class ObjectsTransformationCommand : public Command
 {
 public:
   ObjectsTransformationCommand(const std::set<Object*>& objects, const ObjectTransformation& t);
-  void undo();
-  void redo();
+  void undo() override;
+  void redo() override;
   int id() const override;
   bool mergeWith(const QUndoCommand* command) override;
 

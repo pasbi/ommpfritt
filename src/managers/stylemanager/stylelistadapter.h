@@ -27,7 +27,7 @@ public:
   std::unique_ptr<AbstractRAIIGuard> acquire_remover_guard(int row) override;
   std::unique_ptr<AbstractRAIIGuard> acquire_reseter_guard() override;
 
-  Qt::ItemFlags flags(const QModelIndex &index) const;
+  Qt::ItemFlags flags(const QModelIndex &index) const override;
   Style& item_at(const QModelIndex& index) const override;
 };
 

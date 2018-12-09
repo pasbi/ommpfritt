@@ -55,7 +55,7 @@ public:
 protected:
   void set_properties_value(const value_type& value)
   {
-    scene().submit<PropertiesCommand<property_type>>(m_properties, value);
+    scene().template submit<PropertiesCommand<property_type>>(m_properties, value);
   }
 
   auto get_properties_values() const

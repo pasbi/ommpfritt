@@ -17,6 +17,7 @@ class Handle
 {
 public:
   explicit Handle(Scene& scene, const std::set<Object*>& selection);
+  virtual ~Handle() = default;
 
   /**
    * @brief returns true if any grabbable was moved

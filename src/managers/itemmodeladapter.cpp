@@ -189,6 +189,8 @@ ItemModelAdapter<StructureT, ItemModel>
       m_scene.submit<CopyCommand<StructureT>>(m_structure, std::move(copy_contextes));
       break;
     }
+    default:
+      break;
     }
     return true;
   }

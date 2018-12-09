@@ -4,7 +4,6 @@
 #include "objects/object.h"
 #include "mainwindow/viewport/axishandle.h"
 #include "mainwindow/viewport/circlehandle.h"
-#include "mainwindow/viewport/scalehandle.h"
 #include "scene/scene.h"
 #include "commands/objectstransformationcommand.h"
 
@@ -64,6 +63,9 @@ bool Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
       case SubHandle::Status::Active:
       case SubHandle::Status::Hovered:
         hit_something = true;
+        break;
+      case SubHandle::Status::Inactive:
+        break;
       }
     }
   }
