@@ -9,7 +9,7 @@
 
 namespace omm {
 
-class TagOwner;
+class Object;
 class Scene;
 
 class Tag
@@ -23,11 +23,11 @@ public:
   virtual bool run() { return true; }
   virtual QIcon icon() const = 0;
 
-  void set_owner(TagOwner* owner);
-  TagOwner* owner() const;
+  void set_owner(Object* owner);
+  Object* owner() const;
 
 private:
-  TagOwner* m_owner;
+  Object* m_owner;
 
 };
 

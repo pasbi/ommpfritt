@@ -13,7 +13,7 @@ template<typename T> class Structure
 {
 public:
   using item_type = T;
-  Structure(Scene& scene);
+  Structure(Scene* scene = nullptr);
   virtual ~Structure();
 
   virtual std::set<T*> items() const = 0;
@@ -38,7 +38,7 @@ private:
   Structure<T>(const Structure<T>&) = delete;
   Structure<T>(Structure<T>&&) = delete;
 
-  Scene& m_scene;
+  Scene* m_scene;
 };
 
 }  // namespace omm

@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "scene/contextes.h"
 #include "renderers/style.h"
+#include "tags/tag.h"
 
 namespace omm
 {
@@ -115,8 +116,14 @@ std::vector<std::unique_ptr<T>> List<T>::set(std::vector<std::unique_ptr<T>> ite
   return old_items;
 }
 
+template<typename T> size_t List<T>::size() const
+{
+  return m_items.size();
+}
+
 template<typename T> void List<T>::invalidate() { }
 
 template class List<Style>;
+template class List<Tag>;
 
 }  // namespace omm

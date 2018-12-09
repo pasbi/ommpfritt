@@ -37,8 +37,8 @@ py::object omm::ObjectView::tags()
   throw_if_no_target();
 
   std::vector<TagView> tags;
-  for (const auto& tag : m_target->tags()) {
-    tags.push_back(TagView(*tag));
+  for (const auto& tag : m_target->tags.items()) {
+    tags.push_back(TagView(*tag)); // TODO order is unspecified
   }
   return py::cast(tags);
 }

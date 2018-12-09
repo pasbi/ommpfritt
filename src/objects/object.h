@@ -7,11 +7,11 @@
 #include "aspects/propertyowner.h"
 #include "abstractfactory.h"
 #include "aspects/selectable.h"
-#include "aspects/tagowner.h"
 #include "aspects/treeelement.h"
 #include "common.h"
 #include "aspects/copycreatable.h"
 #include "renderers/abstractrenderer.h"
+#include "scene/list.h"
 
 namespace omm
 {
@@ -24,7 +24,6 @@ class Object
   : public PropertyOwner<AbstractPropertyOwner::Kind::Object>
   , public Selectable
   , public virtual Serializable
-  , public TagOwner
   , public TreeElement<Object>
   , public CopyCreatable<Object>
 {
@@ -47,6 +46,8 @@ public:
   virtual BoundingBox bounding_box() const = 0;
   BoundingBox recursive_bounding_box() const;
   std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() override;
+
+  List<Tag> tags;
 
 private:
   friend class ObjectView;

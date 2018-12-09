@@ -30,6 +30,7 @@ public:
   std::set<T*> items() const override;
   const T* predecessor(const T& sibling) const override;
   size_t position(const T& item) const override;
+  size_t size() const;
 
   T& insert(std::unique_ptr<T> t) override;
   std::unique_ptr<T> remove(T& t) override;
@@ -37,7 +38,7 @@ public:
   void invalidate();
 
 private:
-  std::vector<std::unique_ptr<Style>> m_items;
+  std::vector<std::unique_ptr<T>> m_items;
 };
 
 }  // namespace omm

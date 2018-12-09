@@ -28,7 +28,7 @@ public:
   using observed_type = Observed<observer_type>;
   constexpr static bool is_tree = true;
 
-  Tree(Scene& scene, std::unique_ptr<T> root);
+  Tree(Scene* scene, std::unique_ptr<T> root);
   ~Tree();
 
 public:

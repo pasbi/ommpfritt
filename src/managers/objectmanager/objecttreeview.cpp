@@ -82,10 +82,9 @@ AbstractPropertyOwner::Kind ObjectTreeView::displayed_kinds() const
 
 void ObjectTreeView::remove_selected_tags()
 {
-  LOG(INFO) << "remove_selected_tags";
   auto& scene = model()->scene();
-  for (const Tag* tag : scene.selected_tags()) {
-    scene.detach_tag(*tag).release();
+  for (Tag* tag : scene.selected_tags()) {
+    tag->owner()->tags.remove(*tag);
   }
   scene.invalidate();
 }

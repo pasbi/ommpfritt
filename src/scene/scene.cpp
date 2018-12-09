@@ -12,6 +12,7 @@
 #include "commands/command.h"
 #include "properties/referenceproperty.h"
 #include "renderers/style.h"
+#include "tags/tag.h"
 
 namespace
 {
@@ -61,8 +62,8 @@ namespace omm
 Scene* Scene::m_current = nullptr;
 
 Scene::Scene()
-  : object_tree(*this, make_root())
-  , styles(*this)
+  : object_tree(this, make_root())
+  , styles(this)
   , m_default_style(make_default_style(this))
 {
   object_tree.root().property<StringProperty>(Object::NAME_PROPERTY_KEY).value() = "_root_";
@@ -99,7 +100,7 @@ Scene::find_reference_holders(const AbstractPropertyOwner& candidate) const
 
 void Scene::invalidate()
 {
-  tags.invalidate();
+  m_tags_cache_is_dirty = true;
   selection_changed();
 }
 
@@ -122,7 +123,7 @@ void Scene::clear_selection(AbstractPropertyOwner::Kind kind)
   {
     for (auto& o : object_tree.items()) {
       if (clear_object_selection) { o->deselect(); }
-      if (clear_tag_selection) { deselect_all(o->tags()); }
+      if (clear_tag_selection) { deselect_all(o->tags.items()); }
     }
   }
   if (clear_style_selection) {
@@ -226,13 +227,16 @@ QUndoStack& Scene::undo_stack()
 {
   return m_undo_stack;
 }
-template<> std::set<Tag*> Scene::TGetter<Tag>::compute() const
+
+std::set<Tag*> Scene::tags() const
 {
-  std::set<Tag*> tags;
-  for (const auto object : m_self.object_tree.items()) {
-    tags = merge(tags, object->tags());
+  if (m_tags_cache_is_dirty) {
+    m_tags_cache.clear();
+    for (const auto& object : object_tree.items()) {
+      m_tags_cache = merge(m_tags_cache, object->tags.items());
+    }
   }
-  return tags;
+  return m_tags_cache;
 }
 
 std::set<Tag*> Scene::selected_tags() const
@@ -253,26 +257,26 @@ std::set<AbstractPropertyOwner*> Scene::selection() const
                 object_tree.selected_items(), selected_tags(), styles.selected_items());
 }
 
-Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag)
-{
-  const auto n = owner.n_tags();
-  const Tag* predecessor = n == 0 ? nullptr : &owner.tag(n-1);
-  return attach_tag(owner, std::move(tag), predecessor);
-}
+// Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag)
+// {
+//   const auto n = owner.tags.size();
+//   const Tag* predecessor = n == 0 ? nullptr : &owner.tag(n-1);
+//   return attach_tag(owner, std::move(tag), predecessor);
+// }
 
-Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag, const Tag* predecessor)
-{
-  Tag& ref = owner.attach_tag(std::move(tag), predecessor);
-  invalidate();
-  return ref;
-}
+// Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag, const Tag* predecessor)
+// {
+//   Tag& ref = owner.attach_tag(std::move(tag), predecessor);
+//   invalidate();
+//   return ref;
+// }
 
-std::unique_ptr<Tag> Scene::detach_tag(const Tag& tag)
-{
-  auto ref = tag.owner()->detach_tag(tag);
-  invalidate();
-  return ref;
-}
+// std::unique_ptr<Tag> Scene::detach_tag(const Tag& tag)
+// {
+//   auto ref = tag.owner()->detach_tag(tag);
+//   invalidate();
+//   return ref;
+// }
 
 Style& Scene::default_style() const
 {

@@ -24,7 +24,6 @@ private:
   Scene& m_scene;
 };
 
-
 class AttachTagCommand::TagContext
 {
 public:
@@ -34,8 +33,5 @@ public:
   std::unique_ptr<Tag> owned;
   Tag* reference;
 };
-
-
-
 
 }  // namespace omm

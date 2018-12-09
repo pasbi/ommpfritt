@@ -2,12 +2,13 @@
 #include "common.h"
 #include "objects/object.h"
 #include "renderers/style.h"
+#include "tags/tag.h"
 #include "scene/scene.h"
 
 namespace omm
 {
 
-template<typename T> Structure<T>::Structure(Scene& scene) : m_scene(scene) {}
+template<typename T> Structure<T>::Structure(Scene* scene) : m_scene(scene) {}
 template<typename T> Structure<T>::~Structure() {}
 
 template<typename T> std::set<T*> Structure<T>::selected_items() const
@@ -19,7 +20,9 @@ template<typename T> std::set<T*> Structure<T>::selected_items() const
 template<typename T> void Structure<T>::invalidate_recursive()
 {
   invalidate();
-  m_scene.invalidate();
+  if (m_scene != nullptr) {
+    m_scene->invalidate();
+  }
 }
 
 template<typename T> size_t Structure<T>::insert_position(const T* predecessor) const
@@ -33,5 +36,6 @@ template<typename T> size_t Structure<T>::insert_position(const T* predecessor) 
 
 template class Structure<Object>;
 template class Structure<Style>;
+template class Structure<Tag>;
 
 }  // namespace omm

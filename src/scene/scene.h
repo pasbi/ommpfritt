@@ -43,23 +43,14 @@ public:
   ObjectView root_view();
 
   void reset();
-  template<class T>
-  class TGetter : public CachedGetter<std::set<T*>, Scene&>
-  {
-  private:
-    explicit TGetter(Scene& scene) : CachedGetter<std::set<T*>, Scene&>(scene) {}
-    friend class Scene;
-  protected:
-    std::set<T*> compute() const override;
-  };
 
   // === Tags  ======
 public:
-  Tag& attach_tag(Object& owner, std::unique_ptr<Tag> tag, const Tag* predecessor);
-  Tag& attach_tag(Object& owner, std::unique_ptr<Tag> tag);
-  std::unique_ptr<Tag> detach_tag(const Tag& tag);
-  const TGetter<Tag> tags = TGetter<Tag>(*this);
+  std::set<Tag*> tags() const;
   std::set<Tag*> selected_tags() const;
+private:
+  mutable bool m_tags_cache_is_dirty = true;
+  mutable std::set<Tag*> m_tags_cache;
 
   // === Styles  ====
 public:

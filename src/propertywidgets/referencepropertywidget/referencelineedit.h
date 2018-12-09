@@ -3,6 +3,7 @@
 #include <QComboBox>
 #include "propertywidgets/multivalueedit.h"
 #include "aspects/propertyowner.h"
+#include "tags/tag.h"
 
 class QMimeData;
 

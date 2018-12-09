@@ -25,7 +25,9 @@ void AttachTagCommand::undo()
     if (context.owned) {
       LOG(FATAL) << "Command already owns object. Obtaining ownership again is absurd.";
     } else {
-      context.owned = m_scene.detach_tag(*context.reference);
+      auto& tag = *context.reference;
+      tag.set_owner(nullptr);
+      context.owned = context.tag_owner->tags.remove(tag);
     }
   }
   // important. else, handle or property manager might point to dangling objects
@@ -38,7 +40,8 @@ void AttachTagCommand::redo()
     if (!context.owned) {
       LOG(FATAL) << "Command cannot give away non-owned object.";
     } else {
-      m_scene.attach_tag(*context.tag_owner, std::move(context.owned));
+      context.reference->set_owner(context.tag_owner);
+      context.tag_owner->tags.insert(std::move(context.owned));
     }
   }
 }
@@ -48,6 +51,7 @@ AttachTagCommand::TagContext::TagContext(Object& object, std::unique_ptr<Tag> ta
   , owned(std::move(tag))
   , reference(owned.get())
 {
+  // TODO use MaybeOwner
 }
 
 }  // namespace omm

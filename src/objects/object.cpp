@@ -38,6 +38,7 @@ const std::string Object::TRANSFORMATION_PROPERTY_KEY = "transformation";
 
 Object::Object()
   : TreeElement(nullptr)
+  , tags()
 {
 
   add_property( TRANSFORMATION_PROPERTY_KEY,
@@ -149,9 +150,9 @@ void Object::serialize(AbstractSerializer& serializer, const Pointer& root) cons
   serializer.end_array();
 
   const auto tags_pointer = make_pointer(root, TAGS_POINTER);
-  serializer.start_array(n_tags(), tags_pointer);
-  for (size_t i = 0; i < n_tags(); ++i) {
-    const auto& tag = this->tag(i);
+  serializer.start_array(tags.size(), tags_pointer);
+  for (size_t i = 0; i < tags.size(); ++i) {
+    const auto& tag = tags.item(i);
     const auto tag_pointer = make_pointer(tags_pointer, i);
     serializer.set_value(tag.type(), make_pointer(tag_pointer, TYPE_POINTER));
     tag.serialize(serializer, tag_pointer);
@@ -175,13 +176,17 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
 
   const auto tags_pointer = make_pointer(root, TAGS_POINTER);
   size_t n_tags = deserializer.array_size(tags_pointer);
+  std::vector<std::unique_ptr<Tag>> tags;
+  tags.reserve(n_tags);
   for (size_t i = 0; i < n_tags; ++i) {
     const auto tag_pointer = make_pointer(tags_pointer, i);
     const auto tag_type = deserializer.get_string(make_pointer(tag_pointer, TYPE_POINTER));
     auto tag = Tag::make(tag_type);
     tag->deserialize(deserializer, tag_pointer);
-    attach_tag(std::move(tag));
+    tag->set_owner(this);
+    tags.push_back(std::move(tag));
   }
+  this->tags.set(std::move(tags));
 }
 
 void Object::render_recursive(AbstractRenderer& renderer, const Style& default_style) const
