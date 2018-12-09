@@ -7,7 +7,7 @@
 
 #include "mainwindow/mainwindow.h"
 #include "mainwindow/application.h"
-#include "commands/addobjectcommand.h"
+#include "commands/addcommand.h"
 #include "managers/manager.h"
 #include "menuhelper.h"
 
@@ -29,7 +29,8 @@ void MainMenuBar::make_create_menu()
   for (const auto& key : Object::keys())
   {
     action(create_menu, QString::fromStdString(key), [this, key]() {
-      m_app.scene().submit<AddObjectCommand>(m_app.scene().object_tree, Object::make(key));
+      Scene& scene = m_app.scene();
+      scene.submit<AddCommand<Tree<Object>>>(scene.object_tree, Object::make(key));
     });
   }
 }
