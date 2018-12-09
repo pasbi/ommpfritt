@@ -28,14 +28,24 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
 
   if (object != nullptr)
   {
-    action(menu, tr("&remove"), *this, &ManagerItemView::remove_selection);
-    auto tag_menu = std::make_unique<QMenu>(tr("&attach tag"));
-    for (const auto& key : Tag::keys()) {
-      action(*tag_menu, QString::fromStdString(key), [this, key](){
-        attach_tag_to_selected(key);
-      });
+    switch (index.column())
+    {
+    case 0:
+    {
+      action(menu, tr("&remove"), *this, &ManagerItemView::remove_selection);
+      auto tag_menu = std::make_unique<QMenu>(tr("&attach tag"));
+      for (const auto& key : Tag::keys()) {
+        action(*tag_menu, QString::fromStdString(key), [this, key](){
+          attach_tag_to_selected(key);
+        });
+      }
+      menu.addMenu(tag_menu.release());
+      break;
     }
-    menu.addMenu(tag_menu.release());
+    case 2:
+      action(menu, tr("&remove"), *this, &ObjectTreeView::remove_selected_tags);
+      break;
+    }
   }
 }
 
@@ -68,6 +78,16 @@ void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection)
 AbstractPropertyOwner::Kind ObjectTreeView::displayed_kinds() const
 {
   return AbstractPropertyOwner::Kind::Object;
+}
+
+void ObjectTreeView::remove_selected_tags()
+{
+  LOG(INFO) << "remove_selected_tags";
+  auto& scene = model()->scene();
+  for (const Tag* tag : scene.selected_tags()) {
+    scene.detach_tag(*tag).release();
+  }
+  scene.invalidate();
 }
 
 }  // namespace omm

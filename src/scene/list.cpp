@@ -63,6 +63,7 @@ template<typename T> void List<T>::remove(ListOwningContext<T>& context)
 
 template<typename T> std::unique_ptr<T> List<T>::remove(T& item)
 {
+  // item could be `const T&`, however, that would break compatibility with `Tree::remove`.
   const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
     [this, &item](auto* observer){ return observer->acquire_remover_guard(position(item)); }
   );
