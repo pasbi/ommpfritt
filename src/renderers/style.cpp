@@ -28,4 +28,9 @@ std::unique_ptr<Style> Style::copy() const
   return Copyable<Style>::copy(std::make_unique<Style>(m_scene));
 }
 
+std::string Style::type() const
+{
+  return "Style";
+}
+
 }  // namespace omm
