@@ -33,7 +33,6 @@ public:
 
 public:
   void insert(TreeOwningContext<T>& context);
-  void insert(std::unique_ptr<T> object, T& parent);
   void move(TreeMoveContext<T>& context);
   void remove(TreeOwningContext<T>& context);
   bool can_move_object(const TreeMoveContext<T>& new_context) const;
@@ -43,6 +42,9 @@ public:
   std::set<T*> items() const override;
   size_t position(const T& item) const override;
   const T* predecessor(const T& sibling) const override;
+
+  T& insert(std::unique_ptr<T> t) override;
+  std::unique_ptr<T> remove(T& t) override;
 
 private:
   std::unique_ptr<T> m_root;

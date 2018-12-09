@@ -53,20 +53,18 @@ template<typename T> void Tree<T>::insert(TreeOwningContext<T>& context)
   // tags.invalidate();  // TODO
 }
 
-template<typename T> void Tree<T>::insert(std::unique_ptr<T> item, T& parent)
+template<typename T> T& Tree<T>::insert(std::unique_ptr<T> item)
 {
-  size_t n = parent.children().size();
+  size_t n = root().children().size();
+  const auto guards = observed_type::template transform<Guard>(
+    [this, n] (auto* observer) { return observer->acquire_inserter_guard(root(), n); }
+  );
 
-  {
-    const auto guards = observed_type::template transform<Guard>(
-      [&parent, n] (auto* observer) { return observer->acquire_inserter_guard(parent, n); }
-    );
-
-    parent.adopt(std::move(item));
-  }
+  T& ref = root().adopt(std::move(item));
 
   m_item_cache_is_dirty = true;
   // tags.invalidate();  // TODO
+  return ref;
 }
 
 template<typename T> void Tree<T>::remove(TreeOwningContext<T>& context)
@@ -80,6 +78,15 @@ template<typename T> void Tree<T>::remove(TreeOwningContext<T>& context)
 
   m_item_cache_is_dirty = true;
   // tags.invalidate();  // TODO
+}
+
+template<typename T> std::unique_ptr<T> Tree<T>::remove(T& t)
+{
+  const auto guards = observed_type::template transform<Guard>(
+    [&t](auto* observer) { return observer->acquire_remover_guard(t); }
+  );
+  assert(!t.is_root());
+  return t.parent().repudiate(t);
 }
 
 template<typename T>

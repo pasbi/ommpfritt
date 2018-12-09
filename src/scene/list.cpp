@@ -22,13 +22,16 @@ template<typename T> T& List<T>::item(size_t i) const
   return *m_items[i].get();
 }
 
-template<typename T> void List<T>::insert(std::unique_ptr<T> item)
+template<typename T> T& List<T>::insert(std::unique_ptr<T> item)
 {
   const auto guards = observed_type::template transform<Guard>(
     [this](auto* observer){ return observer->acquire_inserter_guard(m_items.size()); }
   );
+  auto& ref = *item;
   m_items.push_back(std::move(item));
   // selection_changed();  // TODO
+
+  return ref;
 }
 
 template<typename T> void List<T>::insert(std::unique_ptr<T> item, const T* predecessor)
@@ -67,7 +70,6 @@ template<typename T> void List<T>::remove(ListOwningContext<T>& context)
 
 template<typename T> std::unique_ptr<T> List<T>::remove(T& item)
 {
-  ;
   const auto guards = observed_type::template transform<Guard>(
     [this, &item](auto* observer){ return observer->acquire_remover_guard(position(item)); }
   );

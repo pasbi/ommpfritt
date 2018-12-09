@@ -18,10 +18,8 @@ public:
   using observed_type = Observed<observer_type>;
   constexpr static bool is_tree = false;
 
-  void insert(std::unique_ptr<T> t);
   void insert(std::unique_ptr<T> t, const T* predecessor);
   void insert(ListOwningContext<T>& context);
-  std::unique_ptr<T> remove(T& t); // TODO remove?
   void remove(ListOwningContext<T>& t);
   void move(ListMoveContext<T>& context);
   T& item(size_t i) const;
@@ -30,6 +28,9 @@ public:
   std::set<T*> items() const override;
   const T* predecessor(const T& sibling) const override;
   size_t position(const T& item) const;
+
+  T& insert(std::unique_ptr<T> t) override;
+  std::unique_ptr<T> remove(T& t) override;
 
 private:
   std::vector<std::unique_ptr<Style>> m_items;

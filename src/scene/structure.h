@@ -23,6 +23,9 @@ public:
     return ::filter_if(items(), is_selected);
   }
 
+  virtual T& insert(std::unique_ptr<T> t) = 0;
+  virtual std::unique_ptr<T> remove(T& t) = 0;
+
 private:
   // we don't want to assign copy or move
   const Structure<T>& operator=(const Structure<T>&) = delete;
