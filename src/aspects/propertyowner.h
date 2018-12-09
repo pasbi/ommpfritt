@@ -23,7 +23,9 @@ using SetOfPropertyOwner = std::set<omm::AbstractPropertyOwner*>;
 class AbstractPropertyOwner : public virtual Serializable, public AbstractPropertyObserver
 {
 public:
-  enum class Kind { Tag = 0x1, Style = 0x2, Object = 0x4 };
+  enum class Kind { None = 0x0,
+                    Tag = 0x1, Style = 0x2, Object = 0x4,
+                    All = Tag | Style | Object };
   explicit AbstractPropertyOwner();
   AbstractPropertyOwner(AbstractPropertyOwner&& other);
   virtual ~AbstractPropertyOwner();
@@ -70,8 +72,9 @@ public:
 
 }  // namespace omm
 
-omm::AbstractPropertyOwner::Kind
-operator|(omm::AbstractPropertyOwner::Kind a, omm::AbstractPropertyOwner::Kind b);
-omm::AbstractPropertyOwner::Kind
-operator&(omm::AbstractPropertyOwner::Kind a, omm::AbstractPropertyOwner::Kind b);
+omm::AbstractPropertyOwner::Kind operator|( omm::AbstractPropertyOwner::Kind a,
+                                            omm::AbstractPropertyOwner::Kind b );
+omm::AbstractPropertyOwner::Kind operator&( omm::AbstractPropertyOwner::Kind a,
+                                            omm::AbstractPropertyOwner::Kind b );
+omm::AbstractPropertyOwner::Kind operator~( omm::AbstractPropertyOwner::Kind a );
 bool operator!(omm::AbstractPropertyOwner::Kind a);
