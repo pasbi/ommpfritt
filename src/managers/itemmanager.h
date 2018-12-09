@@ -18,8 +18,11 @@ protected:
 private:
   virtual void on_selection_changed( const QItemSelection& selection,
                                      const QItemSelection& old_selection );
-  
+
+  // order matters as m_item_view uses m_item_model.
   ItemModelT m_item_model;
+  ItemViewT m_item_view;      // must be created before and destroyed after `m_item_model`
+
 };
 
 }  // namespace omm

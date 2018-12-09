@@ -13,6 +13,7 @@ class Object;
 class StyleListView : public ManagerItemView<QListView, StyleListAdapter>
 {
 public:
+  using ManagerItemView<QListView, StyleListAdapter>::ManagerItemView;
   void set_selection(const SetOfPropertyOwner& selection) override;
   AbstractPropertyOwner::Kind displayed_kinds() const override;
 

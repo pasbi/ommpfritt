@@ -12,8 +12,9 @@
 namespace omm
 {
 
-ObjectTreeView::ObjectTreeView()
-  : m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this))
+ObjectTreeView::ObjectTreeView(ObjectTreeAdapter& model)
+  : ManagerItemView(model)
+  , m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this))
 {
   setItemDelegateForColumn(2, m_tags_item_delegate.get());
 }

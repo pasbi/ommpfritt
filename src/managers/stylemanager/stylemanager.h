@@ -2,11 +2,10 @@
 
 #include "managers/itemmanager.h"
 #include "managers/stylemanager/stylelistadapter.h"
+#include "managers/stylemanager/stylelistview.h"
 
 namespace omm
 {
-
-class StyleListView;
 
 class StyleManager : public ItemManager<StyleListView, StyleListAdapter>
 {

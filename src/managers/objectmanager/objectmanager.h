@@ -2,11 +2,10 @@
 
 #include "managers/itemmanager.h"
 #include "managers/objectmanager/objecttreeadapter.h"
+#include "managers/objectmanager/objecttreeview.h"
 
 namespace omm
 {
-
-class ObjectTreeView;
 
 class ObjectManager : public ItemManager<ObjectTreeView, ObjectTreeAdapter>
 {

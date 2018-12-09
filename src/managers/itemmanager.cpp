@@ -17,15 +17,16 @@ template<typename ItemViewT, typename ItemModelT>
 ItemManager<ItemViewT, ItemModelT>::ItemManager(const QString& title, Scene& scene)
   : Manager(title, scene)
   , m_item_model(scene)
+  , m_item_view(m_item_model)
 {
-  auto view = std::make_unique<ItemViewT>();
-  view->set_model(&m_item_model);
-
-  connect( view->selectionModel(), &QItemSelectionModel::selectionChanged,
+  connect( m_item_view.selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &ItemManager::on_selection_changed );
 
-  view->installEventFilter(this);
-  setWidget(view.release());
+  m_item_view.installEventFilter(this);
+
+  // we must not release ownership to Qt.
+  // `m_item_view` must be deleted before `m_item_model` is deleted.
+  setWidget(&m_item_view);
 }
 
 template<typename ItemViewT, typename ItemModelT> bool

@@ -18,9 +18,8 @@ class ManagerItemView : public ItemViewT, public AbstractSelectionObserver
 {
 public:
   using item_type = typename ItemModelT::item_type;
-  explicit ManagerItemView();
+  explicit ManagerItemView(ItemModelT& model);
   virtual ~ManagerItemView();
-  void set_model(ItemModelT* model);
   ItemModelT* model() const;
   virtual AbstractPropertyOwner::Kind displayed_kinds() const;
 
@@ -30,6 +29,9 @@ protected:
   virtual void populate_menu(QMenu& menu, const QModelIndex& index) const = 0;
   void contextMenuEvent(QContextMenuEvent *event) override;
   void mouseReleaseEvent(QMouseEvent* e) override;
+
+private:
+  using ItemViewT::setModel;
 };
 
 }  // namespace omm

@@ -14,7 +14,7 @@ class Object;
 class ObjectTreeView : public ManagerItemView<QTreeView, ObjectTreeAdapter>
 {
 public:
-  explicit ObjectTreeView();
+  explicit ObjectTreeView(ObjectTreeAdapter& model);
   void set_selection(const std::set<AbstractPropertyOwner*>& selection) override;
   AbstractPropertyOwner::Kind displayed_kinds() const override;
 
