@@ -25,7 +25,7 @@ void AttachTagCommand::undo()
     if (context.owned) {
       LOG(FATAL) << "Command already owns object. Obtaining ownership again is absurd.";
     } else {
-      context.owned = m_scene.detach_tag(*context.tag_owner, *context.reference);
+      context.owned = m_scene.detach_tag(*context.reference);
     }
   }
   // important. else, handle or property manager might point to dangling objects

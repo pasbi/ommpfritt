@@ -10,10 +10,10 @@ namespace omm
 class TagOwner
 {
 public:
-  virtual ~TagOwner();
+  virtual ~TagOwner() = default;
   Tag& attach_tag(std::unique_ptr<Tag> tag, const Tag* predecessor);
   Tag& attach_tag(std::unique_ptr<Tag> tag);
-  std::unique_ptr<Tag> detach_tag(Tag& tag);
+  std::unique_ptr<Tag> detach_tag(const Tag& tag);
   size_t n_tags() const;
   size_t get_insert_position(const Tag* tag_before_position) const;
   Tag& tag(size_t i) const;

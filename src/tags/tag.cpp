@@ -11,10 +11,8 @@
 namespace omm
 {
 
-Tag::Tag()
-{
-}
 
-Tag::~Tag() { }
+TagOwner* Tag::owner() const { return m_owner; }
+void Tag::set_owner(TagOwner* owner) { m_owner = owner; }
 
 }  // namespace omm

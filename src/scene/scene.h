@@ -57,7 +57,7 @@ public:
 public:
   Tag& attach_tag(Object& owner, std::unique_ptr<Tag> tag, const Tag* predecessor);
   Tag& attach_tag(Object& owner, std::unique_ptr<Tag> tag);
-  std::unique_ptr<Tag> detach_tag(Object& owner, Tag& tag);
+  std::unique_ptr<Tag> detach_tag(const Tag& tag);
   const TGetter<Tag> tags = TGetter<Tag>(*this);
   std::set<Tag*> selected_tags() const;
 

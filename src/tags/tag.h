@@ -9,7 +9,7 @@
 
 namespace omm {
 
-class Object;
+class TagOwner;
 class Scene;
 
 class Tag
@@ -18,11 +18,16 @@ class Tag
   , public CopyCreatable<Tag>
 {
 public:
-  explicit Tag();
-  virtual ~Tag();
+  virtual ~Tag() = default;
 
   virtual bool run() { return true; }
   virtual QIcon icon() const = 0;
+
+  void set_owner(TagOwner* owner);
+  TagOwner* owner() const;
+
+private:
+  TagOwner* m_owner;
 
 };
 

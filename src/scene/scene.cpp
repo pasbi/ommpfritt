@@ -267,9 +267,9 @@ Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag, const Tag* prede
   return ref;
 }
 
-std::unique_ptr<Tag> Scene::detach_tag(Object& owner, Tag& tag)
+std::unique_ptr<Tag> Scene::detach_tag(const Tag& tag)
 {
-  auto ref = owner.detach_tag(tag);
+  auto ref = tag.owner()->detach_tag(tag);
   invalidate();
   return ref;
 }

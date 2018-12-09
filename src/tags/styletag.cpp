@@ -6,10 +6,6 @@
 namespace omm
 {
 
-StyleTag::StyleTag()
-{
-}
-
 std::string StyleTag::type() const
 {
   return "StyleTag";
