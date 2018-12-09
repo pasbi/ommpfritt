@@ -76,7 +76,7 @@ public:
 
   // === Selection ===
 public:
-  void clear_selection();
+  void clear_selection(AbstractPropertyOwner::Kind kind = AbstractPropertyOwner::Kind::All);
   void selection_changed();
   void invalidate();
 

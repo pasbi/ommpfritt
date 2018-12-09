@@ -102,13 +102,22 @@ void Scene::selection_changed()
   );
 }
 
-void Scene::clear_selection()
+void Scene::clear_selection(AbstractPropertyOwner::Kind kind)
 {
-  for (auto& o : object_tree.items()) {
-    o->set_selected(false);
-    for (auto& t : o->tags()) {
-      t->set_selected(false);
+  const bool clear_tag_selection = !!(kind & AbstractPropertyOwner::Kind::Tag);
+  const bool clear_object_selection = !!(kind & AbstractPropertyOwner::Kind::Object);
+  const bool clear_style_selection = !!(kind & AbstractPropertyOwner::Kind::Style);
+
+
+  if (clear_object_selection || clear_tag_selection)
+  {
+    for (auto& o : object_tree.items()) {
+      if (clear_object_selection) { o->deselect(); }
+      if (clear_tag_selection) { deselect_all(o->tags()); }
     }
+  }
+  if (clear_style_selection) {
+    deselect_all(styles.items());
   }
   invalidate();
 }
