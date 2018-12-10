@@ -46,41 +46,6 @@ Object::Object()
     .set_label(QObject::tr("transformation").toStdString())
     .set_category(QObject::tr("object").toStdString());
 
-  add_property("style_ref", std::make_unique<ReferenceProperty>())
-    .set_label("style").set_category("object");
-  property<ReferenceProperty>("style_ref").set_allowed_kinds(AbstractPropertyOwner::Kind::Style);
-
-  add_property("tag_ref", std::make_unique<ReferenceProperty>())
-    .set_label("tag").set_category("object");
-  property<ReferenceProperty>("tag_ref").set_allowed_kinds(AbstractPropertyOwner::Kind::Tag);
-
-  add_property("object_ref", std::make_unique<ReferenceProperty>())
-    .set_label("object").set_category("object");
-  property<ReferenceProperty>("object_ref").set_allowed_kinds(AbstractPropertyOwner::Kind::Object);
-
-  add_property("any_ref", std::make_unique<ReferenceProperty>())
-    .set_label("any").set_category("object");
-  property<ReferenceProperty>("any_ref").set_allowed_kinds( AbstractPropertyOwner::Kind::Object
-                                                          | AbstractPropertyOwner::Kind::Tag
-                                                          | AbstractPropertyOwner::Kind::Style );
-
-  // add some mockup properties for testing purposes
-
-  add_property( "ans",
-                std::make_unique<IntegerProperty>(42) )
-    .set_label(QObject::tr("The Answer").toStdString())
-    .set_category(QObject::tr("special").toStdString());
-
-  add_property( "pi",
-                std::make_unique<FloatProperty>(3.141) )
-    .set_label(QObject::tr("pi").toStdString())
-    .set_category(QObject::tr("object").toStdString());
-
-  add_property( "buddy",
-                std::make_unique<ReferenceProperty>() )
-    .set_label(QObject::tr("buddy").toStdString())
-    .set_category(QObject::tr("object").toStdString());
-
 }
 
 Object::~Object()
