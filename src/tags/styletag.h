@@ -8,10 +8,11 @@ namespace omm {
 class StyleTag : public Tag
 {
 public:
-  using Tag::Tag;
+  explicit StyleTag();
   std::string type() const override;
   QIcon icon() const override;
-
+  static constexpr auto STYLE_REFERENCE = "style";
+  static constexpr auto TYPE = "StyleTag";
 };
 
 }  // namespace omm

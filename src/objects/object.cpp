@@ -15,6 +15,7 @@
 #include "common.h"
 #include "serializers/jsonserializer.h"
 #include "renderers/style.h"
+#include "tags/styletag.h"
 
 namespace
 {
@@ -23,10 +24,24 @@ static constexpr auto CHILDREN_POINTER = "children";
 static constexpr auto TAGS_POINTER = "tags";
 static constexpr auto TYPE_POINTER = "type";
 
-std::vector<omm::Style*> find_styles(const omm::Object& object)
+std::vector<const omm::Style*> find_styles(const omm::Object& object)
 {
-  // TODO find style tags
-  return { };
+  const auto get_style = [](const omm::Tag* tag) -> const omm::Style* {
+    if (tag->type() == omm::StyleTag::TYPE) {
+      constexpr auto key = omm::StyleTag::STYLE_REFERENCE;
+      const auto& referenceproperty= tag->property<omm::ReferenceProperty>(key);
+      const auto* property_owner = referenceproperty.value();
+      assert(  property_owner == nullptr
+            || property_owner->kind() == omm::AbstractPropertyOwner::Kind::Style );
+      return static_cast<const omm::Style*>(property_owner);
+    } else {
+      return nullptr;
+    }
+  };
+
+  const auto is_not_null = [](const void* ptr) { return ptr != nullptr; };
+  const auto tags = object.tags.ordered_items();
+  return ::filter_if(::transform<const omm::Style*>(tags, get_style), is_not_null);
 }
 
 }  // namespace
@@ -45,7 +60,6 @@ Object::Object()
                 std::make_unique<TransformationProperty>(ObjectTransformation()) )
     .set_label(QObject::tr("transformation").toStdString())
     .set_category(QObject::tr("object").toStdString());
-
 }
 
 Object::~Object()
@@ -155,7 +169,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
 void Object::render_recursive(AbstractRenderer& renderer, const Style& default_style) const
 {
   const auto styles = find_styles(*this);
-  for (const auto& style : styles) {
+  for (const auto* style : styles) {
     render(renderer, *style);
   }
   if (styles.size() == 0) {
