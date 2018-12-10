@@ -1,7 +1,8 @@
 #pragma once
 
-#include <QWidget>
+#include <QScrollArea>
 #include <set>
+#include <memory>
 
 class QVBoxLayout;
 
@@ -11,7 +12,7 @@ namespace omm
 class Scene;
 class Property;
 
-class PropertyManagerTab : public QWidget
+class PropertyManagerTab : public QScrollArea
 {
 public:
   explicit PropertyManagerTab();
@@ -21,6 +22,7 @@ public:
 
 private:
   QVBoxLayout* m_layout;
+  std::unique_ptr<QWidget> m_widget;
 };
 
 }  // namespace omm

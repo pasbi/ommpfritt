@@ -28,9 +28,11 @@ namespace omm
 
 PropertyManagerTab::PropertyManagerTab()
 {
+  setWidgetResizable(true);
   auto layout = std::make_unique<QVBoxLayout>();
   m_layout = layout.get();
-  setLayout(layout.release());
+  m_widget = std::make_unique<QWidget>();
+  m_widget->setLayout(layout.release());
 }
 
 PropertyManagerTab::~PropertyManagerTab()
@@ -41,13 +43,15 @@ void PropertyManagerTab::add_properties(Scene& scene, const Property::SetOfPrope
 {
   assert(properties.size() > 0);
   const auto widget_type = (*properties.begin())->widget_type();
-  auto widget = AbstractPropertyWidget::make(widget_type, scene, properties);
-  m_layout->addWidget(widget.release());
+  auto property_widget = AbstractPropertyWidget::make(widget_type, scene, properties);
+  m_layout->addWidget(property_widget.release());
 }
 
 void PropertyManagerTab::end_add_properties()
 {
   m_layout->addStretch();
+  m_widget->show();
+  setWidget(m_widget.release());
 }
 
 }  // namespace omm
