@@ -15,8 +15,8 @@ BoolPropertyWidget::BoolPropertyWidget(Scene& scene, const Property::SetOfProper
   m_checkbox = checkbox.get();
   set_default_layout(std::move(checkbox));
 
-  connect(m_checkbox, &QCheckBox::stateChanged, [this](const int state) {
-    set_properties_value(state == Qt::Checked);
+  connect(m_checkbox, &QCheckBox::clicked, [this](const bool checked) {
+    set_properties_value(checked);
   });
 
   on_property_value_changed();
