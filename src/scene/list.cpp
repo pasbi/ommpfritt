@@ -12,6 +12,11 @@ template<typename T> std::set<T*> List<T>::items() const
   return ::transform<T*, std::set>(m_items, [](const auto& item) { return item.get(); });
 }
 
+template<typename T> std::vector<T*> List<T>::ordered_items() const
+{
+  return ::transform<T*>(m_items, [](const auto& item) { return item.get(); });
+}
+
 template<typename T> T& List<T>::item(size_t i) const
 {
   return *m_items[i].get();

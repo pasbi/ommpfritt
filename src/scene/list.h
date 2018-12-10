@@ -28,6 +28,7 @@ public:
   std::vector<std::unique_ptr<T>> set(std::vector<std::unique_ptr<T>> items);
 
   std::set<T*> items() const override;
+  std::vector<T*> ordered_items() const;
   const T* predecessor(const T& sibling) const override;
   size_t position(const T& item) const override;
   size_t size() const;
