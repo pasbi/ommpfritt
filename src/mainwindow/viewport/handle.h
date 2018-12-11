@@ -44,7 +44,14 @@ private:
   arma::vec2 map_to_handle_local(const arma::vec2& pos) const;
 };
 
-class GlobalOrientedHandle : public Handle
+class GloballyOrientedHandle : public Handle
+{
+protected:
+  using Handle::Handle;
+  ObjectTransformation transformation() const override;
+};
+
+class LocallyOrientedHandle : public Handle
 {
 protected:
   using Handle::Handle;

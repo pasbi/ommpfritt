@@ -58,7 +58,8 @@ bool Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
   if (objects().size() > 0) {
     const auto handle_local_pos = map_to_handle_local(pos);
     for (const auto& sub_handle : m_sub_handles) {
-      sub_handle->mouse_move(delta, handle_local_pos, !hit_something);
+      const auto transformed_delta = transformation().inverted().apply_to_direction(delta);
+      sub_handle->mouse_move(transformed_delta, handle_local_pos, !hit_something);
       switch (sub_handle->status()) {
       case SubHandle::Status::Active:
       case SubHandle::Status::Hovered:
@@ -113,18 +114,6 @@ const std::set<Object*>& Handle::objects() const
   return m_objects;
 }
 
-
-ObjectTransformation GlobalOrientedHandle::transformation() const
-{
-  assert(objects().size() > 0);
-  const auto add = [](const arma::vec2& accu, const Object* object) -> arma::vec2 {
-    return accu + object->global_transformation().translation();
-  };
-  const auto sum_pos = std::accumulate( objects().begin(), objects().end(),
-                                        arma::vec2({0.0, 0.0}), add );
-  return ObjectTransformation().translated(sum_pos / objects().size());
-}
-
 arma::vec2 Handle::map_to_handle_local(const arma::vec2& pos) const
 {
   return transformation().inverted().apply_to_position(pos);
@@ -137,6 +126,32 @@ void Handle::transform_objects(const ObjectTransformation& transformation) const
   const ObjectTransformation::Mat t = transformation.to_mat();
 
   m_scene.submit<ObjectsTransformationCommand>(objects(), ObjectTransformation(h * t * h_inv));
+}
+
+ObjectTransformation GloballyOrientedHandle::transformation() const
+{
+  assert(objects().size() > 0);
+  const auto add = [](const arma::vec2& accu, const Object* object) -> arma::vec2 {
+    return accu + object->global_transformation().translation();
+  };
+  const auto sum_pos = std::accumulate( objects().begin(), objects().end(),
+                                        arma::vec2({0.0, 0.0}), add );
+  return ObjectTransformation().translated(sum_pos / objects().size());
+}
+
+ObjectTransformation LocallyOrientedHandle::transformation() const
+{
+  assert(objects().size() > 0);
+  const auto add = [](const arma::vec2& accu, const Object* object) -> arma::vec2 {
+    return accu + object->global_transformation().translation();
+  };
+  const auto sum_pos = std::accumulate( objects().begin(), objects().end(),
+                                        arma::vec2({0.0, 0.0}), add );
+
+  ObjectTransformation transformation;
+  transformation.rotate((*objects().begin())->global_transformation().rotation());
+  transformation.translate(sum_pos / objects().size());
+  return transformation;
 }
 
 }  // namespace omm
