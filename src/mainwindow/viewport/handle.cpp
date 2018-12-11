@@ -40,6 +40,16 @@ auto filter_selection(std::set<omm::Object*> selection)
   return selection;
 }
 
+arma::vec2 get_global_position_mean(const std::set<omm::Object*>& objects)
+{
+  assert(objects.size() > 0);
+  const auto add = [](const arma::vec2& accu, const omm::Object* object) -> arma::vec2 {
+    return accu + object->global_transformation().translation();
+  };
+  const auto null = arma::vec2 {0.0, 0.0};
+  return std::accumulate(objects.begin(), objects.end(), null, add) / objects.size();
+}
+
 }  // namespace
 
 namespace omm
@@ -130,27 +140,16 @@ void Handle::transform_objects(const ObjectTransformation& transformation) const
 
 ObjectTransformation GloballyOrientedHandle::transformation() const
 {
-  assert(objects().size() > 0);
-  const auto add = [](const arma::vec2& accu, const Object* object) -> arma::vec2 {
-    return accu + object->global_transformation().translation();
-  };
-  const auto sum_pos = std::accumulate( objects().begin(), objects().end(),
-                                        arma::vec2({0.0, 0.0}), add );
-  return ObjectTransformation().translated(sum_pos / objects().size());
+  return ObjectTransformation().translated(get_global_position_mean(objects()));
 }
 
 ObjectTransformation LocallyOrientedHandle::transformation() const
 {
-  assert(objects().size() > 0);
-  const auto add = [](const arma::vec2& accu, const Object* object) -> arma::vec2 {
-    return accu + object->global_transformation().translation();
-  };
-  const auto sum_pos = std::accumulate( objects().begin(), objects().end(),
-                                        arma::vec2({0.0, 0.0}), add );
-
   ObjectTransformation transformation;
-  transformation.rotate((*objects().begin())->global_transformation().rotation());
-  transformation.translate(sum_pos / objects().size());
+  transformation.translate(get_global_position_mean(objects()));
+  if (objects().size() == 1) {
+    transformation.rotate((*objects().begin())->global_transformation().rotation());
+  }
   return transformation;
 }
 
