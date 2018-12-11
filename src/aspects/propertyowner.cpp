@@ -56,7 +56,7 @@ void AbstractPropertyOwner::serialize(AbstractSerializer& serializer, const Poin
 {
   Serializable::serialize(serializer, root);
   const auto id_pointer = make_pointer(root, ID_POINTER);
-  serializer.set_value(identify(), id_pointer);
+  serializer.set_value(this, id_pointer);
 
   const auto properties_pointer = make_pointer(root, PROPERTIES_POINTER);
   serializer.start_array(m_properties.size(), properties_pointer);
@@ -76,7 +76,7 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
   Serializable::deserialize(deserializer, root);
 
   const auto id_pointer = make_pointer(root, ID_POINTER);
-  const auto id = deserializer.get_id(id_pointer);
+  const auto id = deserializer.get_size_t(id_pointer);
   deserializer.register_reference(id, *this);
 
   const auto properties_pointer = make_pointer(root, PROPERTIES_POINTER);

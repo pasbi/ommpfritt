@@ -16,11 +16,9 @@ class Serializable
 public:
   using Pointer = std::string;
   using ByteArray = std::vector<char>;
-  using IdType = std::size_t;
 
   virtual void serialize(AbstractSerializer& serializer, const Pointer& root) const {};
   virtual void deserialize(AbstractDeserializer& deserializer, const Pointer& root) {};
-  IdType identify() const;
 
   template<typename PointerT> static auto make_pointer(const PointerT& pointer)
   {

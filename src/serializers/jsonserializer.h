@@ -20,7 +20,7 @@ public:
   void set_value(double value, const Pointer& pointer) override;
   void set_value(const std::string& value, const Pointer& pointer) override;
   void set_value(const ObjectTransformation& value, const Pointer& pointer) override;
-  void set_value(const Serializable::IdType& id, const Pointer& pointer) override;
+  void set_value(const std::size_t id, const Pointer& pointer) override;
   void set_value(const Color& color, const Pointer& pointer) override;
   std::string type() const override;
 
@@ -42,7 +42,7 @@ public:
   std::string get_string(const Pointer& pointer) override;
   Color get_color(const Pointer& pointer) override;
   ObjectTransformation get_object_transformation(const Pointer& pointer) override;
-  Serializable::IdType get_id(const Pointer& pointer) override;
+  std::size_t get_size_t(const Pointer& pointer) override;
 
   std::string type() const override;
 

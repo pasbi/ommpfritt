@@ -40,8 +40,7 @@ std::string ReferenceProperty::widget_type() const
 void ReferenceProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   TypedProperty::serialize(serializer, root);
-  const auto id = value() == nullptr ? 0 : value()->identify();
-  serializer.set_value(id, make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
+  serializer.set_value(value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
 }
 
 void ReferenceProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
@@ -50,7 +49,7 @@ void ReferenceProperty::deserialize(AbstractDeserializer& deserializer, const Po
 
   // not all objects are restored yet, hence not all pointers are known.
   // remember the property to set `m_value` later.
-  const auto id = deserializer.get_id(make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
+  const auto id = deserializer.get_size_t(make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
   deserializer.register_reference_property(*this, id);
 }
 

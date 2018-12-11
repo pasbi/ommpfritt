@@ -31,9 +31,15 @@ public:
   virtual void set_value(double value, const Pointer& pointer) = 0;
   virtual void set_value(const std::string& value, const Pointer& pointer) = 0;
   virtual void set_value(const ObjectTransformation& value, const Pointer& pointer) = 0;
-  virtual void set_value(const Serializable::IdType& id, const Pointer& pointer) = 0;
   virtual void set_value(const Color& color, const Pointer& pointer) = 0;
+  virtual void set_value(const std::size_t, const Pointer& pointer) = 0;
+  void set_value(const AbstractPropertyOwner* id, const Pointer& pointer);
+  std::set<AbstractPropertyOwner*> serialized_references() const;
 
+protected:
+  void register_serialzied_reference(AbstractPropertyOwner* reference);
+private:
+  std::set<AbstractPropertyOwner*> m_serialized_references;
 
 };
 
@@ -45,6 +51,8 @@ public:
   explicit AbstractDeserializer(std::istream& stream);
   virtual ~AbstractDeserializer();
 
+  void add_references(const std::set<AbstractPropertyOwner*>& existing_references);
+
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
   virtual size_t array_size(const Pointer& pointer) = 0;
   virtual bool get_bool(const Pointer& pointer) = 0;
@@ -52,13 +60,13 @@ public:
   virtual double  get_double(const Pointer& pointer) = 0;
   virtual std::string  get_string(const Pointer& pointer) = 0;
   virtual ObjectTransformation get_object_transformation(const Pointer& pointer) = 0;
-  virtual Serializable::IdType get_id(const Pointer& pointer) = 0;
+  virtual std::size_t get_size_t(const Pointer& pointer) = 0;
   virtual Color get_color(const Pointer& pointer) = 0;
 
 
-  void register_reference(const Serializable::IdType& id, AbstractPropertyOwner& reference);
+  void register_reference(const std::size_t id, AbstractPropertyOwner& reference);
   void register_reference_property( ReferenceProperty& reference_property,
-                                    const Serializable::IdType& id );
+                                    const std::size_t id );
 
 
   class DeserializeError : public std::runtime_error
@@ -69,10 +77,10 @@ public:
 
 private:
   // maps old stored hash to new ref
-  std::unordered_map<Serializable::IdType, AbstractPropertyOwner*> m_id_to_reference;
+  std::unordered_map<std::size_t, AbstractPropertyOwner*> m_id_to_reference;
 
   // maps new property to old hash
-  std::unordered_map<ReferenceProperty*, Serializable::IdType> m_reference_property_to_id;
+  std::unordered_map<ReferenceProperty*, std::size_t> m_reference_property_to_id;
 };
 
 void register_serializers();

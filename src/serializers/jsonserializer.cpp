@@ -106,7 +106,7 @@ void JSONSerializer::set_value(const ObjectTransformation& value, const Pointer&
   }
 }
 
-void JSONSerializer::set_value(const Serializable::IdType& id, const Pointer& pointer)
+void JSONSerializer::set_value(const std::size_t id, const Pointer& pointer)
 {
   m_store[ptr(pointer)] = id;
 }
@@ -178,9 +178,9 @@ ObjectTransformation JSONDeserializer::get_object_transformation(const Pointer& 
   return ObjectTransformation(mat);
 }
 
-Serializable::IdType JSONDeserializer::get_id(const Pointer& pointer)
+std::size_t JSONDeserializer::get_size_t(const Pointer& pointer)
 {
-  return get_t<Serializable::IdType>(m_store, pointer);
+  return get_t<std::size_t>(m_store, pointer);
 }
 
 std::string JSONDeserializer::type() const
