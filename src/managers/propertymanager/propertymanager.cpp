@@ -74,6 +74,13 @@ std::string get_tab_label(const omm::Property::SetOfProperties& properties)
   return tab_label;
 }
 
+size_t find_tab_label(const std::string& label, const std::vector<std::string>& labels)
+{
+  const auto it = std::find(labels.cbegin(), labels.cend(), label);
+  assert(it != labels.cend());
+  return std::distance(labels.cbegin(), it);
+}
+
 }  // namespace
 
 namespace omm
@@ -81,14 +88,18 @@ namespace omm
 
 PropertyManager::PropertyManager(Scene& scene)
   : Manager(tr("Properties"), scene)
-  , m_tabs(transfer( std::make_unique<QTabWidget>(),
-                     [this](std::unique_ptr<QTabWidget> tabs) {
-                        this->setWidget(tabs.release());
-                      } ) )
 {
+  auto tabs = std::make_unique<QTabWidget>();
+  m_tabs = tabs.get();
+  setWidget(tabs.release());
   setWindowTitle(tr("property manager"));
   setObjectName(TYPE());
   m_scene.Observed<AbstractSelectionObserver>::register_observer(*this);
+  connect(m_tabs, &QTabWidget::currentChanged, [this](int index) {
+    if (index >= 0) {
+      m_active_category = m_tabs->tabText(index).toStdString();
+    }
+  });
 }
 
 PropertyManager::~PropertyManager()
@@ -112,19 +123,25 @@ void PropertyManager::set_selection(const SetOfPropertyOwner& selection)
     tabs.at(tab_label)->add_properties(m_scene, properties);
   }
 
+  const auto active_category = m_active_category;
   for (auto&& tab_label : tabs.keys()) {
     auto& tab = tabs.at(tab_label);
     tab->end_add_properties();
-    m_tabs.addTab(tab.release(), QString::fromStdString(tab_label));
+    m_tabs->addTab(tab.release(), QString::fromStdString(tab_label));
+  }
+
+  if (tabs.contains(active_category)) {
+    m_tabs->setCurrentIndex(find_tab_label(active_category, tabs.keys()));
   }
 }
 
 void PropertyManager::clear()
 {
-  while (m_tabs.count()) {
-    delete m_tabs.widget(0);
+  const auto active_category = m_active_category;
+  while (m_tabs->count() > 0) {
+    delete m_tabs->widget(0);
   }
-  assert(m_tabs.count() == 0);
+  m_active_category = active_category;
 }
 
 }  // namespace omm

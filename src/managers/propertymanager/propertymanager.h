@@ -27,7 +27,8 @@ public:
   void clear();
 
 private:
-  QTabWidget& m_tabs;
+  QTabWidget* m_tabs;
+  std::string m_active_category;
 };
 
 }  // namespace omm
