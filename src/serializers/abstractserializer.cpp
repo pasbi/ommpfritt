@@ -34,7 +34,6 @@ AbstractSerializer::~AbstractSerializer()
 
 void AbstractSerializer::set_value(const AbstractPropertyOwner* ref, const Pointer& pointer)
 {
-  LOG(INFO) << "set value reference " << pointer;
   m_serialized_references.insert(const_cast<AbstractPropertyOwner*>(ref));
   set_value(static_cast<std::size_t>(hash(ref)), pointer);
 }

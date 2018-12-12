@@ -16,6 +16,8 @@
 #include "scene/cachedgetter.h"
 #include "scene/list.h"
 #include "scene/tree.h"
+#include "scene/stylelistadapter.h"
+#include "scene/objecttreeadapter.h"
 
 namespace omm
 {
@@ -34,8 +36,11 @@ public:
   Scene();
   ~Scene();
 
-  List<Style> styles;
   Tree<Object> object_tree;
+  ObjectTreeAdapter object_tree_adapter;
+
+  List<Style> styles;
+  StyleListAdapter style_list_adapter;
 
   template<typename ItemT> typename SceneStructure<ItemT>::type& structure();
   template<typename ItemT> const typename SceneStructure<ItemT>::type& structure() const;
@@ -96,6 +101,8 @@ private:
   bool m_has_pending_changes = false;
   void set_has_pending_changes(bool v);
   QUndoStack m_undo_stack;
+
+
 
 public:
   static Scene* currentInstance();

@@ -5,9 +5,10 @@
 #include <QDebug>
 #include <QMouseEvent>
 
-#include "managers/objectmanager/objecttreeadapter.h"
+#include "scene/objecttreeadapter.h"
 #include "managers/objectmanager/objecttreeview.h"
 #include "tags/tag.h"
+#include "scene/scene.h"
 
 namespace
 {

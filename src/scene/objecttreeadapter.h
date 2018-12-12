@@ -1,8 +1,7 @@
 #pragma once
 
 #include <QAbstractItemModel>
-#include "scene/scene.h"
-#include "managers/itemmodeladapter.h"
+#include "scene/itemmodeladapter.h"
 #include "scene/tree.h"
 #include "scene/abstractstructureobserver.h"
 #include "objects/object.h"

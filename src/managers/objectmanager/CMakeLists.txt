@@ -1,7 +1,6 @@
 
 file (GLOB SOURCES
   "objectmanager.cpp"
-  "objecttreeadapter.cpp"
   "objecttreeview.cpp"
   "tagsitemdelegate.cpp"
 )

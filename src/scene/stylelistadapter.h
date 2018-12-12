@@ -1,13 +1,14 @@
 #pragma once
 
 #include <QAbstractItemModel>
-#include "scene/scene.h"
-#include "managers/itemmodeladapter.h"
+#include "scene/itemmodeladapter.h"
 
 class QItemSelection;
 
 namespace omm
 {
+
+class Scene;
 
 class StyleListAdapter : public ItemModelAdapter<List<Style>, QAbstractListModel>
 {

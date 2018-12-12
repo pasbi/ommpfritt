@@ -4,55 +4,53 @@
 #include <QEvent>
 #include "scene/scene.h"
 #include "managers/stylemanager/stylelistview.h"
-#include "managers/stylemanager/stylelistadapter.h"
+#include "scene/stylelistadapter.h"
 #include "managers/objectmanager/objecttreeview.h"
-#include "managers/objectmanager/objecttreeadapter.h"
+#include "scene/objecttreeadapter.h"
 #include "renderers/style.h"
 #include "objects/object.h"
 
 namespace omm
 {
 
-template<typename ItemViewT, typename ItemModelT>
-ItemManager<ItemViewT, ItemModelT>::ItemManager(const QString& title, Scene& scene)
+template<typename ItemViewT> ItemManager<ItemViewT>
+::ItemManager(const QString& title, Scene& scene, item_model_type& model)
   : Manager(title, scene)
-  , m_item_model(scene)
-  , m_item_view(m_item_model)
 {
-  connect( m_item_view.selectionModel(), &QItemSelectionModel::selectionChanged,
-           this, &ItemManager::on_selection_changed );
+   auto item_view = std::make_unique<ItemViewT>(model);
 
-  m_item_view.installEventFilter(this);
+  // connect( m_item_view.selectionModel(), &QItemSelectionModel::selectionChanged,
+  //          this, &ItemManager::on_selection_changed );
 
-  // we must not release ownership to Qt.
-  // `m_item_view` must be deleted before `m_item_model` is deleted.
-  setWidget(&m_item_view);
+  // item_view->installEventFilter(this);
+
+  setWidget(item_view.release());
 }
 
-template<typename ItemViewT, typename ItemModelT> bool
-ItemManager<ItemViewT, ItemModelT>::eventFilter(QObject* object, QEvent* event)
-{
-  if (object == widget() && event->type() == QEvent::MouseButtonRelease) {
-    m_scene.selection_changed();
-  }
-  return Manager::eventFilter(object, event);
-}
+// template<typename ItemViewT> bool
+// ItemManager<ItemViewT>::eventFilter(QObject* object, QEvent* event)
+// {
+//   if (object == widget() && event->type() == QEvent::MouseButtonRelease) {
+//     m_scene.selection_changed();
+//   }
+//   return Manager::eventFilter(object, event);
+// }
 
-template<typename ItemViewT, typename ItemModelT> void
-ItemManager<ItemViewT, ItemModelT>::on_selection_changed( const QItemSelection& selection,
-                                                          const QItemSelection& old_selection )
-{
-  for (auto& index : old_selection.indexes()) {
-    if (!selection.contains(index)) {
-      m_item_model.item_at(index).deselect();
-    }
-  }
-  for (auto& index : selection.indexes()) {
-    m_item_model.item_at(index).select();
-  }
-}
+// template<typename ItemViewT> void
+// ItemManager<ItemViewT>::on_selection_changed( const QItemSelection& selection,
+//                                                           const QItemSelection& old_selection )
+// {
+//   for (auto& index : old_selection.indexes()) {
+//     if (!selection.contains(index)) {
+//       m_item_model.item_at(index).deselect();
+//     }
+//   }
+//   for (auto& index : selection.indexes()) {
+//     m_item_model.item_at(index).select();
+//   }
+// }
 
-template class ItemManager<ObjectTreeView, ObjectTreeAdapter>;
-template class ItemManager<StyleListView, StyleListAdapter>;
+template class ItemManager<ObjectTreeView>;
+template class ItemManager<StyleListView>;
 
 }  // namespace omm

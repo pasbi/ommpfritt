@@ -1,6 +1,5 @@
 file (GLOB SOURCES
   "itemmanager.cpp"
-  "itemmodeladapter.cpp"
   "manager.cpp"
   "manageritemview.cpp"
   "managerregister.cpp"

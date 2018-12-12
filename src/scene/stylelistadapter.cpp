@@ -1,5 +1,6 @@
-#include "managers/stylemanager/stylelistadapter.h"
+#include "scene/stylelistadapter.h"
 #include "renderers/style.h"
+#include "scene/scene.h"
 
 namespace omm
 {

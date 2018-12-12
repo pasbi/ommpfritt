@@ -11,7 +11,9 @@ class Scene;
 class AbstractSelectionObserver
 {
 protected:
-  virtual void set_selection(const std::set<AbstractPropertyOwner*>& selection) = 0;
+
+  // TODO remove the observer class or make the following method pure virtual.
+  virtual void set_selection(const std::set<AbstractPropertyOwner*>& selection) {};
   friend class Scene;
 };
 

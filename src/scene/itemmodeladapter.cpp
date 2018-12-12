@@ -1,4 +1,4 @@
-#include "managers/itemmodeladapter.h"
+#include "scene/itemmodeladapter.h"
 #include "scene/contextes.h"
 #include "scene/propertyownermimedata.h"
 #include "objects/object.h"

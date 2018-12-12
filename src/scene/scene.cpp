@@ -63,7 +63,9 @@ Scene* Scene::m_current = nullptr;
 
 Scene::Scene()
   : object_tree(this, make_root())
+  , object_tree_adapter(*this)
   , styles(this)
+  , style_list_adapter(*this)
   , m_default_style(make_default_style(this))
 {
   object_tree.root().property<StringProperty>(Object::NAME_PROPERTY_KEY).value() = "_root_";
@@ -256,27 +258,6 @@ std::set<AbstractPropertyOwner*> Scene::selection() const
   return merge( std::set<AbstractPropertyOwner*>(),
                 object_tree.selected_items(), selected_tags(), styles.selected_items());
 }
-
-// Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag)
-// {
-//   const auto n = owner.tags.size();
-//   const Tag* predecessor = n == 0 ? nullptr : &owner.tag(n-1);
-//   return attach_tag(owner, std::move(tag), predecessor);
-// }
-
-// Tag& Scene::attach_tag(Object& owner, std::unique_ptr<Tag> tag, const Tag* predecessor)
-// {
-//   Tag& ref = owner.attach_tag(std::move(tag), predecessor);
-//   invalidate();
-//   return ref;
-// }
-
-// std::unique_ptr<Tag> Scene::detach_tag(const Tag& tag)
-// {
-//   auto ref = tag.owner()->detach_tag(tag);
-//   invalidate();
-//   return ref;
-// }
 
 Style& Scene::default_style() const
 {

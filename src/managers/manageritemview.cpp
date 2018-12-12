@@ -9,9 +9,10 @@
 #include "properties/referenceproperty.h"
 
 #include "managers/stylemanager/stylelistview.h"
-#include "managers/stylemanager/stylelistadapter.h"
+#include "scene/stylelistadapter.h"
 #include "managers/objectmanager/objecttreeview.h"
-#include "managers/objectmanager/objecttreeadapter.h"
+#include "scene/objecttreeadapter.h"
+#include "scene/scene.h"
 
 namespace
 {

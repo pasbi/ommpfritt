@@ -4,11 +4,11 @@
 #include <glog/logging.h>
 
 #include "menuhelper.h"
-#include "managers/objectmanager/objecttreeadapter.h"
 #include "commands/addtagcommand.h"
 #include "scene/contextes.h"
 #include "commands/removecommand.h"
 #include "renderers/style.h"
+#include "scene/scene.h"
 
 namespace omm
 {
@@ -52,24 +52,26 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
   }
 }
 
-void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection, Object& root)
-{
-  assert(root.is_selected() == selection.count(static_cast<AbstractPropertyOwner*>(&root)));
-  const QModelIndex index = model()->index_of(root);
-  if (root.is_selected()) {
-    selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Select);
-  } else {
-    selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Deselect);
-  }
-  for (auto child : root.children()) {
-    set_selection(selection, *child);
-  }
-};
+// void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection, Object& root)
+// {
+//   // assert(root.is_selected() == selection.count(static_cast<AbstractPropertyOwner*>(&root)));
+//   const QModelIndex index = model()->index_of(root);
+//   if (root.is_selected()) {
+//     LOG(INFO) << "select" << root;
+//     selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Select);
+//   } else {
+//     LOG(INFO) << "deselect" << root;
+//     selectionModel()->select(index, QItemSelectionModel::Rows | QItemSelectionModel::Deselect);
+//   }
+//   for (auto child : root.children()) {
+//     set_selection(selection, *child);
+//   }
+// };
 
-void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection)
-{
-  set_selection(selection, model()->structure().root());
-}
+// void ObjectTreeView::set_selection(const SetOfPropertyOwner& selection)
+// {
+//   set_selection(selection, model()->structure().root());
+// }
 
 AbstractPropertyOwner::Kind ObjectTreeView::displayed_kinds() const
 {

@@ -15,6 +15,7 @@
 
 #include "managers/propertymanager/propertymanager.h"
 #include "managers/objectmanager/objectmanager.h"
+#include "scene/scene.h"
 
 namespace omm
 {
