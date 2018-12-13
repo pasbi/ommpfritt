@@ -1,7 +1,6 @@
 #pragma once
 
 #include "aspects/propertyowner.h"
-#include "aspects/selectable.h"
 #include "color/color.h"
 #include "aspects/copycreatable.h"
 

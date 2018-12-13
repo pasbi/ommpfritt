@@ -39,9 +39,8 @@ std::vector<const omm::Style*> find_styles(const omm::Object& object)
     }
   };
 
-  const auto is_not_null = [](const void* ptr) { return ptr != nullptr; };
   const auto tags = object.tags.ordered_items();
-  return ::filter_if(::transform<const omm::Style*>(tags, get_style), is_not_null);
+  return ::filter_if(::transform<const omm::Style*>(tags, get_style), ::is_not_null);
 }
 
 }  // namespace

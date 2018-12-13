@@ -12,6 +12,7 @@
 #include "aspects/serializable.h"
 #include "properties/typedproperty.h"
 #include "properties/stringproperty.h"
+#include "common.h"
 
 
 namespace omm
@@ -52,6 +53,28 @@ public:
   virtual std::string name() const;
   virtual void on_property_value_changed() override;
   virtual Kind kind() const = 0;
+
+  template<typename T> T* cast()
+  {
+    if (kind() == T::KIND) {
+      return static_cast<T*>(this);
+    } else {
+      return nullptr;
+    }
+  }
+
+  template<typename T, typename AbstractPropertyOwnerT, template<typename...> class ContainerT>
+  static ContainerT<T*> cast(const ContainerT<AbstractPropertyOwnerT*>& ss)
+  {
+    const auto f = [](AbstractPropertyOwnerT* a) -> T* {
+      if (a->kind() == T::KIND) {
+        return static_cast<T*>(a);
+      } else {
+        return nullptr;
+      }
+    };
+    return ::filter_if(::transform<T*>(ss, f), ::is_not_null);
+  }
 
   static const std::string NAME_PROPERTY_KEY;
 

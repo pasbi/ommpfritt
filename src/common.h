@@ -96,6 +96,8 @@ Ts filter_if(const Ts& ts, const Predicate& p)
   return filtered;
 }
 
+bool is_not_null(const void* p);
+
 namespace omm
 {
 

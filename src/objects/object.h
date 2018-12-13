@@ -6,7 +6,6 @@
 #include "geometry/objecttransformation.h"
 #include "aspects/propertyowner.h"
 #include "abstractfactory.h"
-#include "aspects/selectable.h"
 #include "aspects/treeelement.h"
 #include "common.h"
 #include "aspects/copycreatable.h"

@@ -1,4 +1,5 @@
 file (GLOB SOURCES
+  common.cpp
   main.cpp
 )
 

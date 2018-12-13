@@ -4,7 +4,6 @@
 #include <QIcon>
 #include "aspects/propertyowner.h"
 #include "external/json_fwd.hpp"
-#include "aspects/selectable.h"
 #include "aspects/copycreatable.h"
 
 namespace omm {

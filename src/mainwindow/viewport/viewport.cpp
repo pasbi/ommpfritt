@@ -132,16 +132,7 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
 
 void Viewport::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
-  const auto to_object = [](AbstractPropertyOwner* item) -> Object* {
-    if (item->kind() == AbstractPropertyOwner::Kind::Object) {
-      return static_cast<Object*>(item);
-    } else {
-      return nullptr;
-    }
-  };
-
-  const auto not_null = [](const void* p) { return p != nullptr; };
-  m_handle->set_objects(::filter_if(::transform<Object*>(selection, to_object), not_null));
+  m_handle->set_objects(AbstractPropertyOwner::cast<Object>(selection));
 }
 
 ObjectTransformation Viewport::viewport_transformation() const
