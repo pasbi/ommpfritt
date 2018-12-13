@@ -12,12 +12,12 @@
 #include "external/json_fwd.hpp"
 #include "observed.h"
 #include "scene/contextes.h"
-#include "scene/abstractselectionobserver.h"
 #include "scene/cachedgetter.h"
 #include "scene/list.h"
 #include "scene/tree.h"
 #include "scene/stylelistadapter.h"
 #include "scene/objecttreeadapter.h"
+#include "scene/abstractselectionobserver.h"
 
 namespace omm
 {
@@ -31,6 +31,7 @@ template<> struct SceneStructure<Style> { using type = List<Style>; };
 
 class Scene
   : public Observed<AbstractSelectionObserver>
+  , public Observed<AbstractSimpleStructureObserver>
 {
 public:
   Scene();
@@ -52,10 +53,12 @@ public:
   // === Tags  ======
 public:
   std::set<Tag*> tags() const;
-  std::set<Tag*> selected_tags() const;
 private:
   mutable bool m_tags_cache_is_dirty = true;
   mutable std::set<Tag*> m_tags_cache;
+
+public:
+  void set_selection(const std::set<AbstractPropertyOwner*>& selection);
 
   // === Styles  ====
 public:
@@ -65,15 +68,9 @@ private:
 
   // === Objects, Tags and Styles ===
 public:
-  std::set<AbstractPropertyOwner*> selection() const;
   std::set<AbstractPropertyOwner*> property_owners() const;
   std::set<ReferenceProperty*>
   find_reference_holders(const AbstractPropertyOwner& candidate) const;
-
-  // === Selection ===
-public:
-  void clear_selection(AbstractPropertyOwner::Kind kind = AbstractPropertyOwner::Kind::All);
-  void selection_changed();
   void invalidate();
 
   // === Save/Load ====

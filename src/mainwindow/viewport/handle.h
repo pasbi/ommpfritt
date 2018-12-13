@@ -16,7 +16,7 @@ class AbstractRenderer;
 class Handle
 {
 public:
-  explicit Handle(Scene& scene, const std::set<Object*>& selection);
+  explicit Handle(Scene& scene);
   virtual ~Handle() = default;
 
   /**
@@ -32,6 +32,7 @@ public:
   void mouse_release();
   void draw(AbstractRenderer& renderer) const;
   void transform_objects(const ObjectTransformation& transformation) const;
+  void set_objects(const std::set<Object*>& objects);
 
 protected:
   virtual ObjectTransformation transformation() const = 0;
@@ -40,7 +41,7 @@ protected:
 
 private:
   Scene& m_scene;
-  const std::set<Object*> m_objects;
+  std::set<Object*> m_objects;
   arma::vec2 map_to_handle_local(const arma::vec2& pos) const;
 };
 

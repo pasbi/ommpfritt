@@ -45,15 +45,6 @@ std::unique_ptr<omm::Style> make_default_style(omm::Scene* scene)
   return default_style;
 }
 
-template<typename SelectablesT>
-void deselect_all(const SelectablesT& selectables)
-{
-  using selectable_type = std::remove_pointer_t<std::decay_t<typename SelectablesT::value_type>>;
-  static constexpr bool is_selectable = std::is_base_of<omm::Selectable, selectable_type>::value;
-  static_assert( is_selectable, "SelectableT must be a container of Selectable" );
-  std::for_each(selectables.begin(), selectables.end(), std::mem_fn(&omm::Selectable::deselect));
-}
-
 }  // namespace
 
 namespace omm
@@ -103,35 +94,9 @@ Scene::find_reference_holders(const AbstractPropertyOwner& candidate) const
 void Scene::invalidate()
 {
   m_tags_cache_is_dirty = true;
-  selection_changed();
-}
-
-void Scene::selection_changed()
-{
-  const auto selection = this->selection();
-  Observed<AbstractSelectionObserver>::for_each(
-    [selection](auto* observer) { observer->set_selection(selection); }
-  );
-}
-
-void Scene::clear_selection(AbstractPropertyOwner::Kind kind)
-{
-  const bool clear_tag_selection = !!(kind & AbstractPropertyOwner::Kind::Tag);
-  const bool clear_object_selection = !!(kind & AbstractPropertyOwner::Kind::Object);
-  const bool clear_style_selection = !!(kind & AbstractPropertyOwner::Kind::Style);
-
-
-  if (clear_object_selection || clear_tag_selection)
-  {
-    for (auto& o : object_tree.items()) {
-      if (clear_object_selection) { o->deselect(); }
-      if (clear_tag_selection) { deselect_all(o->tags.items()); }
-    }
-  }
-  if (clear_style_selection) {
-    deselect_all(styles.items());
-  }
-  invalidate();
+  Observed<AbstractSimpleStructureObserver>::for_each([](auto* observer){
+    observer->structure_has_changed();
+  });
 }
 
 bool Scene::save_as(const std::string &filename)
@@ -241,22 +206,9 @@ std::set<Tag*> Scene::tags() const
   return m_tags_cache;
 }
 
-std::set<Tag*> Scene::selected_tags() const
-{
-  // TODO same in Tree, List
-  const auto is_selected = [](const auto* t) { return t->is_selected(); };
-  return ::filter_if(tags(), is_selected);
-}
-
 std::set<AbstractPropertyOwner*> Scene::property_owners() const
 {
   return merge(std::set<AbstractPropertyOwner*>(), object_tree.items(), tags(), styles.items());
-}
-
-std::set<AbstractPropertyOwner*> Scene::selection() const
-{
-  return merge( std::set<AbstractPropertyOwner*>(),
-                object_tree.selected_items(), selected_tags(), styles.selected_items());
 }
 
 Style& Scene::default_style() const
@@ -282,6 +234,12 @@ template<> typename SceneStructure<Style>::type& Scene::structure<Style>()
 template<> const typename SceneStructure<Style>::type& Scene::structure<Style>() const
 {
   return styles;
+}
+
+void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
+{
+  const auto set_selection = [selection](auto* observer) { observer->set_selection(selection); };
+  Observed<AbstractSelectionObserver>::for_each(set_selection);
 }
 
 }  // namespace omm

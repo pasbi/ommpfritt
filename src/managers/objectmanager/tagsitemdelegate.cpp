@@ -52,9 +52,10 @@ void TagsItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &opt
     const auto& tag = object.tags.item(i);
     painter->setClipRect(rect);
     tag.icon().paint(painter, rect);
-    if (tag.is_selected()) {
-      painter->drawRect(rect);
-    }
+    // TODO
+    // if (tag.is_selected()) {
+    //   painter->drawRect(rect);
+    // }
     painter->translate(icon_size().width(), 0);
   }
 
@@ -79,12 +80,10 @@ bool TagsItemDelegate::editorEvent( QEvent *event, QAbstractItemModel *model,
 
     const auto& object = m_view.model()->item_at(index);
     if (tag_i >= 0 && tag_i < object.tags.size()) {
-      if (!(mouse_event->modifiers() & Qt::ShiftModifier)) {
-        m_view.model()->scene().clear_selection();
-      }
-      Tag& tag = object.tags.item(tag_i);
-      tag.set_selected(mouse_event->modifiers() & Qt::ShiftModifier ? !tag.is_selected() : true);
-      event->accept();
+      // if (!(mouse_event->modifiers() & Qt::ShiftModifier)) {
+      //   m_view.model()->scene().clear_selection();
+      // }
+      // TODO select tag
       m_view.update();
     }
   }

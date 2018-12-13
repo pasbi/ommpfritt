@@ -22,7 +22,6 @@ class Scene;
 
 class Object
   : public PropertyOwner<AbstractPropertyOwner::Kind::Object>
-  , public Selectable
   , public virtual Serializable
   , public TreeElement<Object>
   , public CopyCreatable<Object>

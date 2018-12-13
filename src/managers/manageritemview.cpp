@@ -20,48 +20,48 @@ namespace
 template<typename StructureT>
 bool remove_selection(QWidget& parent, omm::Scene& scene)
 {
-  using item_type = typename StructureT::item_type;
-  static_assert( std::is_base_of<omm::AbstractPropertyOwner, item_type>::value,
-                 "item_type must be a property owner." );
+  // using item_type = typename StructureT::item_type;
+  // static_assert( std::is_base_of<omm::AbstractPropertyOwner, item_type>::value,
+  //                "item_type must be a property owner." );
 
-  StructureT& structure = scene.structure<item_type>();
-  const auto selection = structure.selected_items();
+  // StructureT& structure = scene.structure<item_type>();
+  // const auto selection = structure.selected_items();
 
-  std::map<const item_type*, std::set<omm::ReferenceProperty*>> reference_holder_map;
-  for (const item_type* reference : selection) {
-    const auto reference_holders = scene.find_reference_holders(*reference);
-    if (reference_holders.size() > 0) {
-      reference_holder_map.insert(std::make_pair(reference, reference_holders));
-    }
-  }
+  // std::map<const item_type*, std::set<omm::ReferenceProperty*>> reference_holder_map;
+  // for (const item_type* reference : selection) {
+  //   const auto reference_holders = scene.find_reference_holders(*reference);
+  //   if (reference_holders.size() > 0) {
+  //     reference_holder_map.insert(std::make_pair(reference, reference_holders));
+  //   }
+  // }
 
-  if (reference_holder_map.size() > 0) {
-    const auto message = QObject::tr("There are %1 items being referenced by other items.\n"
-                                     "Remove the refrenced items anyway?")
-                                    .arg(reference_holder_map.size());
-    const auto decision = QMessageBox::warning( &parent, QObject::tr("Warning"), message,
-                                                QMessageBox::YesToAll | QMessageBox::Cancel );
-    switch (decision) {
-    case QMessageBox::YesToAll:
-    {
-      const auto f = [](std::set<omm::ReferenceProperty*> accu, const auto& v) {
-        accu.insert(v.second.begin(), v.second.end());
-        return accu;
-      };
-      const auto properties = std::accumulate( reference_holder_map.begin(),
-                                               reference_holder_map.end(),
-                                               std::set<omm::ReferenceProperty*>(), f );
-      scene.submit<omm::PropertiesCommand<omm::ReferenceProperty>>(properties, nullptr);
-      break;
-    }
-    case QMessageBox::Cancel:
-      return false;
-    default:
-      assert(false);
-    }
-  }
+  // if (reference_holder_map.size() > 0) {
+  //   const auto message = QObject::tr("There are %1 items being referenced by other items.\n"
+  //                                    "Remove the refrenced items anyway?")
+  //                                   .arg(reference_holder_map.size());
+  //   const auto decision = QMessageBox::warning( &parent, QObject::tr("Warning"), message,
+  //                                               QMessageBox::YesToAll | QMessageBox::Cancel );
+  //   switch (decision) {
+  //   case QMessageBox::YesToAll:
+  //   {
+  //     const auto f = [](std::set<omm::ReferenceProperty*> accu, const auto& v) {
+  //       accu.insert(v.second.begin(), v.second.end());
+  //       return accu;
+  //     };
+  //     const auto properties = std::accumulate( reference_holder_map.begin(),
+  //                                              reference_holder_map.end(),
+  //                                              std::set<omm::ReferenceProperty*>(), f );
+  //     scene.submit<omm::PropertiesCommand<omm::ReferenceProperty>>(properties, nullptr);
+  //     break;
+  //   }
+  //   case QMessageBox::Cancel:
+  //     return false;
+  //   default:
+  //     assert(false);
+  //   }
+  // }
 
-  scene.submit<omm::RemoveCommand<StructureT>>(structure, selection);
+  // scene.submit<omm::RemoveCommand<StructureT>>(structure, selection);
   return true;
 }
 
@@ -79,17 +79,11 @@ ManagerItemView<ItemViewT, ItemModelT>::ManagerItemView(ItemModelT& model)
   this->viewport()->setAcceptDrops(true);
 
   ItemViewT::setModel(&model);
-  model.scene().Observed<AbstractSelectionObserver>::register_observer(*this);
-  QObject::connect(this->selectionModel(), &QItemSelectionModel::selectionChanged, [this, &model]() {
-    const auto all_but_managed = AbstractPropertyOwner::Kind::All & ~displayed_kinds();
-    model.scene().clear_selection(all_but_managed);
-  });
 }
 
 template<typename ItemViewT, typename ItemModelT>
 ManagerItemView<ItemViewT, ItemModelT>::~ManagerItemView()
 {
-  this->model()->scene().Observed<AbstractSelectionObserver>::unregister_observer(*this);
 }
 
 template<typename ItemViewT, typename ItemModelT>
@@ -128,9 +122,15 @@ void ManagerItemView<ItemViewT, ItemModelT>::mouseReleaseEvent(QMouseEvent* e)
 }
 
 template<typename ItemViewT, typename ItemModelT>
-AbstractPropertyOwner::Kind ManagerItemView<ItemViewT, ItemModelT>::displayed_kinds() const
+std::set<AbstractPropertyOwner*> ManagerItemView<ItemViewT, ItemModelT>::selected_items() const
 {
-  return AbstractPropertyOwner::Kind::None;
+  const auto get_object = [this](const QModelIndex& index) {
+    return &model()->item_at(index);
+  };
+
+  // TODO add selected tags
+  const auto selected_indexes = this->selectionModel()->selectedIndexes();
+  return ::transform<AbstractPropertyOwner*, std::set>(selected_indexes, get_object);
 }
 
 template class ManagerItemView<QListView, StyleListAdapter>;

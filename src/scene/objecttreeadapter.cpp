@@ -145,7 +145,6 @@ ObjectTreeAdapter::acquire_inserter_guard(Object& parent, int row)
   public:
     InserterGuard(ObjectTreeAdapter& model, const QModelIndex& parent, int row) : m_model(model)
     {
-      LOG(INFO) << "insert";
       m_model.beginInsertRows(parent, row, row);
     }
     ~InserterGuard() { m_model.endInsertRows(); }
@@ -165,7 +164,6 @@ ObjectTreeAdapter::acquire_mover_guard(const ObjectTreeMoveContext& context)
                const QModelIndex& new_parent, const int new_pos)
       : m_model(model)
     {
-      LOG(INFO) << "move";
       m_model.beginMoveRows(old_parent, old_pos, old_pos, new_parent, new_pos);
     }
 
@@ -196,7 +194,6 @@ ObjectTreeAdapter::acquire_remover_guard(const Object& object)
   public:
     RemoverGuard(ObjectTreeAdapter& model, const QModelIndex& parent, int row) : m_model(model)
     {
-      LOG(INFO) << "remove";
       m_model.beginRemoveRows(parent, row, row);
     }
     ~RemoverGuard() { m_model.endRemoveRows(); }
@@ -215,7 +212,6 @@ ObjectTreeAdapter::acquire_reseter_guard()
   public:
     ReseterGuard(ObjectTreeAdapter& model) : m_model(model)
     {
-      LOG(INFO) << "reset";
       m_model.beginResetModel();
     }
     ~ReseterGuard() { m_model.endResetModel(); }

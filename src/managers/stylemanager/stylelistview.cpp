@@ -34,9 +34,4 @@ void StyleListView::populate_menu(QMenu& menu, const QModelIndex& index) const
 //   }
 // }
 
-AbstractPropertyOwner::Kind StyleListView::displayed_kinds() const
-{
-  return AbstractPropertyOwner::Kind::Style;
-}
-
 }  // namespace

@@ -24,6 +24,7 @@ public:
   Manager(const Manager&) = delete;
   Manager(Manager&&) = delete;
   virtual ~Manager() {}
+  Scene& scene() const;
 
 protected:
   explicit Manager(const QString& title, Scene& scene);

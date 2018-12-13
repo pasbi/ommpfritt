@@ -19,12 +19,6 @@ arma::vec2 point2vec(const QPoint& p)
   };
 }
 
-std::unique_ptr<omm::Handle> make_handle(omm::Scene& scene)
-{
-  const auto selected_objects = scene.object_tree.selected_items();
-  return std::make_unique<omm::LocallyOrientedHandle>(scene, selected_objects);
-}
-
 void set_cursor_position(QWidget& widget, const arma::vec2& pos)
 {
   auto cursor = widget.cursor();
@@ -45,7 +39,7 @@ Viewport::Viewport(Scene& scene)
   : m_scene(scene)
   , m_timer(std::make_unique<QTimer>())
   , m_pan_controller([this](const arma::vec2& pos) { set_cursor_position(*this, pos); })
-  , m_handle(make_handle(scene))
+  , m_handle(std::make_unique<LocallyOrientedHandle>(m_scene))
   , m_viewport_transformation(TOP_RIGHT)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -136,9 +130,18 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
   QWidget::mouseReleaseEvent(event);
 }
 
-void Viewport::set_selection(const std::set<AbstractPropertyOwner*>&)
+void Viewport::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
-  m_handle = make_handle(m_scene);
+  const auto to_object = [](AbstractPropertyOwner* item) -> Object* {
+    if (item->kind() == AbstractPropertyOwner::Kind::Object) {
+      return static_cast<Object*>(item);
+    } else {
+      return nullptr;
+    }
+  };
+
+  const auto not_null = [](const void* p) { return p != nullptr; };
+  m_handle->set_objects(::filter_if(::transform<Object*>(selection, to_object), not_null));
 }
 
 ObjectTransformation Viewport::viewport_transformation() const

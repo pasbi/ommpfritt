@@ -12,7 +12,6 @@ class Scene;
 
 class Style
   : public PropertyOwner<AbstractPropertyOwner::Kind::Style>
-  , public Selectable
   , public virtual Serializable
   , public Copyable<Style>
 {

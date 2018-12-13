@@ -14,7 +14,7 @@ namespace omm
 {
 
 std::vector<omm::AbstractPropertyOwner*>
-candidates(const Scene& scene, omm::AbstractPropertyOwner::Kind kind)
+collect_candidates(const Scene& scene, omm::AbstractPropertyOwner::Kind kind)
 {
   std::vector<omm::AbstractPropertyOwner*> candidates = { nullptr };
   auto merge = [&candidates](const auto& ts) {
@@ -33,12 +33,29 @@ candidates(const Scene& scene, omm::AbstractPropertyOwner::Kind kind)
   return candidates;
 }
 
-ReferenceLineEdit::ReferenceLineEdit(const Scene& scene, AbstractPropertyOwner::Kind allowed_kinds)
-  : m_allowed_kinds(allowed_kinds)
-  , m_possible_references(candidates(scene, allowed_kinds))
+ReferenceLineEdit::ReferenceLineEdit(Scene& scene, AbstractPropertyOwner::Kind allowed_kinds)
+  : m_scene(scene)
+  , m_allowed_kinds(allowed_kinds)
 {
   setEditable(false);
   setAcceptDrops(true);
+  connect( this, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+           [this](int index) { set_value(m_possible_references[index]); } );
+  m_scene.Observed<AbstractSimpleStructureObserver>::register_observer(*this);
+  update_candidates();
+}
+
+ReferenceLineEdit::~ReferenceLineEdit()
+{
+  m_scene.Observed<AbstractSimpleStructureObserver>::unregister_observer(*this);
+}
+
+void ReferenceLineEdit::update_candidates()
+{
+  m_possible_references = collect_candidates(m_scene, m_allowed_kinds);
+  QSignalBlocker blocker(this);
+  AbstractPropertyOwner* const value_safe = currentIndex() < 0 ? nullptr : value();
+  clear();
   for (auto candidate : m_possible_references) {
     if (candidate) {
       addItem(QString::fromStdString(candidate->name()));
@@ -46,12 +63,7 @@ ReferenceLineEdit::ReferenceLineEdit(const Scene& scene, AbstractPropertyOwner::
       addItem(tr("< none >"));
     }
   }
-  connect( this, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-           [this](int index) { set_value(m_possible_references[index]); } );
-}
-
-ReferenceLineEdit::~ReferenceLineEdit()
-{
+  set_value(value_safe);
 }
 
 void ReferenceLineEdit::set_value(const value_type& value)
@@ -115,6 +127,11 @@ bool ReferenceLineEdit::can_drop(const QMimeData& mime_data) const
 void ReferenceLineEdit::mouseDoubleClickEvent(QMouseEvent* event)
 {
   set_value(nullptr);
+}
+
+void ReferenceLineEdit::structure_has_changed()
+{
+  update_candidates();
 }
 
 }  // namespace omm

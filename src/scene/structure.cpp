@@ -11,11 +11,6 @@ namespace omm
 template<typename T> Structure<T>::Structure(Scene* scene) : m_scene(scene) {}
 template<typename T> Structure<T>::~Structure() {}
 
-template<typename T> std::set<T*> Structure<T>::selected_items() const
-{
-  const auto is_selected = [](const auto* t) { return t->is_selected(); };
-  return ::filter_if(items(), is_selected);
-}
 
 template<typename T> void Structure<T>::invalidate_recursive()
 {

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "scene/abstractselectionobserver.h"
 #include "aspects/propertyowner.h"
 
 class QMenu;
@@ -14,14 +13,14 @@ namespace omm
 class Style;
 
 template<typename ItemViewT, typename ItemModelT>
-class ManagerItemView : public ItemViewT, public AbstractSelectionObserver
+class ManagerItemView : public ItemViewT
 {
 public:
   using item_type = typename ItemModelT::item_type;
   explicit ManagerItemView(ItemModelT& model);
   virtual ~ManagerItemView();
   ItemModelT* model() const;
-  virtual AbstractPropertyOwner::Kind displayed_kinds() const;
+  virtual std::set<AbstractPropertyOwner*> selected_items() const;
 
   bool remove_selection();
 

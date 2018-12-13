@@ -12,4 +12,9 @@ Manager::Manager(const QString& title, Scene& scene)
   setAttribute(Qt::WA_DeleteOnClose);
 }
 
+Scene& Manager::scene() const
+{
+  return m_scene;
+}
+
 }  // namespace omm

@@ -24,6 +24,7 @@ auto make_sub_handles(omm::Handle& handle)
 
 auto filter_selection(std::set<omm::Object*> selection)
 {
+  // TODO isn't this the same as remove_internal_children
   const auto has_descendant = [selection](omm::Object* subject) {
     const auto is_descendant = [subject](omm::Object* descendat_candidate) {
       return descendat_candidate != subject && descendat_candidate->is_descendant_of(*subject);
@@ -55,11 +56,15 @@ arma::vec2 get_global_position_mean(const std::set<omm::Object*>& objects)
 namespace omm
 {
 
-Handle::Handle(Scene& scene, const std::set<Object*>& selection)
+Handle::Handle(Scene& scene)
   : m_scene(scene)
   , m_sub_handles(make_sub_handles(*this))
-  , m_objects(filter_selection(selection))
 {
+}
+
+void Handle::set_objects(const std::set<Object*>& objects)
+{
+  m_objects = objects;
 }
 
 bool Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos)

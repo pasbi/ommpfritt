@@ -16,8 +16,6 @@ class ObjectTreeView : public ManagerItemView<QTreeView, ObjectTreeAdapter>
 public:
   using model_type = ObjectTreeAdapter;
   explicit ObjectTreeView(ObjectTreeAdapter& model);
-  // void set_selection(const std::set<AbstractPropertyOwner*>& selection) override;
-  AbstractPropertyOwner::Kind displayed_kinds() const override;
   void remove_selected_tags(Object& object) const;
 
 protected:
@@ -25,8 +23,6 @@ protected:
 
 private:
   std::unique_ptr<TagsItemDelegate> m_tags_item_delegate;
-  // void set_selection(const std::set<AbstractPropertyOwner*>& selection, Object& root);
-
 };
 
 }  // namespace

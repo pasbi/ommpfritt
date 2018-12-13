@@ -14,7 +14,6 @@ class Scene;
 
 class Tag
   : public PropertyOwner<AbstractPropertyOwner::Kind::Tag>
-  , public Selectable
   , public CopyCreatable<Tag>
 {
 public:

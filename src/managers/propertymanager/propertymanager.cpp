@@ -94,17 +94,17 @@ PropertyManager::PropertyManager(Scene& scene)
   setWidget(tabs.release());
   setWindowTitle(tr("property manager"));
   setObjectName(TYPE());
-  m_scene.Observed<AbstractSelectionObserver>::register_observer(*this);
   connect(m_tabs, &QTabWidget::currentChanged, [this](int index) {
     if (index >= 0) {
       m_active_category = m_tabs->tabText(index).toStdString();
     }
   });
+  scene.Observed<AbstractSelectionObserver>::register_observer(*this);
 }
 
 PropertyManager::~PropertyManager()
 {
-  m_scene.Observed<AbstractSelectionObserver>::unregister_observer(*this);
+  scene().Observed<AbstractSelectionObserver>::unregister_observer(*this);
 }
 
 void PropertyManager::set_selection(const SetOfPropertyOwner& selection)

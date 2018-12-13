@@ -21,8 +21,6 @@ public:
   virtual const T* predecessor(const T& sibling) const = 0;
   size_t insert_position(const T* predecessor) const;
 
-  std::set<T*> selected_items() const;
-
   virtual T& insert(std::unique_ptr<T> t) = 0;
   virtual std::unique_ptr<T> remove(T& t) = 0;
 
