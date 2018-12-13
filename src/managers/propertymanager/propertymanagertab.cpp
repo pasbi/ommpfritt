@@ -50,7 +50,6 @@ void PropertyManagerTab::add_properties(Scene& scene, const Property::SetOfPrope
 void PropertyManagerTab::end_add_properties()
 {
   m_layout->addStretch();
-  m_widget->show();
   setWidget(m_widget.release());
 }
 
