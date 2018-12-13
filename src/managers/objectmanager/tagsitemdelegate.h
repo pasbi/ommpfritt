@@ -7,11 +7,12 @@ namespace omm
 
 class Object;
 class ObjectTreeView;
+class ObjectTreeSelectionModel;
 
 class TagsItemDelegate : public QAbstractItemDelegate
 {
 public:
-  explicit TagsItemDelegate(ObjectTreeView& view);
+  explicit TagsItemDelegate(ObjectTreeView& view, ObjectTreeSelectionModel& selection_model);
   void set_object(Object& object);
 
   void paint( QPainter *painter, const QStyleOptionViewItem &option,
@@ -22,6 +23,7 @@ public:
 
 private:
   ObjectTreeView& m_view;
+  ObjectTreeSelectionModel& m_selection_model;
   QPoint cell_pos(const QModelIndex& index) const;
 };
 

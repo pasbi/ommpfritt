@@ -117,7 +117,6 @@ std::set<AbstractPropertyOwner*> ManagerItemView<ItemViewT, ItemModelT>::selecte
     return &model()->item_at(index);
   };
 
-  // TODO add selected tags
   const auto selected_indexes = this->selectionModel()->selectedIndexes();
   return ::transform<AbstractPropertyOwner*, std::set>(selected_indexes, get_object);
 }

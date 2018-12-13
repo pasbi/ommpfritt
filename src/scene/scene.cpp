@@ -25,18 +25,6 @@ auto make_root()
   return std::make_unique<omm::Empty>();
 }
 
-template<typename SetA, typename SetB> SetA merge(SetA&& a, SetB&& b)
-{
-  a.insert(b.begin(), b.end());
-  return a;
-}
-
-template<typename SetA, typename SetB, typename... Sets>
-SetA merge(SetA&& a, SetB&& b, Sets&&... sets)
-{
-  return merge(merge(a, b), std::forward<Sets>(sets)...);
-}
-
 std::unique_ptr<omm::Style> make_default_style(omm::Scene* scene)
 {
   auto default_style = std::make_unique<omm::Style>(scene);

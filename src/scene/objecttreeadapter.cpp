@@ -133,7 +133,7 @@ Qt::ItemFlags ObjectTreeAdapter::flags(const QModelIndex &index) const
     return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled
             | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
   default:
-    return QAbstractItemModel::flags(index);
+    return Qt::ItemIsEnabled;
   }
 }
 

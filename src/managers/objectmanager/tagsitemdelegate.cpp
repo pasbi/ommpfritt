@@ -9,6 +9,7 @@
 #include "managers/objectmanager/objecttreeview.h"
 #include "tags/tag.h"
 #include "scene/scene.h"
+#include "managers/objectmanager/objecttreeselectionmodel.h"
 
 namespace
 {
@@ -28,8 +29,9 @@ int tag_at(int pos_x)
 namespace omm
 {
 
-TagsItemDelegate::TagsItemDelegate(ObjectTreeView& view)
+TagsItemDelegate::TagsItemDelegate(ObjectTreeView& view, ObjectTreeSelectionModel& selection_model)
   : m_view(view)
+  , m_selection_model(selection_model)
 {
 }
 
@@ -49,13 +51,12 @@ void TagsItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &opt
   const auto& object = m_view.model()->item_at(index);
   for (size_t i = 0; i < object.tags.size(); ++i)
   {
-    const auto& tag = object.tags.item(i);
+    auto& tag = object.tags.item(i);
     painter->setClipRect(rect);
     tag.icon().paint(painter, rect);
-    // TODO
-    // if (tag.is_selected()) {
-    //   painter->drawRect(rect);
-    // }
+    if (m_selection_model.is_selected(index.siblingAtColumn(0), tag)) {
+      painter->drawRect(rect);
+    }
     painter->translate(icon_size().width(), 0);
   }
 
@@ -73,21 +74,35 @@ TagsItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex
 bool TagsItemDelegate::editorEvent( QEvent *event, QAbstractItemModel *model,
                                     const QStyleOptionViewItem &option, const QModelIndex &index )
 {
-  if (event->type() == QEvent::MouseButtonPress) {
+  if (event->type() == QEvent::MouseButtonPress)
+  {
     auto mouse_event = static_cast<QMouseEvent*>(event);
     const int x = mouse_event->pos().x() - cell_pos(index).x();
     const size_t tag_i = tag_at(x);
-
     const auto& object = m_view.model()->item_at(index);
+    auto& tag = object.tags.item(tag_i);
+    const QModelIndex object_index = index.siblingAtColumn(0);
     if (tag_i >= 0 && tag_i < object.tags.size()) {
-      // if (!(mouse_event->modifiers() & Qt::ShiftModifier)) {
-      //   m_view.model()->scene().clear_selection();
-      // }
-      // TODO select tag
+      QItemSelectionModel::SelectionFlags command = QItemSelectionModel::NoUpdate;
+      if (mouse_event->buttons() & Qt::LeftButton) {
+        command = QItemSelectionModel::Toggle;
+        if (!(mouse_event->modifiers() & Qt::ControlModifier)) {
+          command |= QItemSelectionModel::Clear;
+        }
+      } else if (mouse_event->buttons() & Qt::RightButton) {
+        if (m_selection_model.is_selected(object_index, tag)) {
+          command = QItemSelectionModel::NoUpdate;
+        } else {
+          command = QItemSelectionModel::ClearAndSelect;
+        }
+      }
+      m_selection_model.select(object_index, tag, command);
       m_view.update();
+      event->ignore();
+      return true;
     }
   }
-  return true;
+  return false;
 }
 
 QPoint TagsItemDelegate::cell_pos(const QModelIndex& index) const

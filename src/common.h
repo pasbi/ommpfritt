@@ -98,6 +98,18 @@ Ts filter_if(const Ts& ts, const Predicate& p)
 
 bool is_not_null(const void* p);
 
+template<typename SetA, typename SetB=SetA> SetA merge(SetA&& a, SetB&& b)
+{
+  a.insert(b.begin(), b.end());
+  return a;
+}
+
+template<typename SetA, typename SetB, typename... Sets>
+SetA merge(SetA&& a, SetB&& b, Sets&&... sets)
+{
+  return merge(merge(a, b), std::forward<Sets>(sets)...);
+}
+
 namespace omm
 {
 

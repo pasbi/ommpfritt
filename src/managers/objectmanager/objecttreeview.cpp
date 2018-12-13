@@ -15,9 +15,12 @@ namespace omm
 
 ObjectTreeView::ObjectTreeView(ObjectTreeAdapter& model)
   : ManagerItemView(model)
-  , m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this))
+  , m_selection_model(std::make_unique<ObjectTreeSelectionModel>(model).release())
+  , m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this, *m_selection_model))
 {
   setItemDelegateForColumn(2, m_tags_item_delegate.get());
+  setSelectionModel(m_selection_model.get());
+  setSelectionBehavior(QAbstractItemView::SelectItems);
 }
 
 void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
@@ -50,6 +53,22 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
       break;
     }
   }
+}
+
+std::set<AbstractPropertyOwner*> ObjectTreeView::selected_items() const
+{
+  return ::merge(selected_objects(), selected_tags());
+}
+
+std::set<AbstractPropertyOwner*> ObjectTreeView::selected_objects() const
+{
+  return ManagerItemView::selected_items();
+}
+
+std::set<AbstractPropertyOwner*> ObjectTreeView::selected_tags() const
+{
+  const auto cast = [](Tag* t) { return static_cast<AbstractPropertyOwner*>(t); };
+  return ::transform<AbstractPropertyOwner*>(m_selection_model->selected_tags(), cast);
 }
 
 void ObjectTreeView::remove_selected_tags(Object& object) const
