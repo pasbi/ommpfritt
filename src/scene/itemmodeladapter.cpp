@@ -214,6 +214,7 @@ QMimeData* ItemModelAdapter<StructureT, ItemModel>::mimeData(const QModelIndexLi
     };
 
     auto sorted_indexes = indexes;
+    // TODO replace this very inefficient approach with topological_context_sort
     std::sort(sorted_indexes.begin(), sorted_indexes.end(), model_index_tree_position_compare);
     const auto items = ::transform<AbstractPropertyOwner*, std::vector>(sorted_indexes, f);
     return std::make_unique<PropertyOwnerMimeData>(items).release();

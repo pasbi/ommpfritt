@@ -4,6 +4,7 @@
 #include <cassert>
 #include <memory>
 #include <algorithm>
+#include <vector>
 #include <glog/logging.h>
 #include "aspects/treeelement.h"
 #include "scene/structure.h"
@@ -21,12 +22,6 @@ public:
     : subject(subject), predecessor(predecessor)
   {
   }
-
-  // ListContext(T& subject)
-  //   : ListContext(subject, subject.predecessor())
-  // {
-  // TODO remove
-  // }
 
   Wrapper<T> subject;
   T& get_subject() const { return subject; }
@@ -173,5 +168,43 @@ public:
 private:
   bool is_root() const { return this->get_subject().is_root(); }
 };
+
+template<typename ContextT>
+void topological_context_sort(std::vector<ContextT>& ts)
+{
+  // Stupid because I guess it's O(n^2). It's possible to do it in O(n).
+  const auto move_if = [](auto begin, auto end, const auto& predicate)
+  {
+    const auto it = std::find_if(begin, end, predicate);
+    if (it != end) {
+      std::iter_swap(it, std::prev(end));
+      return std::prev(end);
+    } else {
+      return it;
+    }
+  };
+
+  const auto begin_ts = ts.begin();
+  auto end_ts = ts.end();
+
+  while (begin_ts != end_ts) {
+    end_ts = move_if(begin_ts, end_ts, [&begin_ts, &end_ts](const auto& t) {
+      return end_ts == std::find_if(begin_ts, end_ts, [&t](const auto& s) {
+        return t.predecessor == &s.subject.get();
+      });
+    });
+
+    while (true) {
+      const auto current = move_if(begin_ts, end_ts, [&end_ts](const auto& t) {
+        return &end_ts->subject.get() == t.predecessor;
+      });
+      if (current == end_ts) {
+        break;
+      } else {
+        end_ts = current;
+      }
+    }
+  }
+}
 
 }  // namespace omm
