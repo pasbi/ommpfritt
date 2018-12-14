@@ -27,8 +27,9 @@ template<typename T> void Tree<T>::move(TreeMoveContext<T>& context)
   const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
     [&context](auto* observer) { return observer->acquire_mover_guard(context); }
   );
+  auto item = old_parent.repudiate(context.subject);
   const auto pos = this->insert_position(context.predecessor);
-  context.parent.get().adopt(old_parent.repudiate(context.subject), pos);
+  context.parent.get().adopt(std::move(item), pos);
 
   this->invalidate_recursive();
 }
