@@ -21,6 +21,7 @@ public:
   std::set<AbstractPropertyOwner*> selected_items() const override;
   std::set<AbstractPropertyOwner*> selected_objects() const;
   std::set<AbstractPropertyOwner*> selected_tags() const;
+  bool remove_selection() override;
 
 protected:
   void populate_menu(QMenu& menu, const QModelIndex& index) const override;

@@ -58,49 +58,23 @@ ItemModelT* ManagerItemView<ItemViewT, ItemModelT>::model() const
 template<typename ItemViewT, typename ItemModelT> bool
 ManagerItemView<ItemViewT, ItemModelT>::remove_selection()
 {
-  using item_type = typename ItemModelT::item_type;
-  static_assert( std::is_base_of<AbstractPropertyOwner, item_type>::value,
-                 "item_type must be a property owner." );
-
-  const auto selection = AbstractPropertyOwner::cast<item_type>(selected_items());
-
-  std::map<const AbstractPropertyOwner*, std::set<ReferenceProperty*>> reference_holder_map;
-  for (const auto* reference : selection) {
-    const auto reference_holders = model()->scene().find_reference_holders(*reference);
-    if (reference_holders.size() > 0) {
-      reference_holder_map.insert(std::make_pair(reference, reference_holders));
+  const auto selection = selected_items();
+  Scene& scene = model()->scene();
+  std::set<ReferenceProperty*> properties;
+  if (selection.size() > 0 && can_remove_selection(this, scene, selection, properties))
+  {
+    const auto typed_selection = AbstractPropertyOwner::cast<item_type>(selection);
+    using remove_command_type = RemoveCommand<typename ItemModelT::structure_type>;
+    scene.undo_stack().beginMacro("Remove Selection");
+    if (properties.size() > 0) {
+      scene.template submit<PropertiesCommand<ReferenceProperty>>(properties, nullptr);
     }
+    scene.template submit<remove_command_type>(model()->structure(), typed_selection);
+    scene.undo_stack().endMacro();
+    return true;
+  } else {
+    return false;
   }
-
-  if (reference_holder_map.size() > 0) {
-    const auto message = QObject::tr("There are %1 items being referenced by other items.\n"
-                                     "Remove the refrenced items anyway?")
-                                    .arg(reference_holder_map.size());
-    const auto decision = QMessageBox::warning( this, QObject::tr("Warning"), message,
-                                                QMessageBox::YesToAll | QMessageBox::Cancel );
-    switch (decision) {
-    case QMessageBox::YesToAll:
-    {
-      const auto merge = [](std::set<ReferenceProperty*> accu, const auto& v) {
-        accu.insert(v.second.begin(), v.second.end());
-        return accu;
-      };
-      const auto properties = std::accumulate( reference_holder_map.begin(),
-                                               reference_holder_map.end(),
-                                               std::set<ReferenceProperty*>(), merge );
-      model()->scene().template submit<PropertiesCommand<ReferenceProperty>>(properties, nullptr);
-      break;
-    }
-    case QMessageBox::Cancel:
-      return false;
-    default:
-      assert(false);
-    }
-  }
-
-  using remove_command_type = RemoveCommand<typename ItemModelT::structure_type>;
-  model()->scene().template submit<remove_command_type>(model()->structure(), selection);
-  return true;
 }
 
 template<typename ItemViewT, typename ItemModelT>
@@ -123,5 +97,39 @@ std::set<AbstractPropertyOwner*> ManagerItemView<ItemViewT, ItemModelT>::selecte
 
 template class ManagerItemView<QListView, StyleListAdapter>;
 template class ManagerItemView<QTreeView, ObjectTreeAdapter>;
+
+bool can_remove_selection(QWidget* parent, Scene& scene,
+                          const std::set<AbstractPropertyOwner*>& selection,
+                          std::set<ReferenceProperty*>& properties)
+{
+  const auto reference_holder_map = scene.find_reference_holders(selection);
+  if (reference_holder_map.size() > 0) {
+    const auto message = QObject::tr("There are %1 items being referenced by other items.\n"
+                                     "Remove the refrenced items anyway?")
+                                    .arg(reference_holder_map.size());
+    const auto decision = QMessageBox::warning( parent, QObject::tr("Warning"), message,
+                                                QMessageBox::YesToAll | QMessageBox::Cancel );
+    switch (decision) {
+    case QMessageBox::YesToAll:
+    {
+      const auto merge = [](std::set<ReferenceProperty*> accu, const auto& v) {
+        accu.insert(v.second.begin(), v.second.end());
+        return accu;
+      };
+      properties = std::accumulate( reference_holder_map.begin(), reference_holder_map.end(),
+                                    std::set<ReferenceProperty*>(), merge );
+      return true;
+    }
+    case QMessageBox::Cancel:
+      return false;
+    default:
+      assert(false);
+    }
+  } else {
+    return true;
+  }
+}
+
+// TODO undo removing of two top-level siblings fails
 
 }  // namespace omm

@@ -6,6 +6,7 @@ class QMenu;
 class QModelIndex;
 class QContextMenuEvent;
 class QMouseEvent;
+class QWidget;
 
 namespace omm
 {
@@ -22,7 +23,7 @@ public:
   ItemModelT* model() const;
   virtual std::set<AbstractPropertyOwner*> selected_items() const;
 
-  bool remove_selection();
+  virtual bool remove_selection();
 
 protected:
   virtual void populate_menu(QMenu& menu, const QModelIndex& index) const = 0;
@@ -32,5 +33,9 @@ protected:
 private:
   using ItemViewT::setModel;
 };
+
+bool can_remove_selection(QWidget* parent, Scene& scene,
+                          const std::set<AbstractPropertyOwner*>& selection,
+                          std::set<ReferenceProperty*>& properties);
 
 }  // namespace omm

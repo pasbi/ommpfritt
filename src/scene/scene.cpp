@@ -79,6 +79,19 @@ Scene::find_reference_holders(const AbstractPropertyOwner& candidate) const
   return reference_holders;
 }
 
+std::map<const AbstractPropertyOwner*, std::set<ReferenceProperty*>>
+Scene::find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates) const
+{
+  std::map<const AbstractPropertyOwner*, std::set<ReferenceProperty*>> reference_holder_map;
+  for (const auto* reference : candidates) {
+    const auto reference_holders = find_reference_holders(*reference);
+    if (reference_holders.size() > 0) {
+      reference_holder_map.insert(std::make_pair(reference, reference_holders));
+    }
+  }
+  return reference_holder_map;
+}
+
 void Scene::invalidate()
 {
   m_tags_cache_is_dirty = true;

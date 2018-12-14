@@ -69,8 +69,13 @@ private:
   // === Objects, Tags and Styles ===
 public:
   std::set<AbstractPropertyOwner*> property_owners() const;
+
   std::set<ReferenceProperty*>
   find_reference_holders(const AbstractPropertyOwner& candidate) const;
+
+  std::map<const AbstractPropertyOwner*, std::set<ReferenceProperty*>>
+  find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates) const;
+
   bool is_referenced(const AbstractPropertyOwner& candidate) const;
   void invalidate();
 
