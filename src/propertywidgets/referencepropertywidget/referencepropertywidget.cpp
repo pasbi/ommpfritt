@@ -43,9 +43,8 @@ ReferencePropertyWidget::~ReferencePropertyWidget()
 
 void ReferencePropertyWidget::on_property_value_changed()
 {
-  m_line_edit->blockSignals(true);
+  QSignalBlocker blocker(m_line_edit);
   m_line_edit->set_values(get_properties_values());
-  m_line_edit->blockSignals(false);
 }
 
 std::string ReferencePropertyWidget::type() const

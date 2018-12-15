@@ -20,9 +20,8 @@ ColorPropertyWidget::ColorPropertyWidget(Scene& scene, const Property::SetOfProp
 
 void ColorPropertyWidget::on_property_value_changed()
 {
-  m_color_edit->blockSignals(true);
+  QSignalBlocker blocker(m_color_edit);
   m_color_edit->set_values(get_properties_values());
-  m_color_edit->blockSignals(false);
 }
 
 std::string ColorPropertyWidget::type() const

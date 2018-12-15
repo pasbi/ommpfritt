@@ -32,9 +32,8 @@ template<typename NumericPropertyT> NumericPropertyWidget<NumericPropertyT>
 template<typename NumericPropertyT>
 void NumericPropertyWidget<NumericPropertyT>::on_property_value_changed()
 {
-  m_spinbox->blockSignals(true);
+  QSignalBlocker blocker(m_spinbox);
   m_spinbox->set_values(NumericPropertyWidget<NumericPropertyT>::get_properties_values());
-  m_spinbox->blockSignals(false);
 }
 
 template class NumericPropertyWidget<IntegerProperty>;

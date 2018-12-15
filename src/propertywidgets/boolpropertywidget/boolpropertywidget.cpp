@@ -24,9 +24,8 @@ BoolPropertyWidget::BoolPropertyWidget(Scene& scene, const Property::SetOfProper
 
 void BoolPropertyWidget::on_property_value_changed()
 {
-  m_checkbox->blockSignals(true);
+  QSignalBlocker blocker(m_checkbox);
   m_checkbox->set_values(get_properties_values());
-  m_checkbox->blockSignals(false);
 }
 
 std::string BoolPropertyWidget::type() const
