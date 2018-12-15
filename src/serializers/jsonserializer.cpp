@@ -126,7 +126,11 @@ std::string JSONSerializer::type() const
 JSONDeserializer::JSONDeserializer(std::istream& istream)
   : AbstractDeserializer(istream)
 {
-  istream >> m_store;
+  try {
+    istream >> m_store;
+  } catch (const nlohmann::detail::parse_error& error) {
+    throw omm::AbstractDeserializer::DeserializeError(error.what());
+  }
 }
 
 size_t JSONDeserializer::array_size(const Pointer& pointer)
