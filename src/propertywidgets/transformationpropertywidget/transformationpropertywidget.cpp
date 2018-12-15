@@ -21,9 +21,8 @@ TransformationPropertyWidget
 
 void TransformationPropertyWidget::on_property_value_changed()
 {
-  m_transformation_edit->blockSignals(true);
+  QSignalBlocker blocker(m_transformation_edit);
   m_transformation_edit->set_values(get_properties_values());
-  m_transformation_edit->blockSignals(false);
 }
 
 std::string TransformationPropertyWidget::type() const
