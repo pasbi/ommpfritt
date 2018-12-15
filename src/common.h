@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <cassert>
+#include <set>
 #include <algorithm>
 
 /*
@@ -109,12 +110,3 @@ SetA merge(SetA&& a, SetB&& b, Sets&&... sets)
 {
   return merge(merge(a, b), std::forward<Sets>(sets)...);
 }
-
-namespace omm
-{
-
-class Object;  // TODO deprecated
-using ObjectRef = std::reference_wrapper<Object>;  // TODO deprecated
-using ObjectRefs = std::vector<ObjectRef>;  // TODO deprecated
-
-}  // namespace omm

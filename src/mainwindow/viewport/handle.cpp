@@ -22,25 +22,6 @@ auto make_sub_handles(omm::Handle& handle)
   return sub_handles;
 }
 
-auto filter_selection(std::set<omm::Object*> selection)
-{
-  // TODO isn't this the same as remove_internal_children
-  const auto has_descendant = [selection](omm::Object* subject) {
-    const auto is_descendant = [subject](omm::Object* descendat_candidate) {
-      return descendat_candidate != subject && descendat_candidate->is_descendant_of(*subject);
-    };
-    return std::any_of(selection.begin(), selection.end(), is_descendant);
-  };
-
-  decltype(selection) marked_for_deletion;
-  std::copy_if( selection.begin(), selection.end(),
-                std::inserter(marked_for_deletion, marked_for_deletion.end()), has_descendant );
-  for (omm::Object* object : marked_for_deletion) {
-    selection.erase(object);
-  }
-  return selection;
-}
-
 arma::vec2 get_global_position_mean(const std::set<omm::Object*>& objects)
 {
   assert(objects.size() > 0);
