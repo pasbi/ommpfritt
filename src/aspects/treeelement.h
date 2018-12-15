@@ -3,7 +3,9 @@
 #include <memory>
 #include <vector>
 #include <set>
+#include <algorithm>
 #include "abstractraiiguard.h"
+#include "common.h"
 
 namespace omm
 {
@@ -28,6 +30,19 @@ public:
   std::set<T*> all_descendants() const;
   size_t position() const;
   virtual std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() = 0;
+
+  template<template<typename...> class Container>
+  static void remove_internal_children(Container<T*>& items)
+  {
+    const auto has_parent = [&items](const T* subject) {
+      const auto predicate = [subject](const T* potential_descendant) {
+        return potential_descendant != subject && potential_descendant->is_descendant_of(*subject);
+      };
+      return std::any_of(items.begin(), items.end(), predicate);
+    };
+
+    ::erase_if(items, [&has_parent](const T* subject) { return has_parent(subject); });
+  }
 
 private:
   std::vector<std::unique_ptr<T>> m_children;

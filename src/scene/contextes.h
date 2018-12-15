@@ -33,11 +33,6 @@ public:
    */
   const T* predecessor;
 
-  static void remove_internal_children(std::vector<T*>& objects)
-  {
-    // nothing to do. List items don't have children.
-  }
-
   virtual bool is_sane() const { return true; }
 
   static constexpr bool is_tree_context = false;
@@ -62,18 +57,6 @@ public:
    * @brief the parent of `subject`
    */
   std::reference_wrapper<T> parent;
-
-  static void remove_internal_children(std::vector<T*>& items)
-  {
-    const auto has_parent = [&items](const T* subject) {
-      const auto predicate = [subject](const T* potential_descendant) {
-        return potential_descendant != subject && potential_descendant->is_descendant_of(*subject);
-      };
-      return std::any_of(items.begin(), items.end(), predicate);
-    };
-
-    items.erase(std::remove_if(items.begin(), items.end(), has_parent), items.end());
-  }
 
   bool is_sane() const override
   {

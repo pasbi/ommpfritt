@@ -110,3 +110,20 @@ SetA merge(SetA&& a, SetB&& b, Sets&&... sets)
 {
   return merge(merge(a, b), std::forward<Sets>(sets)...);
 }
+
+template<typename T, typename Predicate> void erase_if(std::set<T>& ts, const Predicate& p)
+{
+  // TODO replace with std::erase_if once we have c++2a.
+  // See https://stackoverflow.com/q/53791992/4248972
+  for (auto it = ts.begin(); it != ts.end(); ++it) {
+    if (p(*it)) {
+      ts.erase(it);
+    }
+  }
+}
+
+template<typename T, typename Predicate> void erase_if(std::vector<T>& ts, const Predicate& p)
+{
+  // TODO replace with std::erase_if once we have c++2a
+  ts.erase(std::remove_if(ts.begin(), ts.end(), p), ts.end());
+}

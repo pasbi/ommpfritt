@@ -12,6 +12,13 @@
 namespace
 {
 
+// TODO once `constexpr if` is available, this can be expressed much more elegantly.
+template<typename T> void remove_internal_children(std::vector<T*> selection) {}
+void remove_internal_children(std::vector<omm::Object*> selection)
+{
+  omm::Object::remove_internal_children(selection);
+}
+
 template<typename T, typename StructureT> bool
 can_move_drop_items( StructureT& structure,
                      const std::vector<typename omm::Contextes<T>::Move>& contextes )
@@ -46,7 +53,7 @@ make_contextes( const ItemModelAdapterT& adapter,
   T& new_parent = adapter.item_at(parent);
   const size_t pos = row < 0 ? new_parent.n_children() : row;
 
-  ContextT::remove_internal_children(items);
+  remove_internal_children(items);
   contextes.reserve(items.size());
   const T* predecessor = (pos == 0) ? nullptr : &new_parent.child(pos - 1);
   for (T* subject : items) {
@@ -74,7 +81,7 @@ make_contextes( const ItemModelAdapterT& adapter,
     return std::vector<ContextT>();
   }
 
-  ContextT::remove_internal_children(items);
+  remove_internal_children(items);
 
   std::vector<ContextT> contextes;
   contextes.reserve(items.size());

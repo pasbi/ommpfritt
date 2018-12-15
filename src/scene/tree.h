@@ -46,7 +46,6 @@ public:
   T& insert(std::unique_ptr<T> t) override;
   std::unique_ptr<T> remove(T& t) override;
   void invalidate() override;
-
 private:
   std::unique_ptr<T> m_root;
 
