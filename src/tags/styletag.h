@@ -11,7 +11,7 @@ public:
   explicit StyleTag();
   std::string type() const override;
   QIcon icon() const override;
-  static constexpr auto STYLE_REFERENCE = "style";
+  static constexpr auto STYLE_REFERENCE_PROPERTY_KEY = "style";
   static constexpr auto TYPE = "StyleTag";
 };
 

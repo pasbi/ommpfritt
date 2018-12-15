@@ -18,7 +18,7 @@ class Tag
 public:
   virtual ~Tag() = default;
 
-  virtual bool run() { return true; }
+  virtual bool run() const { return true; }
   virtual QIcon icon() const = 0;
 
   void set_owner(Object* owner);
