@@ -209,7 +209,6 @@ QMimeData* ItemModelAdapter<StructureT, ItemModel>::mimeData(const QModelIndexLi
     return nullptr;
   } else {
     const auto f = [this](const QModelIndex& index) {
-      // TODO also return selected tags ans styles
       return &this->item_at(index);
     };
 

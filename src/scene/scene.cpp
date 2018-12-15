@@ -98,6 +98,7 @@ void Scene::invalidate()
   Observed<AbstractSimpleStructureObserver>::for_each([](auto* observer){
     observer->structure_has_changed();
   });
+  set_selection(std::set<AbstractPropertyOwner*>());
 }
 
 bool Scene::save_as(const std::string &filename)
