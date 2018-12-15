@@ -46,6 +46,7 @@ Handle::Handle(Scene& scene)
 void Handle::set_objects(const std::set<Object*>& objects)
 {
   m_objects = objects;
+  Object::remove_internal_children(m_objects);
 }
 
 bool Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
