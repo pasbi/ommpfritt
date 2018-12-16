@@ -32,5 +32,10 @@ int main (int argc, char *argv[])
   omm::MainWindow window(app);
   app.set_main_window(window);
   window.show();
+
+  if (argc > 1) {
+    app.scene.load_from(argv[1]);
+  }
+
   return qt_app.exec();
 }
