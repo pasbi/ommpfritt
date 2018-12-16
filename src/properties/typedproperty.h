@@ -40,9 +40,6 @@ public:
 
   virtual void reset() {  m_value = m_default_value; }
 
-  py::object get_py_object() const override { return py::object(); }
-  void set_py_object(const py::object& value) override {}
-
   std::string type() const override = 0;
 
 private:

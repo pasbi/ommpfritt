@@ -1,6 +1,5 @@
 #pragma once
 
-#include <pybind11/embed.h>
 #include <string>
 #include <typeinfo>
 #include <glog/logging.h>
@@ -11,8 +10,6 @@
 #include "abstractfactory.h"
 #include "aspects/serializable.h"
 #include "common.h"
-
-namespace py = pybind11;
 
 namespace omm
 {
@@ -70,8 +67,6 @@ public:
     return dynamic_cast<PropertyT*>(this);
   }
 
-  virtual void set_py_object(const py::object& value) = 0;
-  virtual py::object get_py_object() const = 0;
   std::string label() const;
   std::string category() const;
   Property& set_label(const std::string& label);
