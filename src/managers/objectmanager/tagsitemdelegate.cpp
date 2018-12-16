@@ -80,9 +80,9 @@ bool TagsItemDelegate::editorEvent( QEvent *event, QAbstractItemModel *model,
     const int x = mouse_event->pos().x() - cell_pos(index).x();
     const size_t tag_i = tag_at(x);
     const auto& object = m_view.model()->item_at(index);
-    auto& tag = object.tags.item(tag_i);
     const QModelIndex object_index = index.siblingAtColumn(0);
     if (tag_i >= 0 && tag_i < object.tags.size()) {
+      auto& tag = object.tags.item(tag_i);
       QItemSelectionModel::SelectionFlags command = QItemSelectionModel::NoUpdate;
       if (mouse_event->buttons() & Qt::LeftButton) {
         command = QItemSelectionModel::Toggle;
