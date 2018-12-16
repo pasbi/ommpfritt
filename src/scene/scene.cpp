@@ -40,11 +40,12 @@ namespace omm
 
 Scene* Scene::m_current = nullptr;
 
-Scene::Scene()
+Scene::Scene(const PythonEngine& python_engine)
   : object_tree(this, make_root())
   , object_tree_adapter(*this)
   , styles(this)
   , style_list_adapter(*this)
+  , python_engine(python_engine)
   , m_default_style(make_default_style(this))
 {
   object_tree.root().property<StringProperty>(Object::NAME_PROPERTY_KEY).value() = "_root_";

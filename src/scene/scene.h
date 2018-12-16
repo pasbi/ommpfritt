@@ -24,6 +24,7 @@ namespace omm
 
 class Command;
 class Project;
+class PythonEngine;
 
 template<typename T> struct SceneStructure;
 template<> struct SceneStructure<Object> { using type = Tree<Object>; };
@@ -34,7 +35,7 @@ class Scene
   , public Observed<AbstractSimpleStructureObserver>
 {
 public:
-  Scene();
+  Scene(const PythonEngine& python_engine);
   ~Scene();
 
   Tree<Object> object_tree;
@@ -47,8 +48,8 @@ public:
   template<typename ItemT> const typename SceneStructure<ItemT>::type& structure() const;
 
   ObjectView root_view();
-
   void reset();
+  const PythonEngine& python_engine;
 
   // === Tags  ======
 public:

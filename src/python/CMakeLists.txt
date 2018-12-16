@@ -1,6 +1,6 @@
 file (GLOB SOURCES
   "objectview.cpp"
-  "python.cpp"
+  "pythonengine.cpp"
   "tagview.cpp"
   "view.cpp"
 )

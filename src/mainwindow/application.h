@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include "scene/scene.h"
+#include "python/pythonengine.h"
 
 class QApplication;
 
@@ -25,6 +26,7 @@ public:
   void update_undo_redo_enabled();
   void set_main_window(MainWindow& main_window);
 
+  const PythonEngine python_engine;
   Scene scene;
 
 private:

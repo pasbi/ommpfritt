@@ -20,6 +20,7 @@ namespace omm
 
 Application::Application(QApplication& app)
   : m_app(app)
+  , scene(python_engine)
 {
 }
 
