@@ -17,8 +17,8 @@ include_directories("${PROJECT_BINARY_DIR}")
 add_library(libommpfritt)
 add_executable(ommpfritt)
 
-target_compile_features(libommpfritt PUBLIC cxx_std_14)
-target_compile_features(ommpfritt PUBLIC cxx_std_14)
+target_compile_features(libommpfritt PUBLIC cxx_std_17)
+target_compile_features(ommpfritt PUBLIC cxx_std_17)
 
 find_package(PkgConfig)
 
