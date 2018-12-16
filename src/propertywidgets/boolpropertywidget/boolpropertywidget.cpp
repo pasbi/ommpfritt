@@ -19,10 +19,10 @@ BoolPropertyWidget::BoolPropertyWidget(Scene& scene, const Property::SetOfProper
     set_properties_value(checked);
   });
 
-  on_property_value_changed();
+  update_edit();
 }
 
-void BoolPropertyWidget::on_property_value_changed()
+void BoolPropertyWidget::update_edit()
 {
   QSignalBlocker blocker(m_checkbox);
   m_checkbox->set_values(get_properties_values());

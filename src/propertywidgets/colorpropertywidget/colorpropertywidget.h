@@ -14,7 +14,7 @@ public:
   explicit ColorPropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
 
 protected:
-  void on_property_value_changed() override;
+  void update_edit() override;
   std::string type() const override;
 
 private:

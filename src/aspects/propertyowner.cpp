@@ -110,7 +110,7 @@ Property& AbstractPropertyOwner::add_property(const Key& key, std::unique_ptr<Pr
   return ref;
 }
 
-void AbstractPropertyOwner::on_property_value_changed()
+void AbstractPropertyOwner::on_property_value_changed(Property& property)
 {
 }
 

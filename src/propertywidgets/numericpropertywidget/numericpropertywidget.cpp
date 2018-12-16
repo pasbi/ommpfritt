@@ -26,11 +26,11 @@ template<typename NumericPropertyT> NumericPropertyWidget<NumericPropertyT>
   QObject::connect( m_spinbox,
                     static_cast<value_changed_type>(&SpinBoxT::Base::valueChanged),
                     set_properties_value );
-  on_property_value_changed();
+  update_edit();
 }
 
 template<typename NumericPropertyT>
-void NumericPropertyWidget<NumericPropertyT>::on_property_value_changed()
+void NumericPropertyWidget<NumericPropertyT>::update_edit()
 {
   QSignalBlocker blocker(m_spinbox);
   m_spinbox->set_values(NumericPropertyWidget<NumericPropertyT>::get_properties_values());

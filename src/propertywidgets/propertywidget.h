@@ -18,12 +18,14 @@ class AbstractPropertyWidget
 public:
   explicit AbstractPropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
   virtual ~AbstractPropertyWidget();
+  void on_property_value_changed(Property& property) override;
 
 protected:
   virtual std::string label() const;
   void set_default_layout(std::unique_ptr<QWidget> other);
   std::unique_ptr<QWidget> make_label_widget() const;
   Scene& scene() const { return m_scene; }
+  virtual void update_edit() = 0;
 
 private:
   const std::string m_label;

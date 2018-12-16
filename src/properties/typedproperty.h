@@ -29,8 +29,8 @@ public:
   {
     if (m_value != value) {
       m_value = value;
-      Observed<AbstractPropertyObserver>::for_each([](auto* observer) {
-        observer->on_property_value_changed();
+      Observed<AbstractPropertyObserver>::for_each([this](auto* observer) {
+        observer->on_property_value_changed(*this);
       });
     }
   }

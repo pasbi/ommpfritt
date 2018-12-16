@@ -34,14 +34,14 @@ ReferencePropertyWidget
     set_properties_value(reference);
   });
 
-  on_property_value_changed();
+  update_edit();
 }
 
 ReferencePropertyWidget::~ReferencePropertyWidget()
 {
 }
 
-void ReferencePropertyWidget::on_property_value_changed()
+void ReferencePropertyWidget::update_edit()
 {
   QSignalBlocker blocker(m_line_edit);
   m_line_edit->set_values(get_properties_values());

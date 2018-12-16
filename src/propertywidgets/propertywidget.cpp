@@ -36,4 +36,9 @@ std::string AbstractPropertyWidget::label() const
   return m_label;
 }
 
+void AbstractPropertyWidget::on_property_value_changed(Property& property)
+{
+  update_edit();
+}
+
 }  // namespace omm

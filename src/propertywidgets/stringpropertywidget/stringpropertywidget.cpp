@@ -19,10 +19,10 @@ StringPropertyWidget
     set_properties_value(text.toStdString());
   });
 
-  on_property_value_changed();
+  update_edit();
 }
 
-void StringPropertyWidget::on_property_value_changed()
+void StringPropertyWidget::update_edit()
 {
   QSignalBlocker blocker(m_line_edit);
   m_line_edit->set_values(get_properties_values());

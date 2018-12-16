@@ -51,7 +51,7 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual std::string name() const;
-  virtual void on_property_value_changed() override;
+  virtual void on_property_value_changed(Property& property) override;
   virtual Kind kind() const = 0;
 
   template<typename T> T* cast()

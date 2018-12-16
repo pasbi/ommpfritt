@@ -34,10 +34,12 @@ namespace omm
 template<typename ValueT> class TypedProperty;
 class Object;
 
+class Property;
+
 class AbstractPropertyObserver
 {
 public:
-  virtual void on_property_value_changed() = 0;
+  virtual void on_property_value_changed(Property& property) = 0;
 };
 
 class Property

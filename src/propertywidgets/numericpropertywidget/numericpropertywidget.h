@@ -17,7 +17,7 @@ public:
   explicit NumericPropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
 
 protected:
-  void on_property_value_changed() override;
+  void update_edit() override;
 
 private:
   SpinBox<value_type>* m_spinbox;
