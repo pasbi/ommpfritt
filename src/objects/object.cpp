@@ -28,7 +28,7 @@ std::vector<const omm::Style*> find_styles(const omm::Object& object)
 {
   const auto get_style = [](const omm::Tag* tag) -> const omm::Style* {
     if (tag->type() == omm::StyleTag::TYPE) {
-      constexpr auto key = omm::StyleTag::STYLE_REFERENCE;
+      constexpr auto key = omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY;
       const auto& referenceproperty= tag->property<omm::ReferenceProperty>(key);
       const auto* property_owner = referenceproperty.value();
       assert(  property_owner == nullptr
