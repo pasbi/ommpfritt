@@ -77,7 +77,6 @@ public:
   std::map<const AbstractPropertyOwner*, std::set<ReferenceProperty*>>
   find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates) const;
 
-  bool is_referenced(const AbstractPropertyOwner& candidate) const;
   void invalidate();
 
   // === Save/Load ====

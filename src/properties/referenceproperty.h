@@ -19,8 +19,6 @@ public:
    *  always.
    */
   ReferenceProperty();
-  static bool is_referenced(const ReferenceType& candidate);
-  void set_value(const ReferenceType& value) override;
   std::string type() const override;
   std::string widget_type() const override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
@@ -33,9 +31,6 @@ public:
 private:
   // default is always nullptr
   void set_default_value(const ReferenceType& value) override;
-  static std::map<ReferenceType, size_t> m_references;
-  static size_t reference_count(ReferenceType reference);
-  static void increment_reference_count(ReferenceType reference, int n);
   AbstractPropertyOwner::Kind m_allowed_kinds;
 };
 
