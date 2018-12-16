@@ -1,4 +1,5 @@
 #include "mainwindow/viewport/axishandle.h"
+#include <cmath>
 #include "renderers/abstractrenderer.h"
 #include "mainwindow/viewport/handle.h"
 #include "properties/boolproperty.h"
@@ -36,14 +37,14 @@ arma::vec2 get_scale(const arma::vec2& pos, const arma::vec2& delta, const arma:
   const auto factor = [](const double new_pos, const double delta, const double constraint) {
     const double old_pos = new_pos - delta;
     const double epsilon = 0.0001;
-    if (abs(old_pos) < epsilon) {
+    if (std::abs(old_pos) < epsilon) {
       return 1.0;
     } else {
       double s = new_pos / old_pos;
-      s = copysign(pow(abs(s), abs(constraint)), s);
+      s = std::copysign(std::pow(std::abs(s), std::abs(constraint)), s);
       return s;
-      if (abs(s) < 0.1) {
-        return copysign(1.0, s);
+      if (std::abs(s) < 0.1) {
+        return std::copysign(1.0, s);
       } else {
         return s;
       }
