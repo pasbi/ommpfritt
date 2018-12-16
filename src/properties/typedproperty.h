@@ -24,9 +24,12 @@ public:
     : m_value(defaultValue), m_default_value(defaultValue) {}
 
 public:
-  virtual ValueT value() const { return m_value; }
-  virtual void set_value(const ValueT& value)
+  variant_type variant_value() const override { return m_value; }
+  ValueT value() const { return Property::value<ValueT>(); }
+
+  void set(const variant_type& variant) override
   {
+    const auto value = std::get<ValueT>(variant);
     if (m_value != value) {
       m_value = value;
       Observed<AbstractPropertyObserver>::for_each([this](auto* observer) {

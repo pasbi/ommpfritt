@@ -11,8 +11,10 @@ AbstractPropertiesCommand::AbstractPropertiesCommand(const Property::SetOfProper
 
 bool AbstractPropertiesCommand::mergeWith(const QUndoCommand* command)
 {
-  const auto& properties_command = static_cast<const AbstractPropertiesCommand&>(*command);
-  return properties_command.m_properties == m_properties;
+  const auto touch_same_properties = [](const auto& a, const auto& b) {
+    return a.m_properties == b.m_properties;
+  };
+  return touch_same_properties(*this, static_cast<const AbstractPropertiesCommand&>(*command));
 }
 
 int AbstractPropertiesCommand::id() const

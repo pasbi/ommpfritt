@@ -7,7 +7,7 @@ namespace omm
 {
 
 AbstractPropertyWidget
-::AbstractPropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
+::AbstractPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : m_label(Property::get_label(properties))
   , m_scene(scene)
 {

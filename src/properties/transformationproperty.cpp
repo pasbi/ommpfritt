@@ -16,7 +16,7 @@ std::string TransformationProperty::widget_type() const
 void TransformationProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   TypedProperty::deserialize(deserializer, root);
-  set_value(deserializer.get_object_transformation(
+  set(deserializer.get_object_transformation(
     make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
   set_default_value(deserializer.get_object_transformation(
     make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)) );

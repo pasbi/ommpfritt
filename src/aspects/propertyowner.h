@@ -32,20 +32,7 @@ public:
   virtual ~AbstractPropertyOwner();
   using Key = PropertyMap::key_type;
   Property& property(const Key& key) const;
-
-  template<typename PropertyT> PropertyT& property(const Key& key) const
-  {
-    assert(has_property<PropertyT>(key));
-    return *this->property(key).cast<PropertyT>();
-  }
-
   bool has_property(const Key& key) const;
-
-  template<typename PropertyT> bool has_property(const Key& key) const
-  {
-    return this->has_property(key) && this->property(key).is_type<PropertyT>();
-  }
-
   const PropertyMap& properties() const;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;

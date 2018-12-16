@@ -12,11 +12,11 @@ namespace omm
 class AbstractPropertyWidget
   : public QWidget
   , public AbstractFactory< std::string, AbstractPropertyWidget,
-                            Scene&, const Property::SetOfProperties& >
+                            Scene&, const std::set<Property*>& >
   , public AbstractPropertyObserver
 {
 public:
-  explicit AbstractPropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
+  explicit AbstractPropertyWidget(Scene& scene, const std::set<Property*>& properties);
   virtual ~AbstractPropertyWidget();
   void on_property_value_changed(Property& property) override;
 
@@ -38,9 +38,9 @@ class PropertyWidget : public AbstractPropertyWidget
 public:
   using property_type = PropertyT;
   using value_type = typename property_type::value_type;
-  explicit PropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
+  explicit PropertyWidget(Scene& scene, const std::set<Property*>& properties)
     : AbstractPropertyWidget(scene, properties)
-    , m_properties(Property::cast_all<property_type>(properties))
+    , m_properties(properties)
   {
     for (auto&& property : m_properties) {
       property->Observed<AbstractPropertyObserver>::register_observer(*this);
@@ -57,18 +57,20 @@ public:
 protected:
   void set_properties_value(const value_type& value)
   {
-    scene().template submit<PropertiesCommand<property_type>>(m_properties, value);
+    scene().template submit<PropertiesCommand<value_type>>(m_properties, value);
   }
 
   auto get_properties_values() const
   {
-    return ::transform<value_type>(m_properties, [](auto property) { return property->value(); });
+    return ::transform<value_type>(m_properties, [](const auto* property) {
+      return property->template value<value_type>();
+    });
   }
 
-  const std::set<property_type*>& properties() const { return m_properties; }
+  const std::set<Property*>& properties() const { return m_properties; }
 
 private:
-  std::set<property_type*> m_properties;
+  std::set<Property*> m_properties;
 };
 
 void register_propertywidgets();

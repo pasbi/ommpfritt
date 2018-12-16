@@ -60,6 +60,7 @@ void Property
 
 std::string Property::get_label(const SetOfProperties& properties)
 {
+  // TODO I guess here is not a good place for this.
   assert(properties.size() > 0);
   const auto label = (*properties.begin())->label();
 #ifndef NDEBUG

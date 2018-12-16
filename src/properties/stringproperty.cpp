@@ -16,7 +16,7 @@ std::string StringProperty::widget_type() const
 void StringProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   TypedProperty::deserialize(deserializer, root);
-  set_value(deserializer.get_string(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
+  set(deserializer.get_string(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
   set_default_value(deserializer.get_string(
     make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
 }

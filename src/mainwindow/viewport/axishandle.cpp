@@ -17,10 +17,10 @@ void draw_arrow( omm::AbstractRenderer& renderer, const omm::Style& style,
 
 void set_pen_color(omm::Style& style, const omm::Color& color)
 {
-  style.property<omm::BoolProperty>(omm::Style::PEN_IS_ACTIVE_KEY).set_value(true);
-  style.property<omm::BoolProperty>(omm::Style::BRUSH_IS_ACTIVE_KEY).set_value(false);
-  style.property<omm::ColorProperty>(omm::Style::PEN_COLOR_KEY).set_value(color);
-  style.property<omm::FloatProperty>(omm::Style::PEN_WIDTH_KEY).set_value(2.0);
+  style.property(omm::Style::PEN_IS_ACTIVE_KEY).set(true);
+  style.property(omm::Style::BRUSH_IS_ACTIVE_KEY).set(false);
+  style.property(omm::Style::PEN_COLOR_KEY).set(color);
+  style.property(omm::Style::PEN_WIDTH_KEY).set(2.0);
 }
 
 arma::vec2 project_onto_axis(const arma::vec2 v, const arma::vec2& axis_direction)

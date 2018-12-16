@@ -7,10 +7,13 @@
 namespace
 {
 
-template<typename SetOfProperties>
-omm::AbstractPropertyOwner::Kind get_allowed_kinds(SetOfProperties&& properties)
+omm::AbstractPropertyOwner::Kind get_allowed_kinds(const std::set<omm::Property*>& properties)
 {
-  const auto f = [](const auto property) { return property->allowed_kinds(); };
+  const auto f = [](const auto* property) {
+    using property_type = omm::ReferencePropertyWidget::property_type;
+    assert(std::holds_alternative<property_type::value_type>(property->variant_value()));
+    return static_cast<const property_type&>(*property).allowed_kinds();
+  };
   const auto allowed_kindss = ::transform<omm::AbstractPropertyOwner::Kind>(properties, f);
   assert(::is_uniform(allowed_kindss));
   return *allowed_kindss.begin();
@@ -22,7 +25,7 @@ namespace omm
 {
 
 ReferencePropertyWidget
-::ReferencePropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
+::ReferencePropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget(scene, properties)
 {
   auto line_edit = std::make_unique<ReferenceLineEdit>( scene,

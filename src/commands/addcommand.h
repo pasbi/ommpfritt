@@ -21,8 +21,7 @@ public:
   {
     static int i = 0;
     const auto name = m_item->type() + " " + std::to_string(i++);
-    const auto key = AbstractPropertyOwner::NAME_PROPERTY_KEY;
-    m_item->template property<StringProperty>(key).set_value(name);
+    m_item->property(AbstractPropertyOwner::NAME_PROPERTY_KEY).set(name);
   }
 
   void undo() override

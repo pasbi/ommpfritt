@@ -11,7 +11,7 @@ StyleTag::StyleTag()
 {
   add_property(STYLE_REFERENCE_PROPERTY_KEY, std::make_unique<ReferenceProperty>())
     .set_label("style").set_category("style");
-  property<ReferenceProperty>(STYLE_REFERENCE_PROPERTY_KEY)
+  static_cast<ReferenceProperty&>(property(STYLE_REFERENCE_PROPERTY_KEY))
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Style);
 }
 

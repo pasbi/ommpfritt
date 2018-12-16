@@ -4,12 +4,15 @@
 #include <typeinfo>
 #include <glog/logging.h>
 #include <set>
+#include <variant>
 
 #include "external/json.hpp"
 #include "observed.h"
 #include "abstractfactory.h"
 #include "aspects/serializable.h"
 #include "common.h"
+#include "color/color.h"
+#include "geometry/objecttransformation.h"
 
 namespace omm
 {
@@ -32,6 +35,7 @@ template<typename ValueT> class TypedProperty;
 class Object;
 
 class Property;
+class AbstractPropertyOwner;
 
 class AbstractPropertyObserver
 {
@@ -46,26 +50,16 @@ class Property
 {
 public:
   using SetOfProperties = std::set<Property*>;
+  using variant_type = std::variant< bool, Color, double, int, AbstractPropertyOwner*,
+                                     std::string, ObjectTransformation >;
 
   Property();
   virtual ~Property();
 
-  template<typename PropertyT> bool is_type() const
-  {
-    return cast<PropertyT>() != nullptr;
-  }
+  virtual variant_type variant_value() const = 0;
+  virtual void set(const variant_type& value) = 0;
+  template<typename ValueT> ValueT value() const { return std::get<ValueT>(variant_value()); }
 
-  template<typename PropertyT> const PropertyT* cast() const
-  {
-    DISABLE_DANGEROUS_PROPERTY_TYPES
-    return dynamic_cast<const PropertyT*>(this);
-  }
-
-  template<typename PropertyT> PropertyT* cast()
-  {
-    DISABLE_DANGEROUS_PROPERTY_TYPES
-    return dynamic_cast<PropertyT*>(this);
-  }
 
   std::string label() const;
   std::string category() const;
@@ -77,21 +71,6 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root);
 
   static std::string get_label(const SetOfProperties& properties);
-
-  template<typename PropertyT> static auto cast_all(const SetOfProperties& properties)
-  {
-    return ::transform<PropertyT*>(properties, [](Property* property) {
-      return property->cast<PropertyT>();
-    });
-  }
-
-  template<typename PropertyT>
-  static SetOfProperties cast_all(const std::set<PropertyT*>& properties)
-  {
-    return ::transform<Property*>(properties, [](auto* property) {
-      return static_cast<Property*>(property);
-    });
-  }
 
   virtual bool is_compatible(const Property& other) const;
 

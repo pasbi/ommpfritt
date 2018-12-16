@@ -11,8 +11,6 @@ class AbstractPropertyOwner;
 class ReferenceProperty : public TypedProperty<AbstractPropertyOwner*>
 {
 public:
-  using ReferenceType = AbstractPropertyOwner*;
-
   /**
    * @brief creates a ReferenceProperty with no (aka nullptr) reference
    * @details the constructor does not take an argument because the default reference is nullptr
@@ -30,7 +28,7 @@ public:
 
 private:
   // default is always nullptr
-  void set_default_value(const ReferenceType& value) override;
+  void set_default_value(const value_type& value) override;
   AbstractPropertyOwner::Kind m_allowed_kinds;
 };
 

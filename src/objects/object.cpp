@@ -28,9 +28,8 @@ std::vector<const omm::Style*> find_styles(const omm::Object& object)
 {
   const auto get_style = [](const omm::Tag* tag) -> const omm::Style* {
     if (tag->type() == omm::StyleTag::TYPE) {
-      constexpr auto key = omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY;
-      const auto& referenceproperty= tag->property<omm::ReferenceProperty>(key);
-      const auto* property_owner = referenceproperty.value();
+      const auto* property_owner = tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY)
+                                       .value<omm::ReferenceProperty::value_type>();
       assert(  property_owner == nullptr
             || property_owner->kind() == omm::AbstractPropertyOwner::Kind::Style );
       return static_cast<const omm::Style*>(property_owner);
@@ -67,7 +66,7 @@ Object::~Object()
 
 ObjectTransformation Object::transformation() const
 {
-  return property<TransformationProperty>(TRANSFORMATION_PROPERTY_KEY).value();
+  return property(TRANSFORMATION_PROPERTY_KEY).value<ObjectTransformation>();
 }
 
 ObjectTransformation Object::global_transformation() const
@@ -81,7 +80,7 @@ ObjectTransformation Object::global_transformation() const
 
 void Object::set_transformation(const ObjectTransformation& transformation)
 {
-  property<TransformationProperty>(TRANSFORMATION_PROPERTY_KEY).set_value(transformation);
+  property(TRANSFORMATION_PROPERTY_KEY).set(transformation);
 }
 
 void Object::set_global_transformation(const ObjectTransformation& global_transformation)

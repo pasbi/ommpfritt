@@ -34,15 +34,15 @@ auto to_qcolor(omm::Color color)
 auto make_pen(const omm::Style& style)
 {
   QPen pen;
-  pen.setWidth(style.property<omm::FloatProperty>(omm::Style::PEN_WIDTH_KEY).value());
-  pen.setColor(to_qcolor(style.property<omm::ColorProperty>(omm::Style::PEN_COLOR_KEY).value()));
+  pen.setWidth(style.property(omm::Style::PEN_WIDTH_KEY).value<double>());
+  pen.setColor(to_qcolor(style.property(omm::Style::PEN_COLOR_KEY).value<omm::Color>()));
   return pen;
 }
 
 auto make_brush(const omm::Style& style)
 {
   QBrush brush(Qt::SolidPattern);
-  const auto color = style.property<omm::ColorProperty>(omm::Style::BRUSH_COLOR_KEY).value();
+  const auto color = style.property(omm::Style::BRUSH_COLOR_KEY).value<omm::Color>();
   brush.setColor(to_qcolor(color));
   return brush;
 }
@@ -82,10 +82,10 @@ void ViewportRenderer::draw_spline(const std::vector<Point>& points, const Style
                   to_qpoint(points.at(i).position)  );
   }
 
-  if (style.property<BoolProperty>(Style::BRUSH_IS_ACTIVE_KEY).value()) {
+  if (style.property(Style::BRUSH_IS_ACTIVE_KEY).value<bool>()) {
     m_painter.fillPath(path, make_brush(style));
   }
-  if (style.property<BoolProperty>(Style::PEN_IS_ACTIVE_KEY).value()) {
+  if (style.property(Style::PEN_IS_ACTIVE_KEY).value<bool>()) {
     m_painter.strokePath(path, make_pen(style));
   }
 }

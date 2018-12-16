@@ -130,8 +130,8 @@ bool StyleListAdapter::setData(const QModelIndex& index, const QVariant& value, 
   assert(!index.parent().isValid());
 
   auto& style = structure().item(index.row());
-  auto& name_property = style.property<StringProperty>(Object::NAME_PROPERTY_KEY);
-  name_property.set_value(value.toString().toStdString());
+  auto& name_property = style.property(Object::NAME_PROPERTY_KEY);
+  name_property.set(value.toString().toStdString());
   return true;
 }
 

@@ -3,6 +3,7 @@
 #include <glog/logging.h>
 #include <cassert>
 #include <QDebug>
+#include <variant>
 
 #include "objects/empty.h"
 #include "external/json.hpp"
@@ -28,8 +29,8 @@ auto make_root()
 std::unique_ptr<omm::Style> make_default_style(omm::Scene* scene)
 {
   auto default_style = std::make_unique<omm::Style>(scene);
-  default_style->property<omm::BoolProperty>(omm::Style::PEN_IS_ACTIVE_KEY).set_value(true);
-  default_style->property<omm::BoolProperty>(omm::Style::BRUSH_IS_ACTIVE_KEY).set_value(true);
+  default_style->property(omm::Style::PEN_IS_ACTIVE_KEY).set(true);
+  default_style->property(omm::Style::BRUSH_IS_ACTIVE_KEY).set(true);
   return default_style;
 }
 
@@ -48,7 +49,8 @@ Scene::Scene(const PythonEngine& python_engine)
   , python_engine(python_engine)
   , m_default_style(make_default_style(this))
 {
-  object_tree.root().property<StringProperty>(Object::NAME_PROPERTY_KEY).value() = "_root_";
+  using namespace std::string_literals;
+  object_tree.root().property(Object::NAME_PROPERTY_KEY).set("_root_"s);
   m_current = this;
 }
 
@@ -71,9 +73,15 @@ Scene::find_reference_holders(const AbstractPropertyOwner& candidate) const
   for (const auto& property_owner : property_owners()) {
     const auto& property_map = property_owner->properties();
     for (const auto& key : property_map.keys()) {
-      auto* reference_property = property_map.at(key)->cast<ReferenceProperty>();
-      if (reference_property != nullptr && reference_property->value() == &candidate) {
-        reference_holders.insert(reference_property);
+      auto& property = *property_map.at(key);
+      using value_type = ReferenceProperty::value_type;
+      const Property::variant_type variant_value = property.variant_value();
+      auto maybe_value = std::get_if<value_type>(&variant_value);
+      if (maybe_value != nullptr) {
+        const value_type reference = *maybe_value;
+        if (reference == &candidate) {
+          reference_holders.insert(static_cast<ReferenceProperty*>(&property));
+        }
       }
     }
   }

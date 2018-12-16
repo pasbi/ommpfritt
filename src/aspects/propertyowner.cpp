@@ -116,7 +116,7 @@ void AbstractPropertyOwner::on_property_value_changed(Property& property)
 
 std::string AbstractPropertyOwner::name() const
 {
-  return property<StringProperty>(NAME_PROPERTY_KEY).value();
+  return property(NAME_PROPERTY_KEY).value<std::string>();
 }
 
 }  // namespace omm

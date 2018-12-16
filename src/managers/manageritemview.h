@@ -36,6 +36,6 @@ private:
 
 bool can_remove_selection(QWidget* parent, Scene& scene,
                           const std::set<AbstractPropertyOwner*>& selection,
-                          std::set<ReferenceProperty*>& properties);
+                          std::set<Property*>& properties);
 
 }  // namespace omm

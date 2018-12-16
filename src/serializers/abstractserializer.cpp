@@ -63,7 +63,7 @@ AbstractDeserializer::~AbstractDeserializer()
     const auto id = property_id.second;
     if (m_id_to_reference.count(id) > 0) {
       auto* reference = id == 0 ? nullptr : m_id_to_reference.at(id);
-      property->set_value(reference);
+      property->set(reference);
     }
   }
 }

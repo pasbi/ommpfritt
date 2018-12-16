@@ -108,12 +108,13 @@ bool ObjectTreeView::remove_selection()
   }
 
   Scene& scene = model()->scene();
-  std::set<ReferenceProperty*> properties;
+  std::set<Property*> properties;
   if (removed_items.size() > 0 && can_remove_selection(this, scene, removed_items, properties))
   {
     scene.undo_stack().beginMacro("Remove Selection");
     if (properties.size() > 0) {
-      scene.template submit<PropertiesCommand<ReferenceProperty>>(properties, nullptr);
+      using command_type = PropertiesCommand<ReferenceProperty::value_type>;
+      scene.template submit<command_type>(properties, nullptr);
     }
     remove(scene, model()->structure(), selected_objects);
     for (auto&& item : explicitely_removed_tags) {

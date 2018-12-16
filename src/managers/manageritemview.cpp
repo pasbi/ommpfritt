@@ -60,14 +60,15 @@ ManagerItemView<ItemViewT, ItemModelT>::remove_selection()
 {
   const auto selection = selected_items();
   Scene& scene = model()->scene();
-  std::set<ReferenceProperty*> properties;
+  std::set<Property*> properties;
   if (selection.size() > 0 && can_remove_selection(this, scene, selection, properties))
   {
     const auto typed_selection = AbstractPropertyOwner::cast<item_type>(selection);
     using remove_command_type = RemoveCommand<typename ItemModelT::structure_type>;
     scene.undo_stack().beginMacro("Remove Selection");
     if (properties.size() > 0) {
-      scene.template submit<PropertiesCommand<ReferenceProperty>>(properties, nullptr);
+      using command_type = PropertiesCommand<ReferenceProperty::value_type>;
+      scene.template submit<command_type>(properties, nullptr);
     }
     scene.template submit<remove_command_type>(model()->structure(), typed_selection);
     scene.undo_stack().endMacro();
@@ -100,7 +101,7 @@ template class ManagerItemView<QTreeView, ObjectTreeAdapter>;
 
 bool can_remove_selection(QWidget* parent, Scene& scene,
                           const std::set<AbstractPropertyOwner*>& selection,
-                          std::set<ReferenceProperty*>& properties)
+                          std::set<Property*>& properties)
 {
   const auto reference_holder_map = scene.find_reference_holders(selection);
   if (reference_holder_map.size() > 0) {
@@ -112,12 +113,12 @@ bool can_remove_selection(QWidget* parent, Scene& scene,
     switch (decision) {
     case QMessageBox::YesToAll:
     {
-      const auto merge = [](std::set<ReferenceProperty*> accu, const auto& v) {
+      const auto merge = [](std::set<Property*> accu, const auto& v) {
         accu.insert(v.second.begin(), v.second.end());
         return accu;
       };
       properties = std::accumulate( reference_holder_map.begin(), reference_holder_map.end(),
-                                    std::set<ReferenceProperty*>(), merge );
+                                    std::set<Property*>(), merge );
       return true;
     }
     case QMessageBox::Cancel:

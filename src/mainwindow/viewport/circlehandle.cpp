@@ -28,16 +28,16 @@ namespace omm
 void CircleHandle::draw(AbstractRenderer& renderer) const
 {
   Style style;
-  style.property<BoolProperty>(Style::PEN_IS_ACTIVE_KEY).set_value(true);
+  style.property(Style::PEN_IS_ACTIVE_KEY).set(true);
   switch (status()) {
   case Status::Active:
-    style.property<ColorProperty>(Style::PEN_COLOR_KEY).set_value(Color::WHITE);
+    style.property(Style::PEN_COLOR_KEY).set(Color::WHITE);
     break;
   case Status::Hovered:
-    style.property<ColorProperty>(Style::PEN_COLOR_KEY).set_value(Color(0.2, 0.3, 1.0));
+    style.property(Style::PEN_COLOR_KEY).set(Color(0.2, 0.3, 1.0));
     break;
   case Status::Inactive:
-    style.property<ColorProperty>(Style::PEN_COLOR_KEY).set_value(Color(0.0, 0.0, 1.0));
+    style.property(Style::PEN_COLOR_KEY).set(Color(0.0, 0.0, 1.0));
     break;
   }
   draw_circle(renderer, style);

@@ -4,8 +4,6 @@
 namespace omm
 {
 
-std::map<ReferenceProperty::ReferenceType, size_t> ReferenceProperty::m_references;
-
 ReferenceProperty::ReferenceProperty()
   : TypedProperty(nullptr)
 {
@@ -38,7 +36,7 @@ void ReferenceProperty::deserialize(AbstractDeserializer& deserializer, const Po
   deserializer.register_reference_property(*this, id);
 }
 
-void ReferenceProperty::set_default_value(const ReferenceType& value)
+void ReferenceProperty::set_default_value(const value_type& value)
 {
   assert(value == nullptr);
   TypedProperty::set_default_value(value);
