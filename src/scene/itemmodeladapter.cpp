@@ -12,22 +12,16 @@
 namespace
 {
 
-// TODO once `constexpr if` is available, this can be expressed much more elegantly.
-template<typename T> void remove_internal_children(std::vector<T*> selection) {}
-void remove_internal_children(std::vector<omm::Object*> selection)
-{
-  omm::Object::remove_internal_children(selection);
-}
-
-template<typename T, typename StructureT> bool
+template<typename item_type, typename StructureT> bool
 can_move_drop_items( StructureT& structure,
-                     const std::vector<typename omm::Contextes<T>::Move>& contextes )
+                     const std::vector<typename omm::Contextes<item_type>::Move>& contextes )
 {
-  const auto is_strictly_valid = [&structure](const typename omm::Contextes<T>::Move& context) {
+  using move_context_type = typename omm::Contextes<item_type>::Move;
+  const auto is_strictly_valid = [&structure](const move_context_type& context) {
     return context.is_strictly_valid(structure);
   };
 
-  const auto is_valid = [](const typename omm::Contextes<T>::Move& context) {
+  const auto is_valid = [](const typename omm::Contextes<item_type>::Move& context) {
     return context.is_valid();
   };
 
@@ -42,21 +36,20 @@ make_contextes( const ItemModelAdapterT& adapter,
                 const QMimeData* data, int row, const QModelIndex& parent )
 {
   std::vector<ContextT> contextes;
-  using T = typename ContextT::item_type;
+  using item_type = typename ContextT::item_type;
 
   auto property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
-  auto items = property_owner_mime_data->items<T>();
+  auto items = property_owner_mime_data->items<item_type>();
   if (property_owner_mime_data == nullptr || items.size() == 0) {
     return contextes;
   }
 
-  T& new_parent = adapter.item_at(parent);
+  item_type& new_parent = adapter.item_at(parent);
   const size_t pos = row < 0 ? new_parent.n_children() : row;
-
-  remove_internal_children(items);
+  omm::Object::remove_internal_children(items);
   contextes.reserve(items.size());
-  const T* predecessor = (pos == 0) ? nullptr : &new_parent.child(pos - 1);
-  for (T* subject : items) {
+  const item_type* predecessor = (pos == 0) ? nullptr : &new_parent.child(pos - 1);
+  for (item_type* subject : items) {
     contextes.emplace_back(*subject, new_parent, predecessor);
     predecessor = subject;
   }
@@ -73,21 +66,20 @@ make_contextes( const ItemModelAdapterT& adapter,
     return std::vector<ContextT>(); // it's a list, not a tree.
   }
 
-  using T = typename ContextT::item_type;
+  using item_type = typename ContextT::item_type;
 
   auto property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
-  auto items = property_owner_mime_data->items<T>();
+  const auto items = property_owner_mime_data->items<item_type>();
   if (property_owner_mime_data == nullptr || items.size() == 0) {
     return std::vector<ContextT>();
   }
 
-  remove_internal_children(items);
-
   std::vector<ContextT> contextes;
   contextes.reserve(items.size());
   const size_t pos = row < 0 ? adapter.rowCount() : row;
-  const T* predecessor = (pos == 0) ? nullptr : &adapter.item_at(adapter.index(pos-1, 0, parent));
-  for (T* subject : items) {
+  const item_type* predecessor = (pos == 0) ? nullptr
+                                            : &adapter.item_at(adapter.index(pos - 1, 0, parent));
+  for (item_type* subject : items) {
     contextes.emplace_back(*subject, predecessor);
     predecessor = subject;
   }
