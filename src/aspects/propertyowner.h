@@ -67,11 +67,7 @@ public:
   static ContainerT<T*> cast(const ContainerT<AbstractPropertyOwnerT*>& ss)
   {
     const auto f = [](AbstractPropertyOwnerT* a) -> T* {
-      if (a->kind() == T::KIND) {
-        return static_cast<T*>(a);
-      } else {
-        return nullptr;
-      }
+      return a->kind() == T::KIND ? static_cast<T*>(a) : nullptr;
     };
     return ::filter_if(::transform<T*>(ss, f), ::is_not_null);
   }
