@@ -112,6 +112,10 @@ public:
 private:
   static Scene* m_current;
 
+private:
+  Scene(const Scene& other) = delete;
+  Scene(Scene&& other) = delete;
+
 };
 
 }  // namespace omm

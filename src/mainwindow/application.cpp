@@ -28,11 +28,6 @@ void Application::set_main_window(MainWindow& main_window)
   m_main_window = &main_window;
 }
 
-void Application::new_scene()
-{
-
-}
-
 void Application::quit()
 {
   if (can_close()) {
@@ -49,7 +44,7 @@ void Application::update_undo_redo_enabled()
 
 bool Application::can_close()
 {
-  if (m_scene.has_pending_changes()) {
+  if (scene.has_pending_changes()) {
     const auto decision =
       QMessageBox::question( m_main_window,
                              tr("Question."),
@@ -75,7 +70,7 @@ bool Application::can_close()
 
 bool Application::save(const std::string& filename)
 {
-  if (!m_scene.save_as(filename)) {
+  if (!scene.save_as(filename)) {
     LOG(WARNING) << "Error saving scene as '" << filename << "'.";
     QMessageBox::critical( m_main_window,
                            tr("Error."),
@@ -90,7 +85,7 @@ bool Application::save(const std::string& filename)
 
 bool Application::save()
 {
-  const std::string filename = m_scene.filename();
+  const std::string filename = scene.filename();
   if (filename.empty()) {
     return save_as();
   } else {
@@ -104,18 +99,18 @@ bool Application::save_as()
   const QString filename =
     QFileDialog::getSaveFileName( m_main_window,
                                   tr("Save scene as ..."),
-                                  QString::fromStdString(m_scene.filename()) );
+                                  QString::fromStdString(scene.filename()) );
   if (filename.isEmpty()) {
     return false;
   } else {
-    return m_scene.save_as(filename.toStdString());
+    return scene.save_as(filename.toStdString());
   }
 }
 
 void Application::reset()
 {
   LOG(INFO) << "reset scene.";
-  m_scene.reset();
+  scene.reset();
 }
 
 bool Application::load()
@@ -123,11 +118,11 @@ bool Application::load()
   const QString filename =
     QFileDialog::getOpenFileName( m_main_window,
                                   tr("Load scene ..."),
-                                  QString::fromStdString(m_scene.filename()) );
+                                  QString::fromStdString(scene.filename()) );
 
   if (filename.isEmpty()) {
     return false;
-  } else if (m_scene.load_from(filename.toStdString())) {
+  } else if (scene.load_from(filename.toStdString())) {
     return true;
   } else {
     QMessageBox::critical( m_main_window,
@@ -137,17 +132,5 @@ bool Application::load()
     return false;
   }
 }
-
-
-Scene& Application::scene()
-{
-  return m_scene;
-}
-
-const Scene& Application::scene() const
-{
-  return m_scene;
-}
-
 
 }  // namespace omm

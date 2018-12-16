@@ -24,16 +24,12 @@ public:
   void quit();
   void update_undo_redo_enabled();
   void set_main_window(MainWindow& main_window);
-  void new_scene();
 
-
-  Scene& scene();
-  const Scene& scene() const;
+  Scene scene;
 
 private:
   QApplication& m_app;
   MainWindow* m_main_window;
-  Scene m_scene;
 
 };
 

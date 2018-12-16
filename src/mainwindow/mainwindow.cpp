@@ -25,7 +25,7 @@ MainWindow::MainWindow(Application& app)
 {
   setMenuBar(std::make_unique<MainMenuBar>(app, *this).release());
   setDockNestingEnabled(true);
-  setCentralWidget(std::make_unique<Viewport>(app.scene()).release());
+  setCentralWidget(std::make_unique<Viewport>(app.scene).release());
   restore_state();
 }
 
@@ -44,7 +44,7 @@ void MainWindow::restore_state()
   for (decltype(size) i = 0; i < size; ++i) {
     settings.setArrayIndex(i);
     const auto type = settings.value("type").toString().toStdString();
-    auto manager = Manager::make(type, m_app.scene());
+    auto manager = Manager::make(type, m_app.scene);
     if (!restoreDockWidget(manager.release())) {
       LOG(WARNING) << "Failed to restore geometry of manager.";
     }

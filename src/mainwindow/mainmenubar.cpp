@@ -17,7 +17,7 @@ namespace omm
 void MainMenuBar::make_file_menu()
 {
   auto& file_menu = *addMenu(tr("&File"));
-  action(file_menu, tr("&new"), m_app, &Application::new_scene);
+  action(file_menu, tr("&new"), m_app, &Application::reset);
   action(file_menu, tr("&load"), m_app, &Application::load);
   action(file_menu, tr("&save"), m_app, static_cast<bool (Application::*)()>(&Application::save));
   action(file_menu, tr("&save_as"), m_app, &Application::save_as);
@@ -29,7 +29,7 @@ void MainMenuBar::make_create_menu()
   for (const auto& key : Object::keys())
   {
     action(create_menu, QString::fromStdString(key), [this, key]() {
-      Scene& scene = m_app.scene();
+      Scene& scene = m_app.scene;
       scene.submit<AddCommand<Tree<Object>>>(scene.object_tree, Object::make(key));
     });
   }
@@ -40,7 +40,7 @@ void MainMenuBar::make_window_menu()
   auto& window_menu = *addMenu(tr("&Window"));
   for (auto& key : Manager::keys()) {
     action(window_menu, QString::fromStdString(key), [this, key]() {
-      auto manager = Manager::make(key, m_app.scene());
+      auto manager = Manager::make(key, m_app.scene);
       auto& ref = *manager;
       m_main_window.addDockWidget(Qt::TopDockWidgetArea, manager.release());
       ref.setFloating(true);
@@ -52,7 +52,7 @@ void MainMenuBar::make_edit_menu()
 {
   auto& edit_menu = *addMenu(tr("&Edit"));
 
-  QUndoStack& undo_stack = m_app.scene().undo_stack();
+  QUndoStack& undo_stack = m_app.scene.undo_stack();
   edit_menu.addAction(undo_stack.createUndoAction(nullptr));
   edit_menu.addAction(undo_stack.createRedoAction(nullptr));
 }
