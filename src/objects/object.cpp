@@ -59,11 +59,6 @@ Object::Object()
                 std::make_unique<TransformationProperty>(ObjectTransformation()) )
     .set_label(QObject::tr("transformation").toStdString())
     .set_category(QObject::tr("object").toStdString());
-  add_property( "XXX", std::make_unique<ReferenceProperty>() )
-    .set_label(QObject::tr("test").toStdString())
-    .set_category(QObject::tr("object").toStdString());
-  property<ReferenceProperty>("XXX")
-    .set_allowed_kinds(AbstractPropertyOwner::Kind::All);
 }
 
 Object::~Object()
