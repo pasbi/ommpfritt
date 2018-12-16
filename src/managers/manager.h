@@ -32,5 +32,7 @@ protected:
   Scene& m_scene;
 };
 
+void register_managers();
+
 } // namespace omm
 

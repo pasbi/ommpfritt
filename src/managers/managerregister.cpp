@@ -5,7 +5,7 @@
 namespace omm
 {
 
-void register_properties()
+void register_managers()
 {
 #define REGISTER_MANAGER(TYPE) Manager::register_type<TYPE>(#TYPE);
 
