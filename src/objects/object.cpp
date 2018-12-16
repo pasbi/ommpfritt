@@ -144,9 +144,15 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   for (size_t i = 0; i < n_children; ++i) {
     const auto child_pointer = make_pointer(children_pointer, i);
     const auto child_type = deserializer.get_string(make_pointer(child_pointer, TYPE_POINTER));
-    auto child = Object::make(child_type);
-    child->deserialize(deserializer, child_pointer);
-    adopt(std::move(child));
+    try {
+      auto child = Object::make(child_type);
+      child->deserialize(deserializer, child_pointer);
+      adopt(std::move(child));
+    } catch (std::out_of_range& e) {
+      const auto message = "Failed to retrieve object type '" + child_type + "'.";
+      LOG(ERROR) << message;
+      throw AbstractDeserializer::DeserializeError(message);
+    }
   }
 
   const auto tags_pointer = make_pointer(root, TAGS_POINTER);

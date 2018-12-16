@@ -92,7 +92,13 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
     if (properties().contains(property_key)) {
       assert(property_type == property(property_key).type());
     } else {
-      add_property(property_key, Property::make(property_type));
+      try {
+        add_property(property_key, Property::make(property_type));
+      } catch (const std::out_of_range& e) {
+        const auto message = "Failed to retrieve property type '" + property_type + "'.";
+        LOG(ERROR) << message;
+        throw AbstractDeserializer::DeserializeError(message);
+      }
     }
 
     property(property_key).deserialize(deserializer, property_pointer);
