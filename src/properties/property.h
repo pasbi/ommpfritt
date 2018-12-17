@@ -5,6 +5,7 @@
 #include <glog/logging.h>
 #include <set>
 #include <variant>
+#include <functional>
 
 #include "external/json.hpp"
 #include "observed.h"
@@ -70,7 +71,25 @@ public:
   void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const;
   void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root);
 
-  static std::string get_label(const SetOfProperties& properties);
+  template<typename ResultT, typename PropertyT, typename MemFunc> static
+  ResultT get_value(const std::set<Property*>& properties, MemFunc&& f)
+  {
+    const auto values = ::transform<ResultT>(properties, [&f](const Property* property) {
+      return f(static_cast<const PropertyT&>(*property));
+    });
+
+    if (values.size() > 1) {
+      LOG(WARNING) << "expected uniform value, but got " << values.size() << " different values.";
+    }
+
+    return *values.begin();
+  }
+
+  template<typename ResultT, typename MemFunc> static ResultT
+  get_value(const std::set<Property*>& properties, MemFunc&& f)
+  {
+    return Property::get_value<ResultT, Property, MemFunc>(properties, std::forward<MemFunc>(f));
+  }
 
   virtual bool is_compatible(const Property& other) const;
 

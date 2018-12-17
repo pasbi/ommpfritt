@@ -58,21 +58,6 @@ void Property
   m_category = deserializer.get_string(make_pointer( root, "category" ));
 }
 
-std::string Property::get_label(const SetOfProperties& properties)
-{
-  // TODO I guess here is not a good place for this.
-  assert(properties.size() > 0);
-  const auto label = (*properties.begin())->label();
-#ifndef NDEBUG
-  for (const auto& property : properties) {
-    if (property->label() != label) {
-      LOG(WARNING) << "Inconsistent label: '" << label << "' != '" << property->label() << "'.";
-    }
-  }
-#endif
-  return label;
-}
-
 bool Property::is_compatible(const Property& other) const
 {
   return type() == other.type();
