@@ -102,9 +102,8 @@ Scene::find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates
 void Scene::invalidate()
 {
   m_tags_cache_is_dirty = true;
-  Observed<AbstractSimpleStructureObserver>::for_each([](auto* observer){
-    observer->structure_has_changed();
-  });
+  const auto notifier = std::mem_fn(&AbstractSimpleStructureObserver::structure_has_changed);
+  Observed<AbstractSimpleStructureObserver>::for_each(notifier);
   set_selection(std::set<AbstractPropertyOwner*>());
 }
 

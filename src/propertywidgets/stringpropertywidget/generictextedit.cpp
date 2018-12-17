@@ -2,7 +2,6 @@
 
 namespace omm
 {
-  // TODO use same technique as in Property::get_value for observer
 
 MultiLineTextEdit::MultiLineTextEdit(QWidget* parent)
   : GenericTextEdit<QTextEdit>(parent)
