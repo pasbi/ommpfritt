@@ -4,8 +4,9 @@
 namespace omm
 {
 
-ReferenceProperty::ReferenceProperty()
+ReferenceProperty::ReferenceProperty(AbstractPropertyOwner::Kind allowed_kinds)
   : TypedProperty(nullptr)
+  , m_allowed_kinds(allowed_kinds)
 {
   set_default_value(nullptr);
 }
@@ -42,19 +43,14 @@ void ReferenceProperty::set_default_value(const value_type& value)
   TypedProperty::set_default_value(value);
 }
 
-bool ReferenceProperty::is_allowed(AbstractPropertyOwner::Kind candidate) const
+void ReferenceProperty::set_allowed_kinds(AbstractPropertyOwner::Kind allowed_kinds)
 {
-  return !!(allowed_kinds() & candidate);
+  m_allowed_kinds = allowed_kinds;
 }
 
 AbstractPropertyOwner::Kind ReferenceProperty::allowed_kinds() const
 {
   return m_allowed_kinds;
-}
-
-void ReferenceProperty::set_allowed_kinds(AbstractPropertyOwner::Kind allowed_kinds)
-{
-  m_allowed_kinds = allowed_kinds;
 }
 
 bool ReferenceProperty::is_compatible(const Property& other) const
