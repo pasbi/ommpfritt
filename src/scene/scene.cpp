@@ -75,11 +75,9 @@ Scene::find_reference_holders(const AbstractPropertyOwner& candidate) const
     for (const auto& key : property_map.keys()) {
       auto& property = *property_map.at(key);
       using value_type = ReferenceProperty::value_type;
-      const Property::variant_type variant_value = property.variant_value();
-      auto maybe_value = std::get_if<value_type>(&variant_value);
-      if (maybe_value != nullptr) {
-        const value_type reference = *maybe_value;
-        if (reference == &candidate) {
+      const auto variant = property.variant_value();
+      if (const auto* value = std::get_if<value_type>(&variant); value != nullptr) {
+        if (*value == &candidate) {
           reference_holders.insert(static_cast<ReferenceProperty*>(&property));
         }
       }
