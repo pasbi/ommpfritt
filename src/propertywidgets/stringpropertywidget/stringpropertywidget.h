@@ -7,7 +7,7 @@
 namespace omm
 {
 
-class LineEdit;
+class AbstractGenericTextEdit;
 
 class StringPropertyWidget : public PropertyWidget<StringProperty>
 {
@@ -19,7 +19,7 @@ protected:
   std::string type() const override;
 
 private:
-  LineEdit* m_line_edit;
+  AbstractGenericTextEdit* m_text_edit;
 };
 
 }  // namespace omm
