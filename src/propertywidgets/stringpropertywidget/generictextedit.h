@@ -37,7 +37,11 @@ public:
 
   void set_value(const std::string& text) override
   {
-    m_text_edit->setText(QString::fromStdString(text));
+    if (value() != text) {
+      m_text_edit->setText(QString::fromStdString(text));
+    } else {
+      // each set destroys the cursor position.
+    }
   }
 
   void set_placeholder_text(const std::string& text) override

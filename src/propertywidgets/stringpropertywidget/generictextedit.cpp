@@ -17,7 +17,7 @@ std::string MultiLineTextEdit::value() const
 SingleLineTextEdit::SingleLineTextEdit(QWidget* parent)
   : GenericTextEdit<QLineEdit>(parent)
 {
-  connect(m_text_edit, SIGNAL(textChanged()), this, SIGNAL(text_changed()));
+  connect(m_text_edit, SIGNAL(textChanged(QString)), this, SIGNAL(text_changed()));
 }
 
 std::string SingleLineTextEdit::value() const
