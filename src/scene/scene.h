@@ -8,7 +8,6 @@
 #include <QAbstractItemModel>
 #include <QUndoStack>
 
-#include "python/objectview.h"
 #include "external/json_fwd.hpp"
 #include "observed.h"
 #include "scene/contextes.h"
@@ -47,7 +46,7 @@ public:
   template<typename ItemT> typename SceneStructure<ItemT>::type& structure();
   template<typename ItemT> const typename SceneStructure<ItemT>::type& structure() const;
 
-  ObjectView root_view();
+  // ObjectView root_view();
   void reset();
   const PythonEngine& python_engine;
 

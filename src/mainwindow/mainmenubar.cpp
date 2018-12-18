@@ -30,9 +30,16 @@ void MainMenuBar::make_create_menu()
   {
     action(create_menu, QString::fromStdString(key), [this, key]() {
       Scene& scene = m_app.scene;
-      scene.submit<AddCommand<Tree<Object>>>(scene.object_tree, Object::make(key));
+      using add_command_type = AddCommand<Tree<Object>>;
+      scene.submit<add_command_type>(scene.object_tree, Object::make(key));
     });
   }
+}
+
+void MainMenuBar::make_scene_menu()
+{
+  auto& scene_menu = *addMenu(tr("&Scene"));
+  action(scene_menu, tr("&evaluate"), [this]() { m_app.python_engine.run(m_app.scene); });
 }
 
 void MainMenuBar::make_window_menu()
@@ -64,6 +71,7 @@ MainMenuBar::MainMenuBar(Application& app, MainWindow& main_window)
   make_file_menu();
   make_edit_menu();
   make_create_menu();
+  make_scene_menu();
   make_window_menu();
 }
 

@@ -16,8 +16,6 @@ namespace omm
 {
 
 class Property;
-class Tag;
-class Scene;
 
 class Object
   : public PropertyOwner<AbstractPropertyOwner::Kind::Object>

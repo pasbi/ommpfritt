@@ -8,7 +8,6 @@
 #include <QAbstractItemModel>
 #include <QUndoStack>
 
-#include "python/objectview.h"
 #include "external/json_fwd.hpp"
 #include "observed.h"
 #include "scene/cachedgetter.h"

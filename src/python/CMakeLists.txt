@@ -1,8 +1,8 @@
 file (GLOB SOURCES
-  "objectview.cpp"
+  "objectpywrapper.cpp"
   "pythonengine.cpp"
-  "tagview.cpp"
-  "view.cpp"
+  "propertyownerpywrapper.cpp"
+  "tagpywrapper.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})
 
