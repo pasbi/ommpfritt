@@ -1,31 +1,25 @@
 #pragma once
 
 #include <pybind11/embed.h>
-#include <pybind11/stl.h>
-#include "aspects/propertyowner.h"
 
 namespace py = pybind11;
 
 namespace omm
 {
 
-template<typename WrappedT>
+class AbstractPropertyOwner;
 class PropertyOwnerPyWrapper
 {
 public:
-  explicit PropertyOwnerPyWrapper(WrappedT& wrapped) : wrapped(&wrapped) {}
+  explicit PropertyOwnerPyWrapper(AbstractPropertyOwner& wrapped);
+  py::object get_property(const std::string& key) const;
+  void set_property(const std::string& key, const py::object& value) const;
 
-  py::object get_property(const std::string& key) const
-  {
-    return py::cast(wrapped->property(key).variant_value());
-  }
-
-  void set_property(const std::string& key, const py::object& value) const
-  {
-    wrapped->property(key).set(value.cast<Property::variant_type>());
-  }
-
-  WrappedT* wrapped;
+private:
+  AbstractPropertyOwner* m_wrapped;
+  friend bool operator<(const PropertyOwnerPyWrapper& a, const PropertyOwnerPyWrapper& b);
 };
+
+bool operator<(const PropertyOwnerPyWrapper& a, const PropertyOwnerPyWrapper& b);
 
 }  // namespace omm

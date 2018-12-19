@@ -76,6 +76,8 @@ public:
   std::map<const AbstractPropertyOwner*, std::set<ReferenceProperty*>>
   find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates) const;
 
+  template<typename T> std::set<T*> find_items(const std::string& name) const;
+
   void invalidate();
 
   // === Save/Load ====
@@ -103,8 +105,6 @@ private:
   bool m_has_pending_changes = false;
   void set_has_pending_changes(bool v);
   QUndoStack m_undo_stack;
-
-
 
 public:
   static Scene* currentInstance();

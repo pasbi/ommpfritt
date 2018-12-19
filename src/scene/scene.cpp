@@ -34,6 +34,11 @@ std::unique_ptr<omm::Style> make_default_style(omm::Scene* scene)
   return default_style;
 }
 
+template<typename T> std::set<T*> filter_by_name(const std::set<T*>& set, const std::string& name)
+{
+  return ::filter_if(set, [name](const T* t) { return t->name() == name; });
+}
+
 }  // namespace
 
 namespace omm
@@ -249,5 +254,21 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
   const auto set_selection = [selection](auto* observer) { observer->set_selection(selection); };
   Observed<AbstractSelectionObserver>::for_each(set_selection);
 }
+
+template<> std::set<Tag*> Scene::find_items<Tag>(const std::string& name) const
+{
+  return filter_by_name(tags(), name);
+}
+
+template<> std::set<Object*> Scene::find_items<Object>(const std::string& name) const
+{
+  return filter_by_name(object_tree.items(), name);
+}
+
+template<> std::set<Style*> Scene::find_items<Style>(const std::string& name) const
+{
+  return filter_by_name(styles.items(), name);
+}
+
 
 }  // namespace omm

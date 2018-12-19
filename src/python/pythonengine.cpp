@@ -4,8 +4,8 @@
 
 #include "scene/scene.h"
 #include "tags/scripttag.h"
-#include "python/tagpywrapper.h"
-#include "python/objectpywrapper.h"
+#include "python/itempywrapper.h"
+#include "python/scenepywrapper.h"
 
 namespace py = pybind11;
 
@@ -29,15 +29,20 @@ namespace omm
 {
 
 PYBIND11_EMBEDDED_MODULE(omm, m) {
-  py::class_<ObjectPyWrapper>(m, "object")
-      .def("get_property", &ObjectPyWrapper::get_property)
-      .def("set_property", &ObjectPyWrapper::set_property)
-      .def("get_children", &ObjectPyWrapper::get_children)
-      .def("get_parent", &ObjectPyWrapper::get_parent);
-  py::class_<TagPyWrapper>(m, "tag")
-      .def("get_owner", &TagPyWrapper::get_owner)
-      .def("get_property", &TagPyWrapper::get_property)
-      .def("set_property", &TagPyWrapper::set_property);
+  py::class_<PropertyOwnerPyWrapper>(m, "property_owner")
+      .def("get_property", &PropertyOwnerPyWrapper::get_property)
+      .def("set_property", &PropertyOwnerPyWrapper::set_property);
+  py::class_<PyWrapper<Object>, PropertyOwnerPyWrapper>(m, "object")
+      .def("get_children", &PyWrapper<Object>::get_children)
+      .def("get_parent", &PyWrapper<Object>::get_parent)
+      .def("get_tags", &PyWrapper<Object>::get_tags);
+  py::class_<PyWrapper<Tag>, PropertyOwnerPyWrapper>(m, "tag")
+      .def("get_owner", &PyWrapper<Tag>::get_owner);
+  py::class_<PyWrapper<Style>, PropertyOwnerPyWrapper>(m, "style");
+  py::class_<ScenePyWrapper>(m, "scene")
+      .def("find_tags", &ScenePyWrapper::find_items<Tag>)
+      .def("find_objects", &ScenePyWrapper::find_items<Object>)
+      .def("find_styles", &ScenePyWrapper::find_items<Style>);
 }
 
 PythonEngine::PythonEngine()
@@ -63,7 +68,7 @@ void PythonEngine::run(Scene& scene) const
   for (Tag* tag : scene.tags()) {
     if (tag->type() == ScriptTag::TYPE) {
       const auto code = tag->property(ScriptTag::CODE_PROPERTY_KEY).value<std::string>();
-      auto locals = py::dict("this"_a=TagPyWrapper(*tag));
+      auto locals = py::dict("this"_a=PyWrapper<Tag>(*tag), "scene"_a=ScenePyWrapper(scene));
       ::run(code, locals);
     }
   }
