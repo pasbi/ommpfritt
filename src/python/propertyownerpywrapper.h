@@ -12,8 +12,8 @@ class PropertyOwnerPyWrapper
 {
 public:
   explicit PropertyOwnerPyWrapper(AbstractPropertyOwner& wrapped);
-  py::object get_property(const std::string& key) const;
-  void set_property(const std::string& key, const py::object& value) const;
+  py::object property(const std::string& key) const;
+  void set(const std::string& key, const py::object& value) const;
 
 private:
   AbstractPropertyOwner* m_wrapped;

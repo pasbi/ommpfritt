@@ -14,8 +14,11 @@ class Tag;
 template<> class PyWrapper<Tag> : public PropertyOwnerPyWrapper
 {
 public:
+  explicit PyWrapper();
+  py::object owner() const;
+  py::object type() const;
+
   explicit PyWrapper(Tag& tag);
-  py::object get_owner() const;
   
 private:
   Tag* m_wrapped;
@@ -26,9 +29,10 @@ template<> class PyWrapper<Object> : public PropertyOwnerPyWrapper
 {
 public:
   explicit PyWrapper(Object& object);
-  py::object get_parent() const;
-  py::object get_children() const;
-  py::object get_tags() const;
+  py::object parent() const;
+  py::object children() const;
+  py::object tags() const;
+  py::object type() const;
 
 private:
   Object* m_wrapped;

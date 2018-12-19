@@ -10,7 +10,7 @@ PropertyOwnerPyWrapper::PropertyOwnerPyWrapper(AbstractPropertyOwner& wrapped)
 {
 }
 
-py::object PropertyOwnerPyWrapper::get_property(const std::string& key) const
+py::object PropertyOwnerPyWrapper::property(const std::string& key) const
 {
   if (m_wrapped->has_property(key)) {
     return py::cast(m_wrapped->property(key).variant_value());
@@ -19,7 +19,7 @@ py::object PropertyOwnerPyWrapper::get_property(const std::string& key) const
   }
 }
 
-void PropertyOwnerPyWrapper::set_property(const std::string& key, const py::object& value) const
+void PropertyOwnerPyWrapper::set(const std::string& key, const py::object& value) const
 {
   if (m_wrapped->has_property(key)) {
     m_wrapped->property(key).set(value.cast<Property::variant_type>());
