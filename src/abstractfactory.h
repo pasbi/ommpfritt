@@ -7,25 +7,17 @@
 
 #include "common.h"
 
-template<typename T>
-class get_first_var_template
-{
-public:
-  using type = T;
-};
-
 template<typename Key, typename GeneralT, typename... Args>
 class AbstractFactory
 {
 protected:
   using creator_type = std::unique_ptr<GeneralT>(*)(Args&&... args);
   using creator_map_type = std::map<Key, creator_type>;
-  // static_assert(get_first_var_template<Args...>::type::X, "X");
 
 
 private:
   template<typename SpecialT>
-  static std::unique_ptr<GeneralT> make_unique(Args&&... args)
+  static std::unique_ptr<GeneralT> make(Args&&... args)
   {
     return std::make_unique<SpecialT>(std::forward<Args>(args)...);
   }
@@ -33,7 +25,7 @@ private:
 public:
   template<typename SpecialT> static void register_type(Key key)
   {
-    auto pair = std::pair<Key, creator_type>(key, &make_unique<SpecialT>);
+    auto pair = std::pair<Key, creator_type>(key, &make<SpecialT>);
     m_creator_map.insert(pair);
   }
 
