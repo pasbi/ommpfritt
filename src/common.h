@@ -127,3 +127,13 @@ template<typename T, typename Predicate> void erase_if(std::vector<T>& ts, const
   // TODO replace with std::erase_if once we have c++2a
   ts.erase(std::remove_if(ts.begin(), ts.end(), p), ts.end());
 }
+
+template<typename T, typename S> bool contains(const std::set<T*>& set, S const* const key)
+{
+  return set.count(const_cast<S*>(key)) > 0;
+}
+
+template<typename T, typename S> bool contains(const std::set<T>& set, const S& key)
+{
+  return set.count(const_cast<S&>(key)) > 0;
+}
