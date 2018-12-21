@@ -1,3 +1,5 @@
+#pragma once
+
 #include "tags/tag.h"
 
 namespace omm

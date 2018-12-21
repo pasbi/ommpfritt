@@ -1,3 +1,4 @@
+#include "python/pywrapper.h"
 #include <pybind11/embed.h>
 #include <iostream>
 #include "python/pythonengine.h"
@@ -42,22 +43,23 @@ PythonEngine::PythonEngine()
   count++;
 
   py::object m = py::module::import("omm");
-  py::class_<PropertyOwnerPyWrapper>(m, "property_owner")
-      .def("property", &PropertyOwnerPyWrapper::property)
-      .def("set", &PropertyOwnerPyWrapper::set);
-  py::class_<PyWrapper<Object>, PropertyOwnerPyWrapper>(m, "object")
-      .def("children", &PyWrapper<Object>::children)
-      .def("parent", &PyWrapper<Object>::parent)
-      .def("tags", &PyWrapper<Object>::tags)
-      .def("type", &PyWrapper<Object>::type);
-  py::class_<PyWrapper<Tag>, PropertyOwnerPyWrapper>(m, "tag")
-      .def("owner", &PyWrapper<Tag>::owner)
-      .def("type", &PyWrapper<Tag>::type);
-  py::class_<PyWrapper<Style>, PropertyOwnerPyWrapper>(m, "style");
-  py::class_<ScenePyWrapper>(m, "scene")
-      .def("find_tags", &ScenePyWrapper::find_items<Tag>)
-      .def("find_objects", &ScenePyWrapper::find_items<Object>)
-      .def("find_styles", &ScenePyWrapper::find_items<Style>);
+  py::class_<AbstractPropertyOwnerWrapper> property_owner(m, "PropertyOwner");
+  property_owner.def("property", &AbstractPropertyOwnerWrapper::property);
+  property_owner.def("set", &AbstractPropertyOwnerWrapper::set);
+
+  py::class_<TagWrapper> tag(m, "Tag", property_owner);
+  tag.def("owner", &TagWrapper::owner);
+
+  // py::class_<PyWrapper<Object>, PropertyOwnerPyWrapper>(m, "object")
+  //     .def("children", &PyWrapper<Object>::children)
+  //     .def("parent", &PyWrapper<Object>::parent)
+  //     .def("tags", &PyWrapper<Object>::tags)
+  //     .def("type", &PyWrapper<Object>::wrapped_type);
+  // py::class_<PyWrapper<Style>, PropertyOwnerPyWrapper>(m, "style");
+  // py::class_<ScenePyWrapper>(m, "scene")
+  //     .def("find_tags", &ScenePyWrapper::find_items<Tag>)
+  //     .def("find_objects", &ScenePyWrapper::find_items<Object>)
+  //     .def("find_styles", &ScenePyWrapper::find_items<Style>);
 }
 
 PythonEngine::~PythonEngine()
@@ -71,7 +73,7 @@ void PythonEngine::run(Scene& scene) const
   for (Tag* tag : scene.tags()) {
     if (tag->type() == ScriptTag::TYPE) {
       const auto code = tag->property(ScriptTag::CODE_PROPERTY_KEY).value<std::string>();
-      auto locals = py::dict("this"_a=PyWrapper<Tag>(*tag), "scene"_a=ScenePyWrapper(scene));
+      auto locals = py::dict("this"_a=TagWrapper(*tag)); //, "scene"_a=ScenePyWrapper(scene));
       ::run(code, locals);
     }
   }
