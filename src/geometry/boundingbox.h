@@ -9,7 +9,7 @@ namespace omm
 class BoundingBox
 {
 public:
-  BoundingBox(const std::vector<arma::vec2>& points);
+  BoundingBox(const std::vector<arma::vec2>& points = { arma::vec2 { 0.0, 0.0 } });
 
   BoundingBox merge(const BoundingBox& other) const;
   BoundingBox intersect(const BoundingBox& other) const;
