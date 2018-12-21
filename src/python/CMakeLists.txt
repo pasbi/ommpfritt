@@ -1,8 +1,6 @@
 file (GLOB SOURCES
-  "itempywrapper.cpp"
   "pythonengine.cpp"
-  "propertyownerpywrapper.cpp"
-  "scenepywrapper.cpp"
+  "pywrapper.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})
 
