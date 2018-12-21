@@ -5,6 +5,7 @@
 #include <map>
 #include <memory>
 #include <typeinfo>
+#include <variant>
 
 #include "properties/property.h"
 #include "orderedmap.h"
@@ -34,13 +35,25 @@ public:
   using Key = PropertyMap::key_type;
   Property& property(const Key& key) const;
   bool has_property(const Key& key) const;
+  template<typename ValueT> bool has_property(const Key& key) const
+  {
+    if (has_property(key)) {
+      const auto variant = property(key).variant_value();
+      return std::get_if<ValueT>(&variant) != nullptr;
+    } else {
+      return false;
+    }
+  }
+
   const PropertyMap& properties() const;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual std::string name() const;
-  virtual void on_property_value_changed(Property& property) override;
+  void on_property_value_changed(Property& property) override;
   virtual Kind kind() const = 0;
+
+  bool has_reference_cycle(const std::string& key) const;
 
   template<typename T> T* cast()
   {

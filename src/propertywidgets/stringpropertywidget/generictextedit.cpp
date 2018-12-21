@@ -6,6 +6,7 @@ namespace omm
 MultiLineTextEdit::MultiLineTextEdit(QWidget* parent)
   : GenericTextEdit<QTextEdit>(parent)
 {
+  setFont(QFont("Courier", 12));
   connect(m_text_edit, SIGNAL(textChanged()), this, SIGNAL(text_changed()));
 }
 

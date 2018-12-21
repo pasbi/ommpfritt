@@ -4,6 +4,7 @@
 
 #include "external/json.hpp"
 #include "serializers/abstractserializer.h"
+#include "properties/referenceproperty.h"
 
 namespace
 {
@@ -125,6 +126,23 @@ std::string AbstractPropertyOwner::name() const
   return property(NAME_PROPERTY_KEY).value<std::string>();
 }
 
+bool AbstractPropertyOwner::has_reference_cycle(const std::string& key) const
+{
+  const AbstractPropertyOwner* current = this;
+  while (current->has_property<ReferenceProperty::value_type>(key)) {
+    const auto ref_variant = current->property(key).variant_value();
+    const auto* reference = std::get<ReferenceProperty::value_type>(ref_variant);
+    if (reference == nullptr) {
+      return false;
+    } else if (reference == this) {
+      return true;
+    } else {
+      current = reference;
+    }
+  }
+  return false;
+}
+
 }  // namespace omm
 
 omm::AbstractPropertyOwner::Kind operator|( omm::AbstractPropertyOwner::Kind a,
@@ -157,4 +175,3 @@ bool operator!(omm::AbstractPropertyOwner::Kind a)
   using underlying = std::underlying_type_t<enum_t>;
   return !static_cast<underlying>(a);
 }
-

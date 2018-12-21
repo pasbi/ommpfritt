@@ -19,6 +19,7 @@ public:
   void set_allowed_kinds(AbstractPropertyOwner::Kind allowed_kinds);
   AbstractPropertyOwner::Kind allowed_kinds() const;
   bool is_compatible(const Property& other) const override;
+  bool is_cyclic() const;
 
 private:
   // default is always nullptr
