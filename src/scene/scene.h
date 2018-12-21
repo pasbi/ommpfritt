@@ -37,6 +37,8 @@ public:
   Scene(const PythonEngine& python_engine);
   ~Scene();
 
+  static constexpr auto TYPE = "Scene";
+
   Tree<Object> object_tree;
   ObjectTreeAdapter object_tree_adapter;
 

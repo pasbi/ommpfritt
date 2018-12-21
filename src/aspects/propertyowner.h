@@ -29,6 +29,7 @@ public:
                     All = Tag | Style | Object };
   explicit AbstractPropertyOwner();
   AbstractPropertyOwner(AbstractPropertyOwner&& other);
+  static constexpr auto TYPE = "PropertyOwner";
   virtual ~AbstractPropertyOwner();
   using Key = PropertyMap::key_type;
   Property& property(const Key& key) const;

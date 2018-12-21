@@ -22,6 +22,7 @@ public:
 
   void set_owner(Object* owner);
   Object* owner() const;
+  static constexpr auto TYPE = "Tag";
 
 private:
   Object* m_owner;

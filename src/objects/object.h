@@ -45,6 +45,8 @@ public:
 
   List<Tag> tags;
 
+  static constexpr auto TYPE = "Object";
+
 private:
   friend class ObjectView;
 };
