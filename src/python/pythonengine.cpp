@@ -4,7 +4,8 @@
 
 #include "scene/scene.h"
 #include "tags/scripttag.h"
-#include "python/pywrapper.h"
+#include "python/tagwrapper.h"
+#include "python/scenewrapper.h"
 
 namespace py = pybind11;
 
@@ -40,28 +41,8 @@ PythonEngine::PythonEngine()
   }
   count++;
 
-  py::object m = py::module::import("omm");
-
-  py::class_<PropertyOwnerWrapper>(m, "PropertyOwner")
-        .def("property", &PropertyOwnerWrapper::property)
-        .def("set", &PropertyOwnerWrapper::set);
-
-  py::class_<TagWrapper, PropertyOwnerWrapper>(m, "Tag")
-        .def("owner", &TagWrapper::owner);
-
-  py::class_<ScriptTagWrapper, TagWrapper>(m, "ScriptTag");
-  
-  py::class_<ObjectWrapper, PropertyOwnerWrapper>(m, "Object")
-      .def("children", &ObjectWrapper::children)
-      .def("parent", &ObjectWrapper::parent)
-      .def("tags", &ObjectWrapper::tags);
-
-  py::class_<StyleWrapper, PropertyOwnerWrapper>(m, "style");
-
-  py::class_<SceneWrapper>(m, "scene")
-      .def("find_tags", &SceneWrapper::find_items<Tag>)
-      .def("find_objects", &SceneWrapper::find_items<Object>)
-      .def("find_styles", &SceneWrapper::find_items<Style>);
+  py::object omm_module = py::module::import("omm");
+  register_wrappers(omm_module);
 }
 
 PythonEngine::~PythonEngine()
@@ -75,7 +56,7 @@ void PythonEngine::run(Scene& scene) const
   for (Tag* tag : scene.tags()) {
     if (tag->type() == ScriptTag::TYPE) {
       const auto code = tag->property(ScriptTag::CODE_PROPERTY_KEY).value<std::string>();
-      auto locals = py::dict("this"_a=TagWrapper(tag)); //, "scene"_a=ScenePyWrapper(scene));
+      auto locals = py::dict("this"_a=TagWrapper::make(tag), "scene"_a=SceneWrapper(&scene));
       ::run(code, locals);
     }
   }

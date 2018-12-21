@@ -1,5 +1,7 @@
 #pragma once
 
+#pragma once
+
 #include <string>
 #include <pybind11/embed.h>
 
@@ -24,7 +26,8 @@ private:
 
   PythonEngine(const PythonEngine&) = delete;
   PythonEngine(PythonEngine&&) = delete;
-
 };
+
+void register_wrappers(pybind11::object& module);
 
 }  // namespace omm
