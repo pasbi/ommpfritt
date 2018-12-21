@@ -30,7 +30,7 @@ std::unique_ptr<Style> Style::copy() const
 
 std::string Style::type() const
 {
-  return "Style";
+  return TYPE;
 }
 
 }  // namespace omm

@@ -47,7 +47,7 @@ BoundingBox Ellipse::bounding_box() const
 
 std::string Ellipse::type() const
 {
-  return "Ellipse";
+  return TYPE;
 }
 
 }  // namespace omm

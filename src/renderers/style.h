@@ -18,6 +18,7 @@ public:
   explicit Style(Scene* scene = nullptr);
   std::unique_ptr<Style> copy() const override;
   std::string type() const;
+  static constexpr auto TYPE = "Style";
 
 private:
   Scene* const m_scene;
