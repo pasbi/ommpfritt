@@ -52,8 +52,8 @@ auto make_brush(const omm::Style& style)
 namespace omm
 {
 
-ViewportRenderer::ViewportRenderer(QPainter& painter, const BoundingBox& bounding_box)
-  : AbstractRenderer(bounding_box)
+ViewportRenderer::ViewportRenderer(QPainter& painter, Scene& scene)
+  : AbstractRenderer(scene)
   , m_painter(painter)
 {
 }

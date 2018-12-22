@@ -10,7 +10,7 @@ namespace omm
 class ViewportRenderer : public AbstractRenderer
 {
 public:
-  explicit ViewportRenderer(QPainter& painter, const BoundingBox& bounding_box);
+  explicit ViewportRenderer(QPainter& painter, Scene& scene);
   void draw_spline(const std::vector<Point>& points, const Style& style) override;
 
   void push_transformation(const ObjectTransformation& transformation) override;

@@ -63,15 +63,9 @@ void Viewport::paintEvent(QPaintEvent* event)
   QPainter painter(this);
   painter.setRenderHint(QPainter::Antialiasing);
   painter.fillRect(rect(), Qt::gray);
-
-  const auto width = static_cast<double>(this->width());
-  const auto height = static_cast<double>(this->height());
-  const BoundingBox render_box({ { 0, 0 },
-                                 { width, height } });
-  ViewportRenderer renderer(painter, render_box);
-
+  ViewportRenderer renderer(painter, m_scene);
   renderer.set_base_transformation(viewport_transformation());
-  renderer.render(m_scene);
+  renderer.render();
 
   m_handle->draw(renderer);
 }

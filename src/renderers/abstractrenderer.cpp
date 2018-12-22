@@ -4,19 +4,14 @@
 namespace omm
 {
 
-AbstractRenderer::AbstractRenderer(const BoundingBox& bounding_box)
-  : m_bounding_box(bounding_box)
+AbstractRenderer::AbstractRenderer(Scene& scene)
+  : scene(scene)
 {
 }
 
-void AbstractRenderer::render(const Scene& scene)
+void AbstractRenderer::render()
 {
   scene.object_tree.root().render_recursive(*this, scene.default_style());
-}
-
-const BoundingBox& AbstractRenderer::bounding_box() const
-{
-  return m_bounding_box;
 }
 
 void AbstractRenderer::push_transformation(const ObjectTransformation& transformation)

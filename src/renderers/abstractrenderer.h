@@ -16,8 +16,8 @@ class Scene;
 class AbstractRenderer
 {
 public:
-  explicit AbstractRenderer(const BoundingBox& bounding_box);
-  void render(const Scene& scene);
+  explicit AbstractRenderer(Scene& scene);
+  void render();
   const BoundingBox& bounding_box() const;
 
 public:
@@ -28,9 +28,9 @@ public:
   virtual void push_transformation(const ObjectTransformation& transformation);
   virtual void pop_transformation();
   virtual ObjectTransformation current_transformation() const;
+  Scene& scene;
 
 private:
-  const BoundingBox m_bounding_box;
   ObjectTransformation m_base_transformation;
   std::stack<ObjectTransformation> m_transformation_stack;
 };
