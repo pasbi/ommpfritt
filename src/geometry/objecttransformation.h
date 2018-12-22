@@ -28,10 +28,10 @@ public:
   ObjectTransformation rotated(const double& angle) const;
   double rotation() const;
 
-  void set_scalation(const arma::vec2& scale_vector);
+  void set_scaling(const arma::vec2& scale_vector);
   void scale(const arma::vec2& scale_vector);
   ObjectTransformation scaled(const arma::vec2& scale_vector) const;
-  arma::vec2 scalation() const;
+  arma::vec2 scaling() const;
 
   void set_shearing(const double& shear);
   void shear(const double& shear);
@@ -55,7 +55,7 @@ public:
 
 private:
   arma::vec2 m_translation;
-  arma::vec2 m_scalation;
+  arma::vec2 m_scaling;
   double m_shearing;
   double m_rotation;
 };

@@ -36,9 +36,9 @@ bool fuzzy_equal(omm::ObjectTransformation a, omm::ObjectTransformation b)
     return false;
   } else if (!fuzzy_equal(a.translation()(1), b.translation()(1), trans_eps)) {
     return false;
-  } else if (!fuzzy_equal(a.scalation()(0), b.scalation()(0), scale_eps)) {
+  } else if (!fuzzy_equal(a.scaling()(0), b.scaling()(0), scale_eps)) {
     return false;
-  } else if (!fuzzy_equal(a.scalation()(1), b.scalation()(1), scale_eps)) {
+  } else if (!fuzzy_equal(a.scaling()(1), b.scaling()(1), scale_eps)) {
     return false;
   } else if (!fuzzy_equal(a.shearing(), b.shearing(), shear_eps)) {
     return false;
@@ -82,7 +82,7 @@ auto rotation_test_cases()
                                //-M_PI, -2*M_PI, -0.5*M_PI, -0.25*M_PI, -1, -2, -0.75*M_PI, 100 });
 }
 
-auto scalation_test_cases()
+auto scaling_test_cases()
 {
   using v = arma::vec2;
   return std::vector<v>({ v{1, 1}, v{3, -4}, v{12, -909}, v{-1232, -22}, v{73, 73},
@@ -114,9 +114,9 @@ TEST(geometry, transform_to_from_mat_rotate)
 
 TEST(geometry, transform_to_from_mat_scale)
 {
-  for (auto scalation : scalation_test_cases()) {
+  for (auto scaling : scaling_test_cases()) {
     EXPECT_TRUE(check_transform_to_mat_to_transform_invariant(
-      &omm::ObjectTransformation::set_scalation, scalation ) );
+      &omm::ObjectTransformation::set_scaling, scaling ) );
   }
 }
 
@@ -132,25 +132,25 @@ TEST(geometry, transform_to_from_mat_combined)
 {
   for (auto translation : translation_test_cases()) {
     for (auto rotation : rotation_test_cases()) {
-      for (auto scalation : scalation_test_cases()) {
+      for (auto scaling : scaling_test_cases()) {
         for (auto shearing : shearing_test_cases()) {
           omm::ObjectTransformation first_order;
           first_order.set_rotation(rotation);
           first_order.set_translation(translation);
-          first_order.set_scalation(scalation);
+          first_order.set_scaling(scaling);
           first_order.set_shearing(shearing);
           EXPECT_TRUE(fuzzy_equal(first_order, omm::ObjectTransformation(first_order.to_mat())));
 
           omm::ObjectTransformation second_order;
           second_order.set_translation(translation);
           second_order.set_rotation(rotation);
-          second_order.set_scalation(scalation);
+          second_order.set_scaling(scaling);
           second_order.set_shearing(shearing);
           EXPECT_TRUE(fuzzy_equal(second_order, omm::ObjectTransformation(second_order.to_mat())));
 
           omm::ObjectTransformation third_order;
           third_order.set_translation(translation);
-          third_order.set_scalation(scalation);
+          third_order.set_scaling(scaling);
           third_order.set_shearing(shearing);
           third_order.set_rotation(rotation);
           EXPECT_TRUE(fuzzy_equal(third_order, omm::ObjectTransformation(third_order.to_mat())));
@@ -170,7 +170,7 @@ TEST(geometry, transform_to_from_mat_random)
   for (size_t i = 0; i < n; ++i) {
     omm::ObjectTransformation t;
     t.set_translation({ distribution(rng), distribution(rng) });
-    t.set_scalation({ distribution(rng), distribution(rng) });
+    t.set_scaling({ distribution(rng), distribution(rng) });
     t.set_shearing(distribution(rng));
     t.set_rotation(distribution(rng));
     EXPECT_TRUE(fuzzy_equal(t, omm::ObjectTransformation(t.to_mat())));

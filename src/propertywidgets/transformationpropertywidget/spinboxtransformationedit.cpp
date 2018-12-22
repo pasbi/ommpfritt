@@ -58,8 +58,8 @@ void SpinBoxTransformationEdit::set_value(const ObjectTransformation& value)
 {
   m_xposition_spinbox->setValue(value.translation()(0));
   m_yposition_spinbox->setValue(value.translation()(1));
-  m_xscale_spinbox->setValue(value.scalation()(0));
-  m_yscale_spinbox->setValue(value.scalation()(1));
+  m_xscale_spinbox->setValue(value.scaling()(0));
+  m_yscale_spinbox->setValue(value.scaling()(1));
   m_shear_spinbox->setValue(value.shearing());
   m_rotation_spinbox->setValue(value.rotation() * 180.0 / M_PI);
 }
@@ -68,7 +68,7 @@ ObjectTransformation SpinBoxTransformationEdit::value() const
 {
   ObjectTransformation t;
   t.set_translation({ m_xposition_spinbox->value(), m_yposition_spinbox->value() });
-  t.set_scalation({ m_xscale_spinbox->value(), m_yscale_spinbox->value() });
+  t.set_scaling({ m_xscale_spinbox->value(), m_yscale_spinbox->value() });
   t.set_shearing(m_shear_spinbox->value());
   t.set_rotation(m_rotation_spinbox->value() * M_PI / 180.0);
   return t;
