@@ -39,7 +39,9 @@ void MainMenuBar::make_create_menu()
 void MainMenuBar::make_scene_menu()
 {
   auto& scene_menu = *addMenu(tr("&Scene"));
-  action(scene_menu, tr("&evaluate"), [this]() { m_app.python_engine.run(m_app.scene); });
+  action(scene_menu, tr("&evaluate"), [this]() {
+    m_app.python_engine.evaluate_script_tags(m_app.scene);
+  });
 }
 
 void MainMenuBar::make_window_menu()

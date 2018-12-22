@@ -9,22 +9,6 @@
 
 namespace py = pybind11;
 
-namespace
-{
-
-template<typename T> bool run(const std::string& code, T&& locals)
-{
-  try {
-    py::exec(code, py::globals(), locals);
-    return true;
-  } catch (const std::exception& e) {
-    LOG(WARNING) << e.what();
-    return false;
-  }
-}
-
-}  // namespace
-
 namespace omm
 {
 
@@ -50,14 +34,25 @@ PythonEngine::~PythonEngine()
 
 }
 
-void PythonEngine::run(Scene& scene) const
+bool PythonEngine::run(const std::string& code, const py::object& locals) const
+{
+  try {
+    py::exec(code, py::globals(), locals);
+    return true;
+  } catch (const std::exception& e) {
+    LOG(WARNING) << e.what();
+    return false;
+  }
+}
+
+void PythonEngine::evaluate_script_tags(Scene& scene) const
 {
   using namespace py::literals;
   for (Tag* tag : scene.tags()) {
     if (tag->type() == ScriptTag::TYPE) {
       const auto code = tag->property(ScriptTag::CODE_PROPERTY_KEY).value<std::string>();
       auto locals = py::dict("this"_a=TagWrapper::make(tag), "scene"_a=SceneWrapper(&scene));
-      ::run(code, locals);
+      run(code, locals);
     }
   }
 }

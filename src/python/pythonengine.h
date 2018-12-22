@@ -16,7 +16,8 @@ public:
   explicit PythonEngine();
   ~PythonEngine();
 
-  void run(Scene& scene) const;
+  void evaluate_script_tags(Scene& scene) const;
+  bool run(const std::string& code, const pybind11::object& locals) const;
 
 private:
   // the scoped_interpeter has same lifetime as the application.
