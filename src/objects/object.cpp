@@ -47,8 +47,6 @@ std::vector<const omm::Style*> find_styles(const omm::Object& object)
 namespace omm
 {
 
-const std::string Object::TRANSFORMATION_PROPERTY_KEY = "transformation";
-
 Object::Object()
   : TreeElement(nullptr)
   , tags()

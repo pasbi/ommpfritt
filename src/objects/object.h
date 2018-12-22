@@ -33,8 +33,6 @@ public:
   void set_transformation(const ObjectTransformation& transformation);
   void set_global_transformation(const ObjectTransformation& globalTransformation);
 
-  static const std::string TRANSFORMATION_PROPERTY_KEY;
-
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual void render(AbstractRenderer& renderer, const Style& style) const = 0;
@@ -46,6 +44,8 @@ public:
   List<Tag> tags;
 
   static constexpr auto TYPE = "Object";
+  static constexpr auto TRANSFORMATION_PROPERTY_KEY = "transformation";
+
 
 protected:
   bool m_draw_children = true;
