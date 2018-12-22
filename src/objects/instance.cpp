@@ -45,7 +45,7 @@ Object* Instance::referenced_object() const
   // Note: If you implement a cache, keep in mind that it becomes dirty if
   //  - this instance's parent changes
   //  - the referenced object changes
-  
+
   if (has_reference_cycle(REFERENCE_PROPERTY_KEY)) {
     LOG(WARNING) << "detected reference cycle  "
                  << name() << ":" << property(REFERENCE_PROPERTY_KEY).label() << ".";
