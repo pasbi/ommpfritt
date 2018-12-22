@@ -29,4 +29,13 @@ void FloatProperty::serialize(AbstractSerializer& serializer, const Pointer& roo
                         make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
 }
 
+void FloatProperty::set(const variant_type& variant)
+{
+  if (std::holds_alternative<int>(variant)) {
+    TypedProperty<double>::set(std::get<int>(variant));
+  } else {
+    TypedProperty<double>::set(variant);
+  }
+}
+
 }  // namespace omm

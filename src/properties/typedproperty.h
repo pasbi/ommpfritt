@@ -30,6 +30,11 @@ public:
   void set(const variant_type& variant) override
   {
     const auto value = std::get<ValueT>(variant);
+    set(value);
+  }
+
+  void set(const ValueT& value)
+  {
     if (m_value != value) {
       m_value = value;
       Observed<AbstractPropertyObserver>::for_each([this](auto* observer) {

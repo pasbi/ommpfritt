@@ -29,4 +29,13 @@ void IntegerProperty::serialize(AbstractSerializer& serializer, const Pointer& r
                         make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
 }
 
+void IntegerProperty::set(const variant_type& variant)
+{
+  if (std::holds_alternative<double>(variant)) {
+    TypedProperty<int>::set(std::get<double>(variant));
+  } else {
+    TypedProperty<int>::set(variant);
+  }
+}
+
 }  // namespace omm
