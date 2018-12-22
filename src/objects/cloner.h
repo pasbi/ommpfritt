@@ -20,10 +20,6 @@ public:
   static constexpr auto TYPE = "Cloner";
   static constexpr auto COUNT_PROPERTY_KEY = "count";
   static constexpr auto CODE_PROPERTY_KEY = "code";
-
-private:
-  void render_instances(AbstractRenderer& renderer, const Style& style) const;
-  void render_copies(AbstractRenderer& renderer, const Style& style) const;
 };
 
 }  // namespace omm

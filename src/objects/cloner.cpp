@@ -6,6 +6,7 @@
 #include "properties/stringproperty.h"
 #include "python/scenewrapper.h"
 #include "python/objectwrapper.h"
+#include "python/pythonengine.h"
 
 namespace omm
 {
@@ -24,27 +25,7 @@ Cloner::Cloner()
     .set_category(QObject::tr("Cloner").toStdString());
 }
 
-void Cloner::render_instances(AbstractRenderer& renderer, const Style& style) const
-{
-  using namespace pybind11::literals;
-  const auto n_children = this->n_children();
-  const auto count = property(COUNT_PROPERTY_KEY).value<int>();
-  const auto code = property(CODE_PROPERTY_KEY).value<std::string>();
-
-  if (n_children > 0) {
-    for (int i = 0; i < count; ++i) {
-      Instance instance;
-      instance.property(Instance::REFERENCE_PROPERTY_KEY).set(&child(i % n_children));
-      const auto locals = pybind11::dict( "id"_a=i,
-                                          "instance"_a=ObjectWrapper::make(&instance),
-                                          "scene"_a=SceneWrapper(&renderer.scene)    );
-      renderer.scene.python_engine.run(code, locals);
-      instance.render_recursive(renderer, style);
-    }
-  }
-}
-
-void Cloner::render_copies(AbstractRenderer& renderer, const Style& style) const
+void Cloner::render(AbstractRenderer& renderer, const Style& style) const
 {
   using namespace pybind11::literals;
   const auto n_children = this->n_children();
@@ -61,11 +42,6 @@ void Cloner::render_copies(AbstractRenderer& renderer, const Style& style) const
       copy->render_recursive(renderer, style);
     }
   }
-}
-
-void Cloner::render(AbstractRenderer& renderer, const Style& style) const
-{
-  render_copies(renderer, style);
 }
 
 BoundingBox Cloner::bounding_box() const
