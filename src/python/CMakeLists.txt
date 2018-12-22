@@ -8,6 +8,7 @@ file (GLOB SOURCES
   "tagwrapper.cpp"
   "scripttagwrapper.cpp"
   "wrapperregister.cpp"
+  "objecttransformationwrapper.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})
 

@@ -53,6 +53,8 @@ public:
   ObjectTransformation normalized() const;
   bool contains_nan() const;
 
+  static constexpr auto TYPE = "ObjectTransformation";
+
 private:
   arma::vec2 m_translation;
   arma::vec2 m_scaling;

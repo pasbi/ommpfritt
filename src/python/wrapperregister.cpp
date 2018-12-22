@@ -4,6 +4,7 @@
 #include "python/propertyownerwrapper.h"
 #include "python/scripttagwrapper.h"
 #include "python/stylewrapper.h"
+#include "python/objecttransformationwrapper.h"
 
 namespace omm
 {
@@ -16,6 +17,7 @@ void register_wrappers(py::object& module)
   ObjectWrapper::define_python_interface(module);
   StyleWrapper::define_python_interface(module);
   SceneWrapper::define_python_interface(module);
+  ObjectTransformationWrapper::define_python_interface(module);
 }
 
 }  // namespace omm
