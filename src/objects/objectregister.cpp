@@ -2,6 +2,7 @@
 #include "objects/ellipse.h"
 #include "objects/empty.h"
 #include "objects/instance.h"
+#include "objects/cloner.h"
 
 namespace omm
 {
@@ -12,6 +13,7 @@ void register_objects()
   REGISTER_OBJECT(Empty);
   REGISTER_OBJECT(Ellipse);
   REGISTER_OBJECT(Instance);
+  REGISTER_OBJECT(Cloner);
 #undef REGISTER_OBJECT
 }
 

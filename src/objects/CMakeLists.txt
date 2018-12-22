@@ -1,4 +1,5 @@
 file (GLOB SOURCES
+  "cloner.cpp"
   "ellipse.cpp"
   "empty.cpp"
   "instance.cpp"
