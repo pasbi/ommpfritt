@@ -181,11 +181,13 @@ void Object::render_recursive(AbstractRenderer& renderer, const Style& default_s
   }
 
   // if (bounding_box().intersect(renderer.bounding_box()).is_empty()) {
+  if (m_draw_children) {
     for (const auto& child : children()) {
       renderer.push_transformation(child->transformation());
       child->render_recursive(renderer, default_style);
       renderer.pop_transformation();
     }
+  }
   // }
 }
 

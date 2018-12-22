@@ -47,6 +47,9 @@ public:
 
   static constexpr auto TYPE = "Object";
 
+protected:
+  bool m_draw_children = true;
+
 private:
   friend class ObjectView;
 };
