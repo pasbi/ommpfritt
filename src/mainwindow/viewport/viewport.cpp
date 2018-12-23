@@ -58,7 +58,11 @@ Viewport::~Viewport()
   m_scene.Observed<AbstractSelectionObserver>::unregister_observer(*this);
 }
 
+#if USE_OPENGL
+void Viewport::paintGL()
+#else
 void Viewport::paintEvent(QPaintEvent* event)
+#endif
 {
   QPainter painter(this);
   painter.setRenderHint(QPainter::Antialiasing);

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include <QWidget>
 #include <QTimer>
 
 #include "geometry/objecttransformation.h"
@@ -9,12 +8,26 @@
 #include "scene/abstractselectionobserver.h"
 #include "mainwindow/viewport/handle.h"
 
+#define USE_OPENGL 0
+
+#ifdef USE_OPENGL
+#include <QWidget>
+#else
+#include <QOpenGLWidget>
+#endif
+
 namespace omm
 {
 
 class Scene;
 
-class Viewport : public QWidget, public AbstractSelectionObserver
+class Viewport
+#if USE_OPENGL
+  : public QOpenGLWidget
+#else
+  : public QWidget
+#endif
+  , public AbstractSelectionObserver
 {
 public:
   Viewport(Scene& scene);
@@ -22,7 +35,11 @@ public:
   Scene& scene() const;
 
 protected:
+#if USE_OPENGL
+  void paintGL() override;
+#else
   void paintEvent(QPaintEvent* event) override;
+#endif
   void mousePressEvent(QMouseEvent* event) override;
   void mouseMoveEvent(QMouseEvent* event) override;
   void mouseReleaseEvent(QMouseEvent* event) override;
