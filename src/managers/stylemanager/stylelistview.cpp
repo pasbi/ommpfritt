@@ -20,7 +20,7 @@ void StyleListView::populate_menu(QMenu& menu, const QModelIndex& index) const
   }
 }
 
-// void StyleListView::set_selection(const SetOfPropertyOwner& selection)
+// void StyleListView::set_selection(const std::set<AbstractPropertyOwner>& selection)
 // {
 //   auto& scene = this->model()->scene();
 //   for (size_t i = 0; i < model()->rowCount(); ++i) {

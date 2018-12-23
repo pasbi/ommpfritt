@@ -39,7 +39,7 @@ PropertyManagerTab::~PropertyManagerTab()
 {
 }
 
-void PropertyManagerTab::add_properties(Scene& scene, const Property::SetOfProperties& properties)
+void PropertyManagerTab::add_properties(Scene& scene, const std::set<Property*>& properties)
 {
   assert(properties.size() > 0);
   const auto widget_type = (*properties.begin())->widget_type();

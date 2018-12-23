@@ -50,7 +50,6 @@ class Property
   , public Observed<AbstractPropertyObserver>
 {
 public:
-  using SetOfProperties = std::set<Property*>;
   using variant_type = std::variant< bool, Color, double, int, AbstractPropertyOwner*,
                                      std::string, ObjectTransformation >;
 

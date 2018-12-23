@@ -8,7 +8,7 @@ namespace omm
 {
 
 StringPropertyWidget
-::StringPropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
+::StringPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget(scene, properties)
 {
   const auto get_line_mode = std::mem_fn(&StringProperty::line_mode);

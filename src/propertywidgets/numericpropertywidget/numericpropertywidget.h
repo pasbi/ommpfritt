@@ -14,7 +14,7 @@ class NumericPropertyWidget : public PropertyWidget<NumericPropertyT>
 {
 public:
   using value_type = typename NumericPropertyT::value_type;
-  explicit NumericPropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
+  explicit NumericPropertyWidget(Scene& scene, const std::set<Property*>& properties);
 
 protected:
   void update_edit() override;

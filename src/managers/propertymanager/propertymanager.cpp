@@ -14,7 +14,7 @@ namespace
 
 using Key = omm::AbstractPropertyOwner::Key;
 
-std::vector<Key> get_key_intersection(const omm::SetOfPropertyOwner& selection)
+std::vector<Key> get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
 {
   if (selection.size() == 0) {
     return std::vector<Key>();
@@ -48,7 +48,7 @@ std::vector<Key> get_key_intersection(const omm::SetOfPropertyOwner& selection)
 }
 
 auto collect_properties( const omm::AbstractPropertyOwner::Key& key,
-                         const omm::SetOfPropertyOwner& selection )
+                         const std::set<omm::AbstractPropertyOwner*>& selection )
 {
   std::set<omm::AbstractPropertyOwner*> collection;
   const auto f = [key](omm::AbstractPropertyOwner* entity) {
@@ -58,7 +58,7 @@ auto collect_properties( const omm::AbstractPropertyOwner::Key& key,
   return transform<omm::Property*>(selection, f);
 }
 
-std::string get_tab_label(const omm::Property::SetOfProperties& properties)
+std::string get_tab_label(const std::set<omm::Property*>& properties)
 {
   assert(properties.size() > 0);
   const auto tab_label = (*properties.begin())->category();

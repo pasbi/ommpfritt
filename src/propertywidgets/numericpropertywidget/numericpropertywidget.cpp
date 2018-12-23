@@ -11,7 +11,7 @@ namespace omm
 {
 
 template<typename NumericPropertyT> NumericPropertyWidget<NumericPropertyT>
-::NumericPropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
+::NumericPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget<NumericPropertyT>(scene, properties)
 {
   using SpinBoxT = SpinBox<typename NumericPropertyT::value_type>;

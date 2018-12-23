@@ -6,7 +6,7 @@ namespace omm
 {
 
 TransformationPropertyWidget
-::TransformationPropertyWidget(Scene& scene, const Property::SetOfProperties& properties)
+::TransformationPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget(scene, properties)
 {
   auto transformation_edit = std::make_unique<SpinBoxTransformationEdit>();

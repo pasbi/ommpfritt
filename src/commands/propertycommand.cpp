@@ -3,7 +3,7 @@
 namespace omm
 {
 
-AbstractPropertiesCommand::AbstractPropertiesCommand(const Property::SetOfProperties& properties)
+AbstractPropertiesCommand::AbstractPropertiesCommand(const std::set<Property*>& properties)
   : Command(   QObject::tr("Set ").toStdString()
              + Property::get_value<std::string>(properties, std::mem_fn(&Property::label)) )
   , m_properties(properties)

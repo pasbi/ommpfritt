@@ -11,7 +11,7 @@ class AbstractTransformationEdit;
 class TransformationPropertyWidget : public PropertyWidget<TransformationProperty>
 {
 public:
-  explicit TransformationPropertyWidget(Scene& scene, const Property::SetOfProperties& properties);
+  explicit TransformationPropertyWidget(Scene& scene, const std::set<Property*>& properties);
   std::string type() const override;
 
 protected:

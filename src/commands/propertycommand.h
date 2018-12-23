@@ -15,7 +15,7 @@ public:
   int id() const override;
 
 private:
-  Property::SetOfProperties m_properties;
+  std::set<Property*> m_properties;
 };
 
 template<typename ValueT>
