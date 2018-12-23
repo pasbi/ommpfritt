@@ -22,7 +22,9 @@ PyWrapper::PyWrapper(void* wrapped)
 
 py::object wrap(Object* object)
 {
-  return ObjectWrapper::make(object);
+  auto py_object = ObjectWrapper::make(object);
+  PropertyOwnerWrapper::add_property_shortcuts(py_object, *object);
+  return py_object;
 }
 
 py::object wrap(Tag* tag)

@@ -6,7 +6,6 @@ namespace omm
 py::object TagWrapper::owner() const
 {
   Object* owner = wrapped<Tag>().owner();
-  LOG(INFO) << owner;
   return wrap(owner);
 }
 
