@@ -36,10 +36,13 @@ void Cloner::render(AbstractRenderer& renderer, const Style& style) const
     for (int i = 0; i < count; ++i) {
       auto copy = child(i % n_children).copy();
       const auto locals = pybind11::dict( "id"_a=i,
+                                          "count"_a=count,
                                           "copy"_a=ObjectWrapper::make(copy.get()),
                                           "scene"_a=SceneWrapper(&renderer.scene) );
       renderer.scene.python_engine.run(code, locals);
+      renderer.push_transformation(copy->transformation());
       copy->render_recursive(renderer, style);
+      renderer.pop_transformation();
     }
   }
 }
