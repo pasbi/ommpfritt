@@ -21,13 +21,13 @@ template<typename ItemViewT> ItemManager<ItemViewT>
   m_item_view = item_view.get();
   item_view->installEventFilter(this);
 
-  setWidget(item_view.release());
+  set_widget(std::move(item_view));
 }
 
 template<typename ItemViewT> bool
 ItemManager<ItemViewT>::eventFilter(QObject* object, QEvent* event)
 {
-  if (object == widget() && event->type() == QEvent::MouseButtonRelease) {
+  if (object == m_item_view && event->type() == QEvent::MouseButtonRelease) {
     m_scene.set_selection(m_item_view->selected_items());
   }
   return Manager::eventFilter(object, event);

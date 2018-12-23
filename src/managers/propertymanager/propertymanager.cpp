@@ -91,7 +91,7 @@ PropertyManager::PropertyManager(Scene& scene)
 {
   auto tabs = std::make_unique<QTabWidget>();
   m_tabs = tabs.get();
-  setWidget(tabs.release());
+  set_widget(std::move(tabs));
   setWindowTitle(tr("property manager"));
   setObjectName(TYPE());
   connect(m_tabs, &QTabWidget::currentChanged, [this](int index) {
