@@ -6,14 +6,18 @@ namespace omm
 {
 
 template<typename ReceiverT, typename F>
-void action(QMenu& menu, const QString& label, ReceiverT& receiver, F f)
+QAction& action(QMenu& menu, const QString& label, ReceiverT& receiver, F f)
 {
-  QObject::connect(menu.addAction(label), &QAction::triggered, &receiver, f);
+  auto& action = *menu.addAction(label);
+  QObject::connect(&action, &QAction::triggered, &receiver, f);
+  return action;
 }
 
-template<typename F> void action(QMenu& menu, const QString& label, F f)
+template<typename F> QAction& action(QMenu& menu, const QString& label, F f)
 {
-  QObject::connect(menu.addAction(label), &QAction::triggered, f);
+  auto& action = *menu.addAction(label);
+  QObject::connect(&action, &QAction::triggered, f);
+  return action;
 }
 
 }  // namespace omm
