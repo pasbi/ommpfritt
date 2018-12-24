@@ -3,7 +3,7 @@
 namespace omm
 {
 
-Empty::Empty()
+Empty::Empty(Scene& scene) : Object(scene)
 {
 }
 

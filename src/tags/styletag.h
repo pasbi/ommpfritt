@@ -8,7 +8,7 @@ namespace omm {
 class StyleTag : public Tag
 {
 public:
-  explicit StyleTag();
+  explicit StyleTag(Object& owner);
   std::string type() const override;
   QIcon icon() const override;
   static constexpr auto STYLE_REFERENCE_PROPERTY_KEY = "style";

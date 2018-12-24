@@ -47,8 +47,9 @@ std::vector<const omm::Style*> find_styles(const omm::Object& object)
 namespace omm
 {
 
-Object::Object()
+Object::Object(Scene& scene)
   : TreeElement(nullptr)
+  , scene(scene)
   , tags()
 {
 
@@ -143,7 +144,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
     const auto child_pointer = make_pointer(children_pointer, i);
     const auto child_type = deserializer.get_string(make_pointer(child_pointer, TYPE_POINTER));
     try {
-      auto child = Object::make(child_type);
+      auto child = Object::make(child_type, scene);
       child->deserialize(deserializer, child_pointer);
       adopt(std::move(child));
     } catch (std::out_of_range& e) {
@@ -160,9 +161,8 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   for (size_t i = 0; i < n_tags; ++i) {
     const auto tag_pointer = make_pointer(tags_pointer, i);
     const auto tag_type = deserializer.get_string(make_pointer(tag_pointer, TYPE_POINTER));
-    auto tag = Tag::make(tag_type);
+    auto tag = Tag::make(tag_type, *this);
     tag->deserialize(deserializer, tag_pointer);
-    tag->set_owner(this);
     tags.push_back(std::move(tag));
   }
   this->tags.set(std::move(tags));
@@ -214,6 +214,11 @@ std::unique_ptr<AbstractRAIIGuard> Object::acquire_set_parent_guard()
     const ObjectTransformation m_global_transformation;
   };
   return std::make_unique<SetParentGuard>(*this);
+}
+
+std::unique_ptr<Object> Object::copy() const
+{
+  return Copyable<Object>::copy(this->make(this->type(), scene));
 }
 
 }  // namespace omm

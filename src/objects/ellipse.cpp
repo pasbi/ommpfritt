@@ -9,7 +9,7 @@ namespace omm
 
 class Style;
 
-Ellipse::Ellipse()
+Ellipse::Ellipse(Scene& scene) : Object(scene)
 {
   add_property( "rx", std::make_unique<FloatProperty>(100.0) )
     .set_label(QObject::tr("rx").toStdString())

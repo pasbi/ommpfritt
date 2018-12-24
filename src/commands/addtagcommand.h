@@ -14,7 +14,6 @@ public:
   AddTagCommand(Object& owner, std::unique_ptr<Tag> item)
     : AddCommand(owner.tags, std::move(item))
   {
-    this->item().set_owner(&owner);
   }
 };
 

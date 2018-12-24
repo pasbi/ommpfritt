@@ -11,8 +11,11 @@
 namespace omm
 {
 
+Tag::Tag(Object& owner) : owner(owner) {}
 
-Object* Tag::owner() const { return m_owner; }
-void Tag::set_owner(Object* owner) { m_owner = owner; }
+std::unique_ptr<Tag> Tag::copy() const
+{
+  return Copyable<Tag>::copy(this->make(this->type(), owner));
+}
 
 }  // namespace omm

@@ -9,7 +9,8 @@ namespace omm
 
 class Style;
 
-Instance::Instance()
+Instance::Instance(Scene& scene)
+  : Object(scene)
 {
   const auto only_objects = AbstractPropertyOwner::Kind::Object;
   auto refernce_property = std::make_unique<ReferenceProperty>(only_objects);

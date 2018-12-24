@@ -13,19 +13,15 @@ class Scene;
 
 class Tag
   : public PropertyOwner<AbstractPropertyOwner::Kind::Tag>
-  , public CopyCreatable<Tag>
+  , public CopyCreatable<Tag, Object&>
 {
 public:
+  explicit Tag(Object& owner);
   virtual ~Tag() = default;
-
   virtual QIcon icon() const = 0;
-
-  void set_owner(Object* owner);
-  Object* owner() const;
   static constexpr auto TYPE = "Tag";
-
-private:
-  Object* m_owner;
+  std::unique_ptr<Tag> copy() const override;
+  Object& owner;
 
 };
 

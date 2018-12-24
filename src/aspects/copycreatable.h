@@ -20,10 +20,7 @@ class CopyCreatable
   , public AbstractFactory<std::string, T, CtorArgs...>
 {
 public:
-  std::unique_ptr<T> copy() const
-  {
-    return Copyable<T>::copy(this->make(this->type()));
-  }
+  virtual std::unique_ptr<T> copy() const = 0;
 };
 
 }  // omm

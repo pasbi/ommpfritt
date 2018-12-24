@@ -107,7 +107,7 @@ PropertyManager::~PropertyManager()
   scene().Observed<AbstractSelectionObserver>::unregister_observer(*this);
 }
 
-void PropertyManager::set_selection(const SetOfPropertyOwner& selection)
+void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
   const auto key_intersection = get_key_intersection(selection);
   clear();

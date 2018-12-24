@@ -50,7 +50,7 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
     auto tag_menu = std::make_unique<QMenu>(tr("&attach tag"));
     for (const auto& key : Tag::keys()) {
       action(*tag_menu, QString::fromStdString(key), [this, key, object](){
-        model()->scene().submit<AddTagCommand>(*object, Tag::make(key));
+        model()->scene().submit<AddTagCommand>(*object, Tag::make(key, *object));
       });
     }
     menu.addMenu(tag_menu.release());
@@ -79,9 +79,8 @@ bool ObjectTreeView::remove_selection()
   const auto selected_objects = AbstractPropertyOwner::cast<Object>(this->selected_objects());
 
   const auto accumulate_free_tags = [selected_objects](auto map, auto* tag) {
-    auto* owner = tag->owner();
-    if (selected_objects.count(owner) == 0) {
-      map[owner].insert(tag);
+    if (!::contains(selected_objects, &tag->owner)) {
+      map[&tag->owner].insert(tag);
     }
     return map;
   };

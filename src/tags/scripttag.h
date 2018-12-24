@@ -8,7 +8,7 @@ namespace omm
 class ScriptTag : public Tag
 {
 public:
-  explicit ScriptTag();
+  explicit ScriptTag(Object& owner);
   ~ScriptTag();
   std::string type() const override;
   QIcon icon() const override;

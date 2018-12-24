@@ -21,10 +21,6 @@ namespace
 constexpr auto ROOT_POINTER = "root";
 constexpr auto STYLES_POINTER = "styles";
 
-auto make_root()
-{
-  return std::make_unique<omm::Empty>();
-}
 
 std::unique_ptr<omm::Style> make_default_style(omm::Scene* scene)
 {
@@ -64,6 +60,11 @@ Scene::~Scene()
   if (m_current == this) {
     m_current = nullptr;
   }
+}
+
+std::unique_ptr<Object> Scene::make_root()
+{
+  return std::make_unique<Empty>(*this);
 }
 
 Scene* Scene::currentInstance()

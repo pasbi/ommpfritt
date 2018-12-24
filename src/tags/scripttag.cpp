@@ -11,7 +11,8 @@ namespace py = pybind11;
 namespace omm
 {
 
-ScriptTag::ScriptTag()
+ScriptTag::ScriptTag(Object& owner)
+  : Tag(owner)
 {
   add_property( CODE_PROPERTY_KEY,
                 std::make_unique<StringProperty>("", StringProperty::LineMode::MultiLine) )

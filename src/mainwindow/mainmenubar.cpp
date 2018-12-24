@@ -31,7 +31,7 @@ void MainMenuBar::make_create_menu()
     action(create_menu, QString::fromStdString(key), [this, key]() {
       Scene& scene = m_app.scene;
       using add_command_type = AddCommand<Tree<Object>>;
-      scene.submit<add_command_type>(scene.object_tree, Object::make(key));
+      scene.submit<add_command_type>(scene.object_tree, Object::make(key, scene));
     });
   }
 }

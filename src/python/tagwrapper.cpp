@@ -5,8 +5,7 @@ namespace omm
 
 py::object TagWrapper::owner() const
 {
-  Object* owner = wrapped<Tag>().owner();
-  return wrap(owner);
+  return wrap(&wrapped<Tag>().owner);
 }
 
 void TagWrapper::define_python_interface(py::object& module)

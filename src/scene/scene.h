@@ -37,6 +37,7 @@ public:
   Scene(const PythonEngine& python_engine);
   ~Scene();
 
+  std::unique_ptr<Object> make_root();
   static constexpr auto TYPE = "Scene";
 
   Tree<Object> object_tree;

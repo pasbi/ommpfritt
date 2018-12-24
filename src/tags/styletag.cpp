@@ -7,7 +7,8 @@
 namespace omm
 {
 
-StyleTag::StyleTag()
+StyleTag::StyleTag(Object& owner)
+  : Tag(owner)
 {
   auto style_property = std::make_unique<ReferenceProperty>(AbstractPropertyOwner::Kind::Style);
   add_property( STYLE_REFERENCE_PROPERTY_KEY, std::move(style_property))

@@ -13,7 +13,7 @@ namespace omm
 
 class Style;
 
-Cloner::Cloner()
+Cloner::Cloner(Scene& scene) : Object(scene)
 {
   m_draw_children = false;
   add_property( COUNT_PROPERTY_KEY, std::make_unique<IntegerProperty>(3) )
