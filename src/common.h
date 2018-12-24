@@ -137,3 +137,6 @@ template<typename T, typename S> bool contains(const std::set<T>& set, const S& 
 {
   return set.count(const_cast<S&>(key)) > 0;
 }
+
+template<typename T> struct is_unique_ptr : std::true_type {};
+template<typename... T> struct is_unique_ptr<std::unique_ptr<T...>> : std::true_type {};
