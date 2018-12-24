@@ -91,6 +91,10 @@ public:
   }
 
   virtual bool is_compatible(const Property& other) const;
+  static const std::string USER_PROPERTY_CATEGROY_NAME;
+
+  // user properties can be added/edited/removed dynamically
+  bool is_user_property() const;
 
 private:
   std::string m_label;

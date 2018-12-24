@@ -6,6 +6,7 @@
 #include "aspects/propertyowner.h"
 #include "managers/manager.h"
 #include "scene/scene.h"
+#include "managers/propertymanager/userpropertymanager/userpropertydialog.h"
 
 class QTabWidget;
 
@@ -25,10 +26,14 @@ public:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection) override;
   PropertyView property(const std::string& key);
   void clear();
+  void add_user_property();
 
 private:
   QTabWidget* m_tabs;
   std::string m_active_category;
+  QAction* m_manage_user_properties_action;
+  std::unique_ptr<QMenuBar> make_menu_bar();
+  UserPropertyDialog m_user_property_dialog;
 };
 
 }  // namespace omm

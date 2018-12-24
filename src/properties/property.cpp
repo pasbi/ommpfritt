@@ -12,6 +12,8 @@
 namespace omm
 {
 
+const std::string Property::USER_PROPERTY_CATEGROY_NAME = "user properties"; // TODO translate
+
 Property::Property()
 {
 }
@@ -61,6 +63,11 @@ void Property
 bool Property::is_compatible(const Property& other) const
 {
   return type() == other.type();
+}
+
+bool Property::is_user_property() const
+{
+  return m_category == USER_PROPERTY_CATEGROY_NAME;
 }
 
 }  // namespace omm

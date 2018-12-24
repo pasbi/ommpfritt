@@ -8,6 +8,7 @@
 #include "propertywidgets/propertywidget.h"
 #include "aspects/propertyowner.h"
 #include "common.h"
+#include "menuhelper.h"
 
 namespace
 {
@@ -81,13 +82,15 @@ size_t find_tab_label(const std::string& label, const std::vector<std::string>& 
   return std::distance(labels.cbegin(), it);
 }
 
+
 }  // namespace
 
 namespace omm
 {
 
 PropertyManager::PropertyManager(Scene& scene)
-  : Manager(tr("Properties"), scene)
+  : Manager(tr("Properties"), scene, make_menu_bar())
+  , m_user_property_dialog(this)
 {
   auto tabs = std::make_unique<QTabWidget>();
   m_tabs = tabs.get();
@@ -105,6 +108,16 @@ PropertyManager::PropertyManager(Scene& scene)
 PropertyManager::~PropertyManager()
 {
   scene().Observed<AbstractSelectionObserver>::unregister_observer(*this);
+}
+
+std::unique_ptr<QMenuBar> PropertyManager::make_menu_bar()
+{
+  auto menu_bar = std::make_unique<QMenuBar>();
+  auto user_properties_menu = menu_bar->addMenu("user properties");
+  m_manage_user_properties_action = &action( *user_properties_menu, "new user property",
+                                             [this]() { m_user_property_dialog.exec(); });
+  m_manage_user_properties_action->setEnabled(false);
+  return menu_bar;
 }
 
 void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& selection)
@@ -132,6 +145,13 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
 
   if (tabs.contains(active_category)) {
     m_tabs->setCurrentIndex(find_tab_label(active_category, tabs.keys()));
+  }
+
+  if (selection.size() == 1) {
+    m_user_property_dialog.set_property_owner(*selection.begin());
+    m_manage_user_properties_action->setEnabled(true);
+  } else {
+    m_manage_user_properties_action->setEnabled(false);
   }
 }
 

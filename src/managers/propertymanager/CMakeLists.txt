@@ -4,3 +4,5 @@ file (GLOB SOURCES
 )
 
 target_sources(libommpfritt PRIVATE ${SOURCES})
+add_subdirectory("userpropertymanager")
+
