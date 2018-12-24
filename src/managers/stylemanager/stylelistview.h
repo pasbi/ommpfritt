@@ -3,18 +3,18 @@
 #include <QListView>
 #include "common.h"
 #include "managers/manageritemview.h"
-#include "scene/stylelistadapter.h"
+#include "scene/listadapter.h"
 
 namespace omm
 {
 
 class Object;
 
-class StyleListView : public ManagerItemView<QListView, StyleListAdapter>
+class StyleListView : public ManagerItemView<QListView, ListAdapter<Style>>
 {
 public:
-  using model_type = StyleListAdapter;
-  using ManagerItemView<QListView, StyleListAdapter>::ManagerItemView;
+  using model_type = ListAdapter<Style>;
+  using ManagerItemView<QListView, model_type>::ManagerItemView;
 
 protected:
   void populate_menu(QMenu& menu, const QModelIndex& index) const override;

@@ -1,22 +1,23 @@
-#include "scene/stylelistadapter.h"
+#include "scene/listadapter.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
 
 namespace omm
 {
 
-StyleListAdapter::StyleListAdapter(Scene& scene)
-  : ItemModelAdapter(scene, scene.styles)
+template<typename ItemT> ListAdapter<ItemT>::ListAdapter(List<ItemT>& list)
+  : ItemModelAdapter<List<ItemT>, QAbstractListModel>(list)
+  , list_structure(list)
 {
 }
 
-int StyleListAdapter::rowCount(const QModelIndex& parent) const
+template<typename ItemT> int ListAdapter<ItemT>::rowCount(const QModelIndex& parent) const
 {
   assert(!parent.isValid());
-  return structure().items().size();
+  return this->structure().items().size();
 }
 
-QVariant StyleListAdapter::data(const QModelIndex& index, int role) const
+template<typename ItemT> QVariant ListAdapter<ItemT>::data(const QModelIndex& index, int role) const
 {
   if (!index.isValid()) {
     return QVariant();
@@ -27,31 +28,31 @@ QVariant StyleListAdapter::data(const QModelIndex& index, int role) const
   switch (role) {
   case Qt::DisplayRole:
   case Qt::EditRole:
-    return QString::fromStdString(structure().item(index.row()).name());
+    return QString::fromStdString(this->structure().item(index.row()).name());
   }
   return QVariant();
 }
 
-Qt::ItemFlags StyleListAdapter::flags(const QModelIndex &index) const
+template<typename ItemT> Qt::ItemFlags ListAdapter<ItemT>::flags(const QModelIndex &index) const
 {
   assert(!index.parent().isValid());
   return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled
             | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemNeverHasChildren;
 }
 
-std::unique_ptr<AbstractRAIIGuard>
-StyleListAdapter::acquire_inserter_guard(int row)
+template<typename ItemT> std::unique_ptr<AbstractRAIIGuard>
+ListAdapter<ItemT>::acquire_inserter_guard(int row)
 {
   class InserterGuard : public AbstractRAIIGuard
   {
   public:
-    InserterGuard(StyleListAdapter& model, int row) : m_model(model)
+    InserterGuard(ListAdapter& model, int row) : m_model(model)
     {
       m_model.beginInsertRows(QModelIndex(), row, row);
     }
     ~InserterGuard() { m_model.endInsertRows(); }
   private:
-    StyleListAdapter& m_model;
+    ListAdapter& m_model;
   };
   return std::make_unique<InserterGuard>(*this, row);
 }
@@ -59,47 +60,47 @@ StyleListAdapter::acquire_inserter_guard(int row)
   // friend class AbstractRAIIGuard;
   // std::unique_ptr<AbstractRAIIGuard> acquire_mover_guard() override;
 
-std::unique_ptr<AbstractRAIIGuard>
-StyleListAdapter::acquire_remover_guard(int row)
+template<typename ItemT> std::unique_ptr<AbstractRAIIGuard>
+ListAdapter<ItemT>::acquire_remover_guard(int row)
 {
   class RemoverGuard : public AbstractRAIIGuard
   {
   public:
-    RemoverGuard(StyleListAdapter& model, int row) : m_model(model)
+    RemoverGuard(ListAdapter& model, int row) : m_model(model)
     {
       m_model.beginRemoveRows(QModelIndex(), row, row);
     }
     ~RemoverGuard() { m_model.endRemoveRows(); }
   private:
-    StyleListAdapter& m_model;
+    ListAdapter& m_model;
   };
   return std::make_unique<RemoverGuard>(*this, row);
 }
 
-std::unique_ptr<AbstractRAIIGuard>
-StyleListAdapter::acquire_reseter_guard()
+template<typename ItemT> std::unique_ptr<AbstractRAIIGuard>
+ListAdapter<ItemT>::acquire_reseter_guard()
 {
   class ReseterGuard : public AbstractRAIIGuard
   {
   public:
-    ReseterGuard(StyleListAdapter& model) : m_model(model)
+    ReseterGuard(ListAdapter& model) : m_model(model)
     {
       m_model.beginResetModel();
     }
     ~ReseterGuard() { m_model.endResetModel(); }
   private:
-    StyleListAdapter& m_model;
+    ListAdapter& m_model;
   };
   return std::make_unique<ReseterGuard>(*this);
 }
 
-std::unique_ptr<AbstractRAIIGuard>
-StyleListAdapter::acquire_mover_guard(const StyleListMoveContext& context)
+template<typename ItemT> std::unique_ptr<AbstractRAIIGuard>
+ListAdapter<ItemT>::acquire_mover_guard(const ListMoveContext<ItemT>& context)
 {
   class MoverGuard : public AbstractRAIIGuard
   {
   public:
-    MoverGuard(StyleListAdapter& model, int old_pos, int new_pos)
+    MoverGuard(ListAdapter& model, int old_pos, int new_pos)
       : m_model(model)
     {
       m_model.beginMoveRows(QModelIndex(), old_pos, old_pos, QModelIndex(), new_pos);
@@ -107,11 +108,11 @@ StyleListAdapter::acquire_mover_guard(const StyleListMoveContext& context)
 
     ~MoverGuard() { m_model.endMoveRows(); }
   private:
-    StyleListAdapter& m_model;
+    ListAdapter& m_model;
   };
 
-  const auto old_pos = scene().styles.position(context.subject);
-  const auto new_pos = scene().styles.insert_position(context.predecessor);
+  const auto old_pos = list_structure.position(context.subject);
+  const auto new_pos = list_structure.insert_position(context.predecessor);
 
   if (old_pos == new_pos) {
     return nullptr;
@@ -120,7 +121,8 @@ StyleListAdapter::acquire_mover_guard(const StyleListMoveContext& context)
   }
 }
 
-bool StyleListAdapter::setData(const QModelIndex& index, const QVariant& value, int role)
+template<typename ItemT>
+bool ListAdapter<ItemT>::setData(const QModelIndex& index, const QVariant& value, int role)
 {
   if (!index.isValid() || role != Qt::EditRole) {
     return false;
@@ -129,17 +131,19 @@ bool StyleListAdapter::setData(const QModelIndex& index, const QVariant& value, 
   assert(index.column() == 0);
   assert(!index.parent().isValid());
 
-  auto& style = structure().item(index.row());
-  auto& name_property = style.property(Object::NAME_PROPERTY_KEY);
+  auto& item = this->structure().item(index.row());
+  auto& name_property = item.property(Object::NAME_PROPERTY_KEY);
   name_property.set(value.toString().toStdString());
   return true;
 }
 
-Style& StyleListAdapter::item_at(const QModelIndex& index) const
+template<typename ItemT> ItemT& ListAdapter<ItemT>::item_at(const QModelIndex& index) const
 {
   assert(index.isValid());
   assert(!index.parent().isValid());
-  return structure().item(index.row());
+  return this->structure().item(index.row());
 }
+
+template class ListAdapter<Style>;
 
 }  // namespace omm

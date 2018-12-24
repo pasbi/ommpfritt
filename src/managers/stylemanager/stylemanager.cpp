@@ -3,7 +3,7 @@
 #include <QEvent>
 #include "renderers/style.h"
 #include "managers/stylemanager/stylelistview.h"
-#include "scene/stylelistadapter.h"
+#include "scene/listadapter.h"
 #include "scene/scene.h"
 
 namespace omm

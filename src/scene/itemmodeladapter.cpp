@@ -122,8 +122,8 @@ namespace omm
 {
 
 template<typename StructureT, typename ItemModel>
-ItemModelAdapter<StructureT, ItemModel>::ItemModelAdapter(Scene& scene, StructureT& structure)
-  : m_scene(scene)
+ItemModelAdapter<StructureT, ItemModel>::ItemModelAdapter(StructureT& structure)
+  : m_scene(structure.scene)
   , m_structure(structure)
 {
   m_structure.Observed<AbstractStructureObserver<StructureT>>::register_observer(*this);

@@ -6,7 +6,7 @@ file (GLOB SOURCES
   "propertyownermimedata.cpp"
   "itemmodeladapter.cpp"
   "objecttreeadapter.cpp"
-  "stylelistadapter.cpp"
+  "listadapter.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})
 

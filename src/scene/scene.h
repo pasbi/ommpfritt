@@ -14,7 +14,7 @@
 #include "scene/cachedgetter.h"
 #include "scene/list.h"
 #include "scene/tree.h"
-#include "scene/stylelistadapter.h"
+#include "scene/listadapter.h"
 #include "scene/objecttreeadapter.h"
 #include "scene/abstractselectionobserver.h"
 
@@ -44,7 +44,7 @@ public:
   ObjectTreeAdapter object_tree_adapter;
 
   List<Style> styles;
-  StyleListAdapter style_list_adapter;
+  ListAdapter<Style> style_list_adapter;
 
   template<typename ItemT> typename SceneStructure<ItemT>::type& structure();
   template<typename ItemT> const typename SceneStructure<ItemT>::type& structure() const;
