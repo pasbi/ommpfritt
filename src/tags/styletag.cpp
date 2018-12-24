@@ -10,8 +10,7 @@ namespace omm
 StyleTag::StyleTag(Object& owner)
   : Tag(owner)
 {
-  auto style_property = std::make_unique<ReferenceProperty>(AbstractPropertyOwner::Kind::Style);
-  add_property( STYLE_REFERENCE_PROPERTY_KEY, std::move(style_property))
+  add_property<ReferenceProperty>(STYLE_REFERENCE_PROPERTY_KEY, AbstractPropertyOwner::Kind::Style)
     .set_label("style").set_category("style");
 }
 

@@ -31,10 +31,9 @@ public:
   AbstractPropertyOwner(AbstractPropertyOwner&& other);
   static constexpr auto TYPE = "PropertyOwner";
   virtual ~AbstractPropertyOwner();
-  using Key = PropertyMap::key_type;
-  Property& property(const Key& key) const;
-  bool has_property(const Key& key) const;
-  template<typename ValueT> bool has_property(const Key& key) const
+  Property& property(const std::string& key) const;
+  bool has_property(const std::string& key) const;
+  template<typename ValueT> bool has_property(const std::string& key) const
   {
     if (has_property(key)) {
       const auto variant = property(key).variant_value();
@@ -75,7 +74,23 @@ public:
   static const std::string NAME_PROPERTY_KEY;
 
 protected:
-  Property& add_property(const Key& key, std::unique_ptr<Property> property);
+  template<typename PropertyT>
+  PropertyT& add_property(const std::string& key, std::unique_ptr<PropertyT> property)
+  {
+    static_assert(std::is_base_of<Property, PropertyT>::value);
+    PropertyT& ref = *property;
+    assert(!m_properties.contains(key));
+    m_properties.insert(key, std::move(property));
+    ref.register_observer(*this);
+    return ref;
+  }
+
+  template<typename PropertyT, typename... Args>
+  PropertyT& add_property(const std::string& key, Args&&... args)
+  {
+    static_assert(std::is_base_of<Property, PropertyT>::value);
+    return add_property<PropertyT>(key, std::make_unique<PropertyT>(std::forward<Args>(args)...));
+  }
 
 private:
   PropertyMap m_properties;

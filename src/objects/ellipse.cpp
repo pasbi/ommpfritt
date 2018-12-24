@@ -11,12 +11,10 @@ class Style;
 
 Ellipse::Ellipse(Scene& scene) : Object(scene)
 {
-  add_property( "rx", std::make_unique<FloatProperty>(100.0) )
-    .set_label(QObject::tr("rx").toStdString())
-    .set_category(QObject::tr("ellipse").toStdString());
-  add_property( "ry", std::make_unique<FloatProperty>(100.0) )
-    .set_label(QObject::tr("ry").toStdString())
-    .set_category(QObject::tr("ellipse").toStdString());
+  add_property<FloatProperty>("rx", 100.0).set_label(QObject::tr("rx").toStdString())
+                                          .set_category(QObject::tr("ellipse").toStdString());
+  add_property<FloatProperty>("ry", 100.0).set_label(QObject::tr("ry").toStdString())
+                                          .set_category(QObject::tr("ellipse").toStdString());
 }
 
 void Ellipse::render(AbstractRenderer& renderer, const Style& style) const

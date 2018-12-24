@@ -22,8 +22,7 @@ const std::string AbstractPropertyOwner::NAME_PROPERTY_KEY = "name";
 
 AbstractPropertyOwner::AbstractPropertyOwner()
 {
-  add_property( NAME_PROPERTY_KEY,
-              std::make_unique<StringProperty>("<unnamed object>") )
+  add_property<StringProperty>(NAME_PROPERTY_KEY, "<unnamed object>")
   .set_label(QObject::tr("Name").toStdString())
   .set_category(QObject::tr("basic").toStdString());
 }
@@ -42,13 +41,13 @@ const PropertyMap& AbstractPropertyOwner::properties() const
   return m_properties;
 }
 
-Property& AbstractPropertyOwner::property(const Key& key) const
+Property& AbstractPropertyOwner::property(const std::string& key) const
 {
   assert(has_property(key));
   return *m_properties.at(key);
 }
 
-bool AbstractPropertyOwner::has_property(const Key& key) const
+bool AbstractPropertyOwner::has_property(const std::string& key) const
 {
   return m_properties.contains(key);
 }
@@ -104,17 +103,6 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
 
     property(property_key).deserialize(deserializer, property_pointer);
   }
-}
-
-Property& AbstractPropertyOwner::add_property(const Key& key, std::unique_ptr<Property> property)
-{
-  Property& ref = *property;
-  bool was_inserted = m_properties.insert(key, std::move(property));
-  assert(was_inserted);
-  (void) was_inserted;
-
-  ref.register_observer(*this);
-  return ref;
 }
 
 void AbstractPropertyOwner::on_property_value_changed(Property& property)

@@ -23,7 +23,7 @@ public:
   ~PropertyManager();
 
   void set_selection(const std::set<AbstractPropertyOwner*>& selection) override;
-  PropertyView property(const AbstractPropertyOwner::Key& key);
+  PropertyView property(const std::string& key);
   void clear();
 
 private:

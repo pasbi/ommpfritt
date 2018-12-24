@@ -16,11 +16,10 @@ class Style;
 Cloner::Cloner(Scene& scene) : Object(scene)
 {
   m_draw_children = false;
-  add_property( COUNT_PROPERTY_KEY, std::make_unique<IntegerProperty>(3) )
+  add_property<IntegerProperty>(COUNT_PROPERTY_KEY)
     .set_label(QObject::tr("count").toStdString())
     .set_category(QObject::tr("Cloner").toStdString());
-  add_property( CODE_PROPERTY_KEY,
-                std::make_unique<StringProperty>("", StringProperty::LineMode::MultiLine) )
+  add_property<StringProperty>(CODE_PROPERTY_KEY, "", StringProperty::LineMode::MultiLine)
     .set_label(QObject::tr("code").toStdString())
     .set_category(QObject::tr("Cloner").toStdString());
 }

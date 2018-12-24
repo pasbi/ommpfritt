@@ -53,8 +53,7 @@ Object::Object(Scene& scene)
   , tags(&scene)
 {
 
-  add_property( TRANSFORMATION_PROPERTY_KEY,
-                std::make_unique<TransformationProperty>(ObjectTransformation()) )
+  add_property<TransformationProperty>(TRANSFORMATION_PROPERTY_KEY)
     .set_label(QObject::tr("transformation").toStdString())
     .set_category(QObject::tr("object").toStdString());
 }

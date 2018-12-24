@@ -12,9 +12,7 @@ class Style;
 Instance::Instance(Scene& scene)
   : Object(scene)
 {
-  const auto only_objects = AbstractPropertyOwner::Kind::Object;
-  auto refernce_property = std::make_unique<ReferenceProperty>(only_objects);
-  add_property( REFERENCE_PROPERTY_KEY, std::move(refernce_property))
+  add_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY, AbstractPropertyOwner::Kind::Object)
     .set_label("reference").set_category("Instance");
 }
 

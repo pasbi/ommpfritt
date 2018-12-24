@@ -14,8 +14,7 @@ namespace omm
 ScriptTag::ScriptTag(Object& owner)
   : Tag(owner)
 {
-  add_property( CODE_PROPERTY_KEY,
-                std::make_unique<StringProperty>("", StringProperty::LineMode::MultiLine) )
+  add_property<StringProperty>(CODE_PROPERTY_KEY, "", StringProperty::LineMode::MultiLine)
     .set_label("code").set_category("script");
 }
 

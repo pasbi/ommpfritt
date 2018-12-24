@@ -14,31 +14,33 @@ namespace
 
 using Key = omm::AbstractPropertyOwner::Key;
 
-std::vector<Key> get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
+std::vector<std::string>
+get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
 {
   if (selection.size() == 0) {
-    return std::vector<Key>();
+    return std::vector<std::string>();
   }
 
   const auto* the_entity = *selection.begin();
   auto keys = the_entity->properties().keys();
-  std::unordered_map<Key, omm::Property*> the_properties;
+  std::unordered_map<std::string, omm::Property*> the_properties;
   for (auto&& key : keys) {
     the_properties.insert(std::make_pair(key, &the_entity->property(key)));
   }
 
-  const auto has_key = [](const omm::AbstractPropertyOwner* entity, const Key& key) {
+  const auto has_key = [](const omm::AbstractPropertyOwner* entity, const std::string& key) {
     auto&& property_keys = entity->properties().keys();
     return std::find(property_keys.begin(), property_keys.end(), key) != property_keys.end();
   };
 
   const auto
-  key_same_type = [the_properties](const omm::AbstractPropertyOwner* entity, const Key& key) {
+  key_same_type = [the_properties]( const omm::AbstractPropertyOwner* entity,
+                                    const std::string& key) {
     return the_properties.at(key)->is_compatible(entity->property(key));
   };
 
   for (auto it = std::next(selection.begin()); it != selection.end(); ++it) {
-    const auto not_has_key_of_same_type = [&it, &has_key, &key_same_type](const Key& key) {
+    const auto not_has_key_of_same_type = [&it, &has_key, &key_same_type](const std::string& key) {
       return !has_key(*it, key) || !key_same_type(*it, key);
     };
     keys.erase(std::remove_if(keys.begin(), keys.end(), not_has_key_of_same_type), keys.end());
@@ -47,7 +49,7 @@ std::vector<Key> get_key_intersection(const std::set<omm::AbstractPropertyOwner*
   return keys;
 }
 
-auto collect_properties( const omm::AbstractPropertyOwner::Key& key,
+auto collect_properties( const std::string& key,
                          const std::set<omm::AbstractPropertyOwner*>& selection )
 {
   std::set<omm::AbstractPropertyOwner*> collection;
