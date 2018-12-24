@@ -122,17 +122,17 @@ namespace omm
 {
 
 template<typename StructureT, typename ItemModel>
-ItemModelAdapter<StructureT, ItemModel>::ItemModelAdapter(StructureT& structure)
-  : m_scene(structure.scene)
-  , m_structure(structure)
+ItemModelAdapter<StructureT, ItemModel>::ItemModelAdapter(Scene& scene, StructureT& structure)
+  : scene(scene)
+  , structure(structure)
 {
-  m_structure.Observed<AbstractStructureObserver<StructureT>>::register_observer(*this);
+  structure.Observed<AbstractStructureObserver<StructureT>>::register_observer(*this);
 }
 
 template<typename StructureT, typename ItemModel>
 ItemModelAdapter<StructureT, ItemModel>::~ItemModelAdapter()
 {
-  m_structure.Observed<AbstractStructureObserver<StructureT>>::unregister_observer(*this);
+  structure.Observed<AbstractStructureObserver<StructureT>>::unregister_observer(*this);
 }
 
 template<typename StructureT, typename ItemModel> Qt::DropActions
@@ -156,7 +156,7 @@ template<typename StructureT, typename ItemModel> bool ItemModelAdapter<Structur
   case Qt::MoveAction:
     return data->hasFormat(PropertyOwnerMimeData::MIME_TYPE)
         && qobject_cast<const PropertyOwnerMimeData*>(data) != nullptr
-        && can_move_drop_items<item_type>( m_structure,
+        && can_move_drop_items<item_type>( structure,
                                            make_contextes<Context>(*this, data, row, parent) );
   case Qt::CopyAction:
     return data->hasFormat(PropertyOwnerMimeData::MIME_TYPE)
@@ -180,12 +180,12 @@ ItemModelAdapter<StructureT, ItemModel>
     switch (action) {
     case Qt::MoveAction: {
       auto move_contextes = make_contextes<MoveContext>(*this, data, row, parent);
-      m_scene.submit<MoveCommand<StructureT>>(m_structure, move_contextes);
+      scene.submit<MoveCommand<StructureT>>(structure, move_contextes);
       break;
     }
     case Qt::CopyAction: {
       auto copy_contextes = make_contextes<OwningContext>(*this, data, row, parent);
-      m_scene.submit<CopyCommand<StructureT>>(m_structure, std::move(copy_contextes));
+      scene.submit<CopyCommand<StructureT>>(structure, std::move(copy_contextes));
       break;
     }
     default:
@@ -217,18 +217,6 @@ QMimeData* ItemModelAdapter<StructureT, ItemModel>::mimeData(const QModelIndexLi
     const auto items = ::transform<AbstractPropertyOwner*, std::vector>(sorted_indexes, f);
     return std::make_unique<PropertyOwnerMimeData>(items).release();
   }
-}
-
-template<typename StructureT, typename ItemModel>
-StructureT& ItemModelAdapter<StructureT, ItemModel>::structure() const
-{
-  return m_structure;
-}
-
-template<typename StructureT, typename ItemModel>
-Scene& ItemModelAdapter<StructureT, ItemModel>::scene() const
-{
-  return m_scene;
 }
 
 template class ItemModelAdapter<Tree<Object>, QAbstractItemModel>;

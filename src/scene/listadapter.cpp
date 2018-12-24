@@ -5,8 +5,8 @@
 namespace omm
 {
 
-template<typename ItemT> ListAdapter<ItemT>::ListAdapter(List<ItemT>& list)
-  : ItemModelAdapter<List<ItemT>, QAbstractListModel>(list)
+template<typename ItemT> ListAdapter<ItemT>::ListAdapter(Scene& scene, List<ItemT>& list)
+  : ItemModelAdapter<List<ItemT>, QAbstractListModel>(scene, list)
   , list_structure(list)
 {
 }
@@ -14,7 +14,7 @@ template<typename ItemT> ListAdapter<ItemT>::ListAdapter(List<ItemT>& list)
 template<typename ItemT> int ListAdapter<ItemT>::rowCount(const QModelIndex& parent) const
 {
   assert(!parent.isValid());
-  return this->structure().items().size();
+  return this->structure.items().size();
 }
 
 template<typename ItemT> QVariant ListAdapter<ItemT>::data(const QModelIndex& index, int role) const
@@ -28,7 +28,7 @@ template<typename ItemT> QVariant ListAdapter<ItemT>::data(const QModelIndex& in
   switch (role) {
   case Qt::DisplayRole:
   case Qt::EditRole:
-    return QString::fromStdString(this->structure().item(index.row()).name());
+    return QString::fromStdString(this->structure.item(index.row()).name());
   }
   return QVariant();
 }
@@ -131,7 +131,7 @@ bool ListAdapter<ItemT>::setData(const QModelIndex& index, const QVariant& value
   assert(index.column() == 0);
   assert(!index.parent().isValid());
 
-  auto& item = this->structure().item(index.row());
+  auto& item = this->structure.item(index.row());
   auto& name_property = item.property(Object::NAME_PROPERTY_KEY);
   name_property.set(value.toString().toStdString());
   return true;
@@ -141,7 +141,7 @@ template<typename ItemT> ItemT& ListAdapter<ItemT>::item_at(const QModelIndex& i
 {
   assert(index.isValid());
   assert(!index.parent().isValid());
-  return this->structure().item(index.row());
+  return this->structure.item(index.row());
 }
 
 template class ListAdapter<Style>;

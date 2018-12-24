@@ -14,8 +14,8 @@
 namespace omm
 {
 
-ObjectTreeAdapter::ObjectTreeAdapter(Tree<Object>& tree)
-  : ItemModelAdapter(tree)
+ObjectTreeAdapter::ObjectTreeAdapter(Scene& scene, Tree<Object>& tree)
+  : ItemModelAdapter(scene, tree)
 {
 
 }
@@ -91,7 +91,7 @@ Object& ObjectTreeAdapter::item_at(const QModelIndex& index) const
     assert(index.internalPointer() != nullptr);
     return *static_cast<Object*>(index.internalPointer());
   } else {
-    return structure().root();
+    return structure.root();
   }
 }
 
@@ -100,7 +100,7 @@ QModelIndex ObjectTreeAdapter::index_of(Object& object) const
   if (object.is_root()) {
     return QModelIndex();
   } else {
-    return createIndex(scene().object_tree.position(object), 0, &object);
+    return createIndex(scene.object_tree.position(object), 0, &object);
   }
 }
 
@@ -171,8 +171,8 @@ ObjectTreeAdapter::acquire_mover_guard(const ObjectTreeMoveContext& context)
   assert(!context.subject.get().is_root());
   Object& old_parent = context.subject.get().parent();
   Object& new_parent = context.parent.get();
-  const auto old_pos = scene().object_tree.position(context.subject);
-  const auto new_pos = scene().object_tree.insert_position(context.predecessor);
+  const auto old_pos = scene.object_tree.position(context.subject);
+  const auto new_pos = scene.object_tree.insert_position(context.predecessor);
 
   if (old_pos == new_pos && &old_parent == &new_parent) {
     return nullptr;
@@ -197,7 +197,7 @@ ObjectTreeAdapter::acquire_remover_guard(const Object& object)
     ObjectTreeAdapter& m_model;
   };
   return std::make_unique<RemoverGuard>( *this, index_of(object.parent()),
-                                         scene().object_tree.position(object) );
+                                         scene.object_tree.position(object) );
 }
 
 std::unique_ptr<AbstractRAIIGuard>

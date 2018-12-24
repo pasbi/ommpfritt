@@ -13,8 +13,9 @@ template<typename T> class Structure
 {
 public:
   using item_type = T;
-  Structure(Scene& scene);
-  virtual ~Structure();
+  Structure(Scene* scene = nullptr);
+  Structure(Structure&& other) = default;
+  virtual ~Structure() = default;
 
   virtual std::set<T*> items() const = 0;
   virtual size_t position(const T& item) const = 0;
@@ -23,8 +24,6 @@ public:
 
   virtual T& insert(std::unique_ptr<T> t) = 0;
   virtual std::unique_ptr<T> remove(T& t) = 0;
-
-  Scene& scene;
 
   virtual void invalidate() = 0;
 
@@ -36,7 +35,9 @@ private:
   const Structure<T>& operator=(const Structure<T>&) = delete;
   const Structure<T>& operator=(Structure<T>&&) = delete;
   Structure<T>(const Structure<T>&) = delete;
-  Structure<T>(Structure<T>&&) = delete;
+
+  // TODO actually Structure should not have a pointer to scene.
+  Scene* m_scene;
 };
 
 }  // namespace omm

@@ -17,7 +17,7 @@ class Object;
 class ObjectTreeAdapter : public ItemModelAdapter<Tree<Object>, QAbstractItemModel>
 {
 public:
-  explicit ObjectTreeAdapter(Tree<Object>& tree);
+  explicit ObjectTreeAdapter(Scene& scene, Tree<Object>& tree);
   QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
   QModelIndex parent(const QModelIndex& index) const override;
   int rowCount(const QModelIndex& parent) const override;

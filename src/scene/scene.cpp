@@ -43,10 +43,10 @@ namespace omm
 Scene* Scene::m_current = nullptr;
 
 Scene::Scene(const PythonEngine& python_engine)
-  : object_tree(*this, make_root())
-  , object_tree_adapter(object_tree)
-  , styles(*this)
-  , style_list_adapter(styles)
+  : object_tree(make_root(), this)
+  , object_tree_adapter(*this, object_tree)
+  , styles(this)
+  , style_list_adapter(*this, styles)
   , python_engine(python_engine)
   , m_default_style(make_default_style(this))
 {

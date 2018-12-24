@@ -50,7 +50,7 @@ namespace omm
 Object::Object(Scene& scene)
   : TreeElement(nullptr)
   , scene(scene)
-  , tags(scene)
+  , tags(&scene)
 {
 
   add_property( TRANSFORMATION_PROPERTY_KEY,

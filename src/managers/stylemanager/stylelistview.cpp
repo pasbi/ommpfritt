@@ -9,7 +9,7 @@ namespace omm
 
 void StyleListView::populate_menu(QMenu& menu, const QModelIndex& index) const
 {
-  Scene& scene = model()->scene();
+  Scene& scene = model()->scene;
   action(menu, tr("&new"), [&scene](){
     using command_type = AddCommand<List<Style>>;
     scene.submit<command_type>(scene.styles, scene.default_style().copy());

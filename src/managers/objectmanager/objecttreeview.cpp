@@ -50,7 +50,7 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
     auto tag_menu = std::make_unique<QMenu>(tr("&attach tag"));
     for (const auto& key : Tag::keys()) {
       action(*tag_menu, QString::fromStdString(key), [this, key, object](){
-        model()->scene().submit<AddTagCommand>(*object, Tag::make(key, *object));
+        model()->scene.submit<AddTagCommand>(*object, Tag::make(key, *object));
       });
     }
     menu.addMenu(tag_menu.release());
@@ -106,7 +106,7 @@ bool ObjectTreeView::remove_selection()
     removed_items.insert(item.second.begin(), item.second.end());
   }
 
-  Scene& scene = model()->scene();
+  Scene& scene = model()->scene;
   std::set<Property*> properties;
   if (removed_items.size() > 0 && can_remove_selection(this, scene, removed_items, properties))
   {
@@ -115,7 +115,7 @@ bool ObjectTreeView::remove_selection()
       using command_type = PropertiesCommand<ReferenceProperty::value_type>;
       scene.template submit<command_type>(properties, nullptr);
     }
-    remove(scene, model()->structure(), selected_objects);
+    remove(scene, model()->structure, selected_objects);
     for (auto&& item : explicitely_removed_tags) {
       remove(scene, item.first->tags, AbstractPropertyOwner::cast<Tag>(item.second));
     }

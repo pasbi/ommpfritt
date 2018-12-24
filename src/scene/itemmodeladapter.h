@@ -20,7 +20,7 @@ class ItemModelAdapter : public ItemModel, public AbstractStructureObserver<Stru
 public:
   using item_type = typename StructureT::item_type;
   using structure_type = StructureT;
-  explicit ItemModelAdapter(StructureT& structure);
+  explicit ItemModelAdapter(Scene& scene, StructureT& structure);
   virtual ~ItemModelAdapter();
   Qt::DropActions supportedDragActions() const override;
   Qt::DropActions supportedDropActions() const override;
@@ -30,13 +30,11 @@ public:
                       int row, int column, const QModelIndex &parent ) override;
   QStringList mimeTypes() const override;
   QMimeData* mimeData(const QModelIndexList &indexes) const override;
-  StructureT& structure() const;
   virtual item_type& item_at(const QModelIndex& index) const = 0;
-  Scene& scene() const;
+  Scene& scene;
+  StructureT& structure;
 
 private:
-  Scene& m_scene;
-  StructureT& m_structure;
 };
 
 }  // namespace omm

@@ -12,7 +12,7 @@ template<class ItemT>
 class ListAdapter : public ItemModelAdapter<List<ItemT>, QAbstractListModel>
 {
 public:
-  explicit ListAdapter(List<ItemT>& list);
+  explicit ListAdapter(Scene& scene, List<ItemT>& list);
 
   int rowCount(const QModelIndex& parent = QModelIndex()) const override;
   QVariant data(const QModelIndex& index, int role) const override;

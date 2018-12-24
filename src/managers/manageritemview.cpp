@@ -37,8 +37,6 @@ template<typename ItemViewT, typename ItemModelT>
 void ManagerItemView<ItemViewT, ItemModelT>::contextMenuEvent(QContextMenuEvent *event)
 {
   auto menu = std::make_unique<QMenu>();
-  auto& scene = this->model()->scene();
-
   populate_menu(*menu, this->indexAt(event->pos()));
 
   menu->move(event->globalPos());
@@ -59,7 +57,7 @@ template<typename ItemViewT, typename ItemModelT> bool
 ManagerItemView<ItemViewT, ItemModelT>::remove_selection()
 {
   const auto selection = selected_items();
-  Scene& scene = model()->scene();
+  Scene& scene = model()->scene;
   std::set<Property*> properties;
   if (selection.size() > 0 && can_remove_selection(this, scene, selection, properties))
   {
@@ -70,7 +68,7 @@ ManagerItemView<ItemViewT, ItemModelT>::remove_selection()
       using command_type = PropertiesCommand<ReferenceProperty::value_type>;
       scene.template submit<command_type>(properties, nullptr);
     }
-    scene.template submit<remove_command_type>(model()->structure(), typed_selection);
+    scene.template submit<remove_command_type>(model()->structure, typed_selection);
     scene.undo_stack().endMacro();
     return true;
   } else {
