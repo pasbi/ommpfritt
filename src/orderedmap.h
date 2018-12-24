@@ -2,6 +2,8 @@
 
 #include <map>
 #include <vector>
+#include <type_traits>
+#include "common.h"
 
 template<typename KeyT, typename ValueT>
 class OrderedMap
@@ -13,6 +15,20 @@ public:
   mapped_type& at(const key_type& key) { return m_values.at(key); }
   const mapped_type& at(const key_type& key) const { return m_values.at(key); }
   const std::vector<key_type>& keys() const { return m_keys; }
+
+  auto values() const
+  {
+    if constexpr (::is_unique_ptr<mapped_type>::value) {
+      return ::transform<typename mapped_type::pointer>(keys(), [this](const KeyT& key) {
+        return m_values.at(key).get();
+      });
+    } else {
+      return ::transform<std::add_pointer_t<mapped_type>>(keys(), [this](const KeyT& key) {
+        return &m_values.at(key);
+      });
+    }
+  }
+
   bool contains(const key_type& key) const { return m_values.count(key) == 1; }
 
   template<typename mapped_type_>
