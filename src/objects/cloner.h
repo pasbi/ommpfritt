@@ -13,7 +13,7 @@ class Scene;
 class Cloner : public Object
 {
 public:
-  explicit Cloner(Scene& scene);
+  explicit Cloner(Scene* scene);
   void render(AbstractRenderer& renderer, const Style& style) const override;
   BoundingBox bounding_box() const override;
   std::string type() const override;

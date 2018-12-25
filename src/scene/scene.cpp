@@ -64,7 +64,7 @@ Scene::~Scene()
 
 std::unique_ptr<Object> Scene::make_root()
 {
-  return std::make_unique<Empty>(*this);
+  return std::make_unique<Empty>(this);
 }
 
 Scene* Scene::currentInstance()

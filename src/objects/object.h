@@ -22,10 +22,10 @@ class Object
   : public PropertyOwner<AbstractPropertyOwner::Kind::Object>
   , public virtual Serializable
   , public TreeElement<Object>
-  , public CopyCreatable<Object, Scene&>
+  , public CopyCreatable<Object, Scene*>
 {
 public:
-  explicit Object(Scene& scene);
+  explicit Object(Scene* scene);
   virtual ~Object();
 
   void transform(const ObjectTransformation& transformation);
@@ -42,8 +42,8 @@ public:
   BoundingBox recursive_bounding_box() const;
   std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() override;
   std::unique_ptr<Object> copy() const override;
+  std::unique_ptr<Object> copy(Scene* scene) const;
 
-  Scene& scene;
   List<Tag> tags;
 
   static constexpr auto TYPE = "Object";
@@ -55,6 +55,7 @@ protected:
 
 private:
   friend class ObjectView;
+  Scene* const m_scene;
 };
 
 void register_objects();

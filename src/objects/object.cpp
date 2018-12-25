@@ -47,12 +47,11 @@ std::vector<const omm::Style*> find_styles(const omm::Object& object)
 namespace omm
 {
 
-Object::Object(Scene& scene)
+Object::Object(Scene* scene)
   : TreeElement(nullptr)
-  , scene(scene)
-  , tags(&scene)
+  , tags(scene)
+  , m_scene(scene)
 {
-
   add_property<TransformationProperty>(TRANSFORMATION_PROPERTY_KEY)
     .set_label(QObject::tr("transformation").toStdString())
     .set_category(QObject::tr("object").toStdString());
@@ -143,7 +142,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
     const auto child_pointer = make_pointer(children_pointer, i);
     const auto child_type = deserializer.get_string(make_pointer(child_pointer, TYPE_POINTER));
     try {
-      auto child = Object::make(child_type, scene);
+      auto child = Object::make(child_type, static_cast<Scene*>(m_scene));
       child->deserialize(deserializer, child_pointer);
       adopt(std::move(child));
     } catch (std::out_of_range& e) {
@@ -216,6 +215,11 @@ std::unique_ptr<AbstractRAIIGuard> Object::acquire_set_parent_guard()
 }
 
 std::unique_ptr<Object> Object::copy() const
+{
+  return copy(m_scene);
+}
+
+std::unique_ptr<Object> Object::copy(Scene* scene) const
 {
   return Copyable<Object>::copy(this->make(this->type(), scene));
 }

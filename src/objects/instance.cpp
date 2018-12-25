@@ -9,7 +9,7 @@ namespace omm
 
 class Style;
 
-Instance::Instance(Scene& scene)
+Instance::Instance(Scene* scene)
   : Object(scene)
 {
   add_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY, AbstractPropertyOwner::Kind::Object)

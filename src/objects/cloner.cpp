@@ -13,7 +13,7 @@ namespace omm
 
 class Style;
 
-Cloner::Cloner(Scene& scene) : Object(scene)
+Cloner::Cloner(Scene* scene) : Object(scene)
 {
   m_draw_children = false;
   add_property<IntegerProperty>(COUNT_PROPERTY_KEY)
@@ -34,7 +34,7 @@ void Cloner::render(AbstractRenderer& renderer, const Style& style) const
   std::vector<std::unique_ptr<Object>> copies;
   copies.reserve(n_children);
   for (int i = 0; i < n_children; ++i) {
-    copies.push_back(child(i % n_children).copy());
+    copies.push_back(child(i % n_children).copy(nullptr));
   }
 
   if (copies.size() > 0) {
