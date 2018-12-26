@@ -8,7 +8,7 @@ namespace
 std::vector<omm::Property*> get_user_properties(const omm::AbstractPropertyOwner& property_owner)
 {
   const auto predicate = [](const auto& property) { return property->is_user_property(); };
-  const auto properties = property_owner.properties().ordered_items();
+  const auto properties = property_owner.properties().values();
   return ::filter_if(properties, predicate);
 }
 
