@@ -34,13 +34,8 @@ public:
   template<typename mapped_type_>
   bool insert(const key_type& key, mapped_type_&& value)
   {
-    constexpr bool template_argument_is_valid = std::is_same< std::decay_t<mapped_type_>,
-                                                              std::decay_t<mapped_type > >::value;
-    static_assert(template_argument_is_valid, "mapped_type_ and mapped_type must be same.");
-
-    bool was_inserted;
-    std::tie(std::ignore, was_inserted)
-      = m_values.insert(std::make_pair(key, std::forward<mapped_type_>(value)));
+    const auto [_, was_inserted] = m_values.insert(std::pair( key,
+                                                              std::forward<mapped_type_>(value)) );
     if (was_inserted) {
       m_keys.push_back(key);
       return true;

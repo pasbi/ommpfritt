@@ -12,8 +12,6 @@
 namespace
 {
 
-using Key = omm::AbstractPropertyOwner::Key;
-
 std::vector<std::string>
 get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
 {
