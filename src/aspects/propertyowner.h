@@ -73,7 +73,6 @@ public:
 
   static const std::string NAME_PROPERTY_KEY;
 
-protected:
   template<typename PropertyT>
   PropertyT& add_property(const std::string& key, std::unique_ptr<PropertyT> property)
   {

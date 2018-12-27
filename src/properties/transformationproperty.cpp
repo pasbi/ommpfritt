@@ -5,12 +5,7 @@ namespace omm
 
 std::string TransformationProperty::type() const
 {
-  return "TransformationProperty";
-}
-
-std::string TransformationProperty::widget_type() const
-{
-  return "TransformationPropertyWidget";
+  return TYPE;
 }
 
 void TransformationProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)

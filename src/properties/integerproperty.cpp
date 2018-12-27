@@ -5,12 +5,7 @@ namespace omm
 
 std::string IntegerProperty::type() const
 {
-  return "IntegerProperty";
-}
-
-std::string IntegerProperty::widget_type() const
-{
-  return "IntegerPropertyWidget";
+  return TYPE;
 }
 
 void IntegerProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)

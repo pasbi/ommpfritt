@@ -5,12 +5,7 @@ namespace omm
 
 std::string BoolProperty::type() const
 {
-  return "BoolProperty";
-}
-
-std::string BoolProperty::widget_type() const
-{
-  return "BoolPropertyWidget";
+  return TYPE;
 }
 
 void BoolProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)

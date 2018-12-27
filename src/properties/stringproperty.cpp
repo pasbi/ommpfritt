@@ -12,12 +12,7 @@ StringProperty::StringProperty(std::string defaultValue, LineMode mode)
 
 std::string StringProperty::type() const
 {
-  return "StringProperty";
-}
-
-std::string StringProperty::widget_type() const
-{
-  return "StringPropertyWidget";
+  return TYPE;
 }
 
 StringProperty::LineMode StringProperty::line_mode() const

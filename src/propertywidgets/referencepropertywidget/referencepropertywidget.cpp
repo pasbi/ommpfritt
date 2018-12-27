@@ -52,7 +52,7 @@ void ReferencePropertyWidget::update_edit()
 
 std::string ReferencePropertyWidget::type() const
 {
-  return "ReferencePropertyWidget";
+  return TYPE;
 }
 
 }  // namespace omm

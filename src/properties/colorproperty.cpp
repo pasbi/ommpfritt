@@ -5,12 +5,7 @@ namespace omm
 
 std::string ColorProperty::type() const
 {
-  return "ColorProperty";
-}
-
-std::string ColorProperty::widget_type() const
-{
-  return "ColorPropertyWidget";
+  return TYPE;
 }
 
 void ColorProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)

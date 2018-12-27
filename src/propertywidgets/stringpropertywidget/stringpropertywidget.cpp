@@ -44,7 +44,7 @@ void StringPropertyWidget::update_edit()
 
 std::string StringPropertyWidget::type() const
 {
-  return "StringPropertyWidget";
+  return TYPE;
 }
 
 }  // namespace omm

@@ -13,6 +13,7 @@ class TransformationPropertyWidget : public PropertyWidget<TransformationPropert
 public:
   explicit TransformationPropertyWidget(Scene& scene, const std::set<Property*>& properties);
   std::string type() const override;
+  static constexpr auto TYPE = "TransformationPropertyWidget";
 
 protected:
   void update_edit() override;

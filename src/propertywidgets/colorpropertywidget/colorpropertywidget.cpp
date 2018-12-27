@@ -26,7 +26,7 @@ void ColorPropertyWidget::update_edit()
 
 std::string ColorPropertyWidget::type() const
 {
-  return "ColorPropertyWidget";
+  return TYPE;
 }
 
 }  // namespace omm

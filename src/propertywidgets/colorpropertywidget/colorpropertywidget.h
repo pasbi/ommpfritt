@@ -16,6 +16,7 @@ public:
 protected:
   void update_edit() override;
   std::string type() const override;
+  static constexpr auto TYPE = "ColorPropertyWidget";
 
 private:
   ColorEdit* m_color_edit;

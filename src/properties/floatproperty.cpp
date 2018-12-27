@@ -5,12 +5,7 @@ namespace omm
 
 std::string FloatProperty::type() const
 {
-  return "FloatProperty";
-}
-
-std::string FloatProperty::widget_type() const
-{
-  return "FloatPropertyWidget";
+  return TYPE;
 }
 
 void FloatProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)

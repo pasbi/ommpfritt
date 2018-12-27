@@ -13,12 +13,7 @@ ReferenceProperty::ReferenceProperty(AbstractPropertyOwner::Kind allowed_kinds)
 
 std::string ReferenceProperty::type() const
 {
-  return "ReferenceProperty";
-}
-
-std::string ReferenceProperty::widget_type() const
-{
-  return "ReferencePropertyWidget";
+  return TYPE;
 }
 
 void ReferenceProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const

@@ -30,7 +30,7 @@ void BoolPropertyWidget::update_edit()
 
 std::string BoolPropertyWidget::type() const
 {
-  return "BoolPropertyWidget";
+  return TYPE;
 }
 
 }  // namespace omm

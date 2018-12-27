@@ -45,6 +45,11 @@ Property& Property::set_category(const std::string& category)
   return *this;
 }
 
+std::string Property::widget_type() const
+{
+  return type() + "Widget";
+}
+
 void Property::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   Serializable::serialize(serializer, root);

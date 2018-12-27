@@ -12,9 +12,9 @@ public:
   using TypedProperty::TypedProperty;
   explicit StringProperty(std::string defaultValue, LineMode mode);
   std::string type() const override;
-  std::string widget_type() const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
+  static constexpr auto TYPE = "StringProperty";
 
   StringProperty::LineMode line_mode() const;
 

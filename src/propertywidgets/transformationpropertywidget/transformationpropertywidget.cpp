@@ -27,7 +27,7 @@ void TransformationPropertyWidget::update_edit()
 
 std::string TransformationPropertyWidget::type() const
 {
-  return "TransformationPropertyWidget";
+  return TYPE;
 }
 
 

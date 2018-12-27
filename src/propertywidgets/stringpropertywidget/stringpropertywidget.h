@@ -13,6 +13,7 @@ class StringPropertyWidget : public PropertyWidget<StringProperty>
 {
 public:
   explicit StringPropertyWidget(Scene& scene, const std::set<Property*>& properties);
+  static constexpr auto TYPE = "StringPropertyWidget";
 
 protected:
   void update_edit() override;

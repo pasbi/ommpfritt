@@ -18,6 +18,7 @@ public:
 protected:
   void update_edit() override;
   std::string type() const override;
+  static constexpr auto TYPE = "BoolPropertyWidget";
 
 private:
   CheckBox* m_checkbox;

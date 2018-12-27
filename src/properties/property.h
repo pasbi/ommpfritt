@@ -65,7 +65,7 @@ public:
   std::string category() const;
   Property& set_label(const std::string& label);
   Property& set_category(const std::string& category);
-  virtual std::string widget_type() const = 0;
+  virtual std::string widget_type() const;
 
   void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const;
   void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root);
