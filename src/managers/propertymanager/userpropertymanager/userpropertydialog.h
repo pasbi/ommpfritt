@@ -1,29 +1,29 @@
 #pragma once
 
 #include <QDialog>
-#include "managers/propertymanager/userpropertymanager/userpropertylistmodel.h"
 
-class QListView;
+class QListWidget;
+class QListWidgetItem;
 
 namespace omm
 {
 
 class AbstractPropertyOwner;
+class PropertyItem;
+
 class UserPropertyDialog : public QDialog
 {
 public:
-  explicit UserPropertyDialog(QWidget* parent);
-  void set_property_owner(AbstractPropertyOwner* property);
-
-  void new_user_property();
-  void remove_user_property();
+  explicit UserPropertyDialog(QWidget* parent, AbstractPropertyOwner& property);
+  void set_property_owner();
 
 private:
-  QListView* m_list_view;
+  QListWidget* m_list_widget;
   QWidget* m_right_column;
-  void setup_right_column();
-  std::unique_ptr<UserPropertyListModel> m_user_property_list_model;
-
+  void generate_items(AbstractPropertyOwner& property);
+  void new_item();
+  void remove_selected_item();
+  void on_current_item_changed(QListWidgetItem* item);
 };
 
 }  // namespace omm

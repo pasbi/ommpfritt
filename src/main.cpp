@@ -8,6 +8,7 @@
 #include "managers/manager.h"
 #include "tags/tag.h"
 #include "serializers/abstractserializer.h"
+#include "managers/propertymanager/userpropertymanager/propertyconfigwidget.h"
 #include <QApplication>
 
 #include "mainwindow/mainwindow.h"
@@ -25,6 +26,7 @@ int main (int argc, char *argv[])
   omm::register_tags();
   omm::register_serializers();
   omm::register_deserializers();
+  omm::register_propertyconfigwidgets();
 
   QCoreApplication::setOrganizationName("omm");
   QCoreApplication::setApplicationName("ommpfritt");

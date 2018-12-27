@@ -90,7 +90,6 @@ namespace omm
 
 PropertyManager::PropertyManager(Scene& scene)
   : Manager(tr("Properties"), scene, make_menu_bar())
-  , m_user_property_dialog(this)
 {
   auto tabs = std::make_unique<QTabWidget>();
   m_tabs = tabs.get();
@@ -114,8 +113,11 @@ std::unique_ptr<QMenuBar> PropertyManager::make_menu_bar()
 {
   auto menu_bar = std::make_unique<QMenuBar>();
   auto user_properties_menu = menu_bar->addMenu("user properties");
+  const auto exec_user_property_dialog = [this]() {
+    UserPropertyDialog(this, **m_current_selection.begin()).exec();
+  };
   m_manage_user_properties_action = &action( *user_properties_menu, "new user property",
-                                             [this]() { m_user_property_dialog.exec(); });
+                                             exec_user_property_dialog );
   m_manage_user_properties_action->setEnabled(false);
   return menu_bar;
 }
@@ -147,12 +149,8 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
     m_tabs->setCurrentIndex(find_tab_label(active_category, tabs.keys()));
   }
 
-  if (selection.size() == 1) {
-    m_user_property_dialog.set_property_owner(*selection.begin());
-    m_manage_user_properties_action->setEnabled(true);
-  } else {
-    m_manage_user_properties_action->setEnabled(false);
-  }
+  m_current_selection = selection;
+  m_manage_user_properties_action->setEnabled(m_current_selection.size() == 1);
 }
 
 void PropertyManager::clear()

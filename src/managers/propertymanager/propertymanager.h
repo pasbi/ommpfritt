@@ -33,7 +33,7 @@ private:
   std::string m_active_category;
   QAction* m_manage_user_properties_action;
   std::unique_ptr<QMenuBar> make_menu_bar();
-  UserPropertyDialog m_user_property_dialog;
+  std::set<AbstractPropertyOwner*>  m_current_selection;
 };
 
 }  // namespace omm
