@@ -11,21 +11,19 @@ StringPropertyWidget
 ::StringPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget(scene, properties)
 {
-  const auto get_line_mode = std::mem_fn(&StringProperty::line_mode);
-  const auto line_mode
-    = Property::get_value<StringProperty::LineMode, StringProperty>(properties, get_line_mode);
+  const auto get_is_multi_line = std::mem_fn(&StringProperty::is_multi_line);
+  const auto is_multi_line
+    = Property::get_value<bool, StringProperty>(properties, get_is_multi_line);
 
-  const auto make_edit = [this](auto line_mode) -> std::unique_ptr<AbstractGenericTextEdit> {
-    switch (line_mode)
-    {
-    case StringProperty::LineMode::SingleLine:
-      return std::make_unique<SingleLineTextEdit>(this);
-    case StringProperty::LineMode::MultiLine:
+  const auto make_edit = [this](auto is_multi_line) -> std::unique_ptr<AbstractGenericTextEdit> {
+    if (is_multi_line) {
       return std::make_unique<MultiLineTextEdit>(this);
+    } else {
+      return std::make_unique<SingleLineTextEdit>(this);
     }
   };
 
-  auto text_edit = make_edit(line_mode);
+  auto text_edit = make_edit(is_multi_line);
   m_text_edit = text_edit.get();
   set_default_layout(std::move(text_edit));
 

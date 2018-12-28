@@ -9,7 +9,7 @@ namespace omm
 class StringPropertyConfigWidget : public PropertyConfigWidget<StringProperty>
 {
 public:
-  using PropertyConfigWidget::PropertyConfigWidget;
+  StringPropertyConfigWidget(QWidget* parent, Property& property);
   std::string type() const override;
 };
 

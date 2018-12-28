@@ -42,9 +42,6 @@ AbstractPropertyConfigWidget::AbstractPropertyConfigWidget(QWidget* parent, Prop
     Q_EMIT property_label_changed();
   });
 
-  layout()->addWidget(std::make_unique<QPushButton>("XXX", this).release());
-
-
   const auto index_changed = static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged);
   connect(m_type_combobox, index_changed, [this](int index) {
     const auto type = m_property_types[index];

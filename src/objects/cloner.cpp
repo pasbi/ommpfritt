@@ -19,7 +19,8 @@ Cloner::Cloner(Scene* scene) : Object(scene)
   add_property<IntegerProperty>(COUNT_PROPERTY_KEY)
     .set_label(QObject::tr("count").toStdString())
     .set_category(QObject::tr("Cloner").toStdString());
-  add_property<StringProperty>(CODE_PROPERTY_KEY, "", StringProperty::LineMode::MultiLine)
+  add_property<StringProperty>(CODE_PROPERTY_KEY, "")
+    .set_is_multi_line(true)
     .set_label(QObject::tr("code").toStdString())
     .set_category(QObject::tr("Cloner").toStdString());
 }

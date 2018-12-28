@@ -14,7 +14,8 @@ namespace omm
 ScriptTag::ScriptTag(Object& owner)
   : Tag(owner)
 {
-  add_property<StringProperty>(CODE_PROPERTY_KEY, "", StringProperty::LineMode::MultiLine)
+  add_property<StringProperty>(CODE_PROPERTY_KEY)
+    .set_is_multi_line(true)
     .set_label("code").set_category("script");
 }
 
