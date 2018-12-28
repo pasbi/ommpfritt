@@ -82,7 +82,6 @@ size_t find_tab_label(const std::string& label, const std::vector<std::string>& 
   return std::distance(labels.cbegin(), it);
 }
 
-
 }  // namespace
 
 namespace omm
@@ -114,7 +113,10 @@ std::unique_ptr<QMenuBar> PropertyManager::make_menu_bar()
   auto menu_bar = std::make_unique<QMenuBar>();
   auto user_properties_menu = menu_bar->addMenu("user properties");
   const auto exec_user_property_dialog = [this]() {
-    UserPropertyDialog(this, **m_current_selection.begin()).exec();
+    auto dialog = UserPropertyDialog(this, **m_current_selection.begin());
+    if (dialog.exec() == QDialog::Accepted) {
+      m_scene.submit(dialog.make_user_property_config_command());
+    }
   };
   m_manage_user_properties_action = &action( *user_properties_menu, "new user property",
                                              exec_user_property_dialog );

@@ -91,6 +91,8 @@ public:
     return add_property<PropertyT>(key, std::make_unique<PropertyT>(std::forward<Args>(args)...));
   }
 
+  std::unique_ptr<Property> extract_property(const std::string& key);
+
 private:
   PropertyMap m_properties;
 };

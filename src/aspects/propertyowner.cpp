@@ -131,6 +131,11 @@ bool AbstractPropertyOwner::has_reference_cycle(const std::string& key) const
   return false;
 }
 
+std::unique_ptr<Property> AbstractPropertyOwner::extract_property(const std::string& key)
+{
+  return m_properties.extract(key);
+}
+
 }  // namespace omm
 
 omm::AbstractPropertyOwner::Kind operator|( omm::AbstractPropertyOwner::Kind a,

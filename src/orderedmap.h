@@ -44,6 +44,11 @@ public:
     }
   }
 
+  mapped_type extract(const key_type& key)
+  {
+    return std::move(m_values.extract(key).mapped());
+  }
+
 #if 0
 // TODO replace the OrderedMap::insert with something like that:
 // reason: supply a insert(value_type&&) overload

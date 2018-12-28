@@ -12,10 +12,7 @@ class PropertyItem : public QListWidgetItem
 {
 public:
   explicit PropertyItem();
-  template<typename PropertyT> void set_property_type()
-  {
-    m_property = std::make_unique<PropertyT>();
-  }
+  void set_property_type(const std::string& type);
 
   template<typename PropertyT> PropertyT& property() const
   {
@@ -28,10 +25,12 @@ public:
   }
 
   std::string property_type() const;
-  QVariant data(int role) const;
+  QVariant data(int role) const override;
+  static constexpr auto UNNAMED_PROPERTY_PLACEHOLDER = "<unnamed property>";
 
 private:
   std::unique_ptr<Property> m_property;
+
 };
 
 }  // namespace omm

@@ -6,7 +6,7 @@ namespace omm
 
 PropertyItem::PropertyItem()
 {
-  set_property_type<FloatProperty>();
+  set_property_type(FloatProperty::TYPE);
 }
 
 std::string PropertyItem::property_type() const
@@ -16,11 +16,20 @@ std::string PropertyItem::property_type() const
 
 QVariant PropertyItem::data(int role) const
 {
-  if (role == Qt::DisplayRole) {
-    return "Hello";
+  const QVariant data = QListWidgetItem::data(role);
+  if (role == Qt::DisplayRole && data.isNull()) {
+    return UNNAMED_PROPERTY_PLACEHOLDER;
   } else {
-    return QVariant();
+    return data;
   }
+}
+
+void PropertyItem::set_property_type(const std::string& type)
+{
+  const auto label = m_property ? m_property->label() : "";
+  m_property = Property::make(type);
+  m_property->set_label(label);
+  m_property->set_category(Property::USER_PROPERTY_CATEGROY_NAME);
 }
 
 }  // namespace omm

@@ -6,5 +6,6 @@ file (GLOB SOURCES
   "objectstransformationcommand.cpp"
   "propertycommand.cpp"
   "removecommand.cpp"
+  "userpropertyconfigcommand.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})
