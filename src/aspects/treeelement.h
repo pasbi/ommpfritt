@@ -16,6 +16,7 @@ class TreeElement
 public:
   explicit TreeElement(T* parent);
   virtual ~TreeElement();
+  explicit TreeElement(const TreeElement& other);
   bool is_root() const;
   T& parent() const;
   T& adopt(std::unique_ptr<T> adoptee, const size_t pos);

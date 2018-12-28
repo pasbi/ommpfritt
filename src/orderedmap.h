@@ -10,11 +10,20 @@ class OrderedMap
 {
 public:
   using key_type = KeyT;
-  using mapped_type = ValueT;
+  using mapped_type = std::unique_ptr<ValueT>;
   using value_type = std::pair<key_type, mapped_type>;
   mapped_type& at(const key_type& key) { return m_values.at(key); }
   const mapped_type& at(const key_type& key) const { return m_values.at(key); }
   const std::vector<key_type>& keys() const { return m_keys; }
+  explicit OrderedMap(const OrderedMap<KeyT, ValueT>& other)
+  {
+    for (auto&& key : other.m_keys) {
+      insert(key, other.at(key)->clone());
+    }
+  }
+
+  explicit OrderedMap() = default;
+  explicit OrderedMap(OrderedMap<KeyT, ValueT>&& other) = default;
 
   auto values() const
   {

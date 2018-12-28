@@ -8,7 +8,6 @@
 #include "abstractfactory.h"
 #include "aspects/treeelement.h"
 #include "common.h"
-#include "aspects/copycreatable.h"
 #include "renderers/abstractrenderer.h"
 #include "scene/list.h"
 
@@ -22,10 +21,11 @@ class Object
   : public PropertyOwner<AbstractPropertyOwner::Kind::Object>
   , public virtual Serializable
   , public TreeElement<Object>
-  , public CopyCreatable<Object, Scene*>
+  , public AbstractFactory<std::string, Object, Scene*>
 {
 public:
   explicit Object(Scene* scene);
+  explicit Object(const Object& other);
   virtual ~Object();
 
   void transform(const ObjectTransformation& transformation);
@@ -41,8 +41,8 @@ public:
   virtual BoundingBox bounding_box() const = 0;
   BoundingBox recursive_bounding_box() const;
   std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() override;
-  std::unique_ptr<Object> copy() const override;
-  std::unique_ptr<Object> copy(Scene* scene) const;
+  virtual std::unique_ptr<Object> clone() const = 0;
+  std::unique_ptr<Object> clone(Scene* scene) const;
 
   List<Tag> tags;
 
@@ -55,7 +55,8 @@ protected:
 
 private:
   friend class ObjectView;
-  Scene* const m_scene;
+  Scene* m_scene;
+  void set_scene(Scene* scene);
 };
 
 void register_objects();

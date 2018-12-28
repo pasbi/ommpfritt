@@ -19,6 +19,7 @@ public:
   using observed_type = Observed<observer_type>;
   constexpr static bool is_tree = false;
   using Structure<T>::Structure;
+  explicit List(const List<T>& other);
 
   void insert(std::unique_ptr<T> t, const T* predecessor);
   void insert(ListOwningContext<T>& context);

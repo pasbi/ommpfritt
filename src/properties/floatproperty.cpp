@@ -33,4 +33,9 @@ void FloatProperty::set(const variant_type& variant)
   }
 }
 
+std::unique_ptr<Property> FloatProperty::clone() const
+{
+  return std::make_unique<FloatProperty>(*this);
+}
+
 }  // namespace omm

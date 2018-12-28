@@ -140,3 +140,10 @@ template<typename T, typename S> bool contains(const std::set<T>& set, const S& 
 
 template<typename T> struct is_unique_ptr : std::true_type {};
 template<typename... T> struct is_unique_ptr<std::unique_ptr<T...>> : std::true_type {};
+
+
+template<typename T, template<typename...> class ContainerT>
+ContainerT<std::unique_ptr<T>> copy(const ContainerT<std::unique_ptr<T>>& other)
+{
+  return ::transform<std::unique_ptr<T>>(other, [](const auto& i) { return i->clone(); });
+}

@@ -48,4 +48,9 @@ std::string Ellipse::type() const
   return TYPE;
 }
 
+std::unique_ptr<Object> Ellipse::clone() const
+{
+  return std::make_unique<Ellipse>(*this);
+}
+
 }  // namespace omm

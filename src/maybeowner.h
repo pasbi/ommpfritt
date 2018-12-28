@@ -23,7 +23,7 @@ public:
 
   T& capture_by_copy()
   {
-    m_owned = m_ref.get().copy();
+    m_owned = m_ref.get().clone();
     m_ref = *m_owned;
     return m_ref;
   }

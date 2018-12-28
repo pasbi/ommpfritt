@@ -24,4 +24,9 @@ QIcon StyleTag::icon() const
   return QApplication::style()->standardIcon(QStyle::SP_DialogResetButton);
 }
 
+std::unique_ptr<Tag> StyleTag::clone() const
+{
+  return std::make_unique<StyleTag>(*this);
+}
+
 }  // namespace omm

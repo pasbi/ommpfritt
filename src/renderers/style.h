@@ -2,7 +2,6 @@
 
 #include "aspects/propertyowner.h"
 #include "color/color.h"
-#include "aspects/copycreatable.h"
 
 namespace omm
 {
@@ -12,13 +11,12 @@ class Scene;
 class Style
   : public PropertyOwner<AbstractPropertyOwner::Kind::Style>
   , public virtual Serializable
-  , public Copyable<Style>
 {
 public:
   explicit Style(Scene* scene = nullptr);
-  std::unique_ptr<Style> copy() const override;
   std::string type() const;
   static constexpr auto TYPE = "Style";
+  std::unique_ptr<Style> clone() const;  // provided for interface consistency
 
 private:
   Scene* const m_scene;

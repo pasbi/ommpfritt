@@ -20,6 +20,7 @@ public:
   static constexpr auto TYPE = "Cloner";
   static constexpr auto COUNT_PROPERTY_KEY = "count";
   static constexpr auto CODE_PROPERTY_KEY = "code";
+  std::unique_ptr<Object> clone() const override;
 };
 
 }  // namespace omm

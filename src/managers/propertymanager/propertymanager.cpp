@@ -128,7 +128,7 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
 {
   const auto key_intersection = get_key_intersection(selection);
   clear();
-  OrderedMap<std::string, std::unique_ptr<PropertyManagerTab>> tabs;
+  OrderedMap<std::string, PropertyManagerTab> tabs;
 
   for (const auto& key : key_intersection) {
     const auto properties = collect_properties(key, selection);

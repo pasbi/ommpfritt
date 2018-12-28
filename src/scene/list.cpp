@@ -4,8 +4,25 @@
 #include "renderers/style.h"
 #include "tags/tag.h"
 
+namespace
+{
+
+template<typename T>
+std::vector<std::unique_ptr<T>> copy_items(const std::vector<std::unique_ptr<T>>& items)
+{
+  return ::transform<std::unique_ptr<T>>(items, [](const auto& i) { return i->clone(); });
+}
+
+}  // namespace
+
 namespace omm
 {
+
+template<typename T> List<T>::List(const List<T>& other)
+  : m_items(copy_items(other.m_items))
+{
+
+}
 
 template<typename T> std::set<T*> List<T>::items() const
 {

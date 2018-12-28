@@ -23,6 +23,12 @@ Property::~Property()
 
 }
 
+Property::Property(const Property& property)
+  : m_label(property.m_label)
+  , m_category(property.m_category)
+{
+}
+
 std::string Property::label() const
 {
   return m_label;

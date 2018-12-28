@@ -20,6 +20,7 @@ public:
   bool is_compatible(const Property& other) const override;
   bool is_cyclic() const;
   static constexpr auto TYPE = "ReferenceProperty";
+  std::unique_ptr<Property> clone() const override;
 
 private:
   // default is always nullptr

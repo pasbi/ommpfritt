@@ -18,6 +18,7 @@ public:
   std::string type() const override;
   static constexpr auto TYPE = "Instance";
   static constexpr auto REFERENCE_PROPERTY_KEY = "reference";
+  std::unique_ptr<Object> clone() const override;
 
 private:
   Object* referenced_object() const;

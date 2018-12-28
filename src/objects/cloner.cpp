@@ -34,7 +34,7 @@ void Cloner::render(AbstractRenderer& renderer, const Style& style) const
   std::vector<std::unique_ptr<Object>> copies;
   copies.reserve(n_children);
   for (int i = 0; i < n_children; ++i) {
-    copies.push_back(child(i % n_children).copy(nullptr));
+    copies.push_back(child(i % n_children).clone(nullptr));
   }
 
   if (copies.size() > 0) {
@@ -60,6 +60,11 @@ BoundingBox Cloner::bounding_box() const
 std::string Cloner::type() const
 {
   return TYPE;
+}
+
+std::unique_ptr<Object> Cloner::clone() const
+{
+  return std::make_unique<Cloner>(*this);
 }
 
 }  // namespace omm

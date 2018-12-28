@@ -12,6 +12,7 @@ public:
   void render(AbstractRenderer& renderer, const Style& style) const override;
   BoundingBox bounding_box() const override;
   std::string type() const override;
+  std::unique_ptr<Object> clone() const override;
 };
 
 std::ostream& operator<<(std::ostream& ostream, const Object& object);

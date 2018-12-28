@@ -24,4 +24,9 @@ void BoolProperty::serialize(AbstractSerializer& serializer, const Pointer& root
                         make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
 }
 
+std::unique_ptr<Property> BoolProperty::clone() const
+{
+  return std::make_unique<BoolProperty>(*this);
+}
+
 }  // namespace omm

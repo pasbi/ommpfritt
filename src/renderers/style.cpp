@@ -23,14 +23,14 @@ Style::Style(Scene* scene)
     .set_label("color").set_category("brush");
 }
 
-std::unique_ptr<Style> Style::copy() const
-{
-  return Copyable<Style>::copy(std::make_unique<Style>(m_scene));
-}
-
 std::string Style::type() const
 {
   return TYPE;
+}
+
+std::unique_ptr<Style> Style::clone() const
+{
+  return std::make_unique<Style>(*this);
 }
 
 }  // namespace omm

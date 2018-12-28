@@ -14,6 +14,7 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void set(const variant_type& variant) override;
   static constexpr auto TYPE = "IntegerProperty";
+  std::unique_ptr<Property> clone() const override;
 };
 
 }  // namespace omm

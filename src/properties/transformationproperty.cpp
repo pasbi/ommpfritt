@@ -25,4 +25,9 @@ void TransformationProperty::serialize(AbstractSerializer& serializer, const Poi
                         make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
 }
 
+std::unique_ptr<Property> TransformationProperty::clone() const
+{
+  return std::make_unique<TransformationProperty>(*this);
+}
+
 }  // namespace omm

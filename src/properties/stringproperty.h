@@ -15,10 +15,9 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   static constexpr auto TYPE = "StringProperty";
-
   StringProperty::LineMode line_mode() const;
-
   static constexpr auto IS_MULTILINE_KEY = "is_multiline";
+  std::unique_ptr<Property> clone() const override;
 
 private:
   LineMode m_line_mode = LineMode::SingleLine;

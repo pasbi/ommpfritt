@@ -22,5 +22,9 @@ std::string Empty::type() const
   return "Empty";
 }
 
+std::unique_ptr<Object> Empty::clone() const
+{
+  return std::make_unique<Empty>(*this);
+}
 
 }  // namespace omm

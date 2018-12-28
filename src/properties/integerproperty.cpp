@@ -33,4 +33,9 @@ void IntegerProperty::set(const variant_type& variant)
   }
 }
 
+std::unique_ptr<Property> IntegerProperty::clone() const
+{
+  return std::make_unique<IntegerProperty>(*this);
+}
+
 }  // namespace omm

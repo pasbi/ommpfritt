@@ -17,6 +17,7 @@ public:
   BoundingBox bounding_box() const override;
   std::string type() const override;
   static constexpr auto TYPE = "Ellipse";
+  std::unique_ptr<Object> clone() const override;
 
 private:
 };

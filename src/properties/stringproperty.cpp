@@ -43,4 +43,9 @@ void StringProperty::serialize(AbstractSerializer& serializer, const Pointer& ro
   serializer.set_value(is_multiline, make_pointer(root, StringProperty::IS_MULTILINE_KEY));
 }
 
+std::unique_ptr<Property> StringProperty::clone() const
+{
+  return std::make_unique<StringProperty>(*this);
+}
+
 }  // namespace omm

@@ -61,4 +61,9 @@ Object* Instance::referenced_object() const
   }
 }
 
+std::unique_ptr<Object> Instance::clone() const
+{
+  return std::make_unique<Instance>(*this);
+}
+
 }  // namespace omm

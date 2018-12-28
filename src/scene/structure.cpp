@@ -27,6 +27,11 @@ template<typename T> size_t Structure<T>::insert_position(const T* predecessor) 
   }
 }
 
+template<typename T> void Structure<T>::set_scene(Scene* scene)
+{
+  m_scene = scene;
+}
+
 template class Structure<Object>;
 template class Structure<Style>;
 template class Structure<Tag>;

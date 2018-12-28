@@ -14,6 +14,7 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   static constexpr auto TYPE = "ColorProperty";
+  std::unique_ptr<Property> clone() const override;
 };
 
 }  // namespace omm

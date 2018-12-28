@@ -14,6 +14,7 @@ public:
   QIcon icon() const override;
   static constexpr auto TYPE = "ScriptTag";
   static constexpr auto CODE_PROPERTY_KEY = "code";
+  std::unique_ptr<Tag> clone() const override;
 };
 
 }  // namespace omm

@@ -50,15 +50,30 @@ namespace omm
 Object::Object(Scene* scene)
   : TreeElement(nullptr)
   , tags(scene)
-  , m_scene(scene)
 {
+  set_scene(scene);
   add_property<TransformationProperty>(TRANSFORMATION_PROPERTY_KEY)
     .set_label(QObject::tr("transformation").toStdString())
     .set_category(QObject::tr("object").toStdString());
 }
 
+Object::Object(const Object& other)
+  : PropertyOwner(other)
+  , TreeElement(other)
+  , tags(other.tags)
+  , m_draw_children(other.m_draw_children)
+{
+  set_scene(other.m_scene);
+}
+
 Object::~Object()
 {
+}
+
+void Object::set_scene(Scene* scene)
+{
+  tags.set_scene(scene);
+  m_scene = scene;
 }
 
 ObjectTransformation Object::transformation() const
@@ -214,14 +229,11 @@ std::unique_ptr<AbstractRAIIGuard> Object::acquire_set_parent_guard()
   return std::make_unique<SetParentGuard>(*this);
 }
 
-std::unique_ptr<Object> Object::copy() const
+std::unique_ptr<Object> Object::clone(Scene* scene) const
 {
-  return copy(m_scene);
-}
-
-std::unique_ptr<Object> Object::copy(Scene* scene) const
-{
-  return Copyable<Object>::copy(this->make(this->type(), scene));
+  auto clone = this->clone();
+  clone->m_scene = scene;
+  return clone;
 }
 
 }  // namespace omm

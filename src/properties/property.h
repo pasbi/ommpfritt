@@ -54,6 +54,7 @@ public:
                                      std::string, ObjectTransformation >;
 
   Property();
+  explicit Property(const Property& other);
   virtual ~Property();
 
   virtual variant_type variant_value() const = 0;
@@ -95,6 +96,8 @@ public:
 
   // user properties can be added/edited/removed dynamically
   bool is_user_property() const;
+
+  virtual std::unique_ptr<Property> clone() const = 0;
 
 private:
   std::string m_label;

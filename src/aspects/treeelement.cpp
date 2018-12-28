@@ -11,6 +11,15 @@ template<typename T> TreeElement<T>::TreeElement(T* parent)
   static_assert(std::is_base_of<TreeElement<T>, T>::value, "T must derive ElementType<T>");
 }
 
+template<typename T> TreeElement<T>::TreeElement(const TreeElement& other)
+  : m_parent(nullptr)
+  , m_children(::copy(other.m_children))
+{
+  for (auto&& child : m_children) {
+    child->m_parent = static_cast<T*>(this);
+  }
+}
+
 template<typename T> TreeElement<T>::~TreeElement()
 {
 }

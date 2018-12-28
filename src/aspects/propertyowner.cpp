@@ -32,11 +32,16 @@ AbstractPropertyOwner::AbstractPropertyOwner(AbstractPropertyOwner&& other)
 {
 }
 
+AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner& other)
+  : m_properties(other.m_properties)
+{
+}
+
 AbstractPropertyOwner::~AbstractPropertyOwner()
 {
 }
 
-const PropertyMap& AbstractPropertyOwner::properties() const
+const OrderedMap<std::string, Property>& AbstractPropertyOwner::properties() const
 {
   return m_properties;
 }

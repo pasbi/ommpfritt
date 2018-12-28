@@ -32,4 +32,9 @@ QIcon ScriptTag::icon() const
   return QApplication::style()->standardIcon(QStyle::SP_FileDialogListView);
 }
 
+std::unique_ptr<Tag> ScriptTag::clone() const
+{
+  return std::make_unique<ScriptTag>(*this);
+}
+
 }  // namespace omm

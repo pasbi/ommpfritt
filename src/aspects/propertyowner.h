@@ -19,8 +19,6 @@
 namespace omm
 {
 
-using PropertyMap = OrderedMap<std::string, std::unique_ptr<Property>>;
-
 class AbstractPropertyOwner : public virtual Serializable, public AbstractPropertyObserver
 {
 public:
@@ -28,6 +26,7 @@ public:
                     Tag = 0x1, Style = 0x2, Object = 0x4,
                     All = Tag | Style | Object };
   explicit AbstractPropertyOwner();
+  explicit AbstractPropertyOwner(const AbstractPropertyOwner& other);
   AbstractPropertyOwner(AbstractPropertyOwner&& other);
   static constexpr auto TYPE = "PropertyOwner";
   virtual ~AbstractPropertyOwner();
@@ -43,7 +42,7 @@ public:
     }
   }
 
-  const PropertyMap& properties() const;
+  const OrderedMap<std::string, Property>& properties() const;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
@@ -94,7 +93,7 @@ public:
   std::unique_ptr<Property> extract_property(const std::string& key);
 
 private:
-  PropertyMap m_properties;
+  OrderedMap<std::string, Property> m_properties;
 };
 
 template<AbstractPropertyOwner::Kind kind_> class PropertyOwner : public AbstractPropertyOwner

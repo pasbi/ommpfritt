@@ -13,6 +13,7 @@ public:
   QIcon icon() const override;
   static constexpr auto STYLE_REFERENCE_PROPERTY_KEY = "style";
   static constexpr auto TYPE = "StyleTag";
+  std::unique_ptr<Tag> clone() const override;
 };
 
 }  // namespace omm
