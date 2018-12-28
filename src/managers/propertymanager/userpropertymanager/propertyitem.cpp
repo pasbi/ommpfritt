@@ -4,9 +4,14 @@
 namespace omm
 {
 
-PropertyItem::PropertyItem()
+PropertyItem::PropertyItem(std::unique_ptr<Property> property)
+  : m_property(std::move(property))
 {
-  set_property_type(FloatProperty::TYPE);
+  if (!m_property) {
+    set_property_type(FloatProperty::TYPE);
+  } else {
+    setText(QString::fromStdString(m_property->label()));
+  }
 }
 
 std::string PropertyItem::property_type() const

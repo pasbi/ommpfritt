@@ -11,7 +11,7 @@ class Property;
 class PropertyItem : public QListWidgetItem
 {
 public:
-  explicit PropertyItem();
+  explicit PropertyItem(std::unique_ptr<Property> property = nullptr);
   void set_property_type(const std::string& type);
 
   template<typename PropertyT> PropertyT& property() const

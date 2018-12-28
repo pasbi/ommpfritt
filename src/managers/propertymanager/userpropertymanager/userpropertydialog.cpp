@@ -10,6 +10,7 @@
 #include "menuhelper.h"
 #include "managers/propertymanager/userpropertymanager/propertyitem.h"
 #include "managers/propertymanager/userpropertymanager/propertyconfigwidget.h"
+#include "aspects/propertyowner.h"
 
 
 namespace omm
@@ -46,6 +47,12 @@ UserPropertyDialog::UserPropertyDialog(QWidget* parent, AbstractPropertyOwner& p
   connect(button_box, SIGNAL(accepted()), this, SLOT(accept()));
   connect(button_box, SIGNAL(rejected()), this, SLOT(reject()));
   main_layout->addWidget(button_box);
+
+  for (auto&& property : property_owner.properties().values()) {
+    if (property->is_user_property()) {
+      m_list_widget->addItem(std::make_unique<PropertyItem>(property->clone()).release());
+    }
+  }
 }
 
 void UserPropertyDialog::new_item()
@@ -103,12 +110,10 @@ std::unique_ptr<UserPropertyConfigCommand>
 UserPropertyDialog::make_user_property_config_command() const
 {
   std::vector<std::unique_ptr<Property>> properties;
-
-  // TODO implement virtual copy constructor for property, object and tags. remove aspects/copycreatable.
-  // properties.reserve(m_list_widget->count());
-  // for (std::size_t i = 0; i < m_list_widget->count(); ++i) {
-  //   properties.push_back(static_cast<PropertyItem*>(m_list_widget->item(i))->property().copy());
-  // }
+  properties.reserve(m_list_widget->count());
+  for (std::size_t i = 0; i < m_list_widget->count(); ++i) {
+    properties.push_back(static_cast<PropertyItem*>(m_list_widget->item(i))->property().clone());
+  }
   return std::make_unique<UserPropertyConfigCommand>(m_property_owner, std::move(properties));
 }
 

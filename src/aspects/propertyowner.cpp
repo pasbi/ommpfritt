@@ -138,7 +138,9 @@ bool AbstractPropertyOwner::has_reference_cycle(const std::string& key) const
 
 std::unique_ptr<Property> AbstractPropertyOwner::extract_property(const std::string& key)
 {
-  return m_properties.extract(key);
+  auto property = m_properties.extract(key);
+  property->unregister_observer(*this);
+  return property;
 }
 
 }  // namespace omm
