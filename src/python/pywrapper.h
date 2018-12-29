@@ -15,6 +15,7 @@ namespace omm
 py::object wrap(Object* object);
 py::object wrap(Tag* tag);
 py::object wrap(Style* style);
+py::object wrap(AbstractPropertyOwner* owner);
 
 template<typename Ts>
 py::object wrap(const Ts& items)
@@ -43,7 +44,6 @@ public:
   explicit PyWrapper(void* wrapped);
   virtual ~PyWrapper() = default;
 
-protected:
   template<typename WrappedT> WrappedT& wrapped() const
   {
     WrappedT* wrapped = static_cast<WrappedT*>(m_wrapped);

@@ -5,8 +5,6 @@
 namespace omm
 {
 
-class Property;
-class Tag;
 class Scene;
 
 class Ellipse : public Object

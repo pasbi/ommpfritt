@@ -1,9 +1,0 @@
-
-drag and drop tags
-  - drop onto reference property
-  - drop onto objects (move/copy)
-
-more primitives
-  - spline (i.e. path), at least linear, better (optional) bezier
-
-python script tag

@@ -1,4 +1,33 @@
 #include "python/propertyownerwrapper.h"
+#include "python/objectwrapper.h"
+#include "python/tagwrapper.h"
+#include "python/stylewrapper.h"
+#include "properties/referenceproperty.h"
+#include "renderers/style.h"
+#include "objects/object.h"
+#include "tags/tag.h"
+
+namespace
+{
+
+template<typename WrappedT, typename WrapperT>
+bool set_property_value(const py::object& value, omm::Property& property)
+{
+  try {
+    const auto wrapper = value.cast<WrapperT>();
+    auto& reference_property = static_cast<omm::ReferenceProperty&>(property);
+    if (!!(reference_property.allowed_kinds() & WrappedT::KIND)) {
+      property.set(&wrapper.template wrapped<WrappedT>());
+      return true;
+    } else {
+      return false;
+    }
+  } catch (const std::exception&) {
+    return false;
+  }
+}
+
+}  // namespace omm
 
 namespace omm
 {
@@ -7,7 +36,12 @@ py::object PropertyOwnerWrapper::get(const std::string& key) const
 {
   auto& property_owner = wrapped<AbstractPropertyOwner>();
   if (property_owner.has_property(key)) {
-    return py::cast(property_owner.property(key).variant_value());
+    const auto value = property_owner.property(key).variant_value();
+    if (std::holds_alternative<AbstractPropertyOwner*>(value)) {
+      return wrap(std::get<AbstractPropertyOwner*>(value));
+    } else {
+      return py::cast(value);
+    }
   } else {
     for (auto&& key : property_owner.properties().keys()) {
       LOG(INFO) << key;
@@ -20,8 +54,25 @@ bool PropertyOwnerWrapper::set(const std::string& key, const py::object& value) 
 {
   auto& property_owner = wrapped<AbstractPropertyOwner>();
   if (property_owner.has_property(key)) {
-    property_owner.property(key).set(value.cast<Property::variant_type>());
-    return true;
+    auto& property = property_owner.property(key);
+    if (property.type() == ReferenceProperty::TYPE) {
+      if (value.is_none()) {
+        property.set(nullptr);
+        return true;
+      } else if (set_property_value<Object, ObjectWrapper>(value, property)) {
+        return true;
+      } else if (set_property_value<Tag, TagWrapper>(value, property)) {
+        return true;
+      } else if (set_property_value<Style, StyleWrapper>(value, property)) {
+        return true;
+      } else {
+        LOG(WARNING) << "Attempted to set non-allowed kind of reference.";
+        return false;
+      }
+    } else {
+      property_owner.property(key).set(value.cast<Property::variant_type>());
+      return true;
+    }
   } else {
     return false;
   }
