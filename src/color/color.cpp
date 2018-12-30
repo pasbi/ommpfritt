@@ -72,4 +72,10 @@ bool operator<(const Color& a, const Color& b)
   return false;
 }
 
+std::ostream& operator<<(std::ostream& ostream, const Color& color)
+{
+  ostream << "Color[" << color.red() << ", " << color.green() << ", " << color.blue() << "]";
+  return ostream;
+}
+
 }  // namespace omm

@@ -42,5 +42,6 @@ private:
 bool operator==(const Color& a, const Color& b);
 bool operator!=(const Color& a, const Color& b);
 bool operator<(const Color& a, const Color& b);
+std::ostream& operator<<(std::ostream& ostream, const Color& color);
 
 }  // namespace
