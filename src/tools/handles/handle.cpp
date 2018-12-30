@@ -1,21 +1,6 @@
 #include "tools/handles/handle.h"
 #include "renderers/abstractrenderer.h"
 
-namespace
-{
-
-void draw_arrow( omm::AbstractRenderer& renderer, const omm::Style& style,
-                 const arma::vec2& tip_position )
-{
-  constexpr double LENGTH = 100;
-  omm::Point center({0, 0});
-  omm::Point tip(tip_position);
-  renderer.draw_spline({ center, tip }, style);
-}
-
-
-}  // namespace
-
 namespace omm
 {
 

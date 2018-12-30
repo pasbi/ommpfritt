@@ -1,5 +1,4 @@
 #include "tools/toolbox.h"
-#include "tools/movetool.h"
 
 namespace
 {
@@ -20,9 +19,7 @@ namespace omm
 ToolBox::ToolBox(Scene& scene)
   : m_tools(make_tool_map(scene))
 {
-  LOG(INFO) << Tool::keys().size();
-  LOG(INFO) << *Tool::keys().begin();
-  m_active_tool = m_tools.at(MoveTool::TYPE).get();
+  m_active_tool = m_tools.at("ScaleTool").get();
 }
 
 Tool& ToolBox::active_tool() const
