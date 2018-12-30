@@ -19,7 +19,7 @@ namespace omm
 ToolBox::ToolBox(Scene& scene)
   : m_tools(make_tool_map(scene))
 {
-  m_active_tool = m_tools.at("ScaleTool").get();
+  m_active_tool = m_tools.at("RotateTool").get();
 }
 
 Tool& ToolBox::active_tool() const
