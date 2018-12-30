@@ -17,6 +17,7 @@
 #include "scene/listadapter.h"
 #include "scene/objecttreeadapter.h"
 #include "scene/abstractselectionobserver.h"
+#include "tools/toolbox.h"
 
 namespace omm
 {
@@ -117,6 +118,9 @@ private:
 private:
   Scene(const Scene& other) = delete;
   Scene(Scene&& other) = delete;
+
+public:
+  ToolBox tool_box;
 
 };
 

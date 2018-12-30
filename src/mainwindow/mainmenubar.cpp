@@ -10,6 +10,7 @@
 #include "commands/addcommand.h"
 #include "managers/manager.h"
 #include "menuhelper.h"
+#include "mainwindow/toolbar.h"
 
 namespace omm
 {
@@ -55,6 +56,11 @@ void MainMenuBar::make_window_menu()
       ref.setFloating(true);
     });
   }
+  action(window_menu, "toolbar", [this]() {
+    auto toolbar = std::make_unique<ToolBar>(this);
+    m_main_window.addToolBar(Qt::TopToolBarArea, toolbar.release());
+    // TODO set floating true
+  });
 }
 
 void MainMenuBar::make_edit_menu()

@@ -6,7 +6,6 @@
 #include "geometry/objecttransformation.h"
 #include "mainwindow/viewport/mousepancontroller.h"
 #include "scene/abstractselectionobserver.h"
-#include "mainwindow/viewport/handle.h"
 
 #define USE_OPENGL 0
 
@@ -50,7 +49,6 @@ private:
   std::unique_ptr<QTimer> m_timer;
   ObjectTransformation m_viewport_transformation;
   MousePanController m_pan_controller;
-  std::unique_ptr<Handle> m_handle;
   ObjectTransformation viewport_transformation() const;
 };
 

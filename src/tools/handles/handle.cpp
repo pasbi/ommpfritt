@@ -1,6 +1,5 @@
-#include "mainwindow/viewport/subhandle.h"
+#include "tools/handles/handle.h"
 #include "renderers/abstractrenderer.h"
-#include "mainwindow/viewport/handle.h"
 
 namespace
 {
@@ -14,24 +13,24 @@ void draw_arrow( omm::AbstractRenderer& renderer, const omm::Style& style,
   renderer.draw_spline({ center, tip }, style);
 }
 
+
 }  // namespace
 
 namespace omm
 {
 
-SubHandle::SubHandle(Handle& handle)
-  : handle(handle)
+Handle::Handle()
 {
 }
 
-void SubHandle::mouse_press(const arma::vec2& pos)
+void Handle::mouse_press(const arma::vec2& pos)
 {
   if (contains(pos)) {
     m_status = Status::Active;
   }
 }
 
-void SubHandle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover)
+void Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover)
 {
   if (m_status != Status::Active) {
     if (allow_hover && contains(pos)) {
@@ -42,19 +41,31 @@ void SubHandle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const
   }
 }
 
-void SubHandle::mouse_release()
+void Handle::mouse_release()
 {
   m_status = Status::Inactive;
 }
 
-SubHandle::Status SubHandle::status() const
+Handle::Status Handle::status() const
 {
   return m_status;;
 }
 
-void SubHandle::deactivate()
+void Handle::deactivate()
 {
   m_status = Status::Inactive;
 }
+
+void Handle::set_style(Status status, Style&& style)
+{
+  m_styles.erase(status);
+  m_styles.insert(std::pair(status, style));
+}
+
+const Style& Handle::current_style() const
+{
+  return m_styles.at(m_status);
+}
+
 
 }  // namespace omm

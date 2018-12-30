@@ -23,8 +23,8 @@ class AbstractPropertyOwner : public virtual Serializable, public AbstractProper
 {
 public:
   enum class Kind { None = 0x0,
-                    Tag = 0x1, Style = 0x2, Object = 0x4,
-                    All = Tag | Style | Object };
+                    Tag = 0x1, Style = 0x2, Object = 0x4, Tool = 0x8,
+                    Item = Tag | Style | Object, All = Item | Tool };
   explicit AbstractPropertyOwner();
   explicit AbstractPropertyOwner(const AbstractPropertyOwner& other);
   AbstractPropertyOwner(AbstractPropertyOwner&& other);

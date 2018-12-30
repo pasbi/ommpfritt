@@ -39,7 +39,6 @@ Viewport::Viewport(Scene& scene)
   : m_scene(scene)
   , m_timer(std::make_unique<QTimer>())
   , m_pan_controller([this](const arma::vec2& pos) { set_cursor_position(*this, pos); })
-  , m_handle(std::make_unique<LocallyOrientedHandle>(m_scene))
   , m_viewport_transformation(TOP_RIGHT)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -71,7 +70,7 @@ void Viewport::paintEvent(QPaintEvent* event)
   renderer.set_base_transformation(viewport_transformation());
   renderer.render();
 
-  m_handle->draw(renderer);
+  m_scene.tool_box.active_tool().draw(renderer);
 }
 
 void Viewport::mousePressEvent(QMouseEvent* event)
@@ -83,7 +82,7 @@ void Viewport::mousePressEvent(QMouseEvent* event)
     event->accept();
   }  else if (event->modifiers() == Qt::NoModifier) {
     const auto pos = viewport_transformation().inverted().apply_to_position(cursor_position);
-    if (m_handle->mouse_press(pos))
+    if (m_scene.tool_box.active_tool().mouse_press(pos))
     {
       event->accept();
     }
@@ -110,9 +109,10 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
 
   if (event->modifiers() == Qt::NoModifier)
   {
-    if (m_handle->mouse_move( viewport_transformation().inverted().apply_to_direction(delta),
-                              viewport_transformation().inverted().apply_to_position(
-                                cursor_position) ))
+    auto& tool = m_scene.tool_box.active_tool();
+    const auto delta_ = viewport_transformation().inverted().apply_to_direction(delta);
+    const auto cpos_ = viewport_transformation().inverted().apply_to_position(cursor_position);
+    if (tool.mouse_move(delta_, cpos_))
     {
       event->accept();
       return;
@@ -124,13 +124,13 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
 
 void Viewport::mouseReleaseEvent(QMouseEvent* event)
 {
-  m_handle->mouse_release();
+  m_scene.tool_box.active_tool().mouse_release();
   QWidget::mouseReleaseEvent(event);
 }
 
 void Viewport::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
-  m_handle->set_objects(AbstractPropertyOwner::cast<Object>(selection));
+  m_scene.tool_box.active_tool().set_selection(AbstractPropertyOwner::cast<Object>(selection));
 }
 
 ObjectTransformation Viewport::viewport_transformation() const

@@ -49,6 +49,7 @@ Scene::Scene(const PythonEngine& python_engine)
   , style_list_adapter(*this, styles)
   , python_engine(python_engine)
   , m_default_style(make_default_style(this))
+  , tool_box(*this)
 {
   using namespace std::string_literals;
   object_tree.root().property(Object::NAME_PROPERTY_KEY).set("_root_"s);

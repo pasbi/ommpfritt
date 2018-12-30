@@ -11,7 +11,7 @@ class AbstractPropertyOwner;
 class ReferenceProperty : public TypedProperty<AbstractPropertyOwner*>
 {
 public:
-  ReferenceProperty(AbstractPropertyOwner::Kind allowed_kinds = AbstractPropertyOwner::Kind::All);
+  ReferenceProperty(AbstractPropertyOwner::Kind allowed_kinds = AbstractPropertyOwner::Kind::Item);
   std::string type() const override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;

@@ -1,19 +1,25 @@
 #pragma once
 
-#include "mainwindow/viewport/subhandle.h"
+#include <armadillo>
+#include "tools/handles/handle.h"
 
 namespace omm
 {
 
-class CircleHandle : public SubHandle
+class MoveTool;
+
+class MoveAxisHandle : public Handle
 {
 public:
-  using SubHandle::SubHandle;
+  MoveAxisHandle(MoveTool& tool);
   void draw(AbstractRenderer& renderer) const override;
   bool contains(const arma::vec2& point) const override;
   void mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override;
+  void set_direction(const arma::vec2& direction);
 
-  static constexpr double RADIUS = 100;
+private:
+  arma::vec2 m_direction;
+  MoveTool& m_tool;
 };
 
 }  // namespace omm

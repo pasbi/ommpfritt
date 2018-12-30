@@ -7,6 +7,7 @@
 #include "objects/object.h"
 #include "managers/manager.h"
 #include "tags/tag.h"
+#include "tools/tool.h"
 #include "serializers/abstractserializer.h"
 #include "managers/propertymanager/userpropertymanager/propertyconfigwidget.h"
 #include <QApplication>
@@ -16,8 +17,6 @@
 int main (int argc, char *argv[])
 {
   google::InitGoogleLogging(argv[0]);
-  QApplication qt_app(argc, argv);
-  omm::Application app(qt_app);
 
   omm::register_properties();
   omm::register_managers();
@@ -27,6 +26,11 @@ int main (int argc, char *argv[])
   omm::register_serializers();
   omm::register_deserializers();
   omm::register_propertyconfigwidgets();
+  omm::register_tools();
+
+  QApplication qt_app(argc, argv);
+  omm::Application app(qt_app);
+
 
   QCoreApplication::setOrganizationName("omm");
   QCoreApplication::setApplicationName("ommpfritt");
