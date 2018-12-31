@@ -21,7 +21,7 @@ class Scene;
 
 class Manager : public QDockWidget, public AbstractFactory<std::string, Manager, Scene&>
 {
-  Q_OBJECT
+  Q_OBJECT   // Required for MainWindow::save_state
 public:
   Manager(const Manager&) = delete;
   Manager(Manager&&) = delete;

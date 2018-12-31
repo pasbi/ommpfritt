@@ -11,6 +11,8 @@ public:
   ToolBox(Scene& scene);
 
   Tool& active_tool() const;
+  Tool& tool(const std::string& key) const;
+  void set_active_tool(const std::string& key);
 
 private:
   Tool* m_active_tool;

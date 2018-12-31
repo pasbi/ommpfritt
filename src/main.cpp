@@ -31,7 +31,6 @@ int main (int argc, char *argv[])
   QApplication qt_app(argc, argv);
   omm::Application app(qt_app);
 
-
   QCoreApplication::setOrganizationName("omm");
   QCoreApplication::setApplicationName("ommpfritt");
 

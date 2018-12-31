@@ -27,4 +27,19 @@ Tool& ToolBox::active_tool() const
   return *m_active_tool;
 }
 
+Tool& ToolBox::tool(const std::string& key) const
+{
+  try {
+    return *m_tools.at(key);
+  } catch (const std::out_of_range& e) {
+    LOG(FATAL) << "Failed to load tool '" << key << "'.";
+  }
+}
+
+void ToolBox::set_active_tool(const std::string &key)
+{
+  LOG(INFO) << "set active_tool '" << key << "'";
+  m_active_tool = m_tools.at(key).get();
+}
+
 }  // namespace

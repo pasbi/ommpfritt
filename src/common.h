@@ -147,3 +147,9 @@ ContainerT<std::unique_ptr<T>> copy(const ContainerT<std::unique_ptr<T>>& other)
 {
   return ::transform<std::unique_ptr<T>>(other, [](const auto& i) { return i->clone(); });
 }
+
+static constexpr struct identity_t
+{
+  template<typename T>
+  constexpr decltype(auto) operator()(T&& t) const noexcept { return std::forward<T>(t); }
+} identity {};
