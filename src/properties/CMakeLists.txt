@@ -3,6 +3,7 @@ file (GLOB SOURCES
   "colorproperty.cpp"
   "floatproperty.cpp"
   "integerproperty.cpp"
+  "optionsproperty.cpp"
   "property.cpp"
   "propertyregister.cpp"
   "referenceproperty.cpp"

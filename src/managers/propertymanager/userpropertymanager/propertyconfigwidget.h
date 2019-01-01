@@ -37,7 +37,6 @@ class PropertyConfigWidget : public AbstractPropertyConfigWidget
 public:
   using property_type = PropertyT;
   static const std::string TYPE;
-protected:
   using AbstractPropertyConfigWidget::AbstractPropertyConfigWidget;
 };
 

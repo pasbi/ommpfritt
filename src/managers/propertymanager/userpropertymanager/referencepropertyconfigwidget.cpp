@@ -24,6 +24,7 @@ ReferencePropertyConfigWidget::ReferencePropertyConfigWidget(QWidget* parent, Pr
   using Kind = AbstractPropertyOwner::Kind;
   for (auto [kind, check_box] : make_allowed_kinds_checkboxes(parent)) {
     auto& reference_property = static_cast<ReferenceProperty&>(property);
+    // TODO introduce property_cast. It shall perform a static cast and check TYPE == type().
     layout()->addWidget(check_box);
     check_box->setChecked(!!(reference_property.allowed_kinds() & kind));
     connect(check_box, &QCheckBox::clicked, [kind = kind, &reference_property](bool checked) {

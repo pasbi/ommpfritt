@@ -3,6 +3,7 @@ file (GLOB SOURCES
   "colorpropertyconfigwidget.cpp"
   "floatpropertyconfigwidget.cpp"
   "integerpropertyconfigwidget.cpp"
+  "optionspropertyconfigwidget.cpp"
   "propertyitem.cpp"
   "propertyconfigwidget.cpp"
   "propertyconfigwidgetsregister.cpp"

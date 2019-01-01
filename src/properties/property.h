@@ -51,7 +51,7 @@ class Property
 {
 public:
   using variant_type = std::variant< bool, Color, double, int, AbstractPropertyOwner*,
-                                     std::string, ObjectTransformation >;
+                                     std::string, ObjectTransformation, size_t >;
 
   Property();
   explicit Property(const Property& other);

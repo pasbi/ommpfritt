@@ -5,6 +5,7 @@
 #include "managers/propertymanager/userpropertymanager/referencepropertyconfigwidget.h"
 #include "managers/propertymanager/userpropertymanager/stringpropertyconfigwidget.h"
 #include "managers/propertymanager/userpropertymanager/transformationpropertyconfigwidget.h"
+#include "managers/propertymanager/userpropertymanager/optionspropertyconfigwidget.h"
 
 namespace omm
 {
@@ -21,6 +22,7 @@ void register_propertyconfigwidgets()
   REGISTER_PROPERTY(ReferencePropertyConfigWidget);
   REGISTER_PROPERTY(StringPropertyConfigWidget);
   REGISTER_PROPERTY(TransformationPropertyConfigWidget);
+  REGISTER_PROPERTY(OptionsPropertyConfigWidget);
 
 #undef REGISTER_PROPERTY
 }
