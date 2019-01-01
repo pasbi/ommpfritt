@@ -5,6 +5,8 @@
 namespace omm
 {
 
+class Scene;
+
 class ToolBox
 {
 public:
@@ -17,6 +19,7 @@ public:
 private:
   Tool* m_active_tool;
   const std::map<std::string, std::unique_ptr<Tool>> m_tools;
+  Scene& m_scene;
 
 };
 

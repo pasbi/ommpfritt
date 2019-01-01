@@ -3,6 +3,7 @@
 #include <memory>
 #include "renderers/abstractrenderer.h"
 #include "objects/object.h"
+#include "properties/optionsproperty.h"
 
 namespace
 {
@@ -26,31 +27,22 @@ Tool::Tool(Scene& scene, std::vector<std::unique_ptr<Handle>> handles)
   : scene(scene)
   , m_handles(std::move(handles))
 {
+  add_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY)
+    .set_options({ "global", "local" })
+    .set_label(QObject::tr("Alignment").toStdString())
+    .set_category(QObject::tr("Tool").toStdString());
 }
 
-bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
-{
-  return false;
-}
-
-bool Tool::mouse_press(const arma::vec2& pos)
-{
-  return false;
-}
-
-void Tool::mouse_release()
-{
-}
+bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos) { return false; }
+bool Tool::mouse_press(const arma::vec2& pos) { return false; }
+void Tool::mouse_release() { }
 
 ObjectTransformation Tool::transformation() const
 {
-  // TODO switch property
-  // return ObjectTransformation().translated(get_global_position_mean(selection()));
-
   ObjectTransformation transformation;
   transformation.translate(get_global_position_mean(selection()));
-  if (selection().size() == 1) {
-    transformation.rotate((*selection().begin())->global_transformation().rotation());
+  if (property(ALIGNMENT_PROPERTY_KEY).value<size_t>() == 1 && selection().size() == 1) {
+      transformation.rotate((*selection().begin())->global_transformation().rotation());
   }
   return transformation;
 }

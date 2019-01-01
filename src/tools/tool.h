@@ -42,6 +42,8 @@ public:
 
   arma::vec2 map_to_tool_local(const arma::vec2& pos) const;
 
+  static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";
+
 protected:
   Scene& scene;
   const std::set<Object*> selection() const;

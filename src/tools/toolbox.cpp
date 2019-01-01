@@ -1,4 +1,5 @@
 #include "tools/toolbox.h"
+#include "scene/scene.h"
 
 namespace
 {
@@ -18,6 +19,7 @@ namespace omm
 
 ToolBox::ToolBox(Scene& scene)
   : m_tools(make_tool_map(scene))
+  , m_scene(scene)
 {
   m_active_tool = m_tools.at("RotateTool").get();
 }
@@ -38,8 +40,8 @@ Tool& ToolBox::tool(const std::string& key) const
 
 void ToolBox::set_active_tool(const std::string &key)
 {
-  LOG(INFO) << "set active_tool '" << key << "'";
   m_active_tool = m_tools.at(key).get();
+  m_scene.set_selection(std::set<AbstractPropertyOwner*> { m_active_tool });
 }
 
 }  // namespace
