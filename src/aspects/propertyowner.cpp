@@ -22,9 +22,6 @@ const std::string AbstractPropertyOwner::NAME_PROPERTY_KEY = "name";
 
 AbstractPropertyOwner::AbstractPropertyOwner()
 {
-  add_property<StringProperty>(NAME_PROPERTY_KEY, "<unnamed object>")
-  .set_label(QObject::tr("Name").toStdString())
-  .set_category(QObject::tr("basic").toStdString());
 }
 
 AbstractPropertyOwner::AbstractPropertyOwner(AbstractPropertyOwner&& other)

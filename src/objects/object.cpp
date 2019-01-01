@@ -52,6 +52,11 @@ Object::Object(Scene* scene)
   , tags(scene)
 {
   set_scene(scene);
+
+  add_property<StringProperty>(NAME_PROPERTY_KEY, "<unnamed object>")
+    .set_label(QObject::tr("Name").toStdString())
+    .set_category(QObject::tr("basic").toStdString());
+
   add_property<TransformationProperty>(TRANSFORMATION_PROPERTY_KEY)
     .set_label(QObject::tr("transformation").toStdString())
     .set_category(QObject::tr("object").toStdString());

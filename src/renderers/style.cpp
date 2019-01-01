@@ -10,6 +10,10 @@ namespace omm
 Style::Style(Scene* scene)
   : m_scene(scene)
 {
+  add_property<StringProperty>(NAME_PROPERTY_KEY, "<unnamed object>")
+    .set_label(QObject::tr("Name").toStdString())
+    .set_category(QObject::tr("basic").toStdString());
+
   add_property(PEN_IS_ACTIVE_KEY, std::make_unique<BoolProperty>(false))
     .set_label("active").set_category("pen");
   add_property(PEN_COLOR_KEY, std::make_unique<ColorProperty>(Color::BLACK))
