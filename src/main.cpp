@@ -9,7 +9,7 @@
 #include "tags/tag.h"
 #include "tools/tool.h"
 #include "serializers/abstractserializer.h"
-#include "managers/propertymanager/userpropertymanager/propertyconfigwidget.h"
+#include "propertywidgets/propertyconfigwidget.h"
 #include <QApplication>
 
 #include "mainwindow/mainwindow.h"

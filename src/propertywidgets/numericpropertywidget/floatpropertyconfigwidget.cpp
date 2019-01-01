@@ -1,4 +1,4 @@
-#include "managers/propertymanager/userpropertymanager/floatpropertyconfigwidget.h"
+#include "propertywidgets/numericpropertywidget/floatpropertyconfigwidget.h"
 
 namespace omm
 {

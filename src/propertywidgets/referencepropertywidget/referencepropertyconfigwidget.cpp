@@ -1,4 +1,4 @@
-#include "managers/propertymanager/userpropertymanager/referencepropertyconfigwidget.h"
+#include "propertywidgets/referencepropertywidget/referencepropertyconfigwidget.h"
 
 #include <QCheckBox>
 #include <QLayout>

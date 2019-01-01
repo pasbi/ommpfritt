@@ -1,5 +1,6 @@
 file (GLOB SOURCES
   "referencelineedit.cpp"
+  "referencepropertyconfigwidget.cpp"
   "referencepropertywidget.cpp"
 )
 

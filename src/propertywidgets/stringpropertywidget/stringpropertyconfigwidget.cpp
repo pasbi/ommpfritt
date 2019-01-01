@@ -1,4 +1,4 @@
-#include "managers/propertymanager/userpropertymanager/stringpropertyconfigwidget.h"
+#include "propertywidgets/stringpropertywidget/stringpropertyconfigwidget.h"
 #include <QCheckBox>
 #include <QLayout>
 

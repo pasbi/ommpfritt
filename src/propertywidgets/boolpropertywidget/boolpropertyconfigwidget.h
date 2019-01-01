@@ -1,6 +1,6 @@
 #pragma once
 
-#include "managers/propertymanager/userpropertymanager/propertyconfigwidget.h"
+#include "propertywidgets/propertyconfigwidget.h"
 #include "properties/boolproperty.h"
 
 namespace omm

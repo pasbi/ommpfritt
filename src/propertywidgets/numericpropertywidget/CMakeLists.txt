@@ -1,4 +1,6 @@
 file (GLOB SOURCES
+  "floatpropertyconfigwidget.cpp"
+  "integerpropertyconfigwidget.cpp"
   "numericpropertywidget.cpp"
 )
 

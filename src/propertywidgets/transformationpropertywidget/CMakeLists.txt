@@ -1,6 +1,7 @@
 file (GLOB SOURCES
   "abstracttransformationedit.cpp"
   "spinboxtransformationedit.cpp"
+  "transformationpropertyconfigwidget.cpp"
   "transformationpropertywidget.cpp"
 )
 

@@ -1,4 +1,6 @@
 file (GLOB SOURCES
+  "propertyconfigwidget.cpp"
+  "propertyconfigwidgetsregister.cpp"
   "propertywidget.cpp"
   "propertywidgetregister.cpp"
 )

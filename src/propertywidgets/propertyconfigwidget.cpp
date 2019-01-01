@@ -1,4 +1,4 @@
-#include "managers/propertymanager/userpropertymanager/propertyconfigwidget.h"
+#include "propertywidgets/propertyconfigwidget.h"
 #include <QVBoxLayout>
 #include <QComboBox>
 #include <QLineEdit>

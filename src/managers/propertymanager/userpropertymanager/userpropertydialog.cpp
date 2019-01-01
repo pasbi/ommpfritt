@@ -9,7 +9,7 @@
 #include <QMenuBar>
 #include "menuhelper.h"
 #include "managers/propertymanager/userpropertymanager/propertyitem.h"
-#include "managers/propertymanager/userpropertymanager/propertyconfigwidget.h"
+#include "propertywidgets/propertyconfigwidget.h"
 #include "aspects/propertyowner.h"
 
 

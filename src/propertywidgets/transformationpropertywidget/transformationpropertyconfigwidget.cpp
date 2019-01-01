@@ -1,4 +1,4 @@
-#include "managers/propertymanager/userpropertymanager/transformationpropertyconfigwidget.h"
+#include "propertywidgets/transformationpropertywidget/transformationpropertyconfigwidget.h"
 
 namespace omm
 {

@@ -1,4 +1,4 @@
-#include "managers/propertymanager/userpropertymanager/boolpropertyconfigwidget.h"
+#include "propertywidgets/boolpropertywidget/boolpropertyconfigwidget.h"
 
 namespace omm
 {

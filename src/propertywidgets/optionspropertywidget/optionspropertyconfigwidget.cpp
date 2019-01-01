@@ -1,4 +1,4 @@
-#include "managers/propertymanager/userpropertymanager/optionspropertyconfigwidget.h"
+#include "propertywidgets/optionspropertywidget/optionspropertyconfigwidget.h"
 #include <functional>
 #include <QLayout>
 #include <QListWidget>

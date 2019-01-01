@@ -1,4 +1,4 @@
-#include "managers/propertymanager/userpropertymanager/colorpropertyconfigwidget.h"
+#include "propertywidgets/colorpropertywidget/colorpropertyconfigwidget.h"
 
 namespace omm
 {

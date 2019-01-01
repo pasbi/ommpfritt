@@ -1,4 +1,5 @@
 file (GLOB SOURCES
+  "boolpropertyconfigwidget.cpp"
   "boolpropertywidget.cpp"
   "checkbox.cpp"
 )

@@ -1,5 +1,6 @@
 file (GLOB SOURCES
   "stringpropertywidget.cpp"
+  "stringpropertyconfigwidget.cpp"
   "generictextedit.cpp"
 )
 

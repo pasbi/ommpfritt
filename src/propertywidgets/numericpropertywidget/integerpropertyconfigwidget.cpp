@@ -1,4 +1,4 @@
-#include "managers/propertymanager/userpropertymanager/integerpropertyconfigwidget.h"
+#include "propertywidgets/numericpropertywidget/integerpropertyconfigwidget.h"
 
 namespace omm
 {
