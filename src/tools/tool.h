@@ -38,6 +38,7 @@ public:
   ObjectTransformation transformation() const;
 
   void set_selection(const std::set<Object*>& objects);
+  const std::set<Object*> selection() const;
   std::vector<Handle*> handles() const;
 
   arma::vec2 map_to_tool_local(const arma::vec2& pos) const;
@@ -46,7 +47,6 @@ public:
 
 protected:
   Scene& scene;
-  const std::set<Object*> selection() const;
 
 private:
   std::set<Object*> m_selection;

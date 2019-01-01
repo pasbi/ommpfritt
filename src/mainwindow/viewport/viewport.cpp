@@ -130,7 +130,13 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
 
 void Viewport::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
-  m_scene.tool_box.active_tool().set_selection(AbstractPropertyOwner::cast<Object>(selection));
+  const auto objects = AbstractPropertyOwner::cast<Object>(selection);
+  LOG(INFO) << selection.size() << " " << objects.size();
+  if (selection.size() == 0 || objects.size() > 0) {
+    m_scene.tool_box.active_tool().set_selection(objects);
+  } else {
+    // ignore this event, if only non-objects are selected and selection is not cleared.
+  }
 }
 
 ObjectTransformation Viewport::viewport_transformation() const

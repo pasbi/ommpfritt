@@ -40,8 +40,11 @@ Tool& ToolBox::tool(const std::string& key) const
 
 void ToolBox::set_active_tool(const std::string &key)
 {
+  const auto selection = m_active_tool == nullptr ? decltype(m_active_tool->selection())()
+                                                  : m_active_tool->selection();
   m_active_tool = m_tools.at(key).get();
   m_scene.set_selection(std::set<AbstractPropertyOwner*> { m_active_tool });
+  m_active_tool->set_selection(selection);
 }
 
 }  // namespace
