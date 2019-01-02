@@ -29,20 +29,11 @@ private:
 
 auto make_handles(omm::RotateTool& tool)
 {
-  const auto make_style = [](const omm::Color& color) {
-    omm::Style style;
-    style.property(omm::Style::PEN_IS_ACTIVE_KEY).set(true);
-    style.property(omm::Style::BRUSH_IS_ACTIVE_KEY).set(false);
-    style.property(omm::Style::PEN_COLOR_KEY).set(color);
-    style.property(omm::Style::PEN_WIDTH_KEY).set(2.0);
-    return style;
-  };
-
   using Status = omm::Handle::Status;
   auto rh = std::make_unique<RotateHandle>(tool);
-  rh->set_style(Status::Active, make_style(omm::Color(1.0, 1.0, 1.0)));
-  rh->set_style(Status::Hovered, make_style(omm::Color(0.0, 0.0, 1.0)));
-  rh->set_style(Status::Inactive, make_style(omm::Color(0.3, 0.3, 1.0)));
+  rh->set_style(Status::Active, omm::Style(omm::Color(1.0, 1.0, 1.0)));
+  rh->set_style(Status::Hovered, omm::Style(omm::Color(0.0, 0.0, 1.0)));
+  rh->set_style(Status::Inactive, omm::Style(omm::Color(0.3, 0.3, 1.0)));
   rh->set_radius(100);
 
   std::vector<std::unique_ptr<omm::Handle>> handles;
