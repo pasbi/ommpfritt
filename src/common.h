@@ -6,6 +6,7 @@
 #include <cassert>
 #include <set>
 #include <algorithm>
+#include <type_traits>
 
 /*
  * passes ownership of `object` to `consumer` and returns a reference to `object`
@@ -153,3 +154,31 @@ static constexpr struct identity_t
   template<typename T>
   constexpr decltype(auto) operator()(T&& t) const noexcept { return std::forward<T>(t); }
 } identity {};
+
+template<typename T> struct EnableBitMaskOperators : std::false_type {};
+
+template<typename EnumT>
+std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT> operator|(EnumT a, EnumT b)
+{
+  using underlying = std::underlying_type_t<EnumT>;
+  return static_cast<EnumT>(static_cast<underlying>(a) | static_cast<underlying>(b));
+}
+
+template<typename EnumT>
+std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT> operator&(EnumT a, EnumT b)
+{
+  using underlying = std::underlying_type_t<EnumT>;
+  return static_cast<EnumT>(static_cast<underlying>(a) & static_cast<underlying>(b));
+}
+
+template<typename EnumT>
+std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT> operator~(EnumT a)
+{
+  return static_cast<EnumT>(~static_cast<std::underlying_type_t<EnumT>>(a));
+}
+
+template<typename EnumT>
+std::enable_if_t<EnableBitMaskOperators<EnumT>::value, bool> operator!(EnumT a)
+{
+  return !static_cast<std::underlying_type_t<EnumT>>(a);
+}

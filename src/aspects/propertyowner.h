@@ -15,7 +15,6 @@
 #include "properties/stringproperty.h"
 #include "common.h"
 
-
 namespace omm
 {
 
@@ -106,9 +105,4 @@ public:
 
 }  // namespace omm
 
-omm::AbstractPropertyOwner::Kind operator|( omm::AbstractPropertyOwner::Kind a,
-                                            omm::AbstractPropertyOwner::Kind b );
-omm::AbstractPropertyOwner::Kind operator&( omm::AbstractPropertyOwner::Kind a,
-                                            omm::AbstractPropertyOwner::Kind b );
-omm::AbstractPropertyOwner::Kind operator~( omm::AbstractPropertyOwner::Kind a );
-bool operator!(omm::AbstractPropertyOwner::Kind a);
+template<> struct EnableBitMaskOperators<omm::AbstractPropertyOwner::Kind> : std::true_type {};

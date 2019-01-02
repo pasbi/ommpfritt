@@ -141,34 +141,3 @@ std::unique_ptr<Property> AbstractPropertyOwner::extract_property(const std::str
 }
 
 }  // namespace omm
-
-omm::AbstractPropertyOwner::Kind operator|( omm::AbstractPropertyOwner::Kind a,
-                                            omm::AbstractPropertyOwner::Kind b )
-{
-  using enum_t = omm::AbstractPropertyOwner::Kind;
-  using underlying = std::underlying_type_t<enum_t>;
-  return static_cast<enum_t>(static_cast<underlying>(a) | static_cast<underlying>(b));
-}
-
-omm::AbstractPropertyOwner::Kind operator&( omm::AbstractPropertyOwner::Kind a,
-                                            omm::AbstractPropertyOwner::Kind b )
-{
-  using enum_t = omm::AbstractPropertyOwner::Kind;
-  using underlying = std::underlying_type_t<enum_t>;
-  return static_cast<enum_t>(static_cast<underlying>(a) & static_cast<underlying>(b));
-}
-
-omm::AbstractPropertyOwner::Kind operator~( omm::AbstractPropertyOwner::Kind a )
-{
-  using enum_t = omm::AbstractPropertyOwner::Kind;
-  using underlying = std::underlying_type_t<enum_t>;
-  return static_cast<enum_t>( static_cast<underlying>(omm::AbstractPropertyOwner::Kind::All)
-                            & ~static_cast<underlying>(a));
-}
-
-bool operator!(omm::AbstractPropertyOwner::Kind a)
-{
-  using enum_t = omm::AbstractPropertyOwner::Kind;
-  using underlying = std::underlying_type_t<enum_t>;
-  return !static_cast<underlying>(a);
-}
