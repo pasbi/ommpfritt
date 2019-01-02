@@ -1,4 +1,5 @@
 file (GLOB SOURCES
+  "abstractproceduralpath.cpp"
   "cloner.cpp"
   "ellipse.cpp"
   "empty.cpp"

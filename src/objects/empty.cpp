@@ -1,10 +1,14 @@
 #include "objects/empty.h"
+#include "properties/optionsproperty.h"
 
 namespace omm
 {
 
 Empty::Empty(Scene* scene) : Object(scene)
 {
+  const std::vector<std::string> options { "O1", "O2" };
+  add_property<OptionsProperty>("hdhe")
+    .set_options(options).set_label("hdhe").set_category("base");
 }
 
 void Empty::render(AbstractRenderer&, const Style&) const
