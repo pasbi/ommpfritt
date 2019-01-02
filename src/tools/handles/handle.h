@@ -22,6 +22,7 @@ public:
   Status status() const;
   void deactivate();
   void set_style(Status status, Style&& style);
+  double epsilon = 10.0;
 
 protected:
   virtual bool contains(const arma::vec2& point) const = 0;
@@ -30,6 +31,7 @@ protected:
 private:
   Status m_status = Status::Inactive;
   std::map<Status, Style> m_styles;
+
 };
 
 }  // namespace omm

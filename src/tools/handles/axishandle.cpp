@@ -13,7 +13,6 @@ namespace omm
 
 bool AxisHandle::contains(const arma::vec2& point) const
 {
-  constexpr double eps = 10;
   arma::vec2 o { 0.0, 0.0 };
 
   arma::vec2 v = project_onto_axis(point);
@@ -25,7 +24,7 @@ bool AxisHandle::contains(const arma::vec2& point) const
     v(i) = std::max(static_cast<double>(min(i)), std::min(v(i), static_cast<double>(max(i))));
   }
 
-  return arma::norm(point - v) < eps;
+  return arma::norm(point - v) < epsilon;
 }
 
 void AxisHandle::set_direction(const arma::vec2& direction)

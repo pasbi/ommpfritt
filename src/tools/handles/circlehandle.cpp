@@ -22,9 +22,8 @@ void CircleHandle::draw(AbstractRenderer& renderer) const
 
 bool CircleHandle::contains(const arma::vec2& point) const
 {
-  constexpr double eps = 10;
   const double r = arma::norm(point);
-  return RADIUS - eps <= r && r <= RADIUS + eps;
+  return RADIUS - epsilon <= r && r <= RADIUS + epsilon;
 }
 
 void CircleHandle::set_radius(double r)
