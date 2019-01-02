@@ -63,13 +63,13 @@ ManagerItemView<ItemViewT, ItemModelT>::remove_selection()
   {
     const auto typed_selection = AbstractPropertyOwner::cast<item_type>(selection);
     using remove_command_type = RemoveCommand<typename ItemModelT::structure_type>;
-    scene.undo_stack().beginMacro("Remove Selection");
+    scene.undo_stack.beginMacro("Remove Selection");
     if (properties.size() > 0) {
       using command_type = PropertiesCommand<ReferenceProperty::value_type>;
       scene.template submit<command_type>(properties, nullptr);
     }
     scene.template submit<remove_command_type>(model()->structure, typed_selection);
-    scene.undo_stack().endMacro();
+    scene.undo_stack.endMacro();
     return true;
   } else {
     return false;

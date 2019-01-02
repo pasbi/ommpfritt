@@ -110,7 +110,7 @@ bool ObjectTreeView::remove_selection()
   std::set<Property*> properties;
   if (removed_items.size() > 0 && can_remove_selection(this, scene, removed_items, properties))
   {
-    scene.undo_stack().beginMacro("Remove Selection");
+    scene.undo_stack.beginMacro("Remove Selection");
     if (properties.size() > 0) {
       using command_type = PropertiesCommand<ReferenceProperty::value_type>;
       scene.template submit<command_type>(properties, nullptr);
@@ -119,7 +119,7 @@ bool ObjectTreeView::remove_selection()
     for (auto&& item : explicitely_removed_tags) {
       remove(scene, item.first->tags, AbstractPropertyOwner::cast<Tag>(item.second));
     }
-    scene.undo_stack().endMacro();
+    scene.undo_stack.endMacro();
     return true;
   } else {
     return false;

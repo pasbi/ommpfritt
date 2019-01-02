@@ -201,13 +201,8 @@ bool Scene::has_pending_changes() const
 
 void Scene::submit(std::unique_ptr<Command> command)
 {
-  m_undo_stack.push(command.release());
+  undo_stack.push(command.release());
   set_has_pending_changes(true);
-}
-
-QUndoStack& Scene::undo_stack()
-{
-  return m_undo_stack;
 }
 
 std::set<Tag*> Scene::tags() const

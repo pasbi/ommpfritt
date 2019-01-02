@@ -69,10 +69,8 @@ void MainMenuBar::make_window_menu()
 void MainMenuBar::make_edit_menu()
 {
   auto& edit_menu = *addMenu(tr("&Edit"));
-
-  QUndoStack& undo_stack = m_app.scene.undo_stack();
-  edit_menu.addAction(undo_stack.createUndoAction(nullptr));
-  edit_menu.addAction(undo_stack.createRedoAction(nullptr));
+  edit_menu.addAction(m_app.scene.undo_stack.createUndoAction(nullptr));
+  edit_menu.addAction(m_app.scene.undo_stack.createRedoAction(nullptr));
 }
 
 MainMenuBar::MainMenuBar(Application& app, MainWindow& main_window)

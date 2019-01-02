@@ -98,17 +98,17 @@ private:
 
   // === Commands ====
 public:
+  QUndoStack undo_stack;
   template<typename CommandT, typename... Args> void submit(Args&&... args)
   {
     submit(std::make_unique<CommandT>(std::forward<Args>(args)...));
   }
   bool has_pending_changes() const;
-  QUndoStack& undo_stack();
   void submit(std::unique_ptr<Command> command);
+
 private:
   bool m_has_pending_changes = false;
   void set_has_pending_changes(bool v);
-  QUndoStack m_undo_stack;
 
 public:
   static Scene* currentInstance();
