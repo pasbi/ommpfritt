@@ -56,6 +56,8 @@ public:
 protected:
   bool m_draw_children = true;
   Scene* scene() const;
+  void copy_properties(Object& other) const;
+  void copy_tags(Object& other) const;
 
 private:
   friend class ObjectView;

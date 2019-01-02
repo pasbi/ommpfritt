@@ -182,3 +182,12 @@ std::enable_if_t<EnableBitMaskOperators<EnumT>::value, bool> operator!(EnumT a)
 {
   return !static_cast<std::underlying_type_t<EnumT>>(a);
 }
+
+template<typename T, template<typename...> class ContainerT>
+ContainerT<T> intersect(const ContainerT<T>& a, const ContainerT<T>& b)
+{
+  ContainerT<T> intersection;
+  auto inserter = std::inserter(intersection, intersection.end());
+  std::set_intersection(a.begin(), a.end(), b.begin(), b.end(), inserter);
+  return intersection;
+}
