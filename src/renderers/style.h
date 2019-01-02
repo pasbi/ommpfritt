@@ -14,6 +14,7 @@ class Style
 {
 public:
   explicit Style(Scene* scene = nullptr);
+  explicit Style(const Color& color, Scene* scene = nullptr);
   std::string type() const;
   static constexpr auto TYPE = "Style";
   std::unique_ptr<Style> clone() const;  // provided for interface consistency

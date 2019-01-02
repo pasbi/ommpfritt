@@ -24,13 +24,13 @@ void Ellipse::render(AbstractRenderer& renderer, const Style& style) const
   const auto ry = property("ry").value<double>();
 
   std::vector<Point> points;
-  points.reserve(n+1);
-  for (size_t i = 0; i <= n; ++i) {
+  points.reserve(n);
+  for (size_t i = 0; i < n; ++i) {
     const double x = cos(i * 2.0/n * M_PI) * rx;
     const double y = sin(i * 2.0/n * M_PI) * ry;
     points.push_back(Point(arma::vec2 { x, y }));
   }
-  renderer.draw_spline(points, style);
+  renderer.draw_spline(points, style, true);
 }
 
 BoundingBox Ellipse::bounding_box() const
