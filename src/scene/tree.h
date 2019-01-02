@@ -42,7 +42,6 @@ public:
   size_t position(const T& item) const override;
   const T* predecessor(const T& sibling) const override;
 
-  T& insert(std::unique_ptr<T> t) override;
   std::unique_ptr<T> remove(T& t) override;
   void invalidate() override;
 private:

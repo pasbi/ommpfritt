@@ -39,27 +39,6 @@ template<typename T> T& List<T>::item(size_t i) const
   return *m_items[i].get();
 }
 
-template<typename T> T& List<T>::insert(std::unique_ptr<T> item)
-{
-  const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [this](auto* observer){ return observer->acquire_inserter_guard(m_items.size()); }
-  );
-  auto& ref = *item;
-  m_items.push_back(std::move(item));
-  this->invalidate_recursive();
-  return ref;
-}
-
-template<typename T> void List<T>::insert(std::unique_ptr<T> item, const T* predecessor)
-{
-  const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [this](auto* observer){ return observer->acquire_inserter_guard(m_items.size()); }
-  );
-  const auto it = m_items.begin() + this->insert_position(predecessor);
-  m_items.insert(it, std::move(item));
-  this->invalidate_recursive();
-}
-
 template<typename T> void List<T>::insert(ListOwningContext<T>& context)
 {
   const size_t position = this->insert_position(context.predecessor);

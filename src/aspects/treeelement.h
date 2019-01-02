@@ -24,7 +24,6 @@ public:
   std::unique_ptr<T> repudiate(T& repudiatee);
   std::vector<T*> children() const;
   T& child(size_t i) const;
-  const T* predecessor() const;
   size_t n_children() const;
   bool is_descendant_of(const T& subject) const;
   void reset_parent(T& new_parent);

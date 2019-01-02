@@ -20,8 +20,6 @@ public:
   constexpr static bool is_tree = false;
   using Structure<T>::Structure;
   explicit List(const List<T>& other);
-
-  void insert(std::unique_ptr<T> t, const T* predecessor);
   void insert(ListOwningContext<T>& context);
   void remove(ListOwningContext<T>& t);
   void move(ListMoveContext<T>& context);
@@ -34,7 +32,6 @@ public:
   size_t position(const T& item) const override;
   size_t size() const;
 
-  T& insert(std::unique_ptr<T> t) override;
   std::unique_ptr<T> remove(T& t) override;
 
   void invalidate() override;

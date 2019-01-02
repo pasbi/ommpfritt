@@ -50,19 +50,6 @@ template<typename T> void Tree<T>::insert(TreeOwningContext<T>& context)
   this->invalidate_recursive();
 }
 
-template<typename T> T& Tree<T>::insert(std::unique_ptr<T> item)
-{
-  size_t n = root().children().size();
-  const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [this, n] (auto* observer) { return observer->acquire_inserter_guard(root(), n); }
-  );
-
-  T& ref = root().adopt(std::move(item));
-
-  this->invalidate_recursive();
-  return ref;
-}
-
 template<typename T> void Tree<T>::remove(TreeOwningContext<T>& context)
 {
   assert(!context.subject.owns());
