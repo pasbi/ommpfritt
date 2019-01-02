@@ -10,37 +10,6 @@
 namespace omm
 {
 
-namespace detail
-{
-
-template<typename ContextT, typename ItemT, typename StructureT>
-ContextT make_context(std::unique_ptr<ItemT> item, StructureT& structure)
-{
-  const auto get_siblings = [&structure]() {
-    if constexpr (StructureT::is_tree) {
-      return structure.root().children();
-    } else {
-      return structure.ordered_items();
-    }
-  };
-
-  const auto make_context = [&structure, &get_siblings](ItemT& item) {
-    const auto siblings = get_siblings();
-    auto* predecessor = siblings.size() == 0 ? nullptr : siblings.back();
-    if constexpr (StructureT::is_tree) {
-      return ContextT(item, structure.root(), predecessor);
-    } else {
-      return ContextT(item, predecessor);
-    }
-  };
-
-  auto context = make_context(*item);
-  context.subject.capture(std::move(item));
-  return context;
-}
-
-}  // namespace detail
-
 template<typename StructureT>
 class AddCommand : public Command
 {
@@ -49,7 +18,7 @@ public:
   using context_type = typename Contextes<item_type>::Owning;
 
   AddCommand(StructureT& structure, std::unique_ptr<item_type> item)
-    : AddCommand(structure, detail::make_context<context_type>(std::move(item), structure))
+    : AddCommand(structure, context_type(std::move(item), structure))
   {
     static int i = 0;
     const auto name = m_context.subject->type() + " " + std::to_string(i++);

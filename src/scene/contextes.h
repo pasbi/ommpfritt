@@ -9,6 +9,8 @@
 #include "aspects/treeelement.h"
 #include "scene/structure.h"
 #include "scene/contextes_fwd.h"
+#include "scene/list.h"
+#include "scene/tree.h"
 
 namespace omm
 {
@@ -189,5 +191,50 @@ void topological_context_sort(std::vector<ContextT>& ts)
     }
   }
 }
+
+namespace
+{
+
+template<typename StructureT>
+const auto* last_sibling(const StructureT& s)
+{
+  const auto get_siblings = [&s]() {
+    if constexpr (StructureT::is_tree) {
+      return s.root().children();
+    } else {
+      return s.ordered_items();
+    }
+  };
+  const auto siblings = get_siblings();
+  return siblings.size() == 0 ? nullptr : siblings.back();
+}
+
+}  // namespace
+
+template<typename T, template<typename, template<typename...> class > class ContextT>
+using OwningContext = ContextT<T, MaybeOwner>;
+
+template<typename T> class ListOwningContext : public OwningContext<T, ListContext>
+{
+public:
+  using OwningContext<T, ListContext>::OwningContext;
+  ListOwningContext(std::unique_ptr<T> item, List<T>& structure)
+    : OwningContext<T, ListContext>(*item, last_sibling(structure))
+  {
+    this->subject.capture(std::move(item));
+  }
+
+};
+
+template<typename T> class TreeOwningContext : public OwningContext<T, TreeContext>
+{
+public:
+  using OwningContext<T, TreeContext>::OwningContext;
+  TreeOwningContext(std::unique_ptr<T> item, Tree<T>& structure)
+    : OwningContext<T, TreeContext>(*item, structure.root(), last_sibling(structure))
+  {
+    this->subject.capture(std::move(item));
+  };
+};
 
 }  // namespace omm
