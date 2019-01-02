@@ -16,7 +16,8 @@ public:
   std::string type() const override;
   static constexpr auto TYPE = "Ellipse";
   std::unique_ptr<Object> clone() const override;
-
+  std::unique_ptr<Object> convert() const override;
+  Object::Flag flags() const override;
 private:
 };
 

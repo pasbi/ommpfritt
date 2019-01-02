@@ -1,8 +1,7 @@
 #include "objects/ellipse.h"
-
 #include <QObject>
-
 #include "properties/floatproperty.h"
+#include "objects/path.h"
 
 namespace omm
 {
@@ -52,5 +51,18 @@ std::unique_ptr<Object> Ellipse::clone() const
 {
   return std::make_unique<Ellipse>(*this);
 }
+
+Object::Flag Ellipse::flags() const
+{
+  return Flag::Convertable;
+}
+
+std::unique_ptr<Object> Ellipse::convert() const
+{
+  auto converted = std::make_unique<Path>(scene());
+  converted->property(NAME_PROPERTY_KEY).set(name());
+  return converted;
+}
+
 
 }  // namespace omm

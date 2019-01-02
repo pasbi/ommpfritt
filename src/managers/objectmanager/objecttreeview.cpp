@@ -7,10 +7,12 @@
 #include "commands/addtagcommand.h"
 #include "scene/contextes.h"
 #include "commands/removecommand.h"
+#include "commands/addcommand.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
 #include "commands/propertycommand.h"
 #include "properties/referenceproperty.h"
+#include "common.h"
 
 namespace
 {
@@ -63,6 +65,25 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
   }
   tag_menu->setEnabled(selected_objects.size() > 0);
   menu.addMenu(tag_menu.release());
+
+  const auto convertables = ::filter_if(selected_objects, [](const Object* object) {
+    return !!(object->flags() & Object::Flag::Convertable);
+  });
+  auto& convert_action = action(menu, tr("&convert"), [this, convertables]() {
+    Scene& scene = model()->scene;
+    scene.undo_stack.beginMacro(tr("convert"));
+    for (auto&& c : convertables) {
+      auto converted = c->convert();
+      assert(!c->is_root());
+      TreeOwningContext<Object> context(*converted, c->parent(), c);
+      context.subject.capture(std::move(converted));
+      using object_tree_type = Tree<Object>;
+      scene.submit<AddCommand<object_tree_type>>(scene.object_tree, std::move(context));
+    }
+    remove(scene, scene.object_tree, ::transform<Object*, std::set>(convertables, ::identity));
+    scene.undo_stack.endMacro();
+  });
+  convert_action.setEnabled(convertables.size() > 0);
 }
 
 std::set<AbstractPropertyOwner*> ObjectTreeView::selected_items() const
