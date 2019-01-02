@@ -3,6 +3,7 @@
 #include "objects/empty.h"
 #include "objects/instance.h"
 #include "objects/cloner.h"
+#include "objects/path.h"
 
 namespace omm
 {
@@ -14,6 +15,7 @@ void register_objects()
   REGISTER_OBJECT(Ellipse);
   REGISTER_OBJECT(Instance);
   REGISTER_OBJECT(Cloner);
+  REGISTER_OBJECT(Path);
 #undef REGISTER_OBJECT
 }
 
