@@ -28,6 +28,8 @@ public:
   explicit Object(const Object& other);
   virtual ~Object();
 
+  enum class Flag { None = 0x0, Convertable = 0x1 };
+
   void transform(const ObjectTransformation& transformation);
   ObjectTransformation transformation() const;
   ObjectTransformation global_transformation() const;
@@ -43,15 +45,17 @@ public:
   std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() override;
   virtual std::unique_ptr<Object> clone() const = 0;
   std::unique_ptr<Object> clone(Scene* scene) const;
+  virtual std::unique_ptr<Object> convert() const;
+  virtual Flag flags() const;
 
   List<Tag> tags;
 
   static constexpr auto TYPE = "Object";
   static constexpr auto TRANSFORMATION_PROPERTY_KEY = "transformation";
 
-
 protected:
   bool m_draw_children = true;
+  Scene* scene() const;
 
 private:
   friend class ObjectView;
@@ -63,3 +67,5 @@ void register_objects();
 std::ostream& operator<<(std::ostream& ostream, const Object& object);
 
 }  // namespace omm
+
+template<> struct EnableBitMaskOperators<omm::Object::Flag> : std::true_type {};

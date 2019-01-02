@@ -241,4 +241,19 @@ std::unique_ptr<Object> Object::clone(Scene* scene) const
   return clone;
 }
 
+std::unique_ptr<Object> Object::convert() const
+{
+  return clone();
+}
+
+Object::Flag Object::flags() const
+{
+  return Flag::None;
+}
+
+Scene* Object::scene() const
+{
+  return m_scene;
+}
+
 }  // namespace omm
