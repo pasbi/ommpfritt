@@ -24,7 +24,8 @@ public:
   void set_base_transformation(const ObjectTransformation& base_transformation);
   virtual void start_group(const std::string& name) {}
   virtual void end_group() {}
-  virtual void draw_spline(const std::vector<Point>& points, const Style& style) = 0;
+  virtual void draw_spline( const std::vector<Point>& points, const Style& style,
+                            bool closed = false ) = 0;
   virtual void push_transformation(const ObjectTransformation& transformation);
   virtual void pop_transformation();
   virtual ObjectTransformation current_transformation() const;
