@@ -1,6 +1,7 @@
 #include "tools/movetool.h"
 #include <memory>
 #include "tools/handles/axishandle.h"
+#include "tools/handles/pointhandle.h"
 #include "scene/scene.h"
 #include "commands/objectstransformationcommand.h"
 
@@ -14,7 +15,7 @@ public:
 
   void mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
   {
-    Handle::mouse_move(delta, pos, allow_hover);
+    AxisHandle::mouse_move(delta, pos, allow_hover);
     if (status() == Status::Active) {
       const auto t = omm::ObjectTransformation().translated(project_onto_axis(delta));
       m_tool.transform_objects(t);
@@ -39,32 +40,42 @@ private:
   omm::MoveTool& m_tool;
 };
 
+class PointMoveHandle : public omm::PointHandle
+{
+public:
+  PointMoveHandle(omm::MoveTool& tool) : m_tool(tool) {}
+  void mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
+  {
+    PointHandle::mouse_move(delta, pos, allow_hover);
+    if (status() == Status::Active) {
+      const auto t = omm::ObjectTransformation().translated(delta);
+      m_tool.transform_objects(t);
+    }
+  }
+
+private:
+  omm::MoveTool& m_tool;
+};
+
 auto make_handles(omm::MoveTool& tool)
 {
-  const auto make_style = [](const omm::Color& color) {
-    omm::Style style;
-    style.property(omm::Style::PEN_IS_ACTIVE_KEY).set(true);
-    style.property(omm::Style::BRUSH_IS_ACTIVE_KEY).set(true);
-    style.property(omm::Style::PEN_COLOR_KEY).set(color);
-    style.property(omm::Style::BRUSH_COLOR_KEY).set(color);
-    style.property(omm::Style::PEN_WIDTH_KEY).set(2.0);
-    return style;
-  };
-
   using Status = omm::Handle::Status;
+  auto point = std::make_unique<PointMoveHandle>(tool);
+
   auto x_axis = std::make_unique<MoveAxisHandle>(tool);
-  x_axis->set_style(Status::Active, make_style(omm::Color(1.0, 1.0, 1.0)));
-  x_axis->set_style(Status::Hovered, make_style(omm::Color(1.0, 0.0, 0.0)));
-  x_axis->set_style(Status::Inactive, make_style(omm::Color(1.0, 0.3, 0.3)));
+  x_axis->set_style(Status::Active, omm::Style(omm::Color(1.0, 1.0, 1.0)));
+  x_axis->set_style(Status::Hovered, omm::Style(omm::Color(1.0, 0.0, 0.0)));
+  x_axis->set_style(Status::Inactive, omm::Style(omm::Color(1.0, 0.3, 0.3)));
   x_axis->set_direction({100, 0});
 
   auto y_axis = std::make_unique<MoveAxisHandle>(tool);
-  y_axis->set_style(Status::Active, make_style(omm::Color(1.0, 1.0, 1.0)));
-  y_axis->set_style(Status::Hovered, make_style(omm::Color(0.0, 1.0, 0.0)));
-  y_axis->set_style(Status::Inactive, make_style(omm::Color(0.3, 1.0, 0.3)));
+  y_axis->set_style(Status::Active, omm::Style(omm::Color(1.0, 1.0, 1.0)));
+  y_axis->set_style(Status::Hovered, omm::Style(omm::Color(0.0, 1.0, 0.0)));
+  y_axis->set_style(Status::Inactive, omm::Style(omm::Color(0.3, 1.0, 0.3)));
   y_axis->set_direction({0, 100});
 
   std::vector<std::unique_ptr<omm::Handle>> handles;
+  handles.push_back(std::move(point));
   handles.push_back(std::move(x_axis));
   handles.push_back(std::move(y_axis));
   return handles;
