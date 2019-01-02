@@ -44,17 +44,25 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
     object = nullptr;
   }
 
-  if (object != nullptr)
-  {
-    action(menu, tr("&remove"), *this, &ManagerItemView::remove_selection);
-    auto tag_menu = std::make_unique<QMenu>(tr("&attach tag"));
-    for (const auto& key : Tag::keys()) {
-      action(*tag_menu, QString::fromStdString(key), [this, key, object](){
-        model()->scene.submit<AddTagCommand>(*object, Tag::make(key, *object));
-      });
-    }
-    menu.addMenu(tag_menu.release());
+  const auto selected_tags = AbstractPropertyOwner::cast<Tag>(this->selected_tags());
+  const auto selected_objects = AbstractPropertyOwner::cast<Object>(this->selected_objects());
+
+  auto& remove_action = action(menu, tr("&remove"), *this, &ManagerItemView::remove_selection);
+  remove_action.setEnabled(selected_tags.size() > 0 || selected_objects.size() > 0);
+
+  auto tag_menu = std::make_unique<QMenu>(tr("&attach tag"));
+  for (const auto& key : Tag::keys()) {
+    action(*tag_menu, QString::fromStdString(key), [this, key, selected_objects](){
+      Scene& scene = model()->scene;
+      scene.undo_stack.beginMacro(tr("Add Tag"));
+      for (auto&& object : selected_objects) {
+        scene.submit<AddTagCommand>(*object, Tag::make(key, *object));
+      }
+      scene.undo_stack.endMacro();
+    });
   }
+  tag_menu->setEnabled(selected_objects.size() > 0);
+  menu.addMenu(tag_menu.release());
 }
 
 std::set<AbstractPropertyOwner*> ObjectTreeView::selected_items() const
