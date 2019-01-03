@@ -1,5 +1,8 @@
 file (GLOB SOURCES
+  "common.cpp"
+  "objecttransformationwrapper.cpp"
   "objectwrapper.cpp"
+  "pointwrapper.cpp"
   "propertyownerwrapper.cpp"
   "pythonengine.cpp"
   "pywrapper.cpp"
@@ -8,7 +11,6 @@ file (GLOB SOURCES
   "tagwrapper.cpp"
   "scripttagwrapper.cpp"
   "wrapperregister.cpp"
-  "objecttransformationwrapper.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})
 
