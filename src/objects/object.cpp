@@ -187,7 +187,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   this->tags.set(std::move(tags));
 }
 
-void Object::render_recursive(AbstractRenderer& renderer, const Style& default_style) const
+void Object::render_recursive(AbstractRenderer& renderer, const Style& default_style)
 {
   const auto styles = find_styles(*this);
   for (const auto* style : styles) {

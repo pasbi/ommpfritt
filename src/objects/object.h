@@ -38,8 +38,8 @@ public:
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-  virtual void render(AbstractRenderer& renderer, const Style& style) const = 0;
-  void render_recursive(AbstractRenderer& renderer, const Style& default_style) const;
+  virtual void render(AbstractRenderer& renderer, const Style& style) = 0;
+  void render_recursive(AbstractRenderer& renderer, const Style& default_style);
   virtual BoundingBox bounding_box() const = 0;
   BoundingBox recursive_bounding_box() const;
   std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() override;

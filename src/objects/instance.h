@@ -13,7 +13,7 @@ class Instance : public Object
 {
 public:
   explicit Instance(Scene* scene);
-  void render(AbstractRenderer& renderer, const Style& style) const override;
+  void render(AbstractRenderer& renderer, const Style& style) override;
   BoundingBox bounding_box() const override;
   std::string type() const override;
   static constexpr auto TYPE = "Instance";

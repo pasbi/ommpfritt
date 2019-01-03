@@ -25,7 +25,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_category(QObject::tr("Cloner").toStdString());
 }
 
-void Cloner::render(AbstractRenderer& renderer, const Style& style) const
+void Cloner::render(AbstractRenderer& renderer, const Style& style)
 {
   using namespace pybind11::literals;
   const auto n_children = this->n_children();

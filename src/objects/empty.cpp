@@ -11,7 +11,7 @@ Empty::Empty(Scene* scene) : Object(scene)
     .set_options(options).set_label("hdhe").set_category("base");
 }
 
-void Empty::render(AbstractRenderer&, const Style&) const
+void Empty::render(AbstractRenderer&, const Style&)
 {
   return;
 }

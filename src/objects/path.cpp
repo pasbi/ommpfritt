@@ -16,7 +16,7 @@ Path::Path(Scene* scene) : Object(scene)
     .set_category(QObject::tr("path").toStdString());
 }
 
-void Path::render(AbstractRenderer& renderer, const Style& style) const
+void Path::render(AbstractRenderer& renderer, const Style& style)
 {
   renderer.draw_spline(m_points, style, property("closed").value<bool>());
 }

@@ -11,7 +11,7 @@ class AbstractProceduralPath : public Object
 {
 public:
   using Object::Object;
-  void render(AbstractRenderer& renderer, const Style& style) const override;
+  void render(AbstractRenderer& renderer, const Style& style) override;
   BoundingBox bounding_box() const override;
   static constexpr auto TYPE = "AbstractProceduralPath";
   std::unique_ptr<Object> convert() const override;

@@ -16,7 +16,7 @@ Instance::Instance(Scene* scene)
     .set_label("reference").set_category("Instance");
 }
 
-void Instance::render(AbstractRenderer& renderer, const Style& style) const
+void Instance::render(AbstractRenderer& renderer, const Style& style)
 {
   const auto o = referenced_object();
   if (o != nullptr) {
