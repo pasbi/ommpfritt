@@ -14,8 +14,9 @@ Point::Point(const arma::vec2& position)
 Point::Point(double argument, double magnitude)
   : Point(arma::vec2 { magnitude * std::cos(argument), magnitude * std::sin(argument) })
 {
-
 }
+
+Point::Point() : Point(arma::vec2 { 0.0, 0.0 }) { }
 
 arma::vec2 Point::left_position() const
 {
