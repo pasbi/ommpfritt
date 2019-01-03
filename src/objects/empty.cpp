@@ -16,7 +16,7 @@ void Empty::render(AbstractRenderer&, const Style&)
   return;
 }
 
-BoundingBox Empty::bounding_box() const
+BoundingBox Empty::bounding_box()
 {
   return BoundingBox({ arma::vec2{0, 0} });
 }

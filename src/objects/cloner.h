@@ -15,7 +15,7 @@ class Cloner : public Object
 public:
   explicit Cloner(Scene* scene);
   void render(AbstractRenderer& renderer, const Style& style) override;
-  BoundingBox bounding_box() const override;
+  BoundingBox bounding_box() override;
   std::string type() const override;
   static constexpr auto TYPE = "Cloner";
   static constexpr auto COUNT_PROPERTY_KEY = "count";

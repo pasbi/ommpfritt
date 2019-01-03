@@ -14,7 +14,7 @@ void AbstractProceduralPath::render(AbstractRenderer& renderer, const Style& sty
   renderer.draw_spline(points(), style, is_closed());
 }
 
-BoundingBox AbstractProceduralPath::bounding_box() const
+BoundingBox AbstractProceduralPath::bounding_box()
 {
   return BoundingBox(::transform<arma::vec2>(points(), [](const Point& p) { return p.position; }));
 }
@@ -24,7 +24,7 @@ Object::Flag AbstractProceduralPath::flags() const
   return Flag::Convertable;
 }
 
-std::unique_ptr<Object> AbstractProceduralPath::convert() const
+std::unique_ptr<Object> AbstractProceduralPath::convert()
 {
   auto converted = std::make_unique<Path>(scene());
   copy_properties(*converted);

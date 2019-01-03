@@ -61,6 +61,7 @@ void Cloner::render(AbstractRenderer& renderer, const Style& style)
       const auto locals = pybind11::dict( "id"_a=i,
                                           "count"_a=count,
                                           "copy"_a=ObjectWrapper::make(&copy),
+                                          "this"_a=ObjectWrapper::make(this),
                                           "scene"_a=SceneWrapper(&renderer.scene) );
       renderer.scene.python_engine.run(code, locals);
       renderer.push_transformation(copy.transformation());
@@ -70,7 +71,7 @@ void Cloner::render(AbstractRenderer& renderer, const Style& style)
   }
 }
 
-BoundingBox Cloner::bounding_box() const
+BoundingBox Cloner::bounding_box()
 {
   return BoundingBox();  // TODO
 }

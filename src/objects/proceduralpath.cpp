@@ -24,7 +24,7 @@ ProceduralPath::ProceduralPath(Scene* scene) : AbstractProceduralPath(scene)
     .set_category(QObject::tr("ProceduralPath").toStdString());
 }
 
-BoundingBox ProceduralPath::bounding_box() const
+BoundingBox ProceduralPath::bounding_box()
 {
   const auto rx = property("rx").value<double>();
   const auto ry = property("ry").value<double>();
@@ -44,7 +44,7 @@ std::unique_ptr<Object> ProceduralPath::clone() const
   return std::make_unique<ProceduralPath>(*this);
 }
 
-std::vector<Point> ProceduralPath::points() const
+std::vector<Point> ProceduralPath::points()
 {
   assert(scene() != nullptr);
   using namespace pybind11::literals;

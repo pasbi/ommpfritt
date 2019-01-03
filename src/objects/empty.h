@@ -10,7 +10,7 @@ class Empty : public Object
 public:
   explicit Empty(Scene* scene);
   void render(AbstractRenderer& renderer, const Style& style) override;
-  BoundingBox bounding_box() const override;
+  BoundingBox bounding_box() override;
   std::string type() const override;
   std::unique_ptr<Object> clone() const override;
 };

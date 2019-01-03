@@ -24,7 +24,7 @@ void Instance::render(AbstractRenderer& renderer, const Style& style)
   }
 }
 
-BoundingBox Instance::bounding_box() const
+BoundingBox Instance::bounding_box()
 {
   const auto o = referenced_object();
   if (o != nullptr) {

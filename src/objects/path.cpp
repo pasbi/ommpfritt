@@ -21,7 +21,7 @@ void Path::render(AbstractRenderer& renderer, const Style& style)
   renderer.draw_spline(m_points, style, property("closed").value<bool>());
 }
 
-BoundingBox Path::bounding_box() const
+BoundingBox Path::bounding_box()
 {
   return BoundingBox(); // TODO
 }

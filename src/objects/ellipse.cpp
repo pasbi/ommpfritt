@@ -16,7 +16,7 @@ Ellipse::Ellipse(Scene* scene) : AbstractProceduralPath(scene)
                                           .set_category(QObject::tr("ellipse").toStdString());
 }
 
-BoundingBox Ellipse::bounding_box() const
+BoundingBox Ellipse::bounding_box()
 {
   const auto rx = property("rx").value<double>();
   const auto ry = property("ry").value<double>();
@@ -36,7 +36,7 @@ std::unique_ptr<Object> Ellipse::clone() const
   return std::make_unique<Ellipse>(*this);
 }
 
-std::vector<Point> Ellipse::points() const
+std::vector<Point> Ellipse::points()
 {
   const size_t n = 10;
   const auto rx = property("rx").value<double>();

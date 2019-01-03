@@ -14,10 +14,10 @@ public:
   std::string type() const override;
   static constexpr auto TYPE = "Ellipse";
   std::unique_ptr<Object> clone() const override;
-  BoundingBox bounding_box() const override;
+  BoundingBox bounding_box() override;
 
 private:
-  std::vector<Point> points() const override;
+  std::vector<Point> points() override;
   bool is_closed() const override;
 };
 

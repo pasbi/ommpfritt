@@ -208,7 +208,7 @@ void Object::render_recursive(AbstractRenderer& renderer, const Style& default_s
   // }
 }
 
-BoundingBox Object::recursive_bounding_box() const
+BoundingBox Object::recursive_bounding_box()
 {
   auto bounding_box = this->bounding_box();
 
@@ -242,7 +242,7 @@ std::unique_ptr<Object> Object::clone(Scene* scene) const
   return clone;
 }
 
-std::unique_ptr<Object> Object::convert() const
+std::unique_ptr<Object> Object::convert()
 {
   return clone();
 }

@@ -40,12 +40,12 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual void render(AbstractRenderer& renderer, const Style& style) = 0;
   void render_recursive(AbstractRenderer& renderer, const Style& default_style);
-  virtual BoundingBox bounding_box() const = 0;
-  BoundingBox recursive_bounding_box() const;
+  virtual BoundingBox bounding_box() = 0;
+  BoundingBox recursive_bounding_box();
   std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() override;
   virtual std::unique_ptr<Object> clone() const = 0;
   std::unique_ptr<Object> clone(Scene* scene) const;
-  virtual std::unique_ptr<Object> convert() const;
+  virtual std::unique_ptr<Object> convert();
   virtual Flag flags() const;
 
   List<Tag> tags;
