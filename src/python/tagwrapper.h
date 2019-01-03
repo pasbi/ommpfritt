@@ -2,16 +2,16 @@
 
 #include "python/propertyownerwrapper.h"
 #include "python/wrapperfactory.h"
+#include "tags/tag.h"
 
 namespace omm
 {
 
-class TagWrapper : public PropertyOwnerWrapper, public WrapperFactory<Tag, TagWrapper>
+class TagWrapper : public AbstractPropertyOwnerWrapper<Tag>, public WrapperFactory<Tag, TagWrapper>
 {
 public:
-  using PropertyOwnerWrapper::PropertyOwnerWrapper;
+  using AbstractPropertyOwnerWrapper<Tag>::AbstractPropertyOwnerWrapper;
   py::object owner() const;
-  using wrapped_type = Tag;
   static void define_python_interface(py::object& module);
 };
 

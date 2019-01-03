@@ -6,10 +6,12 @@
 namespace omm
 {
 
-class ObjectWrapper : public PropertyOwnerWrapper, public WrapperFactory<Object, ObjectWrapper>
+class ObjectWrapper
+  : public AbstractPropertyOwnerWrapper<Object>
+  , public WrapperFactory<Object, ObjectWrapper>
 {
 public:
-  using PropertyOwnerWrapper::PropertyOwnerWrapper;
+  using AbstractPropertyOwnerWrapper<Object>::AbstractPropertyOwnerWrapper;
   py::object children() const;
   py::object parent() const;
   py::object tags() const;

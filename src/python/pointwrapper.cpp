@@ -19,32 +19,32 @@ void PointWrapper::define_python_interface(py::object& module)
 
 py::object PointWrapper::left_tangent() const
 {
-  return py::cast(arma::conv_to<std::vector<double>>::from(wrapped<Point>().left_tangent));
+  return py::cast(arma::conv_to<std::vector<double>>::from(wrapped().left_tangent));
 }
 
 py::object PointWrapper::right_tangent() const
 {
-  return py::cast(arma::conv_to<std::vector<double>>::from(wrapped<Point>().right_tangent));
+  return py::cast(arma::conv_to<std::vector<double>>::from(wrapped().right_tangent));
 }
 
 py::object PointWrapper::position() const
 {
-  return py::cast(arma::conv_to<std::vector<double>>::from(wrapped<Point>().position));
+  return py::cast(arma::conv_to<std::vector<double>>::from(wrapped().position));
 }
 
 void PointWrapper::set_left_tangent(const py::object& value)
 {
-   wrapped<Point>().left_tangent = to_vec2(value);
+   wrapped().left_tangent = to_vec2(value);
 }
 
 void PointWrapper::set_right_tangent(const py::object& value)
 {
-  wrapped<Point>().right_tangent = to_vec2(value);
+  wrapped().right_tangent = to_vec2(value);
 }
 
 void PointWrapper::set_position(const py::object& value)
 {
-  wrapped<Point>().position = to_vec2(value);
+  wrapped().position = to_vec2(value);
 }
 
 

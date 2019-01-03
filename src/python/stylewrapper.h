@@ -1,15 +1,15 @@
 #pragma once
 
 #include "python/propertyownerwrapper.h"
+#include "renderers/style.h"
 
 namespace omm
 {
 
-class StyleWrapper : public PropertyOwnerWrapper
+class StyleWrapper : public AbstractPropertyOwnerWrapper<Style>
 {
 public:
-  using PropertyOwnerWrapper::PropertyOwnerWrapper;
-  using wrapped_type = Style;
+  using AbstractPropertyOwnerWrapper<Style>::AbstractPropertyOwnerWrapper;
   static void define_python_interface(py::object& module);
 };
 

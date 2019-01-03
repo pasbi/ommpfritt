@@ -6,22 +6,21 @@ namespace omm
 
 py::object ObjectWrapper::children() const
 {
-  return wrap(wrapped<Object>().children());
+  return wrap(wrapped().children());
 }
 
 py::object ObjectWrapper::parent() const
 {
-  Object& wrapped = this->wrapped<Object>();
-  if (wrapped.is_root()) {
+  if (this->wrapped().is_root()) {
     return py::none();
   } else {
-    return wrap(&wrapped.parent());
+    return wrap(&this->wrapped().parent());
   }
 }
 
 py::object ObjectWrapper::tags() const
 {
-  return wrap(wrapped<Object>().tags.ordered_items());
+  return wrap(wrapped().tags.ordered_items());
 }
 
 py::object ObjectWrapper::rotation() const
@@ -73,19 +72,18 @@ py::object ObjectWrapper::set_translation(const py::object& translation) const
 
 ObjectTransformation ObjectWrapper::transformation() const
 {
-  auto& property = wrapped<AbstractPropertyOwner>().property(Object::TRANSFORMATION_PROPERTY_KEY);
+  auto& property = wrapped().property(Object::TRANSFORMATION_PROPERTY_KEY);
   return property.value<ObjectTransformation>();
 }
 
 void ObjectWrapper::set_transformation(const ObjectTransformation& t) const
 {
-  wrapped<AbstractPropertyOwner>().property(Object::TRANSFORMATION_PROPERTY_KEY).set(t);
+  wrapped().property(Object::TRANSFORMATION_PROPERTY_KEY).set(t);
 }
-
 
 void ObjectWrapper::define_python_interface(py::object& module)
 {
-  py::class_<ObjectWrapper, PropertyOwnerWrapper>(module, wrapped_type::TYPE)
+  py::class_<ObjectWrapper, AbstractPropertyOwnerWrapper<Object>>(module, wrapped_type::TYPE)
       .def("children", &ObjectWrapper::children)
       .def("parent", &ObjectWrapper::parent)
       .def("tags", &ObjectWrapper::tags)

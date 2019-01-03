@@ -15,15 +15,10 @@ namespace py = pybind11;
 namespace omm
 {
 
-PyWrapper::PyWrapper(void* wrapped)
-  : m_wrapped(wrapped)
-{
-}
-
 py::object wrap(Object* object)
 {
   auto py_object = ObjectWrapper::make(object);
-  PropertyOwnerWrapper::add_property_shortcuts(py_object, *object);
+  // PropertyOwnerWrapper::add_property_shortcuts(py_object, *object);
   return py_object;
 }
 

@@ -6,7 +6,7 @@
 namespace omm
 {
 
-class PointWrapper : public PyWrapper
+class PointWrapper : public PyWrapper<Point>
 {
 public:
   using PyWrapper::PyWrapper;

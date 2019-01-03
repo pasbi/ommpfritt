@@ -1,4 +1,5 @@
 #include "python/propertyownerwrapper.h"
+
 #include "python/objectwrapper.h"
 #include "python/tagwrapper.h"
 #include "python/stylewrapper.h"
@@ -17,7 +18,7 @@ bool set_property_value(const py::object& value, omm::Property& property)
     const auto wrapper = value.cast<WrapperT>();
     auto& reference_property = static_cast<omm::ReferenceProperty&>(property);
     if (!!(reference_property.allowed_kinds() & WrappedT::KIND)) {
-      property.set(&wrapper.template wrapped<WrappedT>());
+      property.set(&wrapper.wrapped());
       return true;
     } else {
       return false;
@@ -27,43 +28,26 @@ bool set_property_value(const py::object& value, omm::Property& property)
   }
 }
 
-}  // namespace omm
+}  // namespace
 
-namespace omm
+namespace omm::detail
 {
 
-py::object PropertyOwnerWrapper::get(const std::string& key) const
+bool set_property_value( AbstractPropertyOwner& property_owner,
+                         const std::string& key, const py::object& value )
 {
-  auto& property_owner = wrapped<AbstractPropertyOwner>();
-  if (property_owner.has_property(key)) {
-    const auto value = property_owner.property(key).variant_value();
-    if (std::holds_alternative<AbstractPropertyOwner*>(value)) {
-      return wrap(std::get<AbstractPropertyOwner*>(value));
-    } else {
-      return py::cast(value);
-    }
-  } else {
-    for (auto&& key : property_owner.properties().keys()) {
-      LOG(INFO) << key;
-    }
-    return py::none();
-  }
-}
-
-bool PropertyOwnerWrapper::set(const std::string& key, const py::object& value) const
-{
-  auto& property_owner = wrapped<AbstractPropertyOwner>();
   if (property_owner.has_property(key)) {
     auto& property = property_owner.property(key);
     if (property.type() == ReferenceProperty::TYPE) {
       if (value.is_none()) {
+        // TODO replace return-status with throw exception
         property.set(nullptr);
         return true;
-      } else if (set_property_value<Object, ObjectWrapper>(value, property)) {
+      } else if (::set_property_value<Object, ObjectWrapper>(value, property)) {
         return true;
-      } else if (set_property_value<Tag, TagWrapper>(value, property)) {
+      } else if (::set_property_value<Tag, TagWrapper>(value, property)) {
         return true;
-      } else if (set_property_value<Style, StyleWrapper>(value, property)) {
+      } else if (::set_property_value<Style, StyleWrapper>(value, property)) {
         return true;
       } else {
         LOG(WARNING) << "Attempted to set non-allowed kind of reference.";
@@ -76,23 +60,6 @@ bool PropertyOwnerWrapper::set(const std::string& key, const py::object& value) 
   } else {
     return false;
   }
-}
-
-void PropertyOwnerWrapper::define_python_interface(py::object& module)
-{
-  py::class_<PropertyOwnerWrapper>(module, wrapped_type::TYPE, py::dynamic_attr())
-        .def("get", &PropertyOwnerWrapper::get)
-        .def("set", &PropertyOwnerWrapper::set);
-}
-
-void PropertyOwnerWrapper::add_property_shortcuts(py::object& object, wrapped_type& property_owner)
-{
-  // TODO once https://github.com/pybind/pybind11/issues/1645#issue-393712659 is resolved
-  // for (auto&& key : property_owner.properties().keys()) {
-    // object.attr(key.c_str()) = [&property_owner, key]() {
-    //   return py::cast(property_owner.property(key).variant_value());
-    // };
-  // }
 }
 
 }  // namespace omm

@@ -26,6 +26,7 @@ py::object wrap(const Ts& items)
   }));
 }
 
+template<typename WrappedT>
 class PyWrapper
 {
 public:
@@ -41,17 +42,25 @@ public:
   // <WrappedType, ActualWrappedType, HelperTag>
   // I think it could work that way, but it is very hard to understand and to maintain.
 
-  explicit PyWrapper(void* wrapped);
+
+  explicit PyWrapper(void* wrapped)
+    : m_wrapped(static_cast<WrappedT*>(wrapped))
+  {
+    assert(m_wrapped != nullptr);
+  }
+
   virtual ~PyWrapper() = default;
 
-  template<typename WrappedT> WrappedT& wrapped() const
+  using wrapped_type = WrappedT;
+
+  WrappedT& wrapped() const
   {
-    WrappedT* wrapped = static_cast<WrappedT*>(m_wrapped);
-    return *wrapped;
+    return *m_wrapped;
   }
 
 private:
-  void* m_wrapped;
+  // TODO replace `WrappedT*` with `WrappedT&` (in ctor, too)
+  WrappedT* m_wrapped;
 };
 
 }  // namespace omm
