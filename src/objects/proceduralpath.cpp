@@ -6,6 +6,7 @@
 #include "python/pythonengine.h"
 #include "scene/scene.h"
 #include "python/pointwrapper.h"
+#include "python/objectwrapper.h"
 #include "python/scenewrapper.h"
 
 namespace omm
@@ -58,6 +59,7 @@ std::vector<Point> ProceduralPath::points()
 
   if (points.size() > 0) {
     const auto locals = pybind11::dict( "points"_a=point_wrappers,
+                                        "this"_a=ObjectWrapper::make(this),
                                         "scene"_a=SceneWrapper(scene()) );
     scene()->python_engine.run(code, locals);
   }
