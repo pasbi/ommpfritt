@@ -31,7 +31,6 @@ PythonEngine::PythonEngine()
 
 PythonEngine::~PythonEngine()
 {
-
 }
 
 bool PythonEngine::run(const std::string& code, const py::object& locals) const
@@ -56,5 +55,7 @@ void PythonEngine::evaluate_script_tags(Scene& scene) const
     }
   }
 }
+
+// TODO imported symbols are not available inside `lambda`s or `def`s.
 
 }  // namespace omm

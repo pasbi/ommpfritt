@@ -52,15 +52,12 @@ std::vector<Point> ProceduralPath::points() const
   const auto code = property(CODE_PROPERTY_KEY).value<std::string>();
 
   std::vector<Point> points(std::max(0, count));
-  std::vector<py::object> point_wrappers;
-  std::transform(points.begin(), points.end(), std::back_inserter(point_wrappers), [](auto& point)
-  {
-    return py::cast(PointWrapper(&point));
+  const auto point_wrappers = ::transform<PointWrapper>(points, [](auto& point) {
+    return PointWrapper(&point);
   });
-  auto wrapped_points = py::cast(point_wrappers);
 
   if (points.size() > 0) {
-    const auto locals = pybind11::dict( "points"_a=wrapped_points,
+    const auto locals = pybind11::dict( "points"_a=point_wrappers,
                                         "scene"_a=SceneWrapper(scene()) );
     scene()->python_engine.run(code, locals);
   }

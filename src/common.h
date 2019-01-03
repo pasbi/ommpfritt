@@ -28,19 +28,24 @@ template<typename T> void reserve(std::vector<T>& c, size_t n)
   c.reserve(n);
 }
 
-template<typename T, typename S, template<typename...> class Container, typename F>
-auto transform(const Container<S>& ss, F&& mapper)
+/**
+ * @brief makes a container similar to `Container<S>` but with `value_type T`.
+ */
+template<typename T, template<typename...> class Container, typename S>
+auto make_container(const Container<S>&) { return Container<T>(); }
+
+template<typename T, typename ContainerS, typename F>
+auto transform(ContainerS&& ss, F&& mapper)
 {
-  Container<T> ts;
+  auto ts = make_container<T>(ss);
   reserve(ts, ss.size());
   std::transform( std::begin(ss), std::end(ss),
                   std::inserter(ts, std::end(ts)), std::forward<F>(mapper) );
   return ts;
 }
 
-template< typename T, template<typename...> class ContainerT,
-          typename S, template<typename...> class ContainerS, typename F >
-auto transform(const ContainerS<S>& ss, F&& mapper)
+template<typename T, template<typename...> class ContainerT, typename ContainerS, typename F>
+auto transform(ContainerS&& ss, F&& mapper)
 {
   ContainerT<T> ts;
   reserve(ts, ss.size());
