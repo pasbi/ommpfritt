@@ -58,25 +58,4 @@ public:
   // static void add_property_shortcuts(pybind11::object& object, wrapped_type& property_owner);
 };
 
-template<typename WrappedT>
-class AbstractPropertyOwnerWrapper<WrappedT, std::enable_if_t<std::is_const<WrappedT>::value>>
-  : public PyWrapper<const WrappedT>
-{
-  static_assert(std::is_base_of<AbstractPropertyOwner, std::decay_t<WrappedT>>::value);
-public:
-  using PyWrapper<WrappedT>::PyWrapper;
-  py::object get(const std::string& key) const
-  {
-    return detail::get_property_value(this->wrapped(), key);
-  }
-
-  static void define_python_interface(py::object& module)
-  {
-    const auto type_name = (std::string("BaseConst") + WrappedT::TYPE).c_str();
-    py::class_<AbstractPropertyOwnerWrapper<WrappedT>>(module, type_name, py::dynamic_attr())
-          .def("get", &AbstractPropertyOwnerWrapper<WrappedT>::get);
-  }
-  // static void add_property_shortcuts(pybind11::object& object, wrapped_type& property_owner);
-};
-
 }  // namespace omm
