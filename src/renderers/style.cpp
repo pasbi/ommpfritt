@@ -27,16 +27,6 @@ Style::Style(Scene* scene)
     .set_label("color").set_category("brush");
 }
 
-Style::Style(const Color& color, Scene* scene)
-  : Style(scene)
-{
-  property(omm::Style::PEN_IS_ACTIVE_KEY).set(true);
-  property(omm::Style::BRUSH_IS_ACTIVE_KEY).set(true);
-  property(omm::Style::PEN_COLOR_KEY).set(color);
-  property(omm::Style::BRUSH_COLOR_KEY).set(color);
-  property(omm::Style::PEN_WIDTH_KEY).set(2.0);
-}
-
 std::string Style::type() const
 {
   return TYPE;
@@ -45,6 +35,21 @@ std::string Style::type() const
 std::unique_ptr<Style> Style::clone() const
 {
   return std::make_unique<Style>(*this);
+}
+
+SolidStyle::SolidStyle(const Color& color, Scene* scene)
+{
+  property(omm::Style::PEN_IS_ACTIVE_KEY).set(false);
+  property(omm::Style::BRUSH_IS_ACTIVE_KEY).set(true);
+  property(omm::Style::BRUSH_COLOR_KEY).set(color);
+}
+
+ContourStyle::ContourStyle(const Color& color, Scene* scene)
+{
+  property(omm::Style::PEN_IS_ACTIVE_KEY).set(true);
+  property(omm::Style::BRUSH_IS_ACTIVE_KEY).set(false);
+  property(omm::Style::PEN_COLOR_KEY).set(color);
+  property(omm::Style::PEN_WIDTH_KEY).set(2.0);
 }
 
 }  // namespace omm

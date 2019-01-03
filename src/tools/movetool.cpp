@@ -63,15 +63,15 @@ auto make_handles(omm::MoveTool& tool)
   auto point = std::make_unique<PointMoveHandle>(tool);
 
   auto x_axis = std::make_unique<MoveAxisHandle>(tool);
-  x_axis->set_style(Status::Active, omm::Style(omm::Color(1.0, 1.0, 1.0)));
-  x_axis->set_style(Status::Hovered, omm::Style(omm::Color(1.0, 0.0, 0.0)));
-  x_axis->set_style(Status::Inactive, omm::Style(omm::Color(1.0, 0.3, 0.3)));
+  x_axis->set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
+  x_axis->set_style(Status::Hovered, omm::ContourStyle(omm::Color(1.0, 0.0, 0.0)));
+  x_axis->set_style(Status::Inactive, omm::ContourStyle(omm::Color(1.0, 0.3, 0.3)));
   x_axis->set_direction({100, 0});
 
   auto y_axis = std::make_unique<MoveAxisHandle>(tool);
-  y_axis->set_style(Status::Active, omm::Style(omm::Color(1.0, 1.0, 1.0)));
-  y_axis->set_style(Status::Hovered, omm::Style(omm::Color(0.0, 1.0, 0.0)));
-  y_axis->set_style(Status::Inactive, omm::Style(omm::Color(0.3, 1.0, 0.3)));
+  y_axis->set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
+  y_axis->set_style(Status::Hovered, omm::ContourStyle(omm::Color(0.0, 1.0, 0.0)));
+  y_axis->set_style(Status::Inactive, omm::ContourStyle(omm::Color(0.3, 1.0, 0.3)));
   y_axis->set_direction({0, 100});
 
   std::vector<std::unique_ptr<omm::Handle>> handles;

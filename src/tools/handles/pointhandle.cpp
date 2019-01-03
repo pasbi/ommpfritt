@@ -7,9 +7,9 @@ namespace omm
 
 PointHandle::PointHandle()
 {
-  set_style(Status::Hovered, omm::Style(omm::Color(1.0, 1.0, 0.0)));
-  set_style(Status::Active, omm::Style(omm::Color(1.0, 1.0, 1.0)));
-  set_style(Status::Inactive, omm::Style(omm::Color(0.8, 0.8, 0.2)));
+  set_style(Status::Hovered, omm::SolidStyle(omm::Color(1.0, 1.0, 0.0)));
+  set_style(Status::Active, omm::SolidStyle(omm::Color(1.0, 1.0, 1.0)));
+  set_style(Status::Inactive, omm::SolidStyle(omm::Color(0.8, 0.8, 0.2)));
 }
 
 bool PointHandle::contains(const arma::vec2& point) const
