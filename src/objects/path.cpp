@@ -11,8 +11,9 @@ class Style;
 
 Path::Path(Scene* scene) : Object(scene)
 {
-  add_property<BoolProperty>("closed").set_label(QObject::tr("closed").toStdString())
-                                      .set_category(QObject::tr("path").toStdString());
+  add_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
+    .set_label(QObject::tr("closed").toStdString())
+    .set_category(QObject::tr("path").toStdString());
 }
 
 void Path::render(AbstractRenderer& renderer, const Style& style) const
@@ -33,6 +34,11 @@ std::string Path::type() const
 std::unique_ptr<Object> Path::clone() const
 {
   return std::make_unique<Path>(*this);
+}
+
+void Path::set_points(const std::vector<Point>& points)
+{
+  m_points = points;
 }
 
 }  // namespace omm

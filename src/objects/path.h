@@ -17,6 +17,8 @@ public:
   std::string type() const override;
   static constexpr auto TYPE = "Path";
   std::unique_ptr<Object> clone() const override;
+  void set_points(const std::vector<Point>& points);
+  static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";
 
 private:
   std::vector<Point> m_points;
