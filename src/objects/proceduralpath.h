@@ -14,8 +14,8 @@ public:
   std::string type() const override;
   static constexpr auto TYPE = "ProceduralPath";
   std::unique_ptr<Object> clone() const override;
-  BoundingBox bounding_box() override;
 
+  static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";
   static constexpr auto CODE_PROPERTY_KEY = "code";
   static constexpr auto COUNT_PROPERTY_KEY = "count";
 

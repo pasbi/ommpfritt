@@ -2,6 +2,7 @@
 #include <QObject>
 #include <pybind11/stl.h>
 #include "properties/integerproperty.h"
+#include "properties/boolproperty.h"
 #include "objects/path.h"
 #include "python/pythonengine.h"
 #include "scene/scene.h"
@@ -23,16 +24,9 @@ ProceduralPath::ProceduralPath(Scene* scene) : AbstractProceduralPath(scene)
   add_property<IntegerProperty>(COUNT_PROPERTY_KEY, 10)
     .set_label(QObject::tr("count").toStdString())
     .set_category(QObject::tr("ProceduralPath").toStdString());
-}
-
-BoundingBox ProceduralPath::bounding_box()
-{
-  const auto rx = property("rx").value<double>();
-  const auto ry = property("ry").value<double>();
-  return BoundingBox({
-    arma::vec2 { -rx, -ry },
-    arma::vec2 { rx, ry }
-  });
+  add_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
+    .set_label(QObject::tr("closed").toStdString())
+    .set_category(QObject::tr("ProceduralPath").toStdString());
 }
 
 std::string ProceduralPath::type() const
@@ -69,7 +63,7 @@ std::vector<Point> ProceduralPath::points()
 
 bool ProceduralPath::is_closed() const
 {
-  return true;
+  return property(IS_CLOSED_PROPERTY_KEY).value<bool>();
 }
 
 
