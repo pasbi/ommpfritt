@@ -52,7 +52,7 @@ void Cloner::render(AbstractRenderer& renderer, const Style& style) const
   std::vector<std::unique_ptr<Object>> copies;
   copies.reserve(n_children);
   for (int i = 0; i < n_children; ++i) {
-    copies.push_back(child(i % n_children).clone(nullptr));
+    copies.push_back(child(i % n_children).clone());
   }
 
   if (copies.size() > 0) {
