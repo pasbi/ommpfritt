@@ -41,4 +41,9 @@ void Path::set_points(const std::vector<Point>& points)
   m_points = points;
 }
 
+std::vector<Point*> Path::points()
+{
+  return ::transform<Point*>(m_points, [](Point& p) { return &p; });
+}
+
 }  // namespace omm
