@@ -1,7 +1,7 @@
-#include "tools/movetool.h"
+#include "tools/objectstools/movetool.h"
 #include <memory>
 #include "tools/handles/axishandle.h"
-#include "tools/handles/pointhandle.h"
+#include "tools/handles/particlehandle.h"
 #include "scene/scene.h"
 #include "commands/objectstransformationcommand.h"
 
@@ -40,13 +40,13 @@ private:
   omm::MoveTool& m_tool;
 };
 
-class PointMoveHandle : public omm::PointHandle
+class PointMoveHandle : public omm::ParticleHandle
 {
 public:
   PointMoveHandle(omm::MoveTool& tool) : m_tool(tool) {}
   void mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
   {
-    PointHandle::mouse_move(delta, pos, allow_hover);
+    ParticleHandle::mouse_move(delta, pos, allow_hover);
     if (status() == Status::Active) {
       const auto t = omm::ObjectTransformation().translated(delta);
       m_tool.transform_objects(t);
@@ -87,7 +87,7 @@ namespace omm
 {
 
 MoveTool::MoveTool(Scene& scene)
-  : ObjectTransformationTool(scene, make_handles(*this))
+  : ObjectsTool(scene, make_handles(*this))
 {
 
 }

@@ -6,10 +6,10 @@
 namespace omm
 {
 
-class PointHandle : public Handle
+class ParticleHandle : public Handle
 {
 public:
-  explicit PointHandle();
+  explicit ParticleHandle();
   bool contains(const arma::vec2& point) const override;
   void draw(omm::AbstractRenderer& renderer) const override;
 };

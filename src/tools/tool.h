@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <QIcon>
 #include "aspects/propertyowner.h"
 #include "external/json_fwd.hpp"
@@ -17,7 +16,7 @@ class Tool
   , public AbstractFactory<std::string, Tool, Scene&>
 {
 public:
-  explicit Tool(Scene& scene, std::vector<std::unique_ptr<Handle>> handles);
+  explicit Tool(Scene& scene);
   virtual ~Tool() = default;
   virtual QIcon icon() const = 0;
   static constexpr auto TYPE = "Tool";
@@ -34,23 +33,16 @@ public:
   virtual bool mouse_press(const arma::vec2& pos);
 
   virtual void mouse_release();
-  virtual void draw(AbstractRenderer& renderer) const;
-  ObjectTransformation transformation() const;
+  virtual void draw(AbstractRenderer& renderer) const = 0;
 
-  void set_selection(const std::set<Object*>& objects);
+  virtual void set_selection(const std::set<Object*>& objects);
   const std::set<Object*> selection() const;
-  std::vector<Handle*> handles() const;
-
-  arma::vec2 map_to_tool_local(const arma::vec2& pos) const;
-
-  static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";
 
 protected:
   Scene& scene;
 
 private:
   std::set<Object*> m_selection;
-  std::vector<std::unique_ptr<Handle>> m_handles;
 };
 
 void register_tools();

@@ -1,7 +1,7 @@
-#include "tools/scaletool.h"
+#include "tools/objectstools/scaletool.h"
 #include <memory>
 #include "tools/handles/axishandle.h"
-#include "tools/handles/pointhandle.h"
+#include "tools/handles/particlehandle.h"
 #include "scene/scene.h"
 #include "commands/objectstransformationcommand.h"
 
@@ -62,13 +62,13 @@ private:
   omm::ScaleTool& m_tool;
 };
 
-class PointScaleHandle : public omm::PointHandle
+class PointScaleHandle : public omm::ParticleHandle
 {
 public:
   PointScaleHandle(omm::ScaleTool& tool) : m_tool(tool) {}
   void mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
   {
-    PointHandle::mouse_move(delta, pos, allow_hover);
+    ParticleHandle::mouse_move(delta, pos, allow_hover);
     if (status() == Status::Active) {
       const auto scale = get_scale(pos, delta, arma::vec2{ 1.0, 1.0 });
       const auto t = omm::ObjectTransformation().scaled(scale);
@@ -113,7 +113,7 @@ namespace omm
 {
 
 ScaleTool::ScaleTool(Scene& scene)
-  : ObjectTransformationTool(scene, make_handles(*this))
+  : ObjectsTool(scene, make_handles(*this))
 {
 
 }

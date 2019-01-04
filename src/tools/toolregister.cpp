@@ -1,7 +1,8 @@
 #include "tools/tool.h"
-#include "tools/movetool.h"
-#include "tools/scaletool.h"
-#include "tools/rotatetool.h"
+#include "tools/pathtool.h"
+#include "tools/objectstools/movetool.h"
+#include "tools/objectstools/scaletool.h"
+#include "tools/objectstools/rotatetool.h"
 
 namespace omm
 {
@@ -12,6 +13,7 @@ void register_tools()
   REGISTER_TOOL(MoveTool);
   REGISTER_TOOL(ScaleTool);
   REGISTER_TOOL(RotateTool);
+  REGISTER_TOOL(PathTool);
 #undef REGISTER_TOOL
 }
 

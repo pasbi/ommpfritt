@@ -1,8 +1,5 @@
 file (GLOB SOURCES
-  "movetool.cpp"
-  "scaletool.cpp"
-  "objecttransformationtool.cpp"
-  "rotatetool.cpp"
+  "pathtool.cpp"
   "tool.cpp"
   "toolbox.cpp"
   "toolregister.cpp"
@@ -10,3 +7,4 @@ file (GLOB SOURCES
 target_sources(libommpfritt PRIVATE ${SOURCES})
 
 add_subdirectory(handles)
+add_subdirectory(objectstools)

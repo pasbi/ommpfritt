@@ -5,8 +5,6 @@
 #include "properties/boolproperty.h"
 #include "properties/colorproperty.h"
 #include "properties/floatproperty.h"
-#include "tools/movetool.h"
-#include "tools/scaletool.h"
 
 namespace omm
 {

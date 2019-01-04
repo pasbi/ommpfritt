@@ -1,12 +1,12 @@
 #pragma once
 
-#include "tools/objecttransformationtool.h"
+#include "tools/objectstools/objectstool.h"
 #include "objects/object.h"
 
 namespace omm
 {
 
-class MoveTool : public ObjectTransformationTool
+class MoveTool : public ObjectsTool
 {
 public:
   explicit MoveTool(Scene& scene);
