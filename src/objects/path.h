@@ -20,6 +20,9 @@ public:
   std::vector<Point*> points();
   void set_points(const std::vector<Point>& points);
   static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";
+  static constexpr auto POINTS_POINTER = "points";
+  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
+  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
 
 private:
   std::vector<Point> m_points;
