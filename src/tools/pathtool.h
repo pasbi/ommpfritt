@@ -2,6 +2,7 @@
 
 #include "tools/tool.h"
 #include "objects/object.h"
+#include "tools/handles/pathhandle.h"
 
 namespace omm
 {
@@ -16,8 +17,11 @@ public:
   QIcon icon() const override;
   static constexpr auto TYPE = "PathTool";
   void draw(AbstractRenderer& renderer) const override;
-  std::set<Path*> paths() const;
   void set_selection(const std::set<Object*>& objects) override;
+  
+
+private:
+  std::set<Path*> m_paths;
 };
 
 }  // namespace omm

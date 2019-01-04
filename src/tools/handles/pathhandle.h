@@ -6,15 +6,17 @@
 namespace omm
 {
 
-class PointsHandle : public Handle
+class Path;
+
+class PathHandle : public Handle
 {
 public:
-  explicit PointsHandle(std::vector<Point*>& point);
-  bool contains(const arma::vec2& point) const override;
+  explicit PathHandle(Path& point);
+  bool contains(const arma::vec2& candidate) const override;
   void draw(omm::AbstractRenderer& renderer) const override;
 
 private:
-  std::vector<Point*> m_points;
+  Path& m_path;
 };
 
 }  // namespace omm

@@ -33,13 +33,14 @@ public:
   virtual bool mouse_press(const arma::vec2& pos);
 
   virtual void mouse_release();
-  virtual void draw(AbstractRenderer& renderer) const = 0;
+  virtual void draw(AbstractRenderer& renderer) const;
 
   virtual void set_selection(const std::set<Object*>& objects);
   const std::set<Object*> selection() const;
 
 protected:
   Scene& scene;
+  std::vector<std::unique_ptr<Handle>> handles;
 
 private:
   std::set<Object*> m_selection;

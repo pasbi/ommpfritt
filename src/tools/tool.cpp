@@ -28,9 +28,46 @@ Tool::Tool(Scene& scene)
 {
 }
 
-bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos) { return false; }
-bool Tool::mouse_press(const arma::vec2& pos) { return false; }
-void Tool::mouse_release() { }
+bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
+{
+  bool hit_something = false;
+  if (selection().size() > 0) {
+    for (auto&& handle : handles) {
+      handle->mouse_move(delta, pos, !hit_something);
+      switch (handle->status()) {
+      case Handle::Status::Active:
+      case Handle::Status::Hovered:
+        hit_something = true;
+        break;
+      case Handle::Status::Inactive:
+        break;
+      }
+    }
+  }
+  return hit_something;
+}
+
+bool Tool::mouse_press(const arma::vec2& pos)
+{
+  if (selection().size() > 0) {
+    for (auto&& handle : handles) {
+      handle->mouse_press(pos);
+      if (handle->status() == Handle::Status::Active) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+void Tool::mouse_release()
+{
+  if (selection().size() > 0) {
+    for (auto&& handle : handles) {
+      handle->mouse_release();
+    }
+  }
+}
 
 void Tool::set_selection(const std::set<Object*>& objects)
 {
@@ -41,5 +78,13 @@ const std::set<Object*> Tool::selection() const
 {
   return m_selection;
 }
+
+void Tool::draw(AbstractRenderer& renderer) const
+{
+  for (auto&& handle : handles) {
+    handle->draw(renderer);
+  }
+}
+
 
 }  // namespace omm

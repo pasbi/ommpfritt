@@ -89,7 +89,6 @@ namespace omm
 MoveTool::MoveTool(Scene& scene)
   : ObjectsTool(scene, make_handles(*this))
 {
-
 }
 
 std::string MoveTool::type() const

@@ -19,26 +19,25 @@ QIcon PathTool::icon() const
 void PathTool::draw(AbstractRenderer& renderer) const
 {
   const auto style = SolidStyle(Color(1, 0, 1));
-  for (auto&& path : paths()) {
-    renderer.push_transformation(path->global_transformation());
-    for (Point* p : path->points()) {
-      renderer.draw_rectangle(p->position, 10, style);
-    }
-    renderer.pop_transformation();
+  for (auto&& handle : handles) {
+    handle->draw(renderer);
   }
-}
-
-std::set<Path*> PathTool::paths() const
-{
-  const auto is_path = [](const Object* object) { return object->type() == Path::TYPE; };
-  const auto to_path = [](Object* object) { return static_cast<Path*>(object); };
-  return ::transform<Path*>(::filter_if(selection(), is_path), to_path);
 }
 
 void PathTool::set_selection(const std::set<Object*>& objects)
 {
-  Tool::set_selection(objects);
-  
+  const auto paths = ::filter_if(objects, [](const Object* object) {
+    return object->type() == Path::TYPE;
+  });
+  m_paths = ::transform<Path*>(paths, [](Object* object) { return static_cast<Path*>(object); });
+
+  Tool::set_selection(paths);
+
+  handles.clear();
+  handles.reserve(m_paths.size());
+  std::transform(m_paths.begin(), m_paths.end(), std::back_inserter(handles), [](Path* path) {
+    return std::make_unique<PathHandle>(*path);
+  });
 }
 
 }  // namespace omm

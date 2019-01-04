@@ -28,8 +28,8 @@ namespace omm
 
 ObjectsTool::ObjectsTool(Scene& scene, std::vector<std::unique_ptr<Handle>> handles)
   : Tool(scene)
-  , m_handles(std::move(handles))
 {
+  this->handles = std::move(handles);
   add_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY)
     .set_options({ "global", "local" })
     .set_label(QObject::tr("Alignment").toStdString())
@@ -53,16 +53,8 @@ void ObjectsTool::draw(AbstractRenderer& renderer) const
   }
 
   renderer.push_transformation(this->transformation());
-
-  for (const auto* handle : handles()) {
-    handle->draw(renderer);
-  }
+  Tool::draw(renderer);
   renderer.pop_transformation();
-}
-
-arma::vec2 ObjectsTool::map_to_tool_local(const arma::vec2& pos) const
-{
-  return transformation().inverted().apply_to_position(pos);
 }
 
 void ObjectsTool::transform_objects(const ObjectTransformation& transformation)
@@ -77,35 +69,22 @@ void ObjectsTool::transform_objects(const ObjectTransformation& transformation)
 
 bool ObjectsTool::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
 {
-  bool hit_something = false;
   if (selection().size() > 0) {
-    const auto handle_local_pos = map_to_tool_local(pos);
-    for (auto* handle : handles()) {
-      const auto transformed_delta = transformation().inverted().apply_to_direction(delta);
-      handle->mouse_move(transformed_delta, handle_local_pos, !hit_something);
-      switch (handle->status()) {
-      case Handle::Status::Active:
-      case Handle::Status::Hovered:
-        hit_something = true;
-        break;
-      case Handle::Status::Inactive:
-        break;
-      }
-    }
+    const auto t_inv = transformation().inverted();
+    const auto local_pos = t_inv.apply_to_position(pos);
+    const auto local_delta = t_inv.apply_to_direction(delta);
+    return Tool::mouse_move(local_delta, local_pos);
+  } else {
+    return false;
   }
-  return hit_something;
 }
 
 bool ObjectsTool::mouse_press(const arma::vec2& pos)
 {
   if (selection().size() > 0) {
-    const auto handle_local_pos = map_to_tool_local(pos);
-    for (auto* handle : handles()) {
-      handle->mouse_press(handle_local_pos);
-      if (handle->status() == Handle::Status::Active) {
-        return true;
-      }
-    }
+    const auto t_inv = transformation().inverted();
+    const auto local_pos = t_inv.apply_to_position(pos);
+    return Tool::mouse_press(local_pos);
   }
   return false;
 }
@@ -113,15 +92,10 @@ bool ObjectsTool::mouse_press(const arma::vec2& pos)
 void ObjectsTool::mouse_release()
 {
   if (selection().size() > 0) {
-    for (auto* handle : handles()) {
+    for (auto&& handle : handles) {
       handle->mouse_release();
     }
   }
-}
-
-std::vector<Handle*> ObjectsTool::handles() const
-{
-  return ::transform<Handle*>(m_handles, std::mem_fn(&std::unique_ptr<Handle>::get));
 }
 
 }  // namespace omm
