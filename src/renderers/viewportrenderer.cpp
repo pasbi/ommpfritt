@@ -99,4 +99,18 @@ ViewportRenderer::draw_spline(const std::vector<Point>& points, const Style& sty
   }
 }
 
+void
+ViewportRenderer::draw_rectangle(const arma::vec2& pos, const double radius, const Style& style)
+{
+  // TODO I guess using QPainter::drawRect is faster.
+  // However, QPainter::drawRect interface is strange, so using it is not trivial, but it shouldn't
+  //  be to hard, either.
+  const auto tl = Point( pos + arma::vec2 { -radius, -radius } );
+  const auto tr = Point( pos + arma::vec2 {  radius, -radius } );
+  const auto bl = Point( pos + arma::vec2 { -radius,  radius } );
+  const auto br = Point( pos + arma::vec2 {  radius,  radius } );
+  draw_spline({ tl, tr, br, bl }, style, true);
+}
+
+
 }  // namespace omm
