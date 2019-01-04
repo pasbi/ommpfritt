@@ -63,6 +63,9 @@ private:
 
 public:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
+  std::set<AbstractPropertyOwner*> selection() const;
+private:
+  std::set<AbstractPropertyOwner*> m_selection;
 
   // === Styles  ====
 public:

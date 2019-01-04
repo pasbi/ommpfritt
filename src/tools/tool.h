@@ -41,6 +41,7 @@ public:
 protected:
   Scene& scene;
   std::vector<std::unique_ptr<Handle>> handles;
+  double epsilon = 10.0;
 
 private:
   std::set<Object*> m_selection;

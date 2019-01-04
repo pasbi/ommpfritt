@@ -250,6 +250,12 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
   const auto set_selection = [selection](auto* observer) { observer->set_selection(selection); };
   Observed<AbstractSelectionObserver>::for_each(set_selection);
+  m_selection = selection;
+}
+
+std::set<AbstractPropertyOwner*> Scene::selection() const
+{
+  return m_selection;
 }
 
 template<> std::set<Tag*> Scene::find_items<Tag>(const std::string& name) const
