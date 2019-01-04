@@ -116,6 +116,11 @@ void JSONSerializer::set_value(const Color& color, const Pointer& pointer)
   m_store[ptr(pointer)] = { color.red(), color.green(), color.blue(), color.alpha() };
 }
 
+void JSONSerializer::set_value(const arma::vec2& value, const Pointer& pointer)
+{
+  m_store[ptr(pointer)] = { value[0], value[1] };
+}
+
 std::string JSONSerializer::type() const
 {
   return "JSONSerializer";
@@ -185,6 +190,16 @@ ObjectTransformation JSONDeserializer::get_object_transformation(const Pointer& 
 std::size_t JSONDeserializer::get_size_t(const Pointer& pointer)
 {
   return get_t<std::size_t>(m_store, pointer);
+}
+
+arma::vec2 JSONDeserializer::get_vec2(const Pointer& pointer)
+{
+  const auto vec2 = get_t<std::vector<double>>(m_store, pointer);
+  if (vec2.size() != 2) {
+    throw omm::AbstractDeserializer::DeserializeError("Expected vector of size 2.");
+  }
+
+  return arma::vec2{ vec2[0], vec2[1] };
 }
 
 std::string JSONDeserializer::type() const

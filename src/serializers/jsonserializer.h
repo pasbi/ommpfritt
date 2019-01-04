@@ -22,6 +22,8 @@ public:
   void set_value(const ObjectTransformation& value, const Pointer& pointer) override;
   void set_value(const std::size_t id, const Pointer& pointer) override;
   void set_value(const Color& color, const Pointer& pointer) override;
+  void set_value(const arma::vec2& value, const Pointer& pointer) override;
+
   std::string type() const override;
 
 private:
@@ -43,6 +45,7 @@ public:
   Color get_color(const Pointer& pointer) override;
   ObjectTransformation get_object_transformation(const Pointer& pointer) override;
   std::size_t get_size_t(const Pointer& pointer) override;
+  arma::vec2 get_vec2(const Pointer& pointer) override;
 
   std::string type() const override;
 
