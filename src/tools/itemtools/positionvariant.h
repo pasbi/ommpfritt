@@ -17,11 +17,13 @@ class Object;
 class ObjectTransformation;
 class Point;
 class Scene;
+template<typename ItemT> class ItemTool;
 
 template<typename PositionRepr>
 class AbstractPositions
 {
 public:
+  using handles_type = std::vector<std::unique_ptr<Handle>>;
   AbstractPositions(Scene& scene) : scene(scene) {};
   virtual ~AbstractPositions() = default;
 
@@ -33,7 +35,7 @@ class PointPositions : public AbstractPositions<Point>
 {
 public:
   using AbstractPositions<Point>::AbstractPositions;
-  void make_handles(std::vector<std::unique_ptr<Handle>>& handles) const;
+  void make_handles(handles_type& handles) const;
   void transform(const ObjectTransformation& transformation);
   void clear_selection();
   arma::vec2 selection_center() const;
@@ -49,7 +51,7 @@ class ObjectPositions : public AbstractPositions<Object>
 {
 public:
   using AbstractPositions<Object>::AbstractPositions;
-  void make_handles(std::vector<std::unique_ptr<Handle>>& handles) const;
+  void make_handles(handles_type& handles) const;
   void transform(const ObjectTransformation& transformation);
   void clear_selection();
   arma::vec2 selection_center() const;

@@ -1,4 +1,4 @@
-#include "tools/objectstools/objectstool.h"
+#include "tools/itemtools/transformationtool.h"
 
 #include <memory>
 #include "renderers/abstractrenderer.h"
@@ -6,13 +6,13 @@
 #include "properties/optionsproperty.h"
 #include "scene/scene.h"
 #include "common.h"
-#include "tools/positionvariant.h"
+#include "tools/itemtools/positionvariant.h"
 
 namespace omm
 {
 
-template<typename PositionVariant> ObjectsTool<PositionVariant>
-::ObjectsTool(Scene& scene, std::vector<std::unique_ptr<Handle>> handles)
+template<typename PositionVariant> TransformationTool<PositionVariant>
+::TransformationTool(Scene& scene, std::vector<std::unique_ptr<Handle>> handles)
   : Tool(scene)
   , m_position_variant(scene)
 {
@@ -24,7 +24,7 @@ template<typename PositionVariant> ObjectsTool<PositionVariant>
 }
 
 template<typename PositionVariant>
-ObjectTransformation ObjectsTool<PositionVariant>::transformation() const
+ObjectTransformation TransformationTool<PositionVariant>::transformation() const
 {
   ObjectTransformation transformation;
   transformation.translate(m_position_variant.selection_center());
@@ -35,7 +35,7 @@ ObjectTransformation ObjectsTool<PositionVariant>::transformation() const
 }
 
 template<typename PositionVariant>
-void ObjectsTool<PositionVariant>::draw(AbstractRenderer& renderer) const
+void TransformationTool<PositionVariant>::draw(AbstractRenderer& renderer) const
 {
   if (m_position_variant.is_empty()) {
     return;
@@ -46,8 +46,8 @@ void ObjectsTool<PositionVariant>::draw(AbstractRenderer& renderer) const
   renderer.pop_transformation();
 }
 
-template<typename PositionVariant>
-void ObjectsTool<PositionVariant>::transform_objects(const ObjectTransformation& transformation)
+template<typename PositionVariant> void
+TransformationTool<PositionVariant>::transform_objects(const ObjectTransformation& transformation)
 {
   const ObjectTransformation::Mat h = this->transformation().to_mat();
   const ObjectTransformation::Mat h_inv = h.i();
@@ -55,8 +55,8 @@ void ObjectsTool<PositionVariant>::transform_objects(const ObjectTransformation&
   m_position_variant.transform(ObjectTransformation(h * t * h_inv));
 }
 
-template<typename PositionVariant>
-bool ObjectsTool<PositionVariant>::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
+template<typename PositionVariant> bool
+TransformationTool<PositionVariant>::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
 {
   if (m_position_variant.is_empty()) {
     return false;
@@ -68,8 +68,8 @@ bool ObjectsTool<PositionVariant>::mouse_move(const arma::vec2& delta, const arm
   }
 }
 
-template<typename PositionVariant>
-bool ObjectsTool<PositionVariant>::mouse_press(const arma::vec2& pos)
+template<typename PositionVariant> bool
+TransformationTool<PositionVariant>::mouse_press(const arma::vec2& pos)
 {
   if (!m_position_variant.is_empty()) {
     const auto t_inv = transformation().inverted();
@@ -81,7 +81,7 @@ bool ObjectsTool<PositionVariant>::mouse_press(const arma::vec2& pos)
 }
 
 template<typename PositionVariant>
-void ObjectsTool<PositionVariant>::mouse_release()
+void TransformationTool<PositionVariant>::mouse_release()
 {
   if (!m_position_variant.is_empty()) {
     for (auto&& handle : handles) {
@@ -90,7 +90,7 @@ void ObjectsTool<PositionVariant>::mouse_release()
   }
 }
 
-template class ObjectsTool<ObjectPositions>;
-template class ObjectsTool<PointPositions>;
+template class TransformationTool<ObjectPositions>;
+template class TransformationTool<PointPositions>;
 
 }  // namespace omm

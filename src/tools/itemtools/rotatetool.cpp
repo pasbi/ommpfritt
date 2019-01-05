@@ -1,4 +1,4 @@
-#include "tools/objectstools/rotatetool.h"
+#include "tools/itemtools/rotatetool.h"
 #include <memory>
 #include "tools/handles/circlehandle.h"
 #include "scene/scene.h"
@@ -49,7 +49,7 @@ namespace omm
 {
 
 ObjectRotateTool::ObjectRotateTool(Scene& scene)
-  : ObjectsTool(scene, make_handles(*this))
+  : TransformationTool(scene, make_handles(*this))
 {
 }
 
@@ -64,7 +64,7 @@ QIcon ObjectRotateTool::icon() const
 }
 
 PointRotateTool::PointRotateTool(Scene& scene)
-  : ObjectsTool(scene, make_handles(*this))
+  : TransformationTool(scene, make_handles(*this))
 {
 }
 

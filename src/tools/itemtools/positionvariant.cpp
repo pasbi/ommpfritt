@@ -1,4 +1,4 @@
-#include "tools/positionvariant.h"
+#include "tools/itemtools/positionvariant.h"
 #include "objects/path.h"
 #include "scene/scene.h"
 #include "commands/objectstransformationcommand.h"
@@ -12,7 +12,7 @@ bool arma::operator<(const arma::vec2& a, const arma::vec2& b)
 namespace omm
 {
 
-void PointPositions::make_handles(std::vector<std::unique_ptr<Handle>>& handles) const
+void PointPositions::make_handles(handles_type& handles) const
 {
   for (auto* path : paths()) {
     const auto t = path->global_transformation();
@@ -82,7 +82,7 @@ std::set<Path*> PointPositions::paths() const
   return ::transform<Path*>(::filter_if(scene.object_selection(), is_path), to_path);
 }
 
-void ObjectPositions::make_handles(std::vector<std::unique_ptr<Handle>>& handles) const
+void ObjectPositions::make_handles(handles_type& handles) const
 {
   // ignore object selection. Return a handle for each object.
   const auto objects = scene.object_tree.items();

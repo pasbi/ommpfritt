@@ -1,6 +1,4 @@
 file (GLOB SOURCES
-  "positionvariant.cpp"
-  "selecttool.cpp"
   "tool.cpp"
   "toolbox.cpp"
   "toolregister.cpp"
@@ -8,4 +6,4 @@ file (GLOB SOURCES
 target_sources(libommpfritt PRIVATE ${SOURCES})
 
 add_subdirectory(handles)
-add_subdirectory(objectstools)
+add_subdirectory(itemtools)

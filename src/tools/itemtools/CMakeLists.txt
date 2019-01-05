@@ -1,7 +1,9 @@
 file (GLOB SOURCES
+  "transformationtool.cpp"
   "movetool.cpp"
-  "objectstool.cpp"
+  "positionvariant.cpp"
   "rotatetool.cpp"
+  "selecttool.cpp"
   "scaletool.cpp"
 )
 

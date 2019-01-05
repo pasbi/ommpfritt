@@ -3,7 +3,7 @@
 #include "tools/tool.h"
 #include "objects/object.h"
 #include "properties/floatproperty.h"
-#include "tools/positionvariant.h"
+#include "tools/itemtools/positionvariant.h"
 
 namespace omm
 {

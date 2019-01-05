@@ -1,4 +1,4 @@
-#include "tools/objectstools/movetool.h"
+#include "tools/itemtools/movetool.h"
 #include <memory>
 #include "tools/handles/axishandle.h"
 #include "tools/handles/particlehandle.h"
@@ -90,7 +90,7 @@ namespace omm
 {
 
 ObjectMoveTool::ObjectMoveTool(Scene& scene)
-  : ObjectsTool(scene, make_handles(*this))
+  : TransformationTool(scene, make_handles(*this))
 {
 }
 
@@ -105,7 +105,7 @@ QIcon ObjectMoveTool::icon() const
 }
 
 PointMoveTool::PointMoveTool(Scene& scene)
-  : ObjectsTool(scene, make_handles(*this))
+  : TransformationTool(scene, make_handles(*this))
 {
 }
 

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "tools/objectstools/objectstool.h"
+#include "tools/itemtools/transformationtool.h"
 #include "objects/object.h"
-#include "tools/positionvariant.h"
+#include "tools/itemtools/positionvariant.h"
 
 namespace omm
 {
 
-class ObjectMoveTool : public ObjectsTool<ObjectPositions>
+class ObjectMoveTool : public TransformationTool<ObjectPositions>
 {
 public:
   explicit ObjectMoveTool(Scene& scene);
@@ -16,7 +16,7 @@ public:
   static constexpr auto TYPE = "ObjectMoveTool";
 };
 
-class PointMoveTool : public ObjectsTool<PointPositions>
+class PointMoveTool : public TransformationTool<PointPositions>
 {
 public:
   explicit PointMoveTool(Scene& scene);

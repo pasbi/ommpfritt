@@ -8,10 +8,10 @@
 namespace omm {
 
 template<typename PositionVariant>
-class ObjectsTool : public Tool
+class TransformationTool : public Tool
 {
 public:
-  ObjectsTool(Scene& scene, std::vector<std::unique_ptr<Handle>> handles);
+  TransformationTool(Scene& scene, std::vector<std::unique_ptr<Handle>> handles);
   ObjectTransformation transformation() const;
   arma::vec2 map_to_tool_local(const arma::vec2& pos) const;
   static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";

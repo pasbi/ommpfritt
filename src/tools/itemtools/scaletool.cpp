@@ -1,4 +1,4 @@
-#include "tools/objectstools/scaletool.h"
+#include "tools/itemtools/scaletool.h"
 #include <memory>
 #include "tools/handles/axishandle.h"
 #include "tools/handles/particlehandle.h"
@@ -116,7 +116,7 @@ namespace omm
 {
 
 ObjectScaleTool::ObjectScaleTool(Scene& scene)
-  : ObjectsTool(scene, make_handles(*this))
+  : TransformationTool(scene, make_handles(*this))
 {
 
 }
@@ -132,7 +132,7 @@ QIcon ObjectScaleTool::icon() const
 }
 
 PointScaleTool::PointScaleTool(Scene& scene)
-  : ObjectsTool(scene, make_handles(*this))
+  : TransformationTool(scene, make_handles(*this))
 {
 
 }

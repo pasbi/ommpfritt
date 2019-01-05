@@ -1,8 +1,8 @@
 #include "tools/tool.h"
-#include "tools/objectstools/movetool.h"
-#include "tools/objectstools/scaletool.h"
-#include "tools/objectstools/rotatetool.h"
-#include "tools/selecttool.h"
+#include "tools/itemtools/movetool.h"
+#include "tools/itemtools/scaletool.h"
+#include "tools/itemtools/rotatetool.h"
+#include "tools/itemtools/selecttool.h"
 
 namespace omm
 {
