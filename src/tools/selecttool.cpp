@@ -20,7 +20,7 @@ template<typename PositionVariant>
 bool SelectTool<PositionVariant>::mouse_press(const arma::vec2& pos)
 {
   if (!Tool::mouse_press(pos)) {
-    scene.set_selection({});
+    m_position_variant.clear_selection();
   }
   return true;
 }

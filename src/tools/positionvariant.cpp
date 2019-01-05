@@ -12,14 +12,11 @@ namespace omm
 
 void PointPositions::make_handles(std::vector<std::unique_ptr<Handle>>& handles) const
 {
-  for (auto&& object : scene.object_selection()) {
-    const auto t = object->global_transformation();
-    if (object->type() == Path::TYPE) {
-      const auto points = static_cast<Path*>(object)->points();
-      handles.reserve(handles.size() + points.size());
-      for (auto&& point : points) {
-        handles.push_back(std::make_unique<PointSelectHandle>(*point));
-      }
+  for (auto* path : paths()) {
+    const auto t = path->global_transformation();
+    handles.reserve(handles.size() + path->points().size());
+    for (auto&& point : path->points()) {
+      handles.push_back(std::make_unique<PointSelectHandle>(*path, *point));
     }
   }
 }
@@ -27,6 +24,22 @@ void PointPositions::make_handles(std::vector<std::unique_ptr<Handle>>& handles)
 void PointPositions::transform(const ObjectTransformation& transformation)
 {
 
+}
+
+void PointPositions::clear_selection()
+{
+  for (auto* path : paths()) {
+    for (auto* point : path->points()) {
+      point->is_selected = false;
+    }
+  }
+}
+
+std::set<Path*> PointPositions::paths() const
+{
+  const auto is_path = [](const auto* o) { return o->type() == Path::TYPE; };
+  const auto to_path = [](auto* o) { return static_cast<Path*>(o); };
+  return ::transform<Path*>(::filter_if(scene.object_selection(), is_path), to_path);
 }
 
 void ObjectPositions::make_handles(std::vector<std::unique_ptr<Handle>>& handles) const
@@ -43,6 +56,11 @@ void ObjectPositions::make_handles(std::vector<std::unique_ptr<Handle>>& handles
 void ObjectPositions::transform(const ObjectTransformation& transformation)
 {
 
+}
+
+void ObjectPositions::clear_selection()
+{
+  scene.set_selection({});
 }
 
 }  // namespace omm

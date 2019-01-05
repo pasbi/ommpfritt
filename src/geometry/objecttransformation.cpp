@@ -259,6 +259,7 @@ Point ObjectTransformation::apply(const Point& point) const
 
 ObjectTransformation ObjectTransformation::inverted() const
 {
+  // TODO caching the inverse might gain some speed
   return ObjectTransformation(to_mat().i());
 }
 

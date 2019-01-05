@@ -92,6 +92,8 @@ ObjectTransformation Object::global_transformation() const
   if (is_root()) {
     return transformation();
   } else {
+    // TODO caching could gain some speed
+    //  invalidate cache if local transformation is set or parent changes
     return parent().global_transformation().apply(transformation());
   }
 }

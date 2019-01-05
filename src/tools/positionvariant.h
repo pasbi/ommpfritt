@@ -35,6 +35,10 @@ public:
   using AbstractPositions<Point>::AbstractPositions;
   void make_handles(std::vector<std::unique_ptr<Handle>>& handles) const;
   void transform(const ObjectTransformation& transformation);
+  void clear_selection();
+
+private:
+  std::set<Path*> paths() const;
 };
 
 class ObjectPositions : public AbstractPositions<Object>
@@ -43,6 +47,7 @@ public:
   using AbstractPositions<Object>::AbstractPositions;
   void make_handles(std::vector<std::unique_ptr<Handle>>& handles) const;
   void transform(const ObjectTransformation& transformation);
+  void clear_selection();
 };
 
 }  // namespace omm

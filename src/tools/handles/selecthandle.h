@@ -6,6 +6,9 @@
 namespace omm
 {
 
+class Scene;
+class Path;
+
 
 class ObjectSelectHandle : public Handle
 {
@@ -19,17 +22,23 @@ protected:
   ObjectTransformation transformation() const override;
 
 private:
-  Object& m_object;
   Scene& m_scene;
+  Object& m_object;
 };
 
 class PointSelectHandle : public Handle
 {
 public:
-  explicit PointSelectHandle(Point& point);
+  explicit PointSelectHandle(Path& path, Point& point);
   bool contains(const arma::vec2& point) const override;
   void draw(omm::AbstractRenderer& renderer) const override;
+  bool mouse_press(const arma::vec2& pos) override;
+
+protected:
+  ObjectTransformation transformation() const override;
+
 private:
+  Path& m_path;
   Point& m_point;
 };
 
