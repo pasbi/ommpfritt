@@ -250,12 +250,26 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
   const auto set_selection = [selection](auto* observer) { observer->set_selection(selection); };
   Observed<AbstractSelectionObserver>::for_each(set_selection);
-  m_selection = selection;
+
+  if (selection.size() == 0) {
+    m_object_selection = {};
+  } else {
+    const auto object_selection = ::filter_if(selection, [](const auto* apo) {
+      return apo->kind() == AbstractPropertyOwner::Kind::Object;
+    });
+    if (object_selection.size() > 0) {
+      m_object_selection = ::transform<Object*>(object_selection, [](auto* apo) {
+        return static_cast<Object*>(apo);
+      });
+    } else {
+      // selection is not empty but does not contain objects. Do not touch the object selection.
+    }
+  }
 }
 
-std::set<AbstractPropertyOwner*> Scene::selection() const
+std::set<Object*> Scene::object_selection() const
 {
-  return m_selection;
+  return m_object_selection;
 }
 
 template<> std::set<Tag*> Scene::find_items<Tag>(const std::string& name) const
