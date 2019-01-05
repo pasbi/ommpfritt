@@ -16,9 +16,7 @@ public:
   std::string type() const override;
   QIcon icon() const override;
   static constexpr auto TYPE = "PathTool";
-  void draw(AbstractRenderer& renderer) const override;
-  void set_selection(const std::set<Object*>& objects) override;
-  
+  // void draw(AbstractRenderer& renderer) override;
 
 private:
   std::set<Path*> m_paths;

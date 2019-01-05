@@ -203,6 +203,10 @@ void Scene::submit(std::unique_ptr<Command> command)
 {
   undo_stack.push(command.release());
   set_has_pending_changes(true);
+
+  // TODO this is a quick'n'dirty hack. Actually only the ObjectSelection tool needs to be
+  // re-activated. All other tools should work well without, however, it does not hurt either.q
+  tool_box.active_tool().activate();
 }
 
 std::set<Tag*> Scene::tags() const

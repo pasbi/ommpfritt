@@ -38,17 +38,18 @@ ObjectsTool::ObjectsTool(Scene& scene, std::vector<std::unique_ptr<Handle>> hand
 
 ObjectTransformation ObjectsTool::transformation() const
 {
+  const auto selection = scene.object_selection();
   ObjectTransformation transformation;
-  transformation.translate(get_global_position_mean(selection()));
-  if (property(ALIGNMENT_PROPERTY_KEY).value<size_t>() == 1 && selection().size() == 1) {
-      transformation.rotate((*selection().begin())->global_transformation().rotation());
+  transformation.translate(get_global_position_mean(selection));
+  if (property(ALIGNMENT_PROPERTY_KEY).value<size_t>() == 1 && selection.size() == 1) {
+      transformation.rotate((*selection.begin())->global_transformation().rotation());
   }
   return transformation;
 }
 
 void ObjectsTool::draw(AbstractRenderer& renderer) const
 {
-  if (selection().size() == 0) {
+  if (scene.object_selection().size() == 0) {
     return;
   }
 
@@ -64,12 +65,12 @@ void ObjectsTool::transform_objects(const ObjectTransformation& transformation)
   const ObjectTransformation::Mat t = transformation.to_mat();
 
   const auto global = ObjectTransformation(h * t * h_inv);
-  scene.submit<ObjectsTransformationCommand>(selection(), global);
+  scene.submit<ObjectsTransformationCommand>(scene.object_selection(), global);
 }
 
 bool ObjectsTool::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
 {
-  if (selection().size() > 0) {
+  if (scene.object_selection().size() > 0) {
     const auto t_inv = transformation().inverted();
     const auto local_pos = t_inv.apply_to_position(pos);
     const auto local_delta = t_inv.apply_to_direction(delta);
@@ -81,7 +82,7 @@ bool ObjectsTool::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
 
 bool ObjectsTool::mouse_press(const arma::vec2& pos)
 {
-  if (selection().size() > 0) {
+  if (scene.object_selection().size() > 0) {
     const auto t_inv = transformation().inverted();
     const auto local_pos = t_inv.apply_to_position(pos);
     return Tool::mouse_press(local_pos);
@@ -91,7 +92,7 @@ bool ObjectsTool::mouse_press(const arma::vec2& pos)
 
 void ObjectsTool::mouse_release()
 {
-  if (selection().size() > 0) {
+  if (scene.object_selection().size() > 0) {
     for (auto&& handle : handles) {
       handle->mouse_release();
     }

@@ -34,9 +34,7 @@ public:
 
   virtual void mouse_release();
   virtual void draw(AbstractRenderer& renderer) const;
-
-  virtual void set_selection(const std::set<Object*>& objects);
-  const std::set<Object*> selection() const;
+  virtual void activate();
 
 protected:
   Scene& scene;

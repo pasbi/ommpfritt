@@ -48,13 +48,7 @@ Viewport::Viewport(Scene& scene)
   m_timer->setInterval(30);
   m_timer->start();
 
-  m_scene.Observed<AbstractSelectionObserver>::register_observer(*this);
   setMouseTracking(true);
-}
-
-Viewport::~Viewport()
-{
-  m_scene.Observed<AbstractSelectionObserver>::unregister_observer(*this);
 }
 
 #if USE_OPENGL
@@ -126,17 +120,6 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
 {
   m_scene.tool_box.active_tool().mouse_release();
   QWidget::mouseReleaseEvent(event);
-}
-
-void Viewport::set_selection(const std::set<AbstractPropertyOwner*>& selection)
-{
-  const auto objects = AbstractPropertyOwner::cast<Object>(selection);
-  LOG(INFO) << selection.size() << " " << objects.size();
-  if (selection.size() == 0 || objects.size() > 0) {
-    m_scene.tool_box.active_tool().set_selection(objects);
-  } else {
-    // ignore this event, if only non-objects are selected and selection is not cleared.
-  }
 }
 
 ObjectTransformation Viewport::viewport_transformation() const

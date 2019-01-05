@@ -15,7 +15,8 @@ void register_tools()
   REGISTER_TOOL(ScaleTool);
   REGISTER_TOOL(RotateTool);
   REGISTER_TOOL(PathTool);
-  REGISTER_TOOL(SelectTool);
+  REGISTER_TOOL(SelectObjectsTool);
+  REGISTER_TOOL(SelectPointsTool);
 #undef REGISTER_TOOL
 }
 

@@ -21,7 +21,7 @@ ToolBox::ToolBox(Scene& scene)
   : m_tools(make_tool_map(scene))
   , m_scene(scene)
 {
-  m_active_tool = m_tools.at("RotateTool").get();
+  m_active_tool = m_tools.at("MoveTool").get();
 }
 
 Tool& ToolBox::active_tool() const
@@ -40,11 +40,9 @@ Tool& ToolBox::tool(const std::string& key) const
 
 void ToolBox::set_active_tool(const std::string &key)
 {
-  const auto selection = m_active_tool == nullptr ? decltype(m_active_tool->selection())()
-                                                  : m_active_tool->selection();
   m_active_tool = m_tools.at(key).get();
   m_scene.set_selection(std::set<AbstractPropertyOwner*> { m_active_tool });
-  m_active_tool->set_selection(selection);
+  m_active_tool->activate();
 }
 
 }  // namespace

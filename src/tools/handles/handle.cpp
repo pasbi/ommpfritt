@@ -8,17 +8,20 @@ Handle::Handle()
 {
 }
 
-void Handle::mouse_press(const arma::vec2& pos)
+bool Handle::mouse_press(const arma::vec2& pos)
 {
-  if (contains(pos)) {
+  if (contains(transformation().inverted().apply_to_position(pos))) {
     m_status = Status::Active;
+    return true;
+  } else {
+    return false;
   }
 }
 
 void Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover)
 {
   if (m_status != Status::Active) {
-    if (allow_hover && contains(pos)) {
+    if (allow_hover && contains(transformation().inverted().apply_to_position(pos))) {
       m_status = Status::Hovered;
     } else {
       m_status = Status::Inactive;
@@ -49,8 +52,17 @@ void Handle::set_style(Status status, Style&& style)
 
 const Style& Handle::current_style() const
 {
-  return m_styles.at(m_status);
+  return style(status());
 }
 
+const Style& Handle::style(Status status) const
+{
+  return m_styles.at(status);
+}
+
+ObjectTransformation Handle::transformation() const
+{
+  return ObjectTransformation();
+}
 
 }  // namespace omm

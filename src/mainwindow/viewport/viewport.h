@@ -26,11 +26,10 @@ class Viewport
 #else
   : public QWidget
 #endif
-  , public AbstractSelectionObserver
 {
 public:
   Viewport(Scene& scene);
-  ~Viewport();
+  ~Viewport() = default;
   Scene& scene() const;
 
 protected:
@@ -42,7 +41,6 @@ protected:
   void mousePressEvent(QMouseEvent* event) override;
   void mouseMoveEvent(QMouseEvent* event) override;
   void mouseReleaseEvent(QMouseEvent* event) override;
-  void set_selection(const std::set<AbstractPropertyOwner*>& selection) override;
 
 private:
   Scene& m_scene;

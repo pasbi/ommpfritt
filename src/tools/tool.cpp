@@ -4,6 +4,7 @@
 #include "renderers/abstractrenderer.h"
 #include "objects/object.h"
 #include "properties/optionsproperty.h"
+#include "scene/scene.h"
 
 namespace
 {
@@ -31,17 +32,15 @@ Tool::Tool(Scene& scene)
 bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
 {
   bool hit_something = false;
-  if (selection().size() > 0) {
-    for (auto&& handle : handles) {
-      handle->mouse_move(delta, pos, !hit_something);
-      switch (handle->status()) {
-      case Handle::Status::Active:
-      case Handle::Status::Hovered:
-        hit_something = true;
-        break;
-      case Handle::Status::Inactive:
-        break;
-      }
+  for (auto&& handle : handles) {
+    handle->mouse_move(delta, pos, !hit_something);
+    switch (handle->status()) {
+    case Handle::Status::Active:
+    case Handle::Status::Hovered:
+      hit_something = true;
+      break;
+    case Handle::Status::Inactive:
+      break;
     }
   }
   return hit_something;
@@ -49,12 +48,9 @@ bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
 
 bool Tool::mouse_press(const arma::vec2& pos)
 {
-  if (selection().size() > 0) {
-    for (auto&& handle : handles) {
-      handle->mouse_press(pos);
-      if (handle->status() == Handle::Status::Active) {
-        return true;
-      }
+  for (auto&& handle : handles) {
+    if (handle->mouse_press(pos)) {
+      return true;
     }
   }
   return false;
@@ -62,21 +58,9 @@ bool Tool::mouse_press(const arma::vec2& pos)
 
 void Tool::mouse_release()
 {
-  if (selection().size() > 0) {
-    for (auto&& handle : handles) {
-      handle->mouse_release();
-    }
+  for (auto&& handle : handles) {
+    handle->mouse_release();
   }
-}
-
-void Tool::set_selection(const std::set<Object*>& objects)
-{
-  m_selection = objects;
-}
-
-const std::set<Object*> Tool::selection() const
-{
-  return m_selection;
 }
 
 void Tool::draw(AbstractRenderer& renderer) const
@@ -84,6 +68,10 @@ void Tool::draw(AbstractRenderer& renderer) const
   for (auto&& handle : handles) {
     handle->draw(renderer);
   }
+}
+
+void Tool::activate()
+{
 }
 
 

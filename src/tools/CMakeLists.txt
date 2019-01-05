@@ -1,5 +1,6 @@
 file (GLOB SOURCES
   "pathtool.cpp"
+  "positionvariant.cpp"
   "selecttool.cpp"
   "tool.cpp"
   "toolbox.cpp"
