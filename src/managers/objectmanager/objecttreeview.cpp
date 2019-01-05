@@ -146,7 +146,7 @@ bool ObjectTreeView::remove_selection()
     }
     remove(scene, model()->structure, selected_objects);
     for (auto&& item : explicitely_removed_tags) {
-      remove(scene, item.first->tags, AbstractPropertyOwner::cast<Tag>(item.second));
+      remove(scene, item.first->tags, item.second);
     }
     scene.undo_stack.endMacro();
     return true;

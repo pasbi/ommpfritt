@@ -60,13 +60,19 @@ public:
     }
   }
 
-  template<typename T, typename AbstractPropertyOwnerT, template<typename...> class ContainerT>
-  static ContainerT<T*> cast(const ContainerT<AbstractPropertyOwnerT*>& ss)
+  template<typename T, template<typename...> class ContainerT>
+  static ContainerT<T*> cast(const ContainerT<AbstractPropertyOwner*>& ss)
   {
-    const auto f = [](AbstractPropertyOwnerT* a) -> T* {
+    const auto f = [](AbstractPropertyOwner* a) -> T* {
       return a->kind() == T::KIND ? static_cast<T*>(a) : nullptr;
     };
     return ::filter_if(::transform<T*>(ss, f), ::is_not_null);
+  }
+
+  template<typename T, template<typename...> class ContainerT>
+  static ContainerT<AbstractPropertyOwner*> cast(const ContainerT<T*>& ss)
+  {
+    return ::transform<AbstractPropertyOwner*>(ss, ::identity);
   }
 
   static const std::string NAME_PROPERTY_KEY;
