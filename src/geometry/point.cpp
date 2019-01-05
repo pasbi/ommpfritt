@@ -28,4 +28,11 @@ arma::vec2 Point::right_position() const
   return position + right_tangent;
 }
 
+void Point::swap(Point& other)
+{
+  other.position.swap(position);
+  other.left_tangent.swap(left_tangent);
+  other.right_tangent.swap(right_tangent);
+}
+
 }  // namespace omm

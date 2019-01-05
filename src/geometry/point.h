@@ -18,6 +18,7 @@ public:
   arma::vec2 right_position() const;
   static constexpr auto TYPE = "Point";
   bool is_selected = false;
+  void swap(Point& other);
 };
 
 }  // namespace omm

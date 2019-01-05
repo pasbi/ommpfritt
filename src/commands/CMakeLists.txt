@@ -4,6 +4,7 @@ file (GLOB SOURCES
   "movecommand.cpp"
   "newstylecommand.cpp"
   "objectstransformationcommand.cpp"
+  "pointstransformationcommand.cpp"
   "propertycommand.cpp"
   "removecommand.cpp"
   "userpropertyconfigcommand.cpp"

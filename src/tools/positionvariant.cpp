@@ -1,6 +1,8 @@
 #include "tools/positionvariant.h"
 #include "objects/path.h"
 #include "scene/scene.h"
+#include "commands/objectstransformationcommand.h"
+#include "commands/pointstransformationcommand.h"
 
 bool arma::operator<(const arma::vec2& a, const arma::vec2& b)
 {
@@ -23,7 +25,7 @@ void PointPositions::make_handles(std::vector<std::unique_ptr<Handle>>& handles)
 
 void PointPositions::transform(const ObjectTransformation& transformation)
 {
-
+  scene.submit<PointsTransformationCommand>(paths(), transformation);
 }
 
 void PointPositions::clear_selection()
@@ -33,6 +35,44 @@ void PointPositions::clear_selection()
       point->is_selected = false;
     }
   }
+}
+
+arma::vec2 PointPositions::selection_center() const
+{
+  std::set<arma::vec2> positions;
+  for (auto* path : paths()) {
+    for (auto* point : path->points()) {
+      if (point->is_selected) {
+        positions.insert(path->global_transformation().apply_to_position(point->position));
+      }
+    }
+  }
+  assert(positions.size() != 0);
+  const auto null = arma::vec2 {0.0, 0.0};
+  return std::accumulate(positions.begin(), positions.end(), null) / positions.size();
+}
+
+double PointPositions::selection_rotation() const
+{
+  return 0.0;
+}
+
+std::set<Point*> PointPositions::selected_points() const
+{
+  std::set<Point*> selected_points;
+  for (auto* path : paths()) {
+    for (auto* point : path->points()) {
+      if (point->is_selected) {
+        selected_points.insert(point);
+      }
+    }
+  }
+  return selected_points;
+}
+
+bool PointPositions::is_empty() const
+{
+  return selected_points().size() == 0;
 }
 
 std::set<Path*> PointPositions::paths() const
@@ -55,12 +95,38 @@ void ObjectPositions::make_handles(std::vector<std::unique_ptr<Handle>>& handles
 
 void ObjectPositions::transform(const ObjectTransformation& transformation)
 {
-
+  scene.submit<ObjectsTransformationCommand>(scene.object_selection(), transformation);
 }
 
 void ObjectPositions::clear_selection()
 {
   scene.set_selection({});
+}
+
+arma::vec2 ObjectPositions::selection_center() const
+{
+  const auto objects = scene.object_selection();
+  assert(objects.size() > 0);
+  const auto add = [](const arma::vec2& accu, const Object* object) -> arma::vec2 {
+    return accu + object->global_transformation().translation();
+  };
+  const auto null = arma::vec2 {0.0, 0.0};
+  return std::accumulate(objects.begin(), objects.end(), null, add) / objects.size();
+}
+
+double ObjectPositions::selection_rotation() const
+{
+  const auto objects = scene.object_selection();
+  if (objects.size() == 1) {
+    return (**objects.begin()).global_transformation().rotation();
+  } else {
+    return 0.0;
+  }
+}
+
+bool ObjectPositions::is_empty() const
+{
+  return scene.object_selection().size() == 0;
 }
 
 }  // namespace omm

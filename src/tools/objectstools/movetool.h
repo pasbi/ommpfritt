@@ -2,17 +2,27 @@
 
 #include "tools/objectstools/objectstool.h"
 #include "objects/object.h"
+#include "tools/positionvariant.h"
 
 namespace omm
 {
 
-class MoveTool : public ObjectsTool
+class ObjectMoveTool : public ObjectsTool<ObjectPositions>
 {
 public:
-  explicit MoveTool(Scene& scene);
+  explicit ObjectMoveTool(Scene& scene);
   std::string type() const override;
   QIcon icon() const override;
-  static constexpr auto TYPE = "MoveTool";
+  static constexpr auto TYPE = "ObjectMoveTool";
+};
+
+class PointMoveTool : public ObjectsTool<PointPositions>
+{
+public:
+  explicit PointMoveTool(Scene& scene);
+  std::string type() const override;
+  QIcon icon() const override;
+  static constexpr auto TYPE = "PointMoveTool";
 };
 
 }  // namespace omm

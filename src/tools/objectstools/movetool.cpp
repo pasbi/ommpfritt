@@ -8,10 +8,11 @@
 namespace
 {
 
+template<typename ToolT>
 class MoveAxisHandle : public omm::AxisHandle
 {
 public:
-  MoveAxisHandle(omm::MoveTool& tool) : m_tool(tool) { }
+  MoveAxisHandle(ToolT& tool) : m_tool(tool) { }
 
   void mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
   {
@@ -37,13 +38,14 @@ public:
   }
 
 private:
-  omm::MoveTool& m_tool;
+  ToolT& m_tool;
 };
 
+template<typename ToolT>
 class PointMoveHandle : public omm::ParticleHandle
 {
 public:
-  PointMoveHandle(omm::MoveTool& tool) : m_tool(tool) {}
+  PointMoveHandle(ToolT& tool) : m_tool(tool) {}
   void mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
   {
     ParticleHandle::mouse_move(delta, pos, allow_hover);
@@ -54,21 +56,22 @@ public:
   }
 
 private:
-  omm::MoveTool& m_tool;
+  ToolT& m_tool;
 };
 
-auto make_handles(omm::MoveTool& tool)
+template<typename ToolT>
+auto make_handles(ToolT& tool)
 {
   using Status = omm::Handle::Status;
-  auto point = std::make_unique<PointMoveHandle>(tool);
+  auto point = std::make_unique<PointMoveHandle<ToolT>>(tool);
 
-  auto x_axis = std::make_unique<MoveAxisHandle>(tool);
+  auto x_axis = std::make_unique<MoveAxisHandle<ToolT>>(tool);
   x_axis->set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
   x_axis->set_style(Status::Hovered, omm::ContourStyle(omm::Color(1.0, 0.0, 0.0)));
   x_axis->set_style(Status::Inactive, omm::ContourStyle(omm::Color(1.0, 0.3, 0.3)));
   x_axis->set_direction({100, 0});
 
-  auto y_axis = std::make_unique<MoveAxisHandle>(tool);
+  auto y_axis = std::make_unique<MoveAxisHandle<ToolT>>(tool);
   y_axis->set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
   y_axis->set_style(Status::Hovered, omm::ContourStyle(omm::Color(0.0, 1.0, 0.0)));
   y_axis->set_style(Status::Inactive, omm::ContourStyle(omm::Color(0.3, 1.0, 0.3)));
@@ -86,17 +89,32 @@ auto make_handles(omm::MoveTool& tool)
 namespace omm
 {
 
-MoveTool::MoveTool(Scene& scene)
+ObjectMoveTool::ObjectMoveTool(Scene& scene)
   : ObjectsTool(scene, make_handles(*this))
 {
 }
 
-std::string MoveTool::type() const
+std::string ObjectMoveTool::type() const
 {
   return TYPE;
 }
 
-QIcon MoveTool::icon() const
+QIcon ObjectMoveTool::icon() const
+{
+  return QIcon();
+}
+
+PointMoveTool::PointMoveTool(Scene& scene)
+  : ObjectsTool(scene, make_handles(*this))
+{
+}
+
+std::string PointMoveTool::type() const
+{
+  return TYPE;
+}
+
+QIcon PointMoveTool::icon() const
 {
   return QIcon();
 }

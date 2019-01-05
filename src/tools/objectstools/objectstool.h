@@ -7,6 +7,7 @@
 
 namespace omm {
 
+template<typename PositionVariant>
 class ObjectsTool : public Tool
 {
 public:
@@ -20,6 +21,9 @@ public:
   bool mouse_press(const arma::vec2& pos) override;
   void mouse_release() override;
   void draw(AbstractRenderer& renderer) const override;
+
+private:
+  PositionVariant m_position_variant;
 };
 
 }  // namespace omm

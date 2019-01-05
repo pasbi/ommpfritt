@@ -21,7 +21,7 @@ ToolBox::ToolBox(Scene& scene)
   : m_tools(make_tool_map(scene))
   , m_scene(scene)
 {
-  m_active_tool = m_tools.at("MoveTool").get();
+  m_active_tool = m_tools.begin()->second.get();
 }
 
 Tool& ToolBox::active_tool() const

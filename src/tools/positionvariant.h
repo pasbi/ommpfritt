@@ -36,8 +36,12 @@ public:
   void make_handles(std::vector<std::unique_ptr<Handle>>& handles) const;
   void transform(const ObjectTransformation& transformation);
   void clear_selection();
+  arma::vec2 selection_center() const;
+  double selection_rotation() const;
+  bool is_empty() const;
 
 private:
+  std::set<Point*> selected_points() const;
   std::set<Path*> paths() const;
 };
 
@@ -48,6 +52,9 @@ public:
   void make_handles(std::vector<std::unique_ptr<Handle>>& handles) const;
   void transform(const ObjectTransformation& transformation);
   void clear_selection();
+  arma::vec2 selection_center() const;
+  double selection_rotation() const;
+  bool is_empty() const;
 };
 
 }  // namespace omm
