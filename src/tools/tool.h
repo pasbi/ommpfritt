@@ -36,9 +36,9 @@ public:
   virtual void draw(AbstractRenderer& renderer) const;
   virtual void on_selection_changed();
   virtual void on_scene_changed();
+  Scene& scene;
 
 protected:
-  Scene& scene;
   std::vector<std::unique_ptr<Handle>> handles;
   double epsilon = 10.0;
 

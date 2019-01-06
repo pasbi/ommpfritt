@@ -6,6 +6,7 @@
 #include "common.h"
 #include "tools/itemtools/selecttool.h"
 #include "tools/itemtools/positionvariant.h"
+#include "commands/modifytangentscommand.h"
 
 namespace
 {
@@ -184,22 +185,27 @@ void PointSelectHandle::transform_tangent(const arma::vec2& delta)
 template<PointSelectHandle::Tangent tangent>
 void PointSelectHandle::transform_tangent(const arma::vec2& delta, TangentMode mode)
 {
-  auto& left_pos = m_point.left_tangent;
-  auto& right_pos = m_point.right_tangent;
-  auto& master_pos = ::conditional<tangent == Tangent::Left>(left_pos, right_pos);
-  auto& slave_pos = ::conditional<tangent == Tangent::Left>(right_pos, left_pos);
+  auto new_point = m_point;
+  {
+    auto& master_pos = ::conditional<tangent == Tangent::Left>( new_point.left_tangent,
+                                                                new_point.right_tangent );
+    auto& slave_pos  = ::conditional<tangent == Tangent::Left>( new_point.right_tangent,
+                                                                new_point.left_tangent  );
 
-
-  const auto old_master_pos = master_pos;
-  const auto transformation = ObjectTransformation().translated(delta);
-  master_pos = transformation.transformed(this->transformation()).apply_to_position(master_pos);
-  if (mode == TangentMode::Mirror) {
-    static constexpr double mag_eps = 0.00001;
-    slave_pos.argument += master_pos.argument - old_master_pos.argument;
-    if (old_master_pos.magnitude > mag_eps) {
-      slave_pos.magnitude *= master_pos.magnitude / old_master_pos.magnitude;
+    const auto old_master_pos = master_pos;
+    const auto transformation = ObjectTransformation().translated(delta);
+    master_pos = transformation.transformed(this->transformation()).apply_to_position(master_pos);
+    if (mode == TangentMode::Mirror) {
+      static constexpr double mag_eps = 0.00001;
+      slave_pos.argument += master_pos.argument - old_master_pos.argument;
+      if (old_master_pos.magnitude > mag_eps) {
+        slave_pos.magnitude *= master_pos.magnitude / old_master_pos.magnitude;
+      }
     }
   }
+
+  const std::vector<ModifyTangentsCommand::PointWithAlternative> ps{ { m_point, new_point } };
+  m_tool.scene.submit<ModifyTangentsCommand>(ps);
 }
 
 }  // namespace omm
