@@ -7,6 +7,41 @@
 #include "tools/itemtools/selecttool.h"
 #include "tools/itemtools/positionvariant.h"
 
+namespace
+{
+
+template<omm::PointSelectHandle::Tangent tangent>
+class TangentHandle : public omm::ParticleHandle
+{
+public:
+  TangentHandle(omm::PointSelectHandle& master_handle) : m_master_handle(master_handle) {}
+  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
+  {
+    ParticleHandle::mouse_move(delta, pos, allow_hover);
+    if (status() == Status::Active) {
+      m_master_handle.transform_tangent<tangent>(omm::ObjectTransformation().translated(delta));
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+private:
+  omm::PointSelectHandle& m_master_handle;
+};
+
+template<bool condition, typename T1, typename T2>
+constexpr decltype(auto) conditional(T1&& t1, T2&& t2) noexcept
+{
+  if constexpr (condition) {
+    return std::forward<T1>(t1);
+  } else {
+    return std::forward<T2>(t2);
+  }
+}
+
+}  // namespace
+
 namespace omm
 {
 
@@ -37,13 +72,16 @@ void ObjectSelectHandle::draw(omm::AbstractRenderer& renderer) const
   renderer.draw_rectangle(pos, epsilon, style);
 }
 
-void ObjectSelectHandle
+bool ObjectSelectHandle
 ::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover)
 {
   Handle::mouse_move(delta, pos, allow_hover);
   if (status() == Status::Active) {
     const auto t = omm::ObjectTransformation().translated(delta);
     m_tool.transform_objects(t);
+    return true;
+  } else {
+    return false;
   }
 }
 
@@ -72,6 +110,9 @@ PointSelectHandle::PointSelectHandle(SelectTool<PointPositions>& tool, Path& pat
   : m_tool(tool)
   , m_path(path)
   , m_point(point)
+  , m_tangent_style(std::make_unique<ContourStyle>(Color(0.0, 1.0, 0.0)))
+  , m_left_tangent_handle(std::make_unique<TangentHandle<Tangent::Left>>(*this))
+  , m_right_tangent_handle(std::make_unique<TangentHandle<Tangent::Right>>(*this))
 {
   set_style(Status::Hovered, omm::SolidStyle(omm::Color(1.0, 1.0, 0.0)));
   set_style(Status::Active, omm::SolidStyle(omm::Color(1.0, 1.0, 1.0)));
@@ -93,26 +134,75 @@ bool PointSelectHandle::mouse_press(const arma::vec2& pos)
   if (Handle::mouse_press(pos)) {
     m_point.is_selected = true; // !m_point.is_selected;
     return true;
+  } else if (m_left_tangent_handle->mouse_press(pos)) {
+    return true;
+  } else if (m_right_tangent_handle->mouse_press(pos)) {
+    return true;
   } else {
     return false;
   }
 }
 
-void PointSelectHandle
+bool PointSelectHandle
 ::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover)
 {
   Handle::mouse_move(delta, pos, allow_hover);
   if (status() == Status::Active) {
-    const auto t = omm::ObjectTransformation().translated(delta);
-    m_tool.transform_objects(t);
+    m_tool.transform_objects(ObjectTransformation().translated(delta));
+    return true;
+  } else if (m_left_tangent_handle->mouse_move(delta, pos, allow_hover)) {
+    return true;
+  } else if (m_right_tangent_handle->mouse_move(delta, pos, allow_hover)) {
+    return true;
+  } else {
+    return false;
   }
+}
+
+void PointSelectHandle::mouse_release()
+{
+  Handle::mouse_release();
+  m_left_tangent_handle->deactivate();
+  m_right_tangent_handle->deactivate();
 }
 
 void PointSelectHandle::draw(omm::AbstractRenderer& renderer) const
 {
   const Style& style = m_point.is_selected ? this->style(Status::Active) : current_style();
   const auto pos = transformation().apply_to_position(m_point.position);
+  const auto left_pos = transformation().apply_to_position(m_point.left_position());
+  const auto right_pos = transformation().apply_to_position(m_point.right_position());
+
+  const auto treat_sub_handle = [&renderer, pos, this](auto& sub_handle, const auto& other_pos) {
+    sub_handle.position = other_pos;
+    renderer.draw_spline( { Point(pos), Point(other_pos) }, *m_tangent_style);
+    sub_handle.draw(renderer);
+  };
+
+  treat_sub_handle(*m_right_tangent_handle, right_pos);
+  treat_sub_handle(*m_left_tangent_handle, left_pos);
   renderer.draw_rectangle(pos, epsilon, style);
+
+}
+
+template<PointSelectHandle::Tangent tangent>
+void PointSelectHandle::transform_tangent(const ObjectTransformation& t)
+{
+  transform_tangent<tangent>(t, static_cast<SelectPointsTool&>(m_tool).tangent_mode());
+}
+
+template<PointSelectHandle::Tangent tangent>
+void PointSelectHandle::transform_tangent(const ObjectTransformation& t, TangentMode mode)
+{
+  auto& left_pos = m_point.left_tangent;
+  auto& right_pos = m_point.right_tangent;
+  auto& master_pos = ::conditional<tangent == Tangent::Left>(left_pos, right_pos);
+  auto& slave_pos = ::conditional<tangent == Tangent::Left>(right_pos, left_pos);
+
+  const auto h = transformation().to_mat();
+  const auto t_mat = t.to_mat();
+  const auto global_transformation = ObjectTransformation(h.i() * t_mat * h);
+  master_pos = global_transformation.apply_to_position(master_pos);
 }
 
 }  // namespace omm

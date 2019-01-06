@@ -14,7 +14,7 @@ bool Handle::mouse_press(const arma::vec2& pos)
   }
 }
 
-void Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover)
+bool Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover)
 {
   if (m_status != Status::Active) {
     if (allow_hover && contains(transformation().inverted().apply_to_position(pos))) {
@@ -23,6 +23,7 @@ void Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bo
       m_status = Status::Inactive;
     }
   }
+  return false;
 }
 
 void Handle::mouse_release()

@@ -2,6 +2,7 @@
 
 #include <armadillo>
 #include "tools/handles/handle.h"
+#include "tools/handles/particlehandle.h"
 
 namespace omm
 {
@@ -20,7 +21,7 @@ public:
   bool contains(const arma::vec2& point) const override;
   void draw(omm::AbstractRenderer& renderer) const override;
   bool mouse_press(const arma::vec2& pos) override;
-  void mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override;
+  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override;
 
 protected:
   ObjectTransformation transformation() const override;
@@ -34,11 +35,17 @@ private:
 class PointSelectHandle : public Handle
 {
 public:
+  enum class Tangent { Left, Right };
+  enum class TangentMode { Mirror, Individual };
   explicit PointSelectHandle(SelectTool<PointPositions>& tool, Path& path, Point& point);
   bool contains(const arma::vec2& point) const override;
   void draw(omm::AbstractRenderer& renderer) const override;
   bool mouse_press(const arma::vec2& pos) override;
-  void mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override;
+  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override;
+  void mouse_release() override;
+
+  template<Tangent tangent>
+  void transform_tangent(const ObjectTransformation& t);
 
 protected:
   ObjectTransformation transformation() const override;
@@ -47,6 +54,12 @@ private:
   SelectTool<PointPositions>& m_tool;
   Path& m_path;
   Point& m_point;
+  const std::unique_ptr<Style> m_tangent_style;
+  std::unique_ptr<ParticleHandle> m_left_tangent_handle;
+  std::unique_ptr<ParticleHandle> m_right_tangent_handle;
+
+  template<Tangent tangent>
+  void transform_tangent(const ObjectTransformation& t, TangentMode mode);
 };
 
 

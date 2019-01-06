@@ -4,6 +4,7 @@
 #include "objects/object.h"
 #include "properties/floatproperty.h"
 #include "tools/itemtools/positionvariant.h"
+#include "tools/handles/selecthandle.h"
 
 namespace omm
 {
@@ -34,6 +35,7 @@ private:
 class SelectObjectsTool : public SelectTool<ObjectPositions>
 {
 public:
+
   using SelectTool::SelectTool;
   std::string type() const override;
   QIcon icon() const override;
@@ -43,10 +45,12 @@ public:
 class SelectPointsTool : public SelectTool<PointPositions>
 {
 public:
-  using SelectTool::SelectTool;
+  explicit SelectPointsTool(Scene& scene);
   std::string type() const override;
   QIcon icon() const override;
   static constexpr auto TYPE = "SelectPointsTool";
+  static constexpr auto TANGENT_MODE_PROPERTY_KEY = "tangent_mode";
+  PointSelectHandle::TangentMode tangent_mode() const;
 };
 
 }  // namespace omm

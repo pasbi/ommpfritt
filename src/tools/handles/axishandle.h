@@ -25,12 +25,15 @@ class MoveAxisHandle : public omm::AxisHandle
 public:
   MoveAxisHandle(ToolT& tool) : m_tool(tool) { }
 
-  void mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
+  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
   {
     AxisHandle::mouse_move(delta, pos, allow_hover);
     if (status() == Status::Active) {
       const auto t = omm::ObjectTransformation().translated(project_onto_axis(delta));
       m_tool.transform_objects(t);
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -57,12 +60,15 @@ class ScaleAxisHandle : public omm::AxisHandle
 {
 public:
   ScaleAxisHandle(ItemT& tool) : m_tool(tool) { }
-  void mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
+  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
   {
     AxisHandle::mouse_move(delta, pos, allow_hover);
     if (status() == Status::Active) {
       const auto t = omm::ObjectTransformation().scaled(get_scale(pos, delta, m_direction));
       m_tool.transform_objects(t);
+      return true;
+    } else {
+      return false;
     }
   }
 

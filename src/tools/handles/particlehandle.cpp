@@ -14,12 +14,12 @@ ParticleHandle::ParticleHandle()
 
 bool ParticleHandle::contains(const arma::vec2& point) const
 {
-  return arma::norm(point) < epsilon;
+  return arma::norm(point - position) < epsilon;
 }
 
 void ParticleHandle::draw(omm::AbstractRenderer& renderer) const
 {
-  renderer.draw_rectangle(arma::vec2{ 0.0, 0.0 }, epsilon, current_style());
+  renderer.draw_rectangle(position, epsilon, current_style());
 }
 
 }  // namespace omm

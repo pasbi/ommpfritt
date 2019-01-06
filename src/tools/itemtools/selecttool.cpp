@@ -6,6 +6,7 @@
 #include "scene/scene.h"
 #include "commands/objectstransformationcommand.h"
 #include "objects/path.h"
+#include "properties/optionsproperty.h"
 
 namespace omm
 {
@@ -49,6 +50,15 @@ QIcon SelectObjectsTool::icon() const
   return QIcon();
 }
 
+SelectPointsTool::SelectPointsTool(Scene& scene)
+  : SelectTool<PointPositions>(scene)
+{
+  add_property<OptionsProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
+    .set_options({ "Mirror", "Individual" })
+    .set_label(QObject::tr("tangent").toStdString())
+    .set_category(QObject::tr("tool").toStdString());
+}
+
 std::string SelectPointsTool::type() const
 {
   return TYPE;
@@ -57,6 +67,12 @@ std::string SelectPointsTool::type() const
 QIcon SelectPointsTool::icon() const
 {
   return QIcon();
+}
+
+PointSelectHandle::TangentMode SelectPointsTool::tangent_mode() const
+{
+  const auto i = property(TANGENT_MODE_PROPERTY_KEY).value<size_t>();
+  return static_cast<PointSelectHandle::TangentMode>(i);
 }
 
 template class SelectTool<ObjectPositions>;

@@ -16,8 +16,8 @@ public:
   virtual ~Handle() = default;
   virtual void draw(AbstractRenderer& renderer) const = 0;
   virtual bool mouse_press(const arma::vec2& pos);
-  virtual void mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover);
-  void mouse_release();
+  virtual bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover);
+  virtual void mouse_release();
   Status status() const;
   virtual void deactivate();
   void set_style(Status status, Style&& style);
