@@ -121,6 +121,11 @@ void JSONSerializer::set_value(const arma::vec2& value, const Pointer& pointer)
   m_store[ptr(pointer)] = { value[0], value[1] };
 }
 
+void JSONSerializer::set_value(const PolarCoordinates& value, const Pointer& pointer)
+{
+  set_value(arma::vec2{ value.argument, value.magnitude }, pointer);
+}
+
 std::string JSONSerializer::type() const
 {
   return "JSONSerializer";
@@ -200,6 +205,12 @@ arma::vec2 JSONDeserializer::get_vec2(const Pointer& pointer)
   }
 
   return arma::vec2{ vec2[0], vec2[1] };
+}
+
+PolarCoordinates JSONDeserializer::get_polar_coordinates(const Pointer& pointer)
+{
+  const auto pair = get_vec2(pointer);
+  return PolarCoordinates(pair[0], pair[1]);
 }
 
 std::string JSONDeserializer::type() const

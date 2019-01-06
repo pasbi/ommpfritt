@@ -45,7 +45,7 @@ public:
   void mouse_release() override;
 
   template<Tangent tangent>
-  void transform_tangent(const ObjectTransformation& t);
+  void transform_tangent(const arma::vec2& delta);
 
 protected:
   ObjectTransformation transformation() const override;
@@ -59,7 +59,7 @@ private:
   std::unique_ptr<ParticleHandle> m_right_tangent_handle;
 
   template<Tangent tangent>
-  void transform_tangent(const ObjectTransformation& t, TangentMode mode);
+  void transform_tangent(const arma::vec2& delta, TangentMode mode);
 };
 
 

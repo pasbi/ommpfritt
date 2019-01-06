@@ -19,12 +19,14 @@ void PointWrapper::define_python_interface(py::object& module)
 
 py::object PointWrapper::left_tangent() const
 {
-  return py::cast(arma::conv_to<std::vector<double>>::from(wrapped().left_tangent));
+  const auto tangent_pos = wrapped().left_tangent.to_cartesian();
+  return py::cast(arma::conv_to<std::vector<double>>::from(tangent_pos));
 }
 
 py::object PointWrapper::right_tangent() const
 {
-  return py::cast(arma::conv_to<std::vector<double>>::from(wrapped().right_tangent));
+  const auto tangent_pos = wrapped().right_tangent.to_cartesian();
+  return py::cast(arma::conv_to<std::vector<double>>::from(tangent_pos));
 }
 
 py::object PointWrapper::position() const
@@ -34,12 +36,12 @@ py::object PointWrapper::position() const
 
 void PointWrapper::set_left_tangent(const py::object& value)
 {
-   wrapped().left_tangent = to_vec2(value);
+   wrapped().left_tangent = PolarCoordinates(to_vec2(value));
 }
 
 void PointWrapper::set_right_tangent(const py::object& value)
 {
-  wrapped().right_tangent = to_vec2(value);
+  wrapped().right_tangent = PolarCoordinates(to_vec2(value));
 }
 
 void PointWrapper::set_position(const py::object& value)

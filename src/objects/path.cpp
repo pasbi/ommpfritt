@@ -19,8 +19,8 @@ auto deserialize_point(omm::AbstractDeserializer& deserializer, const Pointer& p
   };
   omm::Point point;
   point.position = deserializer.get_vec2(make_pointer(POSITION_POINTER));
-  point.left_tangent = deserializer.get_vec2(make_pointer(LEFT_TANGENT_POINTER));
-  point.right_tangent = deserializer.get_vec2(make_pointer(RIGHT_TANGENT_POINTER));
+  point.left_tangent = deserializer.get_polar_coordinates(make_pointer(LEFT_TANGENT_POINTER));
+  point.right_tangent = deserializer.get_polar_coordinates(make_pointer(RIGHT_TANGENT_POINTER));
   return point;
 }
 

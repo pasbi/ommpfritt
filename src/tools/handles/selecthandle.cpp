@@ -19,7 +19,7 @@ public:
   {
     ParticleHandle::mouse_move(delta, pos, allow_hover);
     if (status() == Status::Active) {
-      m_master_handle.transform_tangent<tangent>(omm::ObjectTransformation().translated(delta));
+      m_master_handle.transform_tangent<tangent>(delta);
       return true;
     } else {
       return false;
@@ -176,20 +176,30 @@ void PointSelectHandle::draw(omm::AbstractRenderer& renderer) const
 }
 
 template<PointSelectHandle::Tangent tangent>
-void PointSelectHandle::transform_tangent(const ObjectTransformation& t)
+void PointSelectHandle::transform_tangent(const arma::vec2& delta)
 {
-  transform_tangent<tangent>(t, static_cast<SelectPointsTool&>(m_tool).tangent_mode());
+  transform_tangent<tangent>(delta, static_cast<SelectPointsTool&>(m_tool).tangent_mode());
 }
 
 template<PointSelectHandle::Tangent tangent>
-void PointSelectHandle::transform_tangent(const ObjectTransformation& t, TangentMode mode)
+void PointSelectHandle::transform_tangent(const arma::vec2& delta, TangentMode mode)
 {
   auto& left_pos = m_point.left_tangent;
   auto& right_pos = m_point.right_tangent;
   auto& master_pos = ::conditional<tangent == Tangent::Left>(left_pos, right_pos);
   auto& slave_pos = ::conditional<tangent == Tangent::Left>(right_pos, left_pos);
 
-  master_pos = t.transformed(transformation()).apply_to_position(master_pos);
+
+  const auto old_master_pos = master_pos;
+  const auto transformation = ObjectTransformation().translated(delta);
+  master_pos = transformation.transformed(this->transformation()).apply_to_position(master_pos);
+  if (mode == TangentMode::Mirror) {
+    static constexpr double mag_eps = 0.00001;
+    slave_pos.argument += master_pos.argument - old_master_pos.argument;
+    if (old_master_pos.magnitude > mag_eps) {
+      slave_pos.magnitude *= master_pos.magnitude / old_master_pos.magnitude;
+    }
+  }
 }
 
 }  // namespace omm

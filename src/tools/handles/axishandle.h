@@ -42,10 +42,10 @@ public:
     const double magnitude = arma::norm(m_direction);
     const double argument = std::atan2(m_direction[1], m_direction[0]);
 
-    const auto o = omm::Point(arma::vec2{ 0, 0 });
-    const auto tip = omm::Point(m_direction);
-    const auto right = omm::Point(argument-0.1, magnitude*0.9);
-    const auto left = omm::Point(argument+0.1, magnitude*0.9);
+    const omm::Point o(arma::vec2{ 0, 0 });
+    const omm::Point tip(m_direction);
+    const omm::Point right(PolarCoordinates(argument-0.1, magnitude*0.9).to_cartesian());
+    const omm::Point left(PolarCoordinates(argument+0.1, magnitude*0.9).to_cartesian());
 
     renderer.draw_spline({ o, tip }, current_style());
     renderer.draw_spline({ left, tip, right, left }, current_style());

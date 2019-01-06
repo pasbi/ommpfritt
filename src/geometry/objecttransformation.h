@@ -49,6 +49,8 @@ public:
 
   arma::vec2 apply_to_position(const arma::vec2& position) const;
   arma::vec2 apply_to_direction(const arma::vec2& direction) const;
+  PolarCoordinates apply_to_position(const PolarCoordinates& point) const;
+  PolarCoordinates apply_to_direction(const PolarCoordinates& point) const;
   BoundingBox apply(const BoundingBox& bb) const;
   ObjectTransformation apply(const ObjectTransformation& t) const;
   Point apply(const Point& point) const;

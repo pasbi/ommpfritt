@@ -15,7 +15,11 @@ arma::vec2 apply_to_non_homogenous( const omm::ObjectTransformation::Mat& matrix
   homogenous_coordinates = matrix * homogenous_coordinates;
 
   // assert kind of vector did not change (direction maps to direction, position maps to position)
-  assert(homogenous_coordinates[2] == third_component);
+#ifndef NDEBUG
+  if (homogenous_coordinates[2] != third_component) {
+    // LOG(WARNING) << "homogenous invariant violated.";
+  }
+#endif
 
   return { homogenous_coordinates[0], homogenous_coordinates[1] };
 }
@@ -256,6 +260,19 @@ Point ObjectTransformation::apply(const Point& point) const
   p.right_tangent = apply_to_direction(point.right_tangent);
   return p;
 }
+
+PolarCoordinates ObjectTransformation::apply_to_position(const PolarCoordinates& point) const
+{
+  // TODO isn't there something smarter?
+  return PolarCoordinates(apply_to_position(point.to_cartesian()));
+}
+
+PolarCoordinates ObjectTransformation::apply_to_direction(const PolarCoordinates& point) const
+{
+  // TODO isn't there something smarter?
+  return PolarCoordinates(apply_to_direction(point.to_cartesian()));
+}
+
 
 ObjectTransformation ObjectTransformation::inverted() const
 {
