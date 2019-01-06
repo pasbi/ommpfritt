@@ -9,69 +9,18 @@ namespace
 {
 
 template<typename ToolT>
-class MoveAxisHandle : public omm::AxisHandle
-{
-public:
-  MoveAxisHandle(ToolT& tool) : m_tool(tool) { }
-
-  void mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
-  {
-    AxisHandle::mouse_move(delta, pos, allow_hover);
-    if (status() == Status::Active) {
-      const auto t = omm::ObjectTransformation().translated(project_onto_axis(delta));
-      m_tool.transform_objects(t);
-    }
-  }
-
-  void draw(omm::AbstractRenderer& renderer) const override
-  {
-    const double magnitude = arma::norm(m_direction);
-    const double argument = std::atan2(m_direction[1], m_direction[0]);
-
-    const auto o = omm::Point(arma::vec2{ 0, 0 });
-    const auto tip = omm::Point(m_direction);
-    const auto right = omm::Point(argument-0.1, magnitude*0.9);
-    const auto left = omm::Point(argument+0.1, magnitude*0.9);
-
-    renderer.draw_spline({ o, tip }, current_style());
-    renderer.draw_spline({ left, tip, right, left }, current_style());
-  }
-
-private:
-  ToolT& m_tool;
-};
-
-template<typename ToolT>
-class PointMoveHandle : public omm::ParticleHandle
-{
-public:
-  PointMoveHandle(ToolT& tool) : m_tool(tool) {}
-  void mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
-  {
-    ParticleHandle::mouse_move(delta, pos, allow_hover);
-    if (status() == Status::Active) {
-      const auto t = omm::ObjectTransformation().translated(delta);
-      m_tool.transform_objects(t);
-    }
-  }
-
-private:
-  ToolT& m_tool;
-};
-
-template<typename ToolT>
 auto make_handles(ToolT& tool)
 {
   using Status = omm::Handle::Status;
-  auto point = std::make_unique<PointMoveHandle<ToolT>>(tool);
+  auto point = std::make_unique<omm::PointMoveHandle<ToolT>>(tool);
 
-  auto x_axis = std::make_unique<MoveAxisHandle<ToolT>>(tool);
+  auto x_axis = std::make_unique<omm::MoveAxisHandle<ToolT>>(tool);
   x_axis->set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
   x_axis->set_style(Status::Hovered, omm::ContourStyle(omm::Color(1.0, 0.0, 0.0)));
   x_axis->set_style(Status::Inactive, omm::ContourStyle(omm::Color(1.0, 0.3, 0.3)));
   x_axis->set_direction({100, 0});
 
-  auto y_axis = std::make_unique<MoveAxisHandle<ToolT>>(tool);
+  auto y_axis = std::make_unique<omm::MoveAxisHandle<ToolT>>(tool);
   y_axis->set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
   y_axis->set_style(Status::Hovered, omm::ContourStyle(omm::Color(0.0, 1.0, 0.0)));
   y_axis->set_style(Status::Inactive, omm::ContourStyle(omm::Color(0.3, 1.0, 0.3)));

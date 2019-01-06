@@ -12,13 +12,13 @@ bool arma::operator<(const arma::vec2& a, const arma::vec2& b)
 namespace omm
 {
 
-void PointPositions::make_handles(handles_type& handles) const
+void PointPositions::make_handles(handles_type& handles, SelectTool<PointPositions>& tool) const
 {
   for (auto* path : paths()) {
     const auto t = path->global_transformation();
     handles.reserve(handles.size() + path->points().size());
     for (auto&& point : path->points()) {
-      handles.push_back(std::make_unique<PointSelectHandle>(*path, *point));
+      handles.push_back(std::make_unique<PointSelectHandle>(tool, *path, *point));
     }
   }
 }
@@ -82,14 +82,14 @@ std::set<Path*> PointPositions::paths() const
   return ::transform<Path*>(::filter_if(scene.object_selection(), is_path), to_path);
 }
 
-void ObjectPositions::make_handles(handles_type& handles) const
+void ObjectPositions::make_handles(handles_type& handles, SelectTool<ObjectPositions>& tool) const
 {
   // ignore object selection. Return a handle for each object.
   const auto objects = scene.object_tree.items();
   handles.reserve(objects.size());
   auto inserter = std::back_inserter(handles);
-  std::transform(objects.begin(), objects.end(), inserter, [this](Object* o) {
-    return std::make_unique<ObjectSelectHandle>(scene, *o);
+  std::transform(objects.begin(), objects.end(), inserter, [this, &tool](Object* o) {
+    return std::make_unique<ObjectSelectHandle>(tool, scene, *o);
   });
 }
 

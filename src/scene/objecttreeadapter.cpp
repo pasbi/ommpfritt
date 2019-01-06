@@ -10,6 +10,22 @@
 #include "commands/copycommand.h"
 #include "properties/stringproperty.h"
 #include "scene/scene.h"
+#include "abstractraiiguard.h"
+
+namespace
+{
+
+class AbstractRAIISceneInvalidatorGuard : public AbstractRAIIGuard
+{
+protected:
+  AbstractRAIISceneInvalidatorGuard(omm::Scene& scene) : m_scene(scene) {}
+  ~AbstractRAIISceneInvalidatorGuard() override { m_scene.invalidate(); }
+
+private:
+  omm::Scene& m_scene;
+};
+
+}  // namespace
 
 namespace omm
 {
@@ -136,10 +152,13 @@ Qt::ItemFlags ObjectTreeAdapter::flags(const QModelIndex &index) const
 std::unique_ptr<AbstractRAIIGuard>
 ObjectTreeAdapter::acquire_inserter_guard(Object& parent, int row)
 {
-  class InserterGuard : public AbstractRAIIGuard
+  class InserterGuard : public AbstractRAIISceneInvalidatorGuard
   {
   public:
-    InserterGuard(ObjectTreeAdapter& model, const QModelIndex& parent, int row) : m_model(model)
+    InserterGuard(ObjectTreeAdapter& model, const QModelIndex& parent, int row)
+      : AbstractRAIISceneInvalidatorGuard(model.scene)
+      , m_model(model)
+
     {
       m_model.beginInsertRows(parent, row, row);
     }
@@ -153,12 +172,13 @@ ObjectTreeAdapter::acquire_inserter_guard(Object& parent, int row)
 std::unique_ptr<AbstractRAIIGuard>
 ObjectTreeAdapter::acquire_mover_guard(const ObjectTreeMoveContext& context)
 {
-  class MoverGuard : public AbstractRAIIGuard
+  class MoverGuard : public AbstractRAIISceneInvalidatorGuard
   {
   public:
-    MoverGuard(ObjectTreeAdapter& model, const QModelIndex& old_parent, const int old_pos,
-               const QModelIndex& new_parent, const int new_pos)
-      : m_model(model)
+    MoverGuard( ObjectTreeAdapter& model, const QModelIndex& old_parent, const int old_pos,
+                const QModelIndex& new_parent, const int new_pos )
+      : AbstractRAIISceneInvalidatorGuard(model.scene)
+      , m_model(model)
     {
       m_model.beginMoveRows(old_parent, old_pos, old_pos, new_parent, new_pos);
     }
@@ -185,14 +205,17 @@ ObjectTreeAdapter::acquire_mover_guard(const ObjectTreeMoveContext& context)
 std::unique_ptr<AbstractRAIIGuard>
 ObjectTreeAdapter::acquire_remover_guard(const Object& object)
 {
-  class RemoverGuard : public AbstractRAIIGuard
+  class RemoverGuard : public AbstractRAIISceneInvalidatorGuard
   {
   public:
-    RemoverGuard(ObjectTreeAdapter& model, const QModelIndex& parent, int row) : m_model(model)
+    RemoverGuard(ObjectTreeAdapter& model, const QModelIndex& parent, int row)
+      : AbstractRAIISceneInvalidatorGuard(model.scene)
+      , m_model(model)
     {
       m_model.beginRemoveRows(parent, row, row);
     }
     ~RemoverGuard() { m_model.endRemoveRows(); }
+
   private:
     ObjectTreeAdapter& m_model;
   };
@@ -203,14 +226,17 @@ ObjectTreeAdapter::acquire_remover_guard(const Object& object)
 std::unique_ptr<AbstractRAIIGuard>
 ObjectTreeAdapter::acquire_reseter_guard()
 {
-  class ReseterGuard : public AbstractRAIIGuard
+  class ReseterGuard : public AbstractRAIISceneInvalidatorGuard
   {
   public:
-    ReseterGuard(ObjectTreeAdapter& model) : m_model(model)
+    ReseterGuard(ObjectTreeAdapter& model)
+      : AbstractRAIISceneInvalidatorGuard(model.scene)
+      , m_model(model)
     {
       m_model.beginResetModel();
     }
     ~ReseterGuard() { m_model.endResetModel(); }
+
   private:
     ObjectTreeAdapter& m_model;
   };

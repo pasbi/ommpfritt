@@ -17,7 +17,7 @@ template<typename PositionVariant> TransformationTool<PositionVariant>
   , m_position_variant(scene)
 {
   this->handles = std::move(handles);
-  add_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY)
+  this->template add_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY)
     .set_options({ "global", "local" })
     .set_label(QObject::tr("Alignment").toStdString())
     .set_category(QObject::tr("Tool").toStdString());
@@ -28,7 +28,7 @@ ObjectTransformation TransformationTool<PositionVariant>::transformation() const
 {
   ObjectTransformation transformation;
   transformation.translate(m_position_variant.selection_center());
-  if (property(ALIGNMENT_PROPERTY_KEY).template value<size_t>() == 1) {
+  if (this->property(ALIGNMENT_PROPERTY_KEY).template value<size_t>() == 1) {
     transformation.rotate(m_position_variant.selection_rotation());
   }
   return transformation;
@@ -45,7 +45,6 @@ void TransformationTool<PositionVariant>::draw(AbstractRenderer& renderer) const
   Tool::draw(renderer);
   renderer.pop_transformation();
 }
-
 template<typename PositionVariant> void
 TransformationTool<PositionVariant>::transform_objects(const ObjectTransformation& transformation)
 {

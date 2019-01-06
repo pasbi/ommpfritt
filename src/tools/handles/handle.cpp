@@ -4,10 +4,6 @@
 namespace omm
 {
 
-Handle::Handle()
-{
-}
-
 bool Handle::mouse_press(const arma::vec2& pos)
 {
   if (contains(transformation().inverted().apply_to_position(pos))) {
@@ -36,7 +32,7 @@ void Handle::mouse_release()
 
 Handle::Status Handle::status() const
 {
-  return m_status;;
+  return m_status;
 }
 
 void Handle::deactivate()

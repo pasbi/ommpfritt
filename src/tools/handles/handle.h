@@ -13,7 +13,6 @@ class Handle
 {
 public:
   enum class Status { Hovered, Active, Inactive };
-  explicit Handle();
   virtual ~Handle() = default;
   virtual void draw(AbstractRenderer& renderer) const = 0;
   virtual bool mouse_press(const arma::vec2& pos);

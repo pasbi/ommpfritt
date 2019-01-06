@@ -28,9 +28,16 @@ bool SelectTool<PositionVariant>::mouse_press(const arma::vec2& pos)
 template<typename PositionVariant>
 void SelectTool<PositionVariant>::activate()
 {
-  handles.clear();
-  m_position_variant.make_handles(handles);
+  this->handles.clear();
+  m_position_variant.make_handles(this->handles, *this);
 }
+
+template<typename PositionVariant>
+void SelectTool<PositionVariant>::transform_objects(const ObjectTransformation& transformation)
+{
+  m_position_variant.transform(transformation);
+}
+
 
 std::string SelectObjectsTool::type() const
 {
