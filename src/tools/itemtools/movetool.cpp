@@ -12,7 +12,7 @@ template<typename ToolT>
 auto make_handles(ToolT& tool)
 {
   using Status = omm::Handle::Status;
-  auto point = std::make_unique<omm::PointMoveHandle<ToolT>>(tool);
+  auto particle = std::make_unique<omm::MoveParticleHandle<ToolT>>(tool);
 
   auto x_axis = std::make_unique<omm::MoveAxisHandle<ToolT>>(tool);
   x_axis->set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
@@ -27,7 +27,7 @@ auto make_handles(ToolT& tool)
   y_axis->set_direction({0, 100});
 
   std::vector<std::unique_ptr<omm::Handle>> handles;
-  handles.push_back(std::move(point));
+  handles.push_back(std::move(particle));
   handles.push_back(std::move(x_axis));
   handles.push_back(std::move(y_axis));
   return handles;

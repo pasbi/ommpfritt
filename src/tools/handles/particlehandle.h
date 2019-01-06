@@ -13,14 +13,14 @@ public:
   explicit ParticleHandle();
   bool contains(const arma::vec2& point) const override;
   void draw(omm::AbstractRenderer& renderer) const override;
-  arma::vec2 position;
+  arma::vec2 position = arma::vec2{ 0.0, 0.0 };
 };
 
 template<typename ToolT>
-class PointMoveHandle : public omm::ParticleHandle
+class MoveParticleHandle : public omm::ParticleHandle
 {
 public:
-  PointMoveHandle(ToolT& tool) : m_tool(tool) {}
+  MoveParticleHandle(ToolT& tool) : m_tool(tool) {}
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
   {
     ParticleHandle::mouse_move(delta, pos, allow_hover);
@@ -38,10 +38,10 @@ private:
 };
 
 template<typename ToolT>
-class PointScaleHandle : public omm::ParticleHandle
+class ScaleParticleHandle : public omm::ParticleHandle
 {
 public:
-  PointScaleHandle(ToolT& tool) : m_tool(tool) {}
+  ScaleParticleHandle(ToolT& tool) : m_tool(tool) {}
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
   {
     ParticleHandle::mouse_move(delta, pos, allow_hover);
