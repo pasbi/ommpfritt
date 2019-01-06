@@ -30,16 +30,6 @@ private:
   omm::PointSelectHandle& m_master_handle;
 };
 
-template<bool condition, typename T1, typename T2>
-constexpr decltype(auto) conditional(T1&& t1, T2&& t2) noexcept
-{
-  if constexpr (condition) {
-    return std::forward<T1>(t1);
-  } else {
-    return std::forward<T2>(t2);
-  }
-}
-
 }  // namespace
 
 namespace omm
@@ -199,10 +189,7 @@ void PointSelectHandle::transform_tangent(const ObjectTransformation& t, Tangent
   auto& master_pos = ::conditional<tangent == Tangent::Left>(left_pos, right_pos);
   auto& slave_pos = ::conditional<tangent == Tangent::Left>(right_pos, left_pos);
 
-  const auto h = transformation().to_mat();
-  const auto t_mat = t.to_mat();
-  const auto global_transformation = ObjectTransformation(h.i() * t_mat * h);
-  master_pos = global_transformation.apply_to_position(master_pos);
+  master_pos = t.transformed(transformation()).apply_to_position(master_pos);
 }
 
 }  // namespace omm

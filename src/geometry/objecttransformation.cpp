@@ -285,4 +285,10 @@ ObjectTransformation ObjectTransformation::find_transformation( const ObjectTran
   return to.apply(from.inverted());
 }
 
+ObjectTransformation ObjectTransformation::transformed(const ObjectTransformation& other) const
+{
+  const auto o = other.to_mat();
+  return ObjectTransformation(o.i() * to_mat() * o);
+}
+
 }  // namespace omm

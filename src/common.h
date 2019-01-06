@@ -196,3 +196,14 @@ ContainerT<T> intersect(const ContainerT<T>& a, const ContainerT<T>& b)
   std::set_intersection(a.begin(), a.end(), b.begin(), b.end(), inserter);
   return intersection;
 }
+
+// similar to std::conditional, but with values rather than types
+template<bool condition, typename T1, typename T2>
+constexpr decltype(auto) conditional(T1&& t1, T2&& t2) noexcept
+{
+  if constexpr (condition) {
+    return std::forward<T1>(t1);
+  } else {
+    return std::forward<T2>(t2);
+  }
+}

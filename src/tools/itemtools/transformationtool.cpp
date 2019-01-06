@@ -46,12 +46,9 @@ void TransformationTool<PositionVariant>::draw(AbstractRenderer& renderer) const
   renderer.pop_transformation();
 }
 template<typename PositionVariant> void
-TransformationTool<PositionVariant>::transform_objects(const ObjectTransformation& transformation)
+TransformationTool<PositionVariant>::transform_objects(const ObjectTransformation& t)
 {
-  const ObjectTransformation::Mat h = this->transformation().to_mat();
-  const ObjectTransformation::Mat h_inv = h.i();
-  const ObjectTransformation::Mat t = transformation.to_mat();
-  m_position_variant.transform(ObjectTransformation(h * t * h_inv));
+  m_position_variant.transform(t.transformed(this->transformation().inverted()));
 }
 
 template<typename PositionVariant> bool

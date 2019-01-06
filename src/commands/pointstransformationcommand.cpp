@@ -11,8 +11,7 @@ make_alternatives(const std::set<omm::Path*>& paths, const omm::ObjectTransforma
 {
   std::map<omm::Point*, omm::Point> alternatives;
   for (const auto& path : paths) {
-    const auto h = path->global_transformation().to_mat();
-    const auto pt = omm::ObjectTransformation(h.i() * t.to_mat() * h);
+    const auto pt = t.transformed(path->global_transformation());
     for (const auto& point : path->points()) {
       if (point->is_selected) {
         omm::Point other = pt.apply(*point);

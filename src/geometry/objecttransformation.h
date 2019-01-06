@@ -42,6 +42,8 @@ public:
   static ObjectTransformation find_transformation( const ObjectTransformation& from,
                                                    const ObjectTransformation& to );
 
+  ObjectTransformation transformed(const ObjectTransformation& other) const;
+
   Mat to_mat() const;
   void set_mat(const Mat& mat);
 
