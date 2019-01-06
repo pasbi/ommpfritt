@@ -26,7 +26,7 @@ bool Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bo
   return false;
 }
 
-void Handle::mouse_release()
+void Handle::mouse_release(const arma::vec2& pos)
 {
   m_status = Status::Inactive;
 }

@@ -27,7 +27,7 @@ bool SelectTool<PositionVariant>::mouse_press(const arma::vec2& pos)
 }
 
 template<typename PositionVariant>
-void SelectTool<PositionVariant>::activate()
+void SelectTool<PositionVariant>::on_scene_changed()
 {
   this->handles.clear();
   m_position_variant.make_handles(this->handles, *this);
@@ -67,6 +67,11 @@ std::string SelectPointsTool::type() const
 QIcon SelectPointsTool::icon() const
 {
   return QIcon();
+}
+
+void SelectPointsTool::on_selection_changed()
+{
+  on_scene_changed();
 }
 
 PointSelectHandle::TangentMode SelectPointsTool::tangent_mode() const

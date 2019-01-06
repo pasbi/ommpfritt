@@ -112,7 +112,7 @@ void Scene::invalidate()
   const auto notifier = std::mem_fn(&AbstractSimpleStructureObserver::structure_has_changed);
   Observed<AbstractSimpleStructureObserver>::for_each(notifier);
   set_selection(std::set<AbstractPropertyOwner*>());
-  tool_box.active_tool().activate();
+  tool_box.active_tool().on_scene_changed();
 }
 
 bool Scene::save_as(const std::string &filename)
@@ -266,6 +266,7 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
       // selection is not empty but does not contain objects. Do not touch the object selection.
     }
   }
+  tool_box.active_tool().on_selection_changed();
 }
 
 std::set<Object*> Scene::object_selection() const

@@ -67,6 +67,16 @@ void Viewport::paintEvent(QPaintEvent* event)
   m_scene.tool_box.active_tool().draw(renderer);
 }
 
+arma::vec2 Viewport::viewport_to_global_direction(const arma::vec2& pos) const
+{
+  return viewport_transformation().inverted().apply_to_direction(pos);
+}
+
+arma::vec2 Viewport::viewport_to_global_position(const arma::vec2& pos) const
+{
+  return viewport_transformation().inverted().apply_to_position(pos);
+}
+
 void Viewport::mousePressEvent(QMouseEvent* event)
 {
   const arma::vec2 cursor_position = point2vec(event->pos());
@@ -75,7 +85,7 @@ void Viewport::mousePressEvent(QMouseEvent* event)
   if (event->modifiers() & Qt::AltModifier) {
     event->accept();
   }  else if (event->modifiers() == Qt::NoModifier) {
-    const auto pos = viewport_transformation().inverted().apply_to_position(cursor_position);
+    const auto pos = viewport_to_global_position(cursor_position);
     if (m_scene.tool_box.active_tool().mouse_press(pos))
     {
       event->accept();
@@ -104,8 +114,8 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
   if (event->modifiers() == Qt::NoModifier)
   {
     auto& tool = m_scene.tool_box.active_tool();
-    const auto delta_ = viewport_transformation().inverted().apply_to_direction(delta);
-    const auto cpos_ = viewport_transformation().inverted().apply_to_position(cursor_position);
+    const auto delta_ = viewport_to_global_direction(delta);
+    const auto cpos_ = viewport_to_global_position(cursor_position);
     if (tool.mouse_move(delta_, cpos_))
     {
       event->accept();
@@ -118,7 +128,8 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
 
 void Viewport::mouseReleaseEvent(QMouseEvent* event)
 {
-  m_scene.tool_box.active_tool().mouse_release();
+  const auto global_pos = viewport_to_global_position(point2vec(event->pos()));
+  m_scene.tool_box.active_tool().mouse_release(global_pos);
   QWidget::mouseReleaseEvent(event);
 }
 

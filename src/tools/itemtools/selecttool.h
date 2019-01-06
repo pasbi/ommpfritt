@@ -24,8 +24,8 @@ public:
 
   static constexpr auto RADIUS_PROPERTY_KEY = "radius";
   bool mouse_press(const arma::vec2& pos) override;
-  void activate() override;
   void transform_objects(const ObjectTransformation& transformation);
+  void on_scene_changed() override;
 
 private:
   PositionVariant m_position_variant;
@@ -50,6 +50,7 @@ public:
   QIcon icon() const override;
   static constexpr auto TYPE = "SelectPointsTool";
   static constexpr auto TANGENT_MODE_PROPERTY_KEY = "tangent_mode";
+  void on_selection_changed() override;
   PointSelectHandle::TangentMode tangent_mode() const;
 };
 

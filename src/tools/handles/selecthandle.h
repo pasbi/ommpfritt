@@ -42,7 +42,7 @@ public:
   void draw(omm::AbstractRenderer& renderer) const override;
   bool mouse_press(const arma::vec2& pos) override;
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override;
-  void mouse_release() override;
+  void mouse_release(const arma::vec2& pos) override;
 
   template<Tangent tangent>
   void transform_tangent(const arma::vec2& delta);

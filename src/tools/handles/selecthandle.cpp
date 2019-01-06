@@ -149,11 +149,11 @@ bool PointSelectHandle
   }
 }
 
-void PointSelectHandle::mouse_release()
+void PointSelectHandle::mouse_release(const arma::vec2& pos)
 {
-  Handle::mouse_release();
-  m_left_tangent_handle->deactivate();
-  m_right_tangent_handle->deactivate();
+  Handle::mouse_release(pos);
+  m_left_tangent_handle->mouse_release(pos);
+  m_right_tangent_handle->mouse_release(pos);
 }
 
 void PointSelectHandle::draw(omm::AbstractRenderer& renderer) const

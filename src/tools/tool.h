@@ -32,9 +32,10 @@ public:
    */
   virtual bool mouse_press(const arma::vec2& pos);
 
-  virtual void mouse_release();
+  virtual void mouse_release(const arma::vec2& pos);
   virtual void draw(AbstractRenderer& renderer) const;
-  virtual void activate();
+  virtual void on_selection_changed();
+  virtual void on_scene_changed();
 
 protected:
   Scene& scene;

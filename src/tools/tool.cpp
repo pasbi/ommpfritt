@@ -56,10 +56,10 @@ bool Tool::mouse_press(const arma::vec2& pos)
   return false;
 }
 
-void Tool::mouse_release()
+void Tool::mouse_release(const arma::vec2& pos)
 {
   for (auto&& handle : handles) {
-    handle->mouse_release();
+    handle->mouse_release(pos);
   }
 }
 
@@ -70,9 +70,8 @@ void Tool::draw(AbstractRenderer& renderer) const
   }
 }
 
-void Tool::activate()
-{
-}
+void Tool::on_selection_changed() {}
+void Tool::on_scene_changed() {}
 
 
 }  // namespace omm

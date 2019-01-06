@@ -77,11 +77,11 @@ TransformationTool<PositionVariant>::mouse_press(const arma::vec2& pos)
 }
 
 template<typename PositionVariant>
-void TransformationTool<PositionVariant>::mouse_release()
+void TransformationTool<PositionVariant>::mouse_release(const arma::vec2& pos)
 {
   if (!m_position_variant.is_empty()) {
     for (auto&& handle : handles) {
-      handle->mouse_release();
+      handle->mouse_release(pos);
     }
   }
 }
