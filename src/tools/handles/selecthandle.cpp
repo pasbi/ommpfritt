@@ -204,7 +204,7 @@ void PointSelectHandle::transform_tangent(const arma::vec2& delta, TangentMode m
     }
   }
 
-  const std::vector<ModifyTangentsCommand::PointWithAlternative> ps{ { m_point, new_point } };
+  const std::list<ModifyTangentsCommand::PointWithAlternative> ps{ { m_point, new_point } };
   m_tool.scene.submit<ModifyTangentsCommand>(ps);
 }
 

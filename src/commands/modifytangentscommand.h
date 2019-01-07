@@ -1,7 +1,6 @@
 #pragma once
 
-#include <set>
-
+#include <list>
 #include "commands/command.h"
 #include "geometry/point.h"
 
@@ -22,14 +21,14 @@ public:
     Point m_alternative;
   };
 
-  ModifyTangentsCommand(const std::vector<PointWithAlternative>& alternatives);
+  ModifyTangentsCommand(const std::list<PointWithAlternative>& alternatives);
   void undo() override;
   void redo() override;
   int id() const override;
   bool mergeWith(const QUndoCommand* command) override;
 
 private:
-  std::vector<PointWithAlternative> m_alternatives;
+  std::list<PointWithAlternative> m_alternatives;
 };
 
 }  // namespace

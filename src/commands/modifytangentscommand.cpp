@@ -19,7 +19,7 @@ bool ModifyTangentsCommand::PointWithAlternative
   return &m_point == &other.m_point;
 }
 
-ModifyTangentsCommand::ModifyTangentsCommand(const std::vector<PointWithAlternative>& alternatives)
+ModifyTangentsCommand::ModifyTangentsCommand(const std::list<PointWithAlternative>& alternatives)
   : Command("ModifyTangentsCommand")
   , m_alternatives(alternatives)
 {
