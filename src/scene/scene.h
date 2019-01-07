@@ -92,6 +92,7 @@ public:
   bool save_as(const std::string& filename);
   bool load_from(const std::string& filename);
   std::string filename() const;
+
 private:
   /**
    * holds the last filename this scene was associated to.
@@ -124,6 +125,15 @@ private:
 
 public:
   ToolBox tool_box;
+
+  template<typename ObjectT, typename F> void for_each_selected_object(F&& f)
+  {
+    for (auto&& o : object_selection()) {
+      if (o->type() == ObjectT::TYPE) {
+        f(static_cast<ObjectT*>(o));
+      }
+    }
+  }
 
 };
 
