@@ -12,6 +12,7 @@
 #include "menuhelper.h"
 #include "mainwindow/toolbar.h"
 #include "common.h"
+#include "objects/path.h"
 
 namespace omm
 {
@@ -73,6 +74,17 @@ void MainMenuBar::make_edit_menu()
   edit_menu.addAction(m_app.scene.undo_stack.createRedoAction(nullptr));
 }
 
+void MainMenuBar::make_path_menu()
+{
+  auto& path_menu = *addMenu(tr("&Path"));
+  action(path_menu, tr("make linear"), [this]() {
+    m_app.scene.for_each_selected_object<Path>(std::mem_fn(&Path::make_tangents_linear));
+  });
+  action(path_menu, tr("make cubic"), [this]() {
+    m_app.scene.for_each_selected_object<Path>(std::mem_fn(&Path::make_tangets_cubic));
+  });
+}
+
 MainMenuBar::MainMenuBar(Application& app, MainWindow& main_window)
   : m_app(app)
   , m_main_window(main_window)
@@ -80,6 +92,7 @@ MainMenuBar::MainMenuBar(Application& app, MainWindow& main_window)
   make_file_menu();
   make_edit_menu();
   make_create_menu();
+  make_path_menu();
   make_scene_menu();
   make_window_menu();
 }

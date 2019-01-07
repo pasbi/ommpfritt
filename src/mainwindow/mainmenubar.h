@@ -19,6 +19,7 @@ private:
   void make_window_menu();
   void make_edit_menu();
   void make_scene_menu();
+  void make_path_menu();
   Application& m_app;
   MainWindow& m_main_window;
 };
