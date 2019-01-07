@@ -1,8 +1,9 @@
 #include "objects/path.h"
 
 #include <QObject>
-
+#include "commands/modifytangentscommand.h"
 #include "properties/boolproperty.h"
+#include "scene/scene.h"
 
 namespace
 {
@@ -104,6 +105,66 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
     const auto point_pointer = make_pointer(points_pointer, i);
     m_points[i] = deserialize_point(deserializer, point_pointer);
   }
+}
+
+void Path::make_tangets_cubic()
+{
+  auto modify_point = [](auto& point, const auto& left, const auto& right, auto& modified_points)
+  {
+    if (point.is_selected) {
+      const PolarCoordinates l_pc(left.position - point.position);
+      const PolarCoordinates r_pc(right.position - point.position);
+      const double theta = (l_pc.argument + r_pc.argument) / 2.0;
+      const double mag = (l_pc.magnitude + r_pc.magnitude) / 12.0;
+      auto copy = point;
+
+      // TODO
+      const double d = arma::dot(right.position - point.position, left.position - point.position);
+      const double sign = std::copysign(1.0, d);
+
+      copy.left_tangent = PolarCoordinates(theta + M_PI_2, mag);
+      copy.right_tangent = PolarCoordinates(theta - M_PI_2, mag);
+
+      // that's a quick hack. If right tangent is closer to left position
+      // than left tangent, then swap them.
+      // I'm sure there's a more elegant way.
+      if ( arma::norm(copy.right_position() - left.position)
+         < arma::norm(copy.left_position() - left.position)  )
+      {
+        copy.left_tangent.swap(copy.right_tangent);
+      }
+      modified_points.push_back({ point, copy });
+    }
+  };
+
+  std::list<ModifyTangentsCommand::PointWithAlternative> ps;
+  if (property(IS_CLOSED_PROPERTY_KEY).value<bool>()) {
+    const auto n = m_points.size();
+    modify_point(m_points[0], m_points[n-1], m_points[1], ps);
+    modify_point(m_points[n-1], m_points[n-2], m_points[0], ps);
+  } else {
+    // Do something smart with endpoints
+  }
+
+  for (std::size_t i = 1; i < m_points.size() - 1; ++i) {
+    modify_point(m_points[i], m_points[i-1], m_points[i+1], ps);
+  }
+
+  scene()->submit<ModifyTangentsCommand>(ps);
+}
+
+void Path::make_tangents_linear()
+{
+  std::list<ModifyTangentsCommand::PointWithAlternative> ps;
+  for (auto& point : m_points) {
+    if (point.is_selected) {
+      auto new_point = point;
+      new_point.left_tangent.magnitude = 0;
+      new_point.right_tangent.magnitude = 0;
+      ps.push_back({ point, new_point });
+    }
+  }
+  scene()->submit<ModifyTangentsCommand>(ps);
 }
 
 }  // namespace omm

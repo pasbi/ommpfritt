@@ -24,6 +24,9 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
 
+  void make_tangets_cubic();
+  void make_tangents_linear();
+
 private:
   std::vector<Point> m_points;
 };
