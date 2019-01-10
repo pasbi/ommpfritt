@@ -24,12 +24,11 @@ protected:
   virtual std::string label() const;
   void set_default_layout(std::unique_ptr<QWidget> other);
   std::unique_ptr<QWidget> make_label_widget() const;
-  Scene& scene() const { return m_scene; }
+  Scene& scene;
   virtual void update_edit() = 0;
 
 private:
   const std::string m_label;
-  Scene& m_scene;
 };
 
 template<typename PropertyT>
@@ -57,7 +56,7 @@ public:
 protected:
   void set_properties_value(const value_type& value)
   {
-    scene().template submit<PropertiesCommand<value_type>>(m_properties, value);
+    scene.template submit<PropertiesCommand<value_type>>(m_properties, value);
   }
 
   auto get_properties_values() const

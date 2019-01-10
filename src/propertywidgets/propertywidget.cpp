@@ -9,7 +9,7 @@ namespace omm
 AbstractPropertyWidget
 ::AbstractPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : m_label(Property::get_value<std::string>(properties, std::mem_fn(&Property::label)))
-  , m_scene(scene)
+  , scene(scene)
 {
 
 }
