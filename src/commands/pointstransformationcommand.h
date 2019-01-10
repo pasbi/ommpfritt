@@ -21,6 +21,7 @@ public:
 
 private:
   std::map<Point*, Point> m_alternative_points;
+  std::set<Path*> m_paths;
 };
 
 }  // namespace omm

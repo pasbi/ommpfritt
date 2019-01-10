@@ -19,21 +19,28 @@ bool ModifyTangentsCommand::PointWithAlternative
   return &m_point == &other.m_point;
 }
 
-ModifyTangentsCommand::ModifyTangentsCommand(const std::list<PointWithAlternative>& alternatives)
+ModifyTangentsCommand
+::ModifyTangentsCommand(Path* path, const std::list<PointWithAlternative>& alternatives)
   : Command("ModifyTangentsCommand")
   , m_alternatives(alternatives)
+  , m_path(path)
 {
 
 }
 
 void ModifyTangentsCommand::undo()
 {
-  for (PointWithAlternative& point_with_alternative : m_alternatives) {
-    point_with_alternative.swap();
-  }
+  swap();
+  if (m_path != nullptr) { m_path->set_interpolation_mode(m_old_interpolation_mode); }
 }
 
 void ModifyTangentsCommand::redo()
+{
+  swap();
+  if (m_path != nullptr) { m_path->set_interpolation_mode(Path::InterpolationMode::Bezier); }
+}
+
+void ModifyTangentsCommand::swap()
 {
   for (auto& point_with_alternative : m_alternatives) {
     point_with_alternative.swap();

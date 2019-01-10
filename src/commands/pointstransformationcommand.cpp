@@ -46,21 +46,19 @@ PointsTransformationCommand
 ::PointsTransformationCommand(const std::set<Path*>& paths, const ObjectTransformation& t)
   : Command("PointsTransformationCommand")
   , m_alternative_points(make_alternatives(paths, t))
+  , m_paths(paths)
 {
 }
 
 void PointsTransformationCommand::undo()
 {
-  for (const auto& [point, _] : m_alternative_points) {
-    point->swap(m_alternative_points[point]);
-  }
+  redo();
 }
 
 void PointsTransformationCommand::redo()
 {
-  for (const auto& [point, _] : m_alternative_points) {
-    point->swap(m_alternative_points[point]);
-  }
+  for (const auto& [point, _] : m_alternative_points) { point->swap(m_alternative_points[point]); }
+  for (Path* path : m_paths) { path->update_interpolation(); }
 }
 
 int PointsTransformationCommand::id() const

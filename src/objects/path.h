@@ -21,11 +21,19 @@ public:
   void set_points(const std::vector<Point>& points);
   static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";
   static constexpr auto POINTS_POINTER = "points";
+  static constexpr auto INTERPOLATION_PROPERTY_KEY = "interpolation";
+
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
 
-  void make_tangets_cubic();
-  void make_tangents_linear();
+  void make_smooth_tangents(bool constrain_to_selection);
+  void vanish_tangents(bool constrain_to_selection);
+  void update_interpolation();
+  bool tangents_modifiable() const;
+
+  enum class InterpolationMode { Linear, Smooth, Bezier };
+  InterpolationMode interpolation_mode() const;
+  void set_interpolation_mode(const InterpolationMode& mode);
 
 private:
   std::vector<Point> m_points;

@@ -3,6 +3,7 @@
 #include <QObject>
 #include "commands/modifytangentscommand.h"
 #include "properties/boolproperty.h"
+#include "properties/optionsproperty.h"
 #include "scene/scene.h"
 
 namespace
@@ -49,6 +50,11 @@ Path::Path(Scene* scene) : Object(scene)
   add_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
     .set_label(QObject::tr("closed").toStdString())
     .set_category(QObject::tr("path").toStdString());
+  add_property<OptionsProperty>(INTERPOLATION_PROPERTY_KEY)
+    .set_options({ "linear", "smooth", "bezier" })
+    .set_label(QObject::tr("closed").toStdString())
+    .set_category(QObject::tr("path").toStdString())
+    .set_post_submit([this](Property&) { this->update_interpolation(); });
 }
 
 void Path::render(AbstractRenderer& renderer, const Style& style)
@@ -107,11 +113,11 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
   }
 }
 
-void Path::make_tangets_cubic()
+void Path::make_smooth_tangents(bool constrain_to_selection)
 {
-  auto modify_point = [](auto& point, const auto& left, const auto& right, auto& modified_points)
+  auto modify_point = [=](auto& point, const auto& left, const auto& right, auto& modified_points)
   {
-    if (point.is_selected) {
+    if (!constrain_to_selection || point.is_selected) {
       const PolarCoordinates l_pc(left.position - point.position);
       const PolarCoordinates r_pc(right.position - point.position);
       const double theta = (l_pc.argument + r_pc.argument) / 2.0;
@@ -150,21 +156,48 @@ void Path::make_tangets_cubic()
     modify_point(m_points[i], m_points[i-1], m_points[i+1], ps);
   }
 
-  scene()->submit<ModifyTangentsCommand>(ps);
+  scene()->submit<ModifyTangentsCommand>(nullptr, ps);
 }
 
-void Path::make_tangents_linear()
+void Path::vanish_tangents(bool constrain_to_selection)
 {
   std::list<ModifyTangentsCommand::PointWithAlternative> ps;
   for (auto& point : m_points) {
-    if (point.is_selected) {
+    if (!constrain_to_selection || point.is_selected) {
       auto new_point = point;
       new_point.left_tangent.magnitude = 0;
       new_point.right_tangent.magnitude = 0;
       ps.push_back({ point, new_point });
     }
   }
-  scene()->submit<ModifyTangentsCommand>(ps);
+  scene()->submit<ModifyTangentsCommand>(nullptr, ps);
+}
+
+void Path::update_interpolation()
+{
+  switch (interpolation_mode()) {
+  case InterpolationMode::Linear:
+    vanish_tangents(false);
+    break;
+  case InterpolationMode::Smooth:
+    make_smooth_tangents(false);
+    break;
+  case InterpolationMode::Bezier:
+    // leave tangents as thet are
+    break;
+  }
+}
+
+Path::InterpolationMode Path::interpolation_mode() const
+{
+  const auto i = property(INTERPOLATION_PROPERTY_KEY).value<std::size_t>();
+  return static_cast<Path::InterpolationMode>(i);
+}
+
+void Path::set_interpolation_mode(const InterpolationMode& mode)
+{
+  const auto i = static_cast<std::size_t>(mode);
+  property(INTERPOLATION_PROPERTY_KEY).set(i);
 }
 
 }  // namespace omm

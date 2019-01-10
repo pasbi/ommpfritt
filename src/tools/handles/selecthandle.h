@@ -57,6 +57,7 @@ private:
   const std::unique_ptr<Style> m_tangent_style;
   std::unique_ptr<ParticleHandle> m_left_tangent_handle;
   std::unique_ptr<ParticleHandle> m_right_tangent_handle;
+  bool tangents_active() const;
 
   template<Tangent tangent>
   void transform_tangent(const arma::vec2& delta, TangentMode mode);

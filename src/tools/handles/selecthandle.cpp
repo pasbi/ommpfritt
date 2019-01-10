@@ -125,9 +125,9 @@ bool PointSelectHandle::mouse_press(const arma::vec2& pos)
   if (Handle::mouse_press(pos)) {
     m_point.is_selected = true; // !m_point.is_selected;
     return true;
-  } else if (m_left_tangent_handle->mouse_press(pos)) {
+  } else if (tangents_active() && m_left_tangent_handle->mouse_press(pos)) {
     return true;
-  } else if (m_right_tangent_handle->mouse_press(pos)) {
+  } else if (tangents_active() && m_right_tangent_handle->mouse_press(pos)) {
     return true;
   } else {
     return false;
@@ -141,9 +141,9 @@ bool PointSelectHandle
   if (status() == Status::Active) {
     m_tool.transform_objects(ObjectTransformation().translated(delta));
     return true;
-  } else if (m_left_tangent_handle->mouse_move(delta, pos, allow_hover)) {
+  } else if (tangents_active() && m_left_tangent_handle->mouse_move(delta, pos, allow_hover)) {
     return true;
-  } else if (m_right_tangent_handle->mouse_move(delta, pos, allow_hover)) {
+  } else if (tangents_active() && m_right_tangent_handle->mouse_move(delta, pos, allow_hover)) {
     return true;
   } else {
     return false;
@@ -170,8 +170,10 @@ void PointSelectHandle::draw(omm::AbstractRenderer& renderer) const
     sub_handle.draw(renderer);
   };
 
-  treat_sub_handle(*m_right_tangent_handle, right_pos);
-  treat_sub_handle(*m_left_tangent_handle, left_pos);
+  if (tangents_active()) {
+    treat_sub_handle(*m_right_tangent_handle, right_pos);
+    treat_sub_handle(*m_left_tangent_handle, left_pos);
+  }
   renderer.draw_rectangle(pos, epsilon, style);
 
 }
@@ -205,7 +207,12 @@ void PointSelectHandle::transform_tangent(const arma::vec2& delta, TangentMode m
   }
 
   const std::list<ModifyTangentsCommand::PointWithAlternative> ps{ { m_point, new_point } };
-  m_tool.scene.submit<ModifyTangentsCommand>(ps);
+  m_tool.scene.submit<ModifyTangentsCommand>(&m_path, ps);
+}
+
+bool PointSelectHandle::tangents_active() const
+{
+  return m_path.interpolation_mode() == Path::InterpolationMode::Bezier;
 }
 
 }  // namespace omm

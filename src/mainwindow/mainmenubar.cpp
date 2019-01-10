@@ -78,10 +78,12 @@ void MainMenuBar::make_path_menu()
 {
   auto& path_menu = *addMenu(tr("&Path"));
   action(path_menu, tr("make linear"), [this]() {
-    m_app.scene.for_each_selected_object<Path>(std::mem_fn(&Path::make_tangents_linear));
+    m_app.scene.for_each_selected_object<Path>([](Path* path) { path->vanish_tangents(true); });
   });
-  action(path_menu, tr("make cubic"), [this]() {
-    m_app.scene.for_each_selected_object<Path>(std::mem_fn(&Path::make_tangets_cubic));
+  action(path_menu, tr("make smooth"), [this]() {
+    m_app.scene.for_each_selected_object<Path>([](Path* path) {
+      path->make_smooth_tangents(true);
+    });
   });
 }
 
