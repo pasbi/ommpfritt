@@ -50,7 +50,7 @@ void PythonEngine::evaluate_script_tags(Scene& scene) const
   for (Tag* tag : scene.tags()) {
     if (tag->type() == ScriptTag::TYPE) {
       const auto code = tag->property(ScriptTag::CODE_PROPERTY_KEY).value<std::string>();
-      auto locals = py::dict("this"_a=TagWrapper::make(tag), "scene"_a=SceneWrapper(&scene));
+      auto locals = py::dict("this"_a=TagWrapper::make(*tag), "scene"_a=SceneWrapper(scene));
       run(code, locals);
     }
   }

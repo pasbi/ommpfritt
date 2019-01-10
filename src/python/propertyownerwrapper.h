@@ -21,7 +21,8 @@ py::object get_property_value(WrappedT&& wrapped, const std::string& key)
       return py::cast(value);
     }
   } else {
-    for (auto&& key : wrapped.properties().keys()) {
+    LOG(ERROR) << "Failed to find property key '" << key << "'.";
+    for (const std::string& key : wrapped.properties().keys()) {
       LOG(INFO) << key;
     }
     return py::none();
@@ -40,12 +41,12 @@ public:
   using PyWrapper<WrappedT>::PyWrapper;
   py::object get(const std::string& key) const
   {
-    return detail::get_property_value(this->wrapped(), key);
+    return detail::get_property_value(this->wrapped, key);
   }
 
   bool set(const std::string& key, const py::object& value) const
   {
-    return detail::set_property_value(this->wrapped(), key, value);
+    return detail::set_property_value(this->wrapped, key, value);
   }
 
   static void define_python_interface(py::object& module)

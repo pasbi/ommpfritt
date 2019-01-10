@@ -16,7 +16,7 @@ void SceneWrapper::define_python_interface(py::object& module)
 
 template<typename T> py::object SceneWrapper::find_items(const std::string& name) const
 {
-  return wrap(wrapped().find_items<T>(name));
+  return wrap(wrapped.find_items<T>(name));
 }
 
 template py::object SceneWrapper::find_items<Object>(const std::string&) const;

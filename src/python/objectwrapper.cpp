@@ -6,21 +6,21 @@ namespace omm
 
 py::object ObjectWrapper::children() const
 {
-  return wrap(wrapped().children());
+  return wrap(wrapped.children());
 }
 
 py::object ObjectWrapper::parent() const
 {
-  if (this->wrapped().is_root()) {
+  if (this->wrapped.is_root()) {
     return py::none();
   } else {
-    return wrap(&this->wrapped().parent());
+    return wrap(this->wrapped.parent());
   }
 }
 
 py::object ObjectWrapper::tags() const
 {
-  return wrap(wrapped().tags.ordered_items());
+  return wrap(wrapped.tags.ordered_items());
 }
 
 py::object ObjectWrapper::rotation() const
@@ -72,13 +72,13 @@ py::object ObjectWrapper::set_translation(const py::object& translation) const
 
 ObjectTransformation ObjectWrapper::transformation() const
 {
-  auto& property = wrapped().property(Object::TRANSFORMATION_PROPERTY_KEY);
+  auto& property = wrapped.property(Object::TRANSFORMATION_PROPERTY_KEY);
   return property.value<ObjectTransformation>();
 }
 
 void ObjectWrapper::set_transformation(const ObjectTransformation& t) const
 {
-  wrapped().property(Object::TRANSFORMATION_PROPERTY_KEY).set(t);
+  wrapped.property(Object::TRANSFORMATION_PROPERTY_KEY).set(t);
 }
 
 void ObjectWrapper::define_python_interface(py::object& module)

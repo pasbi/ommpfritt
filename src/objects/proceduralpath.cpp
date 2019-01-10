@@ -47,14 +47,16 @@ std::vector<Point> ProceduralPath::points()
   const auto code = property(CODE_PROPERTY_KEY).value<std::string>();
 
   std::vector<Point> points(std::max(0, count));
-  const auto point_wrappers = ::transform<PointWrapper>(points, [](auto& point) {
-    return PointWrapper(&point);
-  });
+  std::vector<PointWrapper> point_wrappers;
+  point_wrappers.reserve(points.size());
+  for (Point& point : points) {
+    point_wrappers.emplace_back(point);
+  }
 
   if (points.size() > 0) {
     const auto locals = pybind11::dict( "points"_a=point_wrappers,
-                                        "this"_a=ObjectWrapper::make(this),
-                                        "scene"_a=SceneWrapper(scene()) );
+                                        "this"_a=ObjectWrapper::make(*this),
+                                        "scene"_a=SceneWrapper(*scene()) );
     scene()->python_engine.run(code, locals);
   }
 

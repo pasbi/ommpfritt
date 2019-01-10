@@ -6,7 +6,7 @@ template<typename GeneralWrappedT, typename GeneralWrapperT>
 class WrapperFactory
 {
 private:
-  template<typename SpecialWrapperT> static py::object make(void* wrapped)
+  template<typename SpecialWrapperT> static py::object make(GeneralWrappedT& wrapped)
   {
     return py::cast(SpecialWrapperT(wrapped));
   }
@@ -18,9 +18,9 @@ public:
     m_creator_map.insert(std::make_pair(type, &make<SpecialWrapperT>));
   }
 
-  static py::object make(GeneralWrappedT* wrapped)
+  static py::object make(GeneralWrappedT& wrapped)
   {
-    const auto type = wrapped->type();
+    const auto type = wrapped.type();
     if (m_creator_map.count(type) == 0) {
       return make<GeneralWrapperT>(wrapped);
     } else {
@@ -28,7 +28,7 @@ public:
     }
   }
 
-  using creator_type = py::object(*)(void*);
+  using creator_type = py::object(*)(GeneralWrappedT&);
   using creator_map_type = std::map<std::string, creator_type>;
 
 private:
