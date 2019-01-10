@@ -6,6 +6,7 @@
 #include "python/stylewrapper.h"
 #include "python/objecttransformationwrapper.h"
 #include "python/pointwrapper.h"
+#include "python/pathwrapper.h"
 
 namespace omm
 {
@@ -14,6 +15,7 @@ void register_wrappers(py::object& module)
 {
   AbstractPropertyOwnerWrapper<Object>::define_python_interface(module);
   ObjectWrapper::define_python_interface(module);
+  PathWrapper::define_python_interface(module);
 
   AbstractPropertyOwnerWrapper<Tag>::define_python_interface(module);
   TagWrapper::define_python_interface(module);
