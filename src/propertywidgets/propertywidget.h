@@ -56,7 +56,21 @@ public:
 protected:
   void set_properties_value(const value_type& value)
   {
-    scene.template submit<PropertiesCommand<value_type>>(m_properties, value);
+    const bool wrap = std::any_of(m_properties.begin(), m_properties.end(), [](const Property* p) {
+      return p->wrap_with_macro;
+    });
+
+    auto command = std::make_unique<PropertiesCommand<value_type>>(m_properties, value);
+
+    if (wrap) {
+      scene.undo_stack.beginMacro(QString::fromStdString(command->label()));
+      for (auto* property : m_properties) { property->pre_submit(*property); }
+    }
+    scene.submit(std::move(command));
+    if (wrap) {
+      for (auto* property : m_properties) { property->post_submit(*property); }
+      scene.undo_stack.endMacro();
+    }
   }
 
   auto get_properties_values() const

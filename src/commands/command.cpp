@@ -13,5 +13,10 @@ Command::Command(const std::string& label)
 {
 }
 
+std::string Command::label() const
+{
+  return actionText().toStdString();
+}
+
 }  // namespace omm
 

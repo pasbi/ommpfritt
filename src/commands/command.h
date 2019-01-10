@@ -13,6 +13,9 @@ class Command : public QUndoCommand
 protected:
   Command(const std::string& label);
 
+public:
+  std::string label() const;
+
 protected:
   static constexpr int PROPERTY_COMMAND_ID = 1;
   static constexpr int OBJECTS_TRANSFORMATION_COMMAND_ID = 2;

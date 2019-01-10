@@ -81,4 +81,18 @@ bool Property::is_user_property() const
   return m_category == USER_PROPERTY_CATEGROY_NAME;
 }
 
+Property& Property::set_pre_submit(const std::function<void(Property&)>& hook)
+{
+  pre_submit = hook;
+  wrap_with_macro = true;
+  return *this;
+}
+
+Property& Property::set_post_submit(const std::function<void(Property&)>& hook)
+{
+  post_submit = hook;
+  wrap_with_macro = true;
+  return *this;
+}
+
 }  // namespace omm

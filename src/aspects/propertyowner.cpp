@@ -107,9 +107,7 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
   }
 }
 
-void AbstractPropertyOwner::on_property_value_changed(Property& property)
-{
-}
+void AbstractPropertyOwner::on_property_value_changed(Property& property) { }
 
 std::string AbstractPropertyOwner::name() const
 {
