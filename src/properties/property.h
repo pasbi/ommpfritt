@@ -44,6 +44,13 @@ public:
   virtual void on_property_value_changed(Property& property) = 0;
 };
 
+class TriggerPropertyDummyValue
+{
+public:
+  bool operator==(const TriggerPropertyDummyValue& other) const;
+  bool operator!=(const TriggerPropertyDummyValue& other) const;
+};
+
 class Property
   : public AbstractFactory<std::string, Property>
   , public virtual Serializable
@@ -51,7 +58,8 @@ class Property
 {
 public:
   using variant_type = std::variant< bool, Color, double, int, AbstractPropertyOwner*,
-                                     std::string, ObjectTransformation, size_t >;
+                                     std::string, ObjectTransformation, size_t,
+                                     TriggerPropertyDummyValue >;
 
   Property();
   explicit Property(const Property& other);
@@ -59,6 +67,7 @@ public:
 
   virtual variant_type variant_value() const = 0;
   virtual void set(const variant_type& value) = 0;
+  virtual void notify_observers() = 0;
   template<typename ValueT> ValueT value() const { return std::get<ValueT>(variant_value()); }
 
 
@@ -112,4 +121,7 @@ private:
 
 void register_properties();
 
-}  // namespace omm
+std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValue& v);
+std::ostream& operator<<(std::ostream& ostream, const Property::variant_type& v);
+
+}  // namespace ommAbstractPropertyOwner

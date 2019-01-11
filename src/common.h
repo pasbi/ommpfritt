@@ -7,6 +7,7 @@
 #include <set>
 #include <algorithm>
 #include <type_traits>
+#include <variant>
 
 /*
  * passes ownership of `object` to `consumer` and returns a reference to `object`
@@ -205,5 +206,18 @@ constexpr decltype(auto) conditional(T1&& t1, T2&& t2) noexcept
     return std::forward<T1>(t1);
   } else {
     return std::forward<T2>(t2);
+  }
+}
+
+template<std::size_t i=0, typename variant_type>
+void print_variant_value(std::ostream& ostream, const variant_type& variant)
+{
+  if (i == variant.index()) {
+    ostream << std::get<i>(variant);
+    return;
+  }
+
+  if constexpr (i+1 < std::variant_size_v<variant_type>) {
+    print_variant_value<i+1, variant_type>(ostream, variant);
   }
 }

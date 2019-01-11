@@ -109,6 +109,8 @@ public:
   Kind kind() const override { return KIND; }
 };
 
+std::ostream& operator<<(std::ostream& ostream, const AbstractPropertyOwner* apo);
+
 }  // namespace omm
 
 template<> struct EnableBitMaskOperators<omm::AbstractPropertyOwner::Kind> : std::true_type {};

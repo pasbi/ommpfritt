@@ -95,4 +95,26 @@ Property& Property::set_post_submit(const std::function<void(Property&)>& hook)
   return *this;
 }
 
+bool TriggerPropertyDummyValue::operator==(const TriggerPropertyDummyValue&) const
+{
+  return true;
+}
+
+bool TriggerPropertyDummyValue::operator!=(const TriggerPropertyDummyValue& other) const
+{
+  return !(this->operator==(other));
+}
+
+std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValue& v)
+{
+  ostream << "[TriggerPropertyDummyValue]";
+  return ostream;
+}
+
+std::ostream& operator<<(std::ostream& ostream, const Property::variant_type& v)
+{
+  print_variant_value(ostream, v);
+  return ostream;
+}
+
 }  // namespace omm

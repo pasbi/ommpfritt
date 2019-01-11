@@ -138,4 +138,15 @@ std::unique_ptr<Property> AbstractPropertyOwner::extract_property(const std::str
   return property;
 }
 
+std::ostream& operator<<(std::ostream& ostream, const AbstractPropertyOwner* apo)
+{
+  if (apo == nullptr) {
+    ostream << "AbstractPropertyOwner[nullptr]";
+  } else {
+    const auto kind = static_cast<std::underlying_type_t<decltype(apo->kind())>>(apo->kind());
+    ostream << "AbstractPropertyOwner[" << kind << "]";
+  }
+  return ostream;
+}
+
 }  // namespace omm
