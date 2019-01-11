@@ -9,6 +9,7 @@ file (GLOB SOURCES
   "referenceproperty.cpp"
   "stringproperty.cpp"
   "transformationproperty.cpp"
+  "triggerproperty.cpp"
   "typedproperty.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})

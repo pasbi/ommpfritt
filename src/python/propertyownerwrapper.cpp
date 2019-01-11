@@ -4,6 +4,7 @@
 #include "python/tagwrapper.h"
 #include "python/stylewrapper.h"
 #include "properties/referenceproperty.h"
+#include "properties/triggerproperty.h"
 #include "renderers/style.h"
 #include "objects/object.h"
 #include "tags/tag.h"
@@ -53,6 +54,8 @@ bool set_property_value( AbstractPropertyOwner& property_owner,
         LOG(WARNING) << "Attempted to set non-allowed kind of reference.";
         return false;
       }
+    } else if (property.type() == TriggerProperty::TYPE) {
+      return false;
     } else {
       property_owner.property(key).set(value.cast<Property::variant_type>());
       return true;

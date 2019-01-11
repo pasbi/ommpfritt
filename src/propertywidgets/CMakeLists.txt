@@ -14,4 +14,5 @@ add_subdirectory("optionspropertywidget")
 add_subdirectory("referencepropertywidget")
 add_subdirectory("stringpropertywidget")
 add_subdirectory("transformationpropertywidget")
+add_subdirectory("triggerpropertywidget")
 

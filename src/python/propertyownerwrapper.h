@@ -17,6 +17,8 @@ py::object get_property_value(WrappedT&& wrapped, const std::string& key)
     const auto value = wrapped.property(key).variant_value();
     if (std::holds_alternative<AbstractPropertyOwner*>(value)) {
       return wrap(std::get<AbstractPropertyOwner*>(value));
+    } else if (std::holds_alternative<TriggerPropertyDummyValue>(value)) {
+      return py::none();
     } else {
       return py::cast(value);
     }

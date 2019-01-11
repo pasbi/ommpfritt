@@ -6,6 +6,7 @@
 #include "propertywidgets/stringpropertywidget/stringpropertyconfigwidget.h"
 #include "propertywidgets/transformationpropertywidget/transformationpropertyconfigwidget.h"
 #include "propertywidgets/optionspropertywidget/optionspropertyconfigwidget.h"
+#include "propertywidgets/triggerpropertywidget/triggerpropertyconfigwidget.h"
 
 namespace omm
 {
@@ -23,6 +24,7 @@ void register_propertyconfigwidgets()
   REGISTER_PROPERTY(StringPropertyConfigWidget);
   REGISTER_PROPERTY(TransformationPropertyConfigWidget);
   REGISTER_PROPERTY(OptionsPropertyConfigWidget);
+  REGISTER_PROPERTY(TriggerPropertyConfigWidget);
 
 #undef REGISTER_PROPERTY
 }
