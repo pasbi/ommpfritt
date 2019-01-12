@@ -20,7 +20,8 @@ public:
   explicit ObjectSelectHandle(SelectTool<ObjectPositions>& tool, Scene& scene, Object& object);
   bool contains(const arma::vec2& point) const override;
   void draw(omm::AbstractRenderer& renderer) const override;
-  bool mouse_press(const arma::vec2& pos) override;
+  bool mouse_press( const arma::vec2& pos,
+                    Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers ) override;
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override;
 
 protected:
@@ -40,7 +41,8 @@ public:
   explicit PointSelectHandle(SelectTool<PointPositions>& tool, Path& path, Point& point);
   bool contains(const arma::vec2& point) const override;
   void draw(omm::AbstractRenderer& renderer) const override;
-  bool mouse_press(const arma::vec2& pos) override;
+  bool mouse_press( const arma::vec2& pos,
+                    Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers ) override;
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override;
   void mouse_release(const arma::vec2& pos) override;
 

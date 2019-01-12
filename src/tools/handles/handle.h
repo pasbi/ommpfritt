@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Qt>
 #include "renderers/style.h"
 #include "geometry/objecttransformation.h"
 
@@ -15,7 +16,8 @@ public:
   enum class Status { Hovered, Active, Inactive };
   virtual ~Handle() = default;
   virtual void draw(AbstractRenderer& renderer) const = 0;
-  virtual bool mouse_press(const arma::vec2& pos);
+  virtual bool
+  mouse_press(const arma::vec2& pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
   virtual bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover);
   virtual void mouse_release(const arma::vec2& pos);
   Status status() const;

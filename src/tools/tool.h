@@ -30,7 +30,8 @@ public:
   /**
    * @brief returns true if any grabbable was hit
    */
-  virtual bool mouse_press(const arma::vec2& pos);
+  virtual bool
+  mouse_press(const arma::vec2& pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
 
   virtual void mouse_release(const arma::vec2& pos);
   virtual void draw(AbstractRenderer& renderer) const;

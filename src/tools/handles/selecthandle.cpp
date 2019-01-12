@@ -76,9 +76,10 @@ bool ObjectSelectHandle
   }
 }
 
-bool ObjectSelectHandle::mouse_press(const arma::vec2& pos)
+bool ObjectSelectHandle
+::mouse_press(const arma::vec2& pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
 {
-  if (Handle::mouse_press(pos)) {
+  if (Handle::mouse_press(pos, buttons, modifiers)) {
     auto selection = m_scene.object_selection();
     if (::contains(selection, &m_object)) {
       selection.erase(&m_object);
@@ -120,14 +121,15 @@ bool PointSelectHandle::contains(const arma::vec2& point) const
   return arma::norm(point - m_point.position) < epsilon;
 }
 
-bool PointSelectHandle::mouse_press(const arma::vec2& pos)
+bool PointSelectHandle
+::mouse_press(const arma::vec2& pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
 {
-  if (Handle::mouse_press(pos)) {
+  if (Handle::mouse_press(pos, buttons, modifiers)) {
     m_point.is_selected = true; // !m_point.is_selected;
     return true;
-  } else if (tangents_active() && m_left_tangent_handle->mouse_press(pos)) {
+  } else if (tangents_active() && m_left_tangent_handle->mouse_press(pos, buttons, modifiers)) {
     return true;
-  } else if (tangents_active() && m_right_tangent_handle->mouse_press(pos)) {
+  } else if (tangents_active() && m_right_tangent_handle->mouse_press(pos, buttons, modifiers)) {
     return true;
   } else {
     return false;

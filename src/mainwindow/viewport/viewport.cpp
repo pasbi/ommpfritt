@@ -89,8 +89,7 @@ void Viewport::mousePressEvent(QMouseEvent* event)
     event->accept();
   }  else if (event->modifiers() == Qt::NoModifier) {
     const auto pos = viewport_to_global_position(cursor_position);
-    if (m_scene.tool_box.active_tool().mouse_press(pos))
-    {
+    if (m_scene.tool_box.active_tool().mouse_press(pos, event->buttons(), event->modifiers())) {
       event->accept();
     }
   } else {

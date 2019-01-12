@@ -17,10 +17,10 @@ namespace omm
 //      3) improve mouse pointer icon
 //      4) select during mouse move (like drawing)
 
-template<typename PositionVariant>
-bool SelectTool<PositionVariant>::mouse_press(const arma::vec2& pos)
+template<typename PositionVariant> bool SelectTool<PositionVariant>
+::mouse_press( const arma::vec2& pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
 {
-  if (!Tool::mouse_press(pos)) {
+  if (!Tool::mouse_press(pos, buttons, modifiers)) {
     m_position_variant.clear_selection();
   }
   return true;

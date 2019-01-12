@@ -14,7 +14,8 @@ public:
   TransformationTool(Scene& scene, std::vector<std::unique_ptr<Handle>> handles);
   void transform_objects(const ObjectTransformation& transformation);
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos) override;
-  bool mouse_press(const arma::vec2& pos) override;
+  bool mouse_press( const arma::vec2& pos,
+                    Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers) override;
   void mouse_release(const arma::vec2& pos) override;
   virtual ObjectTransformation transformation() const;
   void draw(AbstractRenderer& renderer) const override;

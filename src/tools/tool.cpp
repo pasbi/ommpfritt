@@ -46,10 +46,13 @@ bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
   return hit_something;
 }
 
-bool Tool::mouse_press(const arma::vec2& pos)
+bool Tool::mouse_press( const arma::vec2& pos, Qt::MouseButtons buttons,
+                        Qt::KeyboardModifiers modifiers )
 {
+  // `std::any_of` does not *require* to use short-circuit-logic. However, here it is mandatory,
+  // so don't use `std::any_of`.
   for (auto&& handle : handles) {
-    if (handle->mouse_press(pos)) {
+    if (handle->mouse_press(pos, buttons, modifiers)) {
       return true;
     }
   }

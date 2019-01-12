@@ -4,10 +4,13 @@
 namespace omm
 {
 
-bool Handle::mouse_press(const arma::vec2& pos)
+bool Handle::mouse_press( const arma::vec2& pos, Qt::MouseButtons buttons,
+                          Qt::KeyboardModifiers modifiers )
 {
   if (contains(transformation().inverted().apply_to_position(pos))) {
-    m_status = Status::Active;
+    if (buttons == Qt::LeftButton) {
+      m_status = Status::Active;
+    }
     return true;
   } else {
     return false;

@@ -64,13 +64,13 @@ TransformationTool<PositionVariant>::mouse_move(const arma::vec2& delta, const a
   }
 }
 
-template<typename PositionVariant> bool
-TransformationTool<PositionVariant>::mouse_press(const arma::vec2& pos)
+template<typename PositionVariant> bool TransformationTool<PositionVariant>
+::mouse_press(const arma::vec2& pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
 {
   if (!m_position_variant.is_empty()) {
     const auto t_inv = transformation().inverted();
     const auto local_pos = t_inv.apply_to_position(pos);
-    return Tool::mouse_press(local_pos);
+    return Tool::mouse_press(local_pos, buttons, modifiers);
   } else {
     return false;
   }

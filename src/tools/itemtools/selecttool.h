@@ -23,7 +23,8 @@ public:
   }
 
   static constexpr auto RADIUS_PROPERTY_KEY = "radius";
-  bool mouse_press(const arma::vec2& pos) override;
+  bool mouse_press( const arma::vec2& pos,
+                    Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers ) override;
   void transform_objects(const ObjectTransformation& transformation);
   void on_scene_changed() override;
 
