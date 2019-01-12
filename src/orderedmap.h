@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include <type_traits>
+#include <glog/logging.h>
 #include "common.h"
 
 template<typename KeyT, typename ValueT>
@@ -86,7 +87,6 @@ public:
 #endif
 
   size_t size() const { return m_keys.size(); }
-
 
 private:
   std::vector<key_type> m_keys;

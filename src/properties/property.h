@@ -61,9 +61,9 @@ public:
                                      std::string, ObjectTransformation, size_t,
                                      TriggerPropertyDummyValue >;
 
-  Property();
-  explicit Property(const Property& other);
-  virtual ~Property();
+  Property() = default;
+  explicit Property(const Property& other) = default;
+  virtual ~Property() = default;
 
   virtual variant_type variant_value() const = 0;
   virtual void set(const variant_type& value) = 0;
