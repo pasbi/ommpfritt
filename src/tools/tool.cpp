@@ -72,6 +72,8 @@ void Tool::draw(AbstractRenderer& renderer) const
   }
 }
 
+std::unique_ptr<QMenu> Tool::make_context_menu(QWidget* parent) { return nullptr; }
+
 void Tool::on_selection_changed() {}
 void Tool::on_scene_changed() {}
 

@@ -57,10 +57,15 @@ void AbstractSelectHandle
 {
   if (contains_global(pos)) {
     if (!m_move_was_performed) {
-      if (event.button() == selection_mouse_button) {
+      if (event.button() == Qt::LeftButton) {
         if (event.modifiers() == extend_selection_modifier) {
           set_selected(!is_selected());
         } else {
+          clear();
+          set_selected(true);
+        }
+      } else if (event.button() == Qt::RightButton) {
+        if (!is_selected()) {
           clear();
           set_selected(true);
         }

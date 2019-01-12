@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QIcon>
+#include <QMenu>
 #include "aspects/propertyowner.h"
 #include "external/json_fwd.hpp"
 #include "tools/handles/handle.h"
@@ -39,6 +40,7 @@ public:
   virtual void on_selection_changed();
   virtual void on_scene_changed();
   Scene& scene;
+  virtual std::unique_ptr<QMenu> make_context_menu();
 
 protected:
   std::vector<std::unique_ptr<Handle>> handles;

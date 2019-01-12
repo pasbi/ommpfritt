@@ -87,11 +87,10 @@ void Viewport::mousePressEvent(QMouseEvent* event)
 
   if (event->modifiers() & Qt::AltModifier) {
     event->accept();
-  } else {
-    const auto pos = viewport_to_global_position(cursor_position);
-    if (m_scene.tool_box.active_tool().mouse_press(pos, *event)) {
-      event->accept();
-    }
+  } else if ( const auto pos = viewport_to_global_position(cursor_position);
+              m_scene.tool_box.active_tool().mouse_press(pos, *event)       )
+  {
+    event->accept();
   }
 }
 
@@ -126,6 +125,10 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
 {
   const auto global_pos = viewport_to_global_position(point2vec(event->pos()));
   m_scene.tool_box.active_tool().mouse_release(global_pos, *event);
+  if (event->button() == Qt::RightButton) {
+    auto menu = m_scene.tool_box.active_tool().make_context_menu();
+    if (menu) { menu->exec(mapToGlobal(event->pos())); }
+  }
   QWidget::mouseReleaseEvent(event);
 }
 

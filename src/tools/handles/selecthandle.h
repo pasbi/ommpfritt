@@ -29,7 +29,6 @@ private:
   bool m_move_was_performed = false;
 
   static constexpr auto extend_selection_modifier = Qt::ShiftModifier;
-  static constexpr auto selection_mouse_button = Qt::LeftButton;
 };
 
 class ObjectSelectHandle : public AbstractSelectHandle
