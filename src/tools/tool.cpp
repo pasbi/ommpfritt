@@ -29,40 +29,39 @@ Tool::Tool(Scene& scene)
 {
 }
 
-bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
+bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e)
 {
-  bool hit_something = false;
   for (auto&& handle : handles) {
-    handle->mouse_move(delta, pos, !hit_something);
+    handle->mouse_move(delta, pos, e);
     switch (handle->status()) {
     case Handle::Status::Active:
     case Handle::Status::Hovered:
-      hit_something = true;
+      return true;
       break;
     case Handle::Status::Inactive:
       break;
     }
   }
-  return hit_something;
+  return false;
 }
 
-bool Tool::mouse_press( const arma::vec2& pos, Qt::MouseButtons buttons,
-                        Qt::KeyboardModifiers modifiers )
+bool Tool::mouse_press(const arma::vec2& pos, const QMouseEvent& e)
 {
   // `std::any_of` does not *require* to use short-circuit-logic. However, here it is mandatory,
   // so don't use `std::any_of`.
   for (auto&& handle : handles) {
-    if (handle->mouse_press(pos, buttons, modifiers)) {
+    if (handle->mouse_press(pos, e)) {
       return true;
     }
   }
   return false;
 }
 
-void Tool::mouse_release(const arma::vec2& pos)
+void Tool::
+mouse_release(const arma::vec2& pos, const QMouseEvent& e)
 {
   for (auto&& handle : handles) {
-    handle->mouse_release(pos);
+    handle->mouse_release(pos, e);
   }
 }
 

@@ -18,9 +18,9 @@ namespace omm
 //      4) select during mouse move (like drawing)
 
 template<typename PositionVariant> bool SelectTool<PositionVariant>
-::mouse_press( const arma::vec2& pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+::mouse_press( const arma::vec2& pos, const QMouseEvent& event)
 {
-  if (!Tool::mouse_press(pos, buttons, modifiers)) {
+  if (!Tool::mouse_press(pos, event)) {
     m_position_variant.clear_selection();
   }
   return true;

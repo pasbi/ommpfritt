@@ -24,9 +24,9 @@ class RotateHandle : public CircleHandle
 public:
   RotateHandle(ToolT& tool) : m_tool(tool) { }
 
-  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
+  bool mouse_move( const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override
   {
-    Handle::mouse_move(delta, pos, allow_hover);
+    Handle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
       const arma::vec2 origin = pos - delta;
       double origin_angle = atan2(origin(1), origin(0));

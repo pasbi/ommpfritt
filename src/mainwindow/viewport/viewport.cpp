@@ -87,13 +87,11 @@ void Viewport::mousePressEvent(QMouseEvent* event)
 
   if (event->modifiers() & Qt::AltModifier) {
     event->accept();
-  }  else if (event->modifiers() == Qt::NoModifier) {
+  } else {
     const auto pos = viewport_to_global_position(cursor_position);
-    if (m_scene.tool_box.active_tool().mouse_press(pos, event->buttons(), event->modifiers())) {
+    if (m_scene.tool_box.active_tool().mouse_press(pos, *event)) {
       event->accept();
     }
-  } else {
-    QWidget::mousePressEvent(event);
   }
 }
 
@@ -113,16 +111,12 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
     }
   }
 
-  if (event->modifiers() == Qt::NoModifier)
-  {
-    auto& tool = m_scene.tool_box.active_tool();
-    const auto delta_ = viewport_to_global_direction(delta);
-    const auto cpos_ = viewport_to_global_position(cursor_position);
-    if (tool.mouse_move(delta_, cpos_))
-    {
-      event->accept();
-      return;
-    }
+  auto& tool = m_scene.tool_box.active_tool();
+  const auto delta_ = viewport_to_global_direction(delta);
+  const auto cpos_ = viewport_to_global_position(cursor_position);
+  if (tool.mouse_move(delta_, cpos_, *event)) {
+    event->accept();
+    return;
   }
 
   QWidget::mouseMoveEvent(event);
@@ -131,7 +125,7 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
 void Viewport::mouseReleaseEvent(QMouseEvent* event)
 {
   const auto global_pos = viewport_to_global_position(point2vec(event->pos()));
-  m_scene.tool_box.active_tool().mouse_release(global_pos);
+  m_scene.tool_box.active_tool().mouse_release(global_pos, *event);
   QWidget::mouseReleaseEvent(event);
 }
 

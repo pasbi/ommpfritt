@@ -5,6 +5,8 @@
 #include "external/json_fwd.hpp"
 #include "tools/handles/handle.h"
 
+class QMouseEvent;
+
 namespace omm {
 
 class Object;
@@ -25,15 +27,14 @@ public:
   /**
    * @brief returns true if any grabbable was moved
    */
-  virtual bool mouse_move(const arma::vec2& delta, const arma::vec2& pos);
+  virtual bool mouse_move( const arma::vec2& delta, const arma::vec2& pos,
+                           const QMouseEvent& event);
 
   /**
    * @brief returns true if any grabbable was hit
    */
-  virtual bool
-  mouse_press(const arma::vec2& pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers);
-
-  virtual void mouse_release(const arma::vec2& pos);
+  virtual bool mouse_press(const arma::vec2& pos, const QMouseEvent& event);
+  virtual void mouse_release(const arma::vec2& pos, const QMouseEvent& event);
   virtual void draw(AbstractRenderer& renderer) const;
   virtual void on_selection_changed();
   virtual void on_scene_changed();

@@ -7,6 +7,7 @@
 #include "tools/itemtools/selecttool.h"
 #include "tools/itemtools/positionvariant.h"
 #include "commands/modifytangentscommand.h"
+#include <QMouseEvent>
 
 namespace
 {
@@ -16,9 +17,9 @@ class TangentHandle : public omm::ParticleHandle
 {
 public:
   TangentHandle(omm::PointSelectHandle& master_handle) : m_master_handle(master_handle) {}
-  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover) override
+  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override
   {
-    ParticleHandle::mouse_move(delta, pos, allow_hover);
+    ParticleHandle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
       m_master_handle.transform_tangent<tangent>(delta);
       return true;
@@ -35,6 +36,45 @@ private:
 
 namespace omm
 {
+
+bool AbstractSelectHandle
+::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& event)
+{
+  if (status() == Status::Active) {
+    if (!is_selected()) {
+      if (event.modifiers() != extend_selection_modifier) {
+        clear();
+      }
+      set_selected(true);
+    }
+  }
+  return Handle::mouse_move(delta, pos, event);
+}
+
+
+void AbstractSelectHandle
+::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
+{
+  if (contains_global(pos)) {
+    if (!m_move_was_performed) {
+      if (event.button() == selection_mouse_button) {
+        if (event.modifiers() == extend_selection_modifier) {
+          set_selected(!is_selected());
+        } else {
+          clear();
+          set_selected(true);
+        }
+      }
+    }
+  }
+  Handle::mouse_release(pos, event);
+  m_move_was_performed = false;
+}
+
+void AbstractSelectHandle::report_move_action()
+{
+  m_move_was_performed = true;
+}
 
 ObjectSelectHandle
 ::ObjectSelectHandle(SelectTool<ObjectPositions>& tool, Scene& scene, Object& object)
@@ -64,12 +104,13 @@ void ObjectSelectHandle::draw(omm::AbstractRenderer& renderer) const
 }
 
 bool ObjectSelectHandle
-::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover)
+::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& event)
 {
-  Handle::mouse_move(delta, pos, allow_hover);
+  AbstractSelectHandle::mouse_move(delta, pos, event);
   if (status() == Status::Active) {
     const auto t = omm::ObjectTransformation().translated(delta);
     m_tool.transform_objects(t);
+    report_move_action();
     return true;
   } else {
     return false;
@@ -77,25 +118,45 @@ bool ObjectSelectHandle
 }
 
 bool ObjectSelectHandle
-::mouse_press(const arma::vec2& pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+::mouse_press(const arma::vec2& pos, const QMouseEvent& event)
 {
-  if (Handle::mouse_press(pos, buttons, modifiers)) {
-    auto selection = m_scene.object_selection();
-    if (::contains(selection, &m_object)) {
-      selection.erase(&m_object);
-    } else {
-      selection.insert(&m_object);
-    }
-    m_scene.set_selection(AbstractPropertyOwner::cast(selection));
+  if (AbstractSelectHandle::mouse_press(pos, event)) {
     return true;
   } else {
     return false;
   }
 }
 
+void ObjectSelectHandle
+::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
+{
+  AbstractSelectHandle::mouse_release(pos, event);
+}
+
 ObjectTransformation ObjectSelectHandle::transformation() const
 {
   return m_object.global_transformation();
+}
+
+void ObjectSelectHandle::clear()
+{
+  m_scene.set_selection({});
+}
+
+void ObjectSelectHandle::set_selected(bool selected)
+{
+  auto selection = m_scene.object_selection();
+  if (selected) {
+    selection.insert(&m_object);
+  } else {
+    selection.erase(&m_object);
+  }
+  m_scene.set_selection(AbstractPropertyOwner::cast(selection));
+}
+
+bool ObjectSelectHandle::is_selected() const
+{
+  return ::contains(m_scene.object_selection(), &m_object);
 }
 
 PointSelectHandle::PointSelectHandle(SelectTool<PointPositions>& tool, Path& path, Point& point)
@@ -122,14 +183,13 @@ bool PointSelectHandle::contains(const arma::vec2& point) const
 }
 
 bool PointSelectHandle
-::mouse_press(const arma::vec2& pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+::mouse_press(const arma::vec2& pos, const QMouseEvent& event)
 {
-  if (Handle::mouse_press(pos, buttons, modifiers)) {
-    m_point.is_selected = true; // !m_point.is_selected;
+  if (AbstractSelectHandle::mouse_press(pos, event)) {
     return true;
-  } else if (tangents_active() && m_left_tangent_handle->mouse_press(pos, buttons, modifiers)) {
+  } else if (tangents_active() && m_left_tangent_handle->mouse_press(pos, event)) {
     return true;
-  } else if (tangents_active() && m_right_tangent_handle->mouse_press(pos, buttons, modifiers)) {
+  } else if (tangents_active() && m_right_tangent_handle->mouse_press(pos, event)) {
     return true;
   } else {
     return false;
@@ -137,26 +197,30 @@ bool PointSelectHandle
 }
 
 bool PointSelectHandle
-::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const bool allow_hover)
+::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& event)
 {
-  Handle::mouse_move(delta, pos, allow_hover);
+  AbstractSelectHandle::mouse_move(delta, pos, event);
   if (status() == Status::Active) {
     m_tool.transform_objects(ObjectTransformation().translated(delta));
+    report_move_action();
     return true;
-  } else if (tangents_active() && m_left_tangent_handle->mouse_move(delta, pos, allow_hover)) {
+  } else if (tangents_active() && m_left_tangent_handle->mouse_move(delta, pos, event)) {
+    report_move_action();
     return true;
-  } else if (tangents_active() && m_right_tangent_handle->mouse_move(delta, pos, allow_hover)) {
+  } else if (tangents_active() && m_right_tangent_handle->mouse_move(delta, pos, event)) {
+    report_move_action();
     return true;
   } else {
     return false;
   }
 }
 
-void PointSelectHandle::mouse_release(const arma::vec2& pos)
+void PointSelectHandle
+::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
 {
-  Handle::mouse_release(pos);
-  m_left_tangent_handle->mouse_release(pos);
-  m_right_tangent_handle->mouse_release(pos);
+  AbstractSelectHandle::mouse_release(pos, event);
+  m_left_tangent_handle->mouse_release(pos, event);
+  m_right_tangent_handle->mouse_release(pos, event);
 }
 
 void PointSelectHandle::draw(omm::AbstractRenderer& renderer) const
@@ -215,6 +279,21 @@ void PointSelectHandle::transform_tangent(const arma::vec2& delta, TangentMode m
 bool PointSelectHandle::tangents_active() const
 {
   return m_path.interpolation_mode() == Path::InterpolationMode::Bezier;
+}
+
+void PointSelectHandle::set_selected(bool selected)
+{
+  m_point.is_selected = selected;
+}
+
+void PointSelectHandle::clear()
+{
+  m_path.deselect_all_points();
+}
+
+bool PointSelectHandle::is_selected() const
+{
+  return m_point.is_selected;
 }
 
 }  // namespace omm

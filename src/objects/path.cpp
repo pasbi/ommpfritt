@@ -200,4 +200,11 @@ void Path::set_interpolation_mode(const InterpolationMode& mode)
   property(INTERPOLATION_PROPERTY_KEY).set(i);
 }
 
+void Path::deselect_all_points()
+{
+  for (Point* p : points()) {
+    p->is_selected = false;
+  }
+}
+
 }  // namespace omm

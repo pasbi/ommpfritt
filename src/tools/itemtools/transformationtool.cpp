@@ -51,8 +51,8 @@ TransformationTool<PositionVariant>::transform_objects(const ObjectTransformatio
   m_position_variant.transform(t.transformed(this->transformation().inverted()));
 }
 
-template<typename PositionVariant> bool
-TransformationTool<PositionVariant>::mouse_move(const arma::vec2& delta, const arma::vec2& pos)
+template<typename PositionVariant> bool TransformationTool<PositionVariant>
+::mouse_move( const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& event)
 {
   if (m_position_variant.is_empty()) {
     return false;
@@ -60,28 +60,28 @@ TransformationTool<PositionVariant>::mouse_move(const arma::vec2& delta, const a
     const auto t_inv = transformation().inverted();
     const auto local_pos = t_inv.apply_to_position(pos);
     const auto local_delta = t_inv.apply_to_direction(delta);
-    return Tool::mouse_move(local_delta, local_pos);
+    return Tool::mouse_move(local_delta, local_pos, event);
   }
 }
 
 template<typename PositionVariant> bool TransformationTool<PositionVariant>
-::mouse_press(const arma::vec2& pos, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers)
+::mouse_press(const arma::vec2& pos, const QMouseEvent& event)
 {
   if (!m_position_variant.is_empty()) {
     const auto t_inv = transformation().inverted();
     const auto local_pos = t_inv.apply_to_position(pos);
-    return Tool::mouse_press(local_pos, buttons, modifiers);
+    return Tool::mouse_press(local_pos, event);
   } else {
     return false;
   }
 }
 
-template<typename PositionVariant>
-void TransformationTool<PositionVariant>::mouse_release(const arma::vec2& pos)
+template<typename PositionVariant> void TransformationTool<PositionVariant>::
+mouse_release(const arma::vec2& pos, const QMouseEvent& event)
 {
   if (!m_position_variant.is_empty()) {
     for (auto&& handle : handles) {
-      handle->mouse_release(pos);
+      handle->mouse_release(pos, event);
     }
   }
 }
