@@ -7,6 +7,7 @@
 
 #include "renderers/viewportrenderer.h"
 #include "scene/scene.h"
+#include "python/pythonengine.h"
 
 namespace
 {
@@ -62,6 +63,8 @@ void Viewport::paintEvent(QPaintEvent* event)
   painter.fillRect(rect(), Qt::gray);
   ViewportRenderer renderer(painter, m_scene);
   renderer.set_base_transformation(viewport_transformation());
+
+  m_scene.python_engine.prepare_frame(m_scene);
   renderer.render();
 
   m_scene.tool_box.active_tool().draw(renderer);

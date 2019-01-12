@@ -26,28 +26,26 @@ public:
 public:
   variant_type variant_value() const override { return m_value; }
   ValueT value() const { return Property::value<ValueT>(); }
-
-  void set(const variant_type& variant) override
-  {
-    const auto value = std::get<ValueT>(variant);
-    set(value);
-  }
+  void set(const variant_type& variant) override { set(std::get<ValueT>(variant)); }
 
   void set(const ValueT& value)
   {
     if (m_value != value) {
       m_value = value;
-      Observed<AbstractPropertyObserver>::for_each([this](auto* observer) {
-        observer->on_property_value_changed(*this);
-      });
+      notify_observers();
     }
+  }
+
+  void notify_observers() override
+  {
+    Observed<AbstractPropertyObserver>::for_each([this](auto* observer) {
+      observer->on_property_value_changed(*this);
+    });
   }
 
   virtual ValueT default_value() const { return m_default_value; }
   virtual void set_default_value(const ValueT& value) { m_default_value = value; }
-
-  virtual void reset() {  m_value = m_default_value; }
-
+  virtual void reset() { m_value = m_default_value; }
   std::string type() const override = 0;
 
 private:
