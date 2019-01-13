@@ -8,7 +8,7 @@
 namespace
 {
 
-auto modified_tangents(omm::Scene& scene, omm::Path::InterpolationMode mode)
+void modify_tangents(omm::Scene& scene, omm::Path::InterpolationMode mode)
 {
   const auto paths = omm::Object::cast<omm::Path>(scene.object_selection());
   std::map<omm::Path*, std::map<omm::Point*, omm::Point>> map;
@@ -43,10 +43,10 @@ PathMenu::PathMenu(Scene& scene, QWidget* parent)
 
   setTitle(tr("&Path"));
   action(*this, tr("make smooth"), [this, &scene]() {
-    modified_tangents(scene, Path::InterpolationMode::Smooth);
+    modify_tangents(scene, Path::InterpolationMode::Smooth);
   });
   action(*this, tr("make linear"), [this, &scene]() {
-    modified_tangents(scene, Path::InterpolationMode::Linear);
+    modify_tangents(scene, Path::InterpolationMode::Linear);
   });
 }
 

@@ -5,23 +5,11 @@ namespace omm
 
 ModifyPointsCommand
 ::ModifyPointsCommand(const std::map<Path*, std::map<Point*, Point>>& points)
-  : Command("ModifyPointsCommand")
-  , m_data(points)
-{
+  : Command("ModifyPointsCommand"), m_data(points) {}
 
-}
-
-void ModifyPointsCommand::undo()
-{
-  swap();
-  // if (m_path != nullptr) { m_path->set_interpolation_mode(m_old_interpolation_mode); }
-}
-
-void ModifyPointsCommand::redo()
-{
-  swap();
-  // if (m_path != nullptr) { m_path->set_interpolation_mode(Path::InterpolationMode::Bezier); }
-}
+void ModifyPointsCommand::undo() { swap(); }
+void ModifyPointsCommand::redo() { swap(); }
+int ModifyPointsCommand::id() const { return Command::MODIFY_TANGENTS_COMMAND_ID; }
 
 void ModifyPointsCommand::swap()
 {
@@ -30,11 +18,6 @@ void ModifyPointsCommand::swap()
       point_ptr->swap(other);
     }
   }
-}
-
-int ModifyPointsCommand::id() const
-{
-  return Command::MODIFY_TANGENTS_COMMAND_ID;
 }
 
 bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)

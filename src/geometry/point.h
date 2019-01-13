@@ -39,4 +39,7 @@ public:
 constexpr PolarCoordinates to_polar(arma::vec2 cartesian);
 constexpr arma::vec2 to_cartesian(const PolarCoordinates& polar);
 
+std::ostream& operator<<(std::ostream& ostream, const PolarCoordinates& pc);
+std::ostream& operator<<(std::ostream& ostream, const Point& pc);
+
 }  // namespace omm

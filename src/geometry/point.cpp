@@ -1,27 +1,17 @@
 #include "geometry/point.h"
 #include <cmath>
+#include <glog/logging.h>
 
 namespace omm
 {
 
 Point::Point(const arma::vec2& position)
-  : position(position)
-  , left_tangent(PolarCoordinates())
-  , right_tangent(PolarCoordinates())
-{
-}
+  : position(position), left_tangent(PolarCoordinates()), right_tangent(PolarCoordinates()) { }
 
 Point::Point() : Point(arma::vec2 { 0.0, 0.0 }) { }
 
-arma::vec2 Point::left_position() const
-{
-  return position + left_tangent.to_cartesian();
-}
-
-arma::vec2 Point::right_position() const
-{
-  return position + right_tangent.to_cartesian();
-}
+arma::vec2 Point::left_position() const { return position + left_tangent.to_cartesian(); }
+arma::vec2 Point::right_position() const { return position + right_tangent.to_cartesian(); }
 
 void Point::swap(Point& other)
 {
@@ -31,8 +21,7 @@ void Point::swap(Point& other)
 }
 
 PolarCoordinates::PolarCoordinates(const double argument, const double magnitude)
-  : argument(argument), magnitude(magnitude)
-{}
+  : argument(argument), magnitude(magnitude) { }
 
 PolarCoordinates::PolarCoordinates(const arma::vec2& cartesian)
   : PolarCoordinates(std::atan2(cartesian[1], cartesian[0]), arma::norm(cartesian))
@@ -85,6 +74,18 @@ Point Point::nibbed() const
   copy.left_tangent.magnitude = 0;
   copy.right_tangent.magnitude = 0;
   return copy;
+}
+
+std::ostream& operator<<(std::ostream& ostream, const PolarCoordinates& pc)
+{
+  ostream << "[phi=" << pc.argument << ", r=" << pc.magnitude << "]";
+  return ostream;
+}
+
+std::ostream& operator<<(std::ostream& ostream, const Point& pc)
+{
+  ostream << "Point[" << pc.position << ", " << pc.left_tangent << ", " << pc.right_tangent << "]";
+  return ostream;
 }
 
 }  // namespace omm
