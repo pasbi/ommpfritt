@@ -13,6 +13,7 @@
 #include "mainwindow/toolbar.h"
 #include "common.h"
 #include "objects/path.h"
+#include "mainwindow/pathmenu.h"
 
 namespace omm
 {
@@ -76,15 +77,7 @@ void MainMenuBar::make_edit_menu()
 
 void MainMenuBar::make_path_menu()
 {
-  auto& path_menu = *addMenu(tr("&Path"));
-  action(path_menu, tr("make linear"), [this]() {
-    m_app.scene.for_each_selected_object<Path>([](Path* path) { path->vanish_tangents(true); });
-  });
-  action(path_menu, tr("make smooth"), [this]() {
-    m_app.scene.for_each_selected_object<Path>([](Path* path) {
-      path->make_smooth_tangents(true);
-    });
-  });
+  addMenu(std::make_unique<PathMenu>(m_app.scene, this).release());
 }
 
 MainMenuBar::MainMenuBar(Application& app, MainWindow& main_window)
