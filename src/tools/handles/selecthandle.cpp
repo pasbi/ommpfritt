@@ -6,7 +6,7 @@
 #include "common.h"
 #include "tools/itemtools/selecttool.h"
 #include "tools/itemtools/positionvariant.h"
-#include "commands/modifytangentscommand.h"
+#include "commands/modifypointscommand.h"
 #include <QMouseEvent>
 
 namespace
@@ -277,8 +277,9 @@ void PointSelectHandle::transform_tangent(const arma::vec2& delta, TangentMode m
     }
   }
 
-  const std::list<ModifyTangentsCommand::PointWithAlternative> ps{ { m_point, new_point } };
-  m_tool.scene.submit<ModifyTangentsCommand>(&m_path, ps);
+  std::map<Path*, std::map<Point*, Point>> map;
+  map[&m_path][&m_point] = new_point;
+  m_tool.scene.submit<ModifyPointsCommand>(map);
 }
 
 bool PointSelectHandle::tangents_active() const

@@ -50,6 +50,13 @@ public:
   Scene* scene() const;
 
   List<Tag> tags;
+  template<typename T, template<typename...> class ContainerT>
+  static ContainerT<T*> cast(const ContainerT<Object*> object)
+  {
+    const auto type_matches = [](const Object* o) { return o->type() == T::TYPE; };
+    const auto to_type = [](Object* o) { return static_cast<T*>(o); };
+    return ::transform<T*>(::filter_if(object, type_matches), to_type);
+  }
 
   static constexpr auto TYPE = "Object";
   static constexpr auto TRANSFORMATION_PROPERTY_KEY = "transformation";

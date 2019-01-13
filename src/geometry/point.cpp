@@ -52,4 +52,39 @@ void PolarCoordinates::swap(PolarCoordinates& other)
   std::swap(other.magnitude, magnitude);
 }
 
+Point Point::smoothed(const Point& left_neighbor, const Point& right_neighbor) const
+{
+  auto copy = *this;
+  const PolarCoordinates l_pc(left_neighbor.position - copy.position);
+  const PolarCoordinates r_pc(right_neighbor.position - copy.position);
+  const double theta = (l_pc.argument + r_pc.argument) / 2.0;
+  const double mag = (l_pc.magnitude + r_pc.magnitude) / 12.0;
+
+  // TODO
+  const double d = arma::dot( right_neighbor.position - copy.position,
+                              left_neighbor.position - copy.position );
+  const double sign = std::copysign(1.0, d);
+
+  copy.left_tangent = PolarCoordinates(theta + M_PI_2, mag);
+  copy.right_tangent = PolarCoordinates(theta - M_PI_2, mag);
+
+  // that's a quick hack. If right tangent is closer to left position
+  // than left tangent, then swap them.
+  // I'm sure there's a more elegant way.
+  if ( arma::norm(copy.right_position() - left_neighbor.position)
+     < arma::norm(copy.left_position() - left_neighbor.position)  )
+  {
+    copy.left_tangent.swap(copy.right_tangent);
+  }
+  return copy;
+}
+
+Point Point::nibbed() const
+{
+  auto copy = *this;
+  copy.left_tangent.magnitude = 0;
+  copy.right_tangent.magnitude = 0;
+  return copy;
+}
+
 }  // namespace omm

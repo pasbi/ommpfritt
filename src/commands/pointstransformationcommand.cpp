@@ -58,7 +58,11 @@ void PointsTransformationCommand::undo()
 void PointsTransformationCommand::redo()
 {
   for (const auto& [point, _] : m_alternative_points) { point->swap(m_alternative_points[point]); }
-  for (Path* path : m_paths) { path->update_interpolation(); }
+  for (Path* path : m_paths) {
+    for (auto [point, alternative] : path->modified_points(false, path->interpolation_mode())) {
+      point->swap(alternative);
+    }
+  }
 }
 
 int PointsTransformationCommand::id() const

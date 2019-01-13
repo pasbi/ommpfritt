@@ -31,6 +31,9 @@ public:
   PolarCoordinates left_tangent;
   PolarCoordinates right_tangent;
 
+  Point smoothed(const Point& left_neighbor, const Point& right_neighbor) const;
+  Point nibbed() const;
+
 };
 
 constexpr PolarCoordinates to_polar(arma::vec2 cartesian);

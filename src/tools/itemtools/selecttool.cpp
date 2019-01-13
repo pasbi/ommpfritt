@@ -7,6 +7,8 @@
 #include "commands/objectstransformationcommand.h"
 #include "objects/path.h"
 #include "properties/optionsproperty.h"
+#include "menuhelper.h"
+#include "mainwindow/pathmenu.h"
 
 namespace omm
 {
@@ -21,7 +23,7 @@ template<typename PositionVariant> bool SelectTool<PositionVariant>
 ::mouse_press( const arma::vec2& pos, const QMouseEvent& event)
 {
   if (!Tool::mouse_press(pos, event)) {
-    m_position_variant.clear_selection();
+    position_variant.clear_selection();
   }
   return true;
 }
@@ -30,13 +32,13 @@ template<typename PositionVariant>
 void SelectTool<PositionVariant>::on_scene_changed()
 {
   this->handles.clear();
-  m_position_variant.make_handles(this->handles, *this);
+  position_variant.make_handles(this->handles, *this);
 }
 
 template<typename PositionVariant>
 void SelectTool<PositionVariant>::transform_objects(const ObjectTransformation& transformation)
 {
-  m_position_variant.transform(transformation);
+  position_variant.transform(transformation);
 }
 
 
@@ -78,6 +80,11 @@ PointSelectHandle::TangentMode SelectPointsTool::tangent_mode() const
 {
   const auto i = property(TANGENT_MODE_PROPERTY_KEY).value<size_t>();
   return static_cast<PointSelectHandle::TangentMode>(i);
+}
+
+std::unique_ptr<QMenu> SelectPointsTool::make_context_menu(QWidget* parent)
+{
+  return std::make_unique<PathMenu>(scene, parent);
 }
 
 template class SelectTool<ObjectPositions>;

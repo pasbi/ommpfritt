@@ -25,16 +25,15 @@ public:
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-
-  void make_smooth_tangents(bool constrain_to_selection);
-  void vanish_tangents(bool constrain_to_selection);
-  void update_interpolation();
   bool tangents_modifiable() const;
 
   enum class InterpolationMode { Linear, Smooth, Bezier };
   InterpolationMode interpolation_mode() const;
   void set_interpolation_mode(const InterpolationMode& mode);
   void deselect_all_points();
+
+  std::map<Point*, Point>
+  modified_points(const bool constrain_to_selection, InterpolationMode mode);
 
 private:
   std::vector<Point> m_points;

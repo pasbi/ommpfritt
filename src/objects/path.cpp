@@ -1,7 +1,7 @@
 #include "objects/path.h"
 
 #include <QObject>
-#include "commands/modifytangentscommand.h"
+#include "commands/modifypointscommand.h"
 #include "properties/boolproperty.h"
 #include "properties/optionsproperty.h"
 #include "scene/scene.h"
@@ -47,14 +47,19 @@ class Style;
 
 Path::Path(Scene* scene) : Object(scene)
 {
+  const auto update_point_tangents = [this](Property&) {
+    std::map<Path*, std::map<Point*, Point>> map;
+    map[this] = this->modified_points(false, this->interpolation_mode());
+    this->scene()->submit<ModifyPointsCommand>(map);
+  };
   add_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
     .set_label(QObject::tr("closed").toStdString())
     .set_category(QObject::tr("path").toStdString());
   add_property<OptionsProperty>(INTERPOLATION_PROPERTY_KEY)
     .set_options({ "linear", "smooth", "bezier" })
-    .set_label(QObject::tr("closed").toStdString())
+    .set_label(QObject::tr("interpolation").toStdString())
     .set_category(QObject::tr("path").toStdString())
-    .set_post_submit([this](Property&) { this->update_interpolation(); });
+    .set_post_submit(update_point_tangents).set_pre_submit(update_point_tangents);
 }
 
 void Path::render(AbstractRenderer& renderer, const Style& style)
@@ -113,81 +118,6 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
   }
 }
 
-void Path::make_smooth_tangents(bool constrain_to_selection)
-{
-  auto modify_point = [=](auto& point, const auto& left, const auto& right, auto& modified_points)
-  {
-    if (!constrain_to_selection || point.is_selected) {
-      const PolarCoordinates l_pc(left.position - point.position);
-      const PolarCoordinates r_pc(right.position - point.position);
-      const double theta = (l_pc.argument + r_pc.argument) / 2.0;
-      const double mag = (l_pc.magnitude + r_pc.magnitude) / 12.0;
-      auto copy = point;
-
-      // TODO
-      const double d = arma::dot(right.position - point.position, left.position - point.position);
-      const double sign = std::copysign(1.0, d);
-
-      copy.left_tangent = PolarCoordinates(theta + M_PI_2, mag);
-      copy.right_tangent = PolarCoordinates(theta - M_PI_2, mag);
-
-      // that's a quick hack. If right tangent is closer to left position
-      // than left tangent, then swap them.
-      // I'm sure there's a more elegant way.
-      if ( arma::norm(copy.right_position() - left.position)
-         < arma::norm(copy.left_position() - left.position)  )
-      {
-        copy.left_tangent.swap(copy.right_tangent);
-      }
-      modified_points.push_back({ point, copy });
-    }
-  };
-
-  std::list<ModifyTangentsCommand::PointWithAlternative> ps;
-  if (property(IS_CLOSED_PROPERTY_KEY).value<bool>()) {
-    const auto n = m_points.size();
-    modify_point(m_points[0], m_points[n-1], m_points[1], ps);
-    modify_point(m_points[n-1], m_points[n-2], m_points[0], ps);
-  } else {
-    // Do something smart with endpoints
-  }
-
-  for (std::size_t i = 1; i < m_points.size() - 1; ++i) {
-    modify_point(m_points[i], m_points[i-1], m_points[i+1], ps);
-  }
-
-  scene()->submit<ModifyTangentsCommand>(nullptr, ps);
-}
-
-void Path::vanish_tangents(bool constrain_to_selection)
-{
-  std::list<ModifyTangentsCommand::PointWithAlternative> ps;
-  for (auto& point : m_points) {
-    if (!constrain_to_selection || point.is_selected) {
-      auto new_point = point;
-      new_point.left_tangent.magnitude = 0;
-      new_point.right_tangent.magnitude = 0;
-      ps.push_back({ point, new_point });
-    }
-  }
-  scene()->submit<ModifyTangentsCommand>(nullptr, ps);
-}
-
-void Path::update_interpolation()
-{
-  switch (interpolation_mode()) {
-  case InterpolationMode::Linear:
-    vanish_tangents(false);
-    break;
-  case InterpolationMode::Smooth:
-    make_smooth_tangents(false);
-    break;
-  case InterpolationMode::Bezier:
-    // leave tangents as thet are
-    break;
-  }
-}
-
 Path::InterpolationMode Path::interpolation_mode() const
 {
   const auto i = property(INTERPOLATION_PROPERTY_KEY).value<std::size_t>();
@@ -205,6 +135,38 @@ void Path::deselect_all_points()
   for (Point* p : points()) {
     p->is_selected = false;
   }
+}
+
+std::map<Point*, Point>
+Path::modified_points(const bool constrain_to_selection, InterpolationMode mode)
+{
+  const auto points = this->points();
+  std::map<omm::Point*, omm::Point> map;
+
+  const auto process_point = [constrain_to_selection, mode, &map, points](std::size_t i)
+  {
+    Point* point = points[i];
+    if (!constrain_to_selection || point->is_selected) {
+      const auto n = points.size();
+      switch (mode) {
+      case InterpolationMode::Smooth:
+        map[point] = point->smoothed(*points[(i+n-1)%n], *points[(i+n+1)%n]);
+        break;
+      case InterpolationMode::Linear:
+        map[point] = point->nibbed();
+        break;
+      default:
+        break;
+      }
+    }
+  };
+
+  for (std::size_t i = 1; i < points.size()-1; ++i) { process_point(i); }
+  if (this->property(omm::Path::IS_CLOSED_PROPERTY_KEY).value<bool>()) {
+    process_point(0);
+    process_point(points.size()-1);
+  }
+  return map;
 }
 
 }  // namespace omm

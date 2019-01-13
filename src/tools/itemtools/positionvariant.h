@@ -41,10 +41,10 @@ public:
   arma::vec2 selection_center() const;
   double selection_rotation() const;
   bool is_empty() const;
+  std::set<Path*> paths() const;
 
 private:
   std::set<Point*> selected_points() const;
-  std::set<Path*> paths() const;
 };
 
 class ObjectPositions : public AbstractPositions<Object>
