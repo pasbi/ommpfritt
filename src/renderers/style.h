@@ -39,6 +39,7 @@ class ContourStyle : public Style
 {
 public:
   ContourStyle(const Color& color, Scene* scene = nullptr);
+  ContourStyle(const Color& color, double width, Scene* scene = nullptr);
 };
 
 }  // namespace omm

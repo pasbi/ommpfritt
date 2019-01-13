@@ -168,7 +168,7 @@ PointSelectHandle::PointSelectHandle(SelectTool<PointPositions>& tool, Path& pat
   : m_tool(tool)
   , m_path(path)
   , m_point(point)
-  , m_tangent_style(std::make_unique<ContourStyle>(Color(0.0, 1.0, 0.0)))
+  , m_tangent_style(std::make_unique<ContourStyle>(Color(0.0, 0.0, 0.0), 0.1))
   , m_left_tangent_handle(std::make_unique<TangentHandle<Tangent::Left>>(*this))
   , m_right_tangent_handle(std::make_unique<TangentHandle<Tangent::Right>>(*this))
 {
