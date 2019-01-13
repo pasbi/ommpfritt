@@ -13,8 +13,8 @@ int ModifyPointsCommand::id() const { return Command::MODIFY_TANGENTS_COMMAND_ID
 
 void ModifyPointsCommand::swap()
 {
-  for (auto [path, points] : m_data) {
-    for (auto [point_ptr, other] : points) {
+  for (auto& [path, points] : m_data) {
+    for (auto& [point_ptr, other] : points) {
       point_ptr->swap(other);
     }
   }
