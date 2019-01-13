@@ -35,9 +35,9 @@ bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMou
     handle->mouse_move(delta, pos, e);
     switch (handle->status()) {
     case Handle::Status::Active:
-    case Handle::Status::Hovered:
       return true;
       break;
+    case Handle::Status::Hovered:
     case Handle::Status::Inactive:
       break;
     }

@@ -40,7 +40,7 @@ public:
   virtual void on_selection_changed();
   virtual void on_scene_changed();
   Scene& scene;
-  virtual std::unique_ptr<QMenu> make_context_menu();
+  virtual std::unique_ptr<QMenu> make_context_menu(QWidget* parent);
 
 protected:
   std::vector<std::unique_ptr<Handle>> handles;
