@@ -24,7 +24,7 @@ arma::vec2 get_scale(const arma::vec2& pos, const arma::vec2& delta, const arma:
       return 1.0;
     } else {
       double s = new_pos / old_pos;
-      s = std::copysign(std::pow(std::abs(s), std::abs(constraint)), s);
+      s = std::pow(s, std::abs(constraint));
       return s;
       if (std::abs(s) < 0.1) {
         return std::copysign(1.0, s);
