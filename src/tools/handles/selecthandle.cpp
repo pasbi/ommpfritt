@@ -4,8 +4,8 @@
 #include "scene/scene.h"
 #include "objects/path.h"
 #include "common.h"
-#include "tools/itemtools/selecttool.h"
-#include "tools/itemtools/positionvariant.h"
+#include "tools/selecttool.h"
+#include "tools/positionvariant.h"
 #include "commands/modifypointscommand.h"
 #include <QMouseEvent>
 

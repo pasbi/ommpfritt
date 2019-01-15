@@ -30,14 +30,16 @@ ObjectTransformation Tool::transformation() const { return ObjectTransformation(
 bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e)
 {
   for (auto&& handle : handles) {
-    handle->mouse_move(delta, pos, e);
-    switch (handle->status()) {
-    case Handle::Status::Active:
-      return true;
-      break;
-    case Handle::Status::Hovered:
-    case Handle::Status::Inactive:
-      break;
+    if (handle->is_enabled()) {
+      handle->mouse_move(delta, pos, e);
+      switch (handle->status()) {
+      case Handle::Status::Active:
+        return true;
+        break;
+      case Handle::Status::Hovered:
+      case Handle::Status::Inactive:
+        break;
+      }
     }
   }
   return false;
@@ -48,7 +50,7 @@ bool Tool::mouse_press(const arma::vec2& pos, const QMouseEvent& e)
   // `std::any_of` does not *require* to use short-circuit-logic. However, here it is mandatory,
   // so don't use `std::any_of`.
   for (auto&& handle : handles) {
-    if (handle->mouse_press(pos, e)) {
+    if (handle->is_enabled() && handle->mouse_press(pos, e)) {
       return true;
     }
   }
@@ -59,7 +61,9 @@ void Tool::
 mouse_release(const arma::vec2& pos, const QMouseEvent& e)
 {
   for (auto&& handle : handles) {
-    handle->mouse_release(pos, e);
+    if (handle->is_enabled()) {
+      handle->mouse_release(pos, e);
+    }
   }
 }
 
@@ -67,17 +71,21 @@ void Tool::draw(AbstractRenderer& renderer) const
 {
   const ObjectTransformation transformation = this->transformation();
   for (auto&& handle : handles) {
-    if (handle->transform_in_tool_space) {
-      renderer.push_transformation(transformation);
-      handle->draw(renderer);
-      renderer.pop_transformation();
-    } else {
-      handle->draw(renderer);
+    if (handle->is_enabled()) {
+      if (handle->transform_in_tool_space) {
+        renderer.push_transformation(transformation);
+        handle->draw(renderer);
+        renderer.pop_transformation();
+      } else {
+        handle->draw(renderer);
+      }
     }
   }
 }
 
 std::unique_ptr<QMenu> Tool::make_context_menu(QWidget* parent) { return nullptr; }
+
+bool Tool::has_transformation() const { return false; }
 
 void Tool::on_selection_changed() {}
 void Tool::on_scene_changed() {}

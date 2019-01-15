@@ -27,6 +27,7 @@ public:
   void set_style(Status status, Style&& style);
   double epsilon = 4.0;
   const bool transform_in_tool_space;
+  bool is_enabled() const;
 
 protected:
   virtual bool contains(const arma::vec2& point) const = 0;
@@ -39,6 +40,7 @@ private:
   Status m_status = Status::Inactive;
   std::map<Status, Style> m_styles;
   const Tool& m_tool;
+  bool m_enabled = false;
 };
 
 }  // namespace omm

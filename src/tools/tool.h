@@ -39,6 +39,7 @@ public:
   virtual void draw(AbstractRenderer& renderer) const;
   virtual void on_selection_changed();
   virtual void on_scene_changed();
+  virtual bool has_transformation() const;
   Scene& scene;
   virtual std::unique_ptr<QMenu> make_context_menu(QWidget* parent);
   virtual ObjectTransformation transformation() const;

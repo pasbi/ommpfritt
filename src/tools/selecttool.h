@@ -1,9 +1,9 @@
 #pragma once
 
-#include "tools/itemtools/transformationtool.h"
 #include "objects/object.h"
-#include "tools/itemtools/positionvariant.h"
+#include "tools/positionvariant.h"
 #include "tools/handles/selecthandle.h"
+#include "tools/tool.h"
 
 namespace omm
 {
@@ -20,6 +20,7 @@ public:
   void on_scene_changed() override;
   PositionVariant position_variant;
   ObjectTransformation transformation() const override;
+  bool has_transformation() const override;
 };
 
 class SelectObjectsTool : public SelectTool<ObjectPositions>
@@ -40,7 +41,6 @@ public:
   QIcon icon() const override;
   static constexpr auto TYPE = "SelectPointsTool";
   static constexpr auto TANGENT_MODE_PROPERTY_KEY = "tangent_mode";
-  void on_selection_changed() override;
   PointSelectHandle::TangentMode tangent_mode() const;
   std::unique_ptr<QMenu> make_context_menu(QWidget* parent) override;
 };

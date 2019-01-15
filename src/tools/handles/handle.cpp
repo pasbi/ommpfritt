@@ -40,15 +40,11 @@ void Handle::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
   m_status = Status::Inactive;
 }
 
-Handle::Status Handle::status() const
-{
-  return m_status;
-}
-
-void Handle::deactivate()
-{
-  m_status = Status::Inactive;
-}
+Handle::Status Handle::status() const { return m_status; }
+void Handle::deactivate() { m_status = Status::Inactive; }
+const Style& Handle::style(Status status) const { return m_styles.at(status); }
+const Style& Handle::current_style() const { return style(status()); }
+bool Handle::is_enabled() const { return !transform_in_tool_space || m_tool.has_transformation(); }
 
 void Handle::set_style(Status status, Style&& style)
 {
@@ -56,18 +52,9 @@ void Handle::set_style(Status status, Style&& style)
   m_styles.insert(std::pair(status, style));
 }
 
-const Style& Handle::current_style() const
-{
-  return style(status());
-}
-
-const Style& Handle::style(Status status) const
-{
-  return m_styles.at(status);
-}
-
 ObjectTransformation Handle::transformation() const
 {
+  assert(is_enabled());
   return transform_in_tool_space ? m_tool.transformation() : ObjectTransformation();
 }
 
@@ -75,5 +62,6 @@ bool Handle::contains_global(const arma::vec2& global_point) const
 {
   return contains(transformation().inverted().apply_to_position(global_point));
 }
+
 
 }  // namespace omm

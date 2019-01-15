@@ -1,4 +1,4 @@
-#include "tools/itemtools/positionvariant.h"
+#include "tools/positionvariant.h"
 #include "objects/path.h"
 #include "scene/scene.h"
 #include "commands/objectstransformationcommand.h"
@@ -7,6 +7,20 @@
 bool arma::operator<(const arma::vec2& a, const arma::vec2& b)
 {
   return a[0] == b[0] ? a[1] < b[1] : a[0] < b[0];
+}
+
+namespace
+{
+
+template<typename Ts, typename T, typename... F> T mean(const Ts& ts, const T& null, F&&... fs)
+{
+  if (ts.size() > 0) {
+    return std::accumulate(std::begin(ts), std::end(ts), null, fs...) / ts.size();
+  } else {
+    return null;
+  }
+}
+
 }
 
 namespace omm
@@ -47,12 +61,7 @@ arma::vec2 PointPositions::selection_center() const
       }
     }
   }
-  const auto null = arma::vec2 {0.0, 0.0};
-  if (positions.size() > 0) {
-    return std::accumulate(positions.begin(), positions.end(), null) / positions.size();
-  } else {
-    return null;
-  }
+  return mean(positions, arma::vec2{0.0, 0.0});
 }
 
 double PointPositions::selection_rotation() const
@@ -109,12 +118,10 @@ void ObjectPositions::clear_selection()
 arma::vec2 ObjectPositions::selection_center() const
 {
   const auto objects = scene.object_selection();
-  assert(objects.size() > 0);
   const auto add = [](const arma::vec2& accu, const Object* object) -> arma::vec2 {
     return accu + object->global_transformation().translation();
   };
-  const auto null = arma::vec2 {0.0, 0.0};
-  return std::accumulate(objects.begin(), objects.end(), null, add) / objects.size();
+  return mean(objects, arma::vec2{0.0, 0.0}, add);
 }
 
 double ObjectPositions::selection_rotation() const

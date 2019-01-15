@@ -1,4 +1,4 @@
-#include "tools/itemtools/selecttool.h"
+#include "tools/selecttool.h"
 #include <memory>
 #include <algorithm>
 #include "tools/handles/axishandle.h"
@@ -76,7 +76,6 @@ template<typename PositionVariant> SelectTool<PositionVariant>::SelectTool(Scene
     .set_category(QObject::tr("tool").toStdString());
 }
 
-
 template<typename PositionVariant>
 ObjectTransformation SelectTool<PositionVariant>::transformation() const
 {
@@ -116,6 +115,10 @@ template<typename PositionVariant> void SelectTool<PositionVariant>
   position_variant.transform(t);
 }
 
+template<typename PositionVariant> bool SelectTool<PositionVariant>::has_transformation() const
+{
+  return !position_variant.is_empty();
+}
 
 std::string SelectObjectsTool::type() const
 {
@@ -144,11 +147,6 @@ std::string SelectPointsTool::type() const
 QIcon SelectPointsTool::icon() const
 {
   return QIcon();
-}
-
-void SelectPointsTool::on_selection_changed()
-{
-  on_scene_changed();
 }
 
 PointSelectHandle::TangentMode SelectPointsTool::tangent_mode() const
