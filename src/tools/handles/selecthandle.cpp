@@ -16,7 +16,9 @@ template<omm::PointSelectHandle::Tangent tangent>
 class TangentHandle : public omm::ParticleHandle
 {
 public:
-  TangentHandle(omm::PointSelectHandle& master_handle) : m_master_handle(master_handle) {}
+  TangentHandle(const omm::Tool& tool, omm::PointSelectHandle& master_handle)
+    : ParticleHandle(tool, false), m_master_handle(master_handle) {}
+
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override
   {
     ParticleHandle::mouse_move(delta, pos, e);
@@ -37,6 +39,8 @@ private:
 namespace omm
 {
 
+AbstractSelectHandle::AbstractSelectHandle(const Tool& tool) : Handle(tool, false) { }
+
 bool AbstractSelectHandle
 ::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& event)
 {
@@ -50,7 +54,6 @@ bool AbstractSelectHandle
   }
   return Handle::mouse_move(delta, pos, event);
 }
-
 
 void AbstractSelectHandle
 ::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
@@ -83,7 +86,8 @@ void AbstractSelectHandle::report_move_action()
 
 ObjectSelectHandle
 ::ObjectSelectHandle(SelectTool<ObjectPositions>& tool, Scene& scene, Object& object)
-  : m_tool(tool)
+  : AbstractSelectHandle(tool)
+  , m_tool(tool)
   , m_scene(scene)
   , m_object(object)
 {
@@ -114,7 +118,7 @@ bool ObjectSelectHandle
   AbstractSelectHandle::mouse_move(delta, pos, event);
   if (status() == Status::Active) {
     const auto t = omm::ObjectTransformation().translated(delta);
-    m_tool.transform_objects(t);
+    m_tool.transform_objects(t, false);
     report_move_action();
     return true;
   } else {
@@ -165,12 +169,13 @@ bool ObjectSelectHandle::is_selected() const
 }
 
 PointSelectHandle::PointSelectHandle(SelectTool<PointPositions>& tool, Path& path, Point& point)
-  : m_tool(tool)
+  : AbstractSelectHandle(tool)
+  , m_tool(tool)
   , m_path(path)
   , m_point(point)
   , m_tangent_style(std::make_unique<ContourStyle>(Color(0.0, 0.0, 0.0), 0.1))
-  , m_left_tangent_handle(std::make_unique<TangentHandle<Tangent::Left>>(*this))
-  , m_right_tangent_handle(std::make_unique<TangentHandle<Tangent::Right>>(*this))
+  , m_left_tangent_handle(std::make_unique<TangentHandle<Tangent::Left>>(tool, *this))
+  , m_right_tangent_handle(std::make_unique<TangentHandle<Tangent::Right>>(tool, *this))
 {
   set_style(Status::Hovered, omm::SolidStyle(omm::Color(1.0, 1.0, 0.0)));
   set_style(Status::Active, omm::SolidStyle(omm::Color(1.0, 1.0, 1.0)));
@@ -206,7 +211,7 @@ bool PointSelectHandle
 {
   AbstractSelectHandle::mouse_move(delta, pos, event);
   if (status() == Status::Active) {
-    m_tool.transform_objects(ObjectTransformation().translated(delta));
+    m_tool.transform_objects(ObjectTransformation().translated(delta), false);
     report_move_action();
     return true;
   } else if (tangents_active() && m_left_tangent_handle->mouse_move(delta, pos, event)) {

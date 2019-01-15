@@ -41,6 +41,7 @@ public:
   virtual void on_scene_changed();
   Scene& scene;
   virtual std::unique_ptr<QMenu> make_context_menu(QWidget* parent);
+  virtual ObjectTransformation transformation() const;
 
 protected:
   std::vector<std::unique_ptr<Handle>> handles;

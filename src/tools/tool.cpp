@@ -24,10 +24,8 @@ arma::vec2 get_global_position_mean(const std::set<omm::Object*>& objects)
 namespace omm
 {
 
-Tool::Tool(Scene& scene)
-  : scene(scene)
-{
-}
+Tool::Tool(Scene& scene) : scene(scene) { }
+ObjectTransformation Tool::transformation() const { return ObjectTransformation(); }
 
 bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e)
 {
@@ -67,8 +65,15 @@ mouse_release(const arma::vec2& pos, const QMouseEvent& e)
 
 void Tool::draw(AbstractRenderer& renderer) const
 {
+  const ObjectTransformation transformation = this->transformation();
   for (auto&& handle : handles) {
-    handle->draw(renderer);
+    if (handle->transform_in_tool_space) {
+      renderer.push_transformation(transformation);
+      handle->draw(renderer);
+      renderer.pop_transformation();
+    } else {
+      handle->draw(renderer);
+    }
   }
 }
 

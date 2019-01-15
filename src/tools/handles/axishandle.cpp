@@ -9,10 +9,11 @@
 namespace omm
 {
 
+AxisHandle::AxisHandle(const Tool& tool) : Handle(tool, true) {}
+
 bool AxisHandle::contains(const arma::vec2& point) const
 {
   arma::vec2 o { 0.0, 0.0 };
-
   arma::vec2 v = project_onto_axis(point);
 
   // clamp v between o and m_direction
@@ -25,10 +26,7 @@ bool AxisHandle::contains(const arma::vec2& point) const
   return arma::norm(point - v) < epsilon;
 }
 
-void AxisHandle::set_direction(const arma::vec2& direction)
-{
-  m_direction = direction;
-}
+void AxisHandle::set_direction(const arma::vec2& direction) { m_direction = direction; }
 
 arma::vec2 AxisHandle::project_onto_axis(const arma::vec2& v) const
 {

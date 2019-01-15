@@ -17,8 +17,10 @@ class ObjectPositions;
 class AbstractSelectHandle : public Handle
 {
 public:
+  explicit AbstractSelectHandle(const Tool& tool);
   void mouse_release( const arma::vec2& pos, const QMouseEvent& event) override;
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override;
+
 protected:
   virtual void set_selected(bool selected) = 0;
   virtual void clear() = 0;

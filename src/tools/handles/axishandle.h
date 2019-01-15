@@ -11,6 +11,7 @@ namespace omm
 class AxisHandle : public Handle
 {
 public:
+  explicit AxisHandle(const Tool& tool);
   bool contains(const arma::vec2& point) const override;
   void set_direction(const arma::vec2& direction);
 
@@ -23,14 +24,14 @@ template<typename ToolT>
 class MoveAxisHandle : public omm::AxisHandle
 {
 public:
-  MoveAxisHandle(ToolT& tool) : m_tool(tool) { }
+  MoveAxisHandle(ToolT& tool) : AxisHandle(tool), m_tool(tool) { }
 
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override
   {
     AxisHandle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
       const auto t = omm::ObjectTransformation().translated(project_onto_axis(delta));
-      m_tool.transform_objects(t);
+      m_tool.transform_objects(t, true);
       return true;
     } else {
       return false;
@@ -59,13 +60,13 @@ template<typename ItemT>
 class ScaleAxisHandle : public omm::AxisHandle
 {
 public:
-  ScaleAxisHandle(ItemT& tool) : m_tool(tool) { }
+  ScaleAxisHandle(ItemT& tool) : AxisHandle(tool), m_tool(tool) { }
   bool mouse_move( const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override
   {
     AxisHandle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
       const auto t = omm::ObjectTransformation().scaled(get_scale(pos, delta, m_direction));
-      m_tool.transform_objects(t);
+      m_tool.transform_objects(t, true);
       return true;
     } else {
       return false;

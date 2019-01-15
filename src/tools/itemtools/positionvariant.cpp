@@ -47,9 +47,12 @@ arma::vec2 PointPositions::selection_center() const
       }
     }
   }
-  assert(positions.size() != 0);
   const auto null = arma::vec2 {0.0, 0.0};
-  return std::accumulate(positions.begin(), positions.end(), null) / positions.size();
+  if (positions.size() > 0) {
+    return std::accumulate(positions.begin(), positions.end(), null) / positions.size();
+  } else {
+    return null;
+  }
 }
 
 double PointPositions::selection_rotation() const

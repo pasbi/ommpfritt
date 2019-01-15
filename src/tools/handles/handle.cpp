@@ -1,9 +1,15 @@
 #include "tools/handles/handle.h"
 #include "renderers/abstractrenderer.h"
 #include <QMouseEvent>
+#include "tools/tool.h"
 
 namespace omm
 {
+
+Handle::Handle(const Tool& tool, const bool transform_in_tool_space)
+  : m_tool(tool)
+  , transform_in_tool_space(transform_in_tool_space)
+{}
 
 bool Handle::mouse_press(const arma::vec2& pos, const QMouseEvent& event)
 {
@@ -62,7 +68,7 @@ const Style& Handle::style(Status status) const
 
 ObjectTransformation Handle::transformation() const
 {
-  return ObjectTransformation();
+  return transform_in_tool_space ? m_tool.transformation() : ObjectTransformation();
 }
 
 bool Handle::contains_global(const arma::vec2& global_point) const

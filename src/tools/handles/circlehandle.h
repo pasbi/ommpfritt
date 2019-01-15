@@ -8,7 +8,7 @@ namespace omm
 class CircleHandle : public Handle
 {
 public:
-  using Handle::Handle;
+  explicit CircleHandle(const Tool& tool);
   void draw(AbstractRenderer& renderer) const override;
   bool contains(const arma::vec2& point) const override;
   void set_radius(double r);
@@ -22,16 +22,18 @@ template<typename ToolT>
 class RotateHandle : public CircleHandle
 {
 public:
-  RotateHandle(ToolT& tool) : m_tool(tool) { }
+  RotateHandle(ToolT& tool) : CircleHandle(tool), m_tool(tool) { }
 
   bool mouse_move( const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
-      const arma::vec2 origin = pos - delta;
+      const auto global_pos = transformation().inverted().apply_to_position(pos);
+      const arma::vec2 origin = global_pos - delta;
       double origin_angle = atan2(origin(1), origin(0));
-      double pos_angle = atan2(pos(1), pos(0));
-      m_tool.transform_objects(omm::ObjectTransformation().rotated(pos_angle - origin_angle));
+      double pos_angle = atan2(global_pos(1), global_pos(0));
+      const auto t = omm::ObjectTransformation().rotated(pos_angle - origin_angle);
+      m_tool.transform_objects(t, transform_in_tool_space);
       return true;
     } else {
       return false;

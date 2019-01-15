@@ -2,7 +2,6 @@
 
 #include "tools/itemtools/transformationtool.h"
 #include "objects/object.h"
-#include "properties/floatproperty.h"
 #include "tools/itemtools/positionvariant.h"
 #include "tools/handles/selecthandle.h"
 
@@ -13,20 +12,14 @@ template<typename PositionVariant>
 class SelectTool : public Tool
 {
 public:
-  explicit SelectTool(Scene& scene)
-    : Tool(scene)
-    , position_variant(scene)
-  {
-    this->template add_property<FloatProperty>(RADIUS_PROPERTY_KEY, 20.0)
-      .set_label(QObject::tr("radius").toStdString())
-      .set_category(QObject::tr("tool").toStdString());
-  }
-
+  explicit SelectTool(Scene& scene);
+  static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";
   static constexpr auto RADIUS_PROPERTY_KEY = "radius";
   bool mouse_press(const arma::vec2& pos, const QMouseEvent& event) override;
-  void transform_objects(const ObjectTransformation& transformation);
+  void transform_objects(ObjectTransformation t, const bool tool_space);
   void on_scene_changed() override;
   PositionVariant position_variant;
+  ObjectTransformation transformation() const override;
 };
 
 class SelectObjectsTool : public SelectTool<ObjectPositions>

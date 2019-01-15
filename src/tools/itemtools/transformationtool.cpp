@@ -45,10 +45,12 @@ void TransformationTool<PositionVariant>::draw(AbstractRenderer& renderer) const
   Tool::draw(renderer);
   renderer.pop_transformation();
 }
-template<typename PositionVariant> void
-TransformationTool<PositionVariant>::transform_objects(const ObjectTransformation& t)
+
+template<typename PositionVariant> void TransformationTool<PositionVariant>
+::transform_objects(ObjectTransformation t, const bool tool_space)
 {
-  m_position_variant.transform(t.transformed(this->transformation().inverted()));
+  if (tool_space) { t = t.transformed(this->transformation().inverted()); }
+  m_position_variant.transform(t);
 }
 
 template<typename PositionVariant> bool TransformationTool<PositionVariant>

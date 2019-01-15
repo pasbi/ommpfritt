@@ -12,11 +12,11 @@ class TransformationTool : public Tool
 {
 public:
   TransformationTool(Scene& scene, std::vector<std::unique_ptr<Handle>> handles);
-  void transform_objects(const ObjectTransformation& transformation);
+  void transform_objects(ObjectTransformation transformation, const bool tool_space);
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override;
   bool mouse_press(const arma::vec2& pos, const QMouseEvent& e) override;
   void mouse_release(const arma::vec2& pos, const QMouseEvent& e) override;
-  virtual ObjectTransformation transformation() const;
+  virtual ObjectTransformation transformation() const override;
   void draw(AbstractRenderer& renderer) const override;
 
   static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";

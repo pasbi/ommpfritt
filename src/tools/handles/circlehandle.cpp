@@ -7,6 +7,8 @@
 namespace omm
 {
 
+CircleHandle::CircleHandle(const Tool& tool) : Handle(tool, true) {}
+
 void CircleHandle::draw(AbstractRenderer& renderer) const
 {
   constexpr auto n = 200;
