@@ -26,7 +26,7 @@ public:
     ParticleHandle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
       const auto t = omm::ObjectTransformation().translated(delta);
-      m_tool.transform_objects(t, transform_in_tool_space);
+      m_tool.transform_objects(t, false);
       return true;
     } else {
       return false;
@@ -48,7 +48,7 @@ public:
     if (status() == Status::Active) {
       const auto scale = get_scale(pos, delta, arma::vec2{ 1.0, 1.0 });
       const auto t = omm::ObjectTransformation().scaled(scale);
-      m_tool.transform_objects(t, transform_in_tool_space);
+      m_tool.transform_objects(t, false);
       return true;
     } else {
       return false;

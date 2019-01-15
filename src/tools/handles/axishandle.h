@@ -30,7 +30,8 @@ public:
   {
     AxisHandle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
-      const auto t = omm::ObjectTransformation().translated(project_onto_axis(delta));
+      const auto global_delta = transformation().inverted().apply_to_direction(delta);
+      const auto t = omm::ObjectTransformation().translated(project_onto_axis(global_delta));
       m_tool.transform_objects(t, true);
       return true;
     } else {

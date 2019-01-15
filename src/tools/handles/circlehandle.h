@@ -29,7 +29,8 @@ public:
     Handle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
       const auto global_pos = transformation().inverted().apply_to_position(pos);
-      const arma::vec2 origin = global_pos - delta;
+      const auto global_delta = transformation().inverted().apply_to_direction(delta);
+      const arma::vec2 origin = global_pos - global_delta;
       double origin_angle = atan2(origin(1), origin(0));
       double pos_angle = atan2(global_pos(1), global_pos(0));
       const auto t = omm::ObjectTransformation().rotated(pos_angle - origin_angle);
