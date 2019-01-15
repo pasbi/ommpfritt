@@ -7,6 +7,7 @@
 #include "python/scenewrapper.h"
 #include "python/objectwrapper.h"
 #include "python/pythonengine.h"
+#include "objects/empty.h"
 
 namespace omm
 {
@@ -27,48 +28,39 @@ Cloner::Cloner(Scene* scene) : Object(scene)
 
 void Cloner::render(AbstractRenderer& renderer, const Style& style)
 {
+  assert(&renderer.scene == scene());
+  for (auto&& clone : make_clones()) {
+    renderer.push_transformation(clone->transformation());
+    clone->render_recursive(renderer, style);
+    renderer.pop_transformation();
+  }
+}
+
+std::vector<std::unique_ptr<Object>> Cloner::make_clones()
+{
   using namespace pybind11::literals;
   const auto n_children = this->n_children();
   const auto count = property(COUNT_PROPERTY_KEY).value<int>();
   const auto code = property(CODE_PROPERTY_KEY).value<std::string>();
 
-  // TODO ProceduralPath works differently.
-  // the cloner script is evaluated once for each clone individually, the procedural path script
-  // is evaluated once for all points.
-  // both approaches have pros and cons. The cloner-approach is simpler, it does not require a loop
-  // in the python code. The path-approach gives more control, i.e. an expensive pre-computation
-  // only needs to be performed once for all points.
-  // However, implementing the procedural path approach for cloner introduces another drawback:
-  // `count`-clones would be required to be kept in memory at once. If `count` is very large, that
-  // might be a problem. With the current approach, only `n_children` objects must be in memory at
-  // once.
-  // I'd prefer to have the same approach in both procedural path and cloner, however, I like the
-  // cloner approach too much to drop it.
-  // Short term solution: have two different approaches
-  // Long term solution: implement procedural path approach here next to current approach,
-  //  introduce a OptionProperty s.t. user can chose. Consider to implement (optional)
-  //  cloner-approach in procedural path, too.
-
-  std::vector<std::unique_ptr<Object>> copies;
-  copies.reserve(n_children);
-  for (int i = 0; i < n_children; ++i) {
-    copies.push_back(child(i % n_children).clone());
+  std::vector<std::unique_ptr<Object>> clones;
+  clones.reserve(count);
+  for (int i = 0; i < count; ++i) {
+    clones.push_back(child(i % n_children).clone());
   }
 
-  if (copies.size() > 0) {
+  if (clones.size() > 0) {
     for (int i = 0; i < count; ++i) {
-      auto& copy = *copies.at(i % copies.size());
+      auto& copy = *clones.at(i % clones.size());
       const auto locals = pybind11::dict( "id"_a=i,
                                           "count"_a=count,
                                           "copy"_a=ObjectWrapper::make(copy),
                                           "this"_a=ObjectWrapper::make(*this),
-                                          "scene"_a=SceneWrapper(renderer.scene) );
-      renderer.scene.python_engine.run(code, locals);
-      renderer.push_transformation(copy.transformation());
-      copy.render_recursive(renderer, style);
-      renderer.pop_transformation();
+                                          "scene"_a=SceneWrapper(*scene()) );
+      scene()->python_engine.run(code, locals);
     }
   }
+  return clones;
 }
 
 BoundingBox Cloner::bounding_box()
@@ -84,6 +76,29 @@ std::string Cloner::type() const
 std::unique_ptr<Object> Cloner::clone() const
 {
   return std::make_unique<Cloner>(*this);
+}
+
+Object::Flag Cloner::flags() const
+{
+  return Object::flags() | Flag::Convertable;
+}
+
+std::unique_ptr<Object> Cloner::convert()
+{
+  auto converted = std::make_unique<Empty>(scene());
+  copy_properties(*converted);
+  copy_tags(*converted);
+
+  auto clones = make_clones();
+  for (std::size_t i = 0; i < clones.size(); ++i) {
+    const auto local_transformation = clones[i]->transformation();
+    auto& clone = converted->adopt(std::move(clones[i]));
+    const std::string name = clone.name() + " " + std::to_string(i);
+    clone.property(NAME_PROPERTY_KEY).set(name);
+    clone.set_transformation(local_transformation);
+  }
+
+  return converted;
 }
 
 }  // namespace omm

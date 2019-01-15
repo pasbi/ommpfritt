@@ -21,6 +21,12 @@ public:
   static constexpr auto COUNT_PROPERTY_KEY = "count";
   static constexpr auto CODE_PROPERTY_KEY = "code";
   std::unique_ptr<Object> clone() const override;
+  virtual Flag flags() const override;
+  std::unique_ptr<Object> convert() override;
+
+private:
+  std::vector<std::unique_ptr<Object>> make_clones();
+
 };
 
 }  // namespace omm
