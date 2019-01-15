@@ -160,6 +160,11 @@ std::unique_ptr<QMenu> SelectPointsTool::make_context_menu(QWidget* parent)
   return std::make_unique<PathMenu>(scene, parent);
 }
 
+void SelectPointsTool::on_selection_changed()
+{
+  on_scene_changed();
+}
+
 template class SelectTool<ObjectPositions>;
 template class SelectTool<PointPositions>;
 
