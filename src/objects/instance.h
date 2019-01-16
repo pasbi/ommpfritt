@@ -19,6 +19,8 @@ public:
   static constexpr auto TYPE = "Instance";
   static constexpr auto REFERENCE_PROPERTY_KEY = "reference";
   std::unique_ptr<Object> clone() const override;
+  std::unique_ptr<Object> convert() override;
+  Flag flags() const override;
 
 private:
   Object* referenced_object() const;

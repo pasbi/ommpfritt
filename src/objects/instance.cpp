@@ -66,4 +66,22 @@ std::unique_ptr<Object> Instance::clone() const
   return std::make_unique<Instance>(*this);
 }
 
+std::unique_ptr<Object> Instance::convert()
+{
+  auto* referenced_object = this->referenced_object();
+  if (referenced_object != nullptr) {
+    auto clone = referenced_object->clone();
+    copy_properties(*clone);
+    copy_tags(*clone);
+    return clone;
+  } else {
+    return nullptr;
+  }
+}
+
+Object::Flag Instance::flags() const
+{
+  return Object::flags() | Flag::Convertable;
+}
+
 }  // namespace omm
