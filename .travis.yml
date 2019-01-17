@@ -1,7 +1,11 @@
 language: cpp
 
 before_install:
-  - sudo apt-get install -y libarmadillo-dev python3 python3-pybind11 pybind11-dev qt5-default
+  - sudo apt-get install -y libarmadillo-dev python3 qt5-default
+  - wget http://ftp.us.debian.org/debian/pool/main/p/pybind11/pybind11-dev_2.2.4-2_all.deb
+  - sudo dpkg -i pybind11-dev_2.2.4-2_all.deb
+  - wget http://ftp.us.debian.org/debian/pool/main/p/pybind11/python3-pybind11_2.2.4-2_all.deb
+  - sudo dpkg -i python3-pybind11_2.2.4-2_all.deb
 
 addons:
   apt:
