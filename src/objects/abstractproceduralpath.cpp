@@ -21,7 +21,7 @@ BoundingBox AbstractProceduralPath::bounding_box()
 
 Object::Flag AbstractProceduralPath::flags() const
 {
-  return Flag::Convertable;
+  return Object::flags() | Flag::Convertable | Flag::Evaluatable;
 }
 
 std::unique_ptr<Object> AbstractProceduralPath::convert()
@@ -33,5 +33,7 @@ std::unique_ptr<Object> AbstractProceduralPath::convert()
   converted->property(Path::IS_CLOSED_PROPERTY_KEY).set(is_closed());
   return converted;
 }
+
+Cubics AbstractProceduralPath::cubic_segments() { return Cubics(points(), is_closed()); }
 
 }  // namespace omm

@@ -3,6 +3,7 @@ file (GLOB SOURCES
   "cloner.cpp"
   "ellipse.cpp"
   "empty.cpp"
+  "evaluatable.cpp"
   "instance.cpp"
   "object.cpp"
   "objectregister.cpp"

@@ -5,6 +5,7 @@
 #include "properties/boolproperty.h"
 #include "properties/optionsproperty.h"
 #include "scene/scene.h"
+#include "geometry/cubic.h"
 
 namespace
 {
@@ -168,5 +169,12 @@ Path::modified_points(const bool constrain_to_selection, InterpolationMode mode)
   }
   return map;
 }
+
+Cubics Path::cubic_segments()
+{
+  return Cubics(m_points, property(IS_CLOSED_PROPERTY_KEY).value<bool>());
+}
+
+Object::Flag Path::flags() const { return Object::flags() | Flag::Evaluatable; };
 
 }  // namespace omm

@@ -28,7 +28,7 @@ public:
   explicit Object(const Object& other);
   virtual ~Object();
 
-  enum class Flag { None = 0x0, Convertable = 0x1 };
+  enum class Flag { None = 0x0, Convertable = 0x1, Evaluatable = 0x2 };
 
   void transform(const ObjectTransformation& transformation);
   ObjectTransformation transformation() const;
