@@ -1,5 +1,12 @@
 language: cpp
 
+before_install:
+  - sudo apt-get install -y libarmadillo-dev python3 python3-pybind11 pybind11-dev qt5-default
+
+addons:
+  apt:
+    update: true
+
 compiler:
   - gcc
   - clang
@@ -9,4 +16,4 @@ before_script:
   - cd build
   - cmake ..
 
-script: make && make test
+script: make
