@@ -1,8 +1,8 @@
 # ommpfritt
 
 *ommpfritt* or short *omm* is a free and open source vector modelling application.
-It maps the workflow of (3D) modelling tools to the 2D vector graphics world.
-The design of the application encourages and supports the user to design maintainable documents,
+It brings the workflow of (3D) modelling tools to the 2D vector graphics world.
+The design of the application encourages and supports the user to produce maintainable documents,
 using concepts like procedural modelling and non-destructive editing.
 
 The concept lies in between traditional vector graphic editors (e.g., _inkscape_), CAD applications
@@ -16,7 +16,7 @@ Although you can already use the app, it's still a long way until v1.0, so we ne
 Currently we're looking for
 
 - developers (have a look at the issues section; better get in touch with us before you start coding)
-- users (aka. testers, file an issue)
+- users (aka. testers, file an issue, tell us your ideas)
 
 ## Building
 
