@@ -289,5 +289,10 @@ template<> std::set<Style*> Scene::find_items<Style>(const std::string& name) co
   return filter_by_name(styles.items(), name);
 }
 
+void Scene::evaluate_tags()
+{
+  for (Tag* tag : tags()) { tag->evaluate(); }
+}
+
 
 }  // namespace omm

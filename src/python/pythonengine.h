@@ -14,10 +14,6 @@ class PythonEngine
 {
 public:
   explicit PythonEngine();
-  ~PythonEngine();
-
-  void prepare_frame(Scene& scene) const;
-  void evaluate_script_tags(Scene& scene, bool force = true) const;
   bool run(const std::string& code, const pybind11::object& locals) const;
 
 private:

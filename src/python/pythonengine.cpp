@@ -29,10 +29,6 @@ PythonEngine::PythonEngine()
   register_wrappers(omm_module);
 }
 
-PythonEngine::~PythonEngine()
-{
-}
-
 bool PythonEngine::run(const std::string& code, const py::object& locals) const
 {
   try {
@@ -43,22 +39,6 @@ bool PythonEngine::run(const std::string& code, const py::object& locals) const
     return false;
   }
 }
-
-void PythonEngine::prepare_frame(Scene& scene) const
-{
-  evaluate_script_tags(scene, false);
-}
-
-void PythonEngine::evaluate_script_tags(Scene& scene, bool force) const
-{
-  for (Tag* tag : scene.tags()) {
-    if (tag->type() == ScriptTag::TYPE) {
-      auto& script_tag = static_cast<ScriptTag&>(*tag);
-      if (force || script_tag.update_on_frame()) { script_tag.run(); }
-    }
-  }
-}
-
 
 // TODO imported symbols are not available inside `lambda`s or `def`s.
 

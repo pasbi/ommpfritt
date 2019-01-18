@@ -14,6 +14,7 @@
 #include "common.h"
 #include "objects/path.h"
 #include "mainwindow/pathmenu.h"
+#include "tags/scripttag.h"
 
 namespace omm
 {
@@ -44,7 +45,11 @@ void MainMenuBar::make_scene_menu()
 {
   auto& scene_menu = *addMenu(tr("&Scene"));
   action(scene_menu, tr("&evaluate"), [this]() {
-    m_app.python_engine.evaluate_script_tags(m_app.scene);
+    for (Tag* tag : m_app.scene.tags()) {
+      if (tag->type() == ScriptTag::TYPE) {
+        static_cast<ScriptTag*>(tag)->force_evaluate();
+      }
+    }
   });
 }
 

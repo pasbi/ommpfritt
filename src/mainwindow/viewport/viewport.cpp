@@ -64,7 +64,7 @@ void Viewport::paintEvent(QPaintEvent* event)
   ViewportRenderer renderer(painter, m_scene);
   renderer.set_base_transformation(viewport_transformation());
 
-  m_scene.python_engine.prepare_frame(m_scene);
+  m_scene.evaluate_tags();
   renderer.render();
 
   m_scene.tool_box.active_tool().draw(renderer);

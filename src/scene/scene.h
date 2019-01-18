@@ -136,6 +136,8 @@ public:
     }
   }
 
+  void evaluate_tags();
+
 };
 
 }  // namespace omm

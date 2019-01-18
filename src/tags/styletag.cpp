@@ -14,19 +14,14 @@ StyleTag::StyleTag(Object& owner)
     .set_label("style").set_category("style");
 }
 
-std::string StyleTag::type() const
-{
-  return TYPE;
-}
 
 QIcon StyleTag::icon() const
 {
   return QApplication::style()->standardIcon(QStyle::SP_DialogResetButton);
 }
 
-std::unique_ptr<Tag> StyleTag::clone() const
-{
-  return std::make_unique<StyleTag>(*this);
-}
+std::string StyleTag::type() const { return TYPE; }
+std::unique_ptr<Tag> StyleTag::clone() const { return std::make_unique<StyleTag>(*this); }
+void StyleTag::evaluate() {}
 
 }  // namespace omm

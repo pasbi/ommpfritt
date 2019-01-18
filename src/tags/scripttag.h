@@ -4,12 +4,10 @@
 
 namespace omm
 {
-
 class ScriptTag : public Tag
 {
 public:
   explicit ScriptTag(Object& owner);
-  ~ScriptTag();
   std::string type() const override;
   QIcon icon() const override;
   static constexpr auto TYPE = "ScriptTag";
@@ -18,8 +16,8 @@ public:
   static constexpr auto TRIGGER_UPDATE_PROPERTY_KEY = "trigger";
   std::unique_ptr<Tag> clone() const override;
   void on_property_value_changed(Property& property) override;
-  void run();
-  bool update_on_frame() const;
+  void evaluate() override;
+  void force_evaluate();
 
 };
 

@@ -31,10 +31,6 @@ ScriptTag::ScriptTag(Object& owner)
     .set_label("evaluate").set_category("script");
 }
 
-ScriptTag::~ScriptTag()
-{
-}
-
 std::string ScriptTag::type() const
 {
   return TYPE;
@@ -52,12 +48,10 @@ std::unique_ptr<Tag> ScriptTag::clone() const
 
 void ScriptTag::on_property_value_changed(Property& property)
 {
-  if (&property == &this->property(TRIGGER_UPDATE_PROPERTY_KEY)) {
-    run();
-  }
+  if (&property == &this->property(TRIGGER_UPDATE_PROPERTY_KEY)) { force_evaluate(); }
 }
 
-void ScriptTag::run()
+void ScriptTag::force_evaluate()
 {
   Scene* scene = owner.scene();
   assert(scene != nullptr);
@@ -67,9 +61,11 @@ void ScriptTag::run()
   scene->python_engine.run(code, locals);
 }
 
-bool ScriptTag::update_on_frame() const
+void ScriptTag::evaluate()
 {
-  return property(UPDATE_MODE_PROPERTY_KEY).value<std::size_t>() == 0;
+  if (property(UPDATE_MODE_PROPERTY_KEY).value<std::size_t>() == 0) {
+    force_evaluate();
+  }
 }
 
 }  // namespace omm

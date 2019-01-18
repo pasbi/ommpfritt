@@ -21,6 +21,7 @@ public:
   static constexpr auto TYPE = "Tag";
   virtual std::unique_ptr<Tag> clone() const = 0;
   Object& owner;
+  virtual void evaluate() = 0;
 };
 
 void register_tags();
