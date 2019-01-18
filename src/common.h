@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <type_traits>
 #include <variant>
+#include <typeinfo>
+#include <utility>
 
 /*
  * passes ownership of `object` to `consumer` and returns a reference to `object`
@@ -220,4 +222,22 @@ void print_variant_value(std::ostream& ostream, const variant_type& variant)
   if constexpr (i+1 < std::variant_size_v<variant_type>) {
     print_variant_value<i+1, variant_type>(ostream, variant);
   }
+}
+
+template<typename T, typename S> T type_cast(S* s)
+{
+  if (s->type() == std::decay_t<std::remove_pointer_t<T>>::TYPE) {
+    return static_cast<T>(s);
+  } else {
+    return nullptr;
+  }
+}
+
+template<typename T, typename S> T& type_cast(S& s)
+{
+  auto* t = type_cast<std::add_pointer_t<T>>(&s);
+  if (t == nullptr) {
+    throw std::bad_cast();
+  }
+  return *t;
 }

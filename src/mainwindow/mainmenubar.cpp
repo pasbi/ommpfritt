@@ -46,9 +46,8 @@ void MainMenuBar::make_scene_menu()
   auto& scene_menu = *addMenu(tr("&Scene"));
   action(scene_menu, tr("&evaluate"), [this]() {
     for (Tag* tag : m_app.scene.tags()) {
-      if (tag->type() == ScriptTag::TYPE) {
-        static_cast<ScriptTag*>(tag)->force_evaluate();
-      }
+      auto* script_tag = type_cast<ScriptTag*>(tag);
+      if (script_tag != nullptr) { script_tag->force_evaluate(); }
     }
   });
 }
