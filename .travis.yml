@@ -8,7 +8,7 @@ before_install:
   - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic multiverse'
   - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic restricted'
   - sudo apt-get update
-  - sudo apt-get install -y python3-pybind11 pybind11-dev qt5-default libarmadillo-dev python3 
+  - sudo apt-get install -y python3-pybind11 pybind11-dev qt5-default libarmadillo-dev libgoogle-glog-dev python3
 
 compiler:
   - clang
