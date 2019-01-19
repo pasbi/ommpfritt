@@ -10,7 +10,8 @@ namespace omm
 StyleTag::StyleTag(Object& owner)
   : Tag(owner)
 {
-  add_property<ReferenceProperty>(STYLE_REFERENCE_PROPERTY_KEY, AbstractPropertyOwner::Kind::Style)
+  add_property<ReferenceProperty>(STYLE_REFERENCE_PROPERTY_KEY)
+    .set_allowed_kinds(AbstractPropertyOwner::Kind::Style)
     .set_label("style").set_category("style");
 }
 

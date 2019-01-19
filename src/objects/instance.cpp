@@ -12,7 +12,8 @@ class Style;
 Instance::Instance(Scene* scene)
   : Object(scene)
 {
-  add_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY, AbstractPropertyOwner::Kind::Object)
+  add_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
+    .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
     .set_label("reference").set_category("Instance");
 }
 
