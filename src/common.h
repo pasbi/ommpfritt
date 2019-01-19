@@ -31,6 +31,12 @@ template<typename T> void reserve(std::vector<T>& c, size_t n)
   c.reserve(n);
 }
 
+static constexpr struct identity_t
+{
+  template<typename T>
+  constexpr decltype(auto) operator()(T&& t) const noexcept { return std::forward<T>(t); }
+} identity {};
+
 /**
  * @brief makes a container similar to `Container<S>` but with `value_type T`.
  */
@@ -47,6 +53,12 @@ auto transform(ContainerS&& ss, F&& mapper)
   return ts;
 }
 
+template<typename T, typename ContainerS>
+auto transform(ContainerS&& ss)
+{
+  return ::transform<T, ContainerS>(std::forward<ContainerS>(ss), ::identity);
+}
+
 template<typename T, template<typename...> class ContainerT, typename ContainerS, typename F>
 auto transform(ContainerS&& ss, F&& mapper)
 {
@@ -55,6 +67,12 @@ auto transform(ContainerS&& ss, F&& mapper)
   std::transform( std::begin(ss), std::end(ss),
                   std::inserter(ts, std::end(ts)), std::forward<F>(mapper) );
   return ts;
+}
+
+template<typename T, template<typename...> class ContainerT, typename ContainerS>
+auto transform(ContainerS&& ss)
+{
+  return ::transform<T, ContainerT>(std::forward<ContainerS>(ss), ::identity);
 }
 
 template<typename Ts, typename F>
@@ -156,12 +174,6 @@ ContainerT<std::unique_ptr<T>> copy(const ContainerT<std::unique_ptr<T>>& other)
 {
   return ::transform<std::unique_ptr<T>>(other, [](const auto& i) { return i->clone(); });
 }
-
-static constexpr struct identity_t
-{
-  template<typename T>
-  constexpr decltype(auto) operator()(T&& t) const noexcept { return std::forward<T>(t); }
-} identity {};
 
 template<typename T> struct EnableBitMaskOperators : std::false_type {};
 
