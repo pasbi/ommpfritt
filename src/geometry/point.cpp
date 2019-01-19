@@ -53,7 +53,7 @@ Point Point::smoothed(const Point& left_neighbor, const Point& right_neighbor) c
   const PolarCoordinates l_pc(left_neighbor.position - copy.position);
   const PolarCoordinates r_pc(right_neighbor.position - copy.position);
   const double theta = (l_pc.argument + r_pc.argument) / 2.0;
-  const double mag = (l_pc.magnitude + r_pc.magnitude) / 12.0;
+  const double mag = (l_pc.magnitude + r_pc.magnitude) / 6.0;
 
   // TODO
   const double d = arma::dot( right_neighbor.position - copy.position,
