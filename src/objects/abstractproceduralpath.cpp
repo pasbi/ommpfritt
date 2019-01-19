@@ -3,6 +3,7 @@
 #include "properties/floatproperty.h"
 #include "objects/path.h"
 #include "common.h"
+#include "geometry/cubic.h"
 
 namespace omm
 {
@@ -21,7 +22,7 @@ BoundingBox AbstractProceduralPath::bounding_box()
 
 Object::Flag AbstractProceduralPath::flags() const
 {
-  return Object::flags() | Flag::Convertable | Flag::Evaluatable;
+  return Object::flags() | Flag::Convertable;
 }
 
 std::unique_ptr<Object> AbstractProceduralPath::convert()
@@ -34,6 +35,14 @@ std::unique_ptr<Object> AbstractProceduralPath::convert()
   return converted;
 }
 
-Cubics AbstractProceduralPath::cubic_segments() { return Cubics(points(), is_closed()); }
+OrientedPoint AbstractProceduralPath::evaluate(const double t)
+{
+  return Cubics(points(), is_closed()).evaluate(t);
+}
+
+double AbstractProceduralPath::path_length()
+{
+  return Cubics(points(), is_closed()).length();
+}
 
 }  // namespace omm

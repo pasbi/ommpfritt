@@ -1,14 +1,13 @@
 #pragma once
 
 #include "objects/object.h"
-#include "objects/evaluatable.h"
 
 namespace omm
 {
 
 class Scene;
 
-class AbstractProceduralPath : public Object, public Evaluatable
+class AbstractProceduralPath : public Object
 {
 public:
   using Object::Object;
@@ -16,8 +15,10 @@ public:
   BoundingBox bounding_box() override;
   static constexpr auto TYPE = "AbstractProceduralPath";
   std::unique_ptr<Object> convert() override;
-  Cubics cubic_segments() override;
   Flag flags() const override;
+
+  OrientedPoint evaluate(const double t) override;
+  double path_length() override;
 
 protected:
   virtual std::vector<Point> points() = 0;

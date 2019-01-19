@@ -1,5 +1,6 @@
 #include "geometry/cubic.h"
 #include "geometry/point.h"
+#include <glog/logging.h>
 
 namespace
 {
@@ -17,14 +18,9 @@ arma::vec2 accumulate(const Fs& fs, const Points& points, const double t)
 namespace omm
 {
 
-PointOnCubic::PointOnCubic(const Cubic& cubic, const double t)
-  : pos(cubic.pos(t)), tangent(cubic.tangent(t)) { }
-
-double PointOnCubic::rotation() const { return std::atan2(tangent(1), tangent(0)); }
-
-
 Cubic::Cubic(const Point& start, const Point& end)
-  : Cubic( { start.position, start.right_position(), end.left_position(), end.position } )
+  : Cubic( { start.position, 3 * start.right_tangent.to_cartesian(),
+             end.position, -3 * end.left_tangent.to_cartesian() } )
 {
 }
 
@@ -74,15 +70,16 @@ arma::vec2 Cubic::tangent(const double t) const
   return accumulate(base_polynomials_derivatives, m_points, t);
 }
 
-PointOnCubic Cubic::evaluate(const double t) const
+OrientedPoint Cubic::evaluate(const double t) const
 {
-  return PointOnCubic(*this, t);
+  const auto tangent = this->tangent(t);
+  return OrientedPoint(pos(t), atan2(tangent(1), tangent(0)));
 }
 
 Cubics::Cubics(const std::vector<Point>& points, const bool is_closed)
 {
   m_cubics.reserve(points.size() - 1);
-  for (std::size_t i = 0; i < points.size(); ++i) {
+  for (std::size_t i = 0; i < points.size() - 1; ++i) {
     m_cubics.push_back(Cubic(points[i], points[i+1]));
   }
   if (is_closed && points.size() > 2) {
@@ -90,7 +87,7 @@ Cubics::Cubics(const std::vector<Point>& points, const bool is_closed)
   }
 }
 
-PointOnCubic Cubics::evaluate(const double t) const
+OrientedPoint Cubics::evaluate(const double t) const
 {
   double segment_t = -1.0;
   std::size_t segment_i = m_cubics.size();

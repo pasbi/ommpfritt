@@ -4,20 +4,10 @@
 #include <array>
 #include <cassert>
 
+#include "geometry/point.h"
+
 namespace omm
 {
-
-class Point;
-class Cubic;
-
-class PointOnCubic
-{
-public:
-  PointOnCubic(const Cubic& cubic, const double t);
-  const arma::vec2 pos;
-  const arma::vec2 tangent;
-  double rotation() const;
-};
 
 class Cubic
 {
@@ -29,7 +19,7 @@ public:
   arma::vec2 pos(const double t) const;
   arma::vec2 tangent(const double t) const;
   double length() const;
-  PointOnCubic evaluate(const double t) const;
+  OrientedPoint evaluate(const double t) const;
   std::vector<arma::vec2> interpolate(const std::size_t n) const;
 
 private:
@@ -43,7 +33,7 @@ public:
   Cubics(const std::vector<Point>& points, const bool is_closed);
   double length() const;
   void segment(const double t, std::size_t& segment_i, double& segment_t) const;
-  PointOnCubic evaluate(const double t) const;
+  OrientedPoint evaluate(const double t) const;
 
 private:
   std::vector<Cubic> m_cubics;

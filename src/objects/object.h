@@ -10,6 +10,7 @@
 #include "common.h"
 #include "renderers/abstractrenderer.h"
 #include "scene/list.h"
+#include "geometry/point.h"
 
 namespace omm
 {
@@ -28,7 +29,7 @@ public:
   explicit Object(const Object& other);
   virtual ~Object();
 
-  enum class Flag { None = 0x0, Convertable = 0x1, Evaluatable = 0x2 };
+  enum class Flag { None = 0x0, Convertable = 0x1 };
 
   void transform(const ObjectTransformation& transformation);
   ObjectTransformation transformation() const;
@@ -60,6 +61,9 @@ public:
 
   static constexpr auto TYPE = "Object";
   static constexpr auto TRANSFORMATION_PROPERTY_KEY = "transformation";
+
+  virtual OrientedPoint evaluate(const double t);
+  virtual double path_length();
 
 protected:
   bool m_draw_children = true;

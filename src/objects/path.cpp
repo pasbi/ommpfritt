@@ -163,18 +163,26 @@ Path::modified_points(const bool constrain_to_selection, InterpolationMode mode)
   };
 
   for (std::size_t i = 1; i < points.size()-1; ++i) { process_point(i); }
-  if (this->property(omm::Path::IS_CLOSED_PROPERTY_KEY).value<bool>()) {
+  if (is_closed()) {
     process_point(0);
     process_point(points.size()-1);
   }
   return map;
 }
 
-Cubics Path::cubic_segments()
+bool Path::is_closed() const
 {
-  return Cubics(m_points, property(IS_CLOSED_PROPERTY_KEY).value<bool>());
+  return this->property(omm::Path::IS_CLOSED_PROPERTY_KEY).value<bool>();
 }
 
-Object::Flag Path::flags() const { return Object::flags() | Flag::Evaluatable; };
+OrientedPoint Path::evaluate(const double t)
+{
+  return Cubics(m_points, is_closed()).evaluate(t);
+}
+
+double Path::path_length()
+{
+  return Cubics(m_points, is_closed()).length();
+}
 
 }  // namespace omm

@@ -244,20 +244,9 @@ std::unique_ptr<Object> Object::clone(Scene* scene) const
   return clone;
 }
 
-std::unique_ptr<Object> Object::convert()
-{
-  return clone();
-}
-
-Object::Flag Object::flags() const
-{
-  return Flag::None;
-}
-
-Scene* Object::scene() const
-{
-  return m_scene;
-}
+std::unique_ptr<Object> Object::convert() { return clone(); }
+Object::Flag Object::flags() const { return Flag::None; }
+Scene* Object::scene() const { return m_scene; }
 
 void Object::copy_properties(Object& other) const
 {
@@ -281,5 +270,8 @@ void Object::copy_tags(Object& other) const
     other.tags.insert(context);
   }
 }
+
+OrientedPoint Object::evaluate(const double t) { return OrientedPoint(); }
+double Object::path_length() { return -1.0; }
 
 }  // namespace omm

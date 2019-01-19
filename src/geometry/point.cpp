@@ -5,6 +5,12 @@
 namespace omm
 {
 
+
+OrientedPoint::OrientedPoint() : position(arma::vec2{0.0, 0.0}), rotation(0), is_valid(false) { }
+
+OrientedPoint::OrientedPoint(const arma::vec2& pos, double rotation)
+  : position(pos), rotation(rotation), is_valid(true) { }
+
 Point::Point(const arma::vec2& position)
   : position(position), left_tangent(PolarCoordinates()), right_tangent(PolarCoordinates()) { }
 

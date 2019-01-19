@@ -3,14 +3,13 @@
 #include "objects/object.h"
 #include "geometry/point.h"
 #include "geometry/cubic.h"
-#include "objects/evaluatable.h"
 
 namespace omm
 {
 
 class Scene;
 
-class Path : public Object, public Evaluatable
+class Path : public Object
 {
 public:
   explicit Path(Scene* scene);
@@ -25,7 +24,8 @@ public:
   static constexpr auto POINTS_POINTER = "points";
   static constexpr auto INTERPOLATION_PROPERTY_KEY = "interpolation";
 
-  Cubics cubic_segments() override;
+  OrientedPoint evaluate(const double t) override;
+  double path_length() override;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
@@ -35,10 +35,10 @@ public:
   InterpolationMode interpolation_mode() const;
   void set_interpolation_mode(const InterpolationMode& mode);
   void deselect_all_points();
-  Flag flags() const override;
 
   std::map<Point*, Point>
   modified_points(const bool constrain_to_selection, InterpolationMode mode);
+  bool is_closed() const;
 
 private:
   std::vector<Point> m_points;

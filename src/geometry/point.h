@@ -5,6 +5,16 @@
 namespace omm
 {
 
+class OrientedPoint
+{
+public:
+  OrientedPoint();
+  OrientedPoint(const arma::vec2& pos, double rotation);
+  const arma::vec2 position;
+  const double rotation;
+  const bool is_valid;
+};
+
 struct PolarCoordinates
 {
   explicit PolarCoordinates(const double argument, const double magnitude);

@@ -308,4 +308,15 @@ ObjectTransformation ObjectTransformation::transformed(const ObjectTransformatio
   return ObjectTransformation(o.i() * to_mat() * o);
 }
 
+OrientedPoint ObjectTransformation::apply(const OrientedPoint& point)
+{
+  return OrientedPoint(apply_to_position(point.position), apply_to_angle(point.rotation));
+}
+
+double ObjectTransformation::apply_to_angle(double angle) const
+{
+  const arma::vec2 direction = apply_to_direction({ std::cos(angle), std::sin(angle) });
+  return std::atan2(direction(1), direction(0));
+}
+
 }  // namespace omm
