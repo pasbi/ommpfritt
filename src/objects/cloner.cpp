@@ -43,13 +43,13 @@ std::vector<std::unique_ptr<Object>> Cloner::make_clones()
   const auto count = property(COUNT_PROPERTY_KEY).value<int>();
   const auto code = property(CODE_PROPERTY_KEY).value<std::string>();
 
-  std::vector<std::unique_ptr<Object>> clones;
-  clones.reserve(count);
-  for (int i = 0; i < count; ++i) {
-    clones.push_back(child(i % n_children).clone());
-  }
 
-  if (clones.size() > 0) {
+  std::vector<std::unique_ptr<Object>> clones;
+  if (n_children > 0) {
+    clones.reserve(count);
+    for (int i = 0; i < count; ++i) {
+      clones.push_back(child(i % n_children).clone());
+    }
     for (int i = 0; i < count; ++i) {
       auto& copy = *clones.at(i % clones.size());
       const auto locals = pybind11::dict( "id"_a=i,
