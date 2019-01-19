@@ -76,6 +76,10 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
       auto converted = c->convert();
       assert(!c->is_root());
       TreeOwningContext<Object> context(*converted, c->parent(), c);
+      const auto properties = ::transform<Property*>(scene.find_reference_holders(*c));
+      if (properties.size() > 0) {
+        scene.submit<PropertiesCommand<AbstractPropertyOwner*>>(properties, converted.get());
+      }
       context.subject.capture(std::move(converted));
       using object_tree_type = Tree<Object>;
       scene.submit<AddCommand<object_tree_type>>(scene.object_tree, std::move(context));
