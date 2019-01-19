@@ -1,4 +1,5 @@
 file (GLOB SOURCES
+  "pathtag.cpp"
   "scripttag.cpp"
   "styletag.cpp"
   "tag.cpp"
