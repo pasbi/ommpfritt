@@ -50,14 +50,15 @@ Path::Path(Scene* scene) : Object(scene)
 {
   const auto update_point_tangents = [this](Property&) {
     std::map<Path*, std::map<Point*, Point>> map;
-    map[this] = this->modified_points(false, this->interpolation_mode());
+    const auto i_mode = property(INTERPOLATION_PROPERTY_KEY).value<InterpolationMode>();
+    map[this] = this->modified_points(false, i_mode);
     this->scene()->submit<ModifyPointsCommand>(map);
   };
   add_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
     .set_label(QObject::tr("closed").toStdString())
     .set_category(QObject::tr("path").toStdString());
   add_property<OptionsProperty>(INTERPOLATION_PROPERTY_KEY)
-    .set_options({ "linear", "smooth", "bezier" })
+    .set_options({ "linear", "smooth", "bezier" })    // must match Path::InterpolationMode
     .set_label(QObject::tr("interpolation").toStdString())
     .set_category(QObject::tr("path").toStdString())
     .set_post_submit(update_point_tangents).set_pre_submit(update_point_tangents);
@@ -117,18 +118,6 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
     const auto point_pointer = make_pointer(points_pointer, i);
     m_points[i] = deserialize_point(deserializer, point_pointer);
   }
-}
-
-Path::InterpolationMode Path::interpolation_mode() const
-{
-  const auto i = property(INTERPOLATION_PROPERTY_KEY).value<std::size_t>();
-  return static_cast<Path::InterpolationMode>(i);
-}
-
-void Path::set_interpolation_mode(const InterpolationMode& mode)
-{
-  const auto i = static_cast<std::size_t>(mode);
-  property(INTERPOLATION_PROPERTY_KEY).set(i);
 }
 
 void Path::deselect_all_points()

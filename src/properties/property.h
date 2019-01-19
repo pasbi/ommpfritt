@@ -66,9 +66,17 @@ public:
   virtual ~Property() = default;
 
   virtual variant_type variant_value() const = 0;
-  virtual void set(const variant_type& value) = 0;
   virtual void notify_observers() = 0;
-  template<typename ValueT> ValueT value() const { return std::get<ValueT>(variant_value()); }
+
+  virtual void set(const variant_type& value) = 0;
+
+  template<typename EnumT> std::enable_if_t<std::is_enum_v<EnumT>, void>
+  set(const EnumT& value) { set(static_cast<std::size_t>(value)); }
+
+  template<typename ValueT> std::enable_if_t<!std::is_enum_v<ValueT>, ValueT>
+  value() const { return std::get<ValueT>(variant_value()); }
+  template<typename ValueT> std::enable_if_t<std::is_enum_v<ValueT>, ValueT>
+  value() const { return static_cast<ValueT>(std::get<std::size_t>(variant_value())); }
 
 
   std::string label() const;

@@ -59,7 +59,9 @@ void PointsTransformationCommand::redo()
 {
   for (const auto& [point, _] : m_alternative_points) { point->swap(m_alternative_points[point]); }
   for (Path* path : m_paths) {
-    for (auto [point, alternative] : path->modified_points(false, path->interpolation_mode())) {
+    const auto& i_mode_property = path->property(Path::INTERPOLATION_PROPERTY_KEY);
+    const auto i_mode = i_mode_property.value<Path::InterpolationMode>();
+    for (auto [point, alternative] : path->modified_points(false, i_mode)) {
       point->swap(alternative);
     }
   }

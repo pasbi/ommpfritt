@@ -289,7 +289,8 @@ void PointSelectHandle::transform_tangent(const arma::vec2& delta, TangentMode m
 
 bool PointSelectHandle::tangents_active() const
 {
-  return m_path.interpolation_mode() == Path::InterpolationMode::Bezier;
+  const auto& imode_property = m_path.property(Path::INTERPOLATION_PROPERTY_KEY);
+  return imode_property.value<Path::InterpolationMode>() == Path::InterpolationMode::Bezier;
 }
 
 void PointSelectHandle::set_selected(bool selected)

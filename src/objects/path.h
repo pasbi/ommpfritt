@@ -32,8 +32,6 @@ public:
   bool tangents_modifiable() const;
 
   enum class InterpolationMode { Linear, Smooth, Bezier };
-  InterpolationMode interpolation_mode() const;
-  void set_interpolation_mode(const InterpolationMode& mode);
   void deselect_all_points();
 
   std::map<Point*, Point>
