@@ -9,13 +9,10 @@ TransformationPropertyWidget
 ::TransformationPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget(scene, properties)
 {
-  auto transformation_edit = std::make_unique<SpinBoxTransformationEdit>();
+  const auto on_value_changed = [this](const auto& value) { /*set_properties_value(value);*/ };
+  auto transformation_edit = std::make_unique<SpinBoxTransformationEdit>(on_value_changed);
   m_transformation_edit = transformation_edit.get();
   set_default_layout(std::move(transformation_edit));
-
-  QObject::connect( m_transformation_edit, &AbstractTransformationEdit::value_changed,
-                    [this](const ObjectTransformation& value) { set_properties_value(value); } );
-
   update_edit();
 }
 

@@ -21,7 +21,8 @@ WidgetT& add_new(QGridLayout& layout, int row, int column, Args&&... args)
 namespace omm
 {
 
-SpinBoxTransformationEdit::SpinBoxTransformationEdit()
+SpinBoxTransformationEdit::SpinBoxTransformationEdit(const on_value_changed_t& on_value_changed)
+  : MultiValueEdit<ObjectTransformation>(on_value_changed)
 {
   auto layout = std::make_unique<QGridLayout>();
 
@@ -41,16 +42,16 @@ SpinBoxTransformationEdit::SpinBoxTransformationEdit()
 
   setLayout(layout.release());
 
-  const auto emit_value_changed = [this]() {
-    Q_EMIT value_changed(value());
-  };
+  on_value_changed(value());
 
   for (const auto& spinbox : { m_xposition_spinbox, m_xscale_spinbox, m_shear_spinbox,
                                m_yposition_spinbox, m_yscale_spinbox, m_rotation_spinbox })
   {
     spinbox->setRange(-1000, 1000);
     using T = void(QDoubleSpinBox::*)(double);
-    connect(spinbox, static_cast<T>(&QDoubleSpinBox::valueChanged), emit_value_changed);
+    connect(spinbox, static_cast<T>(&QDoubleSpinBox::valueChanged), [this, on_value_changed]() {
+      on_value_changed(value());
+    });
   }
 }
 

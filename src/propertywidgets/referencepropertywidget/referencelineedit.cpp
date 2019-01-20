@@ -33,8 +33,10 @@ collect_candidates(const Scene& scene, omm::AbstractPropertyOwner::Kind kind)
   return candidates;
 }
 
-ReferenceLineEdit::ReferenceLineEdit(Scene& scene, AbstractPropertyOwner::Kind allowed_kinds)
-  : m_scene(scene)
+ReferenceLineEdit::ReferenceLineEdit( Scene& scene, AbstractPropertyOwner::Kind allowed_kinds,
+                                      const on_value_changed_t& on_value_changed )
+  : MultiValueEdit<AbstractPropertyOwner *>(on_value_changed)
+  , m_scene(scene)
   , m_allowed_kinds(allowed_kinds)
 {
   setEditable(false);
@@ -74,15 +76,13 @@ void ReferenceLineEdit::set_value(const value_type& value)
   assert(it != m_possible_references.end());
   setCurrentIndex(std::distance(m_possible_references.begin(), it));
 
-  if (value_has_changed) {
-    Q_EMIT reference_changed(value);
-  }
+  if (value_has_changed) { on_value_changed(value); }
 }
 
-void ReferenceLineEdit::set_inconsistent_value()
-{
-  setEditText(tr("<multiple values>"));
-}
+void ReferenceLineEdit::set_inconsistent_value() { setEditText(tr("<multiple values>")); }
+ReferenceLineEdit::value_type ReferenceLineEdit::value() const { return m_value; }
+void ReferenceLineEdit::mouseDoubleClickEvent(QMouseEvent* event) { set_value(nullptr); }
+void ReferenceLineEdit::structure_has_changed() { update_candidates(); }
 
 void ReferenceLineEdit::dragEnterEvent(QDragEnterEvent* event)
 {
@@ -105,10 +105,6 @@ void ReferenceLineEdit::dropEvent(QDropEvent* event)
   }
 }
 
-ReferenceLineEdit::value_type ReferenceLineEdit::value() const
-{
-  return m_value;
-}
 
 bool ReferenceLineEdit::can_drop(const QMimeData& mime_data) const
 {
@@ -124,14 +120,5 @@ bool ReferenceLineEdit::can_drop(const QMimeData& mime_data) const
   return false;
 }
 
-void ReferenceLineEdit::mouseDoubleClickEvent(QMouseEvent* event)
-{
-  set_value(nullptr);
-}
-
-void ReferenceLineEdit::structure_has_changed()
-{
-  update_candidates();
-}
 
 }  // namespace omm

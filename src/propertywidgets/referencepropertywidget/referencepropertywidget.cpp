@@ -28,14 +28,14 @@ ReferencePropertyWidget
 ::ReferencePropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget(scene, properties)
 {
+  const auto on_value_changed = [this](const auto& reference) {
+    set_properties_value(reference);
+  };
   auto line_edit = std::make_unique<ReferenceLineEdit>( scene,
-                                                        get_allowed_kinds(this->properties()) );
+                                                        get_allowed_kinds(this->properties()),
+                                                        on_value_changed );
   m_line_edit = line_edit.get();
   set_default_layout(std::move(line_edit));
-
-  connect(m_line_edit, &ReferenceLineEdit::reference_changed, [this](const auto& reference) {
-    set_properties_value(reference);
-  });
 
   update_edit();
 }

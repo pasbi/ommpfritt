@@ -25,9 +25,8 @@ auto from_qcolor(const QColor& color)
 namespace omm
 {
 
-ColorEdit::ColorEdit()
-{
-}
+ColorEdit::ColorEdit(const on_value_changed_t& on_value_changed)
+  : MultiValueEdit<Color>(on_value_changed) { }
 
 void ColorEdit::paintEvent(QPaintEvent* event)
 {
@@ -39,7 +38,7 @@ void ColorEdit::set_value(const value_type& value)
 {
   if (m_current_color != value) {
     m_current_color = value;
-    Q_EMIT color_changed(m_current_color);
+    on_value_changed(m_current_color);
     update();
   }
 }
@@ -50,10 +49,7 @@ void ColorEdit::set_inconsistent_value()
   update();
 }
 
-ColorEdit::value_type ColorEdit::value() const
-{
-  return m_current_color;
-}
+ColorEdit::value_type ColorEdit::value() const { return m_current_color; }
 
 void ColorEdit::mouseDoubleClickEvent(QMouseEvent* event)
 {

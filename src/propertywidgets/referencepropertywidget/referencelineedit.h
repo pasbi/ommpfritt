@@ -18,16 +18,13 @@ class ReferenceLineEdit
   , public MultiValueEdit<AbstractPropertyOwner*>
   , public AbstractSimpleStructureObserver
 {
-  Q_OBJECT
 public:
-  explicit ReferenceLineEdit(Scene& scene, AbstractPropertyOwner::Kind allowed_kinds);
+  explicit ReferenceLineEdit( Scene& scene, AbstractPropertyOwner::Kind allowed_kinds,
+                              const on_value_changed_t& on_value_changed );
   ~ReferenceLineEdit();
   void set_value(const value_type& value) override;
   value_type value() const override;
   void structure_has_changed() override;
-
-Q_SIGNALS:
-  void reference_changed(AbstractPropertyOwner* reference);
 
 protected:
   void set_inconsistent_value() override;

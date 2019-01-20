@@ -15,17 +15,12 @@ template<typename NumericPropertyT> NumericPropertyWidget<NumericPropertyT>
   : PropertyWidget<NumericPropertyT>(scene, properties)
 {
   using SpinBoxT = SpinBox<typename NumericPropertyT::value_type>;
-  auto spinbox = std::make_unique<SpinBoxT>();
+  auto spinbox = std::make_unique<SpinBoxT>([this](const auto& value) {
+    this->set_properties_value(value);
+  });
   m_spinbox = spinbox.get();
   this->set_default_layout(std::move(spinbox));
 
-  const auto set_properties_value = [this](const value_type& value) {
-    this->set_properties_value(value);
-  };
-  using value_changed_type = void(SpinBoxT::Base::*)(value_type);
-  QObject::connect( m_spinbox,
-                    static_cast<value_changed_type>(&SpinBoxT::Base::valueChanged),
-                    set_properties_value );
   update_edit();
 }
 

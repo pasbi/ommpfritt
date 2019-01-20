@@ -8,15 +8,17 @@ namespace omm
 OptionsPropertyWidget::OptionsPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget(scene, properties)
 {
-  auto options_edit = std::make_unique<OptionsEdit>();
+  auto options_edit = std::make_unique<OptionsEdit>([this](const std::size_t& value) {
+    LOG(INFO) << "Set " << value;
+    set_properties_value(value);
+  });
   m_options_edit = options_edit.get();
   const auto get_options = std::mem_fn(&OptionsProperty::options);
-  m_options_edit->set_options(Property::get_value<std::vector<std::string>, OptionsProperty>(properties, get_options));
+
+  QSignalBlocker blocker(m_options_edit);
+  m_options_edit->set_options(
+    Property::get_value<std::vector<std::string>, OptionsProperty>(properties, get_options));
   set_default_layout(std::move(options_edit));
-
-  connect( m_options_edit, static_cast<void(QComboBox::*)(int)>(&OptionsEdit::currentIndexChanged),
-           this, &OptionsPropertyWidget::set_properties_value );
-
   update_edit();
 }
 

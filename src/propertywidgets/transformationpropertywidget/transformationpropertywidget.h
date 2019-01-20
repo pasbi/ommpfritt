@@ -6,7 +6,7 @@
 namespace omm
 {
 
-class AbstractTransformationEdit;
+class SpinBoxTransformationEdit;
 
 class TransformationPropertyWidget : public PropertyWidget<TransformationProperty>
 {
@@ -17,7 +17,7 @@ public:
 protected:
   void update_edit() override;
 
-  AbstractTransformationEdit* m_transformation_edit;
+  SpinBoxTransformationEdit* m_transformation_edit;
 };
 
 }  // namespace omm

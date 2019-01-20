@@ -17,19 +17,19 @@ StringPropertyWidget
 
   const auto make_edit = [this](auto is_multi_line) -> std::unique_ptr<AbstractGenericTextEdit> {
     if (is_multi_line) {
-      return std::make_unique<MultiLineTextEdit>(this);
+      return std::make_unique<MultiLineTextEdit>(this, [this](const auto& value) {
+        set_properties_value(value);
+      });
     } else {
-      return std::make_unique<SingleLineTextEdit>(this);
+      return std::make_unique<SingleLineTextEdit>(this, [this](const auto& value) {
+        set_properties_value(value);
+      });
     }
   };
 
   auto text_edit = make_edit(is_multi_line);
   m_text_edit = text_edit.get();
   set_default_layout(std::move(text_edit));
-
-  connect(m_text_edit, &AbstractGenericTextEdit::text_changed, [this]() {
-    set_properties_value(m_text_edit->value());
-  });
 
   update_edit();
 }

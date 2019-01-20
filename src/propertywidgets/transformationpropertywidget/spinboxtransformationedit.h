@@ -1,17 +1,18 @@
 #pragma once
 
-#include "propertywidgets/transformationpropertywidget/abstracttransformationedit.h"
+#include <QWidget>
+#include "propertywidgets/multivalueedit.h"
+#include "properties/transformationproperty.h"
 
 class QDoubleSpinBox;
 
 namespace omm
 {
 
-class SpinBoxTransformationEdit : public AbstractTransformationEdit
+class SpinBoxTransformationEdit : public QWidget, public MultiValueEdit<ObjectTransformation>
 {
 public:
-  explicit SpinBoxTransformationEdit();
-
+  explicit SpinBoxTransformationEdit(const on_value_changed_t& on_value_changed);
   void set_value(const ObjectTransformation& value) override;
   ObjectTransformation value() const override;
 

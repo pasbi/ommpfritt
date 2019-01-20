@@ -12,23 +12,19 @@ namespace omm
 
 class AbstractGenericTextEdit : public QWidget, public MultiValueEdit<std::string>
 {
-  Q_OBJECT
 public:
-  using QWidget::QWidget;
+  explicit AbstractGenericTextEdit(QWidget* parent, const on_value_changed_t& on_value_changed);
   virtual void set_value(const std::string& text) = 0;
   virtual std::string value() const = 0;
   virtual void set_placeholder_text(const std::string& text) = 0;
-
-Q_SIGNALS:
-  void text_changed();
 };
 
 template<typename TextEdit>
 class GenericTextEdit : public AbstractGenericTextEdit
 {
 public:
-  explicit GenericTextEdit(QWidget* parent = nullptr)
-    : AbstractGenericTextEdit(parent)
+  explicit GenericTextEdit(QWidget* parent, const on_value_changed_t& on_value_changed)
+    : AbstractGenericTextEdit(parent, on_value_changed)
     , m_text_edit(std::make_unique<TextEdit>(this).release())
   {
     setLayout(std::make_unique<QVBoxLayout>(this).release());
@@ -62,14 +58,14 @@ protected:
 class MultiLineTextEdit : public GenericTextEdit<QTextEdit>
 {
 public:
-  explicit MultiLineTextEdit(QWidget* parent = nullptr);
+  explicit MultiLineTextEdit(QWidget* parent, const on_value_changed_t& on_value_changed);
   std::string value() const override;
 };
 
 class SingleLineTextEdit : public GenericTextEdit<QLineEdit>
 {
 public:
-  explicit SingleLineTextEdit(QWidget* parent = nullptr);
+  explicit SingleLineTextEdit(QWidget* parent, const on_value_changed_t& on_value_changed);
   std::string value() const override;
 };
 
