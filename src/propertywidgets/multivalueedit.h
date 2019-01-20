@@ -1,6 +1,7 @@
 #pragma once
 
 #include <set>
+#include <functional>
 
 namespace omm
 {
@@ -11,6 +12,12 @@ class MultiValueEdit
 public:
   using value_type = ValueT;
   using Values = std::set<ValueT>;
+
+  explicit MultiValueEdit(const std::function<void(const value_type&)>& on_value_changed)
+    : on_value_changed(on_value_changed) {}
+
+  explicit MultiValueEdit()  // TODO remove
+    : MultiValueEdit([](const value_type&) {}) {}
 
   virtual void set_values(const Values& values)
   {
@@ -30,6 +37,7 @@ public:
 
 protected:
   virtual void set_inconsistent_value() = 0;
+  const std::function<void(const value_type&)> on_value_changed;
 };
 
 }  // namespace omm

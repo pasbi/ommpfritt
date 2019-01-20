@@ -121,6 +121,11 @@ void JSONSerializer::set_value(const arma::vec2& value, const Pointer& pointer)
   m_store[ptr(pointer)] = { value[0], value[1] };
 }
 
+void JSONSerializer::set_value(const arma::ivec2& value, const Pointer& pointer)
+{
+  m_store[ptr(pointer)] = { value[0], value[1] };
+}
+
 void JSONSerializer::set_value(const PolarCoordinates& value, const Pointer& pointer)
 {
   set_value(arma::vec2{ value.argument, value.magnitude }, pointer);
@@ -205,6 +210,16 @@ arma::vec2 JSONDeserializer::get_vec2(const Pointer& pointer)
   }
 
   return arma::vec2{ vec2[0], vec2[1] };
+}
+
+arma::ivec2 JSONDeserializer::get_ivec2(const Pointer& pointer)
+{
+  const auto vec2 = get_t<std::vector<int>>(m_store, pointer);
+  if (vec2.size() != 2) {
+    throw omm::AbstractDeserializer::DeserializeError("Expected vector of size 2.");
+  }
+
+  return arma::ivec2{ vec2[0], vec2[1] };
 }
 
 PolarCoordinates JSONDeserializer::get_polar_coordinates(const Pointer& pointer)

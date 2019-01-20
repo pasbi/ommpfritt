@@ -53,6 +53,8 @@ public:
     }
   }
 
+  static const std::string TYPE;
+
 protected:
   void set_properties_value(const value_type& value)
   {
@@ -60,7 +62,7 @@ protected:
       return p->wrap_with_macro;
     });
 
-    auto command = std::make_unique<PropertiesCommand<value_type>>(m_properties, value);
+    auto command = std::make_unique<PropertiesCommand<property_type>>(m_properties, value);
 
     if (wrap) {
       scene.undo_stack.beginMacro(QString::fromStdString(command->label()));
@@ -85,6 +87,9 @@ protected:
 private:
   std::set<Property*> m_properties;
 };
+
+template<typename PropertyT> const std::string
+PropertyWidget<PropertyT>::TYPE = std::string(PropertyT::TYPE) + "Widget";
 
 void register_propertywidgets();
 

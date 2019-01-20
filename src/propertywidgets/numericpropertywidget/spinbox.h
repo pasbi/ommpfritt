@@ -2,6 +2,8 @@
 
 #include <QDoubleSpinBox>
 #include <QSpinBox>
+#include <QLineEdit>
+#include "propertywidgets/multivalueedit.h"
 
 namespace omm
 {
@@ -41,7 +43,6 @@ public:
     return QtSpinBox<T>::value();
   }
 
-protected:
   void set_inconsistent_value() override
   {
     QtSpinBox<T>::lineEdit()->setText("");

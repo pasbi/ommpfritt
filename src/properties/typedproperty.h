@@ -9,17 +9,26 @@ namespace omm
 namespace TypedPropertyDetail
 {
 
-  static constexpr auto VALUE_POINTER = "value";
-  static constexpr auto DEFAULT_VALUE_POINTER = "default_value";
+static constexpr auto VALUE_POINTER = "value";
+static constexpr auto DEFAULT_VALUE_POINTER = "default_value";
 
 } // namespace TypedPropertyDetail
 
+/**
+ * @brief [brief description]
+ * @details [long description]
+ *
+ * @tparam ValueT ValueT must provide
+ *  bool operator==(const ValueT&, const ValueT&)
+ *  bool operator!=(const ValueT&, const ValueT&)
+ *  bool operator<(const ValueT&, const ValueT&)
+ *  or equivalent non-member functions.
+ */
 template<typename ValueT>
 class TypedProperty : public Property
 {
 public:
   using value_type = ValueT;
-
   TypedProperty(ValueT defaultValue = ValueT())
     : m_value(defaultValue), m_default_value(defaultValue) {}
 

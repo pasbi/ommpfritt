@@ -4,7 +4,6 @@
 #include "properties/typedproperty.h"
 #include "propertywidgets/boolpropertywidget/checkbox.h"
 
-
 namespace omm
 {
 

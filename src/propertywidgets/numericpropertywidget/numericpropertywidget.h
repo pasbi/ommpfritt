@@ -28,7 +28,6 @@ class IntegerPropertyWidget : public NumericPropertyWidget<IntegerProperty>
 public:
   using NumericPropertyWidget::NumericPropertyWidget;
   std::string type() const override { return TYPE; }
-  static constexpr auto TYPE = "IntegerPropertyWidget";
 };
 
 class FloatPropertyWidget : public NumericPropertyWidget<FloatProperty>
@@ -36,7 +35,6 @@ class FloatPropertyWidget : public NumericPropertyWidget<FloatProperty>
 public:
   using NumericPropertyWidget::NumericPropertyWidget;
   std::string type() const override { return TYPE; }
-  static constexpr auto TYPE = "FloatPropertyWidget";
 };
 
 }  // namespace omm

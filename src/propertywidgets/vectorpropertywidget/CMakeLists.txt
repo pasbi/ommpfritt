@@ -1,6 +1,5 @@
 file (GLOB SOURCES
-  "numericpropertyconfigwidget.cpp"
-  "numericpropertywidget.cpp"
+  "vectorpropertyconfigwidget.cpp"
 )
 
 target_sources(libommpfritt PRIVATE ${SOURCES})

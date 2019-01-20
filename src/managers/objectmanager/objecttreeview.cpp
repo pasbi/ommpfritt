@@ -78,7 +78,7 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
       TreeOwningContext<Object> context(*converted, c->parent(), c);
       const auto properties = ::transform<Property*>(scene.find_reference_holders(*c));
       if (properties.size() > 0) {
-        scene.submit<PropertiesCommand<AbstractPropertyOwner*>>(properties, converted.get());
+        scene.submit<PropertiesCommand<ReferenceProperty>>(properties, converted.get());
       }
       context.subject.capture(std::move(converted));
       using object_tree_type = Tree<Object>;
@@ -145,7 +145,7 @@ bool ObjectTreeView::remove_selection()
   {
     scene.undo_stack.beginMacro("Remove Selection");
     if (properties.size() > 0) {
-      using command_type = PropertiesCommand<ReferenceProperty::value_type>;
+      using command_type = PropertiesCommand<ReferenceProperty>;
       scene.template submit<command_type>(properties, nullptr);
     }
     remove(scene, model()->structure, selected_objects);

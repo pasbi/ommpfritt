@@ -17,22 +17,6 @@
 
 namespace omm
 {
-
-#define DISABLE_DANGEROUS_PROPERTY_TYPE(T) \
-  static_assert( !std::is_same<typename PropertyT::value_type, T>(), \
-                 "Forbidden Property Type '"#T"'." );
-
-// Disable some T in TypedProperty<T>
-// Without this guard, it was easy to accidentally use e.g.
-// TypedProperty<const char*> when you actually want
-// TypedProperty<std::string>. It's hard to notice, things will
-// break at strange places and debugging it becomes ugly.
-// If you encounter such an evil twin ET for your type T, add it to the following list like I did
-// for `const char*`.
-#define DISABLE_DANGEROUS_PROPERTY_TYPES \
-  DISABLE_DANGEROUS_PROPERTY_TYPE(const char*)
-
-template<typename ValueT> class TypedProperty;
 class Object;
 
 class Property;
@@ -45,11 +29,37 @@ public:
   virtual void on_property_value_changed(Property& property) = 0;
 };
 
-class TriggerPropertyDummyValue
+class TriggerPropertyDummyValueType
 {
 public:
-  bool operator==(const TriggerPropertyDummyValue& other) const;
-  bool operator!=(const TriggerPropertyDummyValue& other) const;
+  bool operator==(const TriggerPropertyDummyValueType& other) const;
+  bool operator!=(const TriggerPropertyDummyValueType& other) const;
+};
+
+template<typename VecT>
+class VectorPropertyValueType : public VecT
+{
+public:
+  static constexpr auto n_elems = VecT::n_elem;
+  using VecT::VecT;
+  bool operator==(const VectorPropertyValueType& other) const
+  {
+    for (std::size_t i = 0; i < VectorPropertyValueType::n_elems; ++i) {
+      if (other(i) != (*this)(i)) { return false; }
+    }
+    return true;
+  }
+
+  bool operator<(const VectorPropertyValueType& other) const
+  {
+    for (std::size_t i = 0; i < VectorPropertyValueType::n_elems; ++i) {
+      if (other(i) < (*this)(i)) { return true; }
+    }
+    return false;
+  }
+
+  bool operator!=(const VectorPropertyValueType& other) const { return !(other == *this); }
+
 };
 
 class Property
@@ -60,7 +70,9 @@ class Property
 public:
   using variant_type = std::variant< bool, Color, double, int, AbstractPropertyOwner*,
                                      std::string, ObjectTransformation, size_t,
-                                     TriggerPropertyDummyValue >;
+                                     TriggerPropertyDummyValueType,
+                                     VectorPropertyValueType<arma::vec2>,
+                                     VectorPropertyValueType<arma::ivec2> >;
 
   Property() = default;
   explicit Property(const Property& other) = default;
@@ -150,7 +162,7 @@ private:
 
 void register_properties();
 
-std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValue& v);
+std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValueType& v);
 std::ostream& operator<<(std::ostream& ostream, const Property::variant_type& v);
 
 }  // namespace ommAbstractPropertyOwner

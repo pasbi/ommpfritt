@@ -65,7 +65,7 @@ ManagerItemView<ItemViewT, ItemModelT>::remove_selection()
     using remove_command_type = RemoveCommand<typename ItemModelT::structure_type>;
     scene.undo_stack.beginMacro("Remove Selection");
     if (properties.size() > 0) {
-      using command_type = PropertiesCommand<ReferenceProperty::value_type>;
+      using command_type = PropertiesCommand<ReferenceProperty>;
       scene.template submit<command_type>(properties, nullptr);
     }
     scene.template submit<remove_command_type>(model()->structure, typed_selection);

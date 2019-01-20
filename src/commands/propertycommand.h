@@ -18,21 +18,23 @@ private:
   std::set<Property*> m_properties;
 };
 
-template<typename ValueT>
+template<typename PropertyT>
 class PropertiesCommand : public AbstractPropertiesCommand
 {
+public:
+  using value_type = typename PropertyT::value_type;
   class PropertyBiState
   {
   public:
-    PropertyBiState(Property* property, const ValueT& new_value)
-      : property(property) , old_value(property->value<ValueT>()), new_value(new_value) {}
+    PropertyBiState(Property* property, const value_type& new_value)
+      : property(property) , old_value(property->value<value_type>()), new_value(new_value) {}
 
     void undo() const { property->set(old_value); }
     void redo() const { property->set(new_value); }
 
     Property* property;
-    const ValueT old_value;
-    ValueT new_value;
+    const value_type old_value;
+    value_type new_value;
 
     bool operator <(const PropertyBiState& other) const
     {
@@ -41,7 +43,7 @@ class PropertiesCommand : public AbstractPropertiesCommand
   };
 
   template<typename Properties>
-  static auto get_bi_states( const Properties& properties, const ValueT& new_value)
+  static auto get_bi_states( const Properties& properties, const value_type& new_value)
   {
     return ::transform<PropertyBiState>(properties, [new_value](const auto& property) {
       return PropertyBiState(property, new_value);
@@ -49,7 +51,7 @@ class PropertiesCommand : public AbstractPropertiesCommand
   }
 
 public:
-  PropertiesCommand(const std::set<Property*>& properties, const ValueT& new_value)
+  PropertiesCommand(const std::set<Property*>& properties, const value_type& new_value)
     : AbstractPropertiesCommand(properties)
     , m_properties_bi_states(get_bi_states(properties, new_value))
   {
@@ -68,9 +70,9 @@ public:
   bool mergeWith(const QUndoCommand* command) override
   {
     if (AbstractPropertiesCommand::mergeWith(command)) {
-      const auto& property_command = static_cast<const PropertiesCommand<Property>&>(*command);
+      const auto& property_command = static_cast<const PropertiesCommand<PropertyT>&>(*command);
       assert(::is_uniform(m_properties_bi_states, [](const auto pbs) { return pbs.new_value; }));
-      const ValueT new_value = m_properties_bi_states.begin()->new_value;
+      const value_type new_value = m_properties_bi_states.begin()->new_value;
       for (auto pbs : m_properties_bi_states) {
         pbs.new_value = new_value;
       }

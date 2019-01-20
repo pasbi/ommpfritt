@@ -75,22 +75,17 @@ auto transform(ContainerS&& ss)
   return ::transform<T, ContainerT>(std::forward<ContainerS>(ss), ::identity);
 }
 
-template<typename Ts, typename F>
-auto is_uniform(const Ts& container, F&& mapper)
+template<typename Ts, typename F=identity_t, typename EqualT=std::equal_to<>>
+auto is_uniform( const Ts& container,
+                 const F& mapper=::identity,
+                 const EqualT& equal_to = std::equal_to<>() )
 {
-  const auto& first = mapper(*std::begin(container));
+  if (container.size() == 0) { return true; }
+  decltype(auto) first = mapper(*std::begin(container));
   for (const auto& v : container) {
-    if (mapper(v) != first) {
-      return false;
-    }
+    if (!equal_to(mapper(v), first)) { return false; }
   }
   return true;
-}
-
-template<typename Ts>
-auto is_uniform(const Ts& container)
-{
-  return is_uniform<Ts>(container, [](const auto& f) { return f; });
 }
 
 template<typename T, template<typename...> class ContainerT>

@@ -7,6 +7,7 @@
 #include "propertywidgets/referencepropertywidget/referencepropertywidget.h"
 #include "propertywidgets/optionspropertywidget/optionspropertywidget.h"
 #include "propertywidgets/triggerpropertywidget/triggerpropertywidget.h"
+#include "propertywidgets/vectorpropertywidget/vectorpropertywidget.h"
 
 namespace omm
 {
@@ -24,6 +25,8 @@ void register_propertywidgets()
   REGISTER_PROPERTYWIDGET(TransformationPropertyWidget);
   REGISTER_PROPERTYWIDGET(OptionsPropertyWidget);
   REGISTER_PROPERTYWIDGET(TriggerPropertyWidget);
+  REGISTER_PROPERTYWIDGET(IntegerVectorPropertyWidget);
+  REGISTER_PROPERTYWIDGET(FloatVectorPropertyWidget);
 
 #undef REGISTER_PROPERTYWIDGET
 }

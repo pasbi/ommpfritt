@@ -11,6 +11,7 @@ file (GLOB SOURCES
   "transformationproperty.cpp"
   "triggerproperty.cpp"
   "typedproperty.cpp"
+  "vectorproperty.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})
 

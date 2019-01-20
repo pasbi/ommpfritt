@@ -16,7 +16,6 @@ class ReferencePropertyWidget : public PropertyWidget<ReferenceProperty>
 public:
   explicit ReferencePropertyWidget(Scene& scene, const std::set<Property*>& properties);
   ~ReferencePropertyWidget();
-  static constexpr auto TYPE = "ReferencePropertyWidget";
 
 protected:
   void update_edit() override;

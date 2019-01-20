@@ -14,7 +14,6 @@ public:
 
 protected:
   std::string type() const override;
-  static constexpr auto TYPE = "TriggerPropertyWidget";
   void update_edit() override;
 };
 

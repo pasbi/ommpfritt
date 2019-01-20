@@ -81,19 +81,19 @@ Property& Property::set_post_submit(const std::function<void(Property&)>& hook)
   return *this;
 }
 
-bool TriggerPropertyDummyValue::operator==(const TriggerPropertyDummyValue&) const
+bool TriggerPropertyDummyValueType::operator==(const TriggerPropertyDummyValueType&) const
 {
   return true;
 }
 
-bool TriggerPropertyDummyValue::operator!=(const TriggerPropertyDummyValue& other) const
+bool TriggerPropertyDummyValueType::operator!=(const TriggerPropertyDummyValueType& other) const
 {
   return !(this->operator==(other));
 }
 
-std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValue& v)
+std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValueType& v)
 {
-  ostream << "[TriggerPropertyDummyValue]";
+  ostream << "[TriggerPropertyDummyValueType]";
   return ostream;
 }
 

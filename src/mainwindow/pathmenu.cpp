@@ -4,6 +4,7 @@
 #include "scene/scene.h"
 #include "commands/modifypointscommand.h"
 #include "commands/propertycommand.h"
+#include "properties/optionsproperty.h"
 
 namespace
 {
@@ -22,7 +23,8 @@ void modify_tangents(omm::Scene& scene, omm::Path::InterpolationMode mode)
   });
 
   scene.undo_stack.beginMacro("modify tangents");
-  scene.submit<omm::PropertiesCommand<std::size_t>>(interpolation_properties, bezier_mode);
+  using OptionsPropertyCommand = omm::PropertiesCommand<omm::OptionsProperty>;
+  scene.submit<OptionsPropertyCommand>(interpolation_properties, bezier_mode);
   scene.submit<omm::ModifyPointsCommand>(map);
   scene.undo_stack.endMacro();
 }
