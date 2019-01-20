@@ -37,6 +37,7 @@ class Object;
 
 class Property;
 class AbstractPropertyOwner;
+class OptionsProperty;
 
 class AbstractPropertyObserver
 {
@@ -78,11 +79,11 @@ public:
   template<typename ValueT> std::enable_if_t<std::is_enum_v<ValueT>, ValueT>
   value() const { return static_cast<ValueT>(std::get<std::size_t>(variant_value())); }
 
-
   std::string label() const;
   std::string category() const;
   Property& set_label(const std::string& label);
   Property& set_category(const std::string& category);
+
   virtual std::string widget_type() const;
 
   void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const;
@@ -125,6 +126,26 @@ public:
 private:
   std::string m_label;
   std::string m_category;
+
+public:
+  OptionsProperty* enabled_buddy() const;
+  bool is_enabled() const;
+  template<typename EnumT> std::enable_if_t<std::is_enum_v<EnumT>, Property>&
+  set_enabled_buddy(OptionsProperty& property, std::set<EnumT> values)
+  {
+    return set_enabled_buddy(property, ::transform<std::size_t>(values, [](EnumT value) {
+      return static_cast<std::size_t>(value);
+    }));
+  }
+
+private:
+  Property& set_enabled_buddy(OptionsProperty& property, const std::set<std::size_t>& value);
+  struct IsEnabledBuddy
+  {
+    OptionsProperty* property = nullptr;
+    std::set<std::size_t> target_values;
+  } m_enabled_buddy;
+
 };
 
 void register_properties();

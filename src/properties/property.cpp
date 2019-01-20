@@ -8,6 +8,7 @@
 #include "properties/referenceproperty.h"
 #include "properties/stringproperty.h"
 #include "properties/transformationproperty.h"
+#include "properties/optionsproperty.h"
 
 namespace omm
 {
@@ -101,5 +102,27 @@ std::ostream& operator<<(std::ostream& ostream, const Property::variant_type& v)
   print_variant_value(ostream, v);
   return ostream;
 }
+
+OptionsProperty* Property::enabled_buddy() const
+{
+  return m_enabled_buddy.property;
+}
+
+bool Property::is_enabled() const
+{
+  if (m_enabled_buddy.property == nullptr) { return true; }
+  else {
+    return ::contains(m_enabled_buddy.target_values, m_enabled_buddy.property->value());
+  }
+}
+
+Property&
+Property::set_enabled_buddy(OptionsProperty& property, const std::set<std::size_t>& values)
+{
+  m_enabled_buddy.property = &property;
+  m_enabled_buddy.target_values = values;
+  return *this;
+}
+
 
 }  // namespace omm

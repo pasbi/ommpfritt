@@ -15,7 +15,8 @@ namespace omm
 
 class PropertyView;
 
-class PropertyManager : public Manager, public AbstractSelectionObserver
+class PropertyManager
+  : public Manager, public AbstractSelectionObserver, public AbstractPropertyObserver
 {
   DECLARE_MANAGER_TYPE(PropertyManager)
 
@@ -27,6 +28,7 @@ public:
   PropertyView property(const std::string& key);
   void clear();
   void add_user_property();
+  void on_property_value_changed(Property& property) override;
 
 private:
   QTabWidget* m_tabs;
@@ -34,6 +36,7 @@ private:
   QAction* m_manage_user_properties_action;
   std::unique_ptr<QMenuBar> make_menu_bar();
   std::set<AbstractPropertyOwner*>  m_current_selection;
+  std::set<Property*> m_observed_properties;
 };
 
 }  // namespace omm

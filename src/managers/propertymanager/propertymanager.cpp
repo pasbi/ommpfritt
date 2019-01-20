@@ -3,7 +3,9 @@
 #include <algorithm>
 #include <set>
 #include <QTabWidget>
+#include <QTimer>
 
+#include "properties/optionsproperty.h"
 #include "managers/propertymanager/propertymanagertab.h"
 #include "propertywidgets/propertywidget.h"
 #include "aspects/propertyowner.h"
@@ -105,6 +107,7 @@ PropertyManager::PropertyManager(Scene& scene)
 
 PropertyManager::~PropertyManager()
 {
+  clear();
   scene().Observed<AbstractSelectionObserver>::unregister_observer(*this);
 }
 
@@ -126,18 +129,26 @@ std::unique_ptr<QMenuBar> PropertyManager::make_menu_bar()
 
 void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
-  const auto key_intersection = get_key_intersection(selection);
   clear();
   OrderedMap<std::string, PropertyManagerTab> tabs;
 
-  for (const auto& key : key_intersection) {
+  for (const auto& key : get_key_intersection(selection)) {
     const auto properties = collect_properties(key, selection);
     assert(properties.size() > 0);
     const auto tab_label = get_tab_label(properties);
     if (!tabs.contains(tab_label)) {
       tabs.insert(tab_label, std::make_unique<PropertyManagerTab>());
     }
-    tabs.at(tab_label)->add_properties(m_scene, properties);
+    if (Property::get_value<bool>(properties, std::mem_fn(&Property::is_enabled))) {
+      tabs.at(tab_label)->add_properties(m_scene, properties);
+    }
+    for (Property* property : properties) {
+      auto* enabled_buddy = property->enabled_buddy();
+      if (enabled_buddy != nullptr && !::contains(m_observed_properties, enabled_buddy)) {
+        enabled_buddy->Observed<AbstractPropertyObserver>::register_observer(*this);
+        m_observed_properties.insert(enabled_buddy);
+      }
+    }
   }
 
   const auto active_category = m_active_category;
@@ -157,11 +168,25 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
 
 void PropertyManager::clear()
 {
+  for (auto* observed_property : m_observed_properties) {
+    observed_property->Observed<AbstractPropertyObserver>::unregister_observer(*this);
+  }
+  m_observed_properties.clear();
+
   const auto active_category = m_active_category;
   while (m_tabs->count() > 0) {
-    delete m_tabs->widget(0);
+    m_tabs->widget(0)->deleteLater();
+    m_tabs->removeTab(0);
   }
   m_active_category = active_category;
+}
+
+void PropertyManager::on_property_value_changed(Property& property)
+{
+  // As  (A) the current widgets (A) will be deleted in `set_selection`
+  // and (B) the widget of `property` still has pending events, it's not wise to call
+  // `set_selection` directly. Instead, wait until all events in the Qt event queue are handled.
+  QTimer::singleShot(0, [this](){ set_selection(m_current_selection); });
 }
 
 }  // namespace omm
