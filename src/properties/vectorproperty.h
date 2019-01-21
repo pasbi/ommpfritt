@@ -12,7 +12,7 @@ public:
   std::string type() const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  static constexpr auto TYPE = "VectorProperty";
+  static constexpr auto TYPE = "FloatVectorProperty";
   std::unique_ptr<Property> clone() const override;
 };
 

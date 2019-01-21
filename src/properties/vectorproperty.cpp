@@ -8,7 +8,8 @@ std::string FloatVectorProperty::type() const { return TYPE; }
 void FloatVectorProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   TypedProperty::deserialize(deserializer, root);
-  set(deserializer.get_double(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
+  const auto v = deserializer.get_vec2(make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
+  set(VectorPropertyValueType<arma::vec2>(v));
   set_default_value(
     deserializer.get_vec2(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
 }
@@ -31,7 +32,9 @@ std::string IntegerVectorProperty::type() const { return TYPE; }
 void IntegerVectorProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   TypedProperty::deserialize(deserializer, root);
-  set(deserializer.get_double(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
+  const auto v = deserializer.get_ivec2(make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
+  set(VectorPropertyValueType<arma::ivec2>(v));
+  LOG(INFO) << "get ivec2 from " << root;
   set_default_value(
     deserializer.get_ivec2(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
 }
