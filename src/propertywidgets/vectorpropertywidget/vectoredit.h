@@ -23,11 +23,11 @@ public:
   {
     std::make_unique<QHBoxLayout>(this).release();
 
-    m_x_spinbox = std::make_unique<SpinBox<elem_type>>([this](const auto& value) {
-      set_value(value_type{ this->value()(0), value });
+    m_x_spinbox = std::make_unique<SpinBox<elem_type>>([=](const auto& value) {
+      on_value_changed(value_type{ value, this->value()(1) });
     }).release();
-    m_y_spinbox = std::make_unique<SpinBox<elem_type>>([this](const auto& value) {
-      set_value(value_type{ value, this->value()(1) });
+    m_y_spinbox = std::make_unique<SpinBox<elem_type>>([=](const auto& value) {
+      on_value_changed(value_type{ this->value()(0), value });
     }).release();
 
     layout()->addWidget(m_x_spinbox);
