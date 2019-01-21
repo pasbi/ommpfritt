@@ -4,6 +4,7 @@
 #include <cassert>
 #include <QDebug>
 #include <variant>
+#include <QTimer>
 
 #include "objects/empty.h"
 #include "external/json.hpp"
@@ -165,10 +166,15 @@ bool Scene::load_from(const std::string &filename)
       styles.push_back(std::move(style));
     }
 
-    object_tree.replace_root(std::move(new_root));
-    this->styles.set(std::move(styles));
-    set_has_pending_changes(false);
+    set_selection({});
     m_filename = filename;
+    set_has_pending_changes(false);
+    QTimer::singleShot(0, [ this, new_root=std::move(new_root),
+                            styles=std::move(styles) ]() mutable
+    {
+      this->object_tree.replace_root(std::move(new_root));
+      this->styles.set(std::move(styles));
+    });
 
     return true;
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
@@ -181,8 +187,11 @@ bool Scene::load_from(const std::string &filename)
 void Scene::reset()
 {
   set_has_pending_changes(false);
-  object_tree.replace_root(make_root());
-  styles.set(std::vector<std::unique_ptr<Style>> {});
+  set_selection({});
+  QTimer::singleShot(0, [this]() {
+    object_tree.replace_root(make_root());
+    styles.set(std::vector<std::unique_ptr<Style>> {});
+  });
 }
 
 std::string Scene::filename() const
