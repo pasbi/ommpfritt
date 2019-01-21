@@ -183,7 +183,7 @@ void PropertyManager::clear()
 
 void PropertyManager::on_property_value_changed(Property& property)
 {
-  // As  (A) the current widgets (A) will be deleted in `set_selection`
+  // As  (A) the current widgets will be deleted in `set_selection`
   // and (B) the widget of `property` still has pending events, it's not wise to call
   // `set_selection` directly. Instead, wait until all events in the Qt event queue are handled.
   QTimer::singleShot(0, [this](){ set_selection(m_current_selection); });

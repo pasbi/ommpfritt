@@ -14,10 +14,6 @@ AbstractPropertyWidget
 
 }
 
-AbstractPropertyWidget::~AbstractPropertyWidget()
-{
-}
-
 void AbstractPropertyWidget::set_default_layout(std::unique_ptr<QWidget> other)
 {
   auto layout = std::make_unique<QHBoxLayout>();
