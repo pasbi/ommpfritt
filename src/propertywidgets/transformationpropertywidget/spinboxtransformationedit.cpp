@@ -42,8 +42,6 @@ SpinBoxTransformationEdit::SpinBoxTransformationEdit(const on_value_changed_t& o
 
   setLayout(layout.release());
 
-  on_value_changed(value());
-
   for (const auto& spinbox : { m_xposition_spinbox, m_xscale_spinbox, m_shear_spinbox,
                                m_yposition_spinbox, m_yscale_spinbox, m_rotation_spinbox })
   {
