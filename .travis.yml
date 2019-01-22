@@ -1,16 +1,26 @@
 language: cpp
 
-before_install:
-  - sudo apt-get install -y libarmadillo-dev python3 python3-pybind11 pybind11-dev qt5-default
+dist: xenial
 
-addons:
-  apt:
-    sources: debian-sid
-    update: true
+before_install:
+  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic main'
+  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic universe'
+  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic multiverse'
+  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic restricted'
+  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-security main'
+  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-security universe'
+  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-security multiverse'
+  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-security restricted'
+  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-updates main'
+  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-updates universe'
+  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-updates multiverse'
+  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-updates restricted'
+  - sudo apt-get update
+  - sudo apt-get install -y python3-pybind11 pybind11-dev qt5-default libarmadillo-dev libgoogle-glog-dev python3
 
 compiler:
-  - gcc
   - clang
+  - gcc
 
 before_script:
   - mkdir build
