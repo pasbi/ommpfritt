@@ -67,9 +67,6 @@ template<typename PositionVariant> SelectTool<PositionVariant>::SelectTool(Scene
   : Tool(scene)
   , position_variant(scene)
 {
-  this->template add_property<FloatProperty>(RADIUS_PROPERTY_KEY, 20.0)
-    .set_label(QObject::tr("radius").toStdString())
-    .set_category(QObject::tr("tool").toStdString());
   this->template add_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY)
     .set_options({ "global", "local" })
     .set_label(QObject::tr("Alignment").toStdString())

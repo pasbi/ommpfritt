@@ -304,7 +304,6 @@ void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align,
 void Object::set_oriented_position(const OrientedPoint& op, const bool align)
 {
   auto transformation = global_transformation();
-  LOG(INFO) << align << " " << op.rotation;
   if (align) { transformation.set_rotation(op.rotation); }
   transformation.set_translation(op.position);
   set_global_transformation(transformation);
