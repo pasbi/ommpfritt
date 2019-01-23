@@ -30,6 +30,7 @@ public:
   virtual void push_transformation(const ObjectTransformation& transformation);
   virtual void pop_transformation();
   virtual ObjectTransformation current_transformation() const;
+  virtual void draw_circle(const arma::vec2& pos, const double radius, const Style& style) = 0;
   Scene& scene;
 
 private:

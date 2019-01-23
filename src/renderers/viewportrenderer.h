@@ -14,6 +14,7 @@ public:
   void draw_spline( const std::vector<Point>& points, const Style& style,
                     bool closed = false ) override;
   void draw_rectangle(const arma::vec2& pos, const double radius, const Style& style) override;
+  void draw_circle(const arma::vec2& pos, const double radius, const Style& style) override;
 
   void push_transformation(const ObjectTransformation& transformation) override;
   void pop_transformation() override;

@@ -33,18 +33,26 @@ auto to_qcolor(omm::Color color)
 
 auto make_pen(const omm::Style& style)
 {
-  QPen pen;
-  pen.setWidth(style.property(omm::Style::PEN_WIDTH_KEY).value<double>());
-  pen.setColor(to_qcolor(style.property(omm::Style::PEN_COLOR_KEY).value<omm::Color>()));
-  return pen;
+  if (style.property(omm::Style::PEN_IS_ACTIVE_KEY).value<bool>()) {
+    QPen pen;
+    pen.setWidth(style.property(omm::Style::PEN_WIDTH_KEY).value<double>());
+    pen.setColor(to_qcolor(style.property(omm::Style::PEN_COLOR_KEY).value<omm::Color>()));
+    return pen;
+  } else {
+    return QPen(Qt::NoPen);
+  }
 }
 
 auto make_brush(const omm::Style& style)
 {
-  QBrush brush(Qt::SolidPattern);
-  const auto color = style.property(omm::Style::BRUSH_COLOR_KEY).value<omm::Color>();
-  brush.setColor(to_qcolor(color));
-  return brush;
+  if (style.property(omm::Style::BRUSH_IS_ACTIVE_KEY).value<bool>()) {
+    QBrush brush(Qt::SolidPattern);
+    const auto color = style.property(omm::Style::BRUSH_COLOR_KEY).value<omm::Color>();
+    brush.setColor(to_qcolor(color));
+    return brush;
+  } else {
+    return QBrush(Qt::NoBrush);
+  }
 }
 
 }  // namespace
@@ -104,12 +112,21 @@ ViewportRenderer::draw_rectangle(const arma::vec2& pos, const double radius, con
 {
   // TODO I guess using QPainter::drawRect is faster.
   // However, QPainter::drawRect interface is strange, so using it is not trivial, but it shouldn't
-  //  be to hard, either.
+  //  be too hard, either.
   const auto tl = Point( pos + arma::vec2 { -radius, -radius } );
   const auto tr = Point( pos + arma::vec2 {  radius, -radius } );
   const auto bl = Point( pos + arma::vec2 { -radius,  radius } );
   const auto br = Point( pos + arma::vec2 {  radius,  radius } );
   draw_spline({ tl, tr, br, bl }, style, true);
+}
+
+void ViewportRenderer::draw_circle(const arma::vec2& pos, const double radius, const Style& style)
+{
+  m_painter.save();
+  m_painter.setPen(make_pen(style));
+  m_painter.setBrush(make_brush(style));
+  m_painter.drawEllipse(to_qpoint(pos), radius, radius);
+  m_painter.restore();
 }
 
 
