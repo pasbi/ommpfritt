@@ -57,6 +57,7 @@ Path::Path(Scene* scene) : Object(scene)
   add_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
     .set_label(QObject::tr("closed").toStdString())
     .set_category(QObject::tr("path").toStdString());
+
   add_property<OptionsProperty>(INTERPOLATION_PROPERTY_KEY)
     .set_options({ "linear", "smooth", "bezier" })    // must match Path::InterpolationMode
     .set_label(QObject::tr("interpolation").toStdString())

@@ -48,7 +48,7 @@ SpinBoxTransformationEdit::SpinBoxTransformationEdit(const on_value_changed_t& o
     spinbox->setRange(-1000, 1000);
     using T = void(QDoubleSpinBox::*)(double);
     connect(spinbox, static_cast<T>(&QDoubleSpinBox::valueChanged), [this, on_value_changed]() {
-      on_value_changed(value());
+      if (!signalsBlocked()) { on_value_changed(value()); }
     });
   }
 }

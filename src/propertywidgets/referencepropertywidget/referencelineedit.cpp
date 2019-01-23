@@ -76,7 +76,7 @@ void ReferenceLineEdit::set_value(const value_type& value)
   assert(it != m_possible_references.end());
   setCurrentIndex(std::distance(m_possible_references.begin(), it));
 
-  if (value_has_changed) { on_value_changed(value); }
+  if (value_has_changed && !signalsBlocked()) { on_value_changed(value); }
 }
 
 void ReferenceLineEdit::set_inconsistent_value() { setEditText(tr("<multiple values>")); }
