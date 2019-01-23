@@ -5,7 +5,7 @@
 namespace omm
 {
 
-ParticleHandle::ParticleHandle(const Tool& tool, bool transform_in_tool_space)
+ParticleHandle::ParticleHandle(Tool& tool, bool transform_in_tool_space)
   : Handle(tool, transform_in_tool_space)
 {
   set_style(Status::Hovered, omm::SolidStyle(omm::Color(1.0, 1.0, 0.0)));

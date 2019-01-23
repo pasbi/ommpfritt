@@ -11,7 +11,7 @@ namespace omm
 class AxisHandle : public Handle
 {
 public:
-  explicit AxisHandle(const Tool& tool);
+  explicit AxisHandle(Tool& tool);
   bool contains(const arma::vec2& point) const override;
   void set_direction(const arma::vec2& direction);
 

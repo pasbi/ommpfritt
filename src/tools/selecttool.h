@@ -16,7 +16,7 @@ public:
   static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";
   static constexpr auto RADIUS_PROPERTY_KEY = "radius";
   bool mouse_press(const arma::vec2& pos, const QMouseEvent& event) override;
-  void transform_objects(ObjectTransformation t, const bool tool_space);
+  void transform_objects(ObjectTransformation t, const bool tool_space) override;
   void on_scene_changed() override;
   PositionVariant position_variant;
   ObjectTransformation transformation() const override;

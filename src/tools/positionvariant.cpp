@@ -26,7 +26,7 @@ template<typename Ts, typename T, typename... F> T mean(const Ts& ts, const T& n
 namespace omm
 {
 
-void PointPositions::make_handles(handles_type& handles, SelectTool<PointPositions>& tool) const
+void PointPositions::make_handles(handles_type& handles, Tool& tool) const
 {
   for (auto* path : paths()) {
     const auto t = path->global_transformation();
@@ -94,7 +94,7 @@ std::set<Path*> PointPositions::paths() const
   return ::transform<Path*>(::filter_if(scene.object_selection(), is_path), to_path);
 }
 
-void ObjectPositions::make_handles(handles_type& handles, SelectTool<ObjectPositions>& tool) const
+void ObjectPositions::make_handles(handles_type& handles, Tool& tool) const
 {
   // ignore object selection. Return a handle for each object.
   const auto objects = scene.object_tree.items();

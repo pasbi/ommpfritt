@@ -8,7 +8,7 @@ namespace omm
 class CircleHandle : public Handle
 {
 public:
-  explicit CircleHandle(const Tool& tool);
+  explicit CircleHandle(Tool& tool);
   void draw(AbstractRenderer& renderer) const override;
   bool contains(const arma::vec2& point) const override;
   void set_radius(double r);
@@ -24,7 +24,7 @@ class RotateHandle : public CircleHandle
 public:
   RotateHandle(ToolT& tool) : CircleHandle(tool), m_tool(tool) { }
 
-  bool mouse_move( const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override
+  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {

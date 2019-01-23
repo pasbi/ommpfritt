@@ -9,7 +9,7 @@
 namespace omm
 {
 
-AxisHandle::AxisHandle(const Tool& tool) : Handle(tool, true) {}
+AxisHandle::AxisHandle(Tool& tool) : Handle(tool, true) {}
 
 bool AxisHandle::contains(const arma::vec2& point) const
 {

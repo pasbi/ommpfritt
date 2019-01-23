@@ -16,7 +16,7 @@ class Handle
 {
 public:
   enum class Status { Hovered, Active, Inactive };
-  explicit Handle(const Tool& tool, const bool transform_in_tool_space);
+  explicit Handle(Tool& tool, const bool transform_in_tool_space);
   virtual ~Handle() = default;
   virtual void draw(AbstractRenderer& renderer) const = 0;
   virtual bool mouse_press(const arma::vec2& pos, const QMouseEvent& event);
@@ -35,11 +35,11 @@ protected:
   const Style& current_style() const;
   const Style& style(Status status) const;
   virtual ObjectTransformation transformation() const;
+  Tool& tool;
 
 private:
   Status m_status = Status::Inactive;
   std::map<Status, Style> m_styles;
-  const Tool& m_tool;
   bool m_enabled = false;
 };
 
