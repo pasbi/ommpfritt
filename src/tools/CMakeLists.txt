@@ -1,4 +1,5 @@
 file (GLOB SOURCES
+  "brushselecttool.cpp"
   "positionvariant.cpp"
   "selecttool.cpp"
   "tool.cpp"
