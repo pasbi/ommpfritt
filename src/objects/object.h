@@ -62,8 +62,13 @@ public:
   static constexpr auto TYPE = "Object";
   static constexpr auto TRANSFORMATION_PROPERTY_KEY = "transformation";
 
+  enum class Border { Clamp, Wrap, Hide, Reflect };
+  static double apply_border(double t, Border border);
   virtual OrientedPoint evaluate(const double t);
   virtual double path_length();
+
+  void set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t);
+  void set_oriented_position(const OrientedPoint& op, const bool align);
 
 protected:
   bool m_draw_children = true;

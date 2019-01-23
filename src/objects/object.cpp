@@ -271,7 +271,43 @@ void Object::copy_tags(Object& other) const
   }
 }
 
+double Object::apply_border(double t, Border border)
+{
+  switch (border) {
+  case Border::Clamp: return std::min(1.0, std::max(0.0, t));
+  case Border::Wrap: return fmod(fmod(t, 1.0) + 1.0, 1.0);
+  case Border::Hide: return apply_border(t, Border::Clamp) == t ? t : -1.0;
+  case Border::Reflect: {
+    const bool flip = int(t / 1.0) % 2 == 1;
+    t = apply_border(t, Border::Wrap);
+    return flip ? (1.0-t) : t;
+  }
+  }
+}
 OrientedPoint Object::evaluate(const double t) { return OrientedPoint(); }
 double Object::path_length() { return -1.0; }
+
+void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t)
+{
+  if (path != nullptr && path->kind() == AbstractPropertyOwner::Kind::Object) {
+    auto* path_object = static_cast<Object*>(path);
+    if (!path_object->is_descendant_of(*this)) {
+      const auto location = path_object->evaluate(std::clamp(t, 0.0, 1.0));
+      const auto global_location = path_object->global_transformation().apply(location);
+      set_oriented_position(global_location, align);
+    } else {
+      LOG(WARNING) << "cycle.";
+    }
+  }
+}
+
+void Object::set_oriented_position(const OrientedPoint& op, const bool align)
+{
+  auto transformation = global_transformation();
+  LOG(INFO) << align << " " << op.rotation;
+  if (align) { transformation.set_rotation(op.rotation); }
+  transformation.set_translation(op.position);
+  set_global_transformation(transformation);
+}
 
 }  // namespace omm
