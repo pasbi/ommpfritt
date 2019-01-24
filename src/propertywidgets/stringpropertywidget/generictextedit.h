@@ -6,6 +6,7 @@
 #include "observed.h"
 #include "propertywidgets/multivalueedit.h"
 #include "properties/stringproperty.h"
+#include "widgets/filepathedit.h"
 
 namespace omm
 {
@@ -66,6 +67,13 @@ class SingleLineTextEdit : public GenericTextEdit<QLineEdit>
 {
 public:
   explicit SingleLineTextEdit(QWidget* parent, const on_value_changed_t& on_value_changed);
+  std::string value() const override;
+};
+
+class FilePathTextEdit : public GenericTextEdit<FilePathEdit>
+{
+public:
+  explicit FilePathTextEdit(QWidget* parent, const on_value_changed_t& on_value_changed);
   std::string value() const override;
 };
 

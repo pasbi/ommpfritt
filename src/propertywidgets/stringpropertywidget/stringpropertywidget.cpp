@@ -11,25 +11,25 @@ StringPropertyWidget
 ::StringPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget(scene, properties)
 {
-  const auto get_is_multi_line = std::mem_fn(&StringProperty::is_multi_line);
-  const auto is_multi_line
-    = Property::get_value<bool, StringProperty>(properties, get_is_multi_line);
+  const auto getter = std::mem_fn(&StringProperty::mode);
+  const auto mode = Property::get_value<StringProperty::Mode, StringProperty>(properties, getter);
 
-  const auto make_edit = [this](auto is_multi_line) -> std::unique_ptr<AbstractGenericTextEdit> {
-    if (is_multi_line) {
-      return std::make_unique<MultiLineTextEdit>(this, [this](const auto& value) {
-        set_properties_value(value);
-      });
-    } else {
-      return std::make_unique<SingleLineTextEdit>(this, [this](const auto& value) {
-        set_properties_value(value);
-      });
-    }
-  };
+  std::unique_ptr<AbstractGenericTextEdit> edit;
+  const auto spv_closure = [this](const auto& value) { set_properties_value(value); };
+  switch (mode) {
+  case StringProperty::Mode::MultiLine:
+    edit = std::make_unique<MultiLineTextEdit>(this, spv_closure);
+    break;
+  case StringProperty::Mode::SingleLine:
+    edit = std::make_unique<SingleLineTextEdit>(this, spv_closure);
+    break;
+  case StringProperty::Mode::FilePath:
+    edit = std::make_unique<FilePathTextEdit>(this, spv_closure);
+    break;
+  }
 
-  auto text_edit = make_edit(is_multi_line);
-  m_text_edit = text_edit.get();
-  set_default_layout(std::move(text_edit));
+  m_text_edit = edit.get();
+  set_default_layout(std::move(edit));
 
   update_edit();
 }

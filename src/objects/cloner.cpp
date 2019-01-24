@@ -81,7 +81,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Radial, Mode::Path });
 
   add_property<StringProperty>(CODE_PROPERTY_KEY, "")
-    .set_is_multi_line(true)
+    .set_mode(StringProperty::Mode::MultiLine)
     .set_label(QObject::tr("code").toStdString())
     .set_category(QObject::tr("Cloner").toStdString())
     .set_enabled_buddy<Mode>(mode_property, { Mode::Script });

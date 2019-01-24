@@ -3,19 +3,12 @@
 namespace omm
 {
 
-std::string StringProperty::type() const
-{
-  return TYPE;
-}
+std::string StringProperty::type() const { return TYPE; }
+StringProperty::Mode StringProperty::mode() const { return m_mode; }
 
-bool StringProperty::is_multi_line() const
+StringProperty& StringProperty::set_mode(Mode mode)
 {
-  return m_is_multi_line;
-}
-
-StringProperty& StringProperty::set_is_multi_line(bool is_multiline)
-{
-  m_is_multi_line = is_multiline;
+  m_mode = mode;
   return *this;
 }
 
@@ -25,7 +18,8 @@ void StringProperty::deserialize(AbstractDeserializer& deserializer, const Point
   set(deserializer.get_string(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
   set_default_value(deserializer.get_string(
     make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
-  m_is_multi_line = deserializer.get_bool(make_pointer(root, StringProperty::IS_MULTILINE_KEY));
+  const auto mode_pointer = make_pointer(root, StringProperty::MODE_PROPERTY_KEY);
+  m_mode = static_cast<Mode>(deserializer.get_size_t(mode_pointer));
 }
 
 void StringProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
@@ -34,7 +28,8 @@ void StringProperty::serialize(AbstractSerializer& serializer, const Pointer& ro
   serializer.set_value(value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
   serializer.set_value( default_value(),
                         make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
-  serializer.set_value(m_is_multi_line, make_pointer(root, StringProperty::IS_MULTILINE_KEY));
+  const auto mode_pointer = make_pointer(root, StringProperty::MODE_PROPERTY_KEY);
+  serializer.set_value(static_cast<std::size_t>(m_mode), mode_pointer);
 }
 
 std::unique_ptr<Property> StringProperty::clone() const

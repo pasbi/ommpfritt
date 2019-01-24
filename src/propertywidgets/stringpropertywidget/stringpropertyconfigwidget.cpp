@@ -1,5 +1,5 @@
 #include "propertywidgets/stringpropertywidget/stringpropertyconfigwidget.h"
-#include <QCheckBox>
+#include <QComboBox>
 #include <QLayout>
 
 namespace omm
@@ -9,11 +9,14 @@ StringPropertyConfigWidget::StringPropertyConfigWidget(QWidget* parent, Property
   : PropertyConfigWidget<StringProperty>(parent, property)
 {
   auto& string_property = static_cast<StringProperty&>(property);
-  auto* check_box = std::make_unique<QCheckBox>("multi line", this).release();
-  layout()->addWidget(check_box);
-  check_box->setChecked(string_property.is_multi_line());
-  connect(check_box, &QCheckBox::clicked, [&string_property](bool checked) {
-    string_property.set_is_multi_line(checked);
+
+  auto* mode_selector = std::make_unique<QComboBox>(this).release();
+  mode_selector->addItems({ "single line", "multi line", "file path" });
+  layout()->addWidget(mode_selector);
+  mode_selector->setCurrentIndex(static_cast<int>(string_property.mode()));
+  const auto cic = static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged);
+  connect(mode_selector, cic, [&string_property](int index) {
+    string_property.set_mode(static_cast<StringProperty::Mode>(index));
   });
 }
 
