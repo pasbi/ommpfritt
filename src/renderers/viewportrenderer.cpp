@@ -125,6 +125,12 @@ void ViewportRenderer::draw_circle(const arma::vec2& pos, const double radius, c
   m_painter->restore();
 }
 
+void ViewportRenderer
+::draw_image(const std::string& filename, const arma::vec2& pos, const arma::vec2& size)
+{
+  QRectF rect(to_qpoint(pos), to_qpoint(pos + size));
+  m_painter->drawImage(rect, m_image_cache.load(filename));
+}
 
 void ViewportRenderer::set_painter(QPainter& painter) { m_painter = &painter; }
 void ViewportRenderer::clear_painter() { m_painter = nullptr; }

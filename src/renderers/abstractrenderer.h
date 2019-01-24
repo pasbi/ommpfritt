@@ -31,6 +31,8 @@ public:
   virtual void pop_transformation();
   virtual ObjectTransformation current_transformation() const;
   virtual void draw_circle(const arma::vec2& pos, const double radius, const Style& style) = 0;
+  virtual
+  void draw_image(const std::string& filename, const arma::vec2& pos, const arma::vec2& size) = 0;
   Scene& scene;
 
 private:
