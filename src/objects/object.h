@@ -30,6 +30,7 @@ public:
   virtual ~Object();
 
   enum class Flag { None = 0x0, Convertable = 0x1 };
+  enum class Visibility { Visible, Hide, HideTree };
 
   void transform(const ObjectTransformation& transformation);
   ObjectTransformation transformation() const;
@@ -50,6 +51,7 @@ public:
   virtual Flag flags() const;
   Scene* scene() const;
   bool is_active() const;
+  Visibility is_visible() const;
 
   List<Tag> tags;
   template<typename T, template<typename...> class ContainerT>
@@ -62,6 +64,7 @@ public:
 
   static constexpr auto TYPE = "Object";
   static constexpr auto TRANSFORMATION_PROPERTY_KEY = "transformation";
+  static constexpr auto IS_VISIBLE_PROPERTY_KEY = "is_visible";
   static constexpr auto IS_ACTIVE_PROPERTY_KEY = "is_active";
 
   enum class Border { Clamp, Wrap, Hide, Reflect };

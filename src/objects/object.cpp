@@ -18,6 +18,7 @@
 #include "tags/styletag.h"
 #include "scene/contextes.h"
 #include "properties/boolproperty.h"
+#include "properties/optionsproperty.h"
 
 namespace
 {
@@ -55,6 +56,10 @@ Object::Object(Scene* scene)
 {
   set_scene(scene);
 
+  add_property<OptionsProperty>(IS_VISIBLE_PROPERTY_KEY, true)
+    .set_options({ "visible", "hide", "hide tree" })
+    .set_label(QObject::tr("").toStdString())
+    .set_category(QObject::tr("basic").toStdString());
 
   add_property<BoolProperty>(IS_ACTIVE_PROPERTY_KEY, true)
     .set_label(QObject::tr("active").toStdString())
@@ -199,23 +204,24 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
 
 void Object::render_recursive(AbstractRenderer& renderer, const Style& default_style)
 {
-  const auto styles = find_styles(*this);
-  for (const auto* style : styles) {
-    render(renderer, *style);
-  }
-  if (styles.size() == 0) {
-    render(renderer, default_style);
+  const auto visibility = property(IS_VISIBLE_PROPERTY_KEY).value<Visibility>();
+  if (visibility == Visibility::Visible) {
+    const auto styles = find_styles(*this);
+    for (const auto* style : styles) {
+      render(renderer, *style);
+    }
+    if (styles.size() == 0) {
+      render(renderer, default_style);
+    }
   }
 
-  // if (bounding_box().intersect(renderer.bounding_box()).is_empty()) {
-  if (m_draw_children) {
+  if (visibility != Visibility::HideTree && m_draw_children) {
     for (const auto& child : children()) {
       renderer.push_transformation(child->transformation());
       child->render_recursive(renderer, default_style);
       renderer.pop_transformation();
     }
   }
-  // }
 }
 
 BoundingBox Object::recursive_bounding_box()
