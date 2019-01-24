@@ -9,7 +9,6 @@ OptionsPropertyWidget::OptionsPropertyWidget(Scene& scene, const std::set<Proper
   : PropertyWidget(scene, properties)
 {
   auto options_edit = std::make_unique<OptionsEdit>([this](const std::size_t& value) {
-    LOG(INFO) << "Set " << value;
     set_properties_value(value);
   });
   m_options_edit = options_edit.get();

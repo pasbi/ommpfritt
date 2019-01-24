@@ -34,7 +34,6 @@ void IntegerVectorProperty::deserialize(AbstractDeserializer& deserializer, cons
   TypedProperty::deserialize(deserializer, root);
   const auto v = deserializer.get_ivec2(make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
   set(VectorPropertyValueType<arma::ivec2>(v));
-  LOG(INFO) << "get ivec2 from " << root;
   set_default_value(
     deserializer.get_ivec2(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
 }
