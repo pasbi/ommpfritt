@@ -22,11 +22,13 @@ void modify_tangents(omm::Scene& scene, omm::Path::InterpolationMode mode)
     return &path->property(omm::Path::INTERPOLATION_PROPERTY_KEY);
   });
 
-  scene.undo_stack.beginMacro("modify tangents");
-  using OptionsPropertyCommand = omm::PropertiesCommand<omm::OptionsProperty>;
-  scene.submit<OptionsPropertyCommand>(interpolation_properties, bezier_mode);
-  scene.submit<omm::ModifyPointsCommand>(map);
-  scene.undo_stack.endMacro();
+  if (map.size() > 0) {
+    scene.undo_stack.beginMacro("modify tangents");
+    using OptionsPropertyCommand = omm::PropertiesCommand<omm::OptionsProperty>;
+    scene.submit<OptionsPropertyCommand>(interpolation_properties, bezier_mode);
+    scene.submit<omm::ModifyPointsCommand>(map);
+    scene.undo_stack.endMacro();
+  }
 }
 
 }  // namespace
