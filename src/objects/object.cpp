@@ -167,7 +167,11 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
     try {
       auto child = Object::make(child_type, static_cast<Scene*>(m_scene));
       child->deserialize(deserializer, child_pointer);
-      adopt(std::move(child));
+
+      // TODO adopt sets the global transformation which is reverted by setting the local
+      //  transformation immediately afterwards. That can be optimized.
+      const auto t = child->transformation();
+      adopt(std::move(child)).set_transformation(t);
     } catch (std::out_of_range& e) {
       const auto message = "Failed to retrieve object type '" + child_type + "'.";
       LOG(ERROR) << message;
