@@ -13,6 +13,8 @@ public:
   BoundingBox bounding_box() override;
   std::string type() const override;
   std::unique_ptr<Object> clone() const override;
+  static constexpr auto TYPE = "Empty";
+
 };
 
 std::ostream& operator<<(std::ostream& ostream, const Object& object);

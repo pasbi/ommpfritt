@@ -11,24 +11,9 @@ Empty::Empty(Scene* scene) : Object(scene)
     .set_options(options).set_label("hdhe").set_category("base");
 }
 
-void Empty::render(AbstractRenderer&, const Style&)
-{
-  return;
-}
-
-BoundingBox Empty::bounding_box()
-{
-  return BoundingBox({ arma::vec2{0, 0} });
-}
-
-std::string Empty::type() const
-{
-  return "Empty";
-}
-
-std::unique_ptr<Object> Empty::clone() const
-{
-  return std::make_unique<Empty>(*this);
-}
+void Empty::render(AbstractRenderer&, const Style&) { return; }
+BoundingBox Empty::bounding_box() { return BoundingBox({ arma::vec2{0, 0} }); }
+std::string Empty::type() const { return TYPE; }
+std::unique_ptr<Object> Empty::clone() const { return std::make_unique<Empty>(*this); }
 
 }  // namespace omm
