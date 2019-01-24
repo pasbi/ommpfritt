@@ -21,8 +21,6 @@ class Style;
 
 Cloner::Cloner(Scene* scene) : Object(scene)
 {
-  m_draw_children = false;
-
   auto& mode_property = add_property<OptionsProperty>(MODE_PROPERTY_KEY);
   mode_property.set_options({ "Linear", "Grid", "Radial", "Path", "Script" })
     .set_label(QObject::tr("mode").toStdString())
@@ -90,11 +88,16 @@ Cloner::Cloner(Scene* scene) : Object(scene)
 
 void Cloner::render(AbstractRenderer& renderer, const Style& style)
 {
-  assert(&renderer.scene == scene());
-  for (auto&& clone : make_clones()) {
-    renderer.push_transformation(clone->transformation());
-    clone->render_recursive(renderer, style);
-    renderer.pop_transformation();
+  if (is_active()) {
+    assert(&renderer.scene == scene());
+    for (auto&& clone : make_clones()) {
+      renderer.push_transformation(clone->transformation());
+      clone->render_recursive(renderer, style);
+      renderer.pop_transformation();
+    }
+    m_draw_children = false;
+  } else {
+    m_draw_children = true;
   }
 }
 

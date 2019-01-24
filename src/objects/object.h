@@ -49,6 +49,7 @@ public:
   virtual std::unique_ptr<Object> convert();
   virtual Flag flags() const;
   Scene* scene() const;
+  bool is_active() const;
 
   List<Tag> tags;
   template<typename T, template<typename...> class ContainerT>
@@ -61,6 +62,7 @@ public:
 
   static constexpr auto TYPE = "Object";
   static constexpr auto TRANSFORMATION_PROPERTY_KEY = "transformation";
+  static constexpr auto IS_ACTIVE_PROPERTY_KEY = "is_active";
 
   enum class Border { Clamp, Wrap, Hide, Reflect };
   static double apply_border(double t, Border border);

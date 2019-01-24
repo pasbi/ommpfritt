@@ -19,9 +19,11 @@ Instance::Instance(Scene* scene)
 
 void Instance::render(AbstractRenderer& renderer, const Style& style)
 {
-  const auto o = referenced_object();
-  if (o != nullptr) {
-    o->render_recursive(renderer, style);
+  if (is_active()) {
+    const auto o = referenced_object();
+    if (o != nullptr) {
+      o->render_recursive(renderer, style);
+    }
   }
 }
 

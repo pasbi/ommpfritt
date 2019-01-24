@@ -17,6 +17,7 @@
 #include "renderers/style.h"
 #include "tags/styletag.h"
 #include "scene/contextes.h"
+#include "properties/boolproperty.h"
 
 namespace
 {
@@ -54,6 +55,11 @@ Object::Object(Scene* scene)
 {
   set_scene(scene);
 
+
+  add_property<BoolProperty>(IS_ACTIVE_PROPERTY_KEY, true)
+    .set_label(QObject::tr("active").toStdString())
+    .set_category(QObject::tr("basic").toStdString());
+
   add_property<StringProperty>(NAME_PROPERTY_KEY, "<unnamed object>")
     .set_label(QObject::tr("Name").toStdString())
     .set_category(QObject::tr("basic").toStdString());
@@ -72,9 +78,7 @@ Object::Object(const Object& other)
   set_scene(other.m_scene);
 }
 
-Object::~Object()
-{
-}
+Object::~Object() { }
 
 void Object::set_scene(Scene* scene)
 {
@@ -313,4 +317,5 @@ void Object::set_oriented_position(const OrientedPoint& op, const bool align)
   set_global_transformation(transformation);
 }
 
+bool Object::is_active() const { return property(IS_ACTIVE_PROPERTY_KEY).value<bool>(); }
 }  // namespace omm
