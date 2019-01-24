@@ -12,7 +12,7 @@ class AxisHandle : public Handle
 {
 public:
   explicit AxisHandle(Tool& tool);
-  bool contains(const arma::vec2& point) const override;
+  bool contains_global(const arma::vec2& point) const override;
   void set_direction(const arma::vec2& direction);
 
 protected:

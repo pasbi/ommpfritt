@@ -10,7 +10,7 @@ class CircleHandle : public Handle
 public:
   explicit CircleHandle(Tool& tool);
   void draw(AbstractRenderer& renderer) const override;
-  bool contains(const arma::vec2& point) const override;
+  bool contains_global(const arma::vec2& point) const override;
   void set_radius(double r);
 
   static constexpr double RADIUS = 100;

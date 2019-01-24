@@ -95,9 +95,9 @@ ObjectSelectHandle
   set_style(Status::Inactive, omm::SolidStyle(omm::Color(0.8, 0.8, 0.2)));
 }
 
-bool ObjectSelectHandle::contains(const arma::vec2& point) const
+bool ObjectSelectHandle::contains_global(const arma::vec2& point) const
 {
-  return arma::norm(point) < epsilon;
+  return arma::norm(point - transformation().apply_to_position(arma::vec2{0.0, 0.0})) < epsilon;
 }
 
 void ObjectSelectHandle::draw(omm::AbstractRenderer& renderer) const
@@ -185,9 +185,9 @@ ObjectTransformation PointSelectHandle::transformation() const
   return m_path.global_transformation();
 }
 
-bool PointSelectHandle::contains(const arma::vec2& point) const
+bool PointSelectHandle::contains_global(const arma::vec2& point) const
 {
-  return arma::norm(point - m_point.position) < epsilon;
+  return arma::norm(point - transformation().apply_to_position(m_point.position)) < epsilon;
 }
 
 bool PointSelectHandle

@@ -11,10 +11,11 @@ namespace omm
 
 AxisHandle::AxisHandle(Tool& tool) : Handle(tool, true) {}
 
-bool AxisHandle::contains(const arma::vec2& point) const
+bool AxisHandle::contains_global(const arma::vec2& point) const
 {
+  const arma::vec2 global_point = transformation().inverted().apply_to_position(point);
   arma::vec2 o { 0.0, 0.0 };
-  arma::vec2 v = project_onto_axis(point);
+  arma::vec2 v = project_onto_axis(global_point);
 
   // clamp v between o and m_direction
   const arma::vec2 min = arma::min(o, m_direction);
@@ -23,7 +24,7 @@ bool AxisHandle::contains(const arma::vec2& point) const
     v(i) = std::max(static_cast<double>(min(i)), std::min(v(i), static_cast<double>(max(i))));
   }
 
-  return arma::norm(point - v) < epsilon;
+  return arma::norm(global_point - v) < epsilon;
 }
 
 void AxisHandle::set_direction(const arma::vec2& direction) { m_direction = direction; }

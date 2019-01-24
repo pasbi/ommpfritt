@@ -22,9 +22,9 @@ void CircleHandle::draw(AbstractRenderer& renderer) const
   renderer.draw_spline(points, current_style());
 }
 
-bool CircleHandle::contains(const arma::vec2& point) const
+bool CircleHandle::contains_global(const arma::vec2& point) const
 {
-  const double r = arma::norm(point);
+  const double r = arma::norm(point - transformation().apply_to_position(arma::vec2{0.0, 0.0}));
   return RADIUS - epsilon <= r && r <= RADIUS + epsilon;
 }
 

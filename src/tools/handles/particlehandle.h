@@ -11,7 +11,7 @@ class ParticleHandle : public Handle
 {
 public:
   explicit ParticleHandle(Tool& tool, bool transform_in_tool_space);
-  bool contains(const arma::vec2& point) const override;
+  bool contains_global(const arma::vec2& point) const override;
   void draw(omm::AbstractRenderer& renderer) const override;
   arma::vec2 position = arma::vec2{ 0.0, 0.0 };
 };

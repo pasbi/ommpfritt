@@ -13,9 +13,9 @@ ParticleHandle::ParticleHandle(Tool& tool, bool transform_in_tool_space)
   set_style(Status::Inactive, omm::SolidStyle(omm::Color(0.8, 0.8, 0.2)));
 }
 
-bool ParticleHandle::contains(const arma::vec2& point) const
+bool ParticleHandle::contains_global(const arma::vec2& point) const
 {
-  return arma::norm(point - position) < epsilon;
+  return arma::norm(point - transformation().apply_to_position(position)) < epsilon;
 }
 
 void ParticleHandle::draw(omm::AbstractRenderer& renderer) const

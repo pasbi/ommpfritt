@@ -58,10 +58,4 @@ ObjectTransformation Handle::transformation() const
   return transform_in_tool_space ? tool.transformation() : ObjectTransformation();
 }
 
-bool Handle::contains_global(const arma::vec2& global_point) const
-{
-  return contains(transformation().inverted().apply_to_position(global_point));
-}
-
-
 }  // namespace omm

@@ -30,8 +30,7 @@ public:
   bool is_enabled() const;
 
 protected:
-  virtual bool contains(const arma::vec2& point) const = 0;
-  virtual bool contains_global(const arma::vec2& global_point) const;
+  virtual bool contains_global(const arma::vec2& global_point) const = 0;
   const Style& current_style() const;
   const Style& style(Status status) const;
   virtual ObjectTransformation transformation() const;
