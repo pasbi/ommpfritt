@@ -5,7 +5,6 @@
 #include <QTimer>
 #include <QMouseEvent>
 
-#include "renderers/viewportrenderer.h"
 #include "scene/scene.h"
 #include "python/pythonengine.h"
 
@@ -41,6 +40,7 @@ Viewport::Viewport(Scene& scene)
   , m_timer(std::make_unique<QTimer>())
   , m_pan_controller([this](const arma::vec2& pos) { set_cursor_position(*this, pos); })
   , m_viewport_transformation(TOP_RIGHT)
+  , m_renderer(scene)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   connect(&*m_timer, &QTimer::timeout, [this]() {
@@ -59,15 +59,17 @@ void Viewport::paintEvent(QPaintEvent* event)
 #endif
 {
   QPainter painter(this);
+  m_renderer.set_painter(painter);
+
   painter.setRenderHint(QPainter::Antialiasing);
   painter.fillRect(rect(), Qt::gray);
-  ViewportRenderer renderer(painter, m_scene);
-  renderer.set_base_transformation(viewport_transformation());
+  m_renderer.set_base_transformation(viewport_transformation());
 
   m_scene.evaluate_tags();
-  renderer.render();
+  m_renderer.render();
 
-  m_scene.tool_box.active_tool().draw(renderer);
+  m_scene.tool_box.active_tool().draw(m_renderer);
+  m_renderer.clear_painter();
 }
 
 arma::vec2 Viewport::viewport_to_global_direction(const arma::vec2& pos) const

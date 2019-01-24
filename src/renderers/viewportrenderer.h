@@ -10,7 +10,7 @@ namespace omm
 class ViewportRenderer : public AbstractRenderer
 {
 public:
-  explicit ViewportRenderer(QPainter& painter, Scene& scene);
+  explicit ViewportRenderer(Scene& scene);
   void draw_spline( const std::vector<Point>& points, const Style& style,
                     bool closed = false ) override;
   void draw_rectangle(const arma::vec2& pos, const double radius, const Style& style) override;
@@ -18,9 +18,11 @@ public:
 
   void push_transformation(const ObjectTransformation& transformation) override;
   void pop_transformation() override;
+  void set_painter(QPainter& painter);
+  void clear_painter();
 
 private:
-  QPainter& m_painter;
+  QPainter* m_painter;
 };
 
 }  // namespace omm

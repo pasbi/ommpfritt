@@ -60,22 +60,18 @@ auto make_brush(const omm::Style& style)
 namespace omm
 {
 
-ViewportRenderer::ViewportRenderer(QPainter& painter, Scene& scene)
-  : AbstractRenderer(scene)
-  , m_painter(painter)
-{
-}
+ViewportRenderer::ViewportRenderer(Scene& scene) : AbstractRenderer(scene) {}
 
 void ViewportRenderer::push_transformation(const ObjectTransformation& transformation)
 {
   AbstractRenderer::push_transformation(transformation);
-  m_painter.setTransform(to_transformation(current_transformation()), false);
+  m_painter->setTransform(to_transformation(current_transformation()), false);
 }
 
 void ViewportRenderer::pop_transformation()
 {
   AbstractRenderer::pop_transformation();
-  m_painter.setTransform(to_transformation(current_transformation()), false);
+  m_painter->setTransform(to_transformation(current_transformation()), false);
 }
 
 void
@@ -99,10 +95,10 @@ ViewportRenderer::draw_spline(const std::vector<Point>& points, const Style& sty
     }
 
     if (style.property(Style::BRUSH_IS_ACTIVE_KEY).value<bool>()) {
-      m_painter.fillPath(path, make_brush(style));
+      m_painter->fillPath(path, make_brush(style));
     }
     if (style.property(Style::PEN_IS_ACTIVE_KEY).value<bool>()) {
-      m_painter.strokePath(path, make_pen(style));
+      m_painter->strokePath(path, make_pen(style));
     }
   }
 }
@@ -122,12 +118,15 @@ ViewportRenderer::draw_rectangle(const arma::vec2& pos, const double radius, con
 
 void ViewportRenderer::draw_circle(const arma::vec2& pos, const double radius, const Style& style)
 {
-  m_painter.save();
-  m_painter.setPen(make_pen(style));
-  m_painter.setBrush(make_brush(style));
-  m_painter.drawEllipse(to_qpoint(pos), radius, radius);
-  m_painter.restore();
+  m_painter->save();
+  m_painter->setPen(make_pen(style));
+  m_painter->setBrush(make_brush(style));
+  m_painter->drawEllipse(to_qpoint(pos), radius, radius);
+  m_painter->restore();
 }
 
+
+void ViewportRenderer::set_painter(QPainter& painter) { m_painter = &painter; }
+void ViewportRenderer::clear_painter() { m_painter = nullptr; }
 
 }  // namespace omm

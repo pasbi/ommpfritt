@@ -6,6 +6,7 @@
 #include "geometry/objecttransformation.h"
 #include "mainwindow/viewport/mousepancontroller.h"
 #include "scene/abstractselectionobserver.h"
+#include "renderers/viewportrenderer.h"
 
 #define USE_OPENGL 0
 
@@ -47,6 +48,7 @@ private:
   std::unique_ptr<QTimer> m_timer;
   ObjectTransformation m_viewport_transformation;
   MousePanController m_pan_controller;
+  ViewportRenderer m_renderer;
   ObjectTransformation viewport_transformation() const;
   arma::vec2 viewport_to_global_direction(const arma::vec2& pos) const;
   arma::vec2 viewport_to_global_position(const arma::vec2& pos) const;
