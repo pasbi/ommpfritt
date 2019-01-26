@@ -1,5 +1,6 @@
 FILE(GLOB SRC_FILES
   "geometry.cpp"
+  "main.cpp"
 )
 
 # Add executable

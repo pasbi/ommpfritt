@@ -3,7 +3,7 @@ file (GLOB SOURCES
   main.cpp
 )
 
-target_sources(ommpfritt PRIVATE ${SOURCES})
+target_sources(libommpfritt PRIVATE ${SOURCES})
 
 add_subdirectory(aspects)
 add_subdirectory(color)
