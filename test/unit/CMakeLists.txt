@@ -1,5 +1,6 @@
 FILE(GLOB SRC_FILES
   "geometry.cpp"
+  "path.cpp"
   "main.cpp"
 )
 

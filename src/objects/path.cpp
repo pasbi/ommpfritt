@@ -175,4 +175,82 @@ double Path::path_length()
   return Cubics(m_points, is_closed()).length();
 }
 
+std::vector<Path::PointSequence> Path::remove_points(std::vector<std::size_t> indices)
+{
+  // `points` may have holes, but must be ordered.
+
+  std::list<PointSequence> sequences;
+  if (indices.size() > 0) {
+    sequences.push_back(PointSequence{});
+    std::size_t i = 0;
+    bool fresh = true;
+    for (std::size_t j = 0; j < m_points.size(); ++j) {
+      if (i == indices.size()) {
+        break;
+      } else if (j == indices[i]) {
+        sequences.back().sequence.push_back(m_points[j]);
+        i++;
+        fresh = false;
+      } else {
+        if (!fresh) {
+          sequences.push_back(PointSequence{});
+          fresh = true;
+        }
+        sequences.back().position = j+1;
+      }
+    }
+    assert(i == indices.size()); // otherwise, indices was not ordered.
+    if (fresh) {  sequences.pop_back(); }
+  }
+
+  std::vector<Point> new_points;
+  new_points.reserve(m_points.size() - indices.size());
+  std::size_t j = 0;
+  for (std::size_t i = 0; i < m_points.size(); ++i) {
+    if (j >= indices.size() || i != indices[j]) {
+      new_points.push_back(m_points[i]);
+    } else {
+      j++;
+    }
+  }
+  assert(new_points.size() == m_points.size() - indices.size());
+  m_points = new_points;
+
+  return std::vector<Path::PointSequence>(sequences.begin(), sequences.end());
+}
+
+std::vector<std::size_t> Path::add_points(const PointSequence& sequence)
+{
+  auto i = std::next(m_points.begin(), sequence.position);
+  const auto n = sequence.sequence.size();
+
+  m_points.insert(i, sequence.sequence.begin(), sequence.sequence.end());
+
+  std::vector<std::size_t> points;
+  points.reserve(n);
+  for (std::size_t j = 0; j < n; ++j) {
+    points.push_back(sequence.position + j);
+  }
+  return points;
+}
+
+std::vector<std::size_t> Path::add_points(const std::vector<PointSequence>& sequences)
+{
+  std::size_t last_pos = 0;
+  std::list<std::size_t> points;
+  for (std::size_t i = 0; i < sequences.size(); ++i) {
+    const auto pos = sequences[i].position;
+    // sequences must be separated by at least one item.
+    // subsequent sequences are acutually not a problem, however, they are expected to be merged
+    // into a single sequence. Sequences must not interleave because it produces unintuive effects.
+    assert(i == 0 || pos > sequences[i-1].position + sequences[i-1].sequence.size());
+    last_pos = pos;
+    const auto ps = add_points(sequences[i]);
+    std::copy(ps.begin(), ps.end(), std::back_inserter(points));
+  }
+  return std::vector(points.begin(), points.end());
+}
+
+
+
 }  // namespace omm

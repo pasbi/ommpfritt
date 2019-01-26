@@ -3,6 +3,7 @@
 #include "objects/object.h"
 #include "geometry/point.h"
 #include "geometry/cubic.h"
+#include <list>
 
 namespace omm
 {
@@ -36,6 +37,17 @@ public:
 
   std::map<Point*, Point>
   modified_points(const bool constrain_to_selection, InterpolationMode mode);
+
+  struct PointSequence
+  {
+    std::size_t position = 0;
+    std::list<Point> sequence;
+  };
+
+  std::vector<PointSequence> remove_points(std::vector<std::size_t> points);
+  std::vector<std::size_t> add_points(const PointSequence& sequence);
+  std::vector<std::size_t> add_points(const std::vector<PointSequence>& sequences);
+
   bool is_closed() const;
 
 private:
