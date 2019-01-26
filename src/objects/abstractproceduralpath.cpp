@@ -20,10 +20,7 @@ BoundingBox AbstractProceduralPath::bounding_box()
   return BoundingBox(::transform<arma::vec2>(points(), [](const Point& p) { return p.position; }));
 }
 
-Object::Flag AbstractProceduralPath::flags() const
-{
-  return Object::flags() | Flag::Convertable;
-}
+Object::Flag AbstractProceduralPath::flags() const { return Object::flags() | Flag::Convertable; }
 
 std::unique_ptr<Object> AbstractProceduralPath::convert()
 {
@@ -40,9 +37,6 @@ OrientedPoint AbstractProceduralPath::evaluate(const double t)
   return Cubics(points(), is_closed()).evaluate(t);
 }
 
-double AbstractProceduralPath::path_length()
-{
-  return Cubics(points(), is_closed()).length();
-}
+double AbstractProceduralPath::path_length() { return Cubics(points(), is_closed()).length(); }
 
 }  // namespace omm

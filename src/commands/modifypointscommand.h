@@ -13,8 +13,8 @@ class ModifyPointsCommand : public Command
 {
 public:
   ModifyPointsCommand(const std::map<Path*, std::map<Point*, Point>>& points);
-  void undo() override;
   void redo() override;
+  void undo() override;
   int id() const override;
   bool mergeWith(const QUndoCommand* command) override;
 

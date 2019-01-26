@@ -24,6 +24,8 @@ struct PolarCoordinates
   void swap(PolarCoordinates& other);
   double argument;
   double magnitude;
+  bool operator==(const PolarCoordinates& other) const;
+  bool operator!=(const PolarCoordinates& other) const;
 };
 
 class Point
@@ -43,8 +45,11 @@ public:
 
   Point smoothed(const Point& left_neighbor, const Point& right_neighbor) const;
   Point nibbed() const;
+  bool operator==(const Point& point) const;
+  bool operator!=(const Point& point) const;
 
 };
+
 
 constexpr PolarCoordinates to_polar(arma::vec2 cartesian);
 constexpr arma::vec2 to_cartesian(const PolarCoordinates& polar);

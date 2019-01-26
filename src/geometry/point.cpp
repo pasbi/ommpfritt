@@ -47,6 +47,16 @@ void PolarCoordinates::swap(PolarCoordinates& other)
   std::swap(other.magnitude, magnitude);
 }
 
+bool PolarCoordinates::operator==(const PolarCoordinates& point) const
+{
+  return argument == point.argument && magnitude == point.magnitude;
+}
+
+bool PolarCoordinates::operator!=(const PolarCoordinates& point) const
+{
+  return !(*this == point);
+}
+
 Point Point::smoothed(const Point& left_neighbor, const Point& right_neighbor) const
 {
   auto copy = *this;
@@ -90,8 +100,18 @@ std::ostream& operator<<(std::ostream& ostream, const PolarCoordinates& pc)
 
 std::ostream& operator<<(std::ostream& ostream, const Point& pc)
 {
-  ostream << "Point[" << pc.position << ", " << pc.left_tangent << ", " << pc.right_tangent << "]";
+  ostream << "Point[" << "[" << pc.position(0) << ", " << pc.position(1) << "], "
+          << pc.left_tangent << ", " << pc.right_tangent << "]";
   return ostream;
 }
+
+bool Point::operator==(const Point& point) const
+{
+  return arma::all(position == point.position)
+    && left_tangent == point.left_tangent
+    && right_tangent == point.right_tangent;
+}
+
+bool Point::operator!=(const Point& point) const { return !(*this == point); }
 
 }  // namespace omm
