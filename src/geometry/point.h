@@ -32,6 +32,7 @@ class Point
 {
 public:
   explicit Point(const arma::vec2& position);
+  explicit Point(const OrientedPoint& op, const double tangent_length);
   Point();
   arma::vec2 position;
   arma::vec2 left_position() const;
@@ -56,5 +57,6 @@ constexpr arma::vec2 to_cartesian(const PolarCoordinates& polar);
 
 std::ostream& operator<<(std::ostream& ostream, const PolarCoordinates& pc);
 std::ostream& operator<<(std::ostream& ostream, const Point& pc);
+std::ostream& operator<<(std::ostream& ostream, const Point* pc);
 
 }  // namespace omm

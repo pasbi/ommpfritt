@@ -57,6 +57,15 @@ bool PolarCoordinates::operator!=(const PolarCoordinates& point) const
   return !(*this == point);
 }
 
+Point::Point(const OrientedPoint& op, const double tangent_length)
+  : Point(op.position)
+{
+  left_tangent.argument = op.rotation;
+  left_tangent.magnitude = tangent_length;
+  right_tangent.argument = M_PI + op.rotation;
+  right_tangent.magnitude = tangent_length;
+}
+
 Point Point::smoothed(const Point& left_neighbor, const Point& right_neighbor) const
 {
   auto copy = *this;
@@ -100,8 +109,25 @@ std::ostream& operator<<(std::ostream& ostream, const PolarCoordinates& pc)
 
 std::ostream& operator<<(std::ostream& ostream, const Point& pc)
 {
-  ostream << "Point[" << "[" << pc.position(0) << ", " << pc.position(1) << "], "
-          << pc.left_tangent << ", " << pc.right_tangent << "]";
+  static constexpr bool verbose = false;
+  if constexpr (verbose) {
+    ostream << "Point[" << "[" << pc.position(0) << ", " << pc.position(1) << "], "
+            << pc.left_tangent << ", " << pc.right_tangent << "]";
+  } else {
+    ostream << "[" << pc.position(0) << ", " << pc.position(1) << "]";
+  }
+  return ostream;
+}
+
+std::ostream& operator<<(std::ostream& ostream, const Point* pc)
+{
+  static constexpr bool verbose = false;
+  if constexpr (verbose) {
+    ostream << "Point[" << "[" << pc->position(0) << ", " << pc->position(1) << "], "
+            << pc->left_tangent << ", " << pc->right_tangent << "]";
+  } else {
+    ostream << "[" << pc->position(0) << ", " << pc->position(1) << "]";
+  }
   return ostream;
 }
 
