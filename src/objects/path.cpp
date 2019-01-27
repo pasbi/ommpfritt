@@ -227,6 +227,7 @@ std::vector<Path::PointSequence> Path::remove_points(std::vector<std::size_t> in
   assert(new_points.size() == m_points.size() - indices.size());
   m_points = new_points;
 
+  scene()->tool_box.active_tool().on_scene_changed();
   return std::vector<Path::PointSequence>(sequences.begin(), sequences.end());
 }
 
@@ -259,6 +260,10 @@ std::vector<std::size_t> Path::add_points(const std::vector<PointSequence>& sequ
     last_pos = pos;
     const auto ps = add_points(sequences[i]);
     std::copy(ps.begin(), ps.end(), std::back_inserter(points));
+  }
+  if (scene()) {
+    // scene() == nullptr should happen only in unit-test context.
+    scene()->tool_box.active_tool().on_scene_changed();
   }
   return std::vector(points.begin(), points.end());
 }

@@ -46,13 +46,17 @@ public:
   };
 
   std::vector<PointSequence> remove_points(std::vector<std::size_t> points);
-  std::vector<std::size_t> add_points(const PointSequence& sequence);
   std::vector<std::size_t> add_points(const std::vector<PointSequence>& sequences);
 
   bool is_closed() const;
 
 private:
   std::vector<Point> m_points;
+  /**
+   * @brief this function does not notifiy the active tool.
+   *  use the overload add_points(const std::vector<PointSequence>&);
+   */
+  std::vector<std::size_t> add_points(const PointSequence& sequence);
 };
 
 }  // namespace omm

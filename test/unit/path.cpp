@@ -49,9 +49,7 @@ void remove_add_points( const std::vector<omm::Point>& initial_points,
     }
   }
 
-  for (const auto& sequence : sequences) {
-    path.add_points(sequence);
-  }
+  path.add_points(sequences);
 
   LOG(INFO) << "after insert: "
             << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>);
