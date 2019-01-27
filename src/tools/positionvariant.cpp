@@ -39,7 +39,9 @@ void PointPositions::make_handles(handles_type& handles, Tool& tool) const
 
 void PointPositions::transform(const ObjectTransformation& transformation)
 {
-  scene.submit<PointsTransformationCommand>(paths(), transformation);
+  if (const auto paths = this->paths(); paths.size() > 0) {
+    scene.submit<PointsTransformationCommand>(paths, transformation);
+  }
 }
 
 void PointPositions::clear_selection()

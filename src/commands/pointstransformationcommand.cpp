@@ -9,13 +9,14 @@ namespace
 auto
 make_alternatives(const std::set<omm::Path*>& paths, const omm::ObjectTransformation& t)
 {
-  std::map<omm::Point*, omm::Point> alternatives;
-  for (const auto& path : paths) {
+  std::map<omm::Path*, std::map<std::size_t, omm::Point>> alternatives;
+  for (omm::Path* path : paths) {
     const auto pt = t.transformed(path->global_transformation());
-    for (const auto& point : path->points()) {
-      if (point->is_selected) {
-        omm::Point other = pt.apply(*point);
-        alternatives.insert(std::make_pair(point, other));
+    const auto points = path->points();
+    for (std::size_t i = 0; i < points.size(); ++i) {
+      if (points[i]->is_selected) {
+        omm::Point other = pt.apply(*points[i]);
+        alternatives[path].insert(std::make_pair(i, other));
       }
     }
   }
@@ -46,19 +47,18 @@ PointsTransformationCommand
 ::PointsTransformationCommand(const std::set<Path*>& paths, const ObjectTransformation& t)
   : Command("PointsTransformationCommand")
   , m_alternative_points(make_alternatives(paths, t))
-  , m_paths(paths)
 {
 }
 
-void PointsTransformationCommand::undo()
-{
-  redo();
-}
 
 void PointsTransformationCommand::redo()
 {
-  for (const auto& [point, _] : m_alternative_points) { point->swap(m_alternative_points[point]); }
-  for (Path* path : m_paths) {
+  for (auto&& [path, alternatives] : m_alternative_points) {
+    const auto points = path->points();
+    for (const auto& [i, _] : alternatives) {
+      points[i]->swap(alternatives[i]);
+    }
+
     const auto& i_mode_property = path->property(Path::INTERPOLATION_PROPERTY_KEY);
     const auto i_mode = i_mode_property.value<Path::InterpolationMode>();
     for (auto [point, alternative] : path->modified_points(false, i_mode)) {
@@ -67,10 +67,8 @@ void PointsTransformationCommand::redo()
   }
 }
 
-int PointsTransformationCommand::id() const
-{
-  return POINTS_TRANSFORMATION_COMMAND_ID;
-}
+void PointsTransformationCommand::undo() { redo(); }
+int PointsTransformationCommand::id() const { return POINTS_TRANSFORMATION_COMMAND_ID; }
 
 bool PointsTransformationCommand::mergeWith(const QUndoCommand* command)
 {

@@ -20,8 +20,7 @@ public:
   bool mergeWith(const QUndoCommand* command) override;
 
 private:
-  std::map<Point*, Point> m_alternative_points;
-  std::set<Path*> m_paths;
+  std::map<Path*, std::map<std::size_t, Point>> m_alternative_points;
 };
 
 }  // namespace omm
