@@ -34,6 +34,7 @@ public:
 
   enum class InterpolationMode { Linear, Smooth, Bezier };
   void deselect_all_points();
+  std::vector<std::size_t> selected_points() const;
 
   std::map<Point*, Point>
   modified_points(const bool constrain_to_selection, InterpolationMode mode);

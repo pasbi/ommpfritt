@@ -45,4 +45,43 @@ bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)
   return true;
 }
 
+AbstractPointsCommand::AbstractPointsCommand(
+  const std::string& label, const std::map<Path*, std::vector<Path::PointSequence>>& points )
+  : Command(label), m_added_points(points) {}
+
+AbstractPointsCommand::AbstractPointsCommand(
+  const std::string& label, const std::map<Path*, std::vector<std::size_t>>& points )
+  : Command(label), m_removed_points(points) {}
+
+void AbstractPointsCommand::remove()
+{
+  assert(m_added_points.size() == 0);
+  for (auto&& [path, points] : m_removed_points) {
+    m_added_points[path] = path->remove_points(points);
+  }
+  m_removed_points.clear();
+}
+
+void AbstractPointsCommand::add()
+{
+  assert(m_removed_points.size() == 0);
+  for (auto&& [path, points] : m_added_points) {
+    m_removed_points[path] = path->add_points(points);
+  }
+  m_added_points.clear();
+}
+
+AddPointsCommand::AddPointsCommand(const std::map<Path*, std::vector<Path::PointSequence>>& points)
+  : AbstractPointsCommand("AddPointsCommand", points) {}
+
+void AddPointsCommand::redo() { add(); }
+void AddPointsCommand::undo() { remove(); }
+
+RemovePointsCommand::RemovePointsCommand(const std::map<Path*, std::vector<std::size_t>>& points)
+  : AbstractPointsCommand("RemovePointsCommand", points) {}
+
+void RemovePointsCommand::redo() { remove(); }
+void RemovePointsCommand::undo() { add(); }
+
+
 }  // namespace omm

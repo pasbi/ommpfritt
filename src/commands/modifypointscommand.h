@@ -24,4 +24,35 @@ private:
   void swap();
 };
 
+class AbstractPointsCommand : public Command
+{
+protected:
+  AbstractPointsCommand( const std::string& label,
+                         const std::map<Path*, std::vector<Path::PointSequence>>& points );
+  AbstractPointsCommand( const std::string& label,
+                         const std::map<Path*, std::vector<std::size_t>>& points );
+  void add();
+  void remove();
+
+private:
+  std::map<Path*, std::vector<std::size_t>> m_removed_points;
+  std::map<Path*, std::vector<Path::PointSequence>> m_added_points;
+};
+
+class AddPointsCommand : public AbstractPointsCommand
+{
+public:
+  AddPointsCommand(const std::map<Path*, std::vector<Path::PointSequence>>& points);
+  void redo() override;
+  void undo() override;
+};
+
+class RemovePointsCommand : public AbstractPointsCommand
+{
+public:
+  RemovePointsCommand(const std::map<Path*, std::vector<std::size_t>>& points);
+  void redo() override;
+  void undo() override;
+};
+
 }  // namespace

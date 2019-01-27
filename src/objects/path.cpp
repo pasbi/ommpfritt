@@ -6,6 +6,7 @@
 #include "properties/optionsproperty.h"
 #include "scene/scene.h"
 #include "geometry/cubic.h"
+#include "common.h"
 
 namespace
 {
@@ -142,6 +143,7 @@ Path::modified_points(const bool constrain_to_selection, InterpolationMode mode)
       switch (mode) {
       case InterpolationMode::Smooth:
         map[point] = point->smoothed(*points[(i+n-1)%n], *points[(i+n+1)%n]);
+        LOG(INFO) << (void*) point;
         break;
       case InterpolationMode::Linear:
         map[point] = point->nibbed();
@@ -175,10 +177,19 @@ double Path::path_length()
   return Cubics(m_points, is_closed()).length();
 }
 
+std::vector<std::size_t> Path::selected_points() const
+{
+  std::list<std::size_t> selection;
+  for (std::size_t i = 0; i < m_points.size(); ++i) {
+    if (m_points[i].is_selected) { selection.push_back(i); }
+  }
+  return std::vector(selection.begin(), selection.end());
+}
+
 std::vector<Path::PointSequence> Path::remove_points(std::vector<std::size_t> indices)
 {
+  using ::operator<<;
   // `points` may have holes, but must be ordered.
-
   std::list<PointSequence> sequences;
   if (indices.size() > 0) {
     sequences.push_back(PointSequence{});
@@ -236,6 +247,7 @@ std::vector<std::size_t> Path::add_points(const PointSequence& sequence)
 
 std::vector<std::size_t> Path::add_points(const std::vector<PointSequence>& sequences)
 {
+  using ::operator<<;
   std::size_t last_pos = 0;
   std::list<std::size_t> points;
   for (std::size_t i = 0; i < sequences.size(); ++i) {
