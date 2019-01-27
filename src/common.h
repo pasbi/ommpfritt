@@ -10,6 +10,8 @@
 #include <variant>
 #include <typeinfo>
 #include <utility>
+#include <sstream>
+#include <list>
 
 /*
  * passes ownership of `object` to `consumer` and returns a reference to `object`
@@ -247,4 +249,23 @@ template<typename T, typename S> T& type_cast(S& s)
     throw std::bad_cast();
   }
   return *t;
+}
+
+template<typename T> decltype(auto) dereference(T* t) { return *t; }
+
+template<typename T> std::ostream& operator<<(std::ostream& ostream, const std::vector<T>& vs)
+{
+  ostream << "[ ";
+  if (vs.size() > 0) {
+    ostream << vs[0];
+    for (std::size_t i = 1; i < vs.size(); ++i) { ostream << ", " << vs[i]; }
+  }
+  ostream << " ]";
+  return ostream;
+}
+
+template<typename T> std::ostream& operator<<(std::ostream& ostream, const std::list<T>& vs)
+{
+  ostream << std::vector(vs.begin(), vs.end());
+  return ostream;
 }
