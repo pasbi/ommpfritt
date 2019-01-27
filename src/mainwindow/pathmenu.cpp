@@ -92,16 +92,16 @@ PathMenu::PathMenu(Scene& scene, QWidget* parent)
   : QMenu(parent)
 {
   setTitle(tr("&Path"));
-  action(*this, tr("make smooth"), [this, &scene]() {
+  action(*this, tr("make smooth"), [&scene]() {
     modify_tangents(scene, Path::InterpolationMode::Smooth);
   });
-  action(*this, tr("make linear"), [this, &scene]() {
+  action(*this, tr("make linear"), [&scene]() {
     modify_tangents(scene, Path::InterpolationMode::Linear);
   });
-  action(*this, tr("remove selected points"), [this, &scene]() {
+  action(*this, tr("remove selected points"), [&scene]() {
     remove_selected_points(scene);
   });
-  action(*this, tr("subdivide"), [this, &scene]() {
+  action(*this, tr("subdivide"), [&scene]() {
     subdivide(scene);
   });
 }
