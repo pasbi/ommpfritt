@@ -1,5 +1,6 @@
 #include "managers/objectmanager/objecttreeselectionmodel.h"
 #include "scene/objecttreeadapter.h"
+#include "scene/scene.h"
 
 namespace omm
 {
@@ -9,34 +10,22 @@ ObjectTreeSelectionModel::ObjectTreeSelectionModel(ObjectTreeAdapter& adapter)
 {
 }
 
-bool ObjectTreeSelectionModel::is_selected(const QModelIndex& index, Tag& tag) const
+bool ObjectTreeSelectionModel::is_selected(Tag& tag) const
 {
-  return m_selected_tags.count(index) > 0
-      && m_selected_tags.at(index).count(&tag) > 0;
+  return ::contains(m_selected_tags, &tag);
 }
 
-void ObjectTreeSelectionModel::select( const QModelIndex& index, Tag& tag,
-                                       QItemSelectionModel::SelectionFlags command )
+void ObjectTreeSelectionModel::select(Tag& tag, QItemSelectionModel::SelectionFlags command)
 {
-  const bool is_selected = m_selected_tags[index].count(&tag);
-  if (command & QItemSelectionModel::Clear) {
-    clear_selection();
-  }
+  if (command & QItemSelectionModel::Clear) { clear_selection(); }
 
   if (command & QItemSelectionModel::Select) {
-    m_selected_tags[index].insert(&tag);
+    m_selected_tags.insert(&tag);
   } else if (command & QItemSelectionModel::Deselect) {
-    m_selected_tags[index].erase(&tag);
+    m_selected_tags.erase(&tag);
   } else if (command & QItemSelectionModel::Toggle) {
-    if (is_selected) {
-      select(index, tag, QItemSelectionModel::Deselect);
-    } else {
-      select(index, tag, QItemSelectionModel::Select);
-    }
-  }
-
-  if (m_selected_tags[index].size() == 0) {
-    m_selected_tags.erase(index);
+    if (is_selected(tag)) { select(tag, QItemSelectionModel::Deselect); }
+    else { select(tag, QItemSelectionModel::Select); }
   }
 }
 
@@ -60,19 +49,30 @@ void ObjectTreeSelectionModel::select( const QItemSelection &selection,
                                        QItemSelectionModel::SelectionFlags command)
 {
   if (command & QItemSelectionModel::Clear) {
-    LOG(INFO) << "clear";
     m_selected_tags.clear();
   }
   QItemSelectionModel::select(selection, command);
 }
 
-std::set<Tag*> ObjectTreeSelectionModel::selected_tags() const
+std::set<Tag*> ObjectTreeSelectionModel::selected_tags() const { return m_selected_tags; }
+
+std::vector<Tag*> ObjectTreeSelectionModel::selected_tags_ordered(Scene& scene) const
 {
-  std::set<Tag*> selection;
-  for (const auto& it : m_selected_tags) {
-    selection = ::merge(selection, it.second);
+  std::list<Tag*> selected_tags;
+  std::stack<Object*> stack;
+  stack.push(&scene.object_tree.root());
+  while (stack.size() > 0) {
+    Object* object = stack.top();
+    stack.pop();
+
+    for (Tag* tag : object->tags.ordered_items()) {
+      if (::contains(m_selected_tags, tag)) { selected_tags.push_back(tag); }
+    }
+
+    for (Object* child : object->children()) { stack.push(child); }
   }
-  return selection;
+
+  return std::vector(selected_tags.begin(), selected_tags.end());
 }
 
 
