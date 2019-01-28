@@ -1,6 +1,7 @@
 #include "scene/objecttreeadapter.h"
 
 #include <QItemSelection>
+#include <QDebug>
 #include <glog/logging.h>
 
 #include "scene/propertyownermimedata.h"
@@ -144,6 +145,8 @@ Qt::ItemFlags ObjectTreeAdapter::flags(const QModelIndex &index) const
   case 0:
     return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled
             | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+  case 2:
+    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
   default:
     return Qt::ItemIsEnabled;
   }
@@ -156,12 +159,11 @@ ObjectTreeAdapter::acquire_inserter_guard(Object& parent, int row)
   {
   public:
     InserterGuard(ObjectTreeAdapter& model, const QModelIndex& parent, int row)
-      : AbstractRAIISceneInvalidatorGuard(model.scene)
-      , m_model(model)
-
+      : AbstractRAIISceneInvalidatorGuard(model.scene), m_model(model)
     {
       m_model.beginInsertRows(parent, row, row);
     }
+
     ~InserterGuard() { m_model.endInsertRows(); }
   private:
     ObjectTreeAdapter& m_model;
@@ -177,8 +179,7 @@ ObjectTreeAdapter::acquire_mover_guard(const ObjectTreeMoveContext& context)
   public:
     MoverGuard( ObjectTreeAdapter& model, const QModelIndex& old_parent, const int old_pos,
                 const QModelIndex& new_parent, const int new_pos )
-      : AbstractRAIISceneInvalidatorGuard(model.scene)
-      , m_model(model)
+      : AbstractRAIISceneInvalidatorGuard(model.scene), m_model(model)
     {
       m_model.beginMoveRows(old_parent, old_pos, old_pos, new_parent, new_pos);
     }
@@ -209,8 +210,7 @@ ObjectTreeAdapter::acquire_remover_guard(const Object& object)
   {
   public:
     RemoverGuard(ObjectTreeAdapter& model, const QModelIndex& parent, int row)
-      : AbstractRAIISceneInvalidatorGuard(model.scene)
-      , m_model(model)
+      : AbstractRAIISceneInvalidatorGuard(model.scene), m_model(model)
     {
       m_model.beginRemoveRows(parent, row, row);
     }
@@ -230,8 +230,7 @@ ObjectTreeAdapter::acquire_reseter_guard()
   {
   public:
     ReseterGuard(ObjectTreeAdapter& model)
-      : AbstractRAIISceneInvalidatorGuard(model.scene)
-      , m_model(model)
+      : AbstractRAIISceneInvalidatorGuard(model.scene), m_model(model)
     {
       m_model.beginResetModel();
     }

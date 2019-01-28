@@ -2,6 +2,10 @@
 
 #include <memory>
 #include <glog/logging.h>
+#include <QMouseEvent>
+#include <QApplication>
+#include <QDebug>
+#include <QDrag>
 
 #include "menuhelper.h"
 #include "commands/addtagcommand.h"
@@ -13,6 +17,7 @@
 #include "commands/propertycommand.h"
 #include "properties/referenceproperty.h"
 #include "common.h"
+#include "scene/propertyownermimedata.h"
 
 namespace
 {
@@ -102,8 +107,7 @@ std::set<AbstractPropertyOwner*> ObjectTreeView::selected_objects() const
 
 std::set<AbstractPropertyOwner*> ObjectTreeView::selected_tags() const
 {
-  const auto cast = [](Tag* t) { return static_cast<AbstractPropertyOwner*>(t); };
-  return ::transform<AbstractPropertyOwner*>(m_selection_model->selected_tags(), cast);
+  return AbstractPropertyOwner::cast(m_selection_model->selected_tags());
 }
 
 bool ObjectTreeView::remove_selection()
@@ -157,6 +161,34 @@ bool ObjectTreeView::remove_selection()
   } else {
     return false;
   }
+}
+
+void ObjectTreeView::mousePressEvent(QMouseEvent* e)
+{
+  if (e->button() == Qt::LeftButton) {
+    m_dragged_index = indexAt(e->pos());
+    m_mouse_press_pos = e->pos();
+  }
+  ManagerItemView::mousePressEvent(e);
+}
+
+void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
+{
+  if ((e->pos() - m_mouse_press_pos).manhattanLength() > QApplication::startDragDistance()) {
+    if (e->buttons() & Qt::LeftButton && m_dragged_index.column() == TAGS_COLUMN) {
+      const auto selected_tags = m_selection_model->selected_tags_ordered(model()->scene);
+      const auto st_apo = AbstractPropertyOwner::cast(selected_tags);
+      if (selected_tags.size() > 0) {
+        auto mime_data = std::make_unique<PropertyOwnerMimeData>(st_apo);
+        auto drag = std::make_unique<QDrag>(this);
+        drag->setMimeData(mime_data.release());
+        // drag->setPixmap()  // TODO
+        drag.release()->exec(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction);
+      }
+      return;
+    }
+  }
+  ManagerItemView::mouseMoveEvent(e);
 }
 
 }  // namespace omm
