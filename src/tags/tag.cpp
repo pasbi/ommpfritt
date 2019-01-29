@@ -18,4 +18,10 @@ Tag::Tag(Object& owner) : owner(owner)
     .set_category(QObject::tr("basic").toStdString());
 }
 
+std::ostream& operator<<(std::ostream& ostream, const Tag& tag)
+{
+  ostream << tag.type() << "[" << tag.name() << "]";
+  return ostream;  return ostream;
+}
+
 }  // namespace omm
