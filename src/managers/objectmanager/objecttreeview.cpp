@@ -8,7 +8,6 @@
 #include <QDrag>
 
 #include "menuhelper.h"
-#include "commands/addtagcommand.h"
 #include "scene/contextes.h"
 #include "commands/removecommand.h"
 #include "commands/addcommand.h"
@@ -63,7 +62,8 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
       Scene& scene = model()->scene;
       scene.undo_stack.beginMacro(tr("Add Tag"));
       for (auto&& object : selected_objects) {
-        scene.submit<AddTagCommand>(*object, Tag::make(key, *object));
+        using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
+        scene.submit<AddTagCommand>(object->tags, Tag::make(key, *object));
       }
       scene.undo_stack.endMacro();
     });
