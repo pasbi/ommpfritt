@@ -102,14 +102,37 @@ QPoint TagsItemDelegate::cell_pos(const QModelIndex& index) const
   return m_view.visualRect(index).topLeft();
 }
 
-Tag* TagsItemDelegate::tag_at(const QModelIndex& index, const QPoint& pos) const
+Tag* TagsItemDelegate::tag_at(const QPoint& pos) const { return tag_at(m_view.indexAt(pos), pos); }
+
+Tag*
+TagsItemDelegate::tag_at(const QModelIndex& index, const QPoint& pos) const
 {
   if (!index.isValid()) { return nullptr; }
-
   const int x = (pos.x() - cell_pos(index).x()) / icon_size().width();
   Object& object = m_view.model()->item_at(index);
   if (x < 0 || x >= object.tags.size()) { return nullptr; }
   return &object.tags.item(x);
+}
+
+Tag* TagsItemDelegate::tag_before(const QPoint& pos) const
+{
+  return tag_before(m_view.indexAt(pos), pos);
+}
+
+Tag* TagsItemDelegate::tag_before(const QModelIndex& index, QPoint pos) const
+{
+  if (!index.isValid()) { return nullptr; }
+
+  pos -= QPoint(cell_pos(index).x(), 0);
+
+  Object& object = m_view.model()->item_at(index);
+  auto tags = object.tags.ordered_items();
+  const int x = int(double(pos.x()) / icon_size().width() + 0.5) - 1;
+  if (x < 0 || tags.size() == 0) {
+    return nullptr;
+  } else {
+    return tags.at(std::min<int>(tags.size() - 1, x));
+  }
 }
 
 

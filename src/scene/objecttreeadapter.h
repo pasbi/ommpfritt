@@ -29,6 +29,12 @@ public:
   Qt::ItemFlags flags(const QModelIndex &index) const override;
   QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
+  bool dropMimeData( const QMimeData *data, Qt::DropAction action,
+                      int row, int column, const QModelIndex &parent ) override;
+
+  bool canDropMimeData( const QMimeData *data, Qt::DropAction action,
+                        int row, int column, const QModelIndex &parent ) const override;
+
   friend class AbstractRAIIGuard;
   std::unique_ptr<AbstractRAIIGuard>
   acquire_inserter_guard(Object& parent, int row) override;
@@ -38,6 +44,13 @@ public:
 
   std::unique_ptr<AbstractRAIIGuard> acquire_remover_guard(const Object& object) override;
   std::unique_ptr<AbstractRAIIGuard> acquire_reseter_guard() override;
+
+  constexpr static std::size_t TAGS_COLUMN = 2;
+  constexpr static std::size_t VISIBILITY_COLUMN = 1;
+  constexpr static std::size_t OBJECT_COLUMN = 0;
+
+public:
+  Tag* current_tag = nullptr;
 
 };
 

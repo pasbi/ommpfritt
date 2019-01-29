@@ -182,13 +182,13 @@ ItemModelAdapter<StructureT, ItemModel>
     switch (action) {
     case Qt::MoveAction: {
       auto move_contextes = make_contextes<MoveContext>(*this, data, row, parent);
-      assert(move_contextes.size() > 0);
+      if (move_contextes.size() == 0) { return false; }
       scene.submit<MoveCommand<StructureT>>(structure, move_contextes);
       break;
     }
     case Qt::CopyAction: {
       auto copy_contextes = make_contextes<OwningContext>(*this, data, row, parent);
-      assert(copy_contextes.size() > 0);
+      if (copy_contextes.size() == 0) { return false; }
       scene.submit<CopyCommand<StructureT>>(structure, std::move(copy_contextes));
       break;
     }

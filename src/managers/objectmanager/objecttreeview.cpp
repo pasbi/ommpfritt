@@ -17,6 +17,7 @@
 #include "properties/referenceproperty.h"
 #include "common.h"
 #include "scene/propertyownermimedata.h"
+#include "tags/tag.h"
 
 namespace
 {
@@ -37,6 +38,7 @@ ObjectTreeView::ObjectTreeView(ObjectTreeAdapter& model)
   : ManagerItemView(model)
   , m_selection_model(std::make_unique<ObjectTreeSelectionModel>(model).release())
   , m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this, *m_selection_model))
+  , m_model(model)
 {
   setItemDelegateForColumn(2, m_tags_item_delegate.get());
   setSelectionModel(m_selection_model.get());
@@ -175,7 +177,9 @@ void ObjectTreeView::mousePressEvent(QMouseEvent* e)
 void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
 {
   if ((e->pos() - m_mouse_press_pos).manhattanLength() > QApplication::startDragDistance()) {
-    if (e->buttons() & Qt::LeftButton && m_dragged_index.column() == TAGS_COLUMN) {
+    const auto tag_column = m_dragged_index.column() == ObjectTreeAdapter::TAGS_COLUMN;
+    const auto left_button = e->buttons() & Qt::LeftButton;
+    if (left_button && tag_column) {
       const auto selected_tags = m_selection_model->selected_tags_ordered(model()->scene);
       const auto st_apo = AbstractPropertyOwner::cast(selected_tags);
       if (selected_tags.size() > 0) {
@@ -189,6 +193,18 @@ void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
     }
   }
   ManagerItemView::mouseMoveEvent(e);
+}
+
+void ObjectTreeView::dragEnterEvent(QDragEnterEvent* e)
+{
+  m_model.current_tag = m_tags_item_delegate->tag_before(e->pos());
+  ManagerItemView::dragEnterEvent(e);
+}
+
+void ObjectTreeView::dragMoveEvent(QDragMoveEvent* e)
+{
+  m_model.current_tag = m_tags_item_delegate->tag_before(e->pos());
+  ManagerItemView::dragMoveEvent(e);
 }
 
 }  // namespace omm

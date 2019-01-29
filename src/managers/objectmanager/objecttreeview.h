@@ -21,19 +21,17 @@ public:
   std::set<AbstractPropertyOwner*> selected_objects() const;
   std::set<AbstractPropertyOwner*> selected_tags() const;
   bool remove_selection() override;
+  void dragEnterEvent(QDragEnterEvent* e) override;
+  void dragMoveEvent(QDragMoveEvent* e) override;
 
 protected:
   void populate_menu(QMenu& menu, const QModelIndex& index) const override;
   void mousePressEvent(QMouseEvent* e) override;
   void mouseMoveEvent(QMouseEvent* e) override;
-
-  constexpr static std::size_t TAGS_COLUMN = 2;
-  constexpr static std::size_t VISIBILITY_COLUMN = 1;
-  constexpr static std::size_t OBJECT_COLUMN = 0;
-
 private:
   std::unique_ptr<ObjectTreeSelectionModel> m_selection_model;
   std::unique_ptr<TagsItemDelegate> m_tags_item_delegate;
+  ObjectTreeAdapter& m_model;
 
   QPoint m_mouse_press_pos;
   QModelIndex m_dragged_index;

@@ -21,9 +21,7 @@ class ListContext
 public:
   using item_type = T;
   ListContext(T& subject, const T* predecessor)
-    : subject(subject), predecessor(predecessor)
-  {
-  }
+    : subject(subject), predecessor(predecessor) { }
 
   Wrapper<T> subject;
   T& get_subject() const { return subject; }
@@ -34,9 +32,7 @@ public:
    * @details the parent of `predecessor` must be `parent`.
    */
   const T* predecessor;
-
   virtual bool is_sane() const { return true; }
-
   static constexpr bool is_tree_context = false;
 };
 
@@ -46,14 +42,10 @@ class TreeContext : public ListContext<T, Wrapper>
   static_assert( std::is_base_of<TreeElement<T>, T>::value, "T must be derived from TreeElement.");
 public:
   TreeContext(T& subject, T& parent, const T* predecessor)
-    : ListContext<T, Wrapper>(subject, predecessor), parent(parent)
-  {
-  }
+    : ListContext<T, Wrapper>(subject, predecessor), parent(parent) { }
 
   TreeContext(T& subject, const T* predecessor)
-    : ListContext<T, Wrapper>(subject, predecessor), parent(subject.parent())
-  {
-  }
+    : ListContext<T, Wrapper>(subject, predecessor), parent(subject.parent()) { }
 
   /**
    * @brief the parent of `subject`
@@ -96,10 +88,7 @@ protected:
     return this->predecessor == structure.predecessor(this->get_subject());
   }
 
-  bool subject_is_predecessor() const
-  {
-    return this->predecessor == &this->get_subject();
-  }
+  bool subject_is_predecessor() const { return this->predecessor == &this->get_subject(); }
 };
 
 template<typename T>
@@ -220,6 +209,12 @@ public:
   using OwningContext<T, ListContext>::OwningContext;
   ListOwningContext(std::unique_ptr<T> item, List<T>& structure)
     : OwningContext<T, ListContext>(*item, last_sibling(structure))
+  {
+    this->subject.capture(std::move(item));
+  }
+
+  ListOwningContext(std::unique_ptr<T> item, List<T>& structure, T* predecessor)
+    : OwningContext<T, ListContext>(*item, predecessor)
   {
     this->subject.capture(std::move(item));
   }

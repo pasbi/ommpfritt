@@ -20,6 +20,9 @@ public:
   bool editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
                     const QModelIndex &index ) override;
   Tag* tag_at(const QModelIndex& index, const QPoint& pos) const;
+  Tag* tag_at(const QPoint& pos) const;
+  Tag* tag_before(const QModelIndex& index, QPoint pos) const;
+  Tag* tag_before(const QPoint& pos) const;
 
 private:
   ObjectTreeView& m_view;

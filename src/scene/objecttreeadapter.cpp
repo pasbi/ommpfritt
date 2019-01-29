@@ -9,12 +9,18 @@
 #include "common.h"
 #include "commands/movecommand.h"
 #include "commands/copycommand.h"
+#include "commands/addcommand.h"
 #include "properties/stringproperty.h"
 #include "scene/scene.h"
 #include "abstractraiiguard.h"
+#include "tags/tag.h"
+#include "tags/styletag.h"
+#include "scene/contextes.h"
 
 namespace
 {
+
+using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
 
 class AbstractRAIISceneInvalidatorGuard : public AbstractRAIIGuard
 {
@@ -25,6 +31,57 @@ protected:
 private:
   omm::Scene& m_scene;
 };
+
+void drop_tags_onto_object( omm::Scene& scene, omm::Object& object,
+                            const std::vector<omm::Tag*>& tags, Qt::DropAction action )
+{
+  if (action == Qt::CopyAction) {
+    if (tags.size() > 0) {
+      scene.undo_stack.beginMacro("copy tags");
+      for (auto* tag : tags) {
+        scene.submit<AddTagCommand>(object.tags, tag->clone());
+      }
+      scene.undo_stack.endMacro();
+    }
+  }
+}
+
+void drop_tags_behind( omm::Scene& scene, omm::Object& object, omm::Tag* current_tag,
+                        const std::vector<omm::Tag*>& tags, Qt::DropAction action )
+{
+  if (current_tag != nullptr && &current_tag->owner != &object) {
+    const auto& tags = object.tags;
+    current_tag = tags.size() == 0 ? nullptr : tags.ordered_items().back();
+  }
+
+  if (action == Qt::MoveAction) {
+    // move tags
+  } else if (action == Qt::CopyAction) {
+    if (tags.size() > 0) {
+      scene.undo_stack.beginMacro("copy tags");
+      for (auto* tag : tags) {
+        omm::ListOwningContext<omm::Tag> context(tag->clone(), object.tags, current_tag);
+        scene.submit<AddTagCommand>(object.tags, std::move(context));
+      }
+      scene.undo_stack.endMacro();
+    }
+  }
+}
+
+void drop_style_onto_object( omm::Scene& scene, omm::Object& object,
+                             const std::vector<omm::Style*>& styles )
+{
+  if (styles.size() > 0) {
+    scene.undo_stack.beginMacro("set styles tags");
+    for (auto* style : styles) {
+      auto style_tag = std::make_unique<omm::StyleTag>(object);
+      style_tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY).set(style);
+
+      scene.submit<AddTagCommand>(object.tags, std::move(style_tag));
+    }
+    scene.undo_stack.endMacro();
+  }
+}
 
 }  // namespace
 
@@ -241,5 +298,69 @@ ObjectTreeAdapter::acquire_reseter_guard()
   };
   return std::make_unique<ReseterGuard>(*this);
 }
+
+bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction action,
+                                      int row, int column, const QModelIndex &parent )
+{
+  if (ItemModelAdapter::dropMimeData(data, action, row, column, parent)) {
+    LOG(INFO) << "done";
+    return true;
+  } else {
+    const auto* pdata = qobject_cast<const PropertyOwnerMimeData*>(data);
+    if (const auto tags = pdata->tags(); tags.size() > 0) {
+      if (parent.column() == OBJECT_COLUMN) {
+        assert(parent.isValid());  // otherwise, column was < 0.
+        drop_tags_onto_object(scene, item_at(parent), tags, action);
+        return true;
+      } else if (parent.column() == TAGS_COLUMN) {
+        if (current_tag) {
+          LOG(INFO) << (void*) current_tag << " " << current_tag;
+        } else {
+          LOG(INFO) << (void*) current_tag;
+        }
+        if (std::find(tags.begin(), tags.end(), current_tag) == tags.end()) {
+          drop_tags_behind(scene, item_at(parent), current_tag, tags, action);
+          return true;
+        } else {
+          if (action == Qt::MoveAction) {
+            // cannot reorder list of tags relative to a tag which is contained in that very list.
+            return false;
+          } else {
+            return false;
+          }
+        }
+        return true;
+      }
+    }
+    if (const auto styles = pdata->styles(); styles.size() > 0) {
+      if (parent.column() == 0) {
+        assert(parent.isValid()); // otherwise, column was < 0
+        drop_style_onto_object(scene, item_at(parent), styles);
+      } else {
+        // TODO if parent.column() == 2 and current_tag is a style tag, set style.
+      }
+    }
+  }
+  return false;
+}
+
+bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction action,
+                                         int row, int column, const QModelIndex &parent ) const
+{
+  if (ItemModelAdapter::canDropMimeData(data, action, row, column, parent)) {
+    return true;
+  } else {
+    const auto* pdata = qobject_cast<const PropertyOwnerMimeData*>(data);
+    if (pdata->tags().size() > 0 && (parent.column() == 2 || parent.column() == 0)) {
+      return true;
+    }
+    if (pdata->styles().size() > 0) {
+      return parent.column() == OBJECT_COLUMN;
+      // TODO also allow drop onto Style tag
+    }
+  }
+  return false;
+}
+
 
 }  // namespace omm
