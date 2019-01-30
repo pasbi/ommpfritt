@@ -28,6 +28,10 @@ private:
   ObjectTreeView& m_view;
   ObjectTreeSelectionModel& m_selection_model;
   QPoint cell_pos(const QModelIndex& index) const;
+
+  bool on_mouse_button_press(QMouseEvent& event);
+  bool on_mouse_button_release(QMouseEvent& event);
+  Tag* m_recently_selected_tag = nullptr;
 };
 
 }  // namespace omm

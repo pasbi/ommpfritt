@@ -69,32 +69,50 @@ TagsItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex
 bool TagsItemDelegate::editorEvent( QEvent *event, QAbstractItemModel *model,
                                     const QStyleOptionViewItem &option, const QModelIndex &index )
 {
-  if (event->type() == QEvent::MouseButtonPress)
-  {
-    auto mouse_event = static_cast<QMouseEvent*>(event);
-    const int x = mouse_event->pos().x() - cell_pos(index).x();
-    Tag* tag = tag_at(index, mouse_event->pos());
-    if (tag != nullptr) {
-      QItemSelectionModel::SelectionFlags command = QItemSelectionModel::NoUpdate;
-      if (mouse_event->buttons() & Qt::LeftButton) {
-        command = QItemSelectionModel::Toggle;
-        if (!(mouse_event->modifiers() & Qt::ControlModifier)) {
-          command |= QItemSelectionModel::Clear;
-        }
-      } else if (mouse_event->buttons() & Qt::RightButton) {
-        if (m_selection_model.is_selected(*tag)) {
-          command = QItemSelectionModel::NoUpdate;
-        } else {
-          command = QItemSelectionModel::ClearAndSelect;
-        }
-      }
-      m_selection_model.select(*tag, command);
-      m_view.update();
-      event->ignore();
-      return true;
-    }
+  switch (event->type()) {
+  case QEvent::MouseButtonPress:
+    return on_mouse_button_press(*static_cast<QMouseEvent*>(event));
+  case QEvent::MouseButtonRelease:
+    return on_mouse_button_release(*static_cast<QMouseEvent*>(event));
+  default:
+    return false;
   }
-  return false;
+}
+
+bool TagsItemDelegate::on_mouse_button_press(QMouseEvent& event)
+{
+  if (event.button() != Qt::LeftButton) { return false; }
+  Tag* tag = tag_at(event.pos());
+  if (tag == nullptr) { return false; }
+  const bool is_selected = m_selection_model.is_selected(*tag);
+
+  if (!is_selected) {
+    if (event.modifiers() & Qt::ControlModifier) {
+      m_selection_model.select(*tag, QItemSelectionModel::Select);
+    } else {
+      m_selection_model.select(*tag, QItemSelectionModel::ClearAndSelect);
+    }
+    m_recently_selected_tag = tag;
+  } else {
+    m_recently_selected_tag = nullptr;
+  }
+  return true;
+}
+
+bool TagsItemDelegate::on_mouse_button_release(QMouseEvent& event)
+{
+  if (event.button() != Qt::LeftButton) { return false; }
+  Tag* tag = tag_at(event.pos());
+  if (tag == nullptr) { return false; }
+  const bool is_selected = m_selection_model.is_selected(*tag);
+  if (!(event.modifiers() & Qt::ControlModifier)) {
+    m_selection_model.select(*tag, QItemSelectionModel::ClearAndSelect);
+  } else if (m_recently_selected_tag != tag) {
+    m_selection_model.select(*tag, QItemSelectionModel::Toggle);
+  }
+  m_recently_selected_tag = nullptr;
+
+  return true;
 }
 
 QPoint TagsItemDelegate::cell_pos(const QModelIndex& index) const
