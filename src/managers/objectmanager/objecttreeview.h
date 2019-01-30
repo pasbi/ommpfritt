@@ -35,6 +35,8 @@ private:
 
   QPoint m_mouse_press_pos;
   QModelIndex m_dragged_index;
+
+  void handle_drag_event(QDragMoveEvent* e);
 };
 
 }  // namespace

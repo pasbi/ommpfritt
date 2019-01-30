@@ -195,15 +195,21 @@ void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
   ManagerItemView::mouseMoveEvent(e);
 }
 
-void ObjectTreeView::dragEnterEvent(QDragEnterEvent* e)
+void ObjectTreeView::handle_drag_event(QDragMoveEvent* e)
 {
   m_model.current_tag = m_tags_item_delegate->tag_before(e->pos());
+  setDropIndicatorShown(indexAt(e->pos()).column() != ObjectTreeAdapter::TAGS_COLUMN);
+}
+
+void ObjectTreeView::dragEnterEvent(QDragEnterEvent* e)
+{
+  handle_drag_event(e);
   ManagerItemView::dragEnterEvent(e);
 }
 
 void ObjectTreeView::dragMoveEvent(QDragMoveEvent* e)
 {
-  m_model.current_tag = m_tags_item_delegate->tag_before(e->pos());
+  handle_drag_event(e);
   ManagerItemView::dragMoveEvent(e);
 }
 
