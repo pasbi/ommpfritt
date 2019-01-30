@@ -319,36 +319,28 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
                                       int row, int column, const QModelIndex &parent )
 {
   if (ItemModelAdapter::dropMimeData(data, action, row, column, parent)) {
-    LOG(INFO) << "done";
     return true;
   } else {
     const auto* pdata = qobject_cast<const PropertyOwnerMimeData*>(data);
-    if (const auto tags = pdata->tags(); tags.size() > 0) {
-      if (parent.column() == OBJECT_COLUMN) {
-        assert(parent.isValid());  // otherwise, column was < 0.
-        drop_tags_onto_object(scene, item_at(parent), tags, action);
-        return true;
-      } else if (parent.column() == TAGS_COLUMN) {
-        if (std::find(tags.begin(), tags.end(), current_tag) == tags.end()) {
+    if (pdata != nullptr) {
+      if (const auto tags = pdata->tags(); tags.size() > 0) {
+        if (parent.column() == OBJECT_COLUMN) {
+          assert(parent.isValid());  // otherwise, column was < 0.
+          drop_tags_onto_object(scene, item_at(parent), tags, action);
+          return true;
+        } else if (parent.column() == TAGS_COLUMN) {
+          assert(tags.front() != current_tag || action != Qt::MoveAction);
           drop_tags_behind(scene, item_at(parent), current_tag, tags, action);
           return true;
-        } else {
-          if (action == Qt::MoveAction) {
-            // cannot reorder list of tags relative to a tag which is contained in that very list.
-            return false;
-          } else {
-            return false;
-          }
         }
-        return true;
       }
-    }
-    if (const auto styles = pdata->styles(); styles.size() > 0) {
-      if (parent.column() == 0) {
-        assert(parent.isValid()); // otherwise, column was < 0
-        drop_style_onto_object(scene, item_at(parent), styles);
-      } else {
-        // TODO if parent.column() == 2 and current_tag is a style tag, set style.
+      if (const auto styles = pdata->styles(); styles.size() > 0) {
+        if (parent.column() == 0) {
+          assert(parent.isValid()); // otherwise, column was < 0
+          drop_style_onto_object(scene, item_at(parent), styles);
+        } else {
+          // TODO if parent.column() == 2 and current_tag is a style tag, set style.
+        }
       }
     }
   }
@@ -362,16 +354,23 @@ bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction a
     return true;
   } else {
     const auto* pdata = qobject_cast<const PropertyOwnerMimeData*>(data);
-    if (pdata->tags().size() > 0 && (parent.column() == 2 || parent.column() == 0)) {
-      return true;
-    }
-    if (pdata->styles().size() > 0) {
-      return parent.column() == OBJECT_COLUMN;
-      // TODO also allow drop onto Style tag
+    if (pdata != nullptr) {
+      const auto tags = pdata->tags();
+      if (tags.size() > 0) {
+        switch (parent.column()) {
+        case OBJECT_COLUMN: return true;
+        case TAGS_COLUMN:
+          return tags.front() != current_tag || action != Qt::MoveAction;
+        }
+        return true;
+      }
+      if (pdata->styles().size() > 0) {
+        return parent.column() == OBJECT_COLUMN;
+        // TODO also allow drop onto Style tag
+      }
     }
   }
   return false;
 }
-
 
 }  // namespace omm
