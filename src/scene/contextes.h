@@ -213,7 +213,7 @@ public:
     this->subject.capture(std::move(item));
   }
 
-  ListOwningContext(std::unique_ptr<T> item, List<T>& structure, T* predecessor)
+  ListOwningContext(std::unique_ptr<T> item, T* predecessor)
     : OwningContext<T, ListContext>(*item, predecessor)
   {
     this->subject.capture(std::move(item));
