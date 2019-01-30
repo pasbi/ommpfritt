@@ -116,19 +116,21 @@ std::string AbstractPropertyOwner::name() const
 
 bool AbstractPropertyOwner::has_reference_cycle(const std::string& key) const
 {
+  std::set<const AbstractPropertyOwner*> referenced_items;
   const AbstractPropertyOwner* current = this;
-  while (current->has_property<ReferenceProperty::value_type>(key)) {
-    const auto ref_variant = current->property(key).variant_value();
-    const auto* reference = std::get<ReferenceProperty::value_type>(ref_variant);
-    if (reference == nullptr) {
-      return false;
-    } else if (reference == this) {
+
+  while (true) {
+    if (::contains(referenced_items, current)) {
       return true;
+    } else if (current == nullptr || !current->has_property<ReferenceProperty::value_type>(key)) {
+      return false;
     } else {
-      current = reference;
+      referenced_items.insert(current);
+      current = current->property(key).value<ReferenceProperty::value_type>();
     }
   }
-  return false;
+  assert(false);
+  return true;
 }
 
 std::unique_ptr<Property> AbstractPropertyOwner::extract_property(const std::string& key)
