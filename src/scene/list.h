@@ -29,6 +29,7 @@ public:
   std::set<T*> items() const override;
   std::vector<T*> ordered_items() const;
   const T* predecessor(const T& sibling) const override;
+  using Structure<T>::predecessor;
   size_t position(const T& item) const override;
   size_t size() const;
 

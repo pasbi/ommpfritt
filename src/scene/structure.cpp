@@ -32,6 +32,11 @@ template<typename T> void Structure<T>::set_scene(Scene* scene)
   m_scene = scene;
 }
 
+template<typename T> T* Structure<T>::predecessor(T& sibling) const
+{
+  return const_cast<T*>(predecessor(static_cast<const T&>(sibling)));
+}
+
 template class Structure<Object>;
 template class Structure<Style>;
 template class Structure<Tag>;
