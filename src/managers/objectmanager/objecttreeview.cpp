@@ -118,8 +118,8 @@ bool ObjectTreeView::remove_selection()
   const auto selected_objects = AbstractPropertyOwner::cast<Object>(this->selected_objects());
 
   const auto accumulate_free_tags = [selected_objects](auto map, auto* tag) {
-    if (!::contains(selected_objects, &tag->owner)) {
-      map[&tag->owner].insert(tag);
+    if (!::contains(selected_objects, tag->owner)) {
+      map[tag->owner].insert(tag);
     }
     return map;
   };
