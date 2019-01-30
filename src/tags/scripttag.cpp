@@ -53,7 +53,7 @@ void ScriptTag::on_property_value_changed(Property& property)
 
 void ScriptTag::force_evaluate()
 {
-  Scene* scene = owner.scene();
+  Scene* scene = owner->scene();
   assert(scene != nullptr);
   using namespace py::literals;
   const auto code = property(ScriptTag::CODE_PROPERTY_KEY).value<std::string>();

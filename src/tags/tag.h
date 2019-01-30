@@ -20,7 +20,7 @@ public:
   virtual QIcon icon() const = 0;
   static constexpr auto TYPE = "Tag";
   virtual std::unique_ptr<Tag> clone() const = 0;
-  Object& owner;
+  Object* owner;
   virtual void evaluate() = 0;
 };
 
