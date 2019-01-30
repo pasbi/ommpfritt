@@ -10,13 +10,13 @@
 #include "commands/movecommand.h"
 #include "commands/copycommand.h"
 #include "commands/addcommand.h"
+#include "commands/movetagscommand.h"
 #include "properties/stringproperty.h"
 #include "scene/scene.h"
 #include "abstractraiiguard.h"
 #include "tags/tag.h"
 #include "tags/styletag.h"
 #include "scene/contextes.h"
-
 namespace
 {
 
@@ -32,16 +32,25 @@ private:
   omm::Scene& m_scene;
 };
 
+template<typename T>
+T* last(const std::vector<T*>& ts) { return ts.size() == 0 ? nullptr : ts.back(); }
+
 void drop_tags_onto_object( omm::Scene& scene, omm::Object& object,
                             const std::vector<omm::Tag*>& tags, Qt::DropAction action )
 {
-  if (action == Qt::CopyAction) {
-    if (tags.size() > 0) {
+  if (tags.size() > 0) {
+    switch (action) {
+    case Qt::CopyAction:
       scene.undo_stack.beginMacro("copy tags");
       for (auto* tag : tags) {
         scene.submit<AddTagCommand>(object.tags, tag->clone());
       }
       scene.undo_stack.endMacro();
+      break;
+    case Qt::MoveAction:
+      scene.submit<omm::MoveTagsCommand>(tags, object, last(object.tags.ordered_items()));
+      break;
+    default: break;
     }
   }
 }
@@ -49,21 +58,24 @@ void drop_tags_onto_object( omm::Scene& scene, omm::Object& object,
 void drop_tags_behind( omm::Scene& scene, omm::Object& object, omm::Tag* current_tag,
                         const std::vector<omm::Tag*>& tags, Qt::DropAction action )
 {
-  if (current_tag != nullptr && &current_tag->owner != &object) {
+  if (current_tag != nullptr && current_tag->owner != &object) {
     const auto& tags = object.tags;
-    current_tag = tags.size() == 0 ? nullptr : tags.ordered_items().back();
+    current_tag = last(tags.ordered_items());
   }
-
-  if (action == Qt::MoveAction) {
-    // move tags
-  } else if (action == Qt::CopyAction) {
-    if (tags.size() > 0) {
+  if (tags.size() > 0) {
+    switch (action) {
+    case Qt::CopyAction:
       scene.undo_stack.beginMacro("copy tags");
       for (auto* tag : tags) {
-        omm::ListOwningContext<omm::Tag> context(tag->clone(), object.tags, current_tag);
+        omm::ListOwningContext<omm::Tag> context(tag->clone(), current_tag);
         scene.submit<AddTagCommand>(object.tags, std::move(context));
       }
       scene.undo_stack.endMacro();
+      break;
+    case Qt::MoveAction:
+      scene.submit<omm::MoveTagsCommand>(tags, object, current_tag);
+      break;
+    default: break;
     }
   }
 }
@@ -313,11 +325,6 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
         drop_tags_onto_object(scene, item_at(parent), tags, action);
         return true;
       } else if (parent.column() == TAGS_COLUMN) {
-        if (current_tag) {
-          LOG(INFO) << (void*) current_tag << " " << current_tag;
-        } else {
-          LOG(INFO) << (void*) current_tag;
-        }
         if (std::find(tags.begin(), tags.end(), current_tag) == tags.end()) {
           drop_tags_behind(scene, item_at(parent), current_tag, tags, action);
           return true;
