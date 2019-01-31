@@ -89,20 +89,24 @@ bool TagsItemDelegate::on_mouse_button_press(QMouseEvent& event)
     if (!is_selected) {
       if (event.modifiers() & Qt::ControlModifier) {
         m_selection_model.select(*tag, QItemSelectionModel::Select);
+      } else if (event.modifiers() & Qt::ShiftModifier) {
+        m_selection_model.extend_selection(*tag);
       } else {
         m_selection_model.select(*tag, QItemSelectionModel::ClearAndSelect);
       }
-      m_recently_selected_tag = tag;
+      m_fragile_selection = true;
+      return true;
     } else {
-      m_recently_selected_tag = nullptr;
+      m_fragile_selection = false;
+      return false;
     }
-    return true;
   case Qt::RightButton:
     if (!is_selected) {
       m_selection_model.select(*tag, QItemSelectionModel::ClearAndSelect);
-      m_recently_selected_tag = tag;
+      m_fragile_selection = true;
       return true;
     } else {
+      m_fragile_selection = false;
       return false;
     }
   default:
@@ -115,13 +119,17 @@ bool TagsItemDelegate::on_mouse_button_release(QMouseEvent& event)
   if (event.button() != Qt::LeftButton) { return false; }
   Tag* tag = tag_at(event.pos());
   if (tag == nullptr) { return false; }
-  const bool is_selected = m_selection_model.is_selected(*tag);
-  if (!(event.modifiers() & Qt::ControlModifier)) {
-    m_selection_model.select(*tag, QItemSelectionModel::ClearAndSelect);
-  } else if (m_recently_selected_tag != tag) {
-    m_selection_model.select(*tag, QItemSelectionModel::Toggle);
+  if (m_fragile_selection) {
+    m_fragile_selection = false;
+    return false;
   }
-  m_recently_selected_tag = nullptr;
+  const bool is_selected = m_selection_model.is_selected(*tag);
+  if (event.modifiers() & Qt::ControlModifier) {
+    m_selection_model.select(*tag, QItemSelectionModel::Toggle);
+  } else {
+    m_selection_model.select(*tag, QItemSelectionModel::ClearAndSelect);
+  }
+  m_fragile_selection = false;
 
   return true;
 }

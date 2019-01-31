@@ -1,6 +1,7 @@
 #include "managers/objectmanager/objecttreeselectionmodel.h"
 #include "scene/objecttreeadapter.h"
 #include "scene/scene.h"
+#include "tags/tag.h"
 
 namespace omm
 {
@@ -17,6 +18,7 @@ bool ObjectTreeSelectionModel::is_selected(Tag& tag) const
 
 void ObjectTreeSelectionModel::select(Tag& tag, QItemSelectionModel::SelectionFlags command)
 {
+  m_current_tag = &tag;
   if (command & QItemSelectionModel::Clear) { clear_selection(); }
 
   if (command & QItemSelectionModel::Select) {
@@ -81,6 +83,21 @@ std::vector<Tag*> ObjectTreeSelectionModel::selected_tags_ordered(Scene& scene) 
   return std::vector(selected_tags.begin(), selected_tags.end());
 }
 
-
+void ObjectTreeSelectionModel::extend_selection(Tag& tag)
+{
+  if (m_current_tag == nullptr || m_current_tag->owner != tag.owner) {
+    select(tag, QItemSelectionModel::Select);
+  } else {
+    const auto tags = tag.owner->tags.ordered_items();
+    auto begin = std::find(tags.begin(), tags.end(), &tag);
+    auto end = std::find(tags.begin(), tags.end(), m_current_tag);
+    assert(begin != tags.end() && end != tags.end());
+    if (end < begin) { std::swap(begin, end); }
+    std::advance(end, 1);
+    for (auto it = begin; it != end; ++it) {
+      select(**it, QItemSelectionModel::Select);
+    }
+  }
+}
 
 }  // namespace omm

@@ -31,7 +31,7 @@ private:
 
   bool on_mouse_button_press(QMouseEvent& event);
   bool on_mouse_button_release(QMouseEvent& event);
-  Tag* m_recently_selected_tag = nullptr;
+  bool m_fragile_selection = false;
 };
 
 }  // namespace omm

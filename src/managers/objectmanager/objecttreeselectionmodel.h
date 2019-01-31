@@ -22,12 +22,14 @@ public:
   void select(const QModelIndex &index, QItemSelectionModel::SelectionFlags command) override;
   void select( const QItemSelection &selection,
                QItemSelectionModel::SelectionFlags command) override;
+  void extend_selection(Tag& tag);
   std::set<Tag*> selected_tags() const;
   std::vector<Tag*> selected_tags_ordered(Scene& scene) const;
 
 
 private:
   std::set<Tag*> m_selected_tags;
+  Tag* m_current_tag;
   using QItemSelectionModel::clearSelection;
 };
 
