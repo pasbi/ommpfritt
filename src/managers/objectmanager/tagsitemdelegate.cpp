@@ -81,22 +81,33 @@ bool TagsItemDelegate::editorEvent( QEvent *event, QAbstractItemModel *model,
 
 bool TagsItemDelegate::on_mouse_button_press(QMouseEvent& event)
 {
-  if (event.button() != Qt::LeftButton) { return false; }
   Tag* tag = tag_at(event.pos());
   if (tag == nullptr) { return false; }
   const bool is_selected = m_selection_model.is_selected(*tag);
-
-  if (!is_selected) {
-    if (event.modifiers() & Qt::ControlModifier) {
-      m_selection_model.select(*tag, QItemSelectionModel::Select);
+  switch (event.button()) {
+  case Qt::LeftButton:
+    if (!is_selected) {
+      if (event.modifiers() & Qt::ControlModifier) {
+        m_selection_model.select(*tag, QItemSelectionModel::Select);
+      } else {
+        m_selection_model.select(*tag, QItemSelectionModel::ClearAndSelect);
+      }
+      m_recently_selected_tag = tag;
     } else {
-      m_selection_model.select(*tag, QItemSelectionModel::ClearAndSelect);
+      m_recently_selected_tag = nullptr;
     }
-    m_recently_selected_tag = tag;
-  } else {
-    m_recently_selected_tag = nullptr;
+    return true;
+  case Qt::RightButton:
+    if (!is_selected) {
+      m_selection_model.select(*tag, QItemSelectionModel::ClearAndSelect);
+      m_recently_selected_tag = tag;
+      return true;
+    } else {
+      return false;
+    }
+  default:
+    return false;
   }
-  return true;
 }
 
 bool TagsItemDelegate::on_mouse_button_release(QMouseEvent& event)
@@ -122,8 +133,7 @@ QPoint TagsItemDelegate::cell_pos(const QModelIndex& index) const
 
 Tag* TagsItemDelegate::tag_at(const QPoint& pos) const { return tag_at(m_view.indexAt(pos), pos); }
 
-Tag*
-TagsItemDelegate::tag_at(const QModelIndex& index, const QPoint& pos) const
+Tag* TagsItemDelegate::tag_at(const QModelIndex& index, const QPoint& pos) const
 {
   if (!index.isValid()) { return nullptr; }
   const int x = (pos.x() - cell_pos(index).x()) / icon_size().width();

@@ -24,8 +24,7 @@ void ObjectTreeSelectionModel::select(Tag& tag, QItemSelectionModel::SelectionFl
   } else if (command & QItemSelectionModel::Deselect) {
     m_selected_tags.erase(&tag);
   } else if (command & QItemSelectionModel::Toggle) {
-    if (is_selected(tag)) { select(tag, QItemSelectionModel::Deselect); }
-    else { select(tag, QItemSelectionModel::Select); }
+    select(tag, is_selected(tag) ? QItemSelectionModel::Deselect : QItemSelectionModel::Select);
   }
 }
 
@@ -38,8 +37,8 @@ void ObjectTreeSelectionModel::clear_selection()
 void ObjectTreeSelectionModel::select( const QModelIndex &index,
                                        QItemSelectionModel::SelectionFlags command)
 {
-  if (command & QItemSelectionModel::Clear) {
-    LOG(INFO) << "clear";
+  const bool is_tag_index = index.column() == omm::ObjectTreeAdapter::TAGS_COLUMN;
+  if (command & QItemSelectionModel::Clear && !is_tag_index) {
     m_selected_tags.clear();
   }
   QItemSelectionModel::select(index, command);
@@ -48,7 +47,14 @@ void ObjectTreeSelectionModel::select( const QModelIndex &index,
 void ObjectTreeSelectionModel::select( const QItemSelection &selection,
                                        QItemSelectionModel::SelectionFlags command)
 {
-  if (command & QItemSelectionModel::Clear) {
+
+  const auto has_tag_index = [](const QItemSelectionRange& range) {
+    return range.left() <= ObjectTreeAdapter::TAGS_COLUMN
+        && range.right() >= ObjectTreeAdapter::TAGS_COLUMN;
+  };
+  const bool selection_has_tags = std::any_of(selection.begin(), selection.end(), has_tag_index);
+
+  if (command & QItemSelectionModel::Clear && !selection_has_tags) {
     m_selected_tags.clear();
   }
   QItemSelectionModel::select(selection, command);
