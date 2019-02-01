@@ -28,6 +28,8 @@ protected:
   void populate_menu(QMenu& menu, const QModelIndex& index) const override;
   void mousePressEvent(QMouseEvent* e) override;
   void mouseMoveEvent(QMouseEvent* e) override;
+  void paintEvent(QPaintEvent* e) override;
+
 private:
   std::unique_ptr<ObjectTreeSelectionModel> m_selection_model;
   std::unique_ptr<TagsItemDelegate> m_tags_item_delegate;

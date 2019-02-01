@@ -373,4 +373,18 @@ bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction a
   return false;
 }
 
+std::size_t ObjectTreeAdapter::max_number_of_tags_on_object() const
+{
+  const auto objects = scene.object_tree.items();
+  const auto cmp = [](const Object* lhs, const Object* rhs) {
+    return lhs->tags.size() < rhs->tags.size();
+  };
+  const auto max = std::max_element(objects.begin(), objects.end(), cmp);
+  if (max != objects.end()) {
+    return (*max)->tags.size();
+  } else {
+    return 0;
+  }
+}
+
 }  // namespace omm

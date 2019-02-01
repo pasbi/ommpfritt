@@ -11,16 +11,6 @@
 #include "scene/scene.h"
 #include "managers/objectmanager/objecttreeselectionmodel.h"
 
-namespace
-{
-
-constexpr QSize icon_size()
-{
-  return QSize(32, 32);
-}
-
-}  // namespace
-
 namespace omm
 {
 
@@ -41,7 +31,7 @@ void TagsItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &opt
   pen.setColor(Qt::black);
 
   painter->setPen(pen);
-  const auto rect = QRect(QPoint(), icon_size());
+  const auto rect = QRect(QPoint(), tag_icon_size());
 
   const auto& object = m_view.model()->item_at(index);
   for (size_t i = 0; i < object.tags.size(); ++i)
@@ -52,7 +42,7 @@ void TagsItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &opt
     if (m_selection_model.is_selected(tag)) {
       painter->drawRect(rect);
     }
-    painter->translate(icon_size().width(), 0);
+    painter->translate(tag_icon_size().width(), 0);
   }
 
   painter->restore();
@@ -62,8 +52,8 @@ QSize
 TagsItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
   const int n_tags = m_view.model()->item_at(index).tags.size();
-  const int width = n_tags * icon_size().width();
-  return QSize(width, icon_size().height());
+  const int width = n_tags * tag_icon_size().width();
+  return QSize(width, tag_icon_size().height());
 }
 
 bool TagsItemDelegate::editorEvent( QEvent *event, QAbstractItemModel *model,
@@ -144,7 +134,7 @@ Tag* TagsItemDelegate::tag_at(const QPoint& pos) const { return tag_at(m_view.in
 Tag* TagsItemDelegate::tag_at(const QModelIndex& index, const QPoint& pos) const
 {
   if (!index.isValid()) { return nullptr; }
-  const int x = (pos.x() - cell_pos(index).x()) / icon_size().width();
+  const int x = (pos.x() - cell_pos(index).x()) / tag_icon_size().width();
   Object& object = m_view.model()->item_at(index);
   if (x < 0 || x >= object.tags.size()) { return nullptr; }
   return &object.tags.item(x);
@@ -163,7 +153,7 @@ Tag* TagsItemDelegate::tag_before(const QModelIndex& index, QPoint pos) const
 
   Object& object = m_view.model()->item_at(index);
   auto tags = object.tags.ordered_items();
-  const int x = int(double(pos.x()) / icon_size().width() + 0.5) - 1;
+  const int x = int(double(pos.x()) / tag_icon_size().width() + 0.5) - 1;
   if (x < 0 || tags.size() == 0) {
     return nullptr;
   } else {
@@ -171,5 +161,9 @@ Tag* TagsItemDelegate::tag_before(const QModelIndex& index, QPoint pos) const
   }
 }
 
+QSize TagsItemDelegate::tag_icon_size() const
+{
+  return QSize(32, 32);
+}
 
 }  // namespace omm

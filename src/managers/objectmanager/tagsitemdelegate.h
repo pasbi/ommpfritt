@@ -23,6 +23,7 @@ public:
   Tag* tag_at(const QPoint& pos) const;
   Tag* tag_before(const QModelIndex& index, QPoint pos) const;
   Tag* tag_before(const QPoint& pos) const;
+  QSize tag_icon_size() const;
 
 private:
   ObjectTreeView& m_view;

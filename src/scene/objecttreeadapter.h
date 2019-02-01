@@ -49,6 +49,8 @@ public:
   constexpr static std::size_t VISIBILITY_COLUMN = 1;
   constexpr static std::size_t OBJECT_COLUMN = 0;
 
+  std::size_t max_number_of_tags_on_object() const;
+
 public:
   Tag* current_tag = nullptr;
 
