@@ -81,6 +81,9 @@ Object::Object(const Object& other)
   , m_draw_children(other.m_draw_children)
 {
   set_scene(other.m_scene);
+  for (Tag* tag : tags.items()) {
+    tag->owner = this;
+  }
 }
 
 Object::~Object() { }
