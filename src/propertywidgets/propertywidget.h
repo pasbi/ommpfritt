@@ -17,6 +17,7 @@ class AbstractPropertyWidget
 {
 public:
   explicit AbstractPropertyWidget(Scene& scene, const std::set<Property*>& properties);
+  virtual ~AbstractPropertyWidget();
   void on_property_value_changed(Property& property) override;
 
 protected:
@@ -28,30 +29,17 @@ protected:
 
 private:
   const std::string m_label;
+  std::set<Property*> m_properties;
+  template<typename PropertyT> friend class PropertyWidget;
 };
 
 template<typename PropertyT>
 class PropertyWidget : public AbstractPropertyWidget
 {
 public:
+  using AbstractPropertyWidget::AbstractPropertyWidget;
   using property_type = PropertyT;
   using value_type = typename property_type::value_type;
-  explicit PropertyWidget(Scene& scene, const std::set<Property*>& properties)
-    : AbstractPropertyWidget(scene, properties)
-    , m_properties(properties)
-  {
-    for (auto&& property : m_properties) {
-      property->Observed<AbstractPropertyObserver>::register_observer(*this);
-    }
-  }
-
-  virtual ~PropertyWidget()
-  {
-    for (auto&& property : m_properties) {
-      property->Observed<AbstractPropertyObserver>::unregister_observer(*this);
-    }
-  }
-
   static const std::string TYPE;
 
 protected:
@@ -82,9 +70,6 @@ protected:
   }
 
   const std::set<Property*>& properties() const { return m_properties; }
-
-private:
-  std::set<Property*> m_properties;
 };
 
 template<typename PropertyT> const std::string

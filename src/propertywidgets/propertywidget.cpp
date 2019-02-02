@@ -8,10 +8,21 @@ namespace omm
 
 AbstractPropertyWidget
 ::AbstractPropertyWidget(Scene& scene, const std::set<Property*>& properties)
-  : m_label(Property::get_value<std::string>(properties, std::mem_fn(&Property::label)))
+  : m_properties(properties)
+  , m_label(Property::get_value<std::string>(properties, std::mem_fn(&Property::label)))
   , scene(scene)
 {
+  for (auto&& property : properties) {
+    property->Observed<AbstractPropertyObserver>::register_observer(*this);
+  }
+}
 
+AbstractPropertyWidget::~AbstractPropertyWidget()
+{
+  for (auto&& property : m_properties) {
+    LOG(INFO) << "unregister " << (void*) this << " from " << (void*) property;
+    property->Observed<AbstractPropertyObserver>::unregister_observer(*this);
+  }
 }
 
 void AbstractPropertyWidget::set_default_layout(std::unique_ptr<QWidget> other)
