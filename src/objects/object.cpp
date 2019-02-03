@@ -265,21 +265,6 @@ std::unique_ptr<Object> Object::convert() { return clone(); }
 Object::Flag Object::flags() const { return Flag::None; }
 Scene* Object::scene() const { return m_scene; }
 
-void Object::copy_properties(Object& other) const
-{
-  const auto keys = [](const Object& o) {
-    return ::transform<std::string, std::set>(o.properties().keys(), ::identity);
-  };
-
-  for (const auto& key : ::intersect(keys(other), keys(*this))) {
-    const auto& p = property(key);
-    auto& other_property = other.property(key);
-    if (other_property.is_compatible(p)) {
-      other_property.set(p.variant_value());
-    }
-  }
-}
-
 void Object::copy_tags(Object& other) const
 {
   for (const Tag* tag : tags.items()) {

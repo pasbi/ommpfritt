@@ -20,24 +20,6 @@ namespace omm
 const std::string AbstractPropertyOwner::NAME_PROPERTY_KEY = "name";
 
 
-AbstractPropertyOwner::AbstractPropertyOwner()
-{
-}
-
-AbstractPropertyOwner::AbstractPropertyOwner(AbstractPropertyOwner&& other)
-  : m_properties(std::move(other.m_properties))
-{
-}
-
-AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner& other)
-  : m_properties(other.m_properties)
-{
-}
-
-AbstractPropertyOwner::~AbstractPropertyOwner()
-{
-}
-
 const OrderedMap<std::string, Property>& AbstractPropertyOwner::properties() const
 {
   return m_properties;
@@ -149,6 +131,21 @@ std::ostream& operator<<(std::ostream& ostream, const AbstractPropertyOwner* apo
     ostream << "AbstractPropertyOwner[" << kind << "]";
   }
   return ostream;
+}
+
+void AbstractPropertyOwner::copy_properties(AbstractPropertyOwner& target) const
+{
+  const auto keys = [](const AbstractPropertyOwner& o) {
+    return ::transform<std::string, std::set>(o.properties().keys(), ::identity);
+  };
+
+  for (const auto& key : ::intersect(keys(target), keys(*this))) {
+    const auto& p = property(key);
+    auto& other_property = target.property(key);
+    if (other_property.is_compatible(p)) {
+      other_property.set(p.variant_value());
+    }
+  }
 }
 
 }  // namespace omm

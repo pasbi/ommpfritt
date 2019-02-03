@@ -24,11 +24,8 @@ public:
   enum class Kind { None = 0x0,
                     Tag = 0x1, Style = 0x2, Object = 0x4, Tool = 0x8,
                     Item = Tag | Style | Object, All = Item | Tool };
-  explicit AbstractPropertyOwner();
-  explicit AbstractPropertyOwner(const AbstractPropertyOwner& other);
-  AbstractPropertyOwner(AbstractPropertyOwner&& other);
   static constexpr auto TYPE = "PropertyOwner";
-  virtual ~AbstractPropertyOwner();
+  virtual ~AbstractPropertyOwner() = default;
   Property& property(const std::string& key) const;
   bool has_property(const std::string& key) const;
   template<typename ValueT> bool has_property(const std::string& key) const
@@ -96,6 +93,7 @@ public:
   }
 
   std::unique_ptr<Property> extract_property(const std::string& key);
+  void copy_properties(AbstractPropertyOwner& target) const;
 
 private:
   OrderedMap<std::string, Property> m_properties;

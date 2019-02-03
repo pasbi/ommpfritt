@@ -77,7 +77,6 @@ public:
 
 protected:
   bool m_draw_children = true;
-  void copy_properties(Object& other) const;
   void copy_tags(Object& other) const;
 
 private:
