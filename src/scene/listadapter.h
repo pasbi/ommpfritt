@@ -18,7 +18,7 @@ public:
   QVariant data(const QModelIndex& index, int role) const override;
   bool setData(const QModelIndex& index, const QVariant& value, int role) override;
 
-  friend class AbstractRAIIGuard;
+  friend class ::AbstractRAIIGuard;
   std::unique_ptr<AbstractRAIIGuard> acquire_inserter_guard(int row) override;
 
   std::unique_ptr<AbstractRAIIGuard>

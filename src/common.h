@@ -251,7 +251,10 @@ template<typename T, typename S> T& type_cast(S& s)
   return *t;
 }
 
-template<typename T> decltype(auto) dereference(T* t) { return *t; }
+template<typename T> struct dereference
+{
+  decltype(auto) operator()(std::add_pointer_t<T> val) const { return *val; }
+};
 
 template<typename T> std::ostream& operator<<(std::ostream& ostream, const std::vector<T>& vs)
 {

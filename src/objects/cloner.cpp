@@ -138,11 +138,11 @@ std::vector<std::unique_ptr<Object>> Cloner::make_clones()
     case Mode::Path:
     case Mode::Script:
       return property(COUNT_PROPERTY_KEY).value<int>();
-    case Mode::Grid:
-    {
+    case Mode::Grid: {
       const auto c = property(COUNT_2D_PROPERTY_KEY).value<VectorPropertyValueType<arma::ivec2>>();
       return c(0) * c(1);
     }
+    default: assert(false); return 0;
     }
   };
 

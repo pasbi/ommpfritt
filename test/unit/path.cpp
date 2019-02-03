@@ -2,6 +2,7 @@
 #include <glog/logging.h>
 #include <string>
 #include "objects/path.h"
+#include "common.h"
 
 
 bool operator==(const std::vector<omm::Point*>& lhs, const std::vector<omm::Point>& rhs)
@@ -23,10 +24,10 @@ void remove_add_points( const std::vector<omm::Point>& initial_points,
 
   LOG(INFO) << "=============\n\n\n";
   LOG(INFO) << "original:     "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>);
+            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
   const auto sequences = path.remove_points(indices);
   LOG(INFO) << "after remove: "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>);
+            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
 
   ASSERT_EQ( path.points().size(), initial_points.size() - indices.size() );
 
@@ -52,7 +53,7 @@ void remove_add_points( const std::vector<omm::Point>& initial_points,
   path.add_points(sequences);
 
   LOG(INFO) << "after insert: "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>);
+            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
 
   ASSERT_EQ( path.points().size(), initial_points.size() );
   for (std::size_t i = 0; i < initial_points.size(); ++i) {
@@ -69,17 +70,17 @@ void test_invariant_1( const std::vector<omm::Point>& initial_points,
 
   LOG(INFO) << "=============\n\n\n";
   LOG(INFO) << "original:     "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>);
+            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
   const auto sequences = path.remove_points(indices);
   LOG(INFO) << "after remove: "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>);
+            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
   LOG(INFO) << "sequences: " << sequences.size();
   for (const auto& sequence : sequences) {
     LOG(INFO) << " >> " << sequence.position << " " << sequence.sequence;
   }
   path.add_points(sequences);
   LOG(INFO) << "after insert: "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>);
+            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
   EXPECT_TRUE(path.points() == initial_points);
 }
 
@@ -92,7 +93,7 @@ void test_invariant_2( const std::vector<omm::Point> initial_points,
 
   LOG(INFO) << "=============\n\n\n";
   LOG(INFO) << "original:     "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>);
+            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
   LOG(INFO) << "sequences: " << sequences.size();
   for (const auto& sequence : sequences) {
     LOG(INFO) << " >> " << sequence.position << " " << sequence.sequence;
@@ -100,10 +101,10 @@ void test_invariant_2( const std::vector<omm::Point> initial_points,
   std::vector<std::size_t> indices = path.add_points(sequences);
   LOG(INFO) << "indices: " << indices.size() << " " << indices;
   LOG(INFO) << "after insert: "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>);
+            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
   path.remove_points(indices);
   LOG(INFO) << "after remove: "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>);
+            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
 
 
   EXPECT_TRUE(path.points() == initial_points);

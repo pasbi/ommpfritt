@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "abstractraiiguard.h"
 // #include "scene/list.h"
 // #include "scene/tree.h"

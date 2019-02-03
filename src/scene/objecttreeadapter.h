@@ -5,6 +5,7 @@
 #include "scene/tree.h"
 #include "scene/abstractstructureobserver.h"
 #include "objects/object.h"
+#include "abstractraiiguard.h"
 
 class QItemSelection;
 
@@ -35,9 +36,8 @@ public:
   bool canDropMimeData( const QMimeData *data, Qt::DropAction action,
                         int row, int column, const QModelIndex &parent ) const override;
 
-  friend class AbstractRAIIGuard;
-  std::unique_ptr<AbstractRAIIGuard>
-  acquire_inserter_guard(Object& parent, int row) override;
+  friend class ::AbstractRAIIGuard;
+  std::unique_ptr<AbstractRAIIGuard> acquire_inserter_guard(Object& parent, int row) override;
 
   std::unique_ptr<AbstractRAIIGuard>
   acquire_mover_guard(const ObjectTreeMoveContext& context) override;

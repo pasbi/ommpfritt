@@ -299,6 +299,8 @@ double Object::apply_border(double t, Border border)
     t = apply_border(t, Border::Wrap);
     return flip ? (1.0-t) : t;
   }
+  default:
+    assert(false); return 0.0;
   }
 }
 OrientedPoint Object::evaluate(const double t) { return OrientedPoint(); }

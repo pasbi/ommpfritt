@@ -315,7 +315,7 @@ OrientedPoint ObjectTransformation::apply(const OrientedPoint& point)
 
 double ObjectTransformation::apply_to_angle(double angle) const
 {
-  const arma::vec2 direction = apply_to_direction({ std::cos(angle), std::sin(angle) });
+  const arma::vec2 direction = apply_to_direction(PolarCoordinates(angle, 1.0).to_cartesian());
   return std::atan2(direction(1), direction(0));
 }
 
