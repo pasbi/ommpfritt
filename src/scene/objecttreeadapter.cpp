@@ -335,7 +335,7 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
         }
       }
       if (const auto styles = pdata->styles(); styles.size() > 0) {
-        if (parent.column() == 0) {
+        if (parent.column() == OBJECT_COLUMN && column < 0) {
           assert(parent.isValid()); // otherwise, column was < 0
           drop_style_onto_object(scene, item_at(parent), styles);
         } else {
@@ -365,7 +365,7 @@ bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction a
         return true;
       }
       if (pdata->styles().size() > 0) {
-        return parent.column() == OBJECT_COLUMN;
+        return parent.column() == OBJECT_COLUMN && column < 0;
         // TODO also allow drop onto Style tag
       }
     }
