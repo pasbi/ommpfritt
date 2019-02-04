@@ -58,4 +58,7 @@ ObjectTransformation Handle::transformation() const
   return transform_in_tool_space ? tool.transformation() : ObjectTransformation();
 }
 
+double Handle::draw_epsilon() const { return 4.0; }
+double Handle::interact_epsilon() const { return 4.0; }
+
 }  // namespace omm

@@ -95,7 +95,8 @@ ObjectSelectHandle
 
 bool ObjectSelectHandle::contains_global(const arma::vec2& point) const
 {
-  return arma::norm(point - transformation().apply_to_position(arma::vec2{0.0, 0.0})) < epsilon;
+  const auto d = arma::norm(point - transformation().apply_to_position(arma::vec2{0.0, 0.0}));
+  return d < interact_epsilon();
 }
 
 void ObjectSelectHandle::draw(omm::AbstractRenderer& renderer) const
@@ -106,7 +107,7 @@ void ObjectSelectHandle::draw(omm::AbstractRenderer& renderer) const
 
   const Style& style = is_selected() ? this->style(Status::Active) : current_style();
   const auto pos = transformation().apply_to_position(arma::vec2{ 0.0, 0.0 });
-  renderer.draw_rectangle(pos, epsilon, style);
+  renderer.draw_rectangle(pos, draw_epsilon(), style);
 }
 
 bool ObjectSelectHandle
@@ -185,7 +186,8 @@ ObjectTransformation PointSelectHandle::transformation() const
 
 bool PointSelectHandle::contains_global(const arma::vec2& point) const
 {
-  return arma::norm(point - transformation().apply_to_position(m_point.position)) < epsilon;
+  const auto d = arma::norm(point - transformation().apply_to_position(m_point.position));
+  return d < interact_epsilon();
 }
 
 bool PointSelectHandle
@@ -246,7 +248,7 @@ void PointSelectHandle::draw(omm::AbstractRenderer& renderer) const
     treat_sub_handle(*m_right_tangent_handle, right_pos);
     treat_sub_handle(*m_left_tangent_handle, left_pos);
   }
-  renderer.draw_rectangle(pos, epsilon, style);
+  renderer.draw_rectangle(pos, draw_epsilon(), style);
 
 }
 

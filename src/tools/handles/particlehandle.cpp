@@ -15,12 +15,12 @@ ParticleHandle::ParticleHandle(Tool& tool, bool transform_in_tool_space)
 
 bool ParticleHandle::contains_global(const arma::vec2& point) const
 {
-  return arma::norm(point - transformation().apply_to_position(position)) < epsilon;
+  return arma::norm(point - transformation().apply_to_position(position)) < interact_epsilon();
 }
 
 void ParticleHandle::draw(omm::AbstractRenderer& renderer) const
 {
-  renderer.draw_rectangle(position, epsilon, current_style());
+  renderer.draw_rectangle(position, draw_epsilon(), current_style());
 }
 
 }  // namespace omm

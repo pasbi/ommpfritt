@@ -24,7 +24,7 @@ bool AxisHandle::contains_global(const arma::vec2& point) const
     v(i) = std::max(static_cast<double>(min(i)), std::min(v(i), static_cast<double>(max(i))));
   }
 
-  return arma::norm(global_point - v) < epsilon;
+  return arma::norm(global_point - v) < interact_epsilon();
 }
 
 void AxisHandle::set_direction(const arma::vec2& direction) { m_direction = direction; }

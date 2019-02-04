@@ -25,7 +25,8 @@ public:
   Status status() const;
   virtual void deactivate();
   void set_style(Status status, Style&& style);
-  double epsilon = 4.0;
+  virtual double draw_epsilon() const;
+  virtual double interact_epsilon() const;
   const bool transform_in_tool_space;
   bool is_enabled() const;
 
