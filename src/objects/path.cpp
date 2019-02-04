@@ -143,7 +143,6 @@ Path::modified_points(const bool constrain_to_selection, InterpolationMode mode)
       switch (mode) {
       case InterpolationMode::Smooth:
         map[point] = point->smoothed(*points[(i+n-1)%n], *points[(i+n+1)%n]);
-        LOG(INFO) << (void*) point;
         break;
       case InterpolationMode::Linear:
         map[point] = point->nibbed();

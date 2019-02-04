@@ -20,7 +20,6 @@ AbstractPropertyWidget
 AbstractPropertyWidget::~AbstractPropertyWidget()
 {
   for (auto&& property : m_properties) {
-    LOG(INFO) << "unregister " << (void*) this << " from " << (void*) property;
     property->Observed<AbstractPropertyObserver>::unregister_observer(*this);
   }
 }

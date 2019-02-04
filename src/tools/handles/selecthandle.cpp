@@ -46,9 +46,7 @@ bool AbstractSelectHandle
 {
   if (status() == Status::Active) {
     if (!is_selected()) {
-      if (event.modifiers() != extend_selection_modifier) {
-        clear();
-      }
+      if (event.modifiers() != extend_selection_modifier) { clear(); }
       set_selected(true);
     }
   }
