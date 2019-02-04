@@ -17,7 +17,10 @@ class TangentHandle : public omm::ParticleHandle
 {
 public:
   TangentHandle(omm::Tool& tool, omm::PointSelectHandle& master_handle)
-    : ParticleHandle(tool, false), m_master_handle(master_handle) {}
+    : ParticleHandle(tool, false), m_master_handle(master_handle)
+  {
+    set_style(Handle::Status::Inactive, omm::SolidStyle(omm::Color(0.0, 0.0, 0.0)));
+  }
 
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override
   {
@@ -29,6 +32,8 @@ public:
       return false;
     }
   }
+
+  double draw_epsilon() const override { return 2.0; }
 
 private:
   omm::PointSelectHandle& m_master_handle;
@@ -241,7 +246,7 @@ void PointSelectHandle::draw(omm::AbstractRenderer& renderer) const
   const auto treat_sub_handle = [&renderer, pos, this](auto& sub_handle, const auto& other_pos) {
     sub_handle.position = other_pos;
     renderer.draw_spline( { Point(pos), Point(other_pos) }, *m_tangent_style);
-    sub_handle.draw(renderer);
+    if (m_point.is_selected) { sub_handle.draw(renderer); }
   };
 
   if (tangents_active()) {
@@ -288,7 +293,9 @@ void PointSelectHandle::transform_tangent(const arma::vec2& delta, TangentMode m
 bool PointSelectHandle::tangents_active() const
 {
   const auto& imode_property = m_path.property(Path::INTERPOLATION_PROPERTY_KEY);
-  return imode_property.value<Path::InterpolationMode>() == Path::InterpolationMode::Bezier;
+  const auto interpolation_mode = imode_property.value<Path::InterpolationMode>();
+  const bool is_bezier = interpolation_mode == Path::InterpolationMode::Bezier;
+  return is_bezier && m_point.is_selected;
 }
 
 void PointSelectHandle::set_selected(bool selected)
