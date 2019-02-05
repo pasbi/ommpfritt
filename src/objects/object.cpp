@@ -74,15 +74,18 @@ Object::Object(Scene* scene)
     .set_category(QObject::tr("basic").toStdString());
 
   add_property<FloatVectorProperty>(SCALE_PROPERTY_KEY, arma::vec2{ 1.0, 1.0 })
+    .set_step(arma::vec2{ 0.1, 0.1 })
     .set_label(QObject::tr("scale").toStdString())
     .set_category(QObject::tr("basic").toStdString());
 
   add_property<FloatProperty>(ROTATION_PROPERTY_KEY, 0.0)
+    .set_multiplier(180.0 / M_PI)
     .set_label(QObject::tr("rotation").toStdString())
     .set_category(QObject::tr("basic").toStdString());
 
   add_property<FloatProperty>(SHEAR_PROPERTY_KEY, 0.0)
-    .set_label(QObject::tr("rotation").toStdString())
+    .set_step(0.01)
+    .set_label(QObject::tr("shear").toStdString())
     .set_category(QObject::tr("basic").toStdString());
 }
 
