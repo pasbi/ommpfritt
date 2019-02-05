@@ -43,6 +43,9 @@ T get_t(const nlohmann::json& json, const PointerT& pointer)
   return get_t<T>(json, nlohmann::json::json_pointer(pointer));
 }
 
+constexpr auto inf_value = "inf";
+constexpr auto neg_inf_value = "-inf";
+
 }  // namespace
 
 namespace omm
@@ -85,7 +88,14 @@ void JSONSerializer::set_value(bool value, const Pointer& pointer)
 
 void JSONSerializer::set_value(double value, const Pointer& pointer)
 {
-  m_store[ptr(pointer)] = value;
+  // unfortunately, json cannot store infinity values, hence the workaround.
+  if (value == std::numeric_limits<double>::infinity()) {
+    m_store[ptr(pointer)] = inf_value;
+  } else if (value == -std::numeric_limits<double>::infinity()) {
+    m_store[ptr(pointer)] = neg_inf_value;
+  } else {
+    m_store[ptr(pointer)] = value;
+  }
 }
 
 void JSONSerializer::set_value(const std::string& value, const Pointer& pointer)
@@ -154,7 +164,25 @@ bool JSONDeserializer::get_bool(const Pointer& pointer)
 
 double JSONDeserializer::get_double(const Pointer& pointer)
 {
-  return get_t<double>(m_store, pointer);
+  using namespace std::string_literals;
+  const auto json_val = m_store[ptr(pointer)];
+  if (json_val.is_number()) {
+    return json_val;
+  } else if (json_val.is_string()) {
+    const std::string value = json_val;
+    if (value == inf_value) {
+      return std::numeric_limits<double>::infinity();
+    } else if (value == neg_inf_value) {
+      return -std::numeric_limits<double>::infinity();
+    } else {
+      const std::string msg = "Expected '"s + inf_value + "' or '" + neg_inf_value
+                            + "' but got '" + value + "'.";
+      throw omm::AbstractDeserializer::DeserializeError(msg);
+    }
+  } else {
+    throw omm::AbstractDeserializer::DeserializeError("invalid type.");
+  }
+  return std::numeric_limits<double>::signaling_NaN();
 }
 
 std::string JSONDeserializer::get_string(const Pointer& pointer)
