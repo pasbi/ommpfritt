@@ -50,6 +50,8 @@ public:
     m_step = step;
   }
 
+  void set_multiplier(double multiplier) { m_multiplier = multiplier; }
+
   void set_value(const value_type& value)
   {
     if (value != this->value()) {
@@ -128,11 +130,13 @@ private:
   value_type m_min;
   value_type m_max;
   value_type m_step = 1;
+  double m_multiplier = 1.0;
   QPoint m_mouse_press_pos;
 
   void increment(double factor)
   {
-    set_value(std::max(m_min, std::min<value_type>(m_max, value() + factor * m_step)));
+    const auto increment = factor * m_step / m_multiplier;
+    set_value(std::max(m_min, std::min<value_type>(m_max, value() + increment)));
   }
 
   value_type parse(const std::string& text) const
@@ -140,6 +144,7 @@ private:
     std::istringstream sstream(text);
     value_type value;
     sstream >> value;
+    value /= m_multiplier;
     if (sstream) {
       return value;
     } else {
@@ -152,7 +157,7 @@ private:
   }
 
   const on_value_changed_t m_on_value_changed;
-  void set_text(const value_type& value) { setText(QString("%1").arg(value)); }
+  void set_text(const value_type& value) { setText(QString("%1").arg(m_multiplier * value)); }
   static constexpr value_type invalid_value = 0;
 };
 
