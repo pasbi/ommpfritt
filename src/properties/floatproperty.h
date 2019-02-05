@@ -1,18 +1,17 @@
 #pragma once
 
-#include "properties/typedproperty.h"
+#include "properties/numericproperty.h"
 
 namespace omm
 {
 
-class FloatProperty : public TypedProperty<double>
+class FloatProperty : public NumericProperty<double>
 {
 public:
-  using TypedProperty::TypedProperty;
+  using NumericProperty<double>::NumericProperty;
   std::string type() const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  void set(const variant_type& variant) override;
   static constexpr auto TYPE = "FloatProperty";
   std::unique_ptr<Property> clone() const override;
 };
