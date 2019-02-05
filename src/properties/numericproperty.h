@@ -21,19 +21,19 @@ public:
     }
   }
 
-  static constexpr auto MIN_VALUE_POINTER = "min_value";
-  static constexpr auto MAX_VALUE_POINTER = "max_value";
+  static constexpr auto LOWER_VALUE_POINTER = "lower_value";
+  static constexpr auto UPPER_VALUE_POINTER = "upper_value";
   static constexpr auto STEP_POINTER = "step";
   static constexpr auto MULTIPLIER_POINTER = "multiplier";
 
-  NumericProperty<T>& set_range(T min, T max)
+  NumericProperty<T>& set_range(const T& lower, const T& upper)
   {
-    m_min = min;
-    m_max = max;
+    m_lower = lower;
+    m_upper = upper;
     return *this;
   }
 
-  NumericProperty<T>& set_step(T step)
+  NumericProperty<T>& set_step(const T& step)
   {
     m_step = step;
     return *this;
@@ -45,8 +45,7 @@ public:
     return *this;
   }
 
-
-  static constexpr T upper_limit()
+  static constexpr T get_upper_limit()
   {
     if constexpr(std::numeric_limits<T>::has_infinity) {
       return std::numeric_limits<T>::infinity();
@@ -55,7 +54,7 @@ public:
     }
   }
 
-  static constexpr T lower_limit()
+  static constexpr T get_lower_limit()
   {
     if constexpr(std::numeric_limits<T>::has_infinity) {
       return -std::numeric_limits<T>::infinity();
@@ -66,8 +65,8 @@ public:
 
   void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
   {
-    m_min = deserializer.get_double(Serializable::make_pointer(root, MIN_VALUE_POINTER));
-    m_max = deserializer.get_double(Serializable::make_pointer(root, MAX_VALUE_POINTER));
+    m_lower = deserializer.get_double(Serializable::make_pointer(root, LOWER_VALUE_POINTER));
+    m_upper = deserializer.get_double(Serializable::make_pointer(root, UPPER_VALUE_POINTER));
     m_step = deserializer.get_double(Serializable::make_pointer(root, STEP_POINTER));
     m_multiplier = deserializer.get_double(Serializable::make_pointer(root, MULTIPLIER_POINTER));
 
@@ -75,21 +74,22 @@ public:
 
   void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
   {
-    serializer.set_value(m_min, Serializable::make_pointer(root, MIN_VALUE_POINTER));
-    serializer.set_value(m_max, Serializable::make_pointer(root, MAX_VALUE_POINTER));
+    serializer.set_value(m_lower, Serializable::make_pointer(root, LOWER_VALUE_POINTER));
+    serializer.set_value(m_upper, Serializable::make_pointer(root, UPPER_VALUE_POINTER));
     serializer.set_value(m_step, Serializable::make_pointer(root, STEP_POINTER));
     serializer.set_value(m_multiplier, Serializable::make_pointer(root, MULTIPLIER_POINTER));
   }
 
 private:
-  T m_min = lower_limit();
-  T m_max = upper_limit();
+  T m_lower = get_lower_limit();
+  T m_upper = get_upper_limit();
   T m_step = 1.0;
   double m_multiplier = 1.0;
 
+public:
   // these values are merely reommendations for the gui.
-  T min() const { return m_min; }
-  T max() const { return m_max; }
+  T lower() const { return m_lower; }
+  T upper() const { return m_upper; }
   T step() const { return m_step; }
   double multiplier() const { return m_multiplier; }
 };
