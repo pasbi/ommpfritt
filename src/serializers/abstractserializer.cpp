@@ -115,7 +115,14 @@ template<> arma::vec2 AbstractDeserializer::get<arma::vec2>(const Pointer& point
   return get_vec2(pointer);
 }
 
-template<> arma::ivec2 AbstractDeserializer::get<arma::ivec2>(const Pointer& pointer)
+template<> VectorPropertyValueType<arma::vec2>
+AbstractDeserializer::get<VectorPropertyValueType<arma::vec2>>(const Pointer& pointer)
+{
+  return get_vec2(pointer);
+}
+
+template<> VectorPropertyValueType<arma::ivec2>
+AbstractDeserializer::get<VectorPropertyValueType<arma::ivec2>>(const Pointer& pointer)
 {
   return get_ivec2(pointer);
 }

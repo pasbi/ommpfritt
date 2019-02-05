@@ -49,6 +49,24 @@ public:
     return value_type{m_x_spinbox->value(), m_y_spinbox->value()};
   }
 
+  void set_range(const T& lower, const T& upper)
+  {
+    m_x_spinbox->set_range(lower(0), upper(0));
+    m_x_spinbox->set_range(lower(1), upper(1));
+  }
+
+  void set_multiplier(double multiplier)
+  {
+    m_x_spinbox->set_multiplier(multiplier);
+    m_y_spinbox->set_multiplier(multiplier);
+  }
+
+  void set_step(const T& step)
+  {
+    m_x_spinbox->set_step(step(0));
+    m_y_spinbox->set_step(step(1));
+  }
+
 protected:
   void set_inconsistent_value() override
   {
