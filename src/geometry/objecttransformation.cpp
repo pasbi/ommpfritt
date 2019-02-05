@@ -29,13 +29,12 @@ arma::vec2 apply_to_non_homogenous( const omm::ObjectTransformation::Mat& matrix
 namespace omm
 {
 
- ObjectTransformation::ObjectTransformation()
-  : m_translation({ 0, 0 })
-  , m_scaling({ 1, 1 })
-  , m_shearing(0)
-  , m_rotation(0)
-{
-}
+ObjectTransformation::ObjectTransformation()
+  : m_translation({ 0, 0 }), m_scaling({ 1, 1 }), m_shearing(0), m_rotation(0) { }
+
+ObjectTransformation::ObjectTransformation( const arma::vec2& translation, const arma::vec2& scale,
+                                            const double rotation, const double shear )
+  : m_translation(translation), m_scaling(scale), m_rotation(rotation), m_shearing(shear) { }
 
 ObjectTransformation::ObjectTransformation(const Mat& mat)
 {

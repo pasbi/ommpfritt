@@ -4,7 +4,6 @@
 #include "properties/integerproperty.h"
 #include "properties/referenceproperty.h"
 #include "properties/stringproperty.h"
-#include "properties/transformationproperty.h"
 #include "properties/optionsproperty.h"
 
 namespace omm
@@ -19,7 +18,6 @@ void register_properties()
   REGISTER_PROPERTY(IntegerProperty);
   REGISTER_PROPERTY(ReferenceProperty);
   REGISTER_PROPERTY(StringProperty);
-  REGISTER_PROPERTY(TransformationProperty);
   REGISTER_PROPERTY(OptionsProperty);
 
 

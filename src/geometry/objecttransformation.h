@@ -17,6 +17,8 @@ public:
 
   explicit ObjectTransformation();
   explicit ObjectTransformation(const Mat& mat);
+  explicit ObjectTransformation( const arma::vec2& translation, const arma::vec2& scale,
+                                 const double rotation, const double shear );
 
   void set_translation(const arma::vec2& translation_vector);
   void translate(const arma::vec2& translation_vector);

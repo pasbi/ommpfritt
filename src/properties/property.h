@@ -13,7 +13,6 @@
 #include "aspects/serializable.h"
 #include "common.h"
 #include "color/color.h"
-#include "geometry/objecttransformation.h"
 
 namespace omm
 {
@@ -69,8 +68,7 @@ class Property
 {
 public:
   using variant_type = std::variant< bool, Color, double, int, AbstractPropertyOwner*,
-                                     std::string, ObjectTransformation, size_t,
-                                     TriggerPropertyDummyValueType,
+                                     std::string, size_t, TriggerPropertyDummyValueType,
                                      VectorPropertyValueType<arma::vec2>,
                                      VectorPropertyValueType<arma::ivec2> >;
 

@@ -63,9 +63,12 @@ public:
   }
 
   static constexpr auto TYPE = "Object";
-  static constexpr auto TRANSFORMATION_PROPERTY_KEY = "transformation";
   static constexpr auto IS_VISIBLE_PROPERTY_KEY = "is_visible";
   static constexpr auto IS_ACTIVE_PROPERTY_KEY = "is_active";
+  static constexpr auto POSITION_PROPERTY_KEY = "position";
+  static constexpr auto SCALE_PROPERTY_KEY = "scale";
+  static constexpr auto ROTATION_PROPERTY_KEY = "rotation";
+  static constexpr auto SHEAR_PROPERTY_KEY = "shear";
 
   enum class Border { Clamp, Wrap, Hide, Reflect };
   static double apply_border(double t, Border border);

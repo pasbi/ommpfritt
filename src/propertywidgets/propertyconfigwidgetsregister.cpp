@@ -3,7 +3,6 @@
 #include "propertywidgets/numericpropertywidget/numericpropertyconfigwidget.h"
 #include "propertywidgets/referencepropertywidget/referencepropertyconfigwidget.h"
 #include "propertywidgets/stringpropertywidget/stringpropertyconfigwidget.h"
-#include "propertywidgets/transformationpropertywidget/transformationpropertyconfigwidget.h"
 #include "propertywidgets/optionspropertywidget/optionspropertyconfigwidget.h"
 #include "propertywidgets/triggerpropertywidget/triggerpropertyconfigwidget.h"
 #include "propertywidgets/vectorpropertywidget/vectorpropertyconfigwidget.h"
@@ -22,7 +21,6 @@ void register_propertyconfigwidgets()
   REGISTER_PROPERTY(IntegerPropertyConfigWidget);
   REGISTER_PROPERTY(ReferencePropertyConfigWidget);
   REGISTER_PROPERTY(StringPropertyConfigWidget);
-  REGISTER_PROPERTY(TransformationPropertyConfigWidget);
   REGISTER_PROPERTY(OptionsPropertyConfigWidget);
   REGISTER_PROPERTY(TriggerPropertyConfigWidget);
   REGISTER_PROPERTY(IntegerVectorPropertyConfigWidget);

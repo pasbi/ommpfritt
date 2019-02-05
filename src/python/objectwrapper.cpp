@@ -23,76 +23,69 @@ py::object ObjectWrapper::tags() const
   return wrap(wrapped.tags.ordered_items());
 }
 
-py::object ObjectWrapper::rotation() const
-{
-  return py::cast(transformation().rotation());
-}
+// py::object ObjectWrapper::rotation() const
+// {
+//   return py::cast(transformation().rotation());
+// }
 
-py::object ObjectWrapper::scaling() const
-{
-  return py::cast(::to_stdvec(transformation().scaling()));
-}
+// py::object ObjectWrapper::scale() const
+// {
+//   return py::cast(::to_stdvec(transformation().scaling()));
+// }
 
-py::object ObjectWrapper::translation() const
-{
-  return py::cast(::to_stdvec(transformation().translation()));
-}
+// py::object ObjectWrapper::translation() const
+// {
+//   return py::cast(::to_stdvec(transformation().translation()));
+// }
 
-py::object ObjectWrapper::set_rotation(const py::object& rotation) const
-{
-  auto t = transformation();
-  t.set_rotation(rotation.cast<double>());
-  set_transformation(t);
-  return py::cast(true);
-}
+// py::object ObjectWrapper::set_rotation(const py::object& rotation) const
+// {
+//   wrapped.property(Object::ROTATION_PROPERTY_KEY).set(rotation.cast<double>());
+//   return py::cast(true);
+// }
 
-py::object ObjectWrapper::set_scaling(const py::object& scaling) const
-{
-  auto t = transformation();
-  try {
-    t.set_scaling(::to_vec2(scaling.cast<std::vector<double>>()));
-  } catch (const std::length_error&) {
-    return py::cast(false);
-  }
-  set_transformation(t);
-  return py::cast(true);
-}
+// py::object ObjectWrapper::set_scale(const py::object& scale) const
+// {
+//   try {
+//     const auto py_scale = ::to_vec2(scale.cast<std::vector<double>>());
+//     wrapped.property(Object::SCALE_PROPERTY_KEY).set(py_scale);
+//   } catch (const std::length_error&) {
+//     return py::cast(false);
+//   }
+//   return py::cast(true);
+// }
 
-py::object ObjectWrapper::set_translation(const py::object& translation) const
-{
-  auto t = transformation();
-  try {
-    t.set_translation(::to_vec2(translation.cast<std::vector<double>>()));
-  } catch (const std::length_error&) {
-    return py::cast(false);
-  }
-  set_transformation(t);
-  return py::cast(true);
-}
+// py::object ObjectWrapper::set_shear(const py::object& shear) const
+// {
+//   wrapped.property(Object::SHEAR_PROPERTY_KEY).set(shear.cast<double>());
+//   return py::cast(true);
+// }
 
-ObjectTransformation ObjectWrapper::transformation() const
-{
-  auto& property = wrapped.property(Object::TRANSFORMATION_PROPERTY_KEY);
-  return property.value<ObjectTransformation>();
-}
-
-void ObjectWrapper::set_transformation(const ObjectTransformation& t) const
-{
-  wrapped.property(Object::TRANSFORMATION_PROPERTY_KEY).set(t);
-}
+// py::object ObjectWrapper::set_translation(const py::object& translation) const
+// {
+//   try {
+//     const auto py_translation = ::to_vec2(translation.cast<std::vector<double>>());
+//     wrapped.property(Object::SCALE_PROPERTY_KEY).set(py_translation);
+//   } catch (const std::length_error&) {
+//     return py::cast(false);
+//   }
+//   return py::cast(true);
+// }
 
 void ObjectWrapper::define_python_interface(py::object& module)
 {
   py::class_<ObjectWrapper, AbstractPropertyOwnerWrapper<Object>>(module, wrapped_type::TYPE)
       .def("children", &ObjectWrapper::children)
       .def("parent", &ObjectWrapper::parent)
-      .def("tags", &ObjectWrapper::tags)
-      .def("rotation", &ObjectWrapper::rotation)
-      .def("scaling", &ObjectWrapper::scaling)
-      .def("translation", &ObjectWrapper::translation)
-      .def("set_rotation", &ObjectWrapper::set_rotation)
-      .def("set_translation", &ObjectWrapper::set_translation)
-      .def("set_scaling", &ObjectWrapper::set_scaling);
+      .def("tags", &ObjectWrapper::tags);
+      // .def("rotation", &ObjectWrapper::rotation)
+      // .def("scale", &ObjectWrapper::scale)
+      // .def("shear", &ObjectWrapper::shear)
+      // .def("translation", &ObjectWrapper::translation)
+      // .def("set_rotation", &ObjectWrapper::set_rotation)
+      // .def("set_translation", &ObjectWrapper::set_translation)
+      // .def("set_scale", &ObjectWrapper::scale)
+      // .def("set_shear", &ObjectWrapper::set_shear);
 }
 
 }  // namespace omm

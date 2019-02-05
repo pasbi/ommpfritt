@@ -7,7 +7,6 @@
 #include <QObject>
 
 #include "tags/tag.h"
-#include "properties/transformationproperty.h"
 #include "properties/stringproperty.h"
 #include "properties/integerproperty.h"
 #include "properties/floatproperty.h"
@@ -19,6 +18,7 @@
 #include "scene/contextes.h"
 #include "properties/boolproperty.h"
 #include "properties/optionsproperty.h"
+#include "properties/vectorproperty.h"
 
 namespace
 {
@@ -69,9 +69,21 @@ Object::Object(Scene* scene)
     .set_label(QObject::tr("Name").toStdString())
     .set_category(QObject::tr("basic").toStdString());
 
-  add_property<TransformationProperty>(TRANSFORMATION_PROPERTY_KEY)
-    .set_label(QObject::tr("transformation").toStdString())
-    .set_category(QObject::tr("object").toStdString());
+  add_property<FloatVectorProperty>(POSITION_PROPERTY_KEY, arma::vec2{ 0.0, 0.0 })
+    .set_label(QObject::tr("pos").toStdString())
+    .set_category(QObject::tr("basic").toStdString());
+
+  add_property<FloatVectorProperty>(SCALE_PROPERTY_KEY, arma::vec2{ 1.0, 1.0 })
+    .set_label(QObject::tr("scale").toStdString())
+    .set_category(QObject::tr("basic").toStdString());
+
+  add_property<FloatProperty>(ROTATION_PROPERTY_KEY, 0.0)
+    .set_label(QObject::tr("rotation").toStdString())
+    .set_category(QObject::tr("basic").toStdString());
+
+  add_property<FloatProperty>(SHEAR_PROPERTY_KEY, 0.0)
+    .set_label(QObject::tr("rotation").toStdString())
+    .set_category(QObject::tr("basic").toStdString());
 }
 
 Object::Object(const Object& other)
@@ -96,7 +108,12 @@ void Object::set_scene(Scene* scene)
 
 ObjectTransformation Object::transformation() const
 {
-  return property(TRANSFORMATION_PROPERTY_KEY).value<ObjectTransformation>();
+  return ObjectTransformation(
+    property(POSITION_PROPERTY_KEY).value<VectorPropertyValueType<arma::vec2>>(),
+    property(SCALE_PROPERTY_KEY).value<VectorPropertyValueType<arma::vec2>>(),
+    property(ROTATION_PROPERTY_KEY).value<double>(),
+    property(SHEAR_PROPERTY_KEY).value<double>()
+  );
 }
 
 ObjectTransformation Object::global_transformation() const
@@ -112,7 +129,10 @@ ObjectTransformation Object::global_transformation() const
 
 void Object::set_transformation(const ObjectTransformation& transformation)
 {
-  property(TRANSFORMATION_PROPERTY_KEY).set(transformation);
+  property(POSITION_PROPERTY_KEY).set(transformation.translation());
+  property(SCALE_PROPERTY_KEY).set(transformation.scaling());
+  property(ROTATION_PROPERTY_KEY).set(transformation.rotation());
+  property(SHEAR_PROPERTY_KEY).set(transformation.shearing());
 }
 
 void Object::set_global_transformation(const ObjectTransformation& global_transformation)

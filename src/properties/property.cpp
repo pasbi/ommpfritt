@@ -3,11 +3,6 @@
 #include <cassert>
 #include "objects/object.h"
 
-#include "properties/floatproperty.h"
-#include "properties/integerproperty.h"
-#include "properties/referenceproperty.h"
-#include "properties/stringproperty.h"
-#include "properties/transformationproperty.h"
 #include "properties/optionsproperty.h"
 
 namespace omm
