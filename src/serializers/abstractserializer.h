@@ -72,6 +72,7 @@ public:
   void register_reference_property( ReferenceProperty& reference_property,
                                     const std::size_t id );
 
+  template<typename T> T get(const Pointer&);
 
   class DeserializeError : public std::runtime_error
   {

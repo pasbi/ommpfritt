@@ -80,4 +80,49 @@ void AbstractDeserializer::register_reference_property(ReferenceProperty& refere
   m_reference_property_to_id[&reference_property] = id;
 }
 
+template<> bool AbstractDeserializer::get<bool>(const Pointer& pointer)
+{
+  return get_bool(pointer);
+}
+
+template<> int AbstractDeserializer::get<int>(const Pointer& pointer)
+{
+  return get_int(pointer);
+}
+
+template<> double AbstractDeserializer::get<double>(const Pointer& pointer)
+{
+  return get_double(pointer);
+}
+
+template<> std::string AbstractDeserializer::get<std::string>(const Pointer& pointer)
+{
+  return get_string(pointer);
+}
+
+template<> std::size_t AbstractDeserializer::get<std::size_t>(const Pointer& pointer)
+{
+  return get_size_t(pointer);
+}
+
+template<> Color AbstractDeserializer::get<Color>(const Pointer& pointer)
+{
+  return get_color(pointer);
+}
+
+template<> arma::vec2 AbstractDeserializer::get<arma::vec2>(const Pointer& pointer)
+{
+  return get_vec2(pointer);
+}
+
+template<> arma::ivec2 AbstractDeserializer::get<arma::ivec2>(const Pointer& pointer)
+{
+  return get_ivec2(pointer);
+}
+
+template<> PolarCoordinates AbstractDeserializer::get<PolarCoordinates>(const Pointer& pointer)
+{
+  return get_polarcoordinates(pointer);
+}
+
 }  // namespace omm
