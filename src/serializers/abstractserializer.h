@@ -31,7 +31,6 @@ public:
   virtual void set_value(int value, const Pointer& pointer) = 0;
   virtual void set_value(double value, const Pointer& pointer) = 0;
   virtual void set_value(const std::string& value, const Pointer& pointer) = 0;
-  virtual void set_value(const ObjectTransformation& value, const Pointer& pointer) = 0;
   virtual void set_value(const arma::vec2& value, const Pointer& pointer) = 0;
   virtual void set_value(const arma::ivec2& value, const Pointer& pointer) = 0;
   virtual void set_value(const PolarCoordinates& value, const Pointer& pointer) = 0;
@@ -63,12 +62,11 @@ public:
   virtual int  get_int(const Pointer& pointer) = 0;
   virtual double  get_double(const Pointer& pointer) = 0;
   virtual std::string  get_string(const Pointer& pointer) = 0;
-  virtual ObjectTransformation get_object_transformation(const Pointer& pointer) = 0;
   virtual std::size_t get_size_t(const Pointer& pointer) = 0;
   virtual Color get_color(const Pointer& pointer) = 0;
   virtual arma::vec2 get_vec2(const Pointer& pointer) = 0;
   virtual arma::ivec2 get_ivec2(const Pointer& pointer) = 0;
-  virtual PolarCoordinates get_polar_coordinates(const Pointer& pointer) = 0;
+  virtual PolarCoordinates get_polarcoordinates(const Pointer& pointer) = 0;
 
   void register_reference(const std::size_t id, AbstractPropertyOwner& reference);
   void register_reference_property( ReferenceProperty& reference_property,

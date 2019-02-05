@@ -3,7 +3,6 @@
 #include <glog/logging.h>
 #include <typeinfo>
 
-#include "geometry/objecttransformation.h"
 #include "aspects/serializable.h"
 
 namespace
@@ -94,18 +93,6 @@ void JSONSerializer::set_value(const std::string& value, const Pointer& pointer)
   m_store[ptr(pointer)] = value;
 }
 
-void JSONSerializer::set_value(const ObjectTransformation& value, const Pointer& pointer)
-{
-  auto& matrix_json = m_store[ptr(pointer)];
-  for (size_t i_row = 0; i_row < ObjectTransformation::N_ROWS; ++i_row) {
-    auto& row = matrix_json[i_row];
-    for (size_t i_col = 0; i_col < ObjectTransformation::N_COLS; ++i_col) {
-      const auto matrix = value.to_mat();
-      row[i_col] = matrix(i_row, i_col);
-    }
-  }
-}
-
 void JSONSerializer::set_value(const std::size_t id, const Pointer& pointer)
 {
   m_store[ptr(pointer)] = id;
@@ -185,18 +172,6 @@ Color JSONDeserializer::get_color(const Pointer& pointer)
   return color;
 }
 
-ObjectTransformation JSONDeserializer::get_object_transformation(const Pointer& pointer)
-{
-  ObjectTransformation::Mat mat;
-  for (size_t i_row = 0; i_row < ObjectTransformation::N_ROWS; ++i_row) {
-    for (size_t i_col = 0; i_col < ObjectTransformation::N_COLS; ++i_col) {
-      const auto element_pointer = Serializable::make_pointer(pointer, i_row, i_col);
-      mat(i_row, i_col) = get_t<double>(m_store, element_pointer);
-    }
-  }
-  return ObjectTransformation(mat);
-}
-
 std::size_t JSONDeserializer::get_size_t(const Pointer& pointer)
 {
   return get_t<std::size_t>(m_store, pointer);
@@ -222,7 +197,7 @@ arma::ivec2 JSONDeserializer::get_ivec2(const Pointer& pointer)
   return arma::ivec2{ vec2[0], vec2[1] };
 }
 
-PolarCoordinates JSONDeserializer::get_polar_coordinates(const Pointer& pointer)
+PolarCoordinates JSONDeserializer::get_polarcoordinates(const Pointer& pointer)
 {
   const auto pair = get_vec2(pointer);
   return PolarCoordinates(pair[0], pair[1]);
