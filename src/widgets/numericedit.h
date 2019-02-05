@@ -20,6 +20,7 @@ public:
     : QLineEdit(parent)
     , m_on_value_changed(on_value_changed)
   {
+    setContextMenuPolicy(Qt::NoContextMenu);
     if constexpr (std::numeric_limits<value_type>::has_infinity) {
       m_min = -std::numeric_limits<value_type>::infinity();
       m_max =  std::numeric_limits<value_type>::infinity();
@@ -69,28 +70,58 @@ public:
 protected:
   void wheelEvent(QWheelEvent* e) override
   {
-    increment(e->angleDelta().y() / 8);
-    e->accept();
+    // TODO
+    // e->pixelDelta() is always null for me.
+    // e->angleDelta() is (0, +-120) with my logitech mouse
+    // e->angleDelta() is (0, n*8) with trackpoint (n being integer)
+    // to make behaviour of trackpoint and mouse somewhat consistent, don't use the value
+    // of angleDelta but only its direction.
+    // curiously, `xev` does not display values on trackpoint/mouse wheel
+    //  scroll but only button press events.
+
+    const auto dy = e->angleDelta().y();
+    if (dy < 0) {
+      e->accept();
+      increment(-1); }
+    else if (dy > 0) {
+      e->accept();
+      increment(1);
+    }
   }
 
   void mousePressEvent(QMouseEvent* e) override
   {
-    if (e->button() == Qt::LeftButton) { m_mouse_press_pos = e->pos(); }
+    if (e->button() == Qt::RightButton) {
+      m_mouse_press_pos = e->pos();
+      e->accept();
+    } else {
+      QLineEdit::mousePressEvent(e);
+    }
   }
 
   void mouseMoveEvent(QMouseEvent* e) override
   {
-    if (e->buttons() & Qt::LeftButton) {
+    if (e->buttons() & Qt::RightButton) {
       QPoint distance = m_mouse_press_pos - e->pos();
       increment(distance.y());
       QCursor::setPos(mapToGlobal(m_mouse_press_pos));
+      e->accept();
+    } else {
+      QLineEdit::mouseMoveEvent(e);
     }
   }
 
   void keyPressEvent(QKeyEvent* e) override
   {
-    if (e->key() == Qt::Key_Down) { increment(-1); }
-    if (e->key() == Qt::Key_Up) { increment(1); }
+    if (e->key() == Qt::Key_Down) {
+      increment(-1);
+      e->accept();
+    } else if (e->key() == Qt::Key_Up) {
+      increment(1);
+      e->accept();
+    } else {
+      QLineEdit::keyPressEvent(e);
+    }
   }
 
 private:
