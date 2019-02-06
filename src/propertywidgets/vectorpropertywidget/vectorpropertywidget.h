@@ -64,21 +64,28 @@ protected:
   template<std::size_t dim> void set_properties_value(const elem_type& value)
   {
     const auto properties = this->properties();
-    const bool wrap = std::any_of(properties.begin(), properties.end(), [](const Property* p) {
-      return p->wrap_with_macro;
-    });
 
-    using command_t = VectorPropertiesCommand<VectorPropertyT, dim>;
-    auto command = std::make_unique<command_t>(properties, value);
+    const auto is_noop = [&value](const Property* p) {
+      return p->value<value_type>()(dim) == value;
+    };
 
-    if (wrap) {
-      this->scene.undo_stack.beginMacro(QString::fromStdString(command->label()));
-      for (auto* property : properties) { property->pre_submit(*property); }
-    }
-    this->scene.submit(std::move(command));
-    if (wrap) {
-      for (auto* property : properties) { property->post_submit(*property); }
-      this->scene.undo_stack.endMacro();
+    if (!std::all_of(properties.begin(), properties.end(), is_noop)) {
+      const bool wrap = std::any_of(properties.begin(), properties.end(), [](const Property* p) {
+        return p->wrap_with_macro;
+      });
+
+      using command_t = VectorPropertiesCommand<VectorPropertyT, dim>;
+      auto command = std::make_unique<command_t>(properties, value);
+
+      if (wrap) {
+        this->scene.undo_stack.beginMacro(QString::fromStdString(command->label()));
+        for (auto* property : properties) { property->pre_submit(*property); }
+      }
+      this->scene.submit(std::move(command));
+      if (wrap) {
+        for (auto* property : properties) { property->post_submit(*property); }
+        this->scene.undo_stack.endMacro();
+      }
     }
   }
 
