@@ -81,14 +81,16 @@ protected:
     // curiously, `xev` does not display values on trackpoint/mouse wheel
     //  scroll but only button press events.
 
-    const auto dy = e->angleDelta().y();
-    if (dy < 0) {
-      e->accept();
-      increment(-1); }
-    else if (dy > 0) {
-      e->accept();
-      increment(1);
-    }
+    // const auto dy = e->angleDelta().y();
+    // if (dy < 0) {
+    //   e->accept();
+    //   increment(-1); }
+    // else if (dy > 0) {
+    //   e->accept();
+    //   increment(1);
+    // }
+
+    QLineEdit::wheelEvent(e);
   }
 
   void mousePressEvent(QMouseEvent* e) override
