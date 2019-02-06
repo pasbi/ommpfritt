@@ -2,7 +2,7 @@
 
 #include "propertywidgets/propertywidget.h"
 #include "propertywidgets/multivalueedit.h"
-#include "propertywidgets/numericpropertywidget/spinbox.h"
+#include "propertywidgets/numericpropertywidget/numericmultivalueedit.h"
 #include "properties/integerproperty.h"
 #include "properties/floatproperty.h"
 
@@ -20,7 +20,7 @@ protected:
   void update_edit() override;
 
 private:
-  SpinBox<value_type>* m_spinbox;
+  NumericMultiValueEdit<value_type>* m_spinbox;
 };
 
 class IntegerPropertyWidget : public NumericPropertyWidget<IntegerProperty>

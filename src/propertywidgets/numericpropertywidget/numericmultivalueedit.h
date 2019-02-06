@@ -9,12 +9,12 @@
 namespace omm
 {
 
-template<typename T> class SpinBox : public NumericEdit<T>, public MultiValueEdit<T>
+template<typename T> class NumericMultiValueEdit : public NumericEdit<T>, public MultiValueEdit<T>
 {
 public:
   using value_type = T;
   using on_value_changed_t = std::function<void(T)>;
-  SpinBox(const on_value_changed_t& on_value_changed)
+  NumericMultiValueEdit(const on_value_changed_t& on_value_changed)
     : NumericEdit<T>(on_value_changed), MultiValueEdit<T>(on_value_changed)
   {}
   void set_value(const T& value) override { NumericEdit<T>::set_value(value); }

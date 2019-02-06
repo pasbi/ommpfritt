@@ -5,7 +5,7 @@
 #include <QHBoxLayout>
 #include "propertywidgets/multivalueedit.h"
 #include "properties/vectorproperty.h"
-#include "../numericpropertywidget/spinbox.h"
+#include "propertywidgets/numericpropertywidget/numericmultivalueedit.h"
 
 namespace omm
 {
@@ -22,11 +22,11 @@ public:
     : MultiValueEdit<T>(on_value_changed)
   {
     std::make_unique<QHBoxLayout>(this).release();
-
-    m_x_spinbox = std::make_unique<SpinBox<elem_type>>([=](const auto& value) {
+    using edit_type = NumericMultiValueEdit<elem_type>;
+    m_x_spinbox = std::make_unique<edit_type>([=](const auto& value) {
       on_value_changed(value_type{ value, this->value()(1) });
     }).release();
-    m_y_spinbox = std::make_unique<SpinBox<elem_type>>([=](const auto& value) {
+    m_y_spinbox = std::make_unique<edit_type>([=](const auto& value) {
       on_value_changed(value_type{ this->value()(0), value });
     }).release();
 
@@ -78,8 +78,8 @@ private:
   bool m_is_consistent = false;
   arma::vec2 m_current_value{0.0, 0.0};
 
-  SpinBox<elem_type>* m_x_spinbox;
-  SpinBox<elem_type>* m_y_spinbox;
+  NumericMultiValueEdit<elem_type>* m_x_spinbox;
+  NumericMultiValueEdit<elem_type>* m_y_spinbox;
 };
 
 }  // namespace omm

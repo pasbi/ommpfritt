@@ -1,11 +1,9 @@
 #include "propertywidgets/numericpropertywidget/numericpropertywidget.h"
 
-#include <QSpinBox>
 #include <QLineEdit>
 
 // TODO units
 // TODO alternative editor widgets (line edit, slider)
-// TODO min, max, step, default
 
 namespace omm
 {
@@ -14,8 +12,8 @@ template<typename NumericPropertyT> NumericPropertyWidget<NumericPropertyT>
 ::NumericPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget<NumericPropertyT>(scene, properties)
 {
-  using SpinBoxT = SpinBox<typename NumericPropertyT::value_type>;
-  auto spinbox = std::make_unique<SpinBoxT>([this](const auto& value) {
+  using edit_type = NumericMultiValueEdit<typename NumericPropertyT::value_type>;
+  auto spinbox = std::make_unique<edit_type>([this](const auto& value) {
     this->set_properties_value(value);
   });
   m_spinbox = spinbox.get();
