@@ -29,7 +29,7 @@ public:
     m_y_spinbox = std::make_unique<edit_type>([=](const auto& value) {
       on_value_changed(value_type{ this->value()(0), value });
     }).release();
-
+    layout()->setContentsMargins(0, 0, 0, 0);
     layout()->addWidget(m_x_spinbox);
     layout()->addWidget(m_y_spinbox);
   }

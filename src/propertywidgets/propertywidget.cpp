@@ -29,6 +29,7 @@ void AbstractPropertyWidget::set_default_layout(std::unique_ptr<QWidget> other)
   auto layout = std::make_unique<QHBoxLayout>();
   layout->addWidget(make_label_widget().release(), 0);
   layout->addWidget(other.release(), 1);
+  layout->setContentsMargins(0, 0, 0, 0);
   setLayout(layout.release());
 }
 
