@@ -43,7 +43,7 @@ public:
   static const std::string TYPE;
 
 protected:
-  void set_properties_value(const value_type& value)
+  virtual void set_properties_value(const value_type& value)
   {
     const bool wrap = std::any_of(m_properties.begin(), m_properties.end(), [](const Property* p) {
       return p->wrap_with_macro;
