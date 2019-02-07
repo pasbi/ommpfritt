@@ -52,6 +52,7 @@ public:
   std::size_t max_number_of_tags_on_object() const;
 
 public:
+  Tag* current_tag_predecessor = nullptr;
   Tag* current_tag = nullptr;
 
 };

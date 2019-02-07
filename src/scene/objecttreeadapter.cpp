@@ -12,6 +12,8 @@
 #include "commands/addcommand.h"
 #include "commands/movetagscommand.h"
 #include "properties/stringproperty.h"
+#include "commands/propertycommand.h"
+#include "properties/referenceproperty.h"
 #include "scene/scene.h"
 #include "abstractraiiguard.h"
 #include "tags/tag.h"
@@ -64,12 +66,12 @@ void drop_tags_onto_object( omm::Scene& scene, omm::Object& object,
   }
 }
 
-void drop_tags_behind( omm::Scene& scene, omm::Object& object, omm::Tag* current_tag,
+void drop_tags_behind( omm::Scene& scene, omm::Object& object, omm::Tag* current_tag_predecessor,
                         const std::vector<omm::Tag*>& tags, Qt::DropAction action )
 {
-  if (current_tag != nullptr && current_tag->owner != &object) {
+  if (current_tag_predecessor != nullptr && current_tag_predecessor->owner != &object) {
     const auto& tags = object.tags;
-    current_tag = last(tags.ordered_items());
+    current_tag_predecessor = last(tags.ordered_items());
   }
   if (tags.size() > 0) {
     switch (action) {
@@ -85,13 +87,13 @@ void drop_tags_behind( omm::Scene& scene, omm::Object& object, omm::Tag* current
         auto tag_clone = omm::Tag::make(tag->type(), *tag->owner);
         tag->copy_properties(*tag_clone);
 
-        omm::ListOwningContext<omm::Tag> context(std::move(tag_clone), current_tag);
+        omm::ListOwningContext<omm::Tag> context(std::move(tag_clone), current_tag_predecessor);
         scene.submit<AddTagCommand>(object.tags, std::move(context));
       }
       scene.undo_stack.endMacro();
       break;
     case Qt::MoveAction:
-      scene.submit<omm::MoveTagsCommand>(tags, object, current_tag);
+      scene.submit<omm::MoveTagsCommand>(tags, object, current_tag_predecessor);
       break;
     default: break;
     }
@@ -120,9 +122,7 @@ namespace omm
 
 ObjectTreeAdapter::ObjectTreeAdapter(Scene& scene, Tree<Object>& tree)
   : ItemModelAdapter(scene, tree)
-{
-
-}
+{ }
 
 QModelIndex ObjectTreeAdapter::index(int row, int column, const QModelIndex& parent) const
 {
@@ -343,8 +343,8 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
           drop_tags_onto_object(scene, item_at(parent), tags, action);
           return true;
         } else if (parent.column() == TAGS_COLUMN) {
-          assert(tags.front() != current_tag || action != Qt::MoveAction);
-          drop_tags_behind(scene, item_at(parent), current_tag, tags, action);
+          assert(tags.front() != current_tag_predecessor || action != Qt::MoveAction);
+          drop_tags_behind(scene, item_at(parent), current_tag_predecessor, tags, action);
           return true;
         }
       }
@@ -352,8 +352,13 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
         if (parent.column() == OBJECT_COLUMN && column < 0) {
           assert(parent.isValid()); // otherwise, column was < 0
           drop_style_onto_object(scene, item_at(parent), styles);
-        } else {
-          // TODO if parent.column() == 2 and current_tag is a style tag, set style.
+        } else if (parent.column() == TAGS_COLUMN && column < 0) {
+          assert(current_tag->type() == StyleTag::TYPE);
+          assert(styles.size() == 1);
+          auto* style_tag = static_cast<StyleTag*>(current_tag);
+          auto& property = style_tag->property(StyleTag::STYLE_REFERENCE_PROPERTY_KEY);
+          using ref_prop_cmd_t = PropertiesCommand<ReferenceProperty>;
+          scene.submit<ref_prop_cmd_t>(std::set { &property }, *styles.begin());
         }
       }
     }
@@ -374,13 +379,18 @@ bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction a
         switch (parent.column()) {
         case OBJECT_COLUMN: return true;
         case TAGS_COLUMN:
-          return tags.front() != current_tag || action != Qt::MoveAction;
+          return tags.front() != current_tag_predecessor || action != Qt::MoveAction;
         }
         return true;
       }
-      if (pdata->styles().size() > 0) {
-        return parent.column() == OBJECT_COLUMN && column < 0;
-        // TODO also allow drop onto Style tag
+      if (const auto styles = pdata->styles(); styles.size() > 0) {
+        if (parent.column() == OBJECT_COLUMN && column < 0) {
+          return true;
+        } else if (parent.column() == TAGS_COLUMN && column < 0 && styles.size() == 1) {
+          if (current_tag != nullptr && current_tag->type() == StyleTag::TYPE) {
+            return true;
+          }
+        }
       }
     }
   }

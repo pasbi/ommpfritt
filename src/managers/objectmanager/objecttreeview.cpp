@@ -197,7 +197,8 @@ void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
 
 void ObjectTreeView::handle_drag_event(QDragMoveEvent* e)
 {
-  m_model.current_tag = m_tags_item_delegate->tag_before(e->pos());
+  m_model.current_tag_predecessor = m_tags_item_delegate->tag_before(e->pos());
+  m_model.current_tag = m_tags_item_delegate->tag_at(e->pos());
   setDropIndicatorShown(indexAt(e->pos()).column() != ObjectTreeAdapter::TAGS_COLUMN);
 }
 
