@@ -2,6 +2,7 @@
 
 #include "renderers/abstractrenderer.h"
 #include "renderers/imagecache.h"
+#include "color/color.h"
 
 class QPainter;
 
@@ -23,6 +24,12 @@ public:
   void pop_transformation() override;
   void set_painter(QPainter& painter);
   void clear_painter();
+
+  static QTransform to_transformation(const omm::ObjectTransformation& transformation);
+  static QPointF to_qpoint(const arma::vec2& point);
+  static QColor to_qcolor(omm::Color color);
+  static QPen make_pen(const omm::Style& style);
+  static QBrush make_brush(const omm::Style& style);
 
 private:
   QPainter* m_painter;

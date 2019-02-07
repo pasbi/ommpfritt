@@ -9,54 +9,6 @@
 #include "properties/floatproperty.h"
 #include "properties/boolproperty.h"
 
-namespace
-{
-
-auto to_transformation(const omm::ObjectTransformation& transformation)
-{
-  const auto& m = transformation.to_mat();
-  return QTransform( m.at(0, 0), m.at(1, 0), m.at(2, 0),
-                     m.at(0, 1), m.at(1, 1), m.at(2, 1),
-                     m.at(0, 2), m.at(1, 2), m.at(2, 2) );
-}
-
-auto to_qpoint(const arma::vec2& point)
-{
-  return QPointF(point[0], point[1]);
-}
-
-auto to_qcolor(omm::Color color)
-{
-  color = color.clamped() * 255.0;
-  return QColor(color.red(), color.green(), color.blue(), color.alpha());
-}
-
-auto make_pen(const omm::Style& style)
-{
-  if (style.property(omm::Style::PEN_IS_ACTIVE_KEY).value<bool>()) {
-    QPen pen;
-    pen.setWidth(style.property(omm::Style::PEN_WIDTH_KEY).value<double>());
-    pen.setColor(to_qcolor(style.property(omm::Style::PEN_COLOR_KEY).value<omm::Color>()));
-    return pen;
-  } else {
-    return QPen(Qt::NoPen);
-  }
-}
-
-auto make_brush(const omm::Style& style)
-{
-  if (style.property(omm::Style::BRUSH_IS_ACTIVE_KEY).value<bool>()) {
-    QBrush brush(Qt::SolidPattern);
-    const auto color = style.property(omm::Style::BRUSH_COLOR_KEY).value<omm::Color>();
-    brush.setColor(to_qcolor(color));
-    return brush;
-  } else {
-    return QBrush(Qt::NoBrush);
-  }
-}
-
-}  // namespace
-
 namespace omm
 {
 
@@ -134,5 +86,49 @@ void ViewportRenderer
 
 void ViewportRenderer::set_painter(QPainter& painter) { m_painter = &painter; }
 void ViewportRenderer::clear_painter() { m_painter = nullptr; }
+
+
+QTransform ViewportRenderer::to_transformation(const omm::ObjectTransformation& transformation)
+{
+  const auto& m = transformation.to_mat();
+  return QTransform( m.at(0, 0), m.at(1, 0), m.at(2, 0),
+                     m.at(0, 1), m.at(1, 1), m.at(2, 1),
+                     m.at(0, 2), m.at(1, 2), m.at(2, 2) );
+}
+
+QPointF ViewportRenderer::to_qpoint(const arma::vec2& point)
+{
+  return QPointF(point[0], point[1]);
+}
+
+QColor ViewportRenderer::to_qcolor(omm::Color color)
+{
+  color = color.clamped() * 255.0;
+  return QColor(color.red(), color.green(), color.blue(), color.alpha());
+}
+
+QPen ViewportRenderer::make_pen(const omm::Style& style)
+{
+  if (style.property(omm::Style::PEN_IS_ACTIVE_KEY).value<bool>()) {
+    QPen pen;
+    pen.setWidth(style.property(omm::Style::PEN_WIDTH_KEY).value<double>());
+    pen.setColor(to_qcolor(style.property(omm::Style::PEN_COLOR_KEY).value<omm::Color>()));
+    return pen;
+  } else {
+    return QPen(Qt::NoPen);
+  }
+}
+
+QBrush ViewportRenderer::make_brush(const omm::Style& style)
+{
+  if (style.property(omm::Style::BRUSH_IS_ACTIVE_KEY).value<bool>()) {
+    QBrush brush(Qt::SolidPattern);
+    const auto color = style.property(omm::Style::BRUSH_COLOR_KEY).value<omm::Color>();
+    brush.setColor(to_qcolor(color));
+    return brush;
+  } else {
+    return QBrush(Qt::NoBrush);
+  }
+}
 
 }  // namespace omm
