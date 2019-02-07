@@ -3,6 +3,7 @@
 #include <QApplication>  // TODO only for icon testing
 #include <QStyle>        // TODO only for icon testing
 #include "properties/referenceproperty.h"
+#include "renderers/style.h"
 
 namespace omm
 {
@@ -18,7 +19,13 @@ StyleTag::StyleTag(Object& owner)
 
 QIcon StyleTag::icon() const
 {
-  return QApplication::style()->standardIcon(QStyle::SP_DialogResetButton);
+  const auto* style = property(STYLE_REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
+  if (style == nullptr) {
+    return QApplication::style()->standardIcon(QStyle::SP_DialogResetButton);
+  } else {
+    assert(style->kind() == AbstractPropertyOwner::Kind::Style);
+    return static_cast<const Style*>(style)->icon();
+  }
 }
 
 std::string StyleTag::type() const { return TYPE; }
