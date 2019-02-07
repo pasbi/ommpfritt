@@ -28,7 +28,12 @@ Style::Style(Scene* scene)
 }
 
 std::string Style::type() const { return TYPE; }
-std::unique_ptr<Style> Style::clone() const { return std::make_unique<Style>(*this); }
+std::unique_ptr<Style> Style::clone() const
+{
+  auto clone = std::make_unique<Style>(m_scene);
+  copy_properties(*clone);
+  return clone;
+}
 
 
 SolidStyle::SolidStyle(const Color& color, Scene* scene)
