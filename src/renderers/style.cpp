@@ -20,6 +20,8 @@ Style::Style(Scene* scene)
   add_property(PEN_COLOR_KEY, std::make_unique<ColorProperty>(Color::BLACK))
     .set_label("color").set_category("pen");
   add_property(PEN_WIDTH_KEY, std::make_unique<FloatProperty>(1.0))
+    .set_step(0.1)
+    .set_range(0, std::numeric_limits<double>::infinity())
     .set_label("width").set_category("pen");
 
   add_property(BRUSH_IS_ACTIVE_KEY, std::make_unique<BoolProperty>(false))
