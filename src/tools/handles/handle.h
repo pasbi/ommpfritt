@@ -24,7 +24,7 @@ public:
   virtual void mouse_release(const arma::vec2& pos, const QMouseEvent& event);
   Status status() const;
   virtual void deactivate();
-  void set_style(Status status, Style&& style);
+  void set_style(Status status, Style style);
   virtual double draw_epsilon() const;
   virtual double interact_epsilon() const;
   const bool transform_in_tool_space;

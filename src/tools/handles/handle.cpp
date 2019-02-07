@@ -46,10 +46,10 @@ const Style& Handle::style(Status status) const { return m_styles.at(status); }
 const Style& Handle::current_style() const { return style(status()); }
 bool Handle::is_enabled() const { return !transform_in_tool_space || tool.has_transformation(); }
 
-void Handle::set_style(Status status, Style&& style)
+void Handle::set_style(Status status, Style style)
 {
   m_styles.erase(status);
-  m_styles.insert(std::pair(status, style));
+  m_styles.insert(std::pair(status, std::move(style)));
 }
 
 ObjectTransformation Handle::transformation() const
