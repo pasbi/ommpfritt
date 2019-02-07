@@ -1,0 +1,24 @@
+#pragma once
+
+#include <QIconEngine>
+
+namespace omm
+{
+
+class Style;
+
+class StyleIconEngine : public QIconEngine
+{
+
+public:
+  explicit StyleIconEngine(const Style& style);
+  StyleIconEngine(const StyleIconEngine& style) = default;
+
+  void paint(QPainter* painter, const QRect& rect, QIcon::Mode mode, QIcon::State state) override;
+  QIconEngine* clone() const override;
+
+private:
+  const Style& m_style;
+};
+
+}  // namespace omm

@@ -3,6 +3,7 @@
 #include "properties/colorproperty.h"
 #include "properties/floatproperty.h"
 #include "scene/scene.h"
+#include "renderers/styleiconengine.h"
 
 namespace omm
 {
@@ -35,6 +36,10 @@ std::unique_ptr<Style> Style::clone() const
   return clone;
 }
 
+QIcon Style::icon() const
+{
+  return QIcon(std::make_unique<StyleIconEngine>(*this).release());
+}
 
 SolidStyle::SolidStyle(const Color& color, Scene* scene)
 {

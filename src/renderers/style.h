@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QIcon>
 #include "aspects/propertyowner.h"
 #include "color/color.h"
 
@@ -17,6 +18,7 @@ public:
   std::string type() const;
   static constexpr auto TYPE = "Style";
   std::unique_ptr<Style> clone() const;  // provided for interface consistency
+  QIcon icon() const;
 
 private:
   Scene* const m_scene;

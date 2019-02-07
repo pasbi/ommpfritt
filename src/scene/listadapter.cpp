@@ -29,6 +29,8 @@ template<typename ItemT> QVariant ListAdapter<ItemT>::data(const QModelIndex& in
   case Qt::DisplayRole:
   case Qt::EditRole:
     return QString::fromStdString(this->structure.item(index.row()).name());
+  case Qt::DecorationRole:
+    return this->structure.item(index.row()).icon();
   }
   return QVariant();
 }
