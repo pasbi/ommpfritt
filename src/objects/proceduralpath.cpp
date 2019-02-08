@@ -18,7 +18,7 @@ class Style;
 ProceduralPath::ProceduralPath(Scene* scene) : AbstractProceduralPath(scene)
 {
   add_property<StringProperty>(CODE_PROPERTY_KEY, "")
-    .set_mode(StringProperty::Mode::MultiLine)
+    .set_mode(StringProperty::Mode::Code)
     .set_label(QObject::tr("code").toStdString())
     .set_category(QObject::tr("ProceduralPath").toStdString());
   add_property<IntegerProperty>(COUNT_PROPERTY_KEY, 10)

@@ -22,7 +22,7 @@ ScriptTag::ScriptTag(Object& owner)
   : Tag(owner)
 {
   add_property<StringProperty>(CODE_PROPERTY_KEY)
-    .set_mode(StringProperty::Mode::MultiLine)
+    .set_mode(StringProperty::Mode::Code)
     .set_label("code").set_category("script");
   add_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY)
     .set_options({ "per frame", "on request" })
