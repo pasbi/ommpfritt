@@ -1,6 +1,4 @@
 file (GLOB SOURCES
-  "common.cpp"
-  "objecttransformationwrapper.cpp"
   "objectwrapper.cpp"
   "pathwrapper.cpp"
   "pointwrapper.cpp"

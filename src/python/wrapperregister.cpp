@@ -4,7 +4,6 @@
 #include "python/propertyownerwrapper.h"
 #include "python/scripttagwrapper.h"
 #include "python/stylewrapper.h"
-#include "python/objecttransformationwrapper.h"
 #include "python/pointwrapper.h"
 #include "python/pathwrapper.h"
 
@@ -25,7 +24,6 @@ void register_wrappers(py::object& module)
   StyleWrapper::define_python_interface(module);
 
   SceneWrapper::define_python_interface(module);
-  ObjectTransformationWrapper::define_python_interface(module);
   PointWrapper::define_python_interface(module);
 }
 

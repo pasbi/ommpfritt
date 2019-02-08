@@ -2,6 +2,7 @@
 
 #include "python/pywrapper.h"
 #include <type_traits>
+#include "python/common.h"
 
 
 namespace omm
@@ -19,6 +20,10 @@ py::object get_property_value(WrappedT&& wrapped, const std::string& key)
       return wrap(std::get<AbstractPropertyOwner*>(value));
     } else if (std::holds_alternative<TriggerPropertyDummyValueType>(value)) {
       return py::none();
+    } else if (std::holds_alternative<VectorPropertyValueType<arma::vec2>>(value)) {
+      return omm::from_vec2<arma::vec2>(std::get<VectorPropertyValueType<arma::vec2>>(value));
+    } else if (std::holds_alternative<VectorPropertyValueType<arma::ivec2>>(value)) {
+      return omm::from_vec2<arma::ivec2>(std::get<VectorPropertyValueType<arma::ivec2>>(value));
     } else {
       return py::cast(value);
     }

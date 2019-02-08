@@ -7,7 +7,9 @@
 #include "properties/triggerproperty.h"
 #include "renderers/style.h"
 #include "objects/object.h"
+#include "properties/vectorproperty.h"
 #include "tags/tag.h"
+#include "python/common.h"
 
 namespace
 {
@@ -56,8 +58,14 @@ bool set_property_value( AbstractPropertyOwner& property_owner,
       }
     } else if (property.type() == TriggerProperty::TYPE) {
       return false;
+    } else if (property.type() == FloatVectorProperty::TYPE) {
+      property.set(VectorPropertyValueType<arma::vec2>(to_vec2<arma::vec2>(value)));
+      return true;
+    } else if (property.type() == IntegerVectorProperty::TYPE) {
+      property.set(VectorPropertyValueType<arma::ivec2>(to_vec2<arma::ivec2>(value)));
+      return true;
     } else {
-      property_owner.property(key).set(value.cast<Property::variant_type>());
+      property.set(value.cast<Property::variant_type>());
       return true;
     }
   } else {
