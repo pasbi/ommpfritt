@@ -37,6 +37,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Grid });
 
   add_property<FloatProperty>(DISTANCE_PROPERTY_KEY, 10.0)
+    .set_step(0.1)
     .set_label(QObject::tr("distance").toStdString())
     .set_category(QObject::tr("Cloner").toStdString())
     .set_enabled_buddy<Mode>(mode_property, { Mode::Linear });
@@ -46,7 +47,8 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_category(QObject::tr("Cloner").toStdString())
     .set_enabled_buddy<Mode>(mode_property, { Mode::Grid });
 
-  add_property<FloatProperty>(RADIUS_PROPERTY_KEY, 0.0)
+  add_property<FloatProperty>(RADIUS_PROPERTY_KEY, 50.0)
+    .set_step(0.1)
     .set_label(QObject::tr("radius").toStdString())
     .set_category(QObject::tr("Cloner").toStdString())
     .set_enabled_buddy<Mode>(mode_property, { Mode::Radial });
@@ -58,11 +60,13 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Path });
 
   add_property<FloatProperty>(START_PROPERTY_KEY, 0.0)
+    .set_step(0.01)
     .set_label(QObject::tr("start").toStdString())
     .set_category(QObject::tr("Cloner").toStdString())
     .set_enabled_buddy<Mode>(mode_property, { Mode::Radial, Mode::Path });
 
   add_property<FloatProperty>(END_PROPERTY_KEY, 1.0)
+    .set_step(0.01)
     .set_label(QObject::tr("end").toStdString())
     .set_category(QObject::tr("Cloner").toStdString())
     .set_enabled_buddy<Mode>(mode_property, { Mode::Radial, Mode::Path });
