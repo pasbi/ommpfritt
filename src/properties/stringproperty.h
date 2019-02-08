@@ -9,7 +9,7 @@ class StringProperty : public TypedProperty<std::string>
 {
 public:
   using TypedProperty::TypedProperty;
-  enum class Mode { SingleLine, MultiLine, FilePath };
+  enum class Mode { SingleLine, MultiLine, FilePath, Code };
   std::string type() const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;

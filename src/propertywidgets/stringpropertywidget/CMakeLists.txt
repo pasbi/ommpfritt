@@ -1,7 +1,7 @@
 file (GLOB SOURCES
   "stringpropertywidget.cpp"
   "stringpropertyconfigwidget.cpp"
-  "generictextedit.cpp"
+  "texteditadapter.cpp"
 )
 
 target_sources(libommpfritt PRIVATE ${SOURCES})

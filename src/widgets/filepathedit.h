@@ -18,9 +18,8 @@ public:
   std::string path() const;
   QFileDialog::FileMode mode = QFileDialog::AnyFile;
   QFileDialog::Options options = 0;
-  void setText(const QString& text);
   void clear();
-  void setPlaceholderText(const QString& text);
+  void set_placeholder_text(const std::string& text);
 
 Q_SIGNALS:
   void path_changed(const std::string& path);

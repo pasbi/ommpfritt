@@ -50,12 +50,10 @@ void FilePathEdit::set_path(const std::string& path)
 }
 
 std::string FilePathEdit::path() const { return m_path; }
-void FilePathEdit::setText(const QString& text) { set_path(text.toStdString()); }
 void FilePathEdit::clear() { set_path(""); }
-
-void FilePathEdit::setPlaceholderText(const QString& text)
+void FilePathEdit::set_placeholder_text(const std::string &text)
 {
-  m_line_edit->setPlaceholderText(text);
+  m_line_edit->setPlaceholderText(QString::fromStdString(text));
 }
 
 }  // namespace
