@@ -20,7 +20,10 @@ BoundingBox AbstractProceduralPath::bounding_box()
   return BoundingBox(::transform<arma::vec2>(points(), [](const Point& p) { return p.position; }));
 }
 
-Object::Flag AbstractProceduralPath::flags() const { return Object::flags() | Flag::Convertable; }
+AbstractPropertyOwner::Flag AbstractProceduralPath::flags() const
+{
+  return Object::flags() | Flag::Convertable | Flag::IsPathLike;
+}
 
 std::unique_ptr<Object> AbstractProceduralPath::convert()
 {

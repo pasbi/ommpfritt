@@ -17,6 +17,7 @@ public:
   static constexpr auto POSITION_PROPERTY_KEY = "t";
   std::unique_ptr<Tag> clone() const override;
   void evaluate() override;
+  Flag flags() const override;
 };
 
 }  // namespace omm

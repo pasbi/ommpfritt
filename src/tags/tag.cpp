@@ -24,4 +24,6 @@ std::ostream& operator<<(std::ostream& ostream, const Tag& tag)
   return ostream;  return ostream;
 }
 
+AbstractPropertyOwner::Flag Tag::flags() const { return Flag::None; }
+
 }  // namespace omm

@@ -15,6 +15,7 @@ public:
   static constexpr auto TYPE = "Ellipse";
   std::unique_ptr<Object> clone() const override;
   BoundingBox bounding_box() override;
+  Flag flags() const override;
 
 private:
   std::vector<Point> points() override;

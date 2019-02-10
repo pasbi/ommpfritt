@@ -68,5 +68,9 @@ bool ProceduralPath::is_closed() const
   return property(IS_CLOSED_PROPERTY_KEY).value<bool>();
 }
 
+AbstractPropertyOwner::Flag ProceduralPath::flags() const
+{
+  return Object::flags() | Flag::IsPathLike | Flag::HasScript;
+}
 
 }  // namespace omm

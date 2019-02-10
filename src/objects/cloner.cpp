@@ -113,7 +113,10 @@ BoundingBox Cloner::bounding_box()
 Cloner::Mode Cloner::mode() const { return property(MODE_PROPERTY_KEY).value<Mode>(); }
 std::string Cloner::type() const { return TYPE; }
 std::unique_ptr<Object> Cloner::clone() const { return std::make_unique<Cloner>(*this); }
-Object::Flag Cloner::flags() const { return Object::flags() | Flag::Convertable; }
+AbstractPropertyOwner::Flag Cloner::flags() const
+{
+  return Object::flags() | Flag::Convertable | Flag::HasScript;
+}
 
 std::unique_ptr<Object> Cloner::convert()
 {

@@ -267,6 +267,6 @@ std::vector<std::size_t> Path::add_points(const std::vector<PointSequence>& sequ
   return std::vector(points.begin(), points.end());
 }
 
-
+AbstractPropertyOwner::Flag Path::flags() const { return Object::flags() | Flag::IsPathLike; }
 
 }  // namespace omm

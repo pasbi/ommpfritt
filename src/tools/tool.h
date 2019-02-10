@@ -44,6 +44,7 @@ public:
   virtual std::unique_ptr<QMenu> make_context_menu(QWidget* parent);
   virtual ObjectTransformation transformation() const;
   virtual void transform_objects(ObjectTransformation t, const bool tool_space);
+  Flag flags() const override;
 
 protected:
   std::vector<std::unique_ptr<Handle>> handles;

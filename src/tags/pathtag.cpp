@@ -27,6 +27,7 @@ QIcon PathTag::icon() const
 
 std::string PathTag::type() const { return TYPE; }
 std::unique_ptr<Tag> PathTag::clone() const { return std::make_unique<PathTag>(*this); }
+AbstractPropertyOwner::Flag PathTag::flags() const { return Tag::flags(); }
 
 void PathTag::evaluate()
 {

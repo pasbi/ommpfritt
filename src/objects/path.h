@@ -49,6 +49,7 @@ public:
   std::vector<std::size_t> add_points(const std::vector<PointSequence>& sequences);
 
   bool is_closed() const;
+  Flag flags() const override;
 
 private:
   std::vector<Point> m_points;

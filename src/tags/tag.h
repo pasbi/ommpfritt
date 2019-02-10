@@ -22,6 +22,7 @@ public:
   virtual std::unique_ptr<Tag> clone() const = 0;
   Object* owner;
   virtual void evaluate() = 0;
+  Flag flags() const override;
 };
 
 void register_tags();

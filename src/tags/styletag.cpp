@@ -31,5 +31,6 @@ QIcon StyleTag::icon() const
 std::string StyleTag::type() const { return TYPE; }
 std::unique_ptr<Tag> StyleTag::clone() const { return std::make_unique<StyleTag>(*this); }
 void StyleTag::evaluate() {}
+AbstractPropertyOwner::Flag StyleTag::flags() const { return Tag::flags(); }
 
 }  // namespace omm

@@ -15,6 +15,7 @@ public:
   static constexpr auto TYPE = "StyleTag";
   std::unique_ptr<Tag> clone() const override;
   void evaluate() override;
+  Flag flags() const override;
 };
 
 }  // namespace omm

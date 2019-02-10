@@ -285,7 +285,7 @@ std::unique_ptr<Object> Object::clone(Scene* scene) const
 }
 
 std::unique_ptr<Object> Object::convert() { return clone(); }
-Object::Flag Object::flags() const { return Flag::None; }
+AbstractPropertyOwner::Flag Object::flags() const { return Flag::None; }
 Scene* Object::scene() const { return m_scene; }
 
 void Object::copy_tags(Object& other) const

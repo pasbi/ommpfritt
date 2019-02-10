@@ -18,7 +18,7 @@ public:
   void on_property_value_changed(Property& property) override;
   void evaluate() override;
   void force_evaluate();
-
+  Flag flags() const override;
 };
 
 }  // namespace omm

@@ -57,5 +57,10 @@ bool Ellipse::is_closed() const
   return true;
 }
 
+AbstractPropertyOwner::Flag Ellipse::flags() const
+{
+  return Object::flags() | Flag::Convertable | Flag::IsPathLike;
+}
+
 
 }  // namespace omm

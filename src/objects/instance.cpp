@@ -37,11 +37,6 @@ BoundingBox Instance::bounding_box()
   }
 }
 
-std::string Instance::type() const
-{
-  return TYPE;
-}
-
 Object* Instance::referenced_object() const
 {
   // Note: If you implement a cache, keep in mind that it becomes dirty if
@@ -64,10 +59,6 @@ Object* Instance::referenced_object() const
   }
 }
 
-std::unique_ptr<Object> Instance::clone() const
-{
-  return std::make_unique<Instance>(*this);
-}
 
 std::unique_ptr<Object> Instance::convert()
 {
@@ -82,9 +73,8 @@ std::unique_ptr<Object> Instance::convert()
   }
 }
 
-Object::Flag Instance::flags() const
-{
-  return Object::flags() | Flag::Convertable;
-}
+std::string Instance::type() const { return TYPE; }
+std::unique_ptr<Object> Instance::clone() const { return std::make_unique<Instance>(*this); }
+Object::Flag Instance::flags() const { return Object::flags() | Flag::Convertable; }
 
 }  // namespace omm

@@ -29,7 +29,6 @@ public:
   explicit Object(const Object& other);
   virtual ~Object();
 
-  enum class Flag { None = 0x0, Convertable = 0x1 };
   enum class Visibility { Visible, Hide, HideTree };
 
   void transform(const ObjectTransformation& transformation);
@@ -48,7 +47,7 @@ public:
   virtual std::unique_ptr<Object> clone() const = 0;
   std::unique_ptr<Object> clone(Scene* scene) const;
   virtual std::unique_ptr<Object> convert();
-  virtual Flag flags() const;
+  Flag flags() const override;
   Scene* scene() const;
   bool is_active() const;
   Visibility is_visible() const;
@@ -92,5 +91,3 @@ void register_objects();
 std::ostream& operator<<(std::ostream& ostream, const Object& object);
 
 }  // namespace omm
-
-template<> struct EnableBitMaskOperators<omm::Object::Flag> : std::true_type {};

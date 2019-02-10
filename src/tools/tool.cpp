@@ -90,6 +90,6 @@ bool Tool::has_transformation() const { return false; }
 void Tool::on_selection_changed() {}
 void Tool::on_scene_changed() {}
 void Tool::transform_objects(ObjectTransformation t, const bool tool_space) {}
-
+AbstractPropertyOwner::Flag Tool::flags() const { return Flag::None; }
 
 }  // namespace omm

@@ -24,6 +24,11 @@ public:
   enum class Kind { None = 0x0,
                     Tag = 0x1, Style = 0x2, Object = 0x4, Tool = 0x8,
                     Item = Tag | Style | Object, All = Item | Tool };
+
+  enum class Flag { None = 0x0,
+                    Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4,
+                    Any = Convertable | HasScript | IsPathLike };
+
   static constexpr auto TYPE = "PropertyOwner";
   virtual ~AbstractPropertyOwner() = default;
   Property& property(const std::string& key) const;
@@ -37,6 +42,8 @@ public:
       return false;
     }
   }
+
+  virtual Flag flags() const = 0;
 
   const OrderedMap<std::string, Property>& properties() const;
 
@@ -112,3 +119,4 @@ std::ostream& operator<<(std::ostream& ostream, const AbstractPropertyOwner* apo
 }  // namespace omm
 
 template<> struct EnableBitMaskOperators<omm::AbstractPropertyOwner::Kind> : std::true_type {};
+template<> struct EnableBitMaskOperators<omm::AbstractPropertyOwner::Flag> : std::true_type {};

@@ -31,19 +31,13 @@ ScriptTag::ScriptTag(Object& owner)
     .set_label("evaluate").set_category("script");
 }
 
-std::string ScriptTag::type() const
-{
-  return TYPE;
-}
+std::string ScriptTag::type() const { return TYPE; }
+AbstractPropertyOwner::Flag ScriptTag::flags() const { return Tag::flags() | Flag::HasScript; }
+std::unique_ptr<Tag> ScriptTag::clone() const { return std::make_unique<ScriptTag>(*this); }
 
 QIcon ScriptTag::icon() const
 {
   return QApplication::style()->standardIcon(QStyle::SP_FileDialogListView);
-}
-
-std::unique_ptr<Tag> ScriptTag::clone() const
-{
-  return std::make_unique<ScriptTag>(*this);
 }
 
 void ScriptTag::on_property_value_changed(Property& property)
