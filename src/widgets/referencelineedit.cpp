@@ -1,4 +1,4 @@
-#include "propertywidgets/referencepropertywidget/referencelineedit.h"
+#include "widgets/referencelineedit.h"
 
 #include <QDragEnterEvent>
 #include <QMimeData>

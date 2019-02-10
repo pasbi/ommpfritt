@@ -1,6 +1,7 @@
 file (GLOB SOURCES
-  "filepathedit.cpp"
   "codeedit.cpp"
+  "filepathedit.cpp"
+  "referencelineedit.cpp"
 )
 
 target_sources(libommpfritt PRIVATE ${SOURCES})
