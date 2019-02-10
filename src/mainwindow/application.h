@@ -26,7 +26,7 @@ public:
   void update_undo_redo_enabled();
   void set_main_window(MainWindow& main_window);
 
-  const PythonEngine python_engine;
+  PythonEngine python_engine;
   Scene scene;
 
 private:

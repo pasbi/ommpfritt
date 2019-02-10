@@ -4,17 +4,29 @@
 
 #include <string>
 #include <pybind11/embed.h>
+#include "observed.h"
 
 namespace omm
 {
 
 class Scene;
+class AbstractPropertyOwner;
 
-class PythonEngine
+class PythonIOObserver
+{
+public:
+  virtual void on_stdout(const void* item, const std::string& text) = 0;
+  virtual void on_stderr(const void* item, const std::string& text) = 0;
+};
+
+class PythonEngine : public Observed<PythonIOObserver>
 {
 public:
   explicit PythonEngine();
-  bool run(const std::string& code, const pybind11::object& locals) const;
+  bool
+  exec(const std::string& code, const pybind11::object& locals, const void* association) const;
+  pybind11::object
+  eval(const std::string& code, const pybind11::object& locals, const void* association) const;
 
 private:
   // the scoped_interpeter has same lifetime as the application.

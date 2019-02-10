@@ -35,7 +35,7 @@ class Scene
   , public Observed<AbstractSimpleStructureObserver>
 {
 public:
-  Scene(const PythonEngine& python_engine);
+  Scene(PythonEngine& python_engine);
   ~Scene();
 
   std::unique_ptr<Object> make_root();
@@ -52,7 +52,7 @@ public:
 
   // ObjectView root_view();
   void reset();
-  const PythonEngine& python_engine;
+  PythonEngine& python_engine;
 
   // === Tags  ======
 public:

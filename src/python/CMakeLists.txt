@@ -4,6 +4,7 @@ file (GLOB SOURCES
   "pointwrapper.cpp"
   "propertyownerwrapper.cpp"
   "pythonengine.cpp"
+  "pythonstreamredirect.cpp"
   "pywrapper.cpp"
   "scenewrapper.cpp"
   "stylewrapper.cpp"

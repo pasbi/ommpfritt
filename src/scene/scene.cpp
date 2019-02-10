@@ -43,7 +43,7 @@ namespace omm
 
 Scene* Scene::m_current = nullptr;
 
-Scene::Scene(const PythonEngine& python_engine)
+Scene::Scene(PythonEngine& python_engine)
   : object_tree(make_root(), this)
   , object_tree_adapter(*this, object_tree)
   , styles(this)

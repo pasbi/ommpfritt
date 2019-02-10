@@ -57,7 +57,7 @@ std::vector<Point> ProceduralPath::points()
     const auto locals = pybind11::dict( "points"_a=point_wrappers,
                                         "this"_a=ObjectWrapper::make(*this),
                                         "scene"_a=SceneWrapper(*scene()) );
-    scene()->python_engine.run(code, locals);
+    scene()->python_engine.exec(code, locals, this);
   }
 
   return points;

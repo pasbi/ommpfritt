@@ -9,4 +9,5 @@ target_sources(libommpfritt PRIVATE ${SOURCES})
 
 add_subdirectory("objectmanager")
 add_subdirectory("propertymanager")
+add_subdirectory("pythonconsole")
 add_subdirectory("stylemanager")
