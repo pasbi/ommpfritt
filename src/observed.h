@@ -24,6 +24,11 @@ public:
     std::for_each(m_observers.begin(), m_observers.end(), std::forward<F>(f));
   }
 
+  template<typename F> void for_each(F&& f) const
+  {
+    std::for_each(m_observers.cbegin(), m_observers.cend(), std::forward<F>(f));
+  }
+
   template<typename Result, typename F> auto transform(F&& f)
   {
     return ::transform<Result>(m_observers, std::forward<F>(f));
