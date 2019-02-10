@@ -13,6 +13,7 @@ PathTag::PathTag(Object& owner) : Tag(owner)
 {
   add_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
+    .set_required_flags(AbstractPropertyOwner::Flag::IsPathLike)
     .set_label("path").set_category("path");
   add_property<FloatProperty>(POSITION_PROPERTY_KEY)
     .set_label("position").set_category("path");

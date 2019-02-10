@@ -55,6 +55,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
 
   add_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(Kind::Object)
+    .set_required_flags(Flag::IsPathLike)
     .set_label(QObject::tr("path").toStdString())
     .set_category(QObject::tr("Cloner").toStdString())
     .set_enabled_buddy<Mode>(mode_property, { Mode::Path });
