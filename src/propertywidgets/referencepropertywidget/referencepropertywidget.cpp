@@ -7,16 +7,16 @@
 namespace
 {
 
-omm::AbstractPropertyOwner::Kind get_allowed_kinds(const std::set<omm::Property*>& properties)
+template<typename PropertyT, typename ReturnT, typename F>
+ReturnT get(const std::set<omm::Property*>& properties, const F& getter)
 {
-  const auto f = [](const auto* property) {
-    using property_type = omm::ReferencePropertyWidget::property_type;
-    assert(std::holds_alternative<property_type::value_type>(property->variant_value()));
-    return static_cast<const property_type&>(*property).allowed_kinds();
-  };
-  const auto allowed_kindss = ::transform<omm::AbstractPropertyOwner::Kind>(properties, f);
-  assert(::is_uniform(allowed_kindss));
-  return *allowed_kindss.begin();
+  const auto typed_properties = transform<const PropertyT*>(properties, [](const auto* property) {
+    assert(std::holds_alternative<typename PropertyT::value_type>(property->variant_value()));
+    return static_cast<const PropertyT*>(property);
+  });
+  const auto values = ::transform<ReturnT>(typed_properties, getter);
+  assert(::is_uniform(values));
+  return *values.begin();
 }
 
 }  // namespace
@@ -31,9 +31,16 @@ ReferencePropertyWidget
   const auto on_value_changed = [this](const auto& reference) {
     set_properties_value(reference);
   };
-  auto line_edit = std::make_unique<ReferenceLineEdit>( scene,
-                                                        get_allowed_kinds(this->properties()),
-                                                        on_value_changed );
+  auto line_edit = std::make_unique<ReferenceLineEdit>(scene, on_value_changed);
+
+  const auto get_allowed_kinds = [](const ReferenceProperty* p) { return p->allowed_kinds(); };
+  const auto get_required_flags = [](const ReferenceProperty* p) { return p->required_flags(); };
+
+  line_edit->set_filter(get<ReferenceProperty, AbstractPropertyOwner::Kind>( properties,
+                                                                             get_allowed_kinds) );
+  line_edit->set_filter(get<ReferenceProperty, AbstractPropertyOwner::Flag>( properties,
+                                                                             get_required_flags) );
+
   m_line_edit = line_edit.get();
   set_default_layout(std::move(line_edit));
 

@@ -13,31 +13,9 @@
 namespace omm
 {
 
-std::vector<omm::AbstractPropertyOwner*>
-collect_candidates(const Scene& scene, omm::AbstractPropertyOwner::Kind kind)
-{
-  std::vector<omm::AbstractPropertyOwner*> candidates = { nullptr };
-  auto merge = [&candidates](const auto& ts) {
-    candidates.insert(candidates.end(), ts.begin(), ts.end());
-  };
-  if (!!(kind & omm::AbstractPropertyOwner::Kind::Object)) {
-    merge(scene.object_tree.items());
-  }
-  if (!!(kind & omm::AbstractPropertyOwner::Kind::Tag)) {
-    merge(scene.tags());
-  }
-  if (!!(kind & omm::AbstractPropertyOwner::Kind::Style)) {
-    merge(scene.styles.items());
-  }
-
-  return candidates;
-}
-
-ReferenceLineEdit::ReferenceLineEdit( Scene& scene, AbstractPropertyOwner::Kind allowed_kinds,
-                                      const on_value_changed_t& on_value_changed )
+ReferenceLineEdit::ReferenceLineEdit(Scene& scene, const on_value_changed_t& on_value_changed)
   : MultiValueEdit<AbstractPropertyOwner *>(on_value_changed)
   , m_scene(scene)
-  , m_allowed_kinds(allowed_kinds)
 {
   setEditable(false);
   setAcceptDrops(true);
@@ -54,7 +32,7 @@ ReferenceLineEdit::~ReferenceLineEdit()
 
 void ReferenceLineEdit::update_candidates()
 {
-  m_possible_references = collect_candidates(m_scene, m_allowed_kinds);
+  m_possible_references = collect_candidates();
   QSignalBlocker blocker(this);
   AbstractPropertyOwner* const value_safe = currentIndex() < 0 ? nullptr : value();
   clear();
@@ -120,5 +98,42 @@ bool ReferenceLineEdit::can_drop(const QMimeData& mime_data) const
   return false;
 }
 
+void ReferenceLineEdit::set_filter(AbstractPropertyOwner::Kind allowed_kinds)
+{
+  m_allowed_kinds = allowed_kinds;
+  update_candidates();
+}
+
+void ReferenceLineEdit::set_filter(AbstractPropertyOwner::Flag required_flags)
+{
+  m_required_flags = required_flags;
+  update_candidates();
+}
+
+std::vector<omm::AbstractPropertyOwner*> ReferenceLineEdit::collect_candidates()
+{
+  std::vector<omm::AbstractPropertyOwner*> candidates = { nullptr };
+  auto merge = [&candidates](const auto& ts) {
+    candidates.insert(candidates.end(), ts.begin(), ts.end());
+  };
+  if (!!(m_allowed_kinds & omm::AbstractPropertyOwner::Kind::Object)) {
+    merge(m_scene.object_tree.items());
+  }
+  if (!!(m_allowed_kinds & omm::AbstractPropertyOwner::Kind::Tag)) {
+    merge(m_scene.tags());
+  }
+  if (!!(m_allowed_kinds & omm::AbstractPropertyOwner::Kind::Style)) {
+    merge(m_scene.styles.items());
+  }
+
+  const auto matches_flags = [this](const omm::AbstractPropertyOwner* apo) {
+    return !(apo->flags() & m_required_flags);
+  };
+
+  candidates.erase( std::remove_if(std::next(candidates.begin()), candidates.end(), matches_flags),
+                    candidates.end() );
+
+  return candidates;
+}
 
 }  // namespace omm
