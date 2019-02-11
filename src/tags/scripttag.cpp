@@ -13,6 +13,13 @@
 #include "python/pythonengine.h"
 #include "common.h"
 
+constexpr auto default_script = R"(scale = this.owner().get("scale")[0]
+scale = scale + 0.05
+if scale > 2:
+  scale = -scale
+this.owner().set("scale", [scale, scale])
+)";
+
 namespace py = pybind11;
 
 namespace omm
@@ -21,7 +28,7 @@ namespace omm
 ScriptTag::ScriptTag(Object& owner)
   : Tag(owner)
 {
-  add_property<StringProperty>(CODE_PROPERTY_KEY)
+  add_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
     .set_mode(StringProperty::Mode::Code)
     .set_label("code").set_category("script");
   add_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY)

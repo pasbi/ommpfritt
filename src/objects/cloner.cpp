@@ -14,6 +14,21 @@
 #include "python/pythonengine.h"
 #include "objects/empty.h"
 
+namespace
+{
+
+constexpr auto default_script = R"(import math
+import numpy as np
+np.random.seed(id)
+copy.set("position", [ id*100, 0.0 ])
+copy.set("rotation", id*math.pi/10.0)
+copy.set("scale", np.random.random(2)+0.5)
+)";
+
+constexpr auto max = std::numeric_limits<int>::max();
+
+}  // namespace
+
 namespace omm
 {
 
@@ -27,11 +42,14 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_category(QObject::tr("Cloner").toStdString());
 
   add_property<IntegerProperty>(COUNT_PROPERTY_KEY, 3)
+    .set_range(0, max)
     .set_label(QObject::tr("count").toStdString())
     .set_category(QObject::tr("Cloner").toStdString())
     .set_enabled_buddy<Mode>(mode_property, { Mode::Linear, Mode::Radial,                                        Mode::Path, Mode::Script });
 
   add_property<IntegerVectorProperty>(COUNT_2D_PROPERTY_KEY, arma::ivec2{3, 3})
+    .set_range( VectorPropertyValueType<arma::ivec2> { 0, 0 },
+                VectorPropertyValueType<arma::ivec2> { max, max })
     .set_label(QObject::tr("count").toStdString())
     .set_category(QObject::tr("Cloner").toStdString())
     .set_enabled_buddy<Mode>(mode_property, { Mode::Grid });
@@ -83,7 +101,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_category(QObject::tr("Cloner").toStdString())
     .set_enabled_buddy<Mode>(mode_property, { Mode::Radial, Mode::Path });
 
-  add_property<StringProperty>(CODE_PROPERTY_KEY, "")
+  add_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
     .set_mode(StringProperty::Mode::Code)
     .set_label(QObject::tr("code").toStdString())
     .set_category(QObject::tr("Cloner").toStdString())

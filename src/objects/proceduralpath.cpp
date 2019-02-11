@@ -10,6 +10,25 @@
 #include "python/objectwrapper.h"
 #include "python/scenewrapper.h"
 
+namespace
+{
+
+constexpr auto default_script = R"(import math
+import numpy as np
+
+for i, p in enumerate(points):
+  r = 50 if i % 2 else 200
+  theta = i/len(points)*math.pi*2
+  pos = np.array([math.cos(theta), math.sin(theta)])
+  tangent = np.array([pos[1], -pos[0]])
+  p.set_position(r*pos)
+  r /= 10
+  p.set_left_tangent(r*tangent)
+  p.set_right_tangent(-r*tangent)
+)";
+
+}  // namespace
+
 namespace omm
 {
 
@@ -17,11 +36,12 @@ class Style;
 
 ProceduralPath::ProceduralPath(Scene* scene) : AbstractProceduralPath(scene)
 {
-  add_property<StringProperty>(CODE_PROPERTY_KEY, "")
+  add_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
     .set_mode(StringProperty::Mode::Code)
     .set_label(QObject::tr("code").toStdString())
     .set_category(QObject::tr("ProceduralPath").toStdString());
   add_property<IntegerProperty>(COUNT_PROPERTY_KEY, 10)
+    .set_range(0, std::numeric_limits<int>::max())
     .set_label(QObject::tr("count").toStdString())
     .set_category(QObject::tr("ProceduralPath").toStdString());
   add_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
