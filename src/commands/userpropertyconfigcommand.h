@@ -18,10 +18,8 @@ public:
 
 private:
   AbstractPropertyOwner& m_owner;
-  using properties_type = std::vector<std::unique_ptr<Property>>;
-  properties_type m_new_properties;
-  properties_type m_old_properties;
-  void swap_user_properties(properties_type& new_properties, properties_type& old_properties);
+  std::vector<std::unique_ptr<Property>> m_swapped_properties;
+  void swap_user_properties();
 };
 
 }  // namespace omm

@@ -1,5 +1,6 @@
 #include "commands/userpropertyconfigcommand.h"
 #include "aspects/propertyowner.h"
+#include <glog/logging.h>
 
 namespace omm
 {
@@ -8,35 +9,42 @@ UserPropertyConfigCommand::UserPropertyConfigCommand(
   AbstractPropertyOwner& owner, std::vector<std::unique_ptr<Property>> properties )
   : Command("Modify user properties")
   , m_owner(owner)
-  , m_new_properties(std::move(properties))
+  , m_swapped_properties(std::move(properties))
 {
-
 }
 
 void UserPropertyConfigCommand::undo()
 {
-  swap_user_properties(m_old_properties, m_new_properties);
+  swap_user_properties();
 }
 
 void UserPropertyConfigCommand::redo()
 {
-  swap_user_properties(m_new_properties, m_old_properties);
+  swap_user_properties();
 }
 
-void UserPropertyConfigCommand
-::swap_user_properties(properties_type& new_properties, properties_type& old_properties)
+void UserPropertyConfigCommand::swap_user_properties()
 {
-  assert(old_properties.size() == 0);
-  for (auto&& key : m_owner.properties().keys()) {
+  decltype(m_swapped_properties) new_properties;
+  std::swap(new_properties, m_swapped_properties);
+
+  const auto keys = m_owner.properties().keys();
+  for (auto&& key : keys) {
     if (m_owner.property(key).is_user_property()) {
-      old_properties.push_back(m_owner.extract_property(key));
+      m_swapped_properties.push_back(m_owner.extract_property(key));
     }
   }
 
   for (auto&& property : new_properties) {
-    m_owner.add_property(property->label(), std::move(property));
+    const auto label = property->label();
+    auto unique_label = label;
+    int i = 0;
+    while (m_owner.has_property(unique_label)) {
+      i += 1;
+      unique_label = label + "." + std::to_string(i);
+    }
+    m_owner.add_property(unique_label, std::move(property));
   }
-  new_properties.clear();
 }
 
 }  // namespace omm

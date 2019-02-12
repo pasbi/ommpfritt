@@ -54,7 +54,7 @@ public:
     }
   }
 
-  mapped_type extract(const key_type& key)
+  mapped_type extract(const key_type key)
   {
     m_keys.erase(remove(m_keys.begin(), m_keys.end(), key), m_keys.end());
     auto v = std::move(m_values.extract(key).mapped());
