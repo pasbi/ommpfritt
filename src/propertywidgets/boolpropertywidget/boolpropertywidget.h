@@ -13,7 +13,8 @@ class CheckBox;
 class BoolPropertyWidget : public PropertyWidget<BoolProperty>
 {
 public:
-  explicit BoolPropertyWidget(Scene& scene, const std::set<Property*>& properties);
+  explicit BoolPropertyWidget( Scene& scene, const std::string& key,
+                               const std::set<Property*>& properties) ;
 
 protected:
   void update_edit() override;

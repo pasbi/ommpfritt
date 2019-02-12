@@ -17,7 +17,7 @@ class PropertyManagerTab : public QScrollArea
 public:
   explicit PropertyManagerTab();
   ~PropertyManagerTab();
-  void add_properties(Scene& scene, const std::set<Property*>& properties);
+  void add_properties(Scene& scene, const std::string& key, const std::set<Property*>& properties);
   void end_add_properties();
 
 private:

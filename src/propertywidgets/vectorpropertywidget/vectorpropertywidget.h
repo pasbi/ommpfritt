@@ -13,8 +13,9 @@ class VectorPropertyWidget : public PropertyWidget<VectorPropertyT>
 public:
   using value_type = typename VectorPropertyT::value_type;
   using elem_type = typename value_type::elem_type;
-  explicit VectorPropertyWidget(Scene& scene, const std::set<Property*>& properties)
-    : PropertyWidget<VectorPropertyT>(scene, properties)
+  explicit VectorPropertyWidget( Scene& scene, const std::string& key,
+                                 const std::set<Property*>& properties )
+    : PropertyWidget<VectorPropertyT>(scene, key, properties)
   {
     m_x_edit = std::make_unique<NumericMultiValueEdit<elem_type>>([this](const elem_type value) {
       set_properties_value<0>(value);

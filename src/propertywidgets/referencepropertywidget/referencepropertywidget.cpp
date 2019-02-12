@@ -25,8 +25,9 @@ namespace omm
 {
 
 ReferencePropertyWidget
-::ReferencePropertyWidget(Scene& scene, const std::set<Property*>& properties)
-  : PropertyWidget(scene, properties)
+::ReferencePropertyWidget( Scene& scene, const std::string& key,
+                           const std::set<Property*>& properties )
+  : PropertyWidget(scene, key, properties)
 {
   const auto on_value_changed = [this](const auto& reference) {
     set_properties_value(reference);

@@ -11,7 +11,8 @@ class OptionsEdit;
 class OptionsPropertyWidget : public PropertyWidget<OptionsProperty>
 {
 public:
-  explicit OptionsPropertyWidget(Scene& scene, const std::set<Property*>& properties);
+  explicit OptionsPropertyWidget( Scene& scene, const std::string& key,
+                                  const std::set<Property*>& properties );
 
 protected:
   void update_edit() override;

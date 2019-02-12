@@ -39,11 +39,12 @@ PropertyManagerTab::~PropertyManagerTab()
 {
 }
 
-void PropertyManagerTab::add_properties(Scene& scene, const std::set<Property*>& properties)
+void PropertyManagerTab::add_properties( Scene& scene, const std::string& key,
+                                         const std::set<Property*>& properties )
 {
   assert(properties.size() > 0);
   const auto widget_type = (*properties.begin())->widget_type();
-  auto property_widget = AbstractPropertyWidget::make(widget_type, scene, properties);
+  auto property_widget = AbstractPropertyWidget::make(widget_type, scene, key, properties);
   m_layout->addWidget(property_widget.release());
 }
 

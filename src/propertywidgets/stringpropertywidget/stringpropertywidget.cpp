@@ -8,8 +8,8 @@ namespace omm
 {
 
 StringPropertyWidget
-::StringPropertyWidget(Scene& scene, const std::set<Property*>& properties)
-  : PropertyWidget(scene, properties)
+::StringPropertyWidget(Scene& scene, const std::string& key, const std::set<Property*>& properties)
+  : PropertyWidget(scene, key, properties)
 {
   const auto getter = std::mem_fn(&StringProperty::mode);
   const auto mode = Property::get_value<StringProperty::Mode, StringProperty>(properties, getter);

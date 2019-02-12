@@ -5,8 +5,9 @@
 namespace omm
 {
 
-OptionsPropertyWidget::OptionsPropertyWidget(Scene& scene, const std::set<Property*>& properties)
-  : PropertyWidget(scene, properties)
+OptionsPropertyWidget::OptionsPropertyWidget( Scene& scene, const std::string& key,
+                                              const std::set<Property*>& properties )
+  : PropertyWidget(scene, key, properties)
 {
   auto options_edit = std::make_unique<OptionsEdit>([this](const std::size_t& value) {
     set_properties_value(value);
