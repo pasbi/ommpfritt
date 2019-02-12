@@ -7,16 +7,22 @@
 template<typename ObserverT> class Observed
 {
 public:
+  Observed(const Observed& other) { }  // intentionally don't copy observers
+  Observed() = default;
+  virtual ~Observed() = default;
+
   void register_observer(ObserverT& observer)
   {
     assert(m_observers.count(&observer) == 0);
     m_observers.insert(&observer);
+    assert(m_observers.count(&observer) == 1);
   }
 
   void unregister_observer(ObserverT& observer)
   {
     assert(m_observers.count(&observer) == 1);
     m_observers.erase(m_observers.find(&observer));
+    assert(m_observers.count(&observer) == 0);
   }
 
   template<typename F> void for_each(F&& f)

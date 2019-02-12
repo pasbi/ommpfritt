@@ -57,7 +57,10 @@ public:
   mapped_type extract(const key_type& key)
   {
     m_keys.erase(remove(m_keys.begin(), m_keys.end(), key), m_keys.end());
-    return std::move(m_values.extract(key).mapped());
+    auto v = std::move(m_values.extract(key).mapped());
+    assert(m_values.count(key) == 0);
+    assert(std::find(m_keys.begin(), m_keys.end(), key) == m_keys.end());
+    return v;
   }
 
 #if 0
