@@ -112,7 +112,7 @@ void ReferenceLineEdit::set_filter(AbstractPropertyOwner::Flag required_flags)
 
 std::vector<omm::AbstractPropertyOwner*> ReferenceLineEdit::collect_candidates()
 {
-  std::vector<omm::AbstractPropertyOwner*> candidates = { nullptr };
+  std::vector<omm::AbstractPropertyOwner*> candidates = { };
   auto merge = [&candidates](const auto& ts) {
     candidates.insert(candidates.end(), ts.begin(), ts.end());
   };
@@ -126,13 +126,13 @@ std::vector<omm::AbstractPropertyOwner*> ReferenceLineEdit::collect_candidates()
     merge(m_scene.styles.items());
   }
 
-  const auto matches_flags = [this](const omm::AbstractPropertyOwner* apo) {
-    return !(apo->flags() & m_required_flags);
+  const auto not_has_required_flags = [this](const omm::AbstractPropertyOwner* apo) {
+    return m_required_flags & ~apo->flags();
   };
 
-  candidates.erase( std::remove_if(std::next(candidates.begin()), candidates.end(), matches_flags),
+  candidates.erase( std::remove_if(candidates.begin(), candidates.end(), not_has_required_flags),
                     candidates.end() );
-
+  candidates.push_back(nullptr);
   return candidates;
 }
 

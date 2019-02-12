@@ -26,8 +26,7 @@ public:
                     Item = Tag | Style | Object, All = Item | Tool };
 
   enum class Flag { None = 0x0,
-                    Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4,
-                    Any = Convertable | HasScript | IsPathLike };
+                    Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4 };
 
   static constexpr auto TYPE = "PropertyOwner";
   virtual ~AbstractPropertyOwner() = default;

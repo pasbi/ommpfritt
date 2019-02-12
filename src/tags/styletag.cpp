@@ -12,7 +12,7 @@ StyleTag::StyleTag(Object& owner)
   : Tag(owner)
 {
   add_property<ReferenceProperty>(STYLE_REFERENCE_PROPERTY_KEY)
-    .set_allowed_kinds(AbstractPropertyOwner::Kind::Style)
+    .set_allowed_kinds(Kind::Style)
     .set_label("style").set_category("style");
 }
 
@@ -23,7 +23,7 @@ QIcon StyleTag::icon() const
   if (style == nullptr) {
     return QApplication::style()->standardIcon(QStyle::SP_DialogResetButton);
   } else {
-    assert(style->kind() == AbstractPropertyOwner::Kind::Style);
+    assert(style->kind() == Kind::Style);
     return static_cast<const Style*>(style)->icon();
   }
 }

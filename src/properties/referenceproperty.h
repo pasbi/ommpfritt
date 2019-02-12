@@ -29,7 +29,7 @@ private:
   // default is always nullptr
   void set_default_value(const value_type& value) override;
   AbstractPropertyOwner::Kind m_allowed_kinds = AbstractPropertyOwner::Kind::All;
-  AbstractPropertyOwner::Flag m_required_flags = AbstractPropertyOwner::Flag::Any;
+  AbstractPropertyOwner::Flag m_required_flags = AbstractPropertyOwner::Flag::None;
 };
 
 }  // namespace omm
