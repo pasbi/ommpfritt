@@ -45,16 +45,7 @@ void drop_tags_onto_object( omm::Scene& scene, omm::Object& object,
     case Qt::CopyAction:
       scene.undo_stack.beginMacro("copy tags");
       for (auto* tag : tags) {
-
-        // that would be the proper way, but it crashes when you show the properties of the copy
-        // in a certain context.
-        // auto tag_clone = tag->clone();
-
-        // that is a dirty hack, but it's stable. weird.
-        auto tag_clone = omm::Tag::make(tag->type(), *tag->owner);
-        tag->copy_properties(*tag_clone);
-
-        scene.submit<AddTagCommand>(object.tags, std::move(tag_clone));
+        scene.submit<AddTagCommand>(object.tags, std::move(tag->clone()));
       }
       scene.undo_stack.endMacro();
       break;
@@ -78,16 +69,7 @@ void drop_tags_behind( omm::Scene& scene, omm::Object& object, omm::Tag* current
     case Qt::CopyAction:
       scene.undo_stack.beginMacro("copy tags");
       for (auto* tag : tags) {
-
-        // that would be the proper way, but it crashes when you show the properties of the copy
-        // in a certain context.
-        // auto tag_clone = tag->clone();
-
-        // that is a dirty hack, but it's stable. weird.
-        auto tag_clone = omm::Tag::make(tag->type(), *tag->owner);
-        tag->copy_properties(*tag_clone);
-
-        omm::ListOwningContext<omm::Tag> context(std::move(tag_clone), current_tag_predecessor);
+        omm::ListOwningContext<omm::Tag> context(std::move(tag->clone()), current_tag_predecessor);
         scene.submit<AddTagCommand>(object.tags, std::move(context));
       }
       scene.undo_stack.endMacro();
@@ -108,7 +90,6 @@ void drop_style_onto_object( omm::Scene& scene, omm::Object& object,
     for (auto* style : styles) {
       auto style_tag = std::make_unique<omm::StyleTag>(object);
       style_tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY).set(style);
-
       scene.submit<AddTagCommand>(object.tags, std::move(style_tag));
     }
     scene.undo_stack.endMacro();
