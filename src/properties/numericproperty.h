@@ -47,6 +47,7 @@ public:
 
   void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
   {
+    TypedProperty<T>::deserialize(deserializer, root);
     m_lower = deserializer.get<T>(Serializable::make_pointer(root, LOWER_VALUE_POINTER));
     m_upper = deserializer.get<T>(Serializable::make_pointer(root, UPPER_VALUE_POINTER));
     m_step = deserializer.get<T>(Serializable::make_pointer(root, STEP_POINTER));
@@ -55,6 +56,7 @@ public:
 
   void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
   {
+    TypedProperty<T>::serialize(serializer, root);
     serializer.set_value(m_lower, Serializable::make_pointer(root, LOWER_VALUE_POINTER));
     serializer.set_value(m_upper, Serializable::make_pointer(root, UPPER_VALUE_POINTER));
     serializer.set_value(m_step, Serializable::make_pointer(root, STEP_POINTER));
