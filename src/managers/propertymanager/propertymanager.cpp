@@ -140,7 +140,7 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
       tabs.insert(tab_label, std::make_unique<PropertyManagerTab>());
     }
     if (Property::get_value<bool>(properties, std::mem_fn(&Property::is_enabled))) {
-      tabs.at(tab_label)->add_properties(m_scene, properties);
+      tabs.at(tab_label)->add_properties(m_scene, key, properties);
     }
     for (Property* property : properties) {
       auto* enabled_buddy = property->enabled_buddy();
