@@ -28,6 +28,7 @@ UserPropertyDialog::UserPropertyDialog(QWidget* parent, AbstractPropertyOwner& p
 
   m_list_widget = std::make_unique<QListWidget>(this).release();
   m_layout->addWidget(m_list_widget);
+  m_list_widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
 
   m_right_column = nullptr;
 
@@ -116,6 +117,5 @@ UserPropertyDialog::make_user_property_config_command() const
   }
   return std::make_unique<UserPropertyConfigCommand>(m_property_owner, std::move(properties));
 }
-
 
 }  // namespace omm

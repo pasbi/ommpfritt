@@ -121,7 +121,7 @@ std::unique_ptr<QMenuBar> PropertyManager::make_menu_bar()
       m_scene.submit(dialog.make_user_property_config_command());
     }
   };
-  m_manage_user_properties_action = &action( *user_properties_menu, "new user property",
+  m_manage_user_properties_action = &action( *user_properties_menu, "edit ...",
                                              exec_user_property_dialog );
   m_manage_user_properties_action->setEnabled(false);
   return menu_bar;

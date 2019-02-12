@@ -5,6 +5,7 @@
 
 class QComboBox;
 class QLineEdit;
+class QVBoxLayout;
 
 namespace omm
 {
@@ -23,12 +24,16 @@ Q_SIGNALS:
   void property_type_changed(const std::string& type);
   void property_label_changed();
 
+protected:
+  QVBoxLayout* layout() const;
+
 private:
   QComboBox* m_type_combobox;
   QLineEdit* m_name_edit;
   const std::vector<std::string> m_property_types;
   Property& m_property;
   void set_property_type(const std::string& type);
+  QVBoxLayout* m_layout;
 };
 
 template<typename PropertyT>
