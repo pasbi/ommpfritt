@@ -26,4 +26,11 @@ std::ostream& operator<<(std::ostream& ostream, const Tag& tag)
 
 AbstractPropertyOwner::Flag Tag::flags() const { return Flag::None; }
 
+std::unique_ptr<Tag> Tag::clone(Object& owner) const
+{
+  auto clone = this->clone();
+  clone->owner = &owner;
+  return clone;
+}
+
 }  // namespace omm

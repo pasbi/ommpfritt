@@ -20,6 +20,7 @@ public:
   virtual QIcon icon() const = 0;
   static constexpr auto TYPE = "Tag";
   virtual std::unique_ptr<Tag> clone() const = 0;
+  std::unique_ptr<Tag> clone(Object& owner) const;
   Object* owner;
   virtual void evaluate() = 0;
   Flag flags() const override;
