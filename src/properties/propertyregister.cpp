@@ -5,6 +5,7 @@
 #include "properties/referenceproperty.h"
 #include "properties/stringproperty.h"
 #include "properties/optionsproperty.h"
+#include "properties/vectorproperty.h"
 
 namespace omm
 {
@@ -19,7 +20,8 @@ void register_properties()
   REGISTER_PROPERTY(ReferenceProperty);
   REGISTER_PROPERTY(StringProperty);
   REGISTER_PROPERTY(OptionsProperty);
-
+  REGISTER_PROPERTY(FloatVectorProperty);
+  REGISTER_PROPERTY(IntegerVectorProperty);
 
 #undef REGISTER_PROPERTY
 }
