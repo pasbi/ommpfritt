@@ -9,9 +9,8 @@ namespace omm
 {
 
 template<typename NumericPropertyT> NumericPropertyWidget<NumericPropertyT>
-::NumericPropertyWidget( Scene& scene, const std::string& key,
-                         const std::set<Property*>& properties )
-  : PropertyWidget<NumericPropertyT>(scene, key, properties)
+::NumericPropertyWidget(Scene& scene, const std::set<Property*>& properties)
+  : PropertyWidget<NumericPropertyT>(scene, properties)
 {
   using edit_type = NumericMultiValueEdit<typename NumericPropertyT::value_type>;
   auto spinbox = std::make_unique<edit_type>([this](const auto& value) {

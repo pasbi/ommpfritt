@@ -4,7 +4,7 @@
 #include <set>
 #include <memory>
 
-class QVBoxLayout;
+class QFormLayout;
 
 namespace omm
 {
@@ -21,7 +21,7 @@ public:
   void end_add_properties();
 
 private:
-  QVBoxLayout* m_layout;
+  QFormLayout* m_layout;
   std::unique_ptr<QWidget> m_widget;
 };
 

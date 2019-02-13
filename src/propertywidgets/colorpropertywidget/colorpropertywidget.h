@@ -11,8 +11,7 @@ class ColorEdit;
 class ColorPropertyWidget : public PropertyWidget<ColorProperty>
 {
 public:
-  explicit ColorPropertyWidget( Scene& scene, const std::string& key,
-                                const std::set<Property*>& properties );
+  explicit ColorPropertyWidget(Scene& scene, const std::set<Property*>& properties);
 
 protected:
   void update_edit() override;

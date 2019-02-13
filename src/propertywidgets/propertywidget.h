@@ -12,27 +12,21 @@ namespace omm
 class AbstractPropertyWidget
   : public QWidget
   , public AbstractFactory< std::string, AbstractPropertyWidget,
-                            Scene&, const std::string&, const std::set<Property*>& >
+                            Scene&, const std::set<Property*>& >
   , public AbstractPropertyObserver
 {
 public:
-  explicit AbstractPropertyWidget( Scene& scene, const std::string& key,
-                                   const std::set<Property*>& properties );
+  explicit AbstractPropertyWidget(Scene& scene, const std::set<Property*>& properties);
   virtual ~AbstractPropertyWidget();
   void on_property_value_changed(Property& property) override;
 
 protected:
-  std::string label() const;
-  std::string tool_tip() const;
-
   void set_default_layout(std::unique_ptr<QWidget> other);
-  std::unique_ptr<QWidget> make_label_widget() const;
   Scene& scene;
   virtual void update_edit() = 0;
 
 private:
   const std::string m_label;
-  const std::string m_key;
   std::set<Property*> m_properties;
   template<typename PropertyT> friend class PropertyWidget;
 };

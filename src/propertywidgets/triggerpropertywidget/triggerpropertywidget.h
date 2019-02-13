@@ -9,8 +9,7 @@ namespace omm
 class TriggerPropertyWidget : public PropertyWidget<TriggerProperty>
 {
 public:
-  explicit TriggerPropertyWidget( Scene& scene, const std::string& key,
-                                  const std::set<Property*>& properties );
+  explicit TriggerPropertyWidget(Scene& scene, const std::set<Property*>& properties);
   void trigger();
 
 protected:

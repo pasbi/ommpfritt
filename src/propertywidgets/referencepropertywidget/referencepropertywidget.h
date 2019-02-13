@@ -14,8 +14,7 @@ class ReferenceLineEdit;
 class ReferencePropertyWidget : public PropertyWidget<ReferenceProperty>
 {
 public:
-  explicit ReferencePropertyWidget( Scene& scene, const std::string& key,
-                                    const std::set<Property*>& properties );
+  explicit ReferencePropertyWidget(Scene& scene, const std::set<Property*>& properties);
   ~ReferencePropertyWidget();
 
 protected:

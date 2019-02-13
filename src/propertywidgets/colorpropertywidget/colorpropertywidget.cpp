@@ -5,9 +5,8 @@
 namespace omm
 {
 
-ColorPropertyWidget::ColorPropertyWidget( Scene& scene, const std::string& key,
-                                          const std::set<Property*>& properties )
-  : PropertyWidget(scene, key, properties)
+ColorPropertyWidget::ColorPropertyWidget(Scene& scene, const std::set<Property*>& properties)
+  : PropertyWidget(scene, properties)
 {
   auto color_edit = std::make_unique<ColorEdit>([this](const Color& value) {
     set_properties_value(value);

@@ -8,9 +8,8 @@
 namespace omm
 {
 
-TriggerPropertyWidget::TriggerPropertyWidget( Scene& scene, const std::string& key,
-                                              const std::set<Property*>& properties )
-  : PropertyWidget(scene, key, properties)
+TriggerPropertyWidget::TriggerPropertyWidget(Scene& scene, const std::set<Property*>& properties)
+  : PropertyWidget(scene, properties)
 {
   auto button = std::make_unique<QPushButton>();
   connect(button.get(), &QPushButton::clicked, this, &TriggerPropertyWidget::trigger);
