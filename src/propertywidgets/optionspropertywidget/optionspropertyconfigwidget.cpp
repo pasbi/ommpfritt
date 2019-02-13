@@ -30,7 +30,7 @@ OptionsPropertyConfigWidget
     add_option("Unnamed Option");
   }
 
-  layout()->addWidget(list_widget.release());
+  box_layout()->addWidget(list_widget.release());
 }
 
 std::string OptionsPropertyConfigWidget::type() const

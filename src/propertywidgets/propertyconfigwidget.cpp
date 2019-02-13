@@ -4,6 +4,8 @@
 #include <QLineEdit>
 #include "properties/property.h"
 #include <QPushButton>
+#include <QFormLayout>
+#include <QLabel>
 #include "managers/propertymanager/userpropertymanager/propertyitem.h"
 
 namespace
@@ -26,18 +28,24 @@ AbstractPropertyConfigWidget::AbstractPropertyConfigWidget(QWidget* parent, Prop
   , m_property(property)
 {
   auto layout = std::make_unique<QVBoxLayout>(this);
-  m_layout = layout.get();
+  m_box_layout = layout.get();
   setLayout(layout.release());
 
   m_type_combobox = std::make_unique<QComboBox>(this).release();
   m_type_combobox->addItems(::transform<QString, QList>(m_property_types, QString::fromStdString));
-  this->layout()->addWidget(m_type_combobox);
+  box_layout()->addWidget(m_type_combobox);
   set_property_type(property.type());
 
+
   m_name_edit = std::make_unique<QLineEdit>(this).release();
-  this->layout()->addWidget(m_name_edit);
   m_name_edit->setPlaceholderText(PropertyItem::UNNAMED_PROPERTY_PLACEHOLDER);
   m_name_edit->setText(QString::fromStdString(property.label()));
+
+  auto form_layout = std::make_unique<QFormLayout>();
+  form_layout->addRow(tr("&name:"), m_name_edit);
+
+  m_form_layout = form_layout.get();
+  box_layout()->addLayout(form_layout.release());
 
   connect(m_name_edit, &QLineEdit::textChanged, [this](const QString& text) {
     m_property.set_label(text.toStdString());
@@ -49,8 +57,6 @@ AbstractPropertyConfigWidget::AbstractPropertyConfigWidget(QWidget* parent, Prop
     const auto type = m_property_types[index];
     Q_EMIT property_type_changed(type);
   });
-
-  m_layout->addStretch();
 }
 
 void AbstractPropertyConfigWidget::set_property_type(const std::string& type)
@@ -60,6 +66,7 @@ void AbstractPropertyConfigWidget::set_property_type(const std::string& type)
   m_type_combobox->setCurrentIndex(std::distance(m_property_types.begin(), pos));
 }
 
-QVBoxLayout* AbstractPropertyConfigWidget::layout() const { return m_layout; }
+QVBoxLayout* AbstractPropertyConfigWidget::box_layout() const { return m_box_layout; }
+QFormLayout* AbstractPropertyConfigWidget::form_layout() const { return m_form_layout; }
 
 }  // namespace omm

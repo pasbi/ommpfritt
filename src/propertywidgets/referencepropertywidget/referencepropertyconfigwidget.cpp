@@ -2,6 +2,7 @@
 
 #include <QCheckBox>
 #include <QLayout>
+#include <QLabel>
 
 auto make_allowed_kinds_checkboxes(QWidget* parent)
 {
@@ -36,6 +37,7 @@ ReferencePropertyConfigWidget::ReferencePropertyConfigWidget(QWidget* parent, Pr
   auto& reference_property = type_cast<ReferenceProperty&>(property);
 
   auto left_column = std::make_unique<QVBoxLayout>();
+  left_column->addWidget(std::make_unique<QLabel>(tr("allowed:")).release());
   for (auto [kind, check_box] : make_allowed_kinds_checkboxes(parent)) {
     left_column->addWidget(check_box);
     check_box->setChecked(!!(reference_property.allowed_kinds() & kind));
@@ -46,6 +48,7 @@ ReferencePropertyConfigWidget::ReferencePropertyConfigWidget(QWidget* parent, Pr
   }
 
   auto right_column = std::make_unique<QVBoxLayout>();
+  right_column->addWidget(std::make_unique<QLabel>(tr("required:")).release());
   for (auto [flag, check_box] : make_required_flags_checkboxes(parent)) {
     right_column->addWidget(check_box);
     check_box->setChecked(!!(reference_property.required_flags() & flag));
@@ -58,7 +61,8 @@ ReferencePropertyConfigWidget::ReferencePropertyConfigWidget(QWidget* parent, Pr
   auto two_column_layout = std::make_unique<QHBoxLayout>();
   two_column_layout->addLayout(left_column.release());
   two_column_layout->addLayout(right_column.release());
-  layout()->addLayout(two_column_layout.release());
+  box_layout()->addLayout(two_column_layout.release());
+  box_layout()->addStretch();
 }
 
 std::string ReferencePropertyConfigWidget::type() const

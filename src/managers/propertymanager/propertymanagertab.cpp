@@ -59,7 +59,6 @@ void PropertyManagerTab::add_properties( Scene& scene, const std::string& key,
 
 void PropertyManagerTab::end_add_properties()
 {
-  // m_layout->addStretch();
   setWidget(m_widget.release());
 }
 

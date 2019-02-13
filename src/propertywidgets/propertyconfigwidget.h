@@ -6,6 +6,7 @@
 class QComboBox;
 class QLineEdit;
 class QVBoxLayout;
+class QFormLayout;
 
 namespace omm
 {
@@ -25,7 +26,8 @@ Q_SIGNALS:
   void property_label_changed();
 
 protected:
-  QVBoxLayout* layout() const;
+  QVBoxLayout* box_layout() const;
+  QFormLayout* form_layout() const;
 
 private:
   QComboBox* m_type_combobox;
@@ -33,7 +35,10 @@ private:
   const std::vector<std::string> m_property_types;
   Property& m_property;
   void set_property_type(const std::string& type);
-  QVBoxLayout* m_layout;
+
+  QVBoxLayout* m_box_layout;
+  QFormLayout* m_form_layout;
+  QLayout* layout() const = delete;
 };
 
 template<typename PropertyT>
