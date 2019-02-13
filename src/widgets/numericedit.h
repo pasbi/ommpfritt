@@ -7,6 +7,26 @@
 #include <QWheelEvent>
 #include <glog/logging.h>
 
+namespace detail
+{
+
+constexpr auto inf = "inf";
+constexpr auto neg_inf = "-inf";
+
+// they must be initialized, though they should never be used.
+template<typename T> T highest_possible_value = T();
+template<typename T> T lowest_possible_value = T();
+
+// these are the meaningful specializations
+template<> constexpr double highest_possible_value<double>
+                          = std::numeric_limits<double>::infinity();
+template<> constexpr double lowest_possible_value<double>
+                          = std::numeric_limits<double>::infinity();
+template<> constexpr int highest_possible_value<int> = std::numeric_limits<int>::max();
+template<> constexpr int lowest_possible_value<int> = std::numeric_limits<int>::lowest();
+
+}
+
 namespace omm
 {
 
@@ -21,13 +41,6 @@ public:
     , m_on_value_changed(on_value_changed)
   {
     setContextMenuPolicy(Qt::NoContextMenu);
-    if constexpr (std::numeric_limits<value_type>::has_infinity) {
-      m_min = -std::numeric_limits<value_type>::infinity();
-      m_max =  std::numeric_limits<value_type>::infinity();
-    } else {
-      m_min =  std::numeric_limits<value_type>::lowest();
-      m_max =  std::numeric_limits<value_type>::max();
-    }
 
     connect(this, &QLineEdit::textEdited, [this](const QString& text) {
       const auto value = this->parse(text.toStdString());
@@ -129,8 +142,8 @@ protected:
   }
 
 private:
-  value_type m_min;
-  value_type m_max;
+  value_type m_min = detail::lowest_possible_value<value_type>;
+  value_type m_max = detail::highest_possible_value<value_type>;
   value_type m_step = 1;
   double m_multiplier = 1.0;
   QPoint m_mouse_press_pos;
@@ -138,28 +151,46 @@ private:
   void increment(double factor)
   {
     const auto increment = factor * m_step / m_multiplier;
-    set_value(std::max(m_min, std::min<value_type>(m_max, value() + increment)));
+
+    // do the range checking in double-domain.
+    double new_value = double(this->value()) + double(increment);
+    if (new_value > m_max) {
+      new_value = m_max;
+    } else if (new_value < m_min) {
+      new_value = m_min;
+    }
+    set_value(value_type(new_value));
   }
 
   value_type parse(const std::string& text) const
   {
-    std::istringstream sstream(text);
-    value_type value;
-    sstream >> value;
-    value /= m_multiplier;
-    if (sstream) {
-      return value;
+    if (text == detail::inf) {
+      return detail::highest_possible_value<value_type>;
+    } else if (text == detail::neg_inf) {
+      return detail::lowest_possible_value<value_type>;
     } else {
-      if (m_min < 0 && 0 < m_max) {
-        return 0;
+      std::istringstream sstream(text);
+      value_type value;
+      sstream >> value;
+      value /= m_multiplier;
+      if (sstream) {
+        return value;
       } else {
-        return m_min;
+        if (text != "") { LOG(ERROR) << "Failed to parse string '" << text << "'"; }
+        if (m_min <= 0 && 0 <= m_max) {
+          return 0;
+        } else {
+          return m_min;
+        }
       }
     }
   }
 
-  const on_value_changed_t m_on_value_changed;
-  void set_text(const value_type& value) { setText(QString("%1").arg(m_multiplier * value)); }
+  on_value_changed_t m_on_value_changed;
+  void set_text(const value_type& value)
+  {
+    setText(QString("%1").arg(value_type(m_multiplier * value)));
+  }
   static constexpr value_type invalid_value = 0;
 };
 
