@@ -2,7 +2,8 @@
 
 #include "propertywidgets/propertywidget.h"
 #include "properties/vectorproperty.h"
-#include "propertywidgets/vectorpropertywidget/vectoredit.h"
+#include "propertywidgets/numericpropertywidget/numericmultivalueedit.h"
+#include <QHBoxLayout>
 
 namespace omm
 {
