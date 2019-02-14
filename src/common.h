@@ -152,14 +152,13 @@ template<typename T, typename Predicate> void erase_if(std::vector<T>& ts, const
   ts.erase(std::remove_if(ts.begin(), ts.end(), p), ts.end());
 }
 
-template<typename T, typename S> bool contains(const std::set<T*>& set, S const* const key)
+template<typename Ts, typename S> bool contains(const Ts& set, S&& key)
 {
-  return set.count(const_cast<S*>(key)) > 0;
-}
-
-template<typename T, typename S> bool contains(const std::set<T>& set, const S& key)
-{
-  return set.count(const_cast<S&>(key)) > 0;
+  if constexpr (std::is_pointer_v<S> || std::is_reference_v<S>) {
+    return std::find(set.begin(), set.end(), const_cast<std::remove_const_t<S>>(key)) != set.end();
+  } else {
+    return std::find(set.begin(), set.end(), key) != set.end();
+  }
 }
 
 template<typename T> struct is_unique_ptr : std::true_type {};
