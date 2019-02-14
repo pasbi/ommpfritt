@@ -73,7 +73,7 @@ void UserPropertyDialog::on_current_item_changed(QListWidgetItem* item)
   using f_type = std::function<void(UserPropertyDialog&, PropertyItem*)>;
   using map_type = std::map<std::string, f_type>;
 
-  m_right_column->deleteLater();
+  if (m_right_column != nullptr) { m_right_column->deleteLater(); }
   m_right_column = nullptr;
   const auto current_item = this->current_item();
   if (current_item != nullptr) {
