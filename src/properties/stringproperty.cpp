@@ -37,4 +37,5 @@ std::unique_ptr<Property> StringProperty::clone() const
   return std::make_unique<StringProperty>(*this);
 }
 
+
 }  // namespace omm

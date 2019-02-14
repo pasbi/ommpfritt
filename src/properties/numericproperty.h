@@ -63,6 +63,8 @@ public:
     serializer.set_value(m_multiplier, Serializable::make_pointer(root, MULTIPLIER_POINTER));
   }
 
+  void revise() override { set(std::clamp(m_lower, this->value(), m_upper)); }
+
 private:
   T m_lower = NumericPropertyLimitsT::lower;
   T m_upper = NumericPropertyLimitsT::upper;

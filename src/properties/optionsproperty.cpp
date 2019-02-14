@@ -1,4 +1,5 @@
 #include "properties/optionsproperty.h"
+#include <algorithm>
 
 namespace omm
 {
@@ -65,6 +66,11 @@ bool OptionsProperty::is_compatible(const Property& other) const
   } else {
     return false;
   }
+}
+
+void OptionsProperty::revise()
+{
+  set(std::clamp<std::size_t>(0, this->value(), m_options.size() - 1));
 }
 
 }  // namespace omm

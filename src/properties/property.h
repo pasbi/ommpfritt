@@ -132,6 +132,7 @@ public:
   bool wrap_with_macro = false;
   Property& set_pre_submit(const std::function<void(Property&)>& hook);
   Property& set_post_submit(const std::function<void(Property&)>& hook);
+  virtual void revise();
 
 private:
   std::string m_label;

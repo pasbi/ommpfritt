@@ -43,6 +43,7 @@ void UserPropertyConfigCommand::swap_user_properties()
       i += 1;
       unique_label = label + "." + std::to_string(i);
     }
+    property->revise();
     m_owner.add_property(unique_label, std::move(property));
   }
 }

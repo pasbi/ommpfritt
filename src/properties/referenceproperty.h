@@ -19,11 +19,17 @@ public:
   AbstractPropertyOwner::Kind allowed_kinds() const;
   ReferenceProperty& set_required_flags(AbstractPropertyOwner::Flag required_flags);
   AbstractPropertyOwner::Flag required_flags() const;
+  void revise() override;
 
   bool is_compatible(const Property& other) const override;
   bool is_cyclic() const;
   static constexpr auto TYPE = "ReferenceProperty";
   std::unique_ptr<Property> clone() const override;
+
+
+  static std::vector<omm::AbstractPropertyOwner*>
+  collect_candidates(const Scene& scene, const AbstractPropertyOwner::Kind allowed_kinds,
+                                         const AbstractPropertyOwner::Flag required_flags);
 
 private:
   // default is always nullptr

@@ -70,4 +70,6 @@ std::unique_ptr<Property> ReferenceProperty::clone() const
   return std::make_unique<ReferenceProperty>(*this);
 }
 
+void ReferenceProperty::revise() { set(nullptr); }
+
 }   // namespace omm

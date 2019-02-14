@@ -119,5 +119,6 @@ Property::set_enabled_buddy(OptionsProperty& property, const std::set<std::size_
   return *this;
 }
 
+void Property::revise() {}
 
 }  // namespace omm

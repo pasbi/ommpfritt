@@ -48,13 +48,19 @@ void ReferenceLineEdit::update_candidates()
 
 void ReferenceLineEdit::set_value(const value_type& value)
 {
-  bool value_has_changed = m_value != value;
-  m_value = value;
-  const auto it = std::find(m_possible_references.begin(), m_possible_references.end(), value);
+  const bool value_has_changed = m_value != value;
+  if (::contains(m_possible_references, value)) {
+    m_value = value;
+  } else {
+    m_value = nullptr;
+  }
+  assert(::contains(m_possible_references, nullptr));
+  const auto it = std::find(m_possible_references.begin(), m_possible_references.end(), m_value);
   assert(it != m_possible_references.end());
-  setCurrentIndex(std::distance(m_possible_references.begin(), it));
+  const auto i = std::distance(m_possible_references.begin(), it);
+  setCurrentIndex(i);
 
-  if (value_has_changed && !signalsBlocked()) { on_value_changed(value); }
+  if (value_has_changed && !signalsBlocked()) { on_value_changed(m_value); }
 }
 
 void ReferenceLineEdit::set_inconsistent_value() { setEditText(tr("<multiple values>")); }
