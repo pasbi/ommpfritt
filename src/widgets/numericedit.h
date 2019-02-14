@@ -8,20 +8,25 @@
 #include <glog/logging.h>
 #include <memory>
 
-namespace detail
+namespace NumericEditDetail
 {
 
 // they must be initialized, though they should never be used.
 template<typename T> T highest_possible_value = T();
 template<typename T> T lowest_possible_value = T();
+template<typename T> T smallest_step = T();
+
 
 // these are the meaningful specializations
 template<> constexpr double highest_possible_value<double>
                           = std::numeric_limits<double>::infinity();
 template<> constexpr double lowest_possible_value<double>
                           = -std::numeric_limits<double>::infinity();
+template<> constexpr double smallest_step<double>
+                          = -std::numeric_limits<double>::min();
 template<> constexpr int highest_possible_value<int> = std::numeric_limits<int>::max();
 template<> constexpr int lowest_possible_value<int> = std::numeric_limits<int>::lowest();
+template<> constexpr int smallest_step<int> = 1;
 
 }
 
@@ -167,8 +172,8 @@ protected:
   }
 
 private:
-  value_type m_min = detail::lowest_possible_value<value_type>;
-  value_type m_max = detail::highest_possible_value<value_type>;
+  value_type m_min = NumericEditDetail::lowest_possible_value<value_type>;
+  value_type m_max = NumericEditDetail::highest_possible_value<value_type>;
   value_type m_step = 1;
   double m_multiplier = 1.0;
   QPoint m_mouse_press_pos;
@@ -190,9 +195,9 @@ private:
   value_type parse(const std::string& text) const
   {
     if (text == inf) {
-      return detail::highest_possible_value<value_type>;
+      return NumericEditDetail::highest_possible_value<value_type>;
     } else if (text == neg_inf) {
-      return detail::lowest_possible_value<value_type>;
+      return NumericEditDetail::lowest_possible_value<value_type>;
     } else {
       std::istringstream sstream(text);
       value_type value;
@@ -220,7 +225,7 @@ private:
 
 public:
   using on_min_max_changed_t = std::function<void(const ValueType& min, const ValueType& max)>;
-  static auto make_min_max_edits(const on_min_max_changed_t& on_min_max_changed)
+  static auto make_range_edits(const on_min_max_changed_t& on_min_max_changed)
   {
     enum class MasterBound { Upper, Lower };
     auto min_edit = std::make_unique<NumericEdit<ValueType>>([](const ValueType&) {});
