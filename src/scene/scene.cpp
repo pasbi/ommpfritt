@@ -258,6 +258,7 @@ template<> const typename SceneStructure<Style>::type& Scene::structure<Style>()
 
 void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
+  m_selection = selection;
   const auto set_selection = [selection](auto* observer) { observer->set_selection(selection); };
   Observed<AbstractSelectionObserver>::for_each(set_selection);
 
@@ -278,10 +279,8 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
   tool_box.active_tool().on_selection_changed();
 }
 
-std::set<Object*> Scene::object_selection() const
-{
-  return m_object_selection;
-}
+std::set<AbstractPropertyOwner*> Scene::selection() const { return m_selection; }
+std::set<Object*> Scene::object_selection() const { return m_object_selection; }
 
 template<> std::set<Tag*> Scene::find_items<Tag>(const std::string& name) const
 {

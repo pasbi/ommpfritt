@@ -119,6 +119,7 @@ std::unique_ptr<QMenuBar> PropertyManager::make_menu_bar()
     auto dialog = UserPropertyDialog(this, **m_current_selection.begin());
     if (dialog.exec() == QDialog::Accepted) {
       m_scene.submit(dialog.make_user_property_config_command());
+      m_scene.set_selection(m_scene.selection());
     }
   };
   m_manage_user_properties_action = &action( *user_properties_menu, "edit ...",
