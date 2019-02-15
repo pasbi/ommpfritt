@@ -45,6 +45,7 @@ AbstractPropertyConfigWidget::AbstractPropertyConfigWidget(QWidget* parent, Prop
   form_layout->addRow(tr("&name:"), m_name_edit);
 
   m_form_layout = form_layout.get();
+  m_form_layout->setContentsMargins(0, 0, 0, 0);
   box_layout()->addLayout(form_layout.release());
 
   connect(m_name_edit, &QLineEdit::textChanged, [this](const QString& text) {

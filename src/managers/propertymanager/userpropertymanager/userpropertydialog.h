@@ -6,6 +6,7 @@
 
 class QListWidget;
 class QListWidgetItem;
+class QHBoxLayout;
 
 namespace omm
 {
@@ -30,7 +31,7 @@ private:
   void on_current_item_type_changed(const std::string& type);
   void on_current_item_label_changed();
   PropertyItem* current_item() const;
-  QLayout* m_layout;
+  QHBoxLayout* m_layout;
   AbstractPropertyOwner& m_property_owner;
 };
 
