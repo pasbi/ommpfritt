@@ -34,7 +34,7 @@ public:
     void redo() const { property->set(new_value); }
 
     Property* property;
-    const value_type old_value;
+    value_type old_value;
     value_type new_value;
 
     bool operator <(const PropertyBiState& other) const
@@ -46,7 +46,10 @@ public:
 protected:
   PropertiesCommand( const std::set<Property*>& properties,
                      const std::set<PropertyBiState>& properties_bi_states )
-    : AbstractPropertiesCommand(properties), m_properties_bi_states(properties_bi_states) { }
+    : AbstractPropertiesCommand(properties)
+    , m_properties_bi_states(properties_bi_states.begin(), properties_bi_states.end())
+  {
+  }
 
 private:
   template<typename Properties>
@@ -77,10 +80,11 @@ public:
   {
     if (AbstractPropertiesCommand::mergeWith(command)) {
       const auto& property_command = static_cast<const PropertiesCommand<PropertyT>&>(*command);
-      // assert(::is_uniform(m_properties_bi_states, [](const auto pbs) { return pbs.new_value; }));
-      const value_type new_value = m_properties_bi_states.begin()->new_value;
-      for (auto pbs : m_properties_bi_states) {
+      const value_type new_value = property_command.m_properties_bi_states.begin()->new_value;
+      const value_type old_value = m_properties_bi_states.begin()->old_value;
+      for (PropertyBiState& pbs : m_properties_bi_states) {
         pbs.new_value = new_value;
+        pbs.old_value = old_value;
       }
       return true;
     } else {
@@ -89,7 +93,8 @@ public:
   }
 
 private:
-  std::set<PropertyBiState> m_properties_bi_states;
+  // items must not be stored in a set-like container, otherwise they wouldn't be modifiable.
+  std::vector<PropertyBiState> m_properties_bi_states;
 };
 
 template<typename PropertyT, std::size_t dim>
