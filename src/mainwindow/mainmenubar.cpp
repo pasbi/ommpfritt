@@ -15,6 +15,7 @@
 #include "objects/path.h"
 #include "mainwindow/pathmenu.h"
 #include "tags/scripttag.h"
+#include "keybindings/keybindingsdialog.h"
 
 namespace omm
 {
@@ -69,6 +70,9 @@ void MainMenuBar::make_window_menu()
     auto tool_bar = std::make_unique<ToolBar>(this, m_app.scene.tool_box, all_tools);
     m_main_window.addToolBar(Qt::TopToolBarArea, tool_bar.release());
     // TODO set floating true
+  });
+  action(window_menu, "keybindings", [this]() {
+    KeyBindingsDialog(m_main_window.key_bindings, this).exec();
   });
 }
 
