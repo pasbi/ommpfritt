@@ -47,8 +47,8 @@ protected:
   PropertiesCommand( const std::set<Property*>& properties,
                      const std::set<PropertyBiState>& properties_bi_states )
     : AbstractPropertiesCommand(properties)
-    , m_properties_bi_states(properties_bi_states.begin(), properties_bi_states.end())
   {
+    for (auto&& pbs : properties_bi_states) { m_properties_bi_states.emplace(pbs.property, pbs); }
   }
 
 private:
@@ -68,23 +68,22 @@ public:
 
   void undo() override
   {
-    for (const auto& property_bi_state : m_properties_bi_states) { property_bi_state.undo(); }
+    for (const auto& [_, property_bi_state] : m_properties_bi_states) { property_bi_state.undo(); }
   }
 
   void redo() override
   {
-    for (const auto& property_bi_state : m_properties_bi_states) { property_bi_state.redo(); }
+    for (const auto& [_, property_bi_state] : m_properties_bi_states) { property_bi_state.redo(); }
   }
 
   bool mergeWith(const QUndoCommand* command) override
   {
     if (AbstractPropertiesCommand::mergeWith(command)) {
       const auto& property_command = static_cast<const PropertiesCommand<PropertyT>&>(*command);
-      const value_type new_value = property_command.m_properties_bi_states.begin()->new_value;
-      const value_type old_value = m_properties_bi_states.begin()->old_value;
-      for (PropertyBiState& pbs : m_properties_bi_states) {
+      const auto new_value = property_command.m_properties_bi_states.begin()->second.new_value;
+      for (auto& [property, pbs] : m_properties_bi_states) {
         pbs.new_value = new_value;
-        pbs.old_value = old_value;
+        pbs.old_value = m_properties_bi_states.at(property).old_value;
       }
       return true;
     } else {
@@ -93,8 +92,7 @@ public:
   }
 
 private:
-  // items must not be stored in a set-like container, otherwise they wouldn't be modifiable.
-  std::vector<PropertyBiState> m_properties_bi_states;
+  std::map<Property*, PropertyBiState> m_properties_bi_states;
 };
 
 template<typename PropertyT, std::size_t dim>
