@@ -18,7 +18,6 @@ class MainWindow : public QMainWindow, CommandInterface
   Q_OBJECT
 public:
   explicit MainWindow(Application& app);
-  ~MainWindow();
   void restore_state();
   void save_state();
   void call(const std::string& command) override;
