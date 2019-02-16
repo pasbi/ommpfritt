@@ -16,7 +16,6 @@ class MainWindow : public QMainWindow
   Q_OBJECT
 public:
   explicit MainWindow(Application& app);
-  ~MainWindow();
   void restore_state();
   void save_state();
 

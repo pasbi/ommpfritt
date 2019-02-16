@@ -73,10 +73,6 @@ MainWindow::MainWindow(Application& app)
   restore_state();
 }
 
-MainWindow::~MainWindow()
-{
-}
-
 void MainWindow::restore_state()
 {
   LOG(INFO) << "restore-state";
