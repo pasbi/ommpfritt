@@ -56,33 +56,27 @@ void write_each(QSettings& settings, const std::string& key, const Ts& ts, const
   settings.endArray();
 }
 
-const std::vector<std::string> file_menu_actions = { "new document", "save document",
-  "save document as", "load document" };
-
-const std::vector<std::string> edit_menu_actions = { "undo", "redo" };
-const std::vector<std::string> path_menu_actions = { "make smooth", "make linear", "remove points",
-   "subdivide" };
-const std::vector<std::string> scene_menu_actions = { "evaluate" };
-const std::vector<std::string> create_menu_actions()
-{
-  return ::transform<std::string, std::vector>(omm::Object::keys(), [](const auto& key) {
-    return "create " + key;
-  });
-};
-const std::vector<std::string> window_menu_actions()
-{
-  auto actions = ::transform<std::string, std::vector>(omm::Manager::keys(), [](const auto& key) {
-    return "show " + key;
-  });
-  actions.push_back(omm::KeyBindings::SEPARATOR);
-  actions.push_back("show keybindings dialog");
-  return actions;
-};
-
 }  // namespace
 
 namespace omm
 {
+
+std::map<std::string, std::list<std::string>> MainWindow::main_menu_entries()
+{
+  std::map<std::string, std::list<std::string>> entries = {
+    { "file", { "new document", "save document", "save document as", "load document" } },
+    { "edit", { "undo", "redo" } },
+    { "path", { "make smooth", "make linear", "remove points", "subdivide" } },
+    { "scene", { "evaluate" } },
+    { "create", {} },
+    { "window", { KeyBindings::SEPARATOR, "show keybindings dialog" } }
+  };
+
+  for (const std::string& key : Manager::keys()) { entries["window"].push_front("show " + key); }
+  for (const std::string& key : Object::keys()) { entries["create"].push_back("create " + key); }
+
+  return entries;
+}
 
 MainWindow::MainWindow(Application& app)
   : m_app(app)
@@ -92,14 +86,15 @@ MainWindow::MainWindow(Application& app)
   restore_state();
 
   setMenuBar(std::make_unique<QMenuBar>().release());
-  add_menu("&File", file_menu_actions);
-  add_menu("&Edit", edit_menu_actions);
-  add_menu("&Create", create_menu_actions());
-  add_menu("&Scene", scene_menu_actions);
-  add_menu("&Window", window_menu_actions());
+  add_menu("&File", main_menu_entries()["file"]);
+  add_menu("&Edit", main_menu_entries()["edit"]);
+  add_menu("&Create", main_menu_entries()["create"]);
+  add_menu("&Path", main_menu_entries()["path"]);
+  add_menu("&Scene", main_menu_entries()["scene"]);
+  add_menu("&Window", main_menu_entries()["window"]);
 }
 
-void MainWindow::add_menu(const std::string& title, const std::vector<std::string>& actions)
+void MainWindow::add_menu(const std::string& title, const std::list<std::string>& actions)
 {
   auto menu = m_app.key_bindings.make_menu(m_app, actions);
   menu->setTearOffEnabled(true);

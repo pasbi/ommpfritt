@@ -30,7 +30,7 @@ public:
   std::unique_ptr<QAction> make_action(CommandInterface& ci, const std::string& actions) const;
   static constexpr auto SEPARATOR = "separator";
   std::unique_ptr<QMenu>
-  make_menu(CommandInterface& ci, const std::vector<std::string>& actions) const;
+  make_menu(CommandInterface& ci, const std::list<std::string>& actions) const;
 
 public:
   int columnCount(const QModelIndex& parent) const override;

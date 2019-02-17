@@ -8,9 +8,10 @@
 #include "commands/objectstransformationcommand.h"
 #include "objects/path.h"
 #include "menuhelper.h"
-#include "mainwindow/pathmenu.h"
 #include "properties/floatproperty.h"
 #include "properties/optionsproperty.h"
+#include "mainwindow/application.h"
+#include "mainwindow/mainwindow.h"
 
 namespace
 {
@@ -154,7 +155,8 @@ PointSelectHandle::TangentMode SelectPointsTool::tangent_mode() const
 
 std::unique_ptr<QMenu> SelectPointsTool::make_context_menu(QWidget* parent)
 {
-  return std::make_unique<PathMenu>(scene, parent);
+  auto& app = Application::instance();
+  return app.key_bindings.make_menu(app, MainWindow::main_menu_entries()["path"]);
 }
 
 void SelectPointsTool::on_selection_changed()

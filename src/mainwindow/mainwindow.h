@@ -21,12 +21,20 @@ public:
   void save_state();
   void keyPressEvent(QKeyEvent* e) override;
 
+  static std::map<std::string, std::list<std::string>> main_menu_entries();
+
 protected:
   void closeEvent(QCloseEvent *event) override;
 
 private:
   Application& m_app;
-  void add_menu(const std::string& title, const std::vector<std::string>& actions);
+  void add_menu(const std::string& title, const std::list<std::string>& actions);
+
 };
 
 }  // namespace omm
+
+
+// TODO tools must be selectable via command interface
+// select-last-tool command
+// select all/none/invert points

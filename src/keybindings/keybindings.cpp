@@ -220,7 +220,7 @@ KeyBindings::make_action(CommandInterface& ci, const std::string& action_name) c
 }
 
 std::unique_ptr<QMenu>
-KeyBindings::make_menu(CommandInterface& ci, const std::vector<std::string>& actions) const
+KeyBindings::make_menu(CommandInterface& ci, const std::list<std::string>& actions) const
 {
   auto menu = std::make_unique<QMenu>();
   for (const auto action_name : actions) {
