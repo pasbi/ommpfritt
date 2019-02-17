@@ -4,8 +4,11 @@
 #include <memory>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QTimer>
 #include <QHeaderView>
 #include "keybindings/keybindings.h"
+#include "keybindings/keybindingstable.h"
+#include <glog/logging.h>
 
 namespace omm
 {
@@ -16,6 +19,10 @@ KeyBindingsDialog::KeyBindingsDialog(KeyBindings& key_bindings, QWidget* parent)
 
   auto edit = std::make_unique<KeyBindingsTable>(key_bindings);
   edit->horizontalHeader()->setStretchLastSection(true);
+  QTimer::singleShot(1000, [this, edit=edit.get()]() {
+    LOG(INFO) << edit->sizeHint().width();
+    LOG(INFO) << "adjust"; edit->adjustSize(); this->adjustSize();
+  });
   layout->addWidget(edit.release());
 
   const auto buttons = QDialogButtonBox::Ok;

@@ -21,7 +21,10 @@ public:
   void restore_state();
   void save_state();
   void call(const std::string& command) override;
+  static const std::map<std::string, QKeySequence> DEFAULT_BINDINGS;
+  static constexpr auto TYPE = "MainWindow";
   std::string type() const override;
+  void keyPressEvent(QKeyEvent* e) override;
 
 protected:
   void closeEvent(QCloseEvent *event) override;

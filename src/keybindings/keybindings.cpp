@@ -2,6 +2,11 @@
 #include <QSettings>
 #include "keybindings/commandinterface.h"
 #include <glog/logging.h>
+#include <QKeyEvent>
+#include "common.h"
+#include <map>
+
+#include "mainwindow/mainwindow.h"
 
 namespace
 {
@@ -11,10 +16,20 @@ QString settings_key(const omm::KeyBinding& binding)
   return QString::fromStdString(binding.context()) + "/" + QString::fromStdString(binding.name());
 }
 
-std::vector<omm::KeyBinding> default_keybindings {
-  omm::KeyBinding("undo", "MainWindow", "Ctrl+Z"),
-  omm::KeyBinding("redo", "MainWindow", "Ctrl+Y"),
-};
+template<typename CommandInterfaceT>
+void collect_default_bindings(std::list<omm::KeyBinding>& bindings)
+{
+  for (const auto& [ name, key_sequence ] : CommandInterfaceT::DEFAULT_BINDINGS) {
+    bindings.push_back(omm::KeyBinding(name, CommandInterfaceT::TYPE, key_sequence));
+  }
+}
+
+std::vector<omm::KeyBinding> collect_default_bindings()
+{
+  std::list<omm::KeyBinding> default_bindings;
+  collect_default_bindings<omm::MainWindow>(default_bindings);
+  return std::vector(default_bindings.begin(), default_bindings.end());
+}
 
 }  // namespace
 
@@ -22,10 +37,15 @@ namespace omm
 {
 
 KeyBindings::KeyBindings(CommandInterface& global_command_interface)
-  : m_bindings(default_keybindings)
+  : m_bindings(collect_default_bindings())
   , m_global_command_interface(global_command_interface)
 {
   restore();
+  m_reset_timer.setSingleShot(true);
+  connect(&m_reset_timer, &QTimer::timeout, [this]() {
+    LOG(INFO) << "reset";
+    m_current_sequene.clear();
+  });
 }
 
 KeyBindings::~KeyBindings() { store(); }
@@ -70,6 +90,41 @@ bool KeyBindings::call(const QKeySequence& sequence, CommandInterface& interface
     call(sequence, m_global_command_interface);
     return true;
   } else {
+    return false;
+  }
+}
+
+QKeySequence KeyBindings::make_key_sequence(const QKeyEvent& event) const
+{
+  static constexpr std::size_t MAX_SEQUENCE_LENGTH = 4;  // must be 4 to match QKeySequence impl.
+  const int code = event.key() | event.modifiers();
+  m_current_sequene.push_back(code);
+  if (m_current_sequene.size() > MAX_SEQUENCE_LENGTH) { m_current_sequene.pop_front(); }
+
+  std::vector sequence(m_current_sequene.begin(), m_current_sequene.end());
+  sequence.reserve(MAX_SEQUENCE_LENGTH);
+  while (sequence.size() < MAX_SEQUENCE_LENGTH) { sequence.push_back(0); }
+
+  return QKeySequence(sequence[0], sequence[1], sequence[2], sequence[3]);
+}
+
+bool KeyBindings::call(const QKeyEvent& key_event, CommandInterface& interface) const
+{
+  m_reset_timer.start(m_reset_delay);
+  // QKeySequence does not support combinations without non-modifier keys.
+  static const auto bad_keys = std::set { Qt::Key_unknown, Qt::Key_Shift, Qt::Key_Control,
+                                          Qt::Key_Meta, Qt::Key_Alt };
+
+  if (::contains(bad_keys, key_event.key())) {
+    return false;
+  } if (key_event.key() == Qt::Key_Escape) {
+    m_current_sequene.clear();
+    return false;
+  } else if (const auto sequence = make_key_sequence(key_event); call(sequence, interface)) {
+    m_current_sequene.clear();
+    return true;
+  } else {
+    LOG(INFO) << "key sequence was not (yet) accepted: " << sequence.toString().toStdString();
     return false;
   }
 }

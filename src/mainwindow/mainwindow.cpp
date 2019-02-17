@@ -124,11 +124,24 @@ void MainWindow::closeEvent(QCloseEvent *event)
   QMainWindow::closeEvent(event);
 }
 
+const std::map<std::string, QKeySequence> MainWindow::DEFAULT_BINDINGS {
+  { "undo", QKeySequence("Ctrl+Z") },
+  { "redo", QKeySequence("Ctrl+Y") },
+  { "xgh", QKeySequence("Ctrl+F") },
+};
+
 void MainWindow::call(const std::string& command)
 {
-  LOG(INFO) << "command: " << command;
+  dispatch(command, {
+    { "undo", [this]() { m_app.scene.undo_stack.undo(); } },
+    { "redo", [this]() { m_app.scene.undo_stack.redo(); } },
+  });
 }
 
-std::string MainWindow::type() const { return "MainWindow"; }
+std::string MainWindow::type() const { return TYPE; }
+void MainWindow::keyPressEvent(QKeyEvent* e)
+{
+  key_bindings.call(*e, *this);
+}
 
 }  // namespace omm

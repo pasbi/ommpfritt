@@ -3,6 +3,9 @@
 #include "keybindings/keybinding.h"
 #include <vector>
 #include <QAbstractTableModel>
+#include <QTimer>
+
+class QKeyEvent;
 
 namespace omm
 {
@@ -20,6 +23,7 @@ public:
   static constexpr auto settings_group = "keybindings";
 
   bool call(const QKeySequence& key_sequence, CommandInterface& interface) const;
+  bool call(const QKeyEvent& key_event, CommandInterface& interface) const;
 
 public:
   int columnCount(const QModelIndex& parent) const override;
@@ -35,6 +39,10 @@ public:
 private:
   std::vector<KeyBinding> m_bindings;
   CommandInterface& m_global_command_interface;
+  QKeySequence make_key_sequence(const QKeyEvent& event) const;
+  mutable std::list<int> m_current_sequene;
+  mutable QTimer m_reset_timer;
+  static constexpr auto m_reset_delay = std::chrono::milliseconds(1000);
 
 };
 
