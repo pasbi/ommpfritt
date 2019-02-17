@@ -34,6 +34,18 @@ ManagerItemView<ItemViewT, ItemModelT>::~ManagerItemView()
 }
 
 template<typename ItemViewT, typename ItemModelT>
+void ManagerItemView<ItemViewT, ItemModelT>::setSelectionModel(QItemSelectionModel* model)
+{
+  const auto on_selection_changed = [this](const auto& selected) {
+    if (!m_block_selection_change_signal) {
+      this->model()->scene.set_selection(this->selected_items());
+    }
+  };
+  this->connect(model, &QItemSelectionModel::selectionChanged, on_selection_changed);
+  ItemViewT::setSelectionModel(model);
+}
+
+template<typename ItemViewT, typename ItemModelT>
 void ManagerItemView<ItemViewT, ItemModelT>::contextMenuEvent(QContextMenuEvent *event)
 {
   auto menu = std::make_unique<QMenu>();
@@ -79,8 +91,20 @@ ManagerItemView<ItemViewT, ItemModelT>::remove_selection()
 template<typename ItemViewT, typename ItemModelT>
 void ManagerItemView<ItemViewT, ItemModelT>::mouseReleaseEvent(QMouseEvent* e)
 {
+  // see also mousePressEvent
   e->ignore();
   ItemViewT::mouseReleaseEvent(e);
+}
+
+template<typename ItemViewT, typename ItemModelT>
+void ManagerItemView<ItemViewT, ItemModelT>::mousePressEvent(QMouseEvent* e)
+{
+  // selection change must be propagated on key release rather than on key press.
+  // otherwise, drag'n'dropping items on other items' reference-properties becomes really hard.
+  // see also mouseReleaseEvent.
+  m_block_selection_change_signal = true;
+  ItemViewT::mousePressEvent(e);
+  m_block_selection_change_signal = false;
 }
 
 template<typename ItemViewT, typename ItemModelT>

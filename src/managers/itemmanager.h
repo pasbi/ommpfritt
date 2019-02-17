@@ -16,6 +16,9 @@ protected:
   explicit ItemManager(const QString& title, Scene& scene, item_model_type& model);
   bool eventFilter(QObject* object, QEvent* event) override;
 
+protected:
+  ItemViewT& item_view() const;
+
 private:
   ItemViewT* m_item_view;
 };

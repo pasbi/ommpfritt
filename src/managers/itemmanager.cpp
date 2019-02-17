@@ -24,14 +24,17 @@ template<typename ItemViewT> ItemManager<ItemViewT>
   set_widget(std::move(item_view));
 }
 
-template<typename ItemViewT> bool
-ItemManager<ItemViewT>::eventFilter(QObject* object, QEvent* event)
+template<typename ItemViewT>
+bool ItemManager<ItemViewT>::eventFilter(QObject* object, QEvent* event)
 {
   if (object == m_item_view && event->type() == QEvent::MouseButtonRelease) {
     m_scene.set_selection(m_item_view->selected_items());
   }
   return Manager::eventFilter(object, event);
 }
+
+template<typename ItemViewT>
+ItemViewT& ItemManager<ItemViewT>::item_view() const { return *m_item_view; }
 
 template class ItemManager<ObjectTreeView>;
 template class ItemManager<StyleListView>;
