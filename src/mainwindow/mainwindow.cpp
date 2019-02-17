@@ -66,7 +66,6 @@ namespace omm
 
 MainWindow::MainWindow(Application& app)
   : m_app(app)
-  , key_bindings(*this)
 {
   setMenuBar(std::make_unique<MainMenuBar>(app, *this).release());
   setDockNestingEnabled(true);
@@ -141,7 +140,9 @@ void MainWindow::call(const std::string& command)
 std::string MainWindow::type() const { return TYPE; }
 void MainWindow::keyPressEvent(QKeyEvent* e)
 {
-  key_bindings.call(*e, *this);
+  if (!Application::instance().key_bindings.call(*e, *this)) {
+    QMainWindow::keyPressEvent(e);
+  }
 }
 
 }  // namespace omm

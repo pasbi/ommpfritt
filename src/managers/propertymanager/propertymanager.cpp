@@ -96,7 +96,7 @@ PropertyManager::PropertyManager(Scene& scene)
   m_tabs = tabs.get();
   set_widget(std::move(tabs));
   setWindowTitle(tr("property manager"));
-  setObjectName(TYPE());
+  setObjectName(TYPE);
   connect(m_tabs, &QTabWidget::currentChanged, [this](int index) {
     if (index >= 0) {
       m_active_category = m_tabs->tabText(index).toStdString();

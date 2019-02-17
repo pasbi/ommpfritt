@@ -15,7 +15,7 @@ class CommandInterface;
 class KeyBindings : public QAbstractTableModel
 {
 public:
-  KeyBindings(CommandInterface& global_command_interface);
+  KeyBindings();
   ~KeyBindings();
 
   void store() const;
@@ -24,6 +24,7 @@ public:
 
   bool call(const QKeySequence& key_sequence, CommandInterface& interface) const;
   bool call(const QKeyEvent& key_event, CommandInterface& interface) const;
+  void set_global_command_interface(CommandInterface& global_command_interface);
 
 public:
   int columnCount(const QModelIndex& parent) const override;
@@ -38,7 +39,7 @@ public:
 
 private:
   std::vector<KeyBinding> m_bindings;
-  CommandInterface& m_global_command_interface;
+  CommandInterface* m_global_command_interface = nullptr;
   QKeySequence make_key_sequence(const QKeyEvent& event) const;
   mutable std::list<int> m_current_sequene;
   mutable QTimer m_reset_timer;

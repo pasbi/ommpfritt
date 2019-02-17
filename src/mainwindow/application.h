@@ -3,6 +3,7 @@
 #include <QObject>
 #include "scene/scene.h"
 #include "python/pythonengine.h"
+#include "keybindings/keybindings.h"
 
 class QApplication;
 
@@ -25,14 +26,18 @@ public:
   void quit();
   void update_undo_redo_enabled();
   void set_main_window(MainWindow& main_window);
+  static Application& instance();
 
   PythonEngine python_engine;
   Scene scene;
 
 private:
   QApplication& m_app;
+  static Application* m_instance;
   MainWindow* m_main_window;
 
+public:
+  KeyBindings key_bindings;
 };
 
 }  // namespace omm

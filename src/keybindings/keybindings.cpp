@@ -7,6 +7,7 @@
 #include <map>
 
 #include "mainwindow/mainwindow.h"
+#include "managers/stylemanager/stylemanager.h"
 
 namespace
 {
@@ -28,6 +29,7 @@ std::vector<omm::KeyBinding> collect_default_bindings()
 {
   std::list<omm::KeyBinding> default_bindings;
   collect_default_bindings<omm::MainWindow>(default_bindings);
+  collect_default_bindings<omm::StyleManager>(default_bindings);
   return std::vector(default_bindings.begin(), default_bindings.end());
 }
 
@@ -36,9 +38,8 @@ std::vector<omm::KeyBinding> collect_default_bindings()
 namespace omm
 {
 
-KeyBindings::KeyBindings(CommandInterface& global_command_interface)
+KeyBindings::KeyBindings()
   : m_bindings(collect_default_bindings())
-  , m_global_command_interface(global_command_interface)
 {
   restore();
   m_reset_timer.setSingleShot(true);
@@ -85,8 +86,8 @@ bool KeyBindings::call(const QKeySequence& sequence, CommandInterface& interface
   if (it != m_bindings.end()) {
     interface.call(it->name());
     return true;
-  } else if (&interface != &m_global_command_interface) {
-    call(sequence, m_global_command_interface);
+  } else if (&interface != m_global_command_interface && m_global_command_interface != nullptr) {
+    call(sequence, *m_global_command_interface);
     return true;
   } else {
     return false;
@@ -190,6 +191,11 @@ Qt::ItemFlags KeyBindings::flags(const QModelIndex& index) const
   Qt::ItemFlags flags = Qt::ItemIsEnabled;
   if (index.column() == SEQUENCE_COLUMN) { flags |= Qt::ItemIsEditable; }
   return flags;
+}
+
+void KeyBindings::set_global_command_interface(CommandInterface& global_command_interface)
+{
+  m_global_command_interface = &global_command_interface;
 }
 
 }  // namespace omm

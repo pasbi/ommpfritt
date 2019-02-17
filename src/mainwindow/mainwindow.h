@@ -13,7 +13,7 @@ class Application;
 class Scene;
 class Manager;
 
-class MainWindow : public QMainWindow, CommandInterface
+class MainWindow : public QMainWindow, public CommandInterface
 {
   Q_OBJECT
 public:
@@ -31,8 +31,6 @@ protected:
 
 private:
   Application& m_app;
-public:
-  KeyBindings key_bindings;
 
 };
 

@@ -12,7 +12,7 @@ ObjectManager::ObjectManager(Scene& scene)
   : ItemManager(tr("Objects"), scene, scene.object_tree_adapter)
 {
   setWindowTitle(tr("object manager"));
-  setObjectName(TYPE());
+  setObjectName(TYPE);
 }
 
 }  // namespace omm

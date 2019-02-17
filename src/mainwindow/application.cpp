@@ -18,15 +18,29 @@ constexpr auto FILE_ENDING = ".omm";
 namespace omm
 {
 
+Application* Application::m_instance = nullptr;
+
 Application::Application(QApplication& app)
   : m_app(app)
   , scene(python_engine)
 {
+  if (m_instance == nullptr) {
+    m_instance = this;
+  } else {
+    LOG(FATAL) << "Resetting application instance.";
+  }
+}
+
+Application& Application::instance()
+{
+  assert(m_instance != nullptr);
+  return *m_instance;
 }
 
 void Application::set_main_window(MainWindow& main_window)
 {
   m_main_window = &main_window;
+  key_bindings.set_global_command_interface(main_window);
 }
 
 void Application::quit()

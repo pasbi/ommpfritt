@@ -72,7 +72,7 @@ void MainMenuBar::make_window_menu()
     // TODO set floating true
   });
   action(window_menu, "keybindings", [this]() {
-    KeyBindingsDialog(m_main_window.key_bindings, this).exec();
+    KeyBindingsDialog(Application::instance().key_bindings, this).exec();
   });
 }
 

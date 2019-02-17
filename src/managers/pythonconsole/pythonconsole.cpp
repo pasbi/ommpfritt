@@ -17,7 +17,7 @@ PythonConsole::PythonConsole(Scene& scene)
   : Manager(tr("Styles"), scene, make_menu_bar())
 {
   setWindowTitle(tr("Python Console"));
-  setObjectName(TYPE());
+  setObjectName(TYPE);
 
   auto widget = std::make_unique<QWidget>();
   auto layout = std::make_unique<QVBoxLayout>(widget.get());

@@ -13,8 +13,8 @@ namespace omm
 
 #define DECLARE_MANAGER_TYPE(classname) \
   public: \
-    static constexpr auto TYPE() { return QT_TRANSLATE_NOOP("Manager", #classname); } \
-    std::string type() const override { return TYPE(); }
+    static constexpr auto TYPE = #classname; \
+    std::string type() const override { return TYPE; }
 
 class MainWindow;
 class Scene;
