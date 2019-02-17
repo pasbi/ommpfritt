@@ -79,18 +79,38 @@ int KeyBindings::rowCount(const QModelIndex& parent) const { return m_bindings.s
 QVariant KeyBindings::data(const QModelIndex& index, int role) const
 {
   assert(index.isValid());
+  const auto& binding = m_bindings[index.row()];
   switch (role) {
   case Qt::DisplayRole:
     switch (index.column()) {
     case NAME_COLUMN:
-      return QString::fromStdString(m_bindings[index.row()].name());
+      return QString::fromStdString(binding.name());
     case CONTEXT_COLUMN:
-      return QString::fromStdString(m_bindings[index.row()].context());
+      return QString::fromStdString(binding.context());
     case SEQUENCE_COLUMN:
-      return m_bindings[index.row()].key_sequence().toString(QKeySequence::PortableText);
+      return binding.key_sequence().toString(QKeySequence::PortableText);
     }
+    break;
+  case Qt::EditRole:
+    switch (index.column()) {
+    case SEQUENCE_COLUMN:
+      return binding.key_sequence();
+    }
+    break;
   }
   return QVariant();
+}
+
+bool KeyBindings::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+  if (role != Qt::EditRole) { return false; }
+  assert(index.column() == SEQUENCE_COLUMN);
+  if (value.canConvert<QKeySequence>()) {
+    m_bindings[index.row()].set_key_sequence(value.value<QKeySequence>());
+    return true;
+  }  else {
+    return false;
+  }
 }
 
 QVariant KeyBindings::headerData(int section, Qt::Orientation orientation, int role) const

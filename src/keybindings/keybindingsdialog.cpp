@@ -14,8 +14,7 @@ KeyBindingsDialog::KeyBindingsDialog(KeyBindings& key_bindings, QWidget* parent)
 {
   auto layout = std::make_unique<QVBoxLayout>();
 
-  auto edit = std::make_unique<QTableView>();
-  edit->setModel(&key_bindings);
+  auto edit = std::make_unique<KeyBindingsTable>(key_bindings);
   edit->horizontalHeader()->setStretchLastSection(true);
   layout->addWidget(edit.release());
 
