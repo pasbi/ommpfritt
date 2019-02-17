@@ -7,7 +7,7 @@
 #include <map>
 #include "keybindings/action.h"
 
-#include "mainwindow/mainwindow.h"
+#include "mainwindow/application.h"
 #include "managers/stylemanager/stylemanager.h"
 #include "managers/objectmanager/objectmanager.h"
 
@@ -30,7 +30,7 @@ void collect_default_bindings(std::list<omm::KeyBinding>& bindings)
 std::vector<omm::KeyBinding> collect_default_bindings()
 {
   std::list<omm::KeyBinding> default_bindings;
-  collect_default_bindings<omm::MainWindow>(default_bindings);
+  collect_default_bindings<omm::Application>(default_bindings);
   collect_default_bindings<omm::StyleManager>(default_bindings);
   collect_default_bindings<omm::ObjectManager>(default_bindings);
   return std::vector(default_bindings.begin(), default_bindings.end());
@@ -217,6 +217,24 @@ KeyBindings::make_action(CommandInterface& ci, const std::string& action_name) c
     });
     return action;
   }
+}
+
+std::unique_ptr<QMenu>
+KeyBindings::make_menu(CommandInterface& ci, const std::vector<std::string>& actions) const
+{
+  auto menu = std::make_unique<QMenu>();
+  for (const auto action_name : actions) {
+    if (action_name == SEPARATOR) {
+      menu->addSeparator();
+    } else {
+      auto action = make_action(ci, action_name);
+      if (action != nullptr) {
+        action->setParent(menu.get());
+        menu->addAction(action.release());
+      }
+    }
+  }
+  return menu;
 }
 
 }  // namespace omm

@@ -4,7 +4,6 @@
 #include <map>
 #include <QMainWindow>
 #include "keybindings/keybindings.h"
-#include "keybindings/commandinterface.h"
 
 namespace omm
 {
@@ -13,17 +12,13 @@ class Application;
 class Scene;
 class Manager;
 
-class MainWindow : public QMainWindow, public CommandInterface
+class MainWindow : public QMainWindow
 {
   Q_OBJECT
 public:
   explicit MainWindow(Application& app);
   void restore_state();
   void save_state();
-  void call(const std::string& command) override;
-  static std::map<std::string, QKeySequence> default_bindings();
-  static constexpr auto TYPE = "MainWindow";
-  std::string type() const override;
   void keyPressEvent(QKeyEvent* e) override;
 
 protected:

@@ -12,10 +12,10 @@ namespace omm::actions
 {
 
 
-void make_smooth(Scene& scene);
-void make_linear(Scene& scene);
-void remove_selected_points(Scene& scene);
-void subdivide(Scene& scene);
-void evaluate(Scene& scene);
+void make_smooth();
+void make_linear();
+void remove_selected_points();
+void subdivide();
+void evaluate();
 
 } // namespace omm::actions

@@ -10,6 +10,16 @@
 #include "managers/manager.h"
 #include "managers/propertymanager/propertymanager.h"
 #include "managers/objectmanager/objectmanager.h"
+#include "mainwindow/actions.h"
+
+#include "managers/propertymanager/propertymanager.h"
+#include "managers/objectmanager/objectmanager.h"
+#include "scene/scene.h"
+#include "commands/addcommand.h"
+#include "objects/path.h"
+#include "mainwindow/actions.h"
+#include "common.h"
+#include "keybindings/keybindingsdialog.h"
 
 namespace {
 constexpr auto FILE_ENDING = ".omm";
@@ -24,6 +34,7 @@ Application::Application(QApplication& app)
   : m_app(app)
   , scene(python_engine)
 {
+  key_bindings.set_global_command_interface(*this);
   if (m_instance == nullptr) {
     m_instance = this;
   } else {
@@ -40,7 +51,6 @@ Application& Application::instance()
 void Application::set_main_window(MainWindow& main_window)
 {
   m_main_window = &main_window;
-  key_bindings.set_global_command_interface(main_window);
 }
 
 void Application::quit()
@@ -147,5 +157,75 @@ bool Application::load()
     return false;
   }
 }
+
+std::map<std::string, QKeySequence> Application::default_bindings()
+{
+  std::map<std::string, QKeySequence> map {
+    { "undo", QKeySequence("Ctrl+Z") },
+    { "redo", QKeySequence("Ctrl+Y") },
+    { "new document", QKeySequence("Ctrl+N") },
+    { "save document", QKeySequence("Ctrl+S") },
+    { "save document as", QKeySequence("Ctrl+Shift+S") },
+    { "load document", QKeySequence("Ctrl+O") },
+    { "make smooth", QKeySequence() },
+    { "make linear", QKeySequence() },
+    { "remove points", QKeySequence() },
+    { "subdivide", QKeySequence() },
+    { "evaluate", QKeySequence() },
+    { "show keybindings dialog", QKeySequence() },
+  };
+
+  for (const auto& key : Object::keys()) {
+    map.insert(std::pair("create " + key, QKeySequence()));
+  }
+
+  for (const auto& key : Manager::keys()) {
+    map.insert(std::pair("show " + key, QKeySequence()));
+  }
+
+  return map;
+}
+
+void Application::call(const std::string& command)
+{
+  const auto save = static_cast<bool(Application::*)()>(&Application::save);
+
+  Dispatcher map {
+    { "undo", std::bind(&QUndoStack::undo, &scene.undo_stack) },
+    { "redo", std::bind(&QUndoStack::redo, &scene.undo_stack) },
+    { "new document", std::bind(&Application::reset, this) },
+    { "save document", std::bind(save, this) },
+    { "save document as", std::bind(&Application::save_as, this) },
+    { "load document", std::bind(&Application::load, this) },
+    { "make smooth", &actions::make_smooth },
+    { "make linear", &actions::make_linear },
+    { "remove points", &actions::remove_selected_points },
+    { "subdivide", &actions::subdivide },
+    { "evaluate", &actions::evaluate },
+    { "show keybindings dialog", [this]() {
+        KeyBindingsDialog(Application::instance().key_bindings, m_main_window).exec();
+    } },
+  };
+
+  for (const auto& key : Object::keys()) {
+    map.insert(std::pair("create " + key, [this, key](){
+      using add_command_type = AddCommand<Tree<Object>>;
+      scene.submit<add_command_type>(scene.object_tree, Object::make(key, &scene));
+    }));
+  }
+
+  for (const auto& key : Manager::keys()) {
+    map.insert(std::pair("show " + key, [this, key](){
+      auto manager = Manager::make(key, scene);
+      auto& ref = *manager;
+      m_main_window->addDockWidget(Qt::TopDockWidgetArea, manager.release());
+      ref.setFloating(true);
+    }));
+  }
+
+  dispatch(command, map);
+}
+
+std::string Application::type() const { return TYPE; }
 
 }  // namespace omm

@@ -4,6 +4,7 @@
 #include "scene/scene.h"
 #include "python/pythonengine.h"
 #include "keybindings/keybindings.h"
+#include "keybindings/commandinterface.h"
 
 class QApplication;
 
@@ -12,7 +13,7 @@ namespace omm
 
 class MainWindow;
 
-class Application : public QObject
+class Application : public QObject, public CommandInterface
 {
   Q_OBJECT
 public:
@@ -27,6 +28,11 @@ public:
   void update_undo_redo_enabled();
   void set_main_window(MainWindow& main_window);
   static Application& instance();
+
+  void call(const std::string& command) override;
+  static std::map<std::string, QKeySequence> default_bindings();
+  static constexpr auto TYPE = "Application";
+  std::string type() const override;
 
   PythonEngine python_engine;
   Scene scene;

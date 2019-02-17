@@ -2,6 +2,7 @@
 
 #include "managers/itemmanager.h"
 #include "managers/objectmanager/objecttreeview.h"
+#include "keybindings/commandinterface.h"
 
 namespace omm
 {

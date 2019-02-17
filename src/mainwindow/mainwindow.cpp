@@ -11,18 +11,9 @@
 #include <functional>
 
 #include "mainwindow/viewport/viewport.h"
-#include "mainwindow/mainmenubar.h"
 #include "mainwindow/application.h"
 #include "mainwindow/toolbar.h"
-
-#include "managers/propertymanager/propertymanager.h"
-#include "managers/objectmanager/objectmanager.h"
-#include "scene/scene.h"
-#include "commands/addcommand.h"
-#include "objects/path.h"
-#include "mainwindow/actions.h"
-#include "common.h"
-#include "keybindings/keybindingsdialog.h"
+#include "managers/manager.h"
 
 namespace
 {
@@ -65,7 +56,6 @@ void write_each(QSettings& settings, const std::string& key, const Ts& ts, const
   settings.endArray();
 }
 
-constexpr auto SEPARATOR = "separator";
 const std::vector<std::string> file_menu_actions = { "new document", "save document",
   "save document as", "load document" };
 
@@ -84,12 +74,10 @@ const std::vector<std::string> window_menu_actions()
   auto actions = ::transform<std::string, std::vector>(omm::Manager::keys(), [](const auto& key) {
     return "show " + key;
   });
-  actions.push_back(SEPARATOR);
+  actions.push_back(omm::KeyBindings::SEPARATOR);
   actions.push_back("show keybindings dialog");
   return actions;
 };
-
-
 
 }  // namespace
 
@@ -113,18 +101,7 @@ MainWindow::MainWindow(Application& app)
 
 void MainWindow::add_menu(const std::string& title, const std::vector<std::string>& actions)
 {
-  auto menu = std::make_unique<QMenu>();
-  for (const auto action_name : actions) {
-    if (action_name == SEPARATOR) {
-      menu->addSeparator();
-    } else {
-      auto action = m_app.key_bindings.make_action(*this, action_name);
-      if (action != nullptr) {
-        action->setParent(this);
-        menu->addAction(action.release());
-      }
-    }
-  }
+  auto menu = m_app.key_bindings.make_menu(m_app, actions);
   menu->setTearOffEnabled(true);
   menu->setTitle(QString::fromStdString(title));
   menuBar()->addMenu(menu.release());
@@ -180,79 +157,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
   QMainWindow::closeEvent(event);
 }
 
-std::map<std::string, QKeySequence> MainWindow::default_bindings()
-{
-  std::map<std::string, QKeySequence> map {
-    { "undo", QKeySequence("Ctrl+Z") },
-    { "redo", QKeySequence("Ctrl+Y") },
-    { "new document", QKeySequence("Ctrl+N") },
-    { "save document", QKeySequence("Ctrl+S") },
-    { "save document as", QKeySequence("Ctrl+Shift+S") },
-    { "load document", QKeySequence("Ctrl+O") },
-    { "make smooth", QKeySequence() },
-    { "make linear", QKeySequence() },
-    { "remove points", QKeySequence() },
-    { "subdivide", QKeySequence() },
-    { "evaluate", QKeySequence() },
-    { "show keybindings dialog", QKeySequence() },
-  };
-
-  for (const auto& key : Object::keys()) {
-    map.insert(std::pair("create " + key, QKeySequence()));
-  }
-
-  for (const auto& key : Manager::keys()) {
-    map.insert(std::pair("show " + key, QKeySequence()));
-  }
-
-  return map;
-}
-
-void MainWindow::call(const std::string& command)
-{
-  const auto save = static_cast<bool(Application::*)()>(&Application::save);
-
-  Dispatcher map {
-    { "undo", std::bind(&QUndoStack::undo, &m_app.scene.undo_stack) },
-    { "redo", std::bind(&QUndoStack::redo, &m_app.scene.undo_stack) },
-    { "new document", std::bind(&Application::reset, &m_app) },
-    { "save document", std::bind(save, &m_app) },
-    { "save document as", std::bind(&Application::save_as, &m_app) },
-    { "load document", std::bind(&Application::load, &m_app) },
-    { "make smooth", std::bind(&actions::make_smooth, std::ref(m_app.scene)) },
-    { "make linear", std::bind(&actions::make_linear, std::ref(m_app.scene)) },
-    { "remove points", std::bind(&actions::remove_selected_points, std::ref(m_app.scene)) },
-    { "subdivide", std::bind(&actions::subdivide, std::ref(m_app.scene)) },
-    { "evaluate", std::bind(&actions::evaluate, std::ref(m_app.scene)) },
-    { "show keybindings dialog", [this]() {
-        KeyBindingsDialog(Application::instance().key_bindings, this).exec();
-    } },
-  };
-
-  for (const auto& key : Object::keys()) {
-    map.insert(std::pair("create " + key, [this, key](){
-      Scene& scene = m_app.scene;
-      using add_command_type = AddCommand<Tree<Object>>;
-      scene.submit<add_command_type>(scene.object_tree, Object::make(key, &scene));
-    }));
-  }
-
-  for (const auto& key : Manager::keys()) {
-    map.insert(std::pair("show " + key, [this, key](){
-      auto manager = Manager::make(key, m_app.scene);
-      auto& ref = *manager;
-      addDockWidget(Qt::TopDockWidgetArea, manager.release());
-      ref.setFloating(true);
-    }));
-  }
-
-  dispatch(command, map);
-}
-
-std::string MainWindow::type() const { return TYPE; }
 void MainWindow::keyPressEvent(QKeyEvent* e)
 {
-  if (!Application::instance().key_bindings.call(*e, *this)) {
+  if (!Application::instance().key_bindings.call(*e, m_app)) {
     QMainWindow::keyPressEvent(e);
   }
 }

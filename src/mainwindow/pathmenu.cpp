@@ -20,16 +20,16 @@ PathMenu::PathMenu(Scene& scene, QWidget* parent)
 {
   setTitle(tr("&Path"));
   action(*this, tr("make smooth"), [&scene]() {
-    actions::make_smooth(scene);
+    actions::make_smooth();
   });
   action(*this, tr("make linear"), [&scene]() {
-    actions::make_linear(scene);
+    actions::make_linear();
   });
   action(*this, tr("remove selected points"), [&scene]() {
-    actions::remove_selected_points(scene);
+    actions::remove_selected_points();
   });
   action(*this, tr("subdivide"), [&scene]() {
-    actions::subdivide(scene);
+    actions::subdivide();
   });
 }
 
