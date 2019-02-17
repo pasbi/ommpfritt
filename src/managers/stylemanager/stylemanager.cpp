@@ -12,9 +12,13 @@ namespace omm
 {
 
 
-const std::map<std::string, QKeySequence> StyleManager::DEFAULT_BINDINGS {
-  { "new", QKeySequence("Ctrl+N") },
-};
+std::map<std::string, QKeySequence> StyleManager::default_bindings()
+{
+  return {
+    { "new", QKeySequence("Ctrl+N") },
+    { "delete", QKeySequence("Del") },
+  };
+}
 
 StyleManager::StyleManager(Scene& scene)
   : ItemManager(tr("Styles"), scene, scene.style_list_adapter)
@@ -29,7 +33,8 @@ void StyleManager::call(const std::string& command)
     { "new", [this]() {
       using command_type = AddCommand<List<Style>>;
       scene().submit<command_type>(scene().styles, scene().default_style().clone());
-    } }
+    } },
+    { "delete", std::bind(&StyleListView::remove_selection, &item_view()) }
   });
 }
 

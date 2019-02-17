@@ -14,7 +14,7 @@ class StyleManager : public ItemManager<StyleListView>, public CommandInterface
 public:
   explicit StyleManager(Scene& scene);
   void call(const std::string& command) override;
-  static const std::map<std::string, QKeySequence> DEFAULT_BINDINGS;
+  static std::map<std::string, QKeySequence> default_bindings();
 
 protected:
   void keyPressEvent(QKeyEvent* event) override;

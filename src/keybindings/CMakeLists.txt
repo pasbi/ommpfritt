@@ -1,4 +1,5 @@
 file (GLOB SOURCES
+  "action.cpp"
   "commandinterface.cpp"
   "keybinding.cpp"
   "keybindings.cpp"

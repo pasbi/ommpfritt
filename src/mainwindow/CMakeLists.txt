@@ -1,4 +1,5 @@
 file (GLOB SOURCES
+  "actions.cpp"
   "application.cpp"
   "mainmenubar.cpp"
   "mainwindow.cpp"

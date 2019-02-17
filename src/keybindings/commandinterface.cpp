@@ -8,7 +8,6 @@ bool CommandInterface::dispatch(const std::string& command, const Dispatcher& di
 {
   const auto it = dispatcher.find(command);
   if (it != dispatcher.end()) {
-    LOG(INFO) << "dispatch command " << command;
     it->second();
     return true;
   } else {

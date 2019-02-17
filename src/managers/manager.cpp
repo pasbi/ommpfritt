@@ -31,5 +31,4 @@ void Manager::set_widget(std::unique_ptr<QWidget> widget)
   this->widget()->layout()->addWidget(widget.release());
 }
 
-
 }  // namespace omm

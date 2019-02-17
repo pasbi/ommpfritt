@@ -4,6 +4,8 @@
 #include <vector>
 #include <QAbstractTableModel>
 #include <QTimer>
+#include <QMenu>
+#include <memory>
 
 class QKeyEvent;
 
@@ -25,6 +27,7 @@ public:
   bool call(const QKeySequence& key_sequence, CommandInterface& interface) const;
   bool call(const QKeyEvent& key_event, CommandInterface& interface) const;
   void set_global_command_interface(CommandInterface& global_command_interface);
+  std::unique_ptr<QAction> make_action(CommandInterface& ci, const std::string& actions) const;
 
 public:
   int columnCount(const QModelIndex& parent) const override;
@@ -38,7 +41,7 @@ public:
   static constexpr auto CONTEXT_COLUMN = 1;
 
 private:
-  std::vector<KeyBinding> m_bindings;
+  std::vector<KeyBinding> m_bindings;  // pointers must not change
   CommandInterface* m_global_command_interface = nullptr;
   QKeySequence make_key_sequence(const QKeyEvent& event) const;
   mutable std::list<int> m_current_sequene;

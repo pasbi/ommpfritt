@@ -153,6 +153,4 @@ bool can_remove_selection(QWidget* parent, Scene& scene,
   }
 }
 
-// TODO undo removing of two top-level siblings fails
-
 }  // namespace omm

@@ -21,7 +21,7 @@ public:
   void restore_state();
   void save_state();
   void call(const std::string& command) override;
-  static const std::map<std::string, QKeySequence> DEFAULT_BINDINGS;
+  static std::map<std::string, QKeySequence> default_bindings();
   static constexpr auto TYPE = "MainWindow";
   std::string type() const override;
   void keyPressEvent(QKeyEvent* e) override;
@@ -31,7 +31,7 @@ protected:
 
 private:
   Application& m_app;
-
+  void add_menu(const std::string& title, const std::vector<std::string>& actions);
 };
 
 }  // namespace omm

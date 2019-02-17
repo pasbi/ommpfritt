@@ -5,9 +5,11 @@
 #include <QKeyEvent>
 #include "common.h"
 #include <map>
+#include "keybindings/action.h"
 
 #include "mainwindow/mainwindow.h"
 #include "managers/stylemanager/stylemanager.h"
+#include "managers/objectmanager/objectmanager.h"
 
 namespace
 {
@@ -20,7 +22,7 @@ QString settings_key(const omm::KeyBinding& binding)
 template<typename CommandInterfaceT>
 void collect_default_bindings(std::list<omm::KeyBinding>& bindings)
 {
-  for (const auto& [ name, key_sequence ] : CommandInterfaceT::DEFAULT_BINDINGS) {
+  for (const auto& [ name, key_sequence ] : CommandInterfaceT::default_bindings()) {
     bindings.push_back(omm::KeyBinding(name, CommandInterfaceT::TYPE, key_sequence));
   }
 }
@@ -30,6 +32,7 @@ std::vector<omm::KeyBinding> collect_default_bindings()
   std::list<omm::KeyBinding> default_bindings;
   collect_default_bindings<omm::MainWindow>(default_bindings);
   collect_default_bindings<omm::StyleManager>(default_bindings);
+  collect_default_bindings<omm::ObjectManager>(default_bindings);
   return std::vector(default_bindings.begin(), default_bindings.end());
 }
 
@@ -128,7 +131,6 @@ bool KeyBindings::call(const QKeyEvent& key_event, CommandInterface& interface) 
     return false;
   }
 }
-
 int KeyBindings::columnCount(const QModelIndex& parent) const { return 3; }
 int KeyBindings::rowCount(const QModelIndex& parent) const { return m_bindings.size(); }
 QVariant KeyBindings::data(const QModelIndex& index, int role) const
@@ -196,6 +198,25 @@ Qt::ItemFlags KeyBindings::flags(const QModelIndex& index) const
 void KeyBindings::set_global_command_interface(CommandInterface& global_command_interface)
 {
   m_global_command_interface = &global_command_interface;
+}
+
+std::unique_ptr<QAction>
+KeyBindings::make_action(CommandInterface& ci, const std::string& action_name) const
+{
+  auto label = QString::fromStdString(action_name);
+  const auto it = std::find_if(m_bindings.begin(), m_bindings.end(), [&](const auto& binding) {
+    return binding.name() == action_name && binding.context() == ci.type();
+  });
+  if (it == m_bindings.end()) {
+    LOG(ERROR) << "Failed to find keybindings for '" << ci.type() << "::" << action_name << "'.";
+    return nullptr;
+  } else {
+    auto action = std::make_unique<Action>(*it);
+    QObject::connect(action.get(), &QAction::triggered, [&ci, action_name] {
+      ci.call(action_name);
+    });
+    return action;
+  }
 }
 
 }  // namespace omm
