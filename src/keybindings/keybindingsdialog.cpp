@@ -9,6 +9,7 @@
 #include "keybindings/keybindings.h"
 #include "keybindings/keybindingstable.h"
 #include <glog/logging.h>
+#include <QSettings>
 
 namespace omm
 {
@@ -19,10 +20,6 @@ KeyBindingsDialog::KeyBindingsDialog(KeyBindings& key_bindings, QWidget* parent)
 
   auto edit = std::make_unique<KeyBindingsTable>(key_bindings);
   edit->horizontalHeader()->setStretchLastSection(true);
-  QTimer::singleShot(1000, [this, edit=edit.get()]() {
-    LOG(INFO) << edit->sizeHint().width();
-    LOG(INFO) << "adjust"; edit->adjustSize(); this->adjustSize();
-  });
   layout->addWidget(edit.release());
 
   const auto buttons = QDialogButtonBox::Ok;
@@ -32,6 +29,19 @@ KeyBindingsDialog::KeyBindingsDialog(KeyBindings& key_bindings, QWidget* parent)
   layout->addWidget(button_box.release());
 
   setLayout(layout.release());
+
+  QSettings settings;
+  settings.beginGroup(KEYBINDINGS_DIALOG_SETTINGS_GROUP);
+  restoreGeometry(settings.value(GEOMETRY_SETTINGS_KEY).toByteArray());
+  settings.endGroup();
+}
+
+KeyBindingsDialog::~KeyBindingsDialog()
+{
+  QSettings settings;
+  settings.beginGroup(KEYBINDINGS_DIALOG_SETTINGS_GROUP);
+  settings.setValue(GEOMETRY_SETTINGS_KEY, saveGeometry());
+  settings.endGroup();
 }
 
 }  // namespace omm

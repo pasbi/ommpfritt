@@ -43,7 +43,6 @@ KeyBindings::KeyBindings(CommandInterface& global_command_interface)
   restore();
   m_reset_timer.setSingleShot(true);
   connect(&m_reset_timer, &QTimer::timeout, [this]() {
-    LOG(INFO) << "reset";
     m_current_sequene.clear();
   });
 }
@@ -174,9 +173,9 @@ QVariant KeyBindings::headerData(int section, Qt::Orientation orientation, int r
     switch (role) {
     case Qt::DisplayRole:
       switch (section) {
-      case NAME_COLUMN: return "name";
-      case CONTEXT_COLUMN: return "context";
-      case SEQUENCE_COLUMN: return "sequence";
+      case NAME_COLUMN: return tr("name");
+      case CONTEXT_COLUMN: return tr("context");
+      case SEQUENCE_COLUMN: return tr("sequence");
       }
     }
     return QVariant();
