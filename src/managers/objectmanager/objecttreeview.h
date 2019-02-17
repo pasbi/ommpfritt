@@ -26,8 +26,6 @@ public:
 
 protected:
   void populate_menu(QMenu& menu, const QModelIndex& index) const override;
-  void mousePressEvent(QMouseEvent* e) override;
-  void mouseMoveEvent(QMouseEvent* e) override;
   void paintEvent(QPaintEvent* e) override;
 
 private:
