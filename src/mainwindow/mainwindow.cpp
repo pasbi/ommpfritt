@@ -66,7 +66,8 @@ std::map<std::string, std::list<std::string>> MainWindow::main_menu_entries()
   std::map<std::string, std::list<std::string>> entries = {
     { "file", { "new document", "save document", "save document as", "load document" } },
     { "edit", { "undo", "redo" } },
-    { "path", { "make smooth", "make linear", "remove points", "subdivide" } },
+    { "path", { "make smooth", "make linear", "remove points", "subdivide", "select all",
+                "deselect all", "invert selection" } },
     { "tool", { "previous tool", KeyBindings::SEPARATOR } },
     { "scene", { "evaluate" } },
     { "create", {} },

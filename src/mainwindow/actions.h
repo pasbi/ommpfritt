@@ -18,5 +18,8 @@ void subdivide();
 void evaluate();
 void show_keybindings_dialog();
 void previous_tool();
+void select_all();
+void deselect_all();
+void invert_selection();
 
 } // namespace omm::actions

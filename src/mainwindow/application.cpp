@@ -167,6 +167,9 @@ std::map<std::string, QKeySequence> Application::default_bindings()
     { "evaluate", QKeySequence() },
     { "show keybindings dialog", QKeySequence() },
     { "previous tool", QKeySequence("Space") },
+    { "select all", QKeySequence("A") },
+    { "deselect all", QKeySequence() },
+    { "invert selection", QKeySequence("I") },
   };
 
   for (const auto& key : Object::keys()) {
@@ -203,6 +206,9 @@ void Application::call(const std::string& command)
     { "evaluate", &actions::evaluate },
     { "show keybindings dialog", &actions::show_keybindings_dialog },
     { "previous tool", &actions::previous_tool },
+    { "select all", &actions::select_all },
+    { "deselect all", &actions::deselect_all },
+    { "invert selection", &actions::invert_selection },
   };
 
   for (const auto& key : Object::keys()) {

@@ -33,8 +33,3 @@ private:
 };
 
 }  // namespace omm
-
-
-// TODO tools must be selectable via command interface
-// select-last-tool command
-// select all/none/invert points

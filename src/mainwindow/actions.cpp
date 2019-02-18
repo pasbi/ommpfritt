@@ -107,4 +107,30 @@ void show_keybindings_dialog()
 
 void previous_tool() { scene().tool_box.set_previous_tool(); }
 
+void select_all()
+{
+  for (auto* path : Object::cast<Path>(scene().object_selection())) {
+    for (auto* point : path->points()) {
+      point->is_selected = true;
+    }
+  }
+}
+void deselect_all()
+{
+  for (auto* path : Object::cast<Path>(scene().object_selection())) {
+    for (auto* point : path->points()) {
+      point->is_selected = false;
+    }
+  }
+}
+
+void invert_selection()
+{
+  for (auto* path : Object::cast<Path>(scene().object_selection())) {
+    for (auto* point : path->points()) {
+      point->is_selected = !point->is_selected;
+    }
+  }
+}
+
 }  // namespace omm::actions
