@@ -8,18 +8,11 @@
 
 #include "mainwindow/mainwindow.h"
 #include "managers/manager.h"
-#include "managers/propertymanager/propertymanager.h"
-#include "managers/objectmanager/objectmanager.h"
-#include "mainwindow/actions.h"
-
-#include "managers/propertymanager/propertymanager.h"
-#include "managers/objectmanager/objectmanager.h"
 #include "scene/scene.h"
 #include "commands/addcommand.h"
-#include "objects/path.h"
 #include "mainwindow/actions.h"
-#include "common.h"
-#include "keybindings/keybindingsdialog.h"
+#include "objects/object.h"
+#include "tools/toolbox.h"
 
 namespace {
 constexpr auto FILE_ENDING = ".omm";
@@ -173,6 +166,7 @@ std::map<std::string, QKeySequence> Application::default_bindings()
     { "subdivide", QKeySequence() },
     { "evaluate", QKeySequence() },
     { "show keybindings dialog", QKeySequence() },
+    { "previous tool", QKeySequence("Space") },
   };
 
   for (const auto& key : Object::keys()) {
@@ -183,9 +177,14 @@ std::map<std::string, QKeySequence> Application::default_bindings()
     map.insert(std::pair("show " + key, QKeySequence()));
   }
 
+  for (const auto& key : Tool::keys()) {
+    map.insert(std::pair("select " + key, QKeySequence()));
+  }
+
   return map;
 }
 
+// TODO bind all actions to `&actions::...`. Then this method can be made static.
 void Application::call(const std::string& command)
 {
   const auto save = static_cast<bool(Application::*)()>(&Application::save);
@@ -202,9 +201,8 @@ void Application::call(const std::string& command)
     { "remove points", &actions::remove_selected_points },
     { "subdivide", &actions::subdivide },
     { "evaluate", &actions::evaluate },
-    { "show keybindings dialog", [this]() {
-        KeyBindingsDialog(Application::instance().key_bindings, m_main_window).exec();
-    } },
+    { "show keybindings dialog", &actions::show_keybindings_dialog },
+    { "previous tool", &actions::previous_tool },
   };
 
   for (const auto& key : Object::keys()) {
@@ -223,9 +221,16 @@ void Application::call(const std::string& command)
     }));
   }
 
+  for (const auto& key : Tool::keys()) {
+    map.insert(std::pair("select " + key, [this, key](){
+      scene.tool_box.set_active_tool(key);
+    }));
+  }
+
   dispatch(command, map);
 }
 
 std::string Application::type() const { return TYPE; }
+MainWindow* Application::main_window() const { return m_main_window; }
 
 }  // namespace omm

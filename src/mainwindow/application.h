@@ -36,6 +36,7 @@ public:
 
   PythonEngine python_engine;
   Scene scene;
+  MainWindow* main_window() const;
 
 private:
   QApplication& m_app;

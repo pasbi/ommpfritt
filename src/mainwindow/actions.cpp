@@ -5,6 +5,8 @@
 #include "properties/optionsproperty.h"
 #include "tags/scripttag.h"
 #include "mainwindow/application.h"
+#include "keybindings/keybindingsdialog.h"
+#include "mainwindow/mainwindow.h"
 
 namespace
 {
@@ -96,5 +98,13 @@ void evaluate()
     if (script_tag != nullptr) { script_tag->force_evaluate(); }
   }
 }
+
+void show_keybindings_dialog()
+{
+  auto& app = Application::instance();
+  KeyBindingsDialog(app.key_bindings, app.main_window()).exec();
+}
+
+void previous_tool() { scene().tool_box.set_previous_tool(); }
 
 }  // namespace omm::actions

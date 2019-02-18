@@ -67,6 +67,7 @@ std::map<std::string, std::list<std::string>> MainWindow::main_menu_entries()
     { "file", { "new document", "save document", "save document as", "load document" } },
     { "edit", { "undo", "redo" } },
     { "path", { "make smooth", "make linear", "remove points", "subdivide" } },
+    { "tool", { "previous tool", KeyBindings::SEPARATOR } },
     { "scene", { "evaluate" } },
     { "create", {} },
     { "window", { KeyBindings::SEPARATOR, "show keybindings dialog" } }
@@ -74,6 +75,7 @@ std::map<std::string, std::list<std::string>> MainWindow::main_menu_entries()
 
   for (const std::string& key : Manager::keys()) { entries["window"].push_front("show " + key); }
   for (const std::string& key : Object::keys()) { entries["create"].push_back("create " + key); }
+  for (const std::string& key : Tool::keys()) { entries["tool"].push_back("select " + key); }
 
   return entries;
 }
@@ -90,6 +92,7 @@ MainWindow::MainWindow(Application& app)
   add_menu("&Edit", main_menu_entries()["edit"]);
   add_menu("&Create", main_menu_entries()["create"]);
   add_menu("&Path", main_menu_entries()["path"]);
+  add_menu("&Tool", main_menu_entries()["tool"]);
   add_menu("&Scene", main_menu_entries()["scene"]);
   add_menu("&Window", main_menu_entries()["window"]);
 }

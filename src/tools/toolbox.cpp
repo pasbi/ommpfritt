@@ -12,6 +12,19 @@ auto make_tool_map(omm::Scene& scene)
   return map;
 }
 
+template<typename T> void unique(std::list<T>& ls)
+{
+  std::set<T> occurences;
+  ls.remove_if([&occurences](const T& item) {
+    if (::contains(occurences, item)) {
+      return true;
+    } else {
+      occurences.insert(item);
+      return false;
+    }
+  });
+}
+
 }  // namespace
 
 namespace omm
@@ -40,9 +53,19 @@ Tool& ToolBox::tool(const std::string& key) const
 
 void ToolBox::set_active_tool(const std::string &key)
 {
+  m_history.push_front(key);
+  ::unique(m_history);
   m_active_tool = m_tools.at(key).get();
   m_scene.set_selection(std::set<AbstractPropertyOwner*> { m_active_tool });
   m_active_tool->on_scene_changed();
+}
+
+void ToolBox::set_previous_tool()
+{
+  if (m_history.size() > 1) {
+    const auto name = *std::next(m_history.begin());
+    set_active_tool(name);
+  }
 }
 
 }  // namespace
