@@ -43,6 +43,7 @@ Viewport::Viewport(Scene& scene)
   , m_renderer(scene)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  setFocusPolicy(Qt::StrongFocus);
   connect(&*m_timer, &QTimer::timeout, [this]() {
     update();
   });
