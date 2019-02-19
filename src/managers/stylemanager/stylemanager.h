@@ -18,6 +18,8 @@ public:
 
 protected:
   void keyPressEvent(QKeyEvent* event) override;
+  std::vector<std::string> application_actions() const override;
+  void populate_menu(QMenu& menu) override;
 };
 
 }  // namespace omm

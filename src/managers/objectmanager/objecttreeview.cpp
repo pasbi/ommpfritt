@@ -48,11 +48,6 @@ ObjectTreeView::ObjectTreeView(ObjectTreeAdapter& model)
   setAutoExpandDelay(200);
 }
 
-std::vector<std::string> ObjectTreeView::application_actions() const
-{
-  return MainWindow::object_menu_entries();
-}
-
 std::set<AbstractPropertyOwner*> ObjectTreeView::selected_items() const
 {
   return ::merge(selected_objects(), selected_tags());

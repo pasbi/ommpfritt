@@ -47,26 +47,6 @@ void ManagerItemView<ItemViewT, ItemModelT>::setSelectionModel(QItemSelectionMod
 }
 
 template<typename ItemViewT, typename ItemModelT>
-void ManagerItemView<ItemViewT, ItemModelT>::contextMenuEvent(QContextMenuEvent *event)
-{
-  auto& app = Application::instance();
-  auto menus = app.key_bindings.make_menus(app, application_actions());
-  if (menus.size() > 0) {
-    assert(menus.size() == 1);
-    auto menu = std::move(menus.front());
-
-    populate_menu(*menu, this->indexAt(event->pos()));
-
-    menu->move(event->globalPos());
-    menu->show();
-
-    menu->setAttribute(Qt::WA_DeleteOnClose);
-    menu.release();
-    event->accept();
-  }
-}
-
-template<typename ItemViewT, typename ItemModelT>
 ItemModelT* ManagerItemView<ItemViewT, ItemModelT>::model() const
 {
   return static_cast<ItemModelT*>(ItemViewT::model());
@@ -100,17 +80,6 @@ std::set<AbstractPropertyOwner*> ManagerItemView<ItemViewT, ItemModelT>::selecte
 
   const auto selected_indexes = this->selectionModel()->selectedIndexes();
   return ::transform<AbstractPropertyOwner*, std::set>(selected_indexes, get_object);
-}
-
-template<typename ItemViewT, typename ItemModelT>
-std::vector<std::string> ManagerItemView<ItemViewT, ItemModelT>::application_actions() const
-{
-  return {};
-}
-
-template<typename ItemViewT, typename ItemModelT> void
-ManagerItemView<ItemViewT, ItemModelT>::populate_menu(QMenu& menu, const QModelIndex& index) const
-{
 }
 
 template class ManagerItemView<QListView, ListAdapter<Style>>;

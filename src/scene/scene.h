@@ -141,7 +141,9 @@ public:
   void evaluate_tags();
 
 public:
-  bool can_remove_selection(QWidget* parent, std::set<Property*>& properties) const;
+  bool can_remove( QWidget* parent, std::set<AbstractPropertyOwner*> selection,
+                   std::set<Property*>& properties ) const;
+  bool remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& selection);
 };
 
 }  // namespace omm

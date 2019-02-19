@@ -1,6 +1,5 @@
 file (GLOB SOURCES
   "stylelistadapter.cpp"
-  "stylelistview.cpp"
   "stylemanager.cpp"
 )
 

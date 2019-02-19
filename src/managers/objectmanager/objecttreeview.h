@@ -22,7 +22,6 @@ public:
   std::set<AbstractPropertyOwner*> selected_tags() const;
 
 protected:
-  std::vector<std::string> application_actions() const override;
   void paintEvent(QPaintEvent* e) override;
   void dragEnterEvent(QDragEnterEvent* e) override;
   void dragMoveEvent(QDragMoveEvent* e) override;

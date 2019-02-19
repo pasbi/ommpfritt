@@ -26,9 +26,6 @@ public:
   void setSelectionModel(QItemSelectionModel* model) override;
 
 protected:
-  virtual void populate_menu(QMenu& menu, const QModelIndex& index) const;
-  virtual std::vector<std::string> application_actions() const;
-  void contextMenuEvent(QContextMenuEvent *event) override;
   void mouseReleaseEvent(QMouseEvent* e) override;
   void mousePressEvent(QMouseEvent* e) override;
 

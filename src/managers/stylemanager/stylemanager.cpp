@@ -14,7 +14,9 @@ namespace omm
 
 std::map<std::string, QKeySequence> StyleManager::default_bindings()
 {
-  return { };
+  return {
+    { "remove styles", QKeySequence("Del") }
+  };
 }
 
 StyleManager::StyleManager(Scene& scene)
@@ -27,12 +29,7 @@ StyleManager::StyleManager(Scene& scene)
 void StyleManager::call(const std::string& command)
 {
   dispatch(command, {
-    // TODO re-enable the new-style command (perhaps globaly as actions::new_style).
-    // { "new", [this]() {
-    //   using command_type = AddCommand<List<Style>>;
-    //   scene().submit<command_type>(scene().styles, scene().default_style().clone());
-    // } },
-    // { "delete", std::bind(&StyleListView::remove_selection, &item_view()) }
+    { "remove styles", [this](){ scene().remove(this, item_view().selected_items()); } },
   });
 }
 
@@ -41,6 +38,17 @@ void StyleManager::keyPressEvent(QKeyEvent* event)
   if (!Application::instance().key_bindings.call(*event, *this)) {
     Manager::keyPressEvent(event);
   }
+}
+
+std::vector<std::string> StyleManager::application_actions() const
+{
+  return { "new style" };
+}
+
+void StyleManager::populate_menu(QMenu& menu)
+{
+  auto& key_bindings = Application::instance().key_bindings;
+  menu.addAction(key_bindings.make_action(*this, "remove styles").release());
 }
 
 }  // namespace omm

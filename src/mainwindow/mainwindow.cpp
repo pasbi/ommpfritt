@@ -64,7 +64,7 @@ namespace omm
 
 std::vector<std::string> MainWindow::object_menu_entries()
 {
-  std::list<std::string> entries { "object/remove objects", "object/convert objects" };
+  std::list<std::string> entries { "object/remove selection", "object/convert objects" };
 
   for (const std::string& key : Object::keys()) {
     entries.push_back("object/create/create " + key);
@@ -79,10 +79,9 @@ std::vector<std::string> MainWindow::object_menu_entries()
 
 std::vector<std::string> MainWindow::path_menu_entries()
 {
-  std::list<std::string> entries { "path/make smooth", "path/make linear", "path/subdivide",
-    "path/select all", "path/deselect all", "path/invert selection"
+  return std::vector<std::string> { "path/make smooth", "path/make linear",
+    "path/subdivide", "path/select all", "path/deselect all", "path/invert selection"
   };
-  return std::vector(entries.begin(), entries.end());
 }
 
 std::vector<std::string> MainWindow::main_menu_entries()
@@ -91,7 +90,7 @@ std::vector<std::string> MainWindow::main_menu_entries()
   std::list<std::string> entries = {
     "file/new document", "file/save document", "file/save document as", "file/load document",
     "edit/undo", "edit/redo",
-    "object/",
+    "object/new style",
     "path/",
     "tool/previous tool", "tool/"s + KeyBindings::SEPARATOR,
     "scene/evaluate",

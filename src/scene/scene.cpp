@@ -16,12 +16,33 @@
 #include "properties/referenceproperty.h"
 #include "renderers/style.h"
 #include "tags/tag.h"
+#include "objects/object.h"
+#include "commands/propertycommand.h"
+#include "commands/removecommand.h"
 
 namespace
 {
 
+template<typename StructureT, typename ItemsT>
+void remove_items(omm::Scene& scene, StructureT& structure, const ItemsT& selection)
+{
+  using remove_command_type = omm::RemoveCommand<StructureT>;
+  scene.submit<remove_command_type>(structure, selection);
+}
+
 constexpr auto ROOT_POINTER = "root";
 constexpr auto STYLES_POINTER = "styles";
+
+auto implicitely_selected_tags(const std::set<omm::AbstractPropertyOwner*>& selection)
+{
+  std::set<omm::AbstractPropertyOwner*> tags;
+  for (auto* object : omm::AbstractPropertyOwner::cast<omm::Object>(selection)) {
+    for (auto* tag : object->tags.items()) {
+      tags.insert(tag);
+    }
+  }
+  return tags;
+}
 
 
 std::unique_ptr<omm::Style> make_default_style(omm::Scene* scene)
@@ -303,9 +324,11 @@ void Scene::evaluate_tags()
   for (Tag* tag : tags()) { tag->evaluate(); }
 }
 
-bool Scene::can_remove_selection(QWidget* parent, std::set<Property*>& properties) const
+bool Scene::can_remove( QWidget* parent, std::set<AbstractPropertyOwner*> selection,
+                                         std::set<Property*>& properties ) const
 {
-  const auto reference_holder_map = find_reference_holders(selection());
+  selection = merge(selection, implicitely_selected_tags(selection));
+  const auto reference_holder_map = find_reference_holders(selection);
   if (reference_holder_map.size() > 0) {
     const auto message = QObject::tr("There are %1 items being referenced by other items.\n"
                                      "Remove the refrenced items anyway?")
@@ -330,6 +353,31 @@ bool Scene::can_remove_selection(QWidget* parent, std::set<Property*>& propertie
     }
   } else {
     return true;
+  }
+}
+
+bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& selection)
+{
+  std::set<Property *> properties;
+  if (can_remove(parent, selection, properties)) {
+    undo_stack.beginMacro("Remove Selection");
+    if (properties.size() > 0) {
+      using command_type = PropertiesCommand<ReferenceProperty>;
+      submit<command_type>(properties, nullptr);
+    }
+
+    std::map<Object*, std::set<Tag*>> tag_map;
+    for (Tag* tag : AbstractPropertyOwner::cast<Tag>(selection)) {
+      if (!::contains(selection, tag->owner)) { tag_map[tag->owner].insert(tag); }
+    }
+    for (auto [ owner, tags ] : tag_map) { ::remove_items(*this, owner->tags, tags); }
+    ::remove_items(*this, styles, AbstractPropertyOwner::cast<Style>(selection));
+    ::remove_items(*this, object_tree, AbstractPropertyOwner::cast<Object>(selection));
+
+    undo_stack.endMacro();
+    return true;
+  } else {
+    return false;
   }
 }
 

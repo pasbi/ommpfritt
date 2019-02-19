@@ -15,10 +15,6 @@ class StyleListView : public ManagerItemView<QListView, ListAdapter<Style>>
 public:
   using model_type = ListAdapter<Style>;
   using ManagerItemView<QListView, model_type>::ManagerItemView;
-
-protected:
-  // TODO void std::vector<std::string> application_actions() const override;
-
 };
 
 }  // namespace
