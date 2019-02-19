@@ -43,6 +43,7 @@ ObjectTreeView::ObjectTreeView(ObjectTreeAdapter& model)
   setItemDelegateForColumn(2, m_tags_item_delegate.get());
   setSelectionModel(m_selection_model.get());
   setSelectionBehavior(QAbstractItemView::SelectItems);
+  setAutoExpandDelay(200);
 }
 
 void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
