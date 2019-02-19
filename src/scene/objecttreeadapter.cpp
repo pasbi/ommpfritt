@@ -350,6 +350,7 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
 bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction action,
                                          int row, int column, const QModelIndex &parent ) const
 {
+  const auto actual_column = column >= 0 ? column : parent.column();
   if (ItemModelAdapter::canDropMimeData(data, action, row, column, parent)) {
     return true;
   } else {
@@ -357,12 +358,12 @@ bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction a
     if (pdata != nullptr) {
       const auto tags = pdata->tags();
       if (tags.size() > 0) {
-        switch (parent.column()) {
+        switch (actual_column) {
         case OBJECT_COLUMN: return true;
         case TAGS_COLUMN:
           return tags.front() != current_tag_predecessor || action != Qt::MoveAction;
         }
-        return true;
+        return false;
       }
       if (const auto styles = pdata->styles(); styles.size() > 0) {
         if (parent.column() == OBJECT_COLUMN && column < 0) {
