@@ -17,7 +17,8 @@ public:
   using ManagerItemView<QListView, model_type>::ManagerItemView;
 
 protected:
-  void populate_menu(QMenu& menu, const QModelIndex& index) const override;
+  // TODO void std::vector<std::string> application_actions() const override;
+
 };
 
 }  // namespace

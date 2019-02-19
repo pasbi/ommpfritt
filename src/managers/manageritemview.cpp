@@ -13,6 +13,7 @@
 #include "managers/objectmanager/objecttreeview.h"
 #include "scene/objecttreeadapter.h"
 #include "scene/scene.h"
+#include "mainwindow/application.h"
 
 namespace omm
 {
@@ -48,44 +49,27 @@ void ManagerItemView<ItemViewT, ItemModelT>::setSelectionModel(QItemSelectionMod
 template<typename ItemViewT, typename ItemModelT>
 void ManagerItemView<ItemViewT, ItemModelT>::contextMenuEvent(QContextMenuEvent *event)
 {
-  auto menu = std::make_unique<QMenu>();
-  populate_menu(*menu, this->indexAt(event->pos()));
+  auto& app = Application::instance();
+  auto menus = app.key_bindings.make_menus(app, application_actions());
+  if (menus.size() > 0) {
+    assert(menus.size() == 1);
+    auto menu = std::move(menus.front());
 
-  menu->move(event->globalPos());
-  menu->show();
+    populate_menu(*menu, this->indexAt(event->pos()));
 
-  menu->setAttribute(Qt::WA_DeleteOnClose);
-  menu.release();
-  event->accept();
+    menu->move(event->globalPos());
+    menu->show();
+
+    menu->setAttribute(Qt::WA_DeleteOnClose);
+    menu.release();
+    event->accept();
+  }
 }
 
 template<typename ItemViewT, typename ItemModelT>
 ItemModelT* ManagerItemView<ItemViewT, ItemModelT>::model() const
 {
   return static_cast<ItemModelT*>(ItemViewT::model());
-}
-
-template<typename ItemViewT, typename ItemModelT> bool
-ManagerItemView<ItemViewT, ItemModelT>::remove_selection()
-{
-  const auto selection = selected_items();
-  Scene& scene = model()->scene;
-  std::set<Property*> properties;
-  if (selection.size() > 0 && can_remove_selection(this, scene, selection, properties))
-  {
-    const auto typed_selection = AbstractPropertyOwner::cast<item_type>(selection);
-    using remove_command_type = RemoveCommand<typename ItemModelT::structure_type>;
-    scene.undo_stack.beginMacro("Remove Selection");
-    if (properties.size() > 0) {
-      using command_type = PropertiesCommand<ReferenceProperty>;
-      scene.template submit<command_type>(properties, nullptr);
-    }
-    scene.template submit<remove_command_type>(model()->structure, typed_selection);
-    scene.undo_stack.endMacro();
-    return true;
-  } else {
-    return false;
-  }
 }
 
 template<typename ItemViewT, typename ItemModelT>
@@ -118,39 +102,18 @@ std::set<AbstractPropertyOwner*> ManagerItemView<ItemViewT, ItemModelT>::selecte
   return ::transform<AbstractPropertyOwner*, std::set>(selected_indexes, get_object);
 }
 
+template<typename ItemViewT, typename ItemModelT>
+std::vector<std::string> ManagerItemView<ItemViewT, ItemModelT>::application_actions() const
+{
+  return {};
+}
+
+template<typename ItemViewT, typename ItemModelT> void
+ManagerItemView<ItemViewT, ItemModelT>::populate_menu(QMenu& menu, const QModelIndex& index) const
+{
+}
+
 template class ManagerItemView<QListView, ListAdapter<Style>>;
 template class ManagerItemView<QTreeView, ObjectTreeAdapter>;
-
-bool can_remove_selection(QWidget* parent, Scene& scene,
-                          const std::set<AbstractPropertyOwner*>& selection,
-                          std::set<Property*>& properties)
-{
-  const auto reference_holder_map = scene.find_reference_holders(selection);
-  if (reference_holder_map.size() > 0) {
-    const auto message = QObject::tr("There are %1 items being referenced by other items.\n"
-                                     "Remove the refrenced items anyway?")
-                                    .arg(reference_holder_map.size());
-    const auto decision = QMessageBox::warning( parent, QObject::tr("Warning"), message,
-                                                QMessageBox::YesToAll | QMessageBox::Cancel );
-    switch (decision) {
-    case QMessageBox::YesToAll:
-    {
-      const auto merge = [](std::set<Property*> accu, const auto& v) {
-        accu.insert(v.second.begin(), v.second.end());
-        return accu;
-      };
-      properties = std::accumulate( reference_holder_map.begin(), reference_holder_map.end(),
-                                    std::set<Property*>(), merge );
-      return true;
-    }
-    case QMessageBox::Cancel:
-      return false;
-    default:
-      assert(false);
-    }
-  } else {
-    return true;
-  }
-}
 
 }  // namespace omm

@@ -64,7 +64,7 @@ namespace omm
 
 std::vector<std::string> MainWindow::object_menu_entries()
 {
-  std::list<std::string> entries { "object/delete objects", "object/convert objects" };
+  std::list<std::string> entries { "object/remove objects", "object/convert objects" };
 
   for (const std::string& key : Object::keys()) {
     entries.push_back("object/create/create " + key);

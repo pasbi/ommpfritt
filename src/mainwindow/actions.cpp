@@ -18,6 +18,12 @@ namespace
 
 omm::Scene& scene() { return omm::Application::instance().scene; }
 
+template<typename StructureT>
+void remove(StructureT& structure, const std::set<typename StructureT::item_type*>& selection)
+{
+  scene().template submit<omm::RemoveCommand<StructureT>>(structure, selection);
+}
+
 void modify_tangents(omm::Path::InterpolationMode mode)
 {
   const auto paths = omm::Object::cast<omm::Path>(scene().object_selection());
@@ -138,9 +144,56 @@ void invert_selection()
   }
 }
 
-void delete_objects()
+void remove_objects()
 {
+  const auto selected_tags = AbstractPropertyOwner::cast<Tag>(scene().selection());
+  const auto selected_objects = AbstractPropertyOwner::cast<Object>(scene().selection());
+  const auto selected_styles = AbstractPropertyOwner::cast<Style>(scene().selection());
 
+  const auto accumulate_free_tags = [selected_objects](auto map, auto* tag) {
+    if (!::contains(selected_objects, tag->owner)) {
+      map[tag->owner].insert(tag);
+    }
+    return map;
+  };
+  const auto explicitely_removed_tags = std::accumulate( selected_tags.begin(),
+                                                         selected_tags.end(),
+                                                         std::map<Object*, std::set<Tag*>>(),
+                                                         accumulate_free_tags );
+
+  const auto accumlate_object_tags = [](std::set<Tag*> tags, const Object* object) {
+    std::set<Tag*> object_tags = object->tags.items();
+    tags.insert(object_tags.begin(), object_tags.end());
+    return tags;
+  };
+  const auto implicitely_removed_tags = std::accumulate( selected_objects.begin(),
+                                                         selected_objects.end(),
+                                                         std::set<Tag*>(),
+                                                         accumlate_object_tags );
+
+  auto removed_items = ::merge( std::set<AbstractPropertyOwner*>(),
+                                selected_objects,
+                                implicitely_removed_tags,
+                                selected_styles );
+  for (auto&& item : explicitely_removed_tags) {
+    removed_items.insert(item.second.begin(), item.second.end());
+  }
+
+  std::set<Property*> properties;
+  QWidget* parent_widget = Application::instance().main_window();
+  if (removed_items.size() > 0 && scene().can_remove_selection(parent_widget, properties)) {
+    scene().undo_stack.beginMacro("Remove Selection");
+    if (properties.size() > 0) {
+      using command_type = PropertiesCommand<ReferenceProperty>;
+      scene().template submit<command_type>(properties, nullptr);
+    }
+    remove(scene().styles, selected_styles);
+    remove(scene().object_tree, selected_objects);
+    for (auto&& item : explicitely_removed_tags) {
+      remove(item.first->tags, item.second);
+    }
+    scene().undo_stack.endMacro();
+  }
 }
 
 void convert_objects()

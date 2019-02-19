@@ -140,6 +140,8 @@ public:
 
   void evaluate_tags();
 
+public:
+  bool can_remove_selection(QWidget* parent, std::set<Property*>& properties) const;
 };
 
 }  // namespace omm

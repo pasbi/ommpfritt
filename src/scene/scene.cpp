@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <variant>
 #include <QTimer>
+#include <QMessageBox>
 
 #include "objects/empty.h"
 #include "external/json.hpp"
@@ -302,5 +303,34 @@ void Scene::evaluate_tags()
   for (Tag* tag : tags()) { tag->evaluate(); }
 }
 
+bool Scene::can_remove_selection(QWidget* parent, std::set<Property*>& properties) const
+{
+  const auto reference_holder_map = find_reference_holders(selection());
+  if (reference_holder_map.size() > 0) {
+    const auto message = QObject::tr("There are %1 items being referenced by other items.\n"
+                                     "Remove the refrenced items anyway?")
+                                    .arg(reference_holder_map.size());
+    const auto decision = QMessageBox::warning( parent, QObject::tr("Warning"), message,
+                                                QMessageBox::YesToAll | QMessageBox::Cancel );
+    switch (decision) {
+    case QMessageBox::YesToAll:
+    {
+      const auto merge = [](std::set<Property*> accu, const auto& v) {
+        accu.insert(v.second.begin(), v.second.end());
+        return accu;
+      };
+      properties = std::accumulate( reference_holder_map.begin(), reference_holder_map.end(),
+                                    std::set<Property*>(), merge );
+      return true;
+    }
+    case QMessageBox::Cancel:
+      return false;
+    default:
+      assert(false);
+    }
+  } else {
+    return true;
+  }
+}
 
 }  // namespace omm

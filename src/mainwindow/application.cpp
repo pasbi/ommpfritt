@@ -172,7 +172,7 @@ std::map<std::string, QKeySequence> Application::default_bindings()
     { "select all", ks("A") },
     { "deselect all", ks() },
     { "invert selection", ks("I") },
-    { "delete objects", ks("Ctrl+Del") },
+    { "remove objects", ks("Ctrl+Del") },
     { "convert objects", ks("C") },
   };
 
@@ -206,7 +206,7 @@ void Application::call(const std::string& command)
     { "select all", &actions::select_all },
     { "deselect all", &actions::deselect_all },
     { "invert selection", &actions::invert_selection },
-    { "delete objects", &actions::delete_objects },
+    { "remove objects", &actions::remove_objects },
     { "convert objects", &actions::convert_objects },
   };
 

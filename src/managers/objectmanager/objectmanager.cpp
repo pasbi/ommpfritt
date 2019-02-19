@@ -26,9 +26,7 @@ ObjectManager::ObjectManager(Scene& scene)
 
 void ObjectManager::call(const std::string& command)
 {
-  dispatch(command, {
-    { "delete", std::bind(&ObjectTreeView::remove_selection, &item_view()) }
-  });
+  dispatch(command, {});
 }
 
 void ObjectManager::keyPressEvent(QKeyEvent* event)
