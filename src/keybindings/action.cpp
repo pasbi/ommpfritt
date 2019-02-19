@@ -42,7 +42,6 @@ public:
     });
     m_name_label = name_label.get();
     name_label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-    name_label->setAutoFillBackground(true);
 
     auto shortcut_label = std::make_unique<LiveLabel>([&key_binding]() {
       return key_binding.key_sequence().toString().toStdString();
@@ -50,8 +49,6 @@ public:
     m_shortcut_label = shortcut_label.get();
     shortcut_label->setAlignment(Qt::AlignRight);
     shortcut_label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-    shortcut_label->setAutoFillBackground(true);
-
 
     auto layout = std::make_unique<QHBoxLayout>();
     layout->addWidget(name_label.release());
@@ -59,12 +56,11 @@ public:
     layout->setSpacing(10);
 
     setLayout(layout.release());
-    setAutoFillBackground(true);
     setMouseTracking(true);
   }
 
-  void enterEvent(QEvent* event) { set_highlighted(true); }
-  void leaveEvent(QEvent* event) { set_highlighted(false); }
+  void enterEvent(QEvent* event) override { set_highlighted(true); }
+  void leaveEvent(QEvent* event) override { set_highlighted(false); }
 
 private:
   LiveLabel* m_name_label;
@@ -76,6 +72,9 @@ private:
     m_shortcut_label->setBackgroundRole(h ? QPalette::Highlight : QPalette::Window);
     m_shortcut_label->setForegroundRole(h ? QPalette::HighlightedText : QPalette::Text);
     setBackgroundRole(h ? QPalette::Highlight : QPalette::Window);
+    setAutoFillBackground(h);
+    m_name_label->setAutoFillBackground(h);
+    m_shortcut_label->setAutoFillBackground(h);
   }
 };
 
