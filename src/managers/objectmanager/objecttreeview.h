@@ -21,12 +21,14 @@ public:
   std::set<AbstractPropertyOwner*> selected_objects() const;
   std::set<AbstractPropertyOwner*> selected_tags() const;
   bool remove_selection() override;
-  void dragEnterEvent(QDragEnterEvent* e) override;
-  void dragMoveEvent(QDragMoveEvent* e) override;
 
 protected:
   void populate_menu(QMenu& menu, const QModelIndex& index) const override;
   void paintEvent(QPaintEvent* e) override;
+  void dragEnterEvent(QDragEnterEvent* e) override;
+  void dragMoveEvent(QDragMoveEvent* e) override;
+  void mouseMoveEvent(QMouseEvent* e) override;
+  void mousePressEvent(QMouseEvent* e) override;
 
 private:
   std::unique_ptr<ObjectTreeSelectionModel> m_selection_model;

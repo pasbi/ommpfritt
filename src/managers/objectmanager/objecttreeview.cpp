@@ -176,4 +176,34 @@ void ObjectTreeView::paintEvent(QPaintEvent* e)
   ManagerItemView<QTreeView, ObjectTreeAdapter>::paintEvent(e);
 }
 
+void ObjectTreeView::mousePressEvent(QMouseEvent* e)
+{
+  if (e->button() == Qt::LeftButton) {
+    m_dragged_index = indexAt(e->pos());
+    m_mouse_press_pos = e->pos();
+  }
+  ManagerItemView::mousePressEvent(e);
+}
+
+void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
+{
+  if ((e->pos() - m_mouse_press_pos).manhattanLength() > QApplication::startDragDistance()) {
+    const auto tag_column = m_dragged_index.column() == ObjectTreeAdapter::TAGS_COLUMN;
+    const auto left_button = e->buttons() & Qt::LeftButton;
+    if (left_button && tag_column) {
+      const auto selected_tags = m_selection_model->selected_tags_ordered(model()->scene);
+      const auto st_apo = AbstractPropertyOwner::cast(selected_tags);
+      if (selected_tags.size() > 0) {
+        auto mime_data = std::make_unique<PropertyOwnerMimeData>(st_apo);
+        auto drag = std::make_unique<QDrag>(this);
+        drag->setMimeData(mime_data.release());
+        // drag->setPixmap()  // TODO
+        drag.release()->exec(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction);
+      }
+      return;
+    }
+  }
+  ManagerItemView::mouseMoveEvent(e);
+}
+
 }  // namespace omm
