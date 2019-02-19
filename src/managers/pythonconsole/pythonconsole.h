@@ -5,6 +5,7 @@
 #include <memory>
 #include "python/pythonengine.h"
 #include <string>
+#include "keybindings/commandinterface.h"
 
 namespace omm
 {
@@ -12,7 +13,7 @@ namespace omm
 class CodeEdit;
 class ReferenceLineEdit;
 
-class PythonConsole : public Manager, public PythonIOObserver
+class PythonConsole : public Manager, public PythonIOObserver, public CommandInterface
 {
   DECLARE_MANAGER_TYPE(PythonConsole)
 
@@ -25,6 +26,7 @@ public:
 
 protected:
   bool eventFilter(QObject* object, QEvent* event) override;
+  void keyPressEvent(QKeyEvent* event) override;
 
 private:
   std::unique_ptr<QMenuBar> make_menu_bar();
@@ -45,6 +47,12 @@ private:
   std::list<std::string>::iterator m_command_stack_pointer = m_command_stack.end();
 
   static constexpr Qt::KeyboardModifiers caption_modifiers = Qt::ControlModifier;
+
+public:
+  static std::map<std::string, QKeySequence> default_bindings();
+  void call(const std::string& command) override;
+  void  populate_menu(QMenu& menu) override;
+
 };
 
 }  // namespace omm

@@ -12,6 +12,7 @@
 #include "mainwindow/application.h"
 #include "managers/stylemanager/stylemanager.h"
 #include "managers/objectmanager/objectmanager.h"
+#include "managers/pythonconsole/pythonconsole.h"
 
 namespace
 {
@@ -35,6 +36,7 @@ std::vector<omm::KeyBinding> collect_default_bindings()
   collect_default_bindings<omm::Application>(default_bindings);
   collect_default_bindings<omm::StyleManager>(default_bindings);
   collect_default_bindings<omm::ObjectManager>(default_bindings);
+  collect_default_bindings<omm::PythonConsole>(default_bindings);
   return std::vector(default_bindings.begin(), default_bindings.end());
 }
 

@@ -9,6 +9,7 @@
 #include "python/pythonengine.h"
 #include "python/scenewrapper.h"
 #include "widgets/referencelineedit.h"
+#include "mainwindow/application.h"
 
 namespace omm
 {
@@ -171,6 +172,33 @@ void PythonConsole::push_command(const std::string& command)
   m_command_stack.erase(m_command_stack_pointer, m_command_stack.end());
   m_command_stack.push_back(command);
   m_command_stack_pointer = m_command_stack.end();
+}
+
+void PythonConsole::keyPressEvent(QKeyEvent* event)
+{
+  if (!Application::instance().key_bindings.call(*event, *this)) {
+    Manager::keyPressEvent(event);
+  }
+}
+
+std::map<std::string, QKeySequence> PythonConsole::default_bindings()
+{
+  return {
+    { "clear python console", QKeySequence("Ctrl+K") }
+  };
+}
+
+void PythonConsole::call(const std::string& command)
+{
+  dispatch(command, {
+    { "clear python console", [this](){ clear();  } },
+  });
+}
+
+void PythonConsole::populate_menu(QMenu& menu)
+{
+  auto& key_bindings = Application::instance().key_bindings;
+  menu.addAction(key_bindings.make_action(*this, "clear python console").release());
 }
 
 }  // namespace omm
