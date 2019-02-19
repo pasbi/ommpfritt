@@ -156,7 +156,8 @@ PointSelectHandle::TangentMode SelectPointsTool::tangent_mode() const
 std::unique_ptr<QMenu> SelectPointsTool::make_context_menu(QWidget* parent)
 {
   auto& app = Application::instance();
-  return app.key_bindings.make_menu(app, MainWindow::main_menu_entries()["path"]);
+  // return app.key_bindings.make_menu(app, MainWindow::main_menu_entries()["path"]);
+  return std::make_unique<QMenu>();
 }
 
 void SelectPointsTool::on_selection_changed()

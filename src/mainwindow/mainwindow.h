@@ -21,14 +21,15 @@ public:
   void save_state();
   void keyPressEvent(QKeyEvent* e) override;
 
-  static std::map<std::string, std::list<std::string>> main_menu_entries();
+  static std::vector<std::string> object_menu_entries();
+  static std::vector<std::string> path_menu_entries();
+  static std::vector<std::string> main_menu_entries();
 
 protected:
   void closeEvent(QCloseEvent *event) override;
 
 private:
   Application& m_app;
-  void add_menu(const std::string& title, const std::list<std::string>& actions);
 
 };
 

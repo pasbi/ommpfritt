@@ -29,8 +29,10 @@ public:
   void set_global_command_interface(CommandInterface& global_command_interface);
   std::unique_ptr<QAction> make_action(CommandInterface& ci, const std::string& actions) const;
   static constexpr auto SEPARATOR = "separator";
-  std::unique_ptr<QMenu>
-  make_menu(CommandInterface& ci, const std::list<std::string>& actions) const;
+  // std::unique_ptr<QMenu>
+  // make_menu(CommandInterface& ci, const std::list<std::string>& actions) const;
+  std::vector<std::unique_ptr<QMenu>>
+  make_menus(CommandInterface& ci, const std::vector<std::string>& actions) const;
 
 public:
   int columnCount(const QModelIndex& parent) const override;

@@ -5,8 +5,10 @@
 #include <QKeyEvent>
 #include "common.h"
 #include <map>
+#include <list>
 #include "keybindings/action.h"
-
+#include <memory>
+#include <QMenu>
 #include "mainwindow/application.h"
 #include "managers/stylemanager/stylemanager.h"
 #include "managers/objectmanager/objectmanager.h"
@@ -34,6 +36,38 @@ std::vector<omm::KeyBinding> collect_default_bindings()
   collect_default_bindings<omm::StyleManager>(default_bindings);
   collect_default_bindings<omm::ObjectManager>(default_bindings);
   return std::vector(default_bindings.begin(), default_bindings.end());
+}
+
+std::pair<std::string, std::string> split(const std::string& path)
+{
+  constexpr auto separator = '/';
+  const auto it = std::find(path.rbegin(), path.rend(), separator);
+  if (it == path.rend()) {
+    return { "", path };
+  } else {
+    const auto i = std::distance(it, path.rend());
+    return { path.substr(0, i-1), path.substr(i) };
+  }
+}
+
+std::unique_ptr<QMenu> add_menu(const std::string& path, std::map<std::string, QMenu*>& menu_map)
+{
+  if (menu_map.count(path) > 0) {
+    return nullptr;
+  } else {
+    const auto [ rest_path, menu_name ] = split(path);
+    auto menu = std::make_unique<QMenu>(QString::fromStdString(menu_name));
+    menu_map.insert({ path, menu.get() });
+
+    if (rest_path.empty()) {
+      return menu;  // menu is top-level and did not exist before.
+    } else {
+      auto top_level_menu = add_menu(rest_path, menu_map);
+      assert(menu_map.count(rest_path) > 0);
+      menu_map[rest_path]->addMenu(menu.release());
+      return top_level_menu;  // may be nullptr if top_level_menu already existed before.
+    }
+  }
 }
 
 }  // namespace
@@ -219,22 +253,23 @@ KeyBindings::make_action(CommandInterface& ci, const std::string& action_name) c
   }
 }
 
-std::unique_ptr<QMenu>
-KeyBindings::make_menu(CommandInterface& ci, const std::list<std::string>& actions) const
+std::vector<std::unique_ptr<QMenu>>
+KeyBindings::make_menus(CommandInterface& ci, const std::vector<std::string>& actions) const
 {
-  auto menu = std::make_unique<QMenu>();
-  for (const auto action_name : actions) {
+  std::list<std::unique_ptr<QMenu>> menus;
+  std::map<std::string, QMenu*> menu_map;
+  for (const auto& action_path : actions) {
+    const auto [path, action_name] = split(action_path);
+    auto menu = ::add_menu(path, menu_map);
+    if (menu) { menus.push_back(std::move(menu)); }
+    assert(menu_map.count(path) > 0);
     if (action_name == SEPARATOR) {
-      menu->addSeparator();
-    } else {
-      auto action = make_action(ci, action_name);
-      if (action != nullptr) {
-        action->setParent(menu.get());
-        menu->addAction(action.release());
-      }
+      menu_map[path]->addSeparator();
+    } else if (!action_name.empty()) {
+      menu_map[path]->addAction(make_action(ci, action_name).release());
     }
   }
-  return menu;
+  return std::vector(std::make_move_iterator(menus.begin()), std::make_move_iterator(menus.end()));
 }
 
 }  // namespace omm

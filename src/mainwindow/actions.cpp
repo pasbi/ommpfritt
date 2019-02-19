@@ -2,11 +2,16 @@
 #include "scene/scene.h"
 #include "commands/modifypointscommand.h"
 #include "commands/propertycommand.h"
+#include "commands/addcommand.h"
+#include "commands/removecommand.h"
 #include "properties/optionsproperty.h"
 #include "tags/scripttag.h"
 #include "mainwindow/application.h"
 #include "keybindings/keybindingsdialog.h"
 #include "mainwindow/mainwindow.h"
+#include <QUndoStack>
+#include "common.h"
+#include "properties/referenceproperty.h"
 
 namespace
 {
@@ -131,6 +136,35 @@ void invert_selection()
       point->is_selected = !point->is_selected;
     }
   }
+}
+
+void delete_objects()
+{
+
+}
+
+void convert_objects()
+{
+  const auto convertables = ::filter_if(scene().object_selection(), [](const Object* object) {
+    return !!(object->flags() & Object::Flag::Convertable);
+  });
+  scene().undo_stack.beginMacro(QObject::tr("convert"));
+  for (auto&& c : convertables) {
+    auto converted = c->convert();
+    assert(!c->is_root());
+    TreeOwningContext<Object> context(*converted, c->parent(), c);
+    const auto properties = ::transform<Property*>(scene().find_reference_holders(*c));
+    if (properties.size() > 0) {
+      scene().submit<PropertiesCommand<ReferenceProperty>>(properties, converted.get());
+    }
+    context.subject.capture(std::move(converted));
+    using object_tree_type = Tree<Object>;
+    scene().submit<AddCommand<object_tree_type>>(scene().object_tree, std::move(context));
+  }
+  const auto selection = ::transform<Object*, std::set>(convertables, ::identity);
+  using remove_command = RemoveCommand<Tree<Object>>;
+  scene().template submit<remove_command>(scene().object_tree, selection);
+  scene().undo_stack.endMacro();
 }
 
 }  // namespace omm::actions

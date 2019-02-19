@@ -18,7 +18,7 @@
 #include "common.h"
 #include "scene/propertyownermimedata.h"
 #include "tags/tag.h"
-
+#include "mainwindow/application.h"
 namespace
 {
 
@@ -76,25 +76,9 @@ void ObjectTreeView::populate_menu(QMenu& menu, const QModelIndex& index) const
   const auto convertables = ::filter_if(selected_objects, [](const Object* object) {
     return !!(object->flags() & Object::Flag::Convertable);
   });
-  auto& convert_action = action(menu, tr("&convert"), [this, convertables]() {
-    Scene& scene = model()->scene;
-    scene.undo_stack.beginMacro(tr("convert"));
-    for (auto&& c : convertables) {
-      auto converted = c->convert();
-      assert(!c->is_root());
-      TreeOwningContext<Object> context(*converted, c->parent(), c);
-      const auto properties = ::transform<Property*>(scene.find_reference_holders(*c));
-      if (properties.size() > 0) {
-        scene.submit<PropertiesCommand<ReferenceProperty>>(properties, converted.get());
-      }
-      context.subject.capture(std::move(converted));
-      using object_tree_type = Tree<Object>;
-      scene.submit<AddCommand<object_tree_type>>(scene.object_tree, std::move(context));
-    }
-    remove(scene, scene.object_tree, ::transform<Object*, std::set>(convertables, ::identity));
-    scene.undo_stack.endMacro();
-  });
-  convert_action.setEnabled(convertables.size() > 0);
+
+  auto& app = Application::instance();
+  menu.addAction(app.key_bindings.make_action(app, "convert objects").release());
 }
 
 std::set<AbstractPropertyOwner*> ObjectTreeView::selected_items() const

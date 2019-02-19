@@ -13,6 +13,7 @@
 #include "mainwindow/actions.h"
 #include "objects/object.h"
 #include "tools/toolbox.h"
+#include "tags/tag.h"
 
 namespace {
 constexpr auto FILE_ENDING = ".omm";
@@ -153,36 +154,32 @@ bool Application::load()
 
 std::map<std::string, QKeySequence> Application::default_bindings()
 {
+  const auto ks = [](auto&&... code) { return QKeySequence(code...); };
   std::map<std::string, QKeySequence> map {
-    { "undo", QKeySequence("Ctrl+Z") },
-    { "redo", QKeySequence("Ctrl+Y") },
-    { "new document", QKeySequence("Ctrl+N") },
-    { "save document", QKeySequence("Ctrl+S") },
-    { "save document as", QKeySequence("Ctrl+Shift+S") },
-    { "load document", QKeySequence("Ctrl+O") },
-    { "make smooth", QKeySequence() },
-    { "make linear", QKeySequence() },
-    { "remove points", QKeySequence() },
-    { "subdivide", QKeySequence() },
-    { "evaluate", QKeySequence() },
-    { "show keybindings dialog", QKeySequence() },
-    { "previous tool", QKeySequence("Space") },
-    { "select all", QKeySequence("A") },
-    { "deselect all", QKeySequence() },
-    { "invert selection", QKeySequence("I") },
+    { "undo", ks("Ctrl+Z") },
+    { "redo", ks("Ctrl+Y") },
+    { "new document", ks("Ctrl+N") },
+    { "save document", ks("Ctrl+S") },
+    { "save document as", ks("Ctrl+Shift+S") },
+    { "load document", ks("Ctrl+O") },
+    { "make smooth", ks() },
+    { "make linear", ks() },
+    { "remove points", ks("Del") },
+    { "subdivide", ks() },
+    { "evaluate", ks() },
+    { "show keybindings dialog", ks() },
+    { "previous tool", ks("Space") },
+    { "select all", ks("A") },
+    { "deselect all", ks() },
+    { "invert selection", ks("I") },
+    { "delete objects", ks("Ctrl+Del") },
+    { "convert objects", ks("C") },
   };
 
-  for (const auto& key : Object::keys()) {
-    map.insert(std::pair("create " + key, QKeySequence()));
-  }
-
-  for (const auto& key : Manager::keys()) {
-    map.insert(std::pair("show " + key, QKeySequence()));
-  }
-
-  for (const auto& key : Tool::keys()) {
-    map.insert(std::pair("select " + key, QKeySequence()));
-  }
+  for (const auto& key : Object::keys()) { map.insert(std::pair("create " + key, ks())); }
+  for (const auto& key : Manager::keys()) { map.insert(std::pair("show " + key, ks())); }
+  for (const auto& key : Tool::keys()) { map.insert(std::pair("select " + key, ks())); }
+  for (const auto& key : Tag::keys()) { map.insert(std::pair("attach " + key, ks())); }
 
   return map;
 }
@@ -209,6 +206,8 @@ void Application::call(const std::string& command)
     { "select all", &actions::select_all },
     { "deselect all", &actions::deselect_all },
     { "invert selection", &actions::invert_selection },
+    { "delete objects", &actions::delete_objects },
+    { "convert objects", &actions::convert_objects },
   };
 
   for (const auto& key : Object::keys()) {
@@ -230,6 +229,17 @@ void Application::call(const std::string& command)
   for (const auto& key : Tool::keys()) {
     map.insert(std::pair("select " + key, [this, key](){
       scene.tool_box.set_active_tool(key);
+    }));
+  }
+
+  for (const auto& key : Tag::keys()) {
+    map.insert(std::pair("attach " + key, [this, key]() {
+      scene.undo_stack.beginMacro(tr("Add Tag"));
+      for (auto&& object : scene.object_selection()) {
+        using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
+        scene.submit<AddTagCommand>(object->tags, Tag::make(key, *object));
+      }
+      scene.undo_stack.endMacro();
     }));
   }
 

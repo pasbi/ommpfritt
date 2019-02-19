@@ -21,5 +21,7 @@ void previous_tool();
 void select_all();
 void deselect_all();
 void invert_selection();
+void delete_objects();
+void convert_objects();
 
 } // namespace omm::actions

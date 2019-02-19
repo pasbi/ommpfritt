@@ -14,6 +14,7 @@
 #include "mainwindow/application.h"
 #include "mainwindow/toolbar.h"
 #include "managers/manager.h"
+#include "tags/tag.h"
 
 namespace
 {
@@ -61,24 +62,52 @@ void write_each(QSettings& settings, const std::string& key, const Ts& ts, const
 namespace omm
 {
 
-std::map<std::string, std::list<std::string>> MainWindow::main_menu_entries()
+std::vector<std::string> MainWindow::object_menu_entries()
 {
-  std::map<std::string, std::list<std::string>> entries = {
-    { "file", { "new document", "save document", "save document as", "load document" } },
-    { "edit", { "undo", "redo" } },
-    { "path", { "make smooth", "make linear", "remove points", "subdivide", "select all",
-                "deselect all", "invert selection" } },
-    { "tool", { "previous tool", KeyBindings::SEPARATOR } },
-    { "scene", { "evaluate" } },
-    { "create", {} },
-    { "window", { KeyBindings::SEPARATOR, "show keybindings dialog" } }
+  std::list<std::string> entries { "object/delete objects", "object/convert objects" };
+
+  for (const std::string& key : Object::keys()) {
+    entries.push_back("object/create/create " + key);
+  }
+
+  for (const std::string& key : Tag::keys()) {
+    entries.push_back("object/attach/attach " + key);
+  }
+
+  return std::vector(entries.begin(), entries.end());
+}
+
+std::vector<std::string> MainWindow::path_menu_entries()
+{
+  std::list<std::string> entries { "path/make smooth", "path/make linear", "path/subdivide",
+    "path/select all", "path/deselect all", "path/invert selection"
+  };
+  return std::vector(entries.begin(), entries.end());
+}
+
+std::vector<std::string> MainWindow::main_menu_entries()
+{
+  using namespace std::string_literals;
+  std::list<std::string> entries = {
+    "file/new document", "file/save document", "file/save document as", "file/load document",
+    "edit/undo", "edit/redo",
+    "object/",
+    "path/",
+    "tool/previous tool", "tool/"s + KeyBindings::SEPARATOR,
+    "scene/evaluate",
+    "window/",
   };
 
-  for (const std::string& key : Manager::keys()) { entries["window"].push_front("show " + key); }
-  for (const std::string& key : Object::keys()) { entries["create"].push_back("create " + key); }
-  for (const std::string& key : Tool::keys()) { entries["tool"].push_back("select " + key); }
+  const auto merge = [&es=entries](auto&& ls) { es.insert(es.end(), ls.begin(), ls.end()); };
 
-  return entries;
+  for (const std::string& key : Manager::keys()) { entries.push_back("window/show " + key); }
+  entries.insert(entries.end(), {
+    "window/"s + KeyBindings::SEPARATOR, "window/show keybindings dialog"
+  });
+  merge(object_menu_entries());
+  merge(path_menu_entries());
+  for (const std::string& key : Tool::keys()) { entries.push_back("tool/select " + key); }
+  return std::vector(entries.begin(), entries.end());
 }
 
 MainWindow::MainWindow(Application& app)
@@ -89,21 +118,9 @@ MainWindow::MainWindow(Application& app)
   restore_state();
 
   setMenuBar(std::make_unique<QMenuBar>().release());
-  add_menu("&File", main_menu_entries()["file"]);
-  add_menu("&Edit", main_menu_entries()["edit"]);
-  add_menu("&Create", main_menu_entries()["create"]);
-  add_menu("&Path", main_menu_entries()["path"]);
-  add_menu("&Tool", main_menu_entries()["tool"]);
-  add_menu("&Scene", main_menu_entries()["scene"]);
-  add_menu("&Window", main_menu_entries()["window"]);
-}
-
-void MainWindow::add_menu(const std::string& title, const std::list<std::string>& actions)
-{
-  auto menu = m_app.key_bindings.make_menu(m_app, actions);
-  menu->setTearOffEnabled(true);
-  menu->setTitle(QString::fromStdString(title));
-  menuBar()->addMenu(menu.release());
+  for (auto&& menu : m_app.key_bindings.make_menus(m_app, main_menu_entries())) {
+    menuBar()->addMenu(menu.release());
+  }
 }
 
 void MainWindow::restore_state()

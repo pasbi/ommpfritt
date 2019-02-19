@@ -5,6 +5,6 @@ file (GLOB SOURCES
   "mainwindow.cpp"
   "toolbar.cpp"
 )
-target_sources(libommpfritt PRIVATE ${SOURCES})
 
+target_sources(libommpfritt PRIVATE ${SOURCES})
 add_subdirectory(viewport)
