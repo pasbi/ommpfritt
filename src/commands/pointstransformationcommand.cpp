@@ -45,7 +45,7 @@ namespace omm
 
 PointsTransformationCommand
 ::PointsTransformationCommand(const std::set<Path*>& paths, const ObjectTransformation& t)
-  : Command("PointsTransformationCommand")
+  : Command(QObject::tr("PointsTransformationCommand").toStdString())
   , m_alternative_points(make_alternatives(paths, t))
 {
 }

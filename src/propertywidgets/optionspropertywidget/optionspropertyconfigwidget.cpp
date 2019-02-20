@@ -9,6 +9,8 @@
 namespace omm
 {
 
+static constexpr auto unnamed_option_label = QT_TR_NOOP("Unnamed Option");
+
 OptionsPropertyConfigWidget
 ::OptionsPropertyConfigWidget(QWidget* parent, Property& property)
   : PropertyConfigWidget(parent, property)
@@ -27,7 +29,7 @@ OptionsPropertyConfigWidget
   }
 
   if (m_list_widget->count() == 0) {
-    add_option("Unnamed Option");
+    add_option(tr(unnamed_option_label).toStdString());
   }
 
   box_layout()->addWidget(list_widget.release());
@@ -65,7 +67,7 @@ void OptionsPropertyConfigWidget::remove_option(int index)
     update_property_options();
   } else {
     LOG(WARNING) << "Prevented attempt to remove last option";
-    QMessageBox::warning(this, "Warning", "Cannot remove last option.");
+    QMessageBox::warning(this, tr("Warning"), tr("Cannot remove last option."));
   }
 }
 
@@ -89,7 +91,7 @@ bool OptionsPropertyConfigWidget::eventFilter(QObject* watched, QEvent* event)
   const auto attempt_add_item = [get_item, this](QMouseEvent* event) {
     auto* item = get_item();
     if (event->button() == Qt::LeftButton && item == nullptr) {
-      add_option("Unnamed Option");
+      add_option(tr(unnamed_option_label).toStdString());
       return true;
     } else {
       return false;

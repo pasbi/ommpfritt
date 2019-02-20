@@ -18,8 +18,6 @@ namespace
 
 omm::Scene& scene() { return omm::Application::instance().scene; }
 
-
-
 void modify_tangents(omm::Path::InterpolationMode mode)
 {
   const auto paths = omm::Object::cast<omm::Path>(scene().object_selection());
@@ -34,7 +32,7 @@ void modify_tangents(omm::Path::InterpolationMode mode)
   });
 
   if (map.size() > 0) {
-    scene().undo_stack.beginMacro("modify tangents");
+    scene().undo_stack.beginMacro(QObject::tr("modify tangents"));
     using OptionsPropertyCommand = omm::PropertiesCommand<omm::OptionsProperty>;
     scene().submit<OptionsPropertyCommand>(interpolation_properties, bezier_mode);
     scene().submit<omm::ModifyPointsCommand>(map);

@@ -5,8 +5,6 @@
 #include <algorithm>
 #include <set>
 
-#include "common.h"
-
 template<typename Key, typename GeneralT, typename... Args>
 class AbstractFactory
 {

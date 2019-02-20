@@ -4,11 +4,12 @@
 #include "objects/object.h"
 
 #include "properties/optionsproperty.h"
+#include <Qt>
 
 namespace omm
 {
 
-const std::string Property::USER_PROPERTY_CATEGROY_NAME = "user properties"; // TODO translate
+const std::string Property::USER_PROPERTY_CATEGROY_NAME = QT_TR_NOOP("user properties");
 
 std::string Property::label() const
 {
@@ -46,10 +47,17 @@ void Property::serialize(AbstractSerializer& serializer, const Pointer& root) co
 
 void Property
 ::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
-{
+{;
   Serializable::deserialize(deserializer, root);
-  m_label = deserializer.get_string(make_pointer(root, "label"));
-  m_category = deserializer.get_string(make_pointer( root, "category" ));
+
+  // if m_label and m_category are already set, prefer these values since they are translated.
+  // if m_label and m_category are not set, use the loaded ones (useful for user properties)
+  if (m_label.empty()) {
+    m_label = deserializer.get_string(make_pointer(root, "label"));
+  }
+  if (m_category.empty()) {
+    m_category = deserializer.get_string(make_pointer( root, "category"));
+  }
 }
 
 bool Property::is_compatible(const Property& other) const

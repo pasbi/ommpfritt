@@ -12,7 +12,7 @@ class ProceduralPath : public AbstractProceduralPath
 public:
   explicit ProceduralPath(Scene* scene);
   std::string type() const override;
-  static constexpr auto TYPE = "ProceduralPath";
+  static constexpr auto TYPE = QT_TR_NOOP("ProceduralPath");
   std::unique_ptr<Object> clone() const override;
   Flag flags() const override;
 

@@ -74,8 +74,8 @@ std::unique_ptr<QMenuBar> PythonConsole::make_menu_bar()
 {
   auto menu_bar = std::make_unique<QMenuBar>();
 
-  // auto py_menu = menu_bar->addMenu("Python");
-  // connect(py_menu->addAction("run"), &QAction::triggered, this, &PythonConsole::run);
+  // auto py_menu = menu_bar->addMenu(tr("Python");
+  // connect(py_menu->addAction(tr("run")), &QAction::triggered, this, &PythonConsole::run);
 
   return menu_bar;
 }
@@ -84,13 +84,14 @@ void PythonConsole::eval()
 {
   const auto code = m_commandline->code();
   push_command(code);
-  m_output->put(">>> " + code, CodeEdit::Stream::stdout);
+  m_output->put(tr(">>> ").toStdString() + code, CodeEdit::Stream::stdout);
 
   using namespace pybind11::literals;
   const auto locals = pybind11::dict("scene"_a=SceneWrapper(scene()));
   auto result = scene().python_engine.eval(code, locals, nullptr);
   if (!result.is_none()) {
-    scene().python_engine.eval("print(result)", pybind11::dict("result"_a=result), nullptr);
+    scene().python_engine.eval( "print(result)",
+                                pybind11::dict("result"_a=result), nullptr);
   }
 
   m_commandline->clear();
@@ -184,7 +185,7 @@ void PythonConsole::keyPressEvent(QKeyEvent* event)
 std::map<std::string, QKeySequence> PythonConsole::default_bindings()
 {
   return {
-    { "clear python console", QKeySequence("Ctrl+K") }
+    { QT_TR_NOOP("clear python console"), QKeySequence(tr("Ctrl+K")) }
   };
 }
 

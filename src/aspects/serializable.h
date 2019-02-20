@@ -24,7 +24,7 @@ public:
   {
     constexpr char SEPARATOR = '/';
     std::ostringstream ostream;
-    ostream << "" << pointer;
+    ostream << pointer;
     const std::string str = ostream.str();
     assert(str.size() > 0);
     if (str.at(0) == SEPARATOR) {

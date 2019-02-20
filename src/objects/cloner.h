@@ -2,6 +2,7 @@
 
 #include "objects/object.h"
 #include "objects/instance.h"
+#include <Qt>
 
 namespace omm
 {
@@ -17,7 +18,7 @@ public:
   void render(AbstractRenderer& renderer, const Style& style) override;
   BoundingBox bounding_box() override;
   std::string type() const override;
-  static constexpr auto TYPE = "Cloner";
+  static constexpr auto TYPE = QT_TR_NOOP("Cloner");
   static constexpr auto MODE_PROPERTY_KEY = "mode";
   static constexpr auto CODE_PROPERTY_KEY = "code";
   static constexpr auto COUNT_PROPERTY_KEY = "count";

@@ -69,7 +69,7 @@ template<typename PositionVariant> SelectTool<PositionVariant>::SelectTool(Scene
   , position_variant(scene)
 {
   this->template add_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY)
-    .set_options({ "global", "local" })
+    .set_options({ QObject::tr("global").toStdString(), QObject::tr("local").toStdString() })
     .set_label(QObject::tr("Alignment").toStdString())
     .set_category(QObject::tr("tool").toStdString());
 }
@@ -132,7 +132,7 @@ SelectPointsTool::SelectPointsTool(Scene& scene)
   : SelectTool<PointPositions>(scene)
 {
   add_property<OptionsProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
-    .set_options({ "Mirror", "Individual" })
+    .set_options({ QObject::tr("Mirror").toStdString(), QObject::tr("Individual").toStdString() })
     .set_label(QObject::tr("tangent").toStdString())
     .set_category(QObject::tr("tool").toStdString());
 }

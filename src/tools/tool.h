@@ -4,6 +4,7 @@
 #include <QMenu>
 #include "aspects/propertyowner.h"
 #include "external/json_fwd.hpp"
+#include <Qt>
 #include "tools/handles/handle.h"
 
 class QMouseEvent;
@@ -22,7 +23,7 @@ public:
   explicit Tool(Scene& scene);
   virtual ~Tool() = default;
   virtual QIcon icon() const = 0;
-  static constexpr auto TYPE = "Tool";
+  static constexpr auto TYPE = QT_TR_NOOP("Tool");
   AbstractPropertyOwner::Kind KIND = AbstractPropertyOwner::Kind::Tool;
 
   /**

@@ -79,9 +79,9 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
       try {
         add_property(property_key, Property::make(property_type));
       } catch (const std::out_of_range& e) {
-        const auto message = "Failed to retrieve property type '" + property_type + "'.";
-        LOG(ERROR) << message;
-        throw AbstractDeserializer::DeserializeError(message);
+        const auto msg = "Failed to retrieve property type '" + property_type + "'.";
+        LOG(ERROR) << msg;
+        throw AbstractDeserializer::DeserializeError(msg);
       }
     }
 

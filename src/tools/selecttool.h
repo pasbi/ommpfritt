@@ -4,6 +4,7 @@
 #include "tools/positionvariant.h"
 #include "tools/handles/selecthandle.h"
 #include "tools/tool.h"
+#include <Qt>
 
 namespace omm
 {
@@ -29,7 +30,7 @@ public:
   using SelectTool::SelectTool;
   std::string type() const override;
   QIcon icon() const override;
-  static constexpr auto TYPE = "SelectObjectsTool";
+  static constexpr auto TYPE = QT_TR_NOOP("SelectObjectsTool");
 };
 
 class SelectPointsTool : public SelectTool<PointPositions>
@@ -38,7 +39,7 @@ public:
   explicit SelectPointsTool(Scene& scene);
   std::string type() const override;
   QIcon icon() const override;
-  static constexpr auto TYPE = "SelectPointsTool";
+  static constexpr auto TYPE = QT_TR_NOOP("SelectPointsTool");
   static constexpr auto TANGENT_MODE_PROPERTY_KEY = "tangent_mode";
   PointSelectHandle::TangentMode tangent_mode() const;
   std::unique_ptr<QMenu> make_context_menu(QWidget* parent) override;

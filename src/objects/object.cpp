@@ -57,7 +57,8 @@ Object::Object(Scene* scene)
   set_scene(scene);
 
   add_property<OptionsProperty>(IS_VISIBLE_PROPERTY_KEY, true)
-    .set_options({ "visible", "hide", "hide tree" })
+    .set_options({ QObject::tr("visible").toStdString(), QObject::tr("hidden").toStdString(),
+      QObject::tr("hide .tree").toStdString() })
     .set_label(QObject::tr("").toStdString())
     .set_category(QObject::tr("basic").toStdString());
 
@@ -65,7 +66,7 @@ Object::Object(Scene* scene)
     .set_label(QObject::tr("active").toStdString())
     .set_category(QObject::tr("basic").toStdString());
 
-  add_property<StringProperty>(NAME_PROPERTY_KEY, "<unnamed object>")
+  add_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>").toStdString())
     .set_label(QObject::tr("Name").toStdString())
     .set_category(QObject::tr("basic").toStdString());
 
@@ -208,7 +209,8 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
       const auto t = child->transformation();
       adopt(std::move(child)).set_transformation(t);
     } catch (std::out_of_range& e) {
-      const auto message = "Failed to retrieve object type '" + child_type + "'.";
+      const auto message = QObject::tr("Failed to retrieve object type '%1'.")
+                            .arg(QString::fromStdString(child_type)).toStdString();
       LOG(ERROR) << message;
       throw AbstractDeserializer::DeserializeError(message);
     }

@@ -13,7 +13,8 @@ StyleTag::StyleTag(Object& owner)
 {
   add_property<ReferenceProperty>(STYLE_REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(Kind::Style)
-    .set_label("style").set_category("style");
+    .set_label(QObject::tr("style").toStdString())
+    .set_category(QObject::tr("style").toStdString());
 }
 
 

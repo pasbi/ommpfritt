@@ -43,7 +43,7 @@ void drop_tags_onto_object( omm::Scene& scene, omm::Object& object,
   if (tags.size() > 0) {
     switch (action) {
     case Qt::CopyAction:
-      scene.undo_stack.beginMacro("copy tags");
+      scene.undo_stack.beginMacro(omm::ObjectTreeAdapter::tr("copy tags"));
       for (auto* tag : tags) {
         scene.submit<AddTagCommand>(object.tags, tag->clone(object));
       }
@@ -67,7 +67,7 @@ void drop_tags_behind( omm::Scene& scene, omm::Object& object, omm::Tag* current
   if (tags.size() > 0) {
     switch (action) {
     case Qt::CopyAction:
-      scene.undo_stack.beginMacro("copy tags");
+      scene.undo_stack.beginMacro(omm::ObjectTreeAdapter::tr("copy tags"));
       for (auto* tag : tags) {
         omm::ListOwningContext<omm::Tag> context(tag->clone(object), current_tag_predecessor);
         scene.submit<AddTagCommand>(object.tags, std::move(context));
@@ -86,7 +86,7 @@ void drop_style_onto_object( omm::Scene& scene, omm::Object& object,
                              const std::vector<omm::Style*>& styles )
 {
   if (styles.size() > 0) {
-    scene.undo_stack.beginMacro("set styles tags");
+    scene.undo_stack.beginMacro(omm::ObjectTreeAdapter::tr("set styles tags"));
     for (auto* style : styles) {
       auto style_tag = std::make_unique<omm::StyleTag>(object);
       style_tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY).set(style);
@@ -194,9 +194,9 @@ QVariant ObjectTreeAdapter::headerData(int section, Qt::Orientation orientation,
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
   {
     switch (section) {
-    case 0: return "object";
-    case 1: return "is visible";
-    case 2: return "tags";
+    case 0: return tr("object");
+    case 1: return tr("is visible");
+    case 2: return tr("tags");
     }
   }
 

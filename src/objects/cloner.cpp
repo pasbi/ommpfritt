@@ -37,7 +37,9 @@ class Style;
 Cloner::Cloner(Scene* scene) : Object(scene)
 {
   auto& mode_property = add_property<OptionsProperty>(MODE_PROPERTY_KEY);
-  mode_property.set_options({ "Linear", "Grid", "Radial", "Path", "Script" })
+  mode_property.set_options({ QObject::tr("Linear").toStdString(),
+    QObject::tr("Grid").toStdString(), QObject::tr("Radial").toStdString(),
+    QObject::tr("Path").toStdString(), QObject::tr("Script").toStdString() })
     .set_label(QObject::tr("mode").toStdString())
     .set_category(QObject::tr("Cloner").toStdString());
 
@@ -96,7 +98,8 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Radial, Mode::Path });
 
   add_property<OptionsProperty>(BORDER_PROPERTY_KEY)
-    .set_options( { "Clamp", "Wrap", "Hide", "Reflect" } )
+    .set_options( { QObject::tr("Clamp").toStdString(), QObject::tr("Wrap").toStdString(),
+      QObject::tr("Hide").toStdString(), QObject::tr("Reflect").toStdString() } )
     .set_label(QObject::tr("border").toStdString())
     .set_category(QObject::tr("Cloner").toStdString())
     .set_enabled_buddy<Mode>(mode_property, { Mode::Radial, Mode::Path });

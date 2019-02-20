@@ -13,7 +13,7 @@ namespace omm
 std::map<std::string, QKeySequence> ObjectManager::default_bindings()
 {
   return {
-    { "remove objects and tags", QKeySequence("Del") }
+    { QT_TR_NOOP("remove objects and tags"), QKeySequence(tr("Del")) }
   };
 }
 
@@ -27,7 +27,9 @@ ObjectManager::ObjectManager(Scene& scene)
 void ObjectManager::call(const std::string& command)
 {
   dispatch(command, {
-    { "remove objects and tags", [this](){ scene().remove(this, item_view().selected_items()); } },
+    { "remove objects and tags", [this]() {
+      scene().remove(this, item_view().selected_items());
+    } },
   });
 }
 

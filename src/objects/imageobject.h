@@ -1,6 +1,7 @@
 #pragma once
 
 #include "objects/object.h"
+#include <Qt>
 
 namespace omm
 {
@@ -13,7 +14,7 @@ public:
   std::string type() const override;
   BoundingBox bounding_box() override;
   std::unique_ptr<Object> clone() const override;
-  static constexpr auto TYPE = "ImageObject";
+  static constexpr auto TYPE = QT_TR_NOOP("ImageObject");
   static constexpr auto FILEPATH_PROPERTY_KEY = "filename";
 };
 

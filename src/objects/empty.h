@@ -1,6 +1,7 @@
 #pragma once
 
 #include "objects/object.h"
+#include <Qt>
 
 namespace omm
 {
@@ -13,7 +14,7 @@ public:
   BoundingBox bounding_box() override;
   std::string type() const override;
   std::unique_ptr<Object> clone() const override;
-  static constexpr auto TYPE = "Empty";
+  static constexpr auto TYPE = QT_TR_NOOP("Empty");
 
 };
 

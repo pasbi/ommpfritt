@@ -1,6 +1,7 @@
 #pragma once
 
 #include "objects/object.h"
+#include <Qt>
 
 namespace omm
 {
@@ -16,7 +17,7 @@ public:
   void render(AbstractRenderer& renderer, const Style& style) override;
   BoundingBox bounding_box() override;
   std::string type() const override;
-  static constexpr auto TYPE = "Instance";
+  static constexpr auto TYPE = QT_TR_NOOP("Instance");
   static constexpr auto REFERENCE_PROPERTY_KEY = "reference";
   std::unique_ptr<Object> clone() const override;
   std::unique_ptr<Object> convert() override;

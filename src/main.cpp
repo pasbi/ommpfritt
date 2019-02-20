@@ -31,8 +31,8 @@ int main (int argc, char *argv[])
   QApplication qt_app(argc, argv);
   omm::Application app(qt_app);
 
-  QCoreApplication::setOrganizationName("omm");
-  QCoreApplication::setApplicationName("ommpfritt");
+  QCoreApplication::setOrganizationName(QObject::tr("omm"));
+  QCoreApplication::setApplicationName(QObject::tr("ommpfritt"));
 
   omm::MainWindow window(app);
   app.set_main_window(window);

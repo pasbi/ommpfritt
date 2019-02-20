@@ -14,7 +14,8 @@ Instance::Instance(Scene* scene)
 {
   add_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
-    .set_label("reference").set_category("Instance");
+    .set_label(QObject::tr("reference").toStdString())
+    .set_category(QObject::tr("Instance").toStdString());
 }
 
 void Instance::render(AbstractRenderer& renderer, const Style& style)

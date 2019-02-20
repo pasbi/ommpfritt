@@ -13,7 +13,7 @@ FilePathEdit::FilePathEdit(QWidget* parent)
   : QWidget(parent)
 {
   m_line_edit = std::make_unique<QLineEdit>(this).release();
-  m_button = std::make_unique<QPushButton>("...", this).release();
+  m_button = std::make_unique<QPushButton>(tr("..."), this).release();
   std::make_unique<QHBoxLayout>(this).release();
   layout()->addWidget(m_line_edit);
   layout()->addWidget(m_button);
@@ -50,7 +50,7 @@ void FilePathEdit::set_path(const std::string& path)
 }
 
 std::string FilePathEdit::path() const { return m_path; }
-void FilePathEdit::clear() { set_path(""); }
+void FilePathEdit::clear() { set_path(tr("").toStdString()); }
 void FilePathEdit::set_placeholder_text(const std::string &text)
 {
   m_line_edit->setPlaceholderText(QString::fromStdString(text));

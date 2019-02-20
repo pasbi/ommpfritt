@@ -39,7 +39,7 @@ public:
 template<typename T, template<typename...> class Wrapper>
 class TreeContext : public ListContext<T, Wrapper>
 {
-  static_assert( std::is_base_of<TreeElement<T>, T>::value, "T must be derived from TreeElement.");
+  static_assert(std::is_base_of<TreeElement<T>, T>::value, "T must be derived from TreeElement.");
 public:
   TreeContext(T& subject, T& parent, const T* predecessor)
     : ListContext<T, Wrapper>(subject, predecessor), parent(parent) { }

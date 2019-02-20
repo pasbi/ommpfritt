@@ -58,7 +58,8 @@ public:
 
   static void define_python_interface(py::object& module)
   {
-    const auto type_name = (std::string("Base") + WrappedT::TYPE).c_str();
+    using namespace std::string_literals;
+    const auto type_name = ("Base"s + WrappedT::TYPE).c_str();
     py::class_<AbstractPropertyOwnerWrapper<WrappedT>>(module, type_name, py::dynamic_attr())
           .def("get", &AbstractPropertyOwnerWrapper<WrappedT>::get)
           .def("set", &AbstractPropertyOwnerWrapper<WrappedT>::set);

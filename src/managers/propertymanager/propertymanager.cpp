@@ -69,8 +69,8 @@ std::string get_tab_label(const std::set<omm::Property*>& properties)
   for (auto&& property : properties) {
     assert(property != nullptr);
     if (tab_label != property->category()) {
-      LOG(WARNING) << "category is not consistent: "
-                   << "'" << tab_label << "' != '" << property->category() << "'.";
+      LOG(WARNING) << "category is not consistent: '" << tab_label
+                   << "' != '" << property->category() << "'.";
     }
   }
 #endif
@@ -114,7 +114,7 @@ PropertyManager::~PropertyManager()
 std::unique_ptr<QMenuBar> PropertyManager::make_menu_bar()
 {
   auto menu_bar = std::make_unique<QMenuBar>();
-  auto user_properties_menu = menu_bar->addMenu("user properties");
+  auto user_properties_menu = menu_bar->addMenu(tr("user properties"));
   const auto exec_user_property_dialog = [this]() {
     auto dialog = UserPropertyDialog(this, **m_current_selection.begin());
     if (dialog.exec() == QDialog::Accepted) {
@@ -122,7 +122,7 @@ std::unique_ptr<QMenuBar> PropertyManager::make_menu_bar()
       m_scene.set_selection(m_scene.selection());
     }
   };
-  m_manage_user_properties_action = &action( *user_properties_menu, "edit ...",
+  m_manage_user_properties_action = &action( *user_properties_menu, tr("edit ..."),
                                              exec_user_property_dialog );
   m_manage_user_properties_action->setEnabled(false);
   return menu_bar;

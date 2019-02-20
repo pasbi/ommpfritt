@@ -30,12 +30,16 @@ ScriptTag::ScriptTag(Object& owner)
 {
   add_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
     .set_mode(StringProperty::Mode::Code)
-    .set_label("code").set_category("script");
+    .set_label(QObject::tr("code").toStdString())
+    .set_category(QObject::tr("script").toStdString());
   add_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY)
-    .set_options({ "per frame", "on request" })
-    .set_label("update").set_category("script");
+    .set_options({ QObject::tr("per frame").toStdString(),
+                   QObject::tr("on request").toStdString() })
+    .set_label(QObject::tr("update").toStdString())
+    .set_category(QObject::tr("script").toStdString());
   add_property<TriggerProperty>(TRIGGER_UPDATE_PROPERTY_KEY)
-    .set_label("evaluate").set_category("script");
+    .set_label(QObject::tr("evaluate").toStdString())
+    .set_category(QObject::tr("script").toStdString());
 }
 
 std::string ScriptTag::type() const { return TYPE; }
@@ -58,7 +62,8 @@ void ScriptTag::force_evaluate()
   assert(scene != nullptr);
   using namespace py::literals;
   const auto code = property(ScriptTag::CODE_PROPERTY_KEY).value<std::string>();
-  auto locals = py::dict("this"_a=TagWrapper::make(*this), "scene"_a=SceneWrapper(*scene));
+  auto locals = py::dict( "this"_a=TagWrapper::make(*this),
+                          "scene"_a=SceneWrapper(*scene) );
   scene->python_engine.exec(code, locals, this);
 }
 

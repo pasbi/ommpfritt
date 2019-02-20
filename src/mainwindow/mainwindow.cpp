@@ -64,7 +64,9 @@ namespace omm
 
 std::vector<std::string> MainWindow::object_menu_entries()
 {
-  std::list<std::string> entries { "object/remove selection", "object/convert objects" };
+  std::list<std::string> entries {
+    "object/remove selection", "object/convert objects"
+  };
 
   for (const std::string& key : Object::keys()) {
     entries.push_back("object/create/create " + key);
@@ -88,7 +90,8 @@ std::vector<std::string> MainWindow::main_menu_entries()
 {
   using namespace std::string_literals;
   std::list<std::string> entries = {
-    "file/new document", "file/save document", "file/save document as", "file/load document",
+    "file/new document", "file/save document", "file/save document as",
+      "file/load document",
     "edit/undo", "edit/redo",
     "object/new style",
     "path/",
@@ -99,13 +102,17 @@ std::vector<std::string> MainWindow::main_menu_entries()
 
   const auto merge = [&es=entries](auto&& ls) { es.insert(es.end(), ls.begin(), ls.end()); };
 
-  for (const std::string& key : Manager::keys()) { entries.push_back("window/show " + key); }
+  for (const std::string& key : Manager::keys()) {
+    entries.push_back("window/show " + key);
+  }
   entries.insert(entries.end(), {
     "window/"s + KeyBindings::SEPARATOR, "window/show keybindings dialog"
   });
   merge(object_menu_entries());
   merge(path_menu_entries());
-  for (const std::string& key : Tool::keys()) { entries.push_back("tool/select " + key); }
+  for (const std::string& key : Tool::keys()) {
+    entries.push_back("tool/select " + key);
+  }
   return std::vector(entries.begin(), entries.end());
 }
 

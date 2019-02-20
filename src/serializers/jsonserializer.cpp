@@ -23,8 +23,8 @@ double get_double(const nlohmann::json& json_val)
     } else if (value == neg_inf_value) {
       return -std::numeric_limits<double>::infinity();
     } else {
-      const std::string msg = "Expected '"s + inf_value + "' or '" + neg_inf_value
-                            + "' but got '" + value + "'.";
+      const std::string msg = "Expected '"s + inf_value + "' or '"
+                            + neg_inf_value + "' but got '" + value + "'.";
       throw omm::AbstractDeserializer::DeserializeError(msg);
     }
   } else {
@@ -72,10 +72,10 @@ T get_t(const nlohmann::json& json, const nlohmann::json::json_pointer& pointer)
     }
   } catch (const nlohmann::json::out_of_range& json_exception) {
     throw omm::AbstractDeserializer::DeserializeError(
-      std::string("Cannot find '") + std::string(pointer) + "'.");
+      "Cannot find '" + std::string(pointer) + "'.");
   } catch (const nlohmann::json::parse_error& json_exception) {
     throw omm::AbstractDeserializer::DeserializeError(
-      std::string("Invalid pointer '") + std::string(pointer) + "'.");
+      "Invalid pointer '" + std::string(pointer) + "'.");
   }
 }
 
@@ -160,10 +160,7 @@ void JSONSerializer::set_value(const PolarCoordinates& value, const Pointer& poi
   set_value(arma::vec2{ value.argument, value.magnitude }, pointer);
 }
 
-std::string JSONSerializer::type() const
-{
-  return "JSONSerializer";
-}
+std::string JSONSerializer::type() const { return "JSONSerializer"; }
 
 
 
@@ -227,10 +224,10 @@ arma::vec2 JSONDeserializer::get_vec2(const Pointer& pointer)
     return arma::vec2{ x, y };
   } catch (const nlohmann::json::out_of_range& json_exception) {
     throw omm::AbstractDeserializer::DeserializeError(
-      std::string("Cannot find vector of size two at '") + std::string(pointer) + "'.");
+      "Cannot find vector of size two at '" + std::string(pointer) + "'.");
   } catch (const nlohmann::json::parse_error& json_exception) {
     throw omm::AbstractDeserializer::DeserializeError(
-      std::string("Invalid pointerx '") + std::string(pointer) + "'.");
+      "Invalid pointer '" + std::string(pointer) + "'.");
   }
   return arma::vec2{};
 }
@@ -251,9 +248,6 @@ PolarCoordinates JSONDeserializer::get_polarcoordinates(const Pointer& pointer)
   return PolarCoordinates(pair[0], pair[1]);
 }
 
-std::string JSONDeserializer::type() const
-{
-  return "JSONDeserializer";
-}
+std::string JSONDeserializer::type() const { return "JSONDeserializer"; }
 
 }  // namespace omm

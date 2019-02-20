@@ -4,6 +4,7 @@
 #include "external/json_fwd.hpp"
 #include "geometry/point.h"
 #include "geometry/boundingbox.h"
+#include <Qt>
 
 namespace omm
 {
@@ -61,7 +62,7 @@ public:
   ObjectTransformation normalized() const;
   bool contains_nan() const;
 
-  static constexpr auto TYPE = "ObjectTransformation";
+  static constexpr auto TYPE = QT_TR_NOOP("ObjectTransformation");
 
 private:
   arma::vec2 m_translation;

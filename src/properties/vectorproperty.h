@@ -1,6 +1,7 @@
 #pragma once
 
 #include "properties/numericproperty.h"
+#include <Qt>
 
 namespace omm
 {
@@ -20,7 +21,7 @@ public:
   std::string type() const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  static constexpr auto TYPE = "FloatVectorProperty";
+  static constexpr auto TYPE = QT_TR_NOOP("FloatVectorProperty");
   std::unique_ptr<Property> clone() const override;
 };
 
@@ -39,7 +40,7 @@ public:
   std::string type() const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  static constexpr auto TYPE = "IntegerVectorProperty";
+  static constexpr auto TYPE = QT_TR_NOOP("IntegerVectorProperty");
   std::unique_ptr<Property> clone() const override;
 };
 

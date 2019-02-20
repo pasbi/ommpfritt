@@ -26,7 +26,7 @@ public:
   }
 
   AddCommand(StructureT& structure, context_type context)
-    : Command("add")
+    : Command(QObject::tr("add").toStdString())
     , m_context(std::move(context))
     , m_structure(structure)
   {

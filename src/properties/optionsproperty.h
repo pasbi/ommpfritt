@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "properties/typedproperty.h"
+#include <Qt>
 
 namespace omm
 {
@@ -14,7 +15,7 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void set(const variant_type& variant) override;
-  static constexpr auto TYPE = "OptionsProperty";
+  static constexpr auto TYPE = QT_TR_NOOP("OptionsProperty");
   std::unique_ptr<Property> clone() const override;
 
   std::vector<std::string> options() const;

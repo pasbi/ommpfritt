@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tags/tag.h"
+#include <Qt>
 
 namespace omm
 {
@@ -10,7 +11,7 @@ public:
   explicit ScriptTag(Object& owner);
   std::string type() const override;
   QIcon icon() const override;
-  static constexpr auto TYPE = "ScriptTag";
+  static constexpr auto TYPE = QT_TR_NOOP("ScriptTag");
   static constexpr auto CODE_PROPERTY_KEY = "code";
   static constexpr auto UPDATE_MODE_PROPERTY_KEY = "update";
   static constexpr auto TRIGGER_UPDATE_PROPERTY_KEY = "trigger";

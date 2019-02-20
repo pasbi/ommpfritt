@@ -85,7 +85,7 @@ UserPropertyDialog::UserPropertyDialog(QWidget* parent, AbstractPropertyOwner& p
   m_right_column = nullptr;
 
   QMenuBar& menu_bar = static_cast<QMenuBar&>(*main_layout->menuBar());
-  QMenu& user_property_menu = *menu_bar.addMenu("User Properties");
+  QMenu& user_property_menu = *menu_bar.addMenu(tr("User Properties"));
 
   connect(m_list_widget, &QListWidget::currentItemChanged, [this](auto* item) {
     on_current_item_changed(static_cast<PropertyItem*>(item));

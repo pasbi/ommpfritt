@@ -60,7 +60,8 @@ Path::Path(Scene* scene) : Object(scene)
     .set_category(QObject::tr("path").toStdString());
 
   add_property<OptionsProperty>(INTERPOLATION_PROPERTY_KEY)
-    .set_options({ "linear", "smooth", "bezier" })    // must match Path::InterpolationMode
+    .set_options({ QObject::tr("linear").toStdString(), QObject::tr("smooth").toStdString(),
+                   QObject::tr("bezier").toStdString() })
     .set_label(QObject::tr("interpolation").toStdString())
     .set_category(QObject::tr("path").toStdString())
     .set_post_submit(update_point_tangents).set_pre_submit(update_point_tangents);
@@ -68,7 +69,7 @@ Path::Path(Scene* scene) : Object(scene)
 
 void Path::render(AbstractRenderer& renderer, const Style& style)
 {
-  renderer.draw_spline(m_points, style, property("closed").value<bool>());
+  renderer.draw_spline(m_points, style, property(IS_CLOSED_PROPERTY_KEY).value<bool>());
 }
 
 BoundingBox Path::bounding_box()

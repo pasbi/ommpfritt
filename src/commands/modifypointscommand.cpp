@@ -5,7 +5,7 @@ namespace omm
 
 ModifyPointsCommand
 ::ModifyPointsCommand(const std::map<Path*, std::map<Point*, Point>>& points)
-  : Command("ModifyPointsCommand"), m_data(points) {}
+  : Command(QObject::tr("ModifyPointsCommand").toStdString()), m_data(points) {}
 
 void ModifyPointsCommand::undo() { swap(); }
 void ModifyPointsCommand::redo() { swap(); }
@@ -72,13 +72,13 @@ void AbstractPointsCommand::add()
 }
 
 AddPointsCommand::AddPointsCommand(const std::map<Path*, std::vector<Path::PointSequence>>& points)
-  : AbstractPointsCommand("AddPointsCommand", points) {}
+  : AbstractPointsCommand(QObject::tr("AddPointsCommand").toStdString(), points) {}
 
 void AddPointsCommand::redo() { add(); }
 void AddPointsCommand::undo() { remove(); }
 
 RemovePointsCommand::RemovePointsCommand(const std::map<Path*, std::vector<std::size_t>>& points)
-  : AbstractPointsCommand("RemovePointsCommand", points) {}
+  : AbstractPointsCommand(QObject::tr("RemovePointsCommand").toStdString(), points) {}
 
 void RemovePointsCommand::redo() { remove(); }
 void RemovePointsCommand::undo() { add(); }

@@ -2,6 +2,7 @@
 
 #include "properties/typedproperty.h"
 #include "aspects/propertyowner.h"
+#include <Qt>
 
 namespace omm
 {
@@ -23,7 +24,7 @@ public:
 
   bool is_compatible(const Property& other) const override;
   bool is_cyclic() const;
-  static constexpr auto TYPE = "ReferenceProperty";
+  static constexpr auto TYPE = QT_TR_NOOP("ReferenceProperty");
   std::unique_ptr<Property> clone() const override;
 
 

@@ -10,9 +10,12 @@ auto make_allowed_kinds_checkboxes(QWidget* parent)
     return std::make_unique<QCheckBox>(QString::fromStdString(label), parent).release();
   };
   std::map<omm::AbstractPropertyOwner::Kind, QCheckBox*> map;
-  map.insert(std::pair(omm::AbstractPropertyOwner::Kind::Tag, make_cb("Tag")));
-  map.insert(std::pair(omm::AbstractPropertyOwner::Kind::Style, make_cb("Style")));
-  map.insert(std::pair(omm::AbstractPropertyOwner::Kind::Object, make_cb("Object")));
+  map.insert( std::pair(omm::AbstractPropertyOwner::Kind::Tag,
+              make_cb(omm::ReferencePropertyConfigWidget::tr("Tag").toStdString())) );
+  map.insert( std::pair(omm::AbstractPropertyOwner::Kind::Style,
+              make_cb(omm::ReferencePropertyConfigWidget::tr("Style").toStdString())) );
+  map.insert( std::pair(omm::AbstractPropertyOwner::Kind::Object,
+              make_cb(omm::ReferencePropertyConfigWidget::tr("Object").toStdString())) );
   return map;
 }
 
@@ -22,9 +25,12 @@ auto make_required_flags_checkboxes(QWidget* parent)
     return std::make_unique<QCheckBox>(QString::fromStdString(label), parent).release();
   };
   std::map<omm::AbstractPropertyOwner::Flag, QCheckBox*> map;
-  map.insert(std::pair(omm::AbstractPropertyOwner::Flag::Convertable, make_cb("convertable")));
-  map.insert(std::pair(omm::AbstractPropertyOwner::Flag::HasScript, make_cb("has script")));
-  map.insert(std::pair(omm::AbstractPropertyOwner::Flag::IsPathLike, make_cb("is path like")));
+  map.insert( std::pair(omm::AbstractPropertyOwner::Flag::Convertable,
+              make_cb(omm::ReferencePropertyConfigWidget::tr("convertable").toStdString())) );
+  map.insert( std::pair(omm::AbstractPropertyOwner::Flag::HasScript,
+              make_cb(omm::ReferencePropertyConfigWidget::tr("has script").toStdString())) );
+  map.insert( std::pair(omm::AbstractPropertyOwner::Flag::IsPathLike,
+              make_cb(omm::ReferencePropertyConfigWidget::tr("is path like").toStdString())) );
   return map;
 }
 

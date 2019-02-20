@@ -5,7 +5,7 @@ namespace omm
 {
 
 ToolBar::ToolBar(QWidget* parent, ToolBox& tool_box, const std::vector<std::string>& tools)
-  : QToolBar("ToolBar", parent)
+  : QToolBar(tr("ToolBar"), parent)
   , m_tools(tools)
 {
   setAttribute(Qt::WA_DeleteOnClose);

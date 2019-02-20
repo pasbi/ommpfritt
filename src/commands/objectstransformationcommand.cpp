@@ -45,7 +45,7 @@ namespace omm
 
 ObjectsTransformationCommand
 ::ObjectsTransformationCommand(const std::set<Object*>& objects, const ObjectTransformation& t)
-  : Command("ObjectsTransformationCommand")
+  : Command(QObject::tr("ObjectsTransformationCommand").toStdString())
   , m_alternative_transformations(make_alternatives(objects, t.to_mat()))
 {
 }

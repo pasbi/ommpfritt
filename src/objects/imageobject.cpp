@@ -1,5 +1,6 @@
 #include "objects/imageobject.h"
 #include "properties/stringproperty.h"
+#include <QObject>
 
 namespace omm
 {
@@ -8,7 +9,8 @@ ImageObject::ImageObject(Scene* scene) : Object(scene)
 {
   add_property<StringProperty>(FILEPATH_PROPERTY_KEY)
     .set_mode(StringProperty::Mode::FilePath)
-    .set_label("filename").set_category("image");
+    .set_label(QObject::tr("filename").toStdString())
+    .set_category(QObject::tr("image").toStdString());
 }
 
 void ImageObject::render(AbstractRenderer& renderer, const Style& style)

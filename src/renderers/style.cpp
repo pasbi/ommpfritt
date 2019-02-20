@@ -11,23 +11,28 @@ namespace omm
 Style::Style(Scene* scene)
   : m_scene(scene)
 {
-  add_property<StringProperty>(NAME_PROPERTY_KEY, "<unnamed object>")
+  add_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>").toStdString())
     .set_label(QObject::tr("Name").toStdString())
     .set_category(QObject::tr("basic").toStdString());
 
   add_property(PEN_IS_ACTIVE_KEY, std::make_unique<BoolProperty>(false))
-    .set_label("active").set_category("pen");
+    .set_label(QObject::tr("active").toStdString())
+    .set_category(QObject::tr("pen").toStdString());
   add_property(PEN_COLOR_KEY, std::make_unique<ColorProperty>(Color::BLACK))
-    .set_label("color").set_category("pen");
+    .set_label(QObject::tr("color").toStdString())
+    .set_category(QObject::tr("pen").toStdString());
   add_property(PEN_WIDTH_KEY, std::make_unique<FloatProperty>(1.0))
     .set_step(0.1)
     .set_range(0, std::numeric_limits<double>::infinity())
-    .set_label("width").set_category("pen");
+    .set_label(QObject::tr("width").toStdString())
+    .set_category(QObject::tr("pen").toStdString());
 
   add_property(BRUSH_IS_ACTIVE_KEY, std::make_unique<BoolProperty>(false))
-    .set_label("active").set_category("brush");
+    .set_label(QObject::tr("active").toStdString())
+    .set_category(QObject::tr("brush").toStdString());
   add_property(BRUSH_COLOR_KEY, std::make_unique<ColorProperty>(Color::RED))
-    .set_label("color").set_category("brush");
+    .set_label(QObject::tr("color").toStdString())
+    .set_category(QObject::tr("brush").toStdString());
 }
 
 std::string Style::type() const { return TYPE; }

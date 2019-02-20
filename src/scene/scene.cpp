@@ -142,7 +142,8 @@ bool Scene::save_as(const std::string &filename)
 {
   std::ofstream ofstream(filename);
   if (!ofstream) {
-    LOG(ERROR) << "Failed to open ofstream at '" << filename << "'";
+    LOG(ERROR) << QObject::tr("Failed to open ofstream at '%1'")
+                    .arg(QString::fromStdString(filename)).toStdString();
     return false;
   }
 
@@ -156,7 +157,8 @@ bool Scene::save_as(const std::string &filename)
   }
   serializer->end_array();
 
-  LOG(INFO) << "Saved current scene to '" << filename << "'";
+  LOG(INFO) << QObject::tr("Saved current scene to '%1'")
+                .arg(QString::fromStdString(filename)).toStdString();
   set_has_pending_changes(false);
   m_filename = filename;
   return true;
@@ -166,7 +168,8 @@ bool Scene::load_from(const std::string &filename)
 {
   std::ifstream ifstream(filename);
   if (!ifstream) {
-    LOG(ERROR) << "Failed to open '" << filename << "'.";
+    LOG(ERROR) << QObject::tr("Failed to open '%1'")
+                    .arg(QString::fromStdString(filename)).toStdString();
     return false;
   }
 
@@ -200,7 +203,8 @@ bool Scene::load_from(const std::string &filename)
 
     return true;
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
-    LOG(ERROR) << "Failed to deserialize file at '" << filename << "'.";
+    LOG(ERROR) << QObject::tr("Failed to deserialize file at '%1'")
+                    .arg(QString::fromStdString(filename)).toStdString();
     LOG(INFO) << deserialize_error.what();
   }
   return false;
@@ -360,7 +364,7 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
 {
   std::set<Property *> properties;
   if (can_remove(parent, selection, properties)) {
-    undo_stack.beginMacro("Remove Selection");
+    undo_stack.beginMacro(QObject::tr("Remove Selection"));
     if (properties.size() > 0) {
       using command_type = PropertiesCommand<ReferenceProperty>;
       submit<command_type>(properties, nullptr);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "objects/object.h"
+#include <Qt>
 
 namespace omm
 {
@@ -13,7 +14,7 @@ public:
   using Object::Object;
   void render(AbstractRenderer& renderer, const Style& style) override;
   BoundingBox bounding_box() override;
-  static constexpr auto TYPE = "AbstractProceduralPath";
+  static constexpr auto TYPE = QT_TR_NOOP("AbstractProceduralPath");
   std::unique_ptr<Object> convert() override;
   Flag flags() const override;
 

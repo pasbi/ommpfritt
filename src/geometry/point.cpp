@@ -111,8 +111,8 @@ std::ostream& operator<<(std::ostream& ostream, const Point& pc)
 {
   static constexpr bool verbose = false;
   if constexpr (verbose) {
-    ostream << "Point[" << "[" << pc.position(0) << ", " << pc.position(1) << "], "
-            << pc.left_tangent << ", " << pc.right_tangent << "]";
+    ostream << "Point[[" << pc.position(0) << ", " << pc.position(1) << "], " << pc.left_tangent
+            << ", " << pc.right_tangent << "]";
   } else {
     ostream << "[" << pc.position(0) << ", " << pc.position(1) << "]";
   }
@@ -122,12 +122,10 @@ std::ostream& operator<<(std::ostream& ostream, const Point& pc)
 std::ostream& operator<<(std::ostream& ostream, const Point* pc)
 {
   static constexpr bool verbose = false;
-  if constexpr (verbose) {
-    ostream << "Point[" << "[" << pc->position(0) << ", " << pc->position(1) << "], "
-            << pc->left_tangent << ", " << pc->right_tangent << "]";
-  } else {
-    ostream << "[" << pc->position(0) << ", " << pc->position(1) << "]";
+  if (pc == nullptr) {
+    ostream << "Point[nullptr]";
   }
+  ostream << *pc;
   return ostream;
 }
 

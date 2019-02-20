@@ -38,8 +38,8 @@ class NumericEdit : public QLineEdit
 {
 public:
 
-  static constexpr auto inf = "inf";
-  static constexpr auto neg_inf = "-inf";
+  const std::string inf = tr("inf").toStdString();
+  const std::string neg_inf = tr("-inf").toStdString();
 
   using value_type = ValueType;
   using on_value_changed_t = std::function<void(value_type)>;
@@ -109,7 +109,7 @@ public:
     }
   }
 
-  void set_invalid_value() { setText("< invalid >"); }
+  void set_invalid_value() { setText(tr("< invalid >")); }
   value_type value() const { return parse(text().toStdString()); }
 
 protected:
@@ -219,7 +219,7 @@ private:
   const on_value_changed_t m_on_value_changed;
   void set_text(const value_type& value)
   {
-    setText(QString("%1").arg(value_type(m_multiplier * value)));
+    setText(QString::fromStdString(std::to_string(value_type(m_multiplier * value))));
   }
   static constexpr value_type invalid_value = 0;
 

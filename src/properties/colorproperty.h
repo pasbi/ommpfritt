@@ -2,6 +2,7 @@
 
 #include "properties/typedproperty.h"
 #include "color/color.h"
+#include <Qt>
 
 namespace omm
 {
@@ -13,7 +14,7 @@ public:
   std::string type() const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  static constexpr auto TYPE = "ColorProperty";
+  static constexpr auto TYPE = QT_TR_NOOP("ColorProperty");
   std::unique_ptr<Property> clone() const override;
 };
 

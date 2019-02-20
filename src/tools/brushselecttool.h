@@ -11,7 +11,7 @@ class BrushSelectTool : public Tool
 public:
   explicit BrushSelectTool(Scene& scene);
   QIcon icon() const override;
-  static constexpr auto TYPE = "BrushSelectTool";
+  static constexpr auto TYPE = QT_TR_NOOP("BrushSelectTool");
 
   /**
    * @brief returns true if any grabbable was moved

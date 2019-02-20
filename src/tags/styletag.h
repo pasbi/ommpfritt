@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "tags/tag.h"
+#include <Qt>
 
 namespace omm {
 
@@ -12,7 +13,7 @@ public:
   std::string type() const override;
   QIcon icon() const override;
   static constexpr auto STYLE_REFERENCE_PROPERTY_KEY = "style";
-  static constexpr auto TYPE = "StyleTag";
+  static constexpr auto TYPE = QT_TR_NOOP("StyleTag");
   std::unique_ptr<Tag> clone() const override;
   void evaluate() override;
   Flag flags() const override;

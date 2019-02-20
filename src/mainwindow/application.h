@@ -5,6 +5,7 @@
 #include "python/pythonengine.h"
 #include "keybindings/keybindings.h"
 #include "keybindings/commandinterface.h"
+#include <Qt>
 
 class QApplication;
 
@@ -31,7 +32,7 @@ public:
 
   void call(const std::string& command) override;
   static std::map<std::string, QKeySequence> default_bindings();
-  static constexpr auto TYPE = "Application";
+  static constexpr auto TYPE = QT_TR_NOOP("Application");
   std::string type() const override;
 
   PythonEngine python_engine;

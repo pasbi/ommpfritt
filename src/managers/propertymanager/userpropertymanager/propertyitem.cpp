@@ -23,7 +23,7 @@ QVariant PropertyItem::data(int role) const
 {
   const QVariant data = QListWidgetItem::data(role);
   if (role == Qt::DisplayRole && data.isNull()) {
-    return UNNAMED_PROPERTY_PLACEHOLDER;
+    return QObject::tr(UNNAMED_PROPERTY_PLACEHOLDER);
   } else {
     return data;
   }
@@ -34,7 +34,8 @@ void PropertyItem::set_property_type(const std::string& type)
   const auto label = m_property ? m_property->label() : "";
   m_property = Property::make(type);
   m_property->set_label(label);
-  m_property->set_category(Property::USER_PROPERTY_CATEGROY_NAME);
+  const auto cat_name = QObject::tr(Property::USER_PROPERTY_CATEGROY_NAME.c_str());
+  m_property->set_category(cat_name.toStdString());
 }
 
 }  // namespace omm

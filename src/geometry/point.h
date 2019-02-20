@@ -1,6 +1,7 @@
 #pragma once
 
 #include <armadillo>
+#include <Qt>
 
 namespace omm
 {
@@ -37,7 +38,7 @@ public:
   arma::vec2 position;
   arma::vec2 left_position() const;
   arma::vec2 right_position() const;
-  static constexpr auto TYPE = "Point";
+  static constexpr auto TYPE = QT_TR_NOOP("Point");
   bool is_selected = false;
   void swap(Point& other);
 

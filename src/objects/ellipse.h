@@ -1,6 +1,7 @@
 #pragma once
 
 #include "objects/abstractproceduralpath.h"
+#include <Qt>
 
 namespace omm
 {
@@ -12,7 +13,7 @@ class Ellipse : public AbstractProceduralPath
 public:
   explicit Ellipse(Scene* scene);
   std::string type() const override;
-  static constexpr auto TYPE = "Ellipse";
+  static constexpr auto TYPE = QT_TR_NOOP("Ellipse");
   std::unique_ptr<Object> clone() const override;
   BoundingBox bounding_box() override;
   Flag flags() const override;
