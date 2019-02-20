@@ -8,7 +8,7 @@ namespace omm
 class Empty : public Object
 {
 public:
-  explicit Empty(Scene* scene);
+  using Object::Object;
   void render(AbstractRenderer& renderer, const Style& style) override;
   BoundingBox bounding_box() override;
   std::string type() const override;
