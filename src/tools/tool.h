@@ -23,7 +23,7 @@ public:
   explicit Tool(Scene& scene);
   virtual ~Tool() = default;
   virtual QIcon icon() const = 0;
-  static constexpr auto TYPE = QT_TR_NOOP("Tool");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("Tool", "Tool");
   AbstractPropertyOwner::Kind KIND = AbstractPropertyOwner::Kind::Tool;
 
   /**

@@ -62,7 +62,7 @@ public:
   ObjectTransformation normalized() const;
   bool contains_nan() const;
 
-  static constexpr auto TYPE = QT_TR_NOOP("ObjectTransformation");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("ObjectTransformation", "ObjectTransformation");
 
 private:
   arma::vec2 m_translation;

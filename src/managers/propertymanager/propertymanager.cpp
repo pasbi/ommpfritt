@@ -90,12 +90,12 @@ namespace omm
 {
 
 PropertyManager::PropertyManager(Scene& scene)
-  : Manager(tr("Properties"), scene, make_menu_bar())
+  : Manager(QObject::tr("Properties", "PropertyManager"), scene, make_menu_bar())
 {
   auto tabs = std::make_unique<QTabWidget>();
   m_tabs = tabs.get();
   set_widget(std::move(tabs));
-  setWindowTitle(tr("property manager"));
+  setWindowTitle(QObject::tr("property manager", "PropertyManager"));
   setObjectName(TYPE);
   connect(m_tabs, &QTabWidget::currentChanged, [this](int index) {
     if (index >= 0) {
@@ -114,7 +114,7 @@ PropertyManager::~PropertyManager()
 std::unique_ptr<QMenuBar> PropertyManager::make_menu_bar()
 {
   auto menu_bar = std::make_unique<QMenuBar>();
-  auto user_properties_menu = menu_bar->addMenu(tr("user properties"));
+  auto user_properties_menu = menu_bar->addMenu(QObject::tr("user properties", "PropertyManager"));
   const auto exec_user_property_dialog = [this]() {
     auto dialog = UserPropertyDialog(this, **m_current_selection.begin());
     if (dialog.exec() == QDialog::Accepted) {
@@ -122,7 +122,8 @@ std::unique_ptr<QMenuBar> PropertyManager::make_menu_bar()
       m_scene.set_selection(m_scene.selection());
     }
   };
-  m_manage_user_properties_action = &action( *user_properties_menu, tr("edit ..."),
+  m_manage_user_properties_action = &action( *user_properties_menu,
+                                             QObject::tr("edit ...", "PropertyManager"),
                                              exec_user_property_dialog );
   m_manage_user_properties_action->setEnabled(false);
   return menu_bar;

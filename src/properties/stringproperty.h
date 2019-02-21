@@ -14,7 +14,7 @@ public:
   std::string type() const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  static constexpr auto TYPE = QT_TR_NOOP("StringProperty");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("StringProperty", "StringProperty");
   Mode mode() const;
   StringProperty& set_mode(Mode mode);
   static constexpr auto MODE_PROPERTY_KEY = "mode";

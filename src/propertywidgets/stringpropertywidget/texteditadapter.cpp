@@ -19,7 +19,7 @@ TextEditAdapter<QLineEdit>
 
 void TextEditAdapter<QLineEdit>::set_inconsistent_value()
 {
-  QLineEdit::setPlaceholderText(tr("< multiple values >"));
+  QLineEdit::setPlaceholderText(QObject::tr("< multiple values >", "TextEditAdapter"));
   QLineEdit::clear();
 }
 
@@ -43,7 +43,7 @@ TextEditAdapter<QTextEdit>
 
 void TextEditAdapter<QTextEdit>::set_inconsistent_value()
 {
-  QTextEdit::setPlaceholderText(tr("< multiple values >"));
+  QTextEdit::setPlaceholderText(QObject::tr("< multiple values >", "TextEditAdapter"));
   QTextEdit::clear();
 }
 
@@ -74,7 +74,8 @@ TextEditAdapter<FilePathEdit>
 
 void TextEditAdapter<FilePathEdit>::set_inconsistent_value()
 {
-  FilePathEdit::set_placeholder_text(tr("< multiple values >").toStdString());
+  const auto placeholder_text = QObject::tr("< multiple values >", "TextEditAdapter");
+  FilePathEdit::set_placeholder_text(placeholder_text.toStdString());
   FilePathEdit::clear();
 }
 
@@ -100,7 +101,8 @@ TextEditAdapter<CodeEdit>
 
 void TextEditAdapter<CodeEdit>::set_inconsistent_value()
 {
-  CodeEdit::set_placeholder_text(tr("< multiple values >").toStdString());
+  const auto placeholder_text = QObject::tr("< multiple values >", "TextEditAdapter");
+  CodeEdit::set_placeholder_text(placeholder_text.toStdString());
 }
 
 void TextEditAdapter<CodeEdit>::set_value(const std::string& text) { CodeEdit::set_code(text); }

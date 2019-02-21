@@ -156,31 +156,39 @@ std::map<std::string, QKeySequence> Application::default_bindings()
 {
   const auto ks = [](auto&&... code) { return QKeySequence(code...); };
   std::map<std::string, QKeySequence> map {
-    { QT_TR_NOOP("undo"),                    ks(tr("Ctrl+Z"))       },
-    { QT_TR_NOOP("redo"),                    ks(tr("Ctrl+Y"))       },
-    { QT_TR_NOOP("new document"),            ks(tr("Ctrl+N"))       },
-    { QT_TR_NOOP("save document"),           ks(tr("Ctrl+S"))       },
-    { QT_TR_NOOP("save document as"),        ks(tr("Ctrl+Shift+S")) },
-    { QT_TR_NOOP("load document"),           ks(tr("Ctrl+O"))       },
-    { QT_TR_NOOP("make smooth"),             ks()                   },
-    { QT_TR_NOOP("make linear"),             ks()                   },
-    { QT_TR_NOOP("remove points"),           ks(tr("Del"))          },
-    { QT_TR_NOOP("subdivide"),               ks()                   },
-    { QT_TR_NOOP("evaluate"),                ks()                   },
-    { QT_TR_NOOP("show keybindings dialog"), ks()                   },
-    { QT_TR_NOOP("previous tool"),           ks(tr("Space"))        },
-    { QT_TR_NOOP("select all"),              ks(tr("A"))            },
-    { QT_TR_NOOP("deselect all"),            ks()                   },
-    { QT_TR_NOOP("invert selection"),        ks(tr("I"))            },
-    { QT_TR_NOOP("remove selection"),        ks(tr("Ctrl+Del"))     },
-    { QT_TR_NOOP("new style"),               ks(tr(""))             },
-    { QT_TR_NOOP("convert objects"),         ks(tr("C"))            },
+    { QT_TRANSLATE_NOOP("action_name", "undo"),                    ks(tr("Ctrl+Z"))       },
+    { QT_TRANSLATE_NOOP("action_name", "redo"),                    ks(tr("Ctrl+Y"))       },
+    { QT_TRANSLATE_NOOP("action_name", "new document"),            ks(tr("Ctrl+N"))       },
+    { QT_TRANSLATE_NOOP("action_name", "save document"),           ks(tr("Ctrl+S"))       },
+    { QT_TRANSLATE_NOOP("action_name", "save document as"),        ks(tr("Ctrl+Shift+S")) },
+    { QT_TRANSLATE_NOOP("action_name", "load document"),           ks(tr("Ctrl+O"))       },
+    { QT_TRANSLATE_NOOP("action_name", "make smooth"),             ks()                   },
+    { QT_TRANSLATE_NOOP("action_name", "make linear"),             ks()                   },
+    { QT_TRANSLATE_NOOP("action_name", "remove points"),           ks(tr("Del"))          },
+    { QT_TRANSLATE_NOOP("action_name", "subdivide"),               ks()                   },
+    { QT_TRANSLATE_NOOP("action_name", "evaluate"),                ks()                   },
+    { QT_TRANSLATE_NOOP("action_name", "show keybindings dialog"), ks()                   },
+    { QT_TRANSLATE_NOOP("action_name", "previous tool"),           ks(tr("Space"))        },
+    { QT_TRANSLATE_NOOP("action_name", "select all"),              ks(tr("A"))            },
+    { QT_TRANSLATE_NOOP("action_name", "deselect all"),            ks()                   },
+    { QT_TRANSLATE_NOOP("action_name", "invert selection"),        ks(tr("I"))            },
+    { QT_TRANSLATE_NOOP("action_name", "remove selection"),        ks(tr("Ctrl+Del"))     },
+    { QT_TRANSLATE_NOOP("action_name", "new style"),               ks(tr(""))             },
+    { QT_TRANSLATE_NOOP("action_name", "convert objects"),         ks(tr("C"))            },
   };
 
-  for (const auto& key : Object::keys()) { map.insert(std::pair("create " + key, ks())); }
-  for (const auto& key : Manager::keys()) { map.insert(std::pair("show " + key, ks())); }
-  for (const auto& key : Tool::keys()) { map.insert(std::pair("select " + key, ks())); }
-  for (const auto& key : Tag::keys()) { map.insert(std::pair("attach " + key, ks())); }
+  for (const auto& key : Object::keys()) {
+    map.insert(std::pair(key, ks()));
+  }
+  for (const auto& key : Manager::keys()) {
+    map.insert(std::pair(key, ks()));
+  }
+  for (const auto& key : Tool::keys()) {
+    map.insert(std::pair(key, ks()));
+  }
+  for (const auto& key : Tag::keys()) {
+    map.insert(std::pair(key, ks()));
+  }
 
   return map;
 }
@@ -213,14 +221,14 @@ void Application::call(const std::string& command)
   };
 
   for (const auto& key : Object::keys()) {
-    map.insert(std::pair("create " + key, [this, key](){
+    map.insert(std::pair(key, [this, key](){
       using add_command_type = AddCommand<Tree<Object>>;
       scene.submit<add_command_type>(scene.object_tree, Object::make(key, &scene));
     }));
   }
 
   for (const auto& key : Manager::keys()) {
-    map.insert(std::pair("show " + key, [this, key](){
+    map.insert(std::pair(key, [this, key](){
       auto manager = Manager::make(key, scene);
       auto& ref = *manager;
       m_main_window->addDockWidget(Qt::TopDockWidgetArea, manager.release());
@@ -229,13 +237,13 @@ void Application::call(const std::string& command)
   }
 
   for (const auto& key : Tool::keys()) {
-    map.insert(std::pair("select " + key, [this, key](){
+    map.insert(std::pair(key, [this, key](){
       scene.tool_box.set_active_tool(key);
     }));
   }
 
   for (const auto& key : Tag::keys()) {
-    map.insert(std::pair("attach " + key, [this, key]() {
+    map.insert(std::pair(key, [this, key]() {
       scene.undo_stack.beginMacro(tr("Add Tag"));
       for (auto&& object : scene.object_selection()) {
         using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;

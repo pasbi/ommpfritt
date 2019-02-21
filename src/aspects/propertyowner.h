@@ -29,7 +29,7 @@ public:
   enum class Flag { None = 0x0,
                     Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4 };
 
-  static constexpr auto TYPE = QT_TR_NOOP("PropertyOwner");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("PropertyOwner", "AbstractPropertyOwner");
   virtual ~AbstractPropertyOwner() = default;
   Property& property(const std::string& key) const;
   bool has_property(const std::string& key) const;

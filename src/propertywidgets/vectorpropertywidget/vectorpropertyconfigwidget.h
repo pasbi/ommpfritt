@@ -75,15 +75,16 @@ public:
     auto min_layout = make_vector_edit<elem_type>(std::move(min_x), std::move(min_y));
     auto max_layout = make_vector_edit<elem_type>(std::move(max_x), std::move(max_y));
     auto step_layout = make_vector_edit<elem_type>(std::move(step_x_edit), std::move(step_y_edit));
-    this->form_layout()->addRow(VectorPropertyConfigWidget::tr("min"), min_layout.release());
-    this->form_layout()->addRow(VectorPropertyConfigWidget::tr("max"), max_layout.release());
-    this->form_layout()->addRow(VectorPropertyConfigWidget::tr("step"), step_layout.release());
+    this->form_layout()->addRow(QObject::tr("min", "NumericProperty"), min_layout.release());
+    this->form_layout()->addRow(QObject::tr("max", "NumericProperty"), max_layout.release());
+    this->form_layout()->addRow(QObject::tr("step", "NumericProperty"), step_layout.release());
   }
 };
 
 
 class IntegerVectorPropertyConfigWidget : public VectorPropertyConfigWidget<IntegerVectorProperty>
 {
+  Q_OBJECT
 public:
   using VectorPropertyConfigWidget::VectorPropertyConfigWidget;
   std::string type() const override;
@@ -91,6 +92,7 @@ public:
 
 class FloatVectorPropertyConfigWidget : public VectorPropertyConfigWidget<FloatVectorProperty>
 {
+  Q_OBJECT
 public:
   using VectorPropertyConfigWidget::VectorPropertyConfigWidget;
   std::string type() const override;

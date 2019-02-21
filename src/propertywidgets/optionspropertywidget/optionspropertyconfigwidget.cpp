@@ -9,7 +9,8 @@
 namespace omm
 {
 
-static constexpr auto unnamed_option_label = QT_TR_NOOP("Unnamed Option");
+static constexpr auto unnamed_option_label = QT_TRANSLATE_NOOP( "Unnamed Option",
+                                                                "OptionsPropertyConfigWidget" );
 
 OptionsPropertyConfigWidget
 ::OptionsPropertyConfigWidget(QWidget* parent, Property& property)
@@ -67,7 +68,9 @@ void OptionsPropertyConfigWidget::remove_option(int index)
     update_property_options();
   } else {
     LOG(WARNING) << "Prevented attempt to remove last option";
-    QMessageBox::warning(this, tr("Warning"), tr("Cannot remove last option."));
+    QMessageBox::warning(this, QObject::tr("Warning", "OptionsPropertyConfigWidget"),
+                               QObject::tr( "Cannot remove last option.",
+                                            "OptionsPropertyConfigWidget" ));
   }
 }
 

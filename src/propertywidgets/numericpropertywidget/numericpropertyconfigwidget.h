@@ -34,9 +34,9 @@ public:
     min_edit->set_value(numeric_property.lower());
     max_edit->set_value(numeric_property.upper());
 
-    this->form_layout()->addRow(NumericPropertyConfigWidget::tr("min"), min_edit.release());
-    this->form_layout()->addRow(NumericPropertyConfigWidget::tr("max"), max_edit.release());
-    this->form_layout()->addRow(NumericPropertyConfigWidget::tr("step"), step_edit.release());
+    this->form_layout()->addRow(QObject::tr("min", "NumericProperty"), min_edit.release());
+    this->form_layout()->addRow(QObject::tr("max", "NumericProperty"), max_edit.release());
+    this->form_layout()->addRow(QObject::tr("step", "NumericProperty"), step_edit.release());
   }
 };
 

@@ -9,7 +9,8 @@
 namespace omm
 {
 
-const std::string Property::USER_PROPERTY_CATEGROY_NAME = QT_TR_NOOP("user properties");
+const std::string Property::USER_PROPERTY_CATEGROY_NAME = QT_TRANSLATE_NOOP( "Property",
+                                                                             "user properties" );
 
 std::string Property::label() const
 {

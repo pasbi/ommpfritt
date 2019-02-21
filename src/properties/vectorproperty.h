@@ -21,7 +21,7 @@ public:
   std::string type() const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  static constexpr auto TYPE = QT_TR_NOOP("FloatVectorProperty");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("FloatVectorProperty", "FloatVectorProperty");
   std::unique_ptr<Property> clone() const override;
 };
 
@@ -40,7 +40,7 @@ public:
   std::string type() const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  static constexpr auto TYPE = QT_TR_NOOP("IntegerVectorProperty");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("IntegerVectorProperty", "IntegerVectorProperty");
   std::unique_ptr<Property> clone() const override;
 };
 

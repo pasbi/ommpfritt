@@ -10,7 +10,7 @@ namespace omm
 class StyleManager : public ItemManager<StyleListView>, public CommandInterface
 {
   DECLARE_MANAGER_TYPE(StyleManager)
-
+  Q_OBJECT
 public:
   explicit StyleManager(Scene& scene);
   void call(const std::string& command) override;

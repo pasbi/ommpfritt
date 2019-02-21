@@ -11,7 +11,10 @@ StringPropertyConfigWidget::StringPropertyConfigWidget(QWidget* parent, Property
   auto& string_property = static_cast<StringProperty&>(property);
 
   auto* mode_selector = std::make_unique<QComboBox>(this).release();
-  mode_selector->addItems({ tr("single line"), tr("multi line"), tr("file path"), tr("code") });
+  mode_selector->addItems({ QObject::tr("single line", "StringPropertyConfigWidget"),
+                            QObject::tr("multi line", "StringPropertyConfigWidget"),
+                            QObject::tr("file path", "StringPropertyConfigWidget"),
+                            QObject::tr("code", "StringPropertyConfigWidget") });
   box_layout()->addWidget(mode_selector);
   mode_selector->setCurrentIndex(static_cast<int>(string_property.mode()));
   const auto cic = static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged);

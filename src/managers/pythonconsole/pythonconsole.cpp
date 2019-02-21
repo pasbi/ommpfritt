@@ -15,9 +15,9 @@ namespace omm
 {
 
 PythonConsole::PythonConsole(Scene& scene)
-  : Manager(tr("Styles"), scene, make_menu_bar())
+  : Manager(QObject::tr("Styles", "PythonConsole"), scene, make_menu_bar())
 {
-  setWindowTitle(tr("Python Console"));
+  setWindowTitle(QObject::tr("PythonConsole", "Python Console"));
   setObjectName(TYPE);
 
   auto widget = std::make_unique<QWidget>();
@@ -34,12 +34,12 @@ PythonConsole::PythonConsole(Scene& scene)
   m_associated_item_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   header_layout->addWidget(ref_filter_widget.release());
 
-  auto exec_button = std::make_unique<QPushButton>(tr("run"));
+  auto exec_button = std::make_unique<QPushButton>(QObject::tr("PythonConsole", "run"));
   connect(exec_button.get(), &QPushButton::clicked, this, &PythonConsole::eval);
   exec_button->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   header_layout->addWidget(exec_button.release());
 
-  auto clear_button = std::make_unique<QPushButton>(tr("clear"));
+  auto clear_button = std::make_unique<QPushButton>(QObject::tr("PythonConsole", "clear"));
   connect(clear_button.get(), &QPushButton::clicked, this, &PythonConsole::clear);
   clear_button->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   header_layout->addWidget(clear_button.release());
@@ -47,14 +47,15 @@ PythonConsole::PythonConsole(Scene& scene)
   auto output = std::make_unique<CodeEdit>();
   m_output = output.get();
   m_output->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  m_output->set_placeholder_text(tr("no output yet.").toStdString());
+  m_output->set_placeholder_text(QObject::tr("PythonConsole", "no output yet.").toStdString());
   m_output->set_editable(false);
   m_layout->addWidget(output.release());
 
   auto commandline = std::make_unique<CodeEdit>();
   m_commandline = commandline.get();
   m_commandline->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-  m_commandline->set_placeholder_text(tr("enter command ...").toStdString());
+  m_commandline->set_placeholder_text( QObject::tr("PythonConsole", "enter command ...")
+                                        .toStdString() );
   m_commandline->installEventFilter(this);
   m_commandline->set_caption_modifiers(caption_modifiers);
   m_layout->addWidget(commandline.release());
@@ -84,7 +85,7 @@ void PythonConsole::eval()
 {
   const auto code = m_commandline->code();
   push_command(code);
-  m_output->put(tr(">>> ").toStdString() + code, CodeEdit::Stream::stdout);
+  m_output->put(QObject::tr(">>> ", "PythonConsole").toStdString() + code, CodeEdit::Stream::stdout);
 
   using namespace pybind11::literals;
   const auto locals = pybind11::dict("scene"_a=SceneWrapper(scene()));
@@ -185,7 +186,8 @@ void PythonConsole::keyPressEvent(QKeyEvent* event)
 std::map<std::string, QKeySequence> PythonConsole::default_bindings()
 {
   return {
-    { QT_TR_NOOP("clear python console"), QKeySequence(tr("Ctrl+K")) }
+    { QT_TRANSLATE_NOOP("clear python console", "PythonConsole"),
+      QKeySequence(QObject::tr("Ctrl+K", "PythonConsole")) }
   };
 }
 

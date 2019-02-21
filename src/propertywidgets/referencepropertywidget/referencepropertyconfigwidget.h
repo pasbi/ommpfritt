@@ -8,6 +8,7 @@ namespace omm
 
 class ReferencePropertyConfigWidget : public PropertyConfigWidget<ReferenceProperty>
 {
+  Q_OBJECT
 public:
   ReferencePropertyConfigWidget(QWidget* parent, Property& property);
   std::string type() const override;

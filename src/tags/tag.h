@@ -19,7 +19,7 @@ public:
   explicit Tag(Object& owner);
   virtual ~Tag() = default;
   virtual QIcon icon() const = 0;
-  static constexpr auto TYPE = QT_TR_NOOP("Tag");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("Tag", "Tag");
   virtual std::unique_ptr<Tag> clone() const = 0;
   std::unique_ptr<Tag> clone(Object& owner) const;
   Object* owner;

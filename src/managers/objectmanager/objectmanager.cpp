@@ -13,14 +13,15 @@ namespace omm
 std::map<std::string, QKeySequence> ObjectManager::default_bindings()
 {
   return {
-    { QT_TR_NOOP("remove objects and tags"), QKeySequence(tr("Del")) }
+    { QT_TRANSLATE_NOOP("remove objects and tags", "ObjectManager"),
+      QKeySequence(QObject::tr("Del", "ObjectManager")) }
   };
 }
 
 ObjectManager::ObjectManager(Scene& scene)
-  : ItemManager(tr("Objects"), scene, scene.object_tree_adapter)
+  : ItemManager(QObject::tr("Objects", "ObjectManager"), scene, scene.object_tree_adapter)
 {
-  setWindowTitle(tr("object manager"));
+  setWindowTitle(QObject::tr("object manager", "ObjectManager"));
   setObjectName(TYPE);
 }
 

@@ -6,6 +6,7 @@
 #include <QEvent>
 #include <glog/logging.h>
 #include <QWidget>
+#include <QCoreApplication>
 
 namespace
 {
@@ -38,7 +39,7 @@ public:
   ActionWidget(QWidget* parent, const omm::KeyBinding& key_binding) : QWidget(parent)
   {
     auto name_label = std::make_unique<LiveLabel>([&key_binding]() {
-      return key_binding.name(); // TODO translate
+      return QCoreApplication::translate("action_name", key_binding.name().c_str()).toStdString();
     });
     m_name_label = name_label.get();
     name_label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);

@@ -24,7 +24,7 @@ public:
 
   bool is_compatible(const Property& other) const override;
   bool is_cyclic() const;
-  static constexpr auto TYPE = QT_TR_NOOP("ReferenceProperty");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("ReferenceProperty", "ReferenceProperty");
   std::unique_ptr<Property> clone() const override;
 
 

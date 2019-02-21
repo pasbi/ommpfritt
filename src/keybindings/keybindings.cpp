@@ -13,6 +13,7 @@
 #include "managers/stylemanager/stylemanager.h"
 #include "managers/objectmanager/objectmanager.h"
 #include "managers/pythonconsole/pythonconsole.h"
+#include <QCoreApplication>
 
 namespace
 {
@@ -58,7 +59,8 @@ std::unique_ptr<QMenu> add_menu(const std::string& path, std::map<std::string, Q
     return nullptr;
   } else {
     const auto [ rest_path, menu_name ] = split(path);
-    auto menu = std::make_unique<QMenu>(QString::fromStdString(menu_name));
+    const auto menu_label = QCoreApplication::translate("menu_name", menu_name.c_str());
+    auto menu = std::make_unique<QMenu>(menu_label);
     menu_map.insert({ path, menu.get() });
 
     if (rest_path.empty()) {
@@ -212,9 +214,9 @@ QVariant KeyBindings::headerData(int section, Qt::Orientation orientation, int r
     switch (role) {
     case Qt::DisplayRole:
       switch (section) {
-      case NAME_COLUMN: return tr("name");
-      case CONTEXT_COLUMN: return tr("context");
-      case SEQUENCE_COLUMN: return tr("sequence");
+      case NAME_COLUMN: return QObject::tr("name", "keybindings");
+      case CONTEXT_COLUMN: return QObject::tr("context", "keybindings");
+      case SEQUENCE_COLUMN: return QObject::tr("sequence", "keybindings");
       }
     }
     return QVariant();

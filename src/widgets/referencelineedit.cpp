@@ -40,7 +40,7 @@ void ReferenceLineEdit::update_candidates()
     if (candidate) {
       addItem(QString::fromStdString(candidate->name()));
     } else {
-      addItem(tr("< none >"));
+      addItem(QObject::tr("< none >", "ReferenceLineEdit"));
     }
   }
   set_value(value_safe);
@@ -63,7 +63,11 @@ void ReferenceLineEdit::set_value(const value_type& value)
   if (value_has_changed && !signalsBlocked()) { on_value_changed(m_value); }
 }
 
-void ReferenceLineEdit::set_inconsistent_value() { setEditText(tr("<multiple values>")); }
+void ReferenceLineEdit::set_inconsistent_value()
+{
+  setEditText(QObject::tr("<multiple values>", "ReferenceLineEdit"));
+}
+
 ReferenceLineEdit::value_type ReferenceLineEdit::value() const { return m_value; }
 void ReferenceLineEdit::mouseDoubleClickEvent(QMouseEvent* event) { set_value(nullptr); }
 void ReferenceLineEdit::structure_has_changed() { update_candidates(); }

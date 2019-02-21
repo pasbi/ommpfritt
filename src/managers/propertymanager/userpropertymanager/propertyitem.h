@@ -26,7 +26,8 @@ public:
 
   std::string property_type() const;
   QVariant data(int role) const override;
-  static constexpr auto UNNAMED_PROPERTY_PLACEHOLDER = QT_TR_NOOP("<unnamed property>");
+  static constexpr auto UNNAMED_PROPERTY_PLACEHOLDER
+    = QT_TRANSLATE_NOOP("PropertyItem", "<unnamed property>");
 
 private:
   std::unique_ptr<Property> m_property;

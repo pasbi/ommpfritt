@@ -7,6 +7,7 @@
 #include <QWheelEvent>
 #include <glog/logging.h>
 #include <memory>
+#include <QCoreApplication>
 
 namespace NumericEditDetail
 {
@@ -37,9 +38,8 @@ template<typename ValueType>
 class NumericEdit : public QLineEdit
 {
 public:
-
-  const std::string inf = tr("inf").toStdString();
-  const std::string neg_inf = tr("-inf").toStdString();
+  const std::string inf = QLineEdit::tr("inf").toStdString();
+  const std::string neg_inf = QLineEdit::tr("-inf").toStdString();
 
   using value_type = ValueType;
   using on_value_changed_t = std::function<void(value_type)>;
@@ -109,7 +109,7 @@ public:
     }
   }
 
-  void set_invalid_value() { setText(tr("< invalid >")); }
+  void set_invalid_value() { setText(QObject::tr("< invalid >", "property")); }
   value_type value() const { return parse(text().toStdString()); }
 
 protected:
