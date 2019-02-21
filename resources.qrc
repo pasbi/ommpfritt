@@ -1,0 +1,12 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file alias="translation.qm">build/de_DE.qm</file>
+    </qresource>
+    <qresource lang="de">
+        <file alias="translation.qm">build/de_DE.qm</file>
+    </qresource>
+    <qresource lang="en">
+        <file alias="translation.qm">build/en_US.qm</file>
+    </qresource>
+</RCC>
