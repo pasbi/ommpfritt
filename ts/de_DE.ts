@@ -261,12 +261,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="46"/>
+        <location filename="../src/main.cpp" line="91"/>
         <source>omm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="47"/>
+        <location filename="../src/main.cpp" line="92"/>
         <source>ommpfritt</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1123,7 +1123,7 @@ Remove the refrenced items anyway?</source>
     <message>
         <location filename="../src/mainwindow/mainwindow.cpp" line="99"/>
         <source>file</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei</translation>
     </message>
     <message>
         <location filename="../src/mainwindow/mainwindow.cpp" line="103"/>
