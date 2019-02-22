@@ -6,6 +6,8 @@ set (CMAKE_AUTOMOC ON)
 set (CMAKE_AUTORCC ON)
 set (OMMPFRITT_VERSION_MAJOR 1)
 set (OMMPFRITT_VERSION_MINOR 0)
+set (QT_QM_PATH CACHE PATH
+    "path where to find the  qt translation files (qt_en.qm, qtbase_de.qm, etc.")
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/ommpfrittconfig.h.in"
@@ -38,11 +40,20 @@ find_package(Qt5Widgets CONFIG REQUIRED)
 find_package(Qt5 COMPONENTS LinguistTools)
 
 file (GLOB TS_FILES
-  ts/de_DE.ts
-  ts/en_US.ts
+  ts/omm_en.ts
+  ts/omm_de.ts
 )
 
+foreach (lang en de)
+  foreach (pref qt qtbase qt_help qtlocation)
+    file(COPY ${QT_QM_PATH}/${pref}_${lang}.qm  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+  endforeach(pref)
+endforeach(lang)
+
+message("TS ${TS_FILES}")
 qt5_create_translation(QM_FILES ${CMAKE_CURRENT_SOURCE_DIR} ${TS_FILES})
+message("QM ${QM_FILES}")
+qt5_add_translation(QM_FILES "${TS_FILES}")
 set(RESOURCES resources.qrc)
 
 add_library(libommpfritt)

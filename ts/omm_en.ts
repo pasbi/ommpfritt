@@ -261,12 +261,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="91"/>
+        <location filename="../src/main.cpp" line="63"/>
         <source>omm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/main.cpp" line="92"/>
+        <location filename="../src/main.cpp" line="64"/>
         <source>ommpfritt</source>
         <translation type="unfinished"></translation>
     </message>
@@ -998,49 +998,49 @@ Remove the refrenced items anyway?</source>
     <name>action_name</name>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="159"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="103"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="106"/>
         <source>undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="160"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="104"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="107"/>
         <source>redo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="161"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="99"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="102"/>
         <source>new document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="162"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="100"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="103"/>
         <source>save document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="163"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="101"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="104"/>
         <source>save document as</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="164"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="102"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="105"/>
         <source>load document</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="165"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="86"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="89"/>
         <source>make smooth</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="166"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="87"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="90"/>
         <source>make linear</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1051,61 +1051,61 @@ Remove the refrenced items anyway?</source>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="168"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="88"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="91"/>
         <source>subdivide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="169"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="111"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="114"/>
         <source>evaluate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="170"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="122"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="125"/>
         <source>show keybindings dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="171"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="109"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="112"/>
         <source>previous tool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="172"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="89"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="92"/>
         <source>select all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="173"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="90"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="93"/>
         <source>deselect all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="174"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="91"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="94"/>
         <source>invert selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="175"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="68"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="71"/>
         <source>remove selection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="176"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="105"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="108"/>
         <source>new style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="177"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="69"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="72"/>
         <source>convert objects</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1121,59 +1121,59 @@ Remove the refrenced items anyway?</source>
 <context>
     <name>menu_name</name>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="99"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="102"/>
         <source>file</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="103"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="106"/>
         <source>edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="105"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="106"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="107"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="108"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="109"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="110"/>
         <source>object</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="106"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="109"/>
         <source>create/</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="107"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="110"/>
         <source>attach/</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="108"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="111"/>
         <source>path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="109"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="112"/>
         <source>tool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="110"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="113"/>
         <source>select</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="111"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="114"/>
         <source>scene</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="112"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="115"/>
         <source>window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="112"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="115"/>
         <source>show</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1300,6 +1300,44 @@ Remove the refrenced items anyway?</source>
     <message>
         <location filename="../src/widgets/filepathedit.cpp" line="16"/>
         <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::MainWindow</name>
+    <message>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="151"/>
+        <source>about</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="153"/>
+        <source>About</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="153"/>
+        <source>omm.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="157"/>
+        <source>Changing language takes effect after restarting the application.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="158"/>
+        <source>information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="161"/>
+        <source>language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="186"/>
+        <source>system default</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -17,53 +17,51 @@
 #include <QVariant>
 #include <QDirIterator>
 
-std::vector<std::string> available_translations()
+auto load_translator(const std::string& prefix, const QLocale& locale)
 {
-  std::list<std::string> trs;
-  QDirIterator it(":", QDirIterator::Subdirectories);
-  static const QString prefix(":/translation.");
-  static const QString suffix(".qm");
-  while (it.hasNext()) {
-    const auto filename = it.next();
-    if (filename.startsWith(prefix) && filename.endsWith(suffix)) {
-      const int code_length = filename.size() - prefix.size()-  suffix.size();
-      if (code_length < 0) {
-        trs.push_back("");
-      } else {
-        const auto code = filename.mid(prefix.size(), code_length);
-        trs.push_back(code.toStdString());
-      }
-    }
-  }
-
-  return std::vector(trs.begin(), trs.end());
-}
-
-bool load_translator(const QLocale& locale, QTranslator& translator)
-{
+  auto translator = std::make_unique<QTranslator>();
   const auto locale_name = locale.name().toStdString();
-  if (translator.load("translation." + locale.name(), ":", "_", ".qm")) {
-    LOG(INFO) << "Installing translator for " << locale_name << ".";
-    return true;
+  if (translator->load( QString("%1_%2").arg(prefix.c_str()).arg(locale.name()),
+                        omm::MainWindow::LANGUAGE_RESOURCE_DIRECTORY, "_",
+                        omm::MainWindow::LANGUAGE_RESOURCE_SUFFIX )) {
+    LOG(INFO) << "Installing translator '" << prefix << "' for " << locale_name << ".";
+    return translator;
   } else {
-    LOG(WARNING) << "No translator found for " << locale_name << ". Using fallback-translator.";
-    LOG(INFO) << "Available locales: ";
-    for (const auto& code : available_translations()) {
+    LOG(WARNING) << "No translator '" << prefix << "' found for " << locale_name
+                 << ". Using fallback-translator.";
+    LOG(INFO) << "Available locales for '" << prefix << "': ";
+    for (const auto& code : omm::MainWindow::available_translations()) {
       LOG(INFO) << "    '" << code << "'";
     }
-    if (translator.load("translation.qm", ":")) {
+    const auto fallback_tr_name = QString::fromStdString(prefix)
+                                + omm::MainWindow::LANGUAGE_RESOURCE_SUFFIX;
+    if (translator->load(fallback_tr_name, ":")) {
       LOG(INFO) << "Installing fallback-translator.";
+      return translator;
     } else {
       LOG(ERROR) << "failed to load fallback-translator.";
+      return std::unique_ptr<QTranslator>(nullptr);
     }
-    return false;
   }
+}
+
+auto install_translators(QCoreApplication& app, const QLocale& locale)
+{
+  const auto qms = { "qtbase", "omm" };
+  const auto load_tr = [&app, locale](const std::string& qm) {
+    auto translator = load_translator(qm, locale);
+    if (translator) { app.installTranslator(translator.get()); };
+    return translator;
+  };
+  return ::transform<std::unique_ptr<QTranslator>, std::vector>(qms, load_tr);
 }
 
 int main (int argc, char *argv[])
 {
   google::InitGoogleLogging(argv[0]);
 
+  QCoreApplication::setOrganizationName(QObject::tr("omm"));
+  QCoreApplication::setApplicationName(QObject::tr("ommpfritt"));
 
   omm::register_properties();
   omm::register_managers();
@@ -78,13 +76,8 @@ int main (int argc, char *argv[])
   QApplication qt_app(argc, argv);
   omm::Application app(qt_app);
 
-  QTranslator translator;
-  const auto locale = QSettings().value("locale", QLocale()).toLocale();
-  load_translator(locale, translator);
-  qt_app.installTranslator(&translator);
-
-  QCoreApplication::setOrganizationName(QObject::tr("omm"));
-  QCoreApplication::setApplicationName(QObject::tr("ommpfritt"));
+  const auto locale = QSettings().value(omm::MainWindow::LOCALE_SETTINGS_KEY).toLocale();
+  const auto translators = install_translators(qt_app, locale);
 
   omm::MainWindow window(app);
   app.set_main_window(window);
