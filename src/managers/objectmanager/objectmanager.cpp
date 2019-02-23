@@ -46,4 +46,6 @@ std::vector<std::string> ObjectManager::application_actions() const
   return MainWindow::object_menu_entries();
 }
 
+std::string ObjectManager::type() const { return TYPE; }
+
 }  // namespace omm

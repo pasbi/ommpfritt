@@ -9,7 +9,6 @@ namespace omm
 
 class ObjectManager : public ItemManager<ObjectTreeView>, public CommandInterface
 {
-  DECLARE_MANAGER_TYPE(ObjectManager)
 
 public:
   static std::map<std::string, QKeySequence> default_bindings();
@@ -19,6 +18,10 @@ public:
 protected:
   void keyPressEvent(QKeyEvent* event) override;
   std::vector<std::string> application_actions() const override;
+
+public:
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ObjectManager");
+  std::string type() const override;
 
 };
 

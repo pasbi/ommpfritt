@@ -15,14 +15,15 @@ class ReferenceLineEdit;
 
 class PythonConsole : public Manager, public PythonIOObserver, public CommandInterface
 {
-  DECLARE_MANAGER_TYPE(PythonConsole)
-
 public:
   explicit PythonConsole(Scene& scene);
   ~PythonConsole();
 
   void on_stdout(const void* associated_item, const std::string& text) override;
   void on_stderr(const void* associated_item, const std::string& text) override;
+
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PythonConsole");
+  std::string type() const override;
 
 protected:
   bool eventFilter(QObject* object, QEvent* event) override;

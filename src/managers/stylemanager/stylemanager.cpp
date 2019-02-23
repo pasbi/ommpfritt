@@ -51,4 +51,6 @@ void StyleManager::populate_menu(QMenu& menu)
   menu.addAction(key_bindings.make_action(*this, "remove styles").release());
 }
 
+std::string StyleManager::type() const { return TYPE; }
+
 }  // namespace omm

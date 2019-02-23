@@ -18,8 +18,6 @@ class PropertyView;
 class PropertyManager
   : public Manager, public AbstractSelectionObserver, public AbstractPropertyObserver
 {
-  DECLARE_MANAGER_TYPE(PropertyManager)
-
 public:
   explicit PropertyManager(Scene& scene);
   ~PropertyManager();
@@ -29,6 +27,8 @@ public:
   void clear();
   void add_user_property();
   void on_property_value_changed(Property& property) override;
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PropertyManager");
+  std::string type() const override;
 
 private:
   QTabWidget* m_tabs;

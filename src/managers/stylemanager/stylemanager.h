@@ -9,12 +9,14 @@ namespace omm
 
 class StyleManager : public ItemManager<StyleListView>, public CommandInterface
 {
-  DECLARE_MANAGER_TYPE(StyleManager)
   Q_OBJECT
 public:
   explicit StyleManager(Scene& scene);
   void call(const std::string& command) override;
   static std::map<std::string, QKeySequence> default_bindings();
+
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "StyleManager");
+  std::string type() const override;
 
 protected:
   void keyPressEvent(QKeyEvent* event) override;

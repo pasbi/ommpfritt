@@ -1047,6 +1047,26 @@ Remove the selected items anyway?</translation>
         <source>ProceduralPath</source>
         <translation>Procedural path</translation>
     </message>
+    <message>
+        <location filename="../src/managers/objectmanager/objectmanager.h" line="23"/>
+        <source>ObjectManager</source>
+        <translation type="unfinished">Object manager</translation>
+    </message>
+    <message>
+        <location filename="../src/managers/propertymanager/propertymanager.h" line="30"/>
+        <source>PropertyManager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/managers/pythonconsole/pythonconsole.h" line="25"/>
+        <source>PythonConsole</source>
+        <translation type="unfinished">Python Console</translation>
+    </message>
+    <message>
+        <location filename="../src/managers/stylemanager/stylemanager.h" line="18"/>
+        <source>StyleManager</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>menu_name</name>

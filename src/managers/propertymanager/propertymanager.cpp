@@ -191,4 +191,6 @@ void PropertyManager::on_property_value_changed(Property& property)
   QTimer::singleShot(0, [this](){ set_selection(m_current_selection); });
 }
 
+std::string PropertyManager::type() const { return TYPE; }
+
 }  // namespace omm

@@ -204,4 +204,6 @@ void PythonConsole::populate_menu(QMenu& menu)
   menu.addAction(key_bindings.make_action(*this, "clear python console").release());
 }
 
+std::string PythonConsole::type() const { return TYPE; }
+
 }  // namespace omm
