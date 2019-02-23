@@ -601,64 +601,28 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Ungültig</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="93"/>
-        <source>Properties</source>
-        <comment>PropertyManager</comment>
-        <translation>Eigenschaften</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="98"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="99"/>
         <source>property manager</source>
         <comment>PropertyManager</comment>
         <translation>Eigenschaftsmanager</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="117"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="118"/>
         <source>user properties</source>
         <comment>PropertyManager</comment>
         <translation>Benutzereigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="126"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="127"/>
         <source>edit ...</source>
         <comment>PropertyManager</comment>
         <translation>Berarbeiten ...</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="17"/>
-        <source>Del</source>
-        <comment>ObjectManager</comment>
-        <translation>Entf</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="22"/>
-        <source>Objects</source>
-        <comment>ObjectManager</comment>
-        <translation>Objekte</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="24"/>
-        <source>object manager</source>
-        <comment>ObjectManager</comment>
-        <translation>Objekt-Manager</translation>
     </message>
     <message>
         <location filename="../src/managers/propertymanager/userpropertymanager/userpropertydialog.cpp" line="88"/>
         <source>User Properties</source>
         <comment>UserPropertyDialog</comment>
         <translation>Benutzereigenschaften-Dialog</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="18"/>
-        <source>Styles</source>
-        <comment>PythonConsole</comment>
-        <translation>Styles</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="20"/>
-        <source>PythonConsole</source>
-        <comment>Python Console</comment>
-        <translation>Python Konsole</translation>
     </message>
     <message>
         <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="37"/>
@@ -817,6 +781,11 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <comment>TextEditAdapter</comment>
         <translation>Mehrere Werte</translation>
     </message>
+    <message>
+        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="17"/>
+        <source>Del</source>
+        <translation>Entf</translation>
+    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>
@@ -968,7 +937,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="170"/>
         <source>show keybindings dialog</source>
-        <translation>Tastenkürzeldialog Öffnen</translation>
+        <translation>Tastenkürzeldialog öffnen</translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="171"/>
@@ -1048,24 +1017,37 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Prozeduraler Pfad</translation>
     </message>
     <message>
+        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="16"/>
+        <source>remove objects and tags</source>
+        <translation>Objekte und Tags entfernen</translation>
+    </message>
+    <message>
+        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="22"/>
         <location filename="../src/managers/objectmanager/objectmanager.h" line="23"/>
         <source>ObjectManager</source>
-        <translation type="unfinished">Objektmanager</translation>
+        <translation>Objekt-Manager</translation>
     </message>
     <message>
         <location filename="../src/managers/propertymanager/propertymanager.h" line="30"/>
         <source>PropertyManager</source>
-        <translation type="unfinished"></translation>
+        <translation>Eigenschaften-Manager</translation>
     </message>
     <message>
+        <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="19"/>
         <location filename="../src/managers/pythonconsole/pythonconsole.h" line="25"/>
         <source>PythonConsole</source>
-        <translation type="unfinished">Python Konsole</translation>
+        <translation>Python Konsole</translation>
     </message>
     <message>
+        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="24"/>
         <location filename="../src/managers/stylemanager/stylemanager.h" line="18"/>
         <source>StyleManager</source>
-        <translation type="unfinished"></translation>
+        <translation>Style-Manager</translation>
+    </message>
+    <message>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="94"/>
+        <source>Properties</source>
+        <translation>Eigenschaften</translation>
     </message>
 </context>
 <context>
@@ -1257,10 +1239,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <name>omm::MainWindow</name>
     <message>
         <location filename="../src/mainwindow/mainwindow.cpp" line="151"/>
-        <source>about</source>
-        <translation>Über</translation>
-    </message>
-    <message>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="152"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="153"/>
         <source>About</source>
         <translation>Über</translation>
@@ -1337,24 +1316,14 @@ Soll die Selektion troztdem entfernt werden?</translation>
 <context>
     <name>omm::StyleManager</name>
     <message>
-        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="18"/>
+        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="19"/>
         <source>remove styles</source>
         <translation>Styles entfernen</translation>
     </message>
     <message>
-        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="18"/>
+        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="19"/>
         <source>Del</source>
         <translation>Entf</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="23"/>
-        <source>Styles</source>
-        <translation>Styles</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="25"/>
-        <source>style manager</source>
-        <translation>Stylemanager</translation>
     </message>
 </context>
 <context>
@@ -1363,14 +1332,6 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <location filename="../src/mainwindow/toolbar.cpp" line="8"/>
         <source>ToolBar</source>
         <translation>Werkzeugkasten</translation>
-    </message>
-</context>
-<context>
-    <name>remove objects and tags</name>
-    <message>
-        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="16"/>
-        <source>ObjectManager</source>
-        <translation>Objektmanager</translation>
     </message>
 </context>
 </TS>

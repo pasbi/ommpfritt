@@ -179,9 +179,9 @@ QVariant KeyBindings::data(const QModelIndex& index, int role) const
   case Qt::DisplayRole:
     switch (index.column()) {
     case NAME_COLUMN:
-      return QString::fromStdString(binding.name());
+      return QCoreApplication::translate("any-context", binding.name().c_str());
     case CONTEXT_COLUMN:
-      return QString::fromStdString(binding.context());
+      return QCoreApplication::translate("any-context", binding.context().c_str());
     case SEQUENCE_COLUMN:
       return binding.key_sequence().toString(QKeySequence::PortableText);
     }

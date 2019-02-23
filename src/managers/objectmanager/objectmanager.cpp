@@ -4,7 +4,7 @@
 #include "scene/scene.h"
 #include <functional>
 #include "mainwindow/application.h"
-
+#include <QCoreApplication>
 #include <glog/logging.h>
 
 namespace omm
@@ -13,15 +13,15 @@ namespace omm
 std::map<std::string, QKeySequence> ObjectManager::default_bindings()
 {
   return {
-    { QT_TRANSLATE_NOOP("remove objects and tags", "ObjectManager"),
-      QKeySequence(QObject::tr("Del", "ObjectManager")) }
+    { QT_TRANSLATE_NOOP("any-context", "remove objects and tags"),
+      QKeySequence(QObject::tr("Del")) }
   };
 }
 
 ObjectManager::ObjectManager(Scene& scene)
-  : ItemManager(QObject::tr("Objects", "ObjectManager"), scene, scene.object_tree_adapter)
+  : ItemManager( QCoreApplication::translate("any-context", "ObjectManager"),
+                 scene, scene.object_tree_adapter )
 {
-  setWindowTitle(QObject::tr("object manager", "ObjectManager"));
   setObjectName(TYPE);
 }
 

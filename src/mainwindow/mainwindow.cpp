@@ -148,8 +148,8 @@ MainWindow::MainWindow(Application& app)
 
 std::unique_ptr<QMenu> MainWindow::make_about_menu()
 {
-  auto menu = std::make_unique<QMenu>(tr("about"));
-  connect(menu->addAction("about"), &QAction::triggered, [this]() {
+  auto menu = std::make_unique<QMenu>(tr("About"));
+  connect(menu->addAction(tr("About")), &QAction::triggered, [this]() {
     QMessageBox::information(this, tr("About"), tr("omm."));
   });
 

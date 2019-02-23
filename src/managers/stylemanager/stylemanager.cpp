@@ -7,6 +7,7 @@
 #include "scene/scene.h"
 #include "commands/addcommand.h"
 #include "mainwindow/application.h"
+#include <QCoreApplication>
 
 namespace omm
 {
@@ -20,9 +21,9 @@ std::map<std::string, QKeySequence> StyleManager::default_bindings()
 }
 
 StyleManager::StyleManager(Scene& scene)
-  : ItemManager(tr("Styles"), scene, scene.style_list_adapter)
+  : ItemManager( QCoreApplication::translate("any-context", "StyleManager"),
+                 scene, scene.style_list_adapter )
 {
-  setWindowTitle(tr("style manager"));
   setObjectName(TYPE);
 }
 

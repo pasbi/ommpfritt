@@ -10,14 +10,14 @@
 #include "python/scenewrapper.h"
 #include "widgets/referencelineedit.h"
 #include "mainwindow/application.h"
+#include <QCoreApplication>
 
 namespace omm
 {
 
 PythonConsole::PythonConsole(Scene& scene)
-  : Manager(QObject::tr("Styles", "PythonConsole"), scene, make_menu_bar())
+  : Manager(QCoreApplication::translate("any-context", "PythonConsole"), scene, make_menu_bar())
 {
-  setWindowTitle(QObject::tr("PythonConsole", "Python Console"));
   setObjectName(TYPE);
 
   auto widget = std::make_unique<QWidget>();

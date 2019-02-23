@@ -4,6 +4,7 @@
 #include <set>
 #include <QTabWidget>
 #include <QTimer>
+#include <QCoreApplication>
 
 #include "properties/optionsproperty.h"
 #include "managers/propertymanager/propertymanagertab.h"
@@ -90,7 +91,7 @@ namespace omm
 {
 
 PropertyManager::PropertyManager(Scene& scene)
-  : Manager(QObject::tr("Properties", "PropertyManager"), scene, make_menu_bar())
+  : Manager(QCoreApplication::translate("any-context", "Properties"), scene, make_menu_bar())
 {
   auto tabs = std::make_unique<QTabWidget>();
   m_tabs = tabs.get();

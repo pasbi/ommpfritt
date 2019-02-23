@@ -601,64 +601,28 @@ Remove the selected items anyway?</translation>
         <translation>Invalid</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="93"/>
-        <source>Properties</source>
-        <comment>PropertyManager</comment>
-        <translation>Properties</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="98"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="99"/>
         <source>property manager</source>
         <comment>PropertyManager</comment>
         <translation>Property manager</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="117"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="118"/>
         <source>user properties</source>
         <comment>PropertyManager</comment>
         <translation>User properties</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="126"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="127"/>
         <source>edit ...</source>
         <comment>PropertyManager</comment>
         <translation>Edit ...</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="17"/>
-        <source>Del</source>
-        <comment>ObjectManager</comment>
-        <translation>Del</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="22"/>
-        <source>Objects</source>
-        <comment>ObjectManager</comment>
-        <translation>Objects</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="24"/>
-        <source>object manager</source>
-        <comment>ObjectManager</comment>
-        <translation>Object manager</translation>
     </message>
     <message>
         <location filename="../src/managers/propertymanager/userpropertymanager/userpropertydialog.cpp" line="88"/>
         <source>User Properties</source>
         <comment>UserPropertyDialog</comment>
         <translation>User properties dialog</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="18"/>
-        <source>Styles</source>
-        <comment>PythonConsole</comment>
-        <translation>Styles</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="20"/>
-        <source>PythonConsole</source>
-        <comment>Python Console</comment>
-        <translation>Python Console</translation>
     </message>
     <message>
         <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="37"/>
@@ -816,6 +780,11 @@ Remove the selected items anyway?</translation>
         <source>&lt; multiple values &gt;</source>
         <comment>TextEditAdapter</comment>
         <translation>Multiple values</translation>
+    </message>
+    <message>
+        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="17"/>
+        <source>Del</source>
+        <translation>Del</translation>
     </message>
 </context>
 <context>
@@ -1048,24 +1017,37 @@ Remove the selected items anyway?</translation>
         <translation>Procedural path</translation>
     </message>
     <message>
+        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="16"/>
+        <source>remove objects and tags</source>
+        <translation>Remove objects and tags</translation>
+    </message>
+    <message>
+        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="22"/>
         <location filename="../src/managers/objectmanager/objectmanager.h" line="23"/>
         <source>ObjectManager</source>
-        <translation type="unfinished">Object manager</translation>
+        <translation>Object manager</translation>
     </message>
     <message>
         <location filename="../src/managers/propertymanager/propertymanager.h" line="30"/>
         <source>PropertyManager</source>
-        <translation type="unfinished"></translation>
+        <translation>Property manager</translation>
     </message>
     <message>
+        <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="19"/>
         <location filename="../src/managers/pythonconsole/pythonconsole.h" line="25"/>
         <source>PythonConsole</source>
-        <translation type="unfinished">Python Console</translation>
+        <translation>Python Console</translation>
     </message>
     <message>
+        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="24"/>
         <location filename="../src/managers/stylemanager/stylemanager.h" line="18"/>
         <source>StyleManager</source>
-        <translation type="unfinished"></translation>
+        <translation>Style manager</translation>
+    </message>
+    <message>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="94"/>
+        <source>Properties</source>
+        <translation>Properties</translation>
     </message>
 </context>
 <context>
@@ -1257,10 +1239,7 @@ Remove the selected items anyway?</translation>
     <name>omm::MainWindow</name>
     <message>
         <location filename="../src/mainwindow/mainwindow.cpp" line="151"/>
-        <source>about</source>
-        <translation>About</translation>
-    </message>
-    <message>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="152"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="153"/>
         <source>About</source>
         <translation>About</translation>
@@ -1337,24 +1316,14 @@ Remove the selected items anyway?</translation>
 <context>
     <name>omm::StyleManager</name>
     <message>
-        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="18"/>
+        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="19"/>
         <source>remove styles</source>
         <translation>Remove styles</translation>
     </message>
     <message>
-        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="18"/>
+        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="19"/>
         <source>Del</source>
         <translation>Del</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="23"/>
-        <source>Styles</source>
-        <translation>Styles</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="25"/>
-        <source>style manager</source>
-        <translation>Style manager</translation>
     </message>
 </context>
 <context>
@@ -1363,14 +1332,6 @@ Remove the selected items anyway?</translation>
         <location filename="../src/mainwindow/toolbar.cpp" line="8"/>
         <source>ToolBar</source>
         <translation>Tool bar</translation>
-    </message>
-</context>
-<context>
-    <name>remove objects and tags</name>
-    <message>
-        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="16"/>
-        <source>ObjectManager</source>
-        <translation>Object manager</translation>
     </message>
 </context>
 </TS>
