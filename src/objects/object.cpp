@@ -58,7 +58,7 @@ Object::Object(Scene* scene)
 
   add_property<OptionsProperty>(IS_VISIBLE_PROPERTY_KEY, true)
     .set_options({ QObject::tr("visible").toStdString(), QObject::tr("hidden").toStdString(),
-      QObject::tr("hide .tree").toStdString() })
+      QObject::tr("hide tree").toStdString() })
     .set_label(QObject::tr("").toStdString())
     .set_category(QObject::tr("basic").toStdString());
 

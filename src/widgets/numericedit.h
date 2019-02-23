@@ -38,8 +38,8 @@ template<typename ValueType>
 class NumericEdit : public QLineEdit
 {
 public:
-  const std::string inf = QLineEdit::tr("inf").toStdString();
-  const std::string neg_inf = QLineEdit::tr("-inf").toStdString();
+  const std::string inf = "inf";
+  const std::string neg_inf = "-inf";
 
   using value_type = ValueType;
   using on_value_changed_t = std::function<void(value_type)>;

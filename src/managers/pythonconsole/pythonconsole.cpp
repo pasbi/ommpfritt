@@ -34,12 +34,12 @@ PythonConsole::PythonConsole(Scene& scene)
   m_associated_item_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   header_layout->addWidget(ref_filter_widget.release());
 
-  auto exec_button = std::make_unique<QPushButton>(QObject::tr("PythonConsole", "run"));
+  auto exec_button = std::make_unique<QPushButton>(QObject::tr("run", "PythonConsole"));
   connect(exec_button.get(), &QPushButton::clicked, this, &PythonConsole::eval);
   exec_button->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   header_layout->addWidget(exec_button.release());
 
-  auto clear_button = std::make_unique<QPushButton>(QObject::tr("PythonConsole", "clear"));
+  auto clear_button = std::make_unique<QPushButton>(QObject::tr("clear", "PythonConsole"));
   connect(clear_button.get(), &QPushButton::clicked, this, &PythonConsole::clear);
   clear_button->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   header_layout->addWidget(clear_button.release());
@@ -47,14 +47,14 @@ PythonConsole::PythonConsole(Scene& scene)
   auto output = std::make_unique<CodeEdit>();
   m_output = output.get();
   m_output->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  m_output->set_placeholder_text(QObject::tr("PythonConsole", "no output yet.").toStdString());
+  m_output->set_placeholder_text(QObject::tr("no output yet.", "PythonConsole").toStdString());
   m_output->set_editable(false);
   m_layout->addWidget(output.release());
 
   auto commandline = std::make_unique<CodeEdit>();
   m_commandline = commandline.get();
   m_commandline->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-  m_commandline->set_placeholder_text( QObject::tr("PythonConsole", "enter command ...")
+  m_commandline->set_placeholder_text( QObject::tr("enter command ...", "PythonConsole")
                                         .toStdString() );
   m_commandline->installEventFilter(this);
   m_commandline->set_caption_modifiers(caption_modifiers);
@@ -186,7 +186,7 @@ void PythonConsole::keyPressEvent(QKeyEvent* event)
 std::map<std::string, QKeySequence> PythonConsole::default_bindings()
 {
   return {
-    { QT_TRANSLATE_NOOP("clear python console", "PythonConsole"),
+    { QT_TRANSLATE_NOOP("PythonConsole", "clear python console"),
       QKeySequence(QObject::tr("Ctrl+K", "PythonConsole")) }
   };
 }

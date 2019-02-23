@@ -241,7 +241,6 @@ void KeyBindings::set_global_command_interface(CommandInterface& global_command_
 std::unique_ptr<QAction>
 KeyBindings::make_action(CommandInterface& ci, const std::string& action_name) const
 {
-  auto label = QString::fromStdString(action_name);
   const auto it = std::find_if(m_bindings.begin(), m_bindings.end(), [&](const auto& binding) {
     return binding.name() == action_name && binding.context() == ci.type();
   });

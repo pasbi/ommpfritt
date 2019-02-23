@@ -74,10 +74,11 @@ int main (int argc, char *argv[])
   omm::register_tools();
 
   QApplication qt_app(argc, argv);
-  omm::Application app(qt_app);
 
   const auto locale = QSettings().value(omm::MainWindow::LOCALE_SETTINGS_KEY).toLocale();
   const auto translators = install_translators(qt_app, locale);
+
+  omm::Application app(qt_app);
 
   omm::MainWindow window(app);
   app.set_main_window(window);
