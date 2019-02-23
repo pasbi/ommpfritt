@@ -68,8 +68,8 @@ namespace omm
 std::vector<std::string> MainWindow::object_menu_entries()
 {
   std::list<std::string> entries {
-    "object/" QT_TRANSLATE_NOOP("action_name", "remove selection"),
-    "object/" QT_TRANSLATE_NOOP("action_name", "convert objects"),
+    "object/" QT_TRANSLATE_NOOP("any-context", "remove selection"),
+    "object/" QT_TRANSLATE_NOOP("any-context", "convert objects"),
   };
 
   for (const std::string& key : Object::keys()) {
@@ -86,12 +86,12 @@ std::vector<std::string> MainWindow::object_menu_entries()
 std::vector<std::string> MainWindow::path_menu_entries()
 {
   return std::vector<std::string> {
-    "path/" QT_TRANSLATE_NOOP("action_name", "make smooth"),
-    "path/" QT_TRANSLATE_NOOP("action_name", "make linear"),
-    "path/" QT_TRANSLATE_NOOP("action_name", "subdivide"),
-    "path/" QT_TRANSLATE_NOOP("action_name", "select all"),
-    "path/" QT_TRANSLATE_NOOP("action_name", "deselect all"),
-    "path/" QT_TRANSLATE_NOOP("action_name", "invert selection"),
+    "path/" QT_TRANSLATE_NOOP("any-context", "make smooth"),
+    "path/" QT_TRANSLATE_NOOP("any-context", "make linear"),
+    "path/" QT_TRANSLATE_NOOP("any-context", "subdivide"),
+    "path/" QT_TRANSLATE_NOOP("any-context", "select all"),
+    "path/" QT_TRANSLATE_NOOP("any-context", "deselect all"),
+    "path/" QT_TRANSLATE_NOOP("any-context", "invert selection"),
   };
 }
 
@@ -99,19 +99,19 @@ std::vector<std::string> MainWindow::main_menu_entries()
 {
   using namespace std::string_literals;
   std::list<std::string> entries = {
-    QT_TRANSLATE_NOOP("menu_name", "file")"/" QT_TRANSLATE_NOOP("action_name", "new document"),
-    "file/" QT_TRANSLATE_NOOP("action_name", "save document"),
-    "file/" QT_TRANSLATE_NOOP("action_name", "save document as"),
-    "file/" QT_TRANSLATE_NOOP("action_name", "load document"),
-    QT_TRANSLATE_NOOP("menu_name", "edit")"/" QT_TRANSLATE_NOOP("action_name", "undo"),
-    "edit/" QT_TRANSLATE_NOOP("action_name", "redo"),
-    QT_TRANSLATE_NOOP("menu_name", "object")"/" QT_TRANSLATE_NOOP("action_name", "new style"),
+    QT_TRANSLATE_NOOP("menu_name", "file")"/" QT_TRANSLATE_NOOP("any-context", "new document"),
+    "file/" QT_TRANSLATE_NOOP("any-context", "save document"),
+    "file/" QT_TRANSLATE_NOOP("any-context", "save document as"),
+    "file/" QT_TRANSLATE_NOOP("any-context", "load document"),
+    QT_TRANSLATE_NOOP("menu_name", "edit")"/" QT_TRANSLATE_NOOP("any-context", "undo"),
+    "edit/" QT_TRANSLATE_NOOP("any-context", "redo"),
+    QT_TRANSLATE_NOOP("menu_name", "object")"/" QT_TRANSLATE_NOOP("any-context", "new style"),
     QT_TRANSLATE_NOOP("menu_name", "object")"/" QT_TRANSLATE_NOOP("menu_name", "create")"/",
     QT_TRANSLATE_NOOP("menu_name", "object")"/" QT_TRANSLATE_NOOP("menu_name", "attach")"/",
     QT_TRANSLATE_NOOP("menu_name", "path")"/",
-    QT_TRANSLATE_NOOP("menu_name", "tool")"/" QT_TRANSLATE_NOOP("action_name", "previous tool"),
+    QT_TRANSLATE_NOOP("menu_name", "tool")"/" QT_TRANSLATE_NOOP("any-context", "previous tool"),
     "tool/" QT_TRANSLATE_NOOP("menu_name", "select")"/",
-    QT_TRANSLATE_NOOP("menu_name", "scene")"/" QT_TRANSLATE_NOOP("action_name", "evaluate"),
+    QT_TRANSLATE_NOOP("menu_name", "scene")"/" QT_TRANSLATE_NOOP("any-context", "evaluate"),
     QT_TRANSLATE_NOOP("menu_name", "window")"/" QT_TRANSLATE_NOOP("menu_name", "show")"/",
   };
 
@@ -122,7 +122,7 @@ std::vector<std::string> MainWindow::main_menu_entries()
   }
   entries.insert(entries.end(), {
     "window/"s + KeyBindings::SEPARATOR,
-    "window/" QT_TRANSLATE_NOOP("action_name", "show keybindings dialog"),
+    "window/" QT_TRANSLATE_NOOP(TYPE_NAME_CONTEXT, "show keybindings dialog"),
   });
   merge(object_menu_entries());
   merge(path_menu_entries());

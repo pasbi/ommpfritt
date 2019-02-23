@@ -14,8 +14,6 @@ public:
   using Object::Object;
   void render(AbstractRenderer& renderer, const Style& style) override;
   BoundingBox bounding_box() override;
-  static constexpr auto TYPE
-    = QT_TRANSLATE_NOOP("AbstractProceduralPath", "AbstractProceduralPath");
   std::unique_ptr<Object> convert() override;
   Flag flags() const override;
 

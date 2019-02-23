@@ -13,7 +13,7 @@ class Ellipse : public AbstractProceduralPath
 public:
   explicit Ellipse(Scene* scene);
   std::string type() const override;
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("Ellipse", "Ellipse");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Ellipse");
   std::unique_ptr<Object> clone() const override;
   BoundingBox bounding_box() override;
   Flag flags() const override;

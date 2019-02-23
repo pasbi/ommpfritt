@@ -61,7 +61,7 @@ public:
     return ::transform<T*>(::filter_if(object, type_matches), to_type);
   }
 
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("Object", "Object");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP(ANY_TR_CONTEXT, "Object");
   static constexpr auto IS_VISIBLE_PROPERTY_KEY = "is_visible";
   static constexpr auto IS_ACTIVE_PROPERTY_KEY = "is_active";
   static constexpr auto POSITION_PROPERTY_KEY = "position";

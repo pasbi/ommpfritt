@@ -14,7 +14,7 @@ public:
   std::string type() const override;
   BoundingBox bounding_box() override;
   std::unique_ptr<Object> clone() const override;
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("ImageObject", "ImageObject");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ImageObject");
   static constexpr auto FILEPATH_PROPERTY_KEY = "filename";
 };
 

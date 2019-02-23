@@ -17,7 +17,7 @@ public:
   void render(AbstractRenderer& renderer, const Style& style) override;
   BoundingBox bounding_box() override;
   std::string type() const override;
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("Path", "Path");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Path");
   std::unique_ptr<Object> clone() const override;
   std::vector<Point*> points();
   void set_points(const std::vector<Point>& points);

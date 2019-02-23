@@ -39,6 +39,7 @@ public:
   static constexpr auto LANGUAGE_RESOURCE_PREFIX = "omm";
   static constexpr auto LANGUAGE_RESOURCE_SUFFIX = ".qm";
   static constexpr auto LANGUAGE_RESOURCE_DIRECTORY = ":";
+  static constexpr auto TYPE_NAME_CONTEXT = "typename";
 
 protected:
   void closeEvent(QCloseEvent *event) override;

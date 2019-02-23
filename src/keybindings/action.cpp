@@ -7,6 +7,7 @@
 #include <glog/logging.h>
 #include <QWidget>
 #include <QCoreApplication>
+#include "common.h"
 
 namespace
 {
@@ -39,13 +40,15 @@ public:
   ActionWidget(QWidget* parent, const omm::KeyBinding& key_binding) : QWidget(parent)
   {
     auto name_label = std::make_unique<LiveLabel>([&key_binding]() {
-      return QCoreApplication::translate("action_name", key_binding.name().c_str()).toStdString();
+      const auto name = key_binding.name();
+      return QCoreApplication::translate("any-context", name.c_str()).toStdString();
     });
     m_name_label = name_label.get();
     name_label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
     auto shortcut_label = std::make_unique<LiveLabel>([&key_binding]() {
-      return key_binding.key_sequence().toString().toStdString();
+      const auto code = key_binding.key_sequence().toString().toStdString().c_str();
+      return QCoreApplication::translate("any-context", code).toStdString();
     });
     m_shortcut_label = shortcut_label.get();
     shortcut_label->setAlignment(Qt::AlignRight);
@@ -67,7 +70,7 @@ private:
   LiveLabel* m_name_label;
   LiveLabel* m_shortcut_label;
   void set_highlighted(bool h)
-  {
+{
     m_name_label->setBackgroundRole(h ? QPalette::Highlight : QPalette::Window);
     m_name_label->setForegroundRole(h ? QPalette::HighlightedText : QPalette::Text);
     m_shortcut_label->setBackgroundRole(h ? QPalette::Highlight : QPalette::Window);

@@ -2,14 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de_DE">
 <context>
-    <name>AbstractProceduralPath</name>
-    <message>
-        <location filename="../src/objects/abstractproceduralpath.h" line="18"/>
-        <source>AbstractProceduralPath</source>
-        <translation>Abstrakter Prozeduraler Pfad</translation>
-    </message>
-</context>
-<context>
     <name>BoolProperty</name>
     <message>
         <location filename="../src/properties/boolproperty.h" line="16"/>
@@ -26,35 +18,11 @@
     </message>
 </context>
 <context>
-    <name>Cloner</name>
-    <message>
-        <location filename="../src/objects/cloner.h" line="21"/>
-        <source>Cloner</source>
-        <translation>Kloner</translation>
-    </message>
-</context>
-<context>
     <name>ColorProperty</name>
     <message>
         <location filename="../src/properties/colorproperty.h" line="17"/>
         <source>ColorProperty</source>
         <translation>Farb-Eigenschaft</translation>
-    </message>
-</context>
-<context>
-    <name>Ellipse</name>
-    <message>
-        <location filename="../src/objects/ellipse.h" line="16"/>
-        <source>Ellipse</source>
-        <translation>Ellipse</translation>
-    </message>
-</context>
-<context>
-    <name>Empty</name>
-    <message>
-        <location filename="../src/objects/empty.h" line="17"/>
-        <source>Empty</source>
-        <translation>Nullobjekt</translation>
     </message>
 </context>
 <context>
@@ -74,22 +42,6 @@
     </message>
 </context>
 <context>
-    <name>ImageObject</name>
-    <message>
-        <location filename="../src/objects/imageobject.h" line="17"/>
-        <source>ImageObject</source>
-        <translation>Bildobjekt</translation>
-    </message>
-</context>
-<context>
-    <name>Instance</name>
-    <message>
-        <location filename="../src/objects/instance.h" line="20"/>
-        <source>Instance</source>
-        <translation>Instanz</translation>
-    </message>
-</context>
-<context>
     <name>IntegerProperty</name>
     <message>
         <location filename="../src/properties/integerproperty.h" line="23"/>
@@ -103,14 +55,6 @@
         <location filename="../src/properties/vectorproperty.h" line="43"/>
         <source>IntegerVectorProperty</source>
         <translation>Ganzzahlvektor-Eigenschaft</translation>
-    </message>
-</context>
-<context>
-    <name>Object</name>
-    <message>
-        <location filename="../src/objects/object.h" line="64"/>
-        <source>Object</source>
-        <translation>Objekt</translation>
     </message>
 </context>
 <context>
@@ -130,14 +74,6 @@
     </message>
 </context>
 <context>
-    <name>Path</name>
-    <message>
-        <location filename="../src/objects/path.h" line="20"/>
-        <source>Path</source>
-        <translation>Pfad</translation>
-    </message>
-</context>
-<context>
     <name>PathTag</name>
     <message>
         <location filename="../src/tags/pathtag.h" line="15"/>
@@ -151,14 +87,6 @@
         <location filename="../src/geometry/point.h" line="41"/>
         <source>Point</source>
         <translation>Punkt</translation>
-    </message>
-</context>
-<context>
-    <name>ProceduralPath</name>
-    <message>
-        <location filename="../src/objects/proceduralpath.h" line="15"/>
-        <source>ProceduralPath</source>
-        <translation>Prozeduraler Pfad</translation>
     </message>
 </context>
 <context>
@@ -971,7 +899,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
 </context>
 <context>
-    <name>action_name</name>
+    <name>any-context</name>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="159"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="106"/>
@@ -1039,27 +967,26 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="170"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="125"/>
         <source>show keybindings dialog</source>
-        <translation>Tastaturkürzeldialog öffnen ...</translation>
+        <translation>Tastenkürzeldialog Öffnen</translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="171"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="112"/>
         <source>previous tool</source>
-        <translation>Letztes Werkzeug</translation>
+        <translation>Vorheriges Werkzeug</translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="172"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="92"/>
         <source>select all</source>
-        <translation>Alle selektieren</translation>
+        <translation>Alles selektieren</translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="173"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="93"/>
         <source>deselect all</source>
-        <translation>Alle deselektieren</translation>
+        <translation>Alles deselektieren</translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="174"/>
@@ -1077,13 +1004,48 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <location filename="../src/mainwindow/application.cpp" line="176"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="108"/>
         <source>new style</source>
-        <translation>Neuen Style erzeugen</translation>
+        <translation>Neuer Style</translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="177"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="72"/>
         <source>convert objects</source>
         <translation>Objekte konvertieren</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/cloner.h" line="21"/>
+        <source>Cloner</source>
+        <translation>Kloner</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/ellipse.h" line="16"/>
+        <source>Ellipse</source>
+        <translation>Ellipse</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/empty.h" line="17"/>
+        <source>Empty</source>
+        <translation>Nullobjekt</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/imageobject.h" line="17"/>
+        <source>ImageObject</source>
+        <translation>Bildobjekt</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/instance.h" line="20"/>
+        <source>Instance</source>
+        <translation>Instanz</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/path.h" line="20"/>
+        <source>Path</source>
+        <translation>Pfad</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/proceduralpath.h" line="15"/>
+        <source>ProceduralPath</source>
+        <translation>Prozeduraler Pfad</translation>
     </message>
 </context>
 <context>
