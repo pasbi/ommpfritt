@@ -45,6 +45,11 @@ public:
     });
     m_name_label = name_label.get();
     name_label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    name_label->setContentsMargins(0, 0, 0, 0);
+
+    auto icon_label = std::make_unique<QLabel>();
+    m_icon_label = icon_label.get();
+    m_icon_label->setFixedSize(12, 12);
 
     auto shortcut_label = std::make_unique<LiveLabel>([&key_binding]() {
       const auto code = key_binding.key_sequence().toString().toStdString().c_str();
@@ -53,11 +58,14 @@ public:
     m_shortcut_label = shortcut_label.get();
     shortcut_label->setAlignment(Qt::AlignRight);
     shortcut_label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    shortcut_label->setContentsMargins(0, 0, 0, 0);
 
     auto layout = std::make_unique<QHBoxLayout>();
+    layout->addWidget(icon_label.release());
     layout->addWidget(name_label.release());
+    layout->addSpacing(10);
     layout->addWidget(shortcut_label.release());
-    layout->setSpacing(10);
+    layout->setContentsMargins(10, 3, 10, 3);
 
     setLayout(layout.release());
     setMouseTracking(true);
@@ -69,6 +77,7 @@ public:
 private:
   LiveLabel* m_name_label;
   LiveLabel* m_shortcut_label;
+  QLabel* m_icon_label;
   void set_highlighted(bool h)
 {
     m_name_label->setBackgroundRole(h ? QPalette::Highlight : QPalette::Window);
