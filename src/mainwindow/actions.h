@@ -5,24 +5,22 @@ namespace omm
 {
 
 class Scene;
+class Application;
 
 }  // namespace omm
 
 namespace omm::actions
 {
 
-void make_smooth();
-void make_linear();
-void remove_selected_points();
-void subdivide();
-void evaluate();
-void show_keybindings_dialog();
-void previous_tool();
-void select_all();
-void deselect_all();
-void invert_selection();
-void remove_selection();
-void convert_objects();
-void new_style();
+void make_smooth(Application& app);
+void make_linear(Application& app);
+void remove_selected_points(Application& app);
+void subdivide(Application& app);
+void evaluate(Application& app);
+void select_all(Application& app);
+void deselect_all(Application& app);
+void invert_selection(Application& app);
+void remove_selection(Application& app);
+void convert_objects(Application& app);
 
 } // namespace omm::actions

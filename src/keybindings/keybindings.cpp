@@ -26,8 +26,8 @@ QString settings_key(const omm::KeyBinding& binding)
 template<typename CommandInterfaceT>
 void collect_default_bindings(std::list<omm::KeyBinding>& bindings)
 {
-  for (const auto& [ name, key_sequence ] : CommandInterfaceT::default_bindings()) {
-    bindings.push_back(omm::KeyBinding(name, CommandInterfaceT::TYPE, key_sequence));
+  for (const auto& action_info : CommandInterfaceT::action_infos()) {
+    bindings.push_back(action_info.make_keybinding());
   }
 }
 
@@ -41,6 +41,7 @@ std::vector<omm::KeyBinding> collect_default_bindings()
   return std::vector(default_bindings.begin(), default_bindings.end());
 }
 
+// TODO these methods don't depend on template, hence they can be moved to cpp.
 std::pair<std::string, std::string> split(const std::string& path)
 {
   constexpr auto separator = '/';
@@ -115,26 +116,6 @@ void KeyBindings::store() const
   settings.endGroup();
 }
 
-bool KeyBindings::call(const QKeySequence& sequence, CommandInterface& interface) const
-{
-  const auto context = interface.type();
-
-  const auto is_match = [sequence, context](const auto& binding) {
-    return binding.matches(sequence, context);
-  };
-
-  const auto it = std::find_if(m_bindings.begin(), m_bindings.end(), is_match);
-  if (it != m_bindings.end()) {
-    interface.call(it->name());
-    return true;
-  } else if (&interface != m_global_command_interface && m_global_command_interface != nullptr) {
-    call(sequence, *m_global_command_interface);
-    return true;
-  } else {
-    return false;
-  }
-}
-
 QKeySequence KeyBindings::make_key_sequence(const QKeyEvent& event) const
 {
   static constexpr std::size_t MAX_SEQUENCE_LENGTH = 4;  // must be 4 to match QKeySequence impl.
@@ -149,26 +130,6 @@ QKeySequence KeyBindings::make_key_sequence(const QKeyEvent& event) const
   return QKeySequence(sequence[0], sequence[1], sequence[2], sequence[3]);
 }
 
-bool KeyBindings::call(const QKeyEvent& key_event, CommandInterface& interface) const
-{
-  m_reset_timer.start(m_reset_delay);
-  // QKeySequence does not support combinations without non-modifier keys.
-  static const auto bad_keys = std::set { Qt::Key_unknown, Qt::Key_Shift, Qt::Key_Control,
-                                          Qt::Key_Meta, Qt::Key_Alt };
-
-  if (::contains(bad_keys, key_event.key())) {
-    return false;
-  } if (key_event.key() == Qt::Key_Escape) {
-    m_current_sequene.clear();
-    return false;
-  } else if (const auto sequence = make_key_sequence(key_event); call(sequence, interface)) {
-    m_current_sequene.clear();
-    return true;
-  } else {
-    LOG(INFO) << "key sequence was not (yet) accepted: " << sequence.toString().toStdString();
-    return false;
-  }
-}
 int KeyBindings::columnCount(const QModelIndex& parent) const { return 3; }
 int KeyBindings::rowCount(const QModelIndex& parent) const { return m_bindings.size(); }
 QVariant KeyBindings::data(const QModelIndex& index, int role) const
@@ -238,41 +199,21 @@ void KeyBindings::set_global_command_interface(CommandInterface& global_command_
   m_global_command_interface = &global_command_interface;
 }
 
-std::unique_ptr<QAction>
-KeyBindings::make_action(CommandInterface& ci, const std::string& action_name) const
+std::pair<std::string, QMenu*>
+KeyBindings::get_menu( const std::string& action_path, std::map<std::string, QMenu*>& menu_map,
+                                                       std::list<std::unique_ptr<QMenu>>& menus )
 {
-  const auto it = std::find_if(m_bindings.begin(), m_bindings.end(), [&](const auto& binding) {
-    return binding.name() == action_name && binding.context() == ci.type();
-  });
-  if (it == m_bindings.end()) {
-    LOG(ERROR) << "Failed to find keybindings for '" << ci.type() << "::" << action_name << "'.";
-    return nullptr;
+  const auto [path, action_name] = split(action_path);
+  auto menu = add_menu(path, menu_map);
+  assert(menu_map.count(path) > 0);
+  QMenu* menu_ptr = nullptr;
+  if (menu) {
+    menu_ptr = menu.get();
+    menus.push_back(std::move(menu));
   } else {
-    auto action = std::make_unique<Action>(*it);
-    QObject::connect(action.get(), &QAction::triggered, [&ci, action_name] {
-      ci.call(action_name);
-    });
-    return action;
+    menu_ptr = menu_map.at(path);
   }
-}
-
-std::vector<std::unique_ptr<QMenu>>
-KeyBindings::make_menus(CommandInterface& ci, const std::vector<std::string>& actions) const
-{
-  std::list<std::unique_ptr<QMenu>> menus;
-  std::map<std::string, QMenu*> menu_map;
-  for (const auto& action_path : actions) {
-    const auto [path, action_name] = split(action_path);
-    auto menu = ::add_menu(path, menu_map);
-    if (menu) { menus.push_back(std::move(menu)); }
-    assert(menu_map.count(path) > 0);
-    if (action_name == SEPARATOR) {
-      menu_map[path]->addSeparator();
-    } else if (!action_name.empty()) {
-      menu_map[path]->addAction(make_action(ci, action_name).release());
-    }
-  }
-  return std::vector(std::make_move_iterator(menus.begin()), std::make_move_iterator(menus.end()));
+  return std::pair(action_name, menu_ptr);
 }
 
 }  // namespace omm

@@ -12,8 +12,7 @@ class StyleManager : public ItemManager<StyleListView>, public CommandInterface
   Q_OBJECT
 public:
   explicit StyleManager(Scene& scene);
-  void call(const std::string& command) override;
-  static std::map<std::string, QKeySequence> default_bindings();
+  static std::vector<CommandInterface::ActionInfo<StyleManager>> action_infos();
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "StyleManager");
   std::string type() const override;

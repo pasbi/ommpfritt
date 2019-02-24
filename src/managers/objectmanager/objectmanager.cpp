@@ -10,14 +10,6 @@
 namespace omm
 {
 
-std::map<std::string, QKeySequence> ObjectManager::default_bindings()
-{
-  return {
-    { QT_TRANSLATE_NOOP("any-context", "remove objects and tags"),
-      QKeySequence("Del") }
-  };
-}
-
 ObjectManager::ObjectManager(Scene& scene)
   : ItemManager( QCoreApplication::translate("any-context", "ObjectManager"),
                  scene, scene.object_tree_adapter )
@@ -25,13 +17,13 @@ ObjectManager::ObjectManager(Scene& scene)
   setObjectName(TYPE);
 }
 
-void ObjectManager::call(const std::string& command)
+std::vector<CommandInterface::ActionInfo<ObjectManager>> ObjectManager::action_infos()
 {
-  dispatch(command, {
-    { "remove objects and tags", [this]() {
-      scene().remove(this, item_view().selected_items());
-    } },
-  });
+  using AI = ActionInfo<ObjectManager>;
+  return {
+    AI( QT_TRANSLATE_NOOP("any-context", "remove objects and tags"), QKeySequence("Del"),
+      [](ObjectManager& om) { om.scene().remove(&om, om.item_view().selected_items()); } ),
+  };
 }
 
 void ObjectManager::keyPressEvent(QKeyEvent* event)

@@ -24,6 +24,8 @@ public:
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PythonConsole");
   std::string type() const override;
+  static std::vector<CommandInterface::ActionInfo<PythonConsole>> action_infos();
+  void  populate_menu(QMenu& menu) override;
 
 protected:
   bool eventFilter(QObject* object, QEvent* event) override;
@@ -48,11 +50,6 @@ private:
   std::list<std::string>::iterator m_command_stack_pointer = m_command_stack.end();
 
   static constexpr Qt::KeyboardModifiers caption_modifiers = Qt::ControlModifier;
-
-public:
-  static std::map<std::string, QKeySequence> default_bindings();
-  void call(const std::string& command) override;
-  void  populate_menu(QMenu& menu) override;
 
 };
 

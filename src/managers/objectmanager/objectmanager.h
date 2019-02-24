@@ -11,9 +11,9 @@ class ObjectManager : public ItemManager<ObjectTreeView>, public CommandInterfac
 {
 
 public:
-  static std::map<std::string, QKeySequence> default_bindings();
   explicit ObjectManager(Scene& scene);
-  void call(const std::string& command) override;
+  static std::vector<CommandInterface::ActionInfo<ObjectManager>> action_infos();
+
 
 protected:
   void keyPressEvent(QKeyEvent* event) override;

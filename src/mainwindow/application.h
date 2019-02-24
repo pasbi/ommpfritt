@@ -30,9 +30,8 @@ public:
   void set_main_window(MainWindow& main_window);
   static Application& instance();
 
-  void call(const std::string& command) override;
-  static std::map<std::string, QKeySequence> default_bindings();
-  static constexpr auto TYPE = QT_TR_NOOP("Application");
+  static std::vector<CommandInterface::ActionInfo<Application>> action_infos();
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Application");
   std::string type() const override;
 
   PythonEngine python_engine;

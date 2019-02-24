@@ -14,6 +14,7 @@
 #include "objects/object.h"
 #include "tools/toolbox.h"
 #include "tags/tag.h"
+#include "keybindings/keybindingsdialog.h"
 
 namespace {
 constexpr auto FILE_ENDING = ".omm";
@@ -152,98 +153,71 @@ bool Application::load()
   }
 }
 
-std::map<std::string, QKeySequence> Application::default_bindings()
+std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos()
 {
   const auto ks = [](auto&&... code) { return QKeySequence(code...); };
-  std::map<std::string, QKeySequence> map {
-    { QT_TRANSLATE_NOOP("any-context", "undo"),                    ks("Ctrl+Z")        },
-    { QT_TRANSLATE_NOOP("any-context", "redo"),                    ks("Ctrl+Y")        },
-    { QT_TRANSLATE_NOOP("any-context", "new document"),            ks("Ctrl+N")        },
-    { QT_TRANSLATE_NOOP("any-context", "save document"),           ks("Ctrl+S")        },
-    { QT_TRANSLATE_NOOP("any-context", "save document as"),        ks("Ctrl+Shf  t+S") },
-    { QT_TRANSLATE_NOOP("any-context", "load document"),           ks("Ctrl+O")        },
-    { QT_TRANSLATE_NOOP("any-context", "make smooth"),             ks()                },
-    { QT_TRANSLATE_NOOP("any-context", "make linear"),             ks()                },
-    { QT_TRANSLATE_NOOP("any-context", "remove points"),           ks("Del")           },
-    { QT_TRANSLATE_NOOP("any-context", "subdivide"),               ks()                },
-    { QT_TRANSLATE_NOOP("any-context", "evaluate"),                ks()                },
-    { QT_TRANSLATE_NOOP("any-context", "show keybindings dialog"), ks()                },
-    { QT_TRANSLATE_NOOP("any-context", "previous tool"),           ks("Space")         },
-    { QT_TRANSLATE_NOOP("any-context", "select all"),              ks("A")             },
-    { QT_TRANSLATE_NOOP("any-context", "deselect all"),            ks()                },
-    { QT_TRANSLATE_NOOP("any-context", "invert selection"),        ks("I")             },
-    { QT_TRANSLATE_NOOP("any-context", "remove selection"),        ks("Ctrl+Del")      },
-    { QT_TRANSLATE_NOOP("any-context", "new style"),               ks("")              },
-    { QT_TRANSLATE_NOOP("any-context", "convert objects"),         ks("C")             },
+  using AI = ActionInfo<Application>;
+  std::list infos {
+    AI( QT_TRANSLATE_NOOP("any-context", "undo"),             ks("Ctrl+Z"),
+        [](Application& app) { app.scene.undo_stack.undo(); } ),
+    AI( QT_TRANSLATE_NOOP("any-context", "redo"),             ks("Ctrl+Y"),
+        [](Application& app) { app.scene.undo_stack.redo(); } ),
+    AI( QT_TRANSLATE_NOOP("any-context", "remove selection"), ks("Ctrl+Del"),
+        [](Application& app) { app.scene.remove(app.main_window(), app.scene.selection()); } ),
+    AI( QT_TRANSLATE_NOOP("any-context", "new document"),     ks("Ctrl+N"),
+        [](Application& app) { app.reset(); } ),
+    AI( QT_TRANSLATE_NOOP("any-context", "save document"),    ks("Ctrl+S"),
+        [](Application& app) {} ),
+    AI( QT_TRANSLATE_NOOP("any-context", "save document as"), ks("Ctrl+Shfit+S"),
+        [](Application& app) { app.save_as(); } ),
+    AI( QT_TRANSLATE_NOOP("any-context", "load document"),    ks("Ctrl+O"),
+        [](Application& app) { app.load(); } ),
+    AI( QT_TRANSLATE_NOOP("any-context", "make smooth"),      ks(), &actions::make_smooth),
+    AI( QT_TRANSLATE_NOOP("any-context", "make linear"),      ks(), &actions::make_linear),
+    AI( QT_TRANSLATE_NOOP("any-context", "remove points"),    ks("Del"),
+        &actions::remove_selected_points ),
+    AI( QT_TRANSLATE_NOOP("any-context", "subdivide"),        ks(), &actions::subdivide),
+    AI( QT_TRANSLATE_NOOP("any-context", "evaluate"),         ks(), &actions::evaluate),
+    AI( QT_TRANSLATE_NOOP("any-context", "show keybindings dialog"), ks(),
+        [](Application& app) { KeyBindingsDialog(app.key_bindings, app.main_window()).exec(); } ),
+    AI( QT_TRANSLATE_NOOP("any-context", "previous tool"),    ks("Space"),
+        [](Application& app) { app.scene.tool_box.set_previous_tool(); } ),
+    AI( QT_TRANSLATE_NOOP("any-context", "select all"),       ks("A"), &actions::select_all),
+    AI( QT_TRANSLATE_NOOP("any-context", "deselect all"),     ks(), &actions::deselect_all),
+    AI( QT_TRANSLATE_NOOP("any-context", "invert selection"), ks("I"),
+        &actions::invert_selection),
+    AI( QT_TRANSLATE_NOOP("any-context", "new style"),        ks(), [](Application& app) {
+          using command_type = AddCommand<List<Style>>;
+          app.scene.submit<command_type>(app.scene.styles, app.scene.default_style().clone());
+        } ),
+    AI( QT_TRANSLATE_NOOP("any-context", "convert objects"),  ks("C"),
+        &actions::convert_objects ),
   };
 
   for (const auto& key : Object::keys()) {
-    map.insert(std::pair(key, ks()));
-  }
-  for (const auto& key : Manager::keys()) {
-    map.insert(std::pair(key, ks()));
-  }
-  for (const auto& key : Tool::keys()) {
-    map.insert(std::pair(key, ks()));
-  }
-  for (const auto& key : Tag::keys()) {
-    map.insert(std::pair(key, ks()));
-  }
-
-  return map;
-}
-
-// TODO bind all actions to `&actions::...`. Then this method can be made static.
-void Application::call(const std::string& command)
-{
-  const auto save = static_cast<bool(Application::*)()>(&Application::save);
-
-  Dispatcher map {
-    { "undo",                    std::bind(&QUndoStack::undo, &scene.undo_stack) },
-    { "redo",                    std::bind(&QUndoStack::redo, &scene.undo_stack) },
-    { "new document",            std::bind(&Application::reset, this) },
-    { "save document",           std::bind(save, this) },
-    { "save document as",        std::bind(&Application::save_as, this) },
-    { "load document",           std::bind(&Application::load, this) },
-    { "make smooth",             &actions::make_smooth },
-    { "make linear",             &actions::make_linear },
-    { "remove points",           &actions::remove_selected_points },
-    { "subdivide",               &actions::subdivide },
-    { "evaluate",                &actions::evaluate },
-    { "show keybindings dialog", &actions::show_keybindings_dialog },
-    { "previous tool",           &actions::previous_tool },
-    { "select all",              &actions::select_all },
-    { "deselect all",            &actions::deselect_all },
-    { "invert selection",        &actions::invert_selection },
-    { "remove selection",        &actions::remove_selection },
-    { "convert objects",         &actions::convert_objects },
-    { "new style",               &actions::new_style },
-  };
-
-  for (const auto& key : Object::keys()) {
-    map.insert(std::pair(key, [this, key](){
+    infos.push_back(AI(key, ks(), [key](Application& app) {
       using add_command_type = AddCommand<Tree<Object>>;
+      Scene& scene = app.scene;
       scene.submit<add_command_type>(scene.object_tree, Object::make(key, &scene));
     }));
   }
-
   for (const auto& key : Manager::keys()) {
-    map.insert(std::pair(key, [this, key](){
+    infos.push_back(AI(key, ks(), [key](Application& app) {
+      Scene& scene = app.scene;
       auto manager = Manager::make(key, scene);
       auto& ref = *manager;
-      m_main_window->addDockWidget(Qt::TopDockWidgetArea, manager.release());
+      app.main_window()->addDockWidget(Qt::TopDockWidgetArea, manager.release());
       ref.setFloating(true);
     }));
   }
-
   for (const auto& key : Tool::keys()) {
-    map.insert(std::pair(key, [this, key](){
-      scene.tool_box.set_active_tool(key);
+    infos.push_back(AI(key, ks(), [key](Application& app) {
+      app.scene.tool_box.set_active_tool(key);
     }));
   }
-
   for (const auto& key : Tag::keys()) {
-    map.insert(std::pair(key, [this, key]() {
+    infos.push_back(AI(key, ks(), [key](Application& app) {
+      Scene& scene = app.scene;
       scene.undo_stack.beginMacro(tr("Add Tag"));
       for (auto&& object : scene.object_selection()) {
         using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
@@ -252,8 +226,7 @@ void Application::call(const std::string& command)
       scene.undo_stack.endMacro();
     }));
   }
-
-  dispatch(command, map);
+  return std::vector(infos.begin(), infos.end());
 }
 
 std::string Application::type() const { return TYPE; }

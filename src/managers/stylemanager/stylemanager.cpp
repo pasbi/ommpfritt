@@ -13,13 +13,6 @@ namespace omm
 {
 
 
-std::map<std::string, QKeySequence> StyleManager::default_bindings()
-{
-  return {
-    { QT_TR_NOOP("remove styles"), QKeySequence("Del") }
-  };
-}
-
 StyleManager::StyleManager(Scene& scene)
   : ItemManager( QCoreApplication::translate("any-context", "StyleManager"),
                  scene, scene.style_list_adapter )
@@ -27,12 +20,16 @@ StyleManager::StyleManager(Scene& scene)
   setObjectName(TYPE);
 }
 
-void StyleManager::call(const std::string& command)
+std::vector<CommandInterface::ActionInfo<StyleManager>> StyleManager::action_infos()
 {
-  dispatch(command, {
-    { "remove styles", [this](){ scene().remove(this, item_view().selected_items()); } },
-  });
+  using AI = ActionInfo<StyleManager>;
+  return {
+    AI( QT_TRANSLATE_NOOP("any-context", "remove styles"), QKeySequence(), [](StyleManager& sm) {
+      sm.scene().remove(&sm, sm.item_view().selected_items());
+    }),
+  };
 }
+
 
 void StyleManager::keyPressEvent(QKeyEvent* event)
 {

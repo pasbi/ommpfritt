@@ -183,20 +183,15 @@ void PythonConsole::keyPressEvent(QKeyEvent* event)
   }
 }
 
-std::map<std::string, QKeySequence> PythonConsole::default_bindings()
+std::vector<CommandInterface::ActionInfo<PythonConsole>> PythonConsole::action_infos()
 {
+  using AI = ActionInfo<PythonConsole>;
   return {
-    { QT_TRANSLATE_NOOP("PythonConsole", "clear python console"),
-      QKeySequence("Ctrl+K") }
+    AI( QT_TRANSLATE_NOOP("any-context", "clear python console"), QKeySequence("Ctrl+K"),
+      [](PythonConsole& pc) { pc.clear(); }),
   };
 }
 
-void PythonConsole::call(const std::string& command)
-{
-  dispatch(command, {
-    { "clear python console", [this](){ clear();  } },
-  });
-}
 
 void PythonConsole::populate_menu(QMenu& menu)
 {
