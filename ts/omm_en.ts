@@ -66,14 +66,6 @@
     </message>
 </context>
 <context>
-    <name>PathTag</name>
-    <message>
-        <location filename="../src/tags/pathtag.h" line="15"/>
-        <source>PathTag</source>
-        <translation>Path tag</translation>
-    </message>
-</context>
-<context>
     <name>Point</name>
     <message>
         <location filename="../src/geometry/point.h" line="41"/>
@@ -103,14 +95,6 @@
         <location filename="../src/aspects/propertyowner.h" line="32"/>
         <source>AbstractPropertyOwner</source>
         <translation>Property owner</translation>
-    </message>
-</context>
-<context>
-    <name>PythonConsole</name>
-    <message>
-        <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="189"/>
-        <source>clear python console</source>
-        <translation>Clear python console</translation>
     </message>
 </context>
 <context>
@@ -186,12 +170,12 @@
         <translation>omm</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/actions.cpp" line="35"/>
+        <location filename="../src/mainwindow/actions.cpp" line="32"/>
         <source>modify tangents</source>
         <translation>Modify tangents</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/actions.cpp" line="146"/>
+        <location filename="../src/mainwindow/actions.cpp" line="134"/>
         <source>convert</source>
         <translation>Convert</translation>
     </message>
@@ -534,7 +518,7 @@ Remove the selected items anyway?</translation>
     <message>
         <location filename="../src/tools/brushselecttool.cpp" line="19"/>
         <location filename="../src/tools/selecttool.cpp" line="74"/>
-        <location filename="../src/tools/selecttool.cpp" line="137"/>
+        <location filename="../src/tools/selecttool.cpp" line="130"/>
         <source>tool</source>
         <translation>Tool</translation>
     </message>
@@ -554,34 +538,34 @@ Remove the selected items anyway?</translation>
         <translation>Alignment</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="135"/>
+        <location filename="../src/tools/selecttool.cpp" line="128"/>
         <source>Mirror</source>
         <translation>Mirror</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="135"/>
+        <location filename="../src/tools/selecttool.cpp" line="128"/>
         <source>Individual</source>
         <translation>Individual</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="136"/>
+        <location filename="../src/tools/selecttool.cpp" line="129"/>
         <source>tangent</source>
         <translation>Tangent</translation>
     </message>
     <message>
-        <location filename="../src/keybindings/keybindings.cpp" line="217"/>
+        <location filename="../src/keybindings/keybindings.cpp" line="178"/>
         <source>name</source>
         <comment>keybindings</comment>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/keybindings/keybindings.cpp" line="218"/>
+        <location filename="../src/keybindings/keybindings.cpp" line="179"/>
         <source>context</source>
         <comment>keybindings</comment>
         <translation>Context</translation>
     </message>
     <message>
-        <location filename="../src/keybindings/keybindings.cpp" line="219"/>
+        <location filename="../src/keybindings/keybindings.cpp" line="180"/>
         <source>sequence</source>
         <comment>keybindings</comment>
         <translation>Sequence</translation>
@@ -767,10 +751,6 @@ Remove the selected items anyway?</translation>
         <comment>TextEditAdapter</comment>
         <translation>Multiple values</translation>
     </message>
-    <message>
-        <source>Del</source>
-        <translation type="vanished">Del</translation>
-    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>
@@ -781,27 +761,11 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
-    <name>ScriptTag</name>
-    <message>
-        <location filename="../src/tags/scripttag.h" line="14"/>
-        <source>ScriptTag</source>
-        <translation>Script tag</translation>
-    </message>
-</context>
-<context>
     <name>StringProperty</name>
     <message>
         <location filename="../src/properties/stringproperty.h" line="17"/>
         <source>StringProperty</source>
         <translation>String property</translation>
-    </message>
-</context>
-<context>
-    <name>StyleTag</name>
-    <message>
-        <location filename="../src/tags/styletag.h" line="16"/>
-        <source>StyleTag</source>
-        <translation>Style tag</translation>
     </message>
 </context>
 <context>
@@ -839,113 +803,113 @@ Remove the selected items anyway?</translation>
 <context>
     <name>any-context</name>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="159"/>
+        <location filename="../src/mainwindow/application.cpp" line="161"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="106"/>
         <source>undo</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="160"/>
+        <location filename="../src/mainwindow/application.cpp" line="163"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="107"/>
         <source>redo</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="161"/>
+        <location filename="../src/mainwindow/application.cpp" line="167"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="102"/>
         <source>new document</source>
         <translation>New Scene</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="162"/>
+        <location filename="../src/mainwindow/application.cpp" line="169"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="103"/>
         <source>save document</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="163"/>
+        <location filename="../src/mainwindow/application.cpp" line="171"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="104"/>
         <source>save document as</source>
         <translation>Save as ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="164"/>
+        <location filename="../src/mainwindow/application.cpp" line="173"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="105"/>
         <source>load document</source>
         <translation>Open ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="165"/>
+        <location filename="../src/mainwindow/application.cpp" line="175"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="89"/>
         <source>make smooth</source>
         <translation>Adjust tangents cubic</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="166"/>
+        <location filename="../src/mainwindow/application.cpp" line="176"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="90"/>
         <source>make linear</source>
         <translation>Vanish tangents</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="167"/>
+        <location filename="../src/mainwindow/application.cpp" line="177"/>
         <source>remove points</source>
         <translation>Remove points</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="168"/>
+        <location filename="../src/mainwindow/application.cpp" line="179"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="91"/>
         <source>subdivide</source>
         <translation>Subdivide</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="169"/>
+        <location filename="../src/mainwindow/application.cpp" line="180"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="114"/>
         <source>evaluate</source>
         <translation>Evaluate</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="170"/>
+        <location filename="../src/mainwindow/application.cpp" line="181"/>
         <source>show keybindings dialog</source>
         <translation>Show key bindings dialog</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="171"/>
+        <location filename="../src/mainwindow/application.cpp" line="183"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="112"/>
         <source>previous tool</source>
         <translation>Previous tool</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="172"/>
+        <location filename="../src/mainwindow/application.cpp" line="185"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="92"/>
         <source>select all</source>
         <translation>Select all</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="173"/>
+        <location filename="../src/mainwindow/application.cpp" line="186"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="93"/>
         <source>deselect all</source>
         <translation>Deselect all</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="174"/>
+        <location filename="../src/mainwindow/application.cpp" line="187"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="94"/>
         <source>invert selection</source>
         <translation>Invert selection</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="175"/>
+        <location filename="../src/mainwindow/application.cpp" line="165"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="71"/>
         <source>remove selection</source>
         <translation>Remove selection</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="176"/>
+        <location filename="../src/mainwindow/application.cpp" line="189"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="108"/>
         <source>new style</source>
         <translation>New Style</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="177"/>
+        <location filename="../src/mainwindow/application.cpp" line="193"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="72"/>
         <source>convert objects</source>
         <translation>Convert objects</translation>
@@ -986,12 +950,12 @@ Remove the selected items anyway?</translation>
         <translation>Procedural path</translation>
     </message>
     <message>
-        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="16"/>
+        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="24"/>
         <source>remove objects and tags</source>
         <translation>Remove objects and tags</translation>
     </message>
     <message>
-        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="22"/>
+        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="14"/>
         <location filename="../src/managers/objectmanager/objectmanager.h" line="23"/>
         <source>ObjectManager</source>
         <translation>Object manager</translation>
@@ -1008,10 +972,20 @@ Remove the selected items anyway?</translation>
         <translation>Python Console</translation>
     </message>
     <message>
-        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="24"/>
-        <location filename="../src/managers/stylemanager/stylemanager.h" line="18"/>
+        <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="190"/>
+        <source>clear python console</source>
+        <translation>Clear python console</translation>
+    </message>
+    <message>
+        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="17"/>
+        <location filename="../src/managers/stylemanager/stylemanager.h" line="17"/>
         <source>StyleManager</source>
         <translation>Style manager</translation>
+    </message>
+    <message>
+        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="27"/>
+        <source>remove styles</source>
+        <translation>Remove styles</translation>
     </message>
     <message>
         <location filename="../src/managers/propertymanager/propertymanager.cpp" line="94"/>
@@ -1032,6 +1006,26 @@ Remove the selected items anyway?</translation>
         <location filename="../src/tools/selecttool.h" line="42"/>
         <source>SelectPointsTool</source>
         <translation>Select points</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/application.h" line="34"/>
+        <source>Application</source>
+        <translation>Application</translation>
+    </message>
+    <message>
+        <location filename="../src/tags/pathtag.h" line="15"/>
+        <source>PathTag</source>
+        <translation>Path tag</translation>
+    </message>
+    <message>
+        <location filename="../src/tags/scripttag.h" line="14"/>
+        <source>ScriptTag</source>
+        <translation>Script tag</translation>
+    </message>
+    <message>
+        <location filename="../src/tags/styletag.h" line="16"/>
+        <source>StyleTag</source>
+        <translation>Style tag</translation>
     </message>
 </context>
 <context>
@@ -1074,10 +1068,6 @@ Remove the selected items anyway?</translation>
         <translation>Tool</translation>
     </message>
     <message>
-        <source>select</source>
-        <translation type="vanished">Select</translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow/mainwindow.cpp" line="114"/>
         <source>scene</source>
         <translation>Scene</translation>
@@ -1104,50 +1094,45 @@ Remove the selected items anyway?</translation>
 <context>
     <name>omm::Application</name>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="69"/>
+        <location filename="../src/mainwindow/application.cpp" line="70"/>
         <source>Question.</source>
         <translation>Question.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="70"/>
+        <location filename="../src/mainwindow/application.cpp" line="71"/>
         <source>Some pending changes will be lost if you don&apos;t save.What do you want me to do?</source>
         <translation>Pending changes will be lost if they are not saved.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="95"/>
-        <location filename="../src/mainwindow/application.cpp" line="148"/>
+        <location filename="../src/mainwindow/application.cpp" line="96"/>
+        <location filename="../src/mainwindow/application.cpp" line="149"/>
         <source>Error.</source>
         <translation>Error.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="96"/>
+        <location filename="../src/mainwindow/application.cpp" line="97"/>
         <source>The scene could not be saved at &apos;%1&apos;.</source>
         <translation>The scene could not be saved at &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="120"/>
+        <location filename="../src/mainwindow/application.cpp" line="121"/>
         <source>Save scene as ...</source>
         <translation>Save scene as ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="139"/>
+        <location filename="../src/mainwindow/application.cpp" line="140"/>
         <source>Load scene ...</source>
         <translation>Load scene ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="149"/>
+        <location filename="../src/mainwindow/application.cpp" line="150"/>
         <source>Loading scene from &apos;%1&apos; failed.</source>
         <translation>Loading scene from &apos;%1&apos; failed.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="247"/>
+        <location filename="../src/mainwindow/application.cpp" line="221"/>
         <source>Add Tag</source>
         <translation>Add tag</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.h" line="35"/>
-        <source>Application</source>
-        <translation>Application</translation>
     </message>
 </context>
 <context>
@@ -1234,18 +1219,6 @@ Remove the selected items anyway?</translation>
         <location filename="../src/propertywidgets/referencepropertywidget/referencepropertyconfigwidget.cpp" line="57"/>
         <source>required:</source>
         <translation>Required:</translation>
-    </message>
-</context>
-<context>
-    <name>omm::StyleManager</name>
-    <message>
-        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="19"/>
-        <source>remove styles</source>
-        <translation>Remove styles</translation>
-    </message>
-    <message>
-        <source>Del</source>
-        <translation type="vanished">Del</translation>
     </message>
 </context>
 <context>

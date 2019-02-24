@@ -66,14 +66,6 @@
     </message>
 </context>
 <context>
-    <name>PathTag</name>
-    <message>
-        <location filename="../src/tags/pathtag.h" line="15"/>
-        <source>PathTag</source>
-        <translation>Pfad-Tag</translation>
-    </message>
-</context>
-<context>
     <name>Point</name>
     <message>
         <location filename="../src/geometry/point.h" line="41"/>
@@ -103,14 +95,6 @@
         <location filename="../src/aspects/propertyowner.h" line="32"/>
         <source>AbstractPropertyOwner</source>
         <translation>Eigenschafts-Besitzer</translation>
-    </message>
-</context>
-<context>
-    <name>PythonConsole</name>
-    <message>
-        <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="189"/>
-        <source>clear python console</source>
-        <translation>Python Konsole leeren</translation>
     </message>
 </context>
 <context>
@@ -186,12 +170,12 @@
         <translation>omm</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/actions.cpp" line="35"/>
+        <location filename="../src/mainwindow/actions.cpp" line="32"/>
         <source>modify tangents</source>
         <translation>Tangenten ändern</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/actions.cpp" line="146"/>
+        <location filename="../src/mainwindow/actions.cpp" line="134"/>
         <source>convert</source>
         <translation>Konvertieren</translation>
     </message>
@@ -534,7 +518,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <message>
         <location filename="../src/tools/brushselecttool.cpp" line="19"/>
         <location filename="../src/tools/selecttool.cpp" line="74"/>
-        <location filename="../src/tools/selecttool.cpp" line="137"/>
+        <location filename="../src/tools/selecttool.cpp" line="130"/>
         <source>tool</source>
         <translation>Werkzeug</translation>
     </message>
@@ -554,34 +538,34 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Ausrichtung</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="135"/>
+        <location filename="../src/tools/selecttool.cpp" line="128"/>
         <source>Mirror</source>
         <translation>Spiegeln</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="135"/>
+        <location filename="../src/tools/selecttool.cpp" line="128"/>
         <source>Individual</source>
         <translation>Individuell</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="136"/>
+        <location filename="../src/tools/selecttool.cpp" line="129"/>
         <source>tangent</source>
         <translation>Tangente</translation>
     </message>
     <message>
-        <location filename="../src/keybindings/keybindings.cpp" line="217"/>
+        <location filename="../src/keybindings/keybindings.cpp" line="178"/>
         <source>name</source>
         <comment>keybindings</comment>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/keybindings/keybindings.cpp" line="218"/>
+        <location filename="../src/keybindings/keybindings.cpp" line="179"/>
         <source>context</source>
         <comment>keybindings</comment>
         <translation>Kontext</translation>
     </message>
     <message>
-        <location filename="../src/keybindings/keybindings.cpp" line="219"/>
+        <location filename="../src/keybindings/keybindings.cpp" line="180"/>
         <source>sequence</source>
         <comment>keybindings</comment>
         <translation>Sequenz</translation>
@@ -767,10 +751,6 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <comment>TextEditAdapter</comment>
         <translation>Mehrere Werte</translation>
     </message>
-    <message>
-        <source>Del</source>
-        <translation type="vanished">Entf</translation>
-    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>
@@ -781,27 +761,11 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
 </context>
 <context>
-    <name>ScriptTag</name>
-    <message>
-        <location filename="../src/tags/scripttag.h" line="14"/>
-        <source>ScriptTag</source>
-        <translation>Skript-Tag</translation>
-    </message>
-</context>
-<context>
     <name>StringProperty</name>
     <message>
         <location filename="../src/properties/stringproperty.h" line="17"/>
         <source>StringProperty</source>
         <translation>Text-Eigenschaft</translation>
-    </message>
-</context>
-<context>
-    <name>StyleTag</name>
-    <message>
-        <location filename="../src/tags/styletag.h" line="16"/>
-        <source>StyleTag</source>
-        <translation>Style-Tag</translation>
     </message>
 </context>
 <context>
@@ -839,113 +803,113 @@ Soll die Selektion troztdem entfernt werden?</translation>
 <context>
     <name>any-context</name>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="159"/>
+        <location filename="../src/mainwindow/application.cpp" line="161"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="106"/>
         <source>undo</source>
         <translation>Rückgängig</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="160"/>
+        <location filename="../src/mainwindow/application.cpp" line="163"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="107"/>
         <source>redo</source>
         <translation>Wiederholen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="161"/>
+        <location filename="../src/mainwindow/application.cpp" line="167"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="102"/>
         <source>new document</source>
         <translation>Neue Szene</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="162"/>
+        <location filename="../src/mainwindow/application.cpp" line="169"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="103"/>
         <source>save document</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="163"/>
+        <location filename="../src/mainwindow/application.cpp" line="171"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="104"/>
         <source>save document as</source>
         <translation>Speichern als ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="164"/>
+        <location filename="../src/mainwindow/application.cpp" line="173"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="105"/>
         <source>load document</source>
         <translation>Öffnen ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="165"/>
+        <location filename="../src/mainwindow/application.cpp" line="175"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="89"/>
         <source>make smooth</source>
         <translation>Tangenten kubisch anpassen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="166"/>
+        <location filename="../src/mainwindow/application.cpp" line="176"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="90"/>
         <source>make linear</source>
         <translation>Tangenten entfernen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="167"/>
+        <location filename="../src/mainwindow/application.cpp" line="177"/>
         <source>remove points</source>
         <translation>Punkte entfernen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="168"/>
+        <location filename="../src/mainwindow/application.cpp" line="179"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="91"/>
         <source>subdivide</source>
         <translation>Unterteilen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="169"/>
+        <location filename="../src/mainwindow/application.cpp" line="180"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="114"/>
         <source>evaluate</source>
         <translation>Auswerten</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="170"/>
+        <location filename="../src/mainwindow/application.cpp" line="181"/>
         <source>show keybindings dialog</source>
         <translation>Tastenkürzeldialog öffnen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="171"/>
+        <location filename="../src/mainwindow/application.cpp" line="183"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="112"/>
         <source>previous tool</source>
         <translation>Vorheriges Werkzeug</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="172"/>
+        <location filename="../src/mainwindow/application.cpp" line="185"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="92"/>
         <source>select all</source>
         <translation>Alles selektieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="173"/>
+        <location filename="../src/mainwindow/application.cpp" line="186"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="93"/>
         <source>deselect all</source>
         <translation>Alles deselektieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="174"/>
+        <location filename="../src/mainwindow/application.cpp" line="187"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="94"/>
         <source>invert selection</source>
         <translation>Selektion invertieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="175"/>
+        <location filename="../src/mainwindow/application.cpp" line="165"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="71"/>
         <source>remove selection</source>
         <translation>Selektion entfernen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="176"/>
+        <location filename="../src/mainwindow/application.cpp" line="189"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="108"/>
         <source>new style</source>
         <translation>Neuer Style</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="177"/>
+        <location filename="../src/mainwindow/application.cpp" line="193"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="72"/>
         <source>convert objects</source>
         <translation>Objekte konvertieren</translation>
@@ -986,12 +950,12 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Prozeduraler Pfad</translation>
     </message>
     <message>
-        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="16"/>
+        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="24"/>
         <source>remove objects and tags</source>
         <translation>Objekte und Tags entfernen</translation>
     </message>
     <message>
-        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="22"/>
+        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="14"/>
         <location filename="../src/managers/objectmanager/objectmanager.h" line="23"/>
         <source>ObjectManager</source>
         <translation>Objekt-Manager</translation>
@@ -1008,10 +972,20 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Python Konsole</translation>
     </message>
     <message>
-        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="24"/>
-        <location filename="../src/managers/stylemanager/stylemanager.h" line="18"/>
+        <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="190"/>
+        <source>clear python console</source>
+        <translation>Python Konsole leeren</translation>
+    </message>
+    <message>
+        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="17"/>
+        <location filename="../src/managers/stylemanager/stylemanager.h" line="17"/>
         <source>StyleManager</source>
         <translation>Style-Manager</translation>
+    </message>
+    <message>
+        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="27"/>
+        <source>remove styles</source>
+        <translation>Styles entfernen</translation>
     </message>
     <message>
         <location filename="../src/managers/propertymanager/propertymanager.cpp" line="94"/>
@@ -1032,6 +1006,26 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <location filename="../src/tools/selecttool.h" line="42"/>
         <source>SelectPointsTool</source>
         <translation>Punkte selektieren</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/application.h" line="34"/>
+        <source>Application</source>
+        <translation>Applikation</translation>
+    </message>
+    <message>
+        <location filename="../src/tags/pathtag.h" line="15"/>
+        <source>PathTag</source>
+        <translation>Pfad-Tag</translation>
+    </message>
+    <message>
+        <location filename="../src/tags/scripttag.h" line="14"/>
+        <source>ScriptTag</source>
+        <translation>Skript-Tag</translation>
+    </message>
+    <message>
+        <location filename="../src/tags/styletag.h" line="16"/>
+        <source>StyleTag</source>
+        <translation>Style-Tag</translation>
     </message>
 </context>
 <context>
@@ -1074,10 +1068,6 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Werkzeug</translation>
     </message>
     <message>
-        <source>select</source>
-        <translation type="vanished">Selektieren</translation>
-    </message>
-    <message>
         <location filename="../src/mainwindow/mainwindow.cpp" line="114"/>
         <source>scene</source>
         <translation>Szene</translation>
@@ -1104,50 +1094,45 @@ Soll die Selektion troztdem entfernt werden?</translation>
 <context>
     <name>omm::Application</name>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="69"/>
+        <location filename="../src/mainwindow/application.cpp" line="70"/>
         <source>Question.</source>
         <translation>Frage.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="70"/>
+        <location filename="../src/mainwindow/application.cpp" line="71"/>
         <source>Some pending changes will be lost if you don&apos;t save.What do you want me to do?</source>
         <translation>Nicht gesicherte Änderungen gehen verloren wenn nicht gespeichert wird.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="95"/>
-        <location filename="../src/mainwindow/application.cpp" line="148"/>
+        <location filename="../src/mainwindow/application.cpp" line="96"/>
+        <location filename="../src/mainwindow/application.cpp" line="149"/>
         <source>Error.</source>
         <translation>Fehler.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="96"/>
+        <location filename="../src/mainwindow/application.cpp" line="97"/>
         <source>The scene could not be saved at &apos;%1&apos;.</source>
         <translation>Die Szene konnte nicht als &apos;%1&apos; gespeichert werden.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="120"/>
+        <location filename="../src/mainwindow/application.cpp" line="121"/>
         <source>Save scene as ...</source>
         <translation>Szene speichern als ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="139"/>
+        <location filename="../src/mainwindow/application.cpp" line="140"/>
         <source>Load scene ...</source>
         <translation>Szene laden ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="149"/>
+        <location filename="../src/mainwindow/application.cpp" line="150"/>
         <source>Loading scene from &apos;%1&apos; failed.</source>
         <translation>Szene konnte nicht von &apos;%1&apos; geladen werden.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="247"/>
+        <location filename="../src/mainwindow/application.cpp" line="221"/>
         <source>Add Tag</source>
         <translation>Tag hinzufügen</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.h" line="35"/>
-        <source>Application</source>
-        <translation>Applikation</translation>
     </message>
 </context>
 <context>
@@ -1234,18 +1219,6 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <location filename="../src/propertywidgets/referencepropertywidget/referencepropertyconfigwidget.cpp" line="57"/>
         <source>required:</source>
         <translation>Erforderlich:</translation>
-    </message>
-</context>
-<context>
-    <name>omm::StyleManager</name>
-    <message>
-        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="19"/>
-        <source>remove styles</source>
-        <translation>Styles entfernen</translation>
-    </message>
-    <message>
-        <source>Del</source>
-        <translation type="vanished">Entf</translation>
     </message>
 </context>
 <context>

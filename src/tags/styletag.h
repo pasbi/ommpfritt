@@ -13,7 +13,7 @@ public:
   std::string type() const override;
   QIcon icon() const override;
   static constexpr auto STYLE_REFERENCE_PROPERTY_KEY = "style";
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("StyleTag", "StyleTag");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "StyleTag");
   std::unique_ptr<Tag> clone() const override;
   void evaluate() override;
   Flag flags() const override;
