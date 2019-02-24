@@ -12,13 +12,18 @@ void OptionsProperty::deserialize(AbstractDeserializer& deserializer, const Poin
   set(deserializer.get_size_t(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
   set_default_value(
     deserializer.get_size_t(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
-  m_options.clear();
-  const std::size_t n_options = deserializer.array_size(make_pointer(root, OPTIONS_POINTER));
-  m_options.reserve(n_options);
-  for (std::size_t i = 0; i < n_options; ++i) {
-    const auto option = deserializer.get_string(make_pointer(root, OPTIONS_POINTER, i));
-    m_options.push_back(option);
+
+  if (m_options.empty()) {
+    // if options are already there, don't overwrite them because they are probably already
+    //  translated.
+    const std::size_t n_options = deserializer.array_size(make_pointer(root, OPTIONS_POINTER));
+    m_options.reserve(n_options);
+    for (std::size_t i = 0; i < n_options; ++i) {
+      const auto option = deserializer.get_string(make_pointer(root, OPTIONS_POINTER, i));
+      m_options.push_back(option);
+    }
   }
+
 }
 
 void OptionsProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
