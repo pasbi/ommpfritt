@@ -30,7 +30,7 @@ public:
   using SelectTool::SelectTool;
   std::string type() const override;
   QIcon icon() const override;
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("SelectObjectsTool", "SelectObjectsTool");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectObjectsTool");
 };
 
 class SelectPointsTool : public SelectTool<PointPositions>
@@ -39,7 +39,7 @@ public:
   explicit SelectPointsTool(Scene& scene);
   std::string type() const override;
   QIcon icon() const override;
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("SelectPointsTool", "SelectPointsTool");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectPointsTool");
   static constexpr auto TANGENT_MODE_PROPERTY_KEY = "tangent_mode";
   PointSelectHandle::TangentMode tangent_mode() const;
   std::unique_ptr<QMenu> make_context_menu(QWidget* parent) override;

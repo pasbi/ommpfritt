@@ -10,14 +10,6 @@
     </message>
 </context>
 <context>
-    <name>BrushSelectTool</name>
-    <message>
-        <location filename="../src/tools/brushselecttool.h" line="14"/>
-        <source>BrushSelectTool</source>
-        <translation>Pinselselektion</translation>
-    </message>
-</context>
-<context>
     <name>ColorProperty</name>
     <message>
         <location filename="../src/properties/colorproperty.h" line="17"/>
@@ -804,22 +796,6 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
 </context>
 <context>
-    <name>SelectObjectsTool</name>
-    <message>
-        <location filename="../src/tools/selecttool.h" line="33"/>
-        <source>SelectObjectsTool</source>
-        <translation>Objekte selektieren</translation>
-    </message>
-</context>
-<context>
-    <name>SelectPointsTool</name>
-    <message>
-        <location filename="../src/tools/selecttool.h" line="42"/>
-        <source>SelectPointsTool</source>
-        <translation>Punkte selektieren</translation>
-    </message>
-</context>
-<context>
     <name>StringProperty</name>
     <message>
         <location filename="../src/properties/stringproperty.h" line="17"/>
@@ -865,6 +841,13 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <location filename="../src/propertywidgets/optionspropertywidget/optionspropertyconfigwidget.cpp" line="12"/>
         <source>OptionsPropertyConfigWidget</source>
         <translation>Options-Eigenschaft Konfigurations Widget</translation>
+    </message>
+</context>
+<context>
+    <name>any-contex</name>
+    <message>
+        <source>BrushSelectTool</source>
+        <translation type="obsolete">Pinselselektion</translation>
     </message>
 </context>
 <context>
@@ -1048,6 +1031,21 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <location filename="../src/managers/propertymanager/propertymanager.cpp" line="94"/>
         <source>Properties</source>
         <translation>Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/tools/brushselecttool.h" line="14"/>
+        <source>BrushSelectTool</source>
+        <translation>Pinselselektion</translation>
+    </message>
+    <message>
+        <location filename="../src/tools/selecttool.h" line="33"/>
+        <source>SelectObjectsTool</source>
+        <translation>Objekte selektieren</translation>
+    </message>
+    <message>
+        <location filename="../src/tools/selecttool.h" line="42"/>
+        <source>SelectPointsTool</source>
+        <translation>Punkte selektieren</translation>
     </message>
 </context>
 <context>

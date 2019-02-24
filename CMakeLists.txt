@@ -7,7 +7,7 @@ set (CMAKE_AUTORCC ON)
 set (OMMPFRITT_VERSION_MAJOR 1)
 set (OMMPFRITT_VERSION_MINOR 0)
 set (QT_QM_PATH CACHE PATH
-    "path where to find the  qt translation files (qt_en.qm, qtbase_de.qm, etc.")
+    "path where to find the Qt translation files (qt_en.qm, qtbase_de.qm, etc.")
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/ommpfrittconfig.h.in"
@@ -59,6 +59,9 @@ set(RESOURCES resources.qrc)
 add_library(libommpfritt)
 add_executable(ommpfritt ${RESOURCES})
 
+target_compile_features(libommpfritt PUBLIC cxx_std_17)
+target_compile_features(ommpfritt PUBLIC cxx_std_17)
+
 target_include_directories(libommpfritt PRIVATE ${ARMADILLO_INCLUDE_DIRS})
 target_link_libraries(libommpfritt ${ARMADILLO_LIBRARIES})
 target_link_libraries(ommpfritt ${ARMADILLO_LIBRARIES})
@@ -76,6 +79,3 @@ add_subdirectory(src)
 add_subdirectory(test)
 
 target_link_libraries(ommpfritt libommpfritt)
-
-target_compile_features(libommpfritt PUBLIC cxx_std_17)
-target_compile_features(ommpfritt PUBLIC cxx_std_17)

@@ -110,7 +110,7 @@ std::vector<std::string> MainWindow::main_menu_entries()
     QT_TRANSLATE_NOOP("menu_name", "object")"/" QT_TRANSLATE_NOOP("menu_name", "attach")"/",
     QT_TRANSLATE_NOOP("menu_name", "path")"/",
     QT_TRANSLATE_NOOP("menu_name", "tool")"/" QT_TRANSLATE_NOOP("any-context", "previous tool"),
-    "tool/" QT_TRANSLATE_NOOP("menu_name", "select")"/",
+    "tool/"s + KeyBindings::SEPARATOR,
     QT_TRANSLATE_NOOP("menu_name", "scene")"/" QT_TRANSLATE_NOOP("any-context", "evaluate"),
     QT_TRANSLATE_NOOP("menu_name", "window")"/" QT_TRANSLATE_NOOP("menu_name", "show")"/",
   };
@@ -127,7 +127,7 @@ std::vector<std::string> MainWindow::main_menu_entries()
   merge(object_menu_entries());
   merge(path_menu_entries());
   for (const std::string& key : Tool::keys()) {
-    entries.push_back("tool/select/" + key);
+    entries.push_back("tool/" + key);
   }
   return std::vector(entries.begin(), entries.end());
 }

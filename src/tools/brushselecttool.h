@@ -11,7 +11,7 @@ class BrushSelectTool : public Tool
 public:
   explicit BrushSelectTool(Scene& scene);
   QIcon icon() const override;
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("BrushSelectTool", "BrushSelectTool");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "BrushSelectTool");
 
   /**
    * @brief returns true if any grabbable was moved
@@ -30,7 +30,6 @@ public:
   PointPositions position_variant;
   void draw(AbstractRenderer& renderer) const override;
   static constexpr auto RADIUS_PROPERTY_KEY = "radius";
-
 
 private:
   bool m_mouse_down = false;
