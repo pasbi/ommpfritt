@@ -647,12 +647,6 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>&gt;&gt;&gt; </translation>
     </message>
     <message>
-        <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="190"/>
-        <source>Ctrl+K</source>
-        <comment>PythonConsole</comment>
-        <translation>Strg+K</translation>
-    </message>
-    <message>
         <location filename="../src/objects/instance.cpp" line="17"/>
         <source>reference</source>
         <comment>Instance</comment>
@@ -774,9 +768,8 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Mehrere Werte</translation>
     </message>
     <message>
-        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="17"/>
         <source>Del</source>
-        <translation>Entf</translation>
+        <translation type="vanished">Entf</translation>
     </message>
 </context>
 <context>
@@ -841,13 +834,6 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <location filename="../src/propertywidgets/optionspropertywidget/optionspropertyconfigwidget.cpp" line="12"/>
         <source>OptionsPropertyConfigWidget</source>
         <translation>Options-Eigenschaft Konfigurations Widget</translation>
-    </message>
-</context>
-<context>
-    <name>any-contex</name>
-    <message>
-        <source>BrushSelectTool</source>
-        <translation type="obsolete">Pinselselektion</translation>
     </message>
 </context>
 <context>
@@ -1088,9 +1074,8 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Werkzeug</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="113"/>
         <source>select</source>
-        <translation>Selektieren</translation>
+        <translation type="vanished">Selektieren</translation>
     </message>
     <message>
         <location filename="../src/mainwindow/mainwindow.cpp" line="114"/>
@@ -1155,67 +1140,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Szene konnte nicht von &apos;%1&apos; geladen werden.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="159"/>
-        <source>Ctrl+Z</source>
-        <translation>Strg+Z</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="160"/>
-        <source>Ctrl+Y</source>
-        <translation>Strg+Y</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="161"/>
-        <source>Ctrl+N</source>
-        <translation>Strg+N</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="162"/>
-        <source>Ctrl+S</source>
-        <translation>Strg+S</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="163"/>
-        <source>Ctrl+Shift+S</source>
-        <translation>Strg+Shift+S</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="164"/>
-        <source>Ctrl+O</source>
-        <translation>Strg+O</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="167"/>
-        <source>Del</source>
-        <translation>Entf</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="171"/>
-        <source>Space</source>
-        <translation>Leertaste</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="172"/>
-        <source>A</source>
-        <translation>A</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="174"/>
-        <source>I</source>
-        <translation>I</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="175"/>
-        <source>Ctrl+Del</source>
-        <translation>Strg+Entf</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="177"/>
-        <source>C</source>
-        <translation>C</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="249"/>
+        <location filename="../src/mainwindow/application.cpp" line="247"/>
         <source>Add Tag</source>
         <translation>Tag hinzufügen</translation>
     </message>
@@ -1319,9 +1244,8 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Styles entfernen</translation>
     </message>
     <message>
-        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="19"/>
         <source>Del</source>
-        <translation>Entf</translation>
+        <translation type="vanished">Entf</translation>
     </message>
 </context>
 <context>

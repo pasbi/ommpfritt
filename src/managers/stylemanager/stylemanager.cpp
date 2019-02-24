@@ -16,7 +16,7 @@ namespace omm
 std::map<std::string, QKeySequence> StyleManager::default_bindings()
 {
   return {
-    { QT_TR_NOOP("remove styles"), QKeySequence(tr("Del")) }
+    { QT_TR_NOOP("remove styles"), QKeySequence("Del") }
   };
 }
 

@@ -14,7 +14,7 @@ std::map<std::string, QKeySequence> ObjectManager::default_bindings()
 {
   return {
     { QT_TRANSLATE_NOOP("any-context", "remove objects and tags"),
-      QKeySequence(QObject::tr("Del")) }
+      QKeySequence("Del") }
   };
 }
 

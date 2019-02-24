@@ -647,12 +647,6 @@ Remove the selected items anyway?</translation>
         <translation>&gt;&gt;&gt; </translation>
     </message>
     <message>
-        <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="190"/>
-        <source>Ctrl+K</source>
-        <comment>PythonConsole</comment>
-        <translation>Ctrl+K</translation>
-    </message>
-    <message>
         <location filename="../src/objects/instance.cpp" line="17"/>
         <source>reference</source>
         <comment>Instance</comment>
@@ -774,9 +768,8 @@ Remove the selected items anyway?</translation>
         <translation>Multiple values</translation>
     </message>
     <message>
-        <location filename="../src/managers/objectmanager/objectmanager.cpp" line="17"/>
         <source>Del</source>
-        <translation>Del</translation>
+        <translation type="vanished">Del</translation>
     </message>
 </context>
 <context>
@@ -841,13 +834,6 @@ Remove the selected items anyway?</translation>
         <location filename="../src/propertywidgets/optionspropertywidget/optionspropertyconfigwidget.cpp" line="12"/>
         <source>OptionsPropertyConfigWidget</source>
         <translation>Options property config widget</translation>
-    </message>
-</context>
-<context>
-    <name>any-contex</name>
-    <message>
-        <source>BrushSelectTool</source>
-        <translation type="obsolete">Brush selection</translation>
     </message>
 </context>
 <context>
@@ -1088,9 +1074,8 @@ Remove the selected items anyway?</translation>
         <translation>Tool</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="113"/>
         <source>select</source>
-        <translation>Select</translation>
+        <translation type="vanished">Select</translation>
     </message>
     <message>
         <location filename="../src/mainwindow/mainwindow.cpp" line="114"/>
@@ -1155,67 +1140,7 @@ Remove the selected items anyway?</translation>
         <translation>Loading scene from &apos;%1&apos; failed.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="159"/>
-        <source>Ctrl+Z</source>
-        <translation>Ctrl+Z</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="160"/>
-        <source>Ctrl+Y</source>
-        <translation>Ctrl+Y</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="161"/>
-        <source>Ctrl+N</source>
-        <translation>Ctrl+N</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="162"/>
-        <source>Ctrl+S</source>
-        <translation>Ctrl+S</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="163"/>
-        <source>Ctrl+Shift+S</source>
-        <translation>Ctrl+Shift+S</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="164"/>
-        <source>Ctrl+O</source>
-        <translation>Ctrl+O</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="167"/>
-        <source>Del</source>
-        <translation>Del</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="171"/>
-        <source>Space</source>
-        <translation>Space</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="172"/>
-        <source>A</source>
-        <translation>A</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="174"/>
-        <source>I</source>
-        <translation>I</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="175"/>
-        <source>Ctrl+Del</source>
-        <translation>Ctrl+Del</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="177"/>
-        <source>C</source>
-        <translation>C</translation>
-    </message>
-    <message>
-        <location filename="../src/mainwindow/application.cpp" line="249"/>
+        <location filename="../src/mainwindow/application.cpp" line="247"/>
         <source>Add Tag</source>
         <translation>Add tag</translation>
     </message>
@@ -1319,9 +1244,8 @@ Remove the selected items anyway?</translation>
         <translation>Remove styles</translation>
     </message>
     <message>
-        <location filename="../src/managers/stylemanager/stylemanager.cpp" line="19"/>
         <source>Del</source>
-        <translation>Del</translation>
+        <translation type="vanished">Del</translation>
     </message>
 </context>
 <context>

@@ -156,25 +156,25 @@ std::map<std::string, QKeySequence> Application::default_bindings()
 {
   const auto ks = [](auto&&... code) { return QKeySequence(code...); };
   std::map<std::string, QKeySequence> map {
-    { QT_TRANSLATE_NOOP("any-context", "undo"),                    ks(tr("Ctrl+Z"))       },
-    { QT_TRANSLATE_NOOP("any-context", "redo"),                    ks(tr("Ctrl+Y"))       },
-    { QT_TRANSLATE_NOOP("any-context", "new document"),            ks(tr("Ctrl+N"))       },
-    { QT_TRANSLATE_NOOP("any-context", "save document"),           ks(tr("Ctrl+S"))       },
-    { QT_TRANSLATE_NOOP("any-context", "save document as"),        ks(tr("Ctrl+Shift+S")) },
-    { QT_TRANSLATE_NOOP("any-context", "load document"),           ks(tr("Ctrl+O"))       },
-    { QT_TRANSLATE_NOOP("any-context", "make smooth"),             ks()                   },
-    { QT_TRANSLATE_NOOP("any-context", "make linear"),             ks()                   },
-    { QT_TRANSLATE_NOOP("any-context", "remove points"),           ks(tr("Del"))          },
-    { QT_TRANSLATE_NOOP("any-context", "subdivide"),               ks()                   },
-    { QT_TRANSLATE_NOOP("any-context", "evaluate"),                ks()                   },
-    { QT_TRANSLATE_NOOP("any-context", "show keybindings dialog"), ks()                   },
-    { QT_TRANSLATE_NOOP("any-context", "previous tool"),           ks(tr("Space"))        },
-    { QT_TRANSLATE_NOOP("any-context", "select all"),              ks(tr("A"))            },
-    { QT_TRANSLATE_NOOP("any-context", "deselect all"),            ks()                   },
-    { QT_TRANSLATE_NOOP("any-context", "invert selection"),        ks(tr("I"))            },
-    { QT_TRANSLATE_NOOP("any-context", "remove selection"),        ks(tr("Ctrl+Del"))     },
-    { QT_TRANSLATE_NOOP("any-context", "new style"),               ks(tr(""))             },
-    { QT_TRANSLATE_NOOP("any-context", "convert objects"),         ks(tr("C"))            },
+    { QT_TRANSLATE_NOOP("any-context", "undo"),                    ks("Ctrl+Z")        },
+    { QT_TRANSLATE_NOOP("any-context", "redo"),                    ks("Ctrl+Y")        },
+    { QT_TRANSLATE_NOOP("any-context", "new document"),            ks("Ctrl+N")        },
+    { QT_TRANSLATE_NOOP("any-context", "save document"),           ks("Ctrl+S")        },
+    { QT_TRANSLATE_NOOP("any-context", "save document as"),        ks("Ctrl+Shf  t+S") },
+    { QT_TRANSLATE_NOOP("any-context", "load document"),           ks("Ctrl+O")        },
+    { QT_TRANSLATE_NOOP("any-context", "make smooth"),             ks()                },
+    { QT_TRANSLATE_NOOP("any-context", "make linear"),             ks()                },
+    { QT_TRANSLATE_NOOP("any-context", "remove points"),           ks("Del")           },
+    { QT_TRANSLATE_NOOP("any-context", "subdivide"),               ks()                },
+    { QT_TRANSLATE_NOOP("any-context", "evaluate"),                ks()                },
+    { QT_TRANSLATE_NOOP("any-context", "show keybindings dialog"), ks()                },
+    { QT_TRANSLATE_NOOP("any-context", "previous tool"),           ks("Space")         },
+    { QT_TRANSLATE_NOOP("any-context", "select all"),              ks("A")             },
+    { QT_TRANSLATE_NOOP("any-context", "deselect all"),            ks()                },
+    { QT_TRANSLATE_NOOP("any-context", "invert selection"),        ks("I")             },
+    { QT_TRANSLATE_NOOP("any-context", "remove selection"),        ks("Ctrl+Del")      },
+    { QT_TRANSLATE_NOOP("any-context", "new style"),               ks("")              },
+    { QT_TRANSLATE_NOOP("any-context", "convert objects"),         ks("C")             },
   };
 
   for (const auto& key : Object::keys()) {
@@ -189,8 +189,6 @@ std::map<std::string, QKeySequence> Application::default_bindings()
   for (const auto& key : Tag::keys()) {
     map.insert(std::pair(key, ks()));
   }
-
-  LOG(INFO) << "DELETE SEQUENCE: " << map["remove selection"].toString().toStdString();
 
   return map;
 }

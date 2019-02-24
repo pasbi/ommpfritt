@@ -187,7 +187,7 @@ std::map<std::string, QKeySequence> PythonConsole::default_bindings()
 {
   return {
     { QT_TRANSLATE_NOOP("PythonConsole", "clear python console"),
-      QKeySequence(QObject::tr("Ctrl+K", "PythonConsole")) }
+      QKeySequence("Ctrl+K") }
   };
 }
 
