@@ -84,11 +84,8 @@ public:
     if (it != m_bindings.end()) {
       interface.template call<CommandInterfaceT>(it->name());
       return true;
-    } else if (&interface != m_global_command_interface && m_global_command_interface != nullptr) {
-      // call(sequence, *m_global_command_interface);
-      return true;
     } else {
-      return false;
+      return this->call_global_command(sequence, interface);
     }
   }
 
@@ -127,7 +124,6 @@ public:
 
 private:
   std::vector<KeyBinding> m_bindings;  // pointers must not change
-  CommandInterface* m_global_command_interface = nullptr;
   QKeySequence make_key_sequence(const QKeyEvent& event) const;
   mutable std::list<int> m_current_sequene;
   mutable QTimer m_reset_timer;
@@ -135,7 +131,8 @@ private:
 
   static std::pair<std::string, QMenu*>
   get_menu( const std::string& action_path, std::map<std::string, QMenu*>& menu_map,
-                                            std::list<std::unique_ptr<QMenu>>& menus );
+            std::list<std::unique_ptr<QMenu>>& menus);
+  bool call_global_command(const QKeySequence& sequence, const CommandInterface& source) const;
 
 };
 

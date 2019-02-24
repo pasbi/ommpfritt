@@ -79,7 +79,7 @@ private:
   LiveLabel* m_shortcut_label;
   QLabel* m_icon_label;
   void set_highlighted(bool h)
-{
+  {
     m_name_label->setBackgroundRole(h ? QPalette::Highlight : QPalette::Window);
     m_name_label->setForegroundRole(h ? QPalette::HighlightedText : QPalette::Text);
     m_shortcut_label->setBackgroundRole(h ? QPalette::Highlight : QPalette::Window);
@@ -96,7 +96,7 @@ private:
 namespace omm
 {
 
-Action::Action(const KeyBinding& key_binding) : QWidgetAction(nullptr) , m_key_binding(key_binding)
+Action::Action(const KeyBinding& key_binding) : QWidgetAction(nullptr), m_key_binding(key_binding)
 {
 }
 

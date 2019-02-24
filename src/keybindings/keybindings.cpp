@@ -194,14 +194,9 @@ Qt::ItemFlags KeyBindings::flags(const QModelIndex& index) const
   return flags;
 }
 
-void KeyBindings::set_global_command_interface(CommandInterface& global_command_interface)
-{
-  m_global_command_interface = &global_command_interface;
-}
-
 std::pair<std::string, QMenu*>
 KeyBindings::get_menu( const std::string& action_path, std::map<std::string, QMenu*>& menu_map,
-                                                       std::list<std::unique_ptr<QMenu>>& menus )
+                       std::list<std::unique_ptr<QMenu>>& menus)
 {
   const auto [path, action_name] = split(action_path);
   auto menu = add_menu(path, menu_map);
@@ -214,6 +209,17 @@ KeyBindings::get_menu( const std::string& action_path, std::map<std::string, QMe
     menu_ptr = menu_map.at(path);
   }
   return std::pair(action_name, menu_ptr);
+}
+
+bool KeyBindings::call_global_command( const QKeySequence& sequence,
+                                       const CommandInterface& source ) const
+{
+  auto& global_command_interface = Application::instance();
+  if (&global_command_interface == &source) {
+    return false;
+  } else {
+    return call(sequence, global_command_interface);
+  }
 }
 
 }  // namespace omm
