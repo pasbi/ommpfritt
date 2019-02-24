@@ -166,7 +166,7 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
     AI( QT_TRANSLATE_NOOP("any-context", "new document"),     ks("Ctrl+N"),
         [](Application& app) { app.reset(); } ),
     AI( QT_TRANSLATE_NOOP("any-context", "save document"),    ks("Ctrl+S"),
-        [](Application& app) {} ),
+        [](Application& app) { app.save(); } ),
     AI( QT_TRANSLATE_NOOP("any-context", "save document as"), ks("Ctrl+Shfit+S"),
         [](Application& app) { app.save_as(); } ),
     AI( QT_TRANSLATE_NOOP("any-context", "load document"),    ks("Ctrl+O"),
