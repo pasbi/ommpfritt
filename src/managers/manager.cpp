@@ -36,13 +36,14 @@ void Manager::contextMenuEvent(QContextMenuEvent *event)
   }
 
   populate_menu(*menu);
+  if (menu->actions().size() > 0) {
+    menu->move(event->globalPos());
+    menu->exec();
 
-  menu->move(event->globalPos());
-  menu->show();
-
-  menu->setAttribute(Qt::WA_DeleteOnClose);
-  menu.release();
-  event->accept();
+    menu->setAttribute(Qt::WA_DeleteOnClose);
+    menu.release();
+    event->accept();
+  }
 }
 
 std::vector<std::string> Manager::application_actions() const { return {}; }
