@@ -30,10 +30,7 @@ public:
   void restore();
   static constexpr auto settings_group = "keybindings";
 
-  void set_global_command_interface(CommandInterface& global_command_interface);
   static constexpr auto SEPARATOR = "separator";
-  // std::unique_ptr<QMenu>
-  // make_menu(CommandInterface& ci, const std::list<std::string>& actions) const;
 
   template<typename CommandInterfaceT> std::unique_ptr<QAction>
   make_action(CommandInterfaceT& ci, const std::string& action_name) const

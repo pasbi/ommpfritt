@@ -29,7 +29,6 @@ Application::Application(QApplication& app)
   : m_app(app)
   , scene(python_engine)
 {
-  key_bindings.set_global_command_interface(*this);
   if (m_instance == nullptr) {
     m_instance = this;
   } else {
