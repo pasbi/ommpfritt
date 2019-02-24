@@ -571,7 +571,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Sequenz</translation>
     </message>
     <message>
-        <location filename="../src/widgets/numericedit.h" line="112"/>
+        <location filename="../src/widgets/numericedit.h" line="116"/>
         <source>&lt; invalid &gt;</source>
         <comment>property</comment>
         <translation>Ungültig</translation>

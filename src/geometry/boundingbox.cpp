@@ -43,15 +43,11 @@ BoundingBox BoundingBox::merge(const BoundingBox& other) const
 
 BoundingBox BoundingBox::intersect(const BoundingBox& other) const
 {
-  const auto clamp = [](const auto& v, const auto& lo, const auto& hi) {
-    return std::min(hi, std::max(lo, v));
-  };
-
   return BoundingBox({
-    arma::vec2 { clamp(m_top_left[0], other.m_top_left[0], other.m_bottom_right[0]),
-                 clamp(m_top_left[1], other.m_top_left[1], other.m_bottom_right[1]) },
-    arma::vec2 { clamp(m_bottom_right[0], other.m_top_left[0], other.m_bottom_right[0]),
-                 clamp(m_bottom_right[1], other.m_top_left[1], other.m_bottom_right[1]) }
+    arma::vec2 { std::clamp(m_top_left[0], other.m_top_left[0], other.m_bottom_right[0]),
+                 std::clamp(m_top_left[1], other.m_top_left[1], other.m_bottom_right[1]) },
+    arma::vec2 { std::clamp(m_bottom_right[0], other.m_top_left[0], other.m_bottom_right[0]),
+                 std::clamp(m_bottom_right[1], other.m_top_left[1], other.m_bottom_right[1]) }
   });
 }
 

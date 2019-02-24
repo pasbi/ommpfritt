@@ -50,9 +50,11 @@ public:
     setContextMenuPolicy(Qt::NoContextMenu);
 
     connect(this, &QLineEdit::textEdited, [this](const QString& text) {
-      const auto value = this->parse(text.toStdString());
+      const auto value = this->value();
       if (!std::isnan(value)) { m_on_value_changed(value); }
     });
+
+    connect(this, &QLineEdit::editingFinished, [this]() { set_value(value()); });
 
     set_text(invalid_value);
   }
@@ -95,22 +97,27 @@ public:
 
   void set_multiplier(double multiplier) { m_multiplier = multiplier; }
 
-  void set_value(const value_type& value)
+  void set_value(value_type value)
   {
-    if (value != this->value()) {
-      if (std::isnan(value)) {
-        set_invalid_value();
-      } else {
+    value = std::clamp(value, m_min, m_max);
+    if (std::isnan(value)) {
+      set_invalid_value();
+    } else {
+      if (value != this->value() || !hasFocus()) {
         set_text(value);
-        m_on_value_changed(value);
       }
-    } else if (value == invalid_value) {
+      m_on_value_changed(value);
+    }
+    if (value == invalid_value) {
       set_text(invalid_value);
     }
   }
 
   void set_invalid_value() { setText(QObject::tr("< invalid >", "property")); }
-  value_type value() const { return parse(text().toStdString()); }
+  value_type value() const
+  {
+    return std::clamp(parse(text().toStdString()), m_min, m_max);
+  }
 
 protected:
   void wheelEvent(QWheelEvent* e) override
@@ -206,7 +213,6 @@ private:
       if (sstream) {
         return value;
       } else {
-        if (text != "") { LOG(ERROR) << "Failed to parse string '" << text << "'"; }
         if (m_min <= 0 && 0 <= m_max) {
           return 0;
         } else {
