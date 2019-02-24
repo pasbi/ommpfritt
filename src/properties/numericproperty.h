@@ -45,7 +45,7 @@ public:
     return *this;
   }
 
-  void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
+  void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root) override
   {
     TypedProperty<T>::deserialize(deserializer, root);
     m_lower = deserializer.get<T>(Serializable::make_pointer(root, LOWER_VALUE_POINTER));
@@ -54,7 +54,7 @@ public:
     m_multiplier = deserializer.get<double>(Serializable::make_pointer(root, MULTIPLIER_POINTER));
   }
 
-  void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
+  void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const override
   {
     TypedProperty<T>::serialize(serializer, root);
     serializer.set_value(m_lower, Serializable::make_pointer(root, LOWER_VALUE_POINTER));
