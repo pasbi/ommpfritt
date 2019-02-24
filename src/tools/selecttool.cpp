@@ -118,15 +118,8 @@ template<typename PositionVariant> bool SelectTool<PositionVariant>::has_transfo
   return !position_variant.is_empty();
 }
 
-std::string SelectObjectsTool::type() const
-{
-  return TYPE;
-}
-
-QIcon SelectObjectsTool::icon() const
-{
-  return QIcon();
-}
+std::string SelectObjectsTool::type() const { return TYPE; }
+QIcon SelectObjectsTool::icon() const { return QIcon(); }
 
 SelectPointsTool::SelectPointsTool(Scene& scene)
   : SelectTool<PointPositions>(scene)
@@ -137,15 +130,8 @@ SelectPointsTool::SelectPointsTool(Scene& scene)
     .set_category(QObject::tr("tool").toStdString());
 }
 
-std::string SelectPointsTool::type() const
-{
-  return TYPE;
-}
-
-QIcon SelectPointsTool::icon() const
-{
-  return QIcon();
-}
+std::string SelectPointsTool::type() const { return TYPE; }
+QIcon SelectPointsTool::icon() const { return QIcon(); }
 
 PointSelectHandle::TangentMode SelectPointsTool::tangent_mode() const
 {
@@ -156,8 +142,14 @@ PointSelectHandle::TangentMode SelectPointsTool::tangent_mode() const
 std::unique_ptr<QMenu> SelectPointsTool::make_context_menu(QWidget* parent)
 {
   auto& app = Application::instance();
-  // return app.key_bindings.make_menu(app, MainWindow::main_menu_entries()["path"]);
-  return std::make_unique<QMenu>();
+  auto menus = app.key_bindings.make_menus(app, MainWindow::path_menu_entries());
+  if (menus.size() > 1) {
+    LOG(WARNING) << "cannot combine entries from multiple menus";
+    // TODO replace top-level-menu with custom key (i.e. 'path' in this case).
+    // then, all entries will be in the same menu.
+  }
+  if (menus.size() == 0) { return nullptr; }
+  return std::move(menus.front());
 }
 
 void SelectPointsTool::on_selection_changed()
