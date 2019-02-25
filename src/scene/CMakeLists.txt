@@ -1,4 +1,5 @@
 file (GLOB SOURCES
+  "abstractselectionobserver.cpp"
   "list.cpp"
   "scene.cpp"
   "structure.cpp"

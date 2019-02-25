@@ -63,11 +63,14 @@ private:
 
 public:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
-  std::set<Object*> object_selection() const;
   std::set<AbstractPropertyOwner*> selection() const;
+  template<typename ItemT> std::set<ItemT*> item_selection() const
+  {
+    return AbstractPropertyOwner::cast<ItemT>(m_item_selection.at(ItemT::KIND));
+  }
 
 private:
-  std::set<Object*> m_object_selection;
+  std::map<AbstractPropertyOwner::Kind, std::set<AbstractPropertyOwner*>> m_item_selection;
   std::set<AbstractPropertyOwner*> m_selection;
 
   // === Styles  ====
@@ -128,16 +131,6 @@ private:
 
 public:
   ToolBox tool_box;
-
-  template<typename ObjectT, typename F> void for_each_selected_object(F&& f)
-  {
-    for (auto&& o : object_selection()) {
-      if (o->type() == ObjectT::TYPE) {
-        f(static_cast<ObjectT*>(o));
-      }
-    }
-  }
-
   void evaluate_tags();
 
 public:

@@ -77,6 +77,9 @@ Scene::Scene(PythonEngine& python_engine)
   using namespace std::string_literals;
   object_tree.root().property(Object::NAME_PROPERTY_KEY).set("_root_"s);
   m_current = this;
+  for (auto kind : { Object::KIND, Tag::KIND, Style::KIND, Tool::KIND }) {
+    m_item_selection[kind] = {};
+  }
 }
 
 Scene::~Scene()
@@ -281,28 +284,39 @@ template<> const typename SceneStructure<Style>::type& Scene::structure<Style>()
 void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
   m_selection = selection;
-  const auto set_selection = [selection](auto* observer) { observer->set_selection(selection); };
-  Observed<AbstractSelectionObserver>::for_each(set_selection);
+  Observed<AbstractSelectionObserver>::for_each( [this](auto* observer) {
+    observer->on_selection_changed(m_selection);
+  });
 
-  if (selection.size() == 0) {
-    m_object_selection = {};
-  } else {
-    const auto object_selection = ::filter_if(selection, [](const auto* apo) {
-      return apo->kind() == AbstractPropertyOwner::Kind::Object;
-    });
-    if (object_selection.size() > 0) {
-      m_object_selection = ::transform<Object*>(object_selection, [](auto* apo) {
-        return static_cast<Object*>(apo);
+  for (auto& kind : { AbstractPropertyOwner::Kind::Object, AbstractPropertyOwner::Kind::Style,
+                      AbstractPropertyOwner::Kind::Tag, AbstractPropertyOwner::Kind::Tool })
+  {
+    if (selection.size() == 0) {
+      m_item_selection.at(kind).clear();
+      Observed<AbstractSelectionObserver>::for_each( [this, kind](auto* observer) {
+        observer->on_selection_changed(m_item_selection.at(kind), kind);
       });
     } else {
-      // selection is not empty but does not contain objects. Do not touch the object selection.
+      const auto item_selection = ::filter_if(selection, [kind](const auto* apo) {
+        return apo->kind() == kind;
+      });
+      if (item_selection.empty()) {
+        // selection is not empty but does not contain objects. Do not touch the object selection.
+      } else {
+        if (m_item_selection[kind] != item_selection) {
+          m_item_selection[kind] = item_selection;
+          Observed<AbstractSelectionObserver>::for_each( [this, kind](auto* observer) {
+            observer->on_selection_changed(m_item_selection.at(kind), kind);
+          });
+        }
+      }
     }
   }
+
   tool_box.active_tool().on_selection_changed();
 }
 
 std::set<AbstractPropertyOwner*> Scene::selection() const { return m_selection; }
-std::set<Object*> Scene::object_selection() const { return m_object_selection; }
 
 template<> std::set<Tag*> Scene::find_items<Tag>(const std::string& name) const
 {

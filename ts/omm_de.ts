@@ -461,19 +461,19 @@
         <translation>Pinsel</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="333"/>
+        <location filename="../src/scene/scene.cpp" line="347"/>
         <source>There are %1 items being referenced by other items.
 Remove the refrenced items anyway?</source>
         <translation>%1 Elemente sind von der Selektion abhänging.
 Soll die Selektion troztdem entfernt werden?</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="336"/>
+        <location filename="../src/scene/scene.cpp" line="350"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="363"/>
+        <location filename="../src/scene/scene.cpp" line="377"/>
         <source>Remove Selection</source>
         <translation>Selektion entfernen</translation>
     </message>
@@ -956,7 +956,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
     <message>
         <location filename="../src/managers/objectmanager/objectmanager.cpp" line="14"/>
-        <location filename="../src/managers/objectmanager/objectmanager.h" line="23"/>
+        <location filename="../src/managers/objectmanager/objectmanager.h" line="25"/>
         <source>ObjectManager</source>
         <translation>Objekt-Manager</translation>
     </message>

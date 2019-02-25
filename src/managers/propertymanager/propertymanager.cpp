@@ -130,7 +130,7 @@ std::unique_ptr<QMenuBar> PropertyManager::make_menu_bar()
   return menu_bar;
 }
 
-void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& selection)
+void PropertyManager::on_selection_changed(const std::set<AbstractPropertyOwner*>& selection)
 {
   clear();
   OrderedMap<std::string, PropertyManagerTab> tabs;
@@ -189,7 +189,7 @@ void PropertyManager::on_property_value_changed(Property& property)
   // As  (A) the current widgets will be deleted in `set_selection`
   // and (B) the widget of `property` still has pending events, it's not wise to call
   // `set_selection` directly. Instead, wait until all events in the Qt event queue are handled.
-  QTimer::singleShot(0, [this](){ set_selection(m_current_selection); });
+  QTimer::singleShot(0, [this](){ on_selection_changed(m_current_selection); });
 }
 
 std::string PropertyManager::type() const { return TYPE; }

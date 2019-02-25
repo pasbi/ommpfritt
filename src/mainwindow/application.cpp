@@ -218,7 +218,7 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
     infos.push_back(AI(key, ks(), [key](Application& app) {
       Scene& scene = app.scene;
       scene.undo_stack.beginMacro(tr("Add Tag"));
-      for (auto&& object : scene.object_selection()) {
+      for (auto&& object : scene.item_selection<Object>()) {
         using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
         scene.submit<AddTagCommand>(object->tags, Tag::make(key, *object));
       }

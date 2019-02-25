@@ -7,7 +7,8 @@
 namespace omm
 {
 
-class ObjectManager : public ItemManager<ObjectTreeView>, public CommandInterface
+class ObjectManager
+  : public ItemManager<ObjectTreeView>, public CommandInterface
 {
 
 public:

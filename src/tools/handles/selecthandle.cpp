@@ -107,7 +107,7 @@ bool ObjectSelectHandle::contains_global(const arma::vec2& point) const
 void ObjectSelectHandle::draw(omm::AbstractRenderer& renderer) const
 {
   const auto is_selected = [this]() {
-    return ::contains(m_scene.object_selection(), &m_object);
+    return ::contains(m_scene.item_selection<Object>(), &m_object);
   };
 
   const Style& style = is_selected() ? this->style(Status::Active) : current_style();
@@ -157,7 +157,7 @@ void ObjectSelectHandle::clear()
 
 void ObjectSelectHandle::set_selected(bool selected)
 {
-  auto selection = m_scene.object_selection();
+  auto selection = m_scene.item_selection<Object>();
   if (selected) {
     selection.insert(&m_object);
   } else {
@@ -168,7 +168,7 @@ void ObjectSelectHandle::set_selected(bool selected)
 
 bool ObjectSelectHandle::is_selected() const
 {
-  return ::contains(m_scene.object_selection(), &m_object);
+  return ::contains(m_scene.item_selection<Object>(), &m_object);
 }
 
 PointSelectHandle::PointSelectHandle(Tool& tool, Path& path, Point& point)

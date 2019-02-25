@@ -17,7 +17,7 @@ namespace
 
 void modify_tangents(omm::Path::InterpolationMode mode, omm::Application& app)
 {
-  const auto paths = omm::Object::cast<omm::Path>(app.scene.object_selection());
+  const auto paths = omm::Object::cast<omm::Path>(app.scene.item_selection<omm::Object>());
   std::map<omm::Path*, std::map<omm::Point*, omm::Point>> map;
   for (omm::Path* path : paths) {
     map[path] = path->modified_points(true, mode);
@@ -48,7 +48,7 @@ void make_smooth(Application& app) { modify_tangents(Path::InterpolationMode::Sm
 void remove_selected_points(Application& app)
 {
   std::map<Path*, std::vector<std::size_t>> map;
-  for (auto* path : Object::cast<Path>(app.scene.object_selection())) {
+  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
     map[path] = path->selected_points();
   }
 
@@ -85,7 +85,7 @@ void subdivide(Application& app)
     return std::vector(sequences.begin(), sequences.end());
   };
   std::map<Path*, std::vector<Path::PointSequence>> map;
-  for (auto* path : Object::cast<Path>(app.scene.object_selection())) {
+  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
     map[path] = make_subdivision_sequences(*path);
   }
 
@@ -102,7 +102,7 @@ void evaluate(Application& app)
 
 void select_all(Application& app)
 {
-  for (auto* path : Object::cast<Path>(app.scene.object_selection())) {
+  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
     for (auto* point : path->points()) {
       point->is_selected = true;
     }
@@ -110,7 +110,7 @@ void select_all(Application& app)
 }
 void deselect_all(Application& app)
 {
-  for (auto* path : Object::cast<Path>(app.scene.object_selection())) {
+  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
     for (auto* point : path->points()) {
       point->is_selected = false;
     }
@@ -119,7 +119,7 @@ void deselect_all(Application& app)
 
 void invert_selection(Application& app)
 {
-  for (auto* path : Object::cast<Path>(app.scene.object_selection())) {
+  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
     for (auto* point : path->points()) {
       point->is_selected = !point->is_selected;
     }
@@ -128,8 +128,8 @@ void invert_selection(Application& app)
 
 void convert_objects(Application& app)
 {
-  const auto convertables = ::filter_if(app.scene.object_selection(), [](const Object* object) {
-    return !!(object->flags() & Object::Flag::Convertable);
+  const auto convertables = ::filter_if(app.scene.item_selection<Object>(), [](const Object* o) {
+    return !!(o->flags() & Object::Flag::Convertable);
   });
   app.scene.undo_stack.beginMacro(QObject::tr("convert"));
   for (auto&& c : convertables) {

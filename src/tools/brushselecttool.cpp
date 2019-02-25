@@ -41,7 +41,7 @@ bool BrushSelectTool::mouse_press(const arma::vec2& pos, const QMouseEvent& even
   if (event.modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) {
     // don't deselect
   } else {
-    for (Object* object : scene.object_selection()) {
+    for (Object* object : scene.item_selection<Object>()) {
       auto* path = type_cast<Path*>(object);
       if (path != nullptr) { path->deselect_all_points(); }
     }
@@ -63,7 +63,7 @@ void BrushSelectTool
   const bool extend_selection = !(event.modifiers() & Qt::ControlModifier);
   const double radius = property(RADIUS_PROPERTY_KEY).value<double>();
   std::list<Point*> points;
-  for (Object* object : scene.object_selection()) {
+  for (Object* object : scene.item_selection<Object>()) {
     Path* path = type_cast<Path*>(object);
     if (path) {
       for (Point* point : path->points()) {

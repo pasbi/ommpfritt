@@ -80,8 +80,8 @@ ObjectTransformation SelectTool<PositionVariant>::transformation() const
   ObjectTransformation transformation;
   transformation.translate(position_variant.selection_center());
   if (this->property(ALIGNMENT_PROPERTY_KEY).template value<size_t>() == 1) {
-    if (scene.object_selection().size() == 1) {
-      const auto* lonely_object = *scene.object_selection().begin();
+    if (scene.item_selection<Object>().size() == 1) {
+      const auto* lonely_object = *scene.item_selection<Object>().begin();
       transformation.rotate(lonely_object->global_transformation().rotation());
     }
   }

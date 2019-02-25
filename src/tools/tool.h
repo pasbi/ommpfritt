@@ -24,7 +24,6 @@ public:
   virtual ~Tool() = default;
   virtual QIcon icon() const = 0;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Tool", "Tool");
-  AbstractPropertyOwner::Kind KIND = AbstractPropertyOwner::Kind::Tool;
 
   /**
    * @brief returns true if any grabbable was moved

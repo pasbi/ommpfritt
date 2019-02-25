@@ -461,19 +461,19 @@
         <translation>Brush</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="333"/>
+        <location filename="../src/scene/scene.cpp" line="347"/>
         <source>There are %1 items being referenced by other items.
 Remove the refrenced items anyway?</source>
         <translation>There are %1 items being referenced by the selection.
 Remove the selected items anyway?</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="336"/>
+        <location filename="../src/scene/scene.cpp" line="350"/>
         <source>Warning</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="363"/>
+        <location filename="../src/scene/scene.cpp" line="377"/>
         <source>Remove Selection</source>
         <translation>Remove selection</translation>
     </message>
@@ -956,7 +956,7 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <location filename="../src/managers/objectmanager/objectmanager.cpp" line="14"/>
-        <location filename="../src/managers/objectmanager/objectmanager.h" line="23"/>
+        <location filename="../src/managers/objectmanager/objectmanager.h" line="25"/>
         <source>ObjectManager</source>
         <translation>Object manager</translation>
     </message>

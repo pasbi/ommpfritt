@@ -16,13 +16,13 @@ namespace omm
 class PropertyView;
 
 class PropertyManager
-  : public Manager, public AbstractSelectionObserver, public AbstractPropertyObserver
+  : public Manager, public AbstractPropertyObserver
 {
 public:
   explicit PropertyManager(Scene& scene);
   ~PropertyManager();
 
-  void set_selection(const std::set<AbstractPropertyOwner*>& selection) override;
+  void on_selection_changed(const std::set<AbstractPropertyOwner*>& selection) override;
   PropertyView property(const std::string& key);
   void clear();
   void add_user_property();
