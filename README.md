@@ -25,6 +25,8 @@ Primary use case is creating and editing (animated) info graphics, diagrams, ico
 - **flexible GUI** using dockable widgets
 - properties can be added at runtime
 - **multi-selection** support for properties: compatible intersection of properties of all selected items (objects, tags, styles, tools) is shown and can be modified simultaneously
+- **flexible, customizable key binding sequences** (aka short-cuts)
+- **multi-language** (currently English and German only)
 
 ### Styling
 - build complex reusable **style cascades**
