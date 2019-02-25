@@ -19,6 +19,7 @@ public:
 protected:
   void keyPressEvent(QKeyEvent* event) override;
   std::vector<std::string> application_actions() const override;
+  void on_selection_changed(const std::set<AbstractPropertyOwner*>& selection) override;
 
 public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ObjectManager");

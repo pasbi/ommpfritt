@@ -103,13 +103,11 @@ PropertyManager::PropertyManager(Scene& scene)
       m_active_category = m_tabs->tabText(index).toStdString();
     }
   });
-  scene.Observed<AbstractSelectionObserver>::register_observer(*this);
 }
 
 PropertyManager::~PropertyManager()
 {
   clear();
-  scene().Observed<AbstractSelectionObserver>::unregister_observer(*this);
 }
 
 std::unique_ptr<QMenuBar> PropertyManager::make_menu_bar()

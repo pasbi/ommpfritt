@@ -9,8 +9,6 @@ namespace
 
 template<typename ItemT> auto cast(const std::set<omm::AbstractPropertyOwner*>& items)
 {
-  auto kind = omm::Object::KIND;
-  LOG(INFO) << (kind == omm::Object::KIND);
   const auto items_t = omm::AbstractPropertyOwner::cast<ItemT>(items);
   assert(items_t.size() == items.size());
   return items_t;

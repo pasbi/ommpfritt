@@ -16,6 +16,7 @@ public:
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "StyleManager");
   std::string type() const override;
+  void on_style_selection_changed(const std::set<Style*>& selection) override;
 
 protected:
   void keyPressEvent(QKeyEvent* event) override;

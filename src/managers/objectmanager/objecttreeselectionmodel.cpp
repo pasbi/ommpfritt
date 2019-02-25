@@ -40,9 +40,7 @@ void ObjectTreeSelectionModel::select( const QModelIndex &index,
                                        QItemSelectionModel::SelectionFlags command)
 {
   const bool is_tag_index = index.column() == omm::ObjectTreeAdapter::TAGS_COLUMN;
-  if (command & QItemSelectionModel::Clear && !is_tag_index) {
-    m_selected_tags.clear();
-  }
+  if (command & QItemSelectionModel::Clear && !is_tag_index) { m_selected_tags.clear(); }
   QItemSelectionModel::select(index, command);
 }
 
@@ -99,5 +97,24 @@ void ObjectTreeSelectionModel::extend_selection(Tag& tag)
     }
   }
 }
+
+const ObjectTreeAdapter& ObjectTreeSelectionModel::model() const
+{
+  return static_cast<const ObjectTreeAdapter&>(*QItemSelectionModel::model());
+}
+
+
+void ObjectTreeSelectionModel::set_selection(const std::set<AbstractPropertyOwner*>& selection)
+{
+  m_selected_tags = AbstractPropertyOwner::cast<Tag>(selection);
+  QItemSelection new_selection;
+  for (Object* object : AbstractPropertyOwner::cast<Object>(selection)) {
+    QModelIndex index = model().index_of(*object);
+    new_selection.merge(QItemSelection(index, index), QItemSelectionModel::Select);
+  }
+  QItemSelectionModel::select(new_selection, QItemSelectionModel::ClearAndSelect);
+
+}
+
 
 }  // namespace omm

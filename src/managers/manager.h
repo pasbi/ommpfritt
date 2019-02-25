@@ -24,7 +24,7 @@ class Manager
 public:
   Manager(const Manager&) = delete;
   Manager(Manager&&) = delete;
-  virtual ~Manager() {}
+  virtual ~Manager();
   Scene& scene() const;
 
 protected:

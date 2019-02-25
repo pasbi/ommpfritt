@@ -21,6 +21,8 @@ public:
   std::set<AbstractPropertyOwner*> selected_objects() const;
   std::set<AbstractPropertyOwner*> selected_tags() const;
 
+  void set_selection(const std::set<AbstractPropertyOwner*>& selected_items);
+
 protected:
   void paintEvent(QPaintEvent* e) override;
   void dragEnterEvent(QDragEnterEvent* e) override;

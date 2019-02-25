@@ -583,13 +583,13 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Eigenschaftsmanager</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="118"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="116"/>
         <source>user properties</source>
         <comment>PropertyManager</comment>
         <translation>Benutzereigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="127"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="125"/>
         <source>edit ...</source>
         <comment>PropertyManager</comment>
         <translation>Berarbeiten ...</translation>

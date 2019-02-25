@@ -30,6 +30,10 @@ std::vector<CommandInterface::ActionInfo<StyleManager>> StyleManager::action_inf
   };
 }
 
+void StyleManager::on_style_selection_changed(const std::set<Style*>& selection)
+{
+  item_view().set_selection(selection);
+}
 
 void StyleManager::keyPressEvent(QKeyEvent* event)
 {

@@ -120,4 +120,10 @@ void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
   ManagerItemView::mouseMoveEvent(e);
 }
 
+void ObjectTreeView::set_selection(const std::set<AbstractPropertyOwner*>& selected_items)
+{
+  m_selection_model->set_selection(selected_items);
+}
+
+
 }  // namespace omm

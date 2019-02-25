@@ -18,9 +18,13 @@ Manager::Manager(const QString& title, Scene& scene, std::unique_ptr<QMenuBar> m
   setWidget(std::make_unique<QWidget>(this).release());
   widget()->setLayout(std::make_unique<QVBoxLayout>(widget()).release());
 
-  if (menu_bar) {
-    widget()->layout()->addWidget(menu_bar.release());
-  }
+  if (menu_bar) { widget()->layout()->addWidget(menu_bar.release()); }
+  m_scene.Observed<AbstractSelectionObserver>::register_observer(*this);
+}
+
+Manager::~Manager()
+{
+  m_scene.Observed<AbstractSelectionObserver>::unregister_observer(*this);
 }
 
 void Manager::contextMenuEvent(QContextMenuEvent *event)

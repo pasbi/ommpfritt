@@ -40,4 +40,9 @@ std::vector<std::string> ObjectManager::application_actions() const
 
 std::string ObjectManager::type() const { return TYPE; }
 
+void ObjectManager::on_selection_changed(const std::set<AbstractPropertyOwner*>& selection)
+{
+  item_view().set_selection(selection);
+}
+
 }  // namespace omm

@@ -9,6 +9,7 @@ namespace omm
 class ObjectTreeAdapter;
 class Tag;
 class Scene;
+class AbstractPropertyOwner;
 
 class ObjectTreeSelectionModel : public QItemSelectionModel
 {
@@ -22,10 +23,11 @@ public:
   void select(const QModelIndex &index, QItemSelectionModel::SelectionFlags command) override;
   void select( const QItemSelection &selection,
                QItemSelectionModel::SelectionFlags command) override;
+  void set_selection(const std::set<AbstractPropertyOwner*>& selection);
   void extend_selection(Tag& tag);
   std::set<Tag*> selected_tags() const;
   std::vector<Tag*> selected_tags_ordered(Scene& scene) const;
-
+  const ObjectTreeAdapter& model() const;
 
 private:
   std::set<Tag*> m_selected_tags;

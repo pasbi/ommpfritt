@@ -15,6 +15,8 @@ class StyleListView : public ManagerItemView<QListView, ListAdapter<Style>>
 public:
   using model_type = ListAdapter<Style>;
   using ManagerItemView<QListView, model_type>::ManagerItemView;
+
+  void set_selection(const std::set<Style*>& selection);
 };
 
 }  // namespace

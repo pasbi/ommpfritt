@@ -31,6 +31,7 @@ public:
   QStringList mimeTypes() const override;
   QMimeData* mimeData(const QModelIndexList &indexes) const override;
   virtual item_type& item_at(const QModelIndex& index) const = 0;
+  virtual QModelIndex index_of(item_type& item) const = 0;
   Scene& scene;
   StructureT& structure;
 

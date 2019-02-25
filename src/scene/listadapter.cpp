@@ -146,6 +146,11 @@ template<typename ItemT> ItemT& ListAdapter<ItemT>::item_at(const QModelIndex& i
   return this->structure.item(index.row());
 }
 
+template<typename ItemT> QModelIndex ListAdapter<ItemT>::index_of(ItemT& item) const
+{
+  return this->createIndex(list_structure.position(item), 0, &item);
+}
+
 template class ListAdapter<Style>;
 
 }  // namespace omm

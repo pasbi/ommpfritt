@@ -29,6 +29,7 @@ public:
 
   Qt::ItemFlags flags(const QModelIndex &index) const override;
   ItemT& item_at(const QModelIndex& index) const override;
+  QModelIndex index_of(ItemT& item) const override;
 
   List<ItemT>& list_structure;
 };
