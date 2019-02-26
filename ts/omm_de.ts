@@ -517,38 +517,38 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
     <message>
         <location filename="../src/tools/brushselecttool.cpp" line="19"/>
-        <location filename="../src/tools/selecttool.cpp" line="73"/>
-        <location filename="../src/tools/selecttool.cpp" line="129"/>
+        <location filename="../src/tools/selecttool.cpp" line="74"/>
+        <location filename="../src/tools/selecttool.cpp" line="137"/>
         <source>tool</source>
         <translation>Werkzeug</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="71"/>
+        <location filename="../src/tools/selecttool.cpp" line="72"/>
         <source>global</source>
         <translation>Global</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="71"/>
+        <location filename="../src/tools/selecttool.cpp" line="72"/>
         <source>local</source>
         <translation>Lokal</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="72"/>
+        <location filename="../src/tools/selecttool.cpp" line="73"/>
         <source>Alignment</source>
         <translation>Ausrichtung</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="127"/>
+        <location filename="../src/tools/selecttool.cpp" line="135"/>
         <source>Mirror</source>
         <translation>Spiegeln</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="127"/>
+        <location filename="../src/tools/selecttool.cpp" line="135"/>
         <source>Individual</source>
         <translation>Individuell</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="128"/>
+        <location filename="../src/tools/selecttool.cpp" line="136"/>
         <source>tangent</source>
         <translation>Tangente</translation>
     </message>
@@ -577,19 +577,19 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Ungültig</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="93"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="195"/>
         <source>property manager</source>
         <comment>PropertyManager</comment>
         <translation>Eigenschaftsmanager</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="110"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="112"/>
         <source>user properties</source>
         <comment>PropertyManager</comment>
         <translation>Benutzereigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="119"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="121"/>
         <source>edit ...</source>
         <comment>PropertyManager</comment>
         <translation>Berarbeiten ...</translation>
@@ -988,12 +988,12 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Styles entfernen</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="88"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="90"/>
         <source>Properties</source>
         <translation>Eigenschaften</translation>
     </message>
     <message>
-        <location filename="../src/tools/brushselecttool.h" line="14"/>
+        <location filename="../src/tools/brushselecttool.h" line="15"/>
         <source>BrushSelectTool</source>
         <translation>Pinselselektion</translation>
     </message>
@@ -1003,7 +1003,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Objekte selektieren</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.h" line="41"/>
+        <location filename="../src/tools/selecttool.h" line="42"/>
         <source>SelectPointsTool</source>
         <translation>Punkte selektieren</translation>
     </message>

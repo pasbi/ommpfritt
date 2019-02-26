@@ -30,6 +30,7 @@ public:
   std::string type() const override;
   QIcon icon() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectObjectsTool");
+  std::string name() const override;
 };
 
 class SelectPointsTool : public SelectTool<PointPositions>
@@ -43,6 +44,7 @@ public:
   PointSelectHandle::TangentMode tangent_mode() const;
   std::unique_ptr<QMenu> make_context_menu(QWidget* parent) override;
   void on_selection_changed() override;
+  std::string name() const override;
 };
 
 }  // namespace omm

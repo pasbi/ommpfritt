@@ -100,4 +100,9 @@ void BrushSelectTool::draw(AbstractRenderer& renderer) const
   }
 }
 
+std::string BrushSelectTool::name() const
+{
+  return QCoreApplication::translate("any-context", TYPE).toStdString();
+}
+
 }  // namespace omm

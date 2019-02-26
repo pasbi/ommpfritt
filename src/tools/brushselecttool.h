@@ -2,6 +2,7 @@
 
 #include "tools/tool.h"
 #include "tools/positionvariant.h"
+#include <QCoreApplication>
 
 namespace omm
 {
@@ -30,6 +31,7 @@ public:
   PointPositions position_variant;
   void draw(AbstractRenderer& renderer) const override;
   static constexpr auto RADIUS_PROPERTY_KEY = "radius";
+  std::string name() const override;
 
 private:
   bool m_mouse_down = false;

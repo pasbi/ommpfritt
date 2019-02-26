@@ -37,6 +37,7 @@ private:
   std::unique_ptr<QMenuBar> make_menu_bar();
   std::set<AbstractPropertyOwner*>  m_current_selection;
   std::set<Property*> m_observed_properties;
+  std::string make_window_title() const;
 };
 
 }  // namespace omm

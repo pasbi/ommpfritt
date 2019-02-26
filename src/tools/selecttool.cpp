@@ -12,6 +12,7 @@
 #include "properties/optionsproperty.h"
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
+#include <QCoreApplication>
 
 namespace
 {
@@ -120,6 +121,13 @@ template<typename PositionVariant> bool SelectTool<PositionVariant>::has_transfo
 std::string SelectObjectsTool::type() const { return TYPE; }
 QIcon SelectObjectsTool::icon() const { return QIcon(); }
 
+std::string SelectObjectsTool::name() const
+{
+  return QCoreApplication::translate("any-context", TYPE).toStdString();
+}
+
+
+
 SelectPointsTool::SelectPointsTool(Scene& scene)
   : SelectTool<PointPositions>(scene)
 {
@@ -154,6 +162,11 @@ std::unique_ptr<QMenu> SelectPointsTool::make_context_menu(QWidget* parent)
 void SelectPointsTool::on_selection_changed()
 {
   on_scene_changed();
+}
+
+std::string SelectPointsTool::name() const
+{
+  return QCoreApplication::translate("any-context", TYPE).toStdString();
 }
 
 template class SelectTool<ObjectPositions>;

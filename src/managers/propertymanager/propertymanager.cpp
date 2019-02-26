@@ -39,7 +39,9 @@ get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
         return the_properties.at(key)->is_compatible((*it)->property(key));
       }
     };
-    keys.erase(std::remove_if(keys.begin(), keys.end(), std::not_fn(has_key_of_same_type)), keys.end());
+
+    const auto sr = std::remove_if(keys.begin(), keys.end(), std::not_fn(has_key_of_same_type));
+    keys.erase(sr, keys.end());
   }
 
   return keys;
@@ -90,7 +92,7 @@ PropertyManager::PropertyManager(Scene& scene)
   auto tabs = std::make_unique<QTabWidget>();
   m_tabs = tabs.get();
   set_widget(std::move(tabs));
-  setWindowTitle(QObject::tr("property manager", "PropertyManager"));
+  setWindowTitle(QString::fromStdString(make_window_title()));
   setObjectName(TYPE);
   connect(m_tabs, &QTabWidget::currentChanged, [this](int index) {
     if (index >= 0) {
@@ -159,6 +161,7 @@ void PropertyManager::on_selection_changed(const std::set<AbstractPropertyOwner*
 
   m_current_selection = selection;
   m_manage_user_properties_action->setEnabled(m_current_selection.size() == 1);
+  setWindowTitle(QString::fromStdString(make_window_title()));
 }
 
 void PropertyManager::clear()
@@ -185,5 +188,15 @@ void PropertyManager::on_property_value_changed(Property& property)
 }
 
 std::string PropertyManager::type() const { return TYPE; }
+
+std::string PropertyManager::make_window_title() const
+{
+  std::ostringstream ss;
+  ss << QObject::tr("property manager", "PropertyManager").toStdString();
+  for (auto&& selected : m_current_selection) {
+    ss << " " << selected->name();
+  }
+  return ss.str();
+}
 
 }  // namespace omm
