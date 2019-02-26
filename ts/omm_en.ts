@@ -461,19 +461,19 @@
         <translation>Brush</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="347"/>
+        <location filename="../src/scene/scene.cpp" line="349"/>
         <source>There are %1 items being referenced by other items.
 Remove the refrenced items anyway?</source>
         <translation>There are %1 items being referenced by the selection.
 Remove the selected items anyway?</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="350"/>
+        <location filename="../src/scene/scene.cpp" line="352"/>
         <source>Warning</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="377"/>
+        <location filename="../src/scene/scene.cpp" line="379"/>
         <source>Remove Selection</source>
         <translation>Remove selection</translation>
     </message>
@@ -517,38 +517,38 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <location filename="../src/tools/brushselecttool.cpp" line="19"/>
-        <location filename="../src/tools/selecttool.cpp" line="74"/>
-        <location filename="../src/tools/selecttool.cpp" line="130"/>
+        <location filename="../src/tools/selecttool.cpp" line="73"/>
+        <location filename="../src/tools/selecttool.cpp" line="129"/>
         <source>tool</source>
         <translation>Tool</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="72"/>
+        <location filename="../src/tools/selecttool.cpp" line="71"/>
         <source>global</source>
         <translation>Global</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="72"/>
+        <location filename="../src/tools/selecttool.cpp" line="71"/>
         <source>local</source>
         <translation>Local</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="73"/>
+        <location filename="../src/tools/selecttool.cpp" line="72"/>
         <source>Alignment</source>
         <translation>Alignment</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="128"/>
+        <location filename="../src/tools/selecttool.cpp" line="127"/>
         <source>Mirror</source>
         <translation>Mirror</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="128"/>
+        <location filename="../src/tools/selecttool.cpp" line="127"/>
         <source>Individual</source>
         <translation>Individual</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="129"/>
+        <location filename="../src/tools/selecttool.cpp" line="128"/>
         <source>tangent</source>
         <translation>Tangent</translation>
     </message>
@@ -577,19 +577,19 @@ Remove the selected items anyway?</translation>
         <translation>Invalid</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="99"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="93"/>
         <source>property manager</source>
         <comment>PropertyManager</comment>
         <translation>Property manager</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="116"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="110"/>
         <source>user properties</source>
         <comment>PropertyManager</comment>
         <translation>User properties</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="125"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="119"/>
         <source>edit ...</source>
         <comment>PropertyManager</comment>
         <translation>Edit ...</translation>
@@ -988,7 +988,7 @@ Remove the selected items anyway?</translation>
         <translation>Remove styles</translation>
     </message>
     <message>
-        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="94"/>
+        <location filename="../src/managers/propertymanager/propertymanager.cpp" line="88"/>
         <source>Properties</source>
         <translation>Properties</translation>
     </message>
@@ -998,12 +998,12 @@ Remove the selected items anyway?</translation>
         <translation>Brush selection</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.h" line="33"/>
+        <location filename="../src/tools/selecttool.h" line="32"/>
         <source>SelectObjectsTool</source>
         <translation>Select objects</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.h" line="42"/>
+        <location filename="../src/tools/selecttool.h" line="41"/>
         <source>SelectPointsTool</source>
         <translation>Select points</translation>
     </message>

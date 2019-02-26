@@ -20,6 +20,7 @@ public:
   explicit AbstractSelectHandle(Tool& tool);
   void mouse_release(const arma::vec2& pos, const QMouseEvent& event) override;
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override;
+  bool mouse_press(const arma::vec2 &pos, const QMouseEvent &event) override;
 
 protected:
   virtual void set_selected(bool selected) = 0;

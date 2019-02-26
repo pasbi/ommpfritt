@@ -46,15 +46,16 @@ namespace omm
 
 AbstractSelectHandle::AbstractSelectHandle(Tool& tool) : Handle(tool, false) { }
 
+bool AbstractSelectHandle::mouse_press(const arma::vec2 &pos, const QMouseEvent &event)
+{
+  m_move_was_performed = false;
+  return false;
+}
+
 bool AbstractSelectHandle
 ::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& event)
 {
-  if (status() == Status::Active) {
-    if (!is_selected()) {
-      if (event.modifiers() != extend_selection_modifier) { clear(); }
-      set_selected(true);
-    }
-  }
+  m_move_was_performed = true;
   return Handle::mouse_move(delta, pos, event);
 }
 
@@ -64,7 +65,7 @@ void AbstractSelectHandle::mouse_release(const arma::vec2& pos, const QMouseEven
     if (!m_move_was_performed) {
       if (event.button() == Qt::LeftButton) {
         if (event.modifiers() == extend_selection_modifier) {
-          set_selected(!is_selected());
+          set_selected(true);
         } else {
           clear();
           set_selected(true);
@@ -120,7 +121,6 @@ bool ObjectSelectHandle
   if (status() == Status::Active) {
     const auto t = omm::ObjectTransformation().translated(delta);
     tool.transform_objects(t, false);
-    report_move_action();
     return true;
   } else {
     return false;
@@ -196,13 +196,10 @@ bool PointSelectHandle
   AbstractSelectHandle::mouse_move(delta, pos, event);
   if (status() == Status::Active) {
     tool.transform_objects(ObjectTransformation().translated(delta), false);
-    report_move_action();
     return true;
   } else if (tangents_active() && m_left_tangent_handle->mouse_move(delta, pos, event)) {
-    report_move_action();
     return true;
   } else if (tangents_active() && m_right_tangent_handle->mouse_move(delta, pos, event)) {
-    report_move_action();
     return true;
   } else {
     return false;
