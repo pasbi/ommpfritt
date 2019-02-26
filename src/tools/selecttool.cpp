@@ -59,9 +59,8 @@ namespace omm
 
 // TODO 1) implement a kd-tree or similar to get the closest object fast
 //      2) I guess it's more intuitive when items can be selected by clicking anywhere inside
-//          its area.
+//          their area.
 //      3) improve mouse pointer icon
-//      4) select during mouse move (like drawing)
 
 
 template<typename PositionVariant> SelectTool<PositionVariant>::SelectTool(Scene& scene)

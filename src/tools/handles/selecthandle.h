@@ -39,8 +39,6 @@ public:
   explicit ObjectSelectHandle(Tool& tool, Scene& scene, Object& object);
   bool contains_global(const arma::vec2& point) const override;
   void draw(omm::AbstractRenderer& renderer) const override;
-  bool mouse_press( const arma::vec2& pos, const QMouseEvent& event) override;
-  void mouse_release( const arma::vec2& pos, const QMouseEvent& event) override;
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override;
 
 protected:

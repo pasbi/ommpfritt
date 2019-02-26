@@ -26,7 +26,6 @@ public:
 class SelectObjectsTool : public SelectTool<ObjectPositions>
 {
 public:
-
   using SelectTool::SelectTool;
   std::string type() const override;
   QIcon icon() const override;

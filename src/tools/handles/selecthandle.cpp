@@ -58,8 +58,7 @@ bool AbstractSelectHandle
   return Handle::mouse_move(delta, pos, event);
 }
 
-void AbstractSelectHandle
-::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
+void AbstractSelectHandle::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
 {
   if (contains_global(pos)) {
     if (!m_move_was_performed) {
@@ -87,8 +86,7 @@ void AbstractSelectHandle::report_move_action()
   m_move_was_performed = true;
 }
 
-ObjectSelectHandle
-::ObjectSelectHandle(Tool& tool, Scene& scene, Object& object)
+ObjectSelectHandle::ObjectSelectHandle(Tool& tool, Scene& scene, Object& object)
   : AbstractSelectHandle(tool)
   , m_scene(scene)
   , m_object(object)
@@ -127,22 +125,6 @@ bool ObjectSelectHandle
   } else {
     return false;
   }
-}
-
-bool ObjectSelectHandle
-::mouse_press(const arma::vec2& pos, const QMouseEvent& event)
-{
-  if (AbstractSelectHandle::mouse_press(pos, event)) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-void ObjectSelectHandle
-::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
-{
-  AbstractSelectHandle::mouse_release(pos, event);
 }
 
 ObjectTransformation ObjectSelectHandle::transformation() const
@@ -195,8 +177,7 @@ bool PointSelectHandle::contains_global(const arma::vec2& point) const
   return d < interact_epsilon();
 }
 
-bool PointSelectHandle
-::mouse_press(const arma::vec2& pos, const QMouseEvent& event)
+bool PointSelectHandle::mouse_press(const arma::vec2& pos, const QMouseEvent& event)
 {
   if (AbstractSelectHandle::mouse_press(pos, event)) {
     return true;
@@ -228,8 +209,7 @@ bool PointSelectHandle
   }
 }
 
-void PointSelectHandle
-::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
+void PointSelectHandle::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
 {
   AbstractSelectHandle::mouse_release(pos, event);
   m_left_tangent_handle->mouse_release(pos, event);

@@ -12,15 +12,12 @@ namespace omm
 const std::string Property::USER_PROPERTY_CATEGROY_NAME = QT_TRANSLATE_NOOP( "Property",
                                                                              "user properties" );
 
-std::string Property::label() const
-{
-  return m_label;
-}
-
-std::string Property::category() const
-{
-  return m_category;
-}
+std::string Property::label() const { return m_label; }
+std::string Property::widget_type() const { return type() + "Widget"; }
+std::string Property::category() const { return m_category; }
+bool Property::is_user_property() const { return m_category == USER_PROPERTY_CATEGROY_NAME; }
+OptionsProperty* Property::enabled_buddy() const { return m_enabled_buddy.property; }
+void Property::revise() {}
 
 Property& Property::set_label(const std::string& label)
 {
@@ -32,11 +29,6 @@ Property& Property::set_category(const std::string& category)
 {
   m_category = category;
   return *this;
-}
-
-std::string Property::widget_type() const
-{
-  return type() + "Widget";
 }
 
 void Property::serialize(AbstractSerializer& serializer, const Pointer& root) const
@@ -61,10 +53,6 @@ void Property
   }
 }
 
-bool Property::is_user_property() const
-{
-  return m_category == USER_PROPERTY_CATEGROY_NAME;
-}
 
 Property& Property::set_pre_submit(const std::function<void(Property&)>& hook)
 {
@@ -102,11 +90,6 @@ std::ostream& operator<<(std::ostream& ostream, const Property::variant_type& v)
   return ostream;
 }
 
-OptionsProperty* Property::enabled_buddy() const
-{
-  return m_enabled_buddy.property;
-}
-
 bool Property::is_enabled() const
 {
   if (m_enabled_buddy.property == nullptr) { return true; }
@@ -127,6 +110,5 @@ bool Property::is_compatible(const Property& other) const
 {
   return other.category() == category() && other.type() == type();
 }
-void Property::revise() {}
 
 }  // namespace omm
