@@ -19,6 +19,7 @@
 #include "objects/object.h"
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
+#include "tools/selecttool.h"
 
 namespace
 {
@@ -80,6 +81,7 @@ Scene::Scene(PythonEngine& python_engine)
   for (auto kind : { Object::KIND, Tag::KIND, Style::KIND, Tool::KIND }) {
     m_item_selection[kind] = {};
   }
+  tool_box.set_active_tool(SelectObjectsTool::TYPE);
 }
 
 Scene::~Scene()
