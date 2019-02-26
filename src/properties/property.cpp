@@ -61,11 +61,6 @@ void Property
   }
 }
 
-bool Property::is_compatible(const Property& other) const
-{
-  return type() == other.type();
-}
-
 bool Property::is_user_property() const
 {
   return m_category == USER_PROPERTY_CATEGROY_NAME;
@@ -128,6 +123,10 @@ Property::set_enabled_buddy(OptionsProperty& property, const std::set<std::size_
   return *this;
 }
 
+bool Property::is_compatible(const Property& other) const
+{
+  return other.category() == category() && other.type() == type();
+}
 void Property::revise() {}
 
 }  // namespace omm
