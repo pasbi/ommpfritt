@@ -1,4 +1,5 @@
 #include "mainwindow/viewport/mousepancontroller.h"
+#include "geometry/objecttransformation.h"
 
 namespace omm
 {
@@ -8,30 +9,25 @@ MousePanController::MousePanController(const set_cursor_pos_type& set_cursor_pos
 {
 }
 
-void MousePanController::init(const arma::vec2& pos)
+void MousePanController::init(const arma::vec2& pos, Action action)
 {
+  m_action = action;
   m_last_position = pos;
 }
 
-arma::vec2 MousePanController::delta(arma::vec2 new_position, const arma::vec2& max)
+arma::vec2
+MousePanController::apply(const arma::vec2& current_cursor_position, ObjectTransformation& t)
 {
-  const decltype(m_last_position) delta = new_position - m_last_position;
+  const arma::vec2 old_cursor_pos = m_last_position;
+  const arma::vec2 delta = update(current_cursor_position);
+  t.translate(delta);
+  return delta;
+}
 
-  const auto infinity_pan_shift = [](double& coordinate, const double max) {
-    while (coordinate >= max) {
-      coordinate -= max;
-    }
-    while (coordinate <= 0) {
-      coordinate += max;
-    }
-  };
-
-  infinity_pan_shift(new_position(0), max(0));
-  infinity_pan_shift(new_position(1), max(1));
-
-  m_set_cursor_pos(new_position);
-  m_last_position = new_position;
-
+arma::vec2 MousePanController::update(const arma::vec2& current_cursor_position)
+{
+  const arma::vec2 delta = current_cursor_position - m_last_position;
+  m_last_position = current_cursor_position;
   return delta;
 }
 

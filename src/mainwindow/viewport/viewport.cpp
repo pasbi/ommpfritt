@@ -86,31 +86,31 @@ arma::vec2 Viewport::viewport_to_global_position(const arma::vec2& pos) const
 void Viewport::mousePressEvent(QMouseEvent* event)
 {
   const arma::vec2 cursor_position = point2vec(event->pos());
-  m_pan_controller.init(cursor_position);
+
+  if (event->button() == Qt::LeftButton) {
+    m_pan_controller.init(cursor_position, MousePanController::Action::Pan);
+  } else {
+    m_pan_controller.init(cursor_position, MousePanController::Action::Zoom);
+  }
 
   if (event->modifiers() & Qt::AltModifier) {
     event->accept();
-  } else if ( const auto pos = viewport_to_global_position(cursor_position);
-              m_scene.tool_box.active_tool().mouse_press(pos, *event)       )
-  {
-    event->accept();
+  } else {
+    const auto pos = viewport_to_global_position(cursor_position);
+    if (m_scene.tool_box.active_tool().mouse_press(pos, *event)) { event->accept(); }
   }
 }
 
 void Viewport::mouseMoveEvent(QMouseEvent* event)
 {
-  const auto widget_size = arma::vec2{ static_cast<double>(width()),
-                                       static_cast<double>(height()) };
   const auto cursor_position = point2vec(event->pos());
+
   arma::vec2 delta { 0.0, 0.0 };
-  if (event->buttons() == Qt::LeftButton)
-  {
-    delta = m_pan_controller.delta(cursor_position, widget_size);
-    if (event->modifiers() & Qt::AltModifier) {
-      m_viewport_transformation.translate(delta);
-      event->accept();
-      return;
-    }
+  if (event->modifiers() & Qt::AltModifier) {
+    delta = m_pan_controller.apply(cursor_position, m_viewport_transformation);
+    event->accept();
+  } else {
+    delta = m_pan_controller.update(cursor_position);
   }
 
   auto& tool = m_scene.tool_box.active_tool();
