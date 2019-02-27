@@ -86,12 +86,15 @@ arma::vec2 Viewport::viewport_to_global_position(const arma::vec2& pos) const
 void Viewport::mousePressEvent(QMouseEvent* event)
 {
   const arma::vec2 cursor_position = point2vec(event->pos());
-
-  if (event->button() == Qt::LeftButton) {
-    m_pan_controller.init(cursor_position, MousePanController::Action::Pan);
-  } else {
-    m_pan_controller.init(cursor_position, MousePanController::Action::Zoom);
-  }
+  const arma::vec2 global_cursor_position = viewport_to_global_position(cursor_position);
+  const auto action = [](const QMouseEvent* event) {
+    switch (event->button()) {
+    case Qt::LeftButton: return MousePanController::Action::Pan;
+    case Qt::RightButton: return MousePanController::Action::Zoom;
+    default: return MousePanController::Action::None;
+    }
+  };
+  m_pan_controller.start_move(cursor_position, global_cursor_position, action(event));
 
   if (event->modifiers() & Qt::AltModifier) {
     event->accept();
@@ -126,6 +129,7 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
 
 void Viewport::mouseReleaseEvent(QMouseEvent* event)
 {
+  m_pan_controller.end_move();
   const auto global_pos = viewport_to_global_position(point2vec(event->pos()));
   m_scene.tool_box.active_tool().mouse_release(global_pos, *event);
   if (event->button() == Qt::RightButton) {
