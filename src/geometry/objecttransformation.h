@@ -45,6 +45,8 @@ public:
   static ObjectTransformation find_transformation( const ObjectTransformation& from,
                                                    const ObjectTransformation& to );
 
+  arma::vec2 null() const;
+
   ObjectTransformation transformed(const ObjectTransformation& other) const;
 
   Mat to_mat() const;

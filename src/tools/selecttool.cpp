@@ -33,7 +33,7 @@ void make_move_handles(HandlesT& handles, ToolT& tool)
   y_axis->set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
   y_axis->set_style(Status::Hovered, omm::ContourStyle(omm::Color(0.0, 1.0, 0.0)));
   y_axis->set_style(Status::Inactive, omm::ContourStyle(omm::Color(0.3, 1.0, 0.3)));
-  y_axis->set_direction({0, 100});
+  y_axis->set_direction({0, -100});
 
   handles.push_back(std::move(particle));
   handles.push_back(std::move(x_axis));

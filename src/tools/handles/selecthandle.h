@@ -67,6 +67,8 @@ public:
 
   template<Tangent tangent>
   void transform_tangent(const arma::vec2& delta);
+  void set_scale(const arma::vec2& scale) override;
+
 
 protected:
   ObjectTransformation transformation() const override;

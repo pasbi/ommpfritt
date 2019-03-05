@@ -36,10 +36,7 @@ ObjectTransformation::ObjectTransformation( const arma::vec2& translation, const
                                             const double rotation, const double shear )
   : m_translation(translation), m_scaling(scale), m_rotation(rotation), m_shearing(shear) { }
 
-ObjectTransformation::ObjectTransformation(const Mat& mat)
-{
-  set_mat(mat);
-}
+ObjectTransformation::ObjectTransformation(const Mat& mat) { set_mat(mat); }
 
 void ObjectTransformation::set_translation(const arma::vec2& translation_vector)
 {
@@ -51,10 +48,7 @@ void ObjectTransformation::set_rotation(const double& angle)
   m_rotation = angle;
 }
 
-void ObjectTransformation::set_shearing(const double& shear)
-{
-  m_shearing = shear;
-}
+void ObjectTransformation::set_shearing(const double& shear) { m_shearing = shear; }
 
 void ObjectTransformation::set_scaling(const arma::vec2& scale_vector)
 {
@@ -66,15 +60,8 @@ void ObjectTransformation::translate(const arma::vec2& translation_vector)
   m_translation += translation_vector;
 }
 
-void ObjectTransformation::rotate(const double& angle)
-{
-  m_rotation += angle;
-}
-
-void ObjectTransformation::shear(const double& shear)
-{
-  m_shearing += shear;
-}
+void ObjectTransformation::rotate(const double& angle) { m_rotation += angle; }
+void ObjectTransformation::shear(const double& shear) { m_shearing += shear; }
 
 void ObjectTransformation::scale(const arma::vec2& scale_vector)
 {
@@ -164,25 +151,11 @@ void ObjectTransformation::set_mat(const Mat& mat)
   m_shearing = (a*b + c*d) / pow(n, 2.0);
 }
 
-arma::vec2 ObjectTransformation::translation() const
-{
-  return m_translation;
-}
-
-double ObjectTransformation::rotation() const
-{
-  return m_rotation;
-}
-
-arma::vec2 ObjectTransformation::scaling() const
-{
-  return m_scaling;
-}
-
-double ObjectTransformation::shearing() const
-{
-  return m_shearing;
-}
+arma::vec2 ObjectTransformation::translation() const { return m_translation; }
+double ObjectTransformation::rotation() const { return m_rotation; }
+arma::vec2 ObjectTransformation::scaling() const { return m_scaling; }
+double ObjectTransformation::shearing() const { return m_shearing; }
+arma::vec2 ObjectTransformation::null() const { return apply_to_position(arma::vec2{ 0.0, 0.0 }); }
 
 std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t)
 {
@@ -317,5 +290,6 @@ double ObjectTransformation::apply_to_angle(double angle) const
   const arma::vec2 direction = apply_to_direction(PolarCoordinates(angle, 1.0).to_cartesian());
   return std::atan2(direction(1), direction(0));
 }
+
 
 }  // namespace omm

@@ -52,7 +52,7 @@
 <context>
     <name>ObjectTransformation</name>
     <message>
-        <location filename="../src/geometry/objecttransformation.h" line="65"/>
+        <location filename="../src/geometry/objecttransformation.h" line="67"/>
         <source>ObjectTransformation</source>
         <translation>Object transformation</translation>
     </message>
@@ -250,8 +250,8 @@
         <location filename="../src/objects/path.cpp" line="66"/>
         <location filename="../src/tags/pathtag.cpp" line="17"/>
         <location filename="../src/tags/pathtag.cpp" line="18"/>
-        <location filename="../src/tags/pathtag.cpp" line="21"/>
-        <location filename="../src/tags/pathtag.cpp" line="24"/>
+        <location filename="../src/tags/pathtag.cpp" line="22"/>
+        <location filename="../src/tags/pathtag.cpp" line="25"/>
         <source>path</source>
         <translation>Path</translation>
     </message>
@@ -267,7 +267,7 @@
     </message>
     <message>
         <location filename="../src/objects/cloner.cpp" line="96"/>
-        <location filename="../src/tags/pathtag.cpp" line="23"/>
+        <location filename="../src/tags/pathtag.cpp" line="24"/>
         <source>align</source>
         <translation>Align</translation>
     </message>
@@ -478,7 +478,7 @@ Remove the selected items anyway?</translation>
         <translation>Remove selection</translation>
     </message>
     <message>
-        <location filename="../src/tags/pathtag.cpp" line="20"/>
+        <location filename="../src/tags/pathtag.cpp" line="21"/>
         <source>position</source>
         <translation>Position</translation>
     </message>

@@ -24,7 +24,12 @@ void CircleHandle::draw(AbstractRenderer& renderer) const
 
 bool CircleHandle::contains_global(const arma::vec2& point) const
 {
-  const double r = arma::norm(point - transformation().apply_to_position(arma::vec2{0.0, 0.0}));
+  // const ObjectTransformation t2 = ObjectTransformation().scaled(arma::vec2{ 1/m_scale(0), 1/m_scale(1) });
+  // const ObjectTransformation t1 = transformation().inverted();
+  // const auto global_position = t2.apply_to_position(t1.apply_to_position(point));
+  const auto global_point = transform_position_to_global(point);
+  const arma::vec2 o{ 0.0, 0.0 };
+  const double r = arma::norm(global_point - o);
   return RADIUS - interact_epsilon() <= r && r <= RADIUS + interact_epsilon();
 }
 

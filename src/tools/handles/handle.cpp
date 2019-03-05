@@ -55,10 +55,32 @@ void Handle::set_style(Status status, Style style)
 ObjectTransformation Handle::transformation() const
 {
   assert(is_enabled());
-  return transform_in_tool_space ? tool.transformation() : ObjectTransformation();
+  if (transform_in_tool_space) {
+    return tool.transformation(); // .scaled(m_scale);
+  } else {
+    return ObjectTransformation(); // .scaled(m_scale);
+  }
 }
 
-double Handle::draw_epsilon() const { return 4.0; }
-double Handle::interact_epsilon() const { return 4.0; }
+double Handle::draw_epsilon() const { return 10.0; }
+double Handle::interact_epsilon() const { return 10.0; }
+
+arma::vec2 Handle::transform_position_to_global(const arma::vec2& position) const
+{
+  const ObjectTransformation t1 = transformation().inverted();
+  return viewport_transformation().apply_to_position(t1.apply_to_position(position));
+}
+
+ObjectTransformation Handle::viewport_transformation() const
+{
+  return m_viewport_transformation;
+}
+
+void Handle::set_viewport_transformation(const ObjectTransformation& viewport_transformation)
+{
+  m_viewport_transformation = viewport_transformation;
+  m_viewport_transformation.set_translation(arma::vec2{ 0.0, 0.0 });
+  m_scale = viewport_transformation.inverted().scaling();
+}
 
 }  // namespace omm

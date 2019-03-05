@@ -129,14 +129,15 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
 
 void Viewport::mouseReleaseEvent(QMouseEvent* event)
 {
-  m_pan_controller.end_move();
-  const auto global_pos = viewport_to_global_position(point2vec(event->pos()));
-  m_scene.tool_box.active_tool().mouse_release(global_pos, *event);
-  if (event->button() == Qt::RightButton) {
-    auto menu = m_scene.tool_box.active_tool().make_context_menu(this);
-    if (menu) { menu->exec(event->globalPos()); }
+  if (!m_pan_controller.end_move()) {
+    const auto global_pos = viewport_to_global_position(point2vec(event->pos()));
+    m_scene.tool_box.active_tool().mouse_release(global_pos, *event);
+    if (event->button() == Qt::RightButton) {
+      auto menu = m_scene.tool_box.active_tool().make_context_menu(this);
+      if (menu) { menu->exec(event->globalPos()); }
+    }
+    QWidget::mouseReleaseEvent(event);
   }
-  QWidget::mouseReleaseEvent(event);
 }
 
 ObjectTransformation Viewport::viewport_transformation() const

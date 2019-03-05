@@ -35,6 +35,15 @@ public:
 
   double draw_epsilon() const override { return 2.0; }
 
+  void draw(omm::AbstractRenderer& renderer) const override
+  {
+    renderer.push_transformation(omm::ObjectTransformation().translated(position));
+    renderer.push_transformation(omm::ObjectTransformation().scaled(m_scale));
+    renderer.draw_rectangle(arma::vec2{ 0.0, 0.0 }, draw_epsilon(), current_style());
+    renderer.pop_transformation();
+    renderer.pop_transformation();
+  }
+
 private:
   omm::PointSelectHandle& m_master_handle;
 };
@@ -99,8 +108,8 @@ ObjectSelectHandle::ObjectSelectHandle(Tool& tool, Scene& scene, Object& object)
 
 bool ObjectSelectHandle::contains_global(const arma::vec2& point) const
 {
-  const auto d = arma::norm(point - transformation().apply_to_position(arma::vec2{0.0, 0.0}));
-  return d < interact_epsilon();
+  const arma::vec2 d = viewport_transformation().apply_to_direction(point - transformation().null());
+  return arma::max(arma::abs(d)) < interact_epsilon();
 }
 
 void ObjectSelectHandle::draw(omm::AbstractRenderer& renderer) const
@@ -111,7 +120,11 @@ void ObjectSelectHandle::draw(omm::AbstractRenderer& renderer) const
 
   const Style& style = is_selected() ? this->style(Status::Active) : current_style();
   const auto pos = transformation().apply_to_position(arma::vec2{ 0.0, 0.0 });
-  renderer.draw_rectangle(pos, draw_epsilon(), style);
+  renderer.push_transformation(ObjectTransformation().translated(pos));
+  renderer.push_transformation(ObjectTransformation().scaled(m_scale));
+  renderer.draw_rectangle(arma::vec2{ 0.0, 0.0 }, draw_epsilon(), style);
+  renderer.pop_transformation();
+  renderer.pop_transformation();
 }
 
 bool ObjectSelectHandle
@@ -222,6 +235,7 @@ void PointSelectHandle::draw(omm::AbstractRenderer& renderer) const
 
   const auto treat_sub_handle = [&renderer, pos, this](auto& sub_handle, const auto& other_pos) {
     sub_handle.position = other_pos;
+
     renderer.draw_spline( { Point(pos), Point(other_pos) }, *m_tangent_style);
     if (m_point.is_selected) { sub_handle.draw(renderer); }
   };
@@ -230,7 +244,12 @@ void PointSelectHandle::draw(omm::AbstractRenderer& renderer) const
     treat_sub_handle(*m_right_tangent_handle, right_pos);
     treat_sub_handle(*m_left_tangent_handle, left_pos);
   }
-  renderer.draw_rectangle(pos, draw_epsilon(), style);
+
+  renderer.push_transformation(ObjectTransformation().translated(pos));
+  renderer.push_transformation(ObjectTransformation().scaled(m_scale));
+  renderer.draw_rectangle(arma::vec2{ 0.0, 0.0 }, draw_epsilon(), style);
+  renderer.pop_transformation();
+  renderer.pop_transformation();
 
 }
 
@@ -278,6 +297,13 @@ bool PointSelectHandle::tangents_active() const
 void PointSelectHandle::set_selected(bool selected)
 {
   m_point.is_selected = selected;
+}
+
+void PointSelectHandle::set_scale(const arma::vec2& scale)
+{
+  AbstractSelectHandle::set_scale(scale);
+  m_left_tangent_handle->set_scale(scale);
+  m_right_tangent_handle->set_scale(scale);
 }
 
 void PointSelectHandle::clear()

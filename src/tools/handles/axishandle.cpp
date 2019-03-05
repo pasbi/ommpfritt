@@ -13,7 +13,10 @@ AxisHandle::AxisHandle(Tool& tool) : Handle(tool, true) {}
 
 bool AxisHandle::contains_global(const arma::vec2& point) const
 {
-  const arma::vec2 global_point = transformation().inverted().apply_to_position(point);
+  // const ObjectTransformation t1 = transformation().inverted();
+  // const ObjectTransformation t2 = ObjectTransformation().scaled(arma::vec2{ 1/m_scale(0), 1/m_scale(1) });
+  // const arma::vec2 global_point = t2.apply_to_position(t1.apply_to_position(point));
+  const auto global_point = transform_position_to_global(point);
   arma::vec2 o { 0.0, 0.0 };
   arma::vec2 v = project_onto_axis(global_point);
 

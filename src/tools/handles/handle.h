@@ -29,13 +29,19 @@ public:
   virtual double interact_epsilon() const;
   const bool transform_in_tool_space;
   bool is_enabled() const;
+  virtual void set_scale(const arma::vec2& scale);
+  void set_viewport_transformation(const ObjectTransformation& t);
+  ObjectTransformation viewport_transformation() const;
 
 protected:
+  arma::vec2 transform_position_to_global(const arma::vec2& position) const;
   virtual bool contains_global(const arma::vec2& global_point) const = 0;
   const Style& current_style() const;
   const Style& style(Status status) const;
   virtual ObjectTransformation transformation() const;
   Tool& tool;
+  arma::vec2 m_scale { 1.0, 1.0 };  // todo make private
+  ObjectTransformation m_viewport_transformation;
 
 private:
   Status m_status = Status::Inactive;
