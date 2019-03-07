@@ -200,7 +200,6 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
       auto object = Object::make(key, &scene);
       auto& object_ref = *object;
       scene.submit<add_command_type>(scene.object_tree, std::move(object));
-      object_ref.set_transformation(ObjectTransformation());
     }));
   }
   for (const auto& key : Manager::keys()) {

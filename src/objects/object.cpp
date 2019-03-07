@@ -120,9 +120,9 @@ ObjectTransformation Object::transformation() const
   );
 }
 
-ObjectTransformation Object::global_transformation() const
+ObjectTransformation Object::global_transformation(const bool skip_root) const
 {
-  if (is_root()) {
+  if (is_root() || (skip_root && parent().is_root())) {
     return transformation();
   } else {
     // TODO caching could gain some speed
@@ -139,10 +139,11 @@ void Object::set_transformation(const ObjectTransformation& transformation)
   property(SHEAR_PROPERTY_KEY).set(transformation.shearing());
 }
 
-void Object::set_global_transformation(const ObjectTransformation& global_transformation)
+void Object
+::set_global_transformation(const ObjectTransformation& global_transformation, bool skip_root)
 {
   ObjectTransformation local_transformation;
-  if (is_root()) {
+  if (is_root() || (skip_root && parent().is_root())) {
     local_transformation = global_transformation;
   } else {
     try {
@@ -268,9 +269,9 @@ std::unique_ptr<AbstractRAIIGuard> Object::acquire_set_parent_guard()
   {
   public:
     explicit SetParentGuard(Object& self)
-      : m_self(self), m_global_transformation(m_self.global_transformation()) { }
+      : m_self(self), m_global_transformation(m_self.global_transformation(true)) { }
 
-    ~SetParentGuard() { m_self.set_global_transformation(m_global_transformation); }
+    ~SetParentGuard() { m_self.set_global_transformation(m_global_transformation, true); }
 
   private:
     Object& m_self;

@@ -399,7 +399,7 @@
         <translation>Shear</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="212"/>
+        <location filename="../src/objects/object.cpp" line="213"/>
         <source>Failed to retrieve object type &apos;%1&apos;.</source>
         <translation>Failed to retrieve object type &apos;%1&apos;.</translation>
     </message>
@@ -1130,7 +1130,7 @@ Remove the selected items anyway?</translation>
         <translation>Loading scene from &apos;%1&apos; failed.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="223"/>
+        <location filename="../src/mainwindow/application.cpp" line="222"/>
         <source>Add Tag</source>
         <translation>Add tag</translation>
     </message>

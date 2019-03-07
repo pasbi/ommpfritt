@@ -399,7 +399,7 @@
         <translation>Scherung</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="212"/>
+        <location filename="../src/objects/object.cpp" line="213"/>
         <source>Failed to retrieve object type &apos;%1&apos;.</source>
         <translation>Objekttyp &apos;%1&apos; konnte nicht abgerufen werden.</translation>
     </message>
@@ -1130,7 +1130,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Szene konnte nicht von &apos;%1&apos; geladen werden.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="223"/>
+        <location filename="../src/mainwindow/application.cpp" line="222"/>
         <source>Add Tag</source>
         <translation>Tag hinzufügen</translation>
     </message>

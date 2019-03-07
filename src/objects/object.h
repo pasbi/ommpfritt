@@ -33,9 +33,10 @@ public:
 
   void transform(const ObjectTransformation& transformation);
   ObjectTransformation transformation() const;
-  ObjectTransformation global_transformation() const;
+  ObjectTransformation global_transformation(const bool skip_root = false) const;
   void set_transformation(const ObjectTransformation& transformation);
-  void set_global_transformation(const ObjectTransformation& globalTransformation);
+  void set_global_transformation( const ObjectTransformation& globalTransformation,
+                                  const bool skip_root = false );
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
