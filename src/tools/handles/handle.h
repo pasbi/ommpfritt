@@ -19,7 +19,7 @@ public:
   explicit Handle(Tool& tool, const bool transform_in_tool_space);
   virtual ~Handle() = default;
   virtual void draw(AbstractRenderer& renderer) const = 0;
-  virtual bool mouse_press(const arma::vec2& pos, const QMouseEvent& event);
+  virtual bool mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force);
   virtual bool mouse_move( const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e );
   virtual void mouse_release(const arma::vec2& pos, const QMouseEvent& event);
   Status status() const;

@@ -51,45 +51,27 @@ namespace omm
 
 AbstractSelectHandle::AbstractSelectHandle(Tool& tool) : Handle(tool, false) { }
 
-bool AbstractSelectHandle::mouse_press(const arma::vec2 &pos, const QMouseEvent &event)
+bool AbstractSelectHandle::mouse_press(const arma::vec2 &pos, const QMouseEvent &event, bool force)
 {
-  m_move_was_performed = false;
-  return contains_global(pos);
+  if (Handle::mouse_press(pos, event, force)) {
+    if (force) {
+      if (event.modifiers() != extend_selection_modifier) {
+        clear();
+      }
+      set_selected(true);
+      return true;
+    } else {
+      return is_selected();
+    }
+  } else {
+    return false;
+  }
 }
 
 bool AbstractSelectHandle
 ::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& event)
 {
-  m_move_was_performed = true;
   return Handle::mouse_move(delta, pos, event);
-}
-
-void AbstractSelectHandle::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
-{
-  if (contains_global(pos)) {
-    if (!m_move_was_performed) {
-      if (event.button() == Qt::LeftButton) {
-        if (event.modifiers() == extend_selection_modifier) {
-          set_selected(true);
-        } else {
-          clear();
-          set_selected(true);
-        }
-      } else if (event.button() == Qt::RightButton) {
-        if (!is_selected()) {
-          clear();
-          set_selected(true);
-        }
-      }
-    }
-  }
-  Handle::mouse_release(pos, event);
-  m_move_was_performed = false;
-}
-
-void AbstractSelectHandle::report_move_action()
-{
-  m_move_was_performed = true;
 }
 
 ObjectSelectHandle::ObjectSelectHandle(Tool& tool, Scene& scene, Object& object)
@@ -143,7 +125,6 @@ void ObjectSelectHandle::clear()
 
 void ObjectSelectHandle::set_selected(bool selected)
 {
-  LOG(INFO) << "Set selected " << selected;
   auto selection = m_scene.item_selection<Object>();
   if (selected) {
     selection.insert(&m_object);
@@ -182,13 +163,13 @@ bool PointSelectHandle::contains_global(const arma::vec2& point) const
   return d < interact_epsilon();
 }
 
-bool PointSelectHandle::mouse_press(const arma::vec2& pos, const QMouseEvent& event)
+bool PointSelectHandle::mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force)
 {
-  if (AbstractSelectHandle::mouse_press(pos, event)) {
+  if (AbstractSelectHandle::mouse_press(pos, event, force)) {
     return true;
-  } else if (tangents_active() && m_left_tangent_handle->mouse_press(pos, event)) {
+  } else if (tangents_active() && m_left_tangent_handle->mouse_press(pos, event, false)) {
     return true;
-  } else if (tangents_active() && m_right_tangent_handle->mouse_press(pos, event)) {
+  } else if (tangents_active() && m_right_tangent_handle->mouse_press(pos, event, false)) {
     return true;
   } else {
     return false;

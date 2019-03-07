@@ -15,7 +15,7 @@ class SelectTool : public Tool
 public:
   explicit SelectTool(Scene& scene);
   static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";
-  bool mouse_press(const arma::vec2& pos, const QMouseEvent& event) override;
+  bool mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force) override;
   void transform_objects(ObjectTransformation t, const bool tool_space) override;
   void on_scene_changed() override;
   PositionVariant position_variant;

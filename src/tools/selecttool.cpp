@@ -89,12 +89,16 @@ ObjectTransformation SelectTool<PositionVariant>::transformation() const
 }
 
 template<typename PositionVariant> bool SelectTool<PositionVariant>
-::mouse_press( const arma::vec2& pos, const QMouseEvent& event)
+::mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force)
 {
-  if (!Tool::mouse_press(pos, event)) {
+  if (Tool::mouse_press(pos, event, false)) {
+    return true;
+  } else if (Tool::mouse_press(pos, event, true)) {
+    return true;
+  } else {
     position_variant.clear_selection();
+    return false;
   }
-  return true;
 }
 
 template<typename PositionVariant>

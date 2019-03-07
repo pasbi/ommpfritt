@@ -34,7 +34,7 @@ public:
   /**
    * @brief returns true if any grabbable was hit
    */
-  virtual bool mouse_press(const arma::vec2& pos, const QMouseEvent& event);
+  virtual bool mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force = false);
   virtual void mouse_release(const arma::vec2& pos, const QMouseEvent& event);
   virtual void draw(AbstractRenderer& renderer) const;
   virtual void on_selection_changed();

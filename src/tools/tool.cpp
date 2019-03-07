@@ -45,12 +45,12 @@ bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMou
   return false;
 }
 
-bool Tool::mouse_press(const arma::vec2& pos, const QMouseEvent& e)
+bool Tool::mouse_press(const arma::vec2& pos, const QMouseEvent& e, bool force)
 {
   // `std::any_of` does not *require* to use short-circuit-logic. However, here it is mandatory,
   // so don't use `std::any_of`.
   for (auto&& handle : handles) {
-    if (handle->is_enabled() && handle->mouse_press(pos, e)) {
+    if (handle->is_enabled() && handle->mouse_press(pos, e, force)) {
       return true;
     }
   }

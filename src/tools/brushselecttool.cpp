@@ -36,7 +36,7 @@ bool BrushSelectTool::mouse_move( const arma::vec2& delta, const arma::vec2& pos
   }
 }
 
-bool BrushSelectTool::mouse_press(const arma::vec2& pos, const QMouseEvent& event)
+bool BrushSelectTool::mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force)
 {
   if (event.modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) {
     // don't deselect

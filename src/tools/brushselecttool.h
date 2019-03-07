@@ -23,7 +23,7 @@ public:
   /**
    * @brief returns true if any grabbable was hit
    */
-  bool mouse_press(const arma::vec2& pos, const QMouseEvent& event) override;
+  bool mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force) override;
   void mouse_release(const arma::vec2& pos, const QMouseEvent& event) override;
   std::string type() const override;
   void on_scene_changed() override;

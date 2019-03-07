@@ -518,7 +518,7 @@ Remove the selected items anyway?</translation>
     <message>
         <location filename="../src/tools/brushselecttool.cpp" line="19"/>
         <location filename="../src/tools/selecttool.cpp" line="74"/>
-        <location filename="../src/tools/selecttool.cpp" line="137"/>
+        <location filename="../src/tools/selecttool.cpp" line="141"/>
         <source>tool</source>
         <translation>Tool</translation>
     </message>
@@ -538,17 +538,17 @@ Remove the selected items anyway?</translation>
         <translation>Alignment</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="135"/>
+        <location filename="../src/tools/selecttool.cpp" line="139"/>
         <source>Mirror</source>
         <translation>Mirror</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="135"/>
+        <location filename="../src/tools/selecttool.cpp" line="139"/>
         <source>Individual</source>
         <translation>Individual</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="136"/>
+        <location filename="../src/tools/selecttool.cpp" line="140"/>
         <source>tangent</source>
         <translation>Tangent</translation>
     </message>

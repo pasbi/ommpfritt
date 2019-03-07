@@ -518,7 +518,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <message>
         <location filename="../src/tools/brushselecttool.cpp" line="19"/>
         <location filename="../src/tools/selecttool.cpp" line="74"/>
-        <location filename="../src/tools/selecttool.cpp" line="137"/>
+        <location filename="../src/tools/selecttool.cpp" line="141"/>
         <source>tool</source>
         <translation>Werkzeug</translation>
     </message>
@@ -538,17 +538,17 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Ausrichtung</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="135"/>
+        <location filename="../src/tools/selecttool.cpp" line="139"/>
         <source>Mirror</source>
         <translation>Spiegeln</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="135"/>
+        <location filename="../src/tools/selecttool.cpp" line="139"/>
         <source>Individual</source>
         <translation>Individuell</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="136"/>
+        <location filename="../src/tools/selecttool.cpp" line="140"/>
         <source>tangent</source>
         <translation>Tangente</translation>
     </message>

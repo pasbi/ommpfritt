@@ -11,7 +11,7 @@ Handle::Handle(Tool& tool, const bool transform_in_tool_space)
   , transform_in_tool_space(transform_in_tool_space)
 {}
 
-bool Handle::mouse_press(const arma::vec2& pos, const QMouseEvent& event)
+bool Handle::mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force)
 {
   if (contains_global(pos)) {
     if (event.button() == Qt::LeftButton) {

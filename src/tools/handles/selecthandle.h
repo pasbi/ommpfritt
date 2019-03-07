@@ -18,18 +18,13 @@ class AbstractSelectHandle : public Handle
 {
 public:
   explicit AbstractSelectHandle(Tool& tool);
-  void mouse_release(const arma::vec2& pos, const QMouseEvent& event) override;
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override;
-  bool mouse_press(const arma::vec2 &pos, const QMouseEvent &event) override;
+  bool mouse_press(const arma::vec2 &pos, const QMouseEvent &event, bool force) override;
 
 protected:
   virtual void set_selected(bool selected) = 0;
   virtual void clear() = 0;
   virtual bool is_selected() const = 0;
-  void report_move_action();
-
-private:
-  bool m_move_was_performed = false;
 
   static constexpr auto extend_selection_modifier = Qt::ShiftModifier;
 };
@@ -61,7 +56,7 @@ public:
   explicit PointSelectHandle(Tool& tool, Path& path, Point& point);
   bool contains_global(const arma::vec2& point) const override;
   void draw(omm::AbstractRenderer& renderer) const override;
-  bool mouse_press( const arma::vec2& pos, const QMouseEvent& event) override;
+  bool mouse_press( const arma::vec2& pos, const QMouseEvent& event, bool force) override;
   bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override;
   void mouse_release( const arma::vec2& pos, const QMouseEvent& event) override;
 
