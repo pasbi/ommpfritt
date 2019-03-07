@@ -12,6 +12,7 @@ AbstractRenderer::AbstractRenderer(Scene& scene)
 void AbstractRenderer::render()
 {
   scene.object_tree.root().render_recursive(*this, scene.default_style());
+  assert(m_transformation_stack.empty());
 }
 
 void AbstractRenderer::push_transformation(const ObjectTransformation& transformation)
@@ -27,15 +28,10 @@ void AbstractRenderer::pop_transformation()
 ObjectTransformation AbstractRenderer::current_transformation() const
 {
   if (m_transformation_stack.size() == 0) {
-    return m_base_transformation;
+    return ObjectTransformation();
   } else {
     return m_transformation_stack.top();
   }
-}
-
-void AbstractRenderer::set_base_transformation(const ObjectTransformation& base_transformation)
-{
-  m_base_transformation = base_transformation;
 }
 
 }  // namespace omm

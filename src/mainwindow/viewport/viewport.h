@@ -50,8 +50,6 @@ private:
   MousePanController m_pan_controller;
   ViewportRenderer m_renderer;
   ObjectTransformation viewport_transformation() const;
-  arma::vec2 viewport_to_global_direction(const arma::vec2& pos) const;
-  arma::vec2 viewport_to_global_position(const arma::vec2& pos) const;
 };
 
 }  // namespace omm

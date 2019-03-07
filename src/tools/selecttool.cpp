@@ -101,9 +101,9 @@ template<typename PositionVariant>
 void SelectTool<PositionVariant>::on_scene_changed()
 {
   this->handles.clear();
-  position_variant.make_handles(this->handles, *this);
-  make_rotate_handle(this->handles, *this);
   make_move_handles(this->handles, *this);
+  make_rotate_handle(this->handles, *this);
+  position_variant.make_handles(this->handles, *this);
 }
 
 template<typename PositionVariant> void SelectTool<PositionVariant>

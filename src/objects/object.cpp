@@ -232,6 +232,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
 
 void Object::render_recursive(AbstractRenderer& renderer, const Style& default_style)
 {
+  renderer.push_transformation(transformation());
   const auto visibility = property(IS_VISIBLE_PROPERTY_KEY).value<Visibility>();
   if (visibility == Visibility::Visible) {
     const auto styles = find_styles(*this);
@@ -245,11 +246,10 @@ void Object::render_recursive(AbstractRenderer& renderer, const Style& default_s
 
   if (visibility != Visibility::HideTree && m_draw_children) {
     for (const auto& child : children()) {
-      renderer.push_transformation(child->transformation());
       child->render_recursive(renderer, default_style);
-      renderer.pop_transformation();
     }
   }
+  renderer.pop_transformation();
 }
 
 BoundingBox Object::recursive_bounding_box()

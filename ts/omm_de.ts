@@ -1130,7 +1130,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Szene konnte nicht von &apos;%1&apos; geladen werden.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="220"/>
+        <location filename="../src/mainwindow/application.cpp" line="223"/>
         <source>Add Tag</source>
         <translation>Tag hinzufügen</translation>
     </message>

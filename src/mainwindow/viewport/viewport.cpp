@@ -26,10 +26,6 @@ void set_cursor_position(QWidget& widget, const arma::vec2& pos)
   widget.setCursor(cursor);
 }
 
-// coordinate system of QWidget's canvas goes top-down and left-to-right
-// I think bottom-up and left-to-right is more intuitive.
-const auto TOP_RIGHT = omm::ObjectTransformation().scaled({1, -1});
-
 }  // namespace
 
 namespace omm
@@ -38,8 +34,8 @@ namespace omm
 Viewport::Viewport(Scene& scene)
   : m_scene(scene)
   , m_timer(std::make_unique<QTimer>())
+  , m_viewport_transformation(ObjectTransformation().scaled({1.0, -1.0})) // y grows towards top
   , m_pan_controller([this](const arma::vec2& pos) { set_cursor_position(*this, pos); })
-  , m_viewport_transformation(TOP_RIGHT)
   , m_renderer(scene)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -64,8 +60,8 @@ void Viewport::paintEvent(QPaintEvent* event)
 
   painter.setRenderHint(QPainter::Antialiasing);
   painter.fillRect(rect(), Qt::gray);
-  m_renderer.set_base_transformation(viewport_transformation());
 
+  m_scene.object_tree.root().set_transformation(viewport_transformation());
   m_scene.evaluate_tags();
   m_renderer.render();
 
@@ -73,20 +69,9 @@ void Viewport::paintEvent(QPaintEvent* event)
   m_renderer.clear_painter();
 }
 
-arma::vec2 Viewport::viewport_to_global_direction(const arma::vec2& pos) const
-{
-  return viewport_transformation().inverted().apply_to_direction(pos);
-}
-
-arma::vec2 Viewport::viewport_to_global_position(const arma::vec2& pos) const
-{
-  return viewport_transformation().inverted().apply_to_position(pos);
-}
-
 void Viewport::mousePressEvent(QMouseEvent* event)
 {
-  const arma::vec2 cursor_position = point2vec(event->pos());
-  const arma::vec2 global_cursor_position = viewport_to_global_position(cursor_position);
+  const arma::vec2 cursor_pos = point2vec(event->pos());
   const auto action = [](const QMouseEvent* event) {
     switch (event->button()) {
     case Qt::LeftButton: return MousePanController::Action::Pan;
@@ -94,32 +79,31 @@ void Viewport::mousePressEvent(QMouseEvent* event)
     default: return MousePanController::Action::None;
     }
   };
-  m_pan_controller.start_move(cursor_position, global_cursor_position, action(event));
+  m_pan_controller.start_move( cursor_pos,
+                               viewport_transformation().inverted().apply_to_position(cursor_pos),
+                               action(event));
 
   if (event->modifiers() & Qt::AltModifier) {
     event->accept();
   } else {
-    const auto pos = viewport_to_global_position(cursor_position);
-    if (m_scene.tool_box.active_tool().mouse_press(pos, *event)) { event->accept(); }
+    if (m_scene.tool_box.active_tool().mouse_press(cursor_pos, *event)) { event->accept(); }
   }
 }
 
 void Viewport::mouseMoveEvent(QMouseEvent* event)
 {
-  const auto cursor_position = point2vec(event->pos());
+  const auto cursor_pos = point2vec(event->pos());
 
   arma::vec2 delta { 0.0, 0.0 };
   if (event->modifiers() & Qt::AltModifier) {
-    delta = m_pan_controller.apply(cursor_position, m_viewport_transformation);
+    delta = m_pan_controller.apply(cursor_pos, m_viewport_transformation);
     event->accept();
   } else {
-    delta = m_pan_controller.update(cursor_position);
+    delta = m_pan_controller.update(cursor_pos);
   }
 
   auto& tool = m_scene.tool_box.active_tool();
-  const auto delta_ = viewport_to_global_direction(delta);
-  const auto cpos_ = viewport_to_global_position(cursor_position);
-  if (tool.mouse_move(delta_, cpos_, *event)) {
+  if (tool.mouse_move(delta, cursor_pos, *event)) {
     event->accept();
     return;
   }
@@ -130,8 +114,8 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
 void Viewport::mouseReleaseEvent(QMouseEvent* event)
 {
   if (!m_pan_controller.end_move()) {
-    const auto global_pos = viewport_to_global_position(point2vec(event->pos()));
-    m_scene.tool_box.active_tool().mouse_release(global_pos, *event);
+    const auto cursor_pos = point2vec(event->pos());
+    m_scene.tool_box.active_tool().mouse_release(cursor_pos, *event);
     if (event->button() == Qt::RightButton) {
       auto menu = m_scene.tool_box.active_tool().make_context_menu(this);
       if (menu) { menu->exec(event->globalPos()); }

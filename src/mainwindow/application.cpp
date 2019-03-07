@@ -197,7 +197,10 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
     infos.push_back(AI(key, ks(), [key](Application& app) {
       using add_command_type = AddCommand<Tree<Object>>;
       Scene& scene = app.scene;
-      scene.submit<add_command_type>(scene.object_tree, Object::make(key, &scene));
+      auto object = Object::make(key, &scene);
+      auto& object_ref = *object;
+      scene.submit<add_command_type>(scene.object_tree, std::move(object));
+      object_ref.set_transformation(ObjectTransformation());
     }));
   }
   for (const auto& key : Manager::keys()) {

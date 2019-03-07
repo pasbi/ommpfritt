@@ -1130,7 +1130,7 @@ Remove the selected items anyway?</translation>
         <translation>Loading scene from &apos;%1&apos; failed.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="220"/>
+        <location filename="../src/mainwindow/application.cpp" line="223"/>
         <source>Add Tag</source>
         <translation>Add tag</translation>
     </message>

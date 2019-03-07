@@ -69,18 +69,12 @@ mouse_release(const arma::vec2& pos, const QMouseEvent& e)
 
 void Tool::draw(AbstractRenderer& renderer) const
 {
-  arma::vec2 scale = renderer.current_transformation().scaling();
-  scale = { 1.0 / scale(0), 1.0 / scale(1) };
-
   const ObjectTransformation transformation = this->transformation();
   for (auto&& handle : handles) {
-    handle->set_viewport_transformation(renderer.current_transformation());
     if (handle->is_enabled()) {
       if (handle->transform_in_tool_space) {
         renderer.push_transformation(transformation);
-        renderer.push_transformation(ObjectTransformation().scaled(scale));
         handle->draw(renderer);
-        renderer.pop_transformation();
         renderer.pop_transformation();
       } else {
         handle->draw(renderer);
