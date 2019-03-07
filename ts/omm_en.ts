@@ -571,7 +571,7 @@ Remove the selected items anyway?</translation>
         <translation>Sequence</translation>
     </message>
     <message>
-        <location filename="../src/widgets/numericedit.h" line="116"/>
+        <location filename="../src/widgets/numericedit.h" line="115"/>
         <source>&lt; invalid &gt;</source>
         <comment>property</comment>
         <translation>Invalid</translation>

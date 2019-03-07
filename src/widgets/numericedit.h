@@ -7,6 +7,8 @@
 #include <QWheelEvent>
 #include <glog/logging.h>
 #include <memory>
+#include <sstream>
+#include <iomanip>
 #include <QCoreApplication>
 
 namespace NumericEditDetail
@@ -107,9 +109,6 @@ public:
         set_text(value);
       }
       m_on_value_changed(value);
-    }
-    if (value == invalid_value) {
-      set_text(invalid_value);
     }
   }
 
@@ -225,7 +224,9 @@ private:
   const on_value_changed_t m_on_value_changed;
   void set_text(const value_type& value)
   {
-    setText(QString::fromStdString(std::to_string(value_type(m_multiplier * value))));
+    std::ostringstream ss;
+    ss << std::setprecision(3) << std::fixed << value_type(m_multiplier * value);
+    setText(QString::fromStdString(ss.str()));
   }
   static constexpr value_type invalid_value = 0;
 
