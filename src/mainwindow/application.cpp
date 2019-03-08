@@ -15,6 +15,7 @@
 #include "tools/toolbox.h"
 #include "tags/tag.h"
 #include "keybindings/keybindingsdialog.h"
+#include "mainwindow/viewport/viewport.h"
 
 namespace {
 constexpr auto FILE_ENDING = ".omm";
@@ -191,6 +192,9 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
         } ),
     AI( QT_TRANSLATE_NOOP("any-context", "convert objects"),  ks("C"),
         &actions::convert_objects ),
+    AI( QT_TRANSLATE_NOOP("any-context", "reset viewport"),  ks("R"), [](Application& app) {
+        app.main_window()->viewport().reset();
+    })
   };
 
   for (const auto& key : Object::keys()) {

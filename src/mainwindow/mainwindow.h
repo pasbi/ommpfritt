@@ -11,6 +11,7 @@ namespace omm
 class Application;
 class Scene;
 class Manager;
+class Viewport;
 
 class MainWindow : public QMainWindow
 {
@@ -20,6 +21,7 @@ public:
   void restore_state();
   void save_state();
   void keyPressEvent(QKeyEvent* e) override;
+  Viewport& viewport() const;
 
   static std::vector<std::string> object_menu_entries();
   static std::vector<std::string> path_menu_entries();
@@ -46,6 +48,7 @@ protected:
 
 private:
   Application& m_app;
+  Viewport* m_viewport;
 
 };
 

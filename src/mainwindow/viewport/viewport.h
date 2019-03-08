@@ -32,6 +32,7 @@ public:
   Viewport(Scene& scene);
   ~Viewport() = default;
   Scene& scene() const;
+  void reset();
 
 protected:
 #if USE_OPENGL

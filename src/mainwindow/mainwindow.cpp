@@ -112,6 +112,7 @@ std::vector<std::string> MainWindow::main_menu_entries()
     QT_TRANSLATE_NOOP("menu_name", "tool")"/" QT_TRANSLATE_NOOP("any-context", "previous tool"),
     "tool/"s + KeyBindings::SEPARATOR,
     QT_TRANSLATE_NOOP("menu_name", "scene")"/" QT_TRANSLATE_NOOP("any-context", "evaluate"),
+    "scene/" QT_TRANSLATE_NOOP("any-context", "reset viewport"),
     QT_TRANSLATE_NOOP("menu_name", "window")"/" QT_TRANSLATE_NOOP("menu_name", "show")"/",
   };
 
@@ -136,7 +137,9 @@ MainWindow::MainWindow(Application& app)
   : m_app(app)
 {
   setDockNestingEnabled(true);
-  setCentralWidget(std::make_unique<Viewport>(app.scene).release());
+  auto viewport = std::make_unique<Viewport>(app.scene);
+  m_viewport = viewport.get();
+  setCentralWidget(viewport.release());
   restore_state();
 
   setMenuBar(std::make_unique<QMenuBar>().release());
@@ -277,5 +280,7 @@ std::vector<std::string> MainWindow::available_translations()
 
   return std::vector(trs.begin(), trs.end());
 }
+
+Viewport& MainWindow::viewport() const { return *m_viewport; }
 
 }  // namespace omm

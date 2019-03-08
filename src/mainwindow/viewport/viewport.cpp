@@ -11,6 +11,10 @@
 namespace
 {
 
+ // y grows towards top
+static const omm::ObjectTransformation default_transformation
+  = omm::ObjectTransformation().scaled(arma::vec2{ 1.0, -1.0 });
+
 arma::vec2 point2vec(const QPoint& p)
 {
   return arma::vec2 {
@@ -34,7 +38,7 @@ namespace omm
 Viewport::Viewport(Scene& scene)
   : m_scene(scene)
   , m_timer(std::make_unique<QTimer>())
-  , m_viewport_transformation(ObjectTransformation().scaled({1.0, -1.0})) // y grows towards top
+  , m_viewport_transformation(default_transformation)
   , m_pan_controller([this](const arma::vec2& pos) { set_cursor_position(*this, pos); })
   , m_renderer(scene)
 {
@@ -134,6 +138,11 @@ ObjectTransformation Viewport::viewport_transformation() const
 Scene& Viewport::scene() const
 {
   return m_scene;
+}
+
+void Viewport::reset()
+{
+  m_viewport_transformation = default_transformation;
 }
 
 }  // namespace omm
