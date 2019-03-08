@@ -23,7 +23,6 @@ public:
   virtual ~ManagerItemView();
   ItemModelT* model() const;
   virtual std::set<AbstractPropertyOwner*> selected_items() const;
-  void setSelectionModel(QItemSelectionModel* model) override;
 
 protected:
   void mouseReleaseEvent(QMouseEvent* e) override;

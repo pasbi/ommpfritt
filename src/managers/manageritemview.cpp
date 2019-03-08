@@ -35,18 +35,6 @@ ManagerItemView<ItemViewT, ItemModelT>::~ManagerItemView()
 }
 
 template<typename ItemViewT, typename ItemModelT>
-void ManagerItemView<ItemViewT, ItemModelT>::setSelectionModel(QItemSelectionModel* model)
-{
-  const auto on_selection_changed = [this](const auto& selected) {
-    if (!m_block_selection_change_signal) {
-      this->model()->scene.set_selection(this->selected_items());
-    }
-  };
-  this->connect(model, &QItemSelectionModel::selectionChanged, on_selection_changed);
-  ItemViewT::setSelectionModel(model);
-}
-
-template<typename ItemViewT, typename ItemModelT>
 ItemModelT* ManagerItemView<ItemViewT, ItemModelT>::model() const
 {
   return static_cast<ItemModelT*>(ItemViewT::model());
