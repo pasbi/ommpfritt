@@ -3,6 +3,7 @@
 #include <QObject>
 
 #include "properties/referenceproperty.h"
+#include "properties/boolproperty.h"
 
 namespace omm
 {
@@ -16,14 +17,26 @@ Instance::Instance(Scene* scene)
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
     .set_label(QObject::tr("reference", "Instance").toStdString())
     .set_category(QObject::tr("Instance", "Instance").toStdString());
+  add_property<BoolProperty>(COMBINE_STYLES_PROPERTY_KEY)
+    .set_label(QObject::tr("combine styles", "Instance").toStdString())
+    .set_category(QObject::tr("Instance", "Instance").toStdString());
 }
 
-void Instance::render(AbstractRenderer& renderer, const Style& style)
+void Instance::render(AbstractRenderer& renderer, const Style& default_style)
 {
   if (is_active()) {
     const auto o = referenced_object();
     if (o != nullptr) {
-      o->render_recursive(renderer, style);
+      RenderOptions options;
+      options.default_style = &default_style;
+      options.always_visible = true;
+      options.styles = find_styles();
+      if (options.styles.empty() || property(COMBINE_STYLES_PROPERTY_KEY).value<bool>()) {
+        const auto ostyles = o->find_styles();
+        options.styles.reserve(options.styles.size() + ostyles.size());
+        options.styles.insert(options.styles.begin(), ostyles.begin(), ostyles.end());
+      }
+      o->render_recursive(renderer, options);
     }
   }
 }

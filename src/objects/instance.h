@@ -14,11 +14,12 @@ class Instance : public Object
 {
 public:
   explicit Instance(Scene* scene);
-  void render(AbstractRenderer& renderer, const Style& style) override;
+  void render(AbstractRenderer& renderer, const Style& default_style) override;
   BoundingBox bounding_box() override;
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Instance");
   static constexpr auto REFERENCE_PROPERTY_KEY = "reference";
+  static constexpr auto COMBINE_STYLES_PROPERTY_KEY = "combine-styles";
   std::unique_ptr<Object> clone() const override;
   std::unique_ptr<Object> convert() override;
   Flag flags() const override;

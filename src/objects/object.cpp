@@ -27,24 +27,6 @@ static constexpr auto CHILDREN_POINTER = "children";
 static constexpr auto TAGS_POINTER = "tags";
 static constexpr auto TYPE_POINTER = "type";
 
-std::vector<const omm::Style*> find_styles(const omm::Object& object)
-{
-  const auto get_style = [](const omm::Tag* tag) -> const omm::Style* {
-    if (tag->type() == omm::StyleTag::TYPE) {
-      const auto* property_owner = tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY)
-                                       .value<omm::ReferenceProperty::value_type>();
-      assert(  property_owner == nullptr
-            || property_owner->kind() == omm::AbstractPropertyOwner::Kind::Style );
-      return static_cast<const omm::Style*>(property_owner);
-    } else {
-      return nullptr;
-    }
-  };
-
-  const auto tags = object.tags.ordered_items();
-  return ::filter_if(::transform<const omm::Style*>(tags, get_style), ::is_not_null);
-}
-
 }  // namespace
 
 namespace omm
@@ -233,21 +215,29 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
 
 void Object::render_recursive(AbstractRenderer& renderer, const Style& default_style)
 {
+  RenderOptions options;
+  options.styles = find_styles();
+  options.default_style = &default_style;
+  options.always_visible = false;
+  render_recursive(renderer, options);
+}
+
+void Object::render_recursive(AbstractRenderer& renderer, const RenderOptions& options)
+{
   renderer.push_transformation(transformation());
   const auto visibility = property(IS_VISIBLE_PROPERTY_KEY).value<Visibility>();
-  if (visibility == Visibility::Visible) {
-    const auto styles = find_styles(*this);
-    for (const auto* style : styles) {
+  if (options.always_visible || visibility == Visibility::Visible) {
+    for (const auto* style : options.styles) {
       render(renderer, *style);
     }
-    if (styles.size() == 0) {
-      render(renderer, default_style);
+    if (options.styles.size() == 0) {
+      render(renderer, *options.default_style);
     }
   }
 
   if (visibility != Visibility::HideTree && m_draw_children) {
     for (const auto& child : children()) {
-      child->render_recursive(renderer, default_style);
+      child->render_recursive(renderer, *options.default_style);
     }
   }
   renderer.pop_transformation();
@@ -344,6 +334,24 @@ bool Object::is_active() const { return property(IS_ACTIVE_PROPERTY_KEY).value<b
 Object::Visibility Object::visibility() const
 {
   return property(IS_VISIBLE_PROPERTY_KEY).value<Visibility>();
+}
+
+std::vector<const omm::Style*> Object::find_styles() const
+{
+  const auto get_style = [](const omm::Tag* tag) -> const omm::Style* {
+    if (tag->type() == omm::StyleTag::TYPE) {
+      const auto* property_owner = tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY)
+                                       .value<omm::ReferenceProperty::value_type>();
+      assert(  property_owner == nullptr
+            || property_owner->kind() == omm::AbstractPropertyOwner::Kind::Style );
+      return static_cast<const omm::Style*>(property_owner);
+    } else {
+      return nullptr;
+    }
+  };
+
+  const auto tags = this->tags.ordered_items();
+  return ::filter_if(::transform<const omm::Style*>(tags, get_style), ::is_not_null);
 }
 
 }  // namespace omm

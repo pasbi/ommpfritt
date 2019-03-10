@@ -41,7 +41,16 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual void render(AbstractRenderer& renderer, const Style& style) = 0;
+
+  struct RenderOptions
+  {
+    std::vector<const Style*> styles;
+    bool always_visible = true;
+    const Style* default_style = nullptr;
+  };
+
   void render_recursive(AbstractRenderer& renderer, const Style& default_style);
+  void render_recursive(AbstractRenderer& renderer, const RenderOptions& options);
   virtual BoundingBox bounding_box() = 0;
   BoundingBox recursive_bounding_box();
   std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() override;
@@ -52,6 +61,7 @@ public:
   Scene* scene() const;
   bool is_active() const;
   Visibility visibility() const;
+  virtual std::vector<const omm::Style*> find_styles() const;
 
   List<Tag> tags;
   template<typename T, template<typename...> class ContainerT>

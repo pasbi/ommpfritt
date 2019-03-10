@@ -330,76 +330,76 @@
         <translation>Bild</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="60"/>
+        <location filename="../src/objects/object.cpp" line="42"/>
         <source>visible</source>
         <translation>Sichtbar</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="60"/>
+        <location filename="../src/objects/object.cpp" line="42"/>
         <source>hidden</source>
         <translation>Versteckt</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="61"/>
+        <location filename="../src/objects/object.cpp" line="43"/>
         <source>hide tree</source>
         <translation>Hierarchie verstecken</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="63"/>
+        <location filename="../src/objects/object.cpp" line="45"/>
+        <location filename="../src/objects/object.cpp" line="49"/>
+        <location filename="../src/objects/object.cpp" line="53"/>
+        <location filename="../src/objects/object.cpp" line="57"/>
+        <location filename="../src/objects/object.cpp" line="62"/>
         <location filename="../src/objects/object.cpp" line="67"/>
-        <location filename="../src/objects/object.cpp" line="71"/>
-        <location filename="../src/objects/object.cpp" line="75"/>
-        <location filename="../src/objects/object.cpp" line="80"/>
-        <location filename="../src/objects/object.cpp" line="85"/>
-        <location filename="../src/objects/object.cpp" line="90"/>
+        <location filename="../src/objects/object.cpp" line="72"/>
         <location filename="../src/renderers/style.cpp" line="16"/>
         <location filename="../src/tags/tag.cpp" line="18"/>
         <source>basic</source>
         <translation>Basic</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="66"/>
+        <location filename="../src/objects/object.cpp" line="48"/>
         <location filename="../src/renderers/style.cpp" line="19"/>
         <location filename="../src/renderers/style.cpp" line="31"/>
         <source>active</source>
         <translation>Aktiv</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="69"/>
+        <location filename="../src/objects/object.cpp" line="51"/>
         <location filename="../src/renderers/style.cpp" line="14"/>
         <location filename="../src/tags/tag.cpp" line="16"/>
         <source>&lt;unnamed object&gt;</source>
         <translation>Unbenanntes Objekt</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="70"/>
+        <location filename="../src/objects/object.cpp" line="52"/>
         <location filename="../src/renderers/style.cpp" line="15"/>
         <location filename="../src/tags/tag.cpp" line="17"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="74"/>
+        <location filename="../src/objects/object.cpp" line="56"/>
         <source>pos</source>
         <translation>Position</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="79"/>
+        <location filename="../src/objects/object.cpp" line="61"/>
         <source>scale</source>
         <translation>Skalierung</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="84"/>
+        <location filename="../src/objects/object.cpp" line="66"/>
         <source>rotation</source>
         <translation>Drehung</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="89"/>
+        <location filename="../src/objects/object.cpp" line="71"/>
         <source>shear</source>
         <translation>Scherung</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="213"/>
+        <location filename="../src/objects/object.cpp" line="195"/>
         <source>Failed to retrieve object type &apos;%1&apos;.</source>
         <translation>Objekttyp &apos;%1&apos; konnte nicht abgerufen werden.</translation>
     </message>
@@ -631,16 +631,23 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>&gt;&gt;&gt; </translation>
     </message>
     <message>
-        <location filename="../src/objects/instance.cpp" line="17"/>
+        <location filename="../src/objects/instance.cpp" line="18"/>
         <source>reference</source>
         <comment>Instance</comment>
         <translation>Referenz</translation>
     </message>
     <message>
-        <location filename="../src/objects/instance.cpp" line="18"/>
+        <location filename="../src/objects/instance.cpp" line="19"/>
+        <location filename="../src/objects/instance.cpp" line="22"/>
         <source>Instance</source>
         <comment>Instance</comment>
         <translation>Instanz</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/instance.cpp" line="21"/>
+        <source>combine styles</source>
+        <comment>Instance</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/propertywidgets/numericpropertywidget/numericpropertyconfigwidget.h" line="37"/>
