@@ -116,11 +116,7 @@ void Cloner::render(AbstractRenderer& renderer, const Style& style)
 {
   if (is_active()) {
     assert(&renderer.scene == scene());
-    for (auto&& clone : make_clones()) {
-      renderer.push_transformation(clone->transformation());
-      clone->render_recursive(renderer, style);
-      renderer.pop_transformation();
-    }
+    for (auto&& clone : make_clones()) { clone->render_recursive(renderer, style); }
     m_draw_children = false;
   } else {
     m_draw_children = true;
