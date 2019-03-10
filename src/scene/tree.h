@@ -31,7 +31,7 @@ public:
   ~Tree();
 
 public:
-  void insert(TreeOwningContext<T>& context);
+  virtual void insert(TreeOwningContext<T>& context);
   void move(TreeMoveContext<T>& context);
   void remove(TreeOwningContext<T>& context);
   bool can_move_object(const TreeMoveContext<T>& new_context) const;
@@ -49,6 +49,13 @@ private:
 
   mutable bool m_item_cache_is_dirty = true;
   mutable std::set<T*> m_item_cache;
+};
+
+class ObjectTree : public Tree<Object>
+{
+public:
+  using Tree<Object>::Tree;
+  void insert(TreeOwningContext<Object>& context) override;
 };
 
 }  // namespace omm

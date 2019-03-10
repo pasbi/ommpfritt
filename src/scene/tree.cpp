@@ -117,4 +117,10 @@ template<typename T> void Tree<T>::invalidate()
 
 template class Tree<Object>;
 
+void ObjectTree::insert(TreeOwningContext<Object>& context)
+{
+  Tree<Object>::insert(context);
+  context.subject.get().set_transformation(ObjectTransformation());
+}
+
 }  // namespace
