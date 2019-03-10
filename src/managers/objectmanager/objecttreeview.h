@@ -4,6 +4,7 @@
 #include "common.h"
 #include "managers/manageritemview.h"
 #include "managers/objectmanager/tagsitemdelegate.h"
+#include "managers/objectmanager/objectquickaccessdelegate.h"
 #include "scene/objecttreeadapter.h"
 #include "managers/objectmanager/objecttreeselectionmodel.h"
 
@@ -32,6 +33,7 @@ protected:
 
 private:
   std::unique_ptr<ObjectTreeSelectionModel> m_selection_model;
+  std::unique_ptr<ObjectQuickAccessDelegate> m_object_quick_access_delegate;
   std::unique_ptr<TagsItemDelegate> m_tags_item_delegate;
   ObjectTreeAdapter& m_model;
 

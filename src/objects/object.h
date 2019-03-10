@@ -51,7 +51,7 @@ public:
   Flag flags() const override;
   Scene* scene() const;
   bool is_active() const;
-  Visibility is_visible() const;
+  Visibility visibility() const;
 
   List<Tag> tags;
   template<typename T, template<typename...> class ContainerT>

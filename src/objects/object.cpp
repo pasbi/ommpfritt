@@ -341,4 +341,9 @@ void Object::set_oriented_position(const OrientedPoint& op, const bool align)
 
 bool Object::is_active() const { return property(IS_ACTIVE_PROPERTY_KEY).value<bool>(); }
 
+Object::Visibility Object::visibility() const
+{
+  return property(IS_VISIBLE_PROPERTY_KEY).value<Visibility>();
+}
+
 }  // namespace omm

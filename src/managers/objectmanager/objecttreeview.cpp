@@ -20,6 +20,7 @@
 #include "tags/tag.h"
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
+#include <QHeaderView>
 
 namespace
 {
@@ -39,10 +40,16 @@ namespace omm
 ObjectTreeView::ObjectTreeView(ObjectTreeAdapter& model)
   : ManagerItemView(model)
   , m_selection_model(std::make_unique<ObjectTreeSelectionModel>(model).release())
+  , m_object_quick_access_delegate(std::make_unique<ObjectQuickAccessDelegate>(*this))
   , m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this, *m_selection_model))
   , m_model(model)
 {
+  setItemDelegateForColumn(1, m_object_quick_access_delegate.get());
+  header()->setSectionResizeMode(1, QHeaderView::Fixed);
+  header()->resizeSection(1, ObjectQuickAccessDelegate::width);
+
   setItemDelegateForColumn(2, m_tags_item_delegate.get());
+
   setSelectionModel(m_selection_model.get());
   setSelectionBehavior(QAbstractItemView::SelectItems);
   setAutoExpandDelay(200);
