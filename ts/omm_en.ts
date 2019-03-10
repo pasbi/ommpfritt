@@ -461,19 +461,19 @@
         <translation>Brush</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="349"/>
+        <location filename="../src/scene/scene.cpp" line="350"/>
         <source>There are %1 items being referenced by other items.
 Remove the refrenced items anyway?</source>
         <translation>There are %1 items being referenced by the selection.
 Remove the selected items anyway?</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="352"/>
+        <location filename="../src/scene/scene.cpp" line="353"/>
         <source>Warning</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="379"/>
+        <location filename="../src/scene/scene.cpp" line="380"/>
         <source>Remove Selection</source>
         <translation>Remove selection</translation>
     </message>
@@ -810,119 +810,119 @@ Remove the selected items anyway?</translation>
 <context>
     <name>any-context</name>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="161"/>
+        <location filename="../src/mainwindow/application.cpp" line="167"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="106"/>
         <source>undo</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="163"/>
+        <location filename="../src/mainwindow/application.cpp" line="169"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="107"/>
         <source>redo</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="167"/>
+        <location filename="../src/mainwindow/application.cpp" line="173"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="102"/>
         <source>new document</source>
         <translation>New Scene</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="169"/>
+        <location filename="../src/mainwindow/application.cpp" line="175"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="103"/>
         <source>save document</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="171"/>
+        <location filename="../src/mainwindow/application.cpp" line="177"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="104"/>
         <source>save document as</source>
         <translation>Save as ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="173"/>
+        <location filename="../src/mainwindow/application.cpp" line="179"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="105"/>
         <source>load document</source>
         <translation>Open ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="175"/>
+        <location filename="../src/mainwindow/application.cpp" line="181"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="89"/>
         <source>make smooth</source>
         <translation>Adjust tangents cubic</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="176"/>
+        <location filename="../src/mainwindow/application.cpp" line="182"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="90"/>
         <source>make linear</source>
         <translation>Vanish tangents</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="177"/>
+        <location filename="../src/mainwindow/application.cpp" line="183"/>
         <source>remove points</source>
         <translation>Remove points</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="179"/>
+        <location filename="../src/mainwindow/application.cpp" line="185"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="91"/>
         <source>subdivide</source>
         <translation>Subdivide</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="180"/>
+        <location filename="../src/mainwindow/application.cpp" line="186"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="114"/>
         <source>evaluate</source>
         <translation>Evaluate</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="181"/>
+        <location filename="../src/mainwindow/application.cpp" line="187"/>
         <source>show keybindings dialog</source>
         <translation>Show key bindings dialog</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="183"/>
+        <location filename="../src/mainwindow/application.cpp" line="189"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="112"/>
         <source>previous tool</source>
         <translation>Previous tool</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="185"/>
+        <location filename="../src/mainwindow/application.cpp" line="191"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="92"/>
         <source>select all</source>
         <translation>Select all</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="186"/>
+        <location filename="../src/mainwindow/application.cpp" line="192"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="93"/>
         <source>deselect all</source>
         <translation>Deselect all</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="187"/>
+        <location filename="../src/mainwindow/application.cpp" line="193"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="94"/>
         <source>invert selection</source>
         <translation>Invert selection</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="195"/>
+        <location filename="../src/mainwindow/application.cpp" line="201"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="115"/>
         <source>reset viewport</source>
         <translation>Reset viewport</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="165"/>
+        <location filename="../src/mainwindow/application.cpp" line="171"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="71"/>
         <source>remove selection</source>
         <translation>Remove selection</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="189"/>
+        <location filename="../src/mainwindow/application.cpp" line="195"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="108"/>
         <source>new style</source>
         <translation>New Style</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="193"/>
+        <location filename="../src/mainwindow/application.cpp" line="199"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="72"/>
         <source>convert objects</source>
         <translation>Convert objects</translation>
@@ -1117,33 +1117,33 @@ Remove the selected items anyway?</translation>
         <translation>Pending changes will be lost if they are not saved.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="96"/>
-        <location filename="../src/mainwindow/application.cpp" line="149"/>
+        <location filename="../src/mainwindow/application.cpp" line="98"/>
+        <location filename="../src/mainwindow/application.cpp" line="155"/>
         <source>Error.</source>
         <translation>Error.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="97"/>
+        <location filename="../src/mainwindow/application.cpp" line="99"/>
         <source>The scene could not be saved at &apos;%1&apos;.</source>
         <translation>The scene could not be saved at &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="121"/>
+        <location filename="../src/mainwindow/application.cpp" line="123"/>
         <source>Save scene as ...</source>
         <translation>Save scene as ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="140"/>
+        <location filename="../src/mainwindow/application.cpp" line="146"/>
         <source>Load scene ...</source>
         <translation>Load scene ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="150"/>
+        <location filename="../src/mainwindow/application.cpp" line="156"/>
         <source>Loading scene from &apos;%1&apos; failed.</source>
         <translation>Loading scene from &apos;%1&apos; failed.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="226"/>
+        <location filename="../src/mainwindow/application.cpp" line="232"/>
         <source>Add Tag</source>
         <translation>Add tag</translation>
     </message>

@@ -73,12 +73,9 @@ bool Application::can_close()
                              QMessageBox::Close | QMessageBox::Cancel | QMessageBox::Save,
                              QMessageBox::Save );
     switch (decision) {
-    case QMessageBox::Close:
-      return true;
-    case QMessageBox::Cancel:
-      return false;
-    case QMessageBox::Save:
-      return save();
+    case QMessageBox::Close: return true;
+    case QMessageBox::Cancel: return false;
+    case QMessageBox::Save: return save();
     default:
       LOG(ERROR) << "Unexpected response code: " << decision;
       return false;
@@ -129,12 +126,16 @@ bool Application::save_as()
 
 void Application::reset()
 {
+  if (!can_close()) { return; }
+
   LOG(INFO) << "reset scene.";
   scene.reset();
 }
 
 bool Application::load()
 {
+  if (!can_close()) { return false; }
+
   const QString filename =
     QFileDialog::getOpenFileName( m_main_window,
                                   tr("Load scene ..."),

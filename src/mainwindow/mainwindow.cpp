@@ -246,8 +246,12 @@ void MainWindow::save_state()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-  save_state();
-  QMainWindow::closeEvent(event);
+  if (Application::instance().can_close()) {
+    save_state();
+    event->accept();
+  } else {
+    event->ignore();
+  }
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* e)
