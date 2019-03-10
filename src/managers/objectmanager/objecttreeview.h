@@ -35,6 +35,7 @@ private:
   std::unique_ptr<ObjectTreeSelectionModel> m_selection_model;
   std::unique_ptr<ObjectQuickAccessDelegate> m_object_quick_access_delegate;
   std::unique_ptr<TagsItemDelegate> m_tags_item_delegate;
+  std::unique_ptr<QTimer> m_update_timer;
   ObjectTreeAdapter& m_model;
 
   QPoint m_mouse_press_pos;

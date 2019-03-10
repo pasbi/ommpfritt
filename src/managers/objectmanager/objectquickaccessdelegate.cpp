@@ -34,11 +34,14 @@ void draw_cross(QPainter& painter, const QRectF& area, bool is_enabled)
   }
   pen.setWidth(4.0);
   pen.setCosmetic(true);
+  pen.setCapStyle(Qt::RoundCap);
+
+  const auto rect = area - QMarginsF(0.02, 0.02, 0.02, 0.02);
 
   painter.save();
   painter.setPen(pen);
-  painter.drawLine(area.topLeft(), area.bottomRight());
-  painter.drawLine(area.topRight(), area.bottomLeft());
+  painter.drawLine(rect.topLeft(), rect.bottomRight());
+  painter.drawLine(rect.topRight(), rect.bottomLeft());
   painter.restore();
 }
 
@@ -74,7 +77,6 @@ namespace omm
 ObjectQuickAccessDelegate::ObjectQuickAccessDelegate(ObjectTreeView& view)
   : m_view(view)
 {
-
 }
 
 void ObjectQuickAccessDelegate::
@@ -97,18 +99,6 @@ paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &
 QSize ObjectQuickAccessDelegate::sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const
 {
   return QSize(-1, -1);
-}
-
-bool ObjectQuickAccessDelegate::editorEvent( QEvent *event, QAbstractItemModel *model,
-                                             const QStyleOptionViewItem &option,
-                                             const QModelIndex &index )
-{
-  switch (event->type()) {
-  case QEvent::MouseButtonPress:
-    return on_mouse_button_press(*static_cast<QMouseEvent*>(event));
-  default:
-    return false;
-  }
 }
 
 bool ObjectQuickAccessDelegate::on_mouse_button_press(QMouseEvent& event)

@@ -21,6 +21,7 @@
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
 #include <QHeaderView>
+#include <QTimer>
 
 namespace
 {
@@ -42,6 +43,7 @@ ObjectTreeView::ObjectTreeView(ObjectTreeAdapter& model)
   , m_selection_model(std::make_unique<ObjectTreeSelectionModel>(model).release())
   , m_object_quick_access_delegate(std::make_unique<ObjectQuickAccessDelegate>(*this))
   , m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this, *m_selection_model))
+  , m_update_timer(std::make_unique<QTimer>())
   , m_model(model)
 {
   setItemDelegateForColumn(1, m_object_quick_access_delegate.get());
@@ -53,6 +55,12 @@ ObjectTreeView::ObjectTreeView(ObjectTreeAdapter& model)
   setSelectionModel(m_selection_model.get());
   setSelectionBehavior(QAbstractItemView::SelectItems);
   setAutoExpandDelay(200);
+
+  connect(m_update_timer.get(), &QTimer::timeout, [this]() {
+    viewport()->update();
+  });
+  m_update_timer->start(200);
+
 }
 
 std::set<AbstractPropertyOwner*> ObjectTreeView::selected_items() const
@@ -99,11 +107,19 @@ void ObjectTreeView::paintEvent(QPaintEvent* e)
 
 void ObjectTreeView::mousePressEvent(QMouseEvent* e)
 {
-  if (e->button() == Qt::LeftButton) {
-    m_dragged_index = indexAt(e->pos());
-    m_mouse_press_pos = e->pos();
+  switch (columnAt(e->pos().x())) {
+    case 0:
+    case 2:
+      if (e->button() == Qt::LeftButton) {
+        m_dragged_index = indexAt(e->pos());
+        m_mouse_press_pos = e->pos();
+      }
+      ManagerItemView::mousePressEvent(e);
+      break;
+    case 1:
+      m_object_quick_access_delegate->on_mouse_button_press(*e);
+      break;
   }
-  ManagerItemView::mousePressEvent(e);
 }
 
 void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
