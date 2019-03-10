@@ -140,9 +140,11 @@ void convert_objects(Application& app)
     if (properties.size() > 0) {
       app.scene.submit<PropertiesCommand<ReferenceProperty>>(properties, converted.get());
     }
+    auto& converted_ref = *converted;
     context.subject.capture(std::move(converted));
     using object_tree_type = Tree<Object>;
     app.scene.submit<AddCommand<object_tree_type>>(app.scene.object_tree, std::move(context));
+    converted_ref.set_transformation(c->transformation());
   }
   const auto selection = ::transform<Object*, std::set>(convertables, ::identity);
   using remove_command = RemoveCommand<Tree<Object>>;
