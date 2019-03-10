@@ -36,7 +36,10 @@ void Instance::render(AbstractRenderer& renderer, const Style& default_style)
         options.styles.reserve(options.styles.size() + ostyles.size());
         options.styles.insert(options.styles.begin(), ostyles.begin(), ostyles.end());
       }
+      const auto o_transformation = o->transformation();
+      o->set_transformation(ObjectTransformation());
       o->render_recursive(renderer, options);
+      o->set_transformation(o_transformation);
     }
   }
 }
