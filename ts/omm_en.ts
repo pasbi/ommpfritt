@@ -553,19 +553,19 @@ Remove the selected items anyway?</translation>
         <translation>Tangent</translation>
     </message>
     <message>
-        <location filename="../src/keybindings/keybindings.cpp" line="178"/>
+        <location filename="../src/keybindings/keybindings.cpp" line="197"/>
         <source>name</source>
         <comment>keybindings</comment>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/keybindings/keybindings.cpp" line="179"/>
+        <location filename="../src/keybindings/keybindings.cpp" line="198"/>
         <source>context</source>
         <comment>keybindings</comment>
         <translation>Context</translation>
     </message>
     <message>
-        <location filename="../src/keybindings/keybindings.cpp" line="180"/>
+        <location filename="../src/keybindings/keybindings.cpp" line="199"/>
         <source>sequence</source>
         <comment>keybindings</comment>
         <translation>Sequence</translation>

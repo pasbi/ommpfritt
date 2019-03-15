@@ -34,6 +34,11 @@ private:
   const std::function<std::string(void)> m_getter;
 };
 
+}  // namespace
+
+namespace omm
+{
+
 class ActionWidget : public QWidget
 {
 public:
@@ -71,13 +76,6 @@ public:
     setMouseTracking(true);
   }
 
-  void enterEvent(QEvent* event) override { set_highlighted(true); }
-  void leaveEvent(QEvent* event) override { set_highlighted(false); }
-
-private:
-  LiveLabel* m_name_label;
-  LiveLabel* m_shortcut_label;
-  QLabel* m_icon_label;
   void set_highlighted(bool h)
   {
     m_name_label->setBackgroundRole(h ? QPalette::Highlight : QPalette::Window);
@@ -89,12 +87,13 @@ private:
     m_name_label->setAutoFillBackground(h);
     m_shortcut_label->setAutoFillBackground(h);
   }
+
+private:
+  LiveLabel* m_name_label;
+  LiveLabel* m_shortcut_label;
+  QLabel* m_icon_label;
+
 };
-
-}
-
-namespace omm
-{
 
 Action::Action(const KeyBinding& key_binding) : QWidgetAction(nullptr), m_key_binding(key_binding)
 {
@@ -102,7 +101,14 @@ Action::Action(const KeyBinding& key_binding) : QWidgetAction(nullptr), m_key_bi
 
 QWidget* Action::createWidget(QWidget* parent)
 {
-  return std::make_unique<ActionWidget>(parent, m_key_binding).release();
+  auto aw = std::make_unique<ActionWidget>(parent, m_key_binding);
+  m_action_widget = aw.get();
+  return aw.release();
+}
+
+void Action::set_highlighted(bool h)
+{
+  if (m_action_widget != nullptr) { m_action_widget->set_highlighted(h); }
 }
 
 }  // namespace omm
