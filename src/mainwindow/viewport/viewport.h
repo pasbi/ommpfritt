@@ -33,6 +33,12 @@ public:
   ~Viewport() = default;
   Scene& scene() const;
   void reset();
+  BoundingBox visible_rect(const arma::vec2 margin = { 0.0, 0.0 }) const;
+  void set_transformation(const ObjectTransformation& transformation);
+
+  // y grows towards top
+  static const ObjectTransformation default_transformation;
+  ObjectTransformation viewport_transformation() const;
 
 protected:
 #if USE_OPENGL
@@ -50,7 +56,6 @@ private:
   ObjectTransformation m_viewport_transformation;
   MousePanController m_pan_controller;
   ViewportRenderer m_renderer;
-  ObjectTransformation viewport_transformation() const;
 };
 
 }  // namespace omm

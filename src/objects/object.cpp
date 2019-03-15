@@ -109,7 +109,7 @@ ObjectTransformation Object::global_transformation(const bool skip_root) const
   } else {
     // TODO caching could gain some speed
     //  invalidate cache if local transformation is set or parent changes
-    return parent().global_transformation().apply(transformation());
+    return parent().global_transformation(skip_root).apply(transformation());
   }
 }
 
@@ -130,7 +130,7 @@ void Object
   } else {
     try {
       local_transformation =
-        parent().global_transformation().inverted().apply(global_transformation);
+        parent().global_transformation(skip_root).inverted().apply(global_transformation);
     } catch (const std::runtime_error& e) {
       assert(false);
     }

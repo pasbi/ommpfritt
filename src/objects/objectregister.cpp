@@ -6,6 +6,7 @@
 #include "objects/cloner.h"
 #include "objects/path.h"
 #include "objects/proceduralpath.h"
+#include "objects/view.h"
 
 namespace omm
 {
@@ -20,6 +21,7 @@ void register_objects()
   REGISTER_OBJECT(Cloner);
   REGISTER_OBJECT(Path);
   REGISTER_OBJECT(ProceduralPath);
+  REGISTER_OBJECT(View);
 #undef REGISTER_OBJECT
 }
 

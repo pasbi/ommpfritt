@@ -259,6 +259,9 @@ ObjectTransformation ObjectTransformation::normalized() const
     normalized.set_scaling(-normalized.scaling());
     normalized.set_rotation(normalized.rotation() + M_PI);
   }
+
+  while (normalized.rotation() > M_PI) { normalized.rotate(-2*M_PI); }
+  while (normalized.rotation() < -M_PI) { normalized.rotate(2*M_PI); }
   return normalized;
 }
 

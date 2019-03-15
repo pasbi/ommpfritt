@@ -11,10 +11,6 @@
 namespace
 {
 
- // y grows towards top
-static const omm::ObjectTransformation default_transformation
-  = omm::ObjectTransformation().scaled(arma::vec2{ 1.0, -1.0 });
-
 arma::vec2 point2vec(const QPoint& p)
 {
   return arma::vec2 {
@@ -34,6 +30,9 @@ void set_cursor_position(QWidget& widget, const arma::vec2& pos)
 
 namespace omm
 {
+
+const ObjectTransformation Viewport::default_transformation
+  = ObjectTransformation().scaled(arma::vec2{ 1.0, -1.0 });
 
 Viewport::Viewport(Scene& scene)
   : m_scene(scene)
@@ -130,19 +129,23 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
 
 ObjectTransformation Viewport::viewport_transformation() const
 {
-  const auto center = arma::vec2{ static_cast<double>(width()) / 2.0,
-                                  static_cast<double>(height()) / 2.0 };
-  return m_viewport_transformation.translated(center);
+  return m_viewport_transformation.translated(arma::vec2{ width() / 2.0, height() / 2.0 });
 }
 
-Scene& Viewport::scene() const
+Scene& Viewport::scene() const { return m_scene; }
+void Viewport::reset() { m_viewport_transformation = default_transformation; }
+
+void Viewport::set_transformation(const ObjectTransformation& transformation)
 {
-  return m_scene;
+  m_viewport_transformation = transformation;
+  m_viewport_transformation.normalized();
 }
 
-void Viewport::reset()
+BoundingBox Viewport::visible_rect(const arma::vec2 margin) const
 {
-  m_viewport_transformation = default_transformation;
+  const arma::vec2 v { double(QWidget::width()), double(QWidget::height()) };
+  BoundingBox bb({ margin, v - margin});
+  return viewport_transformation().inverted().apply(bb);
 }
 
 }  // namespace omm

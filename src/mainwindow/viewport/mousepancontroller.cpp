@@ -40,7 +40,7 @@ MousePanController::apply(const arma::vec2& current_cursor_position, ObjectTrans
   if (m_action == Action::Pan) {
     t.translate(delta);
   } else if (m_action == Action::Zoom) {
-    t.translate((1-scale) * t.scaling() % m_global_start_position);
+    t = t.apply(ObjectTransformation().translated((1-scale) * m_global_start_position));
     t.scale(arma::vec2{ scale, scale });
   }
   return delta;
