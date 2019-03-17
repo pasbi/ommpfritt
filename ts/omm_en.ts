@@ -561,6 +561,22 @@ Remove the selected items anyway?</translation>
         <translation>Alignment</translation>
     </message>
     <message>
+        <location filename="../src/objects/mirror.cpp" line="29"/>
+        <source>Horizontal</source>
+        <translation>Horizontal</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/mirror.cpp" line="30"/>
+        <source>Vertical</source>
+        <translation>Vertical</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/mirror.cpp" line="31"/>
+        <source>Direction</source>
+        <translation>Direction</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/mirror.cpp" line="32"/>
         <location filename="../src/tools/selecttool.cpp" line="139"/>
         <source>Mirror</source>
         <translation>Mirror</translation>
@@ -1095,6 +1111,11 @@ Remove the selected items anyway?</translation>
         <location filename="../src/objects/view.h" line="19"/>
         <source>View</source>
         <translation>View</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/mirror.h" line="22"/>
+        <source>Mirror</source>
+        <translation>Mirror</translation>
     </message>
 </context>
 <context>

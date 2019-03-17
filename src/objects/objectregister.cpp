@@ -7,6 +7,7 @@
 #include "objects/path.h"
 #include "objects/proceduralpath.h"
 #include "objects/view.h"
+#include "objects/mirror.h"
 
 namespace omm
 {
@@ -22,6 +23,7 @@ void register_objects()
   REGISTER_OBJECT(Path);
   REGISTER_OBJECT(ProceduralPath);
   REGISTER_OBJECT(View);
+  REGISTER_OBJECT(Mirror);
 #undef REGISTER_OBJECT
 }
 
