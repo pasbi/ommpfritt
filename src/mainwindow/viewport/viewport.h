@@ -33,7 +33,6 @@ public:
   ~Viewport() = default;
   Scene& scene() const;
   void reset();
-  BoundingBox visible_rect(const arma::vec2 margin = { 0.0, 0.0 }) const;
   void set_transformation(const ObjectTransformation& transformation);
 
   // y grows towards top

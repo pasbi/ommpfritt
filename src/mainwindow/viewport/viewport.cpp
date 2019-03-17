@@ -141,11 +141,4 @@ void Viewport::set_transformation(const ObjectTransformation& transformation)
   m_viewport_transformation.normalized();
 }
 
-BoundingBox Viewport::visible_rect(const arma::vec2 margin) const
-{
-  const arma::vec2 v { double(QWidget::width()), double(QWidget::height()) };
-  BoundingBox bb({ margin, v - margin});
-  return viewport_transformation().inverted().apply(bb);
-}
-
 }  // namespace omm
