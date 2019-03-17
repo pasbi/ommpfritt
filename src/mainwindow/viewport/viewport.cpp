@@ -39,7 +39,7 @@ Viewport::Viewport(Scene& scene)
   , m_timer(std::make_unique<QTimer>())
   , m_viewport_transformation(default_transformation)
   , m_pan_controller([this](const arma::vec2& pos) { set_cursor_position(*this, pos); })
-  , m_renderer(scene)
+  , m_renderer(scene, AbstractRenderer::Category::All)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   setFocusPolicy(Qt::StrongFocus);

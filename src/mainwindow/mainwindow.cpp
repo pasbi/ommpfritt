@@ -103,6 +103,8 @@ std::vector<std::string> MainWindow::main_menu_entries()
     "file/" QT_TRANSLATE_NOOP("any-context", "save document"),
     "file/" QT_TRANSLATE_NOOP("any-context", "save document as"),
     "file/" QT_TRANSLATE_NOOP("any-context", "load document"),
+    "file/"s + KeyBindings::SEPARATOR,
+    "file/" QT_TRANSLATE_NOOP("any-context", "export"),
     QT_TRANSLATE_NOOP("menu_name", "edit")"/" QT_TRANSLATE_NOOP("any-context", "undo"),
     "edit/" QT_TRANSLATE_NOOP("any-context", "redo"),
     QT_TRANSLATE_NOOP("menu_name", "object")"/" QT_TRANSLATE_NOOP("any-context", "new style"),

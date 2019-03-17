@@ -114,6 +114,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
 
 void Cloner::render(AbstractRenderer& renderer, const Style& style)
 {
+  renderer.set_category(AbstractRenderer::Category::Objects);
   if (is_active()) {
     assert(&renderer.scene == scene());
     for (auto&& clone : make_clones()) { clone->render_recursive(renderer, style); }

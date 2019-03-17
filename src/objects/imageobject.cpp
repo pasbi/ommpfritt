@@ -15,6 +15,7 @@ ImageObject::ImageObject(Scene* scene) : Object(scene)
 
 void ImageObject::render(AbstractRenderer& renderer, const Style& style)
 {
+  renderer.set_category(AbstractRenderer::Category::Objects);
   if (is_active()) {
     const auto path = property(FILEPATH_PROPERTY_KEY).value<std::string>();
     renderer.draw_image(path, arma::vec2{0.0, 0.0}, arma::vec2{1.0, 1.0});

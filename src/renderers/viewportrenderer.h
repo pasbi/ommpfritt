@@ -12,7 +12,7 @@ namespace omm
 class ViewportRenderer : public AbstractRenderer
 {
 public:
-  explicit ViewportRenderer(Scene& scene);
+  explicit ViewportRenderer(Scene& scene, Category filter);
   void draw_spline( const std::vector<Point>& points, const Style& style,
                     bool closed = false ) override;
   void draw_rectangle(const arma::vec2& pos, const double radius, const Style& style) override;

@@ -16,9 +16,20 @@
 #include "tags/tag.h"
 #include "keybindings/keybindingsdialog.h"
 #include "mainwindow/viewport/viewport.h"
+#include "mainwindow/exportdialog.h"
 
 namespace {
 constexpr auto FILE_ENDING = ".omm";
+
+void show_export_dialog(omm::Application& app)
+{
+  static std::unique_ptr<QDialog> export_dialog;
+  if (!export_dialog) {
+     export_dialog = std::make_unique<omm::ExportDialog>(app.scene, app.main_window());
+  }
+  export_dialog->exec();
+}
+
 }
 
 namespace omm
@@ -173,6 +184,7 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
         [](Application& app) { app.save_as(); } ),
     AI( QT_TRANSLATE_NOOP("any-context", "load document"),    ks("Ctrl+O"),
         [](Application& app) { app.load(); } ),
+    AI( QT_TRANSLATE_NOOP("any-context", "export"),           ks("Ctrl+E"), show_export_dialog),
     AI( QT_TRANSLATE_NOOP("any-context", "make smooth"),      ks(), &actions::make_smooth),
     AI( QT_TRANSLATE_NOOP("any-context", "make linear"),      ks(), &actions::make_linear),
     AI( QT_TRANSLATE_NOOP("any-context", "remove points"),    ks("Del"),

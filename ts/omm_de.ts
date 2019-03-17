@@ -18,6 +18,29 @@
     </message>
 </context>
 <context>
+    <name>ExportDialog</name>
+    <message>
+        <location filename="../build/libommpfritt_autogen/include/mainwindow/ui_exportdialog.h" line="118"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../build/libommpfritt_autogen/include/mainwindow/ui_exportdialog.h" line="119"/>
+        <source>preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../build/libommpfritt_autogen/include/mainwindow/ui_exportdialog.h" line="120"/>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../build/libommpfritt_autogen/include/mainwindow/ui_exportdialog.h" line="121"/>
+        <source>Export as ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>FloatProperty</name>
     <message>
         <location filename="../src/properties/floatproperty.h" line="23"/>
@@ -571,7 +594,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Sequenz</translation>
     </message>
     <message>
-        <location filename="../src/widgets/numericedit.h" line="115"/>
+        <location filename="../src/widgets/numericedit.h" line="118"/>
         <source>&lt; invalid &gt;</source>
         <comment>property</comment>
         <translation>Ungültig</translation>
@@ -647,7 +670,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <location filename="../src/objects/instance.cpp" line="21"/>
         <source>combine styles</source>
         <comment>Instance</comment>
-        <translation type="unfinished"></translation>
+        <translation>Stile kombinieren</translation>
     </message>
     <message>
         <location filename="../src/propertywidgets/numericpropertywidget/numericpropertyconfigwidget.h" line="37"/>
@@ -707,13 +730,13 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Code</translation>
     </message>
     <message>
-        <location filename="../src/widgets/referencelineedit.cpp" line="43"/>
+        <location filename="../src/widgets/referencelineedit.cpp" line="25"/>
         <source>&lt; none &gt;</source>
         <comment>ReferenceLineEdit</comment>
         <translation>&lt; Keine &gt;</translation>
     </message>
     <message>
-        <location filename="../src/widgets/referencelineedit.cpp" line="68"/>
+        <location filename="../src/widgets/referencelineedit.cpp" line="74"/>
         <source>&lt;multiple values&gt;</source>
         <comment>ReferenceLineEdit</comment>
         <translation>Mehrere Werte</translation>
@@ -761,24 +784,24 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <message>
         <location filename="../src/objects/view.cpp" line="17"/>
         <source>size</source>
-        <translation type="unfinished"></translation>
+        <translation>Größe</translation>
     </message>
     <message>
         <location filename="../src/objects/view.cpp" line="18"/>
         <location filename="../src/objects/view.cpp" line="21"/>
         <location filename="../src/objects/view.cpp" line="24"/>
         <source>view</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansicht</translation>
     </message>
     <message>
         <location filename="../src/objects/view.cpp" line="20"/>
         <source>to viewport</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansichtsfenster anpassen</translation>
     </message>
     <message>
         <location filename="../src/objects/view.cpp" line="23"/>
         <source>from viewport</source>
-        <translation type="unfinished"></translation>
+        <translation>An Ansichtsfenster anpassen</translation>
     </message>
 </context>
 <context>
@@ -832,125 +855,125 @@ Soll die Selektion troztdem entfernt werden?</translation>
 <context>
     <name>any-context</name>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="163"/>
+        <location filename="../src/mainwindow/application.cpp" line="173"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="108"/>
         <source>undo</source>
         <translation>Rückgängig</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="165"/>
+        <location filename="../src/mainwindow/application.cpp" line="175"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="109"/>
         <source>redo</source>
         <translation>Wiederholen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="169"/>
+        <location filename="../src/mainwindow/application.cpp" line="179"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="102"/>
         <source>new document</source>
         <translation>Neue Szene</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="171"/>
+        <location filename="../src/mainwindow/application.cpp" line="181"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="103"/>
         <source>save document</source>
         <translation>Speichern</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="173"/>
+        <location filename="../src/mainwindow/application.cpp" line="183"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="104"/>
         <source>save document as</source>
         <translation>Speichern als ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="175"/>
+        <location filename="../src/mainwindow/application.cpp" line="185"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="105"/>
         <source>load document</source>
         <translation>Öffnen ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="177"/>
+        <location filename="../src/mainwindow/application.cpp" line="187"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="107"/>
         <source>export</source>
-        <translation type="unfinished"></translation>
+        <translation>exportieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="179"/>
+        <location filename="../src/mainwindow/application.cpp" line="188"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="89"/>
         <source>make smooth</source>
         <translation>Tangenten kubisch anpassen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="180"/>
+        <location filename="../src/mainwindow/application.cpp" line="189"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="90"/>
         <source>make linear</source>
         <translation>Tangenten entfernen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="181"/>
+        <location filename="../src/mainwindow/application.cpp" line="190"/>
         <source>remove points</source>
         <translation>Punkte entfernen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="183"/>
+        <location filename="../src/mainwindow/application.cpp" line="192"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="91"/>
         <source>subdivide</source>
         <translation>Unterteilen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="184"/>
+        <location filename="../src/mainwindow/application.cpp" line="193"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="116"/>
         <source>evaluate</source>
         <translation>Auswerten</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="185"/>
+        <location filename="../src/mainwindow/application.cpp" line="194"/>
         <source>show keybindings dialog</source>
         <translation>Tastenkürzeldialog öffnen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="187"/>
+        <location filename="../src/mainwindow/application.cpp" line="196"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="114"/>
         <source>previous tool</source>
         <translation>Vorheriges Werkzeug</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="189"/>
+        <location filename="../src/mainwindow/application.cpp" line="198"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="92"/>
         <source>select all</source>
         <translation>Alles selektieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="190"/>
+        <location filename="../src/mainwindow/application.cpp" line="199"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="93"/>
         <source>deselect all</source>
         <translation>Alles deselektieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="191"/>
+        <location filename="../src/mainwindow/application.cpp" line="200"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="94"/>
         <source>invert selection</source>
         <translation>Selektion invertieren</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="199"/>
+        <location filename="../src/mainwindow/application.cpp" line="208"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="117"/>
         <source>reset viewport</source>
         <translation>Ansichtsfenster zurücksetzen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="167"/>
+        <location filename="../src/mainwindow/application.cpp" line="177"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="71"/>
         <source>remove selection</source>
         <translation>Selektion entfernen</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="193"/>
+        <location filename="../src/mainwindow/application.cpp" line="202"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="110"/>
         <source>new style</source>
         <translation>Neuer Style</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="197"/>
+        <location filename="../src/mainwindow/application.cpp" line="206"/>
         <location filename="../src/mainwindow/mainwindow.cpp" line="72"/>
         <source>convert objects</source>
         <translation>Objekte konvertieren</translation>
@@ -1071,7 +1094,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <message>
         <location filename="../src/objects/view.h" line="19"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Ansicht</translation>
     </message>
 </context>
 <context>
@@ -1140,45 +1163,78 @@ Soll die Selektion troztdem entfernt werden?</translation>
 <context>
     <name>omm::Application</name>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="71"/>
+        <location filename="../src/mainwindow/application.cpp" line="81"/>
         <source>Question.</source>
         <translation>Frage.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="72"/>
+        <location filename="../src/mainwindow/application.cpp" line="82"/>
         <source>Some pending changes will be lost if you don&apos;t save.What do you want me to do?</source>
         <translation>Nicht gesicherte Änderungen gehen verloren wenn nicht gespeichert wird.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="94"/>
-        <location filename="../src/mainwindow/application.cpp" line="151"/>
+        <location filename="../src/mainwindow/application.cpp" line="104"/>
+        <location filename="../src/mainwindow/application.cpp" line="161"/>
         <source>Error.</source>
         <translation>Fehler.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="95"/>
+        <location filename="../src/mainwindow/application.cpp" line="105"/>
         <source>The scene could not be saved at &apos;%1&apos;.</source>
         <translation>Die Szene konnte nicht als &apos;%1&apos; gespeichert werden.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="119"/>
+        <location filename="../src/mainwindow/application.cpp" line="129"/>
         <source>Save scene as ...</source>
         <translation>Szene speichern als ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="142"/>
+        <location filename="../src/mainwindow/application.cpp" line="152"/>
         <source>Load scene ...</source>
         <translation>Szene laden ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="152"/>
+        <location filename="../src/mainwindow/application.cpp" line="162"/>
         <source>Loading scene from &apos;%1&apos; failed.</source>
         <translation>Szene konnte nicht von &apos;%1&apos; geladen werden.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="230"/>
+        <location filename="../src/mainwindow/application.cpp" line="239"/>
         <source>Add Tag</source>
         <translation>Tag hinzufügen</translation>
+    </message>
+</context>
+<context>
+    <name>omm::ExportDialog</name>
+    <message>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="78"/>
+        <source>Viewport</source>
+        <translation>Ansichtsfenster</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="88"/>
+        <source>Save as ...</source>
+        <translation>Speichern als ...</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="187"/>
+        <source>Export image ...</source>
+        <translation>Bild exportieren ...</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="190"/>
+        <source>Images (*.png *.jpg)</source>
+        <translation>Bilder (*.png *.jpg)</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="201"/>
+        <source>Writing image &apos;%1&apos; failed.</source>
+        <translation>Bild speichern unter &apos;%1&apos; fehlgeschlagen.</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="202"/>
+        <source>Export image</source>
+        <translation>Bild exportieren</translation>
     </message>
 </context>
 <context>

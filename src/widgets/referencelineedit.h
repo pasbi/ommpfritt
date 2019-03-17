@@ -26,6 +26,7 @@ public:
   void structure_has_changed() override;
   void set_filter(AbstractPropertyOwner::Kind allowed_kinds);
   void set_filter(AbstractPropertyOwner::Flag required_flags);
+  void set_null_label(const std::string& value);
 
 protected:
   void set_inconsistent_value() override;
@@ -43,6 +44,7 @@ private:
 
   std::vector<omm::AbstractPropertyOwner*> collect_candidates();
   void update_candidates();
+  std::string m_null_label;
 };
 
 }  // namespace omm

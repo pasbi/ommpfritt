@@ -22,12 +22,18 @@ ReferenceLineEdit::ReferenceLineEdit(Scene& scene, const on_value_changed_t& on_
   connect( this, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
            [this](int index) { set_value(m_possible_references[index]); } );
   m_scene.Observed<AbstractSimpleStructureObserver>::register_observer(*this);
-  update_candidates();
+  set_null_label(QObject::tr("< none >", "ReferenceLineEdit").toStdString());
 }
 
 ReferenceLineEdit::~ReferenceLineEdit()
 {
   m_scene.Observed<AbstractSimpleStructureObserver>::unregister_observer(*this);
+}
+
+void ReferenceLineEdit::set_null_label(const std::string& value)
+{
+  m_null_label = value;
+  update_candidates();
 }
 
 void ReferenceLineEdit::update_candidates()
@@ -40,7 +46,7 @@ void ReferenceLineEdit::update_candidates()
     if (candidate) {
       addItem(QString::fromStdString(candidate->name()));
     } else {
-      addItem(QObject::tr("< none >", "ReferenceLineEdit"));
+      addItem(QString::fromStdString(m_null_label));
     }
   }
   set_value(value_safe);

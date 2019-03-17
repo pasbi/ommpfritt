@@ -27,7 +27,7 @@ public:
                     Item = Tag | Style | Object, All = Item | Tool };
 
   enum class Flag { None = 0x0,
-                    Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4 };
+                    Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4, IsView = 0x8 };
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PropertyOwner", "AbstractPropertyOwner");
   virtual ~AbstractPropertyOwner() = default;

@@ -69,6 +69,7 @@ Path::Path(Scene* scene) : Object(scene)
 
 void Path::render(AbstractRenderer& renderer, const Style& style)
 {
+  renderer.set_category(AbstractRenderer::Category::Objects);
   renderer.draw_spline(m_points, style, property(IS_CLOSED_PROPERTY_KEY).value<bool>());
 }
 

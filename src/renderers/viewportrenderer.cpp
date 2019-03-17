@@ -12,7 +12,10 @@
 namespace omm
 {
 
-ViewportRenderer::ViewportRenderer(Scene& scene) : AbstractRenderer(scene) {}
+ViewportRenderer::ViewportRenderer(Scene& scene, Category filter)
+  : AbstractRenderer(scene, filter)
+{
+}
 
 void ViewportRenderer::push_transformation(const ObjectTransformation& transformation)
 {
@@ -29,6 +32,8 @@ void ViewportRenderer::pop_transformation()
 void
 ViewportRenderer::draw_spline(const std::vector<Point>& points, const Style& style, bool closed)
 {
+  if (!is_active()) { return; }
+
   QPainterPath path;
   if (points.size() > 1) {
     path.moveTo(to_qpoint(points.front().position));
@@ -58,6 +63,8 @@ ViewportRenderer::draw_spline(const std::vector<Point>& points, const Style& sty
 void
 ViewportRenderer::draw_rectangle(const arma::vec2& pos, const double radius, const Style& style)
 {
+  if (!is_active()) { return; }
+
   // TODO I guess using QPainter::drawRect is faster.
   // However, QPainter::drawRect interface is strange, so using it is not trivial, but it shouldn't
   //  be too hard, either.
@@ -70,6 +77,8 @@ ViewportRenderer::draw_rectangle(const arma::vec2& pos, const double radius, con
 
 void ViewportRenderer::draw_circle(const arma::vec2& pos, const double radius, const Style& style)
 {
+  if (!is_active()) { return; }
+
   m_painter->save();
   m_painter->setPen(make_pen(style));
   m_painter->setBrush(make_brush(style));
@@ -80,6 +89,8 @@ void ViewportRenderer::draw_circle(const arma::vec2& pos, const double radius, c
 void ViewportRenderer
 ::draw_image(const std::string& filename, const arma::vec2& pos, const arma::vec2& size)
 {
+  if (!is_active()) { return; }
+
   QRectF rect(to_qpoint(pos), to_qpoint(pos + size));
   m_painter->drawImage(rect, m_image_cache.load(filename));
 }

@@ -69,6 +69,7 @@ mouse_release(const arma::vec2& pos, const QMouseEvent& e)
 
 void Tool::draw(AbstractRenderer& renderer) const
 {
+  renderer.set_category(AbstractRenderer::Category::Handles);
   const ObjectTransformation transformation = this->transformation();
   for (auto&& handle : handles) {
     if (handle->is_enabled()) {

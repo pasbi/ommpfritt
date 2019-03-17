@@ -24,6 +24,7 @@ Instance::Instance(Scene* scene)
 
 void Instance::render(AbstractRenderer& renderer, const Style& default_style)
 {
+  renderer.set_category(AbstractRenderer::Category::Objects);
   if (is_active()) {
     const auto o = referenced_object();
     if (o != nullptr) {

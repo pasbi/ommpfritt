@@ -6,6 +6,7 @@
 #include "geometry/objecttransformation.h"
 #include "geometry/boundingbox.h"
 #include "geometry/point.h"
+#include "common.h"
 
 namespace omm
 {
@@ -16,7 +17,8 @@ class Scene;
 class AbstractRenderer
 {
 public:
-  explicit AbstractRenderer(Scene& scene);
+  enum class Category { None = 0x0, Objects = 0x1, Handles = 0x2, All = Objects | Handles };
+  explicit AbstractRenderer(Scene& scene, Category filter);
   void render();
   const BoundingBox& bounding_box() const;
 
@@ -34,8 +36,20 @@ public:
   void draw_image(const std::string& filename, const arma::vec2& pos, const arma::vec2& size) = 0;
   Scene& scene;
 
+  void set_category(Category category);
+  void end_draw_handles();
+
+protected:
+  bool is_active() const;
+
 private:
   std::stack<ObjectTransformation> m_transformation_stack;
+  Category m_current_category;
+  const Category m_enabled_categories;
+
 };
 
 }  // namespace omm
+
+template<> struct EnableBitMaskOperators<omm::AbstractRenderer::Category> : std::true_type {};
+
