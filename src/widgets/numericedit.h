@@ -53,7 +53,10 @@ public:
 
     connect(this, &QLineEdit::textEdited, [this](const QString& text) {
       const auto value = this->value();
-      if (!std::isnan(value)) { m_on_value_changed(value); }
+      if (value != m_last_value) {
+        m_last_value = value;
+        m_on_value_changed(value);
+      }
     });
 
     connect(this, &QLineEdit::editingFinished, [this]() { set_value(value()); });
@@ -107,8 +110,8 @@ public:
     } else {
       if (value != this->value() || !hasFocus()) {
         set_text(value);
+        if (hasFocus()) { m_on_value_changed(value); }
       }
-      m_on_value_changed(value);
     }
   }
 
@@ -224,6 +227,7 @@ private:
   const on_value_changed_t m_on_value_changed;
   void set_text(const value_type& value)
   {
+    m_last_value = value;
     std::ostringstream ss;
     ss << std::setprecision(3) << std::fixed << value_type(m_multiplier * value);
     setText(QString::fromStdString(ss.str()));
@@ -263,6 +267,9 @@ public:
     connect(max_edit.get(), &QLineEdit::editingFinished, on_upper_changed);
     return std::pair(std::move(min_edit), std::move(max_edit));
   }
+
+private:
+  ValueType m_last_value;
 };
 
 }  // namespace
