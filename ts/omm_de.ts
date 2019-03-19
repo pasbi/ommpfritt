@@ -561,22 +561,22 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Ausrichtung</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="29"/>
+        <location filename="../src/objects/mirror.cpp" line="30"/>
         <source>Horizontal</source>
         <translation>Horizontal</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="30"/>
+        <location filename="../src/objects/mirror.cpp" line="31"/>
         <source>Vertical</source>
         <translation>Vertikal</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="31"/>
+        <location filename="../src/objects/mirror.cpp" line="32"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="32"/>
+        <location filename="../src/objects/mirror.cpp" line="33"/>
         <location filename="../src/tools/selecttool.cpp" line="139"/>
         <source>Mirror</source>
         <translation>Spiegeln</translation>

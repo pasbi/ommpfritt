@@ -27,7 +27,7 @@ public:
   std::unique_ptr<Object> convert() override;
 
 private:
-
+  std::unique_ptr<Object> make_reflection();
 };
 
 }  // namespace omm
