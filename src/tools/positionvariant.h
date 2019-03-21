@@ -36,7 +36,6 @@ class PointPositions : public AbstractPositions<Point>
 public:
   using AbstractPositions<Point>::AbstractPositions;
   void make_handles(handles_type& handles, Tool& tool) const;
-  void transform(const ObjectTransformation& transformation);
   void clear_selection();
   arma::vec2 selection_center() const;
   double selection_rotation() const;
@@ -52,11 +51,11 @@ class ObjectPositions : public AbstractPositions<Object>
 public:
   using AbstractPositions<Object>::AbstractPositions;
   void make_handles(handles_type& handles, Tool& tool) const;
-  void transform(const ObjectTransformation& transformation);
   void clear_selection();
   arma::vec2 selection_center() const;
   double selection_rotation() const;
   bool is_empty() const;
+
 };
 
 }  // namespace omm

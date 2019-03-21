@@ -51,6 +51,9 @@ public:
   bool is_closed() const;
   Flag flags() const override;
 
+  void set_global_axis_transformation( const ObjectTransformation& global_transformation,
+                                       const bool skip_root = false ) override;
+
 private:
   std::vector<Point> m_points;
   /**

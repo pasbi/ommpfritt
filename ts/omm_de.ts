@@ -18,29 +18,6 @@
     </message>
 </context>
 <context>
-    <name>ExportDialog</name>
-    <message>
-        <location filename="../build/libommpfritt_autogen/include/mainwindow/ui_exportdialog.h" line="118"/>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/libommpfritt_autogen/include/mainwindow/ui_exportdialog.h" line="119"/>
-        <source>preview</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/libommpfritt_autogen/include/mainwindow/ui_exportdialog.h" line="120"/>
-        <source>X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../build/libommpfritt_autogen/include/mainwindow/ui_exportdialog.h" line="121"/>
-        <source>Export as ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>FloatProperty</name>
     <message>
         <location filename="../src/properties/floatproperty.h" line="23"/>
@@ -158,7 +135,7 @@
         <translation>Tags verschieben</translation>
     </message>
     <message>
-        <location filename="../src/commands/objectstransformationcommand.cpp" line="48"/>
+        <location filename="../src/commands/objectstransformationcommand.cpp" line="43"/>
         <source>ObjectsTransformationCommand</source>
         <translation>Objekte transformieren</translation>
     </message>
@@ -422,7 +399,7 @@
         <translation>Scherung</translation>
     </message>
     <message>
-        <location filename="../src/objects/object.cpp" line="195"/>
+        <location filename="../src/objects/object.cpp" line="209"/>
         <source>Failed to retrieve object type &apos;%1&apos;.</source>
         <translation>Objekttyp &apos;%1&apos; konnte nicht abgerufen werden.</translation>
     </message>
@@ -540,25 +517,41 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
     <message>
         <location filename="../src/tools/brushselecttool.cpp" line="19"/>
-        <location filename="../src/tools/selecttool.cpp" line="74"/>
-        <location filename="../src/tools/selecttool.cpp" line="141"/>
+        <location filename="../src/tools/selecttool.cpp" line="76"/>
+        <location filename="../src/tools/selecttool.cpp" line="126"/>
+        <location filename="../src/tools/selecttool.cpp" line="154"/>
         <source>tool</source>
         <translation>Werkzeug</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="72"/>
+        <location filename="../src/tools/selecttool.cpp" line="74"/>
         <source>global</source>
         <translation>Global</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="72"/>
+        <location filename="../src/tools/selecttool.cpp" line="74"/>
         <source>local</source>
         <translation>Lokal</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="73"/>
+        <location filename="../src/tools/selecttool.cpp" line="75"/>
         <source>Alignment</source>
         <translation>Ausrichtung</translation>
+    </message>
+    <message>
+        <location filename="../src/tools/selecttool.cpp" line="124"/>
+        <source>Object</source>
+        <translation>Objekt</translation>
+    </message>
+    <message>
+        <location filename="../src/tools/selecttool.cpp" line="124"/>
+        <source>Axis</source>
+        <translation>Achse</translation>
+    </message>
+    <message>
+        <location filename="../src/tools/selecttool.cpp" line="125"/>
+        <source>Mode</source>
+        <translation>Modus</translation>
     </message>
     <message>
         <location filename="../src/objects/mirror.cpp" line="30"/>
@@ -577,17 +570,17 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
     <message>
         <location filename="../src/objects/mirror.cpp" line="33"/>
-        <location filename="../src/tools/selecttool.cpp" line="139"/>
+        <location filename="../src/tools/selecttool.cpp" line="152"/>
         <source>Mirror</source>
         <translation>Spiegeln</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="139"/>
+        <location filename="../src/tools/selecttool.cpp" line="152"/>
         <source>Individual</source>
         <translation>Individuell</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="140"/>
+        <location filename="../src/tools/selecttool.cpp" line="153"/>
         <source>tangent</source>
         <translation>Tangente</translation>
     </message>
@@ -1078,12 +1071,12 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Pinselselektion</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.h" line="32"/>
+        <location filename="../src/tools/selecttool.h" line="31"/>
         <source>SelectObjectsTool</source>
         <translation>Objekte selektieren</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.h" line="42"/>
+        <location filename="../src/tools/selecttool.h" line="44"/>
         <source>SelectPointsTool</source>
         <translation>Punkte selektieren</translation>
     </message>

@@ -138,6 +138,20 @@ void Object
   set_transformation(local_transformation);
 }
 
+
+void Object::set_global_axis_transformation( const ObjectTransformation& global_transformation,
+                                             const bool skip_root )
+{
+  const auto get_glob_trans = [skip_root](const auto* c) {
+    return c->global_transformation(skip_root);
+  };
+  const auto child_transformations = ::transform<ObjectTransformation>(children(), get_glob_trans);
+  set_global_transformation(global_transformation, skip_root);
+  for (std::size_t i = 0; i < child_transformations.size(); ++i) {
+    children()[i]->set_global_transformation(child_transformations[i], skip_root);
+  }
+}
+
 void Object::transform(const ObjectTransformation& transformation)
 {
   set_transformation(transformation.apply(this->transformation()));

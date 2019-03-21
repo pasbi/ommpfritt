@@ -1,8 +1,6 @@
 #include "tools/positionvariant.h"
 #include "objects/path.h"
 #include "scene/scene.h"
-#include "commands/objectstransformationcommand.h"
-#include "commands/pointstransformationcommand.h"
 
 bool arma::operator<(const arma::vec2& a, const arma::vec2& b)
 {
@@ -34,13 +32,6 @@ void PointPositions::make_handles(handles_type& handles, Tool& tool) const
     for (auto&& point : path->points()) {
       handles.push_back(std::make_unique<PointSelectHandle>(tool, *path, *point));
     }
-  }
-}
-
-void PointPositions::transform(const ObjectTransformation& transformation)
-{
-  if (const auto paths = this->paths(); paths.size() > 0) {
-    scene.submit<PointsTransformationCommand>(paths, transformation);
   }
 }
 
@@ -105,11 +96,6 @@ void ObjectPositions::make_handles(handles_type& handles, Tool& tool) const
   std::transform(objects.begin(), objects.end(), inserter, [this, &tool](Object* o) {
     return std::make_unique<ObjectSelectHandle>(tool, scene, *o);
   });
-}
-
-void ObjectPositions::transform(const ObjectTransformation& transformation)
-{
-  scene.submit<ObjectsTransformationCommand>(scene.item_selection<Object>(), transformation);
 }
 
 void ObjectPositions::clear_selection()

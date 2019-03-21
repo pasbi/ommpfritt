@@ -13,6 +13,8 @@
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
 #include <QCoreApplication>
+#include "commands/objectstransformationcommand.h"
+#include "commands/pointstransformationcommand.h"
 
 namespace
 {
@@ -110,16 +112,18 @@ void SelectTool<PositionVariant>::on_scene_changed()
   position_variant.make_handles(this->handles, *this);
 }
 
-template<typename PositionVariant> void SelectTool<PositionVariant>
-::transform_objects(ObjectTransformation t, bool tool_space)
-{
-  if (tool_space) { t = t.transformed(this->transformation().inverted()); }
-  position_variant.transform(t);
-}
-
 template<typename PositionVariant> bool SelectTool<PositionVariant>::has_transformation() const
 {
   return !position_variant.is_empty();
+}
+
+
+SelectObjectsTool::SelectObjectsTool(Scene& scene) : SelectTool(scene)
+{
+  add_property<OptionsProperty>(TRANSFORMATION_MODE_KEY, 0)
+    .set_options({ QObject::tr("Object").toStdString(), QObject::tr("Axis").toStdString() })
+    .set_label(QObject::tr("Mode").toStdString())
+    .set_category(QObject::tr("tool").toStdString());
 }
 
 std::string SelectObjectsTool::type() const { return TYPE; }
@@ -129,6 +133,15 @@ std::string SelectObjectsTool::name() const
 {
   return QCoreApplication::translate("any-context", TYPE).toStdString();
 }
+
+void SelectObjectsTool::transform_objects(ObjectTransformation t, const bool tool_space)
+{
+  if (tool_space) { t = t.transformed(this->transformation().inverted()); }
+  using TransformationMode = ObjectsTransformationCommand::TransformationMode;
+  const auto tmode = property(TRANSFORMATION_MODE_KEY).value<TransformationMode>();
+  scene.submit<ObjectsTransformationCommand>(scene.item_selection<Object>(), t, tmode);
+}
+
 
 
 
@@ -171,6 +184,14 @@ void SelectPointsTool::on_selection_changed()
 std::string SelectPointsTool::name() const
 {
   return QCoreApplication::translate("any-context", TYPE).toStdString();
+}
+
+void SelectPointsTool::transform_objects(ObjectTransformation t, const bool tool_space)
+{
+  if (tool_space) { t = t.transformed(this->transformation().inverted()); }
+  if (const auto paths = position_variant.paths(); paths.size() > 0) {
+    scene.submit<PointsTransformationCommand>(paths, t);
+  }
 }
 
 template class SelectTool<ObjectPositions>;

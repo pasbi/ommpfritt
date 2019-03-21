@@ -11,7 +11,9 @@ class Object;
 class ObjectsTransformationCommand : public Command
 {
 public:
-  ObjectsTransformationCommand(const std::set<Object*>& objects, const ObjectTransformation& t);
+  enum class TransformationMode { Object, Axis };
+  ObjectsTransformationCommand(const std::set<Object*>& objects, const ObjectTransformation& t,
+                               const TransformationMode transformation_mode);
   void undo() override;
   void redo() override;
   int id() const override;
@@ -19,6 +21,7 @@ public:
 
 private:
   std::map<Object*, ObjectTransformation> m_alternative_transformations;
+  const TransformationMode m_transformation_mode;
 };
 
 }  // namespace omm

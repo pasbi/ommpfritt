@@ -271,4 +271,15 @@ std::vector<std::size_t> Path::add_points(const std::vector<PointSequence>& sequ
 
 AbstractPropertyOwner::Flag Path::flags() const { return Object::flags() | Flag::IsPathLike; }
 
+void Path::set_global_axis_transformation( const ObjectTransformation& global_transformation,
+                                           const bool skip_root )
+{
+  // const auto td = this->global_transformation(skip_root).inverted().apply(global_transformation).inverted();
+  const auto td = global_transformation.inverted().apply(this->global_transformation(skip_root));
+  Object::set_global_axis_transformation(global_transformation, skip_root);
+  for (auto& point : m_points) {
+    point = td.apply(point);
+  }
+}
+
 }  // namespace omm
