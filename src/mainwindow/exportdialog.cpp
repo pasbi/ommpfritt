@@ -12,6 +12,8 @@
 #include "mainwindow/viewport/viewport.h"
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QLabel>
+#include <QVBoxLayout>
 
 namespace
 {

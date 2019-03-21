@@ -2,7 +2,6 @@
 
 #include <QDialog>
 #include <memory>
-#include "mainwindow/ui_exportdialog.h"
 #include <QPicture>
 #include <QImage>
 

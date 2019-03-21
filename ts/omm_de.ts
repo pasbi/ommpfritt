@@ -1221,32 +1221,32 @@ Soll die Selektion troztdem entfernt werden?</translation>
 <context>
     <name>omm::ExportDialog</name>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="78"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="80"/>
         <source>Viewport</source>
         <translation>Ansichtsfenster</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="88"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="90"/>
         <source>Save as ...</source>
         <translation>Speichern als ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="187"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="189"/>
         <source>Export image ...</source>
         <translation>Bild exportieren ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="190"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="192"/>
         <source>Images (*.png *.jpg)</source>
         <translation>Bilder (*.png *.jpg)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="201"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="203"/>
         <source>Writing image &apos;%1&apos; failed.</source>
         <translation>Bild speichern unter &apos;%1&apos; fehlgeschlagen.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="202"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="204"/>
         <source>Export image</source>
         <translation>Bild exportieren</translation>
     </message>

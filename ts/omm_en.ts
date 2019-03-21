@@ -1221,32 +1221,32 @@ Remove the selected items anyway?</translation>
 <context>
     <name>omm::ExportDialog</name>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="78"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="80"/>
         <source>Viewport</source>
         <translation>Viewport</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="88"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="90"/>
         <source>Save as ...</source>
         <translation>Save as ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="187"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="189"/>
         <source>Export image ...</source>
         <translation>Export image ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="190"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="192"/>
         <source>Images (*.png *.jpg)</source>
         <translation>Images (*.png *.jpg)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="201"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="203"/>
         <source>Writing image &apos;%1&apos; failed.</source>
         <translation>Writing image &apos;%1&apos; failed.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="202"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="204"/>
         <source>Export image</source>
         <translation>Export image</translation>
     </message>
