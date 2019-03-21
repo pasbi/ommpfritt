@@ -18,6 +18,9 @@ public:
   BoundingBox bounding_box() override;
   Flag flags() const override;
 
+  static constexpr auto RADIUS_PROPERTY_KEY = "r";
+  static constexpr auto CORNER_COUNT_PROPERTY_KEY = "n";
+
 private:
   std::vector<Point> points() override;
   bool is_closed() const override;

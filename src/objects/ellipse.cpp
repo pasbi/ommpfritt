@@ -12,10 +12,10 @@ class Style;
 
 Ellipse::Ellipse(Scene* scene) : AbstractProceduralPath(scene)
 {
-  add_property<FloatVectorProperty>("r", arma::vec2 { 100.0, 100.0 } )
+  add_property<FloatVectorProperty>(RADIUS_PROPERTY_KEY, arma::vec2 { 100.0, 100.0 } )
     .set_label(QObject::tr("r").toStdString())
     .set_category(QObject::tr("ellipse").toStdString());
-  add_property<IntegerProperty>("n", 100)
+  add_property<IntegerProperty>(CORNER_COUNT_PROPERTY_KEY, 100)
     .set_range(3, IntegerPropertyLimits::upper)
     .set_label(QObject::tr("n").toStdString())
     .set_category(QObject::tr("ellipse").toStdString());
@@ -23,7 +23,7 @@ Ellipse::Ellipse(Scene* scene) : AbstractProceduralPath(scene)
 
 BoundingBox Ellipse::bounding_box()
 {
-  const auto r = property("r").value<VectorPropertyValueType<arma::vec2>>();
+  const auto r = property(RADIUS_PROPERTY_KEY).value<VectorPropertyValueType<arma::vec2>>();
   return BoundingBox({ -r, r });
 }
 
@@ -39,8 +39,8 @@ std::unique_ptr<Object> Ellipse::clone() const
 
 std::vector<Point> Ellipse::points()
 {
-  const size_t n = std::max(3, property("n").value<int>());
-  const auto r = property("r").value<VectorPropertyValueType<arma::vec2>>();
+  const size_t n = std::max(3, property(CORNER_COUNT_PROPERTY_KEY).value<int>());
+  const auto r = property(RADIUS_PROPERTY_KEY).value<VectorPropertyValueType<arma::vec2>>();
 
   std::vector<Point> points;
   points.reserve(n);
