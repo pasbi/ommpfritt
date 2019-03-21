@@ -115,14 +115,17 @@ QPointF ViewportRenderer::to_qpoint(const arma::vec2& point)
 QColor ViewportRenderer::to_qcolor(omm::Color color)
 {
   color = color.clamped() * 255.0;
-  return QColor(color.red(), color.green(), color.blue(), color.alpha());
+  return QColor( static_cast<int>(color.red()),
+                 static_cast<int>(color.green()),
+                 static_cast<int>(color.blue()),
+                 static_cast<int>(color.alpha()) );
 }
 
 QPen ViewportRenderer::make_pen(const omm::Style& style)
 {
   if (style.property(omm::Style::PEN_IS_ACTIVE_KEY).value<bool>()) {
     QPen pen;
-    pen.setWidth(style.property(omm::Style::PEN_WIDTH_KEY).value<double>());
+    pen.setWidthF(style.property(omm::Style::PEN_WIDTH_KEY).value<double>());
     pen.setColor(to_qcolor(style.property(omm::Style::PEN_COLOR_KEY).value<omm::Color>()));
     return pen;
   } else {

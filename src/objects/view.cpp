@@ -41,8 +41,8 @@ void View::render(AbstractRenderer& renderer, const Style&)
   const auto size = property(SIZE_PROPERTY_KEY).value<VectorPropertyValueType<arma::vec2>>();
   const auto w = size(0)/2;
   const auto h = size(1)/2;
-  const auto points = { Point(arma::vec2{-w, -h}), Point(arma::vec2{ w, -h}),
-                        Point(arma::vec2{ w,  h}), Point(arma::vec2{-w,  h}) };
+  const auto points = std::vector { Point(arma::vec2{-w, -h}), Point(arma::vec2{ w, -h}),
+                                    Point(arma::vec2{ w,  h}), Point(arma::vec2{-w,  h}) };
 
   const auto style = ContourStyle(Color::BLACK);
   renderer.draw_spline(points, style, true);
