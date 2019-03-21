@@ -27,6 +27,7 @@ Primary use case is creating and editing (animated) info graphics, diagrams, ico
 - **multi-selection** support for properties: compatible intersection of properties of all selected items (objects, tags, styles, tools) is shown and can be modified simultaneously
 - **flexible, customizable key binding sequences** (aka short-cuts)
 - **multi-language** (currently English and German only)
+- **rasterize** to `png` and `jpg`
 
 ### Styling
 - build complex reusable **style cascades**
@@ -48,6 +49,12 @@ Primary use case is creating and editing (animated) info graphics, diagrams, ico
    - along any path
    - radial
    - by python script
+- **mirror**
+- **view**: define a view onto the scene for export
+  - set the export region comfortably within the editor
+  - adjust to viewport or vice versa
+  - switch between any number of self-defined views
+  - supports translation, scaling, rotation and shear
    
 ### Tags
 - **path tag**: constrain position of any object to any path
@@ -57,6 +64,7 @@ Primary use case is creating and editing (animated) info graphics, diagrams, ico
 ### Tools
 - object selection: select in viewport and rotate, move or scale* along common center of all selected objects
 - point-level: select in viewport and rotate, move or scale* along common center of all selected points. Works fine even if many path-objects are selected.
+- optinally transform axes only. Re-set the origin of the object without affecting its geometry.
 - brush-select: select points as if you were painting
 
 ## Contributing
