@@ -6,8 +6,9 @@ namespace
 {
 
 auto
-make_alternatives(const std::set<omm::Object*>& objects, const omm::ObjectTransformation::Mat& t)
+make_alternatives(std::set<omm::Object*> objects, const omm::ObjectTransformation::Mat& t)
 {
+  omm::Object::remove_internal_children(objects);
   std::map<omm::Object*, omm::ObjectTransformation> alternatives;
   for (const auto& object : objects) {
     const auto new_t = omm::ObjectTransformation(t * object->global_transformation().to_mat());
