@@ -646,7 +646,7 @@ Remove the selected items anyway?</translation>
     <message>
         <location filename="../src/objects/instance.cpp" line="16"/>
         <source>Instance</source>
-        <translation type="unfinished">Instance</translation>
+        <translation>Instance</translation>
     </message>
     <message>
         <location filename="../src/objects/instance.cpp" line="19"/>
@@ -793,195 +793,195 @@ Remove the selected items anyway?</translation>
         <location filename="../src/objects/text.cpp" line="24"/>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="16"/>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Font</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="30"/>
         <source>Strikeout</source>
-        <translation type="unfinished"></translation>
+        <translation>Strikeout</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="26"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>Underline</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="22"/>
-        <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <source>Weight</source>
+        <translation>Weight</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="24"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Italic</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="28"/>
         <source>Overline</source>
-        <translation type="unfinished"></translation>
+        <translation>Overline</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="32"/>
         <source>Mixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Mixed</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="33"/>
         <source>All upper</source>
-        <translation type="unfinished"></translation>
+        <translation>All upper</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="34"/>
         <source>All lower</source>
-        <translation type="unfinished"></translation>
+        <translation>All lower</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="35"/>
         <source>Small caps</source>
-        <translation type="unfinished"></translation>
+        <translation>Small caps</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="36"/>
         <source>Capitalize</source>
-        <translation type="unfinished"></translation>
+        <translation>Capitalize</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="37"/>
         <source>Case</source>
-        <translation type="unfinished"></translation>
+        <translation>Case</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="39"/>
         <source>Fixed pitch</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixed pitch</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="41"/>
         <source>Kerning</source>
-        <translation type="unfinished"></translation>
+        <translation>Kerning</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="43"/>
         <source>Relative</source>
-        <translation type="unfinished"></translation>
+        <translation>Relative</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="43"/>
         <source>Absolute</source>
-        <translation type="unfinished"></translation>
+        <translation>Absolute</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="44"/>
-        <source>Letter spacing</source>
-        <translation type="unfinished"></translation>
+        <source>Letter spacing mode</source>
+        <translation>Letter spacing mode</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="46"/>
-        <source>Spacing</source>
-        <translation type="unfinished"></translation>
+        <source>Letter spacing</source>
+        <translation>Letter spacing</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="49"/>
         <source>Word spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Word spacing</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/fontproperties.cpp" line="19"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Size</translation>
     </message>
     <message>
         <location filename="../src/objects/text.cpp" line="22"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Width</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="16"/>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Left</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="16"/>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="20"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Center</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="17"/>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Right</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="17"/>
         <source>Justify</source>
-        <translation type="unfinished"></translation>
+        <translation>Justify</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="18"/>
         <source>H-Align</source>
-        <translation type="unfinished"></translation>
+        <translation>Hor. Alignment</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="20"/>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Top</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="21"/>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Bottom</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="32"/>
         <source>Left to right</source>
-        <translation type="unfinished"></translation>
+        <translation>Left to right</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="33"/>
         <source>Right to left</source>
-        <translation type="unfinished"></translation>
+        <translation>Right to left</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="34"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="37"/>
         <source>none</source>
-        <translation type="unfinished"></translation>
+        <translation>None</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="38"/>
         <source>at word boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>Word boundary</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="39"/>
         <source>anywhere</source>
-        <translation type="unfinished"></translation>
+        <translation>Anywhere</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="40"/>
         <source>prefer at word boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>Prefer word boundary</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="27"/>
         <source>V-Align</source>
-        <translation type="unfinished"></translation>
+        <translation>Vert. Alignment</translation>
     </message>
     <message>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="30"/>
         <source>Tab width</source>
-        <translation type="unfinished"></translation>
+        <translation>Tab width</translation>
     </message>
     <message>
         <location filename="../src/objects/text.cpp" line="17"/>
         <location filename="../src/objects/text.cpp" line="20"/>
         <location filename="../src/objects/text.cpp" line="25"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Text</translation>
     </message>
 </context>
 <context>
@@ -1284,7 +1284,7 @@ Remove the selected items anyway?</translation>
     <message>
         <location filename="../src/objects/text.h" line="18"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Text</translation>
     </message>
 </context>
 <context>

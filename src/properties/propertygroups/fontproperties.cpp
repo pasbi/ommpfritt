@@ -19,7 +19,7 @@ void FontProperties::make_properties(const std::string& category)
     .set_label(QObject::tr("Size").toStdString()).set_category(category);
   add_property<IntegerProperty>(key(WEIGHT_PROPERTY_KEY))
     .set_range(0, 99)
-    .set_label(QObject::tr("Bold").toStdString()).set_category(category);
+    .set_label(QObject::tr("Weight").toStdString()).set_category(category);
   add_property<BoolProperty>(key(ITALIC_PROPERTY_KEY))
     .set_label(QObject::tr("Italic").toStdString()).set_category(category);
   add_property<BoolProperty>(key(UNDERLINE_PROPERTY_KEY))
@@ -41,9 +41,9 @@ void FontProperties::make_properties(const std::string& category)
     .set_label(QObject::tr("Kerning").toStdString()).set_category(category);
   add_property<OptionsProperty>(key(LETTER_SPACING_TYPE_PROPERTY_KEY))
     .set_options({ QObject::tr("Relative").toStdString(), QObject::tr("Absolute").toStdString() })
-    .set_label(QObject::tr("Letter spacing").toStdString()).set_category(category);
+    .set_label(QObject::tr("Letter spacing mode").toStdString()).set_category(category);
   add_property<FloatProperty>(key(LETTER_SPACING_PROPERTY_KEY))
-    .set_label(QObject::tr("Spacing").toStdString()).set_category(category);
+    .set_label(QObject::tr("Letter spacing").toStdString()).set_category(category);
   add_property<FloatProperty>(key(WORD_SPACING_PROPERTY_KEY))
     .set_range(0.0, 100.0)
     .set_label(QObject::tr("Word spacing").toStdString()).set_category(category);
