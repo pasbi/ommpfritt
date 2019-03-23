@@ -1,0 +1,35 @@
+#pragma once
+
+#include <string>
+#include <QFont>
+#include <QTextOption>
+#include "aspects/propertyowner.h"
+
+namespace omm
+{
+
+class PropertyGroup
+{
+public:
+  explicit PropertyGroup(const std::string& prefix, AbstractPropertyOwner& property_owner);
+  virtual void make_properties(const std::string& group) = 0;
+  virtual ~PropertyGroup() = default;
+
+private:
+  const std::string m_prefix;
+  AbstractPropertyOwner& m_property_owner;
+
+protected:
+  std::string key(const std::string& key) const;
+  template<typename T> T property_value(const std::string& key) const
+  {
+    return m_property_owner.property(this->key(key)).value<T>();
+  }
+
+  template<typename PropertyT, typename... Args> decltype(auto) add_property(Args&&... args)
+  {
+    return m_property_owner.add_property<PropertyT>(std::forward<Args>(args)...);
+  }
+};
+
+}  // namespace omm

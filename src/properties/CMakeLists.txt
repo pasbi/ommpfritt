@@ -13,5 +13,7 @@ file (GLOB SOURCES
   "typedproperty.cpp"
   "vectorproperty.cpp"
 )
+
 target_sources(libommpfritt PRIVATE ${SOURCES})
 
+add_subdirectory(propertygroups)
