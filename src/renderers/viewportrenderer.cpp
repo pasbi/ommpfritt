@@ -119,14 +119,27 @@ void ViewportRenderer::draw_circle(const arma::vec2& pos, const double radius, c
   m_painter->restore();
 }
 
-void ViewportRenderer
-::draw_image(const std::string& filename, const arma::vec2& pos, const arma::vec2& size)
+void ViewportRenderer::draw_image( const std::string& filename, const arma::vec2& pos,
+                                   const arma::vec2& size, const double opacity )
 {
   if (!is_active()) { return; }
 
+  m_painter->setOpacity(opacity);
   QRectF rect(to_qpoint(pos), to_qpoint(pos + size));
   m_painter->drawImage(rect, m_image_cache.load(filename));
+  m_painter->setOpacity(1.0);
 }
+
+void ViewportRenderer::draw_image( const std::string& filename, const arma::vec2& pos,
+                                   const double& width, const double opacity )
+{
+  if (!is_active()) { return; }
+
+  const QImage image = m_image_cache.load(filename);
+  const auto height = static_cast<double>(width) / image.width() * image.height();
+  return draw_image(filename, pos, arma::vec2{ width, height }, opacity);
+}
+
 
 void ViewportRenderer::set_painter(QPainter& painter) { m_painter = &painter; }
 void ViewportRenderer::clear_painter() { m_painter = nullptr; }

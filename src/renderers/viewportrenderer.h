@@ -17,8 +17,10 @@ public:
                     bool closed = false ) override;
   void draw_rectangle(const arma::vec2& pos, const double radius, const Style& style) override;
   void draw_circle(const arma::vec2& pos, const double radius, const Style& style) override;
-  void
-  draw_image(const std::string& filename, const arma::vec2& pos, const arma::vec2& size) override;
+  void draw_image( const std::string& filename, const arma::vec2& pos,
+                   const arma::vec2& size, const double opacity) override;
+  void draw_image( const std::string& filename, const arma::vec2& pos,
+                   const double& width, const double opacity) override;
   void draw_text(const std::string& text, const TextOptions& options) override;
 
 

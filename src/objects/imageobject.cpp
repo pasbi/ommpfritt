@@ -1,6 +1,8 @@
 #include "objects/imageobject.h"
 #include "properties/stringproperty.h"
 #include <QObject>
+#include "properties/floatproperty.h"
+#include "mainwindow/viewport/viewport.h"
 
 namespace omm
 {
@@ -11,14 +13,25 @@ ImageObject::ImageObject(Scene* scene) : Object(scene)
   add_property<StringProperty>(FILEPATH_PROPERTY_KEY)
     .set_mode(StringProperty::Mode::FilePath)
     .set_label(QObject::tr("filename").toStdString()).set_category(category);
+
+  add_property<FloatProperty>(WIDTH_PROPERTY_KEY, 100)
+    .set_range(0.0, FloatPropertyLimits::upper)
+    .set_label(QObject::tr("Width").toStdString()).set_category(category);
+  add_property<FloatProperty>(OPACITY_PROPERTY_KEY, 1.0)
+    .set_range(0.0, 1.0).set_step(0.01)
+    .set_label(QObject::tr("Opacity").toStdString()).set_category(category);
 }
 
 void ImageObject::render(AbstractRenderer& renderer, const Style& style)
 {
   renderer.set_category(AbstractRenderer::Category::Objects);
   if (is_active()) {
+    renderer.push_transformation(Viewport::default_transformation);
     const auto path = property(FILEPATH_PROPERTY_KEY).value<std::string>();
-    renderer.draw_image(path, arma::vec2{0.0, 0.0}, arma::vec2{1.0, 1.0});
+    const auto width = property(WIDTH_PROPERTY_KEY).value<double>();
+    const auto opacity = property(OPACITY_PROPERTY_KEY).value<double>();
+    renderer.draw_image(path, arma::vec2{0.0, 0.0}, width, opacity);
+    renderer.pop_transformation();
   }
 }
 
