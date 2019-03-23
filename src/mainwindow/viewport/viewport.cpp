@@ -62,6 +62,7 @@ void Viewport::paintEvent(QPaintEvent* event)
   m_renderer.set_painter(painter);
 
   painter.setRenderHint(QPainter::Antialiasing);
+  painter.setRenderHint(QPainter::SmoothPixmapTransform);
   painter.fillRect(rect(), Qt::gray);
 
   m_scene.object_tree.root().set_transformation(viewport_transformation());
