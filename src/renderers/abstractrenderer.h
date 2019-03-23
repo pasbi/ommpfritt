@@ -8,6 +8,9 @@
 #include "geometry/point.h"
 #include "common.h"
 
+class QFont;
+class QTextOption;
+
 namespace omm
 {
 
@@ -17,6 +20,18 @@ class Scene;
 class AbstractRenderer
 {
 public:
+
+  struct TextOptions
+  {
+    TextOptions( const QFont& font, const QTextOption& option,
+                 const Style& style, const double width )
+      : font(font), option(option), style(style), width(width) {}
+    const QFont& font;
+    const QTextOption& option;
+    const Style& style;
+    const double width;
+  };
+
   enum class Category { None = 0x0, Objects = 0x1, Handles = 0x2, All = Objects | Handles };
   explicit AbstractRenderer(Scene& scene, Category filter);
   void render();
@@ -34,6 +49,7 @@ public:
   virtual void draw_circle(const arma::vec2& pos, const double radius, const Style& style) = 0;
   virtual
   void draw_image(const std::string& filename, const arma::vec2& pos, const arma::vec2& size) = 0;
+  virtual void draw_text(const std::string& text, const TextOptions& options) = 0;
   Scene& scene;
 
   void set_category(Category category);

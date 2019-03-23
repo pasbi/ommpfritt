@@ -3,6 +3,7 @@
 #include <glog/logging.h>
 #include <QTransform>
 #include <QPainter>
+#include <QDebug>
 
 #include "renderers/style.h"
 #include "properties/colorproperty.h"
@@ -58,6 +59,38 @@ ViewportRenderer::draw_spline(const std::vector<Point>& points, const Style& sty
       m_painter->strokePath(path, make_pen(style));
     }
   }
+}
+
+void ViewportRenderer::draw_text(const std::string& text, const TextOptions& options)
+{
+  m_painter->setFont(options.font);
+  m_painter->setPen(make_pen(options.style));
+
+  static constexpr double HUGE = 10e10;
+
+  const auto [left, width] = [&options]() {
+    switch (options.option.alignment() & Qt::AlignHorizontal_Mask) {
+    case Qt::AlignLeft: [[fallthrough]];
+    case Qt::AlignJustify: return std::pair(0.0, options.width);
+    case Qt::AlignHCenter: return std::pair(-options.width/2.0, options.width);
+    case Qt::AlignRight: return std::pair(-options.width, options.width);
+    default: assert(false); return std::pair(0.0, 0.0);
+    }
+  }();
+
+  const auto [top, height] = [&options]() {
+    switch (options.option.alignment() & Qt::AlignVertical_Mask) {
+    case Qt::AlignTop: return std::pair(0.0, HUGE);
+    case Qt::AlignVCenter: return std::pair(-HUGE/2.0, HUGE);
+    case Qt::AlignBottom: return std::pair(-HUGE, HUGE);
+    // Qt::AlignBaseline is never reached (see @FontProperties::code make_properties)
+    case Qt::AlignBaseline:
+    default: assert(false); return std::pair(0.0, 0.0);
+    }
+  }();
+
+  const QRectF rect(QPointF(left, top), QSizeF(width, height));
+  m_painter->drawText(rect, QString::fromStdString(text), options.option);
 }
 
 void

@@ -19,6 +19,8 @@ public:
   void draw_circle(const arma::vec2& pos, const double radius, const Style& style) override;
   void
   draw_image(const std::string& filename, const arma::vec2& pos, const arma::vec2& size) override;
+  void draw_text(const std::string& text, const TextOptions& options) override;
+
 
   void push_transformation(const ObjectTransformation& transformation) override;
   void pop_transformation() override;

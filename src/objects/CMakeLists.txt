@@ -10,6 +10,7 @@ file (GLOB SOURCES
   "objectregister.cpp"
   "path.cpp"
   "proceduralpath.cpp"
+  "text.cpp"
   "view.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})

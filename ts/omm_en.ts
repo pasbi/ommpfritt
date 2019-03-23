@@ -310,14 +310,12 @@
     </message>
     <message>
         <location filename="../src/objects/ellipse.cpp" line="17"/>
-        <location filename="../src/objects/ellipse.cpp" line="21"/>
         <source>ellipse</source>
         <translation>Ellipse</translation>
     </message>
     <message>
-        <location filename="../src/objects/ellipse.cpp" line="20"/>
         <source>n</source>
-        <translation>Count</translation>
+        <translation type="vanished">Count</translation>
     </message>
     <message>
         <location filename="../src/objects/imageobject.cpp" line="12"/>
@@ -812,6 +810,99 @@ Remove the selected items anyway?</translation>
         <source>from viewport</source>
         <translation>Adjust to viewport</translation>
     </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="20"/>
+        <source>Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="22"/>
+        <source>Strikeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="24"/>
+        <source>Underline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="26"/>
+        <source>Bold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="28"/>
+        <source>Italic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="31"/>
+        <source>Size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="34"/>
+        <source>Width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="36"/>
+        <source>Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="36"/>
+        <location filename="../src/objects/fontproperties.cpp" line="40"/>
+        <source>Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="37"/>
+        <source>Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="37"/>
+        <source>Justify</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="38"/>
+        <source>H-Align</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="40"/>
+        <source>Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="41"/>
+        <source>Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="41"/>
+        <source>Baseline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="42"/>
+        <source>V-Align</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/fontproperties.cpp" line="45"/>
+        <source>Tab width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/objects/text.cpp" line="17"/>
+        <location filename="../src/objects/text.cpp" line="18"/>
+        <location filename="../src/objects/text.cpp" line="20"/>
+        <source>Text</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>
@@ -1109,6 +1200,11 @@ Remove the selected items anyway?</translation>
         <location filename="../src/objects/mirror.h" line="22"/>
         <source>Mirror</source>
         <translation>Mirror</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/text.h" line="17"/>
+        <source>Text</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
