@@ -180,61 +180,67 @@
         <translation>Konvertieren</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="41"/>
+        <location filename="../src/objects/cloner.cpp" line="45"/>
         <source>Linear</source>
         <translation>Linear</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="42"/>
+        <location filename="../src/objects/cloner.cpp" line="46"/>
         <source>Grid</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="42"/>
+        <location filename="../src/objects/cloner.cpp" line="46"/>
         <source>Radial</source>
         <translation>Radial</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="43"/>
+        <location filename="../src/objects/cloner.cpp" line="47"/>
         <source>Path</source>
         <translation>Pfad</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="43"/>
+        <location filename="../src/objects/cloner.cpp" line="47"/>
         <source>Script</source>
         <translation>Skript</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="44"/>
+        <location filename="../src/objects/cloner.cpp" line="48"/>
         <source>mode</source>
         <translation>Modus</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="39"/>
+        <location filename="../src/objects/cloner.cpp" line="43"/>
         <source>Cloner</source>
         <translation>Kloner</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="49"/>
-        <location filename="../src/objects/cloner.cpp" line="57"/>
+        <location filename="../src/objects/cloner.cpp" line="41"/>
+        <source>d0ir</source>
+        <translation>deu</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/cloner.cpp" line="53"/>
+        <location filename="../src/objects/cloner.cpp" line="61"/>
         <location filename="../src/objects/proceduralpath.cpp" line="45"/>
+        <location filename="../src/objects/text.cpp" line="18"/>
         <source>count</source>
         <translation>Anzahl</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="63"/>
-        <location filename="../src/objects/cloner.cpp" line="68"/>
+        <location filename="../src/objects/cloner.cpp" line="67"/>
+        <location filename="../src/objects/cloner.cpp" line="72"/>
         <source>distance</source>
         <translation>Abstand</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="74"/>
+        <location filename="../src/objects/cloner.cpp" line="78"/>
         <location filename="../src/tools/brushselecttool.cpp" line="18"/>
         <source>radius</source>
         <translation>Radius</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="81"/>
+        <location filename="../src/objects/cloner.cpp" line="85"/>
         <location filename="../src/objects/path.cpp" line="52"/>
         <location filename="../src/tags/pathtag.cpp" line="17"/>
         <location filename="../src/tags/pathtag.cpp" line="18"/>
@@ -244,49 +250,49 @@
         <translation>Pfad</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="87"/>
+        <location filename="../src/objects/cloner.cpp" line="91"/>
         <source>start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="93"/>
+        <location filename="../src/objects/cloner.cpp" line="97"/>
         <source>end</source>
         <translation>Ende</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="98"/>
+        <location filename="../src/objects/cloner.cpp" line="102"/>
         <location filename="../src/tags/pathtag.cpp" line="24"/>
         <source>align</source>
         <translation>Ausrichten</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="103"/>
+        <location filename="../src/objects/cloner.cpp" line="107"/>
         <source>Clamp</source>
         <translation>Abscheiden</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="103"/>
+        <location filename="../src/objects/cloner.cpp" line="107"/>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="41"/>
         <source>Wrap</source>
         <translation>Wiederholen</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="104"/>
+        <location filename="../src/objects/cloner.cpp" line="108"/>
         <source>Hide</source>
         <translation>Verstecken</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="104"/>
+        <location filename="../src/objects/cloner.cpp" line="108"/>
         <source>Reflect</source>
         <translation>Reflektieren</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="105"/>
+        <location filename="../src/objects/cloner.cpp" line="109"/>
         <source>border</source>
         <translation>Rand</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="111"/>
+        <location filename="../src/objects/cloner.cpp" line="115"/>
         <location filename="../src/objects/proceduralpath.cpp" line="42"/>
         <location filename="../src/tags/scripttag.cpp" line="33"/>
         <source>code</source>
@@ -790,108 +796,115 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>An Ansichtsfenster anpassen</translation>
     </message>
     <message>
-        <location filename="../src/objects/text.cpp" line="24"/>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="16"/>
+        <location filename="../src/objects/text.cpp" line="21"/>
+        <source>d0firefoir</source>
+        <translation>deutsch</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/text.cpp" line="30"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="18"/>
         <source>Font</source>
         <translation>Schrift</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="30"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="32"/>
         <source>Strikeout</source>
         <translation>Durchgestrichen</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="26"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="28"/>
         <source>Underline</source>
         <translation>Unterstrichen</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="22"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="24"/>
         <source>Weight</source>
         <translation>Gewicht</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="24"/>
+        <location filename="../src/objects/text.cpp" line="19"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="16"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="26"/>
         <source>Italic</source>
         <translation>Kursiv</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="28"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="30"/>
         <source>Overline</source>
         <translation>Überstreichen</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="32"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="34"/>
         <source>Mixed</source>
         <translation>Gemischt</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="33"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="35"/>
         <source>All upper</source>
         <translation>Alles groß</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="34"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="36"/>
         <source>All lower</source>
         <translation>Alles klein</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="35"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="37"/>
         <source>Small caps</source>
         <translation>Kapitälchen</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="36"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="38"/>
         <source>Capitalize</source>
         <translation>Großbuchstaben</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="37"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="39"/>
         <source>Case</source>
         <translation>Groß-/Kleinschreibung</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="39"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="41"/>
         <source>Fixed pitch</source>
         <translation>Festbreite</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="41"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="43"/>
         <source>Kerning</source>
         <translation>Unterschneidung</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="43"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="45"/>
         <source>Relative</source>
         <translation>Relativ</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="43"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="45"/>
         <source>Absolute</source>
         <translation>Absolut</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="44"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="46"/>
         <source>Letter spacing mode</source>
         <translation>Spationierungsmodus</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="46"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="48"/>
         <source>Letter spacing</source>
         <translation>Spationierung</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="49"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="51"/>
         <source>Word spacing</source>
         <translation>Wortabstand</translation>
     </message>
     <message>
-        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="19"/>
+        <location filename="../src/properties/propertygroups/fontproperties.cpp" line="21"/>
         <source>Size</source>
         <translation>Größe</translation>
     </message>
     <message>
-        <location filename="../src/objects/text.cpp" line="22"/>
+        <location filename="../src/objects/text.cpp" line="28"/>
         <source>Width</source>
         <translation>Breite</translation>
     </message>
@@ -977,9 +990,9 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Tabbreite</translation>
     </message>
     <message>
-        <location filename="../src/objects/text.cpp" line="17"/>
-        <location filename="../src/objects/text.cpp" line="20"/>
-        <location filename="../src/objects/text.cpp" line="25"/>
+        <location filename="../src/objects/text.cpp" line="23"/>
+        <location filename="../src/objects/text.cpp" line="26"/>
+        <location filename="../src/objects/text.cpp" line="31"/>
         <source>Text</source>
         <translation>Text</translation>
     </message>
