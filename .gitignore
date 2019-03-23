@@ -1,2 +1,4 @@
 build
 *.user
+*.autosave
+compile_commands.json
