@@ -14,7 +14,8 @@ StringPropertyConfigWidget::StringPropertyConfigWidget(QWidget* parent, Property
   mode_selector->addItems({ QObject::tr("single line", "StringPropertyConfigWidget"),
                             QObject::tr("multi line", "StringPropertyConfigWidget"),
                             QObject::tr("file path", "StringPropertyConfigWidget"),
-                            QObject::tr("code", "StringPropertyConfigWidget") });
+                            QObject::tr("code", "StringPropertyConfigWidget"),
+                            QObject::tr("font", "StringPropertyConfigWidget") });
   box_layout()->addWidget(mode_selector);
   mode_selector->setCurrentIndex(static_cast<int>(string_property.mode()));
   const auto cic = static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged);
@@ -24,10 +25,7 @@ StringPropertyConfigWidget::StringPropertyConfigWidget(QWidget* parent, Property
   box_layout()->addStretch();
 }
 
-std::string StringPropertyConfigWidget::type() const
-{
-  return TYPE;
-}
+std::string StringPropertyConfigWidget::type() const { return TYPE; }
 
 }  // namespace pmm
 

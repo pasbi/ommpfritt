@@ -28,6 +28,10 @@ StringPropertyWidget
     break;
   case StringProperty::Mode::Code:
     edit = std::make_unique<TextEditAdapter<CodeEdit>>(spv_closure, this);
+    break;
+  case StringProperty::Mode::Font:
+    edit = std::make_unique<TextEditAdapter<QFontComboBox>>(spv_closure, this);
+    break;
   }
 
   m_text_edit = edit.get();

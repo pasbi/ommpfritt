@@ -13,6 +13,7 @@ namespace omm
 void FontProperties::make_properties(const std::string& category)
 {
   add_property<StringProperty>(key(FONT_PROPERTY_KEY), "Arial")
+    .set_mode(StringProperty::Mode::Font)
     .set_label(QObject::tr("Font").toStdString()).set_category(category);
   add_property<FloatProperty>(key(SIZE_PROPERTY_KEY), 12)
     .set_range(0.1, 100)

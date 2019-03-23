@@ -3,6 +3,7 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 #include <QLineEdit>
+#include <QFontComboBox>
 #include "observed.h"
 #include "propertywidgets/multivalueedit.h"
 #include "properties/stringproperty.h"
@@ -68,6 +69,20 @@ template<> class TextEditAdapter<CodeEdit>
 public:
   using edit_type = CodeEdit;
   using CodeEdit::CodeEdit;
+  TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent = nullptr);
+  void set_inconsistent_value() override;
+  void set_value(const std::string& ph) override;
+  void clear() override;
+  std::string value() const override;
+  QWidget* as_widget() override;
+};
+
+template<> class TextEditAdapter<QFontComboBox>
+  : public QFontComboBox, public AbstractTextEditAdapter
+{
+public:
+  using edit_type = QFontComboBox;
+  using QFontComboBox::QFontComboBox;
   TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent = nullptr);
   void set_inconsistent_value() override;
   void set_value(const std::string& ph) override;

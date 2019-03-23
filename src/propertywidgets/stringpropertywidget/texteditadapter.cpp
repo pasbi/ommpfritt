@@ -3,10 +3,14 @@
 namespace omm
 {
 
+// AbstractTextEditAdapter
+
 AbstractTextEditAdapter
 ::AbstractTextEditAdapter(const on_value_changed_t& on_value_changed)
   : MultiValueEdit<std::string>(on_value_changed)
 { }
+
+// TextEditAdapter<QLineEdit>
 
 TextEditAdapter<QLineEdit>
 ::TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent)
@@ -31,6 +35,9 @@ void TextEditAdapter<QLineEdit>::set_value(const std::string& text)
 void TextEditAdapter<QLineEdit>::clear() { QLineEdit::clear(); }
 std::string TextEditAdapter<QLineEdit>::value() const { return QLineEdit::text().toStdString(); }
 QWidget* TextEditAdapter<QLineEdit>::as_widget() { return this; }
+
+
+// TextEditAdapter<QTextEdit>
 
 TextEditAdapter<QTextEdit>
 ::TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent)
@@ -73,6 +80,9 @@ TextEditAdapter<FilePathEdit>
   });
 }
 
+
+// TextEditAdapter<FilePathEdit>
+
 void TextEditAdapter<FilePathEdit>::set_inconsistent_value()
 {
   const auto placeholder_text = QObject::tr("< multiple values >", "TextEditAdapter");
@@ -87,9 +97,7 @@ void TextEditAdapter<FilePathEdit>::set_value(const std::string& text)
 
 void TextEditAdapter<FilePathEdit>::clear() { FilePathEdit::clear(); }
 std::string TextEditAdapter<FilePathEdit>::value() const { return FilePathEdit::path(); }
-
 QWidget* TextEditAdapter<FilePathEdit>::as_widget() { return this; }
-
 
 TextEditAdapter<CodeEdit>
 ::TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent)
@@ -100,6 +108,9 @@ TextEditAdapter<CodeEdit>
   });
 }
 
+
+// TextEditAdapter<CodeEdit>
+
 void TextEditAdapter<CodeEdit>::set_inconsistent_value()
 {
   const auto placeholder_text = QObject::tr("< multiple values >", "TextEditAdapter");
@@ -109,8 +120,29 @@ void TextEditAdapter<CodeEdit>::set_inconsistent_value()
 void TextEditAdapter<CodeEdit>::set_value(const std::string& text) { CodeEdit::set_code(text); }
 void TextEditAdapter<CodeEdit>::clear() { CodeEdit::clear(); }
 std::string TextEditAdapter<CodeEdit>::value() const { return CodeEdit::code(); }
-
 QWidget* TextEditAdapter<CodeEdit>::as_widget() { return this; }
 
-}  // namespace omm
 
+// TextEditAdapter<QFontComboBox>
+
+
+TextEditAdapter<QFontComboBox>
+::TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent)
+  : QFontComboBox(parent), AbstractTextEditAdapter(on_value_changed)
+{
+  connect(this, &QFontComboBox::currentFontChanged, [on_value_changed, this]() {
+    if (!signalsBlocked()) { on_value_changed(value()); }
+  });
+}
+
+void TextEditAdapter<QFontComboBox>::set_value(const std::string& text)
+{
+  QFontComboBox::setCurrentFont(QFont(QString::fromStdString(text)));
+}
+
+void TextEditAdapter<QFontComboBox>::set_inconsistent_value() { setCurrentIndex(-1); }
+void TextEditAdapter<QFontComboBox>::clear() { QFontComboBox::clear(); }
+std::string TextEditAdapter<QFontComboBox>::value() const { return currentText().toStdString(); }
+QWidget* TextEditAdapter<QFontComboBox>::as_widget() { return this; }
+
+}  // namespace omm
