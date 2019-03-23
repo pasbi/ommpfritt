@@ -7,10 +7,10 @@ namespace omm
 
 ImageObject::ImageObject(Scene* scene) : Object(scene)
 {
+  static const auto category = QObject::tr("image").toStdString();
   add_property<StringProperty>(FILEPATH_PROPERTY_KEY)
     .set_mode(StringProperty::Mode::FilePath)
-    .set_label(QObject::tr("filename").toStdString())
-    .set_category(QObject::tr("image").toStdString());
+    .set_label(QObject::tr("filename").toStdString()).set_category(category);
 }
 
 void ImageObject::render(AbstractRenderer& renderer, const Style& style)

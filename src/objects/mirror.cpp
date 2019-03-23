@@ -26,11 +26,11 @@ class Style;
 
 Mirror::Mirror(Scene* scene) : Object(scene)
 {
+  static const auto category = QObject::tr("Mirror").toStdString();
   add_property<OptionsProperty>(DIRECTION_PROPERTY_KEY)
     .set_options({ QObject::tr("Horizontal").toStdString(),
                    QObject::tr("Vertical").toStdString() })
-    .set_label(QObject::tr("Direction").toStdString())
-    .set_category(QObject::tr("Mirror").toStdString());
+    .set_label(QObject::tr("Direction").toStdString()).set_category(category);
 }
 
 

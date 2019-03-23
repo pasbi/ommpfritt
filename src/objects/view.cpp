@@ -13,15 +13,13 @@ namespace omm
 
 View::View(Scene* scene) : Object(scene)
 {
+  static const auto category = QObject::tr("view").toStdString();
   add_property<FloatVectorProperty>(SIZE_PROPERTY_KEY, arma::vec2 { 100.0, 100.0 } )
-    .set_label(QObject::tr("size").toStdString())
-    .set_category(QObject::tr("view").toStdString());
+    .set_label(QObject::tr("size").toStdString()).set_category(category);
   add_property<TriggerProperty>(TO_VIEWPORT_PROPERTY_KEY)
-    .set_label(QObject::tr("to viewport").toStdString())
-    .set_category(QObject::tr("view").toStdString());
+    .set_label(QObject::tr("to viewport").toStdString()).set_category(category);
   add_property<TriggerProperty>(FROM_VIEWPORT_PROPERTY_KEY)
-    .set_label(QObject::tr("from viewport").toStdString())
-    .set_category(QObject::tr("view").toStdString());
+    .set_label(QObject::tr("from viewport").toStdString()).set_category(category);
 }
 
 std::string View::type() const { return TYPE; }

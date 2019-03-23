@@ -36,6 +36,7 @@ TextEditAdapter<QTextEdit>
 ::TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent)
   : QTextEdit(parent), AbstractTextEditAdapter(on_value_changed)
 {
+  setTabStopWidth(20);
   connect(this, &QTextEdit::textChanged, [on_value_changed, this]() {
     if (!signalsBlocked()) { on_value_changed(value()); }
   });

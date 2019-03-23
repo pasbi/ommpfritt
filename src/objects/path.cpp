@@ -49,6 +49,7 @@ class Style;
 
 Path::Path(Scene* scene) : Object(scene)
 {
+  static const auto category = QObject::tr("path").toStdString();
   const auto update_point_tangents = [this](Property&) {
     std::map<Path*, std::map<Point*, Point>> map;
     const auto i_mode = property(INTERPOLATION_PROPERTY_KEY).value<InterpolationMode>();
@@ -56,14 +57,12 @@ Path::Path(Scene* scene) : Object(scene)
     this->scene()->submit<ModifyPointsCommand>(map);
   };
   add_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
-    .set_label(QObject::tr("closed").toStdString())
-    .set_category(QObject::tr("path").toStdString());
+    .set_label(QObject::tr("closed").toStdString()).set_category(category);
 
   add_property<OptionsProperty>(INTERPOLATION_PROPERTY_KEY)
     .set_options({ QObject::tr("linear").toStdString(), QObject::tr("smooth").toStdString(),
                    QObject::tr("bezier").toStdString() })
-    .set_label(QObject::tr("interpolation").toStdString())
-    .set_category(QObject::tr("path").toStdString())
+    .set_label(QObject::tr("interpolation").toStdString()).set_category(category)
     .set_post_submit(update_point_tangents).set_pre_submit(update_point_tangents);
 }
 
