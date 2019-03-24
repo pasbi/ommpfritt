@@ -19,7 +19,8 @@ namespace omm
 {
 
 template<typename T> List<T>::List(const List<T>& other)
-  : m_items(copy_items(other.m_items))
+  : Structure<T>(), Observed<AbstractStructureObserver<List<T>>>(other)
+  ,m_items(copy_items(other.m_items))
 {
 
 }
@@ -43,11 +44,11 @@ template<typename T> void List<T>::insert(ListOwningContext<T>& context)
 {
   const size_t position = this->insert_position(context.predecessor);
   const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [this, position](auto* observer) {
+    [position](auto* observer) {
       return observer->acquire_inserter_guard(position);
     }
   );
-  m_items.insert(m_items.begin() + position, context.subject.release());
+  m_items.insert(m_items.begin() + static_cast<int>(position), context.subject.release());
   this->invalidate_recursive();
 }
 
@@ -80,7 +81,9 @@ template<typename T> size_t List<T>::position(const T& item) const
   });
 
   assert(it != m_items.end());
-  return std::distance(m_items.begin(), it);
+  auto i = std::distance(m_items.begin(), it);
+  assert(i >= 0);
+  return static_cast<std::size_t>(i);
 }
 
 template<typename T> const T* List<T>::predecessor(const T& item) const
@@ -101,7 +104,8 @@ template<typename T> void List<T>::move(ListMoveContext<T>& context)
   );
 
   std::unique_ptr<T> item = ::extract(m_items, context.subject.get());
-  m_items.insert(m_items.begin() + this->insert_position(context.predecessor), std::move(item));
+  const auto i = m_items.begin() + static_cast<int>(this->insert_position(context.predecessor));
+  m_items.insert(i, std::move(item));
   this->invalidate_recursive();
 }
 
@@ -109,7 +113,7 @@ template<typename T>
 std::vector<std::unique_ptr<T>> List<T>::set(std::vector<std::unique_ptr<T>> items)
 {
   const auto style_guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [this](auto* observer) { return observer->acquire_reseter_guard(); }
+    [](auto* observer) { return observer->acquire_reseter_guard(); }
   );
   auto old_items = std::move(m_items);
   m_items = std::move(items);

@@ -6,21 +6,6 @@
 #include "properties/optionsproperty.h"
 #include "scene/scene.h"
 
-namespace
-{
-
-arma::vec2 get_global_position_mean(const std::set<omm::Object*>& objects)
-{
-  assert(objects.size() > 0);
-  const auto add = [](const arma::vec2& accu, const omm::Object* object) -> arma::vec2 {
-    return accu + object->global_transformation().translation();
-  };
-  const auto null = arma::vec2 {0.0, 0.0};
-  return std::accumulate(objects.begin(), objects.end(), null, add) / objects.size();
-}
-
-}  // namespace
-
 namespace omm
 {
 
@@ -35,7 +20,6 @@ bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMou
       switch (handle->status()) {
       case Handle::Status::Active:
         return true;
-        break;
       case Handle::Status::Hovered:
       case Handle::Status::Inactive:
         break;
@@ -84,11 +68,21 @@ void Tool::draw(AbstractRenderer& renderer) const
   }
 }
 
-std::unique_ptr<QMenu> Tool::make_context_menu(QWidget* parent) { return nullptr; }
+std::unique_ptr<QMenu> Tool::make_context_menu(QWidget* parent)
+{
+  Q_UNUSED(parent);
+  return nullptr;
+}
+
+void Tool::transform_objects(ObjectTransformation t, const bool tool_space)
+{
+  Q_UNUSED(t);
+  Q_UNUSED(tool_space);
+}
+
 bool Tool::has_transformation() const { return false; }
 void Tool::on_selection_changed() {}
 void Tool::on_scene_changed() {}
-void Tool::transform_objects(ObjectTransformation t, const bool tool_space) {}
 AbstractPropertyOwner::Flag Tool::flags() const { return Flag::None; }
 
 }  // namespace omm

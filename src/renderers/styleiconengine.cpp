@@ -32,7 +32,7 @@ void draw_background(QPainter& painter, QRect rect)
   for (int x = rect.left(); x < rect.right(); x += size) {
     for (int y = rect.top(); y < rect.bottom(); y += size) {
       QRect rect(QPoint(x, y), QPoint(std::min(mx, x+size), std::min(my, y+size)));
-      painter.fillRect(rect, bg_colors[(x/size+y/size)%bg_colors.size()]);
+      painter.fillRect(rect, bg_colors[static_cast<std::size_t>(x/size+y/size)%bg_colors.size()]);
     }
   }
   painter.restore();
@@ -45,8 +45,9 @@ void draw_style(QPainter& painter, const QRect& rect, const omm::Style& style)
   auto pen = omm::ViewportRenderer::make_pen(style);
   pen.setWidthF(adjust_pen_width(pen.width(), rect.size()));
   painter.setPen(pen);
-  const int r = 0.8 * std::min(rect.size().width(), rect.size().height());
-  painter.drawEllipse(rect.bottomRight(), r, r);
+  const auto r = 0.8 * std::min(rect.size().width(), rect.size().height());
+  const auto ir = static_cast<int>(r);
+  painter.drawEllipse(rect.bottomRight(), ir, ir);
 
   painter.restore();
 }
@@ -63,7 +64,7 @@ QIconEngine* StyleIconEngine::clone() const
 }
 
 void
-StyleIconEngine::paint(QPainter* painter, const QRect& rect, QIcon::Mode mode, QIcon::State state)
+StyleIconEngine::paint(QPainter* painter, const QRect& rect, QIcon::Mode, QIcon::State)
 {
   painter->save();
   painter->setClipRect(rect);
@@ -71,6 +72,5 @@ StyleIconEngine::paint(QPainter* painter, const QRect& rect, QIcon::Mode mode, Q
   draw_style(*painter, rect, m_style);
   painter->restore();
 }
-
 
 }

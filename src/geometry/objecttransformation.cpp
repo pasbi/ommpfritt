@@ -34,7 +34,7 @@ ObjectTransformation::ObjectTransformation()
 
 ObjectTransformation::ObjectTransformation( const arma::vec2& translation, const arma::vec2& scale,
                                             const double rotation, const double shear )
-  : m_translation(translation), m_scaling(scale), m_rotation(rotation), m_shearing(shear) { }
+  : m_translation(translation), m_scaling(scale), m_shearing(shear), m_rotation(rotation) { }
 
 ObjectTransformation::ObjectTransformation(const Mat& mat) { set_mat(mat); }
 

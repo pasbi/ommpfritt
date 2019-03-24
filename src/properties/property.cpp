@@ -78,7 +78,7 @@ bool TriggerPropertyDummyValueType::operator!=(const TriggerPropertyDummyValueTy
   return !(this->operator==(other));
 }
 
-std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValueType& v)
+std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValueType&)
 {
   ostream << "[TriggerPropertyDummyValueType]";
   return ostream;

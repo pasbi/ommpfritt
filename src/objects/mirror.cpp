@@ -15,6 +15,7 @@ omm::ObjectTransformation get_mirror_t(omm::Mirror::Direction direction)
   case omm::Mirror::Direction::Vertical:
     return omm::ObjectTransformation().scaled(arma::vec2{  1.0, -1.0 });
   }
+  Q_UNREACHABLE();
 }
 
 }  // namespace
@@ -63,7 +64,7 @@ std::unique_ptr<Object> Mirror::make_reflection()
 
 std::unique_ptr<Object> Mirror::convert()
 {
-  auto converted = std::make_unique<Empty>(scene());
+  std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
   copy_properties(*converted);
   copy_tags(*converted);
 

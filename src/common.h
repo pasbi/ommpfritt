@@ -23,7 +23,7 @@ template<typename T, typename F> T& transfer(std::unique_ptr<T> object, F consum
   return ref;
 }
 
-template<typename T, template<typename...> class Container> void reserve(Container<T>& c, size_t)
+template<typename T, template<typename...> class Container> void reserve(Container<T>&, size_t)
 {
   // for most containers, reserving is a no op.
 }

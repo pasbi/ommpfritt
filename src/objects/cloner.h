@@ -40,7 +40,7 @@ public:
 
 private:
   std::vector<std::unique_ptr<Object>> make_clones();
-  std::vector<std::unique_ptr<Object>> copy_children(const int n);
+  std::vector<std::unique_ptr<Object>> copy_children(const std::size_t n);
 
   double get_t(std::size_t i, const bool inclusive) const;
   void set_linear(Object& object, std::size_t i);

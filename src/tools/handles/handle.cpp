@@ -7,12 +7,13 @@ namespace omm
 {
 
 Handle::Handle(Tool& tool, const bool transform_in_tool_space)
-  : tool(tool)
-  , transform_in_tool_space(transform_in_tool_space)
+  : transform_in_tool_space(transform_in_tool_space)
+  , tool(tool)
 {}
 
 bool Handle::mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force)
 {
+  Q_UNUSED(force);
   if (contains_global(pos)) {
     if (event.button() == Qt::LeftButton) {
       m_status = Status::Active;
@@ -23,8 +24,9 @@ bool Handle::mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool f
   }
 }
 
-bool Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& event)
+bool Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent&)
 {
+  Q_UNUSED(delta);
   if (m_status != Status::Active) {
     if (contains_global(pos)) {
       m_status = Status::Hovered;
@@ -35,8 +37,9 @@ bool Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QM
   return false;
 }
 
-void Handle::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
+void Handle::mouse_release(const arma::vec2& pos, const QMouseEvent&)
 {
+  Q_UNUSED(pos);
   m_status = Status::Inactive;
 }
 

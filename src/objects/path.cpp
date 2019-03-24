@@ -233,7 +233,7 @@ std::vector<Path::PointSequence> Path::remove_points(std::vector<std::size_t> in
 
 std::vector<std::size_t> Path::add_points(const PointSequence& sequence)
 {
-  auto i = std::next(m_points.begin(), sequence.position);
+  auto i = std::next(m_points.begin(), static_cast<int>(sequence.position));
   const auto n = sequence.sequence.size();
 
   m_points.insert(i, sequence.sequence.begin(), sequence.sequence.end());
@@ -249,7 +249,6 @@ std::vector<std::size_t> Path::add_points(const PointSequence& sequence)
 std::vector<std::size_t> Path::add_points(const std::vector<PointSequence>& sequences)
 {
   using ::operator<<;
-  std::size_t last_pos = 0;
   std::list<std::size_t> points;
   for (std::size_t i = 0; i < sequences.size(); ++i) {
     const auto pos = sequences[i].position;
@@ -257,7 +256,6 @@ std::vector<std::size_t> Path::add_points(const std::vector<PointSequence>& sequ
     // subsequent sequences are acutually not a problem, however, they are expected to be merged
     // into a single sequence. Sequences must not interleave because it produces unintuive effects.
     assert(i == 0 || pos > sequences[i-1].position + sequences[i-1].sequence.size());
-    last_pos = pos;
     const auto ps = add_points(sequences[i]);
     std::copy(ps.begin(), ps.end(), std::back_inserter(points));
   }

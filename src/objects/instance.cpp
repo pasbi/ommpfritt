@@ -81,7 +81,7 @@ std::unique_ptr<Object> Instance::convert()
 {
   auto* referenced_object = this->referenced_object();
   if (referenced_object != nullptr) {
-    auto clone = referenced_object->clone();
+    std::unique_ptr<Object> clone = referenced_object->clone();
     copy_properties(*clone);
     copy_tags(*clone);
     return clone;

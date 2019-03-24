@@ -6,8 +6,8 @@ namespace omm
 {
 
 QWidget* KeySequenceItemDelegate::createEditor( QWidget* parent,
-                                                const QStyleOptionViewItem& option,
-                                                const QModelIndex& index ) const
+                                                const QStyleOptionViewItem&,
+                                                const QModelIndex&) const
 {
   return std::make_unique<QKeySequenceEdit>(parent).release();
 }
@@ -38,7 +38,7 @@ QSize KeyBindingsTable::viewportSizeHint() const
   LOG(INFO) << QTableView::viewportSizeHint().width();
   int width = 0;
   if (model()) {
-    for (std::size_t i = 0; i < model()->columnCount(); ++i) {
+    for (int i = 0; i < model()->columnCount(); ++i) {
       width += QAbstractItemView::sizeHintForColumn(i);
     }
   }

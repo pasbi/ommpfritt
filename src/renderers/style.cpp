@@ -49,14 +49,14 @@ QIcon Style::icon() const
   return QIcon(std::make_unique<StyleIconEngine>(*this).release());
 }
 
-SolidStyle::SolidStyle(const Color& color, Scene* scene)
+SolidStyle::SolidStyle(const Color& color, Scene* scene) : Style(scene)
 {
   property(omm::Style::PEN_IS_ACTIVE_KEY).set(false);
   property(omm::Style::BRUSH_IS_ACTIVE_KEY).set(true);
   property(omm::Style::BRUSH_COLOR_KEY).set(color);
 }
 
-ContourStyle::ContourStyle(const Color& color, const double width, Scene* scene)
+ContourStyle::ContourStyle(const Color& color, const double width, Scene* scene) : Style(scene)
 {
   property(omm::Style::PEN_IS_ACTIVE_KEY).set(true);
   property(omm::Style::BRUSH_IS_ACTIVE_KEY).set(false);

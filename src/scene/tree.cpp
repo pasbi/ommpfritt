@@ -4,7 +4,7 @@
 namespace omm
 {
 
-template<typename T> Tree<T>::Tree(std::unique_ptr<T> root, Scene* scene)
+template<typename T> Tree<T>::Tree(std::unique_ptr<T> root, Scene*)
   : Structure<T>()
   , m_root(std::move(root))
 {

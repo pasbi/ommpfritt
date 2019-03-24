@@ -51,7 +51,7 @@ void Manager::contextMenuEvent(QContextMenuEvent *event)
 }
 
 std::vector<std::string> Manager::application_actions() const { return {}; }
-void Manager::populate_menu(QMenu& menu) { }
+void Manager::populate_menu(QMenu&) { }
 Scene& Manager::scene() const { return m_scene; }
 
 void Manager::set_widget(std::unique_ptr<QWidget> widget)

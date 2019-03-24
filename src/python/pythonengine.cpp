@@ -31,15 +31,14 @@ auto on_stdout(omm::PythonIOObserver* observer, const void* associated_item)
   return std::bind(&omm::PythonIOObserver::on_stdout, observer, associated_item, _1);
 }
 
-}
+}  // namespace
 
 namespace omm
 {
 
-PYBIND11_EMBEDDED_MODULE(omm, m) {}  // TODO consider to remove that
+PYBIND11_EMBEDDED_MODULE(omm, m) { Q_UNUSED(m); }
 
 PythonEngine::PythonEngine()
-  : m_guard {}
 {
   static size_t count = 0;
   if (count > 0) {
@@ -54,6 +53,10 @@ PythonEngine::PythonEngine()
 bool PythonEngine
 ::exec(const std::string& code, const py::object& locals, const void* associated_item) const
 {
+  // actually, they are used. However some compilers emit false warnings without the following.
+  Q_UNUSED(::on_stderr);
+  Q_UNUSED(::on_stdout);
+  Q_UNUSED(::notify);
 
   PythonStreamRedirect py_output_redirect {};
   try {

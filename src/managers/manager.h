@@ -34,7 +34,7 @@ protected:
   Scene& m_scene;
   void set_widget(std::unique_ptr<QWidget> widget);
   void contextMenuEvent(QContextMenuEvent *event) override;
-  virtual void populate_menu(QMenu& menu);
+  virtual void populate_menu(QMenu&);
   virtual std::vector<std::string> application_actions() const;
 
 private:

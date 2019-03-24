@@ -7,7 +7,7 @@
 template<typename ObserverT> class Observed
 {
 public:
-  Observed(const Observed& other) { }  // intentionally don't copy observers
+  Observed(const Observed&) { }  // intentionally don't copy observers
   Observed() = default;
   virtual ~Observed() = default;
 

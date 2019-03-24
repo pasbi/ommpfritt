@@ -20,11 +20,11 @@ namespace omm
 {
 
 void AbstractSelectionObserver::
-on_selection_changed(const std::set<AbstractPropertyOwner*>& selection) {}
-void AbstractSelectionObserver::on_object_selection_changed(const std::set<Object*>& selection) {}
-void AbstractSelectionObserver::on_style_selection_changed(const std::set<Style*>& selection) {}
-void AbstractSelectionObserver::on_tag_selection_changed(const std::set<Tag*>& selection) {}
-void AbstractSelectionObserver::on_tool_selection_changed(const std::set<Tool*>& selection) {}
+on_selection_changed(const std::set<AbstractPropertyOwner*>&) {}
+void AbstractSelectionObserver::on_object_selection_changed(const std::set<Object*>&) {}
+void AbstractSelectionObserver::on_style_selection_changed(const std::set<Style*>&) {}
+void AbstractSelectionObserver::on_tag_selection_changed(const std::set<Tag*>&) {}
+void AbstractSelectionObserver::on_tool_selection_changed(const std::set<Tool*>&) {}
 
 
 void AbstractSelectionObserver::

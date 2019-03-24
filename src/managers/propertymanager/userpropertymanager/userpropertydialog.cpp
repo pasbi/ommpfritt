@@ -84,10 +84,6 @@ UserPropertyDialog::UserPropertyDialog(QWidget* parent, AbstractPropertyOwner& p
 
   m_right_column = nullptr;
 
-  QMenuBar& menu_bar = static_cast<QMenuBar&>(*main_layout->menuBar());
-  QMenu& user_property_menu = *menu_bar.addMenu( QObject::tr( "User Properties",
-                                                              "UserPropertyDialog") );
-
   connect(m_list_widget, &QListWidget::currentItemChanged, [this](auto* item) {
     on_current_item_changed(static_cast<PropertyItem*>(item));
   });
@@ -126,11 +122,8 @@ void UserPropertyDialog::remove_selected_item()
   }
 }
 
-void UserPropertyDialog::on_current_item_changed(QListWidgetItem* item)
+void UserPropertyDialog::on_current_item_changed(QListWidgetItem*)
 {
-  using f_type = std::function<void(UserPropertyDialog&, PropertyItem*)>;
-  using map_type = std::map<std::string, f_type>;
-
   if (m_right_column != nullptr) { m_right_column->deleteLater(); }
   m_right_column = nullptr;
   const auto current_item = this->current_item();
@@ -169,8 +162,9 @@ std::unique_ptr<UserPropertyConfigCommand>
 UserPropertyDialog::make_user_property_config_command() const
 {
   std::vector<std::unique_ptr<Property>> properties;
-  properties.reserve(m_list_widget->count());
-  for (std::size_t i = 0; i < m_list_widget->count(); ++i) {
+  const auto n = m_list_widget->count();
+  properties.reserve(static_cast<std::size_t>(n));
+  for (int i = 0; i < n; ++i) {
     properties.push_back(static_cast<PropertyItem*>(m_list_widget->item(i))->property().clone());
   }
   return std::make_unique<UserPropertyConfigCommand>(m_property_owner, std::move(properties));

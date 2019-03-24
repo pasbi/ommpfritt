@@ -179,7 +179,7 @@ void PropertyManager::clear()
   m_active_category = active_category;
 }
 
-void PropertyManager::on_property_value_changed(Property& property)
+void PropertyManager::on_property_value_changed(Property&)
 {
   // As  (A) the current widgets will be deleted in `set_selection`
   // and (B) the widget of `property` still has pending events, it's not wise to call

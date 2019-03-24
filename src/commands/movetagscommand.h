@@ -32,8 +32,8 @@ public:
   void undo();
 
 private:
-  std::vector<MoveTagContext> m_new_contextes;
   std::vector<MoveTagContext> m_old_contextes;
+  std::vector<MoveTagContext> m_new_contextes;
 };
 
 }  // namespace omm

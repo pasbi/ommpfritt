@@ -51,7 +51,7 @@ Viewport::Viewport(Scene& scene)
 #if USE_OPENGL
 void Viewport::paintGL()
 #else
-void Viewport::paintEvent(QPaintEvent* event)
+void Viewport::paintEvent(QPaintEvent*)
 #endif
 {
   QPainter painter(this);

@@ -39,7 +39,7 @@ void TextEdit::keyPressEvent(QKeyEvent* event)
   event->setAccepted(false);  // event is not yet finished.
 }
 
-CodeEdit::CodeEdit(QWidget* parent)
+CodeEdit::CodeEdit(QWidget* parent) : QWidget(parent)
 {
   auto text_edit = std::make_unique<TextEdit>(this);
   m_text_edit = text_edit.get();
@@ -58,7 +58,6 @@ CodeEdit::CodeEdit(QWidget* parent)
   const QString test_string(" ");
 
   // compute the size of a char in double-precision
-  const int single_char_width = font_metrics.width(test_string);
   const int many_char_width = font_metrics.width(test_string.repeated(big_number));
   const double single_char_width_double = many_char_width / double(big_number);
 

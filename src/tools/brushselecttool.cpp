@@ -27,6 +27,7 @@ QIcon BrushSelectTool::icon() const
 bool BrushSelectTool::mouse_move( const arma::vec2& delta, const arma::vec2& pos,
                                   const QMouseEvent& event)
 {
+  Q_UNUSED(delta);
   if (m_mouse_down) {
     modify_selection(pos, event);
     m_mouse_pos = pos;
@@ -38,6 +39,7 @@ bool BrushSelectTool::mouse_move( const arma::vec2& delta, const arma::vec2& pos
 
 bool BrushSelectTool::mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force)
 {
+  Q_UNUSED(force);
   if (event.modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) {
     // don't deselect
   } else {
@@ -54,6 +56,8 @@ bool BrushSelectTool::mouse_press(const arma::vec2& pos, const QMouseEvent& even
 
 void BrushSelectTool::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
 {
+  Q_UNUSED(pos);
+  Q_UNUSED(event);
   m_mouse_down = false;
 }
 

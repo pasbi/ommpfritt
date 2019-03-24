@@ -38,8 +38,6 @@ public:
   const BoundingBox& bounding_box() const;
 
 public:
-  virtual void start_group(const std::string& name) {}
-  virtual void end_group() {}
   virtual void draw_spline( const std::vector<Point>& points, const Style& style,
                             bool closed = false ) = 0;
   virtual void draw_rectangle(const arma::vec2& pos, const double radius, const Style& style) = 0;

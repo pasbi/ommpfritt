@@ -24,7 +24,7 @@ namespace omm
 {
 
 
-AbstractSerializer::AbstractSerializer(std::ostream& stream)
+AbstractSerializer::AbstractSerializer(std::ostream&)
 {
 }
 
@@ -44,7 +44,7 @@ std::set<omm::AbstractPropertyOwner*> AbstractSerializer::serialized_references(
 }
 
 
-AbstractDeserializer::AbstractDeserializer(std::istream& stream)
+AbstractDeserializer::AbstractDeserializer(std::istream&)
 {
 }
 

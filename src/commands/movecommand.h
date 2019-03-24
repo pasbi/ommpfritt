@@ -16,8 +16,8 @@ public:
   void undo();
 
 private:
-  std::vector<context_type> m_new_contextes;
   std::vector<context_type> m_old_contextes;
+  std::vector<context_type> m_new_contextes;
   StructureT& m_structure;
 };
 

@@ -21,7 +21,7 @@ class AbstractSerializer
 {
 public:
   using Pointer = Serializable::Pointer;
-  explicit AbstractSerializer(std::ostream& stream);
+  explicit AbstractSerializer(std::ostream&);
   virtual ~AbstractSerializer();
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
@@ -51,7 +51,7 @@ class AbstractDeserializer
 {
 public:
   using Pointer = Serializable::Pointer;
-  explicit AbstractDeserializer(std::istream& stream);
+  explicit AbstractDeserializer(std::istream&);
   virtual ~AbstractDeserializer();
 
   void add_references(const std::set<AbstractPropertyOwner*>& existing_references);

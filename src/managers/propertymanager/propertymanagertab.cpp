@@ -7,23 +7,6 @@
 #include "properties/typedproperty.h"
 #include "propertywidgets/propertywidget.h"
 
-namespace
-{
-
-std::string get_property_index(const std::set<omm::Property*>& properties)
-{
-  assert(properties.size() > 0);
-  const auto type = (*properties.begin())->type();
-#ifndef NDEBUG
-  for (auto&& property : properties) {
-    assert(type == property->type());
-  }
-#endif
-  return type;
-}
-
-}  // namespace
-
 namespace omm
 {
 

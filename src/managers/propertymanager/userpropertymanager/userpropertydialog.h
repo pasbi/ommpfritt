@@ -27,7 +27,7 @@ private:
   void generate_items(AbstractPropertyOwner& property);
   void new_item();
   void remove_selected_item();
-  void on_current_item_changed(QListWidgetItem* item);
+  void on_current_item_changed(QListWidgetItem*);
   void on_current_item_type_changed(const std::string& type);
   void on_current_item_label_changed();
   PropertyItem* current_item() const;

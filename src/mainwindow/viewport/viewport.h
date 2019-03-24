@@ -41,7 +41,7 @@ protected:
 #if USE_OPENGL
   void paintGL() override;
 #else
-  void paintEvent(QPaintEvent* event) override;
+  void paintEvent(QPaintEvent*) override;
 #endif
   void mousePressEvent(QMouseEvent* event) override;
   void mouseMoveEvent(QMouseEvent* event) override;

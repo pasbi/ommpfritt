@@ -51,7 +51,7 @@ public:
   {
     setContextMenuPolicy(Qt::NoContextMenu);
 
-    connect(this, &QLineEdit::textEdited, [this](const QString& text) {
+    connect(this, &QLineEdit::textEdited, [this](const QString&) {
       const auto value = this->value();
       if (value != m_last_value) {
         m_last_value = value;

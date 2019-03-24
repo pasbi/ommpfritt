@@ -7,8 +7,8 @@ namespace omm
 {
 
 AbstractPropertyWidget::AbstractPropertyWidget(Scene& scene, const std::set<Property*>& properties)
-  : m_properties(properties)
-  , scene(scene)
+  : scene(scene)
+  , m_properties(properties)
 {
   for (auto&& property : properties) {
     property->Observed<AbstractPropertyObserver>::register_observer(*this);
@@ -30,7 +30,7 @@ void AbstractPropertyWidget::set_default_layout(std::unique_ptr<QWidget> other)
   setLayout(layout.release());
 }
 
-void AbstractPropertyWidget::on_property_value_changed(Property& property)
+void AbstractPropertyWidget::on_property_value_changed(Property&)
 {
   update_edit();
 }

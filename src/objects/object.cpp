@@ -132,7 +132,7 @@ void Object
     try {
       local_transformation =
         parent().global_transformation(skip_root).inverted().apply(global_transformation);
-    } catch (const std::runtime_error& e) {
+    } catch (const std::runtime_error&) {
       assert(false);
     }
   }
@@ -309,17 +309,22 @@ double Object::apply_border(double t, Border border)
   switch (border) {
   case Border::Clamp: return std::min(1.0, std::max(0.0, t));
   case Border::Wrap: return fmod(fmod(t, 1.0) + 1.0, 1.0);
-  case Border::Hide: return apply_border(t, Border::Clamp) == t ? t : -1.0;
+  case Border::Hide: return (t >= 0.0 && t <= 1.0) ? t : -1.0;
   case Border::Reflect: {
     const bool flip = int(t / 1.0) % 2 == 1;
     t = apply_border(t, Border::Wrap);
     return flip ? (1.0-t) : t;
   }
-  default:
-    assert(false); return 0.0;
   }
+  Q_UNREACHABLE();
 }
-OrientedPoint Object::evaluate(const double t) { return OrientedPoint(); }
+
+OrientedPoint Object::evaluate(const double t)
+{
+  Q_UNUSED(t);
+  return OrientedPoint();
+}
+
 double Object::path_length() { return -1.0; }
 
 void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t)

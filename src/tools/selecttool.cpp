@@ -53,6 +53,7 @@ ObjectTransformation SelectTool<PositionVariant>::transformation() const
 template<typename PositionVariant> bool SelectTool<PositionVariant>
 ::mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force)
 {
+  Q_UNUSED(force);
   if (Tool::mouse_press(pos, event, false)) {
     return true;
   } else if (Tool::mouse_press(pos, event, true)) {
@@ -129,6 +130,7 @@ PointSelectHandle::TangentMode SelectPointsTool::tangent_mode() const
 
 std::unique_ptr<QMenu> SelectPointsTool::make_context_menu(QWidget* parent)
 {
+  Q_UNUSED(parent);
   auto& app = Application::instance();
   auto menus = app.key_bindings.make_menus(app, MainWindow::path_menu_entries());
   if (menus.size() > 1) {

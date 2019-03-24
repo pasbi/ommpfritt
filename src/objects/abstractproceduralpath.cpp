@@ -31,9 +31,10 @@ std::unique_ptr<Object> AbstractProceduralPath::convert()
   auto converted = std::make_unique<Path>(scene());
   copy_properties(*converted);
   copy_tags(*converted);
-  converted->set_points(points());
   converted->property(Path::IS_CLOSED_PROPERTY_KEY).set(is_closed());
-  return converted;
+  converted->property(Path::INTERPOLATION_PROPERTY_KEY).set(Path::InterpolationMode::Bezier);
+  converted->set_points(points());
+  return std::unique_ptr<Object>(converted.release());
 }
 
 OrientedPoint AbstractProceduralPath::evaluate(const double t)

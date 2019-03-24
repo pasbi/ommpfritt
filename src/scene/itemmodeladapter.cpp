@@ -91,8 +91,6 @@ bool model_index_tree_position_compare(QModelIndex a, QModelIndex b)
   assert(a.isValid());
   assert(b.isValid());
 
-  bool a_and_b_are_siblings = false;
-
   const auto find_ancestors = [](QModelIndex index) {
     std::vector<QModelIndex> ancestors;
     while (index.isValid()) {
@@ -150,7 +148,7 @@ template<typename StructureT, typename ItemModel> bool ItemModelAdapter<Structur
 ::canDropMimeData( const QMimeData *data, Qt::DropAction action,
                    int row, int column, const QModelIndex &parent ) const
 {
-
+  Q_UNUSED(column);
   if (!data->hasFormat(PropertyOwnerMimeData::MIME_TYPE)) { return false; }
   const auto* pdata = qobject_cast<const PropertyOwnerMimeData*>(data);
   if (pdata == nullptr) { return false; }

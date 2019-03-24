@@ -41,7 +41,6 @@ std::vector<omm::KeyBinding> collect_default_bindings()
   return std::vector(default_bindings.begin(), default_bindings.end());
 }
 
-// TODO these methods don't depend on template, hence they can be moved to cpp.
 std::pair<std::string, std::string> split(const std::string& path)
 {
   constexpr auto separator = '/';
@@ -50,7 +49,9 @@ std::pair<std::string, std::string> split(const std::string& path)
     return { "", path };
   } else {
     const auto i = std::distance(it, path.rend());
-    return { path.substr(0, i-1), path.substr(i) };
+    assert(i > 1);
+    return { path.substr(0, static_cast<std::size_t>(i-1)),
+             path.substr(static_cast<std::size_t>(i)) };
   }
 }
 
@@ -80,7 +81,7 @@ std::unique_ptr<QMenu> add_menu(const std::string& path, std::map<std::string, Q
   } else {
     const auto [ rest_path, menu_name ] = split(path);
     const auto menu_label = QCoreApplication::translate("menu_name", menu_name.c_str());
-    auto menu = std::make_unique<Menu>(menu_label);
+    std::unique_ptr<QMenu> menu = std::make_unique<Menu>(menu_label);
     menu_map.insert({ path, menu.get() });
 
     if (rest_path.empty()) {
@@ -149,12 +150,17 @@ QKeySequence KeyBindings::make_key_sequence(const QKeyEvent& event) const
   return QKeySequence(sequence[0], sequence[1], sequence[2], sequence[3]);
 }
 
-int KeyBindings::columnCount(const QModelIndex& parent) const { return 3; }
-int KeyBindings::rowCount(const QModelIndex& parent) const { return m_bindings.size(); }
+int KeyBindings::columnCount(const QModelIndex& parent) const { Q_UNUSED(parent); return 3; }
+int KeyBindings::rowCount(const QModelIndex& parent) const
+{
+  Q_UNUSED(parent);
+  return static_cast<int>(m_bindings.size());
+}
+
 QVariant KeyBindings::data(const QModelIndex& index, int role) const
 {
   assert(index.isValid());
-  const auto& binding = m_bindings[index.row()];
+  const auto& binding = m_bindings[static_cast<std::size_t>(index.row())];
   switch (role) {
   case Qt::DisplayRole:
     switch (index.column()) {
@@ -181,7 +187,7 @@ bool KeyBindings::setData(const QModelIndex& index, const QVariant& value, int r
   if (role != Qt::EditRole) { return false; }
   assert(index.column() == SEQUENCE_COLUMN);
   if (value.canConvert<QKeySequence>()) {
-    m_bindings[index.row()].set_key_sequence(value.value<QKeySequence>());
+    m_bindings[static_cast<std::size_t>(index.row())].set_key_sequence(value.value<QKeySequence>());
     return true;
   }  else {
     return false;

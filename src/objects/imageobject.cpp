@@ -22,7 +22,7 @@ ImageObject::ImageObject(Scene* scene) : Object(scene)
     .set_label(QObject::tr("Opacity").toStdString()).set_category(category);
 }
 
-void ImageObject::render(AbstractRenderer& renderer, const Style& style)
+void ImageObject::render(AbstractRenderer& renderer, const Style&)
 {
   renderer.set_category(AbstractRenderer::Category::Objects);
   if (is_active()) {

@@ -45,8 +45,8 @@ public:
   }
 
 private:
-  std::vector<std::unique_ptr<T>> m_children;
   T* m_parent;
+  std::vector<std::unique_ptr<T>> m_children;
   T& get() { return static_cast<T&>(*this); }
   const T& get() const { return static_cast<const T&>(*this); }
 };

@@ -45,9 +45,9 @@ public:
   std::unique_ptr<AbstractRAIIGuard> acquire_remover_guard(const Object& object) override;
   std::unique_ptr<AbstractRAIIGuard> acquire_reseter_guard() override;
 
-  constexpr static std::size_t TAGS_COLUMN = 2;
-  constexpr static std::size_t VISIBILITY_COLUMN = 1;
-  constexpr static std::size_t OBJECT_COLUMN = 0;
+  constexpr static int TAGS_COLUMN = 2;
+  constexpr static int VISIBILITY_COLUMN = 1;
+  constexpr static int OBJECT_COLUMN = 0;
 
   std::size_t max_number_of_tags_on_object() const;
 

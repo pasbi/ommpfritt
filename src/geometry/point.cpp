@@ -74,11 +74,6 @@ Point Point::smoothed(const Point& left_neighbor, const Point& right_neighbor) c
   const double theta = (l_pc.argument + r_pc.argument) / 2.0;
   const double mag = (l_pc.magnitude + r_pc.magnitude) / 6.0;
 
-  // TODO
-  const double d = arma::dot( right_neighbor.position - copy.position,
-                              left_neighbor.position - copy.position );
-  const double sign = std::copysign(1.0, d);
-
   copy.left_tangent = PolarCoordinates(theta + M_PI_2, mag);
   copy.right_tangent = PolarCoordinates(theta - M_PI_2, mag);
 
@@ -121,7 +116,6 @@ std::ostream& operator<<(std::ostream& ostream, const Point& pc)
 
 std::ostream& operator<<(std::ostream& ostream, const Point* pc)
 {
-  static constexpr bool verbose = false;
   if (pc == nullptr) {
     ostream << "Point[nullptr]";
   }

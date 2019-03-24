@@ -141,7 +141,7 @@ AbstractPropertyOwner::Flag Cloner::flags() const
 
 std::unique_ptr<Object> Cloner::convert()
 {
-  auto converted = std::make_unique<Empty>(scene());
+  std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
   copy_properties(*converted);
   copy_tags(*converted);
 
@@ -159,22 +159,19 @@ std::unique_ptr<Object> Cloner::convert()
 
 std::vector<std::unique_ptr<Object>> Cloner::make_clones()
 {
-  const auto count = [this]() -> int {
+  const auto count = [this]() -> std::size_t {
     switch (mode()) {
     case Mode::Linear:
     case Mode::Radial:
     case Mode::Path:
     case Mode::Script:
-      return property(COUNT_PROPERTY_KEY).value<int>();
+      return static_cast<std::size_t>(property(COUNT_PROPERTY_KEY).value<int>());
     case Mode::Grid: {
       const auto c = property(COUNT_2D_PROPERTY_KEY).value<VectorPropertyValueType<arma::ivec2>>();
-      const auto count = c(0) * c(1);
-      const int icount = static_cast<int>(count);
-      assert(icount == count);
-      return icount;
+      return static_cast<std::size_t>(c(0) * c(1));
     }
-    default: qFatal("unexpected case");
     }
+    Q_UNREACHABLE();
   };
 
   auto clones = copy_children(count());
@@ -191,13 +188,13 @@ std::vector<std::unique_ptr<Object>> Cloner::make_clones()
   return clones;
 }
 
-std::vector<std::unique_ptr<Object>> Cloner::copy_children(const int count)
+std::vector<std::unique_ptr<Object>> Cloner::copy_children(const std::size_t count)
 {
   const auto n_children = this->n_children();
   std::vector<std::unique_ptr<Object>> clones;
   if (n_children > 0 && count > 0) {
     clones.reserve(count);
-    for (int i = 0; i < count; ++i) {
+    for (std::size_t i = 0; i < count; ++i) {
       clones.push_back(child(i % n_children).clone());
     }
   }
@@ -232,7 +229,8 @@ void Cloner::set_grid(Object& object, std::size_t i)
   const auto n = property(COUNT_2D_PROPERTY_KEY).value<VectorPropertyValueType<arma::ivec2>>();
   const auto v = property(DISTANCE_2D_PROPERTY_KEY).value<VectorPropertyValueType<arma::vec2>>();
   auto t = object.transformation();
-  t.set_translation({ v(0) * (i % n(0)), v(1) * (i / n(0)) });
+  t.set_translation({ v(0u) * (i % static_cast<ulong>(n(0u))),
+                      v(1u) * (i / static_cast<ulong>(n(0u))) });
   object.set_transformation(t);
 }
 
@@ -248,8 +246,6 @@ void Cloner::set_path(Object& object, std::size_t i)
 {
   auto* o = property(PATH_REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
 
-  const double t_start = property(START_PROPERTY_KEY).value<double>();
-  const double t_end = property(END_PROPERTY_KEY).value<double>();
   const bool align = property(ALIGN_PROPERTY_KEY).value<bool>();
   object.set_position_on_path(o, align, get_t(i, true));
 }

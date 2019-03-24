@@ -20,7 +20,7 @@ TagsItemDelegate::TagsItemDelegate(ObjectTreeView& view, ObjectTreeSelectionMode
 {
 }
 
-void TagsItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
+void TagsItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &,
                               const QModelIndex &index ) const
 {
   painter->save();
@@ -49,15 +49,15 @@ void TagsItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &opt
 }
 
 QSize
-TagsItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+TagsItemDelegate::sizeHint(const QStyleOptionViewItem &, const QModelIndex &index) const
 {
-  const int n_tags = m_view.model()->item_at(index).tags.size();
+  const int n_tags = static_cast<int>(m_view.model()->item_at(index).tags.size());
   const int width = n_tags * tag_icon_size().width();
   return QSize(width, tag_icon_size().height());
 }
 
-bool TagsItemDelegate::editorEvent( QEvent *event, QAbstractItemModel *model,
-                                    const QStyleOptionViewItem &option, const QModelIndex &index )
+bool TagsItemDelegate::editorEvent( QEvent *event, QAbstractItemModel *,
+                                    const QStyleOptionViewItem &, const QModelIndex & )
 {
   switch (event->type()) {
   case QEvent::MouseButtonPress:
@@ -113,7 +113,6 @@ bool TagsItemDelegate::on_mouse_button_release(QMouseEvent& event)
     m_fragile_selection = false;
     return false;
   }
-  const bool is_selected = m_selection_model.is_selected(*tag);
   if (event.modifiers() & Qt::ControlModifier) {
     m_selection_model.select(*tag, QItemSelectionModel::Toggle);
   } else {
@@ -136,8 +135,11 @@ Tag* TagsItemDelegate::tag_at(const QModelIndex& index, const QPoint& pos) const
   if (!index.isValid()) { return nullptr; }
   const int x = (pos.x() - cell_pos(index).x()) / tag_icon_size().width();
   Object& object = m_view.model()->item_at(index);
-  if (x < 0 || x >= object.tags.size()) { return nullptr; }
-  return &object.tags.item(x);
+  if (x < 0 || x >= static_cast<int>(object.tags.size())) {
+    return nullptr;
+  } else {
+    return &object.tags.item(static_cast<std::size_t>(x));
+  }
 }
 
 Tag* TagsItemDelegate::tag_before(const QPoint& pos) const
@@ -157,7 +159,7 @@ Tag* TagsItemDelegate::tag_before(const QModelIndex& index, QPoint pos) const
   if (x < 0 || tags.size() == 0) {
     return nullptr;
   } else {
-    return tags.at(std::min<int>(tags.size() - 1, x));
+    return tags.at(std::min(tags.size() - 1, static_cast<std::size_t>(x)));
   }
 }
 

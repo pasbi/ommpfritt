@@ -38,8 +38,8 @@ namespace omm
 Application* Application::m_instance = nullptr;
 
 Application::Application(QApplication& app)
-  : m_app(app)
-  , scene(python_engine)
+  : scene(python_engine)
+  , m_app(app)
 {
   if (m_instance == nullptr) {
     m_instance = this;
@@ -215,7 +215,6 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
       using add_command_type = AddCommand<Tree<Object>>;
       Scene& scene = app.scene;
       auto object = Object::make(key, &scene);
-      auto& object_ref = *object;
       scene.submit<add_command_type>(scene.object_tree, std::move(object));
     }));
   }

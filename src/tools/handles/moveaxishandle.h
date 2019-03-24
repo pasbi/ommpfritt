@@ -43,8 +43,8 @@ public:
     // clamp v between o and m_direction
     const arma::vec2 min = arma::min(o, m_direction);
     const arma::vec2 max = arma::max(o, m_direction);
-    for (auto i : {0, 1}) {
-      v(i) = std::max(static_cast<double>(min(i)), std::min(v(i), static_cast<double>(max(i))));
+    for (uint i : { 0u, 1u }) {
+      v(i) = std::clamp(v(i), min(i), max(i));
     }
 
     return arma::norm(global_point - v) < interact_epsilon();

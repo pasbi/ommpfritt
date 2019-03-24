@@ -16,6 +16,7 @@ void advance_visibility(omm::Object& object)
     case omm::Object::Visibility::Hide: return omm::Object::Visibility::HideTree;
     case omm::Object::Visibility::HideTree: return omm::Object::Visibility::Visible;
     }
+    Q_UNREACHABLE();
   }(object.visibility()));
 }
 
@@ -52,6 +53,7 @@ QColor get_visibility_color_code(const omm::Object::Visibility visibility)
   case omm::Object::Visibility::Hide: return QColor("#FFFF00");
   case omm::Object::Visibility::HideTree: return QColor("#FF2080");
   }
+  Q_UNREACHABLE();
 }
 
 void draw_dot(QPainter& painter, const QRectF& area, const omm::Object::Visibility visibility)
@@ -80,7 +82,7 @@ ObjectQuickAccessDelegate::ObjectQuickAccessDelegate(ObjectTreeView& view)
 }
 
 void ObjectQuickAccessDelegate::
-paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+paint(QPainter *painter, const QStyleOptionViewItem &, const QModelIndex &index) const
 {
   static constexpr QMarginsF margins(0.1, 0.1, 0.1, 0.1);
 

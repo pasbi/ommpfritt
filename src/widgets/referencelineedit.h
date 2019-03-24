@@ -32,7 +32,7 @@ protected:
   void set_inconsistent_value() override;
   void dragEnterEvent(QDragEnterEvent* event) override;
   void dropEvent(QDropEvent* event) override;
-  void mouseDoubleClickEvent(QMouseEvent* event) override;
+  void mouseDoubleClickEvent(QMouseEvent*) override;
 
 private:
   bool can_drop(const QMimeData& mime_data) const;
