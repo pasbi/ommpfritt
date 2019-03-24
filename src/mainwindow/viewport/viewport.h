@@ -35,8 +35,6 @@ public:
   void reset();
   void set_transformation(const ObjectTransformation& transformation);
 
-  // y grows towards top
-  static const ObjectTransformation default_transformation;
   ObjectTransformation viewport_transformation() const;
 
 protected:

@@ -31,13 +31,9 @@ void set_cursor_position(QWidget& widget, const arma::vec2& pos)
 namespace omm
 {
 
-const ObjectTransformation Viewport::default_transformation
-  = ObjectTransformation().scaled(arma::vec2{ 1.0, -1.0 });
-
 Viewport::Viewport(Scene& scene)
   : m_scene(scene)
   , m_timer(std::make_unique<QTimer>())
-  , m_viewport_transformation(default_transformation)
   , m_pan_controller([this](const arma::vec2& pos) { set_cursor_position(*this, pos); })
   , m_renderer(scene, AbstractRenderer::Category::All)
 {
@@ -134,7 +130,7 @@ ObjectTransformation Viewport::viewport_transformation() const
 }
 
 Scene& Viewport::scene() const { return m_scene; }
-void Viewport::reset() { m_viewport_transformation = default_transformation; }
+void Viewport::reset() { m_viewport_transformation = ObjectTransformation(); }
 
 void Viewport::set_transformation(const ObjectTransformation& transformation)
 {

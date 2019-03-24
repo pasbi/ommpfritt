@@ -26,12 +26,10 @@ void ImageObject::render(AbstractRenderer& renderer, const Style& style)
 {
   renderer.set_category(AbstractRenderer::Category::Objects);
   if (is_active()) {
-    renderer.push_transformation(Viewport::default_transformation);
     const auto path = property(FILEPATH_PROPERTY_KEY).value<std::string>();
     const auto width = property(WIDTH_PROPERTY_KEY).value<double>();
     const auto opacity = property(OPACITY_PROPERTY_KEY).value<double>();
     renderer.draw_image(path, arma::vec2{0.0, 0.0}, width, opacity);
-    renderer.pop_transformation();
   }
 }
 
