@@ -24,7 +24,6 @@ public:
   virtual void mouse_release(const arma::vec2& pos, const QMouseEvent& event);
   Status status() const;
   virtual void deactivate();
-  void set_style(Status status, Style style);
   virtual double draw_epsilon() const;
   virtual double interact_epsilon() const;
   const bool transform_in_tool_space;
@@ -33,6 +32,7 @@ public:
 protected:
   arma::vec2 transform_position_to_global(const arma::vec2& position) const;
   virtual bool contains_global(const arma::vec2& global_point) const = 0;
+  void set_style(Status status, Style style);
   const Style& current_style() const;
   const Style& style(Status status) const;
   virtual ObjectTransformation transformation() const;
