@@ -17,7 +17,7 @@ public:
 };
 
 template<typename ToolT>
-class MoveParticleHandle : public omm::ParticleHandle
+class MoveParticleHandle : public ParticleHandle
 {
 public:
   MoveParticleHandle(ToolT& tool) : ParticleHandle(tool, true), m_tool(tool) {}
@@ -26,28 +26,6 @@ public:
     ParticleHandle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
       const auto t = omm::ObjectTransformation().translated(delta);
-      m_tool.transform_objects(t, false);
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-private:
-  ToolT& m_tool;
-};
-
-template<typename ToolT>
-class ScaleParticleHandle : public omm::ParticleHandle
-{
-public:
-  ScaleParticleHandle(ToolT& tool) : ParticleHandle(tool, true), m_tool(tool) {}
-  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override
-  {
-    ParticleHandle::mouse_move(delta, pos, e);
-    if (status() == Status::Active) {
-      const auto scale = get_scale(pos, delta, arma::vec2{ 1.0, 1.0 });
-      const auto t = omm::ObjectTransformation().scaled(scale);
       m_tool.transform_objects(t, false);
       return true;
     } else {

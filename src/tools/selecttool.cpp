@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "tools/handles/axishandle.h"
 #include "tools/handles/circlehandle.h"
+#include "tools/handles/bandhandle.h"
 #include "tools/handles/particlehandle.h"
 #include "scene/scene.h"
 #include "commands/objectstransformationcommand.h"
@@ -53,6 +54,18 @@ void make_rotate_handle(HandlesT& handles, ToolT& tool)
   rh->set_radius(100);
 
   handles.push_back(std::move(rh));
+}
+
+template<typename ToolT, typename HandlesT>
+void make_scale_handle(HandlesT& handles, ToolT& tool)
+{
+  using Status = omm::Handle::Status;
+  auto sh = std::make_unique<omm::ScaleBandHandle<ToolT>>(tool);
+  sh->set_style(Status::Active, omm::SolidStyle(omm::Color(1.0, 1.0, 1.0)));
+  sh->set_style(Status::Hovered, omm::SolidStyle(omm::Color(0.7, 0.7, 0.7)));
+  sh->set_style(Status::Inactive, omm::SolidStyle(omm::Color(0.5, 0.5, 0.5)));
+
+  handles.push_back(std::move(sh));
 }
 
 }  // namespace
@@ -107,6 +120,7 @@ template<typename PositionVariant>
 void SelectTool<PositionVariant>::on_scene_changed()
 {
   this->handles.clear();
+  make_scale_handle(this->handles, *this);
   make_move_handles(this->handles, *this);
   make_rotate_handle(this->handles, *this);
   position_variant.make_handles(this->handles, *this);

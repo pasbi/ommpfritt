@@ -1,5 +1,6 @@
 file (GLOB SOURCES
   "axishandle.cpp"
+  "bandhandle.cpp"
   "circlehandle.cpp"
   "handle.cpp"
   "particlehandle.cpp"
