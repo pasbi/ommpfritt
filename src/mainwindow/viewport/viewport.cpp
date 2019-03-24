@@ -65,7 +65,9 @@ void Viewport::paintEvent(QPaintEvent*)
   m_scene.evaluate_tags();
   m_renderer.render();
 
-  m_scene.tool_box.active_tool().draw(m_renderer);
+  auto& tool = m_scene.tool_box.active_tool();
+  tool.viewport_transformation = viewport_transformation();
+  tool.draw(m_renderer);
   m_renderer.clear_painter();
 }
 

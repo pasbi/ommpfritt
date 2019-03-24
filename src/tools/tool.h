@@ -44,11 +44,18 @@ public:
   virtual std::unique_ptr<QMenu> make_context_menu(QWidget* parent);
   virtual ObjectTransformation transformation() const;
   virtual void transform_objects(ObjectTransformation t, const bool tool_space);
+  void transform_objects_absolute(ObjectTransformation t, const bool tool_space);
   Flag flags() const override;
+  ObjectTransformation viewport_transformation;
+  bool integer_transformation() const;
 
 protected:
   std::vector<std::unique_ptr<Handle>> handles;
   double epsilon = 10.0;
+
+private:
+  ObjectTransformation m_last_object_transformation;
+  void reset_absolute_object_transformation();
 };
 
 void register_tools();

@@ -40,11 +40,21 @@ public:
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
-      const auto ti = m_tool.transformation().inverted();
-      arma::vec2 gpos = ti.apply_to_position(pos);
-      arma::vec2 gdelta = ti.apply_to_direction(delta);
-      const auto t = omm::ObjectTransformation().scaled(gpos / (gpos - gdelta));
-      m_tool.transform_objects(t, true);
+      const auto ti = transformation().inverted();
+      const auto global_pos = ti.apply_to_position(pos);
+      const auto origin = ti.apply_to_position(press_pos());
+      const auto delta = global_pos - origin;
+      double s = arma::norm(global_pos) / arma::norm(global_pos - delta);
+      if (m_tool.integer_transformation()) {
+        static constexpr auto step = 0.1;
+        if (std::abs(s) > step) { // s must never be zero.
+          s = step * static_cast<int>(s / step);
+        }
+      }
+      if (constexpr auto eps = 10e-10; std::abs(s) > eps) { s = std::copysign(eps, s); }
+
+      const auto t = omm::ObjectTransformation().scaled(arma::vec2{ s, s });
+      m_tool.transform_objects_absolute(t, true);
       return true;
     } else {
       return false;

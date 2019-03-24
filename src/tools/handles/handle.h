@@ -37,12 +37,13 @@ protected:
   const Style& style(Status status) const;
   virtual ObjectTransformation transformation() const;
   Tool& tool;
-  ObjectTransformation m_viewport_transformation;
+  arma::vec2 press_pos() const;
 
 private:
   Status m_status = Status::Inactive;
   std::map<Status, Style> m_styles;
   bool m_enabled = false;
+  arma::vec2 m_press_pos;
 };
 
 }  // namespace omm

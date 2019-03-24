@@ -46,12 +46,16 @@ public:
     Handle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
       const auto global_pos = transformation().inverted().apply_to_position(pos);
-      const auto global_delta = transformation().inverted().apply_to_direction(delta);
-      const arma::vec2 origin = global_pos - global_delta;
-      double origin_angle = atan2(origin(1), origin(0));
-      double pos_angle = atan2(global_pos(1), global_pos(0));
-      const auto t = omm::ObjectTransformation().rotated(pos_angle - origin_angle);
-      m_tool.transform_objects(t, transform_in_tool_space);
+      const auto origin = transformation().inverted().apply_to_position(press_pos());
+      const auto delta = global_pos - origin;
+
+      double angle = atan2(global_pos(1), global_pos(0)) - atan2(origin(1), origin(0));
+      if (m_tool.integer_transformation()) {
+        static constexpr double step = 15 * M_PI / 180.0;
+        angle = step * static_cast<int>(angle / step);
+      }
+      const auto t = omm::ObjectTransformation().rotated(angle);
+      m_tool.transform_objects_absolute(t, transform_in_tool_space);
       return true;
     } else {
       return false;

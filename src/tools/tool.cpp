@@ -5,6 +5,7 @@
 #include "objects/object.h"
 #include "properties/optionsproperty.h"
 #include "scene/scene.h"
+#include <QApplication>
 
 namespace omm
 {
@@ -31,6 +32,7 @@ bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMou
 
 bool Tool::mouse_press(const arma::vec2& pos, const QMouseEvent& e, bool force)
 {
+  reset_absolute_object_transformation();
   // `std::any_of` does not *require* to use short-circuit-logic. However, here it is mandatory,
   // so don't use `std::any_of`.
   for (auto&& handle : handles) {
@@ -84,5 +86,21 @@ bool Tool::has_transformation() const { return false; }
 void Tool::on_selection_changed() {}
 void Tool::on_scene_changed() {}
 AbstractPropertyOwner::Flag Tool::flags() const { return Flag::None; }
+
+void Tool::transform_objects_absolute(ObjectTransformation t, const bool tool_space)
+{
+  transform_objects(m_last_object_transformation.inverted().apply(t), tool_space);
+  m_last_object_transformation = t;
+}
+
+void Tool::reset_absolute_object_transformation()
+{
+  m_last_object_transformation = ObjectTransformation();
+}
+
+bool Tool::integer_transformation() const
+{
+  return QApplication::keyboardModifiers() & Qt::ShiftModifier;
+}
 
 }  // namespace omm

@@ -4,6 +4,7 @@
 #include "tools/handles/handle.h"
 #include "renderers/abstractrenderer.h"
 #include "geometry/util.h"
+#include <QDebug>
 
 namespace omm
 {
@@ -54,9 +55,18 @@ public:
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
-      const auto global_delta = transformation().inverted().apply_to_direction(delta);
-      const auto t = omm::ObjectTransformation().translated(project_onto_axis(global_delta));
-      m_tool.transform_objects(t, true);
+      auto total_delta = transformation().inverted().apply_to_direction(pos - press_pos());
+      total_delta = project_onto_axis(total_delta);
+      if (m_tool.integer_transformation()) {
+        total_delta = m_tool.viewport_transformation.inverted().apply_to_direction(total_delta);
+        static constexpr double step = 10.0;
+        const double magnitude = arma::norm(total_delta);
+        if (abs(magnitude) > 10e-10) {
+          total_delta = (total_delta / magnitude) * static_cast<int>(magnitude / step) * step;
+        }
+        total_delta = m_tool.viewport_transformation.apply_to_direction(total_delta);
+      }
+      m_tool.transform_objects_absolute(omm::ObjectTransformation().translated(total_delta), true);
       return true;
     } else {
       return false;
