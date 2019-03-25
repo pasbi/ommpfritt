@@ -39,6 +39,8 @@ protected:
   Tool& tool;
   arma::vec2 press_pos() const;
 
+  void discretize(arma::vec2& vec) const;
+
 private:
   Status m_status = Status::Inactive;
   std::map<Status, Style> m_styles;

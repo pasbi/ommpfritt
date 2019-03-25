@@ -9,7 +9,7 @@ template<typename ToolT>
 class RotateHandle : public Handle
 {
 public:
-  RotateHandle(ToolT& tool) : Handle(tool, true), m_tool(tool)
+  RotateHandle(ToolT& tool) : Handle(tool, true)
   {
     set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
     set_style(Status::Hovered, omm::ContourStyle(omm::Color(0.0, 0.0, 1.0)));
@@ -32,9 +32,6 @@ public:
 
   bool contains_global(const arma::vec2& point) const override
   {
-    // const ObjectTransformation t2 = ObjectTransformation().scaled(arma::vec2{ 1/m_scale(0), 1/m_scale(1) });
-    // const ObjectTransformation t1 = transformation().inverted();
-    // const auto global_position = t2.apply_to_position(t1.apply_to_position(point));
     const auto global_point = transform_position_to_global(point);
     const arma::vec2 o{ 0.0, 0.0 };
     const double r = arma::norm(global_point - o);
@@ -50,12 +47,13 @@ public:
       const auto delta = global_pos - origin;
 
       double angle = atan2(global_pos(1), global_pos(0)) - atan2(origin(1), origin(0));
-      if (m_tool.integer_transformation()) {
+      if (tool.integer_transformation()) {
         static constexpr double step = 15 * M_PI / 180.0;
         angle = step * static_cast<int>(angle / step);
       }
       const auto t = omm::ObjectTransformation().rotated(angle);
-      m_tool.transform_objects_absolute(t, transform_in_tool_space);
+      tool.transform_objects_absolute(t, transform_in_tool_space);
+      tool.tool_info = QString("%1°").arg(angle / M_PI * 180.0).toStdString();
       return true;
     } else {
       return false;
@@ -63,7 +61,6 @@ public:
   }
 
 private:
-  ToolT& m_tool;
   static constexpr double RADIUS = 100;
 };
 

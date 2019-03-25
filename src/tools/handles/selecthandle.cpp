@@ -68,11 +68,21 @@ bool AbstractSelectHandle::mouse_press(const arma::vec2 &pos, const QMouseEvent 
   }
 }
 
-bool AbstractSelectHandle
-::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& event)
+bool AbstractSelectHandle::
+mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e)
 {
-  return Handle::mouse_move(delta, pos, event);
+  Handle::mouse_move(delta, pos, e);
+  if (status() == Status::Active) {
+    arma::vec2 total_delta = pos - press_pos();
+    discretize(total_delta);
+    tool.transform_objects_absolute(omm::ObjectTransformation().translated(total_delta), false);
+    tool.tool_info = QString("%1").arg(arma::norm(total_delta)).toStdString();
+    return true;
+  } else {
+    return false;
+  }
 }
+
 
 ObjectSelectHandle::ObjectSelectHandle(Tool& tool, Scene& scene, Object& object)
   : AbstractSelectHandle(tool)
@@ -100,18 +110,6 @@ void ObjectSelectHandle::draw(omm::AbstractRenderer& renderer) const
   renderer.draw_rectangle(pos, draw_epsilon(), style);
 }
 
-bool ObjectSelectHandle
-::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& event)
-{
-  AbstractSelectHandle::mouse_move(delta, pos, event);
-  if (status() == Status::Active) {
-    const auto t = omm::ObjectTransformation().translated(delta);
-    tool.transform_objects(t, false);
-    return true;
-  } else {
-    return false;
-  }
-}
 
 ObjectTransformation ObjectSelectHandle::transformation() const
 {
@@ -179,9 +177,7 @@ bool PointSelectHandle::mouse_press(const arma::vec2& pos, const QMouseEvent& ev
 bool PointSelectHandle
 ::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& event)
 {
-  AbstractSelectHandle::mouse_move(delta, pos, event);
-  if (status() == Status::Active) {
-    tool.transform_objects(ObjectTransformation().translated(delta), false);
+  if (AbstractSelectHandle::mouse_move(delta, pos, event)) {
     return true;
   } else if (tangents_active() && m_left_tangent_handle->mouse_move(delta, pos, event)) {
     return true;

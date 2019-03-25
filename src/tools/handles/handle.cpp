@@ -41,6 +41,7 @@ bool Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QM
 void Handle::mouse_release(const arma::vec2& pos, const QMouseEvent&)
 {
   Q_UNUSED(pos);
+  tool.tool_info.clear();
   m_status = Status::Inactive;
 }
 
@@ -73,6 +74,18 @@ arma::vec2 Handle::press_pos() const { return m_press_pos; }
 arma::vec2 Handle::transform_position_to_global(const arma::vec2& position) const
 {
   return transformation().inverted().apply_to_position(position);
+}
+
+void Handle::discretize(arma::vec2& vec) const
+{
+  if (tool.integer_transformation()) {
+    vec = tool.viewport_transformation.inverted().apply_to_direction(vec);
+    static constexpr double step = 50.0;
+    for (auto i : { 0u, 1u }) {
+      vec(i) = step * static_cast<int>(vec(i) / step);
+    }
+    vec = tool.viewport_transformation.apply_to_direction(vec);
+  }
 }
 
 }  // namespace omm

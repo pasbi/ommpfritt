@@ -17,7 +17,6 @@ class MoveAxisHandle : public Handle
 public:
   MoveAxisHandle(ToolT& tool)
     : Handle(tool, true)
-    , m_tool(tool)
     , m_direction(direction == MoveAxisHandleDirection::X ? arma::vec2{100.0, 0.0}
                                                           : arma::vec2{0.0, 100.0})
   {
@@ -57,16 +56,10 @@ public:
     if (status() == Status::Active) {
       auto total_delta = transformation().inverted().apply_to_direction(pos - press_pos());
       total_delta = project_onto_axis(total_delta);
-      if (m_tool.integer_transformation()) {
-        total_delta = m_tool.viewport_transformation.inverted().apply_to_direction(total_delta);
-        static constexpr double step = 10.0;
-        const double magnitude = arma::norm(total_delta);
-        if (abs(magnitude) > 10e-10) {
-          total_delta = (total_delta / magnitude) * static_cast<int>(magnitude / step) * step;
-        }
-        total_delta = m_tool.viewport_transformation.apply_to_direction(total_delta);
-      }
-      m_tool.transform_objects_absolute(omm::ObjectTransformation().translated(total_delta), true);
+      discretize(total_delta);
+      tool.transform_objects_absolute(omm::ObjectTransformation().translated(total_delta), true);
+      total_delta = tool.viewport_transformation.inverted().apply_to_direction(total_delta);
+      tool.tool_info = QString("%1").arg(arma::norm(total_delta)).toStdString();
       return true;
     } else {
       return false;
@@ -88,7 +81,6 @@ public:
   }
 
 private:
-  ToolT& m_tool;
   arma::vec2 project_onto_axis(const arma::vec2& v) const
   {
     arma::vec2 o { 0.0, 0.0 };

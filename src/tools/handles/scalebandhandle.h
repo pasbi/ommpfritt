@@ -12,7 +12,7 @@ template<typename ToolT>
 class ScaleBandHandle : public Handle
 {
 public:
-  ScaleBandHandle(ToolT& tool) : Handle(tool, true), m_tool(tool)
+  ScaleBandHandle(ToolT& tool) : Handle(tool, true)
   {
     set_style(Status::Active, omm::SolidStyle(omm::Color(1.0, 1.0, 1.0)));
     set_style(Status::Hovered, omm::SolidStyle(omm::Color(0.7, 0.7, 0.7)));
@@ -45,16 +45,17 @@ public:
       const auto origin = ti.apply_to_position(press_pos());
       const auto delta = global_pos - origin;
       double s = arma::norm(global_pos) / arma::norm(global_pos - delta);
-      if (m_tool.integer_transformation()) {
+      if (tool.integer_transformation()) {
         static constexpr auto step = 0.1;
         if (std::abs(s) > step) { // s must never be zero.
           s = step * static_cast<int>(s / step);
         }
       }
-      if (constexpr auto eps = 10e-10; std::abs(s) > eps) { s = std::copysign(eps, s); }
+      if (constexpr auto eps = 10e-10; std::abs(s) < eps) { s = std::copysign(eps, s); }
 
       const auto t = omm::ObjectTransformation().scaled(arma::vec2{ s, s });
-      m_tool.transform_objects_absolute(t, true);
+      tool.transform_objects_absolute(t, true);
+      tool.tool_info = QString("%1").arg(s).toStdString();
       return true;
     } else {
       return false;
@@ -62,7 +63,6 @@ public:
   }
 
 private:
-  ToolT& m_tool;
   static constexpr double width = 40.0;
   static constexpr double r = 70.0;
   static constexpr double stop = 10.0;

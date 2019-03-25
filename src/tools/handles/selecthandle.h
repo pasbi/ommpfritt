@@ -18,8 +18,8 @@ class AbstractSelectHandle : public Handle
 {
 public:
   explicit AbstractSelectHandle(Tool& tool);
-  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override;
   bool mouse_press(const arma::vec2 &pos, const QMouseEvent &event, bool force) override;
+  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override;
 
 protected:
   virtual void set_selected(bool selected) = 0;
@@ -35,7 +35,6 @@ public:
   explicit ObjectSelectHandle(Tool& tool, Scene& scene, Object& object);
   bool contains_global(const arma::vec2& point) const override;
   void draw(omm::AbstractRenderer& renderer) const override;
-  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override;
 
 protected:
   ObjectTransformation transformation() const override;
