@@ -50,6 +50,7 @@ public:
   virtual void draw_image( const std::string& filename, const arma::vec2& pos,
                            const double& width, const double opacity = 1.0) = 0;
   virtual void draw_text(const std::string& text, const TextOptions& options) = 0;
+  virtual void toast(const arma::vec2& pos, const std::string& text) = 0;
   Scene& scene;
 
   void set_category(Category category);

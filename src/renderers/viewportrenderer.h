@@ -22,7 +22,7 @@ public:
   void draw_image( const std::string& filename, const arma::vec2& pos,
                    const double& width, const double opacity) override;
   void draw_text(const std::string& text, const TextOptions& options) override;
-
+  void toast(const arma::vec2& pos, const std::string& text) override;
 
   void push_transformation(const ObjectTransformation& transformation) override;
   void pop_transformation() override;

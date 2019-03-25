@@ -191,4 +191,23 @@ QBrush ViewportRenderer::make_brush(const omm::Style& style)
   }
 }
 
+void ViewportRenderer::toast(const arma::vec2& pos, const std::string& text)
+{
+  m_painter->save();
+  const arma::vec2 gpos = current_transformation().apply_to_position(pos);
+  m_painter->resetTransform();
+  const QPointF top_left = to_qpoint(gpos);
+  static constexpr double huge = 10.0e10;
+  const QRectF rect(top_left, QSizeF(huge, huge));
+  QRectF actual_rect;
+  m_painter->drawText(rect, Qt::AlignTop | Qt::AlignLeft, text.c_str(), &actual_rect);
+  const double margin = 10.0;
+  actual_rect.adjust(-margin, -margin, margin, margin);
+
+  m_painter->setBrush(QBrush(QColor(80, 60, 40, 120)));
+  m_painter->setPen(QPen(Qt::white));
+  m_painter->drawRoundRect(actual_rect);
+  m_painter->restore();
+}
+
 }  // namespace omm
