@@ -59,8 +59,6 @@ public:
   BoundingBox apply(const BoundingBox& bb) const;
   ObjectTransformation apply(const ObjectTransformation& t) const;
   Point apply(const Point& point) const;
-  OrientedPoint apply(const OrientedPoint& point);
-  double apply_to_angle(double angle) const;
   ObjectTransformation normalized() const;
   bool contains_nan() const;
 

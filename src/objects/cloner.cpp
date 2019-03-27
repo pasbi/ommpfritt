@@ -238,7 +238,7 @@ void Cloner::set_radial(Object& object, std::size_t i)
 {
   const double angle = 2*M_PI * get_t(i, false);
   const double r = property(RADIUS_PROPERTY_KEY).value<double>();
-  const OrientedPoint op({std::cos(angle) * r, std::sin(angle) * r}, angle + M_PI/2.0);
+  const Point op({std::cos(angle) * r, std::sin(angle) * r}, angle + M_PI/2.0);
   object.set_oriented_position(op, property(ALIGN_PROPERTY_KEY).value<bool>());
 }
 

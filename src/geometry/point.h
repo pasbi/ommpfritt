@@ -6,16 +6,6 @@
 namespace omm
 {
 
-class OrientedPoint
-{
-public:
-  OrientedPoint();
-  OrientedPoint(const arma::vec2& pos, double rotation);
-  const arma::vec2 position;
-  const double rotation;
-  const bool is_valid;
-};
-
 struct PolarCoordinates
 {
   explicit PolarCoordinates(const double argument, const double magnitude);
@@ -32,12 +22,14 @@ struct PolarCoordinates
 class Point
 {
 public:
-  explicit Point(const arma::vec2& position);
-  explicit Point(const OrientedPoint& op, const double tangent_length);
+  explicit Point( const arma::vec2& position,
+                  const double rotation = 0.0,
+                  const double tangent_length = 1.0 );
   Point();
   arma::vec2 position;
   arma::vec2 left_position() const;
   arma::vec2 right_position() const;
+  double rotation() const;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Point", "Point");
   bool is_selected = false;
   void swap(Point& other);

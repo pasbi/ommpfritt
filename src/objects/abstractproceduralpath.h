@@ -17,7 +17,7 @@ public:
   std::unique_ptr<Object> convert() override;
   Flag flags() const override;
 
-  OrientedPoint evaluate(const double t) override;
+  Point evaluate(const double t) override;
   double path_length() override;
 
 protected:

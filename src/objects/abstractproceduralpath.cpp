@@ -37,7 +37,7 @@ std::unique_ptr<Object> AbstractProceduralPath::convert()
   return std::unique_ptr<Object>(converted.release());
 }
 
-OrientedPoint AbstractProceduralPath::evaluate(const double t)
+Point AbstractProceduralPath::evaluate(const double t)
 {
   return Cubics(points(), is_closed()).evaluate(t);
 }

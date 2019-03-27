@@ -167,7 +167,7 @@ bool Path::is_closed() const
   return this->property(omm::Path::IS_CLOSED_PROPERTY_KEY).value<bool>();
 }
 
-OrientedPoint Path::evaluate(const double t)
+Point Path::evaluate(const double t)
 {
   return Cubics(m_points, is_closed()).evaluate(t);
 }

@@ -5,14 +5,11 @@
 namespace omm
 {
 
-
-OrientedPoint::OrientedPoint() : position(arma::vec2{0.0, 0.0}), rotation(0), is_valid(false) { }
-
-OrientedPoint::OrientedPoint(const arma::vec2& pos, double rotation)
-  : position(pos), rotation(rotation), is_valid(true) { }
-
-Point::Point(const arma::vec2& position)
-  : position(position), left_tangent(PolarCoordinates()), right_tangent(PolarCoordinates()) { }
+Point::Point(const arma::vec2& position, const double rotation, const double tangent_length)
+  : position(position)
+  , left_tangent(PolarCoordinates(rotation, tangent_length))
+  , right_tangent(PolarCoordinates(M_PI + rotation, tangent_length))
+{ }
 
 Point::Point() : Point(arma::vec2 { 0.0, 0.0 }) { }
 
@@ -57,15 +54,6 @@ bool PolarCoordinates::operator!=(const PolarCoordinates& point) const
   return !(*this == point);
 }
 
-Point::Point(const OrientedPoint& op, const double tangent_length)
-  : Point(op.position)
-{
-  left_tangent.argument = op.rotation;
-  left_tangent.magnitude = tangent_length;
-  right_tangent.argument = M_PI + op.rotation;
-  right_tangent.magnitude = tangent_length;
-}
-
 Point Point::smoothed(const Point& left_neighbor, const Point& right_neighbor) const
 {
   auto copy = *this;
@@ -86,6 +74,11 @@ Point Point::smoothed(const Point& left_neighbor, const Point& right_neighbor) c
     copy.left_tangent.swap(copy.right_tangent);
   }
   return copy;
+}
+
+double Point::rotation() const
+{
+  return (PolarCoordinates(left_tangent).argument + PolarCoordinates(right_tangent).argument) / 2.0;
 }
 
 Point Point::nibbed() const

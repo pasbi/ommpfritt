@@ -70,10 +70,10 @@ arma::vec2 Cubic::tangent(const double t) const
   return accumulate(base_polynomials_derivatives, m_points, t);
 }
 
-OrientedPoint Cubic::evaluate(const double t) const
+Point Cubic::evaluate(const double t) const
 {
   const auto tangent = this->tangent(t);
-  return OrientedPoint(pos(t), atan2(tangent(1), tangent(0)));
+  return Point(pos(t), atan2(tangent(1), tangent(0)));
 }
 
 Cubics::Cubics(const std::vector<Point>& points, const bool is_closed)
@@ -87,7 +87,7 @@ Cubics::Cubics(const std::vector<Point>& points, const bool is_closed)
   }
 }
 
-OrientedPoint Cubics::evaluate(const double t) const
+Point Cubics::evaluate(const double t) const
 {
   double segment_t = -1.0;
   std::size_t segment_i = m_cubics.size();
@@ -98,7 +98,7 @@ OrientedPoint Cubics::evaluate(const double t) const
     segment_t = 1.0;
   } else {
     double length_accu = 0.0;
-    double current_length;
+    double current_length = 0.0;
     for (std::size_t i = 0; i < m_cubics.size(); ++i) {
       current_length = m_cubics[i].length();
       if (t_length < length_accu + current_length) {

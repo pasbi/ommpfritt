@@ -25,7 +25,7 @@ public:
   static constexpr auto POINTS_POINTER = "points";
   static constexpr auto INTERPOLATION_PROPERTY_KEY = "interpolation";
 
-  OrientedPoint evaluate(const double t) override;
+  Point evaluate(const double t) override;
   double path_length() override;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;

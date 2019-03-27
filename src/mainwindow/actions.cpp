@@ -11,6 +11,7 @@
 #include <QUndoStack>
 #include "common.h"
 #include "properties/referenceproperty.h"
+#include "geometry/cubic.h"
 
 namespace
 {
@@ -58,7 +59,7 @@ void remove_selected_points(Application& app)
 void subdivide(Application& app)
 {
   const std::size_t n = 1;
-  const auto subdivide = [n]( const auto& points, const std::size_t i,
+  const auto subdivide = []( const auto& points, const std::size_t i,
                               auto& sequences, std::size_t& accu ) {
     const Point& a = *points[i];
     const Point& b = *points[(i+1)%points.size()];
@@ -67,7 +68,7 @@ void subdivide(Application& app)
       Cubic segment(a, b);
       for (std::size_t j = 0; j < n; ++j) {
         const double t = double(j+1) / double(n+1);
-        intermediates.push_back(Point(segment.evaluate(t), 1.0));
+        intermediates.push_back(segment.evaluate(t));
       }
       sequences.push_back(Path::PointSequence{ i+1+accu, intermediates });
       accu += intermediates.size();

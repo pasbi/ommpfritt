@@ -19,7 +19,7 @@ public:
   arma::vec2 pos(const double t) const;
   arma::vec2 tangent(const double t) const;
   double length() const;
-  OrientedPoint evaluate(const double t) const;
+  Point evaluate(const double t) const;
   std::vector<arma::vec2> interpolate(const std::size_t n) const;
 
 private:
@@ -33,7 +33,7 @@ public:
   Cubics(const std::vector<Point>& points, const bool is_closed);
   double length() const;
   void segment(const double t, std::size_t& segment_i, double& segment_t) const;
-  OrientedPoint evaluate(const double t) const;
+  Point evaluate(const double t) const;
 
 private:
   std::vector<Cubic> m_cubics;

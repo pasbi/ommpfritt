@@ -319,10 +319,10 @@ double Object::apply_border(double t, Border border)
   Q_UNREACHABLE();
 }
 
-OrientedPoint Object::evaluate(const double t)
+Point Object::evaluate(const double t)
 {
   Q_UNUSED(t);
-  return OrientedPoint();
+  return Point();
 }
 
 double Object::path_length() { return -1.0; }
@@ -341,10 +341,10 @@ void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align,
   }
 }
 
-void Object::set_oriented_position(const OrientedPoint& op, const bool align)
+void Object::set_oriented_position(const Point& op, const bool align)
 {
   auto transformation = global_transformation();
-  if (align) { transformation.set_rotation(op.rotation); }
+  if (align) { transformation.set_rotation(op.rotation()); }
   transformation.set_translation(op.position);
   set_global_transformation(transformation);
 }
