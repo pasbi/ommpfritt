@@ -206,7 +206,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
       //  transformation immediately afterwards. That can be optimized.
       const auto t = child->transformation();
       adopt(std::move(child)).set_transformation(t);
-    } catch (std::out_of_range& e) {
+    } catch (std::out_of_range&) {
       const auto message = QObject::tr("Failed to retrieve object type '%1'.")
                             .arg(QString::fromStdString(child_type)).toStdString();
       LOG(ERROR) << message;

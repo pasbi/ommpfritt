@@ -47,7 +47,7 @@ Tool& ToolBox::tool(const std::string& key) const
 {
   try {
     return *m_tools.at(key);
-  } catch (const std::out_of_range& e) {
+  } catch (const std::out_of_range&) {
     LOG(FATAL) << "Failed to load tool '" << key << "'.";
   }
 }

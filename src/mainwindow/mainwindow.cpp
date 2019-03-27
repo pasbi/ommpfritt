@@ -27,7 +27,8 @@ auto read_each(QSettings& settings, const std::string& key, const F& f)
 {
   auto size = settings.beginReadArray(QString::fromStdString(key));
   std::vector<T> ts;
-  ts.reserve(size);
+  assert(size >= 0);
+  ts.reserve(static_cast<std::size_t>(size));
   for (decltype(size) i = 0; i < size; ++i) {
     settings.setArrayIndex(i);
     ts.push_back(f());
@@ -51,7 +52,7 @@ template<typename Ts, typename F>
 void write_each(QSettings& settings, const std::string& key, const Ts& ts, const F& f)
 {
   settings.beginWriteArray(QString::fromStdString(key));
-  size_t i = 0;
+  int i = 0;
   for (auto&& t : ts) {
     settings.setArrayIndex(i);
     f(t);

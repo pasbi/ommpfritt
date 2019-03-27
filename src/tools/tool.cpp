@@ -106,7 +106,6 @@ void Tool::transform_objects_absolute(ObjectTransformation t, const bool tool_sp
 
 void Tool::reset_absolute_object_transformation()
 {
-  LOG(INFO) << transformation().null();
   m_init_position = transformation().null();
   m_last_object_transformation = ObjectTransformation();
 }
