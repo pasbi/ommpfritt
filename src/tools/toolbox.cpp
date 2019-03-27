@@ -1,5 +1,6 @@
 #include "tools/toolbox.h"
 #include "scene/scene.h"
+#include "tools/selecttool.h"
 
 namespace
 {
@@ -66,6 +67,21 @@ void ToolBox::set_previous_tool()
     const auto name = *std::next(m_history.begin());
     set_active_tool(name);
   }
+}
+
+void ToolBox::switch_between_object_and_point_selection()
+{
+  for (auto&& tool : m_history) {
+    if (tool == SelectPointsTool::TYPE) {
+      set_active_tool(SelectObjectsTool::TYPE);
+      return;
+    } else if (tool == SelectObjectsTool::TYPE) {
+      set_active_tool(SelectPointsTool::TYPE);
+      return;
+    }
+  }
+  set_active_tool(SelectObjectsTool::TYPE);
+  return;
 }
 
 }  // namespace

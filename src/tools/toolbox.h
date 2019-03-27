@@ -17,6 +17,7 @@ public:
   Tool& tool(const std::string& key) const;
   void set_active_tool(const std::string& key);
   void set_previous_tool();
+  void switch_between_object_and_point_selection();
 
 private:
   Tool* m_active_tool;
