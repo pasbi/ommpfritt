@@ -5,12 +5,19 @@
 namespace omm
 {
 
-Point::Point(const arma::vec2& position, const double rotation, const double tangent_length)
-  : position(position)
-  , left_tangent(PolarCoordinates(rotation, tangent_length))
-  , right_tangent(PolarCoordinates(M_PI + rotation, tangent_length))
-{ }
+Point::Point(const arma::vec2& position,
+             const PolarCoordinates& left_tangent, const PolarCoordinates& right_tangent)
+  : position(position), left_tangent(left_tangent), right_tangent(right_tangent)
+{
+}
 
+Point::Point(const arma::vec2& position, const double rotation, const double tangent_length)
+  : Point( position, PolarCoordinates(rotation, tangent_length),
+                     PolarCoordinates(M_PI + rotation, tangent_length) )
+{
+}
+
+Point::Point(const arma::vec2& position) : Point(position, 0.0, 0.0) { }
 Point::Point() : Point(arma::vec2 { 0.0, 0.0 }) { }
 
 arma::vec2 Point::left_position() const { return position + left_tangent.to_cartesian(); }
@@ -78,7 +85,7 @@ Point Point::smoothed(const Point& left_neighbor, const Point& right_neighbor) c
 
 double Point::rotation() const
 {
-  return (PolarCoordinates(left_tangent).argument + PolarCoordinates(right_tangent).argument) / 2.0;
+  return PolarCoordinates(left_tangent).argument;
 }
 
 Point Point::nibbed() const

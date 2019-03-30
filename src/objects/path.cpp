@@ -227,7 +227,7 @@ std::vector<Path::PointSequence> Path::remove_points(std::vector<std::size_t> in
   assert(new_points.size() == m_points.size() - indices.size());
   m_points = new_points;
 
-  scene()->tool_box.active_tool().on_scene_changed();
+  if (auto* s = scene(); s != nullptr) { s->tool_box.active_tool().on_scene_changed(); }
   return std::vector<Path::PointSequence>(sequences.begin(), sequences.end());
 }
 

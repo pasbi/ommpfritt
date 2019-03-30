@@ -23,8 +23,12 @@ class Point
 {
 public:
   explicit Point( const arma::vec2& position,
-                  const double rotation = 0.0,
+                  const PolarCoordinates& left_tangent,
+                  const PolarCoordinates& right_tangent );
+  explicit Point( const arma::vec2& position,
+                  const double rotation,
                   const double tangent_length = 1.0 );
+  explicit Point( const arma::vec2& position );
   Point();
   arma::vec2 position;
   arma::vec2 left_position() const;
