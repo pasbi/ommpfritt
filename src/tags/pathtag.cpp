@@ -17,7 +17,7 @@ PathTag::PathTag(Object& owner) : Tag(owner)
     .set_label(QObject::tr("path").toStdString())
     .set_category(QObject::tr("path").toStdString());
   add_property<FloatProperty>(POSITION_PROPERTY_KEY)
-    .set_step(0.01)
+    .set_step(0.001)
     .set_label(QObject::tr("position").toStdString())
     .set_category(QObject::tr("path").toStdString());
   add_property<BoolProperty>(ALIGN_REFERENCE_PROPERTY_KEY)
