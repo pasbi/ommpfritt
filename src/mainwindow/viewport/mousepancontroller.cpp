@@ -13,11 +13,12 @@ MousePanController::MousePanController(const set_cursor_pos_type& set_cursor_pos
 void MousePanController
 ::start_move(const arma::vec2& viewport_pos, const arma::vec2& global_pos, Action action)
 {
-  assert(m_action == Action::None);
-  m_action = action;
-  m_last_position = viewport_pos;
-  m_global_start_position = global_pos;
-  m_was_applied = false;
+  if (m_action == Action::None) {
+    m_action = action;
+    m_last_position = viewport_pos;
+    m_global_start_position = global_pos;
+    m_was_applied = false;
+  }
 }
 
 bool MousePanController::end_move()
