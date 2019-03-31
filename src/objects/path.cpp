@@ -169,12 +169,14 @@ bool Path::is_closed() const
 
 Point Path::evaluate(const double t)
 {
-  return Cubics(m_points, is_closed()).evaluate(t);
+  return cubics().evaluate(t);
 }
+
+Cubics Path::cubics() const { return Cubics(m_points, is_closed()); }
 
 double Path::path_length()
 {
-  return Cubics(m_points, is_closed()).length();
+  return cubics().length();
 }
 
 std::vector<std::size_t> Path::selected_points() const
@@ -186,84 +188,62 @@ std::vector<std::size_t> Path::selected_points() const
   return std::vector(selection.begin(), selection.end());
 }
 
-std::vector<Path::PointSequence> Path::remove_points(std::vector<std::size_t> indices)
-{
-  using ::operator<<;
-  // `points` may have holes, but must be ordered.
-  std::list<PointSequence> sequences;
-  if (indices.size() > 0) {
-    sequences.push_back(PointSequence{});
-    std::size_t i = 0;
-    bool fresh = true;
-    for (std::size_t j = 0; j < m_points.size(); ++j) {
-      if (i == indices.size()) {
-        break;
-      } else if (j == indices[i]) {
-        sequences.back().sequence.push_back(m_points[j]);
-        i++;
-        fresh = false;
-      } else {
-        if (!fresh) {
-          sequences.push_back(PointSequence{});
-          fresh = true;
-        }
-        sequences.back().position = j+1;
-      }
-    }
-    assert(i == indices.size()); // otherwise, indices was not ordered.
-    if (fresh) {  sequences.pop_back(); }
-  }
-
-  std::vector<Point> new_points;
-  new_points.reserve(m_points.size() - indices.size());
-  std::size_t j = 0;
-  for (std::size_t i = 0; i < m_points.size(); ++i) {
-    if (j >= indices.size() || i != indices[j]) {
-      new_points.push_back(m_points[i]);
-    } else {
-      j++;
-    }
-  }
-  assert(new_points.size() == m_points.size() - indices.size());
-  m_points = new_points;
-
-  if (auto* s = scene(); s != nullptr) { s->tool_box.active_tool().on_scene_changed(); }
-  return std::vector<Path::PointSequence>(sequences.begin(), sequences.end());
-}
-
 std::vector<std::size_t> Path::add_points(const PointSequence& sequence)
 {
   auto i = std::next(m_points.begin(), static_cast<int>(sequence.position));
-  const auto n = sequence.sequence.size();
 
   m_points.insert(i, sequence.sequence.begin(), sequence.sequence.end());
 
   std::vector<std::size_t> points;
+  const auto n = sequence.sequence.size();
   points.reserve(n);
   for (std::size_t j = 0; j < n; ++j) {
-    points.push_back(sequence.position + j);
+    points.push_back(sequence.position);
   }
+
   return points;
 }
 
-std::vector<std::size_t> Path::add_points(const std::vector<PointSequence>& sequences)
+std::vector<std::size_t> Path::add_points(std::vector<PointSequence> sequences)
 {
-  using ::operator<<;
-  std::list<std::size_t> points;
-  for (std::size_t i = 0; i < sequences.size(); ++i) {
-    const auto pos = sequences[i].position;
-    // sequences must be separated by at least one item.
-    // subsequent sequences are acutually not a problem, however, they are expected to be merged
-    // into a single sequence. Sequences must not interleave because it produces unintuive effects.
-    assert(i == 0 || pos > sequences[i-1].position + sequences[i-1].sequence.size());
-    const auto ps = add_points(sequences[i]);
-    std::copy(ps.begin(), ps.end(), std::back_inserter(points));
+  std::sort(sequences.begin(), sequences.end(), [](const auto& s1, const auto& s2) {
+    assert(s1.position != s2.position); // sequences shall be merged.
+    return s1.position > s2.position;
+  });
+
+  std::list<std::size_t> indices;
+  for (const auto& sequence : sequences) {
+    auto ii = add_points(sequence);
+    indices.insert(indices.end(), ii.begin(), ii.end());
   }
-  if (scene()) {
-    // scene() == nullptr should happen only in unit-test context.
-    scene()->tool_box.active_tool().on_scene_changed();
+
+  return std::vector(indices.begin(), indices.end());
+}
+
+std::vector<Path::PointSequence> Path::remove_points(std::vector<std::size_t> indices)
+{
+  std::sort(indices.begin(), indices.end());
+  std::list<Path::PointSequence> sequences;
+
+  const auto is_continuous = [&sequences](const std::size_t i) {
+    if (sequences.empty()) {
+      return false;
+    } else {
+      const auto& s = sequences.back();
+      return s.position + s.sequence.size() == i;
+    }
+  };
+
+  for (std::size_t i : indices) {
+    if (is_continuous(i)) {
+      sequences.back().sequence.push_back(m_points[i]);
+    } else {
+      sequences.push_back(Path::PointSequence{ i, std::list{m_points[i]} });
+    }
+    m_points.erase(std::next(m_points.begin(), static_cast<int>(i)));
   }
-  return std::vector(points.begin(), points.end());
+
+  return std::vector(sequences.begin(), sequences.end());
 }
 
 AbstractPropertyOwner::Flag Path::flags() const { return Object::flags() | Flag::IsPathLike; }
@@ -271,7 +251,6 @@ AbstractPropertyOwner::Flag Path::flags() const { return Object::flags() | Flag:
 void Path::set_global_axis_transformation( const ObjectTransformation& global_transformation,
                                            const bool skip_root )
 {
-  // const auto td = this->global_transformation(skip_root).inverted().apply(global_transformation).inverted();
   const auto td = global_transformation.inverted().apply(this->global_transformation(skip_root));
   Object::set_global_axis_transformation(global_transformation, skip_root);
   for (auto& point : m_points) {
@@ -281,7 +260,36 @@ void Path::set_global_axis_transformation( const ObjectTransformation& global_tr
 
 std::vector<double> Path::cut(const arma::vec2& c_start, const arma::vec2& c_end)
 {
-  return Cubics(m_points, is_closed()).cut(c_start, c_end);
+  const auto gti = global_transformation().inverted();
+  return cubics().cut(gti.apply_to_position(c_start), gti.apply_to_position(c_end));
+}
+
+std::vector<Path::PointSequence> Path::get_point_sequences(const std::vector<double> &ts) const
+{
+  const auto cubics = this->cubics();
+  std::map<std::size_t, std::list<double>> sequences_t;
+  for (double t : ts) {
+    const auto [segment_i, segment_t] = cubics.path_to_segment(t);
+    sequences_t[segment_i].push_back(segment_t);
+  }
+
+  const auto f = [cubics](auto i_ts) {
+    auto [segment_i, sequence_t] = i_ts;
+    sequence_t.sort();
+    PointSequence point_sequence;
+    const auto f = [segment_i=segment_i, cubics](const double segment_t) {
+      return cubics.evaluate(segment_i, segment_t);
+    };
+    point_sequence.sequence = ::transform<Point>(sequence_t, f);
+    point_sequence.position = segment_i + 1;
+    return point_sequence;
+  };
+
+  auto sequences = ::transform<PointSequence, std::vector>(sequences_t, f);
+  std::sort(sequences.begin(), sequences.end(), [](const auto& a, const auto& b) {
+    return a.position > b.position;
+  });
+  return sequences;
 }
 
 }  // namespace omm

@@ -45,11 +45,15 @@ namespace omm
 
 Cubic::Cubic(const Point& start, const Point& end)
   : Cubic( { start.position, start.right_position(),
-             end.left_position(), end.position } )
+             end.left_position(), end.position },
+           start.is_selected && end.is_selected )
 {
 }
 
-Cubic::Cubic(const std::array<arma::vec2, 4>& points) : m_points(points) { }
+Cubic::Cubic(const std::array<arma::vec2, 4>& points, const bool is_selected)
+  : m_points(points)
+  , m_is_selected(is_selected)
+{ }
 
 arma::vec2 Cubic::pos(const double t) const
 {
@@ -127,5 +131,7 @@ std::vector<double> Cubic::cut(const arma::vec2& start, const arma::vec2& end) c
   std::sort(ts_v.begin(), ts_v.end());
   return ts_v;
 }
+
+bool Cubic::is_selected() const { return m_is_selected; }
 
 }  // namespace omm

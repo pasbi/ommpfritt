@@ -44,4 +44,11 @@ Point AbstractProceduralPath::evaluate(const double t)
 
 double AbstractProceduralPath::path_length() { return Cubics(points(), is_closed()).length(); }
 
+std::vector<double> AbstractProceduralPath::cut(const arma::vec2& c_start, const arma::vec2& c_end)
+{
+  const auto gti = global_transformation().inverted();
+  return Cubics(points(), is_closed()).cut( gti.apply_to_position(c_start),
+                                            gti.apply_to_position(c_end) );
+}
+
 }  // namespace omm

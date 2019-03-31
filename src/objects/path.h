@@ -3,6 +3,7 @@
 #include "objects/object.h"
 #include "geometry/point.h"
 #include <list>
+#include "geometry/cubics.h"
 
 namespace omm
 {
@@ -19,6 +20,7 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Path");
   std::unique_ptr<Object> clone() const override;
   std::vector<Point*> points();
+  Cubics cubics() const;
   void set_points(const std::vector<Point>& points);
   static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";
   static constexpr auto POINTS_POINTER = "points";
@@ -45,7 +47,8 @@ public:
   };
 
   std::vector<PointSequence> remove_points(std::vector<std::size_t> points);
-  std::vector<std::size_t> add_points(const std::vector<PointSequence>& sequences);
+  std::vector<std::size_t> add_points(std::vector<PointSequence> sequences);
+  std::vector<PointSequence> get_point_sequences(const std::vector<double> &ts) const;
 
   bool is_closed() const;
   Flag flags() const override;

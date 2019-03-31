@@ -3,6 +3,8 @@
 #include "scene/scene.h"
 #include "common.h"
 #include "objects/path.h"
+#include "commands/modifypointscommand.h"
+#include <glog/logging.h>
 
 namespace
 {
@@ -28,13 +30,8 @@ bool KnifeTool::mouse_move(const arma::vec2 &delta, const arma::vec2 &pos, const
     return true;
   } else if (m_is_cutting) {
     m_points.clear();
-    const std::set<Object*> so = scene.item_selection<Object>();
-    const std::set<Path*> selected_paths = ::type_cast<Path*>(so);
-    for (auto&& path : selected_paths) {
-      const auto gti = path->global_transformation(false).inverted();
-      const auto a = gti.apply_to_position(m_mouse_press_pos);
-      const auto b = gti.apply_to_position(m_mouse_move_pos);
-      auto ts = path->cut(a, b);
+    for (auto&& path : ::type_cast<Path*>(scene.item_selection<Object>())) {
+      auto ts = path->cut(m_mouse_press_pos, m_mouse_move_pos);
       const auto g = path->global_transformation(false);
       const auto ps = ::transform<Point>(ts, [&path, g](const double t) {
         return g.apply(path->evaluate(t));
@@ -42,7 +39,7 @@ bool KnifeTool::mouse_move(const arma::vec2 &delta, const arma::vec2 &pos, const
       m_points.insert(m_points.end(), ps.begin(), ps.end());
     }
   }
-  return false;
+  return true;
 }
 
 bool KnifeTool::mouse_press(const arma::vec2 &pos, const QMouseEvent &event, bool force)
@@ -60,6 +57,16 @@ bool KnifeTool::mouse_press(const arma::vec2 &pos, const QMouseEvent &event, boo
 
 void KnifeTool::mouse_release(const arma::vec2 &pos, const QMouseEvent &event)
 {
+  if (m_is_cutting) {
+    LOG(INFO) << "CUT ---------------";
+    std::map<Path*, std::vector<Path::PointSequence>> sequencess;
+    for (auto&& path : ::type_cast<Path*>(scene.item_selection<Object>())) {
+      const auto ts = path->cut(m_mouse_press_pos, m_mouse_move_pos);
+      sequencess[path] = path->get_point_sequences(ts);
+    }
+    scene.submit<AddPointsCommand>(sequencess);
+    on_selection_changed();
+  }
   SelectPointsTool::mouse_release(pos, event);
   m_is_cutting = false;
 }

@@ -250,7 +250,7 @@ template<typename T, typename S> T& type_cast(S& s)
   return *t;
 }
 
-template<typename T, template<typename> class Container, typename S>
+template<typename T, template<typename...> class Container, typename S>
 Container<T> type_cast(const Container<S>& apos)
 {
   const auto casted = ::transform<T>(apos, [](S apo) { return type_cast<T>(apo); });

@@ -11,7 +11,7 @@
 #include <QUndoStack>
 #include "common.h"
 #include "properties/referenceproperty.h"
-#include "geometry/cubic.h"
+#include "geometry/cubics.h"
 
 namespace
 {
@@ -58,39 +58,30 @@ void remove_selected_points(Application& app)
 
 void subdivide(Application& app)
 {
-  const std::size_t n = 1;
-  const auto subdivide = []( const auto& points, const std::size_t i,
-                              auto& sequences, std::size_t& accu ) {
-    const Point& a = *points[i];
-    const Point& b = *points[(i+1)%points.size()];
-    if (a.is_selected && b.is_selected) {
-      std::list<Point> intermediates;
-      Cubic segment(a, b);
-      for (std::size_t j = 0; j < n; ++j) {
-        const double t = double(j+1) / double(n+1);
-        intermediates.push_back(segment.evaluate(t));
-      }
-      sequences.push_back(Path::PointSequence{ i+1+accu, intermediates });
-      accu += intermediates.size();
-    }
-  };
-  const auto make_subdivision_sequences = [subdivide](Path& path) {
-    std::size_t accu = 0;
-    std::list<Path::PointSequence> sequences;
-    for (std::size_t i = 0; i < path.points().size() - 1; ++i) {
-      subdivide(path.points(), i, sequences, accu);
-    }
-    if (path.is_closed()) {
-      subdivide(path.points(), path.points().size() - 1, sequences, accu);
-    }
-    return std::vector(sequences.begin(), sequences.end());
-  };
+  constexpr auto n = 1;
   std::map<Path*, std::vector<Path::PointSequence>> map;
+
   for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-    map[path] = make_subdivision_sequences(*path);
+    std::list<Path::PointSequence> sequences;
+    const auto cubics = path->cubics();
+    for (std::size_t i = 0; i < cubics.n_segments(); ++i) {
+      if (cubics.is_selected(i)) {
+        Path::PointSequence sequence;
+        sequence.position = i+1;
+        for (std::size_t j = 0; j < n; ++j) {
+          sequence.sequence.push_back(cubics.evaluate(i, (j+1.0)/(n+1.0)));
+        }
+        sequences.push_back(sequence);
+      } else {
+      }
+    }
+    map[path] = std::vector(sequences.begin(), sequences.end());
   }
 
-  app.scene.submit<AddPointsCommand>(map);
+  if (map.size() > 0) {
+    app.scene.submit<AddPointsCommand>(map);
+    app.scene.tool_box.active_tool().on_scene_changed();
+  }
 }
 
 void evaluate(Application& app)

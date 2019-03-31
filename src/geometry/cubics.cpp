@@ -1,50 +1,42 @@
 #include "geometry/cubics.h"
 #include "common.h"
+#include <glog/logging.h>
+
+namespace
+{
+
+std::vector<omm::Cubic> make_cubics(const std::vector<omm::Point>& points, const bool is_closed)
+{
+  std::list<omm::Cubic> cubics;
+  for (std::size_t i = 0; i < points.size() - 1; ++i) {
+    cubics.push_back(omm::Cubic(points[i], points[i+1]));
+  }
+  if (is_closed && points.size() > 2) {
+    cubics.push_back(omm::Cubic(points.back(), points.front()));
+  }
+  return std::vector(cubics.begin(), cubics.end());
+}
+
+}  // namespace
 
 namespace omm
 {
 
 Cubics::Cubics(const std::vector<Point>& points, const bool is_closed)
+  : m_cubics(make_cubics(points, is_closed))
 {
-  if (is_closed && points.size() > 2) {
-    m_cubics.reserve(points.size());
-  } else {
-    m_cubics.reserve(points.size() - 1);
-  }
-  for (std::size_t i = 0; i < points.size() - 1; ++i) {
-    m_cubics.push_back(Cubic(points[i], points[i+1]));
-  }
-  if (is_closed && points.size() > 2) {
-    m_cubics.push_back(Cubic(points.back(), points.front()));
-  }
+
 }
 
-Point Cubics::evaluate(const double t) const
+Point Cubics::evaluate(const std::size_t segment_i, const double segment_t) const
 {
-  double segment_t = -1.0;
-  std::size_t segment_i = m_cubics.size();
-  assert(0 <= t && t <= 1.0);
-  const double t_length = t * length();
-  if (t == 1.0) {
-    segment_i = m_cubics.size() - 1;
-    segment_t = 1.0;
-  } else {
-    double length_accu = 0.0;
-    double current_length = 0.0;
-    for (std::size_t i = 0; i < m_cubics.size(); ++i) {
-      current_length = m_cubics[i].length();
-      if (t_length < length_accu + current_length) {
-        segment_i = i;
-        break;
-      } else {
-        length_accu += current_length;
-      }
-    }
-    assert(segment_i < m_cubics.size());
-    segment_t = (t_length - length_accu) / current_length;
-  }
-
   return m_cubics[segment_i].evaluate(segment_t);
+}
+
+Point Cubics::evaluate(const double path_t) const
+{
+  const auto [segment_i, segment_t] = path_to_segment(path_t);
+  return evaluate(segment_i, segment_t);
 }
 
 std::vector<double> Cubics::cut(const arma::vec2& a, const arma::vec2& b) const
@@ -60,14 +52,21 @@ std::vector<double> Cubics::cut(const arma::vec2& a, const arma::vec2& b) const
 
 std::pair<std::size_t, double> Cubics::path_to_segment(const double path_t) const
 {
-  const double dist = path_t * length();
-  double t = 0.0;
+  if (m_cubics.empty()) { return std::pair(std::size_t(0), 0.0); }
+
+  assert(path_t >= 0.0 && path_t <= 1.0);
+
+  double segment_t_start = 0.0;
+  double segment_t_end = lengths()[0];
   std::size_t segment_i = 0;
-  for (segment_i = 1; segment_i < m_cubics.size() && t < dist; ++segment_i) {
-    t += lengths()[segment_i-1];
+  const double dist = path_t * length();
+  for (segment_i = 0; segment_i < m_cubics.size()-1 && segment_t_end < dist; ++segment_i) {
+    segment_t_start = segment_t_end;
+    segment_t_end += lengths()[segment_i+1];
   }
 
-  const double segment_t = (t - dist) / lengths()[segment_i];
+  const double segment_length = lengths()[segment_i];
+  const double segment_t = (dist - segment_t_start) / segment_length;
   assert(segment_t >= 0.0 && segment_t <= 1.0);
   return std::pair(segment_i, segment_t);
 }
@@ -84,7 +83,7 @@ double Cubics::segment_to_path(const std::size_t& segment_i, const double& segme
 
 std::vector<double> Cubics::lengths() const
 {
-  if (m_lengths.size() == 0) {
+  if (m_lengths.empty()) {
     m_lengths = ::transform<double>(m_cubics, std::mem_fn(&Cubic::length));
   }
 
@@ -95,6 +94,13 @@ double Cubics::length() const
 {
   const auto lengths = this->lengths();
   return std::accumulate(m_lengths.begin(), m_lengths.end(), 0.0);
+}
+
+std::size_t Cubics::n_segments() const { return m_cubics.size(); }
+
+bool Cubics::is_selected(const std::size_t& segment_i) const
+{
+  return m_cubics[segment_i].is_selected();
 }
 
 std::vector<double> find_cubic_roots(const std::array<double, 4>& coefficients) noexcept
