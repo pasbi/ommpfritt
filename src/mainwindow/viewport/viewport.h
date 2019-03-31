@@ -21,12 +21,13 @@ namespace omm
 
 class Scene;
 
-class Viewport
 #if USE_OPENGL
-  : public QOpenGLWidget
+using ViewportBase = QOpenGLWidget;
 #else
-  : public QWidget
+using ViewportBase = QWidget;
 #endif
+
+class Viewport : public ViewportBase
 {
 public:
   Viewport(Scene& scene);

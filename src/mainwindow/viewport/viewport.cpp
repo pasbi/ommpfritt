@@ -110,7 +110,7 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
     return;
   }
 
-  QWidget::mouseMoveEvent(event);
+  ViewportBase::mouseMoveEvent(event);
 }
 
 void Viewport::mouseReleaseEvent(QMouseEvent* event)
@@ -122,7 +122,7 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
       auto menu = m_scene.tool_box.active_tool().make_context_menu(this);
       if (menu) { menu->exec(event->globalPos()); }
     }
-    QWidget::mouseReleaseEvent(event);
+    ViewportBase::mouseReleaseEvent(event);
   }
 }
 
