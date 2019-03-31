@@ -3,7 +3,7 @@
 #include "properties/floatproperty.h"
 #include "objects/path.h"
 #include "common.h"
-#include "geometry/cubic.h"
+#include "geometry/cubics.h"
 
 namespace omm
 {

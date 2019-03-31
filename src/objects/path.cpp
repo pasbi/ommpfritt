@@ -5,7 +5,7 @@
 #include "properties/boolproperty.h"
 #include "properties/optionsproperty.h"
 #include "scene/scene.h"
-#include "geometry/cubic.h"
+#include "geometry/cubics.h"
 #include "common.h"
 
 namespace
@@ -277,6 +277,11 @@ void Path::set_global_axis_transformation( const ObjectTransformation& global_tr
   for (auto& point : m_points) {
     point = td.apply(point);
   }
+}
+
+std::vector<double> Path::cut(const arma::vec2& c_start, const arma::vec2& c_end)
+{
+  return Cubics(m_points, is_closed()).cut(c_start, c_end);
 }
 
 }  // namespace omm

@@ -29,24 +29,4 @@ private:
 std::vector<double> find_cubic_roots(const std::array<double, 4>& coefficients) noexcept;
 std::vector<double> find_cubic_roots(const std::array<double, 3>& coefficients) noexcept;
 
-class Cubics
-{
-public:
-  Cubics(const std::vector<Point>& points, const bool is_closed);
-  double length() const;
-  void segment(const double t, std::size_t& segment_i, double& segment_t) const;
-  Point evaluate(const double t) const;
-
-private:
-  std::vector<Cubic> m_cubics;
-  template<typename F> auto do_on_segment(const double t, const F& f) const
-  {
-    assert(0 <= t && t <= 1.0);
-    double segment_t;
-    std::size_t segment_i;
-    segment(t, segment_i, segment_t);
-    return f(m_cubics[segment_i], segment_t);
-  }
-};
-
 }  // namespace

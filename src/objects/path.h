@@ -2,7 +2,6 @@
 
 #include "objects/object.h"
 #include "geometry/point.h"
-#include "geometry/cubic.h"
 #include <list>
 
 namespace omm
@@ -53,6 +52,8 @@ public:
 
   void set_global_axis_transformation( const ObjectTransformation& global_transformation,
                                        const bool skip_root = false ) override;
+
+  std::vector<double> cut(const arma::vec2& c_start, const arma::vec2& c_end);
 
 private:
   std::vector<Point> m_points;
