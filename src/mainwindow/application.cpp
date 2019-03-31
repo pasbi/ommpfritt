@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QApplication>
 
+#include "keybindings/defaultkeysequenceparser.h"
 #include "mainwindow/mainwindow.h"
 #include "managers/manager.h"
 #include "scene/scene.h"
@@ -167,54 +168,49 @@ bool Application::load()
 
 std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos()
 {
-  const auto ks = [](auto&&... code) { return QKeySequence(code...); };
-  using AI = ActionInfo<Application>;
+  DefaultKeySequenceParser parser("://default_keybindings.cfg");
+  const auto ai = [parser](const std::string& name, const std::function<void(Application&)>& f) {
+    return ActionInfo(name, parser.get_key_sequence(name), f);
+  };
   std::list infos {
-    AI( QT_TRANSLATE_NOOP("any-context", "undo"),             ks("Ctrl+Z"),
-        [](Application& app) { app.scene.undo_stack.undo(); } ),
-    AI( QT_TRANSLATE_NOOP("any-context", "redo"),             ks("Ctrl+Y"),
-        [](Application& app) { app.scene.undo_stack.redo(); } ),
-    AI( QT_TRANSLATE_NOOP("any-context", "remove selection"), ks("Ctrl+Del"),
-        [](Application& app) { app.scene.remove(app.main_window(), app.scene.selection()); } ),
-    AI( QT_TRANSLATE_NOOP("any-context", "new document"),     ks("Ctrl+N"),
-        [](Application& app) { app.reset(); } ),
-    AI( QT_TRANSLATE_NOOP("any-context", "save document"),    ks("Ctrl+S"),
-        [](Application& app) { app.save(); } ),
-    AI( QT_TRANSLATE_NOOP("any-context", "save document as"), ks("Ctrl+Shfit+S"),
-        [](Application& app) { app.save_as(); } ),
-    AI( QT_TRANSLATE_NOOP("any-context", "load document"),    ks("Ctrl+O"),
-        [](Application& app) { app.load(); } ),
-    AI( QT_TRANSLATE_NOOP("any-context", "export"),           ks("Ctrl+E"), show_export_dialog),
-    AI( QT_TRANSLATE_NOOP("any-context", "make smooth"),      ks(), &actions::make_smooth),
-    AI( QT_TRANSLATE_NOOP("any-context", "make linear"),      ks(), &actions::make_linear),
-    AI( QT_TRANSLATE_NOOP("any-context", "remove points"),    ks("Del"),
-        &actions::remove_selected_points ),
-    AI( QT_TRANSLATE_NOOP("any-context", "subdivide"),        ks(), &actions::subdivide),
-    AI( QT_TRANSLATE_NOOP("any-context", "evaluate"),         ks(), &actions::evaluate),
-    AI( QT_TRANSLATE_NOOP("any-context", "show keybindings dialog"), ks(),
-        [](Application& app) { KeyBindingsDialog(app.key_bindings, app.main_window()).exec(); } ),
-    AI( QT_TRANSLATE_NOOP("any-context", "switch between object and point selection"),
-                                                              ks("Space"),
+    ai( QT_TRANSLATE_NOOP("any-context", "undo"), [](Application& app) {
+      app.scene.undo_stack.undo(); } ),
+    ai( QT_TRANSLATE_NOOP("any-context", "redo"), [](Application& app) {
+      app.scene.undo_stack.redo(); } ),
+    ai( QT_TRANSLATE_NOOP("any-context", "remove selection"), [](Application& app) {
+      app.scene.remove(app.main_window(), app.scene.selection()); } ),
+    ai( QT_TRANSLATE_NOOP("any-context", "new document"), [](Application& app) { app.reset(); } ),
+    ai( QT_TRANSLATE_NOOP("any-context", "save document"), [](Application& app) { app.save(); } ),
+    ai( QT_TRANSLATE_NOOP("any-context", "save document as"), [](Application& app) {
+      app.save_as(); } ),
+    ai( QT_TRANSLATE_NOOP("any-context", "load document"), [](Application& app) { app.load(); } ),
+    ai( QT_TRANSLATE_NOOP("any-context", "export"), show_export_dialog),
+    ai( QT_TRANSLATE_NOOP("any-context", "make smooth"), &actions::make_smooth),
+    ai( QT_TRANSLATE_NOOP("any-context", "make linear"), &actions::make_linear),
+    ai( QT_TRANSLATE_NOOP("any-context", "remove points"), &actions::remove_selected_points),
+    ai( QT_TRANSLATE_NOOP("any-context", "subdivide"), &actions::subdivide),
+    ai( QT_TRANSLATE_NOOP("any-context", "evaluate"), &actions::evaluate),
+    ai( QT_TRANSLATE_NOOP("any-context", "show keybindings dialog"), [](Application& app) {
+      KeyBindingsDialog(app.key_bindings, app.main_window()).exec(); } ),
+    ai( QT_TRANSLATE_NOOP("any-context", "switch between object and point selection"),
         [](Application& app) { app.scene.tool_box.switch_between_object_and_point_selection(); } ),
-    AI( QT_TRANSLATE_NOOP("any-context", "previous tool"),    ks("Space"),
-        [](Application& app) { app.scene.tool_box.set_previous_tool(); } ),
-    AI( QT_TRANSLATE_NOOP("any-context", "select all"),       ks("A"), &actions::select_all),
-    AI( QT_TRANSLATE_NOOP("any-context", "deselect all"),     ks(), &actions::deselect_all),
-    AI( QT_TRANSLATE_NOOP("any-context", "invert selection"), ks("I"),
-        &actions::invert_selection),
-    AI( QT_TRANSLATE_NOOP("any-context", "new style"),        ks(), [](Application& app) {
-          using command_type = AddCommand<List<Style>>;
-          app.scene.submit<command_type>(app.scene.styles, app.scene.default_style().clone());
-        } ),
-    AI( QT_TRANSLATE_NOOP("any-context", "convert objects"),  ks("C"),
-        &actions::convert_objects ),
-    AI( QT_TRANSLATE_NOOP("any-context", "reset viewport"),  ks("R"), [](Application& app) {
+    ai( QT_TRANSLATE_NOOP("any-context", "previous tool"), [](Application& app) {
+      app.scene.tool_box.set_previous_tool(); } ),
+    ai( QT_TRANSLATE_NOOP("any-context", "select all"), &actions::select_all),
+    ai( QT_TRANSLATE_NOOP("any-context", "deselect all"), &actions::deselect_all),
+    ai( QT_TRANSLATE_NOOP("any-context", "invert selection"), &actions::invert_selection),
+    ai( QT_TRANSLATE_NOOP("any-context", "new style"), [](Application& app) {
+        using command_type = AddCommand<List<Style>>;
+        app.scene.submit<command_type>(app.scene.styles, app.scene.default_style().clone());
+      } ),
+    ai( QT_TRANSLATE_NOOP("any-context", "convert objects"), &actions::convert_objects ),
+    ai( QT_TRANSLATE_NOOP("any-context", "reset viewport"), [](Application& app) {
         app.main_window()->viewport().reset();
-    })
+      })
   };
 
   for (const auto& key : Object::keys()) {
-    infos.push_back(AI(key, ks(), [key](Application& app) {
+    infos.push_back(ai(key, [key](Application& app) {
       using add_command_type = AddCommand<Tree<Object>>;
       Scene& scene = app.scene;
       auto object = Object::make(key, &scene);
@@ -222,7 +218,7 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
     }));
   }
   for (const auto& key : Manager::keys()) {
-    infos.push_back(AI(key, ks(), [key](Application& app) {
+    infos.push_back(ai(key, [key](Application& app) {
       Scene& scene = app.scene;
       auto manager = Manager::make(key, scene);
       auto& ref = *manager;
@@ -231,12 +227,12 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
     }));
   }
   for (const auto& key : Tool::keys()) {
-    infos.push_back(AI(key, ks(), [key](Application& app) {
+    infos.push_back(ai(key, [key](Application& app) {
       app.scene.tool_box.set_active_tool(key);
     }));
   }
   for (const auto& key : Tag::keys()) {
-    infos.push_back(AI(key, ks(), [key](Application& app) {
+    infos.push_back(ai(key, [key](Application& app) {
       Scene& scene = app.scene;
       scene.undo_stack.beginMacro(tr("Add Tag"));
       for (auto&& object : scene.item_selection<Object>()) {

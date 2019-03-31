@@ -28,6 +28,7 @@ public:
   void quit();
   void update_undo_redo_enabled();
   void set_main_window(MainWindow& main_window);
+  QKeySequence default_key_sequence(const std::string& name) const;
   static Application& instance();
 
   static std::vector<CommandInterface::ActionInfo<Application>> action_infos();
@@ -42,6 +43,8 @@ private:
   QApplication& m_app;
   static Application* m_instance;
   MainWindow* m_main_window;
+
+  std::map<std::string, QKeySequence> m_default_key_sequences;
 
 public:
   KeyBindings key_bindings;

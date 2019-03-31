@@ -20,6 +20,7 @@ public:
     using ActionCallback = std::function<void(CommandInterfaceT&)>;
     ActionInfo(const std::string& name, const QKeySequence& key_sequence, const ActionCallback& f)
       : name(name), default_key_sequence(key_sequence), callback(f) {}
+
     std::string name;
     QKeySequence default_key_sequence;
     ActionCallback callback;
