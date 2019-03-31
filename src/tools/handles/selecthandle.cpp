@@ -75,14 +75,15 @@ mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e)
   if (status() == Status::Active) {
     arma::vec2 total_delta = pos - press_pos();
     discretize(total_delta);
-    tool.transform_objects_absolute(omm::ObjectTransformation().translated(total_delta), false);
-    tool.tool_info = QString("%1").arg(arma::norm(total_delta)).toStdString();
+    const auto transformation = omm::ObjectTransformation().translated(total_delta);
+    static_cast<AbstractSelectTool&>(tool).transform_objects_absolute(transformation, false);
+    const auto tool_info = QString("%1").arg(arma::norm(total_delta));
+    static_cast<AbstractSelectTool&>(tool).tool_info = tool_info.toStdString();
     return true;
   } else {
     return false;
   }
 }
-
 
 ObjectSelectHandle::ObjectSelectHandle(Tool& tool, Scene& scene, Object& object)
   : AbstractSelectHandle(tool)

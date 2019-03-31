@@ -52,8 +52,8 @@ public:
         angle = step * static_cast<int>(angle / step);
       }
       const auto t = omm::ObjectTransformation().rotated(angle);
-      tool.transform_objects_absolute(t, transform_in_tool_space);
-      tool.tool_info = QString("%1°").arg(angle / M_PI * 180.0).toStdString();
+      static_cast<ToolT&>(tool).transform_objects_absolute(t, transform_in_tool_space);
+      static_cast<ToolT&>(tool).tool_info = QString("%1°").arg(angle / M_PI * 180.0).toStdString();
       return true;
     } else {
       return false;

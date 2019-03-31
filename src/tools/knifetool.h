@@ -18,6 +18,7 @@ public:
   std::string type() const override;
   void draw(AbstractRenderer& renderer) const override;
   std::string name() const override;
+  void cancel() override;
 
 private:
   bool m_is_cutting = false;

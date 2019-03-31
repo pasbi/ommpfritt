@@ -36,15 +36,15 @@ public:
    */
   virtual bool mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force = false);
   virtual void mouse_release(const arma::vec2& pos, const QMouseEvent& event);
+  virtual bool key_press(const QKeyEvent& event);
   virtual void draw(AbstractRenderer& renderer) const;
   virtual void on_selection_changed();
   virtual void on_scene_changed();
   virtual bool has_transformation() const;
+  virtual void cancel();
   Scene& scene;
   virtual std::unique_ptr<QMenu> make_context_menu(QWidget* parent);
   virtual ObjectTransformation transformation() const;
-  virtual void transform_objects(ObjectTransformation t, const bool tool_space);
-  void transform_objects_absolute(ObjectTransformation t, const bool tool_space);
   Flag flags() const override;
   ObjectTransformation viewport_transformation;
   bool integer_transformation() const;
@@ -52,16 +52,6 @@ public:
 protected:
   std::vector<std::unique_ptr<Handle>> handles;
   double epsilon = 10.0;
-
-private:
-  ObjectTransformation m_last_object_transformation;
-  void reset_absolute_object_transformation();
-
-  const Style m_tool_info_line_style;
-  arma::vec2 m_init_position;
-  arma::vec2 m_current_position;
-public:
-  std::string tool_info;
 };
 
 void register_tools();

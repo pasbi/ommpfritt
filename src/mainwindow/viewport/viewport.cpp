@@ -140,4 +140,11 @@ void Viewport::set_transformation(const ObjectTransformation& transformation)
   m_viewport_transformation.normalized();
 }
 
+void Viewport::keyPressEvent(QKeyEvent *event)
+{
+  if (!m_scene.tool_box.active_tool().key_press(*event)) {
+    ViewportBase::keyPressEvent(event);
+  }
+}
+
 }  // namespace omm

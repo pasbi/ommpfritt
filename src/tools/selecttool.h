@@ -9,17 +9,41 @@
 namespace omm
 {
 
+class Command;
+
+class AbstractSelectTool : public Tool
+{
+public:
+  explicit AbstractSelectTool(Scene& scene);
+  static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";
+  virtual Command* transform_objects(ObjectTransformation t, const bool tool_space) = 0;
+  Command *transform_objects_absolute(ObjectTransformation t, const bool tool_space);
+  void cancel() override;
+  bool mouse_move(const arma::vec2 &delta, const arma::vec2 &pos, const QMouseEvent &e);
+  bool mouse_press(const arma::vec2 &pos, const QMouseEvent &e, bool force);
+  void draw(AbstractRenderer &renderer) const;
+  std::string tool_info;
+  void mouse_release(const arma::vec2 &pos, const QMouseEvent &event);
+
+private:
+  ObjectTransformation m_last_object_transformation;
+  void reset_absolute_object_transformation();
+  const Style m_tool_info_line_style;
+  arma::vec2 m_init_position;
+  arma::vec2 m_current_position;
+};
+
 template<typename PositionVariant>
-class SelectTool : public Tool
+class SelectTool : public AbstractSelectTool
 {
 public:
   explicit SelectTool(Scene& scene);
-  static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";
   bool mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force) override;
   void on_scene_changed() override;
   PositionVariant position_variant;
   ObjectTransformation transformation() const override;
   bool has_transformation() const override;
+
 };
 
 class SelectObjectsTool : public SelectTool<ObjectPositions>
@@ -30,7 +54,7 @@ public:
   QIcon icon() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectObjectsTool");
   std::string name() const override;
-  void transform_objects(ObjectTransformation t, const bool tool_space) override;
+  Command* transform_objects(ObjectTransformation t, const bool tool_space) override;
   static constexpr auto TRANSFORMATION_MODE_KEY = "transformation_mode";
 
 };
@@ -47,7 +71,7 @@ public:
   std::unique_ptr<QMenu> make_context_menu(QWidget* parent) override;
   void on_selection_changed() override;
   std::string name() const override;
-  void transform_objects(ObjectTransformation t, const bool tool_space) override;
+  Command *transform_objects(ObjectTransformation t, const bool tool_space) override;
 
 };
 

@@ -54,8 +54,8 @@ public:
       if (constexpr auto eps = 10e-10; std::abs(s) < eps) { s = std::copysign(eps, s); }
 
       const auto t = omm::ObjectTransformation().scaled(arma::vec2{ s, s });
-      tool.transform_objects_absolute(t, true);
-      tool.tool_info = QString("%1").arg(s).toStdString();
+      static_cast<ToolT&>(tool).transform_objects_absolute(t, true);
+      static_cast<ToolT&>(tool).tool_info = QString("%1").arg(s).toStdString();
       return true;
     } else {
       return false;

@@ -41,7 +41,6 @@ bool Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QM
 void Handle::mouse_release(const arma::vec2& pos, const QMouseEvent&)
 {
   Q_UNUSED(pos);
-  tool.tool_info.clear();
   m_status = Status::Inactive;
 }
 

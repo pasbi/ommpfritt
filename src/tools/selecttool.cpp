@@ -26,15 +26,76 @@ namespace omm
 //      3) improve mouse pointer icon
 
 
-template<typename PositionVariant> SelectTool<PositionVariant>::SelectTool(Scene& scene)
+AbstractSelectTool::AbstractSelectTool(Scene& scene)
   : Tool(scene)
-  , position_variant(scene)
+ , m_tool_info_line_style(ContourStyle(Color(0.0, 0.0, 0.0, 0.3), 0.7))
+
 {
-  this->template add_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY)
+  this->add_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY)
     .set_options({ QObject::tr("global").toStdString(), QObject::tr("local").toStdString() })
     .set_label(QObject::tr("Alignment").toStdString())
     .set_category(QObject::tr("tool").toStdString());
 }
+
+Command*
+AbstractSelectTool::transform_objects_absolute(ObjectTransformation t, const bool tool_space)
+{
+  Command* cmd = transform_objects(m_last_object_transformation.inverted().apply(t), tool_space);
+  m_last_object_transformation = t;
+  return cmd;
+}
+
+void AbstractSelectTool::reset_absolute_object_transformation()
+{
+  m_init_position = transformation().null();
+  m_last_object_transformation = ObjectTransformation();
+}
+
+bool AbstractSelectTool::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e)
+{
+  m_current_position = transformation().null();
+  return Tool::mouse_move(delta, pos, e);
+}
+
+
+bool AbstractSelectTool::mouse_press(const arma::vec2& pos, const QMouseEvent& e, bool force)
+{
+  const bool r = Tool::mouse_press(pos, e, force);
+  reset_absolute_object_transformation();
+  return r;
+}
+
+void AbstractSelectTool::mouse_release(const arma::vec2 &pos, const QMouseEvent &event)
+{
+  tool_info.clear();
+  Tool::mouse_release(pos, event);
+}
+
+void AbstractSelectTool::draw(AbstractRenderer& renderer) const
+{
+  Tool::draw(renderer);
+  if (!tool_info.empty()) {
+    renderer.toast(m_current_position + arma::vec2{ 30.0, 30.0 }, tool_info.c_str());
+    const auto line = std::vector { Point(m_init_position), Point(m_current_position) };
+    renderer.draw_spline(line, m_tool_info_line_style, false);
+  }
+}
+
+void AbstractSelectTool::cancel()
+{
+  Command* cmd = transform_objects_absolute(ObjectTransformation(), true);
+  if (cmd) {
+    cmd->setObsolete(true);
+    scene.undo_stack.undo();
+  }
+  Tool::cancel();
+}
+
+template<typename PositionVariant>
+SelectTool<PositionVariant>::SelectTool(Scene& scene)
+  : AbstractSelectTool(scene)
+  , position_variant(scene)
+{}
 
 template<typename PositionVariant>
 ObjectTransformation SelectTool<PositionVariant>::transformation() const
@@ -54,9 +115,9 @@ template<typename PositionVariant> bool SelectTool<PositionVariant>
 ::mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force)
 {
   Q_UNUSED(force);
-  if (Tool::mouse_press(pos, event, false)) {
+  if (AbstractSelectTool::mouse_press(pos, event, false)) {
     return true;
-  } else if (Tool::mouse_press(pos, event, true)) {
+  } else if (AbstractSelectTool::mouse_press(pos, event, true)) {
     return true;
   } else {
     position_variant.clear_selection();
@@ -99,14 +160,17 @@ std::string SelectObjectsTool::name() const
   return QCoreApplication::translate("any-context", TYPE).toStdString();
 }
 
-void SelectObjectsTool::transform_objects(ObjectTransformation t, const bool tool_space)
+Command* SelectObjectsTool::transform_objects(ObjectTransformation t, const bool tool_space)
 {
   if (tool_space) { t = t.transformed(this->transformation().inverted()); }
   using TransformationMode = ObjectsTransformationCommand::TransformationMode;
   const auto tmode = property(TRANSFORMATION_MODE_KEY).value<TransformationMode>();
-  scene.submit<ObjectsTransformationCommand>(scene.item_selection<Object>(), t, tmode);
+  auto command = std::make_unique<ObjectsTransformationCommand>( scene.item_selection<Object>(),
+                                                                 t, tmode );
+  auto& command_ref = *command;
+  scene.submit(std::move(command));
+  return &command_ref;
 }
-
 
 
 
@@ -152,11 +216,16 @@ std::string SelectPointsTool::name() const
   return QCoreApplication::translate("any-context", TYPE).toStdString();
 }
 
-void SelectPointsTool::transform_objects(ObjectTransformation t, const bool tool_space)
+Command* SelectPointsTool::transform_objects(ObjectTransformation t, const bool tool_space)
 {
   if (tool_space) { t = t.transformed(this->transformation().inverted()); }
   if (const auto paths = position_variant.paths(); paths.size() > 0) {
-    scene.submit<PointsTransformationCommand>(paths, t);
+    auto command = std::make_unique<PointsTransformationCommand>(paths, t);
+    auto& command_ref = *command;
+    scene.submit(std::move(command));
+    return &command_ref;
+  } else {
+    return nullptr;
   }
 }
 

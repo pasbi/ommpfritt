@@ -18,10 +18,7 @@ namespace omm
 
 const Style KnifeTool::m_line_style = ContourStyle(Color(0.0, 0.0, 0.0, 1.0), 1);
 
-KnifeTool::KnifeTool(Scene& scene) : SelectPointsTool(scene)
-{
-
-}
+KnifeTool::KnifeTool(Scene& scene) : SelectPointsTool(scene) { }
 
 bool KnifeTool::mouse_move(const arma::vec2 &delta, const arma::vec2 &pos, const QMouseEvent &e)
 {
@@ -58,7 +55,6 @@ bool KnifeTool::mouse_press(const arma::vec2 &pos, const QMouseEvent &event, boo
 void KnifeTool::mouse_release(const arma::vec2 &pos, const QMouseEvent &event)
 {
   if (m_is_cutting) {
-    LOG(INFO) << "CUT ---------------";
     std::map<Path*, std::vector<Path::PointSequence>> sequencess;
     for (auto&& path : ::type_cast<Path*>(scene.item_selection<Object>())) {
       const auto ts = path->cut(m_mouse_press_pos, m_mouse_move_pos);
@@ -90,5 +86,6 @@ std::string KnifeTool::name() const
 
 std::string KnifeTool::type() const { return TYPE; }
 QIcon KnifeTool::icon() const { return QIcon(); }
+void KnifeTool::cancel() { m_is_cutting = false; }
 
 }  // namespace omm
