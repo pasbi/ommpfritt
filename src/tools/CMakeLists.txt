@@ -1,5 +1,6 @@
 file (GLOB SOURCES
   "brushselecttool.cpp"
+  "knifetool.cpp"
   "positionvariant.cpp"
   "selecttool.cpp"
   "tool.cpp"

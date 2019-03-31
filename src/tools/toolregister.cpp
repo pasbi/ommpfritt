@@ -1,6 +1,7 @@
 #include "tools/tool.h"
 #include "tools/selecttool.h"
 #include "tools/brushselecttool.h"
+#include "tools/knifetool.h"
 
 namespace omm
 {
@@ -11,6 +12,7 @@ void register_tools()
   REGISTER_TOOL(SelectObjectsTool);
   REGISTER_TOOL(SelectPointsTool);
   REGISTER_TOOL(BrushSelectTool);
+  REGISTER_TOOL(KnifeTool);
 #undef REGISTER_TOOL
 }
 
