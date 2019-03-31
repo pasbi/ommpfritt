@@ -58,7 +58,8 @@ Path::Path(Scene* scene) : Object(scene)
   };
 
   add_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
-    .set_label(QObject::tr("closed").toStdString()).set_category(category);
+    .set_label(QObject::tr("closed").toStdString()).set_category(category)
+    .set_post_submit(update_point_tangents).set_pre_submit(update_point_tangents);
 
   add_property<OptionsProperty>(INTERPOLATION_PROPERTY_KEY)
     .set_options({ QObject::tr("linear").toStdString(), QObject::tr("smooth").toStdString(),
@@ -300,12 +301,18 @@ std::vector<Path::PointSequence> Path::get_point_sequences(const std::vector<dou
 
 void Path::update_tangents()
 {
-  const auto imode = property(INTERPOLATION_PROPERTY_KEY).value<InterpolationMode>();
-  if (imode == InterpolationMode::Smooth) {
-    const Cubics cubics = this->cubics();
-    for (std::size_t i = 0; i < cubics.n_segments(); ++i) {
+  switch (property(INTERPOLATION_PROPERTY_KEY).value<InterpolationMode>()) {
+  case InterpolationMode::Bezier: break;
+  case InterpolationMode::Linear:
+    for (std::size_t i = 0; i < m_points.size(); ++i) {
+      m_points[i] = m_points[i].nibbed();
+    }
+    break;
+  case InterpolationMode::Smooth:
+    for (std::size_t i = 0; i < m_points.size(); ++i) {
       m_points[i] = smoothed(i);
     }
+    break;
   }
 }
 
