@@ -23,18 +23,6 @@
 #include <QHeaderView>
 #include <QTimer>
 
-namespace
-{
-
-template<typename StructureT>
-void remove( omm::Scene& scene, StructureT& structure,
-             const std::set<typename StructureT::item_type*>& selection )
-{
-  scene.template submit<omm::RemoveCommand<StructureT>>(structure, selection);
-}
-
-}  // namespace
-
 namespace omm
 {
 

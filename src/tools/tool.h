@@ -57,8 +57,6 @@ private:
   ObjectTransformation m_last_object_transformation;
   void reset_absolute_object_transformation();
 
-
-private:
   const Style m_tool_info_line_style;
   arma::vec2 m_init_position;
   arma::vec2 m_current_position;
