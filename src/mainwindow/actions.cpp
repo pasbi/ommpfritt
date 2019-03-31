@@ -50,7 +50,10 @@ void remove_selected_points(Application& app)
 {
   std::map<Path*, std::vector<std::size_t>> map;
   for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-    map[path] = path->selected_points();
+    auto selected_points = path->selected_points();
+    std::sort(selected_points.begin(), selected_points.end());
+    for (std::size_t i = 0; i < selected_points.size(); ++i) { selected_points[i] -= i; }
+    map[path] = selected_points;
   }
 
   app.scene.submit<RemovePointsCommand>(map);

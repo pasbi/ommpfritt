@@ -229,8 +229,7 @@ std::vector<Path::PointSequence> Path::remove_points(std::vector<std::size_t> in
     if (sequences.empty()) {
       return false;
     } else {
-      const auto& s = sequences.back();
-      return s.position + s.sequence.size() == i;
+      return sequences.back().position == i;
     }
   };
 
