@@ -136,28 +136,37 @@ Path::modified_points(const bool constrain_to_selection, InterpolationMode mode)
   const auto points = this->points();
   std::map<omm::Point*, omm::Point> map;
 
-  const auto process_point = [constrain_to_selection, mode, &map, points](std::size_t i)
+  const bool is_closed = this->is_closed();
+  for (std::size_t i = 0; i < points.size(); ++i)
   {
     Point* point = points[i];
     if (!constrain_to_selection || point->is_selected) {
       const auto n = points.size();
       switch (mode) {
       case InterpolationMode::Smooth:
-        map[point] = point->smoothed(*points[(i+n-1)%n], *points[(i+n+1)%n]);
+      {
+        arma::vec2 left, right;
+        if (i == 0) {
+          left = is_closed ? points[n-1]->position : points[0]->position;
+          right = points[1]->position;
+        } else if (i == n-1) {
+          left = points[n-2]->position;
+          right = is_closed ? points[0]->position : points[n-1]->position;
+        } else {
+          left = points[i-1]->position;
+          right = points[i+1]->position;
+        }
+        map[point] = point->smoothed(left, right);
         break;
+      }
       case InterpolationMode::Linear:
+        LOG(INFO) << "nib point";
         map[point] = point->nibbed();
         break;
       default:
         break;
       }
     }
-  };
-
-  for (std::size_t i = 1; i < points.size()-1; ++i) { process_point(i); }
-  if (is_closed()) {
-    process_point(0);
-    process_point(points.size()-1);
   }
   return map;
 }
