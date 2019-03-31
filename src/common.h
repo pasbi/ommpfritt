@@ -250,6 +250,13 @@ template<typename T, typename S> T& type_cast(S& s)
   return *t;
 }
 
+template<typename T, template<typename> class Container, typename S>
+Container<T> type_cast(const Container<S>& apos)
+{
+  const auto casted = ::transform<T>(apos, [](S apo) { return type_cast<T>(apo); });
+  return ::filter_if(casted, ::is_not_null);
+}
+
 template<typename T> struct dereference
 {
   decltype(auto) operator()(std::add_pointer_t<T> val) const { return *val; }
