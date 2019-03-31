@@ -56,6 +56,7 @@ Path::Path(Scene* scene) : Object(scene)
     map[this] = this->modified_points(false, i_mode);
     this->scene()->submit<ModifyPointsCommand>(map);
   };
+
   add_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
     .set_label(QObject::tr("closed").toStdString()).set_category(category);
 
@@ -136,39 +137,38 @@ Path::modified_points(const bool constrain_to_selection, InterpolationMode mode)
   const auto points = this->points();
   std::map<omm::Point*, omm::Point> map;
 
-  const bool is_closed = this->is_closed();
-  for (std::size_t i = 0; i < points.size(); ++i)
-  {
-    Point* point = points[i];
-    if (!constrain_to_selection || point->is_selected) {
-      const auto n = points.size();
+  for (std::size_t i = 0; i < points.size(); ++i) {
+    if (!constrain_to_selection || m_points[i].is_selected) {
       switch (mode) {
       case InterpolationMode::Smooth:
-      {
-        arma::vec2 left, right;
-        if (i == 0) {
-          left = is_closed ? points[n-1]->position : points[0]->position;
-          right = points[1]->position;
-        } else if (i == n-1) {
-          left = points[n-2]->position;
-          right = is_closed ? points[0]->position : points[n-1]->position;
-        } else {
-          left = points[i-1]->position;
-          right = points[i+1]->position;
-        }
-        map[point] = point->smoothed(left, right);
+        map[&m_points[i]] = smoothed(i);
         break;
-      }
       case InterpolationMode::Linear:
-        LOG(INFO) << "nib point";
-        map[point] = point->nibbed();
+        map[&m_points[i]] = m_points[i].nibbed();
         break;
-      default:
+      case InterpolationMode::Bezier:
         break;
       }
     }
   }
   return map;
+}
+
+Point Path::smoothed(const std::size_t& i) const
+{
+  arma::vec2 left, right;
+  const std::size_t n = m_points.size();
+  if (i == 0) {
+   left = is_closed() ? m_points[n-1].position : m_points[0].position;
+   right = m_points[1].position;
+  } else if (i == n-1) {
+   left = m_points[n-2].position;
+   right = is_closed() ? m_points[0].position : m_points[n-1].position;
+  } else {
+   left = m_points[i-1].position;
+   right = m_points[i+1].position;
+  }
+  return m_points[i].smoothed(left, right);
 }
 
 bool Path::is_closed() const
@@ -209,7 +209,6 @@ std::vector<std::size_t> Path::add_points(const PointSequence& sequence)
   for (std::size_t j = 0; j < n; ++j) {
     points.push_back(sequence.position);
   }
-
   return points;
 }
 
@@ -225,7 +224,6 @@ std::vector<std::size_t> Path::add_points(std::vector<PointSequence> sequences)
     auto ii = add_points(sequence);
     indices.insert(indices.end(), ii.begin(), ii.end());
   }
-
   return std::vector(indices.begin(), indices.end());
 }
 
@@ -286,7 +284,7 @@ std::vector<Path::PointSequence> Path::get_point_sequences(const std::vector<dou
     sequence_t.sort();
     PointSequence point_sequence;
     const auto f = [segment_i=segment_i, cubics](const double segment_t) {
-      return cubics.evaluate(segment_i, segment_t);
+      return cubics.segment(segment_i).evaluate(segment_t);
     };
     point_sequence.sequence = ::transform<Point>(sequence_t, f);
     point_sequence.position = segment_i + 1;
@@ -298,6 +296,17 @@ std::vector<Path::PointSequence> Path::get_point_sequences(const std::vector<dou
     return a.position > b.position;
   });
   return sequences;
+}
+
+void Path::update_tangents()
+{
+  const auto imode = property(INTERPOLATION_PROPERTY_KEY).value<InterpolationMode>();
+  if (imode == InterpolationMode::Smooth) {
+    const Cubics cubics = this->cubics();
+    for (std::size_t i = 0; i < cubics.n_segments(); ++i) {
+      m_points[i] = smoothed(i);
+    }
+  }
 }
 
 }  // namespace omm

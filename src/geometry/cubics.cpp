@@ -28,15 +28,10 @@ Cubics::Cubics(const std::vector<Point>& points, const bool is_closed)
 
 }
 
-Point Cubics::evaluate(const std::size_t segment_i, const double segment_t) const
-{
-  return m_cubics[segment_i].evaluate(segment_t);
-}
-
 Point Cubics::evaluate(const double path_t) const
 {
   const auto [segment_i, segment_t] = path_to_segment(path_t);
-  return evaluate(segment_i, segment_t);
+  return segment(segment_i).evaluate(segment_t);
 }
 
 std::vector<double> Cubics::cut(const arma::vec2& a, const arma::vec2& b) const
@@ -97,11 +92,7 @@ double Cubics::length() const
 }
 
 std::size_t Cubics::n_segments() const { return m_cubics.size(); }
-
-bool Cubics::is_selected(const std::size_t& segment_i) const
-{
-  return m_cubics[segment_i].is_selected();
-}
+const Cubic& Cubics::segment(const std::size_t& segment_i) const { return m_cubics[segment_i]; }
 
 std::vector<double> find_cubic_roots(const std::array<double, 4>& coefficients) noexcept
 {

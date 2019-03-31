@@ -62,7 +62,7 @@ arma::vec2 Cubic::pos(const double t) const
 
 arma::vec2 Cubic::tangent(const double t) const
 {
-  return ::evaluate(bezier_4_derivative(m_points), t);
+  return -1.0/6.0 * ::evaluate(bezier_4_derivative(m_points), t);
 }
 
 std::vector<arma::vec2> Cubic::interpolate(const std::size_t n) const
@@ -88,16 +88,7 @@ double Cubic::length() const
 Point Cubic::evaluate(const double t) const
 {
   const auto tangent = this->tangent(t);
-  return Point(pos(t), atan2(tangent(1), tangent(0)));
-}
-
-double intersect_lines(const arma::vec2& a1, const arma::vec2& a2, const arma::vec2& a3, const arma::vec2& a4)
-{
-  const double a = (a1(0) - a3(0)) * (a3(1) - a4(1));
-  const double b = (a1(1) - a3(1)) * (a3(0) - a4(0));
-  const double c = (a1(0) - a2(0)) * (a3(1) - a4(1));
-  const double d = (a1(1) - a2(1)) * (a3(0) - a4(0));
-  return (a-b) / (c-d);
+  return Point(pos(t), PolarCoordinates(tangent), PolarCoordinates(-tangent));
 }
 
 std::vector<double> Cubic::cut(const arma::vec2& start, const arma::vec2& end) const

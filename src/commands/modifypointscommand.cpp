@@ -58,6 +58,7 @@ void AbstractPointsCommand::remove()
   assert(m_added_points.size() == 0);
   for (auto&& [path, points] : m_removed_points) {
     m_added_points[path] = path->remove_points(points);
+    path->update_tangents();
   }
   m_removed_points.clear();
 }
@@ -67,6 +68,7 @@ void AbstractPointsCommand::add()
   assert(m_removed_points.size() == 0);
   for (auto&& [path, points] : m_added_points) {
     m_removed_points[path] = path->add_points(points);
+    path->update_tangents();
   }
   m_added_points.clear();
 }

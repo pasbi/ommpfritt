@@ -68,11 +68,11 @@ void subdivide(Application& app)
     std::list<Path::PointSequence> sequences;
     const auto cubics = path->cubics();
     for (std::size_t i = 0; i < cubics.n_segments(); ++i) {
-      if (cubics.is_selected(i)) {
+      if (cubics.segment(i).is_selected()) {
         Path::PointSequence sequence;
         sequence.position = i+1;
         for (std::size_t j = 0; j < n; ++j) {
-          sequence.sequence.push_back(cubics.evaluate(i, (j+1.0)/(n+1.0)));
+          sequence.sequence.push_back(cubics.segment(i).evaluate((j+1.0)/(n+1.0)));
         }
         sequences.push_back(sequence);
       } else {

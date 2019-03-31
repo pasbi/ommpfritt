@@ -49,6 +49,7 @@ public:
   std::vector<PointSequence> remove_points(std::vector<std::size_t> points);
   std::vector<std::size_t> add_points(std::vector<PointSequence> sequences);
   std::vector<PointSequence> get_point_sequences(const std::vector<double> &ts) const;
+  void update_tangents();
 
   bool is_closed() const;
   Flag flags() const override;
@@ -57,6 +58,7 @@ public:
                                        const bool skip_root = false ) override;
 
   std::vector<double> cut(const arma::vec2& c_start, const arma::vec2& c_end);
+  Point smoothed(const std::size_t& i) const;
 
 private:
   std::vector<Point> m_points;
