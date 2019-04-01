@@ -192,6 +192,8 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
     ai( QT_TRANSLATE_NOOP("any-context", "evaluate"), &actions::evaluate),
     ai( QT_TRANSLATE_NOOP("any-context", "show keybindings dialog"), [](Application& app) {
       KeyBindingsDialog(app.key_bindings, app.main_window()).exec(); } ),
+    ai( QT_TRANSLATE_NOOP("any-context", "restore default layout"), [](Application& app) {
+      app.main_window()->restore_default_layout(); }),
     ai( QT_TRANSLATE_NOOP("any-context", "switch between object and point selection"),
         [](Application& app) { app.scene.tool_box.switch_between_object_and_point_selection(); } ),
     ai( QT_TRANSLATE_NOOP("any-context", "previous tool"), [](Application& app) {

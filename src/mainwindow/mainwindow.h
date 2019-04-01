@@ -22,6 +22,7 @@ public:
   void save_state();
   void keyPressEvent(QKeyEvent* e) override;
   Viewport& viewport() const;
+  void restore_default_layout();
 
   static std::vector<std::string> object_menu_entries();
   static std::vector<std::string> path_menu_entries();

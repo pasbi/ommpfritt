@@ -127,6 +127,7 @@ std::vector<std::string> MainWindow::main_menu_entries()
   entries.insert(entries.end(), {
     "window/"s + KeyBindings::SEPARATOR,
     "window/" QT_TRANSLATE_NOOP(TYPE_NAME_CONTEXT, "show keybindings dialog"),
+    "window/restore default layout",
   });
   merge(object_menu_entries());
   merge(path_menu_entries());
@@ -143,7 +144,13 @@ MainWindow::MainWindow(Application& app)
   auto viewport = std::make_unique<Viewport>(app.scene);
   m_viewport = viewport.get();
   setCentralWidget(viewport.release());
-  restore_state();
+
+  QSettings settings;
+  if (settings.allKeys().size() == 0) {
+    restore_default_layout();
+  } else {
+    restore_state();
+  }
 
   setMenuBar(std::make_unique<QMenuBar>().release());
   for (auto&& menu : m_app.key_bindings.make_menus(m_app, main_menu_entries())) {
@@ -225,6 +232,23 @@ void MainWindow::restore_state()
       LOG(WARNING) << "Failed to restore geometry of manager.";
     }
   });
+}
+
+void MainWindow::restore_default_layout()
+{
+  // TODO restore toolbars
+
+  for (auto* dock : findChildren<QDockWidget*>()) {
+    dock->hide();
+    dock->deleteLater();
+  }
+
+  addDockWidget(Qt::RightDockWidgetArea,
+                Manager::make(ObjectManager::TYPE, m_app.scene).release());
+  addDockWidget(Qt::RightDockWidgetArea,
+                Manager::make(PropertyManager::TYPE, m_app.scene).release());
+  addDockWidget(Qt::RightDockWidgetArea,
+                Manager::make(StyleManager::TYPE, m_app.scene).release());
 }
 
 void MainWindow::save_state()
