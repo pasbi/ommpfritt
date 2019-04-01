@@ -221,8 +221,8 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
   }
   for (const auto& key : Manager::keys()) {
     infos.push_back(ai(key, [key](Application& app) {
-      Scene& scene = app.scene;
-      auto manager = Manager::make(key, scene);
+      auto manager = Manager::make(key, app.scene);
+      app.main_window()->make_unique_manager_name(*manager);
       auto& ref = *manager;
       app.main_window()->addDockWidget(Qt::TopDockWidgetArea, manager.release());
       ref.setFloating(true);

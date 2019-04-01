@@ -30,6 +30,7 @@ public:
 
   std::unique_ptr<QMenu> make_about_menu();
   static std::vector<std::string> available_translations();
+  void make_unique_manager_name(QDockWidget& widget) const;
 
   static constexpr auto LOCALE_SETTINGS_KEY = "locale";
   static constexpr auto TOOLBAR_SETTINGS_KEY = "mainwindow/toolbars";
@@ -37,6 +38,7 @@ public:
   static constexpr auto TOOLBAR_TOOLS_SETTINGS_KEY = "tools";
   static constexpr auto MANAGER_SETTINGS_KEY = "mainwindow/managers";
   static constexpr auto MANAGER_TYPE_SETTINGS_KEY = "type";
+  static constexpr auto MANAGER_NAME_SETTINGS_KEY = "name";
   static constexpr auto GEOMETRY_SETTINGS_KEY = "mainwindow/geometry";
   static constexpr auto WINDOWSTATE_SETTINGS_KEY = "mainwindow/window_state";
   static constexpr auto LANGUAGE_RESOURCE_PREFIX = "omm";
@@ -50,6 +52,7 @@ protected:
 private:
   Application& m_app;
   Viewport* m_viewport;
+  std::vector<QDockWidget*> dock_widgets() const;
 
 };
 

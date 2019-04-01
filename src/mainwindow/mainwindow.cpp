@@ -13,6 +13,9 @@
 #include <QDirIterator>
 #include <QLocale>
 
+#include "managers/objectmanager/objectmanager.h"
+#include "managers/stylemanager/stylemanager.h"
+#include "managers/propertymanager/propertymanager.h"
 #include "mainwindow/viewport/viewport.h"
 #include "mainwindow/application.h"
 #include "mainwindow/toolbar.h"
@@ -211,7 +214,6 @@ std::unique_ptr<QMenu> MainWindow::make_about_menu()
 
 void MainWindow::restore_state()
 {
-  LOG(INFO) << "restore-state";
   QSettings settings;
   restoreGeometry(settings.value(GEOMETRY_SETTINGS_KEY).toByteArray());
 
@@ -227,28 +229,41 @@ void MainWindow::restore_state()
 
   read_each(settings, MANAGER_SETTINGS_KEY, [this, &settings]() {
     const auto type = settings.value(MANAGER_TYPE_SETTINGS_KEY).toString().toStdString();
+    const auto name = settings.value(MANAGER_NAME_SETTINGS_KEY).toString();
     auto manager = Manager::make(type, m_app.scene);
+    manager->setObjectName(name);
+    assert(manager);
     if (!restoreDockWidget(manager.release())) {
       LOG(WARNING) << "Failed to restore geometry of manager.";
     }
   });
 }
 
+std::vector<QDockWidget*> MainWindow::dock_widgets() const
+{
+  return ::transform<QDockWidget*, std::vector>(findChildren<QDockWidget*>(), ::identity);
+}
+
 void MainWindow::restore_default_layout()
 {
   // TODO restore toolbars
-
-  for (auto* dock : findChildren<QDockWidget*>()) {
-    dock->hide();
-    dock->deleteLater();
+  for (auto* dock : dock_widgets()) {
+    removeDockWidget(dock);
+    dock->close();
   }
 
-  addDockWidget(Qt::RightDockWidgetArea,
-                Manager::make(ObjectManager::TYPE, m_app.scene).release());
-  addDockWidget(Qt::RightDockWidgetArea,
-                Manager::make(PropertyManager::TYPE, m_app.scene).release());
-  addDockWidget(Qt::RightDockWidgetArea,
-                Manager::make(StyleManager::TYPE, m_app.scene).release());
+  const auto add_dock = [this](const std::string& type) {
+    auto manager = Manager::make(type, m_app.scene);
+    make_unique_manager_name(*manager);
+    manager->setParent(this);
+    this->addDockWidget(Qt::RightDockWidgetArea, manager.release(), Qt::Vertical);
+  };
+
+  add_dock(ObjectManager::TYPE);
+  add_dock(PropertyManager::TYPE);
+  add_dock(StyleManager::TYPE);
+
+  QTimer::singleShot(100, [this]() { save_state(); });
 }
 
 void MainWindow::save_state()
@@ -258,7 +273,9 @@ void MainWindow::save_state()
   settings.setValue(WINDOWSTATE_SETTINGS_KEY, saveState());
 
   const auto save_manager = [&settings](const Manager* manager) {
+    LOG(INFO) << "save manager " << manager->type() << " " << manager->isVisible() << " " << manager->objectName().toStdString();
     settings.setValue(MANAGER_TYPE_SETTINGS_KEY, QString::fromStdString(manager->type()));
+    settings.setValue(MANAGER_NAME_SETTINGS_KEY, manager->objectName());
   };
   write_each(settings, MANAGER_SETTINGS_KEY, findChildren<Manager*>(), save_manager);
 
@@ -313,5 +330,20 @@ std::vector<std::string> MainWindow::available_translations()
 }
 
 Viewport& MainWindow::viewport() const { return *m_viewport; }
+
+void MainWindow::make_unique_manager_name(QDockWidget& widget) const
+{
+  const auto names = ::transform<QString, std::set>(dock_widgets(), [](const auto* w) {
+    return w->objectName();
+  });
+  std::size_t i = 0;
+  const QString base = widget.objectName();
+  QString name = base;
+  while (::contains(names, name)) {
+    name += QString("_%1").arg(i);
+    i++;
+  }
+  widget.setObjectName(name);
+}
 
 }  // namespace omm
