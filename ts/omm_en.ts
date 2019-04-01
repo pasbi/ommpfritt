@@ -52,7 +52,7 @@
 <context>
     <name>ObjectTransformation</name>
     <message>
-        <location filename="../src/geometry/objecttransformation.h" line="67"/>
+        <location filename="../src/geometry/objecttransformation.h" line="65"/>
         <source>ObjectTransformation</source>
         <translation>Object transformation</translation>
     </message>
@@ -68,7 +68,7 @@
 <context>
     <name>Point</name>
     <message>
-        <location filename="../src/geometry/point.h" line="41"/>
+        <location filename="../src/geometry/point.h" line="37"/>
         <source>Point</source>
         <translation>Point</translation>
     </message>
@@ -115,12 +115,12 @@
         <translation>Modify points</translation>
     </message>
     <message>
-        <location filename="../src/commands/modifypointscommand.cpp" line="75"/>
+        <location filename="../src/commands/modifypointscommand.cpp" line="77"/>
         <source>AddPointsCommand</source>
         <translation>Add points</translation>
     </message>
     <message>
-        <location filename="../src/commands/modifypointscommand.cpp" line="81"/>
+        <location filename="../src/commands/modifypointscommand.cpp" line="83"/>
         <source>RemovePointsCommand</source>
         <translation>Remove points</translation>
     </message>
@@ -170,12 +170,12 @@
         <translation>omm</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/actions.cpp" line="32"/>
+        <location filename="../src/mainwindow/actions.cpp" line="33"/>
         <source>modify tangents</source>
         <translation>Modify tangents</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/actions.cpp" line="134"/>
+        <location filename="../src/mainwindow/actions.cpp" line="129"/>
         <source>convert</source>
         <translation>Convert</translation>
     </message>
@@ -293,27 +293,32 @@
         <translation>Code</translation>
     </message>
     <message>
-        <location filename="../src/objects/ellipse.cpp" line="17"/>
+        <location filename="../src/objects/ellipse.cpp" line="18"/>
         <source>r</source>
         <translation>Radius</translation>
     </message>
     <message>
-        <location filename="../src/objects/ellipse.cpp" line="15"/>
+        <location filename="../src/objects/ellipse.cpp" line="16"/>
         <source>ellipse</source>
         <translation>Ellipse</translation>
     </message>
     <message>
-        <location filename="../src/objects/ellipse.cpp" line="20"/>
+        <location filename="../src/objects/ellipse.cpp" line="21"/>
         <source>n</source>
         <translation>Count</translation>
     </message>
     <message>
-        <location filename="../src/objects/imageobject.cpp" line="13"/>
+        <location filename="../src/objects/imageobject.cpp" line="15"/>
         <source>filename</source>
         <translation>Filename</translation>
     </message>
     <message>
-        <location filename="../src/objects/imageobject.cpp" line="10"/>
+        <location filename="../src/objects/imageobject.cpp" line="22"/>
+        <source>Opacity</source>
+        <translation>Opacity</translation>
+    </message>
+    <message>
+        <location filename="../src/objects/imageobject.cpp" line="12"/>
         <source>image</source>
         <translation>Image</translation>
     </message>
@@ -386,28 +391,29 @@
         <translation>Failed to retrieve object type &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/objects/path.cpp" line="60"/>
+        <location filename="../src/objects/path.cpp" line="61"/>
         <location filename="../src/objects/proceduralpath.cpp" line="47"/>
         <source>closed</source>
         <translation>Closed</translation>
     </message>
     <message>
-        <location filename="../src/objects/path.cpp" line="63"/>
+        <location filename="../src/objects/path.cpp" line="65"/>
         <source>linear</source>
         <translation>Linear</translation>
     </message>
     <message>
-        <location filename="../src/objects/path.cpp" line="63"/>
+        <location filename="../src/objects/ellipse.cpp" line="23"/>
+        <location filename="../src/objects/path.cpp" line="65"/>
         <source>smooth</source>
         <translation>Cubic</translation>
     </message>
     <message>
-        <location filename="../src/objects/path.cpp" line="64"/>
+        <location filename="../src/objects/path.cpp" line="66"/>
         <source>bezier</source>
         <translation>Bézier</translation>
     </message>
     <message>
-        <location filename="../src/objects/path.cpp" line="65"/>
+        <location filename="../src/objects/path.cpp" line="67"/>
         <source>interpolation</source>
         <translation>Interpolation</translation>
     </message>
@@ -497,88 +503,88 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <location filename="../src/tools/brushselecttool.cpp" line="19"/>
-        <location filename="../src/tools/selecttool.cpp" line="76"/>
-        <location filename="../src/tools/selecttool.cpp" line="126"/>
-        <location filename="../src/tools/selecttool.cpp" line="154"/>
+        <location filename="../src/tools/selecttool.cpp" line="37"/>
+        <location filename="../src/tools/selecttool.cpp" line="152"/>
+        <location filename="../src/tools/selecttool.cpp" line="183"/>
         <source>tool</source>
         <translation>Tool</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="74"/>
+        <location filename="../src/tools/selecttool.cpp" line="35"/>
         <source>global</source>
         <translation>Global</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="74"/>
+        <location filename="../src/tools/selecttool.cpp" line="35"/>
         <source>local</source>
         <translation>Local</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="75"/>
+        <location filename="../src/tools/selecttool.cpp" line="36"/>
         <source>Alignment</source>
         <translation>Alignment</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="124"/>
+        <location filename="../src/tools/selecttool.cpp" line="150"/>
         <source>Object</source>
         <translation>Object</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="124"/>
+        <location filename="../src/tools/selecttool.cpp" line="150"/>
         <source>Axis</source>
         <translation>Axis</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="125"/>
+        <location filename="../src/tools/selecttool.cpp" line="151"/>
         <source>Mode</source>
         <translation>Mode</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="31"/>
+        <location filename="../src/objects/mirror.cpp" line="32"/>
         <source>Horizontal</source>
         <translation>Horizontal</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="32"/>
+        <location filename="../src/objects/mirror.cpp" line="33"/>
         <source>Vertical</source>
         <translation>Vertical</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="33"/>
+        <location filename="../src/objects/mirror.cpp" line="34"/>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="35"/>
         <source>Direction</source>
         <translation>Direction</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="29"/>
-        <location filename="../src/tools/selecttool.cpp" line="152"/>
+        <location filename="../src/objects/mirror.cpp" line="30"/>
+        <location filename="../src/tools/selecttool.cpp" line="181"/>
         <source>Mirror</source>
         <translation>Mirror</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="152"/>
+        <location filename="../src/tools/selecttool.cpp" line="181"/>
         <source>Individual</source>
         <translation>Individual</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.cpp" line="153"/>
+        <location filename="../src/tools/selecttool.cpp" line="182"/>
         <source>tangent</source>
         <translation>Tangent</translation>
     </message>
     <message>
-        <location filename="../src/keybindings/keybindings.cpp" line="197"/>
+        <location filename="../src/keybindings/keybindings.cpp" line="203"/>
         <source>name</source>
         <comment>keybindings</comment>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/keybindings/keybindings.cpp" line="198"/>
+        <location filename="../src/keybindings/keybindings.cpp" line="204"/>
         <source>context</source>
         <comment>keybindings</comment>
         <translation>Context</translation>
     </message>
     <message>
-        <location filename="../src/keybindings/keybindings.cpp" line="199"/>
+        <location filename="../src/keybindings/keybindings.cpp" line="205"/>
         <source>sequence</source>
         <comment>keybindings</comment>
         <translation>Sequence</translation>
@@ -606,12 +612,6 @@ Remove the selected items anyway?</translation>
         <source>edit ...</source>
         <comment>PropertyManager</comment>
         <translation>Edit ...</translation>
-    </message>
-    <message>
-        <location filename="../src/managers/propertymanager/userpropertymanager/userpropertydialog.cpp" line="88"/>
-        <source>User Properties</source>
-        <comment>UserPropertyDialog</comment>
-        <translation>User properties dialog</translation>
     </message>
     <message>
         <location filename="../src/managers/pythonconsole/pythonconsole.cpp" line="37"/>
@@ -730,7 +730,7 @@ Remove the selected items anyway?</translation>
         <translation>&lt; None &gt;</translation>
     </message>
     <message>
-        <location filename="../src/widgets/referencelineedit.cpp" line="74"/>
+        <location filename="../src/widgets/referencelineedit.cpp" line="73"/>
         <source>&lt;multiple values&gt;</source>
         <comment>ReferenceLineEdit</comment>
         <translation>Multiple values</translation>
@@ -749,19 +749,19 @@ Remove the selected items anyway?</translation>
         <translation>Set style tags</translation>
     </message>
     <message>
-        <location filename="../src/scene/objecttreeadapter.cpp" line="198"/>
+        <location filename="../src/scene/objecttreeadapter.cpp" line="199"/>
         <source>object</source>
         <comment>ObjectTreeAdapter</comment>
         <translation>Object</translation>
     </message>
     <message>
-        <location filename="../src/scene/objecttreeadapter.cpp" line="199"/>
+        <location filename="../src/scene/objecttreeadapter.cpp" line="200"/>
         <source>is visible</source>
         <comment>ObjectTreeAdapter</comment>
         <translation>Visibility</translation>
     </message>
     <message>
-        <location filename="../src/scene/objecttreeadapter.cpp" line="200"/>
+        <location filename="../src/scene/objecttreeadapter.cpp" line="201"/>
         <source>tags</source>
         <comment>ObjectTreeAdapter</comment>
         <translation>Tags</translation>
@@ -897,6 +897,7 @@ Remove the selected items anyway?</translation>
         <translation>Size</translation>
     </message>
     <message>
+        <location filename="../src/objects/imageobject.cpp" line="19"/>
         <location filename="../src/objects/text.cpp" line="22"/>
         <source>Width</source>
         <translation>Width</translation>
@@ -1041,56 +1042,49 @@ Remove the selected items anyway?</translation>
 <context>
     <name>any-context</name>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="173"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="108"/>
+        <location filename="../src/mainwindow/application.cpp" line="176"/>
         <source>undo</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="175"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="109"/>
+        <location filename="../src/mainwindow/application.cpp" line="178"/>
         <source>redo</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="179"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="102"/>
+        <location filename="../src/mainwindow/application.cpp" line="182"/>
         <source>new document</source>
         <translation>New Scene</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="181"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="103"/>
+        <location filename="../src/mainwindow/application.cpp" line="183"/>
         <source>save document</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="183"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="104"/>
+        <location filename="../src/mainwindow/application.cpp" line="184"/>
         <source>save document as</source>
         <translation>Save as ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="185"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="105"/>
+        <location filename="../src/mainwindow/application.cpp" line="186"/>
         <source>load document</source>
         <translation>Open ...</translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="187"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="107"/>
         <source>export</source>
         <translation>export</translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="188"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="89"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="93"/>
         <source>make smooth</source>
         <translation>Adjust tangents cubic</translation>
     </message>
     <message>
         <location filename="../src/mainwindow/application.cpp" line="189"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="90"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="94"/>
         <source>make linear</source>
         <translation>Vanish tangents</translation>
     </message>
@@ -1100,67 +1094,74 @@ Remove the selected items anyway?</translation>
         <translation>Remove points</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="192"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="91"/>
+        <location filename="../src/mainwindow/application.cpp" line="191"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="95"/>
         <source>subdivide</source>
         <translation>Subdivide</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="193"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="116"/>
+        <location filename="../src/mainwindow/application.cpp" line="192"/>
         <source>evaluate</source>
         <translation>Evaluate</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="194"/>
+        <location filename="../src/mainwindow/application.cpp" line="193"/>
         <source>show keybindings dialog</source>
         <translation>Show key bindings dialog</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="196"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="114"/>
+        <location filename="../src/mainwindow/application.cpp" line="195"/>
+        <source>restore default layout</source>
+        <translation>Restore default layout</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/application.cpp" line="197"/>
+        <source>switch between object and point selection</source>
+        <translation>Switch between object- and point-selection</translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow/application.cpp" line="199"/>
         <source>previous tool</source>
         <translation>Previous tool</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="198"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="92"/>
+        <location filename="../src/mainwindow/application.cpp" line="201"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="96"/>
         <source>select all</source>
         <translation>Select all</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="199"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="93"/>
+        <location filename="../src/mainwindow/application.cpp" line="202"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="97"/>
         <source>deselect all</source>
         <translation>Deselect all</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="200"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="94"/>
+        <location filename="../src/mainwindow/application.cpp" line="203"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="98"/>
         <source>invert selection</source>
         <translation>Invert selection</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="208"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="117"/>
+        <location filename="../src/mainwindow/application.cpp" line="209"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="121"/>
         <source>reset viewport</source>
         <translation>Reset viewport</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="177"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="71"/>
+        <location filename="../src/mainwindow/application.cpp" line="180"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="75"/>
         <source>remove selection</source>
         <translation>Remove selection</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="202"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="110"/>
+        <location filename="../src/mainwindow/application.cpp" line="204"/>
         <source>new style</source>
         <translation>New Style</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="206"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="72"/>
+        <location filename="../src/mainwindow/application.cpp" line="208"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="76"/>
         <source>convert objects</source>
         <translation>Convert objects</translation>
     </message>
@@ -1248,17 +1249,17 @@ Remove the selected items anyway?</translation>
         <translation>Brush selection</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.h" line="31"/>
+        <location filename="../src/tools/selecttool.h" line="55"/>
         <source>SelectObjectsTool</source>
         <translation>Select objects</translation>
     </message>
     <message>
-        <location filename="../src/tools/selecttool.h" line="44"/>
+        <location filename="../src/tools/selecttool.h" line="68"/>
         <source>SelectPointsTool</source>
         <translation>Select points</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.h" line="34"/>
+        <location filename="../src/mainwindow/application.h" line="35"/>
         <source>Application</source>
         <translation>Application</translation>
     </message>
@@ -1292,58 +1293,63 @@ Remove the selected items anyway?</translation>
         <source>Text</source>
         <translation>Text</translation>
     </message>
+    <message>
+        <location filename="../src/tools/knifetool.h" line="13"/>
+        <source>KnifeTool</source>
+        <translation>Knife</translation>
+    </message>
 </context>
 <context>
     <name>menu_name</name>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="102"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="106"/>
         <source>file</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="108"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="112"/>
         <source>edit</source>
         <translation>Edit</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="110"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="111"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="112"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="114"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="115"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="116"/>
         <source>object</source>
         <translation>Object</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="111"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="115"/>
         <source>create</source>
         <translation>Create</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="112"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="116"/>
         <source>attach</source>
         <translation>Attach</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="113"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="117"/>
         <source>path</source>
         <translation>Path</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="114"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="118"/>
         <source>tool</source>
         <translation>Tool</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="116"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="120"/>
         <source>scene</source>
         <translation>Scene</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="118"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="122"/>
         <source>window</source>
         <translation>Window</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="118"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="122"/>
         <source>show</source>
         <translation>Show windows</translation>
     </message>
@@ -1359,43 +1365,43 @@ Remove the selected items anyway?</translation>
 <context>
     <name>omm::Application</name>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="81"/>
+        <location filename="../src/mainwindow/application.cpp" line="82"/>
         <source>Question.</source>
         <translation>Question.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="82"/>
+        <location filename="../src/mainwindow/application.cpp" line="83"/>
         <source>Some pending changes will be lost if you don&apos;t save.What do you want me to do?</source>
         <translation>Pending changes will be lost if they are not saved.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="104"/>
-        <location filename="../src/mainwindow/application.cpp" line="161"/>
+        <location filename="../src/mainwindow/application.cpp" line="105"/>
+        <location filename="../src/mainwindow/application.cpp" line="162"/>
         <source>Error.</source>
         <translation>Error.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="105"/>
+        <location filename="../src/mainwindow/application.cpp" line="106"/>
         <source>The scene could not be saved at &apos;%1&apos;.</source>
         <translation>The scene could not be saved at &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="129"/>
+        <location filename="../src/mainwindow/application.cpp" line="130"/>
         <source>Save scene as ...</source>
         <translation>Save scene as ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="152"/>
+        <location filename="../src/mainwindow/application.cpp" line="153"/>
         <source>Load scene ...</source>
         <translation>Load scene ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="162"/>
+        <location filename="../src/mainwindow/application.cpp" line="163"/>
         <source>Loading scene from &apos;%1&apos; failed.</source>
         <translation>Loading scene from &apos;%1&apos; failed.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="239"/>
+        <location filename="../src/mainwindow/application.cpp" line="238"/>
         <source>Add Tag</source>
         <translation>Add tag</translation>
     </message>
@@ -1444,34 +1450,34 @@ Remove the selected items anyway?</translation>
 <context>
     <name>omm::MainWindow</name>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="156"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="157"/>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="158"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="167"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="168"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="169"/>
         <source>About</source>
         <translation>About</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="158"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="169"/>
         <source>omm.</source>
         <translation>omm.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="162"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="173"/>
         <source>Changing language takes effect after restarting the application.</source>
         <translation>Changing language takes effect after restarting the application.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="163"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="174"/>
         <source>information</source>
         <translation>Information</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="166"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="177"/>
         <source>language</source>
         <translation>Language</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/mainwindow.cpp" line="191"/>
+        <location filename="../src/mainwindow/mainwindow.cpp" line="202"/>
         <source>system default</source>
         <translation>System</translation>
     </message>
