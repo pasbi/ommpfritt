@@ -100,21 +100,21 @@ std::vector<std::string> MainWindow::main_menu_entries()
 {
   using namespace std::string_literals;
   std::list<std::string> entries = {
-    QT_TRANSLATE_NOOP("menu_name", "file")"/" QT_TRANSLATE_NOOP("any-context", "new document"),
-    "file/" QT_TRANSLATE_NOOP("any-context", "save document"),
-    "file/" QT_TRANSLATE_NOOP("any-context", "save document as"),
-    "file/" QT_TRANSLATE_NOOP("any-context", "load document"),
+    QT_TRANSLATE_NOOP("menu_name", "file")"/new document",
+    "file/save document",
+    "file/save document as",
+    "file/load document",
     "file/"s + KeyBindings::SEPARATOR,
-    "file/" QT_TRANSLATE_NOOP("any-context", "export"),
-    QT_TRANSLATE_NOOP("menu_name", "edit")"/" QT_TRANSLATE_NOOP("any-context", "undo"),
-    "edit/" QT_TRANSLATE_NOOP("any-context", "redo"),
-    QT_TRANSLATE_NOOP("menu_name", "object")"/" QT_TRANSLATE_NOOP("any-context", "new style"),
+    "file/export",
+    QT_TRANSLATE_NOOP("menu_name", "edit")"/undo",
+    "edit/redo",
+    QT_TRANSLATE_NOOP("menu_name", "object")"/new style",
     QT_TRANSLATE_NOOP("menu_name", "object")"/" QT_TRANSLATE_NOOP("menu_name", "create")"/",
     QT_TRANSLATE_NOOP("menu_name", "object")"/" QT_TRANSLATE_NOOP("menu_name", "attach")"/",
     QT_TRANSLATE_NOOP("menu_name", "path")"/",
-    QT_TRANSLATE_NOOP("menu_name", "tool")"/" QT_TRANSLATE_NOOP("any-context", "previous tool"),
+    QT_TRANSLATE_NOOP("menu_name", "tool")"/previous tool",
     "tool/"s + KeyBindings::SEPARATOR,
-    QT_TRANSLATE_NOOP("menu_name", "scene")"/" QT_TRANSLATE_NOOP("any-context", "evaluate"),
+    QT_TRANSLATE_NOOP("menu_name", "scene")"/evaluate",
     "scene/" QT_TRANSLATE_NOOP("any-context", "reset viewport"),
     QT_TRANSLATE_NOOP("menu_name", "window")"/" QT_TRANSLATE_NOOP("menu_name", "show")"/",
   };
@@ -126,7 +126,7 @@ std::vector<std::string> MainWindow::main_menu_entries()
   }
   entries.insert(entries.end(), {
     "window/"s + KeyBindings::SEPARATOR,
-    "window/" QT_TRANSLATE_NOOP(TYPE_NAME_CONTEXT, "show keybindings dialog"),
+    "window/show keybindings dialog",
     "window/restore default layout",
   });
   merge(object_menu_entries());
