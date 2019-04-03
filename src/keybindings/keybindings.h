@@ -6,12 +6,12 @@
 #include <QTimer>
 #include <QMenu>
 #include <memory>
-#include <glog/logging.h>
 #include "keybindings/action.h"
 #include <QCoreApplication>  // TODO remove
 #include <QKeyEvent>
 #include <set>
 #include "common.h"
+#include "logging.h"
 
 class QKeyEvent;
 
@@ -39,7 +39,7 @@ public:
       return binding.name() == action_name && binding.context() == ci.type();
     });
     if (it == m_bindings.end()) {
-      LOG(ERROR) << "Failed to find keybindings for '" << ci.type() << "::" << action_name << "'.";
+      LERROR << "Failed to find keybindings for '" << ci.type() << "::" << action_name << "'.";
       return nullptr;
     } else {
       auto action = std::make_unique<Action>(*it);
@@ -103,7 +103,7 @@ public:
       m_current_sequene.clear();
       return true;
     } else {
-      LOG(INFO) << "key sequence was not (yet) accepted: " << sequence.toString().toStdString();
+      LINFO << "key sequence was not (yet) accepted: " << sequence.toString().toStdString();
       return false;
     }
   }

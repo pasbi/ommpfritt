@@ -5,7 +5,7 @@
 #include <map>
 #include <QKeySequence>
 #include "keybindings/keybinding.h"
-#include <glog/logging.h>
+#include "logging.h"
 
 namespace omm
 {
@@ -39,7 +39,7 @@ public:
       return info.name == command_name;
     });
     if (it == infos.end()) {
-      LOG(ERROR) << "Failed to dispatch command '" << CommandInterfaceT::TYPE
+      LERROR << "Failed to dispatch command '" << CommandInterfaceT::TYPE
                  << "'::'" << command_name << "'.";
     } else {
       it->callback(static_cast<CommandInterfaceT&>(*this));

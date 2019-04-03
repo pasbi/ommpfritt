@@ -1,6 +1,5 @@
 #include "application.h"
 
-#include <glog/logging.h>
 #include <cassert>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -18,6 +17,7 @@
 #include "keybindings/keybindingsdialog.h"
 #include "mainwindow/viewport/viewport.h"
 #include "mainwindow/exportdialog.h"
+#include "logging.h"
 
 namespace {
 constexpr auto FILE_ENDING = ".omm";
@@ -45,7 +45,7 @@ Application::Application(QApplication& app)
   if (m_instance == nullptr) {
     m_instance = this;
   } else {
-    LOG(FATAL) << "Resetting application instance.";
+    LFATAL("Resetting application instance.");
   }
 }
 
@@ -63,10 +63,10 @@ void Application::set_main_window(MainWindow& main_window)
 void Application::quit()
 {
   if (can_close()) {
-    LOG(INFO) << "Quit application.";
+    LINFO << "Quit application.";
     m_app.quit();
   } else {
-    LOG(INFO) << "Aborted quit.";
+    LINFO << "Aborted quit.";
   }
 }
 
@@ -89,7 +89,7 @@ bool Application::can_close()
     case QMessageBox::Cancel: return false;
     case QMessageBox::Save: return save();
     default:
-      LOG(ERROR) << "Unexpected response code: " << decision;
+      qCritical() << "Unexpected response code: " << decision;
       return false;
     }
   } else {
@@ -100,7 +100,7 @@ bool Application::can_close()
 bool Application::save(const std::string& filename)
 {
   if (!scene.save_as(filename)) {
-    LOG(WARNING) << "Error saving scene as '" << filename << "'.";
+    LWARNING << "Error saving scene as '" << filename << "'.";
     QMessageBox::critical( m_main_window,
                            tr("Error."),
                            tr("The scene could not be saved at '%1'.")
@@ -124,7 +124,7 @@ bool Application::save()
 
 bool Application::save_as()
 {
-  LOG(INFO) << m_main_window;
+  LINFO << m_main_window;
   const QString filename =
     QFileDialog::getSaveFileName( m_main_window,
                                   tr("Save scene as ..."),
@@ -140,7 +140,7 @@ void Application::reset()
 {
   if (!can_close()) { return; }
 
-  LOG(INFO) << "reset scene.";
+  LINFO << "reset scene.";
   scene.reset();
 }
 

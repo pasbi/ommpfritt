@@ -4,7 +4,6 @@
 #include <QHBoxLayout>
 #include "keybindings/keybinding.h"
 #include <QEvent>
-#include <glog/logging.h>
 #include <QWidget>
 #include <QCoreApplication>
 #include "common.h"

@@ -1,6 +1,5 @@
 #include "managers/manager.h"
 #include <QMenuBar>
-#include <glog/logging.h>
 #include "mainwindow/application.h"
 #include <QContextMenuEvent>
 

@@ -1,6 +1,5 @@
 #include "mainwindow/viewport/viewport.h"
 
-#include <glog/logging.h>
 #include <QPainter>
 #include <QTimer>
 #include <QMouseEvent>

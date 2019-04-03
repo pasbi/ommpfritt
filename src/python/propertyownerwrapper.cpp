@@ -9,6 +9,7 @@
 #include "objects/object.h"
 #include "properties/vectorproperty.h"
 #include "tags/tag.h"
+#include "logging.h"
 
 namespace
 {
@@ -52,7 +53,7 @@ bool set_property_value( AbstractPropertyOwner& property_owner,
       } else if (::set_property_value<Style, StyleWrapper>(value, property)) {
         return true;
       } else {
-        LOG(WARNING) << "Attempted to set non-allowed kind of reference.";
+        LWARNING << "Attempted to set non-allowed kind of reference.";
         return false;
       }
     } else if (property.type() == TriggerProperty::TYPE) {

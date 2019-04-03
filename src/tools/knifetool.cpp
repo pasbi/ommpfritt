@@ -4,7 +4,6 @@
 #include "common.h"
 #include "objects/path.h"
 #include "commands/modifypointscommand.h"
-#include <glog/logging.h>
 
 namespace
 {

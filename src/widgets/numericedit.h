@@ -5,11 +5,11 @@
 #include <numeric>
 #include <cmath>
 #include <QWheelEvent>
-#include <glog/logging.h>
 #include <memory>
 #include <sstream>
 #include <iomanip>
 #include <QCoreApplication>
+#include "logging.h"
 
 namespace NumericEditDetail
 {
@@ -67,7 +67,7 @@ public:
   void set_range(const value_type min, const value_type max)
   {
     if (min > max) {
-      LOG(ERROR) << "min is greater than max: " << min << " > " << max;
+      LERROR << "min is greater than max: " << min << " > " << max;
       m_min = min;
       m_max = min;
     } else {
@@ -79,7 +79,7 @@ public:
   void set_lower(const value_type min)
   {
     if (min > m_max) {
-      LOG(ERROR) << "min is greater than max: " << min << " > " << m_max;
+      LERROR << "min is greater than max: " << min << " > " << m_max;
     } else {
       m_min = min;
     }
@@ -88,7 +88,7 @@ public:
   void set_upper(const value_type max)
   {
     if (m_min > max) {
-      LOG(ERROR) << "max is greater than min: " << m_min << " > " << max;
+      LERROR << "max is greater than min: " << m_min << " > " << max;
     } else {
       m_max = max;
     }

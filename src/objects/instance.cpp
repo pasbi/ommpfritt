@@ -61,14 +61,14 @@ Object* Instance::referenced_object() const
   //  - the referenced object changes
 
   if (has_reference_cycle(REFERENCE_PROPERTY_KEY)) {
-    LOG(WARNING) << "detected reference cycle  "
+    LWARNING << "detected reference cycle  "
                  << name() << ":" << property(REFERENCE_PROPERTY_KEY).label() << ".";
     return nullptr;
   } else  {
     const auto reference = property(REFERENCE_PROPERTY_KEY).value<ReferenceProperty::value_type>();
     const auto object_reference = static_cast<Object*>(reference);
     if (object_reference != nullptr && ::contains(object_reference->all_descendants(), this)) {
-      LOG(WARNING) << "Instance cannot descend from referenced object.";
+      LWARNING << "Instance cannot descend from referenced object.";
       return nullptr;
     } else {
       return object_reference;

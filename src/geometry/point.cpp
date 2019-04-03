@@ -1,6 +1,6 @@
 #include "geometry/point.h"
 #include <cmath>
-#include <glog/logging.h>
+#include <ostream>
 
 namespace omm
 {

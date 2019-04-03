@@ -16,6 +16,7 @@
 #include <QCoreApplication>
 #include "commands/objectstransformationcommand.h"
 #include "commands/pointstransformationcommand.h"
+#include "logging.h"
 
 namespace omm
 {
@@ -198,7 +199,7 @@ std::unique_ptr<QMenu> SelectPointsTool::make_context_menu(QWidget* parent)
   auto& app = Application::instance();
   auto menus = app.key_bindings.make_menus(app, MainWindow::path_menu_entries());
   if (menus.size() > 1) {
-    LOG(WARNING) << "cannot combine entries from multiple menus";
+    LWARNING << "cannot combine entries from multiple menus";
     // TODO replace top-level-menu with custom key (i.e. 'path' in this case).
     // then, all entries will be in the same menu.
   }

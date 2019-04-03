@@ -3,6 +3,7 @@
 #include "python/pywrapper.h"
 #include <type_traits>
 #include "geometry/vec2.h"
+#include "logging.h"
 
 namespace omm
 {
@@ -27,9 +28,9 @@ py::object get_property_value(WrappedT&& wrapped, const std::string& key)
       return py::cast(value);
     }
   } else {
-    LOG(ERROR) << "Failed to find property key '" << key << "'.";
+    LERROR << "Failed to find property key '" << key << "'.";
     for (const std::string& key : wrapped.properties().keys()) {
-      LOG(INFO) << key;
+      LINFO << key;
     }
     return py::none();
   }

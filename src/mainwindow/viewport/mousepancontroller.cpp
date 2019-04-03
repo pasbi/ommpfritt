@@ -1,6 +1,5 @@
 #include "mainwindow/viewport/mousepancontroller.h"
 #include "geometry/objecttransformation.h"
-#include <glog/logging.h>
 
 namespace omm
 {

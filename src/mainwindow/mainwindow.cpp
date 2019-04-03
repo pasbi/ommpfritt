@@ -1,7 +1,6 @@
 #include "mainwindow/mainwindow.h"
 
 #include <memory>
-#include <glog/logging.h>
 
 #include <QMenu>
 #include <QMenuBar>
@@ -21,6 +20,7 @@
 #include "mainwindow/toolbar.h"
 #include "managers/manager.h"
 #include "tags/tag.h"
+#include "logging.h"
 
 namespace
 {
@@ -234,7 +234,7 @@ void MainWindow::restore_state()
     manager->setObjectName(name);
     assert(manager);
     if (!restoreDockWidget(manager.release())) {
-      LOG(WARNING) << "Failed to restore geometry of manager.";
+      LWARNING << "Failed to restore geometry of manager.";
     }
   });
 }
@@ -273,7 +273,7 @@ void MainWindow::save_state()
   settings.setValue(WINDOWSTATE_SETTINGS_KEY, saveState());
 
   const auto save_manager = [&settings](const Manager* manager) {
-    LOG(INFO) << "save manager " << manager->type() << " " << manager->isVisible() << " " << manager->objectName().toStdString();
+    LINFO << "save manager " << manager->type() << " " << manager->isVisible() << " " << manager->objectName().toStdString();
     settings.setValue(MANAGER_TYPE_SETTINGS_KEY, QString::fromStdString(manager->type()));
     settings.setValue(MANAGER_NAME_SETTINGS_KEY, manager->objectName());
   };

@@ -1,6 +1,5 @@
 #include "serializers/jsonserializer.h"
 
-#include <glog/logging.h>
 #include <typeinfo>
 #include "common.h"
 #include "aspects/serializable.h"
@@ -196,7 +195,6 @@ bool JSONDeserializer::get_bool(const Pointer& pointer)
 
 double JSONDeserializer::get_double(const Pointer& pointer)
 {
-  LOG(INFO) << pointer;
   return get_t<double>(m_store, pointer);
 }
 

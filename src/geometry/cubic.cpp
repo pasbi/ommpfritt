@@ -1,6 +1,5 @@
 #include "geometry/cubic.h"
 #include "geometry/point.h"
-#include <glog/logging.h>
 #include <list>
 #include "common.h"
 

@@ -8,7 +8,6 @@
 #include <QHeaderView>
 #include "keybindings/keybindings.h"
 #include "keybindings/keybindingstable.h"
-#include <glog/logging.h>
 #include <QSettings>
 
 namespace omm

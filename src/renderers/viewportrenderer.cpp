@@ -1,6 +1,5 @@
 #include "renderers/viewportrenderer.h"
 
-#include <glog/logging.h>
 #include <QTransform>
 #include <QPainter>
 #include <QDebug>

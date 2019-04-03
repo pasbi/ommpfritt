@@ -1,6 +1,6 @@
 #include "keybindings/keybindingstable.h"
 #include "keybindings/keybindings.h"
-#include <glog/logging.h>
+#include "logging.h"
 
 namespace omm
 {
@@ -35,7 +35,7 @@ KeyBindingsTable::KeyBindingsTable(KeyBindings& key_bindings)
 
 QSize KeyBindingsTable::viewportSizeHint() const
 {
-  LOG(INFO) << QTableView::viewportSizeHint().width();
+  LINFO << QTableView::viewportSizeHint().width();
   int width = 0;
   if (model()) {
     for (int i = 0; i < model()->columnCount(); ++i) {

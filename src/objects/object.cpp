@@ -19,6 +19,7 @@
 #include "properties/boolproperty.h"
 #include "properties/optionsproperty.h"
 #include "properties/vectorproperty.h"
+#include "logging.h"
 
 namespace
 {
@@ -209,7 +210,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
     } catch (std::out_of_range&) {
       const auto message = QObject::tr("Failed to retrieve object type '%1'.")
                             .arg(QString::fromStdString(child_type)).toStdString();
-      LOG(ERROR) << message;
+      LERROR << message;
       throw AbstractDeserializer::DeserializeError(message);
     }
   }
@@ -336,7 +337,7 @@ void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align,
       const auto global_location = path_object->global_transformation().apply(location);
       set_oriented_position(global_location, align);
     } else {
-      LOG(WARNING) << "cycle.";
+      LWARNING << "cycle.";
     }
   }
 }

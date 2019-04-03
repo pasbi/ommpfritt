@@ -66,7 +66,7 @@ template<typename ValueT> std::string TypedProperty<ValueT>::type() const
 {
   // TypedProperty<ValueT> has no meaningful way to provide type(), which is realised
   // by overriding the virtual type() member in any of the derived types.
-  LOG(FATAL) << "It is tempting to call me. However, I'm useless. Don't call me.";
+  LFATAL("It is tempting to call me. However, I'm useless. Don't call me.");
   return "";
 }
 

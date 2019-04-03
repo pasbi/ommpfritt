@@ -12,6 +12,7 @@
 #include "aspects/propertyowner.h"
 #include "common.h"
 #include "menuhelper.h"
+#include "logging.h"
 
 namespace
 {
@@ -66,7 +67,7 @@ std::string get_tab_label(const std::set<omm::Property*>& properties)
   for (auto&& property : properties) {
     assert(property != nullptr);
     if (tab_label != property->category()) {
-      LOG(WARNING) << "category is not consistent: '" << tab_label
+      LWARNING << "category is not consistent: '" << tab_label
                    << "' != '" << property->category() << "'.";
     }
   }

@@ -1,6 +1,5 @@
 #include "propertywidgets/optionspropertywidget/optionsedit.h"
 #include "common.h"
-#include <glog/logging.h>
 
 namespace omm
 {

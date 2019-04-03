@@ -1,9 +1,9 @@
 #pragma once
 
 #include <sstream>
-#include <glog/logging.h>
 #include <cassert>
 #include <memory>
+#include <vector>
 
 namespace omm
 {

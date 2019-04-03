@@ -42,7 +42,7 @@ PythonEngine::PythonEngine()
 {
   static size_t count = 0;
   if (count > 0) {
-    LOG(FATAL) << "There must be not pymore than one PythonEngine.";
+    LFATAL("There must be not pymore than one PythonEngine.");
   }
   count++;
 

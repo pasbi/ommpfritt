@@ -5,7 +5,6 @@
 #include <functional>
 #include "mainwindow/application.h"
 #include <QCoreApplication>
-#include <glog/logging.h>
 
 namespace omm
 {

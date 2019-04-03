@@ -2,7 +2,6 @@
 #include <QHBoxLayout>
 #include <QTextEdit>
 #include <QKeyEvent>
-#include <glog/logging.h>
 #include <memory>
 #include "common.h"
 #include <QScrollBar>

@@ -1,5 +1,4 @@
 #include "scene/propertyownermimedata.h"
-#include <glog/logging.h>
 #include "objects/object.h"
 #include "tags/tag.h"
 #include "renderers/style.h"
@@ -51,7 +50,7 @@ QVariant PropertyOwnerMimeData::retrieveData(const QString &mimeType, QVariant::
 {
   (void) mimeType;
   (void) type;
-  LOG(FATAL) << "This function shall not be called.";
+  LFATAL("This function shall not be called.");
   assert(false);
 }
 

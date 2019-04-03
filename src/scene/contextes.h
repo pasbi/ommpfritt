@@ -5,7 +5,6 @@
 #include <memory>
 #include <algorithm>
 #include <vector>
-#include <glog/logging.h>
 #include "aspects/treeelement.h"
 #include "scene/structure.h"
 #include "scene/contextes_fwd.h"

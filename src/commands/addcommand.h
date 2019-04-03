@@ -35,7 +35,7 @@ public:
   void undo() override
   {
     if (m_context.subject.owns()) {
-      LOG(FATAL) << "Command already owns object. Obtaining ownership again is absurd.";
+      LFATAL("Command already owns object. Obtaining ownership again is absurd.");
     } else {
       m_context.subject.capture(m_structure.remove(m_context.subject));
 
@@ -47,7 +47,7 @@ public:
   void redo() override
   {
     if (!m_context.subject.owns()) {
-      LOG(FATAL) << "Command cannot give away non-owned object.";
+      LFATAL("Command cannot give away non-owned object.");
     } else {
       m_structure.insert(m_context);
       // m_structure.selection_changed();  // TODO

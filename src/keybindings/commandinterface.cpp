@@ -1,5 +1,5 @@
 #include "keybindings/commandinterface.h"
-#include <glog/logging.h>
+#include "logging.h"
 
 namespace omm
 {
@@ -11,7 +11,7 @@ bool CommandInterface::dispatch(const std::string& command, const Dispatcher& di
     it->second();
     return true;
   } else {
-    LOG(WARNING) << "Failed to dispatch command '" << command << "' in '" << type() << "'.";
+    LWARNING << "Failed to dispatch command '" << command << "' in '" << type() << "'.";
     return false;
   }
 }

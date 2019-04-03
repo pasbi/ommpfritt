@@ -3,7 +3,6 @@
 #include <memory>
 #include <QFormLayout>
 #include <QLabel>
-#include <glog/logging.h>
 #include "properties/typedproperty.h"
 #include "propertywidgets/propertywidget.h"
 

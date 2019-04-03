@@ -1,6 +1,5 @@
 #pragma once
 
-#include <glog/logging.h>
 #include <set>
 #include <memory>
 

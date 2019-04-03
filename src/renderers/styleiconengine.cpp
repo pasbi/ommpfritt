@@ -1,7 +1,6 @@
 #include "renderers/styleiconengine.h"
 #include <QPainter>
 #include <memory>
-#include <glog/logging.h>
 #include <iostream>
 #include "renderers/viewportrenderer.h"
 #include <QDebug>

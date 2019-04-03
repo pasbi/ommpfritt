@@ -2,8 +2,8 @@
 
 #include <QFile>
 #include <QTextStream>
-#include <glog/logging.h>
 #include "common.h"
+#include "logging.h"
 
 namespace
 {
@@ -13,7 +13,7 @@ auto parse_sequences(const std::string& filename)
   std::map<std::string, QKeySequence> map;
   QFile file(QString::fromStdString(filename));
   if (!file.open(QIODevice::ReadOnly)) {
-    LOG(ERROR) << "Failed to open file '" << filename << "'.";
+    LERROR << "Failed to open file '" << filename << "'.";
     return map;
   }
 
@@ -26,7 +26,7 @@ auto parse_sequences(const std::string& filename)
     }
     const auto tokens = line.split(":");
     if (tokens.size() != 2) {
-      LOG(WARNING) << "ignoring line " << line.toStdString()
+      LWARNING << "ignoring line " << line.toStdString()
                    << ". Expected format: <name>: <key sequence>.";
       continue;
     }
@@ -34,10 +34,10 @@ auto parse_sequences(const std::string& filename)
     const auto code = tokens[1].trimmed();
     const auto sequence = QKeySequence(code);
     if (sequence.isEmpty() != code.isEmpty()) {
-      LOG(WARNING) << "Failed to parse key sequence for '" << name
+      LWARNING << "Failed to parse key sequence for '" << name
                    << "': '" << code.toStdString() << "'.";
     } else if (map.count(name) > 0) {
-      LOG(WARNING) << "Duplicate key sequence for '" << name << ". Drop '"
+      LWARNING << "Duplicate key sequence for '" << name << ". Drop '"
                    << sequence.toString().toStdString() << "', keep '"
                    << map[name].toString().toStdString() << "'.";
     } else {

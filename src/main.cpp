@@ -1,5 +1,3 @@
-#include <glog/logging.h>
-
 #include "mainwindow/application.h"
 #include "ommpfrittconfig.h"
 #include "properties/property.h"
@@ -16,6 +14,7 @@
 #include <QSettings>
 #include <QVariant>
 #include <QDirIterator>
+#include "logging.h"
 
 auto load_translator(const std::string& prefix, const QLocale& locale)
 {
@@ -24,22 +23,22 @@ auto load_translator(const std::string& prefix, const QLocale& locale)
   if (translator->load( QString("%1_%2").arg(prefix.c_str()).arg(locale.name()),
                         omm::MainWindow::LANGUAGE_RESOURCE_DIRECTORY, "_",
                         omm::MainWindow::LANGUAGE_RESOURCE_SUFFIX )) {
-    LOG(INFO) << "Installing translator '" << prefix << "' for " << locale_name << ".";
+    LINFO << "Installing translator '" << prefix << "' for " << locale_name << ".";
     return translator;
   } else {
-    LOG(WARNING) << "No translator '" << prefix << "' found for " << locale_name
+    LWARNING << "No translator '" << prefix << "' found for " << locale_name
                  << ". Using fallback-translator.";
-    LOG(INFO) << "Available locales for '" << prefix << "': ";
+    LINFO << "Available locales for '" << prefix << "': ";
     for (const auto& code : omm::MainWindow::available_translations()) {
-      LOG(INFO) << "    '" << code << "'";
+      LINFO << "    '" << code << "'";
     }
     const auto fallback_tr_name = QString::fromStdString(prefix)
                                 + omm::MainWindow::LANGUAGE_RESOURCE_SUFFIX;
     if (translator->load(fallback_tr_name, ":")) {
-      LOG(INFO) << "Installing fallback-translator.";
+      LINFO << "Installing fallback-translator.";
       return translator;
     } else {
-      LOG(ERROR) << "failed to load fallback-translator.";
+      LERROR << "failed to load fallback-translator.";
       return std::unique_ptr<QTranslator>(nullptr);
     }
   }
@@ -58,8 +57,6 @@ auto install_translators(QCoreApplication& app, const QLocale& locale)
 
 int main (int argc, char *argv[])
 {
-  google::InitGoogleLogging(argv[0]);
-
   QCoreApplication::setOrganizationName(QObject::tr("omm"));
   QCoreApplication::setApplicationName(QObject::tr("ommpfritt"));
 

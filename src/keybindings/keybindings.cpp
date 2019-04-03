@@ -1,7 +1,6 @@
 #include "keybindings/keybindings.h"
 #include <QSettings>
 #include "keybindings/commandinterface.h"
-#include <glog/logging.h>
 #include <QKeyEvent>
 #include "common.h"
 #include <map>

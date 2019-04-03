@@ -2,7 +2,6 @@
 
 #include <QItemSelection>
 #include <QDebug>
-#include <glog/logging.h>
 
 #include "scene/propertyownermimedata.h"
 #include "objects/object.h"

@@ -1,5 +1,6 @@
 file (GLOB SOURCES
   common.cpp
+  logging.cpp
   main.cpp
 )
 

@@ -3,7 +3,6 @@
 #include <map>
 #include <vector>
 #include <type_traits>
-#include <glog/logging.h>
 #include "common.h"
 
 template<typename KeyT, typename ValueT>

@@ -1,6 +1,6 @@
 #include <cassert>
 #include <cmath>
-#include <glog/logging.h>
+#include <ostream>
 
 #include "geometry/objecttransformation.h"
 

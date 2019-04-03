@@ -4,7 +4,6 @@
 #include <QHBoxLayout>
 #include <memory>
 #include <QDebug>
-#include <glog/logging.h>
 
 namespace omm
 {

@@ -2,6 +2,7 @@
 
 #include "objects/object.h"
 #include <Qt>
+#include "logging.h"
 
 namespace omm
 {

@@ -1,6 +1,5 @@
 #include "scene.h"
 #include <random>
-#include <glog/logging.h>
 #include <cassert>
 #include <QDebug>
 #include <variant>
@@ -21,6 +20,7 @@
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
 #include "tools/selecttool.h"
+#include "logging.h"
 
 namespace
 {
@@ -148,7 +148,7 @@ bool Scene::save_as(const std::string &filename)
 {
   std::ofstream ofstream(filename);
   if (!ofstream) {
-    LOG(ERROR) <<  "Failed to open ofstream at '" << filename << "'.";
+    LERROR <<  "Failed to open ofstream at '" << filename << "'.";
     return false;
   }
 
@@ -162,7 +162,7 @@ bool Scene::save_as(const std::string &filename)
   }
   serializer->end_array();
 
-  LOG(INFO) << "Saved current scene to '" << filename << "'.";
+  LINFO << "Saved current scene to '" << filename << "'.";
   set_has_pending_changes(false);
   m_filename = filename;
   return true;
@@ -172,7 +172,7 @@ bool Scene::load_from(const std::string &filename)
 {
   std::ifstream ifstream(filename);
   if (!ifstream) {
-    LOG(ERROR) << "Failed to open '" << filename << "'.";
+    LERROR << "Failed to open '" << filename << "'.";
     return false;
   }
 
@@ -206,8 +206,8 @@ bool Scene::load_from(const std::string &filename)
 
     return true;
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
-    LOG(ERROR) << "Failed to deserialize file at '" << filename << "'.";
-    LOG(INFO) << deserialize_error.what();
+    LERROR << "Failed to deserialize file at '" << filename << "'.";
+    LINFO << deserialize_error.what();
   }
   return false;
 }

@@ -1,6 +1,5 @@
 #include "geometry/cubics.h"
 #include "common.h"
-#include <glog/logging.h>
 #include <numeric>
 
 namespace

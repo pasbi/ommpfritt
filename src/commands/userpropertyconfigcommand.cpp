@@ -1,6 +1,5 @@
 #include "commands/userpropertyconfigcommand.h"
 #include "aspects/propertyowner.h"
-#include <glog/logging.h>
 
 namespace omm
 {

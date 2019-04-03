@@ -5,6 +5,7 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QMessageBox>
+#include "logging.h"
 
 namespace omm
 {
@@ -67,7 +68,7 @@ void OptionsPropertyConfigWidget::remove_option(int index)
     delete m_list_widget->takeItem(index);
     update_property_options();
   } else {
-    LOG(WARNING) << "Prevented attempt to remove last option";
+    LWARNING << "Prevented attempt to remove last option";
     QMessageBox::warning(this, QObject::tr("Warning", "OptionsPropertyConfigWidget"),
                                QObject::tr( "Cannot remove last option.",
                                             "OptionsPropertyConfigWidget" ));

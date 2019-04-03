@@ -2,11 +2,11 @@
 
 #include <string>
 #include <typeinfo>
-#include <glog/logging.h>
 #include <set>
 #include <variant>
 #include <functional>
 
+#include "logging.h"
 #include "external/json.hpp"
 #include "observed.h"
 #include "abstractfactory.h"
@@ -107,7 +107,7 @@ public:
     });
 
     if (values.size() > 1) {
-      LOG(WARNING) << "expected uniform value, but got " << values.size() << " different values.";
+      LWARNING << "expected uniform value, but got " << values.size() << " different values.";
     }
 
     return *values.begin();
