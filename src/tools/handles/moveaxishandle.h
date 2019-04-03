@@ -82,7 +82,7 @@ private:
     const Vec2f s = m_direction;
 
     // project v onto the line through o and s
-    return Vec2f::dot(v, s) / s.euclidean_norm() * s;
+    return Vec2f::dot(v, s) / Vec2f::dot(s, s) * s;
   }
 
   const Vec2f m_direction;
