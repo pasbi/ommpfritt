@@ -114,7 +114,7 @@ std::vector<double> Cubic::cut(const Vec2f& start, const Vec2f& end) const
     if (t >= 0.0 && t <= 1.0) {
       const Vec2f d = end - start;
       const Vec2f e = pos(t) - start;
-      const double s = Vec2f::dot(d, e) / d.euclidean_norm();
+      const double s = Vec2f::dot(d, e) / Vec2f::dot(d, d);
       if (s >= 0.0 && s <= 1.0) {
         ts.push_back(t);
       }
