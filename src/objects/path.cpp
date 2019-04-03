@@ -22,7 +22,7 @@ auto deserialize_point(omm::AbstractDeserializer& deserializer, const Pointer& p
     return omm::Serializable::make_pointer(pointer, top_level_pointer);
   };
   omm::Point point;
-  point.position = deserializer.get_vec2(make_pointer(POSITION_POINTER));
+  point.position = deserializer.get_vec2f(make_pointer(POSITION_POINTER));
   point.left_tangent = deserializer.get_polarcoordinates(make_pointer(LEFT_TANGENT_POINTER));
   point.right_tangent = deserializer.get_polarcoordinates(make_pointer(RIGHT_TANGENT_POINTER));
   return point;
@@ -157,7 +157,7 @@ Path::modified_points(const bool constrain_to_selection, InterpolationMode mode)
 
 Point Path::smoothed(const std::size_t& i) const
 {
-  arma::vec2 left, right;
+  Vec2f left, right;
   const std::size_t n = m_points.size();
   if (i == 0) {
    left = is_closed() ? m_points[n-1].position : m_points[0].position;
@@ -265,7 +265,7 @@ void Path::set_global_axis_transformation( const ObjectTransformation& global_tr
   }
 }
 
-std::vector<double> Path::cut(const arma::vec2& c_start, const arma::vec2& c_end)
+std::vector<double> Path::cut(const Vec2f& c_start, const Vec2f& c_end)
 {
   const auto gti = global_transformation().inverted();
   return cubics().cut(gti.apply_to_position(c_start), gti.apply_to_position(c_end));

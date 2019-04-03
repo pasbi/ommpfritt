@@ -1,6 +1,6 @@
 #pragma once
 
-#include <armadillo>
+#include "geometry/vec2.h"
 #include "tools/handles/handle.h"
 #include "renderers/abstractrenderer.h"
 #include "geometry/util.h"
@@ -17,8 +17,8 @@ class MoveAxisHandle : public Handle
 public:
   MoveAxisHandle(ToolT& tool)
     : Handle(tool, true)
-    , m_direction(direction == MoveAxisHandleDirection::X ? arma::vec2{100.0, 0.0}
-                                                          : arma::vec2{0.0, 100.0})
+    , m_direction(direction == MoveAxisHandleDirection::X ? Vec2f(100.0, 0.0)
+                                                          : Vec2f(0.0, 100.0))
   {
     switch (direction) {
     case MoveAxisHandleDirection::X:
@@ -34,23 +34,18 @@ public:
     }
   }
 
-  bool contains_global(const arma::vec2& point) const override
+  bool contains_global(const Vec2f& point) const override
   {
-    const arma::vec2 global_point = transformation().inverted().apply_to_position(point);
-    arma::vec2 o { 0.0, 0.0 };
-    arma::vec2 v = project_onto_axis(global_point);
+    const Vec2f global_point = transformation().inverted().apply_to_position(point);
+    Vec2f v = project_onto_axis(global_point);
 
     // clamp v between o and m_direction
-    const arma::vec2 min = arma::min(o, m_direction);
-    const arma::vec2 max = arma::max(o, m_direction);
-    for (uint i : { 0u, 1u }) {
-      v(i) = std::clamp(v(i), min(i), max(i));
-    }
+    v = v.clamped(Vec2f::min(Vec2f::o(), m_direction), Vec2f::max(Vec2f::o(), m_direction));
 
-    return arma::norm(global_point - v) < interact_epsilon();
+    return (global_point - v).euclidean_norm() < interact_epsilon();
   }
 
-  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override
+  bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
@@ -60,7 +55,7 @@ public:
       const auto transformation = omm::ObjectTransformation().translated(total_delta);
       static_cast<ToolT&>(tool).transform_objects_absolute(transformation, true);
       total_delta = tool.viewport_transformation.inverted().apply_to_direction(total_delta);
-      const auto tool_info = QString("%1").arg(arma::norm(total_delta));
+      const auto tool_info = QString("%1").arg(total_delta.euclidean_norm());
       static_cast<ToolT&>(tool).tool_info = tool_info.toStdString();
       return true;
     } else {
@@ -70,29 +65,27 @@ public:
 
   void draw(omm::AbstractRenderer& renderer) const override
   {
-    const double magnitude = arma::norm(m_direction);
-    const double argument = std::atan2(m_direction[1], m_direction[0]);
+    const double magnitude = m_direction.euclidean_norm();
+    const double argument = std::atan2(m_direction.y, m_direction.x);
 
-    const omm::Point o(arma::vec2{ 0, 0 });
     const omm::Point tip(m_direction);
     const omm::Point right(PolarCoordinates(argument-0.1, magnitude*0.9).to_cartesian());
     const omm::Point left(PolarCoordinates(argument+0.1, magnitude*0.9).to_cartesian());
 
-    renderer.draw_spline({ o, tip }, current_style());
+    renderer.draw_spline({ Point(Vec2f::o()), tip }, current_style());
     renderer.draw_spline({ left, tip, right, left }, current_style());
   }
 
 private:
-  arma::vec2 project_onto_axis(const arma::vec2& v) const
+  Vec2f project_onto_axis(const Vec2f& v) const
   {
-    arma::vec2 o { 0.0, 0.0 };
-    const arma::vec2 s = m_direction;
+    const Vec2f s = m_direction;
 
     // project v onto the line through o and s
-    return o + arma::dot(v-o, s-o) / arma::dot(s-o, s-o) * s;
+    return Vec2f::dot(v, s) / s.euclidean_norm() * s;
   }
 
-  const arma::vec2 m_direction;
+  const Vec2f m_direction;
 };
 
 }  // namespace omm

@@ -2,7 +2,7 @@
 
 #include <glog/logging.h>
 #include <typeinfo>
-
+#include "common.h"
 #include "aspects/serializable.h"
 
 namespace
@@ -30,7 +30,6 @@ double get_double(const nlohmann::json& json_val)
   } else {
     throw omm::AbstractDeserializer::DeserializeError("invalid type.");
   }
-  return std::numeric_limits<double>::signaling_NaN();
 }
 
 nlohmann::json set_double(double value)
@@ -59,6 +58,8 @@ T get_t(const nlohmann::json& json, const nlohmann::json::json_pointer& pointer)
       if constexpr (std::is_same_v<T, double>) {
         // get inf properly
         return get_double(value);
+      } else if constexpr (std::is_same_v<T, std::vector<double>>) {
+        return ::transform<double, std::vector>(value, get_double);
       } else {
         return value;
       }
@@ -147,19 +148,19 @@ void JSONSerializer::set_value(const Color& color, const Pointer& pointer)
   m_store[ptr(pointer)] = { color.red(), color.green(), color.blue(), color.alpha() };
 }
 
-void JSONSerializer::set_value(const arma::vec2& value, const Pointer& pointer)
+void JSONSerializer::set_value(const Vec2f& value, const Pointer& pointer)
 {
   m_store[ptr(pointer)] = { set_double(value[0]), set_double(value[1]) };
 }
 
-void JSONSerializer::set_value(const arma::ivec2& value, const Pointer& pointer)
+void JSONSerializer::set_value(const Vec2i& value, const Pointer& pointer)
 {
   m_store[ptr(pointer)] = { value[0], value[1] };
 }
 
 void JSONSerializer::set_value(const PolarCoordinates& value, const Pointer& pointer)
 {
-  set_value(arma::vec2{ value.argument, value.magnitude }, pointer);
+  set_value(Vec2f(value.argument, value.magnitude), pointer);
 }
 
 std::string JSONSerializer::type() const { return "JSONSerializer"; }
@@ -195,6 +196,7 @@ bool JSONDeserializer::get_bool(const Pointer& pointer)
 
 double JSONDeserializer::get_double(const Pointer& pointer)
 {
+  LOG(INFO) << pointer;
   return get_t<double>(m_store, pointer);
 }
 
@@ -205,12 +207,11 @@ std::string JSONDeserializer::get_string(const Pointer& pointer)
 
 Color JSONDeserializer::get_color(const Pointer& pointer)
 {
-  arma::vec4 color;
-  for (size_t i = 0; i < color.n_elem; ++i) {
-    const auto element_pointer = Serializable::make_pointer(pointer, i);
-    color[i] = get_t<double>(m_store, element_pointer);
+  try {
+    return Color(get_t<std::vector<double>>(m_store, Serializable::make_pointer(pointer)));
+  } catch (std::out_of_range&) {
+    throw omm::AbstractDeserializer::DeserializeError("Expected vector of size 2.");
   }
-  return color;
 }
 
 std::size_t JSONDeserializer::get_size_t(const Pointer& pointer)
@@ -218,35 +219,27 @@ std::size_t JSONDeserializer::get_size_t(const Pointer& pointer)
   return get_t<std::size_t>(m_store, pointer);
 }
 
-arma::vec2 JSONDeserializer::get_vec2(const Pointer& pointer)
+Vec2f JSONDeserializer::get_vec2f(const Pointer& pointer)
 {
   try {
-    const double x = ::get_double(m_store.at(ptr(pointer + "/0")));
-    const double y = ::get_double(m_store.at(ptr(pointer + "/1")));
-    return arma::vec2{ x, y };
-  } catch (const nlohmann::json::out_of_range& json_exception) {
-    throw omm::AbstractDeserializer::DeserializeError(
-      "Cannot find vector of size two at '" + std::string(pointer) + "'.");
-  } catch (const nlohmann::json::parse_error& json_exception) {
-    throw omm::AbstractDeserializer::DeserializeError(
-      "Invalid pointer '" + std::string(pointer) + "'.");
-  }
-  return arma::vec2{};
-}
-
-arma::ivec2 JSONDeserializer::get_ivec2(const Pointer& pointer)
-{
-  const auto vec2 = get_t<std::vector<int>>(m_store, pointer);
-  if (vec2.size() != 2) {
+    return Vec2f(get_t<std::vector<double>>(m_store, pointer));
+  } catch (std::out_of_range&) {
     throw omm::AbstractDeserializer::DeserializeError("Expected vector of size 2.");
   }
+}
 
-  return arma::ivec2{ vec2[0], vec2[1] };
+Vec2i JSONDeserializer::get_vec2i(const Pointer& pointer)
+{
+  try {
+    return Vec2i(get_t<std::vector<int>>(m_store, pointer));
+  } catch (std::out_of_range&) {
+    throw omm::AbstractDeserializer::DeserializeError("Expected vector of size 2.");
+  }
 }
 
 PolarCoordinates JSONDeserializer::get_polarcoordinates(const Pointer& pointer)
 {
-  const auto pair = get_vec2(pointer);
+  const auto pair = get_vec2f(pointer);
   return PolarCoordinates(pair[0], pair[1]);
 }
 

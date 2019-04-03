@@ -19,18 +19,18 @@ public:
   virtual Command* transform_objects(ObjectTransformation t, const bool tool_space) = 0;
   Command *transform_objects_absolute(ObjectTransformation t, const bool tool_space);
   void cancel() override;
-  bool mouse_move(const arma::vec2 &delta, const arma::vec2 &pos, const QMouseEvent &e);
-  bool mouse_press(const arma::vec2 &pos, const QMouseEvent &e, bool force);
-  void draw(AbstractRenderer &renderer) const;
+  bool mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEvent &e) override;
+  bool mouse_press(const Vec2f &pos, const QMouseEvent &e, bool force) override;
+  void draw(AbstractRenderer &renderer) const override;
   std::string tool_info;
-  void mouse_release(const arma::vec2 &pos, const QMouseEvent &event);
+  void mouse_release(const Vec2f &pos, const QMouseEvent &event) override;
 
 private:
   ObjectTransformation m_last_object_transformation;
   void reset_absolute_object_transformation();
   const Style m_tool_info_line_style;
-  arma::vec2 m_init_position;
-  arma::vec2 m_current_position;
+  Vec2f m_init_position;
+  Vec2f m_current_position;
 };
 
 template<typename PositionVariant>
@@ -38,7 +38,7 @@ class SelectTool : public AbstractSelectTool
 {
 public:
   explicit SelectTool(Scene& scene);
-  bool mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force) override;
+  bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force) override;
   void on_scene_changed() override;
   PositionVariant position_variant;
   ObjectTransformation transformation() const override;

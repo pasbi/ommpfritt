@@ -1,5 +1,5 @@
-  #include "tools/handles/selecthandle.h"
-#include <armadillo>
+#include "tools/handles/selecthandle.h"
+#include "geometry/vec2.h"
 #include "renderers/abstractrenderer.h"
 #include "scene/scene.h"
 #include "objects/path.h"
@@ -23,7 +23,7 @@ public:
     set_style(Handle::Status::Inactive, omm::SolidStyle(omm::Color(0.0, 0.0, 0.0)));
   }
 
-  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override
+  bool mouse_move(const omm::Vec2f& delta, const omm::Vec2f& pos, const QMouseEvent& e) override
   {
     ParticleHandle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
@@ -52,7 +52,7 @@ namespace omm
 
 AbstractSelectHandle::AbstractSelectHandle(Tool& tool) : Handle(tool, false) { }
 
-bool AbstractSelectHandle::mouse_press(const arma::vec2 &pos, const QMouseEvent &event, bool force)
+bool AbstractSelectHandle::mouse_press(const Vec2f &pos, const QMouseEvent &event, bool force)
 {
   if (Handle::mouse_press(pos, event, force)) {
     if (force) {
@@ -70,15 +70,15 @@ bool AbstractSelectHandle::mouse_press(const arma::vec2 &pos, const QMouseEvent 
 }
 
 bool AbstractSelectHandle::
-mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e)
+mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
   Handle::mouse_move(delta, pos, e);
   if (status() == Status::Active) {
-    arma::vec2 total_delta = pos - press_pos();
+    Vec2f total_delta = pos - press_pos();
     discretize(total_delta);
     const auto transformation = omm::ObjectTransformation().translated(total_delta);
     static_cast<AbstractSelectTool&>(tool).transform_objects_absolute(transformation, false);
-    const auto tool_info = QString("%1").arg(arma::norm(total_delta));
+    const auto tool_info = QString("%1").arg(total_delta.euclidean_norm());
     static_cast<AbstractSelectTool&>(tool).tool_info = tool_info.toStdString();
     return true;
   } else {
@@ -96,9 +96,9 @@ ObjectSelectHandle::ObjectSelectHandle(Tool& tool, Scene& scene, Object& object)
   set_style(Status::Inactive, omm::SolidStyle(omm::Color(0.8, 0.8, 0.2)));
 }
 
-bool ObjectSelectHandle::contains_global(const arma::vec2& point) const
+bool ObjectSelectHandle::contains_global(const Vec2f& point) const
 {
-  return arma::max(arma::abs(point - transformation().null())) < interact_epsilon();
+  return (point - transformation().null()).max_norm() < interact_epsilon();
 }
 
 void ObjectSelectHandle::draw(omm::AbstractRenderer& renderer) const
@@ -108,7 +108,7 @@ void ObjectSelectHandle::draw(omm::AbstractRenderer& renderer) const
   };
 
   const Style& style = is_selected() ? this->style(Status::Active) : current_style();
-  const auto pos = transformation().apply_to_position(arma::vec2{ 0.0, 0.0 });
+  const auto pos = transformation().null();
   renderer.draw_rectangle(pos, draw_epsilon(), style);
 }
 
@@ -157,13 +157,13 @@ ObjectTransformation PointSelectHandle::transformation() const
   return m_path.global_transformation();
 }
 
-bool PointSelectHandle::contains_global(const arma::vec2& point) const
+bool PointSelectHandle::contains_global(const Vec2f& point) const
 {
-  const auto d = arma::norm(point - transformation().apply_to_position(m_point.position));
+  const auto d = (point - transformation().apply_to_position(m_point.position)).euclidean_norm();
   return d < interact_epsilon();
 }
 
-bool PointSelectHandle::mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force)
+bool PointSelectHandle::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
 {
   if (AbstractSelectHandle::mouse_press(pos, event, force)) {
     return true;
@@ -177,7 +177,7 @@ bool PointSelectHandle::mouse_press(const arma::vec2& pos, const QMouseEvent& ev
 }
 
 bool PointSelectHandle
-::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& event)
+::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& event)
 {
   if (AbstractSelectHandle::mouse_move(delta, pos, event)) {
     return true;
@@ -190,7 +190,7 @@ bool PointSelectHandle
   }
 }
 
-void PointSelectHandle::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
+void PointSelectHandle::mouse_release(const Vec2f& pos, const QMouseEvent& event)
 {
   AbstractSelectHandle::mouse_release(pos, event);
   m_left_tangent_handle->mouse_release(pos, event);
@@ -217,19 +217,19 @@ void PointSelectHandle::draw(omm::AbstractRenderer& renderer) const
   }
 
   renderer.push_transformation(ObjectTransformation().translated(pos));
-  renderer.draw_rectangle(arma::vec2{ 0.0, 0.0 }, draw_epsilon(), style);
+  renderer.draw_rectangle(Vec2f::o(), draw_epsilon(), style);
   renderer.pop_transformation();
 
 }
 
 template<PointSelectHandle::Tangent tangent>
-void PointSelectHandle::transform_tangent(const arma::vec2& delta)
+void PointSelectHandle::transform_tangent(const Vec2f& delta)
 {
   transform_tangent<tangent>(delta, static_cast<SelectPointsTool&>(tool).tangent_mode());
 }
 
 template<PointSelectHandle::Tangent tangent>
-void PointSelectHandle::transform_tangent(const arma::vec2& delta, TangentMode mode)
+void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentMode mode)
 {
   auto new_point = m_point;
   {

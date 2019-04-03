@@ -18,7 +18,7 @@ void AbstractProceduralPath::render(AbstractRenderer& renderer, const Style& sty
 
 BoundingBox AbstractProceduralPath::bounding_box()
 {
-  return BoundingBox(::transform<arma::vec2>(points(), [](const Point& p) { return p.position; }));
+  return BoundingBox(::transform<Vec2f>(points(), [](const Point& p) { return p.position; }));
 }
 
 AbstractPropertyOwner::Flag AbstractProceduralPath::flags() const
@@ -44,7 +44,7 @@ Point AbstractProceduralPath::evaluate(const double t)
 
 double AbstractProceduralPath::path_length() { return Cubics(points(), is_closed()).length(); }
 
-std::vector<double> AbstractProceduralPath::cut(const arma::vec2& c_start, const arma::vec2& c_end)
+std::vector<double> AbstractProceduralPath::cut(const Vec2f& c_start, const Vec2f& c_end)
 {
   const auto gti = global_transformation().inverted();
   return Cubics(points(), is_closed()).cut( gti.apply_to_position(c_start),

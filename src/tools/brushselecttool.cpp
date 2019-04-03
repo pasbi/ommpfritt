@@ -24,7 +24,7 @@ QIcon BrushSelectTool::icon() const
   return QIcon();
 }
 
-bool BrushSelectTool::mouse_move( const arma::vec2& delta, const arma::vec2& pos,
+bool BrushSelectTool::mouse_move( const Vec2f& delta, const Vec2f& pos,
                                   const QMouseEvent& event)
 {
   Q_UNUSED(delta);
@@ -37,7 +37,7 @@ bool BrushSelectTool::mouse_move( const arma::vec2& delta, const arma::vec2& pos
   }
 }
 
-bool BrushSelectTool::mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force)
+bool BrushSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
 {
   Q_UNUSED(force);
   if (event.modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) {
@@ -54,7 +54,7 @@ bool BrushSelectTool::mouse_press(const arma::vec2& pos, const QMouseEvent& even
   return true;
 }
 
-void BrushSelectTool::mouse_release(const arma::vec2& pos, const QMouseEvent& event)
+void BrushSelectTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
 {
   Q_UNUSED(pos);
   Q_UNUSED(event);
@@ -62,7 +62,7 @@ void BrushSelectTool::mouse_release(const arma::vec2& pos, const QMouseEvent& ev
 }
 
 void BrushSelectTool
-::modify_selection(const arma::vec2& pos, const QMouseEvent& event)
+::modify_selection(const Vec2f& pos, const QMouseEvent& event)
 {
   const bool extend_selection = !(event.modifiers() & Qt::ControlModifier);
   const double radius = property(RADIUS_PROPERTY_KEY).value<double>();
@@ -74,7 +74,7 @@ void BrushSelectTool
         // we can't transform `pos` with path's inverse transformation because if it scales,
         // `radius` will be wrong.
         const auto gpos = path->global_transformation().apply_to_position(point->position);
-        if (arma::norm(gpos - pos) < radius) {
+        if ((gpos - pos).euclidean_norm() < radius) {
           point->is_selected = extend_selection;
         }
       }

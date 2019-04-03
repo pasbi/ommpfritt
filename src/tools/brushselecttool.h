@@ -17,14 +17,13 @@ public:
   /**
    * @brief returns true if any grabbable was moved
    */
-  bool mouse_move( const arma::vec2& delta, const arma::vec2& pos,
-                           const QMouseEvent& event) override;
+  bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& event) override;
 
   /**
    * @brief returns true if any grabbable was hit
    */
-  bool mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force) override;
-  void mouse_release(const arma::vec2& pos, const QMouseEvent& event) override;
+  bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force) override;
+  void mouse_release(const Vec2f& pos, const QMouseEvent& event) override;
   std::string type() const override;
   void on_scene_changed() override;
   void on_selection_changed() override;
@@ -35,9 +34,9 @@ public:
 
 private:
   bool m_mouse_down = false;
-  arma::vec2 m_mouse_pos;
+  Vec2f m_mouse_pos;
   const static Style m_style;
-  void modify_selection(const arma::vec2& pos, const QMouseEvent& event);
+  void modify_selection(const Vec2f& pos, const QMouseEvent& event);
 };
 
 void register_tools();

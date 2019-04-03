@@ -1,6 +1,6 @@
 #pragma once
 
-#include <armadillo>
+#include "geometry/vec2.h"
 #include "tools/handles/handle.h"
 #include "tools/handles/particlehandle.h"
 
@@ -18,8 +18,8 @@ class AbstractSelectHandle : public Handle
 {
 public:
   explicit AbstractSelectHandle(Tool& tool);
-  bool mouse_press(const arma::vec2 &pos, const QMouseEvent &event, bool force) override;
-  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override;
+  bool mouse_press(const Vec2f& pos, const QMouseEvent &event, bool force) override;
+  bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
 
 protected:
   virtual void set_selected(bool selected) = 0;
@@ -33,7 +33,7 @@ class ObjectSelectHandle : public AbstractSelectHandle
 {
 public:
   explicit ObjectSelectHandle(Tool& tool, Scene& scene, Object& object);
-  bool contains_global(const arma::vec2& point) const override;
+  bool contains_global(const Vec2f& point) const override;
   void draw(omm::AbstractRenderer& renderer) const override;
 
 protected:
@@ -53,14 +53,14 @@ public:
   enum class Tangent { Left, Right };
   enum class TangentMode { Mirror, Individual };
   explicit PointSelectHandle(Tool& tool, Path& path, Point& point);
-  bool contains_global(const arma::vec2& point) const override;
+  bool contains_global(const Vec2f& point) const override;
   void draw(omm::AbstractRenderer& renderer) const override;
-  bool mouse_press( const arma::vec2& pos, const QMouseEvent& event, bool force) override;
-  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override;
-  void mouse_release( const arma::vec2& pos, const QMouseEvent& event) override;
+  bool mouse_press( const Vec2f& pos, const QMouseEvent& event, bool force) override;
+  bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
+  void mouse_release( const Vec2f& pos, const QMouseEvent& event) override;
 
   template<Tangent tangent>
-  void transform_tangent(const arma::vec2& delta);
+  void transform_tangent(const Vec2f& delta);
 
 protected:
   ObjectTransformation transformation() const override;
@@ -77,7 +77,7 @@ private:
   bool tangents_active() const;
 
   template<Tangent tangent>
-  void transform_tangent(const arma::vec2& delta, TangentMode mode);
+  void transform_tangent(const Vec2f& delta, TangentMode mode);
 };
 
 

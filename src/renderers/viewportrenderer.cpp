@@ -94,21 +94,21 @@ void ViewportRenderer::draw_text(const std::string& text, const TextOptions& opt
 }
 
 void
-ViewportRenderer::draw_rectangle(const arma::vec2& pos, const double radius, const Style& style)
+ViewportRenderer::draw_rectangle(const Vec2f& pos, const double radius, const Style& style)
 {
   if (!is_active()) { return; }
 
   // TODO I guess using QPainter::drawRect is faster.
   // However, QPainter::drawRect interface is strange, so using it is not trivial, but it shouldn't
   //  be too hard, either.
-  const auto tl = Point( pos + arma::vec2 { -radius, -radius } );
-  const auto tr = Point( pos + arma::vec2 {  radius, -radius } );
-  const auto bl = Point( pos + arma::vec2 { -radius,  radius } );
-  const auto br = Point( pos + arma::vec2 {  radius,  radius } );
+  const auto tl = Point( pos + Vec2f(-radius, -radius) );
+  const auto tr = Point( pos + Vec2f( radius, -radius) );
+  const auto bl = Point( pos + Vec2f(-radius,  radius) );
+  const auto br = Point( pos + Vec2f( radius,  radius) );
   draw_spline({ tl, tr, br, bl }, style, true);
 }
 
-void ViewportRenderer::draw_circle(const arma::vec2& pos, const double radius, const Style& style)
+void ViewportRenderer::draw_circle(const Vec2f& pos, const double radius, const Style& style)
 {
   if (!is_active()) { return; }
 
@@ -119,8 +119,8 @@ void ViewportRenderer::draw_circle(const arma::vec2& pos, const double radius, c
   m_painter->restore();
 }
 
-void ViewportRenderer::draw_image( const std::string& filename, const arma::vec2& pos,
-                                   const arma::vec2& size, const double opacity )
+void ViewportRenderer::draw_image( const std::string& filename, const Vec2f& pos,
+                                   const Vec2f& size, const double opacity )
 {
   if (!is_active()) { return; }
 
@@ -130,14 +130,14 @@ void ViewportRenderer::draw_image( const std::string& filename, const arma::vec2
   m_painter->setOpacity(1.0);
 }
 
-void ViewportRenderer::draw_image( const std::string& filename, const arma::vec2& pos,
+void ViewportRenderer::draw_image( const std::string& filename, const Vec2f& pos,
                                    const double& width, const double opacity )
 {
   if (!is_active()) { return; }
 
   const QImage image = m_image_cache.load(filename);
   const auto height = static_cast<double>(width) / image.width() * image.height();
-  return draw_image(filename, pos, arma::vec2{ width, height }, opacity);
+  return draw_image(filename, pos, Vec2f{ width, height }, opacity);
 }
 
 
@@ -148,12 +148,12 @@ void ViewportRenderer::clear_painter() { m_painter = nullptr; }
 QTransform ViewportRenderer::to_transformation(const omm::ObjectTransformation& transformation)
 {
   const auto& m = transformation.to_mat();
-  return QTransform( m.at(0, 0), m.at(1, 0), m.at(2, 0),
-                     m.at(0, 1), m.at(1, 1), m.at(2, 1),
-                     m.at(0, 2), m.at(1, 2), m.at(2, 2) );
+  return QTransform( m.m[0][0], m.m[1][0], m.m[2][0],
+                     m.m[0][1], m.m[1][1], m.m[2][1],
+                     m.m[0][2], m.m[1][2], m.m[2][2] );
 }
 
-QPointF ViewportRenderer::to_qpoint(const arma::vec2& point)
+QPointF ViewportRenderer::to_qpoint(const Vec2f& point)
 {
   return QPointF(point[0], point[1]);
 }
@@ -191,10 +191,10 @@ QBrush ViewportRenderer::make_brush(const omm::Style& style)
   }
 }
 
-void ViewportRenderer::toast(const arma::vec2& pos, const std::string& text)
+void ViewportRenderer::toast(const Vec2f& pos, const std::string& text)
 {
   m_painter->save();
-  const arma::vec2 gpos = current_transformation().apply_to_position(pos);
+  const Vec2f gpos = current_transformation().apply_to_position(pos);
   m_painter->resetTransform();
   const QPointF top_left = to_qpoint(gpos);
   static constexpr double huge = 10.0e10;

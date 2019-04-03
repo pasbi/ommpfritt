@@ -24,21 +24,20 @@ public:
     for (size_t i = 0; i <= n; ++i) {
       const double x = cos(i * 2.0/n * M_PI) * RADIUS;
       const double y = sin(i * 2.0/n * M_PI) * RADIUS;
-      points.push_back(omm::Point(arma::vec2 { x, y }));
+      points.push_back(omm::Point(Vec2f(x, y)));
     }
 
     renderer.draw_spline(points, current_style());
   }
 
-  bool contains_global(const arma::vec2& point) const override
+  bool contains_global(const Vec2f& point) const override
   {
     const auto global_point = transform_position_to_global(point);
-    const arma::vec2 o{ 0.0, 0.0 };
-    const double r = arma::norm(global_point - o);
+    const double r = global_point.euclidean_norm();
     return RADIUS - interact_epsilon() <= r && r <= RADIUS + interact_epsilon();
   }
 
-  bool mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e) override
+  bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
@@ -46,7 +45,7 @@ public:
       const auto origin = transformation().inverted().apply_to_position(press_pos());
       const auto delta = global_pos - origin;
 
-      double angle = atan2(global_pos(1), global_pos(0)) - atan2(origin(1), origin(0));
+      double angle = atan2(global_pos.y, global_pos.x) - atan2(origin.y, origin.x);
       if (tool.integer_transformation()) {
         static constexpr double step = 15 * M_PI / 180.0;
         angle = step * static_cast<int>(angle / step);

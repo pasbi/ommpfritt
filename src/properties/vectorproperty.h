@@ -8,13 +8,13 @@ namespace omm
 
 struct FloatVectorPropertyLimits
 {
-  static const arma::vec2 lower;
-  static const arma::vec2 upper;
-  static const arma::vec2 step;
+  static const Vec2f lower;
+  static const Vec2f upper;
+  static const Vec2f step;
 };
 
 class FloatVectorProperty
-  : public NumericProperty<VectorPropertyValueType<arma::vec2>, FloatVectorPropertyLimits>
+  : public NumericProperty<Vec2f, FloatVectorPropertyLimits>
 {
 public:
   using NumericProperty::NumericProperty;
@@ -27,13 +27,13 @@ public:
 
 struct IntegerVectorPropertyLimits
 {
-  static const arma::ivec2 lower;
-  static const arma::ivec2 upper;
-  static const arma::ivec2 step;
+  static const Vec2i lower;
+  static const Vec2i upper;
+  static const Vec2i step;
 };
 
 class IntegerVectorProperty
-  : public NumericProperty<VectorPropertyValueType<arma::ivec2>, IntegerVectorPropertyLimits>
+  : public NumericProperty<Vec2i, IntegerVectorPropertyLimits>
 {
 public:
   using NumericProperty::NumericProperty;

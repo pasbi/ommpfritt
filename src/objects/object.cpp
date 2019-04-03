@@ -53,12 +53,12 @@ Object::Object(Scene* scene)
     .set_label(QObject::tr("Name").toStdString())
     .set_category(category);
 
-  add_property<FloatVectorProperty>(POSITION_PROPERTY_KEY, arma::vec2{ 0.0, 0.0 })
+  add_property<FloatVectorProperty>(POSITION_PROPERTY_KEY, Vec2f(0.0, 0.0))
     .set_label(QObject::tr("pos").toStdString())
     .set_category(category);
 
-  add_property<FloatVectorProperty>(SCALE_PROPERTY_KEY, arma::vec2{ 1.0, 1.0 })
-    .set_step(arma::vec2{ 0.1, 0.1 })
+  add_property<FloatVectorProperty>(SCALE_PROPERTY_KEY, Vec2f(1.0, 1.0))
+    .set_step(Vec2f(0.1, 0.1))
     .set_label(QObject::tr("scale").toStdString())
     .set_category(category);
 
@@ -96,8 +96,8 @@ void Object::set_scene(Scene* scene)
 ObjectTransformation Object::transformation() const
 {
   return ObjectTransformation(
-    property(POSITION_PROPERTY_KEY).value<VectorPropertyValueType<arma::vec2>>(),
-    property(SCALE_PROPERTY_KEY).value<VectorPropertyValueType<arma::vec2>>(),
+    property(POSITION_PROPERTY_KEY).value<Vec2f>(),
+    property(SCALE_PROPERTY_KEY).value<Vec2f>(),
     property(ROTATION_PROPERTY_KEY).value<double>(),
     property(SHEAR_PROPERTY_KEY).value<double>()
   );

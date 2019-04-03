@@ -6,21 +6,15 @@
 namespace
 {
 
-auto to_qcolor(omm::Color color)
+auto to_qcolor(const omm::Color& color)
 {
-  const auto cast = [](const double t) {
-    return static_cast<int>(std::clamp(t, 0.0, 1.0) * 255.0);
-  };
-  color = color.clamped() * 255.0;
+  const auto cast = [](const double t) { return std::clamp(static_cast<int>(t * 255.0), 0, 255); };
   return QColor(cast(color.red()), cast(color.green()), cast(color.blue()), cast(color.alpha()));
 }
 
 auto from_qcolor(const QColor& color)
 {
-  const auto vec4 = arma::vec4 {
-    color.red() / 255.0, color.green() / 255.0, color.blue() / 255.0, color.alpha() / 255.0
-  };
-  return omm::Color(vec4);
+  return omm::Color(color.red(), color.green(), color.blue(), color.alpha()) / 255.0;
 }
 
 }  // namespace

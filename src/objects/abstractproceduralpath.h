@@ -20,7 +20,7 @@ public:
   Point evaluate(const double t) override;
   double path_length() override;
 
-  std::vector<double> cut(const arma::vec2& c_start, const arma::vec2& c_end);
+  std::vector<double> cut(const Vec2f& c_start, const Vec2f& c_end);
 
 protected:
   virtual std::vector<Point> points() = 0;

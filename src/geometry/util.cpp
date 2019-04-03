@@ -1,21 +1,10 @@
 #include "geometry/util.h"
 #include <cmath>
 
-std::vector<double> to_stdvec(const arma::vec2& vec2)
+namespace omm
 {
-  return arma::conv_to<std::vector<double>>::from(vec2);
-}
 
-arma::vec2 to_vec2(const std::vector<double>& stdvec)
-{
-  if (stdvec.size() != 2) {
-    const auto msg = "Expected vector of size 2 but got " + std::to_string(stdvec.size());
-    throw std::length_error(msg);
-  }
-  return arma::vec2 { stdvec[0], stdvec[1] };
-}
-
-arma::vec2 get_scale(const arma::vec2& pos, const arma::vec2& delta, const arma::vec2& direction)
+Vec2f get_scale(const Vec2f& pos, const Vec2f& delta, const Vec2f& direction)
 {
   const auto factor = [](const double new_pos, const double delta, const double constraint) {
     const double old_pos = new_pos - delta;
@@ -33,7 +22,9 @@ arma::vec2 get_scale(const arma::vec2& pos, const arma::vec2& delta, const arma:
       }
     }
   };
-  const arma::vec old_pos = pos - delta;
-  const arma::vec d = direction / arma::norm(direction);
-  return arma::vec({ factor(pos(0), delta(0), d(0)), factor(pos(1), delta(1), d(1)) });
+  const Vec2f old_pos = pos - delta;
+  const Vec2f d = direction / direction.euclidean_norm();
+  return Vec2f(factor(pos.x, delta.x, d.x), factor(pos.y, delta.y, d.y));
 }
+
+}  // namespace omm

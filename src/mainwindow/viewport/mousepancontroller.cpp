@@ -10,8 +10,8 @@ MousePanController::MousePanController(const set_cursor_pos_type& set_cursor_pos
 {
 }
 
-void MousePanController
-::start_move(const arma::vec2& viewport_pos, const arma::vec2& global_pos, Action action)
+void
+MousePanController::start_move(const Vec2f& viewport_pos, const Vec2f& global_pos, Action action)
 {
   if (m_action == Action::None) {
     m_action = action;
@@ -27,29 +27,28 @@ bool MousePanController::end_move()
   return m_was_applied;
 }
 
-arma::vec2
-MousePanController::apply(const arma::vec2& current_cursor_position, ObjectTransformation& t)
+Vec2f MousePanController::apply(const Vec2f& current_cursor_position, ObjectTransformation& t)
 {
   m_was_applied = true;
   static constexpr double base_scale = 1.003;
-  const arma::vec2 old_cursor_pos = m_last_position;
-  const arma::vec2 delta = update(current_cursor_position);
+  const Vec2f old_cursor_pos = m_last_position;
+  const Vec2f delta = update(current_cursor_position);
 
-  const int i_max_abs = arma::index_max(arma::abs(delta));
-  const double scale = std::pow(base_scale, std::copysign(arma::norm(delta), delta(i_max_abs)));
+  const double max_mag = std::abs(delta.x) > std::abs(delta.y) ? delta.x : delta.y;
+  const double scale = std::pow(base_scale, std::copysign(delta.euclidean_norm(), max_mag));
 
   if (m_action == Action::Pan) {
     t.translate(delta);
   } else if (m_action == Action::Zoom) {
     t = t.apply(ObjectTransformation().translated((1-scale) * m_global_start_position));
-    t.scale(arma::vec2{ scale, scale });
+    t.scale(Vec2f(scale, scale));
   }
   return delta;
 }
 
-arma::vec2 MousePanController::update(const arma::vec2& current_cursor_position)
+Vec2f MousePanController::update(const Vec2f& current_cursor_position)
 {
-  const arma::vec2 delta = current_cursor_position - m_last_position;
+  const Vec2f delta = current_cursor_position - m_last_position;
   m_last_position = current_cursor_position;
   return delta;
 }

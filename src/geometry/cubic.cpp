@@ -10,7 +10,7 @@ namespace
 template<typename T, std::size_t N> T evaluate(const std::array<T, N>& ps, const double t)
 {
   assert(0 <= t && t <= 1.0);
-  arma::vec2 p{0.0, 0.0};
+  omm::Vec2f p(0.0, 0.0);
   for (std::size_t j = 0; j < N; ++j) {
     p += ps[std::size_t(N-j-1)] * pow(t, j);
   }
@@ -50,25 +50,25 @@ Cubic::Cubic(const Point& start, const Point& end)
 {
 }
 
-Cubic::Cubic(const std::array<arma::vec2, 4>& points, const bool is_selected)
+Cubic::Cubic(const std::array<Vec2f, 4>& points, const bool is_selected)
   : m_points(points)
   , m_is_selected(is_selected)
 { }
 
-arma::vec2 Cubic::pos(const double t) const
+Vec2f Cubic::pos(const double t) const
 {
   return ::evaluate(bezier_4(m_points), t);
 }
 
-arma::vec2 Cubic::tangent(const double t) const
+Vec2f Cubic::tangent(const double t) const
 {
   return -1.0/6.0 * ::evaluate(bezier_4_derivative(m_points), t);
 }
 
-std::vector<arma::vec2> Cubic::interpolate(const std::size_t n) const
+std::vector<Vec2f> Cubic::interpolate(const std::size_t n) const
 {
   assert(n >= 2);
-  std::vector<arma::vec2> points;
+  std::vector<Vec2f> points;
   points.reserve(n);
   for (std::size_t i = 0; i < n; ++i) {
     points.push_back(pos(double(i)/double(n-1)));
@@ -81,7 +81,9 @@ double Cubic::length() const
   constexpr std::size_t n = 10;
   const auto points = interpolate(n);
   double length = 0.0;
-  for (std::size_t i = 0; i < n - 1; ++i) { length += arma::norm(points[i] - points[i+1]); }
+  for (std::size_t i = 0; i < n - 1; ++i) {
+    length += (points[i] - points[i+1]).euclidean_norm();
+  }
   return length;
 }
 
@@ -91,17 +93,19 @@ Point Cubic::evaluate(const double t) const
   return Point(pos(t), PolarCoordinates(tangent), PolarCoordinates(-tangent));
 }
 
-std::vector<double> Cubic::cut(const arma::vec2& start, const arma::vec2& end) const
+std::vector<double> Cubic::cut(const Vec2f& start, const Vec2f& end) const
 {
-  if (arma::norm(start - end) < 10e-10) { return std::vector<double>(); }
+  if ((start - end).euclidean_norm() < 10e-10) {
+    return std::vector<double>();
+  }
 
-  const arma::vec2 n{ end(1) - start(1), start(0) - end(0) };
-  const double c = -arma::dot(start, n);
+  const Vec2f n(end.y - start.y, start.x - end.x);
+  const double c = -Vec2f::dot(start, n);
 
   const auto bb = bezier_4(m_points);
 
-  const std::array<double, 4> ps = { arma::dot(n, bb[0]),  arma::dot(n, bb[1]),
-                                     arma::dot(n, bb[2]),  arma::dot(n, bb[3]) + c };
+  const std::array<double, 4> ps = { Vec2f::dot(n, bb[0]), Vec2f::dot(n, bb[1]),
+                                     Vec2f::dot(n, bb[2]), Vec2f::dot(n, bb[3]) + c };
   const auto roots = find_cubic_roots(ps);
 
   std::list<double> ts;
@@ -109,9 +113,9 @@ std::vector<double> Cubic::cut(const arma::vec2& start, const arma::vec2& end) c
   for (const double t : roots) {
     assert(!std::isnan(t));
     if (t >= 0.0 && t <= 1.0) {
-      const arma::vec2 d = end - start;
-      const arma::vec2 e = pos(t) - start;
-      const double s = arma::dot(d, e) / arma::dot(d, d);
+      const Vec2f d = end - start;
+      const Vec2f e = pos(t) - start;
+      const double s = Vec2f::dot(d, e) / d.euclidean_norm();
       if (s >= 0.0 && s <= 1.0) {
         ts.push_back(t);
       }

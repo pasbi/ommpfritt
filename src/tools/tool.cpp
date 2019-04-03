@@ -17,7 +17,7 @@ Tool::Tool(Scene& scene)
 
 ObjectTransformation Tool::transformation() const { return ObjectTransformation(); }
 
-bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e)
+bool Tool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
   for (auto&& handle : handles) {
     if (handle->is_enabled()) {
@@ -34,7 +34,7 @@ bool Tool::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMou
   return false;
 }
 
-bool Tool::mouse_press(const arma::vec2& pos, const QMouseEvent& e, bool force)
+bool Tool::mouse_press(const Vec2f& pos, const QMouseEvent& e, bool force)
 {
   // `std::any_of` does not *require* to use short-circuit-logic. However, here it is mandatory,
   // so don't use `std::any_of`.
@@ -47,7 +47,7 @@ bool Tool::mouse_press(const arma::vec2& pos, const QMouseEvent& e, bool force)
 }
 
 void Tool::
-mouse_release(const arma::vec2& pos, const QMouseEvent& e)
+mouse_release(const Vec2f& pos, const QMouseEvent& e)
 {
   for (auto&& handle : handles) {
     if (handle->is_enabled()) {

@@ -52,7 +52,7 @@
 <context>
     <name>ObjectTransformation</name>
     <message>
-        <location filename="../src/geometry/objecttransformation.h" line="65"/>
+        <location filename="../src/geometry/objecttransformation.h" line="62"/>
         <source>ObjectTransformation</source>
         <translation>Objekttransformation</translation>
     </message>
@@ -135,7 +135,7 @@
         <translation>Tags verschieben</translation>
     </message>
     <message>
-        <location filename="../src/commands/objectstransformationcommand.cpp" line="43"/>
+        <location filename="../src/commands/objectstransformationcommand.cpp" line="44"/>
         <source>ObjectsTransformationCommand</source>
         <translation>Objekte transformieren</translation>
     </message>
@@ -216,25 +216,25 @@
     </message>
     <message>
         <location filename="../src/objects/cloner.cpp" line="49"/>
-        <location filename="../src/objects/cloner.cpp" line="57"/>
+        <location filename="../src/objects/cloner.cpp" line="56"/>
         <location filename="../src/objects/proceduralpath.cpp" line="45"/>
         <source>count</source>
         <translation>Anzahl</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="63"/>
-        <location filename="../src/objects/cloner.cpp" line="68"/>
+        <location filename="../src/objects/cloner.cpp" line="62"/>
+        <location filename="../src/objects/cloner.cpp" line="67"/>
         <source>distance</source>
         <translation>Abstand</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="74"/>
+        <location filename="../src/objects/cloner.cpp" line="73"/>
         <location filename="../src/tools/brushselecttool.cpp" line="18"/>
         <source>radius</source>
         <translation>Radius</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="81"/>
+        <location filename="../src/objects/cloner.cpp" line="80"/>
         <location filename="../src/objects/path.cpp" line="52"/>
         <location filename="../src/tags/pathtag.cpp" line="17"/>
         <location filename="../src/tags/pathtag.cpp" line="18"/>
@@ -244,49 +244,49 @@
         <translation>Pfad</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="87"/>
+        <location filename="../src/objects/cloner.cpp" line="86"/>
         <source>start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="93"/>
+        <location filename="../src/objects/cloner.cpp" line="92"/>
         <source>end</source>
         <translation>Ende</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="98"/>
+        <location filename="../src/objects/cloner.cpp" line="97"/>
         <location filename="../src/tags/pathtag.cpp" line="24"/>
         <source>align</source>
         <translation>Ausrichten</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="103"/>
+        <location filename="../src/objects/cloner.cpp" line="102"/>
         <source>Clamp</source>
         <translation>Abscheiden</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="103"/>
+        <location filename="../src/objects/cloner.cpp" line="102"/>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="41"/>
         <source>Wrap</source>
         <translation>Wiederholen</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="104"/>
+        <location filename="../src/objects/cloner.cpp" line="103"/>
         <source>Hide</source>
         <translation>Verstecken</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="104"/>
+        <location filename="../src/objects/cloner.cpp" line="103"/>
         <source>Reflect</source>
         <translation>Reflektieren</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="105"/>
+        <location filename="../src/objects/cloner.cpp" line="104"/>
         <source>border</source>
         <translation>Rand</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="111"/>
+        <location filename="../src/objects/cloner.cpp" line="110"/>
         <location filename="../src/objects/proceduralpath.cpp" line="42"/>
         <location filename="../src/tags/scripttag.cpp" line="33"/>
         <source>code</source>
@@ -447,19 +447,19 @@
         <translation>Pinsel</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="350"/>
+        <location filename="../src/scene/scene.cpp" line="351"/>
         <source>There are %1 items being referenced by other items.
 Remove the refrenced items anyway?</source>
         <translation>%1 Elemente sind von der Selektion abhänging.
 Soll die Selektion troztdem entfernt werden?</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="353"/>
+        <location filename="../src/scene/scene.cpp" line="354"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="380"/>
+        <location filename="../src/scene/scene.cpp" line="381"/>
         <source>Remove Selection</source>
         <translation>Selektion entfernen</translation>
     </message>
@@ -540,23 +540,23 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Modus</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="32"/>
+        <location filename="../src/objects/mirror.cpp" line="33"/>
         <source>Horizontal</source>
         <translation>Horizontal</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="33"/>
+        <location filename="../src/objects/mirror.cpp" line="34"/>
         <source>Vertical</source>
         <translation>Vertikal</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="34"/>
+        <location filename="../src/objects/mirror.cpp" line="35"/>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="35"/>
         <source>Direction</source>
         <translation>Richtung</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="30"/>
+        <location filename="../src/objects/mirror.cpp" line="31"/>
         <location filename="../src/tools/selecttool.cpp" line="181"/>
         <source>Mirror</source>
         <translation>Spiegeln</translation>
@@ -1401,7 +1401,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Szene konnte nicht von &apos;%1&apos; geladen werden.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="238"/>
+        <location filename="../src/mainwindow/application.cpp" line="239"/>
         <source>Add Tag</source>
         <translation>Tag hinzufügen</translation>
     </message>
@@ -1409,32 +1409,32 @@ Soll die Selektion troztdem entfernt werden?</translation>
 <context>
     <name>omm::ExportDialog</name>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="80"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="81"/>
         <source>Viewport</source>
         <translation>Ansichtsfenster</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="90"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="91"/>
         <source>Save as ...</source>
         <translation>Speichern als ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="189"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="190"/>
         <source>Export image ...</source>
         <translation>Bild exportieren ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="192"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="193"/>
         <source>Images (*.png *.jpg)</source>
         <translation>Bilder (*.png *.jpg)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="203"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="204"/>
         <source>Writing image &apos;%1&apos; failed.</source>
         <translation>Bild speichern unter &apos;%1&apos; fehlgeschlagen.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="204"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="205"/>
         <source>Export image</source>
         <translation>Bild exportieren</translation>
     </message>

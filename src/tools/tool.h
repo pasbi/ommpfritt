@@ -28,14 +28,14 @@ public:
   /**
    * @brief returns true if any grabbable was moved
    */
-  virtual bool mouse_move( const arma::vec2& delta, const arma::vec2& pos,
+  virtual bool mouse_move( const Vec2f& delta, const Vec2f& pos,
                            const QMouseEvent& event);
 
   /**
    * @brief returns true if any grabbable was hit
    */
-  virtual bool mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force = false);
-  virtual void mouse_release(const arma::vec2& pos, const QMouseEvent& event);
+  virtual bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force = false);
+  virtual void mouse_release(const Vec2f& pos, const QMouseEvent& event);
   virtual bool key_press(const QKeyEvent& event);
   virtual void draw(AbstractRenderer& renderer) const;
   virtual void on_selection_changed();

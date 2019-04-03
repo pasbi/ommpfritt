@@ -3,6 +3,7 @@
 #include <QObject>
 #include "objects/empty.h"
 #include "properties/optionsproperty.h"
+#include "geometry/vec2.h"
 
 namespace
 {
@@ -11,9 +12,9 @@ omm::ObjectTransformation get_mirror_t(omm::Mirror::Direction direction)
 {
   switch (direction) {
   case omm::Mirror::Direction::Horizontal:
-    return omm::ObjectTransformation().scaled(arma::vec2{ -1.0,  1.0 });
+    return omm::ObjectTransformation().scaled(omm::Vec2f(-1.0,  1.0));
   case omm::Mirror::Direction::Vertical:
-    return omm::ObjectTransformation().scaled(arma::vec2{  1.0, -1.0 });
+    return omm::ObjectTransformation().scaled(omm::Vec2f( 1.0, -1.0));
   }
   Q_UNREACHABLE();
 }

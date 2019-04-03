@@ -110,21 +110,14 @@ template<> Color AbstractDeserializer::get<Color>(const Pointer& pointer)
   return get_color(pointer);
 }
 
-template<> arma::vec2 AbstractDeserializer::get<arma::vec2>(const Pointer& pointer)
+template<> Vec2f AbstractDeserializer::get<Vec2f>(const Pointer& pointer)
 {
-  return get_vec2(pointer);
+  return get_vec2f(pointer);
 }
 
-template<> VectorPropertyValueType<arma::vec2>
-AbstractDeserializer::get<VectorPropertyValueType<arma::vec2>>(const Pointer& pointer)
+template<> Vec2i AbstractDeserializer::get<Vec2i>(const Pointer& pointer)
 {
-  return get_vec2(pointer);
-}
-
-template<> VectorPropertyValueType<arma::ivec2>
-AbstractDeserializer::get<VectorPropertyValueType<arma::ivec2>>(const Pointer& pointer)
-{
-  return get_ivec2(pointer);
+  return get_vec2i(pointer);
 }
 
 template<> PolarCoordinates AbstractDeserializer::get<PolarCoordinates>(const Pointer& pointer)

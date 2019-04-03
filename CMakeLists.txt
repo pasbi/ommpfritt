@@ -19,10 +19,6 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 find_package(PkgConfig)
 
-find_package(Armadillo REQUIRED)
-link_directories(${Armadillo_LIBRARY_DIRS})
-include_directories(${Armadillo_INCLUDE_DIRS})
-
 find_package(PythonLibs 3 REQUIRED)
 link_directories(${PythonLibs_LIBRARY_DIRS})
 include_directories(${PythonLibs_INCLUDE_DIRS})
@@ -62,9 +58,6 @@ add_executable(ommpfritt ${RESOURCES})
 target_compile_features(libommpfritt PUBLIC cxx_std_17)
 target_compile_features(ommpfritt PUBLIC cxx_std_17)
 
-target_include_directories(libommpfritt PRIVATE ${ARMADILLO_INCLUDE_DIRS})
-target_link_libraries(libommpfritt ${ARMADILLO_LIBRARIES})
-target_link_libraries(ommpfritt ${ARMADILLO_LIBRARIES})
 target_link_libraries(libommpfritt python3.7m)
 target_link_libraries(ommpfritt python3.7m)
 target_include_directories(libommpfritt PRIVATE ${PYTHON_INCLUDE_DIRS})

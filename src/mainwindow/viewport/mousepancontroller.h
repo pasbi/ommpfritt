@@ -1,7 +1,7 @@
 #pragma once
 
 #include <functional>
-#include <armadillo>
+#include "geometry/vec2.h"
 
 namespace omm
 {
@@ -11,18 +11,18 @@ class ObjectTransformation;
 class MousePanController
 {
 private:
-  using set_cursor_pos_type = std::function<void(const arma::vec2& pos)>;
+  using set_cursor_pos_type = std::function<void(const Vec2f& pos)>;
 public:
   explicit MousePanController(const set_cursor_pos_type& set_cursor_pos);
   enum class Action { None, Pan, Zoom };
-  void start_move(const arma::vec2& viewport_pos, const arma::vec2& global_pos, Action actiono);
+  void start_move(const Vec2f& viewport_pos, const Vec2f& global_pos, Action actiono);
   bool end_move();
-  arma::vec2 apply(const arma::vec2& current_cursor_position, ObjectTransformation& t);
-  arma::vec2 update(const arma::vec2& current_cursor_position);
+  Vec2f apply(const Vec2f& current_cursor_position, ObjectTransformation& t);
+  Vec2f update(const Vec2f& current_cursor_position);
 
 private:
-  arma::vec2 m_last_position;
-  arma::vec2 m_global_start_position;
+  Vec2f m_last_position;
+  Vec2f m_global_start_position;
   Action m_action = Action::None;
   const set_cursor_pos_type m_set_cursor_pos;
   bool m_was_applied = false;

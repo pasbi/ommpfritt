@@ -15,14 +15,14 @@ public:
   explicit ViewportRenderer(Scene& scene, Category filter);
   void draw_spline( const std::vector<Point>& points, const Style& style,
                     bool closed = false ) override;
-  void draw_rectangle(const arma::vec2& pos, const double radius, const Style& style) override;
-  void draw_circle(const arma::vec2& pos, const double radius, const Style& style) override;
-  void draw_image( const std::string& filename, const arma::vec2& pos,
-                   const arma::vec2& size, const double opacity) override;
-  void draw_image( const std::string& filename, const arma::vec2& pos,
+  void draw_rectangle(const Vec2f& pos, const double radius, const Style& style) override;
+  void draw_circle(const Vec2f& pos, const double radius, const Style& style) override;
+  void draw_image( const std::string& filename, const Vec2f& pos,
+                   const Vec2f& size, const double opacity) override;
+  void draw_image( const std::string& filename, const Vec2f& pos,
                    const double& width, const double opacity) override;
   void draw_text(const std::string& text, const TextOptions& options) override;
-  void toast(const arma::vec2& pos, const std::string& text) override;
+  void toast(const Vec2f& pos, const std::string& text) override;
 
   void push_transformation(const ObjectTransformation& transformation) override;
   void pop_transformation() override;
@@ -30,7 +30,7 @@ public:
   void clear_painter();
 
   static QTransform to_transformation(const omm::ObjectTransformation& transformation);
-  static QPointF to_qpoint(const arma::vec2& point);
+  static QPointF to_qpoint(const Vec2f& point);
   static QColor to_qcolor(omm::Color color);
   static QPen make_pen(const omm::Style& style);
   static QBrush make_brush(const omm::Style& style);

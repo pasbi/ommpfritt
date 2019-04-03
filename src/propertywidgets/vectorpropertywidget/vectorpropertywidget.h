@@ -13,7 +13,7 @@ class VectorPropertyWidget : public PropertyWidget<VectorPropertyT>
 {
 public:
   using value_type = typename VectorPropertyT::value_type;
-  using elem_type = typename value_type::elem_type;
+  using elem_type = typename value_type::element_type;
   explicit VectorPropertyWidget(Scene& scene, const std::set<Property*>& properties)
     : PropertyWidget<VectorPropertyT>(scene, properties)
   {
@@ -27,8 +27,8 @@ public:
 
     const auto get_step = std::mem_fn(&VectorPropertyT::step);
     const auto step = Property::get_value<value_type, VectorPropertyT>(properties, get_step);
-    m_x_edit->set_step(step(0));
-    m_y_edit->set_step(step(1));
+    m_x_edit->set_step(step.x);
+    m_y_edit->set_step(step.y);
 
     const auto get_mult = std::mem_fn(&VectorPropertyT::multiplier);
     const double multiplier = Property::get_value<double, VectorPropertyT>(properties, get_mult);
@@ -39,8 +39,8 @@ public:
     const auto lower = Property::get_value<value_type, VectorPropertyT>(properties, get_lower);
     const auto get_upper = std::mem_fn(&VectorPropertyT::upper);
     const auto upper = Property::get_value<value_type, VectorPropertyT>(properties, get_upper);
-    m_x_edit->set_range(lower(0), upper(0));
-    m_y_edit->set_range(lower(1), upper(1));
+    m_x_edit->set_range(lower.x, upper.x);
+    m_y_edit->set_range(lower.y, upper.y);
 
     auto container = std::make_unique<QWidget>(this);
     auto* layout = std::make_unique<QHBoxLayout>(container.get()).release();
@@ -58,8 +58,8 @@ protected:
     QSignalBlocker x_blocker(m_x_edit);
     QSignalBlocker y_blocker(m_y_edit);
     const auto values = this->get_properties_values();
-    m_x_edit->set_values(::transform<elem_type>(values, [](const auto& vec) { return vec(0); }));
-    m_y_edit->set_values(::transform<elem_type>(values, [](const auto& vec) { return vec(1); }));
+    m_x_edit->set_values(::transform<elem_type>(values, [](const auto& vec) { return vec.x; }));
+    m_y_edit->set_values(::transform<elem_type>(values, [](const auto& vec) { return vec.y; }));
   }
 
   template<std::size_t dim> void set_properties_value(const elem_type& value)
@@ -67,7 +67,7 @@ protected:
     const auto properties = this->properties();
 
     const auto is_noop = [&value](const Property* p) {
-      return p->value<value_type>()(dim) == value;
+      return p->value<value_type>()[dim] == value;
     };
 
     if (!std::all_of(properties.begin(), properties.end(), is_noop)) {

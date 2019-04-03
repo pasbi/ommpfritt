@@ -1,30 +1,33 @@
 #pragma once
 
-#include <armadillo>
+#include <iterator>
+#include <array>
+#include <vector>
 
 namespace omm
 {
 
-class Color : private arma::vec4
+class Color
 {
 public:
-  Color(double r, double g, double b, double a = 1.0);
-  Color(const arma::vec3& vec3, double a = 1.0);
-  Color(const arma::vec4& vec4);
+  explicit Color(double r, double g, double b, double a = 1.0);
+  explicit Color(const std::vector<double>& components);
+  explicit Color();
 
-  Color operator%(const Color& other) const;
-  Color operator+(const Color& other) const;
-  Color operator*(double other) const;
+  enum class BlendMode {};
+  Color blend(const Color& other, BlendMode mode) const;
 
   Color clamped() const;
-  double& red() { return (*this)[0]; }
-  double& green() { return (*this)[1]; }
-  double& blue() { return (*this)[2]; }
-  double& alpha() { return (*this)[3]; }
-  double red() const { return (*this)[0]; }
-  double green() const { return (*this)[1]; }
-  double blue() const { return (*this)[2]; }
-  double alpha() const { return (*this)[3]; }
+  double& red();
+  double& green();
+  double& blue();
+  double& alpha();
+  double& operator[](const std::size_t i);
+  double red() const;
+  double green() const;
+  double blue() const;
+  double alpha() const;
+  double operator[](const std::size_t i) const;
 
   static Color RED;
   static Color GREEN;
@@ -34,7 +37,7 @@ public:
   static Color WHITE;
 
 private:
-  using base_type = arma::vec4;
+  std::array<double, 4> m_components;
   friend bool operator==(const Color& a, const Color& b);
   friend bool operator<(const Color& a, const Color& b);
 };
@@ -43,5 +46,9 @@ bool operator==(const Color& a, const Color& b);
 bool operator!=(const Color& a, const Color& b);
 bool operator<(const Color& a, const Color& b);
 std::ostream& operator<<(std::ostream& ostream, const Color& color);
+
+Color operator*(const Color& c, const double s);
+Color operator*(const double s, const Color& c);
+Color operator/(const Color& c, const double s);
 
 }  // namespace

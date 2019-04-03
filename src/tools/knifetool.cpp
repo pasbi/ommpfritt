@@ -20,7 +20,7 @@ const Style KnifeTool::m_line_style = ContourStyle(Color(0.0, 0.0, 0.0, 1.0), 1)
 
 KnifeTool::KnifeTool(Scene& scene) : SelectPointsTool(scene) { }
 
-bool KnifeTool::mouse_move(const arma::vec2 &delta, const arma::vec2 &pos, const QMouseEvent &e)
+bool KnifeTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEvent &e)
 {
   m_mouse_move_pos = pos;
   if (SelectPointsTool::mouse_move(delta, pos, e)) {
@@ -39,7 +39,7 @@ bool KnifeTool::mouse_move(const arma::vec2 &delta, const arma::vec2 &pos, const
   return true;
 }
 
-bool KnifeTool::mouse_press(const arma::vec2 &pos, const QMouseEvent &event, bool force)
+bool KnifeTool::mouse_press(const Vec2f &pos, const QMouseEvent &event, bool force)
 {
   m_mouse_press_pos = pos;
   if (SelectPointsTool::mouse_press(pos, event, force)) {
@@ -52,7 +52,7 @@ bool KnifeTool::mouse_press(const arma::vec2 &pos, const QMouseEvent &event, boo
 }
 
 
-void KnifeTool::mouse_release(const arma::vec2 &pos, const QMouseEvent &event)
+void KnifeTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
 {
   if (m_is_cutting) {
     std::map<Path*, std::vector<Path::PointSequence>> sequencess;

@@ -24,7 +24,7 @@ class VectorPropertyConfigWidget : public PropertyConfigWidget<PropertyT>
 {
 public:
   using value_type = typename PropertyT::value_type;
-  using elem_type = typename value_type::value_type;
+  using elem_type = typename value_type::element_type;
   VectorPropertyConfigWidget(QWidget* parent, Property& property)
     : PropertyConfigWidget<PropertyT>(parent, property)
   {
@@ -36,8 +36,8 @@ public:
     {
       auto min2d = vector_property.lower();
       auto max2d = vector_property.upper();
-      min2d(static_cast<int>(d)) = min;
-      max2d(static_cast<int>(d)) = max;
+      min2d[static_cast<int>(d)] = min;
+      max2d[static_cast<int>(d)] = max;
       vector_property.set_range(min2d, max2d);
     };
 
@@ -51,15 +51,15 @@ public:
     };
     auto [ min_y, max_y ] = NumericEdit<elem_type>::make_range_edits(on_y_range_changed);
 
-    min_x->set_value(vector_property.lower()(0));
-    min_y->set_value(vector_property.lower()(1));
-    max_x->set_value(vector_property.upper()(0));
-    max_y->set_value(vector_property.upper()(1));
+    min_x->set_value(vector_property.lower().x);
+    min_y->set_value(vector_property.lower().y);
+    max_x->set_value(vector_property.upper().x);
+    max_y->set_value(vector_property.upper().y);
 
     const auto make_step_edit = [&vector_property](const Dimension dim) {
       const auto on_step_changed = [&vector_property, dim](const elem_type step) {
         auto step2d = vector_property.step();
-        step2d(static_cast<int>(dim)) = step;
+        step2d[static_cast<int>(dim)] = step;
         vector_property.set_step(step2d);
       };
       auto step_edit = std::make_unique<omm::NumericEdit<elem_type>>(on_step_changed);
@@ -68,9 +68,9 @@ public:
     };
 
     auto step_x_edit = make_step_edit(Dimension::X);
-    step_x_edit->set_value(vector_property.step()(0));
+    step_x_edit->set_value(vector_property.step().x);
     auto step_y_edit = make_step_edit(Dimension::Y);
-    step_y_edit->set_value(vector_property.step()(1));
+    step_y_edit->set_value(vector_property.step().y);
 
     auto min_layout = make_vector_edit<elem_type>(std::move(min_x), std::move(min_y));
     auto max_layout = make_vector_edit<elem_type>(std::move(max_x), std::move(max_y));

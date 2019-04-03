@@ -1,6 +1,7 @@
 #include "geometry/cubics.h"
 #include "common.h"
 #include <glog/logging.h>
+#include <numeric>
 
 namespace
 {
@@ -34,7 +35,7 @@ Point Cubics::evaluate(const double path_t) const
   return segment(segment_i).evaluate(segment_t);
 }
 
-std::vector<double> Cubics::cut(const arma::vec2& a, const arma::vec2& b) const
+std::vector<double> Cubics::cut(const Vec2f& a, const Vec2f& b) const
 {
   std::list<double> ts;
   for (std::size_t segment_i = 0; segment_i < m_cubics.size(); ++segment_i) {

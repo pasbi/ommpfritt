@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <glog/logging.h>
-
+#include <random>
 #include "geometry/objecttransformation.h"
 
 namespace
@@ -32,13 +32,13 @@ bool fuzzy_equal(omm::ObjectTransformation a, omm::ObjectTransformation b)
 
   if (!fuzzy_equal(normalize_radians(a.rotation()), normalize_radians(b.rotation()), rad_eps)) {
     return false;
-  } else if (!fuzzy_equal(a.translation()(0), b.translation()(0), trans_eps)) {
+  } else if (!fuzzy_equal(a.translation().x, b.translation().x, trans_eps)) {
     return false;
-  } else if (!fuzzy_equal(a.translation()(1), b.translation()(1), trans_eps)) {
+  } else if (!fuzzy_equal(a.translation().y, b.translation().y, trans_eps)) {
     return false;
-  } else if (!fuzzy_equal(a.scaling()(0), b.scaling()(0), scale_eps)) {
+  } else if (!fuzzy_equal(a.scaling().x, b.scaling().x, scale_eps)) {
     return false;
-  } else if (!fuzzy_equal(a.scaling()(1), b.scaling()(1), scale_eps)) {
+  } else if (!fuzzy_equal(a.scaling().y, b.scaling().y, scale_eps)) {
     return false;
   } else if (!fuzzy_equal(a.shearing(), b.shearing(), shear_eps)) {
     return false;
@@ -69,9 +69,9 @@ bool check_transform_to_mat_to_transform_invariant(SetParameterF<Arg> f, const A
 
 auto translation_test_cases()
 {
-  using v = arma::vec2;
-  return std::vector<v>({ v{0.0, 0.0}, v{1.0, 0.0}, v{0.0, 1.0}, v{-1.0, 0.0}, v{0.0, -1.0},
-                          v{3, -4}, v{12, -909}, v{-1232, -22}, v{73, 73}, v{0.012, -0.778} });
+  using v = omm::Vec2f;
+  return std::vector<v>({ v(0.0, 0.0), v(1.0, 0.0), v(0.0, 1.0), v(-1.0, 0.0), v(0.0, -1.0),
+                          v(3, -4), v(12, -909), v(-1232, -22), v(73, 73), v(0.012, -0.778) });
 }
 
 auto rotation_test_cases()
@@ -84,9 +84,9 @@ auto rotation_test_cases()
 
 auto scaling_test_cases()
 {
-  using v = arma::vec2;
-  return std::vector<v>({ v{1, 1}, v{3, -4}, v{12, -909}, v{-1232, -22}, v{73, 73},
-                          v{0.012, -0.778} });
+  using v = omm::Vec2f;
+  return std::vector<v>({ v(1, 1), v(3, -4), v(12, -909), v(-1232, -22), v(73, 73),
+                          v(0.012, -0.778) });
 }
 
 auto shearing_test_cases()

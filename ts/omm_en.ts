@@ -52,7 +52,7 @@
 <context>
     <name>ObjectTransformation</name>
     <message>
-        <location filename="../src/geometry/objecttransformation.h" line="65"/>
+        <location filename="../src/geometry/objecttransformation.h" line="62"/>
         <source>ObjectTransformation</source>
         <translation>Object transformation</translation>
     </message>
@@ -135,7 +135,7 @@
         <translation>Move tags</translation>
     </message>
     <message>
-        <location filename="../src/commands/objectstransformationcommand.cpp" line="43"/>
+        <location filename="../src/commands/objectstransformationcommand.cpp" line="44"/>
         <source>ObjectsTransformationCommand</source>
         <translation>Transform objects</translation>
     </message>
@@ -216,25 +216,25 @@
     </message>
     <message>
         <location filename="../src/objects/cloner.cpp" line="49"/>
-        <location filename="../src/objects/cloner.cpp" line="57"/>
+        <location filename="../src/objects/cloner.cpp" line="56"/>
         <location filename="../src/objects/proceduralpath.cpp" line="45"/>
         <source>count</source>
         <translation>Count</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="63"/>
-        <location filename="../src/objects/cloner.cpp" line="68"/>
+        <location filename="../src/objects/cloner.cpp" line="62"/>
+        <location filename="../src/objects/cloner.cpp" line="67"/>
         <source>distance</source>
         <translation>Distance</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="74"/>
+        <location filename="../src/objects/cloner.cpp" line="73"/>
         <location filename="../src/tools/brushselecttool.cpp" line="18"/>
         <source>radius</source>
         <translation>Radius</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="81"/>
+        <location filename="../src/objects/cloner.cpp" line="80"/>
         <location filename="../src/objects/path.cpp" line="52"/>
         <location filename="../src/tags/pathtag.cpp" line="17"/>
         <location filename="../src/tags/pathtag.cpp" line="18"/>
@@ -244,49 +244,49 @@
         <translation>Path</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="87"/>
+        <location filename="../src/objects/cloner.cpp" line="86"/>
         <source>start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="93"/>
+        <location filename="../src/objects/cloner.cpp" line="92"/>
         <source>end</source>
         <translation>End</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="98"/>
+        <location filename="../src/objects/cloner.cpp" line="97"/>
         <location filename="../src/tags/pathtag.cpp" line="24"/>
         <source>align</source>
         <translation>Align</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="103"/>
+        <location filename="../src/objects/cloner.cpp" line="102"/>
         <source>Clamp</source>
         <translation>Clamp</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="103"/>
+        <location filename="../src/objects/cloner.cpp" line="102"/>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="41"/>
         <source>Wrap</source>
         <translation>Wrap</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="104"/>
+        <location filename="../src/objects/cloner.cpp" line="103"/>
         <source>Hide</source>
         <translation>Hide</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="104"/>
+        <location filename="../src/objects/cloner.cpp" line="103"/>
         <source>Reflect</source>
         <translation>Reflect</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="105"/>
+        <location filename="../src/objects/cloner.cpp" line="104"/>
         <source>border</source>
         <translation>Border</translation>
     </message>
     <message>
-        <location filename="../src/objects/cloner.cpp" line="111"/>
+        <location filename="../src/objects/cloner.cpp" line="110"/>
         <location filename="../src/objects/proceduralpath.cpp" line="42"/>
         <location filename="../src/tags/scripttag.cpp" line="33"/>
         <source>code</source>
@@ -447,19 +447,19 @@
         <translation>Brush</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="350"/>
+        <location filename="../src/scene/scene.cpp" line="351"/>
         <source>There are %1 items being referenced by other items.
 Remove the refrenced items anyway?</source>
         <translation>There are %1 items being referenced by the selection.
 Remove the selected items anyway?</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="353"/>
+        <location filename="../src/scene/scene.cpp" line="354"/>
         <source>Warning</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../src/scene/scene.cpp" line="380"/>
+        <location filename="../src/scene/scene.cpp" line="381"/>
         <source>Remove Selection</source>
         <translation>Remove selection</translation>
     </message>
@@ -540,23 +540,23 @@ Remove the selected items anyway?</translation>
         <translation>Mode</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="32"/>
+        <location filename="../src/objects/mirror.cpp" line="33"/>
         <source>Horizontal</source>
         <translation>Horizontal</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="33"/>
+        <location filename="../src/objects/mirror.cpp" line="34"/>
         <source>Vertical</source>
         <translation>Vertical</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="34"/>
+        <location filename="../src/objects/mirror.cpp" line="35"/>
         <location filename="../src/properties/propertygroups/textoptionproperties.cpp" line="35"/>
         <source>Direction</source>
         <translation>Direction</translation>
     </message>
     <message>
-        <location filename="../src/objects/mirror.cpp" line="30"/>
+        <location filename="../src/objects/mirror.cpp" line="31"/>
         <location filename="../src/tools/selecttool.cpp" line="181"/>
         <source>Mirror</source>
         <translation>Mirror</translation>
@@ -1401,7 +1401,7 @@ Remove the selected items anyway?</translation>
         <translation>Loading scene from &apos;%1&apos; failed.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/application.cpp" line="238"/>
+        <location filename="../src/mainwindow/application.cpp" line="239"/>
         <source>Add Tag</source>
         <translation>Add tag</translation>
     </message>
@@ -1409,32 +1409,32 @@ Remove the selected items anyway?</translation>
 <context>
     <name>omm::ExportDialog</name>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="80"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="81"/>
         <source>Viewport</source>
         <translation>Viewport</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="90"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="91"/>
         <source>Save as ...</source>
         <translation>Save as ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="189"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="190"/>
         <source>Export image ...</source>
         <translation>Export image ...</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="192"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="193"/>
         <source>Images (*.png *.jpg)</source>
         <translation>Images (*.png *.jpg)</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="203"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="204"/>
         <source>Writing image &apos;%1&apos; failed.</source>
         <translation>Writing image &apos;%1&apos; failed.</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow/exportdialog.cpp" line="204"/>
+        <location filename="../src/mainwindow/exportdialog.cpp" line="205"/>
         <source>Export image</source>
         <translation>Export image</translation>
     </message>

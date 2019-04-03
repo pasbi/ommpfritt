@@ -1,5 +1,4 @@
 #include "tools/handles/particlehandle.h"
-#include <armadillo>
 #include "renderers/abstractrenderer.h"
 
 namespace omm
@@ -13,9 +12,9 @@ ParticleHandle::ParticleHandle(Tool& tool, bool transform_in_tool_space)
   set_style(Status::Inactive, omm::SolidStyle(omm::Color(0.8, 0.8, 0.2)));
 }
 
-bool ParticleHandle::contains_global(const arma::vec2& point) const
+bool ParticleHandle::contains_global(const Vec2f& point) const
 {
-  const double dist = arma::max(arma::abs(point - transformation().apply_to_position(position)));
+  const double dist = (point - transformation().apply_to_position(position)).euclidean_norm();
   return dist < interact_epsilon();
 }
 

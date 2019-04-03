@@ -2,18 +2,14 @@
 #include "objects/path.h"
 #include "scene/scene.h"
 
-bool arma::operator<(const arma::vec2& a, const arma::vec2& b)
-{
-  return a[0] == b[0] ? a[1] < b[1] : a[0] < b[0];
-}
-
 namespace
 {
 
 template<typename Ts, typename T, typename... F> T mean(const Ts& ts, const T& null, F&&... fs)
 {
   if (ts.size() > 0) {
-    return std::accumulate(std::begin(ts), std::end(ts), null, fs...) / ts.size();
+    return std::accumulate(std::begin(ts), std::end(ts), null, fs...)
+            / static_cast<double>(ts.size());
   } else {
     return null;
   }
@@ -44,9 +40,9 @@ void PointPositions::clear_selection()
   }
 }
 
-arma::vec2 PointPositions::selection_center() const
+Vec2f PointPositions::selection_center() const
 {
-  std::set<arma::vec2> positions;
+  std::set<Vec2f> positions;
   for (auto* path : paths()) {
     for (auto* point : path->points()) {
       if (point->is_selected) {
@@ -54,7 +50,7 @@ arma::vec2 PointPositions::selection_center() const
       }
     }
   }
-  return mean(positions, arma::vec2{0.0, 0.0});
+  return mean(positions, Vec2f::o());
 }
 
 double PointPositions::selection_rotation() const
@@ -103,13 +99,13 @@ void ObjectPositions::clear_selection()
   scene.set_selection({});
 }
 
-arma::vec2 ObjectPositions::selection_center() const
+Vec2f ObjectPositions::selection_center() const
 {
   const auto objects = scene.item_selection<Object>();
-  const auto add = [](const arma::vec2& accu, const Object* object) -> arma::vec2 {
+  const auto add = [](const Vec2f& accu, const Object* object) -> Vec2f {
     return accu + object->global_transformation().translation();
   };
-  return mean(objects, arma::vec2{0.0, 0.0}, add);
+  return mean(objects, Vec2f::o(), add);
 }
 
 double ObjectPositions::selection_rotation() const

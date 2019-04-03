@@ -14,6 +14,7 @@
 #include <QMessageBox>
 #include <QLabel>
 #include <QVBoxLayout>
+#include "geometry/vec2.h"
 
 namespace
 {
@@ -39,10 +40,10 @@ public:
 
 omm::Viewport& viewport() { return omm::Application::instance().main_window()->viewport(); }
 
-arma::vec2 view_size(const omm::View& view)
+omm::Vec2f view_size(const omm::View& view)
 {
   const auto& property = view.property(omm::View::SIZE_PROPERTY_KEY);
-  return property.value<omm::VectorPropertyValueType<arma::vec2>>();
+  return property.value<omm::Vec2f>();
 }
 
 double compute_aspect_ratio(const omm::View* view)
@@ -50,8 +51,8 @@ double compute_aspect_ratio(const omm::View* view)
   if (view == nullptr) {
     return double(viewport().width()) / double(viewport().height());
   } else {
-    const arma::vec2 s = view_size(*view);
-    return s(0) / s(1);
+    const omm::Vec2f s = view_size(*view);
+    return s.x / s.y;
   }
 }
 
@@ -163,14 +164,14 @@ QImage ExportDialog::render(int width, int height) const
     if (view == nullptr) {
       const auto t = viewport().viewport_transformation();
       const auto s = width / double(viewport().width());
-      return ObjectTransformation().scaled(arma::vec2{ s, s }).apply(t);
+      return ObjectTransformation().scaled(Vec2f(s, s)).apply(t);
     } else {
       const auto view_size = ::view_size(*view);
-      const auto viewport_size = arma::vec2{ double(viewport().width()),
-                                             double(viewport().height()) };
+      const auto viewport_size = Vec2f( double(viewport().width()),
+                                        double(viewport().height()) );
       const auto t = view->transformation().translated(viewport_size / 2.0);
       const auto s = width / double(viewport().width());
-      return ObjectTransformation().scaled(arma::vec2{ s, s }).apply(t);
+      return ObjectTransformation().scaled(Vec2f(s, s)).apply(t);
     }
   };
 

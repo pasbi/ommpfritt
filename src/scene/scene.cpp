@@ -6,6 +6,7 @@
 #include <variant>
 #include <QTimer>
 #include <QMessageBox>
+#include <fstream>
 
 #include "objects/empty.h"
 #include "external/json.hpp"

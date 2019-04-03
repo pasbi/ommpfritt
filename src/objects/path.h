@@ -57,7 +57,7 @@ public:
   void set_global_axis_transformation( const ObjectTransformation& global_transformation,
                                        const bool skip_root = false ) override;
 
-  std::vector<double> cut(const arma::vec2& c_start, const arma::vec2& c_end);
+  std::vector<double> cut(const Vec2f& c_start, const Vec2f& c_end);
   Point smoothed(const std::size_t& i) const;
 
 private:

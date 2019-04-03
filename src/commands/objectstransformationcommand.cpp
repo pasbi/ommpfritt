@@ -1,4 +1,5 @@
 #include "commands/objectstransformationcommand.h"
+#include "geometry/matrix.h"
 #include "common.h"
 #include "objects/object.h"
 
@@ -6,7 +7,7 @@ namespace
 {
 
 auto
-make_alternatives(std::set<omm::Object*> objects, const omm::ObjectTransformation::Mat& t)
+make_alternatives(std::set<omm::Object*> objects, const omm::Matrix& t)
 {
   omm::Object::remove_internal_children(objects);
   std::map<omm::Object*, omm::ObjectTransformation> alternatives;

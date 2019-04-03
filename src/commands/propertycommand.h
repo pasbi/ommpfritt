@@ -99,7 +99,7 @@ template<typename PropertyT, std::size_t dim>
 class VectorPropertiesCommand : public PropertiesCommand<PropertyT>
 {
   using value_type = typename PropertiesCommand<PropertyT>::value_type;
-  using elem_type = typename value_type::elem_type;
+  using elem_type = typename value_type::element_type;
   using PropertyBiState = typename PropertiesCommand<PropertyT>::PropertyBiState;
 
 private:
@@ -108,7 +108,7 @@ private:
   {
     return ::transform<PropertyBiState>(properties, [new_value](const auto& property) {
       auto new_vector_value = property->template value<value_type>();
-      new_vector_value(dim) = new_value;
+      new_vector_value[dim] = new_value;
       return PropertyBiState(property, new_vector_value);
     });
   }

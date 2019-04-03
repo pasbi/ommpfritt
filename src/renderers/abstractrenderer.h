@@ -40,17 +40,17 @@ public:
 public:
   virtual void draw_spline( const std::vector<Point>& points, const Style& style,
                             bool closed = false ) = 0;
-  virtual void draw_rectangle(const arma::vec2& pos, const double radius, const Style& style) = 0;
+  virtual void draw_rectangle(const Vec2f& pos, const double radius, const Style& style) = 0;
   virtual void push_transformation(const ObjectTransformation& transformation);
   virtual void pop_transformation();
   virtual ObjectTransformation current_transformation() const;
-  virtual void draw_circle(const arma::vec2& pos, const double radius, const Style& style) = 0;
-  virtual void draw_image( const std::string& filename, const arma::vec2& pos,
-                           const arma::vec2& size, const double opacity = 1.0) = 0;
-  virtual void draw_image( const std::string& filename, const arma::vec2& pos,
+  virtual void draw_circle(const Vec2f& pos, const double radius, const Style& style) = 0;
+  virtual void draw_image( const std::string& filename, const Vec2f& pos,
+                           const Vec2f& size, const double opacity = 1.0) = 0;
+  virtual void draw_image( const std::string& filename, const Vec2f& pos,
                            const double& width, const double opacity = 1.0) = 0;
   virtual void draw_text(const std::string& text, const TextOptions& options) = 0;
-  virtual void toast(const arma::vec2& pos, const std::string& text) = 0;
+  virtual void toast(const Vec2f& pos, const std::string& text) = 0;
   Scene& scene;
 
   void set_category(Category category);

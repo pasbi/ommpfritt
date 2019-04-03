@@ -11,18 +11,10 @@
 namespace
 {
 
-arma::vec2 point2vec(const QPoint& p)
-{
-  return arma::vec2 {
-    static_cast<double>(p.x()),
-    static_cast<double>(p.y()),
-  };
-}
-
-void set_cursor_position(QWidget& widget, const arma::vec2& pos)
+void set_cursor_position(QWidget& widget, const omm::Vec2f& pos)
 {
   auto cursor = widget.cursor();
-  cursor.setPos(widget.mapToGlobal(QPoint(pos(0), pos(1))));
+  cursor.setPos(widget.mapToGlobal(pos.to_point()));
   widget.setCursor(cursor);
 }
 
@@ -34,7 +26,7 @@ namespace omm
 Viewport::Viewport(Scene& scene)
   : m_scene(scene)
   , m_timer(std::make_unique<QTimer>())
-  , m_pan_controller([this](const arma::vec2& pos) { set_cursor_position(*this, pos); })
+  , m_pan_controller([this](const Vec2f& pos) { set_cursor_position(*this, pos); })
   , m_renderer(scene, AbstractRenderer::Category::All)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -73,7 +65,7 @@ void Viewport::paintEvent(QPaintEvent*)
 
 void Viewport::mousePressEvent(QMouseEvent* event)
 {
-  const arma::vec2 cursor_pos = point2vec(event->pos());
+  const Vec2f cursor_pos = Vec2f(event->pos());
   const auto action = [](const QMouseEvent* event) {
     switch (event->button()) {
     case Qt::LeftButton: return MousePanController::Action::Pan;
@@ -94,9 +86,9 @@ void Viewport::mousePressEvent(QMouseEvent* event)
 
 void Viewport::mouseMoveEvent(QMouseEvent* event)
 {
-  const auto cursor_pos = point2vec(event->pos());
+  const auto cursor_pos = Vec2f(event->pos());
 
-  arma::vec2 delta { 0.0, 0.0 };
+  Vec2f delta = Vec2f::o();
   if (event->modifiers() & Qt::AltModifier) {
     delta = m_pan_controller.apply(cursor_pos, m_viewport_transformation);
     event->accept();
@@ -116,7 +108,7 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
 void Viewport::mouseReleaseEvent(QMouseEvent* event)
 {
   if (!m_pan_controller.end_move()) {
-    const auto cursor_pos = point2vec(event->pos());
+    const auto cursor_pos = Vec2f(event->pos());
     m_scene.tool_box.active_tool().mouse_release(cursor_pos, *event);
     if (event->button() == Qt::RightButton) {
       auto menu = m_scene.tool_box.active_tool().make_context_menu(this);
@@ -128,7 +120,7 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
 
 ObjectTransformation Viewport::viewport_transformation() const
 {
-  return m_viewport_transformation.translated(arma::vec2{ width() / 2.0, height() / 2.0 });
+  return m_viewport_transformation.translated(Vec2f(width(), height())/2.0);
 }
 
 Scene& Viewport::scene() const { return m_scene; }

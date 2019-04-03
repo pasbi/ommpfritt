@@ -1,14 +1,9 @@
 #pragma once
 
-#include <armadillo>
+#include "geometry/vec2.h"
 #include <set>
 #include <vector>
 #include "tools/handles/selecthandle.h"
-
-namespace arma
-{
-bool operator<(const arma::vec2& a, const arma::vec2& b);
-}  // namespace arma
 
 namespace omm
 {
@@ -37,7 +32,7 @@ public:
   using AbstractPositions<Point>::AbstractPositions;
   void make_handles(handles_type& handles, Tool& tool) const;
   void clear_selection();
-  arma::vec2 selection_center() const;
+  Vec2f selection_center() const;
   double selection_rotation() const;
   bool is_empty() const;
   std::set<Path*> paths() const;
@@ -52,7 +47,7 @@ public:
   using AbstractPositions<Object>::AbstractPositions;
   void make_handles(handles_type& handles, Tool& tool) const;
   void clear_selection();
-  arma::vec2 selection_center() const;
+  Vec2f selection_center() const;
   double selection_rotation() const;
   bool is_empty() const;
 

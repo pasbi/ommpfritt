@@ -13,6 +13,7 @@
 #include "aspects/serializable.h"
 #include "common.h"
 #include "color/color.h"
+#include "geometry/vec2.h"
 
 namespace omm
 {
@@ -69,8 +70,7 @@ class Property
 public:
   using variant_type = std::variant< bool, Color, double, int, AbstractPropertyOwner*,
                                      std::string, size_t, TriggerPropertyDummyValueType,
-                                     VectorPropertyValueType<arma::vec2>,
-                                     VectorPropertyValueType<arma::ivec2> >;
+                                     Vec2f, Vec2i >;
 
   Property() = default;
   explicit Property(const Property& other) = default;

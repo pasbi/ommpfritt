@@ -113,22 +113,22 @@ void test_invariant_2( const std::vector<omm::Point> initial_points,
 TEST(path, remove_add_points)
 {
   static const std::vector<omm::Point> points3 ({
-    omm::Point(arma::vec2{0, 0}),
-    omm::Point(arma::vec2{1, 0}),
-    omm::Point(arma::vec2{2, 0}),
+    omm::Point(omm::Vec2f(0, 0)),
+    omm::Point(omm::Vec2f(1, 0)),
+    omm::Point(omm::Vec2f(2, 0))
   });
 
   static const std::vector<omm::Point> points10 ({
-    omm::Point(arma::vec2{0, 0}),
-    omm::Point(arma::vec2{1, 0}),
-    omm::Point(arma::vec2{2, 0}),
-    omm::Point(arma::vec2{3, 0}),
-    omm::Point(arma::vec2{4, 0}),
-    omm::Point(arma::vec2{5, 0}),
-    omm::Point(arma::vec2{6, 0}),
-    omm::Point(arma::vec2{7, 0}),
-    omm::Point(arma::vec2{8, 0}),
-    omm::Point(arma::vec2{9, 0}),
+    omm::Point(omm::Vec2f(0, 0)),
+    omm::Point(omm::Vec2f(1, 0)),
+    omm::Point(omm::Vec2f(2, 0)),
+    omm::Point(omm::Vec2f(3, 0)),
+    omm::Point(omm::Vec2f(4, 0)),
+    omm::Point(omm::Vec2f(5, 0)),
+    omm::Point(omm::Vec2f(6, 0)),
+    omm::Point(omm::Vec2f(7, 0)),
+    omm::Point(omm::Vec2f(8, 0)),
+    omm::Point(omm::Vec2f(9, 0)),
   });
 
   // assertion shall fail if candidate points are in wrong order
@@ -168,47 +168,47 @@ TEST(path, remove_add_points)
   test_invariant_1(points10, {0, 6, 7, 8, 9});
 
   test_invariant_2(points3, {
-    omm::Path::PointSequence{ 0, { omm::Point(arma::vec2{0, 1}) } }
+    omm::Path::PointSequence{ 0, { omm::Point(omm::Vec2f(0, 1)) } }
   });
 
   test_invariant_2(points3, {
-    omm::Path::PointSequence{ 1, { omm::Point(arma::vec2{0, 1}) } }
+    omm::Path::PointSequence{ 1, { omm::Point(omm::Vec2f(0, 1)) } }
   });
 
   test_invariant_2(points3, {
-    omm::Path::PointSequence{ 2, { omm::Point(arma::vec2{0, 1}) } }
+    omm::Path::PointSequence{ 2, { omm::Point(omm::Vec2f(0, 1)) } }
   });
 
   test_invariant_2(points3, {
-    omm::Path::PointSequence{ 0, { omm::Point(arma::vec2{0, 1}), omm::Point(arma::vec2{0, 2}) } }
+    omm::Path::PointSequence{ 0, { omm::Point(omm::Vec2f(0, 1)), omm::Point(omm::Vec2f(0, 2)) } }
   });
 
   ASSERT_DEATH( // interleaving sequences
     test_invariant_2(points3, {
-      omm::Path::PointSequence{ 0, { omm::Point(arma::vec2{0, 1}),
-                                     omm::Point(arma::vec2{0, 2}) } },
-      omm::Path::PointSequence{ 1, { omm::Point(arma::vec2{0, 3}),
-                                     omm::Point(arma::vec2{0, 4}) } }
+      omm::Path::PointSequence{ 0, { omm::Point(omm::Vec2f(0, 1)),
+                                     omm::Point(omm::Vec2f(0, 2)) } },
+      omm::Path::PointSequence{ 1, { omm::Point(omm::Vec2f(0, 3)),
+                                     omm::Point(omm::Vec2f(0, 4)) } }
     }) , "");
 
   ASSERT_DEATH( // subsequent sequences
     test_invariant_2(points3, {
-      omm::Path::PointSequence{ 0, { omm::Point(arma::vec2{0, 1}),
-                                     omm::Point(arma::vec2{0, 2}) } },
-      omm::Path::PointSequence{ 2, { omm::Point(arma::vec2{0, 3}),
-                                     omm::Point(arma::vec2{0, 4}) } }
+      omm::Path::PointSequence{ 0, { omm::Point(omm::Vec2f(0, 1)),
+                                     omm::Point(omm::Vec2f(0, 2)) } },
+      omm::Path::PointSequence{ 2, { omm::Point(omm::Vec2f(0, 3)),
+                                     omm::Point(omm::Vec2f(0, 4)) } }
     }) , "");
 
   test_invariant_2(points3, {
-    omm::Path::PointSequence{ 0, { omm::Point(arma::vec2{0, 1}),
-                                   omm::Point(arma::vec2{0, 2}) } },
-    omm::Path::PointSequence{ 3, { omm::Point(arma::vec2{0, 3}),
-                                   omm::Point(arma::vec2{0, 4}) } } });
+    omm::Path::PointSequence{ 0, { omm::Point(omm::Vec2f(0, 1)),
+                                   omm::Point(omm::Vec2f(0, 2)) } },
+    omm::Path::PointSequence{ 3, { omm::Point(omm::Vec2f(0, 3)),
+                                   omm::Point(omm::Vec2f(0, 4)) } } });
 
   test_invariant_2(points3, {
-    omm::Path::PointSequence{ 0, { omm::Point(arma::vec2{0, 1}),
-                                   omm::Point(arma::vec2{0, 2}) } },
-    omm::Path::PointSequence{ 3, { omm::Point(arma::vec2{0, 3}),
-                                   omm::Point(arma::vec2{0, 3}),
-                                   omm::Point(arma::vec2{0, 5}) } } });
+    omm::Path::PointSequence{ 0, { omm::Point(omm::Vec2f(0, 1)),
+                                   omm::Point(omm::Vec2f(0, 2)) } },
+    omm::Path::PointSequence{ 3, { omm::Point(omm::Vec2f(0, 3)),
+                                   omm::Point(omm::Vec2f(0, 3)),
+                                   omm::Point(omm::Vec2f(0, 5)) } } });
 }

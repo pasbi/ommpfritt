@@ -9,7 +9,6 @@
 #include "objects/object.h"
 #include "properties/vectorproperty.h"
 #include "tags/tag.h"
-#include "python/common.h"
 
 namespace
 {
@@ -59,10 +58,10 @@ bool set_property_value( AbstractPropertyOwner& property_owner,
     } else if (property.type() == TriggerProperty::TYPE) {
       return false;
     } else if (property.type() == FloatVectorProperty::TYPE) {
-      property.set(VectorPropertyValueType<arma::vec2>(to_vec2<arma::vec2>(value)));
+      property.set(Vec2f(value.cast<std::vector<Vec2f::element_type>>()));
       return true;
     } else if (property.type() == IntegerVectorProperty::TYPE) {
-      property.set(VectorPropertyValueType<arma::ivec2>(to_vec2<arma::ivec2>(value)));
+      property.set(Vec2i(value.cast<std::vector<Vec2i::element_type>>()));
       return true;
     } else {
       property.set(value.cast<Property::variant_type>());

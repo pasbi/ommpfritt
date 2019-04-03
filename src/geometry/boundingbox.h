@@ -1,7 +1,7 @@
 #pragma once
 
 #include "geometry/boundingbox.h"
-#include <armadillo>
+#include "geometry/vec2.h"
 
 namespace omm
 {
@@ -9,18 +9,18 @@ namespace omm
 class BoundingBox
 {
 public:
-  BoundingBox(const std::vector<arma::vec2>& points = { arma::vec2 { 0.0, 0.0 } });
+  BoundingBox(const std::vector<Vec2f>& points = { Vec2f::o() });
 
   BoundingBox merge(const BoundingBox& other) const;
   BoundingBox intersect(const BoundingBox& other) const;
   bool contains(const BoundingBox& other) const;
-  bool contains(const arma::vec2& point) const;
+  bool contains(const Vec2f& point) const;
   bool is_empty() const;
 
-  arma::vec2 top_left() const;
-  arma::vec2 top_right() const;
-  arma::vec2 bottom_left() const;
-  arma::vec2 bottom_right() const;
+  Vec2f top_left() const;
+  Vec2f top_right() const;
+  Vec2f bottom_left() const;
+  Vec2f bottom_right() const;
   double left() const;
   double top() const;
   double right() const;
@@ -29,8 +29,8 @@ public:
   double height() const;
 
 private:
-  arma::vec2 m_top_left;
-  arma::vec2 m_bottom_right;
+  Vec2f m_top_left;
+  Vec2f m_bottom_right;
 };
 
 }  // namespace omm

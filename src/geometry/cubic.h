@@ -1,10 +1,9 @@
 #pragma once
 
-#include <armadillo>
 #include <array>
 #include <cassert>
-
 #include "geometry/point.h"
+#include "geometry/vec2.h"
 
 namespace omm
 {
@@ -13,18 +12,18 @@ class Cubic
 {
 public:
   Cubic(const Point& start, const Point& end);
-  Cubic(const std::array<arma::vec2, 4>& points, const bool is_selected = false);
+  Cubic(const std::array<Vec2f, 4>& points, const bool is_selected = false);
 
-  arma::vec2 pos(const double t) const;
-  arma::vec2 tangent(const double t) const;
+  Vec2f pos(const double t) const;
+  Vec2f tangent(const double t) const;
   double length() const;
   Point evaluate(const double t) const;
-  std::vector<arma::vec2> interpolate(const std::size_t n) const;
-  std::vector<double> cut(const arma::vec2& a, const arma::vec2& b) const;
+  std::vector<Vec2f> interpolate(const std::size_t n) const;
+  std::vector<double> cut(const Vec2f& a, const Vec2f& b) const;
   bool is_selected() const;
 
 private:
-  const std::array<arma::vec2, 4> m_points;
+  const std::array<Vec2f, 4> m_points;
   const bool m_is_selected;
 };
 

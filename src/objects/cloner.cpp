@@ -51,9 +51,8 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Linear, Mode::Radial,
                                               Mode::Path, Mode::Script });
 
-  add_property<IntegerVectorProperty>(COUNT_2D_PROPERTY_KEY, arma::ivec2{3, 3})
-    .set_range( VectorPropertyValueType<arma::ivec2> { 0, 0 },
-                VectorPropertyValueType<arma::ivec2> { max, max })
+  add_property<IntegerVectorProperty>(COUNT_2D_PROPERTY_KEY, Vec2i(3, 3))
+    .set_range(Vec2i(0, 0), Vec2i(max, max))
     .set_label(QObject::tr("count").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Grid });
@@ -64,7 +63,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Linear });
 
-  add_property<FloatVectorProperty>(DISTANCE_2D_PROPERTY_KEY, arma::vec2{10.0, 10.0})
+  add_property<FloatVectorProperty>(DISTANCE_2D_PROPERTY_KEY, Vec2f(10.0, 10.0))
     .set_label(QObject::tr("distance").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Grid });
@@ -167,8 +166,8 @@ std::vector<std::unique_ptr<Object>> Cloner::make_clones()
     case Mode::Script:
       return static_cast<std::size_t>(property(COUNT_PROPERTY_KEY).value<int>());
     case Mode::Grid: {
-      const auto c = property(COUNT_2D_PROPERTY_KEY).value<VectorPropertyValueType<arma::ivec2>>();
-      return static_cast<std::size_t>(c(0) * c(1));
+      const auto c = property(COUNT_2D_PROPERTY_KEY).value<Vec2i>();
+      return static_cast<std::size_t>(c.x * c.y);
     }
     }
     Q_UNREACHABLE();
@@ -220,17 +219,17 @@ void Cloner::set_linear(Object& object, std::size_t i)
 {
   const double x = i * property(DISTANCE_PROPERTY_KEY).value<double>();
   auto t = object.transformation();
-  t.set_translation(arma::vec2{x, 0.0});
+  t.set_translation(Vec2f(x, 0.0));
   object.set_transformation(t);
 }
 
 void Cloner::set_grid(Object& object, std::size_t i)
 {
-  const auto n = property(COUNT_2D_PROPERTY_KEY).value<VectorPropertyValueType<arma::ivec2>>();
-  const auto v = property(DISTANCE_2D_PROPERTY_KEY).value<VectorPropertyValueType<arma::vec2>>();
+  const auto n = property(COUNT_2D_PROPERTY_KEY).value<Vec2i>();
+  const auto v = property(DISTANCE_2D_PROPERTY_KEY).value<Vec2f>();
   auto t = object.transformation();
-  t.set_translation({ v(0u) * (i % static_cast<ulong>(n(0u))),
-                      v(1u) * (i / static_cast<ulong>(n(0u))) });
+  t.set_translation({ v.x * (i % static_cast<ulong>(n.x)),
+                      v.y * (i / static_cast<ulong>(n.x)) });
   object.set_transformation(t);
 }
 

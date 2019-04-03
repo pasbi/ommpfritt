@@ -11,7 +11,7 @@ Handle::Handle(Tool& tool, const bool transform_in_tool_space)
   , tool(tool)
 {}
 
-bool Handle::mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force)
+bool Handle::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
 {
   Q_UNUSED(force);
   m_press_pos = pos;
@@ -25,7 +25,7 @@ bool Handle::mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool f
   }
 }
 
-bool Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent&)
+bool Handle::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent&)
 {
   Q_UNUSED(delta);
   if (m_status != Status::Active) {
@@ -38,7 +38,7 @@ bool Handle::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QM
   return false;
 }
 
-void Handle::mouse_release(const arma::vec2& pos, const QMouseEvent&)
+void Handle::mouse_release(const Vec2f& pos, const QMouseEvent&)
 {
   Q_UNUSED(pos);
   m_status = Status::Inactive;
@@ -68,20 +68,20 @@ ObjectTransformation Handle::transformation() const
 
 double Handle::draw_epsilon() const { return 4.0; }
 double Handle::interact_epsilon() const { return 4.0; }
-arma::vec2 Handle::press_pos() const { return m_press_pos; }
+Vec2f Handle::press_pos() const { return m_press_pos; }
 
-arma::vec2 Handle::transform_position_to_global(const arma::vec2& position) const
+Vec2f Handle::transform_position_to_global(const Vec2f& position) const
 {
   return transformation().inverted().apply_to_position(position);
 }
 
-void Handle::discretize(arma::vec2& vec) const
+void Handle::discretize(Vec2f& vec) const
 {
   if (tool.integer_transformation()) {
     vec = tool.viewport_transformation.inverted().apply_to_direction(vec);
     static constexpr double step = 50.0;
     for (auto i : { 0u, 1u }) {
-      vec(i) = step * static_cast<int>(vec(i) / step);
+      vec[i] = step * static_cast<int>(vec[i] / step);
     }
     vec = tool.viewport_transformation.apply_to_direction(vec);
   }

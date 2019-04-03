@@ -11,19 +11,18 @@ namespace omm
 {
 
 
-const arma::vec2 FloatVectorPropertyLimits::lower = arma::vec2 { -inf, -inf };
-const arma::vec2 FloatVectorPropertyLimits::upper = arma::vec2 {  inf,  inf };
-const arma::vec2 FloatVectorPropertyLimits::step = arma::vec2 { 1.0, 1.0 };
+const Vec2f FloatVectorPropertyLimits::lower(-inf, -inf);
+const Vec2f FloatVectorPropertyLimits::upper( inf,  inf);
+const Vec2f FloatVectorPropertyLimits::step(1.0, 1.0);
 
 std::string FloatVectorProperty::type() const { return TYPE; }
 
 void FloatVectorProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   NumericProperty::deserialize(deserializer, root);
-  const auto v = deserializer.get_vec2(make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
-  set(VectorPropertyValueType<arma::vec2>(v));
+  set(deserializer.get_vec2f(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
   set_default_value(
-    deserializer.get_vec2(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
+    deserializer.get_vec2f(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
 }
 
 void FloatVectorProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
@@ -39,19 +38,18 @@ std::unique_ptr<Property> FloatVectorProperty::clone() const
   return std::make_unique<FloatVectorProperty>(*this);
 }
 
-const arma::ivec2 IntegerVectorPropertyLimits::lower = arma::ivec2 { int_low,  int_low  };
-const arma::ivec2 IntegerVectorPropertyLimits::upper = arma::ivec2 { int_high, int_high };
-const arma::ivec2 IntegerVectorPropertyLimits::step = arma::ivec2 { 1, 1 };
+const Vec2i IntegerVectorPropertyLimits::lower(int_low,  int_low);
+const Vec2i IntegerVectorPropertyLimits::upper(int_high, int_high);
+const Vec2i IntegerVectorPropertyLimits::step(1, 1);
 
 std::string IntegerVectorProperty::type() const { return TYPE; }
 
 void IntegerVectorProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   NumericProperty::deserialize(deserializer, root);
-  const auto v = deserializer.get_ivec2(make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
-  set(VectorPropertyValueType<arma::ivec2>(v));
+  set(deserializer.get_vec2i(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
   set_default_value(
-    deserializer.get_ivec2(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
+    deserializer.get_vec2i(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
 }
 
 void IntegerVectorProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const

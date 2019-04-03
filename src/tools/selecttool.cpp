@@ -28,7 +28,7 @@ namespace omm
 
 AbstractSelectTool::AbstractSelectTool(Scene& scene)
   : Tool(scene)
- , m_tool_info_line_style(ContourStyle(Color(0.0, 0.0, 0.0, 0.3), 0.7))
+  , m_tool_info_line_style(ContourStyle(Color(0.0, 0.0, 0.0, 0.3), 0.7))
 
 {
   this->add_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY)
@@ -51,21 +51,21 @@ void AbstractSelectTool::reset_absolute_object_transformation()
   m_last_object_transformation = ObjectTransformation();
 }
 
-bool AbstractSelectTool::mouse_move(const arma::vec2& delta, const arma::vec2& pos, const QMouseEvent& e)
+bool AbstractSelectTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
   m_current_position = transformation().null();
   return Tool::mouse_move(delta, pos, e);
 }
 
 
-bool AbstractSelectTool::mouse_press(const arma::vec2& pos, const QMouseEvent& e, bool force)
+bool AbstractSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& e, bool force)
 {
   const bool r = Tool::mouse_press(pos, e, force);
   reset_absolute_object_transformation();
   return r;
 }
 
-void AbstractSelectTool::mouse_release(const arma::vec2 &pos, const QMouseEvent &event)
+void AbstractSelectTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
 {
   tool_info.clear();
   Tool::mouse_release(pos, event);
@@ -75,7 +75,7 @@ void AbstractSelectTool::draw(AbstractRenderer& renderer) const
 {
   Tool::draw(renderer);
   if (!tool_info.empty()) {
-    renderer.toast(m_current_position + arma::vec2{ 30.0, 30.0 }, tool_info.c_str());
+    renderer.toast(m_current_position + Vec2f(30.0, 30.0), tool_info.c_str());
     const auto line = std::vector { Point(m_init_position), Point(m_current_position) };
     renderer.draw_spline(line, m_tool_info_line_style, false);
   }
@@ -112,7 +112,7 @@ ObjectTransformation SelectTool<PositionVariant>::transformation() const
 }
 
 template<typename PositionVariant> bool SelectTool<PositionVariant>
-::mouse_press(const arma::vec2& pos, const QMouseEvent& event, bool force)
+::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
 {
   Q_UNUSED(force);
   if (AbstractSelectTool::mouse_press(pos, event, false)) {
