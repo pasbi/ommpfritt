@@ -5,6 +5,7 @@
 #include <cmath>
 #include <algorithm>
 #include <QPointF>
+#include <ostream>
 
 namespace omm
 {
@@ -152,5 +153,11 @@ template<typename ValueT> bool operator<(const Vec2<ValueT>& d1, const Vec2<Valu
 
 using Vec2f = Vec2<double>;
 using Vec2i = Vec2<int>;
+
+template<typename T> std::ostream& operator<<(std::ostream& ostream, const Vec2<T>& vec)
+{
+  ostream << "[" << vec.x << ", " << vec.y << "]";
+  return ostream;
+}
 
 }  // namespace omm
