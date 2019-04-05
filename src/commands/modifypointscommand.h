@@ -12,7 +12,8 @@ class Path;
 class ModifyPointsCommand : public Command
 {
 public:
-  ModifyPointsCommand(const std::map<Path*, std::map<Point*, Point>>& points);
+  using map_type = std::map<Path*, std::map<Point*, Point>>;
+  ModifyPointsCommand(const map_type& points);
   void redo() override;
   void undo() override;
   int id() const override;

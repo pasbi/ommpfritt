@@ -53,33 +53,21 @@ CoordinateEdit::CoordinateEdit(QWidget *parent) : QWidget(parent)
   connect(m_arg_edit, SIGNAL(textChanged(QString)), this, SLOT(update_cartesian()));
   connect(m_mag_edit, SIGNAL(textChanged(QString)), this, SLOT(update_cartesian()));
 
-  connect(m_x_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed_from_cartesian()));
-  connect(m_y_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed_from_cartesian()));
-  connect(m_arg_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed_from_polar()));
-  connect(m_mag_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed_from_polar()));
+  connect(m_x_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed()));
+  connect(m_y_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed()));
+  connect(m_arg_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed()));
+  connect(m_mag_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed()));
 
 }
 
 Vec2f CoordinateEdit::to_cartesian() const
 {
-  const auto p = value_from_polar();
-#ifndef NDEBUG
-  const auto c = value_from_cartesian();
-  LINFO << c << " " << p.to_cartesian();
-  assert((c - p.to_cartesian()).max_norm() < 0.01);
-#endif  // NDEBUG
-  return c;
+  return Vec2f(m_x_edit->value(), m_y_edit->value());
 }
 
 PolarCoordinates CoordinateEdit::to_polar() const
 {
-  const auto c = value_from_cartesian();
-#ifndef NDEBUG
-  const auto p = value_from_polar();
-  LINFO << c << " " << p.to_cartesian() << " " << (c - p.to_cartesian()).max_norm();
-  assert((c - p.to_cartesian()).max_norm() < 0.01);  //
-#endif  // NDEBUG
-  return p;
+  return PolarCoordinates(m_arg_edit->value() / 180.0 * M_PI, m_mag_edit->value());
 }
 
 void CoordinateEdit::set_coordinates(const Vec2f &coordinates)
@@ -98,7 +86,7 @@ void CoordinateEdit::set_coordinates(const PolarCoordinates& coordinates)
 
 void CoordinateEdit::update_polar()
 {
-  const auto pc = PolarCoordinates(value_from_cartesian());
+  const auto pc = PolarCoordinates(to_cartesian());
   QSignalBlocker b_arg(m_arg_edit);
   QSignalBlocker b_mag(m_mag_edit);
   m_arg_edit->set_value(pc.argument * 180 * M_1_PI);
@@ -107,34 +95,16 @@ void CoordinateEdit::update_polar()
 
 void CoordinateEdit::update_cartesian()
 {
-  const auto cartesian = value_from_polar().to_cartesian();
+  const auto cartesian = to_polar().to_cartesian();
   QSignalBlocker b_x(m_x_edit);
   QSignalBlocker b_y(m_y_edit);
   m_x_edit->set_value(cartesian.x);
   m_y_edit->set_value(cartesian.y);
 }
 
-PolarCoordinates CoordinateEdit::value_from_polar() const
+void CoordinateEdit::emit_value_changed()
 {
-  return PolarCoordinates(m_arg_edit->value() / 180.0 * M_PI, m_mag_edit->value());
-}
-
-Vec2f CoordinateEdit::value_from_cartesian() const
-{
-  return Vec2f(m_x_edit->value(), m_y_edit->value());
-}
-
-void CoordinateEdit::emit_value_changed_from_polar()
-{
-  const auto new_polar_coordinates = value_from_polar();
-  Q_EMIT value_changed(m_old_polar_coordinates, new_polar_coordinates);
-  Q_EMIT value_changed();
-  m_old_polar_coordinates = new_polar_coordinates;
-}
-
-void CoordinateEdit::emit_value_changed_from_cartesian()
-{
-  const auto new_polar_coordinates = value_from_polar();
+  const auto new_polar_coordinates = to_polar();
   Q_EMIT value_changed(m_old_polar_coordinates, new_polar_coordinates);
   Q_EMIT value_changed();
   m_old_polar_coordinates = new_polar_coordinates;

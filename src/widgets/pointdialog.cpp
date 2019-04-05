@@ -11,7 +11,7 @@
 namespace
 {
 
-auto make_tab_widget_page(const std::vector<omm::Point*>& points)
+auto make_tab_widget_page(omm::Path& path)
 {
   auto scroll_area = std::make_unique<QScrollArea>();
   scroll_area->setWidgetResizable(true);
@@ -20,8 +20,8 @@ auto make_tab_widget_page(const std::vector<omm::Point*>& points)
   auto widget = std::make_unique<QWidget>();
   auto layout = std::make_unique<QVBoxLayout>();
 
-  for (omm::Point* point : points) {
-    layout->addWidget(std::make_unique<omm::PointEdit>(*point).release());
+  for (omm::Point* point : path.points()) {
+    layout->addWidget(std::make_unique<omm::PointEdit>(*point, &path).release());
   }
   layout->addStretch();
 
@@ -39,7 +39,7 @@ PointDialog::PointDialog(const std::set<Path*>& paths, QWidget* parent) : QDialo
 {
   auto tab_widget = std::make_unique<QTabWidget>();
   for (Path* path : paths) {
-    tab_widget->addTab( make_tab_widget_page(path->points()).release(),
+    tab_widget->addTab( make_tab_widget_page(*path).release(),
                         QString::fromStdString(path->name()) );
   }
   auto button_box = std::make_unique<QDialogButtonBox>( QDialogButtonBox::Ok |

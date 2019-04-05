@@ -40,15 +40,12 @@ private:
   QLabel* m_polar_label;
   NumericEdit<double>* m_mag_edit;
 
-  PolarCoordinates value_from_polar() const;
-  Vec2f value_from_cartesian() const;
   PolarCoordinates m_old_polar_coordinates;
 
 private Q_SLOTS:
   void update_polar();
   void update_cartesian();
-  void emit_value_changed_from_polar();
-  void emit_value_changed_from_cartesian();
+  void emit_value_changed();
 };
 
 }  // namespace omm
