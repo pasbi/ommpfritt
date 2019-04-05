@@ -18,6 +18,7 @@
 #include "mainwindow/viewport/viewport.h"
 #include "mainwindow/exportdialog.h"
 #include "logging.h"
+#include "widgets/pointdialog.h"
 
 namespace {
 constexpr auto FILE_ENDING = ".omm";
@@ -208,6 +209,10 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
     ai( QT_TRANSLATE_NOOP("any-context", "convert objects"), &actions::convert_objects ),
     ai( QT_TRANSLATE_NOOP("any-context", "reset viewport"), [](Application& app) {
         app.main_window()->viewport().reset();
+      }),
+    ai( QT_TRANSLATE_NOOP("any-context", "show point dialog"), [](Application& app) {
+        PointDialog d(Object::cast<Path>(app.scene.item_selection<Object>()), app.main_window());
+        d.exec();
       })
   };
 

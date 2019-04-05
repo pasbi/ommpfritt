@@ -96,6 +96,7 @@ std::vector<std::string> MainWindow::path_menu_entries()
     "path/" QT_TRANSLATE_NOOP("any-context", "select all"),
     "path/" QT_TRANSLATE_NOOP("any-context", "deselect all"),
     "path/" QT_TRANSLATE_NOOP("any-context", "invert selection"),
+    "path/" QT_TRANSLATE_NOOP("any-context", "show point dialog"),
   };
 }
 
