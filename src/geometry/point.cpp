@@ -88,4 +88,19 @@ bool Point::operator==(const Point& point) const
 
 bool Point::operator!=(const Point& point) const { return !(*this == point); }
 
+PolarCoordinates Point::mirror_tangent( const PolarCoordinates& old_pos,
+                                        const PolarCoordinates& old_other_pos,
+                                        const PolarCoordinates& new_other_pos )
+{
+  PolarCoordinates new_pos;
+  static constexpr double mag_eps = 0.00001;
+  new_pos.argument = old_pos.argument + new_other_pos.argument - old_other_pos.argument;
+  if (old_other_pos.magnitude > mag_eps) {
+    new_pos.magnitude = old_pos.magnitude * new_other_pos.magnitude / old_other_pos.magnitude;
+  } else {
+    new_pos.magnitude = new_other_pos.magnitude;
+  }
+  return new_pos;
+}
+
 }  // namespace omm

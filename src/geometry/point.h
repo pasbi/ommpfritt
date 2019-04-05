@@ -34,6 +34,19 @@ public:
   bool operator==(const Point& point) const;
   bool operator!=(const Point& point) const;
 
+  /**
+   * @brief When a tangent is at `old_pos` and it is mirror-coupled with its sibling which moves
+   *  from `old_other_pos` to `new_other_pos`, then this tangent moves to the return value of
+   *  this function.
+   * @param old_pos position of this tangent (relative to its Point)
+   * @param old_other_pos old position of the other tangent (relative to its Point)
+   * @param new_other_pos new position of the other tangent (relative to its Point)
+   * @return [description]
+   */
+  static PolarCoordinates mirror_tangent( const PolarCoordinates& old_pos,
+                                          const PolarCoordinates& old_other_pos,
+                                          const PolarCoordinates& new_other_pos );
+
 };
 
 

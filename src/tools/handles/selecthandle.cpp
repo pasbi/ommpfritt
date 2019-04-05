@@ -241,12 +241,9 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentMode mode)
     const auto old_master_pos = master_pos;
     const auto transformation = ObjectTransformation().translated(delta);
     master_pos = transformation.transformed(this->transformation()).apply_to_position(master_pos);
-    if (mode == TangentMode::Mirror && !(QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)) {
-      static constexpr double mag_eps = 0.00001;
-      slave_pos.argument += master_pos.argument - old_master_pos.argument;
-      if (old_master_pos.magnitude > mag_eps) {
-        slave_pos.magnitude *= master_pos.magnitude / old_master_pos.magnitude;
-      }
+    if (mode == TangentMode::Mirror && !(QGuiApplication::keyboardModifiers() & Qt::ShiftModifier))
+    {
+      slave_pos = Point::mirror_tangent(slave_pos, old_master_pos, master_pos);
     }
   }
 
