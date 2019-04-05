@@ -30,37 +30,6 @@ void Point::swap(Point& other)
   other.right_tangent.swap(right_tangent);
 }
 
-PolarCoordinates::PolarCoordinates(const double argument, const double magnitude)
-  : argument(argument), magnitude(magnitude) { }
-
-PolarCoordinates::PolarCoordinates(const Vec2f& cartesian)
-  : PolarCoordinates(std::atan2(cartesian[1], cartesian[0]), cartesian.euclidean_norm())
-{
-}
-
-PolarCoordinates::PolarCoordinates() : PolarCoordinates(0.0, 0.0) {}
-
-Vec2f PolarCoordinates::to_cartesian() const
-{
-  return Vec2f { magnitude * std::cos(argument), magnitude * std::sin(argument) };
-}
-
-void PolarCoordinates::swap(PolarCoordinates& other)
-{
-  std::swap(other.argument, argument);
-  std::swap(other.magnitude, magnitude);
-}
-
-bool PolarCoordinates::operator==(const PolarCoordinates& point) const
-{
-  return argument == point.argument && magnitude == point.magnitude;
-}
-
-bool PolarCoordinates::operator!=(const PolarCoordinates& point) const
-{
-  return !(*this == point);
-}
-
 Point Point::smoothed(Vec2f& left, const Vec2f& right) const
 {
   auto copy = *this;

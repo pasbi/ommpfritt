@@ -5,6 +5,7 @@ file (GLOB SOURCES
   "matrix.cpp"
   "objecttransformation.cpp"
   "point.cpp"
+  "polarcoordinates.cpp"
   "util.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})

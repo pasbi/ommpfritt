@@ -6,8 +6,8 @@
 #include "abstractfactory.h"
 #include "aspects/serializable.h"
 #include "color/color.h"
-#include "geometry/point.h"
 #include "geometry/vec2.h"
+#include "geometry/polarcoordinates.h"
 
 namespace omm
 {

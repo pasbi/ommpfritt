@@ -2,22 +2,10 @@
 
 #include "geometry/vec2.h"
 #include <Qt>
+#include "geometry/polarcoordinates.h"
 
 namespace omm
 {
-
-struct PolarCoordinates
-{
-  explicit PolarCoordinates(const double argument, const double magnitude);
-  explicit PolarCoordinates(const Vec2f& cartesian);
-  explicit PolarCoordinates();
-  Vec2f to_cartesian() const;
-  void swap(PolarCoordinates& other);
-  double argument;
-  double magnitude;
-  bool operator==(const PolarCoordinates& other) const;
-  bool operator!=(const PolarCoordinates& other) const;
-};
 
 class Point
 {
