@@ -2,6 +2,7 @@
 
 #include <QBoxLayout>
 #include <QLabel>
+#include <QTimer>
 
 namespace omm
 {
@@ -32,7 +33,8 @@ void AbstractPropertyWidget::set_default_layout(std::unique_ptr<QWidget> other)
 
 void AbstractPropertyWidget::on_property_value_changed(Property&)
 {
-  update_edit();
+  // wait until other properties have updated (important for MultiValueEdit)
+  QTimer::singleShot(1, [this]() { update_edit(); });
 }
 
 }  // namespace omm

@@ -51,11 +51,12 @@ public:
   {
     setContextMenuPolicy(Qt::NoContextMenu);
 
-    connect(this, &QLineEdit::textEdited, [this](const QString&) {
-      const auto value = this->value();
+    connect(this, &QLineEdit::textEdited, [this](const QString& text) {
+      const auto value = parse(text.toStdString());
       if (value != m_last_value) {
-        m_last_value = value;
-        m_on_value_changed(value);
+        m_value = value;
+        m_last_value = m_value;
+        m_on_value_changed(m_value);
       }
     });
 
@@ -110,6 +111,7 @@ public:
     } else {
       if (value != this->value() || !hasFocus()) {
         set_text(value);
+        m_value = value;
         if (hasFocus()) { m_on_value_changed(value); }
       }
     }
@@ -118,7 +120,7 @@ public:
   void set_invalid_value() { setText(QObject::tr("< invalid >", "property")); }
   value_type value() const
   {
-    return std::clamp(parse(text().toStdString()), m_min, m_max);
+    return std::clamp(m_value, m_min, m_max);
   }
 
 protected:
@@ -227,10 +229,14 @@ private:
   const on_value_changed_t m_on_value_changed;
   void set_text(const value_type& value)
   {
-    m_last_value = value;
+    m_value = value;
     std::ostringstream ss;
     ss << std::setprecision(3) << std::fixed << value_type(m_multiplier * value);
-    setText(QString::fromStdString(ss.str()));
+    const auto new_text = QString::fromStdString(ss.str());
+    if (text() != new_text) {
+      setText(new_text);
+    }
+    m_last_value = value;
   }
   static constexpr value_type invalid_value = 0;
 
@@ -270,6 +276,7 @@ public:
 
 private:
   ValueType m_last_value;
+  ValueType m_value;
 };
 
 }  // namespace
