@@ -36,6 +36,7 @@ CoordinateEdit::CoordinateEdit(QWidget *parent) : QWidget(parent)
   grid_layout->addWidget(y_edit.release(), 0, 2);
 
   auto arg_edit = std::make_unique<NumericEdit<double>>(noop);
+  arg_edit->set_multiplier(M_1_PI *180.0);
   m_arg_edit = arg_edit.get();
   grid_layout->addWidget(arg_edit.release(), 1, 0);
 
@@ -69,7 +70,7 @@ Vec2f CoordinateEdit::to_cartesian() const
 
 PolarCoordinates CoordinateEdit::to_polar() const
 {
-  return PolarCoordinates(m_arg_edit->value() / 180.0 * M_PI, m_mag_edit->value());
+  return PolarCoordinates(m_arg_edit->value(), m_mag_edit->value());
 }
 
 void CoordinateEdit::set_coordinates(const Vec2f &coordinates)
@@ -81,7 +82,7 @@ void CoordinateEdit::set_coordinates(const Vec2f &coordinates)
 
 void CoordinateEdit::set_coordinates(const PolarCoordinates& coordinates)
 {
-  m_arg_edit->set_value(coordinates.argument * 180 * M_1_PI);
+  m_arg_edit->set_value(coordinates.argument);
   m_mag_edit->set_value(coordinates.magnitude);
   update_cartesian();
 }
@@ -91,7 +92,7 @@ void CoordinateEdit::update_polar()
   const auto pc = PolarCoordinates(to_cartesian());
   QSignalBlocker b_arg(m_arg_edit);
   QSignalBlocker b_mag(m_mag_edit);
-  m_arg_edit->set_value(pc.argument * 180 * M_1_PI);
+  m_arg_edit->set_value(pc.argument);
   m_mag_edit->set_value(pc.magnitude);
 }
 
