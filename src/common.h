@@ -278,3 +278,9 @@ template<typename T> std::ostream& operator<<(std::ostream& ostream, const std::
   ostream << std::vector(vs.begin(), vs.end());
   return ostream;
 }
+
+template<typename T> std::ostream& operator<<(std::ostream& ostream, const std::set<T>& vs)
+{
+  ostream << std::vector(vs.begin(), vs.end());
+  return ostream;
+}
