@@ -3,6 +3,7 @@
 #include <QWidget>
 #include "geometry/vec2.h"
 #include "geometry/polarcoordinates.h"
+#include "common.h"
 
 class QLabel;
 
@@ -11,10 +12,13 @@ namespace omm
 
 template<typename> class NumericEdit;
 
+enum class DisplayMode { Polar = 0x1, Cartesian = 0x2, Both = Polar | Cartesian };
+
 class CoordinateEdit : public QWidget
 {
   Q_OBJECT
 public:
+
   explicit CoordinateEdit(QWidget *parent = nullptr);
 
   Vec2f to_cartesian() const;
@@ -27,9 +31,8 @@ Q_SIGNALS:
 public Q_SLOTS:
   void set_coordinates(const PolarCoordinates &coordinates);
   void set_coordinates(const Vec2f& coordinates);
-  void set_mode_cartesian();
-  void set_mode_polar();
-  void set_mode_both();
+  void set_display_mode(const DisplayMode& display_mode);
+  void set_magnitude(const double magnitude);
 
 private:
   NumericEdit<double>* m_x_edit;
@@ -49,3 +52,5 @@ private Q_SLOTS:
 };
 
 }  // namespace omm
+
+template<> struct EnableBitMaskOperators<omm::DisplayMode> : std::true_type {};

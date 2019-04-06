@@ -57,7 +57,9 @@ CoordinateEdit::CoordinateEdit(QWidget *parent) : QWidget(parent)
   connect(m_y_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed()));
   connect(m_arg_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed()));
   connect(m_mag_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed()));
+  update();
 
+  set_display_mode(DisplayMode::Both);
 }
 
 Vec2f CoordinateEdit::to_cartesian() const
@@ -110,34 +112,20 @@ void CoordinateEdit::emit_value_changed()
   m_old_polar_coordinates = new_polar_coordinates;
 }
 
-void CoordinateEdit::set_mode_cartesian()
+void CoordinateEdit::set_display_mode(const DisplayMode& display_mode)
 {
-  m_x_edit->setVisible(true);
-  m_y_edit->setVisible(true);
-  m_cart_label->setVisible(true);
-  m_arg_edit->setVisible(false);
-  m_mag_edit->setVisible(false);
-  m_polar_label->setVisible(false);
+  m_x_edit->setVisible(!!(display_mode & DisplayMode::Cartesian));
+  m_y_edit->setVisible(!!(display_mode & DisplayMode::Cartesian));
+  m_cart_label->setVisible(!!(display_mode & DisplayMode::Cartesian));
+  m_arg_edit->setVisible(!!(display_mode & DisplayMode::Polar));
+  m_mag_edit->setVisible(!!(display_mode & DisplayMode::Polar));
+  m_polar_label->setVisible(!!(display_mode & DisplayMode::Polar));
 }
 
-void CoordinateEdit::set_mode_polar()
+void CoordinateEdit::set_magnitude(const double magnitude)
 {
-  m_x_edit->setVisible(false);
-  m_y_edit->setVisible(false);
-  m_cart_label->setVisible(false);
-  m_arg_edit->setVisible(true);
-  m_mag_edit->setVisible(true);
-  m_polar_label->setVisible(true);
-}
-
-void CoordinateEdit::set_mode_both()
-{
-  m_x_edit->setVisible(true);
-  m_y_edit->setVisible(true);
-  m_cart_label->setVisible(true);
-  m_arg_edit->setVisible(true);
-  m_mag_edit->setVisible(true);
-  m_polar_label->setVisible(true);
+  m_mag_edit->set_value(magnitude);
+  update_cartesian();
 }
 
 }  // namespace omm

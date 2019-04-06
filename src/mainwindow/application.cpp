@@ -211,8 +211,8 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
         app.main_window()->viewport().reset();
       }),
     ai( QT_TRANSLATE_NOOP("any-context", "show point dialog"), [](Application& app) {
-        PointDialog d(Object::cast<Path>(app.scene.item_selection<Object>()), app.main_window());
-        d.exec();
+        const auto paths = Object::cast<Path>(app.scene.item_selection<Object>());
+        if (paths.size() > 0) { PointDialog(paths, app.main_window()).exec(); }
       })
   };
 

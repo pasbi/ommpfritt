@@ -36,8 +36,14 @@ namespace omm
 PointEdit::PointEdit(Point& point, Path* path, QWidget* parent)
   : QWidget(parent), m_point(point), m_path(path)
 {
-  auto coupled = std::make_unique<QPushButton>();
+  if (point.is_selected) {
+    QPalette palette = this->palette();
+    palette.setColor(QPalette::Window, palette.color(QPalette::AlternateBase));
+    setPalette(palette);
+    setAutoFillBackground(true);
+  }
 
+  auto coupled = std::make_unique<QPushButton>();
   auto left = make_tangent_layout(m_left_tangent_edit, m_mirror_from_right, m_vanish_left);
   auto right = make_tangent_layout(m_right_tangent_edit, m_mirror_from_left, m_vanish_right);
 
@@ -45,10 +51,9 @@ PointEdit::PointEdit(Point& point, Path* path, QWidget* parent)
 
   auto position_edit = std::make_unique<CoordinateEdit>();
   m_position_edit = position_edit.get();
-  m_position_edit->set_mode_cartesian();
   center->addWidget(position_edit.release());
 
-  auto couple_button = std::make_unique<QPushButton>("X");
+  auto couple_button = std::make_unique<QPushButton>(tr("LNK"));
   couple_button->setCheckable(true);
   couple_button->setChecked(true);
   m_coupled = couple_button.get();
@@ -64,16 +69,19 @@ PointEdit::PointEdit(Point& point, Path* path, QWidget* parent)
   m_left_tangent_edit->set_coordinates(point.left_tangent.to_cartesian());
   m_right_tangent_edit->set_coordinates(point.right_tangent.to_cartesian());
   m_position_edit->set_coordinates(point.position);
+  m_position_edit->set_display_mode(DisplayMode::Cartesian);
 
   connect(m_mirror_from_left, SIGNAL(clicked()), this, SLOT(mirror_from_left()));
   connect(m_mirror_from_right, SIGNAL(clicked()), this, SLOT(mirror_from_right()));
   connect(m_vanish_left, &QPushButton::clicked, [this]() {
     QSignalBlocker m_left(m_left_tangent_edit);
-    m_left_tangent_edit->set_coordinates(Vec2f::o());
+    m_left_tangent_edit->set_magnitude(0.0);
+    update_point();
   });
   connect(m_vanish_right, &QPushButton::clicked, [this]() {
     QSignalBlocker m_right(m_right_tangent_edit);
-    m_right_tangent_edit->set_coordinates(Vec2f::o());
+    m_right_tangent_edit->set_magnitude(0.0);
+    update_point();
   });
   connect( m_left_tangent_edit,
            SIGNAL(value_changed(const PolarCoordinates&, const PolarCoordinates&)),
@@ -93,12 +101,14 @@ void PointEdit::mirror_from_right()
 {
   QSignalBlocker b_left(m_left_tangent_edit);
   m_left_tangent_edit->set_coordinates(-m_right_tangent_edit->to_polar());
+  update_point();
 }
 
 void PointEdit::mirror_from_left()
 {
   QSignalBlocker b_right(m_right_tangent_edit);
   m_right_tangent_edit->set_coordinates(-m_left_tangent_edit->to_polar());
+  update_point();
 }
 
 void
@@ -136,6 +146,12 @@ void PointEdit::update_point()
                                    m_right_tangent_edit->to_polar() );
     m_path->scene()->submit<ModifyPointsCommand>(map);
   }
+}
+
+void PointEdit::set_display_mode(const DisplayMode &display_mode)
+{
+  m_left_tangent_edit->set_display_mode(display_mode);
+  m_right_tangent_edit->set_display_mode(display_mode);
 }
 
 }  // namespace omm

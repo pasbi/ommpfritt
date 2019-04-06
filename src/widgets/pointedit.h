@@ -11,12 +11,15 @@ namespace omm
 class CoordinateEdit;
 class Point;
 class Path;
+enum class DisplayMode;
 
 class PointEdit : public QWidget
 {
   Q_OBJECT
 public:
   PointEdit(Point& point, Path* path, QWidget* parent = nullptr);
+  void set_display_mode(const DisplayMode& display_mode);
+
 private:
   QPushButton* m_mirror_from_left;
   QPushButton* m_mirror_from_right;
