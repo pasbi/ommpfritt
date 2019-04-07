@@ -120,7 +120,7 @@ void ObjectTransformation::set_mat(const Matrix& mat)
   // translation * rotation * scaling * shearing
   const auto n = sqrt(pow(b, 2.0) + pow(d, 2.0));
   m_rotation = -atan2(b, d);
-  m_scaling = Vec2f(n, m_scaling[0] = (a*d - b*c) / n);
+  m_scaling = Vec2f((a*d - b*c) / n, n);
   m_shearing = (a*b + c*d) / pow(n, 2.0);
 }
 
