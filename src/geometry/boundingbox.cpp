@@ -50,4 +50,10 @@ bool BoundingBox::contains(const BoundingBox& other) const
       || other.contains(top_right());
 }
 
+std::ostream& operator<<(std::ostream &ostream, const BoundingBox &bb)
+{
+  ostream << "BoundingBox[" << bb.top_left() << ", " << bb.width() << "x" << bb.height() << "]";
+  return ostream;
+}
+
 }  // namespace omm

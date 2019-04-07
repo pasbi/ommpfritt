@@ -21,4 +21,6 @@ public:
   using Rectangle::contains;
 };
 
+std::ostream& operator<<(std::ostream& ostream, const BoundingBox& bb);
+
 }  // namespace omm
