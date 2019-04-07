@@ -2,7 +2,6 @@
 
 #include <QBoxLayout>
 #include <QLabel>
-#include <QTimer>
 
 namespace omm
 {
@@ -14,6 +13,8 @@ AbstractPropertyWidget::AbstractPropertyWidget(Scene& scene, const std::set<Prop
   for (auto&& property : properties) {
     property->Observed<AbstractPropertyObserver>::register_observer(*this);
   }
+  connect(&m_update_timer, &QTimer::timeout, [this]() { update_edit(); });
+  m_update_timer.setSingleShot(true);
 }
 
 AbstractPropertyWidget::~AbstractPropertyWidget()
@@ -34,7 +35,7 @@ void AbstractPropertyWidget::set_default_layout(std::unique_ptr<QWidget> other)
 void AbstractPropertyWidget::on_property_value_changed(Property&)
 {
   // wait until other properties have updated (important for MultiValueEdit)
-  QTimer::singleShot(1, [this]() { update_edit(); });
+  m_update_timer.start(0);
 }
 
 }  // namespace omm

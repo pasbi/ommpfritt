@@ -5,6 +5,7 @@
 #include "common.h"
 #include "scene/scene.h"
 #include "commands/propertycommand.h"
+#include <QTimer>
 
 namespace omm
 {
@@ -29,6 +30,7 @@ private:
   const std::string m_label;
   std::set<Property*> m_properties;
   template<typename PropertyT> friend class PropertyWidget;
+  QTimer m_update_timer;
 };
 
 template<typename PropertyT>
