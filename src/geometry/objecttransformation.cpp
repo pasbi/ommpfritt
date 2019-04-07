@@ -238,11 +238,7 @@ ObjectTransformation ObjectTransformation::normalized() const
   return normalized;
 }
 
-bool ObjectTransformation::contains_nan() const
-{
-  return to_mat().has_nan();
-}
-
+bool ObjectTransformation::contains_nan() const { return to_mat().has_nan(); }
 
 ObjectTransformation ObjectTransformation::find_transformation( const ObjectTransformation& from,
                                                                 const ObjectTransformation& to )
