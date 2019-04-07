@@ -41,7 +41,7 @@ public:
   std::unique_ptr<Object> make_root();
   static constexpr auto TYPE = "Scene";
 
-  ObjectTree object_tree;
+  Tree<Object> object_tree;
   ObjectTreeAdapter object_tree_adapter;
 
   List<Style> styles;

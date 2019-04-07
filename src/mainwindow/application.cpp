@@ -221,7 +221,9 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
       using add_command_type = AddCommand<Tree<Object>>;
       Scene& scene = app.scene;
       auto object = Object::make(key, &scene);
+      auto& ref = *object;
       scene.submit<add_command_type>(scene.object_tree, std::move(object));
+      ref.set_global_transformation(ObjectTransformation(), true);  // spawn at world-origin
     }));
   }
   for (const auto& key : Manager::keys()) {

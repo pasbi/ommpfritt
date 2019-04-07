@@ -42,7 +42,6 @@ template<typename T> void Tree<T>::insert(TreeOwningContext<T>& context)
   );
   const auto pos = this->insert_position(context.predecessor);
   context.parent.get().adopt(context.subject.release(), pos);
-
   this->invalidate_recursive();
 }
 
@@ -112,11 +111,5 @@ template<typename T> void Tree<T>::invalidate()
 }
 
 template class Tree<Object>;
-
-void ObjectTree::insert(TreeOwningContext<Object>& context)
-{
-  Tree<Object>::insert(context);
-  context.subject.get().set_transformation(ObjectTransformation());
-}
 
 }  // namespace

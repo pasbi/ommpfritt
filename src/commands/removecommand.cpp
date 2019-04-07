@@ -62,7 +62,6 @@ template<typename StructureT> void RemoveCommand<StructureT>::undo()
   // m_structure.selection_changed();  // TODO
 }
 
-template class RemoveCommand<ObjectTree>;
 template class RemoveCommand<Tree<Object>>;
 template class RemoveCommand<List<Style>>;
 template class RemoveCommand<List<Tag>>;

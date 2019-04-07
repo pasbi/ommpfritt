@@ -51,12 +51,5 @@ private:
   mutable std::set<T*> m_item_cache;
 };
 
-class ObjectTree : public Tree<Object>
-{
-public:
-  using Tree<Object>::Tree;
-  void insert(TreeOwningContext<Object>& context) override;
-};
-
 }  // namespace omm
 
