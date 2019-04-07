@@ -28,7 +28,7 @@ public:
   constexpr static bool is_tree = true;
 
   Tree(std::unique_ptr<T> root, Scene* scene);
-  ~Tree();
+  virtual ~Tree() = default;
 
 public:
   virtual void insert(TreeOwningContext<T>& context);

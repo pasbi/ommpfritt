@@ -10,10 +10,6 @@ template<typename T> Tree<T>::Tree(std::unique_ptr<T> root, Scene*)
 {
 }
 
-template<typename T> Tree<T>::~Tree()
-{
-}
-
 template<typename T> T& Tree<T>::root() const
 {
   return *m_root;
