@@ -15,7 +15,7 @@ class TreeElement
 {
 public:
   explicit TreeElement(T* parent);
-  virtual ~TreeElement();
+  virtual ~TreeElement() = default;
   explicit TreeElement(const TreeElement& other);
   bool is_root() const;
   T& parent() const;

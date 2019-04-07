@@ -5,8 +5,7 @@
 namespace omm
 {
 
-template<typename T> TreeElement<T>::TreeElement(T* parent)
-  : m_parent(parent)
+template<typename T> TreeElement<T>::TreeElement(T* parent) : m_parent(parent)
 {
   static_assert(std::is_base_of<TreeElement<T>, T>::value, "T must derive ElementType<T>");
 }
@@ -18,10 +17,6 @@ template<typename T> TreeElement<T>::TreeElement(const TreeElement& other)
   for (auto&& child : m_children) {
     child->m_parent = static_cast<T*>(this);
   }
-}
-
-template<typename T> TreeElement<T>::~TreeElement()
-{
 }
 
 template<typename T> T& TreeElement<T>::adopt(std::unique_ptr<T> object, const size_t pos)
@@ -56,20 +51,9 @@ template<typename T> std::vector<T*> TreeElement<T>::children() const
   return ::transform<T*>(m_children, [](const auto& up) { return up.get(); });
 }
 
-template<typename T> size_t TreeElement<T>::n_children() const
-{
-  return m_children.size();
-}
-
-template<typename T> T& TreeElement<T>::child(size_t i) const
-{
-  return *m_children[i];
-}
-
-template<typename T> bool TreeElement<T>::is_root() const
-{
-  return m_parent == nullptr;
-}
+template<typename T> size_t TreeElement<T>::n_children() const { return m_children.size(); }
+template<typename T> T& TreeElement<T>::child(size_t i) const { return *m_children[i]; }
+template<typename T> bool TreeElement<T>::is_root() const { return m_parent == nullptr; }
 
 template<typename T> T& TreeElement<T>::parent() const
 {
