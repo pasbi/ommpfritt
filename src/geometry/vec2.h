@@ -17,7 +17,7 @@ public:
   Vec2(const element_type& x, const element_type& y) : x(x), y(y) {}
   Vec2() : Vec2(element_type(0), element_type(0)) {}
   Vec2(const std::array<element_type, 2>& components) : Vec2(components[0], components[1]) {}
-  Vec2(const std::vector<ValueT>& components)
+  explicit Vec2(const std::vector<ValueT>& components)
   {
     if (components.size() != 2) {
       const auto msg = "Expected vector of size 2 but got " + std::to_string(components.size());
@@ -111,6 +111,16 @@ template<typename ValueT> Vec2<ValueT> operator+(const Vec2<ValueT>& d1, const V
 template<typename ValueT> Vec2<ValueT> operator-(const Vec2<ValueT>& d1, const Vec2<ValueT>& d2)
 {
   return d1 + (-d2);
+}
+
+template<typename ValueT> Vec2<ValueT> operator-(const Vec2<ValueT>& d, const ValueT& s)
+{
+  return d - Vec2<ValueT>(s, s);
+}
+
+template<typename ValueT> Vec2<ValueT> operator+(const Vec2<ValueT>& d, const ValueT& s)
+{
+  return d + Vec2<ValueT>(s, s);
 }
 
 template<typename ValueT> Vec2<ValueT> operator*(const Vec2<ValueT>& d, const ValueT s)

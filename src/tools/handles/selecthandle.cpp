@@ -9,6 +9,7 @@
 #include "commands/modifypointscommand.h"
 #include <QGuiApplication>
 #include <QMouseEvent>
+#include "geometry/rectangle.h"
 
 namespace
 {
@@ -38,7 +39,7 @@ public:
 
   void draw(omm::AbstractRenderer& renderer) const override
   {
-    renderer.draw_rectangle(position, draw_epsilon(), current_style());
+    renderer.draw_rectangle(omm::Rectangle(position, draw_epsilon()), current_style());
   }
 
 private:
@@ -109,7 +110,7 @@ void ObjectSelectHandle::draw(omm::AbstractRenderer& renderer) const
 
   const Style& style = is_selected() ? this->style(Status::Active) : current_style();
   const auto pos = transformation().null();
-  renderer.draw_rectangle(pos, draw_epsilon(), style);
+  renderer.draw_rectangle(Rectangle(pos, draw_epsilon()), style);
 }
 
 
@@ -217,7 +218,7 @@ void PointSelectHandle::draw(omm::AbstractRenderer& renderer) const
   }
 
   renderer.push_transformation(ObjectTransformation().translated(pos));
-  renderer.draw_rectangle(Vec2f::o(), draw_epsilon(), style);
+  renderer.draw_rectangle(Rectangle(Vec2f::o(), draw_epsilon()), style);
   renderer.pop_transformation();
 
 }

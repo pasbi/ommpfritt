@@ -7,5 +7,6 @@ file (GLOB SOURCES
   "point.cpp"
   "polarcoordinates.cpp"
   "util.cpp"
+  "rectangle.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})

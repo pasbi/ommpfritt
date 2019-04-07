@@ -20,7 +20,7 @@ bool ParticleHandle::contains_global(const Vec2f& point) const
 
 void ParticleHandle::draw(omm::AbstractRenderer& renderer) const
 {
-  renderer.draw_rectangle(position, draw_epsilon(), current_style());
+  renderer.draw_rectangle(Rectangle(position, draw_epsilon()), current_style());
 }
 
 }  // namespace omm

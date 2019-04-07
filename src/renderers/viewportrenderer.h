@@ -15,7 +15,7 @@ public:
   explicit ViewportRenderer(Scene& scene, Category filter);
   void draw_spline( const std::vector<Point>& points, const Style& style,
                     bool closed = false ) override;
-  void draw_rectangle(const Vec2f& pos, const double radius, const Style& style) override;
+  void draw_rectangle(const Rectangle& rect, const Style& style) override;
   void draw_circle(const Vec2f& pos, const double radius, const Style& style) override;
   void draw_image( const std::string& filename, const Vec2f& pos,
                    const Vec2f& size, const double opacity) override;

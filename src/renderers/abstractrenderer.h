@@ -16,6 +16,7 @@ namespace omm
 
 class Style;
 class Scene;
+class Rectangle;
 
 class AbstractRenderer
 {
@@ -40,7 +41,7 @@ public:
 public:
   virtual void draw_spline( const std::vector<Point>& points, const Style& style,
                             bool closed = false ) = 0;
-  virtual void draw_rectangle(const Vec2f& pos, const double radius, const Style& style) = 0;
+  virtual void draw_rectangle(const Rectangle& rect, const Style& style) = 0;
   virtual void push_transformation(const ObjectTransformation& transformation);
   virtual void pop_transformation();
   virtual ObjectTransformation current_transformation() const;

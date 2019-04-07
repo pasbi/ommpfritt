@@ -92,19 +92,11 @@ void ViewportRenderer::draw_text(const std::string& text, const TextOptions& opt
   m_painter->drawText(rect, QString::fromStdString(text), options.option);
 }
 
-void
-ViewportRenderer::draw_rectangle(const Vec2f& pos, const double radius, const Style& style)
+void ViewportRenderer::draw_rectangle(const Rectangle &rect, const Style &style)
 {
   if (!is_active()) { return; }
 
-  // TODO I guess using QPainter::drawRect is faster.
-  // However, QPainter::drawRect interface is strange, so using it is not trivial, but it shouldn't
-  //  be too hard, either.
-  const auto tl = Point( pos + Vec2f(-radius, -radius) );
-  const auto tr = Point( pos + Vec2f( radius, -radius) );
-  const auto bl = Point( pos + Vec2f(-radius,  radius) );
-  const auto br = Point( pos + Vec2f( radius,  radius) );
-  draw_spline({ tl, tr, br, bl }, style, true);
+  draw_spline(rect.to_points(), style, true);
 }
 
 void ViewportRenderer::draw_circle(const Vec2f& pos, const double radius, const Style& style)
