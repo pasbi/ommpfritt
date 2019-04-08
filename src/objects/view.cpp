@@ -42,7 +42,7 @@ void View::render(AbstractRenderer& renderer, const Style&)
   const auto points = std::vector { Point(Vec2f(-w, -h)), Point(Vec2f( w, -h)),
                                     Point(Vec2f( w,  h)), Point(Vec2f(-w,  h)) };
 
-  const auto style = ContourStyle(Color::BLACK);
+  const auto style = ContourStyle(Colors::BLACK);
   renderer.draw_spline(points, style, true);
 }
 

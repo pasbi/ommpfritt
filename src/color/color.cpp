@@ -6,7 +6,6 @@
 namespace omm
 {
 
-Color::Color(double r, double g, double b, double a) : m_components({r, g, b, a}) {}
 Color::Color() : Color(0.0, 0.0, 0.0, 1.0) {}
 Color::Color(const std::vector<double>& components)
 {
@@ -43,13 +42,6 @@ double Color::green() const { return m_components[1]; }
 double Color::blue() const { return m_components[2]; }
 double Color::alpha() const { return m_components[3]; }
 double Color::operator[](const std::size_t i) const { return m_components[i]; }
-
-Color Color::RED(1.0, 0.0, 0.0, 1.0);
-Color Color::GREEN(0.0, 1.0, 0.0, 1.0);
-Color Color::BLUE(0.0, 0.0, 1.0, 1.0);
-Color Color::YELLOW(1.0, 1.0, 0.0, 1.0);
-Color Color::BLACK(0.0, 0.0, 0.0, 1.0);
-Color Color::WHITE(1.0, 1.0, 1.0, 1.0);
 
 bool operator==(const Color& a, const Color& b)
 {

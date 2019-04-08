@@ -22,7 +22,7 @@ protected:
 
 private:
   bool m_is_consistent = false;
-  Color m_current_color = Color::BLACK;
+  Color m_current_color = Colors::BLACK;
 };
 
 }  // namespace omm

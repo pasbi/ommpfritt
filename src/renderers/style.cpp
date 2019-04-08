@@ -18,7 +18,7 @@ Style::Style(Scene* scene)
   add_property(PEN_IS_ACTIVE_KEY, std::make_unique<BoolProperty>(false))
     .set_label(QObject::tr("active").toStdString())
     .set_category(QObject::tr("pen").toStdString());
-  add_property(PEN_COLOR_KEY, std::make_unique<ColorProperty>(Color::BLACK))
+  add_property(PEN_COLOR_KEY, std::make_unique<ColorProperty>(Colors::BLACK))
     .set_label(QObject::tr("color").toStdString())
     .set_category(QObject::tr("pen").toStdString());
   add_property(PEN_WIDTH_KEY, std::make_unique<FloatProperty>(1.0))
@@ -30,7 +30,7 @@ Style::Style(Scene* scene)
   add_property(BRUSH_IS_ACTIVE_KEY, std::make_unique<BoolProperty>(false))
     .set_label(QObject::tr("active").toStdString())
     .set_category(QObject::tr("brush").toStdString());
-  add_property(BRUSH_COLOR_KEY, std::make_unique<ColorProperty>(Color::RED))
+  add_property(BRUSH_COLOR_KEY, std::make_unique<ColorProperty>(Colors::RED))
     .set_label(QObject::tr("color").toStdString())
     .set_category(QObject::tr("brush").toStdString());
 }

@@ -10,7 +10,8 @@ namespace omm
 class Color
 {
 public:
-  explicit Color(double r, double g, double b, double a = 1.0);
+  inline explicit constexpr Color(double r, double g, double b, double a = 1.0)
+    : m_components({r, g, b, a}) {}
   explicit Color(const std::vector<double>& components);
   explicit Color();
 
@@ -29,18 +30,23 @@ public:
   double alpha() const;
   double operator[](const std::size_t i) const;
 
-  static Color RED;
-  static Color GREEN;
-  static Color BLUE;
-  static Color YELLOW;
-  static Color BLACK;
-  static Color WHITE;
-
 private:
   std::array<double, 4> m_components;
   friend bool operator==(const Color& a, const Color& b);
   friend bool operator<(const Color& a, const Color& b);
 };
+
+namespace Colors
+{
+
+static constexpr Color RED = Color(1.0, 0.0, 0.0, 1.0);
+static constexpr Color GREEN = Color(0.0, 1.0, 0.0, 1.0);
+static constexpr Color BLUE = Color(0.0, 0.0, 1.0, 1.0);
+static constexpr Color YELLOW = Color(1.0, 1.0, 0.0, 1.0);
+static constexpr Color BLACK = Color(0.0, 0.0, 0.0, 1.0);
+static constexpr Color WHITE = Color(1.0, 1.0, 1.0, 1.0);
+
+}
 
 bool operator==(const Color& a, const Color& b);
 bool operator!=(const Color& a, const Color& b);
