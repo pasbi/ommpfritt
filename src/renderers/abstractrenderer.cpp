@@ -5,13 +5,13 @@ namespace omm
 {
 
 AbstractRenderer::AbstractRenderer(Scene& scene, Category filter)
-  : scene(scene), m_enabled_categories(filter)
+  : scene(scene), category_filter(filter)
 {
 }
 
 void AbstractRenderer::render()
 {
-  scene.object_tree.root().render_recursive(*this, scene.default_style());
+  scene.object_tree.root().draw_recursive(*this, scene.default_style());
   assert(m_transformation_stack.empty());
 }
 
@@ -33,8 +33,5 @@ ObjectTransformation AbstractRenderer::current_transformation() const
     return m_transformation_stack.top();
   }
 }
-
-void AbstractRenderer::set_category(Category category) { m_current_category = category; }
-bool AbstractRenderer::is_active() const { return !!(m_current_category & m_enabled_categories); }
 
 }  // namespace omm

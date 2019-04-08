@@ -10,9 +10,8 @@ namespace omm
 
 class Style;
 
-void AbstractProceduralPath::render(AbstractRenderer& renderer, const Style& style)
+void AbstractProceduralPath::draw_object(AbstractRenderer& renderer, const Style& style)
 {
-  renderer.set_category(AbstractRenderer::Category::Objects);
   if (is_active()) { renderer.draw_spline(points(), style, is_closed()); }
 }
 

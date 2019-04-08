@@ -22,9 +22,8 @@ ImageObject::ImageObject(Scene* scene) : Object(scene)
     .set_label(QObject::tr("Opacity").toStdString()).set_category(category);
 }
 
-void ImageObject::render(AbstractRenderer& renderer, const Style&)
+void ImageObject::draw_object(AbstractRenderer& renderer, const Style&)
 {
-  renderer.set_category(AbstractRenderer::Category::Objects);
   if (is_active()) {
     const auto path = property(FILEPATH_PROPERTY_KEY).value<std::string>();
     const auto width = property(WIDTH_PROPERTY_KEY).value<double>();

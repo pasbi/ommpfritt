@@ -33,9 +33,8 @@ void View::to_viewport()
   viewport.set_transformation(transformation());
 }
 
-void View::render(AbstractRenderer& renderer, const Style&)
+void View::draw_handles(AbstractRenderer& renderer)
 {
-  renderer.set_category(AbstractRenderer::Category::Handles);
   const auto size = property(SIZE_PROPERTY_KEY).value<Vec2f>();
   const auto w = size.x/2;
   const auto h = size.y/2;

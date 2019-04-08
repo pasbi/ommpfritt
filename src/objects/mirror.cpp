@@ -26,12 +26,11 @@ Mirror::Mirror(Scene* scene) : Object(scene)
 }
 
 
-void Mirror::render(AbstractRenderer& renderer, const Style& style)
+void Mirror::draw_object(AbstractRenderer& renderer, const Style& style)
 {
-  renderer.set_category(AbstractRenderer::Category::Objects);
   assert(&renderer.scene == scene());
   auto reflection = make_reflection();
-  if (reflection) { reflection->render_recursive(renderer, style); }
+  if (reflection) { reflection->draw_recursive(renderer, style); }
 }
 
 BoundingBox Mirror::bounding_box()

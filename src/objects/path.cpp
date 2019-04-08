@@ -68,9 +68,8 @@ Path::Path(Scene* scene) : Object(scene)
     .set_post_submit(update_point_tangents).set_pre_submit(update_point_tangents);
 }
 
-void Path::render(AbstractRenderer& renderer, const Style& style)
+void Path::draw_object(AbstractRenderer& renderer, const Style& style)
 {
-  renderer.set_category(AbstractRenderer::Category::Objects);
   renderer.draw_spline(m_points, style, property(IS_CLOSED_PROPERTY_KEY).value<bool>());
 }
 

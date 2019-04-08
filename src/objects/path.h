@@ -14,7 +14,7 @@ class Path : public Object
 {
 public:
   explicit Path(Scene* scene);
-  void render(AbstractRenderer& renderer, const Style& style) override;
+  void draw_object(AbstractRenderer& renderer, const Style& style) override;
   BoundingBox bounding_box() override;
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Path");

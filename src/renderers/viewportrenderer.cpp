@@ -32,8 +32,6 @@ void ViewportRenderer::pop_transformation()
 void
 ViewportRenderer::draw_spline(const std::vector<Point>& points, const Style& style, bool closed)
 {
-  if (!is_active()) { return; }
-
   QPainterPath path;
   if (points.size() > 1) {
     path.moveTo(to_qpoint(points.front().position));
@@ -94,15 +92,11 @@ void ViewportRenderer::draw_text(const std::string& text, const TextOptions& opt
 
 void ViewportRenderer::draw_rectangle(const Rectangle &rect, const Style &style)
 {
-  if (!is_active()) { return; }
-
   draw_spline(rect.to_points(), style, true);
 }
 
 void ViewportRenderer::draw_circle(const Vec2f& pos, const double radius, const Style& style)
 {
-  if (!is_active()) { return; }
-
   m_painter->save();
   m_painter->setPen(make_pen(style));
   m_painter->setBrush(make_brush(style));
@@ -113,8 +107,6 @@ void ViewportRenderer::draw_circle(const Vec2f& pos, const double radius, const 
 void ViewportRenderer::draw_image( const std::string& filename, const Vec2f& pos,
                                    const Vec2f& size, const double opacity )
 {
-  if (!is_active()) { return; }
-
   m_painter->setOpacity(opacity);
   QRectF rect(to_qpoint(pos), to_qpoint(pos + size));
   m_painter->drawImage(rect, m_image_cache.load(filename));
@@ -124,8 +116,6 @@ void ViewportRenderer::draw_image( const std::string& filename, const Vec2f& pos
 void ViewportRenderer::draw_image( const std::string& filename, const Vec2f& pos,
                                    const double& width, const double opacity )
 {
-  if (!is_active()) { return; }
-
   const QImage image = m_image_cache.load(filename);
   const auto height = static_cast<double>(width) / image.width() * image.height();
   return draw_image(filename, pos, Vec2f{ width, height }, opacity);

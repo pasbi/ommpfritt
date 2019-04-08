@@ -10,7 +10,7 @@ class ImageObject : public Object
 {
 public:
   explicit ImageObject(Scene* scene);
-  void render(AbstractRenderer& renderer, const Style&) override;
+  void draw_object(AbstractRenderer& renderer, const Style&) override;
   std::string type() const override;
   BoundingBox bounding_box() override;
   std::unique_ptr<Object> clone() const override;

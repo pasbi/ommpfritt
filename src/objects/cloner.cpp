@@ -113,12 +113,11 @@ Cloner::Cloner(Scene* scene) : Object(scene)
 }
 
 
-void Cloner::render(AbstractRenderer& renderer, const Style& style)
+void Cloner::draw_object(AbstractRenderer& renderer, const Style& style)
 {
-  renderer.set_category(AbstractRenderer::Category::Objects);
   if (is_active()) {
     assert(&renderer.scene == scene());
-    for (auto&& clone : make_clones()) { clone->render_recursive(renderer, style); }
+    for (auto&& clone : make_clones()) { clone->draw_recursive(renderer, style); }
     m_draw_children = false;
   } else {
     m_draw_children = true;

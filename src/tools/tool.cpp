@@ -58,16 +58,17 @@ mouse_release(const Vec2f& pos, const QMouseEvent& e)
 
 void Tool::draw(AbstractRenderer& renderer) const
 {
-  renderer.set_category(AbstractRenderer::Category::Handles);
-  const ObjectTransformation transformation = this->transformation();
-  for (auto&& handle : handles) {
-    if (handle->is_enabled()) {
-      if (handle->transform_in_tool_space) {
-        renderer.push_transformation(transformation);
-        handle->draw(renderer);
-        renderer.pop_transformation();
-      } else {
-        handle->draw(renderer);
+  if (!!(renderer.category_filter & AbstractRenderer::Category::Handles)) {
+    const ObjectTransformation transformation = this->transformation();
+    for (auto&& handle : handles) {
+      if (handle->is_enabled()) {
+        if (handle->transform_in_tool_space) {
+          renderer.push_transformation(transformation);
+          handle->draw(renderer);
+          renderer.pop_transformation();
+        } else {
+          handle->draw(renderer);
+        }
       }
     }
   }

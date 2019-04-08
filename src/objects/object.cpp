@@ -33,6 +33,7 @@ static constexpr auto TYPE_POINTER = "type";
 namespace omm
 {
 
+Style Object::m_bounding_box_style = ContourStyle(omm::Colors::BLACK, 1.0);
 
 Object::Object(Scene* scene) : TreeElement(nullptr), tags(scene)
 {
@@ -228,31 +229,41 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   this->tags.set(std::move(tags));
 }
 
-void Object::render_recursive(AbstractRenderer& renderer, const Style& default_style)
+void Object::draw_recursive(AbstractRenderer& renderer, const Style& default_style)
 {
   RenderOptions options;
   options.styles = find_styles();
   options.default_style = &default_style;
   options.always_visible = false;
-  render_recursive(renderer, options);
+  draw_recursive(renderer, options);
 }
 
-void Object::render_recursive(AbstractRenderer& renderer, const RenderOptions& options)
+void Object::draw_recursive(AbstractRenderer& renderer, const RenderOptions& options)
 {
   renderer.push_transformation(transformation());
   const auto visibility = property(IS_VISIBLE_PROPERTY_KEY).value<Visibility>();
-  if (options.always_visible || visibility == Visibility::Visible) {
+  const bool is_visible = options.always_visible || visibility == Visibility::Visible;
+  const bool is_enabled = !!(renderer.category_filter & AbstractRenderer::Category::Objects);
+  if (is_enabled && is_visible) {
     for (const auto* style : options.styles) {
-      render(renderer, *style);
+      draw_object(renderer, *style);
     }
     if (options.styles.size() == 0) {
-      render(renderer, *options.default_style);
+      draw_object(renderer, *options.default_style);
     }
+  }
+
+  if (!!(renderer.category_filter & AbstractRenderer::Category::BoundingBox)) {
+    renderer.draw_rectangle(bounding_box(), m_bounding_box_style);
+  }
+
+  if (!!(renderer.category_filter & AbstractRenderer::Category::Handles)) {
+    draw_handles(renderer);
   }
 
   if (visibility != Visibility::HideTree && m_draw_children) {
     for (const auto& child : children()) {
-      child->render_recursive(renderer, *options.default_style);
+      child->draw_recursive(renderer, *options.default_style);
     }
   }
   renderer.pop_transformation();
@@ -373,5 +384,8 @@ std::vector<const omm::Style*> Object::find_styles() const
   const auto tags = this->tags.ordered_items();
   return ::filter_if(::transform<const omm::Style*>(tags, get_style), ::is_not_null);
 }
+
+void Object::draw_object(AbstractRenderer&, const Style&) {}
+void Object::draw_handles(AbstractRenderer&) {}
 
 }  // namespace omm

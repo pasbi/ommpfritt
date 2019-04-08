@@ -41,9 +41,8 @@ AbstractPropertyOwner::Flag Text::flags() const
   // Flag::IsPathLike   // Maybe this becomes feasible once the convert-trait is implemented.
 }
 
-void Text::render(AbstractRenderer& renderer, const Style& style)
+void Text::draw_object(AbstractRenderer& renderer, const Style& style)
 {
-  renderer.set_category(AbstractRenderer::Category::Objects);
   if (is_active()) {
     QFont font = m_font_properties.get_font();
     QTextOption option = m_text_option_properties.get_option();

@@ -42,7 +42,10 @@ public:
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-  virtual void render(AbstractRenderer& renderer, const Style& style) = 0;
+  virtual void draw_object(AbstractRenderer& renderer, const Style& style);
+  virtual void draw_handles(AbstractRenderer& renderer);
+
+  static Style m_bounding_box_style;
 
   struct RenderOptions
   {
@@ -51,8 +54,8 @@ public:
     const Style* default_style = nullptr;
   };
 
-  void render_recursive(AbstractRenderer& renderer, const Style& default_style);
-  void render_recursive(AbstractRenderer& renderer, const RenderOptions& options);
+  void draw_recursive(AbstractRenderer& renderer, const Style& default_style);
+  void draw_recursive(AbstractRenderer& renderer, const RenderOptions& options);
   virtual BoundingBox bounding_box() = 0;
   BoundingBox recursive_bounding_box();
   std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() override;

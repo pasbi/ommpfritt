@@ -15,7 +15,7 @@ class Instance : public Object
 {
 public:
   explicit Instance(Scene* scene);
-  void render(AbstractRenderer& renderer, const Style& default_style) override;
+  void draw_object(AbstractRenderer& renderer, const Style& default_style) override;
   BoundingBox bounding_box() override;
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Instance");

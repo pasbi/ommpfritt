@@ -21,9 +21,8 @@ Instance::Instance(Scene* scene)
     .set_label(QObject::tr("combine styles", "Instance").toStdString()).set_category(category);
 }
 
-void Instance::render(AbstractRenderer& renderer, const Style& default_style)
+void Instance::draw_object(AbstractRenderer& renderer, const Style& default_style)
 {
-  renderer.set_category(AbstractRenderer::Category::Objects);
   if (is_active()) {
     const auto o = referenced_object();
     if (o != nullptr) {
@@ -38,7 +37,7 @@ void Instance::render(AbstractRenderer& renderer, const Style& default_style)
       }
       const auto o_transformation = o->transformation();
       o->set_transformation(ObjectTransformation());
-      o->render_recursive(renderer, options);
+      o->draw_recursive(renderer, options);
       o->set_transformation(o_transformation);
     }
   }
