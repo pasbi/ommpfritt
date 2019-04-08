@@ -76,7 +76,7 @@ void Path::render(AbstractRenderer& renderer, const Style& style)
 
 BoundingBox Path::bounding_box()
 {
-  return BoundingBox(); // TODO
+  return BoundingBox(::transform<Vec2f>(points(), [](const Point* p) { return p->position; }));
 }
 
 std::string Path::type() const

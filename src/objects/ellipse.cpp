@@ -25,8 +25,7 @@ Ellipse::Ellipse(Scene* scene) : AbstractProceduralPath(scene)
 
 BoundingBox Ellipse::bounding_box()
 {
-  const auto r = property(RADIUS_PROPERTY_KEY).value<Vec2f>();
-  return BoundingBox({ -r, r });
+  return BoundingBox(points());
 }
 
 std::string Ellipse::type() const

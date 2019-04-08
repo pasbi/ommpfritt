@@ -64,7 +64,7 @@ std::vector<Point> ProceduralPath::points()
   const auto count = property(COUNT_PROPERTY_KEY).value<int>();
   const auto code = property(CODE_PROPERTY_KEY).value<std::string>();
 
-  std::vector<Point> points(std::max(0, count));
+  std::vector<Point> points(static_cast<std::size_t>(std::max(0, count)));
   std::vector<PointWrapper> point_wrappers;
   point_wrappers.reserve(points.size());
   for (Point& point : points) {

@@ -8,16 +8,6 @@
 namespace
 {
 
-omm::ObjectTransformation get_mirror_t(omm::Mirror::Direction direction)
-{
-  switch (direction) {
-  case omm::Mirror::Direction::Horizontal:
-    return omm::ObjectTransformation().scaled(omm::Vec2f(-1.0,  1.0));
-  case omm::Mirror::Direction::Vertical:
-    return omm::ObjectTransformation().scaled(omm::Vec2f( 1.0, -1.0));
-  }
-  Q_UNREACHABLE();
-}
 
 }  // namespace
 
@@ -44,7 +34,18 @@ void Mirror::render(AbstractRenderer& renderer, const Style& style)
   if (reflection) { reflection->render_recursive(renderer, style); }
 }
 
-BoundingBox Mirror::bounding_box() { return BoundingBox(); }  // TODO
+BoundingBox Mirror::bounding_box()
+{
+  const auto n_children = this->n_children();
+  if (is_active() && n_children > 0) {
+    auto object = this->children().front();
+    auto bb = object->transformation().apply(object->bounding_box());
+    return bb | get_mirror_t().apply(bb);
+  } else {
+    return BoundingBox();
+  }
+}
+
 std::string Mirror::type() const { return TYPE; }
 std::unique_ptr<Object> Mirror::clone() const { return std::make_unique<Mirror>(*this); }
 AbstractPropertyOwner::Flag Mirror::flags() const { return Object::flags() | Flag::Convertable; }
@@ -54,9 +55,7 @@ std::unique_ptr<Object> Mirror::make_reflection()
   const auto n_children = this->n_children();
   if (is_active() && n_children > 0) {
     auto reflection = this->children().front()->clone();
-    const auto direction = property(DIRECTION_PROPERTY_KEY).value<Mirror::Direction>();
-    ObjectTransformation t = get_mirror_t(direction).apply(reflection->transformation());
-    reflection->set_transformation(t);
+    reflection->set_transformation(get_mirror_t().apply(reflection->transformation()));
     return reflection;
   } else {
     return nullptr;
@@ -75,6 +74,17 @@ std::unique_ptr<Object> Mirror::convert()
   }
 
   return converted;
+}
+
+ObjectTransformation Mirror::get_mirror_t() const
+{
+  switch (property(DIRECTION_PROPERTY_KEY).value<Mirror::Direction>()) {
+  case omm::Mirror::Direction::Horizontal:
+    return omm::ObjectTransformation().scaled(omm::Vec2f(-1.0,  1.0));
+  case omm::Mirror::Direction::Vertical:
+    return omm::ObjectTransformation().scaled(omm::Vec2f( 1.0, -1.0));
+  }
+  Q_UNREACHABLE();
 }
 
 }  // namespace omm

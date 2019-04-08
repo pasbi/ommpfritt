@@ -28,6 +28,7 @@ public:
 
 private:
   std::unique_ptr<Object> make_reflection();
+  ObjectTransformation get_mirror_t() const;
 };
 
 }  // namespace omm

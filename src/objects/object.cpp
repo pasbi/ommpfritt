@@ -33,9 +33,8 @@ static constexpr auto TYPE_POINTER = "type";
 namespace omm
 {
 
-Object::Object(Scene* scene)
-  : TreeElement(nullptr)
-  , tags(scene)
+
+Object::Object(Scene* scene) : TreeElement(nullptr), tags(scene)
 {
   set_scene(scene);
 

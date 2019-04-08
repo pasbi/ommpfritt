@@ -18,7 +18,7 @@ void AbstractProceduralPath::render(AbstractRenderer& renderer, const Style& sty
 
 BoundingBox AbstractProceduralPath::bounding_box()
 {
-  return BoundingBox(::transform<Vec2f>(points(), [](const Point& p) { return p.position; }));
+  return BoundingBox(points());
 }
 
 AbstractPropertyOwner::Flag AbstractProceduralPath::flags() const
