@@ -14,13 +14,18 @@ class BoundingBox : public Rectangle
 public:
   explicit BoundingBox(const std::vector<Vec2f>& points = { Vec2f::o() });
   explicit BoundingBox(const std::vector<double>& xs, const std::vector<double>& ys);
+  explicit BoundingBox(const std::vector<Point>& points);
 
-  BoundingBox merge(const BoundingBox& other) const;
-  BoundingBox intersect(const BoundingBox& other) const;
   bool contains(const BoundingBox& other) const;
   using Rectangle::contains;
+
+  BoundingBox& operator |=(const BoundingBox& other);
+  BoundingBox& operator &=(const BoundingBox& other);
+
 };
 
 std::ostream& operator<<(std::ostream& ostream, const BoundingBox& bb);
+BoundingBox operator|(const BoundingBox& a, const BoundingBox& b);
+BoundingBox operator&(const BoundingBox& a, const BoundingBox& b);
 
 }  // namespace omm

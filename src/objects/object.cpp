@@ -264,7 +264,7 @@ BoundingBox Object::recursive_bounding_box()
   auto bounding_box = this->bounding_box();
 
   for (const auto& child : children()) {
-    bounding_box = bounding_box.merge(child->recursive_bounding_box());
+    bounding_box |= child->recursive_bounding_box();
   }
   return transformation().apply(bounding_box);
 }
