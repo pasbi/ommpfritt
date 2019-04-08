@@ -57,16 +57,11 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Grid });
 
-  add_property<FloatProperty>(DISTANCE_PROPERTY_KEY, 10.0)
-    .set_step(0.1)
-    .set_label(QObject::tr("distance").toStdString())
-    .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::Linear });
-
   add_property<FloatVectorProperty>(DISTANCE_2D_PROPERTY_KEY, Vec2f(10.0, 10.0))
+    .set_step(Vec2f(0.1, 0.1))
     .set_label(QObject::tr("distance").toStdString())
     .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::Grid });
+    .set_enabled_buddy<Mode>(mode_property, { Mode::Linear, Mode::Grid });
 
   add_property<FloatProperty>(RADIUS_PROPERTY_KEY, 50.0)
     .set_step(0.1)
@@ -216,9 +211,9 @@ double Cloner::get_t(std::size_t i, const bool inclusive) const
 
 void Cloner::set_linear(Object& object, std::size_t i)
 {
-  const double x = i * property(DISTANCE_PROPERTY_KEY).value<double>();
+  const Vec2f pos = static_cast<double>(i) * property(DISTANCE_2D_PROPERTY_KEY).value<Vec2f>();
   auto t = object.transformation();
-  t.set_translation(Vec2f(x, 0.0));
+  t.set_translation(pos);
   object.set_transformation(t);
 }
 
