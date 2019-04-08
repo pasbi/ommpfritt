@@ -69,5 +69,5 @@ private:
 
 }  // namespace omm
 
-template<> struct EnableBitMaskOperators<omm::AbstractRenderer::Category> : std::true_type {};
+template<> struct omm::EnableBitMaskOperators<omm::AbstractRenderer::Category> : std::true_type {};
 

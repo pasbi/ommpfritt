@@ -171,34 +171,6 @@ ContainerT<std::unique_ptr<T>> copy(const ContainerT<std::unique_ptr<T>>& other)
   return ::transform<std::unique_ptr<T>>(other, [](const auto& i) { return i->clone(); });
 }
 
-template<typename T> struct EnableBitMaskOperators : std::false_type {};
-
-template<typename EnumT>
-std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT> operator|(EnumT a, EnumT b)
-{
-  using underlying = std::underlying_type_t<EnumT>;
-  return static_cast<EnumT>(static_cast<underlying>(a) | static_cast<underlying>(b));
-}
-
-template<typename EnumT>
-std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT> operator&(EnumT a, EnumT b)
-{
-  using underlying = std::underlying_type_t<EnumT>;
-  return static_cast<EnumT>(static_cast<underlying>(a) & static_cast<underlying>(b));
-}
-
-template<typename EnumT>
-std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT> operator~(EnumT a)
-{
-  return static_cast<EnumT>(~static_cast<std::underlying_type_t<EnumT>>(a));
-}
-
-template<typename EnumT>
-std::enable_if_t<EnableBitMaskOperators<EnumT>::value, bool> operator!(EnumT a)
-{
-  return !static_cast<std::underlying_type_t<EnumT>>(a);
-}
-
 template<typename T, template<typename...> class ContainerT>
 ContainerT<T> intersect(const ContainerT<T>& a, const ContainerT<T>& b)
 {
@@ -283,4 +255,37 @@ template<typename T> std::ostream& operator<<(std::ostream& ostream, const std::
 {
   ostream << std::vector(vs.begin(), vs.end());
   return ostream;
+}
+
+namespace omm
+{
+
+template<typename T> struct EnableBitMaskOperators : std::false_type {};
+
+template<typename EnumT>
+std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT> operator|(EnumT a, EnumT b)
+{
+  using underlying = std::underlying_type_t<EnumT>;
+  return static_cast<EnumT>(static_cast<underlying>(a) | static_cast<underlying>(b));
+}
+
+template<typename EnumT>
+std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT> operator&(EnumT a, EnumT b)
+{
+  using underlying = std::underlying_type_t<EnumT>;
+  return static_cast<EnumT>(static_cast<underlying>(a) & static_cast<underlying>(b));
+}
+
+template<typename EnumT>
+std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT> operator~(EnumT a)
+{
+  return static_cast<EnumT>(~static_cast<std::underlying_type_t<EnumT>>(a));
+}
+
+template<typename EnumT>
+std::enable_if_t<EnableBitMaskOperators<EnumT>::value, bool> operator!(EnumT a)
+{
+  return !static_cast<std::underlying_type_t<EnumT>>(a);
+}
+
 }

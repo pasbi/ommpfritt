@@ -29,7 +29,6 @@ public:
                     Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4, IsView = 0x8 };
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PropertyOwner", "AbstractPropertyOwner");
-  virtual ~AbstractPropertyOwner() = default;
   Property& property(const std::string& key) const;
   bool has_property(const std::string& key) const;
   template<typename ValueT> bool has_property(const std::string& key) const
@@ -117,5 +116,5 @@ std::ostream& operator<<(std::ostream& ostream, const AbstractPropertyOwner* apo
 
 }  // namespace omm
 
-template<> struct EnableBitMaskOperators<omm::AbstractPropertyOwner::Kind> : std::true_type {};
-template<> struct EnableBitMaskOperators<omm::AbstractPropertyOwner::Flag> : std::true_type {};
+template<> struct omm::EnableBitMaskOperators<omm::AbstractPropertyOwner::Kind> : std::true_type {};
+template<> struct omm::EnableBitMaskOperators<omm::AbstractPropertyOwner::Flag> : std::true_type {};

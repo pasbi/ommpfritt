@@ -53,4 +53,4 @@ private Q_SLOTS:
 
 }  // namespace omm
 
-template<> struct EnableBitMaskOperators<omm::DisplayMode> : std::true_type {};
+template<> struct omm::EnableBitMaskOperators<omm::DisplayMode> : std::true_type {};
