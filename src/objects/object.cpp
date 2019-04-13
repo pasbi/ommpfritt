@@ -387,5 +387,7 @@ std::vector<const omm::Style*> Object::find_styles() const
 
 void Object::draw_object(AbstractRenderer&, const Style&) {}
 void Object::draw_handles(AbstractRenderer&) {}
+bool Object::contains(const Vec2f&) { return false; }
+
 
 }  // namespace omm

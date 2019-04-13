@@ -43,6 +43,11 @@ Point AbstractProceduralPath::evaluate(const double t)
 
 double AbstractProceduralPath::path_length() { return Cubics(points(), is_closed()).length(); }
 
+bool AbstractProceduralPath::contains(const Vec2f &pos)
+{
+  return Cubics(points(), is_closed()).contains(pos);
+}
+
 std::vector<double> AbstractProceduralPath::cut(const Vec2f& c_start, const Vec2f& c_end)
 {
   const auto gti = global_transformation().inverted();

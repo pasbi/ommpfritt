@@ -257,4 +257,9 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
 std::string Application::type() const { return TYPE; }
 MainWindow* Application::main_window() const { return m_main_window; }
 
+GEOSContextHandle_t Application::geos_context_handle() const
+{
+  return Geos::instance().handle();
+}
+
 }  // namespace omm

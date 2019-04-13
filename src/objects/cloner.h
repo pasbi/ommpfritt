@@ -23,7 +23,6 @@ public:
   static constexpr auto CODE_PROPERTY_KEY = "code";
   static constexpr auto COUNT_PROPERTY_KEY = "count";
   static constexpr auto COUNT_2D_PROPERTY_KEY = "count2d";
-  static constexpr auto DISTANCE_PROPERTY_KEY = "distance";
   static constexpr auto DISTANCE_2D_PROPERTY_KEY = "distance2d";
   static constexpr auto RADIUS_PROPERTY_KEY = "radius";
   static constexpr auto PATH_REFERENCE_PROPERTY_KEY = "path";
@@ -31,12 +30,14 @@ public:
   static constexpr auto END_PROPERTY_KEY = "end";
   static constexpr auto BORDER_PROPERTY_KEY = "border";
   static constexpr auto ALIGN_PROPERTY_KEY = "align";
+  static constexpr auto SEED_PROPERTY_KEY = "seed";
 
-  enum class Mode { Linear, Grid, Radial, Path, Script };
+  enum class Mode { Linear, Grid, Radial, Path, Script, FillRandom  };
   std::unique_ptr<Object> clone() const override;
   virtual Flag flags() const override;
   std::unique_ptr<Object> convert() override;
   Mode mode() const;
+  bool contains(const Vec2f &pos) override;
 
 private:
   std::vector<std::unique_ptr<Object>> make_clones();
@@ -48,6 +49,7 @@ private:
   void set_radial(Object& object, std::size_t i);
   void set_path(Object& object, std::size_t i);
   void set_by_script(Object& object, std::size_t i);
+  void set_fillrandom(Object& object, std::size_t i);
 
 
 };

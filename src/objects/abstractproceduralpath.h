@@ -19,6 +19,7 @@ public:
 
   Point evaluate(const double t) override;
   double path_length() override;
+  bool contains(const Vec2f &pos) override;
 
   std::vector<double> cut(const Vec2f& c_start, const Vec2f& c_end);
 

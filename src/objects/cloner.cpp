@@ -40,7 +40,8 @@ Cloner::Cloner(Scene* scene) : Object(scene)
   auto& mode_property = add_property<OptionsProperty>(MODE_PROPERTY_KEY);
   mode_property.set_options({ QObject::tr("Linear").toStdString(),
     QObject::tr("Grid").toStdString(), QObject::tr("Radial").toStdString(),
-    QObject::tr("Path").toStdString(), QObject::tr("Script").toStdString() })
+    QObject::tr("Path").toStdString(), QObject::tr("Script").toStdString(),
+    QObject::tr("Fill Random").toStdString() })
     .set_label(QObject::tr("mode").toStdString())
     .set_category(category);
 
@@ -48,8 +49,8 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_range(0, max)
     .set_label(QObject::tr("count").toStdString())
     .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::Linear, Mode::Radial,
-                                              Mode::Path, Mode::Script });
+    .set_enabled_buddy<Mode>(mode_property, { Mode::Linear, Mode::Radial, Mode::Path,
+                                              Mode::Script, Mode::FillRandom });
 
   add_property<IntegerVectorProperty>(COUNT_2D_PROPERTY_KEY, Vec2i(3, 3))
     .set_range(Vec2i(0, 0), Vec2i(max, max))
@@ -74,7 +75,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_required_flags(Flag::IsPathLike)
     .set_label(QObject::tr("path").toStdString())
     .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::Path });
+    .set_enabled_buddy<Mode>(mode_property, { Mode::Path, Mode::FillRandom });
 
   add_property<FloatProperty>(START_PROPERTY_KEY, 0.0)
     .set_step(0.01)
@@ -105,6 +106,11 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_label(QObject::tr("code").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Script });
+
+  add_property<IntegerProperty>(SEED_PROPERTY_KEY, 12345)
+    .set_label(QObject::tr("seed").toStdString())
+    .set_category(category)
+    .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom });
 }
 
 
@@ -121,10 +127,25 @@ void Cloner::draw_object(AbstractRenderer& renderer, const Style& style)
 
 BoundingBox Cloner::bounding_box()
 {
-  return BoundingBox();  // TODO
+  BoundingBox bb;
+  for (auto&& clone : make_clones()) {
+    bb |= clone->transformation().apply(clone->bounding_box());
+  }
+  return bb;
 }
 
 Cloner::Mode Cloner::mode() const { return property(MODE_PROPERTY_KEY).value<Mode>(); }
+
+bool Cloner::contains(const Vec2f &pos)
+{
+  for (auto&& clone : make_clones()) {
+    if (clone->contains(clone->transformation().apply_to_position(pos))) {
+      return true;
+    }
+  }
+  return false;
+}
+
 std::string Cloner::type() const { return TYPE; }
 std::unique_ptr<Object> Cloner::clone() const { return std::make_unique<Cloner>(*this); }
 AbstractPropertyOwner::Flag Cloner::flags() const
@@ -158,6 +179,7 @@ std::vector<std::unique_ptr<Object>> Cloner::make_clones()
     case Mode::Radial:
     case Mode::Path:
     case Mode::Script:
+    case Mode::FillRandom:
       return static_cast<std::size_t>(property(COUNT_PROPERTY_KEY).value<int>());
     case Mode::Grid: {
       const auto c = property(COUNT_2D_PROPERTY_KEY).value<Vec2i>();
@@ -175,6 +197,7 @@ std::vector<std::unique_ptr<Object>> Cloner::make_clones()
     case Mode::Path: set_path(*clones[i], i); break;
     case Mode::Script: set_by_script(*clones[i], i); break;
     case Mode::Grid: set_grid(*clones[i], i); break;
+    case Mode::FillRandom: set_fillrandom(*clones[i], i); break;
     }
   }
 
@@ -252,6 +275,11 @@ void Cloner::set_by_script(Object& object, std::size_t i)
                                       "this"_a=ObjectWrapper::make(*this),
                                       "scene"_a=SceneWrapper(*scene()) );
   scene()->python_engine.exec(property(CODE_PROPERTY_KEY).value<std::string>(), locals, this);
+}
+
+void Cloner::set_fillrandom(Object &object, std::size_t i)
+{
+  const auto seed = property(SEED_PROPERTY_KEY).value<int>();
 }
 
 

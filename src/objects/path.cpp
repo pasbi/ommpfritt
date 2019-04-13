@@ -7,6 +7,7 @@
 #include "scene/scene.h"
 #include "geometry/cubics.h"
 #include "common.h"
+#include "geometry/polygon.h"
 
 namespace
 {
@@ -70,28 +71,24 @@ Path::Path(Scene* scene) : Object(scene)
 
 void Path::draw_object(AbstractRenderer& renderer, const Style& style)
 {
+  const auto triangulation_style = ContourStyle(Colors::BLACK, 1.0);
   renderer.draw_spline(m_points, style, property(IS_CLOSED_PROPERTY_KEY).value<bool>());
+  Polygon polygon(::transform<Vec2f>(m_points, [](const Point& p) { return p.position; }));
+  const std::vector<Triangle> tr = polygon.triangulation();
+  for (const auto& t : tr) {
+    const auto path = ::transform<Point, std::vector>(t.points, [](const Vec2f& p) { return Point(p); });
+    renderer.draw_spline(path, triangulation_style, true);
+  }
 }
 
 BoundingBox Path::bounding_box()
 {
-  return BoundingBox(::transform<Vec2f>(points(), [](const Point* p) { return p->position; }));
+  return BoundingBox(::transform<Point>(points(), [](Point* p) { return *p; }));
 }
 
-std::string Path::type() const
-{
-  return TYPE;
-}
-
-std::unique_ptr<Object> Path::clone() const
-{
-  return std::make_unique<Path>(*this);
-}
-
-void Path::set_points(const std::vector<Point>& points)
-{
-  m_points = points;
-}
+std::string Path::type() const { return TYPE; }
+std::unique_ptr<Object> Path::clone() const { return std::make_unique<Path>(*this); }
+void Path::set_points(const std::vector<Point>& points) { m_points = points; }
 
 std::vector<Point*> Path::points()
 {

@@ -5,6 +5,7 @@
 #include <utility>
 #include "geometry/cubic.h"
 #include "geometry/vec2.h"
+#include "geometry/boundingbox.h"
 #include <cstddef>
 
 namespace omm
@@ -23,9 +24,12 @@ public:
   std::vector<double> lengths() const;
   std::size_t n_segments() const;
   const Cubic& segment(const std::size_t& segment_i) const;
+  bool contains(const Vec2f& pos) const;
 
 private:
   const std::vector<Cubic> m_cubics;
+  const BoundingBox m_bounding_box;
+  const bool m_is_closed;
   mutable std::vector<double> m_lengths;
 };
 

@@ -61,6 +61,8 @@ target_link_libraries(libommpfritt pybind11::embed)
 target_link_libraries(ommpfritt pybind11::embed)
 target_link_libraries(libommpfritt Qt5::Widgets)
 target_link_libraries(ommpfritt Qt5::Widgets)
+target_link_libraries(libommpfritt -lgeos_c)
+target_link_libraries(ommpfritt -lgeos_c)
 
 add_subdirectory(src)
 add_subdirectory(test)
