@@ -9,17 +9,19 @@
 #include "objects/view.h"
 #include "objects/mirror.h"
 #include "objects/text.h"
+#include "objects/line.h"
 
 namespace omm
 {
 
 void register_objects()
 {
-#define REGISTER_OBJECT(TYPE) Object::register_type<TYPE>(#TYPE);
+#define REGISTER_OBJECT(TYPE) Object::register_type<TYPE>(#TYPE)
   REGISTER_OBJECT(Empty);
   REGISTER_OBJECT(Ellipse);
   REGISTER_OBJECT(ImageObject);
   REGISTER_OBJECT(Instance);
+  REGISTER_OBJECT(Line);
   REGISTER_OBJECT(Cloner);
   REGISTER_OBJECT(Path);
   REGISTER_OBJECT(ProceduralPath);

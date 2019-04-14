@@ -77,7 +77,7 @@ void Path::draw_object(AbstractRenderer& renderer, const Style& style)
 
 BoundingBox Path::bounding_box()
 {
-  return BoundingBox(::transform<Point>(points(), [](Point* p) { return *p; }));
+  return BoundingBox(::transform<Point>(points(), [](const Point* p) { return *p; }));
 }
 
 std::string Path::type() const { return TYPE; }

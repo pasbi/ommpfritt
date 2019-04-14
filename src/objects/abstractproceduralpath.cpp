@@ -15,11 +15,6 @@ void AbstractProceduralPath::draw_object(AbstractRenderer& renderer, const Style
   if (is_active()) { renderer.draw_spline(points(), style, is_closed()); }
 }
 
-BoundingBox AbstractProceduralPath::bounding_box()
-{
-  return BoundingBox(points());
-}
-
 AbstractPropertyOwner::Flag AbstractProceduralPath::flags() const
 {
   return Object::flags() | Flag::Convertable | Flag::IsPathLike;
@@ -41,6 +36,7 @@ Point AbstractProceduralPath::evaluate(const double t)
   return Cubics(points(), is_closed()).evaluate(t);
 }
 
+BoundingBox AbstractProceduralPath::bounding_box() { return BoundingBox(points()); }
 double AbstractProceduralPath::path_length() { return Cubics(points(), is_closed()).length(); }
 
 bool AbstractProceduralPath::contains(const Vec2f &pos)

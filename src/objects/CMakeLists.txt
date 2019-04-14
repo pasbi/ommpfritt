@@ -5,6 +5,7 @@ file (GLOB SOURCES
   "empty.cpp"
   "imageobject.cpp"
   "instance.cpp"
+  "line.cpp"
   "mirror.cpp"
   "object.cpp"
   "objectregister.cpp"
