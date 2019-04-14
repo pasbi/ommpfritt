@@ -2,6 +2,7 @@ file (GLOB SOURCES
   "boundingbox.cpp"
   "cubic.cpp"
   "cubics.cpp"
+  "edge.cpp"
   "matrix.cpp"
   "objecttransformation.cpp"
   "point.cpp"

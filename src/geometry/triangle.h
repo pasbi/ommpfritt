@@ -3,6 +3,7 @@
 #include "geometry/vec2.h"
 #include <array>
 #include <random>
+#include "geometry/edge.h"
 
 namespace omm
 {
@@ -26,9 +27,24 @@ public:
     return a * points[0] + b * points[1] + c * points[2];
   }
 
-  const std::array<Vec2f, 3> points;
+  bool contains(const Vec2f& p) const;
+  bool has_vertex(const Vec2f& p, std::size_t *index = nullptr) const;
+  bool has_edge(const Edge& edge) const;
+  bool crosses_edge(const Edge& edge, Edge &crossing) const;
+  bool is_neighbor(const Triangle& other) const;
+  std::vector<Edge> edges() const;
+
+  static void swap_diagonal(Triangle &a, Triangle &b);
+
+  std::array<Vec2f, 3> points;
+  bool operator==(const Triangle& other) const;
+  bool operator!=(const Triangle& other) const;
+
+  bool marked = false;
 
 private:
 };
+
+std::ostream& operator <<(std::ostream& stream, const Triangle& triangle);
 
 }  // namespace omm
