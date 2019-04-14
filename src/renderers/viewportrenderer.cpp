@@ -8,6 +8,7 @@
 #include "properties/colorproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/boolproperty.h"
+#include "geometry/util.h"
 
 namespace omm
 {
@@ -32,22 +33,8 @@ void ViewportRenderer::pop_transformation()
 void
 ViewportRenderer::draw_spline(const std::vector<Point>& points, const Style& style, bool closed)
 {
-  QPainterPath path;
   if (points.size() > 1) {
-    path.moveTo(to_qpoint(points.front().position));
-
-    for (size_t i = 1; i < points.size(); ++i)
-    {
-      path.cubicTo( to_qpoint(points.at(i-1).right_position()),
-                    to_qpoint(points.at(i).left_position()),
-                    to_qpoint(points.at(i).position)  );
-    }
-
-    if (closed && points.size() > 2) {
-      path.cubicTo(to_qpoint(points.back().right_position()),
-                   to_qpoint(points.front().left_position()),
-                   to_qpoint(points.front().position) );
-    }
+    QPainterPath path = to_path(points, closed);
 
     if (style.property(Style::BRUSH_IS_ACTIVE_KEY).value<bool>()) {
       m_painter->fillPath(path, make_brush(style));
@@ -132,11 +119,6 @@ QTransform ViewportRenderer::to_transformation(const omm::ObjectTransformation& 
   return QTransform( m.m[0][0], m.m[1][0], m.m[2][0],
                      m.m[0][1], m.m[1][1], m.m[2][1],
                      m.m[0][2], m.m[1][2], m.m[2][2] );
-}
-
-QPointF ViewportRenderer::to_qpoint(const Vec2f& point)
-{
-  return QPointF(point[0], point[1]);
 }
 
 QColor ViewportRenderer::to_qcolor(omm::Color color)

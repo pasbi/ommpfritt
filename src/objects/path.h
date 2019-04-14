@@ -59,6 +59,7 @@ public:
 
   std::vector<double> cut(const Vec2f& c_start, const Vec2f& c_end);
   Point smoothed(const std::size_t& i) const;
+  bool contains(const Vec2f &pos) override;
 
 private:
   std::vector<Point> m_points;

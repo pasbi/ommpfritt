@@ -13,6 +13,7 @@
 #include "python/objectwrapper.h"
 #include "python/pythonengine.h"
 #include "objects/empty.h"
+#include <random>
 
 namespace
 {
@@ -189,6 +190,11 @@ std::vector<std::unique_ptr<Object>> Cloner::make_clones()
     Q_UNREACHABLE();
   };
 
+  const auto seed = property(SEED_PROPERTY_KEY).value<int>();
+  std::random_device dev;
+  std::mt19937 rng(dev());
+  rng.seed(static_cast<decltype(rng)::result_type>(seed));
+
   auto clones = copy_children(count());
   for (std::size_t i = 0; i < clones.size(); ++i) {
     switch (mode()) {
@@ -197,7 +203,7 @@ std::vector<std::unique_ptr<Object>> Cloner::make_clones()
     case Mode::Path: set_path(*clones[i], i); break;
     case Mode::Script: set_by_script(*clones[i], i); break;
     case Mode::Grid: set_grid(*clones[i], i); break;
-    case Mode::FillRandom: set_fillrandom(*clones[i], i); break;
+    case Mode::FillRandom: set_fillrandom(*clones[i], rng); break;
     }
   }
 
@@ -277,9 +283,33 @@ void Cloner::set_by_script(Object& object, std::size_t i)
   scene()->python_engine.exec(property(CODE_PROPERTY_KEY).value<std::string>(), locals, this);
 }
 
-void Cloner::set_fillrandom(Object &object, std::size_t i)
+void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
 {
-  const auto seed = property(SEED_PROPERTY_KEY).value<int>();
+  auto* apo = property(PATH_REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
+  assert(apo != nullptr && apo->kind() == AbstractPropertyOwner::Kind::Object);
+  auto& area = static_cast<Object&>(*apo);
+
+  const auto position = [&rng, &area]() {
+    static constexpr auto max_rejections = 1000;
+    auto dist = std::uniform_real_distribution<double>(0, 1);
+    for (std::size_t i = 0; i < max_rejections; ++i) {
+      const Vec2f p( dist(rng) * area.bounding_box().width() + area.bounding_box().left(),
+                     dist(rng) * area.bounding_box().height() + area.bounding_box().top() );
+      if (area.contains(p)) {
+        return p;
+      }
+    }
+
+    LWARNING << "Giving up to create sample within path after " << max_rejections << " rejections.";
+    LINFO << "Return a random point on edge instead.";
+
+    const auto t = dist(rng);
+    return area.evaluate(t).position;
+  }();
+
+  auto transformation = object.transformation();
+  transformation.set_translation(position);
+  object.set_transformation(transformation);
 }
 
 

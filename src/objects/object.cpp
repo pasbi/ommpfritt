@@ -385,9 +385,14 @@ std::vector<const omm::Style*> Object::find_styles() const
   return ::filter_if(::transform<const omm::Style*>(tags, get_style), ::is_not_null);
 }
 
+bool Object::contains(const Vec2f &point)
+{
+  Q_UNUSED(point);
+  return false;
+}
+
 void Object::draw_object(AbstractRenderer&, const Style&) {}
 void Object::draw_handles(AbstractRenderer&) {}
-bool Object::contains(const Vec2f&) { return false; }
 
 
 }  // namespace omm

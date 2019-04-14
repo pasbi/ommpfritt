@@ -7,6 +7,9 @@
 #include "geometry/vec2.h"
 #include "geometry/boundingbox.h"
 #include <cstddef>
+#include <QPainterPath>
+#include <random>
+#include "logging.h"
 
 namespace omm
 {
@@ -30,6 +33,7 @@ private:
   const std::vector<Cubic> m_cubics;
   const BoundingBox m_bounding_box;
   const bool m_is_closed;
+  const QPainterPath m_path;
   mutable std::vector<double> m_lengths;
 };
 

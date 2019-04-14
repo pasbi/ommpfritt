@@ -7,7 +7,6 @@
 #include "scene/scene.h"
 #include "geometry/cubics.h"
 #include "common.h"
-#include "geometry/polygon.h"
 
 namespace
 {
@@ -71,17 +70,9 @@ Path::Path(Scene* scene) : Object(scene)
 
 void Path::draw_object(AbstractRenderer& renderer, const Style& style)
 {
-  const auto triangulation_style = ContourStyle(Colors::BLACK, 1.0);
+  const auto triangulation_style = ContourStyle(Colors::BLACK, 0.5);
+  const auto marked_triangulation_style = ContourStyle(Colors::GREEN, 2.0);
   renderer.draw_spline(m_points, style, property(IS_CLOSED_PROPERTY_KEY).value<bool>());
-  if (m_points.size() > 3) {
-    Polygon polygon(::transform<Vec2f>(m_points, [](const Point& p) { return p.position; }));
-    const std::vector<Triangle> tr = polygon.triangulation();
-    for (const auto& t : tr) {
-      const auto path = ::transform<Point, std::vector>(t.points, [](const Vec2f& p) {
-        return Point(p);
-      });
-    }
-  }
 }
 
 BoundingBox Path::bounding_box()
@@ -170,6 +161,8 @@ Point Path::smoothed(const std::size_t& i) const
   }
   return m_points[i].smoothed(left, right);
 }
+
+bool Path::contains(const Vec2f &pos) { return cubics().contains(pos); }
 
 bool Path::is_closed() const
 {

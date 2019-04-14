@@ -3,6 +3,7 @@
 #include "objects/object.h"
 #include "objects/instance.h"
 #include <Qt>
+#include <random>
 
 namespace omm
 {
@@ -49,7 +50,7 @@ private:
   void set_radial(Object& object, std::size_t i);
   void set_path(Object& object, std::size_t i);
   void set_by_script(Object& object, std::size_t i);
-  void set_fillrandom(Object& object, std::size_t i);
+  void set_fillrandom(Object& object, std::mt19937 &rng);
 
 
 };

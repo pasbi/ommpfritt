@@ -30,7 +30,6 @@ public:
   void clear_painter();
 
   static QTransform to_transformation(const omm::ObjectTransformation& transformation);
-  static QPointF to_qpoint(const Vec2f& point);
   static QColor to_qcolor(omm::Color color);
   static QPen make_pen(const omm::Style& style);
   static QBrush make_brush(const omm::Style& style);

@@ -1,4 +1,5 @@
 #include "geometry/cubics.h"
+#include "geometry/util.h"
 #include "common.h"
 #include <numeric>
 
@@ -24,8 +25,8 @@ namespace omm
 
 Cubics::Cubics(const std::vector<Point>& points, const bool is_closed)
   : m_cubics(make_cubics(points, is_closed)), m_bounding_box(points), m_is_closed(is_closed)
+  , m_path(to_path(points, is_closed))
 {
-
 }
 
 Point Cubics::evaluate(const double path_t) const
@@ -96,11 +97,7 @@ const Cubic& Cubics::segment(const std::size_t& segment_i) const { return m_cubi
 
 bool Cubics::contains(const Vec2f &pos) const
 {
-  if (!m_is_closed || !m_bounding_box.contains(pos)) { return false; }
-
-  Vec2f outsider = m_bounding_box.top_left() - Vec2f(1.0, 1.0);
-  const auto n_cuts = cut(pos, outsider).size();
-  return n_cuts % 2 == 1;
+  return m_path.contains(to_qpoint(pos));
 }
 
 std::vector<double> find_cubic_roots(const std::array<double, 4>& coefficients) noexcept
