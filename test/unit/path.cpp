@@ -23,12 +23,9 @@ void remove_add_points( const std::vector<omm::Point>& initial_points,
   path.set_points(initial_points);
 
   LINFO << "=============\n\n\n";
-  LINFO << "original:     "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
+  LINFO << "original:     " << path.points();
   const auto sequences = path.remove_points(indices);
-  LINFO << "after remove: "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
-
+  LINFO << "after remove: " << path.points();
   ASSERT_EQ( path.points().size(), initial_points.size() - indices.size() );
 
 
@@ -52,12 +49,11 @@ void remove_add_points( const std::vector<omm::Point>& initial_points,
 
   path.add_points(sequences);
 
-  LINFO << "after insert: "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
+  LINFO << "after insert: " << path.points();
 
   ASSERT_EQ( path.points().size(), initial_points.size() );
   for (std::size_t i = 0; i < initial_points.size(); ++i) {
-    ASSERT_EQ( *path.points()[i], initial_points[i] );
+    ASSERT_EQ( path.points()[i], initial_points[i] );
   }
 }
 
@@ -69,18 +65,15 @@ void test_invariant_1( const std::vector<omm::Point>& initial_points,
   path.set_points(initial_points);
 
   LINFO << "=============\n\n\n";
-  LINFO << "original:     "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
+  LINFO << "original:     " << path.points();
   const auto sequences = path.remove_points(indices);
-  LINFO << "after remove: "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
+  LINFO << "after remove: " << path.points();
   LINFO << "sequences: " << sequences.size();
   for (const auto& sequence : sequences) {
     LINFO << " >> " << sequence.position << " " << sequence.sequence;
   }
   path.add_points(sequences);
-  LINFO << "after insert: "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
+  LINFO << "after insert: " << path.points();
   EXPECT_TRUE(path.points() == initial_points);
 }
 
@@ -92,19 +85,16 @@ void test_invariant_2( const std::vector<omm::Point> initial_points,
   path.set_points(initial_points);
 
   LINFO << "=============\n\n\n";
-  LINFO << "original:     "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
+  LINFO << "original:     " << path.points();
   LINFO << "sequences: " << sequences.size();
   for (const auto& sequence : sequences) {
     LINFO << " >> " << sequence.position << " " << sequence.sequence;
   }
   std::vector<std::size_t> indices = path.add_points(sequences);
   LINFO << "indices: " << indices.size() << " " << indices;
-  LINFO << "after insert: "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
+  LINFO << "after insert: " << path.points();
   path.remove_points(indices);
-  LINFO << "after remove: "
-            << ::transform<omm::Point>(path.points(), ::dereference<omm::Point>());
+  LINFO << "after remove: " << path.points();
 
 
   EXPECT_TRUE(path.points() == initial_points);

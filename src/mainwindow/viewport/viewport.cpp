@@ -52,6 +52,7 @@ void Viewport::paintEvent(QPaintEvent*)
   painter.setRenderHint(QPainter::SmoothPixmapTransform);
   painter.fillRect(rect(), Qt::gray);
 
+  m_scene.update();
   m_scene.object_tree.root().set_transformation(viewport_transformation());
   m_scene.evaluate_tags();
   m_renderer.render();

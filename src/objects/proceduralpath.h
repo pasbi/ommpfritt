@@ -20,8 +20,11 @@ public:
   static constexpr auto CODE_PROPERTY_KEY = "code";
   static constexpr auto COUNT_PROPERTY_KEY = "count";
 
+  void update() override;
+  std::vector<Point> points() const override;
+
 private:
-  std::vector<Point> points() override;
+  std::vector<Point> m_points;
   bool is_closed() const override;
 };
 

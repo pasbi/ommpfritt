@@ -42,8 +42,8 @@ public:
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-  virtual void draw_object(AbstractRenderer& renderer, const Style& style);
-  virtual void draw_handles(AbstractRenderer& renderer);
+  virtual void draw_object(AbstractRenderer& renderer, const Style& style) const;
+  virtual void draw_handles(AbstractRenderer& renderer) const;
 
   static Style m_bounding_box_style;
 
@@ -54,14 +54,14 @@ public:
     const Style* default_style = nullptr;
   };
 
-  void draw_recursive(AbstractRenderer& renderer, const Style& default_style);
-  void draw_recursive(AbstractRenderer& renderer, const RenderOptions& options);
-  virtual BoundingBox bounding_box() = 0;
-  BoundingBox recursive_bounding_box();
+  void draw_recursive(AbstractRenderer& renderer, const Style& default_style) const;
+  void draw_recursive(AbstractRenderer& renderer, const RenderOptions& options) const;
+  virtual BoundingBox bounding_box() const = 0;
+  BoundingBox recursive_bounding_box() const;
   std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() override;
   virtual std::unique_ptr<Object> clone() const = 0;
   std::unique_ptr<Object> clone(Scene* scene) const;
-  virtual std::unique_ptr<Object> convert();
+  virtual std::unique_ptr<Object> convert() const;
   Flag flags() const override;
   Scene* scene() const;
   bool is_active() const;
@@ -87,13 +87,15 @@ public:
 
   enum class Border { Clamp, Wrap, Hide, Reflect };
   static double apply_border(double t, Border border);
-  virtual Point evaluate(const double t);
-  virtual double path_length();
+  virtual Point evaluate(const double t) const;
+  virtual double path_length() const;
 
   void set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t);
   void set_oriented_position(const Point &op, const bool align);
 
-  virtual bool contains(const Vec2f& pos);
+  virtual bool contains(const Vec2f& pos) const;
+  virtual void update();
+  void update_recursive();
 
 protected:
   bool m_draw_children = true;

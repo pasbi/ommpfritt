@@ -68,26 +68,24 @@ Path::Path(Scene* scene) : Object(scene)
     .set_post_submit(update_point_tangents).set_pre_submit(update_point_tangents);
 }
 
-void Path::draw_object(AbstractRenderer& renderer, const Style& style)
+void Path::draw_object(AbstractRenderer& renderer, const Style& style) const
 {
   const auto triangulation_style = ContourStyle(Colors::BLACK, 0.5);
   const auto marked_triangulation_style = ContourStyle(Colors::GREEN, 2.0);
   renderer.draw_spline(m_points, style, property(IS_CLOSED_PROPERTY_KEY).value<bool>());
 }
 
-BoundingBox Path::bounding_box()
-{
-  return BoundingBox(::transform<Point>(points(), [](const Point* p) { return *p; }));
-}
-
+BoundingBox Path::bounding_box() const { return BoundingBox(m_points); }
 std::string Path::type() const { return TYPE; }
 std::unique_ptr<Object> Path::clone() const { return std::make_unique<Path>(*this); }
 void Path::set_points(const std::vector<Point>& points) { m_points = points; }
+std::vector<Point> Path::points() const { return m_points; }
 
-std::vector<Point*> Path::points()
+std::vector<Point*> Path::points_ref()
 {
   return ::transform<Point*>(m_points, [](Point& p) { return &p; });
 }
+
 
 void Path::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
@@ -117,8 +115,8 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 
 void Path::deselect_all_points()
 {
-  for (Point* p : points()) {
-    p->is_selected = false;
+  for (Point& p : m_points) {
+    p.is_selected = false;
   }
 }
 
@@ -162,21 +160,21 @@ Point Path::smoothed(const std::size_t& i) const
   return m_points[i].smoothed(left, right);
 }
 
-bool Path::contains(const Vec2f &pos) { return cubics().contains(pos); }
+bool Path::contains(const Vec2f &pos) const { return cubics().contains(pos); }
 
 bool Path::is_closed() const
 {
   return this->property(omm::Path::IS_CLOSED_PROPERTY_KEY).value<bool>();
 }
 
-Point Path::evaluate(const double t)
+Point Path::evaluate(const double t) const
 {
   return cubics().evaluate(t);
 }
 
 Cubics Path::cubics() const { return Cubics(m_points, is_closed()); }
 
-double Path::path_length()
+double Path::path_length() const
 {
   return cubics().length();
 }

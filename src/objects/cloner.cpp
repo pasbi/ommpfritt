@@ -111,25 +111,26 @@ Cloner::Cloner(Scene* scene) : Object(scene)
   add_property<IntegerProperty>(SEED_PROPERTY_KEY, 12345)
     .set_label(QObject::tr("seed").toStdString())
     .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom });
+      .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom });
 }
 
-
-void Cloner::draw_object(AbstractRenderer& renderer, const Style& style)
+Cloner::Cloner(const Cloner &other) : Object(other)
 {
-  if (is_active()) {
-    assert(&renderer.scene == scene());
-    for (auto&& clone : make_clones()) { clone->draw_recursive(renderer, style); }
-    m_draw_children = false;
-  } else {
-    m_draw_children = true;
+  update();
+}
+
+void Cloner::draw_object(AbstractRenderer& renderer, const Style& style) const
+{
+  assert(&renderer.scene == scene());
+  for (auto&& clone : m_clones) {
+    clone->draw_recursive(renderer, style);
   }
 }
 
-BoundingBox Cloner::bounding_box()
+BoundingBox Cloner::bounding_box() const
 {
   BoundingBox bb;
-  for (auto&& clone : make_clones()) {
+  for (auto&& clone : m_clones) {
     bb |= clone->transformation().apply(clone->bounding_box());
   }
   return bb;
@@ -137,14 +138,25 @@ BoundingBox Cloner::bounding_box()
 
 Cloner::Mode Cloner::mode() const { return property(MODE_PROPERTY_KEY).value<Mode>(); }
 
-bool Cloner::contains(const Vec2f &pos)
+bool Cloner::contains(const Vec2f &pos) const
 {
-  for (auto&& clone : make_clones()) {
+  for (auto&& clone : m_clones) {
     if (clone->contains(clone->transformation().apply_to_position(pos))) {
       return true;
     }
   }
   return false;
+}
+
+void Cloner::update()
+{
+  if (is_active()) {
+    m_clones = make_clones();
+    m_draw_children = false;
+  } else {
+    m_clones.clear();
+    m_draw_children = true;
+  }
 }
 
 std::string Cloner::type() const { return TYPE; }
@@ -154,16 +166,15 @@ AbstractPropertyOwner::Flag Cloner::flags() const
   return Object::flags() | Flag::Convertable | Flag::HasScript;
 }
 
-std::unique_ptr<Object> Cloner::convert()
+std::unique_ptr<Object> Cloner::convert() const
 {
   std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
   copy_properties(*converted);
   copy_tags(*converted);
 
-  auto clones = make_clones();
-  for (std::size_t i = 0; i < clones.size(); ++i) {
-    const auto local_transformation = clones[i]->transformation();
-    auto& clone = converted->adopt(std::move(clones[i]));
+  for (std::size_t i = 0; i < m_clones.size(); ++i) {
+    const auto local_transformation = m_clones[i]->transformation();
+    auto& clone = converted->adopt(m_clones[i]->clone());
     const std::string name = clone.name() + " " + std::to_string(i);
     clone.property(NAME_PROPERTY_KEY).set(name);
     clone.set_transformation(local_transformation);
@@ -235,7 +246,7 @@ double Cloner::get_t(std::size_t i, const bool inclusive) const
   } else {
     const auto spacing =  (end - start) / (n-1);
     return apply_border(start + spacing * i, border);
-  };
+  }
 }
 
 void Cloner::set_linear(Object& object, std::size_t i)

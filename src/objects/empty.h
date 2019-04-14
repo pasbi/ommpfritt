@@ -10,7 +10,7 @@ class Empty : public Object
 {
 public:
   using Object::Object;
-  BoundingBox bounding_box() override;
+  BoundingBox bounding_box() const override;
   std::string type() const override;
   std::unique_ptr<Object> clone() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Empty");

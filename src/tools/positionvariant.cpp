@@ -23,9 +23,8 @@ namespace omm
 void PointPositions::make_handles(handles_type& handles, Tool& tool) const
 {
   for (auto* path : paths()) {
-    const auto t = path->global_transformation();
     handles.reserve(handles.size() + path->points().size());
-    for (auto&& point : path->points()) {
+    for (auto* point : path->points_ref()) {
       handles.push_back(std::make_unique<PointSelectHandle>(tool, *path, *point));
     }
   }
@@ -34,7 +33,7 @@ void PointPositions::make_handles(handles_type& handles, Tool& tool) const
 void PointPositions::clear_selection()
 {
   for (auto* path : paths()) {
-    for (auto* point : path->points()) {
+    for (auto* point : path->points_ref()) {
       point->is_selected = false;
     }
   }
@@ -44,7 +43,7 @@ Vec2f PointPositions::selection_center() const
 {
   std::set<Vec2f> positions;
   for (auto* path : paths()) {
-    for (auto* point : path->points()) {
+    for (auto* point : path->points_ref()) {
       if (point->is_selected) {
         positions.insert(path->global_transformation().apply_to_position(point->position));
       }
@@ -62,7 +61,7 @@ std::set<Point*> PointPositions::selected_points() const
 {
   std::set<Point*> selected_points;
   for (auto* path : paths()) {
-    for (auto* point : path->points()) {
+    for (auto* point : path->points_ref()) {
       if (point->is_selected) {
         selected_points.insert(point);
       }

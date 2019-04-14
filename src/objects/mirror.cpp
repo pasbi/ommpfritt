@@ -26,14 +26,14 @@ Mirror::Mirror(Scene* scene) : Object(scene)
 }
 
 
-void Mirror::draw_object(AbstractRenderer& renderer, const Style& style)
+void Mirror::draw_object(AbstractRenderer& renderer, const Style& style) const
 {
   assert(&renderer.scene == scene());
   auto reflection = make_reflection();
   if (reflection) { reflection->draw_recursive(renderer, style); }
 }
 
-BoundingBox Mirror::bounding_box()
+BoundingBox Mirror::bounding_box() const
 {
   const auto n_children = this->n_children();
   if (is_active() && n_children > 0) {
@@ -49,7 +49,7 @@ std::string Mirror::type() const { return TYPE; }
 std::unique_ptr<Object> Mirror::clone() const { return std::make_unique<Mirror>(*this); }
 AbstractPropertyOwner::Flag Mirror::flags() const { return Object::flags() | Flag::Convertable; }
 
-std::unique_ptr<Object> Mirror::make_reflection()
+std::unique_ptr<Object> Mirror::make_reflection() const
 {
   const auto n_children = this->n_children();
   if (is_active() && n_children > 0) {
@@ -61,7 +61,7 @@ std::unique_ptr<Object> Mirror::make_reflection()
   }
 }
 
-std::unique_ptr<Object> Mirror::convert()
+std::unique_ptr<Object> Mirror::convert() const
 {
   std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
   copy_properties(*converted);

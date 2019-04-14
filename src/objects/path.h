@@ -14,20 +14,21 @@ class Path : public Object
 {
 public:
   explicit Path(Scene* scene);
-  void draw_object(AbstractRenderer& renderer, const Style& style) override;
-  BoundingBox bounding_box() override;
+  void draw_object(AbstractRenderer& renderer, const Style& style) const override;
+  BoundingBox bounding_box() const override;
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Path");
   std::unique_ptr<Object> clone() const override;
-  std::vector<Point*> points();
+  std::vector<Point> points() const;
+  std::vector<Point*> points_ref();
   Cubics cubics() const;
   void set_points(const std::vector<Point>& points);
   static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";
   static constexpr auto POINTS_POINTER = "points";
   static constexpr auto INTERPOLATION_PROPERTY_KEY = "interpolation";
 
-  Point evaluate(const double t) override;
-  double path_length() override;
+  Point evaluate(const double t) const override;
+  double path_length() const override;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
@@ -59,7 +60,7 @@ public:
 
   std::vector<double> cut(const Vec2f& c_start, const Vec2f& c_end);
   Point smoothed(const std::size_t& i) const;
-  bool contains(const Vec2f &pos) override;
+  bool contains(const Vec2f &pos) const override;
 
 private:
   std::vector<Point> m_points;

@@ -399,4 +399,9 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
   }
 }
 
+void Scene::update()
+{
+  object_tree.root().update_recursive();
+}
+
 }  // namespace omm

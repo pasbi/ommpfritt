@@ -14,8 +14,8 @@ make_alternatives(const std::set<omm::Path*>& paths, const omm::ObjectTransforma
     const auto pt = t.transformed(path->global_transformation());
     const auto points = path->points();
     for (std::size_t i = 0; i < points.size(); ++i) {
-      if (points[i]->is_selected) {
-        omm::Point other = pt.apply(*points[i]);
+      if (points[i].is_selected) {
+        omm::Point other = pt.apply(points[i]);
         alternatives[path].insert(std::make_pair(i, other));
       }
     }
@@ -54,7 +54,7 @@ PointsTransformationCommand
 void PointsTransformationCommand::redo()
 {
   for (auto&& [path, alternatives] : m_alternative_points) {
-    const auto points = path->points();
+    const auto points = path->points_ref();
     for (const auto& [i, _] : alternatives) {
       points[i]->swap(alternatives[i]);
     }

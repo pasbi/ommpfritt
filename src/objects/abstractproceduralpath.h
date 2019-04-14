@@ -12,19 +12,19 @@ class AbstractProceduralPath : public Object
 {
 public:
   using Object::Object;
-  void draw_object(AbstractRenderer& renderer, const Style& style) override;
-  BoundingBox bounding_box() override;
-  std::unique_ptr<Object> convert() override;
+  void draw_object(AbstractRenderer& renderer, const Style& style) const override;
+  BoundingBox bounding_box() const override;
+  std::unique_ptr<Object> convert() const override;
   Flag flags() const override;
 
-  Point evaluate(const double t) override;
-  double path_length() override;
-  bool contains(const Vec2f &pos) override;
+  Point evaluate(const double t) const override;
+  double path_length() const override;
+  bool contains(const Vec2f &pos) const override;
 
   std::vector<double> cut(const Vec2f& c_start, const Vec2f& c_end);
 
 protected:
-  virtual std::vector<Point> points() = 0;
+  virtual std::vector<Point> points() const = 0;
   virtual bool is_closed() const = 0;
 };
 

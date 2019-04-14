@@ -23,7 +23,7 @@ View::View(Scene* scene) : Object(scene)
 }
 
 std::string View::type() const { return TYPE; }
-BoundingBox View::bounding_box() { return BoundingBox(); }
+BoundingBox View::bounding_box() const { return BoundingBox(); }
 View::Flag View::flags() const { return Flag::IsView; }
 std::unique_ptr<Object> View::clone() const { return std::make_unique<View>(*this); }
 
@@ -33,7 +33,7 @@ void View::to_viewport()
   viewport.set_transformation(transformation());
 }
 
-void View::draw_handles(AbstractRenderer& renderer)
+void View::draw_handles(AbstractRenderer& renderer) const
 {
   const auto size = property(SIZE_PROPERTY_KEY).value<Vec2f>();
   const auto w = size.x/2;

@@ -17,10 +17,10 @@ public:
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Text");
   std::unique_ptr<Object> clone() const override;
-  BoundingBox bounding_box() override;
+  BoundingBox bounding_box() const override;
   Flag flags() const override;
   static constexpr auto TEXT_PROPERTY_KEY = "text";
-  void draw_object(AbstractRenderer& renderer, const Style& style) override;
+  void draw_object(AbstractRenderer& renderer, const Style& style) const override;
 
   static constexpr auto WIDTH_PROPERTY_KEY = "width";
 

@@ -21,7 +21,7 @@ Instance::Instance(Scene* scene)
     .set_label(QObject::tr("combine styles", "Instance").toStdString()).set_category(category);
 }
 
-void Instance::draw_object(AbstractRenderer& renderer, const Style& default_style)
+void Instance::draw_object(AbstractRenderer& renderer, const Style& default_style) const
 {
   if (is_active()) {
     const auto o = referenced_object();
@@ -43,7 +43,7 @@ void Instance::draw_object(AbstractRenderer& renderer, const Style& default_styl
   }
 }
 
-BoundingBox Instance::bounding_box()
+BoundingBox Instance::bounding_box() const
 {
   const auto o = referenced_object();
   if (o != nullptr) {
@@ -76,7 +76,7 @@ Object* Instance::referenced_object() const
 }
 
 
-std::unique_ptr<Object> Instance::convert()
+std::unique_ptr<Object> Instance::convert() const
 {
   auto* referenced_object = this->referenced_object();
   if (referenced_object != nullptr) {

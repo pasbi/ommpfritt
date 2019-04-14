@@ -70,7 +70,7 @@ void BrushSelectTool
   for (Object* object : scene.item_selection<Object>()) {
     Path* path = type_cast<Path*>(object);
     if (path) {
-      for (Point* point : path->points()) {
+      for (Point* point : path->points_ref()) {
         // we can't transform `pos` with path's inverse transformation because if it scales,
         // `radius` will be wrong.
         const auto gpos = path->global_transformation().apply_to_position(point->position);

@@ -229,7 +229,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   this->tags.set(std::move(tags));
 }
 
-void Object::draw_recursive(AbstractRenderer& renderer, const Style& default_style)
+void Object::draw_recursive(AbstractRenderer& renderer, const Style& default_style) const
 {
   RenderOptions options;
   options.styles = find_styles();
@@ -238,7 +238,7 @@ void Object::draw_recursive(AbstractRenderer& renderer, const Style& default_sty
   draw_recursive(renderer, options);
 }
 
-void Object::draw_recursive(AbstractRenderer& renderer, const RenderOptions& options)
+void Object::draw_recursive(AbstractRenderer& renderer, const RenderOptions& options) const
 {
   renderer.push_transformation(transformation());
   const auto visibility = property(IS_VISIBLE_PROPERTY_KEY).value<Visibility>();
@@ -269,7 +269,7 @@ void Object::draw_recursive(AbstractRenderer& renderer, const RenderOptions& opt
   renderer.pop_transformation();
 }
 
-BoundingBox Object::recursive_bounding_box()
+BoundingBox Object::recursive_bounding_box() const
 {
   auto bounding_box = this->bounding_box();
 
@@ -303,7 +303,7 @@ std::unique_ptr<Object> Object::clone(Scene* scene) const
   return clone;
 }
 
-std::unique_ptr<Object> Object::convert() { return clone(); }
+std::unique_ptr<Object> Object::convert() const { return clone(); }
 AbstractPropertyOwner::Flag Object::flags() const { return Flag::None; }
 Scene* Object::scene() const { return m_scene; }
 
@@ -330,13 +330,13 @@ double Object::apply_border(double t, Border border)
   Q_UNREACHABLE();
 }
 
-Point Object::evaluate(const double t)
+Point Object::evaluate(const double t) const
 {
-  Q_UNUSED(t);
+  Q_UNUSED(t)
   return Point();
 }
 
-double Object::path_length() { return -1.0; }
+double Object::path_length() const { return -1.0; }
 
 void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t)
 {
@@ -385,14 +385,23 @@ std::vector<const omm::Style*> Object::find_styles() const
   return ::filter_if(::transform<const omm::Style*>(tags, get_style), ::is_not_null);
 }
 
-bool Object::contains(const Vec2f &point)
+bool Object::contains(const Vec2f &point) const
 {
-  Q_UNUSED(point);
+  Q_UNUSED(point)
   return false;
 }
 
-void Object::draw_object(AbstractRenderer&, const Style&) {}
-void Object::draw_handles(AbstractRenderer&) {}
+void Object::update_recursive()
+{
+  update();
+  for (auto* child : children()) {
+    child->update_recursive();
+  }
+}
+
+void Object::update() { }
+void Object::draw_object(AbstractRenderer&, const Style&) const {}
+void Object::draw_handles(AbstractRenderer&) const {}
 
 
 }  // namespace omm

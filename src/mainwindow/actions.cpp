@@ -98,7 +98,7 @@ void evaluate(Application& app)
 void select_all(Application& app)
 {
   for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-    for (auto* point : path->points()) {
+    for (auto* point : path->points_ref()) {
       point->is_selected = true;
     }
   }
@@ -106,7 +106,7 @@ void select_all(Application& app)
 void deselect_all(Application& app)
 {
   for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-    for (auto* point : path->points()) {
+    for (auto* point : path->points_ref()) {
       point->is_selected = false;
     }
   }
@@ -115,7 +115,7 @@ void deselect_all(Application& app)
 void invert_selection(Application& app)
 {
   for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-    for (auto* point : path->points()) {
+    for (auto* point : path->points_ref()) {
       point->is_selected = !point->is_selected;
     }
   }

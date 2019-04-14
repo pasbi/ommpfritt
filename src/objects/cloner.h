@@ -16,8 +16,9 @@ class Cloner : public Object
 {
 public:
   explicit Cloner(Scene* scene);
-  void draw_object(AbstractRenderer& renderer, const Style& style) override;
-  BoundingBox bounding_box() override;
+  explicit Cloner(const Cloner& other);
+  void draw_object(AbstractRenderer& renderer, const Style& style) const override;
+  BoundingBox bounding_box() const override;
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Cloner");
   static constexpr auto MODE_PROPERTY_KEY = "mode";
@@ -36,9 +37,10 @@ public:
   enum class Mode { Linear, Grid, Radial, Path, Script, FillRandom  };
   std::unique_ptr<Object> clone() const override;
   virtual Flag flags() const override;
-  std::unique_ptr<Object> convert() override;
+  std::unique_ptr<Object> convert() const override;
   Mode mode() const;
-  bool contains(const Vec2f &pos) override;
+  bool contains(const Vec2f &pos) const override;
+  void update() override;
 
 private:
   std::vector<std::unique_ptr<Object>> make_clones();
@@ -51,7 +53,7 @@ private:
   void set_path(Object& object, std::size_t i);
   void set_by_script(Object& object, std::size_t i);
   void set_fillrandom(Object& object, std::mt19937 &rng);
-
+  std::vector<std::unique_ptr<Object>> m_clones;
 
 };
 

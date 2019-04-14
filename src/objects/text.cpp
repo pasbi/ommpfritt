@@ -26,7 +26,7 @@ Text::Text(Scene* scene)
 
 }
 
-BoundingBox Text::bounding_box() { return BoundingBox(); }
+BoundingBox Text::bounding_box() const { return BoundingBox(); }
 std::string Text::type() const { return TYPE; }
 std::unique_ptr<Object> Text::clone() const { return std::make_unique<Text>(*this); }
 
@@ -41,7 +41,7 @@ AbstractPropertyOwner::Flag Text::flags() const
   // Flag::IsPathLike   // Maybe this becomes feasible once the convert-trait is implemented.
 }
 
-void Text::draw_object(AbstractRenderer& renderer, const Style& style)
+void Text::draw_object(AbstractRenderer& renderer, const Style& style) const
 {
   if (is_active()) {
     QFont font = m_font_properties.get_font();

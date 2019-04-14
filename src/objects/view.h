@@ -9,8 +9,8 @@ class View : public Object
 {
 public:
   explicit View(Scene* scene);
-  void draw_handles(AbstractRenderer& renderer) override;
-  BoundingBox bounding_box() override;
+  void draw_handles(AbstractRenderer& renderer) const override;
+  BoundingBox bounding_box() const override;
   std::string type() const override;
   std::unique_ptr<Object> clone() const override;
   static constexpr auto SIZE_PROPERTY_KEY = "size";

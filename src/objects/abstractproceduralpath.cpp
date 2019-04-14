@@ -10,7 +10,7 @@ namespace omm
 
 class Style;
 
-void AbstractProceduralPath::draw_object(AbstractRenderer& renderer, const Style& style)
+void AbstractProceduralPath::draw_object(AbstractRenderer& renderer, const Style& style) const
 {
   if (is_active()) { renderer.draw_spline(points(), style, is_closed()); }
 }
@@ -20,7 +20,7 @@ AbstractPropertyOwner::Flag AbstractProceduralPath::flags() const
   return Object::flags() | Flag::Convertable | Flag::IsPathLike;
 }
 
-std::unique_ptr<Object> AbstractProceduralPath::convert()
+std::unique_ptr<Object> AbstractProceduralPath::convert() const
 {
   auto converted = std::make_unique<Path>(scene());
   copy_properties(*converted);
@@ -31,15 +31,18 @@ std::unique_ptr<Object> AbstractProceduralPath::convert()
   return std::unique_ptr<Object>(converted.release());
 }
 
-Point AbstractProceduralPath::evaluate(const double t)
+Point AbstractProceduralPath::evaluate(const double t) const
 {
   return Cubics(points(), is_closed()).evaluate(t);
 }
 
-BoundingBox AbstractProceduralPath::bounding_box() { return BoundingBox(points()); }
-double AbstractProceduralPath::path_length() { return Cubics(points(), is_closed()).length(); }
+BoundingBox AbstractProceduralPath::bounding_box() const { return BoundingBox(points()); }
+double AbstractProceduralPath::path_length() const
+{
+  return Cubics(points(), is_closed()).length();
+}
 
-bool AbstractProceduralPath::contains(const Vec2f &pos)
+bool AbstractProceduralPath::contains(const Vec2f &pos) const
 {
   return Cubics(points(), is_closed()).contains(pos);
 }

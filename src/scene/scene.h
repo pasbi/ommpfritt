@@ -137,6 +137,9 @@ public:
   bool can_remove( QWidget* parent, std::set<AbstractPropertyOwner*> selection,
                    std::set<Property*>& properties ) const;
   bool remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& selection);
+
+public:
+  void update();
 };
 
 }  // namespace omm

@@ -22,7 +22,7 @@ ImageObject::ImageObject(Scene* scene) : Object(scene)
     .set_label(QObject::tr("Opacity").toStdString()).set_category(category);
 }
 
-void ImageObject::draw_object(AbstractRenderer& renderer, const Style&)
+void ImageObject::draw_object(AbstractRenderer& renderer, const Style&) const
 {
   if (is_active()) {
     const auto path = property(FILEPATH_PROPERTY_KEY).value<std::string>();
@@ -34,7 +34,7 @@ void ImageObject::draw_object(AbstractRenderer& renderer, const Style&)
 
 std::string ImageObject::type() const { return TYPE; }
 std::unique_ptr<Object> ImageObject::clone() const { return std::make_unique<ImageObject>(*this); }
-BoundingBox ImageObject::bounding_box()
+BoundingBox ImageObject::bounding_box() const
 {
   // implementing this is relly a problem.
   // The height of the image is not known at this point.

@@ -47,38 +47,35 @@ ProceduralPath::ProceduralPath(Scene* scene) : AbstractProceduralPath(scene)
     .set_label(QObject::tr("closed").toStdString()).set_category(category);
 }
 
-std::string ProceduralPath::type() const
-{
-  return TYPE;
-}
 
 std::unique_ptr<Object> ProceduralPath::clone() const
 {
   return std::make_unique<ProceduralPath>(*this);
 }
 
-std::vector<Point> ProceduralPath::points()
+std::string ProceduralPath::type() const { return TYPE; }
+std::vector<Point> ProceduralPath::points() const { return m_points; }
+
+void ProceduralPath::update()
 {
   assert(scene() != nullptr);
   using namespace pybind11::literals;
   const auto count = property(COUNT_PROPERTY_KEY).value<int>();
   const auto code = property(CODE_PROPERTY_KEY).value<std::string>();
 
-  std::vector<Point> points(static_cast<std::size_t>(std::max(0, count)));
+  m_points = std::vector<Point>(static_cast<std::size_t>(std::max(0, count)));
   std::vector<PointWrapper> point_wrappers;
-  point_wrappers.reserve(points.size());
-  for (Point& point : points) {
+  point_wrappers.reserve(m_points.size());
+  for (Point& point : m_points) {
     point_wrappers.emplace_back(point);
   }
 
-  if (points.size() > 0) {
+  if (m_points.size() > 0) {
     const auto locals = pybind11::dict( "points"_a=point_wrappers,
                                         "this"_a=ObjectWrapper::make(*this),
                                         "scene"_a=SceneWrapper(*scene()) );
     scene()->python_engine.exec(code, locals, this);
   }
-
-  return points;
 }
 
 bool ProceduralPath::is_closed() const

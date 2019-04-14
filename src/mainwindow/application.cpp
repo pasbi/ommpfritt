@@ -27,7 +27,8 @@ void show_export_dialog(omm::Application& app)
 {
   static std::unique_ptr<QDialog> export_dialog;
   if (!export_dialog) {
-     export_dialog = std::make_unique<omm::ExportDialog>(app.scene, app.main_window());
+    app.scene.update();
+    export_dialog = std::make_unique<omm::ExportDialog>(app.scene, app.main_window());
   }
   export_dialog->exec();
 }
