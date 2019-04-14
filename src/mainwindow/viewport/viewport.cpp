@@ -26,7 +26,7 @@ Viewport::Viewport(Scene& scene)
   : m_scene(scene)
   , m_timer(std::make_unique<QTimer>())
   , m_pan_controller([this](const Vec2f& pos) { set_cursor_position(*this, pos); })
-  , m_renderer(scene, AbstractRenderer::Category::All)
+  , m_renderer(scene, AbstractRenderer::Category::Handles | AbstractRenderer::Category::Objects)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   setFocusPolicy(Qt::StrongFocus);
