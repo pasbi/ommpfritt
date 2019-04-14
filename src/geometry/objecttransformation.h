@@ -39,9 +39,6 @@ public:
   double shearing() const;
 
   ObjectTransformation inverted() const;
-  static ObjectTransformation find_transformation( const ObjectTransformation& from,
-                                                   const ObjectTransformation& to );
-
   Vec2f null() const;
 
   ObjectTransformation transformed(const ObjectTransformation& other) const;

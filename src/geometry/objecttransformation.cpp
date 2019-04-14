@@ -240,12 +240,6 @@ ObjectTransformation ObjectTransformation::normalized() const
 
 bool ObjectTransformation::contains_nan() const { return to_mat().has_nan(); }
 
-ObjectTransformation ObjectTransformation::find_transformation( const ObjectTransformation& from,
-                                                                const ObjectTransformation& to )
-{
-  return to.apply(from.inverted());
-}
-
 ObjectTransformation ObjectTransformation::transformed(const ObjectTransformation& other) const
 {
   const auto o = other.to_mat();

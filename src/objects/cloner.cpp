@@ -109,9 +109,13 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Script });
 
   add_property<IntegerProperty>(SEED_PROPERTY_KEY, 12345)
-    .set_label(QObject::tr("seed").toStdString())
-    .set_category(category)
-      .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom });
+    .set_label(QObject::tr("seed").toStdString()).set_category(category)
+    .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom });
+
+  add_property<OptionsProperty>(ANCHOR_PROPERTY_KEY, 0)
+    .set_options({ QObject::tr("This").toStdString(), QObject::tr("Area").toStdString() })
+    .set_label(QObject::tr("anchor").toStdString()).set_category(category)
+    .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom });
 }
 
 Cloner::Cloner(const Cloner &other) : Object(other)
@@ -318,9 +322,12 @@ void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
     return area.evaluate(t).position;
   }();
 
-  auto transformation = object.transformation();
-  transformation.set_translation(position);
-  object.set_transformation(transformation);
+  auto t = object.transformation();
+  t.set_translation(position);
+  if (property(ANCHOR_PROPERTY_KEY).value<Anchor>() == Anchor::Area) {
+    t = global_transformation().inverted().apply(area.global_transformation()).apply(t);
+  }
+  object.set_transformation(t);
 }
 
 

@@ -33,8 +33,10 @@ public:
   static constexpr auto BORDER_PROPERTY_KEY = "border";
   static constexpr auto ALIGN_PROPERTY_KEY = "align";
   static constexpr auto SEED_PROPERTY_KEY = "seed";
+  static constexpr auto ANCHOR_PROPERTY_KEY = "anchor";
 
   enum class Mode { Linear, Grid, Radial, Path, Script, FillRandom  };
+  enum class Anchor { This, Area };
   std::unique_ptr<Object> clone() const override;
   virtual Flag flags() const override;
   std::unique_ptr<Object> convert() const override;
