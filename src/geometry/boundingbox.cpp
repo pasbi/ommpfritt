@@ -7,8 +7,22 @@
 namespace
 {
 
-double min(const std::vector<double>& ds) { return *std::min_element(ds.begin(), ds.end()); }
-double max(const std::vector<double>& ds) { return *std::max_element(ds.begin(), ds.end()); }
+double min(const std::vector<double>& ds)
+{
+  if (ds.empty()) {
+    return 0.0;
+  } else {
+    return *std::min_element(ds.begin(), ds.end());
+  }
+}
+double max(const std::vector<double>& ds)
+{
+  if (ds.empty()) {
+    return 0.0;
+  } else {
+    return *std::max_element(ds.begin(), ds.end());
+  }
+}
 
 std::vector<omm::Vec2f> get_all_control_points(const std::vector<omm::Point>& points)
 {

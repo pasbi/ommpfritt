@@ -10,8 +10,7 @@ namespace
 
 std::vector<omm::Vec2f> ensure_closed(std::vector<omm::Vec2f> points)
 {
-  const bool is_closed = (points.front() - points.back()).euclidean_norm() < 0.0001;
-  if (!is_closed && points.size() >= 3) {
+  if ((points.front() - points.back()).euclidean_norm() > 0.0001) {
     points.push_back(points.front());
   }
   return points;
