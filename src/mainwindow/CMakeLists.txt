@@ -2,7 +2,6 @@ file (GLOB SOURCES
   "actions.cpp"
   "application.cpp"
   "exportdialog.cpp"
-  "geos.cpp"
   "mainmenubar.cpp"
   "mainwindow.cpp"
   "toolbar.cpp"

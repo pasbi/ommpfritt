@@ -6,7 +6,6 @@
 #include "keybindings/keybindings.h"
 #include "keybindings/commandinterface.h"
 #include <Qt>
-#include "mainwindow/geos.h"
 
 class QApplication;
 
@@ -39,7 +38,6 @@ public:
   PythonEngine python_engine;
   Scene scene;
   MainWindow* main_window() const;
-  GEOSContextHandle_t geos_context_handle() const;
 
 private:
   QApplication& m_app;
@@ -47,7 +45,6 @@ private:
   MainWindow* m_main_window;
 
   std::map<std::string, QKeySequence> m_default_key_sequences;
-  Geos m_geos;
 
 public:
   KeyBindings key_bindings;

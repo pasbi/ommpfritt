@@ -3,14 +3,9 @@
 #include <random>
 #include "geometry/objecttransformation.h"
 #include "logging.h"
-#include "geometry/triangulation.h"
-#include "mainwindow/geos.h"
 
 namespace
 {
-
-void notice_function(const char* message, ...) { LINFO << "notice: " << message; }
-void error_function(const char* message, ...) { LERROR << "error: " << message; }
 
 double mod(double a, double b)
 {
@@ -181,28 +176,4 @@ TEST(geometry, transform_to_from_mat_random)
     t.set_rotation(distribution(rng));
     EXPECT_TRUE(fuzzy_equal(t, omm::ObjectTransformation(t.to_mat())));
   }
-}
-
-TEST(geometry, triangulation)
-{  
-  const auto make_star = [](const std::size_t n, const double r1, const double r2)
-  {
-    const auto reverse = true;
-    std::vector<omm::Vec2f> polygon;
-    assert(n > 2 && r1 > 0.0 && r2 > 0.0);
-    const std::size_t m = 2*n + 1;
-    polygon.reserve(m);
-    for (std::size_t i = 0; i < m; ++i) {
-      const std::size_t k = reverse ? m-i : i;
-      const double theta = static_cast<double>(k) / static_cast<double>(m) * 2*M_PI;
-      const double r = i % 2 == 0 ? r1 : r2;
-      const double x = std::sin(theta) * r;
-      const double y = std::cos(theta) * r;
-      polygon.emplace_back(x, y);
-    }
-    return polygon;
-  };
-
-  const auto star = make_star(100, 20, 10);
-  const auto triangles = omm::triangulate_delauney(star);
 }
