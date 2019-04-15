@@ -116,6 +116,12 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_options({ QObject::tr("This").toStdString(), QObject::tr("Area").toStdString() })
     .set_label(QObject::tr("anchor").toStdString()).set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom });
+
+  m_clone_dependencies = ::transform<Property*>(std::set{
+    COUNT_PROPERTY_KEY, COUNT_2D_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY, RADIUS_PROPERTY_KEY,
+    PATH_REFERENCE_PROPERTY_KEY, START_PROPERTY_KEY, END_PROPERTY_KEY, ALIGN_PROPERTY_KEY,
+    BORDER_PROPERTY_KEY, CODE_PROPERTY_KEY, SEED_PROPERTY_KEY, ANCHOR_PROPERTY_KEY
+  }, [this](const auto& key) { return &property(key); });
 }
 
 Cloner::Cloner(const Cloner &other) : Object(other)
@@ -155,12 +161,34 @@ bool Cloner::contains(const Vec2f &pos) const
 void Cloner::update()
 {
   if (is_active()) {
-    m_clones = make_clones();
-    m_draw_children = false;
+    if (m_clones.size() == 0) {
+      m_clones = make_clones();
+      m_draw_children = false;
+    }
   } else {
     m_clones.clear();
     m_draw_children = true;
   }
+}
+
+void Cloner::on_children_changed()
+{
+  m_clones.clear();
+  Object::on_children_changed();
+}
+
+void Cloner::on_child_property_value_changed(Property &property, Object &child)
+{
+  m_clones.clear();
+  Object::on_child_property_value_changed(property, child);
+}
+
+void Cloner::on_property_value_changed(Property &property)
+{
+  if (::contains(m_clone_dependencies, &property)) {
+    m_clones.clear();
+  }
+  Object::on_property_value_changed(property);
 }
 
 std::string Cloner::type() const { return TYPE; }

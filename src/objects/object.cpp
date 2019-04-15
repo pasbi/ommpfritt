@@ -315,6 +315,20 @@ void Object::copy_tags(Object& other) const
   }
 }
 
+void Object::on_property_value_changed(Property &property)
+{
+  if (!is_root()) {
+    parent().on_child_property_value_changed(property, *this);
+  }
+}
+
+void Object::on_child_property_value_changed(Property &property, Object &child)
+{
+  if (!is_root()) {
+    parent().on_child_property_value_changed(property, child);
+  }
+}
+
 double Object::apply_border(double t, Border border)
 {
   switch (border) {

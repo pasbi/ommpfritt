@@ -44,6 +44,9 @@ public:
     ::erase_if(items, [&has_parent](const T* subject) { return has_parent(subject); });
   }
 
+protected:
+  virtual void on_children_changed() {}
+
 private:
   T* m_parent;
   std::vector<std::unique_ptr<T>> m_children;

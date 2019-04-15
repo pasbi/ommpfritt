@@ -44,6 +44,11 @@ public:
   bool contains(const Vec2f &pos) const override;
   void update() override;
 
+protected:
+  void on_children_changed() override;
+  void on_child_property_value_changed(Property &property, Object &child) override;
+  void on_property_value_changed(Property &property) override;
+
 private:
   std::vector<std::unique_ptr<Object>> make_clones();
   std::vector<std::unique_ptr<Object>> copy_children(const std::size_t n);
@@ -56,6 +61,7 @@ private:
   void set_by_script(Object& object, std::size_t i);
   void set_fillrandom(Object& object, std::mt19937 &rng);
   std::vector<std::unique_ptr<Object>> m_clones;
+  std::set<Property*> m_clone_dependencies;
 
 };
 
