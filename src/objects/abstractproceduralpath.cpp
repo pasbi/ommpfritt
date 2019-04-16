@@ -12,7 +12,7 @@ class Style;
 
 void AbstractProceduralPath::draw_object(AbstractRenderer& renderer, const Style& style) const
 {
-  if (is_active()) { renderer.draw_spline(points(), style, is_closed()); }
+  if (is_active()) { renderer.draw_spline(m_points, style, is_closed()); }
 }
 
 AbstractPropertyOwner::Flag AbstractProceduralPath::flags() const
@@ -27,30 +27,30 @@ std::unique_ptr<Object> AbstractProceduralPath::convert() const
   copy_tags(*converted);
   converted->property(Path::IS_CLOSED_PROPERTY_KEY).set(is_closed());
   converted->property(Path::INTERPOLATION_PROPERTY_KEY).set(Path::InterpolationMode::Bezier);
-  converted->set_points(points());
+  converted->set_points(m_points);
   return std::unique_ptr<Object>(converted.release());
 }
 
 Point AbstractProceduralPath::evaluate(const double t) const
 {
-  return Cubics(points(), is_closed()).evaluate(t);
+  return Cubics(m_points, is_closed()).evaluate(t);
 }
 
-BoundingBox AbstractProceduralPath::bounding_box() const { return BoundingBox(points()); }
+BoundingBox AbstractProceduralPath::bounding_box() const { return BoundingBox(m_points); }
 double AbstractProceduralPath::path_length() const
 {
-  return Cubics(points(), is_closed()).length();
+  return Cubics(m_points, is_closed()).length();
 }
 
 bool AbstractProceduralPath::contains(const Vec2f &pos) const
 {
-  return Cubics(points(), is_closed()).contains(pos);
+  return Cubics(m_points, is_closed()).contains(pos);
 }
 
 std::vector<double> AbstractProceduralPath::cut(const Vec2f& c_start, const Vec2f& c_end)
 {
   const auto gti = global_transformation().inverted();
-  return Cubics(points(), is_closed()).cut( gti.apply_to_position(c_start),
+  return Cubics(m_points, is_closed()).cut( gti.apply_to_position(c_start),
                                             gti.apply_to_position(c_end) );
 }
 

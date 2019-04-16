@@ -22,10 +22,14 @@ public:
   bool contains(const Vec2f &pos) const override;
 
   std::vector<double> cut(const Vec2f& c_start, const Vec2f& c_end);
+  void update() override;
 
 protected:
   virtual std::vector<Point> points() const = 0;
   virtual bool is_closed() const = 0;
+
+private:
+  std::vector<Point> m_points;
 };
 
 }  // namespace omm
