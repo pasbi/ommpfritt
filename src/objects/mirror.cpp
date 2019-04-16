@@ -5,16 +5,9 @@
 #include "properties/optionsproperty.h"
 #include "geometry/vec2.h"
 
-namespace
-{
-
-
-}  // namespace
 
 namespace omm
 {
-
-class Style;
 
 Mirror::Mirror(Scene* scene) : Object(scene)
 {
@@ -22,15 +15,20 @@ Mirror::Mirror(Scene* scene) : Object(scene)
   add_property<OptionsProperty>(DIRECTION_PROPERTY_KEY)
     .set_options({ QObject::tr("Horizontal").toStdString(),
                    QObject::tr("Vertical").toStdString() })
-    .set_label(QObject::tr("Direction").toStdString()).set_category(category);
+      .set_label(QObject::tr("Direction").toStdString()).set_category(category);
 }
+
+Mirror::Mirror(const Mirror &other)
+  : Object(other), m_reflection(other.m_reflection->clone())
+{}
 
 
 void Mirror::draw_object(AbstractRenderer& renderer, const Style& style) const
 {
   assert(&renderer.scene == scene());
-  auto reflection = make_reflection();
-  if (reflection) { reflection->draw_recursive(renderer, style); }
+  if (m_reflection) {
+    m_reflection->draw_recursive(renderer, style);
+  }
 }
 
 BoundingBox Mirror::bounding_box() const
@@ -49,30 +47,32 @@ std::string Mirror::type() const { return TYPE; }
 std::unique_ptr<Object> Mirror::clone() const { return std::make_unique<Mirror>(*this); }
 AbstractPropertyOwner::Flag Mirror::flags() const { return Object::flags() | Flag::Convertable; }
 
-std::unique_ptr<Object> Mirror::make_reflection() const
-{
-  const auto n_children = this->n_children();
-  if (is_active() && n_children > 0) {
-    auto reflection = this->children().front()->clone();
-    reflection->set_transformation(get_mirror_t().apply(reflection->transformation()));
-    return reflection;
-  } else {
-    return nullptr;
-  }
-}
-
 std::unique_ptr<Object> Mirror::convert() const
 {
   std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
   copy_properties(*converted);
   copy_tags(*converted);
 
-  converted->adopt(make_reflection());
+  if (m_reflection) {
+    converted->adopt(m_reflection->clone());
+  }
+
   for (auto&& child : this->children()) {
     converted->adopt(child->clone());
   }
 
   return converted;
+}
+
+void Mirror::update()
+{
+  const auto n_children = this->n_children();
+  if (is_active() && n_children > 0) {
+    m_reflection = this->children().front()->clone();
+    m_reflection->set_transformation(get_mirror_t().apply(m_reflection->transformation()));
+  } else {
+    m_reflection.reset();
+  }
 }
 
 ObjectTransformation Mirror::get_mirror_t() const

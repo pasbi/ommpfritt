@@ -16,6 +16,7 @@ class Mirror : public Object
 public:
   enum class Direction { Horizontal, Vertical };
   explicit Mirror(Scene* scene);
+  Mirror(const Mirror& other);
   void draw_object(AbstractRenderer& renderer, const Style& style) const override;
   BoundingBox bounding_box() const override;
   std::string type() const override;
@@ -25,10 +26,12 @@ public:
   std::unique_ptr<Object> clone() const override;
   virtual Flag flags() const override;
   std::unique_ptr<Object> convert() const override;
+  void update() override;
 
 private:
-  std::unique_ptr<Object> make_reflection() const;
+  std::unique_ptr<Object> m_reflection;
   ObjectTransformation get_mirror_t() const;
+
 };
 
 }  // namespace omm
