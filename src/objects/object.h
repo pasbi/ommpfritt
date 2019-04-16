@@ -92,6 +92,7 @@ public:
 
   void set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t);
   void set_oriented_position(const Point &op, const bool align);
+  virtual std::unique_ptr<Object> outline(const double t) const;
 
   virtual bool contains(const Vec2f& pos) const;
   virtual void update();

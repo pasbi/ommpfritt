@@ -1,6 +1,7 @@
 #include "geometry/point.h"
 #include <cmath>
 #include <ostream>
+#include "logging.h"
 
 namespace omm
 {
@@ -101,6 +102,89 @@ PolarCoordinates Point::mirror_tangent( const PolarCoordinates& old_pos,
     new_pos.magnitude = new_other_pos.magnitude;
   }
   return new_pos;
+}
+
+double Point::get_direction(const Point *left_neighbor, const Point *right_neighbor) const
+{
+  double left_arg = 0;
+  double right_arg = 0;
+  bool has_left_direction = true;
+  bool has_right_direction = true;
+  static constexpr auto eps = 0.001;
+
+  if (right_tangent.magnitude >= eps) {
+    left_arg = right_tangent.argument;
+  } else if (left_neighbor != nullptr) {
+    left_arg = (position - left_neighbor->position).arg();
+  } else {
+    has_left_direction = false;
+  }
+
+  if (left_tangent.magnitude >= eps) {
+    right_arg = left_tangent.argument;
+  } else if (right_neighbor != nullptr) {
+    right_arg = (position - right_neighbor->position).arg();
+  } else {
+    has_right_direction = false;
+  }
+
+  if (has_left_direction && has_right_direction) {
+    auto a = 0.5  * (left_arg + right_arg);
+    if (a - right_arg < 0) {
+      a -= M_PI;
+    }
+    return a;
+
+  } else if (has_left_direction) {
+    return left_arg + M_PI_2;
+  } else if (has_right_direction) {
+    return right_arg - M_PI_2;
+  } else {
+    LWARNING << "Directed point must have at least one neighbor or tangent";
+    return 0.0;
+  }
+}
+
+Point Point::offset(double t, const Point *left_neighbor, const Point *right_neighbor) const
+{
+  const double arg = get_direction(left_neighbor, right_neighbor);
+  const auto direction = PolarCoordinates(arg, 1.0).to_cartesian();
+  const Vec2f pdirection = direction;  // (direction.y, -direction.x);
+
+  const auto f = [](const double t, const double mag) {
+    return mag + std::clamp(t, -mag, 0.0) + 0.5 * (std::max(0.0, t));
+  };
+
+  auto left_tanget = this->left_tangent;
+  auto right_tangent = this->right_tangent;
+  left_tanget.magnitude = f(t, left_tangent.magnitude);
+  right_tangent.magnitude = f(t, right_tangent.magnitude);
+  Point offset(position + t * pdirection, left_tanget, right_tangent);
+  return offset;
+}
+
+std::vector<Point> Point::offset(const double t,
+                                 const std::vector<Point>& points, const bool is_closed)
+{
+  const auto n = points.size();
+  if (n >= 2) {
+    std::vector<Point> off_points;
+    off_points.reserve(n);
+    const auto* left = is_closed ? &points.back() : nullptr;
+    off_points.push_back(points[0].offset(t, left, &points[1]));
+
+    for (std::size_t i = 1; i < n-1; ++i) {
+      off_points.push_back(points[i].offset(t, &points[i-1], &points[i+1]));
+    }
+
+    const auto* right = is_closed ? &points.front() : nullptr;
+    off_points.push_back(points[n-1].offset(t, &points[n-2], right));
+    return off_points;
+  } else if (n == 1) {
+    return { points[0].offset(t, nullptr, nullptr) };
+  } else {
+    return {};
+  }
 }
 
 }  // namespace omm

@@ -34,6 +34,8 @@ public:
   bool operator==(const Point& point) const;
   bool operator!=(const Point& point) const;
 
+  Point offset(double t, const Point *left_neighbor, const Point *right_neighbor) const;
+
   /**
    * @brief When a tangent is at `old_pos` and it is mirror-coupled with its sibling which moves
    *  from `old_other_pos` to `new_other_pos`, then this tangent moves to the return value of
@@ -47,8 +49,14 @@ public:
                                           const PolarCoordinates& old_other_pos,
                                           const PolarCoordinates& new_other_pos );
 
-};
+private:
+  double get_direction(const Point* left_neighbor, const Point* right_neighbor) const;
 
+public:
+  static std::vector<Point> offset(const double t,
+                                   const std::vector<Point>& points, const bool is_closed);
+
+};
 
 constexpr PolarCoordinates to_polar(Vec2f cartesian);
 constexpr Vec2f to_cartesian(const PolarCoordinates& polar);

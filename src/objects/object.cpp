@@ -374,6 +374,7 @@ void Object::set_oriented_position(const Point& op, const bool align)
   set_global_transformation(transformation);
 }
 
+
 bool Object::is_active() const { return property(IS_ACTIVE_PROPERTY_KEY).value<bool>(); }
 
 Object::Visibility Object::visibility() const
@@ -416,6 +417,7 @@ void Object::update_recursive()
 void Object::update() { }
 void Object::draw_object(AbstractRenderer&, const Style&) const {}
 void Object::draw_handles(AbstractRenderer&) const {}
+std::unique_ptr<Object> Object::outline(const double t) const { return nullptr; }
 
 
 }  // namespace omm

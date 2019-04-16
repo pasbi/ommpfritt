@@ -9,6 +9,7 @@ file (GLOB SOURCES
   "mirror.cpp"
   "object.cpp"
   "objectregister.cpp"
+  "outline.cpp"
   "path.cpp"
   "proceduralpath.cpp"
   "text.cpp"
