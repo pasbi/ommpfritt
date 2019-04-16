@@ -163,11 +163,16 @@ std::string SelectObjectsTool::name() const
 
 Command* SelectObjectsTool::transform_objects(ObjectTransformation t, const bool tool_space)
 {
-  if (tool_space) { t = t.transformed(this->transformation().inverted()); }
+  if (tool_space) {
+    t = t.transformed(this->transformation().inverted());
+  }
+
+  const Matrix mat = viewport_transformation.to_mat().inverted() * t.to_mat();
+
   using TransformationMode = ObjectsTransformationCommand::TransformationMode;
   const auto tmode = property(TRANSFORMATION_MODE_KEY).value<TransformationMode>();
   auto command = std::make_unique<ObjectsTransformationCommand>( scene.item_selection<Object>(),
-                                                                 t, tmode );
+                                                                 mat, tmode );
   auto& command_ref = *command;
   scene.submit(std::move(command));
   return &command_ref;
@@ -195,7 +200,7 @@ PointSelectHandle::TangentMode SelectPointsTool::tangent_mode() const
 
 std::unique_ptr<QMenu> SelectPointsTool::make_context_menu(QWidget* parent)
 {
-  Q_UNUSED(parent);
+  Q_UNUSED(parent)
   auto& app = Application::instance();
   auto menus = app.key_bindings.make_menus(app, MainWindow::path_menu_entries());
   if (menus.size() > 1) {

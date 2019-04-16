@@ -12,7 +12,7 @@ class ObjectsTransformationCommand : public Command
 {
 public:
   enum class TransformationMode { Object, Axis };
-  ObjectsTransformationCommand(const std::set<Object*>& objects, const ObjectTransformation& t,
+  ObjectsTransformationCommand(const std::set<Object*>& objects, const Matrix& t,
                                const TransformationMode transformation_mode);
   void undo() override;
   void redo() override;

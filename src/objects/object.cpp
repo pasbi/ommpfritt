@@ -285,9 +285,9 @@ std::unique_ptr<AbstractRAIIGuard> Object::acquire_set_parent_guard()
   {
   public:
     explicit SetParentGuard(Object& self)
-      : m_self(self), m_global_transformation(m_self.global_transformation(false)) { }
+      : m_self(self), m_global_transformation(m_self.global_transformation(true)) { }
 
-    ~SetParentGuard() { m_self.set_global_transformation(m_global_transformation, false); }
+    ~SetParentGuard() { m_self.set_global_transformation(m_global_transformation, true); }
 
   private:
     Object& m_self;
