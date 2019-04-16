@@ -41,7 +41,7 @@ std::vector<Point> Ellipse::points() const
     const double y = std::sin(theta) * r.y;
     if (smooth) {
       const Vec2f d(std::sin(theta) * r.x, -std::cos(theta) * r.y);
-      points.push_back(Point(Vec2f(x, y), std::atan2(d.y, d.x), 2.0 * d.euclidean_norm()/n));
+      points.push_back(Point(Vec2f(x, y), d.arg(), 2.0 * d.euclidean_norm()/n));
     } else {
       points.push_back(Point(Vec2f(x, y)));
     }

@@ -45,7 +45,7 @@ public:
       const auto origin = transformation().inverted().apply_to_position(press_pos());
       const auto delta = global_pos - origin;
 
-      double angle = atan2(global_pos.y, global_pos.x) - atan2(origin.y, origin.x);
+      double angle = global_pos.arg() - origin.arg();
       if (tool.integer_transformation()) {
         static constexpr double step = 15 * M_PI / 180.0;
         angle = step * static_cast<int>(angle / step);

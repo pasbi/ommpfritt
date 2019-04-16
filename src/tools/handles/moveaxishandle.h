@@ -66,7 +66,7 @@ public:
   void draw(omm::AbstractRenderer& renderer) const override
   {
     const double magnitude = m_direction.euclidean_norm();
-    const double argument = std::atan2(m_direction.y, m_direction.x);
+    const double argument = m_direction.arg();
 
     const omm::Point tip(m_direction);
     const omm::Point right(PolarCoordinates(argument-0.1, magnitude*0.9).to_cartesian());

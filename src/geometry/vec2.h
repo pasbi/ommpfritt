@@ -95,6 +95,11 @@ public:
   {
     return (*this) += (-rhs);
   }
+
+  double arg() const
+  {
+    return std::atan2(y, x);
+  }
 };
 
 template<typename ValueT>

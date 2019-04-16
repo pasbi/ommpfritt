@@ -7,7 +7,7 @@ PolarCoordinates::PolarCoordinates(const double argument, const double magnitude
   : argument(argument), magnitude(magnitude) { }
 
 PolarCoordinates::PolarCoordinates(const Vec2f& cartesian)
-  : PolarCoordinates(std::atan2(cartesian[1], cartesian[0]), cartesian.euclidean_norm())
+  : PolarCoordinates(cartesian.arg(), cartesian.euclidean_norm())
 {
 }
 
