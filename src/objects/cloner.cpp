@@ -329,33 +329,35 @@ void Cloner::set_by_script(Object& object, std::size_t i)
 void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
 {
   auto* apo = property(PATH_REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
-  assert(apo != nullptr && apo->kind() == AbstractPropertyOwner::Kind::Object);
-  auto& area = static_cast<Object&>(*apo);
+  if (apo != nullptr) {
+    assert(apo->kind() == AbstractPropertyOwner::Kind::Object);
+    auto& area = static_cast<Object&>(*apo);
 
-  const auto position = [&rng, &area]() {
-    static constexpr auto max_rejections = 1000;
-    auto dist = std::uniform_real_distribution<double>(0, 1);
-    for (std::size_t i = 0; i < max_rejections; ++i) {
-      const Vec2f p( dist(rng) * area.bounding_box().width() + area.bounding_box().left(),
-                     dist(rng) * area.bounding_box().height() + area.bounding_box().top() );
-      if (area.contains(p)) {
-        return p;
+    const auto position = [&rng, &area]() {
+      static constexpr auto max_rejections = 1000;
+      auto dist = std::uniform_real_distribution<double>(0, 1);
+      for (std::size_t i = 0; i < max_rejections; ++i) {
+        const Vec2f p( dist(rng) * area.bounding_box().width() + area.bounding_box().left(),
+                       dist(rng) * area.bounding_box().height() + area.bounding_box().top() );
+        if (area.contains(p)) {
+          return p;
+        }
       }
+
+      LWARNING << "Giving up to create sample within path after " << max_rejections << " rejections.";
+      LINFO << "Return a random point on edge instead.";
+
+      const auto t = dist(rng);
+      return area.evaluate(t).position;
+    }();
+
+    auto t = object.transformation();
+    t.set_translation(position);
+    if (property(ANCHOR_PROPERTY_KEY).value<Anchor>() == Anchor::Area) {
+      t = global_transformation().inverted().apply(area.global_transformation()).apply(t);
     }
-
-    LWARNING << "Giving up to create sample within path after " << max_rejections << " rejections.";
-    LINFO << "Return a random point on edge instead.";
-
-    const auto t = dist(rng);
-    return area.evaluate(t).position;
-  }();
-
-  auto t = object.transformation();
-  t.set_translation(position);
-  if (property(ANCHOR_PROPERTY_KEY).value<Anchor>() == Anchor::Area) {
-    t = global_transformation().inverted().apply(area.global_transformation()).apply(t);
+    object.set_transformation(t);
   }
-  object.set_transformation(t);
 }
 
 
