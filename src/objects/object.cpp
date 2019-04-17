@@ -20,6 +20,7 @@
 #include "properties/optionsproperty.h"
 #include "properties/vectorproperty.h"
 #include "logging.h"
+#include "objects/path.h"
 
 namespace
 {
@@ -408,10 +409,11 @@ bool Object::contains(const Vec2f &point) const
 
 void Object::update_recursive()
 {
-  update();
+  // it's important to first update the children because of the way e.g. Cloner does its caching.
   for (auto* child : children()) {
     child->update_recursive();
   }
+  update();
 }
 
 void Object::update() { }
