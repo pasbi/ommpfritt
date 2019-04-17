@@ -31,6 +31,19 @@ public:
 
   Point smoothed(Vec2f &left_neighbor, const Vec2f &right_neighbor) const;
   Point nibbed() const;
+
+  /**
+   * @brief flattened means adjust the tangents such that the angle between them approaches
+   *  180 degree.
+   * @param t control the amount of the effect.
+   *  t = 0: returns a unmodified copy of the this.
+   *  t = 1: return a copy where the tangents are spread by 180 degree.
+   *  Values outside that range have not been tested, the result of such an operation is a surprise.
+   *  The magnitude of tangents is not modified. The angle bisector is an invariant.
+   * @return the flattened point.
+   */
+  Point flattened(const double t) const;
+
   bool operator==(const Point& point) const;
   bool operator!=(const Point& point) const;
 

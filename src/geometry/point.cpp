@@ -53,6 +53,28 @@ Point Point::nibbed() const
   return copy;
 }
 
+Point Point::flattened(const double t) const
+{
+  Point copy(*this);
+  auto center = 0.5*(left_tangent.argument + right_tangent.argument);
+  if (center - left_tangent.argument < 0) {
+    center += M_PI;
+  }
+
+  const auto lerp_angle = [](double rad1, double rad2, const double t) {
+
+    const Vec2f v =   t   * PolarCoordinates(rad2, 1.0).to_cartesian()
+                  + (1-t) * PolarCoordinates(rad1, 1.0).to_cartesian();
+    return (v/2.0).arg();
+
+  };
+
+  copy.left_tangent.argument = lerp_angle(left_tangent.argument, center - M_PI_2, t);
+  copy.right_tangent.argument = lerp_angle(right_tangent.argument, center + M_PI_2, t);
+
+  return copy;
+}
+
 std::ostream& operator<<(std::ostream& ostream, const PolarCoordinates& pc)
 {
   ostream << "[phi=" << pc.argument << ", r=" << pc.magnitude << "]";
@@ -160,7 +182,8 @@ Point Point::offset(double t, const Point *left_neighbor, const Point *right_nei
   left_tanget.magnitude = f(t, left_tangent.magnitude);
   right_tangent.magnitude = f(t, right_tangent.magnitude);
   Point offset(position + t * pdirection, left_tanget, right_tangent);
-  return offset;
+  const double tn = t / Vec2f(left_tanget.magnitude, right_tangent.magnitude).euclidean_norm();
+  return offset.flattened(std::clamp(tn, 0.0, 1.0));
 }
 
 std::vector<Point> Point::offset(const double t,

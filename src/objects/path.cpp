@@ -306,12 +306,12 @@ void Path::update_tangents()
   }
 }
 
-std::unique_ptr<Object> Path::outline(const double t) const
+Object::PathUniquePtr Path::outline(const double t) const
 {
   auto outline = std::make_unique<Path>(scene());
   outline->set_points(Point::offset(t, m_points, is_closed()));
   outline->property(IS_CLOSED_PROPERTY_KEY).set(is_closed());
-  return std::unique_ptr<Object>(outline.release());
+  return Object::PathUniquePtr(outline.release());
 }
 
 }  // namespace omm

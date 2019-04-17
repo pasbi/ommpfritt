@@ -1,6 +1,7 @@
 #pragma once
 
 #include "objects/object.h"
+#include "objects/path.h"
 #include <Qt>
 
 namespace omm
@@ -27,8 +28,12 @@ public:
   std::unique_ptr<Object> convert() const override;
   void update() override;
 
+  Point evaluate(const double t) const override;
+  double path_length() const override;
+  bool contains(const Vec2f &pos) const override;
+
 private:
-  std::unique_ptr<Object> m_outline;
+  PathUniquePtr m_outline;
 };
 
 }  // namespace omm

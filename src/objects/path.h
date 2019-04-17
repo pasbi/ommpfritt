@@ -27,8 +27,6 @@ public:
   static constexpr auto POINTS_POINTER = "points";
   static constexpr auto INTERPOLATION_PROPERTY_KEY = "interpolation";
 
-  Point evaluate(const double t) const override;
-  double path_length() const override;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
@@ -40,7 +38,7 @@ public:
 
   std::map<Point*, Point>
   modified_points(const bool constrain_to_selection, InterpolationMode mode);
-  std::unique_ptr<Object> outline(const double t) const override;
+  PathUniquePtr outline(const double t) const override;
 
   struct PointSequence
   {
@@ -61,6 +59,9 @@ public:
 
   std::vector<double> cut(const Vec2f& c_start, const Vec2f& c_end);
   Point smoothed(const std::size_t& i) const;
+
+  Point evaluate(const double t) const override;
+  double path_length() const override;
   bool contains(const Vec2f &pos) const override;
 
 private:

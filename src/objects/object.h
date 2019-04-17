@@ -17,6 +17,13 @@ namespace omm
 
 class Scene;
 class Property;
+class Path;
+
+class PathDeleter
+{
+public:
+  void operator()(Path* path);
+};
 
 class Object
   : public PropertyOwner<AbstractPropertyOwner::Kind::Object>
@@ -25,6 +32,9 @@ class Object
   , public AbstractFactory<std::string, Object, Scene*>
 {
 public:
+
+  using PathUniquePtr = std::unique_ptr<Path, PathDeleter>;
+
   explicit Object(Scene* scene);
   explicit Object(const Object& other);
   virtual ~Object();
@@ -92,7 +102,7 @@ public:
 
   void set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t);
   void set_oriented_position(const Point &op, const bool align);
-  virtual std::unique_ptr<Object> outline(const double t) const;
+  virtual PathUniquePtr outline(const double t) const;
 
   virtual bool contains(const Vec2f& pos) const;
   virtual void update();

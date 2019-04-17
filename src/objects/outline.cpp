@@ -5,7 +5,7 @@
 #include "properties/floatproperty.h"
 #include "properties/referenceproperty.h"
 #include "geometry/vec2.h"
-
+#include "objects/path.h"
 
 namespace omm
 {
@@ -21,7 +21,7 @@ Outline::Outline(Scene* scene) : Object(scene)
 }
 
 Outline::Outline(const Outline &other)
-  : Object(other), m_outline(other.m_outline->clone())
+  : Object(other), m_outline(PathUniquePtr(new Path(*other.m_outline)))
 { }
 
 void Outline::draw_object(AbstractRenderer& renderer, const Style& style) const
@@ -39,25 +39,55 @@ BoundingBox Outline::bounding_box() const
 
 std::string Outline::type() const { return TYPE; }
 std::unique_ptr<Object> Outline::clone() const { return std::make_unique<Outline>(*this); }
-AbstractPropertyOwner::Flag Outline::flags() const { return Object::flags() | Flag::Convertable; }
+AbstractPropertyOwner::Flag Outline::flags() const
+{
+  return Object::flags() | Flag::Convertable | Flag::IsPathLike; }
 
 void Outline::update()
 {
   if (is_active()) {
     auto* ref = property(REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
     const auto t = property(OFFSET_PROPERTY_KEY).value<double>();
-    auto* object = ref ? ref->cast<Object>() : nullptr;
-    if (object) {
-      m_outline = object->outline(t);
-    } else {
-      m_outline.reset();
-    }
+    m_outline = ref ? ref->cast<Object>()->outline(t) : nullptr;
+  } else {
+    m_outline.reset();
+  }
+}
+
+Point Outline::evaluate(const double t) const
+{
+  if (m_outline) {
+    return m_outline->evaluate(t);
+  } else {
+    return Point();
+  }
+}
+
+double Outline::path_length() const
+{
+  if (m_outline) {
+    return m_outline->path_length();
+  } else {
+    return 0.0;
+  }
+}
+
+bool Outline::contains(const Vec2f &pos) const
+{
+  if (m_outline) {
+    return m_outline->contains(pos);
+  } else {
+    return false;
   }
 }
 
 std::unique_ptr<Object> Outline::convert() const
 {
-  return m_outline->clone();
+  auto converted = m_outline->clone();
+  copy_properties(*converted);
+  copy_tags(*converted);
+  converted->property(Path::INTERPOLATION_PROPERTY_KEY).set(Path::InterpolationMode::Bezier);
+  return std::unique_ptr<Object>(converted.release());
 }
 
 
