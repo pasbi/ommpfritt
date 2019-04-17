@@ -36,32 +36,6 @@ public:
   bool operator!=(const TriggerPropertyDummyValueType& other) const;
 };
 
-template<typename VecT>
-class VectorPropertyValueType : public VecT
-{
-public:
-  static constexpr auto n_elems = VecT::n_elem;
-  using VecT::VecT;
-  bool operator==(const VectorPropertyValueType& other) const
-  {
-    for (std::size_t i = 0; i < VectorPropertyValueType::n_elems; ++i) {
-      if (other(i) != (*this)(i)) { return false; }
-    }
-    return true;
-  }
-
-  bool operator<(const VectorPropertyValueType& other) const
-  {
-    for (std::size_t i = 0; i < VectorPropertyValueType::n_elems; ++i) {
-      if (other(i) < (*this)(i)) { return true; }
-    }
-    return false;
-  }
-
-  bool operator!=(const VectorPropertyValueType& other) const { return !(other == *this); }
-
-};
-
 class Property
   : public AbstractFactory<std::string, Property>
   , public virtual Serializable
