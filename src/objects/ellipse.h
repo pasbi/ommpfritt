@@ -22,7 +22,7 @@ public:
   static constexpr auto SMOOTH_PROPERTY_KEY = "smooth";
 
 private:
-  std::vector<Point> points() const override;
+  std::vector<Point> points() override;
   bool is_closed() const override;
 };
 

@@ -18,7 +18,7 @@ public:
   static constexpr auto CENTER_PROPERTY_KEY = "center";
 
 private:
-  std::vector<Point> points() const override;
+  std::vector<Point> points() override;
   bool is_closed() const override;
 };
 
