@@ -131,9 +131,9 @@ void ExportDialog::update_preview()
   int height = m_preview_label->height();
 
   if (const double ar = compute_aspect_ratio(view()); double(width) / double(height) > ar) {
-    width = height * ar;
+    width = static_cast<int>(height * ar);
   } else {
-    height = width / ar;
+    height = static_cast<int>(width / ar);
   }
 
   m_preview_label->setPixmap(QPixmap::fromImage(render(width, height)));
@@ -141,13 +141,7 @@ void ExportDialog::update_preview()
 
 const View* ExportDialog::view() const
 {
-  auto* apo = m_view_combobox->value();
-  if (apo == nullptr) { return nullptr; }
-
-  auto* object = apo->cast<Object>();
-  assert(object != nullptr && object->type() == View::TYPE);
-
-  return static_cast<View*>(object);
+  return type_cast<View*>(kind_cast<Object*>(m_view_combobox->value()));
 }
 
 QImage ExportDialog::render(int width, int height) const

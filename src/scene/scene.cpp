@@ -38,7 +38,7 @@ constexpr auto STYLES_POINTER = "styles";
 auto implicitely_selected_tags(const std::set<omm::AbstractPropertyOwner*>& selection)
 {
   std::set<omm::AbstractPropertyOwner*> tags;
-  for (auto* object : omm::AbstractPropertyOwner::cast<omm::Object>(selection)) {
+  for (auto* object : omm::kind_cast<omm::Object>(selection)) {
     for (auto* tag : object->tags.items()) {
       tags.insert(tag);
     }
@@ -385,12 +385,12 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
     }
 
     std::map<Object*, std::set<Tag*>> tag_map;
-    for (Tag* tag : AbstractPropertyOwner::cast<Tag>(selection)) {
+    for (Tag* tag : kind_cast<Tag>(selection)) {
       if (!::contains(selection, tag->owner)) { tag_map[tag->owner].insert(tag); }
     }
     for (auto [ owner, tags ] : tag_map) { ::remove_items(*this, owner->tags, tags); }
-    ::remove_items(*this, styles, AbstractPropertyOwner::cast<Style>(selection));
-    ::remove_items(*this, object_tree, AbstractPropertyOwner::cast<Object>(selection));
+    ::remove_items(*this, styles, kind_cast<Style>(selection));
+    ::remove_items(*this, object_tree, kind_cast<Object>(selection));
 
     undo_stack.endMacro();
     return true;

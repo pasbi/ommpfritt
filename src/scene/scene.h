@@ -66,7 +66,7 @@ public:
   std::set<AbstractPropertyOwner*> selection() const;
   template<typename ItemT> std::set<ItemT*> item_selection() const
   {
-    return AbstractPropertyOwner::cast<ItemT>(m_item_selection.at(ItemT::KIND));
+    return kind_cast<ItemT>(m_item_selection.at(ItemT::KIND));
   }
 
 private:

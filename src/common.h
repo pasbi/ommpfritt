@@ -206,7 +206,7 @@ void print_variant_value(std::ostream& ostream, const variant_type& variant)
 
 template<typename T, typename S> T type_cast(S* s)
 {
-  if (s->type() == std::decay_t<std::remove_pointer_t<T>>::TYPE) {
+  if (s != nullptr && s->type() == std::decay_t<std::remove_pointer_t<T>>::TYPE) {
     return static_cast<T>(s);
   } else {
     return nullptr;
@@ -229,10 +229,6 @@ Container<T> type_cast(const Container<S>& apos)
   return ::filter_if(casted, ::is_not_null);
 }
 
-template<typename T> struct dereference
-{
-  decltype(auto) operator()(std::add_pointer_t<T> val) const { return *val; }
-};
 
 template<typename T> std::ostream& operator<<(std::ostream& ostream, const std::vector<T>& vs)
 {

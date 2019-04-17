@@ -160,6 +160,10 @@ bool Cloner::contains(const Vec2f &pos) const
 
 void Cloner::update()
 {
+  auto* apo = property(PATH_REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
+  auto* ref = kind_cast<Object*>(apo);
+  if (ref) {ref->update(); }
+
   if (is_active()) {
     if (m_clones.size() == 0) {
       m_clones = make_clones();

@@ -132,7 +132,7 @@ void ObjectSelectHandle::set_selected(bool selected)
   } else {
     selection.erase(&m_object);
   }
-  m_scene.set_selection(AbstractPropertyOwner::cast(selection));
+  m_scene.set_selection(down_cast(selection));
 }
 
 bool ObjectSelectHandle::is_selected() const

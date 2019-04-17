@@ -62,7 +62,7 @@ std::set<AbstractPropertyOwner*> ObjectTreeView::selected_objects() const
 
 std::set<AbstractPropertyOwner*> ObjectTreeView::selected_tags() const
 {
-  return AbstractPropertyOwner::cast(m_selection_model->selected_tags());
+  return down_cast(m_selection_model->selected_tags());
 }
 
 void ObjectTreeView::handle_drag_event(QDragMoveEvent* e)
@@ -116,7 +116,7 @@ void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
     const auto left_button = e->buttons() & Qt::LeftButton;
     if (left_button && tag_column) {
       const auto selected_tags = m_selection_model->selected_tags_ordered(model()->scene);
-      const auto st_apo = AbstractPropertyOwner::cast(selected_tags);
+      const auto st_apo = down_cast(selected_tags);
       if (selected_tags.size() > 0) {
         auto mime_data = std::make_unique<PropertyOwnerMimeData>(st_apo);
         auto drag = std::make_unique<QDrag>(this);

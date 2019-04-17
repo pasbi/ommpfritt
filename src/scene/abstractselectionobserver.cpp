@@ -4,18 +4,6 @@
 #include "tags/tag.h"
 #include "tools/tool.h"
 
-namespace
-{
-
-template<typename ItemT> auto cast(const std::set<omm::AbstractPropertyOwner*>& items)
-{
-  const auto items_t = omm::AbstractPropertyOwner::cast<ItemT>(items);
-  assert(items_t.size() == items.size());
-  return items_t;
-}
-
-}  // namespace
-
 namespace omm
 {
 
@@ -33,16 +21,16 @@ on_selection_changed( const std::set<AbstractPropertyOwner*>& selection,
 {
   switch (kind) {
   case AbstractPropertyOwner::Kind::Style:
-    on_style_selection_changed(::cast<Style>(selection));
+    on_style_selection_changed(kind_cast<Style>(selection));
     break;
   case AbstractPropertyOwner::Kind::Object:
-    on_object_selection_changed(::cast<Object>(selection));
+    on_object_selection_changed(kind_cast<Object>(selection));
     break;
   case AbstractPropertyOwner::Kind::Tag:
-    on_tag_selection_changed(::cast<Tag>(selection));
+    on_tag_selection_changed(kind_cast<Tag>(selection));
     break;
   case AbstractPropertyOwner::Kind::Tool:
-    on_tool_selection_changed(::cast<Tool>(selection));
+    on_tool_selection_changed(kind_cast<Tool>(selection));
     break;
   default:
     break;

@@ -46,9 +46,13 @@ AbstractPropertyOwner::Flag Outline::flags() const
 void Outline::update()
 {
   if (is_active()) {
-    auto* ref = property(REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
+    const auto* ref = property(REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
     const auto t = property(OFFSET_PROPERTY_KEY).value<double>();
-    m_outline = ref ? ref->cast<Object>()->outline(t) : nullptr;
+    if (auto* o = kind_cast<const Object*>(ref); o != nullptr) {
+      m_outline = o->outline(t);
+    } else {
+      m_outline.reset();
+    }
   } else {
     m_outline.reset();
   }
@@ -74,6 +78,9 @@ double Outline::path_length() const
 
 bool Outline::contains(const Vec2f &pos) const
 {
+  auto* ref = kind_cast<Object*>(property(REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>());
+  if (ref) {ref->update(); }
+
   if (m_outline) {
     return m_outline->contains(pos);
   } else {

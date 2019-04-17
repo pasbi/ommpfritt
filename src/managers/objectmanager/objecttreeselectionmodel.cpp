@@ -106,9 +106,9 @@ const ObjectTreeAdapter& ObjectTreeSelectionModel::model() const
 
 void ObjectTreeSelectionModel::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
-  m_selected_tags = AbstractPropertyOwner::cast<Tag>(selection);
+  m_selected_tags = kind_cast<Tag>(selection);
   QItemSelection new_selection;
-  for (Object* object : AbstractPropertyOwner::cast<Object>(selection)) {
+  for (Object* object : kind_cast<Object>(selection)) {
     QModelIndex index = model().index_of(*object);
     new_selection.merge(QItemSelection(index, index), QItemSelectionModel::Select);
   }
