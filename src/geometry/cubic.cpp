@@ -45,7 +45,7 @@ namespace omm
 Cubic::Cubic(const Point& start, const Point& end)
   : Cubic( { start.position, start.right_position(),
              end.left_position(), end.position },
-           start.is_selected && end.is_selected )
+             start.is_selected && end.is_selected )
 {
 }
 

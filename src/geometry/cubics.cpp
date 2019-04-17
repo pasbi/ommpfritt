@@ -9,11 +9,14 @@ namespace
 std::vector<omm::Cubic> make_cubics(const std::vector<omm::Point>& points, const bool is_closed)
 {
   std::list<omm::Cubic> cubics;
-  for (std::size_t i = 0; i < points.size() - 1; ++i) {
-    cubics.push_back(omm::Cubic(points[i], points[i+1]));
-  }
-  if (is_closed && points.size() > 2) {
-    cubics.push_back(omm::Cubic(points.back(), points.front()));
+  if (points.size() > 0) {
+    // the loop cannot handle the case points.size() == 0
+    for (std::size_t i = 0; i < points.size() - 1; ++i) {
+      cubics.push_back(omm::Cubic(points[i], points[i+1]));
+    }
+    if (is_closed && points.size() > 2) {
+      cubics.push_back(omm::Cubic(points.back(), points.front()));
+    }
   }
   return std::vector(cubics.begin(), cubics.end());
 }
@@ -31,8 +34,12 @@ Cubics::Cubics(const std::vector<Point>& points, const bool is_closed)
 
 Point Cubics::evaluate(const double path_t) const
 {
-  const auto [segment_i, segment_t] = path_to_segment(path_t);
-  return segment(segment_i).evaluate(segment_t);
+  if (m_cubics.empty()) {
+    return Point();
+  } else {
+    const auto [segment_i, segment_t] = path_to_segment(path_t);
+    return segment(segment_i).evaluate(segment_t);
+  }
 }
 
 std::vector<double> Cubics::cut(const Vec2f& a, const Vec2f& b) const
