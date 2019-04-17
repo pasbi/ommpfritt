@@ -111,8 +111,8 @@ public:
 protected:
   bool m_draw_children = true;
   void copy_tags(Object& other) const;
-  void on_property_value_changed(Property& property) override;
-  virtual void on_child_property_value_changed(Property& property, Object& child);
+  void on_change() override;
+  virtual void on_child_changed(Object& child);
 
 private:
   friend class ObjectView;

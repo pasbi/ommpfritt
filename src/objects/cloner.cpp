@@ -171,16 +171,10 @@ void Cloner::update()
   }
 }
 
-void Cloner::on_children_changed()
+void Cloner::on_child_changed(Object &child)
 {
   m_clones.clear();
-  Object::on_children_changed();
-}
-
-void Cloner::on_child_property_value_changed(Property &property, Object &child)
-{
-  m_clones.clear();
-  Object::on_child_property_value_changed(property, child);
+  Object::on_child_changed(child);
 }
 
 void Cloner::on_property_value_changed(Property &property)

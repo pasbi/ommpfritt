@@ -26,6 +26,7 @@ class OptionsProperty;
 class AbstractPropertyObserver
 {
 public:
+  virtual ~AbstractPropertyObserver() = default;
   virtual void on_property_value_changed(Property& property) = 0;
 };
 

@@ -8,6 +8,17 @@ namespace omm
 {
 
 class AbstractPropertyOwner;
+class ReferenceProperty;
+
+class ReferencePropertyReferenceObserver : public AbstractPropertyOwnerObserver
+{
+public:
+  ReferencePropertyReferenceObserver(ReferenceProperty& master_property);
+  void on_change(AbstractPropertyOwner*) override;
+
+private:
+  ReferenceProperty& m_master_property;
+};
 
 class ReferenceProperty : public TypedProperty<AbstractPropertyOwner*>
 {
@@ -32,11 +43,14 @@ public:
   collect_candidates(const Scene& scene, const AbstractPropertyOwner::Kind allowed_kinds,
                                          const AbstractPropertyOwner::Flag required_flags);
 
+  void set(AbstractPropertyOwner* const& apo) override;
+
 private:
   // default is always nullptr
   void set_default_value(const value_type& value) override;
   AbstractPropertyOwner::Kind m_allowed_kinds = AbstractPropertyOwner::Kind::All;
   AbstractPropertyOwner::Flag m_required_flags = AbstractPropertyOwner::Flag::None;
+  ReferencePropertyReferenceObserver m_referenceproperty_reference_observer;
 };
 
 }  // namespace omm

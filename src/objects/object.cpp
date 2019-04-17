@@ -316,17 +316,18 @@ void Object::copy_tags(Object& other) const
   }
 }
 
-void Object::on_property_value_changed(Property &property)
+void Object::on_change()
 {
   if (!is_root()) {
-    parent().on_child_property_value_changed(property, *this);
+    parent().on_child_changed(*this);
   }
+  AbstractPropertyOwner::on_change();
 }
 
-void Object::on_child_property_value_changed(Property &property, Object &child)
+void Object::on_child_changed(Object &child)
 {
   if (!is_root()) {
-    parent().on_child_property_value_changed(property, child);
+    parent().on_child_changed(child);
   }
 }
 

@@ -6,6 +6,7 @@ namespace omm
 
 ReferenceProperty::ReferenceProperty()
   : TypedProperty(nullptr)
+  , m_referenceproperty_reference_observer(*this)
 {
   set_default_value(nullptr);
 }
@@ -70,6 +71,27 @@ std::unique_ptr<Property> ReferenceProperty::clone() const
   return std::make_unique<ReferenceProperty>(*this);
 }
 
+void ReferenceProperty::set(AbstractPropertyOwner * const &apo)
+{
+  auto* old_apo = value();
+  if (old_apo) {
+    old_apo->unregister_observer(m_referenceproperty_reference_observer);
+  }
+  TypedProperty::set(apo);
+  if (apo) {
+    apo->register_observer(m_referenceproperty_reference_observer);
+  }
+}
+
 void ReferenceProperty::revise() { set(nullptr); }
+
+ReferencePropertyReferenceObserver
+::ReferencePropertyReferenceObserver(ReferenceProperty &master_property)
+  : m_master_property(master_property) {}
+
+void ReferencePropertyReferenceObserver::on_change(AbstractPropertyOwner *)
+{
+  m_master_property.notify_observers();
+}
 
 }   // namespace omm

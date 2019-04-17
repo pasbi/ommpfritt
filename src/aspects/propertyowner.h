@@ -14,11 +14,22 @@
 #include "properties/stringproperty.h"
 #include "common.h"
 #include <Qt>
+#include "observed.h"
 
 namespace omm
 {
 
-class AbstractPropertyOwner : public virtual Serializable, public AbstractPropertyObserver
+class AbstractPropertyOwner;
+class AbstractPropertyOwnerObserver
+{
+public:
+  virtual ~AbstractPropertyOwnerObserver() = default;
+  virtual void on_change(AbstractPropertyOwner* apo) = 0;
+};
+
+class AbstractPropertyOwner : public virtual Serializable,
+                              public AbstractPropertyObserver,
+                              public Observed<AbstractPropertyOwnerObserver>
 {
 public:
   enum class Kind { None = 0x0,
@@ -49,6 +60,7 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual std::string name() const;
   void on_property_value_changed(Property& property) override;
+  virtual void on_change();
   virtual Kind kind() const = 0;
 
   bool has_reference_cycle(const std::string& key) const;

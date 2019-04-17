@@ -45,9 +45,8 @@ public:
   void update() override;
 
 protected:
-  void on_children_changed() override;
-  void on_child_property_value_changed(Property &property, Object &child) override;
-  void on_property_value_changed(Property &property) override;
+  void on_child_changed(Object &child) override;
+  void on_property_value_changed(Property& property) override;
 
 private:
   std::vector<std::unique_ptr<Object>> make_clones();

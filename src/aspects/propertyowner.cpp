@@ -19,7 +19,6 @@ namespace omm
 
 const std::string AbstractPropertyOwner::NAME_PROPERTY_KEY = "name";
 
-
 const OrderedMap<std::string, Property>& AbstractPropertyOwner::properties() const
 {
   return m_properties;
@@ -89,7 +88,18 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
   }
 }
 
-void AbstractPropertyOwner::on_property_value_changed(Property&) { }
+void AbstractPropertyOwner::on_property_value_changed(Property& property)
+{
+  Q_UNUSED(property)
+  on_change();
+}
+
+void AbstractPropertyOwner::on_change()
+{
+  Observed<AbstractPropertyOwnerObserver>::for_each([this](auto* observer) {
+    observer->on_change(this);
+  });
+}
 
 std::string AbstractPropertyOwner::name() const
 {

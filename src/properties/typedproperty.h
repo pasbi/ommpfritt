@@ -37,7 +37,7 @@ public:
   ValueT value() const { return Property::value<ValueT>(); }
   void set(const variant_type& variant) override { set(std::get<ValueT>(variant)); }
 
-  void set(const ValueT& value)
+  virtual void set(const ValueT& value)
   {
     if (m_value != value) {
       m_value = value;

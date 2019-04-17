@@ -27,7 +27,7 @@ public:
   void update() override;
 
 protected:
-  virtual std::vector<Point> points() const = 0;
+  virtual std::vector<Point> points() = 0;
   virtual bool is_closed() const = 0;
 
 private:
