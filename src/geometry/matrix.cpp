@@ -93,7 +93,9 @@ Vec2f Matrix::apply(const std::vector<double>& vec) const
       result[i] += vec[j] * m[i][j];
     }
   }
-  assert(std::abs(vec[2] - result[2]) < 0.0001);
+  // usually, this is true. but it fails if scale.y becomes zero.
+  // assert(std::abs(vec[2] - result[2]) < 0.0001);
+
   return Vec2f(result[0], result[1]);
 }
 
