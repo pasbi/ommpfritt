@@ -9,5 +9,9 @@
         <file>icons/Path.png</file>
         <file>icons/Text.png</file>
         <file>icons/View.png</file>
+        <file>icons/Instance.png</file>
+        <file>icons/ProceduralPath.png</file>
+        <file>icons/Empty.png</file>
+        <file>icons/ImageObject.png</file>
     </qresource>
 </RCC>

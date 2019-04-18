@@ -2,7 +2,7 @@
     "root": {
         "children": [
             {
-                "id": 93825005645856,
+                "id": 94472848404672,
                 "properties": [
                     {
                         "category": "Basic",
@@ -157,7 +157,7 @@
             {
                 "children": [
                     {
-                        "id": 93825009111360,
+                        "id": 94472848482272,
                         "points": [
                             {
                                 "left": [
@@ -349,7 +349,7 @@
                         ],
                         "tags": [
                             {
-                                "id": 93825009579920,
+                                "id": 94472847355104,
                                 "properties": [
                                     {
                                         "category": "Basic",
@@ -365,7 +365,7 @@
                                         "key": "style",
                                         "label": "Style",
                                         "type": "ReferenceProperty",
-                                        "value": 93825009635632
+                                        "value": 94472848412128
                                     }
                                 ],
                                 "type": "StyleTag"
@@ -374,7 +374,7 @@
                         "type": "Path"
                     }
                 ],
-                "id": 93825009113872,
+                "id": 94472844309552,
                 "properties": [
                     {
                         "category": "Basic",
@@ -501,12 +501,12 @@
                         "key": "ref",
                         "label": "Referenz",
                         "type": "ReferenceProperty",
-                        "value": 93825009111360
+                        "value": 94472848482272
                     }
                 ],
                 "tags": [
                     {
-                        "id": 93825007453936,
+                        "id": 139689516365744,
                         "properties": [
                             {
                                 "category": "Basic",
@@ -522,7 +522,7 @@
                                 "key": "style",
                                 "label": "Style",
                                 "type": "ReferenceProperty",
-                                "value": 93825009635632
+                                "value": 94472848412128
                             }
                         ],
                         "type": "StyleTag"
@@ -531,7 +531,7 @@
                 "type": "Outline"
             },
             {
-                "id": 93825009641296,
+                "id": 94472848487760,
                 "properties": [
                     {
                         "category": "Basic",
@@ -691,7 +691,7 @@
                 ],
                 "tags": [
                     {
-                        "id": 140736817283920,
+                        "id": 139689516359504,
                         "properties": [
                             {
                                 "category": "Basic",
@@ -707,7 +707,7 @@
                                 "key": "style",
                                 "label": "Style",
                                 "type": "ReferenceProperty",
-                                "value": 140737152846736
+                                "value": 94472847672064
                             }
                         ],
                         "type": "StyleTag"
@@ -716,7 +716,7 @@
                 "type": "Ellipse"
             },
             {
-                "id": 93825009533056,
+                "id": 94472848375488,
                 "properties": [
                     {
                         "category": "Basic",
@@ -861,7 +861,7 @@
                 ],
                 "tags": [
                     {
-                        "id": 140736817325376,
+                        "id": 139689516363200,
                         "properties": [
                             {
                                 "category": "Basic",
@@ -877,7 +877,7 @@
                                 "key": "style",
                                 "label": "Style",
                                 "type": "ReferenceProperty",
-                                "value": 140737152846736
+                                "value": 94472847672064
                             }
                         ],
                         "type": "StyleTag"
@@ -888,7 +888,7 @@
             {
                 "children": [
                     {
-                        "id": 93825009059040,
+                        "id": 94472848371472,
                         "properties": [
                             {
                                 "category": "Basic",
@@ -1049,7 +1049,7 @@
                         "type": "Ellipse"
                     }
                 ],
-                "id": 93825007727136,
+                "id": 94472847662000,
                 "properties": [
                     {
                         "category": "Basic",
@@ -1342,7 +1342,7 @@
                 ],
                 "tags": [
                     {
-                        "id": 140736817330736,
+                        "id": 139689516352336,
                         "properties": [
                             {
                                 "category": "Basic",
@@ -1358,7 +1358,7 @@
                                 "key": "style",
                                 "label": "Style",
                                 "type": "ReferenceProperty",
-                                "value": 93825009635632
+                                "value": 94472848412128
                             }
                         ],
                         "type": "StyleTag"
@@ -1367,7 +1367,7 @@
                 "type": "Cloner"
             },
             {
-                "id": 93825008138160,
+                "id": 94472848280784,
                 "points": [
                     {
                         "left": [
@@ -1559,7 +1559,7 @@
                 ],
                 "tags": [
                     {
-                        "id": 140736817321952,
+                        "id": 139689516365104,
                         "properties": [
                             {
                                 "category": "Basic",
@@ -1575,7 +1575,7 @@
                                 "key": "style",
                                 "label": "Style",
                                 "type": "ReferenceProperty",
-                                "value": 93825008272736
+                                "value": 139689851911184
                             }
                         ],
                         "type": "StyleTag"
@@ -1584,7 +1584,7 @@
                 "type": "Path"
             },
             {
-                "id": 93825008169760,
+                "id": 94472848286528,
                 "points": [
                     {
                         "left": [
@@ -1832,7 +1832,7 @@
                 ],
                 "tags": [
                     {
-                        "id": 93825009621104,
+                        "id": 94472849262416,
                         "properties": [
                             {
                                 "category": "Basic",
@@ -1848,7 +1848,7 @@
                                 "key": "style",
                                 "label": "Style",
                                 "type": "ReferenceProperty",
-                                "value": 93825007960096
+                                "value": 139689851914560
                             }
                         ],
                         "type": "StyleTag"
@@ -1861,7 +1861,7 @@
                     {
                         "children": [
                             {
-                                "id": 93825008288400,
+                                "id": 94472848359216,
                                 "properties": [
                                     {
                                         "category": "Basic",
@@ -2021,7 +2021,7 @@
                                 ],
                                 "tags": [
                                     {
-                                        "id": 93825009648560,
+                                        "id": 94472848350176,
                                         "properties": [
                                             {
                                                 "category": "Basic",
@@ -2037,7 +2037,7 @@
                                                 "key": "style",
                                                 "label": "Style",
                                                 "type": "ReferenceProperty",
-                                                "value": 93825009635632
+                                                "value": 94472848412128
                                             }
                                         ],
                                         "type": "StyleTag"
@@ -2046,7 +2046,7 @@
                                 "type": "Ellipse"
                             }
                         ],
-                        "id": 93825008283728,
+                        "id": 94472848354976,
                         "properties": [
                             {
                                 "category": "Basic",
@@ -2172,7 +2172,7 @@
                         "type": "Mirror"
                     }
                 ],
-                "id": 93825008201360,
+                "id": 94472848345328,
                 "properties": [
                     {
                         "category": "Basic",
@@ -2317,7 +2317,7 @@
                 ],
                 "tags": [
                     {
-                        "id": 93825007921888,
+                        "id": 94472848364848,
                         "properties": [
                             {
                                 "category": "Basic",
@@ -2333,7 +2333,7 @@
                                 "key": "style",
                                 "label": "Style",
                                 "type": "ReferenceProperty",
-                                "value": 93825008565120
+                                "value": 94472848463696
                             }
                         ],
                         "type": "StyleTag"
@@ -2342,7 +2342,7 @@
                 "type": "Line"
             },
             {
-                "id": 93825019799616,
+                "id": 94472848365936,
                 "properties": [
                     {
                         "category": "Basic",
@@ -2674,7 +2674,7 @@
                 ],
                 "tags": [
                     {
-                        "id": 93825016714736,
+                        "id": 94472848293824,
                         "properties": [
                             {
                                 "category": "Basic",
@@ -2690,7 +2690,7 @@
                                 "key": "style",
                                 "label": "Style",
                                 "type": "ReferenceProperty",
-                                "value": 140737152846896
+                                "value": 94472848419296
                             }
                         ],
                         "type": "StyleTag"
@@ -2699,7 +2699,7 @@
                 "type": "Text"
             }
         ],
-        "id": 93825009620544,
+        "id": 94472847566576,
         "properties": [
             {
                 "category": "Basic",
@@ -2754,8 +2754,8 @@
                     "inf"
                 ],
                 "value": [
-                    321.09546589187136,
-                    692.8806676351608
+                    355.5,
+                    684.5
                 ]
             },
             {
@@ -2781,8 +2781,8 @@
                     "inf"
                 ],
                 "value": [
-                    1.4940333817580405,
-                    1.4940333817580405
+                    1.0,
+                    1.0
                 ]
             },
             {
@@ -2813,7 +2813,7 @@
     },
     "styles": [
         {
-            "id": 140737152846736,
+            "id": 94472847672064,
             "properties": [
                 {
                     "category": "Basic",
@@ -2891,7 +2891,7 @@
             ]
         },
         {
-            "id": 140737152846896,
+            "id": 94472848419296,
             "properties": [
                 {
                     "category": "Basic",
@@ -2969,7 +2969,7 @@
             ]
         },
         {
-            "id": 93825009635632,
+            "id": 94472848412128,
             "properties": [
                 {
                     "category": "Basic",
@@ -3047,7 +3047,7 @@
             ]
         },
         {
-            "id": 93825008272736,
+            "id": 139689851911184,
             "properties": [
                 {
                     "category": "Basic",
@@ -3125,7 +3125,7 @@
             ]
         },
         {
-            "id": 93825007960096,
+            "id": 139689851914560,
             "properties": [
                 {
                     "category": "Basic",
@@ -3203,7 +3203,7 @@
             ]
         },
         {
-            "id": 93825008565120,
+            "id": 94472848463696,
             "properties": [
                 {
                     "category": "Basic",
