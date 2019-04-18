@@ -7,6 +7,7 @@
 #include <QWidget>
 #include <QCoreApplication>
 #include "common.h"
+#include "logging.h"
 
 namespace
 {
@@ -54,6 +55,10 @@ public:
     auto icon_label = std::make_unique<QLabel>();
     m_icon_label = icon_label.get();
     m_icon_label->setFixedSize(12, 12);
+    const auto icon_name = ":/icons/" + key_binding.name() + ".png";
+    QIcon icon(QString::fromStdString(icon_name));
+    LINFO << icon_name << " " << icon.isNull();
+    m_icon_label->setPixmap(icon.pixmap(m_icon_label->size()));
 
     auto shortcut_label = std::make_unique<LiveLabel>([&key_binding]() {
       const auto code = key_binding.key_sequence().toString().toStdString().c_str();
