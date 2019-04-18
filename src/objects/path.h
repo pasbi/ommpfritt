@@ -51,7 +51,7 @@ public:
   std::vector<PointSequence> get_point_sequences(const std::vector<double> &ts) const;
   void update_tangents();
 
-  bool is_closed() const;
+  bool is_closed() const override;
   Flag flags() const override;
 
   void set_global_axis_transformation( const ObjectTransformation& global_transformation,

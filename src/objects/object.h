@@ -99,7 +99,7 @@ public:
   static double apply_border(double t, Border border);
   virtual Point evaluate(const double t) const;
   virtual double path_length() const;
-
+  virtual bool is_closed() const;
   void set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t);
   void set_oriented_position(const Point &op, const bool align);
   virtual PathUniquePtr outline(const double t) const;

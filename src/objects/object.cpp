@@ -353,6 +353,7 @@ Point Object::evaluate(const double t) const
 }
 
 double Object::path_length() const { return -1.0; }
+bool Object::is_closed() const { return false; }
 
 void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t)
 {

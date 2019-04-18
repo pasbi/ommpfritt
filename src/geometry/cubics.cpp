@@ -70,8 +70,7 @@ std::pair<std::size_t, double> Cubics::path_to_segment(const double path_t) cons
 
   const double segment_length = lengths()[segment_i];
   const double segment_t = (dist - segment_t_start) / segment_length;
-  assert(segment_t >= 0.0 && segment_t <= 1.0);
-  return std::pair(segment_i, segment_t);
+  return std::pair(segment_i, std::clamp(segment_t, 0.0, 1.0));
 }
 
 double Cubics::segment_to_path(const std::size_t& segment_i, const double& segment_t) const

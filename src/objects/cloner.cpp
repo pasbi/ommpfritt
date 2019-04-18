@@ -307,10 +307,11 @@ void Cloner::set_radial(Object& object, std::size_t i)
 
 void Cloner::set_path(Object& object, std::size_t i)
 {
-  auto* o = property(PATH_REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
+  auto* apo = property(PATH_REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
+  auto* o = kind_cast<Object*>(apo);
 
   const bool align = property(ALIGN_PROPERTY_KEY).value<bool>();
-  object.set_position_on_path(o, align, get_t(i, true));
+  object.set_position_on_path(o, align, get_t(i, o == nullptr ? false : !o->is_closed()));
 }
 
 void Cloner::set_by_script(Object& object, std::size_t i)
