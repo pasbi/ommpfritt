@@ -10,7 +10,7 @@ class Style;
 
 Line::Line(Scene* scene) : AbstractProceduralPath(scene)
 {
-  static const auto category = QObject::tr("ellipse").toStdString();
+  static const auto category = QObject::tr("Line").toStdString();
   add_property<FloatProperty>(LENGTH_PROPERTY_KEY, 100.0 )
     .set_label(QObject::tr("length").toStdString()).set_category(category);
   add_property<FloatProperty>(ANGLE_PROPERTY_KEY, 0)

@@ -813,6 +813,10 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <source>Reference</source>
         <translation>Referenz</translation>
     </message>
+    <message>
+        <source>Line</source>
+        <translation>Linie</translation>
+    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>

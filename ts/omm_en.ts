@@ -813,6 +813,10 @@ Remove the selected items anyway?</translation>
         <source>Reference</source>
         <translation>Reference</translation>
     </message>
+    <message>
+        <source>Line</source>
+        <translation>Line</translation>
+    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>
