@@ -24,7 +24,14 @@ class AbstractPropertyOwnerObserver
 {
 public:
   virtual ~AbstractPropertyOwnerObserver() = default;
-  virtual void on_change(AbstractPropertyOwner* apo) = 0;
+
+  /**
+   * @brief on_change is called when the observed property owner changed
+   * @param apo the item which owns the changing property
+   * @param property the property which changed.
+   *  May be null if the change was not induced by a property.
+   */
+  virtual void on_change(AbstractPropertyOwner* apo, Property* property) = 0;
 };
 
 class AbstractPropertyOwner : public virtual Serializable,
@@ -60,7 +67,13 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual std::string name() const;
   void on_property_value_changed(Property& property) override;
-  virtual void on_change();
+
+  /**
+   * @brief on_change is called when the object changes
+   * @param property the property whose value has changed.
+   *  May be null if change was not induced by a property.
+   */
+  virtual void on_change(Property* property);
   virtual Kind kind() const = 0;
 
   bool has_reference_cycle(const std::string& key) const;

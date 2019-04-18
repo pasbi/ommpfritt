@@ -90,14 +90,13 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
 
 void AbstractPropertyOwner::on_property_value_changed(Property& property)
 {
-  Q_UNUSED(property)
-  on_change();
+  on_change(&property);
 }
 
-void AbstractPropertyOwner::on_change()
+void AbstractPropertyOwner::on_change(Property *property)
 {
-  Observed<AbstractPropertyOwnerObserver>::for_each([this](auto* observer) {
-    observer->on_change(this);
+  Observed<AbstractPropertyOwnerObserver>::for_each([this, property](auto* observer) {
+    observer->on_change(this, property);
   });
 }
 
