@@ -10,16 +10,6 @@
 #include "objects/object.h"
 #include "properties/referenceproperty.h"
 
-namespace
-{
-
-auto hash(const omm::AbstractPropertyOwner* ref)
-{
-  return std::hash<const void*>()(ref);
-}
-
-}  // namespace
-
 namespace omm
 {
 
@@ -35,7 +25,7 @@ AbstractSerializer::~AbstractSerializer()
 void AbstractSerializer::set_value(const AbstractPropertyOwner* ref, const Pointer& pointer)
 {
   m_serialized_references.insert(const_cast<AbstractPropertyOwner*>(ref));
-  set_value(static_cast<std::size_t>(hash(ref)), pointer);
+  set_value(ref == nullptr ? 0 : ref->id(), pointer);
 }
 
 std::set<omm::AbstractPropertyOwner*> AbstractSerializer::serialized_references() const
@@ -51,7 +41,7 @@ AbstractDeserializer::AbstractDeserializer(std::istream&)
 void AbstractDeserializer::add_references(const std::set<AbstractPropertyOwner*>& references)
 {
   for (AbstractPropertyOwner* reference : references) {
-    m_id_to_reference.insert(std::make_pair(hash(reference), reference));
+    m_id_to_reference.insert(std::make_pair(reference->id(), reference));
   }
 }
 

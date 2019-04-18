@@ -88,8 +88,16 @@ public:
   std::unique_ptr<Property> extract_property(const std::string& key);
   void copy_properties(AbstractPropertyOwner& target) const;
 
+  std::size_t id() const;
+
 private:
   OrderedMap<std::string, Property> m_properties;
+
+  /**
+   * @brief id_proposal if not 0 then this id shall be used for (de)serialization issues.
+   *  if 0 then the proposal shall be ignored and a new id shall be generated instead.
+   */
+  mutable std::size_t m_id = 0;
 };
 
 template<AbstractPropertyOwner::Kind kind_> class PropertyOwner : public AbstractPropertyOwner

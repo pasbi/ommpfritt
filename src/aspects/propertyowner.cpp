@@ -59,8 +59,8 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
   Serializable::deserialize(deserializer, root);
 
   const auto id_pointer = make_pointer(root, ID_POINTER);
-  const auto id = deserializer.get_size_t(id_pointer);
-  deserializer.register_reference(id, *this);
+  m_id = deserializer.get_size_t(id_pointer);
+  deserializer.register_reference(m_id, *this);
 
   const auto properties_pointer = make_pointer(root, PROPERTIES_POINTER);
   size_t n_properties = deserializer.array_size(properties_pointer);
@@ -156,6 +156,14 @@ void AbstractPropertyOwner::copy_properties(AbstractPropertyOwner& target) const
       other_property.set(p.variant_value());
     }
   }
+}
+
+std::size_t AbstractPropertyOwner::id() const
+{
+  if (m_id == 0) {
+    m_id = std::hash<const void*>()(this);
+  }
+  return m_id;
 }
 
 }  // namespace omm
