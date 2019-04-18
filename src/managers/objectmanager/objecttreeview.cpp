@@ -47,6 +47,7 @@ ObjectTreeView::ObjectTreeView(ObjectTreeAdapter& model)
     viewport()->update();
   });
   m_update_timer->start(200);
+  setIconSize(QSize(24, 24));
 
 }
 

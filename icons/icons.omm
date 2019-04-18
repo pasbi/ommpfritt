@@ -827,7 +827,7 @@
                         "value": 0.0
                     },
                     {
-                        "category": "Ellipse",
+                        "category": "Linie",
                         "default_value": 100.0,
                         "key": "length",
                         "label": "Länge",
@@ -839,7 +839,7 @@
                         "value": 200.0
                     },
                     {
-                        "category": "Ellipse",
+                        "category": "Linie",
                         "default_value": 0.0,
                         "key": "angle",
                         "label": "Winkel",
@@ -851,7 +851,7 @@
                         "value": 0.5410520681182425
                     },
                     {
-                        "category": "Ellipse",
+                        "category": "Linie",
                         "default_value": true,
                         "key": "center",
                         "label": "Zentrum",
@@ -2283,7 +2283,7 @@
                         "value": -6.661338147750948e-16
                     },
                     {
-                        "category": "Ellipse",
+                        "category": "Linie",
                         "default_value": 100.0,
                         "key": "length",
                         "label": "Länge",
@@ -2295,7 +2295,7 @@
                         "value": 86.0
                     },
                     {
-                        "category": "Ellipse",
+                        "category": "Linie",
                         "default_value": 0.0,
                         "key": "angle",
                         "label": "Winkel",
@@ -2307,7 +2307,7 @@
                         "value": 0.0
                     },
                     {
-                        "category": "Ellipse",
+                        "category": "Linie",
                         "default_value": true,
                         "key": "center",
                         "label": "Zentrum",
