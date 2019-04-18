@@ -1,15 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="omm_de.qm">build/omm_de.qm</file>
-        <file alias="qt_de.qm">build/qt_de.qm</file>
-        <file alias="qtbase_de.qm">build/qtbase_de.qm</file>
-        <file alias="qt_help_de.qm">build/qt_help_de.qm</file>
-        <file alias="qtlocation_de.qm">build/qtlocation_de.qm</file>
-        <file alias="omm_en.qm">build/omm_en.qm</file>
-        <file alias="qt_en.qm">build/qt_en.qm</file>
-        <file alias="qtbase_en.qm">build/qtbase_en.qm</file>
-        <file alias="qt_help_en.qm">build/qt_help_en.qm</file>
-        <file alias="qtlocation_en.qm">build/qtlocation_en.qm</file>
         <file alias="default_keybindings.cfg">src/default_keybindings.cfg</file>
     </qresource>
 </RCC>

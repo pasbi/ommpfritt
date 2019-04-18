@@ -43,7 +43,7 @@ public:
   static constexpr auto WINDOWSTATE_SETTINGS_KEY = "mainwindow/window_state";
   static constexpr auto LANGUAGE_RESOURCE_PREFIX = "omm";
   static constexpr auto LANGUAGE_RESOURCE_SUFFIX = ".qm";
-  static constexpr auto LANGUAGE_RESOURCE_DIRECTORY = ":";
+  static constexpr auto LANGUAGE_RESOURCE_DIRECTORY = ":/qm";
   static constexpr auto TYPE_NAME_CONTEXT = "typename";
 
 protected:

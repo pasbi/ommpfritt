@@ -31,24 +31,24 @@ ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 find_package(Qt5Widgets CONFIG REQUIRED)
 find_package(Qt5 COMPONENTS LinguistTools)
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/translations.qrc ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
+set(RESOURCES resources.qrc ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc)
+
 file (GLOB TS_FILES
   ts/omm_en.ts
   ts/omm_de.ts
 )
 
+qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+
 foreach (lang en de)
   foreach (pref qt qtbase qt_help qtlocation)
-    file(COPY ${QT_QM_PATH}/${pref}_${lang}.qm  DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+    file(COPY ${QT_QM_PATH}/${pref}_${lang}.qm DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
   endforeach(pref)
 endforeach(lang)
 
-message("TS ${TS_FILES}")
-qt5_create_translation(QM_FILES ${CMAKE_CURRENT_SOURCE_DIR} ${TS_FILES})
-message("QM ${QM_FILES}")
-qt5_add_translation(QM_FILES "${TS_FILES}")
-set(RESOURCES resources.qrc)
-
 add_library(libommpfritt)
+
 add_executable(ommpfritt ${RESOURCES})
 
 target_compile_features(libommpfritt PUBLIC cxx_std_17)
