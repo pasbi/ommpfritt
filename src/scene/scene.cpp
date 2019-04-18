@@ -94,7 +94,30 @@ Scene::~Scene()
 
 std::unique_ptr<Object> Scene::make_root()
 {
-  return std::make_unique<Empty>(this);
+  class Root : public Empty
+  {
+  public:
+    explicit Root(Scene* scene) : Empty(scene) {}
+    void on_child_changed(Object& child, Property* property) override
+    {
+      const auto is_important_property = [property, &child]() {
+        static const std::set<std::string> important_propertyies {
+          Object::IS_VISIBLE_PROPERTY_KEY, Object::IS_ACTIVE_PROPERTY_KEY
+        };
+        for (auto&& property_key : important_propertyies) {
+          if (&child.property(property_key) == property) {
+            return true;
+          }
+        }
+        return false;
+      };
+      if (property == nullptr || is_important_property()) {
+        scene()->invalidate();
+      }
+    }
+  };
+
+  return std::make_unique<Root>(this);
 }
 
 Scene* Scene::currentInstance()

@@ -84,8 +84,11 @@ std::set<Path*> PointPositions::paths() const
 
 void ObjectPositions::make_handles(handles_type& handles, Tool& tool) const
 {
-  // ignore object selection. Return a handle for each object.
-  const auto objects = scene.object_tree.items();
+  // ignore object selection. Return a handle for each visible object.
+  const auto objects = ::filter_if(scene.object_tree.items(), [](Object* object) {
+    return object->visibility() == Object::Visibility::Visible;
+  });
+
   handles.reserve(objects.size());
   auto inserter = std::back_inserter(handles);
   std::transform(objects.begin(), objects.end(), inserter, [this, &tool](Object* o) {
