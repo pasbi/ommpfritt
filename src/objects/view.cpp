@@ -54,22 +54,9 @@ void View::on_property_value_changed(Property& property)
 void View::from_viewport()
 {
   const auto& viewport = Application::instance().main_window()->viewport();
-  auto t = viewport.viewport_transformation().inverted();
   const auto s = Vec2f(double(viewport.size().width()), double(viewport.size().height()));
   set_global_transformation(ObjectTransformation().translated(s/2.0).normalized(), false);
   property(SIZE_PROPERTY_KEY).set(s);
-}
-
-ObjectTransformation View::transformation() const
-{
-  auto t = global_transformation(true).inverted().normalized();
-  auto& viewport = Application::instance().main_window()->viewport();
-  const auto size = property(SIZE_PROPERTY_KEY).value<Vec2f>();
-  const auto sx = viewport.width() / size.x;
-  const auto sy = viewport.height() / size.y;
-  const auto s = std::abs(sx) < std::abs(sy) ? sx : sy;
-  t = ObjectTransformation().scaled(Vec2f(s, s)).apply(t);
-  return t;
 }
 
 }  // namespace omm

@@ -40,18 +40,12 @@ public:
 
 omm::Viewport& viewport() { return omm::Application::instance().main_window()->viewport(); }
 
-omm::Vec2f view_size(const omm::View& view)
-{
-  const auto& property = view.property(omm::View::SIZE_PROPERTY_KEY);
-  return property.value<omm::Vec2f>();
-}
-
 double compute_aspect_ratio(const omm::View* view)
 {
   if (view == nullptr) {
     return double(viewport().width()) / double(viewport().height());
   } else {
-    const omm::Vec2f s = view_size(*view);
+    const omm::Vec2f s = view->property(omm::View::SIZE_PROPERTY_KEY).value<omm::Vec2f>();
     return s.x / s.y;
   }
 }
@@ -160,12 +154,11 @@ QImage ExportDialog::render(int width, int height) const
       const auto s = width / double(viewport().width());
       return ObjectTransformation().scaled(Vec2f(s, s)).apply(t);
     } else {
-      const auto view_size = ::view_size(*view);
-      const auto viewport_size = Vec2f( double(viewport().width()),
-                                        double(viewport().height()) );
-      const auto t = view->transformation().translated(viewport_size / 2.0);
-      const auto s = width / double(viewport().width());
-      return ObjectTransformation().scaled(Vec2f(s, s)).apply(t);
+      const auto t = view->global_transformation(true).inverted();
+      const auto view_size = view->property(omm::View::SIZE_PROPERTY_KEY).value<omm::Vec2f>();
+      const auto s = width / double(view_size.x);
+      const auto d = view_size/2.0;
+      return ObjectTransformation().scaled(Vec2f(s, s)).apply(t.translated(d));
     }
   };
 
