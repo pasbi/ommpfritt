@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file alias="default_keybindings.cfg">src/default_keybindings.cfg</file>
+        <file>icons/Ellipse.png</file>
+        <file>icons/Line.png</file>
+        <file>icons/Outline.png</file>
     </qresource>
 </RCC>
