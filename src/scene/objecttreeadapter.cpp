@@ -165,7 +165,9 @@ QVariant ObjectTreeAdapter::data(const QModelIndex& index, int role) const
     switch (role) {
     case Qt::DisplayRole:
     case Qt::EditRole:
-      return QString::fromStdString(item_at(index).name());;
+      return QString::fromStdString(item_at(index).name());
+    case Qt::DecorationRole:
+      return QIcon(QString::fromStdString(":/icons/" + item_at(index).type() + ".png"));
     }
   }
   return QVariant();
