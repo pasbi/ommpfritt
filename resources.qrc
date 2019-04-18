@@ -4,5 +4,10 @@
         <file>icons/Ellipse.png</file>
         <file>icons/Line.png</file>
         <file>icons/Outline.png</file>
+        <file>icons/Cloner.png</file>
+        <file>icons/Mirror.png</file>
+        <file>icons/Path.png</file>
+        <file>icons/Text.png</file>
+        <file>icons/View.png</file>
     </qresource>
 </RCC>
