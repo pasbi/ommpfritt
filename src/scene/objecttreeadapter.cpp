@@ -18,6 +18,7 @@
 #include "tags/tag.h"
 #include "tags/styletag.h"
 #include "scene/contextes.h"
+#include "mainwindow/application.h"
 
 namespace
 {
@@ -167,7 +168,7 @@ QVariant ObjectTreeAdapter::data(const QModelIndex& index, int role) const
     case Qt::EditRole:
       return QString::fromStdString(item_at(index).name());
     case Qt::DecorationRole:
-      return QIcon(QString::fromStdString(":/icons/" + item_at(index).type() + ".png"));
+      return Application::instance().icon_provider.get_icon(item_at(index).type(), QSize(24, 24));
     }
   }
   return QVariant();

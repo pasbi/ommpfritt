@@ -6,6 +6,7 @@
 #include "keybindings/keybindings.h"
 #include "keybindings/commandinterface.h"
 #include <Qt>
+#include "mainwindow/iconprovider.h"
 
 class QApplication;
 
@@ -38,6 +39,7 @@ public:
   PythonEngine python_engine;
   Scene scene;
   MainWindow* main_window() const;
+  const IconProvider icon_provider;
 
 private:
   QApplication& m_app;
