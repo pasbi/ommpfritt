@@ -771,43 +771,47 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Fill Random</source>
-        <translation type="unfinished"></translation>
+        <translation>Fill random</translation>
     </message>
     <message>
         <source>seed</source>
-        <translation type="unfinished"></translation>
+        <translation>Seed</translation>
     </message>
     <message>
         <source>This</source>
-        <translation type="unfinished"></translation>
+        <translation>This</translation>
     </message>
     <message>
         <source>Area</source>
-        <translation type="unfinished"></translation>
+        <translation>Area</translation>
     </message>
     <message>
         <source>anchor</source>
-        <translation type="unfinished"></translation>
+        <translation>Anchor</translation>
     </message>
     <message>
         <source>length</source>
-        <translation type="unfinished"></translation>
+        <translation>Length</translation>
     </message>
     <message>
         <source>angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Angle</translation>
     </message>
     <message>
         <source>center</source>
-        <translation type="unfinished"></translation>
+        <translation>Center</translation>
     </message>
     <message>
         <source>Outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Outline</translation>
     </message>
     <message>
         <source>Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Offset</translation>
+    </message>
+    <message>
+        <source>Reference</source>
+        <translation>Reference</translation>
     </message>
 </context>
 <context>
@@ -1056,11 +1060,11 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Line</translation>
     </message>
     <message>
         <source>Outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Outline</translation>
     </message>
 </context>
 <context>

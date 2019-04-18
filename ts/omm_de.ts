@@ -771,43 +771,47 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
     <message>
         <source>Fill Random</source>
-        <translation type="unfinished"></translation>
+        <translation>Zufällig füllen</translation>
     </message>
     <message>
         <source>seed</source>
-        <translation type="unfinished"></translation>
+        <translation>Seed key</translation>
     </message>
     <message>
         <source>This</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses</translation>
     </message>
     <message>
         <source>Area</source>
-        <translation type="unfinished"></translation>
+        <translation>Fläche</translation>
     </message>
     <message>
         <source>anchor</source>
-        <translation type="unfinished"></translation>
+        <translation>Anker</translation>
     </message>
     <message>
         <source>length</source>
-        <translation type="unfinished"></translation>
+        <translation>Länge</translation>
     </message>
     <message>
         <source>angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Winkel</translation>
     </message>
     <message>
         <source>center</source>
-        <translation type="unfinished"></translation>
+        <translation>Zentrum</translation>
     </message>
     <message>
         <source>Outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Umriss</translation>
     </message>
     <message>
         <source>Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Versatz</translation>
+    </message>
+    <message>
+        <source>Reference</source>
+        <translation>Referenz</translation>
     </message>
 </context>
 <context>
@@ -1056,11 +1060,11 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linie</translation>
     </message>
     <message>
         <source>Outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Umriss</translation>
     </message>
 </context>
 <context>

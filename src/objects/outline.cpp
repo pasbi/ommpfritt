@@ -17,7 +17,7 @@ Outline::Outline(Scene* scene) : Object(scene)
     .set_label(QObject::tr("Offset").toStdString()).set_category(category);
   add_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
-      .set_label(QObject::tr("Offset").toStdString()).set_category(category);
+    .set_label(QObject::tr("Reference").toStdString()).set_category(category);
 }
 
 Outline::Outline(const Outline &other)
