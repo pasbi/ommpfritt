@@ -23,6 +23,7 @@ public:
   std::set<AbstractPropertyOwner*> selected_tags() const;
 
   void set_selection(const std::set<AbstractPropertyOwner*>& selected_items);
+  Scene& scene() const;
 
 protected:
   void paintEvent(QPaintEvent* e) override;

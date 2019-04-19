@@ -136,5 +136,7 @@ void ObjectTreeView::set_selection(const std::set<AbstractPropertyOwner*>& selec
   m_selection_model->set_selection(selected_items);
 }
 
+Scene &ObjectTreeView::scene() const { return m_model.scene; }
+
 
 }  // namespace omm

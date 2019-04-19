@@ -4,25 +4,22 @@
 #include <QMouseEvent>
 #include "managers/objectmanager/objecttreeview.h"
 #include <QDebug>
+#include "scene/scene.h"
+#include "commands/propertycommand.h"
+#include "properties/boolproperty.h"
+#include "properties/optionsproperty.h"
 
 namespace
 {
 
-void advance_visibility(omm::Object& object)
+omm::Object::Visibility advance_visibility(omm::Object::Visibility visibility)
 {
-  object.property(omm::Object::IS_VISIBLE_PROPERTY_KEY).set([](const auto& visibility) {
-    switch (visibility) {
-    case omm::Object::Visibility::Visible: return omm::Object::Visibility::Hide;
-    case omm::Object::Visibility::Hide: return omm::Object::Visibility::HideTree;
-    case omm::Object::Visibility::HideTree: return omm::Object::Visibility::Visible;
-    }
-    Q_UNREACHABLE();
-  }(object.visibility()));
-}
-
-void toggle_active(omm::Object& object)
-{
-  object.property(omm::Object::IS_ACTIVE_PROPERTY_KEY).set(!object.is_active());
+  switch (visibility) {
+  case omm::Object::Visibility::Visible: return omm::Object::Visibility::Hide;
+  case omm::Object::Visibility::Hide: return omm::Object::Visibility::HideTree;
+  case omm::Object::Visibility::HideTree: return omm::Object::Visibility::Visible;
+  }
+  Q_UNREACHABLE();
 }
 
 void draw_cross(QPainter& painter, const QRectF& area, bool is_enabled)
@@ -112,10 +109,14 @@ bool ObjectQuickAccessDelegate::on_mouse_button_press(QMouseEvent& event)
   pos.setX(pos.x() / rect.width());
   pos.setY(pos.y() / rect.height());
   if (enabled_cross_area.contains(pos)) {
-    toggle_active(object);
+    const auto is_active = object.is_active();
+    auto& property = object.property(Object::IS_ACTIVE_PROPERTY_KEY);
+    m_view.scene().submit<PropertiesCommand<BoolProperty>>(std::set { &property }, !is_active);
     return true;
   } else if (edit_visibility.contains(pos)) {
-    advance_visibility(object);
+    const auto visibility = static_cast<int>(advance_visibility(object.visibility()));
+    auto& property = object.property(Object::IS_VISIBLE_PROPERTY_KEY);
+    m_view.scene().submit<PropertiesCommand<OptionsProperty>>(std::set { &property }, visibility);
     return true;
   } else {
     return false;
