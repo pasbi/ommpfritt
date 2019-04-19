@@ -175,10 +175,10 @@ void Cloner::update()
   }
 }
 
-void Cloner::on_child_changed(Object &child, Property *property)
+void Cloner::on_change(AbstractPropertyOwner *subject, int code, Property *property)
 {
   m_clones.clear();
-  Object::on_child_changed(child, property);
+  Object::on_change(subject, code, property);
 }
 
 void Cloner::on_property_value_changed(Property &property)

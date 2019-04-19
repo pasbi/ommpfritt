@@ -316,19 +316,18 @@ void Object::copy_tags(Object& other) const
   }
 }
 
-void Object::on_change(Property* property)
+void Object::on_change(AbstractPropertyOwner* subject, int what, Property* property)
 {
   if (!is_root()) {
-    parent().on_child_changed(*this, property);
+    parent().on_change(subject, what, property);
   }
-  AbstractPropertyOwner::on_change(property);
+  AbstractPropertyOwner::on_change(subject, what, property);
 }
 
-void Object::on_child_changed(Object &child, Property *property)
+void Object::on_children_changed()
 {
-  if (!is_root()) {
-    parent().on_child_changed(child, property);
-  }
+  on_change(this, HIERARCHY_CHANGED, nullptr);
+  TreeElement::on_children_changed();
 }
 
 double Object::apply_border(double t, Border border)

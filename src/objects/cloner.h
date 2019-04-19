@@ -45,7 +45,7 @@ public:
   void update() override;
 
 protected:
-  void on_child_changed(Object &child, Property* property) override;
+  void on_change(AbstractPropertyOwner* subject, int code, Property* property) override;
   void on_property_value_changed(Property& property) override;
 
 private:

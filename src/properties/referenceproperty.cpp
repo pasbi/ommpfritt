@@ -89,7 +89,7 @@ ReferencePropertyReferenceObserver
 ::ReferencePropertyReferenceObserver(ReferenceProperty &master_property)
   : m_master_property(master_property) {}
 
-void ReferencePropertyReferenceObserver::on_change(AbstractPropertyOwner *, Property *)
+void ReferencePropertyReferenceObserver::on_change(AbstractPropertyOwner *, int, Property *)
 {
   m_master_property.notify_observers();
 }

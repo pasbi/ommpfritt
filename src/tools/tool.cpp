@@ -20,6 +20,7 @@ ObjectTransformation Tool::transformation() const { return ObjectTransformation(
 bool Tool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
   for (auto&& handle : handles) {
+    assert(handle != nullptr);
     if (handle->is_enabled()) {
       handle->mouse_move(delta, pos, e);
       switch (handle->status()) {

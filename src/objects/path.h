@@ -26,7 +26,7 @@ public:
   static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";
   static constexpr auto POINTS_POINTER = "points";
   static constexpr auto INTERPOLATION_PROPERTY_KEY = "interpolation";
-
+  static constexpr auto POINTS_CHANGED = 2;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;

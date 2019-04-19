@@ -14,7 +14,7 @@ class ReferencePropertyReferenceObserver : public AbstractPropertyOwnerObserver
 {
 public:
   ReferencePropertyReferenceObserver(ReferenceProperty& master_property);
-  void on_change(AbstractPropertyOwner*, Property*) override;
+  void on_change(AbstractPropertyOwner*, int, Property*) override;
 
 private:
   ReferenceProperty& m_master_property;

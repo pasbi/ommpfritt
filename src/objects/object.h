@@ -95,6 +95,7 @@ public:
   static constexpr auto SCALE_PROPERTY_KEY = "scale";
   static constexpr auto ROTATION_PROPERTY_KEY = "rotation";
   static constexpr auto SHEAR_PROPERTY_KEY = "shear";
+  static constexpr auto HIERARCHY_CHANGED = 1;
 
   enum class Border { Clamp, Wrap, Hide, Reflect };
   static double apply_border(double t, Border border);
@@ -109,11 +110,12 @@ public:
   virtual void update();
   void update_recursive();
 
+  void on_change(AbstractPropertyOwner* subject, int what, Property* property) override;
+  void on_children_changed() override;
+
 protected:
   bool m_draw_children = true;
   void copy_tags(Object& other) const;
-  void on_change(Property* property) override;
-  virtual void on_child_changed(Object& child, Property* property);
 
 private:
   friend class ObjectView;

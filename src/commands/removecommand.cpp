@@ -45,12 +45,8 @@ template<typename StructureT> void RemoveCommand<StructureT>::redo()
 {
   for (auto&& context : m_contextes) {
     assert(!context.subject.owns());
-    // assert(!context.subject.reference().is_root()); // TODO
-    // assert(m_structure.find_reference_holders(context.subject).size() == 0);  // TODO
     m_structure.remove(context);
   }
-  // important. else, handle or property manager might point to dangling objects
-  // m_structure.selection_changed();  // TODO
 }
 
 template<typename StructureT> void RemoveCommand<StructureT>::undo()
@@ -59,7 +55,6 @@ template<typename StructureT> void RemoveCommand<StructureT>::undo()
     assert(context.subject.owns());
     m_structure.insert(context);
   }
-  // m_structure.selection_changed();  // TODO
 }
 
 template class RemoveCommand<Tree<Object>>;

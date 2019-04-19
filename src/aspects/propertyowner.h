@@ -26,12 +26,9 @@ public:
   virtual ~AbstractPropertyOwnerObserver() = default;
 
   /**
-   * @brief on_change is called when the observed property owner changed
-   * @param apo the item which owns the changing property
-   * @param property the property which changed.
-   *  May be null if the change was not induced by a property.
+   * @see AbstractPropertyOwner::on_change;
    */
-  virtual void on_change(AbstractPropertyOwner* apo, Property* property) = 0;
+  virtual void on_change(AbstractPropertyOwner* apo, int what, Property* property) = 0;
 };
 
 class AbstractPropertyOwner : public virtual Serializable,
@@ -69,11 +66,17 @@ public:
   void on_property_value_changed(Property& property) override;
 
   /**
-   * @brief on_change is called when the object changes
-   * @param property the property whose value has changed.
-   *  May be null if change was not induced by a property.
+   * @brief on_change is called when the appearance of `this` changed.
+   *  That is, if `this` is hierarchical (i.e., Object) on_change is also called recursively
+   *  if one of its children changed.
+   * @param subject the item that has changed. For non-hierarchical items, subject equals this.
+   * @param what a code about what has changed. New codes may be defined in subclasses.
+   * @param property the property which has changed. May be nullptr if the change was not induced
+   *  by a property.
    */
-  virtual void on_change(Property* property);
+  virtual void on_change(AbstractPropertyOwner* subject, int what, Property* property);
+  static constexpr auto PROPERTY_CHANGED = 0; // A property changed
+
   virtual Kind kind() const = 0;
 
   bool has_reference_cycle(const std::string& key) const;
