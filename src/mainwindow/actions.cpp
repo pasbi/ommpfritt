@@ -125,24 +125,26 @@ void convert_objects(Application& app)
   const auto convertables = ::filter_if(app.scene.item_selection<Object>(), [](const Object* o) {
     return !!(o->flags() & Object::Flag::Convertable);
   });
+  if (convertables.size() > 0) {
   auto macro = app.scene.history.start_macro(QObject::tr("convert"));
-  for (auto&& c : convertables) {
-    auto converted = c->convert();
-    assert(!c->is_root());
-    TreeOwningContext<Object> context(*converted, c->parent(), c);
-    const auto properties = ::transform<Property*>(app.scene.find_reference_holders(*c));
-    if (properties.size() > 0) {
-      app.scene.submit<PropertiesCommand<ReferenceProperty>>(properties, converted.get());
+    for (auto&& c : convertables) {
+      auto converted = c->convert();
+      assert(!c->is_root());
+      TreeOwningContext<Object> context(*converted, c->parent(), c);
+      const auto properties = ::transform<Property*>(app.scene.find_reference_holders(*c));
+      if (properties.size() > 0) {
+        app.scene.submit<PropertiesCommand<ReferenceProperty>>(properties, converted.get());
+      }
+      auto& converted_ref = *converted;
+      context.subject.capture(std::move(converted));
+      using object_tree_type = Tree<Object>;
+      app.scene.submit<AddCommand<object_tree_type>>(app.scene.object_tree, std::move(context));
+      converted_ref.set_transformation(c->transformation());
     }
-    auto& converted_ref = *converted;
-    context.subject.capture(std::move(converted));
-    using object_tree_type = Tree<Object>;
-    app.scene.submit<AddCommand<object_tree_type>>(app.scene.object_tree, std::move(context));
-    converted_ref.set_transformation(c->transformation());
+    const auto selection = ::transform<Object*, std::set>(convertables, ::identity);
+    using remove_command = RemoveCommand<Tree<Object>>;
+    app.scene.template submit<remove_command>(app.scene.object_tree, selection);
   }
-  const auto selection = ::transform<Object*, std::set>(convertables, ::identity);
-  using remove_command = RemoveCommand<Tree<Object>>;
-  app.scene.template submit<remove_command>(app.scene.object_tree, selection);
 }
 
 }  // namespace omm::actions
