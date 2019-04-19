@@ -99,11 +99,22 @@ public:
     } if (key_event.key() == Qt::Key_Escape) {
       m_current_sequene.clear();
       return false;
-    } else if (const auto sequence = make_key_sequence(key_event); call(sequence, interface)) {
-      m_current_sequene.clear();
-      return true;
     } else {
-      LINFO << "key sequence was not (yet) accepted: " << sequence.toString().toStdString();
+      auto sequence = make_key_sequence(key_event);
+      while (sequence.count() > 0) {
+        if (call(sequence, interface)) {
+          m_current_sequene.clear();
+          return true;
+        } else {
+          // try with a suffix of the sequence. This is convenient because if user accidentaly
+          // hits a key and then starts a key-sequence, that key sequence wouldn't be recognized
+          // since it was prefixed with that accidental key.
+          sequence = QKeySequence(sequence[1], sequence[2], sequence[3], 0);
+        }
+      }
+
+      LINFO << "key sequence (and all its suffixes were not (yet) accepted: "
+            << sequence.toString().toStdString();
       return false;
     }
   }
