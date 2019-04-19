@@ -44,12 +44,13 @@ void drop_tags_onto_object( omm::Scene& scene, omm::Object& object,
   if (tags.size() > 0) {
     switch (action) {
     case Qt::CopyAction:
-      scene.undo_stack.beginMacro(QObject::tr("copy tags", "ObjectTreeAdapter"));
+    {
+      auto macro = scene.history.start_macro(QObject::tr("copy tags", "ObjectTreeAdapter"));
       for (auto* tag : tags) {
         scene.submit<AddTagCommand>(object.tags, tag->clone(object));
       }
-      scene.undo_stack.endMacro();
       break;
+    }
     case Qt::MoveAction:
       scene.submit<omm::MoveTagsCommand>(tags, object, last(object.tags.ordered_items()));
       break;
@@ -68,13 +69,14 @@ void drop_tags_behind( omm::Scene& scene, omm::Object& object, omm::Tag* current
   if (tags.size() > 0) {
     switch (action) {
     case Qt::CopyAction:
-      scene.undo_stack.beginMacro(QObject::tr("copy tags", "ObjectTreeAdapter"));
+    {
+      auto macro = scene.history.start_macro(QObject::tr("copy tags", "ObjectTreeAdapter"));
       for (auto* tag : tags) {
         omm::ListOwningContext<omm::Tag> context(tag->clone(object), current_tag_predecessor);
         scene.submit<AddTagCommand>(object.tags, std::move(context));
       }
-      scene.undo_stack.endMacro();
       break;
+    }
     case Qt::MoveAction:
       scene.submit<omm::MoveTagsCommand>(tags, object, current_tag_predecessor);
       break;
@@ -87,13 +89,12 @@ void drop_style_onto_object( omm::Scene& scene, omm::Object& object,
                              const std::vector<omm::Style*>& styles )
 {
   if (styles.size() > 0) {
-    scene.undo_stack.beginMacro(QObject::tr("set styles tags", "ObjectTreeAdapter"));
+    auto macro = scene.history.start_macro(QObject::tr("set styles tags", "ObjectTreeAdapter"));
     for (auto* style : styles) {
       auto style_tag = std::make_unique<omm::StyleTag>(object);
       style_tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY).set(style);
       scene.submit<AddTagCommand>(object.tags, std::move(style_tag));
     }
-    scene.undo_stack.endMacro();
   }
 }
 

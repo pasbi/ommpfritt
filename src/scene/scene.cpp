@@ -263,7 +263,7 @@ bool Scene::has_pending_changes() const
 
 void Scene::submit(std::unique_ptr<Command> command)
 {
-  undo_stack.push(command.release());
+  history.push(std::move(command));
   set_has_pending_changes(true);
 }
 
@@ -401,7 +401,7 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
 {
   std::set<Property *> properties;
   if (can_remove(parent, selection, properties)) {
-    undo_stack.beginMacro(QObject::tr("Remove Selection"));
+    auto macro = history.start_macro(QObject::tr("Remove Selection"));
     if (properties.size() > 0) {
       using command_type = PropertiesCommand<ReferenceProperty>;
       submit<command_type>(properties, nullptr);
@@ -415,7 +415,6 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
     ::remove_items(*this, styles, kind_cast<Style>(selection));
     ::remove_items(*this, object_tree, kind_cast<Object>(selection));
 
-    undo_stack.endMacro();
     return true;
   } else {
     return false;

@@ -2,18 +2,20 @@
 #include "managers/propertymanager/propertymanager.h"
 #include "managers/stylemanager/stylemanager.h"
 #include "managers/pythonconsole/pythonconsole.h"
+#include "managers/historymanager/historymanager.h"
 
 namespace omm
 {
 
 void register_managers()
 {
-#define REGISTER_MANAGER(TYPE) Manager::register_type<TYPE>(#TYPE);
+#define REGISTER_MANAGER(TYPE) Manager::register_type<TYPE>(#TYPE)
 
   REGISTER_MANAGER(ObjectManager);
   REGISTER_MANAGER(PropertyManager);
   REGISTER_MANAGER(StyleManager);
   REGISTER_MANAGER(PythonConsole);
+  REGISTER_MANAGER(HistoryManager);
 
 #undef REGISTER_MANAGER
 }

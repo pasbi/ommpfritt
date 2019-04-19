@@ -87,7 +87,7 @@ void AbstractSelectTool::cancel()
   Command* cmd = transform_objects_absolute(ObjectTransformation(), true);
   if (cmd) {
     cmd->setObsolete(true);
-    scene.undo_stack.undo();
+    scene.history.undo();
   }
   Tool::cancel();
 }

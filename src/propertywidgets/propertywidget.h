@@ -54,14 +54,14 @@ protected:
     };
     if (!std::all_of(m_properties.begin(), m_properties.end(), is_noop)) {
       auto command = std::make_unique<PropertiesCommand<property_type>>(m_properties, value);
+      std::unique_ptr<HistoryModel::Macro> macro;
       if (wrap) {
-        scene.undo_stack.beginMacro(QString::fromStdString(command->label()));
+        macro = scene.history.start_macro(QString::fromStdString(command->label()));
         for (auto* property : m_properties) { property->pre_submit(*property); }
       }
       scene.submit(std::move(command));
       if (wrap) {
         for (auto* property : m_properties) { property->post_submit(*property); }
-        scene.undo_stack.endMacro();
       }
     }
   }

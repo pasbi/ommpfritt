@@ -7,6 +7,7 @@ file (GLOB SOURCES
 
 target_sources(libommpfritt PRIVATE ${SOURCES})
 
+add_subdirectory("historymanager")
 add_subdirectory("objectmanager")
 add_subdirectory("propertymanager")
 add_subdirectory("pythonconsole")

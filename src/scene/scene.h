@@ -17,6 +17,7 @@
 #include "scene/listadapter.h"
 #include "scene/objecttreeadapter.h"
 #include "scene/abstractselectionobserver.h"
+#include "scene/history/historymodel.h"
 #include "tools/toolbox.h"
 
 namespace omm
@@ -108,7 +109,7 @@ private:
 
   // === Commands ====
 public:
-  QUndoStack undo_stack;
+  HistoryModel history;
   template<typename CommandT, typename... Args> void submit(Args&&... args)
   {
     submit(std::make_unique<CommandT>(std::forward<Args>(args)...));

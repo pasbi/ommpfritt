@@ -78,14 +78,14 @@ protected:
       using command_t = VectorPropertiesCommand<VectorPropertyT, dim>;
       auto command = std::make_unique<command_t>(properties, value);
 
+      std::unique_ptr<HistoryModel::Macro> macro;
       if (wrap) {
-        this->scene.undo_stack.beginMacro(QString::fromStdString(command->label()));
+        macro = this->scene.history.start_macro(QString::fromStdString(command->label()));
         for (auto* property : properties) { property->pre_submit(*property); }
       }
       this->scene.submit(std::move(command));
       if (wrap) {
         for (auto* property : properties) { property->post_submit(*property); }
-        this->scene.undo_stack.endMacro();
       }
     }
   }

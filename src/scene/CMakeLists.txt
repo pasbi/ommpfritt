@@ -9,5 +9,8 @@ file (GLOB SOURCES
   "objecttreeadapter.cpp"
   "listadapter.cpp"
 )
+
+add_subdirectory(history)
+
 target_sources(libommpfritt PRIVATE ${SOURCES})
 

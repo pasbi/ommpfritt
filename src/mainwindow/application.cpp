@@ -176,9 +176,9 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
   };
   std::list infos {
     ai( QT_TRANSLATE_NOOP("any-context", "undo"), [](Application& app) {
-      app.scene.undo_stack.undo(); } ),
+      app.scene.history.undo(); } ),
     ai( QT_TRANSLATE_NOOP("any-context", "redo"), [](Application& app) {
-      app.scene.undo_stack.redo(); } ),
+      app.scene.history.redo(); } ),
     ai( QT_TRANSLATE_NOOP("any-context", "remove selection"), [](Application& app) {
       app.scene.remove(app.main_window(), app.scene.selection()); } ),
     ai( QT_TRANSLATE_NOOP("any-context", "new document"), [](Application& app) { app.reset(); } ),
@@ -244,12 +244,11 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
   for (const auto& key : Tag::keys()) {
     infos.push_back(ai(key, [key](Application& app) {
       Scene& scene = app.scene;
-      scene.undo_stack.beginMacro(tr("Add Tag"));
+      auto macro = scene.history.start_macro(tr("Add Tag"));
       for (auto&& object : scene.item_selection<Object>()) {
         using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
         scene.submit<AddTagCommand>(object->tags, Tag::make(key, *object));
       }
-      scene.undo_stack.endMacro();
     }));
   }
   return std::vector(infos.begin(), infos.end());

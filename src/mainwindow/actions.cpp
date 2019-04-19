@@ -30,11 +30,10 @@ void modify_tangents(omm::Path::InterpolationMode mode, omm::Application& app)
   });
 
   if (map.size() > 0) {
-    app.scene.undo_stack.beginMacro(QObject::tr("modify tangents"));
+    auto macro = app.scene.history.start_macro(QObject::tr("modify tangents"));
     using OptionsPropertyCommand = omm::PropertiesCommand<omm::OptionsProperty>;
     app.scene.submit<OptionsPropertyCommand>(interpolation_properties, bezier_mode);
     app.scene.submit<omm::ModifyPointsCommand>(map);
-    app.scene.undo_stack.endMacro();
   }
 }
 
@@ -126,7 +125,7 @@ void convert_objects(Application& app)
   const auto convertables = ::filter_if(app.scene.item_selection<Object>(), [](const Object* o) {
     return !!(o->flags() & Object::Flag::Convertable);
   });
-  app.scene.undo_stack.beginMacro(QObject::tr("convert"));
+  auto macro = app.scene.history.start_macro(QObject::tr("convert"));
   for (auto&& c : convertables) {
     auto converted = c->convert();
     assert(!c->is_root());
@@ -144,7 +143,6 @@ void convert_objects(Application& app)
   const auto selection = ::transform<Object*, std::set>(convertables, ::identity);
   using remove_command = RemoveCommand<Tree<Object>>;
   app.scene.template submit<remove_command>(app.scene.object_tree, selection);
-  app.scene.undo_stack.endMacro();
 }
 
 }  // namespace omm::actions
