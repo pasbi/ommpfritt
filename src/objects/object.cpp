@@ -380,6 +380,22 @@ void Object::set_oriented_position(const Point& op, const bool align)
 
 bool Object::is_active() const { return property(IS_ACTIVE_PROPERTY_KEY).value<bool>(); }
 
+bool Object::is_visible() const
+{
+  const Object* o = this;
+  if (o->visibility() == Visibility::Visible) {
+    while (!o->is_root()) {
+      o = &o->parent();
+      if (o->visibility() == Visibility::HideTree) {
+        return false;
+      }
+    }
+    return true;
+  } else {
+    return false;
+  }
+}
+
 Object::Visibility Object::visibility() const
 {
   return property(IS_VISIBLE_PROPERTY_KEY).value<Visibility>();

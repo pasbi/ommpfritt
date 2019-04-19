@@ -75,6 +75,7 @@ public:
   Flag flags() const override;
   Scene* scene() const;
   bool is_active() const;
+  bool is_visible() const;
   Visibility visibility() const;
   virtual std::vector<const omm::Style*> find_styles() const;
 

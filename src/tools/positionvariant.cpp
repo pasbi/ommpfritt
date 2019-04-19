@@ -86,7 +86,7 @@ void ObjectPositions::make_handles(handles_type& handles, Tool& tool) const
 {
   // ignore object selection. Return a handle for each visible object.
   const auto objects = ::filter_if(scene.object_tree.items(), [](Object* object) {
-    return object->visibility() == Object::Visibility::Visible;
+    return object->is_visible();
   });
 
   handles.reserve(objects.size());
