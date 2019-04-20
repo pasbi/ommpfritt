@@ -274,7 +274,8 @@ void MainWindow::save_state()
   settings.setValue(WINDOWSTATE_SETTINGS_KEY, saveState());
 
   const auto save_manager = [&settings](const Manager* manager) {
-    LINFO << "save manager " << manager->type() << " " << manager->isVisible() << " " << manager->objectName().toStdString();
+    LINFO << "save manager " << manager->type() << " "
+          << manager->isVisible() << " " << manager->objectName().toStdString();
     settings.setValue(MANAGER_TYPE_SETTINGS_KEY, QString::fromStdString(manager->type()));
     settings.setValue(MANAGER_NAME_SETTINGS_KEY, manager->objectName());
   };
