@@ -99,7 +99,7 @@ QSize CodeEdit::sizeHint() const
   });
   const auto max_width = *std::max_element(widths.begin(), widths.end());
 
-  const auto height = font_metrics.lineSpacing() * lines.size();
+  const auto height = font_metrics.lineSpacing() * (lines.size() + 1);
   return QSize(max_width, height);
 }
 
