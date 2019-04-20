@@ -177,16 +177,16 @@ void Cloner::update()
 
 void Cloner::on_change(AbstractPropertyOwner *subject, int code, Property *property)
 {
-  m_clones.clear();
   Object::on_change(subject, code, property);
+  m_clones.clear();
 }
 
 void Cloner::on_property_value_changed(Property &property)
 {
+  Object::on_property_value_changed(property);
   if (::contains(m_clone_dependencies, &property)) {
     m_clones.clear();
   }
-  Object::on_property_value_changed(property);
 }
 
 std::string Cloner::type() const { return TYPE; }

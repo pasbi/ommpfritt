@@ -10,7 +10,6 @@ file (GLOB SOURCES
   "stringproperty.cpp"
   "transformationproperty.cpp"
   "triggerproperty.cpp"
-  "typedproperty.cpp"
   "vectorproperty.cpp"
 )
 
