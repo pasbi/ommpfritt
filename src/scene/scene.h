@@ -37,7 +37,6 @@ class Scene
   Q_OBJECT
 public:
   Scene(PythonEngine& python_engine);
-  ~Scene();
 
   std::unique_ptr<Object> make_root();
   static constexpr auto TYPE = "Scene";
@@ -123,11 +122,6 @@ private:
 
 public:
   void on_change(AbstractPropertyOwner *apo, int what, Property *property) override;
-
-public:
-  static Scene* currentInstance();
-private:
-  static Scene* m_current;
 
 private:
   Scene(const Scene& other) = delete;

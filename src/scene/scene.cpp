@@ -65,8 +65,6 @@ template<typename T> std::set<T*> filter_by_name(const std::set<T*>& set, const 
 namespace omm
 {
 
-Scene* Scene::m_current = nullptr;
-
 Scene::Scene(PythonEngine& python_engine)
   : object_tree(make_root(), this)
   , object_tree_adapter(*this, object_tree)
@@ -78,18 +76,10 @@ Scene::Scene(PythonEngine& python_engine)
 {
   using namespace std::string_literals;
   object_tree.root().property(Object::NAME_PROPERTY_KEY).set("_root_"s);
-  m_current = this;
   for (auto kind : { Object::KIND, Tag::KIND, Style::KIND, Tool::KIND }) {
     m_item_selection[kind] = {};
   }
   tool_box.set_active_tool(SelectObjectsTool::TYPE);
-}
-
-Scene::~Scene()
-{
-  if (m_current == this) {
-    m_current = nullptr;
-  }
 }
 
 std::unique_ptr<Object> Scene::make_root()
@@ -120,11 +110,6 @@ std::unique_ptr<Object> Scene::make_root()
   auto root = std::make_unique<Root>(this);
   root->register_observer(*this);
   return std::unique_ptr<Object>(root.release());
-}
-
-Scene* Scene::currentInstance()
-{
-  return m_current;
 }
 
 std::set<ReferenceProperty*>
