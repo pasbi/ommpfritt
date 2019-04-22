@@ -39,7 +39,7 @@ make_contextes( const ItemModelAdapterT& adapter,
   using item_type = typename ContextT::item_type;
 
   auto property_owner_mime_data = qobject_cast<const omm::PropertyOwnerMimeData*>(data);
-  auto items = property_owner_mime_data->items<item_type>();
+  auto items = ::transform<item_type*, std::set>(property_owner_mime_data->items<item_type>());
   if (property_owner_mime_data == nullptr || items.size() == 0) {
     return contextes;
   }

@@ -31,18 +31,9 @@ public:
   size_t position() const;
   virtual std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() = 0;
 
-  template<template<typename...> class Container>
-  static void remove_internal_children(Container<T*>& items)
-  {
-    const auto has_parent = [&items](const T* subject) {
-      const auto predicate = [subject](const T* potential_descendant) {
-        return potential_descendant != subject && potential_descendant->is_descendant_of(*subject);
-      };
-      return std::any_of(items.begin(), items.end(), predicate);
-    };
+  static void remove_internal_children(std::set<T*>& items);
 
-    ::erase_if(items, [&has_parent](const T* subject) { return has_parent(subject); });
-  }
+
 
 protected:
   virtual void on_children_changed() {}
