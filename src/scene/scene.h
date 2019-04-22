@@ -16,7 +16,6 @@
 #include "scene/tree.h"
 #include "scene/listadapter.h"
 #include "scene/objecttreeadapter.h"
-#include "scene/abstractselectionobserver.h"
 #include "scene/history/historymodel.h"
 #include "tools/toolbox.h"
 
@@ -32,9 +31,10 @@ template<> struct SceneStructure<Object> { using type = Tree<Object>; };
 template<> struct SceneStructure<Style> { using type = List<Style>; };
 
 class Scene
-  : public Observed<AbstractSelectionObserver>
-  , public Observed<AbstractSimpleStructureObserver>
+  : public QObject
+  , public AbstractPropertyOwnerObserver
 {
+  Q_OBJECT
 public:
   Scene(PythonEngine& python_engine);
   ~Scene();
@@ -122,6 +122,9 @@ private:
   void set_has_pending_changes(bool v);
 
 public:
+  void on_change(AbstractPropertyOwner *apo, int what, Property *property) override;
+
+public:
   static Scene* currentInstance();
 private:
   static Scene* m_current;
@@ -141,6 +144,18 @@ public:
 
 public:
   void update();
+
+Q_SIGNALS:
+  void selection_changed(const std::set<AbstractPropertyOwner*>& selection);
+  void object_selection_changed(const std::set<Object*>& selection);
+  void style_selection_changed(const std::set<Style*>& selection);
+  void tag_selection_changed(const std::set<Tag*>& selection);
+  void tool_selection_changed(const std::set<Tool*>& selection);
+  void selection_changed(const std::set<AbstractPropertyOwner*>& selection,
+                            AbstractPropertyOwner::Kind kind);
+  void structure_changed();
+  void scene_changed();
+
 };
 
 }  // namespace omm

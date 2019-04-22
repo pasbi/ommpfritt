@@ -18,6 +18,8 @@ StyleManager::StyleManager(Scene& scene)
                  scene, scene.style_list_adapter )
 {
   setObjectName(TYPE);
+  connect(&scene, SIGNAL(style_selection_changed(std::set<Style*>)),
+          &item_view(), SLOT(set_selection(std::set<Style*>)));
 }
 
 std::vector<CommandInterface::ActionInfo<StyleManager>> StyleManager::action_infos()
@@ -28,11 +30,6 @@ std::vector<CommandInterface::ActionInfo<StyleManager>> StyleManager::action_inf
       sm.scene().remove(&sm, sm.item_view().selected_items());
     }),
   };
-}
-
-void StyleManager::on_style_selection_changed(const std::set<Style*>& selection)
-{
-  item_view().set_selection(selection);
 }
 
 void StyleManager::keyPressEvent(QKeyEvent* event)

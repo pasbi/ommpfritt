@@ -16,14 +16,13 @@ class AbstractPropertyOwner;
 class ReferenceLineEdit
   : public QComboBox
   , public MultiValueEdit<AbstractPropertyOwner*>
-  , public AbstractSimpleStructureObserver
 {
+  Q_OBJECT
 public:
   explicit ReferenceLineEdit(Scene& scene, const on_value_changed_t& on_value_changed);
-  ~ReferenceLineEdit();
+  ~ReferenceLineEdit() = default;
   void set_value(const value_type& value) override;
   value_type value() const override;
-  void structure_has_changed() override;
   void set_filter(AbstractPropertyOwner::Kind allowed_kinds);
   void set_filter(AbstractPropertyOwner::Flag required_flags);
   void set_null_label(const std::string& value);
@@ -43,8 +42,10 @@ private:
   std::vector<AbstractPropertyOwner*> m_possible_references;
 
   std::vector<omm::AbstractPropertyOwner*> collect_candidates();
-  void update_candidates();
   std::string m_null_label;
+
+private Q_SLOTS:
+  void update_candidates();
 };
 
 }  // namespace omm

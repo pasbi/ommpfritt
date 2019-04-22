@@ -3,6 +3,7 @@
 #include <set>
 #include <type_traits>
 #include "common.h"
+#include "logging.h"
 
 template<typename ObserverT> class Observed
 {
@@ -13,6 +14,7 @@ public:
 
   void register_observer(ObserverT& observer)
   {
+//    LINFO << m_observers.size() << " " << m_observers.count(&observer);
     assert(m_observers.count(&observer) == 0);
     m_observers.insert(&observer);
     assert(m_observers.count(&observer) == 1);
@@ -20,6 +22,7 @@ public:
 
   void unregister_observer(ObserverT& observer)
   {
+//    LINFO << m_observers.size() << " " << m_observers.count(&observer);
     assert(m_observers.count(&observer) == 1);
     m_observers.erase(m_observers.find(&observer));
     assert(m_observers.count(&observer) == 0);

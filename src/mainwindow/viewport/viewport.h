@@ -5,8 +5,8 @@
 
 #include "geometry/objecttransformation.h"
 #include "mainwindow/viewport/mousepancontroller.h"
-#include "scene/abstractselectionobserver.h"
 #include "renderers/viewportrenderer.h"
+#include "scene/scene.h"
 
 #define USE_OPENGL 0
 
@@ -29,6 +29,7 @@ using ViewportBase = QWidget;
 
 class Viewport : public ViewportBase
 {
+  Q_OBJECT
 public:
   Viewport(Scene& scene);
   ~Viewport() = default;

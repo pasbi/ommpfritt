@@ -37,6 +37,7 @@ Viewport::Viewport(Scene& scene)
   m_timer->start();
 
   setMouseTracking(true);
+  connect(&scene, SIGNAL(scene_changed()), this, SLOT(update()));
 }
 
 #if USE_OPENGL

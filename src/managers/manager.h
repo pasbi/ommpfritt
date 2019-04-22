@@ -7,7 +7,6 @@
 
 #include "mainwindow/mainwindow.h"
 #include "abstractfactory.h"
-#include "scene/abstractselectionobserver.h"
 
 namespace omm
 {
@@ -17,14 +16,13 @@ class Scene;
 
 class Manager
   : public QDockWidget
-  , public AbstractSelectionObserver
   , public AbstractFactory<std::string, Manager, Scene&>
 {
   Q_OBJECT   // Required for MainWindow::save_state
 public:
   Manager(const Manager&) = delete;
   Manager(Manager&&) = delete;
-  virtual ~Manager();
+  virtual ~Manager() = default;
   Scene& scene() const;
 
 protected:

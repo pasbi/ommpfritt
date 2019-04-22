@@ -15,6 +15,7 @@ class Object;
 
 class ObjectTreeView : public ManagerItemView<QTreeView, ObjectTreeAdapter>
 {
+  Q_OBJECT
 public:
   using model_type = ObjectTreeAdapter;
   explicit ObjectTreeView(ObjectTreeAdapter& model);
@@ -22,8 +23,10 @@ public:
   std::set<AbstractPropertyOwner*> selected_objects() const;
   std::set<AbstractPropertyOwner*> selected_tags() const;
 
-  void set_selection(const std::set<AbstractPropertyOwner*>& selected_items);
   Scene& scene() const;
+
+public Q_SLOTS:
+  void set_selection(const std::set<AbstractPropertyOwner*>& selected_items);
 
 protected:
   void paintEvent(QPaintEvent* e) override;

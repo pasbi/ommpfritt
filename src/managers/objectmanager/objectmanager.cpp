@@ -14,6 +14,8 @@ ObjectManager::ObjectManager(Scene& scene)
                  scene, scene.object_tree_adapter )
 {
   setObjectName(TYPE);
+  connect(&scene, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
+          &item_view(), SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
 }
 
 std::vector<CommandInterface::ActionInfo<ObjectManager>> ObjectManager::action_infos()
@@ -38,10 +40,5 @@ std::vector<std::string> ObjectManager::application_actions() const
 }
 
 std::string ObjectManager::type() const { return TYPE; }
-
-void ObjectManager::on_selection_changed(const std::set<AbstractPropertyOwner*>& selection)
-{
-  item_view().set_selection(selection);
-}
 
 }  // namespace omm

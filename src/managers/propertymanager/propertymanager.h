@@ -18,11 +18,11 @@ class PropertyView;
 class PropertyManager
   : public Manager, public AbstractPropertyObserver
 {
+  Q_OBJECT
 public:
   explicit PropertyManager(Scene& scene);
   ~PropertyManager();
 
-  void on_selection_changed(const std::set<AbstractPropertyOwner*>& selection) override;
   PropertyView property(const std::string& key);
   void clear();
   void add_user_property();
@@ -38,6 +38,9 @@ private:
   std::set<AbstractPropertyOwner*>  m_current_selection;
   std::set<Property*> m_observed_properties;
   std::string make_window_title() const;
+
+private Q_SLOTS:
+  void set_selection(const std::set<AbstractPropertyOwner*>& selection);
 };
 
 }  // namespace omm

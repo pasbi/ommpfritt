@@ -100,6 +100,7 @@ std::unique_ptr<Object> Scene::make_root()
     explicit Root(Scene* scene) : Empty(scene) {}
     void on_change(AbstractPropertyOwner* subject, int code, Property* property) override
     {
+      Object::on_change(subject, code, property);
       if (code == Object::HIERARCHY_CHANGED) {
         scene()->invalidate();
       } else if (code == AbstractPropertyOwner::PROPERTY_CHANGED) {
@@ -115,7 +116,10 @@ std::unique_ptr<Object> Scene::make_root()
     }
   };
 
-  return std::make_unique<Root>(this);
+
+  auto root = std::make_unique<Root>(this);
+  root->register_observer(*this);
+  return std::unique_ptr<Object>(root.release());
 }
 
 Scene* Scene::currentInstance()
@@ -160,7 +164,7 @@ void Scene::invalidate()
 {
   m_tags_cache_is_dirty = true;
   const auto notifier = std::mem_fn(&AbstractSimpleStructureObserver::structure_has_changed);
-  Observed<AbstractSimpleStructureObserver>::for_each(notifier);
+  Q_EMIT structure_changed();
   set_selection(std::set<AbstractPropertyOwner*>());
   tool_box.active_tool().on_scene_changed();
 }
@@ -254,6 +258,14 @@ void Scene::set_has_pending_changes(bool v)
   m_has_pending_changes = v;
 }
 
+void Scene::on_change(AbstractPropertyOwner *apo, int what, Property *property)
+{
+  Q_UNUSED(apo)
+  Q_UNUSED(what)
+  Q_UNUSED(property)
+  Q_EMIT scene_changed();
+}
+
 bool Scene::has_pending_changes() const
 {
   return m_has_pending_changes;
@@ -309,18 +321,35 @@ template<> const typename SceneStructure<Style>::type& Scene::structure<Style>()
 void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
   m_selection = selection;
-  Observed<AbstractSelectionObserver>::for_each( [this](auto* observer) {
-    observer->on_selection_changed(m_selection);
-  });
+  Q_EMIT selection_changed(m_selection);
+
+  static const auto emit_selection_changed = [this](const auto& selection, const auto kind) {
+    Q_EMIT selection_changed(selection, kind);
+
+    switch (kind) {
+    case AbstractPropertyOwner::Kind::Style:
+      Q_EMIT style_selection_changed(kind_cast<Style>(selection));
+      break;
+    case AbstractPropertyOwner::Kind::Object:
+      Q_EMIT object_selection_changed(kind_cast<Object>(selection));
+      break;
+    case AbstractPropertyOwner::Kind::Tag:
+      Q_EMIT tag_selection_changed(kind_cast<Tag>(selection));
+      break;
+    case AbstractPropertyOwner::Kind::Tool:
+      Q_EMIT tool_selection_changed(kind_cast<Tool>(selection));
+      break;
+    default:
+      break;
+    }
+  };
 
   for (auto& kind : { AbstractPropertyOwner::Kind::Object, AbstractPropertyOwner::Kind::Style,
                       AbstractPropertyOwner::Kind::Tag, AbstractPropertyOwner::Kind::Tool })
   {
     if (selection.size() == 0) {
       m_item_selection.at(kind).clear();
-      Observed<AbstractSelectionObserver>::for_each( [this, kind](auto* observer) {
-        observer->on_selection_changed(m_item_selection.at(kind), kind);
-      });
+      emit_selection_changed(m_selection, kind);
     } else {
       const auto item_selection = ::filter_if(selection, [kind](const auto* apo) {
         return apo->kind() == kind;
@@ -330,9 +359,7 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
       } else {
         if (m_item_selection[kind] != item_selection) {
           m_item_selection[kind] = item_selection;
-          Observed<AbstractSelectionObserver>::for_each( [this, kind](auto* observer) {
-            observer->on_selection_changed(m_item_selection.at(kind), kind);
-          });
+          emit_selection_changed(m_item_selection.at(kind), kind);
         }
       }
     }
