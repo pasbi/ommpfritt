@@ -37,6 +37,7 @@ public:
   bool can_move_object(const TreeMoveContext<T>& new_context) const;
   std::unique_ptr<T> replace_root(std::unique_ptr<T> new_root);
   T& root() const;
+  bool contains(const T &t) const;
 
   std::set<T*> items() const override;
   size_t position(const T& item) const override;

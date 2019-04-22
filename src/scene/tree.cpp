@@ -1,5 +1,6 @@
 #include "scene/tree.h"
 #include "scene/contextes.h"
+#include <type_traits>
 
 namespace omm
 {
@@ -13,6 +14,13 @@ template<typename T> Tree<T>::Tree(std::unique_ptr<T> root, Scene*)
 template<typename T> T& Tree<T>::root() const
 {
   return *m_root;
+}
+
+template<typename T> bool Tree<T>::contains(const T& t) const
+{
+  static_assert(std::is_base_of_v<TreeElement<T>, T>);
+  const auto& root = static_cast<const TreeElement<T>&>(*m_root);
+  return root.is_descendant_of(t);
 }
 
 template<typename T> void Tree<T>::move(TreeMoveContext<T>& context)

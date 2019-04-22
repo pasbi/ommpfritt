@@ -36,6 +36,7 @@ public:
   std::unique_ptr<T> remove(T& t) override;
 
   void invalidate() override;
+  bool contains(const T& item) const;
 
 private:
   std::vector<std::unique_ptr<T>> m_items;

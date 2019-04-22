@@ -33,8 +33,6 @@ public:
 
   static void remove_internal_children(std::set<T*>& items);
 
-
-
 protected:
   virtual void on_children_changed() {}
 

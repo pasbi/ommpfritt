@@ -128,6 +128,13 @@ template<typename T> size_t List<T>::size() const
 
 template<typename T> void List<T>::invalidate() { }
 
+template<typename T> bool List<T>::contains(const T &item) const
+{
+  return m_items.end() != std::find_if(m_items.begin(), m_items.end(), [&item](const auto& i) {
+    return i.get() == &item;
+  });
+}
+
 template class List<Style>;
 template class List<Tag>;
 

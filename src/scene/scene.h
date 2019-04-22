@@ -144,6 +144,7 @@ public:
 
 public:
   void update();
+  bool contains(const AbstractPropertyOwner* apo) const;
 
 Q_SIGNALS:
   void selection_changed(const std::set<AbstractPropertyOwner*>& selection);

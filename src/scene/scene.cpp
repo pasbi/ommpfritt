@@ -165,7 +165,9 @@ void Scene::invalidate()
   m_tags_cache_is_dirty = true;
   const auto notifier = std::mem_fn(&AbstractSimpleStructureObserver::structure_has_changed);
   Q_EMIT structure_changed();
-  set_selection(std::set<AbstractPropertyOwner*>());
+  set_selection(::filter_if(m_selection, [this](auto* apo) {
+    return contains(apo);
+  }));
   tool_box.active_tool().on_scene_changed();
 }
 
@@ -449,6 +451,22 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
 void Scene::update()
 {
   object_tree.root().update_recursive();
+}
+
+bool Scene::contains(const AbstractPropertyOwner *apo) const
+{
+  switch (apo->kind()) {
+  case AbstractPropertyOwner::Kind::Tag:
+  {
+    const auto tags = this->tags();
+    return tags.end() != std::find(tags.begin(), tags.end(), static_cast<const Tag*>(apo));
+  }
+  case AbstractPropertyOwner::Kind::Object:
+    return object_tree.contains(static_cast<const Object&>(*apo));
+  case AbstractPropertyOwner::Kind::Style:
+    return styles.contains(static_cast<const Style&>(*apo));
+  default: return false;
+  }
 }
 
 }  // namespace omm
