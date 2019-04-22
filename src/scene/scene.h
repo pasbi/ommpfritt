@@ -30,9 +30,7 @@ template<typename T> struct SceneStructure;
 template<> struct SceneStructure<Object> { using type = Tree<Object>; };
 template<> struct SceneStructure<Style> { using type = List<Style>; };
 
-class Scene
-  : public QObject
-  , public AbstractPropertyOwnerObserver
+class Scene : public QObject
 {
   Q_OBJECT
 public:
@@ -120,9 +118,6 @@ private:
   bool m_has_pending_changes = false;
   void set_has_pending_changes(bool v);
 
-public:
-  void on_change(AbstractPropertyOwner *apo, int what, Property *property) override;
-
 private:
   Scene(const Scene& other) = delete;
   Scene(Scene&& other) = delete;
@@ -141,11 +136,27 @@ public:
   bool contains(const AbstractPropertyOwner* apo) const;
 
 Q_SIGNALS:
-  void selection_changed(const std::set<AbstractPropertyOwner*>& selection);
   void object_selection_changed(const std::set<Object*>& selection);
   void style_selection_changed(const std::set<Style*>& selection);
   void tag_selection_changed(const std::set<Tag*>& selection);
   void tool_selection_changed(const std::set<Tool*>& selection);
+
+  /**
+   * @brief selection_changed emitted when one or more items becomes selected or deselected
+   * @param selection the items which are selected after the selection change.
+   */
+  void selection_changed(const std::set<AbstractPropertyOwner*>& selection);
+
+  /**
+   * @brief selection_changed emitted when one or more items of a certain kind becomes selected or
+   *  deselected. This signal unifies the following four signals:
+   * @see object_selection_changed
+   * @see style_selection_changed
+   * @see tag_selection_changed
+   * @see tool_selection_changed
+   * @param selection all items of a certain kind that are selected after the selection has changed.
+   * @param kind the kind of the items.
+   */
   void selection_changed(const std::set<AbstractPropertyOwner*>& selection,
                             AbstractPropertyOwner::Kind kind);
   void structure_changed();

@@ -103,13 +103,11 @@ std::unique_ptr<Object> Scene::make_root()
           scene()->invalidate();  // reset all the handles
         }
       }
+      Q_EMIT scene()->scene_changed();
     }
   };
 
-
-  auto root = std::make_unique<Root>(this);
-  root->register_observer(*this);
-  return std::unique_ptr<Object>(root.release());
+  return std::unique_ptr<Object>(std::make_unique<Root>(this).release());
 }
 
 std::set<ReferenceProperty*>
@@ -243,14 +241,6 @@ std::string Scene::filename() const
 void Scene::set_has_pending_changes(bool v)
 {
   m_has_pending_changes = v;
-}
-
-void Scene::on_change(AbstractPropertyOwner *apo, int what, Property *property)
-{
-  Q_UNUSED(apo)
-  Q_UNUSED(what)
-  Q_UNUSED(property)
-  Q_EMIT scene_changed();
 }
 
 bool Scene::has_pending_changes() const
