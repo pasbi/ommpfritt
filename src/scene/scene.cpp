@@ -46,15 +46,6 @@ auto implicitely_selected_tags(const std::set<omm::AbstractPropertyOwner*>& sele
   return tags;
 }
 
-
-std::unique_ptr<omm::Style> make_default_style(omm::Scene* scene)
-{
-  auto default_style = std::make_unique<omm::Style>(scene);
-  default_style->property(omm::Style::PEN_IS_ACTIVE_KEY).set(true);
-  default_style->property(omm::Style::BRUSH_IS_ACTIVE_KEY).set(true);
-  return default_style;
-}
-
 template<typename T> std::set<T*> filter_by_name(const std::set<T*>& set, const std::string& name)
 {
   return ::filter_if(set, [name](const T* t) { return t->name() == name; });
@@ -70,7 +61,7 @@ Scene::Scene(PythonEngine& python_engine)
   , object_tree_adapter(*this, object_tree)
   , style_list_adapter(*this, styles)
   , python_engine(python_engine)
-  , m_default_style(make_default_style(this))
+  , m_default_style(std::make_unique<Style>(this))
   , tool_box(*this)
 {
   using namespace std::string_literals;

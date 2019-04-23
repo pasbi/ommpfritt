@@ -6,6 +6,7 @@
 #include "common.h"
 #include <QScrollBar>
 #include "common.h"
+#include "logging.h"
 
 namespace
 {
@@ -100,7 +101,9 @@ QSize CodeEdit::sizeHint() const
   const auto max_width = *std::max_element(widths.begin(), widths.end());
 
   const auto height = font_metrics.lineSpacing() * (lines.size() + 1);
-  return QSize(max_width, height);
+
+  return QSize(max_width + m_text_edit->verticalScrollBar()->width(),
+               height + m_text_edit->horizontalScrollBar()->height());
 }
 
 void CodeEdit::scroll_to_bottom()

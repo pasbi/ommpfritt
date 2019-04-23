@@ -32,9 +32,9 @@ ScriptTag::ScriptTag(Object& owner)
     .set_mode(StringProperty::Mode::Code)
     .set_label(QObject::tr("code").toStdString())
     .set_category(QObject::tr("script").toStdString());
-  add_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY)
-    .set_options({ QObject::tr("per frame").toStdString(),
-                   QObject::tr("on request").toStdString() })
+  add_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY, 0)
+    .set_options({ QObject::tr("on request").toStdString(),
+                   QObject::tr("per frame").toStdString() })
     .set_label(QObject::tr("update").toStdString())
     .set_category(QObject::tr("script").toStdString());
   add_property<TriggerProperty>(TRIGGER_UPDATE_PROPERTY_KEY)
@@ -69,7 +69,7 @@ void ScriptTag::force_evaluate()
 
 void ScriptTag::evaluate()
 {
-  if (property(UPDATE_MODE_PROPERTY_KEY).value<std::size_t>() == 0) {
+  if (property(UPDATE_MODE_PROPERTY_KEY).value<std::size_t>() == 1) {
     force_evaluate();
   }
 }

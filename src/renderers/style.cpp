@@ -15,7 +15,7 @@ Style::Style(Scene* scene)
     .set_label(QObject::tr("Name").toStdString())
     .set_category(QObject::tr("basic").toStdString());
 
-  add_property(PEN_IS_ACTIVE_KEY, std::make_unique<BoolProperty>(false))
+  add_property(PEN_IS_ACTIVE_KEY, std::make_unique<BoolProperty>(true))
     .set_label(QObject::tr("active").toStdString())
     .set_category(QObject::tr("pen").toStdString());
   add_property(PEN_COLOR_KEY, std::make_unique<ColorProperty>(Colors::BLACK))

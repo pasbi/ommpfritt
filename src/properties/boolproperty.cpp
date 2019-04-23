@@ -3,10 +3,7 @@
 namespace omm
 {
 
-std::string BoolProperty::type() const
-{
-  return TYPE;
-}
+std::string BoolProperty::type() const { return TYPE; }
 
 void BoolProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
