@@ -70,8 +70,6 @@ Scene::Scene(PythonEngine& python_engine)
     m_item_selection[kind] = {};
   }
   tool_box.set_active_tool(SelectObjectsTool::TYPE);
-
-
 }
 
 std::unique_ptr<Object> Scene::make_root()

@@ -77,6 +77,7 @@ template<typename T> void List<T>::insert(ListOwningContext<T>& context)
   if constexpr (std::is_base_of_v<AbstractPropertyOwner, T>) {
     context.get_subject().register_observer(*this);
   }
+  Q_EMIT this->structure_changed();
 }
 
 template<typename T> void List<T>::remove(ListOwningContext<T>& context)
@@ -90,6 +91,7 @@ template<typename T> void List<T>::remove(ListOwningContext<T>& context)
     context.get_subject().unregister_observer(*this);
   }
   context.subject.capture(::extract(m_items, context.subject.get()));
+  Q_EMIT this->structure_changed();
 }
 
 template<typename T> std::unique_ptr<T> List<T>::remove(T& item)
@@ -99,7 +101,8 @@ template<typename T> std::unique_ptr<T> List<T>::remove(T& item)
     [this, &item](auto* observer){ return observer->acquire_remover_guard(position(item)); }
   );
   auto extracted_item = ::extract(m_items, item);
-  return  extracted_item;
+  Q_EMIT this->structure_changed();
+  return extracted_item;
 }
 
 template<typename T> size_t List<T>::position(const T& item) const
@@ -134,6 +137,7 @@ template<typename T> void List<T>::move(ListMoveContext<T>& context)
   std::unique_ptr<T> item = ::extract(m_items, context.subject.get());
   const auto i = m_items.begin() + static_cast<int>(this->insert_position(context.predecessor));
   m_items.insert(i, std::move(item));
+  Q_EMIT this->structure_changed();
 }
 
 template<typename T>
@@ -146,6 +150,7 @@ std::vector<std::unique_ptr<T>> List<T>::set(std::vector<std::unique_ptr<T>> ite
   auto old_items = std::move(m_items);
   m_items = std::move(items);
   register_items(m_items, *this);
+  Q_EMIT this->structure_changed();
   return old_items;
 }
 

@@ -15,6 +15,7 @@ class AbstractStructure : public QObject
   Q_OBJECT
 Q_SIGNALS:
   void item_changed();
+  void structure_changed();
 };
 
 template<typename T> class Structure : public AbstractStructure

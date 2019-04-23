@@ -21,6 +21,7 @@
 #include "properties/vectorproperty.h"
 #include "logging.h"
 #include "objects/path.h"
+#include "scene/scene.h"
 
 namespace
 {
@@ -77,6 +78,10 @@ Object::Object(Scene* scene) : TreeElement(nullptr)
   QObject::connect(&tags, &List<Tag>::item_changed, [this]() {
     on_change(this, TAG_CHANGED, nullptr);
   });
+
+  QObject::connect(&tags, &List<Tag>::structure_changed, [this]() {
+    m_scene->invalidate();
+  });
 }
 
 Object::Object(const Object& other)
@@ -92,6 +97,10 @@ Object::Object(const Object& other)
 
   QObject::connect(&tags, &List<Tag>::item_changed, [this]() {
     on_change(this, TAG_CHANGED, nullptr);
+  });
+
+  QObject::connect(&tags, &List<Tag>::structure_changed, [this]() {
+    m_scene->invalidate();
   });
 }
 
