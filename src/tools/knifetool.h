@@ -9,7 +9,6 @@ class KnifeTool : public SelectPointsTool
 {
 public:
   explicit KnifeTool(Scene& scene);
-  QIcon icon() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "KnifeTool");
 
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent&) override;

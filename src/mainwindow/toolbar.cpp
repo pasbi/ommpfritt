@@ -1,5 +1,9 @@
 #include "mainwindow/toolbar.h"
 #include "tools/toolbox.h"
+#include "application.h"
+#include "iconprovider.h"
+
+#include <QApplication>
 
 namespace omm
 {
@@ -10,9 +14,11 @@ ToolBar::ToolBar(QWidget* parent, ToolBox& tool_box, const std::vector<std::stri
 {
   setAttribute(Qt::WA_DeleteOnClose);
   setObjectName("ToolBar");
+  const QSize icon_size(24, 24);
+  auto& icon_provider = Application::instance().icon_provider;
   for (auto&& tool_class : tools) {
     auto& tool = tool_box.tool(tool_class);
-    auto* action = addAction(tool.icon(), QString::fromStdString(tool.type()));
+    auto* action = addAction(icon_provider.get_icon(tool.type(), icon_size), tool.name());
     connect(action, &QAction::triggered, [tool_class, &tool_box]() {
       tool_box.set_active_tool(tool_class);
     });

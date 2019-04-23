@@ -154,7 +154,6 @@ SelectObjectsTool::SelectObjectsTool(Scene& scene) : SelectTool(scene)
 }
 
 std::string SelectObjectsTool::type() const { return TYPE; }
-QIcon SelectObjectsTool::icon() const { return QIcon(); }
 
 std::string SelectObjectsTool::name() const
 {
@@ -190,7 +189,6 @@ SelectPointsTool::SelectPointsTool(Scene& scene)
 }
 
 std::string SelectPointsTool::type() const { return TYPE; }
-QIcon SelectPointsTool::icon() const { return QIcon(); }
 
 PointSelectHandle::TangentMode SelectPointsTool::tangent_mode() const
 {

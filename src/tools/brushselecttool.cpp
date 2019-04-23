@@ -19,11 +19,6 @@ BrushSelectTool::BrushSelectTool(Scene& scene)
     .set_category(QObject::tr("tool").toStdString());
 }
 
-QIcon BrushSelectTool::icon() const
-{
-  return QIcon();
-}
-
 bool BrushSelectTool::mouse_move( const Vec2f& delta, const Vec2f& pos,
                                   const QMouseEvent& event)
 {

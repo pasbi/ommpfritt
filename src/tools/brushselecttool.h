@@ -11,7 +11,6 @@ class BrushSelectTool : public Tool
 {
 public:
   explicit BrushSelectTool(Scene& scene);
-  QIcon icon() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "BrushSelectTool");
 
   /**

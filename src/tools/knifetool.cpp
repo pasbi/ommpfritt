@@ -84,7 +84,6 @@ std::string KnifeTool::name() const
 }
 
 std::string KnifeTool::type() const { return TYPE; }
-QIcon KnifeTool::icon() const { return QIcon(); }
 void KnifeTool::cancel() { m_is_cutting = false; }
 
 }  // namespace omm

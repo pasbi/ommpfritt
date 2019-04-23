@@ -22,7 +22,6 @@ class Tool
 public:
   explicit Tool(Scene& scene);
   virtual ~Tool() = default;
-  virtual QIcon icon() const = 0;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Tool", "Tool");
 
   /**

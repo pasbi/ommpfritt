@@ -51,7 +51,6 @@ class SelectObjectsTool : public SelectTool<ObjectPositions>
 public:
   explicit SelectObjectsTool(Scene& scene);
   std::string type() const override;
-  QIcon icon() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectObjectsTool");
   std::string name() const override;
   Command* transform_objects(ObjectTransformation t, const bool tool_space) override;
@@ -64,7 +63,6 @@ class SelectPointsTool : public SelectTool<PointPositions>
 public:
   explicit SelectPointsTool(Scene& scene);
   std::string type() const override;
-  QIcon icon() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectPointsTool");
   static constexpr auto TANGENT_MODE_PROPERTY_KEY = "tangent_mode";
   PointSelectHandle::TangentMode tangent_mode() const;
