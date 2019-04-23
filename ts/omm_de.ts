@@ -1070,6 +1070,14 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <source>Outline</source>
         <translation>Umriss</translation>
     </message>
+    <message>
+        <source>HistoryManager</source>
+        <translation>Verlaufsmanager</translation>
+    </message>
+    <message>
+        <source>PathTool</source>
+        <translation>Pfad Werkzeug</translation>
+    </message>
 </context>
 <context>
     <name>menu_name</name>
@@ -1188,6 +1196,13 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <message>
         <source>...</source>
         <translation>...</translation>
+    </message>
+</context>
+<context>
+    <name>omm::HistoryManager</name>
+    <message>
+        <source>History</source>
+        <translation>Verlauf</translation>
     </message>
 </context>
 <context>

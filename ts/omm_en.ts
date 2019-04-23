@@ -1070,6 +1070,14 @@ Remove the selected items anyway?</translation>
         <source>Outline</source>
         <translation>Outline</translation>
     </message>
+    <message>
+        <source>HistoryManager</source>
+        <translation>History</translation>
+    </message>
+    <message>
+        <source>PathTool</source>
+        <translation>Path Tool</translation>
+    </message>
 </context>
 <context>
     <name>menu_name</name>
@@ -1188,6 +1196,13 @@ Remove the selected items anyway?</translation>
     <message>
         <source>...</source>
         <translation>...</translation>
+    </message>
+</context>
+<context>
+    <name>omm::HistoryManager</name>
+    <message>
+        <source>History</source>
+        <translation>History</translation>
     </message>
 </context>
 <context>
