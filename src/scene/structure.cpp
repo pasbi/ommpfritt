@@ -8,16 +8,6 @@
 namespace omm
 {
 
-template<typename T> Structure<T>::Structure(Scene* scene) : m_scene(scene) {}
-
-template<typename T> void Structure<T>::invalidate_recursive()
-{
-  invalidate();
-  if (m_scene != nullptr) {
-    m_scene->invalidate();
-  }
-}
-
 template<typename T> size_t Structure<T>::insert_position(const T* predecessor) const
 {
   if (predecessor == nullptr) {
@@ -25,11 +15,6 @@ template<typename T> size_t Structure<T>::insert_position(const T* predecessor) 
   } else {
     return position(*predecessor) + 1;
   }
-}
-
-template<typename T> void Structure<T>::set_scene(Scene* scene)
-{
-  m_scene = scene;
 }
 
 template<typename T> T* Structure<T>::predecessor(T& sibling) const

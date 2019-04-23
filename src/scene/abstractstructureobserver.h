@@ -39,11 +39,4 @@ protected:
   friend class List<T>;
 };
 
-class AbstractSimpleStructureObserver
-{
-protected:
-  virtual void structure_has_changed() = 0;
-  friend class Scene;
-};
-
 }  // namespace omm

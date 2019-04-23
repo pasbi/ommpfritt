@@ -3,6 +3,7 @@
 #include "scene/contextes.h"
 #include "renderers/style.h"
 #include "tags/tag.h"
+#include "aspects/propertyowner.h"
 
 namespace
 {
@@ -13,6 +14,26 @@ std::vector<std::unique_ptr<T>> copy_items(const std::vector<std::unique_ptr<T>>
   return ::transform<std::unique_ptr<T>>(items, [](const auto& i) { return i->clone(); });
 }
 
+template<typename T>
+void register_items(const std::vector<std::unique_ptr<T>>& items, omm::List<T>& list)
+{
+  if constexpr (std::is_base_of_v<omm::AbstractPropertyOwner, T>) {
+    for (auto&& item : items) {
+      item->register_observer(list);
+    }
+  }
+}
+
+template<typename T>
+void unregister_items(const std::vector<std::unique_ptr<T>>& items, omm::List<T>& list)
+{
+  if constexpr (std::is_base_of_v<omm::AbstractPropertyOwner, T>) {
+    for (auto&& item : items) {
+      item->unregister_observer(list);
+    }
+  }
+}
+
 }  // namespace
 
 namespace omm
@@ -20,9 +41,13 @@ namespace omm
 
 template<typename T> List<T>::List(const List<T>& other)
   : Structure<T>(), Observed<AbstractStructureObserver<List<T>>>(other)
-  ,m_items(copy_items(other.m_items))
+  , m_items(copy_items(other.m_items))
 {
-
+  register_items(m_items, *this);
+}
+template<typename T> List<T>::~List()
+{
+  unregister_items(m_items, *this);
 }
 
 template<typename T> std::set<T*> List<T>::items() const
@@ -49,7 +74,9 @@ template<typename T> void List<T>::insert(ListOwningContext<T>& context)
     }
   );
   m_items.insert(m_items.begin() + static_cast<int>(position), context.subject.release());
-  this->invalidate_recursive();
+  if constexpr (std::is_base_of_v<AbstractPropertyOwner, T>) {
+    context.get_subject().register_observer(*this);
+  }
 }
 
 template<typename T> void List<T>::remove(ListOwningContext<T>& context)
@@ -59,8 +86,10 @@ template<typename T> void List<T>::remove(ListOwningContext<T>& context)
       return observer->acquire_remover_guard(position(context.subject));
     }
   );
+  if constexpr (std::is_base_of_v<AbstractPropertyOwner, T>) {
+    context.get_subject().unregister_observer(*this);
+  }
   context.subject.capture(::extract(m_items, context.subject.get()));
-  this->invalidate_recursive();
 }
 
 template<typename T> std::unique_ptr<T> List<T>::remove(T& item)
@@ -70,7 +99,6 @@ template<typename T> std::unique_ptr<T> List<T>::remove(T& item)
     [this, &item](auto* observer){ return observer->acquire_remover_guard(position(item)); }
   );
   auto extracted_item = ::extract(m_items, item);
-  this->invalidate_recursive();
   return  extracted_item;
 }
 
@@ -106,7 +134,6 @@ template<typename T> void List<T>::move(ListMoveContext<T>& context)
   std::unique_ptr<T> item = ::extract(m_items, context.subject.get());
   const auto i = m_items.begin() + static_cast<int>(this->insert_position(context.predecessor));
   m_items.insert(i, std::move(item));
-  this->invalidate_recursive();
 }
 
 template<typename T>
@@ -115,9 +142,10 @@ std::vector<std::unique_ptr<T>> List<T>::set(std::vector<std::unique_ptr<T>> ite
   const auto style_guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
     [](auto* observer) { return observer->acquire_reseter_guard(); }
   );
+  unregister_items(m_items, *this);
   auto old_items = std::move(m_items);
   m_items = std::move(items);
-  this->invalidate_recursive();
+  register_items(m_items, *this);
   return old_items;
 }
 
@@ -126,13 +154,20 @@ template<typename T> size_t List<T>::size() const
   return m_items.size();
 }
 
-template<typename T> void List<T>::invalidate() { }
-
 template<typename T> bool List<T>::contains(const T &item) const
 {
   return m_items.end() != std::find_if(m_items.begin(), m_items.end(), [&item](const auto& i) {
     return i.get() == &item;
   });
+}
+
+template<typename T>
+void List<T>::on_change(AbstractPropertyOwner *apo, int what, Property *property)
+{
+  Q_UNUSED(apo)
+  Q_UNUSED(what)
+  Q_UNUSED(property)
+  Q_EMIT this->item_changed();
 }
 
 template class List<Style>;

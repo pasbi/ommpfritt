@@ -96,6 +96,7 @@ public:
   static constexpr auto ROTATION_PROPERTY_KEY = "rotation";
   static constexpr auto SHEAR_PROPERTY_KEY = "shear";
   static constexpr auto HIERARCHY_CHANGED = 1;
+  static constexpr auto TAG_CHANGED = 2;
 
   enum class Border { Clamp, Wrap, Hide, Reflect };
   static double apply_border(double t, Border border);

@@ -30,14 +30,11 @@ Viewport::Viewport(Scene& scene)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   setFocusPolicy(Qt::StrongFocus);
-  connect(&*m_timer, &QTimer::timeout, [this]() {
-    update();
-  });
-  m_timer->setInterval(30);
-  m_timer->start();
 
   setMouseTracking(true);
   connect(&scene, SIGNAL(scene_changed()), this, SLOT(update()));
+  connect(&scene, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
+          this, SLOT(update()));
 }
 
 #if USE_OPENGL
@@ -53,9 +50,12 @@ void Viewport::paintEvent(QPaintEvent*)
   painter.setRenderHint(QPainter::SmoothPixmapTransform);
   painter.fillRect(rect(), Qt::gray);
 
-  m_scene.update();
   m_scene.object_tree.root().set_transformation(viewport_transformation());
-  m_scene.evaluate_tags();
+  {
+    QSignalBlocker blocker(&m_scene);
+    m_scene.evaluate_tags();
+  }
+  m_scene.update();
   m_renderer.render();
 
   auto& tool = m_scene.tool_box.active_tool();
@@ -83,6 +83,7 @@ void Viewport::mousePressEvent(QMouseEvent* event)
   } else {
     if (m_scene.tool_box.active_tool().mouse_press(cursor_pos, *event)) { event->accept(); }
   }
+  update();
 }
 
 void Viewport::mouseMoveEvent(QMouseEvent* event)
@@ -93,6 +94,7 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
   if (event->modifiers() & Qt::AltModifier) {
     delta = m_pan_controller.apply(cursor_pos, m_viewport_transformation);
     event->accept();
+    update();
   } else {
     delta = m_pan_controller.update(cursor_pos);
   }
@@ -117,6 +119,7 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
     }
     ViewportBase::mouseReleaseEvent(event);
   }
+  update();
 }
 
 ObjectTransformation Viewport::viewport_transformation() const

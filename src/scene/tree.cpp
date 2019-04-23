@@ -34,8 +34,7 @@ template<typename T> void Tree<T>::move(TreeMoveContext<T>& context)
   auto item = old_parent.repudiate(context.subject);
   const auto pos = this->insert_position(context.predecessor);
   context.parent.get().adopt(std::move(item), pos);
-
-  this->invalidate_recursive();
+  m_item_cache_is_dirty = true;
 }
 
 template<typename T> void Tree<T>::insert(TreeOwningContext<T>& context)
@@ -50,7 +49,7 @@ template<typename T> void Tree<T>::insert(TreeOwningContext<T>& context)
   );
   const auto pos = this->insert_position(context.predecessor);
   context.parent.get().adopt(context.subject.release(), pos);
-  this->invalidate_recursive();
+  m_item_cache_is_dirty = true;
 }
 
 template<typename T> void Tree<T>::remove(TreeOwningContext<T>& context)
@@ -61,8 +60,7 @@ template<typename T> void Tree<T>::remove(TreeOwningContext<T>& context)
     [&context](auto* observer) { return observer->acquire_remover_guard(context.subject); }
   );
   context.subject.capture(context.parent.get().repudiate(context.subject));
-
-  this->invalidate_recursive();
+  m_item_cache_is_dirty = true;
 }
 
 template<typename T> std::unique_ptr<T> Tree<T>::remove(T& t)
@@ -72,7 +70,7 @@ template<typename T> std::unique_ptr<T> Tree<T>::remove(T& t)
   );
   assert(!t.is_root());
   auto item = t.parent().repudiate(t);
-  this->invalidate_recursive();
+  m_item_cache_is_dirty = true;
   return item;
 }
 
@@ -84,7 +82,7 @@ std::unique_ptr<T> Tree<T>::replace_root(std::unique_ptr<T> new_root)
   );
   auto old_root = std::move(m_root);
   m_root = std::move(new_root);
-  this->invalidate_recursive();
+  m_item_cache_is_dirty = true;
   return old_root;
 }
 
@@ -111,11 +109,6 @@ template<typename T> const T* Tree<T>::predecessor(const T& sibling) const
   } else {
     return &sibling.parent().child(pos - 1);
   }
-}
-
-template<typename T> void Tree<T>::invalidate()
-{
-  m_item_cache_is_dirty = true;
 }
 
 template class Tree<Object>;

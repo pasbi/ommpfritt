@@ -36,7 +36,7 @@ namespace omm
 
 Style Object::m_bounding_box_style = ContourStyle(omm::Colors::BLACK, 1.0);
 
-Object::Object(Scene* scene) : TreeElement(nullptr), tags(scene)
+Object::Object(Scene* scene) : TreeElement(nullptr)
 {
   set_scene(scene);
 
@@ -73,6 +73,10 @@ Object::Object(Scene* scene) : TreeElement(nullptr), tags(scene)
     .set_step(0.01)
     .set_label(QObject::tr("shear").toStdString())
     .set_category(category);
+
+  QObject::connect(&tags, &List<Tag>::item_changed, [this]() {
+    on_change(this, TAG_CHANGED, nullptr);
+  });
 }
 
 Object::Object(const Object& other)
@@ -85,13 +89,16 @@ Object::Object(const Object& other)
   for (Tag* tag : tags.items()) {
     tag->owner = this;
   }
+
+  QObject::connect(&tags, &List<Tag>::item_changed, [this]() {
+    on_change(this, TAG_CHANGED, nullptr);
+  });
 }
 
 Object::~Object() { }
 
 void Object::set_scene(Scene* scene)
 {
-  tags.set_scene(scene);
   m_scene = scene;
 }
 

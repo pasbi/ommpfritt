@@ -6,13 +6,17 @@
 #include "scene/contextes_fwd.h"
 #include "scene/structure.h"
 #include "scene/abstractstructureobserver.h"
+#include "aspects/propertyowner.h"
 #include "observed.h"
 
 namespace omm
 {
 
 template<typename T>
-class List : public Structure<T>, public Observed<AbstractStructureObserver<List<T>>>
+class List
+    : public Structure<T>
+    , public AbstractPropertyOwnerObserver
+    , public Observed<AbstractStructureObserver<List<T>>>
 {
 public:
   using observer_type = AbstractStructureObserver<List<T>>;
@@ -20,8 +24,9 @@ public:
   constexpr static bool is_tree = false;
   using Structure<T>::Structure;
   explicit List(const List<T>& other);
-  void insert(ListOwningContext<T>& context);
-  void remove(ListOwningContext<T>& t);
+  ~List();
+  virtual void insert(ListOwningContext<T>& context);
+  virtual void remove(ListOwningContext<T>& t);
   void move(ListMoveContext<T>& context);
   T& item(size_t i) const;
   std::vector<std::unique_ptr<T>> set(std::vector<std::unique_ptr<T>> items);
@@ -35,8 +40,9 @@ public:
 
   std::unique_ptr<T> remove(T& t) override;
 
-  void invalidate() override;
   bool contains(const T& item) const;
+
+  void on_change(AbstractPropertyOwner *apo, int what, Property *property) override;
 
 private:
   std::vector<std::unique_ptr<T>> m_items;

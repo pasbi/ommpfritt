@@ -68,7 +68,6 @@ namespace omm
 Scene::Scene(PythonEngine& python_engine)
   : object_tree(make_root(), this)
   , object_tree_adapter(*this, object_tree)
-  , styles(this)
   , style_list_adapter(*this, styles)
   , python_engine(python_engine)
   , m_default_style(make_default_style(this))
@@ -80,6 +79,8 @@ Scene::Scene(PythonEngine& python_engine)
     m_item_selection[kind] = {};
   }
   tool_box.set_active_tool(SelectObjectsTool::TYPE);
+
+
 }
 
 std::unique_ptr<Object> Scene::make_root()
@@ -146,7 +147,6 @@ Scene::find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates
 void Scene::invalidate()
 {
   m_tags_cache_is_dirty = true;
-  const auto notifier = std::mem_fn(&AbstractSimpleStructureObserver::structure_has_changed);
   Q_EMIT structure_changed();
   set_selection(::filter_if(m_selection, [this](auto* apo) {
     return contains(apo);

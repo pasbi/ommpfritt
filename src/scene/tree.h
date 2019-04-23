@@ -20,7 +20,9 @@ namespace omm
 {
 
 template<typename T>
-class Tree : public Structure<T>, public Observed<AbstractStructureObserver<Tree<T>>>
+class Tree
+    : public Structure<T>
+    , public Observed<AbstractStructureObserver<Tree<T>>>
 {
 public:
   using observer_type = AbstractStructureObserver<Tree<T>>;
@@ -44,7 +46,7 @@ public:
   const T* predecessor(const T& sibling) const override;
   using Structure<T>::predecessor;
   std::unique_ptr<T> remove(T& t) override;
-  void invalidate() override;
+
 private:
   std::unique_ptr<T> m_root;
 
