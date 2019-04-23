@@ -41,6 +41,7 @@ public:
   virtual void on_scene_changed();
   virtual bool has_transformation() const;
   virtual void cancel();
+  virtual void end();
   Scene& scene;
   virtual std::unique_ptr<QMenu> make_context_menu(QWidget* parent);
   virtual ObjectTransformation transformation() const;

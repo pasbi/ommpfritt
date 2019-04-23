@@ -102,6 +102,7 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
   auto& tool = m_scene.tool_box.active_tool();
   if (tool.mouse_move(delta, cursor_pos, *event)) {
     event->accept();
+    update();
     return;
   }
 
