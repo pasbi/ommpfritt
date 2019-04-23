@@ -47,6 +47,7 @@ public:
   Flag flags() const override;
   ObjectTransformation viewport_transformation;
   bool integer_transformation() const;
+  std::string name() const override;
 
 protected:
   std::vector<std::unique_ptr<Handle>> handles;

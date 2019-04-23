@@ -11,6 +11,7 @@ class AbstractFactory
 protected:
   using creator_type = std::unique_ptr<GeneralT>(*)(Args&&... args);
   using creator_map_type = std::map<Key, creator_type>;
+  virtual ~AbstractFactory() = default;
 
 
 private:

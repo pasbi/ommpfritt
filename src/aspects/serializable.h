@@ -18,8 +18,8 @@ public:
   using ByteArray = std::vector<char>;
   virtual ~Serializable() = default;
 
-  virtual void serialize(AbstractSerializer&, const Pointer&) const {};
-  virtual void deserialize(AbstractDeserializer&, const Pointer&) {};
+  virtual void serialize(AbstractSerializer&, const Pointer&) const {}
+  virtual void deserialize(AbstractDeserializer&, const Pointer&) {}
 
   template<typename PointerT> static auto make_pointer(const PointerT& pointer)
   {

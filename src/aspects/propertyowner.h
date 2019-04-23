@@ -120,6 +120,7 @@ template<AbstractPropertyOwner::Kind kind_> class PropertyOwner : public Abstrac
 {
 public:
   using AbstractPropertyOwner::AbstractPropertyOwner;
+  virtual ~PropertyOwner() = default;
   static constexpr Kind KIND = kind_;
   Kind kind() const override { return KIND; }
 };

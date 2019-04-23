@@ -18,7 +18,8 @@ ToolBar::ToolBar(QWidget* parent, ToolBox& tool_box, const std::vector<std::stri
   auto& icon_provider = Application::instance().icon_provider;
   for (auto&& tool_class : tools) {
     auto& tool = tool_box.tool(tool_class);
-    auto* action = addAction(icon_provider.get_icon(tool.type(), icon_size), tool.name());
+    auto* action = addAction(icon_provider.get_icon(tool.type(), icon_size),
+                             QString::fromStdString(tool.name()));
     connect(action, &QAction::triggered, [tool_class, &tool_box]() {
       tool_box.set_active_tool(tool_class);
     });

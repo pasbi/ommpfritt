@@ -155,11 +155,6 @@ SelectObjectsTool::SelectObjectsTool(Scene& scene) : SelectTool(scene)
 
 std::string SelectObjectsTool::type() const { return TYPE; }
 
-std::string SelectObjectsTool::name() const
-{
-  return QCoreApplication::translate("any-context", TYPE).toStdString();
-}
-
 Command* SelectObjectsTool::transform_objects(ObjectTransformation t, const bool tool_space)
 {
   if (tool_space) {
@@ -213,11 +208,6 @@ std::unique_ptr<QMenu> SelectPointsTool::make_context_menu(QWidget* parent)
 void SelectPointsTool::on_selection_changed()
 {
   on_scene_changed();
-}
-
-std::string SelectPointsTool::name() const
-{
-  return QCoreApplication::translate("any-context", TYPE).toStdString();
 }
 
 Command* SelectPointsTool::transform_objects(ObjectTransformation t, const bool tool_space)

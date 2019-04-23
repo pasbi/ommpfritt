@@ -108,4 +108,9 @@ void Tool::cancel()
   }
 }
 
+std::string Tool::name() const
+{
+  return QCoreApplication::translate("any-context", type().c_str()).toStdString();
+}
+
 }  // namespace omm
