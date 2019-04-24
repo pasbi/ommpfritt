@@ -7,6 +7,9 @@
 #include <QCoreApplication>
 #include "keybindings/defaultkeysequenceparser.h"
 #include "tags/tag.h"
+#include "commands/addcommand.h"
+#include "commands/movecommand.h"
+#include "objects/empty.h"
 
 namespace omm
 {
@@ -30,6 +33,9 @@ std::vector<CommandInterface::ActionInfo<ObjectManager>> ObjectManager::action_i
   return {
     ai(QT_TRANSLATE_NOOP("any-context", "remove objects and tags"), [](ObjectManager& om) {
       om.scene().remove(&om, om.item_view().selected_items());
+    }),
+    ai(QT_TRANSLATE_NOOP("any-context", "group objects"), [](ObjectManager& om) {
+      om.group_selected_objects();
     })
   };
 }
@@ -59,5 +65,31 @@ void ObjectManager::populate_menu(QMenu &menu)
 }
 
 std::string ObjectManager::type() const { return TYPE; }
+
+void ObjectManager::group_selected_objects()
+{
+  auto selected_objects = scene().item_selection<Object>();
+  Object::remove_internal_children(selected_objects);
+
+  if (!selected_objects.empty()) {
+    auto macro = scene().history.start_macro(tr("Group"));
+
+    using add_command_type = AddCommand<Tree<Object>>;
+    auto empty = std::make_unique<Empty>(&scene());
+    auto& empty_ref = *empty;
+    scene().submit<add_command_type>(scene().object_tree, std::move(empty));
+
+    using move_command_type = MoveCommand<Tree<Object>>;
+    using move_context = move_command_type::context_type;
+    Object* predecessor = nullptr;
+    const auto f = [&empty_ref, &predecessor](Object* o) {
+      const auto context = move_command_type::context_type(*o, empty_ref, predecessor);
+      predecessor = o;
+      return context;
+    };
+    const auto move_contextes = ::transform<move_context, std::vector>(selected_objects, f);
+    scene().submit<move_command_type>(scene().object_tree, move_contextes);
+  }
+}
 
 }  // namespace omm

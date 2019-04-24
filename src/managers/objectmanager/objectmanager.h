@@ -24,6 +24,9 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ObjectManager");
   std::string type() const override;
 
+private:
+  void group_selected_objects();
+
 };
 
 }  // namespace omm
