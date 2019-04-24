@@ -126,7 +126,8 @@ void convert_objects(Application& app)
     return !!(o->flags() & Object::Flag::Convertable);
   });
   if (convertables.size() > 0) {
-  auto macro = app.scene.history.start_macro(QObject::tr("convert"));
+    std::set<Object*> converted_objects;
+    auto macro = app.scene.history.start_macro(QObject::tr("convert"));
     for (auto&& c : convertables) {
       auto converted = c->convert();
       assert(!c->is_root());
@@ -140,10 +141,12 @@ void convert_objects(Application& app)
       using object_tree_type = Tree<Object>;
       app.scene.submit<AddCommand<object_tree_type>>(app.scene.object_tree, std::move(context));
       converted_ref.set_transformation(c->transformation());
+      converted_objects.insert(&converted_ref);
     }
     const auto selection = ::transform<Object*, std::set>(convertables, ::identity);
     using remove_command = RemoveCommand<Tree<Object>>;
     app.scene.template submit<remove_command>(app.scene.object_tree, selection);
+    app.scene.set_selection(down_cast(converted_objects));
   }
 }
 
