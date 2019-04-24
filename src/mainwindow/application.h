@@ -47,6 +47,7 @@ private:
   MainWindow* m_main_window;
 
   std::map<std::string, QKeySequence> m_default_key_sequences;
+  void insert_object(const std::string& key);
 
 public:
   KeyBindings key_bindings;

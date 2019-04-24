@@ -19,6 +19,7 @@
 #include "mainwindow/exportdialog.h"
 #include "logging.h"
 #include "widgets/pointdialog.h"
+#include "commands/movecommand.h"
 
 namespace {
 constexpr auto FILE_ENDING = ".omm";
@@ -218,15 +219,9 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
   };
 
   for (const auto& key : Object::keys()) {
-    infos.push_back(ai(key, [key](Application& app) {
-      using add_command_type = AddCommand<Tree<Object>>;
-      Scene& scene = app.scene;
-      auto object = Object::make(key, &scene);
-      auto& ref = *object;
-      scene.submit<add_command_type>(scene.object_tree, std::move(object));
-      ref.set_global_transformation(ObjectTransformation(), true);  // spawn at world-origin
-    }));
+    infos.push_back(ai(key, [key](Application& app) { app.insert_object(key); }));
   }
+
   for (const auto& key : Manager::keys()) {
     infos.push_back(ai(key, [key](Application& app) {
       auto manager = Manager::make(key, app.scene);
@@ -256,5 +251,30 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
 
 std::string Application::type() const { return TYPE; }
 MainWindow* Application::main_window() const { return m_main_window; }
+
+void Application::insert_object(const std::string &key)
+{
+  auto macro = scene.history.start_macro(tr("Create %1")
+                  .arg(QApplication::translate("any-context", key.c_str())));
+  using add_command_type = AddCommand<Tree<Object>>;
+  auto object = Object::make(key, &scene);
+  auto& ref = *object;
+  Object* parent = nullptr;
+  if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
+    const auto selection = scene.item_selection<Object>();
+    if (selection.size() == 1) {
+      parent = *selection.begin();
+    }
+  }
+
+  scene.submit<add_command_type>(scene.object_tree, std::move(object));
+  ref.set_global_transformation(ObjectTransformation(), true);  // spawn at world-origin
+
+  if (parent != nullptr) {
+    using move_command_type = MoveCommand<Tree<Object>>;
+    const move_command_type::context_type move_context(ref, *parent, nullptr);
+    scene.submit<move_command_type>(scene.object_tree, std::vector { move_context });
+  }
+}
 
 }  // namespace omm
