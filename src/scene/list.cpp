@@ -101,6 +101,9 @@ template<typename T> std::unique_ptr<T> List<T>::remove(T& item)
     [this, &item](auto* observer){ return observer->acquire_remover_guard(position(item)); }
   );
   auto extracted_item = ::extract(m_items, item);
+  if constexpr (std::is_base_of_v<AbstractPropertyOwner, T>) {
+    item.unregister_observer(*this);
+  }
   Q_EMIT this->structure_changed();
   return extracted_item;
 }

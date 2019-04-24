@@ -80,6 +80,7 @@ Object::Object(Scene* scene) : TreeElement(nullptr)
   });
 
   QObject::connect(&tags, &List<Tag>::structure_changed, [this]() {
+    on_change(this, TAG_CHANGED, nullptr);
     m_scene->invalidate();
   });
 }
@@ -100,6 +101,7 @@ Object::Object(const Object& other)
   });
 
   QObject::connect(&tags, &List<Tag>::structure_changed, [this]() {
+    on_change(this, TAG_CHANGED, nullptr);
     m_scene->invalidate();
   });
 }
