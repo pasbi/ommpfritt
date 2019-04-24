@@ -17,7 +17,7 @@ public:
 
 protected:
   std::vector<std::string> application_actions() const override;
-  void child_key_press_event(QWidget& child, QKeyEvent& event) override;
+  bool child_key_press_event(QWidget& child, QKeyEvent& event) override;
   void populate_menu(QMenu& menu) override;
 
 public:

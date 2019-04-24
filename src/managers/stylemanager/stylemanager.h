@@ -21,7 +21,7 @@ public:
 protected:
   std::vector<std::string> application_actions() const override;
   void populate_menu(QMenu& menu) override;
-  void child_key_press_event(QWidget &child, QKeyEvent &event);
+  bool child_key_press_event(QWidget &child, QKeyEvent &event) override;
 };
 
 }  // namespace omm

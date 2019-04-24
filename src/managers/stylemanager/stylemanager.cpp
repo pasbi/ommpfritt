@@ -47,10 +47,10 @@ void StyleManager::populate_menu(QMenu& menu)
   Application::instance().key_bindings.populate_menu(menu, *this);
 }
 
-void StyleManager::child_key_press_event(QWidget &child, QKeyEvent &event)
+bool StyleManager::child_key_press_event(QWidget &child, QKeyEvent &event)
 {
   Q_UNUSED(child)
-  Application::instance().key_bindings.call(event, *this);
+  return Application::instance().key_bindings.call(event, *this);
 }
 
 std::string StyleManager::type() const { return TYPE; }

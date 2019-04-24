@@ -59,13 +59,16 @@ bool Manager::eventFilter(QObject *o, QEvent *e)
   if (o->isWidgetType()) {
     auto& w = static_cast<QWidget&>(*o);
     if (isAncestorOf(&w) && e->type() == QEvent::KeyPress) {
-      child_key_press_event(w, static_cast<QKeyEvent&>(*e));
+      auto& ke = static_cast<QKeyEvent&>(*e);
+      if (child_key_press_event(w, ke)) {
+        return true;
+      }
     }
   }
   return QDockWidget::eventFilter(o, e);
 }
 
-void Manager::child_key_press_event(QWidget &, QKeyEvent &) { }
+bool Manager::child_key_press_event(QWidget &, QKeyEvent &) { return false; }
 void Manager::populate_menu(QMenu&) { }
 Scene& Manager::scene() const { return m_scene; }
 

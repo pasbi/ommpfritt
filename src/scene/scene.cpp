@@ -405,7 +405,6 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
     for (auto [ owner, tags ] : tag_map) { ::remove_items(*this, owner->tags, tags); }
     ::remove_items(*this, styles, kind_cast<Style>(selection));
     ::remove_items(*this, object_tree, kind_cast<Object>(selection));
-
     return true;
   } else {
     return false;

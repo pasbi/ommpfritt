@@ -47,10 +47,10 @@ std::vector<std::string> ObjectManager::application_actions() const
   return std::vector(entries.begin(), entries.end());
 }
 
-void ObjectManager::child_key_press_event(QWidget &child, QKeyEvent &event)
+bool ObjectManager::child_key_press_event(QWidget &child, QKeyEvent &event)
 {
   Q_UNUSED(child)
-  Application::instance().key_bindings.call(event, *this);
+  return Application::instance().key_bindings.call(event, *this);
 }
 
 void ObjectManager::populate_menu(QMenu &menu)
