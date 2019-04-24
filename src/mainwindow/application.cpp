@@ -170,7 +170,7 @@ bool Application::load()
 
 std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos()
 {
-  DefaultKeySequenceParser parser("://default_keybindings.cfg");
+  DefaultKeySequenceParser parser("://default_keybindings.cfg", "Application");
   const auto ai = [parser](const std::string& name, const std::function<void(Application&)>& f) {
     return ActionInfo(name, parser.get_key_sequence(name), f);
   };

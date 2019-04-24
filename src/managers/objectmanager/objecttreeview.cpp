@@ -43,12 +43,7 @@ ObjectTreeView::ObjectTreeView(ObjectTreeAdapter& model)
   setSelectionBehavior(QAbstractItemView::SelectItems);
   setAutoExpandDelay(200);
 
-//  connect(m_update_timer.get(), &QTimer::timeout, [this]() {
-//    viewport()->update();
-//  });
-//  m_update_timer->start(200);
   setIconSize(QSize(24, 24));
-
 }
 
 std::set<AbstractPropertyOwner*> ObjectTreeView::selected_items() const

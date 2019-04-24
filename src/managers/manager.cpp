@@ -43,6 +43,29 @@ void Manager::contextMenuEvent(QContextMenuEvent *event)
 }
 
 std::vector<std::string> Manager::application_actions() const { return {}; }
+
+bool Manager::event(QEvent *e)
+{
+  if (e->type() == QEvent::Polish) {
+    for (QWidget* widget : findChildren<QWidget*>()) {
+      widget->installEventFilter(this);
+    }
+  }
+  return QDockWidget::event(e);
+}
+
+bool Manager::eventFilter(QObject *o, QEvent *e)
+{
+  if (o->isWidgetType()) {
+    auto& w = static_cast<QWidget&>(*o);
+    if (isAncestorOf(&w) && e->type() == QEvent::KeyPress) {
+      child_key_press_event(w, static_cast<QKeyEvent&>(*e));
+    }
+  }
+  return QDockWidget::eventFilter(o, e);
+}
+
+void Manager::child_key_press_event(QWidget &, QKeyEvent &) { }
 void Manager::populate_menu(QMenu&) { }
 Scene& Manager::scene() const { return m_scene; }
 

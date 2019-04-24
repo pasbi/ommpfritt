@@ -15,10 +15,10 @@ public:
   explicit ObjectManager(Scene& scene);
   static std::vector<CommandInterface::ActionInfo<ObjectManager>> action_infos();
 
-
 protected:
-  void keyPressEvent(QKeyEvent* event) override;
   std::vector<std::string> application_actions() const override;
+  void child_key_press_event(QWidget& child, QKeyEvent& event) override;
+  void populate_menu(QMenu& menu) override;
 
 public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ObjectManager");

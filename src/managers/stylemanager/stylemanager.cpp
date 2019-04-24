@@ -8,6 +8,7 @@
 #include "commands/addcommand.h"
 #include "mainwindow/application.h"
 #include <QCoreApplication>
+#include "keybindings/defaultkeysequenceparser.h"
 
 namespace omm
 {
@@ -24,19 +25,16 @@ StyleManager::StyleManager(Scene& scene)
 
 std::vector<CommandInterface::ActionInfo<StyleManager>> StyleManager::action_infos()
 {
-  using AI = ActionInfo<StyleManager>;
-  return {
-    AI( QT_TRANSLATE_NOOP("any-context", "remove styles"), QKeySequence(), [](StyleManager& sm) {
-      sm.scene().remove(&sm, sm.item_view().selected_items());
-    }),
+  DefaultKeySequenceParser parser("://default_keybindings.cfg", "StyleManager");
+  const auto ai = [parser](const std::string& name, const std::function<void(StyleManager&)>& f) {
+    return ActionInfo(name, parser.get_key_sequence(name), f);
   };
-}
 
-void StyleManager::keyPressEvent(QKeyEvent* event)
-{
-  if (!Application::instance().key_bindings.call(*event, *this)) {
-    Manager::keyPressEvent(event);
-  }
+  return {
+    ai(QT_TRANSLATE_NOOP("any-context", "remove styles"), [](StyleManager& om) {
+      om.scene().remove(&om, om.item_view().selected_items());
+    })
+  };
 }
 
 std::vector<std::string> StyleManager::application_actions() const
@@ -46,8 +44,13 @@ std::vector<std::string> StyleManager::application_actions() const
 
 void StyleManager::populate_menu(QMenu& menu)
 {
-  auto& key_bindings = Application::instance().key_bindings;
-  menu.addAction(key_bindings.make_action(*this, "remove styles").release());
+  Application::instance().key_bindings.populate_menu(menu, *this);
+}
+
+void StyleManager::child_key_press_event(QWidget &child, QKeyEvent &event)
+{
+  Q_UNUSED(child)
+  Application::instance().key_bindings.call(event, *this);
 }
 
 std::string StyleManager::type() const { return TYPE; }

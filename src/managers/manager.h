@@ -33,6 +33,9 @@ protected:
   void contextMenuEvent(QContextMenuEvent *event) override;
   virtual void populate_menu(QMenu&);
   virtual std::vector<std::string> application_actions() const;
+  bool event(QEvent* e) override;
+  bool eventFilter(QObject* o, QEvent* e) override;
+  virtual void child_key_press_event(QWidget&, QKeyEvent&);
 
 private:
   using QDockWidget::setWidget;  // use set_widget instead

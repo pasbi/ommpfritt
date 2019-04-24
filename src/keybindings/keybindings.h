@@ -10,6 +10,7 @@
 #include <QCoreApplication>  // TODO remove
 #include <QKeyEvent>
 #include <set>
+#include "commandinterface.h"
 #include "common.h"
 #include "logging.h"
 
@@ -28,7 +29,7 @@ public:
 
   void store() const;
   void restore();
-  static constexpr auto settings_group = "keybindings";
+  static constexpr auto keybindings_group = "keybindings";
 
   static constexpr auto SEPARATOR = "separator";
 
@@ -47,6 +48,14 @@ public:
         ci.template call<CommandInterfaceT>(action_name);
       });
       return action;
+    }
+  }
+
+  template<typename CommandInterfaceT>
+  void populate_menu(QMenu& menu, CommandInterfaceT& ci)
+  {
+    for (auto&& action_info : CommandInterfaceT::action_infos()) {
+      menu.addAction(make_action(ci, action_info.name).release());
     }
   }
 
@@ -96,7 +105,7 @@ public:
 
     if (::contains(bad_keys, key_event.key())) {
       return false;
-    } if (key_event.key() == Qt::Key_Escape) {
+    } else if (key_event.key() == Qt::Key_Escape) {
       m_current_sequene.clear();
       return false;
     } else {
@@ -113,7 +122,7 @@ public:
         }
       }
 
-      LINFO << "key sequence (and all its suffixes were not (yet) accepted: "
+      LINFO << "key sequence (and all its suffixes) were not (yet) accepted: "
             << sequence.toString().toStdString();
       return false;
     }

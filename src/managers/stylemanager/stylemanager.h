@@ -17,10 +17,11 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "StyleManager");
   std::string type() const override;
 
+
 protected:
-  void keyPressEvent(QKeyEvent* event) override;
   std::vector<std::string> application_actions() const override;
   void populate_menu(QMenu& menu) override;
+  void child_key_press_event(QWidget &child, QKeyEvent &event);
 };
 
 }  // namespace omm

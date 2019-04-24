@@ -10,9 +10,9 @@ namespace omm
 class KeyBinding
 {
 public:
-  KeyBinding( const std::string& label, const std::string context,
+  KeyBinding( const std::string& name, const std::string context,
               const QKeySequence& sequence = QKeySequence() );
-  KeyBinding( const std::string& label, const std::string context,
+  KeyBinding( const std::string& name, const std::string context,
               const std::string& sequence = "" );
   void set_key_sequence(const QKeySequence& sequence);
   bool matches(const QKeySequence& sequence, const std::string& context) const;

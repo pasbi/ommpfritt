@@ -28,7 +28,6 @@ public:
     {
       return KeyBinding(name, CommandInterfaceT::TYPE, default_key_sequence);
     }
-
   };
 
   template<typename CommandInterfaceT> void call(const std::string& command_name)

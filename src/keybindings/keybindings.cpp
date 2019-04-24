@@ -114,20 +114,24 @@ KeyBindings::~KeyBindings() { store(); }
 void KeyBindings::restore()
 {
   QSettings settings;
-  settings.beginGroup(settings_group);
-  for (auto& key_binding : m_bindings) {
-    if (const auto key = settings_key(key_binding); settings.contains(key)) {
-      const auto sequence = settings.value(key).toString();
-      key_binding.set_key_sequence(QKeySequence(sequence, QKeySequence::PortableText));
+  if (settings.childGroups().contains(keybindings_group)) {
+    settings.beginGroup(keybindings_group);
+    for (auto& key_binding : m_bindings) {
+      if (const auto key = settings_key(key_binding); settings.contains(key)) {
+        const auto sequence = settings.value(key).toString();
+        key_binding.set_key_sequence(QKeySequence(sequence, QKeySequence::PortableText));
+      } else {
+        key_binding.set_key_sequence(QKeySequence());
+      }
     }
+    settings.endGroup();
   }
-  settings.endGroup();
 }
 
 void KeyBindings::store() const
 {
   QSettings settings;
-  settings.beginGroup(settings_group);
+  settings.beginGroup(keybindings_group);
   for (const auto& key_binding : m_bindings) {
     const auto sequence = key_binding.key_sequence().toString(QKeySequence::PortableText);
     settings.setValue(settings_key(key_binding), sequence);

@@ -5,6 +5,8 @@
 #include <functional>
 #include "mainwindow/application.h"
 #include <QCoreApplication>
+#include "keybindings/defaultkeysequenceparser.h"
+#include "tags/tag.h"
 
 namespace omm
 {
@@ -20,23 +22,40 @@ ObjectManager::ObjectManager(Scene& scene)
 
 std::vector<CommandInterface::ActionInfo<ObjectManager>> ObjectManager::action_infos()
 {
-  using AI = ActionInfo<ObjectManager>;
-  return {
-    AI( QT_TRANSLATE_NOOP("any-context", "remove objects and tags"), QKeySequence("Del"),
-      [](ObjectManager& om) { om.scene().remove(&om, om.item_view().selected_items()); } ),
+  DefaultKeySequenceParser parser("://default_keybindings.cfg", "ObjectManager");
+  const auto ai = [parser](const std::string& name, const std::function<void(ObjectManager&)>& f) {
+    return ActionInfo(name, parser.get_key_sequence(name), f);
   };
-}
 
-void ObjectManager::keyPressEvent(QKeyEvent* event)
-{
-  if (!Application::instance().key_bindings.call(*event, *this)) {
-    Manager::keyPressEvent(event);
-  }
+  return {
+    ai(QT_TRANSLATE_NOOP("any-context", "remove objects and tags"), [](ObjectManager& om) {
+      om.scene().remove(&om, om.item_view().selected_items());
+    })
+  };
 }
 
 std::vector<std::string> ObjectManager::application_actions() const
 {
-  return MainWindow::object_menu_entries();
+  std::list<std::string> entries {
+    "object/convert objects",
+  };
+
+  for (const std::string& key : Tag::keys()) {
+    entries.push_back("object/attach/" + key);
+  }
+
+  return std::vector(entries.begin(), entries.end());
+}
+
+void ObjectManager::child_key_press_event(QWidget &child, QKeyEvent &event)
+{
+  Q_UNUSED(child)
+  Application::instance().key_bindings.call(event, *this);
+}
+
+void ObjectManager::populate_menu(QMenu &menu)
+{
+  Application::instance().key_bindings.populate_menu(menu, *this);
 }
 
 std::string ObjectManager::type() const { return TYPE; }
