@@ -25,7 +25,6 @@ class KeyBindingsTable : public QTableView
 public:
   explicit KeyBindingsTable(KeyBindings& key_bindings);
 
-  QSize viewportSizeHint() const override;
 
 private:
   std::unique_ptr<KeySequenceItemDelegate> m_sequence_column_delegate;

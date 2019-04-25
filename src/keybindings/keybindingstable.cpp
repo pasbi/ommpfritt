@@ -31,20 +31,7 @@ KeyBindingsTable::KeyBindingsTable(KeyBindings& key_bindings)
 {
   setModel(&key_bindings);
   setItemDelegateForColumn(KeyBindings::SEQUENCE_COLUMN, m_sequence_column_delegate.get());
-}
-
-QSize KeyBindingsTable::viewportSizeHint() const
-{
-  LINFO << QTableView::viewportSizeHint().width();
-  int width = 0;
-  if (model()) {
-    for (int i = 0; i < model()->columnCount(); ++i) {
-      width += QAbstractItemView::sizeHintForColumn(i);
-    }
-  }
-  QSize size_hint = QTableView::viewportSizeHint();
-  size_hint.setWidth(width);
-  return size_hint;
+  resizeColumnsToContents();
 }
 
 }  // namespace omm

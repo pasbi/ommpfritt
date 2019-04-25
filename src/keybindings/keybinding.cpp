@@ -1,15 +1,6 @@
 #include "keybindings/keybinding.h"
 #include <QSettings>
 
-namespace
-{
-
-constexpr auto NAME_KEY = "name";
-constexpr auto CONTEXT_KEY = "context";
-constexpr auto KEY_SEQUENCE_KEY = "key_sequence";
-
-}  // namespace
-
 namespace omm
 {
 

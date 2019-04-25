@@ -153,10 +153,10 @@ QKeySequence KeyBindings::make_key_sequence(const QKeyEvent& event) const
   return QKeySequence(sequence[0], sequence[1], sequence[2], sequence[3]);
 }
 
-int KeyBindings::columnCount(const QModelIndex& parent) const { Q_UNUSED(parent); return 3; }
+int KeyBindings::columnCount(const QModelIndex& parent) const { Q_UNUSED(parent) return 3; }
 int KeyBindings::rowCount(const QModelIndex& parent) const
 {
-  Q_UNUSED(parent);
+  Q_UNUSED(parent)
   return static_cast<int>(m_bindings.size());
 }
 
@@ -172,7 +172,7 @@ QVariant KeyBindings::data(const QModelIndex& index, int role) const
     case CONTEXT_COLUMN:
       return QCoreApplication::translate("any-context", binding.context().c_str());
     case SEQUENCE_COLUMN:
-      return binding.key_sequence().toString(QKeySequence::PortableText);
+      return binding.key_sequence().toString(QKeySequence::NativeText);
     }
     break;
   case Qt::EditRole:
