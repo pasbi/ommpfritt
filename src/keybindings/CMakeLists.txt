@@ -6,5 +6,7 @@ file (GLOB SOURCES
   "keybindings.cpp"
   "keybindingsdialog.cpp"
   "keybindingstable.cpp"
+  "keybindingsproxymodel.cpp"
+  "keybindingsdialogcontrols.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})

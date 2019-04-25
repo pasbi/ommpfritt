@@ -23,8 +23,7 @@ public:
 class KeyBindingsTable : public QTableView
 {
 public:
-  explicit KeyBindingsTable(KeyBindings& key_bindings);
-
+  explicit KeyBindingsTable(QAbstractItemModel& key_bindings);
 
 private:
   std::unique_ptr<KeySequenceItemDelegate> m_sequence_column_delegate;

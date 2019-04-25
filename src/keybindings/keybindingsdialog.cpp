@@ -8,17 +8,24 @@
 #include <QHeaderView>
 #include "keybindings/keybindings.h"
 #include "keybindings/keybindingstable.h"
+#include "keybindings/keybindingsdialogcontrols.h"
 #include <QSettings>
 
 namespace omm
 {
 
-KeyBindingsDialog::KeyBindingsDialog(KeyBindings& key_bindings, QWidget* parent) : QDialog(parent)
+KeyBindingsDialog::KeyBindingsDialog(KeyBindings& key_bindings, QWidget* parent)
+  : QDialog(parent)
+  , m_proxy_model(KeyBindingsProxyModel(key_bindings))
 {
   auto layout = std::make_unique<QVBoxLayout>();
 
-  auto edit = std::make_unique<KeyBindingsTable>(key_bindings);
+  auto controls = std::make_unique<KeyBindingsDialogControls>(m_proxy_model);
+
+  auto edit = std::make_unique<KeyBindingsTable>(m_proxy_model);
   edit->horizontalHeader()->setStretchLastSection(true);
+
+  layout->addWidget(controls.release());
   layout->addWidget(edit.release());
 
   const auto buttons = QDialogButtonBox::Ok;

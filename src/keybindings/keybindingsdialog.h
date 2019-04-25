@@ -1,5 +1,6 @@
 #pragma once
 #include <QDialog>
+#include "keybindings/keybindingsproxymodel.h"
 
 namespace omm
 {
@@ -14,6 +15,9 @@ public:
 
   static constexpr auto KEYBINDINGS_DIALOG_SETTINGS_GROUP = "keybindingsdialog";
   static constexpr auto GEOMETRY_SETTINGS_KEY = "geometry";
+
+private:
+  KeyBindingsProxyModel m_proxy_model;
 };
 
 }  // namespace omm
