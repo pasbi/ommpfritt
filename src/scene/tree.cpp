@@ -20,7 +20,7 @@ template<typename T> bool Tree<T>::contains(const T& t) const
 {
   static_assert(std::is_base_of_v<TreeElement<T>, T>);
   const auto& root = static_cast<const TreeElement<T>&>(*m_root);
-  return root.is_descendant_of(t);
+  return root.is_ancestor_of(t);
 }
 
 template<typename T> void Tree<T>::move(TreeMoveContext<T>& context)
@@ -82,7 +82,7 @@ template<typename T>
 std::unique_ptr<T> Tree<T>::replace_root(std::unique_ptr<T> new_root)
 {
   const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [this](auto* observer) { return observer->acquire_reseter_guard(); }
+    [](auto* observer) { return observer->acquire_reseter_guard(); }
   );
   auto old_root = std::move(m_root);
   m_root = std::move(new_root);

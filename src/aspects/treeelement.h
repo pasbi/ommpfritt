@@ -25,7 +25,7 @@ public:
   std::vector<T*> children() const;
   T& child(size_t i) const;
   size_t n_children() const;
-  bool is_descendant_of(const T& subject) const;
+  bool is_ancestor_of(const T& subject) const;
   void reset_parent(T& new_parent);
   std::set<T*> all_descendants() const;
   size_t position() const;

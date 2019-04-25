@@ -64,14 +64,14 @@ template<typename T> T& TreeElement<T>::parent() const
   return *m_parent;
 }
 
-template<typename T> bool TreeElement<T>::is_descendant_of(const T& subject) const
+template<typename T> bool TreeElement<T>::is_ancestor_of(const T& subject) const
 {
   if (&subject == this) {
     return true;
   } else if (subject.is_root()) {
     return false;
   } else {
-    return is_descendant_of(subject.parent());
+    return is_ancestor_of(subject.parent());
   }
 }
 
@@ -100,7 +100,7 @@ template<typename T> void TreeElement<T>::remove_internal_children(std::set<T*> 
   for (auto i = items.begin(); i != items.end(); ++i) {
     if (i != items.end()) {
       const bool hit = std::any_of(std::next(i), items.end(), [&i](const T* potential_descendant) {
-        return potential_descendant != *i && potential_descendant->is_descendant_of(**i);
+        return potential_descendant != *i && potential_descendant->is_ancestor_of(**i);
       });
       if (hit) {
         items.erase(i);

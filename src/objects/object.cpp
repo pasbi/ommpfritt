@@ -376,7 +376,7 @@ void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align,
 {
   if (path != nullptr && path->kind() == AbstractPropertyOwner::Kind::Object) {
     auto* path_object = static_cast<Object*>(path);
-    if (!path_object->is_descendant_of(*this)) {
+    if (!path_object->is_ancestor_of(*this)) {
       const auto location = path_object->evaluate(std::clamp(t, 0.0, 1.0));
       const auto global_location = path_object->global_transformation(true).apply(location);
       set_oriented_position(global_location, align);
@@ -460,6 +460,5 @@ void PathDeleter::operator()(Path *path)
 {
   delete path;
 }
-
 
 }  // namespace omm
