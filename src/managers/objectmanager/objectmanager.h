@@ -10,7 +10,7 @@ namespace omm
 class ObjectManager
   : public ItemManager<ObjectTreeView>, public CommandInterface
 {
-
+  Q_OBJECT
 public:
   explicit ObjectManager(Scene& scene);
   static std::vector<CommandInterface::ActionInfo<ObjectManager>> action_infos();

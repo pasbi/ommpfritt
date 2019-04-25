@@ -1078,6 +1078,10 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <source>PathTool</source>
         <translation>Pfad Werkzeug</translation>
     </message>
+    <message>
+        <source>group objects</source>
+        <translation>Objekte gruppieren</translation>
+    </message>
 </context>
 <context>
     <name>menu_name</name>
@@ -1163,6 +1167,10 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <source>Add Tag</source>
         <translation>Tag hinzufügen</translation>
     </message>
+    <message>
+        <source>Create %1</source>
+        <translation>Erzeuge %1</translation>
+    </message>
 </context>
 <context>
     <name>omm::ExportDialog</name>
@@ -1206,6 +1214,13 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
 </context>
 <context>
+    <name>omm::KeyBindingsDialogControls</name>
+    <message>
+        <source>Any Context</source>
+        <translation>Alle</translation>
+    </message>
+</context>
+<context>
     <name>omm::MainWindow</name>
     <message>
         <source>About</source>
@@ -1230,6 +1245,13 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <message>
         <source>system default</source>
         <translation>System</translation>
+    </message>
+</context>
+<context>
+    <name>omm::ObjectManager</name>
+    <message>
+        <source>Group</source>
+        <translation>Gruppieren</translation>
     </message>
 </context>
 <context>

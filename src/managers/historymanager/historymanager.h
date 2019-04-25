@@ -11,6 +11,7 @@ class HistoryModel;
 
 class HistoryManager : public Manager
 {
+  Q_OBJECT
 public:
   HistoryManager(Scene& scene);
 

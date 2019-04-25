@@ -1078,6 +1078,10 @@ Remove the selected items anyway?</translation>
         <source>PathTool</source>
         <translation>Path Tool</translation>
     </message>
+    <message>
+        <source>group objects</source>
+        <translation>Group objects</translation>
+    </message>
 </context>
 <context>
     <name>menu_name</name>
@@ -1163,6 +1167,10 @@ Remove the selected items anyway?</translation>
         <source>Add Tag</source>
         <translation>Add tag</translation>
     </message>
+    <message>
+        <source>Create %1</source>
+        <translation>Create %1</translation>
+    </message>
 </context>
 <context>
     <name>omm::ExportDialog</name>
@@ -1206,6 +1214,13 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
+    <name>omm::KeyBindingsDialogControls</name>
+    <message>
+        <source>Any Context</source>
+        <translation>Any Context</translation>
+    </message>
+</context>
+<context>
     <name>omm::MainWindow</name>
     <message>
         <source>About</source>
@@ -1230,6 +1245,13 @@ Remove the selected items anyway?</translation>
     <message>
         <source>system default</source>
         <translation>System</translation>
+    </message>
+</context>
+<context>
+    <name>omm::ObjectManager</name>
+    <message>
+        <source>Group</source>
+        <translation>Group</translation>
     </message>
 </context>
 <context>
