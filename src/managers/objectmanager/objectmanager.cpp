@@ -70,8 +70,9 @@ void ObjectManager::group_selected_objects()
 {
   auto selected_objects = scene().item_selection<Object>();
   Object::remove_internal_children(selected_objects);
+  auto ordererd_selected_objects = Object::sort(selected_objects);
 
-  if (!selected_objects.empty()) {
+  if (!ordererd_selected_objects.empty()) {
     auto macro = scene().history.start_macro(tr("Group"));
 
     using add_command_type = AddCommand<Tree<Object>>;
@@ -84,10 +85,10 @@ void ObjectManager::group_selected_objects()
     Object* predecessor = nullptr;
     const auto f = [&empty_ref, &predecessor](Object* o) {
       const auto context = move_command_type::context_type(*o, empty_ref, predecessor);
-      predecessor = o;
+      assert(context.is_sane());
       return context;
     };
-    const auto move_contextes = ::transform<move_context, std::vector>(selected_objects, f);
+    const auto move_contextes = ::transform<move_context>(ordererd_selected_objects, f);
     scene().submit<move_command_type>(scene().object_tree, move_contextes);
   }
 }

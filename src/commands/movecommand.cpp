@@ -46,9 +46,9 @@ template<typename StructureT> void MoveCommand<StructureT>::redo()
 
 template<typename StructureT> void MoveCommand<StructureT>::undo()
 {
-  for (auto& context : m_old_contextes) {
-    assert(context.is_sane());
-    m_structure.move(context);
+  for (auto ctx_it = m_old_contextes.rbegin(); ctx_it != m_old_contextes.rend(); ++ctx_it) {
+    assert(ctx_it->is_sane());
+    m_structure.move(*ctx_it);
   }
 }
 
