@@ -5,15 +5,11 @@
 namespace omm
 {
 
-template<typename T> TreeElement<T>::TreeElement(T* parent) : m_parent(parent)
-{
-  static_assert(std::is_base_of<TreeElement<T>, T>::value, "T must derive ElementType<T>");
-}
-
 template<typename T> TreeElement<T>::TreeElement(const TreeElement& other)
   : m_parent(nullptr)
   , m_children(::copy(other.m_children))
 {
+  static_assert(std::is_base_of_v<TreeElement<T>, T>, "T must derive ElementType<T>");
   for (auto&& child : m_children) {
     child->m_parent = static_cast<T*>(this);
   }
@@ -109,6 +105,55 @@ template<typename T> void TreeElement<T>::remove_internal_children(std::set<T*> 
   }
 }
 
+template<typename T>
+T* TreeElement<T>::lowest_common_ancestor(T *a, T *b)
+{
+  // This is a rather inefficient implementation (O(n^2) where n is depth of the tree)
+  // at O(1) with O(n) preparation is possible but apparently hard to implement.
+  T* candidate = a;
+  if (candidate->is_ancestor_of(*b)) {
+    return candidate;
+  }
+  while (!candidate->is_root()) {
+    candidate = &candidate->parent();
+    if (candidate->is_ancestor_of(*b)) {
+      return candidate;
+    }
+  }
+  return nullptr;
+}
+
+template<typename T>
+const T* TreeElement<T>::lowest_common_ancestor(const T *a, const T *b)
+{
+  return const_cast<const T*>(lowest_common_ancestor(const_cast<T*>(a), const_cast<T*>(b)));
+}
+
+template<typename T> std::vector<T*> TreeElement<T>::sort(const std::set<T*> &items)
+{
+  std::vector vs(items.begin(), items.end());
+  std::sort(vs.begin(), vs.end(), tree_gt<T>);
+  return vs;
+}
+
+std::ostream& operator<<(std::ostream& ostream, const TreeTestItem* item)
+{
+  if (item == nullptr) {
+    ostream << "Item[nullptr]";
+  } else {
+    ostream << "Item[" << item->name << "]";
+  }
+  return ostream;
+}
+
+std::ostream& operator<<(std::ostream& ostream, const TreeTestItem& item)
+{
+  ostream << &item;
+  return ostream;
+}
+
 template class TreeElement<Object>;
+template class TreeElement<TreeTestItem>;
+
 
 }  // namespace omm

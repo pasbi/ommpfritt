@@ -164,11 +164,27 @@ template<typename Ts, typename S> bool contains(const Ts& set, S&& key)
 template<typename T> struct is_unique_ptr : std::true_type {};
 template<typename... T> struct is_unique_ptr<std::unique_ptr<T...>> : std::true_type {};
 
+// https://stackoverflow.com/a/87846/4248972
+template<typename T> struct HasCloneMethod
+{
+  struct big_t { char x; char y; };
+  template<typename U, std::unique_ptr<T> (U::*)() const> struct SFINAE {};
+  template<typename U> static char Test(SFINAE<U, &U::clone>*);
+  template<typename U> static big_t Test(...);
+  static constexpr bool value = sizeof(Test<T>(0)) == sizeof(char);
+};
 
 template<typename T, template<typename...> class ContainerT>
 ContainerT<std::unique_ptr<T>> copy(const ContainerT<std::unique_ptr<T>>& other)
 {
-  return ::transform<std::unique_ptr<T>>(other, [](const auto& i) { return i->clone(); });
+  if constexpr (HasCloneMethod<T>::value) {
+    return ::transform<std::unique_ptr<T>>(other, [](const auto& i) { return i->clone(); });
+  } else {
+    return ::transform<std::unique_ptr<T>>(other, [](const auto& i) {
+      return std::make_unique<T>(*i);
+    });
+  }
+
 }
 
 template<typename T, template<typename...> class ContainerT>

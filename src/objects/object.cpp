@@ -37,7 +37,7 @@ namespace omm
 
 Style Object::m_bounding_box_style = ContourStyle(omm::Colors::BLACK, 1.0);
 
-Object::Object(Scene* scene) : TreeElement(nullptr)
+Object::Object(Scene* scene)
 {
   set_scene(scene);
 
