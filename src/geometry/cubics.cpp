@@ -55,7 +55,9 @@ std::vector<double> Cubics::cut(const Vec2f& a, const Vec2f& b) const
 
 std::pair<std::size_t, double> Cubics::path_to_segment(const double path_t) const
 {
-  if (m_cubics.empty()) { return std::pair(std::size_t(0), 0.0); }
+  if (m_cubics.empty()) {
+    return std::pair(std::size_t(0), 0.0);
+  }
 
   assert(path_t >= 0.0 && path_t <= 1.0);
 
@@ -69,8 +71,14 @@ std::pair<std::size_t, double> Cubics::path_to_segment(const double path_t) cons
   }
 
   const double segment_length = lengths()[segment_i];
-  const double segment_t = (dist - segment_t_start) / segment_length;
-  return std::pair(segment_i, std::clamp(segment_t, 0.0, 1.0));
+  static constexpr auto eps = 0.0000001;
+  if (segment_length < eps) {
+    return std::pair(segment_i, 0.0);
+  } else {
+    const double segment_t = (dist - segment_t_start) / segment_length;
+    assert(!std::isnan(segment_t));
+    return std::pair(segment_i, std::clamp(segment_t, 0.0, 1.0));
+  }
 }
 
 double Cubics::segment_to_path(const std::size_t& segment_i, const double& segment_t) const
