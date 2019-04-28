@@ -20,7 +20,7 @@ StyleTag::StyleTag(Object& owner)
 
 QIcon StyleTag::icon() const
 {
-  const auto* style = property(STYLE_REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
+  const auto* style = property(STYLE_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
   if (style == nullptr) {
     return QApplication::style()->standardIcon(QStyle::SP_DialogResetButton);
   } else {

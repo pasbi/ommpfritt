@@ -28,7 +28,7 @@ get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
   auto keys = the_entity->properties().keys();
   std::unordered_map<std::string, omm::Property*> the_properties;
   for (auto&& key : keys) {
-    the_properties.insert(std::make_pair(key, &the_entity->property(key)));
+    the_properties.insert(std::make_pair(key, the_entity->property(key)));
   }
 
   for (auto it = std::next(selection.begin()); it != selection.end(); ++it) {
@@ -37,7 +37,7 @@ get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
       if (std::find(property_keys.begin(), property_keys.end(), key) == property_keys.end()) {
         return false;
       } else {
-        return the_properties.at(key)->is_compatible((*it)->property(key));
+        return the_properties.at(key)->is_compatible(*(*it)->property(key));
       }
     };
 
@@ -53,7 +53,7 @@ auto collect_properties( const std::string& key,
 {
   std::set<omm::AbstractPropertyOwner*> collection;
   const auto f = [key](omm::AbstractPropertyOwner* entity) {
-    return &entity->property(key);
+    return entity->property(key);
   };
 
   return transform<omm::Property*>(selection, f);

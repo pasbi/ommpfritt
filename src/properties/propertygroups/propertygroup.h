@@ -23,7 +23,7 @@ protected:
   std::string key(const std::string& key) const;
   template<typename T> T property_value(const std::string& key) const
   {
-    return m_property_owner.property(this->key(key)).value<T>();
+    return m_property_owner.property(this->key(key))->value<T>();
   }
 
   template<typename PropertyT, typename... Args> decltype(auto) add_property(Args&&... args)

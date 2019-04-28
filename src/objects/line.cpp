@@ -26,9 +26,9 @@ bool Line::is_closed() const { return false; }
 
 std::vector<Point> Line::points()
 {
-  const auto length = property(LENGTH_PROPERTY_KEY).value<double>();
-  const auto angle = property(ANGLE_PROPERTY_KEY).value<double>();
-  const auto centered = property(CENTER_PROPERTY_KEY).value<bool>();
+  const auto length = property(LENGTH_PROPERTY_KEY)->value<double>();
+  const auto angle = property(ANGLE_PROPERTY_KEY)->value<double>();
+  const auto centered = property(CENTER_PROPERTY_KEY)->value<bool>();
   const PolarCoordinates a(angle, centered ? -length / 2.0 : 0.0);
   const PolarCoordinates b(angle, centered ?  length / 2.0 : length);
   return std::vector { Point(a.to_cartesian()), Point(b.to_cartesian()) };

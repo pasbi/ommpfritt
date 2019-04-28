@@ -46,9 +46,9 @@ void Text::draw_object(AbstractRenderer& renderer, const Style& style) const
   if (is_active()) {
     QFont font = m_font_properties.get_font();
     QTextOption option = m_text_option_properties.get_option();
-    const double width = property(WIDTH_PROPERTY_KEY).value<double>();
+    const double width = property(WIDTH_PROPERTY_KEY)->value<double>();
     const auto options = AbstractRenderer::TextOptions(font, option, style, width);
-    renderer.draw_text(property(TEXT_PROPERTY_KEY).value<std::string>(), options);
+    renderer.draw_text(property(TEXT_PROPERTY_KEY)->value<std::string>(), options);
   }
 }
 

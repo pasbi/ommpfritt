@@ -77,7 +77,7 @@ void Mirror::update()
 
 ObjectTransformation Mirror::get_mirror_t() const
 {
-  switch (property(DIRECTION_PROPERTY_KEY).value<Mirror::Direction>()) {
+  switch (property(DIRECTION_PROPERTY_KEY)->value<Mirror::Direction>()) {
   case omm::Mirror::Direction::Horizontal:
     return omm::ObjectTransformation().scaled(omm::Vec2f(-1.0,  1.0));
   case omm::Mirror::Direction::Vertical:

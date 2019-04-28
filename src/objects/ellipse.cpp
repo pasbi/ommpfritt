@@ -29,10 +29,10 @@ bool Ellipse::is_closed() const { return true; }
 
 std::vector<Point> Ellipse::points()
 {
-  const auto n_raw = property(CORNER_COUNT_PROPERTY_KEY).value<int>();
+  const auto n_raw = property(CORNER_COUNT_PROPERTY_KEY)->value<int>();
   const auto n = static_cast<std::size_t>(std::max(3, n_raw));
-  const auto r = property(RADIUS_PROPERTY_KEY).value<Vec2f>();
-  const bool smooth = property(SMOOTH_PROPERTY_KEY).value<bool>();
+  const auto r = property(RADIUS_PROPERTY_KEY)->value<Vec2f>();
+  const bool smooth = property(SMOOTH_PROPERTY_KEY)->value<bool>();
   std::vector<Point> points;
   points.reserve(n);
   for (size_t i = 0; i < n; ++i) {

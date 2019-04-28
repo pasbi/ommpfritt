@@ -46,8 +46,8 @@ AbstractPropertyOwner::Flag Outline::flags() const
 void Outline::update()
 {
   if (is_active()) {
-    const auto* ref = property(REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
-    const auto t = property(OFFSET_PROPERTY_KEY).value<double>();
+    const auto* ref = property(REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
+    const auto t = property(OFFSET_PROPERTY_KEY)->value<double>();
     if (auto* o = kind_cast<const Object*>(ref); o != nullptr) {
       m_outline = o->outline(t);
     } else {
@@ -78,7 +78,7 @@ double Outline::path_length() const
 
 bool Outline::contains(const Vec2f &pos) const
 {
-  auto* ref = kind_cast<Object*>(property(REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>());
+  auto* ref = kind_cast<Object*>(property(REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>());
   if (ref) {ref->update(); }
 
   if (m_outline) {
@@ -93,7 +93,7 @@ std::unique_ptr<Object> Outline::convert() const
   auto converted = m_outline->clone();
   copy_properties(*converted);
   copy_tags(*converted);
-  converted->property(Path::INTERPOLATION_PROPERTY_KEY).set(Path::InterpolationMode::Bezier);
+  converted->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
   return std::unique_ptr<Object>(converted.release());
 }
 

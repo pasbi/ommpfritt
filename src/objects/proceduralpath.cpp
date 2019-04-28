@@ -59,8 +59,8 @@ std::vector<Point> ProceduralPath::points()
 {
   assert(scene() != nullptr);
   using namespace pybind11::literals;
-  const auto count = property(COUNT_PROPERTY_KEY).value<int>();
-  const auto code = property(CODE_PROPERTY_KEY).value<std::string>();
+  const auto count = property(COUNT_PROPERTY_KEY)->value<int>();
+  const auto code = property(CODE_PROPERTY_KEY)->value<std::string>();
 
   auto points = std::vector<Point>(static_cast<std::size_t>(std::max(0, count)));
   std::vector<PointWrapper> point_wrappers;
@@ -80,7 +80,7 @@ std::vector<Point> ProceduralPath::points()
 
 bool ProceduralPath::is_closed() const
 {
-  return property(IS_CLOSED_PROPERTY_KEY).value<bool>();
+  return property(IS_CLOSED_PROPERTY_KEY)->value<bool>();
 }
 
 AbstractPropertyOwner::Flag ProceduralPath::flags() const

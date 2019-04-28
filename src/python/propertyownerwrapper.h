@@ -15,7 +15,7 @@ template<typename WrappedT>
 py::object get_property_value(WrappedT&& wrapped, const std::string& key)
 {
   if (wrapped.has_property(key)) {
-    const auto value = wrapped.property(key).variant_value();
+    const auto value = wrapped.property(key)->variant_value();
     if (std::holds_alternative<AbstractPropertyOwner*>(value)) {
       return wrap(std::get<AbstractPropertyOwner*>(value));
     } else if (std::holds_alternative<TriggerPropertyDummyValueType>(value)) {

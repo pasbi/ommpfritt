@@ -44,12 +44,13 @@ public:
                     Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4, IsView = 0x8 };
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PropertyOwner", "AbstractPropertyOwner");
-  Property& property(const std::string& key) const;
+
+  Property* property(const std::string& key) const;
   bool has_property(const std::string& key) const;
   template<typename ValueT> bool has_property(const std::string& key) const
   {
     if (has_property(key)) {
-      const auto variant = property(key).variant_value();
+      const auto variant = property(key)->variant_value();
       return std::get_if<ValueT>(&variant) != nullptr;
     } else {
       return false;

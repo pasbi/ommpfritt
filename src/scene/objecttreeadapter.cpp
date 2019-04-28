@@ -92,7 +92,7 @@ void drop_style_onto_object( omm::Scene& scene, omm::Object& object,
     auto macro = scene.history.start_macro(QObject::tr("set styles tags", "ObjectTreeAdapter"));
     for (auto* style : styles) {
       auto style_tag = std::make_unique<omm::StyleTag>(object);
-      style_tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY).set(style);
+      style_tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY)->set(style);
       scene.submit<AddTagCommand>(object.tags, std::move(style_tag));
     }
   }
@@ -105,7 +105,26 @@ namespace omm
 
 ObjectTreeAdapter::ObjectTreeAdapter(Scene& scene, Tree<Object>& tree)
   : ItemModelAdapter(scene, tree)
-{ }
+{
+  connect(&scene, &Scene::scene_changed, [this](AbstractPropertyOwner* subject, int code, auto* p) {
+    LINFO << "SCENE CHANGED";
+    if (code == AbstractPropertyOwner::PROPERTY_CHANGED) {
+      auto* object = kind_cast<Object*>(subject);
+      if (object != nullptr) {
+        if (p == object->property(Object::NAME_PROPERTY_KEY)) {
+          const auto index = index_of(*object);
+          Q_EMIT dataChanged(index, index, { Qt::DisplayRole });
+        } else if (p == object->property(Object::IS_ACTIVE_PROPERTY_KEY)
+                   || p == object->property(Object::IS_VISIBLE_PROPERTY_KEY)) {
+          LINFO << "SCENE CHANGED   1";
+          auto index = index_of(*object);
+          index = index.sibling(index.row(), 1);
+          Q_EMIT dataChanged(index, index, { Qt::DisplayRole });
+        }
+      }
+    }
+  });
+}
 
 QModelIndex ObjectTreeAdapter::index(int row, int column, const QModelIndex& parent) const
 {
@@ -149,7 +168,7 @@ bool ObjectTreeAdapter::setData(const QModelIndex& index, const QVariant& value,
 
   switch (index.column()) {
   case 0:
-    item_at(index).property(Object::NAME_PROPERTY_KEY).set(value.toString().toStdString());
+    item_at(index).property(Object::NAME_PROPERTY_KEY)->set(value.toString().toStdString());
     return true;
   }
 
@@ -342,7 +361,7 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
           assert(current_tag->type() == StyleTag::TYPE);
           assert(styles.size() == 1);
           auto* style_tag = static_cast<StyleTag*>(current_tag);
-          auto& property = style_tag->property(StyleTag::STYLE_REFERENCE_PROPERTY_KEY);
+          auto& property = *style_tag->property(StyleTag::STYLE_REFERENCE_PROPERTY_KEY);
           using ref_prop_cmd_t = PropertiesCommand<ReferenceProperty>;
           scene.submit<ref_prop_cmd_t>(std::set { &property }, *styles.begin());
         }

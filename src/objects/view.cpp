@@ -35,7 +35,7 @@ void View::to_viewport()
 
 void View::draw_handles(AbstractRenderer& renderer) const
 {
-  const auto size = property(SIZE_PROPERTY_KEY).value<Vec2f>();
+  const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>();
   const auto w = size.x/2;
   const auto h = size.y/2;
   const auto points = std::vector { Point(Vec2f(-w, -h)), Point(Vec2f( w, -h)),
@@ -47,8 +47,8 @@ void View::draw_handles(AbstractRenderer& renderer) const
 
 void View::on_property_value_changed(Property& property)
 {
-  if (&property == &this->property(TO_VIEWPORT_PROPERTY_KEY)) { to_viewport(); }
-  if (&property == &this->property(FROM_VIEWPORT_PROPERTY_KEY)) { from_viewport(); }
+  if (&property == this->property(TO_VIEWPORT_PROPERTY_KEY)) { to_viewport(); }
+  if (&property == this->property(FROM_VIEWPORT_PROPERTY_KEY)) { from_viewport(); }
 }
 
 void View::from_viewport()
@@ -56,7 +56,7 @@ void View::from_viewport()
   const auto& viewport = Application::instance().main_window()->viewport();
   const auto s = Vec2f(double(viewport.size().width()), double(viewport.size().height()));
   set_global_transformation(ObjectTransformation().translated(s/2.0).normalized(), false);
-  property(SIZE_PROPERTY_KEY).set(s);
+  property(SIZE_PROPERTY_KEY)->set(s);
 }
 
 }  // namespace omm

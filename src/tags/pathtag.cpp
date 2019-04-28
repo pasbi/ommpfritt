@@ -36,9 +36,9 @@ AbstractPropertyOwner::Flag PathTag::flags() const { return Tag::flags(); }
 
 void PathTag::evaluate()
 {
-  auto* o = property(PATH_REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
-  const double t = property(POSITION_PROPERTY_KEY).value<double>();
-  const bool align = property(ALIGN_REFERENCE_PROPERTY_KEY).value<bool>();
+  auto* o = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
+  const double t = property(POSITION_PROPERTY_KEY)->value<double>();
+  const bool align = property(ALIGN_REFERENCE_PROPERTY_KEY)->value<bool>();
   owner->set_position_on_path(o, align, t);
 }
 

@@ -24,10 +24,13 @@ const OrderedMap<std::string, Property>& AbstractPropertyOwner::properties() con
   return m_properties;
 }
 
-Property& AbstractPropertyOwner::property(const std::string& key) const
+Property *AbstractPropertyOwner::property(const std::string& key) const
 {
-  assert(has_property(key));
-  return *m_properties.at(key);
+  if (has_property(key)) {
+    return m_properties.at(key).get();
+  } else {
+    return nullptr;
+  }
 }
 
 bool AbstractPropertyOwner::has_property(const std::string& key) const
@@ -46,7 +49,7 @@ void AbstractPropertyOwner::serialize(AbstractSerializer& serializer, const Poin
   for (size_t i = 0; i < m_properties.size(); ++i) {
     const auto property_key = m_properties.keys().at(i);
     const auto property_pointer = make_pointer(properties_pointer, i);
-    const auto& property = this->property(property_key);
+    const auto& property = *this->property(property_key);
     serializer.set_value(property_key, make_pointer(property_pointer, PROPERTY_KEY_POINTER));
     serializer.set_value(property.type(), make_pointer(property_pointer, PROPERTY_TYPE_POINTER));
     property.serialize(serializer, property_pointer);
@@ -73,7 +76,7 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
       deserializer.get_string(make_pointer(property_pointer, PROPERTY_TYPE_POINTER));
 
     if (properties().contains(property_key)) {
-      assert(property_type == property(property_key).type());
+      assert(property_type == property(property_key)->type());
     } else {
       try {
         add_property(property_key, Property::make(property_type));
@@ -84,7 +87,7 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
       }
     }
 
-    property(property_key).deserialize(deserializer, property_pointer);
+    property(property_key)->deserialize(deserializer, property_pointer);
   }
 }
 
@@ -102,7 +105,7 @@ void AbstractPropertyOwner::on_change(AbstractPropertyOwner *subject, int what, 
 
 std::string AbstractPropertyOwner::name() const
 {
-  return property(NAME_PROPERTY_KEY).value<std::string>();
+  return property(NAME_PROPERTY_KEY)->value<std::string>();
 }
 
 bool AbstractPropertyOwner::has_reference_cycle(const std::string& key) const
@@ -117,7 +120,7 @@ bool AbstractPropertyOwner::has_reference_cycle(const std::string& key) const
       return false;
     } else {
       referenced_items.insert(current);
-      current = current->property(key).value<ReferenceProperty::value_type>();
+      current = current->property(key)->value<ReferenceProperty::value_type>();
     }
   }
   assert(false);
@@ -149,8 +152,8 @@ void AbstractPropertyOwner::copy_properties(AbstractPropertyOwner& target) const
   };
 
   for (const auto& key : ::intersect(keys(target), keys(*this))) {
-    const auto& p = property(key);
-    auto& other_property = target.property(key);
+    const auto& p = *property(key);
+    auto& other_property = *target.property(key);
     if (other_property.is_compatible(p)) {
       other_property.set(p.variant_value());
     }

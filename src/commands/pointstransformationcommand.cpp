@@ -61,7 +61,7 @@ void PointsTransformationCommand::redo()
     }
 
     const auto& i_mode_property = path->property(Path::INTERPOLATION_PROPERTY_KEY);
-    const auto i_mode = i_mode_property.value<Path::InterpolationMode>();
+    const auto i_mode = i_mode_property->value<Path::InterpolationMode>();
     for (auto [point, alternative] : path->modified_points(false, i_mode)) {
       point->swap(alternative);
     }

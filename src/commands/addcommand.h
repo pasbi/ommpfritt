@@ -22,7 +22,7 @@ public:
   {
     static int i = 0;
     const auto name = m_context.subject->type() + " " + std::to_string(i++);
-    m_context.subject->property(AbstractPropertyOwner::NAME_PROPERTY_KEY).set(name);
+    m_context.subject->property(AbstractPropertyOwner::NAME_PROPERTY_KEY)->set(name);
   }
 
   AddCommand(StructureT& structure, context_type context)

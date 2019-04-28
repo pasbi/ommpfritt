@@ -53,7 +53,7 @@ QIcon ScriptTag::icon() const
 
 void ScriptTag::on_property_value_changed(Property& property)
 {
-  if (&property == &this->property(TRIGGER_UPDATE_PROPERTY_KEY)) { force_evaluate(); }
+  if (&property == this->property(TRIGGER_UPDATE_PROPERTY_KEY)) { force_evaluate(); }
 }
 
 void ScriptTag::force_evaluate()
@@ -61,7 +61,7 @@ void ScriptTag::force_evaluate()
   Scene* scene = owner->scene();
   assert(scene != nullptr);
   using namespace py::literals;
-  const auto code = property(ScriptTag::CODE_PROPERTY_KEY).value<std::string>();
+  const auto code = property(ScriptTag::CODE_PROPERTY_KEY)->value<std::string>();
   auto locals = py::dict( "this"_a=TagWrapper::make(*this),
                           "scene"_a=SceneWrapper(*scene) );
   scene->python_engine.exec(code, locals, this);
@@ -69,7 +69,7 @@ void ScriptTag::force_evaluate()
 
 void ScriptTag::evaluate()
 {
-  if (property(UPDATE_MODE_PROPERTY_KEY).value<std::size_t>() == 1) {
+  if (property(UPDATE_MODE_PROPERTY_KEY)->value<std::size_t>() == 1) {
     force_evaluate();
   }
 }

@@ -52,7 +52,7 @@ Path::Path(Scene* scene) : Object(scene)
   static const auto category = QObject::tr("path").toStdString();
   const auto update_point_tangents = [this](Property&) {
     std::map<Path*, std::map<Point*, Point>> map;
-    const auto i_mode = property(INTERPOLATION_PROPERTY_KEY).value<InterpolationMode>();
+    const auto i_mode = property(INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
     map[this] = this->modified_points(false, i_mode);
     this->scene()->submit<ModifyPointsCommand>(map);
   };
@@ -72,7 +72,7 @@ void Path::draw_object(AbstractRenderer& renderer, const Style& style) const
 {
   const auto triangulation_style = ContourStyle(Colors::BLACK, 0.5);
   const auto marked_triangulation_style = ContourStyle(Colors::GREEN, 2.0);
-  renderer.draw_spline(m_points, style, property(IS_CLOSED_PROPERTY_KEY).value<bool>());
+  renderer.draw_spline(m_points, style, property(IS_CLOSED_PROPERTY_KEY)->value<bool>());
 }
 
 BoundingBox Path::bounding_box() const { return BoundingBox(m_points); }
@@ -164,7 +164,7 @@ bool Path::contains(const Vec2f &pos) const { return cubics().contains(pos); }
 
 bool Path::is_closed() const
 {
-  return this->property(omm::Path::IS_CLOSED_PROPERTY_KEY).value<bool>();
+  return this->property(omm::Path::IS_CLOSED_PROPERTY_KEY)->value<bool>();
 }
 
 Point Path::evaluate(const double t) const
@@ -291,7 +291,7 @@ std::vector<Path::PointSequence> Path::get_point_sequences(const std::vector<dou
 
 void Path::update_tangents()
 {
-  switch (property(INTERPOLATION_PROPERTY_KEY).value<InterpolationMode>()) {
+  switch (property(INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>()) {
   case InterpolationMode::Bezier: break;
   case InterpolationMode::Linear:
     for (std::size_t i = 0; i < m_points.size(); ++i) {
@@ -310,7 +310,7 @@ Object::PathUniquePtr Path::outline(const double t) const
 {
   auto outline = std::make_unique<Path>(scene());
   outline->set_points(Point::offset(t, m_points, is_closed()));
-  outline->property(IS_CLOSED_PROPERTY_KEY).set(is_closed());
+  outline->property(IS_CLOSED_PROPERTY_KEY)->set(is_closed());
   return Object::PathUniquePtr(outline.release());
 }
 

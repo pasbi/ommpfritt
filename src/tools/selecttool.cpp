@@ -103,7 +103,7 @@ ObjectTransformation SelectTool<PositionVariant>::transformation() const
 {
   ObjectTransformation transformation;
   transformation.translate(position_variant.selection_center());
-  if (this->property(ALIGNMENT_PROPERTY_KEY).template value<size_t>() == 1) {
+  if (this->property(ALIGNMENT_PROPERTY_KEY)->template value<size_t>() == 1) {
     if (scene.item_selection<Object>().size() == 1) {
       const auto* lonely_object = *scene.item_selection<Object>().begin();
       transformation.rotate(lonely_object->global_transformation().rotation());
@@ -164,7 +164,7 @@ Command* SelectObjectsTool::transform_objects(ObjectTransformation t, const bool
   const Matrix mat = viewport_transformation.to_mat().inverted() * t.to_mat();
 
   using TransformationMode = ObjectsTransformationCommand::TransformationMode;
-  const auto tmode = property(TRANSFORMATION_MODE_KEY).value<TransformationMode>();
+  const auto tmode = property(TRANSFORMATION_MODE_KEY)->value<TransformationMode>();
   auto command = std::make_unique<ObjectsTransformationCommand>( scene.item_selection<Object>(),
                                                                  mat, tmode );
   auto& command_ref = *command;
@@ -187,7 +187,7 @@ std::string SelectPointsTool::type() const { return TYPE; }
 
 PointSelectHandle::TangentMode SelectPointsTool::tangent_mode() const
 {
-  const auto i = property(TANGENT_MODE_PROPERTY_KEY).value<size_t>();
+  const auto i = property(TANGENT_MODE_PROPERTY_KEY)->value<size_t>();
   return static_cast<PointSelectHandle::TangentMode>(i);
 }
 

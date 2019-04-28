@@ -40,7 +40,7 @@ bool set_property_value( AbstractPropertyOwner& property_owner,
                          const std::string& key, const py::object& value )
 {
   if (property_owner.has_property(key)) {
-    auto& property = property_owner.property(key);
+    auto& property = *property_owner.property(key);
     if (property.type() == ReferenceProperty::TYPE) {
       if (value.is_none()) {
         // TODO replace return-status with throw exception

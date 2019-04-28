@@ -29,7 +29,7 @@ void UserPropertyConfigCommand::swap_user_properties()
 
   const auto keys = m_owner.properties().keys();
   for (auto&& key : keys) {
-    if (m_owner.property(key).is_user_property()) {
+    if (m_owner.property(key)->is_user_property()) {
       m_swapped_properties.push_back(m_owner.extract_property(key));
     }
   }

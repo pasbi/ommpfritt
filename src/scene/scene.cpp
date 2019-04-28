@@ -65,7 +65,7 @@ Scene::Scene(PythonEngine& python_engine)
   , tool_box(*this)
 {
   using namespace std::string_literals;
-  object_tree.root().property(Object::NAME_PROPERTY_KEY).set("_root_"s);
+  object_tree.root().property(Object::NAME_PROPERTY_KEY)->set("_root_"s);
   for (auto kind : { Object::KIND, Tag::KIND, Style::KIND, Tool::KIND }) {
     m_item_selection[kind] = {};
   }

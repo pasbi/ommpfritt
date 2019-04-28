@@ -161,7 +161,7 @@ Q_SIGNALS:
   void selection_changed(const std::set<AbstractPropertyOwner*>& selection,
                             AbstractPropertyOwner::Kind kind);
   void structure_changed();
-  void scene_changed();
+  void scene_changed(AbstractPropertyOwner* subject, int code, Property* property);
 
 };
 

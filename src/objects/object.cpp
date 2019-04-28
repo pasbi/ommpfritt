@@ -116,10 +116,10 @@ void Object::set_scene(Scene* scene)
 ObjectTransformation Object::transformation() const
 {
   return ObjectTransformation(
-    property(POSITION_PROPERTY_KEY).value<Vec2f>(),
-    property(SCALE_PROPERTY_KEY).value<Vec2f>(),
-    property(ROTATION_PROPERTY_KEY).value<double>(),
-    property(SHEAR_PROPERTY_KEY).value<double>()
+    property(POSITION_PROPERTY_KEY)->value<Vec2f>(),
+    property(SCALE_PROPERTY_KEY)->value<Vec2f>(),
+    property(ROTATION_PROPERTY_KEY)->value<double>(),
+    property(SHEAR_PROPERTY_KEY)->value<double>()
   );
 }
 
@@ -136,10 +136,10 @@ ObjectTransformation Object::global_transformation(const bool skip_root) const
 
 void Object::set_transformation(const ObjectTransformation& transformation)
 {
-  property(POSITION_PROPERTY_KEY).set(transformation.translation());
-  property(SCALE_PROPERTY_KEY).set(transformation.scaling());
-  property(ROTATION_PROPERTY_KEY).set(transformation.rotation());
-  property(SHEAR_PROPERTY_KEY).set(transformation.shearing());
+  property(POSITION_PROPERTY_KEY)->set(transformation.translation());
+  property(SCALE_PROPERTY_KEY)->set(transformation.scaling());
+  property(ROTATION_PROPERTY_KEY)->set(transformation.rotation());
+  property(SHEAR_PROPERTY_KEY)->set(transformation.shearing());
 }
 
 void Object
@@ -260,7 +260,7 @@ void Object::draw_recursive(AbstractRenderer& renderer, const Style& default_sty
 void Object::draw_recursive(AbstractRenderer& renderer, const RenderOptions& options) const
 {
   renderer.push_transformation(transformation());
-  const auto visibility = property(IS_VISIBLE_PROPERTY_KEY).value<Visibility>();
+  const auto visibility = property(IS_VISIBLE_PROPERTY_KEY)->value<Visibility>();
   const bool is_visible = options.always_visible || visibility == Visibility::Visible;
   const bool is_enabled = !!(renderer.category_filter & AbstractRenderer::Category::Objects);
   if (is_enabled && is_visible) {
@@ -395,7 +395,7 @@ void Object::set_oriented_position(const Point& op, const bool align)
 }
 
 
-bool Object::is_active() const { return property(IS_ACTIVE_PROPERTY_KEY).value<bool>(); }
+bool Object::is_active() const { return property(IS_ACTIVE_PROPERTY_KEY)->value<bool>(); }
 
 bool Object::is_visible() const
 {
@@ -415,7 +415,7 @@ bool Object::is_visible() const
 
 Object::Visibility Object::visibility() const
 {
-  return property(IS_VISIBLE_PROPERTY_KEY).value<Visibility>();
+  return property(IS_VISIBLE_PROPERTY_KEY)->value<Visibility>();
 }
 
 std::vector<const omm::Style*> Object::find_styles() const
@@ -423,7 +423,7 @@ std::vector<const omm::Style*> Object::find_styles() const
   const auto get_style = [](const omm::Tag* tag) -> const omm::Style* {
     if (tag->type() == omm::StyleTag::TYPE) {
       const auto* property_owner = tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY)
-                                       .value<omm::ReferenceProperty::value_type>();
+                                       ->value<omm::ReferenceProperty::value_type>();
       assert(  property_owner == nullptr
             || property_owner->kind() == omm::AbstractPropertyOwner::Kind::Style );
       return static_cast<const omm::Style*>(property_owner);

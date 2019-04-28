@@ -45,7 +45,7 @@ double compute_aspect_ratio(const omm::View* view)
   if (view == nullptr) {
     return double(viewport().width()) / double(viewport().height());
   } else {
-    const omm::Vec2f s = view->property(omm::View::SIZE_PROPERTY_KEY).value<omm::Vec2f>();
+    const omm::Vec2f s = view->property(omm::View::SIZE_PROPERTY_KEY)->value<omm::Vec2f>();
     return s.x / s.y;
   }
 }
@@ -155,7 +155,7 @@ QImage ExportDialog::render(int width, int height) const
       return ObjectTransformation().scaled(Vec2f(s, s)).apply(t);
     } else {
       const auto t = view->global_transformation(true).inverted();
-      const auto view_size = view->property(omm::View::SIZE_PROPERTY_KEY).value<omm::Vec2f>();
+      const auto view_size = view->property(omm::View::SIZE_PROPERTY_KEY)->value<omm::Vec2f>();
       const auto s = width / double(view_size.x);
       const auto d = view_size/2.0;
       return ObjectTransformation().scaled(Vec2f(s, s)).apply(t.translated(d));

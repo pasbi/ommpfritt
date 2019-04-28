@@ -134,8 +134,7 @@ bool ListAdapter<ItemT>::setData(const QModelIndex& index, const QVariant& value
   assert(!index.parent().isValid());
 
   auto& item = this->structure.item(index.row());
-  auto& name_property = item.property(Object::NAME_PROPERTY_KEY);
-  name_property.set(value.toString().toStdString());
+  item.property(Object::NAME_PROPERTY_KEY)->set(value.toString().toStdString());
   return true;
 }
 

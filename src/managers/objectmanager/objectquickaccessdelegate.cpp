@@ -110,12 +110,12 @@ bool ObjectQuickAccessDelegate::on_mouse_button_press(QMouseEvent& event)
   pos.setY(pos.y() / rect.height());
   if (enabled_cross_area.contains(pos)) {
     const auto is_active = object.is_active();
-    auto& property = object.property(Object::IS_ACTIVE_PROPERTY_KEY);
+    auto& property = *object.property(Object::IS_ACTIVE_PROPERTY_KEY);
     m_view.scene().submit<PropertiesCommand<BoolProperty>>(std::set { &property }, !is_active);
     return true;
   } else if (edit_visibility.contains(pos)) {
     const auto visibility = static_cast<int>(advance_visibility(object.visibility()));
-    auto& property = object.property(Object::IS_VISIBLE_PROPERTY_KEY);
+    auto& property = *object.property(Object::IS_VISIBLE_PROPERTY_KEY);
     m_view.scene().submit<PropertiesCommand<OptionsProperty>>(std::set { &property }, visibility);
     return true;
   } else {

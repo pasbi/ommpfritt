@@ -256,7 +256,7 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentMode mode)
 bool PointSelectHandle::tangents_active() const
 {
   const auto& imode_property = m_path.property(Path::INTERPOLATION_PROPERTY_KEY);
-  const auto interpolation_mode = imode_property.value<Path::InterpolationMode>();
+  const auto interpolation_mode = imode_property->value<Path::InterpolationMode>();
   const bool is_bezier = interpolation_mode == Path::InterpolationMode::Bezier;
   return is_bezier && m_point.is_selected;
 }

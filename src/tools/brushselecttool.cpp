@@ -60,7 +60,7 @@ void BrushSelectTool
 ::modify_selection(const Vec2f& pos, const QMouseEvent& event)
 {
   const bool extend_selection = !(event.modifiers() & Qt::ControlModifier);
-  const double radius = property(RADIUS_PROPERTY_KEY).value<double>();
+  const double radius = property(RADIUS_PROPERTY_KEY)->value<double>();
   std::list<Point*> points;
   for (Object* object : scene.item_selection<Object>()) {
     Path* path = type_cast<Path*>(object);
@@ -94,7 +94,7 @@ void BrushSelectTool::draw(AbstractRenderer& renderer) const
 {
   Tool::draw(renderer);
   if (m_mouse_down) {
-    const double radius = property(RADIUS_PROPERTY_KEY).value<double>();
+    const double radius = property(RADIUS_PROPERTY_KEY)->value<double>();
     renderer.draw_circle(m_mouse_pos, radius, m_style);
   }
 }

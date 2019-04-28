@@ -25,8 +25,8 @@ std::unique_ptr<Object> AbstractProceduralPath::convert() const
   auto converted = std::make_unique<Path>(scene());
   copy_properties(*converted);
   copy_tags(*converted);
-  converted->property(Path::IS_CLOSED_PROPERTY_KEY).set(is_closed());
-  converted->property(Path::INTERPOLATION_PROPERTY_KEY).set(Path::InterpolationMode::Bezier);
+  converted->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed());
+  converted->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
   converted->set_points(m_points);
   return std::unique_ptr<Object>(converted.release());
 }
@@ -58,7 +58,7 @@ Object::PathUniquePtr AbstractProceduralPath::outline(const double t) const
 {
   auto outline = std::make_unique<Path>(scene());
   outline->set_points(Point::offset(t, m_points, is_closed()));
-  outline->property(Path::IS_CLOSED_PROPERTY_KEY).set(is_closed());
+  outline->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed());
   return Object::PathUniquePtr(outline.release());
 }
 

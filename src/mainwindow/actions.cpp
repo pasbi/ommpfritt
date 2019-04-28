@@ -27,7 +27,7 @@ void modify_tangents(omm::Path::InterpolationMode mode, omm::Application& app)
 
   constexpr auto bezier_mode = static_cast<std::size_t>(omm::Path::InterpolationMode::Bezier);
   const auto interpolation_properties = ::transform<omm::Property*>(paths, [](omm::Path* path) {
-    return &path->property(omm::Path::INTERPOLATION_PROPERTY_KEY);
+    return path->property(omm::Path::INTERPOLATION_PROPERTY_KEY);
   });
 
   if (map.size() > 0) {

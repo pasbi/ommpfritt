@@ -25,9 +25,9 @@ ImageObject::ImageObject(Scene* scene) : Object(scene)
 void ImageObject::draw_object(AbstractRenderer& renderer, const Style&) const
 {
   if (is_active()) {
-    const auto path = property(FILEPATH_PROPERTY_KEY).value<std::string>();
-    const auto width = property(WIDTH_PROPERTY_KEY).value<double>();
-    const auto opacity = property(OPACITY_PROPERTY_KEY).value<double>();
+    const auto path = property(FILEPATH_PROPERTY_KEY)->value<std::string>();
+    const auto width = property(WIDTH_PROPERTY_KEY)->value<double>();
+    const auto opacity = property(OPACITY_PROPERTY_KEY)->value<double>();
     renderer.draw_image(path, Vec2f::o(), width, opacity);
   }
 }

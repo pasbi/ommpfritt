@@ -121,7 +121,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     COUNT_PROPERTY_KEY, COUNT_2D_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY, RADIUS_PROPERTY_KEY,
     PATH_REFERENCE_PROPERTY_KEY, START_PROPERTY_KEY, END_PROPERTY_KEY, ALIGN_PROPERTY_KEY,
     BORDER_PROPERTY_KEY, CODE_PROPERTY_KEY, SEED_PROPERTY_KEY, ANCHOR_PROPERTY_KEY
-  }, [this](const auto& key) { return &property(key); });
+  }, [this](const auto& key) { return property(key); });
 }
 
 Cloner::Cloner(const Cloner &other) : Object(other)
@@ -146,7 +146,7 @@ BoundingBox Cloner::bounding_box() const
   return bb;
 }
 
-Cloner::Mode Cloner::mode() const { return property(MODE_PROPERTY_KEY).value<Mode>(); }
+Cloner::Mode Cloner::mode() const { return property(MODE_PROPERTY_KEY)->value<Mode>(); }
 
 bool Cloner::contains(const Vec2f &pos) const
 {
@@ -160,7 +160,7 @@ bool Cloner::contains(const Vec2f &pos) const
 
 void Cloner::update()
 {
-  auto* apo = property(PATH_REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
+  auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
   auto* ref = kind_cast<Object*>(apo);
   if (ref) {ref->update(); }
 
@@ -206,7 +206,7 @@ std::unique_ptr<Object> Cloner::convert() const
     const auto local_transformation = m_clones[i]->transformation();
     auto& clone = converted->adopt(m_clones[i]->clone());
     const std::string name = clone.name() + " " + std::to_string(i);
-    clone.property(NAME_PROPERTY_KEY).set(name);
+    clone.property(NAME_PROPERTY_KEY)->set(name);
     clone.set_transformation(local_transformation);
   }
 
@@ -222,16 +222,16 @@ std::vector<std::unique_ptr<Object>> Cloner::make_clones()
     case Mode::Path:
     case Mode::Script:
     case Mode::FillRandom:
-      return static_cast<std::size_t>(property(COUNT_PROPERTY_KEY).value<int>());
+      return static_cast<std::size_t>(property(COUNT_PROPERTY_KEY)->value<int>());
     case Mode::Grid: {
-      const auto c = property(COUNT_2D_PROPERTY_KEY).value<Vec2i>();
+      const auto c = property(COUNT_2D_PROPERTY_KEY)->value<Vec2i>();
       return static_cast<std::size_t>(c.x * c.y);
     }
     }
     Q_UNREACHABLE();
   };
 
-  const auto seed = property(SEED_PROPERTY_KEY).value<int>();
+  const auto seed = property(SEED_PROPERTY_KEY)->value<int>();
   std::random_device dev;
   std::mt19937 rng(dev());
   rng.seed(static_cast<decltype(rng)::result_type>(seed));
@@ -266,10 +266,10 @@ std::vector<std::unique_ptr<Object>> Cloner::copy_children(const std::size_t cou
 
 double Cloner::get_t(std::size_t i, const bool inclusive) const
 {
-  const auto n = property(COUNT_PROPERTY_KEY).value<int>() + (inclusive ? 0 : 1);
-  const auto start = property(START_PROPERTY_KEY).value<double>();
-  const auto end = property(END_PROPERTY_KEY).value<double>();
-  const auto border = property(BORDER_PROPERTY_KEY).value<Border>();
+  const auto n = property(COUNT_PROPERTY_KEY)->value<int>() + (inclusive ? 0 : 1);
+  const auto start = property(START_PROPERTY_KEY)->value<double>();
+  const auto end = property(END_PROPERTY_KEY)->value<double>();
+  const auto border = property(BORDER_PROPERTY_KEY)->value<Border>();
 
   if (n <= 1) {
     return 0.0;
@@ -281,7 +281,7 @@ double Cloner::get_t(std::size_t i, const bool inclusive) const
 
 void Cloner::set_linear(Object& object, std::size_t i)
 {
-  const Vec2f pos = static_cast<double>(i) * property(DISTANCE_2D_PROPERTY_KEY).value<Vec2f>();
+  const Vec2f pos = static_cast<double>(i) * property(DISTANCE_2D_PROPERTY_KEY)->value<Vec2f>();
   auto t = object.transformation();
   t.set_translation(pos);
   object.set_transformation(t);
@@ -289,8 +289,8 @@ void Cloner::set_linear(Object& object, std::size_t i)
 
 void Cloner::set_grid(Object& object, std::size_t i)
 {
-  const auto n = property(COUNT_2D_PROPERTY_KEY).value<Vec2i>();
-  const auto v = property(DISTANCE_2D_PROPERTY_KEY).value<Vec2f>();
+  const auto n = property(COUNT_2D_PROPERTY_KEY)->value<Vec2i>();
+  const auto v = property(DISTANCE_2D_PROPERTY_KEY)->value<Vec2f>();
   auto t = object.transformation();
   t.set_translation({ v.x * (i % static_cast<ulong>(n.x)),
                       v.y * (i / static_cast<ulong>(n.x)) });
@@ -300,17 +300,17 @@ void Cloner::set_grid(Object& object, std::size_t i)
 void Cloner::set_radial(Object& object, std::size_t i)
 {
   const double angle = 2*M_PI * get_t(i, false);
-  const double r = property(RADIUS_PROPERTY_KEY).value<double>();
+  const double r = property(RADIUS_PROPERTY_KEY)->value<double>();
   const Point op({std::cos(angle) * r, std::sin(angle) * r}, angle + M_PI/2.0);
-  object.set_oriented_position(op, property(ALIGN_PROPERTY_KEY).value<bool>());
+  object.set_oriented_position(op, property(ALIGN_PROPERTY_KEY)->value<bool>());
 }
 
 void Cloner::set_path(Object& object, std::size_t i)
 {
-  auto* apo = property(PATH_REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
+  auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
   auto* o = kind_cast<Object*>(apo);
 
-  const bool align = property(ALIGN_PROPERTY_KEY).value<bool>();
+  const bool align = property(ALIGN_PROPERTY_KEY)->value<bool>();
   object.set_position_on_path(o, align, get_t(i, o == nullptr ? false : !o->is_closed()));
 }
 
@@ -318,16 +318,16 @@ void Cloner::set_by_script(Object& object, std::size_t i)
 {
   using namespace pybind11::literals;
   const auto locals = pybind11::dict( "id"_a=i,
-                                      "count"_a=property(COUNT_PROPERTY_KEY).value<int>(),
+                                      "count"_a=property(COUNT_PROPERTY_KEY)->value<int>(),
                                       "copy"_a=ObjectWrapper::make(object),
                                       "this"_a=ObjectWrapper::make(*this),
                                       "scene"_a=SceneWrapper(*scene()) );
-  scene()->python_engine.exec(property(CODE_PROPERTY_KEY).value<std::string>(), locals, this);
+  scene()->python_engine.exec(property(CODE_PROPERTY_KEY)->value<std::string>(), locals, this);
 }
 
 void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
 {
-  auto* apo = property(PATH_REFERENCE_PROPERTY_KEY).value<AbstractPropertyOwner*>();
+  auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
   if (apo != nullptr) {
     assert(apo->kind() == AbstractPropertyOwner::Kind::Object);
     auto& area = static_cast<Object&>(*apo);
@@ -352,7 +352,7 @@ void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
 
     auto t = object.transformation();
     t.set_translation(position);
-    if (property(ANCHOR_PROPERTY_KEY).value<Anchor>() == Anchor::Area) {
+    if (property(ANCHOR_PROPERTY_KEY)->value<Anchor>() == Anchor::Area) {
       t = global_transformation().inverted().apply(area.global_transformation()).apply(t);
     }
     object.set_transformation(t);
