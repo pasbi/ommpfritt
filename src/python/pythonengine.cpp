@@ -62,8 +62,8 @@ bool PythonEngine
   try {
     py::exec(code, py::globals(), locals);
     Observed<PythonIOObserver>::for_each([&](auto* observer) {
-      notify(py_output_redirect.stdout(), on_stdout(observer, associated_item));
-      notify(py_output_redirect.stderr(), on_stderr(observer, associated_item));
+      notify(py_output_redirect.stdout_(), on_stdout(observer, associated_item));
+      notify(py_output_redirect.stderr_(), on_stderr(observer, associated_item));
     });
     return true;
   } catch (const std::exception& e) {
@@ -82,8 +82,8 @@ pybind11::object PythonEngine
   try {
     auto result = py::eval(code, py::globals(), locals);
     Observed<PythonIOObserver>::for_each([&](auto* observer) {
-      notify(py_output_redirect.stdout(), on_stdout(observer, associated_item));
-      notify(py_output_redirect.stderr(), on_stderr(observer, associated_item));
+      notify(py_output_redirect.stdout_(), on_stdout(observer, associated_item));
+      notify(py_output_redirect.stderr_(), on_stderr(observer, associated_item));
     });
     return result;
   } catch (const std::exception& e) {

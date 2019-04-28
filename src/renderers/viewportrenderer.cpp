@@ -50,7 +50,7 @@ void ViewportRenderer::draw_text(const std::string& text, const TextOptions& opt
   m_painter->setFont(options.font);
   m_painter->setPen(make_pen(options.style));
 
-  static constexpr double HUGE = 10e10;
+  static constexpr double HUGE_NUMBER = 10e10;
 
   const auto [left, width] = [&options]() {
     switch (options.option.alignment() & Qt::AlignHorizontal_Mask) {
@@ -64,9 +64,9 @@ void ViewportRenderer::draw_text(const std::string& text, const TextOptions& opt
 
   const auto [top, height] = [&options]() {
     switch (options.option.alignment() & Qt::AlignVertical_Mask) {
-    case Qt::AlignTop: return std::pair(0.0, HUGE);
-    case Qt::AlignVCenter: return std::pair(-HUGE/2.0, HUGE);
-    case Qt::AlignBottom: return std::pair(-HUGE, HUGE);
+    case Qt::AlignTop: return std::pair(0.0, HUGE_NUMBER);
+    case Qt::AlignVCenter: return std::pair(-HUGE_NUMBER/2.0, HUGE_NUMBER);
+    case Qt::AlignBottom: return std::pair(-HUGE_NUMBER, HUGE_NUMBER);
     // Qt::AlignBaseline is never reached (see @FontProperties::code make_properties)
     case Qt::AlignBaseline:
     default: assert(false); return std::pair(0.0, 0.0);

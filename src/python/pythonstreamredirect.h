@@ -12,8 +12,8 @@ class PythonStreamRedirect
 public:
   PythonStreamRedirect();
   ~PythonStreamRedirect();
-  std::string stdout();
-  std::string stderr();
+  std::string stdout_();
+  std::string stderr_();
 
 private:
   pybind11::object m_stdout;

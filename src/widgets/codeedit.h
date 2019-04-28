@@ -20,7 +20,7 @@ class CodeEdit : public QWidget
 {
   Q_OBJECT
 public:
-  enum class Stream { stdout, stderr };
+  enum class Stream { stdout_, stderr_ };
   explicit CodeEdit(QWidget* parent = nullptr);
   std::string code() const;
   void clear();

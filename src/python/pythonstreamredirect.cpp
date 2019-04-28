@@ -24,13 +24,13 @@ PythonStreamRedirect::~PythonStreamRedirect()
   sysm.attr("stderr") = m_stderr;
 }
 
-std::string PythonStreamRedirect::stdout()
+std::string PythonStreamRedirect::stdout_()
 {
   m_stdout_buffer.attr("seek")(0);
   return py::str(m_stdout_buffer.attr("read")());
 }
 
-std::string PythonStreamRedirect::stderr()
+std::string PythonStreamRedirect::stderr_()
 {
   m_stderr_buffer.attr("seek")(0);
   return py::str(m_stderr_buffer.attr("read")());

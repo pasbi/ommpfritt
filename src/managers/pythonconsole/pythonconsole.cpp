@@ -85,7 +85,7 @@ void PythonConsole::eval()
 {
   const auto code = m_commandline->code();
   push_command(code);
-  m_output->put(QObject::tr(">>> ", "PythonConsole").toStdString() + code, CodeEdit::Stream::stdout);
+  m_output->put(QObject::tr(">>> ", "PythonConsole").toStdString() + code, CodeEdit::Stream::stdout_);
 
   using namespace pybind11::literals;
   const auto locals = pybind11::dict("scene"_a=SceneWrapper(scene()));
@@ -100,12 +100,12 @@ void PythonConsole::eval()
 
 void PythonConsole::on_stdout(const void* associated_item, const std::string& text)
 {
-  if (accept(associated_item)) { m_output->put(text, CodeEdit::Stream::stdout); }
+  if (accept(associated_item)) { m_output->put(text, CodeEdit::Stream::stdout_); }
 }
 
 void PythonConsole::on_stderr(const void* associated_item, const std::string& text)
 {
-  if (accept(associated_item)) { m_output->put(text, CodeEdit::Stream::stderr); }
+  if (accept(associated_item)) { m_output->put(text, CodeEdit::Stream::stderr_); }
 }
 
 bool PythonConsole::accept(const void* associated_item) const

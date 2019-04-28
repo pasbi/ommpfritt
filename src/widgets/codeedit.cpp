@@ -122,10 +122,10 @@ void CodeEdit::put(const std::string& text, Stream stream)
 {
   const bool was_at_bottom = is_at_bottom();
   switch (stream) {
-  case Stream::stdout:
+  case Stream::stdout_:
     m_text_edit->setTextColor(Qt::black);
     break;
-  case Stream::stderr:
+  case Stream::stderr_:
     m_text_edit->setTextColor(Qt::red);
     break;
   }
