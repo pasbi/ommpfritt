@@ -93,14 +93,15 @@ template<typename T> size_t TreeElement<T>::position() const
 
 template<typename T> void TreeElement<T>::remove_internal_children(std::set<T*> &items)
 {
-  for (auto i = items.begin(); i != items.end(); ++i) {
-    if (i != items.end()) {
-      const bool hit = std::any_of(std::next(i), items.end(), [&i](const T* potential_descendant) {
-        return potential_descendant != *i && potential_descendant->is_ancestor_of(**i);
-      });
-      if (hit) {
-        items.erase(i);
-      }
+  auto i = items.begin();
+  while (i != items.end()) {
+    const bool hit = std::any_of(items.begin(), items.end(), [&i](const T* potential_descendant) {
+      return potential_descendant != *i && potential_descendant->is_ancestor_of(**i);
+    });
+    if (hit) {
+      i = items.erase(i);
+    } else {
+      std::advance(i, 1);
     }
   }
 }
