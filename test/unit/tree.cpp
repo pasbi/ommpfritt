@@ -1,5 +1,4 @@
-#include <gtest/gtest.h>
-#include <glog/logging.h>
+#include "gtest/gtest.h"
 
 #include "aspects/treeelement.h"
 #include "common.h"

@@ -1,5 +1,4 @@
-#include <gtest/gtest.h>
-#include <glog/logging.h>
+#include "gtest/gtest.h"
 #include <random>
 #include "geometry/objecttransformation.h"
 #include "logging.h"

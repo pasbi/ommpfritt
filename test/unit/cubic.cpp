@@ -1,6 +1,4 @@
-#include <gtest/gtest.h>
-#include <glog/logging.h>
-
+#include "gtest/gtest.h"
 #include "geometry/cubic.h"
 
 TEST(cubic, find_roots)

@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>  // for InitGoogleTest, RUN_ALL_TESTS
+#include "gtest/gtest.h"
 #include "mainwindow/application.h"
 #include <QApplication>
 
