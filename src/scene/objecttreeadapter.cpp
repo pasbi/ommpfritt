@@ -107,7 +107,6 @@ ObjectTreeAdapter::ObjectTreeAdapter(Scene& scene, Tree<Object>& tree)
   : ItemModelAdapter(scene, tree)
 {
   connect(&scene, &Scene::scene_changed, [this](AbstractPropertyOwner* subject, int code, auto* p) {
-    LINFO << "SCENE CHANGED";
     if (code == AbstractPropertyOwner::PROPERTY_CHANGED) {
       auto* object = kind_cast<Object*>(subject);
       if (object != nullptr) {
@@ -116,7 +115,6 @@ ObjectTreeAdapter::ObjectTreeAdapter(Scene& scene, Tree<Object>& tree)
           Q_EMIT dataChanged(index, index, { Qt::DisplayRole });
         } else if (p == object->property(Object::IS_ACTIVE_PROPERTY_KEY)
                    || p == object->property(Object::IS_VISIBLE_PROPERTY_KEY)) {
-          LINFO << "SCENE CHANGED   1";
           auto index = index_of(*object);
           index = index.sibling(index.row(), 1);
           Q_EMIT dataChanged(index, index, { Qt::DisplayRole });

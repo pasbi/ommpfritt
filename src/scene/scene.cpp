@@ -87,13 +87,13 @@ std::unique_ptr<Object> Scene::make_root()
         const auto* object = kind_cast<const Object*>(subject);
         assert(property != nullptr);
         assert(object != nullptr);
-        if ( property == &object->property(Object::IS_VISIBLE_PROPERTY_KEY)
-             || property == &object->property(Object::IS_ACTIVE_PROPERTY_KEY) )
+        if ( property == object->property(Object::IS_VISIBLE_PROPERTY_KEY)
+             || property == object->property(Object::IS_ACTIVE_PROPERTY_KEY) )
         {
           scene()->invalidate();  // reset all the handles
         }
       }
-      Q_EMIT scene()->scene_changed();
+      Q_EMIT scene()->scene_changed(subject, code, property);
     }
   };
 
