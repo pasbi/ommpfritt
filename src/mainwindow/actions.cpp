@@ -12,6 +12,7 @@
 #include "common.h"
 #include "properties/referenceproperty.h"
 #include "geometry/cubics.h"
+#include "commands/movecommand.h"
 
 namespace
 {
@@ -35,6 +36,63 @@ void modify_tangents(omm::Path::InterpolationMode mode, omm::Application& app)
     app.scene.submit<OptionsPropertyCommand>(interpolation_properties, bezier_mode);
     app.scene.submit<omm::ModifyPointsCommand>(map);
   }
+}
+
+void convert_objects(omm::Application& app, std::set<omm::Object*> convertables)
+{
+  using namespace omm;
+
+  // spit convertables into [`convertables`, `leftover_convertables`]
+  // s.t. `convertables` only contains top-level items, i.e. no item in `convertables` has a parent
+  // in `convertables`. That's important because the children of a converted object must not change.
+  // Porcess the left-over items later.
+  std::set<Object*> leftover_convertables;
+  {
+    const auto all_convertables = convertables;
+    Object::remove_internal_children(convertables);
+    std::set_difference(all_convertables.begin(), all_convertables.end(),
+        convertables.begin(), convertables.end(),
+        std::inserter(leftover_convertables, leftover_convertables.end()));
+  }
+
+  if (convertables.size() > 0) {
+    std::set<Object*> converted_objects;
+    std::list<ObjectTreeMoveContext> move_contextes;
+    for (auto&& c : convertables) {
+      auto converted = c->convert();
+      assert(!c->is_root());
+      TreeOwningContext<Object> context(*converted, c->parent(), c);
+      const auto properties = ::transform<Property*>(app.scene.find_reference_holders(*c));
+      if (properties.size() > 0) {
+        app.scene.submit<PropertiesCommand<ReferenceProperty>>(properties, converted.get());
+      }
+      auto& converted_ref = *converted;
+      context.subject.capture(std::move(converted));
+      using object_tree_type = Tree<Object>;
+      app.scene.submit<AddCommand<object_tree_type>>(app.scene.object_tree, std::move(context));
+      converted_ref.set_transformation(c->transformation());
+      converted_objects.insert(&converted_ref);
+
+
+      const auto make_move_context = [&converted_ref](auto* cc) {
+        return ObjectTreeMoveContext(*cc, converted_ref, nullptr);
+      };
+      const auto old_children = c->children();
+      std::transform(old_children.rbegin(), old_children.rend(),
+                     std::back_inserter(move_contextes), make_move_context);
+    }
+
+    app.scene.template submit<MoveCommand<Tree<Object>>>(app.scene.object_tree, std::vector(move_contextes.begin(), move_contextes.end()));
+    const auto selection = ::transform<Object*, std::set>(convertables, ::identity);
+    using remove_command = RemoveCommand<Tree<Object>>;
+    app.scene.template submit<remove_command>(app.scene.object_tree, selection);
+    app.scene.set_selection(down_cast(converted_objects));
+
+    // process the left over items
+    convert_objects(app, leftover_convertables);
+  }
+
+
 }
 
 }  // namespace
@@ -126,27 +184,8 @@ void convert_objects(Application& app)
     return !!(o->flags() & Object::Flag::Convertable);
   });
   if (convertables.size() > 0) {
-    std::set<Object*> converted_objects;
     auto macro = app.scene.history.start_macro(QObject::tr("convert"));
-    for (auto&& c : convertables) {
-      auto converted = c->convert();
-      assert(!c->is_root());
-      TreeOwningContext<Object> context(*converted, c->parent(), c);
-      const auto properties = ::transform<Property*>(app.scene.find_reference_holders(*c));
-      if (properties.size() > 0) {
-        app.scene.submit<PropertiesCommand<ReferenceProperty>>(properties, converted.get());
-      }
-      auto& converted_ref = *converted;
-      context.subject.capture(std::move(converted));
-      using object_tree_type = Tree<Object>;
-      app.scene.submit<AddCommand<object_tree_type>>(app.scene.object_tree, std::move(context));
-      converted_ref.set_transformation(c->transformation());
-      converted_objects.insert(&converted_ref);
-    }
-    const auto selection = ::transform<Object*, std::set>(convertables, ::identity);
-    using remove_command = RemoveCommand<Tree<Object>>;
-    app.scene.template submit<remove_command>(app.scene.object_tree, selection);
-    app.scene.set_selection(down_cast(converted_objects));
+    ::convert_objects(app, convertables);
   }
 }
 
