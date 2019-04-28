@@ -1,5 +1,6 @@
 #include "managers/manageritemview.h"
 
+#include <QApplication>
 #include <QMessageBox>
 #include <QContextMenuEvent>
 #include <QMenu>
@@ -57,6 +58,34 @@ void ManagerItemView<ItemViewT, ItemModelT>::mousePressEvent(QMouseEvent* e)
   m_block_selection_change_signal = true;
   ItemViewT::mousePressEvent(e);
   m_block_selection_change_signal = false;
+}
+
+template<typename ItemViewT, typename ItemModelT>
+void ManagerItemView<ItemViewT, ItemModelT>::keyPressEvent(QKeyEvent *e)
+{
+  // workaround for  https://bugreports.qt.io/browse/QTBUG-62283.
+  if (e->key() == Qt::Key_Shift) {
+    this->setDragEnabled(false);
+  }
+  ItemViewT::keyPressEvent(e);
+}
+
+template<typename ItemViewT, typename ItemModelT>
+void ManagerItemView<ItemViewT, ItemModelT>::keyReleaseEvent(QKeyEvent *e)
+{
+  // workaround for  https://bugreports.qt.io/browse/QTBUG-62283.
+  if (e->key() == Qt::Key_Shift) {
+    this->setDragEnabled(true);
+  }
+  ItemViewT::keyPressEvent(e);
+}
+
+template<typename ItemViewT, typename ItemModelT>
+void ManagerItemView<ItemViewT, ItemModelT>::focusInEvent(QFocusEvent *e)
+{
+  // workaround for  https://bugreports.qt.io/browse/QTBUG-62283.
+  this->setDragEnabled(!(QApplication::keyboardModifiers() & Qt::ShiftModifier));
+  ItemViewT::focusInEvent(e);
 }
 
 template<typename ItemViewT, typename ItemModelT>
