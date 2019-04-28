@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.6)  # warnings vanish with Version > 3.3
+cmake_minimum_required (VERSION 2.8.4)  # warnings vanish with Version > 3.3
 
 project (ommpfritt)
 
