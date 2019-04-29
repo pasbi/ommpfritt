@@ -11,10 +11,7 @@ ReferenceProperty::ReferenceProperty()
   set_default_value(nullptr);
 }
 
-std::string ReferenceProperty::type() const
-{
-  return TYPE;
-}
+std::string ReferenceProperty::type() const { return TYPE; }
 
 void ReferenceProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {

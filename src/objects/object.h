@@ -113,6 +113,7 @@ public:
 
   void on_change(AbstractPropertyOwner* subject, int what, Property* property) override;
   void on_children_changed() override;
+  void on_property_value_changed(Property& property) override;
 
   virtual void post_create_hook();
 

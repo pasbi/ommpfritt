@@ -348,6 +348,17 @@ void Object::on_children_changed()
   TreeElement::on_children_changed();
 }
 
+void Object::on_property_value_changed(Property &property)
+{
+  if (property.type() == ReferenceProperty::TYPE) {
+    Object* reference = kind_cast<Object*>(property.value<AbstractPropertyOwner*>());
+    if (reference != nullptr && reference->is_ancestor_of(*this)) {
+      return; // break the cycle!
+    }
+  }
+  PropertyOwner::on_property_value_changed(property);
+}
+
 void Object::post_create_hook() { }
 
 double Object::apply_border(double t, Border border)
