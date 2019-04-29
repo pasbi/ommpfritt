@@ -21,7 +21,7 @@ ReferenceLineEdit::ReferenceLineEdit(Scene& scene, const on_value_changed_t& on_
   setAcceptDrops(true);
   connect( this, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
            [this](int index) { set_value(m_possible_references[static_cast<std::size_t>(index)]); } );
-  connect(&m_scene, SIGNAL(scene_changed()), this, SLOT(update_candidates()));
+  connect(&m_scene, SIGNAL(structure_changed()), this, SLOT(update_candidates()));
   set_null_label(QObject::tr("< none >", "ReferenceLineEdit").toStdString());
 }
 
