@@ -34,6 +34,8 @@ protected:
   void dragMoveEvent(QDragMoveEvent* e) override;
   void mouseMoveEvent(QMouseEvent* e) override;
   void mousePressEvent(QMouseEvent* e) override;
+  void mouseReleaseEvent(QMouseEvent *e) override;
+  void focusInEvent(QFocusEvent *e) override;
 
 private:
   std::unique_ptr<ObjectTreeSelectionModel> m_selection_model;

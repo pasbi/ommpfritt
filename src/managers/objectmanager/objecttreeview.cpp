@@ -100,9 +100,29 @@ void ObjectTreeView::mousePressEvent(QMouseEvent* e)
       ManagerItemView::mousePressEvent(e);
       break;
     case 1:
+      // Attempting to drag a cell from this column would always drag another cell since this one
+      // cannot be selected. Hence we must disable dragging for that column.
+      // Not returning Draggable-Flag in flags() is not enough.
+      // It's important to enable dragging if the mouse is released or focus comes from another
+      // widget.
+      setDragEnabled(false);
       m_object_quick_access_delegate->on_mouse_button_press(*e);
       break;
   }
+}
+
+void ObjectTreeView::mouseReleaseEvent(QMouseEvent *e)
+{
+  // see ObjectTreeView::mousePRessEvent case 1
+  setDragEnabled(true);
+  ManagerItemView::mouseReleaseEvent(e);
+}
+
+void ObjectTreeView::focusInEvent(QFocusEvent *e)
+{
+  // see ObjectTreeView::mousePRessEvent case 1
+  setDragEnabled(true);
+  ManagerItemView::focusInEvent(e);
 }
 
 void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
