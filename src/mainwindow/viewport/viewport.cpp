@@ -32,7 +32,9 @@ Viewport::Viewport(Scene& scene)
   setFocusPolicy(Qt::StrongFocus);
 
   setMouseTracking(true);
-  connect(&scene, SIGNAL(scene_changed()), this, SLOT(update()));
+  connect(&scene, SIGNAL(scene_changed(AbstractPropertyOwner*, int, Property*)),
+          this, SLOT(update()));
+
   connect(&scene, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(update()));
 }
