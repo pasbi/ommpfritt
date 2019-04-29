@@ -54,6 +54,8 @@ private:
   Viewport* m_viewport;
   std::vector<QDockWidget*> dock_widgets() const;
 
+private Q_SLOTS:
+  void update_window_title();
 };
 
 }  // namespace omm

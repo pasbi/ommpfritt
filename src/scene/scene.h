@@ -117,7 +117,6 @@ public:
 
 private:
   bool m_has_pending_changes = false;
-  void set_has_pending_changes(bool v);
 
 private:
   Scene(const Scene& other) = delete;
@@ -162,6 +161,7 @@ Q_SIGNALS:
                             AbstractPropertyOwner::Kind kind);
   void structure_changed();
   void scene_changed(AbstractPropertyOwner* subject, int code, Property* property);
+  void filename_changed();
 
 };
 

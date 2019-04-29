@@ -162,8 +162,9 @@ bool Scene::save_as(const std::string &filename)
   serializer->end_array();
 
   LINFO << "Saved current scene to '" << filename << "'.";
-  set_has_pending_changes(false);
+  m_has_pending_changes = false;
   m_filename = filename;
+  Q_EMIT filename_changed();
   return true;
 }
 
@@ -195,7 +196,8 @@ bool Scene::load_from(const std::string &filename)
 
     set_selection({});
     m_filename = filename;
-    set_has_pending_changes(false);
+    m_has_pending_changes = false;
+    Q_EMIT filename_changed();
     QTimer::singleShot(0, [ this, new_root=std::move(new_root),
                             styles=std::move(styles) ]() mutable
     {
@@ -213,23 +215,19 @@ bool Scene::load_from(const std::string &filename)
 
 void Scene::reset()
 {
-  set_has_pending_changes(false);
+  m_has_pending_changes = false;
   set_selection({});
   QTimer::singleShot(0, [this]() {
     object_tree.replace_root(make_root());
     styles.set(std::vector<std::unique_ptr<Style>> {});
   });
   m_filename.clear();
+  Q_EMIT filename_changed();
 }
 
 std::string Scene::filename() const
 {
   return m_filename;
-}
-
-void Scene::set_has_pending_changes(bool v)
-{
-  m_has_pending_changes = v;
 }
 
 bool Scene::has_pending_changes() const
@@ -240,7 +238,8 @@ bool Scene::has_pending_changes() const
 void Scene::submit(std::unique_ptr<Command> command)
 {
   history.push(std::move(command));
-  set_has_pending_changes(true);
+  m_has_pending_changes = true;
+  filename_changed();
 }
 
 std::set<Tag*> Scene::tags() const

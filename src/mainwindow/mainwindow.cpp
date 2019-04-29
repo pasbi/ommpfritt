@@ -141,6 +141,19 @@ std::vector<std::string> MainWindow::main_menu_entries()
   return std::vector(entries.begin(), entries.end());
 }
 
+void MainWindow::update_window_title()
+{
+  QString filename = QString::fromStdString(m_app.scene.filename());
+  static const QString clean_indicator = tr("");
+  static const QString dirty_indicator = tr("*");
+  QString indicator = m_app.scene.has_pending_changes() ? dirty_indicator : clean_indicator;
+  if (filename.isEmpty()) {
+    filename = tr("unnamed");
+    indicator = clean_indicator;  // never show dirty indicator if no filename is set.
+  }
+  setWindowTitle(QString("%1%2 - omm").arg(filename).arg(indicator));
+}
+
 MainWindow::MainWindow(Application& app)
   : m_app(app)
 {
@@ -161,6 +174,8 @@ MainWindow::MainWindow(Application& app)
     menuBar()->addMenu(menu.release());
   }
   menuBar()->addMenu(make_about_menu().release());
+
+  connect(&app.scene, SIGNAL(filename_changed()), this, SLOT(update_window_title()));
 }
 
 std::unique_ptr<QMenu> MainWindow::make_about_menu()
