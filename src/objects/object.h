@@ -114,6 +114,8 @@ public:
   void on_change(AbstractPropertyOwner* subject, int what, Property* property) override;
   void on_children_changed() override;
 
+  virtual void post_create_hook();
+
 protected:
   bool m_draw_children = true;
   void copy_tags(Object& other) const;

@@ -275,6 +275,8 @@ void Application::insert_object(const std::string &key)
     const move_command_type::context_type move_context(ref, *parent, nullptr);
     scene.submit<move_command_type>(scene.object_tree, std::vector { move_context });
   }
+
+  ref.post_create_hook();
 }
 
 }  // namespace omm

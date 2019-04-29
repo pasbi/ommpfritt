@@ -348,6 +348,8 @@ void Object::on_children_changed()
   TreeElement::on_children_changed();
 }
 
+void Object::post_create_hook() { }
+
 double Object::apply_border(double t, Border border)
 {
   switch (border) {

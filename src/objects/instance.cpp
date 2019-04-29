@@ -1,9 +1,10 @@
 #include "objects/instance.h"
 
 #include <QObject>
-
+#include "scene/scene.h"
 #include "properties/referenceproperty.h"
 #include "properties/boolproperty.h"
+#include "commands/propertycommand.h"
 
 namespace omm
 {
@@ -92,5 +93,15 @@ std::unique_ptr<Object> Instance::convert() const
 std::string Instance::type() const { return TYPE; }
 std::unique_ptr<Object> Instance::clone() const { return std::make_unique<Instance>(*this); }
 Object::Flag Instance::flags() const { return Object::flags() | Flag::Convertable; }
+
+void Instance::post_create_hook()
+{
+  const auto selection = scene()->item_selection<Object>();
+  if (selection.size() == 1) {
+    auto* object = *selection.begin();
+    using command = PropertiesCommand<ReferenceProperty>;
+    scene()->submit<command>(std::set { property(REFERENCE_PROPERTY_KEY) }, object);
+  }
+}
 
 }  // namespace omm

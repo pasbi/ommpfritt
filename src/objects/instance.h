@@ -24,6 +24,7 @@ public:
   std::unique_ptr<Object> clone() const override;
   std::unique_ptr<Object> convert() const override;
   Flag flags() const override;
+  void post_create_hook() override;
 
 private:
   Object* referenced_object() const;
