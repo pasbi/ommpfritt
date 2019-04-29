@@ -1,6 +1,8 @@
 #include "scene/listadapter.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
+#include "commands/propertycommand.h"
+#include "properties/stringproperty.h"
 
 namespace omm
 {
@@ -133,9 +135,21 @@ bool ListAdapter<ItemT>::setData(const QModelIndex& index, const QVariant& value
   assert(index.column() == 0);
   assert(!index.parent().isValid());
 
-  auto& item = this->structure.item(index.row());
-  item.property(Object::NAME_PROPERTY_KEY)->set(value.toString().toStdString());
-  return true;
+  switch (index.column()) {
+  case 0:
+  {
+    Property* property = item_at(index).property(Object::NAME_PROPERTY_KEY);
+    const auto svalue = value.toString().toStdString();
+    if (property->value<std::string>() != svalue) {
+      this->scene.template submit<PropertiesCommand<StringProperty>>(std::set { property }, svalue);
+      return true;
+    } else {
+      return false;
+    }
+  }
+  }
+
+  return false;
 }
 
 template<typename ItemT> ItemT& ListAdapter<ItemT>::item_at(const QModelIndex& index) const

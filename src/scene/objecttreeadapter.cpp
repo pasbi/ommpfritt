@@ -166,8 +166,16 @@ bool ObjectTreeAdapter::setData(const QModelIndex& index, const QVariant& value,
 
   switch (index.column()) {
   case 0:
-    item_at(index).property(Object::NAME_PROPERTY_KEY)->set(value.toString().toStdString());
-    return true;
+  {
+    Property* property = item_at(index).property(Object::NAME_PROPERTY_KEY);
+    const auto svalue = value.toString().toStdString();
+    if (property->value<std::string>() != svalue) {
+      scene.submit<PropertiesCommand<StringProperty>>(std::set { property }, svalue);
+      return true;
+    } else {
+      return false;
+    }
+  }
   }
 
   return false;
