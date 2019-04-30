@@ -30,7 +30,6 @@ ObjectTreeView::ObjectTreeView(ObjectTreeAdapter& model)
   , m_selection_model(std::make_unique<ObjectTreeSelectionModel>(model).release())
   , m_object_quick_access_delegate(std::make_unique<ObjectQuickAccessDelegate>(*this))
   , m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this, *m_selection_model))
-  , m_update_timer(std::make_unique<QTimer>())
   , m_model(model)
 {
   setItemDelegateForColumn(1, m_object_quick_access_delegate.get());
