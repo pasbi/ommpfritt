@@ -150,6 +150,8 @@ void MainWindow::update_window_title()
   if (filename.isEmpty()) {
     filename = tr("unnamed");
     indicator = clean_indicator;  // never show dirty indicator if no filename is set.
+  } else {
+    filename = QFileInfo(filename).fileName();
   }
   setWindowTitle(QString("%1%2 - omm").arg(filename).arg(indicator));
 }

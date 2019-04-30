@@ -128,14 +128,16 @@ bool Application::save()
 bool Application::save_as()
 {
   LINFO << m_main_window;
-  const QString filename =
-    QFileDialog::getSaveFileName( m_main_window,
-                                  tr("Save scene as ..."),
-                                  QString::fromStdString(scene.filename()) );
-  if (filename.isEmpty()) {
-    return false;
+  QFileDialog dialog(m_main_window);
+  dialog.setWindowTitle(tr("Save scene as ..."));
+  dialog.setDirectoryUrl(QString::fromStdString(scene.filename()));
+  dialog.setDefaultSuffix(FILE_ENDING);
+  if (dialog.exec() == QDialog::Accepted) {
+    const auto files = dialog.selectedFiles();
+    assert(files.size() == 1);
+    return scene.save_as(files.front().toStdString());
   } else {
-    return scene.save_as(filename.toStdString());
+    return false;
   }
 }
 
