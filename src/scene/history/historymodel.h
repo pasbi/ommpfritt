@@ -10,6 +10,7 @@ namespace omm
 class HistoryModel : public QAbstractListModel
 {
 public:
+  HistoryModel();
   int rowCount(const QModelIndex& parent) const override;
   QVariant data(const QModelIndex& index, int role) const override;
 
@@ -18,6 +19,7 @@ public:
   void redo();
   int count() const;
   const Command& command(int index) const;
+  void set_index(const int index);
 
   class Macro
   {
