@@ -77,7 +77,7 @@ void ManagerItemView<ItemViewT, ItemModelT>::keyReleaseEvent(QKeyEvent *e)
   if (e->key() == Qt::Key_Shift) {
     this->setDragEnabled(true);
   }
-  ItemViewT::keyPressEvent(e);
+  ItemViewT::keyReleaseEvent(e);
 }
 
 template<typename ItemViewT, typename ItemModelT>
