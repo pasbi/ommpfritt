@@ -140,8 +140,8 @@ const View* ExportDialog::view() const
 
 QImage ExportDialog::render(int width, int height) const
 {
-  QImage image(width, height, QImage::Format_RGB888);
-  image.fill(Qt::white);
+  QImage image(width, height, QImage::Format_ARGB32);
+  image.fill(Qt::transparent);
   ViewportRenderer renderer(m_scene, AbstractRenderer::Category::Objects);
   QPainter painter(&image);
   painter.setRenderHint(QPainter::Antialiasing);
