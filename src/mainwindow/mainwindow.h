@@ -41,6 +41,7 @@ public:
   static constexpr auto MANAGER_NAME_SETTINGS_KEY = "name";
   static constexpr auto GEOMETRY_SETTINGS_KEY = "mainwindow/geometry";
   static constexpr auto WINDOWSTATE_SETTINGS_KEY = "mainwindow/window_state";
+  static constexpr auto RECENT_DOCUMENTS_SETTINGS_KEY = "mainwindow/recent_documents";
   static constexpr auto LANGUAGE_RESOURCE_PREFIX = "omm";
   static constexpr auto LANGUAGE_RESOURCE_SUFFIX = ".qm";
   static constexpr auto LANGUAGE_RESOURCE_DIRECTORY = ":/qm";

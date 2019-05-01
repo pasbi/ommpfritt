@@ -81,6 +81,7 @@ std::unique_ptr<QMenu> add_menu(const std::string& path, std::map<std::string, Q
     const auto [ rest_path, menu_name ] = split(path);
     const auto menu_label = QCoreApplication::translate("menu_name", menu_name.c_str());
     std::unique_ptr<QMenu> menu = std::make_unique<Menu>(menu_label);
+    menu->setObjectName(QString::fromStdString(menu_name));
     menu_map.insert({ path, menu.get() });
 
     if (rest_path.empty()) {

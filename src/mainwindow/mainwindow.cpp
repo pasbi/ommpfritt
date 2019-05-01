@@ -64,6 +64,33 @@ void write_each(QSettings& settings, const std::string& key, const Ts& ts, const
   settings.endArray();
 }
 
+QMenu* find_menu(QMenu* menu, const QString& object_name)
+{
+  if (menu == nullptr) {
+    return nullptr;
+  } else if (menu->objectName() == object_name) {
+    return menu;
+  } else {
+    for (QAction* action : menu->actions()) {
+      QMenu* sub_menu = find_menu(action->menu(), object_name);
+      if (sub_menu != nullptr) {
+        return sub_menu;
+      }
+    }
+    return nullptr;
+  }
+}
+
+QMenu* find_menu(QMenuBar* bar, const QString& object_name)
+{
+  for (auto&& action : bar->actions()) {
+    if (auto* menu = find_menu(action->menu(), object_name); menu != nullptr) {
+      return menu;
+    }
+  }
+  return nullptr;
+}
+
 }  // namespace
 
 namespace omm
@@ -108,14 +135,15 @@ std::vector<std::string> MainWindow::main_menu_entries()
     "file/save document",
     "file/save document as",
     "file/load document",
+    "file/" QT_TRANSLATE_NOOP("menu_name", "load recent document") "/",
     "file/"s + KeyBindings::SEPARATOR,
     "file/export",
     QT_TRANSLATE_NOOP("menu_name", "edit")"/undo",
     "edit/redo",
     QT_TRANSLATE_NOOP("menu_name", "object")"/new style",
-    QT_TRANSLATE_NOOP("menu_name", "object")"/" QT_TRANSLATE_NOOP("menu_name", "create")"/",
-    QT_TRANSLATE_NOOP("menu_name", "object")"/" QT_TRANSLATE_NOOP("menu_name", "attach")"/",
-    QT_TRANSLATE_NOOP("menu_name", "path")"/",
+    "object/" QT_TRANSLATE_NOOP("menu_name", "create")"/",
+    "object/" QT_TRANSLATE_NOOP("menu_name", "attach")"/",
+    "path/",
     QT_TRANSLATE_NOOP("menu_name", "tool")"/previous tool",
     "tool/"s + KeyBindings::SEPARATOR,
     QT_TRANSLATE_NOOP("menu_name", "scene")"/evaluate",
@@ -138,6 +166,7 @@ std::vector<std::string> MainWindow::main_menu_entries()
   for (const std::string& key : Tool::keys()) {
     entries.push_back("tool/" + key);
   }
+
   return std::vector(entries.begin(), entries.end());
 }
 
@@ -177,7 +206,28 @@ MainWindow::MainWindow(Application& app)
   }
   menuBar()->addMenu(make_about_menu().release());
 
+  auto* recent_document_menu = find_menu(menuBar(), "load recent document");
+  assert(recent_document_menu != nullptr);
+  for (auto&& fn : settings.value(RECENT_DOCUMENTS_SETTINGS_KEY, QStringList()).toStringList()) {
+    auto action = std::make_unique<QAction>(QFileInfo(fn).fileName());
+    action->setToolTip(fn);
+    connect(action.get(), &QAction::triggered, [fn, &app]() {
+      if (app.can_close()) {
+        app.scene.load_from(fn.toStdString());
+      }
+    });
+    recent_document_menu->addAction(action.release());
+  }
+
   connect(&app.scene, SIGNAL(filename_changed()), this, SLOT(update_window_title()));
+  connect(&app.scene, &Scene::filename_changed, [&app] {
+    QSettings settings;
+    auto fns = settings.value(RECENT_DOCUMENTS_SETTINGS_KEY, QStringList()).toStringList();
+    const auto fn = QString::fromStdString(app.scene.filename());
+    fns.removeAll(fn);
+    fns.append(fn);
+    settings.setValue(RECENT_DOCUMENTS_SETTINGS_KEY, fns);
+  });
 }
 
 std::unique_ptr<QMenu> MainWindow::make_about_menu()
@@ -280,8 +330,6 @@ void MainWindow::restore_default_layout()
   add_dock(ObjectManager::TYPE);
   add_dock(PropertyManager::TYPE);
   add_dock(StyleManager::TYPE);
-
-  QTimer::singleShot(100, [this]() { save_state(); });
 }
 
 void MainWindow::save_state()
