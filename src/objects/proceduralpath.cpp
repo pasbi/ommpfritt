@@ -54,28 +54,28 @@ std::unique_ptr<Object> ProceduralPath::clone() const
 }
 
 std::string ProceduralPath::type() const { return TYPE; }
+std::vector<Point> ProceduralPath::points() const { return m_points; }
 
-std::vector<Point> ProceduralPath::points()
+void ProceduralPath::update()
 {
   assert(scene() != nullptr);
   using namespace pybind11::literals;
   const auto count = property(COUNT_PROPERTY_KEY)->value<int>();
   const auto code = property(CODE_PROPERTY_KEY)->value<std::string>();
 
-  auto points = std::vector<Point>(static_cast<std::size_t>(std::max(0, count)));
+  m_points = std::vector<Point>(static_cast<std::size_t>(std::max(0, count)));
   std::vector<PointWrapper> point_wrappers;
-  point_wrappers.reserve(points.size());
-  for (Point& point : points) {
+  point_wrappers.reserve(m_points.size());
+  for (Point& point : m_points) {
     point_wrappers.emplace_back(point);
   }
 
-  if (points.size() > 0) {
+  if (m_points.size() > 0) {
     const auto locals = pybind11::dict( "points"_a=point_wrappers,
                                         "this"_a=ObjectWrapper::make(*this),
                                         "scene"_a=SceneWrapper(*scene()) );
     scene()->python_engine.exec(code, locals, this);
   }
-  return points;
 }
 
 bool ProceduralPath::is_closed() const

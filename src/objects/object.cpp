@@ -468,10 +468,7 @@ void Object::update() { }
 void Object::draw_object(AbstractRenderer&, const Style&) const {}
 void Object::draw_handles(AbstractRenderer&) const {}
 Object::PathUniquePtr Object::outline(const double t) const { return nullptr; }
-
-void PathDeleter::operator()(Path *path)
-{
-  delete path;
-}
+std::vector<Point> Object::points() const { return {}; }
+void PathDeleter::operator()(Path *path) { delete path; }
 
 }  // namespace omm

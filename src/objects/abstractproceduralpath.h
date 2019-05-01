@@ -25,10 +25,7 @@ public:
   PathUniquePtr outline(const double t) const override;
 
   void update() override;
-
 protected:
-  virtual std::vector<Point> points() = 0;
-  virtual bool is_closed() const = 0;
 
 private:
   std::vector<Point> m_points;

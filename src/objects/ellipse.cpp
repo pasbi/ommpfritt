@@ -1,4 +1,5 @@
 #include "objects/ellipse.h"
+
 #include <QObject>
 #include "properties/floatproperty.h"
 #include "objects/path.h"
@@ -27,7 +28,7 @@ std::string Ellipse::type() const { return TYPE; }
 std::unique_ptr<Object> Ellipse::clone() const { return std::make_unique<Ellipse>(*this); }
 bool Ellipse::is_closed() const { return true; }
 
-std::vector<Point> Ellipse::points()
+std::vector<Point> Ellipse::points() const
 {
   const auto n_raw = property(CORNER_COUNT_PROPERTY_KEY)->value<int>();
   const auto n = static_cast<std::size_t>(std::max(3, n_raw));

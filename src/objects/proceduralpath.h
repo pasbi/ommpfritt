@@ -20,10 +20,13 @@ public:
   static constexpr auto CODE_PROPERTY_KEY = "code";
   static constexpr auto COUNT_PROPERTY_KEY = "count";
 
-  std::vector<Point> points() override;
+  std::vector<Point> points() const override;
+  void update() override;
+  bool is_closed() const override;
 
 private:
-  bool is_closed() const override;
+  std::vector<Point> m_points;
+
 };
 
 }  // namespace omm
