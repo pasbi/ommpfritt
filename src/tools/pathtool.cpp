@@ -54,6 +54,7 @@ void PathTool::draw(AbstractRenderer &renderer) const
 {
   Tool::draw(renderer);
   if (m_path) {
+    m_path->set_transformation(viewport_transformation);
     m_path->draw_recursive(renderer, scene.default_style());
   }
 }
@@ -64,9 +65,11 @@ void PathTool::add_point(const Vec2f &pos)
     m_path = std::make_unique<Path>(&scene);
   }
 
+  const auto gpos = viewport_transformation.inverted().apply_to_position(pos);
+
   Path::PointSequence point_sequence;
   point_sequence.position = m_path->points().size();
-  point_sequence.sequence = { Point(pos) };
+  point_sequence.sequence = { Point(gpos) };
   m_path->add_points(std::vector { point_sequence });
   m_current_point = m_path->points_ref().back();
 }
@@ -74,11 +77,15 @@ void PathTool::add_point(const Vec2f &pos)
 void PathTool::end()
 {
   if (m_path) {
+    auto t = ObjectTransformation();
     using add_command_type = AddCommand<Tree<Object>>;
-    m_path->set_global_transformation(viewport_transformation.inverted(), false);
+    for (Point* point : m_path->points_ref()) {
+      *point = t.apply(*point);
+    }
+    m_path->set_global_transformation(t.inverted(), false);
+    m_path->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
     scene.submit<add_command_type>(scene.object_tree, std::move(m_path));
   }
 }
-
 
 }  // namespace
