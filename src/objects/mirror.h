@@ -15,6 +15,7 @@ class Mirror : public Object
 {
 public:
   enum class Direction { Horizontal, Vertical };
+  enum class Mode { Object, Path };
   explicit Mirror(Scene* scene);
   Mirror(const Mirror& other);
   void draw_object(AbstractRenderer& renderer, const Style& style) const override;
@@ -22,6 +23,9 @@ public:
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Mirror");
   static constexpr auto DIRECTION_PROPERTY_KEY = "direction";
+  static constexpr auto AS_PATH_PROPERTY_KEY = "as_path";
+  static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";
+  static constexpr auto IS_INVERTED_PROPERTY_KEY = "inverted";
 
   std::unique_ptr<Object> clone() const override;
   virtual Flag flags() const override;
