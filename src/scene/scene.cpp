@@ -163,6 +163,7 @@ bool Scene::save_as(const std::string &filename)
 
   LINFO << "Saved current scene to '" << filename << "'.";
   m_has_pending_changes = false;
+  history.set_saved_index();
   m_filename = filename;
   Q_EMIT filename_changed();
   return true;
@@ -197,6 +198,7 @@ bool Scene::load_from(const std::string &filename)
     set_selection({});
     m_filename = filename;
     m_has_pending_changes = false;
+    history.set_saved_index();
     Q_EMIT filename_changed();
     QTimer::singleShot(0, [ this, new_root=std::move(new_root),
                             styles=std::move(styles) ]() mutable
@@ -216,6 +218,7 @@ bool Scene::load_from(const std::string &filename)
 void Scene::reset()
 {
   m_has_pending_changes = false;
+  history.set_saved_index();
   set_selection({});
   QTimer::singleShot(0, [this]() {
     object_tree.replace_root(make_root());

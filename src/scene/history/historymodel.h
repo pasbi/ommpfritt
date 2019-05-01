@@ -21,6 +21,12 @@ public:
   const Command& command(int index) const;
   void set_index(const int index);
 
+  /**
+   * @brief set_saved_index indicates that the current index is saved.
+   * 	Removes save-indication from all other indices.
+   */
+  void set_saved_index();
+
   class Macro
   {
   public:
@@ -34,6 +40,7 @@ public:
 
 private:
   QUndoStack m_undo_stack;
+  int m_saved_index = 0;
 };
 
 }  // namespace omm
