@@ -112,11 +112,7 @@ public:
   {
     submit(std::make_unique<CommandT>(std::forward<Args>(args)...));
   }
-  bool has_pending_changes() const;
   void submit(std::unique_ptr<Command> command);
-
-private:
-  bool m_has_pending_changes = false;
 
 private:
   Scene(const Scene& other) = delete;

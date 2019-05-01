@@ -70,6 +70,7 @@ Scene::Scene(PythonEngine& python_engine)
     m_item_selection[kind] = {};
   }
   tool_box.set_active_tool(SelectObjectsTool::TYPE);
+  connect(&history, SIGNAL(index_changed()), this, SIGNAL(filename_changed()));
 }
 
 std::unique_ptr<Object> Scene::make_root()
@@ -162,7 +163,6 @@ bool Scene::save_as(const std::string &filename)
   serializer->end_array();
 
   LINFO << "Saved current scene to '" << filename << "'.";
-  m_has_pending_changes = false;
   history.set_saved_index();
   m_filename = filename;
   Q_EMIT filename_changed();
@@ -197,7 +197,6 @@ bool Scene::load_from(const std::string &filename)
 
     set_selection({});
     m_filename = filename;
-    m_has_pending_changes = false;
     history.set_saved_index();
     Q_EMIT filename_changed();
     QTimer::singleShot(0, [ this, new_root=std::move(new_root),
@@ -217,7 +216,6 @@ bool Scene::load_from(const std::string &filename)
 
 void Scene::reset()
 {
-  m_has_pending_changes = false;
   history.set_saved_index();
   set_selection({});
   QTimer::singleShot(0, [this]() {
@@ -233,15 +231,9 @@ std::string Scene::filename() const
   return m_filename;
 }
 
-bool Scene::has_pending_changes() const
-{
-  return m_has_pending_changes;
-}
-
 void Scene::submit(std::unique_ptr<Command> command)
 {
   history.push(std::move(command));
-  m_has_pending_changes = true;
   filename_changed();
 }
 

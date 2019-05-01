@@ -1,5 +1,5 @@
 #include "scene/history/historymodel.h"
-
+#include "logging.h"
 #include <QColor>
 
 namespace omm
@@ -67,6 +67,11 @@ void HistoryModel::set_index(const int index)
   m_undo_stack.setIndex(index);
 }
 
+bool HistoryModel::has_pending_changes() const
+{
+  return m_saved_index != m_undo_stack.index();
+}
+
 void HistoryModel::set_saved_index()
 {
   const QModelIndex old_index = this->index(m_saved_index, 0);
@@ -88,6 +93,7 @@ HistoryModel::HistoryModel()
     const auto after = this->index(std::min(m_undo_stack.count()-1, index+1), 0);
     Q_EMIT dataChanged(before, after);
   });
+  connect(&m_undo_stack, SIGNAL(indexChanged(int)), this, SIGNAL(index_changed()));
 }
 
 int HistoryModel::rowCount(const QModelIndex &parent) const

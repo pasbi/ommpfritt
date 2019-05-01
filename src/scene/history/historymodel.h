@@ -9,6 +9,7 @@ namespace omm
 
 class HistoryModel : public QAbstractListModel
 {
+  Q_OBJECT
 public:
   HistoryModel();
   int rowCount(const QModelIndex& parent) const override;
@@ -20,6 +21,7 @@ public:
   int count() const;
   const Command& command(int index) const;
   void set_index(const int index);
+  bool has_pending_changes() const;
 
   /**
    * @brief set_saved_index indicates that the current index is saved.
@@ -37,6 +39,9 @@ public:
   };
 
   [[nodiscard]] std::unique_ptr<Macro> start_macro(const QString& text);
+
+Q_SIGNALS:
+  void index_changed();
 
 private:
   QUndoStack m_undo_stack;
