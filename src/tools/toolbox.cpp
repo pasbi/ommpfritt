@@ -74,16 +74,22 @@ void ToolBox::set_previous_tool()
 
 void ToolBox::switch_between_object_and_point_selection()
 {
-  for (auto&& tool : m_history) {
-    if (tool == SelectPointsTool::TYPE) {
-      set_active_tool(SelectObjectsTool::TYPE);
-      return;
-    } else if (tool == SelectObjectsTool::TYPE) {
-      set_active_tool(SelectPointsTool::TYPE);
-      return;
+  if (m_active_tool->type() == SelectPointsTool::TYPE) {
+    set_active_tool(SelectObjectsTool::TYPE);
+  } else if (m_active_tool->type() == SelectObjectsTool::TYPE) {
+    set_active_tool(SelectPointsTool::TYPE);
+  } else {
+    for (auto&& tool : m_history) {
+      if (tool == SelectPointsTool::TYPE) {
+        set_active_tool(SelectPointsTool::TYPE);
+        return;
+      } else if (tool == SelectObjectsTool::TYPE) {
+        set_active_tool(SelectObjectsTool::TYPE);
+        return;
+      }
     }
+    set_active_tool(SelectObjectsTool::TYPE);
   }
-  set_active_tool(SelectObjectsTool::TYPE);
   return;
 }
 
