@@ -235,7 +235,7 @@ std::vector<Path::PointSequence> Path::remove_points(std::vector<std::size_t> in
     if (is_continuous(i)) {
       sequences.back().sequence.push_back(m_points[i]);
     } else {
-      sequences.push_back(Path::PointSequence{ i, std::list{m_points[i]} });
+      sequences.push_back(Path::PointSequence(i, std::list{m_points[i]} ));
     }
     m_points.erase(std::next(m_points.begin(), static_cast<int>(i)));
   }
@@ -273,13 +273,10 @@ std::vector<Path::PointSequence> Path::get_point_sequences(const std::vector<dou
   const auto f = [cubics](auto i_ts) {
     auto [segment_i, sequence_t] = i_ts;
     sequence_t.sort();
-    PointSequence point_sequence;
     const auto f = [segment_i=segment_i, cubics](const double segment_t) {
       return cubics.segment(segment_i).evaluate(segment_t);
     };
-    point_sequence.sequence = ::transform<Point>(sequence_t, f);
-    point_sequence.position = segment_i + 1;
-    return point_sequence;
+    return PointSequence(segment_i + 1, ::transform<Point>(sequence_t, f));
   };
 
   auto sequences = ::transform<PointSequence, std::vector>(sequences_t, f);
@@ -313,5 +310,16 @@ Object::PathUniquePtr Path::outline(const double t) const
   outline->property(IS_CLOSED_PROPERTY_KEY)->set(is_closed());
   return Object::PathUniquePtr(outline.release());
 }
+
+Path::PointSequence::PointSequence(int position) : position(position) {}
+
+Path::PointSequence::PointSequence(int position, const std::initializer_list<Point> &points)
+  : position(position), sequence(points.begin(), points.end()) {}
+
+Path::PointSequence::PointSequence(int position, const std::list<Point> &points)
+  : position(position), sequence(points) {}
+
+Path::PointSequence::PointSequence(int position, const std::vector<Point> &points)
+  : position(position), sequence(points.begin(), points.end()) {}
 
 }  // namespace omm

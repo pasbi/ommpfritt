@@ -42,6 +42,10 @@ public:
 
   struct PointSequence
   {
+    explicit PointSequence(int position);
+    explicit PointSequence(int position, const std::initializer_list<Point>& points);
+    explicit PointSequence(int position, const std::list<Point>& points);
+    explicit PointSequence(int position, const std::vector<Point>& points);
     std::size_t position = 0;
     std::list<Point> sequence;
   };

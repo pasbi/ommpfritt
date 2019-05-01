@@ -67,9 +67,7 @@ void PathTool::add_point(const Vec2f &pos)
 
   const auto gpos = viewport_transformation.inverted().apply_to_position(pos);
 
-  Path::PointSequence point_sequence;
-  point_sequence.position = m_path->points().size();
-  point_sequence.sequence = { Point(gpos) };
+  Path::PointSequence point_sequence(m_path->points().size(), { Point(gpos) });
   m_path->add_points(std::vector { point_sequence });
   m_current_point = m_path->points_ref().back();
 }
