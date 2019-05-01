@@ -125,7 +125,7 @@
     </message>
     <message>
         <source>Set </source>
-        <translation>Set property</translation>
+        <translation>Set property </translation>
     </message>
     <message>
         <source>remove</source>
@@ -817,6 +817,22 @@ Remove the selected items anyway?</translation>
         <source>Line</source>
         <translation>Line</translation>
     </message>
+    <message>
+        <source>Close</source>
+        <translation>Close</translation>
+    </message>
+    <message>
+        <source>Invert</source>
+        <translation>Invert</translation>
+    </message>
+    <message>
+        <source>rectangle</source>
+        <translation>Rectangle</translation>
+    </message>
+    <message>
+        <source>tension</source>
+        <translation>Tension</translation>
+    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>
@@ -1082,6 +1098,10 @@ Remove the selected items anyway?</translation>
         <source>group objects</source>
         <translation>Group objects</translation>
     </message>
+    <message>
+        <source>RectangleObject</source>
+        <translation>Rectangle</translation>
+    </message>
 </context>
 <context>
     <name>menu_name</name>
@@ -1106,10 +1126,6 @@ Remove the selected items anyway?</translation>
         <translation>Attach</translation>
     </message>
     <message>
-        <source>path</source>
-        <translation>Path</translation>
-    </message>
-    <message>
         <source>tool</source>
         <translation>Tool</translation>
     </message>
@@ -1124,6 +1140,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>show</source>
         <translation>Show windows</translation>
+    </message>
+    <message>
+        <source>load recent document</source>
+        <translation>Recently opened files ...</translation>
     </message>
 </context>
 <context>
@@ -1214,6 +1234,17 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
+    <name>omm::HistoryModel</name>
+    <message>
+        <source>foundation</source>
+        <translation>Foundation</translation>
+    </message>
+    <message>
+        <source> #</source>
+        <translation>#</translation>
+    </message>
+</context>
+<context>
     <name>omm::KeyBindingsDialogControls</name>
     <message>
         <source>Any Context</source>
@@ -1245,6 +1276,14 @@ Remove the selected items anyway?</translation>
     <message>
         <source>system default</source>
         <translation>System</translation>
+    </message>
+    <message>
+        <source>*</source>
+        <translation>*</translation>
+    </message>
+    <message>
+        <source>unnamed</source>
+        <translation>unnamed</translation>
     </message>
 </context>
 <context>

@@ -125,7 +125,7 @@
     </message>
     <message>
         <source>Set </source>
-        <translation>Eigenschaft einstellen</translation>
+        <translation>Eigenschaft einstellen </translation>
     </message>
     <message>
         <source>remove</source>
@@ -817,6 +817,22 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <source>Line</source>
         <translation>Linie</translation>
     </message>
+    <message>
+        <source>Close</source>
+        <translation>Geschlossen</translation>
+    </message>
+    <message>
+        <source>Invert</source>
+        <translation>Rückwärts</translation>
+    </message>
+    <message>
+        <source>rectangle</source>
+        <translation>Rechteck</translation>
+    </message>
+    <message>
+        <source>tension</source>
+        <translation>Spannung</translation>
+    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>
@@ -1082,6 +1098,10 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <source>group objects</source>
         <translation>Objekte gruppieren</translation>
     </message>
+    <message>
+        <source>RectangleObject</source>
+        <translation>Rechteck</translation>
+    </message>
 </context>
 <context>
     <name>menu_name</name>
@@ -1106,10 +1126,6 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Anhängen</translation>
     </message>
     <message>
-        <source>path</source>
-        <translation>Pfad</translation>
-    </message>
-    <message>
         <source>tool</source>
         <translation>Werkzeug</translation>
     </message>
@@ -1124,6 +1140,10 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <message>
         <source>show</source>
         <translation>Fenster anzeigen</translation>
+    </message>
+    <message>
+        <source>load recent document</source>
+        <translation>Zuletzt geöffnete Dokumente ...</translation>
     </message>
 </context>
 <context>
@@ -1214,6 +1234,17 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
 </context>
 <context>
+    <name>omm::HistoryModel</name>
+    <message>
+        <source>foundation</source>
+        <translation>Basis</translation>
+    </message>
+    <message>
+        <source> #</source>
+        <translation>#</translation>
+    </message>
+</context>
+<context>
     <name>omm::KeyBindingsDialogControls</name>
     <message>
         <source>Any Context</source>
@@ -1245,6 +1276,14 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <message>
         <source>system default</source>
         <translation>System</translation>
+    </message>
+    <message>
+        <source>*</source>
+        <translation>*</translation>
+    </message>
+    <message>
+        <source>unnamed</source>
+        <translation>Unbenannt</translation>
     </message>
 </context>
 <context>
