@@ -171,6 +171,7 @@ bool Scene::save_as(const std::string &filename)
 
 bool Scene::load_from(const std::string &filename)
 {
+  history.reset();
   std::ifstream ifstream(filename);
   if (!ifstream) {
     LERROR << "Failed to open '" << filename << "'.";
@@ -216,6 +217,7 @@ bool Scene::load_from(const std::string &filename)
 
 void Scene::reset()
 {
+  history.reset();
   history.set_saved_index();
   set_selection({});
   QTimer::singleShot(0, [this]() {

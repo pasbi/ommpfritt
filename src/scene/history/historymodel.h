@@ -22,6 +22,7 @@ public:
   const Command& command(int index) const;
   void set_index(const int index);
   bool has_pending_changes() const;
+  void reset();
 
   /**
    * @brief set_saved_index indicates that the current index is saved.

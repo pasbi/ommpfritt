@@ -72,6 +72,13 @@ bool HistoryModel::has_pending_changes() const
   return m_saved_index != m_undo_stack.index();
 }
 
+void HistoryModel::reset()
+{
+  beginResetModel();
+  m_undo_stack.clear();
+  endResetModel();
+}
+
 void HistoryModel::set_saved_index()
 {
   const QModelIndex old_index = this->index(m_saved_index, 0);
