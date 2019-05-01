@@ -13,5 +13,6 @@
         <file>icons/ProceduralPath.png</file>
         <file>icons/Empty.png</file>
         <file>icons/ImageObject.png</file>
+        <file>icons/RectangleObject.png</file>
     </qresource>
 </RCC>

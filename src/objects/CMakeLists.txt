@@ -12,6 +12,7 @@ file (GLOB SOURCES
   "outline.cpp"
   "path.cpp"
   "proceduralpath.cpp"
+  "rectangleobject.cpp"
   "text.cpp"
   "view.cpp"
 )

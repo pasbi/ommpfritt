@@ -6,6 +6,7 @@
 #include "objects/cloner.h"
 #include "objects/path.h"
 #include "objects/proceduralpath.h"
+#include "objects/rectangleobject.h"
 #include "objects/view.h"
 #include "objects/mirror.h"
 #include "objects/text.h"
@@ -28,6 +29,7 @@ void register_objects()
   REGISTER_OBJECT(Outline);
   REGISTER_OBJECT(Path);
   REGISTER_OBJECT(ProceduralPath);
+  REGISTER_OBJECT(RectangleObject);
   REGISTER_OBJECT(View);
   REGISTER_OBJECT(Text);
 #undef REGISTER_OBJECT
