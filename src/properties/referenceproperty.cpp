@@ -56,7 +56,7 @@ AbstractPropertyOwner::Flag ReferenceProperty::required_flags() const { return m
 bool ReferenceProperty::is_compatible(const Property& other) const
 {
   if (Property::is_compatible(other)) {
-    auto other_reference_property = static_cast<const ReferenceProperty&>(other);
+    auto& other_reference_property = static_cast<const ReferenceProperty&>(other);
     return other_reference_property.allowed_kinds() == allowed_kinds();
   } else {
     return false;
