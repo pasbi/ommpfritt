@@ -46,9 +46,9 @@ void draw_cross(QPainter& painter, const QRectF& area, bool is_enabled)
 QColor get_visibility_color_code(const omm::Object::Visibility visibility)
 {
   switch (visibility) {
-  case omm::Object::Visibility::Visible: return QColor("#A8FF6D");
-  case omm::Object::Visibility::Hide: return QColor("#FFFF00");
-  case omm::Object::Visibility::HideTree: return QColor("#FF2080");
+  case omm::Object::Visibility::Visible: return QColor("#6AE008");
+  case omm::Object::Visibility::Hide: return QColor("#FF4A03");
+  case omm::Object::Visibility::HideTree: return QColor("#AA00ED");
   }
   Q_UNREACHABLE();
 }
