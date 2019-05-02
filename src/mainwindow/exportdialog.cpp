@@ -19,9 +19,9 @@
 namespace
 {
 
-auto make_resolution_edit(const omm::NumericEdit<int>::on_value_changed_t& ovt)
+auto make_resolution_edit()
 {
-  auto edit = std::make_unique<omm::NumericEdit<int>>(ovt);
+  auto edit = std::make_unique<omm::NumericEdit<int>>();
   edit->set_range(0, 100000);
   return edit;
 }
@@ -58,71 +58,42 @@ namespace omm
 ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   : QDialog(parent), m_scene(scene)
   , m_filepath(scene.filename())
+  , m_ui(std::make_unique<::Ui::ExportDialog>())
 {
-  auto preview_label = std::make_unique<QLabel>();
-  m_preview_label = preview_label.get();
-  m_preview_label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-  m_preview_label->setMinimumSize(100, 100);
-  m_preview_label->setAlignment(Qt::AlignCenter);
-  auto view_combobox = std::make_unique<ReferenceLineEdit>(scene, [this](auto*) {
-    m_resolution_y->set_value(int(m_resolution_x->value() / compute_aspect_ratio(view())));
+  m_ui->setupUi(this);
+
+  QObject::connect(m_ui->cb_view, &ReferenceLineEdit::value_changed, [this]() {
+    m_ui->ne_resolution_y->set_value(int(m_ui->ne_resolution_x->value()
+                                         / compute_aspect_ratio(view())));
     update_preview();
   });
 
-  m_view_combobox = view_combobox.get();
-  m_view_combobox->set_filter(AbstractPropertyOwner::Kind::Object);
-  m_view_combobox->set_filter(AbstractPropertyOwner::Flag::IsView);
-  m_view_combobox->set_null_label(tr("Viewport").toStdString());
+  m_ui->cb_view->set_filter(AbstractPropertyOwner::Kind::Object);
+  m_ui->cb_view->set_filter(AbstractPropertyOwner::Flag::IsView);
+  m_ui->cb_view->set_null_label(tr("Viewport").toStdString());
+  m_ui->cb_view->set_scene(scene);
 
-  const auto update_resolution_x = [this](int y) {
-    m_resolution_x->set_value(int(y * compute_aspect_ratio(view())));
-  };
+  connect(m_ui->pb_export, &QPushButton::clicked, this, &ExportDialog::save_as);
 
-  const auto update_resolution_y = [this](int x) {
-    m_resolution_y->set_value(int(x / compute_aspect_ratio(view())));
-  };
-
-  auto export_button = std::make_unique<QPushButton>(tr("Save as ..."));
-  m_export_button = export_button.get();
-
-  connect(m_export_button, &QPushButton::clicked, this, &ExportDialog::save_as);
-
-  auto resolution_x = make_resolution_edit(update_resolution_y);
-  m_resolution_x = resolution_x.get();
-  auto resolution_y = make_resolution_edit(update_resolution_x);
-  m_resolution_y = resolution_y.get();
-
-  auto resolution_layout = std::make_unique<QHBoxLayout>();
-  resolution_layout->addWidget(resolution_x.release());
-  resolution_layout->addWidget(std::make_unique<XLabel>().release());
-  resolution_layout->addWidget(resolution_y.release());
-
-  auto column_layout = std::make_unique<QVBoxLayout>();
-  column_layout->addWidget(view_combobox.release());
-  column_layout->addLayout(resolution_layout.release());
-  column_layout->addWidget(export_button.release());
-  column_layout->addStretch();
-
-  auto layout = std::make_unique<QHBoxLayout>();
-  layout->addWidget(preview_label.release());
-  layout->addWidget(std::make_unique<Line>(QFrame::HLine).release());
-  layout->addLayout(column_layout.release());
-  layout->setStretch(0, 1);
-  layout->setStretch(1, 0);
-  layout->setStretch(2, 0);
-  setLayout(layout.release());
+  connect(m_ui->ne_resolution_x, &AbstractNumericEdit::value_changed, [this]() {
+    const auto ar = compute_aspect_ratio(view());
+    m_ui->ne_resolution_y->set_value(static_cast<int>(m_ui->ne_resolution_x->value() / ar));
+  });
+  connect(m_ui->ne_resolution_y, &AbstractNumericEdit::value_changed, [this]() {
+    const auto ar = compute_aspect_ratio(view());
+    m_ui->ne_resolution_x->set_value(static_cast<int>(m_ui->ne_resolution_x->value() * ar));
+  });
 
   update_preview();
 
   const int default_resolution_x = 1000;
-  m_resolution_x->set_value(default_resolution_x);
-  update_resolution_y(default_resolution_x);
+  m_ui->ne_resolution_x->set_value(default_resolution_x);
 }
 
 void ExportDialog::update_preview()
 {
-  int width = m_preview_label->width();
-  int height = m_preview_label->height();
+  int width = m_ui->lb_preview->width();
+  int height = m_ui->lb_preview->height();
 
   if (const double ar = compute_aspect_ratio(view()); double(width) / double(height) > ar) {
     width = static_cast<int>(height * ar);
@@ -130,12 +101,12 @@ void ExportDialog::update_preview()
     height = static_cast<int>(width / ar);
   }
 
-  m_preview_label->setPixmap(QPixmap::fromImage(render(width, height)));
+  m_ui->lb_preview->setPixmap(QPixmap::fromImage(render(width, height)));
 }
 
 const View* ExportDialog::view() const
 {
-  return type_cast<View*>(kind_cast<Object*>(m_view_combobox->value()));
+  return type_cast<View*>(kind_cast<Object*>(m_ui->cb_view->value()));
 }
 
 QImage ExportDialog::render(int width, int height) const
@@ -185,7 +156,7 @@ void ExportDialog::save_as()
     const auto filenames = file_dialog.selectedFiles();
     assert(filenames.size() == 1);
     const auto filename = filenames.front();
-    if (render(m_resolution_x->value(), m_resolution_y->value()).save(filename)) {
+    if (render(m_ui->ne_resolution_x->value(), m_ui->ne_resolution_y->value()).save(filename)) {
       m_filepath = filename.toStdString();
     } else {
       const auto msg = tr("Writing image '%1' failed.").arg(filename);

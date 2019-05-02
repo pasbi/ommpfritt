@@ -4,6 +4,7 @@
 #include <memory>
 #include <QPicture>
 #include <QImage>
+#include "ui_exportdialog.h"
 
 class QPushButton;
 class QLabel;
@@ -28,11 +29,6 @@ protected:
 
 private:
   Scene& m_scene;
-  QLabel* m_preview_label;
-  ReferenceLineEdit* m_view_combobox;
-  QPushButton* m_export_button;
-  NumericEdit<int>* m_resolution_x;
-  NumericEdit<int>* m_resolution_y;
 
   void save_as();
   void update_preview();
@@ -40,6 +36,8 @@ private:
   QImage render(int width, int height) const;
   QPicture m_picture;
   std::string m_filepath;
+
+  std::unique_ptr<::Ui::ExportDialog> m_ui;
 
 };
 
