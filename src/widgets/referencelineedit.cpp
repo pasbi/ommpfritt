@@ -13,9 +13,7 @@
 namespace omm
 {
 
-ReferenceLineEdit::ReferenceLineEdit(Scene& scene, const on_value_changed_t& on_value_changed)
-  : MultiValueEdit<AbstractPropertyOwner *>(on_value_changed)
-  , m_scene(scene)
+ReferenceLineEdit::ReferenceLineEdit(Scene& scene) : m_scene(scene)
 {
   setEditable(false);
   setAcceptDrops(true);
@@ -60,7 +58,9 @@ void ReferenceLineEdit::set_value(const value_type& value)
   assert(it != m_possible_references.end());
   setCurrentIndex(static_cast<int>(std::distance(m_possible_references.begin(), it)));
 
-  if (value_has_changed && !signalsBlocked()) { on_value_changed(m_value); }
+  if (value_has_changed && !signalsBlocked()) {
+    Q_EMIT value_changed(m_value);
+  }
 }
 
 void ReferenceLineEdit::set_inconsistent_value()

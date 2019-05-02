@@ -17,13 +17,15 @@ public:
   explicit VectorPropertyWidget(Scene& scene, const std::set<Property*>& properties)
     : PropertyWidget<VectorPropertyT>(scene, properties)
   {
-    m_x_edit = std::make_unique<NumericMultiValueEdit<elem_type>>([this](const elem_type value) {
-      set_properties_value<0>(value);
-    }).release();
+    m_x_edit = std::make_unique<NumericMultiValueEdit<elem_type>>().release();
+    QObject::connect(m_x_edit, &NumericMultiValueEdit<elem_type>::value_changed, [this]() {
+      set_properties_value<0>(m_x_edit->value());
+    });
 
-    m_y_edit = std::make_unique<NumericMultiValueEdit<elem_type>>([this](const elem_type value) {
-      set_properties_value<1>(value);
-    }).release();
+    m_y_edit = std::make_unique<NumericMultiValueEdit<elem_type>>().release();
+    QObject::connect(m_y_edit, &NumericMultiValueEdit<elem_type>::value_changed, [this]() {
+      set_properties_value<1>(m_y_edit->value());
+    });
 
     const auto get_step = std::mem_fn(&VectorPropertyT::step);
     const auto step = Property::get_value<value_type, VectorPropertyT>(properties, get_step);

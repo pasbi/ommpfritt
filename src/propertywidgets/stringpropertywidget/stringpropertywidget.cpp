@@ -14,27 +14,53 @@ StringPropertyWidget
   const auto getter = std::mem_fn(&StringProperty::mode);
   const auto mode = Property::get_value<StringProperty::Mode, StringProperty>(properties, getter);
 
-  std::unique_ptr<AbstractTextEditAdapter> edit;
-  const auto spv_closure = [this](const auto& value) { set_properties_value(value); };
-  switch (mode) {
-  case StringProperty::Mode::MultiLine:
-    edit = std::make_unique<TextEditAdapter<QTextEdit>>(spv_closure, this);
-    break;
-  case StringProperty::Mode::SingleLine:
-    edit = std::make_unique<TextEditAdapter<QLineEdit>>(spv_closure, this);
-    break;
-  case StringProperty::Mode::FilePath:
-    edit = std::make_unique<TextEditAdapter<FilePathEdit>>(spv_closure, this);
-    break;
-  case StringProperty::Mode::Code:
-    edit = std::make_unique<TextEditAdapter<CodeEdit>>(spv_closure, this);
-    break;
-  case StringProperty::Mode::Font:
-    edit = std::make_unique<TextEditAdapter<QFontComboBox>>(spv_closure, this);
-    break;
-  }
+  auto edit = [this, mode]() {
+    switch (mode) {
+    case StringProperty::Mode::MultiLine: {
+      auto edit = std::make_unique<TextEditAdapter<QTextEdit>>(this);
+      QObject::connect(edit.get(), &QTextEdit::textChanged, [edit=edit.get(), this]() {
+        set_properties_value(edit->value());
+      });
+      return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
+    }
+    case StringProperty::Mode::SingleLine: {
+      auto edit = std::make_unique<TextEditAdapter<QLineEdit>>(this);
+      QObject::connect(edit.get(), &QLineEdit::textChanged, [this](const QString& text) {
+        set_properties_value(text.toStdString());
+      });
+      return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
+    }
+    case StringProperty::Mode::FilePath: {
+      auto edit = std::make_unique<TextEditAdapter<FilePathEdit>>(this);
+      QObject::connect(edit.get(), &FilePathEdit::path_changed, [this](const std::string& text) {
+        set_properties_value(text);
+      });
+      return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
+    }
+    case StringProperty::Mode::Code: {
+      auto edit = std::make_unique<TextEditAdapter<CodeEdit>>(this);
+      QObject::connect(edit.get(), &CodeEdit::code_changed, [this](const std::string& text) {
+        set_properties_value(text);
+      });
+      return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
+    }
+    case StringProperty::Mode::Font: {
+      auto edit = std::make_unique<TextEditAdapter<QFontComboBox>>(this);
+      QObject::connect(edit.get(), &QFontComboBox::currentTextChanged, [this](const QString& text) {
+        set_properties_value(text.toStdString());
+      });
+      return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
+    }
+    default:
+      Q_UNREACHABLE();
+    }
+  }();
 
   m_text_edit = edit.get();
+//  connect(m_text_edit, &AbstractTextEditAdapter::value_changed, [this](QString text) {
+//    this->set_properties_value(text.toStdString());
+//  });
+
   auto text_edit_widget = std::unique_ptr<QWidget>(edit.release()->as_widget());
   set_default_layout(std::move(text_edit_widget));
 

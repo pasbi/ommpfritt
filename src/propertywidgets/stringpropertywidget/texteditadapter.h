@@ -16,7 +16,6 @@ namespace omm
 class AbstractTextEditAdapter : public MultiValueEdit<std::string>
 {
 public:
-  AbstractTextEditAdapter(const on_value_changed_t& on_value_changed);
   virtual ~AbstractTextEditAdapter() = default;
   virtual void clear() = 0;
   virtual QWidget* as_widget() = 0;
@@ -29,7 +28,7 @@ template<> class TextEditAdapter<QLineEdit>
 {
 public:
   using edit_type = QLineEdit;
-  TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent = nullptr);
+  using QLineEdit::QLineEdit;
   void set_inconsistent_value() override;
   void set_value(const std::string& ph) override;
   void clear() override;
@@ -42,7 +41,8 @@ template<> class TextEditAdapter<QTextEdit>
 {
 public:
   using edit_type = QTextEdit;
-  TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent = nullptr);
+  using QTextEdit::QTextEdit;
+  explicit TextEditAdapter(QWidget* parent = nullptr);
   void set_inconsistent_value() override;
   void set_value(const std::string& ph) override;
   void clear() override;
@@ -55,7 +55,7 @@ template<> class TextEditAdapter<FilePathEdit>
 {
 public:
   using edit_type = FilePathEdit;
-  TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent = nullptr);
+  using FilePathEdit::FilePathEdit;
   void set_inconsistent_value() override;
   void set_value(const std::string& ph) override;
   void clear() override;
@@ -69,7 +69,6 @@ template<> class TextEditAdapter<CodeEdit>
 public:
   using edit_type = CodeEdit;
   using CodeEdit::CodeEdit;
-  TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent = nullptr);
   void set_inconsistent_value() override;
   void set_value(const std::string& ph) override;
   void clear() override;
@@ -83,7 +82,6 @@ template<> class TextEditAdapter<QFontComboBox>
 public:
   using edit_type = QFontComboBox;
   using QFontComboBox::QFontComboBox;
-  TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent = nullptr);
   void set_inconsistent_value() override;
   void set_value(const std::string& ph) override;
   void clear() override;

@@ -20,15 +20,19 @@ public:
     : PropertyConfigWidget<PropertyT>(parent, property)
   {
     auto& numeric_property = type_cast<PropertyT&>(property);
-    const auto on_range_changed = [&numeric_property](const value_type min, const value_type max)
-    {
-      numeric_property.set_range(min, max);
+    auto [ min_edit, max_edit ] = NumericEdit<value_type>::make_range_edits();
+    const auto update_range = [&numeric_property, &min_edit=min_edit, &max_edit=max_edit]() {
+      numeric_property.set_range(min_edit->value(), max_edit->value());
     };
-    auto [ min_edit, max_edit ] = NumericEdit<value_type>::make_range_edits(on_range_changed);
+    QObject::connect(min_edit.get(), SIGNAL(value_changed()), this, SLOT(update_range()));
+    QObject::connect(max_edit.get(), SIGNAL(value_changed()), this, SLOT(update_range()));
     const auto on_step_changed = [&numeric_property](value_type step) {
-      numeric_property.set_step(step);
     };
-    auto step_edit = std::make_unique<NumericEdit<value_type>>(on_step_changed);
+    auto step_edit = std::make_unique<NumericEdit<value_type>>();
+    QObject::connect(step_edit.get(), &AbstractNumericEdit::value_changed,
+                     [&numeric_property, step_edit=step_edit.get()]() {
+      numeric_property.set_step(step_edit->value());
+    });
     step_edit->set_lower(NumericEditDetail::smallest_step<value_type>);
     step_edit->set_value(numeric_property.step());
     min_edit->set_value(numeric_property.lower());

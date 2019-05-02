@@ -31,46 +31,45 @@ public:
     enum class Dimension { X = 0, Y = 1 };
 
     auto& vector_property = type_cast<PropertyT&>(property);
-    const auto on_range_changed = [&vector_property]
-                                    (const Dimension d, const elem_type min, const elem_type max)
-    {
-      auto min2d = vector_property.lower();
-      auto max2d = vector_property.upper();
-      min2d[static_cast<int>(d)] = min;
-      max2d[static_cast<int>(d)] = max;
-      vector_property.set_range(min2d, max2d);
-    };
-
     using namespace std::placeholders;
-    const auto on_x_range_changed = [on_range_changed](const elem_type min, const elem_type max) {
-      return on_range_changed(Dimension::X, min, max);
-    };
-    auto [ min_x, max_x ] = NumericEdit<elem_type>::make_range_edits(on_x_range_changed);
-    const auto on_y_range_changed = [on_range_changed](const elem_type min, const elem_type max) {
-      return on_range_changed(Dimension::Y, min, max);
-    };
-    auto [ min_y, max_y ] = NumericEdit<elem_type>::make_range_edits(on_y_range_changed);
+    auto [ min_x, max_x ] = NumericEdit<elem_type>::make_range_edits();
+    QObject::connect(min_x.get(), &AbstractNumericEdit::value_changed,
+                     [v=min_x.get(), &vector_property]() {
+      vector_property.set_lower(value_type(v->value(), vector_property.upper_bound().y));
+    });
+    QObject:: connect(max_x.get(), &AbstractNumericEdit::value_changed,
+                      [v=max_x.get(), &vector_property]() {
+      vector_property.set_upper(value_type(v->value(), vector_property.upper_bound().y));
+    });
+
+    auto [ min_y, max_y ] = NumericEdit<elem_type>::make_range_edits();
+    QObject::connect(min_y.get(), &AbstractNumericEdit::value_changed,
+                     [v=min_y.get(), &vector_property]() {
+      vector_property.set_lower(value_type(vector_property.upper_bound().x, v->value()));
+    });
+    QObject::connect(max_y.get(), &AbstractNumericEdit::value_changed,
+                     [v=max_y.get(), &vector_property]() {
+      vector_property.set_upper(value_type(vector_property.upper_bound().x, v->value()));
+    });
 
     min_x->set_value(vector_property.lower().x);
     min_y->set_value(vector_property.lower().y);
     max_x->set_value(vector_property.upper().x);
     max_y->set_value(vector_property.upper().y);
 
-    const auto make_step_edit = [&vector_property](const Dimension dim) {
-      const auto on_step_changed = [&vector_property, dim](const elem_type step) {
-        auto step2d = vector_property.step();
-        step2d[static_cast<int>(dim)] = step;
-        vector_property.set_step(step2d);
-      };
-      auto step_edit = std::make_unique<omm::NumericEdit<elem_type>>(on_step_changed);
-      step_edit->set_lower(NumericEditDetail::smallest_step<elem_type>);
-      return step_edit;
-    };
-
-    auto step_x_edit = make_step_edit(Dimension::X);
+    auto step_x_edit = std::make_unique<omm::NumericEdit<elem_type>>();
     step_x_edit->set_value(vector_property.step().x);
-    auto step_y_edit = make_step_edit(Dimension::Y);
+    QObject::connect(step_x_edit.get(), &AbstractNumericEdit::value_changed,
+                     [&vector_property, e=step_x_edit.get()]() {
+      vector_property.set_step(value_type(e->value(), vector_property.step().y));
+    });
+
+    auto step_y_edit = std::make_unique<omm::NumericEdit<elem_type>>();
     step_y_edit->set_value(vector_property.step().y);
+    QObject::connect(step_y_edit.get(), &AbstractNumericEdit::value_changed,
+                    [&vector_property, e=step_y_edit.get()]() {
+      vector_property.set_step(value_type(vector_property.step().x, e->value()));
+    });
 
     auto min_layout = make_vector_edit<elem_type>(std::move(min_x), std::move(min_y));
     auto max_layout = make_vector_edit<elem_type>(std::move(max_x), std::move(max_y));

@@ -8,9 +8,9 @@ namespace omm
 OptionsPropertyWidget::OptionsPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget(scene, properties)
 {
-  auto options_edit = std::make_unique<OptionsEdit>([this](const std::size_t& value) {
-    set_properties_value(value);
-  });
+  auto options_edit = std::make_unique<OptionsEdit>();
+  connect(options_edit.get(), static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+          [this](int value) { set_properties_value(value); });
   m_options_edit = options_edit.get();
   const auto get_options = std::mem_fn(&OptionsProperty::options);
 

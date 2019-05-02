@@ -4,22 +4,7 @@ namespace omm
 {
 
 // AbstractTextEditAdapter
-
-AbstractTextEditAdapter
-::AbstractTextEditAdapter(const on_value_changed_t& on_value_changed)
-  : MultiValueEdit<std::string>(on_value_changed)
-{ }
-
 // TextEditAdapter<QLineEdit>
-
-TextEditAdapter<QLineEdit>
-::TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent)
-  : QLineEdit(parent), AbstractTextEditAdapter(on_value_changed)
-{
-  connect(this, &QLineEdit::textChanged, [on_value_changed, this]() {
-    if (!signalsBlocked()) { on_value_changed(value()); }
-  });
-}
 
 void TextEditAdapter<QLineEdit>::set_inconsistent_value()
 {
@@ -39,14 +24,9 @@ QWidget* TextEditAdapter<QLineEdit>::as_widget() { return this; }
 
 // TextEditAdapter<QTextEdit>
 
-TextEditAdapter<QTextEdit>
-::TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent)
-  : QTextEdit(parent), AbstractTextEditAdapter(on_value_changed)
+TextEditAdapter<QTextEdit>::TextEditAdapter(QWidget* parent) : QTextEdit(parent)
 {
   setTabStopWidth(20);
-  connect(this, &QTextEdit::textChanged, [on_value_changed, this]() {
-    if (!signalsBlocked()) { on_value_changed(value()); }
-  });
 }
 
 void TextEditAdapter<QTextEdit>::set_inconsistent_value()
@@ -71,15 +51,6 @@ std::string TextEditAdapter<QTextEdit>::value() const
 
 QWidget* TextEditAdapter<QTextEdit>::as_widget() { return this; }
 
-TextEditAdapter<FilePathEdit>
-::TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent)
-  : FilePathEdit(parent), AbstractTextEditAdapter(on_value_changed)
-{
-  connect(this, &FilePathEdit::path_changed, [on_value_changed, this]() {
-    if (!signalsBlocked()) { on_value_changed(value()); }
-  });
-}
-
 
 // TextEditAdapter<FilePathEdit>
 
@@ -99,15 +70,6 @@ void TextEditAdapter<FilePathEdit>::clear() { FilePathEdit::clear(); }
 std::string TextEditAdapter<FilePathEdit>::value() const { return FilePathEdit::path(); }
 QWidget* TextEditAdapter<FilePathEdit>::as_widget() { return this; }
 
-TextEditAdapter<CodeEdit>
-::TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent)
-  : CodeEdit(parent), AbstractTextEditAdapter(on_value_changed)
-{
-  connect(this, &CodeEdit::code_changed, [on_value_changed, this]() {
-    if (!signalsBlocked()) { on_value_changed(value()); }
-  });
-}
-
 
 // TextEditAdapter<CodeEdit>
 
@@ -124,16 +86,6 @@ QWidget* TextEditAdapter<CodeEdit>::as_widget() { return this; }
 
 
 // TextEditAdapter<QFontComboBox>
-
-
-TextEditAdapter<QFontComboBox>
-::TextEditAdapter(const on_value_changed_t& on_value_changed, QWidget* parent)
-  : QFontComboBox(parent), AbstractTextEditAdapter(on_value_changed)
-{
-  connect(this, &QFontComboBox::currentFontChanged, [on_value_changed, this]() {
-    if (!signalsBlocked()) { on_value_changed(value()); }
-  });
-}
 
 void TextEditAdapter<QFontComboBox>::set_value(const std::string& text)
 {

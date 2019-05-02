@@ -22,9 +22,6 @@ auto from_qcolor(const QColor& color)
 namespace omm
 {
 
-ColorEdit::ColorEdit(const on_value_changed_t& on_value_changed)
-  : MultiValueEdit<Color>(on_value_changed) { }
-
 void ColorEdit::paintEvent(QPaintEvent*)
 {
   QPainter painter(this);
@@ -35,7 +32,7 @@ void ColorEdit::set_value(const value_type& value)
 {
   if (m_current_color != value) {
     m_current_color = value;
-    on_value_changed(m_current_color);
+    Q_EMIT value_changed(value);
     update();
   }
 }

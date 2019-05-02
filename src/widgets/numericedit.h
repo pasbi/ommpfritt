@@ -36,18 +36,25 @@ template<> constexpr int smallest_step<int> = 1;
 namespace omm
 {
 
+class AbstractNumericEdit : public QLineEdit
+{
+  Q_OBJECT
+public:
+  using QLineEdit::QLineEdit;
+
+Q_SIGNALS:
+  void value_changed();
+};
+
 template<typename ValueType>
-class NumericEdit : public QLineEdit
+class NumericEdit : public AbstractNumericEdit
 {
 public:
   const std::string inf = "inf";
   const std::string neg_inf = "-inf";
 
   using value_type = ValueType;
-  using on_value_changed_t = std::function<void(value_type)>;
-  NumericEdit(const on_value_changed_t& on_value_changed, QWidget* parent = nullptr)
-    : QLineEdit(parent)
-    , m_on_value_changed(on_value_changed)
+  NumericEdit(QWidget* parent = nullptr) : AbstractNumericEdit(parent)
   {
     setContextMenuPolicy(Qt::NoContextMenu);
 
@@ -56,7 +63,7 @@ public:
       if (value != m_last_value) {
         m_value = value;
         m_last_value = m_value;
-        m_on_value_changed(m_value);
+        Q_EMIT value_changed();
       }
     });
 
@@ -112,7 +119,7 @@ public:
       if (value != this->value() || !hasFocus()) {
         set_text(value);
         m_value = value;
-        if (hasFocus()) { m_on_value_changed(value); }
+        if (hasFocus()) { Q_EMIT value_changed(); }
       }
     }
   }
@@ -226,7 +233,6 @@ private:
     }
   }
 
-  const on_value_changed_t m_on_value_changed;
   void set_text(const value_type& value)
   {
     m_value = value;
@@ -241,36 +247,16 @@ private:
   static constexpr value_type invalid_value = 0;
 
 public:
-  using on_min_max_changed_t = std::function<void(const ValueType& min, const ValueType& max)>;
-  static auto make_range_edits(const on_min_max_changed_t& on_min_max_changed)
+  static auto make_range_edits()
   {
-    enum class MasterBound { Upper, Lower };
-    auto min_edit = std::make_unique<NumericEdit<ValueType>>([](const ValueType&) {});
-    auto max_edit = std::make_unique<NumericEdit<ValueType>>([](const ValueType&) {});
-
-    auto on_bound_changed = [on_min_max_changed, min_edit=min_edit.get(), max_edit=max_edit.get()]
-                            (MasterBound master_bound)
-    {
-      double max = max_edit->value();
-      double min = min_edit->value();
-      if (max < min) {
-        switch (master_bound) {
-        case MasterBound::Upper:
-          min = max;
-          min_edit->set_value(min);
-          break;
-        case MasterBound::Lower:
-          max = min;
-          max_edit->set_value(max);
-          break;
-        }
-      }
-      on_min_max_changed(min, max);
-    };
-    const auto on_lower_changed = std::bind(on_bound_changed, MasterBound::Lower);
-    connect(min_edit.get(), &QLineEdit::editingFinished, on_lower_changed);
-    const auto on_upper_changed = std::bind(on_bound_changed, MasterBound::Upper);
-    connect(max_edit.get(), &QLineEdit::editingFinished, on_upper_changed);
+    auto min_edit = std::make_unique<NumericEdit<ValueType>>();
+    auto max_edit = std::make_unique<NumericEdit<ValueType>>();
+    connect(min_edit.get(), &AbstractNumericEdit::value_changed, [&min_edit, &max_edit]() {
+      max_edit->set_range(min_edit->value(), NumericEditDetail::highest_possible_value<ValueType>);
+    });
+    connect(max_edit.get(), &AbstractNumericEdit::value_changed, [&min_edit, &max_edit]() {
+      min_edit->set_range(NumericEditDetail::lowest_possible_value<ValueType>, min_edit->value());
+    });
     return std::pair(std::move(min_edit), std::move(max_edit));
   }
 
@@ -278,5 +264,7 @@ private:
   ValueType m_last_value;
   ValueType m_value;
 };
+
+using IntNumericEdit = NumericEdit<int>;
 
 }  // namespace

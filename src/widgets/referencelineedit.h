@@ -19,7 +19,7 @@ class ReferenceLineEdit
 {
   Q_OBJECT
 public:
-  explicit ReferenceLineEdit(Scene& scene, const on_value_changed_t& on_value_changed);
+  explicit ReferenceLineEdit(Scene& scene);
   ~ReferenceLineEdit() = default;
   void set_value(const value_type& value) override;
   value_type value() const override;
@@ -46,6 +46,9 @@ private:
 
 private Q_SLOTS:
   void update_candidates();
+
+Q_SIGNALS:
+  void value_changed(value_type value);
 };
 
 }  // namespace omm

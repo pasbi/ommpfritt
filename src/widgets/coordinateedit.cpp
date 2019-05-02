@@ -24,25 +24,24 @@ CoordinateEdit::CoordinateEdit(QWidget *parent) : QWidget(parent)
 {
   auto grid_layout = std::make_unique<QGridLayout>();
 
-  static const auto noop = [](auto&&...){};
-  auto x_edit = std::make_unique<NumericEdit<double>>(noop);
+  auto x_edit = std::make_unique<NumericEdit<double>>();
   m_x_edit = x_edit.get();
   grid_layout->addWidget(x_edit.release(), 0, 0);
 
   grid_layout->addWidget(make_label(",", m_cart_label).release(), 0, 1);
 
-  auto y_edit = std::make_unique<NumericEdit<double>>(noop);
+  auto y_edit = std::make_unique<NumericEdit<double>>();
   m_y_edit = y_edit.get();
   grid_layout->addWidget(y_edit.release(), 0, 2);
 
-  auto arg_edit = std::make_unique<NumericEdit<double>>(noop);
+  auto arg_edit = std::make_unique<NumericEdit<double>>();
   arg_edit->set_multiplier(M_1_PI *180.0);
   m_arg_edit = arg_edit.get();
   grid_layout->addWidget(arg_edit.release(), 1, 0);
 
   grid_layout->addWidget(make_label("∠", m_polar_label).release(), 1, 1);
 
-  auto mag_edit = std::make_unique<NumericEdit<double>>(noop);
+  auto mag_edit = std::make_unique<NumericEdit<double>>();
   m_mag_edit = mag_edit.get();
   m_mag_edit->set_lower(0.0);
   grid_layout->addWidget(mag_edit.release(), 1, 2);

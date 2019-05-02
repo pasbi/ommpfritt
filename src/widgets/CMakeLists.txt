@@ -5,6 +5,7 @@ file (GLOB SOURCES
   "referencelineedit.cpp"
   "pointdialog.cpp"
   "pointedit.cpp"
+  "numericedit.h"  # required for moc
 )
 
 target_sources(libommpfritt PRIVATE ${SOURCES})

@@ -9,7 +9,7 @@ namespace omm
 class CheckBox : public QCheckBox, public MultiValueEdit<bool>
 {
 public:
-  explicit CheckBox(const on_value_changed_t& on_value_changed);
+  explicit CheckBox();
   void set_value(const value_type& value) override;
   value_type value() const override;
   void nextCheckState() override;

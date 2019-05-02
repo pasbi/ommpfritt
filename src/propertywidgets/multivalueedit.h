@@ -12,10 +12,8 @@ class MultiValueEdit
 public:
   using value_type = ValueT;
   using Values = std::set<ValueT>;
-  using on_value_changed_t = std::function<void(const value_type&)>;
 
-  explicit MultiValueEdit(const on_value_changed_t& on_value_changed)
-    : on_value_changed(on_value_changed) {}
+  explicit MultiValueEdit() = default;
 
   virtual void set_values(const Values& values)
   {
@@ -35,7 +33,6 @@ public:
 
 protected:
   virtual void set_inconsistent_value() = 0;
-  const on_value_changed_t on_value_changed;
 };
 
 }  // namespace omm

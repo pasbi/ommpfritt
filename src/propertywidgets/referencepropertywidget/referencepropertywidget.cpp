@@ -28,10 +28,10 @@ ReferencePropertyWidget
 ::ReferencePropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget(scene, properties)
 {
-  const auto on_value_changed = [this](const auto& reference) {
-    set_properties_value(reference);
-  };
-  auto line_edit = std::make_unique<ReferenceLineEdit>(scene, on_value_changed);
+  auto line_edit = std::make_unique<ReferenceLineEdit>(scene);
+  connect(line_edit.get(), &ReferenceLineEdit::value_changed, [this](AbstractPropertyOwner* o) {
+    set_properties_value(o);
+  });
 
   const auto get_allowed_kinds = [](const ReferenceProperty* p) { return p->allowed_kinds(); };
   const auto get_required_flags = [](const ReferenceProperty* p) { return p->required_flags(); };

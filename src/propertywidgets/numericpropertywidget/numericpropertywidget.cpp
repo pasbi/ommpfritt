@@ -13,8 +13,10 @@ template<typename NumericPropertyT> NumericPropertyWidget<NumericPropertyT>
   : PropertyWidget<NumericPropertyT>(scene, properties)
 {
   using edit_type = NumericMultiValueEdit<typename NumericPropertyT::value_type>;
-  auto spinbox = std::make_unique<edit_type>([this](const auto& value) {
-    this->set_properties_value(value);
+  auto spinbox = std::make_unique<edit_type>();
+  QObject::connect(spinbox.get(), &AbstractNumericEdit::value_changed,
+                   [this, spinbox=spinbox.get()]() {
+    this->set_properties_value(spinbox->value());
   });
   m_spinbox = spinbox.get();
   this->set_default_layout(std::move(spinbox));

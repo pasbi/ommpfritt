@@ -32,6 +32,10 @@ public:
     m_upper = upper;
     return *this;
   }
+  void set_upper(const T& upper) { m_upper = upper; }
+  void set_lower(const T& lower) { m_lower = lower; }
+  T lower_bound() const { return m_lower; }
+  T upper_bound() const { return m_upper; }
 
   NumericProperty<T, NumericPropertyLimitsT>& set_step(const T& step)
   {
