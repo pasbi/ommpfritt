@@ -28,7 +28,8 @@ ReferencePropertyWidget
 ::ReferencePropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget(scene, properties)
 {
-  auto line_edit = std::make_unique<ReferenceLineEdit>(scene);
+  auto line_edit = std::make_unique<ReferenceLineEdit>();
+  line_edit->set_scene(scene);
   connect(line_edit.get(), &ReferenceLineEdit::value_changed, [this](AbstractPropertyOwner* o) {
     set_properties_value(o);
   });

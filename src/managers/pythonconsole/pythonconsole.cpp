@@ -28,7 +28,8 @@ PythonConsole::PythonConsole(Scene& scene)
   auto header_layout = std::make_unique<QHBoxLayout>().release();
   m_layout->addLayout(header_layout);
 
-  auto ref_filter_widget = std::make_unique<ReferenceLineEdit>(scene);
+  auto ref_filter_widget = std::make_unique<ReferenceLineEdit>();
+  ref_filter_widget->set_scene(scene);
   ref_filter_widget->set_filter(AbstractPropertyOwner::Flag::HasScript);
   m_associated_item_widget = ref_filter_widget.get();
   m_associated_item_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);

@@ -13,14 +13,12 @@
 namespace omm
 {
 
-ReferenceLineEdit::ReferenceLineEdit(Scene& scene) : m_scene(scene)
+ReferenceLineEdit::ReferenceLineEdit(QWidget* parent) : QComboBox(parent)
 {
   setEditable(false);
   setAcceptDrops(true);
   connect( this, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
            [this](int index) { set_value(m_possible_references[static_cast<std::size_t>(index)]); } );
-  connect(&m_scene, SIGNAL(structure_changed()), this, SLOT(update_candidates()));
-  set_null_label(QObject::tr("< none >", "ReferenceLineEdit").toStdString());
 }
 
 void ReferenceLineEdit::set_null_label(const std::string& value)
@@ -29,24 +27,37 @@ void ReferenceLineEdit::set_null_label(const std::string& value)
   update_candidates();
 }
 
+void ReferenceLineEdit::set_scene(Scene &scene)
+{
+  set_null_label(QObject::tr("< none >", "ReferenceLineEdit").toStdString());
+  assert(m_scene == nullptr);
+  m_scene = &scene;
+  assert(m_scene != nullptr);
+  connect(m_scene, SIGNAL(structure_changed()), this, SLOT(update_candidates()));
+  update_candidates();
+}
+
 void ReferenceLineEdit::update_candidates()
 {
-  m_possible_references = collect_candidates();
-  QSignalBlocker blocker(this);
-  AbstractPropertyOwner* const value_safe = currentIndex() < 0 ? nullptr : value();
-  clear();
-  for (auto candidate : m_possible_references) {
-    if (candidate) {
-      addItem(QString::fromStdString(candidate->name()));
-    } else {
-      addItem(QString::fromStdString(m_null_label));
+  if (m_scene != nullptr) {
+    m_possible_references = collect_candidates();
+    QSignalBlocker blocker(this);
+    AbstractPropertyOwner* const value_safe = currentIndex() < 0 ? nullptr : value();
+    clear();
+    for (auto candidate : m_possible_references) {
+      if (candidate) {
+        addItem(QString::fromStdString(candidate->name()));
+      } else {
+        addItem(QString::fromStdString(m_null_label));
+      }
     }
+    set_value(value_safe);
   }
-  set_value(value_safe);
 }
 
 void ReferenceLineEdit::set_value(const value_type& value)
 {
+  assert(m_scene != nullptr);
   const bool value_has_changed = m_value != value;
   if (::contains(m_possible_references, value)) {
     m_value = value;
@@ -126,13 +137,13 @@ std::vector<omm::AbstractPropertyOwner*> ReferenceLineEdit::collect_candidates()
     candidates.insert(candidates.end(), ts.begin(), ts.end());
   };
   if (!!(m_allowed_kinds & omm::AbstractPropertyOwner::Kind::Object)) {
-    merge(m_scene.object_tree.items());
+    merge(m_scene->object_tree.items());
   }
   if (!!(m_allowed_kinds & omm::AbstractPropertyOwner::Kind::Tag)) {
-    merge(m_scene.tags());
+    merge(m_scene->tags());
   }
   if (!!(m_allowed_kinds & omm::AbstractPropertyOwner::Kind::Style)) {
-    merge(m_scene.styles.items());
+    merge(m_scene->styles.items());
   }
 
   const auto not_has_required_flags = [this](const omm::AbstractPropertyOwner* apo) {
