@@ -11,6 +11,16 @@ ReferenceProperty::ReferenceProperty()
   set_default_value(nullptr);
 }
 
+ReferenceProperty::ReferenceProperty(const ReferenceProperty &other)
+  : TypedProperty<AbstractPropertyOwner *>(other)
+  , m_referenceproperty_reference_observer(*this)
+{
+  auto* apo = value();
+  if (apo != nullptr) {
+    apo->register_observer(m_referenceproperty_reference_observer);
+  }
+}
+
 std::string ReferenceProperty::type() const { return TYPE; }
 
 void ReferenceProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
