@@ -21,20 +21,10 @@
 #include "widgets/pointdialog.h"
 #include "commands/movecommand.h"
 
-namespace {
-constexpr auto FILE_ENDING = ".omm";
-
-void show_export_dialog(omm::Application& app)
+namespace
 {
-  static std::unique_ptr<QDialog> export_dialog;
-  if (!export_dialog) {
-    app.scene.update();
-    export_dialog = std::make_unique<omm::ExportDialog>(app.scene, app.main_window());
-  }
-  export_dialog->exec();
-}
-
-}
+constexpr auto FILE_ENDING = ".omm";
+}  // namespace
 
 namespace omm
 {
@@ -189,7 +179,14 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
     ai( QT_TRANSLATE_NOOP("any-context", "save document as"), [](Application& app) {
       app.save_as(); } ),
     ai( QT_TRANSLATE_NOOP("any-context", "load document"), [](Application& app) { app.load(); } ),
-    ai( QT_TRANSLATE_NOOP("any-context", "export"), show_export_dialog),
+    ai( QT_TRANSLATE_NOOP("any-context", "export"), [](Application& app) {
+      static ExportDialog* export_dialog = nullptr;
+      if (export_dialog == nullptr) {
+        export_dialog = new omm::ExportDialog(app.scene, app.main_window());
+      }
+      app.scene.update();
+      export_dialog->exec();
+    }),
     ai( QT_TRANSLATE_NOOP("any-context", "make smooth"), &actions::make_smooth),
     ai( QT_TRANSLATE_NOOP("any-context", "make linear"), &actions::make_linear),
     ai( QT_TRANSLATE_NOOP("any-context", "remove points"), &actions::remove_selected_points),

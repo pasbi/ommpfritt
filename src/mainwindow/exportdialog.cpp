@@ -58,7 +58,7 @@ namespace omm
 ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   : QDialog(parent), m_scene(scene)
   , m_filepath(scene.filename())
-  , m_ui(std::make_unique<::Ui::ExportDialog>())
+  , m_ui(new ::Ui::ExportDialog)
 {
   m_ui->setupUi(this);
 
