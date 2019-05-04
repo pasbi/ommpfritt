@@ -16,6 +16,33 @@
     </message>
 </context>
 <context>
+    <name>ExportDialog</name>
+    <message>
+        <source>Raster</source>
+        <translation>Raster</translation>
+    </message>
+    <message>
+        <source>SVG</source>
+        <translation>SVG</translation>
+    </message>
+    <message>
+        <source>x</source>
+        <translation>x</translation>
+    </message>
+    <message>
+        <source>Export</source>
+        <translation>Export</translation>
+    </message>
+    <message>
+        <source>Resolution:</source>
+        <translation>Auflösung:</translation>
+    </message>
+    <message>
+        <source>Scaling:</source>
+        <translation>Skalierung:</translation>
+    </message>
+</context>
+<context>
     <name>FloatProperty</name>
     <message>
         <source>FloatProperty</source>
@@ -833,6 +860,10 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <source>tension</source>
         <translation>Spannung</translation>
     </message>
+    <message>
+        <source>output</source>
+        <translation>Ausgabe</translation>
+    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>
@@ -1199,10 +1230,6 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Ansichtsfenster</translation>
     </message>
     <message>
-        <source>Save as ...</source>
-        <translation>Speichern als ...</translation>
-    </message>
-    <message>
         <source>Export image ...</source>
         <translation>Bild exportieren ...</translation>
     </message>
@@ -1217,6 +1244,14 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <message>
         <source>Export image</source>
         <translation>Bild exportieren</translation>
+    </message>
+    <message>
+        <source>Export vector graphics...</source>
+        <translation>Vektorgraphik exportieren ...</translation>
+    </message>
+    <message>
+        <source>SVG (*.svg)</source>
+        <translation>SVG (*.svg)</translation>
     </message>
 </context>
 <context>

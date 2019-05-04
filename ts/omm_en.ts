@@ -16,6 +16,33 @@
     </message>
 </context>
 <context>
+    <name>ExportDialog</name>
+    <message>
+        <source>Raster</source>
+        <translation>Raster</translation>
+    </message>
+    <message>
+        <source>SVG</source>
+        <translation>SVG</translation>
+    </message>
+    <message>
+        <source>x</source>
+        <translation>x</translation>
+    </message>
+    <message>
+        <source>Export</source>
+        <translation>Export</translation>
+    </message>
+    <message>
+        <source>Resolution:</source>
+        <translation>Resolution:</translation>
+    </message>
+    <message>
+        <source>Scaling:</source>
+        <translation>Scaling:</translation>
+    </message>
+</context>
+<context>
     <name>FloatProperty</name>
     <message>
         <source>FloatProperty</source>
@@ -833,6 +860,10 @@ Remove the selected items anyway?</translation>
         <source>tension</source>
         <translation>Tension</translation>
     </message>
+    <message>
+        <source>output</source>
+        <translation>Output</translation>
+    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>
@@ -1199,10 +1230,6 @@ Remove the selected items anyway?</translation>
         <translation>Viewport</translation>
     </message>
     <message>
-        <source>Save as ...</source>
-        <translation>Save as ...</translation>
-    </message>
-    <message>
         <source>Export image ...</source>
         <translation>Export image ...</translation>
     </message>
@@ -1217,6 +1244,14 @@ Remove the selected items anyway?</translation>
     <message>
         <source>Export image</source>
         <translation>Export image</translation>
+    </message>
+    <message>
+        <source>Export vector graphics...</source>
+        <translation>Export vector graphics ...</translation>
+    </message>
+    <message>
+        <source>SVG (*.svg)</source>
+        <translation>SVG (*.svg)</translation>
     </message>
 </context>
 <context>
