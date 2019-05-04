@@ -52,7 +52,7 @@ public:
   virtual ~Property() = default;
 
   virtual variant_type variant_value() const = 0;
-  virtual void notify_observers() = 0;
+  void notify_observers();
 
   virtual void set(const variant_type& value) = 0;
 
@@ -132,6 +132,17 @@ private:
     std::set<std::size_t> target_values;
   } m_enabled_buddy;
 
+public:
+  struct NotificationBlocker
+  {
+    explicit NotificationBlocker(Property& p);
+    ~NotificationBlocker();
+  private:
+    Property& m_p;
+  };
+private:
+  friend struct NotificationBlocker;
+  bool m_notifications_are_blocked;
 };
 
 void register_properties();

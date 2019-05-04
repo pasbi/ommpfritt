@@ -45,13 +45,6 @@ public:
     }
   }
 
-  void notify_observers() override
-  {
-    Observed<AbstractPropertyObserver>::for_each([this](auto* observer) {
-      observer->on_property_value_changed(*this);
-    });
-  }
-
   virtual ValueT default_value() const { return m_default_value; }
   virtual void set_default_value(const ValueT& value) { m_default_value = value; }
   virtual void reset() { m_value = m_default_value; }

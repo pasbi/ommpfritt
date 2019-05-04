@@ -12,6 +12,15 @@ namespace omm
 const std::string Property::USER_PROPERTY_CATEGROY_NAME = QT_TRANSLATE_NOOP( "Property",
                                                                              "user properties" );
 
+void Property::notify_observers()
+{
+  if (!m_notifications_are_blocked) {
+    Observed<AbstractPropertyObserver>::for_each([this](auto* observer) {
+      observer->on_property_value_changed(*this);
+    });
+  }
+}
+
 std::string Property::label() const { return m_label; }
 std::string Property::widget_type() const { return type() + "Widget"; }
 std::string Property::category() const { return m_category; }
@@ -109,6 +118,16 @@ Property::set_enabled_buddy(OptionsProperty& property, const std::set<std::size_
 bool Property::is_compatible(const Property& other) const
 {
   return other.category() == category() && other.type() == type();
+}
+
+Property::NotificationBlocker::NotificationBlocker(Property &p) : m_p(p)
+{
+  m_p.m_notifications_are_blocked = true;
+}
+
+Property::NotificationBlocker::~NotificationBlocker()
+{
+  m_p.m_notifications_are_blocked = false;
 }
 
 }  // namespace omm
