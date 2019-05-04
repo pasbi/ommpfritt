@@ -266,5 +266,6 @@ private:
 };
 
 using IntNumericEdit = NumericEdit<int>;
+using DoubleNumericEdit = NumericEdit<double>;
 
 }  // namespace

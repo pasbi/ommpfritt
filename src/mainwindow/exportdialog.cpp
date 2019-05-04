@@ -98,6 +98,9 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   QSettings settings;
   m_ui->cb_format->setCurrentIndex(settings.value(FORMAT_SETTINGS_KEY, 0).toInt());
   update_active_view();
+
+  m_ui->ne_scaling->set_value(100.0);
+  m_ui->ne_scaling->set_step(0.01);
 }
 
 void ExportDialog::update_preview()
@@ -203,9 +206,10 @@ void ExportDialog::save_as_svg()
     QByteArray buffer;
     QSvgGenerator generator;
     generator.setFileName(filename);
-    const double scale = 1.0;
+    const auto scale = m_ui->ne_scaling->value();
     auto view_box_size = view()->property(View::SIZE_PROPERTY_KEY)->value<Vec2f>();
-    generator.setViewBox(QRectF(0.0, 0.0, 1.0, view_box_size.y/view_box_size.x));
+    view_box_size *= scale / view_box_size.x;
+    generator.setViewBox(QRectF(0.0, 0.0, view_box_size.x, view_box_size.y));
     render(generator, -scale * 4.0 / 3.0);
     m_filepath = filename.toStdString();
   }
