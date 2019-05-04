@@ -45,7 +45,7 @@ private:
   std::vector<omm::AbstractPropertyOwner*> collect_candidates();
   std::string m_null_label;
 
-private Q_SLOTS:
+public Q_SLOTS:
   void update_candidates();
 
 Q_SIGNALS:
