@@ -30,6 +30,7 @@ include_directories(${pybind11_INCLUDE_DIRS})
 
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 find_package(Qt5Widgets CONFIG REQUIRED)
+find_package(Qt5Svg REQUIRED)
 find_package(Qt5 COMPONENTS LinguistTools)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/translations.qrc ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
@@ -60,8 +61,8 @@ target_link_libraries(ommpfritt python3.7m)
 target_include_directories(libommpfritt PRIVATE ${PYTHON_INCLUDE_DIRS})
 target_link_libraries(libommpfritt pybind11::embed)
 target_link_libraries(ommpfritt pybind11::embed)
-target_link_libraries(libommpfritt Qt5::Widgets)
-target_link_libraries(ommpfritt Qt5::Widgets)
+target_link_libraries(libommpfritt Qt5::Widgets Qt5::Svg)
+target_link_libraries(ommpfritt Qt5::Widgets Qt5::Svg)
 
 add_subdirectory(src)
 add_subdirectory(test)

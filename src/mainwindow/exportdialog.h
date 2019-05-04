@@ -4,10 +4,11 @@
 #include <memory>
 #include <QPicture>
 #include <QImage>
-#include "ui_exportdialog.h"
 
 class QPushButton;
 class QLabel;
+
+namespace Ui { class ExportDialog; }
 
 namespace omm
 {
@@ -26,6 +27,7 @@ public:
 protected:
   void resizeEvent(QResizeEvent* e) override;
   void showEvent(QShowEvent* e) override;
+  void hideEvent(QHideEvent* e) override;
 
 private:
   Scene& m_scene;
@@ -33,12 +35,23 @@ private:
   void save_as();
   void update_preview();
   const View* view() const;
-  QImage render(int width, int height) const;
+  void render(QPaintDevice& device, double scale = 1.0) const;
+  QImage rasterize(int width, int height) const;
+  void save_as_raster();
+  void save_as_svg();
   QPicture m_picture;
   std::string m_filepath;
 
-  std::unique_ptr<::Ui::ExportDialog> m_ui;
+  struct UiExportDialogDeleter
+  {
+    void operator()(::Ui::ExportDialog* ui);
+  };
 
+  std::unique_ptr<::Ui::ExportDialog, UiExportDialogDeleter> m_ui;
+
+  static constexpr auto FORMAT_SETTINGS_KEY = "last_format";
+  void update_active_view();
+  void save_settings();
 };
 
 }  // namespace

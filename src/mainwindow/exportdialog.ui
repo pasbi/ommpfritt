@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Export</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
    <item>
@@ -37,7 +37,24 @@
     </widget>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
+    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0">
+     <item>
+      <widget class="omm::ReferenceLineEdit" name="cb_view"/>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cb_format">
+       <item>
+        <property name="text">
+         <string>Raster</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>SVG</string>
+        </property>
+       </item>
+      </widget>
+     </item>
      <item>
       <widget class="QStackedWidget" name="stackedWidget">
        <property name="currentIndex">
@@ -45,23 +62,6 @@
        </property>
        <widget class="QWidget" name="page">
         <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="omm::ReferenceLineEdit" name="cb_view"/>
-         </item>
-         <item>
-          <widget class="QComboBox" name="cb_format">
-           <item>
-            <property name="text">
-             <string>Raster</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>SVG</string>
-            </property>
-           </item>
-          </widget>
-         </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
@@ -154,13 +154,13 @@
  <connections>
   <connection>
    <sender>cb_format</sender>
-   <signal>activated(int)</signal>
+   <signal>currentIndexChanged(int)</signal>
    <receiver>stackedWidget</receiver>
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>792</x>
-     <y>21</y>
+     <x>1077</x>
+     <y>60</y>
     </hint>
     <hint type="destinationlabel">
      <x>795</x>
