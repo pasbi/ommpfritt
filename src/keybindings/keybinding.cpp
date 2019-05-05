@@ -27,7 +27,20 @@ std::string KeyBinding::context() const { return m_context; }
 
 bool KeyBinding::collides_with(const KeyBinding &other) const
 {
-  return m_context == other.m_context && m_sequence == other.m_sequence;
+  if (m_context != other.m_context) {
+    return false;
+  }
+
+  if (m_sequence.isEmpty() || other.m_sequence.isEmpty()) {
+    return false;
+  }
+
+  for (int i = 0; i < m_sequence.count(); ++i) {
+    if (m_sequence[i] != other.m_sequence[i]) {
+      return false;
+    }
+  }
+  return true;
 }
 
 }  // namespace omm
