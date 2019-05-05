@@ -2,10 +2,11 @@ file (GLOB SOURCES
   "codeedit.cpp"
   "coordinateedit.cpp"
   "filepathedit.cpp"
-  "referencelineedit.cpp"
+  "keysequenceedit.cpp"
+  "numericedit.h"  # required for moc
   "pointdialog.cpp"
   "pointedit.cpp"
-  "numericedit.h"  # required for moc
+  "referencelineedit.cpp"
 )
 
 target_sources(libommpfritt PRIVATE ${SOURCES})

@@ -138,6 +138,7 @@ public:
   static constexpr auto SEQUENCE_COLUMN = 2;
   static constexpr auto NAME_COLUMN = 0;
   static constexpr auto CONTEXT_COLUMN = 1;
+  static constexpr auto DEFAULT_KEY_SEQUENCE_ROLE = Qt::UserRole + 1;
 
 private:
   std::vector<KeyBinding> m_bindings;  // pointers must not change

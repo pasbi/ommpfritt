@@ -182,6 +182,8 @@ QVariant KeyBindings::data(const QModelIndex& index, int role) const
       return binding.key_sequence();
     }
     break;
+  case DEFAULT_KEY_SEQUENCE_ROLE:
+    return binding.default_key_sequence();
   }
   return QVariant();
 }
