@@ -152,6 +152,11 @@ private:
             std::list<std::unique_ptr<QMenu>>& menus);
   bool call_global_command(const QKeySequence& sequence, const CommandInterface& source) const;
 
+  /**
+   * @brief collides returns true if there is another item colliding with the one at index
+   */
+  bool collides(std::size_t index) const;
+
 };
 
 }  // namespace omm

@@ -13,6 +13,7 @@
 #include "managers/objectmanager/objectmanager.h"
 #include "managers/pythonconsole/pythonconsole.h"
 #include <QCoreApplication>
+#include <QApplication>
 
 namespace
 {
@@ -182,6 +183,20 @@ QVariant KeyBindings::data(const QModelIndex& index, int role) const
       return binding.key_sequence();
     }
     break;
+  case Qt::BackgroundRole:
+    if (collides(index.row()) && !binding.key_sequence().isEmpty()) {
+      return QColor(Qt::red).lighter();
+    } else {
+      return QVariant();
+    }
+  case Qt::FontRole:
+    if (index.column() == SEQUENCE_COLUMN) {
+      if (binding.default_key_sequence() != binding.key_sequence()) {
+        auto font = QApplication::font();
+        font.setItalic(true);
+        return font;
+      }
+    }
   case DEFAULT_KEY_SEQUENCE_ROLE:
     return binding.default_key_sequence();
   }
@@ -251,6 +266,17 @@ bool KeyBindings::call_global_command( const QKeySequence& sequence,
   } else {
     return call(sequence, global_command_interface);
   }
+}
+
+bool KeyBindings::collides(std::size_t index) const
+{
+  const auto& kb = m_bindings[index];
+  for (auto&& other : m_bindings) {
+    if (&other != &kb && other.collides_with(kb)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 }  // namespace omm
