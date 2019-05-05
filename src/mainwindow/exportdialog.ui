@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Export</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
    <item>
     <widget class="QLabel" name="lb_preview">
      <property name="sizePolicy">
