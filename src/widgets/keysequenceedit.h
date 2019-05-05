@@ -17,6 +17,7 @@ public:
   void set_default_key_sequence(const QKeySequence& key_sequence);
   QKeySequence key_sequence() const;
   void focusInEvent(QFocusEvent *event) override;
+  bool focusNextPrevChild(bool next) override;
 
 private:
   QKeySequenceEdit* m_key_sequence_edit;

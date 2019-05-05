@@ -54,6 +54,11 @@ void KeySequenceEdit::focusInEvent(QFocusEvent *event)
   m_key_sequence_edit->setFocus(event->reason());
 }
 
-
+bool KeySequenceEdit::focusNextPrevChild(bool next)
+{
+  // this makes it possible to use `Tab` in a user-defined key sequence.
+  Q_UNUSED(next)
+  return false;
+}
 
 }  // namespace omm
