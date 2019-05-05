@@ -70,6 +70,7 @@ void View::on_property_value_changed(Property& property)
   if (&property == this->property(TO_VIEWPORT_PROPERTY_KEY)) { to_viewport(); }
   if (&property == this->property(FROM_VIEWPORT_PROPERTY_KEY)) { from_viewport(); }
   if (&property == this->property(OUTPUT_VIEW_PROPERTY_KEY)) { make_output_unique(); }
+  Object::on_property_value_changed(property);
 }
 
 void View::from_viewport()
