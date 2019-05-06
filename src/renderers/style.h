@@ -20,6 +20,7 @@ public:
   std::unique_ptr<Style> clone() const;  // provided for interface consistency
   QIcon icon() const;
   Flag flags() const override;
+  Scene* scene() const;
 
 private:
   Scene* const m_scene;

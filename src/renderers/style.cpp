@@ -37,6 +37,8 @@ Style::Style(Scene* scene)
 
 std::string Style::type() const { return TYPE; }
 AbstractPropertyOwner::Flag Style::flags() const { return Flag::None; }
+Scene *Style::scene() const { return m_scene; }
+
 std::unique_ptr<Style> Style::clone() const
 {
   auto clone = std::make_unique<Style>(m_scene);

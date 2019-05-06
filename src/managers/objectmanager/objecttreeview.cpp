@@ -91,6 +91,7 @@ void ObjectTreeView::mousePressEvent(QMouseEvent* e)
 {
   switch (columnAt(e->pos().x())) {
     case 0:
+      [[fallthrough]];
     case 2:
       if (e->button() == Qt::LeftButton) {
         m_dragged_index = indexAt(e->pos());
