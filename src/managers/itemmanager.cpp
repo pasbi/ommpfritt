@@ -19,18 +19,7 @@ template<typename ItemViewT> ItemManager<ItemViewT>
 {
   auto item_view = std::make_unique<ItemViewT>(model);
   m_item_view = item_view.get();
-  item_view->installEventFilter(this);
-
   set_widget(std::move(item_view));
-}
-
-template<typename ItemViewT>
-bool ItemManager<ItemViewT>::eventFilter(QObject* object, QEvent* event)
-{
-  if (object == m_item_view && event->type() == QEvent::MouseButtonRelease) {
-    m_scene.set_selection(m_item_view->selected_items());
-  }
-  return Manager::eventFilter(object, event);
 }
 
 template<typename ItemViewT>

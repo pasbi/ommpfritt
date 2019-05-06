@@ -45,19 +45,8 @@ template<typename ItemViewT, typename ItemModelT>
 void ManagerItemView<ItemViewT, ItemModelT>::mouseReleaseEvent(QMouseEvent* e)
 {
   // see also mousePressEvent
-  e->ignore();
+  this->model()->scene.set_selection(this->selected_items());
   ItemViewT::mouseReleaseEvent(e);
-}
-
-template<typename ItemViewT, typename ItemModelT>
-void ManagerItemView<ItemViewT, ItemModelT>::mousePressEvent(QMouseEvent* e)
-{
-  // selection change must be propagated on key release rather than on key press.
-  // otherwise, drag'n'dropping items on other items' reference-properties becomes really hard.
-  // see also mouseReleaseEvent.
-  m_block_selection_change_signal = true;
-  ItemViewT::mousePressEvent(e);
-  m_block_selection_change_signal = false;
 }
 
 template<typename ItemViewT, typename ItemModelT>
