@@ -15,10 +15,12 @@ namespace omm
 
 ReferenceLineEdit::ReferenceLineEdit(QWidget* parent) : QComboBox(parent)
 {
-  setEditable(false);
+  setEditable(true);
   setAcceptDrops(true);
-  connect( this, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-           [this](int index) { set_value(m_possible_references[static_cast<std::size_t>(index)]); } );
+  const auto set_value = [this](int index) {
+    this->set_value(m_possible_references[static_cast<std::size_t>(index)]);
+  };
+  connect(this, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), set_value);
 }
 
 void ReferenceLineEdit::set_null_label(const std::string& value)
