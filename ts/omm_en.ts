@@ -1287,6 +1287,17 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
+    <name>omm::KeySequenceEdit</name>
+    <message>
+        <source>R</source>
+        <translation>R</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation>X</translation>
+    </message>
+</context>
+<context>
     <name>omm::MainWindow</name>
     <message>
         <source>About</source>
