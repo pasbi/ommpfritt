@@ -1157,10 +1157,6 @@ Remove the selected items anyway?</translation>
         <translation>Attach</translation>
     </message>
     <message>
-        <source>tool</source>
-        <translation>Tool</translation>
-    </message>
-    <message>
         <source>scene</source>
         <translation>Scene</translation>
     </message>
@@ -1175,6 +1171,14 @@ Remove the selected items anyway?</translation>
     <message>
         <source>load recent document</source>
         <translation>Recently opened files ...</translation>
+    </message>
+    <message>
+        <source>path</source>
+        <translation>Path</translation>
+    </message>
+    <message>
+        <source>tool</source>
+        <translation>Tool</translation>
     </message>
 </context>
 <context>

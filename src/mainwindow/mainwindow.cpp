@@ -143,7 +143,7 @@ std::vector<std::string> MainWindow::main_menu_entries()
     QT_TRANSLATE_NOOP("menu_name", "object")"/new style",
     "object/" QT_TRANSLATE_NOOP("menu_name", "create")"/",
     "object/" QT_TRANSLATE_NOOP("menu_name", "attach")"/",
-    "path/",
+    QT_TRANSLATE_NOOP("menu_name", "path")"/",
     QT_TRANSLATE_NOOP("menu_name", "tool")"/previous tool",
     "tool/"s + KeyBindings::SEPARATOR,
     QT_TRANSLATE_NOOP("menu_name", "scene")"/evaluate",

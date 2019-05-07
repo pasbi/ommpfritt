@@ -1157,10 +1157,6 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Anhängen</translation>
     </message>
     <message>
-        <source>tool</source>
-        <translation>Werkzeug</translation>
-    </message>
-    <message>
         <source>scene</source>
         <translation>Szene</translation>
     </message>
@@ -1175,6 +1171,14 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <message>
         <source>load recent document</source>
         <translation>Zuletzt geöffnete Dokumente ...</translation>
+    </message>
+    <message>
+        <source>path</source>
+        <translation>Pfad</translation>
+    </message>
+    <message>
+        <source>tool</source>
+        <translation>Werkzeug</translation>
     </message>
 </context>
 <context>
