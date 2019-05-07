@@ -157,8 +157,10 @@ QBrush ViewportRenderer::make_brush(const omm::Style& style)
 void ViewportRenderer::toast(const Vec2f& pos, const std::string& text)
 {
   static const QFont toast_font("Helvetica", 12, 0, false);
+  static const QPen pen(Qt::black, 1.0);
   m_painter->save();
   m_painter->setFont(toast_font);
+  m_painter->setPen(pen);
   const Vec2f gpos = current_transformation().apply_to_position(pos);
   m_painter->resetTransform();
   const QPointF top_left = to_qpoint(gpos);
