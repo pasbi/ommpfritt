@@ -43,6 +43,11 @@ public:
     return ::transform<Result>(m_observers, std::forward<F>(f));
   }
 
+  bool is_registered(ObserverT& observer) const
+  {
+    return ::contains(m_observers, &observer);
+  }
+
 private:
   std::set<ObserverT*> m_observers;
 };
