@@ -12,6 +12,7 @@ class PropertyGroup
 {
 public:
   explicit PropertyGroup(const std::string& prefix, AbstractPropertyOwner& property_owner);
+  PropertyGroup(const PropertyGroup& other) = delete;
   virtual void make_properties(const std::string& group) = 0;
   virtual ~PropertyGroup() = default;
 

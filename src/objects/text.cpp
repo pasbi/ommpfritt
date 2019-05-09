@@ -23,7 +23,11 @@ Text::Text(Scene* scene)
 
   m_font_properties.make_properties(QObject::tr("Font").toStdString());
   m_text_option_properties.make_properties(QObject::tr("Text").toStdString());
+}
 
+Text::Text(const Text &other)
+  : Object(other), m_font_properties("", *this), m_text_option_properties("", *this)
+{
 }
 
 BoundingBox Text::bounding_box() const { return BoundingBox(); }
