@@ -5,6 +5,8 @@
 #include "properties/referenceproperty.h"
 #include "properties/boolproperty.h"
 #include "commands/propertycommand.h"
+#include "tags/tag.h"
+#include "tags/scripttag.h"
 
 namespace omm
 {
@@ -19,28 +21,34 @@ Instance::Instance(Scene* scene)
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
     .set_label(QObject::tr("reference", "Instance").toStdString()).set_category(category);
   add_property<BoolProperty>(COMBINE_STYLES_PROPERTY_KEY)
-    .set_label(QObject::tr("combine styles", "Instance").toStdString()).set_category(category);
+      .set_label(QObject::tr("combine styles", "Instance").toStdString()).set_category(category);
 }
+
+Instance::Instance(const Instance &other) : Object(other), m_instance(nullptr) { }
 
 void Instance::draw_object(AbstractRenderer& renderer, const Style& default_style) const
 {
-  if (is_active()) {
-    const auto o = referenced_object();
-    if (o != nullptr) {
-      RenderOptions options;
-      options.default_style = &default_style;
-      options.always_visible = true;
-      options.styles = find_styles();
-      if (options.styles.empty() || property(COMBINE_STYLES_PROPERTY_KEY)->value<bool>()) {
-        const auto ostyles = o->find_styles();
-        options.styles.reserve(options.styles.size() + ostyles.size());
-        options.styles.insert(options.styles.begin(), ostyles.begin(), ostyles.end());
-      }
-      const auto o_transformation = o->transformation();
-      o->set_transformation(ObjectTransformation());
-      o->draw_recursive(renderer, options);
-      o->set_transformation(o_transformation);
+  if (is_active() && m_instance) {
+    m_instance->set_transformation(ObjectTransformation());  // same transformation as `this`
+    RenderOptions options;
+    options.default_style = &default_style;
+    options.always_visible = true;
+    options.styles = find_styles();
+    if (options.styles.empty() || property(COMBINE_STYLES_PROPERTY_KEY)->value<bool>()) {
+      const auto ostyles = m_instance->find_styles();
+      options.styles.reserve(options.styles.size() + ostyles.size());
+      options.styles.insert(options.styles.begin(), ostyles.begin(), ostyles.end());
     }
+    auto descendants = m_instance->all_descendants();
+    descendants.insert(m_instance.get());
+    for (auto* d : descendants) {
+      for (auto *t : d->tags.items()) {
+        if (t->type() == ScriptTag::TYPE) {
+          static_cast<ScriptTag*>(t)->evaluate();
+        }
+      }
+    }
+    m_instance->draw_recursive(renderer, options);
   }
 }
 
@@ -76,12 +84,20 @@ Object* Instance::referenced_object() const
   }
 }
 
+void Instance::update()
+{
+  m_instance.reset();
+  if (auto* referenced_object = this->referenced_object(); referenced_object != nullptr) {
+    m_instance = referenced_object->clone();
+    copy_properties(*m_instance);
+  }
+}
+
 
 std::unique_ptr<Object> Instance::convert() const
 {
-  auto* referenced_object = this->referenced_object();
-  if (referenced_object != nullptr) {
-    std::unique_ptr<Object> clone = referenced_object->clone();
+  if (m_instance) {
+    std::unique_ptr<Object> clone = m_instance->clone();
     copy_properties(*clone);
     copy_tags(*clone);
     return clone;

@@ -15,6 +15,7 @@ class Instance : public Object
 {
 public:
   explicit Instance(Scene* scene);
+  Instance(const Instance& other);
   void draw_object(AbstractRenderer& renderer, const Style& default_style) const override;
   BoundingBox bounding_box() const override;
   std::string type() const override;
@@ -25,9 +26,11 @@ public:
   std::unique_ptr<Object> convert() const override;
   Flag flags() const override;
   void post_create_hook() override;
+  void update() override;
 
 private:
   Object* referenced_object() const;
+  std::unique_ptr<Object> m_instance = nullptr;
 };
 
 }  // namespace omm
