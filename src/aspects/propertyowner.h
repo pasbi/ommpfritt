@@ -44,7 +44,8 @@ public:
                     Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4, IsView = 0x8 };
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PropertyOwner", "AbstractPropertyOwner");
-
+  AbstractPropertyOwner() = default;
+  AbstractPropertyOwner(const AbstractPropertyOwner& other);
   Property* property(const std::string& key) const;
   bool has_property(const std::string& key) const;
   template<typename ValueT> bool has_property(const std::string& key) const

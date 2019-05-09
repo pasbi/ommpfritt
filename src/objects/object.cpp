@@ -106,8 +106,6 @@ Object::Object(const Object& other)
   });
 }
 
-Object::~Object() { }
-
 void Object::set_scene(Scene* scene)
 {
   m_scene = scene;

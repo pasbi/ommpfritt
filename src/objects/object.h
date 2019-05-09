@@ -37,7 +37,6 @@ public:
 
   explicit Object(Scene* scene);
   explicit Object(const Object& other);
-  virtual ~Object();
 
   enum class Visibility { Visible, Hide, HideTree };
 

@@ -24,6 +24,13 @@ const OrderedMap<std::string, Property>& AbstractPropertyOwner::properties() con
   return m_properties;
 }
 
+AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner &other)
+{
+  for (auto&& key : other.m_properties.keys()) {
+    add_property(key, other.m_properties.at(key)->clone());
+  }
+}
+
 Property *AbstractPropertyOwner::property(const std::string& key) const
 {
   if (has_property(key)) {
