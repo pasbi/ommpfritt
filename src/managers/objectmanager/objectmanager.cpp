@@ -35,7 +35,7 @@ std::vector<CommandInterface::ActionInfo<ObjectManager>> ObjectManager::action_i
       om.scene().remove(&om, om.item_view().selected_items());
     }),
     ai(QT_TRANSLATE_NOOP("any-context", "group objects"), [](ObjectManager& om) {
-      om.group_selected_objects();
+      Application::instance().insert_object(Empty::TYPE, Application::InsertionMode::AsParent);
     })
   };
 }

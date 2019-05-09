@@ -41,13 +41,15 @@ public:
   MainWindow* main_window() const;
   const IconProvider icon_provider;
 
+  enum class InsertionMode { Default, AsParent, AsChild };
+  void insert_object(const std::string& key, InsertionMode mode);
+
 private:
   QApplication& m_app;
   static Application* m_instance;
   MainWindow* m_main_window;
 
   std::map<std::string, QKeySequence> m_default_key_sequences;
-  void insert_object(const std::string& key);
 
 public:
   KeyBindings key_bindings;

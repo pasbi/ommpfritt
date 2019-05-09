@@ -218,7 +218,19 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
   };
 
   for (const auto& key : Object::keys()) {
-    infos.push_back(ai(key, [key](Application& app) { app.insert_object(key); }));
+    infos.push_back(ai(key, [key](Application& app) {
+      const static auto get_mode = []() {
+        const auto modifiers = QApplication::keyboardModifiers();
+        if (modifiers & Qt::ControlModifier) {
+          return InsertionMode::AsChild;
+        } else if (modifiers & Qt::ShiftModifier) {
+          return InsertionMode::AsParent;
+        } else {
+          return InsertionMode::Default;
+        }
+      };
+      app.insert_object(key, get_mode());
+    }));
   }
 
   for (const auto& key : Manager::keys()) {
@@ -251,28 +263,52 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
 std::string Application::type() const { return TYPE; }
 MainWindow* Application::main_window() const { return m_main_window; }
 
-void Application::insert_object(const std::string &key)
+void Application::insert_object(const std::string &key, InsertionMode mode)
 {
   auto macro = scene.history.start_macro(tr("Create %1")
                   .arg(QApplication::translate("any-context", key.c_str())));
   using add_command_type = AddCommand<Tree<Object>>;
   auto object = Object::make(key, &scene);
   auto& ref = *object;
+
+
   Object* parent = nullptr;
-  if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
-    const auto selection = scene.item_selection<Object>();
-    if (selection.size() == 1) {
+  Object* predecessor = nullptr;
+  std::vector<Object*> children;
+  switch (mode) {
+  case InsertionMode::AsChild:
+    if (const auto selection = scene.item_selection<Object>(); selection.size() == 1) {
       parent = *selection.begin();
     }
+    break;
+  case InsertionMode::AsParent: {
+    auto selection = scene.item_selection<Object>();
+    Object::remove_internal_children(selection);
+    children = Object::sort(selection);
+    parent = children.empty() ? &scene.object_tree.root() : &children.back()->parent();
+    if (std::size_t pos = children.back()->position(); pos > 0) {
+      predecessor = parent->children()[pos-1];
+    }
+    break;
+  }
+  default:
+    break;
   }
 
   scene.submit<add_command_type>(scene.object_tree, std::move(object));
   ref.set_global_transformation(ObjectTransformation(), true);  // spawn at world-origin
-
-  if (parent != nullptr) {
-    using move_command_type = MoveCommand<Tree<Object>>;
-    const move_command_type::context_type move_context(ref, *parent, nullptr);
-    scene.submit<move_command_type>(scene.object_tree, std::vector { move_context });
+  using move_command_t = MoveCommand<Tree<Object>>;
+  using move_context_t = move_command_t::context_type;
+  if (!children.empty()) {
+    const auto move_contextes = ::transform<move_context_t>(children, [&ref](auto* c) {
+      return move_context_t(*c, ref, nullptr);
+    });
+    scene.submit<move_command_t>(scene.object_tree, move_contextes);
+    move_context_t move_context(ref, *parent, predecessor);
+    scene.submit<move_command_t>(scene.object_tree, std::vector { move_context });
+  } else if (parent != nullptr) {
+    const move_context_t move_context(ref, *parent, nullptr);
+    scene.submit<move_command_t>(scene.object_tree, std::vector { move_context });
   }
 
   ref.post_create_hook();
