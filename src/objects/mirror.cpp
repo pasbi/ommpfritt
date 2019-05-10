@@ -30,9 +30,8 @@ Mirror::Mirror(Scene* scene) : Object(scene)
 }
 
 Mirror::Mirror(const Mirror &other)
-  : Object(other), m_reflection(other.m_reflection->clone())
+  : Object(other), m_reflection(other.m_reflection ? other.m_reflection->clone() : nullptr)
 {}
-
 
 void Mirror::draw_object(AbstractRenderer& renderer, const Style& style) const
 {

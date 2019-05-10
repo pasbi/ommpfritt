@@ -286,8 +286,10 @@ void Application::insert_object(const std::string &key, InsertionMode mode)
     Object::remove_internal_children(selection);
     children = Object::sort(selection);
     parent = children.empty() ? &scene.object_tree.root() : &children.back()->parent();
-    if (std::size_t pos = children.back()->position(); pos > 0) {
-      predecessor = parent->children()[pos-1];
+    if (!children.empty()) {
+      if (std::size_t pos = children.back()->position(); pos > 0) {
+        predecessor = parent->children()[pos-1];
+      }
     }
     break;
   }
