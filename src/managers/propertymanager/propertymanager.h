@@ -34,13 +34,16 @@ private:
   QTabWidget* m_tabs;
   std::string m_active_category;
   QAction* m_manage_user_properties_action;
-  std::unique_ptr<QMenuBar> make_menu_bar();
+  std::unique_ptr<QWidget> make_menu_bar();
   std::set<AbstractPropertyOwner*>  m_current_selection;
   std::set<Property*> m_observed_properties;
   std::string make_window_title() const;
+  bool m_is_locked = false;
 
 private Q_SLOTS:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
+  void set_locked(bool locked);
+
 };
 
 }  // namespace omm

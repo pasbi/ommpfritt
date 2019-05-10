@@ -5,6 +5,7 @@
 #include <QTabWidget>
 #include <QTimer>
 #include <QCoreApplication>
+#include <QPushButton>
 
 #include "properties/optionsproperty.h"
 #include "managers/propertymanager/propertymanagertab.h"
@@ -110,7 +111,7 @@ PropertyManager::~PropertyManager()
   clear();
 }
 
-std::unique_ptr<QMenuBar> PropertyManager::make_menu_bar()
+std::unique_ptr<QWidget> PropertyManager::make_menu_bar()
 {
   auto menu_bar = std::make_unique<QMenuBar>();
   auto user_properties_menu = menu_bar->addMenu(QObject::tr("user properties", "PropertyManager"));
@@ -125,11 +126,28 @@ std::unique_ptr<QMenuBar> PropertyManager::make_menu_bar()
                                              QObject::tr("edit ...", "PropertyManager"),
                                              exec_user_property_dialog );
   m_manage_user_properties_action->setEnabled(false);
-  return menu_bar;
+
+  auto lock_button = std::make_unique<QPushButton>();
+  lock_button->setFixedSize(24, 24);
+  lock_button->setText("L");
+  lock_button->setCheckable(true);
+  connect(lock_button.get(), &QPushButton::toggled, [this](bool checked) { set_locked(checked); });
+
+  auto container = std::make_unique<QWidget>();
+  auto layout = std::make_unique<QHBoxLayout>();
+  layout->addWidget(menu_bar.release());
+  layout->addStretch();
+  layout->addWidget(lock_button.release());
+  container->setLayout(layout.release());
+  return container;
 }
 
 void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
+  if (m_is_locked) {
+    return;
+  }
+
   clear();
   OrderedMap<std::string, PropertyManagerTab> tabs;
 
@@ -167,6 +185,8 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
   m_manage_user_properties_action->setEnabled(m_current_selection.size() == 1);
   setWindowTitle(QString::fromStdString(make_window_title()));
 }
+
+void PropertyManager::set_locked(bool locked) { m_is_locked = locked; }
 
 void PropertyManager::clear()
 {

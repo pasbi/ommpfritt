@@ -8,7 +8,7 @@ namespace omm
 
 class MainWindow;
 
-Manager::Manager(const QString& title, Scene& scene, std::unique_ptr<QMenuBar> menu_bar)
+Manager::Manager(const QString& title, Scene& scene, std::unique_ptr<QWidget> menu_bar)
   : QDockWidget(title), m_scene(scene)
 {
   setAttribute(Qt::WA_DeleteOnClose);
