@@ -54,9 +54,9 @@ bool PythonEngine
 ::exec(const std::string& code, const py::object& locals, const void* associated_item) const
 {
   // actually, they are used. However some compilers emit false warnings without the following.
-  Q_UNUSED(::on_stderr);
-  Q_UNUSED(::on_stdout);
-  Q_UNUSED(::notify);
+  Q_UNUSED(::on_stderr)
+  Q_UNUSED(::on_stdout)
+  Q_UNUSED(::notify)
 
   PythonStreamRedirect py_output_redirect {};
   try {

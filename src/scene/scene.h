@@ -36,6 +36,7 @@ class Scene : public QObject
   Q_OBJECT
 public:
   Scene(PythonEngine& python_engine);
+  ~Scene();
 
   std::unique_ptr<Object> make_root();
   static constexpr auto TYPE = "Scene";

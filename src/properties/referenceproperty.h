@@ -25,6 +25,7 @@ class ReferenceProperty : public TypedProperty<AbstractPropertyOwner*>
 public:
   ReferenceProperty();
   explicit ReferenceProperty(const ReferenceProperty& other);
+  ~ReferenceProperty() override;
   std::string type() const override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;

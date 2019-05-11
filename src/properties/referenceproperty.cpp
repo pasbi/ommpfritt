@@ -22,6 +22,14 @@ ReferenceProperty::ReferenceProperty(const ReferenceProperty &other)
   }
 }
 
+ReferenceProperty::~ReferenceProperty()
+{
+  auto* apo = value();
+  if (apo != nullptr && apo->is_registered(m_referenceproperty_reference_observer)) {
+    apo->unregister_observer(m_referenceproperty_reference_observer);
+  }
+}
+
 std::string ReferenceProperty::type() const { return TYPE; }
 
 void ReferenceProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const

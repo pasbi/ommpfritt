@@ -73,6 +73,15 @@ Scene::Scene(PythonEngine& python_engine)
   connect(&history, SIGNAL(index_changed()), this, SIGNAL(filename_changed()));
 }
 
+Scene::~Scene()
+{
+  // make sure that there are no references (via ReferenceProperties) across objects.
+  // the references might be destructed after the referenced objects have been deleted.
+  // that leads to fucked-up states, undefined behavior, etc.
+  object_tree.replace_root(make_root());
+  styles.set(std::vector<std::unique_ptr<Style>> {});
+}
+
 std::unique_ptr<Object> Scene::make_root()
 {
   class Root : public Empty
