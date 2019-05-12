@@ -48,6 +48,9 @@ private:
 public Q_SLOTS:
   void update_candidates();
 
+private Q_SLOTS:
+  void convert_text_to_placeholder_text();
+
 Q_SIGNALS:
   void value_changed(value_type value);
 };

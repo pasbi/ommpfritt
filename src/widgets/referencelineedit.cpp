@@ -3,6 +3,7 @@
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QLineEdit>
+#include <QTimer>
 
 #include "properties/referenceproperty.h"
 #include "scene/propertyownermimedata.h"
@@ -19,8 +20,11 @@ ReferenceLineEdit::ReferenceLineEdit(QWidget* parent) : QComboBox(parent)
   setAcceptDrops(true);
   const auto set_value = [this](int index) {
     this->set_value(m_possible_references[static_cast<std::size_t>(index)]);
+    QSignalBlocker blocker(this);
+    QTimer::singleShot(1, this, SLOT(convert_text_to_placeholder_text()));
   };
   connect(this, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), set_value);
+  QTimer::singleShot(1, this, SLOT(convert_text_to_placeholder_text()));
 }
 
 void ReferenceLineEdit::set_null_label(const std::string& value)
@@ -55,6 +59,12 @@ void ReferenceLineEdit::update_candidates()
     }
     set_value(value_safe);
   }
+}
+
+void ReferenceLineEdit::convert_text_to_placeholder_text()
+{
+  lineEdit()->setPlaceholderText(lineEdit()->text());
+  lineEdit()->setText("");
 }
 
 void ReferenceLineEdit::set_value(const value_type& value)
@@ -104,7 +114,6 @@ void ReferenceLineEdit::dropEvent(QDropEvent* event)
     set_value(reference);
   }
 }
-
 
 bool ReferenceLineEdit::can_drop(const QMimeData& mime_data) const
 {
