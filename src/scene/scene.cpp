@@ -78,6 +78,13 @@ Scene::~Scene()
   // make sure that there are no references (via ReferenceProperties) across objects.
   // the references might be destructed after the referenced objects have been deleted.
   // that leads to fucked-up states, undefined behavior, etc.
+  for (auto* o : object_tree.items()) {
+    for (auto* p : o->properties().values()) {
+      if (auto* ref_prop = type_cast<ReferenceProperty*>(p)) {
+        ref_prop->set(nullptr);
+      }
+    }
+  }
   object_tree.replace_root(make_root());
   styles.set(std::vector<std::unique_ptr<Style>> {});
 }

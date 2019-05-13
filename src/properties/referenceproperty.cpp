@@ -26,7 +26,7 @@ ReferenceProperty::ReferenceProperty(const ReferenceProperty &other)
 ReferenceProperty::~ReferenceProperty()
 {
   NotificationBlocker blocker(*this);
-//  set(nullptr);
+  set(nullptr);
 }
 
 std::string ReferenceProperty::type() const { return TYPE; }
