@@ -45,6 +45,17 @@ private:
   std::vector<std::unique_ptr<T>> m_children;
   T& get() { return static_cast<T&>(*this); }
   const T& get() const { return static_cast<const T&>(*this); }
+  friend class ChildrenChangedNotificationBlocker;
+  bool m_block_children_change_notifications = false;
+public:
+  class ChildrenChangedNotificationBlocker
+  {
+  public:
+    ChildrenChangedNotificationBlocker(TreeElement& tree_element);
+    ~ChildrenChangedNotificationBlocker();
+  private:
+    TreeElement& m_tree_element;
+  };
 };
 
 template<typename T> bool tree_lt(const T* a, const T* b)

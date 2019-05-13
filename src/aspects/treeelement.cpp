@@ -21,7 +21,9 @@ template<typename T> T& TreeElement<T>::adopt(std::unique_ptr<T> object, const s
   auto guard = object->acquire_set_parent_guard();
   object->m_parent = &get();
   auto& r = insert(m_children, std::move(object), pos);
-  this->on_children_changed( { this } );
+  if (!m_block_children_change_notifications) {
+    this->on_children_changed( { this } );
+  }
   return r;
 }
 
@@ -35,7 +37,9 @@ template<typename T> std::unique_ptr<T> TreeElement<T>::repudiate(T& object)
   auto guard = object.acquire_set_parent_guard();
   object.m_parent = nullptr;
   std::unique_ptr<T> optr = extract(m_children, object);
-  this->on_children_changed( { this } );
+  if (!m_block_children_change_notifications) {
+    this->on_children_changed( { this } );
+  }
   return optr;
 }
 
@@ -153,8 +157,20 @@ std::ostream& operator<<(std::ostream& ostream, const TreeTestItem& item)
   return ostream;
 }
 
+template<typename T> TreeElement<T>::ChildrenChangedNotificationBlocker
+::ChildrenChangedNotificationBlocker(TreeElement &tree_element)
+  : m_tree_element(tree_element)
+{
+  m_tree_element.m_block_children_change_notifications = true;
+}
+
+template<typename T>
+TreeElement<T>::ChildrenChangedNotificationBlocker::~ChildrenChangedNotificationBlocker()
+{
+  m_tree_element.m_block_children_change_notifications = false;
+}
+
 template class TreeElement<Object>;
 template class TreeElement<TreeTestItem>;
-
 
 }  // namespace omm
