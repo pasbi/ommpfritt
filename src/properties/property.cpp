@@ -12,11 +12,11 @@ namespace omm
 const std::string Property::USER_PROPERTY_CATEGROY_NAME = QT_TRANSLATE_NOOP( "Property",
                                                                              "user properties" );
 
-void Property::notify_observers()
+void Property::notify_observers(std::set<const void*> trace)
 {
   if (!m_notifications_are_blocked) {
-    Observed<AbstractPropertyObserver>::for_each([this](auto* observer) {
-      observer->on_property_value_changed(*this);
+    Observed<AbstractPropertyObserver>::for_each([this, trace](auto* observer) {
+      observer->on_property_value_changed(*this, trace);
     });
   }
 }

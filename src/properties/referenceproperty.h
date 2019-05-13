@@ -14,7 +14,7 @@ class ReferencePropertyReferenceObserver : public AbstractPropertyOwnerObserver
 {
 public:
   ReferencePropertyReferenceObserver(ReferenceProperty& master_property);
-  void on_change(AbstractPropertyOwner*, int, Property*) override;
+  void on_change(AbstractPropertyOwner*, int, Property*, std::set<const void*> trace) override;
 
 private:
   ReferenceProperty& m_master_property;
@@ -36,7 +36,6 @@ public:
   void revise() override;
 
   bool is_compatible(const Property& other) const override;
-  bool is_cyclic() const;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("ReferenceProperty", "ReferenceProperty");
   std::unique_ptr<Property> clone() const override;
 
@@ -46,6 +45,7 @@ public:
                                          const AbstractPropertyOwner::Flag required_flags);
 
   void set(AbstractPropertyOwner* const& apo) override;
+  bool creates_cycle(AbstractPropertyOwner *apo) const;
 
 private:
   // default is always nullptr

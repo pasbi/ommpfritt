@@ -27,7 +27,7 @@ class AbstractPropertyObserver
 {
 public:
   virtual ~AbstractPropertyObserver() = default;
-  virtual void on_property_value_changed(Property& property) = 0;
+  virtual void on_property_value_changed(Property& property, std::set<const void*> trace) = 0;
 };
 
 class TriggerPropertyDummyValueType
@@ -52,7 +52,7 @@ public:
   virtual ~Property() = default;
 
   virtual variant_type variant_value() const = 0;
-  void notify_observers();
+  void notify_observers(std::set<const void*> trace);
 
   virtual void set(const variant_type& value) = 0;
 

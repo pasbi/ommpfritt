@@ -32,7 +32,7 @@ void AbstractPropertyWidget::set_default_layout(std::unique_ptr<QWidget> other)
   setLayout(layout.release());
 }
 
-void AbstractPropertyWidget::on_property_value_changed(Property&)
+void AbstractPropertyWidget::on_property_value_changed(Property&, std::set<const void *> trace)
 {
   // wait until other properties have updated (important for MultiValueEdit)
   m_update_timer.start(0);

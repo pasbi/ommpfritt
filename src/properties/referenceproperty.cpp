@@ -1,5 +1,6 @@
 #include "properties/referenceproperty.h"
 #include "objects/object.h"
+#include "tags/tag.h"
 
 namespace omm
 {
@@ -24,10 +25,8 @@ ReferenceProperty::ReferenceProperty(const ReferenceProperty &other)
 
 ReferenceProperty::~ReferenceProperty()
 {
-  auto* apo = value();
-  if (apo != nullptr && apo->is_registered(m_referenceproperty_reference_observer)) {
-    apo->unregister_observer(m_referenceproperty_reference_observer);
-  }
+  NotificationBlocker blocker(*this);
+//  set(nullptr);
 }
 
 std::string ReferenceProperty::type() const { return TYPE; }
@@ -105,9 +104,14 @@ ReferencePropertyReferenceObserver
 ::ReferencePropertyReferenceObserver(ReferenceProperty &master_property)
   : m_master_property(master_property) {}
 
-void ReferencePropertyReferenceObserver::on_change(AbstractPropertyOwner *, int, Property *)
+void ReferencePropertyReferenceObserver::on_change(AbstractPropertyOwner *, int, Property *, std::set<const void *> trace)
 {
-  m_master_property.notify_observers();
+  if (::contains(trace, this)) {
+    LINFO << "cycle!";
+  } else {
+    trace.insert(this);
+    m_master_property.notify_observers(trace);
+  }
 }
 
 }   // namespace omm

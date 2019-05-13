@@ -98,40 +98,24 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
   }
 }
 
-void AbstractPropertyOwner::on_property_value_changed(Property& property)
+void AbstractPropertyOwner::on_property_value_changed(Property& property, std::set<const void *> trace)
 {
-  on_change(this, PROPERTY_CHANGED, &property);
+  trace.insert(this);
+  on_change(this, PROPERTY_CHANGED, &property, trace);
 }
 
-void AbstractPropertyOwner::on_change(AbstractPropertyOwner *subject, int what, Property *property)
+void AbstractPropertyOwner::on_change(AbstractPropertyOwner *subject, int what, Property *property,
+                                      std::set<const void*> trace)
 {
+  trace.insert(this);
   Observed<AbstractPropertyOwnerObserver>::for_each([=](auto* observer) {
-    observer->on_change(subject, what, property);
+    observer->on_change(subject, what, property, trace);
   });
 }
 
 std::string AbstractPropertyOwner::name() const
 {
   return property(NAME_PROPERTY_KEY)->value<std::string>();
-}
-
-bool AbstractPropertyOwner::has_reference_cycle(const std::string& key) const
-{
-  std::set<const AbstractPropertyOwner*> referenced_items;
-  const AbstractPropertyOwner* current = this;
-
-  while (true) {
-    if (::contains(referenced_items, current)) {
-      return true;
-    } else if (current == nullptr || !current->has_property<ReferenceProperty::value_type>(key)) {
-      return false;
-    } else {
-      referenced_items.insert(current);
-      current = current->property(key)->value<ReferenceProperty::value_type>();
-    }
-  }
-  assert(false);
-  return true;
 }
 
 std::unique_ptr<Property> AbstractPropertyOwner::extract_property(const std::string& key)

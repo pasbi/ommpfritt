@@ -75,12 +75,14 @@ Object::Object(Scene* scene)
     .set_label(QObject::tr("shear").toStdString())
     .set_category(category);
 
-  QObject::connect(&tags, &List<Tag>::item_changed, [this]() {
-    on_change(this, TAG_CHANGED, nullptr);
+  QObject::connect(&tags, &List<Tag>::item_changed, [this](std::set<const void*> trace) {
+    trace.insert(this);
+    on_change(this, TAG_CHANGED, nullptr, trace);
   });
 
-  QObject::connect(&tags, &List<Tag>::structure_changed, [this]() {
-    on_change(this, TAG_CHANGED, nullptr);
+  QObject::connect(&tags, &List<Tag>::structure_changed, [this](std::set<const void*> trace) {
+    trace.insert(this);
+    on_change(this, TAG_CHANGED, nullptr, trace);
     m_scene->invalidate();
   });
 }
@@ -96,12 +98,14 @@ Object::Object(const Object& other)
     tag->owner = this;
   }
 
-  QObject::connect(&tags, &List<Tag>::item_changed, [this]() {
-    on_change(this, TAG_CHANGED, nullptr);
+  QObject::connect(&tags, &List<Tag>::item_changed, [this](std::set<const void*> trace) {
+    trace.insert(this);
+    on_change(this, TAG_CHANGED, nullptr, trace);
   });
 
-  QObject::connect(&tags, &List<Tag>::structure_changed, [this]() {
-    on_change(this, TAG_CHANGED, nullptr);
+  QObject::connect(&tags, &List<Tag>::structure_changed, [this](std::set<const void*> trace) {
+    trace.insert(this);
+    on_change(this, TAG_CHANGED, nullptr, trace);
     m_scene->invalidate();
   });
 }
@@ -332,21 +336,26 @@ void Object::copy_tags(Object& other) const
   }
 }
 
-void Object::on_change(AbstractPropertyOwner* subject, int what, Property* property)
+void Object::on_change(AbstractPropertyOwner* subject, int what, Property* property,
+                       std::set<const void *> trace)
 {
   if (!is_root()) {
-    parent().on_change(subject, what, property);
+    auto ts = trace;
+    ts.insert(this);
+    parent().on_change(subject, what, property, ts);
   }
-  AbstractPropertyOwner::on_change(subject, what, property);
+  AbstractPropertyOwner::on_change(subject, what, property, trace);
 }
 
-void Object::on_children_changed()
+void Object::on_children_changed(std::set<const void *> trace)
 {
-  on_change(this, HIERARCHY_CHANGED, nullptr);
-  TreeElement::on_children_changed();
+  auto ts = trace;
+  ts.insert(this);
+  on_change(this, HIERARCHY_CHANGED, nullptr, ts);
+  TreeElement::on_children_changed(trace);
 }
 
-void Object::on_property_value_changed(Property &property)
+void Object::on_property_value_changed(Property &property, std::set<const void *> trace)
 {
   if (property.type() == ReferenceProperty::TYPE) {
     Object* reference = kind_cast<Object*>(property.value<AbstractPropertyOwner*>());
@@ -354,7 +363,7 @@ void Object::on_property_value_changed(Property &property)
       return; // break the cycle!
     }
   }
-  PropertyOwner::on_property_value_changed(property);
+  PropertyOwner::on_property_value_changed(property, trace);
 }
 
 void Object::post_create_hook() { }
@@ -392,6 +401,7 @@ void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align,
       const auto global_location = path_object->global_transformation(false).apply(location);
       set_oriented_position(global_location, align);
     } else {
+      // it wouldn't crash but ux would be really bad. Don't allow cycles.
       LWARNING << "cycle.";
     }
   }

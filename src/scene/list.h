@@ -42,7 +42,8 @@ public:
 
   bool contains(const T& item) const;
 
-  void on_change(AbstractPropertyOwner *apo, int what, Property *property) override;
+  void on_change(AbstractPropertyOwner *apo, int what, Property *property,
+                 std::set<const void*> trace) override;
 
 private:
   std::vector<std::unique_ptr<T>> m_items;

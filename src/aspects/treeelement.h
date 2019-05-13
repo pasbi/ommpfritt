@@ -38,7 +38,7 @@ public:
   static std::vector<T*> sort(const std::set<T*>& items);
 
 protected:
-  virtual void on_children_changed() {}
+  virtual void on_children_changed(std::set<const void*>) {}
 
 private:
   T* m_parent = nullptr;

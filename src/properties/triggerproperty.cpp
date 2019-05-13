@@ -27,7 +27,7 @@ void TriggerProperty::trigger()
 {
   // TODO execute pre and post submit hooks
   // TODO implement set-action for python
-  notify_observers();
+  notify_observers({ this });
 }
 
 }  // namespace omm

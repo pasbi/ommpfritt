@@ -54,7 +54,7 @@ PointsTransformationCommand
 void PointsTransformationCommand::redo()
 {
   for (auto&& [path, alternatives] : m_alternative_points) {
-    path->on_change(path, Path::POINTS_CHANGED, nullptr);
+    path->on_change(path, Path::POINTS_CHANGED, nullptr, { this });
     const auto points = path->points_ref();
     for (const auto& [i, _] : alternatives) {
       points[i]->swap(alternatives[i]);

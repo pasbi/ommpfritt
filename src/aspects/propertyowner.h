@@ -28,7 +28,8 @@ public:
   /**
    * @see AbstractPropertyOwner::on_change;
    */
-  virtual void on_change(AbstractPropertyOwner* apo, int what, Property* property) = 0;
+  virtual void on_change(AbstractPropertyOwner* apo, int what, Property* property,
+                         std::set<const void*> trace) = 0;
 };
 
 class AbstractPropertyOwner : public virtual Serializable,
@@ -65,7 +66,7 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual std::string name() const;
-  void on_property_value_changed(Property& property) override;
+  void on_property_value_changed(Property& property, std::set<const void*> trace) override;
 
   /**
    * @brief on_change is called when the appearance of `this` changed.
@@ -76,12 +77,10 @@ public:
    * @param property the property which has changed. May be nullptr if the change was not induced
    *  by a property.
    */
-  virtual void on_change(AbstractPropertyOwner* subject, int what, Property* property);
+  virtual void on_change(AbstractPropertyOwner* subject, int what, Property* property, std::set<const void *> trace);
   static constexpr auto PROPERTY_CHANGED = 0; // A property changed
 
   virtual Kind kind() const = 0;
-
-  bool has_reference_cycle(const std::string& key) const;
 
   static const std::string NAME_PROPERTY_KEY;
 

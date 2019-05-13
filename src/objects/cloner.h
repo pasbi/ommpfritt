@@ -45,8 +45,9 @@ public:
   void update() override;
 
 protected:
-  void on_change(AbstractPropertyOwner* subject, int code, Property* property) override;
-  void on_property_value_changed(Property& property) override;
+  void on_change(AbstractPropertyOwner* subject, int code, Property* property,
+                 std::set<const void*> trace) override;
+  void on_property_value_changed(Property& property, std::set<const void*> trace) override;
 
 private:
   std::vector<std::unique_ptr<Object>> make_clones();

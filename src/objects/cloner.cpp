@@ -175,15 +175,16 @@ void Cloner::update()
   }
 }
 
-void Cloner::on_change(AbstractPropertyOwner *subject, int code, Property *property)
+void Cloner::on_change(AbstractPropertyOwner *subject, int code, Property *property,
+                       std::set<const void *> trace)
 {
-  Object::on_change(subject, code, property);
+  Object::on_change(subject, code, property, trace);
   m_clones.clear();
 }
 
-void Cloner::on_property_value_changed(Property &property)
+void Cloner::on_property_value_changed(Property &property, std::set<const void *> trace)
 {
-  Object::on_property_value_changed(property);
+  Object::on_property_value_changed(property, trace);
   if (::contains(m_clone_dependencies, &property)) {
     m_clones.clear();
   }

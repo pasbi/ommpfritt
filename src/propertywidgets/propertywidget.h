@@ -19,7 +19,7 @@ class AbstractPropertyWidget
 public:
   explicit AbstractPropertyWidget(Scene& scene, const std::set<Property*>& properties);
   virtual ~AbstractPropertyWidget();
-  void on_property_value_changed(Property& property) override;
+  void on_property_value_changed(Property& property, std::set<const void*> trace) override;
 
 protected:
   void set_default_layout(std::unique_ptr<QWidget> other);

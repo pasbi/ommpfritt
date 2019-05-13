@@ -35,7 +35,7 @@ template<typename T> void Tree<T>::move(TreeMoveContext<T>& context)
   const auto pos = this->insert_position(context.predecessor);
   context.parent.get().adopt(std::move(item), pos);
   m_item_cache_is_dirty = true;
-  Q_EMIT this->structure_changed();
+  Q_EMIT this->structure_changed({ this });
 }
 
 template<typename T> void Tree<T>::insert(TreeOwningContext<T>& context)
@@ -51,7 +51,7 @@ template<typename T> void Tree<T>::insert(TreeOwningContext<T>& context)
   const auto pos = this->insert_position(context.predecessor);
   context.parent.get().adopt(context.subject.release(), pos);
   m_item_cache_is_dirty = true;
-  Q_EMIT this->structure_changed();
+  Q_EMIT this->structure_changed({ this });
 }
 
 template<typename T> void Tree<T>::remove(TreeOwningContext<T>& context)
@@ -63,7 +63,7 @@ template<typename T> void Tree<T>::remove(TreeOwningContext<T>& context)
   );
   context.subject.capture(context.parent.get().repudiate(context.subject));
   m_item_cache_is_dirty = true;
-  Q_EMIT this->structure_changed();
+  Q_EMIT this->structure_changed({ this });
 }
 
 template<typename T> std::unique_ptr<T> Tree<T>::remove(T& t)
@@ -74,7 +74,7 @@ template<typename T> std::unique_ptr<T> Tree<T>::remove(T& t)
   assert(!t.is_root());
   auto item = t.parent().repudiate(t);
   m_item_cache_is_dirty = true;
-  Q_EMIT this->structure_changed();
+  Q_EMIT this->structure_changed({ this });
   return item;
 }
 
@@ -87,7 +87,7 @@ std::unique_ptr<T> Tree<T>::replace_root(std::unique_ptr<T> new_root)
   auto old_root = std::move(m_root);
   m_root = std::move(new_root);
   m_item_cache_is_dirty = true;
-  Q_EMIT this->structure_changed();
+  Q_EMIT this->structure_changed({ this });
   return old_root;
 }
 

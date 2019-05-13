@@ -88,9 +88,10 @@ std::unique_ptr<Object> Scene::make_root()
   {
   public:
     explicit Root(Scene* scene) : Empty(scene) {}
-    void on_change(AbstractPropertyOwner* subject, int code, Property* property) override
+    void on_change(AbstractPropertyOwner* subject, int code, Property* property,
+                   std::set<const void*> trace) override
     {
-      Object::on_change(subject, code, property);
+      Object::on_change(subject, code, property, trace);
       if (code == Object::HIERARCHY_CHANGED) {
         scene()->invalidate();
       } else if (code == AbstractPropertyOwner::PROPERTY_CHANGED) {

@@ -111,9 +111,10 @@ public:
   virtual void update();
   void update_recursive();
 
-  void on_change(AbstractPropertyOwner* subject, int what, Property* property) override;
-  void on_children_changed() override;
-  void on_property_value_changed(Property& property) override;
+  void on_change(AbstractPropertyOwner* subject, int what, Property* property,
+                 std::set<const void*> trace) override;
+  void on_children_changed(std::set<const void*> trace) override;
+  void on_property_value_changed(Property& property, std::set<const void*> trace) override;
 
   virtual void post_create_hook();
 

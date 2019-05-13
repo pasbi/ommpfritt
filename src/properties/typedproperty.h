@@ -41,7 +41,7 @@ public:
   {
     if (m_value != value) {
       m_value = value;
-      notify_observers();
+      notify_observers({ this });
     }
   }
 

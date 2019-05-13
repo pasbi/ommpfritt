@@ -65,12 +65,12 @@ void View::draw_handles(AbstractRenderer& renderer) const
   renderer.draw_spline(points, style, true);
 }
 
-void View::on_property_value_changed(Property& property)
+void View::on_property_value_changed(Property& property, std::set<const void *> trace)
 {
   if (&property == this->property(TO_VIEWPORT_PROPERTY_KEY)) { to_viewport(); }
   if (&property == this->property(FROM_VIEWPORT_PROPERTY_KEY)) { from_viewport(); }
   if (&property == this->property(OUTPUT_VIEW_PROPERTY_KEY)) { make_output_unique(); }
-  Object::on_property_value_changed(property);
+  Object::on_property_value_changed(property, trace);
 }
 
 void View::from_viewport()

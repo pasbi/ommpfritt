@@ -68,19 +68,13 @@ Object* Instance::referenced_object() const
   //  - this instance's parent changes
   //  - the referenced object changes
 
-  if (has_reference_cycle(REFERENCE_PROPERTY_KEY)) {
-    LWARNING << "detected reference cycle  "
-                 << name() << ":" << property(REFERENCE_PROPERTY_KEY)->label() << ".";
+  const auto reference = property(REFERENCE_PROPERTY_KEY)->value<ReferenceProperty::value_type>();
+  const auto object_reference = static_cast<Object*>(reference);
+  if (object_reference != nullptr && ::contains(object_reference->all_descendants(), this)) {
+    LWARNING << "Instance cannot descend from referenced object.";
     return nullptr;
-  } else  {
-    const auto reference = property(REFERENCE_PROPERTY_KEY)->value<ReferenceProperty::value_type>();
-    const auto object_reference = static_cast<Object*>(reference);
-    if (object_reference != nullptr && ::contains(object_reference->all_descendants(), this)) {
-      LWARNING << "Instance cannot descend from referenced object.";
-      return nullptr;
-    } else {
-      return object_reference;
-    }
+  } else {
+    return object_reference;
   }
 }
 

@@ -14,8 +14,8 @@ class AbstractStructure : public QObject
 {
   Q_OBJECT
 Q_SIGNALS:
-  void item_changed();
-  void structure_changed();
+  void item_changed(std::set<const void*> trace);
+  void structure_changed(std::set<const void*> trace);
 };
 
 template<typename T> class Structure : public AbstractStructure
