@@ -32,15 +32,9 @@ template<typename T> void Tree<T>::move(TreeMoveContext<T>& context)
   const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
     [&context](auto* observer) { return observer->acquire_mover_guard(context); }
   );
-  typename TreeElement<T>::ChildrenChangedNotificationBlocker b1(old_parent);
-  typename TreeElement<T>::ChildrenChangedNotificationBlocker b2(context.parent.get());
   auto item = old_parent.repudiate(context.subject);
   const auto pos = this->insert_position(context.predecessor);
   context.parent.get().adopt(std::move(item), pos);
-  QTimer::singleShot(1000, [&]() {
-    old_parent.on_children_changed({ &old_parent });
-//    context.parent.get().on_children_changed({ &context.parent.get() });
-  });
   m_item_cache_is_dirty = true;
   Q_EMIT this->structure_changed({ this });
 }
