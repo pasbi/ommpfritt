@@ -115,6 +115,8 @@ void Mirror::update()
         m_reflection->set_transformation(mirror_t.apply(m_reflection->transformation()));
       }
     }
+  } else {
+    m_draw_children = true;
   }
 }
 
