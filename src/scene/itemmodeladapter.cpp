@@ -49,7 +49,7 @@ make_contextes( const ItemModelAdapterT& adapter,
   omm::Object::remove_internal_children(items);
   const auto sorted_items = ContextT::item_type::sort(items);
   contextes.reserve(items.size());
-  const item_type* predecessor = (pos == 0) ? nullptr : &new_parent.child(pos - 1);
+  const item_type* predecessor = (pos == 0) ? nullptr : &new_parent.tree_child(pos - 1);
   for (item_type* subject : sorted_items) {
     contextes.emplace_back(*subject, new_parent, predecessor);
   }

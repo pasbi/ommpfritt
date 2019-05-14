@@ -261,7 +261,7 @@ std::vector<std::unique_ptr<Object>> Cloner::copy_children(const std::size_t cou
   if (n_children > 0 && count > 0) {
     clones.reserve(count);
     for (std::size_t i = 0; i < count; ++i) {
-      clones.push_back(child(i % n_children).clone());
+      clones.push_back(tree_child(i % n_children).clone());
     }
   }
   return clones;

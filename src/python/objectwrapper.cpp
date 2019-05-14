@@ -6,7 +6,7 @@ namespace omm
 
 py::object ObjectWrapper::children() const
 {
-  return wrap(wrapped.children());
+  return wrap(wrapped.tree_children());
 }
 
 py::object ObjectWrapper::parent() const
@@ -14,7 +14,7 @@ py::object ObjectWrapper::parent() const
   if (this->wrapped.is_root()) {
     return py::none();
   } else {
-    return wrap(this->wrapped.parent());
+    return wrap(this->wrapped.tree_parent());
   }
 }
 

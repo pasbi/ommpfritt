@@ -19,12 +19,12 @@ public:
   virtual ~TreeElement() = default;
   explicit TreeElement(const TreeElement& other);
   bool is_root() const;
-  T& parent() const;
+  T& tree_parent() const;
   T& adopt(std::unique_ptr<T> adoptee, const size_t pos);
   T& adopt(std::unique_ptr<T> adoptee);
   std::unique_ptr<T> repudiate(T& repudiatee);
-  std::vector<T*> children() const;
-  T& child(size_t i) const;
+  std::vector<T*> tree_children() const;
+  T& tree_child(size_t i) const;
   size_t n_children() const;
   bool is_ancestor_of(const T& subject) const;
   void reset_parent(T& new_parent);
@@ -53,9 +53,9 @@ template<typename T> bool tree_lt(const T* a, const T* b)
     // return the direct-descendant of root that is a (direct or indirect) ancestor of direction
     assert(root->is_ancestor_of(*direction) && root != direction);
     const T* candidate = direction;
-    while (&candidate->parent() != root) {
+    while (&candidate->tree_parent() != root) {
       assert(!candidate->is_root());
-      candidate = &candidate->parent();
+      candidate = &candidate->tree_parent();
     }
     return candidate;
   };
@@ -74,7 +74,7 @@ template<typename T> bool tree_lt(const T* a, const T* b)
   } else {
     const auto* aa = get_descendant(lca, a);
     const auto* ba = get_descendant(lca, b);
-    for (const T* c : lca->children()) {
+    for (const T* c : lca->tree_children()) {
       if (aa == c) {
         return true;
       } else if (ba == c) {
@@ -96,14 +96,14 @@ std::ostream& print_tree(std::ostream& ostream, const T* item, int indentation =
 {
   ostream << std::string(indentation, ' ') << item << "\n";
   if (item != nullptr) {
-    const auto children = item->children();
+    const auto children = item->tree_children();
     const auto is_pre_leaf = std::none_of(children.begin(), children.end(), [](auto* c) {
-      return c->children().size() > 0;
+      return c->tree_children().size() > 0;
     });
     if (is_pre_leaf) {
       ::operator<<(ostream, children);
     } else {
-      for (auto&& child : item->children()) {
+      for (auto&& child : item->tree_children()) {
         print_tree(ostream, child, indentation + 2);
       }
     }

@@ -285,10 +285,10 @@ void Application::insert_object(const std::string &key, InsertionMode mode)
     auto selection = scene.item_selection<Object>();
     Object::remove_internal_children(selection);
     children = Object::sort(selection);
-    parent = children.empty() ? &scene.object_tree.root() : &children.back()->parent();
+    parent = children.empty() ? &scene.object_tree.root() : &children.back()->tree_parent();
     if (!children.empty()) {
       if (std::size_t pos = children.back()->position(); pos > 0) {
-        predecessor = parent->children()[pos-1];
+        predecessor = parent->tree_children()[pos-1];
       }
     }
     break;

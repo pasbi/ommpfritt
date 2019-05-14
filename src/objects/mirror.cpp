@@ -45,7 +45,7 @@ BoundingBox Mirror::bounding_box() const
 {
   const auto n_children = this->n_children();
   if (is_active() && n_children > 0) {
-    auto object = this->children().front();
+    auto object = this->tree_children().front();
     auto bb = object->transformation().apply(object->bounding_box());
     return bb | get_mirror_t().apply(bb);
   } else {
@@ -67,7 +67,7 @@ std::unique_ptr<Object> Mirror::convert() const
     converted->adopt(m_reflection->clone());
   }
 
-  for (auto&& child : this->children()) {
+  for (auto&& child : this->tree_children()) {
     converted->adopt(child->clone());
   }
 
@@ -83,7 +83,7 @@ void Mirror::update()
     if (property(AS_PATH_PROPERTY_KEY)->value<Mode>() == Mode::Path) {
       m_draw_children = false;
       if (n_children == 1) {
-        Object& child = this->child(0);
+        Object& child = this->tree_child(0);
         if (!!(child.flags() & Object::Flag::IsPathLike) && !child.is_closed()) {
           auto combined_path = std::make_unique<Path>(scene());
           auto points = child.points();
@@ -111,7 +111,7 @@ void Mirror::update()
     } else {
       m_draw_children = true;
       if (n_children > 0) {
-        m_reflection = this->children().front()->clone();
+        m_reflection = this->tree_children().front()->clone();
         m_reflection->set_transformation(mirror_t.apply(m_reflection->transformation()));
       }
     }

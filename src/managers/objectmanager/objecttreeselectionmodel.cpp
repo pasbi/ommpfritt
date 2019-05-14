@@ -75,7 +75,7 @@ std::vector<Tag*> ObjectTreeSelectionModel::selected_tags_ordered(Scene& scene) 
       if (::contains(m_selected_tags, tag)) { selected_tags.push_back(tag); }
     }
 
-    for (Object* child : object->children()) { stack.push(child); }
+    for (Object* child : object->tree_children()) { stack.push(child); }
   }
 
   return std::vector(selected_tags.begin(), selected_tags.end());

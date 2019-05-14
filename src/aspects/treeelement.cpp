@@ -45,16 +45,16 @@ template<typename T> void TreeElement<T>::reset_parent(T& new_parent)
   new_parent.adopt(m_parent->repudiate(get()));
 }
 
-template<typename T> std::vector<T*> TreeElement<T>::children() const
+template<typename T> std::vector<T*> TreeElement<T>::tree_children() const
 {
   return ::transform<T*>(m_children, [](const auto& up) { return up.get(); });
 }
 
 template<typename T> size_t TreeElement<T>::n_children() const { return m_children.size(); }
-template<typename T> T& TreeElement<T>::child(size_t i) const { return *m_children[i]; }
+template<typename T> T& TreeElement<T>::tree_child(size_t i) const { return *m_children[i]; }
 template<typename T> bool TreeElement<T>::is_root() const { return m_parent == nullptr; }
 
-template<typename T> T& TreeElement<T>::parent() const
+template<typename T> T& TreeElement<T>::tree_parent() const
 {
   assert(!is_root());
   return *m_parent;
@@ -67,13 +67,13 @@ template<typename T> bool TreeElement<T>::is_ancestor_of(const T& subject) const
   } else if (subject.is_root()) {
     return false;
   } else {
-    return is_ancestor_of(subject.parent());
+    return is_ancestor_of(subject.tree_parent());
   }
 }
 
 template<typename T> std::set<T*> TreeElement<T>::all_descendants() const
 {
-  const auto children = this->children();
+  const auto children = this->tree_children();
   std::set<T*> all_descendants(children.begin(), children.end());
   for (const auto& child : children) {
     const auto child_descendants = child->all_descendants();
@@ -85,7 +85,7 @@ template<typename T> std::set<T*> TreeElement<T>::all_descendants() const
 template<typename T> size_t TreeElement<T>::position() const
 {
   assert (!is_root());
-  const auto siblings = parent().children();
+  const auto siblings = tree_parent().tree_children();
   const auto it = std::find(siblings.begin(), siblings.end(), this);
   assert(it != siblings.end());
   return std::distance(siblings.begin(), it);
@@ -116,7 +116,7 @@ T* TreeElement<T>::lowest_common_ancestor(T *a, T *b)
     return candidate;
   }
   while (!candidate->is_root()) {
-    candidate = &candidate->parent();
+    candidate = &candidate->tree_parent();
     if (candidate->is_ancestor_of(*b)) {
       return candidate;
     }

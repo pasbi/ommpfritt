@@ -44,7 +44,7 @@ public:
     : ListContext<T, Wrapper>(subject, predecessor), parent(parent) { }
 
   TreeContext(T& subject, const T* predecessor)
-    : ListContext<T, Wrapper>(subject, predecessor), parent(subject.parent()) { }
+    : ListContext<T, Wrapper>(subject, predecessor), parent(subject.tree_parent()) { }
 
   /**
    * @brief the parent of `subject`
@@ -53,7 +53,7 @@ public:
 
   bool is_sane() const override
   {
-    return this->predecessor == nullptr || &this->predecessor->parent() == &this->parent.get();
+    return this->predecessor == nullptr || &this->predecessor->tree_parent() == &this->parent.get();
   }
 
   static constexpr bool is_tree_context = true;
@@ -188,7 +188,7 @@ const auto* last_sibling(const StructureT& s)
 {
   const auto get_siblings = [&s]() {
     if constexpr (StructureT::is_tree) {
-      return s.root().children();
+      return s.root().tree_children();
     } else {
       return s.ordered_items();
     }

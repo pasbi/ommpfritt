@@ -130,7 +130,7 @@ QModelIndex ObjectTreeAdapter::index(int row, int column, const QModelIndex& par
     return QModelIndex();
   }
 
-  return createIndex(row, column, &item_at(parent).child(row));
+  return createIndex(row, column, &item_at(parent).tree_child(row));
 }
 
 QModelIndex ObjectTreeAdapter::parent(const QModelIndex& index) const
@@ -143,7 +143,7 @@ QModelIndex ObjectTreeAdapter::parent(const QModelIndex& index) const
   if (parent_item.is_root()) {
     return QModelIndex();
   } else {
-    return index_of(parent_item.parent());
+    return index_of(parent_item.tree_parent());
   }
 }
 
@@ -284,7 +284,7 @@ ObjectTreeAdapter::acquire_mover_guard(const ObjectTreeMoveContext& context)
   };
 
   assert(!context.subject.get().is_root());
-  Object& old_parent = context.subject.get().parent();
+  Object& old_parent = context.subject.get().tree_parent();
   Object& new_parent = context.parent.get();
   const auto old_pos = scene.object_tree.position(context.subject);
   const auto new_pos = scene.object_tree.insert_position(context.predecessor);
@@ -313,7 +313,7 @@ ObjectTreeAdapter::acquire_remover_guard(const Object& object)
   private:
     ObjectTreeAdapter& m_model;
   };
-  return std::make_unique<RemoverGuard>( *this, index_of(object.parent()),
+  return std::make_unique<RemoverGuard>( *this, index_of(object.tree_parent()),
                                          scene.object_tree.position(object) );
 }
 

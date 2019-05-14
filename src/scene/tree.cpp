@@ -27,7 +27,7 @@ template<typename T> bool Tree<T>::contains(const T& t) const
 template<typename T> void Tree<T>::move(TreeMoveContext<T>& context)
 {
   assert(context.is_valid());
-  Object& old_parent = context.subject.get().parent();
+  Object& old_parent = context.subject.get().tree_parent();
 
   const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
     [&context](auto* observer) { return observer->acquire_mover_guard(context); }
@@ -73,7 +73,7 @@ template<typename T> std::unique_ptr<T> Tree<T>::remove(T& t)
     [&t](auto* observer) { return observer->acquire_remover_guard(t); }
   );
   assert(!t.is_root());
-  auto item = t.parent().repudiate(t);
+  auto item = t.tree_parent().repudiate(t);
   m_item_cache_is_dirty = true;
   Q_EMIT this->structure_changed({ this });
   return item;
@@ -113,7 +113,7 @@ template<typename T> const T* Tree<T>::predecessor(const T& sibling) const
   if (pos == 0) {
     return nullptr;
   } else {
-    return &sibling.parent().child(pos - 1);
+    return &sibling.tree_parent().tree_child(pos - 1);
   }
 }
 

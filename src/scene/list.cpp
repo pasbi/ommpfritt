@@ -45,6 +45,7 @@ template<typename T> List<T>::List(const List<T>& other)
 {
   register_items(m_items, *this);
 }
+
 template<typename T> List<T>::~List()
 {
   unregister_items(m_items, *this);

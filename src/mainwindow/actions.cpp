@@ -61,7 +61,7 @@ void convert_objects(omm::Application& app, std::set<omm::Object*> convertables)
     for (auto&& c : convertables) {
       auto converted = c->convert();
       assert(!c->is_root());
-      TreeOwningContext<Object> context(*converted, c->parent(), c);
+      TreeOwningContext<Object> context(*converted, c->tree_parent(), c);
       const auto properties = ::transform<Property*>(app.scene.find_reference_holders(*c));
       if (properties.size() > 0) {
         app.scene.submit<PropertiesCommand<ReferenceProperty>>(properties, converted.get());
@@ -77,7 +77,7 @@ void convert_objects(omm::Application& app, std::set<omm::Object*> convertables)
       const auto make_move_context = [&converted_ref](auto* cc) {
         return ObjectTreeMoveContext(*cc, converted_ref, nullptr);
       };
-      const auto old_children = c->children();
+      const auto old_children = c->tree_children();
       std::transform(old_children.rbegin(), old_children.rend(),
                      std::back_inserter(move_contextes), make_move_context);
     }

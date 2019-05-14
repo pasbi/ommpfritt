@@ -127,12 +127,12 @@ ObjectTransformation Object::transformation() const
 
 ObjectTransformation Object::global_transformation(const bool skip_root) const
 {
-  if (is_root() || (skip_root && parent().is_root())) {
+  if (is_root() || (skip_root && tree_parent().is_root())) {
     return transformation();
   } else {
     // TODO caching could gain some speed
     //  invalidate cache if local transformation is set or parent changes
-    return parent().global_transformation(skip_root).apply(transformation());
+    return tree_parent().global_transformation(skip_root).apply(transformation());
   }
 }
 
@@ -148,12 +148,12 @@ void Object
 ::set_global_transformation(const ObjectTransformation& global_transformation, bool skip_root)
 {
   ObjectTransformation local_transformation;
-  if (is_root() || (skip_root && parent().is_root())) {
+  if (is_root() || (skip_root && tree_parent().is_root())) {
     local_transformation = global_transformation;
   } else {
     try {
       local_transformation =
-        parent().global_transformation(skip_root).inverted().apply(global_transformation);
+        tree_parent().global_transformation(skip_root).inverted().apply(global_transformation);
     } catch (const std::runtime_error&) {
       assert(false);
     }
@@ -168,10 +168,11 @@ void Object::set_global_axis_transformation( const ObjectTransformation& global_
   const auto get_glob_trans = [skip_root](const auto* c) {
     return c->global_transformation(skip_root);
   };
-  const auto child_transformations = ::transform<ObjectTransformation>(children(), get_glob_trans);
+  const auto child_transformations = ::transform<ObjectTransformation>(tree_children(),
+                                                                       get_glob_trans);
   set_global_transformation(global_transformation, skip_root);
   for (std::size_t i = 0; i < child_transformations.size(); ++i) {
-    children()[i]->set_global_transformation(child_transformations[i], skip_root);
+    tree_children()[i]->set_global_transformation(child_transformations[i], skip_root);
   }
 }
 
@@ -193,7 +194,7 @@ void Object::serialize(AbstractSerializer& serializer, const Pointer& root) cons
   const auto children_pointer = make_pointer(root, CHILDREN_POINTER);
   serializer.start_array(n_children(), children_pointer);
   for (size_t i = 0; i < n_children(); ++i) {
-    const auto& child = this->child(i);
+    const auto& child = this->tree_child(i);
     const auto child_pointer = make_pointer(children_pointer, i);
     serializer.set_value(child.type(), make_pointer(child_pointer, TYPE_POINTER));
     child.serialize(serializer, child_pointer);
@@ -283,7 +284,7 @@ void Object::draw_recursive(AbstractRenderer& renderer, const RenderOptions& opt
   }
 
   if (visibility != Visibility::HideTree && m_draw_children) {
-    for (const auto& child : children()) {
+    for (const auto& child : tree_children()) {
       child->draw_recursive(renderer, *options.default_style);
     }
   }
@@ -294,7 +295,7 @@ BoundingBox Object::recursive_bounding_box() const
 {
   auto bounding_box = this->bounding_box();
 
-  for (const auto& child : children()) {
+  for (const auto& child : tree_children()) {
     bounding_box |= child->recursive_bounding_box();
   }
   return transformation().apply(bounding_box);
@@ -342,7 +343,7 @@ void Object::on_change(AbstractPropertyOwner* subject, int what, Property* prope
   if (!is_root()) {
     auto ts = trace;
     ts.insert(this);
-    parent().on_change(subject, what, property, ts);
+    tree_parent().on_change(subject, what, property, ts);
   }
   AbstractPropertyOwner::on_change(subject, what, property, trace);
 }
@@ -424,7 +425,7 @@ bool Object::is_visible() const
   const Object* o = this;
   if (o->visibility() == Visibility::Visible) {
     while (!o->is_root()) {
-      o = &o->parent();
+      o = &o->tree_parent();
       if (o->visibility() == Visibility::HideTree) {
         return false;
       }
@@ -467,7 +468,7 @@ bool Object::contains(const Vec2f &point) const
 void Object::update_recursive()
 {
   // it's important to first update the children because of the way e.g. Cloner does its caching.
-  for (auto* child : children()) {
+  for (auto* child : tree_children()) {
     child->update_recursive();
   }
   update();
