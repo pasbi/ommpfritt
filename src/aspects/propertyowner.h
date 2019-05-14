@@ -32,10 +32,12 @@ public:
                          std::set<const void*> trace) = 0;
 };
 
-class AbstractPropertyOwner : public virtual Serializable,
-                              public AbstractPropertyObserver,
-                              public Observed<AbstractPropertyOwnerObserver>
+class AbstractPropertyOwner : public QObject
+                            , public virtual Serializable
+                            , public AbstractPropertyObserver
+                            , public Observed<AbstractPropertyOwnerObserver>
 {
+  Q_OBJECT
 public:
   enum class Kind { None = 0x0,
                     Tag = 0x1, Style = 0x2, Object = 0x4, Tool = 0x8,
@@ -115,6 +117,9 @@ private:
    *  if 0 then the proposal shall be ignored and a new id shall be generated instead.
    */
   mutable std::size_t m_id = 0;
+
+Q_SIGNALS:
+  void property_changed(Property* property, std::set<const void*> trace);
 };
 
 template<AbstractPropertyOwner::Kind kind_> class PropertyOwner : public AbstractPropertyOwner

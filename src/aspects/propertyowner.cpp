@@ -111,6 +111,7 @@ void AbstractPropertyOwner::on_change(AbstractPropertyOwner *subject, int what, 
   Observed<AbstractPropertyOwnerObserver>::for_each([=](auto* observer) {
     observer->on_change(subject, what, property, trace);
   });
+  Q_EMIT property_changed(property, trace);
 }
 
 std::string AbstractPropertyOwner::name() const
