@@ -392,13 +392,14 @@ Point Object::evaluate(const double t) const
 double Object::path_length() const { return -1.0; }
 bool Object::is_closed() const { return false; }
 
-void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t)
+void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t,
+                                  const bool skip_root)
 {
   if (path != nullptr && path->kind() == AbstractPropertyOwner::Kind::Object) {
     auto* path_object = static_cast<Object*>(path);
     if (!path_object->is_ancestor_of(*this)) {
       const auto location = path_object->evaluate(std::clamp(t, 0.0, 1.0));
-      const auto global_location = path_object->global_transformation(false).apply(location);
+      const auto global_location = path_object->global_transformation(skip_root).apply(location);
       set_oriented_position(global_location, align);
     } else {
       // it wouldn't crash but ux would be really bad. Don't allow cycles.
