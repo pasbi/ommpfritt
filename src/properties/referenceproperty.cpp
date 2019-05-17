@@ -16,11 +16,14 @@ ReferenceProperty::ReferenceProperty(const ReferenceProperty &other)
   : TypedProperty<AbstractPropertyOwner *>(other)
   , m_referenceproperty_reference_observer(*this)
 {
-  value()->register_observer(&m_referenceproperty_reference_observer);
+  auto* value = this->value();
+  if (value != nullptr) {
+    value->register_observer(&m_referenceproperty_reference_observer);
 
-  // set is virtual, will be called in TypedProperty-constructor.
-  // Make sure to call ReferenceProperty::set
-  set(value());
+    // set is virtual, will be called in TypedProperty-constructor.
+    // Make sure to call ReferenceProperty::set
+    set(value);
+  }
 }
 
 ReferenceProperty::~ReferenceProperty()
