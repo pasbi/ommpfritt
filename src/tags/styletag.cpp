@@ -17,7 +17,6 @@ StyleTag::StyleTag(Object& owner)
     .set_category(QObject::tr("style").toStdString());
 }
 
-
 QIcon StyleTag::icon() const
 {
   const auto* style = property(STYLE_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
