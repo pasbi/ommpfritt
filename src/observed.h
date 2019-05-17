@@ -12,20 +12,14 @@ public:
   Observed() = default;
   virtual ~Observed() = default;
 
-  void register_observer(ObserverT& observer)
+  void register_observer(ObserverT* observer)
   {
-//    LINFO << m_observers.size() << " " << m_observers.count(&observer);
-    assert(m_observers.count(&observer) == 0);
-    m_observers.insert(&observer);
-    assert(m_observers.count(&observer) == 1);
+    m_observers.insert(observer);
   }
 
-  void unregister_observer(ObserverT& observer)
+  void unregister_observer(ObserverT* observer)
   {
-//    LINFO << m_observers.size() << " " << m_observers.count(&observer);
-    assert(m_observers.count(&observer) == 1);
-    m_observers.erase(m_observers.find(&observer));
-    assert(m_observers.count(&observer) == 0);
+    m_observers.erase(m_observers.find(observer));
   }
 
   template<typename F> void for_each(F&& f)
@@ -41,11 +35,6 @@ public:
   template<typename Result, typename F> auto transform(F&& f)
   {
     return ::transform<Result>(m_observers, std::forward<F>(f));
-  }
-
-  bool is_registered(ObserverT& observer) const
-  {
-    return ::contains(m_observers, &observer);
   }
 
 private:

@@ -16,11 +16,7 @@ ReferenceProperty::ReferenceProperty(const ReferenceProperty &other)
   : TypedProperty<AbstractPropertyOwner *>(other)
   , m_referenceproperty_reference_observer(*this)
 {
-  auto* apo = value();
-  if (apo != nullptr && !apo->is_registered(m_referenceproperty_reference_observer)) {
-    // the registration might have been made during deserialization
-    apo->register_observer(m_referenceproperty_reference_observer);
-  }
+  value()->register_observer(m_referenceproperty_reference_observer);
 }
 
 ReferenceProperty::~ReferenceProperty()
