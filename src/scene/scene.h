@@ -160,6 +160,9 @@ Q_SIGNALS:
   void scene_changed(AbstractPropertyOwner* subject, int code, Property* property);
   void filename_changed();
 
+private:
+  void prepare_reset();
+
 };
 
 }  // namespace omm

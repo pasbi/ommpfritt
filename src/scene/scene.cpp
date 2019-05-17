@@ -75,6 +75,11 @@ Scene::Scene(PythonEngine& python_engine)
 
 Scene::~Scene()
 {
+  prepare_reset();
+}
+
+void Scene::prepare_reset()
+{
   // make sure that there are no references (via ReferenceProperties) across objects.
   // the references might be destructed after the referenced objects have been deleted.
   // that leads to fucked-up states, undefined behavior, etc.
@@ -188,6 +193,7 @@ bool Scene::save_as(const std::string &filename)
 
 bool Scene::load_from(const std::string &filename)
 {
+  prepare_reset();
   history.reset();
   std::ifstream ifstream(filename);
   if (!ifstream) {
@@ -234,6 +240,7 @@ bool Scene::load_from(const std::string &filename)
 
 void Scene::reset()
 {
+  prepare_reset();
   history.reset();
   history.set_saved_index();
   set_selection({});
