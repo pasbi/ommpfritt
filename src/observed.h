@@ -19,7 +19,10 @@ public:
 
   void unregister_observer(ObserverT* observer)
   {
-    m_observers.erase(m_observers.find(observer));
+    auto it = m_observers.find(observer);
+    if (it != m_observers.end()) {
+      m_observers.erase(it);
+    }
   }
 
   template<typename F> void for_each(F&& f)
