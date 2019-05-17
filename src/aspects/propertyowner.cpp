@@ -31,6 +31,14 @@ AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner &other)
   }
 }
 
+AbstractPropertyOwner::~AbstractPropertyOwner()
+{
+  for (ReferenceProperty* ref_prop : m_referees) {
+    ReferenceProperty::NotificationBlocker blocker(*ref_prop);
+    ref_prop->set(nullptr);
+  }
+}
+
 Property *AbstractPropertyOwner::property(const std::string& key) const
 {
   if (has_property(key)) {

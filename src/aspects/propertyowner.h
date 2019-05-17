@@ -49,6 +49,7 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PropertyOwner", "AbstractPropertyOwner");
   AbstractPropertyOwner() = default;
   AbstractPropertyOwner(const AbstractPropertyOwner& other);
+  ~AbstractPropertyOwner() override;
   Property* property(const std::string& key) const;
   bool has_property(const std::string& key) const;
   template<typename ValueT> bool has_property(const std::string& key) const
@@ -120,6 +121,10 @@ private:
 
 Q_SIGNALS:
   void property_changed(Property* property, std::set<const void*> trace);
+
+public:
+  // A set of ReferenceProperties which reference `this`.
+  std::set<ReferenceProperty*> m_referees;
 };
 
 template<AbstractPropertyOwner::Kind kind_> class PropertyOwner : public AbstractPropertyOwner
