@@ -164,7 +164,7 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
     for (Property* property : properties) {
       auto* enabled_buddy = property->enabled_buddy();
       if (enabled_buddy != nullptr && !::contains(m_observed_properties, enabled_buddy)) {
-        enabled_buddy->Observed<AbstractPropertyObserver>::register_observer(*this);
+        enabled_buddy->Observed<AbstractPropertyObserver>::register_observer(this);
         m_observed_properties.insert(enabled_buddy);
       }
     }
@@ -191,7 +191,7 @@ void PropertyManager::set_locked(bool locked) { m_is_locked = locked; }
 void PropertyManager::clear()
 {
   for (auto* observed_property : m_observed_properties) {
-    observed_property->Observed<AbstractPropertyObserver>::unregister_observer(*this);
+    observed_property->Observed<AbstractPropertyObserver>::unregister_observer(this);
   }
   m_observed_properties.clear();
 

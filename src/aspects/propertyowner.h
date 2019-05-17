@@ -93,7 +93,7 @@ public:
     PropertyT& ref = *property;
     assert(!m_properties.contains(key));
     m_properties.insert(key, std::move(property));
-    ref.Observed<AbstractPropertyObserver>::register_observer(*this);
+    ref.Observed<AbstractPropertyObserver>::register_observer(this);
     return ref;
   }
 

@@ -64,12 +64,12 @@ PythonConsole::PythonConsole(Scene& scene)
   m_layout->setContentsMargins(0, 0, 0, 0);
   set_widget(std::move(widget));
 
-  scene.python_engine.Observed<PythonIOObserver>::register_observer(*this);
+  scene.python_engine.Observed<PythonIOObserver>::register_observer(this);
 }
 
 PythonConsole::~PythonConsole()
 {
-  scene().python_engine.Observed<PythonIOObserver>::unregister_observer(*this);
+  scene().python_engine.Observed<PythonIOObserver>::unregister_observer(this);
 }
 
 std::unique_ptr<QMenuBar> PythonConsole::make_menu_bar()

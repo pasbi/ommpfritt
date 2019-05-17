@@ -16,7 +16,7 @@ ReferenceProperty::ReferenceProperty(const ReferenceProperty &other)
   : TypedProperty<AbstractPropertyOwner *>(other)
   , m_referenceproperty_reference_observer(*this)
 {
-  value()->register_observer(m_referenceproperty_reference_observer);
+  value()->register_observer(&m_referenceproperty_reference_observer);
 }
 
 ReferenceProperty::~ReferenceProperty()
@@ -86,11 +86,11 @@ void ReferenceProperty::set(AbstractPropertyOwner * const &apo)
 {
   auto* old_apo = value();
   if (old_apo) {
-    old_apo->unregister_observer(m_referenceproperty_reference_observer);
+    old_apo->unregister_observer(&m_referenceproperty_reference_observer);
   }
   TypedProperty::set(apo);
   if (apo) {
-    apo->register_observer(m_referenceproperty_reference_observer);
+    apo->register_observer(&m_referenceproperty_reference_observer);
   }
 }
 

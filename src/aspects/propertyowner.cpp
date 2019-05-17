@@ -122,7 +122,7 @@ std::string AbstractPropertyOwner::name() const
 std::unique_ptr<Property> AbstractPropertyOwner::extract_property(const std::string& key)
 {
   auto property = m_properties.extract(key);
-  property->Observed<AbstractPropertyObserver>::unregister_observer(*this);
+  property->Observed<AbstractPropertyObserver>::unregister_observer(this);
   return property;
 }
 

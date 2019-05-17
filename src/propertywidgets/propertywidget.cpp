@@ -11,7 +11,7 @@ AbstractPropertyWidget::AbstractPropertyWidget(Scene& scene, const std::set<Prop
   , m_properties(properties)
 {
   for (auto&& property : properties) {
-    property->Observed<AbstractPropertyObserver>::register_observer(*this);
+    property->Observed<AbstractPropertyObserver>::register_observer(this);
   }
   connect(&m_update_timer, &QTimer::timeout, [this]() { update_edit(); });
   m_update_timer.setSingleShot(true);
@@ -20,7 +20,7 @@ AbstractPropertyWidget::AbstractPropertyWidget(Scene& scene, const std::set<Prop
 AbstractPropertyWidget::~AbstractPropertyWidget()
 {
   for (auto&& property : m_properties) {
-    property->Observed<AbstractPropertyObserver>::unregister_observer(*this);
+    property->Observed<AbstractPropertyObserver>::unregister_observer(this);
   }
 }
 

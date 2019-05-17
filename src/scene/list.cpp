@@ -19,7 +19,7 @@ void register_items(const std::vector<std::unique_ptr<T>>& items, omm::List<T>& 
 {
   if constexpr (std::is_base_of_v<omm::AbstractPropertyOwner, T>) {
     for (auto&& item : items) {
-      item->register_observer(list);
+      item->register_observer(&list);
     }
   }
 }
@@ -29,7 +29,7 @@ void unregister_items(const std::vector<std::unique_ptr<T>>& items, omm::List<T>
 {
   if constexpr (std::is_base_of_v<omm::AbstractPropertyOwner, T>) {
     for (auto&& item : items) {
-      item->unregister_observer(list);
+      item->unregister_observer(&list);
     }
   }
 }
@@ -76,7 +76,7 @@ template<typename T> void List<T>::insert(ListOwningContext<T>& context)
   );
   m_items.insert(m_items.begin() + static_cast<int>(position), context.subject.release());
   if constexpr (std::is_base_of_v<AbstractPropertyOwner, T>) {
-    context.get_subject().register_observer(*this);
+    context.get_subject().register_observer(this);
   }
   Q_EMIT this->structure_changed({ this });
 }
@@ -89,7 +89,7 @@ template<typename T> void List<T>::remove(ListOwningContext<T>& context)
     }
   );
   if constexpr (std::is_base_of_v<AbstractPropertyOwner, T>) {
-    context.get_subject().unregister_observer(*this);
+    context.get_subject().unregister_observer(this);
   }
   context.subject.capture(::extract(m_items, context.subject.get()));
   Q_EMIT this->structure_changed({ this });
@@ -103,7 +103,7 @@ template<typename T> std::unique_ptr<T> List<T>::remove(T& item)
   );
   auto extracted_item = ::extract(m_items, item);
   if constexpr (std::is_base_of_v<AbstractPropertyOwner, T>) {
-    item.unregister_observer(*this);
+    item.unregister_observer(this);
   }
   Q_EMIT this->structure_changed({ this });
   return extracted_item;
