@@ -9,7 +9,7 @@ class QMouseEvent;
 namespace omm
 {
 
-class AbstractRenderer;
+class Painter;
 class Tool;
 
 class Handle
@@ -18,7 +18,7 @@ public:
   enum class Status { Hovered, Active, Inactive };
   explicit Handle(Tool& tool, const bool transform_in_tool_space);
   virtual ~Handle() = default;
-  virtual void draw(AbstractRenderer& renderer) const = 0;
+  virtual void draw(Painter& renderer) const = 0;
   virtual bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force);
   virtual bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent&);
   virtual void mouse_release(const Vec2f& pos, const QMouseEvent&);

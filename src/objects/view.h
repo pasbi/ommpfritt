@@ -10,7 +10,7 @@ class View : public Object
 public:
   explicit View(Scene* scene);
   explicit View(const View& other);
-  void draw_handles(AbstractRenderer& renderer) const override;
+  void draw_handles(Painter& renderer) const override;
   BoundingBox bounding_box() const override;
   std::string type() const override;
   std::unique_ptr<Object> clone() const override;

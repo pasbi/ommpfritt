@@ -14,7 +14,7 @@ class Path : public Object
 {
 public:
   explicit Path(Scene* scene);
-  void draw_object(AbstractRenderer& renderer, const Style& style) const override;
+  void draw_object(Painter& renderer, const Style& style) const override;
   BoundingBox bounding_box() const override;
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Path");
@@ -67,6 +67,7 @@ public:
   Point evaluate(const double t) const override;
   double path_length() const override;
   bool contains(const Vec2f &pos) const override;
+  void update() override;
 
 private:
   std::vector<Point> m_points;
@@ -75,6 +76,7 @@ private:
    *  use the overload add_points(const std::vector<PointSequence>&);
    */
   std::vector<std::size_t> add_points(const PointSequence& sequence);
+  QPainterPath m_painter_path;
 };
 
 }  // namespace omm

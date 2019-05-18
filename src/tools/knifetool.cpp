@@ -66,14 +66,19 @@ void KnifeTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
   m_is_cutting = false;
 }
 
-void KnifeTool::draw(AbstractRenderer &renderer) const
+void KnifeTool::draw(Painter &renderer) const
 {
   SelectPointsTool::draw(renderer);
   if (m_is_cutting) {
     const auto line = std::vector { Point(m_mouse_press_pos), Point(m_mouse_move_pos) };
-    renderer.draw_spline(line, m_line_style, false);
+
+    renderer.set_style(m_line_style);
+    renderer.painter->drawLine(m_mouse_press_pos.x, m_mouse_press_pos.y,
+                               m_mouse_move_pos.x, m_mouse_move_pos.y);
     for (const Point& p : m_points) {
-      renderer.draw_circle(p.position, 3, marker_style);
+      renderer.set_style(marker_style);
+      const auto r = 3.0/2.0;
+      renderer.painter->drawEllipse(p.position.x-r, p.position.y-r, 2*r, 2*r);
     }
   }
 }

@@ -68,11 +68,12 @@ Path::Path(Scene* scene) : Object(scene)
     .set_post_submit(update_point_tangents).set_pre_submit(update_point_tangents);
 }
 
-void Path::draw_object(AbstractRenderer& renderer, const Style& style) const
+void Path::draw_object(Painter &renderer, const Style& style) const
 {
   const auto triangulation_style = ContourStyle(Colors::BLACK, 0.5);
   const auto marked_triangulation_style = ContourStyle(Colors::GREEN, 2.0);
-  renderer.draw_spline(m_points, style, property(IS_CLOSED_PROPERTY_KEY)->value<bool>());
+  renderer.set_style(style);
+  renderer.painter->drawPath(m_painter_path);
 }
 
 BoundingBox Path::bounding_box() const { return BoundingBox(m_points); }
@@ -161,6 +162,11 @@ Point Path::smoothed(const std::size_t& i) const
 }
 
 bool Path::contains(const Vec2f &pos) const { return cubics().contains(pos); }
+
+void Path::update()
+{
+  m_painter_path = Painter::path(m_points, property(IS_CLOSED_PROPERTY_KEY)->value<bool>());
+}
 
 bool Path::is_closed() const
 {

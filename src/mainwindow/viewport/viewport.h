@@ -5,7 +5,7 @@
 
 #include "geometry/objecttransformation.h"
 #include "mainwindow/viewport/mousepancontroller.h"
-#include "renderers/viewportrenderer.h"
+#include "renderers/painter.h"
 #include "scene/scene.h"
 
 #define USE_OPENGL 0
@@ -55,7 +55,7 @@ private:
   std::unique_ptr<QTimer> m_timer;
   ObjectTransformation m_viewport_transformation;
   MousePanController m_pan_controller;
-  ViewportRenderer m_renderer;
+  Painter m_renderer;
 };
 
 }  // namespace omm

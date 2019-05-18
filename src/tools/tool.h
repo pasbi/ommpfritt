@@ -13,7 +13,7 @@ namespace omm {
 
 class Object;
 class Scene;
-class AbstractRenderer;
+class Painter;
 
 class Tool
   : public PropertyOwner<AbstractPropertyOwner::Kind::Tool>
@@ -36,7 +36,7 @@ public:
   virtual bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force = false);
   virtual void mouse_release(const Vec2f& pos, const QMouseEvent& event);
   virtual bool key_press(const QKeyEvent& event);
-  virtual void draw(AbstractRenderer& renderer) const;
+  virtual void draw(Painter& renderer) const;
   virtual void on_selection_changed();
   virtual void on_scene_changed();
   virtual bool has_transformation() const;

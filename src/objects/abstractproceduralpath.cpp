@@ -10,9 +10,12 @@ namespace omm
 
 class Style;
 
-void AbstractProceduralPath::draw_object(AbstractRenderer& renderer, const Style& style) const
+void AbstractProceduralPath::draw_object(Painter &renderer, const Style& style) const
 {
-  if (is_active()) { renderer.draw_spline(m_points, style, is_closed()); }
+  if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
+    renderer.set_style(style);
+    painter->drawPath(m_painter_path);
+  }
 }
 
 AbstractPropertyOwner::Flag AbstractProceduralPath::flags() const
@@ -65,6 +68,7 @@ Object::PathUniquePtr AbstractProceduralPath::outline(const double t) const
 void AbstractProceduralPath::update()
 {
   m_points = points();
+  m_painter_path = Painter::path(m_points, is_closed());
 }
 
 

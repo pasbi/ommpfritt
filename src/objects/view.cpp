@@ -53,16 +53,11 @@ void View::make_output_unique()
   }
 }
 
-void View::draw_handles(AbstractRenderer& renderer) const
+void View::draw_handles(Painter &renderer) const
 {
   const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>();
-  const auto w = size.x/2;
-  const auto h = size.y/2;
-  const auto points = std::vector { Point(Vec2f(-w, -h)), Point(Vec2f( w, -h)),
-                                    Point(Vec2f( w,  h)), Point(Vec2f(-w,  h)) };
-
-  const auto style = ContourStyle(Colors::BLACK);
-  renderer.draw_spline(points, style, true);
+  renderer.set_style(ContourStyle(Colors::BLACK));
+  renderer.painter->drawRect(QRectF(-size.x/2.0, -size.y/2.0, size.x, size.y));
 }
 
 void View::on_property_value_changed(Property& property, std::set<const void *> trace)

@@ -13,7 +13,7 @@ class ParticleHandle : public Handle
 public:
   explicit ParticleHandle(Tool& tool, bool transform_in_tool_space);
   bool contains_global(const Vec2f& point) const override;
-  void draw(omm::AbstractRenderer& renderer) const override;
+  void draw(omm::Painter& renderer) const override;
   Vec2f position = Vec2f::o();
 };
 

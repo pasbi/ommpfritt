@@ -2,7 +2,7 @@
 #include <QPainter>
 #include <memory>
 #include <iostream>
-#include "renderers/viewportrenderer.h"
+#include "renderers/painter.h"
 #include <QDebug>
 
 namespace
@@ -40,8 +40,8 @@ void draw_background(QPainter& painter, QRect rect)
 void draw_style(QPainter& painter, const QRect& rect, const omm::Style& style)
 {
   painter.save();
-  painter.setBrush(omm::ViewportRenderer::make_brush(style));
-  auto pen = omm::ViewportRenderer::make_pen(style);
+  painter.setBrush(omm::Painter::make_brush(style));
+  auto pen = omm::Painter::make_pen(style);
   pen.setWidthF(adjust_pen_width(pen.width(), rect.size()));
   painter.setPen(pen);
   const auto r = 0.8 * std::min(rect.size().width(), rect.size().height());

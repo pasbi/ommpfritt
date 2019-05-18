@@ -16,18 +16,10 @@ public:
     set_style(Status::Inactive, omm::ContourStyle(omm::Color(0.3, 0.3, 1.0)));
   }
 
-  void draw(AbstractRenderer& renderer) const override
+  void draw(Painter& renderer) const override
   {
-    constexpr auto n = 200;
-    std::vector<omm::Point> points;
-    points.reserve(n+1);
-    for (size_t i = 0; i <= n; ++i) {
-      const double x = cos(i * 2.0/n * M_PI) * RADIUS;
-      const double y = sin(i * 2.0/n * M_PI) * RADIUS;
-      points.push_back(omm::Point(Vec2f(x, y)));
-    }
-
-    renderer.draw_spline(points, current_style());
+    renderer.set_style(current_style());
+    renderer.painter->drawEllipse(-RADIUS, -RADIUS, 2*RADIUS, 2*RADIUS);
   }
 
   bool contains_global(const Vec2f& point) const override

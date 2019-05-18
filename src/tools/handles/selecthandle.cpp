@@ -1,6 +1,6 @@
 #include "tools/handles/selecthandle.h"
 #include "geometry/vec2.h"
-#include "renderers/abstractrenderer.h"
+#include "renderers/painter.h"
 #include "scene/scene.h"
 #include "objects/path.h"
 #include "common.h"
@@ -37,9 +37,11 @@ public:
 
   double draw_epsilon() const override { return 2.0; }
 
-  void draw(omm::AbstractRenderer& renderer) const override
+  void draw(omm::Painter& renderer) const override
   {
-    renderer.draw_rectangle(omm::Rectangle(position, draw_epsilon()), current_style());
+    renderer.set_style(current_style());
+    const auto r = draw_epsilon();
+    renderer.painter->drawEllipse(position.x - r, position.y - r, 2*r, 2*r);
   }
 
 private:
@@ -102,7 +104,7 @@ bool ObjectSelectHandle::contains_global(const Vec2f& point) const
   return (point - transformation().null()).max_norm() < interact_epsilon();
 }
 
-void ObjectSelectHandle::draw(omm::AbstractRenderer& renderer) const
+void ObjectSelectHandle::draw(Painter &renderer) const
 {
   const auto is_selected = [this]() {
     return ::contains(m_scene.item_selection<Object>(), &m_object);
@@ -110,7 +112,10 @@ void ObjectSelectHandle::draw(omm::AbstractRenderer& renderer) const
 
   const Style& style = is_selected() ? this->style(Status::Active) : current_style();
   const auto pos = transformation().null();
-  renderer.draw_rectangle(Rectangle(pos, draw_epsilon()), style);
+  const auto r = draw_epsilon();
+
+  renderer.set_style(style);
+  renderer.painter->drawRect(pos.x - r, pos.y - r, 2*r, 2*r);
 }
 
 
@@ -198,7 +203,7 @@ void PointSelectHandle::mouse_release(const Vec2f& pos, const QMouseEvent& event
   m_right_tangent_handle->mouse_release(pos, event);
 }
 
-void PointSelectHandle::draw(omm::AbstractRenderer& renderer) const
+void PointSelectHandle::draw(Painter &renderer) const
 {
   const Style& style = m_point.is_selected ? this->style(Status::Active) : current_style();
   const auto pos = transformation().apply_to_position(m_point.position);
@@ -208,7 +213,8 @@ void PointSelectHandle::draw(omm::AbstractRenderer& renderer) const
   const auto treat_sub_handle = [&renderer, pos, this](auto& sub_handle, const auto& other_pos) {
     sub_handle.position = other_pos;
 
-    renderer.draw_spline( { Point(pos), Point(other_pos) }, *m_tangent_style);
+    renderer.set_style(*m_tangent_style);
+    renderer.painter->drawLine(pos.x, pos.y, other_pos.x, other_pos.y);
     if (m_point.is_selected) { sub_handle.draw(renderer); }
   };
 
@@ -218,7 +224,10 @@ void PointSelectHandle::draw(omm::AbstractRenderer& renderer) const
   }
 
   renderer.push_transformation(ObjectTransformation().translated(pos));
-  renderer.draw_rectangle(Rectangle(Vec2f::o(), draw_epsilon()), style);
+  renderer.set_style(style);
+
+  const auto r = draw_epsilon();
+  renderer.painter->drawRect(-r, -r, 2*r, 2*r);
   renderer.pop_transformation();
 
 }

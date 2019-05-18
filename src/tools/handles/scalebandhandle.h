@@ -3,7 +3,7 @@
 #include "geometry/vec2.h"
 #include "tools/handles/handle.h"
 #include "geometry/util.h"
-#include "renderers/abstractrenderer.h"
+#include "renderers/painter.h"
 
 namespace omm
 {
@@ -27,13 +27,15 @@ public:
     return x+y < r + width/2.0 && x+y > r - width/2.0 && x > stop && y > stop;
   }
 
-  void draw(omm::AbstractRenderer& renderer) const override
+  void draw(Painter& painter) const override
   {
-    const auto path = std::vector { Point(Vec2f(stop, r - width/2.0 - stop)),
-                                    Point(Vec2f(stop, r + width/2.0 - stop)),
-                                    Point(Vec2f(r + width/2.0 - stop, stop)),
-                                    Point(Vec2f(r - width/2.0 - stop, stop)) };
-    renderer.draw_spline(path, current_style(), true);
+    QPointF polyline[] = { QPointF(stop, r - width/2.0 - stop),
+                           QPointF(stop, r + width/2.0 - stop),
+                           QPointF(r + width/2.0 - stop, stop),
+                           QPointF(r - width/2.0 - stop, stop),
+                           QPointF(stop, r - width/2.0 - stop) };
+    painter.set_style(current_style());
+    painter.painter->drawPolygon(polyline, 5);
   }
 
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override

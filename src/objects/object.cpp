@@ -251,7 +251,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   this->tags.set(std::move(tags));
 }
 
-void Object::draw_recursive(AbstractRenderer& renderer, const Style& default_style) const
+void Object::draw_recursive(Painter& renderer, const Style& default_style) const
 {
   RenderOptions options;
   options.styles = find_styles();
@@ -260,12 +260,12 @@ void Object::draw_recursive(AbstractRenderer& renderer, const Style& default_sty
   draw_recursive(renderer, options);
 }
 
-void Object::draw_recursive(AbstractRenderer& renderer, const RenderOptions& options) const
+void Object::draw_recursive(Painter& renderer, const RenderOptions& options) const
 {
   renderer.push_transformation(transformation());
   const auto visibility = property(IS_VISIBLE_PROPERTY_KEY)->value<Visibility>();
   const bool is_visible = options.always_visible || visibility == Visibility::Visible;
-  const bool is_enabled = !!(renderer.category_filter & AbstractRenderer::Category::Objects);
+  const bool is_enabled = !!(renderer.category_filter & Painter::Category::Objects);
   if (is_enabled && is_visible) {
     for (const auto* style : options.styles) {
       draw_object(renderer, *style);
@@ -275,11 +275,12 @@ void Object::draw_recursive(AbstractRenderer& renderer, const RenderOptions& opt
     }
   }
 
-  if (!!(renderer.category_filter & AbstractRenderer::Category::BoundingBox)) {
-    renderer.draw_rectangle(bounding_box(), m_bounding_box_style);
+  if (!!(renderer.category_filter & Painter::Category::BoundingBox)) {
+    renderer.set_style(m_bounding_box_style);
+    renderer.painter->drawRect(bounding_box());
   }
 
-  if (!!(renderer.category_filter & AbstractRenderer::Category::Handles)) {
+  if (!!(renderer.category_filter & Painter::Category::Handles)) {
     draw_handles(renderer);
   }
 
@@ -475,8 +476,8 @@ void Object::update_recursive()
 }
 
 void Object::update() { }
-void Object::draw_object(AbstractRenderer&, const Style&) const {}
-void Object::draw_handles(AbstractRenderer&) const {}
+void Object::draw_object(Painter&, const Style&) const {}
+void Object::draw_handles(Painter&) const {}
 Object::PathUniquePtr Object::outline(const double t) const { return nullptr; }
 std::vector<Point> Object::points() const { return {}; }
 void PathDeleter::operator()(Path *path) { delete path; }

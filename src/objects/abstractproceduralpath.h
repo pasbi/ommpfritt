@@ -12,7 +12,7 @@ class AbstractProceduralPath : public Object
 {
 public:
   using Object::Object;
-  void draw_object(AbstractRenderer& renderer, const Style& style) const override;
+  void draw_object(Painter& renderer, const Style& style) const override;
   BoundingBox bounding_box() const override;
   std::unique_ptr<Object> convert() const override;
   Flag flags() const override;
@@ -29,6 +29,7 @@ protected:
 
 private:
   std::vector<Point> m_points;
+  QPainterPath m_painter_path;
 };
 
 }  // namespace omm

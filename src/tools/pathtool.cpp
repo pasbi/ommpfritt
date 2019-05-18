@@ -50,7 +50,7 @@ void PathTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
 std::string PathTool::type() const { return TYPE; }
 void PathTool::cancel() { m_path.reset(); }
 
-void PathTool::draw(AbstractRenderer &renderer) const
+void PathTool::draw(Painter &renderer) const
 {
   Tool::draw(renderer);
   if (m_path) {

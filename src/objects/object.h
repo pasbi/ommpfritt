@@ -8,7 +8,7 @@
 #include "abstractfactory.h"
 #include "aspects/treeelement.h"
 #include "common.h"
-#include "renderers/abstractrenderer.h"
+#include "renderers/painter.h"
 #include "scene/list.h"
 #include "geometry/point.h"
 
@@ -51,8 +51,8 @@ public:
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-  virtual void draw_object(AbstractRenderer& renderer, const Style& style) const;
-  virtual void draw_handles(AbstractRenderer& renderer) const;
+  virtual void draw_object(Painter& renderer, const Style& style) const;
+  virtual void draw_handles(Painter& renderer) const;
 
   static Style m_bounding_box_style;
 
@@ -63,8 +63,8 @@ public:
     const Style* default_style = nullptr;
   };
 
-  void draw_recursive(AbstractRenderer& renderer, const Style& default_style) const;
-  void draw_recursive(AbstractRenderer& renderer, const RenderOptions& options) const;
+  void draw_recursive(Painter& renderer, const Style& default_style) const;
+  void draw_recursive(Painter& renderer, const RenderOptions& options) const;
   virtual BoundingBox bounding_box() const = 0;
   BoundingBox recursive_bounding_box() const;
   std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() override;

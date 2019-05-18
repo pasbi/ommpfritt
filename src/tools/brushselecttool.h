@@ -27,7 +27,7 @@ public:
   void on_scene_changed() override;
   void on_selection_changed() override;
   PointPositions position_variant;
-  void draw(AbstractRenderer& renderer) const override;
+  void draw(Painter& renderer) const override;
   static constexpr auto RADIUS_PROPERTY_KEY = "radius";
   std::string name() const override;
 

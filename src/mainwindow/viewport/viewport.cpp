@@ -26,7 +26,7 @@ Viewport::Viewport(Scene& scene)
   : m_scene(scene)
   , m_timer(std::make_unique<QTimer>())
   , m_pan_controller([this](const Vec2f& pos) { set_cursor_position(*this, pos); })
-  , m_renderer(scene, AbstractRenderer::Category::Handles | AbstractRenderer::Category::Objects)
+  , m_renderer(scene, Painter::Category::Handles | Painter::Category::Objects)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   setFocusPolicy(Qt::StrongFocus);
@@ -46,7 +46,7 @@ void Viewport::paintEvent(QPaintEvent*)
 #endif
 {
   QPainter painter(this);
-  m_renderer.set_painter(painter);
+  m_renderer.painter = &painter;
 
   painter.setRenderHint(QPainter::Antialiasing);
   painter.setRenderHint(QPainter::SmoothPixmapTransform);
@@ -63,7 +63,7 @@ void Viewport::paintEvent(QPaintEvent*)
   auto& tool = m_scene.tool_box.active_tool();
   tool.viewport_transformation = viewport_transformation();
   tool.draw(m_renderer);
-  m_renderer.clear_painter();
+  m_renderer.painter = nullptr;
 }
 
 void Viewport::mousePressEvent(QMouseEvent* event)

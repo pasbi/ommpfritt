@@ -6,7 +6,7 @@
 #include "objects/view.h"
 #include <QPainter>
 #include <QSettings>
-#include "renderers/viewportrenderer.h"
+#include "renderers/painter.h"
 #include "scene/scene.h"
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
@@ -137,8 +137,8 @@ void ExportDialog::render(QPaintDevice& device, double scale) const
     QPainter painter(&picture);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    ViewportRenderer renderer(m_scene, AbstractRenderer::Category::Objects);
-    renderer.set_painter(painter);
+    Painter renderer(m_scene, Painter::Category::Objects);
+    renderer.painter = &painter;
 
     auto get_transformation = [&device, view=this->view()]() {
       if (view == nullptr) {

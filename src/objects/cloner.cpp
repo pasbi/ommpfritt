@@ -124,7 +124,7 @@ Cloner::Cloner(const Cloner &other) : Object(other)
   update();
 }
 
-void Cloner::draw_object(AbstractRenderer& renderer, const Style& style) const
+void Cloner::draw_object(Painter &renderer, const Style& style) const
 {
   assert(&renderer.scene == scene());
   const bool draw_in_global_space = mode() == Mode::Path || mode() == Mode::FillRandom;

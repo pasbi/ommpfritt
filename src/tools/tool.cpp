@@ -1,7 +1,7 @@
 #include "tools/tool.h"
 
 #include <memory>
-#include "renderers/abstractrenderer.h"
+#include "renderers/painter.h"
 #include "objects/object.h"
 #include "properties/optionsproperty.h"
 #include "scene/scene.h"
@@ -57,9 +57,9 @@ mouse_release(const Vec2f& pos, const QMouseEvent& e)
   }
 }
 
-void Tool::draw(AbstractRenderer& renderer) const
+void Tool::draw(Painter& renderer) const
 {
-  if (!!(renderer.category_filter & AbstractRenderer::Category::Handles)) {
+  if (!!(renderer.category_filter & Painter::Category::Handles)) {
     const ObjectTransformation transformation = this->transformation();
     for (auto&& handle : handles) {
       if (handle->is_enabled()) {

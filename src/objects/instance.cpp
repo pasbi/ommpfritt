@@ -26,7 +26,7 @@ Instance::Instance(Scene* scene)
 
 Instance::Instance(const Instance &other) : Object(other), m_instance(nullptr) { }
 
-void Instance::draw_object(AbstractRenderer& renderer, const Style& default_style) const
+void Instance::draw_object(Painter &renderer, const Style& default_style) const
 {
   if (is_active() && m_instance) {
     m_instance->set_transformation(ObjectTransformation());  // same transformation as `this`

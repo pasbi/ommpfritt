@@ -72,13 +72,16 @@ void AbstractSelectTool::mouse_release(const Vec2f &pos, const QMouseEvent &even
   Tool::mouse_release(pos, event);
 }
 
-void AbstractSelectTool::draw(AbstractRenderer& renderer) const
+void AbstractSelectTool::draw(Painter &renderer) const
 {
   Tool::draw(renderer);
   if (!tool_info.empty()) {
     renderer.toast(m_current_position + Vec2f(30.0, 30.0), tool_info.c_str());
     const auto line = std::vector { Point(m_init_position), Point(m_current_position) };
-    renderer.draw_spline(line, m_tool_info_line_style, false);
+
+    renderer.set_style(m_tool_info_line_style);
+    renderer.painter->drawLine(m_init_position.x, m_init_position.y,
+                               m_current_position.x, m_current_position.y);
   }
 }
 

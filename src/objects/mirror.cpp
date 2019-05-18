@@ -33,7 +33,7 @@ Mirror::Mirror(const Mirror &other)
   : Object(other), m_reflection(other.m_reflection ? other.m_reflection->clone() : nullptr)
 {}
 
-void Mirror::draw_object(AbstractRenderer& renderer, const Style& style) const
+void Mirror::draw_object(Painter &renderer, const Style& style) const
 {
   assert(&renderer.scene == scene());
   if (m_reflection) {

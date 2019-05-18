@@ -24,7 +24,7 @@ Outline::Outline(const Outline &other)
   : Object(other), m_outline(PathUniquePtr(new Path(*other.m_outline)))
 { }
 
-void Outline::draw_object(AbstractRenderer& renderer, const Style& style) const
+void Outline::draw_object(Painter &renderer, const Style& style) const
 {
   assert(&renderer.scene == scene());
   if (m_outline) {

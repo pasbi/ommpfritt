@@ -90,12 +90,13 @@ void BrushSelectTool::on_selection_changed()
 
 std::string BrushSelectTool::type() const { return TYPE; }
 
-void BrushSelectTool::draw(AbstractRenderer& renderer) const
+void BrushSelectTool::draw(Painter &renderer) const
 {
   Tool::draw(renderer);
   if (m_mouse_down) {
-    const double radius = property(RADIUS_PROPERTY_KEY)->value<double>();
-    renderer.draw_circle(m_mouse_pos, radius, m_style);
+    const double r = property(RADIUS_PROPERTY_KEY)->value<double>();
+    renderer.set_style(m_style);
+    renderer.painter->drawEllipse(m_mouse_pos.x - r, m_mouse_pos.y - r, 2*r, 2*r);
   }
 }
 

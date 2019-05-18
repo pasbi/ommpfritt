@@ -2,7 +2,7 @@
 
 #include "geometry/vec2.h"
 #include "tools/handles/handle.h"
-#include "renderers/abstractrenderer.h"
+#include "renderers/painter.h"
 #include "geometry/util.h"
 #include <QDebug>
 
@@ -63,17 +63,18 @@ public:
     }
   }
 
-  void draw(omm::AbstractRenderer& renderer) const override
+  void draw(omm::Painter& renderer) const override
   {
     const double magnitude = m_direction.euclidean_norm();
     const double argument = m_direction.arg();
 
-    const omm::Point tip(m_direction);
-    const omm::Point right(PolarCoordinates(argument-0.1, magnitude*0.9).to_cartesian());
-    const omm::Point left(PolarCoordinates(argument+0.1, magnitude*0.9).to_cartesian());
+    const auto right = to_qpoint(PolarCoordinates(argument-0.1, magnitude*0.9).to_cartesian());
+    const auto left = to_qpoint(PolarCoordinates(argument+0.1, magnitude*0.9).to_cartesian());
 
-    renderer.draw_spline({ Point(Vec2f::o()), tip }, current_style());
-    renderer.draw_spline({ left, tip, right, left }, current_style());
+    renderer.set_style(current_style());
+    renderer.painter->drawLine(QPointF(0.0, 0.0), to_qpoint(m_direction));
+    const QPointF polyline[] = { left, to_qpoint(m_direction), right, left };
+    renderer.painter->drawPolyline(polyline, 4);
   }
 
 private:

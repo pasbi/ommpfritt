@@ -1,5 +1,5 @@
 #include "tools/handles/particlehandle.h"
-#include "renderers/abstractrenderer.h"
+#include "renderers/painter.h"
 
 namespace omm
 {
@@ -18,9 +18,11 @@ bool ParticleHandle::contains_global(const Vec2f& point) const
   return dist < interact_epsilon();
 }
 
-void ParticleHandle::draw(omm::AbstractRenderer& renderer) const
+void ParticleHandle::draw(Painter &renderer) const
 {
-  renderer.draw_rectangle(Rectangle(position, draw_epsilon()), current_style());
+  const auto e = draw_epsilon();
+  renderer.set_style(current_style());
+  renderer.painter->drawRect(QRectF(to_qpoint(position), QSizeF(e, e)));
 }
 
 }  // namespace omm

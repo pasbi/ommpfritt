@@ -1,5 +1,5 @@
 file (GLOB SOURCES
-  "abstractrenderer.cpp"
+  "painter.cpp"
   "imagecache.cpp"
   "style.cpp"
   "styleiconengine.cpp"

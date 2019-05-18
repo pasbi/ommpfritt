@@ -1,5 +1,5 @@
 #include "tools/handles/handle.h"
-#include "renderers/abstractrenderer.h"
+#include "renderers/painter.h"
 #include <QMouseEvent>
 #include "tools/tool.h"
 
