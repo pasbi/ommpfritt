@@ -114,8 +114,11 @@ private:
   std::string m_category;
 
 public:
-  OptionsProperty* enabled_buddy() const;
+  Property* enabled_buddy() const;
   bool is_enabled() const;
+
+  Property& set_enabled_buddy(Property& property, const std::function<bool(Property&)>& predicate);
+
   template<typename EnumT> std::enable_if_t<std::is_enum_v<EnumT>, Property>&
   set_enabled_buddy(OptionsProperty& property, std::set<EnumT> values)
   {
@@ -128,8 +131,9 @@ private:
   Property& set_enabled_buddy(OptionsProperty& property, const std::set<std::size_t>& value);
   struct IsEnabledBuddy
   {
-    OptionsProperty* property = nullptr;
-    std::set<std::size_t> target_values;
+    Property* property = nullptr;
+    std::function<bool(Property&)> predicate;
+    bool is_enabled() const;
   } m_enabled_buddy;
 
 public:

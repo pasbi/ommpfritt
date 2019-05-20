@@ -18,6 +18,12 @@ public:
   static constexpr auto FILEPATH_PROPERTY_KEY = "filename";
   static constexpr auto WIDTH_PROPERTY_KEY = "width";
   static constexpr auto OPACITY_PROPERTY_KEY = "opacity";
+  static constexpr auto PAGE_PROPERTY_KEY = "page";
+  static constexpr auto HANCHOR_PROPERTY_KEY = "hanchor";
+  static constexpr auto VANCHOR_PROPERTY_KEY = "vanchor";
+
+private:
+  QPointF pos(const QSizeF& size) const;
 };
 
 }  // namespace omm

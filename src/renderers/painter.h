@@ -48,10 +48,7 @@ public:
   void draw_text(const std::string& text, const TextOptions& options);
   void toast(const Vec2f& pos, const std::string& text);
 
-  void draw_image( const std::string& filename, const Vec2f& pos, const Vec2f& size,
-                   const double opacity = 1.0);
-  void draw_image( const std::string& filename, const Vec2f& pos,
-                   const double width, const double opacity);
+  void draw_image(const std::string& filename, const double opacity = 1.0);
 
   static QPainterPath path(const std::vector<Point>& points, bool closed = false);
   static QBrush make_brush(const Style& style);
@@ -63,10 +60,10 @@ public:
   Scene& scene;
   Category category_filter;
   QPainter* painter = nullptr;
+  ImageCache image_cache;
 
 private:
   std::stack<ObjectTransformation> m_transformation_stack;
-  ImageCache m_image_cache;
 };
 
 }  // namespace omm

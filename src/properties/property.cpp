@@ -25,7 +25,7 @@ std::string Property::label() const { return m_label; }
 std::string Property::widget_type() const { return type() + "Widget"; }
 std::string Property::category() const { return m_category; }
 bool Property::is_user_property() const { return m_category == USER_PROPERTY_CATEGROY_NAME; }
-OptionsProperty* Property::enabled_buddy() const { return m_enabled_buddy.property; }
+Property* Property::enabled_buddy() const { return m_enabled_buddy.property; }
 void Property::revise() {}
 
 Property& Property::set_label(const std::string& label)
@@ -101,9 +101,10 @@ std::ostream& operator<<(std::ostream& ostream, const Property::variant_type& v)
 
 bool Property::is_enabled() const
 {
-  if (m_enabled_buddy.property == nullptr) { return true; }
-  else {
-    return ::contains(m_enabled_buddy.target_values, m_enabled_buddy.property->value());
+  if (m_enabled_buddy.property == nullptr) {
+    return true;
+  } else {
+    return m_enabled_buddy.is_enabled();
   }
 }
 
@@ -111,8 +112,17 @@ Property&
 Property::set_enabled_buddy(OptionsProperty& property, const std::set<std::size_t>& values)
 {
   m_enabled_buddy.property = &property;
-  m_enabled_buddy.target_values = values;
+  m_enabled_buddy.predicate = [values](Property& property) {
+    return ::contains(values, static_cast<OptionsProperty&>(property).value());
+  };
   return *this;
+}
+
+Property& Property
+::set_enabled_buddy(Property& buddy, const std::function<bool(Property&)>& predicate)
+{
+  m_enabled_buddy.property = &buddy;
+  m_enabled_buddy.predicate = predicate;
 }
 
 bool Property::is_compatible(const Property& other) const
@@ -128,6 +138,18 @@ Property::NotificationBlocker::NotificationBlocker(Property &p) : m_p(p)
 Property::NotificationBlocker::~NotificationBlocker()
 {
   m_p.m_notifications_are_blocked = false;
+}
+
+bool Property::IsEnabledBuddy::is_enabled() const
+{
+  if (property == nullptr) {
+    // by default, the buddy is inactive and the property is enabled. Most properties don't
+    // have a buddy.
+    return true;
+  }  else {
+    assert(predicate);
+    return predicate(*property);
+  }
 }
 
 }  // namespace omm

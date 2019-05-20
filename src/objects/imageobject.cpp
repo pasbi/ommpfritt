@@ -3,6 +3,18 @@
 #include <QObject>
 #include "properties/floatproperty.h"
 #include "mainwindow/viewport/viewport.h"
+#include "properties/integerproperty.h"
+#include "properties/optionsproperty.h"
+
+namespace
+{
+
+bool is_paged_image(const std::string& filename)
+{
+  return QString::fromStdString(filename).endsWith(".pdf", Qt::CaseInsensitive);
+}
+
+}  // namespace
 
 namespace omm
 {
@@ -20,20 +32,67 @@ ImageObject::ImageObject(Scene* scene) : Object(scene)
   add_property<FloatProperty>(OPACITY_PROPERTY_KEY, 1.0)
     .set_range(0.0, 1.0).set_step(0.01)
     .set_label(QObject::tr("Opacity").toStdString()).set_category(category);
+
+  add_property<IntegerProperty>(PAGE_PROPERTY_KEY, 0)
+    .set_range(0, IntegerPropertyLimits::upper)
+    .set_label(QObject::tr("Page").toStdString()).set_category(category)
+    .set_enabled_buddy(*property(FILEPATH_PROPERTY_KEY), [](Property& property) {
+      return is_paged_image(static_cast<StringProperty&>(property).value());
+    });
+
+  add_property<OptionsProperty>(HANCHOR_PROPERTY_KEY, 1)
+    .set_options({ QObject::tr("Left").toStdString(),
+                   QObject::tr("Center").toStdString(),
+                   QObject::tr("Right").toStdString() })
+    .set_label(QObject::tr("Horizontal").toStdString()).set_category(category);
+
+  add_property<OptionsProperty>(VANCHOR_PROPERTY_KEY, 1)
+    .set_options({ QObject::tr("Top").toStdString(),
+                   QObject::tr("Center").toStdString(),
+                   QObject::tr("Bottom").toStdString() })
+    .set_label(QObject::tr("Vertical").toStdString()).set_category(category);
 }
 
 void ImageObject::draw_object(Painter &renderer, const Style&) const
 {
   if (is_active()) {
     const auto path = property(FILEPATH_PROPERTY_KEY)->value<std::string>();
-    const auto width = property(WIDTH_PROPERTY_KEY)->value<double>();
     const auto opacity = property(OPACITY_PROPERTY_KEY)->value<double>();
-    renderer.draw_image(path, Vec2f::o(), width, opacity);
+    const auto width = property(WIDTH_PROPERTY_KEY)->value<double>();
+    const auto page_num = is_paged_image(path) ? property(PAGE_PROPERTY_KEY)->value<int>() : 0;
+
+    QPainter& painter = *renderer.painter;
+    painter.save();
+    painter.setOpacity(opacity);
+    const QPicture& picture = renderer.image_cache.load(QString::fromStdString(path), page_num);
+    const auto s = width / picture.width();
+    const auto aabb = picture.boundingRect();
+    painter.scale(s, s);
+    painter.translate(-aabb.topLeft());
+
+    painter.drawPicture(pos(aabb.size()), picture);
+    painter.restore();
   }
 }
 
 std::string ImageObject::type() const { return TYPE; }
 std::unique_ptr<Object> ImageObject::clone() const { return std::make_unique<ImageObject>(*this); }
+
+QPointF ImageObject::pos(const QSizeF &size) const
+{
+  const auto dim = [](const double dim, const std::size_t option) {
+    switch (option) {
+    case 0: return 0.0;
+    case 1: return -dim/2.0;
+    case 2: return -dim;
+    default: Q_UNREACHABLE();
+    }
+  };
+
+  return QPointF( dim(size.width(), property(HANCHOR_PROPERTY_KEY)->value<std::size_t>()),
+                  dim(size.height(), property(VANCHOR_PROPERTY_KEY)->value<std::size_t>()) );
+}
+
 BoundingBox ImageObject::bounding_box() const
 {
   // implementing this is relly a problem.

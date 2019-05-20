@@ -106,21 +106,8 @@ void Painter::toast(const Vec2f &pos, const std::string &text)
   painter->restore();
 }
 
-void Painter::draw_image(const std::string &filename, const Vec2f &pos, const Vec2f &size,
-                         const double opacity)
+void Painter::draw_image(const std::string &filename, const double opacity)
 {
-  painter->setOpacity(opacity);
-  QRectF rect(to_qpoint(pos), to_qpoint(pos + size));
-  painter->drawImage(rect, m_image_cache.load(filename));
-  painter->setOpacity(1.0);
-}
-
-void Painter::draw_image(const std::string &filename, const Vec2f &pos, const double width,
-                         const double opacity)
-{
-  const QImage image = m_image_cache.load(filename);
-  const auto height = static_cast<double>(width) / image.width() * image.height();
-  return draw_image(filename, pos, Vec2f{ width, height }, opacity);
 }
 
 QPainterPath Painter::path(const std::vector<Point> &points, bool closed)

@@ -63,6 +63,8 @@ target_link_libraries(libommpfritt pybind11::embed)
 target_link_libraries(ommpfritt pybind11::embed)
 target_link_libraries(libommpfritt Qt5::Widgets Qt5::Svg)
 target_link_libraries(ommpfritt Qt5::Widgets Qt5::Svg)
+target_link_libraries(libommpfritt poppler-qt5)
+target_link_libraries(ommpfritt poppler-qt5)
 
 add_subdirectory(src)
 add_subdirectory(test)
