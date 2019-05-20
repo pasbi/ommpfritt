@@ -29,6 +29,10 @@ public:
   static constexpr auto PEN_IS_ACTIVE_KEY = "pen/active";
   static constexpr auto PEN_COLOR_KEY = "pen/color";
   static constexpr auto PEN_WIDTH_KEY = "pen/width";
+  static constexpr auto STROKE_STYLE_KEY = "pen/stroke";
+  static constexpr auto JOIN_STYLE_KEY = "pen/join";
+  static constexpr auto CAP_STYLE_KEY = "pen/cap";
+  static constexpr auto COSMETIC_KEY = "pen/cosmetic";
   static constexpr auto BRUSH_IS_ACTIVE_KEY = "brush/active";
   static constexpr auto BRUSH_COLOR_KEY = "brush/color";
 };

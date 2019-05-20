@@ -151,6 +151,19 @@ QPen Painter::make_pen(const Style &style)
     QPen pen;
     pen.setWidthF(style.property(omm::Style::PEN_WIDTH_KEY)->value<double>());
     pen.setColor(to_qcolor(style.property(omm::Style::PEN_COLOR_KEY)->value<omm::Color>()));
+    pen.setCosmetic(style.property(omm::Style::COSMETIC_KEY)->value<bool>());
+    switch (style.property(omm::Style::CAP_STYLE_KEY)->value<std::size_t>()) {
+    case 0: pen.setCapStyle(Qt::SquareCap); break;
+    case 1: pen.setCapStyle(Qt::FlatCap); break;
+    case 2: pen.setCapStyle(Qt::RoundCap); break;
+    }
+    switch (style.property(omm::Style::JOIN_STYLE_KEY)->value<std::size_t>()) {
+    case 0: pen.setJoinStyle(Qt::BevelJoin); break;
+    case 1: pen.setJoinStyle(Qt::MiterJoin); break;
+    case 2: pen.setJoinStyle(Qt::RoundJoin); break;
+    }
+    const auto pen_style = style.property(omm::Style::STROKE_STYLE_KEY)->value<Qt::PenStyle>();
+    pen.setStyle(static_cast<Qt::PenStyle>(pen_style + 1));
     return pen;
   } else {
     return QPen(Qt::NoPen);
