@@ -9,7 +9,7 @@ class TextOptionProperties : public PropertyGroup
 {
 public:
   using PropertyGroup::PropertyGroup;
-  void make_properties(const std::string& group) override;
+  void make_properties(const std::string& group) const override;
   QTextOption get_option() const;
 
   static constexpr auto ALIGNH_PROPERTY_KEY = "halign";

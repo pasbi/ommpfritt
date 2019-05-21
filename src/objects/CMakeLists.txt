@@ -14,6 +14,7 @@ file (GLOB SOURCES
   "proceduralpath.cpp"
   "rectangleobject.cpp"
   "text.cpp"
+  "tip.cpp"
   "view.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})

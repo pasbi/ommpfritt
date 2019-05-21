@@ -10,42 +10,42 @@
 namespace omm
 {
 
-void FontProperties::make_properties(const std::string& category)
+void FontProperties::make_properties(const std::string& category) const
 {
-  add_property<StringProperty>(key(FONT_PROPERTY_KEY), "Arial")
+  add_property<StringProperty>(FONT_PROPERTY_KEY, "Arial")
     .set_mode(StringProperty::Mode::Font)
     .set_label(QObject::tr("Font").toStdString()).set_category(category);
-  add_property<FloatProperty>(key(SIZE_PROPERTY_KEY), 12)
+  add_property<FloatProperty>(SIZE_PROPERTY_KEY, 12)
     .set_range(0.1, 100)
     .set_label(QObject::tr("Size").toStdString()).set_category(category);
-  add_property<IntegerProperty>(key(WEIGHT_PROPERTY_KEY))
+  add_property<IntegerProperty>(WEIGHT_PROPERTY_KEY)
     .set_range(0, 99)
     .set_label(QObject::tr("Weight").toStdString()).set_category(category);
-  add_property<BoolProperty>(key(ITALIC_PROPERTY_KEY))
+  add_property<BoolProperty>(ITALIC_PROPERTY_KEY)
     .set_label(QObject::tr("Italic").toStdString()).set_category(category);
-  add_property<BoolProperty>(key(UNDERLINE_PROPERTY_KEY))
+  add_property<BoolProperty>(UNDERLINE_PROPERTY_KEY)
     .set_label(QObject::tr("Underline").toStdString()).set_category(category);
-  add_property<BoolProperty>(key(OVERLINE_PROPERTY_KEY))
+  add_property<BoolProperty>(OVERLINE_PROPERTY_KEY)
     .set_label(QObject::tr("Overline").toStdString()).set_category(category);
-  add_property<BoolProperty>(key(STRIKEOUT_PROPERTY_KEY))
+  add_property<BoolProperty>(STRIKEOUT_PROPERTY_KEY)
     .set_label(QObject::tr("Strikeout").toStdString()).set_category(category);
-  add_property<OptionsProperty>(key(CAPITALIZATION_PROPERTY_KEY))
+  add_property<OptionsProperty>(CAPITALIZATION_PROPERTY_KEY)
     .set_options({ QObject::tr("Mixed").toStdString(),
                    QObject::tr("All upper").toStdString(),
                    QObject::tr("All lower").toStdString(),
                    QObject::tr("Small caps").toStdString(),
                    QObject::tr("Capitalize").toStdString() })
     .set_label(QObject::tr("Case").toStdString()).set_category(category);
-  add_property<BoolProperty>(key(FIXED_PITCH_PROPERTY_KEY))
+  add_property<BoolProperty>(FIXED_PITCH_PROPERTY_KEY)
     .set_label(QObject::tr("Fixed pitch").toStdString()).set_category(category);
-  add_property<BoolProperty>(key(KERNING_PROPERTY_KEY))
+  add_property<BoolProperty>(KERNING_PROPERTY_KEY)
     .set_label(QObject::tr("Kerning").toStdString()).set_category(category);
-  add_property<OptionsProperty>(key(LETTER_SPACING_TYPE_PROPERTY_KEY))
+  add_property<OptionsProperty>(LETTER_SPACING_TYPE_PROPERTY_KEY)
     .set_options({ QObject::tr("Relative").toStdString(), QObject::tr("Absolute").toStdString() })
     .set_label(QObject::tr("Letter spacing mode").toStdString()).set_category(category);
-  add_property<FloatProperty>(key(LETTER_SPACING_PROPERTY_KEY))
+  add_property<FloatProperty>(LETTER_SPACING_PROPERTY_KEY)
     .set_label(QObject::tr("Letter spacing").toStdString()).set_category(category);
-  add_property<FloatProperty>(key(WORD_SPACING_PROPERTY_KEY))
+  add_property<FloatProperty>(WORD_SPACING_PROPERTY_KEY)
     .set_range(0.0, 100.0)
     .set_label(QObject::tr("Word spacing").toStdString()).set_category(category);
 }
