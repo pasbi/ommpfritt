@@ -805,18 +805,6 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <translation>Seed key</translation>
     </message>
     <message>
-        <source>This</source>
-        <translation>Dieses</translation>
-    </message>
-    <message>
-        <source>Area</source>
-        <translation>Fläche</translation>
-    </message>
-    <message>
-        <source>anchor</source>
-        <translation>Anker</translation>
-    </message>
-    <message>
         <source>length</source>
         <translation>Länge</translation>
     </message>
@@ -863,6 +851,106 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <message>
         <source>output</source>
         <translation>Ausgabe</translation>
+    </message>
+    <message>
+        <source>Page</source>
+        <translation>Seite</translation>
+    </message>
+    <message>
+        <source>Solid</source>
+        <translation>ununterbrochen</translation>
+    </message>
+    <message>
+        <source>Dashed</source>
+        <translation>gestrichelt</translation>
+    </message>
+    <message>
+        <source>Dotted</source>
+        <translation>gepunkted</translation>
+    </message>
+    <message>
+        <source>DashDotted</source>
+        <translation>strich/punkt</translation>
+    </message>
+    <message>
+        <source>DashDotDotted</source>
+        <translation>strich/punkt/punkt</translation>
+    </message>
+    <message>
+        <source>Stroke Style</source>
+        <translation>Strichstil</translation>
+    </message>
+    <message>
+        <source>Bevel</source>
+        <translation>gefast</translation>
+    </message>
+    <message>
+        <source>Miter</source>
+        <translation>gegehrt</translation>
+    </message>
+    <message>
+        <source>Round</source>
+        <translation>rund</translation>
+    </message>
+    <message>
+        <source>Join</source>
+        <translation>Verknüpfung</translation>
+    </message>
+    <message>
+        <source>Square</source>
+        <translation>Quadrat</translation>
+    </message>
+    <message>
+        <source>Flat</source>
+        <translation>flach</translation>
+    </message>
+    <message>
+        <source>Cap</source>
+        <translation>Aufsatz</translation>
+    </message>
+    <message>
+        <source>Cosmetic</source>
+        <translation>kosmetisch</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Spitze</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>Keine</translation>
+    </message>
+    <message>
+        <source>Arrow</source>
+        <translation>Pfeil</translation>
+    </message>
+    <message>
+        <source>Bar</source>
+        <translation>Balken</translation>
+    </message>
+    <message>
+        <source>Circle</source>
+        <translation>Kreis</translation>
+    </message>
+    <message>
+        <source>Diamond</source>
+        <translation>Diamant</translation>
+    </message>
+    <message>
+        <source>Shape</source>
+        <translation>Form</translation>
+    </message>
+    <message>
+        <source>Aspect Ratio</source>
+        <translation>Seitenverhältnis</translation>
+    </message>
+    <message>
+        <source>Reverse</source>
+        <translation>Umkehren</translation>
+    </message>
+    <message>
+        <source>decoration</source>
+        <translation>Dekoration</translation>
     </message>
 </context>
 <context>
@@ -1334,13 +1422,6 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <message>
         <source>unnamed</source>
         <translation>Unbenannt</translation>
-    </message>
-</context>
-<context>
-    <name>omm::ObjectManager</name>
-    <message>
-        <source>Group</source>
-        <translation>Gruppieren</translation>
     </message>
 </context>
 <context>

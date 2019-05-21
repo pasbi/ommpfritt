@@ -805,18 +805,6 @@ Remove the selected items anyway?</translation>
         <translation>Seed</translation>
     </message>
     <message>
-        <source>This</source>
-        <translation>This</translation>
-    </message>
-    <message>
-        <source>Area</source>
-        <translation>Area</translation>
-    </message>
-    <message>
-        <source>anchor</source>
-        <translation>Anchor</translation>
-    </message>
-    <message>
         <source>length</source>
         <translation>Length</translation>
     </message>
@@ -863,6 +851,106 @@ Remove the selected items anyway?</translation>
     <message>
         <source>output</source>
         <translation>Output</translation>
+    </message>
+    <message>
+        <source>Page</source>
+        <translation>Page</translation>
+    </message>
+    <message>
+        <source>Solid</source>
+        <translation>solid</translation>
+    </message>
+    <message>
+        <source>Dashed</source>
+        <translation>dashed</translation>
+    </message>
+    <message>
+        <source>Dotted</source>
+        <translation>dotted</translation>
+    </message>
+    <message>
+        <source>DashDotted</source>
+        <translation>dash/dot</translation>
+    </message>
+    <message>
+        <source>DashDotDotted</source>
+        <translation>dash/dot/dot</translation>
+    </message>
+    <message>
+        <source>Stroke Style</source>
+        <translation>Stroke Style</translation>
+    </message>
+    <message>
+        <source>Bevel</source>
+        <translation>bevel</translation>
+    </message>
+    <message>
+        <source>Miter</source>
+        <translation>miter</translation>
+    </message>
+    <message>
+        <source>Round</source>
+        <translation>round</translation>
+    </message>
+    <message>
+        <source>Join</source>
+        <translation>Join</translation>
+    </message>
+    <message>
+        <source>Square</source>
+        <translation>Square</translation>
+    </message>
+    <message>
+        <source>Flat</source>
+        <translation>flat</translation>
+    </message>
+    <message>
+        <source>Cap</source>
+        <translation>Cap</translation>
+    </message>
+    <message>
+        <source>Cosmetic</source>
+        <translation>cosmetic</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Tip</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>None</translation>
+    </message>
+    <message>
+        <source>Arrow</source>
+        <translation>Arrow</translation>
+    </message>
+    <message>
+        <source>Bar</source>
+        <translation>Bar</translation>
+    </message>
+    <message>
+        <source>Circle</source>
+        <translation>Circle</translation>
+    </message>
+    <message>
+        <source>Diamond</source>
+        <translation>Diamond</translation>
+    </message>
+    <message>
+        <source>Shape</source>
+        <translation>Shape</translation>
+    </message>
+    <message>
+        <source>Aspect Ratio</source>
+        <translation>Aspect Ratio</translation>
+    </message>
+    <message>
+        <source>Reverse</source>
+        <translation>Reverse</translation>
+    </message>
+    <message>
+        <source>decoration</source>
+        <translation>Decoration</translation>
     </message>
 </context>
 <context>
@@ -1334,13 +1422,6 @@ Remove the selected items anyway?</translation>
     <message>
         <source>unnamed</source>
         <translation>unnamed</translation>
-    </message>
-</context>
-<context>
-    <name>omm::ObjectManager</name>
-    <message>
-        <source>Group</source>
-        <translation>Group</translation>
     </message>
 </context>
 <context>
