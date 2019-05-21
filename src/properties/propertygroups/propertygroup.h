@@ -13,7 +13,7 @@ class PropertyGroup
 public:
   explicit PropertyGroup(const std::string& prefix, AbstractPropertyOwner& property_owner);
   PropertyGroup(const PropertyGroup& other) = delete;
-  virtual void make_properties(const std::string& group) = 0;
+  virtual void make_properties(const std::string& group) const = 0;
   virtual ~PropertyGroup() = default;
 
 private:
@@ -27,9 +27,10 @@ protected:
     return m_property_owner.property(this->key(key))->value<T>();
   }
 
-  template<typename PropertyT, typename... Args> decltype(auto) add_property(Args&&... args)
+  template<typename PropertyT, typename... Args>
+  decltype(auto) add_property(const std::string& key, Args&&... args) const
   {
-    return m_property_owner.add_property<PropertyT>(std::forward<Args>(args)...);
+    return m_property_owner.add_property<PropertyT>(this->key(key), std::forward<Args>(args)...);
   }
 };
 
