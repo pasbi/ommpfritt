@@ -106,10 +106,6 @@ void Painter::toast(const Vec2f &pos, const std::string &text)
   painter->restore();
 }
 
-void Painter::draw_image(const std::string &filename, const double opacity)
-{
-}
-
 QPainterPath Painter::path(const std::vector<Point> &points, bool closed)
 {
   QPainterPath path;

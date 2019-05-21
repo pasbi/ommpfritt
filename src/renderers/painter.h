@@ -48,8 +48,6 @@ public:
   void draw_text(const std::string& text, const TextOptions& options);
   void toast(const Vec2f& pos, const std::string& text);
 
-  void draw_image(const std::string& filename, const double opacity = 1.0);
-
   static QPainterPath path(const std::vector<Point>& points, bool closed = false);
   static QBrush make_brush(const Style& style);
   static QPen make_pen(const Style& style);
