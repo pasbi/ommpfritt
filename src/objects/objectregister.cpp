@@ -12,6 +12,7 @@
 #include "objects/text.h"
 #include "objects/line.h"
 #include "objects/outline.h"
+#include "objects/tip.h"
 
 namespace omm
 {
@@ -32,6 +33,7 @@ void register_objects()
   REGISTER_OBJECT(RectangleObject);
   REGISTER_OBJECT(View);
   REGISTER_OBJECT(Text);
+  REGISTER_OBJECT(Tip);
 #undef REGISTER_OBJECT
 }
 
