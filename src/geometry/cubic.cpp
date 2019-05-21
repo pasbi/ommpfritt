@@ -88,7 +88,12 @@ double Cubic::length() const
 
 Point Cubic::evaluate(const double t) const
 {
-  const auto tangent = this->tangent(t);
+  static constexpr auto eps = 0.001;
+  Vec2f tangent = this->tangent(t);
+  if (tangent.euclidean_norm() < eps) {
+    tangent = m_points[0] - m_points[3];
+    tangent /= tangent.euclidean_norm();
+  }
   return Point(pos(t), PolarCoordinates(tangent), PolarCoordinates(-tangent));
 }
 

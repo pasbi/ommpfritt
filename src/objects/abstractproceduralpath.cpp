@@ -4,6 +4,8 @@
 #include "objects/path.h"
 #include "common.h"
 #include "geometry/cubics.h"
+#include "renderers/style.h"
+#include "objects/tip.h"
 
 namespace omm
 {
@@ -15,6 +17,10 @@ void AbstractProceduralPath::draw_object(Painter &renderer, const Style& style) 
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
     renderer.set_style(style);
     painter->drawPath(m_painter_path);
+    const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
+    const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();
+    style.start_marker.draw_marker(renderer, evaluate(0.0), marker_color, width);
+    style.end_marker.draw_marker(renderer, evaluate(1.0).rotated(M_PI), marker_color, width);
   }
 }
 

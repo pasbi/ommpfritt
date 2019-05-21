@@ -53,6 +53,14 @@ Point Point::nibbed() const
   return copy;
 }
 
+Point Point::rotated(const double rad) const
+{
+  auto copy = *this;
+  copy.left_tangent.argument += rad;
+  copy.right_tangent.argument += rad;
+  return copy;
+}
+
 Point Point::flattened(const double t) const
 {
   Point copy(*this);

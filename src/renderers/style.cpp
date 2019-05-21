@@ -5,15 +5,29 @@
 #include "scene/scene.h"
 #include "renderers/styleiconengine.h"
 #include "properties/optionsproperty.h"
+#include "objects/tip.h"
+
+namespace
+{
+
+static constexpr auto start_marker_prefix = "start";
+static constexpr auto end_marker_prefix = "end";
+static constexpr double default_marker_size = 2.0;
+static constexpr auto default_marker_shape = omm::MarkerProperties::Shape::None;
+
+}  // namespace
 
 namespace omm
 {
 
 Style::Style(Scene* scene)
   : m_scene(scene)
+  , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
+  , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {
   const auto pen_category = QObject::tr("pen").toStdString();
   const auto brush_category = QObject::tr("brush").toStdString();
+  const auto decoration_category = QObject::tr("decoration").toStdString();
   add_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>").toStdString())
     .set_label(QObject::tr("Name").toStdString())
     .set_category(QObject::tr("basic").toStdString());
@@ -41,7 +55,7 @@ Style::Style(Scene* scene)
                    QObject::tr("Miter").toStdString(),
                    QObject::tr("Round").toStdString() })
     .set_label(QObject::tr("Join").toStdString()).set_category(pen_category);
-  add_property<OptionsProperty>(CAP_STYLE_KEY)
+  add_property<OptionsProperty>(CAP_STYLE_KEY, 1)
     .set_options({ QObject::tr("Square").toStdString(),
                    QObject::tr("Flat").toStdString(),
                    QObject::tr("Round").toStdString() })
@@ -54,7 +68,19 @@ Style::Style(Scene* scene)
     .set_category(brush_category);
   add_property(BRUSH_COLOR_KEY, std::make_unique<ColorProperty>(Colors::RED))
     .set_label(QObject::tr("color").toStdString())
-    .set_category(brush_category);
+      .set_category(brush_category);
+
+  start_marker.make_properties(decoration_category);
+  end_marker.make_properties(decoration_category);
+}
+
+Style::Style(const Style &other)
+  : PropertyOwner<AbstractPropertyOwner::Kind::Style>(other)
+  , m_scene(other.m_scene)
+  , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
+  , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
+{
+
 }
 
 std::string Style::type() const { return TYPE; }

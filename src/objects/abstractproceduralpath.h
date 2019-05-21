@@ -25,7 +25,6 @@ public:
   PathUniquePtr outline(const double t) const override;
 
   void update() override;
-protected:
 
 private:
   std::vector<Point> m_points;

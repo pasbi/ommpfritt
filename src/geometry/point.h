@@ -31,6 +31,7 @@ public:
 
   Point smoothed(Vec2f &left_neighbor, const Vec2f &right_neighbor) const;
   Point nibbed() const;
+  Point rotated(const double rad) const;
 
   /**
    * @brief flattened means adjust the tangents such that the angle between them approaches
