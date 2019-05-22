@@ -19,8 +19,8 @@ void AbstractProceduralPath::draw_object(Painter &renderer, const Style& style) 
     painter->drawPath(m_painter_path);
     const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
     const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();
-    style.start_marker.draw_marker(renderer, evaluate(0.0), marker_color, width);
-    style.end_marker.draw_marker(renderer, evaluate(1.0).rotated(M_PI), marker_color, width);
+    style.start_marker.draw_marker(renderer, evaluate(0.0).rotated(.5 * M_PI), marker_color, width);
+    style.end_marker.draw_marker(renderer, evaluate(1.0).rotated(3/2 * M_PI), marker_color, width);
   }
 }
 

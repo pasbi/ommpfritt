@@ -81,9 +81,9 @@ std::vector<Point> MarkerProperties::shape(const double width) const
 std::vector<Point> MarkerProperties::arrow(const Vec2f& size) const
 {
   return {
-    Point(Vec2f(0.0, size.y)),
     Point(Vec2f(size.x, 0.0)),
-    Point(Vec2f(-size.x, 0.0)),
+    Point(Vec2f(0.0, size.y)),
+    Point(Vec2f(0.0, -size.y)),
   };
 }
 

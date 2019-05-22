@@ -46,18 +46,14 @@ Cubic::Cubic(const Point& start, const Point& end)
   : Cubic( { start.position, start.right_position(),
              end.left_position(), end.position },
              start.is_selected && end.is_selected )
-{
-}
+{ }
 
 Cubic::Cubic(const std::array<Vec2f, 4>& points, const bool is_selected)
   : m_points(points)
   , m_is_selected(is_selected)
 { }
 
-Vec2f Cubic::pos(const double t) const
-{
-  return ::evaluate(bezier_4(m_points), t);
-}
+Vec2f Cubic::pos(const double t) const { return ::evaluate(bezier_4(m_points), t); }
 
 Vec2f Cubic::tangent(const double t) const
 {
@@ -91,7 +87,14 @@ Point Cubic::evaluate(const double t) const
   static constexpr auto eps = 0.001;
   Vec2f tangent = this->tangent(t);
   if (tangent.euclidean_norm() < eps) {
-    tangent = m_points[0] - m_points[3];
+    if (t < eps) {
+      tangent = m_points[0] - m_points[2];
+    } else if (1 - t < eps) {
+      tangent = m_points[1] - m_points[3];
+    }
+    if (tangent.euclidean_norm() < eps) {
+      tangent = m_points[0] - m_points[3];
+    }
     tangent /= tangent.euclidean_norm();
   }
   return Point(pos(t), PolarCoordinates(tangent), PolarCoordinates(-tangent));
