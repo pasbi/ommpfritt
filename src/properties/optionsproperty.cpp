@@ -57,9 +57,9 @@ std::vector<std::string> OptionsProperty::options() const { return m_options; }
 
 OptionsProperty& OptionsProperty::set_options(const std::vector<std::string>& options)
 {
-  set(0);
   m_options = options;
   assert(m_options.size() > 0);
+  set(std::clamp(value(), std::size_t(0), m_options.size()));
   return *this;
 }
 
