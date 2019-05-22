@@ -43,14 +43,14 @@ Style::Style(Scene* scene)
     .set_range(0, std::numeric_limits<double>::infinity())
     .set_label(QObject::tr("width").toStdString())
     .set_category(pen_category);
-  add_property<OptionsProperty>(STROKE_STYLE_KEY)
+  add_property<OptionsProperty>(STROKE_STYLE_KEY, 0)
     .set_options({ QObject::tr("Solid").toStdString(),
                    QObject::tr("Dashed").toStdString(),
                    QObject::tr("Dotted").toStdString(),
                    QObject::tr("DashDotted").toStdString(),
                    QObject::tr("DashDotDotted").toStdString() })
     .set_label(QObject::tr("Stroke Style").toStdString()).set_category(pen_category);
-  add_property<OptionsProperty>(JOIN_STYLE_KEY)
+  add_property<OptionsProperty>(JOIN_STYLE_KEY, 2)
     .set_options({ QObject::tr("Bevel").toStdString(),
                    QObject::tr("Miter").toStdString(),
                    QObject::tr("Round").toStdString() })

@@ -42,7 +42,7 @@ Object::Object(Scene* scene)
   set_scene(scene);
 
   static const auto category = QObject::tr("basic").toStdString();
-  add_property<OptionsProperty>(IS_VISIBLE_PROPERTY_KEY, true)
+  add_property<OptionsProperty>(IS_VISIBLE_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("visible").toStdString(), QObject::tr("hidden").toStdString(),
       QObject::tr("hide tree").toStdString() })
     .set_label(QObject::tr("").toStdString())
