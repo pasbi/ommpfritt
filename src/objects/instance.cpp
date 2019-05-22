@@ -48,6 +48,7 @@ void Instance::draw_object(Painter &renderer, const Style& default_style) const
         }
       }
     }
+    m_instance->update_recursive();
     m_instance->draw_recursive(renderer, options);
   }
 }

@@ -67,10 +67,6 @@ std::unique_ptr<Object> Mirror::convert() const
     converted->adopt(m_reflection->clone());
   }
 
-  for (auto&& child : this->tree_children()) {
-    converted->adopt(child->clone());
-  }
-
   return converted;
 }
 
@@ -101,11 +97,11 @@ void Mirror::update()
           } else {
             points.insert(points.end(), mirrored_points.begin(), mirrored_points.end());
           }
-
           combined_path->add_points(std::vector { Path::PointSequence(0, points) });
           const auto is_closed = property(IS_CLOSED_PROPERTY_KEY)->value<bool>();
           combined_path->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed);
           m_reflection.reset(combined_path.release());
+          m_reflection->update();
         }
       }
     } else {
