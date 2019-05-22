@@ -51,7 +51,11 @@ public:
   template<typename ItemT> const typename SceneStructure<ItemT>::type& structure() const;
 
   // ObjectView root_view();
+
+public Q_SLOTS:
   void reset();
+
+public:
   PythonEngine& python_engine;
 
   // === Tags  ======

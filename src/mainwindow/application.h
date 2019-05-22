@@ -24,7 +24,7 @@ public:
   bool save_as();
   bool save(const std::string& filename);
   bool can_close();
-  bool load();
+  void load();
   void reset();
   void quit();
   void update_undo_redo_enabled();

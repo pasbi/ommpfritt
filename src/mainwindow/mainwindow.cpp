@@ -213,7 +213,10 @@ MainWindow::MainWindow(Application& app)
     action->setToolTip(fn);
     connect(action.get(), &QAction::triggered, [fn, &app]() {
       if (app.can_close()) {
-        app.scene.load_from(fn.toStdString());
+        app.scene.set_selection({});
+        QTimer::singleShot(0, [&app, fn]() {
+          app.scene.load_from(fn.toStdString());
+        });
       }
     });
     recent_document_menu->addAction(action.release());

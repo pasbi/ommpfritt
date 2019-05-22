@@ -40,6 +40,7 @@ Application::Application(QApplication& app)
   } else {
     LFATAL("Resetting application instance.");
   }
+  scene.set_selection({});
 }
 
 Application& Application::instance()
@@ -136,29 +137,33 @@ void Application::reset()
   if (!can_close()) { return; }
 
   LINFO << "reset scene.";
-  scene.reset();
+  scene.set_selection({});
+  QTimer::singleShot(0, &scene, SLOT(reset()));
 }
 
-bool Application::load()
+void Application::load()
 {
-  if (!can_close()) { return false; }
+  if (!can_close()) {
+    return;
+  }
 
   const QString filename =
     QFileDialog::getOpenFileName( m_main_window,
                                   tr("Load scene ..."),
                                   QString::fromStdString(scene.filename()) );
-
   if (filename.isEmpty()) {
-    return false;
-  } else if (scene.load_from(filename.toStdString())) {
-    return true;
-  } else {
-    QMessageBox::critical( m_main_window,
-                           tr("Error."),
-                           tr("Loading scene from '%1' failed.").arg(filename),
-                           QMessageBox::Ok );
-    return false;
+    return;
   }
+
+  scene.set_selection({});
+  QTimer::singleShot(0, [this, filename]() {
+    if (!scene.load_from(filename.toStdString())) {
+      QMessageBox::critical( m_main_window,
+                             tr("Error."),
+                             tr("Loading scene from '%1' failed.").arg(filename),
+                             QMessageBox::Ok );
+    }
+  });
 }
 
 std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos()

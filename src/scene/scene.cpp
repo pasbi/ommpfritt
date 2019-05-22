@@ -6,6 +6,7 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <fstream>
+#include <QApplication>
 
 #include "objects/empty.h"
 #include "external/json.hpp"
@@ -193,6 +194,7 @@ bool Scene::save_as(const std::string &filename)
 
 bool Scene::load_from(const std::string &filename)
 {
+  assert(selection().size() == 0);
   prepare_reset();
   history.reset();
   std::ifstream ifstream(filename);
@@ -240,14 +242,12 @@ bool Scene::load_from(const std::string &filename)
 
 void Scene::reset()
 {
+  assert(selection().size() == 0);
   prepare_reset();
   history.reset();
   history.set_saved_index();
-  set_selection({});
-  QTimer::singleShot(0, [this]() {
-    object_tree.replace_root(make_root());
-    styles.set(std::vector<std::unique_ptr<Style>> {});
-  });
+  object_tree.replace_root(make_root());
+  styles.set(std::vector<std::unique_ptr<Style>> {});
   m_filename.clear();
   Q_EMIT filename_changed();
 }
