@@ -83,7 +83,10 @@ void Mirror::update()
         if (!!(child.flags() & Object::Flag::IsPathLike) && !child.is_closed()) {
           auto combined_path = std::make_unique<Path>(scene());
           auto points = child.points();
-          auto mirrored_points = ::transform<Point>(child.points(), [=](const Point& p) {
+          for (auto& p : points) {
+            p = child.transformation().apply(p);
+          }
+          auto mirrored_points = ::transform<Point>(points, [=](const Point& p) {
             return mirror_t.apply(p);
           });
 
