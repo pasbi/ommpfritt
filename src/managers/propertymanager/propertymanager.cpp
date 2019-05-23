@@ -18,6 +18,14 @@
 namespace
 {
 
+QString tab_display_name(const std::string& tab_name) {
+  if (tab_name == omm::Property::USER_PROPERTY_CATEGROY_NAME) {
+    return QObject::tr(tab_name.c_str());
+  } else {
+    return QString::fromStdString(tab_name);
+  }
+}
+
 std::vector<std::string>
 get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
 {
@@ -74,13 +82,6 @@ std::string get_tab_label(const std::set<omm::Property*>& properties)
   }
 #endif
   return tab_label;
-}
-
-size_t find_tab_label(const std::string& label, const std::vector<std::string>& labels)
-{
-  const auto it = std::find(labels.cbegin(), labels.cend(), label);
-  assert(it != labels.cend());
-  return std::distance(labels.cbegin(), it);
 }
 
 }  // namespace
@@ -150,6 +151,7 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
 
   clear();
   OrderedMap<std::string, PropertyManagerTab> tabs;
+  std::vector<QString> tab_display_names;
 
   for (const auto& key : get_key_intersection(selection)) {
     const auto properties = collect_properties(key, selection);
@@ -157,6 +159,7 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
     const auto tab_label = get_tab_label(properties);
     if (!tabs.contains(tab_label)) {
       tabs.insert(tab_label, std::make_unique<PropertyManagerTab>());
+      tab_display_names.push_back(tab_display_name(tab_label));
     }
     if (Property::get_value<bool>(properties, std::mem_fn(&Property::is_enabled))) {
       tabs.at(tab_label)->add_properties(m_scene, key, properties);
@@ -174,14 +177,16 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
   for (auto&& tab_label : tabs.keys()) {
     auto& tab = tabs.at(tab_label);
     tab->end_add_properties();
-    const QString q_tab_label = tab_label == Property::USER_PROPERTY_CATEGROY_NAME
-                                ? QObject::tr(tab_label.c_str())
-                                : QString::fromStdString(tab_label);
-    m_tabs->addTab(tab.release(), q_tab_label);
+    m_tabs->addTab(tab.release(), tab_display_name(tab_label));
   }
 
-  if (tabs.contains(active_category)) {
-    m_tabs->setCurrentIndex(find_tab_label(active_category, tabs.keys()));
+  {
+    const auto it = std::find(tab_display_names.cbegin(),
+                              tab_display_names.cend(),
+                              QString::fromStdString(active_category));
+    if (it != tab_display_names.cend()) {
+      m_tabs->setCurrentIndex(std::distance(tab_display_names.cbegin(), it));
+    }
   }
 
   m_current_selection = selection;
