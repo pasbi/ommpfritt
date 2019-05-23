@@ -95,7 +95,8 @@ public:
   }
 
   virtual bool is_compatible(const Property& other) const;
-  static const std::string USER_PROPERTY_CATEGROY_NAME;
+  static constexpr auto USER_PROPERTY_CATEGROY_NAME = QT_TRANSLATE_NOOP("Property",
+                                                                        "user properties");
 
   // user properties can be added/edited/removed dynamically
   bool is_user_property() const;
