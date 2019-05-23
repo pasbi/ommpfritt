@@ -25,7 +25,6 @@ public:
 
   PropertyView property(const std::string& key);
   void clear();
-  void add_user_property();
   void on_property_value_changed(Property&, std::set<const void*> trace) override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PropertyManager");
   std::string type() const override;
