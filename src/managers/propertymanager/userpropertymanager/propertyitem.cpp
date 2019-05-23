@@ -34,8 +34,7 @@ void PropertyItem::set_property_type(const std::string& type)
   const auto label = m_property ? m_property->label() : "";
   m_property = Property::make(type);
   m_property->set_label(label);
-  const auto cat_name = QObject::tr(Property::USER_PROPERTY_CATEGROY_NAME.c_str());
-  m_property->set_category(cat_name.toStdString());
+  m_property->set_category(Property::USER_PROPERTY_CATEGROY_NAME);
 }
 
 }  // namespace omm

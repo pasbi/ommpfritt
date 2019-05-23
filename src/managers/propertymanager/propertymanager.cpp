@@ -174,7 +174,10 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
   for (auto&& tab_label : tabs.keys()) {
     auto& tab = tabs.at(tab_label);
     tab->end_add_properties();
-    m_tabs->addTab(tab.release(), QString::fromStdString(tab_label));
+    const QString q_tab_label = tab_label == Property::USER_PROPERTY_CATEGROY_NAME
+                                ? QObject::tr(tab_label.c_str())
+                                : QString::fromStdString(tab_label);
+    m_tabs->addTab(tab.release(), q_tab_label);
   }
 
   if (tabs.contains(active_category)) {
