@@ -37,10 +37,8 @@ namespace omm
 
 Style Object::m_bounding_box_style = ContourStyle(omm::Colors::BLACK, 1.0);
 
-Object::Object(Scene* scene)
+Object::Object(Scene* scene) : m_scene(scene)
 {
-  set_scene(scene);
-
   static const auto category = QObject::tr("basic").toStdString();
   add_property<OptionsProperty>(IS_VISIBLE_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("visible").toStdString(), QObject::tr("hidden").toStdString(),
@@ -92,8 +90,8 @@ Object::Object(const Object& other)
   , TreeElement(other)
   , tags(other.tags)
   , m_draw_children(other.m_draw_children)
+  , m_scene(other.m_scene)
 {
-  set_scene(other.m_scene);
   for (Tag* tag : tags.items()) {
     tag->owner = this;
   }
@@ -108,11 +106,6 @@ Object::Object(const Object& other)
     on_change(this, TAG_CHANGED, nullptr, trace);
     m_scene->invalidate();
   });
-}
-
-void Object::set_scene(Scene* scene)
-{
-  m_scene = scene;
 }
 
 ObjectTransformation Object::transformation() const
