@@ -13,11 +13,11 @@ class ReferenceProperty;
 class ReferencePropertyReferenceObserver : public AbstractPropertyOwnerObserver
 {
 public:
-  ReferencePropertyReferenceObserver(ReferenceProperty& master_property);
+  ReferencePropertyReferenceObserver(ReferenceProperty* master_property);
   void on_change(AbstractPropertyOwner*, int, Property*, std::set<const void*> trace) override;
 
 private:
-  ReferenceProperty& m_master_property;
+  ReferenceProperty* m_master_property = nullptr;
 };
 
 class ReferenceProperty : public TypedProperty<AbstractPropertyOwner*>

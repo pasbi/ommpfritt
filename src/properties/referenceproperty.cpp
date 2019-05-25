@@ -7,14 +7,17 @@ namespace omm
 
 ReferenceProperty::ReferenceProperty()
   : TypedProperty(nullptr)
-  , m_referenceproperty_reference_observer(*this)
+  , m_referenceproperty_reference_observer(this)
 {
   set_default_value(nullptr);
 }
 
 ReferenceProperty::ReferenceProperty(const ReferenceProperty &other)
   : TypedProperty<AbstractPropertyOwner *>(other)
-  , m_referenceproperty_reference_observer(*this)
+  , m_referenceproperty_reference_observer(nullptr)  // I don't know why `nullptr` is correct here.
+                                                     // However, with `nullptr` everything works as
+                                                     // expected. I thought it should be `&other`,
+                                                     // but that crashes.
 {
   auto* value = this->value();
   if (value != nullptr) {
@@ -108,7 +111,7 @@ void ReferenceProperty::set(AbstractPropertyOwner * const &apo)
 void ReferenceProperty::revise() { set(nullptr); }
 
 ReferencePropertyReferenceObserver
-::ReferencePropertyReferenceObserver(ReferenceProperty &master_property)
+::ReferencePropertyReferenceObserver(ReferenceProperty *master_property)
   : m_master_property(master_property) {}
 
 void ReferencePropertyReferenceObserver::on_change(AbstractPropertyOwner *, int, Property *, std::set<const void *> trace)
@@ -117,7 +120,9 @@ void ReferencePropertyReferenceObserver::on_change(AbstractPropertyOwner *, int,
     LINFO << "cycle!";
   } else {
     trace.insert(this);
-    m_master_property.notify_observers(trace);
+    if (m_master_property != nullptr) {
+      m_master_property->notify_observers(trace);
+    }
   }
 }
 
