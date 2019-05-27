@@ -39,8 +39,14 @@ std::unique_ptr<Object> View::clone() const { return std::make_unique<View>(*thi
 
 void View::to_viewport()
 {
+  auto t = global_transformation(true).inverted().normalized();
   auto& viewport = Application::instance().main_window()->viewport();
-  viewport.set_transformation(transformation());
+  const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>();
+  const auto sx = viewport.width() / size.x;
+  const auto sy = viewport.height() / size.y;
+  const auto s = std::abs(sx) < std::abs(sy) ? sx : sy;
+  t = ObjectTransformation().scaled(Vec2f(s, s)).apply(t);
+  viewport.set_transformation(t);
 }
 
 void View::make_output_unique()
