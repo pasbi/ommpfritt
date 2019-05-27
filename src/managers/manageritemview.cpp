@@ -44,9 +44,15 @@ ItemModelT* ManagerItemView<ItemViewT, ItemModelT>::model() const
 template<typename ItemViewT, typename ItemModelT>
 void ManagerItemView<ItemViewT, ItemModelT>::mouseReleaseEvent(QMouseEvent* e)
 {
-  // see also mousePressEvent
-  this->model()->scene.set_selection(this->selected_items());
   ItemViewT::mouseReleaseEvent(e);
+  this->model()->scene.set_selection(this->selected_items());
+}
+
+template<typename ItemViewT, typename ItemModelT>
+void ManagerItemView<ItemViewT, ItemModelT>::mousePressEvent(QMouseEvent *e)
+{
+  ItemViewT::mousePressEvent(e);
+  this->model()->scene.set_selection(this->selected_items());
 }
 
 template<typename ItemViewT, typename ItemModelT>
