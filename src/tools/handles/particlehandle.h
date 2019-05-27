@@ -15,6 +15,10 @@ public:
   bool contains_global(const Vec2f& point) const override;
   void draw(omm::Painter& renderer) const override;
   Vec2f position = Vec2f::o();
+
+  static const Style hovered_style;
+  static const Style active_style;
+  static const Style inactive_style;
 };
 
 template<typename ToolT>

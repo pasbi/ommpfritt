@@ -21,7 +21,36 @@ public:
   TangentHandle(omm::Tool& tool, omm::PointSelectHandle& master_handle)
     : ParticleHandle(tool, false), m_master_handle(master_handle)
   {
-    set_style(Handle::Status::Inactive, omm::SolidStyle(omm::Color(0.0, 0.0, 0.0)));
+    set_style(Handle::Status::Hovered, []() {
+      omm::Style style(nullptr);
+      style.property(omm::Style::COSMETIC_KEY)->set(true);
+      style.property(omm::Style::BRUSH_COLOR_KEY)->set(omm::Color(1.0, 1.0, 0.0));
+      style.property(omm::Style::PEN_COLOR_KEY)->set(omm::Color(0.0, 0.0, 1.0));
+      style.property(omm::Style::BRUSH_IS_ACTIVE_KEY)->set(true);
+      style.property(omm::Style::PEN_IS_ACTIVE_KEY)->set(true);
+      return style;
+    }());
+
+
+    set_style(Handle::Status::Active, []() {
+      omm::Style style(nullptr);
+      style.property(omm::Style::COSMETIC_KEY)->set(true);
+      style.property(omm::Style::BRUSH_COLOR_KEY)->set(omm::Color(1.0, 1.0, 1.0));
+      style.property(omm::Style::PEN_COLOR_KEY)->set(omm::Color(0.0, 0.0, 0.0));
+      style.property(omm::Style::BRUSH_IS_ACTIVE_KEY)->set(true);
+      style.property(omm::Style::PEN_IS_ACTIVE_KEY)->set(true);
+      return style;
+    }());
+
+    set_style(Handle::Status::Inactive, []() {
+      omm::Style style(nullptr);
+      style.property(omm::Style::COSMETIC_KEY)->set(true);
+      style.property(omm::Style::BRUSH_COLOR_KEY)->set(omm::Color(0.8, 0.8, 0.2));
+      style.property(omm::Style::PEN_COLOR_KEY)->set(omm::Color(0.2, 0.2, 0.8));
+      style.property(omm::Style::BRUSH_IS_ACTIVE_KEY)->set(true);
+      style.property(omm::Style::PEN_IS_ACTIVE_KEY)->set(true);
+      return style;
+    }());
   }
 
   bool mouse_move(const omm::Vec2f& delta, const omm::Vec2f& pos, const QMouseEvent& e) override
@@ -40,6 +69,7 @@ public:
   void draw(omm::Painter& renderer) const override
   {
     renderer.set_style(current_style());
+    LINFO << (int) status();
     const auto r = draw_epsilon();
     renderer.painter->drawEllipse(position.x - r, position.y - r, 2*r, 2*r);
   }
@@ -215,9 +245,8 @@ void PointSelectHandle::draw(Painter &renderer) const
 
     renderer.set_style(*m_tangent_style);
     renderer.painter->drawLine(pos.x, pos.y, other_pos.x, other_pos.y);
-    if (force_draw_subhandles || m_point.is_selected) {
-      sub_handle.draw(renderer);
-    }
+    LINFO << (int) sub_handle.status();
+    sub_handle.draw(renderer);
   };
 
   if (tangents_active()) {
