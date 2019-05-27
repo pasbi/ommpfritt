@@ -19,7 +19,7 @@ Primary use case is creating and editing (animated) info graphics, diagrams, ico
 - all modifications to a scene can be undone (**unlimited undo/redo-stack**)
 - **simple concept** with few very concrete item classes (_Object_, _Tag_, _Style_, _Tool_)
 - wide **drag'n'drop** support: move, copy or link Objects, Tags and Styles naturally
-- **non-destructive** editing: properties of Objects, Tags, Styles and Tools can be accessed and modified at any time.
+- **non-destructive**, **non-linear** editing: properties of Objects, Tags, Styles and Tools can be accessed and modified at any time.
 - **programmable**: every property can be accessed and modified using an internal python interpreter
 - build complex **object hierarchies** and object groups
 - **flexible GUI** using dockable widgets
@@ -28,6 +28,7 @@ Primary use case is creating and editing (animated) info graphics, diagrams, ico
 - **flexible, customizable key binding sequences** (aka short-cuts)
 - **multi-language** (currently English and German only)
 - **rasterize** to `png` and `jpg`
+- **export** to SVG
 
 ### Styling
 - build complex reusable **style cascades**
@@ -39,9 +40,9 @@ Primary use case is creating and editing (animated) info graphics, diagrams, ico
   - **linear** mode: no tangents
   - subdivide/remove points
 - **procedural** path: control the points and tangents using python
-- **ellipse**
+- **ellipse**, **rectangle**, **line**
 - **empty**: no geometry, but useful as group parent
-- **image**: load jpg, png, etc. from file.
+- **image**: load JPG, PNG, SVG, PDF as object
 - **instance**: all changes of the reference are updated in the instance-object, too
 - **cloner**: many instances in a regular arrangement
    - grid
@@ -83,7 +84,5 @@ We only test on arch-linux using gcc and clang, but we don't see a reason why it
 
 Dependencies:
 - [Qt > 5.10](https://github.com/qt)
-- [armadillo](http://arma.sourceforge.net/)
 - [pybind11](https://github.com/pybind/pybind11)
-- [glog](https://github.com/google/glog)
 - [python3](https://github.com/python)
