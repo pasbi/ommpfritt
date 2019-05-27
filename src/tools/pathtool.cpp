@@ -19,6 +19,7 @@ bool PathTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEven
     const auto lt = PolarCoordinates(m_current_point->left_tangent.to_cartesian() + delta);
     m_current_point->left_tangent = lt;
     m_current_point->right_tangent = -lt;
+    m_path->update();
     return true;
   } else {
     return false;
@@ -70,6 +71,7 @@ void PathTool::add_point(const Vec2f &pos)
   Path::PointSequence point_sequence(m_path->points().size(), { Point(gpos) });
   m_path->add_points(std::vector { point_sequence });
   m_current_point = m_path->points_ref().back();
+  m_path->update();
 }
 
 void PathTool::end()

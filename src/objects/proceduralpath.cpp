@@ -76,6 +76,7 @@ void ProceduralPath::update()
                                         "scene"_a=SceneWrapper(*scene()) );
     scene()->python_engine.exec(code, locals, this);
   }
+  AbstractProceduralPath::update();
 }
 
 bool ProceduralPath::is_closed() const
