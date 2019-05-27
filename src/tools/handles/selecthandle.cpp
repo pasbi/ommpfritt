@@ -173,9 +173,9 @@ bool PointSelectHandle::mouse_press(const Vec2f& pos, const QMouseEvent& event, 
 {
   if (AbstractSelectHandle::mouse_press(pos, event, force)) {
     return true;
-  } else if (tangents_active() && m_left_tangent_handle->mouse_press(pos, event, false)) {
+  } else if (tangents_active() && force && m_left_tangent_handle->mouse_press(pos, event, false)) {
     return true;
-  } else if (tangents_active() && m_right_tangent_handle->mouse_press(pos, event, false)) {
+  } else if (tangents_active() && force && m_right_tangent_handle->mouse_press(pos, event, false)) {
     return true;
   } else {
     return false;

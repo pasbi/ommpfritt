@@ -20,12 +20,14 @@ template<typename Ts, typename T, typename... F> T mean(const Ts& ts, const T& n
 namespace omm
 {
 
-void PointPositions::make_handles(handles_type& handles, Tool& tool) const
+void PointPositions::make_handles(handles_type& handles, Tool& tool, bool force_draw_subhandle) const
 {
   for (auto* path : paths()) {
     handles.reserve(handles.size() + path->points().size());
     for (auto* point : path->points_ref()) {
-      handles.push_back(std::make_unique<PointSelectHandle>(tool, *path, *point));
+      auto handle = std::make_unique<PointSelectHandle>(tool, *path, *point);
+      handle->force_draw_subhandles = force_draw_subhandle;
+      handles.push_back(std::move(handle));
     }
   }
 }

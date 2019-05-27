@@ -30,7 +30,7 @@ class PointPositions : public AbstractPositions<Point>
 {
 public:
   using AbstractPositions<Point>::AbstractPositions;
-  void make_handles(handles_type& handles, Tool& tool) const;
+  void make_handles(handles_type& handles, Tool& tool, bool force_draw_subhandle = false) const;
   void clear_selection();
   Vec2f selection_center() const;
   double selection_rotation() const;

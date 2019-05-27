@@ -1,22 +1,22 @@
 #include "tools/pathtool.h"
 #include "scene/scene.h"
+#include "tools/selecttool.h"
 #include <QMouseEvent>
 #include "commands/addcommand.h"
+#include <mainwindow/application.h>
+#include "commands/modifypointscommand.h"
 
 namespace omm
 {
 
-PathTool::PathTool(Scene &scene) : Tool(scene)
-{
-
-}
+PathTool::PathTool(Scene &scene) : SelectPointsTool(scene) {  }
 
 bool PathTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEvent &event)
 {
-  Q_UNUSED(pos)
-  Q_UNUSED(event)
-  if (m_current_point != nullptr) {
-    const auto lt = PolarCoordinates(m_current_point->left_tangent.to_cartesian() + delta);
+  if (SelectPointsTool::mouse_move(delta, pos, event)) {
+      return true;
+  } else if (m_path != nullptr && m_current_point != nullptr) {
+    const auto lt = PolarCoordinates(m_current_point->left_tangent.to_cartesian() - delta);
     m_current_point->left_tangent = lt;
     m_current_point->right_tangent = -lt;
     m_path->update();
@@ -28,64 +28,68 @@ bool PathTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEven
 
 bool PathTool::mouse_press(const Vec2f &pos, const QMouseEvent &event, bool force)
 {
-  Q_UNUSED(force)
-  switch (event.button()) {
-  case Qt::LeftButton:
-    add_point(pos);
+  if (SelectPointsTool::mouse_press(pos, event, force)) {
     return true;
-  case Qt::RightButton:
-    end();
-    return true;
-  default:
+  } else {
+    switch (event.button()) {
+    case Qt::LeftButton:
+      add_point(pos);
+      break;
+    case Qt::RightButton:
+      end();
+      break;
+    default:
+      break;
+    }
     return false;
   }
 }
 
 void PathTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
 {
-  Q_UNUSED(pos)
-  Q_UNUSED(event)
+  SelectPointsTool::mouse_release(pos, event);
   m_current_point = nullptr;
 }
 
 std::string PathTool::type() const { return TYPE; }
-void PathTool::cancel() { m_path.reset(); }
-
-void PathTool::draw(Painter &renderer) const
-{
-  Tool::draw(renderer);
-  if (m_path) {
-    m_path->set_transformation(viewport_transformation);
-    m_path->draw_recursive(renderer, scene.default_style());
-  }
-}
 
 void PathTool::add_point(const Vec2f &pos)
 {
   if (!m_path) {
-    m_path = std::make_unique<Path>(&scene);
+    const auto insert_mode = Application::InsertionMode::Default;
+    m_path = static_cast<Path*>(&Application::instance().insert_object(Path::TYPE, insert_mode));
+    m_path->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
+    scene.set_selection({m_path});
   }
 
   const auto gpos = viewport_transformation.inverted().apply_to_position(pos);
 
   Path::PointSequence point_sequence(m_path->points().size(), { Point(gpos) });
-  m_path->add_points(std::vector { point_sequence });
+
+  scene.submit<AddPointsCommand>(std::map{ std::pair{ m_path, std::vector{ point_sequence } } });
   m_current_point = m_path->points_ref().back();
   m_path->update();
+  on_scene_changed();
 }
 
 void PathTool::end()
 {
-  if (m_path) {
-    auto t = ObjectTransformation();
-    using add_command_type = AddCommand<Tree<Object>>;
-    for (Point* point : m_path->points_ref()) {
-      *point = t.apply(*point);
-    }
-    m_path->set_global_transformation(t.inverted(), false);
+  SelectPointsTool::end();
+  if (m_path != nullptr) {
     m_path->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
-    scene.submit<add_command_type>(scene.object_tree, std::move(m_path));
   }
+}
+
+void PathTool::on_scene_changed()
+{
+  auto paths = type_cast<Path*>(scene.item_selection<Object>());
+  if (paths.size() == 1) {
+    m_path = *paths.begin();
+  } else {
+    m_path = nullptr;
+  }
+
+  SelectPointsTool::make_handles(true);
 }
 
 }  // namespace

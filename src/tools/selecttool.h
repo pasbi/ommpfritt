@@ -39,7 +39,6 @@ class SelectTool : public AbstractSelectTool
 public:
   explicit SelectTool(Scene& scene);
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force) override;
-  void on_scene_changed() override;
   PositionVariant position_variant;
   ObjectTransformation transformation() const override;
   bool has_transformation() const override;
@@ -54,6 +53,7 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectObjectsTool");
   Command* transform_objects(ObjectTransformation t, const bool tool_space) override;
   static constexpr auto TRANSFORMATION_MODE_KEY = "transformation_mode";
+  void on_scene_changed() override;
 
 };
 
@@ -68,6 +68,10 @@ public:
   std::unique_ptr<QMenu> make_context_menu(QWidget* parent) override;
   void on_selection_changed() override;
   Command *transform_objects(ObjectTransformation t, const bool tool_space) override;
+  void on_scene_changed() override;
+
+protected:
+  void make_handles(bool force_subhandles = false);
 
 };
 

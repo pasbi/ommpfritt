@@ -1,13 +1,14 @@
 #pragma once
 
-#include "tools/tool.h"
+#include "tools/selecttool.h"
 #include "objects/path.h"
+#include "tools/positionvariant.h"
 #include <memory>
 
 namespace omm
 {
 
-class PathTool : public Tool
+class PathTool : public SelectPointsTool
 {
 public:
   explicit PathTool(Scene& scene);
@@ -16,14 +17,13 @@ public:
   bool mouse_press(const Vec2f &pos, const QMouseEvent &event, bool force = false) override;
   void mouse_release(const Vec2f &pos, const QMouseEvent &event) override;
   std::string type() const override;
-  void cancel() override;
-  void draw(Painter& renderer) const override;
   void end() override;
+  void on_scene_changed() override;
 
 private:
   void add_point(const Vec2f& pos);
 
-  std::unique_ptr<Path> m_path;
+  Path* m_path = nullptr;
   Point* m_current_point = nullptr;
 
 };

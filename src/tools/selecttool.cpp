@@ -129,19 +129,6 @@ template<typename PositionVariant> bool SelectTool<PositionVariant>
   }
 }
 
-template<typename PositionVariant>
-void SelectTool<PositionVariant>::on_scene_changed()
-{
-  this->handles.clear();
-  using tool_t = std::remove_pointer_t<decltype(this)>;
-  handles.push_back(std::make_unique<ScaleBandHandle<tool_t>>(*this));
-  handles.push_back(std::make_unique<RotateHandle<tool_t>>(*this));
-  handles.push_back(std::make_unique<MoveParticleHandle<tool_t>>(*this));
-  handles.push_back(std::make_unique<MoveAxisHandle<tool_t, MoveAxisHandleDirection::X>>(*this));
-  handles.push_back(std::make_unique<MoveAxisHandle<tool_t, MoveAxisHandleDirection::Y>>(*this));
-  position_variant.make_handles(this->handles, *this);
-}
-
 template<typename PositionVariant> bool SelectTool<PositionVariant>::has_transformation() const
 {
   return !position_variant.is_empty();
@@ -175,7 +162,17 @@ Command* SelectObjectsTool::transform_objects(ObjectTransformation t, const bool
   return &command_ref;
 }
 
-
+void SelectObjectsTool::on_scene_changed()
+{
+  handles.clear();
+  using tool_t = std::remove_pointer_t<decltype(this)>;
+  handles.push_back(std::make_unique<ScaleBandHandle<tool_t>>(*this));
+  handles.push_back(std::make_unique<RotateHandle<tool_t>>(*this));
+  handles.push_back(std::make_unique<MoveParticleHandle<tool_t>>(*this));
+  handles.push_back(std::make_unique<MoveAxisHandle<tool_t, MoveAxisHandleDirection::X>>(*this));
+  handles.push_back(std::make_unique<MoveAxisHandle<tool_t, MoveAxisHandleDirection::Y>>(*this));
+  position_variant.make_handles(this->handles, *this);
+}
 
 SelectPointsTool::SelectPointsTool(Scene& scene)
   : SelectTool<PointPositions>(scene)
@@ -208,10 +205,7 @@ std::unique_ptr<QMenu> SelectPointsTool::make_context_menu(QWidget* parent)
   return std::move(menus.front());
 }
 
-void SelectPointsTool::on_selection_changed()
-{
-  on_scene_changed();
-}
+void SelectPointsTool::on_selection_changed() { on_scene_changed(); }
 
 Command* SelectPointsTool::transform_objects(ObjectTransformation t, const bool tool_space)
 {
@@ -224,6 +218,20 @@ Command* SelectPointsTool::transform_objects(ObjectTransformation t, const bool 
   } else {
     return nullptr;
   }
+}
+
+void SelectPointsTool::on_scene_changed() { make_handles(false); }
+
+void SelectPointsTool::make_handles(bool force_subhandles)
+{
+  handles.clear();
+  using tool_t = std::remove_pointer_t<decltype(this)>;
+  handles.push_back(std::make_unique<ScaleBandHandle<tool_t>>(*this));
+  handles.push_back(std::make_unique<RotateHandle<tool_t>>(*this));
+  handles.push_back(std::make_unique<MoveParticleHandle<tool_t>>(*this));
+  handles.push_back(std::make_unique<MoveAxisHandle<tool_t, MoveAxisHandleDirection::X>>(*this));
+  handles.push_back(std::make_unique<MoveAxisHandle<tool_t, MoveAxisHandleDirection::Y>>(*this));
+  position_variant.make_handles(this->handles, *this, force_subhandles);
 }
 
 template class SelectTool<ObjectPositions>;
