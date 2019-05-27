@@ -268,7 +268,7 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
 std::string Application::type() const { return TYPE; }
 MainWindow* Application::main_window() const { return m_main_window; }
 
-void Application::insert_object(const std::string &key, InsertionMode mode)
+Object& Application::insert_object(const std::string &key, InsertionMode mode)
 {
   auto macro = scene.history.start_macro(tr("Create %1")
                   .arg(QApplication::translate("any-context", key.c_str())));
@@ -319,6 +319,7 @@ void Application::insert_object(const std::string &key, InsertionMode mode)
   }
 
   ref.post_create_hook();
+  return ref;
 }
 
 }  // namespace omm

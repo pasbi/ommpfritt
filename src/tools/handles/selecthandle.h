@@ -61,6 +61,7 @@ public:
 
   template<Tangent tangent>
   void transform_tangent(const Vec2f& delta);
+  bool force_draw_subhandles = false;
 
 protected:
   ObjectTransformation transformation() const override;

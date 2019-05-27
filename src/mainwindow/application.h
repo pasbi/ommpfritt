@@ -42,7 +42,7 @@ public:
   const IconProvider icon_provider;
 
   enum class InsertionMode { Default, AsParent, AsChild };
-  void insert_object(const std::string& key, InsertionMode mode);
+  Object &insert_object(const std::string& key, InsertionMode mode);
 
 private:
   QApplication& m_app;

@@ -215,7 +215,9 @@ void PointSelectHandle::draw(Painter &renderer) const
 
     renderer.set_style(*m_tangent_style);
     renderer.painter->drawLine(pos.x, pos.y, other_pos.x, other_pos.y);
-    if (m_point.is_selected) { sub_handle.draw(renderer); }
+    if (force_draw_subhandles || m_point.is_selected) {
+      sub_handle.draw(renderer);
+    }
   };
 
   if (tangents_active()) {
@@ -267,7 +269,7 @@ bool PointSelectHandle::tangents_active() const
   const auto& imode_property = m_path.property(Path::INTERPOLATION_PROPERTY_KEY);
   const auto interpolation_mode = imode_property->value<Path::InterpolationMode>();
   const bool is_bezier = interpolation_mode == Path::InterpolationMode::Bezier;
-  return is_bezier && m_point.is_selected;
+  return (is_bezier && m_point.is_selected) || force_draw_subhandles;
 }
 
 void PointSelectHandle::set_selected(bool selected)
