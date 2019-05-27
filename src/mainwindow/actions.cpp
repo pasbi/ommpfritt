@@ -158,7 +158,9 @@ void select_all(Application& app)
       point->is_selected = true;
     }
   }
+  app.scene.update_selection();
 }
+
 void deselect_all(Application& app)
 {
   for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
@@ -166,6 +168,7 @@ void deselect_all(Application& app)
       point->is_selected = false;
     }
   }
+  app.scene.update_selection();
 }
 
 void invert_selection(Application& app)
@@ -175,6 +178,7 @@ void invert_selection(Application& app)
       point->is_selected = !point->is_selected;
     }
   }
+  app.scene.update_selection();
 }
 
 void convert_objects(Application& app)

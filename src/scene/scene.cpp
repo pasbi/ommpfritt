@@ -72,6 +72,7 @@ Scene::Scene(PythonEngine& python_engine)
   }
   tool_box.set_active_tool(SelectObjectsTool::TYPE);
   connect(&history, SIGNAL(index_changed()), this, SIGNAL(filename_changed()));
+  connect(&history, SIGNAL(index_changed()), this, SIGNAL(update_selection()));
 }
 
 Scene::~Scene()
@@ -352,6 +353,11 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
   }
 
   tool_box.active_tool().on_selection_changed();
+}
+
+void Scene::update_selection()
+{
+  set_selection(selection());
 }
 
 std::set<AbstractPropertyOwner*> Scene::selection() const { return m_selection; }
