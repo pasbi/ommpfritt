@@ -251,6 +251,7 @@ void ExportDialog::showEvent(QShowEvent* e)
 {
   update_preview();
   update_active_view();
+  m_ui->stackedWidget->setCurrentIndex(m_ui->cb_format->currentIndex());
   QDialog::showEvent(e);
 }
 
