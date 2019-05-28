@@ -72,11 +72,12 @@ Scene::Scene(PythonEngine& python_engine)
   }
   tool_box.set_active_tool(SelectObjectsTool::TYPE);
   connect(&history, SIGNAL(index_changed()), this, SIGNAL(filename_changed()));
-  connect(&history, SIGNAL(index_changed()), this, SIGNAL(update_selection()));
+  connect(&history, SIGNAL(index_changed()), this, SLOT(update_selection()));
 }
 
 Scene::~Scene()
 {
+  history.disconnect();
   prepare_reset();
 }
 
