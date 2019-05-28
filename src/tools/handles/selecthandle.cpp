@@ -69,7 +69,6 @@ public:
   void draw(omm::Painter& renderer) const override
   {
     renderer.set_style(current_style());
-    LINFO << (int) status();
     const auto r = draw_epsilon();
     renderer.painter->drawEllipse(position.x - r, position.y - r, 2*r, 2*r);
   }
@@ -245,7 +244,6 @@ void PointSelectHandle::draw(Painter &renderer) const
 
     renderer.set_style(*m_tangent_style);
     renderer.painter->drawLine(pos.x, pos.y, other_pos.x, other_pos.y);
-    LINFO << (int) sub_handle.status();
     sub_handle.draw(renderer);
   };
 
