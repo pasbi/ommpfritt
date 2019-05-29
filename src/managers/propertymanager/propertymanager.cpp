@@ -149,6 +149,10 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
     return;
   }
 
+  if (selection == m_current_selection) {
+    return;
+  }
+
   clear();
   OrderedMap<std::string, PropertyManagerTab> tabs;
   std::vector<QString> tab_display_names;
