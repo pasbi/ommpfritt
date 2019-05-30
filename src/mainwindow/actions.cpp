@@ -91,8 +91,6 @@ void convert_objects(omm::Application& app, std::set<omm::Object*> convertables)
     // process the left over items
     convert_objects(app, leftover_convertables);
   }
-
-
 }
 
 }  // namespace
@@ -114,6 +112,7 @@ void remove_selected_points(Application& app)
   }
 
   app.scene.submit<RemovePointsCommand>(map);
+  app.scene.update_tool();
 }
 
 void subdivide(Application& app)
@@ -158,7 +157,7 @@ void select_all(Application& app)
       point->is_selected = true;
     }
   }
-  app.scene.update_selection();
+  Q_EMIT app.scene.repaint();
 }
 
 void deselect_all(Application& app)
@@ -168,7 +167,7 @@ void deselect_all(Application& app)
       point->is_selected = false;
     }
   }
-  app.scene.update_selection();
+  Q_EMIT app.scene.repaint();
 }
 
 void invert_selection(Application& app)
@@ -178,7 +177,7 @@ void invert_selection(Application& app)
       point->is_selected = !point->is_selected;
     }
   }
-  app.scene.update_selection();
+  Q_EMIT app.scene.repaint();
 }
 
 void convert_objects(Application& app)

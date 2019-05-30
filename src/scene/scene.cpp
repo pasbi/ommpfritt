@@ -72,7 +72,6 @@ Scene::Scene(PythonEngine& python_engine)
   }
   tool_box.set_active_tool(SelectObjectsTool::TYPE);
   connect(&history, SIGNAL(index_changed()), this, SIGNAL(filename_changed()));
-  connect(&history, SIGNAL(index_changed()), this, SLOT(update_selection()));
 }
 
 Scene::~Scene()
@@ -356,11 +355,6 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
   tool_box.active_tool().on_selection_changed();
 }
 
-void Scene::update_selection()
-{
-  set_selection(selection());
-}
-
 std::set<AbstractPropertyOwner*> Scene::selection() const { return m_selection; }
 
 template<> std::set<Tag*> Scene::find_items<Tag>(const std::string& name) const
@@ -441,6 +435,11 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
 void Scene::update()
 {
   object_tree.root().update_recursive();
+}
+
+void Scene::update_tool()
+{
+  tool_box.active_tool().on_scene_changed();
 }
 
 bool Scene::contains(const AbstractPropertyOwner *apo) const

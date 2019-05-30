@@ -37,6 +37,8 @@ Viewport::Viewport(Scene& scene)
 
   connect(&scene, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(update()));
+
+  connect(&scene, SIGNAL(repaint()), this, SLOT(update()));
 }
 
 #if USE_OPENGL

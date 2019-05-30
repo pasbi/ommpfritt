@@ -35,9 +35,13 @@ protected:
   void add();
   void remove();
 
+  bool requires_tool_update() const override;
+  Scene& scene() const;
+
 private:
   std::map<Path*, std::vector<std::size_t>> m_removed_points;
   std::map<Path*, std::vector<Path::PointSequence>> m_added_points;
+
 };
 
 class AddPointsCommand : public AbstractPointsCommand

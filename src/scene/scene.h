@@ -72,8 +72,6 @@ public:
   {
     return kind_cast<ItemT>(m_item_selection.at(ItemT::KIND));
   }
-public Q_SLOTS:
-  void update_selection();
 
 private:
   std::map<AbstractPropertyOwner::Kind, std::set<AbstractPropertyOwner*>> m_item_selection;
@@ -136,9 +134,11 @@ public:
 
 public:
   void update();
+  void update_tool();
   bool contains(const AbstractPropertyOwner* apo) const;
 
 Q_SIGNALS:
+  void repaint();
   void object_selection_changed(const std::set<Object*>& selection);
   void style_selection_changed(const std::set<Style*>& selection);
   void tag_selection_changed(const std::set<Tag*>& selection);

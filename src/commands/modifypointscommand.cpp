@@ -1,11 +1,15 @@
 #include "commands/modifypointscommand.h"
+#include "scene/scene.h"
 
 namespace omm
 {
 
 ModifyPointsCommand
 ::ModifyPointsCommand(const std::map<Path*, std::map<Point*, Point>>& points)
-  : Command(QObject::tr("ModifyPointsCommand").toStdString()), m_data(points) {}
+  : Command(QObject::tr("ModifyPointsCommand").toStdString()), m_data(points)
+{
+  assert(points.size() > 0);
+}
 
 void ModifyPointsCommand::undo() { swap(); }
 void ModifyPointsCommand::redo() { swap(); }
@@ -48,11 +52,32 @@ bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)
 
 AbstractPointsCommand::AbstractPointsCommand(
   const std::string& label, const std::map<Path*, std::vector<Path::PointSequence>>& points )
-  : Command(label), m_added_points(points) {}
+  : Command(label), m_added_points(points)
+{
+  assert(m_added_points.size() > 0);
+}
 
 AbstractPointsCommand::AbstractPointsCommand(
   const std::string& label, const std::map<Path*, std::vector<std::size_t>>& points )
-  : Command(label), m_removed_points(points) {}
+  : Command(label), m_removed_points(points)
+{
+  assert(m_removed_points.size() > 0);
+}
+
+Scene &AbstractPointsCommand::scene() const
+{
+  Scene* scene = m_added_points.size() > 0 ? m_added_points.begin()->first->scene()
+                                           : m_removed_points.begin()->first->scene();
+#ifndef NDEBUG
+  for (auto&& [path, points] : m_added_points) {
+    assert(scene == path->scene());
+  }
+  for (auto&& [path, points] : m_removed_points) {
+    assert(scene == path->scene());
+  }
+#endif  // NDEBUG
+  return *scene;
+}
 
 void AbstractPointsCommand::remove()
 {
@@ -63,7 +88,10 @@ void AbstractPointsCommand::remove()
     path->on_change(path, Path::POINTS_CHANGED, nullptr, { this });
   }
   m_removed_points.clear();
+  scene().update_tool();
 }
+
+bool AbstractPointsCommand::requires_tool_update() const { return true; }
 
 void AbstractPointsCommand::add()
 {
@@ -74,6 +102,7 @@ void AbstractPointsCommand::add()
     path->on_change(path, Path::POINTS_CHANGED, nullptr, { this });
   }
   m_added_points.clear();
+  scene().update_tool();
 }
 
 AddPointsCommand::AddPointsCommand(const std::map<Path*, std::vector<Path::PointSequence>>& points)

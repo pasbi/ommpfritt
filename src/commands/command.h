@@ -15,6 +15,7 @@ protected:
 
 public:
   std::string label() const;
+  virtual bool requires_tool_update() const;
 
 protected:
   static constexpr int PROPERTY_COMMAND_ID = 1;
