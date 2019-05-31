@@ -120,7 +120,7 @@ public:
 
   Property& set_enabled_buddy(Property& property, const std::function<bool(Property&)>& predicate);
 
-  template<typename EnumT> std::enable_if_t<std::is_enum_v<EnumT>, Property>&
+  template<typename EnumT> std::enable_if_t<std::is_enum_v<EnumT>, Property&>&
   set_enabled_buddy(OptionsProperty& property, std::set<EnumT> values)
   {
     return set_enabled_buddy(property, ::transform<std::size_t>(values, [](EnumT value) {

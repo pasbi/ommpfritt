@@ -120,6 +120,7 @@ Property& Property
 {
   m_enabled_buddy.property = &buddy;
   m_enabled_buddy.predicate = predicate;
+  return *this;
 }
 
 bool Property::is_compatible(const Property& other) const
