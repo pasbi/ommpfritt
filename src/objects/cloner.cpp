@@ -59,13 +59,13 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Grid });
 
-  add_property<FloatVectorProperty>(DISTANCE_2D_PROPERTY_KEY, Vec2f(10.0, 10.0))
+  add_property<FloatVectorProperty>(DISTANCE_2D_PROPERTY_KEY, Vec2f(100.0, 100.0))
     .set_step(Vec2f(0.1, 0.1))
     .set_label(QObject::tr("distance").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Linear, Mode::Grid });
 
-  add_property<FloatProperty>(RADIUS_PROPERTY_KEY, 50.0)
+  add_property<FloatProperty>(RADIUS_PROPERTY_KEY, 200.0)
     .set_step(0.1)
     .set_label(QObject::tr("radius").toStdString())
     .set_category(category)

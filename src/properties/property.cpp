@@ -46,7 +46,7 @@ void Property::serialize(AbstractSerializer& serializer, const Pointer& root) co
 
 void Property
 ::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
-{;
+{
   Serializable::deserialize(deserializer, root);
 
   // if m_label and m_category are already set, prefer these values since they are translated.

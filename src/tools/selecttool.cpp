@@ -32,7 +32,7 @@ AbstractSelectTool::AbstractSelectTool(Scene& scene)
   , m_tool_info_line_style(ContourStyle(Color(0.0, 0.0, 0.0, 0.3), 0.7))
 
 {
-  this->add_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY)
+  this->add_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY, 1)
     .set_options({ QObject::tr("global").toStdString(), QObject::tr("local").toStdString() })
     .set_label(QObject::tr("Alignment").toStdString())
     .set_category(QObject::tr("tool").toStdString());
