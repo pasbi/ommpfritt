@@ -36,6 +36,7 @@ private:
   std::unique_ptr<QWidget> make_menu_bar();
   std::set<AbstractPropertyOwner*>  m_current_selection;
   std::set<Property*> m_observed_properties;
+  std::map<Property*, bool> m_defeatable_properties;
   std::string make_window_title() const;
   bool m_is_locked = false;
 
