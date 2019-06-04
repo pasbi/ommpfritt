@@ -83,6 +83,8 @@ Install the depencendies and building should work out of the box.
 We only test on arch-linux using gcc and clang, but we don't see a reason why it shouldn't build on other linuxes/win/mac, too.
 
 Dependencies:
-- [Qt > 5.10](https://github.com/qt)
+- [Qt >= 5.12](https://github.com/qt)
 - [pybind11](https://github.com/pybind/pybind11)
 - [python3](https://github.com/python)
+- recent g++ or clang (works with g++ 8.3.x, does not work with g++ 7.x)
+- msys/mingw64 for windows builds (it might also work with very recent MSVC)
