@@ -218,4 +218,17 @@ std::vector<Point> Point::offset(const double t,
   }
 }
 
+bool Point::operator<(const Point& point) const
+{
+  if (position == point.position) {
+    if (left_tangent == point.left_tangent) {
+      return right_tangent < point.right_tangent;
+    } else {
+      return left_tangent < point.left_tangent;
+    }
+  } else {
+    return position < point.position;
+  }
+}
+
 }  // namespace omm

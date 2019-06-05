@@ -47,6 +47,7 @@ public:
 
   bool operator==(const Point& point) const;
   bool operator!=(const Point& point) const;
+  bool operator<(const Point& point) const;
 
   Point offset(double t, const Point *left_neighbor, const Point *right_neighbor) const;
 

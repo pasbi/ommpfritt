@@ -29,6 +29,15 @@ bool PolarCoordinates::operator==(const PolarCoordinates& point) const
   return argument == point.argument && magnitude == point.magnitude;
 }
 
+bool PolarCoordinates::operator<(const PolarCoordinates &other) const
+{
+  if (magnitude == other.magnitude) {
+    return argument < other.argument;
+  } else {
+    return magnitude < other.magnitude;
+  }
+}
+
 bool PolarCoordinates::operator!=(const PolarCoordinates& point) const
 {
   return !(*this == point);
