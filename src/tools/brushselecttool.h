@@ -1,13 +1,13 @@
 #pragma once
 
 #include "tools/tool.h"
-#include "tools/positionvariant.h"
+#include "tools/selectpointstool.h"
 #include <QCoreApplication>
 
 namespace omm
 {
 
-class BrushSelectTool : public Tool
+class BrushSelectTool : public SelectPointsTool
 {
 public:
   explicit BrushSelectTool(Scene& scene);
@@ -26,7 +26,6 @@ public:
   std::string type() const override;
   void on_scene_changed() override;
   void on_selection_changed() override;
-  PointPositions position_variant;
   void draw(Painter& renderer) const override;
   static constexpr auto RADIUS_PROPERTY_KEY = "radius";
   std::string name() const override;

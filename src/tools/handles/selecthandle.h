@@ -10,10 +10,6 @@ namespace omm
 class Scene;
 class Path;
 
-template<typename PositionVariant> class SelectTool;
-class PointPositions;
-class ObjectPositions;
-
 class AbstractSelectHandle : public Handle
 {
 public:

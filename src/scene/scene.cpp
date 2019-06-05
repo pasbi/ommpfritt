@@ -21,6 +21,7 @@
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
 #include "tools/selecttool.h"
+#include "tools/selectobjectstool.h"
 #include "logging.h"
 
 namespace

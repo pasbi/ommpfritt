@@ -89,7 +89,8 @@ void PathTool::on_scene_changed()
     m_path = nullptr;
   }
 
-  SelectPointsTool::make_handles(true);
+  handles.clear();
+  SelectPointsTool::make_handles(*this, true);
 }
 
 }  // namespace

@@ -1,6 +1,8 @@
 #include "tools/toolbox.h"
 #include "scene/scene.h"
 #include "tools/selecttool.h"
+#include "tools/selectpointstool.h"
+#include "tools/selectobjectstool.h"
 
 namespace
 {

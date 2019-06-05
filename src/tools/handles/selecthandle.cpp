@@ -5,11 +5,11 @@
 #include "objects/path.h"
 #include "common.h"
 #include "tools/selecttool.h"
-#include "tools/positionvariant.h"
 #include "commands/modifypointscommand.h"
 #include <QGuiApplication>
 #include <QMouseEvent>
 #include "geometry/rectangle.h"
+#include "tools/selectpointstool.h"
 
 namespace
 {

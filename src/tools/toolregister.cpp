@@ -1,8 +1,9 @@
 #include "tools/tool.h"
-#include "tools/selecttool.h"
 #include "tools/brushselecttool.h"
 #include "tools/knifetool.h"
 #include "tools/pathtool.h"
+#include "tools/selectpointstool.h"
+#include "tools/selectobjectstool.h"
 
 namespace omm
 {
