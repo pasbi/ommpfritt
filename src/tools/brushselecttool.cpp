@@ -11,7 +11,7 @@ namespace omm
 
 const Style BrushSelectTool::m_style = ContourStyle(omm::Color(0.0, 0.0, 0.0));
 
-BrushSelectTool::BrushSelectTool(Scene& scene) : SelectPointsTool(scene)
+BrushSelectTool::BrushSelectTool(Scene& scene) : SelectPointsBaseTool(scene)
 {
   this->template add_property<FloatProperty>(RADIUS_PROPERTY_KEY, 20.0)
     .set_label(QObject::tr("radius").toStdString())
@@ -21,7 +21,7 @@ BrushSelectTool::BrushSelectTool(Scene& scene) : SelectPointsTool(scene)
 bool BrushSelectTool::mouse_move( const Vec2f& delta, const Vec2f& pos,
                                   const QMouseEvent& event)
 {
-  if (SelectPointsTool::mouse_move(delta, pos, event)) {
+  if (SelectPointsBaseTool::mouse_move(delta, pos, event)) {
     return true;
   }
 
@@ -37,7 +37,7 @@ bool BrushSelectTool::mouse_move( const Vec2f& delta, const Vec2f& pos,
 
 bool BrushSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
 {
-  if (SelectPointsTool::mouse_press(pos, event, force)) {
+  if (SelectPointsBaseTool::mouse_press(pos, event, force)) {
     return true;
   }
 
@@ -58,7 +58,7 @@ bool BrushSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bo
 
 void BrushSelectTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
 {
-  SelectPointsTool::mouse_release(pos, event);
+  SelectPointsBaseTool::mouse_release(pos, event);
   Q_UNUSED(pos);
   Q_UNUSED(event);
   m_mouse_down = false;

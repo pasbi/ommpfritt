@@ -5,7 +5,7 @@
 namespace omm
 {
 
-class KnifeTool : public SelectPointsTool
+class KnifeTool : public SelectPointsBaseTool
 {
 public:
   explicit KnifeTool(Scene& scene);
