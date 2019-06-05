@@ -1,4 +1,5 @@
 #include "geometry/rectangle.h"
+#include "logging.h"
 
 namespace omm
 {
@@ -12,8 +13,8 @@ Rectangle::Rectangle(const Vec2f& center, const double radius)
 
 bool Rectangle::contains(const Vec2f& point) const
 {
-  return m_top_left.x <= point.x && m_bottom_right.x <= point.x
-      && m_top_left.y <= point.y && m_bottom_right.y <= point.y;
+  return m_top_left.x <= point.x && point.x <= m_bottom_right.x
+      && m_top_left.y <= point.y && point.y <= m_bottom_right.y;
 }
 
 Vec2f Rectangle::top_left() const { return m_top_left; }
