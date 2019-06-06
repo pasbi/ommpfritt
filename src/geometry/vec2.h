@@ -98,6 +98,20 @@ public:
     return *this;
   }
 
+  Vec2<element_type>& operator*=(const Vec2<element_type>& rhs)
+  {
+    x *= rhs.x;
+    y *= rhs.y;
+    return *this;
+  }
+
+  Vec2<element_type>& operator/=(const Vec2<element_type>& rhs)
+  {
+    x /= rhs.x;
+    y /= rhs.y;
+    return *this;
+  }
+
   Vec2<element_type>& operator-=(const Vec2<element_type>& rhs) { return (*this) += (-rhs); }
   Vec2<element_type>& operator/=(const element_type& e) { return (*this) *= 1.0/e; }
   double arg() const { return std::atan2(y, x); }
@@ -142,6 +156,16 @@ template<typename ValueT> Vec2<ValueT> operator*(const ValueT s, const Vec2<Valu
 template<typename ValueT> Vec2<ValueT> operator/(const Vec2<ValueT>& d, const ValueT s)
 {
   return d * (1.0/s);
+}
+
+template<typename ValueT> Vec2<ValueT> operator*(const Vec2<ValueT>& s, const Vec2<ValueT>& d)
+{
+  return Vec2<ValueT>(s.x * d.x, s.y * d.y);
+}
+
+template<typename ValueT> Vec2<ValueT> operator/(const Vec2<ValueT>& d, const Vec2<ValueT>& s)
+{
+  return Vec2<ValueT>(s.x / d.x, s.y / d.y);
 }
 
 template<typename ValueT> bool operator==(const Vec2<ValueT>& d1, const Vec2<ValueT>& d2)
