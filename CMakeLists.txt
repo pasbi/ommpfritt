@@ -65,6 +65,8 @@ target_link_libraries(libommpfritt Qt5::Widgets Qt5::Svg)
 target_link_libraries(ommpfritt Qt5::Widgets Qt5::Svg)
 target_link_libraries(libommpfritt poppler-qt5)
 target_link_libraries(ommpfritt poppler-qt5)
+target_link_libraries(libommpfritt -lpthread -lm -ldl -lutil)
+target_link_libraries(ommpfritt -lpthread -lm -ldl -lutil)
 
 add_subdirectory(src)
 add_subdirectory(test)
