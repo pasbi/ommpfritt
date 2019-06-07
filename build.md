@@ -92,4 +92,4 @@ cd build
 7. build it: `make`
 8. run it: `./ommpfritt`
 
-
+pull requests welcome (both for new and existing platforms)!
