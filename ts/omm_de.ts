@@ -954,11 +954,11 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
     <message>
         <source>this</source>
-        <translation type="unfinished"></translation>
+        <translation>Dieses</translation>
     </message>
     <message>
         <source>anchor</source>
-        <translation type="unfinished"></translation>
+        <translation>Anker</translation>
     </message>
 </context>
 <context>

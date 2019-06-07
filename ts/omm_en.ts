@@ -954,11 +954,11 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>this</source>
-        <translation type="unfinished"></translation>
+        <translation>this</translation>
     </message>
     <message>
         <source>anchor</source>
-        <translation type="unfinished"></translation>
+        <translation>Anchor</translation>
     </message>
 </context>
 <context>
