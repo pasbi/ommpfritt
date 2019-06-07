@@ -3,6 +3,7 @@
 #include "tools/handles/handle.h"
 #include "tools/tool.h"
 #include "renderers/painter.h"
+#include <QMouseEvent>
 
 namespace omm
 {
@@ -36,24 +37,50 @@ public:
       return false;
     }
 
-    const auto ti = transformation().inverted();
+    const auto ti = tool.transformation().inverted();
     const auto global_pos = ti.apply_to_position(pos);
-    const auto bounding_box = ti.apply(m_bounding_box);
-    const auto center = ti.apply_to_position(Vec2f::o());
+    const auto origin = ti.apply_to_position(press_pos());
+    const auto delta_ = global_pos - origin;
+    Vec2f s = (global_pos - delta_) / global_pos;
 
-    const double f = 2;
-    Vec2f s(1.0, 1.0);
-    if (m_left_fringe) {
-      s.x += f * (global_pos.x - bounding_box.left()) / (bounding_box.left() - center.x);
-    } else if (m_right_fringe) {
-      s.x -= f * (global_pos.x - bounding_box.right()) / (bounding_box.right() - center.x);
+    if (tool.integer_transformation()) {
+      for (const std::size_t i : { 0u, 1u }) {
+        double step = 0.1;
+        if (std::abs(s[i]) > step) {
+          s[i] = step * static_cast<int>(s[i] / step);
+        } else {
+          double step = 0.01;
+          s[i] = step * static_cast<int>(s[i] / step);
+        }
+      }
     }
-    s.x = 1.0 / s.x;
-    if (m_top_fringe) {
-      s.y -= f * (global_pos.y - bounding_box.top()) / (global_pos.y - center.y);
-    } else if (m_bottom_fringe) {
-      s.y += f * (global_pos.y - bounding_box.bottom()) / (global_pos.y - center.y);
+    if (!m_left_fringe && !m_right_fringe) {
+      s.x = 1.0;
     }
+    if (!m_bottom_fringe && !m_top_fringe) {
+      s.y = 1.0;
+    }
+
+    if (e.modifiers() & Qt::ControlModifier) {
+      double n;
+      if (s.x == 1.0) {
+        n = s.y;
+      } else if (s.y == 1.0) {
+        n = s.x;
+      } else {
+        n = std::max(std::abs(s.x), std::abs(s.y));
+      }
+      for (std::size_t i : { 0u, 1u }) {
+        s[i] = std::copysign(n, s[i]);
+      }
+    }
+
+    for (const std::size_t i : { 0u, 1u }) {
+      if (static constexpr auto eps = 0.01; std::abs(s[i]) < eps) {
+        s[i] = std::copysign(eps, s[i]);
+      }
+    }
+
     const auto t = omm::ObjectTransformation().scaled(s);
     static_cast<ToolT&>(tool).transform_objects_absolute(t, true);
     static_cast<ToolT&>(tool).tool_info = QString("%1, %2").arg(s.x).arg(s.y).toStdString();
