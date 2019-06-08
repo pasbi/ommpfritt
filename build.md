@@ -77,8 +77,9 @@ cd Python-3.7.0
 ./configure
 sudo make altinstall
 ```
-5. get ommpfritt: `git clone https://github.com/pasbi/ommpfritt`
-6. configure it:
+5. Clone and install https://github.com/pybind/pybind11.
+6. get ommpfritt: `git clone https://github.com/pasbi/ommpfritt`
+7. configure it:
 ```
 cd ommpfritt
 mkdir build
@@ -89,7 +90,7 @@ cd build
                                 -DCMAKE_PREFIX_PATH=/opt/qt512 \
                                 ..
 ```
-7. build it: `make`
-8. run it: `./ommpfritt`
+8. build it: `make`
+9. run it: `./ommpfritt`
 
-
+pull requests welcome (both for new and existing platforms)!
