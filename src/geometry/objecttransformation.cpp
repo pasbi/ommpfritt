@@ -239,6 +239,7 @@ ObjectTransformation ObjectTransformation::normalized() const
 }
 
 bool ObjectTransformation::contains_nan() const { return to_mat().has_nan(); }
+bool ObjectTransformation::is_identity() const { return *this == ObjectTransformation(); }
 
 ObjectTransformation ObjectTransformation::transformed(const ObjectTransformation& other) const
 {
