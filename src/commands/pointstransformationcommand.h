@@ -18,6 +18,7 @@ public:
   void redo() override;
   int id() const override;
   bool mergeWith(const QUndoCommand* command) override;
+  bool is_noop() const override;
 
 private:
   std::map<Path*, std::map<std::size_t, Point>> m_alternative_points;

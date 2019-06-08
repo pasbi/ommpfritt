@@ -9,18 +9,15 @@
 namespace omm
 {
 
-class SelectPointsTool : public AbstractSelectTool
+class SelectPointsBaseTool : public AbstractSelectTool
 {
 public:
-  explicit SelectPointsTool(Scene& scene);
-  std::string type() const override;
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectPointsTool");
+  explicit SelectPointsBaseTool(Scene& scene);
   static constexpr auto TANGENT_MODE_PROPERTY_KEY = "tangent_mode";
   PointSelectHandle::TangentMode tangent_mode() const;
   std::unique_ptr<QMenu> make_context_menu(QWidget* parent) override;
   void on_selection_changed() override;
-  Command *transform_objects(ObjectTransformation t, const bool tool_space) override;
-  void on_scene_changed() override;
+  void transform_objects(ObjectTransformation t, const bool tool_space) override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force) override;
 
   bool has_transformation() const override;
@@ -47,11 +44,24 @@ public:
     }
   }
 
+  BoundingBox bounding_box() const;
+
 protected:
-  std::set<Point*> selected_points() const;
+  std::set<Point> selected_points() const;
   Vec2f selection_center() const;
   std::set<Path*> paths() const;
 
+};
+
+class SelectPointsTool : public SelectPointsBaseTool
+{
+public:
+  using SelectPointsBaseTool::SelectPointsBaseTool;
+  std::string type() const override;
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectPointsTool");
+
+protected:
+  void on_scene_changed() override;
 };
 
 }  // namespace

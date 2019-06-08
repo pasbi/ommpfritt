@@ -7,7 +7,7 @@
 namespace omm
 {
 
-class BrushSelectTool : public SelectPointsTool
+class BrushSelectTool : public SelectPointsBaseTool
 {
 public:
   explicit BrushSelectTool(Scene& scene);

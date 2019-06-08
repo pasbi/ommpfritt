@@ -8,7 +8,7 @@
 namespace omm
 {
 
-class PathTool : public SelectPointsTool
+class PathTool : public SelectPointsBaseTool
 {
 public:
   explicit PathTool(Scene& scene);

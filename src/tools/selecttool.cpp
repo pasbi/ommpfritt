@@ -21,7 +21,6 @@ namespace omm
 //          their area.
 //      3) improve mouse pointer icon
 
-
 AbstractSelectTool::AbstractSelectTool(Scene& scene)
   : Tool(scene)
   , m_tool_info_line_style(ContourStyle(Color(0.0, 0.0, 0.0, 0.3), 0.7))
@@ -33,12 +32,10 @@ AbstractSelectTool::AbstractSelectTool(Scene& scene)
     .set_category(QObject::tr("tool").toStdString());
 }
 
-Command*
-AbstractSelectTool::transform_objects_absolute(ObjectTransformation t, const bool tool_space)
+void AbstractSelectTool::transform_objects_absolute(ObjectTransformation t, const bool tool_space)
 {
-  Command* cmd = transform_objects(m_last_object_transformation.inverted().apply(t), tool_space);
+  transform_objects(m_last_object_transformation.inverted().apply(t), tool_space);
   m_last_object_transformation = t;
-  return cmd;
 }
 
 void AbstractSelectTool::reset_absolute_object_transformation()
@@ -95,12 +92,15 @@ void AbstractSelectTool::draw(Painter &renderer) const
 
 void AbstractSelectTool::cancel()
 {
-  Command* cmd = transform_objects_absolute(ObjectTransformation(), true);
-  if (cmd) {
+  transform_objects_absolute(ObjectTransformation(), true);
+
+  Command* cmd = scene.history.last_command();
+  Tool::cancel();
+  if (cmd != nullptr && cmd->is_noop()) {
     cmd->setObsolete(true);
+    QSignalBlocker(&scene.history);
     scene.history.undo();
   }
-  Tool::cancel();
 }
 
 }  // namespace omm

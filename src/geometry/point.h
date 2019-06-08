@@ -80,4 +80,6 @@ std::ostream& operator<<(std::ostream& ostream, const PolarCoordinates& pc);
 std::ostream& operator<<(std::ostream& ostream, const Point& pc);
 std::ostream& operator<<(std::ostream& ostream, const Point* pc);
 
+bool fuzzy_eq(const Point& a, const Point& b);
+
 }  // namespace omm

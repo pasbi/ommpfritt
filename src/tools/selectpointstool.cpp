@@ -4,11 +4,12 @@
 #include "commands/pointstransformationcommand.h"
 #include "objects/path.h"
 #include "properties/optionsproperty.h"
+#include "tools/handles/boundingboxhandle.h"
 
 namespace omm
 {
 
-SelectPointsTool::SelectPointsTool(Scene& scene) : AbstractSelectTool(scene)
+SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene) : AbstractSelectTool(scene)
 {
   add_property<OptionsProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("Mirror").toStdString(), QObject::tr("Individual").toStdString() })
@@ -16,15 +17,13 @@ SelectPointsTool::SelectPointsTool(Scene& scene) : AbstractSelectTool(scene)
     .set_category(QObject::tr("tool").toStdString());
 }
 
-std::string SelectPointsTool::type() const { return TYPE; }
-
-PointSelectHandle::TangentMode SelectPointsTool::tangent_mode() const
+PointSelectHandle::TangentMode SelectPointsBaseTool::tangent_mode() const
 {
   const auto i = property(TANGENT_MODE_PROPERTY_KEY)->value<size_t>();
   return static_cast<PointSelectHandle::TangentMode>(i);
 }
 
-std::unique_ptr<QMenu> SelectPointsTool::make_context_menu(QWidget* parent)
+std::unique_ptr<QMenu> SelectPointsBaseTool::make_context_menu(QWidget* parent)
 {
   Q_UNUSED(parent)
   auto& app = Application::instance();
@@ -38,34 +37,23 @@ std::unique_ptr<QMenu> SelectPointsTool::make_context_menu(QWidget* parent)
   return std::move(menus.front());
 }
 
-void SelectPointsTool::on_selection_changed() { on_scene_changed(); }
+void SelectPointsBaseTool::on_selection_changed() { on_scene_changed(); }
 
-Command* SelectPointsTool::transform_objects(ObjectTransformation t, const bool tool_space)
+void SelectPointsBaseTool::transform_objects(ObjectTransformation t, const bool tool_space)
 {
   if (tool_space) { t = t.transformed(this->transformation().inverted()); }
   const auto paths = this->paths();
   if (paths.size() > 0) {
-    auto command = std::make_unique<PointsTransformationCommand>(paths, t);
-    auto& command_ref = *command;
-    scene.submit(std::move(command));
-    return &command_ref;
-  } else {
-    return nullptr;
+    scene.submit(std::make_unique<PointsTransformationCommand>(paths, t));
   }
 }
 
-void SelectPointsTool::on_scene_changed()
-{
-  handles.clear();
-  make_handles(*this, false);
-}
-
-std::set<Path *> SelectPointsTool::paths() const
+std::set<Path *> SelectPointsBaseTool::paths() const
 {
   return type_cast<Path*>(scene.item_selection<Object>());
 }
 
-bool SelectPointsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
+bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
 {
   Q_UNUSED(force);
   if (AbstractSelectTool::mouse_press(pos, event, false)) {
@@ -82,35 +70,52 @@ bool SelectPointsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, b
   }
 }
 
-bool SelectPointsTool::has_transformation() const
+bool SelectPointsBaseTool::has_transformation() const
 {
-  return !selected_points().empty();
-}
-
-std::set<Point *> SelectPointsTool::selected_points() const
-{
-  std::set<Point*> selected_points;
   for (auto* path : paths()) {
     for (auto* point : path->points_ref()) {
       if (point->is_selected) {
-        selected_points.insert(point);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+BoundingBox SelectPointsBaseTool::bounding_box() const
+{
+  return BoundingBox(::transform<Point, std::vector>(selected_points()));
+}
+
+std::set<Point> SelectPointsBaseTool::selected_points() const
+{
+  std::set<Point> selected_points;
+  for (auto* path : paths()) {
+    for (auto* point : path->points_ref()) {
+      if (point->is_selected) {
+        selected_points.insert(path->global_transformation(false).apply(*point));
       }
     }
   }
   return selected_points;
 }
 
-Vec2f SelectPointsTool::selection_center() const
+Vec2f SelectPointsBaseTool::selection_center() const
 {
-  std::set<Vec2f> ps;
-  for (auto* path : paths()) {
-    for (auto* point : path->points_ref()) {
-      if (point->is_selected) {
-        ps.insert(path->global_transformation().apply_to_position(point->position));
-      }
-    }
-  }
+  const std::set<Vec2f> ps = ::transform<Vec2f>(selected_points(), [](const Point& p) {
+    return p.position;
+  });
   return std::accumulate(ps.begin(), ps.end(), Vec2f(0.0, 0.0)) / static_cast<double>(ps.size());
 }
+
+std::string SelectPointsTool::type() const { return TYPE; }
+
+void SelectPointsTool::on_scene_changed()
+{
+  handles.clear();
+  make_handles(*this, false);
+  handles.push_back(std::make_unique<BoundingBoxHandle<SelectPointsTool>>(*this));
+}
+
 
 }  // namespace omm

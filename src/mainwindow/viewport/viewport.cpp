@@ -78,9 +78,9 @@ void Viewport::mousePressEvent(QMouseEvent* event)
     default: return MousePanController::Action::None;
     }
   };
-  m_pan_controller.start_move( cursor_pos,
-                               viewport_transformation().inverted().apply_to_position(cursor_pos),
+  m_pan_controller.start_move( viewport_transformation().inverted().apply_to_position(cursor_pos),
                                action(event));
+  m_last_cursor_pos = cursor_pos;
 
   if (event->modifiers() & Qt::AltModifier) {
     event->accept();
@@ -93,21 +93,17 @@ void Viewport::mousePressEvent(QMouseEvent* event)
 void Viewport::mouseMoveEvent(QMouseEvent* event)
 {
   const auto cursor_pos = Vec2f(event->pos());
-
-  Vec2f delta = Vec2f::o();
-  if (event->modifiers() & Qt::AltModifier) {
-    delta = m_pan_controller.apply(cursor_pos, m_viewport_transformation);
-    event->accept();
-    update();
-  } else {
-    delta = m_pan_controller.update(cursor_pos);
-  }
+  const Vec2f delta = cursor_pos - m_last_cursor_pos;
+  m_last_cursor_pos = cursor_pos;
 
   auto& tool = m_scene.tool_box.active_tool();
   if (tool.mouse_move(delta, cursor_pos, *event)) {
     event->accept();
     update();
-    return;
+  } else if (event->modifiers() & Qt::AltModifier) {
+    m_pan_controller.apply(delta, m_viewport_transformation);
+    event->accept();
+    update();
   }
 
   ViewportBase::mouseMoveEvent(event);

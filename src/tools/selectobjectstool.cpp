@@ -20,7 +20,7 @@ SelectObjectsTool::SelectObjectsTool(Scene& scene) : AbstractSelectTool(scene)
 
 std::string SelectObjectsTool::type() const { return TYPE; }
 
-Command* SelectObjectsTool::transform_objects(ObjectTransformation t, const bool tool_space)
+void SelectObjectsTool::transform_objects(ObjectTransformation t, const bool tool_space)
 {
   if (tool_space) {
     t = t.transformed(this->transformation().inverted());
@@ -32,9 +32,7 @@ Command* SelectObjectsTool::transform_objects(ObjectTransformation t, const bool
   const auto tmode = property(TRANSFORMATION_MODE_KEY)->value<TransformationMode>();
   auto command = std::make_unique<ObjectsTransformationCommand>( scene.item_selection<Object>(),
                                                                  mat, tmode );
-  auto& command_ref = *command;
   scene.submit(std::move(command));
-  return &command_ref;
 }
 
 void SelectObjectsTool::on_scene_changed()

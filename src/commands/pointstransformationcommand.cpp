@@ -28,14 +28,32 @@ bool has_same_points(const MapT& a, const MapT& b)
 {
   if (a.size() != b.size()) {
     return false;
-  } else {
-    for (const auto& p : a) {
-      if (b.count(p.first) == 0) {
+  }
+
+  for (const auto& [a_path, a_points] : a) {
+    const auto b_it = b.find(a_path);
+    if (b_it == b.end()) {
+      return false;
+    }
+
+    const auto* b_path = b_it->first;
+    if (b_path != a_path) {
+      return false;
+    }
+
+    const auto& b_points = b_it->second;
+    if (a_points.size() != b_points.size()) {
+      return false;
+    }
+
+    for (const auto& [a_i, a_point] : a_points) {
+      const auto bp_it = b_points.find(a_i);
+      if (bp_it == b_points.end()) {
         return false;
       }
     }
-    return true;
   }
+  return true;
 }
 
 }  // namespace
@@ -49,7 +67,6 @@ PointsTransformationCommand
   , m_alternative_points(make_alternatives(paths, t))
 {
 }
-
 
 void PointsTransformationCommand::redo()
 {
@@ -76,6 +93,21 @@ bool PointsTransformationCommand::mergeWith(const QUndoCommand* command)
   // merging happens automatically!
   const auto& ot_command = static_cast<const PointsTransformationCommand&>(*command);
   return has_same_points(ot_command.m_alternative_points, m_alternative_points);
+}
+
+bool PointsTransformationCommand::is_noop() const
+{
+  for (auto&& [path, alternatives] : m_alternative_points) {
+    path->on_change(path, Path::POINTS_CHANGED, nullptr, { this });
+    const auto points = path->points_ref();
+    for (const auto& [i, _] : alternatives) {
+      if (!fuzzy_eq(*points.at(i), alternatives.at(i))) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 }  // namespace omm

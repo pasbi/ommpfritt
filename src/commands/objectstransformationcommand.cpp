@@ -72,4 +72,14 @@ bool ObjectsTransformationCommand::mergeWith(const QUndoCommand* command)
   return has_same_objects(ot_command.m_alternative_transformations, m_alternative_transformations);
 }
 
+bool ObjectsTransformationCommand::is_noop() const
+{
+  for (auto& [object, alternative_transformation] : m_alternative_transformations) {
+    if (object->global_transformation(true) != alternative_transformation) {
+      return false;
+    }
+  }
+  return true;
+}
+
 }  // namespace omm

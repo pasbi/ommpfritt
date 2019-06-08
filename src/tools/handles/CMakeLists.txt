@@ -1,4 +1,5 @@
 file (GLOB SOURCES
+  "boundingboxhandle.cpp"
   "handle.cpp"
   "particlehandle.cpp"
   "pathhandle.cpp"
