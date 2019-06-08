@@ -56,7 +56,8 @@ public:
   }
 
   std::vector<ValueT> to_stdvec() const { return { x, y }; }
-  double euclidean_norm() const { return std::sqrt(x*x + y*y); }
+  double euclidean_norm2() const { return x*x + y*y; }
+  double euclidean_norm() const { return std::sqrt(euclidean_norm2()); }
   ValueT max_norm() const { return std::max(std::abs(x), std::abs(y)); }
   ValueT max() const { return std::max(x, y); }
   ValueT min() const { return std::min(x, y); }
@@ -198,6 +199,12 @@ template<typename T> std::ostream& operator<<(std::ostream& ostream, const Vec2<
 {
   ostream << "[" << vec.x << ", " << vec.y << "]";
   return ostream;
+}
+
+template<typename T> bool fuzzy_eq(const Vec2<T>& a, const Vec2<T>& b)
+{
+  static constexpr double eps = 10e-5;
+  return (a-b).euclidean_norm2() < eps;
 }
 
 }  // namespace omm
