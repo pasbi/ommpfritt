@@ -83,16 +83,7 @@ bool PointsTransformationCommand::is_noop() const
     path->on_change(path, Path::POINTS_CHANGED, nullptr, { this });
     const auto points = path->points_ref();
     for (const auto& [i, _] : alternatives) {
-      if (*points.at(i) != alternatives.at(i)) {
-        // TODO fuzzy comparison
-        return false;
-      }
-    }
-
-    const auto& i_mode_property = path->property(Path::INTERPOLATION_PROPERTY_KEY);
-    const auto i_mode = i_mode_property->value<Path::InterpolationMode>();
-    for (const auto& [point, alternative] : path->modified_points(false, i_mode)) {
-      if (*point != alternative) {
+      if (!fuzzy_eq(*points.at(i), alternatives.at(i))) {
         return false;
       }
     }
