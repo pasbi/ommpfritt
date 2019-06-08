@@ -18,6 +18,7 @@ public:
   void redo() override;
   int id() const override;
   bool mergeWith(const QUndoCommand* command) override;
+  bool is_noop() const override;
 
 private:
   std::map<Object*, ObjectTransformation> m_alternative_transformations;

@@ -50,7 +50,6 @@ PointsTransformationCommand
 {
 }
 
-
 void PointsTransformationCommand::redo()
 {
   for (auto&& [path, alternatives] : m_alternative_points) {
@@ -76,6 +75,30 @@ bool PointsTransformationCommand::mergeWith(const QUndoCommand* command)
   // merging happens automatically!
   const auto& ot_command = static_cast<const PointsTransformationCommand&>(*command);
   return has_same_points(ot_command.m_alternative_points, m_alternative_points);
+}
+
+bool PointsTransformationCommand::is_noop() const
+{
+  for (auto&& [path, alternatives] : m_alternative_points) {
+    path->on_change(path, Path::POINTS_CHANGED, nullptr, { this });
+    const auto points = path->points_ref();
+    for (const auto& [i, _] : alternatives) {
+      if (*points.at(i) != alternatives.at(i)) {
+        // TODO fuzzy comparison
+        return false;
+      }
+    }
+
+    const auto& i_mode_property = path->property(Path::INTERPOLATION_PROPERTY_KEY);
+    const auto i_mode = i_mode_property->value<Path::InterpolationMode>();
+    for (const auto& [point, alternative] : path->modified_points(false, i_mode)) {
+      if (*point != alternative) {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 }  // namespace omm
