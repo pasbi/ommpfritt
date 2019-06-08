@@ -62,6 +62,16 @@ const Command &HistoryModel::command(int index) const
   return static_cast<const Command&>(*m_undo_stack.command(index));
 }
 
+Command *HistoryModel::last_command() const
+{
+  if (m_undo_stack.count() > 0) {
+    QUndoCommand* cmd = const_cast<QUndoCommand*>(m_undo_stack.command(m_undo_stack.count() - 1));
+    return static_cast<Command*>(cmd);
+  } else {
+    return nullptr;
+  }
+}
+
 void HistoryModel::set_index(const int index)
 {
   m_undo_stack.setIndex(index);

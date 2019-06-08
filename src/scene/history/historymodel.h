@@ -20,6 +20,21 @@ public:
   void redo();
   int count() const;
   const Command& command(int index) const;
+
+  /**
+   * @brief last_command returns the command which was pushed most recently to the undo stack.
+   * @note caution! if the command is still on the stack, modifying it may cause bad things.
+   *   There is a good reason Qt decided to return only const-pointers to commands on the command
+   *   stack. (https://doc.qt.io/qt-5/qundostack.html#command).
+   *   There are goof reasons not to follow this policy here, too. Just be careful.
+   *   If the command is not on the stack, it has probably been deleted. The caller is responsible
+   *   for ensuring not to access a deleted object.
+   * @note this function is merge-proof. if the last command was auto-deleted because its contents
+   *   were merged with the previous one, the previous command will be returned.
+   * @note undefined behaviour if index is not at top of the stack. index will be at top if a
+   *   command was recently pushed and no undo/redo has occured since.
+   */
+  Command* last_command() const;
   void set_index(const int index);
   bool has_pending_changes() const;
   void reset();
