@@ -95,12 +95,15 @@ void AbstractSelectTool::draw(Painter &renderer) const
 
 void AbstractSelectTool::cancel()
 {
-  Command* cmd = transform_objects_absolute(ObjectTransformation(), true);
-  if (cmd) {
+  transform_objects_absolute(ObjectTransformation(), true);
+
+  Command* cmd = scene.history.last_command();
+  Tool::cancel();
+  if (cmd != nullptr && cmd->is_noop()) {
     cmd->setObsolete(true);
+    QSignalBlocker(&scene.history);
     scene.history.undo();
   }
-  Tool::cancel();
 }
 
 }  // namespace omm
