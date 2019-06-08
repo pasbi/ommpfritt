@@ -56,6 +56,7 @@ private:
   ObjectTransformation m_viewport_transformation;
   MousePanController m_pan_controller;
   Painter m_renderer;
+  Vec2f m_last_cursor_pos;
 };
 
 }  // namespace omm
