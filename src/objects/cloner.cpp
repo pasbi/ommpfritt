@@ -140,10 +140,9 @@ void Cloner::draw_object(Painter &renderer, const Style& style) const
 BoundingBox Cloner::bounding_box(const ObjectTransformation &transformation) const
 {
   if (is_active()) {
-    const auto gt = transformation.apply(global_transformation(false));
     BoundingBox bb;
     for (auto&& clone : m_clones) {
-      bb |= clone->recursive_bounding_box(gt);
+      bb |= clone->recursive_bounding_box(transformation.apply(clone->transformation()));
     }
     return bb;
   } else {

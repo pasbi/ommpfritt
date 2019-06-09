@@ -48,8 +48,7 @@ Point AbstractProceduralPath::evaluate(const double t) const
 BoundingBox AbstractProceduralPath::bounding_box(const ObjectTransformation &transformation) const
 {
   if (is_active()) {
-    const auto gt = transformation.apply(global_transformation(false));
-    return BoundingBox((m_painter_path * gt.to_qtransform()).boundingRect());
+    return BoundingBox((m_painter_path * transformation.to_qtransform()).boundingRect());
   } else {
     return BoundingBox();
   }

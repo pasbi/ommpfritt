@@ -43,20 +43,15 @@ void Mirror::draw_object(Painter &renderer, const Style& style) const
 
 BoundingBox Mirror::bounding_box(const ObjectTransformation &transformation) const
 {
-  if (is_active()) {
-    const auto gt = transformation.apply(global_transformation(false));
-    if (property(AS_PATH_PROPERTY_KEY)->value<Mode>() == Mode::Path) {
-      if (m_reflection) {
-        return m_reflection->recursive_bounding_box(gt);
-      } else {
-        return BoundingBox();
-      }
-    } else {
-      if (m_reflection) {
-        return m_reflection->recursive_bounding_box(gt);
-      } else {
-        return BoundingBox();
-      }
+  if (is_active() && m_reflection) {
+    const ObjectTransformation t = transformation.apply(m_reflection->transformation());
+    switch (property(AS_PATH_PROPERTY_KEY)->value<Mode>()) {
+    case Mode::Path:
+      return m_reflection->recursive_bounding_box(t);
+    case Mode::Object:
+      return m_reflection->recursive_bounding_box(t);
+    default:
+      Q_UNREACHABLE();
     }
   } else {
     return BoundingBox();
