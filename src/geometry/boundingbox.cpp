@@ -45,17 +45,24 @@ BoundingBox::BoundingBox(const std::vector<Vec2f>& points)
                  ::transform<double>(points, [](const Vec2f& v) { return v.y; }) ) {}
 
 BoundingBox::BoundingBox(const std::vector<double>& xs, const std::vector<double>& ys)
-  : Rectangle(Vec2f(min(xs), min(ys)), Vec2f(max(xs), max(ys))) {}
+  : Rectangle(Vec2f(min(xs), min(ys)), Vec2f(max(xs), max(ys)), xs.empty())
+{
+  assert(xs.empty() == ys.empty());
+}
 
 BoundingBox::BoundingBox(const std::vector<Point>& points)
   : BoundingBox(get_all_control_points(points)) {}
 
 bool BoundingBox::contains(const BoundingBox& other) const
 {
-  return other.contains(top_left())
-      || other.contains(top_right())
-      || other.contains(bottom_left())
-      || other.contains(top_right());
+  if (is_empty()) {
+    return false;
+  } else {
+    return other.contains(top_left())
+        || other.contains(top_right())
+        || other.contains(bottom_left())
+        || other.contains(top_right());
+  }
 }
 
 std::ostream& operator<<(std::ostream &ostream, const BoundingBox &bb)
@@ -70,12 +77,6 @@ BoundingBox& BoundingBox::operator |=(const BoundingBox& other)
   return *this;
 }
 
-BoundingBox& BoundingBox::operator &=(const BoundingBox& other)
-{
-  *this = *this & other;
-  return *this;
-}
-
 BoundingBox &BoundingBox::operator |=(const Vec2f &point)
 {
   *this = *this | point;
@@ -84,26 +85,27 @@ BoundingBox &BoundingBox::operator |=(const Vec2f &point)
 
 BoundingBox operator|(const BoundingBox& a, const BoundingBox& b)
 {
-  return a | b.top_left() | b.bottom_right();
-}
-
-BoundingBox operator&(const BoundingBox& a, const BoundingBox& b)
-{
-  const double left = std::clamp(a.left(), b.left(), b.right());
-  const double top = std::clamp(a.top(), b.top(), b.bottom());
-  const double right = std::clamp(a.right(), b.left(), b.right());
-  const double bottom = std::clamp(a.bottom(), b.top(), b.bottom());
-  return BoundingBox(Vec2f(left, top), Vec2f(right, bottom));
+  if (a.is_empty()) {
+    return b;
+  } else if (b.is_empty()) {
+    return a;
+  } else {
+    return BoundingBox({ b.top_left(), b.bottom_right(), a.top_left(), a.bottom_right() });
+  }
 }
 
 BoundingBox operator|(const BoundingBox &a, const Vec2f &b)
 {
-  const double left = std::min(a.left(), b.x);
-  const double right = std::max(a.right(), b.x);
-  const double top = std::min(a.top(), b.y);
-  const double bottom = std::max(a.bottom(), b.y);
+  if (a.is_empty()) {
+    return BoundingBox({ b });
+  } else {
+    const double left = std::min(a.left(), b.x);
+    const double right = std::max(a.right(), b.x);
+    const double top = std::min(a.top(), b.y);
+    const double bottom = std::max(a.bottom(), b.y);
 
-  return BoundingBox(Vec2f(left, top), Vec2f(right, bottom));
+    return BoundingBox(Vec2f(left, top), Vec2f(right, bottom));
+  }
 }
 
 }  // namespace omm

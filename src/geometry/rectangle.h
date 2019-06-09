@@ -10,8 +10,9 @@ namespace omm
 class Rectangle
 {
 public:
+  explicit Rectangle();
   explicit Rectangle(const QRectF& rect);
-  explicit Rectangle(const Vec2f& top_left, const Vec2f& bottom_right);
+  explicit Rectangle(const Vec2f& top_left, const Vec2f& bottom_right, bool empty = false);
   explicit Rectangle(const Vec2f& center, const double radius);
 
   operator QRectF() const;
@@ -35,6 +36,7 @@ public:
 private:
   Vec2f m_top_left;
   Vec2f m_bottom_right;
+  bool m_is_empty;
 
 };
 
