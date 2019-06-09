@@ -41,13 +41,23 @@ void Mirror::draw_object(Painter &renderer, const Style& style) const
   }
 }
 
-BoundingBox Mirror::bounding_box() const
+BoundingBox Mirror::bounding_box(const ObjectTransformation &transformation) const
 {
-  const auto n_children = this->n_children();
-  if (is_active() && n_children > 0) {
-    auto object = this->tree_children().front();
-    auto bb = object->transformation().apply(object->bounding_box());
-    return bb | get_mirror_t().apply(bb);
+  if (is_active()) {
+    const auto gt = transformation.apply(global_transformation(false));
+    if (property(AS_PATH_PROPERTY_KEY)->value<Mode>() == Mode::Path) {
+      if (m_reflection) {
+        return m_reflection->recursive_bounding_box(gt);
+      } else {
+        return BoundingBox();
+      }
+    } else {
+      if (m_reflection) {
+        return m_reflection->recursive_bounding_box(gt);
+      } else {
+        return BoundingBox();
+      }
+    }
   } else {
     return BoundingBox();
   }

@@ -45,7 +45,16 @@ Point AbstractProceduralPath::evaluate(const double t) const
   return Cubics(m_points, is_closed()).evaluate(t);
 }
 
-BoundingBox AbstractProceduralPath::bounding_box() const { return BoundingBox(m_points); }
+BoundingBox AbstractProceduralPath::bounding_box(const ObjectTransformation &transformation) const
+{
+  if (is_active()) {
+    const auto gt = transformation.apply(global_transformation(false));
+    return BoundingBox((m_painter_path * gt.to_qtransform()).boundingRect());
+  } else {
+    return BoundingBox();
+  }
+}
+
 double AbstractProceduralPath::path_length() const
 {
   return Cubics(m_points, is_closed()).length();

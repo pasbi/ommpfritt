@@ -33,7 +33,7 @@ View::View(const View &other) : Object(other)
 }
 
 std::string View::type() const { return TYPE; }
-BoundingBox View::bounding_box() const { return BoundingBox(); }
+BoundingBox View::bounding_box(const ObjectTransformation &transformation) const { return BoundingBox(); }
 View::Flag View::flags() const { return Flag::IsView; }
 std::unique_ptr<Object> View::clone() const { return std::make_unique<View>(*this); }
 

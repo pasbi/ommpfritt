@@ -30,7 +30,20 @@ Text::Text(const Text &other)
 {
 }
 
-BoundingBox Text::bounding_box() const { return BoundingBox(); }
+BoundingBox Text::bounding_box(const ObjectTransformation &transformation) const
+{
+  if (is_active()) {
+    const auto gt = transformation.apply(global_transformation(false));
+    const std::vector ps { Vec2f(0, 0), Vec2f(100, 100) };
+    // TODO something smarter would be great.
+    return BoundingBox(::transform<Vec2f>(ps, [&gt](const Vec2f& v) {
+      return gt.apply_to_position(v);
+    }));
+  } else {
+    return BoundingBox();
+  }
+}
+
 std::string Text::type() const { return TYPE; }
 std::unique_ptr<Object> Text::clone() const { return std::make_unique<Text>(*this); }
 

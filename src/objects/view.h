@@ -11,7 +11,7 @@ public:
   explicit View(Scene* scene);
   explicit View(const View& other);
   void draw_handles(Painter& renderer) const override;
-  BoundingBox bounding_box() const override;
+  BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   std::string type() const override;
   std::unique_ptr<Object> clone() const override;
   static constexpr auto SIZE_PROPERTY_KEY = "size";

@@ -53,11 +53,11 @@ void Instance::draw_object(Painter &renderer, const Style& default_style) const
   }
 }
 
-BoundingBox Instance::bounding_box() const
+BoundingBox Instance::bounding_box(const ObjectTransformation &transformation) const
 {
-  const auto o = referenced_object();
-  if (o != nullptr) {
-    return o->bounding_box();
+  const auto gt = transformation.apply(global_transformation(false));
+  if (m_instance) {
+    return m_instance->recursive_bounding_box(gt);
   } else {
     return BoundingBox();
   }

@@ -32,9 +32,9 @@ void Outline::draw_object(Painter &renderer, const Style& style) const
   }
 }
 
-BoundingBox Outline::bounding_box() const
+BoundingBox Outline::bounding_box(const ObjectTransformation &transformation) const
 {
-  return m_outline ? m_outline->bounding_box() : BoundingBox();
+  return m_outline ? m_outline->bounding_box(transformation) : BoundingBox();
 }
 
 std::string Outline::type() const { return TYPE; }

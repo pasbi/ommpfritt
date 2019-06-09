@@ -19,7 +19,7 @@ public:
   explicit Mirror(Scene* scene);
   Mirror(const Mirror& other);
   void draw_object(Painter& renderer, const Style& style) const override;
-  BoundingBox bounding_box() const override;
+  BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Mirror");
   static constexpr auto DIRECTION_PROPERTY_KEY = "direction";

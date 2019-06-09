@@ -137,13 +137,18 @@ void Cloner::draw_object(Painter &renderer, const Style& style) const
   }
 }
 
-BoundingBox Cloner::bounding_box() const
+BoundingBox Cloner::bounding_box(const ObjectTransformation &transformation) const
 {
-  BoundingBox bb;
-  for (auto&& clone : m_clones) {
-    bb |= clone->transformation().apply(clone->bounding_box());
+  if (is_active()) {
+    const auto gt = transformation.apply(global_transformation(false));
+    BoundingBox bb;
+    for (auto&& clone : m_clones) {
+      bb |= clone->recursive_bounding_box(gt);
+    }
+    return bb;
+  } else {
+    return BoundingBox();
   }
-  return bb;
 }
 
 Cloner::Mode Cloner::mode() const { return property(MODE_PROPERTY_KEY)->value<Mode>(); }
@@ -312,7 +317,9 @@ void Cloner::set_path(Object& object, std::size_t i)
 {
   auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
   auto* o = kind_cast<Object*>(apo);
-
+  if (o == nullptr) {
+    return;
+  }
   const bool align = property(ALIGN_PROPERTY_KEY)->value<bool>();
   const double t = get_t(i, o == nullptr ? false : !o->is_closed());
   Point p = o->evaluate(t);
@@ -344,9 +351,10 @@ void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
     auto position = [&rng, &area]() {
       static constexpr auto max_rejections = 1000;
       auto dist = std::uniform_real_distribution<double>(0, 1);
+      const BoundingBox bb = area.bounding_box(ObjectTransformation());
       for (std::size_t i = 0; i < max_rejections; ++i) {
-        const Vec2f p( dist(rng) * area.bounding_box().width() + area.bounding_box().left(),
-                       dist(rng) * area.bounding_box().height() + area.bounding_box().top() );
+        const Vec2f p( dist(rng) * bb.width() + bb.left(),
+                       dist(rng) * bb.height() + bb.top() );
         if (area.contains(p)) {
           return p;
         }

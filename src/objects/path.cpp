@@ -80,7 +80,16 @@ void Path::draw_object(Painter &renderer, const Style& style) const
   style.end_marker.draw_marker(renderer, evaluate(1.0).rotated(1.5 * M_PI), marker_color, width);
 }
 
-BoundingBox Path::bounding_box() const { return BoundingBox(m_points); }
+BoundingBox Path::bounding_box(const ObjectTransformation &transformation) const
+{
+  if (is_active()) {
+    const auto gt = transformation.apply(global_transformation(false));
+    return BoundingBox((m_painter_path * gt.to_qtransform()).boundingRect());
+  } else {
+    return BoundingBox();
+  }
+}
+
 std::string Path::type() const { return TYPE; }
 std::unique_ptr<Object> Path::clone() const { return std::make_unique<Path>(*this); }
 void Path::set_points(const std::vector<Point>& points) { m_points = points; }

@@ -17,7 +17,7 @@ public:
   explicit Instance(Scene* scene);
   Instance(const Instance& other);
   void draw_object(Painter& renderer, const Style& default_style) const override;
-  BoundingBox bounding_box() const override;
+  BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Instance");
   static constexpr auto REFERENCE_PROPERTY_KEY = "reference";
