@@ -24,6 +24,7 @@ public:
   void draw_object(Painter& renderer, const Style& style) const override;
 
   static constexpr auto WIDTH_PROPERTY_KEY = "width";
+  QRectF rect(Qt::Alignment alignment) const;
 
 private:
   FontProperties m_font_properties;

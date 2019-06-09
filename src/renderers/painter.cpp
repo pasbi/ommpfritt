@@ -51,38 +51,6 @@ ObjectTransformation Painter::current_transformation() const
   }
 }
 
-void Painter::draw_text(const std::string &text, const Painter::TextOptions &options)
-{
-  painter->setFont(options.font);
-  painter->setPen(make_pen(options.style));
-
-  static constexpr double HUGE_NUMBER = 10e10;
-
-  const auto [left, width] = [&options]() {
-    switch (options.option.alignment() & Qt::AlignHorizontal_Mask) {
-    case Qt::AlignLeft: [[fallthrough]];
-    case Qt::AlignJustify: return std::pair(0.0, options.width);
-    case Qt::AlignHCenter: return std::pair(-options.width/2.0, options.width);
-    case Qt::AlignRight: return std::pair(-options.width, options.width);
-    default: assert(false); return std::pair(0.0, 0.0);
-    }
-  }();
-
-  const auto [top, height] = [&options]() {
-    switch (options.option.alignment() & Qt::AlignVertical_Mask) {
-    case Qt::AlignTop: return std::pair(0.0, HUGE_NUMBER);
-    case Qt::AlignVCenter: return std::pair(-HUGE_NUMBER/2.0, HUGE_NUMBER);
-    case Qt::AlignBottom: return std::pair(-HUGE_NUMBER, HUGE_NUMBER);
-    // Qt::AlignBaseline is never reached (see @FontProperties::code make_properties)
-    case Qt::AlignBaseline:
-    default: assert(false); return std::pair(0.0, 0.0);
-    }
-  }();
-
-  const QRectF rect(QPointF(left, top), QSizeF(width, height));
-  painter->drawText(rect, QString::fromStdString(text), options.option);
-}
-
 void Painter::toast(const Vec2f &pos, const std::string &text)
 {
   static const QFont toast_font("Helvetica", 12, 0, false);
