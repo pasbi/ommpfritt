@@ -6,6 +6,7 @@
 #include "tools/handles/particlehandle.h"
 #include "scene/scene.h"
 #include "properties/optionsproperty.h"
+#include "tools/handles/boundingboxhandle.h"
 
 namespace omm
 {
@@ -44,6 +45,7 @@ void SelectObjectsTool::on_scene_changed()
   handles.push_back(std::make_unique<MoveParticleHandle<tool_t>>(*this));
   handles.push_back(std::make_unique<MoveAxisHandle<tool_t, MoveAxisHandleDirection::X>>(*this));
   handles.push_back(std::make_unique<MoveAxisHandle<tool_t, MoveAxisHandleDirection::Y>>(*this));
+  handles.push_back(std::make_unique<BoundingBoxHandle<SelectObjectsTool>>(*this));
 
 
   // ignore object selection. Return a handle for each visible object.
@@ -70,6 +72,15 @@ bool SelectObjectsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, 
     scene.set_selection({});
     return false;
   }
+}
+
+BoundingBox SelectObjectsTool::bounding_box() const
+{
+  BoundingBox bb;
+  for (const auto* o : scene.item_selection<Object>()) {
+    bb |= o->recursive_bounding_box(ObjectTransformation());
+  }
+  return bb;
 }
 
 bool SelectObjectsTool::has_transformation() const

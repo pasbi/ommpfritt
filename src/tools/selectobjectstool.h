@@ -15,7 +15,7 @@ public:
   static constexpr auto TRANSFORMATION_MODE_KEY = "transformation_mode";
   void on_scene_changed() override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force) override;
-
+  BoundingBox bounding_box() const;
 protected:
   bool has_transformation() const override;
   Vec2f selection_center() const override;
