@@ -55,5 +55,4 @@ AbstractPropertyOwner::Flag Ellipse::flags() const
   return Object::flags() | Flag::Convertable | Flag::IsPathLike;
 }
 
-
 }  // namespace omm
