@@ -37,54 +37,67 @@ public:
       return false;
     }
 
-    const auto ti = tool.transformation().inverted();
-    const auto global_pos = ti.apply_to_position(pos);
-    const auto origin = ti.apply_to_position(press_pos());
-    const auto delta_ = global_pos - origin;
-    Vec2f s = (global_pos - delta_) / global_pos;
+    const auto tool_transformation = tool.transformation();
+    const auto tool_transformation_i = tool_transformation.inverted();
+    const auto mouse_position = tool_transformation_i.apply_to_position(pos);
+    const auto press_position = tool_transformation_i.apply_to_position(press_pos());
+    ToolT& tool = static_cast<ToolT&>(this->tool);
 
-    if (tool.integer_transformation()) {
-      for (const std::size_t i : { 0u, 1u }) {
-        double step = 0.1;
-        if (std::abs(s[i]) > step) {
-          s[i] = step * static_cast<int>(s[i] / step);
-        } else {
-          double step = 0.01;
-          s[i] = step * static_cast<int>(s[i] / step);
+    if (e.modifiers() & Qt::AltModifier) {
+      const auto origin = tool_transformation.apply_to_position(Vec2f::o());
+      ObjectTransformation transformation;
+      LINFO << pos << " " << tool.transformation().apply_to_position(Vec2f::o());
+      tool.transform_objects(transformation, true);
+      return true;
+    } else {
+      ObjectTransformation transformation;
+      Vec2f scale;
+      scale = press_position / mouse_position;
+
+      if (tool.integer_transformation()) {
+        for (const std::size_t i : { 0u, 1u }) {
+          double step = 0.1;
+          if (std::abs(scale[i]) > step) {
+            scale[i] = step * static_cast<int>(scale[i] / step);
+          } else {
+            double step = 0.01;
+            scale[i] = step * static_cast<int>(scale[i] / step);
+          }
         }
       }
-    }
-    if (!m_left_fringe && !m_right_fringe) {
-      s.x = 1.0;
-    }
-    if (!m_bottom_fringe && !m_top_fringe) {
-      s.y = 1.0;
+
+      if (!m_left_fringe && !m_right_fringe) {
+        scale.x = 1.0;
+      }
+      if (!m_bottom_fringe && !m_top_fringe) {
+        scale.y = 1.0;
+      }
+
+      if (e.modifiers() & Qt::ControlModifier) {
+        double n;
+        if (scale.x == 1.0) {
+          n = scale.y;
+        } else if (scale.y == 1.0) {
+          n = scale.x;
+        } else {
+          n = std::max(std::abs(scale.x), std::abs(scale.y));
+        }
+        for (std::size_t i : { 0u, 1u }) {
+          scale[i] = std::copysign(n, scale[i]);
+        }
+      }
+
+      for (const std::size_t i : { 0u, 1u }) {
+        if (static constexpr auto eps = 0.01; std::abs(scale[i]) < eps) {
+          scale[i] = std::copysign(eps, scale[i]);
+        }
+      }
+      transformation.scale(scale);
+      tool.transform_objects_absolute(transformation, true);
+      tool.tool_info = QString("%1, %2").arg(scale.x).arg(scale.y).toStdString();
+      return true;
     }
 
-    if (e.modifiers() & Qt::ControlModifier) {
-      double n;
-      if (s.x == 1.0) {
-        n = s.y;
-      } else if (s.y == 1.0) {
-        n = s.x;
-      } else {
-        n = std::max(std::abs(s.x), std::abs(s.y));
-      }
-      for (std::size_t i : { 0u, 1u }) {
-        s[i] = std::copysign(n, s[i]);
-      }
-    }
-
-    for (const std::size_t i : { 0u, 1u }) {
-      if (static constexpr auto eps = 0.01; std::abs(s[i]) < eps) {
-        s[i] = std::copysign(eps, s[i]);
-      }
-    }
-
-    const auto t = omm::ObjectTransformation().scaled(s);
-    static_cast<ToolT&>(tool).transform_objects_absolute(t, true);
-    static_cast<ToolT&>(tool).tool_info = QString("%1, %2").arg(s.x).arg(s.y).toStdString();
-    return true;
   }
 
   void draw(Painter &renderer) const override
