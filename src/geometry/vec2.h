@@ -166,7 +166,7 @@ template<typename ValueT> Vec2<ValueT> operator*(const Vec2<ValueT>& s, const Ve
 
 template<typename ValueT> Vec2<ValueT> operator/(const Vec2<ValueT>& d, const Vec2<ValueT>& s)
 {
-  return Vec2<ValueT>(s.x / d.x, s.y / d.y);
+  return Vec2<ValueT>(d.x / s.x, d.y / s.y);
 }
 
 template<typename ValueT> bool operator==(const Vec2<ValueT>& d1, const Vec2<ValueT>& d2)
