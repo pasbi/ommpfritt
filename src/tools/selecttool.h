@@ -15,6 +15,7 @@ class AbstractSelectTool : public Tool
 public:
   explicit AbstractSelectTool(Scene& scene);
   static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";
+  static constexpr auto SYMMETRIC_PROPERTY_KEY = "symmetric";
   virtual void transform_objects(ObjectTransformation t, const bool tool_space) = 0;
   void transform_objects_absolute(ObjectTransformation t, const bool tool_space);
   void cancel() override;
