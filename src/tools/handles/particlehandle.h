@@ -33,10 +33,14 @@ public:
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
-      auto total_delta = tool.transformation().inverted().apply_to_direction(pos - press_pos());
+      const auto inv_tool_transformation = tool.transformation().inverted();
+      auto total_delta = inv_tool_transformation.apply_to_direction(pos - press_pos());
       discretize(total_delta);
-      const auto transformation = omm::ObjectTransformation().translated(total_delta);
-      static_cast<ToolT&>(tool).transform_objects_absolute(transformation, true);
+      {
+        auto transformation = omm::ObjectTransformation().translated(total_delta);
+        transformation = transformation.transformed(inv_tool_transformation);
+        static_cast<ToolT&>(tool).transform_objects_absolute(transformation);
+      }
       total_delta = tool.viewport_transformation.inverted().apply_to_direction(total_delta);
       const auto tool_info = QString("%1").arg(total_delta.euclidean_norm());
       static_cast<ToolT&>(tool).tool_info = tool_info.toStdString();

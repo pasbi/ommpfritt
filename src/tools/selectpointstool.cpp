@@ -39,9 +39,8 @@ std::unique_ptr<QMenu> SelectPointsBaseTool::make_context_menu(QWidget* parent)
 
 void SelectPointsBaseTool::on_selection_changed() { on_scene_changed(); }
 
-void SelectPointsBaseTool::transform_objects(ObjectTransformation t, const bool tool_space)
+void SelectPointsBaseTool::transform_objects(ObjectTransformation t)
 {
-  if (tool_space) { t = t.transformed(this->transformation().inverted()); }
   const auto paths = this->paths();
   if (paths.size() > 0) {
     scene.submit(std::make_unique<PointsTransformationCommand>(paths, t));

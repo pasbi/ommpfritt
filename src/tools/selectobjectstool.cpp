@@ -21,12 +21,8 @@ SelectObjectsTool::SelectObjectsTool(Scene& scene) : AbstractSelectTool(scene)
 
 std::string SelectObjectsTool::type() const { return TYPE; }
 
-void SelectObjectsTool::transform_objects(ObjectTransformation t, const bool tool_space)
+void SelectObjectsTool::transform_objects(ObjectTransformation t)
 {
-  if (tool_space) {
-    t = t.transformed(this->transformation().inverted());
-  }
-
   const Matrix mat = viewport_transformation.to_mat().inverted() * t.to_mat();
 
   using TransformationMode = ObjectsTransformationCommand::TransformationMode;

@@ -38,9 +38,9 @@ AbstractSelectTool::AbstractSelectTool(Scene& scene)
     .set_category(category);
 }
 
-void AbstractSelectTool::transform_objects_absolute(ObjectTransformation t, const bool tool_space)
+void AbstractSelectTool::transform_objects_absolute(ObjectTransformation t)
 {
-  transform_objects(m_last_object_transformation.inverted().apply(t), tool_space);
+  transform_objects(m_last_object_transformation.inverted().apply(t));
   m_last_object_transformation = t;
 }
 
@@ -98,7 +98,7 @@ void AbstractSelectTool::draw(Painter &renderer) const
 
 void AbstractSelectTool::cancel()
 {
-  transform_objects_absolute(ObjectTransformation(), true);
+  transform_objects_absolute(ObjectTransformation());
 
   Command* cmd = scene.history.last_command();
   Tool::cancel();

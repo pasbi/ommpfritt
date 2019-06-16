@@ -17,7 +17,7 @@ public:
   PointSelectHandle::TangentMode tangent_mode() const;
   std::unique_ptr<QMenu> make_context_menu(QWidget* parent) override;
   void on_selection_changed() override;
-  void transform_objects(ObjectTransformation t, const bool tool_space) override;
+  void transform_objects(ObjectTransformation t) override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force) override;
 
   bool has_transformation() const override;

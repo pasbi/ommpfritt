@@ -16,8 +16,8 @@ public:
   explicit AbstractSelectTool(Scene& scene);
   static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";
   static constexpr auto SYMMETRIC_PROPERTY_KEY = "symmetric";
-  virtual void transform_objects(ObjectTransformation t, const bool tool_space) = 0;
-  void transform_objects_absolute(ObjectTransformation t, const bool tool_space);
+  virtual void transform_objects(ObjectTransformation t) = 0;
+  void transform_objects_absolute(ObjectTransformation t);
   void cancel() override;
   bool mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEvent &e) override;
   bool mouse_press(const Vec2f &pos, const QMouseEvent &e, bool force) override;

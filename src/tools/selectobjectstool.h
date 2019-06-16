@@ -11,7 +11,7 @@ public:
   explicit SelectObjectsTool(Scene& scene);
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectObjectsTool");
-  void transform_objects(ObjectTransformation t, const bool tool_space) override;
+  void transform_objects(ObjectTransformation t) override;
   static constexpr auto TRANSFORMATION_MODE_KEY = "transformation_mode";
   void on_scene_changed() override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force) override;
