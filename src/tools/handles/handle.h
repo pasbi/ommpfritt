@@ -27,7 +27,6 @@ public:
   virtual double draw_epsilon() const;
   virtual double interact_epsilon() const;
   const bool transform_in_tool_space;
-  bool is_enabled() const;
 
 protected:
   Vec2f transform_position_to_global(const Vec2f& position) const;

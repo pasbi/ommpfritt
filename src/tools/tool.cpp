@@ -21,15 +21,13 @@ bool Tool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e
 {
   for (auto&& handle : handles) {
     assert(handle != nullptr);
-    if (handle->is_enabled()) {
-      handle->mouse_move(delta, pos, e);
-      switch (handle->status()) {
-      case Handle::Status::Active:
-        return true;
-      case Handle::Status::Hovered:
-      case Handle::Status::Inactive:
-        break;
-      }
+    handle->mouse_move(delta, pos, e);
+    switch (handle->status()) {
+    case Handle::Status::Active:
+      return true;
+    case Handle::Status::Hovered:
+    case Handle::Status::Inactive:
+      break;
     }
   }
   return false;
@@ -40,7 +38,7 @@ bool Tool::mouse_press(const Vec2f& pos, const QMouseEvent& e, bool force)
   // `std::any_of` does not *require* to use short-circuit-logic. However, here it is mandatory,
   // so don't use `std::any_of`.
   for (auto&& handle : handles) {
-    if (handle->is_enabled() && handle->mouse_press(pos, e, force)) {
+    if (handle->mouse_press(pos, e, force)) {
       return true;
     }
   }
@@ -50,9 +48,7 @@ bool Tool::mouse_press(const Vec2f& pos, const QMouseEvent& e, bool force)
 void Tool:: mouse_release(const Vec2f& pos, const QMouseEvent& e)
 {
   for (auto&& handle : handles) {
-    if (handle->is_enabled()) {
-      handle->mouse_release(pos, e);
-    }
+    handle->mouse_release(pos, e);
   }
 }
 
@@ -61,14 +57,12 @@ void Tool::draw(Painter& renderer) const
   if (!!(renderer.category_filter & Painter::Category::Handles)) {
     const ObjectTransformation transformation = this->transformation();
     for (auto&& handle : handles) {
-      if (handle->is_enabled()) {
-        if (handle->transform_in_tool_space) {
-          renderer.push_transformation(transformation);
-          handle->draw(renderer);
-          renderer.pop_transformation();
-        } else {
-          handle->draw(renderer);
-        }
+      if (handle->transform_in_tool_space) {
+        renderer.push_transformation(transformation);
+        handle->draw(renderer);
+        renderer.pop_transformation();
+      } else {
+        handle->draw(renderer);
       }
     }
   }
