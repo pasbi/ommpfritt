@@ -11,78 +11,10 @@
 #include "geometry/rectangle.h"
 #include "tools/selectpointstool.h"
 
-namespace
-{
-
-template<omm::PointSelectHandle::Tangent tangent>
-class TangentHandle : public omm::ParticleHandle
-{
-public:
-  TangentHandle(omm::Tool& tool, omm::PointSelectHandle& master_handle)
-    : ParticleHandle(tool, false), m_master_handle(master_handle)
-  {
-    set_style(Handle::Status::Hovered, []() {
-      omm::Style style(nullptr);
-      style.property(omm::Style::COSMETIC_KEY)->set(true);
-      style.property(omm::Style::BRUSH_COLOR_KEY)->set(omm::Color(1.0, 1.0, 0.0));
-      style.property(omm::Style::PEN_COLOR_KEY)->set(omm::Color(0.0, 0.0, 1.0));
-      style.property(omm::Style::BRUSH_IS_ACTIVE_KEY)->set(true);
-      style.property(omm::Style::PEN_IS_ACTIVE_KEY)->set(true);
-      return style;
-    }());
-
-
-    set_style(Handle::Status::Active, []() {
-      omm::Style style(nullptr);
-      style.property(omm::Style::COSMETIC_KEY)->set(true);
-      style.property(omm::Style::BRUSH_COLOR_KEY)->set(omm::Color(1.0, 1.0, 1.0));
-      style.property(omm::Style::PEN_COLOR_KEY)->set(omm::Color(0.0, 0.0, 0.0));
-      style.property(omm::Style::BRUSH_IS_ACTIVE_KEY)->set(true);
-      style.property(omm::Style::PEN_IS_ACTIVE_KEY)->set(true);
-      return style;
-    }());
-
-    set_style(Handle::Status::Inactive, []() {
-      omm::Style style(nullptr);
-      style.property(omm::Style::COSMETIC_KEY)->set(true);
-      style.property(omm::Style::BRUSH_COLOR_KEY)->set(omm::Color(0.8, 0.8, 0.2));
-      style.property(omm::Style::PEN_COLOR_KEY)->set(omm::Color(0.2, 0.2, 0.8));
-      style.property(omm::Style::BRUSH_IS_ACTIVE_KEY)->set(true);
-      style.property(omm::Style::PEN_IS_ACTIVE_KEY)->set(true);
-      return style;
-    }());
-  }
-
-  bool mouse_move(const omm::Vec2f& delta, const omm::Vec2f& pos, const QMouseEvent& e) override
-  {
-    ParticleHandle::mouse_move(delta, pos, e);
-    if (status() == Status::Active) {
-      m_master_handle.transform_tangent<tangent>(delta);
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  double draw_epsilon() const override { return 2.0; }
-
-  void draw(omm::Painter& renderer) const override
-  {
-    renderer.set_style(current_style());
-    const auto r = draw_epsilon();
-    renderer.painter->drawEllipse(position.x - r, position.y - r, 2*r, 2*r);
-  }
-
-private:
-  omm::PointSelectHandle& m_master_handle;
-};
-
-}  // namespace
-
 namespace omm
 {
 
-AbstractSelectHandle::AbstractSelectHandle(Tool& tool) : Handle(tool, false) { }
+AbstractSelectHandle::AbstractSelectHandle(Tool& tool) : Handle(tool) { }
 
 bool AbstractSelectHandle::mouse_press(const Vec2f &pos, const QMouseEvent &event, bool force)
 {
@@ -179,8 +111,10 @@ PointSelectHandle::PointSelectHandle(Tool& tool, Path& path, Point& point)
   , m_path(path)
   , m_point(point)
   , m_tangent_style(std::make_unique<ContourStyle>(Color(0.0, 0.0, 0.0), 0.1))
-  , m_left_tangent_handle(std::make_unique<TangentHandle<Tangent::Left>>(tool, *this))
-  , m_right_tangent_handle(std::make_unique<TangentHandle<Tangent::Right>>(tool, *this))
+  , m_left_tangent_handle(std::make_unique<TangentHandle>(tool, *this,
+                                                          TangentHandle::Tangent::Left))
+  , m_right_tangent_handle(std::make_unique<TangentHandle>(tool, *this,
+                                                           TangentHandle::Tangent::Right))
 {
   set_style(Status::Hovered, omm::SolidStyle(omm::Color(1.0, 1.0, 0.0)));
   set_style(Status::Active, omm::SolidStyle(omm::Color(1.0, 1.0, 1.0)));
@@ -261,21 +195,20 @@ void PointSelectHandle::draw(Painter &renderer) const
 
 }
 
-template<PointSelectHandle::Tangent tangent>
-void PointSelectHandle::transform_tangent(const Vec2f& delta)
+void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentHandle::Tangent tangent)
 {
-  transform_tangent<tangent>(delta, static_cast<SelectPointsTool&>(tool).tangent_mode());
+  transform_tangent(delta, static_cast<SelectPointsTool&>(tool).tangent_mode(), tangent);
 }
 
-template<PointSelectHandle::Tangent tangent>
-void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentMode mode)
+void PointSelectHandle::
+transform_tangent(const Vec2f& delta, TangentMode mode, TangentHandle::Tangent tangent)
 {
   auto new_point = m_point;
   {
-    auto& master_pos = ::conditional<tangent == Tangent::Left>( new_point.left_tangent,
-                                                                new_point.right_tangent );
-    auto& slave_pos  = ::conditional<tangent == Tangent::Left>( new_point.right_tangent,
-                                                                new_point.left_tangent  );
+    auto& master_pos = tangent == TangentHandle::Tangent::Left ? new_point.left_tangent
+                                                               : new_point.right_tangent;
+    auto& slave_pos  = tangent == TangentHandle::Tangent::Left ? new_point.right_tangent
+                                                               : new_point.left_tangent;
 
     const auto old_master_pos = master_pos;
     const auto transformation = ObjectTransformation().translated(delta);

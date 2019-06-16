@@ -16,7 +16,7 @@ class Handle
 {
 public:
   enum class Status { Hovered, Active, Inactive };
-  explicit Handle(Tool& tool, const bool transform_in_tool_space);
+  explicit Handle(Tool& tool);
   virtual ~Handle() = default;
   virtual void draw(Painter& renderer) const = 0;
   virtual bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force);
@@ -26,7 +26,6 @@ public:
   virtual void deactivate();
   virtual double draw_epsilon() const;
   virtual double interact_epsilon() const;
-  const bool transform_in_tool_space;
 
 protected:
   virtual bool contains_global(const Vec2f& global_point) const = 0;

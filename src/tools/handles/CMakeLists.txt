@@ -3,6 +3,7 @@ file (GLOB SOURCES
   "particlehandle.cpp"
   "pathhandle.cpp"
   "selecthandle.cpp"
+  "tangenthandle.cpp"
 )
 target_sources(libommpfritt PRIVATE ${SOURCES})
 

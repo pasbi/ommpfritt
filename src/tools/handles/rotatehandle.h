@@ -9,7 +9,7 @@ template<typename ToolT>
 class RotateHandle : public Handle
 {
 public:
-  RotateHandle(ToolT& tool) : Handle(tool, true)
+  RotateHandle(ToolT& tool) : Handle(tool)
   {
     set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
     set_style(Status::Hovered, omm::ContourStyle(omm::Color(0.0, 0.0, 1.0)));
@@ -18,8 +18,10 @@ public:
 
   void draw(Painter& renderer) const override
   {
+    renderer.push_transformation(tool.transformation());
     renderer.set_style(current_style());
     renderer.painter->drawEllipse(-RADIUS, -RADIUS, 2*RADIUS, 2*RADIUS);
+    renderer.pop_transformation();
   }
 
   bool contains_global(const Vec2f& point) const override
@@ -44,8 +46,10 @@ public:
         static constexpr double step = 15 * M_PI / 180.0;
         angle = step * static_cast<int>(angle / step);
       }
-      const auto t = omm::ObjectTransformation().rotated(angle);
-      static_cast<ToolT&>(tool).transform_objects_absolute(t, transform_in_tool_space);
+
+      const auto inv_tool_transformation = tool.transformation().inverted();
+      const auto t = ObjectTransformation().rotated(angle).transformed(inv_tool_transformation);
+      static_cast<ToolT&>(tool).transform_objects_absolute(t, false);
       static_cast<ToolT&>(tool).tool_info = QString("%1°").arg(angle / M_PI * 180.0).toStdString();
       return true;
     } else {

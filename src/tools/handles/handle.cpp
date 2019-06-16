@@ -7,10 +7,7 @@
 namespace omm
 {
 
-Handle::Handle(Tool& tool, const bool transform_in_tool_space)
-  : transform_in_tool_space(transform_in_tool_space)
-  , tool(tool)
-{}
+Handle::Handle(Tool& tool) : tool(tool) {}
 
 bool Handle::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
 {

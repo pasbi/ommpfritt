@@ -16,7 +16,7 @@ class MoveAxisHandle : public Handle
 {
 public:
   MoveAxisHandle(ToolT& tool)
-    : Handle(tool, true)
+    : Handle(tool)
     , m_direction(direction == MoveAxisHandleDirection::X ? Vec2f(100.0, 0.0)
                                                           : Vec2f(0.0, 100.0))
   {
@@ -65,6 +65,7 @@ public:
 
   void draw(omm::Painter& renderer) const override
   {
+    renderer.push_transformation(tool.transformation());
     const double magnitude = m_direction.euclidean_norm();
     const double argument = m_direction.arg();
 
@@ -75,6 +76,7 @@ public:
     renderer.painter->drawLine(QPointF(0.0, 0.0), to_qpoint(m_direction));
     const QPointF polyline[] = { left, to_qpoint(m_direction), right, left };
     renderer.painter->drawPolyline(polyline, 4);
+    renderer.pop_transformation();
   }
 
 private:

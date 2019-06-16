@@ -55,15 +55,8 @@ void Tool:: mouse_release(const Vec2f& pos, const QMouseEvent& e)
 void Tool::draw(Painter& renderer) const
 {
   if (!!(renderer.category_filter & Painter::Category::Handles)) {
-    const ObjectTransformation transformation = this->transformation();
     for (auto&& handle : handles) {
-      if (handle->transform_in_tool_space) {
-        renderer.push_transformation(transformation);
-        handle->draw(renderer);
-        renderer.pop_transformation();
-      } else {
-        handle->draw(renderer);
-      }
+      handle->draw(renderer);
     }
   }
 }

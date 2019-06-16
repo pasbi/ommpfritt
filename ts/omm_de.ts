@@ -960,6 +960,10 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <source>anchor</source>
         <translation>Anker</translation>
     </message>
+    <message>
+        <source>Symmetric</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>

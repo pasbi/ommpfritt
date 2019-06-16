@@ -11,7 +11,7 @@ namespace omm
 class ParticleHandle : public Handle
 {
 public:
-  explicit ParticleHandle(Tool& tool, bool transform_in_tool_space);
+  explicit ParticleHandle(Tool& tool);
   bool contains_global(const Vec2f& point) const override;
   void draw(omm::Painter& renderer) const override;
   Vec2f position = Vec2f::o();
@@ -19,13 +19,16 @@ public:
   static const Style hovered_style;
   static const Style active_style;
   static const Style inactive_style;
+
+protected:
+  bool transform_in_tool_space;
 };
 
 template<typename ToolT>
 class MoveParticleHandle : public ParticleHandle
 {
 public:
-  MoveParticleHandle(ToolT& tool) : ParticleHandle(tool, true) {}
+  MoveParticleHandle(ToolT& tool) : ParticleHandle(tool) {}
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override
   {
     Handle::mouse_move(delta, pos, e);

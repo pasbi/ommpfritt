@@ -960,6 +960,10 @@ Remove the selected items anyway?</translation>
         <source>anchor</source>
         <translation>Anchor</translation>
     </message>
+    <message>
+        <source>Symmetric</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>

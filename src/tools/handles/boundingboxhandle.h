@@ -12,7 +12,7 @@ template<typename ToolT>
 class BoundingBoxHandle : public Handle
 {
 public:
-  explicit BoundingBoxHandle(ToolT& tool) : Handle(tool, false)
+  explicit BoundingBoxHandle(ToolT& tool) : Handle(tool)
   {
     set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
     set_style(Status::Hovered, omm::ContourStyle(omm::Color(0.7, 0.7, 0.7)));

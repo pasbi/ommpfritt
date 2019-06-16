@@ -12,7 +12,7 @@ template<typename ToolT>
 class ScaleBandHandle : public Handle
 {
 public:
-  ScaleBandHandle(ToolT& tool) : Handle(tool, true)
+  ScaleBandHandle(ToolT& tool) : Handle(tool)
   {
     set_style(Status::Active, omm::SolidStyle(omm::Color(1.0, 1.0, 1.0)));
     set_style(Status::Hovered, omm::SolidStyle(omm::Color(0.7, 0.7, 0.7)));
@@ -29,6 +29,7 @@ public:
 
   void draw(Painter& painter) const override
   {
+    painter.push_transformation(tool.transformation());
     QPointF polyline[] = { QPointF(stop, r - width/2.0 - stop),
                            QPointF(stop, r + width/2.0 - stop),
                            QPointF(r + width/2.0 - stop, stop),
@@ -36,6 +37,7 @@ public:
                            QPointF(stop, r - width/2.0 - stop) };
     painter.set_style(current_style());
     painter.painter->drawPolygon(polyline, 5);
+    painter.pop_transformation();
   }
 
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override
