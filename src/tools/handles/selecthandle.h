@@ -21,7 +21,6 @@ protected:
   virtual void set_selected(bool selected) = 0;
   virtual void clear() = 0;
   virtual bool is_selected() const = 0;
-
   static constexpr auto extend_selection_modifier = Qt::ShiftModifier;
 };
 
@@ -33,7 +32,7 @@ public:
   void draw(omm::Painter& renderer) const override;
 
 protected:
-  ObjectTransformation transformation() const override;
+  ObjectTransformation transformation() const;
   void set_selected(bool selected) override;
   void clear() override;
   bool is_selected() const override;
@@ -60,7 +59,7 @@ public:
   bool force_draw_subhandles = false;
 
 protected:
-  ObjectTransformation transformation() const override;
+  ObjectTransformation transformation() const;
   void set_selected(bool selected) override;
   void clear() override;
   bool is_selected() const override;

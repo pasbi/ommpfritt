@@ -24,7 +24,8 @@ public:
 
   bool contains_global(const Vec2f& point) const override
   {
-    const auto global_point = transform_position_to_global(point);
+    const auto transformation = tool.transformation();
+    const auto global_point = transformation.inverted().apply_to_position(point);
     const double r = global_point.euclidean_norm();
     return RADIUS - interact_epsilon() <= r && r <= RADIUS + interact_epsilon();
   }
@@ -33,8 +34,9 @@ public:
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
-      const auto global_pos = transformation().inverted().apply_to_position(pos);
-      const auto origin = transformation().inverted().apply_to_position(press_pos());
+      const auto transformation = tool.transformation();
+      const auto global_pos = transformation.inverted().apply_to_position(pos);
+      const auto origin = transformation.inverted().apply_to_position(press_pos());
       const auto delta = global_pos - origin;
 
       double angle = global_pos.arg() - origin.arg();

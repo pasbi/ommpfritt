@@ -60,23 +60,9 @@ void Handle::set_style(Status status, Style style)
   m_styles.insert(std::pair(status, std::move(style)));
 }
 
-ObjectTransformation Handle::transformation() const
-{
-  if (transform_in_tool_space) {
-    return tool.transformation(); // .scaled(m_scale);
-  } else {
-    return ObjectTransformation(); // .scaled(m_scale);
-  }
-}
-
 double Handle::draw_epsilon() const { return 4.0; }
 double Handle::interact_epsilon() const { return 4.0; }
 Vec2f Handle::press_pos() const { return m_press_pos; }
-
-Vec2f Handle::transform_position_to_global(const Vec2f& position) const
-{
-  return transformation().inverted().apply_to_position(position);
-}
 
 void Handle::discretize(Vec2f& vec) const
 {

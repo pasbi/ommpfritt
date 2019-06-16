@@ -21,7 +21,7 @@ public:
 
   bool contains_global(const Vec2f& point) const override
   {
-    const Vec2f global_point = transformation().inverted().apply_to_position(point);
+    const Vec2f global_point = tool.transformation().inverted().apply_to_position(point);
     const double x = global_point.x;
     const double y = global_point.y;
     return x+y < r + width/2.0 && x+y > r - width/2.0 && x > stop && y > stop;
@@ -42,7 +42,7 @@ public:
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
-      const auto ti = transformation().inverted();
+      const auto ti = tool.transformation().inverted();
       const auto global_pos = ti.apply_to_position(pos);
       const auto origin = ti.apply_to_position(press_pos());
       const auto delta = global_pos - origin;

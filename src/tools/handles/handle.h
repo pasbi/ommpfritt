@@ -29,12 +29,10 @@ public:
   const bool transform_in_tool_space;
 
 protected:
-  Vec2f transform_position_to_global(const Vec2f& position) const;
   virtual bool contains_global(const Vec2f& global_point) const = 0;
   void set_style(Status status, Style style);
   const Style& current_style() const;
   const Style& style(Status status) const;
-  virtual ObjectTransformation transformation() const;
   Tool& tool;
   Vec2f press_pos() const;
 

@@ -14,7 +14,9 @@ ParticleHandle::ParticleHandle(Tool& tool, bool transform_in_tool_space)
 
 bool ParticleHandle::contains_global(const Vec2f& point) const
 {
-  const double dist = (point - transformation().apply_to_position(position)).euclidean_norm();
+  const auto transformation = transform_in_tool_space ? tool.transformation()
+                                                      : ObjectTransformation();
+  const double dist = (point - transformation.apply_to_position(position)).euclidean_norm();
   return dist < interact_epsilon();
 }
 

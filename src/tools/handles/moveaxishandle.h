@@ -36,7 +36,7 @@ public:
 
   bool contains_global(const Vec2f& point) const override
   {
-    const Vec2f global_point = transformation().inverted().apply_to_position(point);
+    const Vec2f global_point = tool.transformation().inverted().apply_to_position(point);
     Vec2f v = project_onto_axis(global_point);
 
     // clamp v between o and m_direction
@@ -49,7 +49,7 @@ public:
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
-      auto total_delta = transformation().inverted().apply_to_direction(pos - press_pos());
+      auto total_delta = tool.transformation().inverted().apply_to_direction(pos - press_pos());
       total_delta = project_onto_axis(total_delta);
       discretize(total_delta);
       const auto transformation = omm::ObjectTransformation().translated(total_delta);

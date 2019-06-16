@@ -30,7 +30,7 @@ public:
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == Status::Active) {
-      auto total_delta = transformation().inverted().apply_to_direction(pos - press_pos());
+      auto total_delta = tool.transformation().inverted().apply_to_direction(pos - press_pos());
       discretize(total_delta);
       const auto transformation = omm::ObjectTransformation().translated(total_delta);
       static_cast<ToolT&>(tool).transform_objects_absolute(transformation, true);
