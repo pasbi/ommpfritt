@@ -16,6 +16,7 @@ struct PolarCoordinates
   double argument;
   double magnitude;
   bool operator==(const PolarCoordinates& other) const;
+  bool has_nan() const;
 
   /**
    * @brief operator < enables the use of PolarCoordinates in, e.g., std::set

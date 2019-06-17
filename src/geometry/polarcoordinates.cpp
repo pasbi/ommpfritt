@@ -29,6 +29,11 @@ bool PolarCoordinates::operator==(const PolarCoordinates& point) const
   return argument == point.argument && magnitude == point.magnitude;
 }
 
+bool PolarCoordinates::has_nan() const
+{
+  return std::isnan(argument) || std::isnan(magnitude);
+}
+
 bool PolarCoordinates::operator<(const PolarCoordinates &other) const
 {
   if (magnitude == other.magnitude) {

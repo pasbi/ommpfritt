@@ -31,6 +31,11 @@ void Point::swap(Point& other)
   other.right_tangent.swap(right_tangent);
 }
 
+bool Point::has_nan() const
+{
+  return position.has_nan() || left_tangent.has_nan() || right_tangent.has_nan();
+}
+
 Point Point::smoothed(Vec2f& left, const Vec2f& right) const
 {
   auto copy = *this;

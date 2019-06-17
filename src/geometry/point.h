@@ -25,6 +25,7 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Point", "Point");
   bool is_selected = false;
   void swap(Point& other);
+  bool has_nan() const;
 
   PolarCoordinates left_tangent;
   PolarCoordinates right_tangent;
