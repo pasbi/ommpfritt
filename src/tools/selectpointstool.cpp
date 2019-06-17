@@ -43,8 +43,10 @@ void SelectPointsBaseTool::transform_objects(ObjectTransformation t)
 {
   const auto paths = this->paths();
   if (paths.size() > 0) {
-    scene.submit(std::make_unique<PointsTransformationCommand>(paths, t));
+    const auto s = m_last_object_transformation.inverted().apply(t);
+    scene.submit(std::make_unique<PointsTransformationCommand>(paths, s));
   }
+  m_last_object_transformation = t;
 }
 
 std::set<Path *> SelectPointsBaseTool::paths() const

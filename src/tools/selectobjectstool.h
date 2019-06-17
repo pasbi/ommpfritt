@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tools/selecttool.h"
+#include "commands/objectstransformationcommand.h"
 
 namespace omm
 {
@@ -16,9 +17,11 @@ public:
   void on_scene_changed() override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force) override;
   BoundingBox bounding_box() const;
+
 protected:
   bool has_transformation() const override;
   Vec2f selection_center() const override;
+  ObjectsTransformationCommand::Map m_initial_transformations;
 
 };
 

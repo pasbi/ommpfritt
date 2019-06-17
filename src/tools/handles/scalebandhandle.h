@@ -60,7 +60,7 @@ public:
       {
         auto t = omm::ObjectTransformation().scaled(Vec2f(s, s));
         t = t.transformed(ti);
-        static_cast<ToolT&>(tool).transform_objects_absolute(t);
+        static_cast<ToolT&>(tool).transform_objects(t);
       }
       static_cast<ToolT&>(tool).tool_info = QString("%1").arg(s).toStdString();
       return true;

@@ -1,85 +1,93 @@
 #include "commands/objectstransformationcommand.h"
-#include "geometry/matrix.h"
 #include "common.h"
 #include "objects/object.h"
 
 namespace
 {
 
-auto
-make_alternatives(std::set<omm::Object*> objects, const omm::Matrix& t)
+auto get_old_transformations(std::set<omm::Object*> objects)
 {
   omm::Object::remove_internal_children(objects);
-  std::map<omm::Object*, omm::ObjectTransformation> alternatives;
-  for (const auto& object : objects) {
-    alternatives.insert(std::make_pair(object, t * object->global_transformation(false).to_mat()));
+  omm::ObjectsTransformationCommand::Map map;
+  for (auto&& object : objects) {
+    map.insert(std::pair(object, object->global_transformation(true)));
   }
-  return alternatives;
+  return map;
 }
 
-template<typename MapT>
-bool has_same_objects(const MapT& a, const MapT& b)
+auto get_new_transformations(const omm::ObjectsTransformationCommand::Map& new_transformations)
 {
-  if (a.size() != b.size()) {
-    return false;
-  } else {
-    for (const auto& p : a) {
-      if (b.count(p.first) == 0) {
-        return false;
-      }
-    }
-    return true;
+  auto objects = get_keys(new_transformations);
+  omm::Object::remove_internal_children(objects);
+  omm::ObjectsTransformationCommand::Map map;
+  for (auto&& object : objects) {
+    map.insert(std::pair(object, new_transformations.at(object)));
   }
+  return map;
 }
 
-}  // namespace
+}
 
 namespace omm
 {
 
-ObjectsTransformationCommand
-::ObjectsTransformationCommand(const std::set<Object*>& objects, const Matrix& t,
-                               const TransformationMode transformation_mode)
-  : Command(QObject::tr("ObjectsTransformationCommand").toStdString())
-  , m_alternative_transformations(make_alternatives(objects, t))
-  , m_transformation_mode(transformation_mode)
+ObjectsTransformationCommand::
+ObjectsTransformationCommand(const Map &transformations, TransformationMode t_mode)
+  : Command(QObject::tr("ObjectsTransformation").toStdString())
+  , m_old_transformations(get_old_transformations(::get_keys(transformations)))
+  , m_new_transformations(get_new_transformations(transformations))
+  , m_transformation_mode(t_mode)
 {
 }
 
-void ObjectsTransformationCommand::undo()
-{
-  for (auto& [object, alternative_transformation] : m_alternative_transformations) {
-    const auto old_transformation = object->global_transformation(true);
-    switch (m_transformation_mode) {
-    case TransformationMode::Axis:
-      object->set_global_axis_transformation(alternative_transformation, true);
-      break;
-    case TransformationMode::Object:
-      object->set_global_transformation(alternative_transformation, true);
-      break;
-    }
-    alternative_transformation = old_transformation;
-  }
-}
-
-void ObjectsTransformationCommand::redo() { undo(); }
-int ObjectsTransformationCommand::id() const { return OBJECTS_TRANSFORMATION_COMMAND_ID; }
-
-bool ObjectsTransformationCommand::mergeWith(const QUndoCommand* command)
-{
-  // merging happens automatically!
-  const auto& ot_command = static_cast<const ObjectsTransformationCommand&>(*command);
-  return has_same_objects(ot_command.m_alternative_transformations, m_alternative_transformations);
-}
+void ObjectsTransformationCommand::undo() { apply(m_old_transformations); }
+void ObjectsTransformationCommand::redo() { apply(m_new_transformations); }
 
 bool ObjectsTransformationCommand::is_noop() const
 {
-  for (auto& [object, alternative_transformation] : m_alternative_transformations) {
-    if (object->global_transformation(true) != alternative_transformation) {
+  assert(::get_keys(m_old_transformations) == ::get_keys(m_new_transformations));
+  for (auto&& [o, _] : m_old_transformations) {
+    if (m_old_transformations.at(o) != m_new_transformations.at(o)) {
       return false;
     }
   }
   return true;
 }
 
-}  // namespace omm
+bool ObjectsTransformationCommand::mergeWith(const QUndoCommand *command)
+{
+  const auto& ot_command = static_cast<const ObjectsTransformationCommand&>(*command);
+  if (affected_objects() != ot_command.affected_objects()) {
+    return false;
+  }
+
+  for (auto&& object : affected_objects()) {
+    m_new_transformations[object] = ot_command.m_new_transformations.at(object);
+  }
+  return true;
+}
+
+void ObjectsTransformationCommand::apply(const ObjectsTransformationCommand::Map &map)
+{
+  for (auto&& [o, t] : map) {
+    switch (m_transformation_mode) {
+    case TransformationMode::Axis:
+      o->set_global_axis_transformation(t, true);
+      break;
+    case TransformationMode::Object:
+      o->set_global_transformation(t, true);
+      break;
+    }
+  }
+}
+
+std::set<Object *> ObjectsTransformationCommand::affected_objects() const
+{
+  const auto keys = ::get_keys(m_new_transformations);
+  assert(keys == ::get_keys(m_old_transformations));
+  return keys;
+}
+
+int ObjectsTransformationCommand::id() const { return OBJECTS_TRANSFORMATION_COMMAND_ID; }
+
+}

@@ -17,7 +17,6 @@ public:
   static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";
   static constexpr auto SYMMETRIC_PROPERTY_KEY = "symmetric";
   virtual void transform_objects(ObjectTransformation t) = 0;
-  void transform_objects_absolute(ObjectTransformation t);
   void cancel() override;
   bool mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEvent &e) override;
   bool mouse_press(const Vec2f &pos, const QMouseEvent &e, bool force) override;
@@ -28,9 +27,9 @@ public:
 
 protected:
   virtual Vec2f selection_center() const = 0;
+  ObjectTransformation m_last_object_transformation;
 
 private:
-  ObjectTransformation m_last_object_transformation;
   void reset_absolute_object_transformation();
   const Style m_tool_info_line_style;
   Vec2f m_init_position;

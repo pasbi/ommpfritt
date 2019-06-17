@@ -56,7 +56,7 @@ public:
       {
         auto transformation = omm::ObjectTransformation().translated(total_delta);
         transformation = transformation.transformed(inv_tool_transformation);
-        static_cast<ToolT&>(tool).transform_objects_absolute(transformation);
+        static_cast<ToolT&>(tool).transform_objects(transformation);
       }
       total_delta = tool.viewport_transformation.inverted().apply_to_direction(total_delta);
       const auto tool_info = QString("%1").arg(total_delta.euclidean_norm());

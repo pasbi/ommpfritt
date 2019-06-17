@@ -45,6 +45,7 @@ public:
   }
 
   BoundingBox bounding_box() const;
+  void transform_objects_absolute(ObjectTransformation t);
 
 protected:
   std::set<Point> selected_points() const;

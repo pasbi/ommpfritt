@@ -23,12 +23,17 @@ std::string SelectObjectsTool::type() const { return TYPE; }
 
 void SelectObjectsTool::transform_objects(ObjectTransformation t)
 {
-  const Matrix mat = viewport_transformation.to_mat().inverted() * t.to_mat();
+  const Matrix viewport_mat = viewport_transformation.to_mat();
+  const Matrix inv_viewport_mat = viewport_mat.inverted();
 
   using TransformationMode = ObjectsTransformationCommand::TransformationMode;
   const auto tmode = property(TRANSFORMATION_MODE_KEY)->value<TransformationMode>();
-  auto command = std::make_unique<ObjectsTransformationCommand>( scene.item_selection<Object>(),
-                                                                 mat, tmode );
+  ObjectsTransformationCommand::Map map;
+  const Matrix premul = inv_viewport_mat * t.to_mat() * viewport_mat;
+  for (const auto& i : m_initial_transformations) {
+    map.insert(std::pair(i.first, ObjectTransformation(premul * i.second.to_mat())));
+  }
+  auto command = std::make_unique<ObjectsTransformationCommand>( map, tmode );
   scene.submit(std::move(command));
 }
 
@@ -59,10 +64,13 @@ void SelectObjectsTool::on_scene_changed()
 
 bool SelectObjectsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
 {
+  m_initial_transformations.clear();
   Q_UNUSED(force);
-  if (AbstractSelectTool::mouse_press(pos, event, false)) {
-    return true;
-  } else if (AbstractSelectTool::mouse_press(pos, event, true)) {
+  if (AbstractSelectTool::mouse_press(pos, event, false)
+      || AbstractSelectTool::mouse_press(pos, event, true)) {
+    for (auto&& o : scene.item_selection<Object>()) {
+      m_initial_transformations.insert(std::pair(o, o->global_transformation(true)));
+    }
     return true;
   } else {
     scene.set_selection({});
