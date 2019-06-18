@@ -40,11 +40,23 @@ void SelectPointsBaseTool::on_selection_changed() { on_scene_changed(); }
 
 void SelectPointsBaseTool::transform_objects(ObjectTransformation t)
 {
-  const auto paths = this->paths();
+  class TransformationCache : public Cache<Path*, ObjectTransformation>
+  {
+  public:
+    TransformationCache(const Matrix& mat) : m_mat(mat) {}
+    ObjectTransformation retrieve(Path* const& path) const {
+      const Matrix gt = path->global_transformation(false).to_mat();
+      return ObjectTransformation(gt.inverted() * m_mat * gt);
+    }
+  private:
+    const Matrix m_mat;
+  };
+
+  TransformationCache cache(t.to_mat());
+
   PointsTransformationCommand::Map map;
   for (auto&& [key, point] : m_initial_points) {
-    const Matrix gt = key.first->global_transformation(false).to_mat();
-    const ObjectTransformation premul(gt.inverted() * t.to_mat() * gt);
+    const ObjectTransformation premul = cache.get(key.first);
     auto p = premul.apply(point);
     p.is_selected = point.is_selected;
     map.insert(std::pair(key, p));
