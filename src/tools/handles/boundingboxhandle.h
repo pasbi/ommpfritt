@@ -94,13 +94,8 @@ public:
 
     if (discrete) {
       for (const std::size_t i : { 0u, 1u }) {
-        double step = 0.1;
-        if (std::abs(s[i]) > step) {
-          s[i] = step * static_cast<int>(s[i] / step);
-        } else {
-          double step = 0.01;
-          s[i] = step * static_cast<int>(s[i] / step);
-        }
+        static constexpr double step = 0.1;
+        s[i] = step * static_cast<int>(s[i] / step);
       }
     }
 
