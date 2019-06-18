@@ -30,8 +30,8 @@ void SelectObjectsTool::transform_objects(ObjectTransformation t)
   const auto tmode = property(TRANSFORMATION_MODE_KEY)->value<TransformationMode>();
   ObjectsTransformationCommand::Map map;
   const Matrix premul = inv_viewport_mat * t.to_mat() * viewport_mat;
-  for (const auto& i : m_initial_transformations) {
-    map.insert(std::pair(i.first, ObjectTransformation(premul * i.second.to_mat())));
+  for (auto&& [object, transformation] : m_initial_transformations) {
+    map.insert(std::pair(object, ObjectTransformation(premul * transformation.to_mat())));
   }
   auto command = std::make_unique<ObjectsTransformationCommand>( map, tmode );
   scene.submit(std::move(command));
@@ -100,7 +100,6 @@ Vec2f SelectObjectsTool::selection_center() const
   for (const auto& o : objects) {
     sum += o->global_transformation().translation();
   }
-
   return sum / static_cast<double>(objects.size());
 }
 

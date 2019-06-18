@@ -12,6 +12,11 @@ public:
   explicit SelectObjectsTool(Scene& scene);
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectObjectsTool");
+
+  /**
+   * @brief transform_objects transforms the selected objects with given transformation @code t.
+   * @param t the transformation in viewport-space.
+   */
   void transform_objects(ObjectTransformation t) override;
   static constexpr auto TRANSFORMATION_MODE_KEY = "transformation_mode";
   void on_scene_changed() override;
