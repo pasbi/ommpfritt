@@ -274,7 +274,7 @@ template<typename K, typename V> std::set<K> get_keys(const std::map<K, V>& map)
 {
   std::set<K> keys;
   for (auto&& [k, v] : map) {
-    Q_UNUSED(v);
+    (void) v;
     keys.insert(k);
   }
   return keys;
