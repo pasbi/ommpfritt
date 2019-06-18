@@ -64,7 +64,8 @@ void ImageObject::draw_object(Painter &renderer, const Style&) const
     QPainter& painter = *renderer.painter;
     painter.save();
     painter.setOpacity(opacity);
-    const QPicture& picture = renderer.image_cache.load(QString::fromStdString(path), page_num);
+    const auto key = std::pair(QString::fromStdString(path), page_num);
+    const QPicture& picture = renderer.image_cache.get(key);
     const auto s = width / picture.width();
     const auto aabb = picture.boundingRect();
     painter.scale(s, s);
