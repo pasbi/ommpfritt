@@ -5,6 +5,7 @@
 #include "tools/handles/rotatehandle.h"
 #include "tools/handles/scalebandhandle.h"
 #include "tools/handles/particlehandle.h"
+#include "commands/pointstransformationcommand.h"
 
 namespace omm
 {
@@ -33,7 +34,6 @@ public:
     tool.handles.push_back(std::make_unique<MoveAxisHandle<ToolT, X>>(tool));
     tool.handles.push_back(std::make_unique<MoveAxisHandle<ToolT, Y>>(tool));
 
-
     for (auto* path : tool.paths()) {
       tool.handles.reserve(tool.handles.size() + path->points().size());
       for (auto* point : path->points_ref()) {
@@ -51,6 +51,7 @@ protected:
   std::set<Point> selected_points() const;
   Vec2f selection_center() const;
   std::set<Path*> paths() const;
+  PointsTransformationCommand::Map m_initial_points;
 
 };
 

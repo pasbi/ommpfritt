@@ -1,59 +1,17 @@
 #include "commands/pointstransformationcommand.h"
-#include "common.h"
-#include "objects/object.h"
 #include "objects/path.h"
 
 namespace
 {
 
-auto
-make_alternatives(const std::set<omm::Path*>& paths, const omm::ObjectTransformation& t)
+auto get_old_points(const std::set<std::pair<omm::Path*, std::size_t>>& keys)
 {
-  std::map<omm::Path*, std::map<std::size_t, omm::Point>> alternatives;
-  for (omm::Path* path : paths) {
-    const auto pt = t.transformed(path->global_transformation());
-    const auto points = path->points();
-    for (std::size_t i = 0; i < points.size(); ++i) {
-      if (points[i].is_selected) {
-        omm::Point other = pt.apply(points[i]);
-        alternatives[path].insert(std::make_pair(i, other));
-      }
-    }
+  omm::PointsTransformationCommand::Map map;
+  for (auto&& [path, index] : keys) {
+    const auto key = std::make_pair(path, index);
+    map.insert(std::make_pair(key, path->points()[index]));
   }
-  return alternatives;
-}
-
-template<typename MapT>
-bool has_same_points(const MapT& a, const MapT& b)
-{
-  if (a.size() != b.size()) {
-    return false;
-  }
-
-  for (const auto& [a_path, a_points] : a) {
-    const auto b_it = b.find(a_path);
-    if (b_it == b.end()) {
-      return false;
-    }
-
-    const auto* b_path = b_it->first;
-    if (b_path != a_path) {
-      return false;
-    }
-
-    const auto& b_points = b_it->second;
-    if (a_points.size() != b_points.size()) {
-      return false;
-    }
-
-    for (const auto& [a_i, a_point] : a_points) {
-      const auto bp_it = b_points.find(a_i);
-      if (bp_it == b_points.end()) {
-        return false;
-      }
-    }
-  }
-  return true;
+  return map;
 }
 
 }  // namespace
@@ -61,53 +19,60 @@ bool has_same_points(const MapT& a, const MapT& b)
 namespace omm
 {
 
-PointsTransformationCommand
-::PointsTransformationCommand(const std::set<Path*>& paths, const ObjectTransformation& t)
+PointsTransformationCommand::PointsTransformationCommand(const Map& new_points)
   : Command(QObject::tr("PointsTransformationCommand").toStdString())
-  , m_alternative_points(make_alternatives(paths, t))
+  , m_old_points(get_old_points(::get_keys(new_points)))
+  , m_new_points(new_points)
 {
 }
 
-void PointsTransformationCommand::redo()
+void PointsTransformationCommand::undo() { apply(m_old_points); }
+void PointsTransformationCommand::redo() { apply(m_new_points); }
+
+int PointsTransformationCommand::id() const
 {
-  for (auto&& [path, alternatives] : m_alternative_points) {
-    path->on_change(path, Path::POINTS_CHANGED, nullptr, { this });
-    const auto points = path->points_ref();
-    for (const auto& [i, _] : alternatives) {
-      points[i]->swap(alternatives[i]);
-    }
-
-    const auto& i_mode_property = path->property(Path::INTERPOLATION_PROPERTY_KEY);
-    const auto i_mode = i_mode_property->value<Path::InterpolationMode>();
-    for (auto [point, alternative] : path->modified_points(false, i_mode)) {
-      point->swap(alternative);
-    }
-  }
+  return Command::POINTS_TRANSFORMATION_COMMAND_ID;
 }
-
-void PointsTransformationCommand::undo() { redo(); }
-int PointsTransformationCommand::id() const { return POINTS_TRANSFORMATION_COMMAND_ID; }
 
 bool PointsTransformationCommand::mergeWith(const QUndoCommand* command)
 {
-  // merging happens automatically!
-  const auto& ot_command = static_cast<const PointsTransformationCommand&>(*command);
-  return has_same_points(ot_command.m_alternative_points, m_alternative_points);
+  const auto& pt_command = static_cast<const PointsTransformationCommand&>(*command);
+  const auto affected_points = this->affected_points();
+  if (affected_points != pt_command.affected_points()) {
+    return false;
+  }
+
+  for (const auto& key : affected_points) {
+    m_new_points[key] = pt_command.m_new_points.at(key);
+  }
+
+  return true;
 }
 
 bool PointsTransformationCommand::is_noop() const
 {
-  for (auto&& [path, alternatives] : m_alternative_points) {
-    path->on_change(path, Path::POINTS_CHANGED, nullptr, { this });
-    const auto points = path->points_ref();
-    for (const auto& [i, _] : alternatives) {
-      if (!fuzzy_eq(*points.at(i), alternatives.at(i))) {
-        return false;
-      }
+  for (const auto& key : affected_points()) {
+    if (m_old_points.at(key) != m_new_points.at(key)) {
+      return false;
     }
   }
-
   return true;
+}
+
+void PointsTransformationCommand::apply(const PointsTransformationCommand::Map &map)
+{
+  for (auto&& [k, v] : map) {
+    Path* path = k.first;
+    std::size_t index = k.second;
+    path->point(index) = map.at(k);
+  }
+}
+
+std::set<std::pair<Path*, std::size_t>> PointsTransformationCommand::affected_points() const
+{
+  const auto keys = ::get_keys(m_old_points);
+  assert(keys == ::get_keys(m_new_points));
+  return keys;
 }
 
 }  // namespace omm

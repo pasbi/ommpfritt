@@ -1,7 +1,6 @@
 #include "tools/selectpointstool.h"
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
-#include "commands/pointstransformationcommand.h"
 #include "objects/path.h"
 #include "properties/optionsproperty.h"
 #include "tools/handles/boundingboxhandle.h"
@@ -42,11 +41,16 @@ void SelectPointsBaseTool::on_selection_changed() { on_scene_changed(); }
 void SelectPointsBaseTool::transform_objects(ObjectTransformation t)
 {
   const auto paths = this->paths();
-  if (paths.size() > 0) {
-    const auto s = m_last_object_transformation.inverted().apply(t);
-    scene.submit(std::make_unique<PointsTransformationCommand>(paths, s));
+  PointsTransformationCommand::Map map;
+  for (auto&& [key, point] : m_initial_points) {
+    const Matrix gt = key.first->global_transformation(false).to_mat();
+    const ObjectTransformation premul(gt.inverted() * t.to_mat() * gt);
+    auto p = premul.apply(point);
+    p.is_selected = point.is_selected;
+    map.insert(std::pair(key, p));
   }
-  m_last_object_transformation = t;
+
+  scene.submit(std::make_unique<PointsTransformationCommand>(map));
 }
 
 std::set<Path *> SelectPointsBaseTool::paths() const
@@ -56,10 +60,15 @@ std::set<Path *> SelectPointsBaseTool::paths() const
 
 bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
 {
+  m_initial_points.clear();
   Q_UNUSED(force);
-  if (AbstractSelectTool::mouse_press(pos, event, false)) {
-    return true;
-  } else if (AbstractSelectTool::mouse_press(pos, event, true)) {
+  if (AbstractSelectTool::mouse_press(pos, event, false)
+    || AbstractSelectTool::mouse_press(pos, event, true)) {
+    for (Path* path : paths()) {
+      for (const std::size_t i : path->selected_points()) {
+        m_initial_points.insert(std::make_pair(std::make_pair(path, i), path->point(i)));
+      }
+    }
     return true;
   } else {
     for (auto* path : paths()) {
@@ -103,10 +112,12 @@ std::set<Point> SelectPointsBaseTool::selected_points() const
 
 Vec2f SelectPointsBaseTool::selection_center() const
 {
-  const std::set<Vec2f> ps = ::transform<Vec2f>(selected_points(), [](const Point& p) {
-    return p.position;
-  });
-  return std::accumulate(ps.begin(), ps.end(), Vec2f(0.0, 0.0)) / static_cast<double>(ps.size());
+  const auto selected_points = this->selected_points();
+  Vec2f sum(0.0, 0.0);
+  for (const Point& p : selected_points) {
+    sum += p.position;
+  }
+  return sum / static_cast<double>(selected_points.size());
 }
 
 std::string SelectPointsTool::type() const { return TYPE; }
