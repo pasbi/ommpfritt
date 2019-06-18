@@ -99,6 +99,8 @@ std::vector<Point*> Path::points_ref()
   return ::transform<Point*>(m_points, [](Point& p) { return &p; });
 }
 
+Point &Path::point(std::size_t i) { return m_points[i]; }
+const Point &Path::point(std::size_t i) const { return m_points[i]; }
 
 void Path::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
