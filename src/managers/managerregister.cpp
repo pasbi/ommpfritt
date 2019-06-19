@@ -3,6 +3,7 @@
 #include "managers/stylemanager/stylemanager.h"
 #include "managers/pythonconsole/pythonconsole.h"
 #include "managers/historymanager/historymanager.h"
+#include "managers/boundingboxmanager/boundingboxmanager.h"
 
 namespace omm
 {
@@ -16,6 +17,7 @@ void register_managers()
   REGISTER_MANAGER(StyleManager);
   REGISTER_MANAGER(PythonConsole);
   REGISTER_MANAGER(HistoryManager);
+  REGISTER_MANAGER(BoundingBoxManager);
 
 #undef REGISTER_MANAGER
 }
