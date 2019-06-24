@@ -80,11 +80,7 @@ bool SelectObjectsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, 
 
 BoundingBox SelectObjectsTool::bounding_box() const
 {
-  BoundingBox bb;
-  for (const auto* o : scene.item_selection<Object>()) {
-    bb |= o->recursive_bounding_box(o->global_transformation(false));
-  }
-  return bb;
+  return BoundingBox::around_selected_objects(scene);
 }
 
 bool SelectObjectsTool::has_transformation() const

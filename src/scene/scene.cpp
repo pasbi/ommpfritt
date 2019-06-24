@@ -65,6 +65,7 @@ Scene::Scene(PythonEngine& python_engine)
   , python_engine(python_engine)
   , m_default_style(std::make_unique<Style>(this))
   , tool_box(*this)
+  , point_selection(*this)
 {
   using namespace std::string_literals;
   object_tree.root().property(Object::NAME_PROPERTY_KEY)->set("_root_"s);

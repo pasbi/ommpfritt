@@ -65,25 +65,22 @@ void SelectPointsBaseTool::transform_objects(ObjectTransformation t)
   scene.submit(std::make_unique<PointsTransformationCommand>(map));
 }
 
-std::set<Path *> SelectPointsBaseTool::paths() const
-{
-  return type_cast<Path*>(scene.item_selection<Object>());
-}
 
 bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
 {
+  const auto paths = type_cast<Path*>(scene.template item_selection<Object>());
   m_initial_points.clear();
   Q_UNUSED(force);
   if (AbstractSelectTool::mouse_press(pos, event, false)
     || AbstractSelectTool::mouse_press(pos, event, true)) {
-    for (Path* path : paths()) {
+    for (Path* path : paths) {
       for (const std::size_t i : path->selected_points()) {
         m_initial_points.insert(std::make_pair(std::make_pair(path, i), path->point(i)));
       }
     }
     return true;
   } else {
-    for (auto* path : paths()) {
+    for (auto* path : paths) {
       for (auto* point : path->points_ref()) {
         point->is_selected = false;
       }
@@ -94,7 +91,7 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
 
 bool SelectPointsBaseTool::has_transformation() const
 {
-  for (auto* path : paths()) {
+  for (auto* path : type_cast<Path*>(scene.template item_selection<Object>())) {
     for (auto* point : path->points_ref()) {
       if (point->is_selected) {
         return true;
@@ -106,30 +103,14 @@ bool SelectPointsBaseTool::has_transformation() const
 
 BoundingBox SelectPointsBaseTool::bounding_box() const
 {
-  return BoundingBox(::transform<Point, std::vector>(selected_points()));
+  return BoundingBox(::transform<Point, std::vector>(scene.point_selection.points()));
 }
 
-std::set<Point> SelectPointsBaseTool::selected_points() const
-{
-  std::set<Point> selected_points;
-  for (auto* path : paths()) {
-    for (auto* point : path->points_ref()) {
-      if (point->is_selected) {
-        selected_points.insert(path->global_transformation(false).apply(*point));
-      }
-    }
-  }
-  return selected_points;
-}
+bool SelectPointsBaseTool::modifies_points() const { return true; }
 
 Vec2f SelectPointsBaseTool::selection_center() const
 {
-  const auto selected_points = this->selected_points();
-  Vec2f sum(0.0, 0.0);
-  for (const Point& p : selected_points) {
-    sum += p.position;
-  }
-  return sum / static_cast<double>(selected_points.size());
+  return scene.point_selection.center();
 }
 
 std::string SelectPointsTool::type() const { return TYPE; }

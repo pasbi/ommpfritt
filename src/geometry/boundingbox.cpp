@@ -3,6 +3,7 @@
 #include "geometry/boundingbox.h"
 #include "common.h"
 #include <algorithm>
+#include "scene/scene.h"
 
 namespace
 {
@@ -81,6 +82,15 @@ BoundingBox &BoundingBox::operator |=(const Vec2f &point)
 {
   *this = *this | point;
   return *this;
+}
+
+BoundingBox BoundingBox::around_selected_objects(const Scene &scene)
+{
+  BoundingBox bb;
+  for (const auto* o : scene.item_selection<Object>()) {
+    bb |= o->recursive_bounding_box(o->global_transformation(false));
+  }
+  return bb;
 }
 
 BoundingBox operator|(const BoundingBox& a, const BoundingBox& b)

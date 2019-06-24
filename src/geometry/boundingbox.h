@@ -9,6 +9,7 @@ class QRectF;
 namespace omm
 {
 
+class Scene;
 class BoundingBox : public Rectangle
 {
 public:
@@ -22,6 +23,8 @@ public:
 
   BoundingBox& operator |=(const BoundingBox& other);
   BoundingBox& operator |=(const Vec2f& point);
+
+  static BoundingBox around_selected_objects(const Scene& scene);
 };
 
 std::ostream& operator<<(std::ostream& ostream, const BoundingBox& bb);

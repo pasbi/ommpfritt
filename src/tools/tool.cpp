@@ -101,4 +101,6 @@ std::string Tool::name() const
   return QCoreApplication::translate("any-context", type().c_str()).toStdString();
 }
 
+bool Tool::modifies_points() const { return false; }
+
 }  // namespace omm

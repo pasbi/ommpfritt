@@ -34,7 +34,7 @@ public:
     tool.handles.push_back(std::make_unique<MoveAxisHandle<ToolT, X>>(tool));
     tool.handles.push_back(std::make_unique<MoveAxisHandle<ToolT, Y>>(tool));
 
-    for (auto* path : tool.paths()) {
+    for (auto* path : type_cast<Path*>(tool.scene.template item_selection<Object>())) {
       tool.handles.reserve(tool.handles.size() + path->points().size());
       for (auto* point : path->points_ref()) {
         auto handle = std::make_unique<PointSelectHandle>(tool, *path, *point);
@@ -46,11 +46,10 @@ public:
 
   BoundingBox bounding_box() const;
   void transform_objects_absolute(ObjectTransformation t);
+  bool modifies_points() const override;
 
 protected:
-  std::set<Point> selected_points() const;
-  Vec2f selection_center() const;
-  std::set<Path*> paths() const;
+  Vec2f selection_center() const override;
   PointsTransformationCommand::Map m_initial_points;
 
 };

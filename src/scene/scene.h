@@ -19,6 +19,7 @@
 #include "scene/history/historymodel.h"
 #include "tools/toolbox.h"
 #include "scene/abstractstructureobserver.h"
+#include "scene/pointselection.h"
 
 namespace omm
 {
@@ -136,6 +137,9 @@ public:
   void update();
   void update_tool();
   bool contains(const AbstractPropertyOwner* apo) const;
+
+public:
+  PointSelection point_selection;
 
 Q_SIGNALS:
   void repaint();
