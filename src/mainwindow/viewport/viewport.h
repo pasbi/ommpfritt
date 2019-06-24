@@ -50,6 +50,12 @@ protected:
   void mouseReleaseEvent(QMouseEvent* event) override;
   void keyPressEvent(QKeyEvent* event) override;
 
+public Q_SLOTS:
+  void update();
+
+Q_SIGNALS:
+  void updated();
+
 private:
   Scene& m_scene;
   std::unique_ptr<QTimer> m_timer;

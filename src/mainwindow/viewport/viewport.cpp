@@ -144,4 +144,10 @@ void Viewport::keyPressEvent(QKeyEvent *event)
   }
 }
 
+void Viewport::update()
+{
+  ViewportBase::update();
+  Q_EMIT updated();
+}
+
 }  // namespace omm
