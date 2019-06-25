@@ -143,10 +143,6 @@
         <translation>Tags verschieben</translation>
     </message>
     <message>
-        <source>ObjectsTransformationCommand</source>
-        <translation>Objekte transformieren</translation>
-    </message>
-    <message>
         <source>PointsTransformationCommand</source>
         <translation>Punkte transformieren</translation>
     </message>
@@ -962,7 +958,11 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
     <message>
         <source>Symmetric</source>
-        <translation type="unfinished"></translation>
+        <translation>Symmetrisch</translation>
+    </message>
+    <message>
+        <source>ObjectsTransformation</source>
+        <translation>Objekttransformation</translation>
     </message>
 </context>
 <context>
@@ -1233,6 +1233,10 @@ Soll die Selektion troztdem entfernt werden?</translation>
         <source>RectangleObject</source>
         <translation>Rechteck</translation>
     </message>
+    <message>
+        <source>BoundingBoxManager</source>
+        <translation>Bounding Box Manager</translation>
+    </message>
 </context>
 <context>
     <name>menu_name</name>
@@ -1325,6 +1329,37 @@ Soll die Selektion troztdem entfernt werden?</translation>
     <message>
         <source>Create %1</source>
         <translation>Erzeuge %1</translation>
+    </message>
+</context>
+<context>
+    <name>omm::BoundingBoxManager</name>
+    <message>
+        <source>Bounding Box Manager</source>
+        <translation>Bounding Box Manager</translation>
+    </message>
+    <message>
+        <source>Pos:</source>
+        <translation>Pos:</translation>
+    </message>
+    <message>
+        <source>Size:</source>
+        <translation>Größe:</translation>
+    </message>
+    <message>
+        <source>Points</source>
+        <translation>Punkte</translation>
+    </message>
+    <message>
+        <source>Objects</source>
+        <translation>Objekte</translation>
+    </message>
+    <message>
+        <source>World</source>
+        <translation>Welt</translation>
+    </message>
+    <message>
+        <source>Local</source>
+        <translation>Lokal</translation>
     </message>
 </context>
 <context>
