@@ -26,11 +26,9 @@ public:
   std::unique_ptr<Object> convert() const override;
   Flag flags() const override;
   void post_create_hook() override;
-  void update() override;
 
 private:
   Object* referenced_object() const;
-  std::unique_ptr<Object> m_instance = nullptr;
 };
 
 }  // namespace omm

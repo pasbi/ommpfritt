@@ -1,5 +1,7 @@
 #include "objects/instance.h"
 
+#include "objects/empty.h"
+
 #include <QObject>
 #include "scene/scene.h"
 #include "properties/referenceproperty.h"
@@ -24,39 +26,29 @@ Instance::Instance(Scene* scene)
       .set_label(QObject::tr("combine styles", "Instance").toStdString()).set_category(category);
 }
 
-Instance::Instance(const Instance &other) : Object(other), m_instance(nullptr) { }
+Instance::Instance(const Instance &other) : Object(other) {}
 
 void Instance::draw_object(Painter &renderer, const Style& default_style) const
 {
-  if (is_active() && m_instance) {
-    m_instance->set_transformation(ObjectTransformation());  // same transformation as `this`
-    RenderOptions options;
-    options.default_style = &default_style;
-    options.always_visible = true;
-    options.styles = find_styles();
-    if (options.styles.empty() || property(COMBINE_STYLES_PROPERTY_KEY)->value<bool>()) {
-      const auto ostyles = m_instance->find_styles();
-      options.styles.reserve(options.styles.size() + ostyles.size());
-      options.styles.insert(options.styles.begin(), ostyles.begin(), ostyles.end());
+  if (is_active()) {
+    const auto* reference = referenced_object();
+    if (reference != nullptr) {
+      renderer.push_transformation(reference->global_transformation(true).inverted());
+      reference->draw_recursive(renderer, default_style);
+      renderer.pop_transformation();
     }
-    auto descendants = m_instance->all_descendants();
-    descendants.insert(m_instance.get());
-    for (auto* d : descendants) {
-      for (auto *t : d->tags.items()) {
-        if (t->type() == ScriptTag::TYPE) {
-          static_cast<ScriptTag*>(t)->evaluate();
-        }
-      }
-    }
-    m_instance->update_recursive();
-    m_instance->draw_recursive(renderer, options);
   }
 }
 
 BoundingBox Instance::bounding_box(const ObjectTransformation &transformation) const
 {
-  if (m_instance) {
-    return m_instance->recursive_bounding_box(transformation);
+  if (is_active()) {
+    const auto* reference = referenced_object();
+    if (reference != nullptr) {
+      return reference->recursive_bounding_box(transformation);
+    } else {
+      return BoundingBox();
+    }
   } else {
     return BoundingBox();
   }
@@ -78,26 +70,21 @@ Object* Instance::referenced_object() const
   }
 }
 
-void Instance::update()
-{
-  m_instance.reset();
-  if (auto* referenced_object = this->referenced_object(); referenced_object != nullptr) {
-    m_instance = referenced_object->clone();
-    copy_properties(*m_instance);
-  }
-}
-
-
 std::unique_ptr<Object> Instance::convert() const
 {
-  if (m_instance) {
-    std::unique_ptr<Object> clone = m_instance->clone();
-    copy_properties(*clone);
-    copy_tags(*clone);
-    return clone;
-  } else {
-    return nullptr;
+  std::unique_ptr<Object> clone;
+  if (is_active()) {
+    const auto* reference = referenced_object();
+    if (reference != nullptr) {
+      clone = reference->clone();
+      copy_properties(*clone);
+      copy_tags(*clone);
+    }
   }
+  if (!clone) {
+    clone = std::make_unique<Empty>(scene());
+  }
+  return clone;
 }
 
 std::string Instance::type() const { return TYPE; }
