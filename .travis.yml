@@ -23,13 +23,13 @@ before_install:
 install:
   - pushd Python-3.7.0
   - ./configure
-  - sudo make altinstall
+  - sudo make altinstall -j2 > python3.7-build-log
   - popd
   - sudo python3.7 -m pip install pytest
   - mkdir -p $pybind11_DIR/build
   - pushd $pybind11_DIR/build
   - $cmake_3_14 ..
-  - sudo make install
+  - sudo make install -j2
   - popd
   - sudo apt-get -y remove qt5-qmake qtbase5-dev qtbase5-dev-tools
   - sudo apt-get -y install qt512tools qt512translations qt512svg qt512base qt512imageformats
@@ -42,7 +42,7 @@ script:
   - mkdir build
   - cd build
   - $cmake_3_14 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=g++-8 -DQT_QM_PATH=/opt/qt512/translations/ ..
-  - make -j
+  - make -j2
 
 after_success:
   - touch success
