@@ -91,8 +91,6 @@ void AbstractPointsCommand::remove()
   scene().update_tool();
 }
 
-bool AbstractPointsCommand::requires_tool_update() const { return true; }
-
 void AbstractPointsCommand::add()
 {
   assert(m_removed_points.size() == 0);

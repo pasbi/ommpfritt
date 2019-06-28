@@ -35,7 +35,6 @@ protected:
   void add();
   void remove();
 
-  bool requires_tool_update() const override;
   Scene& scene() const;
 
 private:
