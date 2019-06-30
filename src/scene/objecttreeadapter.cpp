@@ -160,6 +160,7 @@ int ObjectTreeAdapter::columnCount(const QModelIndex& parent) const
 
 bool ObjectTreeAdapter::setData(const QModelIndex& index, const QVariant& value, int role)
 {
+  Q_UNUSED(role)
   switch (index.column()) {
   case 0:
   {

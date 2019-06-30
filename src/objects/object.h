@@ -109,7 +109,7 @@ public:
   void set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t,
                             const bool skip_root);
   void set_oriented_position(const Point &op, const bool align);
-  virtual PathUniquePtr outline(const double t) const;
+  virtual PathUniquePtr outline(const double offset) const;
   virtual std::vector<Point> points() const;
 
   virtual bool contains(const Vec2f& pos) const;

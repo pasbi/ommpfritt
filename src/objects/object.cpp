@@ -470,8 +470,13 @@ void Object::update_recursive()
 void Object::update() { }
 void Object::draw_object(Painter&, const Style&) const {}
 void Object::draw_handles(Painter&) const {}
-Object::PathUniquePtr Object::outline(const double t) const { return nullptr; }
 std::vector<Point> Object::points() const { return {}; }
 void PathDeleter::operator()(Path *path) { delete path; }
+
+Object::PathUniquePtr Object::outline(const double offset) const
+{
+  Q_UNUSED(offset)
+  return nullptr;
+}
 
 }  // namespace omm
