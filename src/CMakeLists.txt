@@ -1,14 +1,26 @@
-file (GLOB SOURCES
+
+file(GLOB SOURCES
   common.cpp
   logging.cpp
   main.cpp
 )
 
-target_sources(libommpfritt PRIVATE ${SOURCES})
+file(GLOB HEADERS
+  abstractfactory.h
+  abstractraiiguard.h
+  cache.h
+  common.h
+  logging.h
+  maybeowner.h
+  menuhelper.h
+  observed.h
+  orderedmap.h
+)
 
 add_subdirectory(aspects)
 add_subdirectory(color)
 add_subdirectory(commands)
+add_subdirectory(external)
 add_subdirectory(geometry)
 add_subdirectory(keybindings)
 add_subdirectory(mainwindow)
@@ -23,3 +35,6 @@ add_subdirectory(serializers)
 add_subdirectory(tags)
 add_subdirectory(tools)
 add_subdirectory(widgets)
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
+

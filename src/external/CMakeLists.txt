@@ -1,10 +1,8 @@
 
 file(GLOB SOURCES
-  pythonconsole.cpp
 )
 
 file(GLOB HEADERS
-  pythonconsole.h
 )
 
 

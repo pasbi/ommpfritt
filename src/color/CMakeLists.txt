@@ -1,4 +1,12 @@
-file (GLOB SOURCES
-  "color.cpp"
+
+file(GLOB SOURCES
+  color.cpp
 )
-target_sources(libommpfritt PRIVATE ${SOURCES})
+
+file(GLOB HEADERS
+  color.h
+)
+
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
+

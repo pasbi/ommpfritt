@@ -1,7 +1,15 @@
-file (GLOB SOURCES
-  "abstractserializer.cpp"
-  "jsonserializer.cpp"
-  "serializerregister.cpp"
+
+file(GLOB SOURCES
+  abstractserializer.cpp
+  jsonserializer.cpp
+  serializerregister.cpp
 )
-target_sources(libommpfritt PRIVATE ${SOURCES})
+
+file(GLOB HEADERS
+  abstractserializer.h
+  jsonserializer.h
+)
+
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

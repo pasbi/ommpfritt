@@ -1,6 +1,14 @@
-file (GLOB SOURCES
-  "handle.cpp"
-  "mousepancontroller.cpp"
-  "viewport.cpp"
+
+file(GLOB SOURCES
+  mousepancontroller.cpp
+  viewport.cpp
 )
-target_sources(libommpfritt PRIVATE ${SOURCES})
+
+file(GLOB HEADERS
+  mousepancontroller.h
+  viewport.h
+)
+
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
+

@@ -1,16 +1,34 @@
-file (GLOB SOURCES
-  "objectwrapper.cpp"
-  "pathwrapper.cpp"
-  "pointwrapper.cpp"
-  "propertyownerwrapper.cpp"
-  "pythonengine.cpp"
-  "pythonstreamredirect.cpp"
-  "pywrapper.cpp"
-  "scenewrapper.cpp"
-  "stylewrapper.cpp"
-  "tagwrapper.cpp"
-  "scripttagwrapper.cpp"
-  "wrapperregister.cpp"
+
+file(GLOB SOURCES
+  objectwrapper.cpp
+  pathwrapper.cpp
+  pointwrapper.cpp
+  propertyownerwrapper.cpp
+  pythonengine.cpp
+  pythonstreamredirect.cpp
+  pywrapper.cpp
+  scenewrapper.cpp
+  scripttagwrapper.cpp
+  stylewrapper.cpp
+  tagwrapper.cpp
+  wrapperregister.cpp
 )
-target_sources(libommpfritt PRIVATE ${SOURCES})
+
+file(GLOB HEADERS
+  objectwrapper.h
+  pathwrapper.h
+  pointwrapper.h
+  propertyownerwrapper.h
+  pythonengine.h
+  pythonstreamredirect.h
+  pywrapper.h
+  scenewrapper.h
+  scripttagwrapper.h
+  stylewrapper.h
+  tagwrapper.h
+  wrapperfactory.h
+)
+
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

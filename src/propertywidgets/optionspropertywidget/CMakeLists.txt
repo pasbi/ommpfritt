@@ -1,7 +1,16 @@
-file (GLOB SOURCES
-  "optionspropertywidget.cpp"
-  "optionspropertyconfigwidget.cpp"
-  "optionsedit.cpp"
+
+file(GLOB SOURCES
+  optionsedit.cpp
+  optionspropertyconfigwidget.cpp
+  optionspropertywidget.cpp
 )
 
-target_sources(libommpfritt PRIVATE ${SOURCES})
+file(GLOB HEADERS
+  optionsedit.h
+  optionspropertyconfigwidget.h
+  optionspropertywidget.h
+)
+
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
+

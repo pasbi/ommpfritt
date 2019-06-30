@@ -1,9 +1,16 @@
-file (GLOB SOURCES
-  "listelement.cpp"
-  "propertyowner.cpp"
-  "serializable.cpp"
-  "selectable.cpp"
-  "treeelement.cpp"
+
+file(GLOB SOURCES
+  propertyowner.cpp
+  serializable.cpp
+  treeelement.cpp
 )
-target_sources(libommpfritt PRIVATE ${SOURCES})
+
+file(GLOB HEADERS
+  propertyowner.h
+  serializable.h
+  treeelement.h
+)
+
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

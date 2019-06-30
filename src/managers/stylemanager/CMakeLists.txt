@@ -1,7 +1,14 @@
-file (GLOB SOURCES
-  "stylelistadapter.cpp"
-  "stylemanager.cpp"
-  "stylelistview.cpp"
+
+file(GLOB SOURCES
+  stylelistview.cpp
+  stylemanager.cpp
 )
 
-target_sources(libommpfritt PRIVATE ${SOURCES})
+file(GLOB HEADERS
+  stylelistview.h
+  stylemanager.h
+)
+
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
+

@@ -1,8 +1,18 @@
-file (GLOB SOURCES
-  "painter.cpp"
-  "imagecache.cpp"
-  "style.cpp"
-  "styleiconengine.cpp"
-  "viewportrenderer.cpp"
+
+file(GLOB SOURCES
+  imagecache.cpp
+  painter.cpp
+  style.cpp
+  styleiconengine.cpp
 )
-target_sources(libommpfritt PRIVATE ${SOURCES})
+
+file(GLOB HEADERS
+  imagecache.h
+  painter.h
+  style.h
+  styleiconengine.h
+)
+
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
+

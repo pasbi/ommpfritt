@@ -1,8 +1,15 @@
-file (GLOB SOURCES
-  "propertymanager.cpp"
-  "propertymanagertab.cpp"
+
+file(GLOB SOURCES
+  propertymanager.cpp
+  propertymanagertab.cpp
 )
 
-target_sources(libommpfritt PRIVATE ${SOURCES})
-add_subdirectory("userpropertymanager")
+file(GLOB HEADERS
+  propertymanager.h
+  propertymanagertab.h
+)
+
+add_subdirectory(userpropertymanager)
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

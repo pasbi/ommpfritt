@@ -72,3 +72,4 @@ add_subdirectory(src)
 add_subdirectory(test)
 
 target_link_libraries(ommpfritt libommpfritt)
+

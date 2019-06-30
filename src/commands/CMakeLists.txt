@@ -1,14 +1,31 @@
-file (GLOB SOURCES
-  "command.cpp"
-  "copycommand.cpp"
-  "movecommand.cpp"
-  "movetagscommand.cpp"
-  "modifypointscommand.cpp"
-  "newstylecommand.cpp"
-  "objectstransformationcommand.cpp"
-  "pointstransformationcommand.cpp"
-  "propertycommand.cpp"
-  "removecommand.cpp"
-  "userpropertyconfigcommand.cpp"
+
+file(GLOB SOURCES
+  command.cpp
+  copycommand.cpp
+  modifypointscommand.cpp
+  movecommand.cpp
+  movetagscommand.cpp
+  objectstransformationcommand.cpp
+  pointstransformationcommand.cpp
+  propertycommand.cpp
+  removecommand.cpp
+  userpropertyconfigcommand.cpp
 )
-target_sources(libommpfritt PRIVATE ${SOURCES})
+
+file(GLOB HEADERS
+  addcommand.h
+  command.h
+  copycommand.h
+  modifypointscommand.h
+  movecommand.h
+  movetagscommand.h
+  objectstransformationcommand.h
+  pointstransformationcommand.h
+  propertycommand.h
+  removecommand.h
+  userpropertyconfigcommand.h
+)
+
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
+

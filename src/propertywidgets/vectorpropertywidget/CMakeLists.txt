@@ -1,5 +1,13 @@
-file (GLOB SOURCES
-  "vectorpropertyconfigwidget.cpp"
+
+file(GLOB SOURCES
+  vectorpropertyconfigwidget.cpp
 )
 
-target_sources(libommpfritt PRIVATE ${SOURCES})
+file(GLOB HEADERS
+  vectorpropertyconfigwidget.h
+  vectorpropertywidget.h
+)
+
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
+

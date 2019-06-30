@@ -1,7 +1,14 @@
-file (GLOB SOURCES
-  "boundingboxmanager.cpp"
-  "anchorwidget.cpp"
+
+file(GLOB SOURCES
+  anchorwidget.cpp
+  boundingboxmanager.cpp
 )
 
-target_sources(libommpfritt PRIVATE ${SOURCES})
+file(GLOB HEADERS
+  anchorwidget.h
+  boundingboxmanager.h
+)
+
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

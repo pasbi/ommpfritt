@@ -1,6 +1,14 @@
-file (GLOB SOURCES
-  "propertyitem.cpp"
-  "userpropertydialog.cpp"
+
+file(GLOB SOURCES
+  propertyitem.cpp
+  userpropertydialog.cpp
 )
 
-target_sources(libommpfritt PRIVATE ${SOURCES})
+file(GLOB HEADERS
+  propertyitem.h
+  userpropertydialog.h
+)
+
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
+

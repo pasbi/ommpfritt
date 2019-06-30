@@ -1,7 +1,16 @@
-file (GLOB SOURCES
-  "stringpropertywidget.cpp"
-  "stringpropertyconfigwidget.cpp"
-  "texteditadapter.cpp"
+
+file(GLOB SOURCES
+  stringpropertyconfigwidget.cpp
+  stringpropertywidget.cpp
+  texteditadapter.cpp
 )
 
-target_sources(libommpfritt PRIVATE ${SOURCES})
+file(GLOB HEADERS
+  stringpropertyconfigwidget.h
+  stringpropertywidget.h
+  texteditadapter.h
+)
+
+
+target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
+
