@@ -100,7 +100,7 @@ std::string BrushSelectTool::type() const { return TYPE; }
 
 void BrushSelectTool::draw(Painter &renderer) const
 {
-  Tool::draw(renderer);
+  SelectPointsBaseTool::draw(renderer);
   if (m_mouse_down) {
     const double r = property(RADIUS_PROPERTY_KEY)->value<double>();
     renderer.set_style(m_style);
