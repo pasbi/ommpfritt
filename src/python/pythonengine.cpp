@@ -7,12 +7,52 @@
 #include "tags/scripttag.h"
 #include "python/tagwrapper.h"
 #include "python/scenewrapper.h"
-#include "python/pythonstreamredirect.h"
 
 namespace py = pybind11;
 
 namespace
 {
+
+class PythonStreamRedirect
+{
+public:
+  PythonStreamRedirect()
+  {
+    auto sysm = py::module::import("sys");
+    m_stdout = sysm.attr("stdout");
+    m_stderr = sysm.attr("stderr");
+    auto stringio = py::module::import("io").attr("StringIO");
+    m_stdout_buffer = stringio();
+    m_stderr_buffer = stringio();
+    sysm.attr("stdout") = m_stdout_buffer;
+    sysm.attr("stderr") = m_stderr_buffer;
+  }
+
+  ~PythonStreamRedirect()
+  {
+    auto sysm = py::module::import("sys");
+    sysm.attr("stdout") = m_stdout;
+    sysm.attr("stderr") = m_stderr;
+  }
+
+  std::string stdout_()
+  {
+    m_stdout_buffer.attr("seek")(0);
+    return py::str(m_stdout_buffer.attr("read")());
+  }
+
+  std::string stderr_()
+  {
+    m_stderr_buffer.attr("seek")(0);
+    return py::str(m_stderr_buffer.attr("read")());
+  }
+
+private:
+  pybind11::object m_stdout;
+  pybind11::object m_stderr;
+  pybind11::object m_stdout_buffer;
+  pybind11::object m_stderr_buffer;
+};
 
 void notify(const std::string& text, const std::function<void(const std::string&)>& f)
 {

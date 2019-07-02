@@ -5,10 +5,10 @@ file(GLOB SOURCES
   pointwrapper.cpp
   propertyownerwrapper.cpp
   pythonengine.cpp
-  pythonstreamredirect.cpp
   pywrapper.cpp
   scenewrapper.cpp
   scripttagwrapper.cpp
+  scopedinterpreterwrapper.cpp
   stylewrapper.cpp
   tagwrapper.cpp
   wrapperregister.cpp
@@ -20,9 +20,9 @@ file(GLOB HEADERS
   pointwrapper.h
   propertyownerwrapper.h
   pythonengine.h
-  pythonstreamredirect.h
   pywrapper.h
   scenewrapper.h
+  scopedinterpreterwrapper.h
   scripttagwrapper.h
   stylewrapper.h
   tagwrapper.h
