@@ -31,11 +31,6 @@ ManagerItemView<ItemViewT, ItemModelT>::ManagerItemView(ItemModelT& model)
 }
 
 template<typename ItemViewT, typename ItemModelT>
-ManagerItemView<ItemViewT, ItemModelT>::~ManagerItemView()
-{
-}
-
-template<typename ItemViewT, typename ItemModelT>
 ItemModelT* ManagerItemView<ItemViewT, ItemModelT>::model() const
 {
   return static_cast<ItemModelT*>(ItemViewT::model());
@@ -52,7 +47,15 @@ template<typename ItemViewT, typename ItemModelT>
 void ManagerItemView<ItemViewT, ItemModelT>::mousePressEvent(QMouseEvent *e)
 {
   ItemViewT::mousePressEvent(e);
-  this->model()->scene.set_selection(this->selected_items());
+  if (e->button() == Qt::RightButton) {
+    // if the right button was pressed, then a context menu might be created soon.
+    // it is important to update the selection before the context menu is shown to avoid unexpected
+    // happenings.
+    this->model()->scene.set_selection(this->selected_items());
+  }
+  // if the left button is pressed, it is important to not update the selection yet because the user
+  // might want to start a drag operation into another object's reference-property field.
+  // Since a left button press does not spawn a context menu, that's fine.
 }
 
 template<typename ItemViewT, typename ItemModelT>

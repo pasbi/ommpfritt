@@ -50,6 +50,15 @@ public:
   bool integer_transformation() const;
   std::string name() const override;
 
+  /**
+   * @brief modifies_points returns whether the tool modfies points. Shall return false if does not
+   *  modify points.
+   *  e.g., SelectObjectsTool::modifies_points() shall return false as it works on objects
+   *  e.g., KnifeTool::modifes_points() shall return true as it modifies points.
+   * @return The default implementation returns false.
+   */
+  virtual bool modifies_points() const;
+
 protected:
   std::vector<std::unique_ptr<Handle>> handles;
   double epsilon = 10.0;

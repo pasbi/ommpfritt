@@ -64,7 +64,8 @@ void ImageObject::draw_object(Painter &renderer, const Style&) const
     QPainter& painter = *renderer.painter;
     painter.save();
     painter.setOpacity(opacity);
-    const QPicture& picture = renderer.image_cache.load(QString::fromStdString(path), page_num);
+    const auto key = std::pair(QString::fromStdString(path), page_num);
+    const QPicture& picture = renderer.image_cache.get(key);
     const auto s = width / picture.width();
     const auto aabb = picture.boundingRect();
     painter.scale(s, s);
@@ -93,7 +94,7 @@ QPointF ImageObject::pos(const QSizeF &size) const
                   dim(size.height(), property(VANCHOR_PROPERTY_KEY)->value<std::size_t>()) );
 }
 
-BoundingBox ImageObject::bounding_box() const
+BoundingBox ImageObject::bounding_box(const ObjectTransformation &transformation) const
 {
   // implementing this is relly a problem.
   // The height of the image is not known at this point.

@@ -31,6 +31,11 @@ void Point::swap(Point& other)
   other.right_tangent.swap(right_tangent);
 }
 
+bool Point::has_nan() const
+{
+  return position.has_nan() || left_tangent.has_nan() || right_tangent.has_nan();
+}
+
 Point Point::smoothed(Vec2f& left, const Vec2f& right) const
 {
   auto copy = *this;
@@ -216,6 +221,26 @@ std::vector<Point> Point::offset(const double t,
   } else {
     return {};
   }
+}
+
+bool Point::operator<(const Point& point) const
+{
+  if (position == point.position) {
+    if (left_tangent == point.left_tangent) {
+      return right_tangent < point.right_tangent;
+    } else {
+      return left_tangent < point.left_tangent;
+    }
+  } else {
+    return position < point.position;
+  }
+}
+
+bool fuzzy_eq(const Point &a, const Point &b)
+{
+  return fuzzy_eq(a.position, b.position)
+      && fuzzy_eq(a.left_position(), b.left_position())
+      && fuzzy_eq(a.right_position(), b.right_position());
 }
 
 }  // namespace omm

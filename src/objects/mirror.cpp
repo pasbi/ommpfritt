@@ -41,13 +41,18 @@ void Mirror::draw_object(Painter &renderer, const Style& style) const
   }
 }
 
-BoundingBox Mirror::bounding_box() const
+BoundingBox Mirror::bounding_box(const ObjectTransformation &transformation) const
 {
-  const auto n_children = this->n_children();
-  if (is_active() && n_children > 0) {
-    auto object = this->tree_children().front();
-    auto bb = object->transformation().apply(object->bounding_box());
-    return bb | get_mirror_t().apply(bb);
+  if (is_active() && m_reflection) {
+    const ObjectTransformation t = transformation.apply(m_reflection->transformation());
+    switch (property(AS_PATH_PROPERTY_KEY)->value<Mode>()) {
+    case Mode::Path:
+      return m_reflection->recursive_bounding_box(t);
+    case Mode::Object:
+      return m_reflection->recursive_bounding_box(t);
+    default:
+      Q_UNREACHABLE();
+    }
   } else {
     return BoundingBox();
   }
@@ -112,6 +117,7 @@ void Mirror::update()
       if (n_children > 0) {
         m_reflection = this->tree_children().front()->clone();
         m_reflection->set_transformation(mirror_t.apply(m_reflection->transformation()));
+        m_reflection->update();
       }
     }
   } else {

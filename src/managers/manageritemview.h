@@ -22,7 +22,7 @@ class ManagerItemView : public ItemViewT
 public:
   using item_type = typename ItemModelT::item_type;
   explicit ManagerItemView(ItemModelT& model);
-  virtual ~ManagerItemView();
+  virtual ~ManagerItemView() = default;
   ItemModelT* model() const;
   virtual std::set<AbstractPropertyOwner*> selected_items() const;
 

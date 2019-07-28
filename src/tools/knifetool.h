@@ -1,11 +1,11 @@
 #pragma once
 
-#include "tools/selecttool.h"
+#include "tools/selectpointstool.h"
 
 namespace omm
 {
 
-class KnifeTool : public SelectPointsTool
+class KnifeTool : public SelectPointsBaseTool
 {
 public:
   explicit KnifeTool(Scene& scene);

@@ -22,8 +22,8 @@ PropertyManagerTab::~PropertyManagerTab()
 {
 }
 
-void PropertyManagerTab::add_properties( Scene& scene, const std::string& key,
-                                         const std::set<Property*>& properties )
+void PropertyManagerTab::add_properties(Scene& scene, const std::string& key,
+                                        const std::set<Property*>& properties)
 {
   assert(properties.size() > 0);
 

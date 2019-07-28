@@ -15,12 +15,14 @@ class Path : public Object
 public:
   explicit Path(Scene* scene);
   void draw_object(Painter& renderer, const Style& style) const override;
-  BoundingBox bounding_box() const override;
+  BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Path");
   std::unique_ptr<Object> clone() const override;
   std::vector<Point> points() const override;
   std::vector<Point*> points_ref();
+  Point& point(std::size_t i);
+  const Point& point(std::size_t i) const;
   Cubics cubics() const;
   void set_points(const std::vector<Point>& points);
   static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";

@@ -17,12 +17,12 @@ namespace omm
 
 const Style KnifeTool::m_line_style = ContourStyle(Color(0.0, 0.0, 0.0, 1.0), 1);
 
-KnifeTool::KnifeTool(Scene& scene) : SelectPointsTool(scene) { }
+KnifeTool::KnifeTool(Scene& scene) : SelectPointsBaseTool(scene) { }
 
 bool KnifeTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEvent &e)
 {
   m_mouse_move_pos = pos;
-  if (SelectPointsTool::mouse_move(delta, pos, e)) {
+  if (SelectPointsBaseTool::mouse_move(delta, pos, e)) {
     return true;
   } else if (m_is_cutting) {
     m_points.clear();
@@ -41,7 +41,7 @@ bool KnifeTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEve
 bool KnifeTool::mouse_press(const Vec2f &pos, const QMouseEvent &event, bool force)
 {
   m_mouse_press_pos = pos;
-  if (SelectPointsTool::mouse_press(pos, event, force)) {
+  if (SelectPointsBaseTool::mouse_press(pos, event, force)) {
     return true;
   } else {
     m_points.clear();
@@ -62,13 +62,13 @@ void KnifeTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
     scene.submit<AddPointsCommand>(sequencess);
     on_selection_changed();
   }
-  SelectPointsTool::mouse_release(pos, event);
+  SelectPointsBaseTool::mouse_release(pos, event);
   m_is_cutting = false;
 }
 
 void KnifeTool::draw(Painter &renderer) const
 {
-  SelectPointsTool::draw(renderer);
+  SelectPointsBaseTool::draw(renderer);
   if (m_is_cutting) {
     const auto line = std::vector { Point(m_mouse_press_pos), Point(m_mouse_move_pos) };
 

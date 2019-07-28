@@ -33,7 +33,23 @@ View::View(const View &other) : Object(other)
 }
 
 std::string View::type() const { return TYPE; }
-BoundingBox View::bounding_box() const { return BoundingBox(); }
+BoundingBox View::bounding_box(const ObjectTransformation &transformation) const
+{
+  if (is_active()) {
+    const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>();
+    const double l = -size.x/2.0;
+    const double t = -size.y/2.0;
+    const double r = size.x/2.0;
+    const double b = size.y/2.0;
+    const std::vector<Point> points { Point(Vec2f(l, t)), Point(Vec2f(l, b)),
+                                      Point(Vec2f(r, b)), Point(Vec2f(r, t)) };
+    const QPainterPath painter_path = Painter::path(points, is_closed());
+    return BoundingBox((painter_path * transformation.to_qtransform()).boundingRect());
+  } else {
+    return BoundingBox();
+  }
+}
+
 View::Flag View::flags() const { return Flag::IsView; }
 std::unique_ptr<Object> View::clone() const { return std::make_unique<View>(*this); }
 

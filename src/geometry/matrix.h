@@ -2,6 +2,8 @@
 
 #include "geometry/vec2.h"
 
+#include <QMatrix>
+
 namespace omm
 {
 
@@ -20,6 +22,8 @@ public:
 
   static Matrix zeros();
   bool has_nan() const;
+
+  QMatrix to_qmatrix() const;
 
 private:
   Vec2f apply(const std::vector<double>& vec) const;

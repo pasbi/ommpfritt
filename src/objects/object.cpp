@@ -270,7 +270,7 @@ void Object::draw_recursive(Painter& renderer, const RenderOptions& options) con
 
   if (!!(renderer.category_filter & Painter::Category::BoundingBox)) {
     renderer.set_style(m_bounding_box_style);
-    renderer.painter->drawRect(bounding_box());
+    renderer.painter->drawRect(bounding_box(ObjectTransformation()));
   }
 
   if (!!(renderer.category_filter & Painter::Category::Handles)) {
@@ -285,14 +285,13 @@ void Object::draw_recursive(Painter& renderer, const RenderOptions& options) con
   renderer.pop_transformation();
 }
 
-BoundingBox Object::recursive_bounding_box() const
+BoundingBox Object::recursive_bounding_box(const ObjectTransformation& transformation) const
 {
-  auto bounding_box = this->bounding_box();
-
+  auto bounding_box = this->bounding_box(transformation);
   for (const auto& child : tree_children()) {
-    bounding_box |= child->recursive_bounding_box();
+    bounding_box |= child->recursive_bounding_box(transformation.apply(child->transformation()));
   }
-  return transformation().apply(bounding_box);
+  return bounding_box;
 }
 
 std::unique_ptr<AbstractRAIIGuard> Object::acquire_set_parent_guard()

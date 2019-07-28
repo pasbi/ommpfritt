@@ -1,5 +1,7 @@
 # ommpfritt
 
+![travis build status](https://travis-ci.org/pasbi/ommpfritt.svg?branch=master)
+
 *ommpfritt* or short *omm* is a free and open source vector modelling application.
 It brings the workflow of (3D) modelling tools to the 2D vector graphics world.
 The design of the application encourages and supports the user to produce maintainable documents,
@@ -56,7 +58,7 @@ Primary use case is creating and editing (animated) info graphics, diagrams, ico
   - adjust to viewport or vice versa
   - switch between any number of self-defined views
   - supports translation, scaling, rotation and shear
-   
+
 ### Tags
 - **path tag**: constrain position of any object to any path
 - **style tag**: add a style to the object
@@ -78,11 +80,5 @@ Currently we're looking for
 
 ## Building
 
-_omm_ uses _cmake_.
-Install the depencendies and building should work out of the box.
-We only test on arch-linux using gcc and clang, but we don't see a reason why it shouldn't build on other linuxes/win/mac, too.
+see [build.md](build.md)
 
-Dependencies:
-- [Qt > 5.10](https://github.com/qt)
-- [pybind11](https://github.com/pybind/pybind11)
-- [python3](https://github.com/python)

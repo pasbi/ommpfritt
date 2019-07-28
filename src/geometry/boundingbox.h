@@ -9,10 +9,12 @@ class QRectF;
 namespace omm
 {
 
+class Scene;
 class BoundingBox : public Rectangle
 {
 public:
-  explicit BoundingBox(const std::vector<Vec2f>& points = { Vec2f::o() });
+  using Rectangle::Rectangle;
+  explicit BoundingBox(const std::vector<Vec2f>& points);
   explicit BoundingBox(const std::vector<double>& xs, const std::vector<double>& ys);
   explicit BoundingBox(const std::vector<Point>& points);
 
@@ -20,12 +22,13 @@ public:
   using Rectangle::contains;
 
   BoundingBox& operator |=(const BoundingBox& other);
-  BoundingBox& operator &=(const BoundingBox& other);
+  BoundingBox& operator |=(const Vec2f& point);
 
+  static BoundingBox around_selected_objects(const Scene& scene);
 };
 
 std::ostream& operator<<(std::ostream& ostream, const BoundingBox& bb);
 BoundingBox operator|(const BoundingBox& a, const BoundingBox& b);
-BoundingBox operator&(const BoundingBox& a, const BoundingBox& b);
+BoundingBox operator|(const BoundingBox& a, const Vec2f& b);
 
 }  // namespace omm

@@ -2,13 +2,13 @@
 
 #include "tools/selecttool.h"
 #include "objects/path.h"
-#include "tools/positionvariant.h"
+#include "tools/selectpointstool.h"
 #include <memory>
 
 namespace omm
 {
 
-class PathTool : public SelectPointsTool
+class PathTool : public SelectPointsBaseTool
 {
 public:
   explicit PathTool(Scene& scene);

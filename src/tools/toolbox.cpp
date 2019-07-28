@@ -1,6 +1,8 @@
 #include "tools/toolbox.h"
 #include "scene/scene.h"
 #include "tools/selecttool.h"
+#include "tools/selectpointstool.h"
+#include "tools/selectobjectstool.h"
 
 namespace
 {
@@ -54,6 +56,9 @@ Tool& ToolBox::tool(const std::string& key) const
 
 void ToolBox::set_active_tool(const std::string &key)
 {
+  if (m_active_tool->type() == key) {
+    return;
+  }
   m_history.push_front(key);
   ::unique(m_history);
   if (m_active_tool) {
@@ -62,6 +67,7 @@ void ToolBox::set_active_tool(const std::string &key)
   m_active_tool = m_tools.at(key).get();
   m_scene.set_selection(std::set<AbstractPropertyOwner*> { m_active_tool });
   m_active_tool->on_scene_changed();
+  Q_EMIT active_tool_changed(*m_active_tool);
 }
 
 void ToolBox::set_previous_tool()

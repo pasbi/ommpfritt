@@ -5,6 +5,7 @@
 #include "geometry/point.h"
 #include "geometry/boundingbox.h"
 #include "geometry/matrix.h"
+#include <QTransform>
 #include <Qt>
 
 namespace omm
@@ -55,9 +56,11 @@ public:
   Point apply(const Point& point) const;
   ObjectTransformation normalized() const;
   bool contains_nan() const;
+  bool is_identity() const;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("ObjectTransformation", "ObjectTransformation");
 
+  QTransform to_qtransform() const;
 private:
   Vec2f m_translation;
   Vec2f m_scaling;

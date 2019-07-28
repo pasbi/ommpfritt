@@ -56,7 +56,8 @@ public:
   }
 
   std::vector<ValueT> to_stdvec() const { return { x, y }; }
-  double euclidean_norm() const { return std::sqrt(x*x + y*y); }
+  double euclidean_norm2() const { return x*x + y*y; }
+  double euclidean_norm() const { return std::sqrt(euclidean_norm2()); }
   ValueT max_norm() const { return std::max(std::abs(x), std::abs(y)); }
   ValueT max() const { return std::max(x, y); }
   ValueT min() const { return std::min(x, y); }
@@ -98,9 +99,24 @@ public:
     return *this;
   }
 
+  Vec2<element_type>& operator*=(const Vec2<element_type>& rhs)
+  {
+    x *= rhs.x;
+    y *= rhs.y;
+    return *this;
+  }
+
+  Vec2<element_type>& operator/=(const Vec2<element_type>& rhs)
+  {
+    x /= rhs.x;
+    y /= rhs.y;
+    return *this;
+  }
+
   Vec2<element_type>& operator-=(const Vec2<element_type>& rhs) { return (*this) += (-rhs); }
   Vec2<element_type>& operator/=(const element_type& e) { return (*this) *= 1.0/e; }
   double arg() const { return std::atan2(y, x); }
+  bool has_nan() const { return std::isnan(x) || std::isnan(y); }
 };
 
 template<typename ValueT>
@@ -144,6 +160,16 @@ template<typename ValueT> Vec2<ValueT> operator/(const Vec2<ValueT>& d, const Va
   return d * (1.0/s);
 }
 
+template<typename ValueT> Vec2<ValueT> operator*(const Vec2<ValueT>& s, const Vec2<ValueT>& d)
+{
+  return Vec2<ValueT>(s.x * d.x, s.y * d.y);
+}
+
+template<typename ValueT> Vec2<ValueT> operator/(const Vec2<ValueT>& d, const Vec2<ValueT>& s)
+{
+  return Vec2<ValueT>(d.x / s.x, d.y / s.y);
+}
+
 template<typename ValueT> bool operator==(const Vec2<ValueT>& d1, const Vec2<ValueT>& d2)
 {
   return d1.x == d2.x && d1.y == d2.y;
@@ -174,6 +200,12 @@ template<typename T> std::ostream& operator<<(std::ostream& ostream, const Vec2<
 {
   ostream << "[" << vec.x << ", " << vec.y << "]";
   return ostream;
+}
+
+template<typename T> bool fuzzy_eq(const Vec2<T>& a, const Vec2<T>& b)
+{
+  static constexpr double eps = 10e-5;
+  return (a-b).euclidean_norm2() < eps;
 }
 
 }  // namespace omm

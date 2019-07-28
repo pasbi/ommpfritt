@@ -46,7 +46,9 @@ Cubic::Cubic(const Point& start, const Point& end)
   : Cubic( { start.position, start.right_position(),
              end.left_position(), end.position },
              start.is_selected && end.is_selected )
-{ }
+{
+  assert(!start.has_nan() && !end.has_nan());
+}
 
 Cubic::Cubic(const std::array<Vec2f, 4>& points, const bool is_selected)
   : m_points(points)
@@ -79,6 +81,7 @@ double Cubic::length() const
   for (std::size_t i = 0; i < n - 1; ++i) {
     length += (points[i] - points[i+1]).euclidean_norm();
   }
+  assert(!std::isnan(length));
   return length;
 }
 

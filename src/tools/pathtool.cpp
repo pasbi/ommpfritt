@@ -9,11 +9,11 @@
 namespace omm
 {
 
-PathTool::PathTool(Scene &scene) : SelectPointsTool(scene) {  }
+PathTool::PathTool(Scene &scene) : SelectPointsBaseTool(scene) {  }
 
 bool PathTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEvent &event)
 {
-  if (SelectPointsTool::mouse_move(delta, pos, event)) {
+  if (SelectPointsBaseTool::mouse_move(delta, pos, event)) {
       return true;
   } else if (m_path != nullptr && m_current_point != nullptr) {
     const auto lt = PolarCoordinates(m_current_point->left_tangent.to_cartesian() - delta);
@@ -28,7 +28,7 @@ bool PathTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEven
 
 bool PathTool::mouse_press(const Vec2f &pos, const QMouseEvent &event, bool force)
 {
-  if (SelectPointsTool::mouse_press(pos, event, force)) {
+  if (SelectPointsBaseTool::mouse_press(pos, event, force)) {
     return true;
   } else {
     switch (event.button()) {
@@ -47,7 +47,7 @@ bool PathTool::mouse_press(const Vec2f &pos, const QMouseEvent &event, bool forc
 
 void PathTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
 {
-  SelectPointsTool::mouse_release(pos, event);
+  SelectPointsBaseTool::mouse_release(pos, event);
   m_current_point = nullptr;
 }
 
@@ -74,7 +74,7 @@ void PathTool::add_point(const Vec2f &pos)
 
 void PathTool::end()
 {
-  SelectPointsTool::end();
+  SelectPointsBaseTool::end();
   if (m_path != nullptr) {
     m_path->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
   }
@@ -89,7 +89,8 @@ void PathTool::on_scene_changed()
     m_path = nullptr;
   }
 
-  SelectPointsTool::make_handles(true);
+  handles.clear();
+  SelectPointsTool::make_handles(*this, true);
 }
 
 }  // namespace

@@ -18,7 +18,7 @@ public:
   explicit Cloner(Scene* scene);
   explicit Cloner(const Cloner& other);
   void draw_object(Painter& renderer, const Style& style) const override;
-  BoundingBox bounding_box() const override;
+  BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Cloner");
   static constexpr auto MODE_PROPERTY_KEY = "mode";
@@ -33,6 +33,7 @@ public:
   static constexpr auto BORDER_PROPERTY_KEY = "border";
   static constexpr auto ALIGN_PROPERTY_KEY = "align";
   static constexpr auto SEED_PROPERTY_KEY = "seed";
+  static constexpr auto ANCHOR_PROPERTY_KEY = "anchor";
 
   enum class Mode { Linear, Grid, Radial, Path, Script, FillRandom  };
   std::unique_ptr<Object> clone() const override;

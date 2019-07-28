@@ -25,6 +25,7 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Point", "Point");
   bool is_selected = false;
   void swap(Point& other);
+  bool has_nan() const;
 
   PolarCoordinates left_tangent;
   PolarCoordinates right_tangent;
@@ -47,6 +48,7 @@ public:
 
   bool operator==(const Point& point) const;
   bool operator!=(const Point& point) const;
+  bool operator<(const Point& point) const;
 
   Point offset(double t, const Point *left_neighbor, const Point *right_neighbor) const;
 
@@ -78,5 +80,7 @@ constexpr Vec2f to_cartesian(const PolarCoordinates& polar);
 std::ostream& operator<<(std::ostream& ostream, const PolarCoordinates& pc);
 std::ostream& operator<<(std::ostream& ostream, const Point& pc);
 std::ostream& operator<<(std::ostream& ostream, const Point* pc);
+
+bool fuzzy_eq(const Point& a, const Point& b);
 
 }  // namespace omm

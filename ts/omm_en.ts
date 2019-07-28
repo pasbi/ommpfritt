@@ -143,10 +143,6 @@
         <translation>Move tags</translation>
     </message>
     <message>
-        <source>ObjectsTransformationCommand</source>
-        <translation>Transform objects</translation>
-    </message>
-    <message>
         <source>PointsTransformationCommand</source>
         <translation>Transform points</translation>
     </message>
@@ -952,6 +948,22 @@ Remove the selected items anyway?</translation>
         <source>decoration</source>
         <translation>Decoration</translation>
     </message>
+    <message>
+        <source>this</source>
+        <translation>this</translation>
+    </message>
+    <message>
+        <source>anchor</source>
+        <translation>Anchor</translation>
+    </message>
+    <message>
+        <source>Symmetric</source>
+        <translation>Symmetric</translation>
+    </message>
+    <message>
+        <source>ObjectsTransformation</source>
+        <translation>Object transformation</translation>
+    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>
@@ -1221,6 +1233,10 @@ Remove the selected items anyway?</translation>
         <source>RectangleObject</source>
         <translation>Rectangle</translation>
     </message>
+    <message>
+        <source>BoundingBoxManager</source>
+        <translation>Bounding Box Manager</translation>
+    </message>
 </context>
 <context>
     <name>menu_name</name>
@@ -1313,6 +1329,37 @@ Remove the selected items anyway?</translation>
     <message>
         <source>Create %1</source>
         <translation>Create %1</translation>
+    </message>
+</context>
+<context>
+    <name>omm::BoundingBoxManager</name>
+    <message>
+        <source>Bounding Box Manager</source>
+        <translation>Boundin Box Manager</translation>
+    </message>
+    <message>
+        <source>Pos:</source>
+        <translation>Pos:</translation>
+    </message>
+    <message>
+        <source>Size:</source>
+        <translation>Size:</translation>
+    </message>
+    <message>
+        <source>Points</source>
+        <translation>Points</translation>
+    </message>
+    <message>
+        <source>Objects</source>
+        <translation>Objects</translation>
+    </message>
+    <message>
+        <source>World</source>
+        <translation>World</translation>
+    </message>
+    <message>
+        <source>Local</source>
+        <translation>Local</translation>
     </message>
 </context>
 <context>

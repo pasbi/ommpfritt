@@ -5,6 +5,7 @@ file (GLOB SOURCES
   "structure.cpp"
   "tree.cpp"
   "propertyownermimedata.cpp"
+  "pointselection.cpp"
   "itemmodeladapter.cpp"
   "objecttreeadapter.cpp"
   "listadapter.cpp"

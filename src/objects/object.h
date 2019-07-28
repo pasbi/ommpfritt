@@ -65,8 +65,12 @@ public:
 
   void draw_recursive(Painter& renderer, const Style& default_style) const;
   void draw_recursive(Painter& renderer, const RenderOptions& options) const;
-  virtual BoundingBox bounding_box() const = 0;
-  BoundingBox recursive_bounding_box() const;
+
+  /**
+   * @brief bounding_box returns the bounding box in world coordinates
+   */
+  virtual BoundingBox bounding_box(const ObjectTransformation& transformation) const = 0;
+  BoundingBox recursive_bounding_box(const ObjectTransformation &transformation) const;
   std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() override;
   virtual std::unique_ptr<Object> clone() const = 0;
   std::unique_ptr<Object> clone(Scene* scene) const;

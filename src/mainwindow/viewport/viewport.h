@@ -50,12 +50,19 @@ protected:
   void mouseReleaseEvent(QMouseEvent* event) override;
   void keyPressEvent(QKeyEvent* event) override;
 
+public Q_SLOTS:
+  void update();
+
+Q_SIGNALS:
+  void updated();
+
 private:
   Scene& m_scene;
   std::unique_ptr<QTimer> m_timer;
   ObjectTransformation m_viewport_transformation;
   MousePanController m_pan_controller;
   Painter m_renderer;
+  Vec2f m_last_cursor_pos;
 };
 
 }  // namespace omm

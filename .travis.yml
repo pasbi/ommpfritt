@@ -1,31 +1,48 @@
-language: cpp
-
+compiler: gcc
+sudo: require
 dist: xenial
 
-before_install:
-  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic main'
-  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic universe'
-  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic multiverse'
-  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic restricted'
-  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-security main'
-  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-security universe'
-  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-security multiverse'
-  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-security restricted'
-  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-updates main'
-  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-updates universe'
-  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-updates multiverse'
-  - sudo add-apt-repository 'deb http://archive.ubuntu.com/ubuntu bionic-updates restricted'
-  - sudo apt-get update
-  - sudo apt-get install -y python3-pybind11 pybind11-dev qt5-default libarmadillo-dev libgoogle-glog-dev python3
+env:
+  global:
+    - PYBIND11_VERSION="2.2.4"
 
-compiler:
-  - clang
-  - gcc
+before_install:
+  - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-xenial
+  - sudo apt-get update -qq
+  - sudo apt-get install -y zlib1g-dev libssl-dev libffi-dev
+  - wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz
+  - tar xf Python-3.7.0.tar.xz
+  - wget https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.tar.gz
+  - tar xf cmake-3.14.5-Linux-x86_64.tar.gz
+  - cmake_3_14=$(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake
+  - wget https://github.com/pybind/pybind11/archive/v${PYBIND11_VERSION}.tar.gz
+  - tar xf v${PYBIND11_VERSION}.tar.gz
+  - pybind11_DIR=$(pwd)/pybind11-${PYBIND11_VERSION}
+
+install:
+  - pushd Python-3.7.0
+  - ./configure
+  - sudo make altinstall -j2 > python3.7-build-log
+  - popd
+  - sudo python3.7 -m pip install pytest
+  - mkdir -p $pybind11_DIR/build
+  - pushd $pybind11_DIR/build
+  - $cmake_3_14 ..
+  - sudo make install -j2
+  - popd
+  - sudo apt-get -y remove qt5-qmake qtbase5-dev qtbase5-dev-tools
+  - sudo apt-get -y install qt512tools qt512translations qt512svg qt512base qt512imageformats
+  - sudo apt-get -y install libgl-dev python3-dev libpoppler-qt5-dev g++-8
 
 before_script:
-  - mkdir build
-  - cd build
-  - cmake ..
+  - export PATH=/opt/qt512/bin:$PATH
 
 script:
-  - make
+  - mkdir build
+  - cd build
+  - $cmake_3_14 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=g++-8 -DQT_QM_PATH=/opt/qt512/translations/ ..
+  - make -j2
+
+after_success:
+  - touch success

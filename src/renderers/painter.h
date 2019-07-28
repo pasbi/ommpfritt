@@ -25,17 +25,6 @@ class Rectangle;
 class Painter
 {
 public:
-  struct TextOptions
-  {
-    TextOptions( const QFont& font, const QTextOption& option,
-                 const Style& style, const double width )
-      : font(font), option(option), style(style), width(width) {}
-    const QFont& font;
-    const QTextOption& option;
-    const Style& style;
-    const double width;
-  };
-
   enum class Category { None = 0x0, Objects = 0x1, Handles = 0x2, BoundingBox = 0x4,
                         All = Objects | Handles | BoundingBox };
   explicit Painter(Scene& scene, Category filter);
@@ -45,7 +34,6 @@ public:
   void pop_transformation();
   ObjectTransformation current_transformation() const;
 
-  void draw_text(const std::string& text, const TextOptions& options);
   void toast(const Vec2f& pos, const std::string& text);
 
   static QPainterPath path(const std::vector<Point>& points, bool closed = false);

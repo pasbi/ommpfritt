@@ -1,6 +1,7 @@
 #pragma once
 
 #include "geometry/vec2.h"
+#include "tools/handles/tangenthandle.h"
 #include "tools/handles/handle.h"
 #include "tools/handles/particlehandle.h"
 
@@ -9,10 +10,6 @@ namespace omm
 
 class Scene;
 class Path;
-
-template<typename PositionVariant> class SelectTool;
-class PointPositions;
-class ObjectPositions;
 
 class AbstractSelectHandle : public Handle
 {
@@ -25,7 +22,6 @@ protected:
   virtual void set_selected(bool selected) = 0;
   virtual void clear() = 0;
   virtual bool is_selected() const = 0;
-
   static constexpr auto extend_selection_modifier = Qt::ShiftModifier;
 };
 
@@ -37,7 +33,7 @@ public:
   void draw(omm::Painter& renderer) const override;
 
 protected:
-  ObjectTransformation transformation() const override;
+  ObjectTransformation transformation() const;
   void set_selected(bool selected) override;
   void clear() override;
   bool is_selected() const override;
@@ -50,7 +46,6 @@ private:
 class PointSelectHandle : public AbstractSelectHandle
 {
 public:
-  enum class Tangent { Left, Right };
   enum class TangentMode { Mirror, Individual };
   explicit PointSelectHandle(Tool& tool, Path& path, Point& point);
   bool contains_global(const Vec2f& point) const override;
@@ -59,12 +54,11 @@ public:
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
   void mouse_release( const Vec2f& pos, const QMouseEvent& event) override;
 
-  template<Tangent tangent>
-  void transform_tangent(const Vec2f& delta);
+  void transform_tangent(const Vec2f& delta, TangentHandle::Tangent tangent);
   bool force_draw_subhandles = false;
 
 protected:
-  ObjectTransformation transformation() const override;
+  ObjectTransformation transformation() const;
   void set_selected(bool selected) override;
   void clear() override;
   bool is_selected() const override;
@@ -73,12 +67,11 @@ private:
   Path& m_path;
   Point& m_point;
   const std::unique_ptr<Style> m_tangent_style;
-  std::unique_ptr<ParticleHandle> m_left_tangent_handle;
-  std::unique_ptr<ParticleHandle> m_right_tangent_handle;
+  std::unique_ptr<TangentHandle> m_left_tangent_handle;
+  std::unique_ptr<TangentHandle> m_right_tangent_handle;
   bool tangents_active() const;
 
-  template<Tangent tangent>
-  void transform_tangent(const Vec2f& delta, TangentMode mode);
+  void transform_tangent(const Vec2f& delta, TangentMode mode, TangentHandle::Tangent tangent);
 };
 
 

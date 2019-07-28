@@ -12,6 +12,7 @@
 #include <utility>
 #include <sstream>
 #include <list>
+#include <map>
 
 /*
  * passes ownership of `object` to `consumer` and returns a reference to `object`
@@ -267,6 +268,16 @@ template<typename T> std::ostream& operator<<(std::ostream& ostream, const std::
 {
   ostream << std::vector(vs.begin(), vs.end());
   return ostream;
+}
+
+template<typename K, typename V> std::set<K> get_keys(const std::map<K, V>& map)
+{
+  std::set<K> keys;
+  for (auto&& [k, v] : map) {
+    (void) v;
+    keys.insert(k);
+  }
+  return keys;
 }
 
 namespace omm

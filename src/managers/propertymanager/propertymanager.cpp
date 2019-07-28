@@ -149,13 +149,10 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
     return;
   }
 
-  if (selection == m_current_selection) {
-    return;
-  }
-
   clear();
   OrderedMap<std::string, PropertyManagerTab> tabs;
   std::vector<QString> tab_display_names;
+  m_defeatable_properties.clear();
 
   for (const auto& key : get_key_intersection(selection)) {
     const auto properties = collect_properties(key, selection);
@@ -165,15 +162,17 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
       tabs.insert(tab_label, std::make_unique<PropertyManagerTab>());
       tab_display_names.push_back(tab_display_name(tab_label));
     }
-    if (Property::get_value<bool>(properties, std::mem_fn(&Property::is_enabled))) {
+
+    if (std::any_of(properties.begin(), properties.end(), [](auto p) { return p->is_enabled(); })) {
       tabs.at(tab_label)->add_properties(m_scene, key, properties);
     }
-    for (Property* property : properties) {
-      auto* enabled_buddy = property->enabled_buddy();
-      if (enabled_buddy != nullptr && !::contains(m_observed_properties, enabled_buddy)) {
-        enabled_buddy->Observed<AbstractPropertyObserver>::register_observer(this);
-        m_observed_properties.insert(enabled_buddy);
-      }
+    for (auto* property : properties) {
+      m_defeatable_properties.insert(std::pair(property, property->is_enabled()));
+    }
+
+    if (auto* enabled_buddy = (*properties.begin())->enabled_buddy(); enabled_buddy != nullptr) {
+      enabled_buddy->Observed<AbstractPropertyObserver>::register_observer(this);
+      m_observed_properties.insert(enabled_buddy);
     }
   }
 
@@ -202,7 +201,7 @@ void PropertyManager::set_locked(bool locked) { m_is_locked = locked; }
 
 void PropertyManager::clear()
 {
-  for (auto* observed_property : m_observed_properties) {
+  for (auto&& observed_property : m_observed_properties) {
     observed_property->Observed<AbstractPropertyObserver>::unregister_observer(this);
   }
   m_observed_properties.clear();
@@ -220,7 +219,12 @@ void PropertyManager::on_property_value_changed(Property&, std::set<const void *
   // As  (A) the current widgets will be deleted in `set_selection`
   // and (B) the widget of `property` still has pending events, it's not wise to call
   // `set_selection` directly. Instead, wait until all events in the Qt event queue are handled.
-  QTimer::singleShot(0, [this](){ set_selection(m_current_selection); });
+  for (auto&& [property, is_enabled] : m_defeatable_properties) {
+    if (is_enabled != property->is_enabled()) {
+      QTimer::singleShot(0, [this](){ set_selection(m_current_selection); });
+      break;
+    }
+  }
 }
 
 std::string PropertyManager::type() const { return TYPE; }

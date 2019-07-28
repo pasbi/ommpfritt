@@ -59,13 +59,13 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Grid });
 
-  add_property<FloatVectorProperty>(DISTANCE_2D_PROPERTY_KEY, Vec2f(10.0, 10.0))
+  add_property<FloatVectorProperty>(DISTANCE_2D_PROPERTY_KEY, Vec2f(100.0, 100.0))
     .set_step(Vec2f(0.1, 0.1))
     .set_label(QObject::tr("distance").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Linear, Mode::Grid });
 
-  add_property<FloatProperty>(RADIUS_PROPERTY_KEY, 50.0)
+  add_property<FloatProperty>(RADIUS_PROPERTY_KEY, 200.0)
     .set_step(0.1)
     .set_label(QObject::tr("radius").toStdString())
     .set_category(category)
@@ -112,6 +112,11 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_label(QObject::tr("seed").toStdString()).set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom });
 
+  add_property<OptionsProperty>(ANCHOR_PROPERTY_KEY, 0)
+      .set_options( { QObject::tr("Path").toStdString(), QObject::tr("this").toStdString() } )
+      .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom, Mode::Path })
+      .set_label(QObject::tr("anchor").toStdString()).set_category(category);
+
   m_clone_dependencies = ::transform<Property*>(std::set{
     COUNT_PROPERTY_KEY, COUNT_2D_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY, RADIUS_PROPERTY_KEY,
     PATH_REFERENCE_PROPERTY_KEY, START_PROPERTY_KEY, END_PROPERTY_KEY, ALIGN_PROPERTY_KEY,
@@ -127,25 +132,22 @@ Cloner::Cloner(const Cloner &other) : Object(other)
 void Cloner::draw_object(Painter &renderer, const Style& style) const
 {
   assert(&renderer.scene == scene());
-  const bool draw_in_global_space = mode() == Mode::Path || mode() == Mode::FillRandom;
-  if (draw_in_global_space) {
-    renderer.push_transformation(global_transformation(true).inverted());
-  }
   for (auto&& clone : m_clones) {
     clone->draw_recursive(renderer, style);
   }
-  if (draw_in_global_space) {
-    renderer.pop_transformation();
-  }
 }
 
-BoundingBox Cloner::bounding_box() const
+BoundingBox Cloner::bounding_box(const ObjectTransformation &transformation) const
 {
-  BoundingBox bb;
-  for (auto&& clone : m_clones) {
-    bb |= clone->transformation().apply(clone->bounding_box());
+  if (is_active()) {
+    BoundingBox bb;
+    for (auto&& clone : m_clones) {
+      bb |= clone->recursive_bounding_box(transformation.apply(clone->transformation()));
+    }
+    return bb;
+  } else {
+    return BoundingBox();
   }
-  return bb;
 }
 
 Cloner::Mode Cloner::mode() const { return property(MODE_PROPERTY_KEY)->value<Mode>(); }
@@ -164,7 +166,7 @@ void Cloner::update()
 {
   auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
   auto* ref = kind_cast<Object*>(apo);
-  if (ref) {ref->update(); }
+  if (ref) { ref->update(); }
 
   if (is_active()) {
     if (m_clones.size() == 0) {
@@ -261,7 +263,9 @@ std::vector<std::unique_ptr<Object>> Cloner::copy_children(const std::size_t cou
   if (n_children > 0 && count > 0) {
     clones.reserve(count);
     for (std::size_t i = 0; i < count; ++i) {
-      clones.push_back(tree_child(i % n_children).clone());
+      auto clone = tree_child(i % n_children).clone();
+      clone->update();
+      clones.push_back(std::move(clone));
     }
   }
   return clones;
@@ -312,9 +316,17 @@ void Cloner::set_path(Object& object, std::size_t i)
 {
   auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
   auto* o = kind_cast<Object*>(apo);
-
+  if (o == nullptr) {
+    return;
+  }
   const bool align = property(ALIGN_PROPERTY_KEY)->value<bool>();
-  object.set_position_on_path(o, align, get_t(i, o == nullptr ? false : !o->is_closed()), true);
+  const double t = get_t(i, o == nullptr ? false : !o->is_closed());
+  Point p = o->evaluate(t);
+  if (property(ANCHOR_PROPERTY_KEY)->value<std::size_t>() == 0) {
+    p = o->global_transformation(true).apply(p);
+    p = global_transformation(true).inverted().apply(p);
+  }
+  object.set_oriented_position(p, align);
 }
 
 void Cloner::set_by_script(Object& object, std::size_t i)
@@ -338,9 +350,10 @@ void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
     auto position = [&rng, &area]() {
       static constexpr auto max_rejections = 1000;
       auto dist = std::uniform_real_distribution<double>(0, 1);
+      const BoundingBox bb = area.bounding_box(ObjectTransformation());
       for (std::size_t i = 0; i < max_rejections; ++i) {
-        const Vec2f p( dist(rng) * area.bounding_box().width() + area.bounding_box().left(),
-                       dist(rng) * area.bounding_box().height() + area.bounding_box().top() );
+        const Vec2f p( dist(rng) * bb.width() + bb.left(),
+                       dist(rng) * bb.height() + bb.top() );
         if (area.contains(p)) {
           return p;
         }
@@ -353,7 +366,11 @@ void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
       return area.evaluate(t).position;
     }();
 
-    position = area.global_transformation(true).apply_to_position(position);
+
+    if (property(ANCHOR_PROPERTY_KEY)->value<std::size_t>() == 0) {
+      position = area.global_transformation(true).apply_to_position(position);
+      position = global_transformation(true).inverted().apply_to_position(position);
+    }
 
     auto t = object.transformation();
     t.set_translation(position);
