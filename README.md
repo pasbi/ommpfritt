@@ -14,6 +14,27 @@ Primary use case is creating and editing (animated) info graphics, diagrams, ico
 
 ![screenshot](https://raw.githubusercontent.com/pasbi/ommpfritt/master/screenshot.png)
 
+## Download
+
+### Linux ([AppImage](https://appimage.org/))
+
+- Download the `.AppImage` file from https://github.com/pasbi/ommpfritt/releases/tag/continuous
+- Open a terminal in the directory where the file was downloaded and run `chmod a+x ommpfritt*.AppImage`
+- Double click the `.AppImage` file in your file explorer (e.g. nautilus)
+
+### Windows
+
+- Download the `.zip` file from https://github.com/pasbi/ommpfritt/releases/tag/v0.1.2
+- Extract the contents, go into the folder and double-click `ommpfritt.exe`
+
+### macOS
+
+On macOS you currently need to create your own build, see [build.md](build.md)
+
+## How to use
+
+There is a [screencast on youtube](https://www.youtube.com/watch?v=6X5Lo7kq5eM) that shows some of the most important features and how they can be used
+
 ## Features
 
 ### General
