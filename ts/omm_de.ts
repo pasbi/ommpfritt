@@ -798,7 +798,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>seed</source>
-        <translation>Seed key</translation>
+        <translation>Seed</translation>
     </message>
     <message>
         <source>length</source>
