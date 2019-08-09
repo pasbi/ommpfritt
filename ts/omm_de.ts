@@ -368,8 +368,8 @@
     </message>
     <message>
         <source>There are %1 items being referenced by other items.
-        <translation>%1 Elemente sind von der Selektion abhänging.
 Remove the referenced items anyway?</source>
+        <translation>%1 Elemente in der Selektion werden von anderen Objekten referenziert.
 Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
