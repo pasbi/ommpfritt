@@ -368,7 +368,7 @@
     </message>
     <message>
         <source>There are %1 items being referenced by other items.
-Remove the refrenced items anyway?</source>
+Remove the referenced items anyway?</source>
         <translation>There are %1 items being referenced by the selection.
 Remove the selected items anyway?</translation>
     </message>

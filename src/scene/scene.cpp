@@ -386,7 +386,7 @@ bool Scene::can_remove( QWidget* parent, std::set<AbstractPropertyOwner*> select
   const auto reference_holder_map = find_reference_holders(selection);
   if (reference_holder_map.size() > 0) {
     const auto message = QObject::tr("There are %1 items being referenced by other items.\n"
-                                     "Remove the refrenced items anyway?")
+                                     "Remove the referenced items anyway?")
                                     .arg(reference_holder_map.size());
     const auto decision = QMessageBox::warning( parent, QObject::tr("Warning"), message,
                                                 QMessageBox::YesToAll | QMessageBox::Cancel );

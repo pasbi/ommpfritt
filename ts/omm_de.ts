@@ -368,9 +368,9 @@
     </message>
     <message>
         <source>There are %1 items being referenced by other items.
-Remove the refrenced items anyway?</source>
         <translation>%1 Elemente sind von der Selektion abhänging.
-Soll die Selektion troztdem entfernt werden?</translation>
+Remove the referenced items anyway?</source>
+Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -782,7 +782,7 @@ Soll die Selektion troztdem entfernt werden?</translation>
     </message>
     <message>
         <source>V-Align</source>
-        <translation>Vert. Ausrichting</translation>
+        <translation>Vert. Ausrichtung</translation>
     </message>
     <message>
         <source>Tab width</source>
