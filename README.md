@@ -49,7 +49,7 @@ There is a [screencast on youtube](https://www.youtube.com/watch?v=6X5Lo7kq5eM) 
 - properties can be added at runtime
 - **multi-selection** support for properties: compatible intersection of properties of all selected items (objects, tags, styles, tools) is shown and can be modified simultaneously
 - **flexible, customizable key binding sequences** (aka short-cuts)
-- **multi-language** (currently English and German only)
+- **multi-language** (currently English, Spanish and German only)
 - **rasterize** to `png` and `jpg`
 - **export** to SVG
 
@@ -102,4 +102,3 @@ Currently we're looking for
 ## Building
 
 see [build.md](build.md)
-
