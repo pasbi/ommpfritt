@@ -54,9 +54,9 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 5. build it `make`, this may take a few minutes.
 6. start it: `./ommpfritt`
 
-### Ubuntu Xenial
+### Ubuntu 16.04 Xenial
 
-This section is about Ubuntu Xenial (16.04). If your ubuntu is more recent, you might be able to skip some of the steps. E.g., if you already have python3.7, Qt5.12, g++8, etc. installed, you don't need to install it again!
+If your ubuntu is more recent, you might be able to skip some of the steps. E.g., if you already have python3.7, Qt5.12, g++8, etc. installed, you don't need to install it again! (see e.g. instructions below for 19.04 Disco)
 
 1. install g++-8 and Qt:
 ```
@@ -93,4 +93,38 @@ cd build
 8. build it: `make`
 9. run it: `./ommpfritt`
 
-pull requests welcome (both for new and existing platforms)!
+### Ubuntu 19.04 Disco Dingo
+
+At the time of writing this release of ubuntu provides all dependencies for
+ommpfritt at the right versions straight from the standard repositories.
+As these installation instructions were not put together on a completely fresh
+system, some necessary package install commands might be missing below (in that case
+you could speculatively try `sudo apt install build-essential python3-dev` and/or follow up to the error messages cmake gives you, which are usually very helpful - note down the missing file/library and google e.g. `ubuntu disco package <the-missing-thing>` to find out which package to `sudo apt install <the-required-package>`).
+
+#### Install dependencies
+
+```bash
+sudo apt install g++
+sudo apt install cmake
+sudo apt install pybind11-dev
+sudo apt install qtbase5-dev libqt5svg5-dev qttools5-dev  # Qt 5
+sudo apt install libpoppler-qt5-dev
+```
+
+#### Configure, build and run
+
+```bash
+cd ommpfritt
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Debug \
+      -DCMAKE_CXX_COMPILER=g++-8 \
+      -DQT_QM_PATH=/usr/share/qt5/translations/
+      ..
+make
+./ommpfritt
+```
+
+### Contributing to the build instructions
+
+Pull requests are welcome (both for new and existing platforms)!
