@@ -37,13 +37,14 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/translations.qrc ${CMAKE_CURRENT_BINA
 set(RESOURCES resources.qrc ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc)
 
 file (GLOB TS_FILES
-  ts/omm_en.ts
   ts/omm_de.ts
+  ts/omm_en.ts
+  ts/omm_es.ts
 )
 
 qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
-foreach (lang en de)
+foreach (lang de en es)
   foreach (pref qt qtbase qt_help qtlocation)
     file(COPY ${QT_QM_PATH}/${pref}_${lang}.qm DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
   endforeach(pref)
@@ -75,4 +76,3 @@ target_link_libraries(ommpfritt libommpfritt)
 
 install(TARGETS ommpfritt RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib/static)
 install(TARGETS libommpfritt RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib/static)
-

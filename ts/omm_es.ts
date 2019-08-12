@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="en_US">
+<TS version="2.1" language="es">
 <context>
     <name>BoolProperty</name>
     <message>
         <source>BoolProperty</source>
-        <translation>Boolean Property</translation>
+        <translation>Atributo Booleano</translation>
     </message>
 </context>
 <context>
     <name>ColorProperty</name>
     <message>
         <source>ColorProperty</source>
-        <translation>Color property</translation>
+        <translation>Atributo Color</translation>
     </message>
 </context>
 <context>
@@ -31,132 +31,132 @@
     </message>
     <message>
         <source>Export</source>
-        <translation>Export</translation>
+        <translation>Exportar</translation>
     </message>
     <message>
         <source>Resolution:</source>
-        <translation>Resolution:</translation>
+        <translation>Resolución:</translation>
     </message>
     <message>
         <source>Scaling:</source>
-        <translation>Scaling:</translation>
+        <translation>Escala:</translation>
     </message>
 </context>
 <context>
     <name>FloatProperty</name>
     <message>
         <source>FloatProperty</source>
-        <translation>Float property</translation>
+        <translation>Atributo Numérico de Punto Flotante</translation>
     </message>
 </context>
 <context>
     <name>FloatVectorProperty</name>
     <message>
         <source>FloatVectorProperty</source>
-        <translation>Float vector property</translation>
+        <translation>Atributo Vector de Punto Flotante</translation>
     </message>
 </context>
 <context>
     <name>IntegerProperty</name>
     <message>
         <source>IntegerProperty</source>
-        <translation>Integer property</translation>
+        <translation>Atributo Número Entero</translation>
     </message>
 </context>
 <context>
     <name>IntegerVectorProperty</name>
     <message>
         <source>IntegerVectorProperty</source>
-        <translation>Integer vector property</translation>
+        <translation>Atributo Vector de Número Entero</translation>
     </message>
 </context>
 <context>
     <name>ObjectTransformation</name>
     <message>
         <source>ObjectTransformation</source>
-        <translation>Object transformation</translation>
+        <translation>Transformación de Objeto</translation>
     </message>
 </context>
 <context>
     <name>OptionsProperty</name>
     <message>
         <source>OptionsProperty</source>
-        <translation>Options property</translation>
+        <translation>Atributo Opción</translation>
     </message>
 </context>
 <context>
     <name>Point</name>
     <message>
         <source>Point</source>
-        <translation>Point</translation>
+        <translation>Punto</translation>
     </message>
 </context>
 <context>
     <name>Property</name>
     <message>
         <source>user properties</source>
-        <translation>Property</translation>
+        <translation>Atributo</translation>
     </message>
 </context>
 <context>
     <name>PropertyItem</name>
     <message>
         <source>&lt;unnamed property&gt;</source>
-        <translation>Property item</translation>
+        <translation>Elemento Atributo</translation>
     </message>
 </context>
 <context>
     <name>PropertyOwner</name>
     <message>
         <source>AbstractPropertyOwner</source>
-        <translation>Property owner</translation>
+        <translation>Dueño de Atributo</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>add</source>
-        <translation>Add</translation>
+        <translation>Añadir</translation>
     </message>
     <message>
         <source>copy</source>
-        <translation>Copy</translation>
+        <translation>Copiar</translation>
     </message>
     <message>
         <source>ModifyPointsCommand</source>
-        <translation>Modify points</translation>
+        <translation>Modificar puntos</translation>
     </message>
     <message>
         <source>AddPointsCommand</source>
-        <translation>Add points</translation>
+        <translation>Añadir puntos</translation>
     </message>
     <message>
         <source>RemovePointsCommand</source>
-        <translation>Remove points</translation>
+        <translation>Borrar puntos</translation>
     </message>
     <message>
         <source>reparent</source>
-        <translation>Set parent</translation>
+        <translation>Elegir objeto superior</translation>
     </message>
     <message>
         <source>Move tags</source>
-        <translation>Move tags</translation>
+        <translation>Mover tags</translation>
     </message>
     <message>
         <source>PointsTransformationCommand</source>
-        <translation>Transform points</translation>
+        <translation>Transformar puntos</translation>
     </message>
     <message>
         <source>Set </source>
-        <translation>Set property </translation>
+        <translation>Asignar atributo </translation>
     </message>
     <message>
         <source>remove</source>
-        <translation>Remove item</translation>
+        <translation>Borrar elemento</translation>
     </message>
     <message>
         <source>Modify user properties</source>
-        <translation>Modify user properties</translation>
+        <translation>Modificar atributos de usuario</translation>
     </message>
     <message>
         <source>omm</source>
@@ -168,19 +168,19 @@
     </message>
     <message>
         <source>modify tangents</source>
-        <translation>Modify tangents</translation>
+        <translation>Modificar tangentes</translation>
     </message>
     <message>
         <source>convert</source>
-        <translation>Convert</translation>
+        <translation>Convertir</translation>
     </message>
     <message>
         <source>Linear</source>
-        <translation>Linear</translation>
+        <translation>Lineal</translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation>Grid</translation>
+        <translation>Rejilla</translation>
     </message>
     <message>
         <source>Radial</source>
@@ -188,7 +188,7 @@
     </message>
     <message>
         <source>Path</source>
-        <translation>Path</translation>
+        <translation>Trayecto</translation>
     </message>
     <message>
         <source>Script</source>
@@ -196,87 +196,87 @@
     </message>
     <message>
         <source>mode</source>
-        <translation>Mode</translation>
+        <translation>Modo</translation>
     </message>
     <message>
         <source>Cloner</source>
-        <translation>Cloner</translation>
+        <translation>Clonador</translation>
     </message>
     <message>
         <source>count</source>
-        <translation>Count</translation>
+        <translation>Número</translation>
     </message>
     <message>
         <source>distance</source>
-        <translation>Distance</translation>
+        <translation>Distancia</translation>
     </message>
     <message>
         <source>radius</source>
-        <translation>Radius</translation>
+        <translation>Radio</translation>
     </message>
     <message>
         <source>path</source>
-        <translation>Path</translation>
+        <translation>Trayecto</translation>
     </message>
     <message>
         <source>start</source>
-        <translation>Start</translation>
+        <translation>Inicio</translation>
     </message>
     <message>
         <source>end</source>
-        <translation>End</translation>
+        <translation>Fin</translation>
     </message>
     <message>
         <source>align</source>
-        <translation>Align</translation>
+        <translation>Alinear</translation>
     </message>
     <message>
         <source>Clamp</source>
-        <translation>Clamp</translation>
+        <translation>Restringir</translation>
     </message>
     <message>
         <source>Wrap</source>
-        <translation>Wrap</translation>
+        <translation>Repetir</translation>
     </message>
     <message>
         <source>Hide</source>
-        <translation>Hide</translation>
+        <translation>Ocultar</translation>
     </message>
     <message>
         <source>Reflect</source>
-        <translation>Reflect</translation>
+        <translation>Reflejar</translation>
     </message>
     <message>
         <source>border</source>
-        <translation>Border</translation>
+        <translation>Borde</translation>
     </message>
     <message>
         <source>code</source>
-        <translation>Code</translation>
+        <translation>Código</translation>
     </message>
     <message>
         <source>r</source>
-        <translation>Radius</translation>
+        <translation>Radio</translation>
     </message>
     <message>
         <source>ellipse</source>
-        <translation>Ellipse</translation>
+        <translation>Elipse</translation>
     </message>
     <message>
         <source>n</source>
-        <translation>Count</translation>
+        <translation>Puntos</translation>
     </message>
     <message>
         <source>filename</source>
-        <translation>Filename</translation>
+        <translation>Nombre de fichero</translation>
     </message>
     <message>
         <source>Opacity</source>
-        <translation>Opacity</translation>
+        <translation>Opacidad</translation>
     </message>
     <message>
         <source>image</source>
-        <translation>Image</translation>
+        <translation>Imagen</translation>
     </message>
     <message>
         <source>visible</source>
@@ -284,59 +284,59 @@
     </message>
     <message>
         <source>hidden</source>
-        <translation>Hidden</translation>
+        <translation>Ocultado</translation>
     </message>
     <message>
         <source>hide tree</source>
-        <translation>Hide tree</translation>
+        <translation>Ocultar jerarquía</translation>
     </message>
     <message>
         <source>basic</source>
-        <translation>Basic</translation>
+        <translation>Básico</translation>
     </message>
     <message>
         <source>active</source>
-        <translation>Active</translation>
+        <translation>Activo</translation>
     </message>
     <message>
         <source>&lt;unnamed object&gt;</source>
-        <translation>Unnamed Object</translation>
+        <translation>Objeto sin nombre</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Name</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>pos</source>
-        <translation>Position</translation>
+        <translation>Posición</translation>
     </message>
     <message>
         <source>scale</source>
-        <translation>Scale</translation>
+        <translation>Escala</translation>
     </message>
     <message>
         <source>rotation</source>
-        <translation>Rotation</translation>
+        <translation>Rotación</translation>
     </message>
     <message>
         <source>shear</source>
-        <translation>Shear</translation>
+        <translation>Inclinación</translation>
     </message>
     <message>
         <source>Failed to retrieve object type &apos;%1&apos;.</source>
-        <translation>Failed to retrieve object type &apos;%1&apos;.</translation>
+        <translation>El tipo de objeto &apos;%1&apos; no se pudo obtener.</translation>
     </message>
     <message>
         <source>closed</source>
-        <translation>Closed</translation>
+        <translation>Cerrado</translation>
     </message>
     <message>
         <source>linear</source>
-        <translation>Linear</translation>
+        <translation>Lineal</translation>
     </message>
     <message>
         <source>smooth</source>
-        <translation>Cubic</translation>
+        <translation>Cúbico</translation>
     </message>
     <message>
         <source>bezier</source>
@@ -344,15 +344,15 @@
     </message>
     <message>
         <source>interpolation</source>
-        <translation>Interpolation</translation>
+        <translation>Interpolación</translation>
     </message>
     <message>
         <source>ProceduralPath</source>
-        <translation>Procedural path</translation>
+        <translation>Trayecto Procedural</translation>
     </message>
     <message>
         <source>pen</source>
-        <translation>Pen</translation>
+        <translation>Lápiz</translation>
     </message>
     <message>
         <source>color</source>
@@ -360,29 +360,29 @@
     </message>
     <message>
         <source>width</source>
-        <translation>Width</translation>
+        <translation>Ancho</translation>
     </message>
     <message>
         <source>brush</source>
-        <translation>Brush</translation>
+        <translation>Pincel</translation>
     </message>
     <message>
         <source>There are %1 items being referenced by other items.
 Remove the referenced items anyway?</source>
-        <translation>There are %1 items being referenced by the selection.
-Remove the selected items anyway?</translation>
+        <translation>Otros elementos tienen referencias a %1 elementos en la selección.
+Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation>Warning</translation>
+        <translation>Advertencia</translation>
     </message>
     <message>
         <source>Remove Selection</source>
-        <translation>Remove selection</translation>
+        <translation>Borrar selección</translation>
     </message>
     <message>
         <source>position</source>
-        <translation>Position</translation>
+        <translation>Posición</translation>
     </message>
     <message>
         <source>script</source>
@@ -390,27 +390,27 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>per frame</source>
-        <translation>Per Frame</translation>
+        <translation>Por fotograma</translation>
     </message>
     <message>
         <source>on request</source>
-        <translation>On request</translation>
+        <translation>Por Demanda</translation>
     </message>
     <message>
         <source>update</source>
-        <translation>Update</translation>
+        <translation>Actualización</translation>
     </message>
     <message>
         <source>evaluate</source>
-        <translation>Evaluate</translation>
+        <translation>Evaluar</translation>
     </message>
     <message>
         <source>style</source>
-        <translation>Style</translation>
+        <translation>Estilo</translation>
     </message>
     <message>
         <source>tool</source>
-        <translation>Tool</translation>
+        <translation>Herramienta</translation>
     </message>
     <message>
         <source>global</source>
@@ -422,19 +422,19 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Alignment</source>
-        <translation>Alignment</translation>
+        <translation>Alineamiento</translation>
     </message>
     <message>
         <source>Object</source>
-        <translation>Object</translation>
+        <translation>Objeto</translation>
     </message>
     <message>
         <source>Axis</source>
-        <translation>Axis</translation>
+        <translation>Eje</translation>
     </message>
     <message>
         <source>Mode</source>
-        <translation>Mode</translation>
+        <translation>Modo</translation>
     </message>
     <message>
         <source>Horizontal</source>
@@ -446,11 +446,11 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Direction</source>
-        <translation>Direction</translation>
+        <translation>Dirección</translation>
     </message>
     <message>
         <source>Mirror</source>
-        <translation>Mirror</translation>
+        <translation>Simetrizar</translation>
     </message>
     <message>
         <source>Individual</source>
@@ -458,62 +458,62 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>tangent</source>
-        <translation>Tangent</translation>
+        <translation>Tangente</translation>
     </message>
     <message>
         <source>name</source>
         <comment>keybindings</comment>
-        <translation>Name</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>context</source>
         <comment>keybindings</comment>
-        <translation>Context</translation>
+        <translation>Contexto</translation>
     </message>
     <message>
         <source>sequence</source>
         <comment>keybindings</comment>
-        <translation>Sequence</translation>
+        <translation>Secuencia</translation>
     </message>
     <message>
         <source>&lt; invalid &gt;</source>
         <comment>property</comment>
-        <translation>Invalid</translation>
+        <translation>Inválido</translation>
     </message>
     <message>
         <source>property manager</source>
         <comment>PropertyManager</comment>
-        <translation>Property manager</translation>
+        <translation>Controles de Atributos</translation>
     </message>
     <message>
         <source>user properties</source>
         <comment>PropertyManager</comment>
-        <translation>User properties</translation>
+        <translation>Controles de Atributos Usuarios</translation>
     </message>
     <message>
         <source>edit ...</source>
         <comment>PropertyManager</comment>
-        <translation>Edit ...</translation>
+        <translation>Editar ...</translation>
     </message>
     <message>
         <source>run</source>
         <comment>PythonConsole</comment>
-        <translation>Run</translation>
+        <translation>Ejecutar</translation>
     </message>
     <message>
         <source>clear</source>
         <comment>PythonConsole</comment>
-        <translation>Clear</translation>
+        <translation>Borrar</translation>
     </message>
     <message>
         <source>no output yet.</source>
         <comment>PythonConsole</comment>
-        <translation>No output yet.</translation>
+        <translation>Todavía nada de mostrar.</translation>
     </message>
     <message>
         <source>enter command ...</source>
         <comment>PythonConsole</comment>
-        <translation>Enter command ...</translation>
+        <translation>Etra un comando ...</translation>
     </message>
     <message>
         <source>&gt;&gt;&gt; </source>
@@ -522,17 +522,17 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Instance</source>
-        <translation>Instance</translation>
+        <translation>Instancia</translation>
     </message>
     <message>
         <source>reference</source>
         <comment>Instance</comment>
-        <translation>Reference</translation>
+        <translation>Referencia</translation>
     </message>
     <message>
         <source>combine styles</source>
         <comment>Instance</comment>
-        <translation>Combine styles</translation>
+        <translation>Combinar estilos</translation>
     </message>
     <message>
         <source>min</source>
@@ -547,72 +547,72 @@ Remove the selected items anyway?</translation>
     <message>
         <source>step</source>
         <comment>NumericProperty</comment>
-        <translation>Step</translation>
+        <translation>Paso</translation>
     </message>
     <message>
         <source>Warning</source>
         <comment>OptionsPropertyConfigWidget</comment>
-        <translation>Warning</translation>
+        <translation>Advertencia</translation>
     </message>
     <message>
         <source>Cannot remove last option.</source>
         <comment>OptionsPropertyConfigWidget</comment>
-        <translation>Cannot remove last option.</translation>
+        <translation>La última opción no se puede borrar.</translation>
     </message>
     <message>
         <source>single line</source>
         <comment>StringPropertyConfigWidget</comment>
-        <translation>Sinle line</translation>
+        <translation>Línea singular</translation>
     </message>
     <message>
         <source>multi line</source>
         <comment>StringPropertyConfigWidget</comment>
-        <translation>Multi line</translation>
+        <translation>Líneas múltiples</translation>
     </message>
     <message>
         <source>file path</source>
         <comment>StringPropertyConfigWidget</comment>
-        <translation>Filepath</translation>
+        <translation>Ruta del archivo</translation>
     </message>
     <message>
         <source>code</source>
         <comment>StringPropertyConfigWidget</comment>
-        <translation>Code</translation>
+        <translation>Código</translation>
     </message>
     <message>
         <source>font</source>
         <comment>StringPropertyConfigWidget</comment>
-        <translation>Font</translation>
+        <translation>Fuente</translation>
     </message>
     <message>
         <source>&lt; none &gt;</source>
         <comment>ReferenceLineEdit</comment>
-        <translation>&lt; None &gt;</translation>
+        <translation>&lt; Ninguno &gt;</translation>
     </message>
     <message>
         <source>&lt;multiple values&gt;</source>
         <comment>ReferenceLineEdit</comment>
-        <translation>Multiple values</translation>
+        <translation>Múltiples Valores</translation>
     </message>
     <message>
         <source>copy tags</source>
         <comment>ObjectTreeAdapter</comment>
-        <translation>Copy tags</translation>
+        <translation>Copiar tags</translation>
     </message>
     <message>
         <source>set styles tags</source>
         <comment>ObjectTreeAdapter</comment>
-        <translation>Set style tags</translation>
+        <translation>Elegir tags de estilo</translation>
     </message>
     <message>
         <source>object</source>
         <comment>ObjectTreeAdapter</comment>
-        <translation>Object</translation>
+        <translation>Objeto</translation>
     </message>
     <message>
         <source>is visible</source>
         <comment>ObjectTreeAdapter</comment>
-        <translation>Visibility</translation>
+        <translation>Visibilidad</translation>
     </message>
     <message>
         <source>tags</source>
@@ -622,179 +622,179 @@ Remove the selected items anyway?</translation>
     <message>
         <source>&lt; multiple values &gt;</source>
         <comment>TextEditAdapter</comment>
-        <translation>Multiple values</translation>
+        <translation>Múltiples Valores</translation>
     </message>
     <message>
         <source>size</source>
-        <translation>Size</translation>
+        <translation>Tamaño</translation>
     </message>
     <message>
         <source>view</source>
-        <translation>View</translation>
+        <translation>Punto de Vista</translation>
     </message>
     <message>
         <source>to viewport</source>
-        <translation>Adjust viewport</translation>
+        <translation>Ajustar la Vista al Punto de Vista</translation>
     </message>
     <message>
         <source>from viewport</source>
-        <translation>Adjust to viewport</translation>
+        <translation>Ajustar el Punto de Vista a la Vista</translation>
     </message>
     <message>
         <source>Font</source>
-        <translation>Font</translation>
+        <translation>Fuente</translation>
     </message>
     <message>
         <source>Strikeout</source>
-        <translation>Strikeout</translation>
+        <translation>Tachado</translation>
     </message>
     <message>
         <source>Underline</source>
-        <translation>Underline</translation>
+        <translation>Subrayado</translation>
     </message>
     <message>
         <source>Weight</source>
-        <translation>Weight</translation>
+        <translation>Peso</translation>
     </message>
     <message>
         <source>Italic</source>
-        <translation>Italic</translation>
+        <translation>Cursiva</translation>
     </message>
     <message>
         <source>Overline</source>
-        <translation>Overline</translation>
+        <translation>Superlineado</translation>
     </message>
     <message>
         <source>Mixed</source>
-        <translation>Mixed</translation>
+        <translation>Mezclado</translation>
     </message>
     <message>
         <source>All upper</source>
-        <translation>All upper</translation>
+        <translation>Toda mayúscula</translation>
     </message>
     <message>
         <source>All lower</source>
-        <translation>All lower</translation>
+        <translation>Toda minúscula</translation>
     </message>
     <message>
         <source>Small caps</source>
-        <translation>Small caps</translation>
+        <translation>Versalitas</translation>
     </message>
     <message>
         <source>Capitalize</source>
-        <translation>Capitalize</translation>
+        <translation>Letra mayúscula inicial</translation>
     </message>
     <message>
         <source>Case</source>
-        <translation>Case</translation>
+        <translation>Empleo de mayúsculas/minúsculas</translation>
     </message>
     <message>
         <source>Fixed pitch</source>
-        <translation>Fixed pitch</translation>
+        <translation>Monoespaciado</translation>
     </message>
     <message>
         <source>Kerning</source>
-        <translation>Kerning</translation>
+        <translation>Interletraje</translation>
     </message>
     <message>
         <source>Relative</source>
-        <translation>Relative</translation>
+        <translation>Relativo</translation>
     </message>
     <message>
         <source>Absolute</source>
-        <translation>Absolute</translation>
+        <translation>Absoluto</translation>
     </message>
     <message>
         <source>Letter spacing mode</source>
-        <translation>Letter spacing mode</translation>
+        <translation>Modo de espaciado</translation>
     </message>
     <message>
         <source>Letter spacing</source>
-        <translation>Letter spacing</translation>
+        <translation>Espaciado de letras</translation>
     </message>
     <message>
         <source>Word spacing</source>
-        <translation>Word spacing</translation>
+        <translation>Espaciado de palabras</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Size</translation>
+        <translation>Tamaño</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation>Width</translation>
+        <translation>Ancho</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation>Left</translation>
+        <translation>Izquierdo</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation>Center</translation>
+        <translation>Centro</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation>Right</translation>
+        <translation>Derecho</translation>
     </message>
     <message>
         <source>Justify</source>
-        <translation>Justify</translation>
+        <translation>Justificar</translation>
     </message>
     <message>
         <source>H-Align</source>
-        <translation>Hor. Alignment</translation>
+        <translation>Alineamiento H.</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation>Top</translation>
+        <translation>Cima</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation>Bottom</translation>
+        <translation>Fondo</translation>
     </message>
     <message>
         <source>Left to right</source>
-        <translation>Left to right</translation>
+        <translation>De izquierda a derecha</translation>
     </message>
     <message>
         <source>Right to left</source>
-        <translation>Right to left</translation>
+        <translation>De derecha a izquierda</translation>
     </message>
     <message>
         <source>Auto</source>
-        <translation>Auto</translation>
+        <translation>Automática</translation>
     </message>
     <message>
         <source>none</source>
-        <translation>None</translation>
+        <translation>Ninguno</translation>
     </message>
     <message>
         <source>at word boundary</source>
-        <translation>Word boundary</translation>
+        <translation>Límite de la palabra</translation>
     </message>
     <message>
         <source>anywhere</source>
-        <translation>Anywhere</translation>
+        <translation>En cualquier parte</translation>
     </message>
     <message>
         <source>prefer at word boundary</source>
-        <translation>Prefer word boundary</translation>
+        <translation>Preferir el límite de la palabra</translation>
     </message>
     <message>
         <source>V-Align</source>
-        <translation>Vert. Alignment</translation>
+        <translation>Alineamiento V.</translation>
     </message>
     <message>
         <source>Tab width</source>
-        <translation>Tab width</translation>
+        <translation>Ancho de Tab</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation>Text</translation>
+        <translation>Texto</translation>
     </message>
     <message>
         <source>Fill Random</source>
-        <translation>Fill random</translation>
+        <translation>Rellenar aleatoriamente</translation>
     </message>
     <message>
         <source>seed</source>
@@ -802,47 +802,47 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>length</source>
-        <translation>Length</translation>
+        <translation>Longitud</translation>
     </message>
     <message>
         <source>angle</source>
-        <translation>Angle</translation>
+        <translation>Ángulo</translation>
     </message>
     <message>
         <source>center</source>
-        <translation>Center</translation>
+        <translation>Centro</translation>
     </message>
     <message>
         <source>Outline</source>
-        <translation>Outline</translation>
+        <translation>Trazo</translation>
     </message>
     <message>
         <source>Offset</source>
-        <translation>Offset</translation>
+        <translation>Desplazamiento</translation>
     </message>
     <message>
         <source>Reference</source>
-        <translation>Reference</translation>
+        <translation>Referencia</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Line</translation>
+        <translation>Línea</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Close</translation>
+        <translation>Cerrado</translation>
     </message>
     <message>
         <source>Invert</source>
-        <translation>Invert</translation>
+        <translation>Inverso</translation>
     </message>
     <message>
         <source>rectangle</source>
-        <translation>Rectangle</translation>
+        <translation>Rectángulo</translation>
     </message>
     <message>
         <source>tension</source>
-        <translation>Tension</translation>
+        <translation>Tensión</translation>
     </message>
     <message>
         <source>output</source>
@@ -850,133 +850,133 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Page</source>
-        <translation>Page</translation>
+        <translation>Página</translation>
     </message>
     <message>
         <source>Solid</source>
-        <translation>solid</translation>
+        <translation>Sólido</translation>
     </message>
     <message>
         <source>Dashed</source>
-        <translation>dashed</translation>
+        <translation>Rayado</translation>
     </message>
     <message>
         <source>Dotted</source>
-        <translation>dotted</translation>
+        <translation>Punteado</translation>
     </message>
     <message>
         <source>DashDotted</source>
-        <translation>dash/dot</translation>
+        <translation>rayo/punto</translation>
     </message>
     <message>
         <source>DashDotDotted</source>
-        <translation>dash/dot/dot</translation>
+        <translation>rayo/punto/punto</translation>
     </message>
     <message>
         <source>Stroke Style</source>
-        <translation>Stroke Style</translation>
+        <translation>Estilo de Trazo</translation>
     </message>
     <message>
         <source>Bevel</source>
-        <translation>bevel</translation>
+        <translation>biselada</translation>
     </message>
     <message>
         <source>Miter</source>
-        <translation>miter</translation>
+        <translation>ingleteada</translation>
     </message>
     <message>
         <source>Round</source>
-        <translation>round</translation>
+        <translation>redonda</translation>
     </message>
     <message>
         <source>Join</source>
-        <translation>Join</translation>
+        <translation>Unión</translation>
     </message>
     <message>
         <source>Square</source>
-        <translation>Square</translation>
+        <translation>Cuadrado</translation>
     </message>
     <message>
         <source>Flat</source>
-        <translation>flat</translation>
+        <translation>Embutido</translation>
     </message>
     <message>
         <source>Cap</source>
-        <translation>Cap</translation>
+        <translation>Tope</translation>
     </message>
     <message>
         <source>Cosmetic</source>
-        <translation>cosmetic</translation>
+        <translation>Cosmético</translation>
     </message>
     <message>
         <source>Tip</source>
-        <translation>Tip</translation>
+        <translation>Punta</translation>
     </message>
     <message>
         <source>None</source>
-        <translation>None</translation>
+        <translation>Ninguna</translation>
     </message>
     <message>
         <source>Arrow</source>
-        <translation>Arrow</translation>
+        <translation>Flecha</translation>
     </message>
     <message>
         <source>Bar</source>
-        <translation>Bar</translation>
+        <translation>Barra</translation>
     </message>
     <message>
         <source>Circle</source>
-        <translation>Circle</translation>
+        <translation>Círculo</translation>
     </message>
     <message>
         <source>Diamond</source>
-        <translation>Diamond</translation>
+        <translation>Diamante</translation>
     </message>
     <message>
         <source>Shape</source>
-        <translation>Shape</translation>
+        <translation>Forma</translation>
     </message>
     <message>
         <source>Aspect Ratio</source>
-        <translation>Aspect Ratio</translation>
+        <translation>Relación de Aspecto</translation>
     </message>
     <message>
         <source>Reverse</source>
-        <translation>Reverse</translation>
+        <translation>Invertir</translation>
     </message>
     <message>
         <source>decoration</source>
-        <translation>Decoration</translation>
+        <translation>Decoración</translation>
     </message>
     <message>
         <source>this</source>
-        <translation>this</translation>
+        <translation>Este</translation>
     </message>
     <message>
         <source>anchor</source>
-        <translation>Anchor</translation>
+        <translation>Anclaje</translation>
     </message>
     <message>
         <source>Symmetric</source>
-        <translation>Symmetric</translation>
+        <translation>Simétrico</translation>
     </message>
     <message>
         <source>ObjectsTransformation</source>
-        <translation>Object transformation</translation>
+        <translation>Transformación de objeto</translation>
     </message>
 </context>
 <context>
     <name>ReferenceProperty</name>
     <message>
         <source>ReferenceProperty</source>
-        <translation>Reference property</translation>
+        <translation>Atributo Referencia</translation>
     </message>
 </context>
 <context>
     <name>StringProperty</name>
     <message>
         <source>StringProperty</source>
-        <translation>String property</translation>
+        <translation>Atributo Texto</translation>
     </message>
 </context>
 <context>
@@ -990,317 +990,317 @@ Remove the selected items anyway?</translation>
     <name>Tool</name>
     <message>
         <source>Tool</source>
-        <translation>Tool</translation>
+        <translation>Herramienta</translation>
     </message>
 </context>
 <context>
     <name>TriggerProperty</name>
     <message>
         <source>TriggerProperty</source>
-        <translation>Trigger property</translation>
+        <translation>Atributo Activador</translation>
     </message>
 </context>
 <context>
     <name>Unnamed Option</name>
     <message>
         <source>OptionsPropertyConfigWidget</source>
-        <translation>Options property config widget</translation>
+        <translation>Widget de Configuración Atributo Opción</translation>
     </message>
 </context>
 <context>
     <name>any-context</name>
     <message>
         <source>undo</source>
-        <translation>Undo</translation>
+        <translation>Deshacer</translation>
     </message>
     <message>
         <source>redo</source>
-        <translation>Redo</translation>
+        <translation>Rehacer</translation>
     </message>
     <message>
         <source>new document</source>
-        <translation>New Scene</translation>
+        <translation>Nuevo Documento</translation>
     </message>
     <message>
         <source>save document</source>
-        <translation>Save</translation>
+        <translation>Guardar</translation>
     </message>
     <message>
         <source>save document as</source>
-        <translation>Save as ...</translation>
+        <translation>Guardar como ...</translation>
     </message>
     <message>
         <source>load document</source>
-        <translation>Open ...</translation>
+        <translation>Abrir ...</translation>
     </message>
     <message>
         <source>export</source>
-        <translation>export</translation>
+        <translation>Exportar</translation>
     </message>
     <message>
         <source>make smooth</source>
-        <translation>Adjust tangents cubic</translation>
+        <translation>Ajusta tangentes de modo cúbico</translation>
     </message>
     <message>
         <source>make linear</source>
-        <translation>Vanish tangents</translation>
+        <translation>Borrar tangentes</translation>
     </message>
     <message>
         <source>remove points</source>
-        <translation>Remove points</translation>
+        <translation>Borrar puntos</translation>
     </message>
     <message>
         <source>subdivide</source>
-        <translation>Subdivide</translation>
+        <translation>Subdividir</translation>
     </message>
     <message>
         <source>evaluate</source>
-        <translation>Evaluate</translation>
+        <translation>Evaluar</translation>
     </message>
     <message>
         <source>show keybindings dialog</source>
-        <translation>Show key bindings dialog</translation>
+        <translation>Mostrar mapa de teclado</translation>
     </message>
     <message>
         <source>restore default layout</source>
-        <translation>Restore default layout</translation>
+        <translation>Revertir a la configuración de pantalla por defecto</translation>
     </message>
     <message>
         <source>switch between object and point selection</source>
-        <translation>Switch between object- and point-selection</translation>
+        <translation>Cambiar entre la selección de objectos y puntos</translation>
     </message>
     <message>
         <source>previous tool</source>
-        <translation>Previous tool</translation>
+        <translation>Herramienta previa</translation>
     </message>
     <message>
         <source>select all</source>
-        <translation>Select all</translation>
+        <translation>Seleccionar todo</translation>
     </message>
     <message>
         <source>deselect all</source>
-        <translation>Deselect all</translation>
+        <translation>Deseleccionar todo</translation>
     </message>
     <message>
         <source>invert selection</source>
-        <translation>Invert selection</translation>
+        <translation>Invertir selección</translation>
     </message>
     <message>
         <source>reset viewport</source>
-        <translation>Reset viewport</translation>
+        <translation>Revertir vista</translation>
     </message>
     <message>
         <source>show point dialog</source>
-        <translation>Show point dialog</translation>
+        <translation>Mostrar diálogo para editar puntos</translation>
     </message>
     <message>
         <source>remove selection</source>
-        <translation>Remove selection</translation>
+        <translation>Borrar selección</translation>
     </message>
     <message>
         <source>new style</source>
-        <translation>New Style</translation>
+        <translation>Nuevo estilo</translation>
     </message>
     <message>
         <source>convert objects</source>
-        <translation>Convert objects</translation>
+        <translation>Convertir objetos</translation>
     </message>
     <message>
         <source>Cloner</source>
-        <translation>Cloner</translation>
+        <translation>Clonador</translation>
     </message>
     <message>
         <source>Ellipse</source>
-        <translation>Ellipse</translation>
+        <translation>Elipse</translation>
     </message>
     <message>
         <source>Empty</source>
-        <translation>Empty</translation>
+        <translation>Objeto vacío</translation>
     </message>
     <message>
         <source>ImageObject</source>
-        <translation>Image object</translation>
+        <translation>Objeto Imagen</translation>
     </message>
     <message>
         <source>Instance</source>
-        <translation>Instance</translation>
+        <translation>Instancia</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation>Path</translation>
+        <translation>Trayecto</translation>
     </message>
     <message>
         <source>ProceduralPath</source>
-        <translation>Procedural path</translation>
+        <translation>Trayecto Procedural</translation>
     </message>
     <message>
         <source>remove objects and tags</source>
-        <translation>Remove objects and tags</translation>
+        <translation>Borrar Objetos y Tags</translation>
     </message>
     <message>
         <source>ObjectManager</source>
-        <translation>Object manager</translation>
+        <translation>Controles de Objetos</translation>
     </message>
     <message>
         <source>PropertyManager</source>
-        <translation>Property manager</translation>
+        <translation>Controles de Atributos</translation>
     </message>
     <message>
         <source>PythonConsole</source>
-        <translation>Python Console</translation>
+        <translation>Consola Python</translation>
     </message>
     <message>
         <source>clear python console</source>
-        <translation>Clear python console</translation>
+        <translation>Despejar Consola Python</translation>
     </message>
     <message>
         <source>StyleManager</source>
-        <translation>Style manager</translation>
+        <translation>Controles de Estilos</translation>
     </message>
     <message>
         <source>remove styles</source>
-        <translation>Remove styles</translation>
+        <translation>Borrar estilos</translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation>Properties</translation>
+        <translation>Atributos</translation>
     </message>
     <message>
         <source>BrushSelectTool</source>
-        <translation>Brush selection</translation>
+        <translation>Selección con Pincel</translation>
     </message>
     <message>
         <source>SelectObjectsTool</source>
-        <translation>Select objects</translation>
+        <translation>Seleccionar objetos</translation>
     </message>
     <message>
         <source>SelectPointsTool</source>
-        <translation>Select points</translation>
+        <translation>Seleccionar puntos</translation>
     </message>
     <message>
         <source>Application</source>
-        <translation>Application</translation>
+        <translation>Aplicación</translation>
     </message>
     <message>
         <source>PathTag</source>
-        <translation>Path tag</translation>
+        <translation>Tag Trayecto</translation>
     </message>
     <message>
         <source>ScriptTag</source>
-        <translation>Script tag</translation>
+        <translation>Tag Script</translation>
     </message>
     <message>
         <source>StyleTag</source>
-        <translation>Style tag</translation>
+        <translation>Tag Estilo</translation>
     </message>
     <message>
         <source>View</source>
-        <translation>View</translation>
+        <translation>Punto de Vista</translation>
     </message>
     <message>
         <source>Mirror</source>
-        <translation>Mirror</translation>
+        <translation>Simetrizador</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation>Text</translation>
+        <translation>Texto</translation>
     </message>
     <message>
         <source>KnifeTool</source>
-        <translation>Knife</translation>
+        <translation>Cuchillo</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Line</translation>
+        <translation>Línea</translation>
     </message>
     <message>
         <source>Outline</source>
-        <translation>Outline</translation>
+        <translation>Trazo</translation>
     </message>
     <message>
         <source>HistoryManager</source>
-        <translation>History</translation>
+        <translation>Historia de acciones</translation>
     </message>
     <message>
         <source>PathTool</source>
-        <translation>Path Tool</translation>
+        <translation>Herramienta Trayecto</translation>
     </message>
     <message>
         <source>group objects</source>
-        <translation>Group objects</translation>
+        <translation>Agrupar Objetos</translation>
     </message>
     <message>
         <source>RectangleObject</source>
-        <translation>Rectangle</translation>
+        <translation>Rectángulo</translation>
     </message>
     <message>
         <source>BoundingBoxManager</source>
-        <translation>Bounding Box Manager</translation>
+        <translation>Controles de Bounding Box</translation>
     </message>
 </context>
 <context>
     <name>menu_name</name>
     <message>
         <source>file</source>
-        <translation>File</translation>
+        <translation>Archivo</translation>
     </message>
     <message>
         <source>edit</source>
-        <translation>Edit</translation>
+        <translation>Editar</translation>
     </message>
     <message>
         <source>object</source>
-        <translation>Object</translation>
+        <translation>Objeto</translation>
     </message>
     <message>
         <source>create</source>
-        <translation>Create</translation>
+        <translation>Crear</translation>
     </message>
     <message>
         <source>attach</source>
-        <translation>Attach</translation>
+        <translation>Adjuntar</translation>
     </message>
     <message>
         <source>scene</source>
-        <translation>Scene</translation>
+        <translation>Escena</translation>
     </message>
     <message>
         <source>window</source>
-        <translation>Window</translation>
+        <translation>Ventana</translation>
     </message>
     <message>
         <source>show</source>
-        <translation>Show windows</translation>
+        <translation>Mostrar ventana</translation>
     </message>
     <message>
         <source>load recent document</source>
-        <translation>Recently opened files ...</translation>
+        <translation>Documentos recién abridos ...</translation>
     </message>
     <message>
         <source>path</source>
-        <translation>Path</translation>
+        <translation>Trayecto</translation>
     </message>
     <message>
         <source>tool</source>
-        <translation>Tool</translation>
+        <translation>Herramienta</translation>
     </message>
 </context>
 <context>
     <name>omm::AbstractPropertyConfigWidget</name>
     <message>
         <source>&amp;name:</source>
-        <translation>Name</translation>
+        <translation>Nombre</translation>
     </message>
 </context>
 <context>
     <name>omm::Application</name>
     <message>
         <source>Question.</source>
-        <translation>Question.</translation>
+        <translation>Pregunta.</translation>
     </message>
     <message>
         <source>Some pending changes will be lost if you don&apos;t save.What do you want me to do?</source>
-        <translation>Pending changes will be lost if they are not saved.</translation>
+        <translation>Algunos cambios pendientes se van a perder si no guardas.</translation>
     </message>
     <message>
         <source>Error.</source>
@@ -1308,34 +1308,34 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>The scene could not be saved at &apos;%1&apos;.</source>
-        <translation>The scene could not be saved at &apos;%1&apos;.</translation>
+        <translation>La escena no se pudo guardar como &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>Save scene as ...</source>
-        <translation>Save scene as ...</translation>
+        <translation>Guardar escena como ...</translation>
     </message>
     <message>
         <source>Load scene ...</source>
-        <translation>Load scene ...</translation>
+        <translation>Cargar escena ...</translation>
     </message>
     <message>
         <source>Loading scene from &apos;%1&apos; failed.</source>
-        <translation>Loading scene from &apos;%1&apos; failed.</translation>
+        <translation>La escena en &apos;%1&apos; no se pudo cargar.</translation>
     </message>
     <message>
         <source>Add Tag</source>
-        <translation>Add tag</translation>
+        <translation>Añadir día</translation>
     </message>
     <message>
         <source>Create %1</source>
-        <translation>Create %1</translation>
+        <translation>Crear %1</translation>
     </message>
 </context>
 <context>
     <name>omm::BoundingBoxManager</name>
     <message>
         <source>Bounding Box Manager</source>
-        <translation>Boundin Box Manager</translation>
+        <translation>Controles de Bounding Box</translation>
     </message>
     <message>
         <source>Pos:</source>
@@ -1343,19 +1343,19 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Size:</source>
-        <translation>Size:</translation>
+        <translation>Tamaño:</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation>Points</translation>
+        <translation>Puntos</translation>
     </message>
     <message>
         <source>Objects</source>
-        <translation>Objects</translation>
+        <translation>Objetos</translation>
     </message>
     <message>
         <source>World</source>
-        <translation>World</translation>
+        <translation>Mundo</translation>
     </message>
     <message>
         <source>Local</source>
@@ -1366,27 +1366,27 @@ Remove the selected items anyway?</translation>
     <name>omm::ExportDialog</name>
     <message>
         <source>Viewport</source>
-        <translation>Viewport</translation>
+        <translation>Vista</translation>
     </message>
     <message>
         <source>Export image ...</source>
-        <translation>Export image ...</translation>
+        <translation>Exportar imagen ...</translation>
     </message>
     <message>
         <source>Images (*.png *.jpg)</source>
-        <translation>Images (*.png *.jpg)</translation>
+        <translation>Imagenes (*.png *.jpg)</translation>
     </message>
     <message>
         <source>Writing image &apos;%1&apos; failed.</source>
-        <translation>Writing image &apos;%1&apos; failed.</translation>
+        <translation>No se pudo guardar la imagen como &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>Export image</source>
-        <translation>Export image</translation>
+        <translation>Exportar imagen</translation>
     </message>
     <message>
         <source>Export vector graphics...</source>
-        <translation>Export vector graphics ...</translation>
+        <translation>Exportar imagen vectorial ...</translation>
     </message>
     <message>
         <source>SVG (*.svg)</source>
@@ -1404,14 +1404,14 @@ Remove the selected items anyway?</translation>
     <name>omm::HistoryManager</name>
     <message>
         <source>History</source>
-        <translation>History</translation>
+        <translation>Historia</translation>
     </message>
 </context>
 <context>
     <name>omm::HistoryModel</name>
     <message>
         <source>foundation</source>
-        <translation>Foundation</translation>
+        <translation>Base</translation>
     </message>
     <message>
         <source> #</source>
@@ -1422,7 +1422,7 @@ Remove the selected items anyway?</translation>
     <name>omm::KeyBindingsDialogControls</name>
     <message>
         <source>Any Context</source>
-        <translation>Any Context</translation>
+        <translation>Cualquier contexto</translation>
     </message>
 </context>
 <context>
@@ -1440,7 +1440,7 @@ Remove the selected items anyway?</translation>
     <name>omm::MainWindow</name>
     <message>
         <source>About</source>
-        <translation>About</translation>
+        <translation>Sobre</translation>
     </message>
     <message>
         <source>omm.</source>
@@ -1448,19 +1448,19 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Changing language takes effect after restarting the application.</source>
-        <translation>Changing language takes effect after restarting the application.</translation>
+        <translation>Un cambio de idioma solo tiene efecto cuando reinicies la aplicación.</translation>
     </message>
     <message>
         <source>information</source>
-        <translation>Information</translation>
+        <translation>Información</translation>
     </message>
     <message>
         <source>language</source>
-        <translation>Language</translation>
+        <translation>Idioma</translation>
     </message>
     <message>
         <source>system default</source>
-        <translation>System</translation>
+        <translation>Sistema</translation>
     </message>
     <message>
         <source>*</source>
@@ -1468,7 +1468,7 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>unnamed</source>
-        <translation>unnamed</translation>
+        <translation>Sin nombre</translation>
     </message>
 </context>
 <context>
@@ -1479,11 +1479,11 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Cartesian</source>
-        <translation>Cartesian</translation>
+        <translation>Cartesiano</translation>
     </message>
     <message>
         <source>Both</source>
-        <translation>Both</translation>
+        <translation>Ambas</translation>
     </message>
 </context>
 <context>
@@ -1501,15 +1501,15 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation>Style</translation>
+        <translation>Estilo</translation>
     </message>
     <message>
         <source>Object</source>
-        <translation>Object</translation>
+        <translation>Objeto</translation>
     </message>
     <message>
         <source>convertable</source>
-        <translation>Convertable</translation>
+        <translation>Convertible</translation>
     </message>
     <message>
         <source>has script</source>
@@ -1517,22 +1517,22 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>is path like</source>
-        <translation>Path-like</translation>
+        <translation>De clase Trayecto</translation>
     </message>
     <message>
         <source>allowed:</source>
-        <translation>Allowed:</translation>
+        <translation>Permitido:</translation>
     </message>
     <message>
         <source>required:</source>
-        <translation>Required:</translation>
+        <translation>Requerido:</translation>
     </message>
 </context>
 <context>
     <name>omm::ToolBar</name>
     <message>
         <source>ToolBar</source>
-        <translation>Tool bar</translation>
+        <translation>Barra de Herramientas</translation>
     </message>
 </context>
 </TS>
