@@ -38,7 +38,7 @@ class Style;
 Cloner::Cloner(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("Cloner").toStdString();
-  auto& mode_property = add_property<OptionsProperty>(MODE_PROPERTY_KEY);
+  auto& mode_property = create_property<OptionsProperty>(MODE_PROPERTY_KEY);
   mode_property.set_options({ QObject::tr("Linear").toStdString(),
     QObject::tr("Grid").toStdString(), QObject::tr("Radial").toStdString(),
     QObject::tr("Path").toStdString(), QObject::tr("Script").toStdString(),
@@ -46,73 +46,73 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_label(QObject::tr("mode").toStdString())
     .set_category(category);
 
-  add_property<IntegerProperty>(COUNT_PROPERTY_KEY, 3)
+  create_property<IntegerProperty>(COUNT_PROPERTY_KEY, 3)
     .set_range(0, max)
     .set_label(QObject::tr("count").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Linear, Mode::Radial, Mode::Path,
                                               Mode::Script, Mode::FillRandom });
 
-  add_property<IntegerVectorProperty>(COUNT_2D_PROPERTY_KEY, Vec2i(3, 3))
+  create_property<IntegerVectorProperty>(COUNT_2D_PROPERTY_KEY, Vec2i(3, 3))
     .set_range(Vec2i(0, 0), Vec2i(max, max))
     .set_label(QObject::tr("count").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Grid });
 
-  add_property<FloatVectorProperty>(DISTANCE_2D_PROPERTY_KEY, Vec2f(100.0, 100.0))
+  create_property<FloatVectorProperty>(DISTANCE_2D_PROPERTY_KEY, Vec2f(100.0, 100.0))
     .set_step(Vec2f(0.1, 0.1))
     .set_label(QObject::tr("distance").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Linear, Mode::Grid });
 
-  add_property<FloatProperty>(RADIUS_PROPERTY_KEY, 200.0)
+  create_property<FloatProperty>(RADIUS_PROPERTY_KEY, 200.0)
     .set_step(0.1)
     .set_label(QObject::tr("radius").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Radial });
 
-  add_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
+  create_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(Kind::Object)
     .set_required_flags(Flag::IsPathLike)
     .set_label(QObject::tr("path").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Path, Mode::FillRandom });
 
-  add_property<FloatProperty>(START_PROPERTY_KEY, 0.0)
+  create_property<FloatProperty>(START_PROPERTY_KEY, 0.0)
     .set_step(0.01)
     .set_label(QObject::tr("start").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Radial, Mode::Path });
 
-  add_property<FloatProperty>(END_PROPERTY_KEY, 1.0)
+  create_property<FloatProperty>(END_PROPERTY_KEY, 1.0)
     .set_step(0.01)
     .set_label(QObject::tr("end").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Radial, Mode::Path });
 
-  add_property<BoolProperty>(ALIGN_PROPERTY_KEY, true)
+  create_property<BoolProperty>(ALIGN_PROPERTY_KEY, true)
     .set_label(QObject::tr("align").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Radial, Mode::Path });
 
-  add_property<OptionsProperty>(BORDER_PROPERTY_KEY)
+  create_property<OptionsProperty>(BORDER_PROPERTY_KEY)
     .set_options( { QObject::tr("Clamp").toStdString(), QObject::tr("Wrap").toStdString(),
       QObject::tr("Hide").toStdString(), QObject::tr("Reflect").toStdString() } )
     .set_label(QObject::tr("border").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Radial, Mode::Path });
 
-  add_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
+  create_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
     .set_mode(StringProperty::Mode::Code)
     .set_label(QObject::tr("code").toStdString())
     .set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Script });
 
-  add_property<IntegerProperty>(SEED_PROPERTY_KEY, 12345)
+  create_property<IntegerProperty>(SEED_PROPERTY_KEY, 12345)
     .set_label(QObject::tr("seed").toStdString()).set_category(category)
     .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom });
 
-  add_property<OptionsProperty>(ANCHOR_PROPERTY_KEY, 0)
+  create_property<OptionsProperty>(ANCHOR_PROPERTY_KEY, 0)
       .set_options( { QObject::tr("Path").toStdString(), QObject::tr("this").toStdString() } )
       .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom, Mode::Path })
       .set_label(QObject::tr("anchor").toStdString()).set_category(category);

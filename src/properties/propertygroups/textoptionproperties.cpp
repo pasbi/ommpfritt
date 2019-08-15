@@ -12,11 +12,11 @@ namespace omm
 
 void TextOptionProperties::make_properties(const std::string& category) const
 {
-  add_property<OptionsProperty>(ALIGNH_PROPERTY_KEY)
+  create_property<OptionsProperty>(ALIGNH_PROPERTY_KEY)
     .set_options({ QObject::tr("Left").toStdString(), QObject::tr("Center").toStdString(),
                    QObject::tr("Right").toStdString(), QObject::tr("Justify").toStdString() })
     .set_label(QObject::tr("H-Align").toStdString()).set_category(category);
-  add_property<OptionsProperty>(ALIGNV_PROPERTY_KEY)
+  create_property<OptionsProperty>(ALIGNV_PROPERTY_KEY)
     .set_options({ QObject::tr("Top").toStdString(), QObject::tr("Center").toStdString(),
                    QObject::tr("Bottom").toStdString()
                    // the baseline flag cannot be supported right now because of QTBUG-74652:
@@ -25,15 +25,15 @@ void TextOptionProperties::make_properties(const std::string& category) const
                    //, QObject::tr("Baseline").toStdString()
                  })
     .set_label(QObject::tr("V-Align").toStdString()).set_category(category);
-  add_property<FloatProperty>(TABSTOPDISTANCE_PROPERTY_KEY, 10)
+  create_property<FloatProperty>(TABSTOPDISTANCE_PROPERTY_KEY, 10)
     .set_range(0, 100)
     .set_label(QObject::tr("Tab width").toStdString()).set_category(category);
-  add_property<OptionsProperty>(DIRECTION_PROPERTY_KEY)
+  create_property<OptionsProperty>(DIRECTION_PROPERTY_KEY)
       .set_options({ QObject::tr("Left to right").toStdString(),
                      QObject::tr("Right to left").toStdString(),
                      QObject::tr("Auto").toStdString() })
       .set_label(QObject::tr("Direction").toStdString()).set_category(category);
-  add_property<OptionsProperty>(WRAP_MODE_PROPERTY_KEY)
+  create_property<OptionsProperty>(WRAP_MODE_PROPERTY_KEY)
       .set_options({ QObject::tr("none").toStdString(),
                      QObject::tr("at word boundary").toStdString(),
                      QObject::tr("anywhere").toStdString(),

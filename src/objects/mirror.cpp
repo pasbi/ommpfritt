@@ -13,18 +13,18 @@ namespace omm
 Mirror::Mirror(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("Mirror").toStdString();
-  add_property<OptionsProperty>(DIRECTION_PROPERTY_KEY)
+  create_property<OptionsProperty>(DIRECTION_PROPERTY_KEY)
     .set_options({ QObject::tr("Horizontal").toStdString(),
                    QObject::tr("Vertical").toStdString() })
     .set_label(QObject::tr("Direction").toStdString()).set_category(category);
-  auto& mode_property = add_property<OptionsProperty>(AS_PATH_PROPERTY_KEY);
+  auto& mode_property = create_property<OptionsProperty>(AS_PATH_PROPERTY_KEY);
   mode_property.set_options({ QObject::tr("Object").toStdString(),
                               QObject::tr("Path").toStdString() })
     .set_label(QObject::tr("Mode").toStdString()).set_category(category);
-  add_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY, true)
+  create_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY, true)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Path })
     .set_label(QObject::tr("Close").toStdString()).set_category(category);
-  add_property<BoolProperty>(IS_INVERTED_PROPERTY_KEY, true)
+  create_property<BoolProperty>(IS_INVERTED_PROPERTY_KEY, true)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Path })
     .set_label(QObject::tr("Invert").toStdString()).set_category(category);
 }

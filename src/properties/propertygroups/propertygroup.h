@@ -28,9 +28,9 @@ protected:
   }
 
   template<typename PropertyT, typename... Args>
-  decltype(auto) add_property(const std::string& key, Args&&... args) const
+  decltype(auto) create_property(const std::string& key, Args&&... args) const
   {
-    return m_property_owner.add_property<PropertyT>(this->key(key), std::forward<Args>(args)...);
+    return m_property_owner.create_property<PropertyT>(this->key(key), std::forward<Args>(args)...);
   }
 };
 

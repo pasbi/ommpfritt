@@ -11,16 +11,16 @@ namespace omm
 
 PathTag::PathTag(Object& owner) : Tag(owner)
 {
-  add_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
+  create_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
     .set_required_flags(AbstractPropertyOwner::Flag::IsPathLike)
     .set_label(QObject::tr("path").toStdString())
     .set_category(QObject::tr("path").toStdString());
-  add_property<FloatProperty>(POSITION_PROPERTY_KEY)
+  create_property<FloatProperty>(POSITION_PROPERTY_KEY)
     .set_step(0.001).set_range(0.0, 1.0)
     .set_label(QObject::tr("position").toStdString())
     .set_category(QObject::tr("path").toStdString());
-  add_property<BoolProperty>(ALIGN_REFERENCE_PROPERTY_KEY)
+  create_property<BoolProperty>(ALIGN_REFERENCE_PROPERTY_KEY)
     .set_label(QObject::tr("align").toStdString())
     .set_category(QObject::tr("path").toStdString());
 }

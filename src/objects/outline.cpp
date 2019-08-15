@@ -13,9 +13,9 @@ namespace omm
 Outline::Outline(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("Outline").toStdString();
-  add_property<FloatProperty>(OFFSET_PROPERTY_KEY)
+  create_property<FloatProperty>(OFFSET_PROPERTY_KEY)
     .set_label(QObject::tr("Offset").toStdString()).set_category(category);
-  add_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
+  create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
     .set_label(QObject::tr("Reference").toStdString()).set_category(category);
 }

@@ -13,7 +13,7 @@ namespace omm
 
 SelectObjectsTool::SelectObjectsTool(Scene& scene) : AbstractSelectTool(scene)
 {
-  add_property<OptionsProperty>(TRANSFORMATION_MODE_KEY, 0)
+  create_property<OptionsProperty>(TRANSFORMATION_MODE_KEY, 0)
     .set_options({ QObject::tr("Object").toStdString(), QObject::tr("Axis").toStdString() })
     .set_label(QObject::tr("Mode").toStdString())
     .set_category(QObject::tr("tool").toStdString());

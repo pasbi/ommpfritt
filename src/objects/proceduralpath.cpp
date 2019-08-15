@@ -37,13 +37,13 @@ class Style;
 ProceduralPath::ProceduralPath(Scene* scene) : AbstractProceduralPath(scene)
 {
   static const auto category = QObject::tr("ProceduralPath").toStdString();
-  add_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
+  create_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
     .set_mode(StringProperty::Mode::Code)
     .set_label(QObject::tr("code").toStdString()).set_category(category);
-  add_property<IntegerProperty>(COUNT_PROPERTY_KEY, 10)
+  create_property<IntegerProperty>(COUNT_PROPERTY_KEY, 10)
     .set_range(0, std::numeric_limits<int>::max())
     .set_label(QObject::tr("count").toStdString()).set_category(category);
-  add_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
+  create_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
     .set_label(QObject::tr("closed").toStdString()).set_category(category);
 }
 

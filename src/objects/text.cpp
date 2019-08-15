@@ -15,10 +15,10 @@ Text::Text(Scene* scene)
   : Object(scene), m_font_properties("", *this), m_text_option_properties("", *this)
 {
   static const auto text_category = QObject::tr("Text").toStdString();
-  add_property<StringProperty>(TEXT_PROPERTY_KEY, "Text" )
+  create_property<StringProperty>(TEXT_PROPERTY_KEY, "Text" )
     .set_mode(StringProperty::Mode::MultiLine)
     .set_label(QObject::tr("Text").toStdString()).set_category(text_category);
-  add_property<FloatProperty>(WIDTH_PROPERTY_KEY, 200)
+  create_property<FloatProperty>(WIDTH_PROPERTY_KEY, 200)
     .set_label(QObject::tr("Width").toStdString()).set_category(text_category);
 
   m_font_properties.make_properties(QObject::tr("Font").toStdString());

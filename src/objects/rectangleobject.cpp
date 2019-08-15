@@ -9,12 +9,12 @@ RectangleObject::RectangleObject(Scene *scene)
   : AbstractProceduralPath(scene)
 {
   static const auto category = QObject::tr("rectangle").toStdString();
-  add_property<FloatVectorProperty>(SIZE_PROPERTY_KEY, Vec2f(200.0, 200.0) )
+  create_property<FloatVectorProperty>(SIZE_PROPERTY_KEY, Vec2f(200.0, 200.0) )
     .set_label(QObject::tr("size").toStdString()).set_category(category);
-  add_property<FloatVectorProperty>(RADIUS_PROPERTY_KEY, Vec2f(1.0, 1.0) )
+  create_property<FloatVectorProperty>(RADIUS_PROPERTY_KEY, Vec2f(1.0, 1.0) )
     .set_step(Vec2f(0.01, 0.01)).set_range(Vec2f(0.0, 0.0), Vec2f(1.0, 1.0))
     .set_label(QObject::tr("radius").toStdString()).set_category(category);
-  add_property<FloatVectorProperty>(TENSION_PROPERTY_KEY, Vec2f(1.0, 1.0) )
+  create_property<FloatVectorProperty>(TENSION_PROPERTY_KEY, Vec2f(1.0, 1.0) )
     .set_step(Vec2f(0.01, 0.01)).set_range(Vec2f(0.0, 0.0), Vec2f(1.0, 1.0))
     .set_label(QObject::tr("tension").toStdString()).set_category(category);
 }

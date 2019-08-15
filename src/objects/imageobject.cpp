@@ -22,31 +22,31 @@ namespace omm
 ImageObject::ImageObject(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("image").toStdString();
-  add_property<StringProperty>(FILEPATH_PROPERTY_KEY)
+  create_property<StringProperty>(FILEPATH_PROPERTY_KEY)
     .set_mode(StringProperty::Mode::FilePath)
     .set_label(QObject::tr("filename").toStdString()).set_category(category);
 
-  add_property<FloatProperty>(WIDTH_PROPERTY_KEY, 100)
+  create_property<FloatProperty>(WIDTH_PROPERTY_KEY, 100)
     .set_range(0.0, FloatPropertyLimits::upper)
     .set_label(QObject::tr("Width").toStdString()).set_category(category);
-  add_property<FloatProperty>(OPACITY_PROPERTY_KEY, 1.0)
+  create_property<FloatProperty>(OPACITY_PROPERTY_KEY, 1.0)
     .set_range(0.0, 1.0).set_step(0.01)
     .set_label(QObject::tr("Opacity").toStdString()).set_category(category);
 
-  add_property<IntegerProperty>(PAGE_PROPERTY_KEY, 0)
+  create_property<IntegerProperty>(PAGE_PROPERTY_KEY, 0)
     .set_range(0, IntegerPropertyLimits::upper)
     .set_label(QObject::tr("Page").toStdString()).set_category(category)
     .set_enabled_buddy(*property(FILEPATH_PROPERTY_KEY), [](Property& property) {
       return is_paged_image(static_cast<StringProperty&>(property).value());
     });
 
-  add_property<OptionsProperty>(HANCHOR_PROPERTY_KEY, 1)
+  create_property<OptionsProperty>(HANCHOR_PROPERTY_KEY, 1)
     .set_options({ QObject::tr("Left").toStdString(),
                    QObject::tr("Center").toStdString(),
                    QObject::tr("Right").toStdString() })
     .set_label(QObject::tr("Horizontal").toStdString()).set_category(category);
 
-  add_property<OptionsProperty>(VANCHOR_PROPERTY_KEY, 1)
+  create_property<OptionsProperty>(VANCHOR_PROPERTY_KEY, 1)
     .set_options({ QObject::tr("Top").toStdString(),
                    QObject::tr("Center").toStdString(),
                    QObject::tr("Bottom").toStdString() })

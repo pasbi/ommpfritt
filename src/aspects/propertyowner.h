@@ -87,22 +87,16 @@ public:
 
   static const std::string NAME_PROPERTY_KEY;
 
-  template<typename PropertyT>
-  PropertyT& add_property(const std::string& key, std::unique_ptr<PropertyT> property)
-  {
-    static_assert(std::is_base_of<Property, PropertyT>::value);
-    PropertyT& ref = *property;
-    assert(!m_properties.contains(key));
-    m_properties.insert(key, std::move(property));
-    ref.Observed<AbstractPropertyObserver>::register_observer(this);
-    return ref;
-  }
+  Property& add_property(const std::string& key, std::unique_ptr<Property> property);
 
   template<typename PropertyT, typename... Args>
-  PropertyT& add_property(const std::string& key, Args&&... args)
+  PropertyT& create_property(const std::string& key, Args&&... args)
   {
     static_assert(std::is_base_of<Property, PropertyT>::value);
-    return add_property<PropertyT>(key, std::make_unique<PropertyT>(std::forward<Args>(args)...));
+    auto property = std::make_unique<PropertyT>(std::forward<Args>(args)...);
+    PropertyT& ref = *property;
+    add_property(key, std::move(property));
+    return ref;
   }
 
   std::unique_ptr<Property> extract_property(const std::string& key);

@@ -19,11 +19,11 @@ Instance::Instance(Scene* scene)
   : Object(scene)
 {
   static const auto category = QObject::tr("Instance").toStdString();
-  add_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
+  create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
     .set_label(QObject::tr("reference", "Instance").toStdString()).set_category(category);
-  add_property<BoolProperty>(COMBINE_STYLES_PROPERTY_KEY)
-      .set_label(QObject::tr("combine styles", "Instance").toStdString()).set_category(category);
+  create_property<BoolProperty>(COMBINE_STYLES_PROPERTY_KEY)
+    .set_label(QObject::tr("combine styles", "Instance").toStdString()).set_category(category);
 }
 
 Instance::Instance(const Instance &other) : Object(other) {}

@@ -119,6 +119,17 @@ void AbstractPropertyOwner::on_change(AbstractPropertyOwner *subject, int what, 
   Observed<AbstractPropertyOwnerObserver>::for_each([=](auto* observer) {
     observer->on_change(subject, what, property, trace);
   });
+}
+
+Property
+&AbstractPropertyOwner::add_property(const std::string &key, std::unique_ptr<Property> property)
+{
+  Property& ref = *property;
+  assert(!m_properties.contains(key));
+  m_properties.insert(key, std::move(property));
+  connect(&ref, SIGNAL(value_changed(Property*)),
+          this, SLOT(on_property_value_changed(Property*)));
+  return ref;
   Q_EMIT property_changed(property, trace);
 }
 

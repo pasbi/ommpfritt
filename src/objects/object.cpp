@@ -40,35 +40,35 @@ Style Object::m_bounding_box_style = ContourStyle(omm::Colors::BLACK, 1.0);
 Object::Object(Scene* scene) : m_scene(scene)
 {
   static const auto category = QObject::tr("basic").toStdString();
-  add_property<OptionsProperty>(IS_VISIBLE_PROPERTY_KEY, 0)
+  create_property<OptionsProperty>(IS_VISIBLE_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("visible").toStdString(), QObject::tr("hidden").toStdString(),
       QObject::tr("hide tree").toStdString() })
     .set_label(QObject::tr("").toStdString())
     .set_category(category);
 
-  add_property<BoolProperty>(IS_ACTIVE_PROPERTY_KEY, true)
+  create_property<BoolProperty>(IS_ACTIVE_PROPERTY_KEY, true)
     .set_label(QObject::tr("active").toStdString())
     .set_category(category);
 
-  add_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>").toStdString())
+  create_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>").toStdString())
     .set_label(QObject::tr("Name").toStdString())
     .set_category(category);
 
-  add_property<FloatVectorProperty>(POSITION_PROPERTY_KEY, Vec2f(0.0, 0.0))
+  create_property<FloatVectorProperty>(POSITION_PROPERTY_KEY, Vec2f(0.0, 0.0))
     .set_label(QObject::tr("pos").toStdString())
     .set_category(category);
 
-  add_property<FloatVectorProperty>(SCALE_PROPERTY_KEY, Vec2f(1.0, 1.0))
+  create_property<FloatVectorProperty>(SCALE_PROPERTY_KEY, Vec2f(1.0, 1.0))
     .set_step(Vec2f(0.1, 0.1))
     .set_label(QObject::tr("scale").toStdString())
     .set_category(category);
 
-  add_property<FloatProperty>(ROTATION_PROPERTY_KEY, 0.0)
+  create_property<FloatProperty>(ROTATION_PROPERTY_KEY, 0.0)
     .set_multiplier(180.0 / M_PI)
     .set_label(QObject::tr("rotation").toStdString())
     .set_category(category);
 
-  add_property<FloatProperty>(SHEAR_PROPERTY_KEY, 0.0)
+  create_property<FloatProperty>(SHEAR_PROPERTY_KEY, 0.0)
     .set_step(0.01)
     .set_label(QObject::tr("shear").toStdString())
     .set_category(category);

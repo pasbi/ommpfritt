@@ -10,7 +10,7 @@ namespace omm
 
 SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene) : AbstractSelectTool(scene)
 {
-  add_property<OptionsProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
+  create_property<OptionsProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("Mirror").toStdString(), QObject::tr("Individual").toStdString() })
     .set_label(QObject::tr("tangent").toStdString())
     .set_category(QObject::tr("tool").toStdString());

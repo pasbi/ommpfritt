@@ -11,7 +11,7 @@ namespace omm
 StyleTag::StyleTag(Object& owner)
   : Tag(owner)
 {
-  add_property<ReferenceProperty>(STYLE_REFERENCE_PROPERTY_KEY)
+  create_property<ReferenceProperty>(STYLE_REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(Kind::Style)
     .set_label(QObject::tr("style").toStdString())
     .set_category(QObject::tr("style").toStdString());

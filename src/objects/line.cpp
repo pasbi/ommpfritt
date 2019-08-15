@@ -11,12 +11,12 @@ class Style;
 Line::Line(Scene* scene) : AbstractProceduralPath(scene)
 {
   static const auto category = QObject::tr("Line").toStdString();
-  add_property<FloatProperty>(LENGTH_PROPERTY_KEY, 100.0 )
+  create_property<FloatProperty>(LENGTH_PROPERTY_KEY, 100.0 )
     .set_label(QObject::tr("length").toStdString()).set_category(category);
-  add_property<FloatProperty>(ANGLE_PROPERTY_KEY, 0)
+  create_property<FloatProperty>(ANGLE_PROPERTY_KEY, 0)
     .set_multiplier(180.0 / M_PI)
     .set_label(QObject::tr("angle").toStdString()).set_category(category);
-  add_property<BoolProperty>(CENTER_PROPERTY_KEY, true)
+  create_property<BoolProperty>(CENTER_PROPERTY_KEY, true)
     .set_label(QObject::tr("center").toStdString()).set_category(category);
 }
 

@@ -28,12 +28,12 @@ AbstractSelectTool::AbstractSelectTool(Scene& scene)
 
 {
   const std::string category = QObject::tr("tool").toStdString();
-  this->add_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY, 1)
+  create_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY, 1)
     .set_options({ QObject::tr("global").toStdString(), QObject::tr("local").toStdString() })
     .set_label(QObject::tr("Alignment").toStdString())
     .set_category(category);
 
-  this->add_property<BoolProperty>(SYMMETRIC_PROPERTY_KEY, false)
+  create_property<BoolProperty>(SYMMETRIC_PROPERTY_KEY, false)
     .set_label(QObject::tr("Symmetric").toStdString())
     .set_category(category);
 }

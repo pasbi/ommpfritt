@@ -15,13 +15,13 @@ namespace omm
 View::View(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("view").toStdString();
-  add_property<FloatVectorProperty>(SIZE_PROPERTY_KEY, Vec2f(100.0, 100.0) )
+  create_property<FloatVectorProperty>(SIZE_PROPERTY_KEY, Vec2f(100.0, 100.0) )
     .set_label(QObject::tr("size").toStdString()).set_category(category);
-  add_property<TriggerProperty>(TO_VIEWPORT_PROPERTY_KEY)
+  create_property<TriggerProperty>(TO_VIEWPORT_PROPERTY_KEY)
     .set_label(QObject::tr("to viewport").toStdString()).set_category(category);
-  add_property<TriggerProperty>(FROM_VIEWPORT_PROPERTY_KEY)
+  create_property<TriggerProperty>(FROM_VIEWPORT_PROPERTY_KEY)
     .set_label(QObject::tr("from viewport").toStdString()).set_category(category);
-  add_property<BoolProperty>(OUTPUT_VIEW_PROPERTY_KEY, false)
+  create_property<BoolProperty>(OUTPUT_VIEW_PROPERTY_KEY, false)
       .set_label(QObject::tr("output").toStdString()).set_category(category);
 }
 

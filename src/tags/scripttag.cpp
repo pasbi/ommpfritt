@@ -28,16 +28,16 @@ namespace omm
 ScriptTag::ScriptTag(Object& owner)
   : Tag(owner)
 {
-  add_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
+  create_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
     .set_mode(StringProperty::Mode::Code)
     .set_label(QObject::tr("code").toStdString())
     .set_category(QObject::tr("script").toStdString());
-  add_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY, 0)
+  create_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("on request").toStdString(),
                    QObject::tr("per frame").toStdString() })
     .set_label(QObject::tr("update").toStdString())
     .set_category(QObject::tr("script").toStdString());
-  add_property<TriggerProperty>(TRIGGER_UPDATE_PROPERTY_KEY)
+  create_property<TriggerProperty>(TRIGGER_UPDATE_PROPERTY_KEY)
     .set_label(QObject::tr("evaluate").toStdString())
     .set_category(QObject::tr("script").toStdString());
 }

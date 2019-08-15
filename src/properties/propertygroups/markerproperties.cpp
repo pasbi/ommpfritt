@@ -18,19 +18,19 @@ MarkerProperties
 
 void MarkerProperties::make_properties(const std::string &category) const
 {
-  add_property<OptionsProperty>(SHAPE_PROPERTY_KEY, static_cast<std::size_t>(m_default_shape))
+  create_property<OptionsProperty>(SHAPE_PROPERTY_KEY, static_cast<std::size_t>(m_default_shape))
     .set_options(shapes()).set_category(category)
     .set_label(QObject::tr("Shape").toStdString());
 
-  add_property<FloatProperty>(SIZE_PROPERTY_KEY, m_default_size)
+  create_property<FloatProperty>(SIZE_PROPERTY_KEY, m_default_size)
     .set_step(0.1).set_range(0.0, FloatPropertyLimits::upper)
     .set_label(QObject::tr("Size").toStdString()).set_category(category);
 
-  add_property<FloatProperty>(ASPECT_RATIO_PROPERTY_KEY)
+  create_property<FloatProperty>(ASPECT_RATIO_PROPERTY_KEY)
     .set_step(0.001)
     .set_label(QObject::tr("Aspect Ratio").toStdString()).set_category(category);
 
-  add_property<BoolProperty>(REVERSE_PROPERTY_KEY)
+  create_property<BoolProperty>(REVERSE_PROPERTY_KEY)
       .set_label(QObject::tr("Reverse").toStdString()).set_category(category);
 }
 

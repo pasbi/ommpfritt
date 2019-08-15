@@ -13,7 +13,7 @@ const Style BrushSelectTool::m_style = ContourStyle(omm::Color(0.0, 0.0, 0.0));
 
 BrushSelectTool::BrushSelectTool(Scene& scene) : SelectPointsBaseTool(scene)
 {
-  this->template add_property<FloatProperty>(RADIUS_PROPERTY_KEY, 20.0)
+  create_property<FloatProperty>(RADIUS_PROPERTY_KEY, 20.0)
     .set_label(QObject::tr("radius").toStdString())
     .set_category(QObject::tr("tool").toStdString());
 }
