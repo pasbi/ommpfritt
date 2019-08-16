@@ -70,7 +70,7 @@ void Painter::toast(const Vec2f &pos, const std::string &text)
 
   painter->setBrush(QBrush(QColor(80, 60, 40, 120)));
   painter->setPen(QPen(Qt::white));
-  painter->drawRoundRect(actual_rect);
+  painter->drawRoundedRect(actual_rect, 25, 25, Qt::AbsoluteSize);
   painter->restore();
 }
 

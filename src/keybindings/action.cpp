@@ -19,7 +19,7 @@ public:
   LiveLabel(const std::function<std::string(void)>& getter) : m_getter(getter) {}
   QSize sizeHint() const override
   {
-    const auto width = fontMetrics().width(QString::fromStdString(m_getter()));
+    const auto width = fontMetrics().horizontalAdvance(QString::fromStdString(m_getter()));
     const auto height = fontMetrics().height();
     return QSize(width, height);
   }
