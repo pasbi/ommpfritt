@@ -23,13 +23,6 @@ class Property;
 class AbstractPropertyOwner;
 class OptionsProperty;
 
-class AbstractPropertyObserver
-{
-public:
-  virtual ~AbstractPropertyObserver() = default;
-  virtual void on_property_value_changed(Property& property, std::set<const void*> trace) = 0;
-};
-
 class TriggerPropertyDummyValueType
 {
 public:
@@ -38,21 +31,21 @@ public:
 };
 
 class Property
-  : public AbstractFactory<std::string, Property>
+  : public QObject
+  , public AbstractFactory<std::string, Property>
   , public virtual Serializable
-  , public Observed<AbstractPropertyObserver>
 {
+  Q_OBJECT
 public:
   using variant_type = std::variant< bool, Color, double, int, AbstractPropertyOwner*,
                                      std::string, size_t, TriggerPropertyDummyValueType,
                                      Vec2f, Vec2i >;
 
   Property() = default;
-  explicit Property(const Property& other) = default;
+  explicit Property(const Property& other);
   virtual ~Property() = default;
 
   virtual variant_type variant_value() const = 0;
-  void notify_observers(std::set<const void*> trace);
 
   virtual void set(const variant_type& value) = 0;
 
@@ -137,17 +130,9 @@ private:
     bool is_enabled() const;
   } m_enabled_buddy;
 
-public:
-  struct NotificationBlocker
-  {
-    explicit NotificationBlocker(Property& p);
-    ~NotificationBlocker();
-  private:
-    Property& m_p;
-  };
-private:
-  friend struct NotificationBlocker;
-  bool m_notifications_are_blocked;
+Q_SIGNALS:
+  void value_changed(Property*);
+
 };
 
 void register_properties();

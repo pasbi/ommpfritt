@@ -19,7 +19,7 @@ public:
   static constexpr auto FROM_VIEWPORT_PROPERTY_KEY = "from-viewport";
   static constexpr auto OUTPUT_VIEW_PROPERTY_KEY = "output";
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "View");
-  void on_property_value_changed(Property& property, std::set<const void*> trace) override;
+  void on_property_value_changed(Property* property) override;
   Flag flags() const override;
 private:
   void from_viewport();

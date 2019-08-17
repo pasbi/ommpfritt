@@ -34,7 +34,6 @@ public:
 
 class AbstractPropertyOwner : public QObject
                             , public virtual Serializable
-                            , public AbstractPropertyObserver
                             , public Observed<AbstractPropertyOwnerObserver>
 {
   Q_OBJECT
@@ -69,22 +68,8 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual std::string name() const;
-  void on_property_value_changed(Property& property, std::set<const void*> trace) override;
-
-  /**
-   * @brief on_change is called when the appearance of `this` changed.
-   *  That is, if `this` is hierarchical (i.e., Object) on_change is also called recursively
-   *  if one of its children changed.
-   * @param subject the item that has changed. For non-hierarchical items, subject equals this.
-   * @param what a code about what has changed. New codes may be defined in subclasses.
-   * @param property the property which has changed. May be nullptr if the change was not induced
-   *  by a property.
-   */
-  virtual void on_change(AbstractPropertyOwner* subject, int what, Property* property, std::set<const void *> trace);
-  static constexpr auto PROPERTY_CHANGED = 0; // A property changed
 
   virtual Kind kind() const = 0;
-
   static const std::string NAME_PROPERTY_KEY;
 
   Property& add_property(const std::string& key, std::unique_ptr<Property> property);
@@ -104,6 +89,9 @@ public:
 
   std::size_t id() const;
 
+protected Q_SLOTS:
+  virtual void on_property_value_changed(Property* property) { Q_UNUSED(property); }
+
 private:
   OrderedMap<std::string, Property> m_properties;
 
@@ -112,9 +100,6 @@ private:
    *  if 0 then the proposal shall be ignored and a new id shall be generated instead.
    */
   mutable std::size_t m_id = 0;
-
-Q_SIGNALS:
-  void property_changed(Property* property, std::set<const void*> trace);
 
 public:
   // A set of ReferenceProperties which reference `this`.

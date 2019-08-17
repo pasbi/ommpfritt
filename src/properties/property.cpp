@@ -9,13 +9,11 @@
 namespace omm
 {
 
-void Property::notify_observers(std::set<const void*> trace)
+Property::Property(const Property &other)
+  : QObject()
+  , m_label(other.m_label)
+  , m_category(other.m_category)
 {
-  if (!m_notifications_are_blocked) {
-    Observed<AbstractPropertyObserver>::for_each([this, trace](auto* observer) {
-      observer->on_property_value_changed(*this, trace);
-    });
-  }
 }
 
 std::string Property::label() const { return m_label; }
@@ -126,16 +124,6 @@ Property& Property
 bool Property::is_compatible(const Property& other) const
 {
   return other.category() == category() && other.type() == type();
-}
-
-Property::NotificationBlocker::NotificationBlocker(Property &p) : m_p(p)
-{
-  m_p.m_notifications_are_blocked = true;
-}
-
-Property::NotificationBlocker::~NotificationBlocker()
-{
-  m_p.m_notifications_are_blocked = false;
 }
 
 bool Property::IsEnabledBuddy::is_enabled() const

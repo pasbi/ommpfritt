@@ -34,7 +34,7 @@ AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner &other)
 AbstractPropertyOwner::~AbstractPropertyOwner()
 {
   for (ReferenceProperty* ref_prop : m_referees) {
-    ReferenceProperty::NotificationBlocker blocker(*ref_prop);
+    QSignalBlocker blocker(ref_prop);
     ref_prop->set(nullptr);
   }
 }
@@ -106,21 +106,6 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
   }
 }
 
-void AbstractPropertyOwner::on_property_value_changed(Property& property, std::set<const void *> trace)
-{
-  trace.insert(this);
-  on_change(this, PROPERTY_CHANGED, &property, trace);
-}
-
-void AbstractPropertyOwner::on_change(AbstractPropertyOwner *subject, int what, Property *property,
-                                      std::set<const void*> trace)
-{
-  trace.insert(this);
-  Observed<AbstractPropertyOwnerObserver>::for_each([=](auto* observer) {
-    observer->on_change(subject, what, property, trace);
-  });
-}
-
 Property
 &AbstractPropertyOwner::add_property(const std::string &key, std::unique_ptr<Property> property)
 {
@@ -130,7 +115,6 @@ Property
   connect(&ref, SIGNAL(value_changed(Property*)),
           this, SLOT(on_property_value_changed(Property*)));
   return ref;
-  Q_EMIT property_changed(property, trace);
 }
 
 std::string AbstractPropertyOwner::name() const
@@ -141,7 +125,7 @@ std::string AbstractPropertyOwner::name() const
 std::unique_ptr<Property> AbstractPropertyOwner::extract_property(const std::string& key)
 {
   auto property = m_properties.extract(key);
-  property->Observed<AbstractPropertyObserver>::unregister_observer(this);
+  disconnect(property.get(), &Property::value_changed, this, nullptr);
   return property;
 }
 

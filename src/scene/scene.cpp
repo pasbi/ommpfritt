@@ -94,37 +94,12 @@ void Scene::prepare_reset()
       }
     }
   }
-  object_tree.replace_root(make_root());
+
+  auto root = make_root();
+  connect(root.get(), SIGNAL(transformation_changed(Object*)), this, SIGNAL(repaint()));
+  connect(root.get(), SIGNAL(appearance_changed(Object*)), this, SIGNAL(repaint()));
+  object_tree.replace_root(std::move(root));
   styles.set(std::vector<std::unique_ptr<Style>> {});
-}
-
-std::unique_ptr<Object> Scene::make_root()
-{
-  class Root : public Empty
-  {
-  public:
-    explicit Root(Scene* scene) : Empty(scene) {}
-    void on_change(AbstractPropertyOwner* subject, int code, Property* property,
-                   std::set<const void*> trace) override
-    {
-      Object::on_change(subject, code, property, trace);
-      if (code == Object::HIERARCHY_CHANGED) {
-        scene()->invalidate();
-      } else if (code == AbstractPropertyOwner::PROPERTY_CHANGED) {
-        const auto* object = kind_cast<const Object*>(subject);
-        assert(property != nullptr);
-        assert(object != nullptr);
-        if ( property == object->property(Object::IS_VISIBLE_PROPERTY_KEY)
-             || property == object->property(Object::IS_ACTIVE_PROPERTY_KEY) )
-        {
-          scene()->invalidate();  // reset all the handles
-        }
-      }
-      Q_EMIT scene()->scene_changed(subject, code, property);
-    }
-  };
-
-  return std::unique_ptr<Object>(std::make_unique<Root>(this).release());
 }
 
 std::set<ReferenceProperty*>
@@ -358,6 +333,11 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 }
 
 std::set<AbstractPropertyOwner*> Scene::selection() const { return m_selection; }
+
+std::unique_ptr<Object> Scene::make_root()
+{
+  return std::make_unique<Empty>(this);
+}
 
 template<> std::set<Tag*> Scene::find_items<Tag>(const std::string& name) const
 {

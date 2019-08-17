@@ -101,4 +101,19 @@ BoundingBox ImageObject::bounding_box(const ObjectTransformation &transformation
   return BoundingBox();
 }
 
+void ImageObject::on_property_value_changed(Property *property)
+{
+  if (   property == this->property(FILEPATH_PROPERTY_KEY)
+      || property == this->property(WIDTH_PROPERTY_KEY)
+      || property == this->property(OPACITY_PROPERTY_KEY)
+      || property == this->property(PAGE_PROPERTY_KEY)
+      || property == this->property(HANCHOR_PROPERTY_KEY)
+      || property == this->property(VANCHOR_PROPERTY_KEY))
+  {
+    Q_EMIT appearance_changed(this);
+  } else {
+    Object::on_property_value_changed(property);
+  }
+}
+
 }  // namespace omm

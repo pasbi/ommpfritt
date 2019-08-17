@@ -69,9 +69,9 @@ void View::make_output_unique()
 {
   const auto views = type_cast<View*>(scene()->object_tree.items());
   for (View* view : views) {
-    auto& property = *view->property(OUTPUT_VIEW_PROPERTY_KEY);
-    Property::NotificationBlocker blocker(property);
-    property.set(view == this);
+    Property* property = view->property(OUTPUT_VIEW_PROPERTY_KEY);
+    QSignalBlocker blocker(property);
+    property->set(view == this);
   }
 }
 
@@ -82,12 +82,12 @@ void View::draw_handles(Painter &renderer) const
   renderer.painter->drawRect(QRectF(-size.x/2.0, -size.y/2.0, size.x, size.y));
 }
 
-void View::on_property_value_changed(Property& property, std::set<const void *> trace)
+void View::on_property_value_changed(Property *property)
 {
-  if (&property == this->property(TO_VIEWPORT_PROPERTY_KEY)) { to_viewport(); }
-  if (&property == this->property(FROM_VIEWPORT_PROPERTY_KEY)) { from_viewport(); }
-  if (&property == this->property(OUTPUT_VIEW_PROPERTY_KEY)) { make_output_unique(); }
-  Object::on_property_value_changed(property, trace);
+  if (property == this->property(TO_VIEWPORT_PROPERTY_KEY)) { to_viewport(); }
+  if (property == this->property(FROM_VIEWPORT_PROPERTY_KEY)) { from_viewport(); }
+  if (property == this->property(OUTPUT_VIEW_PROPERTY_KEY)) { make_output_unique(); }
+  Object::on_property_value_changed(property);
 }
 
 void View::from_viewport()

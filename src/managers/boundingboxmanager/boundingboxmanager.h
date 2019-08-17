@@ -12,14 +12,16 @@ namespace omm
 class AbstractPropertyOwner;
 class AnchorWidget;
 
-class BoundingBoxManager : public Manager, public AbstractPropertyObserver
+class BoundingBoxManager : public Manager
 {
   Q_OBJECT
 public:
   BoundingBoxManager(Scene &scene);
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "BoundingBoxManager");
-  void on_property_value_changed(Property&, std::set<const void*> trace) override;
+
+public Q_SLOTS:
+  void on_property_value_changed(Property& property);
 
 private:
   enum class Mode { Points = 0, Objects = 1 };

@@ -56,6 +56,21 @@ std::vector<Point> RectangleObject::points() const
   return std::vector(points.begin(), points.end());
 }
 
-bool RectangleObject::is_closed() const { return true; }
+bool RectangleObject::is_closed() const
+{
+  return true;
+}
+
+void RectangleObject::on_property_value_changed(Property *property)
+{
+  if (   property == this->property(SIZE_PROPERTY_KEY)
+      || property == this->property(RADIUS_PROPERTY_KEY)
+      || property == this->property(TENSION_PROPERTY_KEY))
+  {
+    Q_EMIT appearance_changed(this);
+  } else {
+    Object::on_property_value_changed(property);
+  }
+}
 
 }  // namespace omm

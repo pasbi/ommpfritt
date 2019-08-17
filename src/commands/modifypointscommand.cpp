@@ -21,7 +21,6 @@ void ModifyPointsCommand::swap()
     for (auto& [point_ptr, other] : points) {
       point_ptr->swap(other);
     }
-    path->on_change(path, Path::POINTS_CHANGED, nullptr, { this });
   }
 }
 
@@ -85,7 +84,6 @@ void AbstractPointsCommand::remove()
   for (auto&& [path, points] : m_removed_points) {
     m_added_points[path] = path->remove_points(points);
     path->update_tangents();
-    path->on_change(path, Path::POINTS_CHANGED, nullptr, { this });
   }
   m_removed_points.clear();
   scene().update_tool();
@@ -97,7 +95,6 @@ void AbstractPointsCommand::add()
   for (auto&& [path, points] : m_added_points) {
     m_removed_points[path] = path->add_points(points);
     path->update_tangents();
-    path->on_change(path, Path::POINTS_CHANGED, nullptr, { this });
   }
   m_added_points.clear();
   scene().update_tool();

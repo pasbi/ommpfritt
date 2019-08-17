@@ -15,8 +15,7 @@ namespace omm
 
 class PropertyView;
 
-class PropertyManager
-  : public Manager, public AbstractPropertyObserver
+class PropertyManager : public Manager
 {
   Q_OBJECT
 public:
@@ -25,7 +24,6 @@ public:
 
   PropertyView property(const std::string& key);
   void clear();
-  void on_property_value_changed(Property&, std::set<const void*> trace) override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PropertyManager");
   std::string type() const override;
 
@@ -34,9 +32,7 @@ private:
   std::string m_active_category;
   QAction* m_manage_user_properties_action;
   std::unique_ptr<QWidget> make_menu_bar();
-  std::set<AbstractPropertyOwner*>  m_current_selection;
-  std::set<Property*> m_observed_properties;
-  std::map<Property*, bool> m_defeatable_properties;
+  std::set<AbstractPropertyOwner*> m_current_selection;
   std::string make_window_title() const;
   bool m_is_locked = false;
 

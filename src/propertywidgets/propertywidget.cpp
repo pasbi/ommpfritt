@@ -11,16 +11,8 @@ AbstractPropertyWidget::AbstractPropertyWidget(Scene& scene, const std::set<Prop
   , m_properties(properties)
 {
   for (auto&& property : properties) {
-    property->Observed<AbstractPropertyObserver>::register_observer(this);
-  }
-  connect(&m_update_timer, &QTimer::timeout, [this]() { update_edit(); });
-  m_update_timer.setSingleShot(true);
-}
-
-AbstractPropertyWidget::~AbstractPropertyWidget()
-{
-  for (auto&& property : m_properties) {
-    property->Observed<AbstractPropertyObserver>::unregister_observer(this);
+    connect(property, SIGNAL(value_changed(Property*)),
+            this, SLOT(on_property_value_changed(Property*)));
   }
 }
 
@@ -32,10 +24,10 @@ void AbstractPropertyWidget::set_default_layout(std::unique_ptr<QWidget> other)
   setLayout(layout.release());
 }
 
-void AbstractPropertyWidget::on_property_value_changed(Property&, std::set<const void *> trace)
+void AbstractPropertyWidget::on_property_value_changed(Property*)
 {
   // wait until other properties have updated (important for MultiValueEdit)
-  m_update_timer.start(0);
+  QTimer::singleShot(1, this, SLOT(update_edit()));
 }
 
 }  // namespace omm

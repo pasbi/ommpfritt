@@ -7,8 +7,7 @@
 #include "properties/optionsproperty.h"
 #include "objects/tip.h"
 
-namespace
-{
+namespace {
 
 static constexpr auto start_marker_prefix = "start";
 static constexpr auto end_marker_prefix = "end";
@@ -28,45 +27,45 @@ Style::Style(Scene* scene)
   const auto pen_category = QObject::tr("pen").toStdString();
   const auto brush_category = QObject::tr("brush").toStdString();
   const auto decoration_category = QObject::tr("decoration").toStdString();
-  add_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>").toStdString())
+  create_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>").toStdString())
     .set_label(QObject::tr("Name").toStdString())
     .set_category(QObject::tr("basic").toStdString());
 
-  add_property(PEN_IS_ACTIVE_KEY, std::make_unique<BoolProperty>(true))
+  create_property<BoolProperty>(PEN_IS_ACTIVE_KEY, true)
     .set_label(QObject::tr("active").toStdString())
     .set_category(pen_category);
-  add_property(PEN_COLOR_KEY, std::make_unique<ColorProperty>(Colors::BLACK))
+  create_property<ColorProperty>(PEN_COLOR_KEY, Colors::BLACK)
     .set_label(QObject::tr("color").toStdString())
     .set_category(pen_category);
-  add_property(PEN_WIDTH_KEY, std::make_unique<FloatProperty>(1.0))
+  create_property<FloatProperty>(PEN_WIDTH_KEY, 1.0)
     .set_step(0.1)
     .set_range(0, std::numeric_limits<double>::infinity())
     .set_label(QObject::tr("width").toStdString())
     .set_category(pen_category);
-  add_property<OptionsProperty>(STROKE_STYLE_KEY, 0)
+  create_property<OptionsProperty>(STROKE_STYLE_KEY, 0)
     .set_options({ QObject::tr("Solid").toStdString(),
                    QObject::tr("Dashed").toStdString(),
                    QObject::tr("Dotted").toStdString(),
                    QObject::tr("DashDotted").toStdString(),
                    QObject::tr("DashDotDotted").toStdString() })
     .set_label(QObject::tr("Stroke Style").toStdString()).set_category(pen_category);
-  add_property<OptionsProperty>(JOIN_STYLE_KEY, 2)
+  create_property<OptionsProperty>(JOIN_STYLE_KEY, 2)
     .set_options({ QObject::tr("Bevel").toStdString(),
                    QObject::tr("Miter").toStdString(),
                    QObject::tr("Round").toStdString() })
     .set_label(QObject::tr("Join").toStdString()).set_category(pen_category);
-  add_property<OptionsProperty>(CAP_STYLE_KEY, 1)
+  create_property<OptionsProperty>(CAP_STYLE_KEY, 1)
     .set_options({ QObject::tr("Square").toStdString(),
                    QObject::tr("Flat").toStdString(),
                    QObject::tr("Round").toStdString() })
     .set_label(QObject::tr("Cap").toStdString()).set_category(pen_category);
-  add_property<BoolProperty>(COSMETIC_KEY, true).set_label(QObject::tr("Cosmetic").toStdString())
+  create_property<BoolProperty>(COSMETIC_KEY, true).set_label(QObject::tr("Cosmetic").toStdString())
       .set_category(pen_category);
 
-  add_property(BRUSH_IS_ACTIVE_KEY, std::make_unique<BoolProperty>(false))
+  create_property<BoolProperty>(BRUSH_IS_ACTIVE_KEY, false)
     .set_label(QObject::tr("active").toStdString())
     .set_category(brush_category);
-  add_property(BRUSH_COLOR_KEY, std::make_unique<ColorProperty>(Colors::RED))
+  create_property<ColorProperty>(BRUSH_COLOR_KEY, Colors::RED)
     .set_label(QObject::tr("color").toStdString())
       .set_category(brush_category);
 

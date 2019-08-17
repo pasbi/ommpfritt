@@ -7,31 +7,22 @@ namespace omm
 
 ReferenceProperty::ReferenceProperty()
   : TypedProperty(nullptr)
-  , m_referenceproperty_reference_observer(this)
 {
   set_default_value(nullptr);
 }
 
 ReferenceProperty::ReferenceProperty(const ReferenceProperty &other)
   : TypedProperty<AbstractPropertyOwner *>(other)
-  , m_referenceproperty_reference_observer(nullptr)  // I don't know why `nullptr` is correct here.
-                                                     // However, with `nullptr` everything works as
-                                                     // expected. I thought it should be `&other`,
-                                                     // but that crashes.
 {
   auto* value = this->value();
   if (value != nullptr) {
-    value->register_observer(&m_referenceproperty_reference_observer);
-
-    // set is virtual, will be called in TypedProperty-constructor.
-    // Make sure to call ReferenceProperty::set
     set(value);
   }
 }
 
 ReferenceProperty::~ReferenceProperty()
 {
-  NotificationBlocker blocker(*this);
+  QSignalBlocker blocker(this);
   set(nullptr);
 }
 
@@ -94,36 +85,21 @@ std::unique_ptr<Property> ReferenceProperty::clone() const
 
 void ReferenceProperty::set(AbstractPropertyOwner * const &apo)
 {
-  auto* old_apo = value();
-  if (old_apo) {
-    old_apo->unregister_observer(&m_referenceproperty_reference_observer);
-    unregister_observer(apo);
-    old_apo->m_referees.erase(this);
-  }
-  TypedProperty::set(apo);
-  if (apo) {
-    apo->register_observer(&m_referenceproperty_reference_observer);
-    register_observer(apo);
-    apo->m_referees.insert(this);
-  }
+//  auto* old_apo = value();
+//  if (old_apo) {
+//    old_apo->unregister_observer(&m_referenceproperty_reference_observer);
+
+//    unregister_observer(apo);
+//    old_apo->m_referees.erase(this);
+//  }
+//  TypedProperty::set(apo);
+//  if (apo) {
+//    apo->register_observer(&m_referenceproperty_reference_observer);
+//    register_observer(apo);
+//    apo->m_referees.insert(this);
+//  }
 }
 
 void ReferenceProperty::revise() { set(nullptr); }
-
-ReferencePropertyReferenceObserver
-::ReferencePropertyReferenceObserver(ReferenceProperty *master_property)
-  : m_master_property(master_property) {}
-
-void ReferencePropertyReferenceObserver::on_change(AbstractPropertyOwner *, int, Property *, std::set<const void *> trace)
-{
-  if (::contains(trace, this)) {
-    LINFO << "cycle!";
-  } else {
-    trace.insert(this);
-    if (m_master_property != nullptr) {
-      m_master_property->notify_observers(trace);
-    }
-  }
-}
 
 }   // namespace omm

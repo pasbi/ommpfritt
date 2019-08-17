@@ -73,15 +73,14 @@ Object::Object(Scene* scene) : m_scene(scene)
     .set_label(QObject::tr("shear").toStdString())
     .set_category(category);
 
-  QObject::connect(&tags, &List<Tag>::item_changed, [this](std::set<const void*> trace) {
-    trace.insert(this);
-    on_change(this, TAG_CHANGED, nullptr, trace);
-  });
-
-  QObject::connect(&tags, &List<Tag>::structure_changed, [this](std::set<const void*> trace) {
-    trace.insert(this);
-    on_change(this, TAG_CHANGED, nullptr, trace);
-    m_scene->invalidate();
+  connect(this, SIGNAL(child_appearance_changed(Object*)),
+          this, SIGNAL(appearance_changed(Object*)));
+  connect(this, SIGNAL(child_transformation_changed(Object*)),
+          this, SIGNAL(transformation_changed(Object*)));
+  connect(this, &Object::appearance_changed, [this](Object* object) {
+    if (object == this) {
+      update();
+    }
   });
 }
 
@@ -95,17 +94,6 @@ Object::Object(const Object& other)
   for (Tag* tag : tags.items()) {
     tag->owner = this;
   }
-
-  QObject::connect(&tags, &List<Tag>::item_changed, [this](std::set<const void*> trace) {
-    trace.insert(this);
-    on_change(this, TAG_CHANGED, nullptr, trace);
-  });
-
-  QObject::connect(&tags, &List<Tag>::structure_changed, [this](std::set<const void*> trace) {
-    trace.insert(this);
-    on_change(this, TAG_CHANGED, nullptr, trace);
-    m_scene->invalidate();
-  });
 }
 
 ObjectTransformation Object::transformation() const
@@ -330,37 +318,41 @@ void Object::copy_tags(Object& other) const
   }
 }
 
-void Object::on_change(AbstractPropertyOwner* subject, int what, Property* property,
-                       std::set<const void *> trace)
+void Object::on_property_value_changed(Property *property)
 {
-  if (!is_root()) {
-    auto ts = trace;
-    ts.insert(this);
-    tree_parent().on_change(subject, what, property, ts);
+  if (   property == this->property(POSITION_PROPERTY_KEY)
+      || property == this->property(SCALE_PROPERTY_KEY)
+      || property == this->property(SHEAR_PROPERTY_KEY)
+      || property == this->property(SCALE_PROPERTY_KEY)
+      || property == this->property(IS_VISIBLE_PROPERTY_KEY)
+      || property == this->property(IS_ACTIVE_PROPERTY_KEY))
+  {
+    Q_EMIT transformation_changed(this);
   }
-  AbstractPropertyOwner::on_change(subject, what, property, trace);
-}
-
-void Object::on_children_changed(std::set<const void *> trace)
-{
-  auto ts = trace;
-  ts.insert(this);
-  on_change(this, HIERARCHY_CHANGED, nullptr, ts);
-  TreeElement::on_children_changed(trace);
-}
-
-void Object::on_property_value_changed(Property &property, std::set<const void *> trace)
-{
-  if (property.type() == ReferenceProperty::TYPE) {
-    Object* reference = kind_cast<Object*>(property.value<AbstractPropertyOwner*>());
-    if (reference != nullptr && reference->is_ancestor_of(*this)) {
-      return; // break the cycle!
-    }
-  }
-  PropertyOwner::on_property_value_changed(property, trace);
 }
 
 void Object::post_create_hook() { }
+
+void Object::update()
+{
+  Q_EMIT scene()->repaint();
+}
+
+void Object::on_child_added(Object &child)
+{
+  connect(&child, SIGNAL(appearance_changed(Object*)),
+          this, SIGNAL(child_appearance_changed(Object*)));
+  connect(&child, SIGNAL(transformation_changed(Object*)),
+          this, SIGNAL(child_transformation_changed(Object*)));
+}
+
+void Object::on_child_removed(Object &child)
+{
+  disconnect(&child, SIGNAL(appearance_changed(Object*)),
+             this, SIGNAL(child_appearance_changed(Object*)));
+  disconnect(&child, SIGNAL(transformation_changed(Object*)),
+             this, SIGNAL(child_transformation_changed(Object*)));
+}
 
 double Object::apply_border(double t, Border border)
 {
@@ -467,7 +459,6 @@ void Object::update_recursive()
   update();
 }
 
-void Object::update() { }
 void Object::draw_object(Painter&, const Style&) const {}
 void Object::draw_handles(Painter&) const {}
 std::vector<Point> Object::points() const { return {}; }

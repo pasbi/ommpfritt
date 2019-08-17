@@ -20,6 +20,7 @@ public:
   static constexpr auto RADIUS_PROPERTY_KEY = "r";
   static constexpr auto CORNER_COUNT_PROPERTY_KEY = "n";
   static constexpr auto SMOOTH_PROPERTY_KEY = "smooth";
+  void on_property_value_changed(Property* property) override;
 
 private:
   std::vector<Point> points() const override;

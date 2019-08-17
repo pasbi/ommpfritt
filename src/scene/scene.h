@@ -39,7 +39,6 @@ public:
   Scene(PythonEngine& python_engine);
   ~Scene();
 
-  std::unique_ptr<Object> make_root();
   static constexpr auto TYPE = "Scene";
 
   Tree<Object> object_tree;
@@ -77,6 +76,7 @@ public:
 private:
   std::map<AbstractPropertyOwner::Kind, std::set<AbstractPropertyOwner*>> m_item_selection;
   std::set<AbstractPropertyOwner*> m_selection;
+  std::unique_ptr<Object> make_root();
 
   // === Styles  ====
 public:

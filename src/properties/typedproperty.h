@@ -41,7 +41,7 @@ public:
   {
     if (m_value != value) {
       m_value = value;
-      notify_observers({ this });
+      Q_EMIT value_changed(this);
     }
   }
 

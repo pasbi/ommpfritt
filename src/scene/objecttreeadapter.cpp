@@ -106,22 +106,6 @@ namespace omm
 ObjectTreeAdapter::ObjectTreeAdapter(Scene& scene, Tree<Object>& tree)
   : ItemModelAdapter(scene, tree)
 {
-  connect(&scene, &Scene::scene_changed, [this](AbstractPropertyOwner* subject, int code, auto* p) {
-    if (code == AbstractPropertyOwner::PROPERTY_CHANGED) {
-      auto* object = kind_cast<Object*>(subject);
-      if (object != nullptr) {
-        if (p == object->property(Object::NAME_PROPERTY_KEY)) {
-          const auto index = index_of(*object);
-          Q_EMIT dataChanged(index, index, { Qt::DisplayRole });
-        } else if (p == object->property(Object::IS_ACTIVE_PROPERTY_KEY)
-                   || p == object->property(Object::IS_VISIBLE_PROPERTY_KEY)) {
-          auto index = index_of(*object);
-          index = index.sibling(index.row(), 1);
-          Q_EMIT dataChanged(index, index, { Qt::DisplayRole });
-        }
-      }
-    }
-  });
 }
 
 QModelIndex ObjectTreeAdapter::index(int row, int column, const QModelIndex& parent) const

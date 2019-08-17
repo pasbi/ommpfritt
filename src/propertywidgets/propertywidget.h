@@ -14,16 +14,20 @@ class AbstractPropertyWidget
   : public QWidget
   , public AbstractFactory< std::string, AbstractPropertyWidget,
                             Scene&, const std::set<Property*>& >
-  , public AbstractPropertyObserver
 {
+  Q_OBJECT
 public:
   explicit AbstractPropertyWidget(Scene& scene, const std::set<Property*>& properties);
-  virtual ~AbstractPropertyWidget();
-  void on_property_value_changed(Property& property, std::set<const void*> trace) override;
+  virtual ~AbstractPropertyWidget() = default;
+
+public Q_SLOTS:
+  void on_property_value_changed(Property* property);
 
 protected:
   void set_default_layout(std::unique_ptr<QWidget> other);
   Scene& scene;
+
+protected Q_SLOTS:
   virtual void update_edit() = 0;
 
 private:

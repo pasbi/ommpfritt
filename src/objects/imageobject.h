@@ -22,6 +22,9 @@ public:
   static constexpr auto HANCHOR_PROPERTY_KEY = "hanchor";
   static constexpr auto VANCHOR_PROPERTY_KEY = "vanchor";
 
+protected:
+  void on_property_value_changed(Property *property) override;
+
 private:
   QPointF pos(const QSizeF& size) const;
 };

@@ -117,11 +117,8 @@ Cloner::Cloner(Scene* scene) : Object(scene)
       .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom, Mode::Path })
       .set_label(QObject::tr("anchor").toStdString()).set_category(category);
 
-  m_clone_dependencies = ::transform<Property*>(std::set{
-    COUNT_PROPERTY_KEY, COUNT_2D_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY, RADIUS_PROPERTY_KEY,
-    PATH_REFERENCE_PROPERTY_KEY, START_PROPERTY_KEY, END_PROPERTY_KEY, ALIGN_PROPERTY_KEY,
-    BORDER_PROPERTY_KEY, CODE_PROPERTY_KEY, SEED_PROPERTY_KEY
-  }, [this](const auto& key) { return property(key); });
+  connect(this, SIGNAL(child_appearance_changed(Object*)), this, SLOT(update()));
+  connect(this, SIGNAL(child_transformation_changed(Object*)), this, SLOT(update()));
 }
 
 Cloner::Cloner(const Cloner &other) : Object(other)
@@ -166,32 +163,51 @@ void Cloner::update()
 {
   auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
   auto* ref = kind_cast<Object*>(apo);
-  if (ref) { ref->update(); }
+  if (ref) {
+    ref->update_recursive();
+  }
 
   if (is_active()) {
-    if (m_clones.size() == 0) {
-      m_clones = make_clones();
-      m_draw_children = false;
-    }
+    m_clones = make_clones();
+    m_draw_children = false;
   } else {
     m_clones.clear();
     m_draw_children = true;
   }
+  Object::update();
 }
 
-void Cloner::on_change(AbstractPropertyOwner *subject, int code, Property *property,
-                       std::set<const void *> trace)
+void Cloner::on_property_value_changed(Property *property)
 {
-  Object::on_change(subject, code, property, trace);
-  m_clones.clear();
-}
-
-void Cloner::on_property_value_changed(Property &property, std::set<const void *> trace)
-{
-  Object::on_property_value_changed(property, trace);
-  if (::contains(m_clone_dependencies, &property)) {
-    m_clones.clear();
+  if (   property == this->property(COUNT_PROPERTY_KEY)
+      || property == this->property(COUNT_2D_PROPERTY_KEY)
+      || property == this->property(DISTANCE_2D_PROPERTY_KEY)
+      || property == this->property(RADIUS_PROPERTY_KEY)
+      || property == this->property(PATH_REFERENCE_PROPERTY_KEY)
+      || property == this->property(START_PROPERTY_KEY)
+      || property == this->property(END_PROPERTY_KEY)
+      || property == this->property(ALIGN_PROPERTY_KEY)
+      || property == this->property(BORDER_PROPERTY_KEY)
+      || property == this->property(CODE_PROPERTY_KEY)
+      || property == this->property(SEED_PROPERTY_KEY)
+      || property == this->property(ANCHOR_PROPERTY_KEY))
+  {
+    Q_EMIT appearance_changed(this);
+  } else {
+    Object::on_property_value_changed(property);
   }
+}
+
+void Cloner::on_child_added(Object &child)
+{
+  Object::on_child_added(child);
+  Q_EMIT appearance_changed(this);
+}
+
+void Cloner::on_child_removed(Object &child)
+{
+  Object::on_child_removed(child);
+  Q_EMIT appearance_changed(this);
 }
 
 std::string Cloner::type() const { return TYPE; }

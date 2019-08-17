@@ -10,16 +10,6 @@ namespace omm
 class AbstractPropertyOwner;
 class ReferenceProperty;
 
-class ReferencePropertyReferenceObserver : public AbstractPropertyOwnerObserver
-{
-public:
-  ReferencePropertyReferenceObserver(ReferenceProperty* master_property);
-  void on_change(AbstractPropertyOwner*, int, Property*, std::set<const void*> trace) override;
-
-private:
-  ReferenceProperty* m_master_property = nullptr;
-};
-
 class ReferenceProperty : public TypedProperty<AbstractPropertyOwner*>
 {
 public:
@@ -52,7 +42,6 @@ private:
   void set_default_value(const value_type& value) override;
   AbstractPropertyOwner::Kind m_allowed_kinds = AbstractPropertyOwner::Kind::All;
   AbstractPropertyOwner::Flag m_required_flags = AbstractPropertyOwner::Flag::None;
-  ReferencePropertyReferenceObserver m_referenceproperty_reference_observer;
 };
 
 }  // namespace omm

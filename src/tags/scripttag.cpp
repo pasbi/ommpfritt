@@ -51,9 +51,11 @@ QIcon ScriptTag::icon() const
   return QApplication::style()->standardIcon(QStyle::SP_FileDialogListView);
 }
 
-void ScriptTag::on_property_value_changed(Property& property, std::set<const void *> trace)
+void ScriptTag::on_property_value_changed(Property *property)
 {
-  if (&property == this->property(TRIGGER_UPDATE_PROPERTY_KEY)) { force_evaluate(); }
+  if (property == this->property(TRIGGER_UPDATE_PROPERTY_KEY)) {
+    force_evaluate();
+  }
 }
 
 void ScriptTag::force_evaluate()

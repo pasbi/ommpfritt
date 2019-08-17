@@ -63,6 +63,10 @@ private:
   MousePanController m_pan_controller;
   Painter m_renderer;
   Vec2f m_last_cursor_pos;
+
+  QTimer m_fps_limiter;
+  bool m_fps_brake = false;
+  bool m_update_later = false;
 };
 
 }  // namespace omm

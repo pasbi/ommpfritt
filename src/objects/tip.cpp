@@ -26,9 +26,38 @@ Tip::Tip(const Tip &other)
   , m_marker_properties("", *this, default_marker_shape, default_marker_size)
 {
 }
-std::vector<Point> Tip::points() const { return m_marker_properties.shape(1.0); }
-std::string Tip::type() const { return "Tip"; }
-std::unique_ptr<Object> Tip::clone() const { return std::make_unique<Tip>(*this); }
-bool Tip::is_closed() const { return true; }
+
+std::vector<Point> Tip::points() const
+{
+  return m_marker_properties.shape(1.0);
+}
+
+std::string Tip::type() const
+{
+  return "Tip";
+}
+
+std::unique_ptr<Object> Tip::clone() const
+{
+  return std::make_unique<Tip>(*this);
+}
+
+bool Tip::is_closed() const
+{
+  return true;
+}
+
+void Tip::on_property_value_changed(Property *property)
+{
+  if (   property == this->property(MarkerProperties::SHAPE_PROPERTY_KEY)
+      || property == this->property(MarkerProperties::SIZE_PROPERTY_KEY)
+      || property == this->property(MarkerProperties::ASPECT_RATIO_PROPERTY_KEY)
+      || property == this->property(MarkerProperties::REVERSE_PROPERTY_KEY))
+  {
+    Q_EMIT appearance_changed(this);
+  } else {
+    Object::on_property_value_changed(property);
+  }
+}
 
 }  // namespace omm

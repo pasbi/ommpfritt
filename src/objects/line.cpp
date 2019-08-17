@@ -39,4 +39,16 @@ AbstractPropertyOwner::Flag Line::flags() const
   return Object::flags() | Flag::Convertable | Flag::IsPathLike;
 }
 
+void Line::on_property_value_changed(Property *property)
+{
+  if (   property == this->property(LENGTH_PROPERTY_KEY)
+      || property == this->property(ANGLE_PROPERTY_KEY)
+      || property == this->property(CENTER_PROPERTY_KEY))
+  {
+    Q_EMIT appearance_changed(this);
+  } else {
+    AbstractProceduralPath::on_property_value_changed(property);
+  }
+}
+
 }  // namespace omm

@@ -82,8 +82,9 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
 
 std::string BoundingBoxManager::type() const { return TYPE;  }
 
-void BoundingBoxManager::on_property_value_changed(Property &, std::set<const void *> trace)
+void BoundingBoxManager::on_property_value_changed(Property &property)
 {
+  Q_UNUSED(property);
   update_bounding_box();
 }
 

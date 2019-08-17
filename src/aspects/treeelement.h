@@ -38,7 +38,8 @@ public:
   static std::vector<T*> sort(const std::set<T*>& items);
 
 protected:
-  virtual void on_children_changed(std::set<const void*>) {}
+  virtual void on_child_added(T& child) { Q_UNUSED(child); }
+  virtual void on_child_removed(T& child) { Q_UNUSED(child); }
 
 private:
   T* m_parent = nullptr;

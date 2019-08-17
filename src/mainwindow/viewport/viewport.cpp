@@ -39,6 +39,12 @@ Viewport::Viewport(Scene& scene)
           this, SLOT(update()));
 
   connect(&scene, SIGNAL(repaint()), this, SLOT(update()));
+  connect(&m_fps_limiter, &QTimer::timeout, [this]() {
+    m_fps_brake = false;
+    if (m_update_later) {
+      update();
+    }
+  });
 }
 
 #if USE_OPENGL
@@ -59,7 +65,6 @@ void Viewport::paintEvent(QPaintEvent*)
     QSignalBlocker blocker(&m_scene);
     m_scene.evaluate_tags();
   }
-  m_scene.update();
   m_renderer.render();
 
   auto& tool = m_scene.tool_box.active_tool();
@@ -146,8 +151,17 @@ void Viewport::keyPressEvent(QKeyEvent *event)
 
 void Viewport::update()
 {
-  ViewportBase::update();
-  Q_EMIT updated();
+  static constexpr double fps = 30.0;
+  if (!m_fps_brake) {
+    m_fps_brake = true;
+    m_update_later = false;
+    ViewportBase::update();
+    Q_EMIT updated();
+    m_fps_limiter.start(static_cast<int>(1000.0/fps));
+    m_fps_limiter.setSingleShot(true);
+  } else {
+    m_update_later = true;
+  }
 }
 
 }  // namespace omm

@@ -27,6 +27,9 @@ Mirror::Mirror(Scene* scene) : Object(scene)
   create_property<BoolProperty>(IS_INVERTED_PROPERTY_KEY, true)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Path })
     .set_label(QObject::tr("Invert").toStdString()).set_category(category);
+
+  connect(this, SIGNAL(child_appearance_changed(Object*)), this, SLOT(update()));
+  connect(this, SIGNAL(child_transformation_changed(Object*)), this, SLOT(update()));
 }
 
 Mirror::Mirror(const Mirror &other)
@@ -123,6 +126,31 @@ void Mirror::update()
   } else {
     m_draw_children = true;
   }
+}
+
+void Mirror::on_property_value_changed(Property *property)
+{
+  if (   property == this->property(DIRECTION_PROPERTY_KEY)
+      || property == this->property(AS_PATH_PROPERTY_KEY)
+      || property == this->property(IS_CLOSED_PROPERTY_KEY)
+      || property == this->property(IS_INVERTED_PROPERTY_KEY))
+  {
+    Q_EMIT appearance_changed(this);
+  } else {
+    Object::on_property_value_changed(property);
+  }
+}
+
+void Mirror::on_child_added(Object &child)
+{
+  Object::on_child_added(child);
+  Q_EMIT appearance_changed(this);
+}
+
+void Mirror::on_child_removed(Object &child)
+{
+  Object::on_child_removed(child);
+  Q_EMIT appearance_changed(this);
 }
 
 ObjectTransformation Mirror::get_mirror_t() const

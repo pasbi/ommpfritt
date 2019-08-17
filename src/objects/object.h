@@ -31,8 +31,9 @@ class Object
   , public TreeElement<Object>
   , public AbstractFactory<std::string, Object, Scene*>
 {
-public:
+  Q_OBJECT
 
+public:
   using PathUniquePtr = std::unique_ptr<Path, PathDeleter>;
 
   explicit Object(Scene* scene);
@@ -113,20 +114,26 @@ public:
   virtual std::vector<Point> points() const;
 
   virtual bool contains(const Vec2f& pos) const;
-  virtual void update();
   void update_recursive();
 
-  void on_change(AbstractPropertyOwner* subject, int what, Property* property,
-                 std::set<const void*> trace) override;
-  void on_children_changed(std::set<const void*> trace) override;
-  void on_property_value_changed(Property& property, std::set<const void*> trace) override;
-
   virtual void post_create_hook();
+
+public Q_SLOTS:
+  virtual void update();
+
+Q_SIGNALS:
+  void appearance_changed(Object*);
+  void transformation_changed(Object*);
+  void child_appearance_changed(Object*);
+  void child_transformation_changed(Object*);
 
 protected:
   bool m_draw_children = true;
   void copy_tags(Object& other) const;
+  void on_property_value_changed(Property* property) override;
 
+  void on_child_added(Object &child) override;
+  void on_child_removed(Object &child) override;
 private:
   friend class ObjectView;
   Scene* m_scene;

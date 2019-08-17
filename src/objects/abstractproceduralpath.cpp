@@ -83,6 +83,7 @@ void AbstractProceduralPath::update()
 {
   m_points = points();
   m_painter_path = Painter::path(m_points, is_closed());
+  Object::update();
 }
 
 
