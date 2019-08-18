@@ -189,7 +189,6 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
       if (export_dialog == nullptr) {
         export_dialog = new omm::ExportDialog(app.scene, app.main_window());
       }
-      app.scene.update();
       export_dialog->exec();
     }),
     ai( QT_TRANSLATE_NOOP("any-context", "make smooth"), &actions::make_smooth),

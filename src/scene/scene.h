@@ -134,7 +134,6 @@ public:
   bool remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& selection);
 
 public:
-  void update();
   void update_tool();
   bool contains(const AbstractPropertyOwner* apo) const;
 

@@ -62,6 +62,10 @@ void SelectPointsBaseTool::transform_objects(ObjectTransformation t)
     map.insert(std::pair(key, p));
   }
 
+  for (Path* path : m_paths) {
+    path->update();
+  }
+
   scene.submit(std::make_unique<PointsTransformationCommand>(map));
 }
 
@@ -70,11 +74,16 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
 {
   const auto paths = type_cast<Path*>(scene.template item_selection<Object>());
   m_initial_points.clear();
+  m_paths.clear();
   Q_UNUSED(force);
   if (AbstractSelectTool::mouse_press(pos, event, false)
     || AbstractSelectTool::mouse_press(pos, event, true)) {
     for (Path* path : paths) {
-      for (const std::size_t i : path->selected_points()) {
+      const std::vector<std::size_t> selected_points = path->selected_points();
+      if (selected_points.size() > 0) {
+        m_paths.insert(path);
+      }
+      for (const std::size_t i : selected_points) {
         m_initial_points.insert(std::make_pair(std::make_pair(path, i), path->point(i)));
       }
     }

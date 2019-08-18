@@ -67,8 +67,6 @@ Scene::Scene(PythonEngine& python_engine)
   , tool_box(*this)
   , point_selection(*this)
 {
-  using namespace std::string_literals;
-  object_tree.root().property(Object::NAME_PROPERTY_KEY)->set("_root_"s);
   for (auto kind : { Object::KIND, Tag::KIND, Style::KIND, Tool::KIND }) {
     m_item_selection[kind] = {};
   }
@@ -96,8 +94,6 @@ void Scene::prepare_reset()
   }
 
   auto root = make_root();
-  connect(root.get(), SIGNAL(transformation_changed(Object*)), this, SIGNAL(repaint()));
-  connect(root.get(), SIGNAL(appearance_changed(Object*)), this, SIGNAL(repaint()));
   object_tree.replace_root(std::move(root));
   styles.set(std::vector<std::unique_ptr<Style>> {});
 }
@@ -336,7 +332,10 @@ std::set<AbstractPropertyOwner*> Scene::selection() const { return m_selection; 
 
 std::unique_ptr<Object> Scene::make_root()
 {
-  return std::make_unique<Empty>(this);
+  using namespace std::string_literals;
+  auto root = std::make_unique<Empty>(this);
+  root->property(Object::NAME_PROPERTY_KEY)->set("_root_"s);
+  return root;
 }
 
 template<> std::set<Tag*> Scene::find_items<Tag>(const std::string& name) const
@@ -412,11 +411,6 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
   } else {
     return false;
   }
-}
-
-void Scene::update()
-{
-  object_tree.root().update_recursive();
 }
 
 void Scene::update_tool()

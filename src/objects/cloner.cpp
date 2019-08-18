@@ -117,6 +117,8 @@ Cloner::Cloner(Scene* scene) : Object(scene)
       .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom, Mode::Path })
       .set_label(QObject::tr("anchor").toStdString()).set_category(category);
 
+  update();
+
   connect(this, SIGNAL(child_appearance_changed(Object*)), this, SLOT(update()));
   connect(this, SIGNAL(child_transformation_changed(Object*)), this, SLOT(update()));
 }

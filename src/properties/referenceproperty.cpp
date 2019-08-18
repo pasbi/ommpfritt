@@ -83,23 +83,6 @@ std::unique_ptr<Property> ReferenceProperty::clone() const
   return std::make_unique<ReferenceProperty>(*this);
 }
 
-void ReferenceProperty::set(AbstractPropertyOwner * const &apo)
-{
-//  auto* old_apo = value();
-//  if (old_apo) {
-//    old_apo->unregister_observer(&m_referenceproperty_reference_observer);
-
-//    unregister_observer(apo);
-//    old_apo->m_referees.erase(this);
-//  }
-//  TypedProperty::set(apo);
-//  if (apo) {
-//    apo->register_observer(&m_referenceproperty_reference_observer);
-//    register_observer(apo);
-//    apo->m_referees.insert(this);
-//  }
-}
-
 void ReferenceProperty::revise() { set(nullptr); }
 
 }   // namespace omm

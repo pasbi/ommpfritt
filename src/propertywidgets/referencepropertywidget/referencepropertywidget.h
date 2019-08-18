@@ -15,7 +15,6 @@ class ReferencePropertyWidget : public PropertyWidget<ReferenceProperty>
 {
 public:
   explicit ReferencePropertyWidget(Scene& scene, const std::set<Property*>& properties);
-  ~ReferencePropertyWidget();
 
 protected:
   void update_edit() override;

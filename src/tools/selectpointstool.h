@@ -52,6 +52,9 @@ protected:
   Vec2f selection_center() const override;
   PointsTransformationCommand::Map m_initial_points;
 
+private:
+  std::set<Path*> m_paths;
+
 };
 
 class SelectPointsTool : public SelectPointsBaseTool

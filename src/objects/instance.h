@@ -27,6 +27,9 @@ public:
   Flag flags() const override;
   void post_create_hook() override;
 
+protected:
+  void on_property_value_changed(Property *property) override;
+
 private:
   Object* referenced_object() const;
 };

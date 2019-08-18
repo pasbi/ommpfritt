@@ -24,6 +24,7 @@ Instance::Instance(Scene* scene)
     .set_label(QObject::tr("reference", "Instance").toStdString()).set_category(category);
   create_property<BoolProperty>(COMBINE_STYLES_PROPERTY_KEY)
     .set_label(QObject::tr("combine styles", "Instance").toStdString()).set_category(category);
+  update();
 }
 
 Instance::Instance(const Instance &other) : Object(other) {}
@@ -98,6 +99,16 @@ void Instance::post_create_hook()
     auto* object = *selection.begin();
     using command = PropertiesCommand<ReferenceProperty>;
     scene()->submit<command>(std::set { property(REFERENCE_PROPERTY_KEY) }, object);
+  }
+}
+
+void Instance::on_property_value_changed(Property *property)
+{
+  if (   property == this->property(REFERENCE_PROPERTY_KEY)
+      || property == this->property(COMBINE_STYLES_PROPERTY_KEY)) {
+    LINFO << "reference property changed";
+  } else {
+    Object::on_property_value_changed(property);
   }
 }
 

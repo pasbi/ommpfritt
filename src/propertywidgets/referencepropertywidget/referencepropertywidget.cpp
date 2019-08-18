@@ -48,10 +48,6 @@ ReferencePropertyWidget
   update_edit();
 }
 
-ReferencePropertyWidget::~ReferencePropertyWidget()
-{
-}
-
 void ReferencePropertyWidget::update_edit()
 {
   QSignalBlocker blocker(m_line_edit);

@@ -23,6 +23,7 @@ Text::Text(Scene* scene)
 
   m_font_properties.make_properties(QObject::tr("Font").toStdString());
   m_text_option_properties.make_properties(QObject::tr("Text").toStdString());
+  update();
 }
 
 Text::Text(const Text &other)
@@ -97,6 +98,35 @@ QRectF Text::rect(Qt::Alignment alignment) const
   }();
 
   return QRectF(QPointF(left, top), QSizeF(width, height));
+}
+
+void Text::on_property_value_changed(Property *property)
+{
+  if (   property == this->property(TEXT_PROPERTY_KEY)
+      || property == this->property(WIDTH_PROPERTY_KEY)
+      || property == this->property(TextOptionProperties::ALIGNH_PROPERTY_KEY)
+      || property == this->property(TextOptionProperties::ALIGNV_PROPERTY_KEY)
+      || property == this->property(TextOptionProperties::DIRECTION_PROPERTY_KEY)
+      || property == this->property(TextOptionProperties::WRAP_MODE_PROPERTY_KEY)
+      || property == this->property(TextOptionProperties::TABSTOPDISTANCE_PROPERTY_KEY)
+      || property == this->property(FontProperties::FONT_PROPERTY_KEY)
+      || property == this->property(FontProperties::SIZE_PROPERTY_KEY)
+      || property == this->property(FontProperties::ITALIC_PROPERTY_KEY)
+      || property == this->property(FontProperties::WEIGHT_PROPERTY_KEY)
+      || property == this->property(FontProperties::KERNING_PROPERTY_KEY)
+      || property == this->property(FontProperties::OVERLINE_PROPERTY_KEY)
+      || property == this->property(FontProperties::STRIKEOUT_PROPERTY_KEY)
+      || property == this->property(FontProperties::UNDERLINE_PROPERTY_KEY)
+      || property == this->property(FontProperties::FIXED_PITCH_PROPERTY_KEY)
+      || property == this->property(FontProperties::WORD_SPACING_PROPERTY_KEY)
+      || property == this->property(FontProperties::CAPITALIZATION_PROPERTY_KEY)
+      || property == this->property(FontProperties::LETTER_SPACING_PROPERTY_KEY)
+      || property == this->property(FontProperties::LETTER_SPACING_TYPE_PROPERTY_KEY))
+  {
+    Q_EMIT appearance_changed(this);
+  } else {
+    Object::on_property_value_changed(property);
+  }
 }
 
 }  // namespace omm

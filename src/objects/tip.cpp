@@ -19,6 +19,7 @@ Tip::Tip(Scene *scene)
 {
   const auto tip_category = QObject::tr("Tip").toStdString();
   m_marker_properties.make_properties(tip_category);
+  update();
 }
 
 Tip::Tip(const Tip &other)

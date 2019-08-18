@@ -24,6 +24,9 @@ public:
   void update() override;
   bool is_closed() const override;
 
+protected:
+  void on_property_value_changed(Property* property);
+
 private:
   std::vector<Point> m_points;
 

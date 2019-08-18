@@ -32,6 +32,9 @@ public:
   double path_length() const override;
   bool contains(const Vec2f &pos) const override;
 
+protected:
+  void on_property_value_changed(Property *property) override;
+
 private:
   PathUniquePtr m_outline;
 };

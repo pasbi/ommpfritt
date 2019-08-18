@@ -18,6 +18,7 @@ Line::Line(Scene* scene) : AbstractProceduralPath(scene)
     .set_label(QObject::tr("angle").toStdString()).set_category(category);
   create_property<BoolProperty>(CENTER_PROPERTY_KEY, true)
     .set_label(QObject::tr("center").toStdString()).set_category(category);
+  update();
 }
 
 std::string Line::type() const { return TYPE; }

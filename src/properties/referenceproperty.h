@@ -34,7 +34,6 @@ public:
   collect_candidates(const Scene& scene, const AbstractPropertyOwner::Kind allowed_kinds,
                                          const AbstractPropertyOwner::Flag required_flags);
 
-  void set(AbstractPropertyOwner* const& apo) override;
   bool creates_cycle(AbstractPropertyOwner *apo) const;
 
 private:

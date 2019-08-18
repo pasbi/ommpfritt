@@ -51,6 +51,7 @@ ImageObject::ImageObject(Scene* scene) : Object(scene)
                    QObject::tr("Center").toStdString(),
                    QObject::tr("Bottom").toStdString() })
     .set_label(QObject::tr("Vertical").toStdString()).set_category(category);
+  update();
 }
 
 void ImageObject::draw_object(Painter &renderer, const Style&) const

@@ -45,6 +45,7 @@ ProceduralPath::ProceduralPath(Scene* scene) : AbstractProceduralPath(scene)
     .set_label(QObject::tr("count").toStdString()).set_category(category);
   create_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
     .set_label(QObject::tr("closed").toStdString()).set_category(category);
+  update();
 }
 
 
@@ -82,6 +83,18 @@ void ProceduralPath::update()
 bool ProceduralPath::is_closed() const
 {
   return property(IS_CLOSED_PROPERTY_KEY)->value<bool>();
+}
+
+void ProceduralPath::on_property_value_changed(Property *property)
+{
+  if (   property == this->property(CODE_PROPERTY_KEY)
+      || property == this->property(COUNT_PROPERTY_KEY)
+      || property == this->property(IS_CLOSED_PROPERTY_KEY))
+  {
+    Q_EMIT appearance_changed(this);
+  } else {
+    AbstractProceduralPath::on_property_value_changed(property);
+  }
 }
 
 AbstractPropertyOwner::Flag ProceduralPath::flags() const

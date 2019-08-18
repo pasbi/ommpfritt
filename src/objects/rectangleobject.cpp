@@ -17,6 +17,7 @@ RectangleObject::RectangleObject(Scene *scene)
   create_property<FloatVectorProperty>(TENSION_PROPERTY_KEY, Vec2f(1.0, 1.0) )
     .set_step(Vec2f(0.01, 0.01)).set_range(Vec2f(0.0, 0.0), Vec2f(1.0, 1.0))
     .set_label(QObject::tr("tension").toStdString()).set_category(category);
+  update();
 }
 
 std::string RectangleObject::type() const { return TYPE; }

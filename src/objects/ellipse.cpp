@@ -23,6 +23,7 @@ Ellipse::Ellipse(Scene* scene) : AbstractProceduralPath(scene)
     .set_label(QObject::tr("n").toStdString()).set_category(category);
   create_property<BoolProperty>(SMOOTH_PROPERTY_KEY, true)
     .set_label(QObject::tr("smooth").toStdString()).set_category(category);
+  update();
 }
 
 std::string Ellipse::type() const { return TYPE; }

@@ -27,6 +27,7 @@ Mirror::Mirror(Scene* scene) : Object(scene)
   create_property<BoolProperty>(IS_INVERTED_PROPERTY_KEY, true)
     .set_enabled_buddy<Mode>(mode_property, { Mode::Path })
     .set_label(QObject::tr("Invert").toStdString()).set_category(category);
+  update();
 
   connect(this, SIGNAL(child_appearance_changed(Object*)), this, SLOT(update()));
   connect(this, SIGNAL(child_transformation_changed(Object*)), this, SLOT(update()));

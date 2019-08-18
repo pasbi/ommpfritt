@@ -50,22 +50,15 @@ class Style;
 Path::Path(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("path").toStdString();
-  const auto update_point_tangents = [this](Property&) {
-    std::map<Path*, std::map<Point*, Point>> map;
-    const auto i_mode = property(INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
-    map[this] = this->modified_points(false, i_mode);
-    this->scene()->submit<ModifyPointsCommand>(map);
-  };
 
   create_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
-    .set_label(QObject::tr("closed").toStdString()).set_category(category)
-    .set_post_submit(update_point_tangents).set_pre_submit(update_point_tangents);
+    .set_label(QObject::tr("closed").toStdString()).set_category(category);
 
   create_property<OptionsProperty>(INTERPOLATION_PROPERTY_KEY)
     .set_options({ QObject::tr("linear").toStdString(), QObject::tr("smooth").toStdString(),
                    QObject::tr("bezier").toStdString() })
-    .set_label(QObject::tr("interpolation").toStdString()).set_category(category)
-    .set_post_submit(update_point_tangents).set_pre_submit(update_point_tangents);
+    .set_label(QObject::tr("interpolation").toStdString()).set_category(category);
+  update();
 }
 
 void Path::draw_object(Painter &renderer, const Style& style) const
@@ -91,7 +84,13 @@ BoundingBox Path::bounding_box(const ObjectTransformation &transformation) const
 
 std::string Path::type() const { return TYPE; }
 std::unique_ptr<Object> Path::clone() const { return std::make_unique<Path>(*this); }
-void Path::set_points(const std::vector<Point>& points) { m_points = points; }
+
+void Path::set_points(const std::vector<Point>& points)
+{
+  m_points = points;
+  Q_EMIT appearance_changed(this);
+}
+
 std::vector<Point> Path::points() const { return m_points; }
 
 std::vector<Point*> Path::points_ref()
@@ -126,6 +125,7 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
     const auto point_pointer = make_pointer(points_pointer, i);
     m_points[i] = deserialize_point(deserializer, point_pointer);
   }
+  update();
 }
 
 void Path::deselect_all_points()
@@ -179,7 +179,27 @@ bool Path::contains(const Vec2f &pos) const { return cubics().contains(pos); }
 
 void Path::update()
 {
+  LINFO << m_points;
   m_painter_path = Painter::path(m_points, property(IS_CLOSED_PROPERTY_KEY)->value<bool>());
+  Object::update();
+}
+
+void Path::on_property_value_changed(Property *property)
+{
+  if (property == this->property(INTERPOLATION_PROPERTY_KEY)) {
+    std::map<Path*, std::map<Point*, Point>> map;
+    const auto i_mode = property->value<InterpolationMode>();
+    map[this] = this->modified_points(false, i_mode);
+    this->scene()->submit<ModifyPointsCommand>(map);
+  }
+
+  if (   property == this->property(IS_CLOSED_PROPERTY_KEY)
+      || property == this->property(INTERPOLATION_PROPERTY_KEY))
+  {
+    Q_EMIT appearance_changed(this);
+  } else {
+    Object::on_property_value_changed(property);
+  }
 }
 
 bool Path::is_closed() const

@@ -26,6 +26,9 @@ public:
   static constexpr auto WIDTH_PROPERTY_KEY = "width";
   QRectF rect(Qt::Alignment alignment) const;
 
+protected:
+  void on_property_value_changed(Property *property) override;
+
 private:
   FontProperties m_font_properties;
   TextOptionProperties m_text_option_properties;

@@ -23,6 +23,7 @@ View::View(Scene* scene) : Object(scene)
     .set_label(QObject::tr("from viewport").toStdString()).set_category(category);
   create_property<BoolProperty>(OUTPUT_VIEW_PROPERTY_KEY, false)
       .set_label(QObject::tr("output").toStdString()).set_category(category);
+  update();
 }
 
 View::View(const View &other) : Object(other)

@@ -6,6 +6,7 @@
 #include "properties/referenceproperty.h"
 #include "geometry/vec2.h"
 #include "objects/path.h"
+#include "renderers/style.h"
 
 namespace omm
 {
@@ -18,6 +19,7 @@ Outline::Outline(Scene* scene) : Object(scene)
   create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
     .set_label(QObject::tr("Reference").toStdString()).set_category(category);
+  update();
 }
 
 Outline::Outline(const Outline &other)
@@ -28,6 +30,9 @@ void Outline::draw_object(Painter &renderer, const Style& style) const
 {
   assert(&renderer.scene == scene());
   if (m_outline) {
+    LINFO << style.property(Style::PEN_COLOR_KEY)->value<Color>();
+    LINFO << style.property(Style::PEN_WIDTH_KEY)->value<double>();
+    LINFO << renderer.current_transformation();
     m_outline->draw_recursive(renderer, style);
   }
 }
@@ -50,12 +55,14 @@ void Outline::update()
     const auto t = property(OFFSET_PROPERTY_KEY)->value<double>();
     if (auto* o = kind_cast<const Object*>(ref); o != nullptr) {
       m_outline = o->outline(t);
+      LINFO << m_outline->points();
     } else {
       m_outline.reset();
     }
   } else {
     m_outline.reset();
   }
+  Object::update();
 }
 
 Point Outline::evaluate(const double t) const
@@ -85,6 +92,17 @@ bool Outline::contains(const Vec2f &pos) const
     return m_outline->contains(pos);
   } else {
     return false;
+  }
+}
+
+void Outline::on_property_value_changed(Property *property)
+{
+  if (   property == this->property(OFFSET_PROPERTY_KEY)
+      || property == this->property(REFERENCE_PROPERTY_KEY))
+  {
+    Q_EMIT appearance_changed(this);
+  } else {
+    Object::on_property_value_changed(property);
   }
 }
 
