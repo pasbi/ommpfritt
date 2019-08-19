@@ -50,6 +50,19 @@ public:
 
 private:
   std::stack<ObjectTransformation> m_transformation_stack;
+
+  int reference_depth = 0;
+  friend class ReferenceDepthGuard;
+};
+
+class ReferenceDepthGuard
+{
+public:
+  explicit ReferenceDepthGuard(Painter& painter);
+  ~ReferenceDepthGuard();
+  operator bool() const;
+private:
+  Painter& m_painter;
 };
 
 }  // namespace omm

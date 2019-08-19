@@ -34,8 +34,6 @@ public:
   collect_candidates(const Scene& scene, const AbstractPropertyOwner::Kind allowed_kinds,
                                          const AbstractPropertyOwner::Flag required_flags);
 
-  bool creates_cycle(AbstractPropertyOwner *apo) const;
-
 private:
   // default is always nullptr
   void set_default_value(const value_type& value) override;

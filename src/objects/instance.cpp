@@ -1,7 +1,6 @@
 #include "objects/instance.h"
 
 #include "objects/empty.h"
-
 #include <QObject>
 #include "scene/scene.h"
 #include "properties/referenceproperty.h"
@@ -33,7 +32,8 @@ void Instance::draw_object(Painter &renderer, const Style& default_style) const
 {
   if (is_active()) {
     const auto* reference = referenced_object();
-    if (reference != nullptr) {
+    ReferenceDepthGuard guard(renderer);
+    if (reference != nullptr && guard) {
       renderer.push_transformation(reference->global_transformation(true).inverted());
       reference->draw_recursive(renderer, default_style);
       renderer.pop_transformation();
