@@ -1,5 +1,4 @@
 #pragma once
-
 #include <map>
 #include <memory>
 #include <vector>
@@ -20,16 +19,12 @@ namespace omm
 {
 
 template<typename T>
-class Tree
-    : public Structure<T>
-    , public Observed<AbstractStructureObserver<Tree<T>>>
+class Tree : public Structure<T>
 {
 public:
-  using observer_type = AbstractStructureObserver<Tree<T>>;
-  using observed_type = Observed<observer_type>;
   constexpr static bool is_tree = true;
 
-  Tree(std::unique_ptr<T> root, Scene* scene);
+  Tree(std::unique_ptr<T> root, Scene &scene);
   virtual ~Tree() = default;
 
 public:
@@ -52,6 +47,7 @@ private:
 
   mutable bool m_item_cache_is_dirty = true;
   mutable std::set<T*> m_item_cache;
+  Scene& m_scene;
 };
 
 }  // namespace omm

@@ -15,13 +15,6 @@ template<typename> class TreeMoveContext;
 
 template<typename T> class AbstractStructureObserver<Tree<T>>
 {
-protected:
-  virtual std::unique_ptr<AbstractRAIIGuard> acquire_inserter_guard(T& parent, int row) = 0;
-  virtual std::unique_ptr<AbstractRAIIGuard>
-  acquire_mover_guard(const TreeMoveContext<T>& context) = 0;
-  virtual std::unique_ptr<AbstractRAIIGuard> acquire_remover_guard(const T& object) = 0;
-  virtual std::unique_ptr<AbstractRAIIGuard> acquire_reseter_guard() = 0;
-
   friend class Tree<T>;
 };
 
@@ -31,11 +24,11 @@ template<typename> class ListMoveContext;
 template<typename T> class AbstractStructureObserver<List<T>>
 {
 protected:
-  virtual std::unique_ptr<AbstractRAIIGuard> acquire_inserter_guard(int row) = 0;
+  virtual std::unique_ptr<AbstractRAIIGuard> acquire_inserter_guard(int) { return nullptr; }
   virtual std::unique_ptr<AbstractRAIIGuard>
-  acquire_mover_guard(const ListMoveContext<T>& context) = 0;
-  virtual std::unique_ptr<AbstractRAIIGuard> acquire_remover_guard(int row) = 0;
-  virtual std::unique_ptr<AbstractRAIIGuard> acquire_reseter_guard() = 0;
+  acquire_mover_guard(const ListMoveContext<T>&) { return nullptr; }
+  virtual std::unique_ptr<AbstractRAIIGuard> acquire_remover_guard(int) { return nullptr; }
+  virtual std::unique_ptr<AbstractRAIIGuard> acquire_reseter_guard() { return nullptr; }
   friend class List<T>;
 };
 

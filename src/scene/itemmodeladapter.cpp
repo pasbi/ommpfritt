@@ -123,13 +123,11 @@ ItemModelAdapter<StructureT, ItemModel>::ItemModelAdapter(Scene& scene, Structur
   : scene(scene)
   , structure(structure)
 {
-  structure.Observed<AbstractStructureObserver<StructureT>>::register_observer(this);
 }
 
 template<typename StructureT, typename ItemModel>
 ItemModelAdapter<StructureT, ItemModel>::~ItemModelAdapter()
 {
-  structure.Observed<AbstractStructureObserver<StructureT>>::unregister_observer(this);
 }
 
 template<typename StructureT, typename ItemModel> Qt::DropActions

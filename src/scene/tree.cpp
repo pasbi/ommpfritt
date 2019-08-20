@@ -2,13 +2,14 @@
 #include "scene/contextes.h"
 #include <QTimer>
 #include <type_traits>
+#include "scene/scene.h"
+#include "objecttreeadapter.h"
 
 namespace omm
 {
 
-template<typename T> Tree<T>::Tree(std::unique_ptr<T> root, Scene*)
-  : Structure<T>()
-  , m_root(std::move(root))
+template<typename T> Tree<T>::Tree(std::unique_ptr<T> root, Scene& scene)
+  : Structure<T>(), m_root(std::move(root)), m_scene(scene)
 {
 }
 
@@ -27,68 +28,72 @@ template<typename T> bool Tree<T>::contains(const T& t) const
 template<typename T> void Tree<T>::move(TreeMoveContext<T>& context)
 {
   assert(context.is_valid());
-  Object& old_parent = context.subject.get().tree_parent();
 
-  const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [&context](auto* observer) { return observer->acquire_mover_guard(context); }
-  );
+  Object& old_parent = context.subject.get().tree_parent();
+  Object& new_parent = context.parent.get();
+  const auto old_pos = m_scene.object_tree.position(context.subject);
+  const auto new_pos = m_scene.object_tree.insert_position(context.predecessor);
+  const QModelIndex old_parent_index = m_scene.object_tree_adapter.index_of(old_parent);
+  const QModelIndex new_parent_index = m_scene.object_tree_adapter.index_of(new_parent);
+
+  m_scene.object_tree_adapter.beginMoveRows(old_parent_index, old_pos, old_pos,
+                                            new_parent_index, new_pos);
   auto item = old_parent.repudiate(context.subject);
   const auto pos = this->insert_position(context.predecessor);
   context.parent.get().adopt(std::move(item), pos);
   m_item_cache_is_dirty = true;
-  Q_EMIT this->structure_changed({ this });
+  m_scene.object_tree_adapter.endMoveRows();
+  Q_EMIT m_scene.repaint();
 }
 
 template<typename T> void Tree<T>::insert(TreeOwningContext<T>& context)
 {
   assert(context.subject.owns());
 
-  const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [&context, this] (auto* observer) {
-      const auto pos = this->insert_position(context.predecessor);
-      return observer->acquire_inserter_guard(context.parent, pos);
-    }
-  );
-  const auto pos = this->insert_position(context.predecessor);
-  context.parent.get().adopt(context.subject.release(), pos);
+  const auto row = this->insert_position(context.predecessor);
+  const QModelIndex parent_index = m_scene.object_tree_adapter.index_of(context.parent);
+  m_scene.object_tree_adapter.beginInsertRows(parent_index, row, row);
+  context.parent.get().adopt(context.subject.release(), row);
   m_item_cache_is_dirty = true;
-  Q_EMIT this->structure_changed({ this });
+  m_scene.object_tree_adapter.endInsertRows();
+  Q_EMIT m_scene.repaint();
 }
 
 template<typename T> void Tree<T>::remove(TreeOwningContext<T>& context)
 {
   assert(!context.subject.owns());
-
-  const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [&context](auto* observer) { return observer->acquire_remover_guard(context.subject); }
-  );
+  const Object& subject = context.subject;
+  const int row = m_scene.object_tree.position(subject);
+  const QModelIndex parent_index = m_scene.object_tree_adapter.index_of(subject.tree_parent());
+  m_scene.object_tree_adapter.beginRemoveRows(parent_index, row, row);
   context.subject.capture(context.parent.get().repudiate(context.subject));
   m_item_cache_is_dirty = true;
-  Q_EMIT this->structure_changed({ this });
+  m_scene.object_tree_adapter.endRemoveRows();
+  Q_EMIT m_scene.repaint();
 }
 
 template<typename T> std::unique_ptr<T> Tree<T>::remove(T& t)
 {
-  const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [&t](auto* observer) { return observer->acquire_remover_guard(t); }
-  );
+  const int row = m_scene.object_tree.position(t);
+  const QModelIndex parent_index = m_scene.object_tree_adapter.index_of(t.tree_parent());
+  m_scene.object_tree_adapter.beginRemoveRows(parent_index, row, row);
   assert(!t.is_root());
   auto item = t.tree_parent().repudiate(t);
   m_item_cache_is_dirty = true;
-  Q_EMIT this->structure_changed({ this });
+  m_scene.object_tree_adapter.endRemoveRows();
+  Q_EMIT m_scene.repaint();
   return item;
 }
 
 template<typename T>
 std::unique_ptr<T> Tree<T>::replace_root(std::unique_ptr<T> new_root)
 {
-  const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [](auto* observer) { return observer->acquire_reseter_guard(); }
-  );
+  m_scene.object_tree_adapter.beginResetModel();
   auto old_root = std::move(m_root);
   m_root = std::move(new_root);
   m_item_cache_is_dirty = true;
-  Q_EMIT this->structure_changed({ this });
+  m_scene.object_tree_adapter.endResetModel();
+  Q_EMIT m_scene.repaint();
   return old_root;
 }
 

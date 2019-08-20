@@ -36,15 +36,6 @@ public:
   bool canDropMimeData( const QMimeData *data, Qt::DropAction action,
                         int row, int column, const QModelIndex &parent ) const override;
 
-  friend class ::AbstractRAIIGuard;
-  std::unique_ptr<AbstractRAIIGuard> acquire_inserter_guard(Object& parent, int row) override;
-
-  std::unique_ptr<AbstractRAIIGuard>
-  acquire_mover_guard(const ObjectTreeMoveContext& context) override;
-
-  std::unique_ptr<AbstractRAIIGuard> acquire_remover_guard(const Object& object) override;
-  std::unique_ptr<AbstractRAIIGuard> acquire_reseter_guard() override;
-
   constexpr static int TAGS_COLUMN = 2;
   constexpr static int VISIBILITY_COLUMN = 1;
   constexpr static int OBJECT_COLUMN = 0;
@@ -54,6 +45,8 @@ public:
 public:
   Tag* current_tag_predecessor = nullptr;
   Tag* current_tag = nullptr;
+
+  friend class Tree<Object>;
 
 };
 
