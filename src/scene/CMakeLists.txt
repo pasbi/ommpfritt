@@ -1,13 +1,13 @@
 
 file(GLOB SOURCES
   itemmodeladapter.cpp
-  listadapter.cpp
   list.cpp
   objecttreeadapter.cpp
   pointselection.cpp
   propertyownermimedata.cpp
   scene.cpp
   structure.cpp
+  stylelist.cpp
   tree.cpp
 )
 
@@ -17,13 +17,13 @@ file(GLOB HEADERS
   contextes_fwd.h
   contextes.h
   itemmodeladapter.h
-  listadapter.h
   list.h
   objecttreeadapter.h
   pointselection.h
   propertyownermimedata.h
   scene.h
   structure.h
+  stylelist.h
   tree.h
 )
 

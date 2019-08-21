@@ -6,6 +6,7 @@
 #include "tags/tag.h"
 #include "objects/object.h"
 #include "renderers/style.h"
+#include "scene/stylelist.h"
 
 namespace
 {
@@ -58,7 +59,7 @@ template<typename StructureT> void RemoveCommand<StructureT>::undo()
 }
 
 template class RemoveCommand<Tree<Object>>;
-template class RemoveCommand<List<Style>>;
+template class RemoveCommand<StyleList>;
 template class RemoveCommand<List<Tag>>;
 
 }  // namespace omm

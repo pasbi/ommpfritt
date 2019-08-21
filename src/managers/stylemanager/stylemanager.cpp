@@ -3,7 +3,6 @@
 #include <QEvent>
 #include "renderers/style.h"
 #include "managers/stylemanager/stylelistview.h"
-#include "scene/listadapter.h"
 #include "scene/scene.h"
 #include "commands/addcommand.h"
 #include "mainwindow/application.h"
@@ -16,7 +15,7 @@ namespace omm
 
 StyleManager::StyleManager(Scene& scene)
   : ItemManager( QCoreApplication::translate("any-context", "StyleManager"),
-                 scene, scene.style_list_adapter )
+                 scene, scene.styles)
 {
   setObjectName(TYPE);
   connect(&scene, SIGNAL(style_selection_changed(std::set<Style*>)),

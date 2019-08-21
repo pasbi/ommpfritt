@@ -68,13 +68,8 @@ template<typename T> T& List<T>::item(size_t i) const
 
 template<typename T> void List<T>::insert(ListOwningContext<T>& context)
 {
-  const size_t position = this->insert_position(context.predecessor);
-  const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [position](auto* observer) {
-      return observer->acquire_inserter_guard(position);
-    }
-  );
-  m_items.insert(m_items.begin() + static_cast<int>(position), context.subject.release());
+  const int row = this->insert_position(context.predecessor);
+  m_items.insert(m_items.begin() + static_cast<int>(row), context.subject.release());
   if constexpr (std::is_base_of_v<AbstractPropertyOwner, T>) {
     context.get_subject().register_observer(this);
   }
@@ -82,11 +77,6 @@ template<typename T> void List<T>::insert(ListOwningContext<T>& context)
 
 template<typename T> void List<T>::remove(ListOwningContext<T>& context)
 {
-  const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [this, &context](auto* observer) {
-      return observer->acquire_remover_guard(position(context.subject));
-    }
-  );
   if constexpr (std::is_base_of_v<AbstractPropertyOwner, T>) {
     context.get_subject().unregister_observer(this);
   }
@@ -95,10 +85,6 @@ template<typename T> void List<T>::remove(ListOwningContext<T>& context)
 
 template<typename T> std::unique_ptr<T> List<T>::remove(T& item)
 {
-  // item could be `const T&`, however, that would break compatibility with `Tree::remove`.
-  const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [this, &item](auto* observer){ return observer->acquire_remover_guard(position(item)); }
-  );
   auto extracted_item = ::extract(m_items, item);
   if constexpr (std::is_base_of_v<AbstractPropertyOwner, T>) {
     item.unregister_observer(this);
@@ -143,9 +129,6 @@ template<typename T> void List<T>::move(ListMoveContext<T>& context)
 template<typename T>
 std::vector<std::unique_ptr<T>> List<T>::set(std::vector<std::unique_ptr<T>> items)
 {
-  const auto style_guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [](auto* observer) { return observer->acquire_reseter_guard(); }
-  );
   unregister_items(m_items, *this);
   auto old_items = std::move(m_items);
   m_items = std::move(items);

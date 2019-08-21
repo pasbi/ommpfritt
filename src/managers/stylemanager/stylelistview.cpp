@@ -1,4 +1,5 @@
 #include "managers/stylemanager/stylelistview.h"
+#include "scene/stylelist.h"
 
 namespace omm
 {
@@ -13,4 +14,4 @@ void StyleListView::set_selection(const std::set<Style*>& selection)
   selectionModel()->select(new_selection, QItemSelectionModel::ClearAndSelect);
 }
 
-}
+}  // namespace omm

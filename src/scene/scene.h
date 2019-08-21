@@ -14,12 +14,12 @@
 #include "scene/cachedgetter.h"
 #include "scene/list.h"
 #include "scene/tree.h"
-#include "scene/listadapter.h"
 #include "scene/objecttreeadapter.h"
 #include "scene/history/historymodel.h"
 #include "tools/toolbox.h"
 #include "scene/abstractstructureobserver.h"
 #include "scene/pointselection.h"
+#include "scene/stylelist.h"
 
 namespace omm
 {
@@ -44,8 +44,7 @@ public:
   Tree<Object> object_tree;
   ObjectTreeAdapter object_tree_adapter;
 
-  List<Style> styles;
-  ListAdapter<Style> style_list_adapter;
+  StyleList styles;
 
   template<typename ItemT> typename SceneStructure<ItemT>::type& structure();
   template<typename ItemT> const typename SceneStructure<ItemT>::type& structure() const;

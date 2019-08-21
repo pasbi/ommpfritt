@@ -4,7 +4,6 @@
 #include <QEvent>
 #include "scene/scene.h"
 #include "managers/stylemanager/stylelistview.h"
-#include "scene/listadapter.h"
 #include "managers/objectmanager/objecttreeview.h"
 #include "scene/objecttreeadapter.h"
 #include "renderers/style.h"

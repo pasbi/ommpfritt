@@ -10,7 +10,6 @@
 #include "properties/referenceproperty.h"
 
 #include "managers/stylemanager/stylelistview.h"
-#include "scene/listadapter.h"
 #include "managers/objectmanager/objecttreeview.h"
 #include "scene/objecttreeadapter.h"
 #include "scene/scene.h"
@@ -97,7 +96,7 @@ std::set<AbstractPropertyOwner*> ManagerItemView<ItemViewT, ItemModelT>::selecte
   return ::transform<AbstractPropertyOwner*, std::set>(selected_indexes, get_object);
 }
 
-template class ManagerItemView<QListView, ListAdapter<Style>>;
+template class ManagerItemView<QListView, StyleList>;
 template class ManagerItemView<QTreeView, ObjectTreeAdapter>;
 
 }  // namespace omm

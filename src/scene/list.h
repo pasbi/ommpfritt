@@ -27,9 +27,10 @@ public:
   ~List();
   virtual void insert(ListOwningContext<T>& context);
   virtual void remove(ListOwningContext<T>& t);
-  void move(ListMoveContext<T>& context);
+  std::unique_ptr<T> remove(T& t) override;
+  virtual void move(ListMoveContext<T>& context);
   T& item(size_t i) const;
-  std::vector<std::unique_ptr<T>> set(std::vector<std::unique_ptr<T>> items);
+  virtual std::vector<std::unique_ptr<T>> set(std::vector<std::unique_ptr<T>> items);
 
   std::set<T*> items() const override;
   std::vector<T*> ordered_items() const;
@@ -38,7 +39,6 @@ public:
   size_t position(const T& item) const override;
   size_t size() const;
 
-  std::unique_ptr<T> remove(T& t) override;
 
   bool contains(const T& item) const;
 

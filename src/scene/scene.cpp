@@ -61,7 +61,7 @@ namespace omm
 Scene::Scene(PythonEngine& python_engine)
   : object_tree(make_root(), *this)
   , object_tree_adapter(*this, object_tree)
-  , style_list_adapter(*this, styles)
+  , styles(*this)
   , python_engine(python_engine)
   , m_default_style(std::make_unique<Style>(this))
   , tool_box(*this)
