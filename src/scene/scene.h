@@ -17,7 +17,6 @@
 #include "scene/objecttreeadapter.h"
 #include "scene/history/historymodel.h"
 #include "tools/toolbox.h"
-#include "scene/abstractstructureobserver.h"
 #include "scene/pointselection.h"
 #include "scene/stylelist.h"
 

@@ -12,7 +12,6 @@ file(GLOB SOURCES
 )
 
 file(GLOB HEADERS
-  abstractstructureobserver.h
   cachedgetter.h
   contextes_fwd.h
   contextes.h

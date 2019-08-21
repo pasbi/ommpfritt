@@ -124,17 +124,6 @@ ItemModelAdapter<StructureT, ItemModel>::ItemModelAdapter(Scene& scene, Structur
   : scene(scene)
   , structure(structure)
 {
-  if constexpr (!StructureT::is_tree) {
-    structure.Observed<AbstractStructureObserver<StructureT>>::register_observer(this);
-  }
-}
-
-template<typename StructureT, typename ItemModel>
-ItemModelAdapter<StructureT, ItemModel>::~ItemModelAdapter()
-{
-  if constexpr (!StructureT::is_tree) {
-    structure.Observed<AbstractStructureObserver<StructureT>>::unregister_observer(this);
-  }
 }
 
 template<typename StructureT, typename ItemModel> Qt::DropActions

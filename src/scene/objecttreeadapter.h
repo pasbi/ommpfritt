@@ -3,7 +3,6 @@
 #include <QAbstractItemModel>
 #include "scene/itemmodeladapter.h"
 #include "scene/tree.h"
-#include "scene/abstractstructureobserver.h"
 #include "objects/object.h"
 #include "abstractraiiguard.h"
 

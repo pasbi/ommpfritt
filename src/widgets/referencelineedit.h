@@ -4,7 +4,6 @@
 #include "propertywidgets/multivalueedit.h"
 #include "aspects/propertyowner.h"
 #include "tags/tag.h"
-#include "scene/abstractstructureobserver.h"
 
 class QMimeData;
 

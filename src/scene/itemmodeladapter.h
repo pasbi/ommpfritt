@@ -2,7 +2,6 @@
 
 #include <QAbstractItemModel>
 #include "scene/structure.h"
-#include "scene/abstractstructureobserver.h"
 #include "objects/object.h"
 #include "scene/tree.h"
 #include "scene/list.h"
@@ -13,14 +12,14 @@ namespace omm
 class Scene;
 
 template<typename StructureT, typename ItemModel>
-class ItemModelAdapter : public ItemModel, public AbstractStructureObserver<StructureT>
+class ItemModelAdapter : public ItemModel
 {
   static_assert( std::is_base_of<QAbstractItemModel, ItemModel>::value,
                  "ItemModel must be derived from QAbstractItemModel" );
 public:
   using structure_type = StructureT;
   explicit ItemModelAdapter(Scene& scene, StructureT& structure);
-  virtual ~ItemModelAdapter();
+  virtual ~ItemModelAdapter() = default;
   Qt::DropActions supportedDragActions() const override;
   Qt::DropActions supportedDropActions() const override;
   bool canDropMimeData( const QMimeData *data, Qt::DropAction action,

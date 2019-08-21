@@ -12,7 +12,6 @@
 #include "scene/cachedgetter.h"
 #include "scene/structure.h"
 #include "scene/contextes_fwd.h"
-#include "scene/abstractstructureobserver.h"
 #include "objects/object.h"
 
 namespace omm

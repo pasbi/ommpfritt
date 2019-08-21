@@ -40,7 +40,7 @@ namespace omm
 {
 
 template<typename T> List<T>::List(const List<T>& other)
-  : Structure<T>(), Observed<AbstractStructureObserver<List<T>>>(other)
+  : Structure<T>()
   , m_items(copy_items(other.m_items))
 {
   register_items(m_items, *this);
@@ -117,10 +117,6 @@ template<typename T> const T* List<T>::predecessor(const T& item) const
 template<typename T> void List<T>::move(ListMoveContext<T>& context)
 {
   assert(context.is_valid());
-  const auto guards = observed_type::template transform<std::unique_ptr<AbstractRAIIGuard>>(
-    [&context](auto* observer) { return observer->acquire_mover_guard(context); }
-  );
-
   std::unique_ptr<T> item = ::extract(m_items, context.subject.get());
   const auto i = m_items.begin() + static_cast<int>(this->insert_position(context.predecessor));
   m_items.insert(i, std::move(item));

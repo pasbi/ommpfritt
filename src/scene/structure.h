@@ -2,7 +2,6 @@
 
 #include <set>
 #include <memory>
-#include "scene/abstractstructureobserver.h"
 #include "observed.h"
 
 namespace omm

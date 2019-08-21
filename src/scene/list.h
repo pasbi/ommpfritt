@@ -5,7 +5,6 @@
 #include <set>
 #include "scene/contextes_fwd.h"
 #include "scene/structure.h"
-#include "scene/abstractstructureobserver.h"
 #include "aspects/propertyowner.h"
 #include "observed.h"
 
@@ -16,11 +15,8 @@ template<typename T>
 class List
     : public Structure<T>
     , public AbstractPropertyOwnerObserver
-    , public Observed<AbstractStructureObserver<List<T>>>
 {
 public:
-  using observer_type = AbstractStructureObserver<List<T>>;
-  using observed_type = Observed<observer_type>;
   constexpr static bool is_tree = false;
   using Structure<T>::Structure;
   explicit List(const List<T>& other);
