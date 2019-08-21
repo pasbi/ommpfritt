@@ -18,7 +18,6 @@ class ItemModelAdapter : public ItemModel, public AbstractStructureObserver<Stru
   static_assert( std::is_base_of<QAbstractItemModel, ItemModel>::value,
                  "ItemModel must be derived from QAbstractItemModel" );
 public:
-  using item_type = typename StructureT::item_type;
   using structure_type = StructureT;
   explicit ItemModelAdapter(Scene& scene, StructureT& structure);
   virtual ~ItemModelAdapter();
@@ -30,8 +29,8 @@ public:
                       int row, int column, const QModelIndex &parent ) override;
   QStringList mimeTypes() const override;
   QMimeData* mimeData(const QModelIndexList &indexes) const override;
-  virtual item_type& item_at(const QModelIndex& index) const = 0;
-  virtual QModelIndex index_of(item_type& item) const = 0;
+  virtual typename structure_type::item_type& item_at(const QModelIndex& index) const = 0;
+  virtual QModelIndex index_of(typename structure_type::item_type& item) const = 0;
   Scene& scene;
   StructureT& structure;
 

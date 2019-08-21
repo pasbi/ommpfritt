@@ -1,14 +1,14 @@
 #pragma once
 
 #include "scene/list.h"
-
+#include "scene/itemmodeladapter.h"
 #include <QAbstractListModel>
 
 namespace omm
 {
 
 class Style;
-class StyleList : public QAbstractListModel, public List<Style>
+class StyleList : public ItemModelAdapter<List<Style>, QAbstractListModel>, public List<Style>
 {
 public:
   explicit StyleList(Scene& scene);
@@ -22,8 +22,8 @@ public:
   QVariant data(const QModelIndex& index, int role) const override;
   bool setData(const QModelIndex& index, const QVariant& value, int role) override;
   Qt::ItemFlags flags(const QModelIndex& index) const override;
-  Style& item_at(const QModelIndex& index) const;
-  QModelIndex index_of(Style& style) const;
+  Style& item_at(const QModelIndex& index) const override;
+  QModelIndex index_of(Style& style) const override;
   Scene& scene;
 
 };

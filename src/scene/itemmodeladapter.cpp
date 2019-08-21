@@ -157,14 +157,14 @@ template<typename StructureT, typename ItemModel> bool ItemModelAdapter<Structur
   if (!data->hasFormat(PropertyOwnerMimeData::MIME_TYPE)) { return false; }
   const auto* pdata = qobject_cast<const PropertyOwnerMimeData*>(data);
   if (pdata == nullptr) { return false; }
-  const auto items = pdata->items<item_type>();
+  const auto items = pdata->items<typename structure_type::item_type>();
   if (items.size() == 0) { return false; }
 
   switch (action) {
   case Qt::MoveAction: {
-    using Context = typename Contextes<item_type>::Move;
+    using Context = typename Contextes<typename structure_type::item_type>::Move;
     const auto move_contextes = make_contextes<Context>(*this, data, row, parent);
-    return can_move_drop_items<item_type>(structure, move_contextes);
+    return can_move_drop_items<typename structure_type::item_type>(structure, move_contextes);
   }
   case Qt::CopyAction: return true;
   default: return false;
@@ -176,8 +176,8 @@ ItemModelAdapter<StructureT, ItemModel>
 ::dropMimeData( const QMimeData *data, Qt::DropAction action,
                 int row, int column, const QModelIndex &parent )
 {
-  using MoveContext = typename Contextes<item_type>::Move;
-  using OwningContext = typename Contextes<item_type>::Owning;
+  using MoveContext = typename Contextes<typename structure_type::item_type>::Move;
+  using OwningContext = typename Contextes<typename structure_type::item_type>::Owning;
   if (!canDropMimeData(data, action, row, column, parent)) {
     return false;
   } else {

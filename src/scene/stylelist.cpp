@@ -7,7 +7,9 @@
 namespace omm
 {
 
-StyleList::StyleList(Scene &scene) : scene(scene)
+StyleList::StyleList(Scene &scene)
+  : ItemModelAdapter<List<Style>, QAbstractListModel>(scene, *this)
+  , scene(scene)
 {
 
 }
