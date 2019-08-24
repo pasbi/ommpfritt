@@ -2,7 +2,6 @@
 
 #include <set>
 #include <memory>
-#include "observed.h"
 
 namespace omm
 {

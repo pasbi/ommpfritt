@@ -6,15 +6,12 @@
 #include "scene/contextes_fwd.h"
 #include "scene/structure.h"
 #include "aspects/propertyowner.h"
-#include "observed.h"
 
 namespace omm
 {
 
 template<typename T>
-class List
-    : public Structure<T>
-    , public AbstractPropertyOwnerObserver
+class List : public Structure<T>
 {
 public:
   constexpr static bool is_tree = false;
@@ -34,12 +31,7 @@ public:
   using Structure<T>::predecessor;
   size_t position(const T& item) const override;
   size_t size() const;
-
-
   bool contains(const T& item) const;
-
-  void on_change(AbstractPropertyOwner *apo, int what, Property *property,
-                 std::set<const void*> trace) override;
 
 private:
   std::vector<std::unique_ptr<T>> m_items;

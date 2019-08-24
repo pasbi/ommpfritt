@@ -10,7 +10,6 @@
 
 #include "external/json_fwd.hpp"
 #include "scene/objecttree.h"
-#include "observed.h"
 #include "scene/contextes.h"
 #include "scene/cachedgetter.h"
 #include "scene/list.h"

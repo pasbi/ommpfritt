@@ -2,8 +2,9 @@
 
 #include <string>
 #include <pybind11/embed.h>
-#include "observed.h"
 #include "python/scopedinterpreterwrapper.h"
+#include <QObject>
+#include "common.h"
 
 namespace omm
 {

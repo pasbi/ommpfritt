@@ -4,7 +4,6 @@
 #include <QVBoxLayout>
 #include <QLineEdit>
 #include <QFontComboBox>
-#include "observed.h"
 #include "propertywidgets/multivalueedit.h"
 #include "properties/stringproperty.h"
 #include "widgets/filepathedit.h"

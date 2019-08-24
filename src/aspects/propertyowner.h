@@ -14,27 +14,11 @@
 #include "properties/stringproperty.h"
 #include "common.h"
 #include <Qt>
-#include "observed.h"
 
 namespace omm
 {
 
-class AbstractPropertyOwner;
-class AbstractPropertyOwnerObserver
-{
-public:
-  virtual ~AbstractPropertyOwnerObserver() = default;
-
-  /**
-   * @see AbstractPropertyOwner::on_change;
-   */
-  virtual void on_change(AbstractPropertyOwner* apo, int what, Property* property,
-                         std::set<const void*> trace) = 0;
-};
-
-class AbstractPropertyOwner : public QObject
-                            , public virtual Serializable
-                            , public Observed<AbstractPropertyOwnerObserver>
+class AbstractPropertyOwner : public QObject, public virtual Serializable
 {
   Q_OBJECT
 public:

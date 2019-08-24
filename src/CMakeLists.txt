@@ -12,7 +12,6 @@ file(GLOB HEADERS
   logging.h
   maybeowner.h
   menuhelper.h
-  observed.h
   orderedmap.h
 )
 

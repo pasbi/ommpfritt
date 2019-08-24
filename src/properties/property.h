@@ -8,7 +8,6 @@
 
 #include "logging.h"
 #include "external/json.hpp"
-#include "observed.h"
 #include "abstractfactory.h"
 #include "aspects/serializable.h"
 #include "common.h"
