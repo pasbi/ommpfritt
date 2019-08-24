@@ -54,23 +54,6 @@ private:
   pybind11::object m_stderr_buffer;
 };
 
-void notify(const std::string& text, const std::function<void(const std::string&)>& f)
-{
-  if (text.size() > 0) { f(text); }
-}
-
-auto on_stderr(omm::PythonIOObserver* observer, const void* associated_item)
-{
-  using namespace std::placeholders;
-  return std::bind(&omm::PythonIOObserver::on_stderr, observer, associated_item, _1);
-}
-
-auto on_stdout(omm::PythonIOObserver* observer, const void* associated_item)
-{
-  using namespace std::placeholders;
-  return std::bind(&omm::PythonIOObserver::on_stdout, observer, associated_item, _1);
-}
-
 }  // namespace
 
 namespace omm
@@ -82,7 +65,7 @@ PythonEngine::PythonEngine()
 {
   static size_t count = 0;
   if (count > 0) {
-    LFATAL("There must be not pymore than one PythonEngine.");
+    LFATAL("There must be not more than one PythonEngine.");
   }
   count++;
 
@@ -91,45 +74,31 @@ PythonEngine::PythonEngine()
 }
 
 bool PythonEngine
-::exec(const std::string& code, const py::object& locals, const void* associated_item) const
+::exec(const std::string& code, const py::object& locals, const void* associated_item)
 {
-  // actually, they are used. However some compilers emit false warnings without the following.
-  Q_UNUSED(::on_stderr)
-  Q_UNUSED(::on_stdout)
-  Q_UNUSED(::notify)
-
   PythonStreamRedirect py_output_redirect {};
   try {
     py::exec(code, py::globals(), locals);
-    Observed<PythonIOObserver>::for_each([&](auto* observer) {
-      notify(py_output_redirect.stdout_(), on_stdout(observer, associated_item));
-      notify(py_output_redirect.stderr_(), on_stderr(observer, associated_item));
-    });
+    Q_EMIT output(associated_item, py_output_redirect.stdout_(), Stream::stdout_);
+    Q_EMIT output(associated_item, py_output_redirect.stderr_(), Stream::stderr_);
     return true;
   } catch (const std::exception& e) {
-    Observed<PythonIOObserver>::for_each([&](auto* observer) {
-      notify(e.what(), on_stderr(observer, associated_item));
-    });
+    Q_EMIT output(associated_item, e.what(), Stream::stderr_);
     return false;
   }
 }
 
 pybind11::object PythonEngine
-::eval(const std::string& code, const py::object& locals, const void* associated_item) const
+::eval(const std::string& code, const py::object& locals, const void* associated_item)
 {
-
   PythonStreamRedirect py_output_redirect {};
   try {
     auto result = py::eval(code, py::globals(), locals);
-    Observed<PythonIOObserver>::for_each([&](auto* observer) {
-      notify(py_output_redirect.stdout_(), on_stdout(observer, associated_item));
-      notify(py_output_redirect.stderr_(), on_stderr(observer, associated_item));
-    });
+    Q_EMIT output(associated_item, py_output_redirect.stdout_(), Stream::stdout_);
+    Q_EMIT output(associated_item, py_output_redirect.stderr_(), Stream::stderr_);
     return result;
   } catch (const std::exception& e) {
-    Observed<PythonIOObserver>::for_each([&](auto* observer) {
-      notify(e.what(), on_stderr(observer, associated_item));
-    });
+    Q_EMIT output(associated_item, e.what(), Stream::stderr_);
     return py::none();
   }
 }

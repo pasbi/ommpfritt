@@ -14,6 +14,8 @@
 #include <list>
 #include <map>
 
+enum class Stream { stdout_, stderr_ };
+
 /*
  * passes ownership of `object` to `consumer` and returns a reference to `object`
  */

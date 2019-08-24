@@ -11,25 +11,17 @@ namespace omm
 class Scene;
 class AbstractPropertyOwner;
 
-class PythonIOObserver
+class PythonEngine : public QObject
 {
-public:
-  virtual ~PythonIOObserver() = default;
-  virtual void on_stdout(const void* item, const std::string& text) = 0;
-  virtual void on_stderr(const void* item, const std::string& text) = 0;
-};
-
-class PythonEngine : public Observed<PythonIOObserver>
-{
+  Q_OBJECT
 public:
   explicit PythonEngine();
   bool
-  exec(const std::string& code, const pybind11::object& locals, const void* association) const;
+  exec(const std::string& code, const pybind11::object& locals, const void* association);
   pybind11::object
-  eval(const std::string& code, const pybind11::object& locals, const void* association) const;
+  eval(const std::string& code, const pybind11::object& locals, const void* association);
 
 private:
-
   // the scoped_interpeter has same lifetime as the application.
   // otherwise, e.g., importing numpy causes crashed.
   // see https://pybind11.readthedocs.io/en/stable/advanced/embedding.html#interpreter-lifetime
@@ -37,6 +29,9 @@ private:
 
   PythonEngine(const PythonEngine&) = delete;
   PythonEngine(PythonEngine&&) = delete;
+
+Q_SIGNALS:
+  void output(const void* associated_item, const std::string& text, Stream stream);
 };
 
 void register_wrappers(pybind11::object& module);

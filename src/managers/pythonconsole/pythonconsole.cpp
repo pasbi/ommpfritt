@@ -4,7 +4,6 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include "widgets/codeedit.h"
-#include <pybind11/embed.h>
 #include "scene/scene.h"
 #include "python/pythonengine.h"
 #include "python/scenewrapper.h"
@@ -64,12 +63,15 @@ PythonConsole::PythonConsole(Scene& scene)
   m_layout->setContentsMargins(0, 0, 0, 0);
   set_widget(std::move(widget));
 
-  scene.python_engine.Observed<PythonIOObserver>::register_observer(this);
+  connect(&scene.python_engine, SIGNAL(output(const void*, std::string, Stream)),
+          this, SLOT(on_output(const void*, std::string, Stream)));
 }
 
-PythonConsole::~PythonConsole()
+void PythonConsole ::on_output(const void* associated_item, std::string text, Stream stream)
 {
-  scene().python_engine.Observed<PythonIOObserver>::unregister_observer(this);
+  if (accept(associated_item)) {
+    m_output->put(text, stream);
+  }
 }
 
 std::unique_ptr<QMenuBar> PythonConsole::make_menu_bar()
@@ -86,7 +88,7 @@ void PythonConsole::eval()
 {
   const auto code = m_commandline->code();
   push_command(code);
-  m_output->put(QObject::tr(">>> ", "PythonConsole").toStdString() + code, CodeEdit::Stream::stdout_);
+  m_output->put(QObject::tr(">>> ", "PythonConsole").toStdString() + code, Stream::stdout_);
 
   using namespace pybind11::literals;
   const auto locals = pybind11::dict("scene"_a=SceneWrapper(scene()));
@@ -97,16 +99,6 @@ void PythonConsole::eval()
   }
 
   m_commandline->clear();
-}
-
-void PythonConsole::on_stdout(const void* associated_item, const std::string& text)
-{
-  if (accept(associated_item)) { m_output->put(text, CodeEdit::Stream::stdout_); }
-}
-
-void PythonConsole::on_stderr(const void* associated_item, const std::string& text)
-{
-  if (accept(associated_item)) { m_output->put(text, CodeEdit::Stream::stderr_); }
 }
 
 bool PythonConsole::accept(const void* associated_item) const

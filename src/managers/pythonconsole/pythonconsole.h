@@ -6,6 +6,7 @@
 #include "python/pythonengine.h"
 #include <string>
 #include "keybindings/commandinterface.h"
+#include "common.h"
 
 namespace omm
 {
@@ -13,14 +14,11 @@ namespace omm
 class CodeEdit;
 class ReferenceLineEdit;
 
-class PythonConsole : public Manager, public PythonIOObserver, public CommandInterface
+class PythonConsole : public Manager, public CommandInterface
 {
+  Q_OBJECT
 public:
   explicit PythonConsole(Scene& scene);
-  ~PythonConsole();
-
-  void on_stdout(const void* associated_item, const std::string& text) override;
-  void on_stderr(const void* associated_item, const std::string& text) override;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PythonConsole");
   std::string type() const override;
@@ -50,6 +48,9 @@ private:
   std::list<std::string>::iterator m_command_stack_pointer = m_command_stack.end();
 
   static constexpr Qt::KeyboardModifiers caption_modifiers = Qt::ControlModifier;
+
+private Q_SLOTS:
+  void on_output(const void* associated_item, std::string content, Stream stream);
 
 };
 
