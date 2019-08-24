@@ -18,7 +18,6 @@ template<typename T> TreeElement<T>::TreeElement(const TreeElement& other)
 template<typename T> T& TreeElement<T>::adopt(std::unique_ptr<T> object, const size_t pos)
 {
   assert(object->is_root());
-  auto guard = object->acquire_set_parent_guard();
   object->m_parent = &get();
   auto& r = insert(m_children, std::move(object), pos);
   on_child_added(r);
@@ -32,7 +31,6 @@ template<typename T> T& TreeElement<T>::adopt(std::unique_ptr<T> object)
 
 template<typename T> std::unique_ptr<T> TreeElement<T>::repudiate(T& object)
 {
-  auto guard = object.acquire_set_parent_guard();
   object.m_parent = nullptr;
   std::unique_ptr<T> optr = extract(m_children, object);
   on_child_removed(object);

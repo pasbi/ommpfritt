@@ -7,7 +7,6 @@ file(GLOB SOURCES
 
 file(GLOB HEADERS
   abstractfactory.h
-  abstractraiiguard.h
   cache.h
   common.h
   logging.h

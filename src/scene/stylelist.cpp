@@ -11,7 +11,6 @@ StyleList::StyleList(Scene &scene)
   : ItemModelAdapter<StyleList, Style, QAbstractListModel>(scene, *this)
   , scene(scene)
 {
-
 }
 
 void StyleList::insert(ListOwningContext<Style> &context)
@@ -28,7 +27,6 @@ void StyleList::remove(ListOwningContext<Style> &context)
   beginRemoveRows(QModelIndex(), row, row);
   List::remove(context);
   endRemoveRows();
-
 }
 
 std::unique_ptr<Style> StyleList::remove(Style &t)

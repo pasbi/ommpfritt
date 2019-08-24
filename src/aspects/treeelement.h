@@ -4,7 +4,6 @@
 #include <vector>
 #include <set>
 #include <algorithm>
-#include "abstractraiiguard.h"
 #include "common.h"
 #include <QtGlobal>
 
@@ -20,9 +19,9 @@ public:
   explicit TreeElement(const TreeElement& other);
   bool is_root() const;
   T& tree_parent() const;
-  T& adopt(std::unique_ptr<T> adoptee, const size_t pos);
+  virtual T& adopt(std::unique_ptr<T> adoptee, const size_t pos);
   T& adopt(std::unique_ptr<T> adoptee);
-  std::unique_ptr<T> repudiate(T& repudiatee);
+  virtual std::unique_ptr<T> repudiate(T& repudiatee);
   std::vector<T*> tree_children() const;
   T& tree_child(size_t i) const;
   size_t n_children() const;
@@ -30,7 +29,6 @@ public:
   void reset_parent(T& new_parent);
   std::set<T*> all_descendants() const;
   size_t position() const;
-  virtual std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() { return nullptr; }
 
   static void remove_internal_children(std::set<T*>& items);
   static T* lowest_common_ancestor(T *a, T *b);

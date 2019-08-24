@@ -283,21 +283,20 @@ BoundingBox Object::recursive_bounding_box(const ObjectTransformation& transform
   return bounding_box;
 }
 
-std::unique_ptr<AbstractRAIIGuard> Object::acquire_set_parent_guard()
+std::unique_ptr<Object> Object::repudiate(Object &repudiatee)
 {
-  class SetParentGuard : public AbstractRAIIGuard
-  {
-  public:
-    explicit SetParentGuard(Object& self)
-      : m_self(self), m_global_transformation(m_self.global_transformation(true)) { }
+  const ObjectTransformation global_transformation = repudiatee.global_transformation(true);
+  auto o = TreeElement<Object>::repudiate(repudiatee);
+  repudiatee.set_global_transformation(global_transformation, true);
+  return o;
+}
 
-    ~SetParentGuard() { m_self.set_global_transformation(m_global_transformation, true); }
-
-  private:
-    Object& m_self;
-    const ObjectTransformation m_global_transformation;
-  };
-  return std::make_unique<SetParentGuard>(*this);
+Object &Object::adopt(std::unique_ptr<Object> adoptee, const size_t pos)
+{
+  const ObjectTransformation global_transformation = adoptee->global_transformation(true);
+  Object& o = TreeElement<Object>::adopt(std::move(adoptee), pos);
+  o.set_global_transformation(global_transformation, true);
+  return o;
 }
 
 std::unique_ptr<Object> Object::clone(Scene* scene) const

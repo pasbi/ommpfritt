@@ -72,7 +72,9 @@ public:
    */
   virtual BoundingBox bounding_box(const ObjectTransformation& transformation) const = 0;
   BoundingBox recursive_bounding_box(const ObjectTransformation &transformation) const;
-  std::unique_ptr<AbstractRAIIGuard> acquire_set_parent_guard() override;
+  std::unique_ptr<Object> repudiate(Object &repudiatee) override;
+  Object & adopt(std::unique_ptr<Object> adoptee, const size_t pos) override;
+  using TreeElement::adopt;
   virtual std::unique_ptr<Object> clone() const = 0;
   std::unique_ptr<Object> clone(Scene* scene) const;
   virtual std::unique_ptr<Object> convert() const;

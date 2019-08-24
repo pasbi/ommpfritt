@@ -25,7 +25,6 @@ public:
   Style& item_at(const QModelIndex& index) const override;
   QModelIndex index_of(Style& style) const override;
   Scene& scene;
-
 };
 
 }  // namespace omm
