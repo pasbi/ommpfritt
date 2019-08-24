@@ -61,15 +61,14 @@ void convert_objects(omm::Application& app, std::set<omm::Object*> convertables)
     for (auto&& c : convertables) {
       auto converted = c->convert();
       assert(!c->is_root());
-      TreeOwningContext<Object> context(*converted, c->tree_parent(), c);
+      ObjectTreeOwningContext context(*converted, c->tree_parent(), c);
       const auto properties = ::transform<Property*>(app.scene.find_reference_holders(*c));
       if (properties.size() > 0) {
         app.scene.submit<PropertiesCommand<ReferenceProperty>>(properties, converted.get());
       }
       auto& converted_ref = *converted;
       context.subject.capture(std::move(converted));
-      using object_tree_type = Tree<Object>;
-      app.scene.submit<AddCommand<object_tree_type>>(app.scene.object_tree, std::move(context));
+      app.scene.submit<AddCommand<ObjectTree>>(app.scene.object_tree, std::move(context));
       converted_ref.set_transformation(c->transformation());
       converted_objects.insert(&converted_ref);
 
@@ -82,9 +81,9 @@ void convert_objects(omm::Application& app, std::set<omm::Object*> convertables)
                      std::back_inserter(move_contextes), make_move_context);
     }
 
-    app.scene.template submit<MoveCommand<Tree<Object>>>(app.scene.object_tree, std::vector(move_contextes.begin(), move_contextes.end()));
+    app.scene.template submit<MoveCommand<ObjectTree>>(app.scene.object_tree, std::vector(move_contextes.begin(), move_contextes.end()));
     const auto selection = ::transform<Object*, std::set>(convertables, ::identity);
-    using remove_command = RemoveCommand<Tree<Object>>;
+    using remove_command = RemoveCommand<ObjectTree>;
     app.scene.template submit<remove_command>(app.scene.object_tree, selection);
     app.scene.set_selection(down_cast(converted_objects));
 

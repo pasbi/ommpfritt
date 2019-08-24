@@ -15,14 +15,13 @@ template<typename T, template<typename, template<typename...> class > class Cont
 using OwningContext = ContextT<T, MaybeOwner>;
 
 template<typename T> class ListOwningContext;
-template<typename T> class TreeOwningContext;
 
 template<typename T> class TreeMoveContext;
 template<typename T> class ListMoveContext;
 
 class Object;
-using ObjectTreeOwningContext = TreeOwningContext<Object>;
 using ObjectTreeMoveContext = TreeMoveContext<Object>;
+class ObjectTreeOwningContext;
 
 class Style;
 using StyleListOwningContext = ListOwningContext<Style>;

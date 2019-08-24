@@ -25,7 +25,7 @@
 namespace omm
 {
 
-ObjectTreeView::ObjectTreeView(ObjectTreeAdapter& model)
+ObjectTreeView::ObjectTreeView(ObjectTree& model)
   : ManagerItemView(model)
   , m_selection_model(std::make_unique<ObjectTreeSelectionModel>(model).release())
   , m_object_quick_access_delegate(std::make_unique<ObjectQuickAccessDelegate>(*this))
@@ -64,7 +64,7 @@ void ObjectTreeView::handle_drag_event(QDragMoveEvent* e)
 {
   m_model.current_tag_predecessor = m_tags_item_delegate->tag_before(e->pos());
   m_model.current_tag = m_tags_item_delegate->tag_at(e->pos());
-  setDropIndicatorShown(indexAt(e->pos()).column() != ObjectTreeAdapter::TAGS_COLUMN);
+  setDropIndicatorShown(indexAt(e->pos()).column() != ObjectTree::TAGS_COLUMN);
 }
 
 void ObjectTreeView::dragEnterEvent(QDragEnterEvent* e)
@@ -83,8 +83,8 @@ void ObjectTreeView::paintEvent(QPaintEvent* e)
 {
   const auto n_tags = m_model.max_number_of_tags_on_object();
   const auto tags_width = m_tags_item_delegate->tag_icon_size().width();
-  setColumnWidth(ObjectTreeAdapter::TAGS_COLUMN, n_tags * tags_width);
-  ManagerItemView<QTreeView, ObjectTreeAdapter>::paintEvent(e);
+  setColumnWidth(ObjectTree::TAGS_COLUMN, n_tags * tags_width);
+  ManagerItemView<QTreeView, ObjectTree>::paintEvent(e);
 }
 
 void ObjectTreeView::mousePressEvent(QMouseEvent* e)
@@ -128,7 +128,7 @@ void ObjectTreeView::focusInEvent(QFocusEvent *e)
 void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
 {
   if ((e->pos() - m_mouse_press_pos).manhattanLength() > QApplication::startDragDistance()) {
-    const auto tag_column = m_dragged_index.column() == ObjectTreeAdapter::TAGS_COLUMN;
+    const auto tag_column = m_dragged_index.column() == ObjectTree::TAGS_COLUMN;
     const auto left_button = e->buttons() & Qt::LeftButton;
     if (left_button && tag_column) {
       const auto selected_tags = m_selection_model->selected_tags_ordered(model()->scene);

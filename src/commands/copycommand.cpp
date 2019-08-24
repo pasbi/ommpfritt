@@ -1,8 +1,7 @@
 #include "commands/copycommand.h"
 #include "objects/object.h"
 #include "renderers/style.h"
-#include "scene/tree.h"
-#include "scene/list.h"
+#include "scene/stylelist.h"
 
 namespace omm
 {
@@ -39,7 +38,7 @@ template<typename Structure> void CopyCommand<Structure>::undo()
   }
 }
 
-template class CopyCommand<Tree<Object>>;
-template class CopyCommand<List<Style>>;
+template class CopyCommand<ObjectTree>;
+template class CopyCommand<StyleList>;
 
 }  // namespace omm

@@ -2,7 +2,6 @@
 #include "objects/object.h"
 #include "renderers/style.h"
 #include "scene/scene.h"
-#include "scene/tree.h"
 #include "scene/list.h"
 
 namespace
@@ -52,7 +51,7 @@ template<typename StructureT> void MoveCommand<StructureT>::undo()
   }
 }
 
-template class MoveCommand<Tree<Object>>;
-template class MoveCommand<List<Style>>;
+template class MoveCommand<ObjectTree>;
+template class MoveCommand<StyleList>;
 
 }  // namespace omm

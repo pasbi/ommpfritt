@@ -3,7 +3,6 @@
 #include <QAbstractItemModel>
 #include "scene/structure.h"
 #include "objects/object.h"
-#include "scene/tree.h"
 #include "scene/list.h"
 
 namespace omm
@@ -11,7 +10,7 @@ namespace omm
 
 class Scene;
 
-template<typename StructureT, typename ItemModel>
+template<typename StructureT, typename ItemT, typename ItemModel>
 class ItemModelAdapter : public ItemModel
 {
   static_assert( std::is_base_of<QAbstractItemModel, ItemModel>::value,
@@ -28,8 +27,8 @@ public:
                       int row, int column, const QModelIndex &parent ) override;
   QStringList mimeTypes() const override;
   QMimeData* mimeData(const QModelIndexList &indexes) const override;
-  virtual typename structure_type::item_type& item_at(const QModelIndex& index) const = 0;
-  virtual QModelIndex index_of(typename structure_type::item_type& item) const = 0;
+  virtual ItemT& item_at(const QModelIndex& index) const = 0;
+  virtual QModelIndex index_of(ItemT& item) const = 0;
   Scene& scene;
   StructureT& structure;
 

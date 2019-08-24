@@ -4,7 +4,6 @@
 #include <QDebug>
 #include <QMouseEvent>
 
-#include "scene/objecttreeadapter.h"
 #include "managers/objectmanager/objecttreeview.h"
 #include "tags/tag.h"
 #include "scene/scene.h"

@@ -6,7 +6,7 @@
 namespace omm
 {
 
-class ObjectTreeAdapter;
+class ObjectTree;
 class Tag;
 class Scene;
 class AbstractPropertyOwner;
@@ -14,7 +14,7 @@ class AbstractPropertyOwner;
 class ObjectTreeSelectionModel : public QItemSelectionModel
 {
 public:
-  explicit ObjectTreeSelectionModel(ObjectTreeAdapter& model);
+  explicit ObjectTreeSelectionModel(ObjectTree& model);
 
   bool is_selected(Tag& tag) const;
   void clear_selection();
@@ -27,7 +27,7 @@ public:
   void extend_selection(Tag& tag);
   std::set<Tag*> selected_tags() const;
   std::vector<Tag*> selected_tags_ordered(Scene& scene) const;
-  const ObjectTreeAdapter& model() const;
+  const ObjectTree& model() const;
 
 private:
   std::set<Tag*> m_selected_tags;

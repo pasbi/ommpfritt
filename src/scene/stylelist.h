@@ -8,7 +8,7 @@ namespace omm
 {
 
 class Style;
-class StyleList : public ItemModelAdapter<List<Style>, QAbstractListModel>, public List<Style>
+class StyleList : public ItemModelAdapter<StyleList, Style, QAbstractListModel>, public List<Style>
 {
 public:
   explicit StyleList(Scene& scene);

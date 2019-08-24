@@ -1,42 +1,20 @@
-#include "scene/objecttreeadapter.h"
-
-#include <QItemSelection>
-#include <QDebug>
-
-#include "scene/propertyownermimedata.h"
-#include "objects/object.h"
-#include "common.h"
-#include "commands/movecommand.h"
-#include "commands/copycommand.h"
+#include "scene/objecttree.h"
+#include "mainwindow/application.h"
+#include "commands/propertycommand.h"
+#include "propertyownermimedata.h"
+#include "tags/styletag.h"
 #include "commands/addcommand.h"
 #include "commands/movetagscommand.h"
-#include "properties/stringproperty.h"
-#include "commands/propertycommand.h"
 #include "properties/referenceproperty.h"
-#include "scene/scene.h"
-#include "abstractraiiguard.h"
-#include "tags/tag.h"
-#include "tags/styletag.h"
-#include "scene/contextes.h"
-#include "mainwindow/application.h"
 
-namespace
-{
+namespace {
 
 using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
 
-class AbstractRAIISceneInvalidatorGuard : public AbstractRAIIGuard
+template<typename T> T* last(const std::vector<T*>& ts)
 {
-protected:
-  AbstractRAIISceneInvalidatorGuard(omm::Scene& scene) : m_scene(scene) {}
-  ~AbstractRAIISceneInvalidatorGuard() override { m_scene.invalidate(); }
-
-private:
-  omm::Scene& m_scene;
-};
-
-template<typename T>
-T* last(const std::vector<T*>& ts) { return ts.size() == 0 ? nullptr : ts.back(); }
+  return ts.size() == 0 ? nullptr : ts.back();
+}
 
 void drop_tags_onto_object( omm::Scene& scene, omm::Object& object,
                             const std::vector<omm::Tag*>& tags, Qt::DropAction action )
@@ -103,12 +81,122 @@ void drop_style_onto_object( omm::Scene& scene, omm::Object& object,
 namespace omm
 {
 
-ObjectTreeAdapter::ObjectTreeAdapter(Scene& scene, Tree<Object>& tree)
-  : ItemModelAdapter(scene, tree)
+
+
+ObjectTree::ObjectTree(std::unique_ptr<Object> root, Scene& scene)
+  : ItemModelAdapter<ObjectTree, Object, QAbstractItemModel>(scene, *this)
+  , Structure<Object>(), m_root(std::move(root)), m_scene(scene)
 {
 }
 
-QModelIndex ObjectTreeAdapter::index(int row, int column, const QModelIndex& parent) const
+Object& ObjectTree::root() const
+{
+  return *m_root;
+}
+
+bool ObjectTree::contains(const Object& t) const
+{
+  const auto& root = static_cast<const TreeElement<Object>&>(*m_root);
+  return root.is_ancestor_of(t);
+}
+
+void ObjectTree::move(ObjectTreeMoveContext& context)
+{
+  assert(context.is_valid());
+
+  Object& old_parent = context.subject.get().tree_parent();
+  Object& new_parent = context.parent.get();
+  const auto old_pos = m_scene.object_tree.position(context.subject);
+  const auto new_pos = m_scene.object_tree.insert_position(context.predecessor);
+  const QModelIndex old_parent_index = m_scene.object_tree.index_of(old_parent);
+  const QModelIndex new_parent_index = m_scene.object_tree.index_of(new_parent);
+
+  beginMoveRows(old_parent_index, old_pos, old_pos,
+                                            new_parent_index, new_pos);
+  auto item = old_parent.repudiate(context.subject);
+  const auto pos = this->insert_position(context.predecessor);
+  context.parent.get().adopt(std::move(item), pos);
+  m_item_cache_is_dirty = true;
+  endMoveRows();
+  Q_EMIT m_scene.repaint();
+}
+
+void ObjectTree::insert(ObjectTreeOwningContext& context)
+{
+  assert(context.subject.owns());
+
+  const auto row = this->insert_position(context.predecessor);
+  const QModelIndex parent_index = m_scene.object_tree.index_of(context.parent);
+  beginInsertRows(parent_index, row, row);
+  context.parent.get().adopt(context.subject.release(), row);
+  m_item_cache_is_dirty = true;
+  endInsertRows();
+  Q_EMIT m_scene.repaint();
+}
+
+void ObjectTree::remove(ObjectTreeOwningContext &context)
+{
+  assert(!context.subject.owns());
+  const Object& subject = context.subject;
+  const int row = m_scene.object_tree.position(subject);
+  const QModelIndex parent_index = m_scene.object_tree.index_of(subject.tree_parent());
+  beginRemoveRows(parent_index, row, row);
+  context.subject.capture(context.parent.get().repudiate(context.subject));
+  m_item_cache_is_dirty = true;
+  endRemoveRows();
+  Q_EMIT m_scene.repaint();
+}
+
+std::unique_ptr<Object> ObjectTree::remove(Object& t)
+{
+  const int row = m_scene.object_tree.position(t);
+  const QModelIndex parent_index = m_scene.object_tree.index_of(t.tree_parent());
+  beginRemoveRows(parent_index, row, row);
+  assert(!t.is_root());
+  auto item = t.tree_parent().repudiate(t);
+  m_item_cache_is_dirty = true;
+  endRemoveRows();
+  Q_EMIT m_scene.repaint();
+  return item;
+}
+
+std::unique_ptr<Object> ObjectTree::replace_root(std::unique_ptr<Object> new_root)
+{
+  beginResetModel();
+  auto old_root = std::move(m_root);
+  m_root = std::move(new_root);
+  m_item_cache_is_dirty = true;
+  endResetModel();
+  Q_EMIT m_scene.repaint();
+  return old_root;
+}
+
+std::set<Object*> ObjectTree::items() const
+{
+  if (m_item_cache_is_dirty) {
+    m_item_cache_is_dirty = false;
+    m_item_cache = root().all_descendants();
+  }
+  return m_item_cache;
+}
+
+size_t ObjectTree::position(const Object& item) const
+{
+  return item.position();
+}
+
+const Object* ObjectTree::predecessor(const Object& sibling) const
+{
+  assert(!sibling.is_root());
+  const auto pos = position(sibling);
+  if (pos == 0) {
+    return nullptr;
+  } else {
+    return &sibling.tree_parent().tree_child(pos - 1);
+  }
+}
+
+QModelIndex ObjectTree::index(int row, int column, const QModelIndex &parent) const
 {
   if (!hasIndex(row, column, parent)) {
     return QModelIndex();
@@ -117,7 +205,7 @@ QModelIndex ObjectTreeAdapter::index(int row, int column, const QModelIndex& par
   return createIndex(row, column, &item_at(parent).tree_child(row));
 }
 
-QModelIndex ObjectTreeAdapter::parent(const QModelIndex& index) const
+QModelIndex ObjectTree::parent(const QModelIndex &index) const
 {
   if (!index.isValid()) {
     return QModelIndex();
@@ -131,18 +219,37 @@ QModelIndex ObjectTreeAdapter::parent(const QModelIndex& index) const
   }
 }
 
-int ObjectTreeAdapter::rowCount(const QModelIndex& parent) const
+int ObjectTree::rowCount(const QModelIndex &parent) const
 {
   return item_at(parent).n_children();
 }
 
-int ObjectTreeAdapter::columnCount(const QModelIndex& parent) const
+int ObjectTree::columnCount(const QModelIndex &parent) const
 {
   Q_UNUSED(parent)
   return 3;
 }
 
-bool ObjectTreeAdapter::setData(const QModelIndex& index, const QVariant& value, int role)
+QVariant ObjectTree::data(const QModelIndex &index, int role) const
+{
+  if (!index.isValid()) {
+    return QVariant();
+  }
+
+  switch (index.column()) {
+  case 0:
+    switch (role) {
+    case Qt::DisplayRole:
+    case Qt::EditRole:
+      return QString::fromStdString(item_at(index).name());
+    case Qt::DecorationRole:
+      return Application::instance().icon_provider.get_icon(item_at(index).type(), QSize(24, 24));
+    }
+  }
+  return QVariant();
+}
+
+bool ObjectTree::setData(const QModelIndex &index, const QVariant &value, int role)
 {
   Q_UNUSED(role)
   switch (index.column()) {
@@ -162,26 +269,7 @@ bool ObjectTreeAdapter::setData(const QModelIndex& index, const QVariant& value,
   return false;
 }
 
-QVariant ObjectTreeAdapter::data(const QModelIndex& index, int role) const
-{
-  if (!index.isValid()) {
-    return QVariant();
-  }
-
-  switch (index.column()) {
-  case 0:
-    switch (role) {
-    case Qt::DisplayRole:
-    case Qt::EditRole:
-      return QString::fromStdString(item_at(index).name());
-    case Qt::DecorationRole:
-      return Application::instance().icon_provider.get_icon(item_at(index).type(), QSize(24, 24));
-    }
-  }
-  return QVariant();
-}
-
-Object& ObjectTreeAdapter::item_at(const QModelIndex& index) const
+Object &ObjectTree::item_at(const QModelIndex &index) const
 {
   if (index.isValid()) {
     assert(index.internalPointer() != nullptr);
@@ -191,7 +279,7 @@ Object& ObjectTreeAdapter::item_at(const QModelIndex& index) const
   }
 }
 
-QModelIndex ObjectTreeAdapter::index_of(Object& object) const
+QModelIndex ObjectTree::index_of(Object &object) const
 {
   if (object.is_root()) {
     return QModelIndex();
@@ -200,21 +288,7 @@ QModelIndex ObjectTreeAdapter::index_of(Object& object) const
   }
 }
 
-QVariant ObjectTreeAdapter::headerData(int section, Qt::Orientation orientation, int role) const
-{
-  if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-  {
-    switch (section) {
-    case 0: return QObject::tr("object", "ObjectTreeAdapter");
-    case 1: return QObject::tr("is visible", "ObjectTreeAdapter");
-    case 2: return QObject::tr("tags", "ObjectTreeAdapter");
-    }
-  }
-
- return QVariant();
-}
-
-Qt::ItemFlags ObjectTreeAdapter::flags(const QModelIndex &index) const
+Qt::ItemFlags ObjectTree::flags(const QModelIndex &index) const
 {
   if (!index.isValid()) {
     return Qt::ItemIsDropEnabled;
@@ -231,8 +305,21 @@ Qt::ItemFlags ObjectTreeAdapter::flags(const QModelIndex &index) const
   }
 }
 
-bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction action,
-                                      int row, int column, const QModelIndex &parent )
+QVariant ObjectTree::headerData(int section, Qt::Orientation orientation, int role) const
+{
+  if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+  {
+    switch (section) {
+    case 0: return QObject::tr("object", "ObjectTreeAdapter");
+    case 1: return QObject::tr("is visible", "ObjectTreeAdapter");
+    case 2: return QObject::tr("tags", "ObjectTreeAdapter");
+    }
+  }
+
+ return QVariant();
+}
+
+bool ObjectTree::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
   if (ItemModelAdapter::dropMimeData(data, action, row, column, parent)) {
     return true;
@@ -268,8 +355,7 @@ bool ObjectTreeAdapter::dropMimeData( const QMimeData *data, Qt::DropAction acti
   return false;
 }
 
-bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction action,
-                                         int row, int column, const QModelIndex &parent ) const
+bool ObjectTree::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
 {
   const auto actual_column = column >= 0 ? column : parent.column();
   if (ItemModelAdapter::canDropMimeData(data, action, row, column, parent)) {
@@ -300,7 +386,7 @@ bool ObjectTreeAdapter::canDropMimeData( const QMimeData *data, Qt::DropAction a
   return false;
 }
 
-std::size_t ObjectTreeAdapter::max_number_of_tags_on_object() const
+std::size_t ObjectTree::max_number_of_tags_on_object() const
 {
   const auto objects = scene.object_tree.items();
   const auto cmp = [](const Object* lhs, const Object* rhs) {
@@ -313,5 +399,6 @@ std::size_t ObjectTreeAdapter::max_number_of_tags_on_object() const
     return 0;
   }
 }
+
 
 }  // namespace omm

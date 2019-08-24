@@ -11,7 +11,6 @@
 
 #include "managers/stylemanager/stylelistview.h"
 #include "managers/objectmanager/objecttreeview.h"
-#include "scene/objecttreeadapter.h"
 #include "scene/scene.h"
 #include "mainwindow/application.h"
 
@@ -97,6 +96,6 @@ std::set<AbstractPropertyOwner*> ManagerItemView<ItemViewT, ItemModelT>::selecte
 }
 
 template class ManagerItemView<QListView, StyleList>;
-template class ManagerItemView<QTreeView, ObjectTreeAdapter>;
+template class ManagerItemView<QTreeView, ObjectTree>;
 
 }  // namespace omm

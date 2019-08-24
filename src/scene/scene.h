@@ -9,12 +9,11 @@
 #include <QUndoStack>
 
 #include "external/json_fwd.hpp"
+#include "scene/objecttree.h"
 #include "observed.h"
 #include "scene/contextes.h"
 #include "scene/cachedgetter.h"
 #include "scene/list.h"
-#include "scene/tree.h"
-#include "scene/objecttreeadapter.h"
 #include "scene/history/historymodel.h"
 #include "tools/toolbox.h"
 #include "scene/pointselection.h"
@@ -28,8 +27,8 @@ class Project;
 class PythonEngine;
 
 template<typename T> struct SceneStructure;
-template<> struct SceneStructure<Object> { using type = Tree<Object>; };
-template<> struct SceneStructure<Style> { using type = List<Style>; };
+template<> struct SceneStructure<Object> { using type = ObjectTree; };
+template<> struct SceneStructure<Style> { using type = StyleList; };
 
 class Scene : public QObject
 {
@@ -40,8 +39,7 @@ public:
 
   static constexpr auto TYPE = "Scene";
 
-  Tree<Object> object_tree;
-  ObjectTreeAdapter object_tree_adapter;
+  ObjectTree object_tree;
 
   StyleList styles;
 

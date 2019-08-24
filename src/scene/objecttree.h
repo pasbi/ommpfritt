@@ -1,23 +1,38 @@
 #pragma once
 
-#include <QAbstractItemModel>
 #include "scene/itemmodeladapter.h"
-#include "scene/tree.h"
-#include "objects/object.h"
-#include "abstractraiiguard.h"
-
-class QItemSelection;
 
 namespace omm
 {
 
-class Scene;
 class Object;
 
-class ObjectTreeAdapter : public ItemModelAdapter<Tree<Object>, QAbstractItemModel>
+class ObjectTree
+  : public ItemModelAdapter<ObjectTree, Object, QAbstractItemModel>
+  , public Structure<Object>
 {
 public:
-  explicit ObjectTreeAdapter(Scene& scene, Tree<Object>& tree);
+  constexpr static bool is_tree = true;
+
+  ObjectTree(std::unique_ptr<Object> root, Scene &scene);
+  virtual ~ObjectTree() = default;
+
+public:
+  virtual void insert(ObjectTreeOwningContext& context);
+  void move(TreeMoveContext<Object>& context);
+  void remove(ObjectTreeOwningContext& context);
+  bool can_move_object(const TreeMoveContext<Object>& new_context) const;
+  std::unique_ptr<Object> replace_root(std::unique_ptr<Object> new_root);
+  Object& root() const;
+  bool contains(const Object &t) const;
+
+  std::set<Object*> items() const override;
+  size_t position(const Object& item) const override;
+  const Object* predecessor(const Object& sibling) const override;
+  using Structure<Object>::predecessor;
+  std::unique_ptr<Object> remove(Object& t) override;
+
+
   QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
   QModelIndex parent(const QModelIndex& index) const override;
   int rowCount(const QModelIndex& parent) const override;
@@ -45,7 +60,12 @@ public:
   Tag* current_tag_predecessor = nullptr;
   Tag* current_tag = nullptr;
 
-  friend class Tree<Object>;
+private:
+  std::unique_ptr<Object> m_root;
+
+  mutable bool m_item_cache_is_dirty = true;
+  mutable std::set<Object*> m_item_cache;
+  Scene& m_scene;
 
 };
 

@@ -9,7 +9,7 @@
 #include "scene/structure.h"
 #include "scene/contextes_fwd.h"
 #include "scene/list.h"
-#include "scene/tree.h"
+#include "scene/objecttree.h"
 
 namespace omm
 {
@@ -220,12 +220,12 @@ public:
 
 };
 
-template<typename T> class TreeOwningContext : public OwningContext<T, TreeContext>
+class ObjectTreeOwningContext : public OwningContext<Object, TreeContext>
 {
 public:
-  using OwningContext<T, TreeContext>::OwningContext;
-  TreeOwningContext(std::unique_ptr<T> item, Tree<T>& structure)
-    : OwningContext<T, TreeContext>(*item, structure.root(), last_sibling(structure))
+  using OwningContext<Object, TreeContext>::OwningContext;
+  ObjectTreeOwningContext(std::unique_ptr<Object> item, ObjectTree& structure)
+    : OwningContext<Object, TreeContext>(*item, structure.root(), last_sibling(structure))
   {
     this->subject.capture(std::move(item));
   };

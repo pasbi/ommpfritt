@@ -5,7 +5,6 @@
 #include "scene/scene.h"
 #include "managers/stylemanager/stylelistview.h"
 #include "managers/objectmanager/objecttreeview.h"
-#include "scene/objecttreeadapter.h"
 #include "renderers/style.h"
 #include "objects/object.h"
 

@@ -1,7 +1,6 @@
 #include "commands/removecommand.h"
 
 #include <algorithm>
-#include "scene/tree.h"
 #include "scene/list.h"
 #include "tags/tag.h"
 #include "objects/object.h"
@@ -58,7 +57,7 @@ template<typename StructureT> void RemoveCommand<StructureT>::undo()
   }
 }
 
-template class RemoveCommand<Tree<Object>>;
+template class RemoveCommand<ObjectTree>;
 template class RemoveCommand<StyleList>;
 template class RemoveCommand<List<Tag>>;
 

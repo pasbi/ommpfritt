@@ -271,7 +271,7 @@ Object& Application::insert_object(const std::string &key, InsertionMode mode)
 {
   auto macro = scene.history.start_macro(tr("Create %1")
                   .arg(QApplication::translate("any-context", key.c_str())));
-  using add_command_type = AddCommand<Tree<Object>>;
+  using add_command_type = AddCommand<ObjectTree>;
   auto object = Object::make(key, &scene);
   auto& ref = *object;
 
@@ -303,7 +303,7 @@ Object& Application::insert_object(const std::string &key, InsertionMode mode)
 
   scene.submit<add_command_type>(scene.object_tree, std::move(object));
   ref.set_global_transformation(ObjectTransformation(), true);  // spawn at world-origin
-  using move_command_t = MoveCommand<Tree<Object>>;
+  using move_command_t = MoveCommand<ObjectTree>;
   using move_context_t = move_command_t::context_type;
   if (!children.empty()) {
     const auto move_contextes = ::transform<move_context_t>(children, [&ref](auto* c) {

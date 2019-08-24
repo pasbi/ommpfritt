@@ -119,26 +119,28 @@ bool model_index_tree_position_compare(QModelIndex a, QModelIndex b)
 namespace omm
 {
 
-template<typename StructureT, typename ItemModel>
-ItemModelAdapter<StructureT, ItemModel>::ItemModelAdapter(Scene& scene, StructureT& structure)
+template<typename StructureT, typename ItemT, typename ItemModel>
+ItemModelAdapter<StructureT, ItemT, ItemModel>
+::ItemModelAdapter(Scene& scene, StructureT& structure)
   : scene(scene)
   , structure(structure)
 {
 }
 
-template<typename StructureT, typename ItemModel> Qt::DropActions
-ItemModelAdapter<StructureT, ItemModel>::supportedDragActions() const
+template<typename StructureT, typename ItemT, typename ItemModel> Qt::DropActions
+ItemModelAdapter<StructureT, ItemT, ItemModel>::supportedDragActions() const
 {
   return Qt::LinkAction | Qt::MoveAction | Qt::CopyAction;
 }
 
-template<typename StructureT, typename ItemModel> Qt::DropActions
-ItemModelAdapter<StructureT, ItemModel>::supportedDropActions() const
+template<typename StructureT, typename ItemT, typename ItemModel> Qt::DropActions
+ItemModelAdapter<StructureT, ItemT, ItemModel>::supportedDropActions() const
 {
   return Qt::MoveAction | Qt::CopyAction;
 }
 
-template<typename StructureT, typename ItemModel> bool ItemModelAdapter<StructureT, ItemModel>
+template<typename StructureT, typename ItemT, typename ItemModel>
+bool ItemModelAdapter<StructureT, ItemT, ItemModel>
 ::canDropMimeData( const QMimeData *data, Qt::DropAction action,
                    int row, int column, const QModelIndex &parent ) const
 {
@@ -160,8 +162,8 @@ template<typename StructureT, typename ItemModel> bool ItemModelAdapter<Structur
   }
 }
 
-template<typename StructureT, typename ItemModel> bool
-ItemModelAdapter<StructureT, ItemModel>
+template<typename StructureT, typename ItemT, typename ItemModel> bool
+ItemModelAdapter<StructureT, ItemT, ItemModel>
 ::dropMimeData( const QMimeData *data, Qt::DropAction action,
                 int row, int column, const QModelIndex &parent )
 {
@@ -191,14 +193,14 @@ ItemModelAdapter<StructureT, ItemModel>
   }
 }
 
-template<typename StructureT, typename ItemModel>
-QStringList ItemModelAdapter<StructureT, ItemModel>::mimeTypes() const
+template<typename StructureT, typename ItemT, typename ItemModel>
+QStringList ItemModelAdapter<StructureT, ItemT, ItemModel>::mimeTypes() const
 {
   return { PropertyOwnerMimeData::MIME_TYPE };
 }
 
-template<typename StructureT, typename ItemModel>
-QMimeData* ItemModelAdapter<StructureT, ItemModel>::mimeData(const QModelIndexList &indexes) const
+template<typename StructureT, typename ItemT, typename ItemModel>
+QMimeData* ItemModelAdapter<StructureT, ItemT, ItemModel>::mimeData(const QModelIndexList &indexes) const
 {
   if (indexes.isEmpty()) {
     return nullptr;
@@ -215,7 +217,7 @@ QMimeData* ItemModelAdapter<StructureT, ItemModel>::mimeData(const QModelIndexLi
   }
 }
 
-template class ItemModelAdapter<Tree<Object>, QAbstractItemModel>;
-template class ItemModelAdapter<List<Style>, QAbstractListModel>;
+template class ItemModelAdapter<ObjectTree, Object, QAbstractItemModel>;
+template class ItemModelAdapter<StyleList, Style, QAbstractListModel>;
 
 }  // namespace omm

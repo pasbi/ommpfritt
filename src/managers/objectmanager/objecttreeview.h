@@ -5,20 +5,20 @@
 #include "managers/manageritemview.h"
 #include "managers/objectmanager/tagsitemdelegate.h"
 #include "managers/objectmanager/objectquickaccessdelegate.h"
-#include "scene/objecttreeadapter.h"
 #include "managers/objectmanager/objecttreeselectionmodel.h"
+#include "scene/objecttree.h"
 
 namespace omm
 {
 
 class Object;
 
-class ObjectTreeView : public ManagerItemView<QTreeView, ObjectTreeAdapter>
+class ObjectTreeView : public ManagerItemView<QTreeView, ObjectTree>
 {
   Q_OBJECT
 public:
-  using model_type = ObjectTreeAdapter;
-  explicit ObjectTreeView(ObjectTreeAdapter& model);
+  using model_type = ObjectTree;
+  explicit ObjectTreeView(ObjectTree& model);
   std::set<AbstractPropertyOwner*> selected_items() const override;
   std::set<AbstractPropertyOwner*> selected_objects() const;
   std::set<AbstractPropertyOwner*> selected_tags() const;
@@ -42,7 +42,7 @@ private:
   std::unique_ptr<ObjectQuickAccessDelegate> m_object_quick_access_delegate;
   std::unique_ptr<TagsItemDelegate> m_tags_item_delegate;
   std::unique_ptr<QTimer> m_update_timer;
-  ObjectTreeAdapter& m_model;
+  ObjectTree& m_model;
 
   QPoint m_mouse_press_pos;
   QModelIndex m_dragged_index;

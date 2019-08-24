@@ -1,12 +1,11 @@
 #include "managers/objectmanager/objecttreeselectionmodel.h"
-#include "scene/objecttreeadapter.h"
 #include "scene/scene.h"
 #include "tags/tag.h"
 
 namespace omm
 {
 
-ObjectTreeSelectionModel::ObjectTreeSelectionModel(ObjectTreeAdapter& adapter)
+ObjectTreeSelectionModel::ObjectTreeSelectionModel(ObjectTree& adapter)
   : QItemSelectionModel(&adapter)
 {
 }
@@ -39,7 +38,7 @@ void ObjectTreeSelectionModel::clear_selection()
 void ObjectTreeSelectionModel::select( const QModelIndex &index,
                                        QItemSelectionModel::SelectionFlags command)
 {
-  const bool is_tag_index = index.column() == omm::ObjectTreeAdapter::TAGS_COLUMN;
+  const bool is_tag_index = index.column() == omm::ObjectTree::TAGS_COLUMN;
   if (command & QItemSelectionModel::Clear && !is_tag_index) { m_selected_tags.clear(); }
   QItemSelectionModel::select(index, command);
 }
@@ -49,8 +48,8 @@ void ObjectTreeSelectionModel::select( const QItemSelection &selection,
 {
 
   const auto has_tag_index = [](const QItemSelectionRange& range) {
-    return range.left() <= ObjectTreeAdapter::TAGS_COLUMN
-        && range.right() >= ObjectTreeAdapter::TAGS_COLUMN;
+    return range.left() <= ObjectTree::TAGS_COLUMN
+        && range.right() >= ObjectTree::TAGS_COLUMN;
   };
   const bool selection_has_tags = std::any_of(selection.begin(), selection.end(), has_tag_index);
 
@@ -98,9 +97,9 @@ void ObjectTreeSelectionModel::extend_selection(Tag& tag)
   }
 }
 
-const ObjectTreeAdapter& ObjectTreeSelectionModel::model() const
+const ObjectTree& ObjectTreeSelectionModel::model() const
 {
-  return static_cast<const ObjectTreeAdapter&>(*QItemSelectionModel::model());
+  return static_cast<const ObjectTree&>(*QItemSelectionModel::model());
 }
 
 

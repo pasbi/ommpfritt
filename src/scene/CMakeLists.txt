@@ -2,13 +2,12 @@
 file(GLOB SOURCES
   itemmodeladapter.cpp
   list.cpp
-  objecttreeadapter.cpp
+  objecttree.cpp
   pointselection.cpp
   propertyownermimedata.cpp
   scene.cpp
   structure.cpp
   stylelist.cpp
-  tree.cpp
 )
 
 file(GLOB HEADERS
@@ -17,13 +16,12 @@ file(GLOB HEADERS
   contextes.h
   itemmodeladapter.h
   list.h
-  objecttreeadapter.h
+  objecttree.h
   pointselection.h
   propertyownermimedata.h
   scene.h
   structure.h
   stylelist.h
-  tree.h
 )
 
 add_subdirectory(history)
