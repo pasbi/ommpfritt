@@ -109,9 +109,10 @@ void remove_selected_points(Application& app)
     for (std::size_t i = 0; i < selected_points.size(); ++i) { selected_points[i] -= i; }
     map[path] = selected_points;
   }
-
-  app.scene.submit<RemovePointsCommand>(map);
-  app.scene.update_tool();
+  if (!map.empty()) {
+    app.scene.submit<RemovePointsCommand>(map);
+    app.scene.update_tool();
+  }
 }
 
 void subdivide(Application& app)
