@@ -233,17 +233,24 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   this->tags.set(std::move(tags));
 }
 
-void Object::draw_recursive(Painter& renderer, const Style& default_style) const
+void Object::draw_recursive(Painter& renderer, const Style& default_style, std::set<const Object*> trace) const
 {
   RenderOptions options;
   options.styles = find_styles();
   options.default_style = &default_style;
   options.always_visible = false;
-  draw_recursive(renderer, options);
+  draw_recursive(renderer, options, trace);
 }
 
-void Object::draw_recursive(Painter& renderer, const RenderOptions& options) const
+void Object::draw_recursive(Painter& renderer, const RenderOptions& options, std::set<const Object *> trace) const
 {
+  if (::contains(trace, this)) {
+    // break the cycle!
+    return;
+  } else {
+    trace.insert(this);
+  }
+
   renderer.push_transformation(transformation());
   const auto visibility = property(IS_VISIBLE_PROPERTY_KEY)->value<Visibility>();
   const bool is_visible = options.always_visible || visibility == Visibility::Visible;
@@ -268,17 +275,25 @@ void Object::draw_recursive(Painter& renderer, const RenderOptions& options) con
 
   if (visibility != Visibility::HideTree && m_draw_children) {
     for (const auto& child : tree_children()) {
-      child->draw_recursive(renderer, *options.default_style);
+      child->draw_recursive(renderer, *options.default_style, trace);
     }
   }
   renderer.pop_transformation();
 }
 
-BoundingBox Object::recursive_bounding_box(const ObjectTransformation& transformation) const
+BoundingBox Object::recursive_bounding_box(const ObjectTransformation& transformation, std::set<const Object *> trace) const
 {
+  if (::contains(trace, this)) {
+    // break the cycle!
+    return BoundingBox();
+  } else {
+    trace.insert(this);
+  }
+
+
   auto bounding_box = this->bounding_box(transformation);
   for (const auto& child : tree_children()) {
-    bounding_box |= child->recursive_bounding_box(transformation.apply(child->transformation()));
+    bounding_box |= child->recursive_bounding_box(transformation.apply(child->transformation()), trace);
   }
   return bounding_box;
 }

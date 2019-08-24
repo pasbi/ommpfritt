@@ -88,7 +88,7 @@ BoundingBox BoundingBox::around_selected_objects(const Scene &scene)
 {
   BoundingBox bb;
   for (const auto* o : scene.item_selection<Object>()) {
-    bb |= o->recursive_bounding_box(o->global_transformation(false));
+    bb |= o->recursive_bounding_box(o->global_transformation(false), {});
   }
   return bb;
 }

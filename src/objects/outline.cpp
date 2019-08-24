@@ -33,7 +33,7 @@ void Outline::draw_object(Painter &renderer, const Style& style) const
     LINFO << style.property(Style::PEN_COLOR_KEY)->value<Color>();
     LINFO << style.property(Style::PEN_WIDTH_KEY)->value<double>();
     LINFO << renderer.current_transformation();
-    m_outline->draw_recursive(renderer, style);
+    m_outline->draw_recursive(renderer, style, { this });
   }
 }
 
