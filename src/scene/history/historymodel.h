@@ -3,6 +3,7 @@
 #include <QAbstractListModel>
 #include "commands/command.h"
 #include <memory>
+#include "scene/history/macro.h"
 
 namespace omm
 {
@@ -45,16 +46,9 @@ public:
    */
   void set_saved_index();
 
-  class Macro
-  {
-  public:
-    explicit Macro(const QString& text, QUndoStack& stack);
-    ~Macro();
-  private:
-    QUndoStack& m_undo_stack;
-  };
-
   [[nodiscard]] std::unique_ptr<Macro> start_macro(const QString& text);
+  [[nodiscard]]
+  std::unique_ptr<Macro> start_remember_selection_macro(const QString& text, Scene& scene);
 
 Q_SIGNALS:
   void index_changed();

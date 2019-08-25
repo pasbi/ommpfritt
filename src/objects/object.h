@@ -38,6 +38,7 @@ public:
 
   explicit Object(Scene* scene);
   explicit Object(const Object& other);
+  ~Object();
 
   enum class Visibility { Visible, Hide, HideTree };
 

@@ -97,6 +97,11 @@ Object::Object(const Object& other)
   }
 }
 
+Object::~Object()
+{
+  assert(!::contains(m_scene->selection(), this));
+}
+
 ObjectTransformation Object::transformation() const
 {
   return ObjectTransformation(

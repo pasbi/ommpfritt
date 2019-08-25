@@ -81,6 +81,8 @@ Scene::~Scene()
 
 void Scene::prepare_reset()
 {
+  set_selection({});
+
   // make sure that there are no references (via ReferenceProperties) across objects.
   // the references might be destructed after the referenced objects have been deleted.
   // that leads to fucked-up states, undefined behavior, etc.

@@ -7,6 +7,7 @@
 #include "external/json.hpp"
 #include "properties/stringproperty.h"
 #include "serializers/jsonserializer.h"
+#include "scene/scene.h"
 
 namespace omm
 {
@@ -16,6 +17,11 @@ Tag::Tag(Object& owner) : owner(&owner)
   create_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>").toStdString())
     .set_label(QObject::tr("Name").toStdString())
     .set_category(QObject::tr("basic").toStdString());
+}
+
+Tag::~Tag()
+{
+  assert(!::contains(owner->scene()->selection(), this));
 }
 
 std::ostream& operator<<(std::ostream& ostream, const Tag& tag)

@@ -186,7 +186,8 @@ void convert_objects(Application& app)
     return !!(o->flags() & Object::Flag::Convertable);
   });
   if (convertables.size() > 0) {
-    auto macro = app.scene.history.start_macro(QObject::tr("convert"));
+    Scene& scene = app.scene;
+    auto macro = scene.history.start_remember_selection_macro(QObject::tr("convert"), scene);
     ::convert_objects(app, convertables);
   }
 }

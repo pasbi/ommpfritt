@@ -98,11 +98,6 @@ void HistoryModel::set_saved_index()
   Q_EMIT dataChanged(new_index, new_index);
 }
 
-std::unique_ptr<HistoryModel::Macro> HistoryModel::start_macro(const QString &text)
-{
-  return std::make_unique<Macro>(text, m_undo_stack);
-}
-
 HistoryModel::HistoryModel()
 {
   connect(&m_undo_stack, &QUndoStack::indexChanged, [this](int index) {
@@ -130,15 +125,15 @@ void HistoryModel::redo()
   m_undo_stack.redo();
 }
 
-HistoryModel::Macro::Macro(const QString &text, QUndoStack &stack)
-  : m_undo_stack(stack)
+std::unique_ptr<Macro> HistoryModel::start_macro(const QString& text)
 {
-  m_undo_stack.beginMacro(text);
+  return std::make_unique<Macro>(text, m_undo_stack);
 }
 
-HistoryModel::Macro::~Macro()
+std::unique_ptr<Macro>
+HistoryModel::start_remember_selection_macro(const QString& text, Scene& scene)
 {
-  m_undo_stack.endMacro();
+  return std::make_unique<RememberSelectionMacro>(scene, text, m_undo_stack);
 }
 
 }  // namespace omm
