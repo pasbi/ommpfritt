@@ -41,7 +41,7 @@ void Mirror::draw_object(Painter &renderer, const Style& style) const
 {
   assert(&renderer.scene == scene());
   if (m_reflection) {
-    m_reflection->draw_recursive(renderer, style, { this });
+    m_reflection->draw_recursive(renderer, style);
   }
 }
 
@@ -51,9 +51,9 @@ BoundingBox Mirror::bounding_box(const ObjectTransformation &transformation) con
     const ObjectTransformation t = transformation.apply(m_reflection->transformation());
     switch (property(AS_PATH_PROPERTY_KEY)->value<Mode>()) {
     case Mode::Path:
-      return m_reflection->recursive_bounding_box(t, { this });
+      return m_reflection->recursive_bounding_box(t);
     case Mode::Object:
-      return m_reflection->recursive_bounding_box(t, { this });
+      return m_reflection->recursive_bounding_box(t);
     default:
       Q_UNREACHABLE();
     }

@@ -132,7 +132,7 @@ void Cloner::draw_object(Painter &renderer, const Style& style) const
 {
   assert(&renderer.scene == scene());
   for (auto&& clone : m_clones) {
-    clone->draw_recursive(renderer, style, { this });
+    clone->draw_recursive(renderer, style);
   }
 }
 
@@ -141,7 +141,7 @@ BoundingBox Cloner::bounding_box(const ObjectTransformation &transformation) con
   if (is_active()) {
     BoundingBox bb;
     for (auto&& clone : m_clones) {
-      bb |= clone->recursive_bounding_box(transformation.apply(clone->transformation()), { this });
+      bb |= clone->recursive_bounding_box(transformation.apply(clone->transformation()));
     }
     return bb;
   } else {

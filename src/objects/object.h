@@ -64,14 +64,14 @@ public:
     const Style* default_style = nullptr;
   };
 
-  void draw_recursive(Painter& renderer, const Style& default_style, std::set<const Object*> trace) const;
-  void draw_recursive(Painter& renderer, const RenderOptions& options, std::set<const Object*> trace) const;
+  void draw_recursive(Painter& renderer, const Style& default_style) const;
+  void draw_recursive(Painter& renderer, const RenderOptions& options) const;
 
   /**
    * @brief bounding_box returns the bounding box in world coordinates
    */
   virtual BoundingBox bounding_box(const ObjectTransformation& transformation) const = 0;
-  BoundingBox recursive_bounding_box(const ObjectTransformation &transformation, std::set<const Object*> trace) const;
+  BoundingBox recursive_bounding_box(const ObjectTransformation &transformation) const;
   std::unique_ptr<Object> repudiate(Object &repudiatee) override;
   Object & adopt(std::unique_ptr<Object> adoptee, const size_t pos) override;
   using TreeElement::adopt;

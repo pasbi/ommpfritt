@@ -26,7 +26,7 @@ omm::Painter::Painter(omm::Scene &scene, omm::Painter::Category filter)
 
 void Painter::render()
 {
-  scene.object_tree.root().draw_recursive(*this, scene.default_style(), {});
+  scene.object_tree.root().draw_recursive(*this, scene.default_style());
   assert(m_transformation_stack.empty());
 }
 

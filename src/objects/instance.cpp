@@ -35,7 +35,7 @@ void Instance::draw_object(Painter &renderer, const Style& default_style) const
     ReferenceDepthGuard guard(renderer);
     if (reference != nullptr && guard) {
       renderer.push_transformation(reference->global_transformation(true).inverted());
-      reference->draw_recursive(renderer, default_style, { this });
+      reference->draw_recursive(renderer, default_style);
       renderer.pop_transformation();
     }
   }
@@ -46,7 +46,7 @@ BoundingBox Instance::bounding_box(const ObjectTransformation &transformation) c
   if (is_active()) {
     const auto* reference = referenced_object();
     if (reference != nullptr) {
-      return reference->recursive_bounding_box(transformation, { this });
+      return reference->recursive_bounding_box(transformation);
     } else {
       return BoundingBox();
     }
