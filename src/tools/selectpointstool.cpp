@@ -10,10 +10,18 @@ namespace omm
 
 SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene) : AbstractSelectTool(scene)
 {
+  const auto category = QObject::tr("tool").toStdString();
   create_property<OptionsProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("Mirror").toStdString(), QObject::tr("Individual").toStdString() })
     .set_label(QObject::tr("tangent").toStdString())
-    .set_category(QObject::tr("tool").toStdString());
+    .set_category(category);
+
+  create_property<OptionsProperty>(BOUNDING_BOX_MODE_PROPERTY_KEY, 0)
+    .set_options( { QObject::tr("Include Tangents").toStdString(),
+                    QObject::tr("Exclude Tangents").toStdString(),
+                    QObject::tr("None").toStdString() })
+    .set_label(QObject::tr("Bounding Box").toStdString())
+    .set_category(category);
 }
 
 PointSelectHandle::TangentMode SelectPointsBaseTool::tangent_mode() const
@@ -112,10 +120,29 @@ bool SelectPointsBaseTool::has_transformation() const
 
 BoundingBox SelectPointsBaseTool::bounding_box() const
 {
-  return BoundingBox(::transform<Point, std::vector>(scene.point_selection.points()));
+  static const auto remove_tangents = [](const Point& point) { return point.nibbed(); };
+  switch (property(BOUNDING_BOX_MODE_PROPERTY_KEY)->value<BoundingBoxMode>()) {
+  case BoundingBoxMode::IncludeTangents:
+    return BoundingBox(::transform<Point, std::vector>(scene.point_selection.points()));
+  case BoundingBoxMode::ExcludeTangents:
+    return BoundingBox(::transform<Point, std::vector>(scene.point_selection.points(),
+                                                       remove_tangents));
+  case BoundingBoxMode::None:
+    [[ fallthrough ]];
+  default:
+    return BoundingBox();
+  }
 }
 
 bool SelectPointsBaseTool::modifies_points() const { return true; }
+
+void SelectPointsBaseTool::on_property_value_changed(Property *property)
+{
+  if (property == this->property(BOUNDING_BOX_MODE_PROPERTY_KEY)) {
+    Q_EMIT scene.repaint();
+  }
+  AbstractSelectTool::on_property_value_changed(property);
+}
 
 Vec2f SelectPointsBaseTool::selection_center() const
 {

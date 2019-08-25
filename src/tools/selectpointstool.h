@@ -15,6 +15,8 @@ class SelectPointsBaseTool : public AbstractSelectTool
 public:
   explicit SelectPointsBaseTool(Scene& scene);
   static constexpr auto TANGENT_MODE_PROPERTY_KEY = "tangent_mode";
+  static constexpr auto BOUNDING_BOX_MODE_PROPERTY_KEY = "bounding_box_mode";
+  enum class BoundingBoxMode { IncludeTangents, ExcludeTangents, None };
   PointSelectHandle::TangentMode tangent_mode() const;
   std::unique_ptr<QMenu> make_context_menu(QWidget* parent) override;
   void on_selection_changed() override;
@@ -47,6 +49,7 @@ public:
   BoundingBox bounding_box() const;
   void transform_objects_absolute(ObjectTransformation t);
   bool modifies_points() const override;
+  void on_property_value_changed(Property* property) override;
 
 protected:
   Vec2f selection_center() const override;
