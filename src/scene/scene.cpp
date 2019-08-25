@@ -97,6 +97,11 @@ void Scene::prepare_reset()
   styles.set(std::vector<std::unique_ptr<Style>> {});
 }
 
+std::unique_ptr<CycleGuard> Scene::make_cycle_guard(const Object *guarded)
+{
+  return std::make_unique<CycleGuard>(m_cycle_guarded_objects, guarded);
+}
+
 std::set<ReferenceProperty*>
 Scene::find_reference_holders(const AbstractPropertyOwner& candidate) const
 {

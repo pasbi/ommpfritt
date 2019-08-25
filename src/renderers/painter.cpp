@@ -149,20 +149,4 @@ void Painter::set_style(const Style &style)
   painter->setBrush(make_brush(style));
 }
 
-ReferenceDepthGuard::ReferenceDepthGuard(Painter &painter) : m_painter(painter)
-{
-  m_painter.reference_depth += 1;
-}
-
-ReferenceDepthGuard::~ReferenceDepthGuard()
-{
-  m_painter.reference_depth -= 1;
-}
-
-omm::ReferenceDepthGuard::operator bool() const
-{
-  static constexpr int reference_depth_limit = 5;
-  return m_painter.reference_depth < reference_depth_limit;
-}
-
 }  // namespace omm

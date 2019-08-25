@@ -17,6 +17,7 @@
 #include "tools/toolbox.h"
 #include "scene/pointselection.h"
 #include "scene/stylelist.h"
+#include "scene/cycleguard.h"
 
 namespace omm
 {
@@ -166,6 +167,11 @@ Q_SIGNALS:
 
 private:
   void prepare_reset();
+
+public:
+  std::unique_ptr<CycleGuard> make_cycle_guard(const Object* guarded);
+private:
+  std::set<const Object*> m_cycle_guarded_objects;
 
 };
 

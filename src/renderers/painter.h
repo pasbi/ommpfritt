@@ -55,16 +55,6 @@ private:
   friend class ReferenceDepthGuard;
 };
 
-class ReferenceDepthGuard
-{
-public:
-  explicit ReferenceDepthGuard(Painter& painter);
-  ~ReferenceDepthGuard();
-  operator bool() const;
-private:
-  Painter& m_painter;
-};
-
 }  // namespace omm
 
 template<> struct omm::EnableBitMaskOperators<omm::Painter::Category> : std::true_type {};

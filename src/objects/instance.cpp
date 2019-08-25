@@ -30,10 +30,10 @@ Instance::Instance(const Instance &other) : Object(other) {}
 
 void Instance::draw_object(Painter &renderer, const Style& default_style) const
 {
-  if (is_active()) {
+  auto cycle_guard = scene()->make_cycle_guard(this);
+  if (!cycle_guard->inside_cycle() && is_active()) {
     const auto* reference = referenced_object();
-    ReferenceDepthGuard guard(renderer);
-    if (reference != nullptr && guard) {
+    if (reference != nullptr) {
       renderer.push_transformation(reference->global_transformation(true).inverted());
       reference->draw_recursive(renderer, default_style);
       renderer.pop_transformation();
@@ -43,7 +43,8 @@ void Instance::draw_object(Painter &renderer, const Style& default_style) const
 
 BoundingBox Instance::bounding_box(const ObjectTransformation &transformation) const
 {
-  if (is_active()) {
+  auto cycle_guard = scene()->make_cycle_guard(this);
+  if (!cycle_guard->inside_cycle() && is_active()) {
     const auto* reference = referenced_object();
     if (reference != nullptr) {
       return reference->recursive_bounding_box(transformation);
