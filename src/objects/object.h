@@ -15,6 +15,7 @@
 namespace omm
 {
 
+class ObjectTree;
 class Scene;
 class Property;
 #include "scene/taglist.h"
@@ -143,6 +144,11 @@ protected:
 private:
   friend class ObjectView;
   void set_scene(Scene* scene);
+
+public:
+  void set_object_tree(ObjectTree& object_tree);
+private:
+  ObjectTree* m_object_tree = nullptr;
 };
 
 void register_objects();

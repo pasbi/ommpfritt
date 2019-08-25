@@ -66,6 +66,7 @@ Scene::Scene(PythonEngine& python_engine)
   , tool_box(*this)
   , point_selection(*this)
 {
+  object_tree.root().set_object_tree(object_tree);
   for (auto kind : { Object::KIND, Tag::KIND, Style::KIND, Tool::KIND }) {
     m_item_selection[kind] = {};
   }

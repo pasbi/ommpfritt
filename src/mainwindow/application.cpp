@@ -273,6 +273,7 @@ Object& Application::insert_object(const std::string &key, InsertionMode mode)
                   .arg(QApplication::translate("any-context", key.c_str())));
   using add_command_type = AddCommand<ObjectTree>;
   auto object = Object::make(key, &scene);
+  object->set_object_tree(scene.object_tree);
   auto& ref = *object;
 
 

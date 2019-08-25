@@ -113,14 +113,18 @@ void ObjectTreeView::mousePressEvent(QMouseEvent* e)
 
 void ObjectTreeView::mouseReleaseEvent(QMouseEvent *e)
 {
-  // see ObjectTreeView::mousePRessEvent case 1
+  // see ObjectTreeView::mousePressEvent case 1
   setDragEnabled(true);
+  const int column = indexAt(e->pos()).column();
+  if (column == ObjectTree::OBJECT_COLUMN || column == ObjectTree::TAGS_COLUMN) {
+    this->model()->scene.set_selection(this->selected_items());
+  }
   ManagerItemView::mouseReleaseEvent(e);
 }
 
 void ObjectTreeView::focusInEvent(QFocusEvent *e)
 {
-  // see ObjectTreeView::mousePRessEvent case 1
+  // see ObjectTreeView::mousePressEvent case 1
   setDragEnabled(true);
   ManagerItemView::focusInEvent(e);
 }

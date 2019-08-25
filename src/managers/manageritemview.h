@@ -14,8 +14,6 @@ class QFocusEvent;
 namespace omm
 {
 
-class Style;
-
 template<typename ItemViewT, typename ItemModelT>
 class ManagerItemView : public ItemViewT
 {
@@ -27,7 +25,6 @@ public:
   virtual std::set<AbstractPropertyOwner*> selected_items() const;
 
 protected:
-  void mouseReleaseEvent(QMouseEvent* e) override;
   void mousePressEvent(QMouseEvent* e) override;
   void keyPressEvent(QKeyEvent* e) override;
   void keyReleaseEvent(QKeyEvent* e) override;

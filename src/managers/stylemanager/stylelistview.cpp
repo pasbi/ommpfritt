@@ -1,8 +1,15 @@
 #include "managers/stylemanager/stylelistview.h"
 #include "scene/stylelist.h"
+#include "scene/scene.h"
 
 namespace omm
 {
+
+void StyleListView::mouseReleaseEvent(QMouseEvent *e)
+{
+  this->model()->scene.set_selection(this->selected_items());
+  ManagerItemView::mouseReleaseEvent(e);
+}
 
 void StyleListView::set_selection(const std::set<Style*>& selection)
 {

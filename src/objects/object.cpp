@@ -6,6 +6,7 @@
 #include <functional>
 #include <QObject>
 
+#include "scene/objecttree.h"
 #include "tags/tag.h"
 #include "properties/stringproperty.h"
 #include "properties/integerproperty.h"
@@ -92,6 +93,7 @@ Object::Object(const Object& other)
   , m_scene(other.m_scene)
   , tags(other.tags, *this)
   , m_draw_children(other.m_draw_children)
+  , m_object_tree(other.m_object_tree)
 {
   for (Tag* tag : tags.items()) {
     tag->owner = this;
@@ -221,6 +223,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
     const auto child_type = deserializer.get_string(make_pointer(child_pointer, TYPE_POINTER));
     try {
       auto child = Object::make(child_type, static_cast<Scene*>(m_scene));
+      child->set_object_tree(m_scene->object_tree);
       child->deserialize(deserializer, child_pointer);
 
       // TODO adopt sets the global transformation which is reverted by setting the local
@@ -336,14 +339,27 @@ void Object::copy_tags(Object& other) const
 
 void Object::on_property_value_changed(Property *property)
 {
+  const auto object_tree_data_changed = [this](int column) {
+    if (m_object_tree != nullptr) {
+      const auto index = m_object_tree->index_of(*this).siblingAtColumn(column);
+      Q_EMIT m_object_tree->dataChanged(index, index);
+    }
+  };
+
   if (   property == this->property(POSITION_PROPERTY_KEY)
       || property == this->property(SCALE_PROPERTY_KEY)
       || property == this->property(SHEAR_PROPERTY_KEY)
-      || property == this->property(SCALE_PROPERTY_KEY)
-      || property == this->property(IS_VISIBLE_PROPERTY_KEY)
-      || property == this->property(IS_ACTIVE_PROPERTY_KEY))
+      || property == this->property(SCALE_PROPERTY_KEY) )
   {
     Q_EMIT transformation_changed(this);
+    Q_EMIT scene()->repaint();
+  } else if (property == this->property(IS_ACTIVE_PROPERTY_KEY)) {
+    object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
+    Q_EMIT scene()->repaint();
+  } else if (property == this->property(NAME_PROPERTY_KEY)) {
+    object_tree_data_changed(ObjectTree::OBJECT_COLUMN);
+  } else if (property == this->property(IS_VISIBLE_PROPERTY_KEY)) {
+    object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
     Q_EMIT scene()->repaint();
   }
 }
@@ -485,6 +501,15 @@ Object::PathUniquePtr Object::outline(const double offset) const
 {
   Q_UNUSED(offset)
   return nullptr;
+}
+
+void Object::set_object_tree(ObjectTree &object_tree)
+{
+  if (m_object_tree == nullptr) {
+    m_object_tree = &object_tree;
+  } else {
+    assert(m_object_tree == &object_tree);
+  }
 }
 
 }  // namespace omm
