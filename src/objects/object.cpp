@@ -343,6 +343,7 @@ void Object::on_property_value_changed(Property *property)
       || property == this->property(IS_ACTIVE_PROPERTY_KEY))
   {
     Q_EMIT transformation_changed(this);
+    Q_EMIT scene()->repaint();
   }
 }
 
