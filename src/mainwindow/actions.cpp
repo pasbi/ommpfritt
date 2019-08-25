@@ -72,7 +72,6 @@ void convert_objects(omm::Application& app, std::set<omm::Object*> convertables)
       converted_ref.set_transformation(c->transformation());
       converted_objects.insert(&converted_ref);
 
-
       const auto make_move_context = [&converted_ref](auto* cc) {
         return ObjectTreeMoveContext(*cc, converted_ref, nullptr);
       };
@@ -81,7 +80,9 @@ void convert_objects(omm::Application& app, std::set<omm::Object*> convertables)
                      std::back_inserter(move_contextes), make_move_context);
     }
 
-    app.scene.template submit<MoveCommand<ObjectTree>>(app.scene.object_tree, std::vector(move_contextes.begin(), move_contextes.end()));
+    app.scene.template submit<MoveCommand<ObjectTree>>(app.scene.object_tree,
+                                                       std::vector(move_contextes.begin(),
+                                                                   move_contextes.end()));
     const auto selection = ::transform<Object*, std::set>(convertables, ::identity);
     using remove_command = RemoveCommand<ObjectTree>;
     app.scene.template submit<remove_command>(app.scene.object_tree, selection);

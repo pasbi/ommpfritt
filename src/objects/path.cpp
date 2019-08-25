@@ -179,7 +179,6 @@ bool Path::contains(const Vec2f &pos) const { return cubics().contains(pos); }
 
 void Path::update()
 {
-  LINFO << m_points;
   m_painter_path = Painter::path(m_points, property(IS_CLOSED_PROPERTY_KEY)->value<bool>());
   Object::update();
 }
