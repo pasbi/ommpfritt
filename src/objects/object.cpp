@@ -169,6 +169,16 @@ std::ostream& operator<<(std::ostream& ostream, const Object& object)
   return ostream;
 }
 
+std::ostream &operator<<(std::ostream &ostream, const Object *object)
+{
+  if (object != nullptr) {
+    ostream << *object;
+  } else {
+    ostream << "null-Object";
+  }
+  return ostream;
+}
+
 void Object::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   PropertyOwner::serialize(serializer, root);

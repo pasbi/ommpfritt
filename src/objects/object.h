@@ -144,5 +144,6 @@ private:
 
 void register_objects();
 std::ostream& operator<<(std::ostream& ostream, const Object& object);
+std::ostream& operator<<(std::ostream& ostream, const Object* object);
 
 }  // namespace omm
