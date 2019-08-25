@@ -9,6 +9,7 @@ file(GLOB SOURCES
   scene.cpp
   structure.cpp
   stylelist.cpp
+  taglist.cpp
 )
 
 file(GLOB HEADERS
@@ -24,6 +25,7 @@ file(GLOB HEADERS
   scene.h
   structure.h
   stylelist.h
+  taglist.h
 )
 
 add_subdirectory(history)

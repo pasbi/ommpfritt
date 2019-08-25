@@ -59,6 +59,6 @@ template<typename StructureT> void RemoveCommand<StructureT>::undo()
 
 template class RemoveCommand<ObjectTree>;
 template class RemoveCommand<StyleList>;
-template class RemoveCommand<List<Tag>>;
+template class RemoveCommand<TagList>;
 
 }  // namespace omm

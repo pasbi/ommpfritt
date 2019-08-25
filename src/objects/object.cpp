@@ -39,6 +39,7 @@ Style Object::m_bounding_box_style = ContourStyle(omm::Colors::BLACK, 1.0);
 
 Object::Object(Scene* scene)
   : m_scene(scene)
+  , tags(*this)
 {
   static const auto category = QObject::tr("basic").toStdString();
   create_property<OptionsProperty>(IS_VISIBLE_PROPERTY_KEY, 0)
@@ -88,9 +89,9 @@ Object::Object(Scene* scene)
 Object::Object(const Object& other)
   : PropertyOwner(other)
   , TreeElement(other)
-  , tags(other.tags)
-  , m_draw_children(other.m_draw_children)
   , m_scene(other.m_scene)
+  , tags(other.tags, *this)
+  , m_draw_children(other.m_draw_children)
 {
   for (Tag* tag : tags.items()) {
     tag->owner = this;

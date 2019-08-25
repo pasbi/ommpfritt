@@ -9,7 +9,7 @@
 #include "aspects/treeelement.h"
 #include "common.h"
 #include "renderers/painter.h"
-#include "scene/list.h"
+#include "scene/taglist.h"
 #include "geometry/point.h"
 
 namespace omm
@@ -17,6 +17,7 @@ namespace omm
 
 class Scene;
 class Property;
+#include "scene/taglist.h"
 class Path;
 
 class PathDeleter
@@ -32,6 +33,8 @@ class Object
   , public AbstractFactory<std::string, Object, Scene*>
 {
   Q_OBJECT
+
+  Scene* m_scene;
 
 public:
   using PathUniquePtr = std::unique_ptr<Path, PathDeleter>;
@@ -86,7 +89,7 @@ public:
   Visibility visibility() const;
   virtual std::vector<const omm::Style*> find_styles() const;
 
-  List<Tag> tags;
+  TagList tags;
   template<typename T, template<typename...> class ContainerT>
   static ContainerT<T*> cast(const ContainerT<Object*> object)
   {
@@ -139,7 +142,6 @@ protected:
   void on_child_removed(Object &child) override;
 private:
   friend class ObjectView;
-  Scene* m_scene;
   void set_scene(Scene* scene);
 };
 
