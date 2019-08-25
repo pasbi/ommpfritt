@@ -355,7 +355,7 @@ void Object::on_property_value_changed(Property *property)
     Q_EMIT scene()->repaint();
   } else if (property == this->property(IS_ACTIVE_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
-    Q_EMIT scene()->repaint();
+    Q_EMIT appearance_changed(this);
   } else if (property == this->property(NAME_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::OBJECT_COLUMN);
   } else if (property == this->property(IS_VISIBLE_PROPERTY_KEY)) {

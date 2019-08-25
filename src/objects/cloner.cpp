@@ -182,6 +182,7 @@ void Cloner::update()
 void Cloner::on_property_value_changed(Property *property)
 {
   if (   property == this->property(COUNT_PROPERTY_KEY)
+      || property == this->property(MODE_PROPERTY_KEY)
       || property == this->property(COUNT_2D_PROPERTY_KEY)
       || property == this->property(DISTANCE_2D_PROPERTY_KEY)
       || property == this->property(RADIUS_PROPERTY_KEY)

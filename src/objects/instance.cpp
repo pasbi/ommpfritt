@@ -108,6 +108,7 @@ void Instance::on_property_value_changed(Property *property)
   if (   property == this->property(REFERENCE_PROPERTY_KEY)
       || property == this->property(COMBINE_STYLES_PROPERTY_KEY)) {
     LINFO << "reference property changed";
+    Q_EMIT appearance_changed(this);
   } else {
     Object::on_property_value_changed(property);
   }
