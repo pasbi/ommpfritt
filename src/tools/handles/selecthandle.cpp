@@ -222,6 +222,7 @@ transform_tangent(const Vec2f& delta, TangentMode mode, TangentHandle::Tangent t
   std::map<Path*, std::map<Point*, Point>> map;
   map[&m_path][&m_point] = new_point;
   tool.scene.submit<ModifyPointsCommand>(map);
+  m_path.update();
 }
 
 bool PointSelectHandle::tangents_active() const
