@@ -327,7 +327,7 @@ Scene* Object::scene() const { return m_scene; }
 
 void Object::copy_tags(Object& other) const
 {
-  for (const Tag* tag : tags.items()) {
+  for (const Tag* tag : tags.ordered_items()) {
     ListOwningContext<Tag> context(tag->clone(other), other.tags);
     other.tags.insert(context);
   }
