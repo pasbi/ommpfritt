@@ -964,6 +964,18 @@ Borrar la selección de todos modos?</translation>
         <source>ObjectsTransformation</source>
         <translation>Transformación de objeto</translation>
     </message>
+    <message>
+        <source>Include Tangents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exclude Tangents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bounding Box</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>
@@ -1286,6 +1298,13 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
+    <name>omm</name>
+    <message>
+        <source>default</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>omm::AbstractPropertyConfigWidget</name>
     <message>
         <source>&amp;name:</source>
@@ -1456,11 +1475,11 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>language</source>
-        <translation>Idioma</translation>
+        <translation type="vanished">Idioma</translation>
     </message>
     <message>
         <source>system default</source>
-        <translation>Sistema</translation>
+        <translation type="vanished">Sistema</translation>
     </message>
     <message>
         <source>*</source>
@@ -1469,6 +1488,14 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>unnamed</source>
         <translation>Sin nombre</translation>
+    </message>
+    <message>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skin</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

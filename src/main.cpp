@@ -15,25 +15,26 @@
 #include <QVariant>
 #include <QDirIterator>
 #include "logging.h"
+#include "mainwindow/resourcemenu.h"
 
 auto load_translator(const std::string& prefix, const QLocale& locale)
 {
   auto translator = std::make_unique<QTranslator>();
   const auto locale_name = locale.name().toStdString();
   if (translator->load( QString("%1_%2").arg(prefix.c_str()).arg(locale.name()),
-                        omm::MainWindow::LANGUAGE_RESOURCE_DIRECTORY, "_",
-                        omm::MainWindow::LANGUAGE_RESOURCE_SUFFIX )) {
+                        omm::LanguagePlugin::RESOURCE_DIRECTORY, "_",
+                        omm::LanguagePlugin::RESOURCE_SUFFIX )) {
     LINFO << "Installing translator '" << prefix << "' for " << locale_name << ".";
     return translator;
   } else {
     LWARNING << "No translator '" << prefix << "' found for " << locale_name
                  << ". Using fallback-translator.";
     LINFO << "Available locales for '" << prefix << "': ";
-    for (const auto& code : omm::MainWindow::available_translations()) {
+    for (const auto& code : omm::LanguageMenu::available_keys()) {
       LINFO << "    '" << code << "'";
     }
     const auto fallback_tr_name = QString::fromStdString(prefix)
-                                + omm::MainWindow::LANGUAGE_RESOURCE_SUFFIX;
+                                + omm::LanguagePlugin::RESOURCE_SUFFIX;
     if (translator->load(fallback_tr_name, ":")) {
       LINFO << "Installing fallback-translator.";
       return translator;
@@ -76,6 +77,12 @@ int main (int argc, char *argv[])
   const auto translators = install_translators(qt_app, locale);
 
   omm::Application app(qt_app);
+
+  const QString skin = QSettings().value(omm::MainWindow::SKIN_SETTINGS_KEY).toString();
+  if (!skin.isEmpty()) {
+    LINFO << "load skin " << skin;
+    omm::SkinPlugin::load_skin(skin);
+  }
 
   omm::MainWindow window(app);
   app.set_main_window(window);

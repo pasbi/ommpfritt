@@ -33,6 +33,7 @@ public:
   void make_unique_manager_name(QDockWidget& widget) const;
 
   static constexpr auto LOCALE_SETTINGS_KEY = "locale";
+  static constexpr auto SKIN_SETTINGS_KEY = "skin";
   static constexpr auto TOOLBAR_SETTINGS_KEY = "mainwindow/toolbars";
   static constexpr auto TOOLBAR_TOOL_SETTINGS_KEY = "tool";
   static constexpr auto TOOLBAR_TOOLS_SETTINGS_KEY = "tools";
@@ -42,9 +43,6 @@ public:
   static constexpr auto GEOMETRY_SETTINGS_KEY = "mainwindow/geometry";
   static constexpr auto WINDOWSTATE_SETTINGS_KEY = "mainwindow/window_state";
   static constexpr auto RECENT_DOCUMENTS_SETTINGS_KEY = "mainwindow/recent_documents";
-  static constexpr auto LANGUAGE_RESOURCE_PREFIX = "omm";
-  static constexpr auto LANGUAGE_RESOURCE_SUFFIX = ".qm";
-  static constexpr auto LANGUAGE_RESOURCE_DIRECTORY = ":/qm";
   static constexpr auto TYPE_NAME_CONTEXT = "typename";
 
 protected:
@@ -54,6 +52,7 @@ private:
   Application& m_app;
   Viewport* m_viewport;
   std::vector<QDockWidget*> dock_widgets() const;
+
 
 private Q_SLOTS:
   void update_window_title();

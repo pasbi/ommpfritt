@@ -964,6 +964,18 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>ObjectsTransformation</source>
         <translation>Objekttransformation</translation>
     </message>
+    <message>
+        <source>Include Tangents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exclude Tangents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bounding Box</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ReferenceProperty</name>
@@ -1286,6 +1298,13 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
 </context>
 <context>
+    <name>omm</name>
+    <message>
+        <source>default</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>omm::AbstractPropertyConfigWidget</name>
     <message>
         <source>&amp;name:</source>
@@ -1456,11 +1475,11 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>language</source>
-        <translation>Sprache</translation>
+        <translation type="vanished">Sprache</translation>
     </message>
     <message>
         <source>system default</source>
-        <translation>System</translation>
+        <translation type="vanished">System</translation>
     </message>
     <message>
         <source>*</source>
@@ -1469,6 +1488,14 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>unnamed</source>
         <translation>Unbenannt</translation>
+    </message>
+    <message>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skin</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -15,5 +15,7 @@
         <file>icons/ImageObject.png</file>
         <file>icons/RectangleObject.png</file>
         <file>icons/omm.png</file>
+        <file>skins/omm_dark.qss</file>
+        <file>skins/omm_light.qss</file>
     </qresource>
 </RCC>

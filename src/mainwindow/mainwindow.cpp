@@ -21,6 +21,7 @@
 #include "managers/manager.h"
 #include "tags/tag.h"
 #include "logging.h"
+#include "mainwindow/resourcemenu.h"
 
 namespace
 {
@@ -237,48 +238,14 @@ std::unique_ptr<QMenu> MainWindow::make_about_menu()
 {
   auto menu = std::make_unique<QMenu>(tr("About"));
   connect(menu->addAction(tr("About")), &QAction::triggered, [this]() {
-    QMessageBox::information(this, tr("About"), tr("omm."));
+    QMessageBox::information(this, tr("About"), tr(
+R"(See https://github.com/pasbi/ommpfritt/ for details.
+Released under the GPL-3.0.
+The skins (dark and light) are from https://github.com/Alexhuszagh/BreezeStyleSheets.)"));
   });
 
-  const auto show_restart_hint = [this]() {
-    const auto msg = tr("Changing language takes effect after restarting the application.");
-    QMessageBox::information(this, tr("information"), msg);
-  };
-
-  auto language_menu = std::make_unique<QMenu>(tr("language"));
-  QSettings settings;
-
-  auto language_action_group = std::make_unique<QActionGroup>(language_menu.get()).release();
-  language_action_group->setExclusive(true);
-  bool any_language_selected = false;
-  const auto current_locale = settings.value(LOCALE_SETTINGS_KEY);
-  for (const std::string& code : available_translations()) {
-    if (!code.empty()) {
-      const auto locale = QLocale(QString::fromStdString(code));
-      const auto language = QLocale::languageToString(locale.language()).toStdString();
-      auto* action = language_menu->addAction(tr(language.c_str()));
-      language_action_group->addAction(action);
-      action->setCheckable(true);
-      const bool current_locale_selected = locale == current_locale;
-      action->setChecked(current_locale_selected);
-      connect(action, &QAction::triggered, [show_restart_hint, locale]() {
-        QSettings().setValue(LOCALE_SETTINGS_KEY, locale);
-        show_restart_hint();
-      });
-      assert(!current_locale_selected || !any_language_selected);
-      any_language_selected |= current_locale_selected;
-    }
-  }
-  language_menu->addSeparator();
-  auto* default_language_action = language_menu->addAction(tr("system default"));
-  default_language_action->setCheckable(true);
-  default_language_action->setChecked(!any_language_selected);
-  connect(default_language_action, &QAction::triggered, [show_restart_hint]() {
-    QSettings().remove(LOCALE_SETTINGS_KEY);
-    show_restart_hint();
-  });
-  language_action_group->addAction(default_language_action);
-  menu->addMenu(language_menu.release());
+  menu->addMenu(std::make_unique<LanguageMenu>().release());
+  menu->addMenu(std::make_unique<SkinMenu>().release());
 
   return menu;
 }
@@ -373,30 +340,6 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
   if (!Application::instance().key_bindings.call(*e, m_app)) {
     QMainWindow::keyPressEvent(e);
   }
-}
-
-std::vector<std::string> MainWindow::available_translations()
-{
-  using namespace std::string_literals;
-  std::list<std::string> trs;
-  QDirIterator it(LANGUAGE_RESOURCE_DIRECTORY, QDirIterator::Subdirectories);
-  static const QString prefix = QString::fromStdString( LANGUAGE_RESOURCE_DIRECTORY + "/"s
-                                                      + LANGUAGE_RESOURCE_PREFIX + "_"s);
-  static const QString suffix(LANGUAGE_RESOURCE_SUFFIX);
-  while (it.hasNext()) {
-    const auto filename = it.next();
-    if (filename.startsWith(prefix) && filename.endsWith(suffix)) {
-      const int code_length = filename.size() - prefix.size() - suffix.size();
-      if (code_length < 0) {
-        trs.push_back("");
-      } else {
-        const auto code = filename.mid(prefix.size(), code_length);
-        trs.push_back(code.toStdString());
-      }
-    }
-  }
-
-  return std::vector(trs.begin(), trs.end());
 }
 
 Viewport& MainWindow::viewport() const { return *m_viewport; }
