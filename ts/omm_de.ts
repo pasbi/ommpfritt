@@ -2,6 +2,31 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="de_DE">
 <context>
+    <name>AboutDialog</name>
+    <message>
+        <source>About</source>
+        <translation type="unfinished">Über</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;
+&lt;head/&gt;
+&lt;body&gt;
+This software is released under the terms of the GPL-3.0 licence (see below). Detailed information about the ommpfritt project can be found at &lt;a href=&apos;https://github.com/pasbi/ommpfritt&apos;&gt;https://github.com/pasbi/ommpfritt&lt;/a&gt;&lt;br&gt;
+The dark and light skin are provided by &lt;a href=&apos;https://github.com/Alexhuszagh/BreezeStyleSheets&apos;&gt;https://github.com/Alexhuszagh/BreezeStyleSheets&lt;/a&gt; under the MIT licence (see below).
+&lt;/body&gt;
+&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show GPL-3.0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show BreezeStyleSheets License</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>BoolProperty</name>
     <message>
         <source>BoolProperty</source>
@@ -1462,24 +1487,12 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Über</translation>
     </message>
     <message>
-        <source>omm.</source>
-        <translation>omm.</translation>
-    </message>
-    <message>
         <source>Changing language takes effect after restarting the application.</source>
         <translation>Änderungen an der Sprache werden erst nach einem Neustart wirksam.</translation>
     </message>
     <message>
         <source>information</source>
         <translation>Information</translation>
-    </message>
-    <message>
-        <source>language</source>
-        <translation type="vanished">Sprache</translation>
-    </message>
-    <message>
-        <source>system default</source>
-        <translation type="vanished">System</translation>
     </message>
     <message>
         <source>*</source>

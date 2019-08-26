@@ -22,6 +22,7 @@
 #include "tags/tag.h"
 #include "logging.h"
 #include "mainwindow/resourcemenu.h"
+#include "ui_aboutdialog.h"
 
 namespace
 {
@@ -237,11 +238,14 @@ MainWindow::MainWindow(Application& app)
 std::unique_ptr<QMenu> MainWindow::make_about_menu()
 {
   auto menu = std::make_unique<QMenu>(tr("About"));
+
   connect(menu->addAction(tr("About")), &QAction::triggered, [this]() {
-    QMessageBox::information(this, tr("About"), tr(
-R"(See https://github.com/pasbi/ommpfritt/ for details.
-Released under the GPL-3.0.
-The skins (dark and light) are from https://github.com/Alexhuszagh/BreezeStyleSheets.)"));
+    QDialog about_dialog(this);
+    ::Ui::AboutDialog ui;
+    ui.setupUi(&about_dialog);
+    ui.te_breeze_license->hide();
+    ui.te_gpl30->hide();
+    about_dialog.exec();
   });
 
   menu->addMenu(std::make_unique<LanguageMenu>().release());

@@ -2,6 +2,31 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="es">
 <context>
+    <name>AboutDialog</name>
+    <message>
+        <source>About</source>
+        <translation type="unfinished">Sobre</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;
+&lt;head/&gt;
+&lt;body&gt;
+This software is released under the terms of the GPL-3.0 licence (see below). Detailed information about the ommpfritt project can be found at &lt;a href=&apos;https://github.com/pasbi/ommpfritt&apos;&gt;https://github.com/pasbi/ommpfritt&lt;/a&gt;&lt;br&gt;
+The dark and light skin are provided by &lt;a href=&apos;https://github.com/Alexhuszagh/BreezeStyleSheets&apos;&gt;https://github.com/Alexhuszagh/BreezeStyleSheets&lt;/a&gt; under the MIT licence (see below).
+&lt;/body&gt;
+&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show GPL-3.0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show BreezeStyleSheets License</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>BoolProperty</name>
     <message>
         <source>BoolProperty</source>
@@ -1462,24 +1487,12 @@ Borrar la selección de todos modos?</translation>
         <translation>Sobre</translation>
     </message>
     <message>
-        <source>omm.</source>
-        <translation>omm.</translation>
-    </message>
-    <message>
         <source>Changing language takes effect after restarting the application.</source>
         <translation>Un cambio de idioma solo tiene efecto cuando reinicies la aplicación.</translation>
     </message>
     <message>
         <source>information</source>
         <translation>Información</translation>
-    </message>
-    <message>
-        <source>language</source>
-        <translation type="vanished">Idioma</translation>
-    </message>
-    <message>
-        <source>system default</source>
-        <translation type="vanished">Sistema</translation>
     </message>
     <message>
         <source>*</source>
