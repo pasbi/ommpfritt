@@ -24,8 +24,7 @@ public:
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force) override;
   void mouse_release(const Vec2f& pos, const QMouseEvent& event) override;
   std::string type() const override;
-  void on_scene_changed() override;
-  void on_selection_changed() override;
+  void reset() override;
   void draw(Painter& renderer) const override;
   static constexpr auto RADIUS_PROPERTY_KEY = "radius";
   std::string name() const override;

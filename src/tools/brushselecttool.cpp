@@ -89,15 +89,10 @@ void BrushSelectTool
   }
 }
 
-void BrushSelectTool::on_scene_changed()
+void BrushSelectTool::reset()
 {
   handles.clear();
   SelectPointsTool::make_handles(*this, false);
-}
-
-void BrushSelectTool::on_selection_changed()
-{
-  on_scene_changed();
 }
 
 std::string BrushSelectTool::type() const { return TYPE; }

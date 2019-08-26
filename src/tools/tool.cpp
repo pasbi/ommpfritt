@@ -67,11 +67,6 @@ std::unique_ptr<QMenu> Tool::make_context_menu(QWidget* parent)
   return nullptr;
 }
 
-bool Tool::has_transformation() const { return false; }
-void Tool::on_selection_changed() {}
-void Tool::on_scene_changed() {}
-AbstractPropertyOwner::Flag Tool::flags() const { return Flag::None; }
-
 bool Tool::integer_transformation() const
 {
   return QApplication::keyboardModifiers() & Qt::ShiftModifier;

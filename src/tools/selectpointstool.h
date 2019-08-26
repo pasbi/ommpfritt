@@ -19,7 +19,6 @@ public:
   enum class BoundingBoxMode { IncludeTangents, ExcludeTangents, None };
   PointSelectHandle::TangentMode tangent_mode() const;
   std::unique_ptr<QMenu> make_context_menu(QWidget* parent) override;
-  void on_selection_changed() override;
   void transform_objects(ObjectTransformation t) override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force) override;
 
@@ -68,7 +67,7 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectPointsTool");
 
 protected:
-  void on_scene_changed() override;
+  void reset() override;
 };
 
 }  // namespace

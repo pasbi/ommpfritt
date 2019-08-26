@@ -72,6 +72,8 @@ Scene::Scene(PythonEngine& python_engine)
   }
   tool_box.set_active_tool(SelectObjectsTool::TYPE);
   connect(&history, SIGNAL(index_changed()), this, SIGNAL(filename_changed()));
+  connect(this, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
+          &tool_box.active_tool(), SLOT(reset()));
 }
 
 Scene::~Scene()
@@ -145,7 +147,7 @@ void Scene::invalidate()
   set_selection(::filter_if(m_selection, [this](auto* apo) {
     return contains(apo);
   }));
-  tool_box.active_tool().on_scene_changed();
+  tool_box.active_tool().reset();
 }
 
 bool Scene::save_as(const std::string &filename)
@@ -288,7 +290,6 @@ template<> const typename SceneStructure<Style>::type& Scene::structure<Style>()
 void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
   m_selection = selection;
-  Q_EMIT selection_changed(m_selection);
 
   static const auto emit_selection_changed = [this](const auto& selection, const auto kind) {
     Q_EMIT selection_changed(selection, kind);
@@ -332,7 +333,7 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
     }
   }
 
-  tool_box.active_tool().on_selection_changed();
+  Q_EMIT selection_changed(m_selection);
 }
 
 std::set<AbstractPropertyOwner*> Scene::selection() const { return m_selection; }
@@ -414,6 +415,7 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
     for (auto [ owner, tags ] : tag_map) { ::remove_items(*this, owner->tags, tags); }
     ::remove_items(*this, styles, kind_cast<Style>(selection));
     ::remove_items(*this, object_tree, kind_cast<Object>(selection));
+    set_selection({});
     return true;
   } else {
     return false;
@@ -422,7 +424,7 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
 
 void Scene::update_tool()
 {
-  tool_box.active_tool().on_scene_changed();
+  tool_box.active_tool().reset();
 }
 
 bool Scene::contains(const AbstractPropertyOwner *apo) const

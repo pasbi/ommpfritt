@@ -60,7 +60,7 @@ void KnifeTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
       sequencess[path] = path->get_point_sequences(ts);
     }
     scene.submit<AddPointsCommand>(sequencess);
-    on_selection_changed();
+    reset();
   }
   SelectPointsBaseTool::mouse_release(pos, event);
   m_is_cutting = false;

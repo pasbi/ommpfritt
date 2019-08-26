@@ -19,6 +19,7 @@ class Tool
   : public PropertyOwner<AbstractPropertyOwner::Kind::Tool>
   , public AbstractFactory<std::string, Tool, Scene&>
 {
+  Q_OBJECT
 public:
   explicit Tool(Scene& scene);
   virtual ~Tool() = default;
@@ -37,15 +38,13 @@ public:
   virtual void mouse_release(const Vec2f& pos, const QMouseEvent& event);
   virtual bool key_press(const QKeyEvent& event);
   virtual void draw(Painter& renderer) const;
-  virtual void on_selection_changed();
-  virtual void on_scene_changed();
-  virtual bool has_transformation() const;
+  virtual bool has_transformation() const { return false; }
   virtual void cancel();
   virtual void end();
   Scene& scene;
   virtual std::unique_ptr<QMenu> make_context_menu(QWidget* parent);
   virtual ObjectTransformation transformation() const;
-  Flag flags() const override;
+  Flag flags() const override { return Flag::None; }
   ObjectTransformation viewport_transformation;
   bool integer_transformation() const;
   std::string name() const override;
@@ -58,6 +57,9 @@ public:
    * @return The default implementation returns false.
    */
   virtual bool modifies_points() const;
+
+public Q_SLOTS:
+  virtual void reset() {}
 
 protected:
   std::vector<std::unique_ptr<Handle>> handles;

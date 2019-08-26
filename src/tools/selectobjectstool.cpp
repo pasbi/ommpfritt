@@ -37,7 +37,7 @@ void SelectObjectsTool::transform_objects(ObjectTransformation t)
   scene.submit(std::move(command));
 }
 
-void SelectObjectsTool::on_scene_changed()
+void SelectObjectsTool::reset()
 {
   handles.clear();
   using tool_t = std::remove_pointer_t<decltype(this)>;
@@ -47,7 +47,6 @@ void SelectObjectsTool::on_scene_changed()
   handles.push_back(std::make_unique<MoveAxisHandle<tool_t, MoveAxisHandleDirection::X>>(*this));
   handles.push_back(std::make_unique<MoveAxisHandle<tool_t, MoveAxisHandleDirection::Y>>(*this));
   handles.push_back(std::make_unique<BoundingBoxHandle<SelectObjectsTool>>(*this));
-
 
   // ignore object selection. Return a handle for each visible object.
   const auto objects = ::filter_if(scene.object_tree.items(), [](Object* object) {
@@ -60,7 +59,6 @@ void SelectObjectsTool::on_scene_changed()
     return std::make_unique<ObjectSelectHandle>(*this, scene, *o);
   });
 }
-
 
 bool SelectObjectsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
 {
@@ -80,7 +78,11 @@ bool SelectObjectsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, 
 
 BoundingBox SelectObjectsTool::bounding_box() const
 {
-  return BoundingBox::around_selected_objects(scene);
+  if (scene.item_selection<Object>().size() == 0) {
+    return BoundingBox();
+  } else {
+    return BoundingBox::around_selected_objects(scene);
+  }
 }
 
 bool SelectObjectsTool::has_transformation() const

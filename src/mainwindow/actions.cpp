@@ -139,7 +139,7 @@ void subdivide(Application& app)
 
   if (map.size() > 0) {
     app.scene.submit<AddPointsCommand>(map);
-    app.scene.tool_box.active_tool().on_scene_changed();
+    app.scene.tool_box.active_tool().reset();
   }
 }
 

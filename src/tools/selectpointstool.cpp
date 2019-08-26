@@ -44,8 +44,6 @@ std::unique_ptr<QMenu> SelectPointsBaseTool::make_context_menu(QWidget* parent)
   return std::move(menus.front());
 }
 
-void SelectPointsBaseTool::on_selection_changed() { on_scene_changed(); }
-
 void SelectPointsBaseTool::transform_objects(ObjectTransformation t)
 {
   class TransformationCache : public Cache<Path*, ObjectTransformation>
@@ -151,7 +149,7 @@ Vec2f SelectPointsBaseTool::selection_center() const
 
 std::string SelectPointsTool::type() const { return TYPE; }
 
-void SelectPointsTool::on_scene_changed()
+void SelectPointsTool::reset()
 {
   handles.clear();
   make_handles(*this, false);

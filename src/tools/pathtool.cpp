@@ -69,7 +69,7 @@ void PathTool::add_point(const Vec2f &pos)
   scene.submit<AddPointsCommand>(std::map{ std::pair{ m_path, std::vector{ point_sequence } } });
   m_current_point = m_path->points_ref().back();
   m_path->update();
-  on_scene_changed();
+  reset();
 }
 
 void PathTool::end()
@@ -80,7 +80,7 @@ void PathTool::end()
   }
 }
 
-void PathTool::on_scene_changed()
+void PathTool::reset()
 {
   auto paths = type_cast<Path*>(scene.item_selection<Object>());
   if (paths.size() == 1) {

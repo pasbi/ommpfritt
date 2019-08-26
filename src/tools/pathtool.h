@@ -18,7 +18,7 @@ public:
   void mouse_release(const Vec2f &pos, const QMouseEvent &event) override;
   std::string type() const override;
   void end() override;
-  void on_scene_changed() override;
+  void reset() override;
 
 private:
   void add_point(const Vec2f& pos);
