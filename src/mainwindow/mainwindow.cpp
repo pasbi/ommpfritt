@@ -245,6 +245,7 @@ std::unique_ptr<QMenu> MainWindow::make_about_menu()
     ui.setupUi(&about_dialog);
     ui.te_breeze_license->hide();
     ui.te_gpl30->hide();
+    ui.lb_splash->setPixmap(QPixmap::fromImage(QImage(":/icons/omm.png")));
     about_dialog.exec();
   });
 

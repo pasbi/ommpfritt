@@ -22,13 +22,6 @@
 namespace
 {
 
-auto make_resolution_edit()
-{
-  auto edit = std::make_unique<omm::NumericEdit<int>>();
-  edit->set_range(0, 100000);
-  return edit;
-}
-
 class XLabel : public QLabel
 {
 public:
