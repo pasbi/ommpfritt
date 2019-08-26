@@ -8,16 +8,6 @@
         <translation type="unfinished">About</translation>
     </message>
     <message>
-        <source>&lt;html&gt;
-&lt;head/&gt;
-&lt;body&gt;
-This software is released under the terms of the GPL-3.0 licence (see below). Detailed information about the ommpfritt project can be found at &lt;a href=&apos;https://github.com/pasbi/ommpfritt&apos;&gt;https://github.com/pasbi/ommpfritt&lt;/a&gt;&lt;br&gt;
-The dark and light skin are provided by &lt;a href=&apos;https://github.com/Alexhuszagh/BreezeStyleSheets&apos;&gt;https://github.com/Alexhuszagh/BreezeStyleSheets&lt;/a&gt; under the MIT licence (see below).
-&lt;/body&gt;
-&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Show GPL-3.0</source>
         <translation type="unfinished"></translation>
     </message>
