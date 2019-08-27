@@ -343,6 +343,7 @@ std::unique_ptr<Object> Scene::make_root()
   using namespace std::string_literals;
   auto root = std::make_unique<Empty>(this);
   root->property(Object::NAME_PROPERTY_KEY)->set("_root_"s);
+  connect(root.get(), SIGNAL(appearance_changed(Object*)), this, SIGNAL(repaint()));
   return root;
 }
 

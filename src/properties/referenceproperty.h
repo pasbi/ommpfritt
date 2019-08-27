@@ -12,6 +12,7 @@ class ReferenceProperty;
 
 class ReferenceProperty : public TypedProperty<AbstractPropertyOwner*>
 {
+  Q_OBJECT
 public:
   ReferenceProperty();
   explicit ReferenceProperty(const ReferenceProperty& other);
@@ -24,6 +25,7 @@ public:
   ReferenceProperty& set_required_flags(AbstractPropertyOwner::Flag required_flags);
   AbstractPropertyOwner::Flag required_flags() const;
   void revise() override;
+  void set(AbstractPropertyOwner *const &value) override;
 
   bool is_compatible(const Property& other) const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("ReferenceProperty", "ReferenceProperty");
@@ -33,6 +35,9 @@ public:
   static std::vector<omm::AbstractPropertyOwner*>
   collect_candidates(const Scene& scene, const AbstractPropertyOwner::Kind allowed_kinds,
                                          const AbstractPropertyOwner::Flag required_flags);
+
+Q_SIGNALS:
+  void reference_changed(AbstractPropertyOwner* old_ref, AbstractPropertyOwner* new_ref);
 
 private:
   // default is always nullptr

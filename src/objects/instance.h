@@ -13,6 +13,7 @@ class Scene;
 
 class Instance : public Object
 {
+  Q_OBJECT
 public:
   explicit Instance(Scene* scene);
   Instance(const Instance& other);
@@ -21,17 +22,23 @@ public:
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Instance");
   static constexpr auto REFERENCE_PROPERTY_KEY = "reference";
-  static constexpr auto COMBINE_STYLES_PROPERTY_KEY = "combine-styles";
+  static constexpr auto IDENTICAL_PROPERTY_KEY = "identical";
   std::unique_ptr<Object> clone() const override;
   std::unique_ptr<Object> convert() const override;
   Flag flags() const override;
   void post_create_hook() override;
+  void update() override;
 
 protected:
   void on_property_value_changed(Property *property) override;
 
 private:
+  Object* illustrated_object() const;
   Object* referenced_object() const;
+  std::unique_ptr<Object> m_reference;
+
+private Q_SLOTS:
+  void update_tags();
 };
 
 }  // namespace omm

@@ -85,4 +85,11 @@ std::unique_ptr<Property> ReferenceProperty::clone() const
 
 void ReferenceProperty::revise() { set(nullptr); }
 
+void ReferenceProperty::set(AbstractPropertyOwner * const &value)
+{
+  AbstractPropertyOwner* const old_value = this->value();
+  TypedProperty::set(value);
+  Q_EMIT reference_changed(old_value, value);
+}
+
 }   // namespace omm

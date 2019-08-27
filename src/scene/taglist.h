@@ -19,6 +19,10 @@ public:
   std::unique_ptr<Tag> remove(Tag& tag) override;
   void move(ListMoveContext<Tag> &context) override;
 
+Q_SIGNALS:
+  void tag_inserted(Tag&);
+  void tag_removed(Tag&);
+
 private:
   Object& m_object;
 };

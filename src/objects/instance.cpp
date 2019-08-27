@@ -8,6 +8,7 @@
 #include "commands/propertycommand.h"
 #include "tags/tag.h"
 #include "tags/scripttag.h"
+#include "tags/styletag.h"
 
 namespace omm
 {
@@ -21,9 +22,28 @@ Instance::Instance(Scene* scene)
   create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
     .set_label(QObject::tr("reference", "Instance").toStdString()).set_category(category);
-  create_property<BoolProperty>(COMBINE_STYLES_PROPERTY_KEY)
-    .set_label(QObject::tr("combine styles", "Instance").toStdString()).set_category(category);
+  create_property<BoolProperty>(IDENTICAL_PROPERTY_KEY)
+    .set_label(QObject::tr("identical", "Instance").toStdString()).set_category(category);
   update();
+  connect(&tags, SIGNAL(tag_inserted(Tag&)), this, SLOT(update_tags()));
+  connect(&tags, SIGNAL(tag_removed(Tag&)), this, SLOT(update_tags()));
+
+  connect(static_cast<ReferenceProperty*>(property(REFERENCE_PROPERTY_KEY)),
+          &ReferenceProperty::reference_changed,
+          [this](AbstractPropertyOwner* const old_ref, AbstractPropertyOwner* const new_ref) {
+    Object* old_object = kind_cast<Object*>(old_ref);
+    Object* new_object = kind_cast<Object*>(new_ref);
+    if (old_object) {
+      disconnect(old_object, SIGNAL(appearance_changed(Object*)), this, SLOT(update()));
+      disconnect(old_object, SIGNAL(appearance_changed(Object*)), this, SLOT(update()));
+    }
+    if (new_object) {
+      connect(new_object, SIGNAL(appearance_changed(Object*)), this, SLOT(update()));
+      connect(new_object, SIGNAL(appearance_changed(Object*)), this, SLOT(update()));
+    }
+  });
+  connect(&tags, SIGNAL(tag_inserted(Tag&)), this, SLOT(update()));
+  connect(&tags, SIGNAL(tag_removed(Tag&)), this, SLOT(update()));
 }
 
 Instance::Instance(const Instance &other) : Object(other) {}
@@ -32,10 +52,10 @@ void Instance::draw_object(Painter &renderer, const Style& default_style) const
 {
   auto cycle_guard = scene()->make_cycle_guard(this);
   if (!cycle_guard->inside_cycle() && is_active()) {
-    const auto* reference = referenced_object();
-    if (reference != nullptr) {
-      renderer.push_transformation(reference->global_transformation(true).inverted());
-      reference->draw_recursive(renderer, default_style);
+    const auto* r = illustrated_object();
+    if (r != nullptr) {
+      renderer.push_transformation(r->global_transformation(true).inverted());
+      r->draw_recursive(renderer, default_style);
       renderer.pop_transformation();
     }
   }
@@ -45,9 +65,9 @@ BoundingBox Instance::bounding_box(const ObjectTransformation &transformation) c
 {
   auto cycle_guard = scene()->make_cycle_guard(this);
   if (!cycle_guard->inside_cycle() && is_active()) {
-    const auto* reference = referenced_object();
-    if (reference != nullptr) {
-      return reference->recursive_bounding_box(transformation);
+    const auto* r = illustrated_object();
+    if (r != nullptr) {
+      return r->recursive_bounding_box(transformation);
     } else {
       return BoundingBox();
     }
@@ -56,19 +76,16 @@ BoundingBox Instance::bounding_box(const ObjectTransformation &transformation) c
   }
 }
 
-Object* Instance::referenced_object() const
+Object *Instance::illustrated_object() const
 {
   // Note: If you implement a cache, keep in mind that it becomes dirty if
   //  - this instance's parent changes
   //  - the referenced object changes
 
-  const auto reference = property(REFERENCE_PROPERTY_KEY)->value<ReferenceProperty::value_type>();
-  const auto object_reference = static_cast<Object*>(reference);
-  if (object_reference != nullptr && ::contains(object_reference->all_descendants(), this)) {
-    LWARNING << "Instance cannot descend from referenced object.";
-    return nullptr;
+  if (property(IDENTICAL_PROPERTY_KEY)->value<bool>()) {
+    return referenced_object();
   } else {
-    return object_reference;
+    return m_reference.get();
   }
 }
 
@@ -103,14 +120,57 @@ void Instance::post_create_hook()
   }
 }
 
+void Instance::update()
+{
+  if (is_active()) {
+    m_reference.reset();
+    if (!property(IDENTICAL_PROPERTY_KEY)->value<bool>()) {
+      Object* r = referenced_object();
+      if (r != nullptr) {
+        m_reference = r->clone();
+      }
+    }
+
+    update_tags();
+  }
+  Object::update();
+}
+
 void Instance::on_property_value_changed(Property *property)
 {
-  if (   property == this->property(REFERENCE_PROPERTY_KEY)
-      || property == this->property(COMBINE_STYLES_PROPERTY_KEY)) {
-    LINFO << "reference property changed";
-    Q_EMIT appearance_changed(this);
+  if (    property == this->property(REFERENCE_PROPERTY_KEY)
+       || property == this->property(IDENTICAL_PROPERTY_KEY) ) {
+    update();
   } else {
     Object::on_property_value_changed(property);
+  }
+}
+
+Object* Instance::referenced_object() const
+{
+  const auto reference = property(REFERENCE_PROPERTY_KEY)->value<ReferenceProperty::value_type>();
+  const auto object_reference = static_cast<Object*>(reference);
+  if (object_reference != nullptr && ::contains(object_reference->all_descendants(), this)) {
+    LWARNING << "Instance cannot descend from referenced object.";
+    return nullptr;
+  } else {
+    return object_reference;
+  }
+}
+
+void Instance::update_tags()
+{
+  if (m_reference) {
+    const auto instance_style_tags = type_cast<StyleTag*>(tags.ordered_items());
+    if (!instance_style_tags.empty()) {
+      for (Tag* tag : type_cast<StyleTag*>(m_reference->tags.ordered_items())) {
+        m_reference->tags.remove(*tag);
+      }
+    }
+    for (Tag* tag : instance_style_tags) {
+      ListOwningContext<Tag> context(tag->clone(), m_reference->tags);
+      m_reference->tags.insert(context);
+    }
   }
 }
 

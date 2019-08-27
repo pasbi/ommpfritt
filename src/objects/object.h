@@ -127,6 +127,7 @@ public:
 
 public Q_SLOTS:
   virtual void update();
+  void emit_appearance_changed();
 
 Q_SIGNALS:
   void appearance_changed(Object*);

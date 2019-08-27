@@ -80,6 +80,8 @@ Object::Object(Scene* scene)
           this, SIGNAL(appearance_changed(Object*)));
   connect(this, SIGNAL(child_transformation_changed(Object*)),
           this, SIGNAL(transformation_changed(Object*)));
+  connect(&tags, SIGNAL(tag_inserted(Tag&)), this, SLOT(emit_appearance_changed()));
+  connect(&tags, SIGNAL(tag_removed(Tag&)), this, SLOT(emit_appearance_changed()));
 }
 
 Object::Object(const Object& other)
@@ -364,7 +366,11 @@ void Object::post_create_hook() { }
 void Object::update()
 {
   Q_EMIT appearance_changed(this);
-  Q_EMIT scene()->repaint();
+}
+
+void Object::emit_appearance_changed()
+{
+  Q_EMIT appearance_changed(this);
 }
 
 void Object::on_child_added(Object &child)

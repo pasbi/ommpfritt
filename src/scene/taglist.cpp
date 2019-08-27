@@ -20,26 +20,26 @@ TagList::TagList(const TagList &other, Object& object)
 void TagList::insert(ListOwningContext<Tag> &context)
 {
   List<Tag>::insert(context);
-  Q_EMIT m_object.appearance_changed(&m_object);
+  Q_EMIT tag_inserted(context.subject);
 }
 
 void TagList::remove(ListOwningContext<Tag> &t)
 {
   List<Tag>::remove(t);
-  Q_EMIT m_object.appearance_changed(&m_object);
+  Q_EMIT tag_removed(t.subject.get());
 }
 
 std::unique_ptr<Tag> TagList::remove(Tag &tag)
 {
   auto otag = List<Tag>::remove(tag);
-  Q_EMIT m_object.appearance_changed(&m_object);
+  Q_EMIT tag_removed(tag);
   return otag;
 }
 
 void TagList::move(ListMoveContext<Tag> &context)
 {
-  List<Tag>::move(context);
-  Q_EMIT m_object.appearance_changed(&m_object);
+  Q_UNUSED(context);
+  Q_UNREACHABLE();
 }
 
 }  // namespace omm
