@@ -57,21 +57,6 @@ void Property
   }
 }
 
-
-Property& Property::set_pre_submit(const std::function<void(Property&)>& hook)
-{
-  pre_submit = hook;
-  wrap_with_macro = true;
-  return *this;
-}
-
-Property& Property::set_post_submit(const std::function<void(Property&)>& hook)
-{
-  post_submit = hook;
-  wrap_with_macro = true;
-  return *this;
-}
-
 bool TriggerPropertyDummyValueType::operator==(const TriggerPropertyDummyValueType&) const
 {
   return true;

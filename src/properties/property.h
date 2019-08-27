@@ -95,11 +95,6 @@ public:
 
   virtual std::unique_ptr<Property> clone() const = 0;
 
-  std::function<void(Property&)> pre_submit = [](Property&) {};
-  std::function<void(Property&)> post_submit = [](Property&) {};
-  bool wrap_with_macro = false;
-  Property& set_pre_submit(const std::function<void(Property&)>& hook);
-  Property& set_post_submit(const std::function<void(Property&)>& hook);
   virtual void revise();
 
 private:

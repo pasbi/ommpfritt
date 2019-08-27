@@ -73,22 +73,11 @@ protected:
     };
 
     if (!std::all_of(properties.begin(), properties.end(), is_noop)) {
-      const bool wrap = std::any_of(properties.begin(), properties.end(), [](const Property* p) {
-        return p->wrap_with_macro;
-      });
-
       using command_t = VectorPropertiesCommand<VectorPropertyT, dim>;
       auto command = std::make_unique<command_t>(properties, value);
 
       std::unique_ptr<Macro> macro;
-      if (wrap) {
-        macro = this->scene.history.start_macro(QString::fromStdString(command->label()));
-        for (auto* property : properties) { property->pre_submit(*property); }
-      }
       this->scene.submit(std::move(command));
-      if (wrap) {
-        for (auto* property : properties) { property->post_submit(*property); }
-      }
     }
   }
 

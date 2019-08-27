@@ -49,24 +49,13 @@ public:
 protected:
   virtual void set_properties_value(const value_type& value)
   {
-    const bool wrap = std::any_of(m_properties.begin(), m_properties.end(), [](const Property* p) {
-      return p->wrap_with_macro;
-    });
-
     const auto is_noop = [&value](const Property* p) {
       return p->value<value_type>() == value;
     };
     if (!std::all_of(m_properties.begin(), m_properties.end(), is_noop)) {
       auto command = std::make_unique<PropertiesCommand<property_type>>(m_properties, value);
       std::unique_ptr<Macro> macro;
-      if (wrap) {
-        macro = scene.history.start_macro(QString::fromStdString(command->label()));
-        for (auto* property : m_properties) { property->pre_submit(*property); }
-      }
       scene.submit(std::move(command));
-      if (wrap) {
-        for (auto* property : m_properties) { property->post_submit(*property); }
-      }
     }
   }
 
