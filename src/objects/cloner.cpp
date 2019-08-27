@@ -195,7 +195,7 @@ void Cloner::on_property_value_changed(Property *property)
       || property == this->property(SEED_PROPERTY_KEY)
       || property == this->property(ANCHOR_PROPERTY_KEY))
   {
-    Q_EMIT appearance_changed(this);
+    update();
   } else {
     Object::on_property_value_changed(property);
   }
@@ -204,13 +204,13 @@ void Cloner::on_property_value_changed(Property *property)
 void Cloner::on_child_added(Object &child)
 {
   Object::on_child_added(child);
-  Q_EMIT appearance_changed(this);
+  update();
 }
 
 void Cloner::on_child_removed(Object &child)
 {
   Object::on_child_removed(child);
-  Q_EMIT appearance_changed(this);
+  update();
 }
 
 std::string Cloner::type() const { return TYPE; }

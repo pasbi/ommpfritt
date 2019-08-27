@@ -2,7 +2,6 @@
 #include "properties/boolproperty.h"
 #include "properties/colorproperty.h"
 #include "properties/floatproperty.h"
-#include "scene/scene.h"
 #include "renderers/styleiconengine.h"
 #include "properties/optionsproperty.h"
 #include "objects/tip.h"
@@ -19,9 +18,8 @@ static constexpr auto default_marker_shape = omm::MarkerProperties::Shape::None;
 namespace omm
 {
 
-Style::Style(Scene* scene)
-  : m_scene(scene)
-  , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
+Style::Style()
+  : start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {
   const auto pen_category = QObject::tr("pen").toStdString();
@@ -75,7 +73,6 @@ Style::Style(Scene* scene)
 
 Style::Style(const Style &other)
   : PropertyOwner<AbstractPropertyOwner::Kind::Style>(other)
-  , m_scene(other.m_scene)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {
@@ -84,11 +81,26 @@ Style::Style(const Style &other)
 
 std::string Style::type() const { return TYPE; }
 AbstractPropertyOwner::Flag Style::flags() const { return Flag::None; }
-Scene *Style::scene() const { return m_scene; }
+
+void Style::on_property_value_changed(Property *property)
+{
+  if (    property == this->property(PEN_IS_ACTIVE_KEY)
+       || property == this->property(PEN_COLOR_KEY)
+       || property == this->property(PEN_WIDTH_KEY)
+       || property == this->property(STROKE_STYLE_KEY)
+       || property == this->property(JOIN_STYLE_KEY)
+       || property == this->property(CAP_STYLE_KEY)
+       || property == this->property(COSMETIC_KEY)
+       || property == this->property(BRUSH_IS_ACTIVE_KEY)
+       || property == this->property(BRUSH_COLOR_KEY) )
+  {
+    Q_EMIT appearance_changed();
+  }
+}
 
 std::unique_ptr<Style> Style::clone() const
 {
-  auto clone = std::make_unique<Style>(m_scene);
+  auto clone = std::make_unique<Style>();
   copy_properties(*clone);
   return clone;
 }
@@ -98,14 +110,14 @@ QIcon Style::icon() const
   return QIcon(std::make_unique<StyleIconEngine>(*this).release());
 }
 
-SolidStyle::SolidStyle(const Color& color, Scene* scene) : Style(scene)
+SolidStyle::SolidStyle(const Color& color) : Style()
 {
   property(omm::Style::PEN_IS_ACTIVE_KEY)->set(false);
   property(omm::Style::BRUSH_IS_ACTIVE_KEY)->set(true);
   property(omm::Style::BRUSH_COLOR_KEY)->set(color);
 }
 
-ContourStyle::ContourStyle(const Color& color, const double width, Scene* scene) : Style(scene)
+ContourStyle::ContourStyle(const Color& color, const double width) : Style()
 {
   property(omm::Style::PEN_IS_ACTIVE_KEY)->set(true);
   property(omm::Style::BRUSH_IS_ACTIVE_KEY)->set(false);
@@ -113,6 +125,6 @@ ContourStyle::ContourStyle(const Color& color, const double width, Scene* scene)
   property(omm::Style::PEN_WIDTH_KEY)->set(width);
 }
 
-ContourStyle::ContourStyle(const Color& color, Scene* scene) : ContourStyle(color, 2.0, scene) { }
+ContourStyle::ContourStyle(const Color& color) : ContourStyle(color, 2.0) { }
 
 }  // namespace omm

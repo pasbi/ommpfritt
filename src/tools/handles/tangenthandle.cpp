@@ -8,7 +8,7 @@ TangentHandle::TangentHandle(Tool& tool, PointSelectHandle& master_handle, Tange
   : Handle(tool), m_master_handle(master_handle), m_tangent(tangent)
 {
   set_style(Handle::Status::Hovered, []() {
-    Style style(nullptr);
+    Style style;
     style.property(Style::COSMETIC_KEY)->set(true);
     style.property(Style::BRUSH_COLOR_KEY)->set(Color(1.0, 1.0, 0.0));
     style.property(Style::PEN_COLOR_KEY)->set(Color(0.0, 0.0, 1.0));
@@ -17,9 +17,8 @@ TangentHandle::TangentHandle(Tool& tool, PointSelectHandle& master_handle, Tange
     return style;
   }());
 
-
   set_style(Handle::Status::Active, []() {
-    Style style(nullptr);
+    Style style;
     style.property(Style::COSMETIC_KEY)->set(true);
     style.property(Style::BRUSH_COLOR_KEY)->set(Color(1.0, 1.0, 1.0));
     style.property(Style::PEN_COLOR_KEY)->set(Color(0.0, 0.0, 0.0));
@@ -29,7 +28,7 @@ TangentHandle::TangentHandle(Tool& tool, PointSelectHandle& master_handle, Tange
   }());
 
   set_style(Handle::Status::Inactive, []() {
-    Style style(nullptr);
+    Style style;
     style.property(Style::COSMETIC_KEY)->set(true);
     style.property(Style::BRUSH_COLOR_KEY)->set(Color(0.8, 0.8, 0.2));
     style.property(Style::PEN_COLOR_KEY)->set(Color(0.2, 0.2, 0.8));

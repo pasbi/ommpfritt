@@ -209,7 +209,10 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
     ai( QT_TRANSLATE_NOOP("any-context", "invert selection"), &actions::invert_selection),
     ai( QT_TRANSLATE_NOOP("any-context", "new style"), [](Application& app) {
         using command_type = AddCommand<List<Style>>;
-        app.scene.submit<command_type>(app.scene.styles, app.scene.default_style().clone());
+        auto style = app.scene.default_style().clone();
+        connect(style.get(), SIGNAL(appearance_changed()),
+                &app.scene, SIGNAL(appearance_changed()));
+        app.scene.submit<command_type>(app.scene.styles, std::move(style));
       } ),
     ai( QT_TRANSLATE_NOOP("any-context", "convert objects"), &actions::convert_objects ),
     ai( QT_TRANSLATE_NOOP("any-context", "reset viewport"), [](Application& app) {

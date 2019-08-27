@@ -68,7 +68,7 @@ void RectangleObject::on_property_value_changed(Property *property)
       || property == this->property(RADIUS_PROPERTY_KEY)
       || property == this->property(TENSION_PROPERTY_KEY))
   {
-    Q_EMIT appearance_changed(this);
+    update();
   } else {
     Object::on_property_value_changed(property);
   }

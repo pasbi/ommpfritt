@@ -4,6 +4,7 @@
 #include <QStyle>        // TODO only for icon testing
 #include "properties/referenceproperty.h"
 #include "renderers/style.h"
+#include "objects/object.h"
 
 namespace omm
 {
@@ -32,5 +33,12 @@ std::string StyleTag::type() const { return TYPE; }
 std::unique_ptr<Tag> StyleTag::clone() const { return std::make_unique<StyleTag>(*this); }
 void StyleTag::evaluate() {}
 AbstractPropertyOwner::Flag StyleTag::flags() const { return Tag::flags(); }
+
+void StyleTag::on_property_value_changed(Property *property)
+{
+  if (property == this->property(STYLE_REFERENCE_PROPERTY_KEY)) {
+    Q_EMIT owner->appearance_changed(owner);
+  }
+}
 
 }  // namespace omm

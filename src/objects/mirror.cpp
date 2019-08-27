@@ -136,7 +136,7 @@ void Mirror::on_property_value_changed(Property *property)
       || property == this->property(IS_CLOSED_PROPERTY_KEY)
       || property == this->property(IS_INVERTED_PROPERTY_KEY))
   {
-    Q_EMIT appearance_changed(this);
+    update();
   } else {
     Object::on_property_value_changed(property);
   }
@@ -145,13 +145,13 @@ void Mirror::on_property_value_changed(Property *property)
 void Mirror::on_child_added(Object &child)
 {
   Object::on_child_added(child);
-  Q_EMIT appearance_changed(this);
+  update();
 }
 
 void Mirror::on_child_removed(Object &child)
 {
   Object::on_child_removed(child);
-  Q_EMIT appearance_changed(this);
+  update();
 }
 
 ObjectTransformation Mirror::get_mirror_t() const

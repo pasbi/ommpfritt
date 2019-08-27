@@ -14,18 +14,15 @@ class Style
   : public PropertyOwner<AbstractPropertyOwner::Kind::Style>
   , public virtual Serializable
 {
+  Q_OBJECT
 public:
-  explicit Style(Scene* scene = nullptr);
+  explicit Style();
   Style(const Style& other);
   std::string type() const;
   static constexpr auto TYPE = "Style";
   std::unique_ptr<Style> clone() const;  // provided for interface consistency
   QIcon icon() const;
   Flag flags() const override;
-  Scene* scene() const;
-
-private:
-  Scene* const m_scene;
 
 public:
   static constexpr auto PEN_IS_ACTIVE_KEY = "pen/active";
@@ -42,19 +39,23 @@ public:
 
   const MarkerProperties start_marker;
   const MarkerProperties end_marker;
+  void on_property_value_changed(Property* property) override;
+
+Q_SIGNALS:
+  void appearance_changed();
 };
 
 class SolidStyle : public Style
 {
 public:
-  SolidStyle(const Color& color, Scene* scene = nullptr);
+  explicit SolidStyle(const Color& color);
 };
 
 class ContourStyle : public Style
 {
 public:
-  ContourStyle(const Color& color, Scene* scene = nullptr);
-  ContourStyle(const Color& color, double width, Scene* scene = nullptr);
+  explicit ContourStyle(const Color& color);
+  explicit ContourStyle(const Color& color, double width);
 };
 
 }  // namespace omm

@@ -100,7 +100,7 @@ void Outline::on_property_value_changed(Property *property)
   if (   property == this->property(OFFSET_PROPERTY_KEY)
       || property == this->property(REFERENCE_PROPERTY_KEY))
   {
-    Q_EMIT appearance_changed(this);
+    update();
   } else {
     Object::on_property_value_changed(property);
   }

@@ -67,7 +67,7 @@ void ScriptTag::force_evaluate()
   auto locals = py::dict( "this"_a=TagWrapper::make(*this),
                           "scene"_a=SceneWrapper(*scene) );
   scene->python_engine.exec(code, locals, this);
-  Q_EMIT owner->appearance_changed(owner);
+  owner->update();
 }
 
 void ScriptTag::evaluate()

@@ -80,11 +80,6 @@ Object::Object(Scene* scene)
           this, SIGNAL(appearance_changed(Object*)));
   connect(this, SIGNAL(child_transformation_changed(Object*)),
           this, SIGNAL(transformation_changed(Object*)));
-  connect(this, &Object::appearance_changed, [this](Object* object) {
-    if (object == this) {
-      update();
-    }
-  });
 }
 
 Object::Object(const Object& other)
@@ -355,7 +350,7 @@ void Object::on_property_value_changed(Property *property)
     Q_EMIT scene()->repaint();
   } else if (property == this->property(IS_ACTIVE_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
-    Q_EMIT appearance_changed(this);
+    update();
   } else if (property == this->property(NAME_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::OBJECT_COLUMN);
   } else if (property == this->property(IS_VISIBLE_PROPERTY_KEY)) {
@@ -368,6 +363,7 @@ void Object::post_create_hook() { }
 
 void Object::update()
 {
+  Q_EMIT appearance_changed(this);
   Q_EMIT scene()->repaint();
 }
 

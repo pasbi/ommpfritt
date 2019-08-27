@@ -91,7 +91,7 @@ void ProceduralPath::on_property_value_changed(Property *property)
       || property == this->property(COUNT_PROPERTY_KEY)
       || property == this->property(IS_CLOSED_PROPERTY_KEY))
   {
-    Q_EMIT appearance_changed(this);
+    update();
   } else {
     AbstractProceduralPath::on_property_value_changed(property);
   }

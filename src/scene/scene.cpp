@@ -62,7 +62,7 @@ Scene::Scene(PythonEngine& python_engine)
   : object_tree(make_root(), *this)
   , styles(*this)
   , python_engine(python_engine)
-  , m_default_style(std::make_unique<Style>(this))
+  , m_default_style(std::make_unique<Style>())
   , tool_box(*this)
   , point_selection(*this)
 {
@@ -201,6 +201,7 @@ bool Scene::load_from(const std::string &filename)
       const auto style_pointer = Serializable::make_pointer(STYLES_POINTER, i);
       auto style = std::make_unique<Style>();
       style->deserialize(*deserializer, style_pointer);
+      connect(style.get(), SIGNAL(appearance_changed()), this, SIGNAL(repaint()));
       styles.push_back(std::move(style));
     }
 
@@ -208,12 +209,11 @@ bool Scene::load_from(const std::string &filename)
     m_filename = filename;
     history.set_saved_index();
     Q_EMIT filename_changed();
-    QTimer::singleShot(0, [ this, new_root=std::move(new_root),
-                            styles=std::move(styles) ]() mutable
-    {
-      this->object_tree.replace_root(std::move(new_root));
-      this->styles.set(std::move(styles));
-    });
+
+    this->object_tree.replace_root(std::move(new_root));
+    this->styles.set(std::move(styles));
+
+    object_tree.root().update_recursive();
 
     return true;
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {

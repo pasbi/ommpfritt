@@ -17,6 +17,9 @@ public:
   std::unique_ptr<Tag> clone() const override;
   void evaluate() override;
   Flag flags() const override;
+
+protected:
+  void on_property_value_changed(Property* property) override;
 };
 
 }  // namespace omm

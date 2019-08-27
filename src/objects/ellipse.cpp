@@ -63,7 +63,7 @@ void Ellipse::on_property_value_changed(Property *property)
       || property == this->property(CORNER_COUNT_PROPERTY_KEY)
       || property == this->property(SMOOTH_PROPERTY_KEY))
   {
-    Q_EMIT appearance_changed(this);
+    update();
   } else {
     AbstractProceduralPath::on_property_value_changed(property);
   }

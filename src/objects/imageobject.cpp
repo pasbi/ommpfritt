@@ -111,7 +111,7 @@ void ImageObject::on_property_value_changed(Property *property)
       || property == this->property(HANCHOR_PROPERTY_KEY)
       || property == this->property(VANCHOR_PROPERTY_KEY))
   {
-    Q_EMIT appearance_changed(this);
+    update();
   } else {
     Object::on_property_value_changed(property);
   }

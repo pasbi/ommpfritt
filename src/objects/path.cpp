@@ -1,4 +1,4 @@
-#include "objects/path.h"
+#include "objects/path.h"/app
 
 #include <QObject>
 #include "commands/modifypointscommand.h"
@@ -88,7 +88,7 @@ std::unique_ptr<Object> Path::clone() const { return std::make_unique<Path>(*thi
 void Path::set_points(const std::vector<Point>& points)
 {
   m_points = points;
-  Q_EMIT appearance_changed(this);
+  update();
 }
 
 std::vector<Point> Path::points() const { return m_points; }
@@ -195,7 +195,7 @@ void Path::on_property_value_changed(Property *property)
   if (   property == this->property(IS_CLOSED_PROPERTY_KEY)
       || property == this->property(INTERPOLATION_PROPERTY_KEY))
   {
-    Q_EMIT appearance_changed(this);
+    update();
   } else {
     Object::on_property_value_changed(property);
   }

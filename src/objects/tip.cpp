@@ -55,7 +55,7 @@ void Tip::on_property_value_changed(Property *property)
       || property == this->property(MarkerProperties::ASPECT_RATIO_PROPERTY_KEY)
       || property == this->property(MarkerProperties::REVERSE_PROPERTY_KEY))
   {
-    Q_EMIT appearance_changed(this);
+    update();
   } else {
     Object::on_property_value_changed(property);
   }
