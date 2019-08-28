@@ -62,7 +62,7 @@ Scene::Scene(PythonEngine& python_engine)
   : object_tree(make_root(), *this)
   , styles(*this)
   , python_engine(python_engine)
-  , m_default_style(std::make_unique<Style>())
+  , m_default_style(std::make_unique<Style>(this))
   , tool_box(*this)
   , point_selection(*this)
 {
@@ -71,8 +71,8 @@ Scene::Scene(PythonEngine& python_engine)
     m_item_selection[kind] = {};
   }
   tool_box.set_active_tool(SelectObjectsTool::TYPE);
-  connect(&history, SIGNAL(index_changed()), this, SIGNAL(filename_changed()));
-  connect(this, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
+  connect(&history, SIGNAL(index_changed()), &message_box, SIGNAL(filename_changed()));
+  connect(&message_box, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           &tool_box.active_tool(), SLOT(reset()));
 }
 
@@ -140,16 +140,6 @@ Scene::find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates
   return reference_holder_map;
 }
 
-void Scene::invalidate()
-{
-  m_tags_cache_is_dirty = true;
-  Q_EMIT structure_changed();
-  set_selection(::filter_if(m_selection, [this](auto* apo) {
-    return contains(apo);
-  }));
-  tool_box.active_tool().reset();
-}
-
 bool Scene::save_as(const std::string &filename)
 {
   std::ofstream ofstream(filename);
@@ -171,7 +161,7 @@ bool Scene::save_as(const std::string &filename)
   LINFO << "Saved current scene to '" << filename << "'.";
   history.set_saved_index();
   m_filename = filename;
-  Q_EMIT filename_changed();
+  Q_EMIT message_box.filename_changed();
   return true;
 }
 
@@ -199,16 +189,15 @@ bool Scene::load_from(const std::string &filename)
     styles.reserve(n_styles);
     for (size_t i = 0; i < n_styles; ++i) {
       const auto style_pointer = Serializable::make_pointer(STYLES_POINTER, i);
-      auto style = std::make_unique<Style>();
+      auto style = std::make_unique<Style>(this);
       style->deserialize(*deserializer, style_pointer);
-      connect(style.get(), SIGNAL(appearance_changed()), this, SIGNAL(repaint()));
       styles.push_back(std::move(style));
     }
 
     set_selection({});
     m_filename = filename;
     history.set_saved_index();
-    Q_EMIT filename_changed();
+    Q_EMIT message_box.filename_changed();
 
     this->object_tree.replace_root(std::move(new_root));
     this->styles.set(std::move(styles));
@@ -232,7 +221,7 @@ void Scene::reset()
   object_tree.replace_root(make_root());
   styles.set(std::vector<std::unique_ptr<Style>> {});
   m_filename.clear();
-  Q_EMIT filename_changed();
+  Q_EMIT message_box.filename_changed();
 }
 
 std::string Scene::filename() const
@@ -243,18 +232,16 @@ std::string Scene::filename() const
 void Scene::submit(std::unique_ptr<Command> command)
 {
   history.push(std::move(command));
-  filename_changed();
+  Q_EMIT message_box.filename_changed();
 }
 
 std::set<Tag*> Scene::tags() const
 {
-  if (m_tags_cache_is_dirty) {
-    m_tags_cache.clear();
-    for (const auto& object : object_tree.items()) {
-      m_tags_cache = merge(m_tags_cache, object->tags.items());
-    }
+  std::set<Tag*> tags;
+  for (const auto& object : object_tree.items()) {
+    tags = merge(tags, object->tags.items());
   }
-  return m_tags_cache;
+  return tags;
 }
 
 std::set<AbstractPropertyOwner*> Scene::property_owners() const
@@ -292,20 +279,20 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
   m_selection = selection;
 
   static const auto emit_selection_changed = [this](const auto& selection, const auto kind) {
-    Q_EMIT selection_changed(selection, kind);
+    Q_EMIT message_box.selection_changed(selection, kind);
 
     switch (kind) {
     case AbstractPropertyOwner::Kind::Style:
-      Q_EMIT style_selection_changed(kind_cast<Style>(selection));
+      Q_EMIT message_box.selection_changed(kind_cast<Style>(selection));
       break;
     case AbstractPropertyOwner::Kind::Object:
-      Q_EMIT object_selection_changed(kind_cast<Object>(selection));
+      Q_EMIT message_box.selection_changed(kind_cast<Object>(selection));
       break;
     case AbstractPropertyOwner::Kind::Tag:
-      Q_EMIT tag_selection_changed(kind_cast<Tag>(selection));
+      Q_EMIT message_box.selection_changed(kind_cast<Tag>(selection));
       break;
     case AbstractPropertyOwner::Kind::Tool:
-      Q_EMIT tool_selection_changed(kind_cast<Tool>(selection));
+      Q_EMIT message_box.selection_changed(kind_cast<Tool>(selection));
       break;
     default:
       break;
@@ -333,7 +320,7 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
     }
   }
 
-  Q_EMIT selection_changed(m_selection);
+  Q_EMIT message_box.selection_changed(m_selection);
 }
 
 std::set<AbstractPropertyOwner*> Scene::selection() const { return m_selection; }
@@ -343,7 +330,6 @@ std::unique_ptr<Object> Scene::make_root()
   using namespace std::string_literals;
   auto root = std::make_unique<Empty>(this);
   root->property(Object::NAME_PROPERTY_KEY)->set("_root_"s);
-  connect(root.get(), SIGNAL(appearance_changed(Object*)), this, SIGNAL(repaint()));
   return root;
 }
 

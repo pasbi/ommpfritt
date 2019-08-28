@@ -18,7 +18,7 @@ ObjectManager::ObjectManager(Scene& scene)
                  scene, scene.object_tree )
 {
   setObjectName(TYPE);
-  connect(&scene, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
+  connect(&scene.message_box, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           &item_view(), SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
 }
 

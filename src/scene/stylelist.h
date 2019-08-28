@@ -10,6 +10,7 @@ namespace omm
 class Style;
 class StyleList : public ItemModelAdapter<StyleList, Style, QAbstractListModel>, public List<Style>
 {
+  Q_OBJECT
 public:
   explicit StyleList(Scene& scene);
   void insert(ListOwningContext<Style>& context) override;

@@ -32,13 +32,10 @@ Viewport::Viewport(Scene& scene)
   setFocusPolicy(Qt::StrongFocus);
 
   setMouseTracking(true);
-  connect(&scene, SIGNAL(scene_changed(AbstractPropertyOwner*, int, Property*)),
+  connect(&scene.message_box, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(update()));
 
-  connect(&scene, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
-          this, SLOT(update()));
-
-  connect(&scene, SIGNAL(repaint()), this, SLOT(update()));
+  connect(&scene.message_box, SIGNAL(appearance_changed()), this, SLOT(update()));
   connect(&m_fps_limiter, &QTimer::timeout, [this]() {
     m_fps_brake = false;
     if (m_update_later) {

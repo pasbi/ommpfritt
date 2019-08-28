@@ -547,7 +547,7 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>combine styles</source>
         <comment>Instance</comment>
-        <translation>Combinar estilos</translation>
+        <translation type="vanished">Combinar estilos</translation>
     </message>
     <message>
         <source>min</source>
@@ -989,6 +989,11 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>Bounding Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>identical</source>
+        <comment>Instance</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -3,6 +3,7 @@ file(GLOB SOURCES
   cycleguard.cpp
   itemmodeladapter.cpp
   list.cpp
+  messagebox.cpp
   objecttree.cpp
   pointselection.cpp
   propertyownermimedata.cpp
@@ -19,6 +20,7 @@ file(GLOB HEADERS
   contextes.h
   itemmodeladapter.h
   list.h
+  messagebox.h
   objecttree.h
   pointselection.h
   propertyownermimedata.h

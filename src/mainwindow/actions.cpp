@@ -158,7 +158,7 @@ void select_all(Application& app)
       point->is_selected = true;
     }
   }
-  Q_EMIT app.scene.repaint();
+  Q_EMIT app.message_box().appearance_changed();
 }
 
 void deselect_all(Application& app)
@@ -168,7 +168,7 @@ void deselect_all(Application& app)
       point->is_selected = false;
     }
   }
-  Q_EMIT app.scene.repaint();
+  Q_EMIT app.message_box().appearance_changed();
 }
 
 void invert_selection(Application& app)
@@ -178,7 +178,7 @@ void invert_selection(Application& app)
       point->is_selected = !point->is_selected;
     }
   }
-  Q_EMIT app.scene.repaint();
+  Q_EMIT app.message_box().appearance_changed();
 }
 
 void convert_objects(Application& app)

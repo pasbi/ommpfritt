@@ -119,8 +119,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
 
   update();
 
-  connect(this, SIGNAL(child_appearance_changed(Object*)), this, SLOT(update()));
-  connect(this, SIGNAL(child_transformation_changed(Object*)), this, SLOT(update()));
+  listen_to_children_changes();
 }
 
 Cloner::Cloner(const Cloner &other) : Object(other)
@@ -163,18 +162,21 @@ bool Cloner::contains(const Vec2f &pos) const
 
 void Cloner::update()
 {
-  auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
-  auto* ref = kind_cast<Object*>(apo);
-  if (ref) {
-    ref->update_recursive();
-  }
+  {
+    QSignalBlocker blocker(&scene()->message_box);
+    auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
+    auto* ref = kind_cast<Object*>(apo);
+    if (ref) {
+      ref->update_recursive();
+    }
 
-  if (is_active()) {
-    m_clones = make_clones();
-    m_draw_children = false;
-  } else {
-    m_clones.clear();
-    m_draw_children = true;
+    if (is_active()) {
+      m_clones = make_clones();
+      m_draw_children = false;
+    } else {
+      m_clones.clear();
+      m_draw_children = true;
+    }
   }
   Object::update();
 }

@@ -19,6 +19,7 @@ void StyleList::insert(ListOwningContext<Style> &context)
   beginInsertRows(QModelIndex(), row, row);
   List::insert(context);
   endInsertRows();
+  Q_EMIT scene.message_box.style_inserted(context.get_subject());
 }
 
 void StyleList::remove(ListOwningContext<Style> &context)
@@ -27,6 +28,7 @@ void StyleList::remove(ListOwningContext<Style> &context)
   beginRemoveRows(QModelIndex(), row, row);
   List::remove(context);
   endRemoveRows();
+  Q_EMIT scene.message_box.style_removed(context.get_subject());
 }
 
 std::unique_ptr<Style> StyleList::remove(Style &t)
@@ -35,12 +37,14 @@ std::unique_ptr<Style> StyleList::remove(Style &t)
   beginRemoveRows(QModelIndex(), row, row);
   auto removed_item = List::remove(t);
   endRemoveRows();
+  Q_EMIT scene.message_box.style_removed(t);
   return removed_item;
 }
 
 void StyleList::move(ListMoveContext<Style> &context)
 {
-  return List::move(context);
+  Q_UNUSED(context)
+  Q_UNREACHABLE();
 }
 
 std::vector<std::unique_ptr<Style>> StyleList::set(std::vector<std::unique_ptr<Style>> items)

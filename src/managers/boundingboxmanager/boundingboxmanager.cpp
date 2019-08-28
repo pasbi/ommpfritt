@@ -71,7 +71,7 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
     m_mode_combo_box->setCurrentIndex(index);
   });
 
-  connect(&scene, SIGNAL(object_selection_changed(std::set<Object*>)),
+  connect(&scene.message_box, SIGNAL(selection_changed(std::set<Object*>)),
           this, SLOT(update_bounding_box()));
   QTimer::singleShot(1, [this]() {
     Viewport* viewport = &Application::instance().main_window()->viewport();

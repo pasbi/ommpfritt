@@ -39,7 +39,7 @@ template<typename PluginT> ResourceMenu<PluginT>::ResourceMenu()
     }
   }
   addSeparator();
-  auto* default_action = addAction(tr("default"));
+  auto* default_action = addAction(MainWindow::tr("default"));
   default_action->setCheckable(true);
   default_action->setChecked(!anything_selected);
   connect(default_action, &QAction::triggered, [this]() {

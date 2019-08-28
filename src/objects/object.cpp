@@ -75,13 +75,6 @@ Object::Object(Scene* scene)
     .set_step(0.01)
     .set_label(QObject::tr("shear").toStdString())
     .set_category(category);
-
-  connect(this, SIGNAL(child_appearance_changed(Object*)),
-          this, SIGNAL(appearance_changed(Object*)));
-  connect(this, SIGNAL(child_transformation_changed(Object*)),
-          this, SIGNAL(transformation_changed(Object*)));
-  connect(&tags, SIGNAL(tag_inserted(Tag&)), this, SLOT(emit_appearance_changed()));
-  connect(&tags, SIGNAL(tag_removed(Tag&)), this, SLOT(emit_appearance_changed()));
 }
 
 Object::Object(const Object& other)
@@ -348,8 +341,7 @@ void Object::on_property_value_changed(Property *property)
       || property == this->property(SHEAR_PROPERTY_KEY)
       || property == this->property(SCALE_PROPERTY_KEY) )
   {
-    Q_EMIT transformation_changed(this);
-    Q_EMIT scene()->repaint();
+    Q_EMIT scene()->message_box.transformation_changed(*this);
   } else if (property == this->property(IS_ACTIVE_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
     update();
@@ -357,7 +349,7 @@ void Object::on_property_value_changed(Property *property)
     object_tree_data_changed(ObjectTree::OBJECT_COLUMN);
   } else if (property == this->property(IS_VISIBLE_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
-    Q_EMIT scene()->repaint();
+    Q_EMIT scene()->message_box.appearance_changed();
   }
 }
 
@@ -365,28 +357,7 @@ void Object::post_create_hook() { }
 
 void Object::update()
 {
-  Q_EMIT appearance_changed(this);
-}
-
-void Object::emit_appearance_changed()
-{
-  Q_EMIT appearance_changed(this);
-}
-
-void Object::on_child_added(Object &child)
-{
-  connect(&child, SIGNAL(appearance_changed(Object*)),
-          this, SIGNAL(child_appearance_changed(Object*)));
-  connect(&child, SIGNAL(transformation_changed(Object*)),
-          this, SIGNAL(child_transformation_changed(Object*)));
-}
-
-void Object::on_child_removed(Object &child)
-{
-  disconnect(&child, SIGNAL(appearance_changed(Object*)),
-             this, SIGNAL(child_appearance_changed(Object*)));
-  disconnect(&child, SIGNAL(transformation_changed(Object*)),
-             this, SIGNAL(child_transformation_changed(Object*)));
+  Q_EMIT scene()->message_box.appearance_changed(*this);
 }
 
 double Object::apply_border(double t, Border border)
@@ -512,6 +483,32 @@ void Object::set_object_tree(ObjectTree &object_tree)
   } else {
     assert(m_object_tree == &object_tree);
   }
+}
+
+void Object::listen_to_children_changes()
+{
+  connect(&scene()->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
+          [this](Object& o) {
+    if (&o != this && is_ancestor_of(o)) {
+      update();
+    }
+  });
+  connect(&scene()->message_box, qOverload<Object&>(&MessageBox::transformation_changed),
+          [this](Object& o) {
+    if (&o != this && is_ancestor_of(o)) {
+      update();
+    }
+  });
+  connect(&scene()->message_box, &MessageBox::tag_inserted, [this](Tag& tag) {
+    if (is_ancestor_of(*tag.owner) || tag.owner == this) {
+      update();
+    }
+  });
+  connect(&scene()->message_box, &MessageBox::tag_removed, [this](Tag& tag) {
+    if (is_ancestor_of(*tag.owner) || tag.owner == this) {
+      update();
+    }
+  });
 }
 
 }  // namespace omm

@@ -21,7 +21,7 @@ bool AbstractSelectHandle::mouse_press(const Vec2f &pos, const QMouseEvent &even
   if (Handle::mouse_press(pos, event, force)) {
     if (force) {
       if (event.modifiers() != extend_selection_modifier) {
-        QSignalBlocker blocker(tool.scene);
+        QSignalBlocker blocker(tool.scene.message_box);
         clear();
       }
       set_selected(true);

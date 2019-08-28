@@ -15,6 +15,7 @@ public:
   py::object children() const;
   py::object parent() const;
   py::object tags() const;
+  py::object update();
 
   static void define_python_interface(py::object& module);
   using wrapped_type = Object;

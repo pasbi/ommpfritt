@@ -209,7 +209,7 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
     ai( QT_TRANSLATE_NOOP("any-context", "invert selection"), &actions::invert_selection),
     ai( QT_TRANSLATE_NOOP("any-context", "new style"), [](Application& app) {
         using command_type = AddCommand<List<Style>>;
-        auto style = app.scene.default_style().clone();
+        auto style = app.scene.default_style().clone(&app.scene);
         connect(style.get(), SIGNAL(appearance_changed()),
                 &app.scene, SIGNAL(appearance_changed()));
         app.scene.submit<command_type>(app.scene.styles, std::move(style));
@@ -268,6 +268,12 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
 }
 
 std::string Application::type() const { return TYPE; }
+
+MessageBox &Application::message_box()
+{
+  return scene.message_box;
+}
+
 MainWindow* Application::main_window() const { return m_main_window; }
 
 Object& Application::insert_object(const std::string &key, InsertionMode mode)

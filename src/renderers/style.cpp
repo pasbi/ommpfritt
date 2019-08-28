@@ -5,6 +5,7 @@
 #include "renderers/styleiconengine.h"
 #include "properties/optionsproperty.h"
 #include "objects/tip.h"
+#include "scene/scene.h"
 
 namespace {
 
@@ -18,9 +19,10 @@ static constexpr auto default_marker_shape = omm::MarkerProperties::Shape::None;
 namespace omm
 {
 
-Style::Style()
+Style::Style(Scene *scene)
   : start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
+  , m_scene(scene)
 {
   const auto pen_category = QObject::tr("pen").toStdString();
   const auto brush_category = QObject::tr("brush").toStdString();
@@ -94,13 +96,22 @@ void Style::on_property_value_changed(Property *property)
        || property == this->property(BRUSH_IS_ACTIVE_KEY)
        || property == this->property(BRUSH_COLOR_KEY) )
   {
-    Q_EMIT appearance_changed();
+    if (m_scene != nullptr) {
+      Q_EMIT m_scene->message_box.appearance_changed(*this);
+    }
   }
 }
 
 std::unique_ptr<Style> Style::clone() const
 {
-  auto clone = std::make_unique<Style>();
+  auto clone = std::make_unique<Style>(m_scene);
+  copy_properties(*clone);
+  return clone;
+}
+
+std::unique_ptr<Style> Style::clone(Scene* scene) const
+{
+  auto clone = std::make_unique<Style>(scene);
   copy_properties(*clone);
   return clone;
 }
@@ -110,14 +121,14 @@ QIcon Style::icon() const
   return QIcon(std::make_unique<StyleIconEngine>(*this).release());
 }
 
-SolidStyle::SolidStyle(const Color& color) : Style()
+SolidStyle::SolidStyle(const Color& color, Scene* scene) : Style(scene)
 {
   property(omm::Style::PEN_IS_ACTIVE_KEY)->set(false);
   property(omm::Style::BRUSH_IS_ACTIVE_KEY)->set(true);
   property(omm::Style::BRUSH_COLOR_KEY)->set(color);
 }
 
-ContourStyle::ContourStyle(const Color& color, const double width) : Style()
+ContourStyle::ContourStyle(const Color& color, const double width, Scene* scene) : Style(scene)
 {
   property(omm::Style::PEN_IS_ACTIVE_KEY)->set(true);
   property(omm::Style::BRUSH_IS_ACTIVE_KEY)->set(false);
@@ -125,6 +136,6 @@ ContourStyle::ContourStyle(const Color& color, const double width) : Style()
   property(omm::Style::PEN_WIDTH_KEY)->set(width);
 }
 
-ContourStyle::ContourStyle(const Color& color) : ContourStyle(color, 2.0) { }
+ContourStyle::ContourStyle(const Color& color, Scene* scene) : ContourStyle(color, 2.0, scene) { }
 
 }  // namespace omm

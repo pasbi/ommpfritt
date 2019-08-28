@@ -38,6 +38,7 @@ public:
 
   PythonEngine python_engine;
   Scene scene;
+  MessageBox& message_box();
   MainWindow* main_window() const;
   const IconProvider icon_provider;
 

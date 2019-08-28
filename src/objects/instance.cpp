@@ -28,22 +28,25 @@ Instance::Instance(Scene* scene)
   connect(&tags, SIGNAL(tag_inserted(Tag&)), this, SLOT(update_tags()));
   connect(&tags, SIGNAL(tag_removed(Tag&)), this, SLOT(update_tags()));
 
-  connect(static_cast<ReferenceProperty*>(property(REFERENCE_PROPERTY_KEY)),
-          &ReferenceProperty::reference_changed,
-          [this](AbstractPropertyOwner* const old_ref, AbstractPropertyOwner* const new_ref) {
-    Object* old_object = kind_cast<Object*>(old_ref);
-    Object* new_object = kind_cast<Object*>(new_ref);
-    if (old_object) {
-      disconnect(old_object, SIGNAL(appearance_changed(Object*)), this, SLOT(update()));
-      disconnect(old_object, SIGNAL(appearance_changed(Object*)), this, SLOT(update()));
-    }
-    if (new_object) {
-      connect(new_object, SIGNAL(appearance_changed(Object*)), this, SLOT(update()));
-      connect(new_object, SIGNAL(appearance_changed(Object*)), this, SLOT(update()));
+  connect(&scene->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
+          [this](Object& o) {
+    Object* r = referenced_object();
+    if (r != nullptr && r->is_ancestor_of(o)) {
+      update();
     }
   });
-  connect(&tags, SIGNAL(tag_inserted(Tag&)), this, SLOT(update()));
-  connect(&tags, SIGNAL(tag_removed(Tag&)), this, SLOT(update()));
+  connect(&scene->message_box, &MessageBox::tag_inserted, [this](Tag& tag) {
+    Object* r = referenced_object();
+    if (r != nullptr && (r->is_ancestor_of(*tag.owner) || tag.owner == this)) {
+      update();
+    }
+  });
+  connect(&scene->message_box, &MessageBox::tag_removed, [this](Tag& tag) {
+    Object* r = referenced_object();
+    if (r != nullptr && (r->is_ancestor_of(*tag.owner) || tag.owner == this)) {
+      update();
+    }
+  });
 }
 
 Instance::Instance(const Instance &other) : Object(other) {}
@@ -161,6 +164,7 @@ Object* Instance::referenced_object() const
 void Instance::update_tags()
 {
   if (m_reference) {
+    QSignalBlocker blocker(&scene()->message_box);
     const auto instance_style_tags = type_cast<StyleTag*>(tags.ordered_items());
     if (!instance_style_tags.empty()) {
       for (Tag* tag : type_cast<StyleTag*>(m_reference->tags.ordered_items())) {

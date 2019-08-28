@@ -18,6 +18,7 @@ public:
   void remove(ListOwningContext<Tag> &t) override;
   std::unique_ptr<Tag> remove(Tag& tag) override;
   void move(ListMoveContext<Tag> &context) override;
+  Scene& scene();
 
 Q_SIGNALS:
   void tag_inserted(Tag&);

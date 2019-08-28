@@ -69,6 +69,7 @@ bool set_property_value( AbstractPropertyOwner& property_owner,
       return true;
     }
   } else {
+    LWARNING << "Failed to set value for key '" << key << "': key not found.";
     return false;
   }
 }

@@ -11,6 +11,7 @@ class ObjectTree
   : public ItemModelAdapter<ObjectTree, Object, QAbstractItemModel>
   , public Structure<Object>
 {
+  Q_OBJECT
 public:
   constexpr static bool is_tree = true;
 
@@ -66,6 +67,8 @@ private:
   mutable bool m_item_cache_is_dirty = true;
   mutable std::set<Object*> m_item_cache;
   Scene& m_scene;
+
+
 
 };
 

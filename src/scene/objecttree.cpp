@@ -118,7 +118,7 @@ void ObjectTree::move(ObjectTreeMoveContext& context)
   context.parent.get().adopt(std::move(item), pos);
   m_item_cache_is_dirty = true;
   endMoveRows();
-  Q_EMIT m_scene.repaint();
+  Q_EMIT m_scene.message_box.object_moved(context.get_subject());
 }
 
 void ObjectTree::insert(ObjectTreeOwningContext& context)
@@ -131,7 +131,7 @@ void ObjectTree::insert(ObjectTreeOwningContext& context)
   context.parent.get().adopt(context.subject.release(), row);
   m_item_cache_is_dirty = true;
   endInsertRows();
-  Q_EMIT m_scene.repaint();
+  Q_EMIT m_scene.message_box.object_inserted(context.get_subject());
 }
 
 void ObjectTree::remove(ObjectTreeOwningContext &context)
@@ -144,7 +144,7 @@ void ObjectTree::remove(ObjectTreeOwningContext &context)
   context.subject.capture(context.parent.get().repudiate(context.subject));
   m_item_cache_is_dirty = true;
   endRemoveRows();
-  Q_EMIT m_scene.repaint();
+  Q_EMIT m_scene.message_box.object_removed(context.get_subject());
 }
 
 std::unique_ptr<Object> ObjectTree::remove(Object& t)
@@ -156,7 +156,7 @@ std::unique_ptr<Object> ObjectTree::remove(Object& t)
   auto item = t.tree_parent().repudiate(t);
   m_item_cache_is_dirty = true;
   endRemoveRows();
-  Q_EMIT m_scene.repaint();
+  Q_EMIT m_scene.message_box.object_removed(t);
   return item;
 }
 
@@ -167,7 +167,7 @@ std::unique_ptr<Object> ObjectTree::replace_root(std::unique_ptr<Object> new_roo
   m_root = std::move(new_root);
   m_item_cache_is_dirty = true;
   endResetModel();
-  Q_EMIT m_scene.repaint();
+  Q_EMIT m_scene.message_box.scene_reseted();
   return old_root;
 }
 

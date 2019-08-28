@@ -103,7 +103,7 @@ PropertyManager::PropertyManager(Scene& scene)
     }
   });
 
-  connect(&scene, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
+  connect(&scene.message_box, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
 }
 

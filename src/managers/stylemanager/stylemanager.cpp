@@ -18,7 +18,7 @@ StyleManager::StyleManager(Scene& scene)
                  scene, scene.styles)
 {
   setObjectName(TYPE);
-  connect(&scene, SIGNAL(style_selection_changed(std::set<Style*>)),
+  connect(&scene.message_box, SIGNAL(selection_changed(std::set<Style*>)),
           &item_view(), SLOT(set_selection(std::set<Style*>)));
 }
 

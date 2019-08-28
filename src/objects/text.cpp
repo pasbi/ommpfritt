@@ -123,7 +123,7 @@ void Text::on_property_value_changed(Property *property)
       || property == this->property(FontProperties::LETTER_SPACING_PROPERTY_KEY)
       || property == this->property(FontProperties::LETTER_SPACING_TYPE_PROPERTY_KEY))
   {
-    Q_EMIT appearance_changed(this);
+    update();
   } else {
     Object::on_property_value_changed(property);
   }

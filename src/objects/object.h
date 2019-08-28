@@ -127,21 +127,13 @@ public:
 
 public Q_SLOTS:
   virtual void update();
-  void emit_appearance_changed();
-
-Q_SIGNALS:
-  void appearance_changed(Object*);
-  void transformation_changed(Object*);
-  void child_appearance_changed(Object*);
-  void child_transformation_changed(Object*);
 
 protected:
   bool m_draw_children = true;
   void copy_tags(Object& other) const;
   void on_property_value_changed(Property* property) override;
+  void listen_to_children_changes();
 
-  void on_child_added(Object &child) override;
-  void on_child_removed(Object &child) override;
 private:
   friend class ObjectView;
   void set_scene(Scene* scene);

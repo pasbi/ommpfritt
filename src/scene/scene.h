@@ -18,6 +18,7 @@
 #include "scene/pointselection.h"
 #include "scene/stylelist.h"
 #include "scene/cycleguard.h"
+#include "scene/messagebox.h"
 
 namespace omm
 {
@@ -57,9 +58,6 @@ public:
   // === Tags  ======
 public:
   std::set<Tag*> tags() const;
-private:
-  mutable bool m_tags_cache_is_dirty = true;
-  mutable std::set<Tag*> m_tags_cache;
 
 public:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
@@ -91,8 +89,6 @@ public:
   find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates) const;
 
   template<typename T> std::set<T*> find_items(const std::string& name) const;
-
-  void invalidate();
 
   // === Save/Load ====
 public:
@@ -136,35 +132,6 @@ public:
 public:
   PointSelection point_selection;
 
-Q_SIGNALS:
-  void repaint();
-  void object_selection_changed(const std::set<Object*>& selection);
-  void style_selection_changed(const std::set<Style*>& selection);
-  void tag_selection_changed(const std::set<Tag*>& selection);
-  void tool_selection_changed(const std::set<Tool*>& selection);
-
-  /**
-   * @brief selection_changed emitted when one or more items becomes selected or deselected
-   * @param selection the items which are selected after the selection change.
-   */
-  void selection_changed(const std::set<AbstractPropertyOwner*>& selection);
-
-  /**
-   * @brief selection_changed emitted when one or more items of a certain kind becomes selected or
-   *  deselected. This signal unifies the following four signals:
-   * @see object_selection_changed
-   * @see style_selection_changed
-   * @see tag_selection_changed
-   * @see tool_selection_changed
-   * @param selection all items of a certain kind that are selected after the selection has changed.
-   * @param kind the kind of the items.
-   */
-  void selection_changed(const std::set<AbstractPropertyOwner*>& selection,
-                            AbstractPropertyOwner::Kind kind);
-  void structure_changed();
-  void scene_changed(AbstractPropertyOwner* subject, int code, Property* property);
-  void filename_changed();
-
 private:
   void prepare_reset();
 
@@ -172,6 +139,9 @@ public:
   [[nodiscard]] std::unique_ptr<CycleGuard> make_cycle_guard(const Object* guarded);
 private:
   std::set<const Object*> m_cycle_guarded_objects;
+
+public:
+  MessageBox message_box;
 
 };
 

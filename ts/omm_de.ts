@@ -547,7 +547,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>combine styles</source>
         <comment>Instance</comment>
-        <translation>Stile kombinieren</translation>
+        <translation type="vanished">Stile kombinieren</translation>
     </message>
     <message>
         <source>min</source>
@@ -989,6 +989,11 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>Bounding Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>identical</source>
+        <comment>Instance</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>

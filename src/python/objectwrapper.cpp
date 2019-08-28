@@ -23,12 +23,19 @@ py::object ObjectWrapper::tags() const
   return wrap(wrapped.tags.ordered_items());
 }
 
+py::object ObjectWrapper::update()
+{
+  this->wrapped.update();
+  return py::none();
+}
+
 void ObjectWrapper::define_python_interface(py::object& module)
 {
   py::class_<ObjectWrapper, AbstractPropertyOwnerWrapper<Object>>(module, wrapped_type::TYPE)
       .def("children", &ObjectWrapper::children)
       .def("parent", &ObjectWrapper::parent)
-      .def("tags", &ObjectWrapper::tags);
+      .def("tags", &ObjectWrapper::tags)
+      .def("update", &ObjectWrapper::update);
 }
 
 }  // namespace omm

@@ -547,7 +547,7 @@ Remove the selected items anyway?</translation>
     <message>
         <source>combine styles</source>
         <comment>Instance</comment>
-        <translation>Combine styles</translation>
+        <translation type="vanished">Combine styles</translation>
     </message>
     <message>
         <source>min</source>
@@ -989,6 +989,11 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Bounding Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>identical</source>
+        <comment>Instance</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>

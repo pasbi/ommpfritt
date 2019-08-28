@@ -224,8 +224,8 @@ MainWindow::MainWindow(Application& app)
     recent_document_menu->addAction(action.release());
   }
 
-  connect(&app.scene, SIGNAL(filename_changed()), this, SLOT(update_window_title()));
-  connect(&app.scene, &Scene::filename_changed, [&app] {
+  connect(&app.message_box(), SIGNAL(filename_changed()), this, SLOT(update_window_title()));
+  connect(&app.message_box(), &MessageBox::filename_changed, [&app] {
     QSettings settings;
     auto fns = settings.value(RECENT_DOCUMENTS_SETTINGS_KEY, QStringList()).toStringList();
     const auto fn = QString::fromStdString(app.scene.filename());

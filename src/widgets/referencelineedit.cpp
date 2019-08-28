@@ -39,7 +39,6 @@ void ReferenceLineEdit::set_scene(Scene &scene)
   assert(m_scene == nullptr);
   m_scene = &scene;
   assert(m_scene != nullptr);
-  connect(m_scene, SIGNAL(structure_changed()), this, SLOT(update_candidates()));
   update_candidates();
 }
 
