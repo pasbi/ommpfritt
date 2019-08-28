@@ -1,4 +1,4 @@
-#include "objects/path.h"/app
+#include "objects/path.h"
 
 #include <QObject>
 #include "commands/modifypointscommand.h"
