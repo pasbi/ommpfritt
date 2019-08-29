@@ -30,6 +30,7 @@ public:
   const T* predecessor(const T& sibling) const override;
   using Structure<T>::predecessor;
   size_t position(const T& item) const override;
+  size_t insert_position(const T* predecessor) const override;
   size_t size() const;
   bool contains(const T& item) const;
 

@@ -55,7 +55,6 @@ void MoveTagContext::assert_is_valid() const
   assert(owner != nullptr);
   assert(predecessor == nullptr || predecessor->owner == subject->owner);
   assert(subject->owner == owner);
-  assert(owner->tags.predecessor(*subject) == predecessor);
 }
 
 MoveTagsCommand

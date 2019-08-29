@@ -21,7 +21,7 @@ public:
   virtual size_t position(const T& item) const = 0;
   virtual const T* predecessor(const T& sibling) const = 0;
   T* predecessor(T& sibling) const;
-  size_t insert_position(const T* predecessor) const;
+  virtual size_t insert_position(const T* predecessor) const = 0;
 
 private:
   // we don't want to assign copy or move

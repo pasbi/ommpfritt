@@ -73,6 +73,22 @@ template<typename T> size_t List<T>::position(const T& item) const
   return static_cast<std::size_t>(i);
 }
 
+template<typename T> size_t List<T>::insert_position(const T *predecessor) const
+{
+  if (predecessor == nullptr) {
+    return 0;
+  } else {
+    const auto it = std::find_if(m_items.cbegin(), m_items.cend(), [predecessor](const auto& i) {
+      return i.get() == predecessor;
+    });
+    if (it == m_items.cend()) {
+      return m_items.size();
+    } else {
+      return std::distance(m_items.begin(), it) + 1;
+    }
+  }
+}
+
 template<typename T> const T* List<T>::predecessor(const T& item) const
 {
   const auto pos = this->position(item);
