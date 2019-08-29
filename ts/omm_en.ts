@@ -1318,13 +1318,6 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
-    <name>omm</name>
-    <message>
-        <source>default</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>omm::AbstractPropertyConfigWidget</name>
     <message>
         <source>&amp;name:</source>
@@ -1503,6 +1496,10 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Skin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>default</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
