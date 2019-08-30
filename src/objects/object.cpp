@@ -43,9 +43,9 @@ Object::Object(Scene* scene)
   , tags(*this)
 {
   static const auto category = QObject::tr("basic").toStdString();
-  create_property<OptionsProperty>(IS_VISIBLE_PROPERTY_KEY, 0)
-    .set_options({ QObject::tr("visible").toStdString(), QObject::tr("hidden").toStdString(),
-      QObject::tr("hide tree").toStdString() })
+  create_property<OptionsProperty>(VISIBILITY_PROPERTY_KEY, 0)
+    .set_options({ QObject::tr("default").toStdString(), QObject::tr("hidden").toStdString(),
+      QObject::tr("visible").toStdString() })
     .set_label(QObject::tr("").toStdString())
     .set_category(category);
 
@@ -247,35 +247,32 @@ void Object::draw_recursive(Painter& renderer, const Style& default_style) const
   RenderOptions options;
   options.styles = find_styles();
   options.default_style = &default_style;
-  options.always_visible = false;
   draw_recursive(renderer, options);
 }
 
-void Object::draw_recursive(Painter& renderer, const RenderOptions& options) const
+void Object::draw_recursive(Painter& renderer, RenderOptions options) const
 {
   renderer.push_transformation(transformation());
-  const auto visibility = property(IS_VISIBLE_PROPERTY_KEY)->value<Visibility>();
-  const bool is_visible = options.always_visible || visibility == Visibility::Visible;
   const bool is_enabled = !!(renderer.category_filter & Painter::Category::Objects);
-  if (is_enabled && is_visible) {
+  if (is_enabled && is_visible()) {
     for (const auto* style : options.styles) {
       draw_object(renderer, *style);
     }
     if (options.styles.size() == 0) {
       draw_object(renderer, *options.default_style);
     }
+
+    if (!!(renderer.category_filter & Painter::Category::BoundingBox)) {
+      renderer.set_style(m_bounding_box_style);
+      renderer.painter->drawRect(bounding_box(ObjectTransformation()));
+    }
+
+    if (!!(renderer.category_filter & Painter::Category::Handles)) {
+      draw_handles(renderer);
+    }
   }
 
-  if (!!(renderer.category_filter & Painter::Category::BoundingBox)) {
-    renderer.set_style(m_bounding_box_style);
-    renderer.painter->drawRect(bounding_box(ObjectTransformation()));
-  }
-
-  if (!!(renderer.category_filter & Painter::Category::Handles)) {
-    draw_handles(renderer);
-  }
-
-  if (visibility != Visibility::HideTree && m_draw_children) {
+  if (m_draw_children) {
     for (const auto& child : tree_children()) {
       child->draw_recursive(renderer, *options.default_style);
     }
@@ -344,10 +341,13 @@ void Object::on_property_value_changed(Property *property)
     Q_EMIT scene()->message_box.transformation_changed(*this);
   } else if (property == this->property(IS_ACTIVE_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
+    for (Object* c : all_descendants()) {
+      c->m_visibility_cache_is_dirty = false;
+    }
     update();
   } else if (property == this->property(NAME_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::OBJECT_COLUMN);
-  } else if (property == this->property(IS_VISIBLE_PROPERTY_KEY)) {
+  } else if (property == this->property(VISIBILITY_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
     Q_EMIT scene()->message_box.appearance_changed();
   }
@@ -413,23 +413,25 @@ bool Object::is_active() const { return property(IS_ACTIVE_PROPERTY_KEY)->value<
 
 bool Object::is_visible() const
 {
-  const Object* o = this;
-  if (o->visibility() == Visibility::Visible) {
-    while (!o->is_root()) {
-      o = &o->tree_parent();
-      if (o->visibility() == Visibility::HideTree) {
-        return false;
+  const auto compute_visibility = [this]() {
+    switch (property(VISIBILITY_PROPERTY_KEY)->value<Visibility>()) {
+    case Visibility::Hidden:
+      return false;
+    case Visibility::Visible:
+      return true;
+    default:
+      if (is_root()) {
+        return true;
+      } else {
+        return tree_parent().is_visible();
       }
     }
-    return true;
-  } else {
-    return false;
-  }
-}
+  };
 
-Object::Visibility Object::visibility() const
-{
-  return property(IS_VISIBLE_PROPERTY_KEY)->value<Visibility>();
+  if (m_visibility_cache_is_dirty) {
+    m_visibility_cache_value = compute_visibility();
+  }
+  return m_visibility_cache_value;
 }
 
 std::vector<const omm::Style*> Object::find_styles() const

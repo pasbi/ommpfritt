@@ -44,7 +44,7 @@ public:
   explicit Object(const Object& other);
   ~Object();
 
-  enum class Visibility { Visible, Hide, HideTree };
+  enum class Visibility { Default, Visible, Hidden };
 
   void transform(const ObjectTransformation& transformation);
   ObjectTransformation transformation() const;
@@ -65,12 +65,11 @@ public:
   struct RenderOptions
   {
     std::vector<const Style*> styles;
-    bool always_visible = true;
     const Style* default_style = nullptr;
   };
 
   void draw_recursive(Painter& renderer, const Style& default_style) const;
-  void draw_recursive(Painter& renderer, const RenderOptions& options) const;
+  void draw_recursive(Painter& renderer, RenderOptions options) const;
 
   /**
    * @brief bounding_box returns the bounding box in world coordinates
@@ -87,7 +86,6 @@ public:
   Scene* scene() const;
   bool is_active() const;
   bool is_visible() const;
-  Visibility visibility() const;
   virtual std::vector<const omm::Style*> find_styles() const;
 
   TagList tags;
@@ -100,7 +98,7 @@ public:
   }
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP(ANY_TR_CONTEXT, "Object");
-  static constexpr auto IS_VISIBLE_PROPERTY_KEY = "is_visible";
+  static constexpr auto VISIBILITY_PROPERTY_KEY = "visibility";
   static constexpr auto IS_ACTIVE_PROPERTY_KEY = "is_active";
   static constexpr auto POSITION_PROPERTY_KEY = "position";
   static constexpr auto SCALE_PROPERTY_KEY = "scale";
@@ -142,6 +140,10 @@ public:
   void set_object_tree(ObjectTree& object_tree);
 private:
   ObjectTree* m_object_tree = nullptr;
+
+private:
+  mutable bool m_visibility_cache_is_dirty = true;
+  mutable bool m_visibility_cache_value;
 };
 
 void register_objects();

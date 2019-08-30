@@ -303,7 +303,7 @@
     </message>
     <message>
         <source>hide tree</source>
-        <translation>Hide tree</translation>
+        <translation type="vanished">Hide tree</translation>
     </message>
     <message>
         <source>basic</source>
@@ -994,6 +994,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>identical</source>
         <comment>Instance</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>default</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

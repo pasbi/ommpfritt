@@ -303,7 +303,7 @@
     </message>
     <message>
         <source>hide tree</source>
-        <translation>Hierarchie verstecken</translation>
+        <translation type="vanished">Hierarchie verstecken</translation>
     </message>
     <message>
         <source>basic</source>
@@ -994,6 +994,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>identical</source>
         <comment>Instance</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>default</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

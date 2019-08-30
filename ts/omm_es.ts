@@ -303,7 +303,7 @@
     </message>
     <message>
         <source>hide tree</source>
-        <translation>Ocultar jerarquía</translation>
+        <translation type="vanished">Ocultar jerarquía</translation>
     </message>
     <message>
         <source>basic</source>
@@ -994,6 +994,10 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>identical</source>
         <comment>Instance</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>default</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

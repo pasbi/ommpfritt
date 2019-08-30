@@ -15,9 +15,9 @@ namespace
 omm::Object::Visibility advance_visibility(omm::Object::Visibility visibility)
 {
   switch (visibility) {
-  case omm::Object::Visibility::Visible: return omm::Object::Visibility::Hide;
-  case omm::Object::Visibility::Hide: return omm::Object::Visibility::HideTree;
-  case omm::Object::Visibility::HideTree: return omm::Object::Visibility::Visible;
+  case omm::Object::Visibility::Default: return omm::Object::Visibility::Hidden;
+  case omm::Object::Visibility::Hidden: return omm::Object::Visibility::Visible;
+  case omm::Object::Visibility::Visible: return omm::Object::Visibility::Default;
   }
   Q_UNREACHABLE();
 }
@@ -43,27 +43,26 @@ void draw_cross(QPainter& painter, const QRectF& area, bool is_enabled)
   painter.restore();
 }
 
-QColor get_visibility_color_code(const omm::Object::Visibility visibility)
-{
-  switch (visibility) {
-  case omm::Object::Visibility::Visible: return QColor("#6AE008");
-  case omm::Object::Visibility::Hide: return QColor("#FF4A03");
-  case omm::Object::Visibility::HideTree: return QColor("#AA00ED");
-  }
-  Q_UNREACHABLE();
-}
-
 void draw_dot(QPainter& painter, const QRectF& area, const omm::Object::Visibility visibility)
 {
-  QPen pen;
-
   static constexpr QMarginsF margins(0.05, 0.05, 0.05, 0.05);
 
   painter.save();
-  painter.setPen(Qt::NoPen);
-  painter.setBrush(Qt::black);
+  QPen pen;
+  pen.setWidthF(1.0);
+  pen.setCosmetic(true);
+  pen.setColor(Qt::black);
+  painter.setPen(pen);
   painter.drawEllipse(area);
-  painter.setBrush(get_visibility_color_code(visibility));
+  painter.setBrush([visibility]() {
+    switch (visibility) {
+    case omm::Object::Visibility::Default: return QColor(Qt::transparent);
+    case omm::Object::Visibility::Hidden: return QColor(Qt::red);
+    case omm::Object::Visibility::Visible: return QColor(Qt::green);
+    }
+    Q_UNREACHABLE();
+    return QColor();
+  }());
   painter.drawEllipse(area - margins);
   painter.restore();
 }
@@ -90,7 +89,8 @@ paint(QPainter *painter, const QStyleOptionViewItem &, const QModelIndex &index)
   painter->translate(rect.topLeft());
   painter->scale(rect.width(), rect.height());
   draw_cross(*painter, enabled_cross_area - margins, object.is_active());
-  draw_dot(*painter, edit_visibility - margins, object.visibility());
+  draw_dot(*painter, edit_visibility - margins,
+           object.property(Object::VISIBILITY_PROPERTY_KEY)->value<Object::Visibility>());
   // draw_dot(*painter, export_visibility);
   painter->restore();
 }
@@ -114,9 +114,9 @@ bool ObjectQuickAccessDelegate::on_mouse_button_press(QMouseEvent& event)
     m_view.scene().submit<PropertiesCommand<BoolProperty>>(std::set { &property }, !is_active);
     return true;
   } else if (edit_visibility.contains(pos)) {
-    const auto visibility = static_cast<int>(advance_visibility(object.visibility()));
-    auto& property = *object.property(Object::IS_VISIBLE_PROPERTY_KEY);
-    m_view.scene().submit<PropertiesCommand<OptionsProperty>>(std::set { &property }, visibility);
+    auto& prop = *object.property(Object::VISIBILITY_PROPERTY_KEY);
+    const auto v = static_cast<std::size_t>(advance_visibility(prop.value<Object::Visibility>()));
+    m_view.scene().submit<PropertiesCommand<OptionsProperty>>(std::set { &prop }, v);
     return true;
   } else {
     return false;
