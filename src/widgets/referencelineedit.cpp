@@ -36,9 +36,18 @@ void ReferenceLineEdit::set_null_label(const std::string& value)
 void ReferenceLineEdit::set_scene(Scene &scene)
 {
   set_null_label(QObject::tr("< none >", "ReferenceLineEdit").toStdString());
+
+  // scene must not be re-set and must not be cleared.
+  // There's nothing fundamentally speaking against this, however, it is not required and slightly
+  // simpler to program...
   assert(m_scene == nullptr);
   m_scene = &scene;
   assert(m_scene != nullptr);
+  connect(&m_scene->message_box, SIGNAL(tag_inserted(Tag&)), this, SLOT(update_candidates()));
+  connect(&m_scene->message_box, SIGNAL(tag_removed(Tag&)), this, SLOT(update_candidates()));
+  connect(&m_scene->message_box, SIGNAL(object_removed(Object&)), this, SLOT(update_candidates()));
+  connect(&m_scene->message_box, SIGNAL(object_inserted(Object&)), this, SLOT(update_candidates()));
+  connect(&m_scene->message_box, SIGNAL(scene_reseted()), this, SLOT(update_candidates()));
   update_candidates();
 }
 
