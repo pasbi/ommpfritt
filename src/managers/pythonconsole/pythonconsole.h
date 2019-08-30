@@ -52,6 +52,9 @@ private:
 private Q_SLOTS:
   void on_output(const void* associated_item, std::string content, Stream stream);
 
+private:
+  pybind11::dict m_locals;
+
 };
 
 }  // namespace omm

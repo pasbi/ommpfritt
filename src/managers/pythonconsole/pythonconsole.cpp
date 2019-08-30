@@ -65,6 +65,10 @@ PythonConsole::PythonConsole(Scene& scene)
 
   connect(&scene.python_engine, SIGNAL(output(const void*, std::string, Stream)),
           this, SLOT(on_output(const void*, std::string, Stream)));
+  {
+    using namespace pybind11::literals;
+    m_locals = pybind11::dict("scene"_a=SceneWrapper(scene));
+  }
 }
 
 void PythonConsole ::on_output(const void* associated_item, std::string text, Stream stream)
@@ -90,13 +94,8 @@ void PythonConsole::eval()
   push_command(code);
   m_output->put(QObject::tr(">>> ", "PythonConsole").toStdString() + code, Stream::stdout_);
 
-  using namespace pybind11::literals;
-  const auto locals = pybind11::dict("scene"_a=SceneWrapper(scene()));
-  auto result = scene().python_engine.eval(code, locals, nullptr);
-  if (!result.is_none()) {
-    scene().python_engine.eval( "print(result)",
-                                pybind11::dict("result"_a=result), nullptr);
-  }
+  scene().python_engine.exec(code, m_locals, nullptr);
+//  auto result = scene().python_engine.eval(code, locals, nullptr);
 
   m_commandline->clear();
 }

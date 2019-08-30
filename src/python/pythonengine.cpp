@@ -74,7 +74,7 @@ PythonEngine::PythonEngine()
 }
 
 bool PythonEngine
-::exec(const std::string& code, const py::object& locals, const void* associated_item)
+::exec(const std::string& code, py::object& locals, const void* associated_item)
 {
   PythonStreamRedirect py_output_redirect {};
   try {
@@ -89,7 +89,7 @@ bool PythonEngine
 }
 
 pybind11::object PythonEngine
-::eval(const std::string& code, const py::object& locals, const void* associated_item)
+::eval(const std::string& code, py::object& locals, const void* associated_item)
 {
   PythonStreamRedirect py_output_redirect {};
   try {

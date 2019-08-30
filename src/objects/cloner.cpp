@@ -353,11 +353,11 @@ void Cloner::set_path(Object& object, std::size_t i)
 void Cloner::set_by_script(Object& object, std::size_t i)
 {
   using namespace pybind11::literals;
-  const auto locals = pybind11::dict( "id"_a=i,
-                                      "count"_a=property(COUNT_PROPERTY_KEY)->value<int>(),
-                                      "copy"_a=ObjectWrapper::make(object),
-                                      "this"_a=ObjectWrapper::make(*this),
-                                      "scene"_a=SceneWrapper(*scene()) );
+  auto locals = pybind11::dict( "id"_a=i,
+                                "count"_a=property(COUNT_PROPERTY_KEY)->value<int>(),
+                                "copy"_a=ObjectWrapper::make(object),
+                                "this"_a=ObjectWrapper::make(*this),
+                                "scene"_a=SceneWrapper(*scene()) );
   scene()->python_engine.exec(property(CODE_PROPERTY_KEY)->value<std::string>(), locals, this);
 }
 
