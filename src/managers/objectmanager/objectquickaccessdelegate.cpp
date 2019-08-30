@@ -8,6 +8,7 @@
 #include "commands/propertycommand.h"
 #include "properties/boolproperty.h"
 #include "properties/optionsproperty.h"
+#include "scene/history/historymodel.h"
 
 namespace
 {
@@ -72,8 +73,7 @@ void draw_dot(QPainter& painter, const QRectF& area, const omm::Object::Visibili
 namespace omm
 {
 
-ObjectQuickAccessDelegate::ObjectQuickAccessDelegate(ObjectTreeView& view)
-  : m_view(view)
+ObjectQuickAccessDelegate::ObjectQuickAccessDelegate(ObjectTreeView& view) : m_view(view)
 {
 }
 
@@ -103,24 +103,79 @@ QSize ObjectQuickAccessDelegate::sizeHint(const QStyleOptionViewItem &, const QM
 bool ObjectQuickAccessDelegate::on_mouse_button_press(QMouseEvent& event)
 {
   const auto index = m_view.indexAt(event.pos());
+  const auto pos = to_local(event.pos());
   auto& object = m_view.model()->item_at(index);
-  const auto rect = m_view.visualRect(index);
-  auto pos = QPointF(event.pos()) - rect.topLeft();
-  pos.setX(pos.x() / rect.width());
-  pos.setY(pos.y() / rect.height());
+  assert(m_macro == nullptr);
   if (enabled_cross_area.contains(pos)) {
     const auto is_active = object.is_active();
     auto& property = *object.property(Object::IS_ACTIVE_PROPERTY_KEY);
-    m_view.scene().submit<PropertiesCommand<BoolProperty>>(std::set { &property }, !is_active);
+    bool new_value = !is_active;
+    auto command = std::make_unique<PropertiesCommand<BoolProperty>>(std::set { &property },
+                                                                     new_value );
+    m_macro = m_view.scene().history.start_macro(QString::fromStdString(command->label()));
+    m_view.scene().submit(std::move(command));
+    m_active_item = ActiveItem::Activeness;
+    m_active_item_value = new_value;
     return true;
   } else if (edit_visibility.contains(pos)) {
     auto& prop = *object.property(Object::VISIBILITY_PROPERTY_KEY);
     const auto v = static_cast<std::size_t>(advance_visibility(prop.value<Object::Visibility>()));
-    m_view.scene().submit<PropertiesCommand<OptionsProperty>>(std::set { &prop }, v);
+    auto command = std::make_unique<PropertiesCommand<OptionsProperty>>(std::set { &prop }, v);
+    m_macro = m_view.scene().history.start_macro(QString::fromStdString(command->label()));
+    m_view.scene().submit(std::move(command));
+    m_active_item = ActiveItem::Visibility;
+    m_active_item_value = v;
     return true;
   } else {
+    m_active_item = ActiveItem::None;
     return false;
   }
+}
+
+void ObjectQuickAccessDelegate::on_mouse_move(QMouseEvent &event)
+{
+  const auto pos = to_local(event.pos());
+  const auto index = m_view.indexAt(event.pos());
+  auto& object = m_view.model()->item_at(index);
+  switch (m_active_item) {
+  case ActiveItem::Activeness:
+    if (enabled_cross_area.contains(pos)) {
+      auto& prop = *object.property(Object::IS_ACTIVE_PROPERTY_KEY);
+      m_view.scene().submit<PropertiesCommand<BoolProperty>>(std::set { &prop },
+                                                             m_active_item_value);
+      LINFO << m_active_item_value;
+    }
+    break;
+  case ActiveItem::Visibility:
+    if (edit_visibility.contains(pos)) {
+      auto& prop = *object.property(Object::VISIBILITY_PROPERTY_KEY);
+      m_view.scene().submit<PropertiesCommand<OptionsProperty>>(std::set { &prop },
+                                                                m_active_item_value);
+      LINFO << m_active_item_value;
+    }
+    break;
+  default:
+    ;
+  }
+}
+
+void ObjectQuickAccessDelegate::on_mouse_release(QMouseEvent &event)
+{
+  Q_UNUSED(event)
+  if (m_macro) {
+    m_macro.reset();
+  }
+  m_active_item = ActiveItem::None;
+}
+
+QPointF ObjectQuickAccessDelegate::to_local(const QPoint &view_global) const
+{
+  const auto index = m_view.indexAt(view_global);
+  const auto rect = m_view.visualRect(index);
+  auto pos = QPointF(view_global) - rect.topLeft();
+  pos.setX(pos.x() / rect.width());
+  pos.setY(pos.y() / rect.height());
+  return pos;
 }
 
 }  // namespace omm

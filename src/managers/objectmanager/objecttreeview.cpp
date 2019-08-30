@@ -120,6 +120,7 @@ void ObjectTreeView::mouseReleaseEvent(QMouseEvent *e)
     this->model()->scene.set_selection(this->selected_items());
   }
   ManagerItemView::mouseReleaseEvent(e);
+  m_object_quick_access_delegate->on_mouse_release(*e);
 }
 
 void ObjectTreeView::focusInEvent(QFocusEvent *e)
@@ -147,7 +148,10 @@ void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
       return;
     }
   }
-  ManagerItemView::mouseMoveEvent(e);
+  m_object_quick_access_delegate->on_mouse_move(*e);
+
+  // don't call base implementation to avoid strange selection effects.
+  //  ManagerItemView::mouseMoveEvent(e);
 }
 
 void ObjectTreeView::set_selection(const std::set<AbstractPropertyOwner*>& selected_items)
