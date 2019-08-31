@@ -50,11 +50,10 @@ void VisibilityPropertyArea::draw(QPainter &painter, const QModelIndex& index)
 
   painter.save();
   QPen pen;
-  pen.setWidthF(1.0);
+  pen.setWidthF(2.0);
   pen.setCosmetic(true);
   pen.setColor(Qt::black);
   painter.setPen(pen);
-  painter.drawEllipse(area);
   painter.setBrush([visibility]() {
     switch (visibility) {
     case omm::Object::Visibility::Default: return QColor(Qt::transparent);
