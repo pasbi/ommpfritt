@@ -139,9 +139,6 @@ Q_SIGNALS:
    * @brief appearance_changed is emitted when the style appearance changed.
    */
   void appearance_changed(Style&);
-
-  void update_property_managers();
-
 };
 
 }  // namespace omm

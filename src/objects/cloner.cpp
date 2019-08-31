@@ -49,72 +49,59 @@ Cloner::Cloner(Scene* scene) : Object(scene)
   create_property<IntegerProperty>(COUNT_PROPERTY_KEY, 3)
     .set_range(0, max)
     .set_label(QObject::tr("count").toStdString())
-    .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::Linear, Mode::Radial, Mode::Path,
-                                              Mode::Script, Mode::FillRandom });
+    .set_category(category);
 
   create_property<IntegerVectorProperty>(COUNT_2D_PROPERTY_KEY, Vec2i(3, 3))
     .set_range(Vec2i(0, 0), Vec2i(max, max))
     .set_label(QObject::tr("count").toStdString())
-    .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::Grid });
+    .set_category(category);
 
   create_property<FloatVectorProperty>(DISTANCE_2D_PROPERTY_KEY, Vec2f(100.0, 100.0))
     .set_step(Vec2f(0.1, 0.1))
     .set_label(QObject::tr("distance").toStdString())
-    .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::Linear, Mode::Grid });
+    .set_category(category);
 
   create_property<FloatProperty>(RADIUS_PROPERTY_KEY, 200.0)
     .set_step(0.1)
     .set_label(QObject::tr("radius").toStdString())
-    .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::Radial });
+    .set_category(category);
 
   create_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(Kind::Object)
     .set_required_flags(Flag::IsPathLike)
     .set_label(QObject::tr("path").toStdString())
-    .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::Path, Mode::FillRandom });
+    .set_category(category);
 
   create_property<FloatProperty>(START_PROPERTY_KEY, 0.0)
     .set_step(0.01)
     .set_label(QObject::tr("start").toStdString())
-    .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::Radial, Mode::Path });
+    .set_category(category);
 
   create_property<FloatProperty>(END_PROPERTY_KEY, 1.0)
     .set_step(0.01)
     .set_label(QObject::tr("end").toStdString())
-    .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::Radial, Mode::Path });
+    .set_category(category);
 
   create_property<BoolProperty>(ALIGN_PROPERTY_KEY, true)
     .set_label(QObject::tr("align").toStdString())
-    .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::Radial, Mode::Path });
+    .set_category(category);
 
   create_property<OptionsProperty>(BORDER_PROPERTY_KEY)
     .set_options( { QObject::tr("Clamp").toStdString(), QObject::tr("Wrap").toStdString(),
       QObject::tr("Hide").toStdString(), QObject::tr("Reflect").toStdString() } )
     .set_label(QObject::tr("border").toStdString())
-    .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::Radial, Mode::Path });
+    .set_category(category);
 
   create_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
     .set_mode(StringProperty::Mode::Code)
     .set_label(QObject::tr("code").toStdString())
-    .set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::Script });
+    .set_category(category);
 
   create_property<IntegerProperty>(SEED_PROPERTY_KEY, 12345)
-    .set_label(QObject::tr("seed").toStdString()).set_category(category)
-    .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom });
+    .set_label(QObject::tr("seed").toStdString()).set_category(category);
 
   create_property<OptionsProperty>(ANCHOR_PROPERTY_KEY, 0)
       .set_options( { QObject::tr("Path").toStdString(), QObject::tr("this").toStdString() } )
-      .set_enabled_buddy<Mode>(mode_property, { Mode::FillRandom, Mode::Path })
       .set_label(QObject::tr("anchor").toStdString()).set_category(category);
 
   update();
@@ -194,6 +181,19 @@ void Cloner::update()
 
 void Cloner::on_property_value_changed(Property *property)
 {
+  static const std::map<Mode, std::set<std::string>> visibility_map {
+    { Mode::Linear, { COUNT_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY } },
+    { Mode::Radial, { COUNT_PROPERTY_KEY, RADIUS_PROPERTY_KEY, START_PROPERTY_KEY,
+                      END_PROPERTY_KEY, ALIGN_PROPERTY_KEY, BORDER_PROPERTY_KEY } },
+    { Mode::Path, { PATH_REFERENCE_PROPERTY_KEY, START_PROPERTY_KEY,
+                    END_PROPERTY_KEY, ALIGN_PROPERTY_KEY, BORDER_PROPERTY_KEY,
+                    ANCHOR_PROPERTY_KEY }},
+    { Mode::Script, { COUNT_PROPERTY_KEY, CODE_PROPERTY_KEY }},
+    { Mode::FillRandom, { COUNT_PROPERTY_KEY, PATH_REFERENCE_PROPERTY_KEY, SEED_PROPERTY_KEY,
+                          ANCHOR_PROPERTY_KEY }},
+    { Mode::Grid, { COUNT_2D_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY }}
+  };
+
   if (   property == this->property(COUNT_PROPERTY_KEY)
       || property == this->property(COUNT_2D_PROPERTY_KEY)
       || property == this->property(DISTANCE_2D_PROPERTY_KEY)
@@ -209,7 +209,12 @@ void Cloner::on_property_value_changed(Property *property)
   {
     update();
   } else if (property == this->property(MODE_PROPERTY_KEY)) {
-    Q_EMIT scene()->message_box.update_property_managers();
+    const auto mode = property->value<Mode>();
+    for (auto&& [m, ks] : visibility_map) {
+      for (const std::string& k : ks) {
+        this->property(k)->set_visible(m == mode);
+      }
+    }
     update();
   } else {
     Object::on_property_value_changed(property);

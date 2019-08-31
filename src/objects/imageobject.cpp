@@ -35,10 +35,7 @@ ImageObject::ImageObject(Scene* scene) : Object(scene)
 
   create_property<IntegerProperty>(PAGE_PROPERTY_KEY, 0)
     .set_range(0, IntegerPropertyLimits::upper)
-    .set_label(QObject::tr("Page").toStdString()).set_category(category)
-    .set_enabled_buddy(*property(FILEPATH_PROPERTY_KEY), [](Property& property) {
-      return is_paged_image(static_cast<StringProperty&>(property).value());
-    });
+    .set_label(QObject::tr("Page").toStdString()).set_category(category);
 
   create_property<OptionsProperty>(HANCHOR_PROPERTY_KEY, 1)
     .set_options({ QObject::tr("Left").toStdString(),
@@ -112,8 +109,8 @@ void ImageObject::on_property_value_changed(Property *property)
   {
     update();
   } else if (property == this->property(FILEPATH_PROPERTY_KEY)) {
+    this->property(PAGE_PROPERTY_KEY)->set_visible(is_paged_image(property->value<std::string>()));
     update();
-    Q_EMIT scene()->message_box.update_property_managers();
   } else {
     Object::on_property_value_changed(property);
   }

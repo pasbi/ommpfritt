@@ -20,7 +20,6 @@ std::string Property::label() const { return m_label; }
 std::string Property::widget_type() const { return type() + "Widget"; }
 std::string Property::category() const { return m_category; }
 bool Property::is_user_property() const { return m_category == USER_PROPERTY_CATEGROY_NAME; }
-Property* Property::enabled_buddy() const { return m_enabled_buddy.property; }
 void Property::revise() {}
 
 Property& Property::set_label(const std::string& label)
@@ -79,48 +78,22 @@ std::ostream& operator<<(std::ostream& ostream, const Property::variant_type& v)
   return ostream;
 }
 
-bool Property::is_enabled() const
+bool Property::is_visible() const
 {
-  if (m_enabled_buddy.property == nullptr) {
-    return true;
-  } else {
-    return m_enabled_buddy.is_enabled();
+  return m_is_visible;
+}
+
+void Property::set_visible(bool visible)
+{
+  if (m_is_visible != visible) {
+    m_is_visible = visible;
+    Q_EMIT visibility_changed(visible);
   }
-}
-
-Property&
-Property::set_enabled_buddy(OptionsProperty& property, const std::set<std::size_t>& values)
-{
-  m_enabled_buddy.property = &property;
-  m_enabled_buddy.predicate = [values](Property& property) {
-    return ::contains(values, static_cast<OptionsProperty&>(property).value());
-  };
-  return *this;
-}
-
-Property& Property
-::set_enabled_buddy(Property& buddy, const std::function<bool(Property&)>& predicate)
-{
-  m_enabled_buddy.property = &buddy;
-  m_enabled_buddy.predicate = predicate;
-  return *this;
 }
 
 bool Property::is_compatible(const Property& other) const
 {
   return other.category() == category() && other.type() == type();
-}
-
-bool Property::IsEnabledBuddy::is_enabled() const
-{
-  if (property == nullptr) {
-    // by default, the buddy is inactive and the property is enabled. Most properties don't
-    // have a buddy.
-    return true;
-  }  else {
-    assert(predicate);
-    return predicate(*property);
-  }
 }
 
 }  // namespace omm

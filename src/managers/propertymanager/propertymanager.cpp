@@ -168,9 +168,7 @@ void PropertyManager::update_property_widgets()
       tab_display_names.push_back(tab_display_name(tab_label));
     }
 
-    if (std::any_of(properties.begin(), properties.end(), [](auto p) { return p->is_enabled(); })) {
-      tabs.at(tab_label)->add_properties(m_scene, key, properties);
-    }
+    tabs.at(tab_label)->add_properties(m_scene, key, properties);
   }
 
   const auto active_category = m_active_category;

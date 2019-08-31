@@ -35,8 +35,16 @@ void PropertyManagerTab::add_properties(Scene& scene, const std::string& key,
   const auto widget_type = (*properties.begin())->widget_type();
   auto property_widget = AbstractPropertyWidget::make(widget_type, scene, properties);
 
+  for (QWidget* w : std::set<QWidget*> { label_widget.get(), property_widget.get() }) {
+    connect(*properties.begin(), SIGNAL(visibility_changed(bool)), w, SLOT(setVisible(bool)));
+    if (!(*properties.begin())->is_visible()) {
+      w->hide();
+    }
+  }
+
   label_widget->setBuddy(property_widget.get());
   m_layout->addRow(label_widget.release(), property_widget.release());
+  m_layout->setSpacing(0);
 }
 
 void PropertyManagerTab::end_add_properties()

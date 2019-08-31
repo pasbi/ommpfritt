@@ -101,31 +101,15 @@ private:
   std::string m_label;
   std::string m_category;
 
-public:
-  Property* enabled_buddy() const;
-  bool is_enabled() const;
-
-  Property& set_enabled_buddy(Property& property, const std::function<bool(Property&)>& predicate);
-
-  template<typename EnumT> std::enable_if_t<std::is_enum_v<EnumT>, Property&>&
-  set_enabled_buddy(OptionsProperty& property, std::set<EnumT> values)
-  {
-    return set_enabled_buddy(property, ::transform<std::size_t>(values, [](EnumT value) {
-      return static_cast<std::size_t>(value);
-    }));
-  }
-
 private:
-  Property& set_enabled_buddy(OptionsProperty& property, const std::set<std::size_t>& value);
-  struct IsEnabledBuddy
-  {
-    Property* property = nullptr;
-    std::function<bool(Property&)> predicate;
-    bool is_enabled() const;
-  } m_enabled_buddy;
+  bool m_is_visible = true;
+public:
+  bool is_visible() const;
+  void set_visible(bool visible);
 
 Q_SIGNALS:
   void value_changed(Property*);
+  void visibility_changed(bool);
 
 };
 
