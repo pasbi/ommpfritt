@@ -45,7 +45,7 @@ private:
   ObjectTree& m_model;
 
   QPoint m_mouse_press_pos;
-  QModelIndex m_dragged_index;
+  QModelIndex m_mouse_down_index;
 
   void handle_drag_event(QDragMoveEvent* e);
 };

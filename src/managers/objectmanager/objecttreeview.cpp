@@ -89,12 +89,12 @@ void ObjectTreeView::paintEvent(QPaintEvent* e)
 
 void ObjectTreeView::mousePressEvent(QMouseEvent* e)
 {
+  m_mouse_down_index = indexAt(e->pos());
   switch (columnAt(e->pos().x())) {
     case 0:
       [[fallthrough]];
     case 2:
       if (e->button() == Qt::LeftButton) {
-        m_dragged_index = indexAt(e->pos());
         m_mouse_press_pos = e->pos();
       }
       ManagerItemView::mousePressEvent(e);
@@ -132,26 +132,30 @@ void ObjectTreeView::focusInEvent(QFocusEvent *e)
 
 void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
 {
-  if ((e->pos() - m_mouse_press_pos).manhattanLength() > QApplication::startDragDistance()) {
-    const auto tag_column = m_dragged_index.column() == ObjectTree::TAGS_COLUMN;
-    const auto left_button = e->buttons() & Qt::LeftButton;
-    if (left_button && tag_column) {
-      const auto selected_tags = m_selection_model->selected_tags_ordered(model()->scene);
-      const auto st_apo = down_cast(selected_tags);
-      if (selected_tags.size() > 0) {
-        auto mime_data = std::make_unique<PropertyOwnerMimeData>(st_apo);
-        auto drag = std::make_unique<QDrag>(this);
-        drag->setMimeData(mime_data.release());
-        // drag->setPixmap()  // TODO
-        drag.release()->exec(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction);
+  switch (m_mouse_down_index.column()) {
+  case ObjectTree::VISIBILITY_COLUMN:
+    m_object_quick_access_delegate->on_mouse_move(*e);
+    break;
+  case ObjectTree::TAGS_COLUMN:
+    if ((e->pos() - m_mouse_press_pos).manhattanLength() > QApplication::startDragDistance()) {
+      const auto left_button = e->buttons() & Qt::LeftButton;
+      if (left_button) {
+        const auto selected_tags = m_selection_model->selected_tags_ordered(model()->scene);
+        const auto st_apo = down_cast(selected_tags);
+        if (selected_tags.size() > 0) {
+          auto mime_data = std::make_unique<PropertyOwnerMimeData>(st_apo);
+          auto drag = std::make_unique<QDrag>(this);
+          drag->setMimeData(mime_data.release());
+          // drag->setPixmap()  // TODO
+          drag.release()->exec(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction);
+        }
+        return;
       }
-      return;
     }
+    [[fallthrough]];
+  case ObjectTree::OBJECT_COLUMN:
+    ManagerItemView::mouseMoveEvent(e);
   }
-  m_object_quick_access_delegate->on_mouse_move(*e);
-
-  // don't call base implementation to avoid strange selection effects.
-  //  ManagerItemView::mouseMoveEvent(e);
 }
 
 void ObjectTreeView::set_selection(const std::set<AbstractPropertyOwner*>& selected_items)
