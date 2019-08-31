@@ -126,7 +126,6 @@ public:
   bool remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& selection);
 
 public:
-  void update_tool();
   bool contains(const AbstractPropertyOwner* apo) const;
 
 public:
@@ -142,6 +141,9 @@ private:
 
 public:
   MessageBox message_box;
+
+public Q_SLOTS:
+  void update_tool();
 
 };
 

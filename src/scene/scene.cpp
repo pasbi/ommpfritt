@@ -73,7 +73,7 @@ Scene::Scene(PythonEngine& python_engine)
   tool_box.set_active_tool(SelectObjectsTool::TYPE);
   connect(&history, SIGNAL(index_changed()), &message_box, SIGNAL(filename_changed()));
   connect(&message_box, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
-          &tool_box.active_tool(), SLOT(reset()));
+          this, SLOT(update_tool()));
 }
 
 Scene::~Scene()

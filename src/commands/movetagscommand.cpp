@@ -42,7 +42,6 @@ template<typename Contextes> void move(const Contextes& old_ctxs, const Contexte
 namespace omm
 {
 
-
 MoveTagContext::MoveTagContext(Tag& tag)
   : MoveTagContext(tag, *tag.owner, tag.owner->tags.predecessor(tag)) {}
 

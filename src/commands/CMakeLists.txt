@@ -5,6 +5,7 @@ file(GLOB SOURCES
   modifypointscommand.cpp
   movecommand.cpp
   movetagscommand.cpp
+  objectselectioncommand.cpp
   objectstransformationcommand.cpp
   pointstransformationcommand.cpp
   propertycommand.cpp
@@ -19,6 +20,7 @@ file(GLOB HEADERS
   modifypointscommand.h
   movecommand.h
   movetagscommand.h
+  objectselectioncommand.h
   objectstransformationcommand.h
   pointstransformationcommand.h
   propertycommand.h

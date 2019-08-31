@@ -13,6 +13,7 @@
 #include "properties/referenceproperty.h"
 #include "geometry/cubics.h"
 #include "commands/movecommand.h"
+#include "commands/objectselectioncommand.h"
 
 namespace
 {
@@ -38,7 +39,7 @@ void modify_tangents(omm::Path::InterpolationMode mode, omm::Application& app)
   }
 }
 
-void convert_objects(omm::Application& app, std::set<omm::Object*> convertables)
+std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Object*> convertables)
 {
   using namespace omm;
 
@@ -55,8 +56,8 @@ void convert_objects(omm::Application& app, std::set<omm::Object*> convertables)
         std::inserter(leftover_convertables, leftover_convertables.end()));
   }
 
+  std::set<Object*> converted_objects;
   if (convertables.size() > 0) {
-    std::set<Object*> converted_objects;
     std::list<ObjectTreeMoveContext> move_contextes;
     for (auto&& c : convertables) {
       auto converted = c->convert();
@@ -86,11 +87,13 @@ void convert_objects(omm::Application& app, std::set<omm::Object*> convertables)
     const auto selection = ::transform<Object*, std::set>(convertables, ::identity);
     using remove_command = RemoveCommand<ObjectTree>;
     app.scene.template submit<remove_command>(app.scene.object_tree, selection);
-    app.scene.set_selection(down_cast(converted_objects));
+
 
     // process the left over items
-    convert_objects(app, leftover_convertables);
+    const auto cos = convert_objects(app, leftover_convertables);
+    converted_objects.insert(cos.begin(), cos.end());
   }
+  return converted_objects;
 }
 
 }  // namespace
@@ -188,8 +191,10 @@ void convert_objects(Application& app)
   });
   if (convertables.size() > 0) {
     Scene& scene = app.scene;
-    auto macro = scene.history.start_remember_selection_macro(QObject::tr("convert"), scene);
-    ::convert_objects(app, convertables);
+    auto macro = scene.history.start_macro(QObject::tr("convert"));
+    scene.submit<ObjectSelectionCommand>(app.scene, convertables);
+    const auto converted_objects = ::convert_objects(app, convertables);
+    scene.submit<ObjectSelectionCommand>(app.scene, converted_objects);
   }
 }
 
