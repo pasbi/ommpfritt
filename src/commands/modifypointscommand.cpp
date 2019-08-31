@@ -21,6 +21,7 @@ void ModifyPointsCommand::swap()
     for (auto& [point_ptr, other] : points) {
       point_ptr->swap(other);
     }
+    path->update();
   }
 }
 

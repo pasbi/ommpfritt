@@ -65,6 +65,7 @@ void PointsTransformationCommand::apply(const PointsTransformationCommand::Map &
     Path* path = k.first;
     std::size_t index = k.second;
     path->point(index) = map.at(k);
+    path->update();
   }
 }
 
