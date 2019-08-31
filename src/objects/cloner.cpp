@@ -120,6 +120,17 @@ Cloner::Cloner(Scene* scene) : Object(scene)
   update();
 
   listen_to_children_changes();
+
+  connect(&scene->message_box, qOverload<Object&>(&MessageBox::appearance_changed), [this](auto& o)
+  {
+    const auto* reference = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
+    const auto* r = kind_cast<const Object*>(reference);
+    if (r != nullptr && property(MODE_PROPERTY_KEY)->value<Mode>() == Mode::Path) {
+      if (o.is_ancestor_of(*r)) {
+        update();
+      }
+    }
+  });
 }
 
 Cloner::Cloner(const Cloner &other) : Object(other)
