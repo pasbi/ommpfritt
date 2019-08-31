@@ -39,7 +39,9 @@ void ObjectTreeSelectionModel::select( const QModelIndex &index,
                                        QItemSelectionModel::SelectionFlags command)
 {
   const bool is_tag_index = index.column() == omm::ObjectTree::TAGS_COLUMN;
-  if (command & QItemSelectionModel::Clear && !is_tag_index) { m_selected_tags.clear(); }
+  if (command & QItemSelectionModel::Clear && !is_tag_index) {
+    m_selected_tags.clear();
+  }
   QItemSelectionModel::select(index, command);
 }
 

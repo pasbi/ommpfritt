@@ -116,10 +116,10 @@ void ObjectTreeView::mouseReleaseEvent(QMouseEvent *e)
   // see ObjectTreeView::mousePressEvent case 1
   setDragEnabled(true);
   const int column = indexAt(e->pos()).column();
-  if (column == ObjectTree::OBJECT_COLUMN || column == ObjectTree::TAGS_COLUMN) {
-    this->model()->scene.set_selection(this->selected_items());
-  }
   ManagerItemView::mouseReleaseEvent(e);
+  if (column == ObjectTree::OBJECT_COLUMN || column == ObjectTree::TAGS_COLUMN) {
+    model()->scene.set_selection(selected_items());
+  }
   m_object_quick_access_delegate->on_mouse_release(*e);
 }
 
