@@ -23,30 +23,30 @@ omm::Object::Visibility advance_visibility(omm::Object::Visibility visibility)
   Q_UNREACHABLE();
 }
 
-void draw_cross(QPainter& painter, const QRectF& area, bool is_enabled)
+}  // namespace
+
+namespace omm
 {
-  QPen pen;
-  if (is_enabled) {
-    pen.setColor("#80FF80");
-  } else {
-    pen.setColor("#FF8080");
-  }
-  pen.setWidth(4.0);
-  pen.setCosmetic(true);
-  pen.setCapStyle(Qt::RoundCap);
 
-  const auto rect = area - QMarginsF(0.02, 0.02, 0.02, 0.02);
-
-  painter.save();
-  painter.setPen(pen);
-  painter.drawLine(rect.topLeft(), rect.bottomRight());
-  painter.drawLine(rect.topRight(), rect.bottomLeft());
-  painter.restore();
+PropertyArea::PropertyArea(const QRectF& area, ObjectTreeView& view, const std::string &property_key)
+  : area(area), view(view), m_property_key(property_key)
+{
 }
 
-void draw_dot(QPainter& painter, const QRectF& area, const omm::Object::Visibility visibility)
+Property &PropertyArea::property(const QModelIndex &index) const
+{
+  return *view.model()->item_at(index).property(m_property_key);
+}
+
+VisibilityPropertyArea::VisibilityPropertyArea(ObjectTreeView& view)
+  : PropertyArea(QRectF(QPointF(0.5, 0.5), QSizeF(0.5, 0.5)), view, Object::VISIBILITY_PROPERTY_KEY)
+{
+}
+
+void VisibilityPropertyArea::draw(QPainter &painter, const QModelIndex& index)
 {
   static constexpr QMarginsF margins(0.05, 0.05, 0.05, 0.05);
+  const auto visibility = property(index).value<Object::Visibility>();
 
   painter.save();
   QPen pen;
@@ -68,29 +68,80 @@ void draw_dot(QPainter& painter, const QRectF& area, const omm::Object::Visibili
   painter.restore();
 }
 
-}  // namespace
-
-namespace omm
+std::unique_ptr<Command>
+VisibilityPropertyArea::make_command(const QModelIndex &index, bool update_cache)
 {
+  auto& property = this->property(index);
+  const auto old_value = property.value<Object::Visibility>();
+  if (update_cache) {
+    m_new_value = advance_visibility(old_value);
+  }
+  if (m_new_value == old_value) {
+    return nullptr;
+  } else {
+    const auto value_s = static_cast<std::size_t>(m_new_value);
+    return std::make_unique<PropertiesCommand<OptionsProperty>>(std::set{ &property }, value_s);
+  }
+}
+
+IsEnabledPropertyArea::IsEnabledPropertyArea(ObjectTreeView &view)
+  : PropertyArea(QRectF(QPointF(0.0, 0.0), QSizeF(0.5, 1.0)), view, Object::IS_ACTIVE_PROPERTY_KEY)
+{
+}
+
+void IsEnabledPropertyArea::draw(QPainter &painter, const QModelIndex& index)
+{
+  QPen pen;
+  if (property(index).value<bool>()) {
+    pen.setColor("#80FF80");
+  } else {
+    pen.setColor("#FF8080");
+  }
+  pen.setWidth(4.0);
+  pen.setCosmetic(true);
+  pen.setCapStyle(Qt::RoundCap);
+
+  const auto rect = area - QMarginsF(0.02, 0.02, 0.02, 0.02);
+
+  painter.save();
+  painter.setPen(pen);
+  painter.drawLine(rect.topLeft(), rect.bottomRight());
+  painter.drawLine(rect.topRight(), rect.bottomLeft());
+  painter.restore();
+}
+
+std::unique_ptr<Command>
+IsEnabledPropertyArea::make_command(const QModelIndex &index, bool update_cache)
+{
+  auto& property = this->property(index);
+  const auto old_value = property.value<bool>();
+  if (update_cache) {
+    m_new_value = !old_value;
+  }
+  if (m_new_value == old_value) {
+    return nullptr;
+  } else {
+    return std::make_unique<PropertiesCommand<BoolProperty>>(std::set { &property }, m_new_value);
+  }
+}
 
 ObjectQuickAccessDelegate::ObjectQuickAccessDelegate(ObjectTreeView& view) : m_view(view)
 {
+  m_areas.push_back(std::make_unique<IsEnabledPropertyArea>(view));
+  m_areas.push_back(std::make_unique<VisibilityPropertyArea>(view));
 }
 
 void ObjectQuickAccessDelegate::
 paint(QPainter *painter, const QStyleOptionViewItem &, const QModelIndex &index) const
 {
-  static constexpr QMarginsF margins(0.1, 0.1, 0.1, 0.1);
-
-  const auto& object = m_view.model()->item_at(index);
-
   painter->save();
   const auto rect = m_view.visualRect(index);
   painter->translate(rect.topLeft());
   painter->scale(rect.width(), rect.height());
-  draw_cross(*painter, enabled_cross_area - margins, object.is_active());
-  draw_dot(*painter, edit_visibility - margins,
-           object.property(Object::VISIBILITY_PROPERTY_KEY)->value<Object::Visibility>());
+  for (auto& area : m_areas) {
+    area->draw(*painter, index);
+  }
+
   // draw_dot(*painter, export_visibility);
   painter->restore();
 }
@@ -102,60 +153,33 @@ QSize ObjectQuickAccessDelegate::sizeHint(const QStyleOptionViewItem &, const QM
 
 bool ObjectQuickAccessDelegate::on_mouse_button_press(QMouseEvent& event)
 {
-  const auto index = m_view.indexAt(event.pos());
-  const auto pos = to_local(event.pos());
-  auto& object = m_view.model()->item_at(index);
   assert(m_macro == nullptr);
-  if (enabled_cross_area.contains(pos)) {
-    const auto is_active = object.is_active();
-    auto& property = *object.property(Object::IS_ACTIVE_PROPERTY_KEY);
-    bool new_value = !is_active;
-    auto command = std::make_unique<PropertiesCommand<BoolProperty>>(std::set { &property },
-                                                                     new_value );
-    m_macro = m_view.scene().history.start_macro(QString::fromStdString(command->label()));
-    m_view.scene().submit(std::move(command));
-    m_active_item = ActiveItem::Activeness;
-    m_active_item_value = new_value;
-    return true;
-  } else if (edit_visibility.contains(pos)) {
-    auto& prop = *object.property(Object::VISIBILITY_PROPERTY_KEY);
-    const auto v = static_cast<std::size_t>(advance_visibility(prop.value<Object::Visibility>()));
-    auto command = std::make_unique<PropertiesCommand<OptionsProperty>>(std::set { &prop }, v);
-    m_macro = m_view.scene().history.start_macro(QString::fromStdString(command->label()));
-    m_view.scene().submit(std::move(command));
-    m_active_item = ActiveItem::Visibility;
-    m_active_item_value = v;
-    return true;
-  } else {
-    m_active_item = ActiveItem::None;
-    return false;
+  const auto index = m_view.indexAt(event.pos());
+  const QPointF pos = to_local(event.pos(), index);
+  for (const auto& area : m_areas) {
+    if (area->area.contains(pos)) {
+      area->is_active = true;
+      auto command = area->make_command(index, true);
+      assert(command != nullptr);  // a click must alter the value, hence command must not be null.
+      m_macro = m_view.scene().history.start_macro(QString::fromStdString(command->label()));
+      m_view.scene().submit(std::move(command));
+      return true;
+    }
   }
+  return false;
 }
 
 void ObjectQuickAccessDelegate::on_mouse_move(QMouseEvent &event)
 {
-  const auto pos = to_local(event.pos());
   const auto index = m_view.indexAt(event.pos());
-  auto& object = m_view.model()->item_at(index);
-  switch (m_active_item) {
-  case ActiveItem::Activeness:
-    if (enabled_cross_area.contains(pos)) {
-      auto& prop = *object.property(Object::IS_ACTIVE_PROPERTY_KEY);
-      m_view.scene().submit<PropertiesCommand<BoolProperty>>(std::set { &prop },
-                                                             m_active_item_value);
-      LINFO << m_active_item_value;
+  const QPointF pos = to_local(event.pos(), index);
+  for (auto& area : m_areas) {
+    if (area->is_active && area->area.contains(pos)) {
+      auto command = area->make_command(index, false);
+      if (command != nullptr) {
+        m_view.scene().submit(std::move(command));
+      }
     }
-    break;
-  case ActiveItem::Visibility:
-    if (edit_visibility.contains(pos)) {
-      auto& prop = *object.property(Object::VISIBILITY_PROPERTY_KEY);
-      m_view.scene().submit<PropertiesCommand<OptionsProperty>>(std::set { &prop },
-                                                                m_active_item_value);
-      LINFO << m_active_item_value;
-    }
-    break;
-  default:
-    ;
   }
 }
 
@@ -165,12 +189,15 @@ void ObjectQuickAccessDelegate::on_mouse_release(QMouseEvent &event)
   if (m_macro) {
     m_macro.reset();
   }
-  m_active_item = ActiveItem::None;
+  for (auto& area : m_areas) {
+    area->is_active = false;
+  }
 }
 
-QPointF ObjectQuickAccessDelegate::to_local(const QPoint &view_global) const
+QPointF
+ObjectQuickAccessDelegate::to_local(const QPoint &view_global, const QModelIndex& index) const
 {
-  const auto index = m_view.indexAt(view_global);
+  assert(m_view.indexAt(view_global) == index);
   const auto rect = m_view.visualRect(index);
   auto pos = QPointF(view_global) - rect.topLeft();
   pos.setX(pos.x() / rect.width());
