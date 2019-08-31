@@ -159,9 +159,10 @@ bool ObjectQuickAccessDelegate::on_mouse_button_press(QMouseEvent& event)
   for (const auto& area : m_areas) {
     if (area->area.contains(pos)) {
       area->is_active = true;
+
+      // unfortunately, commands cannot be copied. Creating it twice should be fine...
+      m_command_on_hold = area->make_command(index, true);
       auto command = area->make_command(index, true);
-      assert(command != nullptr);  // a click must alter the value, hence command must not be null.
-      m_macro = m_view.scene().history.start_macro(QString::fromStdString(command->label()));
       m_view.scene().submit(std::move(command));
       return true;
     }
@@ -177,6 +178,19 @@ void ObjectQuickAccessDelegate::on_mouse_move(QMouseEvent &event)
     if (area->is_active && area->area.contains(pos)) {
       auto command = area->make_command(index, false);
       if (command != nullptr) {
+
+        // if the macro has not yet been started, start it now.
+        if (m_macro == nullptr) {
+          // move the command that was issued on click inside the macro.
+          m_view.scene().history.undo();  // remove the single command
+          const QString label = QString::fromStdString(m_command_on_hold->label());
+          m_macro = m_view.scene().history.start_macro(label);
+
+          // commit a copy of the removed single command again, now within the macro.
+          m_view.scene().submit(std::move(m_command_on_hold));
+        }
+
+        // commit the actual command
         m_view.scene().submit(std::move(command));
       }
     }
@@ -187,7 +201,7 @@ void ObjectQuickAccessDelegate::on_mouse_release(QMouseEvent &event)
 {
   Q_UNUSED(event)
   if (m_macro) {
-    m_macro.reset();
+    m_macro.reset();  // calls the dtor of m_macro, which will end the macro.
   }
   for (auto& area : m_areas) {
     area->is_active = false;
