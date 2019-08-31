@@ -254,6 +254,8 @@ std::vector<std::size_t> Path::add_points(std::vector<PointSequence> sequences)
     auto ii = add_points(sequence);
     indices.insert(indices.end(), ii.begin(), ii.end());
   }
+
+  update();
   return std::vector(indices.begin(), indices.end());
 }
 
@@ -279,6 +281,7 @@ std::vector<Path::PointSequence> Path::remove_points(std::vector<std::size_t> in
     m_points.erase(std::next(m_points.begin(), static_cast<int>(i)));
   }
 
+  update();
   return std::vector(sequences.begin(), sequences.end());
 }
 
