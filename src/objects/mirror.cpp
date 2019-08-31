@@ -6,6 +6,7 @@
 #include "properties/boolproperty.h"
 #include "geometry/vec2.h"
 #include "objects/path.h"
+#include "scene/scene.h"
 
 namespace omm
 {
@@ -131,10 +132,12 @@ void Mirror::update()
 void Mirror::on_property_value_changed(Property *property)
 {
   if (   property == this->property(DIRECTION_PROPERTY_KEY)
-      || property == this->property(AS_PATH_PROPERTY_KEY)
       || property == this->property(IS_CLOSED_PROPERTY_KEY)
       || property == this->property(IS_INVERTED_PROPERTY_KEY))
   {
+    update();
+  } else if (property == this->property(AS_PATH_PROPERTY_KEY)) {
+    Q_EMIT scene()->message_box.update_property_managers();
     update();
   } else {
     Object::on_property_value_changed(property);

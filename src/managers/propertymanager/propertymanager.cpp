@@ -105,6 +105,8 @@ PropertyManager::PropertyManager(Scene& scene)
 
   connect(&scene.message_box, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
+  connect(&scene.message_box, SIGNAL(update_property_managers()),
+          this, SLOT(update_property_widgets()));
 }
 
 PropertyManager::~PropertyManager()
@@ -145,16 +147,20 @@ std::unique_ptr<QWidget> PropertyManager::make_menu_bar()
 
 void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
-  if (m_is_locked) {
-    return;
+  if (!m_is_locked) {
+    m_current_selection = selection;
+    update_property_widgets();
   }
+}
 
+void PropertyManager::update_property_widgets()
+{
   clear();
   OrderedMap<std::string, PropertyManagerTab> tabs;
   std::vector<QString> tab_display_names;
 
-  for (const auto& key : get_key_intersection(selection)) {
-    const auto properties = collect_properties(key, selection);
+  for (const auto& key : get_key_intersection(m_current_selection)) {
+    const auto properties = collect_properties(key, m_current_selection);
     assert(properties.size() > 0);
     const auto tab_label = get_tab_label(properties);
     if (!tabs.contains(tab_label)) {
@@ -183,7 +189,6 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
     }
   }
 
-  m_current_selection = selection;
   m_manage_user_properties_action->setEnabled(m_current_selection.size() == 1);
   setWindowTitle(QString::fromStdString(make_window_title()));
 }

@@ -140,6 +140,8 @@ Q_SIGNALS:
    */
   void appearance_changed(Style&);
 
+  void update_property_managers();
+
 };
 
 }  // namespace omm

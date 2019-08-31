@@ -39,7 +39,8 @@ private:
 private Q_SLOTS:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
   void set_locked(bool locked);
-
+public Q_SLOTS:
+  void update_property_widgets();
 };
 
 }  // namespace omm

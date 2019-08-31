@@ -184,7 +184,6 @@ void Cloner::update()
 void Cloner::on_property_value_changed(Property *property)
 {
   if (   property == this->property(COUNT_PROPERTY_KEY)
-      || property == this->property(MODE_PROPERTY_KEY)
       || property == this->property(COUNT_2D_PROPERTY_KEY)
       || property == this->property(DISTANCE_2D_PROPERTY_KEY)
       || property == this->property(RADIUS_PROPERTY_KEY)
@@ -197,6 +196,9 @@ void Cloner::on_property_value_changed(Property *property)
       || property == this->property(SEED_PROPERTY_KEY)
       || property == this->property(ANCHOR_PROPERTY_KEY))
   {
+    update();
+  } else if (property == this->property(MODE_PROPERTY_KEY)) {
+    Q_EMIT scene()->message_box.update_property_managers();
     update();
   } else {
     Object::on_property_value_changed(property);

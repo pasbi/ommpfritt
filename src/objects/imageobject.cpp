@@ -104,14 +104,16 @@ BoundingBox ImageObject::bounding_box(const ObjectTransformation &transformation
 
 void ImageObject::on_property_value_changed(Property *property)
 {
-  if (   property == this->property(FILEPATH_PROPERTY_KEY)
-      || property == this->property(WIDTH_PROPERTY_KEY)
+  if (   property == this->property(WIDTH_PROPERTY_KEY)
       || property == this->property(OPACITY_PROPERTY_KEY)
       || property == this->property(PAGE_PROPERTY_KEY)
       || property == this->property(HANCHOR_PROPERTY_KEY)
       || property == this->property(VANCHOR_PROPERTY_KEY))
   {
     update();
+  } else if (property == this->property(FILEPATH_PROPERTY_KEY)) {
+    update();
+    Q_EMIT scene()->message_box.update_property_managers();
   } else {
     Object::on_property_value_changed(property);
   }
