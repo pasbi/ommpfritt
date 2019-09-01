@@ -14,10 +14,6 @@ Macro::Macro(const QString &text, QUndoStack &stack)
 Macro::~Macro()
 {
   m_undo_stack.endMacro();
-  QUndoCommand* last_command = const_cast<QUndoCommand*>(m_undo_stack.command(m_undo_stack.count()-1));
-  if (const int n = last_command->childCount(); n <= 2) {
-    LWARNING << "detected macro with " << n << " commands.";
-  }
 }
 
 RememberSelectionMacro::RememberSelectionMacro(Scene &scene, const QString &text, QUndoStack &stack)
