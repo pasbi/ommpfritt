@@ -113,7 +113,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     const auto* reference = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
     const auto* r = kind_cast<const Object*>(reference);
     if (r != nullptr && property(MODE_PROPERTY_KEY)->value<Mode>() == Mode::Path) {
-      if (o.is_ancestor_of(*r)) {
+      if (o.is_ancestor_of(*r) && &o != this) {
         update();
       }
     }
