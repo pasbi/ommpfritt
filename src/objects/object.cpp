@@ -342,7 +342,7 @@ void Object::on_property_value_changed(Property *property)
   } else if (property == this->property(IS_ACTIVE_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
     for (Object* c : all_descendants()) {
-      c->m_visibility_cache_is_dirty = false;
+      c->m_visibility_cache_is_dirty = true;
     }
     update();
   } else if (property == this->property(NAME_PROPERTY_KEY)) {
