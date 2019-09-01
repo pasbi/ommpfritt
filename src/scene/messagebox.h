@@ -76,10 +76,15 @@ Q_SIGNALS:
   void style_inserted(Style&);
 
   /**
-   * @brief object_inserted is emitted when an object was removed from the scene.
+   * @brief object_inserted is emitted when a style was removed from the scene.
    * This signal forwards to @code appearance_changed().
    */
   void style_removed(Style&);
+
+  /**
+   * @brief style_moved is emitted when a style was moved.
+   */
+  void style_moved(Style&);
 
   /**
    * @brief object_inserted is emitted when a tag was attached to an object.

@@ -43,8 +43,8 @@ std::unique_ptr<Style> StyleList::remove(Style &t)
 
 void StyleList::move(ListMoveContext<Style> &context)
 {
-  Q_UNUSED(context)
-  Q_UNREACHABLE();
+  List::move(context);
+  Q_EMIT scene.message_box.style_moved(context.get_subject());
 }
 
 std::vector<std::unique_ptr<Style>> StyleList::set(std::vector<std::unique_ptr<Style>> items)
