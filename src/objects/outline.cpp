@@ -23,7 +23,7 @@ Outline::Outline(Scene* scene) : Object(scene)
 }
 
 Outline::Outline(const Outline &other)
-  : Object(other), m_outline(PathUniquePtr(new Path(*other.m_outline)))
+  : Object(other), m_outline(other.m_outline ? PathUniquePtr(new Path(*other.m_outline)) : nullptr)
 { }
 
 void Outline::draw_object(Painter &renderer, const Style& style) const
