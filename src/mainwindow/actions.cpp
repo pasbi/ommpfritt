@@ -61,6 +61,7 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
     std::list<ObjectTreeMoveContext> move_contextes;
     for (auto&& c : convertables) {
       auto converted = c->convert();
+      converted->set_object_tree(app.scene.object_tree);
       assert(!c->is_root());
       ObjectTreeOwningContext context(*converted, c->tree_parent(), c);
       const auto properties = ::transform<Property*>(app.scene.find_reference_holders(*c));
@@ -87,7 +88,6 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
     const auto selection = ::transform<Object*, std::set>(convertables, ::identity);
     using remove_command = RemoveCommand<ObjectTree>;
     app.scene.template submit<remove_command>(app.scene.object_tree, selection);
-
 
     // process the left over items
     const auto cos = convert_objects(app, leftover_convertables);

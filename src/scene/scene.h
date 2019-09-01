@@ -47,8 +47,6 @@ public:
   template<typename ItemT> typename SceneStructure<ItemT>::type& structure();
   template<typename ItemT> const typename SceneStructure<ItemT>::type& structure() const;
 
-  // ObjectView root_view();
-
 public Q_SLOTS:
   void reset();
 
