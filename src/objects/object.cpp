@@ -92,6 +92,7 @@ Object::Object(const Object& other)
 
 Object::~Object()
 {
+  LINFO << "delete " <<  (void*) this;
   assert(!::contains(m_scene->selection(), this));
 }
 
@@ -465,6 +466,7 @@ void Object::update_recursive()
     child->update_recursive();
   }
   update();
+//  Q_EMIT scene()->message_box.appearance_changed(*this);
 }
 
 void Object::draw_object(Painter&, const Style&) const {}
@@ -487,30 +489,49 @@ void Object::set_object_tree(ObjectTree &object_tree)
   }
 }
 
+void Object::on_child_added(Object &child)
+{
+  TreeElement::on_child_added(child);
+  Q_EMIT scene()->message_box.appearance_changed(*this);
+}
+
+void Object::on_child_removed(Object &child)
+{
+  TreeElement::on_child_removed(child);
+  Q_EMIT scene()->message_box.appearance_changed(*this);
+}
+
+void Object::listen_to_changes(const std::function<Object *()> &get_watched)
+{
+  const auto c = connect(&scene()->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
+          [get_watched, this](Object& o)
+  {
+    Object* r = get_watched();
+    if (r != nullptr) {
+      if (r->is_ancestor_of(*this)) {
+        {
+          QSignalBlocker blocker(&scene()->message_box);
+          update();
+        }
+        Q_EMIT scene()->message_box.appearance_changed();
+      } else if (r->is_ancestor_of(o)) {
+        update();
+      }
+    }
+  });
+  m_connections.push_back(c);
+}
+
 void Object::listen_to_children_changes()
 {
-  connect(&scene()->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
-          [this](Object& o) {
+  const auto c = connect(&scene()->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
+          [this](Object& o)
+  {
     if (&o != this && is_ancestor_of(o)) {
       update();
     }
   });
-  connect(&scene()->message_box, qOverload<Object&>(&MessageBox::transformation_changed),
-          [this](Object& o) {
-    if (&o != this && is_ancestor_of(o)) {
-      update();
-    }
-  });
-  connect(&scene()->message_box, &MessageBox::tag_inserted, [this](Tag& tag) {
-    if (is_ancestor_of(*tag.owner) || tag.owner == this) {
-      update();
-    }
-  });
-  connect(&scene()->message_box, &MessageBox::tag_removed, [this](Tag& tag) {
-    if (is_ancestor_of(*tag.owner) || tag.owner == this) {
-      update();
-    }
-  });
+  m_connections.push_back(c);
 }
 
 }  // namespace omm

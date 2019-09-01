@@ -26,14 +26,20 @@ Mirror::Mirror(Scene* scene) : Object(scene)
     .set_label(QObject::tr("Close").toStdString()).set_category(category);
   create_property<BoolProperty>(IS_INVERTED_PROPERTY_KEY, true)
     .set_label(QObject::tr("Invert").toStdString()).set_category(category);
-  update();
-
-  listen_to_children_changes();
+  polish();
 }
 
 Mirror::Mirror(const Mirror &other)
   : Object(other), m_reflection(other.m_reflection ? other.m_reflection->clone() : nullptr)
-{}
+{
+  polish();
+}
+
+void Mirror::polish()
+{
+  listen_to_children_changes();
+  update();
+}
 
 void Mirror::draw_object(Painter &renderer, const Style& style) const
 {

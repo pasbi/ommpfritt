@@ -36,6 +36,8 @@ private:
   Object* illustrated_object() const;
   Object* referenced_object() const;
   std::unique_ptr<Object> m_reference;
+  bool m_cyclic_dependency = false;
+  void polish();
 
 private Q_SLOTS:
   void update_tags();

@@ -52,22 +52,22 @@ Q_SIGNALS:
   void appearance_changed();
 
   /**
-   * @brief object_inserted is emitted when an object was inserted into the object tree.
+   * @brief object_inserted is emitted when an object was inserted into the parent object
    * This signal forwards to @code appearance_changed().
    */
-  void object_inserted(Object&);
+  void object_inserted(Object& parent, Object& object);
 
   /**
-   * @brief object_inserted is emitted when an object was removed from the object tree.
+   * @brief object_inserted is emitted when an object was removed from the parent object.
    * This signal forwards to @code appearance_changed().
    */
-  void object_removed(Object&);
+  void object_removed(Object& parent, Object& object);
 
   /**
-   * @brief object_inserted is emitted when an object was moved inside the object tree.
+   * @brief object_inserted is emitted when an object was moved from old_parent to new_parent.
    * This signal forwards to @code appearance_changed().
    */
-  void object_moved(Object&);
+  void object_moved(Object& old_parent, Object& new_parent, Object& object);
 
   /**
    * @brief object_inserted is emitted when a style was inserted into the scene.
@@ -87,16 +87,16 @@ Q_SIGNALS:
   void style_moved(Style&);
 
   /**
-   * @brief object_inserted is emitted when a tag was attached to an object.
+   * @brief object_inserted is emitted when a tag was attached to the object.
    * This signal forwards to @code appearance_changed().
    */
-  void tag_inserted(Tag&);
+  void tag_inserted(Object&, Tag&);
 
   /**
-   * @brief object_inserted is emitted when a tag was removed from an object.
+   * @brief object_inserted is emitted when a tag was removed from the object.
    * This signal forwards to @code appearance_changed().
    */
-  void tag_removed(Tag&);
+  void tag_removed(Object&, Tag&);
 
   /**
    * @brief selection_changed is emitted when the object selection changed.

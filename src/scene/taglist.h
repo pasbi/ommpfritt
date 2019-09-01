@@ -20,10 +20,6 @@ public:
   void move(ListMoveContext<Tag> &context) override;
   Scene& scene();
 
-Q_SIGNALS:
-  void tag_inserted(Tag&);
-  void tag_removed(Tag&);
-
 private:
   Object& m_object;
 };

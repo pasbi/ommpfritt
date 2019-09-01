@@ -7,6 +7,7 @@
 #include "geometry/vec2.h"
 #include "objects/path.h"
 #include "renderers/style.h"
+#include "scene/scene.h"
 
 namespace omm
 {
@@ -19,20 +20,27 @@ Outline::Outline(Scene* scene) : Object(scene)
   create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
     .set_label(QObject::tr("Reference").toStdString()).set_category(category);
-  update();
+  polish();
 }
 
 Outline::Outline(const Outline &other)
   : Object(other), m_outline(other.m_outline ? PathUniquePtr(new Path(*other.m_outline)) : nullptr)
-{ }
+{
+  polish();
+}
+
+void Outline::polish()
+{
+  listen_to_changes([this]() {
+    return kind_cast<Object*>(property(REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>());
+  });
+  update();
+}
 
 void Outline::draw_object(Painter &renderer, const Style& style) const
 {
   assert(&renderer.scene == scene());
   if (m_outline) {
-    LINFO << style.property(Style::PEN_COLOR_KEY)->value<Color>();
-    LINFO << style.property(Style::PEN_WIDTH_KEY)->value<double>();
-    LINFO << renderer.current_transformation();
     m_outline->draw_recursive(renderer, style);
   }
 }
@@ -50,12 +58,17 @@ AbstractPropertyOwner::Flag Outline::flags() const
 
 void Outline::update()
 {
+  // scope of the cycle_guard object must be the whole update-function body!
+  auto cycle_guard = scene()->make_cycle_guard(this);
+  if (cycle_guard->inside_cycle()) {
+    return;
+  }
+
   if (is_active()) {
     const auto* ref = property(REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
     const auto t = property(OFFSET_PROPERTY_KEY)->value<double>();
     if (auto* o = kind_cast<const Object*>(ref); o != nullptr) {
       m_outline = o->outline(t);
-      LINFO << m_outline->points();
     } else {
       m_outline.reset();
     }
@@ -100,6 +113,7 @@ void Outline::on_property_value_changed(Property *property)
   if (   property == this->property(OFFSET_PROPERTY_KEY)
       || property == this->property(REFERENCE_PROPERTY_KEY))
   {
+    LINFO << "update outline: " << this;
     update();
   } else {
     Object::on_property_value_changed(property);

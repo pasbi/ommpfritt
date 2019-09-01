@@ -62,7 +62,7 @@ private:
   void set_fillrandom(Object& object, std::mt19937 &rng);
   std::vector<std::unique_ptr<Object>> m_clones;
   std::set<Property*> m_clone_dependencies;
-
+  void polish();
 };
 
 }  // namespace omm

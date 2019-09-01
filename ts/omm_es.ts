@@ -302,10 +302,6 @@
         <translation>Ocultado</translation>
     </message>
     <message>
-        <source>hide tree</source>
-        <translation type="vanished">Ocultar jerarquía</translation>
-    </message>
-    <message>
         <source>basic</source>
         <translation>Básico</translation>
     </message>
@@ -543,11 +539,6 @@ Borrar la selección de todos modos?</translation>
         <source>reference</source>
         <comment>Instance</comment>
         <translation>Referencia</translation>
-    </message>
-    <message>
-        <source>combine styles</source>
-        <comment>Instance</comment>
-        <translation type="vanished">Combinar estilos</translation>
     </message>
     <message>
         <source>min</source>
@@ -998,6 +989,10 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set Object Selection</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

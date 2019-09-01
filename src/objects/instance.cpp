@@ -24,32 +24,21 @@ Instance::Instance(Scene* scene)
     .set_label(QObject::tr("reference", "Instance").toStdString()).set_category(category);
   create_property<BoolProperty>(IDENTICAL_PROPERTY_KEY)
     .set_label(QObject::tr("identical", "Instance").toStdString()).set_category(category);
-  update();
-  connect(&tags, SIGNAL(tag_inserted(Tag&)), this, SLOT(update_tags()));
-  connect(&tags, SIGNAL(tag_removed(Tag&)), this, SLOT(update_tags()));
-
-  connect(&scene->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
-          [this](Object& o) {
-    Object* r = referenced_object();
-    if (r != nullptr && r->is_ancestor_of(o) && r != this) {
-      update();
-    }
-  });
-  connect(&scene->message_box, &MessageBox::tag_inserted, [this](Tag& tag) {
-    Object* r = referenced_object();
-    if (r != nullptr && (r->is_ancestor_of(*tag.owner) || tag.owner == this)) {
-      update();
-    }
-  });
-  connect(&scene->message_box, &MessageBox::tag_removed, [this](Tag& tag) {
-    Object* r = referenced_object();
-    if (r != nullptr && (r->is_ancestor_of(*tag.owner) || tag.owner == this)) {
-      update();
-    }
-  });
+  polish();
 }
 
-Instance::Instance(const Instance &other) : Object(other) {}
+Instance::Instance(const Instance &other) : Object(other)
+{
+  polish();
+}
+
+void Instance::polish()
+{
+  listen_to_changes([this]() {
+    return kind_cast<Object*>(property(REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>());
+  });
+  update();
+}
 
 void Instance::draw_object(Painter &renderer, const Style& default_style) const
 {
@@ -125,6 +114,10 @@ void Instance::post_create_hook()
 
 void Instance::update()
 {
+  auto cycle_guard = scene()->make_cycle_guard(this);
+  if (cycle_guard->inside_cycle()) {
+    return;
+  }
   if (is_active()) {
     m_reference.reset();
     if (!property(IDENTICAL_PROPERTY_KEY)->value<bool>()) {
@@ -152,8 +145,8 @@ void Instance::on_property_value_changed(Property *property)
 Object* Instance::referenced_object() const
 {
   const auto reference = property(REFERENCE_PROPERTY_KEY)->value<ReferenceProperty::value_type>();
-  const auto object_reference = static_cast<Object*>(reference);
-  if (object_reference != nullptr && ::contains(object_reference->all_descendants(), this)) {
+  Object* object_reference = static_cast<Object*>(reference);
+  if (object_reference != nullptr && object_reference->is_ancestor_of(*this)) {
     LWARNING << "Instance cannot descend from referenced object.";
     return nullptr;
   } else {

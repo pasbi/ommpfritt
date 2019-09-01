@@ -302,10 +302,6 @@
         <translation>Versteckt</translation>
     </message>
     <message>
-        <source>hide tree</source>
-        <translation type="vanished">Hierarchie verstecken</translation>
-    </message>
-    <message>
         <source>basic</source>
         <translation>Basic</translation>
     </message>
@@ -543,11 +539,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>reference</source>
         <comment>Instance</comment>
         <translation>Referenz</translation>
-    </message>
-    <message>
-        <source>combine styles</source>
-        <comment>Instance</comment>
-        <translation type="vanished">Stile kombinieren</translation>
     </message>
     <message>
         <source>min</source>
@@ -998,6 +989,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set Object Selection</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -88,6 +88,13 @@ private:
 public:
   // A set of ReferenceProperties which reference `this`.
   std::set<ReferenceProperty*> m_referees;
+
+protected:
+  /**
+   * @brief m_connections a list of connections that must be destroyed when this object
+   *  becomes deleted
+   */
+  std::list<QMetaObject::Connection> m_connections;
 };
 
 template<AbstractPropertyOwner::Kind kind_> class PropertyOwner : public AbstractPropertyOwner

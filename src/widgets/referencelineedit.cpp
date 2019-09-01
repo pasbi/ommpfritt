@@ -43,10 +43,10 @@ void ReferenceLineEdit::set_scene(Scene &scene)
   assert(m_scene == nullptr);
   m_scene = &scene;
   assert(m_scene != nullptr);
-  connect(&m_scene->message_box, SIGNAL(tag_inserted(Tag&)), this, SLOT(update_candidates()));
-  connect(&m_scene->message_box, SIGNAL(tag_removed(Tag&)), this, SLOT(update_candidates()));
-  connect(&m_scene->message_box, SIGNAL(object_removed(Object&)), this, SLOT(update_candidates()));
-  connect(&m_scene->message_box, SIGNAL(object_inserted(Object&)), this, SLOT(update_candidates()));
+  connect(&m_scene->message_box, SIGNAL(object_removed(Object&, Object&)),
+          this, SLOT(update_candidates()));
+  connect(&m_scene->message_box, SIGNAL(object_inserted(Object&, Object&)),
+          this, SLOT(update_candidates()));
   connect(&m_scene->message_box, SIGNAL(scene_reseted()), this, SLOT(update_candidates()));
   update_candidates();
 }

@@ -302,10 +302,6 @@
         <translation>Hidden</translation>
     </message>
     <message>
-        <source>hide tree</source>
-        <translation type="vanished">Hide tree</translation>
-    </message>
-    <message>
         <source>basic</source>
         <translation>Basic</translation>
     </message>
@@ -543,11 +539,6 @@ Remove the selected items anyway?</translation>
         <source>reference</source>
         <comment>Instance</comment>
         <translation>Reference</translation>
-    </message>
-    <message>
-        <source>combine styles</source>
-        <comment>Instance</comment>
-        <translation type="vanished">Combine styles</translation>
     </message>
     <message>
         <source>min</source>
@@ -998,6 +989,10 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set Object Selection</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

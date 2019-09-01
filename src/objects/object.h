@@ -130,6 +130,9 @@ protected:
   bool m_draw_children = true;
   void copy_tags(Object& other) const;
   void on_property_value_changed(Property* property) override;
+  void on_child_added(Object &child) override;
+  void on_child_removed(Object &child) override;
+  void listen_to_changes(const std::function<Object*()>& get_watched);
   void listen_to_children_changes();
 
 private:

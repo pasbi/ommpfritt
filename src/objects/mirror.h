@@ -37,10 +37,10 @@ protected:
   void on_child_added(Object &child) override;
   void on_child_removed(Object &child) override;
 
-
 private:
   std::unique_ptr<Object> m_reflection;
   ObjectTransformation get_mirror_t() const;
+  void polish();
 
 };
 

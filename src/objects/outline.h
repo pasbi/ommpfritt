@@ -37,6 +37,7 @@ protected:
 
 private:
   PathUniquePtr m_outline;
+  void polish();
 };
 
 }  // namespace omm

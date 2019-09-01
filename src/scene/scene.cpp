@@ -100,6 +100,7 @@ void Scene::prepare_reset()
   auto root = make_root();
   object_tree.replace_root(std::move(root));
   styles.set(std::vector<std::unique_ptr<Style>> {});
+  tool_box.active_tool().reset();
 }
 
 std::unique_ptr<CycleGuard> Scene::make_cycle_guard(const Object *guarded)

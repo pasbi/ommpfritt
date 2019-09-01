@@ -104,25 +104,22 @@ Cloner::Cloner(Scene* scene) : Object(scene)
       .set_options( { QObject::tr("Path").toStdString(), QObject::tr("this").toStdString() } )
       .set_label(QObject::tr("anchor").toStdString()).set_category(category);
 
-  update();
-  update_property_visibility(property(MODE_PROPERTY_KEY)->value<Mode>());
-
-  listen_to_children_changes();
-
-  connect(&scene->message_box, qOverload<Object&>(&MessageBox::appearance_changed), [this](auto& o)
-  {
-    const auto* reference = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
-    const auto* r = kind_cast<const Object*>(reference);
-    if (r != nullptr && property(MODE_PROPERTY_KEY)->value<Mode>() == Mode::Path) {
-      if (o.is_ancestor_of(*r) && &o != this) {
-        update();
-      }
-    }
-  });
+  polish();
 }
 
 Cloner::Cloner(const Cloner &other) : Object(other)
 {
+  polish();
+}
+
+void Cloner::polish()
+{
+  listen_to_changes([this]() {
+    const Property* property = this->property(PATH_REFERENCE_PROPERTY_KEY);
+    return kind_cast<Object*>(property->value<AbstractPropertyOwner*>());
+  });
+  listen_to_children_changes();
+  update_property_visibility(property(MODE_PROPERTY_KEY)->value<Mode>());
   update();
 }
 
@@ -164,11 +161,6 @@ void Cloner::update()
   {
     QSignalBlocker blocker(&scene()->message_box);
     auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
-    auto* ref = kind_cast<Object*>(apo);
-    if (ref) {
-      ref->update_recursive();
-    }
-
     if (is_active()) {
       m_clones = make_clones();
       m_draw_children = false;
