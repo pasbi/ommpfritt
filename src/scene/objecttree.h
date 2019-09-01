@@ -69,7 +69,8 @@ private:
   mutable std::set<Object*> m_item_cache;
   Scene& m_scene;
 
-
+Q_SIGNALS:
+  void expand_item(const QModelIndex&);
 
 };
 

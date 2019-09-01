@@ -43,6 +43,9 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
   setAutoExpandDelay(200);
 
   setIconSize(QSize(24, 24));
+  connect(&model, &ObjectTree::expand_item, [this](const QModelIndex& index) {
+    setExpanded(index, true);
+  });
 }
 
 std::set<AbstractPropertyOwner*> ObjectTreeView::selected_items() const

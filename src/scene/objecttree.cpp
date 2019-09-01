@@ -111,14 +111,14 @@ void ObjectTree::move(ObjectTreeMoveContext& context)
   const QModelIndex old_parent_index = m_scene.object_tree.index_of(old_parent);
   const QModelIndex new_parent_index = m_scene.object_tree.index_of(new_parent);
 
-  beginMoveRows(old_parent_index, old_pos, old_pos,
-                                            new_parent_index, new_pos);
+  beginMoveRows(old_parent_index, old_pos, old_pos, new_parent_index, new_pos);
   auto item = old_parent.repudiate(context.subject);
   const auto pos = this->insert_position(context.predecessor);
   context.parent.get().adopt(std::move(item), pos);
   m_item_cache_is_dirty = true;
   endMoveRows();
   Q_EMIT m_scene.message_box.object_moved(context.get_subject());
+  Q_EMIT expand_item(new_parent_index);
 }
 
 void ObjectTree::insert(ObjectTreeOwningContext& context)
