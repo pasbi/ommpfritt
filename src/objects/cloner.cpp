@@ -105,6 +105,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
       .set_label(QObject::tr("anchor").toStdString()).set_category(category);
 
   update();
+  update_property_visibility(property(MODE_PROPERTY_KEY)->value<Mode>());
 
   listen_to_children_changes();
 
@@ -181,19 +182,6 @@ void Cloner::update()
 
 void Cloner::on_property_value_changed(Property *property)
 {
-  static const std::map<Mode, std::set<std::string>> visibility_map {
-    { Mode::Linear, { COUNT_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY } },
-    { Mode::Radial, { COUNT_PROPERTY_KEY, RADIUS_PROPERTY_KEY, START_PROPERTY_KEY,
-                      END_PROPERTY_KEY, ALIGN_PROPERTY_KEY, BORDER_PROPERTY_KEY } },
-    { Mode::Path, { PATH_REFERENCE_PROPERTY_KEY, START_PROPERTY_KEY,
-                    END_PROPERTY_KEY, ALIGN_PROPERTY_KEY, BORDER_PROPERTY_KEY,
-                    ANCHOR_PROPERTY_KEY }},
-    { Mode::Script, { COUNT_PROPERTY_KEY, CODE_PROPERTY_KEY }},
-    { Mode::FillRandom, { COUNT_PROPERTY_KEY, PATH_REFERENCE_PROPERTY_KEY, SEED_PROPERTY_KEY,
-                          ANCHOR_PROPERTY_KEY }},
-    { Mode::Grid, { COUNT_2D_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY }}
-  };
-
   if (   property == this->property(COUNT_PROPERTY_KEY)
       || property == this->property(COUNT_2D_PROPERTY_KEY)
       || property == this->property(DISTANCE_2D_PROPERTY_KEY)
@@ -209,12 +197,7 @@ void Cloner::on_property_value_changed(Property *property)
   {
     update();
   } else if (property == this->property(MODE_PROPERTY_KEY)) {
-    const auto mode = property->value<Mode>();
-    for (auto&& [m, ks] : visibility_map) {
-      for (const std::string& k : ks) {
-        this->property(k)->set_visible(m == mode);
-      }
-    }
+    update_property_visibility(property->value<Mode>());
     update();
   } else {
     Object::on_property_value_changed(property);
@@ -231,6 +214,32 @@ void Cloner::on_child_removed(Object &child)
 {
   Object::on_child_removed(child);
   update();
+}
+
+void Cloner::update_property_visibility(Mode mode)
+{
+  static const std::set<std::string> properties {
+    CODE_PROPERTY_KEY, COUNT_PROPERTY_KEY, COUNT_2D_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY,
+    RADIUS_PROPERTY_KEY, PATH_REFERENCE_PROPERTY_KEY, START_PROPERTY_KEY, END_PROPERTY_KEY,
+    BORDER_PROPERTY_KEY, ALIGN_PROPERTY_KEY, SEED_PROPERTY_KEY, ANCHOR_PROPERTY_KEY
+  };
+  static const std::map<Mode, std::set<std::string>> visibility_map {
+    { Mode::Linear, { COUNT_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY } },
+    { Mode::Radial, { COUNT_PROPERTY_KEY, RADIUS_PROPERTY_KEY, START_PROPERTY_KEY,
+                      END_PROPERTY_KEY, ALIGN_PROPERTY_KEY, BORDER_PROPERTY_KEY } },
+    { Mode::Path, { COUNT_PROPERTY_KEY, PATH_REFERENCE_PROPERTY_KEY, START_PROPERTY_KEY,
+                    END_PROPERTY_KEY, ALIGN_PROPERTY_KEY, BORDER_PROPERTY_KEY,
+                    ANCHOR_PROPERTY_KEY }},
+    { Mode::Script, { COUNT_PROPERTY_KEY, CODE_PROPERTY_KEY }},
+    { Mode::FillRandom, { COUNT_PROPERTY_KEY, PATH_REFERENCE_PROPERTY_KEY, SEED_PROPERTY_KEY,
+                          ANCHOR_PROPERTY_KEY }},
+    { Mode::Grid, { COUNT_2D_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY }}
+  };
+  for (const std::string& pk : properties) {
+    if (::contains(properties, pk)) {
+      property(pk)->set_visible(::contains(visibility_map.at(mode), pk));
+    }
+  }
 }
 
 std::string Cloner::type() const { return TYPE; }

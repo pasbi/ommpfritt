@@ -47,6 +47,7 @@ protected:
   void on_property_value_changed(Property* property) override;
   void on_child_added(Object &child) override;
   void on_child_removed(Object &child) override;
+  void update_property_visibility(Mode mode);
 
 private:
   std::vector<std::unique_ptr<Object>> make_clones();
