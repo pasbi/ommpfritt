@@ -189,11 +189,9 @@ void Path::on_property_value_changed(Property *property)
     std::map<Path*, std::map<Point*, Point>> map;
     const auto i_mode = property->value<InterpolationMode>();
     map[this] = this->modified_points(false, i_mode);
-    this->scene()->submit<ModifyPointsCommand>(map);
-  }
-
-  if (   property == this->property(IS_CLOSED_PROPERTY_KEY)
-      || property == this->property(INTERPOLATION_PROPERTY_KEY))
+    ModifyPointsCommand(map).redo();
+  } else if (   property == this->property(IS_CLOSED_PROPERTY_KEY)
+             || property == this->property(INTERPOLATION_PROPERTY_KEY))
   {
     update();
   } else {
