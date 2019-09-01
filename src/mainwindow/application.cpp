@@ -321,7 +321,10 @@ Object& Application::insert_object(const std::string &key, InsertionMode mode)
     });
     scene.submit<move_command_t>(scene.object_tree, move_contextes);
     move_context_t move_context(ref, *parent, predecessor);
-    scene.submit<move_command_t>(scene.object_tree, std::vector { move_context });
+    if (move_context.is_strictly_valid(scene.object_tree)) {
+      // the move will fail if the object is already at the correct position.
+      scene.submit<move_command_t>(scene.object_tree, std::vector { move_context });
+    }
   } else if (parent != nullptr) {
     const move_context_t move_context(ref, *parent, nullptr);
     scene.submit<move_command_t>(scene.object_tree, std::vector { move_context });
