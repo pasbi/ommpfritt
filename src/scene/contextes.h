@@ -115,10 +115,10 @@ private:
 
   bool moves_before_itself(const Structure<T>& structure) const
   {
-    const bool parent_does_not_change = &this->parent.get()
-                                     == structure.predecessor(this->get_subject());
+    const T* old_parent = &this->parent.get();
+    const T* new_parent = &this->get_subject().tree_parent();
+    const bool parent_does_not_change = old_parent == new_parent;
 
-    // the `parent_does_not_change` test is only required if `predecessor == nullptr`.
     return parent_does_not_change && this->same_predecessor(structure);
   }
 };
