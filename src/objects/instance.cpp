@@ -31,7 +31,7 @@ Instance::Instance(Scene* scene)
   connect(&scene->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
           [this](Object& o) {
     Object* r = referenced_object();
-    if (r != nullptr && r->is_ancestor_of(o)) {
+    if (r != nullptr && r->is_ancestor_of(o) && r != this) {
       update();
     }
   });
