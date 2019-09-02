@@ -19,6 +19,12 @@ HistoryManager::HistoryManager(Scene &scene)
     scene.history.set_index(index.row());
   });
   m_view->setSelectionMode(QAbstractItemView::NoSelection);
+  connect(&m_model, &HistoryModel::rowsInserted, [this](const QModelIndex&, int row) {
+    m_view->scrollTo(m_model.index(row));
+  });
+  connect(&m_model, &HistoryModel::dataChanged, [this](const QModelIndex& tl, const QModelIndex&) {
+    m_view->scrollTo(tl);
+  });
 }
 
 std::string HistoryManager::type() const { return TYPE; }
