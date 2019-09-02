@@ -144,6 +144,19 @@ Q_SIGNALS:
    * @brief appearance_changed is emitted when the style appearance changed.
    */
   void appearance_changed(Style&);
+
+  /**
+   * @param owner the owner of the property
+   * @param key the
+   * @param property
+   */
+
+  /**
+   * @brief property_value_changed is emitted when the value of the property has changed.
+   * @param key the key of the property. The following invariant applies:
+   *    `owner.property(key) == &p`
+   */
+  void property_value_changed(AbstractPropertyOwner& owner, const std::string& key, Property& p);
 };
 
 }  // namespace omm

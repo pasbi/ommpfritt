@@ -122,6 +122,12 @@ Property
   m_properties.insert(key, std::move(property));
   connect(&ref, SIGNAL(value_changed(Property*)),
           this, SLOT(on_property_value_changed(Property*)));
+  connect(&ref, &Property::value_changed, [this, key](Property* property) {
+    assert(property != nullptr);
+    if (Scene* scene = this->scene(); scene != nullptr) {
+      Q_EMIT scene->message_box.property_value_changed(*this, key, *property);
+    }
+  });
   return ref;
 }
 
