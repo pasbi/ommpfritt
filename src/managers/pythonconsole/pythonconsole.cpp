@@ -75,6 +75,7 @@ void PythonConsole ::on_output(const void* associated_item, std::string text, St
 {
   if (accept(associated_item)) {
     m_output->put(text, stream);
+    m_output->scroll_to_bottom();
   }
 }
 
