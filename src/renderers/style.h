@@ -21,7 +21,6 @@ public:
   std::string type() const;
   static constexpr auto TYPE = "Style";
   std::unique_ptr<Style> clone() const;  // provided for interface consistency
-  std::unique_ptr<Style> clone(Scene* scene) const;
   QIcon icon() const;
   Flag flags() const override;
 
@@ -41,9 +40,6 @@ public:
   const MarkerProperties start_marker;
   const MarkerProperties end_marker;
   void on_property_value_changed(Property* property) override;
-
-private:
-  Scene* m_scene = nullptr;
 };
 
 class SolidStyle : public Style

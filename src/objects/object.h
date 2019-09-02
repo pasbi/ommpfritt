@@ -80,10 +80,8 @@ public:
   Object & adopt(std::unique_ptr<Object> adoptee, const size_t pos) override;
   using TreeElement::adopt;
   virtual std::unique_ptr<Object> clone() const = 0;
-  std::unique_ptr<Object> clone(Scene* scene) const;
   virtual std::unique_ptr<Object> convert() const;
   Flag flags() const override;
-  Scene* scene() const;
   bool is_active() const;
   bool is_visible() const;
   virtual std::vector<const omm::Style*> find_styles() const;

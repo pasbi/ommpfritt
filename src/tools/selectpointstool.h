@@ -35,7 +35,7 @@ public:
     tool.handles.push_back(std::make_unique<MoveAxisHandle<ToolT, X>>(tool));
     tool.handles.push_back(std::make_unique<MoveAxisHandle<ToolT, Y>>(tool));
 
-    for (auto* path : type_cast<Path*>(tool.scene.template item_selection<Object>())) {
+    for (auto* path : type_cast<Path*>(tool.scene()->template item_selection<Object>())) {
       tool.handles.reserve(tool.handles.size() + path->points().size());
       for (auto* point : path->points_ref()) {
         auto handle = std::make_unique<PointSelectHandle>(tool, *path, *point);

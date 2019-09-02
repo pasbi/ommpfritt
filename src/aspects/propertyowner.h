@@ -30,7 +30,7 @@ public:
                     Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4, IsView = 0x8 };
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PropertyOwner", "AbstractPropertyOwner");
-  AbstractPropertyOwner() = default;
+  explicit AbstractPropertyOwner(Scene* scene);
   AbstractPropertyOwner(const AbstractPropertyOwner& other);
   ~AbstractPropertyOwner() override;
   Property* property(const std::string& key) const;
@@ -72,12 +72,14 @@ public:
   void copy_properties(AbstractPropertyOwner& target) const;
 
   std::size_t id() const;
+  Scene* scene() const { return m_scene; }
 
 protected Q_SLOTS:
   virtual void on_property_value_changed(Property* property) { Q_UNUSED(property); }
 
 private:
   OrderedMap<std::string, Property> m_properties;
+  Scene* m_scene = nullptr;
 
   /**
    * @brief id_proposal if not 0 then this id shall be used for (de)serialization issues.

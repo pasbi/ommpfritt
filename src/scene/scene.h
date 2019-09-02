@@ -39,9 +39,8 @@ public:
   ~Scene();
 
   static constexpr auto TYPE = "Scene";
-
+  MessageBox message_box;
   ObjectTree object_tree;
-
   StyleList styles;
 
   template<typename ItemT> typename SceneStructure<ItemT>::type& structure();
@@ -136,9 +135,6 @@ public:
   [[nodiscard]] std::unique_ptr<CycleGuard> make_cycle_guard(const Object* guarded);
 private:
   std::set<const Object*> m_cycle_guarded_objects;
-
-public:
-  MessageBox message_box;
 
 public Q_SLOTS:
   void update_tool();

@@ -21,7 +21,7 @@ bool AbstractSelectHandle::mouse_press(const Vec2f &pos, const QMouseEvent &even
   if (Handle::mouse_press(pos, event, force)) {
     if (force) {
       if (event.modifiers() != extend_selection_modifier) {
-        QSignalBlocker blocker(tool.scene.message_box);
+        QSignalBlocker blocker(tool.scene()->message_box);
         clear();
       }
       set_selected(true);
@@ -222,7 +222,7 @@ transform_tangent(const Vec2f& delta, TangentMode mode, TangentHandle::Tangent t
 
   std::map<Path*, std::map<Point*, Point>> map;
   map[&m_path][&m_point] = new_point;
-  tool.scene.submit<ModifyPointsCommand>(map);
+  tool.scene()->submit<ModifyPointsCommand>(map);
 }
 
 bool PointSelectHandle::tangents_active() const

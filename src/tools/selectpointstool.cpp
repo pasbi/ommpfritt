@@ -72,13 +72,13 @@ void SelectPointsBaseTool::transform_objects(ObjectTransformation t)
     path->update();
   }
 
-  scene.submit(std::make_unique<PointsTransformationCommand>(map));
+  scene()->submit(std::make_unique<PointsTransformationCommand>(map));
 }
 
 
 bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
 {
-  const auto paths = type_cast<Path*>(scene.template item_selection<Object>());
+  const auto paths = type_cast<Path*>(scene()->template item_selection<Object>());
   m_initial_points.clear();
   m_paths.clear();
   Q_UNUSED(force);
@@ -106,7 +106,7 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
 
 bool SelectPointsBaseTool::has_transformation() const
 {
-  for (auto* path : type_cast<Path*>(scene.template item_selection<Object>())) {
+  for (auto* path : type_cast<Path*>(scene()->template item_selection<Object>())) {
     for (auto* point : path->points_ref()) {
       if (point->is_selected) {
         return true;
@@ -121,9 +121,9 @@ BoundingBox SelectPointsBaseTool::bounding_box() const
   static const auto remove_tangents = [](const Point& point) { return point.nibbed(); };
   switch (property(BOUNDING_BOX_MODE_PROPERTY_KEY)->value<BoundingBoxMode>()) {
   case BoundingBoxMode::IncludeTangents:
-    return BoundingBox(::transform<Point, std::vector>(scene.point_selection.points()));
+    return BoundingBox(::transform<Point, std::vector>(scene()->point_selection.points()));
   case BoundingBoxMode::ExcludeTangents:
-    return BoundingBox(::transform<Point, std::vector>(scene.point_selection.points(),
+    return BoundingBox(::transform<Point, std::vector>(scene()->point_selection.points(),
                                                        remove_tangents));
   case BoundingBoxMode::None:
     [[ fallthrough ]];
@@ -137,14 +137,14 @@ bool SelectPointsBaseTool::modifies_points() const { return true; }
 void SelectPointsBaseTool::on_property_value_changed(Property *property)
 {
   if (property == this->property(BOUNDING_BOX_MODE_PROPERTY_KEY)) {
-    Q_EMIT scene.message_box.appearance_changed(*this);
+    Q_EMIT scene()->message_box.appearance_changed(*this);
   }
   AbstractSelectTool::on_property_value_changed(property);
 }
 
 Vec2f SelectPointsBaseTool::selection_center() const
 {
-  return scene.point_selection.center();
+  return scene()->point_selection.center();
 }
 
 std::string SelectPointsTool::type() const { return TYPE; }

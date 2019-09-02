@@ -11,9 +11,9 @@
 namespace omm
 {
 
-Tool::Tool(Scene& scene)
-  : scene(scene)
-{ }
+Tool::Tool(Scene& scene) : PropertyOwner<AbstractPropertyOwner::Kind::Tool>(&scene)
+{
+}
 
 ObjectTransformation Tool::transformation() const { return ObjectTransformation(); }
 

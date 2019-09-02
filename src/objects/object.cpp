@@ -39,7 +39,7 @@ namespace omm
 Style Object::m_bounding_box_style = ContourStyle(omm::Colors::BLACK, 1.0);
 
 Object::Object(Scene* scene)
-  : m_scene(scene)
+  : PropertyOwner<AbstractPropertyOwner::Kind::Object>(scene)
   , tags(*this)
 {
   static const auto category = QObject::tr("basic").toStdString();
@@ -80,7 +80,6 @@ Object::Object(Scene* scene)
 Object::Object(const Object& other)
   : PropertyOwner(other)
   , TreeElement(other)
-  , m_scene(other.m_scene)
   , tags(other.tags, *this)
   , m_draw_children(other.m_draw_children)
   , m_object_tree(other.m_object_tree)
@@ -92,8 +91,7 @@ Object::Object(const Object& other)
 
 Object::~Object()
 {
-  LINFO << "delete " <<  (void*) this;
-  assert(!::contains(m_scene->selection(), this));
+  assert(!::contains(scene()->selection(), this));
 }
 
 ObjectTransformation Object::transformation() const
@@ -213,8 +211,8 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
     const auto child_pointer = make_pointer(children_pointer, i);
     const auto child_type = deserializer.get_string(make_pointer(child_pointer, TYPE_POINTER));
     try {
-      auto child = Object::make(child_type, static_cast<Scene*>(m_scene));
-      child->set_object_tree(m_scene->object_tree);
+      auto child = Object::make(child_type, static_cast<Scene*>(scene()));
+      child->set_object_tree(scene()->object_tree);
       child->deserialize(deserializer, child_pointer);
 
       // TODO adopt sets the global transformation which is reverted by setting the local
@@ -306,16 +304,8 @@ Object &Object::adopt(std::unique_ptr<Object> adoptee, const size_t pos)
   return o;
 }
 
-std::unique_ptr<Object> Object::clone(Scene* scene) const
-{
-  auto clone = this->clone();
-  clone->m_scene = scene;
-  return clone;
-}
-
 std::unique_ptr<Object> Object::convert() const { return clone(); }
 AbstractPropertyOwner::Flag Object::flags() const { return Flag::None; }
-Scene* Object::scene() const { return m_scene; }
 
 void Object::copy_tags(Object& other) const
 {

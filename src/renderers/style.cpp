@@ -20,9 +20,9 @@ namespace omm
 {
 
 Style::Style(Scene *scene)
-  : start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
+  : PropertyOwner<AbstractPropertyOwner::Kind::Style>(scene)
+  , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
-  , m_scene(scene)
 {
   const auto pen_category = QObject::tr("pen").toStdString();
   const auto brush_category = QObject::tr("brush").toStdString();
@@ -96,22 +96,15 @@ void Style::on_property_value_changed(Property *property)
        || property == this->property(BRUSH_IS_ACTIVE_KEY)
        || property == this->property(BRUSH_COLOR_KEY) )
   {
-    if (m_scene != nullptr) {
-      Q_EMIT m_scene->message_box.appearance_changed(*this);
+    if (Scene* scene = this->scene(); scene != nullptr) {
+      Q_EMIT scene->message_box.appearance_changed(*this);
     }
   }
 }
 
 std::unique_ptr<Style> Style::clone() const
 {
-  auto clone = std::make_unique<Style>(m_scene);
-  copy_properties(*clone);
-  return clone;
-}
-
-std::unique_ptr<Style> Style::clone(Scene* scene) const
-{
-  auto clone = std::make_unique<Style>(scene);
+  auto clone = std::make_unique<Style>(scene());
   copy_properties(*clone);
   return clone;
 }

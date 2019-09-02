@@ -47,7 +47,7 @@ bool BrushSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bo
     if (SelectPointsBaseTool::mouse_press(pos, event, force)) {
       return true;
     }
-    for (Object* object : scene.item_selection<Object>()) {
+    for (Object* object : scene()->item_selection<Object>()) {
       auto* path = type_cast<Path*>(object);
       if (path != nullptr) {
         path->deselect_all_points();
@@ -74,7 +74,7 @@ void BrushSelectTool
   const bool extend_selection = !(event.modifiers() & Qt::ControlModifier);
   const double radius = property(RADIUS_PROPERTY_KEY)->value<double>();
   std::list<Point*> points;
-  for (Object* object : scene.item_selection<Object>()) {
+  for (Object* object : scene()->item_selection<Object>()) {
     Path* path = type_cast<Path*>(object);
     if (path) {
       for (Point* point : path->points_ref()) {

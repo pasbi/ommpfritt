@@ -68,8 +68,8 @@ ObjectTransformation AbstractSelectTool::transformation() const
   ObjectTransformation transformation;
   transformation.translate(selection_center());
   if (this->property(ALIGNMENT_PROPERTY_KEY)->template value<size_t>() == 1) {
-    if (scene.item_selection<Object>().size() == 1) {
-      const auto* lonely_object = *scene.item_selection<Object>().begin();
+    if (scene()->item_selection<Object>().size() == 1) {
+      const auto* lonely_object = *scene()->item_selection<Object>().begin();
       transformation.rotate(lonely_object->global_transformation().rotation());
     }
   }
@@ -93,12 +93,12 @@ void AbstractSelectTool::cancel()
 {
   transform_objects(ObjectTransformation());
 
-  Command* cmd = scene.history.last_command();
+  Command* cmd = scene()->history.last_command();
   Tool::cancel();
   if (cmd != nullptr && cmd->is_noop()) {
     cmd->setObsolete(true);
-    QSignalBlocker(&scene.history);
-    scene.history.undo();
+    QSignalBlocker(&scene()->history);
+    scene()->history.undo();
   }
 }
 

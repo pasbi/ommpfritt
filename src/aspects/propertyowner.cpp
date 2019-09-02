@@ -5,7 +5,7 @@
 #include "external/json.hpp"
 #include "serializers/abstractserializer.h"
 #include "properties/referenceproperty.h"
-
+#include "scene/scene.h"
 namespace
 {
   constexpr auto PROPERTIES_POINTER = "properties";
@@ -22,6 +22,11 @@ const std::string AbstractPropertyOwner::NAME_PROPERTY_KEY = "name";
 const OrderedMap<std::string, Property>& AbstractPropertyOwner::properties() const
 {
   return m_properties;
+}
+
+AbstractPropertyOwner::AbstractPropertyOwner(Scene *scene)
+  : m_scene(scene)
+{
 }
 
 AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner &other)

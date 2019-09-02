@@ -35,7 +35,7 @@ bool Handle::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent&
     }
   }
   if (m_status != old_status) {
-    Q_EMIT tool.scene.message_box.appearance_changed(tool);
+    Q_EMIT tool.scene()->message_box.appearance_changed(tool);
   }
   return false;
 }

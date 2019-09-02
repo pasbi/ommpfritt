@@ -12,7 +12,9 @@
 namespace omm
 {
 
-Tag::Tag(Object& owner) : owner(&owner)
+Tag::Tag(Object& owner)
+  : PropertyOwner<AbstractPropertyOwner::Kind::Tag>(owner.scene())
+  , owner(&owner)
 {
   create_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>").toStdString())
     .set_label(QObject::tr("Name").toStdString())

@@ -26,7 +26,7 @@ bool KnifeTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEve
     return true;
   } else if (m_is_cutting) {
     m_points.clear();
-    for (auto&& path : ::type_cast<Path*>(scene.item_selection<Object>())) {
+    for (auto&& path : ::type_cast<Path*>(scene()->item_selection<Object>())) {
       auto ts = path->cut(m_mouse_press_pos, m_mouse_move_pos);
       const auto g = path->global_transformation(false);
       const auto ps = ::transform<Point>(ts, [&path, g](const double t) {
@@ -55,11 +55,11 @@ void KnifeTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
 {
   if (m_is_cutting) {
     std::map<Path*, std::vector<Path::PointSequence>> sequencess;
-    for (auto&& path : ::type_cast<Path*>(scene.item_selection<Object>())) {
+    for (auto&& path : ::type_cast<Path*>(scene()->item_selection<Object>())) {
       const auto ts = path->cut(m_mouse_press_pos, m_mouse_move_pos);
       sequencess[path] = path->get_point_sequences(ts);
     }
-    scene.submit<AddPointsCommand>(sequencess);
+    scene()->submit<AddPointsCommand>(sequencess);
     reset();
   }
   SelectPointsBaseTool::mouse_release(pos, event);
