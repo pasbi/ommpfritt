@@ -119,7 +119,7 @@ mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Debug \
       -DCMAKE_CXX_COMPILER=g++-8 \
-      -DQT_QM_PATH=/usr/share/qt5/translations/
+      -DQT_QM_PATH=/usr/share/qt5/translations/ \
       ..
 make
 ./ommpfritt
