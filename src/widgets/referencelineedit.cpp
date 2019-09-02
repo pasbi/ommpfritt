@@ -27,6 +27,13 @@ ReferenceLineEdit::ReferenceLineEdit(QWidget* parent) : QComboBox(parent)
   QTimer::singleShot(1, this, SLOT(convert_text_to_placeholder_text()));
 }
 
+ReferenceLineEdit::~ReferenceLineEdit()
+{
+  for (const auto& c : m_connections) {
+    disconnect(c);
+  }
+}
+
 void ReferenceLineEdit::set_null_label(const std::string& value)
 {
   m_null_label = value;
@@ -48,6 +55,16 @@ void ReferenceLineEdit::set_scene(Scene &scene)
   connect(&m_scene->message_box, SIGNAL(object_inserted(Object&, Object&)),
           this, SLOT(update_candidates()));
   connect(&m_scene->message_box, SIGNAL(scene_reseted()), this, SLOT(update_candidates()));
+  const auto c = connect(&m_scene->message_box, &MessageBox::property_value_changed,
+          [this](AbstractPropertyOwner& owner, const std::string& key, Property&)
+  {
+    if (static_cast<bool>(owner.flags() & AbstractPropertyOwner::Flag::HasScript)) {
+      if (key == AbstractPropertyOwner::NAME_PROPERTY_KEY) {
+        update_candidates();
+      }
+    }
+  });
+  m_connections.push_back(c);
   update_candidates();
 }
 

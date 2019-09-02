@@ -19,7 +19,7 @@ class ReferenceLineEdit
   Q_OBJECT
 public:
   explicit ReferenceLineEdit(QWidget *parent = nullptr);
-  ~ReferenceLineEdit() = default;
+  ~ReferenceLineEdit();
   void set_value(const value_type& value) override;
   value_type value() const override;
   void set_filter(AbstractPropertyOwner::Kind allowed_kinds);
@@ -43,7 +43,7 @@ private:
 
   std::vector<omm::AbstractPropertyOwner*> collect_candidates();
   std::string m_null_label;
-
+  std::list<QMetaObject::Connection> m_connections;
 public Q_SLOTS:
   void update_candidates();
 
