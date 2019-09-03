@@ -17,6 +17,7 @@ public:
   explicit BoundingBox(const std::vector<Vec2f>& points);
   explicit BoundingBox(const std::vector<double>& xs, const std::vector<double>& ys);
   explicit BoundingBox(const std::vector<Point>& points);
+  explicit BoundingBox(const std::vector<BoundingBox>& bbs);
 
   bool contains(const BoundingBox& other) const;
   using Rectangle::contains;

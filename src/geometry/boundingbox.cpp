@@ -36,6 +36,19 @@ std::vector<omm::Vec2f> get_all_control_points(const std::vector<omm::Point>& po
   return std::vector(control_points.begin(), control_points.end());
 }
 
+std::vector<omm::Vec2f> get_all_points(const std::vector<omm::BoundingBox>& bbs)
+{
+  std::vector<omm::Vec2f> points;
+  points.reserve(bbs.size() * 4);
+  for (const omm::BoundingBox& bb : bbs) {
+    points.push_back(bb.top_left());
+    points.push_back(bb.top_right());
+    points.push_back(bb.bottom_left());
+    points.push_back(bb.bottom_right());
+  }
+  return points;
+}
+
 }
 
 namespace omm
@@ -53,6 +66,11 @@ BoundingBox::BoundingBox(const std::vector<double>& xs, const std::vector<double
 
 BoundingBox::BoundingBox(const std::vector<Point>& points)
   : BoundingBox(get_all_control_points(points)) {}
+
+BoundingBox::BoundingBox(const std::vector<BoundingBox> &bbs)
+  : BoundingBox(get_all_points(bbs))
+{
+}
 
 bool BoundingBox::contains(const BoundingBox& other) const
 {

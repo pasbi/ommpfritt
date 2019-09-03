@@ -62,6 +62,10 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
     update_bounding_box();
   });
 
+  connect(m_align_combo_box, qOverload<int>(&QComboBox::currentIndexChanged), [this]() {
+    update_bounding_box();
+  });
+
   connect(m_anchor_widget, &AnchorWidget::anchor_changed, [this]() {
     update_bounding_box();
   });
@@ -90,19 +94,43 @@ void BoundingBoxManager::on_property_value_changed(Property &property)
 
 void BoundingBoxManager::update_bounding_box()
 {
-  if (current_mode() == Mode::Points) {
-    const BoundingBox bb(::transform<Point, std::vector>(scene().point_selection.points()));
-    const Vec2f anchor = m_anchor_widget->anchor_position(bb);
-    m_pos_x_field->set_value(anchor.x);
-    m_pos_y_field->set_value(anchor.y);
-    m_size_x_field->set_value(bb.width());
-    m_size_y_field->set_value(bb.height());
-  }
+  const BoundingBox bb = [this, mode=current_mode()]() {
+    switch (mode) {
+    case Mode::Points:
+      return BoundingBox(::transform<Point, std::vector>(scene().point_selection.points()));
+    case Mode::Objects:
+      return BoundingBox(::transform<BoundingBox, std::vector>(scene().item_selection<Object>(),
+                                                               [this](const Object* o)
+      {
+        switch (current_align()) {
+        case Align::Local:
+          return o->recursive_bounding_box(o->transformation());
+        case Align::Global:
+          return o->recursive_bounding_box(o->global_transformation(true));
+        default:
+          return BoundingBox();
+        }
+      }));
+    default:
+      return BoundingBox();
+    }
+  }();
+
+  const Vec2f anchor = m_anchor_widget->anchor_position(bb);
+  m_pos_x_field->set_value(anchor.x);
+  m_pos_y_field->set_value(anchor.y);
+  m_size_x_field->set_value(bb.width());
+  m_size_y_field->set_value(bb.height());
 }
 
 BoundingBoxManager::Mode BoundingBoxManager::current_mode() const
 {
   return static_cast<Mode>(m_mode_combo_box->currentIndex());
+}
+
+BoundingBoxManager::Align BoundingBoxManager::current_align() const
+{
+  return static_cast<Align>(m_align_combo_box->currentIndex());
 }
 
 }  // namespace omm
