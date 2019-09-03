@@ -27,13 +27,6 @@ ReferenceLineEdit::ReferenceLineEdit(QWidget* parent) : QComboBox(parent)
   QTimer::singleShot(1, this, SLOT(convert_text_to_placeholder_text()));
 }
 
-ReferenceLineEdit::~ReferenceLineEdit()
-{
-  for (const auto& c : m_connections) {
-    disconnect(c);
-  }
-}
-
 void ReferenceLineEdit::set_null_label(const std::string& value)
 {
   m_null_label = value;
@@ -50,12 +43,18 @@ void ReferenceLineEdit::set_scene(Scene &scene)
   assert(m_scene == nullptr);
   m_scene = &scene;
   assert(m_scene != nullptr);
-  connect(&m_scene->message_box, SIGNAL(object_removed(Object&, Object&)),
-          this, SLOT(update_candidates()));
-  connect(&m_scene->message_box, SIGNAL(object_inserted(Object&, Object&)),
-          this, SLOT(update_candidates()));
-  connect(&m_scene->message_box, SIGNAL(scene_reseted()), this, SLOT(update_candidates()));
-  const auto c = connect(&m_scene->message_box, &MessageBox::property_value_changed,
+  const auto update_candidates_maybe = [this](Object&, AbstractPropertyOwner& object) {
+    if (static_cast<bool>(object.flags() & AbstractPropertyOwner::Flag::HasScript)) {
+      update_candidates();
+    }
+  };
+
+  regc(connect(&m_scene->message_box, &MessageBox::object_removed, update_candidates_maybe));
+  regc(connect(&m_scene->message_box, &MessageBox::object_inserted, update_candidates_maybe));
+  regc(connect(&m_scene->message_box, &MessageBox::tag_inserted, update_candidates_maybe));
+  regc(connect(&m_scene->message_box, &MessageBox::tag_removed, update_candidates_maybe));
+  regc(connect(&m_scene->message_box, SIGNAL(scene_reseted()), this, SLOT(update_candidates())));
+  regc(connect(&m_scene->message_box, &MessageBox::property_value_changed,
           [this](AbstractPropertyOwner& owner, const std::string& key, Property&)
   {
     if (static_cast<bool>(owner.flags() & AbstractPropertyOwner::Flag::HasScript)) {
@@ -63,8 +62,7 @@ void ReferenceLineEdit::set_scene(Scene &scene)
         update_candidates();
       }
     }
-  });
-  m_connections.push_back(c);
+  }));
   update_candidates();
 }
 
