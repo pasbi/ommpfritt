@@ -6,67 +6,30 @@
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
 #include "mainwindow/viewport/viewport.h"
+#include "ui_boundingboxmanager.h"
 
 namespace omm
 {
 
 BoundingBoxManager::BoundingBoxManager(Scene& scene)
   : Manager(tr("Bounding Box Manager"), scene)
+  , m_ui(new ::Ui::BoundingBoxManager)
 {
   setObjectName(TYPE);
+
   auto widget = std::make_unique<QWidget>();
-  auto grid_layout = std::make_unique<QGridLayout>();
-  auto hlayout = std::make_unique<QHBoxLayout>();
-  auto layout = std::make_unique<QVBoxLayout>();
-
-  auto pos_label = std::make_unique<QLabel>(tr("Pos:"));
-  auto pos_x_field = std::make_unique<DoubleNumericEdit>();
-  m_pos_x_field = pos_x_field.get();
-  auto pos_y_field = std::make_unique<DoubleNumericEdit>();
-  m_pos_y_field = pos_y_field.get();
-  grid_layout->addWidget(pos_label.release(), 0, 0, Qt::AlignRight);
-  grid_layout->addWidget(pos_x_field.release(), 0, 1);
-  grid_layout->addWidget(pos_y_field.release(), 0, 2);
-
-  auto size_label = std::make_unique<QLabel>(tr("Size:"));
-  auto size_x_field = std::make_unique<DoubleNumericEdit>();
-  m_size_x_field = size_x_field.get();
-  auto size_y_field = std::make_unique<DoubleNumericEdit>();
-  m_size_y_field = size_y_field.get();
-  grid_layout->addWidget(size_label.release(), 1, 0, Qt::AlignRight);
-  grid_layout->addWidget(size_x_field.release(), 1, 1);
-  grid_layout->addWidget(size_y_field.release(), 1, 2);
-
-  auto anchor_widget = std::make_unique<AnchorWidget>();
-  m_anchor_widget = anchor_widget.get();
-  grid_layout->addWidget(anchor_widget.release(), 0, 3, 2, 1);
-
-  auto mode_combobox = std::make_unique<QComboBox>();
-  mode_combobox->addItem(tr("Points"));
-  mode_combobox->addItem(tr("Objects"));
-  m_mode_combo_box = mode_combobox.get();
-  hlayout->addWidget(mode_combobox.release());
-
-  auto align_combobox = std::make_unique<QComboBox>();
-  align_combobox->addItem(tr("World"));
-  align_combobox->addItem(tr("Local"));
-  m_align_combo_box = align_combobox.get();
-  hlayout->addWidget(align_combobox.release());
-
-  layout->addLayout(grid_layout.release());
-  layout->addLayout(hlayout.release());
-  widget->setLayout(layout.release());
+  m_ui->setupUi(widget.get());
   set_widget(std::move(widget));
 
-  connect(m_mode_combo_box, qOverload<int>(&QComboBox::currentIndexChanged), [this]() {
+  connect(m_ui->cb_mode, qOverload<int>(&QComboBox::currentIndexChanged), [this]() {
     update_bounding_box();
   });
 
-  connect(m_align_combo_box, qOverload<int>(&QComboBox::currentIndexChanged), [this]() {
+  connect(m_ui->cb_align, qOverload<int>(&QComboBox::currentIndexChanged), [this]() {
     update_bounding_box();
   });
 
-  connect(m_anchor_widget, &AnchorWidget::anchor_changed, [this]() {
+  connect(m_ui->w_anchor, &AnchorWidget::anchor_changed, [this]() {
     update_bounding_box();
   });
 
@@ -118,21 +81,26 @@ void BoundingBoxManager::update_bounding_box()
     }
   }();
 
-  const Vec2f anchor = m_anchor_widget->anchor_position(bb);
-  m_pos_x_field->set_value(anchor.x);
-  m_pos_y_field->set_value(anchor.y);
-  m_size_x_field->set_value(bb.width());
-  m_size_y_field->set_value(bb.height());
+  const Vec2f anchor = m_ui->w_anchor->anchor_position(bb);
+  m_ui->sp_x->set_value(anchor.x);
+  m_ui->sp_y->set_value(anchor.y);
+  m_ui->sp_w->set_value(bb.width());
+  m_ui->sp_h->set_value(bb.height());
 }
 
 BoundingBoxManager::Mode BoundingBoxManager::current_mode() const
 {
-  return static_cast<Mode>(m_mode_combo_box->currentIndex());
+  return static_cast<Mode>(m_ui->cb_mode->currentIndex());
 }
 
 BoundingBoxManager::Align BoundingBoxManager::current_align() const
 {
-  return static_cast<Align>(m_align_combo_box->currentIndex());
+  return static_cast<Align>(m_ui->cb_align->currentIndex());
+}
+
+void BoundingBoxManager::UiBoundingBoxManagerDeleter::operator()(Ui::BoundingBoxManager* ui)
+{
+  delete ui;
 }
 
 }  // namespace omm

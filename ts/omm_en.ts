@@ -24,6 +24,45 @@
     </message>
 </context>
 <context>
+    <name>BoundingBoxManager</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pos.&amp;x:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Width:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pos.&amp;y:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local</source>
+        <translation type="unfinished">Local</translation>
+    </message>
+    <message>
+        <source>Global</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Points</source>
+        <translation type="unfinished">Points</translation>
+    </message>
+    <message>
+        <source>Objects</source>
+        <translation type="unfinished">Objects</translation>
+    </message>
+    <message>
+        <source>&amp;Height:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ColorProperty</name>
     <message>
         <source>ColorProperty</source>
@@ -1367,30 +1406,6 @@ Remove the selected items anyway?</translation>
     <message>
         <source>Bounding Box Manager</source>
         <translation>Boundin Box Manager</translation>
-    </message>
-    <message>
-        <source>Pos:</source>
-        <translation>Pos:</translation>
-    </message>
-    <message>
-        <source>Size:</source>
-        <translation>Size:</translation>
-    </message>
-    <message>
-        <source>Points</source>
-        <translation>Points</translation>
-    </message>
-    <message>
-        <source>Objects</source>
-        <translation>Objects</translation>
-    </message>
-    <message>
-        <source>World</source>
-        <translation>World</translation>
-    </message>
-    <message>
-        <source>Local</source>
-        <translation>Local</translation>
     </message>
 </context>
 <context>

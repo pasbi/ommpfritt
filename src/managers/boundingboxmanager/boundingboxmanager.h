@@ -4,13 +4,12 @@
 #include "widgets/numericedit.h"
 #include "aspects/propertyowner.h"
 
-class QComboBox;
+namespace Ui { class BoundingBoxManager; }
 
 namespace omm
 {
 
 class AbstractPropertyOwner;
-class AnchorWidget;
 
 class BoundingBoxManager : public Manager
 {
@@ -25,10 +24,16 @@ public Q_SLOTS:
 
 private:
   enum class Mode { Points = 0, Objects = 1 };
-  DoubleNumericEdit *m_pos_x_field, *m_pos_y_field, *m_size_x_field, *m_size_y_field;
-  QComboBox *m_mode_combo_box, *m_align_combo_box;
-  AnchorWidget *m_anchor_widget;
+  enum class Align { Local = 0, Global = 1 };
   Mode current_mode() const;
+  Align current_align() const;
+
+  struct UiBoundingBoxManagerDeleter
+  {
+    void operator()(::Ui::BoundingBoxManager* ui);
+  };
+
+  std::unique_ptr<::Ui::BoundingBoxManager, UiBoundingBoxManagerDeleter> m_ui;
 
 private Q_SLOTS:
   void update_bounding_box();
