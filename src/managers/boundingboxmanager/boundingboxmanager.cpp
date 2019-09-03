@@ -70,10 +70,12 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
     update_bounding_box();
   });
 
-  connect(&scene.tool_box, &ToolBox::active_tool_changed, [this](const Tool& tool) {
+  const auto adjust_mode =  [this](const Tool& tool) {
     int index = tool.modifies_points() ? 0 : 1;
-    m_mode_combo_box->setCurrentIndex(index);
-  });
+    m_ui->cb_mode->setCurrentIndex(index);
+  };
+  connect(&scene.tool_box, &ToolBox::active_tool_changed, adjust_mode);
+  adjust_mode(scene.tool_box.active_tool());
 
   connect(&scene.message_box, SIGNAL(selection_changed(std::set<Object*>)),
           this, SLOT(update_bounding_box()));
