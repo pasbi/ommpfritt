@@ -3,7 +3,6 @@
 #include <stack>
 #include "managers/manager.h"
 #include <memory>
-#include "python/pythonengine.h"
 #include <string>
 #include "keybindings/commandinterface.h"
 #include "common.h"
@@ -19,6 +18,7 @@ class PythonConsole : public Manager, public CommandInterface
   Q_OBJECT
 public:
   explicit PythonConsole(Scene& scene);
+  ~PythonConsole();
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PythonConsole");
   std::string type() const override;
@@ -53,7 +53,8 @@ private Q_SLOTS:
   void on_output(const void* associated_item, std::string content, Stream stream);
 
 private:
-  pybind11::dict m_locals;
+  // allocation on stack issues strange compiler warnings
+  void* m_locals = nullptr;
 
 };
 

@@ -67,8 +67,13 @@ PythonConsole::PythonConsole(Scene& scene)
           this, SLOT(on_output(const void*, std::string, Stream)));
   {
     using namespace pybind11::literals;
-    m_locals = pybind11::dict("scene"_a=SceneWrapper(scene));
+    m_locals = new pybind11::dict("scene"_a=SceneWrapper(scene));
   }
+}
+
+PythonConsole::~PythonConsole()
+{
+  delete static_cast<pybind11::dict*>(m_locals);
 }
 
 void PythonConsole ::on_output(const void* associated_item, std::string text, Stream stream)
@@ -95,8 +100,7 @@ void PythonConsole::eval()
   push_command(code);
   m_output->put(QObject::tr(">>> ", "PythonConsole").toStdString() + code, Stream::stdout_);
 
-  scene().python_engine.exec(code, m_locals, nullptr);
-//  auto result = scene().python_engine.eval(code, locals, nullptr);
+  scene().python_engine.exec(code, *static_cast<pybind11::dict*>(m_locals), nullptr);
 
   m_commandline->clear();
 }
