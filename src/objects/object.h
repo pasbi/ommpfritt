@@ -135,7 +135,6 @@ protected:
 
 private:
   friend class ObjectView;
-  void set_scene(Scene* scene);
 
 public:
   void set_object_tree(ObjectTree& object_tree);

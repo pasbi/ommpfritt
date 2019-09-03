@@ -30,6 +30,7 @@ AbstractPropertyOwner::AbstractPropertyOwner(Scene *scene)
 }
 
 AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner &other)
+  : m_scene(other.m_scene)
 {
   for (auto&& key : other.m_properties.keys()) {
     add_property(key, other.m_properties.at(key)->clone());
