@@ -33,7 +33,7 @@ double Rectangle::height() const { return bottom() - top(); }
 
 Rectangle::operator QRectF() const
 {
-  return QRectF(m_top_left.to_point(), m_bottom_right.to_point());
+  return QRectF(m_top_left.to_pointf(), m_bottom_right.to_pointf());
 }
 
 std::vector<Point> Rectangle::to_points() const
