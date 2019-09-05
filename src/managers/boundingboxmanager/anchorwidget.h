@@ -20,6 +20,7 @@ public:
   void leaveEvent(QEvent *event) override;
   QSize minimumSizeHint() const override;
   Vec2f anchor_position(const QRectF& grid) const;
+  static QPointF anchor_position(const QRectF& grid, const Anchor& anchor);
 
 Q_SIGNALS:
   void anchor_changed(Anchor anchor);
@@ -33,7 +34,6 @@ private:
   QRectF anchor_grid() const;
   QPointF m_mouse_pos;
   QRectF anchor_rect(const QPointF& pos) const;
-  static QPointF anchor_position(const QRectF& grid, const Anchor& anchor);
   static constexpr std::array<Anchor, 5> PROPER_ANCHORS { Anchor::TopLeft, Anchor::BottomLeft,
                                                           Anchor::TopRight, Anchor::BottomRight,
                                                           Anchor::Center };

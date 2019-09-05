@@ -43,11 +43,7 @@
     </message>
     <message>
         <source>Local</source>
-        <translation type="unfinished">Local</translation>
-    </message>
-    <message>
-        <source>Global</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Local</translation>
     </message>
     <message>
         <source>Points</source>

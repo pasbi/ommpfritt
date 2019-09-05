@@ -3,6 +3,7 @@
 #include "managers/manager.h"
 #include "widgets/numericedit.h"
 #include "aspects/propertyowner.h"
+#include "geometry/boundingbox.h"
 
 namespace Ui { class BoundingBoxManager; }
 
@@ -24,9 +25,11 @@ public Q_SLOTS:
 
 private:
   enum class Mode { Points = 0, Objects = 1 };
-  enum class Align { Local = 0, Global = 1 };
   Mode current_mode() const;
-  Align current_align() const;
+  void update_points();
+  void update_objects();
+  BoundingBox bounding_box() const;
+  BoundingBox m_old_bounding_box;
 
   struct UiBoundingBoxManagerDeleter
   {
@@ -36,7 +39,11 @@ private:
   std::unique_ptr<::Ui::BoundingBoxManager, UiBoundingBoxManagerDeleter> m_ui;
 
 private Q_SLOTS:
+  void update_manager();
   void update_bounding_box();
+
+  void block_signals();
+  void unblock_signals();
 
 };
 
