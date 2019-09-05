@@ -40,4 +40,6 @@ private:
 
 };
 
+bool operator==(const Rectangle& a, const Rectangle& b);
+
 }  // namespace omm

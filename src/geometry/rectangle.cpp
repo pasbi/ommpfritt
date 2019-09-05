@@ -41,4 +41,9 @@ std::vector<Point> Rectangle::to_points() const
   return { Point(top_left()), Point(top_right()), Point(bottom_right()), Point(bottom_left()) };
 }
 
+bool operator==(const Rectangle &a, const Rectangle &b)
+{
+  return a.top_left() == b.top_left() && a.bottom_right() == b.bottom_right();
+}
+
 }  // namespace omm
