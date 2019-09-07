@@ -30,6 +30,7 @@ double Rectangle::right() const { return bottom_right().x; }
 double Rectangle::bottom() const { return bottom_right().y; }
 double Rectangle::width() const { return right() - left(); }
 double Rectangle::height() const { return bottom() - top(); }
+Vec2f Rectangle::size() const { return Vec2f(width(), height()); }
 
 Rectangle::operator QRectF() const
 {

@@ -30,6 +30,7 @@ public:
   double bottom() const;
   double width() const;
   double height() const;
+  omm::Vec2f size() const;
 
   std::vector<Point> to_points() const;
 
