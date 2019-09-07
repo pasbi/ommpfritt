@@ -2,6 +2,7 @@
 #include <cmath>
 #include <ostream>
 #include <QTransform>
+#include "logging.h"
 
 #include "geometry/objecttransformation.h"
 
@@ -119,10 +120,21 @@ void ObjectTransformation::set_mat(const Matrix& mat)
   // m_rotation = atan2(b, a);
 
   // translation * rotation * scaling * shearing
-  const auto n = sqrt(pow(b, 2.0) + pow(d, 2.0));
-  m_rotation = -atan2(b, d);
-  m_scaling = Vec2f((a*d - b*c) / n, n);
-  m_shearing = (a*b + c*d) / pow(n, 2.0);
+
+  static constexpr double eps = 0.000001;
+  const auto sy = sqrt(std::pow(b, 2.0) + std::pow(d, 2.0));
+  if (sy > eps) {
+    m_rotation = -atan2(b, d);
+    m_scaling = Vec2f((a*d - b*c) / sy, sy);
+    m_shearing = (a*b + c*d) / std::pow(sy, 2.0);
+  } else {
+    // since sy is so small, there is no way to get the shearing. Let's assume it is zero.
+    m_shearing = 0.0;
+
+    // since sy is so small, the unknown shearing does not affect the rotation:
+    m_rotation = std::atan2(c, a);
+    m_scaling = Vec2f(std::sqrt(std::pow(c, 2.0) + std::pow(a, 2.0)), sy);
+  }
 }
 
 Vec2f ObjectTransformation::translation() const { return m_translation; }
@@ -245,6 +257,12 @@ bool ObjectTransformation::is_identity() const { return *this == ObjectTransform
 QTransform ObjectTransformation::to_qtransform() const
 {
   return QTransform(to_mat().to_qmatrix());
+}
+
+bool ObjectTransformation::has_nan() const
+{
+  return   m_translation.has_nan() || m_scaling.has_nan()
+         || std::isnan(m_shearing) || std::isnan(m_rotation);
 }
 
 ObjectTransformation ObjectTransformation::transformed(const ObjectTransformation& other) const
