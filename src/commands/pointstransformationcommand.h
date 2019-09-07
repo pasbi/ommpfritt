@@ -14,7 +14,7 @@ class PointsTransformationCommand : public Command
 {
 public:
   using Map = std::map<std::pair<Path*, std::size_t>, Point>;
-  PointsTransformationCommand(const Map& old_points);
+  PointsTransformationCommand(const Map& new_points);
   void undo() override;
   void redo() override;
   int id() const override;
