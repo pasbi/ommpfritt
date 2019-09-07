@@ -232,8 +232,10 @@ std::string Scene::filename() const
 
 void Scene::submit(std::unique_ptr<Command> command)
 {
-  history.push(std::move(command));
-  Q_EMIT message_box.filename_changed();
+  if (command != nullptr) {
+    history.push(std::move(command));
+    Q_EMIT message_box.filename_changed();
+  }
 }
 
 std::set<Tag*> Scene::tags() const
