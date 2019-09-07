@@ -10,6 +10,21 @@
 namespace omm
 {
 
+class TransformPointsHelper
+{
+public:
+  explicit TransformPointsHelper(bool skip_root);
+  std::unique_ptr<PointsTransformationCommand> make_command(const ObjectTransformation& t);
+  void update(const std::set<Path *> &paths);
+  void update();
+  bool is_empty() const { return m_initial_points.size() == 0; }
+
+private:
+  PointsTransformationCommand::Map m_initial_points;
+  std::set<Path*> m_paths;
+  const bool m_skip_root;
+};
+
 class SelectPointsBaseTool : public AbstractSelectTool
 {
 public:
@@ -52,11 +67,9 @@ public:
 
 protected:
   Vec2f selection_center() const override;
-  PointsTransformationCommand::Map m_initial_points;
 
 private:
-  std::set<Path*> m_paths;
-
+  TransformPointsHelper m_transform_points_helper;
 };
 
 class SelectPointsTool : public SelectPointsBaseTool

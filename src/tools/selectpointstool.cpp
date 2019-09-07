@@ -8,7 +8,9 @@
 namespace omm
 {
 
-SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene) : AbstractSelectTool(scene)
+SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene)
+  : AbstractSelectTool(scene)
+  , m_transform_points_helper(false)
 {
   const auto category = QObject::tr("tool").toStdString();
   create_property<OptionsProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
@@ -46,53 +48,16 @@ std::unique_ptr<QMenu> SelectPointsBaseTool::make_context_menu(QWidget* parent)
 
 void SelectPointsBaseTool::transform_objects(ObjectTransformation t)
 {
-  class TransformationCache : public Cache<Path*, ObjectTransformation>
-  {
-  public:
-    TransformationCache(const Matrix& mat) : m_mat(mat) {}
-    ObjectTransformation retrieve(Path* const& path) const {
-      const Matrix gt = path->global_transformation(false).to_mat();
-      return ObjectTransformation(gt.inverted() * m_mat * gt);
-    }
-  private:
-    const Matrix m_mat;
-  };
-
-  TransformationCache cache(t.to_mat());
-
-  PointsTransformationCommand::Map map;
-  for (auto&& [key, point] : m_initial_points) {
-    const ObjectTransformation premul = cache.get(key.first);
-    auto p = premul.apply(point);
-    p.is_selected = point.is_selected;
-    map.insert(std::pair(key, p));
-  }
-
-  for (Path* path : m_paths) {
-    path->update();
-  }
-
-  scene()->submit(std::make_unique<PointsTransformationCommand>(map));
+  scene()->submit(m_transform_points_helper.make_command(t));
 }
-
 
 bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
 {
   const auto paths = type_cast<Path*>(scene()->template item_selection<Object>());
-  m_initial_points.clear();
-  m_paths.clear();
   Q_UNUSED(force);
   if (AbstractSelectTool::mouse_press(pos, event, false)
     || AbstractSelectTool::mouse_press(pos, event, true)) {
-    for (Path* path : paths) {
-      const std::vector<std::size_t> selected_points = path->selected_points();
-      if (selected_points.size() > 0) {
-        m_paths.insert(path);
-      }
-      for (const std::size_t i : selected_points) {
-        m_initial_points.insert(std::make_pair(std::make_pair(path, i), path->point(i)));
-      }
-    }
+    m_transform_points_helper.update(paths);
     return true;
   } else {
     for (auto* path : paths) {
@@ -121,9 +86,9 @@ BoundingBox SelectPointsBaseTool::bounding_box() const
   static const auto remove_tangents = [](const Point& point) { return point.nibbed(); };
   switch (property(BOUNDING_BOX_MODE_PROPERTY_KEY)->value<BoundingBoxMode>()) {
   case BoundingBoxMode::IncludeTangents:
-    return BoundingBox(::transform<Point, std::vector>(scene()->point_selection.points()));
+    return BoundingBox(::transform<Point, std::vector>(scene()->point_selection.points(false)));
   case BoundingBoxMode::ExcludeTangents:
-    return BoundingBox(::transform<Point, std::vector>(scene()->point_selection.points(),
+    return BoundingBox(::transform<Point, std::vector>(scene()->point_selection.points(false),
                                                        remove_tangents));
   case BoundingBoxMode::None:
     [[ fallthrough ]];
@@ -144,7 +109,7 @@ void SelectPointsBaseTool::on_property_value_changed(Property *property)
 
 Vec2f SelectPointsBaseTool::selection_center() const
 {
-  return scene()->point_selection.center();
+  return scene()->point_selection.center(false);
 }
 
 std::string SelectPointsTool::type() const { return TYPE; }
@@ -156,5 +121,69 @@ void SelectPointsTool::reset()
   handles.push_back(std::make_unique<BoundingBoxHandle<SelectPointsTool>>(*this));
 }
 
+TransformPointsHelper::TransformPointsHelper(bool skip_root) : m_skip_root(skip_root)
+{
+  update();
+}
+
+std::unique_ptr<PointsTransformationCommand>
+TransformPointsHelper::make_command(const ObjectTransformation &t)
+{
+  class TransformationCache : public Cache<Path*, ObjectTransformation>
+  {
+  public:
+    TransformationCache(const Matrix& mat, bool skip_root) : m_mat(mat), m_skip_root(skip_root) {}
+    ObjectTransformation retrieve(Path* const& path) const {
+      const Matrix gt = path->global_transformation(m_skip_root).to_mat();
+      return ObjectTransformation(gt.inverted() * m_mat * gt);
+    }
+  private:
+    const Matrix m_mat;
+    const bool m_skip_root;
+  };
+
+  assert(!t.has_nan());
+  assert(!t.to_mat().has_nan());
+  TransformationCache cache(t.to_mat(), m_skip_root);
+
+  PointsTransformationCommand::Map map;
+
+  bool is_noop = true;
+  for (auto&& [key, point] : m_initial_points) {
+    const ObjectTransformation premul = cache.get(key.first);
+    auto p = premul.apply(point);
+    if (p.is_selected != point.is_selected) {
+      p.is_selected = point.is_selected;
+      is_noop = false;
+    }
+    map.insert(std::pair(key, p));
+  }
+
+  if (!is_noop) {
+    return std::make_unique<PointsTransformationCommand>(map);
+  } else {
+    return nullptr;
+  }
+}
+
+void TransformPointsHelper::update(const std::set<Path*>& paths)
+{
+  m_paths = paths;
+  update();
+}
+
+void TransformPointsHelper::update()
+{
+  m_initial_points.clear();
+  for (Path* path : m_paths) {
+    const std::vector<std::size_t> selected_points = path->selected_points();
+    if (selected_points.size() > 0) {
+      m_paths.insert(path);
+    }
+    for (const std::size_t i : selected_points) {
+      m_initial_points.insert(std::make_pair(std::make_pair(path, i), path->point(i)));
+    }
+  }
+}
 
 }  // namespace omm
