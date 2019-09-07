@@ -3,6 +3,7 @@
 #include "geometry/boundingbox.h"
 #include "geometry/vec2.h"
 #include "geometry/rectangle.h"
+#include <set>
 
 class QRectF;
 
@@ -14,10 +15,10 @@ class BoundingBox : public Rectangle
 {
 public:
   using Rectangle::Rectangle;
-  explicit BoundingBox(const std::vector<Vec2f>& points);
-  explicit BoundingBox(const std::vector<double>& xs, const std::vector<double>& ys);
-  explicit BoundingBox(const std::vector<Point>& points);
-  explicit BoundingBox(const std::vector<BoundingBox>& bbs);
+  explicit BoundingBox(const std::set<Vec2f>& points);
+  explicit BoundingBox(const std::set<double>& xs, const std::set<double>& ys);
+  explicit BoundingBox(const std::set<Point>& points);
+  explicit BoundingBox(const std::set<BoundingBox>& bbs);
 
   bool contains(const BoundingBox& other) const;
   using Rectangle::contains;
@@ -32,4 +33,12 @@ std::ostream& operator<<(std::ostream& ostream, const BoundingBox& bb);
 BoundingBox operator|(const BoundingBox& a, const BoundingBox& b);
 BoundingBox operator|(const BoundingBox& a, const Vec2f& b);
 
+/**
+ * @brief operator < There is no mathematical meaning behind this operator.
+ *  It is only provided to enable BoundingBox as template-parameter in std::set.
+ * @param a
+ * @param b
+ * @return returns whether @code a is smaller than @b
+ */
+bool operator<(const BoundingBox& a, const BoundingBox& b);
 }  // namespace omm

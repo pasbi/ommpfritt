@@ -133,10 +133,10 @@ BoundingBox BoundingBoxManager::update_manager()
   const BoundingBox bb = [this]() {
     switch (current_mode()) {
     case Mode::Points:
-      return BoundingBox(::transform<Point, std::vector>(scene().point_selection.points(Space::Scene)));
+      return BoundingBox(::transform<Point>(scene().point_selection.points(Space::Scene)));
     case Mode::Objects:
-      return BoundingBox(::transform<BoundingBox, std::vector>(scene().item_selection<Object>(),
-                                                               [](const Object* o)
+      return BoundingBox(::transform<BoundingBox>(scene().item_selection<Object>(),
+                                                  [](const Object* o)
       {
         return o->recursive_bounding_box(o->global_transformation(Space::Scene));
       }));

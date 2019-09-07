@@ -8,7 +8,7 @@
 namespace
 {
 
-double min(const std::vector<double>& ds)
+double min(const std::set<double>& ds)
 {
   if (ds.empty()) {
     return 0.0;
@@ -16,7 +16,7 @@ double min(const std::vector<double>& ds)
     return *std::min_element(ds.begin(), ds.end());
   }
 }
-double max(const std::vector<double>& ds)
+double max(const std::set<double>& ds)
 {
   if (ds.empty()) {
     return 0.0;
@@ -25,26 +25,25 @@ double max(const std::vector<double>& ds)
   }
 }
 
-std::vector<omm::Vec2f> get_all_control_points(const std::vector<omm::Point>& points)
+std::set<omm::Vec2f> get_all_control_points(const std::set<omm::Point>& points)
 {
-  std::list<omm::Vec2f> control_points;
+  std::set<omm::Vec2f> control_points;
   for (auto&& p : points) {
-    control_points.push_back(p.left_position());
-    control_points.push_back(p.position);
-    control_points.push_back(p.right_position());
+    control_points.insert(p.left_position());
+    control_points.insert(p.position);
+    control_points.insert(p.right_position());
   }
-  return std::vector(control_points.begin(), control_points.end());
+  return control_points;
 }
 
-std::vector<omm::Vec2f> get_all_points(const std::vector<omm::BoundingBox>& bbs)
+std::set<omm::Vec2f> get_all_points(const std::set<omm::BoundingBox>& bbs)
 {
-  std::vector<omm::Vec2f> points;
-  points.reserve(bbs.size() * 4);
+  std::set<omm::Vec2f> points;
   for (const omm::BoundingBox& bb : bbs) {
-    points.push_back(bb.top_left());
-    points.push_back(bb.top_right());
-    points.push_back(bb.bottom_left());
-    points.push_back(bb.bottom_right());
+    points.insert(bb.top_left());
+    points.insert(bb.top_right());
+    points.insert(bb.bottom_left());
+    points.insert(bb.bottom_right());
   }
   return points;
 }
@@ -54,20 +53,20 @@ std::vector<omm::Vec2f> get_all_points(const std::vector<omm::BoundingBox>& bbs)
 namespace omm
 {
 
-BoundingBox::BoundingBox(const std::vector<Vec2f>& points)
+BoundingBox::BoundingBox(const std::set<Vec2f>& points)
   : BoundingBox( ::transform<double>(points, [](const Vec2f& v) { return v.x; }),
                  ::transform<double>(points, [](const Vec2f& v) { return v.y; }) ) {}
 
-BoundingBox::BoundingBox(const std::vector<double>& xs, const std::vector<double>& ys)
+BoundingBox::BoundingBox(const std::set<double>& xs, const std::set<double>& ys)
   : Rectangle(Vec2f(min(xs), min(ys)), Vec2f(max(xs), max(ys)), xs.empty())
 {
   assert(xs.empty() == ys.empty());
 }
 
-BoundingBox::BoundingBox(const std::vector<Point>& points)
+BoundingBox::BoundingBox(const std::set<Point>& points)
   : BoundingBox(get_all_control_points(points)) {}
 
-BoundingBox::BoundingBox(const std::vector<BoundingBox> &bbs)
+BoundingBox::BoundingBox(const std::set<BoundingBox> &bbs)
   : BoundingBox(get_all_points(bbs))
 {
 }
@@ -133,6 +132,15 @@ BoundingBox operator|(const BoundingBox &a, const Vec2f &b)
     const double bottom = std::max(a.bottom(), b.y);
 
     return BoundingBox(Vec2f(left, top), Vec2f(right, bottom));
+  }
+}
+
+bool operator<(const BoundingBox &a, const BoundingBox &b)
+{
+  if (a.top_left() != b.top_left()) {
+    return a.top_left() < b.top_left();
+  } else {
+    return a.top_right() < b.top_right();
   }
 }
 

@@ -27,7 +27,9 @@ namespace omm
 {
 
 Cubics::Cubics(const std::vector<Point>& points, const bool is_closed)
-  : m_cubics(make_cubics(points, is_closed)), m_bounding_box(points), m_is_closed(is_closed)
+  : m_cubics(make_cubics(points, is_closed))
+  , m_bounding_box(::transform<Point, std::set>(points))
+  , m_is_closed(is_closed)
   , m_path(to_path(points, is_closed))
 {
 }
