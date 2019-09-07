@@ -8,14 +8,31 @@
 #include "mainwindow/viewport/viewport.h"
 #include "ui_boundingboxmanager.h"
 #include "commands/objectstransformationcommand.h"
+#include "objects/path.h"
 
 omm::ObjectTransformation
-find_transformation(const omm::BoundingBox& a, const omm::BoundingBox& b,
+find_transformation(const omm::BoundingBox& old_bb, const omm::BoundingBox& new_bb,
                     omm::AnchorWidget::Anchor anchor, bool keep_aspect_ratio)
 {
-  omm::Vec2f s(b.width() / a.width(), b.height() / a.height());
-  const omm::Vec2f ap = omm::AnchorWidget::anchor_position(a, anchor);
-  const omm::Vec2f bp = omm::AnchorWidget::anchor_position(b, anchor);
+  omm::Vec2f s(1.0, 1.0);
+
+  // if width (or height) of both bounding boxes are zero, the scale should be 1.0 rather than nan.
+  static constexpr double eps = 0.000001;
+  if (std::abs(old_bb.width()) < eps) {
+    assert(std::abs(new_bb.width()) < eps);
+    s.x = 1.0;
+  } else {
+    s.x = new_bb.width() / old_bb.width();
+  }
+  if (std::abs(old_bb.height()) < eps) {
+    assert(std::abs(new_bb.height()) < eps);
+    s.y = 1.0;
+  } else {
+    s.y = new_bb.height() / old_bb.height();
+  }
+
+  const omm::Vec2f ap = omm::AnchorWidget::anchor_position(old_bb, anchor);
+  const omm::Vec2f bp = omm::AnchorWidget::anchor_position(new_bb, anchor);
   const omm::Vec2f t = bp - ap;
 
   if ((s - omm::Vec2f(1.0, 1.0)).euclidean_norm2() < t.euclidean_norm2()) {
@@ -42,6 +59,7 @@ namespace omm
 BoundingBoxManager::BoundingBoxManager(Scene& scene)
   : Manager(tr("Bounding Box Manager"), scene)
   , m_ui(new ::Ui::BoundingBoxManager)
+  , m_transform_points_helper(true)
 {
   setObjectName(TYPE);
 
@@ -50,27 +68,40 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   set_widget(std::move(widget));
 
   connect(m_ui->cb_mode, qOverload<int>(&QComboBox::currentIndexChanged), [this]() {
-    update_manager();
+    reset_transformation();
   });
 
   connect(m_ui->w_anchor, &AnchorWidget::anchor_changed, [this]() {
-    update_manager();
+    reset_transformation();
   });
 
   const auto adjust_mode =  [this](const Tool& tool) {
     int index = tool.modifies_points() ? 0 : 1;
     m_ui->cb_mode->setCurrentIndex(index);
   };
-  connect(&scene.tool_box, &ToolBox::active_tool_changed, adjust_mode);
+
+  regc(connect(&scene.tool_box, &ToolBox::active_tool_changed, adjust_mode));
   adjust_mode(scene.tool_box.active_tool());
 
-  connect(&scene.message_box, SIGNAL(selection_changed(std::set<Object*>)),
-          this, SLOT(update_manager()));
-  QTimer::singleShot(1, [this]() {
-    Viewport* viewport = &Application::instance().main_window()->viewport();
-    assert(viewport != nullptr);
-    connect(viewport, SIGNAL(updated()), this, SLOT(update_manager()));
-  });
+  regc(connect(&scene.message_box,
+               qOverload<const std::set<Object*>&>(&MessageBox::selection_changed),
+               [this](const std::set<Object*>&)
+  {
+    update_manager();
+  }));
+
+  regc(connect(&scene.message_box, qOverload<Object&>(&MessageBox::appearance_changed),
+               [this](Object& o)
+  {
+    Path* path = type_cast<Path*>(&o);
+    if (path != nullptr) {
+       update_manager();
+    }
+  }));
+
+  regc(connect(&scene.message_box, &MessageBox::point_selection_changed, [this]() {
+    update_manager();
+  }));
 
   connect(m_ui->sp_x, SIGNAL(value_changed()), this, SLOT(update_bounding_box()));
   connect(m_ui->sp_y, SIGNAL(value_changed()), this, SLOT(update_bounding_box()));
@@ -78,7 +109,15 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   connect(m_ui->sp_h, SIGNAL(value_changed()), this, SLOT(update_bounding_box()));
 
   m_ui->sp_w->set_lower(0.0);
-  m_ui->sp_w->set_lower(0.0);
+  m_ui->sp_h->set_lower(0.0);
+
+  setFocusPolicy(Qt::StrongFocus);
+
+  m_ui->sp_w->installEventFilter(this);
+  m_ui->sp_h->installEventFilter(this);
+  m_ui->sp_x->installEventFilter(this);
+  m_ui->sp_y->installEventFilter(this);
+
 }
 
 std::string BoundingBoxManager::type() const { return TYPE;  }
@@ -86,15 +125,15 @@ std::string BoundingBoxManager::type() const { return TYPE;  }
 void BoundingBoxManager::on_property_value_changed(Property &property)
 {
   Q_UNUSED(property);
-  update_manager();
+  reset_transformation();
 }
 
-void BoundingBoxManager::update_manager()
+BoundingBox BoundingBoxManager::update_manager()
 {
   const BoundingBox bb = [this]() {
     switch (current_mode()) {
     case Mode::Points:
-      return BoundingBox(::transform<Point, std::vector>(scene().point_selection.points()));
+      return BoundingBox(::transform<Point, std::vector>(scene().point_selection.points(true)));
     case Mode::Objects:
       return BoundingBox(::transform<BoundingBox, std::vector>(scene().item_selection<Object>(),
                                                                [](const Object* o)
@@ -113,17 +152,48 @@ void BoundingBoxManager::update_manager()
   m_ui->sp_w->set_value(bb.width());
   m_ui->sp_h->set_value(bb.height());
   unblock_signals();
-  m_old_bounding_box = bb;
+
+  static constexpr auto eps = 0.00001;
+  if (!m_ui->sp_w->hasFocus()) {
+    m_ui->sp_w->setEnabled(bb.width() > eps);
+  }
+
+  if (!m_ui->sp_h->hasFocus()) {
+    m_ui->sp_h->setEnabled(bb.height() > eps);
+  }
+
+  return bb;
 }
 
 void BoundingBoxManager::update_bounding_box()
 {
+  block_signals();
+  const BoundingBox new_bounding_box = bounding_box();
+
+  if (m_old_bounding_box == new_bounding_box) {
+    return;
+  }
+
+  const bool keep_aspect_ratio = m_ui->cb_aspectratio->isChecked();
+
+  const ObjectTransformation t = find_transformation(m_old_bounding_box, new_bounding_box,
+                                                     m_ui->w_anchor->anchor(), keep_aspect_ratio);
   switch (current_mode()) {
   case Mode::Points:
-    return update_points();
+    update_points(t);
+    break;
   case Mode::Objects:
-    return update_objects();
+    update_objects(t);
+    break;
   }
+
+  unblock_signals();
+}
+
+void BoundingBoxManager::reset_transformation()
+{
+  m_old_bounding_box = update_manager();
+  m_transform_points_helper.update(type_cast<Path*>(scene().item_selection<Object>()));
 }
 
 void BoundingBoxManager::block_signals()
@@ -147,11 +217,6 @@ BoundingBoxManager::Mode BoundingBoxManager::current_mode() const
   return static_cast<Mode>(m_ui->cb_mode->currentIndex());
 }
 
-void BoundingBoxManager::update_points()
-{
-
-}
-
 BoundingBox BoundingBoxManager::bounding_box() const
 {
   const Vec2f anchor(m_ui->sp_x->value(), m_ui->sp_y->value());
@@ -173,18 +238,30 @@ BoundingBox BoundingBoxManager::bounding_box() const
   return BoundingBox(top_left, top_left + size);
 }
 
-void BoundingBoxManager::update_objects()
+void BoundingBoxManager::enterEvent(QEvent *e)
 {
-  block_signals();
-  const BoundingBox new_bounding_box = bounding_box();
+  reset_transformation();
+  Manager::enterEvent(e);
+}
 
-  if (m_old_bounding_box == new_bounding_box) {
-    return;
+bool BoundingBoxManager::eventFilter(QObject *o, QEvent *e)
+{
+  if (o == m_ui->sp_h || o == m_ui->sp_w || o == m_ui->sp_x || o == m_ui->sp_y) {
+    if (e->type() == QEvent::FocusOut) {
+      reset_transformation();
+    }
   }
+  return Manager::eventFilter(o, e);
+}
 
-  const bool keep_aspect_ratio = m_ui->cb_aspectratio->isChecked();
-  const ObjectTransformation t = find_transformation(m_old_bounding_box, new_bounding_box,
-                                                     m_ui->w_anchor->anchor(), keep_aspect_ratio);
+void BoundingBoxManager::update_points(const ObjectTransformation& t)
+{
+  auto cmd = m_transform_points_helper.make_command(t);
+  scene().submit(std::move(cmd));
+}
+
+void BoundingBoxManager::update_objects(const ObjectTransformation& t)
+{
   auto objects = scene().item_selection<Object>();
   Object::remove_internal_children(objects);
 
@@ -202,9 +279,6 @@ void BoundingBoxManager::update_objects()
     scene().submit(std::move(command));
     Q_EMIT scene().message_box.appearance_changed();
   }
-
-  m_old_bounding_box = new_bounding_box;
-  unblock_signals();
 }
 
 void BoundingBoxManager::UiBoundingBoxManagerDeleter::operator()(Ui::BoundingBoxManager* ui)
