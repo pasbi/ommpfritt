@@ -285,11 +285,11 @@ std::vector<Path::PointSequence> Path::remove_points(std::vector<std::size_t> in
 
 AbstractPropertyOwner::Flag Path::flags() const { return Object::flags() | Flag::IsPathLike; }
 
-void Path::set_global_axis_transformation( const ObjectTransformation& global_transformation,
-                                           const bool skip_root )
+void Path::set_global_axis_transformation(const ObjectTransformation& global_transformation,
+                                           Space space )
 {
-  const auto td = global_transformation.inverted().apply(this->global_transformation(skip_root));
-  Object::set_global_axis_transformation(global_transformation, skip_root);
+  const auto td = global_transformation.inverted().apply(this->global_transformation(space));
+  Object::set_global_axis_transformation(global_transformation, space);
   for (auto& point : m_points) {
     point = td.apply(point);
   }
@@ -297,7 +297,7 @@ void Path::set_global_axis_transformation( const ObjectTransformation& global_tr
 
 std::vector<double> Path::cut(const Vec2f& c_start, const Vec2f& c_end)
 {
-  const auto gti = global_transformation().inverted();
+  const auto gti = global_transformation(Space::Viewport).inverted();
   return cubics().cut(gti.apply_to_position(c_start), gti.apply_to_position(c_end));
 }
 

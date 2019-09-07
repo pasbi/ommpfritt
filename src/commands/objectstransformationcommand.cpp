@@ -10,7 +10,7 @@ auto get_old_transformations(std::set<omm::Object*> objects)
   omm::Object::remove_internal_children(objects);
   omm::ObjectsTransformationCommand::Map map;
   for (auto&& object : objects) {
-    map.insert(std::pair(object, object->global_transformation(true)));
+    map.insert(std::pair(object, object->global_transformation(omm::Space::Scene)));
   }
   return map;
 }
@@ -72,10 +72,10 @@ void ObjectsTransformationCommand::apply(const ObjectsTransformationCommand::Map
   for (auto&& [o, t] : map) {
     switch (m_transformation_mode) {
     case TransformationMode::Axis:
-      o->set_global_axis_transformation(t, true);
+      o->set_global_axis_transformation(t, Space::Scene);
       break;
     case TransformationMode::Object:
-      o->set_global_transformation(t, true);
+      o->set_global_transformation(t, Space::Scene);
       break;
     }
   }

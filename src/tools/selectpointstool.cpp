@@ -10,7 +10,7 @@ namespace omm
 
 SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene)
   : AbstractSelectTool(scene)
-  , m_transform_points_helper(false)
+  , m_transform_points_helper(Space::Viewport)
 {
   const auto category = QObject::tr("tool").toStdString();
   create_property<OptionsProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
@@ -86,9 +86,9 @@ BoundingBox SelectPointsBaseTool::bounding_box() const
   static const auto remove_tangents = [](const Point& point) { return point.nibbed(); };
   switch (property(BOUNDING_BOX_MODE_PROPERTY_KEY)->value<BoundingBoxMode>()) {
   case BoundingBoxMode::IncludeTangents:
-    return BoundingBox(::transform<Point, std::vector>(scene()->point_selection.points(false)));
+    return BoundingBox(::transform<Point, std::vector>(scene()->point_selection.points(Space::Viewport)));
   case BoundingBoxMode::ExcludeTangents:
-    return BoundingBox(::transform<Point, std::vector>(scene()->point_selection.points(false),
+    return BoundingBox(::transform<Point, std::vector>(scene()->point_selection.points(Space::Viewport),
                                                        remove_tangents));
   case BoundingBoxMode::None:
     [[ fallthrough ]];
@@ -109,7 +109,7 @@ void SelectPointsBaseTool::on_property_value_changed(Property *property)
 
 Vec2f SelectPointsBaseTool::selection_center() const
 {
-  return scene()->point_selection.center(false);
+  return scene()->point_selection.center(Space::Viewport);
 }
 
 std::string SelectPointsTool::type() const { return TYPE; }
@@ -121,7 +121,7 @@ void SelectPointsTool::reset()
   handles.push_back(std::make_unique<BoundingBoxHandle<SelectPointsTool>>(*this));
 }
 
-TransformPointsHelper::TransformPointsHelper(bool skip_root) : m_skip_root(skip_root)
+TransformPointsHelper::TransformPointsHelper(Space space) : m_space(space)
 {
   update();
 }
@@ -132,19 +132,19 @@ TransformPointsHelper::make_command(const ObjectTransformation &t)
   class TransformationCache : public Cache<Path*, ObjectTransformation>
   {
   public:
-    TransformationCache(const Matrix& mat, bool skip_root) : m_mat(mat), m_skip_root(skip_root) {}
+    TransformationCache(const Matrix& mat, Space space) : m_mat(mat), m_space(space) {}
     ObjectTransformation retrieve(Path* const& path) const {
-      const Matrix gt = path->global_transformation(m_skip_root).to_mat();
+      const Matrix gt = path->global_transformation(m_space).to_mat();
       return ObjectTransformation(gt.inverted() * m_mat * gt);
     }
   private:
     const Matrix m_mat;
-    const bool m_skip_root;
+    const Space m_space;
   };
 
   assert(!t.has_nan());
   assert(!t.to_mat().has_nan());
-  TransformationCache cache(t.to_mat(), m_skip_root);
+  TransformationCache cache(t.to_mat(), m_space);
 
   PointsTransformationCommand::Map map;
 

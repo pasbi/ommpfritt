@@ -46,7 +46,7 @@ void Instance::draw_object(Painter &renderer, const Style& default_style) const
   if (!cycle_guard->inside_cycle() && is_active()) {
     const auto* r = illustrated_object();
     if (r != nullptr) {
-      renderer.push_transformation(r->global_transformation(true).inverted());
+      renderer.push_transformation(r->global_transformation(Space::Scene).inverted());
       r->draw_recursive(renderer, default_style);
       renderer.pop_transformation();
     }

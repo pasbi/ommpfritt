@@ -313,4 +313,6 @@ std::enable_if_t<EnableBitMaskOperators<EnumT>::value, bool> operator!(EnumT a)
   return !static_cast<std::underlying_type_t<EnumT>>(a);
 }
 
+enum class Space { Viewport, Scene };
+
 }

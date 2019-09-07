@@ -83,7 +83,7 @@ void ObjectSelectHandle::draw(Painter &renderer) const
 
 ObjectTransformation ObjectSelectHandle::transformation() const
 {
-  return m_object.global_transformation();
+  return m_object.global_transformation(Space::Viewport);
 }
 
 void ObjectSelectHandle::clear()
@@ -124,7 +124,7 @@ PointSelectHandle::PointSelectHandle(Tool& tool, Path& path, Point& point)
 
 ObjectTransformation PointSelectHandle::transformation() const
 {
-  return m_path.global_transformation();
+  return m_path.global_transformation(Space::Viewport);
 }
 
 bool PointSelectHandle::contains_global(const Vec2f& point) const

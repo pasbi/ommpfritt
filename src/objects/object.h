@@ -48,12 +48,12 @@ public:
 
   void transform(const ObjectTransformation& transformation);
   ObjectTransformation transformation() const;
-  ObjectTransformation global_transformation(const bool skip_root = false) const;
+  ObjectTransformation global_transformation(Space space) const;
   void set_transformation(const ObjectTransformation& transformation);
   void set_global_transformation( const ObjectTransformation& global_transformation,
-                                  const bool skip_root = false );
+                                  Space space );
   virtual void set_global_axis_transformation( const ObjectTransformation& global_transformation,
-                                               const bool skip_root = false );
+                                               Space space);
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
@@ -111,7 +111,7 @@ public:
   virtual double path_length() const;
   virtual bool is_closed() const;
   void set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t,
-                            const bool skip_root);
+                            Space space);
   void set_oriented_position(const Point &op, const bool align);
   virtual PathUniquePtr outline(const double offset) const;
   virtual std::vector<Point> points() const;

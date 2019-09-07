@@ -363,8 +363,8 @@ void Cloner::set_path(Object& object, std::size_t i)
   const double t = get_t(i, o == nullptr ? false : !o->is_closed());
   Point p = o->evaluate(t);
   if (property(ANCHOR_PROPERTY_KEY)->value<std::size_t>() == 0) {
-    p = o->global_transformation(true).apply(p);
-    p = global_transformation(true).inverted().apply(p);
+    p = o->global_transformation(Space::Scene).apply(p);
+    p = global_transformation(Space::Scene).inverted().apply(p);
   }
   object.set_oriented_position(p, align);
 }
@@ -408,8 +408,9 @@ void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
 
 
     if (property(ANCHOR_PROPERTY_KEY)->value<std::size_t>() == 0) {
-      position = area.global_transformation(true).apply_to_position(position);
-      position = global_transformation(true).inverted().apply_to_position(position);
+      const auto gti = global_transformation(Space::Scene).inverted();
+      position = area.global_transformation(Space::Scene).apply_to_position(position);
+      position = gti.apply_to_position(position);
     }
 
     auto t = object.transformation();

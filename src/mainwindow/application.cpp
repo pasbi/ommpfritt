@@ -313,7 +313,7 @@ Object& Application::insert_object(const std::string &key, InsertionMode mode)
   }
 
   scene.submit<add_command_type>(scene.object_tree, std::move(object));
-  ref.set_global_transformation(ObjectTransformation(), true);  // spawn at world-origin
+  ref.set_global_transformation(ObjectTransformation(), Space::Scene);
   using move_command_t = MoveCommand<ObjectTree>;
   using move_context_t = move_command_t::context_type;
   if (!children.empty()) {

@@ -104,14 +104,14 @@ ObjectTransformation Object::transformation() const
   );
 }
 
-ObjectTransformation Object::global_transformation(const bool skip_root) const
+ObjectTransformation Object::global_transformation(Space space) const
 {
-  if (is_root() || (skip_root && tree_parent().is_root())) {
+  if (is_root() || (space == Space::Scene && tree_parent().is_root())) {
     return transformation();
   } else {
     // TODO caching could gain some speed
     //  invalidate cache if local transformation is set or parent changes
-    return tree_parent().global_transformation(skip_root).apply(transformation());
+    return tree_parent().global_transformation(space).apply(transformation());
   }
 }
 
@@ -123,16 +123,16 @@ void Object::set_transformation(const ObjectTransformation& transformation)
   property(SHEAR_PROPERTY_KEY)->set(transformation.shearing());
 }
 
-void Object
-::set_global_transformation(const ObjectTransformation& global_transformation, bool skip_root)
+void Object::
+set_global_transformation(const ObjectTransformation& global_transformation, Space space)
 {
   ObjectTransformation local_transformation;
-  if (is_root() || (skip_root && tree_parent().is_root())) {
+  if (is_root() || (space == Space::Scene && tree_parent().is_root())) {
     local_transformation = global_transformation;
   } else {
     try {
       local_transformation =
-        tree_parent().global_transformation(skip_root).inverted().apply(global_transformation);
+        tree_parent().global_transformation(space).inverted().apply(global_transformation);
     } catch (const std::runtime_error&) {
       assert(false);
     }
@@ -142,16 +142,16 @@ void Object
 
 
 void Object::set_global_axis_transformation( const ObjectTransformation& global_transformation,
-                                             const bool skip_root )
+                                             Space space )
 {
-  const auto get_glob_trans = [skip_root](const auto* c) {
-    return c->global_transformation(skip_root);
+  const auto get_glob_trans = [space](const auto* c) {
+    return c->global_transformation(space);
   };
   const auto child_transformations = ::transform<ObjectTransformation>(tree_children(),
                                                                        get_glob_trans);
-  set_global_transformation(global_transformation, skip_root);
+  set_global_transformation(global_transformation, space);
   for (std::size_t i = 0; i < child_transformations.size(); ++i) {
-    tree_children()[i]->set_global_transformation(child_transformations[i], skip_root);
+    tree_children()[i]->set_global_transformation(child_transformations[i], space);
   }
 }
 
@@ -290,17 +290,17 @@ BoundingBox Object::recursive_bounding_box(const ObjectTransformation& transform
 
 std::unique_ptr<Object> Object::repudiate(Object &repudiatee)
 {
-  const ObjectTransformation global_transformation = repudiatee.global_transformation(true);
+  const auto global_transformation = repudiatee.global_transformation(Space::Scene);
   auto o = TreeElement<Object>::repudiate(repudiatee);
-  repudiatee.set_global_transformation(global_transformation, true);
+  repudiatee.set_global_transformation(global_transformation, Space::Scene);
   return o;
 }
 
 Object &Object::adopt(std::unique_ptr<Object> adoptee, const size_t pos)
 {
-  const ObjectTransformation global_transformation = adoptee->global_transformation(true);
+  const auto global_transformation = adoptee->global_transformation(Space::Scene);
   Object& o = TreeElement<Object>::adopt(std::move(adoptee), pos);
-  o.set_global_transformation(global_transformation, true);
+  o.set_global_transformation(global_transformation, Space::Scene);
   return o;
 }
 
@@ -376,13 +376,13 @@ double Object::path_length() const { return -1.0; }
 bool Object::is_closed() const { return false; }
 
 void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t,
-                                  const bool skip_root)
+                                  Space space)
 {
   if (path != nullptr && path->kind() == AbstractPropertyOwner::Kind::Object) {
     auto* path_object = static_cast<Object*>(path);
     if (!path_object->is_ancestor_of(*this)) {
       const auto location = path_object->evaluate(std::clamp(t, 0.0, 1.0));
-      const auto global_location = path_object->global_transformation(skip_root).apply(location);
+      const auto global_location = path_object->global_transformation(space).apply(location);
       set_oriented_position(global_location, align);
     } else {
       // it wouldn't crash but ux would be really bad. Don't allow cycles.
@@ -393,10 +393,10 @@ void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align,
 
 void Object::set_oriented_position(const Point& op, const bool align)
 {
-  auto transformation = global_transformation();
+  auto transformation = global_transformation(Space::Viewport);
   if (align) { transformation.set_rotation(op.rotation()); }
   transformation.set_translation(op.position);
-  set_global_transformation(transformation);
+  set_global_transformation(transformation, Space::Viewport);
 }
 
 

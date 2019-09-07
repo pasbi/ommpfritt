@@ -67,7 +67,7 @@ bool SelectObjectsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, 
   if (AbstractSelectTool::mouse_press(pos, event, false)
       || AbstractSelectTool::mouse_press(pos, event, true)) {
     for (auto&& o : scene()->item_selection<Object>()) {
-      m_initial_transformations.insert(std::pair(o, o->global_transformation(true)));
+      m_initial_transformations.insert(std::pair(o, o->global_transformation(Space::Scene)));
     }
     return true;
   } else {
@@ -96,7 +96,7 @@ Vec2f SelectObjectsTool::selection_center() const
 
   Vec2f sum(0.0, 0.0);
   for (const auto& o : objects) {
-    sum += o->global_transformation().translation();
+    sum += o->global_transformation(Space::Viewport).translation();
   }
   return sum / static_cast<double>(objects.size());
 }

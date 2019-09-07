@@ -28,7 +28,7 @@ bool KnifeTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEve
     m_points.clear();
     for (auto&& path : ::type_cast<Path*>(scene()->item_selection<Object>())) {
       auto ts = path->cut(m_mouse_press_pos, m_mouse_move_pos);
-      const auto g = path->global_transformation(false);
+      const auto g = path->global_transformation(Space::Viewport);
       const auto ps = ::transform<Point>(ts, [&path, g](const double t) {
         return g.apply(path->evaluate(t));
       });

@@ -56,7 +56,7 @@ std::unique_ptr<Object> View::clone() const { return std::make_unique<View>(*thi
 
 void View::to_viewport()
 {
-  auto t = global_transformation(true).inverted().normalized();
+  auto t = global_transformation(Space::Scene).inverted().normalized();
   auto& viewport = Application::instance().main_window()->viewport();
   const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>();
   const auto sx = viewport.width() / size.x;
@@ -95,7 +95,7 @@ void View::from_viewport()
 {
   const auto& viewport = Application::instance().main_window()->viewport();
   const auto s = Vec2f(double(viewport.size().width()), double(viewport.size().height()));
-  set_global_transformation(ObjectTransformation().translated(s/2.0).normalized(), false);
+  set_global_transformation(ObjectTransformation().translated(s/2.0).normalized(), Space::Viewport);
   property(SIZE_PROPERTY_KEY)->set(s);
 }
 

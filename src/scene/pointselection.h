@@ -2,6 +2,7 @@
 
 #include "geometry/point.h"
 #include <set>
+#include "common.h"
 
 namespace omm
 {
@@ -13,8 +14,8 @@ class PointSelection
 {
 public:
   PointSelection(Scene& scene);
-  std::set<Point> points(bool skip_root) const;
-  Vec2f center(bool skip_root) const;
+  std::set<Point> points(Space space) const;
+  Vec2f center(Space space) const;
 
 private:
   Scene& m_scene;

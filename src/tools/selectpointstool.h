@@ -13,7 +13,7 @@ namespace omm
 class TransformPointsHelper
 {
 public:
-  explicit TransformPointsHelper(bool skip_root);
+  explicit TransformPointsHelper(Space space);
   std::unique_ptr<PointsTransformationCommand> make_command(const ObjectTransformation& t);
   void update(const std::set<Path *> &paths);
   void update();
@@ -22,7 +22,7 @@ public:
 private:
   PointsTransformationCommand::Map m_initial_points;
   std::set<Path*> m_paths;
-  const bool m_skip_root;
+  const Space m_space;
 };
 
 class SelectPointsBaseTool : public AbstractSelectTool

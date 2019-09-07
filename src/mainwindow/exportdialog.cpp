@@ -139,7 +139,7 @@ void ExportDialog::render(QPaintDevice& device, double scale) const
         const auto s = device.width() / double(viewport().width());
         return ObjectTransformation().scaled(Vec2f(s, s)).apply(t);
       } else {
-        const auto t = view->global_transformation(true).inverted();
+        const auto t = view->global_transformation(Space::Scene).inverted();
         const auto view_size = view->property(omm::View::SIZE_PROPERTY_KEY)->value<omm::Vec2f>();
         const auto s = device.width() / double(view_size.x);
         const auto d = view_size/2.0;

@@ -66,7 +66,7 @@ bool AbstractProceduralPath::contains(const Vec2f &pos) const
 
 std::vector<double> AbstractProceduralPath::cut(const Vec2f& c_start, const Vec2f& c_end)
 {
-  const auto gti = global_transformation().inverted();
+  const auto gti = global_transformation(Space::Viewport).inverted();
   return Cubics(m_points, is_closed()).cut( gti.apply_to_position(c_start),
                                             gti.apply_to_position(c_end) );
 }

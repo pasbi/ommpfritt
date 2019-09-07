@@ -59,7 +59,7 @@ namespace omm
 BoundingBoxManager::BoundingBoxManager(Scene& scene)
   : Manager(tr("Bounding Box Manager"), scene)
   , m_ui(new ::Ui::BoundingBoxManager)
-  , m_transform_points_helper(true)
+  , m_transform_points_helper(Space::Scene)
 {
   setObjectName(TYPE);
 
@@ -133,12 +133,12 @@ BoundingBox BoundingBoxManager::update_manager()
   const BoundingBox bb = [this]() {
     switch (current_mode()) {
     case Mode::Points:
-      return BoundingBox(::transform<Point, std::vector>(scene().point_selection.points(true)));
+      return BoundingBox(::transform<Point, std::vector>(scene().point_selection.points(Space::Scene)));
     case Mode::Objects:
       return BoundingBox(::transform<BoundingBox, std::vector>(scene().item_selection<Object>(),
                                                                [](const Object* o)
       {
-        return o->recursive_bounding_box(o->global_transformation(true));
+        return o->recursive_bounding_box(o->global_transformation(Space::Scene));
       }));
     default:
       return BoundingBox();
@@ -268,7 +268,7 @@ void BoundingBoxManager::update_objects(const ObjectTransformation& t)
   ObjectsTransformationCommand::Map transformations;
   for (Object* object : objects) {
     const auto to = [object, t]() {
-      return t.apply(object->global_transformation(true));
+      return t.apply(object->global_transformation(Space::Scene));
     }();
     transformations.insert(std::pair(object, to));
   }
