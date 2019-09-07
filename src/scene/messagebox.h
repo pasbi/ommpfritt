@@ -136,6 +136,11 @@ Q_SIGNALS:
   void filename_changed();
 
   /**
+   * @brief point_selection_changed is emitted when points become (de)selected.
+   */
+  void point_selection_changed();
+
+  /**
    * @brief scene_reseted is emitted when the scene was reset.
    */
   void scene_reseted();

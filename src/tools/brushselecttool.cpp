@@ -74,6 +74,7 @@ void BrushSelectTool
   const bool extend_selection = !(event.modifiers() & Qt::ControlModifier);
   const double radius = property(RADIUS_PROPERTY_KEY)->value<double>();
   std::list<Point*> points;
+  bool is_noop = true;
   for (Object* object : scene()->item_selection<Object>()) {
     Path* path = type_cast<Path*>(object);
     if (path) {
@@ -82,10 +83,16 @@ void BrushSelectTool
         // `radius` will be wrong.
         const auto gpos = path->global_transformation().apply_to_position(point->position);
         if ((gpos - pos).euclidean_norm() < radius) {
-          point->is_selected = extend_selection;
+          if (point->is_selected != extend_selection) {
+            is_noop = false;
+            point->is_selected = extend_selection;
+          }
         }
       }
     }
+  }
+  if (!is_noop) {
+    Q_EMIT scene()->message_box.point_selection_changed();
   }
 }
 

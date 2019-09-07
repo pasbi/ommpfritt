@@ -235,7 +235,10 @@ bool PointSelectHandle::tangents_active() const
 
 void PointSelectHandle::set_selected(bool selected)
 {
-  m_point.is_selected = selected;
+  if (m_point.is_selected != selected) {
+    m_point.is_selected = selected;
+    Q_EMIT tool.scene()->message_box.point_selection_changed();
+  }
 }
 
 void PointSelectHandle::clear()
