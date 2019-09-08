@@ -7,7 +7,6 @@
 #include "mainwindow/mainwindow.h"
 #include "mainwindow/viewport/viewport.h"
 #include "ui_boundingboxmanager.h"
-#include "commands/objectstransformationcommand.h"
 #include "objects/path.h"
 
 namespace {
@@ -114,6 +113,10 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
     update_manager();
   }));
 
+  regc(connect(&scene.message_box, &MessageBox::transformation_changed, [this]() {
+    update_manager();
+  }));
+
   connect(m_ui->sp_x, SIGNAL(value_changed()), this, SLOT(update_bounding_box()));
   connect(m_ui->sp_y, SIGNAL(value_changed()), this, SLOT(update_bounding_box()));
   connect(m_ui->sp_w, SIGNAL(value_changed()), this, SLOT(update_bounding_box()));
@@ -207,7 +210,7 @@ void BoundingBoxManager::update_bounding_box()
     scene().submit(m_transform_points_helper.make_command(t));
     break;
   case Mode::Objects:
-    update_objects(t);
+    scene().submit(m_transform_objects_helper.make_command(t.to_mat()));
     break;
   }
 
@@ -217,7 +220,14 @@ void BoundingBoxManager::update_bounding_box()
 void BoundingBoxManager::reset_transformation()
 {
   m_old_bounding_box = update_manager();
-  m_transform_points_helper.update(type_cast<Path*>(scene().item_selection<Object>()));
+  switch (m_current_mode) {
+  case Mode::Points:
+    m_transform_points_helper.update(type_cast<Path*>(scene().item_selection<Object>()));
+    break;
+  case Mode::Objects:
+    m_transform_objects_helper.update(scene().item_selection<Object>());
+    break;
+  }
 }
 
 void BoundingBoxManager::block_signals()

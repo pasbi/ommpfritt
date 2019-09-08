@@ -5,6 +5,7 @@
 #include "aspects/propertyowner.h"
 #include "geometry/boundingbox.h"
 #include "tools/selectpointstool.h"
+#include "tools/selectobjectstool.h"
 #include "aspects/autoconnectiondeleter.h"
 
 namespace Ui { class BoundingBoxManager; }
@@ -27,7 +28,6 @@ public Q_SLOTS:
 
 private:
   enum class Mode { Points = 0, Objects = 1 };
-  void update_objects(const ObjectTransformation& t);
   BoundingBox bounding_box() const;
   BoundingBox m_old_bounding_box;
 
@@ -38,6 +38,7 @@ private:
 
   std::unique_ptr<::Ui::BoundingBoxManager, UiBoundingBoxManagerDeleter> m_ui;
   TransformPointsHelper m_transform_points_helper;
+  TransformObjectsHelper m_transform_objects_helper;
   Mode m_current_mode = Mode::Objects;
 
 protected:
