@@ -6,6 +6,31 @@
 namespace omm
 {
 
+class TransformObjectsHelper
+{
+public:
+  explicit TransformObjectsHelper();
+  using TransformationMode = ObjectsTransformationCommand::TransformationMode;
+
+  /**
+   * @brief make_command makes the command to transform the selected objects
+   * @param t the transformation to apply to each object
+   * @param mode
+   * @return
+   */
+  std::unique_ptr<ObjectsTransformationCommand>
+  make_command(const Matrix &t,
+               TransformationMode mode = TransformationMode::Object) const;
+
+  void update(const std::set<Object*>& objects);
+  void update();
+  bool is_empty() const { return m_initial_transformations.size() == 0; }
+
+private:
+  ObjectsTransformationCommand::Map m_initial_transformations;
+  std::set<Object*> m_objects;
+};
+
 class SelectObjectsTool : public AbstractSelectTool
 {
 public:
@@ -26,7 +51,7 @@ public:
 protected:
   bool has_transformation() const override;
   Vec2f selection_center() const override;
-  ObjectsTransformationCommand::Map m_initial_transformations;
+  TransformObjectsHelper m_transform_objects_helper;
 
 };
 
