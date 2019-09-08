@@ -325,7 +325,7 @@ void Object::on_property_value_changed(Property *property)
   };
 
   if (   property == this->property(POSITION_PROPERTY_KEY)
-      || property == this->property(SCALE_PROPERTY_KEY)
+      || property == this->property(ROTATION_PROPERTY_KEY)
       || property == this->property(SHEAR_PROPERTY_KEY)
       || property == this->property(SCALE_PROPERTY_KEY) )
   {
