@@ -30,7 +30,6 @@ public:
 
 private:
   OrderedMap<std::string, PropertyManagerTab> m_tabs;
-  std::string m_active_category;
   QAction* m_manage_user_properties_action;
   std::unique_ptr<QWidget> make_menu_bar();
   std::set<AbstractPropertyOwner*> m_current_selection;
@@ -38,6 +37,8 @@ private:
   bool m_is_locked = false;
   std::unique_ptr<QVBoxLayout> m_layout;
   std::unique_ptr<QTabBar> m_tab_bar;
+
+  std::map<std::set<AbstractPropertyOwner*>, int> m_current_categroy_indices;
 
 private Q_SLOTS:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);

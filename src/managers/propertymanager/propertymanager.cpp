@@ -173,7 +173,6 @@ void PropertyManager::update_property_widgets()
   }
 
   std::set<QString> tab_display_names;
-  const auto active_category = m_active_category;
   {
     QSignalBlocker blocker(m_tab_bar.get());
     for (auto&& tab_label : m_tabs.keys()) {
@@ -186,14 +185,11 @@ void PropertyManager::update_property_widgets()
   }
 
   {
-    const auto it = std::find(tab_display_names.cbegin(),
-                              tab_display_names.cend(),
-                              QString::fromStdString(active_category));
-    if (it == tab_display_names.cend()) {
+    const auto it = m_current_categroy_indices.find(m_current_selection);
+    if (it == m_current_categroy_indices.cend()) {
       activate_tab(0);
     } else {
-      const int i = std::distance(tab_display_names.cbegin(), it);
-      activate_tab(i);
+      activate_tab(it->second);
     }
   }
 
@@ -207,7 +203,6 @@ void PropertyManager::set_locked(bool locked) { m_is_locked = locked; }
 
 void PropertyManager::clear()
 {
-  const auto active_category = m_active_category;
   for (QWidget* widget : m_tabs.values()) {
     m_layout->removeWidget(widget);
   }
@@ -223,8 +218,6 @@ void PropertyManager::clear()
       m_tab_bar->removeTab(i);
     }
   }
-
-  m_active_category = active_category;
 }
 
 std::string PropertyManager::type() const { return TYPE; }
@@ -248,7 +241,7 @@ void PropertyManager::activate_tab(int index)
     w->hide();
   }
   if (index >= 0 && !tabs.empty()) {
-    m_active_category = m_tab_bar->tabText(index).toStdString();
+    m_current_categroy_indices[m_current_selection] = index;
     tabs[index]->show();
   }
 }
