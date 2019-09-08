@@ -14,6 +14,7 @@ namespace omm
 {
 
 class PropertyView;
+class PropertyManagerTab;
 
 class PropertyManager : public Manager
 {
@@ -28,17 +29,20 @@ public:
   std::string type() const override;
 
 private:
-  QTabWidget* m_tabs;
+  OrderedMap<std::string, PropertyManagerTab> m_tabs;
   std::string m_active_category;
   QAction* m_manage_user_properties_action;
   std::unique_ptr<QWidget> make_menu_bar();
   std::set<AbstractPropertyOwner*> m_current_selection;
   std::string make_window_title() const;
   bool m_is_locked = false;
+  std::unique_ptr<QVBoxLayout> m_layout;
+  std::unique_ptr<QTabBar> m_tab_bar;
 
 private Q_SLOTS:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
   void set_locked(bool locked);
+  void activate_tab(int index);
 public Q_SLOTS:
   void update_property_widgets();
 };

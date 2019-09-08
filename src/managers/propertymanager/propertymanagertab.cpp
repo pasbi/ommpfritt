@@ -11,11 +11,9 @@ namespace omm
 
 PropertyManagerTab::PropertyManagerTab()
 {
-  setWidgetResizable(true);
   auto layout = std::make_unique<QFormLayout>();
   m_layout = layout.get();
-  m_widget = std::make_unique<QWidget>();
-  m_widget->setLayout(layout.release());
+  setLayout(layout.release());
 }
 
 PropertyManagerTab::~PropertyManagerTab()
@@ -45,11 +43,6 @@ void PropertyManagerTab::add_properties(Scene& scene, const std::string& key,
   label_widget->setBuddy(property_widget.get());
   m_layout->addRow(label_widget.release(), property_widget.release());
   m_layout->setSpacing(0);
-}
-
-void PropertyManagerTab::end_add_properties()
-{
-  setWidget(m_widget.release());
 }
 
 }  // namespace omm

@@ -93,18 +93,23 @@ namespace omm
 PropertyManager::PropertyManager(Scene& scene)
   : Manager(QCoreApplication::translate("any-context", "Properties"), scene, make_menu_bar())
 {
-  auto tabs = std::make_unique<QTabWidget>();
-  tabs->tabBar()->setAcceptDrops(true);
-  tabs->tabBar()->setChangeCurrentOnDrag(true);
-  m_tabs = tabs.get();
-  set_widget(std::move(tabs));
+  auto main_layout = std::make_unique<QVBoxLayout>();
+
+  m_tab_bar = std::make_unique<QTabBar>();
+  m_tab_bar->setAcceptDrops(true);
+  m_tab_bar->setChangeCurrentOnDrag(true);
+  main_layout->addWidget(m_tab_bar.get());
+
+  m_layout = std::make_unique<QVBoxLayout>();
+  main_layout->addLayout(m_layout.get());
+
+  auto central_widget = std::make_unique<QWidget>();
+  central_widget->setLayout(main_layout.release());
+  set_widget(std::move(central_widget));
+
   setWindowTitle(QString::fromStdString(make_window_title()));
   setObjectName(TYPE);
-  connect(m_tabs, &QTabWidget::currentChanged, [this](int index) {
-    if (index >= 0) {
-      m_active_category = m_tabs->tabText(index).toStdString();
-    }
-  });
+  connect(m_tab_bar.get(), SIGNAL(currentChanged(int)), this, SLOT(activate_tab(int)));
 
   connect(&scene.message_box, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
@@ -140,7 +145,6 @@ std::unique_ptr<QWidget> PropertyManager::make_menu_bar()
   auto container = std::make_unique<QWidget>();
   auto layout = std::make_unique<QHBoxLayout>();
   layout->addWidget(menu_bar.release());
-  layout->addStretch();
   layout->addWidget(lock_button.release());
   container->setLayout(layout.release());
   return container;
@@ -157,36 +161,43 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
 void PropertyManager::update_property_widgets()
 {
   clear();
-  OrderedMap<std::string, PropertyManagerTab> tabs;
-  std::vector<QString> tab_display_names;
-
   for (const auto& key : get_key_intersection(m_current_selection)) {
     const auto properties = collect_properties(key, m_current_selection);
     assert(properties.size() > 0);
     const auto tab_label = get_tab_label(properties);
-    if (!tabs.contains(tab_label)) {
-      tabs.insert(tab_label, std::make_unique<PropertyManagerTab>());
-      tab_display_names.push_back(tab_display_name(tab_label));
+    if (!m_tabs.contains(tab_label)) {
+      m_tabs.insert(tab_label, std::make_unique<PropertyManagerTab>());
     }
 
-    tabs.at(tab_label)->add_properties(m_scene, key, properties);
+    m_tabs.at(tab_label)->add_properties(m_scene, key, properties);
   }
 
+  std::set<QString> tab_display_names;
   const auto active_category = m_active_category;
-  for (auto&& tab_label : tabs.keys()) {
-    auto& tab = tabs.at(tab_label);
-    tab->end_add_properties();
-    m_tabs->addTab(tab.release(), tab_display_name(tab_label));
+  {
+    QSignalBlocker blocker(m_tab_bar.get());
+    for (auto&& tab_label : m_tabs.keys()) {
+      auto& tab = m_tabs.at(tab_label);
+      const QString display_name = tab_display_name(tab_label);
+      tab_display_names.insert(display_name);
+      m_tab_bar->addTab(display_name);
+      m_layout->addWidget(tab.get());
+    }
   }
 
   {
     const auto it = std::find(tab_display_names.cbegin(),
                               tab_display_names.cend(),
                               QString::fromStdString(active_category));
-    if (it != tab_display_names.cend()) {
-      m_tabs->setCurrentIndex(std::distance(tab_display_names.cbegin(), it));
+    if (it == tab_display_names.cend()) {
+      activate_tab(0);
+    } else {
+      const int i = std::distance(tab_display_names.cbegin(), it);
+      activate_tab(i);
     }
   }
+
+  m_layout->addStretch();
 
   m_manage_user_properties_action->setEnabled(m_current_selection.size() == 1);
   setWindowTitle(QString::fromStdString(make_window_title()));
@@ -197,10 +208,22 @@ void PropertyManager::set_locked(bool locked) { m_is_locked = locked; }
 void PropertyManager::clear()
 {
   const auto active_category = m_active_category;
-  while (m_tabs->count() > 0) {
-    m_tabs->widget(0)->deleteLater();
-    m_tabs->removeTab(0);
+  for (QWidget* widget : m_tabs.values()) {
+    m_layout->removeWidget(widget);
   }
+  m_tabs.clear();
+
+  for (int i = m_layout->count() - 1; i >= 0; --i) {
+    m_layout->removeItem(m_layout->itemAt(i));
+  }
+
+  {
+    QSignalBlocker blocker(m_tab_bar.get());
+    for (int i = m_tab_bar->count() - 1; i >= 0; --i) {
+      m_tab_bar->removeTab(i);
+    }
+  }
+
   m_active_category = active_category;
 }
 
@@ -214,6 +237,20 @@ std::string PropertyManager::make_window_title() const
     ss << " " << selected->name();
   }
   return ss.str();
+}
+
+void PropertyManager::activate_tab(int index)
+{
+  QSignalBlocker blocker(m_tab_bar.get());
+  m_tab_bar->setCurrentIndex(index);
+  const std::vector<PropertyManagerTab*> tabs = m_tabs.values();
+  for (PropertyManagerTab* w : tabs) {
+    w->hide();
+  }
+  if (index >= 0 && !tabs.empty()) {
+    m_active_category = m_tab_bar->tabText(index).toStdString();
+    tabs[index]->show();
+  }
 }
 
 }  // namespace omm
