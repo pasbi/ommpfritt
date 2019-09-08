@@ -10,14 +10,19 @@
 #include "commands/objectstransformationcommand.h"
 #include "objects/path.h"
 
+namespace {
+
+static constexpr auto eps = 0.00001;
+
+enum class AspectRatio { Ignore, FromWidth, FromHeight };
+
 omm::ObjectTransformation
 find_transformation(const omm::BoundingBox& old_bb, const omm::BoundingBox& new_bb,
-                    omm::AnchorWidget::Anchor anchor, bool keep_aspect_ratio)
+                    omm::AnchorWidget::Anchor anchor, AspectRatio aspect_ratio)
 {
   omm::Vec2f s(1.0, 1.0);
 
   // if width (or height) of both bounding boxes are zero, the scale should be 1.0 rather than nan.
-  static constexpr double eps = 0.000001;
   if (std::abs(old_bb.width()) < eps) {
     assert(std::abs(new_bb.width()) < eps);
     s.x = 1.0;
@@ -38,13 +43,17 @@ find_transformation(const omm::BoundingBox& old_bb, const omm::BoundingBox& new_
   if ((s - omm::Vec2f(1.0, 1.0)).euclidean_norm2() < t.euclidean_norm2()) {
     return omm::ObjectTransformation().translated(t);
   } else {
-    if (keep_aspect_ratio) {
-      if (std::abs(std::log(std::abs(s.x))) > std::abs(std::log(std::abs(s.y)))) {
-        s.y = s.x;
-      } else {
-        s.x = s.y;
-      }
+    switch (aspect_ratio) {
+    case AspectRatio::FromWidth:
+      s.y = s.x;
+      break;
+    case AspectRatio::FromHeight:
+      s.x = s.y;
+      break;
+    case AspectRatio::Ignore:
+      break;
     }
+
     omm::ObjectTransformation t;
     t = t.apply(omm::ObjectTransformation().translated(ap));
     t = t.apply(omm::ObjectTransformation().scaled(s));
@@ -52,6 +61,8 @@ find_transformation(const omm::BoundingBox& old_bb, const omm::BoundingBox& new_
     return t;
   }
 }
+
+}  // namespace
 
 namespace omm
 {
@@ -153,13 +164,18 @@ BoundingBox BoundingBoxManager::update_manager()
   m_ui->sp_h->set_value(bb.height());
   unblock_signals();
 
-  static constexpr auto eps = 0.00001;
-  if (!m_ui->sp_w->hasFocus()) {
-    m_ui->sp_w->setEnabled(bb.width() > eps);
-  }
-
-  if (!m_ui->sp_h->hasFocus()) {
-    m_ui->sp_h->setEnabled(bb.height() > eps);
+  if (m_ui->cb_aspectratio->isChecked()) {
+    if (!m_ui->sp_w->hasFocus() && !m_ui->sp_h->hasFocus()) {
+      m_ui->sp_w->setEnabled(bb.width() > eps);
+      m_ui->sp_h->setEnabled(bb.height() > eps);
+    }
+  } else {
+    if (!m_ui->sp_w->hasFocus()) {
+      m_ui->sp_w->setEnabled(bb.width() > eps);
+    }
+    if (!m_ui->sp_h->hasFocus()) {
+      m_ui->sp_h->setEnabled(bb.height() > eps);
+    }
   }
 
   return bb;
@@ -174,10 +190,18 @@ void BoundingBoxManager::update_bounding_box()
     return;
   }
 
-  const bool keep_aspect_ratio = m_ui->cb_aspectratio->isChecked();
-
+  const AspectRatio aspect_ratio = [&ui=m_ui]() {
+    if (ui->cb_aspectratio->isChecked()) {
+      if (ui->sp_h->hasFocus()) {
+        return AspectRatio::FromHeight;
+      } else if (ui->sp_w->hasFocus()) {
+        return AspectRatio::FromWidth;
+      }
+    }
+    return AspectRatio::Ignore;
+  }();
   const ObjectTransformation t = find_transformation(m_old_bounding_box, new_bounding_box,
-                                                     m_ui->w_anchor->anchor(), keep_aspect_ratio);
+                                                     m_ui->w_anchor->anchor(), aspect_ratio );
   switch (current_mode()) {
   case Mode::Points:
     update_points(t);
@@ -249,6 +273,8 @@ bool BoundingBoxManager::eventFilter(QObject *o, QEvent *e)
   if (o == m_ui->sp_h || o == m_ui->sp_w || o == m_ui->sp_x || o == m_ui->sp_y) {
     if (e->type() == QEvent::FocusOut) {
       reset_transformation();
+      m_ui->sp_h->setEnabled(m_ui->sp_h->value() > eps);
+      m_ui->sp_w->setEnabled(m_ui->sp_w->value() > eps);
     }
   }
   return Manager::eventFilter(o, e);
