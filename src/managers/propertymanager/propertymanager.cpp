@@ -5,9 +5,9 @@
 #include <QTimer>
 #include <QCoreApplication>
 #include <QPushButton>
-
 #include <QTabWidget>
 #include <QTabBar>
+
 #include "properties/optionsproperty.h"
 #include "managers/propertymanager/propertymanagertab.h"
 #include "propertywidgets/propertywidget.h"
@@ -100,8 +100,14 @@ PropertyManager::PropertyManager(Scene& scene)
   m_tab_bar->setChangeCurrentOnDrag(true);
   main_layout->addWidget(m_tab_bar.get());
 
-  m_layout = std::make_unique<QVBoxLayout>();
-  main_layout->addLayout(m_layout.get());
+  m_scroll_area = std::make_unique<QScrollArea>();
+  m_scroll_area->setWidgetResizable(true);
+  auto category_widget = std::make_unique<QWidget>();
+  auto layout = std::make_unique<QVBoxLayout>();
+  m_layout = layout.get();
+  category_widget->setLayout(layout.release());
+  m_scroll_area->setWidget(category_widget.release());
+  main_layout->addWidget(m_scroll_area.get());
 
   auto central_widget = std::make_unique<QWidget>();
   central_widget->setLayout(main_layout.release());

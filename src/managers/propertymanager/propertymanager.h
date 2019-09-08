@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <functional>
+#include <QScrollArea>
 
 #include "aspects/propertyowner.h"
 #include "managers/manager.h"
@@ -35,7 +36,8 @@ private:
   std::set<AbstractPropertyOwner*> m_current_selection;
   std::string make_window_title() const;
   bool m_is_locked = false;
-  std::unique_ptr<QVBoxLayout> m_layout;
+  QVBoxLayout* m_layout;
+  std::unique_ptr<QScrollArea> m_scroll_area;
   std::unique_ptr<QTabBar> m_tab_bar;
 
   std::map<std::set<AbstractPropertyOwner*>, int> m_current_categroy_indices;
