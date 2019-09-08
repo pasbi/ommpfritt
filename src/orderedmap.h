@@ -62,6 +62,12 @@ public:
     return v;
   }
 
+  void clear()
+  {
+    m_keys.clear();
+    m_values.clear();
+  }
+
 #if 0
 // TODO replace the OrderedMap::insert with something like that:
 // reason: supply a insert(value_type&&) overload
