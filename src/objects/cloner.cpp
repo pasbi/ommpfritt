@@ -160,7 +160,6 @@ void Cloner::update()
 {
   {
     QSignalBlocker blocker(&scene()->message_box);
-    auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
     if (is_active()) {
       m_clones = make_clones();
       m_draw_children = false;

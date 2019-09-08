@@ -14,7 +14,7 @@ class TransformPointsHelper
 {
 public:
   explicit TransformPointsHelper(Space space);
-  std::unique_ptr<PointsTransformationCommand> make_command(const ObjectTransformation& t);
+  std::unique_ptr<PointsTransformationCommand> make_command(const ObjectTransformation& t) const;
   void update(const std::set<Path *> &paths);
   void update();
   bool is_empty() const { return m_initial_points.size() == 0; }

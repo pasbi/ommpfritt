@@ -127,7 +127,7 @@ TransformPointsHelper::TransformPointsHelper(Space space) : m_space(space)
 }
 
 std::unique_ptr<PointsTransformationCommand>
-TransformPointsHelper::make_command(const ObjectTransformation &t)
+TransformPointsHelper::make_command(const ObjectTransformation &t) const
 {
   class TransformationCache : public Cache<Path*, ObjectTransformation>
   {
