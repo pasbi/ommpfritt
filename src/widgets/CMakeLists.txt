@@ -4,6 +4,7 @@ file(GLOB SOURCES
   coordinateedit.cpp
   filepathedit.cpp
   keysequenceedit.cpp
+  multitabbar.cpp
   pointdialog.cpp
   pointedit.cpp
   referencelineedit.cpp
@@ -14,6 +15,7 @@ file(GLOB HEADERS
   coordinateedit.h
   filepathedit.h
   keysequenceedit.h
+  multitabbar.h
   numericedit.h
   pointdialog.h
   pointedit.h

@@ -6,7 +6,6 @@
 #include <QCoreApplication>
 #include <QPushButton>
 #include <QTabWidget>
-#include <QTabBar>
 
 #include "properties/optionsproperty.h"
 #include "managers/propertymanager/propertymanagertab.h"
@@ -95,9 +94,9 @@ PropertyManager::PropertyManager(Scene& scene)
 {
   auto main_layout = std::make_unique<QVBoxLayout>();
 
-  m_tab_bar = std::make_unique<QTabBar>();
-  m_tab_bar->setAcceptDrops(true);
-  m_tab_bar->setChangeCurrentOnDrag(true);
+  m_tab_bar = std::make_unique<MultiTabBar>();
+//  m_tab_bar->setAcceptDrops(true);
+//  m_tab_bar->setChangeCurrentOnDrag(true);
   main_layout->addWidget(m_tab_bar.get());
 
   m_scroll_area = std::make_unique<QScrollArea>();
@@ -115,8 +114,9 @@ PropertyManager::PropertyManager(Scene& scene)
 
   setWindowTitle(QString::fromStdString(make_window_title()));
   setObjectName(TYPE);
-  connect(m_tab_bar.get(), SIGNAL(currentChanged(int)), this, SLOT(activate_tab(int)));
 
+  connect(m_tab_bar.get(), SIGNAL(current_indices_changed(const std::set<int>&)),
+          this, SLOT(activate_tabs(const std::set<int>&)));
   connect(&scene.message_box, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
 }
@@ -185,7 +185,7 @@ void PropertyManager::update_property_widgets()
       auto& tab = m_tabs.at(tab_label);
       const QString display_name = tab_display_name(tab_label);
       tab_display_names.insert(display_name);
-      m_tab_bar->addTab(display_name);
+      m_tab_bar->add_tab(display_name);
       m_layout->addWidget(tab.get());
     }
   }
@@ -193,9 +193,9 @@ void PropertyManager::update_property_widgets()
   {
     const auto it = m_current_categroy_indices.find(m_current_selection);
     if (it == m_current_categroy_indices.cend()) {
-      activate_tab(0);
+      activate_tabs({0});
     } else {
-      activate_tab(it->second);
+      activate_tabs(it->second);
     }
   }
 
@@ -220,9 +220,7 @@ void PropertyManager::clear()
 
   {
     QSignalBlocker blocker(m_tab_bar.get());
-    for (int i = m_tab_bar->count() - 1; i >= 0; --i) {
-      m_tab_bar->removeTab(i);
-    }
+    m_tab_bar->clear();
   }
 }
 
@@ -238,17 +236,19 @@ std::string PropertyManager::make_window_title() const
   return ss.str();
 }
 
-void PropertyManager::activate_tab(int index)
+void PropertyManager::activate_tabs(const std::set<int>& indices)
 {
   QSignalBlocker blocker(m_tab_bar.get());
-  m_tab_bar->setCurrentIndex(index);
+  m_tab_bar->set_current_indices(indices);
   const std::vector<PropertyManagerTab*> tabs = m_tabs.values();
   for (PropertyManagerTab* w : tabs) {
     w->hide();
   }
-  if (index >= 0 && !tabs.empty()) {
-    m_current_categroy_indices[m_current_selection] = index;
-    tabs[index]->show();
+  if (!indices.empty() && !tabs.empty()) {
+    m_current_categroy_indices[m_current_selection] = indices;
+    for (int index : indices) {
+      tabs[index]->show();
+    }
   }
 }
 

@@ -4,6 +4,7 @@
 #include <functional>
 #include <QScrollArea>
 
+#include "widgets/multitabbar.h"
 #include "aspects/propertyowner.h"
 #include "managers/manager.h"
 #include "scene/scene.h"
@@ -38,14 +39,14 @@ private:
   bool m_is_locked = false;
   QVBoxLayout* m_layout;
   std::unique_ptr<QScrollArea> m_scroll_area;
-  std::unique_ptr<QTabBar> m_tab_bar;
+  std::unique_ptr<MultiTabBar> m_tab_bar;
 
-  std::map<std::set<AbstractPropertyOwner*>, int> m_current_categroy_indices;
+  std::map<std::set<AbstractPropertyOwner*>, std::set<int>> m_current_categroy_indices;
 
 private Q_SLOTS:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
   void set_locked(bool locked);
-  void activate_tab(int index);
+  void activate_tabs(const std::set<int>& indices);
 public Q_SLOTS:
   void update_property_widgets();
 };
