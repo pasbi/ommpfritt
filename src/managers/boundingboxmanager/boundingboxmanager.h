@@ -27,7 +27,6 @@ public Q_SLOTS:
 
 private:
   enum class Mode { Points = 0, Objects = 1 };
-  Mode current_mode() const;
   void update_points(const ObjectTransformation& t);
   void update_objects(const ObjectTransformation& t);
   BoundingBox bounding_box() const;
@@ -40,6 +39,7 @@ private:
 
   std::unique_ptr<::Ui::BoundingBoxManager, UiBoundingBoxManagerDeleter> m_ui;
   TransformPointsHelper m_transform_points_helper;
+  Mode m_current_mode = Mode::Objects;
 
 protected:
   void enterEvent(QEvent* e) override;
@@ -52,7 +52,6 @@ private Q_SLOTS:
 
   void block_signals();
   void unblock_signals();
-
 };
 
 }  // namespace omm

@@ -47,11 +47,11 @@
     </message>
     <message>
         <source>Points</source>
-        <translation type="unfinished">Points</translation>
+        <translation type="obsolete">Points</translation>
     </message>
     <message>
         <source>Objects</source>
-        <translation type="unfinished">Objects</translation>
+        <translation type="obsolete">Objects</translation>
     </message>
     <message>
         <source>&amp;Height:</source>

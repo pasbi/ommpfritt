@@ -78,17 +78,17 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   m_ui->setupUi(widget.get());
   set_widget(std::move(widget));
 
-  connect(m_ui->cb_mode, qOverload<int>(&QComboBox::currentIndexChanged), [this]() {
-    reset_transformation();
-  });
-
   connect(m_ui->w_anchor, &AnchorWidget::anchor_changed, [this]() {
     reset_transformation();
   });
 
   const auto adjust_mode =  [this](const Tool& tool) {
-    int index = tool.modifies_points() ? 0 : 1;
-    m_ui->cb_mode->setCurrentIndex(index);
+    if (tool.modifies_points()) {
+      m_current_mode = Mode::Points;
+    } else {
+      m_current_mode = Mode::Objects;
+    }
+    reset_transformation();
   };
 
   regc(connect(&scene.tool_box, &ToolBox::active_tool_changed, adjust_mode));
@@ -142,7 +142,7 @@ void BoundingBoxManager::on_property_value_changed(Property &property)
 BoundingBox BoundingBoxManager::update_manager()
 {
   const BoundingBox bb = [this]() {
-    switch (current_mode()) {
+    switch (m_current_mode) {
     case Mode::Points:
       return BoundingBox(::transform<Point>(scene().point_selection.points(Space::Scene)));
     case Mode::Objects:
@@ -202,7 +202,7 @@ void BoundingBoxManager::update_bounding_box()
   }();
   const ObjectTransformation t = find_transformation(m_old_bounding_box, new_bounding_box,
                                                      m_ui->w_anchor->anchor(), aspect_ratio );
-  switch (current_mode()) {
+  switch (m_current_mode) {
   case Mode::Points:
     update_points(t);
     break;
@@ -234,11 +234,6 @@ void BoundingBoxManager::unblock_signals()
   m_ui->sp_y->blockSignals(false);
   m_ui->sp_w->blockSignals(false);
   m_ui->sp_h->blockSignals(false);
-}
-
-BoundingBoxManager::Mode BoundingBoxManager::current_mode() const
-{
-  return static_cast<Mode>(m_ui->cb_mode->currentIndex());
 }
 
 BoundingBox BoundingBoxManager::bounding_box() const
