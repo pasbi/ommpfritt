@@ -14,11 +14,13 @@
 #include "properties/stringproperty.h"
 #include "common.h"
 #include <Qt>
+#include "aspects/autoconnectiondeleter.h"
 
 namespace omm
 {
 
-class AbstractPropertyOwner : public QObject, public virtual Serializable
+class AbstractPropertyOwner
+    : public QObject, public virtual Serializable, public AutoConnectionDeleter
 {
   Q_OBJECT
 public:
@@ -91,12 +93,6 @@ public:
   // A set of ReferenceProperties which reference `this`.
   std::set<ReferenceProperty*> m_referees;
 
-protected:
-  /**
-   * @brief m_connections a list of connections that must be destroyed when this object
-   *  becomes deleted
-   */
-  std::list<QMetaObject::Connection> m_connections;
 };
 
 template<AbstractPropertyOwner::Kind kind_> class PropertyOwner : public AbstractPropertyOwner

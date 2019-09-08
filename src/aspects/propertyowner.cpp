@@ -39,9 +39,6 @@ AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner &other)
 
 AbstractPropertyOwner::~AbstractPropertyOwner()
 {
-  for (const QMetaObject::Connection& c : m_connections) {
-    disconnect(c);
-  }
   for (ReferenceProperty* ref_prop : m_referees) {
     QSignalBlocker blocker(ref_prop);
     ref_prop->set(nullptr);

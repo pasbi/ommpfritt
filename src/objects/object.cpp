@@ -493,7 +493,7 @@ void Object::on_child_removed(Object &child)
 
 void Object::listen_to_changes(const std::function<Object *()> &get_watched)
 {
-  const auto c = connect(&scene()->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
+  regc(connect(&scene()->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
           [get_watched, this](Object& o)
   {
     Object* r = get_watched();
@@ -508,20 +508,18 @@ void Object::listen_to_changes(const std::function<Object *()> &get_watched)
         update();
       }
     }
-  });
-  m_connections.push_back(c);
+  }));
 }
 
 void Object::listen_to_children_changes()
 {
-  const auto c = connect(&scene()->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
+  regc(connect(&scene()->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
           [this](Object& o)
   {
     if (&o != this && is_ancestor_of(o)) {
       update();
     }
-  });
-  m_connections.push_back(c);
+  }));
 }
 
 }  // namespace omm
