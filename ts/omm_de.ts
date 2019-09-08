@@ -42,18 +42,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Local</source>
-        <translation type="obsolete">Lokal</translation>
-    </message>
-    <message>
-        <source>Points</source>
-        <translation type="obsolete">Punkte</translation>
-    </message>
-    <message>
-        <source>Objects</source>
-        <translation type="obsolete">Objekte</translation>
-    </message>
-    <message>
         <source>&amp;Height:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1028,6 +1016,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>Set Object Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>visibility</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

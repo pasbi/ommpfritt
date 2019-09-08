@@ -42,18 +42,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Local</source>
-        <translation type="obsolete">Local</translation>
-    </message>
-    <message>
-        <source>Points</source>
-        <translation type="obsolete">Puntos</translation>
-    </message>
-    <message>
-        <source>Objects</source>
-        <translation type="obsolete">Objetos</translation>
-    </message>
-    <message>
         <source>&amp;Height:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1028,6 +1016,10 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>Set Object Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>visibility</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
