@@ -7,6 +7,7 @@ namespace omm
 
 MessageBox::MessageBox()
 {
+  connect(this, SIGNAL(transformation_changed(Object&)), this, SIGNAL(appearance_changed()));
   connect(this, SIGNAL(appearance_changed(Object&)), this, SIGNAL(appearance_changed()));
   connect(this, SIGNAL(appearance_changed(Tool&)), this, SIGNAL(appearance_changed()));
   connect(this, SIGNAL(appearance_changed(Style&)), this, SIGNAL(appearance_changed()));
