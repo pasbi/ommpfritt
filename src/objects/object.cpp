@@ -513,13 +513,14 @@ void Object::listen_to_changes(const std::function<Object *()> &get_watched)
 
 void Object::listen_to_children_changes()
 {
-  regc(connect(&scene()->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
-          [this](Object& o)
-  {
+  const auto on_change = [this](Object& o) {
     if (&o != this && is_ancestor_of(o)) {
       update();
     }
-  }));
+  };
+  regc(connect(&scene()->message_box, &MessageBox::transformation_changed, on_change));
+  regc(connect(&scene()->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
+               on_change));
 }
 
 }  // namespace omm
