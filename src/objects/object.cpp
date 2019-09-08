@@ -46,7 +46,7 @@ Object::Object(Scene* scene)
   create_property<OptionsProperty>(VISIBILITY_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("default").toStdString(), QObject::tr("hidden").toStdString(),
       QObject::tr("visible").toStdString() })
-    .set_label(QObject::tr("").toStdString())
+    .set_label(QObject::tr("visibility").toStdString())
     .set_category(category);
 
   create_property<BoolProperty>(IS_ACTIVE_PROPERTY_KEY, true)
