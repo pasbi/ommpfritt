@@ -2,11 +2,12 @@
 
 #include <algorithm>
 #include <set>
-#include <QTabWidget>
 #include <QTimer>
 #include <QCoreApplication>
 #include <QPushButton>
 
+#include <QTabWidget>
+#include <QTabBar>
 #include "properties/optionsproperty.h"
 #include "managers/propertymanager/propertymanagertab.h"
 #include "propertywidgets/propertywidget.h"
@@ -93,6 +94,8 @@ PropertyManager::PropertyManager(Scene& scene)
   : Manager(QCoreApplication::translate("any-context", "Properties"), scene, make_menu_bar())
 {
   auto tabs = std::make_unique<QTabWidget>();
+  tabs->tabBar()->setAcceptDrops(true);
+  tabs->tabBar()->setChangeCurrentOnDrag(true);
   m_tabs = tabs.get();
   set_widget(std::move(tabs));
   setWindowTitle(QString::fromStdString(make_window_title()));
