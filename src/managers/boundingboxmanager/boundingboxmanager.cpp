@@ -204,7 +204,7 @@ void BoundingBoxManager::update_bounding_box()
                                                      m_ui->w_anchor->anchor(), aspect_ratio );
   switch (m_current_mode) {
   case Mode::Points:
-    update_points(t);
+    scene().submit(m_transform_points_helper.make_command(t));
     break;
   case Mode::Objects:
     update_objects(t);
@@ -273,33 +273,6 @@ bool BoundingBoxManager::eventFilter(QObject *o, QEvent *e)
     }
   }
   return Manager::eventFilter(o, e);
-}
-
-void BoundingBoxManager::update_points(const ObjectTransformation& t)
-{
-  auto cmd = m_transform_points_helper.make_command(t);
-  scene().submit(std::move(cmd));
-}
-
-void BoundingBoxManager::update_objects(const ObjectTransformation& t)
-{
-  auto objects = scene().item_selection<Object>();
-  Object::remove_internal_children(objects);
-
-  ObjectsTransformationCommand::Map transformations;
-  for (Object* object : objects) {
-    const auto to = [object, t]() {
-      return t.apply(object->global_transformation(Space::Scene));
-    }();
-    transformations.insert(std::pair(object, to));
-  }
-
-  if (transformations.size() > 0) {
-    const auto mode = ObjectsTransformationCommand::TransformationMode::Object;
-    auto command = std::make_unique<ObjectsTransformationCommand>(transformations, mode);
-    scene().submit(std::move(command));
-    Q_EMIT scene().message_box.appearance_changed();
-  }
 }
 
 void BoundingBoxManager::UiBoundingBoxManagerDeleter::operator()(Ui::BoundingBoxManager* ui)

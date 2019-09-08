@@ -27,7 +27,6 @@ public Q_SLOTS:
 
 private:
   enum class Mode { Points = 0, Objects = 1 };
-  void update_points(const ObjectTransformation& t);
   void update_objects(const ObjectTransformation& t);
   BoundingBox bounding_box() const;
   BoundingBox m_old_bounding_box;
