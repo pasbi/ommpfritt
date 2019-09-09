@@ -189,7 +189,6 @@ std::vector<CommandInterface::ActionInfo<PythonConsole>> PythonConsole::action_i
   };
 }
 
-
 void PythonConsole::populate_menu(QMenu& menu)
 {
   auto& key_bindings = Application::instance().key_bindings;

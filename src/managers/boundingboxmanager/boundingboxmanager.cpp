@@ -136,6 +136,15 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
 
 std::string BoundingBoxManager::type() const { return TYPE;  }
 
+std::vector<CommandInterface::ActionInfo<BoundingBoxManager> > BoundingBoxManager::action_infos()
+{
+  using AI = ActionInfo<BoundingBoxManager>;
+  return {
+    AI( QT_TRANSLATE_NOOP("any-context", "toggle aspect ratio"), QKeySequence("Ctrl+K"),
+      [](BoundingBoxManager& bbm) { bbm.m_ui->cb_aspectratio->toggle(); }),
+  };
+}
+
 void BoundingBoxManager::on_property_value_changed(Property &property)
 {
   Q_UNUSED(property);
@@ -283,6 +292,13 @@ bool BoundingBoxManager::eventFilter(QObject *o, QEvent *e)
     }
   }
   return Manager::eventFilter(o, e);
+}
+
+void BoundingBoxManager::keyPressEvent(QKeyEvent *event)
+{
+  if (!Application::instance().key_bindings.call(*event, *this)) {
+    Manager::keyPressEvent(event);
+  }
 }
 
 void BoundingBoxManager::UiBoundingBoxManagerDeleter::operator()(Ui::BoundingBoxManager* ui)

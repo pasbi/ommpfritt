@@ -14,6 +14,7 @@
 #include "managers/pythonconsole/pythonconsole.h"
 #include <QCoreApplication>
 #include <QApplication>
+#include "managers/boundingboxmanager/boundingboxmanager.h"
 
 namespace
 {
@@ -38,6 +39,7 @@ std::vector<omm::KeyBinding> collect_default_bindings()
   collect_default_bindings<omm::StyleManager>(default_bindings);
   collect_default_bindings<omm::ObjectManager>(default_bindings);
   collect_default_bindings<omm::PythonConsole>(default_bindings);
+  collect_default_bindings<omm::BoundingBoxManager>(default_bindings);
   return std::vector(default_bindings.begin(), default_bindings.end());
 }
 
