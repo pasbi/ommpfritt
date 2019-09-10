@@ -24,6 +24,11 @@
 #include "tools/selectobjectstool.h"
 #include "logging.h"
 
+#include "scene/history/historymodel.h"
+#include "tools/toolbox.h"
+#include "scene/stylelist.h"
+#include "scene/objecttree.h"
+#include "scene/messagebox.h"
 namespace
 {
 
@@ -59,26 +64,28 @@ namespace omm
 {
 
 Scene::Scene(PythonEngine& python_engine)
-  : object_tree(make_root(), *this)
-  , styles(*this)
-  , python_engine(python_engine)
-  , m_default_style(std::make_unique<Style>(this))
-  , tool_box(*this)
+  : python_engine(python_engine)
   , point_selection(*this)
+  , m_message_box(new MessageBox())
+  , m_object_tree(new ObjectTree(make_root(), *this))
+  , m_default_style(new Style(this))
+  , m_styles(new StyleList(*this))
+  , m_history(new HistoryModel())
+  , m_tool_box(new ToolBox(*this))
 {
-  object_tree.root().set_object_tree(object_tree);
+  object_tree().root().set_object_tree(object_tree());
   for (auto kind : { Object::KIND, Tag::KIND, Style::KIND, Tool::KIND }) {
     m_item_selection[kind] = {};
   }
-  tool_box.set_active_tool(SelectObjectsTool::TYPE);
-  connect(&history, SIGNAL(index_changed()), &message_box, SIGNAL(filename_changed()));
-  connect(&message_box, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
+  tool_box().set_active_tool(SelectObjectsTool::TYPE);
+  connect(&history(), SIGNAL(index_changed()), &message_box(), SIGNAL(filename_changed()));
+  connect(&message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(update_tool()));
 }
 
 Scene::~Scene()
 {
-  history.disconnect();
+  history().disconnect();
   prepare_reset();
 }
 
@@ -89,7 +96,7 @@ void Scene::prepare_reset()
   // make sure that there are no references (via ReferenceProperties) across objects.
   // the references might be destructed after the referenced objects have been deleted.
   // that leads to fucked-up states, undefined behavior, etc.
-  for (auto* o : object_tree.items()) {
+  for (auto* o : object_tree().items()) {
     for (auto* p : o->properties().values()) {
       if (auto* ref_prop = type_cast<ReferenceProperty*>(p)) {
         ref_prop->set(nullptr);
@@ -98,9 +105,9 @@ void Scene::prepare_reset()
   }
 
   auto root = make_root();
-  object_tree.replace_root(std::move(root));
-  styles.set(std::vector<std::unique_ptr<Style>> {});
-  tool_box.active_tool().reset();
+  object_tree().replace_root(std::move(root));
+  styles().set(std::vector<std::unique_ptr<Style>> {});
+  tool_box().active_tool().reset();
 }
 
 std::unique_ptr<CycleGuard> Scene::make_cycle_guard(const Object *guarded)
@@ -151,18 +158,18 @@ bool Scene::save_as(const std::string &filename)
 
   auto serializer = AbstractSerializer::make( "JSONSerializer",
                                               static_cast<std::ostream&>(ofstream) );
-  object_tree.root().serialize(*serializer, ROOT_POINTER);
+  object_tree().root().serialize(*serializer, ROOT_POINTER);
 
-  serializer->start_array(styles.items().size(), Serializable::make_pointer(STYLES_POINTER));
-  for (size_t i = 0; i < styles.items().size(); ++i) {
-    styles.item(i).serialize(*serializer, Serializable::make_pointer(STYLES_POINTER, i));
+  serializer->start_array(styles().items().size(), Serializable::make_pointer(STYLES_POINTER));
+  for (size_t i = 0; i < styles().items().size(); ++i) {
+    styles().item(i).serialize(*serializer, Serializable::make_pointer(STYLES_POINTER, i));
   }
   serializer->end_array();
 
   LINFO << "Saved current scene to '" << filename << "'.";
-  history.set_saved_index();
+  history().set_saved_index();
   m_filename = filename;
-  Q_EMIT message_box.filename_changed();
+  Q_EMIT message_box().filename_changed();
   return true;
 }
 
@@ -170,7 +177,7 @@ bool Scene::load_from(const std::string &filename)
 {
   assert(selection().size() == 0);
   prepare_reset();
-  history.reset();
+  history().reset();
   std::ifstream ifstream(filename);
   if (!ifstream) {
     LERROR << "Failed to open '" << filename << "'.";
@@ -197,13 +204,14 @@ bool Scene::load_from(const std::string &filename)
 
     set_selection({});
     m_filename = filename;
-    history.set_saved_index();
-    Q_EMIT message_box.filename_changed();
+    history().set_saved_index();
+    Q_EMIT message_box().filename_changed();
 
-    this->object_tree.replace_root(std::move(new_root));
-    this->styles.set(std::move(styles));
+    this->object_tree().replace_root(std::move(new_root));
+    this->styles().set(std::move(styles));
 
-    object_tree.root().update_recursive();
+    object_tree().root().update_recursive();
+
 
     return true;
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
@@ -217,12 +225,12 @@ void Scene::reset()
 {
   assert(selection().size() == 0);
   prepare_reset();
-  history.reset();
-  history.set_saved_index();
-  object_tree.replace_root(make_root());
-  styles.set(std::vector<std::unique_ptr<Style>> {});
+  history().reset();
+  history().set_saved_index();
+  object_tree().replace_root(make_root());
+  styles().set(std::vector<std::unique_ptr<Style>> {});
   m_filename.clear();
-  Q_EMIT message_box.filename_changed();
+  Q_EMIT message_box().filename_changed();
 }
 
 std::string Scene::filename() const
@@ -233,15 +241,15 @@ std::string Scene::filename() const
 void Scene::submit(std::unique_ptr<Command> command)
 {
   if (command != nullptr) {
-    history.push(std::move(command));
-    Q_EMIT message_box.filename_changed();
+    history().push(std::move(command));
+    Q_EMIT message_box().filename_changed();
   }
 }
 
 std::set<Tag*> Scene::tags() const
 {
   std::set<Tag*> tags;
-  for (const auto& object : object_tree.items()) {
+  for (const auto& object : object_tree().items()) {
     tags = merge(tags, object->tags.items());
   }
   return tags;
@@ -249,7 +257,7 @@ std::set<Tag*> Scene::tags() const
 
 std::set<AbstractPropertyOwner*> Scene::property_owners() const
 {
-  return merge(std::set<AbstractPropertyOwner*>(), object_tree.items(), tags(), styles.items());
+  return merge(std::set<AbstractPropertyOwner*>(), object_tree().items(), tags(), styles().items());
 }
 
 Style& Scene::default_style() const
@@ -257,45 +265,25 @@ Style& Scene::default_style() const
   return *m_default_style;
 }
 
-template<> typename SceneStructure<Object>::type& Scene::structure<Object>()
-{
-  return object_tree;
-}
-
-template<> const typename SceneStructure<Object>::type& Scene::structure<Object>() const
-{
-  return object_tree;
-}
-
-template<> typename SceneStructure<Style>::type& Scene::structure<Style>()
-{
-  return styles;
-}
-
-template<> const typename SceneStructure<Style>::type& Scene::structure<Style>() const
-{
-  return styles;
-}
-
 void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
   m_selection = selection;
 
   static const auto emit_selection_changed = [this](const auto& selection, const auto kind) {
-    Q_EMIT message_box.selection_changed(selection, kind);
+    Q_EMIT message_box().selection_changed(selection, kind);
 
     switch (kind) {
     case AbstractPropertyOwner::Kind::Style:
-      Q_EMIT message_box.selection_changed(kind_cast<Style>(selection));
+      Q_EMIT message_box().selection_changed(kind_cast<Style>(selection));
       break;
     case AbstractPropertyOwner::Kind::Object:
-      Q_EMIT message_box.selection_changed(kind_cast<Object>(selection));
+      Q_EMIT message_box().selection_changed(kind_cast<Object>(selection));
       break;
     case AbstractPropertyOwner::Kind::Tag:
-      Q_EMIT message_box.selection_changed(kind_cast<Tag>(selection));
+      Q_EMIT message_box().selection_changed(kind_cast<Tag>(selection));
       break;
     case AbstractPropertyOwner::Kind::Tool:
-      Q_EMIT message_box.selection_changed(kind_cast<Tool>(selection));
+      Q_EMIT message_box().selection_changed(kind_cast<Tool>(selection));
       break;
     default:
       break;
@@ -323,7 +311,7 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
     }
   }
 
-  Q_EMIT message_box.selection_changed(m_selection);
+  Q_EMIT message_box().selection_changed(m_selection);
 }
 
 std::set<AbstractPropertyOwner*> Scene::selection() const { return m_selection; }
@@ -343,12 +331,12 @@ template<> std::set<Tag*> Scene::find_items<Tag>(const std::string& name) const
 
 template<> std::set<Object*> Scene::find_items<Object>(const std::string& name) const
 {
-  return filter_by_name(object_tree.items(), name);
+  return filter_by_name(object_tree().items(), name);
 }
 
 template<> std::set<Style*> Scene::find_items<Style>(const std::string& name) const
 {
-  return filter_by_name(styles.items(), name);
+  return filter_by_name(styles().items(), name);
 }
 
 void Scene::evaluate_tags()
@@ -392,7 +380,7 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
 {
   std::set<Property *> properties;
   if (can_remove(parent, selection, properties)) {
-    auto macro = history.start_macro(QObject::tr("Remove Selection"));
+    auto macro = history().start_macro(QObject::tr("Remove Selection"));
     if (properties.size() > 0) {
       using command_type = PropertiesCommand<ReferenceProperty>;
       submit<command_type>(properties, nullptr);
@@ -403,8 +391,8 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
       if (!::contains(selection, tag->owner)) { tag_map[tag->owner].insert(tag); }
     }
     for (auto [ owner, tags ] : tag_map) { ::remove_items(*this, owner->tags, tags); }
-    ::remove_items(*this, styles, kind_cast<Style>(selection));
-    ::remove_items(*this, object_tree, kind_cast<Object>(selection));
+    ::remove_items(*this, styles(), kind_cast<Style>(selection));
+    ::remove_items(*this, object_tree(), kind_cast<Object>(selection));
     set_selection({});
     return true;
   } else {
@@ -414,7 +402,7 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
 
 void Scene::update_tool()
 {
-  tool_box.active_tool().reset();
+  tool_box().active_tool().reset();
 }
 
 bool Scene::contains(const AbstractPropertyOwner *apo) const
@@ -426,9 +414,9 @@ bool Scene::contains(const AbstractPropertyOwner *apo) const
     return tags.end() != std::find(tags.begin(), tags.end(), static_cast<const Tag*>(apo));
   }
   case AbstractPropertyOwner::Kind::Object:
-    return object_tree.contains(static_cast<const Object&>(*apo));
+    return object_tree().contains(static_cast<const Object&>(*apo));
   case AbstractPropertyOwner::Kind::Style:
-    return styles.contains(static_cast<const Style&>(*apo));
+    return styles().contains(static_cast<const Style&>(*apo));
   default: return false;
   }
 }

@@ -13,6 +13,7 @@
 #include "python/objectwrapper.h"
 #include "python/pythonengine.h"
 #include "objects/empty.h"
+#include "scene/messagebox.h"
 #include <random>
 
 namespace
@@ -159,7 +160,7 @@ bool Cloner::contains(const Vec2f &pos) const
 void Cloner::update()
 {
   {
-    QSignalBlocker blocker(&scene()->message_box);
+    QSignalBlocker blocker(&scene()->message_box());
     if (is_active()) {
       m_clones = make_clones();
       m_draw_children = false;

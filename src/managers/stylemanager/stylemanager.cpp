@@ -8,6 +8,7 @@
 #include "mainwindow/application.h"
 #include <QCoreApplication>
 #include "keybindings/defaultkeysequenceparser.h"
+#include "scene/messagebox.h"
 
 namespace omm
 {
@@ -15,10 +16,10 @@ namespace omm
 
 StyleManager::StyleManager(Scene& scene)
   : ItemManager( QCoreApplication::translate("any-context", "StyleManager"),
-                 scene, scene.styles)
+                 scene, scene.styles())
 {
   setObjectName(TYPE);
-  connect(&scene.message_box, SIGNAL(selection_changed(std::set<Style*>)),
+  connect(&scene.message_box(), SIGNAL(selection_changed(std::set<Style*>)),
           &item_view(), SLOT(set_selection(std::set<Style*>)));
 }
 

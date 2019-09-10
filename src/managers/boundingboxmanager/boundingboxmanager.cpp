@@ -8,6 +8,8 @@
 #include "mainwindow/viewport/viewport.h"
 #include "ui_boundingboxmanager.h"
 #include "objects/path.h"
+#include "tools/toolbox.h"
+#include "scene/messagebox.h"
 
 namespace {
 
@@ -90,17 +92,17 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
     reset_transformation();
   };
 
-  regc(connect(&scene.tool_box, &ToolBox::active_tool_changed, adjust_mode));
-  adjust_mode(scene.tool_box.active_tool());
+  regc(connect(&scene.tool_box(), &ToolBox::active_tool_changed, adjust_mode));
+  adjust_mode(scene.tool_box().active_tool());
 
-  regc(connect(&scene.message_box,
+  regc(connect(&scene.message_box(),
                qOverload<const std::set<Object*>&>(&MessageBox::selection_changed),
                [this](const std::set<Object*>&)
   {
     update_manager();
   }));
 
-  regc(connect(&scene.message_box, qOverload<Object&>(&MessageBox::appearance_changed),
+  regc(connect(&scene.message_box(), qOverload<Object&>(&MessageBox::appearance_changed),
                [this](Object& o)
   {
     Path* path = type_cast<Path*>(&o);
@@ -109,11 +111,11 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
     }
   }));
 
-  regc(connect(&scene.message_box, &MessageBox::point_selection_changed, [this]() {
+  regc(connect(&scene.message_box(), &MessageBox::point_selection_changed, [this]() {
     update_manager();
   }));
 
-  regc(connect(&scene.message_box, &MessageBox::transformation_changed, [this]() {
+  regc(connect(&scene.message_box(), &MessageBox::transformation_changed, [this]() {
     update_manager();
   }));
 

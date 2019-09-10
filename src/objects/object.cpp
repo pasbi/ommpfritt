@@ -23,6 +23,7 @@
 #include "logging.h"
 #include "objects/path.h"
 #include "scene/scene.h"
+#include "scene/messagebox.h"
 
 namespace
 {
@@ -212,7 +213,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
     const auto child_type = deserializer.get_string(make_pointer(child_pointer, TYPE_POINTER));
     try {
       auto child = Object::make(child_type, static_cast<Scene*>(scene()));
-      child->set_object_tree(scene()->object_tree);
+      child->set_object_tree(scene()->object_tree());
       child->deserialize(deserializer, child_pointer);
 
       // TODO adopt sets the global transformation which is reverted by setting the local
@@ -329,7 +330,7 @@ void Object::on_property_value_changed(Property *property)
       || property == this->property(SHEAR_PROPERTY_KEY)
       || property == this->property(SCALE_PROPERTY_KEY) )
   {
-    Q_EMIT scene()->message_box.transformation_changed(*this);
+    Q_EMIT scene()->message_box().transformation_changed(*this);
   } else if (property == this->property(IS_ACTIVE_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
     for (Object* c : all_descendants()) {
@@ -340,7 +341,7 @@ void Object::on_property_value_changed(Property *property)
     object_tree_data_changed(ObjectTree::OBJECT_COLUMN);
   } else if (property == this->property(VISIBILITY_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
-    Q_EMIT scene()->message_box.appearance_changed();
+    Q_EMIT scene()->message_box().appearance_changed();
   }
 }
 
@@ -348,7 +349,7 @@ void Object::post_create_hook() { }
 
 void Object::update()
 {
-  Q_EMIT scene()->message_box.appearance_changed(*this);
+  Q_EMIT scene()->message_box().appearance_changed(*this);
 }
 
 double Object::apply_border(double t, Border border)
@@ -482,28 +483,28 @@ void Object::set_object_tree(ObjectTree &object_tree)
 void Object::on_child_added(Object &child)
 {
   TreeElement::on_child_added(child);
-  Q_EMIT scene()->message_box.appearance_changed(*this);
+  Q_EMIT scene()->message_box().appearance_changed(*this);
 }
 
 void Object::on_child_removed(Object &child)
 {
   TreeElement::on_child_removed(child);
-  Q_EMIT scene()->message_box.appearance_changed(*this);
+  Q_EMIT scene()->message_box().appearance_changed(*this);
 }
 
 void Object::listen_to_changes(const std::function<Object *()> &get_watched)
 {
-  regc(connect(&scene()->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
+  regc(connect(&scene()->message_box(), qOverload<Object&>(&MessageBox::appearance_changed),
           [get_watched, this](Object& o)
   {
     Object* r = get_watched();
     if (r != nullptr) {
       if (r->is_ancestor_of(*this)) {
         {
-          QSignalBlocker blocker(&scene()->message_box);
+          QSignalBlocker blocker(&scene()->message_box());
           update();
         }
-        Q_EMIT scene()->message_box.appearance_changed();
+        Q_EMIT scene()->message_box().appearance_changed();
       } else if (r->is_ancestor_of(o)) {
         update();
       }
@@ -518,8 +519,8 @@ void Object::listen_to_children_changes()
       update();
     }
   };
-  regc(connect(&scene()->message_box, &MessageBox::transformation_changed, on_change));
-  regc(connect(&scene()->message_box, qOverload<Object&>(&MessageBox::appearance_changed),
+  regc(connect(&scene()->message_box(), &MessageBox::transformation_changed, on_change));
+  regc(connect(&scene()->message_box(), qOverload<Object&>(&MessageBox::appearance_changed),
                on_change));
 }
 

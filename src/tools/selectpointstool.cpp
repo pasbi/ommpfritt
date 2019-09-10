@@ -4,6 +4,7 @@
 #include "objects/path.h"
 #include "properties/optionsproperty.h"
 #include "tools/handles/boundingboxhandle.h"
+#include "scene/messagebox.h"
 
 namespace omm
 {
@@ -102,7 +103,7 @@ bool SelectPointsBaseTool::modifies_points() const { return true; }
 void SelectPointsBaseTool::on_property_value_changed(Property *property)
 {
   if (property == this->property(BOUNDING_BOX_MODE_PROPERTY_KEY)) {
-    Q_EMIT scene()->message_box.appearance_changed(*this);
+    Q_EMIT scene()->message_box().appearance_changed(*this);
   }
   AbstractSelectTool::on_property_value_changed(property);
 }

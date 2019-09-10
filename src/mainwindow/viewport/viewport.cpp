@@ -6,6 +6,8 @@
 
 #include "scene/scene.h"
 #include "python/pythonengine.h"
+#include "scene/messagebox.h"
+#include "tools/toolbox.h"
 
 namespace
 {
@@ -32,10 +34,10 @@ Viewport::Viewport(Scene& scene)
   setFocusPolicy(Qt::StrongFocus);
 
   setMouseTracking(true);
-  connect(&scene.message_box, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
+  connect(&scene.message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(update()));
 
-  connect(&scene.message_box, SIGNAL(appearance_changed()), this, SLOT(update()));
+  connect(&scene.message_box(), SIGNAL(appearance_changed()), this, SLOT(update()));
   connect(&m_fps_limiter, &QTimer::timeout, [this]() {
     m_fps_brake = false;
     if (m_update_later) {
@@ -57,14 +59,14 @@ void Viewport::paintEvent(QPaintEvent*)
   painter.setRenderHint(QPainter::SmoothPixmapTransform);
   painter.fillRect(rect(), Qt::gray);
 
-  m_scene.object_tree.root().set_transformation(viewport_transformation());
+  m_scene.object_tree().root().set_transformation(viewport_transformation());
   {
     QSignalBlocker blocker(&m_scene);
     m_scene.evaluate_tags();
   }
   m_renderer.render();
 
-  auto& tool = m_scene.tool_box.active_tool();
+  auto& tool = m_scene.tool_box().active_tool();
   tool.viewport_transformation = viewport_transformation();
   tool.draw(m_renderer);
   m_renderer.painter = nullptr;
@@ -87,7 +89,7 @@ void Viewport::mousePressEvent(QMouseEvent* event)
   if (event->modifiers() & Qt::AltModifier) {
     event->accept();
   } else {
-    if (m_scene.tool_box.active_tool().mouse_press(cursor_pos, *event)) { event->accept(); }
+    if (m_scene.tool_box().active_tool().mouse_press(cursor_pos, *event)) { event->accept(); }
   }
   update();
 }
@@ -98,7 +100,7 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
   const Vec2f delta = cursor_pos - m_last_cursor_pos;
   m_last_cursor_pos = cursor_pos;
 
-  auto& tool = m_scene.tool_box.active_tool();
+  auto& tool = m_scene.tool_box().active_tool();
   if (tool.mouse_move(delta, cursor_pos, *event)) {
     event->accept();
     update();
@@ -115,9 +117,9 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
 {
   if (!m_pan_controller.end_move()) {
     const auto cursor_pos = Vec2f(event->pos());
-    m_scene.tool_box.active_tool().mouse_release(cursor_pos, *event);
+    m_scene.tool_box().active_tool().mouse_release(cursor_pos, *event);
     if (event->button() == Qt::RightButton) {
-      auto menu = m_scene.tool_box.active_tool().make_context_menu(this);
+      auto menu = m_scene.tool_box().active_tool().make_context_menu(this);
       if (menu) { menu->exec(event->globalPos()); }
     }
     ViewportBase::mouseReleaseEvent(event);
@@ -141,7 +143,7 @@ void Viewport::set_transformation(const ObjectTransformation& transformation)
 
 void Viewport::keyPressEvent(QKeyEvent *event)
 {
-  if (!m_scene.tool_box.active_tool().key_press(*event)) {
+  if (!m_scene.tool_box().active_tool().key_press(*event)) {
     ViewportBase::keyPressEvent(event);
   }
 }

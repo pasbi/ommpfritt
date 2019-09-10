@@ -67,7 +67,7 @@ std::vector<Tag*> ObjectTreeSelectionModel::selected_tags_ordered(Scene& scene) 
 {
   std::list<Tag*> selected_tags;
   std::stack<Object*> stack;
-  stack.push(&scene.object_tree.root());
+  stack.push(&scene.object_tree().root());
   while (stack.size() > 0) {
     Object* object = stack.top();
     stack.pop();

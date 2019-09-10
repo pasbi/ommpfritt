@@ -14,6 +14,9 @@
 #include "geometry/cubics.h"
 #include "commands/movecommand.h"
 #include "commands/objectselectioncommand.h"
+#include "scene/history/historymodel.h"
+#include "scene/messagebox.h"
+#include "tools/toolbox.h"
 
 namespace
 {
@@ -32,7 +35,7 @@ void modify_tangents(omm::Path::InterpolationMode mode, omm::Application& app)
   });
 
   if (map.size() > 0) {
-    auto macro = app.scene.history.start_macro(QObject::tr("modify tangents"));
+    auto macro = app.scene.history().start_macro(QObject::tr("modify tangents"));
     using OptionsPropertyCommand = omm::PropertiesCommand<omm::OptionsProperty>;
     app.scene.submit<OptionsPropertyCommand>(interpolation_properties, bezier_mode);
     app.scene.submit<omm::ModifyPointsCommand>(map);
@@ -61,7 +64,7 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
     std::list<ObjectTreeMoveContext> move_contextes;
     for (auto&& c : convertables) {
       auto converted = c->convert();
-      converted->set_object_tree(app.scene.object_tree);
+      converted->set_object_tree(app.scene.object_tree());
       assert(!c->is_root());
       ObjectTreeOwningContext context(*converted, c->tree_parent(), c);
       const auto properties = ::transform<Property*>(app.scene.find_reference_holders(*c));
@@ -70,7 +73,7 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
       }
       auto& converted_ref = *converted;
       context.subject.capture(std::move(converted));
-      app.scene.submit<AddCommand<ObjectTree>>(app.scene.object_tree, std::move(context));
+      app.scene.submit<AddCommand<ObjectTree>>(app.scene.object_tree(), std::move(context));
       converted_ref.set_transformation(c->transformation());
       converted_objects.insert(&converted_ref);
 
@@ -82,12 +85,12 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
                      std::back_inserter(move_contextes), make_move_context);
     }
 
-    app.scene.template submit<MoveCommand<ObjectTree>>(app.scene.object_tree,
+    app.scene.template submit<MoveCommand<ObjectTree>>(app.scene.object_tree(),
                                                        std::vector(move_contextes.begin(),
                                                                    move_contextes.end()));
     const auto selection = ::transform<Object*, std::set>(convertables, ::identity);
     using remove_command = RemoveCommand<ObjectTree>;
-    app.scene.template submit<remove_command>(app.scene.object_tree, selection);
+    app.scene.template submit<remove_command>(app.scene.object_tree(), selection);
 
     // process the left over items
     const auto cos = convert_objects(app, leftover_convertables);
@@ -142,7 +145,7 @@ void subdivide(Application& app)
 
   if (map.size() > 0) {
     app.scene.submit<AddPointsCommand>(map);
-    app.scene.tool_box.active_tool().reset();
+    app.scene.tool_box().active_tool().reset();
   }
 }
 
@@ -191,7 +194,7 @@ void convert_objects(Application& app)
   });
   if (convertables.size() > 0) {
     Scene& scene = app.scene;
-    auto macro = scene.history.start_macro(QObject::tr("convert"));
+    auto macro = scene.history().start_macro(QObject::tr("convert"));
     scene.submit<ObjectSelectionCommand>(app.scene, convertables);
     const auto converted_objects = ::convert_objects(app, convertables);
     scene.submit<ObjectSelectionCommand>(app.scene, converted_objects);

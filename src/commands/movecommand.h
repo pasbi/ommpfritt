@@ -2,6 +2,7 @@
 
 #include "commands/command.h"
 #include "scene/contextes.h"
+#include "scene/stylelist.h"
 
 namespace omm
 {

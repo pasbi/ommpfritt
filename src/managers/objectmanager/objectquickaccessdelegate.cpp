@@ -181,9 +181,9 @@ void ObjectQuickAccessDelegate::on_mouse_move(QMouseEvent &event)
         // if the macro has not yet been started, start it now.
         if (m_macro == nullptr) {
           // move the command that was issued on click inside the macro.
-          m_view.scene().history.undo();  // remove the single command
+          m_view.scene().history().undo();  // remove the single command
           const QString label = QString::fromStdString(m_command_on_hold->label());
-          m_macro = m_view.scene().history.start_macro(label);
+          m_macro = m_view.scene().history().start_macro(label);
 
           // commit a copy of the removed single command again, now within the macro.
           m_view.scene().submit(std::move(m_command_on_hold));

@@ -2,6 +2,7 @@
 #include "scene/scene.h"
 #include "objects/object.h"
 #include "tags/tag.h"
+#include "scene/messagebox.h"
 
 namespace omm
 {
@@ -20,20 +21,20 @@ TagList::TagList(const TagList &other, Object& object)
 void TagList::insert(ListOwningContext<Tag> &context)
 {
   List<Tag>::insert(context);
-  Q_EMIT scene().message_box.tag_inserted(m_object, context.get_subject());
+  Q_EMIT scene().message_box().tag_inserted(m_object, context.get_subject());
 }
 
 void TagList::remove(ListOwningContext<Tag> &t)
 {
   List<Tag>::remove(t);
-  Q_EMIT scene().message_box.tag_removed(m_object, t.get_subject());
+  Q_EMIT scene().message_box().tag_removed(m_object, t.get_subject());
 }
 
 std::unique_ptr<Tag> TagList::remove(Tag &tag)
 {
   Object& owner = *tag.owner;
   auto otag = List<Tag>::remove(tag);
-  Q_EMIT scene().message_box.tag_removed(owner, tag);
+  Q_EMIT scene().message_box().tag_removed(owner, tag);
   return otag;
 }
 

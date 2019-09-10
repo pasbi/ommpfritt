@@ -68,7 +68,7 @@ void View::to_viewport()
 
 void View::make_output_unique()
 {
-  const auto views = type_cast<View*>(scene()->object_tree.items());
+  const auto views = type_cast<View*>(scene()->object_tree().items());
   for (View* view : views) {
     Property* property = view->property(OUTPUT_VIEW_PROPERTY_KEY);
     QSignalBlocker blocker(property);

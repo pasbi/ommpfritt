@@ -13,6 +13,7 @@
 #include "commands/pointstransformationcommand.h"
 #include "logging.h"
 #include "properties/boolproperty.h"
+#include "scene/history/historymodel.h"
 
 namespace omm
 {
@@ -93,12 +94,12 @@ void AbstractSelectTool::cancel()
 {
   transform_objects(ObjectTransformation());
 
-  Command* cmd = scene()->history.last_command();
+  Command* cmd = scene()->history().last_command();
   Tool::cancel();
   if (cmd != nullptr && cmd->is_noop()) {
     cmd->setObsolete(true);
-    QSignalBlocker(&scene()->history);
-    scene()->history.undo();
+    QSignalBlocker(&scene()->history());
+    scene()->history().undo();
   }
 }
 

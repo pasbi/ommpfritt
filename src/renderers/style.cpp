@@ -6,6 +6,7 @@
 #include "properties/optionsproperty.h"
 #include "objects/tip.h"
 #include "scene/scene.h"
+#include "scene/messagebox.h"
 
 namespace {
 
@@ -97,7 +98,7 @@ void Style::on_property_value_changed(Property *property)
        || property == this->property(BRUSH_COLOR_KEY) )
   {
     if (Scene* scene = this->scene(); scene != nullptr) {
-      Q_EMIT scene->message_box.appearance_changed(*this);
+      Q_EMIT scene->message_box().appearance_changed(*this);
     }
   }
 }

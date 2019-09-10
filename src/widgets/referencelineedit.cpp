@@ -10,6 +10,8 @@
 #include "objects/object.h"
 #include "scene/scene.h"
 #include "renderers/style.h"
+#include "scene/messagebox.h"
+#include "scene/stylelist.h"
 
 namespace omm
 {
@@ -49,12 +51,12 @@ void ReferenceLineEdit::set_scene(Scene &scene)
     }
   };
 
-  regc(connect(&m_scene->message_box, &MessageBox::object_removed, update_candidates_maybe));
-  regc(connect(&m_scene->message_box, &MessageBox::object_inserted, update_candidates_maybe));
-  regc(connect(&m_scene->message_box, &MessageBox::tag_inserted, update_candidates_maybe));
-  regc(connect(&m_scene->message_box, &MessageBox::tag_removed, update_candidates_maybe));
-  regc(connect(&m_scene->message_box, SIGNAL(scene_reseted()), this, SLOT(update_candidates())));
-  regc(connect(&m_scene->message_box, &MessageBox::property_value_changed,
+  regc(connect(&m_scene->message_box(), &MessageBox::object_removed, update_candidates_maybe));
+  regc(connect(&m_scene->message_box(), &MessageBox::object_inserted, update_candidates_maybe));
+  regc(connect(&m_scene->message_box(), &MessageBox::tag_inserted, update_candidates_maybe));
+  regc(connect(&m_scene->message_box(), &MessageBox::tag_removed, update_candidates_maybe));
+  regc(connect(&m_scene->message_box(), SIGNAL(scene_reseted()), this, SLOT(update_candidates())));
+  regc(connect(&m_scene->message_box(), &MessageBox::property_value_changed,
           [this](AbstractPropertyOwner& owner, const std::string& key, Property&)
   {
     if (static_cast<bool>(owner.flags() & AbstractPropertyOwner::Flag::HasScript)) {
@@ -171,13 +173,13 @@ std::vector<omm::AbstractPropertyOwner*> ReferenceLineEdit::collect_candidates()
     candidates.insert(candidates.end(), ts.begin(), ts.end());
   };
   if (!!(m_allowed_kinds & omm::AbstractPropertyOwner::Kind::Object)) {
-    merge(m_scene->object_tree.items());
+    merge(m_scene->object_tree().items());
   }
   if (!!(m_allowed_kinds & omm::AbstractPropertyOwner::Kind::Tag)) {
     merge(m_scene->tags());
   }
   if (!!(m_allowed_kinds & omm::AbstractPropertyOwner::Kind::Style)) {
-    merge(m_scene->styles.items());
+    merge(m_scene->styles().items());
   }
 
   const auto not_has_required_flags = [this](const omm::AbstractPropertyOwner* apo) {

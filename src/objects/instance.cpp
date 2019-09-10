@@ -9,6 +9,7 @@
 #include "tags/tag.h"
 #include "tags/scripttag.h"
 #include "tags/styletag.h"
+#include "scene/messagebox.h"
 
 namespace omm
 {
@@ -157,7 +158,7 @@ Object* Instance::referenced_object() const
 void Instance::update_tags()
 {
   if (m_reference) {
-    QSignalBlocker blocker(&scene()->message_box);
+    QSignalBlocker blocker(&scene()->message_box());
     const auto instance_style_tags = type_cast<StyleTag*>(tags.ordered_items());
     if (!instance_style_tags.empty()) {
       for (Tag* tag : type_cast<StyleTag*>(m_reference->tags.ordered_items())) {

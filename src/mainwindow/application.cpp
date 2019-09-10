@@ -20,6 +20,8 @@
 #include "logging.h"
 #include "widgets/pointdialog.h"
 #include "commands/movecommand.h"
+#include "scene/history/historymodel.h"
+#include "scene/stylelist.h"
 
 namespace
 {
@@ -70,7 +72,7 @@ void Application::update_undo_redo_enabled()
 
 bool Application::can_close()
 {
-  if (scene.history.has_pending_changes()) {
+  if (scene.history().has_pending_changes()) {
     const auto decision =
       QMessageBox::question( m_main_window,
                              tr("Question."),
@@ -174,9 +176,9 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
   };
   std::list infos {
     ai( QT_TRANSLATE_NOOP("any-context", "undo"), [](Application& app) {
-      app.scene.history.undo(); } ),
+      app.scene.history().undo(); } ),
     ai( QT_TRANSLATE_NOOP("any-context", "redo"), [](Application& app) {
-      app.scene.history.redo(); } ),
+      app.scene.history().redo(); } ),
     ai( QT_TRANSLATE_NOOP("any-context", "remove selection"), [](Application& app) {
       app.scene.remove(app.main_window(), app.scene.selection()); } ),
     ai( QT_TRANSLATE_NOOP("any-context", "new document"), [](Application& app) { app.reset(); } ),
@@ -201,9 +203,9 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
     ai( QT_TRANSLATE_NOOP("any-context", "restore default layout"), [](Application& app) {
       app.main_window()->restore_default_layout(); }),
     ai( QT_TRANSLATE_NOOP("any-context", "switch between object and point selection"),
-        [](Application& app) { app.scene.tool_box.switch_between_object_and_point_selection(); } ),
+        [](Application& app) { app.scene.tool_box().switch_between_object_and_point_selection(); } ),
     ai( QT_TRANSLATE_NOOP("any-context", "previous tool"), [](Application& app) {
-      app.scene.tool_box.set_previous_tool(); } ),
+      app.scene.tool_box().set_previous_tool(); } ),
     ai( QT_TRANSLATE_NOOP("any-context", "select all"), &actions::select_all),
     ai( QT_TRANSLATE_NOOP("any-context", "deselect all"), &actions::deselect_all),
     ai( QT_TRANSLATE_NOOP("any-context", "invert selection"), &actions::invert_selection),
@@ -213,7 +215,7 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
         assert(style->scene() == &app.scene);
         connect(style.get(), SIGNAL(appearance_changed()),
                 &app.scene, SIGNAL(appearance_changed()));
-        app.scene.submit<command_type>(app.scene.styles, std::move(style));
+        app.scene.submit<command_type>(app.scene.styles(), std::move(style));
       } ),
     ai( QT_TRANSLATE_NOOP("any-context", "convert objects"), &actions::convert_objects ),
     ai( QT_TRANSLATE_NOOP("any-context", "reset viewport"), [](Application& app) {
@@ -252,13 +254,13 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
   }
   for (const auto& key : Tool::keys()) {
     infos.push_back(ai(key, [key](Application& app) {
-      app.scene.tool_box.set_active_tool(key);
+      app.scene.tool_box().set_active_tool(key);
     }));
   }
   for (const auto& key : Tag::keys()) {
     infos.push_back(ai(key, [key](Application& app) {
       Scene& scene = app.scene;
-      auto macro = scene.history.start_macro(tr("Add Tag"));
+      auto macro = scene.history().start_macro(tr("Add Tag"));
       for (auto&& object : scene.item_selection<Object>()) {
         using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
         scene.submit<AddTagCommand>(object->tags, Tag::make(key, *object));
@@ -272,18 +274,18 @@ std::string Application::type() const { return TYPE; }
 
 MessageBox &Application::message_box()
 {
-  return scene.message_box;
+  return scene.message_box();
 }
 
 MainWindow* Application::main_window() const { return m_main_window; }
 
 Object& Application::insert_object(const std::string &key, InsertionMode mode)
 {
-  auto macro = scene.history.start_macro(tr("Create %1")
+  auto macro = scene.history().start_macro(tr("Create %1")
                   .arg(QApplication::translate("any-context", key.c_str())));
   using add_command_type = AddCommand<ObjectTree>;
   auto object = Object::make(key, &scene);
-  object->set_object_tree(scene.object_tree);
+  object->set_object_tree(scene.object_tree());
   auto& ref = *object;
 
 
@@ -300,7 +302,7 @@ Object& Application::insert_object(const std::string &key, InsertionMode mode)
     auto selection = scene.item_selection<Object>();
     Object::remove_internal_children(selection);
     children = Object::sort(selection);
-    parent = children.empty() ? &scene.object_tree.root() : &children.back()->tree_parent();
+    parent = children.empty() ? &scene.object_tree().root() : &children.back()->tree_parent();
     if (!children.empty()) {
       if (std::size_t pos = children.back()->position(); pos > 0) {
         predecessor = parent->tree_children()[pos-1];
@@ -312,7 +314,7 @@ Object& Application::insert_object(const std::string &key, InsertionMode mode)
     break;
   }
 
-  scene.submit<add_command_type>(scene.object_tree, std::move(object));
+  scene.submit<add_command_type>(scene.object_tree(), std::move(object));
   ref.set_global_transformation(ObjectTransformation(), Space::Scene);
   using move_command_t = MoveCommand<ObjectTree>;
   using move_context_t = move_command_t::context_type;
@@ -320,15 +322,15 @@ Object& Application::insert_object(const std::string &key, InsertionMode mode)
     const auto move_contextes = ::transform<move_context_t>(children, [&ref](auto* c) {
       return move_context_t(*c, ref, nullptr);
     });
-    scene.submit<move_command_t>(scene.object_tree, move_contextes);
+    scene.submit<move_command_t>(scene.object_tree(), move_contextes);
     move_context_t move_context(ref, *parent, predecessor);
-    if (move_context.is_strictly_valid(scene.object_tree)) {
+    if (move_context.is_strictly_valid(scene.object_tree())) {
       // the move will fail if the object is already at the correct position.
-      scene.submit<move_command_t>(scene.object_tree, std::vector { move_context });
+      scene.submit<move_command_t>(scene.object_tree(), std::vector { move_context });
     }
   } else if (parent != nullptr) {
     const move_context_t move_context(ref, *parent, nullptr);
-    scene.submit<move_command_t>(scene.object_tree, std::vector { move_context });
+    scene.submit<move_command_t>(scene.object_tree(), std::vector { move_context });
   }
 
   ref.post_create_hook();

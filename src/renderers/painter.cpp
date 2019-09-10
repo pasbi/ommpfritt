@@ -1,6 +1,7 @@
 #include "renderers/painter.h"
 #include "geometry/util.h"
 #include "scene/scene.h"
+#include "renderers/style.h"
 
 namespace
 {
@@ -26,7 +27,7 @@ omm::Painter::Painter(omm::Scene &scene, omm::Painter::Category filter)
 
 void Painter::render()
 {
-  scene.object_tree.root().draw_recursive(*this, scene.default_style());
+  scene.object_tree().root().draw_recursive(*this, scene.default_style());
   assert(m_transformation_stack.empty());
 }
 

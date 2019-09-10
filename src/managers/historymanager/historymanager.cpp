@@ -8,7 +8,7 @@ namespace omm
 
 HistoryManager::HistoryManager(Scene &scene)
   : Manager(tr("History"), scene)
-  , m_model(scene.history)
+  , m_model(scene.history())
 {
   setObjectName(TYPE);
   auto view = std::make_unique<QListView>();
@@ -16,7 +16,7 @@ HistoryManager::HistoryManager(Scene &scene)
   set_widget(std::move(view));
   m_view->setModel(&m_model);
   connect(m_view, &QListView::doubleClicked, [&scene](const QModelIndex& index) {
-    scene.history.set_index(index.row());
+    scene.history().set_index(index.row());
   });
   m_view->setSelectionMode(QAbstractItemView::NoSelection);
   connect(&m_model, &HistoryModel::rowsInserted, [this](const QModelIndex&, int row) {

@@ -10,6 +10,7 @@
 #include <QMouseEvent>
 #include "geometry/rectangle.h"
 #include "tools/selectpointstool.h"
+#include "scene/messagebox.h"
 
 namespace omm
 {
@@ -21,7 +22,7 @@ bool AbstractSelectHandle::mouse_press(const Vec2f &pos, const QMouseEvent &even
   if (Handle::mouse_press(pos, event, force)) {
     if (force) {
       if (event.modifiers() != extend_selection_modifier) {
-        QSignalBlocker blocker(tool.scene()->message_box);
+        QSignalBlocker blocker(tool.scene()->message_box());
         clear();
       }
       set_selected(true);
@@ -237,7 +238,7 @@ void PointSelectHandle::set_selected(bool selected)
 {
   if (m_point.is_selected != selected) {
     m_point.is_selected = selected;
-    Q_EMIT tool.scene()->message_box.point_selection_changed();
+    Q_EMIT tool.scene()->message_box().point_selection_changed();
   }
 }
 

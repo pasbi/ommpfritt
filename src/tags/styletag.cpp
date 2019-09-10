@@ -6,6 +6,7 @@
 #include "renderers/style.h"
 #include "objects/object.h"
 #include "scene/scene.h"
+#include "scene/messagebox.h"
 
 namespace omm
 {
@@ -38,7 +39,7 @@ AbstractPropertyOwner::Flag StyleTag::flags() const { return Tag::flags(); }
 void StyleTag::on_property_value_changed(Property *property)
 {
   if (property == this->property(STYLE_REFERENCE_PROPERTY_KEY)) {
-    owner->scene()->message_box.appearance_changed(*owner);
+    owner->scene()->message_box().appearance_changed(*owner);
   }
 }
 

@@ -45,7 +45,7 @@ void SelectObjectsTool::reset()
   handles.push_back(std::make_unique<BoundingBoxHandle<SelectObjectsTool>>(*this));
 
   // ignore object selection. Return a handle for each visible object.
-  const auto objects = ::filter_if(scene()->object_tree.items(), [](Object* object) {
+  const auto objects = ::filter_if(scene()->object_tree().items(), [](Object* object) {
     return object->is_visible();
   });
 

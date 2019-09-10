@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QTabWidget>
 
+#include "scene/messagebox.h"
 #include "properties/optionsproperty.h"
 #include "managers/propertymanager/propertymanagertab.h"
 #include "propertywidgets/propertywidget.h"
@@ -117,7 +118,7 @@ PropertyManager::PropertyManager(Scene& scene)
 
   connect(m_tab_bar.get(), SIGNAL(current_indices_changed(const std::set<int>&)),
           this, SLOT(activate_tabs(const std::set<int>&)));
-  connect(&scene.message_box, SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
+  connect(&scene.message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
 }
 

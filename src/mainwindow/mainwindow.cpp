@@ -12,6 +12,8 @@
 #include <QDirIterator>
 #include <QLocale>
 
+#include "scene/messagebox.h"
+#include "tools/tool.h"
 #include "managers/objectmanager/objectmanager.h"
 #include "managers/stylemanager/stylemanager.h"
 #include "managers/propertymanager/propertymanager.h"
@@ -23,6 +25,7 @@
 #include "logging.h"
 #include "mainwindow/resourcemenu.h"
 #include "ui_aboutdialog.h"
+#include "scene/history/historymodel.h"
 
 namespace
 {
@@ -177,7 +180,8 @@ void MainWindow::update_window_title()
   QString filename = QString::fromStdString(m_app.scene.filename());
   static const QString clean_indicator = tr("");
   static const QString dirty_indicator = tr("*");
-  QString indicator = m_app.scene.history.has_pending_changes() ? dirty_indicator : clean_indicator;
+  QString indicator = m_app.scene.history().has_pending_changes()
+                      ? dirty_indicator : clean_indicator;
   if (filename.isEmpty()) {
     filename = tr("unnamed");
     indicator = clean_indicator;  // never show dirty indicator if no filename is set.
@@ -264,7 +268,7 @@ void MainWindow::restore_state()
     const auto tools = read_each<std::string>(settings, TOOLBAR_TOOLS_SETTINGS_KEY, [&settings]() {
       return settings.value(TOOLBAR_TOOL_SETTINGS_KEY).toString().toStdString();
     });
-    auto tool_bar = std::make_unique<ToolBar>(this, m_app.scene.tool_box, tools);
+    auto tool_bar = std::make_unique<ToolBar>(this, m_app.scene.tool_box(), tools);
     addToolBar(Qt::TopToolBarArea, tool_bar.release());
   });
 

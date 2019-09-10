@@ -5,6 +5,7 @@
 #include "tools/selectpointstool.h"
 #include <list>
 #include <QMouseEvent>
+#include "scene/messagebox.h"
 
 namespace omm
 {
@@ -93,7 +94,7 @@ void BrushSelectTool
     }
   }
   if (!is_noop) {
-    Q_EMIT scene()->message_box.point_selection_changed();
+    Q_EMIT scene()->message_box().point_selection_changed();
   }
 }
 

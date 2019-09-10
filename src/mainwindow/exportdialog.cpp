@@ -147,7 +147,7 @@ void ExportDialog::render(QPaintDevice& device, double scale) const
       }
     };
 
-    m_scene.object_tree.root().set_transformation(get_transformation());
+    m_scene.object_tree().root().set_transformation(get_transformation());
 
     m_scene.evaluate_tags();
     renderer.render();
@@ -211,7 +211,7 @@ void ExportDialog::save_as_svg()
 void ExportDialog::update_active_view()
 {
   m_ui->cb_view->update_candidates();
-  for (auto* view : type_cast<View*>(m_scene.object_tree.items())) {
+  for (auto* view : type_cast<View*>(m_scene.object_tree().items())) {
     if (view->property(View::OUTPUT_VIEW_PROPERTY_KEY)->value<bool>()) {
       m_ui->cb_view->set_value(view);
       break;

@@ -6,6 +6,7 @@
 #include "scene/scene.h"
 #include "commands/propertycommand.h"
 #include <QTimer>
+#include "scene/history/macro.h"
 
 namespace omm
 {

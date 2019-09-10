@@ -6,6 +6,8 @@
 #include "serializers/abstractserializer.h"
 #include "properties/referenceproperty.h"
 #include "scene/scene.h"
+#include "scene/messagebox.h"
+
 namespace
 {
   constexpr auto PROPERTIES_POINTER = "properties";
@@ -123,7 +125,7 @@ Property
   connect(&ref, &Property::value_changed, [this, key](Property* property) {
     assert(property != nullptr);
     if (Scene* scene = this->scene(); scene != nullptr) {
-      Q_EMIT scene->message_box.property_value_changed(*this, key, *property);
+      Q_EMIT scene->message_box().property_value_changed(*this, key, *property);
     }
   });
   return ref;

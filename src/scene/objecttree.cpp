@@ -6,6 +6,8 @@
 #include "commands/addcommand.h"
 #include "commands/movetagscommand.h"
 #include "properties/referenceproperty.h"
+#include "scene/messagebox.h"
+#include "scene/history/historymodel.h"
 
 namespace {
 
@@ -23,7 +25,7 @@ void drop_tags_onto_object( omm::Scene& scene, omm::Object& object,
     switch (action) {
     case Qt::CopyAction:
     {
-      auto macro = scene.history.start_macro(QObject::tr("copy tags", "ObjectTreeAdapter"));
+      auto macro = scene.history().start_macro(QObject::tr("copy tags", "ObjectTreeAdapter"));
       for (auto* tag : tags) {
         scene.submit<AddTagCommand>(object.tags, tag->clone(object));
       }
@@ -48,7 +50,7 @@ void drop_tags_behind( omm::Scene& scene, omm::Object& object, omm::Tag* current
     switch (action) {
     case Qt::CopyAction:
     {
-      auto macro = scene.history.start_macro(QObject::tr("copy tags", "ObjectTreeAdapter"));
+      auto macro = scene.history().start_macro(QObject::tr("copy tags", "ObjectTreeAdapter"));
       for (auto* tag : tags) {
         omm::ListOwningContext<omm::Tag> context(tag->clone(object), current_tag_predecessor);
         scene.submit<AddTagCommand>(object.tags, std::move(context));
@@ -67,7 +69,7 @@ void drop_style_onto_object( omm::Scene& scene, omm::Object& object,
                              const std::vector<omm::Style*>& styles )
 {
   if (styles.size() > 0) {
-    auto macro = scene.history.start_macro(QObject::tr("set styles tags", "ObjectTreeAdapter"));
+    auto macro = scene.history().start_macro(QObject::tr("set styles tags", "ObjectTreeAdapter"));
     for (auto* style : styles) {
       auto style_tag = std::make_unique<omm::StyleTag>(object);
       style_tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY)->set(style);
@@ -106,10 +108,10 @@ void ObjectTree::move(ObjectTreeMoveContext& context)
 
   Object& old_parent = context.subject.get().tree_parent();
   Object& new_parent = context.parent.get();
-  const auto old_pos = m_scene.object_tree.position(context.subject);
-  const auto new_pos = m_scene.object_tree.insert_position(context.predecessor);
-  const QModelIndex old_parent_index = m_scene.object_tree.index_of(old_parent);
-  const QModelIndex new_parent_index = m_scene.object_tree.index_of(new_parent);
+  const auto old_pos = m_scene.object_tree().position(context.subject);
+  const auto new_pos = m_scene.object_tree().insert_position(context.predecessor);
+  const QModelIndex old_parent_index = m_scene.object_tree().index_of(old_parent);
+  const QModelIndex new_parent_index = m_scene.object_tree().index_of(new_parent);
 
   beginMoveRows(old_parent_index, old_pos, old_pos, new_parent_index, new_pos);
   auto item = old_parent.repudiate(context.subject);
@@ -117,7 +119,7 @@ void ObjectTree::move(ObjectTreeMoveContext& context)
   context.parent.get().adopt(std::move(item), pos);
   m_item_cache_is_dirty = true;
   endMoveRows();
-  Q_EMIT m_scene.message_box.object_moved(old_parent, new_parent, context.get_subject());
+  Q_EMIT m_scene.message_box().object_moved(old_parent, new_parent, context.get_subject());
   Q_EMIT expand_item(new_parent_index);
 }
 
@@ -126,38 +128,38 @@ void ObjectTree::insert(ObjectTreeOwningContext& context)
   assert(context.subject.owns());
 
   const auto row = this->insert_position(context.predecessor);
-  const QModelIndex parent_index = m_scene.object_tree.index_of(context.parent);
+  const QModelIndex parent_index = m_scene.object_tree().index_of(context.parent);
   beginInsertRows(parent_index, row, row);
   context.parent.get().adopt(context.subject.release(), row);
   m_item_cache_is_dirty = true;
   endInsertRows();
-  Q_EMIT m_scene.message_box.object_inserted(context.parent.get(), context.get_subject());
+  Q_EMIT m_scene.message_box().object_inserted(context.parent.get(), context.get_subject());
 }
 
 void ObjectTree::remove(ObjectTreeOwningContext &context)
 {
   assert(!context.subject.owns());
   const Object& subject = context.subject;
-  const int row = m_scene.object_tree.position(subject);
-  const QModelIndex parent_index = m_scene.object_tree.index_of(subject.tree_parent());
+  const int row = m_scene.object_tree().position(subject);
+  const QModelIndex parent_index = m_scene.object_tree().index_of(subject.tree_parent());
   beginRemoveRows(parent_index, row, row);
   context.subject.capture(context.parent.get().repudiate(context.subject));
   m_item_cache_is_dirty = true;
   endRemoveRows();
-  Q_EMIT m_scene.message_box.object_removed(context.parent.get(), context.get_subject());
+  Q_EMIT m_scene.message_box().object_removed(context.parent.get(), context.get_subject());
 }
 
 std::unique_ptr<Object> ObjectTree::remove(Object& t)
 {
-  const int row = m_scene.object_tree.position(t);
-  const QModelIndex parent_index = m_scene.object_tree.index_of(t.tree_parent());
+  const int row = m_scene.object_tree().position(t);
+  const QModelIndex parent_index = m_scene.object_tree().index_of(t.tree_parent());
   beginRemoveRows(parent_index, row, row);
   assert(!t.is_root());
   Object& parent = t.tree_parent();
   auto item = parent.repudiate(t);
   m_item_cache_is_dirty = true;
   endRemoveRows();
-  Q_EMIT m_scene.message_box.object_removed(parent, t);
+  Q_EMIT m_scene.message_box().object_removed(parent, t);
   return item;
 }
 
@@ -168,7 +170,7 @@ std::unique_ptr<Object> ObjectTree::replace_root(std::unique_ptr<Object> new_roo
   m_root = std::move(new_root);
   m_item_cache_is_dirty = true;
   endResetModel();
-  Q_EMIT m_scene.message_box.scene_reseted();
+  Q_EMIT m_scene.message_box().scene_reseted();
   return old_root;
 }
 
@@ -285,7 +287,7 @@ QModelIndex ObjectTree::index_of(Object &object) const
   if (object.is_root()) {
     return QModelIndex();
   } else {
-    return createIndex(scene.object_tree.position(object), 0, &object);
+    return createIndex(scene.object_tree().position(object), 0, &object);
   }
 }
 
@@ -389,7 +391,7 @@ bool ObjectTree::canDropMimeData(const QMimeData *data, Qt::DropAction action, i
 
 std::size_t ObjectTree::max_number_of_tags_on_object() const
 {
-  const auto objects = scene.object_tree.items();
+  const auto objects = scene.object_tree().items();
   const auto cmp = [](const Object* lhs, const Object* rhs) {
     return lhs->tags.size() < rhs->tags.size();
   };
