@@ -44,7 +44,7 @@ public:
   explicit Object(const Object& other);
   ~Object();
 
-  enum class Visibility { Default, Visible, Hidden };
+  enum class Visibility { Default, Hidden, Visible };
 
   void transform(const ObjectTransformation& transformation);
   ObjectTransformation transformation() const;
