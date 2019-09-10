@@ -4,6 +4,7 @@
 #include "managers/pythonconsole/pythonconsole.h"
 #include "managers/historymanager/historymanager.h"
 #include "managers/boundingboxmanager/boundingboxmanager.h"
+#include "managers/timeline/timeline.h"
 
 namespace omm
 {
@@ -18,6 +19,7 @@ void register_managers()
   REGISTER_MANAGER(PythonConsole);
   REGISTER_MANAGER(HistoryManager);
   REGISTER_MANAGER(BoundingBoxManager);
+  REGISTER_MANAGER(TimeLine);
 
 #undef REGISTER_MANAGER
 }

@@ -29,6 +29,8 @@
 #include "scene/stylelist.h"
 #include "scene/objecttree.h"
 #include "scene/messagebox.h"
+#include "scene/animator.h"
+
 namespace
 {
 
@@ -41,6 +43,7 @@ void remove_items(omm::Scene& scene, StructureT& structure, const ItemsT& select
 
 constexpr auto ROOT_POINTER = "root";
 constexpr auto STYLES_POINTER = "styles";
+constexpr auto ANIMATOR_POINTER = "animation";
 
 auto implicitely_selected_tags(const std::set<omm::AbstractPropertyOwner*>& selection)
 {
@@ -72,6 +75,7 @@ Scene::Scene(PythonEngine& python_engine)
   , m_styles(new StyleList(*this))
   , m_history(new HistoryModel())
   , m_tool_box(new ToolBox(*this))
+  , m_animator(new Animator())
 {
   object_tree().root().set_object_tree(object_tree());
   for (auto kind : { Object::KIND, Tag::KIND, Style::KIND, Tool::KIND }) {
@@ -166,6 +170,8 @@ bool Scene::save_as(const std::string &filename)
   }
   serializer->end_array();
 
+  animator().serialize(*serializer, ANIMATOR_POINTER);
+
   LINFO << "Saved current scene to '" << filename << "'.";
   history().set_saved_index();
   m_filename = filename;
@@ -212,6 +218,7 @@ bool Scene::load_from(const std::string &filename)
 
     object_tree().root().update_recursive();
 
+    animator().deserialize(*deserializer, ANIMATOR_POINTER);
 
     return true;
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
