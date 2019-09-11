@@ -10,7 +10,7 @@ namespace omm
 class AbstractPropertyOwner;
 class ReferenceProperty;
 
-class ReferenceProperty : public TypedProperty<AbstractPropertyOwner*>
+class ReferenceProperty : public TypedProperty<AbstractPropertyOwner*>, ReferencePolisher
 {
   Q_OBJECT
 public:
@@ -36,6 +36,8 @@ public:
   collect_candidates(const Scene& scene, const AbstractPropertyOwner::Kind allowed_kinds,
                                          const AbstractPropertyOwner::Flag required_flags);
 
+  void update_referenes(const std::map<std::size_t, AbstractPropertyOwner *> &references) override;
+
 Q_SIGNALS:
   void reference_changed(AbstractPropertyOwner* old_ref, AbstractPropertyOwner* new_ref);
 
@@ -44,6 +46,9 @@ private:
   void set_default_value(const value_type& value) override;
   AbstractPropertyOwner::Kind m_allowed_kinds = AbstractPropertyOwner::Kind::All;
   AbstractPropertyOwner::Flag m_required_flags = AbstractPropertyOwner::Flag::None;
+
+  // this field is only required temporarily during deserialization
+  std::size_t m_reference_value_id;
 };
 
 }  // namespace omm

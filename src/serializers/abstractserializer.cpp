@@ -48,13 +48,8 @@ void AbstractDeserializer::add_references(const std::set<AbstractPropertyOwner*>
 AbstractDeserializer::~AbstractDeserializer()
 {
   // polish reference properties
-  for (const auto& property_id : m_reference_property_to_id) {
-    auto* property = property_id.first;
-    const auto id = property_id.second;
-    if (m_id_to_reference.count(id) > 0) {
-      auto* reference = id == 0 ? nullptr : m_id_to_reference.at(id);
-      property->set(reference);
-    }
+  for (ReferencePolisher* polisher : m_reference_polishers) {
+    polisher->update_referenes(m_id_to_reference);
   }
 }
 
@@ -64,10 +59,9 @@ void AbstractDeserializer::register_reference( const std::size_t id,
   m_id_to_reference[id] = &reference;
 }
 
-void AbstractDeserializer::register_reference_property(ReferenceProperty& reference_property,
-                                                       const std::size_t id )
+void AbstractDeserializer::register_reference_polisher(ReferencePolisher &polisher)
 {
-  m_reference_property_to_id[&reference_property] = id;
+  m_reference_polishers.insert(&polisher);
 }
 
 template<> bool AbstractDeserializer::get<bool>(const Pointer& pointer)

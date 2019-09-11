@@ -42,8 +42,9 @@ void ReferenceProperty::deserialize(AbstractDeserializer& deserializer, const Po
 
   // not all objects are restored yet, hence not all pointers are known.
   // remember the property to set `m_value` later.
-  const auto id = deserializer.get_size_t(make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
-  deserializer.register_reference_property(*this, id);
+  const auto ref_pointer = make_pointer(root, TypedPropertyDetail::VALUE_POINTER);
+  m_reference_value_id = deserializer.get_size_t(ref_pointer);
+  deserializer.register_reference_polisher(*this);
 }
 
 void ReferenceProperty::set_default_value(const value_type& value)
@@ -81,6 +82,12 @@ bool ReferenceProperty::is_compatible(const Property& other) const
 std::unique_ptr<Property> ReferenceProperty::clone() const
 {
   return std::make_unique<ReferenceProperty>(*this);
+}
+
+void ReferenceProperty
+::update_referenes(const std::map<std::size_t, AbstractPropertyOwner *> &references)
+{
+  set(references.at(m_reference_value_id));
 }
 
 void ReferenceProperty::revise() { set(nullptr); }
