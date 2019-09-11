@@ -1,7 +1,7 @@
 #include "managers/timeline/timeline.h"
 #include "ui_timeline.h"
 #include "scene/scene.h"
-#include "scene/animator.h"
+#include "animation/animator.h"
 
 namespace omm
 {

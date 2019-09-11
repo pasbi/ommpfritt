@@ -1,6 +1,5 @@
 
 file(GLOB SOURCES
-  animator.cpp
   cycleguard.cpp
   itemmodeladapter.cpp
   list.cpp
@@ -15,7 +14,6 @@ file(GLOB SOURCES
 )
 
 file(GLOB HEADERS
-  animator.h
   cycleguard.h
   cachedgetter.h
   contextes_fwd.h

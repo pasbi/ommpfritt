@@ -29,7 +29,7 @@
 #include "scene/stylelist.h"
 #include "scene/objecttree.h"
 #include "scene/messagebox.h"
-#include "scene/animator.h"
+#include "animation/animator.h"
 
 namespace
 {

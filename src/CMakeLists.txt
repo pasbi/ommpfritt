@@ -15,6 +15,7 @@ file(GLOB HEADERS
   orderedmap.h
 )
 
+add_subdirectory(animation)
 add_subdirectory(aspects)
 add_subdirectory(color)
 add_subdirectory(commands)

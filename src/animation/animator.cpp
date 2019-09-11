@@ -1,4 +1,4 @@
-#include "scene/animator.h"
+#include "animation/animator.h"
 
 #include "logging.h"
 #include "serializers/abstractserializer.h"
