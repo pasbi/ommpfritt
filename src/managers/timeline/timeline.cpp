@@ -49,8 +49,7 @@ TimeLine::TimeLine(Scene &scene)
     m_ui->sp_min->setMaximum(current);
   });
 
-  connect(m_ui->pb_reset, &QPushButton::clicked,
-          &scene.animator(), [this, &scene]() {
+  connect(m_ui->pb_reset, &QPushButton::clicked, &scene.animator(), [&scene]() {
     scene.animator().set_current(scene.animator().start());
   });
   connect(m_ui->pb_play, SIGNAL(toggled(bool)), &scene.animator(), SLOT(toggle_play_pause(bool)));

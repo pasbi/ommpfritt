@@ -2,6 +2,7 @@
 
 #include <QBoxLayout>
 #include <QLabel>
+#include "widgets/animationbutton.h"
 
 namespace omm
 {
@@ -18,6 +19,7 @@ AbstractPropertyWidget::AbstractPropertyWidget(Scene& scene, const std::set<Prop
 
 void AbstractPropertyWidget::set_default_layout(std::unique_ptr<QWidget> other)
 {
+  other->setParent(this);
   auto layout = std::make_unique<QHBoxLayout>();
   layout->addWidget(other.release(), 1);
   layout->setContentsMargins(0, 3, 0, 3);

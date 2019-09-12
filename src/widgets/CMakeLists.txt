@@ -1,5 +1,6 @@
 
 file(GLOB SOURCES
+  animationbutton.cpp
   codeedit.cpp
   coordinateedit.cpp
   filepathedit.cpp
@@ -11,6 +12,7 @@ file(GLOB SOURCES
 )
 
 file(GLOB HEADERS
+  animationbutton.h
   codeedit.h
   coordinateedit.h
   filepathedit.h
