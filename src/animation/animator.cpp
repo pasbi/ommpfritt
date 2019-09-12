@@ -2,7 +2,9 @@
 
 #include "logging.h"
 #include "serializers/abstractserializer.h"
-#include <ratio>
+#include "animation/fcurve.h"
+
+#include "aspects/propertyowner.h"
 
 namespace omm
 {
@@ -20,6 +22,16 @@ void Animator::serialize(AbstractSerializer &serializer, const Serializable::Poi
   serializer.set_value(m_start_frame, make_pointer(pointer, START_FRAME_POINTER));
   serializer.set_value(m_end_frame, make_pointer(pointer, END_FRAME_POINTER));
   serializer.set_value(m_current_frame, make_pointer(pointer, CURRENT_FRAME_POINTER));
+
+  const auto fcurves_pointer = make_pointer(pointer, FCURVES_POINTER);
+  serializer.start_array(m_fcurves.size(), fcurves_pointer);
+  int i = 0;
+  for (const auto& fcurve : m_fcurves) {
+    serializer.set_value(fcurve->type(), make_pointer(pointer, AbstractFCurve::TYPE_KEY));
+    fcurve->serialize(serializer, make_pointer(fcurves_pointer, i));
+    i += 1;
+  }
+  serializer.end_array();
 }
 
 void Animator::deserialize(AbstractDeserializer &deserializer, const Pointer &pointer)
@@ -29,6 +41,45 @@ void Animator::deserialize(AbstractDeserializer &deserializer, const Pointer &po
   set_start(deserializer.get_int(make_pointer(pointer, START_FRAME_POINTER)));
   set_end(deserializer.get_int(make_pointer(pointer, END_FRAME_POINTER)));
   set_current(deserializer.get_int(make_pointer(pointer, CURRENT_FRAME_POINTER)));
+
+  const auto fcurves_pointer = make_pointer(pointer, FCURVES_POINTER);
+  const std::size_t n = deserializer.array_size(fcurves_pointer);
+  for (std::size_t i = 0; i < n; ++i) {
+    const std::string type_pointer = make_pointer(fcurves_pointer, AbstractFCurve::TYPE_KEY);
+    const std::string type = deserializer.get_string(type_pointer);
+    auto fcurve = AbstractFCurve::make(type);
+    m_fcurves.insert(std::move(fcurve));
+  }
+}
+
+std::string Animator::map_property_to_fcurve_type(const std::string &property_type)
+{
+  // <TYPE>Property -> <TYPE>FCurve
+  static const std::string property_suffix = "property";
+  static const std::string fcurve_suffix = "fcurve";
+
+  assert(property_type.size() > property_suffix.size());
+  const std::string type = property_type.substr(0, property_type.size() - property_suffix.size());
+  return type + fcurve_suffix;
+}
+
+AbstractFCurve &Animator::get_fcurve(AbstractPropertyOwner &owner, const std::string &property_key)
+{
+  const auto it = std::find_if(m_fcurves.begin(), m_fcurves.end(),
+                               [&owner, &property_key](const auto& fcurve)
+  {
+    return fcurve->owner() == &owner && fcurve->property_key() == property_key;
+  });
+
+  if (it != m_fcurves.end()) {
+    return **it;
+  } else {
+    Property* property = owner.property(property_key);
+    auto fcurve = AbstractFCurve::make(map_property_to_fcurve_type(property->type()));
+    AbstractFCurve& fcurve_ref = *fcurve;
+    m_fcurves.insert(std::move(fcurve));
+    return fcurve_ref;
+  }
 }
 
 void Animator::set_start(int start)
@@ -49,10 +100,8 @@ void Animator::set_end(int end)
 
 void Animator::set_current(int current)
 {
-  LINFO << "set current: " << current;
   if (m_current_frame != current) {
     m_current_frame = current;
-    LINFO << "emit current changed";
     Q_EMIT current_changed(current);
   }
 }

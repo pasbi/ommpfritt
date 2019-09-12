@@ -1,16 +1,17 @@
 
 file(GLOB SOURCES
-  abstractfcurve.cpp
   animator.cpp
   fcurve.cpp
-  keyvalue.cpp
+  floatfcurve.cpp
+  abstractfcurve.cpp
+  fcurveregister.cpp
 )
 
 file(GLOB HEADERS
-  abstractfcurve.h
   animator.h
   fcurve.h
-  keyvalue.h
+  floatfcurve.h
+  abstractfcurve.h
 )
 
 target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})

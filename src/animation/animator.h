@@ -3,9 +3,14 @@
 #include "aspects/serializable.h"
 #include <QObject>
 #include <QTimer>
+#include <set>
+#include <memory>
+#include "animation/fcurve.h"
 
 namespace omm
 {
+
+class AbstractFCurve;
 
 class Animator : public QObject, public Serializable
 {
@@ -23,6 +28,9 @@ public:
   static constexpr auto START_FRAME_POINTER = "start-frame";
   static constexpr auto END_FRAME_POINTER = "end-frame";
   static constexpr auto CURRENT_FRAME_POINTER = "current-frame";
+  static constexpr auto FCURVES_POINTER = "fcurves";
+  static std::string map_property_to_fcurve_type(const std::string& property_type);
+  AbstractFCurve& get_fcurve(AbstractPropertyOwner& owner, const std::string& property_key);
 
 public Q_SLOTS:
   void set_start(int start);
@@ -38,12 +46,15 @@ Q_SIGNALS:
   void play_pause_toggled(bool);
 
 private:
-  int m_start_frame = -22;
-  int m_end_frame = 22;
-  int m_current_frame = 2;
+  int m_start_frame = 1;
+  int m_end_frame = 100;
+  int m_current_frame = 1;
   bool m_is_playing = false;
   QTimer m_timer;
   PlayMode m_play_mode = PlayMode::Repeat;
+
+  std::set<std::unique_ptr<AbstractFCurve>> m_fcurves;
+
 };
 
 }  // namespace omm

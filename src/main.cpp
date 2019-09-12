@@ -16,6 +16,7 @@
 #include <QDirIterator>
 #include "logging.h"
 #include "mainwindow/resourcemenu.h"
+#include "animation/fcurve.h"
 
 auto load_translator(const std::string& prefix, const QLocale& locale)
 {
@@ -70,6 +71,7 @@ int main (int argc, char *argv[])
   omm::register_deserializers();
   omm::register_propertyconfigwidgets();
   omm::register_tools();
+  omm::register_fcurves();
 
   QApplication qt_app(argc, argv);
 
