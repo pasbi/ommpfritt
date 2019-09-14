@@ -26,8 +26,6 @@ ReferenceProperty::~ReferenceProperty()
   set(nullptr);
 }
 
-std::string ReferenceProperty::type() const { return TYPE; }
-
 void ReferenceProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   // TODO serialize allowed_kinds and required_flags

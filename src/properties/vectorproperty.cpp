@@ -10,12 +10,9 @@ namespace
 namespace omm
 {
 
-
 const Vec2f FloatVectorPropertyLimits::lower(-inf, -inf);
 const Vec2f FloatVectorPropertyLimits::upper( inf,  inf);
 const Vec2f FloatVectorPropertyLimits::step(1.0, 1.0);
-
-std::string FloatVectorProperty::type() const { return TYPE; }
 
 void FloatVectorProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {

@@ -3,11 +3,6 @@
 namespace omm
 {
 
-std::string IntegerProperty::type() const
-{
-  return TYPE;
-}
-
 void IntegerProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   NumericProperty::deserialize(deserializer, root);

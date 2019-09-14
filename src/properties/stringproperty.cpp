@@ -3,9 +3,6 @@
 namespace omm
 {
 
-std::string StringProperty::type() const { return TYPE; }
-StringProperty::Mode StringProperty::mode() const { return m_mode; }
-
 StringProperty& StringProperty::set_mode(Mode mode)
 {
   m_mode = mode;

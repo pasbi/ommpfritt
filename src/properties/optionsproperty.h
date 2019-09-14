@@ -11,11 +11,11 @@ class OptionsProperty : public TypedProperty<size_t>
 {
 public:
   using TypedProperty::TypedProperty;
-  std::string type() const override;
+  std::string type() const override { return TYPE; }
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void set(const variant_type& variant) override;
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("OptionsProperty", "OptionsProperty");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("Property", "OptionsProperty");
   std::unique_ptr<Property> clone() const override;
 
   std::vector<std::string> options() const;

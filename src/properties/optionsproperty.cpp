@@ -4,8 +4,6 @@
 namespace omm
 {
 
-std::string OptionsProperty::type() const { return TYPE; }
-
 void OptionsProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   TypedProperty::deserialize(deserializer, root);

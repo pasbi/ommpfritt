@@ -3,8 +3,6 @@
 namespace omm
 {
 
-std::string FloatProperty::type() const { return TYPE; }
-
 void FloatProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   NumericProperty::deserialize(deserializer, root);

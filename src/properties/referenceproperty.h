@@ -17,7 +17,7 @@ public:
   ReferenceProperty();
   explicit ReferenceProperty(const ReferenceProperty& other);
   ~ReferenceProperty() override;
-  std::string type() const override;
+  std::string type() const override { return TYPE; }
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   ReferenceProperty& set_allowed_kinds(AbstractPropertyOwner::Kind allowed_kinds);
@@ -28,7 +28,7 @@ public:
   void set(AbstractPropertyOwner *const &value) override;
 
   bool is_compatible(const Property& other) const override;
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("ReferenceProperty", "ReferenceProperty");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("Property", "ReferenceProperty");
   std::unique_ptr<Property> clone() const override;
 
 

@@ -18,10 +18,10 @@ class FloatVectorProperty
 {
 public:
   using NumericProperty::NumericProperty;
-  std::string type() const override;
+  std::string type() const override { return TYPE; }
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("FloatVectorProperty", "FloatVectorProperty");
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("Property", "FloatVectorProperty");
   std::unique_ptr<Property> clone() const override;
 };
 

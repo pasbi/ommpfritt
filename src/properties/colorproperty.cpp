@@ -3,11 +3,6 @@
 namespace omm
 {
 
-std::string ColorProperty::type() const
-{
-  return TYPE;
-}
-
 void ColorProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   TypedProperty::deserialize(deserializer, root);
