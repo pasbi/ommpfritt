@@ -1,7 +1,6 @@
 
 file(GLOB SOURCES
   coloredit.cpp
-  colorpropertyconfigwidget.cpp
   colorpropertywidget.cpp
 )
 

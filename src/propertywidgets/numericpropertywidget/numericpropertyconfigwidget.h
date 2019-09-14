@@ -11,51 +11,76 @@
 namespace omm
 {
 
-template<typename PropertyT>
-class NumericPropertyConfigWidget : public PropertyConfigWidget<PropertyT>
+template<typename T>
+class NumericPropertyConfigWidget : public PropertyConfigWidget
 {
 public:
-  using value_type = typename PropertyT::value_type;
-  NumericPropertyConfigWidget(QWidget* parent, Property& property)
-    : PropertyConfigWidget<PropertyT>(parent, property)
+  NumericPropertyConfigWidget()
   {
-    auto& numeric_property = type_cast<PropertyT&>(property);
-    auto [ min_edit, max_edit ] = NumericEdit<value_type>::make_range_edits();
-    const auto update_range = [&numeric_property, &min_edit=min_edit, &max_edit=max_edit]() {
-      numeric_property.set_range(min_edit->value(), max_edit->value());
-    };
-    QObject::connect(min_edit.get(), SIGNAL(value_changed()), this, SLOT(update_range()));
-    QObject::connect(max_edit.get(), SIGNAL(value_changed()), this, SLOT(update_range()));
-    const auto on_step_changed = [&numeric_property](value_type step) {
-    };
-    auto step_edit = std::make_unique<NumericEdit<value_type>>();
-    QObject::connect(step_edit.get(), &AbstractNumericEdit::value_changed,
-                     [&numeric_property, step_edit=step_edit.get()]() {
-      numeric_property.set_step(step_edit->value());
-    });
-    step_edit->set_lower(NumericEditDetail::smallest_step<value_type>);
-    step_edit->set_value(numeric_property.step());
-    min_edit->set_value(numeric_property.lower());
-    max_edit->set_value(numeric_property.upper());
+    auto [ min_edit, max_edit ] = NumericEdit<T>::make_range_edits();
+    m_min_edit = min_edit.get();
+    m_max_edit = max_edit.get();
+    auto step_edit = std::make_unique<NumericEdit<T>>();
+    m_step_edit = step_edit.get();
+    m_step_edit->set_lower(NumericProperty<T>::smallest_step);
+    auto mult_edit = std::make_unique<NumericEdit<double>>();
+    m_mult_edit = mult_edit.get();
 
-    this->form_layout()->addRow(QObject::tr("min", "NumericProperty"), min_edit.release());
-    this->form_layout()->addRow(QObject::tr("max", "NumericProperty"), max_edit.release());
-    this->form_layout()->addRow(QObject::tr("step", "NumericProperty"), step_edit.release());
+    auto layout = std::make_unique<QFormLayout>();
+    layout->addRow(QObject::tr(NumericPropertyDetail::LOWER_VALUE_POINTER, "NumericProperty"), min_edit.release());
+    layout->addRow(QObject::tr(NumericPropertyDetail::UPPER_VALUE_POINTER, "NumericProperty"), max_edit.release());
+    layout->addRow(QObject::tr(NumericPropertyDetail::STEP_POINTER, "NumericProperty"), step_edit.release());
+    layout->addRow(QObject::tr(NumericPropertyDetail::MULTIPLIER_POINTER, "NumericProperty"), mult_edit.release());
+    setLayout(layout.release());
   }
+
+  void init(const Property::Configuration &configuration) override
+  {
+    const auto llower =  NumericProperty<T>::lowest_possible_value;
+    const auto uupper = NumericProperty<T>::highest_possible_value;
+    const auto lower = configuration.get<T>(NumericPropertyDetail::LOWER_VALUE_POINTER, llower);
+    const auto upper = configuration.get<T>(NumericPropertyDetail::UPPER_VALUE_POINTER, uupper);
+    const auto step = configuration.get<T>(NumericPropertyDetail::STEP_POINTER, T(1));
+    const auto mult = configuration.get<double>(NumericPropertyDetail::MULTIPLIER_POINTER, 1.0);
+
+    m_min_edit->set_range(llower, upper);
+    m_min_edit->set_value(lower);
+    m_max_edit->set_range(lower, uupper);
+    m_max_edit->set_value(upper);
+    m_step_edit->set_lower(NumericProperty<T>::smallest_step);
+    m_step_edit->set_value(step);
+    m_mult_edit->set_value(mult);
+  }
+
+  void update(Property::Configuration &configuration) const override
+  {
+    configuration[NumericPropertyDetail::LOWER_VALUE_POINTER] = m_min_edit->value();
+    configuration[NumericPropertyDetail::UPPER_VALUE_POINTER] = m_max_edit->value();
+    configuration[NumericPropertyDetail::STEP_POINTER] = m_step_edit->value();
+    configuration[NumericPropertyDetail::MULTIPLIER_POINTER] = m_mult_edit->value();
+  }
+
+private:
+  NumericEdit<T>* m_min_edit;
+  NumericEdit<T>* m_max_edit;
+  NumericEdit<T>* m_step_edit;
+  NumericEdit<double>* m_mult_edit;
 };
 
-class IntegerPropertyConfigWidget : public NumericPropertyConfigWidget<IntegerProperty>
+class IntegerPropertyConfigWidget : public NumericPropertyConfigWidget<IntegerProperty::value_type>
 {
 public:
-  using NumericPropertyConfigWidget::NumericPropertyConfigWidget;
-  std::string type() const override;
+  using NumericPropertyConfigWidget<IntegerProperty::value_type>::NumericPropertyConfigWidget;
+  static constexpr auto TYPE = "FloatPropertyConfigWidget";
+  std::string type() const override { return TYPE; }
 };
 
-class FloatPropertyConfigWidget : public NumericPropertyConfigWidget<FloatProperty>
+class FloatPropertyConfigWidget : public NumericPropertyConfigWidget<FloatProperty::value_type>
 {
 public:
-  using NumericPropertyConfigWidget::NumericPropertyConfigWidget;
-  std::string type() const override;
+  using NumericPropertyConfigWidget<FloatProperty::value_type>::NumericPropertyConfigWidget;
+  static constexpr auto TYPE = "FloatPropertyConfigWidget";
+  std::string type() const override { return TYPE; }
 };
 
 }  // namespace omm

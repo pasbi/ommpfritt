@@ -4,6 +4,7 @@ file(GLOB SOURCES
   colorproperty.cpp
   floatproperty.cpp
   integerproperty.cpp
+  numericproperty.cpp
   optionsproperty.cpp
   property.cpp
   propertyregister.cpp

@@ -48,6 +48,11 @@ ReferencePropertyWidget
   update_edit();
 }
 
+ReferencePropertyWidget::~ReferencePropertyWidget()
+{
+  LINFO << "delete reference property";
+}
+
 void ReferencePropertyWidget::update_edit()
 {
   QSignalBlocker blocker(m_line_edit);

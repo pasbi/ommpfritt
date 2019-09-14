@@ -12,7 +12,8 @@ template<typename NumericPropertyT> NumericPropertyWidget<NumericPropertyT>
 ::NumericPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget<NumericPropertyT>(scene, properties)
 {
-  using edit_type = NumericMultiValueEdit<typename NumericPropertyT::value_type>;
+  using value_type = typename NumericPropertyT::value_type;
+  using edit_type = NumericMultiValueEdit<value_type>;
   auto spinbox = std::make_unique<edit_type>();
   QObject::connect(spinbox.get(), &AbstractNumericEdit::value_changed,
                    [this, spinbox=spinbox.get()]() {
@@ -21,13 +22,14 @@ template<typename NumericPropertyT> NumericPropertyWidget<NumericPropertyT>
   m_spinbox = spinbox.get();
   this->set_default_layout(std::move(spinbox));
 
-  using P = NumericPropertyT;
-  const auto lower = Property::get_value<value_type, P>(properties, std::mem_fn(&P::lower));
-  const auto upper = Property::get_value<value_type, P>(properties, std::mem_fn(&P::upper));
+  using P = NumericPropertyDetail;
+  const auto lower = this->template configuration<value_type>(P::LOWER_VALUE_POINTER);
+  const auto upper = this->template configuration<value_type>(P::UPPER_VALUE_POINTER);
+
+  const auto mult = this->template configuration<double>(P::MULTIPLIER_POINTER);
+  const auto step = this->template configuration<value_type>(P::STEP_POINTER);
   m_spinbox->set_range(lower, upper);
-  const auto mult = Property::get_value<double, P>(properties, std::mem_fn(&P::multiplier));
   m_spinbox->set_multiplier(mult);
-  const auto step = Property::get_value<value_type, P>(properties, std::mem_fn(&P::step));
   m_spinbox->set_step(step);
 
   update_edit();

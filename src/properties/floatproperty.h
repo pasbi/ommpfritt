@@ -6,14 +6,7 @@
 namespace omm
 {
 
-struct FloatPropertyLimits
-{
-  static constexpr auto upper =  std::numeric_limits<double>::infinity();
-  static constexpr auto lower = -std::numeric_limits<double>::infinity();
-  static constexpr auto step = 1.0;
-};
-
-class FloatProperty : public NumericProperty<double, FloatPropertyLimits>
+class FloatProperty : public NumericProperty<double>
 {
 public:
   using NumericProperty::NumericProperty;

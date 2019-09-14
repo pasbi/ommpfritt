@@ -1,12 +1,12 @@
 
 file(GLOB SOURCES
+  propertyitem.cpp
   userpropertydialog.cpp
-  userpropertylistmodel.cpp
 )
 
 file(GLOB HEADERS
+  propertyitem.h
   userpropertydialog.h
-  userpropertylistmodel.h
 )
 
 

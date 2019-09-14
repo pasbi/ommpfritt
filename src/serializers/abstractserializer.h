@@ -8,6 +8,7 @@
 #include "color/color.h"
 #include "geometry/vec2.h"
 #include "geometry/polarcoordinates.h"
+#include <variant>
 
 namespace omm
 {
@@ -22,8 +23,8 @@ class AbstractSerializer
 {
 public:
   using Pointer = Serializable::Pointer;
-  explicit AbstractSerializer(std::ostream&);
-  virtual ~AbstractSerializer();
+  explicit AbstractSerializer(std::ostream&) { }
+  virtual ~AbstractSerializer() = default;
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
   virtual void start_array(size_t size, const Pointer& pointer) = 0;
@@ -47,12 +48,14 @@ private:
 
 };
 
+template<class T> struct always_false : std::false_type {};
+
 class AbstractDeserializer
   : public AbstractFactory<std::string, AbstractDeserializer, std::istream&>
 {
 public:
   using Pointer = Serializable::Pointer;
-  explicit AbstractDeserializer(std::istream&);
+  explicit AbstractDeserializer(std::istream&) { }
   virtual ~AbstractDeserializer();
 
   void add_references(const std::set<AbstractPropertyOwner*>& existing_references);

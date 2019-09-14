@@ -27,20 +27,16 @@ public:
       set_properties_value<1>(m_y_edit->value());
     });
 
-    const auto get_step = std::mem_fn(&VectorPropertyT::step);
-    const auto step = Property::get_value<value_type, VectorPropertyT>(properties, get_step);
+    const auto step = this->template configuration<value_type>(NumericPropertyDetail::STEP_POINTER);
     m_x_edit->set_step(step.x);
     m_y_edit->set_step(step.y);
 
-    const auto get_mult = std::mem_fn(&VectorPropertyT::multiplier);
-    const double multiplier = Property::get_value<double, VectorPropertyT>(properties, get_mult);
-    m_x_edit->set_multiplier(multiplier);
-    m_y_edit->set_multiplier(multiplier);
+    const auto mult = this->template configuration<double>(NumericPropertyDetail::MULTIPLIER_POINTER);
+    m_x_edit->set_multiplier(mult);
+    m_y_edit->set_multiplier(mult);
 
-    const auto get_lower = std::mem_fn(&VectorPropertyT::lower);
-    const auto lower = Property::get_value<value_type, VectorPropertyT>(properties, get_lower);
-    const auto get_upper = std::mem_fn(&VectorPropertyT::upper);
-    const auto upper = Property::get_value<value_type, VectorPropertyT>(properties, get_upper);
+    const auto lower = this->template configuration<value_type>(NumericPropertyDetail::LOWER_VALUE_POINTER);
+    const auto upper = this->template configuration<value_type>(NumericPropertyDetail::UPPER_VALUE_POINTER);
     m_x_edit->set_range(lower.x, upper.x);
     m_y_edit->set_range(lower.y, upper.y);
 

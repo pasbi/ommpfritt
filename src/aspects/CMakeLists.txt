@@ -2,7 +2,6 @@
 file(GLOB SOURCES
   autoconnectiondeleter.cpp
   propertyowner.cpp
-  serializable.cpp
   treeelement.cpp
 )
 

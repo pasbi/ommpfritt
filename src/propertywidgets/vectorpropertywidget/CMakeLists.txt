@@ -1,6 +1,5 @@
 
 file(GLOB SOURCES
-  vectorpropertyconfigwidget.cpp
 )
 
 file(GLOB HEADERS

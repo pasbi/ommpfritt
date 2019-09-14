@@ -277,6 +277,9 @@ void MainWindow::restore_state()
   read_each(settings, MANAGER_SETTINGS_KEY, [this, &settings]() {
     const auto type = settings.value(MANAGER_TYPE_SETTINGS_KEY).toString().toStdString();
     const auto name = settings.value(MANAGER_NAME_SETTINGS_KEY).toString();
+    if (type == "TimeLine") {
+      return;
+    }
     auto manager = Manager::make(type, m_app.scene);
     manager->setObjectName(name);
     assert(manager);

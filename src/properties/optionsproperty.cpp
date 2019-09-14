@@ -11,15 +11,17 @@ void OptionsProperty::deserialize(AbstractDeserializer& deserializer, const Poin
   set_default_value(
     deserializer.get_size_t(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
 
-  if (m_options.empty()) {
+  auto options = this->options();
+  if (options.empty()) {
     // if options are already there, don't overwrite them because they are probably already
     //  translated.
     const std::size_t n_options = deserializer.array_size(make_pointer(root, OPTIONS_POINTER));
-    m_options.reserve(n_options);
+    options.reserve(n_options);
     for (std::size_t i = 0; i < n_options; ++i) {
       const auto option = deserializer.get_string(make_pointer(root, OPTIONS_POINTER, i));
-      m_options.push_back(option);
+      options.push_back(option);
     }
+    m_configuration[OPTIONS_POINTER] = options;
   }
 
 }
@@ -30,9 +32,10 @@ void OptionsProperty::serialize(AbstractSerializer& serializer, const Pointer& r
   serializer.set_value( value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
   serializer.set_value( default_value(),
                         make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
-  serializer.start_array(m_options.size(), OPTIONS_POINTER);
-  for (std::size_t i = 0; i < m_options.size(); ++i) {
-    serializer.set_value(m_options[i], make_pointer(root, OPTIONS_POINTER, i));
+  const auto options = this->options();
+  serializer.start_array(options.size(), OPTIONS_POINTER);
+  for (std::size_t i = 0; i < options.size(); ++i) {
+    serializer.set_value(options[i], make_pointer(root, OPTIONS_POINTER, i));
   }
   serializer.end_array();
 }
@@ -51,21 +54,24 @@ std::unique_ptr<Property> OptionsProperty::clone() const
   return std::make_unique<OptionsProperty>(*this);
 }
 
-std::vector<std::string> OptionsProperty::options() const { return m_options; }
+std::vector<std::string> OptionsProperty::options() const
+{
+  return configuration().get<std::vector<std::string>>(OPTIONS_POINTER);
+}
 
 OptionsProperty& OptionsProperty::set_options(const std::vector<std::string>& options)
 {
-  m_options = options;
-  assert(m_options.size() > 0);
-  set(std::clamp(value(), std::size_t(0), m_options.size()));
+  m_configuration[OPTIONS_POINTER] = options;
+  assert(options.size() > 0);
+  set(std::clamp(value(), std::size_t(0), options.size()));
   return *this;
 }
 
 bool OptionsProperty::is_compatible(const Property& other) const
 {
   if (TypedProperty::is_compatible(other)) {
-    const auto& options_property = static_cast<const OptionsProperty&>(other);
-    return options_property.m_options == m_options;
+    const auto& other_op = static_cast<const OptionsProperty&>(other);
+    return options() == other_op.options();
   } else {
     return false;
   }
@@ -73,7 +79,7 @@ bool OptionsProperty::is_compatible(const Property& other) const
 
 void OptionsProperty::revise()
 {
-  set(std::clamp<std::size_t>(0, this->value(), m_options.size() - 1));
+  set(std::clamp<std::size_t>(0, this->value(), options().size() - 1));
 }
 
 }  // namespace omm

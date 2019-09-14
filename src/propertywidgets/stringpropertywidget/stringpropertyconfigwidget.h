@@ -6,11 +6,17 @@
 namespace omm
 {
 
-class StringPropertyConfigWidget : public PropertyConfigWidget<StringProperty>
+class StringPropertyConfigWidget : public PropertyConfigWidget
 {
 public:
-  StringPropertyConfigWidget(QWidget* parent, Property& property);
-  std::string type() const override;
+  StringPropertyConfigWidget();
+  static constexpr auto TYPE = "StringPropertyConfigWidget";
+  std::string type() const override { return TYPE; }
+  void init(const Property::Configuration &configuration) override;
+  void update(Property::Configuration &configuration) const override;
+
+private:
+  QComboBox* m_mode_selector;
 };
 
 }  // namespace omm

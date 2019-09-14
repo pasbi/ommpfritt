@@ -36,6 +36,9 @@ public:
   collect_candidates(const Scene& scene, const AbstractPropertyOwner::Kind allowed_kinds,
                                          const AbstractPropertyOwner::Flag required_flags);
 
+  static const std::map<AbstractPropertyOwner::Kind, std::string> KIND_KEYS;
+  static const std::map<AbstractPropertyOwner::Flag, std::string> FLAG_KEYS;
+
 Q_SIGNALS:
   void reference_changed(AbstractPropertyOwner* old_ref, AbstractPropertyOwner* new_ref);
 

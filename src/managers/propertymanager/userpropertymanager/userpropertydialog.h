@@ -1,38 +1,42 @@
 #pragma once
 
 #include <QDialog>
-#include <memory>
 #include "commands/userpropertyconfigcommand.h"
+#include <memory>
+#include "ui_userpropertydialog.h"
+#include "managers/propertymanager/userpropertymanager/userpropertylistmodel.h"
 
-class QListWidget;
-class QListWidgetItem;
-class QHBoxLayout;
+namespace Ui { class UserPropertyDialog; }
 
 namespace omm
 {
 
-class AbstractPropertyConfigWidget;
-class AbstractPropertyOwner;
-class PropertyItem;
+class PropertyConfigWidget;
 
-class UserPropertyDialog : public QDialog
+struct PropertyItem : public std::map<std::string, QVariant>
 {
+
+};
+
+class UserPropertyDialog: public QDialog
+{
+  Q_OBJECT
 public:
-  explicit UserPropertyDialog(QWidget* parent, AbstractPropertyOwner& property_owner);
-  std::unique_ptr<UserPropertyConfigCommand> make_user_property_config_command() const;
+  explicit UserPropertyDialog(AbstractPropertyOwner& owner, QWidget* parent = nullptr);
+
+public Q_SLOTS:
+  void submit();
 
 private:
-  QListWidget* m_list_widget;
-  AbstractPropertyConfigWidget* m_right_column;
-  void generate_items(AbstractPropertyOwner& property);
-  void new_item();
-  void remove_selected_item();
-  void on_current_item_changed(QListWidgetItem*);
-  void on_current_item_type_changed(const std::string& type);
-  void on_current_item_label_changed();
-  PropertyItem* current_item() const;
-  QHBoxLayout* m_layout;
-  AbstractPropertyOwner& m_property_owner;
+  std::unique_ptr<Ui::UserPropertyDialog> m_ui;
+  const std::vector<std::string> m_property_types;
+  AbstractPropertyOwner& m_owner;
+  UserPropertyListModel m_user_property_list_model;
+  UserPropertyListItem* m_current_item = nullptr;
+  PropertyConfigWidget* m_current_config_widget = nullptr;
+  void update_property_config_page(UserPropertyListItem *item);
+
 };
+
 
 }  // namespace omm

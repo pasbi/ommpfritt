@@ -7,66 +7,74 @@
 #include <QMessageBox>
 #include "logging.h"
 
+namespace
+{
+
+std::unique_ptr<QListWidgetItem> make_item(const std::string& label)
+{
+  auto item = std::make_unique<QListWidgetItem>(QString::fromStdString(label));
+  item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
+  return item;
+}
+
+
+}  // namespace
+
 namespace omm
 {
 
-static constexpr auto unnamed_option_label = QT_TRANSLATE_NOOP( "Unnamed Option",
-                                                                "OptionsPropertyConfigWidget" );
+static constexpr auto unnamed_option_label = QT_TRANSLATE_NOOP( "OptionsPropertyConfigWidget",
+                                                                "Unnamed Option" );
 
-OptionsPropertyConfigWidget
-::OptionsPropertyConfigWidget(QWidget* parent, Property& property)
-  : PropertyConfigWidget(parent, property)
-  , m_options_property(static_cast<OptionsProperty&>(property))
+OptionsPropertyConfigWidget ::OptionsPropertyConfigWidget()
 {
   auto list_widget = std::make_unique<QListWidget>(this);
   m_list_widget = list_widget.get();
-  connect(m_list_widget, &QListWidget::itemChanged, [this]() {
-    update_property_options();
-  });
-
   m_list_widget->viewport()->installEventFilter(this);
 
-  for (const std::string& option : m_options_property.options()) {
-    m_list_widget->addItem(QString::fromStdString(option));
-  }
+  auto layout = std::make_unique<QVBoxLayout>();
+  layout->addWidget(list_widget.release());
+  setLayout(layout.release());
+}
 
+void OptionsPropertyConfigWidget::init(const Property::Configuration &configuration)
+{
+  m_list_widget->clear();
+  const auto items
+      = configuration.get<std::vector<std::string>>(OptionsProperty::OPTIONS_POINTER, {});
+  for (const std::string& label : items) {
+    m_list_widget->insertItem(m_list_widget->count(), make_item(label).release());
+  }
   if (m_list_widget->count() == 0) {
-    add_option(tr(unnamed_option_label).toStdString());
+    const std::string label = tr(unnamed_option_label).toStdString();
+    m_list_widget->insertItem(m_list_widget->count(), make_item(label).release());
   }
-
-  box_layout()->addWidget(list_widget.release());
 }
 
-std::string OptionsPropertyConfigWidget::type() const
+void OptionsPropertyConfigWidget::update(Property::Configuration &configuration) const
 {
-  return TYPE;
-}
-
-void OptionsPropertyConfigWidget::update_property_options()
-{
-  std::vector<std::string> options;
-  options.reserve(m_list_widget->count());
-  for (int i = 0; i < m_list_widget->count(); ++i) {
-    options.push_back(m_list_widget->item(i)->text().toStdString());
+  std::vector<std::string> items;
+  const int n = m_list_widget->count();
+  items.reserve(n);
+  for (int row = 0; row < n; ++row) {
+    const auto label = m_list_widget->item(row)->data(Qt::DisplayRole).toString().toStdString();
+    items.push_back(label);
   }
-  m_options_property.set_options(options);
+  configuration[OptionsProperty::OPTIONS_POINTER] = items;
 }
 
 void OptionsPropertyConfigWidget::add_option(const std::string& label)
 {
-  auto item = std::make_unique<QListWidgetItem>(QString::fromStdString(label));
-  item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
+  auto item = make_item(label);
   auto& ref = *item;
-  m_list_widget->addItem(item.release());
+  m_list_widget->insertItem(m_list_widget->count(), item.release());
   m_list_widget->editItem(&ref);
-  update_property_options();
 }
 
 void OptionsPropertyConfigWidget::remove_option(int index)
 {
   if (m_list_widget->count() > 1) {
     delete m_list_widget->takeItem(index);
-    update_property_options();
   } else {
     LWARNING << "Prevented attempt to remove last option";
     QMessageBox::warning(this, QObject::tr("Warning", "OptionsPropertyConfigWidget"),

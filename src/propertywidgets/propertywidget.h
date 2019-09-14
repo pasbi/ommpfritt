@@ -21,6 +21,13 @@ public:
   explicit AbstractPropertyWidget(Scene& scene, const std::set<Property*>& properties);
   virtual ~AbstractPropertyWidget() = default;
 
+  template<typename T> T configuration(const std::string& key)
+  {
+    return Property::get_value<T>(m_properties, [key](const Property& p) {
+      return p.configuration().get<T>(key);
+    });
+  }
+
 public Q_SLOTS:
   void on_property_value_changed(Property* property);
 

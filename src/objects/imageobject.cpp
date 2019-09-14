@@ -27,14 +27,14 @@ ImageObject::ImageObject(Scene* scene) : Object(scene)
     .set_label(QObject::tr("filename").toStdString()).set_category(category);
 
   create_property<FloatProperty>(WIDTH_PROPERTY_KEY, 100)
-    .set_range(0.0, FloatPropertyLimits::upper)
+    .set_range(0.0, FloatProperty::highest_possible_value)
     .set_label(QObject::tr("Width").toStdString()).set_category(category);
   create_property<FloatProperty>(OPACITY_PROPERTY_KEY, 1.0)
     .set_range(0.0, 1.0).set_step(0.01)
     .set_label(QObject::tr("Opacity").toStdString()).set_category(category);
 
   create_property<IntegerProperty>(PAGE_PROPERTY_KEY, 0)
-    .set_range(0, IntegerPropertyLimits::upper)
+    .set_range(0, IntegerProperty::highest_possible_value)
     .set_label(QObject::tr("Page").toStdString()).set_category(category);
 
   create_property<OptionsProperty>(HANCHOR_PROPERTY_KEY, 1)

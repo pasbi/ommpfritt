@@ -1,6 +1,5 @@
 
 file(GLOB SOURCES
-  abstractedit.cpp
   propertyconfigwidget.cpp
   propertyconfigwidgetsregister.cpp
   propertywidget.cpp

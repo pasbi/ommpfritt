@@ -4,76 +4,90 @@
 #include <QLayout>
 #include <QLabel>
 
-auto make_allowed_kinds_checkboxes(QWidget* parent)
+namespace
 {
-  const auto make_cb = [parent](const std::string& label) {
-    return std::make_unique<QCheckBox>(QString::fromStdString(label), parent).release();
-  };
+
+template<typename MapT> auto keys(const MapT& map)
+{
+  return ::transform<typename MapT::value_type::second_type, std::set>(map, [](const auto& kv) {
+    return kv.first;
+  });
+}
+
+auto make_allowed_kinds_checkboxes()
+{
   std::map<omm::AbstractPropertyOwner::Kind, QCheckBox*> map;
   map.insert( std::pair(omm::AbstractPropertyOwner::Kind::Tag,
-              make_cb(omm::ReferencePropertyConfigWidget::tr("Tag").toStdString())) );
+              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("Tag"))) );
   map.insert( std::pair(omm::AbstractPropertyOwner::Kind::Style,
-              make_cb(omm::ReferencePropertyConfigWidget::tr("Style").toStdString())) );
+              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("Style"))) );
   map.insert( std::pair(omm::AbstractPropertyOwner::Kind::Object,
-              make_cb(omm::ReferencePropertyConfigWidget::tr("Object").toStdString())) );
+              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("Object"))) );
+  map.insert( std::pair(omm::AbstractPropertyOwner::Kind::Tool,
+              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("Tool"))) );
   return map;
 }
 
-auto make_required_flags_checkboxes(QWidget* parent)
+auto make_required_flags_checkboxes()
 {
-  const auto make_cb = [parent](const std::string& label) {
-    return std::make_unique<QCheckBox>(QString::fromStdString(label), parent).release();
-  };
   std::map<omm::AbstractPropertyOwner::Flag, QCheckBox*> map;
   map.insert( std::pair(omm::AbstractPropertyOwner::Flag::Convertable,
-              make_cb(omm::ReferencePropertyConfigWidget::tr("convertable").toStdString())) );
+              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("convertable"))) );
   map.insert( std::pair(omm::AbstractPropertyOwner::Flag::HasScript,
-              make_cb(omm::ReferencePropertyConfigWidget::tr("has script").toStdString())) );
+              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("has script"))) );
   map.insert( std::pair(omm::AbstractPropertyOwner::Flag::IsPathLike,
-              make_cb(omm::ReferencePropertyConfigWidget::tr("is path like").toStdString())) );
+              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("is path like"))) );
+  map.insert( std::pair(omm::AbstractPropertyOwner::Flag::IsView,
+              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("is view"))) );
   return map;
 }
+
+}  // namespace
 
 namespace omm
 {
 
-ReferencePropertyConfigWidget::ReferencePropertyConfigWidget(QWidget* parent, Property& property)
-  : PropertyConfigWidget(parent, property)
+ReferencePropertyConfigWidget::ReferencePropertyConfigWidget()
+  : m_allowed_kind_checkboxes(make_allowed_kinds_checkboxes())
+  , m_required_flag_checkboxes(make_required_flags_checkboxes())
 {
-  auto& reference_property = type_cast<ReferenceProperty&>(property);
+  auto layout = std::make_unique<QHBoxLayout>();
+  auto allowed_kind_layout = std::make_unique<QVBoxLayout>();
+  auto required_flags_layout = std::make_unique<QVBoxLayout>();
 
-  auto left_column = std::make_unique<QVBoxLayout>();
-  left_column->addWidget(std::make_unique<QLabel>(tr("allowed:")).release());
-  for (auto [kind, check_box] : make_allowed_kinds_checkboxes(parent)) {
-    left_column->addWidget(check_box);
-    check_box->setChecked(!!(reference_property.allowed_kinds() & kind));
-    connect(check_box, &QCheckBox::clicked, [kind = kind, &reference_property](bool checked) {
-      auto current = reference_property.allowed_kinds();
-      reference_property.set_allowed_kinds(checked ? current | kind : current & ~kind);
-    });
+  for (auto [_, checkbox] : m_allowed_kind_checkboxes) {
+    allowed_kind_layout->addWidget(checkbox);
   }
+  allowed_kind_layout->addStretch();
 
-  auto right_column = std::make_unique<QVBoxLayout>();
-  right_column->addWidget(std::make_unique<QLabel>(tr("required:")).release());
-  for (auto [flag, check_box] : make_required_flags_checkboxes(parent)) {
-    right_column->addWidget(check_box);
-    check_box->setChecked(!!(reference_property.required_flags() & flag));
-    connect(check_box, &QCheckBox::clicked, [flag = flag, &reference_property](bool checked) {
-      auto current = reference_property.required_flags();
-      reference_property.set_required_flags(checked ? current | flag : current & ~flag);
-    });
+  for (auto [_, checkbox] : m_required_flag_checkboxes) {
+    required_flags_layout->addWidget(checkbox);
   }
+  required_flags_layout->addStretch();
 
-  auto two_column_layout = std::make_unique<QHBoxLayout>();
-  two_column_layout->addLayout(left_column.release());
-  two_column_layout->addLayout(right_column.release());
-  box_layout()->addLayout(two_column_layout.release());
-  box_layout()->addStretch();
+  layout->addLayout(allowed_kind_layout.release());
+  layout->addLayout(required_flags_layout.release());
+  setLayout(layout.release());
 }
 
-std::string ReferencePropertyConfigWidget::type() const
+void ReferencePropertyConfigWidget::init(const Property::Configuration &configuration)
 {
-  return TYPE;
+  for (auto&& [ flag, checkbox ]: m_required_flag_checkboxes) {
+    checkbox->setChecked(configuration.get<bool>(ReferenceProperty::FLAG_KEYS.at(flag), false));
+  }
+  for (auto&& [ kind, checkbox ]: m_allowed_kind_checkboxes) {
+    checkbox->setChecked(configuration.get<bool>(ReferenceProperty::KIND_KEYS.at(kind), true));
+  }
+}
+
+void ReferencePropertyConfigWidget::update(Property::Configuration &configuration) const
+{
+  for (auto&& [ flag, checkbox ]: m_required_flag_checkboxes) {
+    configuration[ReferenceProperty::FLAG_KEYS.at(flag)] = checkbox->isChecked();
+  }
+  for (auto&& [ kind, checkbox ]: m_allowed_kind_checkboxes) {
+    configuration[ReferenceProperty::KIND_KEYS.at(kind)] = checkbox->isChecked();
+  }
 }
 
 }  // namespace omm

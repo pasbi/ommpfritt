@@ -10,28 +10,7 @@
 #include <iomanip>
 #include <QCoreApplication>
 #include "logging.h"
-
-namespace NumericEditDetail
-{
-
-// they must be initialized, though they should never be used.
-template<typename T> T highest_possible_value = T();
-template<typename T> T lowest_possible_value = T();
-template<typename T> T smallest_step = T();
-
-
-// these are the meaningful specializations
-template<> constexpr double highest_possible_value<double>
-                          = std::numeric_limits<double>::infinity();
-template<> constexpr double lowest_possible_value<double>
-                          = -std::numeric_limits<double>::infinity();
-template<> constexpr double smallest_step<double>
-                          = -std::numeric_limits<double>::min();
-template<> constexpr int highest_possible_value<int> = std::numeric_limits<int>::max();
-template<> constexpr int lowest_possible_value<int> = std::numeric_limits<int>::lowest();
-template<> constexpr int smallest_step<int> = 1;
-
-}
+#include "properties/numericproperty.h"
 
 namespace omm
 {
@@ -190,8 +169,8 @@ protected:
   }
 
 private:
-  value_type m_min = NumericEditDetail::lowest_possible_value<value_type>;
-  value_type m_max = NumericEditDetail::highest_possible_value<value_type>;
+  value_type m_min = NumericProperty<value_type>::lowest_possible_value;
+  value_type m_max = NumericProperty<value_type>::highest_possible_value;
   value_type m_step = 1;
   double m_multiplier = 1.0;
   QPoint m_mouse_press_pos;
@@ -213,9 +192,9 @@ private:
   value_type parse(const std::string& text) const
   {
     if (text == inf) {
-      return NumericEditDetail::highest_possible_value<value_type>;
+      return NumericProperty<value_type>::highest_possible_value;
     } else if (text == neg_inf) {
-      return NumericEditDetail::lowest_possible_value<value_type>;
+      return NumericProperty<value_type>::lowest_possible_value;
     } else {
       std::istringstream sstream(text);
       value_type value;
@@ -250,12 +229,16 @@ public:
   static auto make_range_edits()
   {
     auto min_edit = std::make_unique<NumericEdit<ValueType>>();
+    auto& min_edit_ref = *min_edit;
     auto max_edit = std::make_unique<NumericEdit<ValueType>>();
-    connect(min_edit.get(), &AbstractNumericEdit::value_changed, [&min_edit, &max_edit]() {
-      max_edit->set_range(min_edit->value(), NumericEditDetail::highest_possible_value<ValueType>);
+    auto& max_edit_ref = *max_edit;
+    connect(min_edit.get(), &AbstractNumericEdit::value_changed, [&min_edit_ref, &max_edit_ref]() {
+      const auto high = NumericProperty<value_type>::highest_possible_value;
+      max_edit_ref.set_range(min_edit_ref.value(), high);
     });
-    connect(max_edit.get(), &AbstractNumericEdit::value_changed, [&min_edit, &max_edit]() {
-      min_edit->set_range(NumericEditDetail::lowest_possible_value<ValueType>, min_edit->value());
+    connect(max_edit.get(), &AbstractNumericEdit::value_changed, [&min_edit_ref, &max_edit_ref]() {
+      const auto low = NumericProperty<value_type>::lowest_possible_value;
+      min_edit_ref.set_range(low, min_edit_ref.value());
     });
     return std::pair(std::move(min_edit), std::move(max_edit));
   }

@@ -11,8 +11,7 @@ StringPropertyWidget
 ::StringPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget(scene, properties)
 {
-  const auto getter = std::mem_fn(&StringProperty::mode);
-  const auto mode = Property::get_value<StringProperty::Mode, StringProperty>(properties, getter);
+  const auto mode = configuration<StringProperty::Mode>(StringProperty::MODE_PROPERTY_KEY);
 
   auto edit = [this, mode]() {
     switch (mode) {

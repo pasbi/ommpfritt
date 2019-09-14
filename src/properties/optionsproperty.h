@@ -24,9 +24,6 @@ public:
   static constexpr auto OPTIONS_POINTER = "options";
   bool is_compatible(const Property& other) const override;
   void revise() override;
-
-private:
-  std::vector<std::string> m_options;
 };
 
 }  // namespace omm

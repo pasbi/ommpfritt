@@ -6,14 +6,7 @@
 namespace omm
 {
 
-struct IntegerPropertyLimits
-{
-  static constexpr auto upper = std::numeric_limits<int>::max();
-  static constexpr auto lower = std::numeric_limits<int>::lowest();
-  static constexpr auto step = 1;
-};
-
-class IntegerProperty : public NumericProperty<int, IntegerPropertyLimits>
+class IntegerProperty : public NumericProperty<int>
 {
 public:
   using NumericProperty::NumericProperty;

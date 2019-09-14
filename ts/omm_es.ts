@@ -17,13 +17,6 @@
     </message>
 </context>
 <context>
-    <name>BoolProperty</name>
-    <message>
-        <source>BoolProperty</source>
-        <translation>Atributo Booleano</translation>
-    </message>
-</context>
-<context>
     <name>BoundingBoxManager</name>
     <message>
         <source>Form</source>
@@ -44,13 +37,6 @@
     <message>
         <source>&amp;Height:</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ColorProperty</name>
-    <message>
-        <source>ColorProperty</source>
-        <translation>Atributo Color</translation>
     </message>
 </context>
 <context>
@@ -81,31 +67,29 @@
     </message>
 </context>
 <context>
-    <name>FloatProperty</name>
-    <message>
-        <source>FloatProperty</source>
-        <translation>Atributo Numérico de Punto Flotante</translation>
-    </message>
-</context>
-<context>
-    <name>FloatVectorProperty</name>
-    <message>
-        <source>FloatVectorProperty</source>
-        <translation>Atributo Vector de Punto Flotante</translation>
-    </message>
-</context>
-<context>
-    <name>IntegerProperty</name>
-    <message>
-        <source>IntegerProperty</source>
-        <translation>Atributo Número Entero</translation>
-    </message>
-</context>
-<context>
     <name>IntegerVectorProperty</name>
     <message>
         <source>IntegerVectorProperty</source>
         <translation>Atributo Vector de Número Entero</translation>
+    </message>
+</context>
+<context>
+    <name>NumericProperty</name>
+    <message>
+        <source>lower_value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>upper_value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>step</source>
+        <translation type="unfinished">Paso</translation>
+    </message>
+    <message>
+        <source>multiplier</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -116,10 +100,10 @@
     </message>
 </context>
 <context>
-    <name>OptionsProperty</name>
+    <name>OptionsPropertyConfigWidget</name>
     <message>
-        <source>OptionsProperty</source>
-        <translation>Atributo Opción</translation>
+        <source>Unnamed Option</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -135,12 +119,41 @@
         <source>user properties</source>
         <translation>Atributo</translation>
     </message>
-</context>
-<context>
-    <name>PropertyItem</name>
     <message>
-        <source>&lt;unnamed property&gt;</source>
-        <translation>Elemento Atributo</translation>
+        <source>StringProperty</source>
+        <translation type="unfinished">Atributo Texto</translation>
+    </message>
+    <message>
+        <source>BoolProperty</source>
+        <translation type="unfinished">Atributo Booleano</translation>
+    </message>
+    <message>
+        <source>ColorProperty</source>
+        <translation type="unfinished">Atributo Color</translation>
+    </message>
+    <message>
+        <source>FloatProperty</source>
+        <translation type="unfinished">Atributo Numérico de Punto Flotante</translation>
+    </message>
+    <message>
+        <source>IntegerProperty</source>
+        <translation type="unfinished">Atributo Número Entero</translation>
+    </message>
+    <message>
+        <source>OptionsProperty</source>
+        <translation type="unfinished">Atributo Opción</translation>
+    </message>
+    <message>
+        <source>ReferenceProperty</source>
+        <translation type="unfinished">Atributo Referencia</translation>
+    </message>
+    <message>
+        <source>TriggerProperty</source>
+        <translation type="unfinished">Atributo Activador</translation>
+    </message>
+    <message>
+        <source>FloatVectorProperty</source>
+        <translation type="unfinished">Atributo Vector de Punto Flotante</translation>
     </message>
 </context>
 <context>
@@ -562,21 +575,6 @@ Borrar la selección de todos modos?</translation>
         <source>reference</source>
         <comment>Instance</comment>
         <translation>Referencia</translation>
-    </message>
-    <message>
-        <source>min</source>
-        <comment>NumericProperty</comment>
-        <translation>Min</translation>
-    </message>
-    <message>
-        <source>max</source>
-        <comment>NumericProperty</comment>
-        <translation>Max</translation>
-    </message>
-    <message>
-        <source>step</source>
-        <comment>NumericProperty</comment>
-        <translation>Paso</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -1024,20 +1022,6 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
-    <name>ReferenceProperty</name>
-    <message>
-        <source>ReferenceProperty</source>
-        <translation>Atributo Referencia</translation>
-    </message>
-</context>
-<context>
-    <name>StringProperty</name>
-    <message>
-        <source>StringProperty</source>
-        <translation>Atributo Texto</translation>
-    </message>
-</context>
-<context>
     <name>Tag</name>
     <message>
         <source>Tag</source>
@@ -1052,17 +1036,29 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
-    <name>TriggerProperty</name>
+    <name>UserPropertyDialog</name>
     <message>
-        <source>TriggerProperty</source>
-        <translation>Atributo Activador</translation>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unnamed</source>
+        <translation type="unfinished">Sin nombre</translation>
     </message>
 </context>
 <context>
-    <name>Unnamed Option</name>
+    <name>UserPropertyListModel</name>
     <message>
-        <source>OptionsPropertyConfigWidget</source>
-        <translation>Widget de Configuración Atributo Opción</translation>
+        <source>&lt;unnamed property&gt;</source>
+        <translation type="unfinished">Elemento Atributo</translation>
     </message>
 </context>
 <context>
@@ -1295,6 +1291,10 @@ Borrar la selección de todos modos?</translation>
         <source>BoundingBoxManager</source>
         <translation>Controles de Bounding Box</translation>
     </message>
+    <message>
+        <source>toggle aspect ratio</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>menu_name</name>
@@ -1341,13 +1341,6 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>tool</source>
         <translation>Herramienta</translation>
-    </message>
-</context>
-<context>
-    <name>omm::AbstractPropertyConfigWidget</name>
-    <message>
-        <source>&amp;name:</source>
-        <translation>Nombre</translation>
     </message>
 </context>
 <context>
@@ -1554,12 +1547,12 @@ Borrar la selección de todos modos?</translation>
         <translation>De clase Trayecto</translation>
     </message>
     <message>
-        <source>allowed:</source>
-        <translation>Permitido:</translation>
+        <source>Tool</source>
+        <translation type="unfinished">Herramienta</translation>
     </message>
     <message>
-        <source>required:</source>
-        <translation>Requerido:</translation>
+        <source>is view</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

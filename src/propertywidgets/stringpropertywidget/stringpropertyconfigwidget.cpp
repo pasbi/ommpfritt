@@ -5,27 +5,31 @@
 namespace omm
 {
 
-StringPropertyConfigWidget::StringPropertyConfigWidget(QWidget* parent, Property& property)
-  : PropertyConfigWidget<StringProperty>(parent, property)
+StringPropertyConfigWidget::StringPropertyConfigWidget()
 {
-  auto& string_property = static_cast<StringProperty&>(property);
-
-  auto* mode_selector = std::make_unique<QComboBox>(this).release();
+  auto layout = std::make_unique<QVBoxLayout>();
+  auto mode_selector = std::make_unique<QComboBox>(this);
   mode_selector->addItems({ QObject::tr("single line", "StringPropertyConfigWidget"),
                             QObject::tr("multi line", "StringPropertyConfigWidget"),
                             QObject::tr("file path", "StringPropertyConfigWidget"),
                             QObject::tr("code", "StringPropertyConfigWidget"),
                             QObject::tr("font", "StringPropertyConfigWidget") });
-  box_layout()->addWidget(mode_selector);
-  mode_selector->setCurrentIndex(static_cast<int>(string_property.mode()));
-  const auto cic = static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged);
-  connect(mode_selector, cic, [&string_property](int index) {
-    string_property.set_mode(static_cast<StringProperty::Mode>(index));
-  });
-  box_layout()->addStretch();
+
+  m_mode_selector = mode_selector.get();
+  layout->addWidget(mode_selector.release());
+  layout->addStretch();
+  setLayout(layout.release());
 }
 
-std::string StringPropertyConfigWidget::type() const { return TYPE; }
+void StringPropertyConfigWidget::init(const Property::Configuration &configuration)
+{
+  m_mode_selector->setCurrentIndex(configuration.get("mode", std::size_t(3)));
+}
+
+void StringPropertyConfigWidget::update(Property::Configuration &configuration) const
+{
+  configuration["mode"] = static_cast<std::size_t>(m_mode_selector->currentIndex());
+}
 
 }  // namespace pmm
 

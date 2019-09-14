@@ -96,8 +96,6 @@ PropertyManager::PropertyManager(Scene& scene)
   auto main_layout = std::make_unique<QVBoxLayout>();
 
   m_tab_bar = std::make_unique<MultiTabBar>();
-//  m_tab_bar->setAcceptDrops(true);
-//  m_tab_bar->setChangeCurrentOnDrag(true);
   main_layout->addWidget(m_tab_bar.get());
 
   m_scroll_area = std::make_unique<QScrollArea>();
@@ -132,9 +130,9 @@ std::unique_ptr<QWidget> PropertyManager::make_menu_bar()
   auto menu_bar = std::make_unique<QMenuBar>();
   auto user_properties_menu = menu_bar->addMenu(QObject::tr("user properties", "PropertyManager"));
   const auto exec_user_property_dialog = [this]() {
-    auto dialog = UserPropertyDialog(this, **m_current_selection.begin());
+    auto dialog = UserPropertyDialog(**m_current_selection.begin(), this);
     if (dialog.exec() == QDialog::Accepted) {
-      m_scene.submit(dialog.make_user_property_config_command());
+//      m_scene.submit(dialog.make_user_property_config_command());
       m_scene.set_selection(m_scene.selection());
     }
   };

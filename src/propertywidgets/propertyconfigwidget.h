@@ -2,6 +2,7 @@
 
 #include <QWidget>
 #include "abstractfactory.h"
+#include "properties/property.h"
 
 class QComboBox;
 class QLineEdit;
@@ -11,47 +12,23 @@ class QFormLayout;
 namespace omm
 {
 
-class Property;
-class AbstractPropertyConfigWidget
+class PropertyConfigWidget
   : public QWidget
-  , public AbstractFactory<std::string, AbstractPropertyConfigWidget, QWidget*, Property&>
+  , public AbstractFactory<std::string, PropertyConfigWidget>
 {
   Q_OBJECT
 
 public:
-  explicit AbstractPropertyConfigWidget(QWidget* parent, Property& property);
-
-Q_SIGNALS:
-  void property_type_changed(const std::string& type);
-  void property_label_changed();
+  explicit PropertyConfigWidget() = default;
+  virtual void init(const Property::Configuration& configuration) = 0;
+  virtual void update(Property::Configuration& configuration) const = 0;
 
 protected:
-  QVBoxLayout* box_layout() const;
-  QFormLayout* form_layout() const;
+  void hideEvent(QHideEvent *event) override;
 
-private:
-  QComboBox* m_type_combobox;
-  QLineEdit* m_name_edit;
-  const std::vector<std::string> m_property_types;
-  Property& m_property;
-  void set_property_type(const std::string& type);
-
-  QVBoxLayout* m_box_layout;
-  QFormLayout* m_form_layout;
-  QLayout* layout() const = delete;
+Q_SIGNALS:
+  void hidden();
 };
-
-template<typename PropertyT>
-class PropertyConfigWidget : public AbstractPropertyConfigWidget
-{
-public:
-  using property_type = PropertyT;
-  static const std::string TYPE;
-  using AbstractPropertyConfigWidget::AbstractPropertyConfigWidget;
-};
-
-template<typename PropertyT> const std::string
-PropertyConfigWidget<PropertyT>::TYPE = std::string(PropertyT::TYPE) + "ConfigWidget";
 
 void register_propertyconfigwidgets();
 

@@ -6,11 +6,14 @@
 namespace omm
 {
 
-class BoolPropertyConfigWidget : public PropertyConfigWidget<BoolProperty>
+class BoolPropertyConfigWidget : public PropertyConfigWidget
 {
 public:
   using PropertyConfigWidget::PropertyConfigWidget;
-  std::string type() const override;
+  static constexpr auto TYPE = "BoolPropertyConfigWidget";
+  std::string type() const override { return TYPE; }
+  void init(const Property::Configuration&) override { }
+  void update(Property::Configuration&) const override { }
 };
 
 }  // namespace omm

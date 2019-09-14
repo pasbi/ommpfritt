@@ -13,15 +13,6 @@
 namespace omm
 {
 
-
-AbstractSerializer::AbstractSerializer(std::ostream&)
-{
-}
-
-AbstractSerializer::~AbstractSerializer()
-{
-}
-
 void AbstractSerializer::set_value(const AbstractPropertyOwner* ref, const Pointer& pointer)
 {
   m_serialized_references.insert(const_cast<AbstractPropertyOwner*>(ref));
@@ -31,11 +22,6 @@ void AbstractSerializer::set_value(const AbstractPropertyOwner* ref, const Point
 std::set<omm::AbstractPropertyOwner*> AbstractSerializer::serialized_references() const
 {
   return m_serialized_references;
-}
-
-
-AbstractDeserializer::AbstractDeserializer(std::istream&)
-{
 }
 
 void AbstractDeserializer::add_references(const std::set<AbstractPropertyOwner*>& references)

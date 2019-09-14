@@ -6,95 +6,109 @@
 #include <memory>
 #include <QHBoxLayout>
 #include <functional>
-
-template<typename elem_type>
-auto make_vector_edit(std::unique_ptr<QWidget> x, std::unique_ptr<QWidget> y)
-{
-  auto layout = std::make_unique<QHBoxLayout>();
-  layout->addWidget(x.release());
-  layout->addWidget(y.release());
-  return layout;
-}
+#include <QFormLayout>
 
 namespace omm
 {
 
-template<typename PropertyT>
-class VectorPropertyConfigWidget : public PropertyConfigWidget<PropertyT>
+template<typename T>
+class VectorPropertyConfigWidget : public PropertyConfigWidget
 {
 public:
-  using value_type = typename PropertyT::value_type;
-  using elem_type = typename value_type::element_type;
-  VectorPropertyConfigWidget(QWidget* parent, Property& property)
-    : PropertyConfigWidget<PropertyT>(parent, property)
+  using ElementT = typename T::element_type;
+  explicit VectorPropertyConfigWidget()
   {
-    enum class Dimension { X = 0, Y = 1 };
+    for (std::string d : { "x", "y" }) {
+      auto [ min_edit, max_edit ] = NumericEdit<ElementT>::make_range_edits();
+      // ownership is only temporarily passed to this.
+      m_edits[d + NumericPropertyDetail::LOWER_VALUE_POINTER] = min_edit.release();
 
-    auto& vector_property = type_cast<PropertyT&>(property);
-    using namespace std::placeholders;
-    auto [ min_x, max_x ] = NumericEdit<elem_type>::make_range_edits();
-    QObject::connect(min_x.get(), &AbstractNumericEdit::value_changed,
-                     [v=min_x.get(), &vector_property]() {
-      vector_property.set_lower(value_type(v->value(), vector_property.upper_bound().y));
-    });
-    QObject:: connect(max_x.get(), &AbstractNumericEdit::value_changed,
-                      [v=max_x.get(), &vector_property]() {
-      vector_property.set_upper(value_type(v->value(), vector_property.upper_bound().y));
-    });
+      // ownership is only temporarily passed to this.
+      m_edits[d + NumericPropertyDetail::UPPER_VALUE_POINTER] = max_edit.release();
+      auto step_edit = std::make_unique<NumericEdit<ElementT>>();
+      step_edit->set_lower(NumericProperty<ElementT>::smallest_step);
 
-    auto [ min_y, max_y ] = NumericEdit<elem_type>::make_range_edits();
-    QObject::connect(min_y.get(), &AbstractNumericEdit::value_changed,
-                     [v=min_y.get(), &vector_property]() {
-      vector_property.set_lower(value_type(vector_property.upper_bound().x, v->value()));
-    });
-    QObject::connect(max_y.get(), &AbstractNumericEdit::value_changed,
-                     [v=max_y.get(), &vector_property]() {
-      vector_property.set_upper(value_type(vector_property.upper_bound().x, v->value()));
-    });
+      // ownership is only temporarily passed to this.
+      m_edits[d + NumericPropertyDetail::STEP_POINTER] = step_edit.release();
+    }
 
-    min_x->set_value(vector_property.lower().x);
-    min_y->set_value(vector_property.lower().y);
-    max_x->set_value(vector_property.upper().x);
-    max_y->set_value(vector_property.upper().y);
+    auto mult_edit = std::make_unique<NumericEdit<double>>();
+    // ownership is only temporarily passed to this.
+    m_edits[NumericPropertyDetail::MULTIPLIER_POINTER] = mult_edit.release();
 
-    auto step_x_edit = std::make_unique<omm::NumericEdit<elem_type>>();
-    step_x_edit->set_value(vector_property.step().x);
-    QObject::connect(step_x_edit.get(), &AbstractNumericEdit::value_changed,
-                     [&vector_property, e=step_x_edit.get()]() {
-      vector_property.set_step(value_type(e->value(), vector_property.step().y));
-    });
-
-    auto step_y_edit = std::make_unique<omm::NumericEdit<elem_type>>();
-    step_y_edit->set_value(vector_property.step().y);
-    QObject::connect(step_y_edit.get(), &AbstractNumericEdit::value_changed,
-                    [&vector_property, e=step_y_edit.get()]() {
-      vector_property.set_step(value_type(vector_property.step().x, e->value()));
-    });
-
-    auto min_layout = make_vector_edit<elem_type>(std::move(min_x), std::move(min_y));
-    auto max_layout = make_vector_edit<elem_type>(std::move(max_x), std::move(max_y));
-    auto step_layout = make_vector_edit<elem_type>(std::move(step_x_edit), std::move(step_y_edit));
-    this->form_layout()->addRow(QObject::tr("min", "NumericProperty"), min_layout.release());
-    this->form_layout()->addRow(QObject::tr("max", "NumericProperty"), max_layout.release());
-    this->form_layout()->addRow(QObject::tr("step", "NumericProperty"), step_layout.release());
+    auto layout = std::make_unique<QFormLayout>();
+    static const std::vector keys = {  NumericPropertyDetail::LOWER_VALUE_POINTER,
+                                       NumericPropertyDetail::UPPER_VALUE_POINTER,
+                                       NumericPropertyDetail::STEP_POINTER };
+    for (std::string k : keys) {
+      auto pair_layout = std::make_unique<QHBoxLayout>();
+      for (std::string d : { "x", "y" }) {
+        pair_layout->addWidget(m_edits[d + k]);  // pass ownership from this to layout
+      }
+      layout->addRow(QObject::tr(k.c_str(), "NumericProperty"), pair_layout.release());
+      layout->addRow(QObject::tr(NumericPropertyDetail::MULTIPLIER_POINTER, "NumericProperty"),
+                     m_edits[NumericPropertyDetail::MULTIPLIER_POINTER]);
+    }
+    setLayout(layout.release());
   }
+
+  void init(const Property::Configuration &configuration) override
+  {
+    const ElementT llower = NumericProperty<ElementT>::lowest_possible_value;
+    const ElementT uupper = NumericProperty<ElementT>::highest_possible_value;
+
+    const T lower = configuration.get(NumericPropertyDetail::LOWER_VALUE_POINTER, T(llower, llower));
+    const T upper = configuration.get(NumericPropertyDetail::UPPER_VALUE_POINTER, T(uupper, uupper));
+    const T step = configuration.get(NumericPropertyDetail::STEP_POINTER, T(1, 1));
+    const double mult = configuration.get(NumericPropertyDetail::MULTIPLIER_POINTER, 1.0);
+
+    for (auto&& [i, d] : std::vector<std::pair<int, std::string>>{ {0, "x"}, {1, "y"} }) {
+      static_cast<NumericEdit<ElementT>*>(m_edits[d + NumericPropertyDetail::LOWER_VALUE_POINTER])->set_range(llower, upper[i]);
+      static_cast<NumericEdit<ElementT>*>(m_edits[d + NumericPropertyDetail::LOWER_VALUE_POINTER])->set_value(lower[i]);
+      static_cast<NumericEdit<ElementT>*>(m_edits[d + NumericPropertyDetail::UPPER_VALUE_POINTER])->set_range(lower[i], uupper);
+      static_cast<NumericEdit<ElementT>*>(m_edits[d + NumericPropertyDetail::UPPER_VALUE_POINTER])->set_value(upper[i]);
+      static_cast<NumericEdit<ElementT>*>(m_edits[d + NumericPropertyDetail::STEP_POINTER])->set_lower(NumericProperty<ElementT>::smallest_step);
+      static_cast<NumericEdit<ElementT>*>(m_edits[d + NumericPropertyDetail::STEP_POINTER])->set_value(step[i]);
+    }
+    static_cast<NumericEdit<double>*>(m_edits[NumericPropertyDetail::MULTIPLIER_POINTER])->set_value(mult);
+  }
+
+  void update(Property::Configuration &configuration) const override
+  {
+    for (const std::string& key : { NumericPropertyDetail::LOWER_VALUE_POINTER,
+                                    NumericPropertyDetail::UPPER_VALUE_POINTER,
+                                    NumericPropertyDetail::STEP_POINTER })
+    {
+      const auto* x_edit = static_cast<NumericEdit<ElementT>*>(m_edits.at("x" + key));
+      const auto* y_edit = static_cast<NumericEdit<ElementT>*>(m_edits.at("y" + key));
+      configuration[key] = T(x_edit->value(), y_edit->value());
+      configuration[NumericPropertyDetail::MULTIPLIER_POINTER]
+          = static_cast<NumericEdit<double>*>(m_edits.at(NumericPropertyDetail::MULTIPLIER_POINTER))->value();
+    }
+  }
+
+private:
+  std::map<std::string, AbstractNumericEdit*> m_edits;
 };
 
-
-class IntegerVectorPropertyConfigWidget : public VectorPropertyConfigWidget<IntegerVectorProperty>
+class IntegerVectorPropertyConfigWidget
+    : public VectorPropertyConfigWidget<IntegerVectorProperty::value_type>
 {
   Q_OBJECT
 public:
-  using VectorPropertyConfigWidget::VectorPropertyConfigWidget;
-  std::string type() const override;
+  using VectorPropertyConfigWidget<IntegerVectorProperty::value_type>::VectorPropertyConfigWidget;
+  static constexpr auto TYPE = "IntegerVectorPropertyConfigWidget";
+  std::string type() const override { return TYPE; }
 };
 
-class FloatVectorPropertyConfigWidget : public VectorPropertyConfigWidget<FloatVectorProperty>
+class FloatVectorPropertyConfigWidget
+    : public VectorPropertyConfigWidget<FloatVectorProperty::value_type>
 {
   Q_OBJECT
 public:
-  using VectorPropertyConfigWidget::VectorPropertyConfigWidget;
-  std::string type() const override;
+  using VectorPropertyConfigWidget<FloatVectorProperty::value_type>::VectorPropertyConfigWidget;
+  static constexpr auto TYPE = "FloatVectorPropertyConfigWidget";
+  std::string type() const override { return TYPE; }
 };
 
 }  // namespace omm

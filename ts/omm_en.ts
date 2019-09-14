@@ -17,13 +17,6 @@
     </message>
 </context>
 <context>
-    <name>BoolProperty</name>
-    <message>
-        <source>BoolProperty</source>
-        <translation>Boolean Property</translation>
-    </message>
-</context>
-<context>
     <name>BoundingBoxManager</name>
     <message>
         <source>Form</source>
@@ -44,13 +37,6 @@
     <message>
         <source>&amp;Height:</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ColorProperty</name>
-    <message>
-        <source>ColorProperty</source>
-        <translation>Color property</translation>
     </message>
 </context>
 <context>
@@ -81,31 +67,29 @@
     </message>
 </context>
 <context>
-    <name>FloatProperty</name>
-    <message>
-        <source>FloatProperty</source>
-        <translation>Float property</translation>
-    </message>
-</context>
-<context>
-    <name>FloatVectorProperty</name>
-    <message>
-        <source>FloatVectorProperty</source>
-        <translation>Float vector property</translation>
-    </message>
-</context>
-<context>
-    <name>IntegerProperty</name>
-    <message>
-        <source>IntegerProperty</source>
-        <translation>Integer property</translation>
-    </message>
-</context>
-<context>
     <name>IntegerVectorProperty</name>
     <message>
         <source>IntegerVectorProperty</source>
         <translation>Integer vector property</translation>
+    </message>
+</context>
+<context>
+    <name>NumericProperty</name>
+    <message>
+        <source>lower_value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>upper_value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>step</source>
+        <translation type="unfinished">Step</translation>
+    </message>
+    <message>
+        <source>multiplier</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -116,10 +100,10 @@
     </message>
 </context>
 <context>
-    <name>OptionsProperty</name>
+    <name>OptionsPropertyConfigWidget</name>
     <message>
-        <source>OptionsProperty</source>
-        <translation>Options property</translation>
+        <source>Unnamed Option</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -135,12 +119,41 @@
         <source>user properties</source>
         <translation>Property</translation>
     </message>
-</context>
-<context>
-    <name>PropertyItem</name>
     <message>
-        <source>&lt;unnamed property&gt;</source>
-        <translation>Property item</translation>
+        <source>StringProperty</source>
+        <translation type="unfinished">String property</translation>
+    </message>
+    <message>
+        <source>BoolProperty</source>
+        <translation type="unfinished">Boolean Property</translation>
+    </message>
+    <message>
+        <source>ColorProperty</source>
+        <translation type="unfinished">Color property</translation>
+    </message>
+    <message>
+        <source>FloatProperty</source>
+        <translation type="unfinished">Float property</translation>
+    </message>
+    <message>
+        <source>IntegerProperty</source>
+        <translation type="unfinished">Integer property</translation>
+    </message>
+    <message>
+        <source>OptionsProperty</source>
+        <translation type="unfinished">Options property</translation>
+    </message>
+    <message>
+        <source>ReferenceProperty</source>
+        <translation type="unfinished">Reference property</translation>
+    </message>
+    <message>
+        <source>TriggerProperty</source>
+        <translation type="unfinished">Trigger property</translation>
+    </message>
+    <message>
+        <source>FloatVectorProperty</source>
+        <translation type="unfinished">Float vector property</translation>
     </message>
 </context>
 <context>
@@ -562,21 +575,6 @@ Remove the selected items anyway?</translation>
         <source>reference</source>
         <comment>Instance</comment>
         <translation>Reference</translation>
-    </message>
-    <message>
-        <source>min</source>
-        <comment>NumericProperty</comment>
-        <translation>Min</translation>
-    </message>
-    <message>
-        <source>max</source>
-        <comment>NumericProperty</comment>
-        <translation>Max</translation>
-    </message>
-    <message>
-        <source>step</source>
-        <comment>NumericProperty</comment>
-        <translation>Step</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -1024,20 +1022,6 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
-    <name>ReferenceProperty</name>
-    <message>
-        <source>ReferenceProperty</source>
-        <translation>Reference property</translation>
-    </message>
-</context>
-<context>
-    <name>StringProperty</name>
-    <message>
-        <source>StringProperty</source>
-        <translation>String property</translation>
-    </message>
-</context>
-<context>
     <name>Tag</name>
     <message>
         <source>Tag</source>
@@ -1052,17 +1036,29 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
-    <name>TriggerProperty</name>
+    <name>UserPropertyDialog</name>
     <message>
-        <source>TriggerProperty</source>
-        <translation>Trigger property</translation>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unnamed</source>
+        <translation type="unfinished">unnamed</translation>
     </message>
 </context>
 <context>
-    <name>Unnamed Option</name>
+    <name>UserPropertyListModel</name>
     <message>
-        <source>OptionsPropertyConfigWidget</source>
-        <translation>Options property config widget</translation>
+        <source>&lt;unnamed property&gt;</source>
+        <translation type="unfinished">Property item</translation>
     </message>
 </context>
 <context>
@@ -1295,6 +1291,10 @@ Remove the selected items anyway?</translation>
         <source>BoundingBoxManager</source>
         <translation>Bounding Box Manager</translation>
     </message>
+    <message>
+        <source>toggle aspect ratio</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>menu_name</name>
@@ -1341,13 +1341,6 @@ Remove the selected items anyway?</translation>
     <message>
         <source>tool</source>
         <translation>Tool</translation>
-    </message>
-</context>
-<context>
-    <name>omm::AbstractPropertyConfigWidget</name>
-    <message>
-        <source>&amp;name:</source>
-        <translation>Name</translation>
     </message>
 </context>
 <context>
@@ -1554,12 +1547,12 @@ Remove the selected items anyway?</translation>
         <translation>Path-like</translation>
     </message>
     <message>
-        <source>allowed:</source>
-        <translation>Allowed:</translation>
+        <source>Tool</source>
+        <translation type="unfinished">Tool</translation>
     </message>
     <message>
-        <source>required:</source>
-        <translation>Required:</translation>
+        <source>is view</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

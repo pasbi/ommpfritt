@@ -36,6 +36,45 @@ class Property
 {
   Q_OBJECT
 public:
+  struct Configuration : std::map<std::string, std::variant<bool, int, double, Vec2i, Vec2f,
+                                                            std::size_t, std::string,
+                                                            std::vector<std::string>>>
+  {
+    using variant_type = value_type::second_type;
+    template<typename T> T get(const std::string& key) const
+    {
+      if constexpr (std::is_enum_v<T>) {
+        return static_cast<T>(get<std::size_t>(key));
+      } else {
+        const auto cit = find(key);
+        assert (cit != end());
+
+        const T* value = std::get_if<T>(&cit->second);
+        assert(value != nullptr);
+        return *value;
+      }
+    }
+
+    template<typename T> T get(const std::string& key, const T& default_value) const
+    {
+      if constexpr (std::is_enum_v<T>) {
+        return static_cast<T>(get<std::size_t>(key, default_value));
+      } else {
+        const auto cit = find(key);
+        if (cit == end()) {
+          return default_value;
+        } else {
+          const T* value = std::get_if<T>(&cit->second);
+          if (value != nullptr) {
+            return *value;
+          } else {
+            return default_value;
+          }
+        }
+      }
+    }
+  };
+
   using variant_type = std::variant< bool, Color, double, int, AbstractPropertyOwner*,
                                      std::string, size_t, TriggerPropertyDummyValueType,
                                      Vec2f, Vec2i >;
@@ -56,6 +95,9 @@ public:
   template<typename ValueT> std::enable_if_t<std::is_enum_v<ValueT>, ValueT>
   value() const { return static_cast<ValueT>(std::get<std::size_t>(variant_value())); }
 
+  static constexpr auto LABEL_POINTER = "label";
+  static constexpr auto CATEGORY_POINTER = "category";
+
   std::string label() const;
   std::string category() const;
   Property& set_label(const std::string& label);
@@ -63,8 +105,8 @@ public:
 
   virtual std::string widget_type() const;
 
-  void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const;
-  void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root);
+  void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const override;
+  void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root) override;
 
   template<typename ResultT, typename PropertyT, typename MemFunc> static
   ResultT get_value(const std::set<Property*>& properties, MemFunc&& f)
@@ -97,9 +139,12 @@ public:
 
   virtual void revise();
 
-private:
-  std::string m_label;
-  std::string m_category;
+
+public:
+  const Configuration& configuration() const { return m_configuration; }
+  void configure(const Configuration& configuration) { m_configuration = configuration; }
+protected:
+  Configuration m_configuration;
 
 private:
   bool m_is_visible = true;

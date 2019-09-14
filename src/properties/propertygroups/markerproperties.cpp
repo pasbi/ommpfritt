@@ -23,7 +23,7 @@ void MarkerProperties::make_properties(const std::string &category) const
     .set_label(QObject::tr("Shape").toStdString());
 
   create_property<FloatProperty>(SIZE_PROPERTY_KEY, m_default_size)
-    .set_step(0.1).set_range(0.0, FloatPropertyLimits::upper)
+    .set_step(0.1).set_range(0.0, FloatProperty::highest_possible_value)
     .set_label(QObject::tr("Size").toStdString()).set_category(category);
 
   create_property<FloatProperty>(ASPECT_RATIO_PROPERTY_KEY)

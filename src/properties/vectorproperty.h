@@ -13,8 +13,7 @@ struct FloatVectorPropertyLimits
   static const Vec2f step;
 };
 
-class FloatVectorProperty
-  : public NumericProperty<Vec2f, FloatVectorPropertyLimits>
+class FloatVectorProperty : public NumericProperty<Vec2f>
 {
 public:
   using NumericProperty::NumericProperty;
@@ -32,8 +31,7 @@ struct IntegerVectorPropertyLimits
   static const Vec2i step;
 };
 
-class IntegerVectorProperty
-  : public NumericProperty<Vec2i, IntegerVectorPropertyLimits>
+class IntegerVectorProperty : public NumericProperty<Vec2i>
 {
 public:
   using NumericProperty::NumericProperty;
