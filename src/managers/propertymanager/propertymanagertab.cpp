@@ -5,6 +5,7 @@
 #include <QLabel>
 #include "properties/typedproperty.h"
 #include "propertywidgets/propertywidget.h"
+#include "widgets/animationbutton.h"
 
 namespace omm
 {
@@ -25,23 +26,32 @@ void PropertyManagerTab::add_properties(Scene& scene, const std::string& key,
 {
   assert(properties.size() > 0);
 
-  const auto label = Property::get_value<std::string>(properties, std::mem_fn(&Property::label));
-  auto label_widget = std::make_unique<QLabel>();
-  label_widget->setText(QString::fromStdString(label));
-  label_widget->setToolTip(QString::fromStdString(key));
+  const auto text = Property::get_value<std::string>(properties, std::mem_fn(&Property::label));
+  auto label_widget = new QWidget(this);
+  auto label = new QLabel(label_widget);
+  auto animation_button = new AnimationButton(label_widget);
+  auto label_layout = new QHBoxLayout(label_widget);
+  label_layout->addWidget(animation_button);
+  label_layout->addWidget(label);
+
+
+  label->setText(QString::fromStdString(text));
+  label->setToolTip(QString::fromStdString(key));
+
 
   const auto widget_type = (*properties.begin())->widget_type();
-  auto property_widget = AbstractPropertyWidget::make(widget_type, scene, properties);
+  auto property_widget = AbstractPropertyWidget::make(widget_type, scene, properties).release();
+  property_widget->setParent(this);
 
-  for (QWidget* w : std::set<QWidget*> { label_widget.get(), property_widget.get() }) {
+  for (QWidget* w : std::set<QWidget*> { label_widget, property_widget }) {
     connect(*properties.begin(), SIGNAL(visibility_changed(bool)), w, SLOT(setVisible(bool)));
     if (!(*properties.begin())->is_visible()) {
       w->hide();
     }
   }
 
-  label_widget->setBuddy(property_widget.get());
-  m_layout->addRow(label_widget.release(), property_widget.release());
+  label->setBuddy(property_widget);
+  m_layout->addRow(label_widget, property_widget);
   m_layout->setSpacing(0);
 }
 

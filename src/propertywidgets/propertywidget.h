@@ -1,5 +1,4 @@
 #pragma once
-
 #include <QWidget>
 #include "properties/typedproperty.h"
 #include "common.h"

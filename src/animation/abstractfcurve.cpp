@@ -1,0 +1,54 @@
+#include "animation/abstractfcurve.h"
+
+namespace omm
+{
+
+void AbstractFCurve::
+serialize(AbstractSerializer& serializer, const Pointer& pointer) const
+{
+  serializer.set_value(m_property_key, make_pointer(pointer, PROPERTY_KEY_KEY));
+  serializer.set_value(m_owner, make_pointer(pointer, OWNER_KEY));
+
+  const auto keys = this->keys();
+  const auto keyvalues_pointer = make_pointer(pointer, KEY_VALUES_KEY);
+  serializer.start_array(keys.size(), keyvalues_pointer);
+
+  for (std::size_t i = 0; i < count(); ++i) {
+    serialize_keyvalue(serializer, i, keyvalues_pointer);
+  }
+  serializer.end_array();
+}
+
+void AbstractFCurve::
+deserialize(AbstractDeserializer& deserializer, const Pointer& pointer)
+{
+  m_property_key = deserializer.get_string(make_pointer(pointer, PROPERTY_KEY_KEY));
+  m_owner_id = deserializer.get_size_t(make_pointer(pointer, OWNER_KEY));
+  deserializer.register_reference_polisher(*this);
+
+  const auto keyvalues_pointer = make_pointer(pointer, KEY_VALUES_KEY);
+  const std::size_t n = deserializer.array_size(keyvalues_pointer);
+  for (std::size_t i = 0; i < n; ++i) {
+    deserialize_keyvalue(deserializer, i, keyvalues_pointer);
+  }
+}
+
+AbstractPropertyOwner *AbstractFCurve::owner() const
+{
+  return m_owner;
+}
+
+const std::string AbstractFCurve::property_key() const
+{
+  return m_property_key;
+}
+
+void AbstractFCurve::set_owner(AbstractPropertyOwner &owner, const std::string &property_key)
+{
+  assert(m_owner == nullptr && property_key.empty());
+  m_owner = &owner;
+  m_property_key = property_key;
+}
+
+
+}  // namespace omm

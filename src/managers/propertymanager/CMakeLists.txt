@@ -10,7 +10,6 @@ file(GLOB HEADERS
 )
 
 add_subdirectory(userpropertymanager)
-add_subdirectory(userpropertymanager_old)
 
 target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

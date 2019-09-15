@@ -1029,6 +1029,21 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
+    <name>TimeLine</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Play/Pause</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>|&lt;---</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Tool</name>
     <message>
         <source>Tool</source>
@@ -1293,6 +1308,10 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>toggle aspect ratio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TimeLine</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

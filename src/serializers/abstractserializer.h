@@ -50,6 +50,13 @@ private:
 
 template<class T> struct always_false : std::false_type {};
 
+class ReferencePolisher
+{
+protected:
+  virtual void update_referenes(const std::map<std::size_t, AbstractPropertyOwner*>& map) = 0;
+  friend class AbstractDeserializer;
+};
+
 class AbstractDeserializer
   : public AbstractFactory<std::string, AbstractDeserializer, std::istream&>
 {
@@ -73,8 +80,7 @@ public:
   virtual PolarCoordinates get_polarcoordinates(const Pointer& pointer) = 0;
 
   void register_reference(const std::size_t id, AbstractPropertyOwner& reference);
-  void register_reference_property( ReferenceProperty& reference_property,
-                                    const std::size_t id );
+  void register_reference_polisher(ReferencePolisher& polisher);
 
   template<typename T> T get(const Pointer&);
 
@@ -86,10 +92,8 @@ public:
 
 private:
   // maps old stored hash to new ref
-  std::unordered_map<std::size_t, AbstractPropertyOwner*> m_id_to_reference;
-
-  // maps new property to old hash
-  std::unordered_map<ReferenceProperty*, std::size_t> m_reference_property_to_id;
+  std::map<std::size_t, AbstractPropertyOwner*> m_id_to_reference;
+  std::set<ReferencePolisher*> m_reference_polishers;
 };
 
 void register_serializers();

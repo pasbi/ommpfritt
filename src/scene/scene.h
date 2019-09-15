@@ -148,6 +148,13 @@ public:
 public Q_SLOTS:
   void update_tool();
 
+
+  // === Animation ===
+private:
+  std::unique_ptr<Animator> m_animator;
+public:
+  Animator& animator() { return *m_animator; }
+
 };
 
 }  // namespace omm

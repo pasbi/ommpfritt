@@ -1,12 +1,12 @@
 
 file(GLOB SOURCES
-  propertyitem.cpp
-  userpropertydialog.cpp
+  slider.cpp
+  timeline.cpp
 )
 
 file(GLOB HEADERS
-  propertyitem.h
-  userpropertydialog.h
+  slider.h
+  timeline.h
 )
 
 
