@@ -16,7 +16,7 @@ void StringProperty::deserialize(AbstractDeserializer& deserializer, const Point
   set_default_value(deserializer.get_string(
     make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
   const auto mode_pointer = make_pointer(root, StringProperty::MODE_PROPERTY_KEY);
-  m_configuration[MODE_PROPERTY_KEY] = deserializer.get_size_t(mode_pointer);
+  configuration[MODE_PROPERTY_KEY] = deserializer.get_size_t(mode_pointer);
 }
 
 void StringProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
@@ -27,13 +27,13 @@ void StringProperty::serialize(AbstractSerializer& serializer, const Pointer& ro
                         make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
   const auto mode_pointer = make_pointer(root, StringProperty::MODE_PROPERTY_KEY);
 
-  const Mode mode = m_configuration.get<Mode>(MODE_PROPERTY_KEY);
+  const Mode mode = configuration.get<Mode>(MODE_PROPERTY_KEY);
   serializer.set_value(static_cast<std::size_t>(static_cast<std::size_t>(mode)), mode_pointer);
 }
 
 StringProperty &StringProperty::set_mode(StringProperty::Mode mode)
 {
-  m_configuration[MODE_PROPERTY_KEY] = static_cast<std::size_t>(mode);
+  configuration[MODE_PROPERTY_KEY] = static_cast<std::size_t>(mode);
   return *this;
 }
 

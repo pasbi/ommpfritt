@@ -11,7 +11,7 @@ namespace omm
 
 Property::Property(const Property &other)
   : QObject()
-  , m_configuration(other.m_configuration)
+  , configuration(other.configuration)
 {
 }
 
@@ -34,14 +34,14 @@ void Property
 
   // if m_label and m_category are already set, prefer these values since they are translated.
   // if m_label and m_category are not set, use the loaded ones (useful for user properties)
-  if (m_configuration.find(LABEL_POINTER) == m_configuration.end()) {
-    m_configuration[LABEL_POINTER] = deserializer.get_string(make_pointer(root, LABEL_POINTER));
+  if (configuration.find(LABEL_POINTER) == configuration.end()) {
+    configuration[LABEL_POINTER] = deserializer.get_string(make_pointer(root, LABEL_POINTER));
   }
-  if (m_configuration.find(CATEGORY_POINTER) == m_configuration.end()) {
-    m_configuration[CATEGORY_POINTER] = deserializer.get_string(make_pointer(root, CATEGORY_POINTER));
+  if (configuration.find(CATEGORY_POINTER) == configuration.end()) {
+    configuration[CATEGORY_POINTER] = deserializer.get_string(make_pointer(root, CATEGORY_POINTER));
   }
-  if (m_configuration.find(ANIMATABLE_POINTER) == m_configuration.end()) {
-    m_configuration[ANIMATABLE_POINTER] = deserializer.get_bool(make_pointer(root, ANIMATABLE_POINTER));
+  if (configuration.find(ANIMATABLE_POINTER) == configuration.end()) {
+    configuration[ANIMATABLE_POINTER] = deserializer.get_bool(make_pointer(root, ANIMATABLE_POINTER));
   }
 }
 
@@ -87,34 +87,34 @@ bool Property::is_compatible(const Property& other) const
 
 std::string Property::label() const
 {
-  return std::get<std::string>(m_configuration.at(LABEL_POINTER));
+  return std::get<std::string>(configuration.at(LABEL_POINTER));
 }
 
 Property& Property::set_label(const std::string& label)
 {
-  m_configuration[LABEL_POINTER] = label;
+  configuration[LABEL_POINTER] = label;
   return *this;
 }
 
 std::string Property::category() const
 {
-  return std::get<std::string>(m_configuration.at(CATEGORY_POINTER));
+  return std::get<std::string>(configuration.at(CATEGORY_POINTER));
 }
 
 Property& Property::set_category(const std::string& category)
 {
-  m_configuration[CATEGORY_POINTER] = category;
+  configuration[CATEGORY_POINTER] = category;
   return *this;
 }
 
 bool Property::is_animatable() const
 {
-  return m_configuration.get(ANIMATABLE_POINTER, true);
+  return configuration.get(ANIMATABLE_POINTER, true);
 }
 
 Property &Property::set_animatable(bool animatable)
 {
-  m_configuration[ANIMATABLE_POINTER] = animatable;
+  configuration[ANIMATABLE_POINTER] = animatable;
   return *this;
 }
 

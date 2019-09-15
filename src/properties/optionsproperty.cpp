@@ -21,7 +21,7 @@ void OptionsProperty::deserialize(AbstractDeserializer& deserializer, const Poin
       const auto option = deserializer.get_string(make_pointer(root, OPTIONS_POINTER, i));
       options.push_back(option);
     }
-    m_configuration[OPTIONS_POINTER] = options;
+    configuration[OPTIONS_POINTER] = options;
   }
 
 }
@@ -56,12 +56,12 @@ std::unique_ptr<Property> OptionsProperty::clone() const
 
 std::vector<std::string> OptionsProperty::options() const
 {
-  return configuration().get<std::vector<std::string>>(OPTIONS_POINTER);
+  return configuration.get<std::vector<std::string>>(OPTIONS_POINTER);
 }
 
 OptionsProperty& OptionsProperty::set_options(const std::vector<std::string>& options)
 {
-  m_configuration[OPTIONS_POINTER] = options;
+  configuration[OPTIONS_POINTER] = options;
   assert(options.size() > 0);
   set(std::clamp(value(), std::size_t(0), options.size()));
   return *this;

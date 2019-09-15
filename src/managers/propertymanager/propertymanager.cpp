@@ -131,10 +131,7 @@ std::unique_ptr<QWidget> PropertyManager::make_menu_bar()
   auto user_properties_menu = menu_bar->addMenu(QObject::tr("user properties", "PropertyManager"));
   const auto exec_user_property_dialog = [this]() {
     auto dialog = UserPropertyDialog(**m_current_selection.begin(), this);
-    if (dialog.exec() == QDialog::Accepted) {
-//      m_scene.submit(dialog.make_user_property_config_command());
-      m_scene.set_selection(m_scene.selection());
-    }
+    dialog.exec();
   };
   m_manage_user_properties_action = &action( *user_properties_menu,
                                              QObject::tr("edit ...", "PropertyManager"),

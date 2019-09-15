@@ -109,7 +109,7 @@ void UserPropertyListModel::del_property(const QModelIndex &index)
 UserPropertyListItem::UserPropertyListItem(Property *property) : m_property(property)
 {
   if (property != nullptr) {
-    configuration = property->configuration();
+    configuration = property->configuration;
   }
 }
 

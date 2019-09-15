@@ -10,7 +10,7 @@ file(GLOB SOURCES
   pointstransformationcommand.cpp
   propertycommand.cpp
   removecommand.cpp
-  userpropertyconfigcommand.cpp
+  userpropertycommand.cpp
 )
 
 file(GLOB HEADERS
@@ -25,7 +25,7 @@ file(GLOB HEADERS
   pointstransformationcommand.h
   propertycommand.h
   removecommand.h
-  userpropertyconfigcommand.h
+  userpropertycommand.h
 )
 
 

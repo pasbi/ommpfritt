@@ -143,10 +143,7 @@ public:
   virtual void revise();
 
 public:
-  const Configuration& configuration() const { return m_configuration; }
-  void configure(const Configuration& configuration) { m_configuration = configuration; }
-protected:
-  Configuration m_configuration;
+  Configuration configuration;
 
 private:
   bool m_is_visible = true;

@@ -23,7 +23,7 @@ public:
   template<typename T> T configuration(const std::string& key)
   {
     return Property::get_value<T>(m_properties, [key](const Property& p) {
-      return p.configuration().get<T>(key);
+      return p.configuration.get<T>(key);
     });
   }
 

@@ -4,6 +4,9 @@
 #include "propertywidgets/propertyconfigwidget.h"
 #include <iomanip>
 #include <ostream>
+#include "scene/scene.h"
+#include "scene/history/historymodel.h"
+#include "commands/userpropertycommand.h"
 
 namespace omm
 {
@@ -53,19 +56,23 @@ UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner &owner, QWidget *pa
 
 void UserPropertyDialog::submit()
 {
+  std::vector<std::pair<std::string, std::unique_ptr<Property>>> additions;
+  std::list<std::string> deletions;
+  std::map<Property*, Property::Configuration> changes;
   const auto keys = m_owner.properties().keys();
   for (const std::string& property_key : keys) {
     Property* p = m_owner.property(property_key);
     if (p != nullptr && p->is_user_property() && !m_user_property_list_model.contains(p)) {
-      m_owner.extract_property(property_key);
+      deletions.push_back(property_key);
     }
   }
+  additions.reserve(m_user_property_list_model.items().size());
   for (const UserPropertyListItem* item : m_user_property_list_model.items()) {
     if (item->property() != nullptr) {
-      item->property()->configure(item->configuration);
+      changes.insert(std::pair(item->property(), item->configuration));
     } else {
       auto property = Property::make(item->type());
-      property->configure(item->configuration);
+      property->configuration = item->configuration;
       property->set_label(item->label());
       property->set_category(Property::USER_PROPERTY_CATEGROY_NAME);
       std::string key = item->label();
@@ -77,8 +84,13 @@ void UserPropertyDialog::submit()
         ostream << item->label() << "." << std::setw(3) << std::setfill('0') << i;
         key = ostream.str();
       }
-      m_owner.add_property(key, std::move(property));
+      additions.push_back(std::pair(key, std::move(property)));
     }
+  }
+  additions.shrink_to_fit();
+  if (deletions.size() > 0 || additions.size() > 0 || changes.size() > 0) {
+    m_owner.scene()->submit<UserPropertyCommand>(std::vector(deletions.begin(), deletions.end()),
+                                                 std::move(additions), changes, m_owner);
   }
 }
 
