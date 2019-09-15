@@ -3,9 +3,19 @@
 #include <memory>
 #include <QFormLayout>
 #include <QLabel>
+#include <QPushButton>
 #include "properties/typedproperty.h"
 #include "propertywidgets/propertywidget.h"
 #include "widgets/animationbutton.h"
+
+namespace
+{
+
+static constexpr int hspacing = 6;
+static constexpr int vspacing = 6;
+static constexpr QSize animation_button_size(28, 28);
+
+}  // namespace
 
 namespace omm
 {
@@ -14,6 +24,8 @@ PropertyManagerTab::PropertyManagerTab()
 {
   auto layout = std::make_unique<QFormLayout>();
   m_layout = layout.get();
+  m_layout->setHorizontalSpacing(hspacing);
+  m_layout->setVerticalSpacing(vspacing);
   setLayout(layout.release());
 }
 
@@ -30,16 +42,19 @@ void PropertyManagerTab::add_properties(Scene& scene, const std::string& key,
   auto label_widget = new QWidget(this);
   auto label = new QLabel(label_widget);
   auto label_layout = new QHBoxLayout(label_widget);
+  label_layout->setSpacing(hspacing);
   if (Property::get_value<bool>(properties, std::mem_fn(&Property::is_animatable))) {
-    auto animation_button = new AnimationButton(label_widget);
-    label_layout->addWidget(animation_button);
+    auto animation_button = std::make_unique<AnimationButton>(label_widget);
+    animation_button->setFixedSize(animation_button_size);
+    label_layout->addWidget(animation_button.release());
+  } else {
+    label_layout->addSpacing(animation_button_size.width() + hspacing);
   }
   label_layout->addWidget(label);
-
+  label_layout->setContentsMargins(0, 0, 0, 0);
 
   label->setText(QString::fromStdString(text));
   label->setToolTip(QString::fromStdString(key));
-
 
   const auto widget_type = (*properties.begin())->widget_type();
   auto property_widget = AbstractPropertyWidget::make(widget_type, scene, properties).release();
@@ -54,7 +69,7 @@ void PropertyManagerTab::add_properties(Scene& scene, const std::string& key,
 
   label->setBuddy(property_widget);
   m_layout->addRow(label_widget, property_widget);
-  m_layout->setSpacing(0);
+  m_layout->setContentsMargins(0, 0, 0, 0);
 }
 
 }  // namespace omm
