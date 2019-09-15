@@ -16,7 +16,8 @@ BrushSelectTool::BrushSelectTool(Scene& scene) : SelectPointsBaseTool(scene)
 {
   create_property<FloatProperty>(RADIUS_PROPERTY_KEY, 20.0)
     .set_label(QObject::tr("radius").toStdString())
-    .set_category(QObject::tr("tool").toStdString());
+    .set_category(QObject::tr("tool").toStdString())
+    .set_animatable(false);
 }
 
 bool BrushSelectTool::mouse_move( const Vec2f& delta, const Vec2f& pos,

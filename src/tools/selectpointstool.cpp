@@ -17,14 +17,16 @@ SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene)
   create_property<OptionsProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("Mirror").toStdString(), QObject::tr("Individual").toStdString() })
     .set_label(QObject::tr("tangent").toStdString())
-    .set_category(category);
+    .set_category(category)
+    .set_animatable(false);
 
   create_property<OptionsProperty>(BOUNDING_BOX_MODE_PROPERTY_KEY, 0)
     .set_options( { QObject::tr("Include Tangents").toStdString(),
                     QObject::tr("Exclude Tangents").toStdString(),
                     QObject::tr("None").toStdString() })
     .set_label(QObject::tr("Bounding Box").toStdString())
-    .set_category(category);
+    .set_category(category)
+    .set_animatable(false);
 }
 
 PointSelectHandle::TangentMode SelectPointsBaseTool::tangent_mode() const

@@ -17,7 +17,8 @@ SelectObjectsTool::SelectObjectsTool(Scene& scene)
   create_property<OptionsProperty>(TRANSFORMATION_MODE_KEY, 0)
     .set_options({ QObject::tr("Object").toStdString(), QObject::tr("Axis").toStdString() })
     .set_label(QObject::tr("Mode").toStdString())
-    .set_category(QObject::tr("tool").toStdString());
+    .set_category(QObject::tr("tool").toStdString())
+    .set_animatable(false);
 }
 
 std::string SelectObjectsTool::type() const { return TYPE; }

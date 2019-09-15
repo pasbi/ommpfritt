@@ -32,11 +32,13 @@ AbstractSelectTool::AbstractSelectTool(Scene& scene)
   create_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY, 1)
     .set_options({ QObject::tr("global").toStdString(), QObject::tr("local").toStdString() })
     .set_label(QObject::tr("Alignment").toStdString())
-    .set_category(category);
+    .set_category(category)
+    .set_animatable(false);
 
   create_property<BoolProperty>(SYMMETRIC_PROPERTY_KEY, false)
     .set_label(QObject::tr("Symmetric").toStdString())
-    .set_category(category);
+    .set_category(category)
+    .set_animatable(false);
 }
 
 void AbstractSelectTool::reset_absolute_object_transformation()
