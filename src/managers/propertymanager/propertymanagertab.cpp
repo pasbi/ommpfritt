@@ -29,9 +29,11 @@ void PropertyManagerTab::add_properties(Scene& scene, const std::string& key,
   const auto text = Property::get_value<std::string>(properties, std::mem_fn(&Property::label));
   auto label_widget = new QWidget(this);
   auto label = new QLabel(label_widget);
-  auto animation_button = new AnimationButton(label_widget);
   auto label_layout = new QHBoxLayout(label_widget);
-  label_layout->addWidget(animation_button);
+  if (Property::get_value<bool>(properties, std::mem_fn(&Property::is_animatable))) {
+    auto animation_button = new AnimationButton(label_widget);
+    label_layout->addWidget(animation_button);
+  }
   label_layout->addWidget(label);
 
 

@@ -32,6 +32,9 @@ UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner &owner, QWidget *pa
     m_current_item->configuration["type"] = m_property_types[index];
     update_property_config_page(m_current_item);
   });
+  connect(m_ui->cb_animatable, &QCheckBox::toggled, [this](bool checked) {
+    m_current_item->configuration[Property::ANIMATABLE_POINTER] = checked;
+  });
 
   connect(m_ui->pb_add, &QPushButton::clicked, [this]() {
     m_user_property_list_model.add_property(m_ui->cb_type->currentText());
@@ -45,6 +48,7 @@ UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner &owner, QWidget *pa
   });
   connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(submit()));
   m_ui->cb_type->hide();
+  m_ui->cb_animatable->hide();
 }
 
 void UserPropertyDialog::submit()
@@ -93,12 +97,18 @@ void UserPropertyDialog::update_property_config_page(UserPropertyListItem* item)
   if (m_current_item == nullptr) {
     m_ui->scrollArea->setWidget(std::make_unique<QWidget>().release());
     m_ui->cb_type->hide();
+    m_ui->cb_animatable->hide();
   } else {
     const std::string type = m_current_item->type();
     {
       QSignalBlocker blocker(m_ui->cb_type);
       m_ui->cb_type->setEnabled(m_current_item->property() == nullptr);
       m_ui->cb_type->setCurrentText(QString::fromStdString(type));
+    }
+    {
+      QSignalBlocker blocker(m_ui->cb_animatable);
+      const bool a = m_current_item->configuration.get(Property::ANIMATABLE_POINTER, true);
+      m_ui->cb_animatable->setChecked(a);
     }
 
     const std::string config_widget_type = type + "ConfigWidget";
@@ -113,6 +123,7 @@ void UserPropertyDialog::update_property_config_page(UserPropertyListItem* item)
     config_widget->init(m_current_item->configuration);
     m_ui->scrollArea->setWidget(config_widget.release());
     m_ui->cb_type->show();
+    m_ui->cb_animatable->show();
   }
 }
 

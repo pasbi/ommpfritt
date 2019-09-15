@@ -100,6 +100,16 @@
         <widget class="QComboBox" name="cb_type"/>
        </item>
        <item>
+        <widget class="QCheckBox" name="cb_animatable">
+         <property name="text">
+          <string>animatable</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QScrollArea" name="scrollArea">
          <property name="widgetResizable">
           <bool>true</bool>
@@ -110,7 +120,7 @@
             <x>0</x>
             <y>0</y>
             <width>168</width>
-            <height>264</height>
+            <height>247</height>
            </rect>
           </property>
          </widget>

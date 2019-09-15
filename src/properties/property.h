@@ -97,11 +97,14 @@ public:
 
   static constexpr auto LABEL_POINTER = "label";
   static constexpr auto CATEGORY_POINTER = "category";
+  static constexpr auto ANIMATABLE_POINTER = "animatable";
 
   std::string label() const;
   std::string category() const;
+  bool is_animatable() const;
   Property& set_label(const std::string& label);
   Property& set_category(const std::string& category);
+  Property& set_animatable(bool animatable);
 
   virtual std::string widget_type() const;
 
@@ -138,7 +141,6 @@ public:
   virtual std::unique_ptr<Property> clone() const = 0;
 
   virtual void revise();
-
 
 public:
   const Configuration& configuration() const { return m_configuration; }
