@@ -7,6 +7,7 @@
 #include "logging.h"
 #include "animation/animator.h"
 #include "animation/track.h"
+#include "aspects/propertyowner.h"
 
 namespace omm
 {
@@ -20,6 +21,8 @@ AnimationButton::AnimationButton(Animator& animator, const std::set<AbstractProp
 {
   setContextMenuPolicy(Qt::DefaultContextMenu);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  connect(&animator, SIGNAL(current_changed(int)), this, SLOT(update()));
+  connect(&animator, SIGNAL(tracks_changed()), this, SLOT(update()));
 }
 
 bool AnimationButton::has_track() const
@@ -40,17 +43,39 @@ bool AnimationButton::has_key() const
 
 void AnimationButton::set_key()
 {
-
+  const int frame = m_animator.current();
+  for (AbstractPropertyOwner* owner : m_owners) {
+    AbstractTrack* track = m_animator.track(*owner, m_property_key);
+    if (track == nullptr) {
+      track = m_animator.create_track(*owner, m_property_key);
+    }
+    if (!track->has_key_at(frame)) {
+      track->record(frame, *owner->property(m_property_key));
+    }
+  }
+  update();
 }
 
 void AnimationButton::remove_key()
 {
-
+  const int frame = m_animator.current();
+  for (AbstractPropertyOwner* owner : m_owners) {
+    AbstractTrack* track = m_animator.track(*owner, m_property_key);
+    if (track != nullptr && track->has_key_at(frame)) {
+      track->remove_key_at(frame);
+    }
+  }
+  update();
 }
 
 void AnimationButton::remove_track()
 {
-
+  for (AbstractPropertyOwner* owner : m_owners) {
+    AbstractTrack* track = m_animator.track(*owner, m_property_key);
+    if (track != nullptr) {
+      m_animator.extract_track(*owner, m_property_key);
+    }
+  }
 }
 
 void AnimationButton::resizeEvent(QResizeEvent *event)
@@ -112,11 +137,23 @@ void AnimationButton::contextMenuEvent(QContextMenuEvent *event)
   make_action(tr("Remove Track"), &AnimationButton::remove_track, has_track());
   make_action(tr("Add Key"), &AnimationButton::set_key, !has_key());
   make_action(tr("Remove Key"), &AnimationButton::remove_key, has_key());
-  context_menu.exec(event->pos());
+  context_menu.exec(mapToGlobal(event->pos()));
 }
 
 void AnimationButton::mousePressEvent(QMouseEvent *event)
 {
+  if (event->button() == Qt::LeftButton) {
+    if (!has_track()) {
+      // no track, hence no key
+      set_key();
+    } else if (!has_key()) {
+      // track but no key
+      set_key();
+    } else {
+      // has key
+      // nothing
+    }
+  }
 }
 
 }  // namespace omm

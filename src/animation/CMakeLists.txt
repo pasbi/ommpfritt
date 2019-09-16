@@ -3,7 +3,6 @@ file(GLOB SOURCES
   abstracttrack.cpp
   animator.cpp
   floattrack.cpp
-  track.cpp
   trackregister.cpp
 )
 

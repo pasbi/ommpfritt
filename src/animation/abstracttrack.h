@@ -3,6 +3,7 @@
 #include "aspects/serializable.h"
 #include <map>
 #include "abstractfactory.h"
+#include <QObject>
 #include "serializers/abstractserializer.h"
 
 namespace omm
@@ -19,16 +20,19 @@ class Property;
  *  to is not known at that time.
  */
 class AbstractTrack
-  : public Serializable
+  : public QObject
+  , public Serializable
   , public AbstractFactory<std::string, AbstractTrack>
   , public ReferencePolisher
 {
+  Q_OBJECT
 public:
   explicit AbstractTrack() = default;
   static constexpr auto PROPERTY_KEY_KEY = "property";
   static constexpr auto OWNER_KEY = "owner";
   static constexpr auto KEY_VALUES_KEY = "keys";
   static constexpr auto TYPE_KEY = "type";
+  static std::string map_property_to_track_type(const std::string& property_type);
 
   void serialize(AbstractSerializer& serializer, const Pointer& pointer) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& pointer) override;
@@ -38,6 +42,8 @@ public:
   const std::string property_key() const;
   void set_owner(AbstractPropertyOwner& owner, const std::string& property_key);
   virtual bool has_key_at(int frame) const = 0;
+  virtual void record(int frame, Property& property) = 0;
+  virtual void remove_key_at(int frame) = 0;
 
 protected:
   struct FCurveSegment {
@@ -60,6 +66,9 @@ protected:
   {
     m_owner = map.at(m_owner_id);
   }
+
+Q_SIGNALS:
+  void track_changed();
 
 
 private:

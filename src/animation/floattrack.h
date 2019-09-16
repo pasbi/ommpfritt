@@ -14,7 +14,10 @@ public:
   double interpolate(int frame) const override;
   std::size_t count() const override;
 
-  struct KeyValue {
+  struct KeyValue
+  {
+    KeyValue(double value);
+
     double value;
 
     int left_offset;
@@ -24,6 +27,8 @@ public:
   };
 
   bool has_key_at(int frame) const override;
+  void record(int frame, Property& property) override;
+  void remove_key_at(int frame) override;
 
 protected:
   void deserialize_keyvalue(AbstractDeserializer &, std::size_t i, const Pointer &pointer) override;

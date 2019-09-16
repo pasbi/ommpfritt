@@ -41,6 +41,8 @@ public:
    */
   AbstractTrack* track(AbstractPropertyOwner& owner, const std::string& property_key) const;
   AbstractTrack* create_track(AbstractPropertyOwner& owner, const std::string& property_key);
+  std::unique_ptr<AbstractTrack> extract_track(AbstractPropertyOwner& owner,
+                                               const std::string& property_key);
 
 public Q_SLOTS:
   void set_start(int start);
@@ -54,6 +56,7 @@ Q_SIGNALS:
   void end_changed(int);
   void current_changed(int);
   void play_pause_toggled(bool);
+  void tracks_changed();
 
 private:
   int m_start_frame = 1;

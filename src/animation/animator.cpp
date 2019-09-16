@@ -6,19 +6,6 @@
 
 #include "aspects/propertyowner.h"
 
-namespace
-{
-
-std::string map_property_to_track_type(const std::string& property_type)
-{
-  static const std::string property_suffix = "property";
-  static const std::string track_suffix = "track";
-  assert(property_type.size() > property_type.size());
-  return property_type.substr(property_type.size() - property_suffix.size()) + track_suffix;
-}
-
-}  // namespace
-
 namespace omm
 {
 
@@ -90,11 +77,25 @@ AbstractTrack *Animator::create_track(AbstractPropertyOwner &owner, const std::s
   assert(this->track(owner, property_key) == nullptr);
 
   Property* property = owner.property(property_key);
-  auto track = AbstractTrack::make(map_property_to_track_type(property->type()));
+  auto track = AbstractTrack::make(AbstractTrack::map_property_to_track_type(property->type()));
+  LINFO << track->owner();
   track->set_owner(owner, property_key);
   AbstractTrack& track_ref = *track;
+  connect(&track_ref, SIGNAL(track_changed()), this, SIGNAL(tracks_changed()));
   m_tracks.insert(std::move(track));
+  Q_EMIT tracks_changed();
   return &track_ref;
+}
+
+std::unique_ptr<AbstractTrack> Animator::extract_track(AbstractPropertyOwner &owner,
+                                                       const std::string &property_key)
+{
+  const auto it = std::find_if(m_tracks.begin(), m_tracks.end(), [&](const auto& t) {
+    return t->owner() == &owner && t->property_key() == property_key;
+  });
+  std::unique_ptr<AbstractTrack> track = std::move(m_tracks.extract(it).value());
+  Q_EMIT tracks_changed();
+  return track;
 }
 
 void Animator::set_start(int start)

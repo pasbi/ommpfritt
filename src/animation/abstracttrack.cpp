@@ -1,4 +1,5 @@
 #include "animation/abstracttrack.h"
+#include "logging.h"
 
 namespace omm
 {
@@ -43,10 +44,17 @@ const std::string AbstractTrack::property_key() const
 
 void AbstractTrack::set_owner(AbstractPropertyOwner &owner, const std::string &property_key)
 {
-  assert(m_owner == nullptr && property_key.empty());
+  assert(m_owner == nullptr && m_property_key.empty());
   m_owner = &owner;
   m_property_key = property_key;
 }
 
+std::string AbstractTrack::map_property_to_track_type(const std::string& property_type)
+{
+  static const std::string property_suffix = "Property";
+  static const std::string track_suffix = "Track";
+  assert(property_type.size() > property_suffix.size());
+  return property_type.substr(0, property_type.size() - property_suffix.size()) + track_suffix;
+}
 
 }  // namespace omm

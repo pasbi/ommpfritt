@@ -9,8 +9,7 @@ namespace omm
 class AbstractPropertyOwner;
 class Property;
 
-template<typename PropertyT>
-class Track : public AbstractTrack
+template<typename PropertyT> class Track : public AbstractTrack
 {
 public:
   using property_type = PropertyT;
