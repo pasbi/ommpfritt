@@ -11,13 +11,20 @@ namespace omm
 class AbstractPropertyOwner;
 class Property;
 
-class AbstractFCurve
-    : public Serializable
-    , public AbstractFactory<std::string, AbstractFCurve>
-    , public ReferencePolisher
+/**
+ * @brief The AbstractTrack class is the base class for all track.
+ *  It is required to store the association to a (owner, property_key)-pair rather than to a
+ *  property directly because properties do not have serialization-persistent ids.
+ *  It would be impossible to restore an track at deserialization since the property it belongs
+ *  to is not known at that time.
+ */
+class AbstractTrack
+  : public Serializable
+  , public AbstractFactory<std::string, AbstractTrack>
+  , public ReferencePolisher
 {
 public:
-  explicit AbstractFCurve() = default;
+  explicit AbstractTrack() = default;
   static constexpr auto PROPERTY_KEY_KEY = "property";
   static constexpr auto OWNER_KEY = "owner";
   static constexpr auto KEY_VALUES_KEY = "keys";
@@ -30,6 +37,7 @@ public:
   AbstractPropertyOwner* owner() const;
   const std::string property_key() const;
   void set_owner(AbstractPropertyOwner& owner, const std::string& property_key);
+  virtual bool has_key_at(int frame) const = 0;
 
 protected:
   struct FCurveSegment {
@@ -61,5 +69,7 @@ private:
   // this field is only required temporarily during deserialization
   std::size_t m_owner_id;
 };
+
+void register_tracks();
 
 }  // namespace omm

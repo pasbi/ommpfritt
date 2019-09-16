@@ -2,9 +2,22 @@
 
 #include "logging.h"
 #include "serializers/abstractserializer.h"
-#include "animation/fcurve.h"
+#include "animation/track.h"
 
 #include "aspects/propertyowner.h"
+
+namespace
+{
+
+std::string map_property_to_track_type(const std::string& property_type)
+{
+  static const std::string property_suffix = "property";
+  static const std::string track_suffix = "track";
+  assert(property_type.size() > property_type.size());
+  return property_type.substr(property_type.size() - property_suffix.size()) + track_suffix;
+}
+
+}  // namespace
 
 namespace omm
 {
@@ -15,6 +28,11 @@ Animator::Animator()
   connect(&m_timer, SIGNAL(timeout()), this, SLOT(advance()));
 }
 
+Animator::~Animator()
+{
+
+}
+
 void Animator::serialize(AbstractSerializer &serializer, const Serializable::Pointer &pointer) const
 {
   Serializable::serialize(serializer, pointer);
@@ -23,11 +41,11 @@ void Animator::serialize(AbstractSerializer &serializer, const Serializable::Poi
   serializer.set_value(m_end_frame, make_pointer(pointer, END_FRAME_POINTER));
   serializer.set_value(m_current_frame, make_pointer(pointer, CURRENT_FRAME_POINTER));
 
-  const auto fcurves_pointer = make_pointer(pointer, FCURVES_POINTER);
-  serializer.start_array(m_fcurves.size(), fcurves_pointer);
+  const auto fcurves_pointer = make_pointer(pointer, TRACKS_POINTER);
+  serializer.start_array(m_tracks.size(), fcurves_pointer);
   int i = 0;
-  for (const auto& fcurve : m_fcurves) {
-    serializer.set_value(fcurve->type(), make_pointer(pointer, AbstractFCurve::TYPE_KEY));
+  for (const auto& fcurve : m_tracks) {
+    serializer.set_value(fcurve->type(), make_pointer(pointer, AbstractTrack::TYPE_KEY));
     fcurve->serialize(serializer, make_pointer(fcurves_pointer, i));
     i += 1;
   }
@@ -42,44 +60,41 @@ void Animator::deserialize(AbstractDeserializer &deserializer, const Pointer &po
   set_end(deserializer.get_int(make_pointer(pointer, END_FRAME_POINTER)));
   set_current(deserializer.get_int(make_pointer(pointer, CURRENT_FRAME_POINTER)));
 
-  const auto fcurves_pointer = make_pointer(pointer, FCURVES_POINTER);
+  const auto fcurves_pointer = make_pointer(pointer, TRACKS_POINTER);
   const std::size_t n = deserializer.array_size(fcurves_pointer);
   for (std::size_t i = 0; i < n; ++i) {
-    const std::string type_pointer = make_pointer(fcurves_pointer, AbstractFCurve::TYPE_KEY);
+    const std::string type_pointer = make_pointer(fcurves_pointer, AbstractTrack::TYPE_KEY);
     const std::string type = deserializer.get_string(type_pointer);
-    auto fcurve = AbstractFCurve::make(type);
-    m_fcurves.insert(std::move(fcurve));
+    m_tracks.insert(AbstractTrack::make(type));
   }
 }
 
-std::string Animator::map_property_to_fcurve_type(const std::string &property_type)
+AbstractTrack* Animator::track(AbstractPropertyOwner &owner, const std::string &property_key) const
 {
-  // <TYPE>Property -> <TYPE>FCurve
-  static const std::string property_suffix = "property";
-  static const std::string fcurve_suffix = "fcurve";
-
-  assert(property_type.size() > property_suffix.size());
-  const std::string type = property_type.substr(0, property_type.size() - property_suffix.size());
-  return type + fcurve_suffix;
-}
-
-AbstractFCurve &Animator::get_fcurve(AbstractPropertyOwner &owner, const std::string &property_key)
-{
-  const auto it = std::find_if(m_fcurves.begin(), m_fcurves.end(),
+  const auto it = std::find_if(m_tracks.begin(), m_tracks.end(),
                                [&owner, &property_key](const auto& fcurve)
   {
     return fcurve->owner() == &owner && fcurve->property_key() == property_key;
   });
 
-  if (it != m_fcurves.end()) {
-    return **it;
+  if (it != m_tracks.end()) {
+    return it->get();
   } else {
-    Property* property = owner.property(property_key);
-    auto fcurve = AbstractFCurve::make(map_property_to_fcurve_type(property->type()));
-    AbstractFCurve& fcurve_ref = *fcurve;
-    m_fcurves.insert(std::move(fcurve));
-    return fcurve_ref;
+    return nullptr;
   }
+}
+
+AbstractTrack *Animator::create_track(AbstractPropertyOwner &owner, const std::string &property_key)
+{
+  // no duplicates!
+  assert(this->track(owner, property_key) == nullptr);
+
+  Property* property = owner.property(property_key);
+  auto track = AbstractTrack::make(map_property_to_track_type(property->type()));
+  track->set_owner(owner, property_key);
+  AbstractTrack& track_ref = *track;
+  m_tracks.insert(std::move(track));
+  return &track_ref;
 }
 
 void Animator::set_start(int start)

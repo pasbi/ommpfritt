@@ -1,15 +1,15 @@
 #pragma once
 
-#include "animation/fcurve.h"
+#include "animation/track.h"
 #include "properties/floatproperty.h"
 
 namespace omm
 {
 
-class FloatFCurve : public FCurve<FloatProperty>
+class FloatTrack : public Track<FloatProperty>
 {
 public:
-  static constexpr auto TYPE = "FloatFCurve";
+  static constexpr auto TYPE = "FloatTrack";
   std::string type() const override { return TYPE; }
   double interpolate(int frame) const override;
   std::size_t count() const override;
@@ -22,6 +22,8 @@ public:
     int right_offset;
     double right_value;
   };
+
+  bool has_key_at(int frame) const override;
 
 protected:
   void deserialize_keyvalue(AbstractDeserializer &, std::size_t i, const Pointer &pointer) override;

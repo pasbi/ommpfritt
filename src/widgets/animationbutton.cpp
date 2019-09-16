@@ -3,21 +3,54 @@
 #include <QResizeEvent>
 #include <QPainter>
 #include <cmath>
+#include <QMenu>
 #include "logging.h"
+#include "animation/animator.h"
+#include "animation/track.h"
 
 namespace omm
 {
 
-AnimationButton::AnimationButton(QWidget *parent) : QWidget(parent)
+AnimationButton::AnimationButton(Animator& animator, const std::set<AbstractPropertyOwner*>& owners,
+                                 const std::string& property_key, QWidget *parent)
+  : QWidget(parent)
+  , m_animator(animator)
+  , m_owners(owners)
+  , m_property_key(property_key)
 {
   setContextMenuPolicy(Qt::DefaultContextMenu);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
-void AnimationButton::set_state(AnimationButton::State state)
+bool AnimationButton::has_track() const
 {
-  m_state = state;
-  update();
+  return std::any_of(m_owners.begin(), m_owners.end(), [this](auto* owner) {
+    return m_animator.track(*owner, m_property_key) != nullptr;
+  });
+}
+
+bool AnimationButton::has_key() const
+{
+  const int current_frame = m_animator.current();
+  return std::any_of(m_owners.begin(), m_owners.end(), [this, current_frame](auto* owner) {
+    AbstractTrack* track = m_animator.track(*owner, m_property_key);
+    return track != nullptr && track->has_key_at(current_frame);
+  });
+}
+
+void AnimationButton::set_key()
+{
+
+}
+
+void AnimationButton::remove_key()
+{
+
+}
+
+void AnimationButton::remove_track()
+{
+
 }
 
 void AnimationButton::resizeEvent(QResizeEvent *event)
@@ -41,20 +74,20 @@ void AnimationButton::paintEvent(QPaintEvent *event)
   const double pen_width_base = std::min(rect.width(), rect.height());
 
   QPen pen;
-  switch (m_state) {
-  case State::NotAnimated:
+  if (!has_track()) {
+    // no track, hence no key
     pen.setColor(Qt::black);
     pen.setWidthF(pen_width_base * 0.2);
     painter.setPen(pen);
     painter.drawEllipse(centered(0.8));
-    break;
-  case State::Animated:
+  } else if (!has_key()) {
+    // track but no key
     pen.setColor(Qt::red);
     pen.setWidthF(pen_width_base * 0.2);
     painter.setPen(pen);
     painter.drawEllipse(centered(0.8));
-    break;
-  case State::KeyValue:
+  } else {
+    // has key
     pen.setColor(Qt::red);
     pen.setWidthF(pen_width_base * 0.2);
     painter.setPen(pen);
@@ -62,26 +95,28 @@ void AnimationButton::paintEvent(QPaintEvent *event)
     QPainterPath ellipse;
     ellipse.addEllipse(centered(0.4));
     painter.fillPath(ellipse, Qt::red);
-    break;
   }
 }
 
 void AnimationButton::contextMenuEvent(QContextMenuEvent *event)
 {
+  auto context_menu = QMenu();
 
+  auto make_action = [&](const QString& label, void(AnimationButton::*on_triggered)(), bool enabled)
+  {
+    QAction* action = context_menu.addAction(label);
+    connect(action, &QAction::triggered, this, on_triggered);
+    action->setEnabled(enabled);
+  };
+
+  make_action(tr("Remove Track"), &AnimationButton::remove_track, has_track());
+  make_action(tr("Add Key"), &AnimationButton::set_key, !has_key());
+  make_action(tr("Remove Key"), &AnimationButton::remove_key, has_key());
+  context_menu.exec(event->pos());
 }
 
 void AnimationButton::mousePressEvent(QMouseEvent *event)
 {
-  switch (m_state) {
-  case State::Animated:
-    return set_state(State::NotAnimated);
-  case State::KeyValue:
-    return set_state(State::Animated);
-  case State::NotAnimated:
-    return set_state(State::KeyValue);
-  }
-  QWidget::mousePressEvent(event);
 }
 
 }  // namespace omm

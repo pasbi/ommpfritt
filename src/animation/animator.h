@@ -5,12 +5,12 @@
 #include <QTimer>
 #include <set>
 #include <memory>
-#include "animation/fcurve.h"
 
 namespace omm
 {
 
-class AbstractFCurve;
+class AbstractTrack;
+class AbstractPropertyOwner;
 
 class Animator : public QObject, public Serializable
 {
@@ -18,6 +18,7 @@ class Animator : public QObject, public Serializable
 public:
   enum class PlayMode { Repeat, Stop };
   explicit Animator();
+  ~Animator();
   void serialize(AbstractSerializer&, const Pointer&) const override;
   void deserialize(AbstractDeserializer&, const Pointer&) override;
 
@@ -28,9 +29,18 @@ public:
   static constexpr auto START_FRAME_POINTER = "start-frame";
   static constexpr auto END_FRAME_POINTER = "end-frame";
   static constexpr auto CURRENT_FRAME_POINTER = "current-frame";
-  static constexpr auto FCURVES_POINTER = "fcurves";
-  static std::string map_property_to_fcurve_type(const std::string& property_type);
-  AbstractFCurve& get_fcurve(AbstractPropertyOwner& owner, const std::string& property_key);
+  static constexpr auto TRACKS_POINTER = "tracks";
+
+  /**
+   * @brief track returns a pointer to the track corresponding to the property represented by the
+   *  given key and owner or nullptr if no such track exists.
+   *  if there is no such track
+   * @param owner
+   * @param property_key
+   * @return
+   */
+  AbstractTrack* track(AbstractPropertyOwner& owner, const std::string& property_key) const;
+  AbstractTrack* create_track(AbstractPropertyOwner& owner, const std::string& property_key);
 
 public Q_SLOTS:
   void set_start(int start);
@@ -53,7 +63,7 @@ private:
   QTimer m_timer;
   PlayMode m_play_mode = PlayMode::Repeat;
 
-  std::set<std::unique_ptr<AbstractFCurve>> m_fcurves;
+  std::set<std::unique_ptr<AbstractTrack>> m_tracks;
 
 };
 

@@ -1,17 +1,17 @@
 
 file(GLOB SOURCES
+  abstracttrack.cpp
   animator.cpp
-  fcurve.cpp
-  floatfcurve.cpp
-  abstractfcurve.cpp
-  fcurveregister.cpp
+  floattrack.cpp
+  track.cpp
+  trackregister.cpp
 )
 
 file(GLOB HEADERS
+  abstracttrack.h
   animator.h
-  fcurve.h
-  floatfcurve.h
-  abstractfcurve.h
+  floattrack.h
+  track.h
 )
 
 target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})

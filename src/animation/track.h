@@ -1,7 +1,7 @@
 #pragma once
 
 #include <map>
-#include "animation/abstractfcurve.h"
+#include "animation/abstracttrack.h"
 
 namespace omm
 {
@@ -10,14 +10,14 @@ class AbstractPropertyOwner;
 class Property;
 
 template<typename PropertyT>
-class FCurve : public AbstractFCurve
+class Track : public AbstractTrack
 {
 public:
   using property_type = PropertyT;
   using value_type = typename PropertyT::value_type;
   enum class InterpolationMode { Step, Linear, Bezier };
 
-  explicit FCurve() = default;
+  explicit Track() = default;
   virtual value_type interpolate(int frame) const = 0;
 
 };
