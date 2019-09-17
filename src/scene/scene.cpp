@@ -224,6 +224,7 @@ bool Scene::load_from(const std::string &filename)
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
     LERROR << "Failed to deserialize file at '" << filename << "'.";
     LINFO << deserialize_error.what();
+    reset();
   }
   return false;
 }
