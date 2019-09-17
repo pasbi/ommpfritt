@@ -3,6 +3,7 @@ file(GLOB SOURCES
   common.cpp
   logging.cpp
   main.cpp
+  variant.cpp
 )
 
 file(GLOB HEADERS
@@ -13,6 +14,7 @@ file(GLOB HEADERS
   maybeowner.h
   menuhelper.h
   orderedmap.h
+  variant.h
 )
 
 add_subdirectory(animation)

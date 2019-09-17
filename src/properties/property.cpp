@@ -45,28 +45,6 @@ void Property
   }
 }
 
-bool TriggerPropertyDummyValueType::operator==(const TriggerPropertyDummyValueType&) const
-{
-  return true;
-}
-
-bool TriggerPropertyDummyValueType::operator!=(const TriggerPropertyDummyValueType& other) const
-{
-  return !(this->operator==(other));
-}
-
-std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValueType&)
-{
-  ostream << "[TriggerPropertyDummyValueType]";
-  return ostream;
-}
-
-std::ostream& operator<<(std::ostream& ostream, const Property::variant_type& v)
-{
-  print_variant_value(ostream, v);
-  return ostream;
-}
-
 bool Property::is_visible() const
 {
   return m_is_visible;

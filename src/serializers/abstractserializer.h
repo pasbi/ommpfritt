@@ -8,7 +8,7 @@
 #include "color/color.h"
 #include "geometry/vec2.h"
 #include "geometry/polarcoordinates.h"
-#include <variant>
+#include "variant.h"
 
 namespace omm
 {
@@ -39,6 +39,7 @@ public:
   virtual void set_value(const Color& color, const Pointer& pointer) = 0;
   virtual void set_value(const std::size_t, const Pointer& pointer) = 0;
   void set_value(const AbstractPropertyOwner* id, const Pointer& pointer);
+  void set_value(const variant_type& variant, const Pointer& pointer);
   std::set<AbstractPropertyOwner*> serialized_references() const;
 
 protected:
@@ -83,6 +84,7 @@ public:
   void register_reference_polisher(ReferencePolisher& polisher);
 
   template<typename T> T get(const Pointer&);
+  variant_type get(const Pointer& pointer, const std::string& type);
 
   class DeserializeError : public std::runtime_error
   {

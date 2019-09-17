@@ -36,8 +36,8 @@ bool AnimationButton::has_key() const
 {
   const int current_frame = m_animator.current();
   return std::any_of(m_owners.begin(), m_owners.end(), [this, current_frame](auto* owner) {
-    AbstractTrack* track = m_animator.track(*owner, m_property_key);
-    return track != nullptr && track->has_key_at(current_frame);
+    Track* track = m_animator.track(*owner, m_property_key);
+    return track != nullptr && track->has_keyframe(current_frame);
   });
 }
 
@@ -45,11 +45,11 @@ void AnimationButton::set_key()
 {
   const int frame = m_animator.current();
   for (AbstractPropertyOwner* owner : m_owners) {
-    AbstractTrack* track = m_animator.track(*owner, m_property_key);
+    Track* track = m_animator.track(*owner, m_property_key);
     if (track == nullptr) {
       track = m_animator.create_track(*owner, m_property_key);
     }
-    if (!track->has_key_at(frame)) {
+    if (!track->has_keyframe(frame)) {
       track->record(frame, *owner->property(m_property_key));
     }
   }
@@ -60,9 +60,9 @@ void AnimationButton::remove_key()
 {
   const int frame = m_animator.current();
   for (AbstractPropertyOwner* owner : m_owners) {
-    AbstractTrack* track = m_animator.track(*owner, m_property_key);
-    if (track != nullptr && track->has_key_at(frame)) {
-      track->remove_key_at(frame);
+    Track* track = m_animator.track(*owner, m_property_key);
+    if (track != nullptr && track->has_keyframe(frame)) {
+      track->remove_keyframe(frame);
     }
   }
   update();
@@ -71,7 +71,7 @@ void AnimationButton::remove_key()
 void AnimationButton::remove_track()
 {
   for (AbstractPropertyOwner* owner : m_owners) {
-    AbstractTrack* track = m_animator.track(*owner, m_property_key);
+    Track* track = m_animator.track(*owner, m_property_key);
     if (track != nullptr) {
       m_animator.extract_track(*owner, m_property_key);
     }

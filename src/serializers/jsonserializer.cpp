@@ -1,5 +1,6 @@
 #include "serializers/jsonserializer.h"
 
+#include "logging.h"
 #include <typeinfo>
 #include "common.h"
 #include "aspects/serializable.h"
@@ -179,8 +180,12 @@ JSONDeserializer::JSONDeserializer(std::istream& istream)
 size_t JSONDeserializer::array_size(const Pointer& pointer)
 {
   const auto array = m_store[ptr(pointer)];
-  assert(array.is_array() || array.is_null());
-  return array.size();
+  if (array.is_array() || array.is_null()) {
+    return array.size();
+  } else {
+    const std::string dump = array.dump(4);
+    throw omm::AbstractDeserializer::DeserializeError("Expected array, got " + dump);
+  }
 }
 
 int JSONDeserializer::get_int(const Pointer& pointer)

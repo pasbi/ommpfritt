@@ -71,7 +71,6 @@ int main (int argc, char *argv[])
   omm::register_deserializers();
   omm::register_propertyconfigwidgets();
   omm::register_tools();
-  omm::register_tracks();
 
   QApplication qt_app(argc, argv);
 

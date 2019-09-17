@@ -9,8 +9,8 @@
 namespace omm
 {
 
-class AbstractTrack;
 class AbstractPropertyOwner;
+class Track;
 
 class Animator : public QObject, public Serializable
 {
@@ -39,10 +39,10 @@ public:
    * @param property_key
    * @return
    */
-  AbstractTrack* track(AbstractPropertyOwner& owner, const std::string& property_key) const;
-  AbstractTrack* create_track(AbstractPropertyOwner& owner, const std::string& property_key);
-  std::unique_ptr<AbstractTrack> extract_track(AbstractPropertyOwner& owner,
-                                               const std::string& property_key);
+  Track* track(AbstractPropertyOwner& owner, const std::string& property_key) const;
+  Track* create_track(AbstractPropertyOwner& owner, const std::string& property_key);
+  std::unique_ptr<Track> extract_track(AbstractPropertyOwner& owner,
+                                       const std::string& property_key);
 
 public Q_SLOTS:
   void set_start(int start);
@@ -66,7 +66,7 @@ private:
   QTimer m_timer;
   PlayMode m_play_mode = PlayMode::Repeat;
 
-  std::set<std::unique_ptr<AbstractTrack>> m_tracks;
+  std::set<std::unique_ptr<Track>> m_tracks;
 
 };
 

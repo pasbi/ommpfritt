@@ -13,6 +13,7 @@
 #include "common.h"
 #include "color/color.h"
 #include "geometry/vec2.h"
+#include "variant.h"
 
 namespace omm
 {
@@ -21,13 +22,6 @@ class Object;
 class Property;
 class AbstractPropertyOwner;
 class OptionsProperty;
-
-class TriggerPropertyDummyValueType
-{
-public:
-  bool operator==(const TriggerPropertyDummyValueType& other) const;
-  bool operator!=(const TriggerPropertyDummyValueType& other) const;
-};
 
 class Property
   : public QObject
@@ -74,10 +68,6 @@ public:
       }
     }
   };
-
-  using variant_type = std::variant< bool, Color, double, int, AbstractPropertyOwner*,
-                                     std::string, size_t, TriggerPropertyDummyValueType,
-                                     Vec2f, Vec2i >;
 
   Property() = default;
   explicit Property(const Property& other);
@@ -158,8 +148,5 @@ Q_SIGNALS:
 };
 
 void register_properties();
-
-std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValueType& v);
-std::ostream& operator<<(std::ostream& ostream, const Property::variant_type& v);
 
 }  // namespace ommAbstractPropertyOwner

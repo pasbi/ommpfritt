@@ -28,7 +28,7 @@ public:
     this->configuration[D::UPPER_VALUE_POINTER] = highest_possible_value;
   }
 
-  void set(const Property::variant_type& variant) override
+  void set(const variant_type& variant) override
   {
     if (std::holds_alternative<int>(variant)) {
       TypedProperty<T>::set(std::get<int>(variant));

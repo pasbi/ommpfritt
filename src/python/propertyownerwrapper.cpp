@@ -65,7 +65,7 @@ bool set_property_value( AbstractPropertyOwner& property_owner,
       property.set(Vec2i(value.cast<std::vector<Vec2i::element_type>>()));
       return true;
     } else {
-      property.set(value.cast<Property::variant_type>());
+      property.set(value.cast<variant_type>());
       return true;
     }
   } else {
