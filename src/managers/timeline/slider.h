@@ -28,13 +28,11 @@ protected:
   void paintEvent(QPaintEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
   void mouseMoveEvent(QMouseEvent *event) override;
-  void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
   int m_min;
   int m_max;
   int m_value;
-  bool m_handle_grabbed = false;
   double frame_to_pixel(int frame) const;
   int pixel_to_frame(int pixel) const;
 

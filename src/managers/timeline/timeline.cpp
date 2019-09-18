@@ -24,7 +24,6 @@ TimeLine::TimeLine(Scene &scene)
   m_ui->sp_max->setMinimum(scene.animator().current());
   m_ui->sp_value->setRange(scene.animator().start(), scene.animator().end());
   m_ui->sp_value->setValue(scene.animator().current());
-  LINFO << "current: " << scene.animator().current();
 
   connect(&scene.animator(), SIGNAL(end_changed(int)), m_ui->slider, SLOT(set_max(int)));
   connect(&scene.animator(), SIGNAL(start_changed(int)), m_ui->slider, SLOT(set_min(int)));

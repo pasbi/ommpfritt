@@ -81,23 +81,14 @@ void Slider::paintEvent(QPaintEvent *event)
 
 void Slider::mousePressEvent(QMouseEvent *event)
 {
-  const int x = event->pos().x() - left_margin;
-  m_handle_grabbed = std::abs(frame_to_pixel(m_value) - x) < pixel_per_frame() / 2.0;
+  set_value(pixel_to_frame(event->pos().x() - left_margin));
   QWidget::mousePressEvent(event);
 }
 
 void Slider::mouseMoveEvent(QMouseEvent *event)
 {
-  if (m_handle_grabbed) {
-    set_value(pixel_to_frame(event->pos().x() - left_margin));
-  }
+  set_value(pixel_to_frame(event->pos().x() - left_margin));
   QWidget::mouseMoveEvent(event);
-}
-
-void Slider::mouseReleaseEvent(QMouseEvent *event)
-{
-  m_handle_grabbed = false;
-  QWidget::mouseReleaseEvent(event);
 }
 
 double Slider::frame_to_pixel(int frame) const
