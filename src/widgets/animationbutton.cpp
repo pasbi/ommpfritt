@@ -49,9 +49,10 @@ void AnimationButton::set_key()
     if (track == nullptr) {
       track = m_animator.create_track(*owner, m_property_key);
     }
-    if (!track->has_keyframe(frame)) {
-      track->record(frame, *owner->property(m_property_key));
+    if (track->has_keyframe(frame)) {
+      track->remove_keyframe(frame);
     }
+    track->record(frame, *owner->property(m_property_key));
   }
   update();
 }
@@ -135,7 +136,7 @@ void AnimationButton::contextMenuEvent(QContextMenuEvent *event)
   };
 
   make_action(tr("Remove Track"), &AnimationButton::remove_track, has_track());
-  make_action(tr("Add Key"), &AnimationButton::set_key, !has_key());
+  make_action(has_key() ? tr("Replace Key") : tr("Add Key"), &AnimationButton::set_key, true);
   make_action(tr("Remove Key"), &AnimationButton::remove_key, has_key());
   context_menu.exec(mapToGlobal(event->pos()));
 }
@@ -143,16 +144,7 @@ void AnimationButton::contextMenuEvent(QContextMenuEvent *event)
 void AnimationButton::mousePressEvent(QMouseEvent *event)
 {
   if (event->button() == Qt::LeftButton) {
-    if (!has_track()) {
-      // no track, hence no key
-      set_key();
-    } else if (!has_key()) {
-      // track but no key
-      set_key();
-    } else {
-      // has key
-      // nothing
-    }
+    set_key();
   }
 }
 
