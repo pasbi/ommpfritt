@@ -1,4 +1,5 @@
 FILE(GLOB SRC_FILES
+  "color.cpp"
   "cubic.cpp"
   "geometry.cpp"
   "path.cpp"

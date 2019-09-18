@@ -29,6 +29,8 @@ public:
   double blue() const;
   double alpha() const;
   double operator[](const std::size_t i) const;
+  void to_hsv(double& hue, double& saturation, double& value) const;
+  static Color from_hsv(double hue, double saturation, double value, double alpha = 1.0);
 
 private:
   std::array<double, 4> m_components;
