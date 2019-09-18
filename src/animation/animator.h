@@ -51,6 +51,7 @@ public Q_SLOTS:
   void toggle_play_pause(bool play);
   void advance();
   void apply();
+  void reset();
 
 Q_SIGNALS:
   void start_changed(int);

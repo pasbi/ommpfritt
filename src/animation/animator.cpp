@@ -93,6 +93,7 @@ std::unique_ptr<Track> Animator::extract_track(AbstractPropertyOwner &owner,
     return t->owner() == &owner && t->property_key() == property_key;
   });
   std::unique_ptr<Track> track = std::move(m_tracks.extract(it).value());
+  disconnect(track.get(), SIGNAL(tracks_changed()), this, SIGNAL(tracks_changed()));
   Q_EMIT tracks_changed();
   return track;
 }
@@ -156,6 +157,11 @@ void Animator::apply()
   for (const auto& track : m_tracks) {
     track->apply(m_current_frame);
   }
+}
+
+void Animator::reset()
+{
+  m_tracks.clear();
 }
 
 }  // namespace omm
