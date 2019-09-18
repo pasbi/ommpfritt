@@ -49,6 +49,7 @@ public:
   static constexpr auto LEFT_VALUE_KEY = "left-value";
   static constexpr auto RIGHT_OFFSET_KEY = "right-offset";
   static constexpr auto RIGHT_VALUE_KEY = "right-value";
+  static constexpr auto INTERPOLATION_KEY = "interpolation";
 
   void serialize(AbstractSerializer& serializer, const Pointer& pointer) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& pointer) override;
@@ -84,7 +85,7 @@ private:
   std::size_t m_owner_id;
 
   std::map<int, Knot> m_knots;
-  Interpolation m_interpolation;
+  Interpolation m_interpolation = Interpolation::Linear;
 };
 
 }  // namespace omm

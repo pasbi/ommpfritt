@@ -135,6 +135,7 @@ void Track::serialize(AbstractSerializer& serializer, const Pointer& pointer) co
     serializer.set_value(knot.right_offset, make_pointer(knot_pointer, RIGHT_OFFSET_KEY));
     serializer.set_value(knot.right_value, make_pointer(knot_pointer, RIGHT_VALUE_KEY));
   }
+  serializer.set_value(m_interpolation, make_pointer(pointer, INTERPOLATION_KEY));
   serializer.end_array();
 }
 
@@ -144,6 +145,7 @@ void Track::deserialize(AbstractDeserializer& deserializer, const Pointer& point
   m_owner_id = deserializer.get_size_t(make_pointer(pointer, OWNER_KEY));
   deserializer.register_reference_polisher(*this);
   const std::string type = deserializer.get_string(make_pointer(pointer, TYPE_KEY));
+  m_interpolation = deserializer.get<Interpolation>(make_pointer(pointer, INTERPOLATION_KEY));
 
   const auto knots_pointer = make_pointer(pointer, KNOTS_KEY);
   const std::size_t n = deserializer.array_size(knots_pointer);
