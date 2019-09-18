@@ -185,6 +185,10 @@ void Track::remove_keyframe(int frame)
 
 variant_type Track::interpolate(double frame) const
 {
+  if (const auto it = m_knots.find(frame); it != m_knots.end()) {
+    return it->second.value;
+  }
+
   const Knot* left = nullptr;
   int left_frame;
   const Knot* right = nullptr;
