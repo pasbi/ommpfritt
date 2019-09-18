@@ -40,6 +40,11 @@ public:
   virtual void set_value(const std::size_t, const Pointer& pointer) = 0;
   void set_value(const AbstractPropertyOwner* id, const Pointer& pointer);
   void set_value(const variant_type& variant, const Pointer& pointer);
+  template<typename T> std::enable_if_t<std::is_enum_v<T>> set_value(const T& t, const Pointer& ptr)
+  {
+    set_value(static_cast<std::size_t>(t), ptr);
+  }
+
   std::set<AbstractPropertyOwner*> serialized_references() const;
 
 protected:
@@ -83,7 +88,12 @@ public:
   void register_reference(const std::size_t id, AbstractPropertyOwner& reference);
   void register_reference_polisher(ReferencePolisher& polisher);
 
-  template<typename T> T get(const Pointer&);
+  template<typename T> std::enable_if_t<!std::is_enum_v<T>, T> get(const Pointer&);
+  template<typename T> std::enable_if_t<std::is_enum_v<T>, T> get(const Pointer& pointer)
+  {
+    return static_cast<T>(get_size_t(pointer));
+  }
+
   variant_type get(const Pointer& pointer, const std::string& type);
 
   class DeserializeError : public std::runtime_error
@@ -100,6 +110,7 @@ private:
 
 void register_serializers();
 void register_deserializers();
+
 
 }  // namespace omm
 
