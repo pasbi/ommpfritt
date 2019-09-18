@@ -64,6 +64,7 @@ public:
   const Knot& knot_at(int frame) const;
   Knot& knot_at(int frame);
   std::vector<int> key_frames() const;
+  void apply(int frame) const;
 
   std::string type() const;
   Property& property() const;

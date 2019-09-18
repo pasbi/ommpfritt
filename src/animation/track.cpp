@@ -236,6 +236,11 @@ std::vector<int> Track::key_frames() const
   });
 }
 
+void Track::apply(int frame) const
+{
+  property().set(interpolate(frame));
+}
+
 const Track::Knot &Track::knot_at(int frame) const
 {
   return m_knots.at(frame);

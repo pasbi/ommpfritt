@@ -50,6 +50,7 @@ public Q_SLOTS:
   void set_current(int current);
   void toggle_play_pause(bool play);
   void advance();
+  void apply();
 
 Q_SIGNALS:
   void start_changed(int);

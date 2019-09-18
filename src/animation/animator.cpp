@@ -13,6 +13,7 @@ Animator::Animator()
 {
   m_timer.setInterval(1000.0/30.0);
   connect(&m_timer, SIGNAL(timeout()), this, SLOT(advance()));
+  connect(this, SIGNAL(current_changed(int)), this, SLOT(apply()));
 }
 
 Animator::~Animator()
@@ -147,6 +148,13 @@ void Animator::advance()
 
   if (next != m_current_frame) {
     set_current(next);
+  }
+}
+
+void Animator::apply()
+{
+  for (const auto& track : m_tracks) {
+    track->apply(m_current_frame);
   }
 }
 
