@@ -16,7 +16,7 @@ public:
   bool operator!=(const TriggerPropertyDummyValueType&) const { return false; }
 };
 
-using variant_type = std::variant< bool, Color, double, int, AbstractPropertyOwner*,
+using variant_type = std::variant< bool, double, Color, int, AbstractPropertyOwner*,
                                    std::string, size_t, TriggerPropertyDummyValueType,
                                    Vec2f, Vec2i >;
 
