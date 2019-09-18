@@ -1020,6 +1020,10 @@ Remove the selected items anyway?</translation>
         <source>visibility</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>User Property</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1067,6 +1071,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>unnamed</source>
         <translation type="unfinished">unnamed</translation>
+    </message>
+    <message>
+        <source>animatable</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1360,6 +1368,21 @@ Remove the selected items anyway?</translation>
     <message>
         <source>tool</source>
         <translation>Tool</translation>
+    </message>
+</context>
+<context>
+    <name>omm::AnimationButton</name>
+    <message>
+        <source>Remove Track</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Key</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

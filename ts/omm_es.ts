@@ -1020,6 +1020,10 @@ Borrar la selección de todos modos?</translation>
         <source>visibility</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>User Property</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1067,6 +1071,10 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>unnamed</source>
         <translation type="unfinished">Sin nombre</translation>
+    </message>
+    <message>
+        <source>animatable</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1360,6 +1368,21 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>tool</source>
         <translation>Herramienta</translation>
+    </message>
+</context>
+<context>
+    <name>omm::AnimationButton</name>
+    <message>
+        <source>Remove Track</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Key</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
