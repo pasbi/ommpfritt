@@ -17,6 +17,7 @@ public:
 
   bool has_key() const;
   bool has_track() const;
+  bool value_coincides() const;
 
 public Q_SLOTS:
   void set_key();

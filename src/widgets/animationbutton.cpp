@@ -23,12 +23,25 @@ AnimationButton::AnimationButton(Animator& animator, const std::set<AbstractProp
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   connect(&animator, SIGNAL(current_changed(int)), this, SLOT(update()));
   connect(&animator, SIGNAL(tracks_changed()), this, SLOT(update()));
+  for (const AbstractPropertyOwner* owner : m_owners) {
+    connect(owner->property(m_property_key), SIGNAL(value_changed(Property*)),
+            this, SLOT(update()));
+  }
 }
 
 bool AnimationButton::has_track() const
 {
   return std::any_of(m_owners.begin(), m_owners.end(), [this](auto* owner) {
     return m_animator.track(*owner, m_property_key) != nullptr;
+  });
+}
+
+bool AnimationButton::value_coincides() const
+{
+  return std::all_of(m_owners.begin(), m_owners.end(), [this](auto* owner) {
+    const Track* track = m_animator.track(*owner, m_property_key);
+    const Property& property = track->property();
+    return property.variant_value() == track->interpolate(m_animator.current());
   });
 }
 
@@ -120,7 +133,11 @@ void AnimationButton::paintEvent(QPaintEvent *event)
     painter.drawEllipse(centered(0.8));
     QPainterPath ellipse;
     ellipse.addEllipse(centered(0.4));
-    painter.fillPath(ellipse, Qt::red);
+    if (value_coincides()) {
+      painter.fillPath(ellipse, Qt::red);
+    } else {
+      painter.fillPath(ellipse, QColor(255, 128, 0));
+    }
   }
 }
 
