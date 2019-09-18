@@ -36,6 +36,8 @@ public:
     variant_type right_value;
   };
 
+  enum class Interpolation { Step, Linear, Bezier };
+
   explicit Track() = default;
   static constexpr auto PROPERTY_KEY_KEY = "property";
   static constexpr auto OWNER_KEY = "owner";
@@ -57,7 +59,7 @@ public:
   bool has_keyframe(int frame) const { return m_knots.find(frame) != m_knots.end(); }
   void record(int frame, Property& property);
   void remove_keyframe(int frame);
-  variant_type interpolate(int frame);
+  variant_type interpolate(double frame) const;
   const Knot& knot_at(int frame) const;
   Knot& knot_at(int frame);
   std::vector<int> key_frames() const;
@@ -82,6 +84,7 @@ private:
   std::size_t m_owner_id;
 
   std::map<int, Knot> m_knots;
+  Interpolation m_interpolation;
 };
 
 }  // namespace omm

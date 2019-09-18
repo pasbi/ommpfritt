@@ -3,6 +3,115 @@
 #include "aspects/propertyowner.h"
 #include "common.h"
 
+namespace
+{
+
+using Interpolation = omm::Track::Interpolation;
+
+template<typename T> struct Segment
+{
+  Segment() = default;
+  std::array<T, 4> values;
+  std::array<double, 4> frames;
+
+  template<typename S, typename F> Segment<S> convert(F&& f) const
+  {
+    Segment<S> s;
+    std::transform(values.begin(), values.end(), s.values.begin(), f);
+    return s;
+  }
+};
+
+template<typename T> T step_interpolate(const Segment<T>& segment, double t)
+{
+  if (t == 1.0) {
+    return segment.values.back();
+  } else {
+    return segment.values.front();
+  }
+}
+
+bool interpolate(const Segment<bool>& segment, double t, Interpolation)
+{
+  return step_interpolate(segment, t);
+}
+
+double interpolate(const Segment<double>& segment, double t, Interpolation interpolation)
+{
+  switch (interpolation) {
+  case Interpolation::Step:
+    return step_interpolate(segment, t);
+  case Interpolation::Linear:
+    return (1.0-t) * segment.values[0] + t * segment.values[3];
+  case Interpolation::Bezier:
+    return 0.0;
+  default:
+    Q_UNREACHABLE();
+    return 0.0;
+  }
+}
+
+omm::Color interpolate(const Segment<omm::Color>& segment, double t, Interpolation interpolation)
+{
+  using Hsva = std::array<double, 4>;
+  const Segment<Hsva> hsva_segment = segment.convert<Hsva>([](const omm::Color& c) {
+    Hsva hsva;
+    c.to_hsv(hsva[0], hsva[1], hsva[2]);
+    hsva[3] = c.alpha();
+    return hsva;
+  });
+
+  Hsva interpolated;
+  for (std::size_t i = 0; i < 4; ++i) {
+    const Segment<double> segd = hsva_segment.convert<double>([i](const Hsva& hsva) {
+      return hsva[i];
+    });
+    interpolated[i] = interpolate(segd, t, interpolation);
+  }
+  return omm::Color::from_hsv(interpolated[0], interpolated[1], interpolated[2], interpolated[3]);
+}
+
+int interpolate(const Segment<int>& segment, double t, Interpolation interpolation)
+{
+  const Segment<double> dseg = segment.convert<double>([](int i) {
+    return static_cast<double>(i);
+  });
+
+  return static_cast<int>(interpolate(dseg, t, interpolation));
+}
+
+omm::AbstractPropertyOwner* interpolate(const Segment<omm::AbstractPropertyOwner*>& segment,
+                                        double t, Interpolation)
+{
+  return step_interpolate(segment, t);
+}
+
+std::string interpolate(const Segment<std::string>& segment, double t, Interpolation)
+{
+  return step_interpolate(segment, t);
+}
+
+std::size_t interpolate(const Segment<std::size_t>& segment, double t, Interpolation)
+{
+  return step_interpolate(segment, t);
+}
+
+omm::TriggerPropertyDummyValueType
+interpolate(const Segment<omm::TriggerPropertyDummyValueType>&, double, Interpolation)
+{
+  return omm::TriggerPropertyDummyValueType();
+}
+
+template<typename T>
+omm::Vec2<T> interpolate(const Segment<omm::Vec2<T>>& segment, double t, Interpolation interpolation)
+{
+  const Segment<T> xs = segment.template convert<T>([](const omm::Vec2<T>& v) { return v[0]; });
+  const Segment<T> ys = segment.template convert<T>([](const omm::Vec2<T>& v) { return v[1]; });
+  return omm::Vec2<T>(interpolate(xs, t, interpolation), interpolate(ys, t, interpolation));
+}
+
+}
+
 namespace omm
 {
 
@@ -70,6 +179,47 @@ void Track::remove_keyframe(int frame)
   assert(it != m_knots.end());
   m_knots.erase(it);
   Q_EMIT track_changed();
+}
+
+variant_type Track::interpolate(double frame) const
+{
+  const Knot* left = nullptr;
+  int left_frame;
+  const Knot* right = nullptr;
+  int right_frame;
+  for (auto it = m_knots.cbegin(); it != m_knots.cend(); ++it) {
+    if (it->first <= frame) {
+      left_frame = it->first;
+      left = &it->second;
+    } else if (it->first > frame) {
+      right_frame = it->first;
+      right = &it->second;
+      break;
+    }
+  }
+
+  if (left == nullptr && right != nullptr) {
+    return right->value;
+  } else if (left != nullptr && right == nullptr) {
+    return left->value;
+  } else {
+    assert(left != nullptr && right != nullptr);
+    return std::visit([=](auto&& arg) -> variant_type {
+      using T = std::decay_t<decltype(arg)>;
+      Segment<T> segment;
+      segment.values = { std::get<T>(left->value),       std::get<T>(left->right_value),
+                         std::get<T>(right->left_value), std::get<T>(right->value) };
+
+      const double span = right_frame - left_frame;
+      const double left_t = left->right_offset / span;
+      const double right_t = (right_frame + right->left_offset - left_frame) / span;
+
+      segment.frames = { 0.0, left_t, right_t, 1.0 };
+      const double t = (frame - left_frame) / span;
+
+      return ::interpolate(segment, t, m_interpolation);
+    }, right->value);
+  }
 }
 
 Track::Knot &Track::knot_at(int frame)
