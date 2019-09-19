@@ -1024,6 +1024,22 @@ Borrar la selección de todos modos?</translation>
         <source>User Property</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Remove Keyframe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Keyframe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Tracks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Tracks</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1070,7 +1086,7 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>unnamed</source>
-        <translation type="unfinished">Sin nombre</translation>
+        <translation type="obsolete">Sin nombre</translation>
     </message>
     <message>
         <source>animatable</source>
@@ -1081,7 +1097,7 @@ Borrar la selección de todos modos?</translation>
     <name>UserPropertyListModel</name>
     <message>
         <source>&lt;unnamed property&gt;</source>
-        <translation type="unfinished">Elemento Atributo</translation>
+        <translation type="obsolete">Elemento Atributo</translation>
     </message>
 </context>
 <context>
@@ -1384,6 +1400,10 @@ Borrar la selección de todos modos?</translation>
         <source>Remove Key</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Replace Key</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::Application</name>
@@ -1602,6 +1622,20 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>ToolBar</source>
         <translation>Barra de Herramientas</translation>
+    </message>
+</context>
+<context>
+    <name>omm::UserPropertyDialog</name>
+    <message>
+        <source>unnamed</source>
+        <translation type="unfinished">Sin nombre</translation>
+    </message>
+</context>
+<context>
+    <name>omm::UserPropertyListModel</name>
+    <message>
+        <source>&lt;unnamed property&gt;</source>
+        <translation type="unfinished">Elemento Atributo</translation>
     </message>
 </context>
 </TS>

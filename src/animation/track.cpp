@@ -115,6 +115,11 @@ omm::Vec2<T> interpolate(const Segment<omm::Vec2<T>>& segment, double t, Interpo
 namespace omm
 {
 
+Track::Track(AbstractPropertyOwner &owner, const std::string &property_key)
+{
+  set_owner(owner, property_key);
+}
+
 void Track::serialize(AbstractSerializer& serializer, const Pointer& pointer) const
 {
   serializer.set_value(m_property_key, make_pointer(pointer, PROPERTY_KEY_KEY));
@@ -168,23 +173,18 @@ void Track::set_owner(AbstractPropertyOwner &owner, const std::string &property_
   m_property_key = property_key;
 }
 
-void Track::record(int frame, Property &property)
-{
-  assert(!has_keyframe(frame));
-  m_knots.insert(std::pair(frame, property.variant_value()));
-  Q_EMIT track_changed();
-}
-
 void Track::remove_keyframe(int frame)
 {
-  const auto it = m_knots.find(frame);
-  assert(it != m_knots.end());
-  m_knots.erase(it);
-  Q_EMIT track_changed();
+  if (const auto it = m_knots.find(frame); it != m_knots.end()) {
+    m_knots.erase(it);
+    Q_EMIT track_changed();
+  }
 }
 
 variant_type Track::interpolate(double frame) const
 {
+  assert(!m_knots.empty());
+
   if (const auto it = m_knots.find(frame); it != m_knots.end()) {
     return it->second.value;
   }
@@ -242,7 +242,19 @@ std::vector<int> Track::key_frames() const
 
 void Track::apply(int frame) const
 {
-  property().set(interpolate(frame));
+  if (!m_knots.empty()) {
+    property().set(interpolate(frame));
+  }
+}
+
+void Track::record(int frame, const variant_type &value)
+{
+  assert(value.index() == property().variant_value().index());
+  const auto it = m_knots.find(frame);
+  if (it == m_knots.end() || it->second.value != value) {
+    m_knots.insert(std::pair(frame, value));
+    Q_EMIT track_changed();
+  }
 }
 
 const Track::Knot &Track::knot_at(int frame) const

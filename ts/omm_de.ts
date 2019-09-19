@@ -1024,6 +1024,22 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>User Property</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Remove Keyframe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Keyframe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Tracks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Tracks</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1070,7 +1086,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>unnamed</source>
-        <translation type="unfinished">Unbenannt</translation>
+        <translation type="obsolete">Unbenannt</translation>
     </message>
     <message>
         <source>animatable</source>
@@ -1081,7 +1097,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <name>UserPropertyListModel</name>
     <message>
         <source>&lt;unnamed property&gt;</source>
-        <translation type="unfinished">Eigenschafts-Element</translation>
+        <translation type="obsolete">Eigenschafts-Element</translation>
     </message>
 </context>
 <context>
@@ -1384,6 +1400,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Remove Key</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Replace Key</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::Application</name>
@@ -1602,6 +1622,20 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>ToolBar</source>
         <translation>Werkzeugkasten</translation>
+    </message>
+</context>
+<context>
+    <name>omm::UserPropertyDialog</name>
+    <message>
+        <source>unnamed</source>
+        <translation type="unfinished">Unbenannt</translation>
+    </message>
+</context>
+<context>
+    <name>omm::UserPropertyListModel</name>
+    <message>
+        <source>&lt;unnamed property&gt;</source>
+        <translation type="unfinished">Eigenschafts-Element</translation>
     </message>
 </context>
 </TS>

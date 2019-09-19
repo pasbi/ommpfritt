@@ -11,13 +11,14 @@ namespace omm
 
 class AbstractPropertyOwner;
 class Track;
+class Scene;
 
 class Animator : public QObject, public Serializable
 {
   Q_OBJECT
 public:
   enum class PlayMode { Repeat, Stop };
-  explicit Animator();
+  explicit Animator(Scene& scene);
   ~Animator();
   void serialize(AbstractSerializer&, const Pointer&) const override;
   void deserialize(AbstractDeserializer&, const Pointer&) override;
@@ -40,9 +41,10 @@ public:
    * @return
    */
   Track* track(AbstractPropertyOwner& owner, const std::string& property_key) const;
-  Track* create_track(AbstractPropertyOwner& owner, const std::string& property_key);
+  Track& insert_track(std::unique_ptr<Track> track);
   std::unique_ptr<Track> extract_track(AbstractPropertyOwner& owner,
                                        const std::string& property_key);
+  Scene& scene;
 
 public Q_SLOTS:
   void set_start(int start);

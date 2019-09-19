@@ -1,5 +1,6 @@
 #include "widgets/animationbutton.h"
 
+#include "scene/scene.h"
 #include <QResizeEvent>
 #include <QPainter>
 #include <cmath>
@@ -8,6 +9,8 @@
 #include "animation/animator.h"
 #include "animation/track.h"
 #include "aspects/propertyowner.h"
+#include "commands/trackcommand.h"
+#include "commands/keyframecommand.h"
 
 namespace omm
 {
@@ -56,40 +59,34 @@ bool AnimationButton::has_key() const
 
 void AnimationButton::set_key()
 {
-  const int frame = m_animator.current();
-  for (AbstractPropertyOwner* owner : m_owners) {
-    Track* track = m_animator.track(*owner, m_property_key);
-    if (track == nullptr) {
-      track = m_animator.create_track(*owner, m_property_key);
+  {
+    std::set<std::unique_ptr<Track>> new_tracks;
+    for (AbstractPropertyOwner* owner : m_owners) {
+      Track* track = m_animator.track(*owner, m_property_key);
+      if (track == nullptr) {
+        new_tracks.insert(std::make_unique<Track>(*owner, m_property_key));
+      }
     }
-    if (track->has_keyframe(frame)) {
-      track->remove_keyframe(frame);
+    if (!new_tracks.empty()) {
+      m_animator.scene.submit<InsertTracksCommand>(m_animator, std::move(new_tracks));
     }
-    track->record(frame, *owner->property(m_property_key));
   }
+  m_animator.scene.submit(std::make_unique<InsertKeyframeCommand>(m_animator, m_animator.current(),
+                                                                  m_owners, m_property_key));
   update();
 }
 
 void AnimationButton::remove_key()
 {
-  const int frame = m_animator.current();
-  for (AbstractPropertyOwner* owner : m_owners) {
-    Track* track = m_animator.track(*owner, m_property_key);
-    if (track != nullptr && track->has_keyframe(frame)) {
-      track->remove_keyframe(frame);
-    }
-  }
+  m_animator.scene.submit(std::make_unique<RemoveKeyframeCommand>(m_animator, m_animator.current(),
+                                                                  m_owners, m_property_key));
   update();
 }
 
 void AnimationButton::remove_track()
 {
-  for (AbstractPropertyOwner* owner : m_owners) {
-    Track* track = m_animator.track(*owner, m_property_key);
-    if (track != nullptr) {
-      m_animator.extract_track(*owner, m_property_key);
-    }
-  }
+  m_animator.scene.submit(std::make_unique<RemoveTracksCommand>(m_animator,
+                                                                m_owners, m_property_key));
 }
 
 void AnimationButton::resizeEvent(QResizeEvent *event)

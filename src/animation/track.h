@@ -39,6 +39,7 @@ public:
   enum class Interpolation { Step, Linear, Bezier };
 
   explicit Track() = default;
+  Track(AbstractPropertyOwner& owner, const std::string& property_key);
   static constexpr auto PROPERTY_KEY_KEY = "property";
   static constexpr auto OWNER_KEY = "owner";
   static constexpr auto KNOTS_KEY = "knots";
@@ -58,13 +59,13 @@ public:
   const std::string property_key() const { return m_property_key; }
   void set_owner(AbstractPropertyOwner& owner, const std::string& property_key);
   bool has_keyframe(int frame) const { return m_knots.find(frame) != m_knots.end(); }
-  void record(int frame, Property& property);
   void remove_keyframe(int frame);
   variant_type interpolate(double frame) const;
   const Knot& knot_at(int frame) const;
   Knot& knot_at(int frame);
   std::vector<int> key_frames() const;
   void apply(int frame) const;
+  void record(int frame, const variant_type& value);
 
   std::string type() const;
   Property& property() const;

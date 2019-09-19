@@ -2,6 +2,7 @@
 file(GLOB SOURCES
   command.cpp
   copycommand.cpp
+  keyframecommand.cpp
   modifypointscommand.cpp
   movecommand.cpp
   movetagscommand.cpp
@@ -10,6 +11,7 @@ file(GLOB SOURCES
   pointstransformationcommand.cpp
   propertycommand.cpp
   removecommand.cpp
+  trackcommand.cpp
   userpropertycommand.cpp
 )
 
@@ -17,6 +19,7 @@ file(GLOB HEADERS
   addcommand.h
   command.h
   copycommand.h
+  keyframecommand.h
   modifypointscommand.h
   movecommand.h
   movetagscommand.h
@@ -25,6 +28,7 @@ file(GLOB HEADERS
   pointstransformationcommand.h
   propertycommand.h
   removecommand.h
+  trackcommand.h
   userpropertycommand.h
 )
 

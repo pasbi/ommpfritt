@@ -75,7 +75,7 @@ Scene::Scene(PythonEngine& python_engine)
   , m_styles(new StyleList(*this))
   , m_history(new HistoryModel())
   , m_tool_box(new ToolBox(*this))
-  , m_animator(new Animator())
+  , m_animator(new Animator(*this))
 {
   object_tree().root().set_object_tree(object_tree());
   for (auto kind : { Object::KIND, Tag::KIND, Style::KIND, Tool::KIND }) {

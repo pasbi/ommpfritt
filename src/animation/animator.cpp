@@ -9,7 +9,7 @@
 namespace omm
 {
 
-Animator::Animator()
+Animator::Animator(Scene& scene) : scene(scene)
 {
   m_timer.setInterval(1000.0/30.0);
   connect(&m_timer, SIGNAL(timeout()), this, SLOT(advance()));
@@ -71,19 +71,15 @@ Track* Animator::track(AbstractPropertyOwner &owner, const std::string &property
   }
 }
 
-Track *Animator::create_track(AbstractPropertyOwner &owner, const std::string &property_key)
+Track &Animator::insert_track(std::unique_ptr<Track> track)
 {
-  // no duplicates!
-  assert(this->track(owner, property_key) == nullptr);
-
-  auto track = std::make_unique<Track>();
-  LINFO << track->owner();
-  track->set_owner(owner, property_key);
-  Track& track_ref = *track;
-  connect(&track_ref, SIGNAL(track_changed()), this, SIGNAL(tracks_changed()));
+  assert(track != nullptr);
+  assert(this->track(*track->owner(), track->property_key()) == nullptr);
+  connect(track.get(), SIGNAL(track_changed()), this, SIGNAL(tracks_changed()));
+  Track& ref = *track;
   m_tracks.insert(std::move(track));
   Q_EMIT tracks_changed();
-  return &track_ref;
+  return ref;
 }
 
 std::unique_ptr<Track> Animator::extract_track(AbstractPropertyOwner &owner,
@@ -93,7 +89,7 @@ std::unique_ptr<Track> Animator::extract_track(AbstractPropertyOwner &owner,
     return t->owner() == &owner && t->property_key() == property_key;
   });
   std::unique_ptr<Track> track = std::move(m_tracks.extract(it).value());
-  disconnect(track.get(), SIGNAL(tracks_changed()), this, SIGNAL(tracks_changed()));
+  disconnect(track.get(), SIGNAL(track_changed()), this, SIGNAL(tracks_changed()));
   Q_EMIT tracks_changed();
   return track;
 }
