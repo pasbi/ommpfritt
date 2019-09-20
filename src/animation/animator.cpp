@@ -9,7 +9,11 @@
 namespace omm
 {
 
-Animator::Animator(Scene& scene) : scene(scene)
+Animator::Animator(Scene& scene)
+  : scene(scene)
+  , get_owners(*this)
+  , get_tracks(*this)
+
 {
   m_timer.setInterval(1000.0/30.0);
   connect(&m_timer, SIGNAL(timeout()), this, SLOT(advance()));
@@ -30,9 +34,14 @@ void Animator::serialize(AbstractSerializer &serializer, const Serializable::Poi
   serializer.set_value(m_current_frame, make_pointer(pointer, CURRENT_FRAME_POINTER));
 
   const auto tracks_pointer = make_pointer(pointer, TRACKS_POINTER);
-  serializer.start_array(m_tracks.size(), tracks_pointer);
+
+  const auto get = [](const std::unique_ptr<Track>& track) { return track.get(); };
+  const auto is_valid = [this](const Track* track) { return track->is_valid(scene); };
+  const auto valid_tracks = ::filter_if(::transform<Track*>(m_tracks, get), is_valid);
+
+  serializer.start_array(valid_tracks.size(), tracks_pointer);
   int i = 0;
-  for (const auto& track : m_tracks) {
+  for (const auto& track : valid_tracks) {
     track->serialize(serializer, make_pointer(tracks_pointer, i));
     i += 1;
   }
@@ -59,9 +68,9 @@ void Animator::deserialize(AbstractDeserializer &deserializer, const Pointer &po
 Track* Animator::track(AbstractPropertyOwner &owner, const std::string &property_key) const
 {
   const auto it = std::find_if(m_tracks.begin(), m_tracks.end(),
-                               [&owner, &property_key](const auto& fcurve)
+                               [&owner, &property_key](const auto& track)
   {
-    return fcurve->owner() == &owner && fcurve->property_key() == property_key;
+    return track->owner() == &owner && track->property_key() == property_key;
   });
 
   if (it != m_tracks.end()) {
@@ -158,6 +167,22 @@ void Animator::apply()
 void Animator::reset()
 {
   m_tracks.clear();
+}
+
+std::vector<AbstractPropertyOwner *> Animator::CachedOwnerGetter::compute() const
+{
+  std::set<AbstractPropertyOwner*> apos;
+  for (const auto& track : m_self.m_tracks) {
+    apos.insert(track->owner());
+  }
+  return std::vector(apos.begin(), apos.end());
+}
+
+std::vector<Track*> Animator::CachedTracksGetter::compute(AbstractPropertyOwner *owner) const
+{
+  const auto get = [](const auto& track) { return track.get(); };
+  const auto filter = [owner](const Track* track) { return track->owner() == owner; };
+  return ::filter_if(::transform<Track*, std::vector>(m_self.m_tracks, get), filter);
 }
 
 }  // namespace omm

@@ -13,6 +13,7 @@ file(GLOB HEADERS
 )
 
 add_subdirectory(boundingboxmanager)
+add_subdirectory(dopesheet)
 add_subdirectory(historymanager)
 add_subdirectory(objectmanager)
 add_subdirectory(propertymanager)

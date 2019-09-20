@@ -3,6 +3,8 @@
 #include "aspects/propertyowner.h"
 #include "common.h"
 
+#include "scene/scene.h"
+
 namespace
 {
 
@@ -255,6 +257,11 @@ void Track::record(int frame, const variant_type &value)
     m_knots.insert(std::pair(frame, value));
     Q_EMIT track_changed();
   }
+}
+
+bool Track::is_valid(Scene &scene) const
+{
+  return scene.contains(owner()) && owner()->has_property(m_property_key);
 }
 
 const Track::Knot &Track::knot_at(int frame) const

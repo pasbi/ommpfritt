@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <set>
 #include <memory>
+#include "scene/cachedgetter.h"
 
 namespace omm
 {
@@ -45,6 +46,25 @@ public:
   std::unique_ptr<Track> extract_track(AbstractPropertyOwner& owner,
                                        const std::string& property_key);
   Scene& scene;
+
+  class CachedOwnerGetter
+      : public CachedGetter<std::vector<AbstractPropertyOwner*>, Animator>
+  {
+  public:
+    using CachedGetter::CachedGetter;
+  protected:
+    std::vector<AbstractPropertyOwner*> compute() const override;
+  } get_owners;
+
+  class CachedTracksGetter
+      : public CachedGetter<std::vector<Track*>, Animator, AbstractPropertyOwner*>
+  {
+  public:
+    using CachedGetter::CachedGetter;
+  protected:
+    std::vector<Track*>
+    compute(AbstractPropertyOwner* owner) const override;
+  } get_tracks;
 
 public Q_SLOTS:
   void set_start(int start);

@@ -1452,6 +1452,13 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
 </context>
 <context>
+    <name>omm::DopeSheetManager</name>
+    <message>
+        <source>Dope Sheet</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>omm::ExportDialog</name>
     <message>
         <source>Viewport</source>

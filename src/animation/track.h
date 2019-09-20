@@ -67,6 +67,12 @@ public:
   void apply(int frame) const;
   void record(int frame, const variant_type& value);
 
+  /**
+   * @brief is_valid returns whether the owner of the track exists and has the given property.
+   * @return
+   */
+  bool is_valid(Scene& scene) const;
+
   std::string type() const;
   Property& property() const;
 
