@@ -34,19 +34,19 @@ TimeLine::TimeLine(Scene &scene)
   connect(m_ui->sp_min, SIGNAL(valueChanged(int)), &scene.animator(), SLOT(set_start(int)));
   connect(m_ui->sp_value, SIGNAL(valueChanged(int)), &scene.animator(), SLOT(set_current(int)));
 
-  connect(&scene.animator(), &Animator::end_changed, [this](int start) {
+  regc(connect(&scene.animator(), &Animator::end_changed, [this](int start) {
     m_ui->sp_max->setValue(start);
     m_ui->sp_value->setMaximum(start);
-  });
-  connect(&scene.animator(), &Animator::start_changed, [this](int start) {
+  }));
+  regc(connect(&scene.animator(), &Animator::start_changed, [this](int start) {
     m_ui->sp_min->setValue(start);
     m_ui->sp_value->setMinimum(start);
-  });
-  connect(&scene.animator(), &Animator::current_changed, [this](int current) {
+  }));
+  regc(connect(&scene.animator(), &Animator::current_changed, [this](int current) {
     m_ui->sp_value->setValue(current);
     m_ui->sp_max->setMinimum(current);
     m_ui->sp_min->setMaximum(current);
-  });
+  }));
 
   connect(m_ui->pb_reset, &QPushButton::clicked, &scene.animator(), [&scene]() {
     scene.animator().set_current(scene.animator().start());
