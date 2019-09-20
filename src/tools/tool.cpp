@@ -11,7 +11,7 @@
 namespace omm
 {
 
-Tool::Tool(Scene& scene) : PropertyOwner<AbstractPropertyOwner::Kind::Tool>(&scene)
+Tool::Tool(Scene& scene) : PropertyOwner(&scene)
 {
 }
 

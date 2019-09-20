@@ -39,9 +39,7 @@ namespace omm
 
 Style Object::m_bounding_box_style = ContourStyle(omm::Colors::BLACK, 1.0);
 
-Object::Object(Scene* scene)
-  : PropertyOwner<AbstractPropertyOwner::Kind::Object>(scene)
-  , tags(*this)
+Object::Object(Scene* scene) : PropertyOwner(scene), tags(*this)
 {
   static const auto category = QObject::tr("basic").toStdString();
   create_property<OptionsProperty>(VISIBILITY_PROPERTY_KEY, 0)

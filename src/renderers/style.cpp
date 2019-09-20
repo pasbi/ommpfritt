@@ -21,7 +21,7 @@ namespace omm
 {
 
 Style::Style(Scene *scene)
-  : PropertyOwner<AbstractPropertyOwner::Kind::Style>(scene)
+  : PropertyOwner(scene)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {
@@ -75,7 +75,7 @@ Style::Style(Scene *scene)
 }
 
 Style::Style(const Style &other)
-  : PropertyOwner<AbstractPropertyOwner::Kind::Style>(other)
+  : PropertyOwner(other)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {
