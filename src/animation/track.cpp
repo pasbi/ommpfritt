@@ -1,8 +1,7 @@
 #include "animation/track.h"
 #include "logging.h"
-#include "aspects/propertyowner.h"
 #include "common.h"
-
+#include "properties/property.h"
 #include "scene/scene.h"
 
 namespace
@@ -12,7 +11,6 @@ using Interpolation = omm::Track::Interpolation;
 
 template<typename T> struct Segment
 {
-  Segment() = default;
   std::array<T, 4> values;
   std::array<double, 4> frames;
 
@@ -117,17 +115,13 @@ omm::Vec2<T> interpolate(const Segment<omm::Vec2<T>>& segment, double t, Interpo
 namespace omm
 {
 
-Track::Track(AbstractPropertyOwner &owner, const std::string &property_key)
+Track::Track(Property &property) : m_property(property)
 {
-  set_owner(owner, property_key);
 }
 
 void Track::serialize(AbstractSerializer& serializer, const Pointer& pointer) const
 {
-  serializer.set_value(m_property_key, make_pointer(pointer, PROPERTY_KEY_KEY));
-  serializer.set_value(m_owner, make_pointer(pointer, OWNER_KEY));
   serializer.set_value(type(), make_pointer(pointer, TYPE_KEY));
-
   const auto knots_pointer = make_pointer(pointer, KNOTS_KEY);
   const auto key_frames = this->key_frames();
   serializer.start_array(key_frames.size(), knots_pointer);
@@ -148,9 +142,6 @@ void Track::serialize(AbstractSerializer& serializer, const Pointer& pointer) co
 
 void Track::deserialize(AbstractDeserializer& deserializer, const Pointer& pointer)
 {
-  m_property_key = deserializer.get_string(make_pointer(pointer, PROPERTY_KEY_KEY));
-  m_owner_id = deserializer.get_size_t(make_pointer(pointer, OWNER_KEY));
-  deserializer.register_reference_polisher(*this);
   const std::string type = deserializer.get_string(make_pointer(pointer, TYPE_KEY));
   m_interpolation = deserializer.get<Interpolation>(make_pointer(pointer, INTERPOLATION_KEY));
 
@@ -166,13 +157,6 @@ void Track::deserialize(AbstractDeserializer& deserializer, const Pointer& point
     const int frame = deserializer.get_int(make_pointer(knot_pointer, FRAME_KEY));
     m_knots.insert(std::pair(frame, knot));
   }
-}
-
-void Track::set_owner(AbstractPropertyOwner &owner, const std::string &property_key)
-{
-  assert(m_owner == nullptr && m_property_key.empty());
-  m_owner = &owner;
-  m_property_key = property_key;
 }
 
 void Track::remove_keyframe(int frame)
@@ -213,18 +197,19 @@ variant_type Track::interpolate(double frame) const
   } else {
     assert(left != nullptr && right != nullptr);
     return std::visit([=](auto&& arg) -> variant_type {
-      using T = std::decay_t<decltype(arg)>;
-      Segment<T> segment;
-      segment.values = { std::get<T>(left->value),       std::get<T>(left->right_value),
-                         std::get<T>(right->left_value), std::get<T>(right->value) };
+      using T = std::decay_t<decltype(arg)>; 
 
       const double span = right_frame - left_frame;
       const double left_t = left->right_offset / span;
       const double right_t = (right_frame + right->left_offset - left_frame) / span;
 
-      segment.frames = { 0.0, left_t, right_t, 1.0 };
-      const double t = (frame - left_frame) / span;
+      const Segment<T> segment {
+         { std::get<T>(left->value),       std::get<T>(left->right_value),
+           std::get<T>(right->left_value), std::get<T>(right->value) },
+          { 0.0, left_t, right_t, 1.0 }
+      };
 
+      const double t = (frame - left_frame) / span;
       return ::interpolate(segment, t, m_interpolation);
     }, right->value);
   }
@@ -259,11 +244,6 @@ void Track::record(int frame, const variant_type &value)
   }
 }
 
-bool Track::is_valid(Scene &scene) const
-{
-  return scene.contains(owner()) && owner()->has_property(m_property_key);
-}
-
 const Track::Knot &Track::knot_at(int frame) const
 {
   return m_knots.at(frame);
@@ -277,9 +257,13 @@ std::string Track::type() const
   return type.substr(0, type.size() - property_suffix.size());
 }
 
-Property &Track::property() const
+bool Track::is_consistent(int frame) const
 {
-  return *m_owner->property(m_property_key);
+  if (const auto it = m_knots.find(frame); it != m_knots.end()) {
+    return it->second.value == property().variant_value();
+  } else {
+    return true;
+  }
 }
 
 Track::Knot::Knot(const variant_type &value)

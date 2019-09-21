@@ -1,7 +1,6 @@
 #pragma once
 
 #include "aspects/abstractpropertyowner.h"
-#include "aspects/animatablepropertyowner.h"
 
 namespace omm
 {

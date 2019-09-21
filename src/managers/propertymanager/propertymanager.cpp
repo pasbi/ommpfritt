@@ -171,7 +171,7 @@ void PropertyManager::update_property_widgets()
       m_tabs.insert(tab_label, std::make_unique<PropertyManagerTab>());
     }
 
-    m_tabs.at(tab_label)->add_properties(m_scene, key, m_current_selection, properties);
+    m_tabs.at(tab_label)->add_properties(m_scene, key, properties);
   }
 
   std::set<QString> tab_display_names;

@@ -7,6 +7,7 @@
 #include "properties/referenceproperty.h"
 #include "scene/scene.h"
 #include "scene/messagebox.h"
+#include "animation/track.h"
 
 namespace
 {

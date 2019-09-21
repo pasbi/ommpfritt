@@ -31,40 +31,8 @@ public:
   static constexpr auto START_FRAME_POINTER = "start-frame";
   static constexpr auto END_FRAME_POINTER = "end-frame";
   static constexpr auto CURRENT_FRAME_POINTER = "current-frame";
-  static constexpr auto TRACKS_POINTER = "tracks";
 
-  /**
-   * @brief track returns a pointer to the track corresponding to the property represented by the
-   *  given key and owner or nullptr if no such track exists.
-   *  if there is no such track
-   * @param owner
-   * @param property_key
-   * @return
-   */
-  Track* track(AbstractPropertyOwner& owner, const std::string& property_key) const;
-  Track& insert_track(std::unique_ptr<Track> track);
-  std::unique_ptr<Track> extract_track(AbstractPropertyOwner& owner,
-                                       const std::string& property_key);
   Scene& scene;
-
-  class CachedOwnerGetter
-      : public CachedGetter<std::vector<AbstractPropertyOwner*>, Animator>
-  {
-  public:
-    using CachedGetter::CachedGetter;
-  protected:
-    std::vector<AbstractPropertyOwner*> compute() const override;
-  } get_owners;
-
-  class CachedTracksGetter
-      : public CachedGetter<std::vector<Track*>, Animator, AbstractPropertyOwner*>
-  {
-  public:
-    using CachedGetter::CachedGetter;
-  protected:
-    std::vector<Track*>
-    compute(AbstractPropertyOwner* owner) const override;
-  } get_tracks;
 
 public Q_SLOTS:
   void set_start(int start);
@@ -73,14 +41,12 @@ public Q_SLOTS:
   void toggle_play_pause(bool play);
   void advance();
   void apply();
-  void reset();
 
 Q_SIGNALS:
   void start_changed(int);
   void end_changed(int);
   void current_changed(int);
   void play_pause_toggled(bool);
-  void tracks_changed();
 
 private:
   int m_start_frame = 1;
@@ -89,9 +55,6 @@ private:
   bool m_is_playing = false;
   QTimer m_timer;
   PlayMode m_play_mode = PlayMode::Repeat;
-
-  std::set<std::unique_ptr<Track>> m_tracks;
-
 };
 
 }  // namespace omm

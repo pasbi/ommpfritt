@@ -15,44 +15,46 @@
 namespace omm
 {
 
-AnimationButton::AnimationButton(Animator& animator, const std::set<AbstractPropertyOwner*>& owners,
-                                 const std::string& property_key, QWidget *parent)
+AnimationButton::AnimationButton(Animator& animator, const std::set<Property*>& properties,
+                                 QWidget *parent)
   : QWidget(parent)
   , m_animator(animator)
-  , m_owners(owners)
-  , m_property_key(property_key)
+  , m_properties(properties)
 {
   setContextMenuPolicy(Qt::DefaultContextMenu);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   connect(&animator, SIGNAL(current_changed(int)), this, SLOT(update()));
   connect(&animator, SIGNAL(tracks_changed()), this, SLOT(update()));
-  for (const AbstractPropertyOwner* owner : m_owners) {
-    connect(owner->property(m_property_key), SIGNAL(value_changed(Property*)),
-            this, SLOT(update()));
+  for (const Property* property : m_properties) {
+    connect(property, SIGNAL(value_changed(Property*)), this, SLOT(update()));
   }
 }
 
 bool AnimationButton::has_track() const
 {
-  return std::any_of(m_owners.begin(), m_owners.end(), [this](auto* owner) {
-    return m_animator.track(*owner, m_property_key) != nullptr;
+  return std::any_of(m_properties.begin(), m_properties.end(), [](auto* property) {
+    return property->track() != nullptr;
   });
 }
 
-bool AnimationButton::value_coincides() const
+bool AnimationButton::value_is_inconsistent() const
 {
-  return std::all_of(m_owners.begin(), m_owners.end(), [this](auto* owner) {
-    const Track* track = m_animator.track(*owner, m_property_key);
-    const Property& property = track->property();
-    return property.variant_value() == track->interpolate(m_animator.current());
+  const int current_frame = m_animator.current();
+  return std::any_of(m_properties.begin(), m_properties.end(), [current_frame](auto* property) {
+    const Track* track = property->track();
+    if (track == nullptr) {
+      return false;  // there is no track, hence there is no inconsistency.
+    } else {
+      return !track->is_consistent(current_frame);
+    }
   });
 }
 
 bool AnimationButton::has_key() const
 {
   const int current_frame = m_animator.current();
-  return std::any_of(m_owners.begin(), m_owners.end(), [this, current_frame](auto* owner) {
-    Track* track = m_animator.track(*owner, m_property_key);
+  return std::any_of(m_properties.begin(), m_properties.end(), [current_frame](auto* property) {
+    Track* track = property->track();
     return track != nullptr && track->has_keyframe(current_frame);
   });
 }
@@ -61,32 +63,30 @@ void AnimationButton::set_key()
 {
   {
     std::set<std::unique_ptr<Track>> new_tracks;
-    for (AbstractPropertyOwner* owner : m_owners) {
-      Track* track = m_animator.track(*owner, m_property_key);
-      if (track == nullptr) {
-        new_tracks.insert(std::make_unique<Track>(*owner, m_property_key));
+    for (Property* property : m_properties) {
+      if (property->track() == nullptr) {
+        new_tracks.insert(std::make_unique<Track>(*property));
       }
     }
     if (!new_tracks.empty()) {
-      m_animator.scene.submit<InsertTracksCommand>(m_animator, std::move(new_tracks));
+      m_animator.scene.submit<InsertTracksCommand>(std::move(new_tracks));
     }
   }
-  m_animator.scene.submit(std::make_unique<InsertKeyframeCommand>(m_animator, m_animator.current(),
-                                                                  m_owners, m_property_key));
+  m_animator.scene.submit(std::make_unique<InsertKeyframeCommand>(m_animator.current(),
+                                                                  m_properties));
   update();
 }
 
 void AnimationButton::remove_key()
 {
-  m_animator.scene.submit(std::make_unique<RemoveKeyframeCommand>(m_animator, m_animator.current(),
-                                                                  m_owners, m_property_key));
+  m_animator.scene.submit(std::make_unique<RemoveKeyframeCommand>(m_animator.current(),
+                                                                  m_properties));
   update();
 }
 
 void AnimationButton::remove_track()
 {
-  m_animator.scene.submit(std::make_unique<RemoveTracksCommand>(m_animator,
-                                                                m_owners, m_property_key));
+  m_animator.scene.submit(std::make_unique<RemoveTracksCommand>(m_properties));
 }
 
 void AnimationButton::resizeEvent(QResizeEvent *event)
@@ -130,10 +130,10 @@ void AnimationButton::paintEvent(QPaintEvent *event)
     painter.drawEllipse(centered(0.8));
     QPainterPath ellipse;
     ellipse.addEllipse(centered(0.4));
-    if (value_coincides()) {
-      painter.fillPath(ellipse, Qt::red);
-    } else {
+    if (value_is_inconsistent()) {
       painter.fillPath(ellipse, QColor(255, 128, 0));
+    } else {
+      painter.fillPath(ellipse, Qt::red);
     }
   }
 }

@@ -238,7 +238,6 @@ void Scene::reset()
   object_tree().replace_root(make_root());
   styles().set(std::vector<std::unique_ptr<Style>> {});
   m_filename.clear();
-  animator().reset();
   Q_EMIT message_box().filename_changed();
 }
 

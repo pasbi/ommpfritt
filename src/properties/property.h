@@ -14,11 +14,13 @@
 #include "color/color.h"
 #include "geometry/vec2.h"
 #include "variant.h"
+#include "animation/track.h"
 
 namespace omm
 {
-class Object;
 
+class Object;
+class Track;
 class Property;
 class AbstractPropertyOwner;
 class OptionsProperty;
@@ -73,33 +75,13 @@ public:
   explicit Property(const Property& other);
   virtual ~Property() = default;
 
-  virtual variant_type variant_value() const = 0;
-
-  virtual void set(const variant_type& value) = 0;
-
-  template<typename EnumT> std::enable_if_t<std::is_enum_v<EnumT>, void>
-  set(const EnumT& value) { set(static_cast<std::size_t>(value)); }
-
-  template<typename ValueT> std::enable_if_t<!std::is_enum_v<ValueT>, ValueT>
-  value() const { return std::get<ValueT>(variant_value()); }
-  template<typename ValueT> std::enable_if_t<std::is_enum_v<ValueT>, ValueT>
-  value() const { return static_cast<ValueT>(std::get<std::size_t>(variant_value())); }
-
   static constexpr auto LABEL_POINTER = "label";
   static constexpr auto CATEGORY_POINTER = "category";
   static constexpr auto ANIMATABLE_POINTER = "animatable";
-
-  std::string label() const;
-  std::string category() const;
-  bool is_animatable() const;
-  Property& set_label(const std::string& label);
-  Property& set_category(const std::string& category);
-  Property& set_animatable(bool animatable);
+  static constexpr auto TRACK_POINTER = "track";
+  static constexpr auto IS_ANIMATED_POINTER = "animated";
 
   virtual std::string widget_type() const;
-
-  void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const override;
-  void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root) override;
 
   template<typename ResultT, typename PropertyT, typename MemFunc> static
   ResultT get_value(const std::set<Property*>& properties, MemFunc&& f)
@@ -132,14 +114,43 @@ public:
 
   virtual void revise();
 
+  // === set/get value
 public:
-  Configuration configuration;
+  virtual variant_type variant_value() const = 0;
+  virtual void set(const variant_type& value) = 0;
+  template<typename EnumT> std::enable_if_t<std::is_enum_v<EnumT>, void>
+  set(const EnumT& value) { set(static_cast<std::size_t>(value)); }
+  template<typename ValueT> std::enable_if_t<!std::is_enum_v<ValueT>, ValueT>
+  value() const { return std::get<ValueT>(variant_value()); }
+  template<typename ValueT> std::enable_if_t<std::is_enum_v<ValueT>, ValueT>
+  value() const { return static_cast<ValueT>(std::get<std::size_t>(variant_value())); }
 
-private:
-  bool m_is_visible = true;
+  // === Configuration ====
 public:
   bool is_visible() const;
   void set_visible(bool visible);
+  std::string label() const;
+  std::string category() const;
+  bool is_animatable() const;
+  Property& set_label(const std::string& label);
+  Property& set_category(const std::string& category);
+  Property& set_animatable(bool animatable);
+  Configuration configuration;
+private:
+  bool m_is_visible = true;
+
+  // === (De)Serialization
+public:
+  void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const override;
+  void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root) override;
+
+  // === Animation
+public:
+  Track* track() const;
+  void set_track(std::unique_ptr<Track> track);
+  std::unique_ptr<Track> extract_track();
+private:
+  std::unique_ptr<Track> m_track;
 
 Q_SIGNALS:
   void value_changed(Property*);

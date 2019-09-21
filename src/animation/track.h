@@ -6,12 +6,11 @@
 #include <QObject>
 #include "serializers/abstractserializer.h"
 #include "common.h"
-#include "properties/property.h"
 
 namespace omm
 {
 
-class AbstractPropertyOwner;
+class Property;
 
 /**
  * @brief The AbstractTrack class is the base class for all track.
@@ -20,10 +19,7 @@ class AbstractPropertyOwner;
  *  It would be impossible to restore an track at deserialization since the property it belongs
  *  to is not known at that time.
  */
-class Track
-  : public QObject
-  , public Serializable
-  , public ReferencePolisher
+class Track : public QObject, public Serializable
 {
   Q_OBJECT
 public:
@@ -38,8 +34,7 @@ public:
 
   enum class Interpolation { Step, Linear, Bezier };
 
-  explicit Track() = default;
-  Track(AbstractPropertyOwner& owner, const std::string& property_key);
+  explicit Track(Property& property);
   static constexpr auto PROPERTY_KEY_KEY = "property";
   static constexpr auto OWNER_KEY = "owner";
   static constexpr auto KNOTS_KEY = "knots";
@@ -55,9 +50,6 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& pointer) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& pointer) override;
 
-  AbstractPropertyOwner* owner() const { return m_owner; }
-  const std::string property_key() const { return m_property_key; }
-  void set_owner(AbstractPropertyOwner& owner, const std::string& property_key);
   bool has_keyframe(int frame) const { return m_knots.find(frame) != m_knots.end(); }
   void remove_keyframe(int frame);
   variant_type interpolate(double frame) const;
@@ -66,32 +58,21 @@ public:
   std::vector<int> key_frames() const;
   void apply(int frame) const;
   void record(int frame, const variant_type& value);
+  std::string type() const;
+  Property& property() const { return m_property; }
 
   /**
-   * @brief is_valid returns whether the owner of the track exists and has the given property.
-   * @return
+   * @brief is_consistent returns whether the key value of the track at @code frame matches the
+   * value of the property. Never interpolates the value.
+   * @note if there is no key frame at @code frame, then true is returned.
    */
-  bool is_valid(Scene& scene) const;
-
-  std::string type() const;
-  Property& property() const;
-
-  void update_referenes(const std::map<std::size_t, AbstractPropertyOwner *> &map) override
-  {
-    m_owner = map.at(m_owner_id);
-  }
+  bool is_consistent(int frame) const;
 
 Q_SIGNALS:
   void track_changed();
 
-
 private:
-  AbstractPropertyOwner* m_owner = nullptr;
-  std::string m_property_key = "";
-
-  // this field is only required temporarily during deserialization
-  std::size_t m_owner_id;
-
+  Property& m_property;
   std::map<int, Knot> m_knots;
   Interpolation m_interpolation = Interpolation::Linear;
 };

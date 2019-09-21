@@ -6,18 +6,18 @@
 namespace omm
 {
 
-class AbstractPropertyOwner;
+class Property;
 class Animator;
 class AnimationButton : public QWidget
 {
   Q_OBJECT
 public:
-  AnimationButton(Animator& animator, const std::set<AbstractPropertyOwner*>& owners,
-                  const std::string& property_key, QWidget* parent = nullptr);
+  AnimationButton(Animator& animator, const std::set<Property*>& properties,
+                  QWidget* parent = nullptr);
 
   bool has_key() const;
   bool has_track() const;
-  bool value_coincides() const;
+  bool value_is_inconsistent() const;
 
 public Q_SLOTS:
   void set_key();
@@ -35,8 +35,7 @@ protected:
 
 private:
   Animator& m_animator;
-  const std::set<AbstractPropertyOwner*> m_owners;
-  const std::string m_property_key;
+  const std::set<Property*> m_properties;
 };
 
 }  // namespace omm

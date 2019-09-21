@@ -1,7 +1,6 @@
 
 file(GLOB SOURCES
   abstractpropertyowner.cpp
-  animatablepropertyowner.cpp
   autoconnectiondeleter.cpp
   propertyowner.cpp
   treeelement.cpp
@@ -9,7 +8,6 @@ file(GLOB SOURCES
 
 file(GLOB HEADERS
   abstractpropertyowner.h
-  animatablepropertyowner.h
   autoconnectiondeleter.h
   propertyowner.h
   serializable.h

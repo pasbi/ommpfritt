@@ -6,33 +6,29 @@
 namespace omm
 {
 
-class AbstractPropertyOwner;
-class Animator;
 class Track;
+class Property;
 
 class TracksCommand : public Command
 {
 protected:
-  TracksCommand(const std::string& label, Animator& animator,
-                const std::set<AbstractPropertyOwner*>& owners, const std::string& property_key);
-  TracksCommand(const std::string& label, Animator& animator,
-                std::set<std::unique_ptr<Track>> tracks);
+  TracksCommand(const std::string& label, const std::set<Property*>& properties);
+  TracksCommand(const std::string& label, std::set<std::unique_ptr<Track>> tracks);
 
 protected:
   void remove();
   void insert();
 
 private:
-  Animator& m_animator;
   std::set<std::unique_ptr<Track>> m_tracks;
-  const std::set<AbstractPropertyOwner*> m_owners;
+  const std::set<Property*> m_properties;
   const std::string m_property_key;
 };
 
 class InsertTracksCommand : public TracksCommand
 {
 public:
-  InsertTracksCommand(Animator& animator, std::set<std::unique_ptr<Track>> tracks);
+  InsertTracksCommand(std::set<std::unique_ptr<Track>> tracks);
   void undo() override { remove(); }
   void redo() override { insert(); }
 };
@@ -40,8 +36,7 @@ public:
 class RemoveTracksCommand : public TracksCommand
 {
 public:
-  RemoveTracksCommand(Animator& animator, const std::set<AbstractPropertyOwner*>& owners,
-                      const std::string& property_key);
+  RemoveTracksCommand(const std::set<Property*>& properties);
   void undo() override { insert(); }
   void redo() override { remove(); }
 };

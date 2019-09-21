@@ -1,21 +1,19 @@
 #include "commands/keyframecommand.h"
-#include "aspects/propertyowner.h"
-#include "animation/animator.h"
 #include "animation/track.h"
+#include "properties/property.h"
 
 namespace
 {
 
-std::map<omm::AbstractPropertyOwner*, omm::variant_type>
-collect_values(omm::Animator& animator,
-               const std::set<omm::AbstractPropertyOwner*>& owners, const std::string& property_key)
+std::map<omm::Property*, omm::variant_type>
+collect_values(const std::set<omm::Property*>& properties)
 {
-  std::map<omm::AbstractPropertyOwner*, omm::variant_type> map;
-  for (omm::AbstractPropertyOwner* owner : owners) {
-    if (animator.track(*owner, property_key) != nullptr) {
+  std::map<omm::Property*, omm::variant_type> map;
+  for (omm::Property* property : properties) {
+    if (property->track() != nullptr) {
       // don't add keyframes to non-existing tracks.
       // You must make sure that the track exists beforehand.
-      map.insert(std::pair(owner, owner->property(property_key)->variant_value()));
+      map.insert(std::pair(property, property->variant_value()));
     }
   }
   return map;
@@ -26,57 +24,43 @@ collect_values(omm::Animator& animator,
 namespace omm
 {
 
-KeyframeCommand::KeyframeCommand(const std::string& label, Animator &animator, int frame,
-                                 const std::map<AbstractPropertyOwner*, variant_type> &values,
-                                 const std::string &property_key)
-  : Command(label), m_animator(animator), m_frame(frame)
-  , m_values(values), m_property_key(property_key)
-{
-}
+KeyframeCommand::KeyframeCommand(const std::string& label, int frame,
+                                 const std::map<Property*, variant_type> &values)
+  : Command(label), m_frame(frame), m_values(values)
+{ }
 
 void KeyframeCommand::insert()
 {
-  for (auto&& [ owner, value ] : m_values) {
-    m_animator.track(*owner, m_property_key)->record(m_frame, value);
+  for (auto&& [ property, value ] : m_values) {
+    Track* track = property->track();
+    assert(track != nullptr);
+    track->record(m_frame, value);
   }
 }
 
 void KeyframeCommand::remove()
 {
-  for (auto&& [ owner, value ] : m_values) {
-    m_animator.track(*owner, m_property_key)->remove_keyframe(m_frame);
+  for (auto&& [ property, value ] : m_values) {
+    Track* track = property->track();
+    assert(track != nullptr);
+    track->remove_keyframe(m_frame);
   }
 }
 
 RemoveKeyframeCommand
-::RemoveKeyframeCommand(Animator &animator, int frame,
-                        const std::set<AbstractPropertyOwner *> &owners,
-                        const std::string &property_key)
-  : KeyframeCommand(QObject::tr("Remove Keyframe").toStdString(), animator, frame,
-                    collect_values(animator, owners, property_key), property_key)
-{
-
-}
+::RemoveKeyframeCommand(int frame, const std::set<Property*> &properties)
+  : KeyframeCommand(QObject::tr("Remove Keyframe").toStdString(), frame, collect_values(properties))
+{ }
 
 InsertKeyframeCommand
-::InsertKeyframeCommand(Animator &animator, int frame,
-                        const std::map<AbstractPropertyOwner *, variant_type> &values,
-                        const std::string &property_key)
-  : KeyframeCommand(QObject::tr("Create Keyframe").toStdString(), animator, frame,
-                    values, property_key)
-{
-
-}
+::InsertKeyframeCommand(int frame, const std::map<Property*, variant_type> &values)
+  : KeyframeCommand(QObject::tr("Create Keyframe").toStdString(), frame, values)
+{ }
 
 InsertKeyframeCommand
-::InsertKeyframeCommand(Animator &animator, int frame,
-                        const std::set<AbstractPropertyOwner *> &owners,
-                        const std::string &property_key)
-  : InsertKeyframeCommand(animator, frame,
-                          collect_values(animator, owners, property_key), property_key)
-{
-
-}
+::InsertKeyframeCommand(int frame, const std::set<Property*> &properties)
+  : InsertKeyframeCommand(frame, collect_values(properties))
+{ }
 
 
 

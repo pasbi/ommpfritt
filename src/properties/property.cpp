@@ -5,6 +5,7 @@
 
 #include "properties/optionsproperty.h"
 #include <Qt>
+#include "animation/track.h"
 
 namespace omm
 {
@@ -25,6 +26,10 @@ void Property::serialize(AbstractSerializer& serializer, const Pointer& root) co
   serializer.set_value(label(), make_pointer(root, LABEL_POINTER));
   serializer.set_value(category(), make_pointer(root, CATEGORY_POINTER));
   serializer.set_value(is_animatable(), make_pointer(root, ANIMATABLE_POINTER));
+  serializer.set_value(m_track != nullptr, make_pointer(root, IS_ANIMATED_POINTER));
+  if (m_track != nullptr) {
+    m_track->serialize(serializer, make_pointer(root, TRACK_POINTER));
+  }
 }
 
 void Property
@@ -42,6 +47,10 @@ void Property
   }
   if (configuration.find(ANIMATABLE_POINTER) == configuration.end()) {
     configuration[ANIMATABLE_POINTER] = deserializer.get_bool(make_pointer(root, ANIMATABLE_POINTER));
+  }
+  if (deserializer.get_bool(make_pointer(root, IS_ANIMATED_POINTER))) {
+    m_track = std::make_unique<Track>(*this);
+    m_track->deserialize(deserializer, make_pointer(root, TRACK_POINTER));
   }
 }
 
@@ -94,6 +103,22 @@ Property &Property::set_animatable(bool animatable)
 {
   configuration[ANIMATABLE_POINTER] = animatable;
   return *this;
+}
+
+Track *Property::track() const
+{
+  return m_track.get();
+}
+
+void Property::set_track(std::unique_ptr<Track> track)
+{
+  assert(&track->property() == this);
+  m_track = std::move(track);
+}
+
+std::unique_ptr<Track> Property::extract_track()
+{
+  return std::move(m_track);
 }
 
 }  // namespace omm

@@ -34,7 +34,6 @@ PropertyManagerTab::~PropertyManagerTab()
 }
 
 void PropertyManagerTab::add_properties(Scene& scene, const std::string& key,
-                                        const std::set<AbstractPropertyOwner*>& owners,
                                         const std::set<Property*>& properties)
 {
   assert(properties.size() > 0);
@@ -45,8 +44,7 @@ void PropertyManagerTab::add_properties(Scene& scene, const std::string& key,
   auto label_layout = new QHBoxLayout(label_widget);
   label_layout->setSpacing(hspacing);
   if (Property::get_value<bool>(properties, std::mem_fn(&Property::is_animatable))) {
-    auto animation_button = std::make_unique<AnimationButton>(scene.animator(),
-                                                              owners, key, label_widget);
+    auto animation_button = std::make_unique<AnimationButton>(scene.animator(), properties, label_widget);
     animation_button->setFixedSize(animation_button_size);
     label_layout->addWidget(animation_button.release());
   } else {
