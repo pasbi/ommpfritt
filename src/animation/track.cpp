@@ -163,7 +163,6 @@ void Track::remove_keyframe(int frame)
 {
   if (const auto it = m_knots.find(frame); it != m_knots.end()) {
     m_knots.erase(it);
-    Q_EMIT track_changed();
   }
 }
 
@@ -240,7 +239,6 @@ void Track::record(int frame, const variant_type &value)
   const auto it = m_knots.find(frame);
   if (it == m_knots.end() || it->second.value != value) {
     m_knots.insert(std::pair(frame, value));
-    Q_EMIT track_changed();
   }
 }
 

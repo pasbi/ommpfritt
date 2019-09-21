@@ -85,9 +85,6 @@ public:
    */
   bool is_consistent(int frame) const;
 
-Q_SIGNALS:
-  void track_changed();
-
 private:
   Property& m_property;
   std::map<int, Knot> m_knots;

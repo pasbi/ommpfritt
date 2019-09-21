@@ -304,6 +304,7 @@ void Animator::insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track>
     this->animated_properties.invalidate();
     endResetModel();
   }
+  Q_EMIT tracks_changed();
 }
 
 std::unique_ptr<Track> Animator::extract_track(AbstractPropertyOwner& owner, Property& property)
@@ -317,17 +318,20 @@ std::unique_ptr<Track> Animator::extract_track(AbstractPropertyOwner& owner, Pro
   auto track = property.extract_track();
   this->animated_properties.invalidate();
   endRemoveRows();
+  Q_EMIT tracks_changed();
   return track;
 }
 
 void Animator::remove_key(AbstractPropertyOwner& owner, Track& track, int frame)
 {
   track.remove_keyframe(frame);
+  Q_EMIT tracks_changed();
 }
 
 void Animator::set_key(AbstractPropertyOwner& owner, Track& track, int frame, const variant_type& value)
 {
   track.record(frame, value);
+  Q_EMIT tracks_changed();
 }
 
 

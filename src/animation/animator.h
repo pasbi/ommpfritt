@@ -50,6 +50,7 @@ Q_SIGNALS:
   void end_changed(int);
   void current_changed(int);
   void play_pause_toggled(bool);
+  void tracks_changed();
 
   // == ItemModel
 public:
