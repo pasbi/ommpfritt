@@ -147,8 +147,27 @@ public:
   // === Animation
 public:
   Track* track() const;
+
+  /**
+   * @brief set_track sets the track, possibly overwriting the track set before (which is deleted).
+   *  Thereafter, the property is animated unless the @code track is nullptr.
+   *  the @code track's property must be @code this.
+   * @param track the track.
+   * @note this function must only be called from the @code Animator instance.
+   * @see Animator::insert_track
+   */
   void set_track(std::unique_ptr<Track> track);
+
+  /**
+   * @brief extract_track extracts the track from this property.
+   * Thereafter, the property is not animated anymore.
+   * Possibly returns nullptr, if there was no track before set.
+   * @return the track.
+   * @note this function must only be called from the @code Animator instance.
+   * @see Animator::extrack_track
+   */
   std::unique_ptr<Track> extract_track();
+
 private:
   std::unique_ptr<Track> m_track;
 

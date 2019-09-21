@@ -51,13 +51,30 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& pointer) override;
 
   bool has_keyframe(int frame) const { return m_knots.find(frame) != m_knots.end(); }
-  void remove_keyframe(int frame);
   variant_type interpolate(double frame) const;
   const Knot& knot_at(int frame) const;
   Knot& knot_at(int frame);
   std::vector<int> key_frames() const;
   void apply(int frame) const;
+
+  /**
+   * @brief record creates a new key-value, overwriting existing keys.
+   * @param frame the frame
+   * @param value the value's type must be the same as the properties' type.
+   * @note this function must only be called from the @code Animator instance.
+   * @see Animator::set_key
+   */
   void record(int frame, const variant_type& value);
+
+  /**
+   * @brief remove_keyframe removes the key at given frame. Does nothing if there is no such
+   *  key.
+   * @param frame the frame
+   * @note this function must only be called from the @code Animator instance.
+   * @see Animator::remove_key
+   */
+  void remove_keyframe(int frame);
+
   std::string type() const;
   Property& property() const { return m_property; }
 
