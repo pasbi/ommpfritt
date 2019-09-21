@@ -15,7 +15,7 @@
 namespace omm
 {
 
-AnimationButton::AnimationButton(Animator& animator, const std::set<Property*>& properties,
+AnimationButton::AnimationButton(Animator& animator, const std::map<AbstractPropertyOwner *, Property *> &properties,
                                  QWidget *parent)
   : QWidget(parent)
   , m_animator(animator)
@@ -25,23 +25,24 @@ AnimationButton::AnimationButton(Animator& animator, const std::set<Property*>& 
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   connect(&animator, SIGNAL(current_changed(int)), this, SLOT(update()));
   connect(&animator, SIGNAL(tracks_changed()), this, SLOT(update()));
-  for (const Property* property : m_properties) {
+  for (auto&& [ owner, property ] : m_properties) {
+    Q_UNUSED(owner)
     connect(property, SIGNAL(value_changed(Property*)), this, SLOT(update()));
   }
 }
 
 bool AnimationButton::has_track() const
 {
-  return std::any_of(m_properties.begin(), m_properties.end(), [](auto* property) {
-    return property->track() != nullptr;
+  return std::any_of(m_properties.begin(), m_properties.end(), [](auto&& arg) {
+    return arg.second->track() != nullptr;
   });
 }
 
 bool AnimationButton::value_is_inconsistent() const
 {
   const int current_frame = m_animator.current();
-  return std::any_of(m_properties.begin(), m_properties.end(), [current_frame](auto* property) {
-    const Track* track = property->track();
+  return std::any_of(m_properties.begin(), m_properties.end(), [current_frame](auto&& arg) {
+    const Track* track = arg.second->track();
     if (track == nullptr) {
       return false;  // there is no track, hence there is no inconsistency.
     } else {
@@ -53,8 +54,8 @@ bool AnimationButton::value_is_inconsistent() const
 bool AnimationButton::has_key() const
 {
   const int current_frame = m_animator.current();
-  return std::any_of(m_properties.begin(), m_properties.end(), [current_frame](auto* property) {
-    Track* track = property->track();
+  return std::any_of(m_properties.begin(), m_properties.end(), [current_frame](auto&& arg) {
+    Track* track = arg.second->track();
     return track != nullptr && track->has_keyframe(current_frame);
   });
 }
@@ -62,31 +63,31 @@ bool AnimationButton::has_key() const
 void AnimationButton::set_key()
 {
   {
-    std::set<std::unique_ptr<Track>> new_tracks;
-    for (Property* property : m_properties) {
+    std::map<AbstractPropertyOwner*, std::unique_ptr<Track>> new_tracks;
+    for (auto&& [ owner, property ] : m_properties) {
       if (property->track() == nullptr) {
-        new_tracks.insert(std::make_unique<Track>(*property));
+        new_tracks.insert(std::pair(owner, std::make_unique<Track>(*property)));
       }
     }
     if (!new_tracks.empty()) {
-      m_animator.scene.submit<InsertTracksCommand>(std::move(new_tracks));
+      m_animator.scene.submit<InsertTracksCommand>(m_animator, std::move(new_tracks));
     }
   }
-  m_animator.scene.submit(std::make_unique<InsertKeyframeCommand>(m_animator.current(),
+  m_animator.scene.submit(std::make_unique<InsertKeyframeCommand>(m_animator, m_animator.current(),
                                                                   m_properties));
   update();
 }
 
 void AnimationButton::remove_key()
 {
-  m_animator.scene.submit(std::make_unique<RemoveKeyframeCommand>(m_animator.current(),
+  m_animator.scene.submit(std::make_unique<RemoveKeyframeCommand>(m_animator, m_animator.current(),
                                                                   m_properties));
   update();
 }
 
 void AnimationButton::remove_track()
 {
-  m_animator.scene.submit(std::make_unique<RemoveTracksCommand>(m_properties));
+  m_animator.scene.submit(std::make_unique<RemoveTracksCommand>(m_animator, m_properties));
 }
 
 void AnimationButton::resizeEvent(QResizeEvent *event)

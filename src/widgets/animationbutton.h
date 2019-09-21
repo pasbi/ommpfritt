@@ -8,11 +8,12 @@ namespace omm
 
 class Property;
 class Animator;
+class AbstractPropertyOwner;
 class AnimationButton : public QWidget
 {
   Q_OBJECT
 public:
-  AnimationButton(Animator& animator, const std::set<Property*>& properties,
+  AnimationButton(Animator& animator, const std::map<AbstractPropertyOwner*, Property*>& properties,
                   QWidget* parent = nullptr);
 
   bool has_key() const;
@@ -35,7 +36,7 @@ protected:
 
 private:
   Animator& m_animator;
-  const std::set<Property*> m_properties;
+  const std::map<AbstractPropertyOwner*, Property*> m_properties;
 };
 
 }  // namespace omm

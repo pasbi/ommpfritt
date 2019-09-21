@@ -61,20 +61,20 @@ get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
 auto collect_properties( const std::string& key,
                          const std::set<omm::AbstractPropertyOwner*>& selection )
 {
-  std::set<omm::AbstractPropertyOwner*> collection;
-  const auto f = [key](omm::AbstractPropertyOwner* entity) {
-    return entity->property(key);
-  };
-
-  return transform<omm::Property*>(selection, f);
+  std::map<omm::AbstractPropertyOwner*, omm::Property*> collection;
+  for (omm::AbstractPropertyOwner* owner : selection) {
+    collection.insert(std::pair(owner, owner->property(key)));
+  }
+  return collection;
 }
 
-std::string get_tab_label(const std::set<omm::Property*>& properties)
+std::string get_tab_label(const std::map<omm::AbstractPropertyOwner*, omm::Property*>& properties)
 {
   assert(properties.size() > 0);
-  const auto tab_label = (*properties.begin())->category();
+  const auto tab_label = (*properties.begin()).second->category();
 #ifndef NDEBUG
-  for (auto&& property : properties) {
+  for (auto&& [_, property ] : properties) {
+    Q_UNUSED(_)
     assert(property != nullptr);
     if (tab_label != property->category()) {
       LWARNING << "category is not consistent: '" << tab_label

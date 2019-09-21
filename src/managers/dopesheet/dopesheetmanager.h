@@ -2,7 +2,6 @@
 
 #include "managers/manager.h"
 #include <memory>
-#include "managers/dopesheet/dopesheet.h"
 
 namespace omm
 {
@@ -20,7 +19,6 @@ public:
 
 private:
   DopeSheetView* m_dope_sheet_view;
-  std::unique_ptr<DopeSheet> m_dope_sheet;
 };
 
 }  // namespace omm

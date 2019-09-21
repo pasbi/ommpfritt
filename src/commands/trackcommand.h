@@ -2,33 +2,40 @@
 #include <set>
 #include <string>
 #include <memory>
+#include <map>
 
 namespace omm
 {
 
 class Track;
 class Property;
+class Animator;
+class AbstractPropertyOwner;
 
 class TracksCommand : public Command
 {
 protected:
-  TracksCommand(const std::string& label, const std::set<Property*>& properties);
-  TracksCommand(const std::string& label, std::set<std::unique_ptr<Track>> tracks);
+  TracksCommand(Animator& animator, const std::string& label,
+                const std::map<AbstractPropertyOwner*, Property*>& properties);
+  TracksCommand(Animator& animator, const std::string& label,
+                std::map<AbstractPropertyOwner *, std::unique_ptr<Track> > tracks);
 
 protected:
   void remove();
   void insert();
 
 private:
-  std::set<std::unique_ptr<Track>> m_tracks;
-  const std::set<Property*> m_properties;
+  Animator& m_animator;
+  std::map<AbstractPropertyOwner*, std::unique_ptr<Track>> m_tracks;
+  const std::map<AbstractPropertyOwner*, Property*> m_properties;
   const std::string m_property_key;
 };
 
 class InsertTracksCommand : public TracksCommand
 {
 public:
-  InsertTracksCommand(std::set<std::unique_ptr<Track>> tracks);
+  InsertTracksCommand(Animator& animator,
+                      std::map<AbstractPropertyOwner*, std::unique_ptr<Track>> tracks);
   void undo() override { remove(); }
   void redo() override { insert(); }
 };
@@ -36,7 +43,8 @@ public:
 class RemoveTracksCommand : public TracksCommand
 {
 public:
-  RemoveTracksCommand(const std::set<Property*>& properties);
+  RemoveTracksCommand(Animator& animator,
+                      const std::map<AbstractPropertyOwner*, Property*>& properties);
   void undo() override { insert(); }
   void redo() override { remove(); }
 };
