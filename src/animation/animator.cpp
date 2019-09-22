@@ -11,6 +11,7 @@
 #include <list>
 #include <functional>
 #include "scene/messagebox.h"
+#include "mainwindow/application.h"
 
 namespace
 {
@@ -206,20 +207,50 @@ int Animator::columnCount(const QModelIndex &parent) const
 
 QVariant Animator::data(const QModelIndex &index, int role) const
 {
-  switch (role) {
-  case Qt::EditRole:
-    [[fallthrough]];
-  case Qt::DisplayRole:
-    switch (index_type(index)) {
-    case IndexType::Owner:
-      return QString::fromStdString(owner(index)->name());
-    case IndexType::Property:
-      return QString::fromStdString(property(index)->label());
+  switch (index_type(index)) {
+  case IndexType::Owner:
+    switch (index.column()) {
+    case 0:
+      switch (role) {
+      case Qt::DisplayRole:
+        return QString::fromStdString(owner(index)->name());
+      case Qt::DecorationRole:
+        return Application::instance().icon_provider.get_icon(owner(index)->type(), QSize(24, 24));
+      default:
+        return QVariant();
+      }
+    case 1:
+      return QVariant();
     default:
-      Q_UNREACHABLE();
+      Q_UNREACHABLE();  // there are only two columns
     }
+    break;
+  case IndexType::Property:
+    switch (index.column()) {
+    case 0:
+      switch (role) {
+      case Qt::DisplayRole:
+        return QString::fromStdString(property(index)->label());
+      default:
+        return QVariant();
+      }
+    case 1:
+      return QVariant();
+    default:
+      Q_UNREACHABLE();  // there are only two columns
+    }
+  default:
+    Q_UNREACHABLE();
   }
+
+  Q_UNREACHABLE();
   return QVariant();
+}
+
+Qt::ItemFlags Animator::flags(const QModelIndex& index) const
+{
+  Q_UNUSED(index);
+  return Qt::ItemIsEnabled;
 }
 
 QModelIndex Animator::index(Property& property, int column) const
