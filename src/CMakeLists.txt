@@ -9,6 +9,7 @@ file(GLOB SOURCES
 file(GLOB HEADERS
   abstractfactory.h
   cache.h
+  cachedgetter.h
   common.h
   logging.h
   maybeowner.h

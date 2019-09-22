@@ -11,7 +11,7 @@
 #include "external/json_fwd.hpp"
 #include "scene/cycleguard.h"
 #include "scene/contextes.h"
-#include "scene/cachedgetter.h"
+#include "cachedgetter.h"
 #include "scene/list.h"
 #include "scene/pointselection.h"
 

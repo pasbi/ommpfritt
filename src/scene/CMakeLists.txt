@@ -15,7 +15,6 @@ file(GLOB SOURCES
 
 file(GLOB HEADERS
   cycleguard.h
-  cachedgetter.h
   contextes_fwd.h
   contextes.h
   itemmodeladapter.h

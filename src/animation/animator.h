@@ -5,7 +5,7 @@
 #include <QTimer>
 #include <set>
 #include <memory>
-#include "scene/cachedgetter.h"
+#include "cachedgetter.h"
 #include <QAbstractItemModel>
 #include "variant.h"
 #include "aspects/autoconnectiondeleter.h"

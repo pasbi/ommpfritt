@@ -5,6 +5,11 @@
 namespace omm
 {
 
+/**
+ * This class is deprecated. You should not use it.
+ * Use CachedGetter instead. The class is currently being used but will be replaced with
+ * CachedGetter soon.
+ */
 template<typename K, typename V> class Cache
 {
 public:
