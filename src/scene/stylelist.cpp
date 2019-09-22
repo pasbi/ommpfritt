@@ -3,6 +3,7 @@
 #include "renderers/style.h"
 #include "scene/scene.h"
 #include "commands/propertycommand.h"
+#include "mainwindow/application.h"
 #include "scene/messagebox.h"
 
 namespace omm
@@ -82,7 +83,7 @@ QVariant StyleList::data(const QModelIndex &index, int role) const
   case Qt::EditRole:
     return QString::fromStdString(item(index.row()).name());
   case Qt::DecorationRole:
-    return item(index.row()).icon();
+    return Application::instance().icon_provider.icon(item(index.row()));;
   }
   return QVariant();
 }

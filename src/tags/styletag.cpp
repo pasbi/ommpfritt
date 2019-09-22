@@ -1,7 +1,5 @@
 #include "tags/styletag.h"
 
-#include <QApplication>  // TODO only for icon testing
-#include <QStyle>        // TODO only for icon testing
 #include "properties/referenceproperty.h"
 #include "renderers/style.h"
 #include "objects/object.h"
@@ -18,17 +16,6 @@ StyleTag::StyleTag(Object& owner)
     .set_allowed_kinds(Kind::Style)
     .set_label(QObject::tr("style").toStdString())
     .set_category(QObject::tr("style").toStdString());
-}
-
-QIcon StyleTag::icon() const
-{
-  const auto* style = property(STYLE_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
-  if (style == nullptr) {
-    return QApplication::style()->standardIcon(QStyle::SP_DialogResetButton);
-  } else {
-    assert(style->kind() == Kind::Style);
-    return static_cast<const Style*>(style)->icon();
-  }
 }
 
 std::string StyleTag::type() const { return TYPE; }

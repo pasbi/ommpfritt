@@ -110,11 +110,6 @@ std::unique_ptr<Style> Style::clone() const
   return clone;
 }
 
-QIcon Style::icon() const
-{
-  return QIcon(std::make_unique<StyleIconEngine>(*this).release());
-}
-
 SolidStyle::SolidStyle(const Color& color, Scene* scene) : Style(scene)
 {
   property(omm::Style::PEN_IS_ACTIVE_KEY)->set(false);

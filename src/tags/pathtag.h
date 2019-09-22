@@ -11,7 +11,6 @@ class PathTag : public Tag
 public:
   explicit PathTag(Object& owner);
   std::string type() const override;
-  QIcon icon() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PathTag");
   static constexpr auto PATH_REFERENCE_PROPERTY_KEY = "path";
   static constexpr auto ALIGN_REFERENCE_PROPERTY_KEY = "align";

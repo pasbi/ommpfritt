@@ -80,6 +80,7 @@ void Animator::deserialize(AbstractDeserializer &deserializer, const Pointer &po
   set_start(deserializer.get_int(make_pointer(pointer, START_FRAME_POINTER)));
   set_end(deserializer.get_int(make_pointer(pointer, END_FRAME_POINTER)));
   set_current(deserializer.get_int(make_pointer(pointer, CURRENT_FRAME_POINTER)));
+  invalidate();
 }
 
 void Animator::set_start(int start)
@@ -215,7 +216,7 @@ QVariant Animator::data(const QModelIndex &index, int role) const
       case Qt::DisplayRole:
         return QString::fromStdString(owner(index)->name());
       case Qt::DecorationRole:
-        return Application::instance().icon_provider.get_icon(owner(index)->type(), QSize(24, 24));
+        return Application::instance().icon_provider.icon(*owner(index));
       default:
         return QVariant();
       }

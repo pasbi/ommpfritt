@@ -56,7 +56,7 @@ void draw_style(QPainter& painter, const QRect& rect, const omm::Style& style)
 namespace omm
 {
 
-StyleIconEngine::StyleIconEngine(const Style& style) : m_style(style) {}
+StyleIconEngine::StyleIconEngine(const Style* style) : m_style(style) {}
 QIconEngine* StyleIconEngine::clone() const
 {
   return std::make_unique<StyleIconEngine>(*this).release();
@@ -68,7 +68,21 @@ StyleIconEngine::paint(QPainter* painter, const QRect& rect, QIcon::Mode, QIcon:
   painter->save();
   painter->setClipRect(rect);
   draw_background(*painter, rect);
-  draw_style(*painter, rect, m_style);
+  if (m_style != nullptr) {
+    draw_style(*painter, rect, *m_style);
+  } else {
+    painter->save();
+    QPen pen(Qt::black);
+    pen.setWidth(3);
+    pen.setCosmetic(true);
+    painter->setPen(pen);
+    const QPointF margin = 0.2 * QPointF(rect.width(), rect.height());
+    QRectF inset = rect;
+    inset.adjust(margin.x(), margin.y(), -margin.x(), -margin.y());
+    painter->drawLine(inset.topLeft(), inset.bottomRight());
+    painter->drawLine(inset.topRight(), inset.bottomLeft());
+    painter->restore();
+  }
   painter->restore();
 }
 

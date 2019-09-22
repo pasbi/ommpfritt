@@ -8,6 +8,7 @@
 #include "tags/tag.h"
 #include "scene/scene.h"
 #include "managers/objectmanager/objecttreeselectionmodel.h"
+#include "mainwindow/application.h"
 
 namespace omm
 {
@@ -36,7 +37,8 @@ void TagsItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &,
   {
     auto& tag = object.tags.item(i);
     painter->setClipRect(rect);
-    tag.icon().paint(painter, rect);
+    const QIcon icon = Application::instance().icon_provider.icon(tag);
+    icon.paint(painter, rect);
     if (m_selection_model.is_selected(tag)) {
       painter->drawRect(rect);
     }

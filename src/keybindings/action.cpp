@@ -56,8 +56,8 @@ public:
     auto icon_label = std::make_unique<QLabel>();
     m_icon_label = icon_label.get();
     m_icon_label->setFixedSize(12, 12);
-    m_icon_label->setPixmap(Application::instance().icon_provider.get_icon(key_binding.name(),
-                                                                           m_icon_label->size()));
+    const QIcon icon = Application::instance().icon_provider.icon(key_binding.name());
+    m_icon_label->setPixmap(icon.pixmap(m_icon_label->size()));
 
     auto shortcut_label = std::make_unique<LiveLabel>([&key_binding]() {
       const auto code = key_binding.key_sequence().toString().toStdString().c_str();

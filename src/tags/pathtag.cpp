@@ -1,6 +1,4 @@
 #include "tags/pathtag.h"
-#include <QApplication>  // TODO only for icon testing
-#include <QStyle>        // TODO only for icon testing
 #include "properties/referenceproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/boolproperty.h"
@@ -23,11 +21,6 @@ PathTag::PathTag(Object& owner) : Tag(owner)
   create_property<BoolProperty>(ALIGN_REFERENCE_PROPERTY_KEY)
     .set_label(QObject::tr("align").toStdString())
     .set_category(QObject::tr("path").toStdString());
-}
-
-QIcon PathTag::icon() const
-{
-  return QApplication::style()->standardIcon(QStyle::SP_MediaSeekForward);
 }
 
 std::string PathTag::type() const { return TYPE; }

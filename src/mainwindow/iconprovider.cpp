@@ -1,32 +1,36 @@
 #include "iconprovider.h"
+#include "aspects/propertyowner.h"
+#include "renderers/style.h"
+#include "tags/tag.h"
+#include "tags/styletag.h"
+#include "renderers/styleiconengine.h"
 
-QPixmap omm::IconProvider::get_icon(const std::string &icon_name, const QSize &size) const
+namespace omm
 {
-  return get_icon_by_filename(":/icons/" + icon_name + ".png", size);
-}
 
-QPixmap omm::IconProvider::get_icon_by_filename(const std::string &filename, const QSize &size) const
+QIcon IconProvider::icon(AbstractPropertyOwner& owner) const
 {
-  const IconKey key(filename, size);
-  if (m_cached_icons.count(key) == 0) {
-    const QIcon icon(QString::fromStdString(filename));
-    m_cached_icons.insert(std::pair(key, icon.isNull() ? QPixmap() : icon.pixmap(size)));
-  }
-  return m_cached_icons[key];
-}
-
-omm::IconProvider::IconKey::IconKey(const std::string &filename, const QSize &size)
-  : filename(filename), size(size) {}
-
-bool omm::IconProvider::IconKey::operator<(const omm::IconProvider::IconKey &other) const
-{
-  if (other.filename == filename) {
-    if (other.size.width() == size.width()) {
-      return other.size.height() < size.height();
-    } else {
-      return other.size.width() < size.width();
+  if (Tag* tag = kind_cast<Tag*>(&owner); tag != nullptr) {
+    if (StyleTag* style_tag = type_cast<StyleTag*>(tag); style_tag != nullptr) {
+      const Property* rprop = style_tag->property(StyleTag::STYLE_REFERENCE_PROPERTY_KEY);
+      const Style* style = kind_cast<const Style*>(rprop->value<AbstractPropertyOwner*>());
+      return QIcon(std::make_unique<StyleIconEngine>(style).release());
     }
-  } else {
-    return other.filename < filename;
+  } else if (Style* style = kind_cast<Style*>(&owner); style != nullptr) {
+    return QIcon(std::make_unique<StyleIconEngine>(style).release());
   }
+  return icon(owner.type());
 }
+
+QIcon IconProvider::icon(const std::string& name) const
+{
+  // Fallback: load icon file
+  const std::string filename = ":/icons/" + name + ".png";
+  if (m_cached_icons_from_file.find(filename) == m_cached_icons_from_file.end()) {
+    QIcon icon(QString::fromStdString(filename));
+    m_cached_icons_from_file.insert(std::pair(filename, icon));
+  }
+  return m_cached_icons_from_file.at(filename);
+}
+
+}  // namespace omm

@@ -21,7 +21,6 @@ public:
   std::string type() const override;
   static constexpr auto TYPE = "Style";
   std::unique_ptr<Style> clone() const;  // provided for interface consistency
-  QIcon icon() const;
   Flag flags() const override;
 
 public:

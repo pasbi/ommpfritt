@@ -17,5 +17,7 @@
         <file>icons/omm.png</file>
         <file>skins/omm_dark.qss</file>
         <file>skins/omm_light.qss</file>
+        <file>icons/ScriptTag.png</file>
+        <file>icons/PathTag.png</file>
     </qresource>
 </RCC>

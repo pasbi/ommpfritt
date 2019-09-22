@@ -1,27 +1,24 @@
 #pragma once
 
 #include <QIcon>
+#include "cachedgetter.h"
 
 namespace omm
 {
 
+class AbstractPropertyOwner;
+
 class IconProvider
 {
 public:
-  struct IconKey
-  {
-    explicit IconKey(const std::string& filename, const QSize& size);
-    const std::string filename;
-    const QSize size;
-    bool operator<(const IconKey& other) const;
-  };
-  IconProvider() = default;
+  explicit IconProvider() = default;
 
-  QPixmap get_icon(const std::string& icon_name, const QSize& size) const;
-  QPixmap get_icon_by_filename(const std::string& filename, const QSize& size) const;
+  QIcon icon(AbstractPropertyOwner& owner) const;
+  QIcon icon(const std::string& name) const;
 
 private:
-  mutable std::map<IconKey, QPixmap> m_cached_icons;
+  mutable std::map<std::string, QIcon> m_cached_icons_from_file;
+  QIcon get_icon_by_filename(const std::string& filename) const;
 };
 
 }  // namespace omm
