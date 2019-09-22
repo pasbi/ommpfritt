@@ -60,20 +60,42 @@ public:
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   int columnCount(const QModelIndex &parent = QModelIndex()) const override;
   QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-  QModelIndex index(Property& property) const;
-  QModelIndex index(AbstractPropertyOwner& owner) const;
+  QModelIndex index(Property& property, int column = 0) const;
+  QModelIndex index(AbstractPropertyOwner& owner, int column = 0) const;
   IndexType index_type(const QModelIndex& index) const;
   Property* property(const QModelIndex& index) const;
   AbstractPropertyOwner* owner(const QModelIndex& index) const;
 
   // == access tracks
 public:
+  class Accelerator
+  {
+  public:
+    Accelerator() = default;
+    explicit Accelerator(Scene& scene);
+    const std::vector<AbstractPropertyOwner*>& owners() const { return m_owner_order; }
+    const std::vector<Property*>& properties(AbstractPropertyOwner& owner) const
+    { return m_by_owner.at(&owner); }
+    bool contains(AbstractPropertyOwner& owner) const
+    { return m_by_owner.find(&owner) != m_by_owner.end(); }
+    Property* predecessor(AbstractPropertyOwner& owner, Property& property) const;
+    AbstractPropertyOwner* predecessor(AbstractPropertyOwner& owner) const;
+    const std::set<Property*>& properties() const { return m_properties; }
+    AbstractPropertyOwner* owner(Property& property) const { return m_by_property.at(&property); }
+  private:
+    Scene* m_scene;
+    std::list<AbstractPropertyOwner*> animatable_owners() const;
+    std::map<AbstractPropertyOwner*, std::vector<Property*>> m_by_owner;
+    std::set<Property*> m_properties;
+    std::map<Property*, AbstractPropertyOwner*> m_by_property;
+    std::vector<AbstractPropertyOwner*> m_owner_order;
+  };
   class CachedAnimatedPropertiesGetter
-    : public CachedGetter<std::map<AbstractPropertyOwner*, std::vector<Property*>>, Animator>
+    : public CachedGetter<Accelerator, Animator>
   {
     using CachedGetter::CachedGetter;
-    std::map<AbstractPropertyOwner*, std::vector<Property*>> compute() const override;
-  } animated_properties;
+    Accelerator compute() const override;
+  } accelerator;
 
   // == modify tracks
 public:
@@ -89,7 +111,6 @@ private:
   bool m_is_playing = false;
   QTimer m_timer;
   PlayMode m_play_mode = PlayMode::Repeat;
-  std::pair<AbstractPropertyOwner*, long> find_owner(Property& property) const;
 };
 
 }  // namespace omm

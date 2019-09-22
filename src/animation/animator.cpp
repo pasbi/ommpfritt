@@ -8,13 +8,35 @@
 #include "tags/tag.h"
 #include "renderers/style.h"
 #include "scene/stylelist.h"
+#include <list>
+#include <functional>
+
+namespace
+{
+
+template<typename T>
+T* predecessor(const std::vector<T*>& candidates, const T& t,
+               const std::function<bool(const T&)>& predicate)
+{
+  T* predecessor = nullptr;
+  for (T* candidate : candidates) {
+    if (candidate == &t) {
+      break;
+    } else if (predicate(*candidate)) {
+      predecessor = candidate;
+    }
+  }
+  return predecessor;
+}
+
+}
 
 namespace omm
 {
 
 Animator::Animator(Scene& scene)
   : scene(scene)
-  , animated_properties(*this)
+  , accelerator(*this)
 {
   m_timer.setInterval(1000.0/30.0);
   connect(&m_timer, SIGNAL(timeout()), this, SLOT(advance()));
@@ -100,64 +122,24 @@ void Animator::advance()
 
 void Animator::apply()
 {
-  for (auto&& [ owner, properties ] : animated_properties()) {
-    Q_UNUSED(owner)
-    for (Property* property : properties) {
-      Track* track = property->track();
-      assert(track != nullptr);
-      track->apply(m_current_frame);
-    }
+  for (Property* property : accelerator().properties()) {
+    property->track()->apply(m_current_frame);
   }
 }
 
-std::map<AbstractPropertyOwner*, std::vector<Property*>>
-Animator::CachedAnimatedPropertiesGetter::compute() const
+Animator::Accelerator Animator::CachedAnimatedPropertiesGetter::compute() const
 {
-  std::map<AbstractPropertyOwner*, std::vector<Property*>> map;
-  const auto collect_animated_properties = [&map](AbstractPropertyOwner* owner) {
-    const auto animated_properties = ::filter_if(owner->properties().values(), [](Property* p) {
-      return p->track() != nullptr;
-    });
-    if (!animated_properties.empty()) {
-      map[owner] = animated_properties;
-    }
-  };
-  for (Object* object : m_self.scene.object_tree().items()) {
-    collect_animated_properties(object);
-    for (Tag* tag : object->tags.items()) {
-      collect_animated_properties(tag);
-    }
-  }
-  for (Style* style : m_self.scene.styles().items()) {
-    collect_animated_properties(style);
-  }
-  return map;
-
+  return Accelerator(m_self.scene);
 }
 
 QModelIndex Animator::index(int row, int column, const QModelIndex &parent) const
 {
-  const auto animated_properties = this->animated_properties();
   if (parent.isValid()) {
     AbstractPropertyOwner* owner = this->owner(parent);
-    return createIndex(row, column, animated_properties.at(owner).at(row));
+    return index(*accelerator().properties(*owner).at(row), column);
   } else {
-    const auto it = std::next(animated_properties.begin() , row);
-    return createIndex(row, column, it->first);
+    return index(*accelerator().owners()[row], column);
   }
-}
-
-std::pair<AbstractPropertyOwner*, long> Animator::find_owner(Property& property) const
-{
-  using pair = std::pair<AbstractPropertyOwner*, long>;
-  const auto map = animated_properties();
-  for (auto&& [ owner, properties ] : map) {
-    const auto it = std::find(properties.begin(), properties.end(), &property);
-    if (it != properties.end()) {
-      return pair(owner, std::distance(properties.begin(), it));
-    }
-  }
-  return pair(nullptr, -1);
 }
 
 QModelIndex Animator::parent(const QModelIndex &child) const
@@ -173,10 +155,7 @@ QModelIndex Animator::parent(const QModelIndex &child) const
   case IndexType::Owner:
     return QModelIndex();
   case IndexType::Property:
-  {
-    auto&& [ owner, row ] = find_owner(*property(child));
-    return index(*owner);
-  }
+    return index(*accelerator().owner(*property(child)));
   default:
     Q_UNREACHABLE();
     return QModelIndex();
@@ -185,13 +164,11 @@ QModelIndex Animator::parent(const QModelIndex &child) const
 
 int Animator::rowCount(const QModelIndex &parent) const
 {
-  const auto animated_properties = this->animated_properties();
   switch (index_type(parent)) {
   case IndexType::None:
-    return animated_properties.size();
+    return accelerator().owners().size();
   case IndexType::Owner:
-    LINFO << "Owner: " << owner(parent)->name();
-    return animated_properties.at(owner(parent)).size();
+    return accelerator().properties(*owner(parent)).size();
   case IndexType::Property:
     [[ fallthrough ]];
   default:
@@ -223,18 +200,19 @@ QVariant Animator::data(const QModelIndex &index, int role) const
   return QVariant();
 }
 
-QModelIndex Animator::index(Property& property) const
+QModelIndex Animator::index(Property& property, int column) const
 {
-  auto&& [ owner, row ] = find_owner(property);
-  return index(row, 0, index(*owner));
+  AbstractPropertyOwner& owner = *accelerator().owner(property);
+  const auto props = accelerator().properties(owner);
+  const int row = std::distance(props.begin(), std::find(props.begin(), props.end(), &property));
+  return createIndex(row, column, &property);
 }
 
-QModelIndex Animator::index(AbstractPropertyOwner& owner) const
+QModelIndex Animator::index(AbstractPropertyOwner& owner, int column) const
 {
-  const auto map = animated_properties();
-  const int row = std::distance(map.begin(), map.find(&owner));
-  return createIndex(row, 0, &owner);
-  return index(row, 0, QModelIndex());
+  const auto& owners = accelerator().owners();
+  const int row = std::distance(owners.begin(), std::find(owners.begin(), owners.end(), &owner));
+  return createIndex(row, column, &owner);
 }
 
 Animator::IndexType Animator::index_type(const QModelIndex& index) const
@@ -244,7 +222,6 @@ Animator::IndexType Animator::index_type(const QModelIndex& index) const
   }
 
   const QObject* internal_pointer = static_cast<QObject*>(index.internalPointer());
-  LINFO << "internal pointer of (" << index.row() << ", " << index.column() << "): " << internal_pointer;
   if (internal_pointer->inherits(Property::staticMetaObject.className())) {
     return IndexType::Property;
   } else if (internal_pointer->inherits(AbstractPropertyOwner::staticMetaObject.className())) {
@@ -269,8 +246,8 @@ AbstractPropertyOwner* Animator::owner(const QModelIndex& index) const
 
 void Animator::insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track> track)
 {
-  const auto animated_properties = this->animated_properties();
-  if (animated_properties.find(&owner) != animated_properties.end()) {
+  const auto accelerator = this->accelerator();
+  if (accelerator.contains(owner)) {
     const QModelIndex parent_index = this->index(owner);
     // the owner already has a track and is in the model. Just add the new track.
     const QModelIndex preprocessor_index = [this, &owner, &property=track->property()]() {
@@ -294,14 +271,14 @@ void Animator::insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track>
     const int row = preprocessor_index.row() + 1;
     beginInsertRows(parent_index, row, row);
     track->property().set_track(std::move(track));
-    this->animated_properties.invalidate();
+    this->accelerator.invalidate();
     endInsertRows();
   } else {
     // the owner is not in the model. Add the owner.
     // it's too complicated to figure out where the owner is added.
     beginResetModel();
     track->property().set_track(std::move(track));
-    this->animated_properties.invalidate();
+    this->accelerator.invalidate();
     endResetModel();
   }
   Q_EMIT tracks_changed();
@@ -309,14 +286,13 @@ void Animator::insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track>
 
 std::unique_ptr<Track> Animator::extract_track(AbstractPropertyOwner& owner, Property& property)
 {
-  const auto map = animated_properties();
   const QModelIndex parent = index(owner);
-  const auto properties = map.at(&owner);
-  const int row =std::distance(properties.begin(),
-                               std::find(properties.begin(), properties.end(), &property));
+  const auto properties = accelerator().properties();
+  const int row = std::distance(properties.begin(),
+                                std::find(properties.begin(), properties.end(), &property));
   beginRemoveRows(parent, row, row);
   auto track = property.extract_track();
-  this->animated_properties.invalidate();
+  this->accelerator.invalidate();
   endRemoveRows();
   Q_EMIT tracks_changed();
   return track;
@@ -332,6 +308,58 @@ void Animator::set_key(AbstractPropertyOwner& owner, Track& track, int frame, co
 {
   track.record(frame, value);
   Q_EMIT tracks_changed();
+}
+
+Animator::Accelerator::Accelerator(Scene& scene) : m_scene(&scene)
+{
+  std::list<AbstractPropertyOwner*> owner_order;
+  for (AbstractPropertyOwner* owner : animatable_owners()) {
+    std::list<Property*> properties;
+    for (Property* property : owner->properties().values()) {
+      if (property->track() != nullptr) {
+        properties.push_back(property);
+        m_by_property.insert(std::pair(property, owner));
+        m_properties.insert(property);
+      }
+    }
+    if (!properties.empty()) {
+      m_by_owner.insert(std::pair(owner, std::vector(properties.begin(), properties.end())));
+      owner_order.push_back(owner);
+    }
+  }
+  m_owner_order = std::vector(owner_order.begin(), owner_order.end());
+}
+
+Property* Animator::Accelerator::predecessor(AbstractPropertyOwner& owner, Property& property) const
+{
+  return ::predecessor<Property>(owner.properties().values(), property, [](const Property& p) {
+    return p.track() != nullptr;
+  });
+}
+
+AbstractPropertyOwner* Animator::Accelerator::predecessor(AbstractPropertyOwner& owner) const
+{
+  return ::predecessor<AbstractPropertyOwner>(m_owner_order, owner, [](const auto& o) {
+    const auto properties = o.properties().values();
+    return std::any_of(properties.begin(), properties.end(), [](const Property* p) {
+      return p->track() != nullptr;
+    });
+  });
+}
+
+std::list<AbstractPropertyOwner*> Animator::Accelerator::animatable_owners() const
+{
+  std::list<AbstractPropertyOwner*> animatables;
+  for (Object* object : m_scene->object_tree().items()) {
+    animatables.push_back(object);
+    for (Tag* tag : object->tags.items()) {
+      animatables.push_back(tag);
+    }
+  }
+  for (Style* style : m_scene->styles().items()) {
+    animatables.push_back(style);
+  }
+  return animatables;
 }
 
 
