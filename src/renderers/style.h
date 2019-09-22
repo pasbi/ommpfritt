@@ -18,7 +18,7 @@ class Style
 public:
   explicit Style(Scene* scene = nullptr);
   Style(const Style& other);
-  std::string type() const;
+  std::string type() const override;
   static constexpr auto TYPE = "Style";
   std::unique_ptr<Style> clone() const;  // provided for interface consistency
   QIcon icon() const;

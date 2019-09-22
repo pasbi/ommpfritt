@@ -213,8 +213,6 @@ std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos
         using command_type = AddCommand<List<Style>>;
         auto style = app.scene.default_style().clone();
         assert(style->scene() == &app.scene);
-        connect(style.get(), SIGNAL(appearance_changed()),
-                &app.scene, SIGNAL(appearance_changed()));
         app.scene.submit<command_type>(app.scene.styles(), std::move(style));
       } ),
     ai( QT_TRANSLATE_NOOP("any-context", "convert objects"), &actions::convert_objects ),
