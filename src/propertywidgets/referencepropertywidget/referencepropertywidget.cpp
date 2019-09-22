@@ -50,7 +50,6 @@ ReferencePropertyWidget
 
 ReferencePropertyWidget::~ReferencePropertyWidget()
 {
-  LINFO << "delete reference property";
 }
 
 void ReferencePropertyWidget::update_edit()

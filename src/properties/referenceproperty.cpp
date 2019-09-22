@@ -98,7 +98,11 @@ std::unique_ptr<Property> ReferenceProperty::clone() const
 void ReferenceProperty
 ::update_referenes(const std::map<std::size_t, AbstractPropertyOwner *> &references)
 {
-  set(references.at(m_reference_value_id));
+  try {
+    set(references.at(m_reference_value_id));
+  } catch (const std::out_of_range&) {
+    LWARNING << "Failed to restore reference.";
+  }
 }
 
 void ReferenceProperty::revise() { set(nullptr); }
