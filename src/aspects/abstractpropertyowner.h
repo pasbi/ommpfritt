@@ -15,12 +15,16 @@
 #include "common.h"
 #include <Qt>
 #include "aspects/autoconnectiondeleter.h"
+#include "aspects/typed.h"
 
 namespace omm
 {
 
 class AbstractPropertyOwner
-    : public QObject, public virtual Serializable, public AutoConnectionDeleter
+    : public QObject
+    , public virtual Serializable
+    , public AutoConnectionDeleter
+    , public virtual Typed
 {
   Q_OBJECT
 public:
@@ -97,5 +101,6 @@ public:
   std::set<ReferenceProperty*> m_referees;
 
 };
+
 
 }  // namespace omm

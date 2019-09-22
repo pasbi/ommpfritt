@@ -12,6 +12,7 @@ file(GLOB HEADERS
   propertyowner.h
   serializable.h
   treeelement.h
+  typed.h
 )
 
 

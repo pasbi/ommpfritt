@@ -4,9 +4,10 @@
 #include <memory>
 #include <algorithm>
 #include <set>
+#include "aspects/typed.h"
 
 template<typename Key, typename GeneralT, typename... Args>
-class AbstractFactory
+class AbstractFactory : public virtual omm::Typed
 {
 protected:
   using creator_type = std::unique_ptr<GeneralT>(*)(Args&&... args);
@@ -47,9 +48,6 @@ public:
                     std::inserter(keys, keys.end()), [](const auto& pair) { return pair.first; } );
     return keys;
   }
-
-public:
-  virtual std::string type() const = 0;
 
 private:
   static creator_map_type m_creator_map;
