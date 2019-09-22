@@ -219,11 +219,12 @@ bool Scene::load_from(const std::string &filename)
     object_tree().root().update_recursive();
 
     animator().deserialize(*deserializer, ANIMATOR_POINTER);
-
+    animator().invalidate();
     return true;
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
     LERROR << "Failed to deserialize file at '" << filename << "'.";
     LINFO << deserialize_error.what();
+    animator().invalidate();
     reset();
   }
   return false;
@@ -238,6 +239,7 @@ void Scene::reset()
   object_tree().replace_root(make_root());
   styles().set(std::vector<std::unique_ptr<Style>> {});
   m_filename.clear();
+  animator().invalidate();
   Q_EMIT message_box().filename_changed();
 }
 

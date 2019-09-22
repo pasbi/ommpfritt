@@ -10,6 +10,7 @@
 #include "scene/stylelist.h"
 #include <list>
 #include <functional>
+#include "scene/messagebox.h"
 
 namespace
 {
@@ -34,13 +35,27 @@ T* predecessor(const std::vector<T*>& candidates, const T& t,
 namespace omm
 {
 
-Animator::Animator(Scene& scene)
-  : scene(scene)
-  , accelerator(*this)
+Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
 {
   m_timer.setInterval(1000.0/30.0);
   connect(&m_timer, SIGNAL(timeout()), this, SLOT(advance()));
   connect(this, SIGNAL(current_changed(int)), this, SLOT(apply()));
+  regc(connect(&scene.message_box(), &MessageBox::property_value_changed,
+               [this](AbstractPropertyOwner& owner, const std::string& key, Property&)
+  {
+    if (key == AbstractPropertyOwner::NAME_PROPERTY_KEY) {
+      const auto& owners = this->accelerator().owners();
+      if (std::find(owners.begin(), owners.end(), &owner) != owners.end()) {
+         const QModelIndex index = this->index(owner);
+         Q_EMIT dataChanged(index, index, { Qt::DisplayRole });
+      }
+    }
+  }));
+
+  connect(&scene.message_box(), SIGNAL(abstract_property_owner_inserted(AbstractPropertyOwner&)),
+          this, SLOT(invalidate()));
+  connect(&scene.message_box(), SIGNAL(abstract_property_owner_removed(AbstractPropertyOwner&)),
+          this, SLOT(invalidate()));
 }
 
 Animator::~Animator()
@@ -125,6 +140,13 @@ void Animator::apply()
   for (Property* property : accelerator().properties()) {
     property->track()->apply(m_current_frame);
   }
+}
+
+void Animator::invalidate()
+{
+  beginResetModel();
+  accelerator.invalidate();
+  endResetModel();
 }
 
 Animator::Accelerator Animator::CachedAnimatedPropertiesGetter::compute() const

@@ -120,8 +120,7 @@ Q_SIGNALS:
 
   /**
    * @brief selection_changed is emitted when the selection changed.
-   */
-  void selection_changed(const std::set<AbstractPropertyOwner*>&);
+   */ void selection_changed(const std::set<AbstractPropertyOwner*>&);
 
   /**
    * @brief selection_changed is emitted when tag, style, object or tool selection changed.
@@ -162,6 +161,22 @@ Q_SIGNALS:
    *    `owner.property(key) == &p`
    */
   void property_value_changed(AbstractPropertyOwner& owner, const std::string& key, Property& p);
+
+  /**
+   * @brief abstract_property_owner_inserted is emitted after any AbstractPropertyOwner is inserted.
+   *  It is forwarded from object_inserted, style_inserted and tag_inserted.
+   * @param owner the item that has been inserted.
+   */
+  void abstract_property_owner_inserted(AbstractPropertyOwner& owner);
+
+  /**
+   * @brief abstract_property_owner_removed is emitted after any AbstractPropertyOwner is removed.
+   *  It is forwarded from object_removed, style_remoced and tag_removed
+   * @param property_owner the item that has been removed.
+   * @note the ownership of the property_owner has been transferred before the signal is emitted.
+   * I.e., if the new owner decides to delete the object, the reference is dangling.
+   */
+  void abstract_property_owner_removed(AbstractPropertyOwner& property_owner);
 };
 
 }  // namespace omm

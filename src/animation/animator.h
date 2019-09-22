@@ -8,6 +8,7 @@
 #include "scene/cachedgetter.h"
 #include <QAbstractItemModel>
 #include "variant.h"
+#include "aspects/autoconnectiondeleter.h"
 
 namespace omm
 {
@@ -17,7 +18,7 @@ class Track;
 class Scene;
 class Property;
 
-class Animator : public QAbstractItemModel, public Serializable
+class Animator : public QAbstractItemModel, public Serializable, public AutoConnectionDeleter
 {
   Q_OBJECT
 public:
@@ -44,6 +45,13 @@ public Q_SLOTS:
   void toggle_play_pause(bool play);
   void advance();
   void apply();
+
+  /**
+   * @brief invalidate invalidates the cache and the model indices.
+   *  call this if the you have changed the model other than through the members
+   * provided by this class.
+   */
+  void invalidate();
 
 Q_SIGNALS:
   void start_changed(int);
