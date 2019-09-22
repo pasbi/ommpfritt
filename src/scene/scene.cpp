@@ -215,11 +215,11 @@ bool Scene::load_from(const std::string &filename)
 
     this->object_tree().replace_root(std::move(new_root));
     this->styles().set(std::move(styles));
+    animator().invalidate();
 
     object_tree().root().update_recursive();
 
     animator().deserialize(*deserializer, ANIMATOR_POINTER);
-    animator().invalidate();
     return true;
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
     LERROR << "Failed to deserialize file at '" << filename << "'.";
