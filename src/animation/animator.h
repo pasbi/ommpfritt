@@ -8,7 +8,6 @@
 #include "cachedgetter.h"
 #include <QAbstractItemModel>
 #include "variant.h"
-#include "aspects/autoconnectiondeleter.h"
 
 namespace omm
 {
@@ -18,7 +17,7 @@ class Track;
 class Scene;
 class Property;
 
-class Animator : public QAbstractItemModel, public Serializable, public AutoConnectionDeleter
+class Animator : public QAbstractItemModel, public Serializable
 {
   Q_OBJECT
 public:

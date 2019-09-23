@@ -4,7 +4,6 @@
 #include "propertywidgets/multivalueedit.h"
 #include "aspects/propertyowner.h"
 #include "tags/tag.h"
-#include "aspects/autoconnectiondeleter.h"
 
 class QMimeData;
 
@@ -16,7 +15,6 @@ class AbstractPropertyOwner;
 class ReferenceLineEdit
   : public QComboBox
   , public MultiValueEdit<AbstractPropertyOwner*>
-  , public AutoConnectionDeleter
 {
   Q_OBJECT
 public:

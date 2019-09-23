@@ -6,7 +6,6 @@
 #include "geometry/boundingbox.h"
 #include "tools/selectpointstool.h"
 #include "tools/selectobjectstool.h"
-#include "aspects/autoconnectiondeleter.h"
 
 namespace Ui { class BoundingBoxManager; }
 
@@ -15,7 +14,7 @@ namespace omm
 
 class AbstractPropertyOwner;
 
-class BoundingBoxManager : public Manager, public CommandInterface,  public AutoConnectionDeleter
+class BoundingBoxManager : public Manager, public CommandInterface
 {
   Q_OBJECT
 public:

@@ -3,14 +3,13 @@
 #include "managers/stylemanager/stylelistview.h"
 #include "keybindings/commandinterface.h"
 #include "managers/manager.h"
-#include "aspects/autoconnectiondeleter.h"
 
 namespace Ui { class TimeLine; }
 
 namespace omm
 {
 
-class TimeLine : public Manager, public CommandInterface, public AutoConnectionDeleter
+class TimeLine : public Manager, public CommandInterface
 {
   Q_OBJECT
 public:

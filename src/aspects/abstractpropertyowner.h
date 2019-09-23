@@ -14,7 +14,6 @@
 #include "properties/stringproperty.h"
 #include "common.h"
 #include <Qt>
-#include "aspects/autoconnectiondeleter.h"
 #include "aspects/typed.h"
 
 namespace omm
@@ -23,7 +22,6 @@ namespace omm
 class AbstractPropertyOwner
     : public QObject
     , public virtual Serializable
-    , public AutoConnectionDeleter
     , public virtual Typed
 {
   Q_OBJECT

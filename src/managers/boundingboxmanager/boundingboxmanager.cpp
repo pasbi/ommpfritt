@@ -92,32 +92,31 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
     reset_transformation();
   };
 
-  regc(connect(&scene.tool_box(), &ToolBox::active_tool_changed, adjust_mode));
+  connect(&scene.tool_box(), &ToolBox::active_tool_changed, this, adjust_mode);
   adjust_mode(scene.tool_box().active_tool());
 
-  regc(connect(&scene.message_box(),
-               qOverload<const std::set<Object*>&>(&MessageBox::selection_changed),
-               [this](const std::set<Object*>&)
+  connect(&scene.message_box(), qOverload<const std::set<Object*>&>(&MessageBox::selection_changed),
+          this, [this](const std::set<Object*>&)
   {
     update_manager();
-  }));
+  });
 
-  regc(connect(&scene.message_box(), qOverload<Object&>(&MessageBox::appearance_changed),
+  connect(&scene.message_box(), qOverload<Object&>(&MessageBox::appearance_changed), this,
                [this](Object& o)
   {
     Path* path = type_cast<Path*>(&o);
     if (path != nullptr) {
        update_manager();
     }
-  }));
+  });
 
-  regc(connect(&scene.message_box(), &MessageBox::point_selection_changed, [this]() {
+  connect(&scene.message_box(), &MessageBox::point_selection_changed, this, [this]() {
     update_manager();
-  }));
+  });
 
-  regc(connect(&scene.message_box(), &MessageBox::transformation_changed, [this]() {
+  connect(&scene.message_box(), &MessageBox::transformation_changed, this, [this]() {
     update_manager();
-  }));
+  });
 
   connect(m_ui->sp_x, SIGNAL(value_changed()), this, SLOT(update_bounding_box()));
   connect(m_ui->sp_y, SIGNAL(value_changed()), this, SLOT(update_bounding_box()));

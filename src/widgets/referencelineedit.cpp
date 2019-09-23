@@ -51,12 +51,12 @@ void ReferenceLineEdit::set_scene(Scene &scene)
     }
   };
 
-  regc(connect(&m_scene->message_box(), &MessageBox::object_removed, update_candidates_maybe));
-  regc(connect(&m_scene->message_box(), &MessageBox::object_inserted, update_candidates_maybe));
-  regc(connect(&m_scene->message_box(), &MessageBox::tag_inserted, update_candidates_maybe));
-  regc(connect(&m_scene->message_box(), &MessageBox::tag_removed, update_candidates_maybe));
-  regc(connect(&m_scene->message_box(), SIGNAL(scene_reseted()), this, SLOT(update_candidates())));
-  regc(connect(&m_scene->message_box(), &MessageBox::property_value_changed,
+  connect(&m_scene->message_box(), &MessageBox::object_removed, this, update_candidates_maybe);
+  connect(&m_scene->message_box(), &MessageBox::object_inserted, this, update_candidates_maybe);
+  connect(&m_scene->message_box(), &MessageBox::tag_inserted, this, update_candidates_maybe);
+  connect(&m_scene->message_box(), &MessageBox::tag_removed, this, update_candidates_maybe);
+  connect(&m_scene->message_box(), SIGNAL(scene_reseted()), this, SLOT(update_candidates()));
+  connect(&m_scene->message_box(), &MessageBox::property_value_changed, this,
           [this](AbstractPropertyOwner& owner, const std::string& key, Property&)
   {
     if (static_cast<bool>(owner.flags() & AbstractPropertyOwner::Flag::HasScript)) {
@@ -64,7 +64,7 @@ void ReferenceLineEdit::set_scene(Scene &scene)
         update_candidates();
       }
     }
-  }));
+  });
   update_candidates();
 }
 
