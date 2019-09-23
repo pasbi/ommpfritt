@@ -56,6 +56,7 @@ public:
   Knot& knot_at(int frame);
   std::vector<int> key_frames() const;
   void apply(int frame) const;
+  void move_key(int old_frame, int new_frame);
 
   /**
    * @brief record creates a new key-value, overwriting existing keys.

@@ -57,6 +57,11 @@ Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
           this, SLOT(invalidate()));
   connect(&scene.message_box(), SIGNAL(abstract_property_owner_removed(AbstractPropertyOwner&)),
           this, SLOT(invalidate()));
+  connect(this, SIGNAL(key_moved(Track&, int, int)), this, SIGNAL(track_changed(Track&)));
+  connect(this, SIGNAL(key_removed(Track&, int)), this, SIGNAL(track_changed(Track&)));
+  connect(this, SIGNAL(key_inserted(Track&, int)), this, SIGNAL(track_changed(Track&)));
+  connect(this, SIGNAL(track_inserted(Track&)), this, SIGNAL(track_changed(Track&)));
+  connect(this, SIGNAL(track_removed(Track&)), this, SIGNAL(track_changed(Track&)));
 }
 
 Animator::~Animator()
@@ -88,6 +93,11 @@ void Animator::set_start(int start)
   if (m_start_frame != start) {
     m_start_frame = start;
     Q_EMIT start_changed(start);
+    for (AbstractPropertyOwner* owner : accelerator().owners()) {
+      QModelIndex start = index(*accelerator().properties(*owner).front()).siblingAtColumn(1);
+      QModelIndex end = index(*accelerator().properties(*owner).back()).siblingAtColumn(1);
+      Q_EMIT dataChanged(start, end);
+    }
   }
 }
 
@@ -300,6 +310,7 @@ AbstractPropertyOwner* Animator::owner(const QModelIndex& index) const
 
 void Animator::insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track> track)
 {
+  Track& track_ref = *track;
   const auto accelerator = this->accelerator();
   if (accelerator.contains(owner)) {
     const QModelIndex parent_index = this->index(owner);
@@ -335,7 +346,7 @@ void Animator::insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track>
     this->accelerator.invalidate();
     endResetModel();
   }
-  Q_EMIT tracks_changed();
+  Q_EMIT track_inserted(track_ref);
 }
 
 std::unique_ptr<Track> Animator::extract_track(AbstractPropertyOwner& owner, Property& property)
@@ -348,20 +359,28 @@ std::unique_ptr<Track> Animator::extract_track(AbstractPropertyOwner& owner, Pro
   auto track = property.extract_track();
   this->accelerator.invalidate();
   endRemoveRows();
-  Q_EMIT tracks_changed();
+  Q_EMIT track_removed(*track);
   return track;
 }
 
 void Animator::remove_key(AbstractPropertyOwner& owner, Track& track, int frame)
 {
   track.remove_keyframe(frame);
-  Q_EMIT tracks_changed();
+  Q_EMIT key_removed(track, frame);
 }
 
 void Animator::set_key(AbstractPropertyOwner& owner, Track& track, int frame, const variant_type& value)
 {
   track.record(frame, value);
-  Q_EMIT tracks_changed();
+  Q_EMIT key_inserted(track, frame);
+}
+
+void Animator::move_key(AbstractPropertyOwner& owner, Track& track, int old_frame, int new_frame)
+{
+  if (old_frame != new_frame) {
+    track.move_key(old_frame, new_frame);
+    Q_EMIT key_moved(track, old_frame, new_frame);
+  }
 }
 
 Animator::Accelerator::Accelerator(Scene& scene) : m_scene(&scene)

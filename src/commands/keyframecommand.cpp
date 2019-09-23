@@ -1,6 +1,7 @@
 #include "commands/keyframecommand.h"
 #include "animation/track.h"
 #include "properties/property.h"
+#include "animation/animator.h"
 
 namespace
 {
@@ -35,7 +36,7 @@ void KeyframeCommand::insert()
     auto&& [ property, value ] = pair;
     Track* track = property->track();
     assert(track != nullptr);
-    track->record(m_frame, value);
+    m_animator.set_key(*owner, *track, m_frame, value);
   }
 }
 
@@ -46,7 +47,7 @@ void KeyframeCommand::remove()
     Property* property = pair.first;
     Track* track = property->track();
     assert(track != nullptr);
-    track->remove_keyframe(m_frame);
+    m_animator.remove_key(*owner, *track, m_frame);
   }
 }
 

@@ -58,7 +58,12 @@ Q_SIGNALS:
   void end_changed(int);
   void current_changed(int);
   void play_pause_toggled(bool);
-  void tracks_changed();
+  void track_changed(Track&);
+  void track_inserted(Track&);
+  void track_removed(Track&);
+  void key_inserted(Track&, int);
+  void key_removed(Track&, int);
+  void key_moved(Track&, int, int);
 
   // == ItemModel
 public:
@@ -112,6 +117,7 @@ public:
   std::unique_ptr<Track> extract_track(AbstractPropertyOwner& owner, Property& property);
   void remove_key(AbstractPropertyOwner& owner, Track& track, int frame);
   void set_key(AbstractPropertyOwner& owner, Track& track, int frame, const variant_type& value);
+  void move_key(AbstractPropertyOwner& owner, Track& track, int old_frame, int new_frame);
 
 private:
   int m_start_frame = 1;

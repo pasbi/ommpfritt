@@ -233,6 +233,11 @@ void Track::apply(int frame) const
   }
 }
 
+void Track::move_key(int old_frame, int new_frame)
+{
+  m_knots.insert(std::pair(new_frame, m_knots.extract(old_frame).mapped()));
+}
+
 void Track::record(int frame, const variant_type &value)
 {
   assert(value.index() == property().variant_value().index());
