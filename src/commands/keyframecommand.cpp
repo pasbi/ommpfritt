@@ -86,25 +86,49 @@ MoveKeyFrameCommand::MoveKeyFrameCommand(Animator& animator, Property& property,
 
 void MoveKeyFrameCommand::undo()
 {
-  shift_keyframes(true);
+  // shift may be null if the command is merge from multiple commands which add up to zero.
+  if (m_shift != 0) {
+    shift_keyframes(true);
 
-  Track* track = m_property.track();
-  for (auto&& [frame, knot] : m_removed_values) {
-    m_animator.insert_knot(*track, frame, knot);
+    Track* track = m_property.track();
+    for (auto&& [frame, knot] : m_removed_values) {
+      m_animator.insert_knot(*track, frame, knot);
+    }
   }
 }
 
 void MoveKeyFrameCommand::redo()
 {
-  Track* track = m_property.track();
-  for (int frame : m_old_frames) {
-    if (track->has_keyframe(frame + m_shift)) {
-      const Track::Knot knot = m_animator.remove_knot(*track, frame + m_shift);
-      m_removed_values.insert(std::pair(frame + m_shift, knot));
+  // shift may be null if the command is merge from multiple commands which add up to zero.
+  if (m_shift != 0) {
+    Track* track = m_property.track();
+    for (int frame : m_old_frames) {
+      if (track->has_keyframe(frame + m_shift)) {
+        const Track::Knot knot = m_animator.remove_knot(*track, frame + m_shift);
+        m_removed_values.insert(std::pair(frame + m_shift, knot));
+      }
     }
-  }
 
-  shift_keyframes(false);
+    shift_keyframes(false);
+  }
+}
+
+bool MoveKeyFrameCommand::mergeWith(const QUndoCommand* other)
+{
+  const MoveKeyFrameCommand& other_mkfc = static_cast<const MoveKeyFrameCommand&>(*other);
+  std::set<int> new_frames;
+  for (int frame : m_old_frames) {
+    new_frames.insert(frame + m_shift);
+  }
+  if (&m_property == &other_mkfc.m_property && new_frames == other_mkfc.m_old_frames) {
+    m_shift = m_shift + other_mkfc.m_shift;
+    for (auto&& [frame, knot] : other_mkfc.m_removed_values) {
+      m_removed_values.insert(std::pair(frame, knot));
+    }
+    return true;
+  } else {
+    return false;
+  }
 }
 
 void MoveKeyFrameCommand::shift_keyframes(bool invert)
@@ -117,7 +141,6 @@ void MoveKeyFrameCommand::shift_keyframes(bool invert)
     }
   };
 
-  assert(m_shift != 0);
   if (m_shift < 0 == invert) {
     for (auto it = m_old_frames.rbegin(); it != m_old_frames.rend(); ++it) {
       move_knot(*it);
@@ -127,7 +150,6 @@ void MoveKeyFrameCommand::shift_keyframes(bool invert)
       move_knot(*it);
     }
   } else {
-    // shift must never be 0.
     Q_UNREACHABLE();
   }
 }

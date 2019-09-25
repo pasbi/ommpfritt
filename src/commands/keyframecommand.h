@@ -52,12 +52,15 @@ public:
   void undo() override;
   void redo() override;
 
+  bool mergeWith(const QUndoCommand* other) override;
+  int id() const override { return MOVE_KEYFRAMES_COMMAND_ID; }
+
 private:
   std::map<int, Track::Knot> m_removed_values;
   Animator& m_animator;
   Property& m_property;
   const std::set<int> m_old_frames;
-  const int m_shift;
+  int m_shift;
   void shift_keyframes(bool invert);
 
 };
