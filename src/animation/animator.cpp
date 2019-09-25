@@ -57,9 +57,9 @@ Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
           this, SLOT(invalidate()));
   connect(&scene.message_box(), SIGNAL(abstract_property_owner_removed(AbstractPropertyOwner&)),
           this, SLOT(invalidate()));
-  connect(this, SIGNAL(key_moved(Track&, int, int)), this, SIGNAL(track_changed(Track&)));
-  connect(this, SIGNAL(key_removed(Track&, int)), this, SIGNAL(track_changed(Track&)));
-  connect(this, SIGNAL(key_inserted(Track&, int)), this, SIGNAL(track_changed(Track&)));
+  connect(this, SIGNAL(knot_moved(Track&, int, int)), this, SIGNAL(track_changed(Track&)));
+  connect(this, SIGNAL(knot_removed(Track&, int)), this, SIGNAL(track_changed(Track&)));
+  connect(this, SIGNAL(knot_inserted(Track&, int)), this, SIGNAL(track_changed(Track&)));
   connect(this, SIGNAL(track_inserted(Track&)), this, SIGNAL(track_changed(Track&)));
   connect(this, SIGNAL(track_removed(Track&)), this, SIGNAL(track_changed(Track&)));
 }
@@ -178,11 +178,6 @@ QModelIndex Animator::index(int row, int column, const QModelIndex &parent) cons
 
 QModelIndex Animator::parent(const QModelIndex &child) const
 {
-  if (child.column() > 0) {
-    // by convention, only first column-indices may have parents.
-    return QModelIndex();
-  }
-
   switch (index_type(child)) {
   case IndexType::None:
     [[fallthrough]];
@@ -363,23 +358,24 @@ std::unique_ptr<Track> Animator::extract_track(AbstractPropertyOwner& owner, Pro
   return track;
 }
 
-void Animator::remove_key(AbstractPropertyOwner& owner, Track& track, int frame)
+Track::Knot Animator::remove_knot(Track& track, int frame)
 {
-  track.remove_keyframe(frame);
-  Q_EMIT key_removed(track, frame);
+  Track::Knot knot = track.remove_knot(frame);
+  Q_EMIT knot_removed(track, frame);
+  return knot;
 }
 
-void Animator::set_key(AbstractPropertyOwner& owner, Track& track, int frame, const variant_type& value)
+void Animator::insert_knot(Track& track, int frame, const Track::Knot& knot)
 {
-  track.record(frame, value);
-  Q_EMIT key_inserted(track, frame);
+  track.insert_knot(frame, knot);
+  Q_EMIT knot_inserted(track, frame);
 }
 
-void Animator::move_key(AbstractPropertyOwner& owner, Track& track, int old_frame, int new_frame)
+void Animator::move_knot(Track& track, int old_frame, int new_frame)
 {
   if (old_frame != new_frame) {
-    track.move_key(old_frame, new_frame);
-    Q_EMIT key_moved(track, old_frame, new_frame);
+    track.move_knot(old_frame, new_frame);
+    Q_EMIT knot_moved(track, old_frame, new_frame);
   }
 }
 

@@ -1,6 +1,7 @@
 #include "managers/dopesheet/dopesheetview.h"
 #include <QPainter>
 #include <QHeaderView>
+#include <QMouseEvent>
 #include "managers/dopesheet/trackviewdelegate.h"
 #include <memory>
 #include "animation/animator.h"
@@ -15,50 +16,80 @@ DopeSheetView::DopeSheetView(Animator& animator) : m_animator(animator)
 {
   setModel(&animator);
   header()->hide();
-  auto track_view_delegate = std::make_unique<TrackViewDelegate>(m_animator);
-  auto& tvdr = *track_view_delegate;
+  auto track_view_delegate = std::make_unique<TrackViewDelegate>(*this, m_animator);
+  m_track_view_delegate = track_view_delegate.get();
   setItemDelegateForColumn(1, track_view_delegate.release());
   connect(&m_animator, SIGNAL(start_changed(int)), this, SLOT(update_second_column()));
   connect(&m_animator, SIGNAL(end_changed(int)), this, SLOT(update_second_column()));
   connect(&m_animator, SIGNAL(current_changed(int)), this, SLOT(update_second_column()));
-  connect(&m_animator, &Animator::key_inserted, [this, &tvdr](Track& track, int frame) {
-    tvdr.insert_keyframe(track, frame);
+  connect(&m_animator, &Animator::knot_inserted, [this](Track& track, int frame) {
+    m_track_view_delegate->insert_keyframe(track, frame);
     update_second_column(track);
   });
-  connect(&m_animator, &Animator::key_removed, [this, &tvdr](Track& track, int frame) {
-    tvdr.remove_keyframe(track, frame);
+  connect(&m_animator, &Animator::knot_removed, [this](Track& track, int frame) {
+    m_track_view_delegate->remove_keyframe(track, frame);
     update_second_column(track);
   });
-  connect(&m_animator, &Animator::key_moved, [this, &tvdr](Track& track, int old_frame, int new_frame) {
-    tvdr.move_keyframe(track, old_frame, new_frame);
+  connect(&m_animator, &Animator::knot_moved, [this](Track& track, int old_frame, int new_frame) {
+    m_track_view_delegate->move_keyframe(track, old_frame, new_frame);
     update_second_column(track);
   });
-  connect(&m_animator, &Animator::track_inserted, [this, &tvdr](Track& track) {
-    tvdr.insert_track(track);
+  connect(&m_animator, &Animator::track_inserted, [this](Track& track) {
+    m_track_view_delegate->insert_track(track);
     update_second_column();
   });
-  connect(&m_animator, &Animator::track_removed, [this, &tvdr](Track& track) {
-    tvdr.remove_track(track);
+  connect(&m_animator, &Animator::track_removed, [this](Track& track) {
+    m_track_view_delegate->remove_track(track);
     update_second_column();
   });
-  connect(&m_animator, &Animator::modelReset, [this, &tvdr]() {
-    tvdr.invalidate_cache();
+  connect(&m_animator, &Animator::modelReset, [this]() {
+    m_track_view_delegate->invalidate_cache();
     update_second_column();
   });
-  tvdr.invalidate_cache();
+  m_track_view_delegate->invalidate_cache();
 }
 
 void DopeSheetView::update_second_column(Track& track)
 {
   QModelIndex index = m_animator.index(track.property());
   viewport()->update(visualRect(index.siblingAtColumn(1)));
-//  update_second_column();
 }
 
 void DopeSheetView::update_second_column()
 {
   const QRect rect(QPoint(columnViewportPosition(1), 0), QSize(columnWidth(1), height()));
   viewport()->update(rect);
+}
+
+void DopeSheetView::mouseReleaseEvent(QMouseEvent* event)
+{
+  m_track_view_delegate->mouse_button_release(*event);
+}
+
+void DopeSheetView::mousePressEvent(QMouseEvent* event)
+{
+  if (columnAt(event->x()) == 1) {
+    m_track_view_delegate->mouse_button_press(*event);
+  } else {
+    QTreeView::mousePressEvent(event);
+  }
+}
+
+void DopeSheetView::mouseMoveEvent(QMouseEvent* event)
+{
+  if (columnAt(event->x()) == 1) {
+    m_track_view_delegate->mouse_move(*event);
+  } else {
+    QTreeView::mouseMoveEvent(event);
+  }
+}
+
+void DopeSheetView::keyPressEvent(QKeyEvent* event)
+{
+  if (event->key() == Qt::Key_Escape) {
+    m_track_view_delegate->abort_move();
+  }
+  QTreeView::keyPressEvent(event);
 }
 
 }  // namespace

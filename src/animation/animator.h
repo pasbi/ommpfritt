@@ -8,6 +8,7 @@
 #include "cachedgetter.h"
 #include <QAbstractItemModel>
 #include "variant.h"
+#include "animation/track.h"
 
 namespace omm
 {
@@ -60,9 +61,9 @@ Q_SIGNALS:
   void track_changed(Track&);
   void track_inserted(Track&);
   void track_removed(Track&);
-  void key_inserted(Track&, int);
-  void key_removed(Track&, int);
-  void key_moved(Track&, int, int);
+  void knot_inserted(Track&, int);
+  void knot_removed(Track&, int);
+  void knot_moved(Track&, int, int);
 
   // == ItemModel
 public:
@@ -114,9 +115,9 @@ public:
 public:
   void insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track> track);
   std::unique_ptr<Track> extract_track(AbstractPropertyOwner& owner, Property& property);
-  void remove_key(AbstractPropertyOwner& owner, Track& track, int frame);
-  void set_key(AbstractPropertyOwner& owner, Track& track, int frame, const variant_type& value);
-  void move_key(AbstractPropertyOwner& owner, Track& track, int old_frame, int new_frame);
+  Track::Knot remove_knot(Track& track, int frame);
+  void insert_knot(Track& track, int frame, const Track::Knot& knot);
+  void move_knot(Track& track, int old_frame, int new_frame);
 
 private:
   int m_start_frame = 1;

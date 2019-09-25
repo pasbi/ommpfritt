@@ -1040,6 +1040,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Remove Tracks</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Move Keyframes</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>

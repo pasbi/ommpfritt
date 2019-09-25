@@ -12,6 +12,20 @@
 #include "commands/trackcommand.h"
 #include "commands/keyframecommand.h"
 
+namespace
+{
+
+template<typename K, typename V> std::set<V> values(const std::map<K, V>& map)
+{
+  std::set<V> vs;
+  for (auto&& [ k, v ] : map) {
+    vs.insert(v);
+  }
+  return vs;
+}
+
+}  // namespace
+
 namespace omm
 {
 
@@ -78,14 +92,14 @@ void AnimationButton::set_key()
     }
   }
   m_animator.scene.submit(std::make_unique<InsertKeyframeCommand>(m_animator, m_animator.current(),
-                                                                  m_properties));
+                                                                  values(m_properties)));
   update();
 }
 
 void AnimationButton::remove_key()
 {
   m_animator.scene.submit(std::make_unique<RemoveKeyframeCommand>(m_animator, m_animator.current(),
-                                                                  m_properties));
+                                                                  values(m_properties)));
   update();
 }
 

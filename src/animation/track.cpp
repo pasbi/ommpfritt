@@ -159,11 +159,10 @@ void Track::deserialize(AbstractDeserializer& deserializer, const Pointer& point
   }
 }
 
-void Track::remove_keyframe(int frame)
+Track::Knot Track::remove_knot(int frame)
 {
-  if (const auto it = m_knots.find(frame); it != m_knots.end()) {
-    m_knots.erase(it);
-  }
+  assert (m_knots.find(frame) != m_knots.end());
+  return m_knots.extract(frame).mapped();
 }
 
 variant_type Track::interpolate(double frame) const
@@ -214,9 +213,20 @@ variant_type Track::interpolate(double frame) const
   }
 }
 
-Track::Knot &Track::knot_at(int frame)
+Track::Knot Track::interpolate_knot(double frame) const
 {
-  return m_knots.at(frame);
+  // TODO we need something clever here for Bezier interpolation
+  const variant_type value = interpolate(frame);
+  return Knot(value);
+}
+
+Track::Knot Track::knot_at(double frame) const
+{
+  if (const auto it = m_knots.find(frame); it != m_knots.end()) {
+    return it->second;
+  } else {
+    return interpolate_knot(frame);
+  }
 }
 
 std::vector<int> Track::key_frames() const
@@ -233,23 +243,18 @@ void Track::apply(int frame) const
   }
 }
 
-void Track::move_key(int old_frame, int new_frame)
+void Track::move_knot(int old_frame, int new_frame)
 {
   m_knots.insert(std::pair(new_frame, m_knots.extract(old_frame).mapped()));
 }
 
-void Track::record(int frame, const variant_type &value)
+void Track::insert_knot(int frame, const Knot &knot)
 {
-  assert(value.index() == property().variant_value().index());
+  assert(knot.value.index() == property().variant_value().index());
   const auto it = m_knots.find(frame);
-  if (it == m_knots.end() || it->second.value != value) {
-    m_knots.insert(std::pair(frame, value));
+  if (it == m_knots.end() || it->second != knot) {
+    m_knots.insert(std::pair(frame, knot));
   }
-}
-
-const Track::Knot &Track::knot_at(int frame) const
-{
-  return m_knots.at(frame);
 }
 
 std::string Track::type() const
@@ -272,6 +277,20 @@ bool Track::is_consistent(int frame) const
 Track::Knot::Knot(const variant_type &value)
   : value(value), left_offset(0), left_value(value), right_offset(0), right_value(value)
 {
+}
+
+bool Track::Knot::operator==(const Track::Knot& other) const
+{
+  return value == other.value
+      && left_value == other.left_value
+      && right_value == other.right_value
+      && left_offset == other.left_offset
+      && right_offset == other.right_offset;
+}
+
+bool Track::Knot::operator!=(const Track::Knot& other) const
+{
+  return !(*this == other);
 }
 
 }  // namespace omm

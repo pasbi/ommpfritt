@@ -30,6 +30,8 @@ public:
     variant_type left_value;
     int right_offset;
     variant_type right_value;
+    bool operator==(const Knot& other) const;
+    bool operator!=(const Knot& other) const;
   };
 
   enum class Interpolation { Step, Linear, Bezier };
@@ -52,11 +54,11 @@ public:
 
   bool has_keyframe(int frame) const { return m_knots.find(frame) != m_knots.end(); }
   variant_type interpolate(double frame) const;
-  const Knot& knot_at(int frame) const;
-  Knot& knot_at(int frame);
+  Knot interpolate_knot(double frame) const;
+  Knot knot_at(double frame) const;
   std::vector<int> key_frames() const;
   void apply(int frame) const;
-  void move_key(int old_frame, int new_frame);
+  void move_knot(int old_frame, int new_frame);
 
   /**
    * @brief record creates a new key-value, overwriting existing keys.
@@ -65,16 +67,16 @@ public:
    * @note this function must only be called from the @code Animator instance.
    * @see Animator::set_key
    */
-  void record(int frame, const variant_type& value);
+  void insert_knot(int frame, const Knot& knot);
 
   /**
-   * @brief remove_keyframe removes the key at given frame. Does nothing if there is no such
+   * @brief remove_knot removes the key at given frame. Does nothing if there is no such
    *  key.
    * @param frame the frame
    * @note this function must only be called from the @code Animator instance.
    * @see Animator::remove_key
    */
-  void remove_keyframe(int frame);
+  Knot remove_knot(int frame);
 
   std::string type() const;
   Property& property() const { return m_property; }

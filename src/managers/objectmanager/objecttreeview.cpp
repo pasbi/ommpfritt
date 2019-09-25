@@ -116,6 +116,7 @@ void ObjectTreeView::mousePressEvent(QMouseEvent* e)
 
 void ObjectTreeView::mouseReleaseEvent(QMouseEvent *e)
 {
+  LINFO << "OTV: mouse-release";
   // see ObjectTreeView::mousePressEvent case 1
   setDragEnabled(true);
   const int column = indexAt(e->pos()).column();
