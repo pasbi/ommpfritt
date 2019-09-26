@@ -19,5 +19,8 @@
         <file>skins/omm_light.qss</file>
         <file>icons/ScriptTag.png</file>
         <file>icons/PathTag.png</file>
+        <file>icons/Play.png</file>
+        <file>icons/Pause.png</file>
+        <file>icons/Jump-End.png</file>
     </qresource>
 </RCC>

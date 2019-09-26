@@ -19,6 +19,9 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "TimeLine");
   std::string type() const override { return TYPE; }
 
+public Q_SLOTS:
+  void update_play_pause_button(bool play);
+
 private:
   struct UiTimeLineDeleter
   {

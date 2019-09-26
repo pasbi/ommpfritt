@@ -31,6 +31,7 @@ public:
   int start() const { return m_start_frame; }
   int end() const { return m_end_frame; }
   int current() const { return m_current_frame; }
+  bool is_playing() const { return m_timer.isActive(); }
 
   static constexpr auto START_FRAME_POINTER = "start-frame";
   static constexpr auto END_FRAME_POINTER = "end-frame";

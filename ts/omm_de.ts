@@ -1058,14 +1058,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Play/Pause</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>|&lt;---</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Tool</name>

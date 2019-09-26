@@ -24,6 +24,7 @@ TimeLine::TimeLine(Scene &scene)
   m_ui->sp_max->setMinimum(scene.animator().current());
   m_ui->sp_value->setRange(scene.animator().start(), scene.animator().end());
   m_ui->sp_value->setValue(scene.animator().current());
+  m_ui->pb_reset->setIcon(QIcon(QPixmap::fromImage(QImage(":/icons/Jump-End.png").mirrored(true, false))));
 
   connect(&scene.animator(), SIGNAL(end_changed(int)), m_ui->slider, SLOT(set_max(int)));
   connect(&scene.animator(), SIGNAL(start_changed(int)), m_ui->slider, SLOT(set_min(int)));
@@ -53,7 +54,8 @@ TimeLine::TimeLine(Scene &scene)
   });
   connect(m_ui->pb_play, SIGNAL(toggled(bool)), &scene.animator(), SLOT(toggle_play_pause(bool)));
   connect(&scene.animator(), SIGNAL(play_pause_toggled(bool)),
-          m_ui->pb_play, SLOT(setChecked(bool)));
+          this, SLOT(update_play_pause_button(bool)));
+  update_play_pause_button(scene.animator().is_playing());
 }
 
 std::vector<CommandInterface::ActionInfo<TimeLine>> TimeLine::action_infos()
@@ -68,4 +70,9 @@ void TimeLine::UiTimeLineDeleter::operator()(Ui::TimeLine *ui)
   delete ui;
 }
 
+void TimeLine::update_play_pause_button(bool play)
+{
+  m_ui->pb_play->setChecked(play);
+  m_ui->pb_play->setIcon(QIcon(QString(":/icons/%1.png").arg(play ? "Pause" : "Play")));
+}
 }  // namespace omm
