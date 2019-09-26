@@ -13,17 +13,16 @@ TimeLine::TimeLine(Scene &scene)
   setObjectName(TYPE);
   auto widget = std::make_unique<QWidget>();
   m_ui->setupUi(widget.get());
+  m_ui->slider->set_animator(scene.animator());
   set_widget(std::move(widget));
 
   m_ui->slider->set_min(scene.animator().start());
   m_ui->slider->set_max(scene.animator().end());
-  m_ui->slider->set_value(scene.animator().current());
   m_ui->sp_min->setValue(scene.animator().start());
   m_ui->sp_max->setValue(scene.animator().end());
   m_ui->sp_value->setValue(scene.animator().current());
   m_ui->pb_reset->setIcon(QIcon(QPixmap::fromImage(QImage(":/icons/Jump-End.png").mirrored(true, false))));
 
-  connect(&scene.animator(), SIGNAL(current_changed(int)), m_ui->slider, SLOT(set_value(int)));
   connect(&scene.animator(), &Animator::end_changed, this, [this](int end) {
     m_ui->sp_min->setValue(std::min(end, m_ui->sp_min->value()));
   });

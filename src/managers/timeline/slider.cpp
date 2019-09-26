@@ -3,6 +3,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <cmath>
+#include "animation/animator.h"
 
 namespace
 {
@@ -13,54 +14,45 @@ namespace
 namespace omm
 {
 
-Slider::Slider(QWidget *parent) : QWidget(parent), m_min(1), m_max(100), m_value(1)
+Slider::Slider(QWidget* parent) : QWidget(parent), m_min(1), m_max(100)
 {
 }
 
-void Slider::set_value(int frame)
+void Slider::set_animator(Animator& animator)
 {
-  frame = std::clamp(frame, m_min, m_max);
-  if (m_value != frame) {
-    m_value = frame;
-    update();
-    Q_EMIT value_changed(frame);
-  }
+  connect(&animator, SIGNAL(start_changed(int)), this, SLOT(update()));
+  connect(&animator, SIGNAL(end_changed(int)), this, SLOT(update()));
+  connect(&animator, SIGNAL(current_changed(int)), this, SLOT(update()));
+  m_animator = &animator;
 }
 
-void Slider::set_min(int frame)
+void Slider::set_min(double frame)
 {
-  if (frame != m_min) {
-    m_min = frame;
-    if (m_value < m_min) {
-      set_value(m_min);
-    }
-    if (m_max < m_min) {
-      set_max(m_min+1);
-    }
-    update();
-    Q_EMIT min_changed(frame);
-  }
+  m_min = frame;
+  update();
 }
 
-void Slider::set_max(int frame)
+void Slider::set_max(double frame)
 {
-  if (frame != m_max) {
-    m_max = frame;
-    if (m_value > m_max) {
-      set_value(m_max);
-    }
-    if (m_max < m_min) {
-      set_min(m_max-1);
-    }
-    update();
-    Q_EMIT max_changed(frame);
-  }
+  m_max = frame;
+  update();
 }
 
 void Slider::paintEvent(QPaintEvent *event)
 {
+  assert(m_animator != nullptr);
   QPainter painter(this);
-  painter.fillRect(rect(), Qt::white);
+  const int left = frame_to_pixel(m_animator->start()) - pixel_per_frame() * 0.5 + left_margin;
+  const int right = frame_to_pixel(m_animator->end()) + pixel_per_frame() * 0.5 + left_margin;
+  if (left > 0) {
+    painter.fillRect(QRect(QPoint(0, 0), QPoint(left-1, height())), Qt::gray);
+  }
+  if (right < width()) {
+    painter.fillRect(QRect(QPoint(right+1, 0), QPoint(width(), height())), Qt::gray);
+  }
+  if (right > 0 && left < width()) {
+    painter.fillRect(QRect(QPoint(left, 0), QPoint(right, height())), Qt::white);
+  }
 
   painter.save();
   painter.translate(left_margin, bottom_margin);
@@ -70,7 +62,7 @@ void Slider::paintEvent(QPaintEvent *event)
   painter.restore();
 
   painter.save();
-  painter.translate(frame_to_pixel(m_value), 0);
+  painter.translate(frame_to_pixel(m_animator->current()), 0);
   draw_current(painter);
   painter.restore();
 
@@ -81,28 +73,59 @@ void Slider::paintEvent(QPaintEvent *event)
 
 void Slider::mousePressEvent(QMouseEvent *event)
 {
-  set_value(pixel_to_frame(event->pos().x() - left_margin));
+  m_mouse_down_pos = event->pos();
+  m_last_mouse_pos = event->pos();
+  m_pan_active = event->modifiers() & Qt::AltModifier && event->button() == Qt::LeftButton;
+  m_zoom_active = event->modifiers() & Qt::AltModifier && event->button() == Qt::RightButton;
+  if (!m_pan_active && !m_zoom_active) {
+    Q_EMIT value_changed(pixel_to_frame(event->pos().x() - left_margin));
+  }
   QWidget::mousePressEvent(event);
 }
 
 void Slider::mouseMoveEvent(QMouseEvent *event)
 {
-  set_value(pixel_to_frame(event->pos().x() - left_margin));
+  static constexpr double min_ppf = 0.5;
+  static constexpr double max_ppf = 70;
+  if (m_pan_active) {
+    const QPoint d = m_last_mouse_pos - event->pos();
+    m_last_mouse_pos = event->pos();
+    const double min = pixel_to_frame(frame_to_pixel(m_min) + d.x());
+    const double max = pixel_to_frame(frame_to_pixel(m_max) + d.x());
+    m_min = min;
+    m_max = max;
+    update();
+  } else if (m_zoom_active) {
+    const QPoint d = m_last_mouse_pos - event->pos();
+    m_last_mouse_pos = event->pos();
+    const double center_frame = pixel_to_frame(m_mouse_down_pos.x() - left_margin);
+    const int left = m_mouse_down_pos.x() - left_margin;
+    const int right = width() - m_mouse_down_pos.x() - right_margin;
+    double ppf = pixel_per_frame() * std::exp(-d.x() / 300.0);
+    ppf = std::clamp(ppf, min_ppf, max_ppf);
+    m_min = center_frame - left / ppf;
+    m_max = center_frame + right  / ppf - 1;
+    update();
+  } else {
+    Q_EMIT value_changed(pixel_to_frame(event->pos().x() - left_margin));
+  }
   QWidget::mouseMoveEvent(event);
 }
 
-double Slider::frame_to_pixel(int frame) const
+void Slider::mouseReleaseEvent(QMouseEvent* event)
 {
-  const double t = static_cast<double>(frame - m_min) / static_cast<double>(m_max - m_min + 1);
-  return t * content_rect().width();
+  m_pan_active = false;
+  QWidget::mouseReleaseEvent(event);
 }
 
-int Slider::pixel_to_frame(int pixel) const
+double Slider::frame_to_pixel(double frame) const
 {
-  double frame = static_cast<double>(pixel) / content_rect().width();
-  frame *= (m_max - m_min + 1);
-  frame += m_min;
-  return std::round(frame);
+  return (frame - m_min) * pixel_per_frame();
+}
+
+double Slider::pixel_to_frame(double pixel) const
+{
+  return pixel / pixel_per_frame() + m_min;
 }
 
 const QRectF Slider::content_rect() const
