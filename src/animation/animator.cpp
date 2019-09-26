@@ -93,11 +93,6 @@ void Animator::set_start(int start)
   if (m_start_frame != start) {
     m_start_frame = start;
     Q_EMIT start_changed(start);
-    for (AbstractPropertyOwner* owner : accelerator().owners()) {
-      QModelIndex start = index(*accelerator().properties(*owner).front()).siblingAtColumn(1);
-      QModelIndex end = index(*accelerator().properties(*owner).back()).siblingAtColumn(1);
-      Q_EMIT dataChanged(start, end);
-    }
   }
 }
 

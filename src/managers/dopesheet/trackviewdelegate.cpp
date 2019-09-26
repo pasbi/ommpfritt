@@ -24,9 +24,9 @@ void TrackViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
                               const QModelIndex& index) const
 {
   painter->fillRect(option.rect, Qt::gray);
+  draw_background(*painter, option.rect);
   if (m_animator.index_type(index) == Animator::IndexType::Property) {
     Track* track = m_animator.property(index)->track();
-    draw_background(*painter, option.rect);
     const auto keyframe_geometry = [this, option](const int frame) {
       const double key_width = pixel_per_frame(option.rect.width());
       return QRectF(QPointF(frame_to_pixel(frame) - key_width/2.0,
@@ -247,7 +247,7 @@ void TrackViewDelegate::mouse_move(QMouseEvent& event)
 void TrackViewDelegate::draw_background(QPainter& painter, const QRect& rect) const
 {
   painter.save();
-  QPen pen(Qt::white);
+  QPen pen(Qt::black);
   for (int frame = m_animator.start(); frame <= m_animator.end(); ++frame) {
     double pen_width = 0.0;
     if (frame % 10 == 0) {
@@ -274,8 +274,8 @@ void TrackViewDelegate::draw_background(QPainter& painter, const QRect& rect) co
 void TrackViewDelegate::draw_current(QPainter& painter, const QRect& rect) const
 {
   painter.save();
-  QPen pen(Qt::black);
-  pen.setWidthF(1.0);
+  QPen pen(QColor(255, 128, 0));
+  pen.setWidthF(2.0);
   painter.setPen(pen);
   const double x = frame_to_pixel(m_animator.current());
   painter.drawLine(x, rect.bottom(), x, rect.top());

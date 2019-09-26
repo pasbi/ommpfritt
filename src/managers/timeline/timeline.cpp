@@ -18,18 +18,18 @@ TimeLine::TimeLine(Scene &scene)
   m_ui->slider->set_min(scene.animator().start());
   m_ui->slider->set_max(scene.animator().end());
   m_ui->slider->set_value(scene.animator().current());
-  m_ui->sp_min->setMaximum(scene.animator().current());
   m_ui->sp_min->setValue(scene.animator().start());
   m_ui->sp_max->setValue(scene.animator().end());
-  m_ui->sp_max->setMinimum(scene.animator().current());
-  m_ui->sp_value->setRange(scene.animator().start(), scene.animator().end());
   m_ui->sp_value->setValue(scene.animator().current());
   m_ui->pb_reset->setIcon(QIcon(QPixmap::fromImage(QImage(":/icons/Jump-End.png").mirrored(true, false))));
 
-  connect(&scene.animator(), SIGNAL(end_changed(int)), m_ui->slider, SLOT(set_max(int)));
-  connect(&scene.animator(), SIGNAL(start_changed(int)), m_ui->slider, SLOT(set_min(int)));
   connect(&scene.animator(), SIGNAL(current_changed(int)), m_ui->slider, SLOT(set_value(int)));
-
+  connect(&scene.animator(), &Animator::end_changed, this, [this](int end) {
+    m_ui->sp_min->setValue(std::min(end, m_ui->sp_min->value()));
+  });
+  connect(&scene.animator(), &Animator::start_changed, this, [this](int start) {
+    m_ui->sp_max->setValue(std::max(start, m_ui->sp_max->value()));
+  });
   connect(m_ui->slider, SIGNAL(value_changed(int)), &scene.animator(), SLOT(set_current(int)));
   connect(m_ui->sp_max, SIGNAL(valueChanged(int)), &scene.animator(), SLOT(set_end(int)));
   connect(m_ui->sp_min, SIGNAL(valueChanged(int)), &scene.animator(), SLOT(set_start(int)));
@@ -37,16 +37,12 @@ TimeLine::TimeLine(Scene &scene)
 
   connect(&scene.animator(), &Animator::end_changed, this, [this](int start) {
     m_ui->sp_max->setValue(start);
-    m_ui->sp_value->setMaximum(start);
   });
   connect(&scene.animator(), &Animator::start_changed, this, [this](int start) {
     m_ui->sp_min->setValue(start);
-    m_ui->sp_value->setMinimum(start);
   });
   connect(&scene.animator(), &Animator::current_changed, this, [this](int current) {
     m_ui->sp_value->setValue(current);
-    m_ui->sp_max->setMinimum(current);
-    m_ui->sp_min->setMaximum(current);
   });
 
   connect(m_ui->pb_reset, &QPushButton::clicked, &scene.animator(), [&scene]() {
