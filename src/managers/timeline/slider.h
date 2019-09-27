@@ -36,11 +36,6 @@ private:
   double frame_to_pixel(double frame) const;
   double pixel_to_frame(double pixel) const;
 
-  static constexpr int left_margin = 5;
-  static constexpr int right_margin = 5;
-  static constexpr int top_margin  = 10;
-  static constexpr int bottom_margin = 10;
-  const QRectF content_rect() const;
   void draw_lines(QPainter& painter) const;
   void draw_current(QPainter& painter) const;
   double pixel_per_frame() const;
