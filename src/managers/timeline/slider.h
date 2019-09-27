@@ -11,10 +11,10 @@ class Slider : public QWidget
 {
   Q_OBJECT
 public:
-  explicit Slider(QWidget* parent = nullptr);
+  explicit Slider(Animator& animator);
 
   std::pair<int, int> range() const { return std::pair(m_min, m_max); }
-  void set_animator(Animator& animator);
+  Animator& animator;
 
 public Q_SLOTS:
   void set_min(double frame);
@@ -32,7 +32,6 @@ protected:
 private:
   double m_min;
   double m_max;
-  Animator* m_animator = nullptr;
   double frame_to_pixel(double frame) const;
   double pixel_to_frame(double pixel) const;
 
