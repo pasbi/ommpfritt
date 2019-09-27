@@ -4,10 +4,11 @@
 #include "keybindings/commandinterface.h"
 #include "managers/manager.h"
 
-namespace Ui { class TimeLine; }
-
 namespace omm
 {
+
+class Slider;
+class TimeLineTitleBar;
 
 class TimeLine : public Manager, public CommandInterface
 {
@@ -23,11 +24,8 @@ public Q_SLOTS:
   void update_play_pause_button(bool play);
 
 private:
-  struct UiTimeLineDeleter
-  {
-    void operator()(::Ui::TimeLine* ui);
-  };
-  std::unique_ptr<::Ui::TimeLine, UiTimeLineDeleter> m_ui;
+  Slider* m_slider;
+  TimeLineTitleBar* m_header;
 
 };
 

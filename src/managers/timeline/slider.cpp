@@ -5,25 +5,14 @@
 #include <cmath>
 #include "animation/animator.h"
 
-namespace
-{
-
-
-}  // namespace
-
 namespace omm
 {
 
-Slider::Slider(QWidget* parent) : QWidget(parent), m_min(1), m_max(100)
-{
-}
-
-void Slider::set_animator(Animator& animator)
+Slider::Slider(Animator& animator) : animator(animator), m_min(1), m_max(100)
 {
   connect(&animator, SIGNAL(start_changed(int)), this, SLOT(update()));
   connect(&animator, SIGNAL(end_changed(int)), this, SLOT(update()));
   connect(&animator, SIGNAL(current_changed(int)), this, SLOT(update()));
-  m_animator = &animator;
 }
 
 void Slider::set_min(double frame)
@@ -40,10 +29,9 @@ void Slider::set_max(double frame)
 
 void Slider::paintEvent(QPaintEvent *event)
 {
-  assert(m_animator != nullptr);
   QPainter painter(this);
-  const int left = frame_to_pixel(m_animator->start()) - pixel_per_frame()/2.0;
-  const int right = frame_to_pixel(m_animator->end()) + pixel_per_frame()/2.0;
+  const int left = frame_to_pixel(animator.start()) - pixel_per_frame()/2.0;
+  const int right = frame_to_pixel(animator.end()) + pixel_per_frame()/2.0;
   if (left > 0) {
     painter.fillRect(QRect(QPoint(0, 0), QPoint(left-1, height())), Qt::gray);
   }
@@ -59,7 +47,7 @@ void Slider::paintEvent(QPaintEvent *event)
   painter.restore();
 
   painter.save();
-  painter.translate(frame_to_pixel(m_animator->current()), 0);
+  painter.translate(frame_to_pixel(animator.current()), 0);
   draw_current(painter);
   painter.restore();
 
@@ -73,7 +61,7 @@ void Slider::mousePressEvent(QMouseEvent *event)
   m_pan_active = event->modifiers() & Qt::AltModifier && event->button() == Qt::LeftButton;
   m_zoom_active = event->modifiers() & Qt::AltModifier && event->button() == Qt::RightButton;
   if (!m_pan_active && !m_zoom_active) {
-    Q_EMIT value_changed(pixel_to_frame(event->pos().x()));
+    Q_EMIT value_changed(pixel_to_frame(event->pos().x()) + 0.5);
   }
   QWidget::mousePressEvent(event);
 }
@@ -84,7 +72,7 @@ void Slider::mouseMoveEvent(QMouseEvent *event)
   static constexpr double max_ppf = 70;
   if (m_pan_active) {
     const QPoint d = m_last_mouse_pos - event->pos();
-    m_last_mouse_pos = event->pos();
+    QCursor::setPos(mapToGlobal(m_mouse_down_pos));
     const double min = pixel_to_frame(frame_to_pixel(m_min) + d.x());
     const double max = pixel_to_frame(frame_to_pixel(m_max) + d.x());
     m_min = min;
@@ -92,7 +80,7 @@ void Slider::mouseMoveEvent(QMouseEvent *event)
     update();
   } else if (m_zoom_active) {
     const QPoint d = m_last_mouse_pos - event->pos();
-    m_last_mouse_pos = event->pos();
+    QCursor::setPos(mapToGlobal(m_mouse_down_pos));
     const double center_frame = pixel_to_frame(m_mouse_down_pos.x());
     const int left = m_mouse_down_pos.x();
     const int right = width() - m_mouse_down_pos.x();
@@ -102,7 +90,7 @@ void Slider::mouseMoveEvent(QMouseEvent *event)
     m_max = center_frame + right  / ppf - 1;
     update();
   } else {
-    Q_EMIT value_changed(pixel_to_frame(event->pos().x()));
+    Q_EMIT value_changed(pixel_to_frame(event->pos().x()) + 0.5);
   }
   QWidget::mouseMoveEvent(event);
 }

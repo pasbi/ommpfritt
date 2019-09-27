@@ -1053,7 +1053,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
 </context>
 <context>
-    <name>TimeLine</name>
+    <name>TimeLineTitleBar</name>
     <message>
         <source>Form</source>
         <translation type="unfinished"></translation>
