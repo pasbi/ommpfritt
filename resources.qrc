@@ -22,5 +22,6 @@
         <file>icons/Play.png</file>
         <file>icons/Pause.png</file>
         <file>icons/Jump-End.png</file>
+        <file>layouts/default.layout</file>
     </qresource>
 </RCC>

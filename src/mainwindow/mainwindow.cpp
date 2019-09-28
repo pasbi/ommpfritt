@@ -11,12 +11,15 @@
 #include <QMessageBox>
 #include <QDirIterator>
 #include <QLocale>
+#include <QFileDialog>
 
 #include "scene/messagebox.h"
 #include "tools/tool.h"
 #include "managers/objectmanager/objectmanager.h"
 #include "managers/stylemanager/stylemanager.h"
 #include "managers/propertymanager/propertymanager.h"
+#include "managers/boundingboxmanager/boundingboxmanager.h"
+#include "managers/timeline/timeline.h"
 #include "mainwindow/viewport/viewport.h"
 #include "mainwindow/application.h"
 #include "mainwindow/toolbar.h"
@@ -29,45 +32,6 @@
 
 namespace
 {
-
-template<typename T, typename F>
-auto read_each(QSettings& settings, const std::string& key, const F& f)
-{
-  auto size = settings.beginReadArray(QString::fromStdString(key));
-  std::vector<T> ts;
-  assert(size >= 0);
-  ts.reserve(static_cast<std::size_t>(size));
-  for (decltype(size) i = 0; i < size; ++i) {
-    settings.setArrayIndex(i);
-    ts.push_back(f());
-  }
-  settings.endArray();
-  return ts;
-}
-
-template<typename F>
-void read_each(QSettings& settings, const std::string& key, const F& f)
-{
-  auto size = settings.beginReadArray(QString::fromStdString(key));
-  for (decltype(size) i = 0; i < size; ++i) {
-    settings.setArrayIndex(i);
-    f();
-  }
-  settings.endArray();
-}
-
-template<typename Ts, typename F>
-void write_each(QSettings& settings, const std::string& key, const Ts& ts, const F& f)
-{
-  settings.beginWriteArray(QString::fromStdString(key));
-  int i = 0;
-  for (auto&& t : ts) {
-    settings.setArrayIndex(i);
-    f(t);
-    i += 1;
-  }
-  settings.endArray();
-}
 
 QMenu* find_menu(QMenu* menu, const QString& object_name)
 {
@@ -165,6 +129,8 @@ std::vector<std::string> MainWindow::main_menu_entries()
     "window/"s + KeyBindings::SEPARATOR,
     "window/show keybindings dialog",
     "window/restore default layout",
+    "window/save layout ...",
+    "window/load layout ...",
   });
   merge(object_menu_entries());
   merge(path_menu_entries());
@@ -263,27 +229,7 @@ void MainWindow::restore_state()
 {
   QSettings settings;
   restoreGeometry(settings.value(GEOMETRY_SETTINGS_KEY).toByteArray());
-
-  read_each(settings, TOOLBAR_SETTINGS_KEY, [this, &settings]() {
-    const auto tools = read_each<std::string>(settings, TOOLBAR_TOOLS_SETTINGS_KEY, [&settings]() {
-      return settings.value(TOOLBAR_TOOL_SETTINGS_KEY).toString().toStdString();
-    });
-    auto tool_bar = std::make_unique<ToolBar>(this, m_app.scene.tool_box(), tools);
-    addToolBar(Qt::TopToolBarArea, tool_bar.release());
-  });
-
-  restoreState(settings.value(WINDOWSTATE_SETTINGS_KEY).toByteArray());
-
-  read_each(settings, MANAGER_SETTINGS_KEY, [this, &settings]() {
-    const auto type = settings.value(MANAGER_TYPE_SETTINGS_KEY).toString().toStdString();
-    const auto name = settings.value(MANAGER_NAME_SETTINGS_KEY).toString();
-    auto manager = Manager::make(type, m_app.scene);
-    manager->setObjectName(name);
-    assert(manager);
-    if (!restoreDockWidget(manager.release())) {
-      LWARNING << "Failed to restore geometry of manager.";
-    }
-  });
+  load_layout(settings);
 }
 
 std::vector<QDockWidget*> MainWindow::dock_widgets() const
@@ -293,45 +239,15 @@ std::vector<QDockWidget*> MainWindow::dock_widgets() const
 
 void MainWindow::restore_default_layout()
 {
-  // TODO restore toolbars
-  for (auto* dock : dock_widgets()) {
-    removeDockWidget(dock);
-    dock->close();
-  }
-
-  const auto add_dock = [this](const std::string& type) {
-    auto manager = Manager::make(type, m_app.scene);
-    make_unique_manager_name(*manager);
-    manager->setParent(this);
-    this->addDockWidget(Qt::RightDockWidgetArea, manager.release(), Qt::Vertical);
-  };
-
-  add_dock(ObjectManager::TYPE);
-  add_dock(PropertyManager::TYPE);
-  add_dock(StyleManager::TYPE);
+  QSettings settings(":/layouts/default.layout", QSettings::IniFormat);
+  load_layout(settings);
 }
 
 void MainWindow::save_state()
 {
   QSettings settings;
   settings.setValue(GEOMETRY_SETTINGS_KEY, saveGeometry());
-  settings.setValue(WINDOWSTATE_SETTINGS_KEY, saveState());
-
-  const auto save_manager = [&settings](const Manager* manager) {
-    LINFO << "save manager " << manager->type() << " "
-          << manager->isVisible() << " " << manager->objectName().toStdString();
-    settings.setValue(MANAGER_TYPE_SETTINGS_KEY, QString::fromStdString(manager->type()));
-    settings.setValue(MANAGER_NAME_SETTINGS_KEY, manager->objectName());
-  };
-  write_each(settings, MANAGER_SETTINGS_KEY, findChildren<Manager*>(), save_manager);
-
-  const auto save_tool_bar = [&settings](const ToolBar* tool_bar) {
-    auto& tools = tool_bar->tools();
-    write_each(settings, TOOLBAR_TOOLS_SETTINGS_KEY, tools, [&settings](const auto& t) {
-      settings.setValue(TOOLBAR_TOOL_SETTINGS_KEY, QString::fromStdString(t));
-    });
-  };
-  write_each(settings, TOOLBAR_SETTINGS_KEY, findChildren<ToolBar*>(), save_tool_bar);
+  save_layout(settings);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -366,6 +282,80 @@ void MainWindow::make_unique_manager_name(QDockWidget& widget) const
     i++;
   }
   widget.setObjectName(name);
+}
+
+QString MainWindow::get_last_layout_filename() const
+{
+  QSettings settings;
+  const QString fn = settings.value(LAST_LAYOUT_FILE_NAME, "").toString();
+  if (fn.isEmpty()) {
+    return QDir::homePath();
+  } else {
+    return fn;
+  }
+}
+
+void MainWindow::load_layout()
+{
+  const QString fn = QFileDialog::getOpenFileName(this, tr("Restore Layout"),
+                                                  get_last_layout_filename());
+  if (!fn.isEmpty()) {
+    QSettings().setValue(LAST_LAYOUT_FILE_NAME, fn);
+    QSettings settings(fn, QSettings::IniFormat);
+    load_layout(settings);
+  }
+}
+
+void MainWindow::save_layout()
+{
+  const QString fn = QFileDialog::getSaveFileName(this, tr("Save Layout"),
+                                                  get_last_layout_filename());
+
+  if (!fn.isEmpty()) {
+    QSettings settings(fn, QSettings::IniFormat);
+    if (settings.isWritable()) {
+      QSettings().setValue(LAST_LAYOUT_FILE_NAME, fn);
+      save_layout(settings);
+    }
+  }
+}
+
+void MainWindow:: load_layout(QSettings& settings)
+{
+  for (Manager* manager : findChildren<Manager*>()) {
+    delete manager;
+  }
+
+  restoreState(settings.value(WINDOWSTATE_SETTINGS_KEY).toByteArray());
+  auto size = settings.beginReadArray(QString::fromStdString(MANAGER_SETTINGS_KEY));
+  for (decltype(size) i = 0; i < size; ++i) {
+    settings.setArrayIndex(i);
+    const QString type = settings.value(MANAGER_TYPE_SETTINGS_KEY).toString();
+    const QString name = settings.value(MANAGER_NAME_SETTINGS_KEY).toString();
+
+    auto manager = Manager::make(type.toStdString(), m_app.scene);
+    manager->setObjectName(name);
+    assert(manager);
+    if (!restoreDockWidget(manager.release())) {
+      LWARNING << "Failed to restore geometry of manager.";
+    }
+
+  }
+  settings.endArray();
+}
+
+void MainWindow::save_layout(QSettings& settings)
+{
+  settings.setValue(WINDOWSTATE_SETTINGS_KEY, saveState());
+  int i = 0;
+  settings.beginWriteArray(MANAGER_SETTINGS_KEY);
+  for (Manager* manager : findChildren<Manager*>()) {
+    settings.setArrayIndex(i);
+    settings.setValue(MANAGER_TYPE_SETTINGS_KEY, QString::fromStdString(manager->type()));
+    settings.setValue(MANAGER_NAME_SETTINGS_KEY, manager->objectName());
+    i += 1;
+  }
+  settings.endArray();
 }
 
 }  // namespace omm

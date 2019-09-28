@@ -32,6 +32,12 @@ public:
   static std::vector<std::string> available_translations();
   void make_unique_manager_name(QDockWidget& widget) const;
 
+  void save_layout();
+  void save_layout(QSettings& settings);
+  void load_layout();
+  void load_layout(QSettings& settings);
+
+
   static constexpr auto LOCALE_SETTINGS_KEY = "locale";
   static constexpr auto SKIN_SETTINGS_KEY = "skin";
   static constexpr auto TOOLBAR_SETTINGS_KEY = "mainwindow/toolbars";
@@ -44,6 +50,7 @@ public:
   static constexpr auto WINDOWSTATE_SETTINGS_KEY = "mainwindow/window_state";
   static constexpr auto RECENT_DOCUMENTS_SETTINGS_KEY = "mainwindow/recent_documents";
   static constexpr auto TYPE_NAME_CONTEXT = "typename";
+  static constexpr auto LAST_LAYOUT_FILE_NAME = "last_layout_file_name";
 
 protected:
   void closeEvent(QCloseEvent *event) override;
@@ -52,6 +59,8 @@ private:
   Application& m_app;
   Viewport* m_viewport;
   std::vector<QDockWidget*> dock_widgets() const;
+
+  QString get_last_layout_filename() const;
 
 
 private Q_SLOTS:
