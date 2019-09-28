@@ -4,15 +4,24 @@
 #include <QPainter>
 #include <cmath>
 #include "animation/animator.h"
+#include "scene/scene.h"
+#include "scene/messagebox.h"
 
 namespace omm
 {
 
-Slider::Slider(Animator& animator) : animator(animator), m_min(1), m_max(100)
+Slider::Slider(Animator& animator)
+  : animator(animator)
+  , m_min(1)
+  , m_max(100)
 {
   connect(&animator, SIGNAL(start_changed(int)), this, SLOT(update()));
   connect(&animator, SIGNAL(end_changed(int)), this, SLOT(update()));
   connect(&animator, SIGNAL(current_changed(int)), this, SLOT(update()));
+  connect(&animator, SIGNAL(track_changed(Track&)), this, SLOT(update_keyframe_hints()));
+  connect(&animator.scene.message_box(),
+          SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),\
+          this, SLOT(update_keyframe_hints()));
 }
 
 void Slider::set_min(double frame)
@@ -30,6 +39,7 @@ void Slider::set_max(double frame)
 void Slider::paintEvent(QPaintEvent *event)
 {
   QPainter painter(this);
+  painter.setRenderHint(QPainter::HighQualityAntialiasing);
   const int left = frame_to_pixel(animator.start()) - pixel_per_frame()/2.0;
   const int right = frame_to_pixel(animator.end()) + pixel_per_frame()/2.0;
   if (left > 0) {
@@ -44,6 +54,10 @@ void Slider::paintEvent(QPaintEvent *event)
 
   painter.save();
   draw_lines(painter);
+  painter.restore();
+
+  painter.save();
+  draw_keyframe_hints(painter);
   painter.restore();
 
   painter.save();
@@ -116,8 +130,23 @@ double Slider::pixel_per_frame() const
   return width() / static_cast<double>(m_max - m_min + 1);
 }
 
+void Slider::update_keyframe_hints()
+{
+  m_keyframe_hints.clear();
+  for (const AbstractPropertyOwner* o : animator.scene.selection()) {
+    for (Property* property : o->properties().values()) {
+      if (Track* track = property->track(); track != nullptr) {
+        const auto key_frames = track->key_frames();
+        m_keyframe_hints.insert(key_frames.begin(), key_frames.end());
+      }
+    }
+  }
+  update();
+}
+
 void Slider::draw_lines(QPainter& painter) const
 {
+  const QFontMetricsF fm(font());
   const double ppf = this->pixel_per_frame();
   QPen pen;
   pen.setColor(Qt::black);
@@ -143,13 +172,11 @@ void Slider::draw_lines(QPainter& painter) const
       draw_frame_number = frame % 2 == 0;
     }
 
-    QFont font;
-    QFontMetrics fm(font);
     pen.setWidthF(frame % 10 == 0 ? 2.0 : 1.0);
     painter.setPen(pen);
     const double x = frame_to_pixel(frame);
     const int line_start = frame % 2 == 0 ? 0 : 5;
-    const int line_end = std::max(line_start, height() - fm.height());
+    const int line_end = std::max(line_start, static_cast<int>(height() - fm.height()));
     painter.drawLine(x, line_start, x, line_end);
 
     if (draw_frame_number) {
@@ -172,5 +199,36 @@ void Slider::draw_current(QPainter& painter) const
   painter.drawRect(current_rect);
 }
 
+void Slider::draw_keyframe_hints(QPainter& painter) const
+{
+  const QFontMetricsF fm(font());
+  const double ppf = this->pixel_per_frame();
+  const int height = (this->height() - fm.height());
+  const int y = height / 2.0;
+  QPainterPath diamond;
+  diamond.moveTo(QPointF( 0,  1));
+  diamond.lineTo(QPointF( 1,  0));
+  diamond.lineTo(QPointF( 0, -1));
+  diamond.lineTo(QPointF(-1,  0));
+  diamond.closeSubpath();
+
+  QPen pen;
+  pen.setCosmetic(true);
+  pen.setColor(Qt::black);
+  const double scale = std::min(height/2.0, std::max(4.0, ppf))/2.0;
+  pen.setWidthF(scale/5.0);
+  painter.setPen(pen);
+
+  for (int frame = m_min; frame <= m_max + 1; ++frame) {
+    if (::contains(m_keyframe_hints, frame)) {
+      painter.save();
+      painter.translate(frame_to_pixel(frame), y);
+      painter.scale(scale, scale);
+      painter.fillPath(diamond, Qt::yellow);
+      painter.drawPath(diamond);
+      painter.restore();
+    }
+  }
+}
 
 }  // namespace omm

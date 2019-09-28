@@ -1,6 +1,7 @@
-#include <QWidget>
-
 #pragma once
+
+#include <QWidget>
+#include <set>
 
 namespace omm
 {
@@ -37,12 +38,19 @@ private:
 
   void draw_lines(QPainter& painter) const;
   void draw_current(QPainter& painter) const;
+  void draw_keyframe_hints(QPainter& painter) const;
   double pixel_per_frame() const;
 
   bool m_pan_active;
   bool m_zoom_active;
   QPoint m_last_mouse_pos;
   QPoint m_mouse_down_pos;
+
+
+private Q_SLOTS:
+  void update_keyframe_hints();
+private:
+  std::set<int> m_keyframe_hints;
 };
 
 }  // namespace
