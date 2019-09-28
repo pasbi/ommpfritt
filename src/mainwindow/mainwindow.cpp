@@ -129,8 +129,11 @@ std::vector<std::string> MainWindow::main_menu_entries()
     "window/"s + KeyBindings::SEPARATOR,
     "window/show keybindings dialog",
     "window/restore default layout",
+#ifndef NDEBUG  // these functions facialiate the creation of profiles.
+                // they should not be used by the user since the file content is not validated.
     "window/save layout ...",
     "window/load layout ...",
+#endif  // NDEBUG
   });
   merge(object_menu_entries());
   merge(path_menu_entries());
