@@ -11,20 +11,30 @@
 #include "scene/scene.h"
 #include "scene/history/historymodel.h"
 #include "commands/keyframecommand.h"
+#include "managers/timeline/slider.h"
 
 namespace omm
 {
 
 TrackViewDelegate::TrackViewDelegate(DopeSheetView& view, Animator& animator)
   : m_view(view), m_animator(animator)
+  , m_start_frame(m_animator.start()), m_end_frame(m_animator.end())
 {
 }
 
 void TrackViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option,
                               const QModelIndex& index) const
 {
-  painter->fillRect(option.rect, Qt::gray);
-  draw_background(*painter, option.rect);
+  painter->save();
+
+  painter->save();
+  painter->setClipRect(option.rect);
+  painter->translate(option.rect.topLeft());
+  painter->scale(option.rect.width(), option.rect.height());
+  Slider::draw_background(m_animator, *painter, 0, 100);
+  Slider::draw_lines(*painter, 0, 100, option.font, option.rect, false);
+  painter->restore();
+
   if (m_animator.index_type(index) == Animator::IndexType::Property) {
     Track* track = m_animator.property(index)->track();
     const auto keyframe_geometry = [this, option](const int frame) {
@@ -43,6 +53,7 @@ void TrackViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
     }
   }
   draw_current(*painter, option.rect);
+  painter->restore();
 }
 
 QSize TrackViewDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -52,16 +63,6 @@ QSize TrackViewDelegate::sizeHint(const QStyleOptionViewItem& option, const QMod
   } else {
     return QSize(0, 0);
   }
-}
-
-int TrackViewDelegate::start_frame() const
-{
-  return m_animator.start();
-}
-
-int TrackViewDelegate::end_frame() const
-{
-  return m_animator.end();
 }
 
 double TrackViewDelegate::pixel_per_frame(int width) const

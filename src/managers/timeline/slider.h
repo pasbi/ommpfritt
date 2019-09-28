@@ -17,6 +17,14 @@ public:
   std::pair<int, int> range() const { return std::pair(m_min, m_max); }
   Animator& animator;
 
+  static void draw_background(const Animator& animator, QPainter& painter,
+                              double left_frame, double right_frame);
+  static void draw_lines(QPainter& painter,
+                         double left_frame, double right_frame, const QFont& font,
+                         const QRectF& rect, bool text);
+  static void draw_current(Animator& animator, QPainter& painter, double left_frame, double right_frame);
+  static void draw_keyframe_hints(QPainter& painter, double left_frame, double right_frame, const QFont& font, const QRectF& rect, const std::set<int>& hints);
+
 public Q_SLOTS:
   void set_min(double frame);
   void set_max(double frame);
@@ -36,9 +44,6 @@ private:
   double frame_to_pixel(double frame) const;
   double pixel_to_frame(double pixel) const;
 
-  void draw_lines(QPainter& painter) const;
-  void draw_current(QPainter& painter) const;
-  void draw_keyframe_hints(QPainter& painter) const;
   double pixel_per_frame() const;
 
   bool m_pan_active;

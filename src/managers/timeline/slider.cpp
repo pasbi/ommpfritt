@@ -24,6 +24,85 @@ Slider::Slider(Animator& animator)
           this, SLOT(update_keyframe_hints()));
 }
 
+void Slider::draw_background(const Animator& animator, QPainter& painter,
+                             double left_frame, double right_frame)
+{
+  painter.save();
+  const double ppf = 1.0 / (right_frame - left_frame + 1);
+  const double left = (animator.start()-left_frame) * ppf - ppf/2.0;
+  const double right = (animator.end()-left_frame) * ppf + ppf/2.0;
+  if (left > 0.0) {
+    painter.fillRect(QRectF(QPointF(0, 0), QPointF(left, 1.0)), Qt::gray);
+  }
+  if (right < 1.0) {
+    painter.fillRect(QRectF(QPointF(right, 0), QPointF(1.0, 1.0)), Qt::gray);
+  }
+  if (right > 0.0 && left < 1.0) {
+    painter.fillRect(QRectF(QPointF(left, 0.0), QPointF(right, 1.0)), Qt::white);
+  }
+  painter.restore();
+}
+
+void Slider::draw_lines(QPainter& painter, double left_frame, double right_frame, const QFont& font,
+                        const QRectF& rect, bool draw_text)
+{
+  painter.save();
+  const double ppf = 1.0 / (right_frame - left_frame + 1);
+  const double ppfs = rect.width() * ppf;
+
+  QFont f(font);
+  painter.setFont(f);
+  const QFontMetricsF fm(f);
+  QPen pen;
+  pen.setColor(Qt::black);
+  pen.setCosmetic(true);
+  painter.setPen(pen);
+  for (int frame = left_frame; frame <= right_frame + 1; ++frame) {
+    if (ppfs < 10 && (frame % 2 != 0)) {
+      continue;
+    } else if (ppfs < 2 && frame % 10 != 0) {
+      continue;
+    } else if (ppfs < 1 && frame % 20 != 0) {
+      continue;
+    }
+
+    bool draw_frame_number = draw_text;
+    if (ppfs < 2) {
+      draw_frame_number &= frame % 100 == 0;
+    } else if (ppfs < 10) {
+      draw_frame_number &= frame % 20 == 0;
+    } else if (ppfs < 20) {
+      draw_frame_number &= frame % 10 == 0;
+    } else {
+      draw_frame_number &= frame % 2 == 0;
+    }
+
+    pen.setWidthF(frame % 10 == 0 ? 2.0 : 1.0);
+    painter.setPen(pen);
+
+    const double x = (frame - left_frame) * ppf;
+    const double line_start = frame % 2 == 0 ? 0 : 0.05;
+
+    // there is no way in drawing really tiny text. Hence, we must draw the frame numbers in
+    // non-normalized coordinates...
+    painter.save();
+    painter.resetTransform();
+    painter.translate(rect.left() + rect.width() * x, rect.top());
+
+    const double line_end = draw_text ? std::max(line_start, rect.height() - fm.height())
+                                      : rect.height();
+    painter.drawLine(QPointF(0, line_start), QPointF(0, line_end));
+
+    if (draw_frame_number) {
+      const QString text = QString("%1").arg(frame);
+      painter.drawText(QPointF(-fm.horizontalAdvance(text)/2.0, rect.height()), text);
+    }
+    painter.restore();
+  }
+
+  painter.restore();
+}
+
 void Slider::set_min(double frame)
 {
   m_min = frame;
@@ -39,30 +118,24 @@ void Slider::set_max(double frame)
 void Slider::paintEvent(QPaintEvent *event)
 {
   QPainter painter(this);
+
+  painter.translate(rect().topLeft());
+  painter.scale(rect().width(), rect().height());
+
   painter.setRenderHint(QPainter::HighQualityAntialiasing);
-  const int left = frame_to_pixel(animator.start()) - pixel_per_frame()/2.0;
-  const int right = frame_to_pixel(animator.end()) + pixel_per_frame()/2.0;
-  if (left > 0) {
-    painter.fillRect(QRect(QPoint(0, 0), QPoint(left-1, height())), Qt::gray);
-  }
-  if (right < width()) {
-    painter.fillRect(QRect(QPoint(right+1, 0), QPoint(width(), height())), Qt::gray);
-  }
-  if (right > 0 && left < width()) {
-    painter.fillRect(QRect(QPoint(left, 0), QPoint(right, height())), Qt::white);
-  }
+
+  draw_background(animator, painter, m_min, m_max);
 
   painter.save();
-  draw_lines(painter);
+  draw_lines(painter, m_min, m_max, font(), rect(), true);
   painter.restore();
 
   painter.save();
-  draw_keyframe_hints(painter);
+  draw_keyframe_hints(painter, m_min, m_max, font(), rect(), m_keyframe_hints);
   painter.restore();
 
   painter.save();
-  painter.translate(frame_to_pixel(animator.current()), 0);
-  draw_current(painter);
+  draw_current(animator, painter, m_min, m_max);
   painter.restore();
 
   QWidget::paintEvent(event);
@@ -144,66 +217,29 @@ void Slider::update_keyframe_hints()
   update();
 }
 
-void Slider::draw_lines(QPainter& painter) const
+void Slider::draw_current(Animator& animator, QPainter& painter, double left_frame, double right_frame)
 {
-  const QFontMetricsF fm(font());
-  const double ppf = this->pixel_per_frame();
-  QPen pen;
-  pen.setColor(Qt::black);
-  pen.setCosmetic(true);
-  painter.setPen(pen);
-  for (int frame = m_min; frame <= m_max + 1; ++frame) {
-    if (ppf < 10 && (frame % 2 != 0)) {
-      continue;
-    } else if (ppf < 2 && frame % 10 != 0) {
-      continue;
-    } else if (ppf < 1 && frame % 20 != 0) {
-      continue;
-    }
-
-    bool draw_frame_number = false;
-    if (ppf < 2) {
-      draw_frame_number = frame % 100 == 0;
-    } else if (ppf < 10) {
-      draw_frame_number = frame % 20 == 0;
-    } else if (ppf < 20) {
-      draw_frame_number = frame % 10 == 0;
-    } else {
-      draw_frame_number = frame % 2 == 0;
-    }
-
-    pen.setWidthF(frame % 10 == 0 ? 2.0 : 1.0);
-    painter.setPen(pen);
-    const double x = frame_to_pixel(frame);
-    const int line_start = frame % 2 == 0 ? 0 : 5;
-    const int line_end = std::max(line_start, static_cast<int>(height() - fm.height()));
-    painter.drawLine(x, line_start, x, line_end);
-
-    if (draw_frame_number) {
-      const QString text = QString("%1").arg(frame);
-      painter.drawText(QPointF(x - fm.horizontalAdvance(text)/2.0, height()), text);
-    }
-  }
-}
-
-void Slider::draw_current(QPainter& painter) const
-{
-  const double height = this->height();
-  const double pixel_per_frame = this->pixel_per_frame();
-  const QRectF current_rect(-pixel_per_frame/2.0, height/2.0, pixel_per_frame, height);
+  const double ppf = 1.0 / (right_frame - left_frame + 1);
+  const double x = (animator.current()-left_frame) * ppf;
+  const QRectF current_rect(QPointF(x-ppf/2.0, 0.5), QSizeF(ppf, 0.5));
   painter.fillRect(current_rect, QColor(255, 128, 0, 60));
   QPen pen;
   pen.setColor(QColor(255, 128, 0, 120));
   pen.setWidthF(4.0);
+  pen.setCosmetic(true);
   painter.setPen(pen);
   painter.drawRect(current_rect);
 }
 
-void Slider::draw_keyframe_hints(QPainter& painter) const
+void Slider::draw_keyframe_hints(QPainter& painter, double left_frame, double right_frame,
+                                 const QFont& font, const QRectF& rect, const std::set<int>& hints)
 {
-  const QFontMetricsF fm(font());
-  const double ppf = this->pixel_per_frame();
-  const int height = (this->height() - fm.height());
+  painter.save();
+  painter.resetTransform();
+  painter.translate(rect.topLeft());
+  const double ppf = rect.width() / (right_frame - left_frame + 1);
+  const QFontMetricsF fm(font);
+  const int height = (rect.height() - fm.height());
   const int y = height / 2.0;
   QPainterPath diamond;
   diamond.moveTo(QPointF( 0,  1));
@@ -219,16 +255,17 @@ void Slider::draw_keyframe_hints(QPainter& painter) const
   pen.setWidthF(scale/5.0);
   painter.setPen(pen);
 
-  for (int frame = m_min; frame <= m_max + 1; ++frame) {
-    if (::contains(m_keyframe_hints, frame)) {
+  for (int frame = left_frame; frame <= right_frame + 1; ++frame) {
+    if (::contains(hints, frame)) {
       painter.save();
-      painter.translate(frame_to_pixel(frame), y);
+      painter.translate((frame - left_frame) * ppf, y);
       painter.scale(scale, scale);
       painter.fillPath(diamond, Qt::yellow);
       painter.drawPath(diamond);
       painter.restore();
     }
   }
+  painter.restore();
 }
 
 }  // namespace omm

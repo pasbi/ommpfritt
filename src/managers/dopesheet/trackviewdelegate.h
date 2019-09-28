@@ -16,9 +16,6 @@ public:
   void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
   QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
-  int start_frame() const;
-  int end_frame() const;
-
   struct TrackGeometry
   {
     explicit TrackGeometry(const TrackViewDelegate& delegate,
@@ -68,6 +65,9 @@ private:
   QPoint m_mouse_down_pos;
   bool m_move_aborted = false;
   int m_current_shift = 0;
+
+  int m_start_frame;
+  int m_end_frame;
 };
 
 }  // namespace omm
