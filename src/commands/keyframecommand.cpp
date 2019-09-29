@@ -21,6 +21,20 @@ collect_knots(const std::set<omm::Property*>& properties, int frame)
   return map;
 }
 
+std::map<omm::Property*, omm::Track::Knot>
+create_knots(const std::set<omm::Property*>& properties, int frame)
+{
+  std::map<omm::Property*, omm::Track::Knot> map;
+  for (auto&& property : properties) {
+    if (property->track() != nullptr) {
+      Q_UNUSED(frame)
+      omm::Track::Knot knot(property->variant_value());
+      map.insert(std::pair(property, knot));
+    }
+  }
+  return map;
+}
+
 }  // namespace
 
 namespace omm
@@ -51,16 +65,9 @@ void KeyframeCommand::remove()
 
 InsertKeyframeCommand::
 InsertKeyframeCommand(Animator& animator, int frame,
-                      const std::map<Property*, Track::Knot>& knots)
-  : KeyframeCommand(animator, QObject::tr("Create Keyframe").toStdString(), frame, knots)
-{
-
-}
-
-InsertKeyframeCommand::
-InsertKeyframeCommand(Animator& animator, int frame,
                       const std::set<Property*>& properties)
-  : InsertKeyframeCommand(animator, frame, collect_knots(properties, frame))
+  : KeyframeCommand(animator, QObject::tr("Create Keyframe").toStdString(), frame,
+                    create_knots(properties, frame))
 {
 
 }

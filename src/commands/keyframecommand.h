@@ -38,8 +38,6 @@ class InsertKeyframeCommand : public KeyframeCommand
 public:
   InsertKeyframeCommand(Animator& animator, int frame,
                         const std::set<Property*>& properties);
-  InsertKeyframeCommand(Animator& animator, int frame,
-                        const std::map<Property*, Track::Knot>& values);
   void undo() override { remove(); }
   void redo() override { insert(); }
 };
