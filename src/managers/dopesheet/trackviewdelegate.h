@@ -1,4 +1,6 @@
 #include <QAbstractItemDelegate>
+#include <set>
+#include "managers/timeline/timelinecanvas.h"
 
 namespace omm
 {
@@ -8,13 +10,14 @@ class Track;
 class DopeSheetView;
 class Property;
 
+
 class TrackViewDelegate : public QAbstractItemDelegate
 {
   Q_OBJECT
 public:
   TrackViewDelegate(DopeSheetView& view, Animator& animator);
   void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-  QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+  QSize sizeHint(const QStyleOptionViewItem&, const QModelIndex &index) const override;
 
   struct TrackGeometry
   {
@@ -66,8 +69,17 @@ private:
   bool m_move_aborted = false;
   int m_current_shift = 0;
 
-  int m_start_frame;
-  int m_end_frame;
+  class TimelineCanvasC : public TimelineCanvas
+  {
+  public:
+    TimelineCanvasC(Animator& animator, TrackViewDelegate& self);
+    void update() override;
+    QPoint map_to_global(const QPoint &pos) const override;
+  private:
+    TrackViewDelegate& m_self;
+  };
+
+  mutable TimelineCanvasC m_canvas;
 };
 
 }  // namespace omm

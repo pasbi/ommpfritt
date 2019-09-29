@@ -17,8 +17,9 @@ namespace omm
 {
 
 TrackViewDelegate::TrackViewDelegate(DopeSheetView& view, Animator& animator)
-  : m_view(view), m_animator(animator)
-  , m_start_frame(m_animator.start()), m_end_frame(m_animator.end())
+  : m_view(view)
+  , m_animator(animator)
+  , m_canvas(animator, *this)
 {
 }
 
@@ -26,37 +27,20 @@ void TrackViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
                               const QModelIndex& index) const
 {
   painter->save();
-
-  painter->save();
   painter->setClipRect(option.rect);
-  painter->translate(option.rect.topLeft());
-  painter->scale(option.rect.width(), option.rect.height());
-  Slider::draw_background(m_animator, *painter, 0, 100);
-  Slider::draw_lines(*painter, 0, 100, option.font, option.rect, false);
-  painter->restore();
 
+  std::set<Track*> tracks;
   if (m_animator.index_type(index) == Animator::IndexType::Property) {
     Track* track = m_animator.property(index)->track();
-    const auto keyframe_geometry = [this, option](const int frame) {
-      const double key_width = pixel_per_frame(option.rect.width());
-      return QRectF(QPointF(frame_to_pixel(frame) - key_width/2.0,
-                            option.rect.top()),
-                    QSizeF(key_width, option.rect.height()));
-    };
-    for (auto&& [frame, pk] : m_keyframes.at(track)) {
-      draw_keyframe(*painter, keyframe_geometry(frame), pk, KeyFrameStyle::Normal);
-    }
-    for (auto&& [frame, pk] : m_keyframes.at(track)) {
-      if (pk.is_dragged) {
-        draw_keyframe(*painter, keyframe_geometry(frame + m_current_shift), pk, KeyFrameStyle::Ghost);
-      }
-    }
+    tracks.insert(track);
   }
-  draw_current(*painter, option.rect);
+  m_canvas.rect = option.rect;
+  m_canvas.tracks = tracks;
+  m_canvas.draw(*painter);
   painter->restore();
 }
 
-QSize TrackViewDelegate::sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
+QSize TrackViewDelegate::sizeHint(const QStyleOptionViewItem&, const QModelIndex& index) const
 {
   if (m_animator.index_type(index) == Animator::IndexType::Property) {
     return QSize(200, 10);
@@ -132,26 +116,6 @@ void TrackViewDelegate::deselect_all_keyframes_except(Track* e_track, int e_fram
   }
 }
 
-void TrackViewDelegate
-::draw_keyframe(QPainter& painter, const QRectF& rect, const PersistentKeyFrame& k,
-                KeyFrameStyle style) const
-{
-  painter.save();
-  switch (style) {
-  case KeyFrameStyle::Normal:
-    if (k.is_selected) {
-      painter.fillRect(rect, Qt::yellow);
-    } else {
-      painter.fillRect(rect, Qt::red);
-    }
-    break;
-  case KeyFrameStyle::Ghost:
-    painter.fillRect(rect, QColor(255, 255, 0, 128));
-    break;
-  }
-  painter.restore();
-}
-
 QPoint TrackViewDelegate::map_to_track_view(const QModelIndex& index, const QPoint& point) const
 {
   return point - m_view.visualRect(index).topLeft();
@@ -159,71 +123,75 @@ QPoint TrackViewDelegate::map_to_track_view(const QModelIndex& index, const QPoi
 
 bool TrackViewDelegate::mouse_button_press(QMouseEvent& event)
 {
-  m_move_aborted = false;
-  m_current_shift = 0;
-  const QModelIndex index = m_view.indexAt(event.pos());
-  m_mouse_down_pos = event.pos();
-  if (m_animator.index_type(index) == Animator::IndexType::Property) {
-    Property* property = m_animator.property(index);
-    const int frame = pixel_to_frame(event.x());
-    auto& key_frames = m_keyframes.at(property->track());
-    if (event.modifiers() & Qt::ShiftModifier) {
-      if (key_frames.find(frame) != key_frames.end()) {
-        key_frames.at(frame).is_selected = !key_frames.at(frame).is_selected;
-      }
-      m_view.update_second_column();
-    } else {
-      if (key_frames.find(frame) != key_frames.end()) {
-        if (!key_frames.at(frame).is_selected) {
-          deselect_all_keyframes_except(property->track(), frame);
-          key_frames.at(frame).is_selected = true;
-        }
-      }
-      m_view.update_second_column();
-    }
-    for (auto&& [track, keyframes] : m_keyframes) {
-      for (auto&& [frame, persisten_keyframe] : keyframes) {
-        if (persisten_keyframe.is_selected) {
-          persisten_keyframe.is_dragged = true;
-        }
-      }
-    }
-    return true;
-  } else {
-    return false;
-  }
+  m_canvas.mouse_press(event);
+
+//  m_move_aborted = false;
+//  m_current_shift = 0;
+//  const QModelIndex index = m_view.indexAt(event.pos());
+//  m_mouse_down_pos = event.pos();
+//  if (m_animator.index_type(index) == Animator::IndexType::Property) {
+//    Property* property = m_animator.property(index);
+//    const int frame = pixel_to_frame(event.x());
+//    auto& key_frames = m_keyframes.at(property->track());
+//    if (event.modifiers() & Qt::ShiftModifier) {
+//      if (key_frames.find(frame) != key_frames.end()) {
+//        key_frames.at(frame).is_selected = !key_frames.at(frame).is_selected;
+//      }
+//      m_view.update_second_column();
+//    } else {
+//      if (key_frames.find(frame) != key_frames.end()) {
+//        if (!key_frames.at(frame).is_selected) {
+//          deselect_all_keyframes_except(property->track(), frame);
+//          key_frames.at(frame).is_selected = true;
+//        }
+//      }
+//      m_view.update_second_column();
+//    }
+//    for (auto&& [track, keyframes] : m_keyframes) {
+//      for (auto&& [frame, persisten_keyframe] : keyframes) {
+//        if (persisten_keyframe.is_selected) {
+//          persisten_keyframe.is_dragged = true;
+//        }
+//      }
+//    }
+//    return true;
+//  } else {
+//    return false;
+//  }
+  return true;
 }
 
 void TrackViewDelegate::mouse_button_release(QMouseEvent& event)
 {
-  if (m_current_shift == 0) {
-    const QModelIndex index = m_view.indexAt(event.pos());
-    if (m_animator.index_type(index) == Animator::IndexType::Property) {
-      if (!(event.modifiers() & Qt::ShiftModifier)) {
-        Track* track = m_animator.property(index)->track();
-        const int frame = pixel_to_frame(event.x());
-        deselect_all_keyframes_except(track, frame);
-      }
-    }
-  } else if (!m_move_aborted) {
-    auto& scene = m_animator.scene;
-    const auto keyframes_copy = m_keyframes;
-    for (auto&& [track, keyframes] : keyframes_copy) {
-      std::set<int> moving_frames;
-      for (auto&& [frame, pk] : keyframes) {
-        if (pk.is_dragged) {
-          m_keyframes.at(track).at(frame).is_dragged = false;
-          moving_frames.insert(frame);
-        }
-      }
-      if (!moving_frames.empty()) {
-        scene.submit<MoveKeyFrameCommand>(m_animator, track->property(),
-                                          moving_frames, m_current_shift);
-      }
-    }
-    m_animator.apply();
-  }
-  m_view.update_second_column();
+  m_canvas.mouse_press(event);
+//  if (m_current_shift == 0) {
+//    const QModelIndex index = m_view.indexAt(event.pos());
+//    if (m_animator.index_type(index) == Animator::IndexType::Property) {
+//      if (!(event.modifiers() & Qt::ShiftModifier)) {
+//        Track* track = m_animator.property(index)->track();
+//        const int frame = pixel_to_frame(event.x());
+//        deselect_all_keyframes_except(track, frame);
+//      }
+//    }
+//  } else if (!m_move_aborted) {
+//    auto& scene = m_animator.scene;
+//    const auto keyframes_copy = m_keyframes;
+//    for (auto&& [track, keyframes] : keyframes_copy) {
+//      std::set<int> moving_frames;
+//      for (auto&& [frame, pk] : keyframes) {
+//        if (pk.is_dragged) {
+//          m_keyframes.at(track).at(frame).is_dragged = false;
+//          moving_frames.insert(frame);
+//        }
+//      }
+//      if (!moving_frames.empty()) {
+//        scene.submit<MoveKeyFrameCommand>(m_animator, track->property(),
+//                                          moving_frames, m_current_shift);
+//      }
+//    }
+//    m_animator.apply();
+//  }
+//  m_view.update_second_column();
 }
 
 void TrackViewDelegate::abort_move()
@@ -241,46 +209,9 @@ void TrackViewDelegate::abort_move()
 
 void TrackViewDelegate::mouse_move(QMouseEvent& event)
 {
-  m_current_shift = pixel_to_frame(event.x()) - pixel_to_frame(m_mouse_down_pos.x());
-  m_view.update_second_column();
-}
-
-void TrackViewDelegate::draw_background(QPainter& painter, const QRect& rect) const
-{
-  painter.save();
-  QPen pen(Qt::black);
-  for (int frame = m_animator.start(); frame <= m_animator.end(); ++frame) {
-    double pen_width = 0.0;
-    if (frame % 10 == 0) {
-      pen_width = 2.0;
-    } else if (frame % 2 == 0) {
-      if (pixel_per_frame(rect.width()) > 5) {
-        pen_width = 1.0;
-      }
-    } else {
-      if (pixel_per_frame(rect.width()) > 10) {
-        pen_width = 0.5;
-      }
-    }
-    if (pen_width > 0.0) {
-      pen.setWidthF(pen_width);
-      painter.setPen(pen);
-      const double x = frame_to_pixel(frame);
-      painter.drawLine(x, rect.bottom(), x, rect.top());
-    }
-  }
-  painter.restore();
-}
-
-void TrackViewDelegate::draw_current(QPainter& painter, const QRect& rect) const
-{
-  painter.save();
-  QPen pen(QColor(255, 128, 0));
-  pen.setWidthF(2.0);
-  painter.setPen(pen);
-  const double x = frame_to_pixel(m_animator.current());
-  painter.drawLine(x, rect.bottom(), x, rect.top());
-  painter.restore();
+  m_canvas.mouse_move(event);
+//  m_current_shift = pixel_to_frame(event.x()) - pixel_to_frame(m_mouse_down_pos.x());
+//  m_view.update_second_column();
 }
 
 double TrackViewDelegate::frame_to_pixel(double frame) const
@@ -292,5 +223,23 @@ int TrackViewDelegate::pixel_to_frame(int pixel) const
 {
   return std::round((pixel - left()) / pixel_per_frame(width()) + m_animator.start());
 }
+
+TrackViewDelegate::TimelineCanvasC::TimelineCanvasC(Animator& animator, TrackViewDelegate& self)
+  : TimelineCanvas(animator)
+  , m_self(self)
+{
+
+}
+
+void TrackViewDelegate::TimelineCanvasC::update()
+{
+  m_self.m_view.update_second_column();
+}
+
+QPoint TrackViewDelegate::TimelineCanvasC::map_to_global(const QPoint& pos) const
+{
+  return m_self.m_view.mapToGlobal(pos);
+}
+
 
 }  // namespace omm

@@ -2,11 +2,14 @@
 
 #include <QWidget>
 #include <set>
+#include "managers/timeline/timelinecanvas.h"
 
 namespace omm
 {
 
 class Animator;
+class Track;
+class Scene;
 
 class Slider : public QWidget
 {
@@ -14,20 +17,8 @@ class Slider : public QWidget
 public:
   explicit Slider(Animator& animator);
 
-  std::pair<int, int> range() const { return std::pair(m_min, m_max); }
-  Animator& animator;
-
-  static void draw_background(const Animator& animator, QPainter& painter,
-                              double left_frame, double right_frame);
-  static void draw_lines(QPainter& painter,
-                         double left_frame, double right_frame, const QFont& font,
-                         const QRectF& rect, bool text);
-  static void draw_current(Animator& animator, QPainter& painter, double left_frame, double right_frame);
-  static void draw_keyframe_hints(QPainter& painter, double left_frame, double right_frame, const QFont& font, const QRectF& rect, const std::set<int>& hints);
-
 public Q_SLOTS:
-  void set_min(double frame);
-  void set_max(double frame);
+  void set_range(double left, double right);
 
 Q_SIGNALS:
   void value_changed(int);
@@ -39,23 +30,20 @@ protected:
   void mouseReleaseEvent(QMouseEvent* event) override;
 
 private:
-  double m_min;
-  double m_max;
-  double frame_to_pixel(double frame) const;
-  double pixel_to_frame(double pixel) const;
+  class TimelineCanvasC : public TimelineCanvas {
+  public:
+    TimelineCanvasC(Animator& animator, Slider& self);
+    QPoint map_to_global(const QPoint &pos) const override;
+    void update() override;
+  private:
+    Slider& m_self;
+  };
 
-  double pixel_per_frame() const;
-
-  bool m_pan_active;
-  bool m_zoom_active;
-  QPoint m_last_mouse_pos;
-  QPoint m_mouse_down_pos;
+  TimelineCanvasC m_canvas;
+  Scene& m_scene;
 
 
-private Q_SLOTS:
-  void update_keyframe_hints();
-private:
-  std::set<int> m_keyframe_hints;
+
 };
 
 }  // namespace

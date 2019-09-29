@@ -23,8 +23,7 @@ TimeLine::TimeLine(Scene &scene)
   m_slider = slider.get();
   set_widget(std::move(slider));
 
-  m_slider->set_min(scene.animator().start());
-  m_slider->set_max(scene.animator().end());
+  m_slider->set_range(scene.animator().start(), scene.animator().end());
   m_header->ui()->sp_min->setValue(scene.animator().start());
   m_header->ui()->sp_max->setValue(scene.animator().end());
   m_header->ui()->sp_value->setValue(scene.animator().current());
