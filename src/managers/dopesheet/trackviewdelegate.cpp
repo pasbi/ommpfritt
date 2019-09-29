@@ -115,7 +115,12 @@ void TrackViewDelegate::activate_index(const QModelIndex& index) const
     break;
   }
 
-  m_canvas.rect = m_view.visualRect(index);
+  if (index.isValid()) {
+    m_canvas.rect = m_view.visualRect(index);
+  } else {
+    m_canvas.rect = QRectF(QPointF(m_view.columnViewportPosition(1), 0),
+                           QSizeF(m_view.columnWidth(1), 0));;
+  }
   m_canvas.tracks = tracks;
 }
 
