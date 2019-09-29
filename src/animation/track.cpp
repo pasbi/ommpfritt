@@ -274,6 +274,11 @@ bool Track::is_consistent(int frame) const
   }
 }
 
+bool Track::is_numerical() const
+{
+  return property().is_numerical();
+}
+
 Track::Knot::Knot(const variant_type &value)
   : value(value), left_offset(0), left_value(value), right_offset(0), right_value(value)
 {

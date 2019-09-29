@@ -23,11 +23,11 @@ class TimelineCanvas : public QObject
 public:
   explicit TimelineCanvas(Animator& animator, int footer_height);
 
-  void draw(QPainter& painter) const;
   void draw_background(QPainter& painter) const;
   void draw_lines(QPainter& painter) const;
   void draw_keyframes(QPainter& painter) const;
   void draw_current(QPainter& painter) const;
+  void draw_fcurve(QPainter& painter) const;
 
   double ppf() const;
   double ppfs() const;

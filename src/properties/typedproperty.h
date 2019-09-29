@@ -50,6 +50,14 @@ public:
   virtual void reset() { m_value = m_default_value; }
   std::string type() const override = 0;
 
+  bool is_numerical() const override
+  {
+    return std::is_same_v<bool, ValueT> || std::is_same_v<double, ValueT>
+        || std::is_same_v<int, ValueT> || std::is_same_v<Vec2f, ValueT>
+        || std::is_same_v<Vec2i, ValueT>;
+
+  }
+
 private:
   ValueT m_value;
   ValueT m_default_value;

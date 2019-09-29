@@ -110,6 +110,9 @@ public:
   // user properties can be added/edited/removed dynamically
   bool is_user_property() const;
 
+  // tracks of numeric properties can be displayed as fcurve.
+  virtual bool is_numerical() const = 0;
+
   virtual std::unique_ptr<Property> clone() const = 0;
 
   virtual void revise();

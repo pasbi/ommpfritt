@@ -36,14 +36,6 @@ TimelineCanvas::TimelineCanvas(Animator& animator, int footer_height)
   });
 }
 
-void TimelineCanvas::draw(QPainter& painter) const
-{
-  draw_background(painter);
-  draw_lines(painter);
-  draw_keyframes(painter);
-  draw_current(painter);
-}
-
 void TimelineCanvas::draw_background(QPainter& painter) const
 {
   painter.save();
@@ -185,6 +177,11 @@ void TimelineCanvas::draw_current(QPainter& painter) const
   painter.setPen(pen);
   painter.drawRect(current_rect);
   painter.restore();
+}
+
+void TimelineCanvas::draw_fcurve(QPainter& painter) const
+{
+  painter.fillRect(rect, QColor(0, 0, 255, 128));
 }
 
 double TimelineCanvas::ppf() const

@@ -44,6 +44,7 @@ private:
   void activate_index(const QModelIndex& index) const;
   QModelIndex m_mouse_press_index;
   std::set<Track*> m_expanded_tracks;
+  bool display_fcurve(const QModelIndex& index) const;
 };
 
 }  // namespace omm

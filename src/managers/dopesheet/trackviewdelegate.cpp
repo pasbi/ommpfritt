@@ -30,9 +30,20 @@ void TrackViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
 {
   painter->save();
   painter->setClipRect(option.rect);
+  painter->setRenderHint(QPainter::HighQualityAntialiasing);
 
   activate_index(index);
-  m_canvas.draw(*painter);
+  m_canvas.draw_background(*painter);
+  m_canvas.draw_lines(*painter);
+  if (m_animator.index_type(index) == Animator::IndexType::Property
+     && ::contains(m_expanded_tracks, m_animator.property(index)->track()))
+  {
+    m_canvas.draw_fcurve(*painter);
+  }
+  else
+  {
+    m_canvas.draw_keyframes(*painter);
+  }
   painter->restore();
 }
 
@@ -79,26 +90,37 @@ void TrackViewDelegate::toggle_expanded(const QModelIndex& index)
   Track* track = m_animator.property(index)->track();
   if (const auto it = m_expanded_tracks.find(track); it != m_expanded_tracks.end()) {
     m_expanded_tracks.erase(it);
-  } else {
+    Q_EMIT sizeHintChanged(index);
+  } else if (track->is_numerical()) {
     m_expanded_tracks.insert(track);
+    Q_EMIT sizeHintChanged(index);
   }
-  Q_EMIT sizeHintChanged(index);
 }
 
 void TrackViewDelegate::activate_index(const QModelIndex& index) const
 {
   std::set<Track*> tracks;
-  if (m_animator.index_type(index) == Animator::IndexType::Property) {
-    Track* track = m_animator.property(index)->track();
-    tracks.insert(track);
+  switch (m_animator.index_type(index)) {
+  case Animator::IndexType::Property:
+    tracks.insert(m_animator.property(index)->track());
+    break;
+  case Animator::IndexType::Owner:
+    for (Property* p : m_animator.owner(index)->properties().values()) {
+      if (p->track() != nullptr) {
+        tracks.insert(p->track());
+      }
+    }
+    break;
+  default:
+    break;
   }
+
   m_canvas.rect = m_view.visualRect(index);
   m_canvas.tracks = tracks;
 }
 
 TrackViewDelegate::TimelineCanvasC::TimelineCanvasC(Animator& animator, TrackViewDelegate& self)
-  : TimelineCanvas(animator, 0)
-  , m_self(self)
+  : TimelineCanvas(animator, 0), m_self(self)
 {
 }
 
@@ -111,6 +133,5 @@ QPoint TrackViewDelegate::TimelineCanvasC::map_to_global(const QPoint& pos) cons
 {
   return m_self.m_view.viewport()->mapToGlobal(pos);
 }
-
 
 }  // namespace omm

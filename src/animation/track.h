@@ -88,6 +88,8 @@ public:
    */
   bool is_consistent(int frame) const;
 
+  bool is_numerical() const;
+
 private:
   Property& m_property;
   std::map<int, Knot> m_knots;

@@ -38,7 +38,10 @@ void Slider::paintEvent(QPaintEvent *event)
   m_canvas.rect = rect();
 
   painter.save();
-  m_canvas.draw(painter);
+  m_canvas.draw_background(painter);
+  m_canvas.draw_lines(painter);
+  m_canvas.draw_keyframes(painter);
+  m_canvas.draw_current(painter);
   painter.restore();
 
   QWidget::paintEvent(event);
@@ -74,6 +77,14 @@ Slider::TimelineCanvasC::TimelineCanvasC(Animator& animator, Slider& self)
           qOverload<const std::set<AbstractPropertyOwner*>&>(&MessageBox::selection_changed),
           this, &TimelineCanvasC::update_tracks);
   update_tracks(animator.scene.selection());
+  connect(&animator, &Animator::track_inserted, this, [this](Track& track) {
+    m_self.m_canvas.tracks.insert(&track);
+    m_self.m_canvas.update();
+  });
+  connect(&animator, &Animator::track_removed, this, [this](Track& track) {
+    m_self.m_canvas.tracks.erase(&track);
+    m_self.m_canvas.update();
+  });
 }
 
 QPoint Slider::TimelineCanvasC::map_to_global(const QPoint& pos) const
