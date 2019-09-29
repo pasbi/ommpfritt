@@ -25,11 +25,8 @@ Q_SIGNALS:
   void value_changed(int);
 
 protected:
+  bool event(QEvent *event) override;
   void paintEvent(QPaintEvent *event) override;
-  void mousePressEvent(QMouseEvent *event) override;
-  void mouseMoveEvent(QMouseEvent *event) override;
-  void mouseReleaseEvent(QMouseEvent* event) override;
-  void keyPressEvent(QKeyEvent *event) override;
 
 private:
   class TimelineCanvasC : public TimelineCanvas {
@@ -44,9 +41,6 @@ private:
 
   TimelineCanvasC m_canvas;
   Scene& m_scene;
-
-
-
 };
 
 }  // namespace

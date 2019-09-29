@@ -18,10 +18,9 @@
 namespace omm
 {
 
-TrackViewDelegate::TrackViewDelegate(DopeSheetView& view, Animator& animator)
+TrackViewDelegate::TrackViewDelegate(DopeSheetView& view, TimelineCanvas& canvas)
   : m_view(view)
-  , m_animator(animator)
-  , m_canvas(animator, *this)
+  , m_canvas(canvas)
 {
 }
 
@@ -35,8 +34,8 @@ void TrackViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
   activate_index(index);
   m_canvas.draw_background(*painter);
   m_canvas.draw_lines(*painter);
-  if (m_animator.index_type(index) == Animator::IndexType::Property
-     && ::contains(m_expanded_tracks, m_animator.property(index)->track()))
+  if (m_canvas.animator.index_type(index) == Animator::IndexType::Property
+     && ::contains(m_expanded_tracks, m_canvas.animator.property(index)->track()))
   {
     m_canvas.draw_fcurve(*painter);
   }
@@ -49,8 +48,8 @@ void TrackViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
 
 QSize TrackViewDelegate::sizeHint(const QStyleOptionViewItem&, const QModelIndex& index) const
 {
-  if (m_animator.index_type(index) == Animator::IndexType::Property) {
-    Track* track = m_animator.property(index)->track();
+  if (m_canvas.animator.index_type(index) == Animator::IndexType::Property) {
+    Track* track = m_canvas.animator.property(index)->track();
     if (::contains(m_expanded_tracks, track)) {
       return QSize(200, 100);
     } else {
@@ -61,33 +60,14 @@ QSize TrackViewDelegate::sizeHint(const QStyleOptionViewItem&, const QModelIndex
   }
 }
 
-void TrackViewDelegate::mouse_press(QMouseEvent& event)
+void TrackViewDelegate::view_event(QEvent& event)
 {
-  m_mouse_press_index = m_view.indexAt(event.pos());
-  activate_index(m_mouse_press_index);
-  m_canvas.mouse_press(event);
-}
-
-void TrackViewDelegate::mouse_release(QMouseEvent& event)
-{
-  activate_index(m_mouse_press_index);
-  m_canvas.mouse_release(event);
-}
-
-void TrackViewDelegate::mouse_move(QMouseEvent& event)
-{
-  activate_index(m_mouse_press_index);
-  m_canvas.mouse_move(event);
-}
-
-void TrackViewDelegate::key_press(QKeyEvent& event)
-{
-  m_canvas.key_press(event);
+  m_canvas.view_event(event);
 }
 
 void TrackViewDelegate::toggle_expanded(const QModelIndex& index)
 {
-  Track* track = m_animator.property(index)->track();
+  Track* track = m_canvas.animator.property(index)->track();
   if (const auto it = m_expanded_tracks.find(track); it != m_expanded_tracks.end()) {
     m_expanded_tracks.erase(it);
     Q_EMIT sizeHintChanged(index);
@@ -100,12 +80,12 @@ void TrackViewDelegate::toggle_expanded(const QModelIndex& index)
 void TrackViewDelegate::activate_index(const QModelIndex& index) const
 {
   std::set<Track*> tracks;
-  switch (m_animator.index_type(index)) {
+  switch (m_canvas.animator.index_type(index)) {
   case Animator::IndexType::Property:
-    tracks.insert(m_animator.property(index)->track());
+    tracks.insert(m_canvas.animator.property(index)->track());
     break;
   case Animator::IndexType::Owner:
-    for (Property* p : m_animator.owner(index)->properties().values()) {
+    for (Property* p : m_canvas.animator.owner(index)->properties().values()) {
       if (p->track() != nullptr) {
         tracks.insert(p->track());
       }
@@ -121,22 +101,8 @@ void TrackViewDelegate::activate_index(const QModelIndex& index) const
     m_canvas.rect = QRectF(QPointF(m_view.columnViewportPosition(1), 0),
                            QSizeF(m_view.columnWidth(1), 0));;
   }
+  m_canvas.footer_height = 0;
   m_canvas.tracks = tracks;
-}
-
-TrackViewDelegate::TimelineCanvasC::TimelineCanvasC(Animator& animator, TrackViewDelegate& self)
-  : TimelineCanvas(animator, 0), m_self(self)
-{
-}
-
-void TrackViewDelegate::TimelineCanvasC::update()
-{
-  m_self.m_view.update_second_column();
-}
-
-QPoint TrackViewDelegate::TimelineCanvasC::map_to_global(const QPoint& pos) const
-{
-  return m_self.m_view.viewport()->mapToGlobal(pos);
 }
 
 }  // namespace omm

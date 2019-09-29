@@ -2,6 +2,7 @@
 
 #include <QTreeView>
 #include <set>
+#include "managers/timeline/timelinecanvas.h"
 
 namespace omm
 {
@@ -30,6 +31,18 @@ protected:
 private:
   Animator& m_animator;
   TrackViewDelegate* m_track_view_delegate;
+
+  class TimelineCanvasC : public TimelineCanvas
+  {
+  public:
+    TimelineCanvasC(Animator& animator, DopeSheetView& self);
+    void update() override;
+    QPoint map_to_global(const QPoint &pos) const override;
+  private:
+    DopeSheetView& m_self;
+  };
+
+  mutable TimelineCanvasC m_canvas;
 };
 
 }  // namespace

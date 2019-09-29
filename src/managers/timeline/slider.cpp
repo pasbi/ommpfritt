@@ -23,6 +23,8 @@ Slider::Slider(Animator& animator)
           SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),
           this, SLOT(update()));
   connect(&m_canvas, SIGNAL(current_frame_changed(int)), this, SIGNAL(value_changed(int)));
+
+  m_canvas.footer_height = QFontMetrics(font()).height();
 }
 
 void Slider::set_range(double left, double right)
@@ -47,31 +49,14 @@ void Slider::paintEvent(QPaintEvent *event)
   QWidget::paintEvent(event);
 }
 
-void Slider::mousePressEvent(QMouseEvent *event)
+bool Slider::event(QEvent* event)
 {
-  m_canvas.mouse_press(*event);
-  QWidget::mousePressEvent(event);
-}
-
-void Slider::mouseMoveEvent(QMouseEvent *event)
-{
-  m_canvas.mouse_move(*event);
-  QWidget::mouseMoveEvent(event);
-}
-
-void Slider::mouseReleaseEvent(QMouseEvent* event)
-{
-  m_canvas.mouse_release(*event);
-  QWidget::mouseReleaseEvent(event);
-}
-
-void Slider::keyPressEvent(QKeyEvent* event)
-{
-  m_canvas.key_press(*event);
+  m_canvas.view_event(*event);
+  return QWidget::event(event);
 }
 
 Slider::TimelineCanvasC::TimelineCanvasC(Animator& animator, Slider& self)
-  : TimelineCanvas(animator, QFontMetrics(self.font()).height()), m_self(self)
+  : TimelineCanvas(animator), m_self(self)
 {
   connect(&animator.scene.message_box(),
           qOverload<const std::set<AbstractPropertyOwner*>&>(&MessageBox::selection_changed),

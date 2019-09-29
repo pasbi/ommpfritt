@@ -21,7 +21,7 @@ class TimelineCanvas : public QObject
 {
   Q_OBJECT
 public:
-  explicit TimelineCanvas(Animator& animator, int footer_height);
+  explicit TimelineCanvas(Animator& animator);
 
   void draw_background(QPainter& painter) const;
   void draw_lines(QPainter& painter) const;
@@ -36,11 +36,10 @@ public:
   double right_frame = 100;
   QRectF rect;
   std::set<Track*> tracks;
+  Animator& animator;
+  int footer_height = 0;
 
-  void mouse_press(QMouseEvent& event);
-  void mouse_move(QMouseEvent& event);
-  void mouse_release(QMouseEvent& event);
-  void key_press(QKeyEvent& event);
+  void view_event(QEvent& event);
 
   virtual QPoint map_to_global(const QPoint& pos) const = 0;
   virtual void update() = 0;
@@ -49,8 +48,6 @@ Q_SIGNALS:
   void current_frame_changed(int);
 
 private:
-  Animator& m_animator;
-  const int m_footer_height;
   std::map<Track*, std::set<int>> m_selection;
   double pixel_to_frame(double pixel) const;
   double frame_to_pixel(double frame) const;
@@ -69,6 +66,11 @@ private:
   int m_shift = 0;
   QPoint m_last_mouse_pos;
   QPoint m_mouse_down_pos;
+
+  void mouse_press(QMouseEvent& event);
+  void mouse_move(QMouseEvent& event);
+  void mouse_release(QMouseEvent& event);
+  void key_press(QKeyEvent& event);
 };
 
 }  // namespace omm
