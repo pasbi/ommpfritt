@@ -18,6 +18,7 @@ DopeSheetHeader::DopeSheetHeader(TimelineCanvas& canvas)
 void DopeSheetHeader::paintSection(QPainter* painter, const QRect& rect, int logicalIndex) const
 {
   if (logicalIndex == 1) {
+    painter->setClipRect(rect);
     m_canvas.rect = rect;
     m_canvas.footer_height = rect.height();
     m_canvas.draw_background(*painter);

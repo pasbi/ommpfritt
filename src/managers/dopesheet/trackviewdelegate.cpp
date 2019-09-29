@@ -32,17 +32,28 @@ void TrackViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
   painter->setRenderHint(QPainter::HighQualityAntialiasing);
 
   activate_index(index);
+  const bool is_property = m_canvas.animator.index_type(index) == Animator::IndexType::Property;
+
   m_canvas.draw_background(*painter);
-  m_canvas.draw_lines(*painter);
-  if (m_canvas.animator.index_type(index) == Animator::IndexType::Property
-     && ::contains(m_expanded_tracks, m_canvas.animator.property(index)->track()))
-  {
-    m_canvas.draw_fcurve(*painter);
+
+  if (!is_property) {
+    painter->save();
+    QPen pen;
+    pen.setColor(Qt::black);
+    pen.setWidth(4);
+    painter->setPen(pen);
+    painter->drawLine(option.rect.topLeft(), option.rect.topRight());
+    painter->restore();
+    painter->fillRect(option.rect, QColor(0, 0, 255, 80));
   }
-  else
-  {
+
+  m_canvas.draw_lines(*painter);
+  if (is_property && ::contains(m_expanded_tracks, m_canvas.animator.property(index)->track())) {
+    m_canvas.draw_fcurve(*painter);
+  } else {
     m_canvas.draw_keyframes(*painter);
   }
+
   painter->restore();
 }
 
