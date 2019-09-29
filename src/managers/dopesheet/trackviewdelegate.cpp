@@ -109,7 +109,7 @@ void TrackViewDelegate::TimelineCanvasC::update()
 
 QPoint TrackViewDelegate::TimelineCanvasC::map_to_global(const QPoint& pos) const
 {
-  return m_self.m_view.mapToGlobal(pos);
+  return m_self.m_view.viewport()->mapToGlobal(pos);
 }
 
 

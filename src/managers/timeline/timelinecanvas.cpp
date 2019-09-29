@@ -141,14 +141,15 @@ void TimelineCanvas::draw_keyframes(QPainter& painter) const
   QPen pen;
   pen.setCosmetic(true);
   pen.setColor(Qt::black);
-  const double scale = std::min(footer_y()/2.0, std::max(4.0, ppf())) * 2.0;
-  pen.setWidthF(std::max(0.0, scale/5.0));
+  const QPointF scale(std::clamp(rect.width() * ppf()/2.0, 4.0, 20.0),
+                      std::min(footer_y()/2.0, 20.0));
+  pen.setWidthF(std::max(0.0, std::min(scale.x(), scale.y())/5.0));
   painter.setPen(pen);
 
   const auto draw_keyframe = [scale, &painter, this](int frame, int y, const QColor& color) {
     painter.save();
     painter.translate(frame_to_pixel(frame), y);
-    painter.scale(scale, scale);
+    painter.scale(scale.x()*0.8, scale.y()*0.8);
     painter.fillPath(diamond, color);
     painter.drawPath(diamond);
     painter.restore();
@@ -255,12 +256,13 @@ void TimelineCanvas::mouse_move(QMouseEvent& event)
 void TimelineCanvas::mouse_release(QMouseEvent& event)
 {
   const int frame = std::round(pixel_to_frame(event.pos().x() - rect.left()));
-  if (m_shift == 0 && !m_move_aborted) {
+  if (m_shift == 0 && !m_move_aborted && m_dragging_knots) {
     if (!(event.modifiers() & Qt::ShiftModifier)) {
       m_selection.clear();
     }
     select(frame);
   } else if (!m_move_aborted && m_shift != 0) {
+    assert (m_dragging_knots);  // m_shift != 0 imples m_dragging_knots
     std::list<std::unique_ptr<MoveKeyFrameCommand>> commands;
     for (auto&& [track, selected_frames] : m_selection) {
         commands.push_back(std::make_unique<MoveKeyFrameCommand>(m_animator, track->property(),
