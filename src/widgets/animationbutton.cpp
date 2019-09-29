@@ -11,6 +11,7 @@
 #include "aspects/propertyowner.h"
 #include "commands/trackcommand.h"
 #include "commands/keyframecommand.h"
+#include "scene/history/historymodel.h"
 
 namespace
 {
@@ -80,6 +81,7 @@ bool AnimationButton::has_key() const
 
 void AnimationButton::set_key()
 {
+  auto macro = m_animator.scene.history().start_macro(tr("Set keyframe"));
   {
     std::map<AbstractPropertyOwner*, std::unique_ptr<Track>> new_tracks;
     for (auto&& [ owner, property ] : m_properties) {
@@ -91,6 +93,9 @@ void AnimationButton::set_key()
       m_animator.scene.submit<InsertTracksCommand>(m_animator, std::move(new_tracks));
     }
   }
+
+  m_animator.scene.submit(std::make_unique<RemoveKeyframeCommand>(m_animator, m_animator.current(),
+                                                                  values(m_properties)));
   m_animator.scene.submit(std::make_unique<InsertKeyframeCommand>(m_animator, m_animator.current(),
                                                                   values(m_properties)));
   update();

@@ -251,10 +251,8 @@ void Track::move_knot(int old_frame, int new_frame)
 void Track::insert_knot(int frame, const Knot &knot)
 {
   assert(knot.value.index() == property().variant_value().index());
-  const auto it = m_knots.find(frame);
-  if (it == m_knots.end() || it->second != knot) {
-    m_knots.insert(std::pair(frame, knot));
-  }
+  assert(m_knots.find(frame) == m_knots.end());
+  m_knots.insert(std::pair(frame, knot));
 }
 
 std::string Track::type() const
