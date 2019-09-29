@@ -39,7 +39,12 @@ void TrackViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
 QSize TrackViewDelegate::sizeHint(const QStyleOptionViewItem&, const QModelIndex& index) const
 {
   if (m_animator.index_type(index) == Animator::IndexType::Property) {
-    return QSize(200, 10);
+    Track* track = m_animator.property(index)->track();
+    if (::contains(m_expanded_tracks, track)) {
+      return QSize(200, 100);
+    } else {
+      return QSize(200, 10);
+    }
   } else {
     return QSize(0, 0);
   }
@@ -67,6 +72,17 @@ void TrackViewDelegate::mouse_move(QMouseEvent& event)
 void TrackViewDelegate::key_press(QKeyEvent& event)
 {
   m_canvas.key_press(event);
+}
+
+void TrackViewDelegate::toggle_expanded(const QModelIndex& index)
+{
+  Track* track = m_animator.property(index)->track();
+  if (const auto it = m_expanded_tracks.find(track); it != m_expanded_tracks.end()) {
+    m_expanded_tracks.erase(it);
+  } else {
+    m_expanded_tracks.insert(track);
+  }
+  Q_EMIT sizeHintChanged(index);
 }
 
 void TrackViewDelegate::activate_index(const QModelIndex& index) const

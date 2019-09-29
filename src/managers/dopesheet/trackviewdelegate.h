@@ -24,6 +24,8 @@ public:
   void mouse_release(QMouseEvent& event);
   void key_press(QKeyEvent& event);
 
+  void toggle_expanded(const QModelIndex& index);
+
 private:
   DopeSheetView& m_view;
   Animator& m_animator;
@@ -41,6 +43,7 @@ private:
   mutable TimelineCanvasC m_canvas;
   void activate_index(const QModelIndex& index) const;
   QModelIndex m_mouse_press_index;
+  std::set<Track*> m_expanded_tracks;
 };
 
 }  // namespace omm

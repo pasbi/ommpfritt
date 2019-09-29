@@ -66,4 +66,14 @@ void DopeSheetView::keyPressEvent(QKeyEvent* event)
   QTreeView::keyPressEvent(event);
 }
 
+void DopeSheetView::mouseDoubleClickEvent(QMouseEvent* event)
+{
+  const QModelIndex index = indexAt(event->pos());
+  if (index.column() == 0 && m_animator.index_type(index) == Animator::IndexType::Property) {
+    m_track_view_delegate->toggle_expanded(index);
+  } else {
+    QTreeView::mouseDoubleClickEvent(event);
+  }
+}
+
 }  // namespace
