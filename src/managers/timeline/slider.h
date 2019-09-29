@@ -10,6 +10,7 @@ namespace omm
 class Animator;
 class Track;
 class Scene;
+class AbstractPropertyOwner;
 
 class Slider : public QWidget
 {
@@ -28,6 +29,7 @@ protected:
   void mousePressEvent(QMouseEvent *event) override;
   void mouseMoveEvent(QMouseEvent *event) override;
   void mouseReleaseEvent(QMouseEvent* event) override;
+  void keyPressEvent(QKeyEvent *event) override;
 
 private:
   class TimelineCanvasC : public TimelineCanvas {
@@ -37,6 +39,7 @@ private:
     void update() override;
   private:
     Slider& m_self;
+    void update_tracks(const std::set<AbstractPropertyOwner*>& selection);
   };
 
   TimelineCanvasC m_canvas;

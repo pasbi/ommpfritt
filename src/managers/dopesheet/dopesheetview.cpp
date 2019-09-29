@@ -22,31 +22,7 @@ DopeSheetView::DopeSheetView(Animator& animator) : m_animator(animator)
   connect(&m_animator, SIGNAL(start_changed(int)), this, SLOT(update_second_column()));
   connect(&m_animator, SIGNAL(end_changed(int)), this, SLOT(update_second_column()));
   connect(&m_animator, SIGNAL(current_changed(int)), this, SLOT(update_second_column()));
-  connect(&m_animator, &Animator::knot_inserted, [this](Track& track, int frame) {
-    m_track_view_delegate->insert_keyframe(track, frame);
-    update_second_column(track);
-  });
-  connect(&m_animator, &Animator::knot_removed, [this](Track& track, int frame) {
-    m_track_view_delegate->remove_keyframe(track, frame);
-    update_second_column(track);
-  });
-  connect(&m_animator, &Animator::knot_moved, [this](Track& track, int old_frame, int new_frame) {
-    m_track_view_delegate->move_keyframe(track, old_frame, new_frame);
-    update_second_column(track);
-  });
-  connect(&m_animator, &Animator::track_inserted, [this](Track& track) {
-    m_track_view_delegate->insert_track(track);
-    update_second_column();
-  });
-  connect(&m_animator, &Animator::track_removed, [this](Track& track) {
-    m_track_view_delegate->remove_track(track);
-    update_second_column();
-  });
-  connect(&m_animator, &Animator::modelReset, [this]() {
-    m_track_view_delegate->invalidate_cache();
-    update_second_column();
-  });
-  m_track_view_delegate->invalidate_cache();
+  connect(&m_animator, SIGNAL(track_changed(Track&)), this, SLOT(update_second_column()));
 }
 
 void DopeSheetView::update_second_column(Track& track)
@@ -63,13 +39,13 @@ void DopeSheetView::update_second_column()
 
 void DopeSheetView::mouseReleaseEvent(QMouseEvent* event)
 {
-  m_track_view_delegate->mouse_button_release(*event);
+  m_track_view_delegate->mouse_release(*event);
 }
 
 void DopeSheetView::mousePressEvent(QMouseEvent* event)
 {
   if (columnAt(event->x()) == 1) {
-    m_track_view_delegate->mouse_button_press(*event);
+    m_track_view_delegate->mouse_press(*event);
   } else {
     QTreeView::mousePressEvent(event);
   }
@@ -86,9 +62,7 @@ void DopeSheetView::mouseMoveEvent(QMouseEvent* event)
 
 void DopeSheetView::keyPressEvent(QKeyEvent* event)
 {
-  if (event->key() == Qt::Key_Escape) {
-    m_track_view_delegate->abort_move();
-  }
+  m_track_view_delegate->key_press(*event);
   QTreeView::keyPressEvent(event);
 }
 

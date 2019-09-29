@@ -15,7 +15,6 @@ Slider::Slider(Animator& animator)
   : m_canvas(animator, *this)
   , m_scene(animator.scene)
 {
-  m_canvas.set_font(font());
   connect(&animator, SIGNAL(start_changed(int)), this, SLOT(update()));
   connect(&animator, SIGNAL(end_changed(int)), this, SLOT(update()));
   connect(&animator, SIGNAL(current_changed(int)), this, SLOT(update()));
@@ -38,15 +37,6 @@ void Slider::paintEvent(QPaintEvent *event)
   painter.setRenderHint(QPainter::HighQualityAntialiasing);
   m_canvas.rect = rect();
 
-  std::set<Track*> tracks;
-  for (const AbstractPropertyOwner* o : m_scene.selection()) {
-    for (Property* property : o->properties().values()) {
-      if (Track* track = property->track(); track != nullptr) {
-        tracks.insert(track);
-      }
-    }
-  }
-  m_canvas.tracks = tracks;
   painter.save();
   m_canvas.draw(painter);
   painter.restore();
@@ -72,9 +62,18 @@ void Slider::mouseReleaseEvent(QMouseEvent* event)
   QWidget::mouseReleaseEvent(event);
 }
 
-Slider::TimelineCanvasC::TimelineCanvasC(Animator& animator, Slider& self)
-  : TimelineCanvas(animator), m_self(self)
+void Slider::keyPressEvent(QKeyEvent* event)
 {
+  m_canvas.key_press(*event);
+}
+
+Slider::TimelineCanvasC::TimelineCanvasC(Animator& animator, Slider& self)
+  : TimelineCanvas(animator, QFontMetrics(self.font()).height()), m_self(self)
+{
+  connect(&animator.scene.message_box(),
+          qOverload<const std::set<AbstractPropertyOwner*>&>(&MessageBox::selection_changed),
+          this, &TimelineCanvasC::update_tracks);
+  update_tracks(animator.scene.selection());
 }
 
 QPoint Slider::TimelineCanvasC::map_to_global(const QPoint& pos) const
@@ -85,6 +84,19 @@ QPoint Slider::TimelineCanvasC::map_to_global(const QPoint& pos) const
 void Slider::TimelineCanvasC::update()
 {
   m_self.update();
+}
+
+void Slider::TimelineCanvasC::update_tracks(const std::set<AbstractPropertyOwner*>& selection)
+{
+  tracks.clear();
+  for (AbstractPropertyOwner* apo : selection) {
+    for (Property* p : apo->properties().values()) {
+      if (Track* track = p->track(); track != nullptr) {
+        tracks.insert(track);
+      }
+    }
+  }
+  update();
 }
 
 }  // namespace omm

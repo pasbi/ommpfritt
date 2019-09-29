@@ -6,7 +6,10 @@
 #include <QFont>
 #include <QObject>
 
+#include <animation/animator.h>
+
 class QMouseEvent;
+class QKeyEvent;
 
 namespace omm
 {
@@ -18,9 +21,7 @@ class TimelineCanvas : public QObject
 {
   Q_OBJECT
 public:
-  explicit TimelineCanvas(Animator& animator);
-
-  void set_font(const QFont& font);
+  explicit TimelineCanvas(Animator& animator, int footer_height);
 
   void draw(QPainter& painter) const;
   void draw_background(QPainter& painter) const;
@@ -39,6 +40,7 @@ public:
   void mouse_press(QMouseEvent& event);
   void mouse_move(QMouseEvent& event);
   void mouse_release(QMouseEvent& event);
+  void key_press(QKeyEvent& event);
 
   virtual QPoint map_to_global(const QPoint& pos) const = 0;
   virtual void update() = 0;
@@ -47,15 +49,24 @@ Q_SIGNALS:
   void current_frame_changed(int);
 
 private:
-  const Animator& m_animator;
-  QFont m_font;
-  bool m_draw_text = false;
+  Animator& m_animator;
+  const int m_footer_height;
   std::map<Track*, std::set<int>> m_selection;
   double pixel_to_frame(double pixel) const;
-  double frame_to_pixel(double pixel) const;
+  double frame_to_pixel(double frame) const;
+  double normalized_to_frame(double pixel) const;
+  double frame_to_normalized(double frame) const;
+  double footer_y() const;
+  std::set<Track*> tracks_at(double frame) const;
+  bool is_selected(int frame) const;
+  void select(int frame);
 
-  bool m_pan_active;
-  bool m_zoom_active;
+  bool m_pan_active = false;
+  bool m_zoom_active = false;
+  bool m_dragging_knots = false;
+  bool m_dragging_time = false;
+  bool m_move_aborted = false;
+  int m_shift = 0;
   QPoint m_last_mouse_pos;
   QPoint m_mouse_down_pos;
 };

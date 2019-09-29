@@ -103,9 +103,12 @@ void MoveKeyFrameCommand::redo()
   if (m_shift != 0) {
     Track* track = m_property.track();
     for (int frame : m_old_frames) {
-      if (track->has_keyframe(frame + m_shift)) {
-        const Track::Knot knot = m_animator.remove_knot(*track, frame + m_shift);
-        m_removed_values.insert(std::pair(frame + m_shift, knot));
+      int new_frame = frame + m_shift;
+      // do not remove frames that are being shifted itself.
+      // the `shift_keyframes`-methods handles such cases.
+      if (track->has_keyframe(new_frame) && !::contains(m_old_frames, new_frame)) {
+        const Track::Knot knot = m_animator.remove_knot(*track, new_frame);
+        m_removed_values.insert(std::pair(new_frame, knot));
       }
     }
 
