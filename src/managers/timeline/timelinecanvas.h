@@ -39,7 +39,7 @@ public:
   Animator& animator;
   int footer_height = 0;
 
-  void view_event(QEvent& event);
+  bool view_event(QEvent& event);
 
   virtual QPoint map_to_global(const QPoint& pos) const = 0;
   virtual void update() = 0;
@@ -67,10 +67,10 @@ private:
   QPoint m_last_mouse_pos;
   QPoint m_mouse_down_pos;
 
-  void mouse_press(QMouseEvent& event);
-  void mouse_move(QMouseEvent& event);
-  void mouse_release(QMouseEvent& event);
-  void key_press(QKeyEvent& event);
+  bool mouse_press(QMouseEvent& event);
+  bool mouse_move(QMouseEvent& event);
+  bool mouse_release(QMouseEvent& event);
+  bool key_press(QKeyEvent& event);
 };
 
 }  // namespace omm

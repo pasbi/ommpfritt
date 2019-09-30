@@ -196,53 +196,58 @@ double TimelineCanvas::ppfs() const
   return rect.width() * ppf();
 }
 
-void TimelineCanvas::view_event(QEvent& event)
+bool TimelineCanvas::view_event(QEvent& event)
 {
   switch (event.type()) {
   case QEvent::MouseButtonPress:
-    mouse_press(static_cast<QMouseEvent&>(event));
-    break;
+    return mouse_press(static_cast<QMouseEvent&>(event));
   case QEvent::MouseButtonRelease:
-    mouse_release(static_cast<QMouseEvent&>(event));
-    break;
+    return mouse_release(static_cast<QMouseEvent&>(event));
   case QEvent::MouseMove:
-    mouse_move(static_cast<QMouseEvent&>(event));
-    break;
+    return mouse_move(static_cast<QMouseEvent&>(event));
   case QEvent::KeyPress:
-    key_press(static_cast<QKeyEvent&>(event));
-    break;
+    return key_press(static_cast<QKeyEvent&>(event));
   default:
-    break;
+    return false;
   }
 }
 
-void TimelineCanvas::mouse_press(QMouseEvent& event)
+bool TimelineCanvas::mouse_press(QMouseEvent& event)
 {
   m_mouse_down_pos = event.pos();
   m_last_mouse_pos = event.pos();
-  m_pan_active = event.modifiers() & Qt::AltModifier && event.button() == Qt::LeftButton;
-  m_zoom_active = event.modifiers() & Qt::AltModifier && event.button() == Qt::RightButton;
   m_shift = 0;
   m_move_aborted = false;
+  m_pan_active = false;
+  m_zoom_active = false;
   const int frame = std::round(pixel_to_frame(event.pos().x() - rect.left()));
-  if (m_pan_active || m_zoom_active) {
-    // do nothing yet
+  if (event.modifiers() & Qt::AltModifier) {
+    m_pan_active = event.button() == Qt::LeftButton;
+    m_zoom_active = event.button() == Qt::RightButton;
+    return true;
   } else if (event.pos().y() - rect.top() < footer_y()) {
-    if (const auto tracks = tracks_at(frame); !tracks.empty()) {
-      m_dragging_knots = true;
-      if (!(event.modifiers() & Qt::ShiftModifier) && !is_selected(frame)) {
-        m_selection.clear();
+    if (event.button() == Qt::LeftButton) {
+      if (const auto tracks = tracks_at(frame); !tracks.empty()) {
+        if (!(event.modifiers() & Qt::ShiftModifier) && !is_selected(frame)) {
+          m_selection.clear();
+        }
+        select(frame);
+        update();
       }
-      select(frame);
-      update();
+      m_dragging_knots = true;
+      return true;
     }
   } else {
-    m_dragging_time = true;
-    Q_EMIT current_frame_changed(std::round(pixel_to_frame(event.pos().x() - rect.left())));
+    if (event.button() == Qt::LeftButton) {
+      m_dragging_time = true;
+      Q_EMIT current_frame_changed(std::round(pixel_to_frame(event.pos().x() - rect.left())));
+      return true;
+    }
   }
+  return false;
 }
 
-void TimelineCanvas::mouse_move(QMouseEvent& event)
+bool TimelineCanvas::mouse_move(QMouseEvent& event)
 {
   const double min_ppf = 0.5 / rect.width();
   const double max_ppf = 70 / rect.width();
@@ -254,6 +259,7 @@ void TimelineCanvas::mouse_move(QMouseEvent& event)
     left_frame = min;
     right_frame = max;
     update();
+    return true;
   } else if (m_zoom_active) {
     QCursor::setPos(map_to_global(m_mouse_down_pos));
     const double left = (m_mouse_down_pos.x() - rect.left()) / rect.width();
@@ -264,15 +270,20 @@ void TimelineCanvas::mouse_move(QMouseEvent& event)
     left_frame = center_frame - left / ppf;
     right_frame = center_frame + right  / ppf - 1.0;
     update();
+    return true;
   } else if (m_dragging_knots && !m_move_aborted) {
     m_shift = std::round(pixel_to_frame(event.x()) - pixel_to_frame(m_mouse_down_pos.x()));
     update();
+    return true;
   } else if (m_dragging_time) {
     Q_EMIT current_frame_changed(std::round(pixel_to_frame(event.pos().x() - rect.left())));
+    return true;
+  } else {
+    return false;
   }
 }
 
-void TimelineCanvas::mouse_release(QMouseEvent& event)
+bool TimelineCanvas::mouse_release(QMouseEvent& event)
 {
   const int frame = std::round(pixel_to_frame(event.pos().x() - rect.left()));
   if (m_shift == 0 && !m_move_aborted && m_dragging_knots) {
@@ -301,14 +312,18 @@ void TimelineCanvas::mouse_release(QMouseEvent& event)
   m_dragging_time = false;
   m_shift = 0;
   update();
+  return false;
 }
 
-void TimelineCanvas::key_press(QKeyEvent& event)
+bool TimelineCanvas::key_press(QKeyEvent& event)
 {
   if (event.key() == Qt::Key_Escape) {
     m_move_aborted = true;
     m_shift = 0;
     update();
+    return true;
+  } else {
+    return false;
   }
 }
 

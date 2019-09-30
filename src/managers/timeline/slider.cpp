@@ -51,8 +51,12 @@ void Slider::paintEvent(QPaintEvent *event)
 
 bool Slider::event(QEvent* event)
 {
-  m_canvas.view_event(*event);
-  return QWidget::event(event);
+  if (m_canvas.view_event(*event)) {
+    event->accept();
+    return true;
+  } else {
+    return QWidget::event(event);
+  }
 }
 
 Slider::TimelineCanvasC::TimelineCanvasC(Animator& animator, Slider& self)

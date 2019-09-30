@@ -71,9 +71,9 @@ QSize TrackViewDelegate::sizeHint(const QStyleOptionViewItem&, const QModelIndex
   }
 }
 
-void TrackViewDelegate::view_event(QEvent& event)
+bool TrackViewDelegate::view_event(QEvent& event)
 {
-  m_canvas.view_event(event);
+  return m_canvas.view_event(event);
 }
 
 void TrackViewDelegate::toggle_expanded(const QModelIndex& index)
