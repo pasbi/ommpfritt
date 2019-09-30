@@ -43,6 +43,8 @@ public:
 
   virtual QPoint map_to_global(const QPoint& pos) const = 0;
   virtual void update() = 0;
+  virtual void disable_context_menu() = 0;
+  virtual void enable_context_menu() = 0;
 
 Q_SIGNALS:
   void current_frame_changed(int);

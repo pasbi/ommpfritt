@@ -86,6 +86,16 @@ void Slider::TimelineCanvasC::update()
   m_self.update();
 }
 
+void Slider::TimelineCanvasC::disable_context_menu()
+{
+  m_self.setContextMenuPolicy(Qt::PreventContextMenu);
+}
+
+void Slider::TimelineCanvasC::enable_context_menu()
+{
+  m_self.setContextMenuPolicy(Qt::DefaultContextMenu);
+}
+
 void Slider::TimelineCanvasC::update_tracks(const std::set<AbstractPropertyOwner*>& selection)
 {
   tracks.clear();

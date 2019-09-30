@@ -38,6 +38,8 @@ private:
     TimelineCanvasC(Animator& animator, DopeSheetView& self);
     void update() override;
     QPoint map_to_global(const QPoint &pos) const override;
+    void enable_context_menu() override;
+    void disable_context_menu() override;
   private:
     DopeSheetView& m_self;
   };

@@ -224,6 +224,7 @@ bool TimelineCanvas::mouse_press(QMouseEvent& event)
   if (event.modifiers() & Qt::AltModifier) {
     m_pan_active = event.button() == Qt::LeftButton;
     m_zoom_active = event.button() == Qt::RightButton;
+    disable_context_menu();
     return true;
   } else if (event.pos().y() - rect.top() < footer_y()) {
     if (event.button() == Qt::LeftButton) {
@@ -312,6 +313,7 @@ bool TimelineCanvas::mouse_release(QMouseEvent& event)
   m_dragging_time = false;
   m_shift = 0;
   update();
+  enable_context_menu();
   return false;
 }
 

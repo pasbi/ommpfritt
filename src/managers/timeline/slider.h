@@ -34,6 +34,8 @@ private:
     TimelineCanvasC(Animator& animator, Slider& self);
     QPoint map_to_global(const QPoint &pos) const override;
     void update() override;
+    void disable_context_menu() override;
+    void enable_context_menu() override;
   private:
     Slider& m_self;
     void update_tracks(const std::set<AbstractPropertyOwner*>& selection);

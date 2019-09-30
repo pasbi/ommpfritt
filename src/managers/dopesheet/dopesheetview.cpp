@@ -106,4 +106,14 @@ QPoint DopeSheetView::TimelineCanvasC::map_to_global(const QPoint& pos) const
   return m_self.viewport()->mapToGlobal(pos);
 }
 
+void DopeSheetView::TimelineCanvasC::enable_context_menu()
+{
+  m_self.setContextMenuPolicy(Qt::PreventContextMenu);
+}
+
+void DopeSheetView::TimelineCanvasC::disable_context_menu()
+{
+  m_self.setContextMenuPolicy(Qt::DefaultContextMenu);
+}
+
 }  // namespace
