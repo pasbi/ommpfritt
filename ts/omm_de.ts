@@ -74,6 +74,28 @@
     </message>
 </context>
 <context>
+    <name>KeyBindingsDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>name filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset All</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>KeySequenceEdit</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>NumericProperty</name>
     <message>
         <source>lower_value</source>
@@ -510,17 +532,17 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>name</source>
         <comment>keybindings</comment>
-        <translation>Name</translation>
+        <translation type="vanished">Name</translation>
     </message>
     <message>
         <source>context</source>
         <comment>keybindings</comment>
-        <translation>Kontext</translation>
+        <translation type="vanished">Kontext</translation>
     </message>
     <message>
         <source>sequence</source>
         <comment>keybindings</comment>
-        <translation>Sequenz</translation>
+        <translation type="vanished">Sequenz</translation>
     </message>
     <message>
         <source>&lt; invalid &gt;</source>
@@ -1086,7 +1108,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>unnamed</source>
-        <translation type="unfinished">Unbenannt</translation>
+        <translation type="obsolete">Unbenannt</translation>
     </message>
     <message>
         <source>animatable</source>
@@ -1097,7 +1119,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <name>UserPropertyListModel</name>
     <message>
         <source>&lt;unnamed property&gt;</source>
-        <translation type="unfinished">Eigenschafts-Element</translation>
+        <translation type="obsolete">Eigenschafts-Element</translation>
     </message>
 </context>
 <context>
@@ -1471,6 +1493,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>show point dialog</source>
         <translation type="unfinished">Punktdialog anzeigen</translation>
     </message>
+    <message>
+        <source>Add Tag</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::BoundingBoxManager</name>
@@ -1543,21 +1569,33 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
 </context>
 <context>
+    <name>omm::KeyBindingsDialog</name>
+    <message>
+        <source>Reset all key bindings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you really want to reset all keycuts to the default value?
+This cannot be undone.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>omm::KeyBindingsDialogControls</name>
     <message>
         <source>Any Context</source>
-        <translation>Alle</translation>
+        <translation type="vanished">Alle</translation>
     </message>
 </context>
 <context>
     <name>omm::KeySequenceEdit</name>
     <message>
         <source>R</source>
-        <translation>R</translation>
+        <translation type="vanished">R</translation>
     </message>
     <message>
         <source>X</source>
-        <translation>X</translation>
+        <translation type="vanished">X</translation>
     </message>
 </context>
 <context>
@@ -1665,6 +1703,20 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>ToolBar</source>
         <translation>Werkzeugkasten</translation>
+    </message>
+</context>
+<context>
+    <name>omm::UserPropertyDialog</name>
+    <message>
+        <source>unnamed</source>
+        <translation type="unfinished">Unbenannt</translation>
+    </message>
+</context>
+<context>
+    <name>omm::UserPropertyListModel</name>
+    <message>
+        <source>&lt;unnamed property&gt;</source>
+        <translation type="unfinished">Eigenschafts-Element</translation>
     </message>
 </context>
 </TS>

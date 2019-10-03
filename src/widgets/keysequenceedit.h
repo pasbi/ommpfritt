@@ -2,8 +2,8 @@
 
 #include <QKeySequence>
 #include <QWidget>
-
-class QKeySequenceEdit;
+#include <memory>
+#include "ui_keysequenceedit.h"
 
 namespace omm
 {
@@ -20,7 +20,7 @@ public:
   bool focusNextPrevChild(bool next) override;
 
 private:
-  QKeySequenceEdit* m_key_sequence_edit;
+  std::unique_ptr<Ui::KeySequenceEdit> m_ui;
   QKeySequence m_default_key_sequence;
 };
 

@@ -23,5 +23,6 @@
         <file>icons/Pause.png</file>
         <file>icons/Jump-End.png</file>
         <file>layouts/default.layout</file>
+        <file>icons/Revert.png</file>
     </qresource>
 </RCC>

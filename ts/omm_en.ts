@@ -74,6 +74,28 @@
     </message>
 </context>
 <context>
+    <name>KeyBindingsDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>name filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset All</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>KeySequenceEdit</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>NumericProperty</name>
     <message>
         <source>lower_value</source>
@@ -510,17 +532,17 @@ Remove the selected items anyway?</translation>
     <message>
         <source>name</source>
         <comment>keybindings</comment>
-        <translation>Name</translation>
+        <translation type="vanished">Name</translation>
     </message>
     <message>
         <source>context</source>
         <comment>keybindings</comment>
-        <translation>Context</translation>
+        <translation type="vanished">Context</translation>
     </message>
     <message>
         <source>sequence</source>
         <comment>keybindings</comment>
-        <translation>Sequence</translation>
+        <translation type="vanished">Sequence</translation>
     </message>
     <message>
         <source>&lt; invalid &gt;</source>
@@ -1086,7 +1108,7 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>unnamed</source>
-        <translation type="unfinished">unnamed</translation>
+        <translation type="obsolete">unnamed</translation>
     </message>
     <message>
         <source>animatable</source>
@@ -1097,7 +1119,7 @@ Remove the selected items anyway?</translation>
     <name>UserPropertyListModel</name>
     <message>
         <source>&lt;unnamed property&gt;</source>
-        <translation type="unfinished">Property item</translation>
+        <translation type="obsolete">Property item</translation>
     </message>
 </context>
 <context>
@@ -1471,6 +1493,10 @@ Remove the selected items anyway?</translation>
         <source>show point dialog</source>
         <translation type="unfinished">Show point dialog</translation>
     </message>
+    <message>
+        <source>Add Tag</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::BoundingBoxManager</name>
@@ -1543,21 +1569,33 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
+    <name>omm::KeyBindingsDialog</name>
+    <message>
+        <source>Reset all key bindings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you really want to reset all keycuts to the default value?
+This cannot be undone.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>omm::KeyBindingsDialogControls</name>
     <message>
         <source>Any Context</source>
-        <translation>Any Context</translation>
+        <translation type="vanished">Any Context</translation>
     </message>
 </context>
 <context>
     <name>omm::KeySequenceEdit</name>
     <message>
         <source>R</source>
-        <translation>R</translation>
+        <translation type="vanished">R</translation>
     </message>
     <message>
         <source>X</source>
-        <translation>X</translation>
+        <translation type="vanished">X</translation>
     </message>
 </context>
 <context>
@@ -1665,6 +1703,20 @@ Remove the selected items anyway?</translation>
     <message>
         <source>ToolBar</source>
         <translation>Tool bar</translation>
+    </message>
+</context>
+<context>
+    <name>omm::UserPropertyDialog</name>
+    <message>
+        <source>unnamed</source>
+        <translation type="unfinished">unnamed</translation>
+    </message>
+</context>
+<context>
+    <name>omm::UserPropertyListModel</name>
+    <message>
+        <source>&lt;unnamed property&gt;</source>
+        <translation type="unfinished">Property item</translation>
     </message>
 </context>
 </TS>
