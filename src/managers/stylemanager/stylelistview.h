@@ -14,9 +14,14 @@ class StyleListView : public ManagerItemView<QListView, StyleList>
 {
   Q_OBJECT
 public:
+  explicit StyleListView(StyleList& model);
   using model_type = StyleList;
   using ManagerItemView<QListView, model_type>::ManagerItemView;
   void mouseReleaseEvent(QMouseEvent* e) override;
+
+
+protected:
+  void resizeEvent(QResizeEvent* e) override;
 
 public Q_SLOTS:
   void set_selection(const std::set<Style*>& selection);
