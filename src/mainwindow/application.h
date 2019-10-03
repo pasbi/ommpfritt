@@ -54,7 +54,7 @@ public:
   KeyBindings key_bindings;
 
 public:
-  bool dispatch_key(int key);
+  bool dispatch_key(int key, Qt::KeyboardModifiers modifiers);
   void register_manager(Manager& manager);
   void unregister_manager(Manager& manager);
   bool perform_action(const std::string& name) override;
@@ -62,6 +62,7 @@ private:
   QTimer m_reset_keysequence_timer;
   std::vector<int> m_pending_key_sequence;
   std::set<Manager*> m_managers;
+  bool dispatch_sequence(const QKeySequence& sequence);
 
 };
 

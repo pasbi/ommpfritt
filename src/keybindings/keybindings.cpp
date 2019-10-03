@@ -206,6 +206,42 @@ std::string KeyBindings::find_action(const std::string& context, const QKeySeque
   }
 }
 
+void KeyBindings::reset()
+{
+  for (ContextKeyBindings& c : m_keybindings) {
+    for (KeyBinding& k : c.key_bindings) {
+      k.reset();
+    }
+  }
+}
+
+std::map<std::string, std::map<std::string, QKeySequence>> KeyBindings::key_sequences() const
+{
+  std::map<std::string, std::map<std::string, QKeySequence>> map;
+  for (ContextKeyBindings& context_keybindings : m_keybindings) {
+    for (KeyBinding& keybinding : context_keybindings.key_bindings) {
+      map[context_keybindings.name][keybinding.name] = keybinding.key_sequence();
+    }
+  }
+  return map;
+}
+
+void KeyBindings::
+set_key_sequences(const std::map<std::string, std::map<std::string, QKeySequence> >& map)
+{
+  beginResetModel();
+  for (ContextKeyBindings& c : m_keybindings) {
+    if (auto cit = map.find(c.name); cit != map.end()) {
+      for (KeyBinding& k : c.key_bindings) {
+        if (auto it = cit->second.find(k.name); it != cit->second.end()) {
+          k.set_key_sequence(it->second);
+        }
+      }
+    }
+  }
+  endResetModel();
+}
+
 void KeyBindings::store() const
 {
   QSettings settings;
@@ -220,7 +256,7 @@ void KeyBindings::store() const
   settings.endGroup();
 }
 
-int KeyBindings::columnCount(const QModelIndex& parent) const { Q_UNUSED(parent) return 3; }
+int KeyBindings::columnCount(const QModelIndex& parent) const { Q_UNUSED(parent) return 2; }
 int KeyBindings::rowCount(const QModelIndex& parent) const
 {
   if (parent.isValid()) {
@@ -250,7 +286,7 @@ QVariant KeyBindings::data(const QModelIndex& index, int role) const
     switch (role) {
     case Qt::DisplayRole:
       switch (index.column()) {
-      case NAME_COLUMN:
+      case 0:
         return QString::fromStdString(static_cast<const ContextKeyBindings*>(index.internalPointer())->name);
       }
     }
@@ -258,17 +294,14 @@ QVariant KeyBindings::data(const QModelIndex& index, int role) const
     switch (role) {
     case Qt::DisplayRole:
       switch (index.column()) {
-      case NAME_COLUMN:
+      case 0:
         return QCoreApplication::translate("", static_cast<const KeyBinding*>(index.internalPointer())->name.c_str());
-      case CONTEXT_COLUMN:
-        return QCoreApplication::translate("", static_cast<const KeyBinding*>(index.internalPointer())->context().c_str());
-      case SEQUENCE_COLUMN:
+      case 1:
         return static_cast<const KeyBinding*>(index.internalPointer())->key_sequence().toString(QKeySequence::NativeText);
       }
       break;
     case Qt::EditRole:
-      switch (index.column()) {
-      case SEQUENCE_COLUMN:
+      if (index.column() == 1) {
         return static_cast<const KeyBinding*>(index.internalPointer())->key_sequence();
       }
       break;
@@ -281,9 +314,7 @@ QVariant KeyBindings::data(const QModelIndex& index, int role) const
       break;
     }
     case Qt::FontRole:
-      switch (index.column()) {
-      case SEQUENCE_COLUMN:
-      {
+      if (index.column() == 1) {
         const KeyBinding* binding = static_cast<const KeyBinding*>(index.internalPointer());
         if (binding->default_key_sequence() != binding->key_sequence()) {
           auto font = QApplication::font();
@@ -291,10 +322,8 @@ QVariant KeyBindings::data(const QModelIndex& index, int role) const
           return font;
         }
       }
-      }
     case DEFAULT_KEY_SEQUENCE_ROLE:
-      switch (index.column()) {
-      case SEQUENCE_COLUMN:
+      if (index.column() == 1) {
         return static_cast<const KeyBinding*>(index.internalPointer())->default_key_sequence();
       }
       break;
@@ -308,40 +337,23 @@ bool KeyBindings::setData(const QModelIndex& index, const QVariant& value, int r
 {
   if (role != Qt::EditRole) {
     return false;
-  } else if (index.column() != SEQUENCE_COLUMN) {
+  } else if (index.column() != 1) {
     return false;
   } else if (static_cast<KeyBindingTreeItem*>(index.internalPointer())->is_context()) {
     return false;
   }
+
   KeyBinding* key_binding = static_cast<KeyBinding*>(index.internalPointer());
   key_binding->set_key_sequence(value.value<QKeySequence>());
   Q_EMIT dataChanged(index, index);
   return true;
 }
 
-QVariant KeyBindings::headerData(int section, Qt::Orientation orientation, int role) const
-{
-  if (orientation == Qt::Horizontal) {
-    switch (role) {
-    case Qt::DisplayRole:
-      switch (section) {
-      case NAME_COLUMN: return QObject::tr("name", "keybindings");
-      case CONTEXT_COLUMN: return QObject::tr("context", "keybindings");
-      case SEQUENCE_COLUMN: return QObject::tr("sequence", "keybindings");
-      }
-    }
-    return QVariant();
-  } else {
-    return QVariant();
-  }
-}
-
-
 Qt::ItemFlags KeyBindings::flags(const QModelIndex& index) const
 {
   Qt::ItemFlags flags = Qt::ItemIsEnabled;
   if (!static_cast<KeyBindingTreeItem*>(index.internalPointer())->is_context()) {
-    if (index.column() == SEQUENCE_COLUMN) {
+    if (index.column() == 1) {
       flags |= Qt::ItemIsEditable;
     }
   }

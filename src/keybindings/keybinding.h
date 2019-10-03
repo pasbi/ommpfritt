@@ -27,6 +27,7 @@ public:
   std::string context() const;
   bool is_context() const override { return false; }
   bool matches(QKeySequence sequence) const;
+  void reset();
 
 private:
   const std::string m_context;

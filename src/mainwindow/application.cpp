@@ -176,7 +176,6 @@ void Application::load()
 
 bool Application::perform_action(const std::string& action_name)
 {
-  LINFO << action_name;
   if (action_name == QT_TR_NOOP("undo")) {
     scene.history().undo();
   } else if (action_name == QT_TR_NOOP("redo")) {
@@ -284,6 +283,48 @@ bool Application::perform_action(const std::string& action_name)
   return true;
 }
 
+bool Application::dispatch_sequence(const QKeySequence &sequence)
+{
+  QWidgetList top_level_widgets = QApplication::topLevelWidgets();
+  std::vector<Manager*> managers(m_managers.begin(), m_managers.end());
+  std::sort(managers.begin(), managers.end(), [top_level_widgets](Manager* a, Manager* b) {
+    const int z_a = top_level_widgets.indexOf(a);
+    const int z_b = top_level_widgets.indexOf(b);
+    if (z_a == -1) {
+      // `a` is not a top level widget.
+      return false;
+    } else if (z_b == -1) {
+      // `b` is not a top level widget.
+      return true;
+    } else {
+      return z_a < z_b;
+    }
+  });
+
+  const QPoint mouse_position = QCursor::pos();
+  for (Manager* manager : m_managers) {
+    const QRect manager_rect(manager->mapToGlobal(manager->rect().topLeft()),
+                             manager->mapToGlobal(manager->rect().bottomRight()));
+    if (manager_rect.contains(mouse_position)) {
+      const std::string action_name = key_bindings.find_action(manager->type(), sequence);
+      if (manager->perform_action(action_name)) {
+        m_pending_key_sequence.clear();
+        return true;
+      }
+    }
+    manager->rect();
+  }
+
+  const std::string action_name  = key_bindings.find_action("Application", sequence);
+
+  if (perform_action(action_name)) {
+    m_pending_key_sequence.clear();
+    return true;
+  } else {
+    return false;
+  }
+}
+
 std::string Application::type() const { return TYPE; }
 
 MessageBox &Application::message_box()
@@ -351,9 +392,9 @@ Object& Application::insert_object(const std::string &key, InsertionMode mode)
   return ref;
 }
 
-bool Application::dispatch_key(int key)
+bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers)
 {
-  m_pending_key_sequence.push_back(key);
+  m_pending_key_sequence.push_back(key | modifiers);
   if (m_pending_key_sequence.size() > 4) {
     m_pending_key_sequence.erase(m_pending_key_sequence.begin());
   }
@@ -366,51 +407,15 @@ bool Application::dispatch_key(int key)
     }
   };
 
-  const QKeySequence current_sequence(get_ith_key(0), get_ith_key(1),
-                                      get_ith_key(2), get_ith_key(3));
-
-  LINFO << "current sequence: " << current_sequence;
-
-  QWidgetList top_level_widgets = QApplication::topLevelWidgets();
-  std::vector<Manager*> managers(m_managers.begin(), m_managers.end());
-  std::sort(managers.begin(), managers.end(), [top_level_widgets](Manager* a, Manager* b) {
-    const int z_a = top_level_widgets.indexOf(a);
-    const int z_b = top_level_widgets.indexOf(b);
-    if (z_a == -1) {
-      // `a` is not a top level widget.
-      return false;
-    } else if (z_b == -1) {
-      // `b` is not a top level widget.
+  QKeySequence sequence(get_ith_key(0), get_ith_key(1), get_ith_key(2), get_ith_key(3));
+  while (sequence.count() > 0) {
+    if (dispatch_sequence(sequence)) {
       return true;
     } else {
-      return z_a < z_b;
+      sequence = QKeySequence(sequence[1], sequence[2], sequence[3], 0);
     }
-  });
-
-  const QPoint mouse_position = QCursor::pos();
-  for (Manager* manager : m_managers) {
-    const QRect manager_rect(manager->mapToGlobal(manager->rect().topLeft()),
-                             manager->mapToGlobal(manager->rect().bottomRight()));
-    if (manager_rect.contains(mouse_position)) {
-      const std::string action_name = key_bindings.find_action(manager->type(), current_sequence);
-      LINFO << "dispatch '" << action_name << "' -> " << manager->type();
-      if (manager->perform_action(action_name)) {
-        m_pending_key_sequence.clear();
-        return true;
-      }
-    }
-    manager->rect();
   }
-
-  const std::string action_name  = key_bindings.find_action("Application", current_sequence);
-
-  LINFO << "dispatch '" << action_name << "' -> " << type();
-  if (perform_action(action_name)) {
-    m_pending_key_sequence.clear();
-    return true;
-  } else {
-    return false;
-  }
+  return false;
 }
 
 void Application::register_manager(Manager& manager)

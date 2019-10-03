@@ -41,11 +41,12 @@ public:
   make_menus(CommandInterface& context, const std::vector<std::string>& actions) const;
 
   std::string find_action(const std::string& context, const QKeySequence& sequence) const;
+  void reset();
+
+  std::map<std::string, std::map<std::string, QKeySequence>> key_sequences() const;
+  void set_key_sequences(const std::map<std::string, std::map<std::string, QKeySequence>>& map);
 
 public:
-  static constexpr auto SEQUENCE_COLUMN = 2;
-  static constexpr auto NAME_COLUMN = 0;
-  static constexpr auto CONTEXT_COLUMN = 1;
   static constexpr auto DEFAULT_KEY_SEQUENCE_ROLE = Qt::UserRole + 1;
 
   // == reimplemented from QAbstractItemModel
@@ -58,7 +59,6 @@ public:
   QVariant data(const QModelIndex& index, int role) const override;
   bool setData(const QModelIndex& index, const QVariant& value, int role) override;
   Qt::ItemFlags flags(const QModelIndex& index) const override;
-  QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
 private:
   QKeySequence make_key_sequence(const QKeyEvent& event) const;
@@ -71,7 +71,6 @@ private:
   bool collides(const KeyBinding& candidate) const;
 
   mutable std::vector<ContextKeyBindings> m_keybindings;
-
 };
 
 }  // namespace omm
