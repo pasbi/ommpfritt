@@ -1044,6 +1044,10 @@ Borrar la selección de todos modos?</translation>
         <source>Move Keyframes</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Move knots</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1082,7 +1086,7 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>unnamed</source>
-        <translation type="obsolete">Sin nombre</translation>
+        <translation type="unfinished">Sin nombre</translation>
     </message>
     <message>
         <source>animatable</source>
@@ -1093,39 +1097,11 @@ Borrar la selección de todos modos?</translation>
     <name>UserPropertyListModel</name>
     <message>
         <source>&lt;unnamed property&gt;</source>
-        <translation type="obsolete">Elemento Atributo</translation>
+        <translation type="unfinished">Elemento Atributo</translation>
     </message>
 </context>
 <context>
     <name>any-context</name>
-    <message>
-        <source>undo</source>
-        <translation>Deshacer</translation>
-    </message>
-    <message>
-        <source>redo</source>
-        <translation>Rehacer</translation>
-    </message>
-    <message>
-        <source>new document</source>
-        <translation>Nuevo Documento</translation>
-    </message>
-    <message>
-        <source>save document</source>
-        <translation>Guardar</translation>
-    </message>
-    <message>
-        <source>save document as</source>
-        <translation>Guardar como ...</translation>
-    </message>
-    <message>
-        <source>load document</source>
-        <translation>Abrir ...</translation>
-    </message>
-    <message>
-        <source>export</source>
-        <translation>Exportar</translation>
-    </message>
     <message>
         <source>make smooth</source>
         <translation>Ajusta tangentes de modo cúbico</translation>
@@ -1135,32 +1111,8 @@ Borrar la selección de todos modos?</translation>
         <translation>Borrar tangentes</translation>
     </message>
     <message>
-        <source>remove points</source>
-        <translation>Borrar puntos</translation>
-    </message>
-    <message>
         <source>subdivide</source>
         <translation>Subdividir</translation>
-    </message>
-    <message>
-        <source>evaluate</source>
-        <translation>Evaluar</translation>
-    </message>
-    <message>
-        <source>show keybindings dialog</source>
-        <translation>Mostrar mapa de teclado</translation>
-    </message>
-    <message>
-        <source>restore default layout</source>
-        <translation>Revertir a la configuración de pantalla por defecto</translation>
-    </message>
-    <message>
-        <source>switch between object and point selection</source>
-        <translation>Cambiar entre la selección de objectos y puntos</translation>
-    </message>
-    <message>
-        <source>previous tool</source>
-        <translation>Herramienta previa</translation>
     </message>
     <message>
         <source>select all</source>
@@ -1185,10 +1137,6 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>remove selection</source>
         <translation>Borrar selección</translation>
-    </message>
-    <message>
-        <source>new style</source>
-        <translation>Nuevo estilo</translation>
     </message>
     <message>
         <source>convert objects</source>
@@ -1223,10 +1171,6 @@ Borrar la selección de todos modos?</translation>
         <translation>Trayecto Procedural</translation>
     </message>
     <message>
-        <source>remove objects and tags</source>
-        <translation>Borrar Objetos y Tags</translation>
-    </message>
-    <message>
         <source>ObjectManager</source>
         <translation>Controles de Objetos</translation>
     </message>
@@ -1239,16 +1183,8 @@ Borrar la selección de todos modos?</translation>
         <translation>Consola Python</translation>
     </message>
     <message>
-        <source>clear python console</source>
-        <translation>Despejar Consola Python</translation>
-    </message>
-    <message>
         <source>StyleManager</source>
         <translation>Controles de Estilos</translation>
-    </message>
-    <message>
-        <source>remove styles</source>
-        <translation>Borrar estilos</translation>
     </message>
     <message>
         <source>Properties</source>
@@ -1315,10 +1251,6 @@ Borrar la selección de todos modos?</translation>
         <translation>Herramienta Trayecto</translation>
     </message>
     <message>
-        <source>group objects</source>
-        <translation>Agrupar Objetos</translation>
-    </message>
-    <message>
         <source>RectangleObject</source>
         <translation>Rectángulo</translation>
     </message>
@@ -1327,19 +1259,7 @@ Borrar la selección de todos modos?</translation>
         <translation>Controles de Bounding Box</translation>
     </message>
     <message>
-        <source>toggle aspect ratio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>TimeLine</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>save layout ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>load layout ...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1408,6 +1328,10 @@ Borrar la selección de todos modos?</translation>
         <source>Replace Key</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Set keyframe</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::Application</name>
@@ -1440,12 +1364,112 @@ Borrar la selección de todos modos?</translation>
         <translation>La escena en &apos;%1&apos; no se pudo cargar.</translation>
     </message>
     <message>
-        <source>Add Tag</source>
-        <translation>Añadir día</translation>
-    </message>
-    <message>
         <source>Create %1</source>
         <translation>Crear %1</translation>
+    </message>
+    <message>
+        <source>undo</source>
+        <translation type="unfinished">Deshacer</translation>
+    </message>
+    <message>
+        <source>redo</source>
+        <translation type="unfinished">Rehacer</translation>
+    </message>
+    <message>
+        <source>remove selection</source>
+        <translation type="unfinished">Borrar selección</translation>
+    </message>
+    <message>
+        <source>new document</source>
+        <translation type="unfinished">Nuevo Documento</translation>
+    </message>
+    <message>
+        <source>save document</source>
+        <translation type="unfinished">Guardar</translation>
+    </message>
+    <message>
+        <source>save document as</source>
+        <translation type="unfinished">Guardar como ...</translation>
+    </message>
+    <message>
+        <source>load document</source>
+        <translation type="unfinished">Abrir ...</translation>
+    </message>
+    <message>
+        <source>export</source>
+        <translation type="unfinished">Exportar</translation>
+    </message>
+    <message>
+        <source>make smooth</source>
+        <translation type="unfinished">Ajusta tangentes de modo cúbico</translation>
+    </message>
+    <message>
+        <source>make linear</source>
+        <translation type="unfinished">Borrar tangentes</translation>
+    </message>
+    <message>
+        <source>remove points</source>
+        <translation type="unfinished">Borrar puntos</translation>
+    </message>
+    <message>
+        <source>subdivide</source>
+        <translation type="unfinished">Subdividir</translation>
+    </message>
+    <message>
+        <source>evaluate</source>
+        <translation type="unfinished">Evaluar</translation>
+    </message>
+    <message>
+        <source>show keybindings dialog</source>
+        <translation type="unfinished">Mostrar mapa de teclado</translation>
+    </message>
+    <message>
+        <source>restore default layout</source>
+        <translation type="unfinished">Revertir a la configuración de pantalla por defecto</translation>
+    </message>
+    <message>
+        <source>save layout ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>load layout ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>switch between object and point selection</source>
+        <translation type="unfinished">Cambiar entre la selección de objectos y puntos</translation>
+    </message>
+    <message>
+        <source>previous tool</source>
+        <translation type="unfinished">Herramienta previa</translation>
+    </message>
+    <message>
+        <source>select all</source>
+        <translation type="unfinished">Seleccionar todo</translation>
+    </message>
+    <message>
+        <source>deselect all</source>
+        <translation type="unfinished">Deseleccionar todo</translation>
+    </message>
+    <message>
+        <source>invert selection</source>
+        <translation type="unfinished">Invertir selección</translation>
+    </message>
+    <message>
+        <source>new style</source>
+        <translation type="unfinished">Nuevo estilo</translation>
+    </message>
+    <message>
+        <source>convert objects</source>
+        <translation type="unfinished">Convertir objetos</translation>
+    </message>
+    <message>
+        <source>reset viewport</source>
+        <translation type="unfinished">Revertir vista</translation>
+    </message>
+    <message>
+        <source>show point dialog</source>
+        <translation type="unfinished">Mostrar diálogo para editar puntos</translation>
     </message>
 </context>
 <context>
@@ -1641,20 +1665,6 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>ToolBar</source>
         <translation>Barra de Herramientas</translation>
-    </message>
-</context>
-<context>
-    <name>omm::UserPropertyDialog</name>
-    <message>
-        <source>unnamed</source>
-        <translation type="unfinished">Sin nombre</translation>
-    </message>
-</context>
-<context>
-    <name>omm::UserPropertyListModel</name>
-    <message>
-        <source>&lt;unnamed property&gt;</source>
-        <translation type="unfinished">Elemento Atributo</translation>
     </message>
 </context>
 </TS>

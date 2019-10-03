@@ -4,6 +4,7 @@
 #include "managers/timeline/timelinetitlebar.h"
 #include "managers/timeline/slider.h"
 #include "ui_timelinetitlebar.h"
+#include "mainwindow/application.h"
 
 namespace omm
 {
@@ -59,16 +60,16 @@ TimeLine::TimeLine(Scene &scene)
   update_play_pause_button(scene.animator().is_playing());
 }
 
-std::vector<CommandInterface::ActionInfo<TimeLine>> TimeLine::action_infos()
-{
-  using AI = ActionInfo<TimeLine>;
-  return {
-  };
-}
-
 void TimeLine::update_play_pause_button(bool play)
 {
   m_header->ui()->pb_play->setChecked(play);
   m_header->ui()->pb_play->setIcon(QIcon(QString(":/icons/%1.png").arg(play ? "Pause" : "Play")));
 }
+
+bool TimeLine::perform_action(const std::string& name)
+{
+  LINFO << name;
+  return false;
+}
+
 }  // namespace omm

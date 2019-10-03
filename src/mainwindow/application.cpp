@@ -5,7 +5,6 @@
 #include <QFileDialog>
 #include <QApplication>
 
-#include "keybindings/defaultkeysequenceparser.h"
 #include "mainwindow/mainwindow.h"
 #include "managers/manager.h"
 #include "scene/scene.h"
@@ -22,6 +21,7 @@
 #include "commands/movecommand.h"
 #include "scene/history/historymodel.h"
 #include "scene/stylelist.h"
+#include "managers/manager.h"
 
 namespace
 {
@@ -43,6 +43,12 @@ Application::Application(QApplication& app)
     LFATAL("Resetting application instance.");
   }
   scene.set_selection({});
+
+  m_reset_keysequence_timer.setSingleShot(true);
+  m_reset_keysequence_timer.setInterval(1000);
+  connect(&m_reset_keysequence_timer, &QTimer::timeout, this, [this]() {
+    m_pending_key_sequence.clear();
+  });
 }
 
 Application& Application::instance()
@@ -168,108 +174,114 @@ void Application::load()
   });
 }
 
-std::vector<CommandInterface::ActionInfo<Application>> Application::action_infos()
+bool Application::perform_action(const std::string& action_name)
 {
-  DefaultKeySequenceParser parser("://default_keybindings.cfg", "Application");
-  const auto ai = [parser](const std::string& name, const std::function<void(Application&)>& f) {
-    return ActionInfo(name, parser.get_key_sequence(name), f);
-  };
-  std::list infos {
-    ai( QT_TRANSLATE_NOOP("any-context", "undo"), [](Application& app) {
-      app.scene.history().undo(); } ),
-    ai( QT_TRANSLATE_NOOP("any-context", "redo"), [](Application& app) {
-      app.scene.history().redo(); } ),
-    ai( QT_TRANSLATE_NOOP("any-context", "remove selection"), [](Application& app) {
-      app.scene.remove(app.main_window(), app.scene.selection()); } ),
-    ai( QT_TRANSLATE_NOOP("any-context", "new document"), [](Application& app) { app.reset(); } ),
-    ai( QT_TRANSLATE_NOOP("any-context", "save document"), [](Application& app) { app.save(); } ),
-    ai( QT_TRANSLATE_NOOP("any-context", "save document as"), [](Application& app) {
-      app.save_as(); } ),
-    ai( QT_TRANSLATE_NOOP("any-context", "load document"), [](Application& app) { app.load(); } ),
-    ai( QT_TRANSLATE_NOOP("any-context", "export"), [](Application& app) {
-      static ExportDialog* export_dialog = nullptr;
-      if (export_dialog == nullptr) {
-        export_dialog = new omm::ExportDialog(app.scene, app.main_window());
-      }
-      export_dialog->exec();
-    }),
-    ai( QT_TRANSLATE_NOOP("any-context", "make smooth"), &actions::make_smooth),
-    ai( QT_TRANSLATE_NOOP("any-context", "make linear"), &actions::make_linear),
-    ai( QT_TRANSLATE_NOOP("any-context", "remove points"), &actions::remove_selected_points),
-    ai( QT_TRANSLATE_NOOP("any-context", "subdivide"), &actions::subdivide),
-    ai( QT_TRANSLATE_NOOP("any-context", "evaluate"), &actions::evaluate),
-    ai( QT_TRANSLATE_NOOP("any-context", "show keybindings dialog"), [](Application& app) {
-      KeyBindingsDialog(app.key_bindings, app.main_window()).exec(); } ),
-    ai( QT_TRANSLATE_NOOP("any-context", "restore default layout"), [](Application& app) {
-      app.main_window()->restore_default_layout(); }),
-    ai( QT_TRANSLATE_NOOP("any-context", "save layout ..."), [](Application& app) {
-      app.main_window()->save_layout(); }),
-    ai( QT_TRANSLATE_NOOP("any-context", "load layout ..."), [](Application& app) {
-      app.main_window()->load_layout(); }),
-    ai( QT_TRANSLATE_NOOP("any-context", "switch between object and point selection"),
-        [](Application& app) { app.scene.tool_box().switch_between_object_and_point_selection(); } ),
-    ai( QT_TRANSLATE_NOOP("any-context", "previous tool"), [](Application& app) {
-      app.scene.tool_box().set_previous_tool(); } ),
-    ai( QT_TRANSLATE_NOOP("any-context", "select all"), &actions::select_all),
-    ai( QT_TRANSLATE_NOOP("any-context", "deselect all"), &actions::deselect_all),
-    ai( QT_TRANSLATE_NOOP("any-context", "invert selection"), &actions::invert_selection),
-    ai( QT_TRANSLATE_NOOP("any-context", "new style"), [](Application& app) {
-        using command_type = AddCommand<List<Style>>;
-        auto style = app.scene.default_style().clone();
-        assert(style->scene() == &app.scene);
-        app.scene.submit<command_type>(app.scene.styles(), std::move(style));
-      } ),
-    ai( QT_TRANSLATE_NOOP("any-context", "convert objects"), &actions::convert_objects ),
-    ai( QT_TRANSLATE_NOOP("any-context", "reset viewport"), [](Application& app) {
-        app.main_window()->viewport().reset();
-      }),
-    ai( QT_TRANSLATE_NOOP("any-context", "show point dialog"), [](Application& app) {
-        const auto paths = Object::cast<Path>(app.scene.item_selection<Object>());
-        if (paths.size() > 0) { PointDialog(paths, app.main_window()).exec(); }
-      })
-  };
-
-  for (const auto& key : Object::keys()) {
-    infos.push_back(ai(key, [key](Application& app) {
-      const static auto get_mode = []() {
+  LINFO << action_name;
+  if (action_name == QT_TR_NOOP("undo")) {
+    scene.history().undo();
+  } else if (action_name == QT_TR_NOOP("redo")) {
+    scene.history().redo();
+  } else if (action_name == QT_TR_NOOP("remove selection")) {
+    scene.remove(main_window(), scene.selection());
+  } else if (action_name == QT_TR_NOOP("new document")) {
+    reset();
+  } else if (action_name == QT_TR_NOOP("save document")) {
+    save();
+  } else if (action_name == QT_TR_NOOP("save document as")) {
+    save_as();
+  } else if (action_name == QT_TR_NOOP("load document")) {
+    load();
+  } else if (action_name == QT_TR_NOOP("export")) {
+    static ExportDialog* export_dialog = nullptr;
+    if (export_dialog == nullptr) {
+      export_dialog = new omm::ExportDialog(scene, main_window());
+    }
+    export_dialog->exec();
+  } else if (action_name == QT_TR_NOOP("make smooth")) {
+    actions::make_smooth(*this);
+  } else if (action_name == QT_TR_NOOP("make linear")) {
+    actions::make_linear(*this);
+  } else if (action_name == QT_TR_NOOP("remove points")) {
+    actions::remove_selected_points(*this);
+  } else if (action_name == QT_TR_NOOP("subdivide")) {
+    actions::subdivide(*this);
+  } else if (action_name == QT_TR_NOOP("evaluate")) {
+    actions::evaluate(*this);
+  } else if (action_name == QT_TR_NOOP("show keybindings dialog")) {
+    KeyBindingsDialog(key_bindings, main_window()).exec();
+  } else if (action_name == QT_TR_NOOP("restore default layout")) {
+    main_window()->restore_default_layout();
+  } else if (action_name == QT_TR_NOOP("save layout ...")) {
+    main_window()->save_layout();
+  } else if (action_name == QT_TR_NOOP("load layout ...")) {
+    main_window()->load_layout();
+  } else if (action_name == QT_TR_NOOP("switch between object and point selection")) {
+    scene.tool_box().switch_between_object_and_point_selection();
+  } else if (action_name == QT_TR_NOOP("previous tool")) {
+    scene.tool_box().set_previous_tool();
+  } else if (action_name == QT_TR_NOOP("select all")) {
+    actions::select_all(*this);
+  } else if (action_name == QT_TR_NOOP("deselect all")) {
+    actions::deselect_all(*this);
+  } else if (action_name == QT_TR_NOOP("invert selection")) {
+    actions::invert_selection(*this);
+  } else if (action_name == QT_TR_NOOP("new style")) {
+      using command_type = AddCommand<List<Style>>;
+      auto style = scene.default_style().clone();
+      assert(style->scene() == &scene);
+      scene.submit<command_type>(scene.styles(), std::move(style));
+  } else if (action_name == QT_TR_NOOP("convert objects")) {
+    actions::convert_objects(*this);
+  } else if (action_name == QT_TR_NOOP("reset viewport")) {
+    main_window()->viewport().reset();
+  } else if (action_name == QT_TR_NOOP("show point dialog")) {
+    const auto paths = Object::cast<Path>(scene.item_selection<Object>());
+    if (paths.size() > 0) {
+      PointDialog(paths, main_window()).exec();
+    }
+  } else {
+    for (const auto& key : Object::keys()) {
+      if (key == action_name) {
         const auto modifiers = QApplication::keyboardModifiers();
         if (modifiers & Qt::ControlModifier) {
-          return InsertionMode::AsChild;
+          insert_object(key, InsertionMode::AsChild);
         } else if (modifiers & Qt::ShiftModifier) {
-          return InsertionMode::AsParent;
+          insert_object(key, InsertionMode::AsParent);
         } else {
-          return InsertionMode::Default;
+          insert_object(key, InsertionMode::Default);
         }
-      };
-      app.insert_object(key, get_mode());
-    }));
-  }
-
-  for (const auto& key : Manager::keys()) {
-    infos.push_back(ai(key, [key](Application& app) {
-      auto manager = Manager::make(key, app.scene);
-      app.main_window()->make_unique_manager_name(*manager);
-      auto& ref = *manager;
-      app.main_window()->addDockWidget(Qt::TopDockWidgetArea, manager.release());
-      ref.setFloating(true);
-    }));
-  }
-  for (const auto& key : Tool::keys()) {
-    infos.push_back(ai(key, [key](Application& app) {
-      app.scene.tool_box().set_active_tool(key);
-    }));
-  }
-  for (const auto& key : Tag::keys()) {
-    infos.push_back(ai(key, [key](Application& app) {
-      Scene& scene = app.scene;
-      auto macro = scene.history().start_macro(tr("Add Tag"));
-      for (auto&& object : scene.item_selection<Object>()) {
-        using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
-        scene.submit<AddTagCommand>(object->tags, Tag::make(key, *object));
+        return true;
       }
-    }));
+    }
+    for (const auto& key : Manager::keys()) {
+      if (key == action_name) {
+        auto manager = Manager::make(key, scene);
+        main_window()->make_unique_manager_name(*manager);
+        auto& ref = *manager;
+        main_window()->addDockWidget(Qt::TopDockWidgetArea, manager.release());
+        ref.setFloating(true);
+        return true;
+      }
+    }
+    for (const auto& key : Tool::keys()) {
+      if (key == action_name) {
+        scene.tool_box().set_active_tool(key);
+        return true;
+      }
+    }
+    for (const auto& key : Tag::keys()) {
+      if (key == action_name) {
+        auto macro = scene.history().start_macro(tr("Add Tag"));
+        for (auto&& object : scene.item_selection<Object>()) {
+          using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
+          scene.submit<AddTagCommand>(object->tags, Tag::make(key, *object));
+        }
+        return true;
+      }
+    }
+    return false;
   }
-  return std::vector(infos.begin(), infos.end());
+  return true;
 }
 
 std::string Application::type() const { return TYPE; }
@@ -337,6 +349,78 @@ Object& Application::insert_object(const std::string &key, InsertionMode mode)
 
   ref.post_create_hook();
   return ref;
+}
+
+bool Application::dispatch_key(int key)
+{
+  m_pending_key_sequence.push_back(key);
+  if (m_pending_key_sequence.size() > 4) {
+    m_pending_key_sequence.erase(m_pending_key_sequence.begin());
+  }
+
+  const auto get_ith_key = [this](std::size_t i) {
+    if (m_pending_key_sequence.size() > i) {
+      return m_pending_key_sequence.at(i);
+    } else {
+      return 0;
+    }
+  };
+
+  const QKeySequence current_sequence(get_ith_key(0), get_ith_key(1),
+                                      get_ith_key(2), get_ith_key(3));
+
+  LINFO << "current sequence: " << current_sequence;
+
+  QWidgetList top_level_widgets = QApplication::topLevelWidgets();
+  std::vector<Manager*> managers(m_managers.begin(), m_managers.end());
+  std::sort(managers.begin(), managers.end(), [top_level_widgets](Manager* a, Manager* b) {
+    const int z_a = top_level_widgets.indexOf(a);
+    const int z_b = top_level_widgets.indexOf(b);
+    if (z_a == -1) {
+      // `a` is not a top level widget.
+      return false;
+    } else if (z_b == -1) {
+      // `b` is not a top level widget.
+      return true;
+    } else {
+      return z_a < z_b;
+    }
+  });
+
+  const QPoint mouse_position = QCursor::pos();
+  for (Manager* manager : m_managers) {
+    const QRect manager_rect(manager->mapToGlobal(manager->rect().topLeft()),
+                             manager->mapToGlobal(manager->rect().bottomRight()));
+    if (manager_rect.contains(mouse_position)) {
+      const std::string action_name = key_bindings.find_action(manager->type(), current_sequence);
+      LINFO << "dispatch '" << action_name << "' -> " << manager->type();
+      if (manager->perform_action(action_name)) {
+        m_pending_key_sequence.clear();
+        return true;
+      }
+    }
+    manager->rect();
+  }
+
+  const std::string action_name  = key_bindings.find_action("Application", current_sequence);
+
+  LINFO << "dispatch '" << action_name << "' -> " << type();
+  if (perform_action(action_name)) {
+    m_pending_key_sequence.clear();
+    return true;
+  } else {
+    return false;
+  }
+}
+
+void Application::register_manager(Manager& manager)
+{
+  m_managers.insert(&manager);
+}
+
+void Application::unregister_manager(Manager& manager)
+{
+  m_managers.erase(&manager);
 }
 
 }  // namespace omm

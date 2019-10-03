@@ -20,7 +20,7 @@ KeyBindingsDialogControls::KeyBindingsDialogControls(KeyBindingsProxyModel &filt
   auto filter_line_edit = std::make_unique<QLineEdit>();
   m_filter_line_edit = filter_line_edit.get();
   connect(m_filter_line_edit, &QLineEdit::textChanged, [this](const QString& text) {
-    m_filter_proxy.set_action_filter(text.toStdString());
+    m_filter_proxy.set_action_name_filter(text.toStdString());
   });
   layout->addWidget(filter_line_edit.release());
 

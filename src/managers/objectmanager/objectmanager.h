@@ -7,18 +7,12 @@
 namespace omm
 {
 
-class ObjectManager
-  : public ItemManager<ObjectTreeView>, public CommandInterface
+class ObjectManager : public ItemManager<ObjectTreeView>
 {
   Q_OBJECT
 public:
   explicit ObjectManager(Scene& scene);
-  static std::vector<CommandInterface::ActionInfo<ObjectManager>> action_infos();
-
-protected:
-  std::vector<std::string> application_actions() const override;
-  bool child_key_press_event(QWidget& child, QKeyEvent& event) override;
-  void populate_menu(QMenu& menu) override;
+  bool perform_action(const std::string& name) override;
 
 public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ObjectManager");

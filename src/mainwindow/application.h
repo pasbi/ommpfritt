@@ -14,6 +14,7 @@ namespace omm
 {
 
 class MainWindow;
+class Manager;
 
 class Application : public QObject, public CommandInterface
 {
@@ -32,7 +33,6 @@ public:
   QKeySequence default_key_sequence(const std::string& name) const;
   static Application& instance();
 
-  static std::vector<CommandInterface::ActionInfo<Application>> action_infos();
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Application");
   std::string type() const override;
 
@@ -50,10 +50,19 @@ private:
   static Application* m_instance;
   MainWindow* m_main_window;
 
-  std::map<std::string, QKeySequence> m_default_key_sequences;
-
 public:
   KeyBindings key_bindings;
+
+public:
+  bool dispatch_key(int key);
+  void register_manager(Manager& manager);
+  void unregister_manager(Manager& manager);
+  bool perform_action(const std::string& name) override;
+private:
+  QTimer m_reset_keysequence_timer;
+  std::vector<int> m_pending_key_sequence;
+  std::set<Manager*> m_managers;
+
 };
 
 }  // namespace omm

@@ -10,15 +10,15 @@ namespace omm
 class Slider;
 class TimeLineTitleBar;
 
-class TimeLine : public Manager, public CommandInterface
+class TimeLine : public Manager
 {
   Q_OBJECT
 public:
   explicit TimeLine(Scene& scene);
-  static std::vector<CommandInterface::ActionInfo<TimeLine>> action_infos();
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "TimeLine");
   std::string type() const override { return TYPE; }
+  bool perform_action(const std::string &name) override;
 
 public Q_SLOTS:
   void update_play_pause_button(bool play);

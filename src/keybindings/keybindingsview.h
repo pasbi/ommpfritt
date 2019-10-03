@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QTableView>
+#include <QTreeView>
 #include <QItemDelegate>
 #include <QKeySequenceEdit>
 #include <memory>
@@ -20,10 +20,10 @@ public:
                      const QModelIndex &index ) const override;
 };
 
-class KeyBindingsTable : public QTableView
+class KeyBindingsView : public QTreeView
 {
 public:
-  explicit KeyBindingsTable(QAbstractItemModel& key_bindings);
+  explicit KeyBindingsView(QAbstractItemModel& key_bindings);
 
 private:
   std::unique_ptr<KeySequenceItemDelegate> m_sequence_column_delegate;

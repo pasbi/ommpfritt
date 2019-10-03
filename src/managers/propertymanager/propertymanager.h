@@ -29,6 +29,7 @@ public:
   void clear();
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PropertyManager");
   std::string type() const override;
+  bool perform_action(const std::string &name) override;
 
 private:
   OrderedMap<std::string, PropertyManagerTab> m_tabs;

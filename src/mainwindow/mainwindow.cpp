@@ -265,7 +265,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::keyPressEvent(QKeyEvent* e)
 {
-  if (!Application::instance().key_bindings.call(*e, m_app)) {
+  if (Application::instance().dispatch_key(e->key())) {
     QMainWindow::keyPressEvent(e);
   }
 }

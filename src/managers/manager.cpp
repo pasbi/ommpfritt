@@ -17,6 +17,7 @@ Manager::Manager(const QString& title, Scene& scene, std::unique_ptr<QWidget> me
   widget()->setLayout(std::make_unique<QVBoxLayout>(widget()).release());
 
   if (menu_bar) { widget()->layout()->addWidget(menu_bar.release()); }
+  Application::instance().register_manager(*this);
 }
 
 void Manager::contextMenuEvent(QContextMenuEvent *event)
@@ -70,6 +71,11 @@ bool Manager::eventFilter(QObject *o, QEvent *e)
 
 bool Manager::child_key_press_event(QWidget &, QKeyEvent &) { return false; }
 void Manager::populate_menu(QMenu&) { }
+Manager::~Manager()
+{
+  Application::instance().unregister_manager(*this);
+}
+
 Scene& Manager::scene() const { return m_scene; }
 
 void Manager::set_widget(std::unique_ptr<QWidget> widget)

@@ -173,26 +173,16 @@ void PythonConsole::push_command(const std::string& command)
   m_command_stack_pointer = m_command_stack.end();
 }
 
-void PythonConsole::keyPressEvent(QKeyEvent* event)
-{
-  if (!Application::instance().key_bindings.call(*event, *this)) {
-    Manager::keyPressEvent(event);
-  }
-}
-
-std::vector<CommandInterface::ActionInfo<PythonConsole>> PythonConsole::action_infos()
-{
-  using AI = ActionInfo<PythonConsole>;
-  return {
-    AI( QT_TRANSLATE_NOOP("any-context", "clear python console"), QKeySequence("Ctrl+K"),
-      [](PythonConsole& pc) { pc.clear(); }),
-  };
-}
-
 void PythonConsole::populate_menu(QMenu& menu)
 {
   auto& key_bindings = Application::instance().key_bindings;
   menu.addAction(key_bindings.make_action(*this, "clear python console").release());
+}
+
+bool PythonConsole::perform_action(const std::string& name)
+{
+  LINFO << name;
+  return false;
 }
 
 std::string PythonConsole::type() const { return TYPE; }

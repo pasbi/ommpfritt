@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QWidgetAction>
+#include "keybindings/keybinding.h"
 
 namespace omm
 {
@@ -16,7 +17,7 @@ public:
   void set_highlighted(bool h);
 
 private:
-  const KeyBinding& m_key_binding;
+  KeyBinding m_key_binding;
   ActionWidget* m_action_widget;
 };
 

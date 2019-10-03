@@ -14,14 +14,13 @@ namespace omm
 
 class AbstractPropertyOwner;
 
-class BoundingBoxManager : public Manager, public CommandInterface
+class BoundingBoxManager : public Manager
 {
   Q_OBJECT
 public:
   BoundingBoxManager(Scene &scene);
   std::string type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "BoundingBoxManager");
-  static std::vector<CommandInterface::ActionInfo<BoundingBoxManager>> action_infos();
 
 public Q_SLOTS:
   void on_property_value_changed(Property& property);
@@ -40,11 +39,11 @@ private:
   TransformPointsHelper m_transform_points_helper;
   TransformObjectsHelper m_transform_objects_helper;
   Mode m_current_mode = Mode::Objects;
+  bool perform_action(const std::string &name) override;
 
 protected:
   void enterEvent(QEvent* e) override;
   bool eventFilter(QObject *o, QEvent *e) override;
-  void keyPressEvent(QKeyEvent* event) override;
 
 private Q_SLOTS:
   BoundingBox update_manager();

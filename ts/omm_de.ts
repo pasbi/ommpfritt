@@ -1044,6 +1044,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Move Keyframes</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Move knots</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1082,7 +1086,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>unnamed</source>
-        <translation type="obsolete">Unbenannt</translation>
+        <translation type="unfinished">Unbenannt</translation>
     </message>
     <message>
         <source>animatable</source>
@@ -1093,39 +1097,11 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <name>UserPropertyListModel</name>
     <message>
         <source>&lt;unnamed property&gt;</source>
-        <translation type="obsolete">Eigenschafts-Element</translation>
+        <translation type="unfinished">Eigenschafts-Element</translation>
     </message>
 </context>
 <context>
     <name>any-context</name>
-    <message>
-        <source>undo</source>
-        <translation>Rückgängig</translation>
-    </message>
-    <message>
-        <source>redo</source>
-        <translation>Wiederholen</translation>
-    </message>
-    <message>
-        <source>new document</source>
-        <translation>Neue Szene</translation>
-    </message>
-    <message>
-        <source>save document</source>
-        <translation>Speichern</translation>
-    </message>
-    <message>
-        <source>save document as</source>
-        <translation>Speichern als ...</translation>
-    </message>
-    <message>
-        <source>load document</source>
-        <translation>Öffnen ...</translation>
-    </message>
-    <message>
-        <source>export</source>
-        <translation>exportieren</translation>
-    </message>
     <message>
         <source>make smooth</source>
         <translation>Tangenten kubisch anpassen</translation>
@@ -1135,32 +1111,8 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Tangenten entfernen</translation>
     </message>
     <message>
-        <source>remove points</source>
-        <translation>Punkte entfernen</translation>
-    </message>
-    <message>
         <source>subdivide</source>
         <translation>Unterteilen</translation>
-    </message>
-    <message>
-        <source>evaluate</source>
-        <translation>Auswerten</translation>
-    </message>
-    <message>
-        <source>show keybindings dialog</source>
-        <translation>Tastenkürzeldialog öffnen</translation>
-    </message>
-    <message>
-        <source>restore default layout</source>
-        <translation>Standardlayout wiederherstellen</translation>
-    </message>
-    <message>
-        <source>switch between object and point selection</source>
-        <translation>Zwischen Objekt- und Punk-Selektion wechseln</translation>
-    </message>
-    <message>
-        <source>previous tool</source>
-        <translation>Vorheriges Werkzeug</translation>
     </message>
     <message>
         <source>select all</source>
@@ -1185,10 +1137,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>remove selection</source>
         <translation>Selektion entfernen</translation>
-    </message>
-    <message>
-        <source>new style</source>
-        <translation>Neuer Style</translation>
     </message>
     <message>
         <source>convert objects</source>
@@ -1223,10 +1171,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Prozeduraler Pfad</translation>
     </message>
     <message>
-        <source>remove objects and tags</source>
-        <translation>Objekte und Tags entfernen</translation>
-    </message>
-    <message>
         <source>ObjectManager</source>
         <translation>Objekt-Manager</translation>
     </message>
@@ -1239,16 +1183,8 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Python Konsole</translation>
     </message>
     <message>
-        <source>clear python console</source>
-        <translation>Python Konsole leeren</translation>
-    </message>
-    <message>
         <source>StyleManager</source>
         <translation>Style-Manager</translation>
-    </message>
-    <message>
-        <source>remove styles</source>
-        <translation>Styles entfernen</translation>
     </message>
     <message>
         <source>Properties</source>
@@ -1315,10 +1251,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Pfad Werkzeug</translation>
     </message>
     <message>
-        <source>group objects</source>
-        <translation>Objekte gruppieren</translation>
-    </message>
-    <message>
         <source>RectangleObject</source>
         <translation>Rechteck</translation>
     </message>
@@ -1327,19 +1259,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Bounding Box Manager</translation>
     </message>
     <message>
-        <source>toggle aspect ratio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>TimeLine</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>save layout ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>load layout ...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1408,6 +1328,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Replace Key</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Set keyframe</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::Application</name>
@@ -1440,12 +1364,112 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Szene konnte nicht von &apos;%1&apos; geladen werden.</translation>
     </message>
     <message>
-        <source>Add Tag</source>
-        <translation>Tag hinzufügen</translation>
-    </message>
-    <message>
         <source>Create %1</source>
         <translation>Erzeuge %1</translation>
+    </message>
+    <message>
+        <source>undo</source>
+        <translation type="unfinished">Rückgängig</translation>
+    </message>
+    <message>
+        <source>redo</source>
+        <translation type="unfinished">Wiederholen</translation>
+    </message>
+    <message>
+        <source>remove selection</source>
+        <translation type="unfinished">Selektion entfernen</translation>
+    </message>
+    <message>
+        <source>new document</source>
+        <translation type="unfinished">Neue Szene</translation>
+    </message>
+    <message>
+        <source>save document</source>
+        <translation type="unfinished">Speichern</translation>
+    </message>
+    <message>
+        <source>save document as</source>
+        <translation type="unfinished">Speichern als ...</translation>
+    </message>
+    <message>
+        <source>load document</source>
+        <translation type="unfinished">Öffnen ...</translation>
+    </message>
+    <message>
+        <source>export</source>
+        <translation type="unfinished">exportieren</translation>
+    </message>
+    <message>
+        <source>make smooth</source>
+        <translation type="unfinished">Tangenten kubisch anpassen</translation>
+    </message>
+    <message>
+        <source>make linear</source>
+        <translation type="unfinished">Tangenten entfernen</translation>
+    </message>
+    <message>
+        <source>remove points</source>
+        <translation type="unfinished">Punkte entfernen</translation>
+    </message>
+    <message>
+        <source>subdivide</source>
+        <translation type="unfinished">Unterteilen</translation>
+    </message>
+    <message>
+        <source>evaluate</source>
+        <translation type="unfinished">Auswerten</translation>
+    </message>
+    <message>
+        <source>show keybindings dialog</source>
+        <translation type="unfinished">Tastenkürzeldialog öffnen</translation>
+    </message>
+    <message>
+        <source>restore default layout</source>
+        <translation type="unfinished">Standardlayout wiederherstellen</translation>
+    </message>
+    <message>
+        <source>save layout ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>load layout ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>switch between object and point selection</source>
+        <translation type="unfinished">Zwischen Objekt- und Punk-Selektion wechseln</translation>
+    </message>
+    <message>
+        <source>previous tool</source>
+        <translation type="unfinished">Vorheriges Werkzeug</translation>
+    </message>
+    <message>
+        <source>select all</source>
+        <translation type="unfinished">Alles selektieren</translation>
+    </message>
+    <message>
+        <source>deselect all</source>
+        <translation type="unfinished">Alles deselektieren</translation>
+    </message>
+    <message>
+        <source>invert selection</source>
+        <translation type="unfinished">Selektion invertieren</translation>
+    </message>
+    <message>
+        <source>new style</source>
+        <translation type="unfinished">Neuer Style</translation>
+    </message>
+    <message>
+        <source>convert objects</source>
+        <translation type="unfinished">Objekte konvertieren</translation>
+    </message>
+    <message>
+        <source>reset viewport</source>
+        <translation type="unfinished">Ansichtsfenster zurücksetzen</translation>
+    </message>
+    <message>
+        <source>show point dialog</source>
+        <translation type="unfinished">Punktdialog anzeigen</translation>
     </message>
 </context>
 <context>
@@ -1641,20 +1665,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>ToolBar</source>
         <translation>Werkzeugkasten</translation>
-    </message>
-</context>
-<context>
-    <name>omm::UserPropertyDialog</name>
-    <message>
-        <source>unnamed</source>
-        <translation type="unfinished">Unbenannt</translation>
-    </message>
-</context>
-<context>
-    <name>omm::UserPropertyListModel</name>
-    <message>
-        <source>&lt;unnamed property&gt;</source>
-        <translation type="unfinished">Eigenschafts-Element</translation>
     </message>
 </context>
 </TS>

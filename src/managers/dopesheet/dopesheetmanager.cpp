@@ -16,4 +16,10 @@ DopeSheetManager::DopeSheetManager(Scene &scene)
   m_dope_sheet_view->setModel(&m_scene.animator());
 }
 
+bool DopeSheetManager::perform_action(const std::string& name)
+{
+  LINFO << name;
+  return false;
+}
+
 }

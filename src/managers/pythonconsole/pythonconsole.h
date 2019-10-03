@@ -13,7 +13,7 @@ namespace omm
 class CodeEdit;
 class ReferenceLineEdit;
 
-class PythonConsole : public Manager, public CommandInterface
+class PythonConsole : public Manager
 {
   Q_OBJECT
 public:
@@ -22,12 +22,11 @@ public:
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PythonConsole");
   std::string type() const override;
-  static std::vector<CommandInterface::ActionInfo<PythonConsole>> action_infos();
-  void  populate_menu(QMenu& menu) override;
+  void populate_menu(QMenu& menu) override;
+  bool perform_action(const std::string &name) override;
 
 protected:
   bool eventFilter(QObject* object, QEvent* event) override;
-  void keyPressEvent(QKeyEvent* event) override;
 
 private:
   std::unique_ptr<QMenuBar> make_menu_bar();

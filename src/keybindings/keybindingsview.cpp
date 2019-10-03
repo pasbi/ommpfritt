@@ -1,4 +1,4 @@
-#include "keybindings/keybindingstable.h"
+#include "keybindings/keybindingsview.h"
 #include "keybindings/keybindings.h"
 #include "logging.h"
 #include "widgets/keysequenceedit.h"
@@ -29,12 +29,14 @@ void KeySequenceItemDelegate::setModelData( QWidget *editor, QAbstractItemModel 
   assert(s);
 }
 
-KeyBindingsTable::KeyBindingsTable(QAbstractItemModel &key_bindings)
+KeyBindingsView::KeyBindingsView(QAbstractItemModel &key_bindings)
   : m_sequence_column_delegate(std::make_unique<KeySequenceItemDelegate>())
 {
   setModel(&key_bindings);
   setItemDelegateForColumn(KeyBindings::SEQUENCE_COLUMN, m_sequence_column_delegate.get());
-  resizeColumnsToContents();
+  for (int i = 0; i < 3; ++i) {
+    resizeColumnToContents(i);
+  }
   setSelectionMode(QAbstractItemView::NoSelection);
 }
 

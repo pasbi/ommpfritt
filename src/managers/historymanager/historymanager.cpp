@@ -31,4 +31,10 @@ HistoryManager::HistoryManager(Scene &scene)
 
 std::string HistoryManager::type() const { return TYPE; }
 
+bool HistoryManager::perform_action(const std::string& name)
+{
+  LINFO << name;
+  return false;
+}
+
 }  // namespace omm

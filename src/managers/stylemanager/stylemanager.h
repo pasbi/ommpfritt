@@ -7,21 +7,15 @@
 namespace omm
 {
 
-class StyleManager : public ItemManager<StyleListView>, public CommandInterface
+class StyleManager : public ItemManager<StyleListView>
 {
   Q_OBJECT
 public:
   explicit StyleManager(Scene& scene);
-  static std::vector<CommandInterface::ActionInfo<StyleManager>> action_infos();
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "StyleManager");
   std::string type() const override;
-
-
-protected:
-  std::vector<std::string> application_actions() const override;
-  void populate_menu(QMenu& menu) override;
-  bool child_key_press_event(QWidget &child, QKeyEvent &event) override;
+  bool perform_action(const std::string& action_name) override;
 };
 
 }  // namespace omm

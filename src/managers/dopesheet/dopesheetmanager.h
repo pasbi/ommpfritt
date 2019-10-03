@@ -16,6 +16,7 @@ public:
   explicit DopeSheetManager(Scene& scene);
   static constexpr auto TYPE = "DopeSheetManager";
   std::string type() const override { return TYPE; }
+  bool perform_action(const std::string &name) override;
 
 private:
   DopeSheetView* m_dope_sheet_view;

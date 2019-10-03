@@ -16,13 +16,14 @@ class Scene;
 
 class Manager
   : public QDockWidget
-  , public AbstractFactory<std::string, Manager, Scene&>
+  , virtual public AbstractFactory<std::string, Manager, Scene&>
+  , virtual public CommandInterface
 {
   Q_OBJECT   // Required for MainWindow::save_state
 public:
   Manager(const Manager&) = delete;
   Manager(Manager&&) = delete;
-  virtual ~Manager() = default;
+  virtual ~Manager();
   Scene& scene() const;
 
 protected:

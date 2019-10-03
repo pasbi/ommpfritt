@@ -222,6 +222,12 @@ void PropertyManager::clear()
 
 std::string PropertyManager::type() const { return TYPE; }
 
+bool PropertyManager::perform_action(const std::string& name)
+{
+  LINFO << name;
+  return false;
+}
+
 std::string PropertyManager::make_window_title() const
 {
   std::ostringstream ss;

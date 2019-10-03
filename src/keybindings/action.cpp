@@ -46,7 +46,7 @@ public:
   ActionWidget(QWidget* parent, const omm::KeyBinding& key_binding) : QWidget(parent)
   {
     auto name_label = std::make_unique<LiveLabel>([&key_binding]() {
-      const auto name = key_binding.name();
+      const auto name = key_binding.name;
       return QCoreApplication::translate("any-context", name.c_str()).toStdString();
     });
     m_name_label = name_label.get();
@@ -56,7 +56,7 @@ public:
     auto icon_label = std::make_unique<QLabel>();
     m_icon_label = icon_label.get();
     m_icon_label->setFixedSize(12, 12);
-    const QIcon icon = Application::instance().icon_provider.icon(key_binding.name());
+    const QIcon icon = Application::instance().icon_provider.icon(key_binding.name);
     m_icon_label->setPixmap(icon.pixmap(m_icon_label->size()));
 
     auto shortcut_label = std::make_unique<LiveLabel>([&key_binding]() {

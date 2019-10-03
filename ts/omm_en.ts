@@ -1044,6 +1044,10 @@ Remove the selected items anyway?</translation>
         <source>Move Keyframes</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Move knots</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1082,7 +1086,7 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>unnamed</source>
-        <translation type="obsolete">unnamed</translation>
+        <translation type="unfinished">unnamed</translation>
     </message>
     <message>
         <source>animatable</source>
@@ -1093,39 +1097,11 @@ Remove the selected items anyway?</translation>
     <name>UserPropertyListModel</name>
     <message>
         <source>&lt;unnamed property&gt;</source>
-        <translation type="obsolete">Property item</translation>
+        <translation type="unfinished">Property item</translation>
     </message>
 </context>
 <context>
     <name>any-context</name>
-    <message>
-        <source>undo</source>
-        <translation>Undo</translation>
-    </message>
-    <message>
-        <source>redo</source>
-        <translation>Redo</translation>
-    </message>
-    <message>
-        <source>new document</source>
-        <translation>New Scene</translation>
-    </message>
-    <message>
-        <source>save document</source>
-        <translation>Save</translation>
-    </message>
-    <message>
-        <source>save document as</source>
-        <translation>Save as ...</translation>
-    </message>
-    <message>
-        <source>load document</source>
-        <translation>Open ...</translation>
-    </message>
-    <message>
-        <source>export</source>
-        <translation>export</translation>
-    </message>
     <message>
         <source>make smooth</source>
         <translation>Adjust tangents cubic</translation>
@@ -1135,32 +1111,8 @@ Remove the selected items anyway?</translation>
         <translation>Vanish tangents</translation>
     </message>
     <message>
-        <source>remove points</source>
-        <translation>Remove points</translation>
-    </message>
-    <message>
         <source>subdivide</source>
         <translation>Subdivide</translation>
-    </message>
-    <message>
-        <source>evaluate</source>
-        <translation>Evaluate</translation>
-    </message>
-    <message>
-        <source>show keybindings dialog</source>
-        <translation>Show key bindings dialog</translation>
-    </message>
-    <message>
-        <source>restore default layout</source>
-        <translation>Restore default layout</translation>
-    </message>
-    <message>
-        <source>switch between object and point selection</source>
-        <translation>Switch between object- and point-selection</translation>
-    </message>
-    <message>
-        <source>previous tool</source>
-        <translation>Previous tool</translation>
     </message>
     <message>
         <source>select all</source>
@@ -1185,10 +1137,6 @@ Remove the selected items anyway?</translation>
     <message>
         <source>remove selection</source>
         <translation>Remove selection</translation>
-    </message>
-    <message>
-        <source>new style</source>
-        <translation>New Style</translation>
     </message>
     <message>
         <source>convert objects</source>
@@ -1223,10 +1171,6 @@ Remove the selected items anyway?</translation>
         <translation>Procedural path</translation>
     </message>
     <message>
-        <source>remove objects and tags</source>
-        <translation>Remove objects and tags</translation>
-    </message>
-    <message>
         <source>ObjectManager</source>
         <translation>Object manager</translation>
     </message>
@@ -1239,16 +1183,8 @@ Remove the selected items anyway?</translation>
         <translation>Python Console</translation>
     </message>
     <message>
-        <source>clear python console</source>
-        <translation>Clear python console</translation>
-    </message>
-    <message>
         <source>StyleManager</source>
         <translation>Style manager</translation>
-    </message>
-    <message>
-        <source>remove styles</source>
-        <translation>Remove styles</translation>
     </message>
     <message>
         <source>Properties</source>
@@ -1315,10 +1251,6 @@ Remove the selected items anyway?</translation>
         <translation>Path Tool</translation>
     </message>
     <message>
-        <source>group objects</source>
-        <translation>Group objects</translation>
-    </message>
-    <message>
         <source>RectangleObject</source>
         <translation>Rectangle</translation>
     </message>
@@ -1327,19 +1259,7 @@ Remove the selected items anyway?</translation>
         <translation>Bounding Box Manager</translation>
     </message>
     <message>
-        <source>toggle aspect ratio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>TimeLine</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>save layout ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>load layout ...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1408,6 +1328,10 @@ Remove the selected items anyway?</translation>
         <source>Replace Key</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Set keyframe</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::Application</name>
@@ -1440,12 +1364,112 @@ Remove the selected items anyway?</translation>
         <translation>Loading scene from &apos;%1&apos; failed.</translation>
     </message>
     <message>
-        <source>Add Tag</source>
-        <translation>Add tag</translation>
-    </message>
-    <message>
         <source>Create %1</source>
         <translation>Create %1</translation>
+    </message>
+    <message>
+        <source>undo</source>
+        <translation type="unfinished">Undo</translation>
+    </message>
+    <message>
+        <source>redo</source>
+        <translation type="unfinished">Redo</translation>
+    </message>
+    <message>
+        <source>remove selection</source>
+        <translation type="unfinished">Remove selection</translation>
+    </message>
+    <message>
+        <source>new document</source>
+        <translation type="unfinished">New Scene</translation>
+    </message>
+    <message>
+        <source>save document</source>
+        <translation type="unfinished">Save</translation>
+    </message>
+    <message>
+        <source>save document as</source>
+        <translation type="unfinished">Save as ...</translation>
+    </message>
+    <message>
+        <source>load document</source>
+        <translation type="unfinished">Open ...</translation>
+    </message>
+    <message>
+        <source>export</source>
+        <translation type="unfinished">export</translation>
+    </message>
+    <message>
+        <source>make smooth</source>
+        <translation type="unfinished">Adjust tangents cubic</translation>
+    </message>
+    <message>
+        <source>make linear</source>
+        <translation type="unfinished">Vanish tangents</translation>
+    </message>
+    <message>
+        <source>remove points</source>
+        <translation type="unfinished">Remove points</translation>
+    </message>
+    <message>
+        <source>subdivide</source>
+        <translation type="unfinished">Subdivide</translation>
+    </message>
+    <message>
+        <source>evaluate</source>
+        <translation type="unfinished">Evaluate</translation>
+    </message>
+    <message>
+        <source>show keybindings dialog</source>
+        <translation type="unfinished">Show key bindings dialog</translation>
+    </message>
+    <message>
+        <source>restore default layout</source>
+        <translation type="unfinished">Restore default layout</translation>
+    </message>
+    <message>
+        <source>save layout ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>load layout ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>switch between object and point selection</source>
+        <translation type="unfinished">Switch between object- and point-selection</translation>
+    </message>
+    <message>
+        <source>previous tool</source>
+        <translation type="unfinished">Previous tool</translation>
+    </message>
+    <message>
+        <source>select all</source>
+        <translation type="unfinished">Select all</translation>
+    </message>
+    <message>
+        <source>deselect all</source>
+        <translation type="unfinished">Deselect all</translation>
+    </message>
+    <message>
+        <source>invert selection</source>
+        <translation type="unfinished">Invert selection</translation>
+    </message>
+    <message>
+        <source>new style</source>
+        <translation type="unfinished">New Style</translation>
+    </message>
+    <message>
+        <source>convert objects</source>
+        <translation type="unfinished">Convert objects</translation>
+    </message>
+    <message>
+        <source>reset viewport</source>
+        <translation type="unfinished">Reset viewport</translation>
+    </message>
+    <message>
+        <source>show point dialog</source>
+        <translation type="unfinished">Show point dialog</translation>
     </message>
 </context>
 <context>
@@ -1641,20 +1665,6 @@ Remove the selected items anyway?</translation>
     <message>
         <source>ToolBar</source>
         <translation>Tool bar</translation>
-    </message>
-</context>
-<context>
-    <name>omm::UserPropertyDialog</name>
-    <message>
-        <source>unnamed</source>
-        <translation type="unfinished">unnamed</translation>
-    </message>
-</context>
-<context>
-    <name>omm::UserPropertyListModel</name>
-    <message>
-        <source>&lt;unnamed property&gt;</source>
-        <translation type="unfinished">Property item</translation>
     </message>
 </context>
 </TS>
