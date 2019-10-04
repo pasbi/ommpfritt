@@ -530,21 +530,6 @@ Remove the selected items anyway?</translation>
         <translation>Tangent</translation>
     </message>
     <message>
-        <source>name</source>
-        <comment>keybindings</comment>
-        <translation type="vanished">Name</translation>
-    </message>
-    <message>
-        <source>context</source>
-        <comment>keybindings</comment>
-        <translation type="vanished">Context</translation>
-    </message>
-    <message>
-        <source>sequence</source>
-        <comment>keybindings</comment>
-        <translation type="vanished">Sequence</translation>
-    </message>
-    <message>
         <source>&lt; invalid &gt;</source>
         <comment>property</comment>
         <translation>Invalid</translation>
@@ -1578,24 +1563,6 @@ Remove the selected items anyway?</translation>
         <source>Do you really want to reset all keycuts to the default value?
 This cannot be undone.</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::KeyBindingsDialogControls</name>
-    <message>
-        <source>Any Context</source>
-        <translation type="vanished">Any Context</translation>
-    </message>
-</context>
-<context>
-    <name>omm::KeySequenceEdit</name>
-    <message>
-        <source>R</source>
-        <translation type="vanished">R</translation>
-    </message>
-    <message>
-        <source>X</source>
-        <translation type="vanished">X</translation>
     </message>
 </context>
 <context>

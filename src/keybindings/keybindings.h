@@ -70,7 +70,7 @@ private:
 
   bool collides(const KeyBinding& candidate) const;
 
-  mutable std::vector<ContextKeyBindings> m_keybindings;
+  mutable std::vector<std::unique_ptr<ContextKeyBindings>> m_keybindings;
 };
 
 }  // namespace omm

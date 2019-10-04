@@ -17,14 +17,6 @@ KeyBinding::KeyBinding(const std::string& name, const std::string context,
   : KeyBinding( name, context,
                 QKeySequence(QString::fromStdString(sequence), QKeySequence::PortableText)) { }
 
-KeyBinding::KeyBinding(KeyBinding&& other)
-  : KeyBindingTreeItem(other.name)
-  , m_context(other.context())
-  , m_sequence(other.m_sequence)
-  , m_default_sequence(other.m_default_sequence)
-{
-}
-
 void KeyBinding::set_key_sequence(const QKeySequence& sequence)
 {
   if (m_sequence != sequence) {
@@ -48,17 +40,6 @@ void KeyBinding::reset()
 }
 
 ContextKeyBindings::ContextKeyBindings(const std::string& name) : KeyBindingTreeItem(name) {}
-
-ContextKeyBindings::~ContextKeyBindings()
-{
-  LINFO << "delete context key binding: " << name << " " << this;
-}
-
-ContextKeyBindings::ContextKeyBindings(ContextKeyBindings&& other)
-  : KeyBindingTreeItem(other.name)
-  , key_bindings(std::move(other.key_bindings))
-{
-}
 
 KeyBindingTreeItem::KeyBindingTreeItem(const std::string& name) : name(name) {}
 

@@ -25,11 +25,11 @@ namespace
 
 auto load_default_keybindings(const std::string& filename)
 {
-  std::list<omm::ContextKeyBindings> keybindings;
+  std::list<std::unique_ptr<omm::ContextKeyBindings>> keybindings;
   QFile file(QString::fromStdString(filename));
   if (!file.open(QIODevice::ReadOnly)) {
     LERROR << "Failed to open file '" << filename << "'.";
-    return std::vector<omm::ContextKeyBindings>();
+    return std::vector<std::unique_ptr<omm::ContextKeyBindings>>();
   }
 
   static const QRegExp context_regexp("\\[\\w+\\]");
@@ -60,31 +60,32 @@ auto load_default_keybindings(const std::string& filename)
                      << "': '" << code.toStdString() << "'.";
       } else {
         auto it = std::find_if(keybindings.begin(), keybindings.end(),
-                                     [context](const omm::ContextKeyBindings& c)
+                                     [context](const std::unique_ptr<omm::ContextKeyBindings>& c)
         {
-          return c.name == context;
+          return c->name == context;
         });
 
         omm::ContextKeyBindings* c = nullptr;
         if (it == keybindings.end()) {
-          keybindings.push_back(omm::ContextKeyBindings(context));
-          c = &keybindings.back();
+          keybindings.push_back(std::make_unique<omm::ContextKeyBindings>(context));
+          c = keybindings.back().get();
         } else {
-          c = &*it;
+          c = it->get();
         }
 
         const auto cit = std::find_if(c->key_bindings.begin(), c->key_bindings.end(),
-                                      [name](const omm::KeyBinding& k)
+                                      [name](const std::unique_ptr<omm::KeyBinding>& k)
         {
-          return k.name == name;
+          return k->name == name;
         });
 
         if (cit != c->key_bindings.end()) {
           LWARNING << "Duplicate key sequence for '" << context << "'::'" << name << "'."
                    << "Drop '" << sequence << "', "
-                   << "keep '" << cit->key_sequence() << "'.";
+                   << "keep '" << (*cit)->key_sequence() << "'.";
+          LFATAL("Duplicate key sequence.");
         } else {
-          c->key_bindings.push_back(omm::KeyBinding(name, context, sequence));
+          c->key_bindings.push_back(std::make_unique<omm::KeyBinding>(name, context, sequence));
         }
       }
     } else {
@@ -170,13 +171,13 @@ void KeyBindings::restore()
   QSettings settings;
   if (settings.childGroups().contains(keybindings_group)) {
     settings.beginGroup(keybindings_group);
-    for (ContextKeyBindings& context_keybindings : m_keybindings) {
-      settings.beginGroup(QString::fromStdString(context_keybindings.name));
-      for (KeyBinding& keybinding : context_keybindings.key_bindings) {
-        const QString action_name_qs = QString::fromStdString(keybinding.name);
+    for (std::unique_ptr<ContextKeyBindings>& context_keybindings : m_keybindings) {
+      settings.beginGroup(QString::fromStdString(context_keybindings->name));
+      for (std::unique_ptr<KeyBinding>& keybinding : context_keybindings->key_bindings) {
+        const QString action_name_qs = QString::fromStdString(keybinding->name);
         if (settings.contains(action_name_qs)) {
           const QString sequence = settings.value(action_name_qs).toString();
-          keybinding.set_key_sequence(QKeySequence(sequence, QKeySequence::PortableText));
+          keybinding->set_key_sequence(QKeySequence(sequence, QKeySequence::PortableText));
         } else {
           // keep default sequence
         }
@@ -190,27 +191,30 @@ void KeyBindings::restore()
 
 std::string KeyBindings::find_action(const std::string& context, const QKeySequence& sequence) const
 {
-  const ContextKeyBindings& c = *std::find_if(m_keybindings.begin(), m_keybindings.end(),
-                                              [context](const ContextKeyBindings& c)
+  const auto& c = *std::find_if(m_keybindings.begin(), m_keybindings.end(),
+                                [context](const auto& c)
   {
-    return c.name == context;
+    return c->name == context;
   });
 
-  const auto it = std::find_if(c.key_bindings.begin(), c.key_bindings.end(),
-                               [sequence](const KeyBinding& k) { return k.matches(sequence); });
+  const auto it = std::find_if(c->key_bindings.begin(), c->key_bindings.end(),
+                               [sequence](const std::unique_ptr<KeyBinding>& k)
+  {
+    return k->matches(sequence);
+  });
 
-  if (it == c.key_bindings.end()) {
+  if (it == c->key_bindings.end()) {
     return "";
   } else {
-    return it->name;
+    return (*it)->name;
   }
 }
 
 void KeyBindings::reset()
 {
-  for (ContextKeyBindings& c : m_keybindings) {
-    for (auto& k : c.key_bindings) {
-      k.reset();
+  for (std::unique_ptr<ContextKeyBindings>& c : m_keybindings) {
+    for (auto& k : c->key_bindings) {
+      k->reset();
     }
   }
 }
@@ -218,9 +222,9 @@ void KeyBindings::reset()
 std::map<std::string, std::map<std::string, QKeySequence>> KeyBindings::key_sequences() const
 {
   std::map<std::string, std::map<std::string, QKeySequence>> map;
-  for (ContextKeyBindings& context_keybindings : m_keybindings) {
-    for (KeyBinding& keybinding : context_keybindings.key_bindings) {
-      map[context_keybindings.name][keybinding.name] = keybinding.key_sequence();
+  for (std::unique_ptr<ContextKeyBindings>& context_keybindings : m_keybindings) {
+    for (std::unique_ptr<KeyBinding>& keybinding : context_keybindings->key_bindings) {
+      map[context_keybindings->name][keybinding->name] = keybinding->key_sequence();
     }
   }
   return map;
@@ -230,11 +234,11 @@ void KeyBindings::
 set_key_sequences(const std::map<std::string, std::map<std::string, QKeySequence> >& map)
 {
   beginResetModel();
-  for (ContextKeyBindings& c : m_keybindings) {
-    if (auto cit = map.find(c.name); cit != map.end()) {
-      for (auto& k : c.key_bindings) {
-        if (auto it = cit->second.find(k.name); it != cit->second.end()) {
-          k.set_key_sequence(it->second);
+  for (std::unique_ptr<ContextKeyBindings>& c : m_keybindings) {
+    if (auto cit = map.find(c->name); cit != map.end()) {
+      for (auto& k : c->key_bindings) {
+        if (auto it = cit->second.find(k->name); it != cit->second.end()) {
+          k->set_key_sequence(it->second);
         }
       }
     }
@@ -246,10 +250,10 @@ void KeyBindings::store() const
 {
   QSettings settings;
   settings.beginGroup(keybindings_group);
-  for (const ContextKeyBindings& context_keybindings : m_keybindings) {
-    settings.beginGroup(QString::fromStdString(context_keybindings.name));
-    for (const KeyBinding& keybinding : context_keybindings.key_bindings) {
-      settings.setValue(QString::fromStdString(keybinding.name), keybinding.key_sequence());
+  for (const std::unique_ptr<ContextKeyBindings>& context_keybindings : m_keybindings) {
+    settings.beginGroup(QString::fromStdString(context_keybindings->name));
+    for (const std::unique_ptr<KeyBinding>& keybinding : context_keybindings->key_bindings) {
+      settings.setValue(QString::fromStdString(keybinding->name), keybinding->key_sequence());
     }
     settings.endGroup();
   }
@@ -260,16 +264,15 @@ int KeyBindings::columnCount(const QModelIndex& parent) const { Q_UNUSED(parent)
 int KeyBindings::rowCount(const QModelIndex& parent) const
 {
   if (parent.isValid()) {
-    if (static_cast<const KeyBindingTreeItem*>(parent.internalPointer())->is_context()) {
-      LINFO << static_cast<const KeyBindingTreeItem*>(parent.internalPointer());
-      LINFO << static_cast<const KeyBindingTreeItem*>(parent.internalPointer())->name;
-      const auto context = static_cast<const ContextKeyBindings*>(parent.internalPointer())->name;
+    KeyBindingTreeItem* ptr = static_cast<KeyBindingTreeItem*>(parent.internalPointer());
+    if (ptr->is_context()) {
+      const auto context = ptr->name;
       const auto& context_keybindings = *std::find_if(m_keybindings.begin(), m_keybindings.end(),
-                                                      [context](const ContextKeyBindings& c)
+                                                      [context](const auto& c)
       {
-        return c.name == context;
+        return c->name == context;
       });
-      return context_keybindings.key_bindings.size();
+      return context_keybindings->key_bindings.size();
     } else {
       return 0;
     }
@@ -284,12 +287,13 @@ QVariant KeyBindings::data(const QModelIndex& index, int role) const
     return QVariant();
   }
 
-  if (static_cast<const KeyBindingTreeItem*>(index.internalPointer())->is_context()) {
+  const auto* const ptr = static_cast<const KeyBindingTreeItem*>(index.internalPointer());
+  if (ptr->is_context()) {
     switch (role) {
     case Qt::DisplayRole:
       switch (index.column()) {
       case 0:
-        return QString::fromStdString(static_cast<const ContextKeyBindings*>(index.internalPointer())->name);
+        return QString::fromStdString(static_cast<const ContextKeyBindings*>(ptr)->name);
       }
     }
   } else {
@@ -297,19 +301,19 @@ QVariant KeyBindings::data(const QModelIndex& index, int role) const
     case Qt::DisplayRole:
       switch (index.column()) {
       case 0:
-        return QCoreApplication::translate("", static_cast<const KeyBinding*>(index.internalPointer())->name.c_str());
+        return QCoreApplication::translate("", static_cast<const KeyBinding*>(ptr)->name.c_str());
       case 1:
-        return static_cast<const KeyBinding*>(index.internalPointer())->key_sequence().toString(QKeySequence::NativeText);
+        return static_cast<const KeyBinding*>(ptr)->key_sequence().toString(QKeySequence::NativeText);
       }
       break;
     case Qt::EditRole:
       if (index.column() == 1) {
-        return static_cast<const KeyBinding*>(index.internalPointer())->key_sequence();
+        return static_cast<const KeyBinding*>(ptr)->key_sequence();
       }
       break;
     case Qt::BackgroundRole:
     {
-      const KeyBinding* binding = static_cast<const KeyBinding*>(index.internalPointer());
+      const KeyBinding* binding = static_cast<const KeyBinding*>(ptr);
       if (!binding->key_sequence().isEmpty() && collides(*binding)) {
         return QColor(Qt::red).lighter();
       }
@@ -317,7 +321,7 @@ QVariant KeyBindings::data(const QModelIndex& index, int role) const
     }
     case Qt::FontRole:
       if (index.column() == 1) {
-        const KeyBinding* binding = static_cast<const KeyBinding*>(index.internalPointer());
+        const KeyBinding* binding = static_cast<const KeyBinding*>(ptr);
         if (binding->default_key_sequence() != binding->key_sequence()) {
           auto font = QApplication::font();
           font.setItalic(true);
@@ -326,7 +330,7 @@ QVariant KeyBindings::data(const QModelIndex& index, int role) const
       }
     case DEFAULT_KEY_SEQUENCE_ROLE:
       if (index.column() == 1) {
-        return static_cast<const KeyBinding*>(index.internalPointer())->default_key_sequence();
+        return static_cast<const KeyBinding*>(ptr)->default_key_sequence();
       }
       break;
     }
@@ -345,7 +349,8 @@ bool KeyBindings::setData(const QModelIndex& index, const QVariant& value, int r
     return false;
   }
 
-  KeyBinding* key_binding = static_cast<KeyBinding*>(index.internalPointer());
+  auto* const ptr = static_cast<KeyBindingTreeItem*>(index.internalPointer());
+  KeyBinding* key_binding = static_cast<KeyBinding*>(ptr);
   key_binding->set_key_sequence(value.value<QKeySequence>());
   Q_EMIT dataChanged(index, index);
   return true;
@@ -386,23 +391,23 @@ bool KeyBindings::collides(const KeyBinding& candidate) const
     return false;
   }
   const auto cit = std::find_if(m_keybindings.begin(), m_keybindings.end(),
-                                [&candidate](const ContextKeyBindings& c)
+                                [&candidate](const std::unique_ptr<ContextKeyBindings>& c)
   {
-    return c.name == candidate.context();
+    return c->name == candidate.context();
   });
 
-  const auto it = std::find_if(cit->key_bindings.begin(), cit->key_bindings.end(),
-                               [&candidate](const KeyBinding& k)
+  const auto it = std::find_if((*cit)->key_bindings.begin(), (*cit)->key_bindings.end(),
+                               [&candidate](const std::unique_ptr<KeyBinding>& k)
   {
-    if (k.name == candidate.name) {
+    if (k->name == candidate.name) {
       // it's the same keybinding, not a duplicate.
       return false;
-    } else if (k.key_sequence().count() == 0) {
+    } else if (k->key_sequence().count() == 0) {
       // empty sequence never collides
       return false;
     }
-    for (int i = 0; i < std::min(k.key_sequence().count(), candidate.key_sequence().count()); ++i) {
-      if (k.key_sequence()[i] != candidate.key_sequence()[i]) {
+    for (int i = 0; i < std::min(k->key_sequence().count(), candidate.key_sequence().count()); ++i) {
+      if (k->key_sequence()[i] != candidate.key_sequence()[i]) {
         return false;
       }
     }
@@ -410,15 +415,15 @@ bool KeyBindings::collides(const KeyBinding& candidate) const
     return true;
   });
 
-  return it != cit->key_bindings.end();
+  return it != (*cit)->key_bindings.end();
 }
 
 QModelIndex KeyBindings::context_index(const std::string& context_name) const
 {
   const auto it = std::find_if(m_keybindings.begin(), m_keybindings.end(),
-                               [=](const ContextKeyBindings& c)
+                               [=](const std::unique_ptr<ContextKeyBindings>& c)
   {
-    return c.name == context_name;
+    return c->name == context_name;
   });
   const int row = std::distance(m_keybindings.begin(), it);
   return index(row, 0, QModelIndex());
@@ -428,25 +433,28 @@ QModelIndex KeyBindings::action_index(const std::string& context_name,
                                       const std::string& action_name) const
 {
   const QModelIndex parent_index = context_index(context_name);
-  ContextKeyBindings& c = m_keybindings.at(parent_index.row());
-  const auto it = std::find_if(c.key_bindings.begin(), c.key_bindings.end(),
-                               [action_name](const KeyBinding& k)
+  std::unique_ptr<ContextKeyBindings>& c = m_keybindings.at(parent_index.row());
+  const auto it = std::find_if(c->key_bindings.begin(), c->key_bindings.end(),
+                               [action_name](const std::unique_ptr<KeyBinding>& k)
   {
-    return k.name == action_name;
+    return k->name == action_name;
   });
-  const int row = std::distance(c.key_bindings.begin(), it);
+  const int row = std::distance(c->key_bindings.begin(), it);
   return index(row, 0, parent_index);
 }
 
 QModelIndex KeyBindings::index(int row, int column, const QModelIndex& parent) const
 {
+  KeyBindingTreeItem* internal_pointer = nullptr;
   if (!parent.isValid()) {
-    return createIndex(row, column, &m_keybindings.at(row));
+    internal_pointer = m_keybindings.at(row).get();
   } else {
-    assert (static_cast<KeyBindingTreeItem*>(parent.internalPointer())->is_context());
-    auto* context = static_cast<ContextKeyBindings*>(parent.internalPointer());
-    return createIndex(row, column, &context->key_bindings.at(row));
+    auto* ptr = static_cast<KeyBindingTreeItem*>(parent.internalPointer());
+    assert (ptr->is_context());
+    auto* context = static_cast<ContextKeyBindings*>(ptr);
+    internal_pointer = context->key_bindings.at(row).get();
   }
+  return createIndex(row, column, internal_pointer);
 }
 
 QModelIndex KeyBindings::parent(const QModelIndex& child) const
@@ -455,15 +463,16 @@ QModelIndex KeyBindings::parent(const QModelIndex& child) const
   if (static_cast<KeyBindingTreeItem*>(child.internalPointer())->is_context()) {
     return QModelIndex();
   } else {
-    auto* key_binding = static_cast<KeyBinding*>(child.internalPointer());
+    auto* const ptr = static_cast<KeyBindingTreeItem*>(child.internalPointer());
+    auto* key_binding = static_cast<KeyBinding*>(ptr);
     const auto it = std::find_if(m_keybindings.begin(), m_keybindings.end(),
-                                 [&](const ContextKeyBindings& c)
+                                 [&](const std::unique_ptr<ContextKeyBindings>& c)
     {
-      return c.name == key_binding->context();
+      return c->name == key_binding->context();
     });
 
     const int row = std::distance(m_keybindings.begin(), it);
-    return createIndex(row, 0, &m_keybindings.at(row));
+    return createIndex(row, 0, m_keybindings.at(row).get());
   }
 }
 
@@ -471,9 +480,9 @@ std::unique_ptr<QAction>
 KeyBindings::make_action(CommandInterface& context, const std::string& action_name) const
 {
   const auto cit = std::find_if(m_keybindings.begin(), m_keybindings.end(),
-                                [context=context.type()](const ContextKeyBindings& c)
+                                [context=context.type()](const auto& c)
   {
-    return context == c.name;
+    return context == c->name;
   });
 
 #ifndef NDEBUG
@@ -483,20 +492,20 @@ KeyBindings::make_action(CommandInterface& context, const std::string& action_na
   }
 #endif  // NDEBUG
 
-  const auto it = std::find_if(cit->key_bindings.begin(), cit->key_bindings.end(),
-                               [action_name](const KeyBinding& k)
+  const auto it = std::find_if((*cit)->key_bindings.begin(), (*cit)->key_bindings.end(),
+                               [action_name](const std::unique_ptr<KeyBinding>& k)
   {
-    return action_name == k.name;
+    return action_name == k->name;
   });
 
 #ifndef NDEBUG
-  if (it == cit->key_bindings.end()) {
+  if (it == (*cit)->key_bindings.end()) {
     LERROR << "Failed to find keybinding for " << context.type() << "::" << action_name;
     LFATAL("Missing keybinding");
   }
 #endif  // NDEBUG
 
-  auto action = std::make_unique<Action>(*it);
+  auto action = std::make_unique<Action>(**it);
   QObject::connect(action.get(), &QAction::triggered, [&context, action_name] {
     context.perform_action(action_name);
   });

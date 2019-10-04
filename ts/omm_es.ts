@@ -530,21 +530,6 @@ Borrar la selección de todos modos?</translation>
         <translation>Tangente</translation>
     </message>
     <message>
-        <source>name</source>
-        <comment>keybindings</comment>
-        <translation type="vanished">Nombre</translation>
-    </message>
-    <message>
-        <source>context</source>
-        <comment>keybindings</comment>
-        <translation type="vanished">Contexto</translation>
-    </message>
-    <message>
-        <source>sequence</source>
-        <comment>keybindings</comment>
-        <translation type="vanished">Secuencia</translation>
-    </message>
-    <message>
         <source>&lt; invalid &gt;</source>
         <comment>property</comment>
         <translation>Inválido</translation>
@@ -1578,24 +1563,6 @@ Borrar la selección de todos modos?</translation>
         <source>Do you really want to reset all keycuts to the default value?
 This cannot be undone.</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::KeyBindingsDialogControls</name>
-    <message>
-        <source>Any Context</source>
-        <translation type="vanished">Cualquier contexto</translation>
-    </message>
-</context>
-<context>
-    <name>omm::KeySequenceEdit</name>
-    <message>
-        <source>R</source>
-        <translation type="vanished">R</translation>
-    </message>
-    <message>
-        <source>X</source>
-        <translation type="vanished">X</translation>
     </message>
 </context>
 <context>

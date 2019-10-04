@@ -16,10 +16,11 @@ bool KeyBindingsProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
     return true;
   } else {
     const QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
-    if (static_cast<const KeyBindingTreeItem*>(index.internalPointer())->is_context()) {
+    auto* ptr = static_cast<KeyBindingTreeItem*>(index.internalPointer());
+    if (ptr->is_context()) {
       return true;  // never filter context nodes
     } else {
-      const auto* key_binding = static_cast<const KeyBinding*>(index.internalPointer());
+      const auto* key_binding = static_cast<const KeyBinding*>(ptr);
       const auto name = QString::fromStdString(key_binding->name);
       const auto sequence = key_binding->key_sequence().toString(QKeySequence::NativeText);
       const bool name_matches = name.contains(QString::fromStdString(m_action_name_filter),

@@ -13,6 +13,7 @@ class KeyBindingTreeItem
 {
 protected:
   explicit KeyBindingTreeItem(const std::string& name);
+  virtual ~KeyBindingTreeItem() = default;
 public:
   virtual bool is_context() const = 0;
   const std::string name;
@@ -24,8 +25,6 @@ class KeyBinding : public QObject, public KeyBindingTreeItem
 public:
   KeyBinding(const std::string& name, const std::string context, const QKeySequence& sequence);
   KeyBinding(const std::string& name, const std::string context, const std::string& sequence);
-  KeyBinding(KeyBinding&& other);
-  KeyBinding(const KeyBinding& other) = delete;
   void set_key_sequence(const QKeySequence& sequence);
   QKeySequence key_sequence() const;
   QKeySequence default_key_sequence() const;
@@ -47,9 +46,7 @@ class ContextKeyBindings : public KeyBindingTreeItem
 {
 public:
   explicit ContextKeyBindings(const std::string& name);
-  ~ContextKeyBindings();
-  ContextKeyBindings(ContextKeyBindings&& other);
-  std::vector<KeyBinding> key_bindings;
+  std::vector<std::unique_ptr<KeyBinding>> key_bindings;
   bool is_context() const override { return true; }
 };
 
