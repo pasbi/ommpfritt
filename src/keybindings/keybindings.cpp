@@ -25,11 +25,11 @@ namespace
 
 auto load_default_keybindings(const std::string& filename)
 {
-  std::vector<omm::ContextKeyBindings> keybindings;
+  std::list<omm::ContextKeyBindings> keybindings;
   QFile file(QString::fromStdString(filename));
   if (!file.open(QIODevice::ReadOnly)) {
     LERROR << "Failed to open file '" << filename << "'.";
-    return keybindings;
+    return std::vector<omm::ContextKeyBindings>();
   }
 
   static const QRegExp context_regexp("\\[\\w+\\]");
@@ -73,7 +73,6 @@ auto load_default_keybindings(const std::string& filename)
           c = &*it;
         }
 
-        const omm::KeyBinding key_binding(name, context, sequence);
         const auto cit = std::find_if(c->key_bindings.begin(), c->key_bindings.end(),
                                       [name](const omm::KeyBinding& k)
         {
@@ -82,10 +81,10 @@ auto load_default_keybindings(const std::string& filename)
 
         if (cit != c->key_bindings.end()) {
           LWARNING << "Duplicate key sequence for '" << context << "'::'" << name << "'."
-                   << "Drop '" << key_binding.key_sequence() << "', "
+                   << "Drop '" << sequence << "', "
                    << "keep '" << cit->key_sequence() << "'.";
         } else {
-          c->key_bindings.push_back(key_binding);
+          c->key_bindings.push_back(omm::KeyBinding(name, context, sequence));
         }
       }
     } else {
@@ -93,7 +92,8 @@ auto load_default_keybindings(const std::string& filename)
     }
 
   }
-  return keybindings;
+  return std::vector(std::make_move_iterator(keybindings.begin()),
+                     std::make_move_iterator(keybindings.end()));
 }
 
 std::pair<std::string, std::string> split(const std::string& path)
@@ -209,7 +209,7 @@ std::string KeyBindings::find_action(const std::string& context, const QKeySeque
 void KeyBindings::reset()
 {
   for (ContextKeyBindings& c : m_keybindings) {
-    for (KeyBinding& k : c.key_bindings) {
+    for (auto& k : c.key_bindings) {
       k.reset();
     }
   }
@@ -232,7 +232,7 @@ set_key_sequences(const std::map<std::string, std::map<std::string, QKeySequence
   beginResetModel();
   for (ContextKeyBindings& c : m_keybindings) {
     if (auto cit = map.find(c.name); cit != map.end()) {
-      for (KeyBinding& k : c.key_bindings) {
+      for (auto& k : c.key_bindings) {
         if (auto it = cit->second.find(k.name); it != cit->second.end()) {
           k.set_key_sequence(it->second);
         }
@@ -261,9 +261,11 @@ int KeyBindings::rowCount(const QModelIndex& parent) const
 {
   if (parent.isValid()) {
     if (static_cast<const KeyBindingTreeItem*>(parent.internalPointer())->is_context()) {
+      LINFO << static_cast<const KeyBindingTreeItem*>(parent.internalPointer());
+      LINFO << static_cast<const KeyBindingTreeItem*>(parent.internalPointer())->name;
       const auto context = static_cast<const ContextKeyBindings*>(parent.internalPointer())->name;
-      const auto context_keybindings = *std::find_if(m_keybindings.begin(), m_keybindings.end(),
-                                                     [context](const ContextKeyBindings& c)
+      const auto& context_keybindings = *std::find_if(m_keybindings.begin(), m_keybindings.end(),
+                                                      [context](const ContextKeyBindings& c)
       {
         return c.name == context;
       });
@@ -384,13 +386,13 @@ bool KeyBindings::collides(const KeyBinding& candidate) const
     return false;
   }
   const auto cit = std::find_if(m_keybindings.begin(), m_keybindings.end(),
-                                [candidate](const ContextKeyBindings& c)
+                                [&candidate](const ContextKeyBindings& c)
   {
     return c.name == candidate.context();
   });
 
   const auto it = std::find_if(cit->key_bindings.begin(), cit->key_bindings.end(),
-                               [candidate](const KeyBinding& k)
+                               [&candidate](const KeyBinding& k)
   {
     if (k.name == candidate.name) {
       // it's the same keybinding, not a duplicate.

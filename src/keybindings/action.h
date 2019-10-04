@@ -17,7 +17,7 @@ public:
   void set_highlighted(bool h);
 
 private:
-  KeyBinding m_key_binding;
+  const KeyBinding& m_key_binding;
   ActionWidget* m_action_widget;
 };
 

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QKeySequence>
+#include <QObject>
+#include <memory>
 
 class QSettings;
 
@@ -16,11 +18,14 @@ public:
   const std::string name;
 };
 
-class KeyBinding : public KeyBindingTreeItem
+class KeyBinding : public QObject, public KeyBindingTreeItem
 {
+  Q_OBJECT
 public:
   KeyBinding(const std::string& name, const std::string context, const QKeySequence& sequence);
   KeyBinding(const std::string& name, const std::string context, const std::string& sequence);
+  KeyBinding(KeyBinding&& other);
+  KeyBinding(const KeyBinding& other) = delete;
   void set_key_sequence(const QKeySequence& sequence);
   QKeySequence key_sequence() const;
   QKeySequence default_key_sequence() const;
@@ -28,6 +33,9 @@ public:
   bool is_context() const override { return false; }
   bool matches(QKeySequence sequence) const;
   void reset();
+
+Q_SIGNALS:
+  void key_sequence_changed(const QKeySequence& sequence);
 
 private:
   const std::string m_context;
@@ -39,6 +47,8 @@ class ContextKeyBindings : public KeyBindingTreeItem
 {
 public:
   explicit ContextKeyBindings(const std::string& name);
+  ~ContextKeyBindings();
+  ContextKeyBindings(ContextKeyBindings&& other);
   std::vector<KeyBinding> key_bindings;
   bool is_context() const override { return true; }
 };

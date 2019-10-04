@@ -1,5 +1,6 @@
 
 file(GLOB SOURCES
+  actionwidget.cpp
   action.cpp
   keybinding.cpp
   keybindings.cpp
@@ -9,6 +10,7 @@ file(GLOB SOURCES
 )
 
 file(GLOB HEADERS
+  actionwidget.h
   action.h
   commandinterface.h
   keybinding.h
