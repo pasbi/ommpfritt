@@ -59,6 +59,17 @@ void KeyBindingsDialog::accept()
   QDialog::accept();
 }
 
+void KeyBindingsDialog::update_expand()
+{
+  const int count = m_proxy_model.rowCount(QModelIndex());
+  for (int row = 0; row < count; ++row) {
+    const QModelIndex index = m_proxy_model.index(row, 0, QModelIndex());
+    if (m_proxy_model.rowCount(index) > 0) {
+      m_ui->treeView->expand(index);
+    }
+  }
+}
+
 void KeyBindingsDialog::reset()
 {
 
@@ -79,11 +90,13 @@ void KeyBindingsDialog::reset_filter()
 void KeyBindingsDialog::set_name_filter(const QString& filter)
 {
   m_proxy_model.set_action_name_filter(filter.toStdString());
+  update_expand();
 }
 
 void KeyBindingsDialog::set_sequence_filter(const QKeySequence& sequence)
 {
   m_proxy_model.set_action_sequence_filter(sequence.toString(QKeySequence::NativeText).toStdString());
+  update_expand();
 }
 
 }  // namespace omm

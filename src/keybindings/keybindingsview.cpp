@@ -85,7 +85,7 @@ void KeyBindingsView::update_column_width()
   const int required_width_name = sizeHintForColumn(0);
   const int required_width_sequence = sizeHintForColumn(1);
   const int available_width = viewport()->width();
-  static constexpr int max_width_sequence = 250;
+  static constexpr int max_width_sequence = 350;
 
   const int excess = std::max(0, available_width - required_width_name - required_width_sequence);
   const int width_sequence = std::max(required_width_sequence,

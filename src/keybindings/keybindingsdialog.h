@@ -28,6 +28,7 @@ private:
   std::unique_ptr<Ui::KeyBindingsDialog> m_ui;
   KeyBindings& m_key_bindings;
   std::map<std::string, std::map<std::string, QKeySequence>> m_revert_cache;
+  void update_expand();
 
 private Q_SLOTS:
   void reset();
