@@ -76,15 +76,15 @@
 <context>
     <name>KeyBindingsDialog</name>
     <message>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>name filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Reset All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Key Bindings</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1605,6 +1605,13 @@ This cannot be undone.</source>
     </message>
     <message>
         <source>Save Layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::ObjectManager</name>
+    <message>
+        <source>Attach</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

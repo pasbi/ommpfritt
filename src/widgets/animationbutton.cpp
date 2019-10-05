@@ -94,10 +94,14 @@ void AnimationButton::set_key()
     }
   }
 
-  m_animator.scene.submit(std::make_unique<RemoveKeyframeCommand>(m_animator, m_animator.current(),
-                                                                  values(m_properties)));
-  m_animator.scene.submit(std::make_unique<InsertKeyframeCommand>(m_animator, m_animator.current(),
-                                                                  values(m_properties)));
+  const int current_time = m_animator.current();
+  const std::set<Property*> p1 = values(m_properties);
+  const std::set<Property*> p2 = ::filter_if(p1, [current_time](Property* p) {
+      return p->track() != nullptr && p->track()->has_keyframe(current_time);
+  });
+
+  m_animator.scene.submit(std::make_unique<RemoveKeyframeCommand>(m_animator, current_time, p2));
+  m_animator.scene.submit(std::make_unique<InsertKeyframeCommand>(m_animator, current_time, p1));
   update();
 }
 
