@@ -7,6 +7,7 @@ file(GLOB SOURCES
   keybindingsdialog.cpp
   keybindingsproxymodel.cpp
   keybindingsview.cpp
+  menu.cpp
 )
 
 file(GLOB HEADERS
@@ -18,6 +19,7 @@ file(GLOB HEADERS
   keybindings.h
   keybindingsproxymodel.h
   keybindingsview.h
+  menu.h
 )
 
 target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})

@@ -19,6 +19,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QRegExp>
+#include "keybindings/menu.h"
 
 namespace
 {
@@ -111,25 +112,6 @@ std::pair<std::string, std::string> split(const std::string& path)
   }
 }
 
-class Menu : public QMenu
-{
-public:
-  explicit Menu(const QString& title) : QMenu(title) { installEventFilter(this); }
-protected:
-  bool eventFilter(QObject* o, QEvent* e) override
-  {
-    if (o == this && e->type() == QEvent::Type::MouseMove) {
-      auto* a = dynamic_cast<omm::Action*>(actionAt(static_cast<QMouseEvent*>(e)->pos()));
-      if (m_current_highlighted != nullptr) { m_current_highlighted->set_highlighted(false); }
-      if (a != nullptr) { a->set_highlighted(true); }
-      m_current_highlighted = a;
-    }
-    return QMenu::eventFilter(o, e);
-  }
-private:
-  omm::Action* m_current_highlighted = nullptr;
-};
-
 std::unique_ptr<QMenu> add_menu(const std::string& path, std::map<std::string, QMenu*>& menu_map)
 {
   if (menu_map.count(path) > 0) {
@@ -137,7 +119,7 @@ std::unique_ptr<QMenu> add_menu(const std::string& path, std::map<std::string, Q
   } else {
     const auto [ rest_path, menu_name ] = split(path);
     const auto menu_label = QCoreApplication::translate("menu_name", menu_name.c_str());
-    std::unique_ptr<QMenu> menu = std::make_unique<Menu>(menu_label);
+    std::unique_ptr<QMenu> menu = std::make_unique<omm::Menu>(menu_label);
     menu->setObjectName(QString::fromStdString(menu_name));
     menu_map.insert({ path, menu.get() });
 
