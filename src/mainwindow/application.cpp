@@ -270,10 +270,13 @@ bool Application::perform_action(const std::string& action_name)
     }
     for (const auto& key : Tag::keys()) {
       if (key == action_name) {
-        auto macro = scene.history().start_macro(tr("Add Tag"));
-        for (auto&& object : scene.item_selection<Object>()) {
-          using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
-          scene.submit<AddTagCommand>(object->tags, Tag::make(key, *object));
+        const auto object_selection = scene.item_selection<Object>();
+        if (!object_selection.empty()) {
+          auto macro = scene.history().start_macro(tr("Add Tag"));
+          for (auto&& object : object_selection) {
+            using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
+            scene.submit<AddTagCommand>(object->tags, Tag::make(key, *object));
+          }
         }
         return true;
       }
