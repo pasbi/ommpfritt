@@ -55,8 +55,22 @@ void ManagerItemView<ItemViewT, ItemModelT>::keyPressEvent(QKeyEvent *e)
   // workaround for  https://bugreports.qt.io/browse/QTBUG-62283.
   if (e->key() == Qt::Key_Shift) {
     this->setDragEnabled(false);
+  } else {
+    switch (e->key()) {
+    case Qt::Key_Left: [[fallthrough]];
+    case Qt::Key_Right: [[fallthrough]];
+    case Qt::Key_Up: [[fallthrough]];
+    case Qt::Key_Down:
+      // use the QAbstractItemView key press handler only for selected keys.
+      ItemViewT::keyPressEvent(e);
+      return;
+    default:
+      // don't use the QAbstractItemView key press handler for all other keys.
+      // They break many keybindings.
+      QWidget::keyPressEvent(e);
+      return;
+    }
   }
-  ItemViewT::keyPressEvent(e);
 }
 
 template<typename ItemViewT, typename ItemModelT>
