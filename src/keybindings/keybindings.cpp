@@ -179,7 +179,11 @@ std::string KeyBindings::find_action(const std::string& context, const QKeySeque
     return c->name == context;
   });
 
-  assert(cit != m_keybindings.end());
+  if (cit == m_keybindings.end()) {
+    // there is no such context.
+    return "";
+  }
+
   const auto& c = *cit;
 
   const auto it = std::find_if(c->key_bindings.begin(), c->key_bindings.end(),
