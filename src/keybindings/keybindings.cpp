@@ -173,11 +173,14 @@ void KeyBindings::restore()
 
 std::string KeyBindings::find_action(const std::string& context, const QKeySequence& sequence) const
 {
-  const auto& c = *std::find_if(m_keybindings.begin(), m_keybindings.end(),
+  const auto cit = std::find_if(m_keybindings.begin(), m_keybindings.end(),
                                 [context](const auto& c)
   {
     return c->name == context;
   });
+
+  assert(cit != m_keybindings.end());
+  const auto& c = *cit;
 
   const auto it = std::find_if(c->key_bindings.begin(), c->key_bindings.end(),
                                [sequence](const std::unique_ptr<KeyBinding>& k)
