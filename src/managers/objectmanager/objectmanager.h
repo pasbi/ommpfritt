@@ -14,6 +14,9 @@ public:
   explicit ObjectManager(Scene& scene);
   bool perform_action(const std::string& name) override;
 
+protected:
+  void contextMenuEvent(QContextMenuEvent* event) override;
+
 public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ObjectManager");
   std::string type() const override;
