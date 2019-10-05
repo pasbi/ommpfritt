@@ -21,6 +21,7 @@ Action::Action(const KeyBinding& key_binding) : QWidgetAction(nullptr), m_key_bi
 QWidget* Action::createWidget(QWidget* parent)
 {
   auto aw = std::make_unique<ActionWidget>(parent, m_key_binding);
+  aw->setEnabled(isEnabled());
   m_action_widget = aw.get();
   return aw.release();
 }
