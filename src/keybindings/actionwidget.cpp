@@ -61,4 +61,14 @@ void ActionWidget::set_highlighted(bool h)
   m_shortcut_label->setAutoFillBackground(h);
 }
 
+void ActionWidget::showEvent(QShowEvent* event)
+{
+  QResizeEvent resize_event(QSize(), parentWidget()->size());
+
+  parentWidget()->adjustSize();
+  qApp->sendEvent(parentWidget(), &resize_event);
+
+  QWidget::showEvent(event);
+}
+
 }  // namespace
