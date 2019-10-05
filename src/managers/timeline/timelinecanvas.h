@@ -28,6 +28,7 @@ public:
   void draw_keyframes(QPainter& painter) const;
   void draw_current(QPainter& painter) const;
   void draw_fcurve(QPainter& painter) const;
+  void draw_rubber_band(QPainter& painter) const;
 
   double ppf() const;
   double ppfs() const;
@@ -73,6 +74,11 @@ private:
   bool mouse_move(QMouseEvent& event);
   bool mouse_release(QMouseEvent& event);
   bool key_press(QKeyEvent& event);
+  QPoint m_rubber_band_origin;
+  QPoint m_rubber_band_corner;
+  bool m_rubber_band_visible = false;
+
+
 };
 
 }  // namespace omm

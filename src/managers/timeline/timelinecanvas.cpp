@@ -16,8 +16,6 @@ namespace omm
 TimelineCanvas::TimelineCanvas(Animator& animator)
   : animator(animator)
 {
-  void knot_removed(Track&, int);
-  void knot_moved(Track&, int, int);
   connect(&animator, &Animator::knot_removed, this, [this](Track& track, int frame) {
     if (const auto it = m_selection.find(&track); it != m_selection.end()) {
       it->second.erase(frame);
@@ -186,6 +184,22 @@ void TimelineCanvas::draw_fcurve(QPainter& painter) const
   painter.fillRect(rect, QColor(0, 0, 255, 128));
 }
 
+void TimelineCanvas::draw_rubber_band(QPainter& painter) const
+{
+  static const QColor color(0, 128, 255, 128);
+  if (m_rubber_band_visible) {
+    painter.save();
+    QPen pen;
+    pen.setWidth(2.0);
+    pen.setColor(color.darker());
+    painter.setPen(pen);
+    const QRect rect = QRect(m_rubber_band_corner, m_rubber_band_origin).normalized();
+    painter.fillRect(rect, color);
+    painter.drawRect(rect);
+    painter.restore();
+  }
+}
+
 double TimelineCanvas::ppf() const
 {
   return 1.0 / (right_frame - left_frame + 1);
@@ -228,14 +242,18 @@ bool TimelineCanvas::mouse_press(QMouseEvent& event)
     return true;
   } else if (event.pos().y() - rect.top() < footer_y()) {
     if (event.button() == Qt::LeftButton) {
+      if (!(event.modifiers() & Qt::ShiftModifier) && !is_selected(frame)) {
+        m_selection.clear();
+      }
       if (const auto tracks = tracks_at(frame); !tracks.empty()) {
-        if (!(event.modifiers() & Qt::ShiftModifier) && !is_selected(frame)) {
-          m_selection.clear();
-        }
         select(frame);
         update();
+        m_dragging_knots = true;
+      } else {
+        m_rubber_band_visible = true;
+        m_rubber_band_origin = event.pos();
+        m_rubber_band_corner = m_rubber_band_origin;
       }
-      m_dragging_knots = true;
       return true;
     }
   } else {
@@ -260,7 +278,6 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
     left_frame = min;
     right_frame = max;
     update();
-    return true;
   } else if (m_zoom_active) {
     QCursor::setPos(map_to_global(m_mouse_down_pos));
     const double left = (m_mouse_down_pos.x() - rect.left()) / rect.width();
@@ -271,21 +288,29 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
     left_frame = center_frame - left / ppf;
     right_frame = center_frame + right  / ppf - 1.0;
     update();
-    return true;
   } else if (m_dragging_knots && !m_move_aborted) {
     m_shift = std::round(pixel_to_frame(event.x()) - pixel_to_frame(m_mouse_down_pos.x()));
     update();
-    return true;
+  } else if (m_rubber_band_visible && !m_move_aborted) {
+    const QPoint pos = event.pos();
+    if (rect.isEmpty()) {
+      m_rubber_band_corner = pos;
+    } else {
+      m_rubber_band_corner = QPoint(std::clamp<int>(pos.x(), rect.left(), rect.right()),
+                                    std::clamp<int>(pos.y(), rect.top(), rect.bottom()));
+    }
+    update();
   } else if (m_dragging_time) {
     Q_EMIT current_frame_changed(std::round(pixel_to_frame(event.pos().x() - rect.left())));
-    return true;
   } else {
     return false;
   }
+  return true;
 }
 
 bool TimelineCanvas::mouse_release(QMouseEvent& event)
 {
+  m_rubber_band_visible = false;
   const int frame = std::round(pixel_to_frame(event.pos().x() - rect.left()));
   if (m_shift == 0 && !m_move_aborted && m_dragging_knots) {
     if (!(event.modifiers() & Qt::ShiftModifier)) {

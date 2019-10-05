@@ -54,6 +54,8 @@ void TrackViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
     m_canvas.draw_keyframes(*painter);
   }
 
+  m_canvas.draw_rubber_band(*painter);
+
   painter->restore();
 }
 

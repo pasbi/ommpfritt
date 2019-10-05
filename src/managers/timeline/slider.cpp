@@ -44,6 +44,7 @@ void Slider::paintEvent(QPaintEvent *event)
   m_canvas.draw_lines(painter);
   m_canvas.draw_keyframes(painter);
   m_canvas.draw_current(painter);
+  m_canvas.draw_rubber_band(painter);
   painter.restore();
 
   QWidget::paintEvent(event);
