@@ -7,13 +7,13 @@
 #include <QPushButton>
 #include <QTabWidget>
 
+#include "managers/propertymanager/propertymanagertitlebar.h"
 #include "scene/messagebox.h"
 #include "properties/optionsproperty.h"
 #include "managers/propertymanager/propertymanagertab.h"
 #include "propertywidgets/propertywidget.h"
 #include "aspects/propertyowner.h"
 #include "common.h"
-#include "menuhelper.h"
 #include "logging.h"
 
 namespace
@@ -93,19 +93,24 @@ namespace omm
 PropertyManager::PropertyManager(Scene& scene)
   : Manager(QCoreApplication::translate("any-context", "Properties"), scene)
 {
-  auto main_layout = std::make_unique<QVBoxLayout>();
+  auto title_bar = std::make_unique<PropertyManagerTitleBar>(*this);
+  m_title_bar = title_bar.get();
+  setTitleBarWidget(title_bar.release());
 
   m_tab_bar = std::make_unique<MultiTabBar>();
-  main_layout->addWidget(m_tab_bar.get());
 
   m_scroll_area = std::make_unique<QScrollArea>();
   m_scroll_area->setWidgetResizable(true);
+
   auto category_widget = std::make_unique<QWidget>();
   auto layout = std::make_unique<QVBoxLayout>();
   m_layout = layout.get();
   category_widget->setLayout(layout.release());
   m_layout->setContentsMargins(0, 0, 6, 0);
   m_scroll_area->setWidget(category_widget.release());
+
+  auto main_layout = std::make_unique<QVBoxLayout>();
+  main_layout->addWidget(m_tab_bar.get());
   main_layout->addWidget(m_scroll_area.get());
 
   auto central_widget = std::make_unique<QWidget>();
@@ -132,6 +137,7 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
   if (!m_is_locked) {
     m_current_selection = selection;
     update_property_widgets();
+    m_title_bar->set_selection(selection);
   }
 }
 

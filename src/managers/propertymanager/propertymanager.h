@@ -17,6 +17,7 @@ namespace omm
 
 class PropertyView;
 class PropertyManagerTab;
+class PropertyManagerTitleBar;
 
 class PropertyManager : public Manager
 {
@@ -41,12 +42,14 @@ private:
   std::unique_ptr<MultiTabBar> m_tab_bar;
 
   std::map<std::set<AbstractPropertyOwner*>, std::set<int>> m_current_categroy_indices;
+  PropertyManagerTitleBar* m_title_bar;
 
 private Q_SLOTS:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
-  void set_locked(bool locked);
   void activate_tabs(const std::set<int>& indices);
+
 public Q_SLOTS:
+  void set_locked(bool locked);
   void update_property_widgets();
 };
 
