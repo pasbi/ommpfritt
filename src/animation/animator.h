@@ -93,8 +93,6 @@ public:
     { return m_by_owner.at(&owner); }
     bool contains(AbstractPropertyOwner& owner) const
     { return m_by_owner.find(&owner) != m_by_owner.end(); }
-    Property* predecessor(AbstractPropertyOwner& owner, Property& property) const;
-    AbstractPropertyOwner* predecessor(AbstractPropertyOwner& owner) const;
     const std::set<Property*>& properties() const { return m_properties; }
     AbstractPropertyOwner* owner(Property& property) const { return m_by_property.at(&property); }
   private:

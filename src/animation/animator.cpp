@@ -13,26 +13,6 @@
 #include "scene/messagebox.h"
 #include "mainwindow/application.h"
 
-namespace
-{
-
-template<typename T>
-T* predecessor(const std::vector<T*>& candidates, const T& t,
-               const std::function<bool(const T&)>& predicate)
-{
-  T* predecessor = nullptr;
-  for (T* candidate : candidates) {
-    if (candidate == &t) {
-      break;
-    } else if (predicate(*candidate)) {
-      predecessor = candidate;
-    }
-  }
-  return predecessor;
-}
-
-}
-
 namespace omm
 {
 
@@ -392,23 +372,6 @@ Animator::Accelerator::Accelerator(Scene& scene) : m_scene(&scene)
     }
   }
   m_owner_order = std::vector(owner_order.begin(), owner_order.end());
-}
-
-Property* Animator::Accelerator::predecessor(AbstractPropertyOwner& owner, Property& property) const
-{
-  return ::predecessor<Property>(owner.properties().values(), property, [](const Property& p) {
-    return p.track() != nullptr;
-  });
-}
-
-AbstractPropertyOwner* Animator::Accelerator::predecessor(AbstractPropertyOwner& owner) const
-{
-  return ::predecessor<AbstractPropertyOwner>(m_owner_order, owner, [](const auto& o) {
-    const auto properties = o.properties().values();
-    return std::any_of(properties.begin(), properties.end(), [](const Property* p) {
-      return p->track() != nullptr;
-    });
-  });
 }
 
 std::list<AbstractPropertyOwner*> Animator::Accelerator::animatable_owners() const
