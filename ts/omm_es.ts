@@ -1643,6 +1643,17 @@ This cannot be undone.</source>
     </message>
 </context>
 <context>
+    <name>omm::PropertyManager</name>
+    <message numerus="yes">
+        <source>%n Elements</source>
+        <comment>PropertyManager</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+</context>
+<context>
     <name>omm::ReferencePropertyConfigWidget</name>
     <message>
         <source>Tag</source>

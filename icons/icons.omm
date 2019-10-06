@@ -3443,7 +3443,7 @@
                                         ],
                                         "value": [
                                             5.0410026535341785,
-                                            -50.73155514244556
+                                            -50.731555142445586
                                         ]
                                     },
                                     {
@@ -3471,8 +3471,8 @@
                                             "inf"
                                         ],
                                         "value": [
-                                            1.0000000000002693,
-                                            0.9999999999999467
+                                            1.0000000000002789,
+                                            0.9999999999999465
                                         ]
                                     },
                                     {
@@ -3487,7 +3487,7 @@
                                         "step": 1.0,
                                         "type": "FloatProperty",
                                         "upper_value": "inf",
-                                        "value": 1.8912496086765982
+                                        "value": 1.891249608676598
                                     },
                                     {
                                         "animatable": true,
@@ -3501,7 +3501,7 @@
                                         "step": 0.01,
                                         "type": "FloatProperty",
                                         "upper_value": "inf",
-                                        "value": 2.8810287489025886e-14
+                                        "value": 3.0142555118576225e-14
                                     },
                                     {
                                         "animatable": true,
@@ -5974,6 +5974,577 @@
                             }
                         ],
                         "type": "Empty"
+                    },
+                    {
+                        "children": [
+                            {
+                                "id": 93825033338320,
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0,
+                                        "key": "visibility",
+                                        "label": "visibility",
+                                        "options": [
+                                            "default",
+                                            "Hidden",
+                                            "Visible"
+                                        ],
+                                        "type": "OptionsProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": true,
+                                        "key": "is_active",
+                                        "label": "Active",
+                                        "type": "BoolProperty",
+                                        "value": true
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": "Unnamed Object",
+                                        "key": "name",
+                                        "label": "Name",
+                                        "mode": 0,
+                                        "type": "StringProperty",
+                                        "value": "Instance 0"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": [
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "key": "position",
+                                        "label": "Position",
+                                        "lower_value": [
+                                            "-inf",
+                                            "-inf"
+                                        ],
+                                        "multiplier": 1.0,
+                                        "step": [
+                                            1.0,
+                                            1.0
+                                        ],
+                                        "type": "FloatVectorProperty",
+                                        "upper_value": [
+                                            "inf",
+                                            "inf"
+                                        ],
+                                        "value": [
+                                            -27.406578758971847,
+                                            -21.788946539476395
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": [
+                                            1.0,
+                                            1.0
+                                        ],
+                                        "key": "scale",
+                                        "label": "Scale",
+                                        "lower_value": [
+                                            "-inf",
+                                            "-inf"
+                                        ],
+                                        "multiplier": 1.0,
+                                        "step": [
+                                            0.1,
+                                            0.1
+                                        ],
+                                        "type": "FloatVectorProperty",
+                                        "upper_value": [
+                                            "inf",
+                                            "inf"
+                                        ],
+                                        "value": [
+                                            0.7579879680621402,
+                                            0.75798796806214
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0.0,
+                                        "key": "rotation",
+                                        "label": "Rotation",
+                                        "lower_value": "-inf",
+                                        "multiplier": 57.29577951308232,
+                                        "step": 1.0,
+                                        "type": "FloatProperty",
+                                        "upper_value": "inf",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0.0,
+                                        "key": "shear",
+                                        "label": "Shear",
+                                        "lower_value": "-inf",
+                                        "multiplier": 1.0,
+                                        "step": 0.01,
+                                        "type": "FloatProperty",
+                                        "upper_value": "inf",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Instance",
+                                        "key": "reference",
+                                        "label": "Reference",
+                                        "type": "ReferenceProperty",
+                                        "value": 94472848487760
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Instance",
+                                        "default_value": false,
+                                        "key": "identical",
+                                        "label": "identical",
+                                        "type": "BoolProperty",
+                                        "value": false
+                                    }
+                                ],
+                                "type": "Instance"
+                            },
+                            {
+                                "id": 93825033335248,
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0,
+                                        "key": "visibility",
+                                        "label": "visibility",
+                                        "options": [
+                                            "default",
+                                            "Hidden",
+                                            "Visible"
+                                        ],
+                                        "type": "OptionsProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": true,
+                                        "key": "is_active",
+                                        "label": "Active",
+                                        "type": "BoolProperty",
+                                        "value": true
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": "Unnamed Object",
+                                        "key": "name",
+                                        "label": "Name",
+                                        "mode": 0,
+                                        "type": "StringProperty",
+                                        "value": "Instance 0"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": [
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "key": "position",
+                                        "label": "Position",
+                                        "lower_value": [
+                                            "-inf",
+                                            "-inf"
+                                        ],
+                                        "multiplier": 1.0,
+                                        "step": [
+                                            1.0,
+                                            1.0
+                                        ],
+                                        "type": "FloatVectorProperty",
+                                        "upper_value": [
+                                            "inf",
+                                            "inf"
+                                        ],
+                                        "value": [
+                                            27.621973627691634,
+                                            29.760394152812694
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": [
+                                            1.0,
+                                            1.0
+                                        ],
+                                        "key": "scale",
+                                        "label": "Scale",
+                                        "lower_value": [
+                                            "-inf",
+                                            "-inf"
+                                        ],
+                                        "multiplier": 1.0,
+                                        "step": [
+                                            0.1,
+                                            0.1
+                                        ],
+                                        "type": "FloatVectorProperty",
+                                        "upper_value": [
+                                            "inf",
+                                            "inf"
+                                        ],
+                                        "value": [
+                                            0.7120334624996281,
+                                            0.7120334624996276
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0.0,
+                                        "key": "rotation",
+                                        "label": "Rotation",
+                                        "lower_value": "-inf",
+                                        "multiplier": 57.29577951308232,
+                                        "step": 1.0,
+                                        "type": "FloatProperty",
+                                        "upper_value": "inf",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0.0,
+                                        "key": "shear",
+                                        "label": "Shear",
+                                        "lower_value": "-inf",
+                                        "multiplier": 1.0,
+                                        "step": 0.01,
+                                        "type": "FloatProperty",
+                                        "upper_value": "inf",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Instance",
+                                        "key": "reference",
+                                        "label": "Reference",
+                                        "type": "ReferenceProperty",
+                                        "value": 140737152861312
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Instance",
+                                        "default_value": false,
+                                        "key": "identical",
+                                        "label": "identical",
+                                        "type": "BoolProperty",
+                                        "value": false
+                                    }
+                                ],
+                                "type": "Instance"
+                            },
+                            {
+                                "id": 93825032564672,
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0,
+                                        "key": "visibility",
+                                        "label": "visibility",
+                                        "options": [
+                                            "default",
+                                            "Hidden",
+                                            "Visible"
+                                        ],
+                                        "type": "OptionsProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": true,
+                                        "key": "is_active",
+                                        "label": "Active",
+                                        "type": "BoolProperty",
+                                        "value": true
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": "Unnamed Object",
+                                        "key": "name",
+                                        "label": "Name",
+                                        "mode": 0,
+                                        "type": "StringProperty",
+                                        "value": "Instance 0"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": [
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "key": "position",
+                                        "label": "Position",
+                                        "lower_value": [
+                                            "-inf",
+                                            "-inf"
+                                        ],
+                                        "multiplier": 1.0,
+                                        "step": [
+                                            1.0,
+                                            1.0
+                                        ],
+                                        "type": "FloatVectorProperty",
+                                        "upper_value": [
+                                            "inf",
+                                            "inf"
+                                        ],
+                                        "value": [
+                                            41.13842052512142,
+                                            35.70763078768125
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": [
+                                            1.0,
+                                            1.0
+                                        ],
+                                        "key": "scale",
+                                        "label": "Scale",
+                                        "lower_value": [
+                                            "-inf",
+                                            "-inf"
+                                        ],
+                                        "multiplier": 1.0,
+                                        "step": [
+                                            0.1,
+                                            0.1
+                                        ],
+                                        "type": "FloatVectorProperty",
+                                        "upper_value": [
+                                            "inf",
+                                            "inf"
+                                        ],
+                                        "value": [
+                                            1.0363321347813022,
+                                            1.0363321347813006
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0.0,
+                                        "key": "rotation",
+                                        "label": "Rotation",
+                                        "lower_value": "-inf",
+                                        "multiplier": 57.29577951308232,
+                                        "step": 1.0,
+                                        "type": "FloatProperty",
+                                        "upper_value": "inf",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0.0,
+                                        "key": "shear",
+                                        "label": "Shear",
+                                        "lower_value": "-inf",
+                                        "multiplier": 1.0,
+                                        "step": 0.01,
+                                        "type": "FloatProperty",
+                                        "upper_value": "inf",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Instance",
+                                        "key": "reference",
+                                        "label": "Reference",
+                                        "type": "ReferenceProperty",
+                                        "value": 94472848365936
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Instance",
+                                        "default_value": false,
+                                        "key": "identical",
+                                        "label": "identical",
+                                        "type": "BoolProperty",
+                                        "value": false
+                                    }
+                                ],
+                                "type": "Instance"
+                            }
+                        ],
+                        "id": 93825087064272,
+                        "properties": [
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0,
+                                "key": "visibility",
+                                "label": "visibility",
+                                "options": [
+                                    "default",
+                                    "Hidden",
+                                    "Visible"
+                                ],
+                                "type": "OptionsProperty",
+                                "value": 1
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": true,
+                                "key": "is_active",
+                                "label": "Active",
+                                "type": "BoolProperty",
+                                "value": true
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": "Unnamed Object",
+                                "key": "name",
+                                "label": "Name",
+                                "mode": 0,
+                                "type": "StringProperty",
+                                "value": "UndeterminedType"
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": [
+                                    0.0,
+                                    0.0
+                                ],
+                                "key": "position",
+                                "label": "Position",
+                                "lower_value": [
+                                    "-inf",
+                                    "-inf"
+                                ],
+                                "multiplier": 1.0,
+                                "step": [
+                                    1.0,
+                                    1.0
+                                ],
+                                "type": "FloatVectorProperty",
+                                "upper_value": [
+                                    "inf",
+                                    "inf"
+                                ],
+                                "value": [
+                                    0.0,
+                                    0.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": [
+                                    1.0,
+                                    1.0
+                                ],
+                                "key": "scale",
+                                "label": "Scale",
+                                "lower_value": [
+                                    "-inf",
+                                    "-inf"
+                                ],
+                                "multiplier": 1.0,
+                                "step": [
+                                    0.1,
+                                    0.1
+                                ],
+                                "type": "FloatVectorProperty",
+                                "upper_value": [
+                                    "inf",
+                                    "inf"
+                                ],
+                                "value": [
+                                    1.0,
+                                    1.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0.0,
+                                "key": "rotation",
+                                "label": "Rotation",
+                                "lower_value": "-inf",
+                                "multiplier": 57.29577951308232,
+                                "step": 1.0,
+                                "type": "FloatProperty",
+                                "upper_value": "inf",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0.0,
+                                "key": "shear",
+                                "label": "Shear",
+                                "lower_value": "-inf",
+                                "multiplier": 1.0,
+                                "step": 0.01,
+                                "type": "FloatProperty",
+                                "upper_value": "inf",
+                                "value": 0.0
+                            }
+                        ],
+                        "type": "Empty"
                     }
                 ],
                 "id": 93825009324944,
@@ -7826,6 +8397,1508 @@
                     }
                 ],
                 "type": "Empty"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "id": 93825088061648,
+                                "points": [
+                                    {
+                                        "left": [
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "position": [
+                                            67.90111194465526,
+                                            -11.187129810771523
+                                        ],
+                                        "right": [
+                                            0.0,
+                                            0.0
+                                        ]
+                                    },
+                                    {
+                                        "left": [
+                                            -1.564269723091719,
+                                            17.49792743359024
+                                        ],
+                                        "position": [
+                                            71.68479134368121,
+                                            95.31613248347753
+                                        ],
+                                        "right": [
+                                            1.5773229304980723,
+                                            17.497927433590228
+                                        ]
+                                    }
+                                ],
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0,
+                                        "key": "visibility",
+                                        "label": "visibility",
+                                        "options": [
+                                            "default",
+                                            "Hidden",
+                                            "Visible"
+                                        ],
+                                        "type": "OptionsProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": true,
+                                        "key": "is_active",
+                                        "label": "Active",
+                                        "type": "BoolProperty",
+                                        "value": true
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": "Unnamed Object",
+                                        "key": "name",
+                                        "label": "Name",
+                                        "mode": 0,
+                                        "type": "StringProperty",
+                                        "value": "Path 2"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": [
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "key": "position",
+                                        "label": "Position",
+                                        "lower_value": [
+                                            "-inf",
+                                            "-inf"
+                                        ],
+                                        "multiplier": 1.0,
+                                        "step": [
+                                            1.0,
+                                            1.0
+                                        ],
+                                        "type": "FloatVectorProperty",
+                                        "upper_value": [
+                                            "inf",
+                                            "inf"
+                                        ],
+                                        "value": [
+                                            0.0,
+                                            0.0
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": [
+                                            1.0,
+                                            1.0
+                                        ],
+                                        "key": "scale",
+                                        "label": "Scale",
+                                        "lower_value": [
+                                            "-inf",
+                                            "-inf"
+                                        ],
+                                        "multiplier": 1.0,
+                                        "step": [
+                                            0.1,
+                                            0.1
+                                        ],
+                                        "type": "FloatVectorProperty",
+                                        "upper_value": [
+                                            "inf",
+                                            "inf"
+                                        ],
+                                        "value": [
+                                            1.0,
+                                            1.0
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0.0,
+                                        "key": "rotation",
+                                        "label": "Rotation",
+                                        "lower_value": "-inf",
+                                        "multiplier": 57.29577951308232,
+                                        "step": 1.0,
+                                        "type": "FloatProperty",
+                                        "upper_value": "inf",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0.0,
+                                        "key": "shear",
+                                        "label": "Shear",
+                                        "lower_value": "-inf",
+                                        "multiplier": 1.0,
+                                        "step": 0.01,
+                                        "type": "FloatProperty",
+                                        "upper_value": "inf",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Path",
+                                        "default_value": false,
+                                        "key": "closed",
+                                        "label": "Closed",
+                                        "type": "BoolProperty",
+                                        "value": false
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Path",
+                                        "default_value": 0,
+                                        "key": "interpolation",
+                                        "label": "Interpolation",
+                                        "options": [
+                                            "Linear",
+                                            "Cubic",
+                                            "Bézier"
+                                        ],
+                                        "type": "OptionsProperty",
+                                        "value": 2
+                                    }
+                                ],
+                                "type": "Path"
+                            }
+                        ],
+                        "id": 93825086530144,
+                        "properties": [
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0,
+                                "key": "visibility",
+                                "label": "visibility",
+                                "options": [
+                                    "default",
+                                    "Hidden",
+                                    "Visible"
+                                ],
+                                "type": "OptionsProperty",
+                                "value": 0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": true,
+                                "key": "is_active",
+                                "label": "Active",
+                                "type": "BoolProperty",
+                                "value": true
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": "Unnamed Object",
+                                "key": "name",
+                                "label": "Name",
+                                "mode": 0,
+                                "type": "StringProperty",
+                                "value": "Mirror 3"
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": [
+                                    0.0,
+                                    0.0
+                                ],
+                                "key": "position",
+                                "label": "Position",
+                                "lower_value": [
+                                    "-inf",
+                                    "-inf"
+                                ],
+                                "multiplier": 1.0,
+                                "step": [
+                                    1.0,
+                                    1.0
+                                ],
+                                "type": "FloatVectorProperty",
+                                "upper_value": [
+                                    "inf",
+                                    "inf"
+                                ],
+                                "value": [
+                                    0.0,
+                                    0.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": [
+                                    1.0,
+                                    1.0
+                                ],
+                                "key": "scale",
+                                "label": "Scale",
+                                "lower_value": [
+                                    "-inf",
+                                    "-inf"
+                                ],
+                                "multiplier": 1.0,
+                                "step": [
+                                    0.1,
+                                    0.1
+                                ],
+                                "type": "FloatVectorProperty",
+                                "upper_value": [
+                                    "inf",
+                                    "inf"
+                                ],
+                                "value": [
+                                    1.0,
+                                    1.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0.0,
+                                "key": "rotation",
+                                "label": "Rotation",
+                                "lower_value": "-inf",
+                                "multiplier": 57.29577951308232,
+                                "step": 1.0,
+                                "type": "FloatProperty",
+                                "upper_value": "inf",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0.0,
+                                "key": "shear",
+                                "label": "Shear",
+                                "lower_value": "-inf",
+                                "multiplier": 1.0,
+                                "step": 0.01,
+                                "type": "FloatProperty",
+                                "upper_value": "inf",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Mirror",
+                                "default_value": 0,
+                                "key": "direction",
+                                "label": "Direction",
+                                "options": [
+                                    "Horizontal",
+                                    "Vertical"
+                                ],
+                                "type": "OptionsProperty",
+                                "value": 0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Mirror",
+                                "default_value": 0,
+                                "key": "as_path",
+                                "label": "Mode",
+                                "options": [
+                                    "Object",
+                                    "Path"
+                                ],
+                                "type": "OptionsProperty",
+                                "value": 1
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Mirror",
+                                "default_value": true,
+                                "key": "closed",
+                                "label": "Close",
+                                "type": "BoolProperty",
+                                "value": true
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Mirror",
+                                "default_value": true,
+                                "key": "inverted",
+                                "label": "Invert",
+                                "type": "BoolProperty",
+                                "value": true
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "id": 93825090607984,
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": "Unnamed Object",
+                                        "key": "name",
+                                        "label": "Name",
+                                        "mode": 0,
+                                        "type": "StringProperty",
+                                        "value": "StyleTag 1"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Style",
+                                        "key": "style",
+                                        "label": "Style",
+                                        "type": "ReferenceProperty",
+                                        "value": 94472848412128
+                                    }
+                                ],
+                                "type": "StyleTag"
+                            }
+                        ],
+                        "type": "Mirror"
+                    },
+                    {
+                        "id": 93825090100208,
+                        "points": [
+                            {
+                                "left": [
+                                    1.3948567013423687,
+                                    11.865519039337496
+                                ],
+                                "position": [
+                                    50.255827590295354,
+                                    -11.478798209347389
+                                ],
+                                "right": [
+                                    -1.7467359522474244,
+                                    11.865519039337496
+                                ]
+                            },
+                            {
+                                "left": [
+                                    0.8943094238836602,
+                                    27.410749890509123
+                                ],
+                                "position": [
+                                    31.161331380700982,
+                                    -85.11844205260383
+                                ],
+                                "right": [
+                                    -2.247283229706133,
+                                    27.410749890509127
+                                ]
+                            },
+                            {
+                                "left": [
+                                    -0.8943094238836602,
+                                    27.410749890509123
+                                ],
+                                "position": [
+                                    -31.161331380700926,
+                                    -85.11844205260383
+                                ],
+                                "right": [
+                                    2.247283229706133,
+                                    27.410749890509127
+                                ]
+                            },
+                            {
+                                "left": [
+                                    -1.394856701342369,
+                                    11.865519039337492
+                                ],
+                                "position": [
+                                    -50.25582759029528,
+                                    -11.478798209347389
+                                ],
+                                "right": [
+                                    1.7467359522474246,
+                                    11.865519039337492
+                                ]
+                            }
+                        ],
+                        "properties": [
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0,
+                                "key": "visibility",
+                                "label": "visibility",
+                                "options": [
+                                    "default",
+                                    "Hidden",
+                                    "Visible"
+                                ],
+                                "type": "OptionsProperty",
+                                "value": 0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": true,
+                                "key": "is_active",
+                                "label": "Active",
+                                "type": "BoolProperty",
+                                "value": true
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": "Unnamed Object",
+                                "key": "name",
+                                "label": "Name",
+                                "mode": 0,
+                                "type": "StringProperty",
+                                "value": "Unnamed Object"
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": [
+                                    0.0,
+                                    0.0
+                                ],
+                                "key": "position",
+                                "label": "Position",
+                                "lower_value": [
+                                    "-inf",
+                                    "-inf"
+                                ],
+                                "multiplier": 1.0,
+                                "step": [
+                                    1.0,
+                                    1.0
+                                ],
+                                "type": "FloatVectorProperty",
+                                "upper_value": [
+                                    "inf",
+                                    "inf"
+                                ],
+                                "value": [
+                                    0.0,
+                                    0.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": [
+                                    1.0,
+                                    1.0
+                                ],
+                                "key": "scale",
+                                "label": "Scale",
+                                "lower_value": [
+                                    "-inf",
+                                    "-inf"
+                                ],
+                                "multiplier": 1.0,
+                                "step": [
+                                    0.1,
+                                    0.1
+                                ],
+                                "type": "FloatVectorProperty",
+                                "upper_value": [
+                                    "inf",
+                                    "inf"
+                                ],
+                                "value": [
+                                    1.0,
+                                    1.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0.0,
+                                "key": "rotation",
+                                "label": "Rotation",
+                                "lower_value": "-inf",
+                                "multiplier": 57.29577951308232,
+                                "step": 1.0,
+                                "type": "FloatProperty",
+                                "upper_value": "inf",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0.0,
+                                "key": "shear",
+                                "label": "Shear",
+                                "lower_value": "-inf",
+                                "multiplier": 1.0,
+                                "step": 0.01,
+                                "type": "FloatProperty",
+                                "upper_value": "inf",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Path",
+                                "default_value": false,
+                                "key": "closed",
+                                "label": "Closed",
+                                "type": "BoolProperty",
+                                "value": false
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Path",
+                                "default_value": 0,
+                                "key": "interpolation",
+                                "label": "Interpolation",
+                                "options": [
+                                    "Linear",
+                                    "Cubic",
+                                    "Bézier"
+                                ],
+                                "type": "OptionsProperty",
+                                "value": 0
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "id": 93825090530192,
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": "Unnamed Object",
+                                        "key": "name",
+                                        "label": "Name",
+                                        "mode": 0,
+                                        "type": "StringProperty",
+                                        "value": "StyleTag 4"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Style",
+                                        "key": "style",
+                                        "label": "Style",
+                                        "type": "ReferenceProperty",
+                                        "value": 93825093450464
+                                    }
+                                ],
+                                "type": "StyleTag"
+                            }
+                        ],
+                        "type": "Path"
+                    }
+                ],
+                "id": 93825093625184,
+                "properties": [
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "category": "Basic",
+                        "default_value": 0,
+                        "key": "visibility",
+                        "label": "visibility",
+                        "options": [
+                            "default",
+                            "Hidden",
+                            "Visible"
+                        ],
+                        "type": "OptionsProperty",
+                        "value": 2
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "category": "Basic",
+                        "default_value": true,
+                        "key": "is_active",
+                        "label": "Active",
+                        "type": "BoolProperty",
+                        "value": true
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "category": "Basic",
+                        "default_value": "Unnamed Object",
+                        "key": "name",
+                        "label": "Name",
+                        "mode": 0,
+                        "type": "StringProperty",
+                        "value": "LockedLock"
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "category": "Basic",
+                        "default_value": [
+                            0.0,
+                            0.0
+                        ],
+                        "key": "position",
+                        "label": "Position",
+                        "lower_value": [
+                            "-inf",
+                            "-inf"
+                        ],
+                        "multiplier": 1.0,
+                        "step": [
+                            1.0,
+                            1.0
+                        ],
+                        "type": "FloatVectorProperty",
+                        "upper_value": [
+                            "inf",
+                            "inf"
+                        ],
+                        "value": [
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "category": "Basic",
+                        "default_value": [
+                            1.0,
+                            1.0
+                        ],
+                        "key": "scale",
+                        "label": "Scale",
+                        "lower_value": [
+                            "-inf",
+                            "-inf"
+                        ],
+                        "multiplier": 1.0,
+                        "step": [
+                            0.1,
+                            0.1
+                        ],
+                        "type": "FloatVectorProperty",
+                        "upper_value": [
+                            "inf",
+                            "inf"
+                        ],
+                        "value": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "category": "Basic",
+                        "default_value": 0.0,
+                        "key": "rotation",
+                        "label": "Rotation",
+                        "lower_value": "-inf",
+                        "multiplier": 57.29577951308232,
+                        "step": 1.0,
+                        "type": "FloatProperty",
+                        "upper_value": "inf",
+                        "value": 0.0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "category": "Basic",
+                        "default_value": 0.0,
+                        "key": "shear",
+                        "label": "Shear",
+                        "lower_value": "-inf",
+                        "multiplier": 1.0,
+                        "step": 0.01,
+                        "type": "FloatProperty",
+                        "upper_value": "inf",
+                        "value": 0.0
+                    }
+                ],
+                "type": "Empty"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "id": 93825086729280,
+                                "points": [
+                                    {
+                                        "left": [
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "position": [
+                                            67.90111194465526,
+                                            -11.187129810771523
+                                        ],
+                                        "right": [
+                                            0.0,
+                                            0.0
+                                        ]
+                                    },
+                                    {
+                                        "left": [
+                                            -1.564269723091719,
+                                            17.49792743359024
+                                        ],
+                                        "position": [
+                                            71.68479134368121,
+                                            95.31613248347753
+                                        ],
+                                        "right": [
+                                            1.5773229304980723,
+                                            17.497927433590228
+                                        ]
+                                    }
+                                ],
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0,
+                                        "key": "visibility",
+                                        "label": "visibility",
+                                        "options": [
+                                            "default",
+                                            "Hidden",
+                                            "Visible"
+                                        ],
+                                        "type": "OptionsProperty",
+                                        "value": 0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": true,
+                                        "key": "is_active",
+                                        "label": "Active",
+                                        "type": "BoolProperty",
+                                        "value": true
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": "Unnamed Object",
+                                        "key": "name",
+                                        "label": "Name",
+                                        "mode": 0,
+                                        "type": "StringProperty",
+                                        "value": "Path 2"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": [
+                                            0.0,
+                                            0.0
+                                        ],
+                                        "key": "position",
+                                        "label": "Position",
+                                        "lower_value": [
+                                            "-inf",
+                                            "-inf"
+                                        ],
+                                        "multiplier": 1.0,
+                                        "step": [
+                                            1.0,
+                                            1.0
+                                        ],
+                                        "type": "FloatVectorProperty",
+                                        "upper_value": [
+                                            "inf",
+                                            "inf"
+                                        ],
+                                        "value": [
+                                            0.0,
+                                            0.0
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": [
+                                            1.0,
+                                            1.0
+                                        ],
+                                        "key": "scale",
+                                        "label": "Scale",
+                                        "lower_value": [
+                                            "-inf",
+                                            "-inf"
+                                        ],
+                                        "multiplier": 1.0,
+                                        "step": [
+                                            0.1,
+                                            0.1
+                                        ],
+                                        "type": "FloatVectorProperty",
+                                        "upper_value": [
+                                            "inf",
+                                            "inf"
+                                        ],
+                                        "value": [
+                                            1.0,
+                                            1.0
+                                        ]
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0.0,
+                                        "key": "rotation",
+                                        "label": "Rotation",
+                                        "lower_value": "-inf",
+                                        "multiplier": 57.29577951308232,
+                                        "step": 1.0,
+                                        "type": "FloatProperty",
+                                        "upper_value": "inf",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": 0.0,
+                                        "key": "shear",
+                                        "label": "Shear",
+                                        "lower_value": "-inf",
+                                        "multiplier": 1.0,
+                                        "step": 0.01,
+                                        "type": "FloatProperty",
+                                        "upper_value": "inf",
+                                        "value": 0.0
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Path",
+                                        "default_value": false,
+                                        "key": "closed",
+                                        "label": "Closed",
+                                        "type": "BoolProperty",
+                                        "value": false
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Path",
+                                        "default_value": 0,
+                                        "key": "interpolation",
+                                        "label": "Interpolation",
+                                        "options": [
+                                            "Linear",
+                                            "Cubic",
+                                            "Bézier"
+                                        ],
+                                        "type": "OptionsProperty",
+                                        "value": 2
+                                    }
+                                ],
+                                "type": "Path"
+                            }
+                        ],
+                        "id": 93825033620672,
+                        "properties": [
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0,
+                                "key": "visibility",
+                                "label": "visibility",
+                                "options": [
+                                    "default",
+                                    "Hidden",
+                                    "Visible"
+                                ],
+                                "type": "OptionsProperty",
+                                "value": 0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": true,
+                                "key": "is_active",
+                                "label": "Active",
+                                "type": "BoolProperty",
+                                "value": true
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": "Unnamed Object",
+                                "key": "name",
+                                "label": "Name",
+                                "mode": 0,
+                                "type": "StringProperty",
+                                "value": "Mirror 3"
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": [
+                                    0.0,
+                                    0.0
+                                ],
+                                "key": "position",
+                                "label": "Position",
+                                "lower_value": [
+                                    "-inf",
+                                    "-inf"
+                                ],
+                                "multiplier": 1.0,
+                                "step": [
+                                    1.0,
+                                    1.0
+                                ],
+                                "type": "FloatVectorProperty",
+                                "upper_value": [
+                                    "inf",
+                                    "inf"
+                                ],
+                                "value": [
+                                    0.0,
+                                    0.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": [
+                                    1.0,
+                                    1.0
+                                ],
+                                "key": "scale",
+                                "label": "Scale",
+                                "lower_value": [
+                                    "-inf",
+                                    "-inf"
+                                ],
+                                "multiplier": 1.0,
+                                "step": [
+                                    0.1,
+                                    0.1
+                                ],
+                                "type": "FloatVectorProperty",
+                                "upper_value": [
+                                    "inf",
+                                    "inf"
+                                ],
+                                "value": [
+                                    1.0,
+                                    1.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0.0,
+                                "key": "rotation",
+                                "label": "Rotation",
+                                "lower_value": "-inf",
+                                "multiplier": 57.29577951308232,
+                                "step": 1.0,
+                                "type": "FloatProperty",
+                                "upper_value": "inf",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0.0,
+                                "key": "shear",
+                                "label": "Shear",
+                                "lower_value": "-inf",
+                                "multiplier": 1.0,
+                                "step": 0.01,
+                                "type": "FloatProperty",
+                                "upper_value": "inf",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Mirror",
+                                "default_value": 0,
+                                "key": "direction",
+                                "label": "Direction",
+                                "options": [
+                                    "Horizontal",
+                                    "Vertical"
+                                ],
+                                "type": "OptionsProperty",
+                                "value": 0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Mirror",
+                                "default_value": 0,
+                                "key": "as_path",
+                                "label": "Mode",
+                                "options": [
+                                    "Object",
+                                    "Path"
+                                ],
+                                "type": "OptionsProperty",
+                                "value": 1
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Mirror",
+                                "default_value": true,
+                                "key": "closed",
+                                "label": "Close",
+                                "type": "BoolProperty",
+                                "value": true
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Mirror",
+                                "default_value": true,
+                                "key": "inverted",
+                                "label": "Invert",
+                                "type": "BoolProperty",
+                                "value": true
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "id": 93825032954592,
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": "Unnamed Object",
+                                        "key": "name",
+                                        "label": "Name",
+                                        "mode": 0,
+                                        "type": "StringProperty",
+                                        "value": "StyleTag 1"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Style",
+                                        "key": "style",
+                                        "label": "Style",
+                                        "type": "ReferenceProperty",
+                                        "value": 94472848412128
+                                    }
+                                ],
+                                "type": "StyleTag"
+                            }
+                        ],
+                        "type": "Mirror"
+                    },
+                    {
+                        "id": 93825090250960,
+                        "points": [
+                            {
+                                "left": [
+                                    1.3714992585545789,
+                                    26.629418128332205
+                                ],
+                                "position": [
+                                    41.95840293190028,
+                                    -64.89346944776568
+                                ],
+                                "right": [
+                                    -1.7700933950352142,
+                                    26.62941812833221
+                                ]
+                            },
+                            {
+                                "left": [
+                                    -0.576846719746659,
+                                    33.59741461710094
+                                ],
+                                "position": [
+                                    -20.27096151655739,
+                                    -94.45304479329832
+                                ],
+                                "right": [
+                                    2.564745933843134,
+                                    33.597414617100924
+                                ]
+                            },
+                            {
+                                "left": [
+                                    -1.3170874082579893,
+                                    12.67915714301304
+                                ],
+                                "position": [
+                                    -50.25582759029528,
+                                    -11.478798209347389
+                                ],
+                                "right": [
+                                    1.8245052453318038,
+                                    12.67915714301304
+                                ]
+                            }
+                        ],
+                        "properties": [
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0,
+                                "key": "visibility",
+                                "label": "visibility",
+                                "options": [
+                                    "default",
+                                    "Hidden",
+                                    "Visible"
+                                ],
+                                "type": "OptionsProperty",
+                                "value": 0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": true,
+                                "key": "is_active",
+                                "label": "Active",
+                                "type": "BoolProperty",
+                                "value": true
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": "Unnamed Object",
+                                "key": "name",
+                                "label": "Name",
+                                "mode": 0,
+                                "type": "StringProperty",
+                                "value": "Unnamed Object"
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": [
+                                    0.0,
+                                    0.0
+                                ],
+                                "key": "position",
+                                "label": "Position",
+                                "lower_value": [
+                                    "-inf",
+                                    "-inf"
+                                ],
+                                "multiplier": 1.0,
+                                "step": [
+                                    1.0,
+                                    1.0
+                                ],
+                                "type": "FloatVectorProperty",
+                                "upper_value": [
+                                    "inf",
+                                    "inf"
+                                ],
+                                "value": [
+                                    0.0,
+                                    0.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": [
+                                    1.0,
+                                    1.0
+                                ],
+                                "key": "scale",
+                                "label": "Scale",
+                                "lower_value": [
+                                    "-inf",
+                                    "-inf"
+                                ],
+                                "multiplier": 1.0,
+                                "step": [
+                                    0.1,
+                                    0.1
+                                ],
+                                "type": "FloatVectorProperty",
+                                "upper_value": [
+                                    "inf",
+                                    "inf"
+                                ],
+                                "value": [
+                                    1.0,
+                                    1.0
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0.0,
+                                "key": "rotation",
+                                "label": "Rotation",
+                                "lower_value": "-inf",
+                                "multiplier": 57.29577951308232,
+                                "step": 1.0,
+                                "type": "FloatProperty",
+                                "upper_value": "inf",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Basic",
+                                "default_value": 0.0,
+                                "key": "shear",
+                                "label": "Shear",
+                                "lower_value": "-inf",
+                                "multiplier": 1.0,
+                                "step": 0.01,
+                                "type": "FloatProperty",
+                                "upper_value": "inf",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Path",
+                                "default_value": false,
+                                "key": "closed",
+                                "label": "Closed",
+                                "type": "BoolProperty",
+                                "value": false
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "category": "Path",
+                                "default_value": 0,
+                                "key": "interpolation",
+                                "label": "Interpolation",
+                                "options": [
+                                    "Linear",
+                                    "Cubic",
+                                    "Bézier"
+                                ],
+                                "type": "OptionsProperty",
+                                "value": 2
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "id": 93825089872736,
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Basic",
+                                        "default_value": "Unnamed Object",
+                                        "key": "name",
+                                        "label": "Name",
+                                        "mode": 0,
+                                        "type": "StringProperty",
+                                        "value": "StyleTag 4"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "category": "Style",
+                                        "key": "style",
+                                        "label": "Style",
+                                        "type": "ReferenceProperty",
+                                        "value": 93825093450464
+                                    }
+                                ],
+                                "type": "StyleTag"
+                            }
+                        ],
+                        "type": "Path"
+                    }
+                ],
+                "id": 93825093462336,
+                "properties": [
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "category": "Basic",
+                        "default_value": 0,
+                        "key": "visibility",
+                        "label": "visibility",
+                        "options": [
+                            "default",
+                            "Hidden",
+                            "Visible"
+                        ],
+                        "type": "OptionsProperty",
+                        "value": 1
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "category": "Basic",
+                        "default_value": true,
+                        "key": "is_active",
+                        "label": "Active",
+                        "type": "BoolProperty",
+                        "value": true
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "category": "Basic",
+                        "default_value": "Unnamed Object",
+                        "key": "name",
+                        "label": "Name",
+                        "mode": 0,
+                        "type": "StringProperty",
+                        "value": "OpenLock"
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "category": "Basic",
+                        "default_value": [
+                            0.0,
+                            0.0
+                        ],
+                        "key": "position",
+                        "label": "Position",
+                        "lower_value": [
+                            "-inf",
+                            "-inf"
+                        ],
+                        "multiplier": 1.0,
+                        "step": [
+                            1.0,
+                            1.0
+                        ],
+                        "type": "FloatVectorProperty",
+                        "upper_value": [
+                            "inf",
+                            "inf"
+                        ],
+                        "value": [
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "category": "Basic",
+                        "default_value": [
+                            1.0,
+                            1.0
+                        ],
+                        "key": "scale",
+                        "label": "Scale",
+                        "lower_value": [
+                            "-inf",
+                            "-inf"
+                        ],
+                        "multiplier": 1.0,
+                        "step": [
+                            0.1,
+                            0.1
+                        ],
+                        "type": "FloatVectorProperty",
+                        "upper_value": [
+                            "inf",
+                            "inf"
+                        ],
+                        "value": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "category": "Basic",
+                        "default_value": 0.0,
+                        "key": "rotation",
+                        "label": "Rotation",
+                        "lower_value": "-inf",
+                        "multiplier": 57.29577951308232,
+                        "step": 1.0,
+                        "type": "FloatProperty",
+                        "upper_value": "inf",
+                        "value": 0.0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "category": "Basic",
+                        "default_value": 0.0,
+                        "key": "shear",
+                        "label": "Shear",
+                        "lower_value": "-inf",
+                        "multiplier": 1.0,
+                        "step": 0.01,
+                        "type": "FloatProperty",
+                        "upper_value": "inf",
+                        "value": 0.0
+                    }
+                ],
+                "type": "Empty"
             }
         ],
         "id": 94472847566576,
@@ -7891,8 +9964,8 @@
                     "inf"
                 ],
                 "value": [
-                    727.3779630837707,
-                    345.036452701723
+                    382.20812275198773,
+                    677.1346717699614
                 ]
             },
             {
@@ -7920,8 +9993,8 @@
                     "inf"
                 ],
                 "value": [
-                    2.0277275464292543,
-                    2.027727546429254
+                    1.9283091632307499,
+                    1.9283091632307494
                 ]
             },
             {
@@ -11512,6 +13585,263 @@
                     ],
                     "type": "OptionsProperty",
                     "value": 1
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Decoration",
+                    "default_value": 2.0,
+                    "key": "endsize",
+                    "label": "Size",
+                    "lower_value": 0.0,
+                    "multiplier": 1.0,
+                    "step": 0.1,
+                    "type": "FloatProperty",
+                    "upper_value": "inf",
+                    "value": 1.5999999999999988
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Decoration",
+                    "default_value": 0.0,
+                    "key": "endaspectratio",
+                    "label": "Aspect Ratio",
+                    "lower_value": "-inf",
+                    "multiplier": 1.0,
+                    "step": 0.001,
+                    "type": "FloatProperty",
+                    "upper_value": "inf",
+                    "value": -0.36700000000000016
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Decoration",
+                    "default_value": false,
+                    "key": "endreverse",
+                    "label": "Reverse",
+                    "type": "BoolProperty",
+                    "value": false
+                }
+            ]
+        },
+        {
+            "id": 93825093450464,
+            "properties": [
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Basic",
+                    "default_value": "Unnamed Object",
+                    "key": "name",
+                    "label": "Name",
+                    "mode": 0,
+                    "type": "StringProperty",
+                    "value": "arrow-green"
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Pen",
+                    "default_value": true,
+                    "key": "pen/active",
+                    "label": "Active",
+                    "type": "BoolProperty",
+                    "value": true
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Pen",
+                    "default_value": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "key": "pen/color",
+                    "label": "Color",
+                    "type": "ColorProperty",
+                    "value": [
+                        0.1843137254901961,
+                        0.5529411764705883,
+                        0.12156862745098039,
+                        1.0
+                    ]
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Pen",
+                    "default_value": 1.0,
+                    "key": "pen/width",
+                    "label": "Width",
+                    "lower_value": 0.0,
+                    "multiplier": 1.0,
+                    "step": 0.1,
+                    "type": "FloatProperty",
+                    "upper_value": "inf",
+                    "value": 19.80000000000005
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Pen",
+                    "default_value": 0,
+                    "key": "pen/stroke",
+                    "label": "Stroke Style",
+                    "options": [
+                        "solid",
+                        "dashed",
+                        "dotted",
+                        "dash/dot",
+                        "dash/dot/dot"
+                    ],
+                    "type": "OptionsProperty",
+                    "value": 0
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Pen",
+                    "default_value": 2,
+                    "key": "pen/join",
+                    "label": "Join",
+                    "options": [
+                        "bevel",
+                        "miter",
+                        "round"
+                    ],
+                    "type": "OptionsProperty",
+                    "value": 2
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Pen",
+                    "default_value": 1,
+                    "key": "pen/cap",
+                    "label": "Cap",
+                    "options": [
+                        "Square",
+                        "flat",
+                        "round"
+                    ],
+                    "type": "OptionsProperty",
+                    "value": 1
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Pen",
+                    "default_value": true,
+                    "key": "pen/cosmetic",
+                    "label": "cosmetic",
+                    "type": "BoolProperty",
+                    "value": false
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Brush",
+                    "default_value": false,
+                    "key": "brush/active",
+                    "label": "Active",
+                    "type": "BoolProperty",
+                    "value": false
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Brush",
+                    "default_value": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "key": "brush/color",
+                    "label": "Color",
+                    "type": "ColorProperty",
+                    "value": [
+                        0.792156862745098,
+                        0.0,
+                        0.1843137254901961,
+                        1.0
+                    ]
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Decoration",
+                    "default_value": 0,
+                    "key": "startshape",
+                    "label": "Shape",
+                    "options": [
+                        "None",
+                        "Arrow",
+                        "Bar",
+                        "Circle",
+                        "Diamond"
+                    ],
+                    "type": "OptionsProperty",
+                    "value": 0
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Decoration",
+                    "default_value": 2.0,
+                    "key": "startsize",
+                    "label": "Size",
+                    "lower_value": 0.0,
+                    "multiplier": 1.0,
+                    "step": 0.1,
+                    "type": "FloatProperty",
+                    "upper_value": "inf",
+                    "value": 2.9
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Decoration",
+                    "default_value": 0.0,
+                    "key": "startaspectratio",
+                    "label": "Aspect Ratio",
+                    "lower_value": "-inf",
+                    "multiplier": 1.0,
+                    "step": 0.001,
+                    "type": "FloatProperty",
+                    "upper_value": "inf",
+                    "value": -0.039000000000000014
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Decoration",
+                    "default_value": false,
+                    "key": "startreverse",
+                    "label": "Reverse",
+                    "type": "BoolProperty",
+                    "value": false
+                },
+                {
+                    "animatable": true,
+                    "animated": false,
+                    "category": "Decoration",
+                    "default_value": 0,
+                    "key": "endshape",
+                    "label": "Shape",
+                    "options": [
+                        "None",
+                        "Arrow",
+                        "Bar",
+                        "Circle",
+                        "Diamond"
+                    ],
+                    "type": "OptionsProperty",
+                    "value": 0
                 },
                 {
                     "animatable": true,

@@ -25,5 +25,8 @@
         <file>layouts/default.layout</file>
         <file>icons/Revert.png</file>
         <file>icons/Tip.png</file>
+        <file>icons/LockedLock.png</file>
+        <file>icons/OpenLock.png</file>
+        <file>icons/UndeterminedType.png</file>
     </qresource>
 </RCC>

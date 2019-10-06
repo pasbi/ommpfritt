@@ -85,6 +85,18 @@ std::string get_tab_label(const std::map<omm::AbstractPropertyOwner*, omm::Prope
   return tab_label;
 }
 
+std::string join(const std::list<std::string>& strings, const std::string& separator)
+{
+  if (strings.empty()) {
+    return "";
+  }
+  std::string joined = strings.front();
+  for (auto it = std::next(strings.begin()); it != strings.end(); ++it) {
+    joined += separator + *it;
+  }
+  return joined;
+}
+
 }  // namespace
 
 namespace omm
@@ -110,6 +122,14 @@ PropertyManager::PropertyManager(Scene& scene)
   m_scroll_area->setWidget(category_widget.release());
 
   auto main_layout = std::make_unique<QVBoxLayout>();
+
+  auto hlayout = std::make_unique<QHBoxLayout>();
+  m_icon_label = std::make_unique<QLabel>("");
+  m_selection_label = std::make_unique<QLabel>("");
+  hlayout->addWidget(m_icon_label.get(), 0);
+  hlayout->addWidget(m_selection_label.get(), 1);
+  main_layout->addLayout(hlayout.release());
+
   main_layout->addWidget(m_tab_bar.get());
   main_layout->addWidget(m_scroll_area.get());
 
@@ -138,6 +158,36 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
     m_current_selection = selection;
     update_property_widgets();
     m_title_bar->set_selection(selection);
+
+    m_icon_label->setVisible(selection.size() > 0);
+    m_selection_label->setVisible(selection.size() > 0);
+    if (selection.size() > 0) {
+      const auto types = ::transform<std::string>(selection, [](AbstractPropertyOwner* owner) {
+          return owner->type();
+      });
+      std::list<std::string> tokens;
+
+      if (selection.size() > 1) {
+        tokens.push_back("["
+                         + tr("%n Elements", "PropertyManager", selection.size()).toStdString()
+                         + "]");
+      }
+      tokens.push_back(types.size() == 1 ? *types.begin() : "");
+      const auto names = ::transform<std::string, std::list>(selection,
+                                                             [](AbstractPropertyOwner* owner)
+      {
+        return owner->name();
+      });
+      tokens.push_back("[" + join(names, ", ") + "]");
+      m_selection_label->setText(QString::fromStdString(join(tokens, " ")));
+
+      const std::string icon_filename = types.size() == 1 ? ":/icons/" + *types.begin() + ".png"
+                                                          : ":/icons/UndeterminedType.png";
+
+      const QImage image(QString::fromStdString(icon_filename));
+      m_icon_label->setPixmap(QPixmap::fromImage(image.scaled(24, 24, Qt::KeepAspectRatio,
+                                                              Qt::SmoothTransformation)));
+    }
   }
 }
 

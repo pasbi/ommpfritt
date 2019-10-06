@@ -4,6 +4,8 @@
 #include <QWidget>
 #include "managers/managertitlebar.h"
 
+class QPushButton;
+
 namespace omm
 {
 
@@ -20,6 +22,10 @@ public:
 private:
   AbstractPropertyOwner* m_first_selected = nullptr;
   QAction* m_manage_user_properties_action;
+  QPushButton* m_lock_button;
+
+private Q_SLOTS:
+  void update_lock_button_icon(bool checked);
 };
 
 }  // namespace omm

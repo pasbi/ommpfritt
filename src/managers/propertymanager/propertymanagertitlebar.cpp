@@ -26,11 +26,13 @@ PropertyManagerTitleBar::PropertyManagerTitleBar(PropertyManager& parent)
   m_manage_user_properties_action->setEnabled(false);
 
   auto lock_button = std::make_unique<QPushButton>();
+  m_lock_button = lock_button.get();
+  update_lock_button_icon(m_lock_button->isChecked());
   lock_button->setFixedSize(24, 24);
-  lock_button->setText("L");
   lock_button->setCheckable(true);
-  connect(lock_button.get(), &QPushButton::toggled, [&parent](bool checked) {
+  connect(lock_button.get(), &QPushButton::toggled, [&parent, this](bool checked) {
     parent.set_locked(checked);
+    update_lock_button_icon(checked);
   });
 
   auto container = std::make_unique<QWidget>();
@@ -52,6 +54,12 @@ void PropertyManagerTitleBar::set_selection(const std::set<AbstractPropertyOwner
     m_first_selected = nullptr;
     m_manage_user_properties_action->setEnabled(false);
   }
+}
+
+void PropertyManagerTitleBar::update_lock_button_icon(bool checked)
+{
+  m_lock_button->setIcon(QPixmap::fromImage(QImage(checked ? ":/icons/LockedLock.png"
+                                                           : ":/icons/OpenLock.png" )));
 }
 
 
