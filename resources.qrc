@@ -24,5 +24,6 @@
         <file>icons/Jump-End.png</file>
         <file>layouts/default.layout</file>
         <file>icons/Revert.png</file>
+        <file>icons/Tip.png</file>
     </qresource>
 </RCC>
