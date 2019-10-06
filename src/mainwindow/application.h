@@ -45,6 +45,8 @@ public:
   enum class InsertionMode { Default, AsParent, AsChild };
   Object &insert_object(const std::string& key, InsertionMode mode);
 
+  static const std::set<int> keyboard_modifiers;
+
 private:
   QApplication& m_app;
   static Application* m_instance;
@@ -54,15 +56,35 @@ public:
   KeyBindings key_bindings;
 
 public:
+  /**
+   * @brief dispatch_key accumulates the key event with already received events.
+   *  The CommandInterface to deliver the action is the docked widget which contains the mouse.
+   *  If that Manager does not want the action, it is delivered to the Application.
+   * @param key the pressed key
+   * @param modifiers the modifiers which were down during the key press
+   * @return true if the action was accepted by the docked Manager under the mouse or the
+   *  Application.
+   */
   bool dispatch_key(int key, Qt::KeyboardModifiers modifiers);
+
+  /**
+   * @brief dispatch_key same as @code dispatch_key, but the event is delivered to given
+   *  CommandInterface @code ci. If that CommandInterface does not want the action, it is forwarded
+   *  to the Application.
+   * @param key
+   * @param modifiers
+   * @param ci
+   * @return true if the action was accepted by @code ci or Application.
+   */
+  bool dispatch_key(int key, Qt::KeyboardModifiers modifiers, CommandInterface& ci);
+
   void register_manager(Manager& manager);
   void unregister_manager(Manager& manager);
   bool perform_action(const std::string& name) override;
 private:
   QTimer m_reset_keysequence_timer;
-  std::vector<int> m_pending_key_sequence;
+  QKeySequence m_pending_key_sequence;
   std::set<Manager*> m_managers;
-  bool dispatch_sequence(const QKeySequence& sequence);
 
 };
 

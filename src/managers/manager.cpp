@@ -27,4 +27,19 @@ void Manager::set_widget(std::unique_ptr<QWidget> widget)
   setWidget(widget.release());
 }
 
+void Manager::keyPressEvent(QKeyEvent* e)
+{
+  if (!::contains(Application::keyboard_modifiers, e->key()) && isFloating()) {
+    // MainWindow is not a parent, hence the manager must handle the key event itself.
+    if (Application::instance().dispatch_key(e->key(), e->modifiers(), *this)) {
+      QDockWidget::keyPressEvent(e);
+    } else {
+      raise();
+    }
+  } else {
+    // Let the MainWindow handle the event and dispatch the keybinding.
+    QDockWidget::keyPressEvent(e);
+  }
+}
+
 }  // namespace omm

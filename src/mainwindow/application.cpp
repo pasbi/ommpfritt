@@ -26,11 +26,33 @@
 namespace
 {
 constexpr auto FILE_ENDING = ".omm";
+
+QKeySequence push_back(const QKeySequence& s, int t)
+{
+  switch (s.count()) {
+  case 0:
+    return QKeySequence(t);
+  case 1:
+    return QKeySequence(s[0], t);
+  case 2:
+    return QKeySequence(s[0], s[1], t);
+  case 3:
+    return QKeySequence(s[0], s[1], s[2], t);
+  case 4:
+    return QKeySequence(s[1], s[2], s[3], t);
+  default:
+    Q_UNREACHABLE();
+    return QKeySequence();
+  }
+}
+
 }  // namespace
 
 namespace omm
 {
 
+const std::set<int> Application::keyboard_modifiers { Qt::Key_Shift, Qt::Key_Control, Qt::Key_Alt,
+                                                      Qt::Key_Meta };
 Application* Application::m_instance = nullptr;
 
 Application::Application(QApplication& app)
@@ -47,7 +69,7 @@ Application::Application(QApplication& app)
   m_reset_keysequence_timer.setSingleShot(true);
   m_reset_keysequence_timer.setInterval(1000);
   connect(&m_reset_keysequence_timer, &QTimer::timeout, this, [this]() {
-    m_pending_key_sequence.clear();
+    m_pending_key_sequence = QKeySequence();
   });
 }
 
@@ -286,46 +308,41 @@ bool Application::perform_action(const std::string& action_name)
   return true;
 }
 
-bool Application::dispatch_sequence(const QKeySequence &sequence)
+bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers, CommandInterface& ci)
 {
-  QWidgetList top_level_widgets = QApplication::topLevelWidgets();
-  std::vector<Manager*> managers(m_managers.begin(), m_managers.end());
-  std::sort(managers.begin(), managers.end(), [top_level_widgets](Manager* a, Manager* b) {
-    const int z_a = top_level_widgets.indexOf(a);
-    const int z_b = top_level_widgets.indexOf(b);
-    if (z_a == -1) {
-      // `a` is not a top level widget.
-      return false;
-    } else if (z_b == -1) {
-      // `b` is not a top level widget.
+  const auto dispatch_sequence = [this](CommandInterface& ci) {
+    LINFO << m_pending_key_sequence;
+    const auto action_name = key_bindings.find_action(ci.type(), m_pending_key_sequence);
+    if (!action_name.empty() && ci.perform_action(action_name)) {
+      m_pending_key_sequence = QKeySequence();
       return true;
     } else {
-      return z_a < z_b;
+      return false;
     }
-  });
+  };
 
+  m_pending_key_sequence = push_back(m_pending_key_sequence, key | modifiers);
+  m_reset_keysequence_timer.start();
+  if (dispatch_sequence(ci)) {
+    return true;
+  } else if (&ci != &Application::instance()) {
+    return dispatch_sequence(Application::instance());
+  } else {
+    return false;
+  }
+}
+
+bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers)
+{
   const QPoint mouse_position = QCursor::pos();
   for (Manager* manager : m_managers) {
     const QRect manager_rect(manager->mapToGlobal(manager->rect().topLeft()),
                              manager->mapToGlobal(manager->rect().bottomRight()));
     if (manager_rect.contains(mouse_position)) {
-      const std::string action_name = key_bindings.find_action(manager->type(), sequence);
-      if (manager->perform_action(action_name)) {
-        m_pending_key_sequence.clear();
-        return true;
-      }
+      return dispatch_key(key, modifiers, *manager);
     }
-    manager->rect();
   }
-
-  const std::string action_name  = key_bindings.find_action("Application", sequence);
-
-  if (perform_action(action_name)) {
-    m_pending_key_sequence.clear();
-    return true;
-  } else {
-    return false;
-  }
+  return dispatch_key(key, modifiers, Application::instance());
 }
 
 std::string Application::type() const { return TYPE; }
@@ -345,7 +362,6 @@ Object& Application::insert_object(const std::string &key, InsertionMode mode)
   auto object = Object::make(key, &scene);
   object->set_object_tree(scene.object_tree());
   auto& ref = *object;
-
 
   Object* parent = nullptr;
   Object* predecessor = nullptr;
@@ -393,32 +409,6 @@ Object& Application::insert_object(const std::string &key, InsertionMode mode)
 
   ref.post_create_hook();
   return ref;
-}
-
-bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers)
-{
-  m_pending_key_sequence.push_back(key | modifiers);
-  if (m_pending_key_sequence.size() > 4) {
-    m_pending_key_sequence.erase(m_pending_key_sequence.begin());
-  }
-
-  const auto get_ith_key = [this](std::size_t i) {
-    if (m_pending_key_sequence.size() > i) {
-      return m_pending_key_sequence.at(i);
-    } else {
-      return 0;
-    }
-  };
-
-  QKeySequence sequence(get_ith_key(0), get_ith_key(1), get_ith_key(2), get_ith_key(3));
-  while (sequence.count() > 0) {
-    if (dispatch_sequence(sequence)) {
-      return true;
-    } else {
-      sequence = QKeySequence(sequence[1], sequence[2], sequence[3], 0);
-    }
-  }
-  return false;
 }
 
 void Application::register_manager(Manager& manager)

@@ -265,7 +265,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::keyPressEvent(QKeyEvent* e)
 {
-  if (Application::instance().dispatch_key(e->key(), e->modifiers())) {
+  if (::contains(Application::keyboard_modifiers, e->key())) {
+    QMainWindow::keyPressEvent(e);
+  } else if (!Application::instance().dispatch_key(e->key(), e->modifiers())) {
     QMainWindow::keyPressEvent(e);
   }
 }
