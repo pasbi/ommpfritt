@@ -40,6 +40,8 @@ private:
     QPoint map_to_global(const QPoint &pos) const override;
     void enable_context_menu() override;
     void disable_context_menu() override;
+    QRect track_rect(Track &track) override;
+    QRect owner_rect(AbstractPropertyOwner &owner) override;
   private:
     DopeSheetView& m_self;
   };

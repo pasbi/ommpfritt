@@ -43,15 +43,41 @@ public:
   bool view_event(QEvent& event);
 
   virtual QPoint map_to_global(const QPoint& pos) const = 0;
+
+  /**
+   * @brief update issues a redraw of the gui
+   */
   virtual void update() = 0;
+
+  /**
+   * @brief disable_context_menu disable the context menu (right click) in the view
+   */
   virtual void disable_context_menu() = 0;
+
+  /**
+   * @brief enable_context_menu enables the context menu (right click) in the view
+   */
   virtual void enable_context_menu() = 0;
+
+  /**
+   * @brief track_rect returns the geometry of the area represented by the given track.
+   *  If @code track is not visible in the view, an empty rect is returned.
+   */
+  virtual QRect track_rect(Track& track) = 0;
+
+  /**
+   * @brief owner_rect returs the geometry of the area represented by the given owner.
+   *  If @code owner is not visible in the view or the view does not displays owners at all, an
+   *  empty rect is returned.
+   */
+  virtual QRect owner_rect(AbstractPropertyOwner& owner) = 0;
 
 Q_SIGNALS:
   void current_frame_changed(int);
 
 private:
   std::map<Track*, std::set<int>> m_selection;
+  std::map<Track*, std::set<int>> m_rubber_band_selection;
   double pixel_to_frame(double pixel) const;
   double frame_to_pixel(double frame) const;
   double normalized_to_frame(double pixel) const;
@@ -77,7 +103,7 @@ private:
   QPoint m_rubber_band_origin;
   QPoint m_rubber_band_corner;
   bool m_rubber_band_visible = false;
-
+  QRect rubber_band() const;
 
 };
 

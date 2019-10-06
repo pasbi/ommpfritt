@@ -193,9 +193,8 @@ void TimelineCanvas::draw_rubber_band(QPainter& painter) const
     pen.setWidth(2.0);
     pen.setColor(color.darker());
     painter.setPen(pen);
-    const QRect rect = QRect(m_rubber_band_corner, m_rubber_band_origin).normalized();
-    painter.fillRect(rect, color);
-    painter.drawRect(rect);
+    painter.fillRect(rubber_band(), color);
+    painter.drawRect(rubber_band());
     painter.restore();
   }
 }
@@ -299,6 +298,38 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
       m_rubber_band_corner = QPoint(std::clamp<int>(pos.x(), rect.left(), rect.right()),
                                     std::clamp<int>(pos.y(), rect.top(), rect.bottom()));
     }
+
+    const int left = pixel_to_frame(rubber_band().left() - rect.left()) + 0.5;
+    const int right = pixel_to_frame(rubber_band().right() - rect.left()) + 0.5;
+
+    for (Property* property : animator.accelerator().properties()) {
+      Track& track = *property->track();
+      if (track_rect(track).intersects(rubber_band())) {
+        m_rubber_band_selection[&track].clear();
+        for (int frame : track.key_frames()) {
+          if (left <= frame && frame <= right) {
+            m_rubber_band_selection[&track].insert(frame);
+            break;
+          }
+        }
+      } else {
+        m_rubber_band_selection.erase(&track);
+      }
+    }
+    for (AbstractPropertyOwner* owner : animator.accelerator().owners()) {
+      if (owner_rect(*owner).intersects(rubber_band())) {
+        for (Property* property : animator.accelerator().properties(*owner)) {
+          Track& track = *property->track();
+          for (int frame : track.key_frames()) {
+            if (left <= frame && frame <= right) {
+              m_rubber_band_selection[&track].insert(frame);
+              break;
+            }
+          }
+        }
+      }
+    }
+
     update();
   } else if (m_dragging_time) {
     Q_EMIT current_frame_changed(std::round(pixel_to_frame(event.pos().x() - rect.left())));
@@ -311,6 +342,10 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
 bool TimelineCanvas::mouse_release(QMouseEvent& event)
 {
   m_rubber_band_visible = false;
+  for (auto&& [track, selection] : m_rubber_band_selection) {
+    m_selection[track].insert(selection.begin(), selection.end());
+  }
+  m_rubber_band_selection.clear();
   const int frame = std::round(pixel_to_frame(event.pos().x() - rect.left()));
   if (m_shift == 0 && !m_move_aborted && m_dragging_knots) {
     if (!(event.modifiers() & Qt::ShiftModifier)) {
@@ -354,6 +389,11 @@ bool TimelineCanvas::key_press(QKeyEvent& event)
   }
 }
 
+QRect TimelineCanvas::rubber_band() const
+{
+  return QRect(m_rubber_band_corner, m_rubber_band_origin).normalized();
+}
+
 double TimelineCanvas::pixel_to_frame(double pixel) const
 {
   return pixel / ppfs() + left_frame;
@@ -392,8 +432,17 @@ double TimelineCanvas::footer_y() const
 
 bool TimelineCanvas::is_selected(int frame) const
 {
-  return std::any_of(tracks.begin(), tracks.end(), [this, frame](Track* track) {
-    if (const auto it = m_selection.find(track); it != m_selection.end()) {
+  const auto relevant_tracks = ::filter_if(tracks, [frame](Track* track) {
+      return track->has_keyframe(frame);
+  });
+  if (relevant_tracks.empty()) {
+    return false;
+  }
+
+  return std::all_of(relevant_tracks.begin(), relevant_tracks.end(), [this, frame](Track* track) {
+    if (auto it = m_selection.find(track); it != m_selection.end()) {
+      return ::contains(it->second, frame);
+    } else if (auto it = m_rubber_band_selection.find(track); it != m_rubber_band_selection.end()) {
       return ::contains(it->second, frame);
     } else {
       return false;

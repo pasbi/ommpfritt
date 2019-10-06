@@ -97,6 +97,22 @@ void Slider::TimelineCanvasC::enable_context_menu()
   m_self.setContextMenuPolicy(Qt::DefaultContextMenu);
 }
 
+QRect Slider::TimelineCanvasC::track_rect(Track& track)
+{
+  if (::contains(tracks, &track)) {
+    return m_self.rect();
+  } else {
+    return QRect();
+  }
+}
+
+QRect Slider::TimelineCanvasC::owner_rect(AbstractPropertyOwner& owner)
+{
+  // this view never shows owner.
+  Q_UNUSED(owner)
+  return QRect();
+}
+
 void Slider::TimelineCanvasC::update_tracks(const std::set<AbstractPropertyOwner*>& selection)
 {
   tracks.clear();

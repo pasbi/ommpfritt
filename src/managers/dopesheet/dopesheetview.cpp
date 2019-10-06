@@ -9,6 +9,7 @@
 #include "animation/track.h"
 #include "properties/property.h"
 #include "managers/dopesheet/dopesheetheader.h"
+#include "aspects/abstractpropertyowner.h"
 
 namespace omm
 {
@@ -114,6 +115,18 @@ void DopeSheetView::TimelineCanvasC::enable_context_menu()
 void DopeSheetView::TimelineCanvasC::disable_context_menu()
 {
   m_self.setContextMenuPolicy(Qt::DefaultContextMenu);
+}
+
+QRect DopeSheetView::TimelineCanvasC::track_rect(Track& track)
+{
+  const QModelIndex index = m_self.m_animator.index(track.property());
+  return m_self.visualRect(index.siblingAtColumn(1));
+}
+
+QRect DopeSheetView::TimelineCanvasC::owner_rect(AbstractPropertyOwner& owner)
+{
+  const QModelIndex index = m_self.m_animator.index(owner);
+  return m_self.visualRect(index.siblingAtColumn(1));
 }
 
 }  // namespace

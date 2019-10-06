@@ -36,6 +36,8 @@ private:
     void update() override;
     void disable_context_menu() override;
     void enable_context_menu() override;
+    QRect track_rect(Track &track) override;
+    QRect owner_rect(AbstractPropertyOwner &owner) override;
   private:
     Slider& m_self;
     void update_tracks(const std::set<AbstractPropertyOwner*>& selection);
