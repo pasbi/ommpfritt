@@ -65,7 +65,6 @@ public:
               const QModelIndex &index ) const override;
   QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
-  static constexpr int width = 40;
   bool on_mouse_button_press(QMouseEvent& event);
   void on_mouse_move(QMouseEvent& event);
   void on_mouse_release(QMouseEvent& event);

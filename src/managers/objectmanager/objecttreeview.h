@@ -24,6 +24,7 @@ public:
   std::set<AbstractPropertyOwner*> selected_tags() const;
 
   Scene& scene() const;
+  static constexpr int row_height = 20;
 
 public Q_SLOTS:
   void set_selection(const std::set<AbstractPropertyOwner*>& selected_items);

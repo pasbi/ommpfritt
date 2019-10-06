@@ -165,7 +165,7 @@ Tag* TagsItemDelegate::tag_before(const QModelIndex& index, QPoint pos) const
 
 QSize TagsItemDelegate::tag_icon_size() const
 {
-  return QSize(32, 32);
+  return QSize(ObjectTreeView::row_height, ObjectTreeView::row_height);
 }
 
 }  // namespace omm

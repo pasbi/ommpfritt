@@ -134,6 +134,7 @@ void ObjectQuickAccessDelegate::
 paint(QPainter *painter, const QStyleOptionViewItem &, const QModelIndex &index) const
 {
   painter->save();
+  painter->setRenderHint(QPainter::HighQualityAntialiasing);
   const auto rect = m_view.visualRect(index);
   painter->translate(rect.topLeft());
   painter->scale(rect.width(), rect.height());

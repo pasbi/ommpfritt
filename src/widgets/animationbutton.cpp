@@ -131,7 +131,7 @@ void AnimationButton::paintEvent(QPaintEvent *event)
 
   const QRectF rect = this->rect();
   auto centered = [rect](const double relative_radius) {
-    const QSizeF absolute_radius = relative_radius * rect.size() / 2.0;
+    const QSizeF absolute_radius = relative_radius * rect.size() / 3.0;
     const QPointF tl = rect.center() - QPointF(absolute_radius.width(), absolute_radius.height());
     return QRectF(tl, 2*absolute_radius);
   };
@@ -141,19 +141,19 @@ void AnimationButton::paintEvent(QPaintEvent *event)
   if (!has_track()) {
     // no track, hence no key
     pen.setColor(Qt::black);
-    pen.setWidthF(pen_width_base * 0.2);
+    pen.setWidthF(pen_width_base * 0.1);
     painter.setPen(pen);
-    painter.drawEllipse(centered(0.8));
+    painter.drawEllipse(centered(0.3));
   } else if (!has_key()) {
     // track but no key
     pen.setColor(Qt::red);
-    pen.setWidthF(pen_width_base * 0.2);
+    pen.setWidthF(pen_width_base * 0.1);
     painter.setPen(pen);
     painter.drawEllipse(centered(0.8));
   } else {
     // has key
     pen.setColor(Qt::red);
-    pen.setWidthF(pen_width_base * 0.2);
+    pen.setWidthF(pen_width_base * 0.1);
     painter.setPen(pen);
     painter.drawEllipse(centered(0.8));
     QPainterPath ellipse;

@@ -104,6 +104,7 @@ PropertyManager::PropertyManager(Scene& scene)
   auto layout = std::make_unique<QVBoxLayout>();
   m_layout = layout.get();
   category_widget->setLayout(layout.release());
+  m_layout->setContentsMargins(0, 0, 6, 0);
   m_scroll_area->setWidget(category_widget.release());
   main_layout->addWidget(m_scroll_area.get());
 
@@ -118,6 +119,7 @@ PropertyManager::PropertyManager(Scene& scene)
           this, SLOT(activate_tabs(const std::set<int>&)));
   connect(&scene.message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
+  m_scroll_area->setFrameShape(QFrame::NoFrame);
 }
 
 PropertyManager::~PropertyManager()

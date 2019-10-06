@@ -34,7 +34,7 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
 {
   setItemDelegateForColumn(1, m_object_quick_access_delegate.get());
   header()->setSectionResizeMode(1, QHeaderView::Fixed);
-  header()->resizeSection(1, ObjectQuickAccessDelegate::width);
+  header()->resizeSection(1, row_height);
 
   setItemDelegateForColumn(2, m_tags_item_delegate.get());
 
@@ -42,7 +42,7 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
   setSelectionBehavior(QAbstractItemView::SelectItems);
   setAutoExpandDelay(200);
 
-  setIconSize(QSize(24, 24));
+  setIconSize(QSize(row_height, row_height));
   connect(&model, &ObjectTree::expand_item, [this](const QModelIndex& index) {
     setExpanded(index, true);
   });
@@ -116,7 +116,6 @@ void ObjectTreeView::mousePressEvent(QMouseEvent* e)
 
 void ObjectTreeView::mouseReleaseEvent(QMouseEvent *e)
 {
-  LINFO << "OTV: mouse-release";
   // see ObjectTreeView::mousePressEvent case 1
   setDragEnabled(true);
   const int column = indexAt(e->pos()).column();
