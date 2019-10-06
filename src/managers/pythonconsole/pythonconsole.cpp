@@ -15,7 +15,7 @@ namespace omm
 {
 
 PythonConsole::PythonConsole(Scene& scene)
-  : Manager(QCoreApplication::translate("any-context", "PythonConsole"), scene, make_menu_bar())
+  : Manager(QCoreApplication::translate("any-context", "PythonConsole"), scene)
 {
   setObjectName(TYPE);
 

@@ -27,7 +27,7 @@ public:
   Scene& scene() const;
 
 protected:
-  Manager(const QString& title, Scene& scene, std::unique_ptr<QWidget> menu_bar = nullptr);
+  Manager(const QString& title, Scene& scene);
 
   Scene& m_scene;
   void set_widget(std::unique_ptr<QWidget> widget);

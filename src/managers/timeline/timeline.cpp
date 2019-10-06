@@ -14,8 +14,6 @@ TimeLine::TimeLine(Scene &scene)
 {
   setObjectName(TYPE);
 
-  widget()->layout()->setContentsMargins(9, 0, 9, 9);
-
   auto header = std::make_unique<TimeLineTitleBar>(*this);
   m_header = header.get();
   setTitleBarWidget(header.release());
