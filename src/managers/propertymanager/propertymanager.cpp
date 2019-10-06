@@ -127,34 +127,6 @@ PropertyManager::~PropertyManager()
   clear();
 }
 
-std::unique_ptr<QWidget> PropertyManager::make_menu_bar()
-{
-//  auto menu_bar = std::make_unique<QMenuBar>();
-//  auto user_properties_menu = menu_bar->addMenu(QObject::tr("user properties", "PropertyManager"));
-//  const auto exec_user_property_dialog = [this]() {
-//    auto dialog = UserPropertyDialog(**m_current_selection.begin(), this);
-//    dialog.exec();
-//  };
-//  m_manage_user_properties_action = &action( *user_properties_menu,
-//                                             QObject::tr("edit ...", "PropertyManager"),
-//                                             exec_user_property_dialog );
-//  m_manage_user_properties_action->setEnabled(false);
-
-//  auto lock_button = std::make_unique<QPushButton>();
-//  lock_button->setFixedSize(24, 24);
-//  lock_button->setText("L");
-//  lock_button->setCheckable(true);
-//  connect(lock_button.get(), &QPushButton::toggled, [this](bool checked) { set_locked(checked); });
-
-//  auto container = std::make_unique<QWidget>();
-//  auto layout = std::make_unique<QHBoxLayout>();
-//  layout->addWidget(menu_bar.release());
-//  layout->addWidget(lock_button.release());
-//  container->setLayout(layout.release());
-//  return container;
-  return nullptr;
-}
-
 void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
   if (!m_is_locked) {

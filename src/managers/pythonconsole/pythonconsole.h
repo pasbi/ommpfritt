@@ -22,7 +22,6 @@ public:
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PythonConsole");
   std::string type() const override;
-  void populate_menu(QMenu& menu) override;
   bool perform_action(const std::string &name) override;
 
 protected:

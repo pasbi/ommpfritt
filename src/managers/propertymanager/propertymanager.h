@@ -33,7 +33,6 @@ public:
 
 private:
   OrderedMap<std::string, PropertyManagerTab> m_tabs;
-  std::unique_ptr<QWidget> make_menu_bar();
   std::set<AbstractPropertyOwner*> m_current_selection;
   std::string make_window_title() const;
   bool m_is_locked = false;

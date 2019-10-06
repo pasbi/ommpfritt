@@ -84,16 +84,6 @@ void PythonConsole ::on_output(const void* associated_item, std::string text, St
   }
 }
 
-std::unique_ptr<QMenuBar> PythonConsole::make_menu_bar()
-{
-  auto menu_bar = std::make_unique<QMenuBar>();
-
-  // auto py_menu = menu_bar->addMenu(tr("Python");
-  // connect(py_menu->addAction(tr("run")), &QAction::triggered, this, &PythonConsole::run);
-
-  return menu_bar;
-}
-
 void PythonConsole::eval()
 {
   const auto code = m_commandline->code();
@@ -171,12 +161,6 @@ void PythonConsole::push_command(const std::string& command)
   m_command_stack.erase(m_command_stack_pointer, m_command_stack.end());
   m_command_stack.push_back(command);
   m_command_stack_pointer = m_command_stack.end();
-}
-
-void PythonConsole::populate_menu(QMenu& menu)
-{
-  auto& key_bindings = Application::instance().key_bindings;
-  menu.addAction(key_bindings.make_action(*this, "clear python console").release());
 }
 
 bool PythonConsole::perform_action(const std::string& name)
