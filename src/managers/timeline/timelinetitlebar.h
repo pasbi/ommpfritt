@@ -1,21 +1,18 @@
 #pragma once
 
-#include <QWidget>
-#include <memory>
+#include "managers/managertitlebar.h"
 
 namespace Ui { class TimeLineTitleBar; }
-class QDockWidget;
 
 namespace omm
 {
-class TimeLineTitleBar : public QWidget
+class TimeLineTitleBar : public ManagerTitleBar
 {
   Q_OBJECT
 public:
-  explicit TimeLineTitleBar(QDockWidget& parent);
+  explicit TimeLineTitleBar(Manager& parent);
   ~TimeLineTitleBar();
   ::Ui::TimeLineTitleBar* ui() const { return m_ui.get(); }
-  QSize sizeHint() const override { return QSize(0, 24); }
 
 private:
   std::unique_ptr<::Ui::TimeLineTitleBar> m_ui;

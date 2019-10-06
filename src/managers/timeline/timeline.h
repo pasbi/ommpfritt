@@ -25,7 +25,7 @@ public Q_SLOTS:
 
 private:
   Slider* m_slider;
-  TimeLineTitleBar* m_header;
+  TimeLineTitleBar* m_title_bar;
 
 };
 
