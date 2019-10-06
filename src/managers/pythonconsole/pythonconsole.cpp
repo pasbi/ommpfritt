@@ -10,6 +10,7 @@
 #include "widgets/referencelineedit.h"
 #include "mainwindow/application.h"
 #include <QCoreApplication>
+#include "managers/pythonconsole/pythonconsoletitlebar.h"
 
 namespace omm
 {
@@ -18,6 +19,8 @@ PythonConsole::PythonConsole(Scene& scene)
   : Manager(QCoreApplication::translate("any-context", "PythonConsole"), scene)
 {
   setObjectName(TYPE);
+
+  setTitleBarWidget(std::make_unique<PythonConsoleTitleBar>(*this).release());
 
   auto widget = std::make_unique<QWidget>();
   auto layout = std::make_unique<QVBoxLayout>(widget.get());
@@ -76,7 +79,7 @@ PythonConsole::~PythonConsole()
   delete static_cast<pybind11::dict*>(m_locals);
 }
 
-void PythonConsole ::on_output(const void* associated_item, std::string text, Stream stream)
+void PythonConsole::on_output(const void* associated_item, std::string text, Stream stream)
 {
   if (accept(associated_item)) {
     m_output->put(text, stream);
@@ -165,8 +168,14 @@ void PythonConsole::push_command(const std::string& command)
 
 bool PythonConsole::perform_action(const std::string& name)
 {
-  LINFO << name;
-  return false;
+  if (name == "clear console") {
+    clear();
+  } else if (name == "evaluate") {
+    eval();
+  } else {
+    return false;
+  }
+  return true;
 }
 
 std::string PythonConsole::type() const { return TYPE; }

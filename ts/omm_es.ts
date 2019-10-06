@@ -1055,6 +1055,11 @@ Borrar la selección de todos modos?</translation>
         <source>Move knots</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Python</source>
+        <comment>PythonConsole</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
