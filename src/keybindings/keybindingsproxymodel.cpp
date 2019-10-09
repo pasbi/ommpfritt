@@ -1,5 +1,6 @@
 #include "keybindings/keybindingsproxymodel.h"
 #include "keybindings/keybindings.h"
+#include <QKeySequence>
 
 namespace omm
 {
@@ -16,13 +17,13 @@ bool KeyBindingsProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
     return true;
   } else {
     const QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
-    auto* ptr = static_cast<KeyBindingTreeItem*>(index.internalPointer());
-    if (ptr->is_context()) {
-      return true;  // never filter context nodes
+    const auto* ptr = static_cast<const SettingsTreeItem*>(index.internalPointer());
+    if (ptr->is_group()) {
+      return rowCount(mapFromSource(index)) > 0;
     } else {
-      const auto* key_binding = static_cast<const KeyBinding*>(ptr);
-      const auto name = QString::fromStdString(key_binding->name);
-      const auto sequence = key_binding->key_sequence().toString(QKeySequence::NativeText);
+      const auto* value = static_cast<const SettingsTreeValueItem*>(ptr);
+      const auto name = QString::fromStdString(value->name);
+      const auto sequence = QKeySequence(QString::fromStdString(value->value())).toString(QKeySequence::NativeText);
       const bool name_matches = name.contains(QString::fromStdString(m_action_name_filter),
                                               Qt::CaseInsensitive);
       const bool sequence_matches = sequence.contains(QString::fromStdString(m_action_sequence_filter),

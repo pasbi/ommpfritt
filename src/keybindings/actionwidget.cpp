@@ -2,7 +2,7 @@
 
 #include <QLabel>
 #include <QHBoxLayout>
-#include "keybindings/keybinding.h"
+#include <QResizeEvent>
 #include <memory>
 #include "mainwindow/application.h"
 #include <QApplication>
@@ -10,7 +10,7 @@
 namespace omm
 {
 
-ActionWidget::ActionWidget(QWidget* parent, const KeyBinding& key_binding)
+ActionWidget::ActionWidget(QWidget* parent, const SettingsTreeValueItem& key_binding)
   : QWidget(parent)
 {
   auto name_label = std::make_unique<QLabel>();
@@ -38,14 +38,16 @@ ActionWidget::ActionWidget(QWidget* parent, const KeyBinding& key_binding)
 
   setLayout(layout.release());
   setMouseTracking(true);
-  connect(&key_binding, &KeyBinding::key_sequence_changed, this, [this](const QKeySequence& s) {
-    m_shortcut_label->setText(s.toString(QKeySequence::NativeText));
+  connect(&key_binding, &SettingsTreeValueItem::value_changed, this, [this](const std::string& s)
+  {
+    m_shortcut_label->setText(QKeySequence(QString::fromStdString(s)).toString(QKeySequence::NativeText));
     QResizeEvent resize_event(QSize(), m_shortcut_label->parentWidget()->size());
     qApp->sendEvent(m_shortcut_label->parent(), &resize_event);
     m_shortcut_label->parentWidget()->adjustSize();
     m_shortcut_label->parentWidget()->updateGeometry();
   });
-  m_shortcut_label->setText(key_binding.key_sequence().toString(QKeySequence::NativeText));
+  const QKeySequence sequence(QString::fromStdString(key_binding.value()));
+  m_shortcut_label->setText(sequence.toString(QKeySequence::NativeText));
   m_name_label->setText(QCoreApplication::translate("any-context", key_binding.name.c_str()));
 }
 

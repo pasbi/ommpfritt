@@ -8,6 +8,8 @@
 #include <QLocale>
 #include <QMessageBox>
 #include <QApplication>
+#include <QTextStream>
+#include "logging.h"
 
 namespace omm
 {

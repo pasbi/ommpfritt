@@ -36,7 +36,7 @@ KeyBindingsDialog::KeyBindingsDialog(KeyBindings& key_bindings, QWidget* parent)
   settings.beginGroup(KEYBINDINGS_DIALOG_SETTINGS_GROUP);
   restoreGeometry(settings.value(GEOMETRY_SETTINGS_KEY).toByteArray());
   settings.endGroup();
-  m_revert_cache = m_key_bindings.key_sequences();
+  key_bindings.store();
 }
 
 KeyBindingsDialog::~KeyBindingsDialog()
@@ -49,7 +49,7 @@ KeyBindingsDialog::~KeyBindingsDialog()
 
 void KeyBindingsDialog::reject()
 {
-  m_key_bindings.set_key_sequences(m_revert_cache);
+  m_key_bindings.restore();
   QDialog::reject();
 }
 

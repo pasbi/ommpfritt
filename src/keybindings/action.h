@@ -1,23 +1,22 @@
 #pragma once
 
 #include <QWidgetAction>
-#include "keybindings/keybinding.h"
 
 namespace omm
 {
 
 class ActionWidget;
-class KeyBinding;
+class SettingsTreeValueItem;
 
 class Action : public QWidgetAction
 {
 public:
-  explicit Action(const KeyBinding& binding);
+  explicit Action(const SettingsTreeValueItem& binding);
   QWidget* createWidget(QWidget* parent) override;
   void set_highlighted(bool h);
 
 private:
-  const KeyBinding& m_key_binding;
+  const SettingsTreeValueItem& m_key_binding;
   ActionWidget* m_action_widget;
 };
 

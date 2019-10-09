@@ -7,6 +7,7 @@
 #include "managers/objectmanager/objecttreeview.h"
 #include "renderers/style.h"
 #include "objects/object.h"
+#include <QTimer>
 
 namespace omm
 {

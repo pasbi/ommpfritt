@@ -7,6 +7,8 @@
 #include "keybindings/commandinterface.h"
 #include <Qt>
 #include "mainwindow/iconprovider.h"
+#include <QTimer>
+#include <QKeySequence>
 
 class QApplication;
 

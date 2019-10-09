@@ -29,6 +29,8 @@
 #include "mainwindow/resourcemenu.h"
 #include "ui_aboutdialog.h"
 #include "scene/history/historymodel.h"
+#include "keybindings/commandinterface.h"
+#include "mainwindow/application.h"
 
 namespace
 {

@@ -7,6 +7,7 @@
 
 #include "mainwindow/mainwindow.h"
 #include "abstractfactory.h"
+#include "keybindings/commandinterface.h"
 
 namespace omm
 {

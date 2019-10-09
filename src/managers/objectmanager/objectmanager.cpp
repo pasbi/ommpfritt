@@ -11,6 +11,7 @@
 #include "scene/messagebox.h"
 #include "mainwindow/actions.h"
 #include "keybindings/menu.h"
+#include <QContextMenuEvent>
 
 namespace omm
 {

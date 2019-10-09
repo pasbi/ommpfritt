@@ -5,6 +5,8 @@
 #include <QMainWindow>
 #include "keybindings/keybindings.h"
 
+class QSettings;
+
 namespace omm
 {
 

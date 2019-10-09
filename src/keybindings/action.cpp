@@ -1,20 +1,16 @@
 #include "keybindings/action.h"
-#include <QLabel>
 #include <memory>
-#include <QHBoxLayout>
-#include "keybindings/keybinding.h"
-#include <QEvent>
+#include "aspects/settingstreeitem.h"
 #include <QWidget>
-#include <QCoreApplication>
 #include "common.h"
 #include "logging.h"
-#include "mainwindow/application.h"
 #include "keybindings/actionwidget.h"
 
 namespace omm
 {
 
-Action::Action(const KeyBinding& key_binding) : QWidgetAction(nullptr), m_key_binding(key_binding)
+Action::Action(const SettingsTreeValueItem& key_binding)
+  : QWidgetAction(nullptr), m_key_binding(key_binding)
 {
 }
 
