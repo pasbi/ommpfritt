@@ -1,4 +1,5 @@
-#include "aspects/settingstree.h"
+#include "preferences/preferencestree.h"
+#include <QCoreApplication>
 #include <QFile>
 #include <QSettings>
 #include "logging.h"
@@ -6,26 +7,28 @@
 namespace omm
 {
 
-SettingsTree::SettingsTree(const std::string filename)
+PreferencesTree::PreferencesTree(const std::string filename)
 {
   if (!load_from_file(filename)) {
     LERROR << "Failed to read file '" << filename << "'.";
     LFATAL("Failed to read default settings file.");
+  } else {
+    LINFO << "initialized SettingTree from '" << filename << "': " << m_groups.size() << " groups.";
   }
 }
 
-SettingsTree::~SettingsTree()
+PreferencesTree::~PreferencesTree()
 {
 
 }
 
-void SettingsTree::save_in_qsettings(const std::string& q_settings_group) const
+void PreferencesTree::save_in_qsettings(const std::string& q_settings_group) const
 {
   QSettings settings;
   settings.beginGroup(QString::fromStdString(q_settings_group));
-  for (const std::unique_ptr<SettingsTreeGroupItem>& group : m_groups) {
+  for (const std::unique_ptr<PreferencesTreeGroupItem>& group : m_groups) {
     settings.beginGroup(QString::fromStdString(group->name));
-    for (const std::unique_ptr<SettingsTreeValueItem>& value : group->values) {
+    for (const std::unique_ptr<PreferencesTreeValueItem>& value : group->values) {
       settings.setValue(QString::fromStdString(value->name),
                         QString::fromStdString(value->value()));
     }
@@ -34,16 +37,16 @@ void SettingsTree::save_in_qsettings(const std::string& q_settings_group) const
   settings.endGroup();
 }
 
-void SettingsTree::load_from_qsettings(const std::string& q_settings_group)
+void PreferencesTree::load_from_qsettings(const std::string& q_settings_group)
 {
   const auto settings_group = QString::fromStdString(q_settings_group);
   beginResetModel();
   QSettings settings;
   if (settings.childGroups().contains(settings_group)) {
     settings.beginGroup(settings_group);
-    for (std::unique_ptr<SettingsTreeGroupItem>& group : m_groups) {
+    for (std::unique_ptr<PreferencesTreeGroupItem>& group : m_groups) {
       settings.beginGroup(QString::fromStdString(group->name));
-      for (std::unique_ptr<SettingsTreeValueItem>& value_item : group->values) {
+      for (std::unique_ptr<PreferencesTreeValueItem>& value_item : group->values) {
         const QString key = QString::fromStdString(value_item->name);
         if (settings.contains(key)) {
           const QString value = settings.value(key).toString();
@@ -59,7 +62,7 @@ void SettingsTree::load_from_qsettings(const std::string& q_settings_group)
   endResetModel();
 }
 
-bool SettingsTree::save_to_file(const std::string& filename) const
+bool PreferencesTree::save_to_file(const std::string& filename) const
 {
   QFile file(QString::fromStdString(filename));
   if (file.open(QIODevice::WriteOnly)) {
@@ -80,7 +83,7 @@ bool SettingsTree::save_to_file(const std::string& filename) const
   return true;
 }
 
-bool SettingsTree::load_from_file(const std::string& filename)
+bool PreferencesTree::load_from_file(const std::string& filename)
 {
   const bool insert_mode = m_groups.empty();
   QFile file(QString::fromStdString(filename));
@@ -113,15 +116,15 @@ bool SettingsTree::load_from_file(const std::string& filename)
       const auto name = tokens[0].trimmed().toStdString();
       const auto value = tokens[1].trimmed().toStdString();
       auto git = std::find_if(m_groups.begin(), m_groups.end(),
-                              [group_name](const std::unique_ptr<SettingsTreeGroupItem>& group)
+                              [group_name](const std::unique_ptr<PreferencesTreeGroupItem>& group)
       {
         return group->name == group_name;
       });
 
-      SettingsTreeGroupItem* group = nullptr;
+      PreferencesTreeGroupItem* group = nullptr;
       if (git == m_groups.end()) {
         if (insert_mode) {
-          m_groups.push_back(std::make_unique<SettingsTreeGroupItem>(group_name));
+          m_groups.push_back(std::make_unique<PreferencesTreeGroupItem>(group_name));
         } else {
           LWARNING << "Ignore unexpected group '" << group_name << "'.";
           goto line_loop;
@@ -132,7 +135,7 @@ bool SettingsTree::load_from_file(const std::string& filename)
       }
 
       const auto vit = std::find_if(group->values.begin(), group->values.end(),
-                                    [name](const std::unique_ptr<SettingsTreeValueItem>& value_item)
+                                    [name](const std::unique_ptr<PreferencesTreeValueItem>& value_item)
       {
         return value_item->name == name;
       });
@@ -143,7 +146,7 @@ bool SettingsTree::load_from_file(const std::string& filename)
                  << "keep '" << (*vit)->value() << "'.";
         LFATAL("Duplicate key sequence.");
       } else {
-        group->values.push_back(std::make_unique<SettingsTreeValueItem>(group->name, name, value));
+        group->values.push_back(std::make_unique<PreferencesTreeValueItem>(group->name, name, value));
       }
     } else {
       LWARNING << "line '" << line << "' ignored since no group is active.";
@@ -152,7 +155,7 @@ bool SettingsTree::load_from_file(const std::string& filename)
   return true;
 }
 
-SettingsTreeGroupItem* SettingsTree::group(const std::string& name) const
+PreferencesTreeGroupItem* PreferencesTree::group(const std::string& name) const
 {
   const auto git = std::find_if(m_groups.begin(), m_groups.end(), [name](const auto& group) {
     return group->name == name;
@@ -164,12 +167,12 @@ SettingsTreeGroupItem* SettingsTree::group(const std::string& name) const
   }
 }
 
-std::vector<SettingsTreeGroupItem*> SettingsTree::groups() const
+std::vector<PreferencesTreeGroupItem*> PreferencesTree::groups() const
 {
-  return ::transform<SettingsTreeGroupItem*>(m_groups, [](const auto& g) { return g.get(); });
+  return ::transform<PreferencesTreeGroupItem*>(m_groups, [](const auto& g) { return g.get(); });
 }
 
-SettingsTreeValueItem* SettingsTree::value(const std::string group_name, const std::string& key) const
+PreferencesTreeValueItem* PreferencesTree::value(const std::string group_name, const std::string& key) const
 {
    const auto* group = this->group(group_name);
    const auto vit = std::find_if(group->values.begin(), group->values.end(),
@@ -180,25 +183,25 @@ SettingsTreeValueItem* SettingsTree::value(const std::string group_name, const s
    return vit->get();
 }
 
-void SettingsTree::store()
+void PreferencesTree::store()
 {
-  for (const std::unique_ptr<SettingsTreeGroupItem>& group : m_groups) {
-    for (const std::unique_ptr<SettingsTreeValueItem>& value : group->values) {
+  for (const std::unique_ptr<PreferencesTreeGroupItem>& group : m_groups) {
+    for (const std::unique_ptr<PreferencesTreeValueItem>& value : group->values) {
       m_stored_values[group->name][value->name] = value->value();
     }
   }
 }
 
-void SettingsTree::restore()
+void PreferencesTree::restore()
 {
-  for (const std::unique_ptr<SettingsTreeGroupItem>& group : m_groups) {
-    for (const std::unique_ptr<SettingsTreeValueItem>& value : group->values) {
+  for (const std::unique_ptr<PreferencesTreeGroupItem>& group : m_groups) {
+    for (const std::unique_ptr<PreferencesTreeValueItem>& value : group->values) {
       value->set_value(m_stored_values[group->name][value->name]);
     }
   }
 }
 
-QModelIndex SettingsTree::group_index(const std::string& group_name) const
+QModelIndex PreferencesTree::group_index(const std::string& group_name) const
 {
   const auto git = std::find_if(m_groups.begin(), m_groups.end(), [group_name](const auto& group) {
     return group->name == group_name;
@@ -207,10 +210,10 @@ QModelIndex SettingsTree::group_index(const std::string& group_name) const
   return index(row, 0, QModelIndex());
 }
 
-QModelIndex SettingsTree::value_index(const std::string& group_name, const std::string& key) const
+QModelIndex PreferencesTree::value_index(const std::string& group_name, const std::string& key) const
 {
   const QModelIndex parent_index = group_index(group_name);
-  SettingsTreeGroupItem& group = *m_groups.at(parent_index.row());
+  PreferencesTreeGroupItem& group = *m_groups.at(parent_index.row());
   const auto vit = std::find_if(group.values.begin(), group.values.end(), [key](const auto& value) {
     return value->name == key;
   });
@@ -218,28 +221,28 @@ QModelIndex SettingsTree::value_index(const std::string& group_name, const std::
   return index(row, 0, parent_index);
 }
 
-QModelIndex SettingsTree::index(int row, int column, const QModelIndex& parent) const
+QModelIndex PreferencesTree::index(int row, int column, const QModelIndex& parent) const
 {
-  SettingsTreeItem* internal_pointer = nullptr;
+  PreferencesTreeItem* internal_pointer = nullptr;
   if (!parent.isValid()) {
     internal_pointer = m_groups.at(row).get();
   } else {
-    auto* ptr = static_cast<const SettingsTreeItem*>(parent.internalPointer());
+    auto* ptr = static_cast<const PreferencesTreeItem*>(parent.internalPointer());
     assert (ptr->is_group());
-    const auto* group = static_cast<const SettingsTreeGroupItem*>(ptr);
+    const auto* group = static_cast<const PreferencesTreeGroupItem*>(ptr);
     internal_pointer = group->values.at(row).get();
   }
   return createIndex(row, column, internal_pointer);
 }
 
-QModelIndex SettingsTree::parent(const QModelIndex& child) const
+QModelIndex PreferencesTree::parent(const QModelIndex& child) const
 {
   assert(child.isValid());
-  if (static_cast<SettingsTreeItem*>(child.internalPointer())->is_group()) {
+  if (static_cast<PreferencesTreeItem*>(child.internalPointer())->is_group()) {
     return QModelIndex();
   } else {
-    auto* const ptr = static_cast<SettingsTreeItem*>(child.internalPointer());
-    auto* value_item  = static_cast<SettingsTreeValueItem*>(ptr);
+    auto* const ptr = static_cast<PreferencesTreeItem*>(child.internalPointer());
+    auto* value_item  = static_cast<PreferencesTreeValueItem*>(ptr);
     const auto it = std::find_if(m_groups.begin(), m_groups.end(), [&](const auto& group) {
       return group->name == value_item->group;
     });
@@ -249,10 +252,10 @@ QModelIndex SettingsTree::parent(const QModelIndex& child) const
   }
 }
 
-int SettingsTree::rowCount(const QModelIndex& parent) const
+int PreferencesTree::rowCount(const QModelIndex& parent) const
 {
   if (parent.isValid()) {
-    SettingsTreeItem* ptr = static_cast<SettingsTreeItem*>(parent.internalPointer());
+    PreferencesTreeItem* ptr = static_cast<PreferencesTreeItem*>(parent.internalPointer());
     if (ptr->is_group()) {
       return group(ptr->name)->values.size();
     } else {
@@ -261,6 +264,61 @@ int SettingsTree::rowCount(const QModelIndex& parent) const
   } else {
     return m_groups.size();
   }
+}
+
+int PreferencesTree::columnCount(const QModelIndex& parent) const
+{
+  Q_UNUSED(parent)
+  return 2;
+}
+
+QVariant PreferencesTree::data(const QModelIndex& index, int role) const
+{
+  if (!index.isValid()) {
+    return QVariant();
+  }
+
+  const auto* const ptr = static_cast<const PreferencesTreeItem*>(index.internalPointer());
+  if (ptr->is_group()) {
+    const auto& group = *static_cast<const PreferencesTreeGroupItem*>(ptr);
+    switch (role) {
+    case Qt::DisplayRole:
+      switch (index.column()) {
+      case 0:
+        return QString::fromStdString(group.name);
+      default:
+        return QVariant();
+      }
+    default:
+      return QVariant();
+    }
+  } else {
+    const auto& value = *static_cast<const PreferencesTreeValueItem*>(ptr);
+
+    if (index.column() == 1) {
+      return data(value, role);
+    } else {
+      switch (role) {
+      case Qt::DisplayRole:
+        return QCoreApplication::translate("", value.name.c_str());
+      case Qt::BackgroundRole:
+        return data(value, role);
+      default:
+        return QVariant();
+      }
+    }
+  }
+}
+
+Qt::ItemFlags PreferencesTree::flags(const QModelIndex& index) const
+{
+  Qt::ItemFlags flags = Qt::ItemIsEnabled;
+  if (!static_cast<PreferencesTreeItem*>(index.internalPointer())->is_group()) {
+    if (index.column() == 1) {
+      flags |= Qt::ItemIsEditable;
+    }
+  }
+  return flags;
 }
 
 }  // namespace omm

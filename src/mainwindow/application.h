@@ -9,6 +9,7 @@
 #include "mainwindow/iconprovider.h"
 #include <QTimer>
 #include <QKeySequence>
+#include "preferences/uicolors.h"
 
 class QApplication;
 
@@ -56,6 +57,7 @@ private:
 
 public:
   KeyBindings key_bindings;
+  UiColors ui_colors;
 
 public:
   /**

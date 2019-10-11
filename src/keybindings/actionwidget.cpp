@@ -10,7 +10,7 @@
 namespace omm
 {
 
-ActionWidget::ActionWidget(QWidget* parent, const SettingsTreeValueItem& key_binding)
+ActionWidget::ActionWidget(QWidget* parent, const PreferencesTreeValueItem& key_binding)
   : QWidget(parent)
 {
   auto name_label = std::make_unique<QLabel>();
@@ -38,7 +38,7 @@ ActionWidget::ActionWidget(QWidget* parent, const SettingsTreeValueItem& key_bin
 
   setLayout(layout.release());
   setMouseTracking(true);
-  connect(&key_binding, &SettingsTreeValueItem::value_changed, this, [this](const std::string& s)
+  connect(&key_binding, &PreferencesTreeValueItem::value_changed, this, [this](const std::string& s)
   {
     m_shortcut_label->setText(QKeySequence(QString::fromStdString(s)).toString(QKeySequence::NativeText));
     QResizeEvent resize_event(QSize(), m_shortcut_label->parentWidget()->size());

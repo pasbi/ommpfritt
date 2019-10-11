@@ -111,6 +111,7 @@ std::vector<std::string> MainWindow::main_menu_entries()
     "file/export",
     QT_TRANSLATE_NOOP("menu_name", "edit")"/undo",
     "edit/redo",
+    "edit/preferences",
     QT_TRANSLATE_NOOP("menu_name", "object")"/new style",
     "object/" QT_TRANSLATE_NOOP("menu_name", "create")"/",
     "object/" QT_TRANSLATE_NOOP("menu_name", "attach")"/",
@@ -129,7 +130,6 @@ std::vector<std::string> MainWindow::main_menu_entries()
   }
   entries.insert(entries.end(), {
     "window/"s + KeyBindings::SEPARATOR,
-    "window/show keybindings dialog",
     "window/restore default layout",
 #ifndef NDEBUG  // these functions facialiate the creation of profiles.
                 // they should not be used by the user since the file content is not validated.
@@ -225,7 +225,6 @@ std::unique_ptr<QMenu> MainWindow::make_about_menu()
   });
 
   menu->addMenu(std::make_unique<LanguageMenu>().release());
-  menu->addMenu(std::make_unique<SkinMenu>().release());
 
   return menu;
 }

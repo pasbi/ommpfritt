@@ -7,23 +7,23 @@
 namespace omm
 {
 
-class SettingsTreeItem
+class PreferencesTreeItem
 {
 public:
   std::map<std::string, std::string> user_data;
 protected:
-  explicit SettingsTreeItem(const std::string& name);
-  virtual ~SettingsTreeItem() = default;
+  explicit PreferencesTreeItem(const std::string& name);
+  virtual ~PreferencesTreeItem() = default;
 public:
   virtual bool is_group() const = 0;
   const std::string name;
 };
 
-class SettingsTreeValueItem : public QObject, public SettingsTreeItem
+class PreferencesTreeValueItem: public QObject, public PreferencesTreeItem
 {
   Q_OBJECT
 public:
-  SettingsTreeValueItem(const std::string& group, const std::string& name, const std::string& value);
+  PreferencesTreeValueItem(const std::string& group, const std::string& name, const std::string& value);
   void set_value(const std::string& value);
   std::string value() const;
   bool is_group() const override { return false; }
@@ -37,11 +37,11 @@ private:
   std::string m_value;
 };
 
-class SettingsTreeGroupItem : public SettingsTreeItem
+class PreferencesTreeGroupItem : public PreferencesTreeItem
 {
 public:
-  explicit SettingsTreeGroupItem(const std::string& group);
-  std::vector<std::unique_ptr<SettingsTreeValueItem>> values;
+  explicit PreferencesTreeGroupItem(const std::string& group);
+  std::vector<std::unique_ptr<PreferencesTreeValueItem>> values;
   bool is_group() const override { return true; }
 };
 

@@ -1,31 +1,29 @@
 #pragma once
-#include <QDialog>
-#include "keybindings/keybindingsproxymodel.h"
-#include <memory>
 
-namespace Ui { class KeyBindingsDialog; }
+#include "preferences/keybindingsproxymodel.h"
+#include <memory>
+#include "preferences/preferencepage.h"
+
+namespace Ui { class KeyBindingsPage; }
 
 namespace omm
 {
 
 class KeyBindings;
 
-class KeyBindingsDialog : public QDialog
+class KeyBindingsPage  : public PreferencePage
 {
   Q_OBJECT
 public:
-  explicit KeyBindingsDialog(KeyBindings& key_bindings, QWidget* parent = nullptr);
-  ~KeyBindingsDialog();
+  explicit KeyBindingsPage(KeyBindings& key_bindings, QWidget* parent = nullptr);
+  ~KeyBindingsPage();
 
   static constexpr auto KEYBINDINGS_DIALOG_SETTINGS_GROUP = "keybindingsdialog";
   static constexpr auto GEOMETRY_SETTINGS_KEY = "geometry";
 
-  void reject() override;
-  void accept() override;
-
 private:
   KeyBindingsProxyModel m_proxy_model;
-  std::unique_ptr<Ui::KeyBindingsDialog> m_ui;
+  std::unique_ptr<Ui::KeyBindingsPage> m_ui;
   KeyBindings& m_key_bindings;
   std::map<std::string, std::map<std::string, QKeySequence>> m_revert_cache;
   void update_expand();

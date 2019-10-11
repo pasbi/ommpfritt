@@ -13,7 +13,6 @@
 #include "objects/object.h"
 #include "tools/toolbox.h"
 #include "tags/tag.h"
-#include "keybindings/keybindingsdialog.h"
 #include "mainwindow/viewport/viewport.h"
 #include "mainwindow/exportdialog.h"
 #include "logging.h"
@@ -22,6 +21,7 @@
 #include "scene/history/historymodel.h"
 #include "scene/stylelist.h"
 #include "managers/manager.h"
+#include "preferences/preferencedialog.h"
 
 namespace
 {
@@ -228,8 +228,6 @@ bool Application::perform_action(const std::string& action_name)
     actions::subdivide(*this);
   } else if (action_name == QT_TR_NOOP("evaluate")) {
     actions::evaluate(*this);
-  } else if (action_name == QT_TR_NOOP("show keybindings dialog")) {
-    KeyBindingsDialog(key_bindings, main_window()).exec();
   } else if (action_name == QT_TR_NOOP("restore default layout")) {
     main_window()->restore_default_layout();
   } else if (action_name == QT_TR_NOOP("save layout ...")) {
@@ -260,6 +258,8 @@ bool Application::perform_action(const std::string& action_name)
     if (paths.size() > 0) {
       PointDialog(paths, main_window()).exec();
     }
+  } else if (action_name == QT_TR_NOOP("preferences")) {
+    PreferenceDialog().exec();
   } else {
     for (const auto& key : Object::keys()) {
       if (key == action_name) {

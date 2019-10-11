@@ -4,7 +4,7 @@
 #include <memory>
 #include <set>
 #include "common.h"
-#include "aspects/settingstree.h"
+#include "preferences/preferencestree.h"
 
 class QKeyEvent;
 class QAction;
@@ -15,7 +15,7 @@ namespace omm
 
 class CommandInterface;
 
-class KeyBindings : public SettingsTree
+class KeyBindings : public PreferencesTree
 {
 public:
   KeyBindings();
@@ -36,11 +36,8 @@ public:
 public:
   static constexpr auto DEFAULT_KEY_SEQUENCE_ROLE = Qt::UserRole + 1;
 
-  // == reimplemented from QAbstractItemModel
-  int columnCount(const QModelIndex& parent) const override;
-  QVariant data(const QModelIndex& index, int role) const override;
+  QVariant data(const PreferencesTreeValueItem& value, int role) const override;
   bool setData(const QModelIndex& index, const QVariant& value, int role) override;
-  Qt::ItemFlags flags(const QModelIndex& index) const override;
 
 private:
   QKeySequence make_key_sequence(const QKeyEvent& event) const;
@@ -50,7 +47,7 @@ private:
             std::list<std::unique_ptr<QMenu>>& menus);
   bool call_global_command(const QKeySequence& sequence, const CommandInterface& source) const;
 
-  bool collides(const SettingsTreeValueItem& candidate) const;
+  bool collides(const PreferencesTreeValueItem& candidate) const;
 };
 
 }  // namespace omm

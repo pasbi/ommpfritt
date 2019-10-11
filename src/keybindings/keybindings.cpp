@@ -63,7 +63,7 @@ std::unique_ptr<QMenu> add_menu(const std::string& path, std::map<std::string, Q
 namespace omm
 {
 
-KeyBindings::KeyBindings() : SettingsTree("://default_keybindings.cfg")
+KeyBindings::KeyBindings() : PreferencesTree("://default_keybindings.cfg")
 {
   for (auto&& group : groups()) {
     for (auto&& value : group->values) {
@@ -105,60 +105,29 @@ void KeyBindings::reset()
   }
 }
 
-int KeyBindings::columnCount(const QModelIndex& parent) const { Q_UNUSED(parent) return 2; }
-
-QVariant KeyBindings::data(const QModelIndex& index, int role) const
+QVariant KeyBindings::data(const PreferencesTreeValueItem& value, int role) const
 {
-  if (!index.isValid()) {
-    return QVariant();
-  }
-
-  const auto* const ptr = static_cast<const SettingsTreeItem*>(index.internalPointer());
-  if (ptr->is_group()) {
-    const auto& group = *static_cast<const SettingsTreeGroupItem*>(ptr);
-    switch (role) {
-    case Qt::DisplayRole:
-      switch (index.column()) {
-      case 0:
-        return QString::fromStdString(group.name);
-      }
+  switch (role) {
+  case Qt::DisplayRole:
+      return ks(value.value()).toString(QKeySequence::NativeText);
+  case Qt::EditRole:
+      return ks(value.value());
+  case Qt::BackgroundRole:
+    if (collides(value)){
+      return QColor(Qt::red).lighter();
+    } else {
+      return QVariant();
     }
-  } else {
-    const auto& value = *static_cast<const SettingsTreeValueItem*>(ptr);
-    switch (role) {
-    case Qt::DisplayRole:
-      switch (index.column()) {
-      case 0:
-        return QCoreApplication::translate("", value.name.c_str());
-      case 1:
-        return ks(value.value()).toString(QKeySequence::NativeText);
-      }
-      break;
-    case Qt::EditRole:
-      if (index.column() == 1) {
-        return ks(value.value());
-      }
-      break;
-    case Qt::BackgroundRole:
-      if (collides(value)){
-        return QColor(Qt::red).lighter();
-      }
-      break;
-    case Qt::FontRole:
-      if (index.column() == 1) {
-        if (ks(value.user_data.at("default")).matches(ks(value.value())) != QKeySequence::ExactMatch) {
-          auto font = QApplication::font();
-          font.setItalic(true);
-          return font;
-        }
-      }
-      break;
-    case DEFAULT_KEY_SEQUENCE_ROLE:
-      if (index.column() == 1) {
-        return ks(value.user_data.at("default"));
-      }
-      break;
+  case Qt::FontRole:
+    if (ks(value.user_data.at("default")).matches(ks(value.value())) != QKeySequence::ExactMatch) {
+      auto font = QApplication::font();
+      font.setItalic(true);
+      return font;
+    } else {
+      return QVariant();
     }
+  case DEFAULT_KEY_SEQUENCE_ROLE:
+    return ks(value.user_data.at("default"));
   }
 
   return QVariant();
@@ -166,7 +135,7 @@ QVariant KeyBindings::data(const QModelIndex& index, int role) const
 
 bool KeyBindings::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-  auto* ptr = static_cast<SettingsTreeItem*>(index.internalPointer());
+  auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());
   if (role != Qt::EditRole) {
     return false;
   } else if (index.column() != 1) {
@@ -175,21 +144,10 @@ bool KeyBindings::setData(const QModelIndex& index, const QVariant& value, int r
     return false;
   }
 
-  auto* value_item = static_cast<SettingsTreeValueItem*>(ptr);
+  auto* value_item = static_cast<PreferencesTreeValueItem*>(ptr);
   value_item->set_value(value.value<QKeySequence>().toString(QKeySequence::PortableText).toStdString());
   Q_EMIT dataChanged(index, index);
   return true;
-}
-
-Qt::ItemFlags KeyBindings::flags(const QModelIndex& index) const
-{
-  Qt::ItemFlags flags = Qt::ItemIsEnabled;
-  if (!static_cast<SettingsTreeItem*>(index.internalPointer())->is_group()) {
-    if (index.column() == 1) {
-      flags |= Qt::ItemIsEditable;
-    }
-  }
-  return flags;
 }
 
 std::pair<std::string, QMenu*>
@@ -209,13 +167,13 @@ KeyBindings::get_menu( const std::string& action_path, std::map<std::string, QMe
   return std::pair(action_name, menu_ptr);
 }
 
-bool KeyBindings::collides(const SettingsTreeValueItem& candidate) const
+bool KeyBindings::collides(const PreferencesTreeValueItem& candidate) const
 {
   const QKeySequence sequence = ks(candidate.value());
   if (sequence.isEmpty()) {
     return false;
   }
-  SettingsTreeGroupItem& group = *this->group(candidate.group);
+  PreferencesTreeGroupItem& group = *this->group(candidate.group);
   const auto it = std::find_if(group.values.begin(), group.values.end(),
                                [sequence, name=candidate.name](const auto& value)
   {

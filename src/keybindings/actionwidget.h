@@ -5,11 +5,11 @@ class QLabel;
 namespace omm
 {
 
-class SettingsTreeValueItem;
+class PreferencesTreeValueItem;
 class ActionWidget : public QWidget
 {
 public:
-  ActionWidget(QWidget* parent, const SettingsTreeValueItem& key_binding);
+  ActionWidget(QWidget* parent, const PreferencesTreeValueItem& key_binding);
   void set_highlighted(bool h);
   void showEvent(QShowEvent *event) override;
 

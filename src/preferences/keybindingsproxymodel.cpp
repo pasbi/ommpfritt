@@ -1,4 +1,4 @@
-#include "keybindings/keybindingsproxymodel.h"
+#include "preferences/keybindingsproxymodel.h"
 #include "keybindings/keybindings.h"
 #include <QKeySequence>
 
@@ -17,11 +17,11 @@ bool KeyBindingsProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
     return true;
   } else {
     const QModelIndex index = sourceModel()->index(source_row, 0, source_parent);
-    const auto* ptr = static_cast<const SettingsTreeItem*>(index.internalPointer());
+    const auto* ptr = static_cast<const PreferencesTreeItem*>(index.internalPointer());
     if (ptr->is_group()) {
       return rowCount(mapFromSource(index)) > 0;
     } else {
-      const auto* value = static_cast<const SettingsTreeValueItem*>(ptr);
+      const auto* value = static_cast<const PreferencesTreeValueItem*>(ptr);
       const auto name = QString::fromStdString(value->name);
       const auto sequence = QKeySequence(QString::fromStdString(value->value())).toString(QKeySequence::NativeText);
       const bool name_matches = name.contains(QString::fromStdString(m_action_name_filter),

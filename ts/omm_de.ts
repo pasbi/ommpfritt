@@ -74,9 +74,9 @@
     </message>
 </context>
 <context>
-    <name>KeyBindingsDialog</name>
+    <name>KeyBindingsPage</name>
     <message>
-        <source>name filter</source>
+        <source>Key Bindings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -84,7 +84,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Key Bindings</source>
+        <source>name filter</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -133,6 +133,13 @@
     <message>
         <source>Point</source>
         <translation>Punkt</translation>
+    </message>
+</context>
+<context>
+    <name>PreferenceDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1083,6 +1090,13 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
 </context>
 <context>
+    <name>UiColorsPage</name>
+    <message>
+        <source>Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>UserPropertyDialog</name>
     <message>
         <source>Dialog</source>
@@ -1433,7 +1447,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>show keybindings dialog</source>
-        <translation type="unfinished">Tastenkürzeldialog öffnen</translation>
+        <translation type="obsolete">Tastenkürzeldialog öffnen</translation>
     </message>
     <message>
         <source>restore default layout</source>
@@ -1485,6 +1499,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>Add Tag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>preferences</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1559,7 +1577,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
 </context>
 <context>
-    <name>omm::KeyBindingsDialog</name>
+    <name>omm::KeyBindingsPage</name>
     <message>
         <source>Reset all key bindings</source>
         <translation type="unfinished"></translation>
@@ -1640,6 +1658,17 @@ This cannot be undone.</source>
     <message>
         <source>LNK</source>
         <translation>🔗</translation>
+    </message>
+</context>
+<context>
+    <name>omm::PreferenceDialog</name>
+    <message>
+        <source>Ui Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keyindings</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
