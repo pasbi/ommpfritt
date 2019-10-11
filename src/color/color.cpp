@@ -5,11 +5,47 @@
 #include <cmath>
 #include <QtGlobal>
 #include "logging.h"
+#include <iomanip>
+#include <iostream>
+
+namespace
+{
+
+bool decode_hex(const std::string& code, omm::Color& color)
+{
+  if (code.at(0) != '#' || (code.size() != 7 && code.size() != 9)) {
+    return false;
+  } else {
+    if (code.size() == 7 || code.size() == 9) {
+      color.red()   = std::strtol(&code.substr(1, 2).at(0), nullptr, 16) / 255.0;
+      color.green() = std::strtol(&code.substr(3, 2).at(0), nullptr, 16) / 255.0;
+      color.blue()  = std::strtol(&code.substr(5, 2).at(0), nullptr, 16) / 255.0;
+      if (code.size() == 9) {
+        color.alpha() = std::strtol(&code.substr(7, 2).at(0), nullptr, 16) / 255.0;
+      } else {
+        color.alpha() = 1.0;
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+}  // namespace
 
 namespace omm
 {
 
 Color::Color() : Color(0.0, 0.0, 0.0, 1.0) {}
+
+Color::Color(const std::string& code)
+{
+  if (!decode(code)) {
+    LWARNING << "Failed to decode color '" << code << "'";
+  }
+}
+
 Color::Color(const std::vector<double>& components)
 {
   switch (components.size()) {
@@ -25,6 +61,19 @@ Color::Color(const std::vector<double>& components)
   }
 }
 
+Color::Color(const std::array<double, 4>& rgba) : m_components(rgba)
+{
+}
+
+Color::Color(const std::array<double, 3>& rgb) : m_components({ rgb[0], rgb[1], rgb[2], 1.0 })
+{
+}
+
+Color::Color(const QColor& c) : Color(c.red(), c.green(), c.blue(), c.alpha())
+{
+  *this = *this / 255.0;
+}
+
 Color Color::clamped() const
 {
   Color clamped;
@@ -33,7 +82,6 @@ Color Color::clamped() const
   }
   return clamped;
 }
-
 
 double& Color::red() { return m_components[0]; }
 double& Color::green() { return m_components[1]; }
@@ -111,6 +159,83 @@ Color Color::from_hsv(double hue, double saturation, double value, double alpha)
   return Color(rgb[0] + m, rgb[1] + m, rgb[2] + m, alpha);
 }
 
+bool Color::decode(const std::string& code)
+{
+  return decode_hex(code, *this);
+}
+
+std::string Color::to_hex(bool no_alpha) const
+{
+  static const auto to_hex = [](float f) {
+    const int i = std::clamp(static_cast<int>(std::round(f*255)), 0, 255);
+    std::ostringstream ostr;
+    ostr << std::setw(2) << std::setfill('0') << std::hex << i;
+    const std::string str = ostr.str();
+    assert(str.size() == 2);
+    return str;
+  };
+  return "#" + to_hex(red()) + to_hex(green()) + to_hex(blue()) + (no_alpha ? "" : to_hex(alpha()));
+}
+
+Color& Color::operator+=(const Color& a)
+{
+  *this = *this + a;
+  return *this;
+}
+
+Color& Color::operator+=(double a)
+{
+  *this = *this + a;
+  return *this;
+}
+
+Color& Color::operator-=(const Color& a)
+{
+  *this = *this - a;
+  return *this;
+}
+
+Color& Color::operator-=(double a)
+{
+  *this = *this - a;
+  return *this;
+}
+
+Color& Color::operator*=(const Color& a)
+{
+  *this = *this * a;
+  return *this;
+}
+
+Color& Color::operator*=(double a)
+{
+  *this = *this * a;
+  return *this;
+}
+
+Color& Color::operator/=(const Color& a)
+{
+  *this = *this / a;
+  return *this;
+}
+
+Color& Color::operator/=(double a)
+{
+  *this = *this / a;
+  return *this;
+}
+
+Color Color::operator-() const
+{
+  return Color(-red(), -green(), -blue(), -alpha());
+}
+
+omm::Color::operator QColor() const
+{
+  const auto cast = [](const double t) { return std::clamp(static_cast<int>(t * 255.0), 0, 255); };
+  return QColor(cast(red()), cast(green()), cast(blue()), cast(alpha()));
+}
+
 bool operator==(const Color& a, const Color& b)
 {
   for (std::size_t i = 0; i < a.m_components.size(); ++i) {
@@ -144,11 +269,7 @@ std::ostream& operator<<(std::ostream& ostream, const Color& color)
 
 Color operator*(const Color& c, const double s)
 {
-  Color result;
-  for (std::size_t i = 0; i < 4; ++i) {
-    result[i] = c[i] * s;
-  }
-  return result;
+  return c * Color(s, s, s, 1.0);
 }
 
 Color operator*(const double s, const Color& c)
@@ -156,9 +277,54 @@ Color operator*(const double s, const Color& c)
   return c * s;
 }
 
+Color operator*(const Color& a, const Color& b)
+{
+  return Color(a.red() * b.red(), a.green() * b.green(), a.blue() * b.blue(), a.alpha() * b.alpha());
+}
+
 Color operator/(const Color& c, const double s)
 {
-  return c * (1.0/s);
+  return c / Color(s, s, s, 1.0);
+}
+
+Color operator/(const double s, const Color& c)
+{
+  return Color(s, s, s, 1.0) / c;
+}
+
+Color operator/(const Color& a, const Color& b)
+{
+  return Color(a.red() / b.red(), a.green() / b.green(), a.blue() / b.blue(), a.alpha() / b.alpha());
+}
+
+Color operator+(const Color& c, const double s)
+{
+  return c + Color(s, s, s, 0.0);
+}
+
+Color operator+(const double s, const Color& c)
+{
+  return c + s;
+}
+
+Color operator+(const Color& a, const Color& b)
+{
+  return Color(a.red() + b.red(), a.green() + b.green(), a.blue() + b.blue(), a.alpha() + b.alpha());
+}
+
+Color operator-(const Color& c, const double s)
+{
+  return c + (-s);
+}
+
+Color operator-(const double s, const Color& c)
+{
+  return s + (-c);
+}
+
+Color operator-(const Color& a, const Color& b)
+{
+  return a + (-b);
 }
 
 }  // namespace omm
