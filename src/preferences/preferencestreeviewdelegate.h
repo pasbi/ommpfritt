@@ -19,7 +19,7 @@ protected:
 };
 
 template<typename EditorT>
-class SettingsTreeViewDelegate : public AbstractPreferencesTreeViewDelegate
+class PreferencesTreeViewDelegate : public AbstractPreferencesTreeViewDelegate
 {
 protected:
   QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem&, const QModelIndex& index) const override

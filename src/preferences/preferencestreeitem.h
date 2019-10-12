@@ -36,7 +36,7 @@ public:
   const std::string group;
 
 Q_SIGNALS:
-  void value_changed(const std::string& sequence);
+  void value_changed(const std::string& value);
 
 private:
   std::string m_value;

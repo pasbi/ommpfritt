@@ -48,18 +48,24 @@ void PreferencesTreeView::resizeEvent(QResizeEvent* event)
 void PreferencesTreeView::update_column_width()
 {
   const int required_width_name = sizeHintForColumn(0);
-  const int required_width_sequence = sizeHintForColumn(1);
+  const int required_width_others = [this]() {
+    int width = 0;
+    for (int i = 1; i < header()->count(); ++i) {
+      width += sizeHintForColumn(i);
+    }
+    return width;
+  }();
   const int available_width = viewport()->width();
-  static constexpr int max_width_sequence = 350;
+  static constexpr int max_width_other = 350;
 
-  const int excess = std::max(0, available_width - required_width_name - required_width_sequence);
-  const int width_sequence = std::max(required_width_sequence,
-                                  std::min(max_width_sequence, required_width_sequence + excess));
-  const int width_name = std::max(available_width - width_sequence, required_width_name);
+  const int excess = std::max(0, available_width - required_width_name - required_width_others);
+  const int width_others = std::clamp(required_width_others + excess,
+                                      required_width_others, max_width_other);
+  const int width_name = std::max(available_width - width_others, required_width_name);
 
   setColumnWidth(0, width_name);
   const int n = header()->count();
-  const double other_width = static_cast<double>(width_sequence) / static_cast<double>(n-1);
+  const double other_width = static_cast<double>(width_others) / static_cast<double>(n-1);
   for (int i = 1; i < n; ++i) {
     setColumnWidth(i, other_width);
   }

@@ -52,7 +52,7 @@ void PreferencesTree::load_from_qsettings(const std::string& q_settings_group)
           const QString value = settings.value(key).toString();
           value_item->set_value(value.toStdString());
         } else {
-          // keep default sequence
+          // keep default value
         }
       }
       settings.endGroup();
@@ -110,7 +110,7 @@ bool PreferencesTree::load_from_file(const std::string& filename)
       const auto tokens = line.split(":");
       if (tokens.size() != 2) {
         LWARNING << "ignoring line '" << line.toStdString()
-                     << "'. Expected format: <name>: <key sequence>.";
+                     << "'. Expected format: <name>: <key value>.";
         continue;
       }
       const auto name = tokens[0].trimmed().toStdString();
@@ -141,10 +141,10 @@ bool PreferencesTree::load_from_file(const std::string& filename)
       });
 
       if (vit != group->values.end()) {
-        LWARNING << "Duplicate key sequence for '" << group_name << "'::'" << name << "'."
+        LWARNING << "Duplicate value for '" << group_name << "'::'" << name << "'."
                  << "Drop '" << value << "', "
                  << "keep '" << (*vit)->value() << "'.";
-        LFATAL("Duplicate key sequence.");
+        LFATAL("Duplicate key.");
       } else {
         group->values.push_back(std::make_unique<PreferencesTreeValueItem>(group->name, name, value));
       }

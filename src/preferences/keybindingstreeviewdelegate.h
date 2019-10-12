@@ -9,7 +9,7 @@
 namespace omm
 {
 
-class KeyBindingsTreeViewDelegate : public SettingsTreeViewDelegate<KeySequenceEdit>
+class KeyBindingsTreeViewDelegate : public PreferencesTreeViewDelegate<KeySequenceEdit>
 {
 protected:
   void set_editor_data(omm::KeySequenceEdit &editor, const QModelIndex &index) const override;
