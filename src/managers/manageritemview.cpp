@@ -102,7 +102,7 @@ std::set<AbstractPropertyOwner*> ManagerItemView<ItemViewT, ItemModelT>::selecte
   return ::transform<AbstractPropertyOwner*, std::set>(selected_indexes, get_object);
 }
 
-template class ManagerItemView<QListView, StyleList>;
-template class ManagerItemView<QTreeView, ObjectTree>;
+template class ManagerItemView<StyledItemView<QListView>, StyleList>;
+template class ManagerItemView<StyledItemView<QTreeView>, ObjectTree>;
 
 }  // namespace omm

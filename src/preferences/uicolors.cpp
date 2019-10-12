@@ -47,6 +47,7 @@ QPalette UiColors::make_palette() const
   static const std::map<std::string, QPalette::ColorRole> role_map {
     { "window",           QPalette::Window },
     { "window text",      QPalette::WindowText },
+    { "text",             QPalette::Text},
     { "base",             QPalette::Base },
     { "alternate base",   QPalette::AlternateBase },
     { "placeholder text", QPalette::PlaceholderText },
@@ -56,7 +57,12 @@ QPalette UiColors::make_palette() const
     { "midlight",         QPalette::Midlight },
     { "dark",             QPalette::Dark },
     { "mid",              QPalette::Mid },
-    { "shadow",           QPalette::Shadow }
+    { "shadow",           QPalette::Shadow },
+    { "bright text",      QPalette::BrightText },
+    { "highlight",        QPalette::Highlight },
+    { "highlighted text", QPalette::HighlightedText },
+    { "link",             QPalette::Link },
+    { "link visited",     QPalette::LinkVisited },
   };
 
   static const std::map<std::size_t, QPalette::ColorGroup> group_map {

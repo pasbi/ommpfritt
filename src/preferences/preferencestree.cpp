@@ -3,6 +3,8 @@
 #include <QFile>
 #include <QSettings>
 #include "logging.h"
+#include <QApplication>
+#include <QPalette>
 
 namespace omm
 {
@@ -294,6 +296,10 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
 {
   if (!index.isValid()) {
     return QVariant();
+  }
+
+  if (role == Qt::ForegroundRole) {
+    return qApp->palette().color(QPalette::Active, QPalette::WindowText);
   }
 
   if (is_group(index)) {

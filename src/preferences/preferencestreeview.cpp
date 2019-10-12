@@ -8,7 +8,7 @@ namespace omm
 {
 
 PreferencesTreeView::PreferencesTreeView(QWidget* parent)
-  : QTreeView(parent)
+  : StyledItemView(parent)
 {
   connect(this, SIGNAL(collapsed(const QModelIndex&)), this, SLOT(update_column_width()));
   connect(this, SIGNAL(expanded(const QModelIndex&)), this, SLOT(update_column_width()));

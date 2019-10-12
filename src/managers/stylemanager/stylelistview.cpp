@@ -8,7 +8,7 @@ namespace omm
 {
 
 StyleListView::StyleListView(StyleList& model)
-  : ManagerItemView<QListView, StyleList>(model)
+  : ManagerItemView(model)
 {
   setWrapping(true);
 }

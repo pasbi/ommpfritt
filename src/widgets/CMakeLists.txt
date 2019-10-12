@@ -22,6 +22,7 @@ file(GLOB HEADERS
   pointdialog.h
   pointedit.h
   referencelineedit.h
+  styleditemview.h
 )
 
 

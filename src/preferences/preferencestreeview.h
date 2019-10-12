@@ -1,9 +1,10 @@
 #pragma once
 
-#include <QTreeView>
 #include <QItemDelegate>
 #include <QKeySequenceEdit>
 #include <memory>
+#include "widgets/styleditemview.h"
+#include <QTreeView>
 
 namespace omm
 {
@@ -11,7 +12,7 @@ namespace omm
 class AbstractPreferencesTreeViewDelegate;
 class KeyBindings;
 
-class PreferencesTreeView: public QTreeView
+class PreferencesTreeView: public StyledItemView<QTreeView>
 {
   Q_OBJECT
 public:

@@ -87,7 +87,7 @@ void ObjectTreeView::paintEvent(QPaintEvent* e)
   const auto n_tags = m_model.max_number_of_tags_on_object();
   const auto tags_width = m_tags_item_delegate->tag_icon_size().width();
   setColumnWidth(ObjectTree::TAGS_COLUMN, n_tags * tags_width);
-  ManagerItemView<QTreeView, ObjectTree>::paintEvent(e);
+  ManagerItemView::paintEvent(e);
 }
 
 void ObjectTreeView::mousePressEvent(QMouseEvent* e)

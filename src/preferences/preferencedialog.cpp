@@ -4,6 +4,7 @@
 #include "mainwindow/application.h"
 #include "preferences/keybindingspage.h"
 #include "preferences/preferencepage.h"
+#include <QApplication>
 
 namespace omm
 {
@@ -20,7 +21,6 @@ PreferenceDialog::PreferenceDialog() : m_ui(new Ui::PreferenceDialog)
                            std::make_unique<UiColorsPage>(app.ui_colors));
   register_preference_page(nullptr, tr("Keyindings"),
                            std::make_unique<KeyBindingsPage>(app.key_bindings));
-
 }
 
 PreferenceDialog::~PreferenceDialog()
@@ -55,6 +55,11 @@ register_preference_page(QTreeWidgetItem* parent, const QString& label,
   } else {
     parent->addChild(item.release());
   }
+
+  connect(qApp, &QGuiApplication::paletteChanged, [&ref](const QPalette& p) {
+    ref.setForeground(0, p.color(QPalette::Active, QPalette::WindowText));
+  });
+  ref.setForeground(0, qApp->palette().color(QPalette::Active, QPalette::WindowText));
 
   connect(m_ui->treeWidget, &QTreeWidget::itemClicked, this, [this](QTreeWidgetItem* item) {
     m_ui->stackedWidget->setCurrentWidget(m_page_map.at(item));

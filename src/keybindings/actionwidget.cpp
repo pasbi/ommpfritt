@@ -49,18 +49,15 @@ ActionWidget::ActionWidget(QWidget* parent, const PreferencesTreeValueItem& key_
   const QKeySequence sequence(QString::fromStdString(key_binding.value()));
   m_shortcut_label->setText(sequence.toString(QKeySequence::NativeText));
   m_name_label->setText(QCoreApplication::translate("any-context", key_binding.name.c_str()));
+  setAutoFillBackground(true);
+  set_highlighted(false);
 }
 
 void ActionWidget::set_highlighted(bool h)
 {
-  m_name_label->setBackgroundRole(h ? QPalette::Highlight : QPalette::Window);
   m_name_label->setForegroundRole(h ? QPalette::HighlightedText : QPalette::Text);
-  m_shortcut_label->setBackgroundRole(h ? QPalette::Highlight : QPalette::Window);
   m_shortcut_label->setForegroundRole(h ? QPalette::HighlightedText : QPalette::Text);
-  setBackgroundRole(h ? QPalette::Highlight : QPalette::Window);
-  setAutoFillBackground(h);
-  m_name_label->setAutoFillBackground(h);
-  m_shortcut_label->setAutoFillBackground(h);
+  setBackgroundRole(h ? QPalette::Highlight : QPalette::Base);
 }
 
 void ActionWidget::showEvent(QShowEvent* event)

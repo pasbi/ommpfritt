@@ -1106,6 +1106,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>save as ...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Reset All</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserPropertyDialog</name>
@@ -1733,6 +1737,32 @@ This cannot be undone.</source>
     <message>
         <source>ToolBar</source>
         <translation>Werkzeugkasten</translation>
+    </message>
+</context>
+<context>
+    <name>omm::UiColors</name>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inactive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::UiColorsPage</name>
+    <message>
+        <source>dark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>light</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

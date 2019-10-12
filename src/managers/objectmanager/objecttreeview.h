@@ -7,13 +7,14 @@
 #include "managers/objectmanager/objectquickaccessdelegate.h"
 #include "managers/objectmanager/objecttreeselectionmodel.h"
 #include "scene/objecttree.h"
+#include "widgets/styleditemview.h"
 
 namespace omm
 {
 
 class Object;
 
-class ObjectTreeView : public ManagerItemView<QTreeView, ObjectTree>
+class ObjectTreeView : public ManagerItemView<StyledItemView<QTreeView>, ObjectTree>
 {
   Q_OBJECT
 public:
