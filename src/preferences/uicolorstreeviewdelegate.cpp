@@ -1,4 +1,5 @@
 #include "preferences/uicolorstreeviewdelegate.h"
+#include "logging.h"
 
 namespace omm
 {

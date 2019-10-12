@@ -21,6 +21,9 @@ public:
   static constexpr auto KEYBINDINGS_DIALOG_SETTINGS_GROUP = "keybindingsdialog";
   static constexpr auto GEOMETRY_SETTINGS_KEY = "geometry";
 
+  void about_to_accept() override;
+  void about_to_reject() override;
+
 private:
   KeyBindingsProxyModel m_proxy_model;
   std::unique_ptr<Ui::KeyBindingsPage> m_ui;

@@ -1,6 +1,9 @@
 #include "preferences/uicolors.h"
 #include <QColor>
 #include "color/color.h"
+#include <QApplication>
+#include <QPalette>
+#include "logging.h"
 
 namespace omm
 {
@@ -32,9 +35,27 @@ QVariant UiColors::encode_data(const PreferencesTreeValueItem& item, int role) c
   }
 }
 
-std::string UiColors::set_data(const QVariant& value) const
+QPalette UiColors::make_palette() const
 {
-  return Color(value.value<QColor>()).to_hex();
+  const auto get_widget_color = [this](const std::string& name) {
+    return Color(value("widget", name)->value()).to_qcolor();
+  };
+  QPalette palette = qApp->palette();
+  palette.setBrush(QPalette::Window, get_widget_color("background"));
+  return palette;
+}
+
+Color UiColors::color(const QModelIndex& index) const
+{
+  assert(!is_group(index));
+  return Color(data(index, Qt::EditRole).toString().toStdString());
+}
+
+void UiColors::set_color(const QModelIndex& index, const Color& color)
+{
+  const bool s = setData(index, color.to_qcolor(), Qt::EditRole);
+  assert(s);
+  Q_UNUSED(s)
 }
 
 }  // namespace omm

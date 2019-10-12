@@ -333,4 +333,23 @@ Qt::ItemFlags PreferencesTree::flags(const QModelIndex& index) const
   return flags;
 }
 
+bool PreferencesTree::is_group(const QModelIndex& index) const
+{
+  return static_cast<const PreferencesTreeItem*>(index.internalPointer())->is_group();
+}
+
+PreferencesTreeGroupItem& PreferencesTree::group(const QModelIndex& index) const
+{
+  assert(is_group(index));
+  auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());
+  return *static_cast<PreferencesTreeGroupItem*>(ptr);
+}
+
+PreferencesTreeValueItem& PreferencesTree::value(const QModelIndex& index) const
+{
+  assert(!is_group(index));
+  auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());
+  return *static_cast<PreferencesTreeValueItem*>(ptr);
+}
+
 }  // namespace omm

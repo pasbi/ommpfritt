@@ -18,6 +18,9 @@ public:
   explicit UiColorsPage(UiColors& colors);
   ~UiColorsPage();
 
+  void about_to_accept() override;
+  void about_to_reject() override;
+
 private:
   std::unique_ptr<Ui::UiColorsPage> m_ui;
 };

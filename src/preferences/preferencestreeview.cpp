@@ -26,21 +26,25 @@ void PreferencesTreeView::set_model(QAbstractItemModel& model)
 {
   assert(this->model() == nullptr);
   setModel(&model);
-  m_sequence_column_delegate->set_model(model);
-  setItemDelegateForColumn(1, m_sequence_column_delegate.get());
+  if (m_column_delegate) {
+    m_column_delegate->set_model(model);
+    setItemDelegateForColumn(1, m_column_delegate.get());
+  }
   setSelectionMode(QAbstractItemView::NoSelection);
 }
 
 void PreferencesTreeView::transfer_editor_data_to_model()
 {
-  m_sequence_column_delegate->transfer_editor_data_to_model();
+  if (m_column_delegate) {
+    m_column_delegate->transfer_editor_data_to_model();
+  }
 }
 
 void PreferencesTreeView::set_delegate(std::unique_ptr<AbstractPreferencesTreeViewDelegate> delegate)
 {
-  assert(m_sequence_column_delegate == nullptr);
+  assert(m_column_delegate == nullptr);
   assert(delegate != nullptr);
-  m_sequence_column_delegate = std::move(delegate);
+  m_column_delegate = std::move(delegate);
 }
 
 void PreferencesTreeView::resizeEvent(QResizeEvent* event)

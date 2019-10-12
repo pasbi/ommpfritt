@@ -47,6 +47,9 @@ public:
   QVariant data(const QModelIndex& index, int role) const override;
   bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
   Qt::ItemFlags flags(const QModelIndex& index) const override;
+  bool is_group(const QModelIndex& index) const;
+  PreferencesTreeGroupItem& group(const QModelIndex& index) const;
+  PreferencesTreeValueItem& value(const QModelIndex& index) const;
 
 protected:
   virtual std::string decode_data(const QVariant& value) const = 0;

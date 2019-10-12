@@ -17,4 +17,13 @@ UiColorsPage::~UiColorsPage()
 {
 }
 
+void UiColorsPage::about_to_accept()
+{
+  m_ui->treeView->transfer_editor_data_to_model();
+}
+
+void UiColorsPage::about_to_reject()
+{
+}
+
 }  // namespace omm

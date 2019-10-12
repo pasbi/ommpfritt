@@ -48,6 +48,16 @@ KeyBindingsPage::~KeyBindingsPage()
   settings.endGroup();
 }
 
+void KeyBindingsPage::about_to_accept()
+{
+  m_ui->treeView->transfer_editor_data_to_model();
+}
+
+void KeyBindingsPage::about_to_reject()
+{
+  m_key_bindings.restore();
+}
+
 void KeyBindingsPage::update_expand()
 {
   const int count = m_proxy_model.rowCount(QModelIndex());

@@ -28,7 +28,7 @@ private Q_SLOTS:
   void update_column_width();
 
 private:
-  std::unique_ptr<AbstractPreferencesTreeViewDelegate> m_sequence_column_delegate;
+  std::unique_ptr<AbstractPreferencesTreeViewDelegate> m_column_delegate;
 };
 
 }  // namespace omm
