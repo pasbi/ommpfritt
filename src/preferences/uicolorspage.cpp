@@ -12,6 +12,10 @@ UiColorsPage::UiColorsPage(UiColors& colors)
   , m_colors(colors)
 {
   m_ui->setupUi(this);
+  m_skins.push_back(std::pair(tr("dark"), ":/skins/ui-colors-dark.cfg"));
+  m_skins.push_back(std::pair(tr("light"), ":/skins/ui-colors-light.cfg"));
+  update_combobox();
+  connect(m_ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(set_default_values(int)));
 
   std::vector<std::unique_ptr<AbstractPreferencesTreeViewDelegate>> delegates(3);
   for (std::size_t i = 0; i < 3; ++i) {
@@ -21,6 +25,11 @@ UiColorsPage::UiColorsPage(UiColors& colors)
   connect(m_ui->pb_saveas, &QPushButton::clicked, this, [this]() {
     m_colors.save_to_file("/tmp/colors.cfg");
   });
+
+  connect(m_ui->pb_reset, &QPushButton::clicked, this, [this]() {
+    m_colors.reset();
+  });
+  m_colors.store();
 }
 
 UiColorsPage::~UiColorsPage()
@@ -35,6 +44,21 @@ void UiColorsPage::about_to_accept()
 
 void UiColorsPage::about_to_reject()
 {
+  m_colors.restore();
+}
+
+void UiColorsPage::set_default_values(int index)
+{
+  m_colors.load_from_file(m_skins.at(index).second);
+}
+
+void UiColorsPage::update_combobox()
+{
+  QSignalBlocker blocker(m_ui->comboBox);
+  m_ui->comboBox->clear();
+  for (auto&& [ name, _ ] : m_skins) {
+    m_ui->comboBox->addItem(name);
+  }
 }
 
 }  // namespace omm

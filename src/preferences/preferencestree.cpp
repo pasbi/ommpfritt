@@ -19,16 +19,17 @@ PreferencesTree::PreferencesTree(const std::string filename)
 
 PreferencesTree::~PreferencesTree()
 {
-
 }
 
 void PreferencesTree::reset()
 {
+  beginResetModel();
   for (auto&& group : groups()) {
     for (auto&& value : group->values) {
       value->reset();
     }
   }
+  endResetModel();
 }
 
 void PreferencesTree::save_in_qsettings(const std::string& q_settings_group) const
@@ -149,13 +150,21 @@ bool PreferencesTree::load_from_file(const std::string& filename)
         return value_item->name == name;
       });
 
-      if (vit != group->values.end()) {
-        LWARNING << "Duplicate value for '" << group_name << "'::'" << name << "'."
-                 << "Drop '" << value << "', "
-                 << "keep '" << (*vit)->value() << "'.";
-        LFATAL("Duplicate key.");
+      if (vit == group->values.end()) {
+        if (insert_mode) {
+          group->values.push_back(std::make_unique<PreferencesTreeValueItem>(group->name, name, value));
+        } else {
+          LWARNING << "No such item '" << group_name << "'::'" << name << "'.";
+        }
       } else {
-        group->values.push_back(std::make_unique<PreferencesTreeValueItem>(group->name, name, value));
+        if (insert_mode) {
+          LWARNING << "Duplicate value for '" << group_name << "'::'" << name << "'."
+                   << "Drop '" << value << "', "
+                   << "keep '" << (*vit)->value() << "'.";
+          LFATAL("Duplicate key.");
+        } else {
+          (*vit)->set_default(value);
+        }
       }
     } else {
       LWARNING << "line '" << line << "' ignored since no group is active.";

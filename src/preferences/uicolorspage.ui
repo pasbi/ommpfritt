@@ -40,6 +40,13 @@
       </spacer>
      </item>
      <item>
+      <widget class="QPushButton" name="pb_reset">
+       <property name="text">
+        <string>Reset All</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QComboBox" name="comboBox"/>
      </item>
     </layout>

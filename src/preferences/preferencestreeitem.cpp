@@ -12,20 +12,34 @@ PreferencesTreeValueItem(const std::string& group, const std::string& name, cons
 {
 }
 
+void PreferencesTreeValueItem::set_default(const std::string& value)
+{
+  m_default = value;
+}
+
+void PreferencesTreeValueItem::set_value(const std::string& value)
+{
+  if (value!= m_value) {
+    m_value = value;
+    Q_EMIT(value_changed(m_value));
+  }
+}
+
 void PreferencesTreeValueItem::set_value(const std::string& value, std::size_t column)
 {
   QStringList columns = QString::fromStdString(m_value).split("/");
   columns[column] = QString::fromStdString(value);
-  const auto joined_value = columns.join("/").toStdString();
-  if (joined_value != m_value) {
-    m_value = joined_value;
-    Q_EMIT(value_changed(m_value));
-  }
+  set_value(columns.join("/").toStdString());
 }
 
 std::string PreferencesTreeValueItem::value(std::size_t column) const
 {
   return QString::fromStdString(m_value).split("/")[column].toStdString();
+}
+
+std::string PreferencesTreeValueItem::value() const
+{
+  return m_value;
 }
 
 std::string PreferencesTreeValueItem::default_value(std::size_t column) const
@@ -35,10 +49,7 @@ std::string PreferencesTreeValueItem::default_value(std::size_t column) const
 
 void PreferencesTreeValueItem::reset()
 {
-  if (m_default != m_value) {
-    m_value = m_default;
-    Q_EMIT(value_changed(m_value));
-  }
+  set_value(m_default);
 }
 
 PreferencesTreeGroupItem::PreferencesTreeGroupItem(const std::string& group)

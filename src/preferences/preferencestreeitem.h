@@ -23,8 +23,11 @@ class PreferencesTreeValueItem: public QObject, public PreferencesTreeItem
 public:
   PreferencesTreeValueItem(const std::string& group, const std::string& name,
                            const std::string& value);
-  void set_value(const std::string& value, std::size_t column = 0);
-  std::string value(std::size_t column = 0) const;
+  void set_default(const std::string& value);
+  void set_value(const std::string& value);
+  void set_value(const std::string& value, std::size_t column);
+  std::string value(std::size_t column) const;
+  std::string value() const;
   std::string default_value(std::size_t column = 0) const;
   bool is_group() const override { return false; }
   void reset();
@@ -36,7 +39,7 @@ Q_SIGNALS:
 
 private:
   std::string m_value;
-  const std::string m_default;
+  std::string m_default;
 };
 
 class PreferencesTreeGroupItem : public PreferencesTreeItem
