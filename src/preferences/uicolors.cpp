@@ -29,6 +29,8 @@ QVariant UiColors::data(int column, const PreferencesTreeValueItem& item, int ro
     return Color(item.value(column-1)).to_qcolor();
   case Qt::EditRole:
     return QString::fromStdString(Color(item.value(column-1)).to_hex());
+  case DEFAULT_VALUE_ROLE:
+    return QString::fromStdString(Color(item.default_value(column-1)).to_hex());
   default:
     return QVariant();
   }
@@ -36,7 +38,7 @@ QVariant UiColors::data(int column, const PreferencesTreeValueItem& item, int ro
 
 bool UiColors::set_data(int column, PreferencesTreeValueItem& item, const QVariant& value)
 {
-  item.set_value(column-1, Color(value.value<QColor>()).to_hex());
+  item.set_value(Color(value.value<QColor>()).to_hex(), column-1);
   return true;
 }
 

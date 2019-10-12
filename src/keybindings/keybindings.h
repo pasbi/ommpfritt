@@ -31,11 +31,8 @@ public:
   make_menus(CommandInterface& context, const std::vector<std::string>& actions) const;
 
   std::string find_action(const std::string& context, const QKeySequence& sequence) const;
-  void reset();
 
 public:
-  static constexpr auto DEFAULT_KEY_SEQUENCE_ROLE = Qt::UserRole + 1;
-
   QVariant data(int column, const PreferencesTreeValueItem &item, int role) const override;
   bool set_data(int column, PreferencesTreeValueItem &item, const QVariant &value) override;
 

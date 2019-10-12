@@ -14,6 +14,7 @@ UiColorEdit::UiColorEdit(QWidget* parent) : QWidget(parent), m_ui(new Ui::UiColo
   m_ui->pb_reset->setIcon(QIcon(":/icons/Revert.png"));
 
   connect(m_ui->pb_reset, &QPushButton::clicked, [this]() {
+    set_color(m_default_color);
   });
 }
 
@@ -22,9 +23,15 @@ UiColorEdit::~UiColorEdit()
 {
 }
 
+void UiColorEdit::set_default_color(const Color& color)
+{
+  m_default_color = color;
+}
+
 void UiColorEdit::set_color(const Color& color)
 {
   m_color = color;
+  update();
 }
 
 Color UiColorEdit::color() const

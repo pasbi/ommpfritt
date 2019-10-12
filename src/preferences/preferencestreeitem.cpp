@@ -8,36 +8,37 @@ PreferencesTreeItem::PreferencesTreeItem(const std::string& name) : name(name) {
 
 PreferencesTreeValueItem::
 PreferencesTreeValueItem(const std::string& group, const std::string& name, const std::string& value)
-  : PreferencesTreeItem(name), group(group), m_value(value)
+  : PreferencesTreeItem(name), group(group), m_value(value), m_default(value)
 {
 }
 
-void PreferencesTreeValueItem::set_value(const std::string& value)
-{
-  if (value != m_value) {
-    m_value = value;
-    Q_EMIT value_changed(value);
-  }
-}
-
-std::string PreferencesTreeValueItem::value() const { return m_value; }
-
-void PreferencesTreeValueItem::set_value(std::size_t column, const std::string& value)
+void PreferencesTreeValueItem::set_value(const std::string& value, std::size_t column)
 {
   QStringList columns = QString::fromStdString(m_value).split("/");
   columns[column] = QString::fromStdString(value);
-  set_value(columns.join("/").toStdString());
+  const auto joined_value = columns.join("/").toStdString();
+  if (joined_value != m_value) {
+    m_value = joined_value;
+    Q_EMIT(value_changed(m_value));
+  }
 }
 
 std::string PreferencesTreeValueItem::value(std::size_t column) const
 {
-  LINFO << m_value;
   return QString::fromStdString(m_value).split("/")[column].toStdString();
 }
 
-void PreferencesTreeValueItem::set_column_count(std::size_t c)
+std::string PreferencesTreeValueItem::default_value(std::size_t column) const
 {
-  m_value = QString("/").repeated(c-1).toStdString();
+  return QString::fromStdString(m_default).split("/")[column].toStdString();
+}
+
+void PreferencesTreeValueItem::reset()
+{
+  if (m_default != m_value) {
+    m_value = m_default;
+    Q_EMIT(value_changed(m_value));
+  }
 }
 
 PreferencesTreeGroupItem::PreferencesTreeGroupItem(const std::string& group)

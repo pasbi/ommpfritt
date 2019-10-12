@@ -22,6 +22,15 @@ PreferencesTree::~PreferencesTree()
 
 }
 
+void PreferencesTree::reset()
+{
+  for (auto&& group : groups()) {
+    for (auto&& value : group->values) {
+      value->reset();
+    }
+  }
+}
+
 void PreferencesTree::save_in_qsettings(const std::string& q_settings_group) const
 {
   QSettings settings;

@@ -65,11 +65,6 @@ namespace omm
 
 KeyBindings::KeyBindings() : PreferencesTree("://default_keybindings.cfg")
 {
-  for (auto&& group : groups()) {
-    for (auto&& value : group->values) {
-      value->user_data["default"] = value->value();
-    }
-  }
   load_from_qsettings(keybindings_group);
 }
 
@@ -96,15 +91,6 @@ std::string KeyBindings::find_action(const std::string& context, const QKeySeque
   }
 }
 
-void KeyBindings::reset()
-{
-  for (auto&& group : groups()) {
-    for (auto&& value : group->values) {
-      value->set_value(value->user_data["default"]);
-    }
-  }
-}
-
 QVariant KeyBindings::data(int column, const PreferencesTreeValueItem& item, int role) const
 {
   switch (role) {
@@ -117,15 +103,17 @@ QVariant KeyBindings::data(int column, const PreferencesTreeValueItem& item, int
       return QVariant();
     }
   case Qt::DisplayRole:
-    return ks(item.value(column)).toString(QKeySequence::NativeText);
+    return ks(item.value(column-1)).toString(QKeySequence::NativeText);
   case Qt::FontRole:
-    if (ks(item.user_data.at("default")).matches(ks(item.value())) != QKeySequence::ExactMatch) {
+    if (ks(item.default_value(column-1)).matches(ks(item.value())) != QKeySequence::ExactMatch) {
       auto font = QApplication::font();
       font.setItalic(true);
       return font;
     } else {
       return QVariant();
     }
+  case DEFAULT_VALUE_ROLE:
+    return ks(item.default_value(column-1));
   default:
     return QVariant();
   }
@@ -134,7 +122,7 @@ QVariant KeyBindings::data(int column, const PreferencesTreeValueItem& item, int
 bool KeyBindings::set_data(int column, PreferencesTreeValueItem& item, const QVariant& value)
 {
   const QKeySequence sequence = value.value<QKeySequence>();
-  item.set_value(column, sequence.toString(QKeySequence::PortableText).toStdString());
+  item.set_value(sequence.toString(QKeySequence::PortableText).toStdString(), column-1);
   return true;
 }
 

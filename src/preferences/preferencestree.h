@@ -23,6 +23,7 @@ class PreferencesTree : public QAbstractItemModel
 public:
   PreferencesTree(const std::string filename);
   ~PreferencesTree();
+  void reset();
 
   void save_in_qsettings(const std::string& q_settings_group) const;
   void load_from_qsettings(const std::string& q_settings_group);
@@ -32,7 +33,6 @@ public:
   PreferencesTreeGroupItem* group(const std::string& name) const;
   std::vector<PreferencesTreeGroupItem*> groups() const;
   PreferencesTreeValueItem* value(const std::string group_name, const std::string& key) const;
-  void reset();
 
   void store();
   void restore();
@@ -50,6 +50,7 @@ public:
   bool is_group(const QModelIndex& index) const;
   PreferencesTreeGroupItem& group(const QModelIndex& index) const;
   PreferencesTreeValueItem& value(const QModelIndex& index) const;
+  static constexpr auto DEFAULT_VALUE_ROLE = Qt::UserRole + 1;
 
 protected:
   virtual bool set_data(int column, PreferencesTreeValueItem& item, const QVariant& value) = 0;

@@ -9,8 +9,6 @@ namespace omm
 
 class PreferencesTreeItem
 {
-public:
-  std::map<std::string, std::string> user_data;
 protected:
   explicit PreferencesTreeItem(const std::string& name);
   virtual ~PreferencesTreeItem() = default;
@@ -23,15 +21,13 @@ class PreferencesTreeValueItem: public QObject, public PreferencesTreeItem
 {
   Q_OBJECT
 public:
-  PreferencesTreeValueItem(const std::string& group, const std::string& name, const std::string& value);
-  void set_value(const std::string& value);
-  std::string value() const;
-
-  void set_value(std::size_t column, const std::string& value);
-  std::string value(std::size_t column) const;
-  void set_column_count(std::size_t c);
-
+  PreferencesTreeValueItem(const std::string& group, const std::string& name,
+                           const std::string& value);
+  void set_value(const std::string& value, std::size_t column = 0);
+  std::string value(std::size_t column = 0) const;
+  std::string default_value(std::size_t column = 0) const;
   bool is_group() const override { return false; }
+  void reset();
 
   const std::string group;
 
@@ -40,6 +36,7 @@ Q_SIGNALS:
 
 private:
   std::string m_value;
+  const std::string m_default;
 };
 
 class PreferencesTreeGroupItem : public PreferencesTreeItem
