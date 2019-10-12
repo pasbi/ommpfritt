@@ -11,13 +11,9 @@ namespace omm
 UiColorEdit::UiColorEdit(QWidget* parent) : QWidget(parent), m_ui(new Ui::UiColorEdit)
 {
   m_ui->setupUi(this);
-  m_ui->pb_clear->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCloseButton));
   m_ui->pb_reset->setIcon(QIcon(":/icons/Revert.png"));
 
   connect(m_ui->pb_reset, &QPushButton::clicked, [this]() {
-  });
-
-  connect(m_ui->pb_clear, &QPushButton::clicked, [this]() {
   });
 }
 

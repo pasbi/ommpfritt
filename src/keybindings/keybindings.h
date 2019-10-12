@@ -36,8 +36,8 @@ public:
 public:
   static constexpr auto DEFAULT_KEY_SEQUENCE_ROLE = Qt::UserRole + 1;
 
-  std::string decode_data(const QVariant &value) const override;
-  QVariant encode_data(const PreferencesTreeValueItem& item, int role) const override;
+  QVariant data(int column, const PreferencesTreeValueItem &item, int role) const override;
+  bool set_data(int column, PreferencesTreeValueItem &item, const QVariant &value) override;
 
 private:
   QKeySequence make_key_sequence(const QKeyEvent& event) const;

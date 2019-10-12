@@ -23,8 +23,10 @@ KeyBindingsPage::KeyBindingsPage(KeyBindings& key_bindings, QWidget* parent)
   , m_key_bindings(key_bindings)
 {
   m_ui->setupUi(this);
-  m_ui->treeView->set_delegate(std::make_unique<KeyBindingsTreeViewDelegate>());
-  m_ui->treeView->set_model(m_proxy_model);
+  std::vector<std::unique_ptr<AbstractPreferencesTreeViewDelegate>> delegates(1);
+  delegates.at(0) = std::make_unique<KeyBindingsTreeViewDelegate>();
+  m_ui->treeView->set_model(m_proxy_model, std::move(delegates));
+  m_ui->treeView->header()->hide();
   connect(m_ui->pb_reset, SIGNAL(clicked()), this, SLOT(reset()));
   connect(m_ui->pb_reset_filter, SIGNAL(clicked()), this, SLOT(reset_filter()));
   connect(m_ui->le_name_filter, SIGNAL(textChanged(const QString&)),

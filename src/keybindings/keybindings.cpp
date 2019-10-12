@@ -105,12 +105,7 @@ void KeyBindings::reset()
   }
 }
 
-std::string KeyBindings::decode_data(const QVariant& value) const
-{
-  return value.value<QKeySequence>().toString(QKeySequence::PortableText).toStdString();
-}
-
-QVariant KeyBindings::encode_data(const PreferencesTreeValueItem& item, int role) const
+QVariant KeyBindings::data(int column, const PreferencesTreeValueItem& item, int role) const
 {
   switch (role) {
   case Qt::EditRole:
@@ -122,7 +117,7 @@ QVariant KeyBindings::encode_data(const PreferencesTreeValueItem& item, int role
       return QVariant();
     }
   case Qt::DisplayRole:
-    return ks(item.value()).toString(QKeySequence::NativeText);
+    return ks(item.value(column)).toString(QKeySequence::NativeText);
   case Qt::FontRole:
     if (ks(item.user_data.at("default")).matches(ks(item.value())) != QKeySequence::ExactMatch) {
       auto font = QApplication::font();
@@ -134,6 +129,13 @@ QVariant KeyBindings::encode_data(const PreferencesTreeValueItem& item, int role
   default:
     return QVariant();
   }
+}
+
+bool KeyBindings::set_data(int column, PreferencesTreeValueItem& item, const QVariant& value)
+{
+  const QKeySequence sequence = value.value<QKeySequence>();
+  item.set_value(column, sequence.toString(QKeySequence::PortableText).toStdString());
+  return true;
 }
 
 std::pair<std::string, QMenu*>

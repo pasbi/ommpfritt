@@ -66,6 +66,8 @@ Application::Application(QApplication& app)
   }
   scene.set_selection({});
 
+  m_app.setPalette(ui_colors.make_palette());;
+
   m_reset_keysequence_timer.setSingleShot(true);
   m_reset_keysequence_timer.setInterval(1000);
   connect(&m_reset_keysequence_timer, &QTimer::timeout, this, [this]() {

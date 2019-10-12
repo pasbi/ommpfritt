@@ -1102,6 +1102,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Preferences</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>save as ...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserPropertyDialog</name>

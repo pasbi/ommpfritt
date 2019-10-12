@@ -1,4 +1,5 @@
 #include "preferences/preferencestreeitem.h"
+#include "logging.h"
 
 namespace omm
 {
@@ -20,6 +21,24 @@ void PreferencesTreeValueItem::set_value(const std::string& value)
 }
 
 std::string PreferencesTreeValueItem::value() const { return m_value; }
+
+void PreferencesTreeValueItem::set_value(std::size_t column, const std::string& value)
+{
+  QStringList columns = QString::fromStdString(m_value).split("/");
+  columns[column] = QString::fromStdString(value);
+  set_value(columns.join("/").toStdString());
+}
+
+std::string PreferencesTreeValueItem::value(std::size_t column) const
+{
+  LINFO << m_value;
+  return QString::fromStdString(m_value).split("/")[column].toStdString();
+}
+
+void PreferencesTreeValueItem::set_column_count(std::size_t c)
+{
+  m_value = QString("/").repeated(c-1).toStdString();
+}
 
 PreferencesTreeGroupItem::PreferencesTreeGroupItem(const std::string& group)
   : PreferencesTreeItem(group)

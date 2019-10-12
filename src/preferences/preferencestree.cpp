@@ -65,7 +65,7 @@ void PreferencesTree::load_from_qsettings(const std::string& q_settings_group)
 bool PreferencesTree::save_to_file(const std::string& filename) const
 {
   QFile file(QString::fromStdString(filename));
-  if (file.open(QIODevice::WriteOnly)) {
+  if (!file.open(QIODevice::WriteOnly)) {
     LERROR << "failed to open file '" << filename << "'.";
     return false;
   }
@@ -300,7 +300,7 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
         return QVariant();
       }
     default:
-      return encode_data(value(index), role);
+      return data(index.column(), value(index), role);
     }
   }
 }
@@ -310,23 +310,26 @@ bool PreferencesTree::setData(const QModelIndex& index, const QVariant& value, i
   auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());
   if (role != Qt::EditRole) {
     return false;
-  } else if (index.column() != 1) {
+  } else if (index.column() == 0) {
     return false;
   } else if (ptr->is_group()) {
     return false;
   }
 
   auto* value_item = static_cast<PreferencesTreeValueItem*>(ptr);
-  value_item->set_value(decode_data(value));
-  Q_EMIT dataChanged(index, index);
-  return true;
+  if (set_data(index.column(), *value_item, value)) {
+    Q_EMIT dataChanged(index, index);
+    return true;
+  } else {
+    return false;
+  }
 }
 
 Qt::ItemFlags PreferencesTree::flags(const QModelIndex& index) const
 {
   Qt::ItemFlags flags = Qt::ItemIsEnabled;
   if (!static_cast<PreferencesTreeItem*>(index.internalPointer())->is_group()) {
-    if (index.column() == 1) {
+    if (index.column() >= 1) {
       flags |= Qt::ItemIsEditable;
     }
   }

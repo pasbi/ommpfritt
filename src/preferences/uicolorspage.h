@@ -23,6 +23,7 @@ public:
 
 private:
   std::unique_ptr<Ui::UiColorsPage> m_ui;
+  UiColors& m_colors;
 };
 
 }  // namespace omm

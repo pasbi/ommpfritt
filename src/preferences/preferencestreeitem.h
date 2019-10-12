@@ -26,6 +26,11 @@ public:
   PreferencesTreeValueItem(const std::string& group, const std::string& name, const std::string& value);
   void set_value(const std::string& value);
   std::string value() const;
+
+  void set_value(std::size_t column, const std::string& value);
+  std::string value(std::size_t column) const;
+  void set_column_count(std::size_t c);
+
   bool is_group() const override { return false; }
 
   const std::string group;

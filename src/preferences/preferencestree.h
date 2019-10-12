@@ -52,8 +52,8 @@ public:
   PreferencesTreeValueItem& value(const QModelIndex& index) const;
 
 protected:
-  virtual std::string decode_data(const QVariant& value) const = 0;
-  virtual QVariant encode_data(const PreferencesTreeValueItem& item, int role) const = 0;
+  virtual bool set_data(int column, PreferencesTreeValueItem& item, const QVariant& value) = 0;
+  virtual QVariant data(int column, const PreferencesTreeValueItem& item, int role) const = 0;
 
 private:
   /**
