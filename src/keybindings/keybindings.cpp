@@ -105,8 +105,9 @@ void KeyBindings::reset()
   }
 }
 
-QVariant KeyBindings::data(const PreferencesTreeValueItem& value, int role) const
+QVariant KeyBindings::data(const PreferencesTreeValueItem& value, int column, int role) const
 {
+  Q_UNUSED(column)
   switch (role) {
   case Qt::DisplayRole:
       return ks(value.value()).toString(QKeySequence::NativeText);
@@ -133,21 +134,9 @@ QVariant KeyBindings::data(const PreferencesTreeValueItem& value, int role) cons
   return QVariant();
 }
 
-bool KeyBindings::setData(const QModelIndex& index, const QVariant& value, int role)
+std::string KeyBindings::set_data(const QVariant& value) const
 {
-  auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());
-  if (role != Qt::EditRole) {
-    return false;
-  } else if (index.column() != 1) {
-    return false;
-  } else if (ptr->is_group()) {
-    return false;
-  }
-
-  auto* value_item = static_cast<PreferencesTreeValueItem*>(ptr);
-  value_item->set_value(value.value<QKeySequence>().toString(QKeySequence::PortableText).toStdString());
-  Q_EMIT dataChanged(index, index);
-  return true;
+  return value.value<QKeySequence>().toString(QKeySequence::PortableText).toStdString();
 }
 
 std::pair<std::string, QMenu*>

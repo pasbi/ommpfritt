@@ -3,29 +3,13 @@
 #include <QPaintEvent>
 #include <QPainter>
 
-namespace
-{
-
-auto to_qcolor(const omm::Color& color)
-{
-  const auto cast = [](const double t) { return std::clamp(static_cast<int>(t * 255.0), 0, 255); };
-  return QColor(cast(color.red()), cast(color.green()), cast(color.blue()), cast(color.alpha()));
-}
-
-auto from_qcolor(const QColor& color)
-{
-  return omm::Color(color.red(), color.green(), color.blue(), color.alpha()) / 255.0;
-}
-
-}  // namespace
-
 namespace omm
 {
 
 void ColorEdit::paintEvent(QPaintEvent*)
 {
   QPainter painter(this);
-  painter.fillRect(rect(), to_qcolor(m_current_color));
+  painter.fillRect(rect(), m_current_color);
 }
 
 void ColorEdit::set_value(const value_type& value)
@@ -47,9 +31,9 @@ ColorEdit::value_type ColorEdit::value() const { return m_current_color; }
 
 void ColorEdit::mouseDoubleClickEvent(QMouseEvent*)
 {
-  const auto color = QColorDialog::getColor(to_qcolor(m_current_color), this);
+  const auto color = QColorDialog::getColor(m_current_color, this);
   if (color.isValid()) {
-    set_value(from_qcolor(color));
+    set_value(color);
   }
 }
 

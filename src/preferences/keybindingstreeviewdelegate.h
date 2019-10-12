@@ -3,7 +3,7 @@
 #include <QKeySequenceEdit>
 #include <memory>
 #include "preferences/preferencestreeview.h"
-#include "widgets/keysequenceedit.h"
+#include "preferences/keysequenceedit.h"
 #include "preferences/preferencestreeviewdelegate.h"
 
 namespace omm

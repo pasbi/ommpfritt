@@ -1,4 +1,4 @@
-#include "widgets/keysequenceedit.h"
+#include "preferences/keysequenceedit.h"
 #include <QKeySequenceEdit>
 #include <QPushButton>
 #include <QHBoxLayout>

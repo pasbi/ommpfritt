@@ -1,15 +1,15 @@
 #include "preferences/preferencestreeview.h"
 #include "preferences/preferencestreeviewdelegate.h"
-#include <QPushButton>
+#include "preferences/uicoloredit.h"
 
 namespace omm
 {
 
-class UiColorsTreeViewDelegate : public SettingsTreeViewDelegate<QPushButton>
+class UiColorsTreeViewDelegate : public SettingsTreeViewDelegate<UiColorEdit>
 {
 protected:
-  void set_editor_data(QPushButton &editor, const QModelIndex &index) const override;
-  bool set_model_data(QPushButton &editor, QAbstractItemModel &model, const QModelIndex &index) const override;
+  void set_editor_data(UiColorEdit &editor, const QModelIndex &index) const override;
+  bool set_model_data(UiColorEdit &editor, QAbstractItemModel &model, const QModelIndex &index) const override;
 };
 
 }  // namespace omm

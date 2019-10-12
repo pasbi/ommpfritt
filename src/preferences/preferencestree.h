@@ -45,10 +45,12 @@ public:
   int rowCount(const QModelIndex& parent) const override;
   int columnCount(const QModelIndex &parent = QModelIndex()) const override;
   QVariant data(const QModelIndex& index, int role) const override;
+  bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
   Qt::ItemFlags flags(const QModelIndex& index) const override;
 
 protected:
-  virtual QVariant data(const PreferencesTreeValueItem& value, int role) const = 0;
+  virtual std::string set_data(const QVariant& value) const = 0;
+  virtual QVariant data(const PreferencesTreeValueItem& value, int column, int role) const = 0;
 
 private:
   /**

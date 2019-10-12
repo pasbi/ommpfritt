@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>KeySequenceEdit</class>
- <widget class="QWidget" name="KeySequenceEdit">
+ <class>UiColorEdit</class>
+ <widget class="QWidget" name="UiColorEdit">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>186</width>
-    <height>45</height>
+    <width>400</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,0">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QKeySequenceEdit" name="key_sequence_edit"/>
+    <widget class="QWidget" name="widget" native="true"/>
    </item>
    <item>
     <widget class="QPushButton" name="pb_reset">

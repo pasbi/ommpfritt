@@ -1090,6 +1090,13 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
+    <name>UiColorEdit</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>UiColorsPage</name>
     <message>
         <source>Preferences</source>

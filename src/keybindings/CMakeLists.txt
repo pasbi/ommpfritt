@@ -13,6 +13,7 @@ file(GLOB HEADERS
   commandinterface.h
   keybinding.h
   keybindingsdialog.h
+  keybindings.h
   menu.h
 )
 

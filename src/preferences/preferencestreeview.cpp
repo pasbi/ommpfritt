@@ -2,7 +2,6 @@
 #include <QHeaderView>
 #include "keybindings/keybindings.h"
 #include "logging.h"
-#include "widgets/keysequenceedit.h"
 #include "preferences/preferencestreeviewdelegate.h"
 
 namespace omm

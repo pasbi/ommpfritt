@@ -296,18 +296,35 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
     const auto& value = *static_cast<const PreferencesTreeValueItem*>(ptr);
 
     if (index.column() == 1) {
-      return data(value, role);
+      return data(value, index.column(), role);
     } else {
       switch (role) {
       case Qt::DisplayRole:
         return QCoreApplication::translate("", value.name.c_str());
       case Qt::BackgroundRole:
-        return data(value, role);
+        return data(value, index.column(), role);
       default:
         return QVariant();
       }
     }
   }
+}
+
+bool PreferencesTree::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+  auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());
+  if (role != Qt::EditRole) {
+    return false;
+  } else if (index.column() != 1) {
+    return false;
+  } else if (ptr->is_group()) {
+    return false;
+  }
+
+  auto* value_item = static_cast<PreferencesTreeValueItem*>(ptr);
+  value_item->set_value(set_data(value));
+  Q_EMIT dataChanged(index, index);
+  return true;
 }
 
 Qt::ItemFlags PreferencesTree::flags(const QModelIndex& index) const

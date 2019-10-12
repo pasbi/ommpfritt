@@ -3,11 +3,13 @@ file(GLOB SOURCES
   keybindingspage.cpp
   keybindingsproxymodel.cpp
   keybindingstreeviewdelegate.cpp
+  keysequenceedit.cpp
   preferencedialog.cpp
   preferencestree.cpp
   preferencestreeitem.cpp
   preferencestreeview.cpp
   preferencestreeviewdelegate.cpp
+  uicoloredit.cpp
   uicolors.cpp
   uicolorspage.cpp
   uicolorstreeviewdelegate.cpp
@@ -17,12 +19,14 @@ file(GLOB HEADERS
   keybindingspage.h
   keybindingsproxymodel.h
   keybindingstreeviewdelegate.h
+  keysequenceedit.h
   preferencedialog.h
   preferencepage.h
   preferencestree.h
   preferencestreeitem.h
   preferencestreeview.h
   preferencestreeviewdelegate.h
+  uicoloredit.h
   uicolors.h
   uicolorspage.h
   uicolorstreeviewdelegate.h
