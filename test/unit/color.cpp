@@ -3,6 +3,7 @@
 #include <cmath>
 #include <QDebug>
 #include "color/color.h"
+#include "logging.h"
 
 namespace
 {
@@ -41,10 +42,11 @@ bool color_eq(const omm::Color& a, const omm::Color& b)
 {
   const auto d = a - b;
   const double eps = 1.0/255.0;
-  return std::abs(d.red()) < eps
-      && std::abs(d.green()) < eps
-      && std::abs(d.blue()) < eps
-      && std::abs(d.alpha()) < eps;
+  const double max = std::max(std::abs(d.red()),
+                              std::max(std::abs(d.green()),
+                                       std::max(std::abs(d.blue()),
+                                                std::abs(d.alpha()))));
+  return max < eps;
 }
 
 }  // namespace
@@ -97,6 +99,27 @@ TEST(color, hex_to_rgb)
         for (auto&& [a, a_s] : hex_lut) {
           EXPECT_TRUE(color_eq(omm::Color("#" + r_s + g_s + b_s), omm::Color(r, g, b)));
           EXPECT_TRUE(color_eq(omm::Color("#" + r_s + g_s + b_s + a_s), omm::Color(r, g, b, a)));
+        }
+      }
+    }
+  }
+}
+
+TEST(color, identity)
+{
+  static constexpr auto vs = { 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9 };
+  for (double r : vs) {
+    for (double g : vs) {
+      for (double b : vs) {
+        for (double a : vs) {
+          const omm::Color c(r, g, b, a);
+          const QColor qc(std::round(255.0 * r),
+                          std::round(255.0 * g),
+                          std::round(255.0 * b),
+                          std::round(255.0 * a));
+          EXPECT_TRUE(color_eq(omm::Color(c.to_qcolor()), c));
+          EXPECT_TRUE(color_eq(omm::Color(c.to_hex()), c));
+          EXPECT_TRUE(color_eq(omm::Color(qc), c));
         }
       }
     }

@@ -49,8 +49,8 @@ public:
   Qt::ItemFlags flags(const QModelIndex& index) const override;
 
 protected:
-  virtual std::string set_data(const QVariant& value) const = 0;
-  virtual QVariant data(const PreferencesTreeValueItem& value, int column, int role) const = 0;
+  virtual std::string decode_data(const QVariant& value) const = 0;
+  virtual QVariant encode_data(const PreferencesTreeValueItem& item, int role) const = 0;
 
 private:
   /**

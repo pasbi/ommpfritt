@@ -10,8 +10,8 @@ class UiColors : public PreferencesTree
 public:
   explicit UiColors();
   ~UiColors();
-  QVariant data(const PreferencesTreeValueItem &value, int column, int role) const override;
-  std::string set_data(const QVariant &value) const override;
+  std::string decode_data(const QVariant &value) const override;
+  QVariant encode_data(const PreferencesTreeValueItem& item, int role) const override;
 };
 
 }  // namespace omm

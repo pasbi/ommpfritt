@@ -5,13 +5,14 @@ namespace omm
 
 void UiColorsTreeViewDelegate::set_editor_data(UiColorEdit& editor, const QModelIndex& index) const
 {
-  editor.set_color(index.data(Qt::EditRole).value<QColor>());
+  const Color color = Color(index.data(Qt::EditRole).toString().toStdString());
+  editor.set_color(color);
 }
 
 bool UiColorsTreeViewDelegate::set_model_data(UiColorEdit& editor, QAbstractItemModel& model,
                                                const QModelIndex& index) const
 {
-  return model.setData(index, QColor(editor.color()), Qt::EditRole);
+  return model.setData(index, editor.color().to_qcolor(), Qt::EditRole);
 }
 
 }  // namespace omm

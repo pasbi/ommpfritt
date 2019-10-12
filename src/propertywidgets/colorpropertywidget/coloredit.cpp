@@ -9,7 +9,7 @@ namespace omm
 void ColorEdit::paintEvent(QPaintEvent*)
 {
   QPainter painter(this);
-  painter.fillRect(rect(), m_current_color);
+  painter.fillRect(rect(), m_current_color.to_qcolor());
 }
 
 void ColorEdit::set_value(const value_type& value)
@@ -31,9 +31,9 @@ ColorEdit::value_type ColorEdit::value() const { return m_current_color; }
 
 void ColorEdit::mouseDoubleClickEvent(QMouseEvent*)
 {
-  const auto color = QColorDialog::getColor(m_current_color, this);
+  const auto color = QColorDialog::getColor(m_current_color.to_qcolor(), this);
   if (color.isValid()) {
-    set_value(color);
+    set_value(Color(color));
   }
 }
 

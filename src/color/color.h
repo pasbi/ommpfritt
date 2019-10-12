@@ -16,7 +16,7 @@ public:
   explicit Color(const std::vector<double>& components);
   explicit Color(const std::array<double, 4>& rgba);
   explicit Color(const std::array<double, 3>& rgb);
-  Color(const QColor& c);
+  explicit Color(const QColor& c);
   explicit Color();
   Color(const std::string& code);
 
@@ -36,7 +36,6 @@ public:
   double operator[](const std::size_t i) const;
   void to_hsv(double& hue, double& saturation, double& value) const;
   static Color from_hsv(double hue, double saturation, double value, double alpha = 1.0);
-  operator QColor() const;
   bool decode(const std::string& code);
   std::string to_hex(bool no_alpha = false) const;
   Color& operator+=(const Color& a);
@@ -48,6 +47,7 @@ public:
   Color& operator/=(const Color& a);
   Color& operator/=(double a);
   Color operator-() const;
+  QColor to_qcolor() const;
 
 private:
   std::array<double, 4> m_components;

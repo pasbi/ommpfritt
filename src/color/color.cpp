@@ -69,9 +69,8 @@ Color::Color(const std::array<double, 3>& rgb) : m_components({ rgb[0], rgb[1], 
 {
 }
 
-Color::Color(const QColor& c) : Color(c.red(), c.green(), c.blue(), c.alpha())
+Color::Color(const QColor& c) : Color(c.redF(), c.greenF(), c.blueF(), c.alphaF())
 {
-  *this = *this / 255.0;
 }
 
 Color Color::clamped() const
@@ -230,10 +229,14 @@ Color Color::operator-() const
   return Color(-red(), -green(), -blue(), -alpha());
 }
 
-omm::Color::operator QColor() const
+QColor Color::to_qcolor() const
 {
-  const auto cast = [](const double t) { return std::clamp(static_cast<int>(t * 255.0), 0, 255); };
-  return QColor(cast(red()), cast(green()), cast(blue()), cast(alpha()));
+  QColor qc;
+  qc.setRedF(red());
+  qc.setGreenF(green());
+  qc.setBlueF(blue());
+  qc.setAlphaF(alpha());
+  return qc;
 }
 
 bool operator==(const Color& a, const Color& b)
@@ -269,7 +272,7 @@ std::ostream& operator<<(std::ostream& ostream, const Color& color)
 
 Color operator*(const Color& c, const double s)
 {
-  return c * Color(s, s, s, 1.0);
+  return c * Color(s, s, s, s);
 }
 
 Color operator*(const double s, const Color& c)
@@ -284,12 +287,12 @@ Color operator*(const Color& a, const Color& b)
 
 Color operator/(const Color& c, const double s)
 {
-  return c / Color(s, s, s, 1.0);
+  return c / Color(s, s, s, s);
 }
 
 Color operator/(const double s, const Color& c)
 {
-  return Color(s, s, s, 1.0) / c;
+  return Color(s, s, s, s) / c;
 }
 
 Color operator/(const Color& a, const Color& b)
@@ -299,7 +302,7 @@ Color operator/(const Color& a, const Color& b)
 
 Color operator+(const Color& c, const double s)
 {
-  return c + Color(s, s, s, 0.0);
+  return c + Color(s, s, s, s);
 }
 
 Color operator+(const double s, const Color& c)

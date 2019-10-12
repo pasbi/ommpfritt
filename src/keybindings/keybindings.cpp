@@ -105,38 +105,35 @@ void KeyBindings::reset()
   }
 }
 
-QVariant KeyBindings::data(const PreferencesTreeValueItem& value, int column, int role) const
+std::string KeyBindings::decode_data(const QVariant& value) const
 {
-  Q_UNUSED(column)
+  return value.value<QKeySequence>().toString(QKeySequence::PortableText).toStdString();
+}
+
+QVariant KeyBindings::encode_data(const PreferencesTreeValueItem& item, int role) const
+{
   switch (role) {
-  case Qt::DisplayRole:
-      return ks(value.value()).toString(QKeySequence::NativeText);
   case Qt::EditRole:
-      return ks(value.value());
+    return ks(item.value());
   case Qt::BackgroundRole:
-    if (collides(value)){
+    if (collides(item)){
       return QColor(Qt::red).lighter();
     } else {
       return QVariant();
     }
+  case Qt::DisplayRole:
+    return ks(item.value()).toString(QKeySequence::NativeText);
   case Qt::FontRole:
-    if (ks(value.user_data.at("default")).matches(ks(value.value())) != QKeySequence::ExactMatch) {
+    if (ks(item.user_data.at("default")).matches(ks(item.value())) != QKeySequence::ExactMatch) {
       auto font = QApplication::font();
       font.setItalic(true);
       return font;
     } else {
       return QVariant();
     }
-  case DEFAULT_KEY_SEQUENCE_ROLE:
-    return ks(value.user_data.at("default"));
+  default:
+    return QVariant();
   }
-
-  return QVariant();
-}
-
-std::string KeyBindings::set_data(const QVariant& value) const
-{
-  return value.value<QKeySequence>().toString(QKeySequence::PortableText).toStdString();
 }
 
 std::pair<std::string, QMenu*>

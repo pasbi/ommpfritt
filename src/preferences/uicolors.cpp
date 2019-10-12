@@ -7,27 +7,26 @@ namespace omm
 
 UiColors::UiColors() : PreferencesTree(":/ui-colors-dark.cfg")
 {
-
 }
 
 UiColors::~UiColors()
 {
-
 }
 
-QVariant UiColors::data(const PreferencesTreeValueItem& value, int column, int role) const
+std::string UiColors::decode_data(const QVariant& value) const
+{
+  return Color(value.value<QColor>()).to_hex();
+}
+
+QVariant UiColors::encode_data(const PreferencesTreeValueItem& item, int role) const
 {
   switch (role) {
   case Qt::DisplayRole:
-    [[fallthrough]];
+    return QVariant();
   case Qt::BackgroundRole:
-    if (column == 0) {
-      return QVariant();
-    } else {
-      [[fallthrough]];
-    }
+    return Color(item.value()).to_qcolor();
   case Qt::EditRole:
-    return QColor(Color(value.value()));
+    return QString::fromStdString(Color(item.value()).to_hex());
   default:
     return QVariant();
   }

@@ -278,14 +278,12 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
     return QVariant();
   }
 
-  const auto* const ptr = static_cast<const PreferencesTreeItem*>(index.internalPointer());
-  if (ptr->is_group()) {
-    const auto& group = *static_cast<const PreferencesTreeGroupItem*>(ptr);
-    switch (role) {
-    case Qt::DisplayRole:
-      switch (index.column()) {
-      case 0:
-        return QString::fromStdString(group.name);
+  if (is_group(index)) {
+    switch (index.column()) {
+    case 0:
+      switch (role) {
+      case Qt::DisplayRole:
+        return QCoreApplication::translate("", group(index).name.c_str());
       default:
         return QVariant();
       }
@@ -293,19 +291,16 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
       return QVariant();
     }
   } else {
-    const auto& value = *static_cast<const PreferencesTreeValueItem*>(ptr);
-
-    if (index.column() == 1) {
-      return data(value, index.column(), role);
-    } else {
-      switch (role) {
+    switch (index.column()) {
+    case 0:
+      switch(role) {
       case Qt::DisplayRole:
-        return QCoreApplication::translate("", value.name.c_str());
-      case Qt::BackgroundRole:
-        return data(value, index.column(), role);
+        return QCoreApplication::translate("", value(index).name.c_str());
       default:
         return QVariant();
       }
+    default:
+      return encode_data(value(index), role);
     }
   }
 }
@@ -322,7 +317,7 @@ bool PreferencesTree::setData(const QModelIndex& index, const QVariant& value, i
   }
 
   auto* value_item = static_cast<PreferencesTreeValueItem*>(ptr);
-  value_item->set_value(set_data(value));
+  value_item->set_value(decode_data(value));
   Q_EMIT dataChanged(index, index);
   return true;
 }
