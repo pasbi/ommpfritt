@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <QAbstractItemView>
 #include <QIdentityProxyModel>
+#include "preferences/uicolors.h"
 
 namespace omm
 {
@@ -21,14 +22,9 @@ private:
     QVariant data(const QModelIndex& index, int role) const
     {
       if (role == Qt::ForegroundRole) {
-        const auto group = m_view.isEnabled() ? (m_view.window()->isActiveWindow()
-                                                 ? QPalette::Active
-                                                 : QPalette::Inactive)
-                                              : QPalette::Disabled;
-        const auto prole = m_view.selectionModel()->isSelected(index)
-                            ? QPalette::HighlightedText
-                            : QPalette::WindowText;
-        return qApp->palette().color(group, prole);
+        return m_view.selectionModel()->isSelected(index)
+                          ? ui_color(m_view, QPalette::HighlightedText)
+                          : ui_color(m_view, QPalette::WindowText);
       } else {
         return QIdentityProxyModel::data(index, role);
       }

@@ -33,6 +33,7 @@ public:
   void reset();
 
   const std::string group;
+  static std::string value(const std::string& value, std::size_t column);
 
 Q_SIGNALS:
   void value_changed(const std::string& value);

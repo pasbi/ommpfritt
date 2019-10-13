@@ -73,9 +73,8 @@ void KeyBindingsPage::update_expand()
 
 void KeyBindingsPage::reset()
 {
-
   if (QMessageBox::question(this, tr("Reset all key bindings"),
-      tr("Do you really want to reset all keycuts to the default value?\nThis cannot be undone."))
+      tr("Do you really want to reset all key bindings to the default value?\nThis cannot be undone."))
       == QMessageBox::Yes)
   {
     m_key_bindings.reset();

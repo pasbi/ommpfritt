@@ -30,6 +30,7 @@ set_model(QAbstractItemModel& model,
     setItemDelegateForColumn(i+1, m_column_delegates.at(i).get());
   }
   setSelectionMode(QAbstractItemView::NoSelection);
+  expandAll();
 }
 
 void PreferencesTreeView::transfer_editor_data_to_model()

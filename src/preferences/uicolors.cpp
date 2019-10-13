@@ -4,20 +4,69 @@
 #include "color/color.h"
 #include <QApplication>
 #include <QPalette>
+#include <QSettings>
 #include "logging.h"
+#include "mainwindow/application.h"
+#include <QWidget>
+
+
+namespace
+{
+
+static const std::map<QPalette::ColorRole, std::string> role_map {
+  { QPalette::Window,           "window"           },
+  { QPalette::WindowText,       "window text"      },
+  { QPalette::Text,             "text"             },
+  { QPalette::Base,             "base"             },
+  { QPalette::AlternateBase,    "alternate base"   },
+  { QPalette::PlaceholderText,  "placeholder text" },
+  { QPalette::Button,           "button"           },
+  { QPalette::ButtonText,       "button text"      },
+  { QPalette::Light,            "light"            },
+  { QPalette::Midlight,         "midlight"         },
+  { QPalette::Dark,             "dark"             },
+  { QPalette::Mid,              "mid"              },
+  { QPalette::Shadow,           "shadow"           },
+  { QPalette::BrightText,       "bright text"      },
+  { QPalette::Highlight,        "highlight"        },
+  { QPalette::HighlightedText,  "highlighted text" },
+  { QPalette::Link,             "link"             },
+  { QPalette::LinkVisited,      "link visited"     },
+};
+
+static const std::map<std::size_t, QPalette::ColorGroup> group_map {
+  { 0, QPalette::Active },
+  { 1, QPalette::Inactive },
+  { 2, QPalette::Disabled }
+};
+
+}  // namespace
 
 namespace omm
 {
 
 UiColors::UiColors() : PreferencesTree(":/skins/ui-colors-dark.cfg")
 {
-  load_from_qsettings("ui-colors");
+// set this macro to print Qt's default color.
+//#define PRINT_DEFAULT_COLOR_SCHEMA
 
+#ifdef PRINT_DEFAULT_COLOR_SCHEMA
+  for (auto&& [role, name] : role_map) {
+      std::cout << name << ": " << Color(qApp->palette().color(QPalette::Active, role)).to_hex()
+                         << "/" << Color(qApp->palette().color(QPalette::Active, role)).to_hex()
+                         << "/" << Color(qApp->palette().color(QPalette::Active, role)).to_hex()
+                         << std::endl;
+  }
+#endif  // PRINT_DEFAULT_COLOR_SCHEMA
+  m_skins.push_back( { tr("dark"), ":/skins/ui-colors-dark.cfg", "ui-colors-dark" });
+  m_skins.push_back( { tr("light"), ":/skins/ui-colors-light.cfg", "ui-colors-light" });
+  set_skin(QSettings().value("ui-colors-schema", 0).toInt());
 }
 
 UiColors::~UiColors()
 {
-  save_in_qsettings("ui-colors");
+  save_in_qsettings(m_skins.at(m_current_skin_index).qsettings_group);
+  QSettings().setValue("ui-colors-schema", m_current_skin_index);
 }
 
 QVariant UiColors::data(int column, const PreferencesTreeValueItem& item, int role) const
@@ -44,38 +93,11 @@ bool UiColors::set_data(int column, PreferencesTreeValueItem& item, const QVaria
 
 QPalette UiColors::make_palette() const
 {
-  static const std::map<std::string, QPalette::ColorRole> role_map {
-    { "window",           QPalette::Window },
-    { "window text",      QPalette::WindowText },
-    { "text",             QPalette::Text},
-    { "base",             QPalette::Base },
-    { "alternate base",   QPalette::AlternateBase },
-    { "placeholder text", QPalette::PlaceholderText },
-    { "button",           QPalette::Button },
-    { "button text",      QPalette::ButtonText },
-    { "light",            QPalette::Light },
-    { "midlight",         QPalette::Midlight },
-    { "dark",             QPalette::Dark },
-    { "mid",              QPalette::Mid },
-    { "shadow",           QPalette::Shadow },
-    { "bright text",      QPalette::BrightText },
-    { "highlight",        QPalette::Highlight },
-    { "highlighted text", QPalette::HighlightedText },
-    { "link",             QPalette::Link },
-    { "link visited",     QPalette::LinkVisited },
-  };
-
-  static const std::map<std::size_t, QPalette::ColorGroup> group_map {
-      { 0, QPalette::Active },
-      { 1, QPalette::Inactive },
-      { 2, QPalette::Disabled }
-  };
-
   const auto get_widget_color = [this](std::size_t column, const std::string& name) {
     return Color(value("Widget", name)->value(column)).to_qcolor();
   };
   QPalette palette = qApp->palette();
-  for (auto&& [ name, role ] : role_map) {
+  for (auto&& [role, name] : role_map) {
     for (auto&& [column, group] : group_map) {
       palette.setBrush(group, role, get_widget_color(column, name));
     }
@@ -107,6 +129,50 @@ QVariant UiColors::headerData(int section, Qt::Orientation orientation, int role
   default:
     return QVariant();
   }
+}
+
+Color UiColors
+::color(QPalette::ColorGroup pgroup, const std::string& group, const std::string& name) const
+{
+  return Color(stored_value(group, name, group_map.at(pgroup)));
+}
+
+void UiColors::apply()
+{
+  PreferencesTree::apply();
+  qApp->setPalette(make_palette());
+}
+
+QStringList UiColors::skin_names() const
+{
+  return ::transform<QString, QList>(m_skins, [](const SkinInfo& info) {
+    return info.display_name;
+  });
+}
+
+void UiColors::set_skin(std::size_t index)
+{
+  if (m_current_skin_index >= 0) {
+    save_in_qsettings(m_skins.at(m_current_skin_index).qsettings_group);
+  }
+  m_current_skin_index = index;
+  const auto& current_skin = m_skins.at(m_current_skin_index);
+  load_from_file(current_skin.file_name);
+  load_from_qsettings(current_skin.qsettings_group);
+}
+
+QColor ui_color(const QWidget& widget, const std::string& group, const std::string& name)
+{
+  const auto pgroup = widget.isEnabled() ? (widget.window()->isActiveWindow()
+                                            ? QPalette::Active
+                                            : QPalette::Inactive)
+                                         : QPalette::Disabled;
+  return Application::instance().ui_colors.color(pgroup, group, name).to_qcolor();
+}
+
+QColor ui_color(const QWidget& widget, const QPalette::ColorRole& role)
+{
+  return ui_color(widget, "Widget", role_map.at(role));
 }
 
 }  // namespace omm

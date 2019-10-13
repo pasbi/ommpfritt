@@ -33,6 +33,7 @@ public:
   PreferencesTreeGroupItem* group(const std::string& name) const;
   std::vector<PreferencesTreeGroupItem*> groups() const;
   PreferencesTreeValueItem* value(const std::string group_name, const std::string& key) const;
+  const std::string stored_value(const std::string& group_name, const std::string& key, std::size_t column) const;
 
   void store();
   void restore();
@@ -51,6 +52,10 @@ public:
   PreferencesTreeGroupItem& group(const QModelIndex& index) const;
   PreferencesTreeValueItem& value(const QModelIndex& index) const;
   static constexpr auto DEFAULT_VALUE_ROLE = Qt::UserRole + 1;
+  virtual void apply();
+
+Q_SIGNALS:
+  void data_changed(const PreferencesTreeGroupItem& group);
 
 protected:
   virtual bool set_data(int column, PreferencesTreeValueItem& item, const QVariant& value) = 0;

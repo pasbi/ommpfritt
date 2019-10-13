@@ -34,7 +34,7 @@ void PreferencesTreeValueItem::set_value(const std::string& value, std::size_t c
 
 std::string PreferencesTreeValueItem::value(std::size_t column) const
 {
-  return QString::fromStdString(m_value).split("/")[column].toStdString();
+  return value(m_value, column);
 }
 
 std::string PreferencesTreeValueItem::value() const
@@ -44,12 +44,17 @@ std::string PreferencesTreeValueItem::value() const
 
 std::string PreferencesTreeValueItem::default_value(std::size_t column) const
 {
-  return QString::fromStdString(m_default).split("/")[column].toStdString();
+  return value(m_default, column);
 }
 
 void PreferencesTreeValueItem::reset()
 {
   set_value(m_default);
+}
+
+std::string PreferencesTreeValueItem::value(const std::string& value, std::size_t column)
+{
+  return QString::fromStdString(value).split("/")[column].toStdString();
 }
 
 PreferencesTreeGroupItem::PreferencesTreeGroupItem(const std::string& group)

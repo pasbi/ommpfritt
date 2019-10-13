@@ -17,6 +17,13 @@ PreferencesTree::PreferencesTree(const std::string filename)
   } else {
     LINFO << "initialized SettingTree from '" << filename << "': " << m_groups.size() << " groups.";
   }
+  connect(this, &PreferencesTree::data_changed, [this](const PreferencesTreeGroupItem& group)
+  {
+    const int n = columnCount(group_index(group.name)) - 1;
+    const QModelIndex tl = value_index(group.name, group.values.front()->name).siblingAtColumn(1);
+    const QModelIndex br = value_index(group.name, group.values.back()->name).siblingAtColumn(n);
+    Q_EMIT dataChanged(tl, br);
+  });
 }
 
 PreferencesTree::~PreferencesTree()
@@ -25,13 +32,12 @@ PreferencesTree::~PreferencesTree()
 
 void PreferencesTree::reset()
 {
-  beginResetModel();
   for (auto&& group : groups()) {
     for (auto&& value : group->values) {
       value->reset();
     }
+    Q_EMIT data_changed(*group);
   }
-  endResetModel();
 }
 
 void PreferencesTree::save_in_qsettings(const std::string& q_settings_group) const
@@ -52,7 +58,6 @@ void PreferencesTree::save_in_qsettings(const std::string& q_settings_group) con
 void PreferencesTree::load_from_qsettings(const std::string& q_settings_group)
 {
   const auto settings_group = QString::fromStdString(q_settings_group);
-  beginResetModel();
   QSettings settings;
   if (settings.childGroups().contains(settings_group)) {
     settings.beginGroup(settings_group);
@@ -67,11 +72,11 @@ void PreferencesTree::load_from_qsettings(const std::string& q_settings_group)
           // keep default value
         }
       }
+      Q_EMIT data_changed(*group);
       settings.endGroup();
     }
     settings.endGroup();
   }
-  endResetModel();
 }
 
 bool PreferencesTree::save_to_file(const std::string& filename) const
@@ -103,6 +108,22 @@ bool PreferencesTree::load_from_file(const std::string& filename)
     LERROR << "Failed to open file '" << filename << "'.";
     return false;
   }
+
+  struct ResetModel {
+    ResetModel(const std::function<void()>& begin_reset, const std::function<void()>& end_reset)
+      : m_end_reset(end_reset)
+    {
+      begin_reset();
+    }
+    ~ResetModel() { m_end_reset(); }
+  private:
+    const std::function<void()> m_end_reset;
+  };
+
+  // If we're in insert mode, create a RAII-guard to reset the model.
+  const std::unique_ptr<ResetModel> reseter = insert_mode
+       ? std::make_unique<ResetModel>([this](){ beginResetModel(); }, [this](){ endResetModel(); })
+       : std::unique_ptr<ResetModel>(nullptr);
 
   static const QRegExp context_regexp("\\[\\w+\\]");
   std::string group_name = "";
@@ -172,6 +193,12 @@ bool PreferencesTree::load_from_file(const std::string& filename)
       LWARNING << "line '" << line << "' ignored since no group is active.";
     }
   }
+
+  if (!insert_mode) {
+    for (auto&& group : groups()) {
+      Q_EMIT data_changed(*group);
+    }
+  }
   return true;
 }
 
@@ -201,6 +228,12 @@ PreferencesTreeValueItem* PreferencesTree::value(const std::string group_name, c
      return value->name == key;
    });
    return vit->get();
+}
+
+const std::string PreferencesTree::stored_value(const std::string& group_name,
+                                                const std::string& key, std::size_t column) const
+{
+  return PreferencesTreeValueItem::value(m_stored_values.at(group_name).at(key), column);
 }
 
 void PreferencesTree::store()
@@ -377,6 +410,11 @@ PreferencesTreeValueItem& PreferencesTree::value(const QModelIndex& index) const
   assert(!is_group(index));
   auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());
   return *static_cast<PreferencesTreeValueItem*>(ptr);
+}
+
+void PreferencesTree::apply()
+{
+  store();
 }
 
 }  // namespace omm
