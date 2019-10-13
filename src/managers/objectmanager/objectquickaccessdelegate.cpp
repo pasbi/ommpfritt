@@ -9,6 +9,7 @@
 #include "properties/boolproperty.h"
 #include "properties/optionsproperty.h"
 #include "scene/history/historymodel.h"
+#include "preferences/uicolors.h"
 
 namespace
 {
@@ -52,13 +53,13 @@ void VisibilityPropertyArea::draw(QPainter &painter, const QModelIndex& index)
   QPen pen;
   pen.setWidthF(2.0);
   pen.setCosmetic(true);
-  pen.setColor(Qt::black);
+  pen.setColor(ui_color(view, "ObjectManager", "visibility outline"));
   painter.setPen(pen);
-  painter.setBrush([visibility]() {
+  painter.setBrush([visibility, this]() {
     switch (visibility) {
-    case omm::Object::Visibility::Default: return QColor(Qt::transparent);
-    case omm::Object::Visibility::Hidden: return QColor(Qt::red);
-    case omm::Object::Visibility::Visible: return QColor(Qt::green);
+    case omm::Object::Visibility::Default: return ui_color(view, "ObjectManager", "default fill");
+    case omm::Object::Visibility::Hidden: return ui_color(view, "ObjectManager", "invisible fill");
+    case omm::Object::Visibility::Visible: return ui_color(view, "ObjectManager", "visible fill");
     }
     Q_UNREACHABLE();
     return QColor();
@@ -92,9 +93,9 @@ void IsEnabledPropertyArea::draw(QPainter &painter, const QModelIndex& index)
 {
   QPen pen;
   if (property(index).value<bool>()) {
-    pen.setColor("#80FF80");
+    pen.setColor(ui_color(view, "ObjectManager", "enabled"));
   } else {
-    pen.setColor("#FF8080");
+    pen.setColor(ui_color(view, "ObjectManager", "disabled"));
   }
   pen.setWidth(4.0);
   pen.setCosmetic(true);

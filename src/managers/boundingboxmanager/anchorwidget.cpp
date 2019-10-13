@@ -5,6 +5,7 @@
 #include "logging.h"
 #include <cmath>
 #include <QTimer>
+#include "preferences/uicolors.h"
 
 namespace omm
 {
@@ -86,7 +87,7 @@ void AnchorWidget::paintEvent(QPaintEvent*)
   painter.setRenderHint(QPainter::HighQualityAntialiasing);
 
   QPen pen;
-  pen.setColor(Qt::black);
+  pen.setColor(ui_color(*this, QPalette::Text));
   pen.setWidth(2);
   pen.setCosmetic(true);
   painter.setPen(pen);
@@ -107,14 +108,15 @@ void AnchorWidget::draw_anchor(QPainter& painter, const QRectF& grid, Anchor anc
   }
   QRectF rect = anchor_rect(pos);
   QPen pen;
+  pen.setColor(ui_color(*this, QPalette::Text));
   painter.setPen(pen);
   QBrush brush(Qt::SolidPattern);
   if (rect.contains(m_mouse_pos) && m_disable_hover_for != anchor && !m_disable_hover) {
-    brush.setColor(Qt::yellow);
+    brush.setColor(ui_color(*this, "AnchorWidget", "hover"));
   } else if (is_selected) {
-    brush.setColor(Qt::blue);
+    brush.setColor(ui_color(*this, "AnchorWidget", "checked"));
   } else {
-    brush.setColor(Qt::transparent);
+    brush.setColor(ui_color(*this, QPalette::Window));
   }
   painter.setBrush(brush);
   painter.drawEllipse(rect);

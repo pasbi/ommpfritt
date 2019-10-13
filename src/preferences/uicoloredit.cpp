@@ -49,7 +49,8 @@ void UiColorEdit::paintEvent(QPaintEvent*)
 
 void UiColorEdit::mouseDoubleClickEvent(QMouseEvent*)
 {
-  const QColor color = QColorDialog::getColor(m_color.to_qcolor(), this, "");
+  const QColor color = QColorDialog::getColor(m_color.to_qcolor(), this,
+                                              "", QColorDialog::ShowAlphaChannel);
   if (color.isValid()) {
     set_color(Color(color));
   }

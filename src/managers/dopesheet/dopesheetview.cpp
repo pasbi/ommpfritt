@@ -93,7 +93,7 @@ void DopeSheetView::mouseDoubleClickEvent(QMouseEvent* event)
 }
 
 DopeSheetView::TimelineCanvasC::TimelineCanvasC(Animator& animator, DopeSheetView& self)
-  : TimelineCanvas(animator), m_self(self)
+  : TimelineCanvas(animator, self), m_self(self)
 {
 }
 

@@ -54,7 +54,7 @@ UiColorsPage::~UiColorsPage()
 void UiColorsPage::about_to_accept()
 {
   m_ui->treeView->transfer_editor_data_to_model();
-  qApp->setPalette(m_colors.make_palette());
+  m_colors.apply();
 }
 
 void UiColorsPage::about_to_reject()

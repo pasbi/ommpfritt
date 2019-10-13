@@ -12,6 +12,7 @@
 #include "commands/trackcommand.h"
 #include "commands/keyframecommand.h"
 #include "scene/history/historymodel.h"
+#include "preferences/uicolors.h"
 
 namespace
 {
@@ -140,28 +141,28 @@ void AnimationButton::paintEvent(QPaintEvent *event)
   QPen pen;
   if (!has_track()) {
     // no track, hence no key
-    pen.setColor(Qt::black);
+    pen.setColor(ui_color(*this, "Preferences", "record normal"));
     pen.setWidthF(pen_width_base * 0.1);
     painter.setPen(pen);
     painter.drawEllipse(centered(0.3));
   } else if (!has_key()) {
     // track but no key
-    pen.setColor(Qt::red);
+    pen.setColor(ui_color(*this, "Preferences", "record keyframe"));
     pen.setWidthF(pen_width_base * 0.1);
     painter.setPen(pen);
     painter.drawEllipse(centered(0.8));
   } else {
     // has key
-    pen.setColor(Qt::red);
+    pen.setColor(ui_color(*this, "Preferences", "record keyframe"));
     pen.setWidthF(pen_width_base * 0.1);
     painter.setPen(pen);
     painter.drawEllipse(centered(0.8));
     QPainterPath ellipse;
     ellipse.addEllipse(centered(0.4));
     if (value_is_inconsistent()) {
-      painter.fillPath(ellipse, QColor(255, 128, 0));
+      painter.fillPath(ellipse, ui_color(*this, "Preferences", "record inconsistent"));
     } else {
-      painter.fillPath(ellipse, Qt::red);
+      painter.fillPath(ellipse, ui_color(*this, "Preferences", "record keyframe"));
     }
   }
 }

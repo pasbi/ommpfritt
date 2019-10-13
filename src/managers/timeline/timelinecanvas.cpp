@@ -9,12 +9,13 @@
 #include "commands/keyframecommand.h"
 #include "scene/scene.h"
 #include "scene/history/historymodel.h"
+#include "preferences/uicolors.h"
 
 namespace omm
 {
 
-TimelineCanvas::TimelineCanvas(Animator& animator)
-  : animator(animator)
+TimelineCanvas::TimelineCanvas(Animator& animator, QWidget& widget)
+  : animator(animator), m_widget(widget)
 {
   connect(&animator, &Animator::knot_removed, this, [this](Track& track, int frame) {
     if (const auto it = m_selection.find(&track); it != m_selection.end()) {
@@ -41,13 +42,16 @@ void TimelineCanvas::draw_background(QPainter& painter) const
   const double left = (animator.start()-left_frame) * ppf() - ppf()/2.0;
   const double right = (animator.end()-left_frame) * ppf() + ppf()/2.0;
   if (left > 0.0) {
-    painter.fillRect(QRectF(QPointF(0, 0), QPointF(left, 1.0)), Qt::gray);
+    painter.fillRect(QRectF(QPointF(0, 0), QPointF(left, 1.0)),
+                     ui_color(m_widget, "TimeLine", "beyond"));
   }
   if (right < 1.0) {
-    painter.fillRect(QRectF(QPointF(right, 0), QPointF(1.0, 1.0)), Qt::gray);
+    painter.fillRect(QRectF(QPointF(right, 0), QPointF(1.0, 1.0)),
+                     ui_color(m_widget, "TimeLine", "beyond"));
   }
   if (right > 0.0 && left < 1.0) {
-    painter.fillRect(QRectF(QPointF(left, 0.0), QPointF(right, 1.0)), Qt::white);
+    painter.fillRect(QRectF(QPointF(left, 0.0), QPointF(right, 1.0)),
+                     ui_color(m_widget, QPalette::Base));
   }
   painter.restore();
 }
@@ -59,7 +63,7 @@ void TimelineCanvas::draw_lines(QPainter& painter) const
   painter.scale(rect.width(), rect.height());
 
   QPen pen;
-  pen.setColor(Qt::black);
+  pen.setColor(ui_color(m_widget, QPalette::ButtonText));
   pen.setCosmetic(true);
   painter.setPen(pen);
 
@@ -132,7 +136,7 @@ void TimelineCanvas::draw_keyframes(QPainter& painter) const
 
   QPen pen;
   pen.setCosmetic(true);
-  pen.setColor(Qt::black);
+  pen.setColor(ui_color(m_widget, "TimeLine", "key outline"));
   const QPointF scale(std::clamp(rect.width() * ppf()/2.0, 4.0, 20.0),
                       std::min(footer_y()/2.0, 20.0));
   pen.setWidthF(std::max(0.0, std::min(scale.x(), scale.y())/5.0));
@@ -153,9 +157,11 @@ void TimelineCanvas::draw_keyframes(QPainter& painter) const
     });
     if (draw) {
       const bool is_selected = this->is_selected(frame);
-      draw_keyframe(frame, y, is_selected ? Qt::yellow : Qt::red);
+      draw_keyframe(frame, y, is_selected
+                              ? ui_color(m_widget, "TimeLine", "key selected")
+                              : ui_color(m_widget, "TimeLine", "key normal"));
       if (m_shift != 0 && is_selected) {
-        draw_keyframe(frame + m_shift, y, QColor(255, 255, 0, 100));
+        draw_keyframe(frame + m_shift, y, ui_color(m_widget, "TimeLine", "key dragged"));
       }
     }
   }
@@ -169,9 +175,9 @@ void TimelineCanvas::draw_current(QPainter& painter) const
   const double x = frame_to_pixel(animator.current());
   const QRectF current_rect(QPointF(x-ppfs()/2.0, footer_y()),
                             QSizeF(ppfs(), footer_height));
-  painter.fillRect(current_rect, QColor(255, 128, 0, 60));
+  painter.fillRect(current_rect, ui_color(m_widget, "TimeLine", "slider fill"));
   QPen pen;
-  pen.setColor(QColor(255, 128, 0, 120));
+  pen.setColor(ui_color(m_widget, "TimeLine", "slider outline"));
   pen.setWidthF(4.0);
   pen.setCosmetic(true);
   painter.setPen(pen);
@@ -186,14 +192,13 @@ void TimelineCanvas::draw_fcurve(QPainter& painter) const
 
 void TimelineCanvas::draw_rubber_band(QPainter& painter) const
 {
-  static const QColor color(0, 128, 255, 128);
   if (m_rubber_band_visible) {
     painter.save();
     QPen pen;
     pen.setWidth(2.0);
-    pen.setColor(color.darker());
+    pen.setColor(ui_color(m_widget, "TimeLine", "rubberband outline"));
     painter.setPen(pen);
-    painter.fillRect(rubber_band(), color);
+    painter.fillRect(rubber_band(), ui_color(m_widget, "TimeLine", "rubberband fill"));
     painter.drawRect(rubber_band());
     painter.restore();
   }

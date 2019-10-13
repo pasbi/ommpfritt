@@ -21,7 +21,7 @@ class TimelineCanvas : public QObject
 {
   Q_OBJECT
 public:
-  explicit TimelineCanvas(Animator& animator);
+  explicit TimelineCanvas(Animator& animator, QWidget& widget);
 
   void draw_background(QPainter& painter) const;
   void draw_lines(QPainter& painter) const;
@@ -76,6 +76,7 @@ Q_SIGNALS:
   void current_frame_changed(int);
 
 private:
+  QWidget& m_widget;
   std::map<Track*, std::set<int>> m_selection;
   std::map<Track*, std::set<int>> m_rubber_band_selection;
   double pixel_to_frame(double pixel) const;
@@ -104,7 +105,6 @@ private:
   QPoint m_rubber_band_corner;
   bool m_rubber_band_visible = false;
   QRect rubber_band() const;
-
 };
 
 }  // namespace omm

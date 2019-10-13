@@ -61,7 +61,7 @@ bool Slider::event(QEvent* event)
 }
 
 Slider::TimelineCanvasC::TimelineCanvasC(Animator& animator, Slider& self)
-  : TimelineCanvas(animator), m_self(self)
+  : TimelineCanvas(animator, self), m_self(self)
 {
   connect(&animator.scene.message_box(),
           qOverload<const std::set<AbstractPropertyOwner*>&>(&MessageBox::selection_changed),

@@ -14,7 +14,6 @@ public:
   ~UiColors();
   QVariant data(int column, const PreferencesTreeValueItem &item, int role) const override;
   bool set_data(int column, PreferencesTreeValueItem& item, const QVariant &value) override;
-  QPalette make_palette() const;
   int columnCount(const QModelIndex &parent = QModelIndex()) const override;
   QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
   Color color(QPalette::ColorGroup pgroup, const std::string& group, const std::string& name) const;
@@ -34,6 +33,7 @@ private:
   };
   std::vector<SkinInfo> m_skins;
   int m_current_skin_index = -1;
+  QPalette make_palette() const;
 };
 
 QColor ui_color(const QWidget& widget, const std::string& group, const std::string& name);

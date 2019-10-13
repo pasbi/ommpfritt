@@ -1598,7 +1598,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Do you really want to reset all keycuts to the default value?
+        <source>Do you really want to reset all key bindings to the default value?
 This cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1753,15 +1753,24 @@ This cannot be undone.</source>
         <source>Disabled</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>omm::UiColorsPage</name>
     <message>
         <source>dark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>light</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::UiColorsPage</name>
+    <message>
+        <source>Reset all key bindings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you really want to reset all colors for in the current color schema?
+This cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
