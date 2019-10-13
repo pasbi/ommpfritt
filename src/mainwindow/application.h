@@ -12,6 +12,7 @@
 #include "preferences/uicolors.h"
 
 class QApplication;
+class QAbstractButton;
 
 namespace omm
 {
@@ -49,6 +50,7 @@ public:
   Object &insert_object(const std::string& key, InsertionMode mode);
 
   static const std::set<int> keyboard_modifiers;
+  void register_auto_invert_icon_button(QAbstractButton& button);
 
 private:
   QApplication& m_app;

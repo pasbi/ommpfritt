@@ -4,6 +4,7 @@
 #include <QColorDialog>
 #include <QStyle>
 #include "logging.h"
+#include "mainwindow/application.h"
 
 namespace omm
 {
@@ -16,6 +17,7 @@ UiColorEdit::UiColorEdit(QWidget* parent) : QWidget(parent), m_ui(new Ui::UiColo
   connect(m_ui->pb_reset, &QPushButton::clicked, [this]() {
     set_color(m_default_color);
   });
+  Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset);
 }
 
 

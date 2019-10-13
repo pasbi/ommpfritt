@@ -22,10 +22,30 @@
 #include "scene/stylelist.h"
 #include "managers/manager.h"
 #include "preferences/preferencedialog.h"
+#include <QAbstractButton>
 
 namespace
 {
 constexpr auto FILE_ENDING = ".omm";
+
+int img_mean(const QImage& image)
+{
+  double w = 0.0;
+  double sum = 0.0;
+  for (int y = 0; y < image.height(); ++y) {
+    assert(image.format() == QImage::Format_ARGB32_Premultiplied);
+    const QRgb* rgba_line = reinterpret_cast<const QRgb*>(image.scanLine(y));
+    for (int x = 0; x < image.width(); ++x) {
+      const auto& rgba = rgba_line[x];
+      const double alpha = qAlpha(rgba) / 255.0;
+      sum += qRed(rgba) * alpha;
+      sum += qGreen(rgba) * alpha;
+      sum += qBlue(rgba) * alpha;
+      w += 3.0 * alpha;
+    }
+  }
+  return sum / w;
+}
 
 QKeySequence push_back(const QKeySequence& s, int t)
 {
@@ -411,6 +431,24 @@ Object& Application::insert_object(const std::string &key, InsertionMode mode)
 
   ref.post_create_hook();
   return ref;
+}
+void Application::register_auto_invert_icon_button(QAbstractButton& button)
+{
+  const auto update_button_icon = [&button]() {
+    const QColor text_color = qApp->palette().color(QPalette::Active, QPalette::ButtonText);
+    QImage img = button.icon().pixmap(QSize(1024, 1024)).toImage();
+    if (std::abs(img_mean(img) - text_color.value()) > 100) {
+      img.invertPixels(QImage::InvertRgb);
+      QSignalBlocker blocker(&button);
+      button.setIcon(QIcon(QPixmap::fromImage(img)));
+    }
+  };
+
+  const auto connection = connect(qApp, &QApplication::paletteChanged, update_button_icon);
+  connect(&button, &QObject::destroyed, this, [connection]() {
+    disconnect(connection);
+  });
+  update_button_icon();
 }
 
 void Application::register_manager(Manager& manager)

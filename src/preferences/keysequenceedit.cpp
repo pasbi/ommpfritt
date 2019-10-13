@@ -5,6 +5,7 @@
 #include <memory>
 #include <QFocusEvent>
 #include <QStyle>
+#include "mainwindow/application.h"
 
 namespace omm
 {
@@ -25,6 +26,9 @@ KeySequenceEdit::KeySequenceEdit(QWidget *parent)
   connect(m_ui->pb_clear, &QPushButton::clicked, [this]() {
     m_ui->key_sequence_edit->setKeySequence(QKeySequence());
   });
+
+  Application::instance().register_auto_invert_icon_button(*m_ui->pb_clear);
+  Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset);
 }
 
 void KeySequenceEdit::set_key_sequence(const QKeySequence &key_sequence)
