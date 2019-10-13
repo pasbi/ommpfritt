@@ -26,7 +26,6 @@
 #include "managers/manager.h"
 #include "tags/tag.h"
 #include "logging.h"
-#include "mainwindow/resourcemenu.h"
 #include "ui_aboutdialog.h"
 #include "scene/history/historymodel.h"
 #include "keybindings/commandinterface.h"
@@ -222,8 +221,6 @@ std::unique_ptr<QMenu> MainWindow::make_about_menu()
     ui.lb_splash->setPixmap(QPixmap::fromImage(QImage(":/icons/omm.png")));
     about_dialog.exec();
   });
-
-  menu->addMenu(std::make_unique<LanguageMenu>().release());
 
   return menu;
 }

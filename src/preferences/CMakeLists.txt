@@ -1,5 +1,6 @@
 
 file(GLOB SOURCES
+  generalpage.cpp
   keybindingspage.cpp
   keybindingsproxymodel.cpp
   keybindingstreeviewdelegate.cpp
@@ -16,6 +17,7 @@ file(GLOB SOURCES
 )
 
 file(GLOB HEADERS
+  generalpage.h
   keybindingspage.h
   keybindingsproxymodel.h
   keybindingstreeviewdelegate.h
