@@ -56,7 +56,7 @@ register_preference_page(QTreeWidgetItem* parent, const QString& label,
     parent->addChild(item.release());
   }
 
-  connect(qApp, &QGuiApplication::paletteChanged, [&ref](const QPalette& p) {
+  connect(qApp, &QGuiApplication::paletteChanged, m_ui->treeWidget, [&ref](const QPalette& p) {
     ref.setForeground(0, p.color(QPalette::Active, QPalette::WindowText));
   });
   ref.setForeground(0, qApp->palette().color(QPalette::Active, QPalette::WindowText));
