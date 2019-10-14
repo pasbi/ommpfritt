@@ -9,6 +9,7 @@ file(GLOB SOURCES
   pointdialog.cpp
   pointedit.cpp
   referencelineedit.cpp
+  styleditemview.cpp
 )
 
 file(GLOB HEADERS

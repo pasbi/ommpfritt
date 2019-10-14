@@ -6,9 +6,20 @@
 #include <QAbstractItemView>
 #include <QIdentityProxyModel>
 #include "preferences/uicolors.h"
+#include "KF5/KItemModels/KLinkItemSelectionModel"
+#include "logging.h"
 
 namespace omm
 {
+
+class LinkItemSelectionModel : public KLinkItemSelectionModel
+{
+public:
+  using KLinkItemSelectionModel::KLinkItemSelectionModel;
+  void setCurrentIndex(const QModelIndex& index, QItemSelectionModel::SelectionFlags command) override;
+
+};
+
 
 template<typename BaseView>
 class StyledItemView : public BaseView
@@ -46,6 +57,18 @@ public:
     m_proxy->setSourceModel(model);
     BaseView::setModel(m_proxy.get());
   }
+
+  void setSelectionModel(QItemSelectionModel* selection_model) override
+  {
+    assert(selection_model != nullptr);
+    QAbstractItemModel* source_model = m_proxy->sourceModel();
+    assert(source_model != nullptr);
+    m_proxy_selection_model = std::make_unique<LinkItemSelectionModel>(m_proxy.get(), selection_model);
+    BaseView::setSelectionModel(m_proxy_selection_model.get());
+  }
+
+private:
+  std::unique_ptr<KLinkItemSelectionModel> m_proxy_selection_model;
 
 };
 
