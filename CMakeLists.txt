@@ -33,6 +33,8 @@ find_package(Qt5Widgets CONFIG REQUIRED)
 find_package(Qt5Svg REQUIRED)
 find_package(Qt5 COMPONENTS LinguistTools)
 
+find_package(KF5Models)
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/translations.qrc ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 set(RESOURCES resources.qrc ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc)
 
@@ -68,6 +70,8 @@ target_link_libraries(libommpfritt poppler-qt5)
 target_link_libraries(ommpfritt poppler-qt5)
 target_link_libraries(libommpfritt -lpthread -lm -ldl -lutil)
 target_link_libraries(ommpfritt -lpthread -lm -ldl -lutil)
+target_link_libraries(libommpfritt KF5ItemModels)
+target_link_libraries(ommpfritt KF5ItemModels)
 
 add_subdirectory(src)
 add_subdirectory(test)
