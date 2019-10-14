@@ -39,7 +39,6 @@ public:
   void load_layout();
   void load_layout(QSettings& settings);
 
-
   static constexpr auto LOCALE_SETTINGS_KEY = "locale";
   static constexpr auto SKIN_SETTINGS_KEY = "skin";
   static constexpr auto TOOLBAR_SETTINGS_KEY = "mainwindow/toolbars";
@@ -61,7 +60,7 @@ private:
   Application& m_app;
   Viewport* m_viewport;
   std::vector<QDockWidget*> dock_widgets() const;
-
+  void update_recent_files_menu();
   QString get_last_layout_filename() const;
 
 

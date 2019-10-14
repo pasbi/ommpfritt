@@ -181,31 +181,19 @@ MainWindow::MainWindow(Application& app)
     menuBar()->addMenu(menu.release());
   }
   menuBar()->addMenu(make_about_menu().release());
-
-  auto* recent_document_menu = find_menu(menuBar(), "load recent document");
-  assert(recent_document_menu != nullptr);
-  for (auto&& fn : settings.value(RECENT_DOCUMENTS_SETTINGS_KEY, QStringList()).toStringList()) {
-    auto action = std::make_unique<QAction>(QFileInfo(fn).fileName());
-    action->setToolTip(fn);
-    connect(action.get(), &QAction::triggered, [fn, &app]() {
-      if (app.can_close()) {
-        app.scene.set_selection({});
-        QTimer::singleShot(0, [&app, fn]() {
-          app.scene.load_from(fn.toStdString());
-        });
-      }
-    });
-    recent_document_menu->addAction(action.release());
-  }
+  update_recent_files_menu();
 
   connect(&app.message_box(), SIGNAL(filename_changed()), this, SLOT(update_window_title()));
-  connect(&app.message_box(), &MessageBox::filename_changed, [&app] {
+  connect(&app.message_box(), &MessageBox::filename_changed, [&app, this] {
     QSettings settings;
     auto fns = settings.value(RECENT_DOCUMENTS_SETTINGS_KEY, QStringList()).toStringList();
     const auto fn = QString::fromStdString(app.scene.filename());
-    fns.removeAll(fn);
-    fns.append(fn);
-    settings.setValue(RECENT_DOCUMENTS_SETTINGS_KEY, fns);
+    if (!fn.isEmpty()) {
+      fns.removeAll(fn);
+      fns.append(QFileInfo(fn).absoluteFilePath());
+      settings.setValue(RECENT_DOCUMENTS_SETTINGS_KEY, fns);
+    }
+    update_recent_files_menu();
   });
 }
 
@@ -358,6 +346,31 @@ void MainWindow::save_layout(QSettings& settings)
     i += 1;
   }
   settings.endArray();
+}
+
+void MainWindow::update_recent_files_menu()
+{
+  auto* recent_document_menu = find_menu(menuBar(), "load recent document");
+  recent_document_menu->clear();
+  Scene& scene = Application::instance().scene;
+  recent_document_menu->setToolTipsVisible(true);
+  assert(recent_document_menu != nullptr);
+  std::size_t count = 0;
+  for (auto&& fn : QSettings().value(RECENT_DOCUMENTS_SETTINGS_KEY, QStringList()).toStringList()) {
+    const QFileInfo file_info(fn);
+    if (file_info.exists() && QFileInfo(scene.filename().c_str()).absoluteFilePath() != file_info.absoluteFilePath()) {
+      auto action = std::make_unique<QAction>(file_info.fileName());
+      action->setToolTip(fn);
+      connect(action.get(), &QAction::triggered, [fn]() {
+        Application::instance().load(fn.toStdString(), false);
+      });
+      recent_document_menu->addAction(action.release());
+    }
+    count++;
+    if (count > 10) {
+      break;
+    }
+  }
 }
 
 }  // namespace omm

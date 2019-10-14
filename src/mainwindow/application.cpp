@@ -193,6 +193,23 @@ void Application::reset()
   QTimer::singleShot(0, &scene, SLOT(reset()));
 }
 
+void Application::load(const std::string& filename, bool force)
+{
+  if (force || !can_close()) {
+    return;
+  }
+
+  scene.set_selection({});
+  QTimer::singleShot(0, [this, filename]() {
+    if (!scene.load_from(filename)) {
+      QMessageBox::critical( m_main_window,
+                             tr("Error."),
+                             tr("Loading scene from '%1' failed.").arg(filename.c_str()),
+                             QMessageBox::Ok );
+    }
+  });
+}
+
 void Application::load()
 {
   if (!can_close()) {
@@ -207,15 +224,7 @@ void Application::load()
     return;
   }
 
-  scene.set_selection({});
-  QTimer::singleShot(0, [this, filename]() {
-    if (!scene.load_from(filename.toStdString())) {
-      QMessageBox::critical( m_main_window,
-                             tr("Error."),
-                             tr("Loading scene from '%1' failed.").arg(filename),
-                             QMessageBox::Ok );
-    }
-  });
+  load(filename.toStdString(), true);
 }
 
 bool Application::perform_action(const std::string& action_name)

@@ -30,6 +30,7 @@ public:
   bool save(const std::string& filename);
   bool can_close();
   void load();
+  void load(const std::string& filename, bool force);
   void reset();
   void quit();
   void update_undo_redo_enabled();
