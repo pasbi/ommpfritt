@@ -23,6 +23,8 @@ public:
   void set_skin(std::size_t index);
   std::size_t skin_index() const { return m_current_skin_index; }
 
+  static void draw_background(QPainter& painter, const QRect& rect);
+
 
 private:
   struct SkinInfo

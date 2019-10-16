@@ -175,4 +175,22 @@ QColor ui_color(const QWidget& widget, const QPalette::ColorRole& role)
   return ui_color(widget, "Widget", role_map.at(role));
 }
 
+void UiColors::draw_background(QPainter& painter, const QRect& rect)
+{
+  static const std::array<QColor, 2> bg_colors = { QColor(128, 128, 128), QColor(180, 180, 180) };
+
+  int size = 7;
+
+  painter.save();
+  int mx = rect.right();
+  int my = rect.bottom();
+  for (int x = rect.left(); x < rect.right(); x += size) {
+    for (int y = rect.top(); y < rect.bottom(); y += size) {
+      QRect rect(QPoint(x, y), QPoint(std::min(mx, x+size), std::min(my, y+size)));
+      painter.fillRect(rect, bg_colors[static_cast<std::size_t>(x/size+y/size)%bg_colors.size()]);
+    }
+  }
+  painter.restore();
+}
+
 }  // namespace omm

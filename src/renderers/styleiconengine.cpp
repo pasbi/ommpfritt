@@ -4,6 +4,7 @@
 #include <iostream>
 #include "renderers/painter.h"
 #include <QDebug>
+#include "preferences/uicolors.h"
 
 namespace
 {
@@ -17,24 +18,6 @@ double adjust_pen_width(double width, const QSize& size)
   // i.e., for small widths (aka x), the function behaves like identity.
   // for large widths, it converges agains max_width (aka a).
   return max_width * width / (max_width + width);
-}
-
-void draw_background(QPainter& painter, QRect rect)
-{
-  static const std::array<QColor, 2> bg_colors = { QColor(128, 128, 128), QColor(180, 180, 180) };
-
-  int size = 7;
-
-  painter.save();
-  int mx = rect.right();
-  int my = rect.bottom();
-  for (int x = rect.left(); x < rect.right(); x += size) {
-    for (int y = rect.top(); y < rect.bottom(); y += size) {
-      QRect rect(QPoint(x, y), QPoint(std::min(mx, x+size), std::min(my, y+size)));
-      painter.fillRect(rect, bg_colors[static_cast<std::size_t>(x/size+y/size)%bg_colors.size()]);
-    }
-  }
-  painter.restore();
 }
 
 void draw_style(QPainter& painter, const QRect& rect, const omm::Style& style)
@@ -67,7 +50,7 @@ StyleIconEngine::paint(QPainter* painter, const QRect& rect, QIcon::Mode, QIcon:
 {
   painter->save();
   painter->setClipRect(rect);
-  draw_background(*painter, rect);
+  UiColors::draw_background(*painter, rect);
   if (m_style != nullptr) {
     draw_style(*painter, rect, *m_style);
   } else {
