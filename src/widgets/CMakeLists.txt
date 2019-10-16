@@ -26,6 +26,7 @@ file(GLOB HEADERS
   styleditemview.h
 )
 
+add_subdirectory(colorwidget)
 
 target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

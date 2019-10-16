@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ColorWidget</class>
+ <widget class="QWidget" name="ColorWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>498</width>
+    <height>188</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,1,1">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QListView" name="lv_named_colors"/>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QPushButton" name="pb_duplicate_named_color">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>D</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pb_remove_named_color">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>-</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pb_add_named_color">
+         <property name="maximumSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>+</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QComboBox" name="cb_color_widget"/>
+     </item>
+     <item>
+      <widget class="QStackedWidget" name="sw_color_widgets"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0,1" columnstretch="0,1,0,0">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item row="5" column="1" colspan="2">
+      <widget class="omm::ColorSlider" name="sl_s" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>&amp;B</string>
+       </property>
+       <property name="buddy">
+        <cstring>sl_b</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" colspan="4">
+      <widget class="Line" name="line">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="3">
+      <widget class="omm::ColorComponentSpinBox" name="sb_s" native="true"/>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="omm::ColorSlider" name="sl_r" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="3">
+      <widget class="omm::ColorComponentSpinBox" name="sb_v" native="true"/>
+     </item>
+     <item row="0" column="3">
+      <widget class="omm::ColorComponentSpinBox" name="sb_r" native="true"/>
+     </item>
+     <item row="11" column="0" colspan="4">
+      <widget class="omm::ColorSlab" name="w_color" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>50</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1" colspan="2">
+      <widget class="omm::ColorSlider" name="sl_a" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" colspan="2">
+      <widget class="omm::ColorSlider" name="sl_b" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>&amp;A</string>
+       </property>
+       <property name="buddy">
+        <cstring>sl_a</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3">
+      <widget class="omm::ColorComponentSpinBox" name="sb_b" native="true"/>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>&amp;S</string>
+       </property>
+       <property name="buddy">
+        <cstring>sl_s</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>&amp;G</string>
+       </property>
+       <property name="buddy">
+        <cstring>sl_g</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>&amp;H</string>
+       </property>
+       <property name="buddy">
+        <cstring>sl_h</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" colspan="2">
+      <widget class="omm::ColorSlider" name="sl_h" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>&amp;V</string>
+       </property>
+       <property name="buddy">
+        <cstring>sl_v</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>&amp;R</string>
+       </property>
+       <property name="buddy">
+        <cstring>sl_r</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0" colspan="4">
+      <widget class="QLineEdit" name="le_html"/>
+     </item>
+     <item row="6" column="1" colspan="2">
+      <widget class="omm::ColorSlider" name="sl_v" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="3">
+      <widget class="omm::ColorComponentSpinBox" name="sb_h" native="true"/>
+     </item>
+     <item row="1" column="3">
+      <widget class="omm::ColorComponentSpinBox" name="sb_g" native="true"/>
+     </item>
+     <item row="8" column="3">
+      <widget class="omm::ColorComponentSpinBox" name="sb_a" native="true"/>
+     </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="omm::ColorSlider" name="sl_g" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0" colspan="4">
+      <widget class="Line" name="line_2">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>omm::ColorSlider</class>
+   <extends>QWidget</extends>
+   <header>widgets/colorwidget/colorslider.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>omm::ColorSlab</class>
+   <extends>QWidget</extends>
+   <header>widgets/colorwidget/colorslab.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>omm::ColorComponentSpinBox</class>
+   <extends>QWidget</extends>
+   <header>widgets/colorwidget/colorcomponentspinbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>lv_named_colors</tabstop>
+  <tabstop>pb_duplicate_named_color</tabstop>
+  <tabstop>pb_remove_named_color</tabstop>
+  <tabstop>pb_add_named_color</tabstop>
+  <tabstop>cb_color_widget</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>cb_color_widget</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>sw_color_widgets</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>454</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>454</x>
+     <y>68</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

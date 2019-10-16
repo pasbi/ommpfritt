@@ -11,10 +11,6 @@
         <source>Show GPL-3.0</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Show BreezeStyleSheets License</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>BoundingBoxManager</name>
@@ -36,6 +32,53 @@
     </message>
     <message>
         <source>&amp;Height:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ColorWidget</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;G</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;H</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;A</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -64,6 +107,17 @@
     <message>
         <source>Scaling:</source>
         <translation>Scaling:</translation>
+    </message>
+</context>
+<context>
+    <name>GeneralPage</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Language:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1529,6 +1583,13 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
+    <name>omm::ColorWidget</name>
+    <message>
+        <source>ColorWidget</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>omm::DopeSheetManager</name>
     <message>
         <source>Dope Sheet</source>
@@ -1574,6 +1635,13 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
+    <name>omm::GeneralPage</name>
+    <message>
+        <source>Changing language takes effect after restarting the application.</source>
+        <translation type="unfinished">Changing language takes effect after restarting the application.</translation>
+    </message>
+</context>
+<context>
     <name>omm::HistoryManager</name>
     <message>
         <source>History</source>
@@ -1611,7 +1679,7 @@ This cannot be undone.</source>
     </message>
     <message>
         <source>Changing language takes effect after restarting the application.</source>
-        <translation>Changing language takes effect after restarting the application.</translation>
+        <translation type="vanished">Changing language takes effect after restarting the application.</translation>
     </message>
     <message>
         <source>information</source>
@@ -1624,18 +1692,6 @@ This cannot be undone.</source>
     <message>
         <source>unnamed</source>
         <translation>unnamed</translation>
-    </message>
-    <message>
-        <source>Language</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Skin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>default</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Restore Layout</source>
@@ -1683,6 +1739,10 @@ This cannot be undone.</source>
     </message>
     <message>
         <source>Keyindings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>General</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
