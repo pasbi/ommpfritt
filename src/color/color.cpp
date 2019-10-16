@@ -122,10 +122,12 @@ void Color::to_hsv(double &hue, double &saturation, double &value) const
 
   saturation = cmax == 0.0 ? 0.0 : delta / cmax;
   value = cmax;
+  hue /= 2 * M_PI;
 }
 
 Color Color::from_hsv(double hue, double saturation, double value, double alpha)
 {
+  hue *= 2.0 * M_PI;
   hue = std::fmod(hue, 2*M_PI);
   if (hue < 0.0) {
     hue += 2*M_PI;
@@ -237,6 +239,118 @@ QColor Color::to_qcolor() const
   qc.setBlueF(blue());
   qc.setAlphaF(alpha());
   return qc;
+}
+
+Color Color::abs() const
+{
+  Color color = *this;
+  for (double& c : color.m_components) {
+    c = std::abs(c);
+  }
+  return color;
+}
+
+double Color::max_component() const
+{
+  double max = m_components[0];
+  for (const double c : m_components) {
+    max = std::max(c, max);
+  }
+  return max;
+}
+
+Color Color::set(Color::Role role, double value) const
+{
+
+  switch (role) {
+  case Role::Red:
+    [[fallthrough]];
+  case Role::Blue:
+    [[fallthrough]];
+  case Role::Alpha:
+    [[fallthrough]];
+  case Role::Green:
+  {
+    Color color = *this;
+    switch (role) {
+    case Role::Red:
+      color.red() = value;
+      return color;
+    case Role::Green:
+      color.green() = value;
+      return color;
+    case Role::Alpha:
+      color.alpha() = value;
+      return color;
+    case Role::Blue:
+      color.blue() = value;
+      return color;
+    default:
+      Q_UNREACHABLE();
+      return Color();
+    }
+  }
+  case Role::Hue:
+    [[fallthrough]];
+  case Role::Saturation:
+    [[fallthrough]];
+  case Role::Value:
+  {
+    double h, s, v;
+    to_hsv(h, s, v);
+    switch (role) {
+    case Role::Hue:
+      return Color::from_hsv(value, s, v, alpha());
+    case Role::Saturation:
+      return Color::from_hsv(h, value, v, alpha());
+    case Role::Value:
+      return Color::from_hsv(h, s, value, alpha());
+    default:
+      Q_UNREACHABLE();
+      return Color();
+    }
+  }
+  default:
+    Q_UNREACHABLE();
+    return Color();
+  }
+}
+
+double Color::get(Color::Role role) const
+{
+  switch (role) {
+  case Role::Red:
+    return red();
+  case Role::Blue:
+    return blue();
+  case Role::Alpha:
+    return alpha();
+  case Role::Green:
+    return green();
+  case Role::Hue:
+    [[fallthrough]];
+  case Role::Saturation:
+    [[fallthrough]];
+  case Role::Value:
+  {
+    double h, s, v;
+    to_hsv(h, s, v);
+    switch (role) {
+    case Role::Hue:
+      return h;
+    case Role::Saturation:
+      return s;
+    case Role::Value:
+      return v;
+    default:
+      Q_UNREACHABLE();
+      return 0.0;
+    }
+  }
+  default:
+    Q_UNREACHABLE();
+    return 0.0;
+  }
 }
 
 bool operator==(const Color& a, const Color& b)

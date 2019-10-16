@@ -8,6 +8,9 @@
 namespace omm
 {
 
+/**
+ * @brief The Color class r, g, b, h, s, v are in range [0, 1]
+ */
 class Color
 {
 public:
@@ -19,6 +22,8 @@ public:
   explicit Color(const QColor& c);
   explicit Color();
   Color(const std::string& code);
+
+  enum class Role { Red, Green, Blue, Hue, Saturation, Value, Alpha };
 
   enum class BlendMode {};
   Color blend(const Color& other, BlendMode mode) const;
@@ -48,6 +53,11 @@ public:
   Color& operator/=(double a);
   Color operator-() const;
   QColor to_qcolor() const;
+  Color abs() const;
+  double max_component() const;
+
+  Color set(Role role, double value) const;
+  double get(Role role) const;
 
 private:
   std::array<double, 4> m_components;
