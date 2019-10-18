@@ -53,22 +53,19 @@ double interpolate(const Segment<double>& segment, double t, Interpolation inter
 
 omm::Color interpolate(const Segment<omm::Color>& segment, double t, Interpolation interpolation)
 {
-  using Hsva = std::array<double, 4>;
-  const Segment<Hsva> hsva_segment = segment.convert<Hsva>([](const omm::Color& c) {
-    Hsva hsva;
-    c.to_hsv(hsva[0], hsva[1], hsva[2]);
-    hsva[3] = c.alpha();
-    return hsva;
+  static constexpr auto model = omm::Color::Model::HSVA;
+
+  const auto seg4 = segment.convert<std::array<double, 4>>([](const omm::Color& color) {
+    return color.components(model);
   });
 
-  Hsva interpolated;
+  std::array<double, 4> components;
   for (std::size_t i = 0; i < 4; ++i) {
-    const Segment<double> segd = hsva_segment.convert<double>([i](const Hsva& hsva) {
-      return hsva[i];
-    });
-    interpolated[i] = interpolate(segd, t, interpolation);
+    components[i] = interpolate(seg4.convert<double>([i](const std::array<double, 4>& cs) {
+      return cs[i];
+    }), t, interpolation);
   }
-  return omm::Color::from_hsv(interpolated[0], interpolated[1], interpolated[2], interpolated[3]);
+  return omm::Color(model, components);
 }
 
 int interpolate(const Segment<int>& segment, double t, Interpolation interpolation)

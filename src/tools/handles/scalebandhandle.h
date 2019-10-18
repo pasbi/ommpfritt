@@ -4,6 +4,7 @@
 #include "tools/handles/handle.h"
 #include "geometry/util.h"
 #include "renderers/painter.h"
+#include "tools/tool.h"
 
 namespace omm
 {
@@ -14,9 +15,9 @@ class ScaleBandHandle : public Handle
 public:
   ScaleBandHandle(ToolT& tool) : Handle(tool)
   {
-    set_style(Status::Active, omm::SolidStyle(omm::Color(1.0, 1.0, 1.0)));
-    set_style(Status::Hovered, omm::SolidStyle(omm::Color(0.7, 0.7, 0.7)));
-    set_style(Status::Inactive, omm::SolidStyle(omm::Color(0.5, 0.5, 0.5)));
+    set_style(Status::Active, SolidStyle(Colors::WHITE));
+    set_style(Status::Hovered, SolidStyle(Color(Color::Model::RGBA, { 0.7, 0.7, 0.7, 1.0 })));
+    set_style(Status::Inactive, SolidStyle(Color(Color::Model::RGBA, { 0.5, 0.5, 0.5 })));
   }
 
   bool contains_global(const Vec2f& point) const override

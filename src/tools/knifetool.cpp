@@ -8,14 +8,14 @@
 namespace
 {
 
-const omm::SolidStyle marker_style(omm::Color(0, 0, 1));
+const omm::SolidStyle marker_style(omm::Colors::BLUE);
 
 }  // namespace
 
 namespace omm
 {
 
-const Style KnifeTool::m_line_style = ContourStyle(Color(0.0, 0.0, 0.0, 1.0), 1);
+const Style KnifeTool::m_line_style = ContourStyle(Colors::BLACK);
 
 KnifeTool::KnifeTool(Scene& scene) : SelectPointsBaseTool(scene) { }
 

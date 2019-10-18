@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tools/handles/handle.h"
+#include "tools/tool.h"
 
 namespace omm
 {
@@ -11,9 +12,9 @@ class RotateHandle : public Handle
 public:
   RotateHandle(ToolT& tool) : Handle(tool)
   {
-    set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
-    set_style(Status::Hovered, omm::ContourStyle(omm::Color(0.0, 0.0, 1.0)));
-    set_style(Status::Inactive, omm::ContourStyle(omm::Color(0.3, 0.3, 1.0)));
+    set_style(Status::Active, ContourStyle(Colors::WHITE));
+    set_style(Status::Hovered, ContourStyle(Colors::BLUE));
+    set_style(Status::Inactive, ContourStyle(Color(Color::Model::RGBA, { 0.3, 0.3, 1.0, 1.0 })));
   }
 
   void draw(Painter& renderer) const override

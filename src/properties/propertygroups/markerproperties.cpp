@@ -46,7 +46,7 @@ void MarkerProperties
     p.rotate(location.rotation() * 180.0 * M_1_PI - 90);
   }
   p.setPen(Qt::NoPen);
-  p.setBrush(Painter::to_qcolor(color));
+  p.setBrush(color.to_qcolor());
   QPainterPath path = Painter::path(shape(width), true);
   p.drawPath(path);
   p.restore();

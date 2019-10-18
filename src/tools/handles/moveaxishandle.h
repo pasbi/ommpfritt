@@ -4,7 +4,7 @@
 #include "tools/handles/handle.h"
 #include "renderers/painter.h"
 #include "geometry/util.h"
-#include <QDebug>
+#include "tools/tool.h"
 
 namespace omm
 {
@@ -22,14 +22,14 @@ public:
   {
     switch (direction) {
     case MoveAxisHandleDirection::X:
-      set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
-      set_style(Status::Hovered, omm::ContourStyle(omm::Color(1.0, 0.0, 0.0)));
-      set_style(Status::Inactive, omm::ContourStyle(omm::Color(1.0, 0.3, 0.3)));
+      set_style(Status::Active, ContourStyle(Colors::WHITE));
+      set_style(Status::Hovered, ContourStyle(Colors::RED));
+      set_style(Status::Inactive, ContourStyle(Color(Color::Model::RGBA, { 1.0, 0.3, 0., 1.0 })));
       break;
     case MoveAxisHandleDirection::Y:
-      set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
-      set_style(Status::Hovered, omm::ContourStyle(omm::Color(0.0, 1.0, 0.0)));
-      set_style(Status::Inactive, omm::ContourStyle(omm::Color(0.3, 1.0, 0.3)));
+      set_style(Status::Active, ContourStyle(Colors::WHITE));
+      set_style(Status::Hovered, ContourStyle(Colors::GREEN));
+      set_style(Status::Inactive, ContourStyle(Color(Color::Model::RGBA, { 0.3, 1.0, 0.3, 1.0 })));
       break;
     }
   }

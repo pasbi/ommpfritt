@@ -40,6 +40,14 @@ static const std::map<std::size_t, QPalette::ColorGroup> group_map {
   { 2, QPalette::Disabled }
 };
 
+omm::Color color_from_html(const std::string& html)
+{
+  bool ok;
+  const auto color = omm::Color::from_html(html, &ok);
+  assert(ok);
+  return color;
+}
+
 }  // namespace
 
 namespace omm
@@ -75,11 +83,11 @@ QVariant UiColors::data(int column, const PreferencesTreeValueItem& item, int ro
   case Qt::DisplayRole:
     return QVariant();
   case Qt::BackgroundRole:
-    return Color(item.value(column-1)).to_qcolor();
+    return color_from_html(item.value(column-1)).to_qcolor();
   case Qt::EditRole:
-    return QString::fromStdString(Color(item.value(column-1)).to_hex());
+    return QString::fromStdString(color_from_html(item.value(column-1)).to_html());
   case DEFAULT_VALUE_ROLE:
-    return QString::fromStdString(Color(item.default_value(column-1)).to_hex());
+    return QString::fromStdString(color_from_html(item.default_value(column-1)).to_html());
   default:
     return QVariant();
   }
@@ -87,14 +95,14 @@ QVariant UiColors::data(int column, const PreferencesTreeValueItem& item, int ro
 
 bool UiColors::set_data(int column, PreferencesTreeValueItem& item, const QVariant& value)
 {
-  item.set_value(Color(value.value<QColor>()).to_hex(), column-1);
+  item.set_value(Color::from_qcolor(value.value<QColor>()).to_html(), column-1);
   return true;
 }
 
 QPalette UiColors::make_palette() const
 {
   const auto get_widget_color = [this](std::size_t column, const std::string& name) {
-    return Color(value("Widget", name)->value(column)).to_qcolor();
+    return color_from_html(value("Widget", name)->value(column)).to_qcolor();
   };
   QPalette palette = qApp->palette();
   for (auto&& [role, name] : role_map) {
@@ -134,7 +142,7 @@ QVariant UiColors::headerData(int section, Qt::Orientation orientation, int role
 Color UiColors
 ::color(QPalette::ColorGroup pgroup, const std::string& group, const std::string& name) const
 {
-  return Color(stored_value(group, name, group_map.at(pgroup)));
+  return color_from_html(stored_value(group, name, group_map.at(pgroup)));
 }
 
 void UiColors::apply()

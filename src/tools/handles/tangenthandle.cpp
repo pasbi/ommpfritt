@@ -10,8 +10,8 @@ TangentHandle::TangentHandle(Tool& tool, PointSelectHandle& master_handle, Tange
   set_style(Handle::Status::Hovered, []() {
     Style style(nullptr);
     style.property(Style::COSMETIC_KEY)->set(true);
-    style.property(Style::BRUSH_COLOR_KEY)->set(Color(1.0, 1.0, 0.0));
-    style.property(Style::PEN_COLOR_KEY)->set(Color(0.0, 0.0, 1.0));
+    style.property(Style::BRUSH_COLOR_KEY)->set(Colors::YELLOW);
+    style.property(Style::PEN_COLOR_KEY)->set(Colors::BLUE);
     style.property(Style::BRUSH_IS_ACTIVE_KEY)->set(true);
     style.property(Style::PEN_IS_ACTIVE_KEY)->set(true);
     return style;
@@ -20,8 +20,8 @@ TangentHandle::TangentHandle(Tool& tool, PointSelectHandle& master_handle, Tange
   set_style(Handle::Status::Active, []() {
     Style style(nullptr);
     style.property(Style::COSMETIC_KEY)->set(true);
-    style.property(Style::BRUSH_COLOR_KEY)->set(Color(1.0, 1.0, 1.0));
-    style.property(Style::PEN_COLOR_KEY)->set(Color(0.0, 0.0, 0.0));
+    style.property(Style::BRUSH_COLOR_KEY)->set(Colors::WHITE);
+    style.property(Style::PEN_COLOR_KEY)->set(Colors::BLACK);
     style.property(Style::BRUSH_IS_ACTIVE_KEY)->set(true);
     style.property(Style::PEN_IS_ACTIVE_KEY)->set(true);
     return style;
@@ -30,8 +30,8 @@ TangentHandle::TangentHandle(Tool& tool, PointSelectHandle& master_handle, Tange
   set_style(Handle::Status::Inactive, []() {
     Style style(nullptr);
     style.property(Style::COSMETIC_KEY)->set(true);
-    style.property(Style::BRUSH_COLOR_KEY)->set(Color(0.8, 0.8, 0.2));
-    style.property(Style::PEN_COLOR_KEY)->set(Color(0.2, 0.2, 0.8));
+    style.property(Style::BRUSH_COLOR_KEY)->set(Color(Color::Model::RGBA, { 0.8, 0.8, 0.2 }, 1.0));
+    style.property(Style::PEN_COLOR_KEY)->set(Color(Color::Model::RGBA, { 0.2, 0.2, 0.8 }, 1.0));
     style.property(Style::BRUSH_IS_ACTIVE_KEY)->set(true);
     style.property(Style::PEN_IS_ACTIVE_KEY)->set(true);
     return style;

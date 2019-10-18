@@ -6,9 +6,9 @@ namespace omm
 
 ParticleHandle::ParticleHandle(Tool& tool) : Handle(tool)
 {
-  set_style(Status::Hovered, omm::SolidStyle(omm::Color(1.0, 1.0, 0.0)));
-  set_style(Status::Active, omm::SolidStyle(omm::Color(1.0, 1.0, 1.0)));
-  set_style(Status::Inactive, omm::SolidStyle(omm::Color(0.8, 0.8, 0.2)));
+  set_style(Status::Hovered, SolidStyle(Colors::YELLOW));
+  set_style(Status::Active, SolidStyle(Colors::WHITE));
+  set_style(Status::Inactive, SolidStyle(Color(Color::Model::RGBA, { 0.8, 0.8, 0.2, 1.0 })));
 }
 
 bool ParticleHandle::contains_global(const Vec2f& point) const

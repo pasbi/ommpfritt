@@ -25,8 +25,9 @@ void ColorSlider::paintEvent(QPaintEvent *e)
   gradient.setStart(QPoint());
   gradient.setFinalStop(QPointF(width(), 0));
   for (double d : steps) {
-    gradient.setColorAt(d, color().set(role(), d).to_qcolor());
-    gradient.setColorAt(d, color().set(role(), d).to_qcolor());
+    Color color = this->color();
+    color.set(role(), d);
+    gradient.setColorAt(d, color.to_qcolor());
   }
   QPainter painter(this);
   UiColors::draw_background(painter, rect());
@@ -60,7 +61,9 @@ void ColorSlider::mouseMoveEvent(QMouseEvent* e)
 void ColorSlider::set_value(int x)
 {
   const double d = static_cast<double>(x) / static_cast<double>(width());
-  set_color(color().set(role(), std::clamp(d, 0.0, 1.0)));
+  Color color = this->color();
+  color.set(role(), std::clamp(d, 0.0, 1.0));
+  set_color(color);
 }
 
 }  // namespace omm

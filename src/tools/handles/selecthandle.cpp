@@ -57,9 +57,9 @@ ObjectSelectHandle::ObjectSelectHandle(Tool& tool, Scene& scene, Object& object)
   , m_scene(scene)
   , m_object(object)
 {
-  set_style(Status::Hovered, omm::SolidStyle(omm::Color(1.0, 1.0, 0.0)));
-  set_style(Status::Active, omm::SolidStyle(omm::Color(1.0, 1.0, 1.0)));
-  set_style(Status::Inactive, omm::SolidStyle(omm::Color(0.8, 0.8, 0.2)));
+  set_style(Status::Hovered, SolidStyle(Colors::YELLOW));
+  set_style(Status::Active, SolidStyle(Colors::WHITE));
+  set_style(Status::Inactive, SolidStyle(Color(Color::Model::RGBA, { 0.8, 0.8, 0.2, 1.0 })));
 }
 
 bool ObjectSelectHandle::contains_global(const Vec2f& point) const
@@ -112,15 +112,15 @@ PointSelectHandle::PointSelectHandle(Tool& tool, Path& path, Point& point)
   : AbstractSelectHandle(tool)
   , m_path(path)
   , m_point(point)
-  , m_tangent_style(std::make_unique<ContourStyle>(Color(0.0, 0.0, 0.0), 0.1))
+  , m_tangent_style(std::make_unique<ContourStyle>(Colors::BLACK))
   , m_left_tangent_handle(std::make_unique<TangentHandle>(tool, *this,
                                                           TangentHandle::Tangent::Left))
   , m_right_tangent_handle(std::make_unique<TangentHandle>(tool, *this,
                                                            TangentHandle::Tangent::Right))
 {
-  set_style(Status::Hovered, omm::SolidStyle(omm::Color(1.0, 1.0, 0.0)));
-  set_style(Status::Active, omm::SolidStyle(omm::Color(1.0, 1.0, 1.0)));
-  set_style(Status::Inactive, omm::SolidStyle(omm::Color(0.8, 0.8, 0.2)));
+  set_style(Status::Hovered, omm::SolidStyle(Colors::YELLOW));
+  set_style(Status::Active, omm::SolidStyle(Colors::WHITE));
+  set_style(Status::Inactive, omm::SolidStyle(Color(Color::Model::RGBA, { 0.8, 0.8, 0.2, 1.0 })));
 }
 
 ObjectTransformation PointSelectHandle::transformation() const

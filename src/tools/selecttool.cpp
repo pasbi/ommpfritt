@@ -25,7 +25,7 @@ namespace omm
 
 AbstractSelectTool::AbstractSelectTool(Scene& scene)
   : Tool(scene)
-  , m_tool_info_line_style(ContourStyle(Color(0.0, 0.0, 0.0, 0.3), 0.7))
+  , m_tool_info_line_style(ContourStyle(Color(Color::Model::RGBA, { 0.0, 0.0, 0.0, 0.3 }), 0.7))
 
 {
   const std::string category = QObject::tr("tool").toStdString();

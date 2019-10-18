@@ -14,9 +14,9 @@ class BoundingBoxHandle : public Handle
 public:
   explicit BoundingBoxHandle(ToolT& tool) : Handle(tool)
   {
-    set_style(Status::Active, omm::ContourStyle(omm::Color(1.0, 1.0, 1.0)));
-    set_style(Status::Hovered, omm::ContourStyle(omm::Color(0.7, 0.7, 0.7)));
-    set_style(Status::Inactive, omm::ContourStyle(omm::Color(0.5, 0.5, 0.5)));
+    set_style(Status::Active, ContourStyle(Colors::WHITE));
+    set_style(Status::Hovered, ContourStyle(Color(Color::Model::RGBA, { 0.7, 0.7, 0.7, 1.0 })));
+    set_style(Status::Inactive, ContourStyle(Color(Color::Model::RGBA, { 0.5, 0.5, 0.5, 1.0 })));
   }
 
   bool mouse_press(const Vec2f& pos, const QMouseEvent& e, bool force) override

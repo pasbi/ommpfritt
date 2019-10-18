@@ -10,7 +10,7 @@
 namespace omm
 {
 
-const Style BrushSelectTool::m_style = ContourStyle(omm::Color(0.0, 0.0, 0.0));
+const Style BrushSelectTool::m_style = ContourStyle(Colors::BLACK);
 
 BrushSelectTool::BrushSelectTool(Scene& scene) : SelectPointsBaseTool(scene)
 {

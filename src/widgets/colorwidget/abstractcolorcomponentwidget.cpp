@@ -13,7 +13,7 @@ void AbstractColorComponentWidget::set_role(Color::Role role)
 
 void AbstractColorComponentWidget::set_color(const Color& color)
 {
-  if ((m_color - color).abs().max_component() > 0.00001) {
+  if (color != m_color) {
     m_color = color;
     Q_EMIT color_changed(color);
   }

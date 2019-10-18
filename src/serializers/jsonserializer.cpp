@@ -145,7 +145,9 @@ void JSONSerializer::set_value(const std::size_t id, const Pointer& pointer)
 
 void JSONSerializer::set_value(const Color& color, const Pointer& pointer)
 {
-  m_store[ptr(pointer)] = { color.red(), color.green(), color.blue(), color.alpha() };
+  using Role = Color::Role;
+  m_store[ptr(pointer)] = { color.get(Role::Red), color.get(Role::Green),
+                            color.get(Role::Blue), color.get(Role::Alpha) };
 }
 
 void JSONSerializer::set_value(const Vec2f& value, const Pointer& pointer)
@@ -211,7 +213,8 @@ std::string JSONDeserializer::get_string(const Pointer& pointer)
 Color JSONDeserializer::get_color(const Pointer& pointer)
 {
   try {
-    return Color(get_t<std::vector<double>>(m_store, Serializable::make_pointer(pointer)));
+    const auto vs = get_t<std::vector<double>>(m_store, Serializable::make_pointer(pointer));
+    return Color(Color::Model::RGBA, { vs.at(0), vs.at(1), vs.at(2), vs.at(3) });
   } catch (std::out_of_range&) {
     throw omm::AbstractDeserializer::DeserializeError("Expected vector of size 2.");
   }

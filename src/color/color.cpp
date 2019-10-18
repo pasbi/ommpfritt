@@ -11,19 +11,98 @@
 namespace
 {
 
-bool decode_hex(const std::string& code, omm::Color& color)
+std::array<double, 3> rgb_to_hsv(const std::array<double, 3>& rgb)
 {
+  const double r = std::clamp(rgb[0], 0.0, 1.0);
+  const double g = std::clamp(rgb[1], 0.0, 1.0);
+  const double b = std::clamp(rgb[2], 0.0, 1.0);
+
+  const double cmax = std::max(r, std::max(g, b));
+  const double cmin = std::min(r, std::min(g, b));
+  const double delta = cmax - cmin;
+
+  double h;
+
+  if (delta == 0.0) {
+    h = 0.0;
+  } else if (cmax == r) {
+    h = std::fmod((g - b)/delta, 6.0);
+  } else if (cmax == g) {
+    h = ((b - r)/delta + 2.0);
+  } else if (cmax == b) {
+    h = ((r - g)/delta + 4.0);
+  } else {
+    Q_UNREACHABLE();
+  }
+  h *= M_PI/3.0;
+  if (h < 0.0) {
+    h += 2*M_PI;
+  }
+
+  const double s = cmax == 0.0 ? 0.0 : delta / cmax;
+  const double v = cmax;
+  h /= 2 * M_PI;
+
+  return { h, s, v };
+}
+
+std::array<double, 3> hsv_to_rgb(const std::array<double, 3>& hsv)
+{
+  double h = hsv[0] * 2.0 * M_PI;
+  h = std::fmod(h, 2*M_PI);
+  if (h < 0.0) {
+    h += 2*M_PI;
+  }
+  h = h * 3.0 / M_PI;
+  const double c = hsv[2] * hsv[1];
+  const double x = c * (1.0 - std::abs(std::fmod(h, 2.0) - 1));
+  const double m = hsv[2] - c;
+  switch (static_cast<int>(h)) {
+  case 0:
+    return {c+m, x+m, m};
+  case 1:
+    return {x+m, c+m, m};
+  case 2:
+    return {m, c+m, x+m};
+  case 3:
+    return {m, x+m, c+m};
+  case 4:
+    return {x+m, m, c+m};
+  case 5:
+    return {c+m, m, x+m};
+  case 6:
+  default:
+    Q_UNREACHABLE();
+    return {0.0, 0.0, 0.0};
+  }
+}
+
+bool decode_hex(const std::string& code, std::array<double, 4>& rgb)
+{
+  static const auto in_range = [](char c) {
+    c = std::tolower(c);
+    return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f');
+  };
+  static const auto decode = [](const std::string& code, std::size_t offset, double& v) {
+    if (code.size() >= offset + 2 && in_range(code[offset]) && in_range(code[offset+1])) {
+      v = std::strtol(&code.substr(offset, 2).at(0), nullptr, 16) / 255.0;
+      return true;
+    } else {
+      return false;
+    }
+  };
   if (code.at(0) != '#' || (code.size() != 7 && code.size() != 9)) {
     return false;
   } else {
     if (code.size() == 7 || code.size() == 9) {
-      color.red()   = std::strtol(&code.substr(1, 2).at(0), nullptr, 16) / 255.0;
-      color.green() = std::strtol(&code.substr(3, 2).at(0), nullptr, 16) / 255.0;
-      color.blue()  = std::strtol(&code.substr(5, 2).at(0), nullptr, 16) / 255.0;
+      if (!decode(code, 1, rgb[0]) || !decode(code, 3, rgb[1]) || !decode(code, 5, rgb[2])) {
+        return false;
+      }
       if (code.size() == 9) {
-        color.alpha() = std::strtol(&code.substr(7, 2).at(0), nullptr, 16) / 255.0;
+        return decode(code, 7, rgb[3]);
       } else {
-        color.alpha() = 1.0;
+        rgb[3] = 1.0;
+        return true;
       }
       return true;
     } else {
@@ -37,135 +116,124 @@ bool decode_hex(const std::string& code, omm::Color& color)
 namespace omm
 {
 
-Color::Color() : Color(0.0, 0.0, 0.0, 1.0) {}
+Color::Color() : Color(Model::RGBA, { 0.0, 0.0, 0.0, 1.0 }) {}
 
-Color::Color(const std::string& code)
-{
-  if (!decode(code)) {
-    LWARNING << "Failed to decode color '" << code << "'";
-  }
-}
-
-Color::Color(const std::vector<double>& components)
-{
-  switch (components.size()) {
-  case 4:
-    m_components[3] = components[3];
-    [[fallthrough]];
-  case 3:
-    m_components[0] = components[0];
-    m_components[1] = components[1];
-    m_components[2] = components[2];
-  default:
-    const auto msg = "Expected vector of size 3 or 4 but got " + std::to_string(components.size());
-  }
-}
-
-Color::Color(const std::array<double, 4>& rgba) : m_components(rgba)
+Color::Color(Color::Model model, const std::array<double, 3> components, double alpha)
+  : Color(model, { components[0], components[1], components[2], alpha })
 {
 }
 
-Color::Color(const std::array<double, 3>& rgb) : m_components({ rgb[0], rgb[1], rgb[2], 1.0 })
+Color::Color(Color::Model model, const std::array<double, 4> components)
+  : m_components(components)
+  , m_current_model(model)
 {
 }
 
-Color::Color(const QColor& c) : Color(c.redF(), c.greenF(), c.blueF(), c.alphaF())
+Color::Color(const QColor& c) : Color(Color::RGBA, { c.redF(), c.greenF(), c.blueF(), c.alphaF() })
 {
 }
 
-Color Color::clamped() const
+
+std::array<double, 4> Color::convert(Color::Model from, Color::Model to,
+                                     const std::array<double, 4> values)
 {
-  Color clamped;
-  for (std::size_t i = 0; i < m_components.size(); ++i) {
-    clamped[i] = std::clamp((*this)[i], 0.0, 1.0);
-  }
-  return clamped;
-}
-
-double& Color::red() { return m_components[0]; }
-double& Color::green() { return m_components[1]; }
-double& Color::blue() { return m_components[2]; }
-double& Color::alpha() { return m_components[3]; }
-double& Color::operator[](const std::size_t i) { return m_components[i]; }
-double Color::red() const { return m_components[0]; }
-double Color::green() const { return m_components[1]; }
-double Color::blue() const { return m_components[2]; }
-double Color::alpha() const { return m_components[3]; }
-double Color::operator[](const std::size_t i) const { return m_components[i]; }
-
-void Color::to_hsv(double &hue, double &saturation, double &value) const
-{
-  std::array<double, 3> rgb;
-  for (std::size_t i = 0; i < 3; ++i) {
-    rgb[i] = std::clamp(m_components[i], 0.0, 1.0);
-  }
-
-  const double cmax = std::max(rgb[0], std::max(rgb[1], rgb[2]));
-  const double cmin = std::min(rgb[0], std::min(rgb[1], rgb[2]));
-  const double delta = cmax - cmin;
-
-  if (delta == 0.0) {
-    hue = 0.0;
-  } else if (cmax == rgb[0]) {
-    hue = std::fmod((rgb[1] - rgb[2])/delta, 6.0);
-  } else if (cmax == rgb[1]) {
-    hue = ((rgb[2] - rgb[0])/delta + 2.0);
-  } else if (cmax == rgb[2]) {
-    hue = ((rgb[0] - rgb[1])/delta + 4.0);
-  } else {
-    Q_UNREACHABLE();
-  }
-  hue *= M_PI/3.0;
-  if (hue < 0.0) {
-    hue += 2*M_PI;
-  }
-
-  saturation = cmax == 0.0 ? 0.0 : delta / cmax;
-  value = cmax;
-  hue /= 2 * M_PI;
-}
-
-Color Color::from_hsv(double hue, double saturation, double value, double alpha)
-{
-  hue *= 2.0 * M_PI;
-  hue = std::fmod(hue, 2*M_PI);
-  if (hue < 0.0) {
-    hue += 2*M_PI;
-  }
-  const double h = hue * 3.0 / M_PI;
-  const double c = value * saturation;
-  const double x = c * (1.0 - std::abs(std::fmod(h, 2.0) - 1));
-  const double m = value - c;
-  const std::array<double, 3> rgb = [c, x, h]() -> std::array<double, 3> {
-    switch (static_cast<int>(h)) {
-    case 0:
-      return {c, x, 0.0};
-    case 1:
-      return {x, c, 0.0};
-    case 2:
-      return {0.0, c, x};
-    case 3:
-      return {0.0, x, c};
-    case 4:
-      return {x, 0.0, c};
-    case 5:
-      return {c, 0.0, x};
-    case 6:
+  static const auto pack = [](const std::array<double, 3>& triple, double fourth) {
+    return std::array<double, 4> { triple[0], triple[1], triple[2], fourth };
+  };
+  static constexpr std::array<double, 4> invalid { 0.0, 0.0, 0.0, 0.0 };
+  switch (from) {
+  case Model::HSVA:
+    switch (to) {
+    case Model::HSVA:
+      return values;
+    case Model::RGBA:
+      return pack(hsv_to_rgb({ values[0], values[1], values[2] }), values[3]);
     default:
       Q_UNREACHABLE();
-      return {0.0, 0.0, 0.0};
+      return invalid;
     }
-  }();
-
-  return Color(rgb[0] + m, rgb[1] + m, rgb[2] + m, alpha);
+  case Model::RGBA:
+    switch (to) {
+    case Model::HSVA:
+      return pack(rgb_to_hsv({ values[0], values[1], values[2] }), values[3]);
+    case Model::RGBA:
+      return values;
+    default:
+      Q_UNREACHABLE();
+      return invalid;
+    }
+  default:
+    Q_UNREACHABLE();
+    return invalid;
+  }
 }
 
-bool Color::decode(const std::string& code)
+void Color::convert(Color::Model to)
 {
-  return decode_hex(code, *this);
+  m_components = convert(m_current_model, to, m_components);
+  m_current_model = to;
 }
 
-std::string Color::to_hex(bool no_alpha) const
+Color Color::convert(Color::Model to) const
+{
+  Color copy = *this;
+  copy.convert(to);
+  return copy;
+}
+
+std::array<double, 4> Color::components(Model model) const
+{
+  return convert(model).m_components;
+}
+
+double& Color::component(Color::Role role)
+{
+  assert(model(role, m_current_model) == m_current_model);
+  switch (role) {
+  case Role::Red:
+    [[fallthrough]];
+  case Role::Hue:
+    return m_components[0];
+  case Role::Green:
+    [[fallthrough]];
+  case Role::Saturation:
+    return m_components[1];
+  case Role::Blue:
+    [[fallthrough]];
+  case Role::Value:
+    return m_components[2];
+  case Role::Alpha:
+    return m_components[3];
+  default:
+    Q_UNREACHABLE();
+    return m_components[0];
+  }
+}
+
+Color::Model Color::model(Role role, Model tie)
+{
+  switch (role) {
+  case Role::Red:
+    [[fallthrough]];
+  case Role::Green:
+    [[fallthrough]];
+  case Role::Blue:
+    return Model::RGBA;
+  case Role::Hue:
+    [[fallthrough]];
+  case Role::Saturation:
+    [[fallthrough]];
+  case Role::Value:
+    return Model::HSVA;
+  case Role::Alpha:
+    return tie;
+  default:
+    Q_UNREACHABLE();
+    return Model::RGBA;
+  }
+}
+
+std::string Color::to_html() const
 {
   static const auto to_hex = [](float f) {
     const int i = std::clamp(static_cast<int>(std::round(f*255)), 0, 255);
@@ -175,188 +243,84 @@ std::string Color::to_hex(bool no_alpha) const
     assert(str.size() == 2);
     return str;
   };
-  return "#" + to_hex(red()) + to_hex(green()) + to_hex(blue()) + (no_alpha ? "" : to_hex(alpha()));
+  return "#" + to_hex(get(Role::Red))
+             + to_hex(get(Role::Green))
+             + to_hex(get(Role::Blue))
+      + to_hex(get(Role::Alpha));
 }
 
-Color& Color::operator+=(const Color& a)
+Color Color::from_html(const std::string& html, bool* ok)
 {
-  *this = *this + a;
-  return *this;
+  Color color(Model::RGBA, { 0.0, 0.0, 0.0, 1.0 });
+  if (decode_hex(html, color.m_components)) {
+    if (ok != nullptr) {
+      *ok = true;
+    }
+  } else {
+    if (ok != nullptr) {
+      *ok = false;
+    }
+  }
+  return color;
 }
 
-Color& Color::operator+=(double a)
+Color Color::from_qcolor(const QColor& color)
 {
-  *this = *this + a;
-  return *this;
-}
-
-Color& Color::operator-=(const Color& a)
-{
-  *this = *this - a;
-  return *this;
-}
-
-Color& Color::operator-=(double a)
-{
-  *this = *this - a;
-  return *this;
-}
-
-Color& Color::operator*=(const Color& a)
-{
-  *this = *this * a;
-  return *this;
-}
-
-Color& Color::operator*=(double a)
-{
-  *this = *this * a;
-  return *this;
-}
-
-Color& Color::operator/=(const Color& a)
-{
-  *this = *this / a;
-  return *this;
-}
-
-Color& Color::operator/=(double a)
-{
-  *this = *this / a;
-  return *this;
-}
-
-Color Color::operator-() const
-{
-  return Color(-red(), -green(), -blue(), -alpha());
+  return Color(Color::Model::RGBA, { color.redF(), color.greenF(), color.blueF(), color.alphaF() });
 }
 
 QColor Color::to_qcolor() const
 {
   QColor qc;
-  qc.setRedF(red());
-  qc.setGreenF(green());
-  qc.setBlueF(blue());
-  qc.setAlphaF(alpha());
+  qc.setRedF(  get(Role::Red));
+  qc.setGreenF(get(Role::Green));
+  qc.setBlueF( get(Role::Blue));
+  qc.setAlphaF(get(Role::Alpha));
   return qc;
 }
 
-Color Color::abs() const
+void Color::set(Color::Role role, double value)
 {
-  Color color = *this;
-  for (double& c : color.m_components) {
-    c = std::abs(c);
-  }
-  return color;
-}
-
-double Color::max_component() const
-{
-  double max = m_components[0];
-  for (const double c : m_components) {
-    max = std::max(c, max);
-  }
-  return max;
-}
-
-Color Color::set(Color::Role role, double value) const
-{
-
   switch (role) {
   case Role::Red:
     [[fallthrough]];
-  case Role::Blue:
-    [[fallthrough]];
-  case Role::Alpha:
-    [[fallthrough]];
   case Role::Green:
-  {
-    Color color = *this;
-    switch (role) {
-    case Role::Red:
-      color.red() = value;
-      return color;
-    case Role::Green:
-      color.green() = value;
-      return color;
-    case Role::Alpha:
-      color.alpha() = value;
-      return color;
-    case Role::Blue:
-      color.blue() = value;
-      return color;
-    default:
-      Q_UNREACHABLE();
-      return Color();
-    }
-  }
+    [[fallthrough]];
+  case Role::Blue:
+    convert(Model::RGBA);
+    component(role) = value;
+    return;
   case Role::Hue:
     [[fallthrough]];
   case Role::Saturation:
     [[fallthrough]];
   case Role::Value:
-  {
-    double h, s, v;
-    to_hsv(h, s, v);
-    switch (role) {
-    case Role::Hue:
-      return Color::from_hsv(value, s, v, alpha());
-    case Role::Saturation:
-      return Color::from_hsv(h, value, v, alpha());
-    case Role::Value:
-      return Color::from_hsv(h, s, value, alpha());
-    default:
-      Q_UNREACHABLE();
-      return Color();
-    }
-  }
+    convert(Model::HSVA);
+    component(role) = value;
+    return;
+  case Role::Alpha:
+    component(role) = value;
+    return;
   default:
     Q_UNREACHABLE();
-    return Color();
   }
 }
 
 double Color::get(Color::Role role) const
 {
-  switch (role) {
-  case Role::Red:
-    return red();
-  case Role::Blue:
-    return blue();
-  case Role::Alpha:
-    return alpha();
-  case Role::Green:
-    return green();
-  case Role::Hue:
-    [[fallthrough]];
-  case Role::Saturation:
-    [[fallthrough]];
-  case Role::Value:
-  {
-    double h, s, v;
-    to_hsv(h, s, v);
-    switch (role) {
-    case Role::Hue:
-      return h;
-    case Role::Saturation:
-      return s;
-    case Role::Value:
-      return v;
-    default:
-      Q_UNREACHABLE();
-      return 0.0;
-    }
-  }
-  default:
-    Q_UNREACHABLE();
-    return 0.0;
-  }
+  Color copy = *this;
+  copy.convert(model(role, m_current_model));
+  return copy.component(role);
 }
+
 
 bool operator==(const Color& a, const Color& b)
 {
+  if (a.m_current_model != b.m_current_model) {
+    return false;
+  }
   for (std::size_t i = 0; i < a.m_components.size(); ++i) {
-    if (a[i] != b[i]) {
+    if (a.m_components[i] != b.m_components[i]) {
       return false;
     }
   }
@@ -367,81 +331,29 @@ bool operator!=(const Color& a, const Color& b) { return !(a == b); }
 
 bool operator<(const Color& a, const Color& b)
 {
-  for (size_t i = 0; i < a.m_components.size(); ++i) {
-    if (a[i] < b[i]) {
-      return true;
-    } else if (a[i] > b[i]) {
-      return false;
+  if (a.m_current_model < b.m_current_model) {
+    return true;
+  } else if (a.m_current_model > b.m_current_model) {
+    return false;
+  } else {
+    for (size_t i = 0; i < a.m_components.size(); ++i) {
+      if (a.m_components[i] < b.m_components[i]) {
+        return true;
+      } else if (a.m_components[i] > b.m_components[i]) {
+        return false;
+      }
     }
+    return false;
   }
-  return false;
 }
 
 std::ostream& operator<<(std::ostream& ostream, const Color& color)
 {
-  ostream << "Color[" << color.red() << ", " << color.green() << ", "
-                      << color.blue() << ", " << color.alpha() << "]";
+  const Color copy = color.convert(Color::Model::RGBA);
+  using Role = Color::Role;
+  ostream << "Color[" << copy.get(Role::Red) << ", " << copy.get(Role::Green) << ", "
+          << copy.get(Role::Blue) << ", " << copy.get(Role::Alpha) << "]";
   return ostream;
-}
-
-Color operator*(const Color& c, const double s)
-{
-  return c * Color(s, s, s, s);
-}
-
-Color operator*(const double s, const Color& c)
-{
-  return c * s;
-}
-
-Color operator*(const Color& a, const Color& b)
-{
-  return Color(a.red() * b.red(), a.green() * b.green(), a.blue() * b.blue(), a.alpha() * b.alpha());
-}
-
-Color operator/(const Color& c, const double s)
-{
-  return c / Color(s, s, s, s);
-}
-
-Color operator/(const double s, const Color& c)
-{
-  return Color(s, s, s, s) / c;
-}
-
-Color operator/(const Color& a, const Color& b)
-{
-  return Color(a.red() / b.red(), a.green() / b.green(), a.blue() / b.blue(), a.alpha() / b.alpha());
-}
-
-Color operator+(const Color& c, const double s)
-{
-  return c + Color(s, s, s, s);
-}
-
-Color operator+(const double s, const Color& c)
-{
-  return c + s;
-}
-
-Color operator+(const Color& a, const Color& b)
-{
-  return Color(a.red() + b.red(), a.green() + b.green(), a.blue() + b.blue(), a.alpha() + b.alpha());
-}
-
-Color operator-(const Color& c, const double s)
-{
-  return c + (-s);
-}
-
-Color operator-(const double s, const Color& c)
-{
-  return s + (-c);
-}
-
-Color operator-(const Color& a, const Color& b)
-{
-  return a + (-b);
 }
 
 }  // namespace omm

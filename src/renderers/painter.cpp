@@ -103,7 +103,7 @@ QBrush Painter::make_brush(const Style &style)
   if (style.property(omm::Style::BRUSH_IS_ACTIVE_KEY)->value<bool>()) {
     QBrush brush(Qt::SolidPattern);
     const auto color = style.property(omm::Style::BRUSH_COLOR_KEY)->value<omm::Color>();
-    brush.setColor(to_qcolor(color));
+    brush.setColor(color.to_qcolor());
     return brush;
   } else {
     return QBrush(Qt::NoBrush);
@@ -115,7 +115,7 @@ QPen Painter::make_pen(const Style &style)
   if (style.property(omm::Style::PEN_IS_ACTIVE_KEY)->value<bool>()) {
     QPen pen;
     pen.setWidthF(style.property(omm::Style::PEN_WIDTH_KEY)->value<double>());
-    pen.setColor(to_qcolor(style.property(omm::Style::PEN_COLOR_KEY)->value<omm::Color>()));
+    pen.setColor(style.property(omm::Style::PEN_COLOR_KEY)->value<omm::Color>().to_qcolor());
     pen.setCosmetic(style.property(omm::Style::COSMETIC_KEY)->value<bool>());
     switch (style.property(omm::Style::CAP_STYLE_KEY)->value<std::size_t>()) {
     case 0: pen.setCapStyle(Qt::SquareCap); break;
@@ -133,15 +133,6 @@ QPen Painter::make_pen(const Style &style)
   } else {
     return QPen(Qt::NoPen);
   }
-}
-
-QColor Painter::to_qcolor(Color color)
-{
-  color = color.clamped() * 255.0;
-  return QColor( static_cast<int>(color.red()),
-                 static_cast<int>(color.green()),
-                 static_cast<int>(color.blue()),
-                 static_cast<int>(color.alpha()) );
 }
 
 void Painter::set_style(const Style &style)
