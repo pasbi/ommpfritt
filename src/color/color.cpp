@@ -1,5 +1,6 @@
 #include "color/color.h"
 
+#include "color/namedcolors.h"
 #include <cassert>
 #include <algorithm>
 #include <cmath>
@@ -7,6 +8,7 @@
 #include "logging.h"
 #include <iomanip>
 #include <iostream>
+#include "mainwindow/application.h"
 
 namespace
 {
@@ -170,6 +172,7 @@ std::array<double, 4> Color::convert(Color::Model from, Color::Model to,
 
 void Color::convert(Color::Model to)
 {
+  to_ordinary_color();
   m_components = convert(m_current_model, to, m_components);
   m_current_model = to;
 }
@@ -278,8 +281,34 @@ QColor Color::to_qcolor() const
   return qc;
 }
 
+void Color::to_ordinary_color()
+{
+  if (is_named_color()) {
+    if (!Application::instance().scene.named_colors().resolve(m_name, *this)) {
+      LWARNING << "Failed to resolve color '" << m_name << "'.";
+    }
+  }
+  m_name.clear();
+}
+
+bool Color::is_named_color() const
+{
+  return !m_name.empty();
+}
+
+std::string Color::name() const
+{
+  if (is_named_color()) {
+    return m_name;
+  } else {
+    LWARNING << "requested name of ordinary color.";
+    return "";
+  }
+}
+
 void Color::set(Color::Role role, double value)
 {
+  to_ordinary_color();
   switch (role) {
   case Role::Red:
     [[fallthrough]];

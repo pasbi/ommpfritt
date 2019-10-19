@@ -12,6 +12,7 @@ public:
   explicit ColorCircle(QWidget* parent = nullptr);
   std::string name() const override { return tr("ColorCircle").toStdString(); }
   void set_color(const Color& color) override;
+  void accept();
 
 protected:
   void paintEvent(QPaintEvent* e) override;

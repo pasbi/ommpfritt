@@ -7,6 +7,7 @@ file(GLOB SOURCES
   colorslab.cpp
   colorslider.cpp
   colorwidget.cpp
+  namedcolorsdialog.cpp
 )
 
 file(GLOB HEADERS
@@ -17,6 +18,7 @@ file(GLOB HEADERS
   colorslab.h
   colorslider.h
   colorwidget.h
+  namedcolorsdialog.h
 )
 
 target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})

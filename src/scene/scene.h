@@ -27,6 +27,7 @@ class ToolBox;
 class MessageBox;
 class HistoryModel;
 class Animator;
+class NamedColors;
 
 template<typename T> struct SceneStructure;
 template<> struct SceneStructure<Object> { using type = ObjectTree; };
@@ -138,8 +139,6 @@ public:
   }
   void submit(std::unique_ptr<Command> command);
 
-
-
   // === Tools ===
 private:
   std::unique_ptr<ToolBox> m_tool_box;
@@ -154,6 +153,12 @@ private:
   std::unique_ptr<Animator> m_animator;
 public:
   Animator& animator() { return *m_animator; }
+
+  // === NamedColors ===
+private:
+  std::unique_ptr<NamedColors> m_named_colors;
+public:
+  NamedColors& named_colors() { return *m_named_colors; }
 
 };
 

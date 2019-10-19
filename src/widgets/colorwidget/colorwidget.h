@@ -10,6 +10,7 @@ namespace omm
 {
 
 class AbstractColorComponentWidget;
+class NamedColors;
 
 class ColorWidget : public ColorPicker
 {
@@ -18,6 +19,8 @@ public:
   explicit ColorWidget(QWidget* parent = nullptr);
   ~ColorWidget();
   std::string name() const override;
+  void set_compact();
+  void hide_named_colors();
 
 public Q_SLOTS:
   void set_color(const Color& color) override;
@@ -28,6 +31,10 @@ private:
   void add_color_picker(std::unique_ptr<ColorPicker> picker);
   std::map<Color::Role, std::list<AbstractColorComponentWidget*>> m_component_widgets;
 
+  std::string m_color_name;
+
+private Q_SLOTS:
+  void show_named_colors_dialog();
 };
 
 }  // namespace omm

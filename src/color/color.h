@@ -20,6 +20,7 @@ public:
   enum Model { RGBA, HSVA };
   Color(Model model, const std::array<double, 3> components, const double alpha);
   Color(Model model, const std::array<double, 4> components);
+  Color(const std::string& name);
   explicit Color(const QColor& c);
   explicit Color();
 
@@ -27,6 +28,10 @@ public:
   static Color from_html(const std::string& html, bool *ok = nullptr);
   static Color from_qcolor(const QColor& color);
   QColor to_qcolor() const;
+
+  void to_ordinary_color();
+  bool is_named_color() const;
+  std::string name() const;
 
   enum class Role { Red, Green, Blue, Hue, Saturation, Value, Alpha };
 
@@ -41,6 +46,7 @@ public:
 
 private:
   Model m_current_model;
+  std::string m_name;
 
   friend bool operator==(const Color& a, const Color& b);
   friend bool operator<(const Color& a, const Color& b);

@@ -1,7 +1,10 @@
 #include "widgets/colorwidget/colorwidget.h"
+#include "mainwindow/application.h"
+#include "color/namedcolors.h"
 #include "widgets/colorwidget/colorcircle.h"
 #include "ui_colorwidget.h"
 #include "color/color.h"
+#include "namedcolorsdialog.h"
 
 namespace omm
 {
@@ -30,6 +33,13 @@ ColorWidget::ColorWidget(QWidget* parent)
   }
 
   add_color_picker(std::make_unique<ColorCircle>());
+  connect(m_ui->pb_named_colors, SIGNAL(clicked()), this, SLOT(show_named_colors_dialog()));
+
+  NamedColors& model = Application::instance().scene.named_colors();
+  using ComboBoxNCHPM = NamedColorsHighlighProxyModel<QComboBox>;
+  auto cb_proxy = std::make_unique<ComboBoxNCHPM>(model, *m_ui->cb_named_colors);
+  m_ui->cb_named_colors->setModel(cb_proxy.get());
+  cb_proxy.release()->setParent(m_ui->cb_named_colors);
 }
 
 ColorWidget::~ColorWidget()
@@ -39,6 +49,17 @@ ColorWidget::~ColorWidget()
 std::string ColorWidget::name() const
 {
   return tr("ColorWidget").toStdString();
+}
+
+void ColorWidget::set_compact()
+{
+  m_ui->w_bonus->hide();
+}
+
+void ColorWidget::hide_named_colors()
+{
+  m_ui->cb_named_colors->hide();
+  m_ui->pb_named_colors->hide();
 }
 
 void ColorWidget::set_color(const Color& color)
@@ -62,6 +83,11 @@ void ColorWidget::set_color(const Color& color)
   }
 
   m_ui->w_color->set_new_color(color);
+  if (color.is_named_color()) {
+    m_ui->cb_named_colors->setCurrentText(QString::fromStdString(color.name()));
+  } else {
+    m_ui->cb_named_colors->setCurrentIndex(-1);
+  }
 }
 
 void ColorWidget::add_color_picker(std::unique_ptr<ColorPicker> picker)
@@ -71,6 +97,11 @@ void ColorWidget::add_color_picker(std::unique_ptr<ColorPicker> picker)
   connect(this, SIGNAL(color_changed(const Color&)), picker.get(), SLOT(set_color(const Color&)));
   m_ui->cb_color_widget->addItem(QString::fromStdString(picker->name()));
   m_ui->sw_color_widgets->addWidget(picker.release());
+}
+
+void ColorWidget::show_named_colors_dialog()
+{
+  NamedColorsDialog().exec();
 }
 
 
