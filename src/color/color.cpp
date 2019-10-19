@@ -131,6 +131,10 @@ Color::Color(Color::Model model, const std::array<double, 4> components)
 {
 }
 
+Color::Color(const std::string& name) : m_name(name)
+{
+}
+
 Color::Color(const QColor& c) : Color(Color::RGBA, { c.redF(), c.greenF(), c.blueF(), c.alphaF() })
 {
 }
@@ -274,10 +278,11 @@ Color Color::from_qcolor(const QColor& color)
 QColor Color::to_qcolor() const
 {
   QColor qc;
-  qc.setRedF(  get(Role::Red));
-  qc.setGreenF(get(Role::Green));
-  qc.setBlueF( get(Role::Blue));
-  qc.setAlphaF(get(Role::Alpha));
+  const auto rgba = components(Model::RGBA);
+  qc.setRedF(std::clamp(rgba[0], 0.0, 1.0));
+  qc.setGreenF(std::clamp(rgba[1], 0.0, 1.0));
+  qc.setBlueF(std::clamp(rgba[2], 0.0, 1.0));
+  qc.setAlphaF(std::clamp(rgba[3], 0.0, 1.0));
   return qc;
 }
 
