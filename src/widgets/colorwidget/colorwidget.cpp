@@ -1,4 +1,5 @@
 #include "widgets/colorwidget/colorwidget.h"
+#include "widgets/colorwidget/colorcircle.h"
 #include "ui_colorwidget.h"
 #include "color/color.h"
 
@@ -27,6 +28,8 @@ ColorWidget::ColorWidget(QWidget* parent)
       connect(this, SIGNAL(color_changed(const Color&)), cwidget, SLOT(set_color(const Color&)));
     }
   }
+
+  add_color_picker(std::make_unique<ColorCircle>());
 }
 
 ColorWidget::~ColorWidget()
@@ -55,7 +58,7 @@ void ColorWidget::set_color(const Color& color)
 
   {
     QSignalBlocker bloker(m_ui->le_html);
-    m_ui->le_html->setText(QString::fromStdString(color.to_hex()));
+    m_ui->le_html->setText(QString::fromStdString(color.to_html()));
   }
 
   m_ui->w_color->set_new_color(color);

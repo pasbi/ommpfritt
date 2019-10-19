@@ -183,7 +183,7 @@ QColor ui_color(const QWidget& widget, const QPalette::ColorRole& role)
   return ui_color(widget, "Widget", role_map.at(role));
 }
 
-void UiColors::draw_background(QPainter& painter, const QRect& rect)
+void UiColors::draw_background(QPainter& painter, const QRectF& rect)
 {
   static const std::array<QColor, 2> bg_colors = { QColor(128, 128, 128), QColor(180, 180, 180) };
 

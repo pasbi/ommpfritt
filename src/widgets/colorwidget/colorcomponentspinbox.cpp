@@ -26,7 +26,9 @@ ColorComponentSpinBox::ColorComponentSpinBox(QWidget* parent) : AbstractColorCom
   setLayout(layout.release());
 
   connect(m_spin_box, &AbstractNumericEdit::value_changed, this, [this]() {
-     set_color(color().set(role(), m_spin_box->value() / m_factor));
+    Color color = this->color();
+    color.set(role(), m_spin_box->value() / m_factor);
+    set_color(color);
   });
 }
 

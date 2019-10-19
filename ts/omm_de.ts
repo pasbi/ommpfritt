@@ -1583,6 +1583,13 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
 </context>
 <context>
+    <name>omm::ColorCircle</name>
+    <message>
+        <source>ColorCircle</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>omm::ColorWidget</name>
     <message>
         <source>ColorWidget</source>

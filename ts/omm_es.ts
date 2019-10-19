@@ -1583,6 +1583,13 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
+    <name>omm::ColorCircle</name>
+    <message>
+        <source>ColorCircle</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>omm::ColorWidget</name>
     <message>
         <source>ColorWidget</source>

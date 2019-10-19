@@ -1,5 +1,5 @@
 #include "widgets/colorwidget/colorslab.h"
-
+#include "preferences/uicolors.h"
 #include <QPainter>
 
 namespace omm
@@ -17,9 +17,10 @@ void ColorSlab::set_new_color(const Color& color)
   update();
 }
 
-void ColorSlab::paintEvent(QPaintEvent* e)
+void ColorSlab::paintEvent(QPaintEvent*)
 {
   QPainter painter(this);
+  UiColors::draw_background(painter, rect());
 
   QPainterPath topleft;
   topleft.moveTo(QPoint(0, 0));

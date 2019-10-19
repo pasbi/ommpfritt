@@ -243,10 +243,9 @@ std::string Color::to_html() const
     assert(str.size() == 2);
     return str;
   };
-  return "#" + to_hex(get(Role::Red))
-             + to_hex(get(Role::Green))
-             + to_hex(get(Role::Blue))
-      + to_hex(get(Role::Alpha));
+
+  const auto rgba = components(Model::RGBA);
+  return "#" + to_hex(rgba[0]) + to_hex(rgba[1]) + to_hex(rgba[2]) + to_hex(rgba[3]);
 }
 
 Color Color::from_html(const std::string& html, bool* ok)
