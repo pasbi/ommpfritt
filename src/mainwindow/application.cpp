@@ -195,7 +195,7 @@ void Application::reset()
 
 void Application::load(const std::string& filename, bool force)
 {
-  if (force || !can_close()) {
+  if (!force || !can_close()) {
     return;
   }
 
