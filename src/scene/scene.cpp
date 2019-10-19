@@ -190,6 +190,13 @@ bool Scene::load_from(const std::string &filename)
     return false;
   }
 
+  auto error_handler = [this, filename](const std::string& msg) {
+    LERROR << "Failed to deserialize file at '" << filename << "'.";
+    LINFO << msg;
+    animator().invalidate();
+    reset();
+  };
+
   try
   {
     auto deserializer = AbstractDeserializer::make( "JSONDeserializer",
@@ -222,11 +229,11 @@ bool Scene::load_from(const std::string &filename)
     animator().deserialize(*deserializer, ANIMATOR_POINTER);
     return true;
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
-    LERROR << "Failed to deserialize file at '" << filename << "'.";
-    LINFO << deserialize_error.what();
-    animator().invalidate();
-    reset();
+    error_handler(deserialize_error.what());
+  } catch (const nlohmann::json::exception& exception) {
+    error_handler(exception.what());
   }
+
   return false;
 }
 
