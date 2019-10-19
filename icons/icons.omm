@@ -3471,7 +3471,7 @@
                                             "inf"
                                         ],
                                         "value": [
-                                            1.0000000000002789,
+                                            1.0000000000002807,
                                             0.9999999999999465
                                         ]
                                     },
@@ -3487,7 +3487,7 @@
                                         "step": 1.0,
                                         "type": "FloatProperty",
                                         "upper_value": "inf",
-                                        "value": 1.891249608676598
+                                        "value": 1.8912496086765977
                                     },
                                     {
                                         "animatable": true,
@@ -3501,7 +3501,7 @@
                                         "step": 0.01,
                                         "type": "FloatProperty",
                                         "upper_value": "inf",
-                                        "value": 3.0142555118576225e-14
+                                        "value": 3.108624468950771e-14
                                     },
                                     {
                                         "animatable": true,
@@ -9964,8 +9964,8 @@
                     "inf"
                 ],
                 "value": [
-                    382.20812275198773,
-                    677.1346717699614
+                    1050.5,
+                    580.5
                 ]
             },
             {
@@ -9993,8 +9993,8 @@
                     "inf"
                 ],
                 "value": [
-                    1.9283091632307499,
-                    1.9283091632307494
+                    1.0,
+                    1.0
                 ]
             },
             {
@@ -10056,21 +10056,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.20784313725490194,
-                        0.1411764705882353,
-                        0.596078431372549,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.20784313725490194,
+                            0.1411764705882353,
+                            0.596078431372549,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -10157,21 +10163,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.4392156862745098,
-                        0.6549019607843137,
-                        1.0,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.4392156862745098,
+                            0.6549019607843137,
+                            1.0,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -10313,21 +10325,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.20784313725490194,
-                        0.1411764705882353,
-                        0.596078431372549,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.20784313725490194,
+                            0.1411764705882353,
+                            0.596078431372549,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -10414,21 +10432,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.4392156862745098,
-                        0.6549019607843137,
-                        1.0,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.4392156862745098,
+                            0.6549019607843137,
+                            1.0,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -10570,21 +10594,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.1843137254901961,
-                        0.5529411764705883,
-                        0.12156862745098039,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.1843137254901961,
+                            0.5529411764705883,
+                            0.12156862745098039,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -10671,21 +10701,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.27450980392156865,
-                        1.0,
-                        0.4784313725490196,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.27450980392156865,
+                            1.0,
+                            0.4784313725490196,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -10827,21 +10863,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.20784313725490194,
-                        0.1411764705882353,
-                        0.596078431372549,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.20784313725490194,
+                            0.1411764705882353,
+                            0.596078431372549,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -10928,21 +10970,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.4392156862745098,
-                        0.6549019607843137,
-                        1.0,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.4392156862745098,
+                            0.6549019607843137,
+                            1.0,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -11084,21 +11132,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.3803921568627451,
-                        0.13725490196078433,
-                        0.1411764705882353,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.3803921568627451,
+                            0.13725490196078433,
+                            0.1411764705882353,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -11185,21 +11239,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.4392156862745098,
-                        0.6549019607843137,
-                        1.0,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.4392156862745098,
+                            0.6549019607843137,
+                            1.0,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -11341,21 +11401,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.1843137254901961,
-                        0.5529411764705883,
-                        0.12156862745098039,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.1843137254901961,
+                            0.5529411764705883,
+                            0.12156862745098039,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -11442,21 +11508,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.27450980392156865,
-                        1.0,
-                        0.4784313725490196,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.27450980392156865,
+                            1.0,
+                            0.4784313725490196,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -11598,21 +11670,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -11699,21 +11777,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.792156862745098,
-                        0.0,
-                        0.1843137254901961,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.792156862745098,
+                            0.0,
+                            0.1843137254901961,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -11855,21 +11939,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -11956,21 +12046,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.9333333333333333,
-                        0.9333333333333333,
-                        0.0,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.9333333333333333,
+                            0.9333333333333333,
+                            0.0,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -12112,21 +12208,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.9333333333333333,
-                        0.9333333333333333,
-                        0.0,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.9333333333333333,
+                            0.9333333333333333,
+                            0.0,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -12213,21 +12315,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.9333333333333333,
-                        0.9333333333333333,
-                        0.0,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.9333333333333333,
+                            0.9333333333333333,
+                            0.0,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -12369,21 +12477,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -12470,21 +12584,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.396078431372549,
-                        0.0,
-                        0.792156862745098,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.396078431372549,
+                            0.0,
+                            0.792156862745098,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -12626,21 +12746,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -12727,21 +12853,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.792156862745098,
-                        0.0,
-                        0.1843137254901961,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.792156862745098,
+                            0.0,
+                            0.1843137254901961,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -12883,21 +13015,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -12984,21 +13122,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.792156862745098,
-                        0.0,
-                        0.1843137254901961,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.792156862745098,
+                            0.0,
+                            0.1843137254901961,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -13140,21 +13284,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.6941176470588235,
-                        0.07058823529411765,
-                        0.07058823529411765,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.6941176470588235,
+                            0.07058823529411765,
+                            0.07058823529411765,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -13241,21 +13391,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.792156862745098,
-                        0.0,
-                        0.1843137254901961,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.792156862745098,
+                            0.0,
+                            0.1843137254901961,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -13397,21 +13553,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.1843137254901961,
-                        0.5529411764705883,
-                        0.12156862745098039,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.1843137254901961,
+                            0.5529411764705883,
+                            0.12156862745098039,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -13498,21 +13660,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.792156862745098,
-                        0.0,
-                        0.1843137254901961,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.792156862745098,
+                            0.0,
+                            0.1843137254901961,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -13654,21 +13822,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Pen",
-                    "default_value": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            0.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "pen/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.1843137254901961,
-                        0.5529411764705883,
-                        0.12156862745098039,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.1843137254901961,
+                            0.5529411764705883,
+                            0.12156862745098039,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
@@ -13755,21 +13929,27 @@
                     "animatable": true,
                     "animated": false,
                     "category": "Brush",
-                    "default_value": [
-                        1.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
+                    "default_value": {
+                        "name": "",
+                        "rgba": [
+                            1.0,
+                            0.0,
+                            0.0,
+                            1.0
+                        ]
+                    },
                     "key": "brush/color",
                     "label": "Color",
                     "type": "ColorProperty",
-                    "value": [
-                        0.792156862745098,
-                        0.0,
-                        0.1843137254901961,
-                        1.0
-                    ]
+                    "value": {
+                        "name": "",
+                        "rgba": [
+                            0.792156862745098,
+                            0.0,
+                            0.1843137254901961,
+                            1.0
+                        ]
+                    }
                 },
                 {
                     "animatable": true,
