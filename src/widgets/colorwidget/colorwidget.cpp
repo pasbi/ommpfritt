@@ -108,13 +108,14 @@ void ColorWidget::add_color_picker(std::unique_ptr<ColorPicker> picker)
 
 void ColorWidget::show_named_colors_dialog()
 {
-  Color current_ordinary = color();
+  const Color color = this->color();
+  Color current_ordinary = color;
   current_ordinary.to_ordinary_color();
   NamedColorsDialog().exec();
   update();
-  if (color().model() == Color::Model::Named) {
+  if (color.model() == Color::Model::Named) {
     NamedColors& model = Application::instance().scene.named_colors();
-    if (!model.has_color(m_color_name)) {
+    if (!model.has_color(color.name())) {
       set_color(current_ordinary);
     }
   }
