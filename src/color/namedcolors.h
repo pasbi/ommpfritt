@@ -83,17 +83,20 @@ public:
 
     if (role == Qt::BackgroundRole || role == Qt::ForegroundRole) {
       const QVariant data = sourceModel()->data(mapToSource(index), Qt::BackgroundRole);
-      QColor bg = data.template value<QColor>();
       if (is_highlighted) {
-        bg = highlight_color(bg);
         if (role == Qt::ForegroundRole) {
-          return get_contrast_color(bg, true);
+          return QColor(Qt::blue);
         } else {
-          return bg;
+          return QColor(Qt::white);
         }
       } else {
+        QColor bg = data.template value<QColor>();
         if (role == Qt::ForegroundRole) {
-          return get_contrast_color(bg, false);
+          if (bg.valueF() < 0.5) {
+            return QColor(Qt::white);
+          } else {
+            return QColor(Qt::black);
+          }
         } else {
           return bg;
         }
