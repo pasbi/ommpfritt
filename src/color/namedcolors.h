@@ -20,6 +20,7 @@ public:
   bool setData(const QModelIndex& index, const QVariant& data, int role) override;
   bool resolve(const std::string& name, Color& color) const;
   Color color(const QModelIndex& index) const;
+  std::string name(const QModelIndex& index) const;
   bool has_color(const std::string& name) const;
   Qt::ItemFlags flags(const QModelIndex& index) const override;
   void set_color(const QModelIndex& index, const Color& color);

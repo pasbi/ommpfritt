@@ -149,10 +149,10 @@ void JSONSerializer::set_value(const Color& color, const Pointer& pointer)
   auto& rgba = m_store[ptr(Serializable::make_pointer(pointer, "rgba"))];
   if (color.model() == Color::Model::Named) {
     name = color.name();
-    rgba = color.components(Color::Model::RGBA);
+    rgba = { 0.0, 0.0, 0.0, 0.0 };
   } else {
     name = "";
-    rgba = { 0.0, 0.0, 0.0, 0.0 };
+    rgba = color.components(Color::Model::RGBA);
   }
 }
 

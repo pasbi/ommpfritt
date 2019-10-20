@@ -55,6 +55,7 @@ Color* NamedColors::resolve(const std::string& name)
   if (it == m_named_colors.end()) {
     return nullptr;
   } else {
+    assert(it->second.model() != Color::Model::Named);
     return &it->second;
   }
 }
@@ -80,6 +81,13 @@ Color NamedColors::color(const QModelIndex& index) const
   assert(index.isValid());
   assert(index.model() == this);
   return m_named_colors[index.row()].second;
+}
+
+std::string NamedColors::name(const QModelIndex& index) const
+{
+  assert(index.isValid());
+  assert(index.model() == this);
+  return m_named_colors[index.row()].first;
 }
 
 bool NamedColors::has_color(const std::string& name) const
