@@ -15,6 +15,7 @@
 #include "serializers/abstractserializer.h"
 #include "commands/command.h"
 #include "properties/referenceproperty.h"
+#include "properties/colorproperty.h"
 #include "renderers/style.h"
 #include "tags/tag.h"
 #include "objects/object.h"
@@ -153,6 +154,25 @@ Scene::find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates
     }
   }
   return reference_holder_map;
+}
+
+std::set<ColorProperty*> Scene::find_named_color_holders(const std::string& name) const
+{
+  std::set<ColorProperty*> properties;
+  for (const auto& property_owner : property_owners()) {
+    const auto& property_map = property_owner->properties();
+    for (const auto& key : property_map.keys()) {
+      auto& property = *property_map.at(key);
+      using value_type = ColorProperty::value_type;
+      const auto variant = property.variant_value();
+      if (const auto* value = std::get_if<value_type>(&variant); value != nullptr) {
+        if (value->model() == Color::Model::Named && value->name() == name) {
+          properties.insert(static_cast<ColorProperty*>(&property));
+        }
+      }
+    }
+  }
+  return properties;
 }
 
 bool Scene::save_as(const std::string &filename)

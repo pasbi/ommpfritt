@@ -2,6 +2,7 @@
 file(GLOB SOURCES
   animationbutton.cpp
   codeedit.cpp
+  combobox.cpp
   coordinateedit.cpp
   filepathedit.cpp
   keysequenceedit.cpp
@@ -15,6 +16,7 @@ file(GLOB SOURCES
 file(GLOB HEADERS
   animationbutton.h
   codeedit.h
+  combobox.h
   coordinateedit.h
   filepathedit.h
   keysequenceedit.h

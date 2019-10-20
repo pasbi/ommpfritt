@@ -37,12 +37,15 @@ ColorWidget::ColorWidget(QWidget* parent)
 
   NamedColors& model = Application::instance().scene.named_colors();
   using ComboBoxNCHPM = NamedColorsHighlighProxyModel<QComboBox>;
-  auto cb_proxy = std::make_unique<ComboBoxNCHPM>(model, *m_ui->cb_named_colors);
-  m_ui->cb_named_colors->setModel(cb_proxy.get());
+  auto cb_proxy = std::make_unique<ComboBoxNCHPM>(model, *m_ui->cb_named_colors->view());
+  m_ui->cb_named_colors->set_model(*cb_proxy);
   cb_proxy.release()->setParent(m_ui->cb_named_colors);
-  connect(m_ui->cb_named_colors, qOverload<const QString&>(&QComboBox::currentIndexChanged),
-          [this](const QString& name) {
-    set_color(Color(name.toStdString()));
+  connect(m_ui->cb_named_colors, &ComboBox::current_index_changed, [this](int index)
+  {
+    if (index >= 0) {
+      const QString name = m_ui->cb_named_colors->view()->itemText(index);
+      set_color(Color(name.toStdString()));
+    }
   });
 }
 
@@ -88,9 +91,9 @@ void ColorWidget::set_color(const Color& color)
 
   m_ui->w_color->set_new_color(color);
   if (color.model() == Color::Model::Named) {
-    m_ui->cb_named_colors->setCurrentText(QString::fromStdString(color.name()));
+    m_ui->cb_named_colors->set_current_text(color.name());
   } else {
-    m_ui->cb_named_colors->setCurrentIndex(-1);
+    m_ui->cb_named_colors->set_current_index(-1);
   }
 }
 
@@ -105,8 +108,16 @@ void ColorWidget::add_color_picker(std::unique_ptr<ColorPicker> picker)
 
 void ColorWidget::show_named_colors_dialog()
 {
+  Color current_ordinary = color();
+  current_ordinary.to_ordinary_color();
   NamedColorsDialog().exec();
   update();
+  if (color().model() == Color::Model::Named) {
+    NamedColors& model = Application::instance().scene.named_colors();
+    if (!model.has_color(m_color_name)) {
+      set_color(current_ordinary);
+    }
+  }
 }
 
 

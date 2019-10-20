@@ -1,4 +1,6 @@
 #include "widgets/colorwidget/colordialog.h"
+#include "logging.h"
+#include <QResizeEvent>
 #include <QVBoxLayout>
 #include "widgets/colorwidget/colorwidget.h"
 #include <QDialogButtonBox>
@@ -22,11 +24,11 @@ ColorDialog::ColorDialog(QWidget* parent) : QDialog(parent)
   layout->addWidget(button_box.release());
 
   setLayout(layout.release());
+  resize(QSize(841, 439));
 }
 
 ColorDialog::~ColorDialog()
 {
-
 }
 
 std::pair<Color, bool> ColorDialog::get_color(const Color& old, QWidget* parent)

@@ -28,6 +28,7 @@ class MessageBox;
 class HistoryModel;
 class Animator;
 class NamedColors;
+class ColorProperty;
 
 template<typename T> struct SceneStructure;
 template<> struct SceneStructure<Object> { using type = ObjectTree; };
@@ -159,6 +160,7 @@ private:
   std::unique_ptr<NamedColors> m_named_colors;
 public:
   NamedColors& named_colors() { return *m_named_colors; }
+  std::set<ColorProperty*> find_named_color_holders(const std::string& name) const;
 
 };
 

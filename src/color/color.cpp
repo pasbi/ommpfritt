@@ -139,7 +139,6 @@ Color::Color(const QColor& c) : Color(Color::RGBA, { c.redF(), c.greenF(), c.blu
 {
 }
 
-
 std::array<double, 4> Color::convert(Color::Model from, Color::Model to,
                                      const std::array<double, 4> values)
 {
@@ -176,6 +175,7 @@ std::array<double, 4> Color::convert(Color::Model from, Color::Model to,
 
 void Color::convert(Color::Model to)
 {
+  assert(to != Color::Model::Named);
   to_ordinary_color();
   m_components = convert(m_current_model, to, m_components);
   m_current_model = to;
