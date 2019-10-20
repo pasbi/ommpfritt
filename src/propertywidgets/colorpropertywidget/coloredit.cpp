@@ -4,6 +4,7 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include "widgets/colorwidget/colordialog.h"
+#include "preferences/uicolors.h"
 
 namespace omm
 {
@@ -11,6 +12,7 @@ namespace omm
 void ColorEdit::paintEvent(QPaintEvent*)
 {
   QPainter painter(this);
+  UiColors::draw_background(painter, rect());
   painter.fillRect(rect(), m_current_color.to_qcolor());
 }
 
