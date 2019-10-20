@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1049</width>
-    <height>658</height>
+    <width>474</width>
+    <height>299</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -68,7 +68,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,0,0,0,0,1,0" columnstretch="0,1,0,0">
        <property name="spacing">
         <number>0</number>

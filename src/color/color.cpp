@@ -131,7 +131,7 @@ Color::Color(Color::Model model, const std::array<double, 4> components)
 {
 }
 
-Color::Color(const std::string& name) : m_name(name)
+Color::Color(const std::string& name) : m_current_model(Model::Named), m_name(name)
 {
 }
 
@@ -233,7 +233,11 @@ Color::Model Color::model(Role role, Model tie)
   case Role::Value:
     return Model::HSVA;
   case Role::Alpha:
-    return tie;
+    if (tie == Model::Named) {
+      return Model::RGBA;
+    } else {
+      return tie;
+    }
   default:
     Q_UNREACHABLE();
     return Model::RGBA;
@@ -288,22 +292,19 @@ QColor Color::to_qcolor() const
 
 void Color::to_ordinary_color()
 {
-  if (is_named_color()) {
+  if (model() == Model::Named) {
     if (!Application::instance().scene.named_colors().resolve(m_name, *this)) {
+      m_components = { 0, 0, 0, 1 };
+      m_current_model = Model::RGBA;
       LWARNING << "Failed to resolve color '" << m_name << "'.";
     }
   }
   m_name.clear();
 }
 
-bool Color::is_named_color() const
-{
-  return !m_name.empty();
-}
-
 std::string Color::name() const
 {
-  if (is_named_color()) {
+  if (model() == Model::Named) {
     return m_name;
   } else {
     LWARNING << "requested name of ordinary color.";
@@ -342,6 +343,7 @@ void Color::set(Color::Role role, double value)
 double Color::get(Color::Role role) const
 {
   Color copy = *this;
+  copy.to_ordinary_color();
   copy.convert(model(role, m_current_model));
   return copy.component(role);
 }

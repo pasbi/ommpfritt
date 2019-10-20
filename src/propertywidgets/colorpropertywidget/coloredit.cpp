@@ -1,7 +1,9 @@
 #include "propertywidgets/colorpropertywidget/coloredit.h"
+#include "logging.h"
 #include <QColorDialog>
 #include <QPaintEvent>
 #include <QPainter>
+#include "widgets/colorwidget/colordialog.h"
 
 namespace omm
 {
@@ -31,9 +33,9 @@ ColorEdit::value_type ColorEdit::value() const { return m_current_color; }
 
 void ColorEdit::mouseDoubleClickEvent(QMouseEvent*)
 {
-  const auto color = QColorDialog::getColor(m_current_color.to_qcolor(), this);
-  if (color.isValid()) {
-    set_value(Color(color));
+  const auto [color, accepted] = ColorDialog::get_color(m_current_color, this);
+  if (accepted) {
+    set_value(color);
   }
 }
 

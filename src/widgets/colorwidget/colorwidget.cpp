@@ -40,6 +40,10 @@ ColorWidget::ColorWidget(QWidget* parent)
   auto cb_proxy = std::make_unique<ComboBoxNCHPM>(model, *m_ui->cb_named_colors);
   m_ui->cb_named_colors->setModel(cb_proxy.get());
   cb_proxy.release()->setParent(m_ui->cb_named_colors);
+  connect(m_ui->cb_named_colors, qOverload<const QString&>(&QComboBox::currentIndexChanged),
+          [this](const QString& name) {
+    set_color(Color(name.toStdString()));
+  });
 }
 
 ColorWidget::~ColorWidget()
@@ -83,7 +87,7 @@ void ColorWidget::set_color(const Color& color)
   }
 
   m_ui->w_color->set_new_color(color);
-  if (color.is_named_color()) {
+  if (color.model() == Color::Model::Named) {
     m_ui->cb_named_colors->setCurrentText(QString::fromStdString(color.name()));
   } else {
     m_ui->cb_named_colors->setCurrentIndex(-1);
@@ -102,6 +106,7 @@ void ColorWidget::add_color_picker(std::unique_ptr<ColorPicker> picker)
 void ColorWidget::show_named_colors_dialog()
 {
   NamedColorsDialog().exec();
+  update();
 }
 
 

@@ -2,6 +2,7 @@
 file(GLOB SOURCES
   abstractcolorcomponentwidget.cpp
   colorcircle.cpp
+  colordialog.cpp
   colorcomponentspinbox.cpp
   colorpicker.cpp
   colorslab.cpp
@@ -13,6 +14,7 @@ file(GLOB SOURCES
 file(GLOB HEADERS
   abstractcolorcomponentwidget.h
   colorcircle.h
+  colordialog.h
   colorcomponentspinbox.h
   colorpicker.h
   colorslab.h

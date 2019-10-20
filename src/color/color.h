@@ -17,7 +17,7 @@ private:
   std::array<double, 4> m_components;
 
 public:
-  enum Model { RGBA, HSVA };
+  enum Model { RGBA, HSVA, Named };
   Color(Model model, const std::array<double, 3> components, const double alpha);
   Color(Model model, const std::array<double, 4> components);
   Color(const std::string& name);
@@ -30,7 +30,6 @@ public:
   QColor to_qcolor() const;
 
   void to_ordinary_color();
-  bool is_named_color() const;
   std::string name() const;
 
   enum class Role { Red, Green, Blue, Hue, Saturation, Value, Alpha };
@@ -43,6 +42,7 @@ public:
   Color convert(Model to) const;
 
   std::array<double, 4> components(Model model) const;
+  Model model() const { return m_current_model; }
 
 private:
   Model m_current_model;

@@ -146,9 +146,14 @@ void JSONSerializer::set_value(const std::size_t id, const Pointer& pointer)
 void JSONSerializer::set_value(const Color& color, const Pointer& pointer)
 {
   auto& name = m_store[ptr(Serializable::make_pointer(pointer, "name"))];
-  name = color.is_named_color() ? color.name() : "";
   auto& rgba = m_store[ptr(Serializable::make_pointer(pointer, "rgba"))];
-  rgba = color.components(Color::Model::RGBA);
+  if (color.model() == Color::Model::Named) {
+    name = color.name();
+    rgba = color.components(Color::Model::RGBA);
+  } else {
+    name = "";
+    rgba = { 0.0, 0.0, 0.0, 0.0 };
+  }
 }
 
 void JSONSerializer::set_value(const Vec2f& value, const Pointer& pointer)

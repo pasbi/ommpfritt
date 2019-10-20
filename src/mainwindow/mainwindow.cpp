@@ -30,6 +30,7 @@
 #include "scene/history/historymodel.h"
 #include "keybindings/commandinterface.h"
 #include "mainwindow/application.h"
+#include "widgets/colorwidget/colorwidget.h"
 
 namespace
 {
