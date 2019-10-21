@@ -5,6 +5,7 @@
 
 namespace Ui { class NamedColorsDialog; }
 
+class QStyledItemDelegate;
 class QListView;
 
 namespace omm
@@ -30,6 +31,7 @@ private:
   std::unique_ptr<Ui::NamedColorsDialog> m_ui;
   NamedColors& model() const;
   std::unique_ptr<NamedColorsHighlighProxyModel<QListView>> m_proxy;
+  std::unique_ptr<QStyledItemDelegate> m_delegate;
 
 };
 

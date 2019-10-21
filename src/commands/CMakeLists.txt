@@ -6,6 +6,7 @@ file(GLOB SOURCES
   modifypointscommand.cpp
   movecommand.cpp
   movetagscommand.cpp
+  namedcolorscommand.cpp
   objectselectioncommand.cpp
   objectstransformationcommand.cpp
   pointstransformationcommand.cpp
@@ -23,6 +24,7 @@ file(GLOB HEADERS
   modifypointscommand.h
   movecommand.h
   movetagscommand.h
+  namedcolorscommand.h
   objectselectioncommand.h
   objectstransformationcommand.h
   pointstransformationcommand.h

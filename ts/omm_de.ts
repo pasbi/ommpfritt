@@ -42,18 +42,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>D</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>+</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;R</source>
         <translation type="unfinished"></translation>
     </message>
@@ -80,6 +68,10 @@
     <message>
         <source>&amp;A</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 <context>
@@ -146,6 +138,21 @@
     <name>KeySequenceEdit</name>
     <message>
         <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>NamedColorsDialog</name>
+    <message>
+        <source>Manage Named Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1121,6 +1128,22 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <comment>PythonConsole</comment>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Change name of named color name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Change Named Color color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Named Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Named Color</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1706,6 +1729,25 @@ This cannot be undone.</source>
     </message>
     <message>
         <source>Save Layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::NamedColors</name>
+    <message>
+        <source>Unnamed Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::NamedColorsDialog</name>
+    <message>
+        <source>%1 properties reference this named color.
+Do you want to convert them into ordinary colors?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert Named Colors</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

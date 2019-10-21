@@ -23,6 +23,7 @@ protected:
   static constexpr int POINTS_TRANSFORMATION_COMMAND_ID = 3;
   static constexpr int MODIFY_TANGENTS_COMMAND_ID = 4;
   static constexpr int MOVE_KEYFRAMES_COMMAND_ID = 5;
+  static constexpr int CHANGE_NAMED_COLORS_COLOR_COMMAND_ID = 6;
 };
 
 }  // namespace omm

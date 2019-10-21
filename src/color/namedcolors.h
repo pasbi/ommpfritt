@@ -17,20 +17,25 @@ class NamedColors : public QAbstractListModel, public Serializable
 public:
   int rowCount(const QModelIndex& parent) const override;
   QVariant data(const QModelIndex& index, int role) const override;
-  bool setData(const QModelIndex& index, const QVariant& data, int role) override;
   bool resolve(const std::string& name, Color& color) const;
   Color color(const QModelIndex& index) const;
   std::string name(const QModelIndex& index) const;
+  using QAbstractListModel::index;
+  QModelIndex index(const std::string& name) const;
   bool has_color(const std::string& name) const;
   Qt::ItemFlags flags(const QModelIndex& index) const override;
   void set_color(const QModelIndex& index, const Color& color);
 
+  void change(const std::string& name, const Color& color);
+  void rename(const std::string& old_name, const std::string& new_name);
+  QModelIndex add(const std::string& name, const Color& color);
+  void remove(const std::string& name);
+  Color color(const std::string& name) const;
+
   void serialize(AbstractSerializer&serializer, const Pointer&p) const override;
   void deserialize(AbstractDeserializer&deserializer, const Pointer&p) override;
 
-public Q_SLOTS:
-  QModelIndex add(const Color& color);
-  void remove(const QModelIndex& index);
+  std::string generate_default_name() const;
 
 private:
   Color* resolve(const std::string& name);

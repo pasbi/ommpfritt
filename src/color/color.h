@@ -20,7 +20,7 @@ public:
   enum Model { RGBA, HSVA, Named };
   Color(Model model, const std::array<double, 3> components, const double alpha);
   Color(Model model, const std::array<double, 4> components);
-  Color(const std::string& name);
+  explicit Color(const std::string& name);
   explicit Color(const QColor& c);
   explicit Color();
 

@@ -29,22 +29,6 @@ QVariant NamedColors::data(const QModelIndex& index, int role) const
   }
 }
 
-bool NamedColors::setData(const QModelIndex& index, const QVariant& data, int role)
-{
-  if (!index.isValid() || role != Qt::EditRole) {
-    return false;
-  }
-
-  const std::string name = data.toString().toStdString();
-  if (name.empty() || has_color(name)) {
-    return false;
-  } else {
-    m_named_colors[index.row()].first = name;
-    Q_EMIT dataChanged(index, index, { Qt::DisplayRole });
-    return true;
-  }
-}
-
 Color* NamedColors::resolve(const std::string& name)
 {
   const auto it = std::find_if(m_named_colors.begin(), m_named_colors.end(),
@@ -90,6 +74,16 @@ std::string NamedColors::name(const QModelIndex& index) const
   return m_named_colors[index.row()].first;
 }
 
+QModelIndex NamedColors::index(const std::string& name) const
+{
+  const auto it = std::find_if(m_named_colors.begin(), m_named_colors.end(),
+                               [name](const auto& pair)
+  {
+    return pair.first == name;
+  });
+  return index(std::distance(m_named_colors.begin(), it), 0);
+}
+
 bool NamedColors::has_color(const std::string& name) const
 {
   const auto it = std::find_if(m_named_colors.begin(), m_named_colors.end(),
@@ -111,6 +105,42 @@ void NamedColors::set_color(const QModelIndex& index, const Color& color)
   assert(index.isValid() && index.model() == this);
   m_named_colors[index.row()].second = color;
   Q_EMIT dataChanged(index, index, { Qt::BackgroundRole, Qt::ForegroundRole });
+}
+
+void NamedColors::change(const std::string& name, const Color& color)
+{
+  auto& pair = m_named_colors[index(name).row()];
+  assert(color.model() != Color::Model::Named);
+  pair.second = color;
+}
+
+void NamedColors::rename(const std::string& old_name, const std::string& new_name)
+{
+  assert(!has_color(new_name));
+  assert(has_color(old_name));
+  const QModelIndex index = this->index(old_name);
+  auto& pair = m_named_colors[index.row()];
+  Q_EMIT dataChanged(index, index, { Qt::DisplayRole });
+  pair.first = new_name;
+}
+
+void NamedColors::remove(const std::string& name)
+{
+  const QModelIndex index = this->index(name);
+  assert(index.isValid());
+  assert(index.model() == this);
+  const std::size_t n = index.row();
+  beginRemoveRows(QModelIndex(), n, n);
+  m_named_colors.erase(m_named_colors.begin() + n);
+  endRemoveRows();
+}
+
+Color NamedColors::color(const std::string& name) const
+{
+  const QModelIndex index = this->index(name);
+  assert(index.isValid());
+  assert(index.model() == this);
+  return m_named_colors[index.row()].second;
 }
 
 void NamedColors::serialize(AbstractSerializer& serializer, const Serializable::Pointer& p) const
@@ -138,35 +168,27 @@ void NamedColors::deserialize(AbstractDeserializer& deserializer, const Serializ
   endResetModel();
 }
 
-QModelIndex NamedColors::add(const Color& color)
+std::string NamedColors::generate_default_name() const
 {
-  const auto default_name = [this]() {
-    const std::string default_name = tr("Unnamed Color").toStdString();
-    std::string candidate = default_name;
-    std::size_t i = 0;
-    while (has_color(candidate)) {
-      i += 1;
-      std::ostringstream ostream;
-      ostream << default_name << "." << std::setw(3) << std::setfill('0') << i;
-      candidate = ostream.str();
-    }
-    return candidate;
-  };
-  const std::size_t n = m_named_colors.size();
-  beginInsertRows(QModelIndex(), n, n);
-  m_named_colors.push_back(std::pair(default_name(), color));
-  endInsertRows();
-  return index(n, 0, QModelIndex());
+  const std::string default_name = tr("Unnamed Color").toStdString();
+  std::string candidate = default_name;
+  std::size_t i = 0;
+  while (has_color(candidate)) {
+    i += 1;
+    std::ostringstream ostream;
+    ostream << default_name << "." << std::setw(3) << std::setfill('0') << i;
+    candidate = ostream.str();
+  }
+  return candidate;
 }
 
-void NamedColors::remove(const QModelIndex& index)
+QModelIndex NamedColors::add(const std::string& name, const Color& color)
 {
-  assert(index.isValid());
-  assert(index.model() == this);
-  const std::size_t n = index.row();
-  beginRemoveRows(QModelIndex(), n, n);
-  m_named_colors.erase(m_named_colors.begin() + n);
-  endRemoveRows();
+  const std::size_t n = m_named_colors.size();
+  beginInsertRows(QModelIndex(), n, n);
+  m_named_colors.push_back(std::pair(name, color));
+  endInsertRows();
+  return index(n, 0, QModelIndex());
 }
 
 }  // namespace omm
