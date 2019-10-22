@@ -1,5 +1,4 @@
 #include "managers/boundingboxmanager/boundingboxmanager.h"
-#include "managers/boundingboxmanager/anchorwidget.h"
 #include <QComboBox>
 #include <QLabel>
 #include "scene/scene.h"
@@ -10,6 +9,7 @@
 #include "objects/path.h"
 #include "tools/toolbox.h"
 #include "scene/messagebox.h"
+#include "mainwindow/application.h"
 
 namespace {
 
@@ -19,7 +19,7 @@ enum class AspectRatio { Ignore, FromWidth, FromHeight };
 
 omm::ObjectTransformation
 find_transformation(const omm::BoundingBox& old_bb, const omm::BoundingBox& new_bb,
-                    omm::AnchorWidget::Anchor anchor, AspectRatio aspect_ratio)
+                    AspectRatio aspect_ratio)
 {
   omm::Vec2f s(1.0, 1.0);
 
@@ -37,8 +37,9 @@ find_transformation(const omm::BoundingBox& old_bb, const omm::BoundingBox& new_
     s.y = new_bb.height() / old_bb.height();
   }
 
-  const omm::Vec2f ap = omm::AnchorWidget::anchor_position(old_bb, anchor);
-  const omm::Vec2f bp = omm::AnchorWidget::anchor_position(new_bb, anchor);
+  const auto& options = omm::Application::instance().options();
+  const omm::Vec2f ap = options.anchor_position(old_bb);
+  const omm::Vec2f bp = options.anchor_position(new_bb);
   const omm::Vec2f t = bp - ap;
 
   if ((s - omm::Vec2f(1.0, 1.0)).euclidean_norm2() < t.euclidean_norm2()) {
@@ -79,7 +80,7 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   m_ui->setupUi(widget.get());
   set_widget(std::move(widget));
 
-  connect(m_ui->w_anchor, &AnchorWidget::anchor_changed, [this]() {
+  connect(&Application::instance().options(), &Options::anchor_changed, [this]() {
     reset_transformation();
   });
 
@@ -161,7 +162,8 @@ BoundingBox BoundingBoxManager::update_manager()
   }();
 
   block_signals();
-  const Vec2f anchor = m_ui->w_anchor->anchor_position(bb);
+  const auto& options = Application::instance().options();
+  const Vec2f anchor = options.anchor_position(bb);
   m_ui->sp_x->set_value(anchor.x);
   m_ui->sp_y->set_value(anchor.y);
   m_ui->sp_w->set_value(bb.width());
@@ -204,8 +206,9 @@ void BoundingBoxManager::update_bounding_box()
     }
     return AspectRatio::Ignore;
   }();
+
   const ObjectTransformation t = find_transformation(m_old_bounding_box, new_bounding_box,
-                                                     m_ui->w_anchor->anchor(), aspect_ratio );
+                                                     aspect_ratio );
   switch (m_current_mode) {
   case Mode::Points:
     scene().submit(m_transform_points_helper.make_command(t));
@@ -252,13 +255,13 @@ BoundingBox BoundingBoxManager::bounding_box() const
   const Vec2f anchor(m_ui->sp_x->value(), m_ui->sp_y->value());
   const Vec2f size(m_ui->sp_w->value(), m_ui->sp_h->value());
 
-  const Vec2f top_left = [size, anchor, this]() {
-    switch (m_ui->w_anchor->anchor()) {
-    case AnchorWidget::Anchor::TopLeft: return anchor;
-    case AnchorWidget::Anchor::TopRight: return anchor - Vec2f(size.x, 0.0);
-    case AnchorWidget::Anchor::BottomLeft: return anchor - Vec2f(0.0, size.y);
-    case AnchorWidget::Anchor::BottomRight: return anchor - size;
-    case AnchorWidget::Anchor::Center: return anchor - size/2.0;
+  const Vec2f top_left = [size, anchor]() {
+    switch (Application::instance().options().anchor()) {
+    case Options::Anchor::TopLeft: return anchor;
+    case Options::Anchor::TopRight: return anchor - Vec2f(size.x, 0.0);
+    case Options::Anchor::BottomLeft: return anchor - Vec2f(0.0, size.y);
+    case Options::Anchor::BottomRight: return anchor - size;
+    case Options::Anchor::Center: return anchor - size/2.0;
     default:
       Q_UNREACHABLE();
       return Vec2f();

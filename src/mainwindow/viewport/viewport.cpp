@@ -1,5 +1,7 @@
 #include "mainwindow/viewport/viewport.h"
 
+#include "mainwindow/viewport/anchorhud.h"
+
 #include <QPainter>
 #include <QTimer>
 #include <QMouseEvent>
@@ -44,6 +46,8 @@ Viewport::Viewport(Scene& scene)
       update();
     }
   });
+
+  m_headup_displays.push_back(std::make_unique<AnchorHUD>(*this));
 }
 
 #if USE_OPENGL
@@ -53,6 +57,7 @@ void Viewport::paintEvent(QPaintEvent*)
 #endif
 {
   QPainter painter(this);
+  painter.save();
   m_renderer.painter = &painter;
 
   painter.setRenderHint(QPainter::Antialiasing);
@@ -70,6 +75,16 @@ void Viewport::paintEvent(QPaintEvent*)
   tool.viewport_transformation = viewport_transformation();
   tool.draw(m_renderer);
   m_renderer.painter = nullptr;
+  painter.restore();
+
+  for (const auto& hud : m_headup_displays) {
+    painter.save();
+    painter.resetTransform();
+    painter.translate(hud->pos);
+    painter.setClipRect(QRect(QPoint(), hud->size()));
+    hud->draw(painter);
+    painter.restore();
+  }
 }
 
 void Viewport::mousePressEvent(QMouseEvent* event)
@@ -88,8 +103,13 @@ void Viewport::mousePressEvent(QMouseEvent* event)
 
   if (event->modifiers() & Qt::AltModifier) {
     event->accept();
+  } else if (auto* hud = find_headup_display(event->pos()); hud && hud->mouse_press(*event)) {
+    event->accept();
+  } else if (m_scene.tool_box().active_tool().mouse_press(cursor_pos, *event)) {
+    event->accept();
   } else {
-    if (m_scene.tool_box().active_tool().mouse_press(cursor_pos, *event)) { event->accept(); }
+    ViewportBase::mousePressEvent(event);
+    return;
   }
   update();
 }
@@ -103,14 +123,22 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
   auto& tool = m_scene.tool_box().active_tool();
   if (tool.mouse_move(delta, cursor_pos, *event)) {
     event->accept();
-    update();
-  } else if (event->modifiers() & Qt::AltModifier) {
-    m_pan_controller.apply(delta, m_viewport_transformation);
-    event->accept();
-    update();
+  } else {
+    bool accept = false;
+    for (auto& hud : m_headup_displays) {
+      accept |= hud->mouse_move(*event);
+    }
+    if (accept) {
+      event->accept();
+    } else if (event->modifiers() & Qt::AltModifier) {
+      m_pan_controller.apply(delta, m_viewport_transformation);
+      event->accept();
+    } else {
+      ViewportBase::mouseMoveEvent(event);
+      return;
+    }
   }
-
-  ViewportBase::mouseMoveEvent(event);
+  update();
 }
 
 void Viewport::mouseReleaseEvent(QMouseEvent* event)
@@ -120,10 +148,16 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
     m_scene.tool_box().active_tool().mouse_release(cursor_pos, *event);
     if (event->button() == Qt::RightButton) {
       auto menu = m_scene.tool_box().active_tool().make_context_menu(this);
-      if (menu) { menu->exec(event->globalPos()); }
+      if (menu) {
+        menu->exec(event->globalPos());
+      }
     }
     ViewportBase::mouseReleaseEvent(event);
   }
+  for (const auto& hud : m_headup_displays) {
+    hud->mouse_release(*event);
+  }
+  ViewportBase::mouseReleaseEvent(event);
   update();
 }
 
@@ -148,6 +182,20 @@ void Viewport::keyPressEvent(QKeyEvent *event)
   }
 }
 
+void Viewport::resizeEvent(QResizeEvent* event)
+{
+  const int spacing = 10;
+  const QPoint margin(10, 10);
+  const QSize size = event->size();
+  QPoint pos = QPoint(size.width(), size.height()) - margin;
+  for (auto& hud : m_headup_displays) {
+    const QSize size = hud->size();
+    pos -= QPoint(0, size.height() + spacing);
+    hud->pos = pos + QPoint(-size.width(), 0);
+  }
+  QWidget::resizeEvent(event);
+}
+
 void Viewport::update()
 {
   static constexpr double fps = 30.0;
@@ -161,6 +209,16 @@ void Viewport::update()
   } else {
     m_update_later = true;
   }
+}
+
+HeadUpDisplay* Viewport::find_headup_display(const QPoint& pos) const
+{
+  for (const auto& hud : m_headup_displays) {
+    if (QRect(hud->pos, hud->size()).contains(pos)) {
+      return hud.get();
+    }
+  }
+  return nullptr;
 }
 
 }  // namespace omm

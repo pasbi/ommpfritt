@@ -1688,6 +1688,10 @@ Remove the selected items anyway?</translation>
         <source> #</source>
         <translation>#</translation>
     </message>
+    <message>
+        <source> &lt;-</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::KeyBindingsPage</name>

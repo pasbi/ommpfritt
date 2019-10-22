@@ -5,6 +5,7 @@ file(GLOB SOURCES
   exportdialog.cpp
   iconprovider.cpp
   mainwindow.cpp
+  options.cpp
   toolbar.cpp
 )
 
@@ -15,6 +16,7 @@ file(GLOB HEADERS
   iconprovider.h
   languageskinmenu.h
   mainwindow.h
+  options.h
   toolbar.h
 )
 

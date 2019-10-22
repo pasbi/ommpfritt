@@ -10,6 +10,8 @@
 #include <QTimer>
 #include <QKeySequence>
 #include "preferences/uicolors.h"
+#include "mainwindow/options.h"
+#include <memory>
 
 class QApplication;
 class QAbstractButton;
@@ -19,12 +21,14 @@ namespace omm
 
 class MainWindow;
 class Manager;
+class Options;
 
 class Application : public QObject, public CommandInterface
 {
   Q_OBJECT
 public:
   Application(QApplication& app);
+  ~Application();
   bool save();
   bool save_as();
   bool save(const std::string& filename);
@@ -61,6 +65,11 @@ private:
 public:
   KeyBindings key_bindings;
   UiColors ui_colors;
+
+public:
+  Options& options() { return *m_options; }
+private:
+  std::unique_ptr<Options> m_options;
 
 public:
   /**

@@ -118,31 +118,9 @@
      </item>
     </layout>
    </item>
-   <item>
-    <widget class="omm::AnchorWidget" name="w_anchor" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>50</width>
-       <height>50</height>
-      </size>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>omm::AnchorWidget</class>
-   <extends>QWidget</extends>
-   <header>managers/boundingboxmanager/anchorwidget.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>omm::DoubleNumericEdit</class>
    <extends>QDoubleSpinBox</extends>

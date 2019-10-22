@@ -1,11 +1,9 @@
 
 file(GLOB SOURCES
-  anchorwidget.cpp
   boundingboxmanager.cpp
 )
 
 file(GLOB HEADERS
-  anchorwidget.h
   boundingboxmanager.h
 )
 

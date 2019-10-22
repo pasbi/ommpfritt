@@ -7,6 +7,7 @@
 #include "mainwindow/viewport/mousepancontroller.h"
 #include "renderers/painter.h"
 #include "scene/scene.h"
+#include "mainwindow/viewport/headupdisplay.h"
 
 #define USE_OPENGL 0
 
@@ -49,6 +50,7 @@ protected:
   void mouseMoveEvent(QMouseEvent* event) override;
   void mouseReleaseEvent(QMouseEvent* event) override;
   void keyPressEvent(QKeyEvent* event) override;
+  void resizeEvent(QResizeEvent* event) override;
 
 public Q_SLOTS:
   void update();
@@ -67,6 +69,9 @@ private:
   QTimer m_fps_limiter;
   bool m_fps_brake = false;
   bool m_update_later = false;
+
+  std::vector<std::unique_ptr<HeadUpDisplay>> m_headup_displays;
+  HeadUpDisplay* find_headup_display(const QPoint& pos) const;
 };
 
 }  // namespace omm

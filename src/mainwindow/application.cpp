@@ -78,6 +78,7 @@ Application* Application::m_instance = nullptr;
 Application::Application(QApplication& app)
   : scene(python_engine)
   , m_app(app)
+  , m_options(new Options)
 {
   if (m_instance == nullptr) {
     m_instance = this;
@@ -93,6 +94,10 @@ Application::Application(QApplication& app)
   connect(&m_reset_keysequence_timer, &QTimer::timeout, this, [this]() {
     m_pending_key_sequence = QKeySequence();
   });
+}
+
+Application::~Application()
+{
 }
 
 Application& Application::instance()
