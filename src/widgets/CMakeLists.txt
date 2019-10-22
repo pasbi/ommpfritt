@@ -5,12 +5,12 @@ file(GLOB SOURCES
   combobox.cpp
   coordinateedit.cpp
   filepathedit.cpp
+  itemproxyview.cpp
   keysequenceedit.cpp
   multitabbar.cpp
   pointdialog.cpp
   pointedit.cpp
   referencelineedit.cpp
-  styleditemview.cpp
 )
 
 file(GLOB HEADERS
@@ -19,13 +19,13 @@ file(GLOB HEADERS
   combobox.h
   coordinateedit.h
   filepathedit.h
+  temproxyview.h
   keysequenceedit.h
   multitabbar.h
   numericedit.h
   pointdialog.h
   pointedit.h
   referencelineedit.h
-  styleditemview.h
 )
 
 add_subdirectory(colorwidget)

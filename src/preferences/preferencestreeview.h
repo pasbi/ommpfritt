@@ -3,7 +3,7 @@
 #include <QItemDelegate>
 #include <QKeySequenceEdit>
 #include <memory>
-#include "widgets/styleditemview.h"
+#include "widgets/itemproxyview.h"
 #include <QTreeView>
 
 namespace omm
@@ -12,7 +12,7 @@ namespace omm
 class AbstractPreferencesTreeViewDelegate;
 class KeyBindings;
 
-class PreferencesTreeView: public StyledItemView<QTreeView>
+class PreferencesTreeView: public ItemProxyView<QTreeView>
 {
   Q_OBJECT
 public:

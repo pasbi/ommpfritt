@@ -3,7 +3,7 @@
 #include <QTreeView>
 #include <set>
 #include "managers/timeline/timelinecanvas.h"
-#include "widgets/styleditemview.h"
+#include "widgets/itemproxyview.h"
 
 namespace omm
 {
@@ -12,7 +12,7 @@ class Animator;
 class Track;
 class TrackViewDelegate;
 
-class DopeSheetView : public StyledItemView<QTreeView>
+class DopeSheetView : public ItemProxyView<QTreeView>
 {
   Q_OBJECT;
 public:

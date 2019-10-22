@@ -1,8 +1,8 @@
 #include "managers/historymanager/historymanager.h"
 #include "scene/history/historymodel.h"
 #include <QListView>
+#include "widgets/itemproxyview.h"
 #include "scene/scene.h"
-#include "widgets/styleditemview.h"
 
 namespace omm
 {
@@ -12,7 +12,7 @@ HistoryManager::HistoryManager(Scene &scene)
   , m_model(scene.history())
 {
   setObjectName(TYPE);
-  auto view = std::make_unique<StyledItemView<QListView>>();
+  auto view = std::make_unique<ItemProxyView<QListView>>();
   m_view = view.get();
   set_widget(std::move(view));
   m_view->setModel(&m_model);
