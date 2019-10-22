@@ -7,12 +7,14 @@ namespace omm
 
 QVariant HistoryModel::data(const QModelIndex &index, int role) const
 {
-  const auto decorate_name = [this](const QString& name, int row) {
+  const auto decorate_name = [this](QString name, int row) {
     if (row == m_saved_index) {
-      return name + tr(" #");
-    } else {
-      return name;
+      name += tr(" #");
     }
+    if (row == m_undo_stack.index()) {
+      name += tr(" <-");
+    }
+    return name;
   };
 
   const auto row_name = [this](int row) {
@@ -23,22 +25,12 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
     }
   };
 
-  const auto row_color = [this](int row) {
-    const int d = row - m_undo_stack.index();
-    if (d <= 0) {
-      return QColor(Qt::black);
-    } else {
-      return QColor(Qt::gray);
-    }
-  };
-
   switch (role) {
   case Qt::DisplayRole:
     return decorate_name(row_name(index.row()), index.row());
-  case Qt::ForegroundRole:
-    return row_color(index.row());
+  default:
+    return QVariant();
   }
-  return QVariant();
 }
 
 void HistoryModel::push(std::unique_ptr<Command> command)
