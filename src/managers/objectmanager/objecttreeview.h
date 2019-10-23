@@ -29,9 +29,9 @@ public:
 
 public Q_SLOTS:
   void set_selection(const std::set<AbstractPropertyOwner*>& selected_items);
+  void update_tag_column_size();
 
 protected:
-  void paintEvent(QPaintEvent* e) override;
   void dragEnterEvent(QDragEnterEvent* e) override;
   void dragMoveEvent(QDragMoveEvent* e) override;
   void mouseMoveEvent(QMouseEvent* e) override;

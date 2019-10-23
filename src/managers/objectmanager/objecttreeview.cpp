@@ -21,6 +21,7 @@
 #include "mainwindow/mainwindow.h"
 #include <QHeaderView>
 #include <QTimer>
+#include "scene/messagebox.h"
 
 namespace omm
 {
@@ -46,6 +47,15 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
   connect(&model, &ObjectTree::expand_item, [this](const QModelIndex& index) {
     setExpanded(index, true);
   });
+
+  connect(&scene().message_box(), SIGNAL(tag_inserted(Object&, Tag&)),
+          this, SLOT(update_tag_column_size()));
+  connect(&scene().message_box(), SIGNAL(tag_removed(Object&, Tag&)),
+          this, SLOT(update_tag_column_size()));
+  connect(&scene().message_box(), SIGNAL(scene_reseted()),
+          this, SLOT(update_tag_column_size()));
+
+  update_tag_column_size();
 }
 
 std::set<AbstractPropertyOwner*> ObjectTreeView::selected_items() const
@@ -80,14 +90,6 @@ void ObjectTreeView::dragMoveEvent(QDragMoveEvent* e)
 {
   handle_drag_event(e);
   ManagerItemView::dragMoveEvent(e);
-}
-
-void ObjectTreeView::paintEvent(QPaintEvent* e)
-{
-  const auto n_tags = m_model.max_number_of_tags_on_object();
-  const auto tags_width = m_tags_item_delegate->tag_icon_size().width();
-  setColumnWidth(ObjectTree::TAGS_COLUMN, n_tags * tags_width);
-  ManagerItemView::paintEvent(e);
 }
 
 void ObjectTreeView::mousePressEvent(QMouseEvent* e)
@@ -164,6 +166,16 @@ void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
 void ObjectTreeView::set_selection(const std::set<AbstractPropertyOwner*>& selected_items)
 {
   m_selection_model->set_selection(selected_items);
+}
+
+void ObjectTreeView::update_tag_column_size()
+{
+  LINFO << "update";
+  const auto n_tags = m_model.max_number_of_tags_on_object();
+  LINFO << n_tags;
+  const auto tags_width = m_tags_item_delegate->tag_icon_size().width();
+  LINFO << tags_width;
+  setColumnWidth(ObjectTree::TAGS_COLUMN, n_tags * tags_width);
 }
 
 Scene &ObjectTreeView::scene() const { return m_model.scene; }
