@@ -181,6 +181,9 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
       tokens.push_back("[" + join(names, ", ") + "]");
       m_selection_label->setText(QString::fromStdString(join(tokens, " ")));
 
+      // text in m_selection_label can get huge but is not very important. Don't mess up the layout.
+      m_selection_label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+
       const std::string icon_filename = types.size() == 1 ? ":/icons/" + *types.begin() + ".png"
                                                           : ":/icons/UndeterminedType.png";
 
