@@ -45,6 +45,9 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Application");
   std::string type() const override;
 
+  KeyBindings key_bindings;
+  UiColors ui_colors;
+
   PythonEngine python_engine;
   Scene scene;
   MessageBox& message_box();
@@ -61,10 +64,6 @@ private:
   QApplication& m_app;
   static Application* m_instance;
   MainWindow* m_main_window;
-
-public:
-  KeyBindings key_bindings;
-  UiColors ui_colors;
 
 public:
   Options& options() { return *m_options; }

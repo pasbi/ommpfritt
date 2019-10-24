@@ -85,9 +85,8 @@ Application::Application(QApplication& app)
   } else {
     LFATAL("Resetting application instance.");
   }
-  scene.set_selection({});
-
   ui_colors.apply();
+  scene.set_selection({});
 
   m_reset_keysequence_timer.setSingleShot(true);
   m_reset_keysequence_timer.setInterval(1000);

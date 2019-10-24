@@ -85,7 +85,6 @@ Scene::Scene(PythonEngine& python_engine)
   for (auto kind : { Object::KIND, Tag::KIND, Style::KIND, Tool::KIND }) {
     m_item_selection[kind] = {};
   }
-  tool_box().set_active_tool(SelectObjectsTool::TYPE);
   connect(&history(), SIGNAL(index_changed()), &message_box(), SIGNAL(filename_changed()));
   connect(&message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(update_tool()));
