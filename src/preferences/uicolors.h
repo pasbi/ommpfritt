@@ -25,7 +25,6 @@ public:
 
   static void draw_background(QPainter& painter, const QRectF& rect);
 
-
 private:
   struct SkinInfo
   {
@@ -39,6 +38,7 @@ private:
 };
 
 QColor ui_color(const QWidget& widget, const std::string& group, const std::string& name);
+QColor ui_color(const QPalette::ColorGroup& status, const std::string& group, const std::string& name);
 QColor ui_color(const QWidget& widget, const QPalette::ColorRole& role);
 
 }  // namespace omm

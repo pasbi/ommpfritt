@@ -170,11 +170,8 @@ void ObjectTreeView::set_selection(const std::set<AbstractPropertyOwner*>& selec
 
 void ObjectTreeView::update_tag_column_size()
 {
-  LINFO << "update";
   const auto n_tags = m_model.max_number_of_tags_on_object();
-  LINFO << n_tags;
   const auto tags_width = m_tags_item_delegate->tag_icon_size().width();
-  LINFO << tags_width;
   setColumnWidth(ObjectTree::TAGS_COLUMN, n_tags * tags_width);
 }
 

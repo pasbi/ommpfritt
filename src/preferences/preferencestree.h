@@ -53,6 +53,7 @@ public:
   PreferencesTreeValueItem& value(const QModelIndex& index) const;
   static constexpr auto DEFAULT_VALUE_ROLE = Qt::UserRole + 1;
   virtual void apply();
+  std::string dump() const;
 
 Q_SIGNALS:
   void data_changed(const PreferencesTreeGroupItem& group);

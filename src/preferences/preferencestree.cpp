@@ -87,16 +87,7 @@ bool PreferencesTree::save_to_file(const std::string& filename) const
     return false;
   }
 
-  const auto write = [&file](const std::string& line) {
-    file.write(QString::fromStdString(line).toUtf8() + "\n");
-  };
-
-  for (auto&& group : m_groups) {
-    write("[" + group->name + "]");
-    for (auto&& value : group->values) {
-      write(value->name + ":" + value->value());
-    }
-  }
+  file.write(QString::fromStdString(dump()).toUtf8());
   return true;
 }
 
@@ -415,6 +406,18 @@ PreferencesTreeValueItem& PreferencesTree::value(const QModelIndex& index) const
 void PreferencesTree::apply()
 {
   store();
+}
+
+std::string PreferencesTree::dump() const
+{
+  std::ostringstream oss;
+  for (auto&& group : m_groups) {
+    oss << "[" + group->name + "]\n";
+    for (auto&& value : group->values) {
+      oss << value->name + ":" + value->value() + "\n";
+    }
+  }
+  return oss.str();
 }
 
 }  // namespace omm

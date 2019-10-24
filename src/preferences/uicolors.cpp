@@ -175,7 +175,7 @@ QColor ui_color(const QWidget& widget, const std::string& group, const std::stri
                                             ? QPalette::Active
                                             : QPalette::Inactive)
                                          : QPalette::Disabled;
-  return Application::instance().ui_colors.color(pgroup, group, name).to_qcolor();
+  return ui_color(pgroup, group, name);
 }
 
 QColor ui_color(const QWidget& widget, const QPalette::ColorRole& role)
@@ -199,6 +199,11 @@ void UiColors::draw_background(QPainter& painter, const QRectF& rect)
     }
   }
   painter.restore();
+}
+
+QColor ui_color(const QPalette::ColorGroup& status, const std::string& group, const std::string& name)
+{
+  return Application::instance().ui_colors.color(status, group, name).to_qcolor();
 }
 
 }  // namespace omm
