@@ -10,8 +10,6 @@
 namespace omm
 {
 
-const Style BrushSelectTool::m_style = ContourStyle(Colors::BLACK);
-
 BrushSelectTool::BrushSelectTool(Scene& scene) : SelectPointsBaseTool(scene)
 {
   create_property<FloatProperty>(RADIUS_PROPERTY_KEY, 20.0)
@@ -112,7 +110,8 @@ void BrushSelectTool::draw(Painter &renderer) const
   SelectPointsBaseTool::draw(renderer);
   if (m_mouse_down) {
     const double r = property(RADIUS_PROPERTY_KEY)->value<double>();
-    renderer.set_style(m_style);
+    renderer.painter->setPen(ui_color("Handle", "foreground"));
+    renderer.painter->setBrush(ui_color("Handle", "background"));
     renderer.painter->drawEllipse(m_mouse_pos.x - r, m_mouse_pos.y - r, 2*r, 2*r);
   }
 }

@@ -57,9 +57,6 @@ ObjectSelectHandle::ObjectSelectHandle(Tool& tool, Scene& scene, Object& object)
   , m_scene(scene)
   , m_object(object)
 {
-  set_style(Status::Hovered, SolidStyle(Colors::YELLOW));
-  set_style(Status::Active, SolidStyle(Colors::WHITE));
-  set_style(Status::Inactive, SolidStyle(Color(Color::Model::RGBA, { 0.8, 0.8, 0.2, 1.0 })));
 }
 
 bool ObjectSelectHandle::contains_global(const Vec2f& point) const
@@ -67,18 +64,17 @@ bool ObjectSelectHandle::contains_global(const Vec2f& point) const
   return (point - transformation().null()).max_norm() < interact_epsilon();
 }
 
-void ObjectSelectHandle::draw(Painter &renderer) const
+void ObjectSelectHandle::draw(QPainter& painter) const
 {
-  const auto is_selected = [this]() {
-    return ::contains(m_scene.item_selection<Object>(), &m_object);
-  };
+  const auto is_selected = ::contains(m_scene.item_selection<Object>(), &m_object);
 
-  const Style& style = is_selected() ? this->style(Status::Active) : current_style();
   const auto pos = transformation().null();
   const auto r = draw_epsilon();
 
-  renderer.set_style(style);
-  renderer.painter->drawRect(pos.x - r, pos.y - r, 2*r, 2*r);
+  painter.setPen(is_selected ? ui_color(QPalette::Active, "object") : ui_color("object"));
+  painter.setBrush(is_selected ? ui_color(QPalette::Active, "object fill")
+                               : ui_color("object fill"));
+  painter.drawRect(pos.x - r, pos.y - r, 2*r, 2*r);
 }
 
 
@@ -112,15 +108,11 @@ PointSelectHandle::PointSelectHandle(Tool& tool, Path& path, Point& point)
   : AbstractSelectHandle(tool)
   , m_path(path)
   , m_point(point)
-  , m_tangent_style(std::make_unique<ContourStyle>(Colors::BLACK))
   , m_left_tangent_handle(std::make_unique<TangentHandle>(tool, *this,
                                                           TangentHandle::Tangent::Left))
   , m_right_tangent_handle(std::make_unique<TangentHandle>(tool, *this,
                                                            TangentHandle::Tangent::Right))
 {
-  set_style(Status::Hovered, omm::SolidStyle(Colors::YELLOW));
-  set_style(Status::Active, omm::SolidStyle(Colors::WHITE));
-  set_style(Status::Inactive, omm::SolidStyle(Color(Color::Model::RGBA, { 0.8, 0.8, 0.2, 1.0 })));
 }
 
 ObjectTransformation PointSelectHandle::transformation() const
@@ -168,19 +160,18 @@ void PointSelectHandle::mouse_release(const Vec2f& pos, const QMouseEvent& event
   m_right_tangent_handle->mouse_release(pos, event);
 }
 
-void PointSelectHandle::draw(Painter &renderer) const
+void PointSelectHandle::draw(QPainter &painter) const
 {
-  const Style& style = m_point.is_selected ? this->style(Status::Active) : current_style();
   const auto pos = transformation().apply_to_position(m_point.position);
   const auto left_pos = transformation().apply_to_position(m_point.left_position());
   const auto right_pos = transformation().apply_to_position(m_point.right_position());
 
-  const auto treat_sub_handle = [&renderer, pos, this](auto& sub_handle, const auto& other_pos) {
+  const auto treat_sub_handle = [&painter, pos, this](auto& sub_handle, const auto& other_pos) {
     sub_handle.position = other_pos;
 
-    renderer.set_style(*m_tangent_style);
-    renderer.painter->drawLine(pos.x, pos.y, other_pos.x, other_pos.y);
-    sub_handle.draw(renderer);
+    painter.setPen(ui_color("tangent"));
+    painter.drawLine(pos.x, pos.y, other_pos.x, other_pos.y);
+    sub_handle.draw(painter);
   };
 
   if (tangents_active()) {
@@ -188,12 +179,11 @@ void PointSelectHandle::draw(Painter &renderer) const
     treat_sub_handle(*m_left_tangent_handle, left_pos);
   }
 
-  renderer.push_transformation(ObjectTransformation().translated(pos));
-  renderer.set_style(style);
+  painter.translate(pos.to_pointf());
+  painter.setPen(m_point.is_selected ? ui_color(QPalette::Active, "point") : ui_color("point"));
 
   const auto r = draw_epsilon();
-  renderer.painter->drawRect(-r, -r, 2*r, 2*r);
-  renderer.pop_transformation();
+  painter.drawRect(-r, -r, 2*r, 2*r);
 
 }
 

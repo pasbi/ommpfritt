@@ -30,7 +30,7 @@ class ObjectSelectHandle : public AbstractSelectHandle
 public:
   explicit ObjectSelectHandle(Tool& tool, Scene& scene, Object& object);
   bool contains_global(const Vec2f& point) const override;
-  void draw(omm::Painter& renderer) const override;
+  void draw(QPainter& painter) const override;
 
 protected:
   ObjectTransformation transformation() const;
@@ -49,7 +49,7 @@ public:
   enum class TangentMode { Mirror, Individual };
   explicit PointSelectHandle(Tool& tool, Path& path, Point& point);
   bool contains_global(const Vec2f& point) const override;
-  void draw(omm::Painter& renderer) const override;
+  void draw(QPainter& painter) const override;
   bool mouse_press( const Vec2f& pos, const QMouseEvent& event, bool force) override;
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
   void mouse_release( const Vec2f& pos, const QMouseEvent& event) override;
@@ -66,7 +66,6 @@ protected:
 private:
   Path& m_path;
   Point& m_point;
-  const std::unique_ptr<Style> m_tangent_style;
   std::unique_ptr<TangentHandle> m_left_tangent_handle;
   std::unique_ptr<TangentHandle> m_right_tangent_handle;
   bool tangents_active() const;

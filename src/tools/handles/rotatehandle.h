@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QPainter>
+#include "renderers/painter.h"
 #include "tools/handles/handle.h"
 #include "tools/tool.h"
 
@@ -12,17 +14,13 @@ class RotateHandle : public Handle
 public:
   RotateHandle(ToolT& tool) : Handle(tool)
   {
-    set_style(Status::Active, ContourStyle(Colors::WHITE));
-    set_style(Status::Hovered, ContourStyle(Colors::BLUE));
-    set_style(Status::Inactive, ContourStyle(Color(Color::Model::RGBA, { 0.3, 0.3, 1.0, 1.0 })));
   }
 
-  void draw(Painter& renderer) const override
+  void draw(QPainter& painter) const override
   {
-    renderer.push_transformation(tool.transformation());
-    renderer.set_style(current_style());
-    renderer.painter->drawEllipse(-RADIUS, -RADIUS, 2*RADIUS, 2*RADIUS);
-    renderer.pop_transformation();
+    painter.setTransform(tool.transformation().to_qtransform(), true);
+    painter.setPen(ui_color("rotate-ring"));
+    painter.drawEllipse(-RADIUS, -RADIUS, 2*RADIUS, 2*RADIUS);
   }
 
   bool contains_global(const Vec2f& point) const override

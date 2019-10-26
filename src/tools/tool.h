@@ -37,7 +37,7 @@ public:
   virtual bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force = false);
   virtual void mouse_release(const Vec2f& pos, const QMouseEvent& event);
   virtual bool key_press(const QKeyEvent& event);
-  virtual void draw(Painter& renderer) const;
+  virtual void draw(Painter& painter) const;
   virtual bool has_transformation() const { return false; }
   virtual void cancel();
   virtual void end();

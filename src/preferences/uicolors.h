@@ -40,5 +40,6 @@ private:
 QColor ui_color(const QWidget& widget, const std::string& group, const std::string& name);
 QColor ui_color(const QPalette::ColorGroup& status, const std::string& group, const std::string& name);
 QColor ui_color(const QWidget& widget, const QPalette::ColorRole& role);
+QColor ui_color(const std::string& group, const std::string& name);
 
 }  // namespace omm

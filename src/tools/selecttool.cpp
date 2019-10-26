@@ -25,7 +25,6 @@ namespace omm
 
 AbstractSelectTool::AbstractSelectTool(Scene& scene)
   : Tool(scene)
-  , m_tool_info_line_style(ContourStyle(Color(Color::Model::RGBA, { 0.0, 0.0, 0.0, 0.3 }), 0.7))
 
 {
   const std::string category = QObject::tr("tool").toStdString();
@@ -85,8 +84,7 @@ void AbstractSelectTool::draw(Painter &renderer) const
   if (!tool_info.empty()) {
     renderer.toast(m_current_position + Vec2f(30.0, 30.0), tool_info.c_str());
     const auto line = std::vector { Point(m_init_position), Point(m_current_position) };
-
-    renderer.set_style(m_tool_info_line_style);
+    renderer.painter->setPen(ui_color("Handle", "line"));
     renderer.painter->drawLine(m_init_position.x, m_init_position.y,
                                m_current_position.x, m_current_position.y);
   }

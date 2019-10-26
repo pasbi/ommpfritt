@@ -5,17 +5,8 @@
 #include "objects/path.h"
 #include "commands/modifypointscommand.h"
 
-namespace
-{
-
-const omm::SolidStyle marker_style(omm::Colors::BLUE);
-
-}  // namespace
-
 namespace omm
 {
-
-const Style KnifeTool::m_line_style = ContourStyle(Colors::BLACK);
 
 KnifeTool::KnifeTool(Scene& scene) : SelectPointsBaseTool(scene) { }
 
@@ -72,11 +63,11 @@ void KnifeTool::draw(Painter &renderer) const
   if (m_is_cutting) {
     const auto line = std::vector { Point(m_mouse_press_pos), Point(m_mouse_move_pos) };
 
-    renderer.set_style(m_line_style);
+    renderer.painter->setPen(ui_color("Handle", "foreground"));
     renderer.painter->drawLine(m_mouse_press_pos.x, m_mouse_press_pos.y,
                                m_mouse_move_pos.x, m_mouse_move_pos.y);
     for (const Point& p : m_points) {
-      renderer.set_style(marker_style);
+      renderer.painter->setPen(ui_color("Handle", "marker"));
       const auto r = 3.0/2.0;
       renderer.painter->drawEllipse(p.position.x-r, p.position.y-r, 2*r, 2*r);
     }

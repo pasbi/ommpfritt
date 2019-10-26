@@ -1,5 +1,6 @@
 #include "tools/handles/tangenthandle.h"
 #include "tools/handles/selecthandle.h"
+#include "renderers/painter.h"
 
 namespace omm
 {
@@ -7,44 +8,16 @@ namespace omm
 TangentHandle::TangentHandle(Tool& tool, PointSelectHandle& master_handle, Tangent tangent)
   : Handle(tool), m_master_handle(master_handle), m_tangent(tangent)
 {
-  set_style(Handle::Status::Hovered, []() {
-    Style style(nullptr);
-    style.property(Style::COSMETIC_KEY)->set(true);
-    style.property(Style::BRUSH_COLOR_KEY)->set(Colors::YELLOW);
-    style.property(Style::PEN_COLOR_KEY)->set(Colors::BLUE);
-    style.property(Style::BRUSH_IS_ACTIVE_KEY)->set(true);
-    style.property(Style::PEN_IS_ACTIVE_KEY)->set(true);
-    return style;
-  }());
-
-  set_style(Handle::Status::Active, []() {
-    Style style(nullptr);
-    style.property(Style::COSMETIC_KEY)->set(true);
-    style.property(Style::BRUSH_COLOR_KEY)->set(Colors::WHITE);
-    style.property(Style::PEN_COLOR_KEY)->set(Colors::BLACK);
-    style.property(Style::BRUSH_IS_ACTIVE_KEY)->set(true);
-    style.property(Style::PEN_IS_ACTIVE_KEY)->set(true);
-    return style;
-  }());
-
-  set_style(Handle::Status::Inactive, []() {
-    Style style(nullptr);
-    style.property(Style::COSMETIC_KEY)->set(true);
-    style.property(Style::BRUSH_COLOR_KEY)->set(Color(Color::Model::RGBA, { 0.8, 0.8, 0.2 }, 1.0));
-    style.property(Style::PEN_COLOR_KEY)->set(Color(Color::Model::RGBA, { 0.2, 0.2, 0.8 }, 1.0));
-    style.property(Style::BRUSH_IS_ACTIVE_KEY)->set(true);
-    style.property(Style::PEN_IS_ACTIVE_KEY)->set(true);
-    return style;
-  }());
 }
 
 double TangentHandle::draw_epsilon() const { return 2.0; }
 
-void TangentHandle::draw(Painter& renderer) const
+void TangentHandle::draw(QPainter& painter) const
 {
-  renderer.set_style(current_style());
+  painter.setPen(ui_color("tangent"));
+  painter.setBrush(ui_color("tangent fill"));
   const auto r = draw_epsilon();
-  renderer.painter->drawEllipse(position.x - r, position.y - r, 2*r, 2*r);
+  painter.drawEllipse(position.x - r, position.y - r, 2*r, 2*r);
 }
 
 bool TangentHandle::contains_global(const Vec2f &point) const

@@ -32,7 +32,6 @@ public:
 private:
   bool m_mouse_down = false;
   Vec2f m_mouse_pos;
-  const static Style m_style;
   void modify_selection(const Vec2f& pos, const QMouseEvent& event);
 };
 

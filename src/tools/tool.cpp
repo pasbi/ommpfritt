@@ -55,9 +55,17 @@ void Tool:: mouse_release(const Vec2f& pos, const QMouseEvent& e)
 void Tool::draw(Painter& renderer) const
 {
   if (!!(renderer.category_filter & Painter::Category::Handles)) {
+    QPainter& painter = *renderer.painter;
+    painter.save();
+    painter.setRenderHint(QPainter::HighQualityAntialiasing);
     for (auto&& handle : handles) {
-      handle->draw(renderer);
+      painter.save();
+      painter.setBrush(Qt::NoBrush);
+      painter.setPen(Qt::NoPen);
+      handle->draw(painter);
+      painter.restore();
     }
+    painter.restore();
   }
 }
 

@@ -1,4 +1,6 @@
 #include "tools/handles/handle.h"
+#include "logging.h"
+#include "preferences/uicolors.h"
 #include "renderers/painter.h"
 #include <QMouseEvent>
 #include "tools/tool.h"
@@ -49,14 +51,6 @@ void Handle::mouse_release(const Vec2f& pos, const QMouseEvent&)
 
 Handle::Status Handle::status() const { return m_status; }
 void Handle::deactivate() { m_status = Status::Inactive; }
-const Style& Handle::style(Status status) const { return m_styles.at(status); }
-const Style& Handle::current_style() const { return style(status()); }
-
-void Handle::set_style(Status status, Style style)
-{
-  m_styles.erase(status);
-  m_styles.insert(std::pair(status, std::move(style)));
-}
 
 double Handle::draw_epsilon() const { return 4.0; }
 double Handle::interact_epsilon() const { return 4.0; }
@@ -72,6 +66,21 @@ void Handle::discretize(Vec2f& vec) const
     }
     vec = tool.viewport_transformation.apply_to_direction(vec);
   }
+}
+
+QColor Handle::ui_color(QPalette::ColorGroup group, const std::string& name) const
+{
+  return omm::ui_color(group, "Handle", name);
+}
+
+QColor Handle::ui_color(const std::string& name) const
+{
+  static const std::map<Status, QPalette::ColorGroup> color_group_map {
+    { Status::Active, QPalette::Active },
+    { Status::Inactive, QPalette::Inactive },
+    { Status::Hovered, QPalette::Disabled }
+  };
+  return ui_color(color_group_map.at(status()), name);
 }
 
 }  // namespace omm

@@ -206,4 +206,9 @@ QColor ui_color(const QPalette::ColorGroup& status, const std::string& group, co
   return Application::instance().ui_colors.color(status, group, name).to_qcolor();
 }
 
+QColor ui_color(const std::string& group, const std::string& name)
+{
+  return ui_color(QPalette::Active, group, name);
+}
+
 }  // namespace omm

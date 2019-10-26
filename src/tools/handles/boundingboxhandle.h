@@ -4,47 +4,57 @@
 #include "tools/tool.h"
 #include "renderers/painter.h"
 #include <QMouseEvent>
+#include "common.h"
+
+namespace omm
+{
+
+class AbstractBoundingBoxHandle : public Handle
+{
+protected:
+  using Handle::Handle;
+  enum class Fringe { None = 0x0, Left = 0x1, Bottom = 0x2, Right = 0x4, Top = 0x8,
+                      Horizontal = Left | Right, Vertical = Bottom | Top };
+};
+
+}  // namespace omm
+
+
+template<> struct omm::EnableBitMaskOperators<omm::AbstractBoundingBoxHandle::Fringe> : std::true_type {};
 
 namespace omm
 {
 
 template<typename ToolT>
-class BoundingBoxHandle : public Handle
+class BoundingBoxHandle : public AbstractBoundingBoxHandle
 {
 public:
-  explicit BoundingBoxHandle(ToolT& tool) : Handle(tool)
+  explicit BoundingBoxHandle(ToolT& tool) : AbstractBoundingBoxHandle(tool)
   {
-    set_style(Status::Active, ContourStyle(Colors::WHITE));
-    set_style(Status::Hovered, ContourStyle(Color(Color::Model::RGBA, { 0.7, 0.7, 0.7, 1.0 })));
-    set_style(Status::Inactive, ContourStyle(Color(Color::Model::RGBA, { 0.5, 0.5, 0.5, 1.0 })));
+    m_bounding_box = static_cast<const ToolT&>(tool).bounding_box();
   }
 
   bool mouse_press(const Vec2f& pos, const QMouseEvent& e, bool force) override
   {
-    static constexpr double eps = 4;
     m_bounding_box = static_cast<const ToolT&>(tool).bounding_box();
-    m_left_fringe = std::abs(m_bounding_box.left() - pos.x) < eps;
-    m_right_fringe = std::abs(m_bounding_box.right() - pos.x) < eps;
-    m_top_fringe = std::abs(m_bounding_box.top() - pos.y) < eps;
-    m_bottom_fringe = std::abs(m_bounding_box.bottom() - pos.y) < eps;
     m_tool_origin = tool.transformation().apply_to_position(Vec2f::o());
     m_symmetric = tool.property(ToolT::SYMMETRIC_PROPERTY_KEY)->template value<bool>();
+    m_active_fringe = get_fringe(pos);
     return Handle::mouse_press(pos, e, force);
   }
 
   bool contains_global(const Vec2f& point) const override
   {
-    Q_UNUSED(point)
-    return m_left_fringe || m_right_fringe || m_top_fringe || m_bottom_fringe;
+    return get_fringe(point) != Fringe::None;
   }
 
   bool mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEvent &e) override
   {
     Q_UNUSED(delta)
+    Handle::mouse_move(delta, pos, e);
     if (status() != Status::Active) {
       return false;
     }
-
     ToolT& tool = static_cast<ToolT&>(this->tool);
     const bool discrete = tool.integer_transformation();
     const bool isotropic = e.modifiers() & Qt::ControlModifier;
@@ -53,16 +63,16 @@ public:
     if (m_symmetric) {
       anchor = m_tool_origin;
     } else {
-      if (m_left_fringe) {
+      if (!!(m_active_fringe & Fringe::Left)) {
         anchor.x = m_bounding_box.right();
-      } else if (m_right_fringe) {
+      } else if (!!(m_active_fringe & Fringe::Right)) {
         anchor.x = m_bounding_box.left();
       } else {
         anchor.x = (m_bounding_box.left() + m_bounding_box.right()) / 2.0;
       }
-      if (m_top_fringe) {
+      if (!!(m_active_fringe & Fringe::Top)) {
         anchor.y = m_bounding_box.bottom();
-      } else if (m_bottom_fringe) {
+      } else if (!!(m_active_fringe & Fringe::Bottom)) {
         anchor.y = m_bounding_box.top();
       } else {
         anchor.y = (m_bounding_box.top() + m_bounding_box.bottom()) / 2.0;
@@ -71,10 +81,10 @@ public:
 
     Vec2f s = (anchor - pos) / (anchor - press_pos());
 
-    if (!m_left_fringe && !m_right_fringe) {
+    if (!(m_active_fringe & Fringe::Horizontal)) {
       s.x = 1.0;
     }
-    if (!m_top_fringe && !m_bottom_fringe) {
+    if (!(m_active_fringe & Fringe::Vertical)) {
       s.y = 1.0;
     }
 
@@ -108,20 +118,36 @@ public:
     return true;
   }
 
-  void draw(Painter &renderer) const override
+  void draw(QPainter &painter) const override
   {
     const BoundingBox bounding_box = static_cast<const ToolT&>(tool).bounding_box();
-    renderer.set_style(current_style());
-    renderer.painter->drawRect(bounding_box);
+    painter.setPen(ui_color("bounding-box"));
+    painter.drawRect(bounding_box);
+  }
+
+  Fringe get_fringe(const Vec2f& pos) const
+  {
+    static constexpr double eps = 4;
+    Fringe f = Fringe::None;
+    if (std::abs(m_bounding_box.left() - pos.x) < eps) {
+      f |= Fringe::Left;
+    }
+    if (std::abs(m_bounding_box.right() - pos.x) < eps) {
+      f |= Fringe::Right;
+    }
+    if (std::abs(m_bounding_box.top() - pos.y) < eps) {
+      f |= Fringe::Top;
+    }
+    if (std::abs(m_bounding_box.bottom() - pos.y) < eps) {
+      f |= Fringe::Bottom;
+    }
+    return f;
   }
 
   BoundingBox m_bounding_box;
-  bool m_left_fringe = false;
-  bool m_right_fringe = false;
-  bool m_top_fringe = false;
-  bool m_bottom_fringe = false;
   bool m_symmetric = false;
   mutable Vec2f m_tool_origin = Vec2f::o();
+  Fringe m_active_fringe;
 
 };
 

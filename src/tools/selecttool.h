@@ -31,7 +31,6 @@ protected:
 
 private:
   void reset_absolute_object_transformation();
-  const Style m_tool_info_line_style;
   Vec2f m_init_position;
   Vec2f m_current_position;
 };

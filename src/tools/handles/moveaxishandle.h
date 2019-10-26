@@ -5,6 +5,7 @@
 #include "renderers/painter.h"
 #include "geometry/util.h"
 #include "tools/tool.h"
+#include "preferences/uicolors.h"
 
 namespace omm
 {
@@ -20,18 +21,6 @@ public:
     , m_direction(direction == MoveAxisHandleDirection::X ? Vec2f(100.0, 0.0)
                                                           : Vec2f(0.0, 100.0))
   {
-    switch (direction) {
-    case MoveAxisHandleDirection::X:
-      set_style(Status::Active, ContourStyle(Colors::WHITE));
-      set_style(Status::Hovered, ContourStyle(Colors::RED));
-      set_style(Status::Inactive, ContourStyle(Color(Color::Model::RGBA, { 1.0, 0.3, 0., 1.0 })));
-      break;
-    case MoveAxisHandleDirection::Y:
-      set_style(Status::Active, ContourStyle(Colors::WHITE));
-      set_style(Status::Hovered, ContourStyle(Colors::GREEN));
-      set_style(Status::Inactive, ContourStyle(Color(Color::Model::RGBA, { 0.3, 1.0, 0.3, 1.0 })));
-      break;
-    }
   }
 
   bool contains_global(const Vec2f& point) const override
@@ -67,20 +56,28 @@ public:
     }
   }
 
-  void draw(omm::Painter& renderer) const override
+  void draw(QPainter& painter) const override
   {
-    renderer.push_transformation(tool.transformation());
+    painter.setTransform(tool.transformation().to_qtransform(), true);
     const double magnitude = m_direction.euclidean_norm();
     const double argument = m_direction.arg();
 
     const auto right = to_qpoint(PolarCoordinates(argument-0.1, magnitude*0.9).to_cartesian());
     const auto left = to_qpoint(PolarCoordinates(argument+0.1, magnitude*0.9).to_cartesian());
 
-    renderer.set_style(current_style());
-    renderer.painter->drawLine(QPointF(0.0, 0.0), to_qpoint(m_direction));
+    static const std::map<MoveAxisHandleDirection, std::string> name_map {
+      { MoveAxisHandleDirection::X, "x-axis" },
+      { MoveAxisHandleDirection::Y, "y-axis" },
+    };
+    const std::string name = name_map.at(direction);
+
+
+    painter.save();
+    painter.setPen(ui_color(name));
+    painter.drawLine(QPointF(0.0, 0.0), to_qpoint(m_direction));
     const QPointF polyline[] = { left, to_qpoint(m_direction), right, left };
-    renderer.painter->drawPolyline(polyline, 4);
-    renderer.pop_transformation();
+    painter.drawPolyline(polyline, 4);
+    painter.restore();
   }
 
 private:

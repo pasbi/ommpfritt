@@ -15,9 +15,6 @@ class ScaleBandHandle : public Handle
 public:
   ScaleBandHandle(ToolT& tool) : Handle(tool)
   {
-    set_style(Status::Active, SolidStyle(Colors::WHITE));
-    set_style(Status::Hovered, SolidStyle(Color(Color::Model::RGBA, { 0.7, 0.7, 0.7, 1.0 })));
-    set_style(Status::Inactive, SolidStyle(Color(Color::Model::RGBA, { 0.5, 0.5, 0.5 })));
   }
 
   bool contains_global(const Vec2f& point) const override
@@ -28,17 +25,17 @@ public:
     return x+y < r + width/2.0 && x+y > r - width/2.0 && x > stop && y > stop;
   }
 
-  void draw(Painter& painter) const override
+  void draw(QPainter& painter) const override
   {
-    painter.push_transformation(tool.transformation());
-    QPointF polyline[] = { QPointF(stop, r - width/2.0 - stop),
-                           QPointF(stop, r + width/2.0 - stop),
-                           QPointF(r + width/2.0 - stop, stop),
-                           QPointF(r - width/2.0 - stop, stop),
-                           QPointF(stop, r - width/2.0 - stop) };
-    painter.set_style(current_style());
-    painter.painter->drawPolygon(polyline, 5);
-    painter.pop_transformation();
+    painter.setPen(ui_color("band"));
+    painter.setBrush(ui_color("band fill"));
+    painter.setTransform(tool.transformation().to_qtransform(), true);
+    const QPointF polyline[] = { QPointF(stop, r - width/2.0 - stop),
+                                 QPointF(stop, r + width/2.0 - stop),
+                                 QPointF(r + width/2.0 - stop, stop),
+                                 QPointF(r - width/2.0 - stop, stop),
+                                 QPointF(stop, r - width/2.0 - stop) };
+    painter.drawPolygon(polyline, 5);
   }
 
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override
