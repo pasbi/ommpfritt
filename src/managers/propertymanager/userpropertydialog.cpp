@@ -1,4 +1,4 @@
-#include "managers/propertymanager/userpropertymanager/userpropertydialog.h"
+#include "managers/propertymanager/userpropertydialog.h"
 #include "aspects/propertyowner.h"
 #include "logging.h"
 #include "propertywidgets/propertyconfigwidget.h"

@@ -1,4 +1,4 @@
-#include "managers/propertymanager/userpropertymanager/userpropertylistmodel.h"
+#include "managers/propertymanager/userpropertylistmodel.h"
 #include "aspects/propertyowner.h"
 #include <variant>
 

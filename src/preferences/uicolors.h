@@ -9,6 +9,7 @@ namespace omm
 
 class UiColors : public PreferencesTree
 {
+  Q_OBJECT
 public:
   explicit UiColors();
   ~UiColors();

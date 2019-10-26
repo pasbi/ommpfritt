@@ -4,7 +4,7 @@
 #include "commands/userpropertyconfigcommand.h"
 #include <memory>
 #include "ui_userpropertydialog.h"
-#include "managers/propertymanager/userpropertymanager/userpropertylistmodel.h"
+#include "managers/propertymanager/userpropertylistmodel.h"
 
 namespace Ui { class UserPropertyDialog; }
 

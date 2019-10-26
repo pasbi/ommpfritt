@@ -9,7 +9,7 @@
 #include "aspects/propertyowner.h"
 #include "managers/manager.h"
 #include "scene/scene.h"
-#include "managers/propertymanager/userpropertymanager/userpropertydialog.h"
+#include "managers/propertymanager/userpropertydialog.h"
 
 class QTabWidget;
 
