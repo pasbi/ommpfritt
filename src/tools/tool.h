@@ -34,7 +34,7 @@ public:
   /**
    * @brief returns true if any grabbable was hit
    */
-  virtual bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force = false);
+  virtual bool mouse_press(const Vec2f& pos, const QMouseEvent& event);
   virtual void mouse_release(const Vec2f& pos, const QMouseEvent& event);
   virtual bool key_press(const QKeyEvent& event);
   virtual void draw(Painter& painter) const;

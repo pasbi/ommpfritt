@@ -35,7 +35,7 @@ public:
   PointSelectHandle::TangentMode tangent_mode() const;
   std::unique_ptr<QMenu> make_context_menu(QWidget* parent) override;
   void transform_objects(ObjectTransformation t) override;
-  bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force) override;
+  bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
 
   bool has_transformation() const override;
 
@@ -43,12 +43,13 @@ public:
   {
     tool.handles.push_back(std::make_unique<ScaleBandHandle<ToolT>>(tool));
     tool.handles.push_back(std::make_unique<RotateHandle<ToolT>>(tool));
-    tool.handles.push_back(std::make_unique<MoveParticleHandle<ToolT>>(tool));
 
     static constexpr auto X = MoveAxisHandleDirection::X;
     static constexpr auto Y = MoveAxisHandleDirection::Y;
     tool.handles.push_back(std::make_unique<MoveAxisHandle<ToolT, X>>(tool));
     tool.handles.push_back(std::make_unique<MoveAxisHandle<ToolT, Y>>(tool));
+
+    tool.handles.push_back(std::make_unique<MoveParticleHandle<ToolT>>(tool));
 
     for (auto* path : type_cast<Path*>(tool.scene()->template item_selection<Object>())) {
       tool.handles.reserve(tool.handles.size() + path->points().size());

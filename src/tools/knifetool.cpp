@@ -29,10 +29,10 @@ bool KnifeTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEve
   return true;
 }
 
-bool KnifeTool::mouse_press(const Vec2f &pos, const QMouseEvent &event, bool force)
+bool KnifeTool::mouse_press(const Vec2f &pos, const QMouseEvent &event)
 {
   m_mouse_press_pos = pos;
-  if (SelectPointsBaseTool::mouse_press(pos, event, force)) {
+  if (SelectPointsBaseTool::mouse_press(pos, event)) {
     return true;
   } else {
     m_points.clear();

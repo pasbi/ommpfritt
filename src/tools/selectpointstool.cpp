@@ -20,7 +20,7 @@ SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene)
     .set_category(category)
     .set_animatable(false);
 
-  create_property<OptionsProperty>(BOUNDING_BOX_MODE_PROPERTY_KEY, 0)
+  create_property<OptionsProperty>(BOUNDING_BOX_MODE_PROPERTY_KEY, 1)
     .set_options( { QObject::tr("Include Tangents").toStdString(),
                     QObject::tr("Exclude Tangents").toStdString(),
                     QObject::tr("None").toStdString() })
@@ -54,12 +54,10 @@ void SelectPointsBaseTool::transform_objects(ObjectTransformation t)
   scene()->submit(m_transform_points_helper.make_command(t));
 }
 
-bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
+bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
   const auto paths = type_cast<Path*>(scene()->template item_selection<Object>());
-  Q_UNUSED(force);
-  if (AbstractSelectTool::mouse_press(pos, event, false)
-    || AbstractSelectTool::mouse_press(pos, event, true)) {
+  if (AbstractSelectTool::mouse_press(pos, event)) {
     m_transform_points_helper.update(paths);
     return true;
   } else {

@@ -45,7 +45,7 @@ public:
   void transform_objects(ObjectTransformation t) override;
   static constexpr auto TRANSFORMATION_MODE_KEY = "transformation_mode";
   void reset() override;
-  bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force) override;
+  bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
   BoundingBox bounding_box() const;
 
 protected:

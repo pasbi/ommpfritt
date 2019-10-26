@@ -21,7 +21,7 @@ public:
   /**
    * @brief returns true if any grabbable was hit
    */
-  bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force) override;
+  bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
   void mouse_release(const Vec2f& pos, const QMouseEvent& event) override;
   std::string type() const override;
   void reset() override;

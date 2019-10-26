@@ -19,10 +19,10 @@ ObjectTransformation Tool::transformation() const { return ObjectTransformation(
 
 bool Tool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
-  for (auto&& handle : handles) {
-    assert(handle != nullptr);
-    handle->mouse_move(delta, pos, e);
-    switch (handle->status()) {
+  for (auto it = handles.rbegin(); it != handles.rend(); ++it) {
+    assert(*it != nullptr);
+    (*it)->mouse_move(delta, pos, e);
+    switch ((*it)->status()) {
     case Handle::Status::Active:
       return true;
     case Handle::Status::Hovered:
@@ -33,12 +33,14 @@ bool Tool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e
   return false;
 }
 
-bool Tool::mouse_press(const Vec2f& pos, const QMouseEvent& e, bool force)
+bool Tool::mouse_press(const Vec2f& pos, const QMouseEvent& e)
 {
   // `std::any_of` does not *require* to use short-circuit-logic. However, here it is mandatory,
   // so don't use `std::any_of`.
-  for (auto&& handle : handles) {
-    if (handle->mouse_press(pos, e, force)) {
+  LINFO << "mouse press";
+  for (auto it = handles.rbegin(); it != handles.rend(); ++it) {
+    LINFO << typeid(**it).name();
+    if ((*it)->mouse_press(pos, e, true)) {
       return true;
     }
   }
@@ -47,8 +49,8 @@ bool Tool::mouse_press(const Vec2f& pos, const QMouseEvent& e, bool force)
 
 void Tool:: mouse_release(const Vec2f& pos, const QMouseEvent& e)
 {
-  for (auto&& handle : handles) {
-    handle->mouse_release(pos, e);
+  for (auto it = handles.rbegin(); it != handles.rend(); ++it) {
+    (*it)->mouse_release(pos, e);
   }
 }
 

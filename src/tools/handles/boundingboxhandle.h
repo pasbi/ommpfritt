@@ -141,8 +141,18 @@ public:
     if (std::abs(m_bounding_box.bottom() - pos.y) < eps) {
       f |= Fringe::Bottom;
     }
+
+    if (    (!!(f & Fringe::Bottom) && !!(f & Fringe::Top))
+         || (!!(f & Fringe::Right) && !!(f & Fringe::Left)) )
+    {
+      // It's only possible to select left and right or top and bottom at the same time if the
+      // bounding box is smaller than epsilon. In this case it's very very unlikely that anything
+      // sane happens in response to the event. Hence, behave as if nothing was selected.
+      f = Fringe::None;
+    }
     return f;
   }
+
 
   BoundingBox m_bounding_box;
   bool m_symmetric = false;

@@ -26,9 +26,9 @@ bool PathTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEven
   }
 }
 
-bool PathTool::mouse_press(const Vec2f &pos, const QMouseEvent &event, bool force)
+bool PathTool::mouse_press(const Vec2f &pos, const QMouseEvent &event)
 {
-  if (SelectPointsBaseTool::mouse_press(pos, event, force)) {
+  if (SelectPointsBaseTool::mouse_press(pos, event)) {
     return true;
   } else {
     switch (event.button()) {

@@ -57,11 +57,9 @@ void SelectObjectsTool::reset()
   });
 }
 
-bool SelectObjectsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
+bool SelectObjectsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
-  Q_UNUSED(force);
-  if (AbstractSelectTool::mouse_press(pos, event, false)
-      || AbstractSelectTool::mouse_press(pos, event, true)) {
+  if (AbstractSelectTool::mouse_press(pos, event)) {
     m_transform_objects_helper.update(scene()->item_selection<Object>());
     return true;
   } else {

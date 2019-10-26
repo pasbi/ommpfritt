@@ -35,16 +35,12 @@ bool BrushSelectTool::mouse_move( const Vec2f& delta, const Vec2f& pos,
   }
 }
 
-bool BrushSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
+bool BrushSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
-
-  Q_UNUSED(force);
-
-  LINFO << "brush select press modifiers: " << event.modifiers();
   if (event.modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) {
     // don't deselect
   } else {
-    if (SelectPointsBaseTool::mouse_press(pos, event, force)) {
+    if (SelectPointsBaseTool::mouse_press(pos, event)) {
       return true;
     }
     for (Object* object : scene()->item_selection<Object>()) {

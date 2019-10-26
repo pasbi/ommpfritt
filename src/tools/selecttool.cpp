@@ -52,9 +52,9 @@ bool AbstractSelectTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const 
   return Tool::mouse_move(delta, pos, e);
 }
 
-bool AbstractSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& e, bool force)
+bool AbstractSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& e)
 {
-  const bool r = Tool::mouse_press(pos, e, force);
+  const bool r = Tool::mouse_press(pos, e);
   reset_absolute_object_transformation();
   return r;
 }
