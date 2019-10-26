@@ -37,10 +37,8 @@ bool Tool::mouse_press(const Vec2f& pos, const QMouseEvent& e)
 {
   // `std::any_of` does not *require* to use short-circuit-logic. However, here it is mandatory,
   // so don't use `std::any_of`.
-  LINFO << "mouse press";
   for (auto it = handles.rbegin(); it != handles.rend(); ++it) {
-    LINFO << typeid(**it).name();
-    if ((*it)->mouse_press(pos, e, true)) {
+    if ((*it)->mouse_press(pos, e)) {
       return true;
     }
   }

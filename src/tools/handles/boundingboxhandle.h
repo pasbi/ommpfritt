@@ -34,13 +34,13 @@ public:
     m_bounding_box = static_cast<const ToolT&>(tool).bounding_box();
   }
 
-  bool mouse_press(const Vec2f& pos, const QMouseEvent& e, bool force) override
+  bool mouse_press(const Vec2f& pos, const QMouseEvent& e) override
   {
     m_bounding_box = static_cast<const ToolT&>(tool).bounding_box();
     m_tool_origin = tool.transformation().apply_to_position(Vec2f::o());
     m_symmetric = tool.property(ToolT::SYMMETRIC_PROPERTY_KEY)->template value<bool>();
     m_active_fringe = get_fringe(pos);
-    return Handle::mouse_press(pos, e, force);
+    return Handle::mouse_press(pos, e);
   }
 
   bool contains_global(const Vec2f& point) const override

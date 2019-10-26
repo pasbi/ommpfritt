@@ -19,7 +19,7 @@ public:
   explicit Handle(Tool& tool);
   virtual ~Handle() = default;
   virtual void draw(QPainter& renderer) const = 0;
-  virtual bool mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force);
+  virtual bool mouse_press(const Vec2f& pos, const QMouseEvent& event);
   virtual bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent&);
   virtual void mouse_release(const Vec2f& pos, const QMouseEvent&);
   Status status() const;

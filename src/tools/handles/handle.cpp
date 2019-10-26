@@ -12,9 +12,8 @@ namespace omm
 
 Handle::Handle(Tool& tool) : tool(tool) {}
 
-bool Handle::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool force)
+bool Handle::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
-  Q_UNUSED(force);
   m_press_pos = pos;
   if (contains_global(pos)) {
     if (event.button() == Qt::LeftButton) {

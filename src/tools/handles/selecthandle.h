@@ -15,7 +15,7 @@ class AbstractSelectHandle : public Handle
 {
 public:
   explicit AbstractSelectHandle(Tool& tool);
-  bool mouse_press(const Vec2f& pos, const QMouseEvent &event, bool force) override;
+  bool mouse_press(const Vec2f& pos, const QMouseEvent &event) override;
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
 
 protected:
@@ -50,7 +50,7 @@ public:
   explicit PointSelectHandle(Tool& tool, Path& path, Point& point);
   bool contains_global(const Vec2f& point) const override;
   void draw(QPainter& painter) const override;
-  bool mouse_press( const Vec2f& pos, const QMouseEvent& event, bool force) override;
+  bool mouse_press( const Vec2f& pos, const QMouseEvent& event) override;
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
   void mouse_release( const Vec2f& pos, const QMouseEvent& event) override;
 
