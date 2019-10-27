@@ -5,73 +5,65 @@
     <name>AboutDialog</name>
     <message>
         <source>About</source>
-        <translation type="unfinished">About</translation>
+        <translation>About</translation>
     </message>
     <message>
         <source>Show GPL-3.0</source>
-        <translation type="unfinished"></translation>
+        <translation>Show GPL-3.0</translation>
     </message>
 </context>
 <context>
     <name>BoundingBoxManager</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Pos.&amp;x:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pos.&amp;x:</translation>
     </message>
     <message>
         <source>&amp;Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Width:</translation>
     </message>
     <message>
         <source>Pos.&amp;y:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pos.y:</translation>
     </message>
     <message>
         <source>&amp;Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Height:</translation>
     </message>
 </context>
 <context>
     <name>ColorWidget</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;R</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;G</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;B</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;H</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;S</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;V</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;A</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
+    </message>
+    <message>
+        <source>&amp;B:</source>
+        <translation>&amp;B:</translation>
+    </message>
+    <message>
+        <source>&amp;G:</source>
+        <translation>&amp;G:</translation>
+    </message>
+    <message>
+        <source>&amp;H:</source>
+        <translation>&amp;H:</translation>
+    </message>
+    <message>
+        <source>&amp;A:</source>
+        <translation>&amp;A:</translation>
+    </message>
+    <message>
+        <source>&amp;V:</source>
+        <translation>&amp;V:</translation>
+    </message>
+    <message>
+        <source>&amp;R:</source>
+        <translation>&amp;R:</translation>
+    </message>
+    <message>
+        <source>&amp;S:</source>
+        <translation>&amp;S:</translation>
     </message>
 </context>
 <context>
@@ -104,12 +96,8 @@
 <context>
     <name>GeneralPage</name>
     <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Language:</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Language:</source>
+        <translation>&amp;Language:</translation>
     </message>
 </context>
 <context>
@@ -122,71 +110,34 @@
 <context>
     <name>KeyBindingsPage</name>
     <message>
-        <source>Key Bindings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Reset All</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle zurücksetzen</translation>
     </message>
     <message>
         <source>name filter</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>KeySequenceEdit</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Name</translation>
     </message>
 </context>
 <context>
     <name>NamedColorsDialog</name>
     <message>
         <source>Manage Named Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Benannte Farben editieren</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>+</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>NumericProperty</name>
-    <message>
-        <source>lower_value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>upper_value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>step</source>
-        <translation type="unfinished">Step</translation>
-    </message>
-    <message>
-        <source>multiplier</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ObjectTransformation</name>
-    <message>
-        <source>ObjectTransformation</source>
-        <translation>Object transformation</translation>
+        <translation>+</translation>
     </message>
 </context>
 <context>
     <name>OptionsPropertyConfigWidget</name>
     <message>
         <source>Unnamed Option</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbennante Option</translation>
     </message>
 </context>
 <context>
@@ -199,51 +150,51 @@
 <context>
     <name>PreferenceDialog</name>
     <message>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <source>Preferences</source>
+        <translation>Preferences</translation>
     </message>
 </context>
 <context>
     <name>Property</name>
     <message>
         <source>user properties</source>
-        <translation>Property</translation>
+        <translation>User properties</translation>
     </message>
     <message>
         <source>StringProperty</source>
-        <translation type="unfinished">String property</translation>
+        <translation>String property</translation>
     </message>
     <message>
         <source>BoolProperty</source>
-        <translation type="unfinished">Boolean Property</translation>
+        <translation>Boolean Property</translation>
     </message>
     <message>
         <source>ColorProperty</source>
-        <translation type="unfinished">Color property</translation>
+        <translation>Color property</translation>
     </message>
     <message>
         <source>FloatProperty</source>
-        <translation type="unfinished">Float property</translation>
+        <translation>Float property</translation>
     </message>
     <message>
         <source>IntegerProperty</source>
-        <translation type="unfinished">Integer property</translation>
+        <translation>Integer property</translation>
     </message>
     <message>
         <source>OptionsProperty</source>
-        <translation type="unfinished">Options property</translation>
+        <translation>Options property</translation>
     </message>
     <message>
         <source>ReferenceProperty</source>
-        <translation type="unfinished">Reference property</translation>
+        <translation>Reference property</translation>
     </message>
     <message>
         <source>TriggerProperty</source>
-        <translation type="unfinished">Trigger property</translation>
+        <translation>Trigger property</translation>
     </message>
     <message>
         <source>FloatVectorProperty</source>
-        <translation type="unfinished">Float vector property</translation>
+        <translation>Float vector property</translation>
     </message>
 </context>
 <context>
@@ -1068,81 +1019,81 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Include Tangents</source>
-        <translation type="unfinished"></translation>
+        <translation>Include tangents</translation>
     </message>
     <message>
         <source>Exclude Tangents</source>
-        <translation type="unfinished"></translation>
+        <translation>Exclude Tangents</translation>
     </message>
     <message>
         <source>Bounding Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Bounding Box</translation>
     </message>
     <message>
         <source>identical</source>
         <comment>Instance</comment>
-        <translation type="unfinished"></translation>
+        <translation>identical</translation>
     </message>
     <message>
         <source>default</source>
-        <translation type="unfinished"></translation>
+        <translation>default</translation>
     </message>
     <message>
         <source>Set Object Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Set Object Selection</translation>
     </message>
     <message>
         <source>visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Visibility</translation>
     </message>
     <message>
         <source>User Property</source>
-        <translation type="unfinished"></translation>
+        <translation>User properties</translation>
     </message>
     <message>
         <source>Remove Keyframe</source>
-        <translation type="unfinished"></translation>
+        <translation>Remove keyframe</translation>
     </message>
     <message>
         <source>Create Keyframe</source>
-        <translation type="unfinished"></translation>
+        <translation>Create keyframe</translation>
     </message>
     <message>
         <source>Create Tracks</source>
-        <translation type="unfinished"></translation>
+        <translation>Create Tracks</translation>
     </message>
     <message>
         <source>Remove Tracks</source>
-        <translation type="unfinished"></translation>
+        <translation>Remove Tracks</translation>
     </message>
     <message>
         <source>Move Keyframes</source>
-        <translation type="unfinished"></translation>
+        <translation>Move keyframes</translation>
     </message>
     <message>
         <source>Move knots</source>
-        <translation type="unfinished"></translation>
+        <translation>Move knots</translation>
     </message>
     <message>
         <source>Python</source>
         <comment>PythonConsole</comment>
-        <translation type="unfinished"></translation>
+        <translation>Python</translation>
     </message>
     <message>
         <source>Change name of named color name</source>
-        <translation type="unfinished"></translation>
+        <translation>Change name of Named Color</translation>
     </message>
     <message>
         <source>Change Named Color color</source>
-        <translation type="unfinished"></translation>
+        <translation>Change color of Named Color</translation>
     </message>
     <message>
         <source>Remove Named Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Remove Named Color</translation>
     </message>
     <message>
         <source>Add Named Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Add Named Color</translation>
     </message>
 </context>
 <context>
@@ -1153,13 +1104,6 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
-    <name>TimeLineTitleBar</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Tool</name>
     <message>
         <source>Tool</source>
@@ -1167,99 +1111,37 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
-    <name>UiColorEdit</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>UiColorsPage</name>
     <message>
-        <source>Preferences</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>save as ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Save as ...</translation>
     </message>
     <message>
         <source>Reset All</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle zurücksetzen</translation>
     </message>
 </context>
 <context>
     <name>UserPropertyDialog</name>
     <message>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>unnamed</source>
-        <translation type="obsolete">unnamed</translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>animatable</source>
-        <translation type="unfinished"></translation>
+        <translation>animatable</translation>
     </message>
-</context>
-<context>
-    <name>UserPropertyListModel</name>
     <message>
-        <source>&lt;unnamed property&gt;</source>
-        <translation type="obsolete">Property item</translation>
+        <source>User Property Dialog</source>
+        <translation>User Properties</translation>
     </message>
 </context>
 <context>
     <name>any-context</name>
-    <message>
-        <source>make smooth</source>
-        <translation>Adjust tangents cubic</translation>
-    </message>
-    <message>
-        <source>make linear</source>
-        <translation>Vanish tangents</translation>
-    </message>
-    <message>
-        <source>subdivide</source>
-        <translation>Subdivide</translation>
-    </message>
-    <message>
-        <source>select all</source>
-        <translation>Select all</translation>
-    </message>
-    <message>
-        <source>deselect all</source>
-        <translation>Deselect all</translation>
-    </message>
-    <message>
-        <source>invert selection</source>
-        <translation>Invert selection</translation>
-    </message>
-    <message>
-        <source>reset viewport</source>
-        <translation>Reset viewport</translation>
-    </message>
-    <message>
-        <source>show point dialog</source>
-        <translation>Show point dialog</translation>
-    </message>
-    <message>
-        <source>remove selection</source>
-        <translation>Remove selection</translation>
-    </message>
-    <message>
-        <source>convert objects</source>
-        <translation>Convert objects</translation>
-    </message>
     <message>
         <source>Cloner</source>
         <translation>Cloner</translation>
@@ -1378,7 +1260,310 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>TimeLine</source>
-        <translation type="unfinished"></translation>
+        <translation>Timeline</translation>
+    </message>
+</context>
+<context>
+    <name>keybindings/Application</name>
+    <message>
+        <source>Ellipse</source>
+        <translation>Ellipse</translation>
+    </message>
+    <message>
+        <source>show point dialog</source>
+        <translation>Show point dialog</translation>
+    </message>
+    <message>
+        <source>Instance</source>
+        <translation>Instance</translation>
+    </message>
+    <message>
+        <source>previous tool</source>
+        <translation>Previous tool</translation>
+    </message>
+    <message>
+        <source>Outline</source>
+        <translation>Outline</translation>
+    </message>
+    <message>
+        <source>load layout ...</source>
+        <translation>Load layout ...</translation>
+    </message>
+    <message>
+        <source>convert objects</source>
+        <translation>Convert objects</translation>
+    </message>
+    <message>
+        <source>Path</source>
+        <translation>Path</translation>
+    </message>
+    <message>
+        <source>BoundingBoxManager</source>
+        <translation>Bounding Box Manager</translation>
+    </message>
+    <message>
+        <source>make smooth</source>
+        <translation>Adjust tangents cubic</translation>
+    </message>
+    <message>
+        <source>new style</source>
+        <translation>New Style</translation>
+    </message>
+    <message>
+        <source>restore default layout</source>
+        <translation>Restore default layout</translation>
+    </message>
+    <message>
+        <source>ImageObject</source>
+        <translation>Image object</translation>
+    </message>
+    <message>
+        <source>PathTool</source>
+        <translation>Path Tool</translation>
+    </message>
+    <message>
+        <source>undo</source>
+        <translation>Undo</translation>
+    </message>
+    <message>
+        <source>PathTag</source>
+        <translation>Path tag</translation>
+    </message>
+    <message>
+        <source>HistoryManager</source>
+        <translation>History</translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation>View</translation>
+    </message>
+    <message>
+        <source>save document</source>
+        <translation>Save</translation>
+    </message>
+    <message>
+        <source>save document as</source>
+        <translation>Save as ...</translation>
+    </message>
+    <message>
+        <source>SelectObjectsTool</source>
+        <translation>Select objects</translation>
+    </message>
+    <message>
+        <source>reset viewport</source>
+        <translation>Reset viewport</translation>
+    </message>
+    <message>
+        <source>KnifeTool</source>
+        <translation>Knife</translation>
+    </message>
+    <message>
+        <source>ProceduralPath</source>
+        <translation>Procedural path</translation>
+    </message>
+    <message>
+        <source>Tip</source>
+        <translation>Tip</translation>
+    </message>
+    <message>
+        <source>deselect all</source>
+        <translation>Deselect all</translation>
+    </message>
+    <message>
+        <source>new document</source>
+        <translation>New Scene</translation>
+    </message>
+    <message>
+        <source>StyleManager</source>
+        <translation>Style manager</translation>
+    </message>
+    <message>
+        <source>remove selection</source>
+        <translation>Remove selection</translation>
+    </message>
+    <message>
+        <source>make linear</source>
+        <translation>Vanish tangents</translation>
+    </message>
+    <message>
+        <source>remove points</source>
+        <translation>Remove points</translation>
+    </message>
+    <message>
+        <source>subdivide</source>
+        <translation>Subdivide</translation>
+    </message>
+    <message>
+        <source>DopeSheetManager</source>
+        <translation>Dope Sheet</translation>
+    </message>
+    <message>
+        <source>ObjectManager</source>
+        <translation>Object manager</translation>
+    </message>
+    <message>
+        <source>redo</source>
+        <translation>Redo</translation>
+    </message>
+    <message>
+        <source>Text</source>
+        <translation>Text</translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation>Line</translation>
+    </message>
+    <message>
+        <source>StyleTag</source>
+        <translation>Style tag</translation>
+    </message>
+    <message>
+        <source>save layout ...</source>
+        <translation>Save Layout ...</translation>
+    </message>
+    <message>
+        <source>RectangleObject</source>
+        <translation>Rectangle</translation>
+    </message>
+    <message>
+        <source>Mirror</source>
+        <translation>Mirror</translation>
+    </message>
+    <message>
+        <source>BrushSelectTool</source>
+        <translation>Brush selection</translation>
+    </message>
+    <message>
+        <source>select all</source>
+        <translation>Select all</translation>
+    </message>
+    <message>
+        <source>export</source>
+        <translation>export</translation>
+    </message>
+    <message>
+        <source>preferences</source>
+        <translation>Preferences</translation>
+    </message>
+    <message>
+        <source>TimeLine</source>
+        <translation>Timeline</translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <translation>Empty</translation>
+    </message>
+    <message>
+        <source>PropertyManager</source>
+        <translation>Property manager</translation>
+    </message>
+    <message>
+        <source>load document</source>
+        <translation>Open ...</translation>
+    </message>
+    <message>
+        <source>switch between object and point selection</source>
+        <translation>Switch between object- and point-selection</translation>
+    </message>
+    <message>
+        <source>invert selection</source>
+        <translation>Invert selection</translation>
+    </message>
+    <message>
+        <source>evaluate</source>
+        <translation>Evaluate</translation>
+    </message>
+    <message>
+        <source>PythonConsole</source>
+        <translation>Python Console</translation>
+    </message>
+    <message>
+        <source>ScriptTag</source>
+        <translation>Script tag</translation>
+    </message>
+    <message>
+        <source>SelectPointsTool</source>
+        <translation>Select points</translation>
+    </message>
+    <message>
+        <source>Cloner</source>
+        <translation>Cloner</translation>
+    </message>
+    <message>
+        <source>Application</source>
+        <translation>Application</translation>
+    </message>
+</context>
+<context>
+    <name>keybindings/ObjectManager</name>
+    <message>
+        <source>remove objects and tags</source>
+        <translation>Remove objects and tags</translation>
+    </message>
+    <message>
+        <source>group objects</source>
+        <translation>Group objects</translation>
+    </message>
+    <message>
+        <source>ObjectManager</source>
+        <translation>Object manager</translation>
+    </message>
+</context>
+<context>
+    <name>keybindings/PythonConsole</name>
+    <message>
+        <source>evaluate</source>
+        <translation>Evaluate</translation>
+    </message>
+    <message>
+        <source>clear console</source>
+        <translation>Clear console</translation>
+    </message>
+    <message>
+        <source>PythonConsole</source>
+        <translation>Python Console</translation>
+    </message>
+</context>
+<context>
+    <name>keybindings/StyleManager</name>
+    <message>
+        <source>remove styles</source>
+        <translation>Remove styles</translation>
+    </message>
+    <message>
+        <source>StyleManager</source>
+        <translation>Style manager</translation>
+    </message>
+</context>
+<context>
+    <name>keybindings/TimeLine</name>
+    <message>
+        <source>step left</source>
+        <translation>Step left</translation>
+    </message>
+    <message>
+        <source>jump to start</source>
+        <translation>Jump to start</translation>
+    </message>
+    <message>
+        <source>play/pause</source>
+        <translation>Play/Pause</translation>
+    </message>
+    <message>
+        <source>step right</source>
+        <translation>Step right</translation>
+    </message>
+    <message>
+        <source>clear selection</source>
+        <translation>Clear selection</translation>
+    </message>
+    <message>
+        <source>remove selection</source>
+        <translation>Remove selection</translation>
+    </message>
+    <message>
+        <source>TimeLine</source>
+        <translation>Timeline</translation>
     </message>
 </context>
 <context>
@@ -1417,7 +1602,7 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>load recent document</source>
-        <translation>Recently opened files ...</translation>
+        <translation>Recently opened files</translation>
     </message>
     <message>
         <source>path</source>
@@ -1432,23 +1617,23 @@ Remove the selected items anyway?</translation>
     <name>omm::AnimationButton</name>
     <message>
         <source>Remove Track</source>
-        <translation type="unfinished"></translation>
+        <translation>Remove track</translation>
     </message>
     <message>
         <source>Add Key</source>
-        <translation type="unfinished"></translation>
+        <translation>Add keyframe</translation>
     </message>
     <message>
         <source>Remove Key</source>
-        <translation type="unfinished"></translation>
+        <translation>Remove keyframe</translation>
     </message>
     <message>
         <source>Replace Key</source>
-        <translation type="unfinished"></translation>
+        <translation>Replace keyframe</translation>
     </message>
     <message>
         <source>Set keyframe</source>
-        <translation type="unfinished"></translation>
+        <translation>Set keyframe</translation>
     </message>
 </context>
 <context>
@@ -1456,10 +1641,6 @@ Remove the selected items anyway?</translation>
     <message>
         <source>Question.</source>
         <translation>Question.</translation>
-    </message>
-    <message>
-        <source>Some pending changes will be lost if you don&apos;t save.What do you want me to do?</source>
-        <translation>Pending changes will be lost if they are not saved.</translation>
     </message>
     <message>
         <source>Error.</source>
@@ -1486,116 +1667,12 @@ Remove the selected items anyway?</translation>
         <translation>Create %1</translation>
     </message>
     <message>
-        <source>undo</source>
-        <translation type="unfinished">Undo</translation>
-    </message>
-    <message>
-        <source>redo</source>
-        <translation type="unfinished">Redo</translation>
-    </message>
-    <message>
-        <source>remove selection</source>
-        <translation type="unfinished">Remove selection</translation>
-    </message>
-    <message>
-        <source>new document</source>
-        <translation type="unfinished">New Scene</translation>
-    </message>
-    <message>
-        <source>save document</source>
-        <translation type="unfinished">Save</translation>
-    </message>
-    <message>
-        <source>save document as</source>
-        <translation type="unfinished">Save as ...</translation>
-    </message>
-    <message>
-        <source>load document</source>
-        <translation type="unfinished">Open ...</translation>
-    </message>
-    <message>
-        <source>export</source>
-        <translation type="unfinished">export</translation>
-    </message>
-    <message>
-        <source>make smooth</source>
-        <translation type="unfinished">Adjust tangents cubic</translation>
-    </message>
-    <message>
-        <source>make linear</source>
-        <translation type="unfinished">Vanish tangents</translation>
-    </message>
-    <message>
-        <source>remove points</source>
-        <translation type="unfinished">Remove points</translation>
-    </message>
-    <message>
-        <source>subdivide</source>
-        <translation type="unfinished">Subdivide</translation>
-    </message>
-    <message>
-        <source>evaluate</source>
-        <translation type="unfinished">Evaluate</translation>
-    </message>
-    <message>
-        <source>show keybindings dialog</source>
-        <translation type="obsolete">Show key bindings dialog</translation>
-    </message>
-    <message>
-        <source>restore default layout</source>
-        <translation type="unfinished">Restore default layout</translation>
-    </message>
-    <message>
-        <source>save layout ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>load layout ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>switch between object and point selection</source>
-        <translation type="unfinished">Switch between object- and point-selection</translation>
-    </message>
-    <message>
-        <source>previous tool</source>
-        <translation type="unfinished">Previous tool</translation>
-    </message>
-    <message>
-        <source>select all</source>
-        <translation type="unfinished">Select all</translation>
-    </message>
-    <message>
-        <source>deselect all</source>
-        <translation type="unfinished">Deselect all</translation>
-    </message>
-    <message>
-        <source>invert selection</source>
-        <translation type="unfinished">Invert selection</translation>
-    </message>
-    <message>
-        <source>new style</source>
-        <translation type="unfinished">New Style</translation>
-    </message>
-    <message>
-        <source>convert objects</source>
-        <translation type="unfinished">Convert objects</translation>
-    </message>
-    <message>
-        <source>reset viewport</source>
-        <translation type="unfinished">Reset viewport</translation>
-    </message>
-    <message>
-        <source>show point dialog</source>
-        <translation type="unfinished">Show point dialog</translation>
-    </message>
-    <message>
         <source>Add Tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Add tag</translation>
     </message>
     <message>
-        <source>preferences</source>
-        <translation type="unfinished"></translation>
+        <source>Some pending changes will be lost if you don&apos;t save.</source>
+        <translation>Some pending changes will be lost if you don&apos;t save.</translation>
     </message>
 </context>
 <context>
@@ -1609,21 +1686,21 @@ Remove the selected items anyway?</translation>
     <name>omm::ColorCircle</name>
     <message>
         <source>ColorCircle</source>
-        <translation type="unfinished"></translation>
+        <translation>Color Circle</translation>
     </message>
 </context>
 <context>
     <name>omm::ColorWidget</name>
     <message>
         <source>ColorWidget</source>
-        <translation type="unfinished"></translation>
+        <translation>Color widget</translation>
     </message>
 </context>
 <context>
     <name>omm::DopeSheetManager</name>
     <message>
         <source>Dope Sheet</source>
-        <translation type="unfinished"></translation>
+        <translation>Dope Sheet</translation>
     </message>
 </context>
 <context>
@@ -1668,7 +1745,7 @@ Remove the selected items anyway?</translation>
     <name>omm::GeneralPage</name>
     <message>
         <source>Changing language takes effect after restarting the application.</source>
-        <translation type="unfinished">Changing language takes effect after restarting the application.</translation>
+        <translation>Changing language takes effect after restarting the application.</translation>
     </message>
 </context>
 <context>
@@ -1686,23 +1763,24 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source> #</source>
-        <translation>#</translation>
+        <translation> #</translation>
     </message>
     <message>
         <source> &lt;-</source>
-        <translation type="unfinished"></translation>
+        <translation> &lt;-</translation>
     </message>
 </context>
 <context>
     <name>omm::KeyBindingsPage</name>
     <message>
         <source>Reset all key bindings</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset all key bindings</translation>
     </message>
     <message>
         <source>Do you really want to reset all key bindings to the default value?
 This cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Do you really want to reset all key bindings to the default value?
+This cannot be undone.</translation>
     </message>
 </context>
 <context>
@@ -1710,10 +1788,6 @@ This cannot be undone.</source>
     <message>
         <source>About</source>
         <translation>About</translation>
-    </message>
-    <message>
-        <source>Changing language takes effect after restarting the application.</source>
-        <translation type="vanished">Changing language takes effect after restarting the application.</translation>
     </message>
     <message>
         <source>information</source>
@@ -1729,37 +1803,43 @@ This cannot be undone.</source>
     </message>
     <message>
         <source>Restore Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Restore layout</translation>
     </message>
     <message>
         <source>Save Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Save layout</translation>
     </message>
 </context>
 <context>
     <name>omm::NamedColors</name>
     <message>
         <source>Unnamed Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Unnamed Color</translation>
     </message>
 </context>
 <context>
     <name>omm::NamedColorsDialog</name>
     <message>
-        <source>%1 properties reference this named color.
-Do you want to convert them into ordinary colors?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Convert Named Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Convert Named Colors</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n properties reference this named color.
+Do you want to convert them into ordinary colors?</source>
+        <comment>NamedColorsDialog</comment>
+        <translation>
+            <numerusform>%n property reference this named color.
+Do you want to convert it into an ordinary colors?</numerusform>
+            <numerusform>%n properties reference this named color.
+Do you want to convert them into ordinary colors?</numerusform>
+        </translation>
     </message>
 </context>
 <context>
     <name>omm::ObjectManager</name>
     <message>
         <source>Attach</source>
-        <translation type="unfinished"></translation>
+        <translation>Attach</translation>
     </message>
 </context>
 <context>
@@ -1788,15 +1868,15 @@ Do you want to convert them into ordinary colors?</source>
     <name>omm::PreferenceDialog</name>
     <message>
         <source>Ui Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Ui-Colors</translation>
     </message>
     <message>
         <source>Keyindings</source>
-        <translation type="unfinished"></translation>
+        <translation>Keybindings</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>General</translation>
     </message>
 </context>
 <context>
@@ -1804,9 +1884,9 @@ Do you want to convert them into ordinary colors?</source>
     <message numerus="yes">
         <source>%n Elements</source>
         <comment>PropertyManager</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n Element</numerusform>
+            <numerusform>%n Elements</numerusform>
         </translation>
     </message>
 </context>
@@ -1838,11 +1918,11 @@ Do you want to convert them into ordinary colors?</source>
     </message>
     <message>
         <source>Tool</source>
-        <translation type="unfinished">Tool</translation>
+        <translation>Tool</translation>
     </message>
     <message>
         <source>is view</source>
-        <translation type="unfinished"></translation>
+        <translation>View</translation>
     </message>
 </context>
 <context>
@@ -1856,49 +1936,312 @@ Do you want to convert them into ordinary colors?</source>
     <name>omm::UiColors</name>
     <message>
         <source>Active</source>
-        <translation type="unfinished"></translation>
+        <translation>Active</translation>
     </message>
     <message>
         <source>Inactive</source>
-        <translation type="unfinished"></translation>
+        <translation>Inactive</translation>
     </message>
     <message>
         <source>Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Disabled</translation>
     </message>
     <message>
         <source>dark</source>
-        <translation type="unfinished"></translation>
+        <translation>dark</translation>
     </message>
     <message>
         <source>light</source>
-        <translation type="unfinished"></translation>
+        <translation>light</translation>
     </message>
 </context>
 <context>
     <name>omm::UiColorsPage</name>
     <message>
         <source>Reset all key bindings</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset all key bindings</translation>
     </message>
     <message>
         <source>Do you really want to reset all colors for in the current color schema?
 This cannot be undone.</source>
-        <translation type="unfinished"></translation>
+        <translation>Do you really want to reset all colors for in the current color schema?
+This cannot be undone.</translation>
     </message>
 </context>
 <context>
     <name>omm::UserPropertyDialog</name>
     <message>
         <source>unnamed</source>
-        <translation type="unfinished">unnamed</translation>
+        <translation>unnamed</translation>
     </message>
 </context>
 <context>
     <name>omm::UserPropertyListModel</name>
     <message>
         <source>&lt;unnamed property&gt;</source>
-        <translation type="unfinished">Property item</translation>
+        <translation>unnamed property</translation>
+    </message>
+</context>
+<context>
+    <name>uicolors/AnchorHUD</name>
+    <message>
+        <source>checked</source>
+        <translation>checked</translation>
+    </message>
+    <message>
+        <source>hover</source>
+        <translation>hover</translation>
+    </message>
+    <message>
+        <source>AnchorHUD</source>
+        <translation>AnchorHUD</translation>
+    </message>
+</context>
+<context>
+    <name>uicolors/Handle</name>
+    <message>
+        <source>marker</source>
+        <translation>Marker</translation>
+    </message>
+    <message>
+        <source>foreground</source>
+        <translation>Foreground</translation>
+    </message>
+    <message>
+        <source>x-axis</source>
+        <translation>X-axis</translation>
+    </message>
+    <message>
+        <source>object fill</source>
+        <translation>Object fill</translation>
+    </message>
+    <message>
+        <source>y-axis</source>
+        <translation>Y-axis</translation>
+    </message>
+    <message>
+        <source>band fill</source>
+        <translation>Band fill</translation>
+    </message>
+    <message>
+        <source>bounding-box</source>
+        <translation>Bounding Box</translation>
+    </message>
+    <message>
+        <source>band</source>
+        <translation>Band</translation>
+    </message>
+    <message>
+        <source>rotate-ring</source>
+        <translation>Rotate-ring</translation>
+    </message>
+    <message>
+        <source>point</source>
+        <translation>Point</translation>
+    </message>
+    <message>
+        <source>particle fill</source>
+        <translation>Particle Fill</translation>
+    </message>
+    <message>
+        <source>particle</source>
+        <translation>Partikel</translation>
+    </message>
+    <message>
+        <source>line</source>
+        <translation>Line</translation>
+    </message>
+    <message>
+        <source>tangent</source>
+        <translation>Tangent</translation>
+    </message>
+    <message>
+        <source>tangent fill</source>
+        <translation>Tangent fill</translation>
+    </message>
+    <message>
+        <source>Handle</source>
+        <translation>Handle</translation>
+    </message>
+    <message>
+        <source>object</source>
+        <translation>Object</translation>
+    </message>
+    <message>
+        <source>background</source>
+        <translation>Background</translation>
+    </message>
+</context>
+<context>
+    <name>uicolors/ObjectManager</name>
+    <message>
+        <source>enabled</source>
+        <translation>Enabled</translation>
+    </message>
+    <message>
+        <source>ObjectManager</source>
+        <translation>Object manager</translation>
+    </message>
+    <message>
+        <source>visibility outline</source>
+        <translation>Visibility outline</translation>
+    </message>
+    <message>
+        <source>visible fill</source>
+        <translation>Visible fill</translation>
+    </message>
+    <message>
+        <source>disabled</source>
+        <translation>Disabled</translation>
+    </message>
+    <message>
+        <source>default fill</source>
+        <translation>Default fill</translation>
+    </message>
+    <message>
+        <source>invisible fill</source>
+        <translation>Invisible fill</translation>
+    </message>
+</context>
+<context>
+    <name>uicolors/Preferences</name>
+    <message>
+        <source>record inconsistent</source>
+        <translation>Inconsistent keyframe</translation>
+    </message>
+    <message>
+        <source>record keyframe</source>
+        <translation>Record keyframe</translation>
+    </message>
+    <message>
+        <source>record normal</source>
+        <translation>Create track</translation>
+    </message>
+    <message>
+        <source>Preferences</source>
+        <translation>Preferences</translation>
+    </message>
+</context>
+<context>
+    <name>uicolors/TimeLine</name>
+    <message>
+        <source>key dragged</source>
+        <translation>Dragged keyframe</translation>
+    </message>
+    <message>
+        <source>slider outline</source>
+        <translation>Slider outline</translation>
+    </message>
+    <message>
+        <source>key selected</source>
+        <translation>Selected keyframe</translation>
+    </message>
+    <message>
+        <source>TimeLine</source>
+        <translation>Timeline</translation>
+    </message>
+    <message>
+        <source>key outline</source>
+        <translation>Keyframe outline</translation>
+    </message>
+    <message>
+        <source>key normal</source>
+        <translation>Keyframe normal</translation>
+    </message>
+    <message>
+        <source>beyond</source>
+        <translation>Beyond</translation>
+    </message>
+    <message>
+        <source>slider fill</source>
+        <translation>Slider fill</translation>
+    </message>
+    <message>
+        <source>rubberband fill</source>
+        <translation>Rubberband fill</translation>
+    </message>
+    <message>
+        <source>rubberband outline</source>
+        <translation>Rubberband outline</translation>
+    </message>
+</context>
+<context>
+    <name>uicolors/Widget</name>
+    <message>
+        <source>link</source>
+        <translation>Link</translation>
+    </message>
+    <message>
+        <source>bright text</source>
+        <translation>Bright text</translation>
+    </message>
+    <message>
+        <source>placeholder text</source>
+        <translation>Placeholder text</translation>
+    </message>
+    <message>
+        <source>highlighted text</source>
+        <translation>Highlighted text</translation>
+    </message>
+    <message>
+        <source>window</source>
+        <translation>Window</translation>
+    </message>
+    <message>
+        <source>mid</source>
+        <translation>Mid</translation>
+    </message>
+    <message>
+        <source>dark</source>
+        <translation>Dark</translation>
+    </message>
+    <message>
+        <source>button</source>
+        <translation>Button</translation>
+    </message>
+    <message>
+        <source>Widget</source>
+        <translation>Background</translation>
+    </message>
+    <message>
+        <source>shadow</source>
+        <translation>Shadow</translation>
+    </message>
+    <message>
+        <source>button text</source>
+        <translation>Button text</translation>
+    </message>
+    <message>
+        <source>link visited</source>
+        <translation>Link visited</translation>
+    </message>
+    <message>
+        <source>base</source>
+        <translation>Base</translation>
+    </message>
+    <message>
+        <source>highlight</source>
+        <translation>Highlight</translation>
+    </message>
+    <message>
+        <source>alternate base</source>
+        <translation>Alternate Basis</translation>
+    </message>
+    <message>
+        <source>midlight</source>
+        <translation>Midlight</translation>
+    </message>
+    <message>
+        <source>light</source>
+        <translation>Light</translation>
+    </message>
+    <message>
+        <source>window text</source>
+        <translation>window text</translation>
+    </message>
+    <message>
+        <source>text</source>
+        <translation>Text</translation>
     </message>
 </context>
 </TS>

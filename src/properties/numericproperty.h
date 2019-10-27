@@ -8,10 +8,10 @@ namespace omm
 class NumericPropertyDetail
 {
 public:
-  static constexpr auto LOWER_VALUE_POINTER = QT_TRANSLATE_NOOP("NumericProperty", "lower_value");
-  static constexpr auto UPPER_VALUE_POINTER = QT_TRANSLATE_NOOP("NumericProperty", "upper_value");
-  static constexpr auto STEP_POINTER = QT_TRANSLATE_NOOP("NumericProperty", "step");
-  static constexpr auto MULTIPLIER_POINTER = QT_TRANSLATE_NOOP("NumericProperty", "multiplier");
+  static constexpr auto LOWER_VALUE_POINTER = "lower_value";
+  static constexpr auto UPPER_VALUE_POINTER = "upper_value";
+  static constexpr auto STEP_POINTER = "step";
+  static constexpr auto MULTIPLIER_POINTER = "multiplier";
 };
 
 template<typename T> class NumericProperty : public TypedProperty<T>

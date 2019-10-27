@@ -108,8 +108,10 @@ void NamedColorsDialog::remove()
 
     auto cmd = std::make_unique<RemoveNamedColorCommand>(model().name(index));
     if (n > 0) {
-      const QString msg = tr("%1 properties reference this named color.\n"
-                             "Do you want to convert them into ordinary colors?").arg(n);
+      const QString msg = tr("%n properties reference this named color.\n"
+                             "Do you want to convert them into ordinary colors?",
+                             "NamedColorsDialog",
+                             n);
       const auto result = QMessageBox::question(this, tr("Convert Named Colors"), msg,
                                                 QMessageBox::Yes | QMessageBox::No);
       can_remove = result == QMessageBox::Yes;

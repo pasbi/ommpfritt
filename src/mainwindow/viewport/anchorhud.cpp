@@ -115,9 +115,9 @@ void AnchorHUD::draw_anchor(QPainter& painter, const QRectF& grid, Anchor anchor
   painter.setPen(pen);
   QBrush brush(Qt::SolidPattern);
   if (rect.contains(m_mouse_pos) && m_disable_hover_for != anchor && !m_disable_hover) {
-    brush.setColor(ui_color(m_widget, "AnchorWidget", "hover"));
+    brush.setColor(ui_color(m_widget, "AnchorHUD", "hover"));
   } else if (is_selected) {
-    brush.setColor(ui_color(m_widget, "AnchorWidget", "checked"));
+    brush.setColor(ui_color(m_widget, "AnchorHUD", "checked"));
   } else {
     brush.setColor(ui_color(m_widget, QPalette::Window));
   }

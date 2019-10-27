@@ -130,8 +130,7 @@ bool Application::can_close()
     const auto decision =
       QMessageBox::question( m_main_window,
                              tr("Question."),
-                             tr("Some pending changes will be lost if you don't save."
-                                 "What do you want me to do?"),
+                             tr("Some pending changes will be lost if you don't save."),
                              QMessageBox::Close | QMessageBox::Cancel | QMessageBox::Save,
                              QMessageBox::Save );
     switch (decision) {
@@ -233,67 +232,67 @@ void Application::load()
 
 bool Application::perform_action(const std::string& action_name)
 {
-  if (action_name == QT_TR_NOOP("undo")) {
+  if (action_name == "undo") {
     scene.history().undo();
-  } else if (action_name == QT_TR_NOOP("redo")) {
+  } else if (action_name == "redo") {
     scene.history().redo();
-  } else if (action_name == QT_TR_NOOP("remove selection")) {
+  } else if (action_name == "remove selection") {
     scene.remove(main_window(), scene.selection());
-  } else if (action_name == QT_TR_NOOP("new document")) {
+  } else if (action_name == "new document") {
     reset();
-  } else if (action_name == QT_TR_NOOP("save document")) {
+  } else if (action_name == "save document") {
     save();
-  } else if (action_name == QT_TR_NOOP("save document as")) {
+  } else if (action_name == "save document as") {
     save_as();
-  } else if (action_name == QT_TR_NOOP("load document")) {
+  } else if (action_name == "load document") {
     load();
-  } else if (action_name == QT_TR_NOOP("export")) {
+  } else if (action_name == "export") {
     static ExportDialog* export_dialog = nullptr;
     if (export_dialog == nullptr) {
       export_dialog = new omm::ExportDialog(scene, main_window());
     }
     export_dialog->exec();
-  } else if (action_name == QT_TR_NOOP("make smooth")) {
+  } else if (action_name == "make smooth") {
     actions::make_smooth(*this);
-  } else if (action_name == QT_TR_NOOP("make linear")) {
+  } else if (action_name == "make linear") {
     actions::make_linear(*this);
-  } else if (action_name == QT_TR_NOOP("remove points")) {
+  } else if (action_name == "remove points") {
     actions::remove_selected_points(*this);
-  } else if (action_name == QT_TR_NOOP("subdivide")) {
+  } else if (action_name == "subdivide") {
     actions::subdivide(*this);
-  } else if (action_name == QT_TR_NOOP("evaluate")) {
+  } else if (action_name == "evaluate") {
     actions::evaluate(*this);
-  } else if (action_name == QT_TR_NOOP("restore default layout")) {
+  } else if (action_name == "restore default layout") {
     main_window()->restore_default_layout();
-  } else if (action_name == QT_TR_NOOP("save layout ...")) {
+  } else if (action_name == "save layout ...") {
     main_window()->save_layout();
-  } else if (action_name == QT_TR_NOOP("load layout ...")) {
+  } else if (action_name == "load layout ...") {
     main_window()->load_layout();
-  } else if (action_name == QT_TR_NOOP("switch between object and point selection")) {
+  } else if (action_name == "switch between object and point selection") {
     scene.tool_box().switch_between_object_and_point_selection();
-  } else if (action_name == QT_TR_NOOP("previous tool")) {
+  } else if (action_name == "previous tool") {
     scene.tool_box().set_previous_tool();
-  } else if (action_name == QT_TR_NOOP("select all")) {
+  } else if (action_name == "select all") {
     actions::select_all(*this);
-  } else if (action_name == QT_TR_NOOP("deselect all")) {
+  } else if (action_name == "deselect all") {
     actions::deselect_all(*this);
-  } else if (action_name == QT_TR_NOOP("invert selection")) {
+  } else if (action_name == "invert selection") {
     actions::invert_selection(*this);
-  } else if (action_name == QT_TR_NOOP("new style")) {
+  } else if (action_name == "new style") {
       using command_type = AddCommand<List<Style>>;
       auto style = scene.default_style().clone();
       assert(style->scene() == &scene);
       scene.submit<command_type>(scene.styles(), std::move(style));
-  } else if (action_name == QT_TR_NOOP("convert objects")) {
+  } else if (action_name == "convert objects") {
     actions::convert_objects(*this);
-  } else if (action_name == QT_TR_NOOP("reset viewport")) {
+  } else if (action_name == "reset viewport") {
     main_window()->viewport().reset();
-  } else if (action_name == QT_TR_NOOP("show point dialog")) {
+  } else if (action_name == "show point dialog") {
     const auto paths = Object::cast<Path>(scene.item_selection<Object>());
     if (paths.size() > 0) {
       PointDialog(paths, main_window()).exec();
     }
-  } else if (action_name == QT_TR_NOOP("preferences")) {
+  } else if (action_name == "preferences") {
     PreferenceDialog().exec();
   } else {
     for (const auto& key : Object::keys()) {

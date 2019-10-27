@@ -10,9 +10,6 @@
     <height>233</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QSplitter" name="splitter">
@@ -85,7 +82,7 @@
        <item row="2" column="0">
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>&amp;B</string>
+          <string>&amp;B:</string>
          </property>
          <property name="buddy">
           <cstring>sl_b</cstring>
@@ -134,7 +131,7 @@
        <item row="1" column="0">
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>&amp;G</string>
+          <string>&amp;G:</string>
          </property>
          <property name="buddy">
           <cstring>sl_g</cstring>
@@ -206,7 +203,7 @@
        <item row="4" column="0">
         <widget class="QLabel" name="label_4">
          <property name="text">
-          <string>&amp;H</string>
+          <string>&amp;H:</string>
          </property>
          <property name="buddy">
           <cstring>sl_h</cstring>
@@ -226,7 +223,7 @@
        <item row="8" column="0">
         <widget class="QLabel" name="label_7">
          <property name="text">
-          <string>&amp;A</string>
+          <string>&amp;A:</string>
          </property>
          <property name="buddy">
           <cstring>sl_a</cstring>
@@ -236,7 +233,7 @@
        <item row="6" column="0">
         <widget class="QLabel" name="label_6">
          <property name="text">
-          <string>&amp;V</string>
+          <string>&amp;V:</string>
          </property>
          <property name="buddy">
           <cstring>sl_v</cstring>
@@ -249,7 +246,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>&amp;R</string>
+          <string>&amp;R:</string>
          </property>
          <property name="buddy">
           <cstring>sl_r</cstring>
@@ -272,7 +269,7 @@
        <item row="5" column="0">
         <widget class="QLabel" name="label_5">
          <property name="text">
-          <string>&amp;S</string>
+          <string>&amp;S:</string>
          </property>
          <property name="buddy">
           <cstring>sl_s</cstring>

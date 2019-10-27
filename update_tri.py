@@ -32,9 +32,12 @@ if __name__ == "__main__":
             disambiguation = subdir + "/" + group
             items.add((disambiguation, item))
 
+    lines = [ format(disambiguation, text) for disambiguation, text in items ]
+    lines = sorted(lines)
+
     with open(base_path + "/src/translations.h", 'w') as f:
-        for disambiguation, text in items:
-            f.write(format(disambiguation, text) + "\n")
+        for line in lines:
+            f.write(line + "\n")
 
 
 

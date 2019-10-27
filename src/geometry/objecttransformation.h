@@ -58,7 +58,7 @@ public:
   bool contains_nan() const;
   bool is_identity() const;
 
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("ObjectTransformation", "ObjectTransformation");
+  static constexpr auto TYPE = "ObjectTransformation";
 
   QTransform to_qtransform() const;
 

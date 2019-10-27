@@ -70,8 +70,8 @@ namespace omm
 std::vector<std::string> MainWindow::object_menu_entries()
 {
   std::list<std::string> entries {
-    "object/" QT_TRANSLATE_NOOP("any-context", "remove selection"),
-    "object/" QT_TRANSLATE_NOOP("any-context", "convert objects"),
+    "object/remove selection",
+    "object/convert objects",
   };
 
   for (const std::string& key : Object::keys()) {
@@ -88,13 +88,13 @@ std::vector<std::string> MainWindow::object_menu_entries()
 std::vector<std::string> MainWindow::path_menu_entries()
 {
   return std::vector<std::string> {
-    "path/" QT_TRANSLATE_NOOP("any-context", "make smooth"),
-    "path/" QT_TRANSLATE_NOOP("any-context", "make linear"),
-    "path/" QT_TRANSLATE_NOOP("any-context", "subdivide"),
-    "path/" QT_TRANSLATE_NOOP("any-context", "select all"),
-    "path/" QT_TRANSLATE_NOOP("any-context", "deselect all"),
-    "path/" QT_TRANSLATE_NOOP("any-context", "invert selection"),
-    "path/" QT_TRANSLATE_NOOP("any-context", "show point dialog"),
+    "path/make smooth",
+    "path/make linear",
+    "path/subdivide",
+    "path/select all",
+    "path/deselect all",
+    "path/invert selection",
+    "path/show point dialog",
   };
 }
 
@@ -119,7 +119,7 @@ std::vector<std::string> MainWindow::main_menu_entries()
     QT_TRANSLATE_NOOP("menu_name", "tool")"/previous tool",
     "tool/"s + KeyBindings::SEPARATOR,
     QT_TRANSLATE_NOOP("menu_name", "scene")"/evaluate",
-    "scene/" QT_TRANSLATE_NOOP("any-context", "reset viewport"),
+    "scene/reset viewport",
     QT_TRANSLATE_NOOP("menu_name", "window")"/" QT_TRANSLATE_NOOP("menu_name", "show")"/",
   };
 
