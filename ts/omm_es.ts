@@ -1879,7 +1879,7 @@ Do you want to convert them into ordinary colors?</source>
 <context>
     <name>omm::PropertyManager</name>
     <message numerus="yes">
-        <source>%n Elements</source>
+        <source>[%n Elements]</source>
         <comment>PropertyManager</comment>
         <translation type="unfinished">
             <numerusform></numerusform>

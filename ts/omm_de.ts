@@ -1882,11 +1882,11 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
 <context>
     <name>omm::PropertyManager</name>
     <message numerus="yes">
-        <source>%n Elements</source>
+        <source>[%n Elements]</source>
         <comment>PropertyManager</comment>
         <translation>
-            <numerusform>%n Element</numerusform>
-            <numerusform>%n Elemente</numerusform>
+            <numerusform>[%n Element]</numerusform>
+            <numerusform>[%n Elemente]</numerusform>
         </translation>
     </message>
 </context>
