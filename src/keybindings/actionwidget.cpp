@@ -48,7 +48,7 @@ ActionWidget::ActionWidget(QWidget* parent, const PreferencesTreeValueItem& key_
   });
   const QKeySequence sequence(QString::fromStdString(key_binding.value()));
   m_shortcut_label->setText(sequence.toString(QKeySequence::NativeText));
-  m_name_label->setText(QCoreApplication::translate("any-context", key_binding.name.c_str()));
+  m_name_label->setText(QString::fromStdString(key_binding.translated_name("keybindings")));
   setAutoFillBackground(true);
   set_highlighted(false);
 }

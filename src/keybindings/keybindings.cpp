@@ -126,11 +126,6 @@ bool KeyBindings::set_data(int column, PreferencesTreeValueItem& item, const QVa
   return true;
 }
 
-std::string KeyBindings::translate(const std::string& group, const std::string& text) const
-{
-  return QCoreApplication::translate(("keybindings/" + group).c_str(), text.c_str()).toStdString();
-}
-
 std::pair<std::string, QMenu*>
 KeyBindings::get_menu( const std::string& action_path, std::map<std::string, QMenu*>& menu_map,
                        std::list<std::unique_ptr<QMenu>>& menus)

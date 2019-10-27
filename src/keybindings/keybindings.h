@@ -37,7 +37,7 @@ public:
   bool set_data(int column, PreferencesTreeValueItem &item, const QVariant &value) override;
 
 protected:
-  std::string translate(const std::string& group, const std::string& text) const override;
+  std::string translation_context() const override { return "keybindings"; }
 
 private:
   QKeySequence make_key_sequence(const QKeyEvent& event) const;

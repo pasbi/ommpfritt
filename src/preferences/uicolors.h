@@ -27,7 +27,7 @@ public:
   static void draw_background(QPainter& painter, const QRectF& rect);
 
 protected:
-  std::string translate(const std::string& group, const std::string& text) const override;
+  std::string translation_context() const override { return "uicolors"; }
 
 private:
   struct SkinInfo

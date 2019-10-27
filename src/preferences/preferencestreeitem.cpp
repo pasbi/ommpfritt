@@ -1,4 +1,5 @@
 #include "preferences/preferencestreeitem.h"
+#include <QCoreApplication>
 #include "logging.h"
 
 namespace omm
@@ -52,6 +53,12 @@ void PreferencesTreeValueItem::reset()
   set_value(m_default);
 }
 
+std::string PreferencesTreeValueItem::translated_name(const std::string& context) const
+{
+  return QCoreApplication::translate((context + "/" + group).c_str(),
+                                     name.c_str()).toStdString();
+}
+
 std::string PreferencesTreeValueItem::value(const std::string& value, std::size_t column)
 {
   return QString::fromStdString(value).split("/")[column].toStdString();
@@ -60,6 +67,12 @@ std::string PreferencesTreeValueItem::value(const std::string& value, std::size_
 PreferencesTreeGroupItem::PreferencesTreeGroupItem(const std::string& group)
   : PreferencesTreeItem(group)
 {
+}
+
+std::string PreferencesTreeGroupItem::translated_name(const std::string& context) const
+{
+  return QCoreApplication::translate((context + "/" + name).c_str(),
+                                     name.c_str()).toStdString();
 }
 
 

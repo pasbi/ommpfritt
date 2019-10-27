@@ -202,11 +202,6 @@ void UiColors::draw_background(QPainter& painter, const QRectF& rect)
   painter.restore();
 }
 
-std::string UiColors::translate(const std::string& group, const std::string& text) const
-{
-  return QCoreApplication::translate(("uicolors/" + group).c_str(), text.c_str()).toStdString();
-}
-
 QColor ui_color(const QPalette::ColorGroup& status, const std::string& group, const std::string& name)
 {
   return Application::instance().ui_colors.color(status, group, name).to_qcolor();

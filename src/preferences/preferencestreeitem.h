@@ -15,6 +15,7 @@ protected:
 public:
   virtual bool is_group() const = 0;
   const std::string name;
+  virtual std::string translated_name(const std::string& context) const = 0;
 };
 
 class PreferencesTreeValueItem: public QObject, public PreferencesTreeItem
@@ -31,6 +32,7 @@ public:
   std::string default_value(std::size_t column = 0) const;
   bool is_group() const override { return false; }
   void reset();
+  std::string translated_name(const std::string& context) const override;
 
   const std::string group;
   static std::string value(const std::string& value, std::size_t column);
@@ -49,6 +51,7 @@ public:
   explicit PreferencesTreeGroupItem(const std::string& group);
   std::vector<std::unique_ptr<PreferencesTreeValueItem>> values;
   bool is_group() const override { return true; }
+  std::string translated_name(const std::string& context) const override;
 };
 
 }  // namespace omm
