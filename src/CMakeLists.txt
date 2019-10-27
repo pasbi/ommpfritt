@@ -16,6 +16,7 @@ file(GLOB HEADERS
   menuhelper.h
   orderedmap.h
   variant.h
+  translations.h
 )
 
 add_subdirectory(animation)

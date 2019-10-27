@@ -61,6 +61,9 @@ Q_SIGNALS:
 protected:
   virtual bool set_data(int column, PreferencesTreeValueItem& item, const QVariant& value) = 0;
   virtual QVariant data(int column, const PreferencesTreeValueItem& item, int role) const = 0;
+  virtual std::string translate(const std::string& group, const std::string& text) const = 0;
+  std::string translate_name(const PreferencesTreeGroupItem& item) const;
+  std::string translate_name(const PreferencesTreeValueItem& item) const;
 
 private:
   /**

@@ -1,4 +1,5 @@
 #include "preferences/uicolors.h"
+#include <QCoreApplication>
 #include <iostream>
 #include <QColor>
 #include "color/color.h"
@@ -53,7 +54,7 @@ omm::Color color_from_html(const std::string& html)
 namespace omm
 {
 
-UiColors::UiColors() : PreferencesTree(":/skins/ui-colors-dark.cfg")
+UiColors::UiColors() : PreferencesTree(":/uicolors/ui-colors-dark.cfg")
 {
 // set this macro to print Qt's default color.
 //#define PRINT_DEFAULT_COLOR_SCHEMA
@@ -66,8 +67,8 @@ UiColors::UiColors() : PreferencesTree(":/skins/ui-colors-dark.cfg")
                          << std::endl;
   }
 #endif  // PRINT_DEFAULT_COLOR_SCHEMA
-  m_skins.push_back( { tr("dark"), ":/skins/ui-colors-dark.cfg", "ui-colors-dark" });
-  m_skins.push_back( { tr("light"), ":/skins/ui-colors-light.cfg", "ui-colors-light" });
+  m_skins.push_back( { tr("dark"), ":/uicolors/ui-colors-dark.cfg", "ui-colors-dark" });
+  m_skins.push_back( { tr("light"), ":/uicolors/ui-colors-light.cfg", "ui-colors-light" });
   set_skin(QSettings().value("ui-colors-schema", 0).toInt());
 }
 
@@ -199,6 +200,11 @@ void UiColors::draw_background(QPainter& painter, const QRectF& rect)
     }
   }
   painter.restore();
+}
+
+std::string UiColors::translate(const std::string& group, const std::string& text) const
+{
+  return QCoreApplication::translate(("uicolors/" + group).c_str(), text.c_str()).toStdString();
 }
 
 QColor ui_color(const QPalette::ColorGroup& status, const std::string& group, const std::string& name)

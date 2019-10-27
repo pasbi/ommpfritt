@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="default_keybindings.cfg">src/default_keybindings.cfg</file>
         <file>icons/Ellipse.png</file>
         <file>icons/Line.png</file>
         <file>icons/Outline.png</file>
@@ -26,7 +25,8 @@
         <file>icons/LockedLock.png</file>
         <file>icons/OpenLock.png</file>
         <file>icons/UndeterminedType.png</file>
-        <file>skins/ui-colors-dark.cfg</file>
-        <file>skins/ui-colors-light.cfg</file>
+        <file>keybindings/default_keybindings.cfg</file>
+        <file>uicolors/ui-colors-dark.cfg</file>
+        <file>uicolors/ui-colors-light.cfg</file>
     </qresource>
 </RCC>

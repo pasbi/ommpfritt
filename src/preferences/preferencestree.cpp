@@ -316,6 +316,16 @@ int PreferencesTree::columnCount(const QModelIndex& parent) const
   return 2;
 }
 
+std::string PreferencesTree::translate_name(const PreferencesTreeGroupItem& item) const
+{
+  return translate(item.name, item.name);
+}
+
+std::string PreferencesTree::translate_name(const PreferencesTreeValueItem& item) const
+{
+  return translate(item.group, item.name);
+}
+
 QVariant PreferencesTree::data(const QModelIndex& index, int role) const
 {
   if (!index.isValid()) {
@@ -331,7 +341,7 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
     case 0:
       switch (role) {
       case Qt::DisplayRole:
-        return QCoreApplication::translate("", group(index).name.c_str());
+        return QString::fromStdString(translate_name(group(index)));
       default:
         return QVariant();
       }
@@ -343,7 +353,7 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
     case 0:
       switch(role) {
       case Qt::DisplayRole:
-        return QCoreApplication::translate("", value(index).name.c_str());
+        return QString::fromStdString(translate_name(value(index)));
       default:
         return QVariant();
       }

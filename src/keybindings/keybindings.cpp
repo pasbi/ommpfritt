@@ -63,7 +63,7 @@ std::unique_ptr<QMenu> add_menu(const std::string& path, std::map<std::string, Q
 namespace omm
 {
 
-KeyBindings::KeyBindings() : PreferencesTree("://default_keybindings.cfg")
+KeyBindings::KeyBindings() : PreferencesTree(":/keybindings/default_keybindings.cfg")
 {
   load_from_qsettings(keybindings_group);
 }
@@ -124,6 +124,11 @@ bool KeyBindings::set_data(int column, PreferencesTreeValueItem& item, const QVa
   const QKeySequence sequence = value.value<QKeySequence>();
   item.set_value(sequence.toString(QKeySequence::PortableText).toStdString(), column-1);
   return true;
+}
+
+std::string KeyBindings::translate(const std::string& group, const std::string& text) const
+{
+  return QCoreApplication::translate(("keybindings/" + group).c_str(), text.c_str()).toStdString();
 }
 
 std::pair<std::string, QMenu*>

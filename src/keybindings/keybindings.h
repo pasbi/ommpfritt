@@ -36,6 +36,9 @@ public:
   QVariant data(int column, const PreferencesTreeValueItem &item, int role) const override;
   bool set_data(int column, PreferencesTreeValueItem &item, const QVariant &value) override;
 
+protected:
+  std::string translate(const std::string& group, const std::string& text) const override;
+
 private:
   QKeySequence make_key_sequence(const QKeyEvent& event) const;
 
