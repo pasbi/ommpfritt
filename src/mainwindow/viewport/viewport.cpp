@@ -135,7 +135,6 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
       event->accept();
     } else {
       ViewportBase::mouseMoveEvent(event);
-      return;
     }
   }
   update();
