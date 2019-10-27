@@ -14,7 +14,7 @@ namespace omm
 
 class PropertyConfigWidget
   : public QWidget
-  , public AbstractFactory<std::string, PropertyConfigWidget>
+  , public AbstractFactory<QString, PropertyConfigWidget>
 {
   Q_OBJECT
 

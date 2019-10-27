@@ -59,7 +59,7 @@ auto implicitely_selected_tags(const std::set<omm::AbstractPropertyOwner*>& sele
   return tags;
 }
 
-template<typename T> std::set<T*> filter_by_name(const std::set<T*>& set, const std::string& name)
+template<typename T> std::set<T*> filter_by_name(const std::set<T*>& set, const QString& name)
 {
   return ::filter_if(set, [name](const T* t) { return t->name() == name; });
 }
@@ -155,7 +155,7 @@ Scene::find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates
   return reference_holder_map;
 }
 
-std::set<ColorProperty*> Scene::find_named_color_holders(const std::string& name) const
+std::set<ColorProperty*> Scene::find_named_color_holders(const QString& name) const
 {
   std::set<ColorProperty*> properties;
   for (const auto& property_owner : property_owners()) {
@@ -174,9 +174,9 @@ std::set<ColorProperty*> Scene::find_named_color_holders(const std::string& name
   return properties;
 }
 
-bool Scene::save_as(const std::string &filename)
+bool Scene::save_as(const QString &filename)
 {
-  std::ofstream ofstream(filename);
+  std::ofstream ofstream(filename.toStdString());
   if (!ofstream) {
     LERROR <<  "Failed to open ofstream at '" << filename << "'.";
     return false;
@@ -202,18 +202,18 @@ bool Scene::save_as(const std::string &filename)
   return true;
 }
 
-bool Scene::load_from(const std::string &filename)
+bool Scene::load_from(const QString &filename)
 {
   assert(selection().size() == 0);
   prepare_reset();
   history().reset();
-  std::ifstream ifstream(filename);
+  std::ifstream ifstream(filename.toStdString());
   if (!ifstream) {
     LERROR << "Failed to open '" << filename << "'.";
     return false;
   }
 
-  auto error_handler = [this, filename](const std::string& msg) {
+  auto error_handler = [this, filename](const QString& msg) {
     LERROR << "Failed to deserialize file at '" << filename << "'.";
     LINFO << msg;
     animator().invalidate();
@@ -275,7 +275,7 @@ void Scene::reset()
   Q_EMIT message_box().filename_changed();
 }
 
-std::string Scene::filename() const
+QString Scene::filename() const
 {
   return m_filename;
 }
@@ -360,23 +360,22 @@ std::set<AbstractPropertyOwner*> Scene::selection() const { return m_selection; 
 
 std::unique_ptr<Object> Scene::make_root()
 {
-  using namespace std::string_literals;
   auto root = std::make_unique<Empty>(this);
-  root->property(Object::NAME_PROPERTY_KEY)->set("_root_"s);
+  root->property(Object::NAME_PROPERTY_KEY)->set(QStringLiteral("_root_"));
   return root;
 }
 
-template<> std::set<Tag*> Scene::find_items<Tag>(const std::string& name) const
+template<> std::set<Tag*> Scene::find_items<Tag>(const QString& name) const
 {
   return filter_by_name(tags(), name);
 }
 
-template<> std::set<Object*> Scene::find_items<Object>(const std::string& name) const
+template<> std::set<Object*> Scene::find_items<Object>(const QString& name) const
 {
   return filter_by_name(object_tree().items(), name);
 }
 
-template<> std::set<Style*> Scene::find_items<Style>(const std::string& name) const
+template<> std::set<Style*> Scene::find_items<Style>(const QString& name) const
 {
   return filter_by_name(styles().items(), name);
 }

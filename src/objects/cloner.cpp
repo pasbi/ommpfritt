@@ -38,72 +38,72 @@ class Style;
 
 Cloner::Cloner(Scene* scene) : Object(scene)
 {
-  static const auto category = QObject::tr("Cloner").toStdString();
+  static const auto category = QObject::tr("Cloner");
   auto& mode_property = create_property<OptionsProperty>(MODE_PROPERTY_KEY);
-  mode_property.set_options({ QObject::tr("Linear").toStdString(),
-    QObject::tr("Grid").toStdString(), QObject::tr("Radial").toStdString(),
-    QObject::tr("Path").toStdString(), QObject::tr("Script").toStdString(),
-    QObject::tr("Fill Random").toStdString() })
-    .set_label(QObject::tr("mode").toStdString())
+  mode_property.set_options({ QObject::tr("Linear"),
+    QObject::tr("Grid"), QObject::tr("Radial"),
+    QObject::tr("Path"), QObject::tr("Script"),
+    QObject::tr("Fill Random") })
+    .set_label(QObject::tr("mode"))
     .set_category(category);
 
   create_property<IntegerProperty>(COUNT_PROPERTY_KEY, 3)
     .set_range(0, max)
-    .set_label(QObject::tr("count").toStdString())
+    .set_label(QObject::tr("count"))
     .set_category(category);
 
   create_property<IntegerVectorProperty>(COUNT_2D_PROPERTY_KEY, Vec2i(3, 3))
     .set_range(Vec2i(0, 0), Vec2i(max, max))
-    .set_label(QObject::tr("count").toStdString())
+    .set_label(QObject::tr("count"))
     .set_category(category);
 
   create_property<FloatVectorProperty>(DISTANCE_2D_PROPERTY_KEY, Vec2f(100.0, 100.0))
     .set_step(Vec2f(0.1, 0.1))
-    .set_label(QObject::tr("distance").toStdString())
+    .set_label(QObject::tr("distance"))
     .set_category(category);
 
   create_property<FloatProperty>(RADIUS_PROPERTY_KEY, 200.0)
     .set_step(0.1)
-    .set_label(QObject::tr("radius").toStdString())
+    .set_label(QObject::tr("radius"))
     .set_category(category);
 
   create_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(Kind::Object)
     .set_required_flags(Flag::IsPathLike)
-    .set_label(QObject::tr("path").toStdString())
+    .set_label(QObject::tr("path"))
     .set_category(category);
 
   create_property<FloatProperty>(START_PROPERTY_KEY, 0.0)
     .set_step(0.01)
-    .set_label(QObject::tr("start").toStdString())
+    .set_label(QObject::tr("start"))
     .set_category(category);
 
   create_property<FloatProperty>(END_PROPERTY_KEY, 1.0)
     .set_step(0.01)
-    .set_label(QObject::tr("end").toStdString())
+    .set_label(QObject::tr("end"))
     .set_category(category);
 
   create_property<BoolProperty>(ALIGN_PROPERTY_KEY, true)
-    .set_label(QObject::tr("align").toStdString())
+    .set_label(QObject::tr("align"))
     .set_category(category);
 
   create_property<OptionsProperty>(BORDER_PROPERTY_KEY)
-    .set_options( { QObject::tr("Clamp").toStdString(), QObject::tr("Wrap").toStdString(),
-      QObject::tr("Hide").toStdString(), QObject::tr("Reflect").toStdString() } )
-    .set_label(QObject::tr("border").toStdString())
+    .set_options( { QObject::tr("Clamp"), QObject::tr("Wrap"),
+      QObject::tr("Hide"), QObject::tr("Reflect") } )
+    .set_label(QObject::tr("border"))
     .set_category(category);
 
   create_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
     .set_mode(StringProperty::Mode::Code)
-    .set_label(QObject::tr("code").toStdString())
+    .set_label(QObject::tr("code"))
     .set_category(category);
 
   create_property<IntegerProperty>(SEED_PROPERTY_KEY, 12345)
-    .set_label(QObject::tr("seed").toStdString()).set_category(category);
+    .set_label(QObject::tr("seed")).set_category(category);
 
   create_property<OptionsProperty>(ANCHOR_PROPERTY_KEY, 0)
-      .set_options( { QObject::tr("Path").toStdString(), QObject::tr("this").toStdString() } )
-      .set_label(QObject::tr("anchor").toStdString()).set_category(category);
+      .set_options( { QObject::tr("Path"), QObject::tr("this") } )
+      .set_label(QObject::tr("anchor")).set_category(category);
 
   polish();
 }
@@ -210,12 +210,12 @@ void Cloner::on_child_removed(Object &child)
 
 void Cloner::update_property_visibility(Mode mode)
 {
-  static const std::set<std::string> properties {
+  static const std::set<QString> properties {
     CODE_PROPERTY_KEY, COUNT_PROPERTY_KEY, COUNT_2D_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY,
     RADIUS_PROPERTY_KEY, PATH_REFERENCE_PROPERTY_KEY, START_PROPERTY_KEY, END_PROPERTY_KEY,
     BORDER_PROPERTY_KEY, ALIGN_PROPERTY_KEY, SEED_PROPERTY_KEY, ANCHOR_PROPERTY_KEY
   };
-  static const std::map<Mode, std::set<std::string>> visibility_map {
+  static const std::map<Mode, std::set<QString>> visibility_map {
     { Mode::Linear, { COUNT_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY } },
     { Mode::Radial, { COUNT_PROPERTY_KEY, RADIUS_PROPERTY_KEY, START_PROPERTY_KEY,
                       END_PROPERTY_KEY, ALIGN_PROPERTY_KEY, BORDER_PROPERTY_KEY } },
@@ -227,14 +227,14 @@ void Cloner::update_property_visibility(Mode mode)
                           ANCHOR_PROPERTY_KEY }},
     { Mode::Grid, { COUNT_2D_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY }}
   };
-  for (const std::string& pk : properties) {
+  for (const QString& pk : properties) {
     if (::contains(properties, pk)) {
       property(pk)->set_visible(::contains(visibility_map.at(mode), pk));
     }
   }
 }
 
-std::string Cloner::type() const { return TYPE; }
+QString Cloner::type() const { return TYPE; }
 std::unique_ptr<Object> Cloner::clone() const { return std::make_unique<Cloner>(*this); }
 AbstractPropertyOwner::Flag Cloner::flags() const
 {
@@ -250,7 +250,7 @@ std::unique_ptr<Object> Cloner::convert() const
   for (std::size_t i = 0; i < m_clones.size(); ++i) {
     const auto local_transformation = m_clones[i]->transformation();
     auto& clone = converted->adopt(m_clones[i]->clone());
-    const std::string name = clone.name() + " " + std::to_string(i);
+    const QString name = clone.name() + QString(" %1").arg(i);
     clone.property(NAME_PROPERTY_KEY)->set(name);
     clone.set_transformation(local_transformation);
   }
@@ -377,7 +377,7 @@ void Cloner::set_by_script(Object& object, std::size_t i)
                                 "copy"_a=ObjectWrapper::make(object),
                                 "this"_a=ObjectWrapper::make(*this),
                                 "scene"_a=SceneWrapper(*scene()) );
-  scene()->python_engine.exec(property(CODE_PROPERTY_KEY)->value<std::string>(), locals, this);
+  scene()->python_engine.exec(property(CODE_PROPERTY_KEY)->value<QString>(), locals, this);
 }
 
 void Cloner::set_fillrandom(Object &object, std::mt19937& rng)

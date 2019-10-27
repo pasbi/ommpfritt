@@ -16,8 +16,8 @@ public:
   HistoryManager(Scene& scene);
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "HistoryManager");
-  std::string type() const override;
-  bool perform_action(const std::string &name) override;
+  QString type() const override;
+  bool perform_action(const QString &name) override;
 
 private:
   QListView* m_view;

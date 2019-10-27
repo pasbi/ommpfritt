@@ -13,7 +13,6 @@ constexpr auto neg_inf_value = "-inf";
 
 double get_double(const nlohmann::json& json_val)
 {
-  using namespace std::string_literals;
   if (json_val.is_number()) {
     return json_val;
   } else if (json_val.is_string()) {
@@ -23,7 +22,7 @@ double get_double(const nlohmann::json& json_val)
     } else if (value == neg_inf_value) {
       return -std::numeric_limits<double>::infinity();
     } else {
-      const std::string msg = "Expected '"s + inf_value + "' or '"
+      const std::string msg = std::string("Expected '") + inf_value + "' or '"
                             + neg_inf_value + "' but got '" + value + "'.";
       throw omm::AbstractDeserializer::DeserializeError(msg);
     }
@@ -46,7 +45,7 @@ nlohmann::json set_double(double value)
 
 auto ptr(const omm::Serializable::Pointer& pointer)
 {
-  return nlohmann::json::json_pointer(pointer);
+  return nlohmann::json::json_pointer(pointer.toStdString());
 }
 
 template<typename T>
@@ -60,11 +59,13 @@ T get_t(const nlohmann::json& json, const nlohmann::json::json_pointer& pointer)
         return get_double(value);
       } else if constexpr (std::is_same_v<T, std::vector<double>>) {
         return ::transform<double, std::vector>(value, get_double);
+      } else if constexpr (std::is_same_v<T, QString>) {
+        return QString::fromStdString(value);
       } else {
         return value;
       }
     } catch (const nlohmann::json::type_error& convert_exception) {
-      std::stringstream message;
+      std::ostringstream message;
       message << "Failed to convert\n";
       message << value << "\n";
       message << "at '" << pointer << "'\n";
@@ -83,7 +84,7 @@ T get_t(const nlohmann::json& json, const nlohmann::json::json_pointer& pointer)
 template<typename T, typename PointerT>
 T get_t(const nlohmann::json& json, const PointerT& pointer)
 {
-  return get_t<T>(json, nlohmann::json::json_pointer(pointer));
+  return get_t<T>(json, nlohmann::json::json_pointer(pointer.toStdString()));
 }
 
 }  // namespace
@@ -133,9 +134,9 @@ void JSONSerializer::set_value(double value, const Pointer& pointer)
   m_store[ptr(pointer)] = ::set_double(value);
 }
 
-void JSONSerializer::set_value(const std::string& value, const Pointer& pointer)
+void JSONSerializer::set_value(const QString& value, const Pointer& pointer)
 {
-  m_store[ptr(pointer)] = value;
+  m_store[ptr(pointer)] = value.toStdString();
 }
 
 void JSONSerializer::set_value(const std::size_t id, const Pointer& pointer)
@@ -148,7 +149,7 @@ void JSONSerializer::set_value(const Color& color, const Pointer& pointer)
   auto& name = m_store[ptr(Serializable::make_pointer(pointer, "name"))];
   auto& rgba = m_store[ptr(Serializable::make_pointer(pointer, "rgba"))];
   if (color.model() == Color::Model::Named) {
-    name = color.name();
+    name = color.name().toStdString();
     rgba = { 0.0, 0.0, 0.0, 0.0 };
   } else {
     name = "";
@@ -171,7 +172,7 @@ void JSONSerializer::set_value(const PolarCoordinates& value, const Pointer& poi
   set_value(Vec2f(value.argument, value.magnitude), pointer);
 }
 
-std::string JSONSerializer::type() const { return "JSONSerializer"; }
+QString JSONSerializer::type() const { return "JSONSerializer"; }
 
 
 
@@ -211,9 +212,9 @@ double JSONDeserializer::get_double(const Pointer& pointer)
   return get_t<double>(m_store, pointer);
 }
 
-std::string JSONDeserializer::get_string(const Pointer& pointer)
+QString JSONDeserializer::get_string(const Pointer& pointer)
 {
-  return get_t<std::string>(m_store, pointer);
+  return get_t<QString>(m_store, pointer);
 }
 
 Color JSONDeserializer::get_color(const Pointer& pointer)
@@ -221,7 +222,7 @@ Color JSONDeserializer::get_color(const Pointer& pointer)
   try {
     const auto v = get_t<std::vector<double>>(m_store, Serializable::make_pointer(pointer, "rgba"));
     const auto n = get_string(Serializable::make_pointer(pointer, "name"));
-    if (n.empty()) {
+    if (n.isEmpty()) {
       return Color(Color::Model::RGBA, { v.at(0), v.at(1), v.at(2), v.at(3) });
     } else {
       return Color(n);
@@ -260,6 +261,6 @@ PolarCoordinates JSONDeserializer::get_polarcoordinates(const Pointer& pointer)
   return PolarCoordinates(pair[0], pair[1]);
 }
 
-std::string JSONDeserializer::type() const { return "JSONDeserializer"; }
+QString JSONDeserializer::type() const { return "JSONDeserializer"; }
 
 }  // namespace omm

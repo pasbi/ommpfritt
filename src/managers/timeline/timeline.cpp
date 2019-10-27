@@ -67,7 +67,7 @@ void TimeLine::update_play_pause_button(bool play)
   m_title_bar->ui()->pb_play->setIcon(QIcon(QString(":/icons/%1.png").arg(play ? "Pause" : "Play")));
 }
 
-bool TimeLine::perform_action(const std::string& name)
+bool TimeLine::perform_action(const QString& name)
 {
   LINFO << name;
   return false;

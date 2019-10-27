@@ -19,7 +19,7 @@ class ReferenceProperty;
 class AbstractPropertyOwner;
 
 class AbstractSerializer
-  : public AbstractFactory<std::string, AbstractSerializer, std::ostream&>
+  : public AbstractFactory<QString, AbstractSerializer, std::ostream&>
 {
 public:
   using Pointer = Serializable::Pointer;
@@ -32,7 +32,7 @@ public:
   virtual void set_value(bool value, const Pointer& pointer) = 0;
   virtual void set_value(int value, const Pointer& pointer) = 0;
   virtual void set_value(double value, const Pointer& pointer) = 0;
-  virtual void set_value(const std::string& value, const Pointer& pointer) = 0;
+  virtual void set_value(const QString& value, const Pointer& pointer) = 0;
   virtual void set_value(const Vec2f& value, const Pointer& pointer) = 0;
   virtual void set_value(const Vec2i& value, const Pointer& pointer) = 0;
   virtual void set_value(const PolarCoordinates& value, const Pointer& pointer) = 0;
@@ -64,7 +64,7 @@ protected:
 };
 
 class AbstractDeserializer
-  : public AbstractFactory<std::string, AbstractDeserializer, std::istream&>
+  : public AbstractFactory<QString, AbstractDeserializer, std::istream&>
 {
 public:
   using Pointer = Serializable::Pointer;
@@ -78,7 +78,7 @@ public:
   virtual bool get_bool(const Pointer& pointer) = 0;
   virtual int  get_int(const Pointer& pointer) = 0;
   virtual double  get_double(const Pointer& pointer) = 0;
-  virtual std::string  get_string(const Pointer& pointer) = 0;
+  virtual QString  get_string(const Pointer& pointer) = 0;
   virtual std::size_t get_size_t(const Pointer& pointer) = 0;
   virtual Color get_color(const Pointer& pointer) = 0;
   virtual Vec2f get_vec2f(const Pointer& pointer) = 0;
@@ -94,7 +94,7 @@ public:
     return static_cast<T>(get_size_t(pointer));
   }
 
-  variant_type get(const Pointer& pointer, const std::string& type);
+  variant_type get(const Pointer& pointer, const QString& type);
 
   class DeserializeError : public std::runtime_error
   {

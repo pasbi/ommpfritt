@@ -49,7 +49,7 @@ public:
       }
       total_delta = tool.viewport_transformation.inverted().apply_to_direction(total_delta);
       const auto tool_info = QString("%1").arg(total_delta.euclidean_norm());
-      static_cast<ToolT&>(tool).tool_info = tool_info.toStdString();
+      static_cast<ToolT&>(tool).tool_info = tool_info;
       return true;
     } else {
       return false;
@@ -65,11 +65,11 @@ public:
     const auto right = to_qpoint(PolarCoordinates(argument-0.1, magnitude*0.9).to_cartesian());
     const auto left = to_qpoint(PolarCoordinates(argument+0.1, magnitude*0.9).to_cartesian());
 
-    static const std::map<MoveAxisHandleDirection, std::string> name_map {
+    static const std::map<MoveAxisHandleDirection, QString> name_map {
       { MoveAxisHandleDirection::X, "x-axis" },
       { MoveAxisHandleDirection::Y, "y-axis" },
     };
-    const std::string name = name_map.at(direction);
+    const QString name = name_map.at(direction);
 
 
     painter.save();

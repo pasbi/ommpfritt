@@ -39,7 +39,7 @@ public:
       }
       total_delta = tool.viewport_transformation.inverted().apply_to_direction(total_delta);
       const auto tool_info = QString("%1").arg(total_delta.euclidean_norm());
-      static_cast<ToolT&>(tool).tool_info = tool_info.toStdString();
+      static_cast<ToolT&>(tool).tool_info = tool_info;
       return true;
     } else {
       return false;

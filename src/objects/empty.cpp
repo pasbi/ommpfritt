@@ -9,7 +9,7 @@ BoundingBox Empty::bounding_box(const ObjectTransformation &transformation) cons
   const Vec2f o = transformation.apply_to_position(Vec2f::o());
   return BoundingBox({ o });
 }
-std::string Empty::type() const { return TYPE; }
+QString Empty::type() const { return TYPE; }
 std::unique_ptr<Object> Empty::clone() const { return std::make_unique<Empty>(*this); }
 
 }  // namespace omm

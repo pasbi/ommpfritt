@@ -89,13 +89,13 @@ void KeyBindingsPage::reset_filter()
 
 void KeyBindingsPage::set_name_filter(const QString& filter)
 {
-  m_proxy_model.set_action_name_filter(filter.toStdString());
+  m_proxy_model.set_action_name_filter(filter);
   update_expand();
 }
 
 void KeyBindingsPage::set_sequence_filter(const QKeySequence& sequence)
 {
-  m_proxy_model.set_action_sequence_filter(sequence.toString(QKeySequence::NativeText).toStdString());
+  m_proxy_model.set_action_sequence_filter(sequence.toString(QKeySequence::NativeText));
   update_expand();
 }
 

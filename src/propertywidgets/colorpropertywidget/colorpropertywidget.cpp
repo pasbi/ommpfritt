@@ -24,7 +24,7 @@ void ColorPropertyWidget::update_edit()
   m_color_edit->set_values(get_properties_values());
 }
 
-std::string ColorPropertyWidget::type() const
+QString ColorPropertyWidget::type() const
 {
   return TYPE;
 }

@@ -37,7 +37,7 @@ public:
     Q_UNUSED(model);
     auto& proxy = static_cast<QAbstractProxyModel&>(*model);
     auto& named_colors = static_cast<omm::NamedColors&>(*proxy.sourceModel());
-    const auto new_name = static_cast<QLineEdit&>(*editor).text().toStdString();
+    const auto new_name = static_cast<QLineEdit&>(*editor).text();
     const auto old_name = named_colors.name(proxy.mapToSource(index));
     if (named_colors.has_color(new_name)) {
       LWARNING << "Failed to rename '" << old_name << "' to '"
@@ -47,7 +47,7 @@ public:
       const auto props = ::transform<omm::Property*>(cprops);
 
       auto cmd = std::make_unique<omm::ChangeNamedColorNameCommand>(old_name, new_name);
-      auto macro = scene().history().start_macro(QString::fromStdString(cmd->label()));
+      auto macro = scene().history().start_macro(cmd->label());
       if (props.size() > 0) {
         scene().submit<omm::PropertiesCommand<omm::ColorProperty>>(props, omm::Color(new_name));
       }
@@ -79,7 +79,7 @@ NamedColorsDialog::NamedColorsDialog(QWidget* parent)
   connect(m_ui->w_colorwidget, &ColorWidget::color_changed, [this](const Color& color) {
     const QModelIndex index = m_ui->listView->currentIndex();
     if (index.isValid()) {
-      const std::string name = model().name(m_proxy->mapToSource(index));
+      const QString name = model().name(m_proxy->mapToSource(index));
       scene().submit<ChangeNamedColorColorCommand>(name, color);
     }
   });
@@ -101,7 +101,7 @@ void NamedColorsDialog::remove()
 {
   const QModelIndex index = m_proxy->mapToSource(m_ui->listView->currentIndex());
   if (index.isValid()) {
-    const std::string name = model().name(index);
+    const QString name = model().name(index);
     auto properties = scene().find_named_color_holders(name);
     const std::size_t n = properties.size();
     bool can_remove = false;
@@ -120,7 +120,7 @@ void NamedColorsDialog::remove()
     }
 
     if (can_remove) {
-      auto macro = scene().history().start_macro(QString::fromStdString(cmd->label()));
+      auto macro = scene().history().start_macro(cmd->label());
       for (ColorProperty* property : properties) {
         Color color = property->value();
         color.to_ordinary_color();

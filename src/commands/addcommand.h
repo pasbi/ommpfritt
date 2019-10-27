@@ -21,12 +21,12 @@ public:
     : AddCommand(structure, context_type(std::move(item), structure))
   {
     static int i = 0;
-    const auto name = m_context.subject->type() + " " + std::to_string(i++);
+    const auto name = m_context.subject->type() + QString(" %1").arg(i++);
     m_context.subject->property(AbstractPropertyOwner::NAME_PROPERTY_KEY)->set(name);
   }
 
   AddCommand(StructureT& structure, context_type context)
-    : Command(QObject::tr("add").toStdString())
+    : Command(QObject::tr("add"))
     , m_context(std::move(context))
     , m_structure(structure)
   {

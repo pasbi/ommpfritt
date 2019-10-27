@@ -13,7 +13,7 @@ class OptionsPropertyConfigWidget : public PropertyConfigWidget
 public:
   OptionsPropertyConfigWidget();
   static constexpr auto TYPE = "OptionsPropertyConfigWidget";
-  std::string type() const override { return TYPE; }
+  QString type() const override { return TYPE; }
   void init(const Property::Configuration &configuration) override;
   void update(Property::Configuration &configuration) const override;
 
@@ -23,7 +23,7 @@ protected:
 private:
   QListWidget* m_list_widget;
 
-  void add_option(const std::string& label);
+  void add_option(const QString& label);
   void remove_option(int index);
 };
 

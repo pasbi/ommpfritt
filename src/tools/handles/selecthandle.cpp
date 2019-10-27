@@ -41,7 +41,7 @@ mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
     const auto transformation = omm::ObjectTransformation().translated(total_delta);
     static_cast<AbstractSelectTool&>(tool).transform_objects(transformation);
     const auto tool_info = QString("%1").arg(total_delta.euclidean_norm());
-    static_cast<AbstractSelectTool&>(tool).tool_info = tool_info.toStdString();
+    static_cast<AbstractSelectTool&>(tool).tool_info = tool_info;
     return true;
   } else {
     return false;

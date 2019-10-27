@@ -14,15 +14,15 @@ class Style;
 Text::Text(Scene* scene)
   : Object(scene), m_font_properties("", *this), m_text_option_properties("", *this)
 {
-  static const auto text_category = QObject::tr("Text").toStdString();
+  static const auto text_category = QObject::tr("Text");
   create_property<StringProperty>(TEXT_PROPERTY_KEY, "Text" )
     .set_mode(StringProperty::Mode::MultiLine)
-    .set_label(QObject::tr("Text").toStdString()).set_category(text_category);
+    .set_label(QObject::tr("Text")).set_category(text_category);
   create_property<FloatProperty>(WIDTH_PROPERTY_KEY, 200)
-    .set_label(QObject::tr("Width").toStdString()).set_category(text_category);
+    .set_label(QObject::tr("Width")).set_category(text_category);
 
-  m_font_properties.make_properties(QObject::tr("Font").toStdString());
-  m_text_option_properties.make_properties(QObject::tr("Text").toStdString());
+  m_font_properties.make_properties(QObject::tr("Font"));
+  m_text_option_properties.make_properties(QObject::tr("Text"));
   update();
 }
 
@@ -44,7 +44,7 @@ BoundingBox Text::bounding_box(const ObjectTransformation &transformation) const
   }
 }
 
-std::string Text::type() const { return TYPE; }
+QString Text::type() const { return TYPE; }
 std::unique_ptr<Object> Text::clone() const { return std::make_unique<Text>(*this); }
 
 AbstractPropertyOwner::Flag Text::flags() const
@@ -67,8 +67,8 @@ void Text::draw_object(Painter &renderer, const Style& style) const
     renderer.set_style(style);
 
     const QRectF rect = this->rect(option.alignment());
-    const std::string text = property(TEXT_PROPERTY_KEY)->value<std::string>();
-    renderer.painter->drawText(rect, QString::fromStdString(text), option);
+    const QString text = property(TEXT_PROPERTY_KEY)->value<QString>();
+    renderer.painter->drawText(rect, text, option);
   }
 }
 

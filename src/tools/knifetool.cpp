@@ -74,12 +74,12 @@ void KnifeTool::draw(Painter &renderer) const
   }
 }
 
-std::string KnifeTool::name() const
+QString KnifeTool::name() const
 {
-  return QCoreApplication::translate("any-context", TYPE).toStdString();
+  return QCoreApplication::translate("any-context", TYPE);
 }
 
-std::string KnifeTool::type() const { return TYPE; }
+QString KnifeTool::type() const { return TYPE; }
 void KnifeTool::cancel() { m_is_cutting = false; }
 
 }  // namespace omm

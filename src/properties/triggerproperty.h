@@ -10,7 +10,7 @@ class TriggerProperty : public TypedProperty<TriggerPropertyDummyValueType>
 {
 public:
   using TypedProperty::TypedProperty;
-  std::string type() const override { return TYPE; }
+  QString type() const override { return TYPE; }
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Property", "TriggerProperty");
   std::unique_ptr<Property> clone() const override;
   void trigger();

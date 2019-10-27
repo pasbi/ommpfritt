@@ -14,12 +14,12 @@ namespace omm
 
 Outline::Outline(Scene* scene) : Object(scene)
 {
-  static const auto category = QObject::tr("Outline").toStdString();
+  static const auto category = QObject::tr("Outline");
   create_property<FloatProperty>(OFFSET_PROPERTY_KEY)
-    .set_label(QObject::tr("Offset").toStdString()).set_category(category);
+    .set_label(QObject::tr("Offset")).set_category(category);
   create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
-    .set_label(QObject::tr("Reference").toStdString()).set_category(category);
+    .set_label(QObject::tr("Reference")).set_category(category);
   polish();
 }
 
@@ -50,7 +50,7 @@ BoundingBox Outline::bounding_box(const ObjectTransformation &transformation) co
   return m_outline ? m_outline->bounding_box(transformation) : BoundingBox();
 }
 
-std::string Outline::type() const { return TYPE; }
+QString Outline::type() const { return TYPE; }
 std::unique_ptr<Object> Outline::clone() const { return std::make_unique<Outline>(*this); }
 AbstractPropertyOwner::Flag Outline::flags() const
 {

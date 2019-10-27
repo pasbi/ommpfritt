@@ -22,19 +22,19 @@ class CodeEdit : public QWidget
   Q_OBJECT
 public:
   explicit CodeEdit(QWidget* parent = nullptr);
-  std::string code() const;
+  QString code() const;
   void clear();
-  void set_code(const std::string& code);
-  void set_placeholder_text(const std::string& ph);
+  void set_code(const QString& code);
+  void set_placeholder_text(const QString& ph);
   QSize sizeHint() const override;
   void set_editable(bool editable);
-  void put(const std::string& text, Stream stream);
+  void put(const QString& text, Stream stream);
   void scroll_to_bottom();
   bool is_at_bottom() const;
   void set_caption_modifiers(const Qt::KeyboardModifiers& modifier);
 
 Q_SIGNALS:
-  void code_changed(const std::string& code);
+  void code_changed(const QString& code);
 
 private:
   TextEdit* m_text_edit;

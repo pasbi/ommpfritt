@@ -40,9 +40,9 @@ protected:
   AbstractPropertyOwner(const AbstractPropertyOwner& other);
 public:
   ~AbstractPropertyOwner() override;
-  Property* property(const std::string& key) const;
-  bool has_property(const std::string& key) const;
-  template<typename ValueT> bool has_property(const std::string& key) const
+  Property* property(const QString& key) const;
+  bool has_property(const QString& key) const;
+  template<typename ValueT> bool has_property(const QString& key) const
   {
     if (has_property(key)) {
       const auto variant = property(key)->variant_value();
@@ -54,19 +54,19 @@ public:
 
   virtual Flag flags() const = 0;
 
-  const OrderedMap<std::string, Property>& properties() const;
+  const OrderedMap<QString, Property>& properties() const;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-  virtual std::string name() const;
+  virtual QString name() const;
 
   virtual Kind kind() const = 0;
-  static const std::string NAME_PROPERTY_KEY;
+  static const QString NAME_PROPERTY_KEY;
 
-  Property& add_property(const std::string& key, std::unique_ptr<Property> property);
+  Property& add_property(const QString& key, std::unique_ptr<Property> property);
 
   template<typename PropertyT, typename... Args>
-  PropertyT& create_property(const std::string& key, Args&&... args)
+  PropertyT& create_property(const QString& key, Args&&... args)
   {
     static_assert(std::is_base_of<Property, PropertyT>::value);
     auto property = std::make_unique<PropertyT>(std::forward<Args>(args)...);
@@ -75,7 +75,7 @@ public:
     return ref;
   }
 
-  std::unique_ptr<Property> extract_property(const std::string& key);
+  std::unique_ptr<Property> extract_property(const QString& key);
   void copy_properties(AbstractPropertyOwner& target) const;
 
   std::size_t id() const;
@@ -85,7 +85,7 @@ protected Q_SLOTS:
   virtual void on_property_value_changed(Property* property) { Q_UNUSED(property); }
 
 private:
-  OrderedMap<std::string, Property> m_properties;
+  OrderedMap<QString, Property> m_properties;
   Scene* m_scene = nullptr;
 
   /**

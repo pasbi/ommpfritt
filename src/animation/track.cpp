@@ -83,7 +83,7 @@ omm::AbstractPropertyOwner* interpolate(const Segment<omm::AbstractPropertyOwner
   return step_interpolate(segment, t);
 }
 
-std::string interpolate(const Segment<std::string>& segment, double t, Interpolation)
+QString interpolate(const Segment<QString>& segment, double t, Interpolation)
 {
   return step_interpolate(segment, t);
 }
@@ -139,7 +139,7 @@ void Track::serialize(AbstractSerializer& serializer, const Pointer& pointer) co
 
 void Track::deserialize(AbstractDeserializer& deserializer, const Pointer& pointer)
 {
-  const std::string type = deserializer.get_string(make_pointer(pointer, TYPE_KEY));
+  const QString type = deserializer.get_string(make_pointer(pointer, TYPE_KEY));
   m_interpolation = deserializer.get<Interpolation>(make_pointer(pointer, INTERPOLATION_KEY));
 
   const auto knots_pointer = make_pointer(pointer, KNOTS_KEY);
@@ -252,12 +252,12 @@ void Track::insert_knot(int frame, const Knot &knot)
   m_knots.insert(std::pair(frame, knot));
 }
 
-std::string Track::type() const
+QString Track::type() const
 {
-  static const std::string property_suffix = "Property";
-  const std::string type = property().type();
+  static const QString property_suffix = "Property";
+  const QString type = property().type();
   assert(type.size() > property_suffix.size());
-  return type.substr(0, type.size() - property_suffix.size());
+  return type.mid(0, type.size() - property_suffix.size());
 }
 
 bool Track::is_consistent(int frame) const

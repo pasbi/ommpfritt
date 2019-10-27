@@ -40,7 +40,7 @@ create_knots(const std::set<omm::Property*>& properties, int frame)
 namespace omm
 {
 
-KeyframeCommand::KeyframeCommand(Animator& animator, const std::string& label, int frame,
+KeyframeCommand::KeyframeCommand(Animator& animator, const QString& label, int frame,
                                  const std::map<Property*, Track::Knot>& values)
   : Command(label), m_animator(animator), m_frame(frame), m_knots(values)
 { }
@@ -66,7 +66,7 @@ void KeyframeCommand::remove()
 InsertKeyframeCommand::
 InsertKeyframeCommand(Animator& animator, int frame,
                       const std::set<Property*>& properties)
-  : KeyframeCommand(animator, QObject::tr("Create Keyframe").toStdString(), frame,
+  : KeyframeCommand(animator, QObject::tr("Create Keyframe"), frame,
                     create_knots(properties, frame))
 {
 
@@ -75,7 +75,7 @@ InsertKeyframeCommand(Animator& animator, int frame,
 RemoveKeyframeCommand::
 RemoveKeyframeCommand(Animator& animator, int frame,
                       const std::set<Property*>& values)
-  : KeyframeCommand(animator, QObject::tr("Remove Keyframe").toStdString(),
+  : KeyframeCommand(animator, QObject::tr("Remove Keyframe"),
                     frame, collect_knots(values, frame))
 {
 
@@ -83,7 +83,7 @@ RemoveKeyframeCommand(Animator& animator, int frame,
 
 MoveKeyFrameCommand::MoveKeyFrameCommand(Animator& animator, Property& property,
                                          std::set<int> old_frames, int shift)
-  : Command(QObject::tr("Move Keyframes").toStdString())
+  : Command(QObject::tr("Move Keyframes"))
   , m_animator(animator)
   , m_property(property)
   , m_old_frames(old_frames)

@@ -26,16 +26,16 @@ const std::map<std::array<double, 3>, std::array<double, 3>> rgb_hsv {
   {{ 1.0, 0.0, 0.9 }, { 5.340707511102648 / (2*M_PI), 1.0, 1.0 }},
 };
 
-const std::map<double, std::string> hex_lut {
+const std::map<double, QString> hex_lut {
   { 0.0, "00" },
   { 1.0, "ff" },
-//  { 0.1, "1a" },
-//  { 0.9, "e6" },
-//  { 0.8, "cc" },
-//  { 0.3, "4d" },
-//  { 0.2, "33" },
-//  { 0.6, "99" },
-//  { 0.4, "66" },
+  { 0.1, "1a" },
+  { 0.9, "e6" },
+  { 0.8, "cc" },
+  { 0.3, "4d" },
+  { 0.2, "33" },
+  { 0.6, "99" },
+  { 0.4, "66" },
 };
 
 bool color_eq(const omm::Color& ca, const omm::Color& cb, double eps = 0.0001)

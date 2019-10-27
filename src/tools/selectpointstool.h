@@ -77,7 +77,7 @@ class SelectPointsTool : public SelectPointsBaseTool
 {
 public:
   using SelectPointsBaseTool::SelectPointsBaseTool;
-  std::string type() const override;
+  QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectPointsTool");
 
 protected:

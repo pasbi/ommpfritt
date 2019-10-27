@@ -13,19 +13,19 @@ class AbstractPropertyOwner;
 class UserPropertyCommand : public Command
 {
 public:
-  using pmap = std::map<std::string, std::unique_ptr<Property>>;
-  using cmap = std::map<std::string, Property::Configuration>;
+  using pmap = std::map<QString, std::unique_ptr<Property>>;
+  using cmap = std::map<QString, Property::Configuration>;
 
-  UserPropertyCommand(const std::vector<std::string>& deletions,
-                      std::vector<std::pair<std::string, std::unique_ptr<Property>>> additions,
+  UserPropertyCommand(const std::vector<QString>& deletions,
+                      std::vector<std::pair<QString, std::unique_ptr<Property>>> additions,
                       const std::map<Property*, Property::Configuration>& changes,
                       AbstractPropertyOwner& owner);
   void undo() override { swap(); }
   void redo() override { swap(); }
 
 private:
-  std::vector<std::string> m_deletions;
-  std::vector<std::pair<std::string, std::unique_ptr<Property>>> m_additions;
+  std::vector<QString> m_deletions;
+  std::vector<std::pair<QString, std::unique_ptr<Property>>> m_additions;
   std::map<Property*, Property::Configuration> m_changes;
   AbstractPropertyOwner& m_owner;
 

@@ -17,7 +17,7 @@ class Property;
 class PropertyArea
 {
 public:
-  PropertyArea(const QRectF& area, ObjectTreeView& view, const std::string& property_key);
+  PropertyArea(const QRectF& area, ObjectTreeView& view, const QString& property_key);
   bool draw_active = false;
   virtual void draw(QPainter& painter, const QModelIndex& index) = 0;
   const QRectF area;
@@ -27,7 +27,7 @@ public:
   virtual std::unique_ptr<Command> make_command(const QModelIndex& index, bool update_cache) = 0;
 
 private:
-  const std::string m_property_key;
+  const QString m_property_key;
 };
 
 class VisibilityPropertyArea : public PropertyArea

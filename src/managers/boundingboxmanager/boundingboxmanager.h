@@ -19,7 +19,7 @@ class BoundingBoxManager : public Manager
   Q_OBJECT
 public:
   BoundingBoxManager(Scene &scene);
-  std::string type() const override;
+  QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "BoundingBoxManager");
 
 public Q_SLOTS:
@@ -39,7 +39,7 @@ private:
   TransformPointsHelper m_transform_points_helper;
   TransformObjectsHelper m_transform_objects_helper;
   Mode m_current_mode = Mode::Objects;
-  bool perform_action(const std::string &name) override;
+  bool perform_action(const QString &name) override;
 
 protected:
   void enterEvent(QEvent* e) override;

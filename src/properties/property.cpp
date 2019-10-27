@@ -16,7 +16,7 @@ Property::Property(const Property &other)
 {
 }
 
-std::string Property::widget_type() const { return type() + "Widget"; }
+QString Property::widget_type() const { return type() + "Widget"; }
 bool Property::is_user_property() const { return category() == USER_PROPERTY_CATEGROY_NAME; }
 void Property::revise() {}
 
@@ -72,23 +72,23 @@ bool Property::is_compatible(const Property& other) const
   return other.category() == category() && other.type() == type();
 }
 
-std::string Property::label() const
+QString Property::label() const
 {
-  return std::get<std::string>(configuration.at(LABEL_POINTER));
+  return std::get<QString>(configuration.at(LABEL_POINTER));
 }
 
-Property& Property::set_label(const std::string& label)
+Property& Property::set_label(const QString& label)
 {
   configuration[LABEL_POINTER] = label;
   return *this;
 }
 
-std::string Property::category() const
+QString Property::category() const
 {
-  return std::get<std::string>(configuration.at(CATEGORY_POINTER));
+  return std::get<QString>(configuration.at(CATEGORY_POINTER));
 }
 
-Property& Property::set_category(const std::string& category)
+Property& Property::set_category(const QString& category)
 {
   configuration[CATEGORY_POINTER] = category;
   return *this;

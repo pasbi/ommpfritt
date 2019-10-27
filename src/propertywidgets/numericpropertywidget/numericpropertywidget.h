@@ -28,7 +28,7 @@ class IntegerPropertyWidget : public NumericPropertyWidget<IntegerProperty>
 public:
   using NumericPropertyWidget::NumericPropertyWidget;
   static constexpr auto TYPE = "IntegerPropertyWidget";
-  std::string type() const override { return TYPE; }
+  QString type() const override { return TYPE; }
 };
 
 class FloatPropertyWidget : public NumericPropertyWidget<FloatProperty>
@@ -36,7 +36,7 @@ class FloatPropertyWidget : public NumericPropertyWidget<FloatProperty>
 public:
   using NumericPropertyWidget::NumericPropertyWidget;
   static constexpr auto TYPE = "FloatPropertyWidget";
-  std::string type() const override { return TYPE; }
+  QString type() const override { return TYPE; }
 };
 
 }  // namespace omm

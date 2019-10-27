@@ -33,14 +33,14 @@ PropertyManagerTab::~PropertyManagerTab()
 }
 
 void
-PropertyManagerTab::add_properties(Scene& scene, const std::string& key,
+PropertyManagerTab::add_properties(Scene& scene, const QString& key,
                                    const std::map<AbstractPropertyOwner*, Property*>& property_map)
 {
   assert(property_map.size() > 0);
   const auto properties = ::transform<Property*, std::set>(property_map, [](const auto& pair) {
     return pair.second;
   });
-  const auto text = Property::get_value<std::string>(properties, std::mem_fn(&Property::label));
+  const auto text = Property::get_value<QString>(properties, std::mem_fn(&Property::label));
   auto label_widget = new QWidget(this);
   auto label = new QLabel(label_widget);
   auto label_layout = new QHBoxLayout(label_widget);
@@ -56,8 +56,8 @@ PropertyManagerTab::add_properties(Scene& scene, const std::string& key,
   label_layout->addWidget(label);
   label_layout->setContentsMargins(0, 0, 0, 0);
 
-  label->setText(QString::fromStdString(text));
-  label->setToolTip(QString::fromStdString(key));
+  label->setText(text);
+  label->setToolTip(key);
 
   const auto widget_type = (*properties.begin())->widget_type();
   auto property_widget = AbstractPropertyWidget::make(widget_type, scene, properties).release();

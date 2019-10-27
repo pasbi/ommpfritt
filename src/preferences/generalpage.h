@@ -19,7 +19,7 @@ public:
 
 private:
   std::unique_ptr<Ui::GeneralPage> m_ui;
-  const std::vector<std::string> m_available_languages;
+  const std::vector<QString> m_available_languages;
 };
 
 }  // namespace omm

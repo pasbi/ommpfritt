@@ -21,7 +21,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
     if (row == 0) {
       return tr("foundation");
     } else {
-      return QString::fromStdString(command(row-1).label());
+      return command(row-1).label();
     }
   };
 

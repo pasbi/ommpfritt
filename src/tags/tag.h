@@ -13,7 +13,7 @@ class Scene;
 
 class Tag
   : public PropertyOwner<AbstractPropertyOwner::Kind::Tag>
-  , public AbstractFactory<std::string, Tag, Object&>
+  , public AbstractFactory<QString, Tag, Object&>
 {
 public:
   explicit Tag(Object& owner);

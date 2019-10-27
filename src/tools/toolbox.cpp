@@ -8,7 +8,7 @@ namespace
 {
 auto make_tool_map(omm::Scene& scene)
 {
-  std::map<std::string, std::unique_ptr<omm::Tool>> map;
+  std::map<QString, std::unique_ptr<omm::Tool>> map;
   for (const auto& key : omm::Tool::keys()) {
     map.insert(std::pair(key, omm::Tool::make(key, scene)));
   }
@@ -45,16 +45,16 @@ Tool& ToolBox::active_tool() const
   return *m_active_tool;
 }
 
-Tool& ToolBox::tool(const std::string& key) const
+Tool& ToolBox::tool(const QString& key) const
 {
   try {
     return *m_tools.at(key);
   } catch (const std::out_of_range&) {
-    LFATAL("Failed to load tool '%s'.", key.c_str());
+    LFATAL("Failed to load tool '%s'.", key.toUtf8().constData());
   }
 }
 
-void ToolBox::set_active_tool(const std::string &key)
+void ToolBox::set_active_tool(const QString &key)
 {
   if (m_active_tool->type() == key) {
     return;

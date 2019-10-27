@@ -15,13 +15,13 @@ SelectObjectsTool::SelectObjectsTool(Scene& scene)
   : AbstractSelectTool(scene)
 {
   create_property<OptionsProperty>(TRANSFORMATION_MODE_KEY, 0)
-    .set_options({ QObject::tr("Object").toStdString(), QObject::tr("Axis").toStdString() })
-    .set_label(QObject::tr("Mode").toStdString())
-    .set_category(QObject::tr("tool").toStdString())
+    .set_options({ QObject::tr("Object"), QObject::tr("Axis") })
+    .set_label(QObject::tr("Mode"))
+    .set_category(QObject::tr("tool"))
     .set_animatable(false);
 }
 
-std::string SelectObjectsTool::type() const { return TYPE; }
+QString SelectObjectsTool::type() const { return TYPE; }
 
 void SelectObjectsTool::transform_objects(ObjectTransformation t)
 {

@@ -6,12 +6,12 @@
 namespace omm
 {
 
-class StringProperty : public TypedProperty<std::string>
+class StringProperty : public TypedProperty<QString>
 {
 public:
-  explicit StringProperty(const std::string &default_value = "");
+  explicit StringProperty(const QString &default_value = "");
   enum class Mode { SingleLine, MultiLine, FilePath, Code, Font };
-  std::string type() const override { return TYPE; }
+  QString type() const override { return TYPE; }
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Property", "StringProperty");

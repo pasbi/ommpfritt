@@ -13,19 +13,19 @@ namespace omm
 
 Mirror::Mirror(Scene* scene) : Object(scene)
 {
-  static const auto category = QObject::tr("Mirror").toStdString();
+  static const auto category = QObject::tr("Mirror");
   create_property<OptionsProperty>(DIRECTION_PROPERTY_KEY)
-    .set_options({ QObject::tr("Horizontal").toStdString(),
-                   QObject::tr("Vertical").toStdString() })
-    .set_label(QObject::tr("Direction").toStdString()).set_category(category);
+    .set_options({ QObject::tr("Horizontal"),
+                   QObject::tr("Vertical") })
+    .set_label(QObject::tr("Direction")).set_category(category);
   auto& mode_property = create_property<OptionsProperty>(AS_PATH_PROPERTY_KEY);
-  mode_property.set_options({ QObject::tr("Object").toStdString(),
-                              QObject::tr("Path").toStdString() })
-    .set_label(QObject::tr("Mode").toStdString()).set_category(category);
+  mode_property.set_options({ QObject::tr("Object"),
+                              QObject::tr("Path") })
+    .set_label(QObject::tr("Mode")).set_category(category);
   create_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY, true)
-    .set_label(QObject::tr("Close").toStdString()).set_category(category);
+    .set_label(QObject::tr("Close")).set_category(category);
   create_property<BoolProperty>(IS_INVERTED_PROPERTY_KEY, true)
-    .set_label(QObject::tr("Invert").toStdString()).set_category(category);
+    .set_label(QObject::tr("Invert")).set_category(category);
   polish();
 }
 
@@ -66,7 +66,7 @@ BoundingBox Mirror::bounding_box(const ObjectTransformation &transformation) con
   }
 }
 
-std::string Mirror::type() const { return TYPE; }
+QString Mirror::type() const { return TYPE; }
 std::unique_ptr<Object> Mirror::clone() const { return std::make_unique<Mirror>(*this); }
 AbstractPropertyOwner::Flag Mirror::flags() const { return Object::flags() | Flag::Convertable; }
 

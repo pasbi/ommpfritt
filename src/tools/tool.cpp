@@ -99,9 +99,9 @@ void Tool::cancel()
 
 void Tool::end() {}
 
-std::string Tool::name() const
+QString Tool::name() const
 {
-  return QCoreApplication::translate("any-context", type().c_str()).toStdString();
+  return QCoreApplication::translate("any-context", type().toUtf8().constData());
 }
 
 bool Tool::modifies_points() const { return false; }

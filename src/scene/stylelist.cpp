@@ -81,7 +81,7 @@ QVariant StyleList::data(const QModelIndex &index, int role) const
   switch (role) {
   case Qt::DisplayRole:  [[fallthrough]];
   case Qt::EditRole:
-    return QString::fromStdString(item(index.row()).name());
+    return item(index.row()).name();
   case Qt::DecorationRole:
     return Application::instance().icon_provider.icon(item(index.row()));;
   }
@@ -101,8 +101,8 @@ bool StyleList::setData(const QModelIndex &index, const QVariant &value, int rol
   case 0:
   {
     Property* property = item_at(index).property(Object::NAME_PROPERTY_KEY);
-    const auto svalue = value.toString().toStdString();
-    if (property->value<std::string>() != svalue) {
+    const auto svalue = value.toString();
+    if (property->value<QString>() != svalue) {
       scene.submit<PropertiesCommand<StringProperty>>(std::set{ property }, svalue);
       return true;
     } else {

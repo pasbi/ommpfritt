@@ -37,7 +37,7 @@ namespace omm::detail
 {
 
 bool set_property_value( AbstractPropertyOwner& property_owner,
-                         const std::string& key, const py::object& value )
+                         const QString& key, const py::object& value )
 {
   if (property_owner.has_property(key)) {
     auto& property = *property_owner.property(key);

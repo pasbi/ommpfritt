@@ -8,7 +8,7 @@ namespace omm
 
 template<typename Structure>
 CopyCommand<Structure>::CopyCommand(Structure& structure, std::vector<Context> contextes)
-  : Command(QObject::tr("copy").toStdString())
+  : Command(QObject::tr("copy"))
   , m_contextes(std::move(contextes))
   , m_structure(structure)
 {

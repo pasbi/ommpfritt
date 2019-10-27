@@ -22,7 +22,7 @@ Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
   connect(&m_timer, SIGNAL(timeout()), this, SLOT(advance()));
   connect(this, SIGNAL(current_changed(int)), this, SLOT(apply()));
   connect(&scene.message_box(), &MessageBox::property_value_changed, this,
-               [this](AbstractPropertyOwner& owner, const std::string& key, Property&)
+          [this](AbstractPropertyOwner& owner, const QString& key, Property&)
   {
     if (key == AbstractPropertyOwner::NAME_PROPERTY_KEY) {
       const auto& owners = this->accelerator().owners();
@@ -194,7 +194,7 @@ QVariant Animator::data(const QModelIndex &index, int role) const
     case 0:
       switch (role) {
       case Qt::DisplayRole:
-        return QString::fromStdString(owner(index)->name());
+        return owner(index)->name();
       case Qt::DecorationRole:
         return Application::instance().icon_provider.icon(*owner(index));
       default:
@@ -211,7 +211,7 @@ QVariant Animator::data(const QModelIndex &index, int role) const
     case 0:
       switch (role) {
       case Qt::DisplayRole:
-        return QString::fromStdString(property(index)->label());
+        return property(index)->label();
       default:
         return QVariant();
       }

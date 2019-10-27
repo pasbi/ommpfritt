@@ -13,11 +13,6 @@ namespace omm
 
 class PropertyConfigWidget;
 
-struct PropertyItem : public std::map<std::string, QVariant>
-{
-
-};
-
 class UserPropertyDialog: public QDialog
 {
   Q_OBJECT
@@ -29,7 +24,7 @@ public Q_SLOTS:
 
 private:
   std::unique_ptr<Ui::UserPropertyDialog> m_ui;
-  const std::vector<std::string> m_property_types;
+  const std::vector<QString> m_property_types;
   AbstractPropertyOwner& m_owner;
   UserPropertyListModel m_user_property_list_model;
   UserPropertyListItem* m_current_item = nullptr;

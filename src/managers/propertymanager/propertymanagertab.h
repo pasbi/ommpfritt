@@ -18,7 +18,7 @@ class PropertyManagerTab : public QWidget
 public:
   explicit PropertyManagerTab();
   ~PropertyManagerTab();
-  void add_properties(Scene& scene, const std::string& key,
+  void add_properties(Scene& scene, const QString& key,
                       const std::map<AbstractPropertyOwner*, Property*> &property_map);
 
 private:

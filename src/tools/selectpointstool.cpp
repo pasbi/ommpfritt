@@ -13,18 +13,18 @@ SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene)
   : AbstractSelectTool(scene)
   , m_transform_points_helper(Space::Viewport)
 {
-  const auto category = QObject::tr("tool").toStdString();
+  const auto category = QObject::tr("tool");
   create_property<OptionsProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
-    .set_options({ QObject::tr("Mirror").toStdString(), QObject::tr("Individual").toStdString() })
-    .set_label(QObject::tr("tangent").toStdString())
+    .set_options({ QObject::tr("Mirror"), QObject::tr("Individual") })
+    .set_label(QObject::tr("tangent"))
     .set_category(category)
     .set_animatable(false);
 
   create_property<OptionsProperty>(BOUNDING_BOX_MODE_PROPERTY_KEY, 1)
-    .set_options( { QObject::tr("Include Tangents").toStdString(),
-                    QObject::tr("Exclude Tangents").toStdString(),
-                    QObject::tr("None").toStdString() })
-    .set_label(QObject::tr("Bounding Box").toStdString())
+    .set_options( { QObject::tr("Include Tangents"),
+                    QObject::tr("Exclude Tangents"),
+                    QObject::tr("None") })
+    .set_label(QObject::tr("Bounding Box"))
     .set_category(category)
     .set_animatable(false);
 }
@@ -113,7 +113,7 @@ Vec2f SelectPointsBaseTool::selection_center() const
   return scene()->point_selection.center(Space::Viewport);
 }
 
-std::string SelectPointsTool::type() const { return TYPE; }
+QString SelectPointsTool::type() const { return TYPE; }
 
 void SelectPointsTool::reset()
 {

@@ -14,7 +14,7 @@
 namespace
 {
 
-static const std::map<QPalette::ColorRole, std::string> role_map {
+static const std::map<QPalette::ColorRole, QString> role_map {
   { QPalette::Window,           "window"           },
   { QPalette::WindowText,       "window text"      },
   { QPalette::Text,             "text"             },
@@ -41,7 +41,7 @@ static const std::map<std::size_t, QPalette::ColorGroup> group_map {
   { 2, QPalette::Disabled }
 };
 
-omm::Color color_from_html(const std::string& html)
+omm::Color color_from_html(const QString& html)
 {
   bool ok;
   const auto color = omm::Color::from_html(html, &ok);
@@ -86,9 +86,9 @@ QVariant UiColors::data(int column, const PreferencesTreeValueItem& item, int ro
   case Qt::BackgroundRole:
     return color_from_html(item.value(column-1)).to_qcolor();
   case Qt::EditRole:
-    return QString::fromStdString(color_from_html(item.value(column-1)).to_html());
+    return color_from_html(item.value(column-1)).to_html();
   case DEFAULT_VALUE_ROLE:
-    return QString::fromStdString(color_from_html(item.default_value(column-1)).to_html());
+    return color_from_html(item.default_value(column-1)).to_html();
   default:
     return QVariant();
   }
@@ -102,7 +102,7 @@ bool UiColors::set_data(int column, PreferencesTreeValueItem& item, const QVaria
 
 QPalette UiColors::make_palette() const
 {
-  const auto get_widget_color = [this](std::size_t column, const std::string& name) {
+  const auto get_widget_color = [this](std::size_t column, const QString& name) {
     return color_from_html(value("Widget", name)->value(column)).to_qcolor();
   };
   QPalette palette = qApp->palette();
@@ -141,7 +141,7 @@ QVariant UiColors::headerData(int section, Qt::Orientation orientation, int role
 }
 
 Color UiColors
-::color(QPalette::ColorGroup pgroup, const std::string& group, const std::string& name) const
+::color(QPalette::ColorGroup pgroup, const QString& group, const QString& name) const
 {
   return color_from_html(stored_value(group, name, group_map.at(pgroup)));
 }
@@ -170,7 +170,7 @@ void UiColors::set_skin(std::size_t index)
   load_from_qsettings(current_skin.qsettings_group);
 }
 
-QColor ui_color(const QWidget& widget, const std::string& group, const std::string& name)
+QColor ui_color(const QWidget& widget, const QString& group, const QString& name)
 {
   const auto pgroup = widget.isEnabled() ? (widget.window()->isActiveWindow()
                                             ? QPalette::Active
@@ -202,12 +202,12 @@ void UiColors::draw_background(QPainter& painter, const QRectF& rect)
   painter.restore();
 }
 
-QColor ui_color(const QPalette::ColorGroup& status, const std::string& group, const std::string& name)
+QColor ui_color(const QPalette::ColorGroup& status, const QString& group, const QString& name)
 {
   return Application::instance().ui_colors.color(status, group, name).to_qcolor();
 }
 
-QColor ui_color(const std::string& group, const std::string& name)
+QColor ui_color(const QString& group, const QString& name)
 {
   return ui_color(QPalette::Active, group, name);
 }

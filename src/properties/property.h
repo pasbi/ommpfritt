@@ -27,17 +27,17 @@ class OptionsProperty;
 
 class Property
   : public QObject
-  , public AbstractFactory<std::string, Property>
+  , public AbstractFactory<QString, Property>
   , public virtual Serializable
 {
   Q_OBJECT
 public:
-  struct Configuration : std::map<std::string, std::variant<bool, int, double, Vec2i, Vec2f,
-                                                            std::size_t, std::string,
-                                                            std::vector<std::string>>>
+  struct Configuration : std::map<QString, std::variant<bool, int, double, Vec2i, Vec2f,
+                                                            std::size_t, QString,
+                                                            std::vector<QString>>>
   {
     using variant_type = value_type::second_type;
-    template<typename T> T get(const std::string& key) const
+    template<typename T> T get(const QString& key) const
     {
       if constexpr (std::is_enum_v<T>) {
         return static_cast<T>(get<std::size_t>(key));
@@ -51,7 +51,7 @@ public:
       }
     }
 
-    template<typename T> T get(const std::string& key, const T& default_value) const
+    template<typename T> T get(const QString& key, const T& default_value) const
     {
       if constexpr (std::is_enum_v<T>) {
         return static_cast<T>(get<std::size_t>(key, default_value));
@@ -81,7 +81,7 @@ public:
   static constexpr auto TRACK_POINTER = "track";
   static constexpr auto IS_ANIMATED_POINTER = "animated";
 
-  virtual std::string widget_type() const;
+  virtual QString widget_type() const;
 
   template<typename ResultT, typename PropertyT, typename MemFunc> static
   ResultT get_value(const std::set<Property*>& properties, MemFunc&& f)
@@ -132,11 +132,11 @@ public:
 public:
   bool is_visible() const;
   void set_visible(bool visible);
-  std::string label() const;
-  std::string category() const;
+  QString label() const;
+  QString category() const;
   bool is_animatable() const;
-  Property& set_label(const std::string& label);
-  Property& set_category(const std::string& category);
+  Property& set_label(const QString& label);
+  Property& set_category(const QString& category);
   Property& set_animatable(bool animatable);
   Configuration configuration;
 private:

@@ -12,13 +12,13 @@ void TextEditAdapter<QLineEdit>::set_inconsistent_value()
   QLineEdit::clear();
 }
 
-void TextEditAdapter<QLineEdit>::set_value(const std::string& text)
+void TextEditAdapter<QLineEdit>::set_value(const QString& text)
 {
-  QLineEdit::setText(QString::fromStdString(text));
+  QLineEdit::setText(text);
 }
 
 void TextEditAdapter<QLineEdit>::clear() { QLineEdit::clear(); }
-std::string TextEditAdapter<QLineEdit>::value() const { return QLineEdit::text().toStdString(); }
+QString TextEditAdapter<QLineEdit>::value() const { return QLineEdit::text(); }
 QWidget* TextEditAdapter<QLineEdit>::as_widget() { return this; }
 
 
@@ -26,7 +26,7 @@ QWidget* TextEditAdapter<QLineEdit>::as_widget() { return this; }
 
 TextEditAdapter<QTextEdit>::TextEditAdapter(QWidget* parent) : QTextEdit(parent)
 {
-  setTabStopWidth(20);
+  setTabStopDistance(20);
 }
 
 void TextEditAdapter<QTextEdit>::set_inconsistent_value()
@@ -35,18 +35,18 @@ void TextEditAdapter<QTextEdit>::set_inconsistent_value()
   QTextEdit::clear();
 }
 
-void TextEditAdapter<QTextEdit>::set_value(const std::string& text)
+void TextEditAdapter<QTextEdit>::set_value(const QString& text)
 {
   if (text != this->value()) {
-    QTextEdit::setText(QString::fromStdString(text));
+    QTextEdit::setText(text);
   }
 }
 
 void TextEditAdapter<QTextEdit>::clear() { QTextEdit::clear(); }
 
-std::string TextEditAdapter<QTextEdit>::value() const
+QString TextEditAdapter<QTextEdit>::value() const
 {
-  return QTextEdit::toPlainText().toStdString();
+  return QTextEdit::toPlainText();
 }
 
 QWidget* TextEditAdapter<QTextEdit>::as_widget() { return this; }
@@ -57,17 +57,17 @@ QWidget* TextEditAdapter<QTextEdit>::as_widget() { return this; }
 void TextEditAdapter<FilePathEdit>::set_inconsistent_value()
 {
   const auto placeholder_text = QObject::tr("< multiple values >", "TextEditAdapter");
-  FilePathEdit::set_placeholder_text(placeholder_text.toStdString());
+  FilePathEdit::set_placeholder_text(placeholder_text);
   FilePathEdit::clear();
 }
 
-void TextEditAdapter<FilePathEdit>::set_value(const std::string& text)
+void TextEditAdapter<FilePathEdit>::set_value(const QString& text)
 {
   FilePathEdit::set_path(text);
 }
 
 void TextEditAdapter<FilePathEdit>::clear() { FilePathEdit::clear(); }
-std::string TextEditAdapter<FilePathEdit>::value() const { return FilePathEdit::path(); }
+QString TextEditAdapter<FilePathEdit>::value() const { return FilePathEdit::path(); }
 QWidget* TextEditAdapter<FilePathEdit>::as_widget() { return this; }
 
 
@@ -76,25 +76,25 @@ QWidget* TextEditAdapter<FilePathEdit>::as_widget() { return this; }
 void TextEditAdapter<CodeEdit>::set_inconsistent_value()
 {
   const auto placeholder_text = QObject::tr("< multiple values >", "TextEditAdapter");
-  CodeEdit::set_placeholder_text(placeholder_text.toStdString());
+  CodeEdit::set_placeholder_text(placeholder_text);
 }
 
-void TextEditAdapter<CodeEdit>::set_value(const std::string& text) { CodeEdit::set_code(text); }
+void TextEditAdapter<CodeEdit>::set_value(const QString& text) { CodeEdit::set_code(text); }
 void TextEditAdapter<CodeEdit>::clear() { CodeEdit::clear(); }
-std::string TextEditAdapter<CodeEdit>::value() const { return CodeEdit::code(); }
+QString TextEditAdapter<CodeEdit>::value() const { return CodeEdit::code(); }
 QWidget* TextEditAdapter<CodeEdit>::as_widget() { return this; }
 
 
 // TextEditAdapter<QFontComboBox>
 
-void TextEditAdapter<QFontComboBox>::set_value(const std::string& text)
+void TextEditAdapter<QFontComboBox>::set_value(const QString& text)
 {
-  QFontComboBox::setCurrentFont(QFont(QString::fromStdString(text)));
+  QFontComboBox::setCurrentFont(QFont(text));
 }
 
 void TextEditAdapter<QFontComboBox>::set_inconsistent_value() { setCurrentIndex(-1); }
 void TextEditAdapter<QFontComboBox>::clear() { QFontComboBox::clear(); }
-std::string TextEditAdapter<QFontComboBox>::value() const { return currentText().toStdString(); }
+QString TextEditAdapter<QFontComboBox>::value() const { return currentText(); }
 QWidget* TextEditAdapter<QFontComboBox>::as_widget() { return this; }
 
 }  // namespace omm

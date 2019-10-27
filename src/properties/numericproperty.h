@@ -59,7 +59,7 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root) override
   {
     TypedProperty<T>::deserialize(deserializer, root);
-    for (const std::string& key : { D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER }) {
+    for (const QString& key : { D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER }) {
       this->configuration[key] = deserializer.get<T>(Serializable::make_pointer(root, key));
     }
     this->configuration[D::MULTIPLIER_POINTER]
@@ -69,7 +69,7 @@ public:
   void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const override
   {
     TypedProperty<T>::serialize(serializer, root);
-    for (const std::string& key : { D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER }) {
+    for (const QString& key : { D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER }) {
       serializer.set_value(this->configuration.template get<T>(key),
                                  Serializable::make_pointer(root, key));
     }

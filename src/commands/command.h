@@ -11,10 +11,10 @@ class Scene;
 class Command : public QUndoCommand
 {
 protected:
-  Command(const std::string& label);
+  Command(const QString& label);
 
 public:
-  std::string label() const;
+  QString label() const;
   virtual bool is_noop() const { return false; }
 
 protected:

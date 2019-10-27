@@ -13,8 +13,8 @@ namespace omm
 BrushSelectTool::BrushSelectTool(Scene& scene) : SelectPointsBaseTool(scene)
 {
   create_property<FloatProperty>(RADIUS_PROPERTY_KEY, 20.0)
-    .set_label(QObject::tr("radius").toStdString())
-    .set_category(QObject::tr("tool").toStdString())
+    .set_label(QObject::tr("radius"))
+    .set_category(QObject::tr("tool"))
     .set_animatable(false);
 }
 
@@ -99,7 +99,7 @@ void BrushSelectTool::reset()
   SelectPointsTool::make_handles(*this, false);
 }
 
-std::string BrushSelectTool::type() const { return TYPE; }
+QString BrushSelectTool::type() const { return TYPE; }
 
 void BrushSelectTool::draw(Painter &renderer) const
 {
@@ -112,9 +112,9 @@ void BrushSelectTool::draw(Painter &renderer) const
   }
 }
 
-std::string BrushSelectTool::name() const
+QString BrushSelectTool::name() const
 {
-  return QCoreApplication::translate("any-context", TYPE).toStdString();
+  return QCoreApplication::translate("any-context", TYPE);
 }
 
 }  // namespace omm

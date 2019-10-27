@@ -66,7 +66,7 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
 
   m_ui->cb_view->set_filter(AbstractPropertyOwner::Kind::Object);
   m_ui->cb_view->set_filter(AbstractPropertyOwner::Flag::IsView);
-  m_ui->cb_view->set_null_label(tr("Viewport").toStdString());
+  m_ui->cb_view->set_null_label(tr("Viewport"));
   m_ui->cb_view->set_scene(scene);
 
   connect(m_ui->pb_export, &QPushButton::clicked, this, &ExportDialog::save_as);
@@ -163,7 +163,7 @@ void ExportDialog::save_as_raster()
   QFileDialog file_dialog(this);
   file_dialog.setWindowTitle(tr("Export image ..."));
   file_dialog.setDefaultSuffix("png");
-  file_dialog.setDirectory(QString::fromStdString(m_filepath));
+  file_dialog.setDirectory(m_filepath);
   file_dialog.setNameFilter(tr("Images (*.png *.jpg)"));
   file_dialog.setFileMode(QFileDialog::AnyFile);
   file_dialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -173,7 +173,7 @@ void ExportDialog::save_as_raster()
     assert(filenames.size() == 1);
     const auto filename = filenames.front();
     if (rasterize(m_ui->ne_resolution_x->value(), m_ui->ne_resolution_y->value()).save(filename)) {
-      m_filepath = filename.toStdString();
+      m_filepath = filename;
     } else {
       const auto msg = tr("Writing image '%1' failed.").arg(filename);
       QMessageBox::warning(this, tr("Export image"), msg);
@@ -186,7 +186,7 @@ void ExportDialog::save_as_svg()
   QFileDialog file_dialog(this);
   file_dialog.setWindowTitle(tr("Export vector graphics..."));
   file_dialog.setDefaultSuffix("svg");
-  file_dialog.setDirectory(QString::fromStdString(m_filepath));
+  file_dialog.setDirectory(m_filepath);
   file_dialog.setNameFilter(tr("SVG (*.svg)"));
   file_dialog.setFileMode(QFileDialog::AnyFile);
   file_dialog.setAcceptMode(QFileDialog::AcceptSave);
@@ -204,7 +204,7 @@ void ExportDialog::save_as_svg()
     view_box_size *= scale / view_box_size.x;
     generator.setViewBox(QRectF(0.0, 0.0, view_box_size.x, view_box_size.y));
     render(generator, -scale * 4.0 / 3.0);
-    m_filepath = filename.toStdString();
+    m_filepath = filename;
   }
 }
 

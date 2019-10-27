@@ -78,7 +78,7 @@ public:
    */
   Knot remove_knot(int frame);
 
-  std::string type() const;
+  QString type() const;
   Property& property() const { return m_property; }
 
   /**

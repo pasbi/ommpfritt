@@ -31,7 +31,7 @@ class Object
   : public PropertyOwner<AbstractPropertyOwner::Kind::Object>
   , public virtual Serializable
   , public TreeElement<Object>
-  , public AbstractFactory<std::string, Object, Scene*>
+  , public AbstractFactory<QString, Object, Scene*>
 {
   Q_OBJECT
 
@@ -59,8 +59,6 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual void draw_object(Painter& renderer, const Style& style) const;
   virtual void draw_handles(Painter& renderer) const;
-
-  static Style m_bounding_box_style;
 
   struct RenderOptions
   {
@@ -144,6 +142,7 @@ private:
 private:
   mutable bool m_visibility_cache_is_dirty = true;
   mutable bool m_visibility_cache_value;
+  static std::unique_ptr<Style> m_bounding_box_style;
 };
 
 void register_objects();

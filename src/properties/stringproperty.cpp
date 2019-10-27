@@ -3,8 +3,8 @@
 namespace omm
 {
 
-StringProperty::StringProperty(const std::string& default_value)
-  : TypedProperty<std::string>(default_value)
+StringProperty::StringProperty(const QString& default_value)
+  : TypedProperty<QString>(default_value)
 {
   set_mode(Mode::SingleLine);
 }

@@ -19,30 +19,30 @@
 namespace
 {
 
-QString tab_display_name(const std::string& tab_name) {
+QString tab_display_name(const QString& tab_name) {
   if (tab_name == omm::Property::USER_PROPERTY_CATEGROY_NAME) {
-    return QObject::tr(tab_name.c_str());
+    return QObject::tr(tab_name.toUtf8().constData());
   } else {
-    return QString::fromStdString(tab_name);
+    return tab_name;
   }
 }
 
-std::vector<std::string>
+std::vector<QString>
 get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
 {
   if (selection.size() == 0) {
-    return std::vector<std::string>();
+    return std::vector<QString>();
   }
 
   const auto* the_entity = *selection.begin();
   auto keys = the_entity->properties().keys();
-  std::unordered_map<std::string, omm::Property*> the_properties;
+  std::unordered_map<QString, omm::Property*> the_properties;
   for (auto&& key : keys) {
     the_properties.insert(std::make_pair(key, the_entity->property(key)));
   }
 
   for (auto it = std::next(selection.begin()); it != selection.end(); ++it) {
-    const auto has_key_of_same_type = [&](const std::string& key) {
+    const auto has_key_of_same_type = [&](const QString& key) {
       auto&& property_keys = (*it)->properties().keys();
       if (std::find(property_keys.begin(), property_keys.end(), key) == property_keys.end()) {
         return false;
@@ -58,7 +58,7 @@ get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
   return keys;
 }
 
-auto collect_properties( const std::string& key,
+auto collect_properties( const QString& key,
                          const std::set<omm::AbstractPropertyOwner*>& selection )
 {
   std::map<omm::AbstractPropertyOwner*, omm::Property*> collection;
@@ -68,7 +68,7 @@ auto collect_properties( const std::string& key,
   return collection;
 }
 
-std::string get_tab_label(const std::map<omm::AbstractPropertyOwner*, omm::Property*>& properties)
+QString get_tab_label(const std::map<omm::AbstractPropertyOwner*, omm::Property*>& properties)
 {
   assert(properties.size() > 0);
   const auto tab_label = (*properties.begin()).second->category();
@@ -85,12 +85,12 @@ std::string get_tab_label(const std::map<omm::AbstractPropertyOwner*, omm::Prope
   return tab_label;
 }
 
-std::string join(const std::list<std::string>& strings, const std::string& separator)
+QString join(const std::list<QString>& strings, const QString& separator)
 {
   if (strings.empty()) {
     return "";
   }
-  std::string joined = strings.front();
+  QString joined = strings.front();
   for (auto it = std::next(strings.begin()); it != strings.end(); ++it) {
     joined += separator + *it;
   }
@@ -137,7 +137,7 @@ PropertyManager::PropertyManager(Scene& scene)
   central_widget->setLayout(main_layout.release());
   set_widget(std::move(central_widget));
 
-  setWindowTitle(QString::fromStdString(make_window_title()));
+  setWindowTitle(make_window_title());
   setObjectName(TYPE);
 
   connect(m_tab_bar.get(), SIGNAL(current_indices_changed(const std::set<int>&)),
@@ -162,32 +162,30 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
     m_icon_label->setVisible(selection.size() > 0);
     m_selection_label->setVisible(selection.size() > 0);
     if (selection.size() > 0) {
-      const auto types = ::transform<std::string>(selection, [](AbstractPropertyOwner* owner) {
+      const auto types = ::transform<QString>(selection, [](AbstractPropertyOwner* owner) {
           return owner->type();
       });
-      std::list<std::string> tokens;
+      std::list<QString> tokens;
 
       if (selection.size() > 1) {
-        tokens.push_back("["
-                         + tr("%n Elements", "PropertyManager", selection.size()).toStdString()
-                         + "]");
+        tokens.push_back(tr("[%n Elements]", "PropertyManager", selection.size()));
       }
       tokens.push_back(types.size() == 1 ? *types.begin() : "");
-      const auto names = ::transform<std::string, std::list>(selection,
+      const auto names = ::transform<QString, std::list>(selection,
                                                              [](AbstractPropertyOwner* owner)
       {
         return owner->name();
       });
       tokens.push_back("[" + join(names, ", ") + "]");
-      m_selection_label->setText(QString::fromStdString(join(tokens, " ")));
+      m_selection_label->setText(join(tokens, " "));
 
       // text in m_selection_label can get huge but is not very important. Don't mess up the layout.
       m_selection_label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
 
-      const std::string icon_filename = types.size() == 1 ? ":/icons/" + *types.begin() + ".png"
+      const QString icon_filename = types.size() == 1 ? ":/icons/" + *types.begin() + ".png"
                                                           : ":/icons/UndeterminedType.png";
 
-      const QImage image(QString::fromStdString(icon_filename));
+      const QImage image(icon_filename);
       m_icon_label->setPixmap(QPixmap::fromImage(image.scaled(24, 24, Qt::KeepAspectRatio,
                                                               Qt::SmoothTransformation)));
     }
@@ -230,7 +228,7 @@ void PropertyManager::update_property_widgets()
   }
 
   m_layout->addStretch();
-  setWindowTitle(QString::fromStdString(make_window_title()));
+  setWindowTitle(make_window_title());
 }
 
 void PropertyManager::set_locked(bool locked) { m_is_locked = locked; }
@@ -252,22 +250,21 @@ void PropertyManager::clear()
   }
 }
 
-std::string PropertyManager::type() const { return TYPE; }
+QString PropertyManager::type() const { return TYPE; }
 
-bool PropertyManager::perform_action(const std::string& name)
+bool PropertyManager::perform_action(const QString& name)
 {
   LINFO << name;
   return false;
 }
 
-std::string PropertyManager::make_window_title() const
+QString PropertyManager::make_window_title() const
 {
-  std::ostringstream ss;
-  ss << QObject::tr("property manager", "PropertyManager").toStdString();
+  QString title = QObject::tr("property manager", "PropertyManager");
   for (auto&& selected : m_current_selection) {
-    ss << " " << selected->name();
+    title += " " + selected->name();
   }
-  return ss.str();
+  return title;
 }
 
 void PropertyManager::activate_tabs(const std::set<int>& indices)

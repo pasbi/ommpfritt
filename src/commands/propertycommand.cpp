@@ -4,8 +4,8 @@ namespace omm
 {
 
 AbstractPropertiesCommand::AbstractPropertiesCommand(const std::set<Property*>& properties)
-  : Command(   QObject::tr("Set ").toStdString()
-             + Property::get_value<std::string>(properties, std::mem_fn(&Property::label)) )
+  : Command(   QObject::tr("Set ")
+             + Property::get_value<QString>(properties, std::mem_fn(&Property::label)) )
   , m_properties(properties)
 {
 }

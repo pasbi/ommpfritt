@@ -22,25 +22,23 @@ bool KeyBindingsProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
       return rowCount(mapFromSource(index)) > 0;
     } else {
       const auto* value = static_cast<const PreferencesTreeValueItem*>(ptr);
-      const auto name = QString::fromStdString(value->name);
-      const auto sequence = QKeySequence(QString::fromStdString(value->value())).toString(QKeySequence::NativeText);
-      const bool name_matches = name.contains(QString::fromStdString(m_action_name_filter),
-                                              Qt::CaseInsensitive);
-      const bool sequence_matches = sequence.contains(QString::fromStdString(m_action_sequence_filter),
-                                                      Qt::CaseInsensitive);
-      return (m_action_name_filter.empty() || name_matches)
-          && (m_action_sequence_filter.empty() || sequence_matches);
+      const auto name = value->name;
+      const auto sequence = QKeySequence(value->value()).toString(QKeySequence::NativeText);
+      const bool name_matches = name.contains(m_action_name_filter, Qt::CaseInsensitive);
+      const bool sequence_matches = sequence.contains(m_action_sequence_filter, Qt::CaseInsensitive);
+      return (m_action_name_filter.isEmpty() || name_matches)
+          && (m_action_sequence_filter.isEmpty() || sequence_matches);
     }
   }
 }
 
-void KeyBindingsProxyModel::set_action_name_filter(const std::string& action_name)
+void KeyBindingsProxyModel::set_action_name_filter(const QString& action_name)
 {
   m_action_name_filter = action_name;
   invalidate();
 }
 
-void KeyBindingsProxyModel::set_action_sequence_filter(const std::string& action_sequence)
+void KeyBindingsProxyModel::set_action_sequence_filter(const QString& action_sequence)
 {
   m_action_sequence_filter = action_sequence;
   invalidate();

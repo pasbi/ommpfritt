@@ -8,7 +8,7 @@
 namespace omm
 {
 
-ToolBar::ToolBar(QWidget* parent, ToolBox& tool_box, const std::vector<std::string>& tools)
+ToolBar::ToolBar(QWidget* parent, ToolBox& tool_box, const std::vector<QString>& tools)
   : QToolBar(tr("ToolBar"), parent)
   , m_tools(tools)
 {
@@ -17,15 +17,14 @@ ToolBar::ToolBar(QWidget* parent, ToolBox& tool_box, const std::vector<std::stri
   auto& icon_provider = Application::instance().icon_provider;
   for (auto&& tool_class : tools) {
     auto& tool = tool_box.tool(tool_class);
-    auto* action = addAction(icon_provider.icon(tool.type()),
-                             QString::fromStdString(tool.name()));
+    auto* action = addAction(icon_provider.icon(tool.type()), tool.name());
     connect(action, &QAction::triggered, [tool_class, &tool_box]() {
       tool_box.set_active_tool(tool_class);
     });
   }
 }
 
-const std::vector<std::string>& ToolBar::tools() const
+const std::vector<QString>& ToolBar::tools() const
 {
   return m_tools;
 }

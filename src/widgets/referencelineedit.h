@@ -24,7 +24,7 @@ public:
   value_type value() const override;
   void set_filter(AbstractPropertyOwner::Kind allowed_kinds);
   void set_filter(AbstractPropertyOwner::Flag required_flags);
-  void set_null_label(const std::string& value);
+  void set_null_label(const QString& value);
   void set_scene(Scene& scene);
 
 protected:
@@ -42,7 +42,7 @@ private:
   std::vector<AbstractPropertyOwner*> m_possible_references;
 
   std::vector<omm::AbstractPropertyOwner*> collect_candidates();
-  std::string m_null_label;
+  QString m_null_label;
 
 public Q_SLOTS:
   void update_candidates();

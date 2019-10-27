@@ -27,15 +27,15 @@ AbstractSelectTool::AbstractSelectTool(Scene& scene)
   : Tool(scene)
 
 {
-  const std::string category = QObject::tr("tool").toStdString();
+  const QString category = QObject::tr("tool");
   create_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY, 1)
-    .set_options({ QObject::tr("global").toStdString(), QObject::tr("local").toStdString() })
-    .set_label(QObject::tr("Alignment").toStdString())
+    .set_options({ QObject::tr("global"), QObject::tr("local") })
+    .set_label(QObject::tr("Alignment"))
     .set_category(category)
     .set_animatable(false);
 
   create_property<BoolProperty>(SYMMETRIC_PROPERTY_KEY, false)
-    .set_label(QObject::tr("Symmetric").toStdString())
+    .set_label(QObject::tr("Symmetric"))
     .set_category(category)
     .set_animatable(false);
 }
@@ -81,8 +81,8 @@ ObjectTransformation AbstractSelectTool::transformation() const
 void AbstractSelectTool::draw(Painter &renderer) const
 {
   Tool::draw(renderer);
-  if (!tool_info.empty()) {
-    renderer.toast(m_current_position + Vec2f(30.0, 30.0), tool_info.c_str());
+  if (!tool_info.isEmpty()) {
+    renderer.toast(m_current_position + Vec2f(30.0, 30.0), tool_info);
     const auto line = std::vector { Point(m_init_position), Point(m_current_position) };
     renderer.painter->setPen(ui_color("Handle", "line"));
     renderer.painter->drawLine(m_init_position.x, m_init_position.y,

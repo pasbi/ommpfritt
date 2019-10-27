@@ -29,7 +29,7 @@ ReferenceLineEdit::ReferenceLineEdit(QWidget* parent) : QComboBox(parent)
   QTimer::singleShot(1, this, SLOT(convert_text_to_placeholder_text()));
 }
 
-void ReferenceLineEdit::set_null_label(const std::string& value)
+void ReferenceLineEdit::set_null_label(const QString& value)
 {
   m_null_label = value;
   update_candidates();
@@ -37,7 +37,7 @@ void ReferenceLineEdit::set_null_label(const std::string& value)
 
 void ReferenceLineEdit::set_scene(Scene &scene)
 {
-  set_null_label(QObject::tr("< none >", "ReferenceLineEdit").toStdString());
+  set_null_label(QObject::tr("< none >", "ReferenceLineEdit"));
 
   // scene must not be re-set and must not be cleared.
   // There's nothing fundamentally speaking against this, however, it is not required and slightly
@@ -57,7 +57,7 @@ void ReferenceLineEdit::set_scene(Scene &scene)
   connect(&m_scene->message_box(), &MessageBox::tag_removed, this, update_candidates_maybe);
   connect(&m_scene->message_box(), SIGNAL(scene_reseted()), this, SLOT(update_candidates()));
   connect(&m_scene->message_box(), &MessageBox::property_value_changed, this,
-          [this](AbstractPropertyOwner& owner, const std::string& key, Property&)
+          [this](AbstractPropertyOwner& owner, const QString& key, Property&)
   {
     if (static_cast<bool>(owner.flags() & AbstractPropertyOwner::Flag::HasScript)) {
       if (key == AbstractPropertyOwner::NAME_PROPERTY_KEY) {
@@ -77,9 +77,9 @@ void ReferenceLineEdit::update_candidates()
     clear();
     for (auto candidate : m_possible_references) {
       if (candidate) {
-        addItem(QString::fromStdString(candidate->name()));
+        addItem(candidate->name());
       } else {
-        addItem(QString::fromStdString(m_null_label));
+        addItem(m_null_label);
       }
     }
     set_value(value_safe);

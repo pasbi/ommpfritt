@@ -52,7 +52,7 @@ ObjectTransformation Painter::current_transformation() const
   }
 }
 
-void Painter::toast(const Vec2f &pos, const std::string &text)
+void Painter::toast(const Vec2f &pos, const QString &text)
 {
   static const QFont toast_font("Helvetica", 12, 0, false);
   static const QPen pen(Qt::black, 1.0);
@@ -65,7 +65,7 @@ void Painter::toast(const Vec2f &pos, const std::string &text)
   static constexpr double huge = 10.0e10;
   const QRectF rect(top_left, QSizeF(huge, huge));
   QRectF actual_rect;
-  painter->drawText(rect, Qt::AlignTop | Qt::AlignLeft, text.c_str(), &actual_rect);
+  painter->drawText(rect, Qt::AlignTop | Qt::AlignLeft, text, &actual_rect);
   const double margin = 10.0;
   actual_rect.adjust(-margin, -margin, margin, margin);
 

@@ -31,19 +31,19 @@ public:
   ~Application();
   bool save();
   bool save_as();
-  bool save(const std::string& filename);
+  bool save(const QString& filename);
   bool can_close();
   void load();
-  void load(const std::string& filename, bool force);
+  void load(const QString& filename, bool force);
   void reset();
   void quit();
   void update_undo_redo_enabled();
   void set_main_window(MainWindow& main_window);
-  QKeySequence default_key_sequence(const std::string& name) const;
+  QKeySequence default_key_sequence(const QString& name) const;
   static Application& instance();
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Application");
-  std::string type() const override;
+  QString type() const override;
 
   KeyBindings key_bindings;
   UiColors ui_colors;
@@ -55,7 +55,7 @@ public:
   const IconProvider icon_provider;
 
   enum class InsertionMode { Default, AsParent, AsChild };
-  Object &insert_object(const std::string& key, InsertionMode mode);
+  Object &insert_object(const QString& key, InsertionMode mode);
 
   static const std::set<int> keyboard_modifiers;
   void register_auto_invert_icon_button(QAbstractButton& button);
@@ -95,7 +95,7 @@ public:
 
   void register_manager(Manager& manager);
   void unregister_manager(Manager& manager);
-  bool perform_action(const std::string& name) override;
+  bool perform_action(const QString& name) override;
 private:
   QTimer m_reset_keysequence_timer;
   QKeySequence m_pending_key_sequence;

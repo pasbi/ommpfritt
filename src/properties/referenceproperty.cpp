@@ -8,12 +8,12 @@ namespace omm
 using Flag = AbstractPropertyOwner::Flag;
 using Kind = AbstractPropertyOwner::Kind;
 
-const std::map<AbstractPropertyOwner::Kind, std::string> ReferenceProperty::KIND_KEYS {
+const std::map<AbstractPropertyOwner::Kind, QString> ReferenceProperty::KIND_KEYS {
   { Kind::Tag, "tag" }, { Kind::Tool, "tool" },
   { Kind::Style, "style" }, { Kind::Object, "object" }
 };
 
-const std::map<AbstractPropertyOwner::Flag, std::string> ReferenceProperty::FLAG_KEYS {
+const std::map<AbstractPropertyOwner::Flag, QString> ReferenceProperty::FLAG_KEYS {
   { Flag::IsView, "is-view" }, { Flag::HasScript, "has-script" },
   { Flag::IsPathLike, "is-pathlike"}, { Flag::Convertable, "convertable" }
 };

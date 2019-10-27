@@ -25,7 +25,7 @@ ObjectManager::ObjectManager(Scene& scene)
           &item_view(), SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
 }
 
-bool ObjectManager::perform_action(const std::string& name)
+bool ObjectManager::perform_action(const QString& name)
 {
   if (name == "remove objects and tags") {
     scene().remove(this, item_view().selected_items());
@@ -53,13 +53,13 @@ void ObjectManager::contextMenuEvent(QContextMenuEvent* event)
   menu.addAction(e_os(kb.make_action(*this, "group objects").release()));
   Menu attach_menu(tr("Attach"));
   menu.addMenu(&attach_menu);
-  for (const std::string& tag_type : Tag::keys()) {
+  for (const QString& tag_type : Tag::keys()) {
     attach_menu.addAction(e_os(kb.make_action(app, tag_type).release()));
   }
 
   menu.exec(event->globalPos());
 }
 
-std::string ObjectManager::type() const { return TYPE; }
+QString ObjectManager::type() const { return TYPE; }
 
 }  // namespace omm

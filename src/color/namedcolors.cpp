@@ -23,13 +23,13 @@ QVariant NamedColors::data(const QModelIndex& index, int role) const
   case Qt::BackgroundRole:
     return color.to_qcolor();
   case Qt::DisplayRole:
-    return QString::fromStdString(name);
+    return name;
   default:
     return QVariant();
   }
 }
 
-Color* NamedColors::resolve(const std::string& name)
+Color* NamedColors::resolve(const QString& name)
 {
   const auto it = std::find_if(m_named_colors.begin(), m_named_colors.end(),
                                [name](const auto& pair)
@@ -44,12 +44,12 @@ Color* NamedColors::resolve(const std::string& name)
   }
 }
 
-const Color* NamedColors::resolve(const std::string& name) const
+const Color* NamedColors::resolve(const QString& name) const
 {
   return const_cast<const Color*>(const_cast<NamedColors*>(this)->resolve(name));
 }
 
-bool NamedColors::resolve(const std::string& name, Color& color) const
+bool NamedColors::resolve(const QString& name, Color& color) const
 {
   const Color* c = resolve(name);
   if (c != nullptr) {
@@ -67,14 +67,14 @@ Color NamedColors::color(const QModelIndex& index) const
   return m_named_colors[index.row()].second;
 }
 
-std::string NamedColors::name(const QModelIndex& index) const
+QString NamedColors::name(const QModelIndex& index) const
 {
   assert(index.isValid());
   assert(index.model() == this);
   return m_named_colors[index.row()].first;
 }
 
-QModelIndex NamedColors::index(const std::string& name) const
+QModelIndex NamedColors::index(const QString& name) const
 {
   const auto it = std::find_if(m_named_colors.begin(), m_named_colors.end(),
                                [name](const auto& pair)
@@ -84,7 +84,7 @@ QModelIndex NamedColors::index(const std::string& name) const
   return index(std::distance(m_named_colors.begin(), it), 0);
 }
 
-bool NamedColors::has_color(const std::string& name) const
+bool NamedColors::has_color(const QString& name) const
 {
   const auto it = std::find_if(m_named_colors.begin(), m_named_colors.end(),
                                [name](const auto& pair)
@@ -107,14 +107,14 @@ void NamedColors::set_color(const QModelIndex& index, const Color& color)
   Q_EMIT dataChanged(index, index, { Qt::BackgroundRole, Qt::ForegroundRole });
 }
 
-void NamedColors::change(const std::string& name, const Color& color)
+void NamedColors::change(const QString& name, const Color& color)
 {
   auto& pair = m_named_colors[index(name).row()];
   assert(color.model() != Color::Model::Named);
   pair.second = color;
 }
 
-void NamedColors::rename(const std::string& old_name, const std::string& new_name)
+void NamedColors::rename(const QString& old_name, const QString& new_name)
 {
   assert(!has_color(new_name));
   assert(has_color(old_name));
@@ -124,7 +124,7 @@ void NamedColors::rename(const std::string& old_name, const std::string& new_nam
   pair.first = new_name;
 }
 
-void NamedColors::remove(const std::string& name)
+void NamedColors::remove(const QString& name)
 {
   const QModelIndex index = this->index(name);
   assert(index.isValid());
@@ -135,7 +135,7 @@ void NamedColors::remove(const std::string& name)
   endRemoveRows();
 }
 
-Color NamedColors::color(const std::string& name) const
+Color NamedColors::color(const QString& name) const
 {
   const QModelIndex index = this->index(name);
   assert(index.isValid());
@@ -168,21 +168,19 @@ void NamedColors::deserialize(AbstractDeserializer& deserializer, const Serializ
   endResetModel();
 }
 
-std::string NamedColors::generate_default_name() const
+QString NamedColors::generate_default_name() const
 {
-  const std::string default_name = tr("Unnamed Color").toStdString();
-  std::string candidate = default_name;
+  const QString default_name = tr("Unnamed Color");
+  QString candidate = default_name;
   std::size_t i = 0;
   while (has_color(candidate)) {
     i += 1;
-    std::ostringstream ostream;
-    ostream << default_name << "." << std::setw(3) << std::setfill('0') << i;
-    candidate = ostream.str();
+    candidate = default_name + QString(".%1").arg(static_cast<int>(i), 3, 10, QChar('0'));
   }
   return candidate;
 }
 
-QModelIndex NamedColors::add(const std::string& name, const Color& color)
+QModelIndex NamedColors::add(const QString& name, const Color& color)
 {
   const std::size_t n = m_named_colors.size();
   beginInsertRows(QModelIndex(), n, n);

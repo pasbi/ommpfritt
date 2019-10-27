@@ -16,7 +16,7 @@ OptionsPropertyWidget::OptionsPropertyWidget(Scene& scene, const std::set<Proper
 
   QSignalBlocker blocker(m_options_edit);
   m_options_edit->set_options(
-    Property::get_value<std::vector<std::string>, OptionsProperty>(properties, get_options));
+    Property::get_value<std::vector<QString>, OptionsProperty>(properties, get_options));
   set_default_layout(std::move(options_edit));
   update_edit();
 }
@@ -27,7 +27,7 @@ void OptionsPropertyWidget::update_edit()
   m_options_edit->set_values(get_properties_values());
 }
 
-std::string OptionsPropertyWidget::type() const
+QString OptionsPropertyWidget::type() const
 {
   return TYPE;
 }

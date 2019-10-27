@@ -14,7 +14,7 @@ namespace omm
 UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner &owner, QWidget *parent)
   : QDialog(parent)
   , m_ui(new Ui::UserPropertyDialog)
-  , m_property_types(::transform<std::string, std::vector>(Property::keys()))
+  , m_property_types(::transform<QString, std::vector>(Property::keys()))
   , m_owner(owner)
   , m_user_property_list_model(owner)
 {
@@ -27,9 +27,9 @@ UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner &owner, QWidget *pa
     m_ui->listView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
   });
 
-  m_ui->cb_type->addItems(::transform<QString, QList>(m_property_types, [](const std::string& s)
+  m_ui->cb_type->addItems(::transform<QString, QList>(m_property_types, [](const QString& s)
   {
-    return tr(s.c_str(), "Property");
+    return tr(s.toUtf8().constData(), "Property");
   }));
   connect(m_ui->cb_type, qOverload<int>(&QComboBox::currentIndexChanged), [this](int index) {
     m_current_item->configuration["type"] = m_property_types[index];
@@ -56,11 +56,11 @@ UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner &owner, QWidget *pa
 
 void UserPropertyDialog::submit()
 {
-  std::vector<std::pair<std::string, std::unique_ptr<Property>>> additions;
-  std::list<std::string> deletions;
+  std::vector<std::pair<QString, std::unique_ptr<Property>>> additions;
+  std::list<QString> deletions;
   std::map<Property*, Property::Configuration> changes;
   const auto keys = m_owner.properties().keys();
-  for (const std::string& property_key : keys) {
+  for (const QString& property_key : keys) {
     Property* p = m_owner.property(property_key);
     if (p != nullptr && p->is_user_property() && !m_user_property_list_model.contains(p)) {
       deletions.push_back(property_key);
@@ -75,14 +75,12 @@ void UserPropertyDialog::submit()
       property->configuration = item->configuration;
       property->set_label(item->label());
       property->set_category(Property::USER_PROPERTY_CATEGROY_NAME);
-      std::string key = item->label();
-      if (key.empty()) {
-        key = tr("unnamed").toStdString();
+      QString key = item->label();
+      if (key.isEmpty()) {
+        key = tr("unnamed");
       }
       for (int i = 0; m_owner.has_property(key); ++i) {
-        std::ostringstream ostream;
-        ostream << item->label() << "." << std::setw(3) << std::setfill('0') << i;
-        key = ostream.str();
+        key = item->label() + QString(".%1").arg(i, 3, 10, QChar('0'));
       }
       additions.push_back(std::pair(key, std::move(property)));
     }
@@ -111,11 +109,11 @@ void UserPropertyDialog::update_property_config_page(UserPropertyListItem* item)
     m_ui->cb_type->hide();
     m_ui->cb_animatable->hide();
   } else {
-    const std::string type = m_current_item->type();
+    const QString type = m_current_item->type();
     {
       QSignalBlocker blocker(m_ui->cb_type);
       m_ui->cb_type->setEnabled(m_current_item->property() == nullptr);
-      m_ui->cb_type->setCurrentText(QString::fromStdString(type));
+      m_ui->cb_type->setCurrentText(type);
     }
     {
       QSignalBlocker blocker(m_ui->cb_animatable);
@@ -123,7 +121,7 @@ void UserPropertyDialog::update_property_config_page(UserPropertyListItem* item)
       m_ui->cb_animatable->setChecked(a);
     }
 
-    const std::string config_widget_type = type + "ConfigWidget";
+    const QString config_widget_type = type + "ConfigWidget";
     auto config_widget = PropertyConfigWidget::make(config_widget_type);
     connect(config_widget.get(), &PropertyConfigWidget::hidden,
             [this, config_widget=config_widget.get()]()

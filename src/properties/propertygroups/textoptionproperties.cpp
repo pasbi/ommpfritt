@@ -10,35 +10,35 @@
 namespace omm
 {
 
-void TextOptionProperties::make_properties(const std::string& category) const
+void TextOptionProperties::make_properties(const QString& category) const
 {
   create_property<OptionsProperty>(ALIGNH_PROPERTY_KEY)
-    .set_options({ QObject::tr("Left").toStdString(), QObject::tr("Center").toStdString(),
-                   QObject::tr("Right").toStdString(), QObject::tr("Justify").toStdString() })
-    .set_label(QObject::tr("H-Align").toStdString()).set_category(category);
+    .set_options({ QObject::tr("Left"), QObject::tr("Center"),
+                   QObject::tr("Right"), QObject::tr("Justify") })
+    .set_label(QObject::tr("H-Align")).set_category(category);
   create_property<OptionsProperty>(ALIGNV_PROPERTY_KEY)
-    .set_options({ QObject::tr("Top").toStdString(), QObject::tr("Center").toStdString(),
-                   QObject::tr("Bottom").toStdString()
+    .set_options({ QObject::tr("Top"), QObject::tr("Center"),
+                   QObject::tr("Bottom")
                    // the baseline flag cannot be supported right now because of QTBUG-74652:
                    // https://bugreports.qt.io/browse/QTBUG-74652
                    // https://stackoverflow.com/q/55296327/4248972
-                   //, QObject::tr("Baseline").toStdString()
+                   //, QObject::tr("Baseline")
                  })
-    .set_label(QObject::tr("V-Align").toStdString()).set_category(category);
+    .set_label(QObject::tr("V-Align")).set_category(category);
   create_property<FloatProperty>(TABSTOPDISTANCE_PROPERTY_KEY, 10)
     .set_range(0, 100)
-    .set_label(QObject::tr("Tab width").toStdString()).set_category(category);
+    .set_label(QObject::tr("Tab width")).set_category(category);
   create_property<OptionsProperty>(DIRECTION_PROPERTY_KEY)
-      .set_options({ QObject::tr("Left to right").toStdString(),
-                     QObject::tr("Right to left").toStdString(),
-                     QObject::tr("Auto").toStdString() })
-      .set_label(QObject::tr("Direction").toStdString()).set_category(category);
+      .set_options({ QObject::tr("Left to right"),
+                     QObject::tr("Right to left"),
+                     QObject::tr("Auto") })
+      .set_label(QObject::tr("Direction")).set_category(category);
   create_property<OptionsProperty>(WRAP_MODE_PROPERTY_KEY)
-      .set_options({ QObject::tr("none").toStdString(),
-                     QObject::tr("at word boundary").toStdString(),
-                     QObject::tr("anywhere").toStdString(),
-                     QObject::tr("prefer at word boundary").toStdString() })
-      .set_label(QObject::tr("Wrap").toStdString()).set_category(category);
+      .set_options({ QObject::tr("none"),
+                     QObject::tr("at word boundary"),
+                     QObject::tr("anywhere"),
+                     QObject::tr("prefer at word boundary") })
+      .set_label(QObject::tr("Wrap")).set_category(category);
 }
 
 QTextOption TextOptionProperties::get_option() const

@@ -18,9 +18,9 @@ class PythonEngine : public QObject
 public:
   explicit PythonEngine();
   bool
-  exec(const std::string& code, pybind11::object& locals, const void* association);
+  exec(const QString& code, pybind11::object& locals, const void* association);
   pybind11::object
-  eval(const std::string& code, pybind11::object& locals, const void* association);
+  eval(const QString& code, pybind11::object& locals, const void* association);
 
 private:
   // the scoped_interpeter has same lifetime as the application.
@@ -32,7 +32,7 @@ private:
   PythonEngine(PythonEngine&&) = delete;
 
 Q_SIGNALS:
-  void output(const void* associated_item, const std::string& text, Stream stream);
+  void output(const void* associated_item, const QString& text, Stream stream);
 };
 
 void register_wrappers(pybind11::object& module);

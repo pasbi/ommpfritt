@@ -10,9 +10,9 @@ class MarkerProperties : public PropertyGroup
 {
 public:
   enum class Shape { None, Arrow, Bar, Circle, Diamond };
-  MarkerProperties(const std::string& prefix, AbstractPropertyOwner& property_owner,
+  MarkerProperties(const QString& prefix, AbstractPropertyOwner& property_owner,
                    const Shape default_shape, const double default_size);
-  void make_properties(const std::string &category) const override;
+  void make_properties(const QString &category) const override;
 
   void draw_marker(Painter& painter, const Point& location,
                    const Color &color, const double width) const;
@@ -22,7 +22,7 @@ public:
   static constexpr auto ASPECT_RATIO_PROPERTY_KEY = "aspectratio";
   static constexpr auto REVERSE_PROPERTY_KEY = "reverse";
 
-  std::vector<std::string> shapes() const;
+  std::vector<QString> shapes() const;
   std::vector<Point> shape(const double width) const;
   std::vector<Point> arrow(const Vec2f& size) const;
   std::vector<Point> bar(const Vec2f& size) const;

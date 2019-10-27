@@ -119,7 +119,6 @@ std::vector<double> Cubic::cut(const Vec2f& start, const Vec2f& end) const
   const auto roots = find_cubic_roots(ps);
 
   std::list<double> ts;
-  std::stringstream tt;
   for (const double t : roots) {
     assert(!std::isnan(t));
     if (t >= 0.0 && t <= 1.0) {

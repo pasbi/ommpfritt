@@ -113,7 +113,7 @@ public:
     transformation = transformation.apply(ObjectTransformation().translated(anchor));
     transformation = transformation.apply(ObjectTransformation().scaled(s));
     transformation = transformation.apply(ObjectTransformation().translated(-anchor));
-    tool.tool_info = QString("%1, %2").arg(s.x).arg(s.y).toStdString();
+    tool.tool_info = QString("%1, %2").arg(s.x).arg(s.y);
     tool.transform_objects(transformation);
     return true;
   }

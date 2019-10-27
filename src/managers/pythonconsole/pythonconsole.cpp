@@ -50,15 +50,14 @@ PythonConsole::PythonConsole(Scene& scene)
   auto output = std::make_unique<CodeEdit>();
   m_output = output.get();
   m_output->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  m_output->set_placeholder_text(QObject::tr("no output yet.", "PythonConsole").toStdString());
+  m_output->set_placeholder_text(QObject::tr("no output yet.", "PythonConsole"));
   m_output->set_editable(false);
   m_layout->addWidget(output.release());
 
   auto commandline = std::make_unique<CodeEdit>();
   m_commandline = commandline.get();
   m_commandline->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
-  m_commandline->set_placeholder_text( QObject::tr("enter command ...", "PythonConsole")
-                                        .toStdString() );
+  m_commandline->set_placeholder_text(QObject::tr("enter command ...", "PythonConsole"));
   m_commandline->installEventFilter(this);
   m_commandline->set_caption_modifiers(caption_modifiers);
   m_layout->addWidget(commandline.release());
@@ -66,8 +65,8 @@ PythonConsole::PythonConsole(Scene& scene)
   m_layout->setContentsMargins(0, 0, 0, 0);
   set_widget(std::move(widget));
 
-  connect(&scene.python_engine, SIGNAL(output(const void*, std::string, Stream)),
-          this, SLOT(on_output(const void*, std::string, Stream)));
+  connect(&scene.python_engine, SIGNAL(output(const void*, QString, Stream)),
+          this, SLOT(on_output(const void*, QString, Stream)));
   {
     using namespace pybind11::literals;
     m_locals = new pybind11::dict("scene"_a=SceneWrapper(scene));
@@ -79,7 +78,7 @@ PythonConsole::~PythonConsole()
   delete static_cast<pybind11::dict*>(m_locals);
 }
 
-void PythonConsole::on_output(const void* associated_item, std::string text, Stream stream)
+void PythonConsole::on_output(const void* associated_item, QString text, Stream stream)
 {
   if (accept(associated_item)) {
     m_output->put(text, stream);
@@ -91,7 +90,7 @@ void PythonConsole::eval()
 {
   const auto code = m_commandline->code();
   push_command(code);
-  m_output->put(QObject::tr(">>> ", "PythonConsole").toStdString() + code, Stream::stdout_);
+  m_output->put(QObject::tr(">>> ", "PythonConsole") + code, Stream::stdout_);
 
   scene().python_engine.exec(code, *static_cast<pybind11::dict*>(m_locals), nullptr);
 
@@ -159,14 +158,14 @@ void PythonConsole::get_next_command()
   }
 }
 
-void PythonConsole::push_command(const std::string& command)
+void PythonConsole::push_command(const QString& command)
 {
   m_command_stack.erase(m_command_stack_pointer, m_command_stack.end());
   m_command_stack.push_back(command);
   m_command_stack_pointer = m_command_stack.end();
 }
 
-bool PythonConsole::perform_action(const std::string& name)
+bool PythonConsole::perform_action(const QString& name)
 {
   if (name == "clear console") {
     clear();
@@ -178,6 +177,6 @@ bool PythonConsole::perform_action(const std::string& name)
   return true;
 }
 
-std::string PythonConsole::type() const { return TYPE; }
+QString PythonConsole::type() const { return TYPE; }
 
 }  // namespace omm

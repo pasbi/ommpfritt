@@ -11,10 +11,10 @@
 namespace
 {
 
-std::string trim_trailing_newline(const std::string& s)
+QString trim_trailing_newline(const QString& s)
 {
   if (s.size() == 0) { return s; }
-  if (s.back() == '\n') { return s.substr(0, s.size() - 1); }
+  if (s.back() == '\n') { return s.mid(0, s.size() - 1); }
   return s;
 }
 
@@ -58,7 +58,7 @@ CodeEdit::CodeEdit(QWidget* parent) : QWidget(parent)
   const QString test_string(" ");
 
   // compute the size of a char in double-precision
-  const int many_char_width = font_metrics.width(test_string.repeated(big_number));
+  const int many_char_width = font_metrics.horizontalAdvance(test_string.repeated(big_number));
   const double single_char_width_double = many_char_width / double(big_number);
 
   // set the tab stop with double-precision
@@ -70,7 +70,7 @@ CodeEdit::CodeEdit(QWidget* parent) : QWidget(parent)
   });
 }
 
-std::string CodeEdit::code() const { return m_text_edit->toPlainText().toStdString(); }
+QString CodeEdit::code() const { return m_text_edit->toPlainText(); }
 void CodeEdit::clear() { m_text_edit->clear(); }
 void CodeEdit::set_editable(bool editable) { m_text_edit->setReadOnly(!editable); }
 void CodeEdit::set_caption_modifiers(const Qt::KeyboardModifiers &modifiers)
@@ -78,17 +78,17 @@ void CodeEdit::set_caption_modifiers(const Qt::KeyboardModifiers &modifiers)
   m_text_edit->caption_modifiers = modifiers;
 }
 
-void CodeEdit::set_code(const std::string& code)
+void CodeEdit::set_code(const QString& code)
 {
   if (code != this->code()) {
-    m_text_edit->setText(QString::fromStdString(code));
+    m_text_edit->setText(code);
     m_text_edit->moveCursor(QTextCursor::End);
   }
 }
 
-void CodeEdit::set_placeholder_text(const std::string& ph)
+void CodeEdit::set_placeholder_text(const QString& ph)
 {
-  m_text_edit->setPlaceholderText(QString::fromStdString(ph));
+  m_text_edit->setPlaceholderText(ph);
 }
 
 QSize CodeEdit::sizeHint() const
@@ -96,7 +96,7 @@ QSize CodeEdit::sizeHint() const
   const auto font_metrics = m_text_edit->fontMetrics();
   const auto lines = m_text_edit->toPlainText().split("\n");
   const auto widths = ::transform<int, std::vector>(lines, [&font_metrics](const QString& line) {
-    return font_metrics.width(line);
+    return font_metrics.horizontalAdvance(line);
   });
   const auto max_width = *std::max_element(widths.begin(), widths.end());
 
@@ -118,7 +118,7 @@ bool CodeEdit::is_at_bottom() const
   return scroll_bar->value() == scroll_bar->maximum();
 }
 
-void CodeEdit::put(const std::string& text, Stream stream)
+void CodeEdit::put(const QString& text, Stream stream)
 {
   const bool was_at_bottom = is_at_bottom();
   switch (stream) {
@@ -129,7 +129,7 @@ void CodeEdit::put(const std::string& text, Stream stream)
     m_text_edit->setTextColor(Qt::red);
     break;
   }
-  m_text_edit->append(QString::fromStdString(trim_trailing_newline(text)));
+  m_text_edit->append(trim_trailing_newline(text));
   if (was_at_bottom) { scroll_to_bottom(); }
 }
 

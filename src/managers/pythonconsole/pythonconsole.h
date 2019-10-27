@@ -21,8 +21,8 @@ public:
   ~PythonConsole();
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PythonConsole");
-  std::string type() const override;
-  bool perform_action(const std::string &name) override;
+  QString type() const override;
+  bool perform_action(const QString &name) override;
 
 protected:
   bool eventFilter(QObject* object, QEvent* event) override;
@@ -40,15 +40,15 @@ private:
 
   void get_previous_command();
   void get_next_command();
-  void push_command(const std::string& command);
+  void push_command(const QString& command);
 
-  std::list<std::string> m_command_stack;
-  std::list<std::string>::iterator m_command_stack_pointer = m_command_stack.end();
+  std::list<QString> m_command_stack;
+  std::list<QString>::iterator m_command_stack_pointer = m_command_stack.end();
 
   static constexpr Qt::KeyboardModifiers caption_modifiers = Qt::ControlModifier;
 
 private Q_SLOTS:
-  void on_output(const void* associated_item, std::string content, Stream stream);
+  void on_output(const void* associated_item, QString content, Stream stream);
 
 private:
   // allocation on stack issues strange compiler warnings

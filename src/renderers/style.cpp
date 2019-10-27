@@ -25,49 +25,49 @@ Style::Style(Scene *scene)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {
-  const auto pen_category = QObject::tr("pen").toStdString();
-  const auto brush_category = QObject::tr("brush").toStdString();
-  const auto decoration_category = QObject::tr("decoration").toStdString();
-  create_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>").toStdString())
-    .set_label(QObject::tr("Name").toStdString())
-    .set_category(QObject::tr("basic").toStdString());
+  const auto pen_category = QObject::tr("pen");
+  const auto brush_category = QObject::tr("brush");
+  const auto decoration_category = QObject::tr("decoration");
+  create_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>"))
+    .set_label(QObject::tr("Name"))
+    .set_category(QObject::tr("basic"));
 
   create_property<BoolProperty>(PEN_IS_ACTIVE_KEY, true)
-    .set_label(QObject::tr("active").toStdString())
+    .set_label(QObject::tr("active"))
     .set_category(pen_category);
   create_property<ColorProperty>(PEN_COLOR_KEY, Colors::BLACK)
-    .set_label(QObject::tr("color").toStdString())
+    .set_label(QObject::tr("color"))
     .set_category(pen_category);
   create_property<FloatProperty>(PEN_WIDTH_KEY, 1.0)
     .set_step(0.1)
     .set_range(0, std::numeric_limits<double>::infinity())
-    .set_label(QObject::tr("width").toStdString())
+    .set_label(QObject::tr("width"))
     .set_category(pen_category);
   create_property<OptionsProperty>(STROKE_STYLE_KEY, 0)
-    .set_options({ QObject::tr("Solid").toStdString(),
-                   QObject::tr("Dashed").toStdString(),
-                   QObject::tr("Dotted").toStdString(),
-                   QObject::tr("DashDotted").toStdString(),
-                   QObject::tr("DashDotDotted").toStdString() })
-    .set_label(QObject::tr("Stroke Style").toStdString()).set_category(pen_category);
+    .set_options({ QObject::tr("Solid"),
+                   QObject::tr("Dashed"),
+                   QObject::tr("Dotted"),
+                   QObject::tr("DashDotted"),
+                   QObject::tr("DashDotDotted") })
+    .set_label(QObject::tr("Stroke Style")).set_category(pen_category);
   create_property<OptionsProperty>(JOIN_STYLE_KEY, 2)
-    .set_options({ QObject::tr("Bevel").toStdString(),
-                   QObject::tr("Miter").toStdString(),
-                   QObject::tr("Round").toStdString() })
-    .set_label(QObject::tr("Join").toStdString()).set_category(pen_category);
+    .set_options({ QObject::tr("Bevel"),
+                   QObject::tr("Miter"),
+                   QObject::tr("Round") })
+    .set_label(QObject::tr("Join")).set_category(pen_category);
   create_property<OptionsProperty>(CAP_STYLE_KEY, 1)
-    .set_options({ QObject::tr("Square").toStdString(),
-                   QObject::tr("Flat").toStdString(),
-                   QObject::tr("Round").toStdString() })
-    .set_label(QObject::tr("Cap").toStdString()).set_category(pen_category);
-  create_property<BoolProperty>(COSMETIC_KEY, true).set_label(QObject::tr("Cosmetic").toStdString())
+    .set_options({ QObject::tr("Square"),
+                   QObject::tr("Flat"),
+                   QObject::tr("Round") })
+    .set_label(QObject::tr("Cap")).set_category(pen_category);
+  create_property<BoolProperty>(COSMETIC_KEY, true).set_label(QObject::tr("Cosmetic"))
       .set_category(pen_category);
 
   create_property<BoolProperty>(BRUSH_IS_ACTIVE_KEY, false)
-    .set_label(QObject::tr("active").toStdString())
+    .set_label(QObject::tr("active"))
     .set_category(brush_category);
   create_property<ColorProperty>(BRUSH_COLOR_KEY, Colors::RED)
-    .set_label(QObject::tr("color").toStdString())
+    .set_label(QObject::tr("color"))
       .set_category(brush_category);
 
   start_marker.make_properties(decoration_category);
@@ -82,7 +82,7 @@ Style::Style(const Style &other)
 
 }
 
-std::string Style::type() const { return TYPE; }
+QString Style::type() const { return TYPE; }
 AbstractPropertyOwner::Flag Style::flags() const { return Flag::None; }
 
 void Style::on_property_value_changed(Property *property)

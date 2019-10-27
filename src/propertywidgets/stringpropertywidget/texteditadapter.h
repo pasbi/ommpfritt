@@ -12,7 +12,7 @@
 namespace omm
 {
 
-class AbstractTextEditAdapter : public MultiValueEdit<std::string>
+class AbstractTextEditAdapter : public MultiValueEdit<QString>
 {
 public:
   virtual ~AbstractTextEditAdapter() = default;
@@ -29,9 +29,9 @@ public:
   using edit_type = QLineEdit;
   using QLineEdit::QLineEdit;
   void set_inconsistent_value() override;
-  void set_value(const std::string& ph) override;
+  void set_value(const QString& ph) override;
   void clear() override;
-  std::string value() const override;
+  QString value() const override;
   QWidget* as_widget() override;
 };
 
@@ -43,9 +43,9 @@ public:
   using QTextEdit::QTextEdit;
   explicit TextEditAdapter(QWidget* parent = nullptr);
   void set_inconsistent_value() override;
-  void set_value(const std::string& ph) override;
+  void set_value(const QString& ph) override;
   void clear() override;
-  std::string value() const override;
+  QString value() const override;
   QWidget* as_widget() override;
 };
 
@@ -56,9 +56,9 @@ public:
   using edit_type = FilePathEdit;
   using FilePathEdit::FilePathEdit;
   void set_inconsistent_value() override;
-  void set_value(const std::string& ph) override;
+  void set_value(const QString& ph) override;
   void clear() override;
-  std::string value() const override;
+  QString value() const override;
   QWidget* as_widget() override;
 };
 
@@ -69,9 +69,9 @@ public:
   using edit_type = CodeEdit;
   using CodeEdit::CodeEdit;
   void set_inconsistent_value() override;
-  void set_value(const std::string& ph) override;
+  void set_value(const QString& ph) override;
   void clear() override;
-  std::string value() const override;
+  QString value() const override;
   QWidget* as_widget() override;
 };
 
@@ -82,9 +82,9 @@ public:
   using edit_type = QFontComboBox;
   using QFontComboBox::QFontComboBox;
   void set_inconsistent_value() override;
-  void set_value(const std::string& ph) override;
+  void set_value(const QString& ph) override;
   void clear() override;
-  std::string value() const override;
+  QString value() const override;
   QWidget* as_widget() override;
 };
 

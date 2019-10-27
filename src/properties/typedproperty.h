@@ -48,7 +48,7 @@ public:
   virtual ValueT default_value() const { return m_default_value; }
   virtual void set_default_value(const ValueT& value) { m_default_value = value; }
   virtual void reset() { m_value = m_default_value; }
-  std::string type() const override = 0;
+  QString type() const override = 0;
 
   bool is_numerical() const override
   {
@@ -63,7 +63,7 @@ private:
   ValueT m_default_value;
 };
 
-template<typename ValueT> std::string TypedProperty<ValueT>::type() const
+template<typename ValueT> QString TypedProperty<ValueT>::type() const
 {
   // TypedProperty<ValueT> has no meaningful way to provide type(), which is realised
   // by overriding the virtual type() member in any of the derived types.

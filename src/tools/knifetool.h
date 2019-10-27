@@ -14,9 +14,9 @@ public:
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent&) override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
   void mouse_release(const Vec2f& pos, const QMouseEvent& event) override;
-  std::string type() const override;
+  QString type() const override;
   void draw(Painter& renderer) const override;
-  std::string name() const override;
+  QString name() const override;
   void cancel() override;
 
 private:

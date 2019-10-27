@@ -136,7 +136,7 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
 
 }
 
-std::string BoundingBoxManager::type() const { return TYPE;  }
+QString BoundingBoxManager::type() const { return TYPE;  }
 
 void BoundingBoxManager::on_property_value_changed(Property &property)
 {
@@ -271,7 +271,7 @@ BoundingBox BoundingBoxManager::bounding_box() const
   return BoundingBox(top_left, top_left + size);
 }
 
-bool BoundingBoxManager::perform_action(const std::string& name)
+bool BoundingBoxManager::perform_action(const QString& name)
 {
   LINFO << name;
   return false;

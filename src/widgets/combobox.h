@@ -27,7 +27,7 @@ public:
 
 public Q_SLOTS:
   void set_current_index(int index);
-  void set_current_text(const std::string& text);
+  void set_current_text(const QString& text);
 
 Q_SIGNALS:
   void current_index_changed(int index);

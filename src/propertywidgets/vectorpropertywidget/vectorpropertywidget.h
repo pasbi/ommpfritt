@@ -86,14 +86,14 @@ class IntegerVectorPropertyWidget : public VectorPropertyWidget<IntegerVectorPro
 {
 public:
   using VectorPropertyWidget::VectorPropertyWidget;
-  std::string type() const override { return TYPE; }
+  QString type() const override { return TYPE; }
 };
 
 class FloatVectorPropertyWidget : public VectorPropertyWidget<FloatVectorProperty>
 {
 public:
   using VectorPropertyWidget::VectorPropertyWidget;
-  std::string type() const override { return TYPE; }
+  QString type() const override { return TYPE; }
 };
 
 

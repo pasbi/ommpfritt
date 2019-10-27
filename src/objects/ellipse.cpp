@@ -15,18 +15,18 @@ class Style;
 
 Ellipse::Ellipse(Scene* scene) : AbstractProceduralPath(scene)
 {
-  static const auto category = QObject::tr("ellipse").toStdString();
+  static const auto category = QObject::tr("ellipse");
   create_property<FloatVectorProperty>(RADIUS_PROPERTY_KEY, Vec2f(100.0, 100.0) )
-    .set_label(QObject::tr("r").toStdString()).set_category(category);
+    .set_label(QObject::tr("r")).set_category(category);
   create_property<IntegerProperty>(CORNER_COUNT_PROPERTY_KEY, 12)
     .set_range(3, IntegerProperty::highest_possible_value)
-    .set_label(QObject::tr("n").toStdString()).set_category(category);
+    .set_label(QObject::tr("n")).set_category(category);
   create_property<BoolProperty>(SMOOTH_PROPERTY_KEY, true)
-    .set_label(QObject::tr("smooth").toStdString()).set_category(category);
+    .set_label(QObject::tr("smooth")).set_category(category);
   update();
 }
 
-std::string Ellipse::type() const { return TYPE; }
+QString Ellipse::type() const { return TYPE; }
 std::unique_ptr<Object> Ellipse::clone() const { return std::make_unique<Ellipse>(*this); }
 bool Ellipse::is_closed() const { return true; }
 

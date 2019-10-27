@@ -4,6 +4,7 @@
 #include <cassert>
 #include <memory>
 #include <vector>
+#include <QString>
 
 namespace omm
 {
@@ -14,19 +15,19 @@ class AbstractDeserializer;
 class Serializable
 {
 public:
-  using Pointer = std::string;
+  using Pointer = QString;
   using ByteArray = std::vector<char>;
   virtual ~Serializable() = default;
 
   virtual void serialize(AbstractSerializer&, const Pointer&) const {}
   virtual void deserialize(AbstractDeserializer&, const Pointer&) {}
 
-  template<typename PointerT> static auto make_pointer(const PointerT& pointer)
+  template<typename PointerT> static QString make_pointer(const PointerT& pointer)
   {
     constexpr char SEPARATOR = '/';
     std::ostringstream ostream;
     ostream << pointer;
-    const std::string str = ostream.str();
+    const auto str = QString::fromStdString(ostream.str());
     assert(str.size() > 0);
     if (str.at(0) == SEPARATOR) {
       return str;
@@ -38,8 +39,8 @@ public:
   template<typename PointerT, typename... PointerTs>
   static auto make_pointer(const PointerT& pointer, const PointerTs&... pointers)
   {
-    std::string lhs = make_pointer<PointerT>(pointer);
-    std::string rhs = make_pointer<PointerTs...>(pointers...);
+    QString lhs = make_pointer<PointerT>(pointer);
+    QString rhs = make_pointer<PointerTs...>(pointers...);
     return lhs + rhs;
   }
 };

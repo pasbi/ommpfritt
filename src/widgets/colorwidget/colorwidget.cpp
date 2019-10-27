@@ -44,7 +44,7 @@ ColorWidget::ColorWidget(QWidget* parent)
   {
     if (index >= 0) {
       const QString name = m_ui->cb_named_colors->view()->itemText(index);
-      set_color(Color(name.toStdString()));
+      set_color(Color(name));
     }
   });
 }
@@ -53,9 +53,9 @@ ColorWidget::~ColorWidget()
 {
 }
 
-std::string ColorWidget::name() const
+QString ColorWidget::name() const
 {
-  return tr("ColorWidget").toStdString();
+  return tr("ColorWidget");
 }
 
 void ColorWidget::set_compact()
@@ -86,7 +86,7 @@ void ColorWidget::set_color(const Color& color)
 
   {
     QSignalBlocker bloker(m_ui->le_html);
-    m_ui->le_html->setText(QString::fromStdString(color.to_html()));
+    m_ui->le_html->setText(color.to_html());
   }
 
   m_ui->w_color->set_new_color(color);
@@ -102,7 +102,7 @@ void ColorWidget::add_color_picker(std::unique_ptr<ColorPicker> picker)
   m_color_pickers.push_back(picker.get());
   connect(picker.get(), SIGNAL(color_changed(const Color&)), this, SLOT(set_color(const Color&)));
   connect(this, SIGNAL(color_changed(const Color&)), picker.get(), SLOT(set_color(const Color&)));
-  m_ui->cb_color_widget->addItem(QString::fromStdString(picker->name()));
+  m_ui->cb_color_widget->addItem(picker->name());
   m_ui->sw_color_widgets->addWidget(picker.release());
 }
 

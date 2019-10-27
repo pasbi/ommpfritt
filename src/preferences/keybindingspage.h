@@ -28,7 +28,7 @@ private:
   KeyBindingsProxyModel m_proxy_model;
   std::unique_ptr<Ui::KeyBindingsPage> m_ui;
   KeyBindings& m_key_bindings;
-  std::map<std::string, std::map<std::string, QKeySequence>> m_revert_cache;
+  std::map<QString, std::map<QString, QKeySequence>> m_revert_cache;
   void update_expand();
 
 private Q_SLOTS:

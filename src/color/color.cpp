@@ -6,8 +6,6 @@
 #include <cmath>
 #include <QtGlobal>
 #include "logging.h"
-#include <iomanip>
-#include <iostream>
 #include "mainwindow/application.h"
 
 namespace
@@ -79,16 +77,13 @@ std::array<double, 3> hsv_to_rgb(const std::array<double, 3>& hsv)
   }
 }
 
-bool decode_hex(const std::string& code, std::array<double, 4>& rgb)
+bool decode_hex(const QString& code, std::array<double, 4>& rgb)
 {
-  static const auto in_range = [](char c) {
-    c = std::tolower(c);
-    return ('0' <= c && c <= '9') || ('a' <= c && c <= 'f');
-  };
-  static const auto decode = [](const std::string& code, std::size_t offset, double& v) {
-    if (code.size() >= offset + 2 && in_range(code[offset]) && in_range(code[offset+1])) {
-      v = std::strtol(&code.substr(offset, 2).at(0), nullptr, 16) / 255.0;
-      return true;
+  static const auto decode = [](const QString& code, int offset, double& v) {
+    if (code.size() >= offset + 2) {
+      bool ok;
+      v = code.mid(offset, 2).toInt(&ok, 16) / 255.0;
+      return ok;
     } else {
       return false;
     }
@@ -131,7 +126,7 @@ Color::Color(Color::Model model, const std::array<double, 4> components)
 {
 }
 
-Color::Color(const std::string& name) : m_current_model(Model::Named), m_name(name)
+Color::Color(const QString& name) : m_current_model(Model::Named), m_name(name)
 {
 }
 
@@ -244,13 +239,11 @@ Color::Model Color::model(Role role, Model tie)
   }
 }
 
-std::string Color::to_html() const
+QString Color::to_html() const
 {
   static const auto to_hex = [](float f) {
     const int i = std::clamp(static_cast<int>(std::round(f*255)), 0, 255);
-    std::ostringstream ostr;
-    ostr << std::setw(2) << std::setfill('0') << std::hex << i;
-    const std::string str = ostr.str();
+    const QString str = QString("%1").arg(static_cast<int>(i), 2, 16, QChar('0'));
     assert(str.size() == 2);
     return str;
   };
@@ -259,7 +252,7 @@ std::string Color::to_html() const
   return "#" + to_hex(rgba[0]) + to_hex(rgba[1]) + to_hex(rgba[2]) + to_hex(rgba[3]);
 }
 
-Color Color::from_html(const std::string& html, bool* ok)
+Color Color::from_html(const QString& html, bool* ok)
 {
   Color color(Model::RGBA, { 0.0, 0.0, 0.0, 1.0 });
   if (decode_hex(html, color.m_components)) {
@@ -302,7 +295,7 @@ void Color::to_ordinary_color()
   m_name.clear();
 }
 
-std::string Color::name() const
+QString Color::name() const
 {
   if (model() == Model::Named) {
     return m_name;

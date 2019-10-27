@@ -8,19 +8,19 @@ namespace omm
 RectangleObject::RectangleObject(Scene *scene)
   : AbstractProceduralPath(scene)
 {
-  static const auto category = QObject::tr("rectangle").toStdString();
+  static const auto category = QObject::tr("rectangle");
   create_property<FloatVectorProperty>(SIZE_PROPERTY_KEY, Vec2f(200.0, 200.0) )
-    .set_label(QObject::tr("size").toStdString()).set_category(category);
+    .set_label(QObject::tr("size")).set_category(category);
   create_property<FloatVectorProperty>(RADIUS_PROPERTY_KEY, Vec2f(1.0, 1.0) )
     .set_step(Vec2f(0.01, 0.01)).set_range(Vec2f(0.0, 0.0), Vec2f(1.0, 1.0))
-    .set_label(QObject::tr("radius").toStdString()).set_category(category);
+    .set_label(QObject::tr("radius")).set_category(category);
   create_property<FloatVectorProperty>(TENSION_PROPERTY_KEY, Vec2f(1.0, 1.0) )
     .set_step(Vec2f(0.01, 0.01)).set_range(Vec2f(0.0, 0.0), Vec2f(1.0, 1.0))
-    .set_label(QObject::tr("tension").toStdString()).set_category(category);
+    .set_label(QObject::tr("tension")).set_category(category);
   update();
 }
 
-std::string RectangleObject::type() const { return TYPE; }
+QString RectangleObject::type() const { return TYPE; }
 
 std::unique_ptr<Object> RectangleObject::clone() const
 {

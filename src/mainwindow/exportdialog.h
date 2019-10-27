@@ -40,7 +40,7 @@ private:
   void save_as_raster();
   void save_as_svg();
   QPicture m_picture;
-  std::string m_filepath;
+  QString m_filepath;
 
   struct UiExportDialogDeleter
   {

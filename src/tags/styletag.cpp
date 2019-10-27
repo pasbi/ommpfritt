@@ -14,11 +14,11 @@ StyleTag::StyleTag(Object& owner)
 {
   create_property<ReferenceProperty>(STYLE_REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(Kind::Style)
-    .set_label(QObject::tr("style").toStdString())
-    .set_category(QObject::tr("style").toStdString());
+    .set_label(QObject::tr("style"))
+    .set_category(QObject::tr("style"));
 }
 
-std::string StyleTag::type() const { return TYPE; }
+QString StyleTag::type() const { return TYPE; }
 std::unique_ptr<Tag> StyleTag::clone() const { return std::make_unique<StyleTag>(*this); }
 void StyleTag::evaluate() {}
 AbstractPropertyOwner::Flag StyleTag::flags() const { return Tag::flags(); }

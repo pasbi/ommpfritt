@@ -17,30 +17,30 @@ class NamedColors : public QAbstractListModel, public Serializable
 public:
   int rowCount(const QModelIndex& parent) const override;
   QVariant data(const QModelIndex& index, int role) const override;
-  bool resolve(const std::string& name, Color& color) const;
+  bool resolve(const QString& name, Color& color) const;
   Color color(const QModelIndex& index) const;
-  std::string name(const QModelIndex& index) const;
+  QString name(const QModelIndex& index) const;
   using QAbstractListModel::index;
-  QModelIndex index(const std::string& name) const;
-  bool has_color(const std::string& name) const;
+  QModelIndex index(const QString& name) const;
+  bool has_color(const QString& name) const;
   Qt::ItemFlags flags(const QModelIndex& index) const override;
   void set_color(const QModelIndex& index, const Color& color);
 
-  void change(const std::string& name, const Color& color);
-  void rename(const std::string& old_name, const std::string& new_name);
-  QModelIndex add(const std::string& name, const Color& color);
-  void remove(const std::string& name);
-  Color color(const std::string& name) const;
+  void change(const QString& name, const Color& color);
+  void rename(const QString& old_name, const QString& new_name);
+  QModelIndex add(const QString& name, const Color& color);
+  void remove(const QString& name);
+  Color color(const QString& name) const;
 
   void serialize(AbstractSerializer&serializer, const Pointer&p) const override;
   void deserialize(AbstractDeserializer&deserializer, const Pointer&p) override;
 
-  std::string generate_default_name() const;
+  QString generate_default_name() const;
 
 private:
-  Color* resolve(const std::string& name);
-  const Color* resolve(const std::string& name) const;
-  std::vector<std::pair<std::string, Color>> m_named_colors;
+  Color* resolve(const QString& name);
+  const Color* resolve(const QString& name) const;
+  std::vector<std::pair<QString, Color>> m_named_colors;
 };
 
 template<typename ViewT>

@@ -14,15 +14,15 @@ namespace omm
 
 View::View(Scene* scene) : Object(scene)
 {
-  static const auto category = QObject::tr("view").toStdString();
+  static const auto category = QObject::tr("view");
   create_property<FloatVectorProperty>(SIZE_PROPERTY_KEY, Vec2f(100.0, 100.0) )
-    .set_label(QObject::tr("size").toStdString()).set_category(category);
+    .set_label(QObject::tr("size")).set_category(category);
   create_property<TriggerProperty>(TO_VIEWPORT_PROPERTY_KEY)
-    .set_label(QObject::tr("to viewport").toStdString()).set_category(category);
+    .set_label(QObject::tr("to viewport")).set_category(category);
   create_property<TriggerProperty>(FROM_VIEWPORT_PROPERTY_KEY)
-    .set_label(QObject::tr("from viewport").toStdString()).set_category(category);
+    .set_label(QObject::tr("from viewport")).set_category(category);
   create_property<BoolProperty>(OUTPUT_VIEW_PROPERTY_KEY, false)
-      .set_label(QObject::tr("output").toStdString()).set_category(category);
+      .set_label(QObject::tr("output")).set_category(category);
   update();
 }
 
@@ -33,7 +33,7 @@ View::View(const View &other) : Object(other)
   }
 }
 
-std::string View::type() const { return TYPE; }
+QString View::type() const { return TYPE; }
 BoundingBox View::bounding_box(const ObjectTransformation &transformation) const
 {
   if (is_active()) {

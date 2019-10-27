@@ -10,48 +10,48 @@ namespace omm
 class PreferencesTreeItem
 {
 protected:
-  explicit PreferencesTreeItem(const std::string& name);
+  explicit PreferencesTreeItem(const QString& name);
   virtual ~PreferencesTreeItem() = default;
 public:
   virtual bool is_group() const = 0;
-  const std::string name;
-  virtual std::string translated_name(const std::string& context) const = 0;
+  const QString name;
+  virtual QString translated_name(const QString& context) const = 0;
 };
 
 class PreferencesTreeValueItem: public QObject, public PreferencesTreeItem
 {
   Q_OBJECT
 public:
-  PreferencesTreeValueItem(const std::string& group, const std::string& name,
-                           const std::string& value);
-  void set_default(const std::string& value);
-  void set_value(const std::string& value);
-  void set_value(const std::string& value, std::size_t column);
-  std::string value(std::size_t column) const;
-  std::string value() const;
-  std::string default_value(std::size_t column = 0) const;
+  PreferencesTreeValueItem(const QString& group, const QString& name,
+                           const QString& value);
+  void set_default(const QString& value);
+  void set_value(const QString& value);
+  void set_value(const QString& value, std::size_t column);
+  QString value(std::size_t column) const;
+  QString value() const;
+  QString default_value(std::size_t column = 0) const;
   bool is_group() const override { return false; }
   void reset();
-  std::string translated_name(const std::string& context) const override;
+  QString translated_name(const QString& context) const override;
 
-  const std::string group;
-  static std::string value(const std::string& value, std::size_t column);
+  const QString group;
+  static QString value(const QString& value, std::size_t column);
 
 Q_SIGNALS:
-  void value_changed(const std::string& value);
+  void value_changed(const QString& value);
 
 private:
-  std::string m_value;
-  std::string m_default;
+  QString m_value;
+  QString m_default;
 };
 
 class PreferencesTreeGroupItem : public PreferencesTreeItem
 {
 public:
-  explicit PreferencesTreeGroupItem(const std::string& group);
+  explicit PreferencesTreeGroupItem(const QString& group);
   std::vector<std::unique_ptr<PreferencesTreeValueItem>> values;
   bool is_group() const override { return true; }
-  std::string translated_name(const std::string& context) const override;
+  QString translated_name(const QString& context) const override;
 };
 
 }  // namespace omm

@@ -9,7 +9,7 @@
 namespace omm
 {
 
-PreferencesTree::PreferencesTree(const std::string filename)
+PreferencesTree::PreferencesTree(const QString filename)
 {
   if (!load_from_file(filename)) {
     LERROR << "Failed to read file '" << filename << "'.";
@@ -40,34 +40,33 @@ void PreferencesTree::reset()
   }
 }
 
-void PreferencesTree::save_in_qsettings(const std::string& q_settings_group) const
+void PreferencesTree::save_in_qsettings(const QString& q_settings_group) const
 {
   QSettings settings;
-  settings.beginGroup(QString::fromStdString(q_settings_group));
+  settings.beginGroup(q_settings_group);
   for (const std::unique_ptr<PreferencesTreeGroupItem>& group : m_groups) {
-    settings.beginGroup(QString::fromStdString(group->name));
+    settings.beginGroup(group->name);
     for (const std::unique_ptr<PreferencesTreeValueItem>& value : group->values) {
-      settings.setValue(QString::fromStdString(value->name),
-                        QString::fromStdString(value->value()));
+      settings.setValue(value->name, value->value());
     }
     settings.endGroup();
   }
   settings.endGroup();
 }
 
-void PreferencesTree::load_from_qsettings(const std::string& q_settings_group)
+void PreferencesTree::load_from_qsettings(const QString& q_settings_group)
 {
-  const auto settings_group = QString::fromStdString(q_settings_group);
+  const auto settings_group = q_settings_group;
   QSettings settings;
   if (settings.childGroups().contains(settings_group)) {
     settings.beginGroup(settings_group);
     for (std::unique_ptr<PreferencesTreeGroupItem>& group : m_groups) {
-      settings.beginGroup(QString::fromStdString(group->name));
+      settings.beginGroup(group->name);
       for (std::unique_ptr<PreferencesTreeValueItem>& value_item : group->values) {
-        const QString key = QString::fromStdString(value_item->name);
+        const QString key = value_item->name;
         if (settings.contains(key)) {
           const QString value = settings.value(key).toString();
-          value_item->set_value(value.toStdString());
+          value_item->set_value(value);
         } else {
           // keep default value
         }
@@ -79,22 +78,22 @@ void PreferencesTree::load_from_qsettings(const std::string& q_settings_group)
   }
 }
 
-bool PreferencesTree::save_to_file(const std::string& filename) const
+bool PreferencesTree::save_to_file(const QString& filename) const
 {
-  QFile file(QString::fromStdString(filename));
+  QFile file(filename);
   if (!file.open(QIODevice::WriteOnly)) {
     LERROR << "failed to open file '" << filename << "'.";
     return false;
   }
 
-  file.write(QString::fromStdString(dump()).toUtf8());
+  file.write(dump().toUtf8());
   return true;
 }
 
-bool PreferencesTree::load_from_file(const std::string& filename)
+bool PreferencesTree::load_from_file(const QString& filename)
 {
   const bool insert_mode = m_groups.empty();
-  QFile file(QString::fromStdString(filename));
+  QFile file(filename);
   if (!file.open(QIODevice::ReadOnly)) {
     LERROR << "Failed to open file '" << filename << "'.";
     return false;
@@ -117,7 +116,7 @@ bool PreferencesTree::load_from_file(const std::string& filename)
        : std::unique_ptr<ResetModel>(nullptr);
 
   static const QRegExp context_regexp("\\[\\w+\\]");
-  std::string group_name = "";
+  QString group_name = "";
 
   QTextStream stream(&file);
   while (!stream.atEnd()) {
@@ -129,16 +128,16 @@ bool PreferencesTree::load_from_file(const std::string& filename)
     }
 
     if (context_regexp.exactMatch(line)) {
-      group_name = line.mid(1, line.size() - 2).toStdString();
-    } else if (!group_name.empty()) {
+      group_name = line.mid(1, line.size() - 2);
+    } else if (!group_name.isEmpty()) {
       const auto tokens = line.split(":");
       if (tokens.size() != 2) {
         LWARNING << "ignoring line '" << line.toStdString()
                      << "'. Expected format: <name>: <key value>.";
         continue;
       }
-      const auto name = tokens[0].trimmed().toStdString();
-      const auto value = tokens[1].trimmed().toStdString();
+      const auto name = tokens[0].trimmed();
+      const auto value = tokens[1].trimmed();
       auto git = std::find_if(m_groups.begin(), m_groups.end(),
                               [group_name](const std::unique_ptr<PreferencesTreeGroupItem>& group)
       {
@@ -193,7 +192,7 @@ bool PreferencesTree::load_from_file(const std::string& filename)
   return true;
 }
 
-PreferencesTreeGroupItem* PreferencesTree::group(const std::string& name) const
+PreferencesTreeGroupItem* PreferencesTree::group(const QString& name) const
 {
   const auto git = std::find_if(m_groups.begin(), m_groups.end(), [name](const auto& group) {
     return group->name == name;
@@ -210,7 +209,7 @@ std::vector<PreferencesTreeGroupItem*> PreferencesTree::groups() const
   return ::transform<PreferencesTreeGroupItem*>(m_groups, [](const auto& g) { return g.get(); });
 }
 
-PreferencesTreeValueItem* PreferencesTree::value(const std::string group_name, const std::string& key) const
+PreferencesTreeValueItem* PreferencesTree::value(const QString group_name, const QString& key) const
 {
    const auto* group = this->group(group_name);
    const auto vit = std::find_if(group->values.begin(), group->values.end(),
@@ -221,8 +220,8 @@ PreferencesTreeValueItem* PreferencesTree::value(const std::string group_name, c
    return vit->get();
 }
 
-const std::string PreferencesTree::stored_value(const std::string& group_name,
-                                                const std::string& key, std::size_t column) const
+const QString PreferencesTree::stored_value(const QString& group_name,
+                                                const QString& key, std::size_t column) const
 {
   return PreferencesTreeValueItem::value(m_stored_values.at(group_name).at(key), column);
 }
@@ -245,7 +244,7 @@ void PreferencesTree::restore()
   }
 }
 
-QModelIndex PreferencesTree::group_index(const std::string& group_name) const
+QModelIndex PreferencesTree::group_index(const QString& group_name) const
 {
   const auto git = std::find_if(m_groups.begin(), m_groups.end(), [group_name](const auto& group) {
     return group->name == group_name;
@@ -254,7 +253,7 @@ QModelIndex PreferencesTree::group_index(const std::string& group_name) const
   return index(row, 0, QModelIndex());
 }
 
-QModelIndex PreferencesTree::value_index(const std::string& group_name, const std::string& key) const
+QModelIndex PreferencesTree::value_index(const QString& group_name, const QString& key) const
 {
   const QModelIndex parent_index = group_index(group_name);
   PreferencesTreeGroupItem& group = *m_groups.at(parent_index.row());
@@ -331,7 +330,7 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
     case 0:
       switch (role) {
       case Qt::DisplayRole:
-        return QString::fromStdString(group(index).translated_name(translation_context()));
+        return group(index).translated_name(translation_context());
       default:
         return QVariant();
       }
@@ -343,7 +342,7 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
     case 0:
       switch(role) {
       case Qt::DisplayRole:
-        return QString::fromStdString(value(index).translated_name(translation_context()));
+        return value(index).translated_name(translation_context());
       default:
         return QVariant();
       }
@@ -408,16 +407,16 @@ void PreferencesTree::apply()
   store();
 }
 
-std::string PreferencesTree::dump() const
+QString PreferencesTree::dump() const
 {
-  std::ostringstream oss;
+  QString dump;
   for (auto&& group : m_groups) {
-    oss << "[" + group->name + "]\n";
+    dump += QString("[%1]\n").arg(group->name);
     for (auto&& value : group->values) {
-      oss << value->name + ":" + value->value() + "\n";
+      dump += value->name + ":" + value->value() + "\n";
     }
   }
-  return oss.str();
+  return dump;
 }
 
 }  // namespace omm

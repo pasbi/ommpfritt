@@ -9,7 +9,7 @@ class RectangleObject : public AbstractProceduralPath
 {
 public:
   explicit RectangleObject(Scene* scene);
-  std::string type() const override;
+  QString type() const override;
   std::unique_ptr<Object> clone() const override;
   Flag flags() const override;
   std::vector<Point> points() const override;

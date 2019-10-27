@@ -7,10 +7,10 @@
 namespace
 {
 
-using item_map = std::map<std::string, omm::TreeTestItem*>;
+using item_map = std::map<QString, omm::TreeTestItem*>;
 
 std::unique_ptr<omm::TreeTestItem> make_tree(int depth, int breadth, item_map& items,
-                                             const std::string& path = "root")
+                                             const QString& path = "root")
 {
   assert(depth >= 0);
 
@@ -20,7 +20,7 @@ std::unique_ptr<omm::TreeTestItem> make_tree(int depth, int breadth, item_map& i
 
   if (depth > 0) {
     for (int i = 0; i < breadth; ++i) {
-      root->adopt(make_tree(depth-1, breadth, items, path + "/" + std::to_string(i)));
+      root->adopt(make_tree(depth-1, breadth, items, path + QString("/%1").arg(i)));
     }
   }
   return root;
@@ -28,7 +28,7 @@ std::unique_ptr<omm::TreeTestItem> make_tree(int depth, int breadth, item_map& i
 
 template<typename ItemTs> auto get_items(const item_map& item_names, ItemTs&& items)
 {
-  return ::transform<omm::TreeTestItem*>(items, [&item_names](const std::string& name) {
+  return ::transform<omm::TreeTestItem*>(items, [&item_names](const QString& name) {
     return item_names.at(name);
   });
 }
@@ -40,7 +40,7 @@ TEST(tree, lca)
   item_map items;
   auto root = make_tree(3, 3, items);
 
-  static const auto lca = [&items](const std::string a, const std::string& b) {
+  static const auto lca = [&items](const QString a, const QString& b) {
     return omm::TreeTestItem::lowest_common_ancestor(items[a], items[b]);
   };
 
@@ -65,8 +65,8 @@ TEST(tree, sort)
   item_map items;
   auto root = make_tree(3, 3, items);
 
-  const auto test_sort = [&items](const std::set<std::string>& item_names,
-                                  const std::vector<std::string>& sorted_item_names) {
+  const auto test_sort = [&items](const std::set<QString>& item_names,
+                                  const std::vector<QString>& sorted_item_names) {
 
     EXPECT_EQ(omm::TreeTestItem::sort(get_items(items, item_names)),
               get_items(items, sorted_item_names) );
@@ -89,8 +89,8 @@ TEST(tree, remove_children)
   item_map items;
   auto root = make_tree(3, 3, items);
 
-  auto test_remove_children = [&items](const std::set<std::string>& candidate_names,
-                                       const std::set<std::string>& gt_names) {
+  auto test_remove_children = [&items](const std::set<QString>& candidate_names,
+                                       const std::set<QString>& gt_names) {
     auto candidates = get_items(items, candidate_names);
     omm::TreeTestItem::remove_internal_children(candidates);
     const auto gt_items = get_items(items, gt_names);

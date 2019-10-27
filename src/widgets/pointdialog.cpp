@@ -45,8 +45,7 @@ PointDialog::PointDialog(const std::set<Path*>& paths, QWidget* parent) : QDialo
   assert(paths.size() > 0);
   auto tab_widget = std::make_unique<QTabWidget>();
   for (Path* path : paths) {
-    tab_widget->addTab( make_tab_widget_page(*path, m_point_edits).release(),
-                        QString::fromStdString(path->name()) );
+    tab_widget->addTab( make_tab_widget_page(*path, m_point_edits).release(), path->name());
   }
   auto button_box = std::make_unique<QDialogButtonBox>(QDialogButtonBox::Ok);
   connect(button_box.get(), SIGNAL(accepted()), this, SLOT(accept()));

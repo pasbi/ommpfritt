@@ -9,29 +9,29 @@ namespace omm
 {
 
 MarkerProperties
-::MarkerProperties(const std::string &prefix, omm::AbstractPropertyOwner &property_owner,
+::MarkerProperties(const QString &prefix, omm::AbstractPropertyOwner &property_owner,
                    const Shape default_shape, const double default_size)
   : PropertyGroup(prefix, property_owner)
   , m_default_shape(default_shape)
   , m_default_size(default_size)
 {}
 
-void MarkerProperties::make_properties(const std::string &category) const
+void MarkerProperties::make_properties(const QString &category) const
 {
   create_property<OptionsProperty>(SHAPE_PROPERTY_KEY, static_cast<std::size_t>(m_default_shape))
     .set_options(shapes()).set_category(category)
-    .set_label(QObject::tr("Shape").toStdString());
+    .set_label(QObject::tr("Shape"));
 
   create_property<FloatProperty>(SIZE_PROPERTY_KEY, m_default_size)
     .set_step(0.1).set_range(0.0, FloatProperty::highest_possible_value)
-    .set_label(QObject::tr("Size").toStdString()).set_category(category);
+    .set_label(QObject::tr("Size")).set_category(category);
 
   create_property<FloatProperty>(ASPECT_RATIO_PROPERTY_KEY)
     .set_step(0.001)
-    .set_label(QObject::tr("Aspect Ratio").toStdString()).set_category(category);
+    .set_label(QObject::tr("Aspect Ratio")).set_category(category);
 
   create_property<BoolProperty>(REVERSE_PROPERTY_KEY)
-      .set_label(QObject::tr("Reverse").toStdString()).set_category(category);
+      .set_label(QObject::tr("Reverse")).set_category(category);
 }
 
 void MarkerProperties
@@ -52,13 +52,13 @@ void MarkerProperties
   p.restore();
 }
 
-std::vector<std::string> MarkerProperties::shapes() const
+std::vector<QString> MarkerProperties::shapes() const
 {
-  return { QObject::tr("None").toStdString(),
-           QObject::tr("Arrow").toStdString(),
-           QObject::tr("Bar").toStdString(),
-           QObject::tr("Circle").toStdString(),
-           QObject::tr("Diamond").toStdString() };
+  return { QObject::tr("None"),
+           QObject::tr("Arrow"),
+           QObject::tr("Bar"),
+           QObject::tr("Circle"),
+           QObject::tr("Diamond") };
 }
 
 std::vector<Point> MarkerProperties::shape(const double width) const

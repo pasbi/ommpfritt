@@ -17,7 +17,7 @@ class FloatVectorProperty : public NumericProperty<Vec2f>
 {
 public:
   using NumericProperty::NumericProperty;
-  std::string type() const override { return TYPE; }
+  QString type() const override { return TYPE; }
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Property", "FloatVectorProperty");
@@ -35,7 +35,7 @@ class IntegerVectorProperty : public NumericProperty<Vec2i>
 {
 public:
   using NumericProperty::NumericProperty;
-  std::string type() const override;
+  QString type() const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("IntegerVectorProperty", "IntegerVectorProperty");

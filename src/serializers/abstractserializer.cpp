@@ -70,7 +70,7 @@ template<> double AbstractDeserializer::get<double>(const Pointer& pointer)
   return get_double(pointer);
 }
 
-template<> std::string AbstractDeserializer::get<std::string>(const Pointer& pointer)
+template<> QString AbstractDeserializer::get<QString>(const Pointer& pointer)
 {
   return get_string(pointer);
 }
@@ -101,7 +101,7 @@ template<> PolarCoordinates AbstractDeserializer::get<PolarCoordinates>(const Po
 }
 
 variant_type AbstractDeserializer::get(const AbstractDeserializer::Pointer &pointer,
-                                       const std::string &type)
+                                       const QString &type)
 {
   if (type == "Bool") {
     return get<bool>(pointer);
@@ -110,7 +110,7 @@ variant_type AbstractDeserializer::get(const AbstractDeserializer::Pointer &poin
   } else if (type == "Float") {
     return get<double>(pointer);
   } else if (type == "String") {
-    return get<std::string>(pointer);
+    return get<QString>(pointer);
   } else if (type == "Options") {
     return get<std::size_t>(pointer);
   } else if (type == "Color") {

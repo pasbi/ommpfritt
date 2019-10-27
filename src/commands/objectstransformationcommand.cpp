@@ -33,7 +33,7 @@ namespace omm
 
 ObjectsTransformationCommand::
 ObjectsTransformationCommand(const Map &transformations, TransformationMode t_mode)
-  : Command(QObject::tr("ObjectsTransformation").toStdString())
+  : Command(QObject::tr("ObjectsTransformation"))
   , m_old_transformations(get_old_transformations(::get_keys(transformations)))
   , m_new_transformations(get_new_transformations(transformations))
   , m_transformation_mode(t_mode)

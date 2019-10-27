@@ -7,9 +7,9 @@ namespace omm
 
 void UiColorsTreeViewDelegate::set_editor_data(UiColorEdit& editor, const QModelIndex& index) const
 {
-  const Color color = Color::from_html(index.data(Qt::EditRole).toString().toStdString());
+  const Color color = Color::from_html(index.data(Qt::EditRole).toString());
   const auto default_value = index.data(PreferencesTree::DEFAULT_VALUE_ROLE).toString();
-  editor.set_default_color(Color::from_html(default_value.toStdString()));
+  editor.set_default_color(Color::from_html(default_value));
   editor.set_color(color);
 }
 

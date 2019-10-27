@@ -26,12 +26,12 @@ public:
   Viewport& viewport() const;
   void restore_default_layout();
 
-  static std::vector<std::string> object_menu_entries();
-  static std::vector<std::string> path_menu_entries();
-  static std::vector<std::string> main_menu_entries();
+  static std::vector<QString> object_menu_entries();
+  static std::vector<QString> path_menu_entries();
+  static std::vector<QString> main_menu_entries();
 
   std::unique_ptr<QMenu> make_about_menu();
-  static std::vector<std::string> available_translations();
+  static std::vector<QString> available_translations();
   void make_unique_manager_name(QDockWidget& widget) const;
 
   void save_layout();

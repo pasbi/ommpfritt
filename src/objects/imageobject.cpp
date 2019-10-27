@@ -9,9 +9,9 @@
 namespace
 {
 
-bool is_paged_image(const std::string& filename)
+bool is_paged_image(const QString& filename)
 {
-  return QString::fromStdString(filename).endsWith(".pdf", Qt::CaseInsensitive);
+  return filename.endsWith(".pdf", Qt::CaseInsensitive);
 }
 
 }  // namespace
@@ -21,40 +21,40 @@ namespace omm
 
 ImageObject::ImageObject(Scene* scene) : Object(scene)
 {
-  static const auto category = QObject::tr("image").toStdString();
+  static const auto category = QObject::tr("image");
   create_property<StringProperty>(FILEPATH_PROPERTY_KEY)
     .set_mode(StringProperty::Mode::FilePath)
-    .set_label(QObject::tr("filename").toStdString()).set_category(category);
+    .set_label(QObject::tr("filename")).set_category(category);
 
   create_property<FloatProperty>(WIDTH_PROPERTY_KEY, 100)
     .set_range(0.0, FloatProperty::highest_possible_value)
-    .set_label(QObject::tr("Width").toStdString()).set_category(category);
+    .set_label(QObject::tr("Width")).set_category(category);
   create_property<FloatProperty>(OPACITY_PROPERTY_KEY, 1.0)
     .set_range(0.0, 1.0).set_step(0.01)
-    .set_label(QObject::tr("Opacity").toStdString()).set_category(category);
+    .set_label(QObject::tr("Opacity")).set_category(category);
 
   create_property<IntegerProperty>(PAGE_PROPERTY_KEY, 0)
     .set_range(0, IntegerProperty::highest_possible_value)
-    .set_label(QObject::tr("Page").toStdString()).set_category(category);
+    .set_label(QObject::tr("Page")).set_category(category);
 
   create_property<OptionsProperty>(HANCHOR_PROPERTY_KEY, 1)
-    .set_options({ QObject::tr("Left").toStdString(),
-                   QObject::tr("Center").toStdString(),
-                   QObject::tr("Right").toStdString() })
-    .set_label(QObject::tr("Horizontal").toStdString()).set_category(category);
+    .set_options({ QObject::tr("Left"),
+                   QObject::tr("Center"),
+                   QObject::tr("Right") })
+    .set_label(QObject::tr("Horizontal")).set_category(category);
 
   create_property<OptionsProperty>(VANCHOR_PROPERTY_KEY, 1)
-    .set_options({ QObject::tr("Top").toStdString(),
-                   QObject::tr("Center").toStdString(),
-                   QObject::tr("Bottom").toStdString() })
-    .set_label(QObject::tr("Vertical").toStdString()).set_category(category);
+    .set_options({ QObject::tr("Top"),
+                   QObject::tr("Center"),
+                   QObject::tr("Bottom") })
+    .set_label(QObject::tr("Vertical")).set_category(category);
   update();
 }
 
 void ImageObject::draw_object(Painter &renderer, const Style&) const
 {
   if (is_active()) {
-    const auto path = property(FILEPATH_PROPERTY_KEY)->value<std::string>();
+    const auto path = property(FILEPATH_PROPERTY_KEY)->value<QString>();
     const auto opacity = property(OPACITY_PROPERTY_KEY)->value<double>();
     const auto width = property(WIDTH_PROPERTY_KEY)->value<double>();
     const auto page_num = is_paged_image(path) ? property(PAGE_PROPERTY_KEY)->value<int>() : 0;
@@ -62,7 +62,7 @@ void ImageObject::draw_object(Painter &renderer, const Style&) const
     QPainter& painter = *renderer.painter;
     painter.save();
     painter.setOpacity(opacity);
-    const auto key = std::pair(QString::fromStdString(path), page_num);
+    const auto key = std::pair(path, page_num);
     const QPicture& picture = renderer.image_cache.get(key);
     const auto s = width / picture.width();
     const auto aabb = picture.boundingRect();
@@ -74,7 +74,7 @@ void ImageObject::draw_object(Painter &renderer, const Style&) const
   }
 }
 
-std::string ImageObject::type() const { return TYPE; }
+QString ImageObject::type() const { return TYPE; }
 std::unique_ptr<Object> ImageObject::clone() const { return std::make_unique<ImageObject>(*this); }
 
 QPointF ImageObject::pos(const QSizeF &size) const
@@ -109,7 +109,7 @@ void ImageObject::on_property_value_changed(Property *property)
   {
     update();
   } else if (property == this->property(FILEPATH_PROPERTY_KEY)) {
-    this->property(PAGE_PROPERTY_KEY)->set_visible(is_paged_image(property->value<std::string>()));
+    this->property(PAGE_PROPERTY_KEY)->set_visible(is_paged_image(property->value<QString>()));
     update();
   } else {
     Object::on_property_value_changed(property);

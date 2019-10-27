@@ -29,7 +29,7 @@ omm::Object::Visibility advance_visibility(omm::Object::Visibility visibility)
 namespace omm
 {
 
-PropertyArea::PropertyArea(const QRectF& area, ObjectTreeView& view, const std::string &property_key)
+PropertyArea::PropertyArea(const QRectF& area, ObjectTreeView& view, const QString &property_key)
   : area(area), view(view), m_property_key(property_key)
 {
 }
@@ -184,7 +184,7 @@ void ObjectQuickAccessDelegate::on_mouse_move(QMouseEvent &event)
         if (m_macro == nullptr) {
           // move the command that was issued on click inside the macro.
           m_view.scene().history().undo();  // remove the single command
-          const QString label = QString::fromStdString(m_command_on_hold->label());
+          const QString label = m_command_on_hold->label();
           m_macro = m_view.scene().history().start_macro(label);
 
           // commit a copy of the removed single command again, now within the macro.

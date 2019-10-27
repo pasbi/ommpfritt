@@ -25,20 +25,20 @@ StringPropertyWidget
     case StringProperty::Mode::SingleLine: {
       auto edit = std::make_unique<TextEditAdapter<QLineEdit>>(this);
       QObject::connect(edit.get(), &QLineEdit::textChanged, [this](const QString& text) {
-        set_properties_value(text.toStdString());
+        set_properties_value(text);
       });
       return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
     }
     case StringProperty::Mode::FilePath: {
       auto edit = std::make_unique<TextEditAdapter<FilePathEdit>>(this);
-      QObject::connect(edit.get(), &FilePathEdit::path_changed, [this](const std::string& text) {
+      QObject::connect(edit.get(), &FilePathEdit::path_changed, [this](const QString& text) {
         set_properties_value(text);
       });
       return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
     }
     case StringProperty::Mode::Code: {
       auto edit = std::make_unique<TextEditAdapter<CodeEdit>>(this);
-      QObject::connect(edit.get(), &CodeEdit::code_changed, [this](const std::string& text) {
+      QObject::connect(edit.get(), &CodeEdit::code_changed, [this](const QString& text) {
         set_properties_value(text);
       });
       return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
@@ -46,7 +46,7 @@ StringPropertyWidget
     case StringProperty::Mode::Font: {
       auto edit = std::make_unique<TextEditAdapter<QFontComboBox>>(this);
       QObject::connect(edit.get(), &QFontComboBox::currentTextChanged, [this](const QString& text) {
-        set_properties_value(text.toStdString());
+        set_properties_value(text);
       });
       return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
     }
@@ -57,7 +57,7 @@ StringPropertyWidget
 
   m_text_edit = edit.get();
 //  connect(m_text_edit, &AbstractTextEditAdapter::value_changed, [this](QString text) {
-//    this->set_properties_value(text.toStdString());
+//    this->set_properties_value(text);
 //  });
 
   auto text_edit_widget = std::unique_ptr<QWidget>(edit.release()->as_widget());
@@ -72,7 +72,7 @@ void StringPropertyWidget::update_edit()
   m_text_edit->set_values(get_properties_values());
 }
 
-std::string StringPropertyWidget::type() const
+QString StringPropertyWidget::type() const
 {
   return TYPE;
 }

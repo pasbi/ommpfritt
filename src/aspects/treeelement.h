@@ -93,7 +93,7 @@ template<typename T> bool tree_gt(const T* a, const T* b)
 template<typename T>
 std::ostream& print_tree(std::ostream& ostream, const T* item, int indentation = 0)
 {
-  ostream << std::string(indentation, ' ') << item << "\n";
+  ostream << QString(" ").repeated(indentation).toStdString() << item << "\n";
   if (item != nullptr) {
     const auto children = item->tree_children();
     const auto is_pre_leaf = std::none_of(children.begin(), children.end(), [](auto* c) {
@@ -119,7 +119,7 @@ std::ostream& print_tree(std::ostream& ostream, const T* item, int indentation =
 class TreeTestItem : public TreeElement<TreeTestItem>
 {
 public:
-  std::string name;
+  QString name;
 };
 
 std::ostream& operator<<(std::ostream& ostream, const TreeTestItem* item);

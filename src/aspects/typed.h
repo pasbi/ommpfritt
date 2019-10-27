@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <QString>
 
 namespace omm
 {
@@ -11,7 +11,7 @@ protected:
   Typed() = default;
 public:
   virtual ~Typed() = default;
-  virtual std::string type() const = 0;
+  virtual QString type() const = 0;
 };
 
 }  // namespace omm

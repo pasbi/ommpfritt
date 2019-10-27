@@ -6,7 +6,7 @@ namespace omm
 
 ModifyPointsCommand
 ::ModifyPointsCommand(const std::map<Path*, std::map<Point*, Point>>& points)
-  : Command(QObject::tr("ModifyPointsCommand").toStdString()), m_data(points)
+  : Command(QObject::tr("ModifyPointsCommand")), m_data(points)
 {
   assert(points.size() > 0);
 }
@@ -51,14 +51,14 @@ bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)
 }
 
 AbstractPointsCommand::AbstractPointsCommand(
-  const std::string& label, const std::map<Path*, std::vector<Path::PointSequence>>& points )
+  const QString& label, const std::map<Path*, std::vector<Path::PointSequence>>& points )
   : Command(label), m_added_points(points)
 {
   assert(m_added_points.size() > 0);
 }
 
 AbstractPointsCommand::AbstractPointsCommand(
-  const std::string& label, const std::map<Path*, std::vector<std::size_t>>& points )
+  const QString& label, const std::map<Path*, std::vector<std::size_t>>& points )
   : Command(label), m_removed_points(points)
 {
   assert(m_removed_points.size() > 0);
@@ -102,13 +102,13 @@ void AbstractPointsCommand::add()
 }
 
 AddPointsCommand::AddPointsCommand(const std::map<Path*, std::vector<Path::PointSequence>>& points)
-  : AbstractPointsCommand(QObject::tr("AddPointsCommand").toStdString(), points) {}
+  : AbstractPointsCommand(QObject::tr("AddPointsCommand"), points) {}
 
 void AddPointsCommand::redo() { add(); }
 void AddPointsCommand::undo() { remove(); }
 
 RemovePointsCommand::RemovePointsCommand(const std::map<Path*, std::vector<std::size_t>>& points)
-  : AbstractPointsCommand(QObject::tr("RemovePointsCommand").toStdString(), points) {}
+  : AbstractPointsCommand(QObject::tr("RemovePointsCommand"), points) {}
 
 void RemovePointsCommand::redo() { remove(); }
 void RemovePointsCommand::undo() { add(); }

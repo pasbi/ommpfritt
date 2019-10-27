@@ -27,16 +27,16 @@ public:
   explicit PropertyManager(Scene& scene);
   ~PropertyManager();
 
-  PropertyView property(const std::string& key);
+  PropertyView property(const QString& key);
   void clear();
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PropertyManager");
-  std::string type() const override;
-  bool perform_action(const std::string &name) override;
+  QString type() const override;
+  bool perform_action(const QString &name) override;
 
 private:
-  OrderedMap<std::string, PropertyManagerTab> m_tabs;
+  OrderedMap<QString, PropertyManagerTab> m_tabs;
   std::set<AbstractPropertyOwner*> m_current_selection;
-  std::string make_window_title() const;
+  QString make_window_title() const;
   bool m_is_locked = false;
   QVBoxLayout* m_layout;
   std::unique_ptr<QScrollArea> m_scroll_area;

@@ -20,17 +20,17 @@ public:
   enum Model { RGBA, HSVA, Named };
   Color(Model model, const std::array<double, 3> components, const double alpha);
   Color(Model model, const std::array<double, 4> components);
-  explicit Color(const std::string& name);
+  explicit Color(const QString& name);
   explicit Color(const QColor& c);
   explicit Color();
 
-  std::string to_html() const;
-  static Color from_html(const std::string& html, bool *ok = nullptr);
+  QString to_html() const;
+  static Color from_html(const QString& html, bool *ok = nullptr);
   static Color from_qcolor(const QColor& color);
   QColor to_qcolor() const;
 
   void to_ordinary_color();
-  std::string name() const;
+  QString name() const;
 
   enum class Role { Red, Green, Blue, Hue, Saturation, Value, Alpha };
 
@@ -46,7 +46,7 @@ public:
 
 private:
   Model m_current_model;
-  std::string m_name;
+  QString m_name = "";
 
   friend bool operator==(const Color& a, const Color& b);
   friend bool operator<(const Color& a, const Color& b);
@@ -64,12 +64,12 @@ private:
 namespace Colors
 {
 
-static const Color RED    = Color(Color::Model::RGBA, { 1.0, 0.0, 0.0, 1.0 });
-static const Color GREEN  = Color(Color::Model::RGBA, { 0.0, 1.0, 0.0, 1.0 });
-static const Color BLUE   = Color(Color::Model::RGBA, { 0.0, 0.0, 1.0, 1.0 });
-static const Color YELLOW = Color(Color::Model::RGBA, { 1.0, 1.0, 0.0, 1.0 });
-static const Color BLACK  = Color(Color::Model::RGBA, { 0.0, 0.0, 0.0, 1.0 });
-static const Color WHITE  = Color(Color::Model::RGBA, { 1.0, 1.0, 1.0, 1.0 });
+static const Color RED   (Color::Model::RGBA, { 1.0, 0.0, 0.0, 1.0 });
+static const Color GREEN (Color::Model::RGBA, { 0.0, 1.0, 0.0, 1.0 });
+static const Color BLUE  (Color::Model::RGBA, { 0.0, 0.0, 1.0, 1.0 });
+static const Color YELLOW(Color::Model::RGBA, { 1.0, 1.0, 0.0, 1.0 });
+static const Color BLACK (Color::Model::RGBA, { 0.0, 0.0, 0.0, 1.0 });
+static const Color WHITE (Color::Model::RGBA, { 1.0, 1.0, 1.0, 1.0 });
 
 }
 

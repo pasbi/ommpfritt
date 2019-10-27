@@ -10,7 +10,7 @@ class ColorCircle : public ColorPicker
   Q_OBJECT
 public:
   explicit ColorCircle(QWidget* parent = nullptr);
-  std::string name() const override { return tr("ColorCircle").toStdString(); }
+  QString name() const override { return tr("ColorCircle"); }
   void set_color(const Color& color) override;
   void accept();
 

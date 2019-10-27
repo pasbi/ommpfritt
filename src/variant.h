@@ -3,6 +3,7 @@
 #include "color/color.h"
 #include <variant>
 #include "geometry/vec2.h"
+#include <QString>
 
 namespace omm
 {
@@ -17,7 +18,7 @@ public:
 };
 
 using variant_type = std::variant< bool, double, Color, int, AbstractPropertyOwner*,
-                                   std::string, size_t, TriggerPropertyDummyValueType,
+                                   QString, size_t, TriggerPropertyDummyValueType,
                                    Vec2f, Vec2i >;
 
 std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValueType& v);

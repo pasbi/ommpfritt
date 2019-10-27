@@ -38,17 +38,17 @@ ActionWidget::ActionWidget(QWidget* parent, const PreferencesTreeValueItem& key_
 
   setLayout(layout.release());
   setMouseTracking(true);
-  connect(&key_binding, &PreferencesTreeValueItem::value_changed, this, [this](const std::string& s)
+  connect(&key_binding, &PreferencesTreeValueItem::value_changed, this, [this](const QString& s)
   {
-    m_shortcut_label->setText(QKeySequence(QString::fromStdString(s)).toString(QKeySequence::NativeText));
+    m_shortcut_label->setText(QKeySequence(s).toString(QKeySequence::NativeText));
     QResizeEvent resize_event(QSize(), m_shortcut_label->parentWidget()->size());
     qApp->sendEvent(m_shortcut_label->parent(), &resize_event);
     m_shortcut_label->parentWidget()->adjustSize();
     m_shortcut_label->parentWidget()->updateGeometry();
   });
-  const QKeySequence sequence(QString::fromStdString(key_binding.value()));
+  const QKeySequence sequence(key_binding.value());
   m_shortcut_label->setText(sequence.toString(QKeySequence::NativeText));
-  m_name_label->setText(QString::fromStdString(key_binding.translated_name("keybindings")));
+  m_name_label->setText(key_binding.translated_name("keybindings"));
   setAutoFillBackground(true);
   set_highlighted(false);
 }

@@ -31,9 +31,9 @@ void ComboBox::set_model(QAbstractItemModel& model)
   reset();
 }
 
-void ComboBox::set_current_text(const std::string& text)
+void ComboBox::set_current_text(const QString& text)
 {
-  m_combo_box->setCurrentText(QString::fromStdString(text));
+  m_combo_box->setCurrentText(text);
 }
 
 void ComboBox::set_current_index(int index)

@@ -28,9 +28,9 @@ private:
 class AbstractPointsCommand : public Command
 {
 protected:
-  AbstractPointsCommand( const std::string& label,
+  AbstractPointsCommand( const QString& label,
                          const std::map<Path*, std::vector<Path::PointSequence>>& points );
-  AbstractPointsCommand( const std::string& label,
+  AbstractPointsCommand( const QString& label,
                          const std::map<Path*, std::vector<std::size_t>>& points );
   void add();
   void remove();

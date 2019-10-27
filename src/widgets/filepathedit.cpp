@@ -22,37 +22,37 @@ FilePathEdit::FilePathEdit(QWidget* parent)
     dialog.setOptions(options);
     if (m_path.size() == 0) {
       dialog.setDirectory(QDir::homePath());
-    } else if (QFileInfo info(QString::fromStdString(m_path)); info.isDir()) {
-      dialog.setDirectory(QString::fromStdString(m_path));
+    } else if (QFileInfo info(m_path); info.isDir()) {
+      dialog.setDirectory(m_path);
     } else {
       dialog.setDirectory(info.dir().path());
     }
     if (QDialog::Accepted == dialog.exec()) {
       const auto paths = dialog.selectedFiles();
-      if (paths.size() > 0) { set_path(paths.front().toStdString()); }
+      if (paths.size() > 0) { set_path(paths.front()); }
     }
   });
 
   connect(m_line_edit, &QLineEdit::textChanged, [this](const QString& text) {
-    Q_EMIT path_changed(text.toStdString());
+    Q_EMIT path_changed(text);
   });
 }
 
-void FilePathEdit::set_path(const std::string& path)
+void FilePathEdit::set_path(const QString& path)
 {
   if (m_path != path) {
     m_path = path;
     QSignalBlocker signal_blocker(m_line_edit);
-    m_line_edit->setText(QString::fromStdString(m_path));
+    m_line_edit->setText(m_path);
     Q_EMIT path_changed(m_path);
   }
 }
 
-std::string FilePathEdit::path() const { return m_path; }
-void FilePathEdit::clear() { set_path(tr("").toStdString()); }
-void FilePathEdit::set_placeholder_text(const std::string &text)
+QString FilePathEdit::path() const { return m_path; }
+void FilePathEdit::clear() { set_path(tr("")); }
+void FilePathEdit::set_placeholder_text(const QString &text)
 {
-  m_line_edit->setPlaceholderText(QString::fromStdString(text));
+  m_line_edit->setPlaceholderText(text);
 }
 
 }  // namespace

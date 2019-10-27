@@ -19,12 +19,12 @@ class Style;
 Instance::Instance(Scene* scene)
   : Object(scene)
 {
-  static const auto category = QObject::tr("Instance").toStdString();
+  static const auto category = QObject::tr("Instance");
   create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
-    .set_label(QObject::tr("reference", "Instance").toStdString()).set_category(category);
+    .set_label(QObject::tr("reference", "Instance")).set_category(category);
   create_property<BoolProperty>(IDENTICAL_PROPERTY_KEY)
-    .set_label(QObject::tr("identical", "Instance").toStdString()).set_category(category);
+    .set_label(QObject::tr("identical", "Instance")).set_category(category);
   polish();
 }
 
@@ -99,7 +99,7 @@ std::unique_ptr<Object> Instance::convert() const
   return clone;
 }
 
-std::string Instance::type() const { return TYPE; }
+QString Instance::type() const { return TYPE; }
 std::unique_ptr<Object> Instance::clone() const { return std::make_unique<Instance>(*this); }
 Object::Flag Instance::flags() const { return Object::flags() | Flag::Convertable; }
 

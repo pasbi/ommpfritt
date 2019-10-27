@@ -20,7 +20,7 @@ namespace omm
 {
 
 PointsTransformationCommand::PointsTransformationCommand(const Map& new_points)
-  : Command(QObject::tr("PointsTransformationCommand").toStdString())
+  : Command(QObject::tr("PointsTransformationCommand"))
   , m_old_points(get_old_points(::get_keys(new_points)))
   , m_new_points(new_points)
 {

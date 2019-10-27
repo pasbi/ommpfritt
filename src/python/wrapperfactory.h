@@ -1,6 +1,8 @@
 #pragma once
 
 #include <pybind11/embed.h>
+#include <QString>
+#include <map>
 
 template<typename GeneralWrappedT, typename GeneralWrapperT>
 class WrapperFactory
@@ -29,7 +31,7 @@ public:
   }
 
   using creator_type = py::object(*)(GeneralWrappedT&);
-  using creator_map_type = std::map<std::string, creator_type>;
+  using creator_map_type = std::map<QString, creator_type>;
 
 private:
   static creator_map_type m_creator_map;

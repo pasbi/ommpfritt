@@ -12,7 +12,7 @@ class Property;
 class KeyframeCommand : public Command
 {
 protected:
-  KeyframeCommand(Animator& animator, const std::string& label, int frame,
+  KeyframeCommand(Animator& animator, const QString& label, int frame,
                   const std::map<Property*, Track::Knot>& values);
   void insert();
   void remove();
@@ -21,7 +21,7 @@ private:
   Animator& m_animator;
   const int m_frame;
   const std::map<Property*, Track::Knot> m_knots;
-  const std::string m_property_key;
+  const QString m_property_key;
 };
 
 class RemoveKeyframeCommand : public KeyframeCommand

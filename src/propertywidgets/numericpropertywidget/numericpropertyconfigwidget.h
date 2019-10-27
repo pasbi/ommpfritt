@@ -72,7 +72,7 @@ class IntegerPropertyConfigWidget : public NumericPropertyConfigWidget<IntegerPr
 public:
   using NumericPropertyConfigWidget<IntegerProperty::value_type>::NumericPropertyConfigWidget;
   static constexpr auto TYPE = "FloatPropertyConfigWidget";
-  std::string type() const override { return TYPE; }
+  QString type() const override { return TYPE; }
 };
 
 class FloatPropertyConfigWidget : public NumericPropertyConfigWidget<FloatProperty::value_type>
@@ -80,7 +80,7 @@ class FloatPropertyConfigWidget : public NumericPropertyConfigWidget<FloatProper
 public:
   using NumericPropertyConfigWidget<FloatProperty::value_type>::NumericPropertyConfigWidget;
   static constexpr auto TYPE = "FloatPropertyConfigWidget";
-  std::string type() const override { return TYPE; }
+  QString type() const override { return TYPE; }
 };
 
 }  // namespace omm

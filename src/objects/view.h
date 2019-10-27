@@ -12,7 +12,7 @@ public:
   explicit View(const View& other);
   void draw_handles(Painter& renderer) const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
-  std::string type() const override;
+  QString type() const override;
   std::unique_ptr<Object> clone() const override;
   static constexpr auto SIZE_PROPERTY_KEY = "size";
   static constexpr auto TO_VIEWPORT_PROPERTY_KEY = "to-viewport";

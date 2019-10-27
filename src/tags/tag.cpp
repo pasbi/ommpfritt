@@ -16,9 +16,9 @@ Tag::Tag(Object& owner)
   : PropertyOwner(owner.scene())
   , owner(&owner)
 {
-  create_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>").toStdString())
-    .set_label(QObject::tr("Name").toStdString())
-    .set_category(QObject::tr("basic").toStdString());
+  create_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>"))
+    .set_label(QObject::tr("Name"))
+    .set_category(QObject::tr("basic"));
 }
 
 Tag::~Tag()

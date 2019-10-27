@@ -17,7 +17,7 @@ public:
 
 protected:
   void update_edit() override;
-  std::string type() const override;
+  QString type() const override;
 
 private:
   CheckBox* m_checkbox;

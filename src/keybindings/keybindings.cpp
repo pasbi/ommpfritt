@@ -17,12 +17,7 @@
 namespace
 {
 
-QKeySequence ks(const std::string& s)
-{
-  return QKeySequence(QString::fromStdString(s));
-}
-
-std::pair<std::string, std::string> split(const std::string& path)
+std::pair<QString, QString> split(const QString& path)
 {
   constexpr auto separator = '/';
   const auto it = std::find(path.rbegin(), path.rend(), separator);
@@ -31,23 +26,22 @@ std::pair<std::string, std::string> split(const std::string& path)
   } else {
     const auto i = std::distance(it, path.rend());
     assert(i > 1);
-    return { path.substr(0, static_cast<std::size_t>(i-1)),
-             path.substr(static_cast<std::size_t>(i)) };
+    return { path.mid(0, i-1), path.mid(i) };
   }
 }
 
-std::unique_ptr<QMenu> add_menu(const std::string& path, std::map<std::string, QMenu*>& menu_map)
+std::unique_ptr<QMenu> add_menu(const QString& path, std::map<QString, QMenu*>& menu_map)
 {
   if (menu_map.count(path) > 0) {
     return nullptr;
   } else {
     const auto [ rest_path, menu_name ] = split(path);
-    const auto menu_label = QCoreApplication::translate("menu_name", menu_name.c_str());
+    const auto menu_label = QCoreApplication::translate("menu_name", menu_name.toUtf8().constData());
     std::unique_ptr<QMenu> menu = std::make_unique<omm::Menu>(menu_label);
-    menu->setObjectName(QString::fromStdString(menu_name));
+    menu->setObjectName(menu_name);
     menu_map.insert({ path, menu.get() });
 
-    if (rest_path.empty()) {
+    if (rest_path.isEmpty()) {
       return menu;  // menu is top-level and did not exist before.
     } else {
       auto top_level_menu = add_menu(rest_path, menu_map);
@@ -73,14 +67,14 @@ KeyBindings::~KeyBindings()
   save_in_qsettings(keybindings_group);
 }
 
-std::string KeyBindings::find_action(const std::string& context, const QKeySequence& sequence) const
+QString KeyBindings::find_action(const QString& context, const QKeySequence& sequence) const
 {
   auto* group = this->group(context);
   if (group == nullptr) {
     return "";
   } else {
     const auto vit = std::find_if(group->values.begin(), group->values.end(), [&sequence](auto&& v) {
-      const auto other = QKeySequence(QString::fromStdString(v->value()));
+      const auto other = QKeySequence(v->value());
       return other.matches(sequence) == QKeySequence::ExactMatch;
     });
     if (vit == group->values.end()) {
@@ -95,7 +89,7 @@ QVariant KeyBindings::data(int column, const PreferencesTreeValueItem& item, int
 {
   switch (role) {
   case Qt::EditRole:
-    return ks(item.value());
+    return QKeySequence(item.value());
   case Qt::BackgroundRole:
     if (collides(item)){
       return QColor(Qt::red).lighter();
@@ -103,9 +97,9 @@ QVariant KeyBindings::data(int column, const PreferencesTreeValueItem& item, int
       return QVariant();
     }
   case Qt::DisplayRole:
-    return ks(item.value(column-1)).toString(QKeySequence::NativeText);
+    return QKeySequence(item.value(column-1)).toString(QKeySequence::NativeText);
   case Qt::FontRole:
-    if (ks(item.default_value(column-1)).matches(ks(item.value())) != QKeySequence::ExactMatch) {
+    if (QKeySequence(item.default_value(column-1)).matches(QKeySequence(item.value())) != QKeySequence::ExactMatch) {
       auto font = QApplication::font();
       font.setItalic(true);
       return font;
@@ -113,7 +107,7 @@ QVariant KeyBindings::data(int column, const PreferencesTreeValueItem& item, int
       return QVariant();
     }
   case DEFAULT_VALUE_ROLE:
-    return ks(item.default_value(column-1));
+    return QKeySequence(item.default_value(column-1));
   default:
     return QVariant();
   }
@@ -122,12 +116,12 @@ QVariant KeyBindings::data(int column, const PreferencesTreeValueItem& item, int
 bool KeyBindings::set_data(int column, PreferencesTreeValueItem& item, const QVariant& value)
 {
   const QKeySequence sequence = value.value<QKeySequence>();
-  item.set_value(sequence.toString(QKeySequence::PortableText).toStdString(), column-1);
+  item.set_value(sequence.toString(QKeySequence::PortableText), column-1);
   return true;
 }
 
-std::pair<std::string, QMenu*>
-KeyBindings::get_menu( const std::string& action_path, std::map<std::string, QMenu*>& menu_map,
+std::pair<QString, QMenu*>
+KeyBindings::get_menu( const QString& action_path, std::map<QString, QMenu*>& menu_map,
                        std::list<std::unique_ptr<QMenu>>& menus)
 {
   const auto [path, action_name] = split(action_path);
@@ -145,7 +139,7 @@ KeyBindings::get_menu( const std::string& action_path, std::map<std::string, QMe
 
 bool KeyBindings::collides(const PreferencesTreeValueItem& candidate) const
 {
-  const QKeySequence sequence = ks(candidate.value());
+  const QKeySequence sequence = QKeySequence(candidate.value());
   if (sequence.isEmpty()) {
     return false;
   }
@@ -156,7 +150,7 @@ bool KeyBindings::collides(const PreferencesTreeValueItem& candidate) const
     if (value->name == name) {
       return false;
     }
-    const QKeySequence other = ks(value->value());
+    const QKeySequence other(value->value());
     if (other.isEmpty()) {
       return false;
     }
@@ -171,7 +165,7 @@ bool KeyBindings::collides(const PreferencesTreeValueItem& candidate) const
 }
 
 std::unique_ptr<QAction>
-KeyBindings::make_action(CommandInterface& context, const std::string& action_name) const
+KeyBindings::make_action(CommandInterface& context, const QString& action_name) const
 {
   const auto* group = this->group(context.type());
 
@@ -203,15 +197,15 @@ KeyBindings::make_action(CommandInterface& context, const std::string& action_na
 }
 
 std::vector<std::unique_ptr<QMenu>>
-KeyBindings::make_menus(CommandInterface& context, const std::vector<std::string>& actions) const
+KeyBindings::make_menus(CommandInterface& context, const std::vector<QString>& actions) const
 {
   std::list<std::unique_ptr<QMenu>> menus;
-  std::map<std::string, QMenu*> menu_map;
+  std::map<QString, QMenu*> menu_map;
   for (const auto& action_path : actions) {
     auto [ action_name, menu ] = get_menu(action_path, menu_map, menus);
     if (action_name == SEPARATOR) {
       menu->addSeparator();
-    } else if (!action_name.empty()) {
+    } else if (!action_name.isEmpty()) {
       menu->addAction(make_action(context, action_name).release());
     }
   }

@@ -146,14 +146,13 @@ bool Application::can_close()
   }
 }
 
-bool Application::save(const std::string& filename)
+bool Application::save(const QString& filename)
 {
   if (!scene.save_as(filename)) {
     LWARNING << "Error saving scene as '" << filename << "'.";
     QMessageBox::critical( m_main_window,
                            tr("Error."),
-                           tr("The scene could not be saved at '%1'.")
-                            .arg(QString::fromStdString(filename)),
+                           tr("The scene could not be saved at '%1'.").arg(filename),
                            QMessageBox::Ok, QMessageBox::Ok );
     return false;
   } else {
@@ -163,8 +162,8 @@ bool Application::save(const std::string& filename)
 
 bool Application::save()
 {
-  const std::string filename = scene.filename();
-  if (filename.empty()) {
+  const QString filename = scene.filename();
+  if (filename.isEmpty()) {
     return save_as();
   } else {
     return save(filename);
@@ -176,12 +175,12 @@ bool Application::save_as()
   LINFO << m_main_window;
   QFileDialog dialog(m_main_window);
   dialog.setWindowTitle(tr("Save scene as ..."));
-  dialog.setDirectoryUrl(QString::fromStdString(scene.filename()));
+  dialog.setDirectoryUrl(scene.filename());
   dialog.setDefaultSuffix(FILE_ENDING);
   if (dialog.exec() == QDialog::Accepted) {
     const auto files = dialog.selectedFiles();
     assert(files.size() == 1);
-    return scene.save_as(files.front().toStdString());
+    return scene.save_as(files.front());
   } else {
     return false;
   }
@@ -196,7 +195,7 @@ void Application::reset()
   QTimer::singleShot(0, &scene, SLOT(reset()));
 }
 
-void Application::load(const std::string& filename, bool force)
+void Application::load(const QString& filename, bool force)
 {
   if (!force || !can_close()) {
     return;
@@ -207,7 +206,7 @@ void Application::load(const std::string& filename, bool force)
     if (!scene.load_from(filename)) {
       QMessageBox::critical( m_main_window,
                              tr("Error."),
-                             tr("Loading scene from '%1' failed.").arg(filename.c_str()),
+                             tr("Loading scene from '%1' failed.").arg(filename),
                              QMessageBox::Ok );
     }
   });
@@ -220,17 +219,15 @@ void Application::load()
   }
 
   const QString filename =
-    QFileDialog::getOpenFileName( m_main_window,
-                                  tr("Load scene ..."),
-                                  QString::fromStdString(scene.filename()) );
+    QFileDialog::getOpenFileName( m_main_window, tr("Load scene ..."), scene.filename());
   if (filename.isEmpty()) {
     return;
   }
 
-  load(filename.toStdString(), true);
+  load(filename, true);
 }
 
-bool Application::perform_action(const std::string& action_name)
+bool Application::perform_action(const QString& action_name)
 {
   if (action_name == "undo") {
     scene.history().undo();
@@ -347,7 +344,7 @@ bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers, Command
   const auto dispatch_sequence = [this](CommandInterface& ci) {
     LINFO << m_pending_key_sequence;
     const auto action_name = key_bindings.find_action(ci.type(), m_pending_key_sequence);
-    if (!action_name.empty() && ci.perform_action(action_name)) {
+    if (!action_name.isEmpty() && ci.perform_action(action_name)) {
       m_pending_key_sequence = QKeySequence();
       return true;
     } else {
@@ -379,7 +376,7 @@ bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers)
   return dispatch_key(key, modifiers, Application::instance());
 }
 
-std::string Application::type() const { return TYPE; }
+QString Application::type() const { return TYPE; }
 
 MessageBox &Application::message_box()
 {
@@ -388,10 +385,10 @@ MessageBox &Application::message_box()
 
 MainWindow* Application::main_window() const { return m_main_window; }
 
-Object& Application::insert_object(const std::string &key, InsertionMode mode)
+Object& Application::insert_object(const QString &key, InsertionMode mode)
 {
-  auto macro = scene.history().start_macro(tr("Create %1")
-                  .arg(QApplication::translate("any-context", key.c_str())));
+  const auto translated_key =QApplication::translate("any-context", key.toUtf8().constData());
+  auto macro = scene.history().start_macro(tr("Create %1").arg(translated_key));
   using add_command_type = AddCommand<ObjectTree>;
   auto object = Object::make(key, &scene);
   object->set_object_tree(scene.object_tree());

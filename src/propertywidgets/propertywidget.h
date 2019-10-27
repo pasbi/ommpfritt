@@ -12,7 +12,7 @@ namespace omm
 
 class AbstractPropertyWidget
   : public QWidget
-  , public AbstractFactory< std::string, AbstractPropertyWidget,
+  , public AbstractFactory< QString, AbstractPropertyWidget,
                             Scene&, const std::set<Property*>& >
 {
   Q_OBJECT
@@ -20,7 +20,7 @@ public:
   explicit AbstractPropertyWidget(Scene& scene, const std::set<Property*>& properties);
   virtual ~AbstractPropertyWidget() = default;
 
-  template<typename T> T configuration(const std::string& key)
+  template<typename T> T configuration(const QString& key)
   {
     return Property::get_value<T>(m_properties, [key](const Property& p) {
       return p.configuration.get<T>(key);
@@ -38,7 +38,7 @@ protected Q_SLOTS:
   virtual void update_edit() = 0;
 
 private:
-  const std::string m_label;
+  const QString m_label;
   std::set<Property*> m_properties;
   template<typename PropertyT> friend class PropertyWidget;
   QTimer m_update_timer;
@@ -51,7 +51,7 @@ public:
   using AbstractPropertyWidget::AbstractPropertyWidget;
   using property_type = PropertyT;
   using value_type = typename property_type::value_type;
-  static const std::string TYPE;
+  static const QString TYPE;
 
 protected:
   virtual void set_properties_value(const value_type& value)
@@ -76,8 +76,8 @@ protected:
   const std::set<Property*>& properties() const { return m_properties; }
 };
 
-template<typename PropertyT> const std::string
-PropertyWidget<PropertyT>::TYPE = std::string(PropertyT::TYPE) + "Widget";
+template<typename PropertyT> const QString
+PropertyWidget<PropertyT>::TYPE = QString(PropertyT::TYPE) + "Widget";
 
 void register_propertywidgets();
 

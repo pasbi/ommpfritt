@@ -58,7 +58,7 @@ void ReferencePropertyWidget::update_edit()
   m_line_edit->set_values(get_properties_values());
 }
 
-std::string ReferencePropertyWidget::type() const
+QString ReferencePropertyWidget::type() const
 {
   return TYPE;
 }

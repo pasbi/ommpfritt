@@ -17,7 +17,7 @@ public:
   ReferenceProperty();
   explicit ReferenceProperty(const ReferenceProperty& other);
   ~ReferenceProperty() override;
-  std::string type() const override { return TYPE; }
+  QString type() const override { return TYPE; }
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   ReferenceProperty& set_allowed_kinds(AbstractPropertyOwner::Kind allowed_kinds);
@@ -36,8 +36,8 @@ public:
   collect_candidates(const Scene& scene, const AbstractPropertyOwner::Kind allowed_kinds,
                                          const AbstractPropertyOwner::Flag required_flags);
 
-  static const std::map<AbstractPropertyOwner::Kind, std::string> KIND_KEYS;
-  static const std::map<AbstractPropertyOwner::Flag, std::string> FLAG_KEYS;
+  static const std::map<AbstractPropertyOwner::Kind, QString> KIND_KEYS;
+  static const std::map<AbstractPropertyOwner::Flag, QString> FLAG_KEYS;
   void update_referenes(const std::map<std::size_t, AbstractPropertyOwner *> &references) override;
 
 Q_SIGNALS:

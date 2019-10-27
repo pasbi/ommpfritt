@@ -10,9 +10,9 @@
 namespace
 {
 
-std::unique_ptr<QListWidgetItem> make_item(const std::string& label)
+std::unique_ptr<QListWidgetItem> make_item(const QString& label)
 {
-  auto item = std::make_unique<QListWidgetItem>(QString::fromStdString(label));
+  auto item = std::make_unique<QListWidgetItem>(label);
   item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
   return item;
 }
@@ -41,29 +41,29 @@ void OptionsPropertyConfigWidget::init(const Property::Configuration &configurat
 {
   m_list_widget->clear();
   const auto items
-      = configuration.get<std::vector<std::string>>(OptionsProperty::OPTIONS_POINTER, {});
-  for (const std::string& label : items) {
+      = configuration.get<std::vector<QString>>(OptionsProperty::OPTIONS_POINTER, {});
+  for (const QString& label : items) {
     m_list_widget->insertItem(m_list_widget->count(), make_item(label).release());
   }
   if (m_list_widget->count() == 0) {
-    const std::string label = tr(unnamed_option_label).toStdString();
+    const QString label = tr(unnamed_option_label);
     m_list_widget->insertItem(m_list_widget->count(), make_item(label).release());
   }
 }
 
 void OptionsPropertyConfigWidget::update(Property::Configuration &configuration) const
 {
-  std::vector<std::string> items;
+  std::vector<QString> items;
   const int n = m_list_widget->count();
   items.reserve(n);
   for (int row = 0; row < n; ++row) {
-    const auto label = m_list_widget->item(row)->data(Qt::DisplayRole).toString().toStdString();
+    const auto label = m_list_widget->item(row)->data(Qt::DisplayRole).toString();
     items.push_back(label);
   }
   configuration[OptionsProperty::OPTIONS_POINTER] = items;
 }
 
-void OptionsPropertyConfigWidget::add_option(const std::string& label)
+void OptionsPropertyConfigWidget::add_option(const QString& label)
 {
   auto item = make_item(label);
   auto& ref = *item;
@@ -103,7 +103,7 @@ bool OptionsPropertyConfigWidget::eventFilter(QObject* watched, QEvent* event)
   const auto attempt_add_item = [get_item, this](QMouseEvent* event) {
     auto* item = get_item();
     if (event->button() == Qt::LeftButton && item == nullptr) {
-      add_option(tr(unnamed_option_label).toStdString());
+      add_option(tr(unnamed_option_label));
       return true;
     } else {
       return false;

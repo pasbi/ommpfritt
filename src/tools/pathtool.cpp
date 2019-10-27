@@ -51,7 +51,7 @@ void PathTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
   m_current_point = nullptr;
 }
 
-std::string PathTool::type() const { return TYPE; }
+QString PathTool::type() const { return TYPE; }
 
 void PathTool::add_point(const Vec2f &pos)
 {

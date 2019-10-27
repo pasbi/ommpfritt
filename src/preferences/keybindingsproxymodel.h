@@ -18,12 +18,12 @@ public:
    *  the translated action label or key-sequence.
    * @param action_name the string to look for
    */
-  void set_action_name_filter(const std::string& action_name);
-  void set_action_sequence_filter(const std::string& action_sequence);
+  void set_action_name_filter(const QString& action_name);
+  void set_action_sequence_filter(const QString& action_sequence);
 
 private:
-  std::string m_action_name_filter;
-  std::string m_action_sequence_filter;
+  QString m_action_name_filter;
+  QString m_action_sequence_filter;
 };
 
 }  // namespace omm

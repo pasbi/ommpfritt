@@ -160,7 +160,7 @@ Q_SIGNALS:
    * @param key the key of the property. The following invariant applies:
    *    `owner.property(key) == &p`
    */
-  void property_value_changed(AbstractPropertyOwner& owner, const std::string& key, Property& p);
+  void property_value_changed(AbstractPropertyOwner& owner, const QString& key, Property& p);
 
   /**
    * @brief abstract_property_owner_inserted is emitted after any AbstractPropertyOwner is inserted.

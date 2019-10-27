@@ -35,16 +35,16 @@ public:
     sysm.attr("stderr") = m_stderr;
   }
 
-  std::string stdout_()
+  QString stdout_()
   {
     m_stdout_buffer.attr("seek")(0);
-    return py::str(m_stdout_buffer.attr("read")());
+    return QString::fromStdString(py::str(m_stdout_buffer.attr("read")()));
   }
 
-  std::string stderr_()
+  QString stderr_()
   {
     m_stderr_buffer.attr("seek")(0);
-    return py::str(m_stderr_buffer.attr("read")());
+    return QString::fromStdString(py::str(m_stderr_buffer.attr("read")()));
   }
 
 private:
@@ -74,11 +74,11 @@ PythonEngine::PythonEngine()
 }
 
 bool PythonEngine
-::exec(const std::string& code, py::object& locals, const void* associated_item)
+::exec(const QString& code, py::object& locals, const void* associated_item)
 {
   PythonStreamRedirect py_output_redirect {};
   try {
-    py::exec(code, py::globals(), locals);
+    py::exec(code.toStdString(), py::globals(), locals);
     Q_EMIT output(associated_item, py_output_redirect.stdout_(), Stream::stdout_);
     Q_EMIT output(associated_item, py_output_redirect.stderr_(), Stream::stderr_);
     return true;
@@ -89,11 +89,11 @@ bool PythonEngine
 }
 
 pybind11::object PythonEngine
-::eval(const std::string& code, py::object& locals, const void* associated_item)
+::eval(const QString& code, py::object& locals, const void* associated_item)
 {
   PythonStreamRedirect py_output_redirect {};
   try {
-    auto result = py::eval(code, py::globals(), locals);
+    auto result = py::eval(code.toStdString(), py::globals(), locals);
     Q_EMIT output(associated_item, py_output_redirect.stdout_(), Stream::stdout_);
     Q_EMIT output(associated_item, py_output_redirect.stderr_(), Stream::stderr_);
     return result;

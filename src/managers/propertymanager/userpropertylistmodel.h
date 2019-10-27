@@ -13,8 +13,8 @@ class UserPropertyListItem
 {
 public:
   explicit UserPropertyListItem(Property* property = nullptr);
-  std::string label() const;
-  std::string type() const;
+  QString label() const;
+  QString type() const;
 
   Property::Configuration configuration;
   Property* property() const { return m_property; }

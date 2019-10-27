@@ -11,18 +11,20 @@
 
 namespace
 {
-  constexpr auto PROPERTIES_POINTER = "properties";
-  constexpr auto PROPERTY_TYPE_POINTER = "type";
-  constexpr auto PROPERTY_KEY_POINTER = "key";
-  constexpr auto ID_POINTER = "id";
+
+constexpr auto PROPERTIES_POINTER = "properties";
+constexpr auto PROPERTY_TYPE_POINTER = "type";
+constexpr auto PROPERTY_KEY_POINTER = "key";
+constexpr auto ID_POINTER = "id";
+
 }  // namespace
 
 namespace omm
 {
 
-const std::string AbstractPropertyOwner::NAME_PROPERTY_KEY = "name";
+const QString AbstractPropertyOwner::NAME_PROPERTY_KEY = "name";
 
-const OrderedMap<std::string, Property>& AbstractPropertyOwner::properties() const
+const OrderedMap<QString, Property>& AbstractPropertyOwner::properties() const
 {
   return m_properties;
 }
@@ -48,7 +50,7 @@ AbstractPropertyOwner::~AbstractPropertyOwner()
   }
 }
 
-Property *AbstractPropertyOwner::property(const std::string& key) const
+Property *AbstractPropertyOwner::property(const QString& key) const
 {
   if (has_property(key)) {
     return m_properties.at(key).get();
@@ -57,7 +59,7 @@ Property *AbstractPropertyOwner::property(const std::string& key) const
   }
 }
 
-bool AbstractPropertyOwner::has_property(const std::string& key) const
+bool AbstractPropertyOwner::has_property(const QString& key) const
 {
   return m_properties.contains(key);
 }
@@ -107,7 +109,7 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
       } catch (const std::out_of_range&) {
         const auto msg = "Failed to retrieve property type '" + property_type + "'.";
         LERROR << msg;
-        throw AbstractDeserializer::DeserializeError(msg);
+        throw AbstractDeserializer::DeserializeError(msg.toStdString());
       }
     }
 
@@ -116,7 +118,7 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
 }
 
 Property
-&AbstractPropertyOwner::add_property(const std::string &key, std::unique_ptr<Property> property)
+&AbstractPropertyOwner::add_property(const QString &key, std::unique_ptr<Property> property)
 {
   Property& ref = *property;
   assert(!m_properties.contains(key));
@@ -132,12 +134,12 @@ Property
   return ref;
 }
 
-std::string AbstractPropertyOwner::name() const
+QString AbstractPropertyOwner::name() const
 {
-  return property(NAME_PROPERTY_KEY)->value<std::string>();
+  return property(NAME_PROPERTY_KEY)->value<QString>();
 }
 
-std::unique_ptr<Property> AbstractPropertyOwner::extract_property(const std::string& key)
+std::unique_ptr<Property> AbstractPropertyOwner::extract_property(const QString& key)
 {
   auto property = m_properties.extract(key);
   disconnect(property.get(), &Property::value_changed, this, nullptr);
@@ -158,7 +160,7 @@ std::ostream& operator<<(std::ostream& ostream, const AbstractPropertyOwner* apo
 void AbstractPropertyOwner::copy_properties(AbstractPropertyOwner& target) const
 {
   const auto keys = [](const AbstractPropertyOwner& o) {
-    return ::transform<std::string, std::set>(o.properties().keys(), ::identity);
+    return ::transform<QString, std::set>(o.properties().keys(), ::identity);
   };
 
   for (const auto& key : ::intersect(keys(target), keys(*this))) {

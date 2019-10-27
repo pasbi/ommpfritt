@@ -15,7 +15,7 @@ class Text : public Object
 public:
   explicit Text(Scene* scene);
   Text(const Text& other);
-  std::string type() const override;
+  QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Text");
   std::unique_ptr<Object> clone() const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;

@@ -15,9 +15,9 @@ class AbstractPropertyOwner;
 class TracksCommand : public Command
 {
 protected:
-  TracksCommand(Animator& animator, const std::string& label,
+  TracksCommand(Animator& animator, const QString& label,
                 const std::map<AbstractPropertyOwner*, Property*>& properties);
-  TracksCommand(Animator& animator, const std::string& label,
+  TracksCommand(Animator& animator, const QString& label,
                 std::map<AbstractPropertyOwner *, std::unique_ptr<Track> > tracks);
 
 protected:
@@ -28,7 +28,7 @@ private:
   Animator& m_animator;
   std::map<AbstractPropertyOwner*, std::unique_ptr<Track>> m_tracks;
   const std::map<AbstractPropertyOwner*, Property*> m_properties;
-  const std::string m_property_key;
+  const QString m_property_key;
 };
 
 class InsertTracksCommand : public TracksCommand

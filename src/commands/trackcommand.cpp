@@ -21,7 +21,7 @@ collect(const std::map<omm::AbstractPropertyOwner*, std::unique_ptr<omm::Track>>
 namespace omm
 {
 
-TracksCommand::TracksCommand(Animator& animator, const std::string &label,
+TracksCommand::TracksCommand(Animator& animator, const QString &label,
                              const std::map<AbstractPropertyOwner*, Property*> &properties)
   : Command(label)
   , m_animator(animator)
@@ -31,7 +31,7 @@ TracksCommand::TracksCommand(Animator& animator, const std::string &label,
 
 }
 
-TracksCommand::TracksCommand(Animator& animator, const std::string &label,
+TracksCommand::TracksCommand(Animator& animator, const QString &label,
                              std::map<AbstractPropertyOwner*, std::unique_ptr<Track>> tracks)
   : Command(label)
   , m_animator(animator)
@@ -60,14 +60,14 @@ void TracksCommand::insert()
 InsertTracksCommand
 ::InsertTracksCommand(Animator& animator,
                       std::map<AbstractPropertyOwner*, std::unique_ptr<Track>> tracks)
-  : TracksCommand(animator, QObject::tr("Create Tracks").toStdString(), std::move(tracks))
+  : TracksCommand(animator, QObject::tr("Create Tracks"), std::move(tracks))
 {
 }
 
 RemoveTracksCommand
 ::RemoveTracksCommand(Animator& animator,
                       const std::map<AbstractPropertyOwner*, Property*> &properties)
-  : TracksCommand(animator, QObject::tr("Remove Tracks").toStdString(), properties)
+  : TracksCommand(animator, QObject::tr("Remove Tracks"), properties)
 {
 }
 

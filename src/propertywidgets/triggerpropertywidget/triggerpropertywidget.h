@@ -13,7 +13,7 @@ public:
   void trigger();
 
 protected:
-  std::string type() const override;
+  QString type() const override;
   void update_edit() override;
 };
 

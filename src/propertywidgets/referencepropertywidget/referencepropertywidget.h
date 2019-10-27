@@ -19,7 +19,7 @@ public:
 
 protected:
   void update_edit() override;
-  std::string type() const override;
+  QString type() const override;
 
 private:
   ReferenceLineEdit* m_line_edit;

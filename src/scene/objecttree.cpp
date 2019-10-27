@@ -244,7 +244,7 @@ QVariant ObjectTree::data(const QModelIndex &index, int role) const
     switch (role) {
     case Qt::DisplayRole:
     case Qt::EditRole:
-      return QString::fromStdString(item_at(index).name());
+      return item_at(index).name();
     case Qt::DecorationRole:
       return Application::instance().icon_provider.icon(item_at(index).type());
     }
@@ -259,8 +259,8 @@ bool ObjectTree::setData(const QModelIndex &index, const QVariant &value, int ro
   case 0:
   {
     Property* property = item_at(index).property(Object::NAME_PROPERTY_KEY);
-    const auto svalue = value.toString().toStdString();
-    if (property->value<std::string>() != svalue) {
+    const auto svalue = value.toString();
+    if (property->value<QString>() != svalue) {
       scene.submit<PropertiesCommand<StringProperty>>(std::set { property }, svalue);
       return true;
     } else {

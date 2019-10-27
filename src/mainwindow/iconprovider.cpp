@@ -22,12 +22,12 @@ QIcon IconProvider::icon(AbstractPropertyOwner& owner) const
   return icon(owner.type());
 }
 
-QIcon IconProvider::icon(const std::string& name) const
+QIcon IconProvider::icon(const QString& name) const
 {
   // Fallback: load icon file
-  const std::string filename = ":/icons/" + name + ".png";
+  const QString filename = ":/icons/" + name + ".png";
   if (m_cached_icons_from_file.find(filename) == m_cached_icons_from_file.end()) {
-    QIcon icon(QString::fromStdString(filename));
+    QIcon icon(filename);
     m_cached_icons_from_file.insert(std::pair(filename, icon));
   }
   return m_cached_icons_from_file.at(filename);

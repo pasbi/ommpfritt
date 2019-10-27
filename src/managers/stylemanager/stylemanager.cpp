@@ -22,9 +22,9 @@ StyleManager::StyleManager(Scene& scene)
           &item_view(), SLOT(set_selection(std::set<Style*>)));
 }
 
-std::string StyleManager::type() const { return TYPE; }
+QString StyleManager::type() const { return TYPE; }
 
-bool StyleManager::perform_action(const std::string& action_name)
+bool StyleManager::perform_action(const QString& action_name)
 {
   LINFO << action_name;
   return false;

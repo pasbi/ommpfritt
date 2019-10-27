@@ -51,14 +51,14 @@ private:
   /**
    * holds the last filename this scene was associated to. Is set in `save_as` and `load_from`
    */
-  std::string m_filename;
+  QString m_filename;
 
 
   // === Save/Load ====
 public:
-  bool save_as(const std::string& filename);
-  bool load_from(const std::string& filename);
-  std::string filename() const;
+  bool save_as(const QString& filename);
+  bool load_from(const QString& filename);
+  QString filename() const;
 
   static constexpr auto TYPE = "Scene";
 
@@ -81,7 +81,7 @@ public:
   find_reference_holders(const AbstractPropertyOwner& candidate) const;
   std::map<const AbstractPropertyOwner*, std::set<ReferenceProperty*>>
   find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates) const;
-  template<typename T> std::set<T*> find_items(const std::string& name) const;
+  template<typename T> std::set<T*> find_items(const QString& name) const;
   bool can_remove( QWidget* parent, std::set<AbstractPropertyOwner*> selection,
                    std::set<Property*>& properties ) const;
   bool remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& selection);
@@ -160,7 +160,7 @@ private:
   std::unique_ptr<NamedColors> m_named_colors;
 public:
   NamedColors& named_colors() { return *m_named_colors; }
-  std::set<ColorProperty*> find_named_color_holders(const std::string& name) const;
+  std::set<ColorProperty*> find_named_color_holders(const QString& name) const;
 
 };
 

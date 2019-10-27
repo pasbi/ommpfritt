@@ -35,7 +35,7 @@ class SelectObjectsTool : public AbstractSelectTool
 {
 public:
   explicit SelectObjectsTool(Scene& scene);
-  std::string type() const override;
+  QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectObjectsTool");
 
   /**

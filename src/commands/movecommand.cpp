@@ -28,7 +28,7 @@ namespace omm
 
 template<typename StructureT> MoveCommand<StructureT>
 ::MoveCommand(StructureT& structure, const std::vector<context_type>& new_contextes)
-  : Command(QObject::tr("reparent").toStdString())
+  : Command(QObject::tr("reparent"))
   , m_old_contextes(make_old_contextes(structure, new_contextes))
   , m_new_contextes(new_contextes)
   , m_structure(structure)

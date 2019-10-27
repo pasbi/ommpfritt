@@ -14,13 +14,13 @@ void SceneWrapper::define_python_interface(py::object& module)
       .def("find_styles", &SceneWrapper::find_items<Style>);
 }
 
-template<typename T> py::object SceneWrapper::find_items(const std::string& name) const
+template<typename T> py::object SceneWrapper::find_items(const QString& name) const
 {
   return wrap(wrapped.find_items<T>(name));
 }
 
-template py::object SceneWrapper::find_items<Object>(const std::string&) const;
-template py::object SceneWrapper::find_items<Tag>(const std::string&) const;
-template py::object SceneWrapper::find_items<Style>(const std::string&) const;
+template py::object SceneWrapper::find_items<Object>(const QString&) const;
+template py::object SceneWrapper::find_items<Tag>(const QString&) const;
+template py::object SceneWrapper::find_items<Style>(const QString&) const;
 
 }  // namespace omm

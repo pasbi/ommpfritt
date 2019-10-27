@@ -7,7 +7,7 @@ namespace omm
 {
 
 NamedColorAddRemoveCommand
-::NamedColorAddRemoveCommand(const std::string& label, const std::string& color_name, const Color& value)
+::NamedColorAddRemoveCommand(const QString& label, const QString& color_name, const Color& value)
   : Command(label), m_color_name(color_name), m_value(value)
 {
   assert(value.model() != Color::Model::Named);
@@ -28,8 +28,8 @@ void NamedColorAddRemoveCommand::remove()
 }
 
 ChangeNamedColorNameCommand::
-ChangeNamedColorNameCommand(const std::string& old_name, const std::string& new_name)
-  : Command(QObject::tr("Change name of named color name").toStdString())
+ChangeNamedColorNameCommand(const QString& old_name, const QString& new_name)
+  : Command(QObject::tr("Change name of named color name"))
   , m_old_name(old_name)
   , m_new_name(new_name)
 {
@@ -47,8 +47,8 @@ void ChangeNamedColorNameCommand::redo()
   model.rename(m_old_name, m_new_name);
 }
 
-ChangeNamedColorColorCommand::ChangeNamedColorColorCommand(const std::string& name, const Color& color)
-  : Command(QObject::tr("Change Named Color color").toStdString())
+ChangeNamedColorColorCommand::ChangeNamedColorColorCommand(const QString& name, const Color& color)
+  : Command(QObject::tr("Change Named Color color"))
   , m_name(name), m_old_color(color), m_new_color(color)
 {
   assert(color.model() != Color::Model::Named);
@@ -71,14 +71,14 @@ bool ChangeNamedColorColorCommand::mergeWith(const QUndoCommand* other)
   return m_name == static_cast<const ChangeNamedColorColorCommand&>(*other).m_name;
 }
 
-RemoveNamedColorCommand::RemoveNamedColorCommand(const std::string& color_name)
-  : NamedColorAddRemoveCommand(QObject::tr("Remove Named Color").toStdString(), color_name,
+RemoveNamedColorCommand::RemoveNamedColorCommand(const QString& color_name)
+  : NamedColorAddRemoveCommand(QObject::tr("Remove Named Color"), color_name,
                                Application::instance().scene.named_colors().color(color_name))
 {
 }
 
-AddNamedColorCommand::AddNamedColorCommand(const std::string& color_name, const Color& value)
-  : NamedColorAddRemoveCommand(QObject::tr("Add Named Color").toStdString(), color_name, value)
+AddNamedColorCommand::AddNamedColorCommand(const QString& color_name, const Color& value)
+  : NamedColorAddRemoveCommand(QObject::tr("Add Named Color"), color_name, value)
 {
 
 }

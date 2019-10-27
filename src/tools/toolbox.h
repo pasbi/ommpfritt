@@ -15,8 +15,8 @@ public:
   ToolBox(Scene& scene);
 
   Tool& active_tool() const;
-  Tool& tool(const std::string& key) const;
-  void set_active_tool(const std::string& key);
+  Tool& tool(const QString& key) const;
+  void set_active_tool(const QString& key);
   void set_previous_tool();
   void switch_between_object_and_point_selection();
 
@@ -25,9 +25,9 @@ Q_SIGNALS:
 
 private:
   Tool* m_active_tool;
-  const std::map<std::string, std::unique_ptr<Tool>> m_tools;
+  const std::map<QString, std::unique_ptr<Tool>> m_tools;
   Scene& m_scene;
-  std::list<std::string> m_history;
+  std::list<QString> m_history;
 };
 
 }  // namespace omm

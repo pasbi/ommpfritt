@@ -37,42 +37,46 @@ static constexpr auto TYPE_POINTER = "type";
 namespace omm
 {
 
-Style Object::m_bounding_box_style = ContourStyle(omm::Colors::BLACK, 1.0);
+std::unique_ptr<Style> Object::m_bounding_box_style;
 
 Object::Object(Scene* scene) : PropertyOwner(scene), tags(*this)
 {
-  static const auto category = QObject::tr("basic").toStdString();
+  if (!m_bounding_box_style) {
+    m_bounding_box_style = std::make_unique<ContourStyle>(omm::Colors::BLACK, 1.0);
+  }
+
+  static const auto category = QObject::tr("basic");
   create_property<OptionsProperty>(VISIBILITY_PROPERTY_KEY, 0)
-    .set_options({ QObject::tr("default").toStdString(), QObject::tr("hidden").toStdString(),
-      QObject::tr("visible").toStdString() })
-    .set_label(QObject::tr("visibility").toStdString())
+    .set_options({ QObject::tr("default"), QObject::tr("hidden"),
+      QObject::tr("visible") })
+    .set_label(QObject::tr("visibility"))
     .set_category(category);
 
   create_property<BoolProperty>(IS_ACTIVE_PROPERTY_KEY, true)
-    .set_label(QObject::tr("active").toStdString())
+    .set_label(QObject::tr("active"))
     .set_category(category);
 
-  create_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>").toStdString())
-    .set_label(QObject::tr("Name").toStdString())
+  create_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>"))
+    .set_label(QObject::tr("Name"))
     .set_category(category);
 
   create_property<FloatVectorProperty>(POSITION_PROPERTY_KEY, Vec2f(0.0, 0.0))
-    .set_label(QObject::tr("pos").toStdString())
+    .set_label(QObject::tr("pos"))
     .set_category(category);
 
   create_property<FloatVectorProperty>(SCALE_PROPERTY_KEY, Vec2f(1.0, 1.0))
     .set_step(Vec2f(0.1, 0.1))
-    .set_label(QObject::tr("scale").toStdString())
+    .set_label(QObject::tr("scale"))
     .set_category(category);
 
   create_property<FloatProperty>(ROTATION_PROPERTY_KEY, 0.0)
     .set_multiplier(180.0 / M_PI)
-    .set_label(QObject::tr("rotation").toStdString())
+    .set_label(QObject::tr("rotation"))
     .set_category(category);
 
   create_property<FloatProperty>(SHEAR_PROPERTY_KEY, 0.0)
     .set_step(0.01)
-    .set_label(QObject::tr("shear").toStdString())
+    .set_label(QObject::tr("shear"))
     .set_category(category);
 }
 
@@ -219,10 +223,9 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
       const auto t = child->transformation();
       adopt(std::move(child)).set_transformation(t);
     } catch (std::out_of_range&) {
-      const auto message = QObject::tr("Failed to retrieve object type '%1'.")
-                            .arg(QString::fromStdString(child_type)).toStdString();
+      const auto message = QObject::tr("Failed to retrieve object type '%1'.") .arg(child_type);
       LERROR << message;
-      throw AbstractDeserializer::DeserializeError(message);
+      throw AbstractDeserializer::DeserializeError(message.toStdString());
     }
   }
 
@@ -261,7 +264,7 @@ void Object::draw_recursive(Painter& renderer, RenderOptions options) const
     }
 
     if (!!(renderer.category_filter & Painter::Category::BoundingBox)) {
-      renderer.set_style(m_bounding_box_style);
+      renderer.set_style(*m_bounding_box_style);
       renderer.painter->drawRect(bounding_box(ObjectTransformation()));
     }
 

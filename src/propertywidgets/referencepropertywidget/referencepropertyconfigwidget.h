@@ -16,7 +16,7 @@ class ReferencePropertyConfigWidget : public PropertyConfigWidget
 public:
   ReferencePropertyConfigWidget();
   static constexpr auto TYPE = "ReferencePropertyConfigWidget";
-  std::string type() const override { return TYPE; }
+  QString type() const override { return TYPE; }
   void init(const Property::Configuration &configuration) override;
   void update(Property::Configuration &configuration) const override;
 

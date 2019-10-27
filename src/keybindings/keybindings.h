@@ -25,25 +25,25 @@ public:
   static constexpr auto SEPARATOR = "separator";
 
   std::unique_ptr<QAction>
-  make_action(CommandInterface& context, const std::string& action_name) const;
+  make_action(CommandInterface& context, const QString& action_name) const;
 
   std::vector<std::unique_ptr<QMenu>>
-  make_menus(CommandInterface& context, const std::vector<std::string>& actions) const;
+  make_menus(CommandInterface& context, const std::vector<QString>& actions) const;
 
-  std::string find_action(const std::string& context, const QKeySequence& sequence) const;
+  QString find_action(const QString& context, const QKeySequence& sequence) const;
 
 public:
   QVariant data(int column, const PreferencesTreeValueItem &item, int role) const override;
   bool set_data(int column, PreferencesTreeValueItem &item, const QVariant &value) override;
 
 protected:
-  std::string translation_context() const override { return "keybindings"; }
+  QString translation_context() const override { return "keybindings"; }
 
 private:
   QKeySequence make_key_sequence(const QKeyEvent& event) const;
 
-  static std::pair<std::string, QMenu*>
-  get_menu( const std::string& action_path, std::map<std::string, QMenu*>& menu_map,
+  static std::pair<QString, QMenu*>
+  get_menu( const QString& action_path, std::map<QString, QMenu*>& menu_map,
             std::list<std::unique_ptr<QMenu>>& menus);
   bool call_global_command(const QKeySequence& sequence, const CommandInterface& source) const;
 

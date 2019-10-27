@@ -7,11 +7,11 @@ namespace omm
 {
 
 UserPropertyCommand
-::UserPropertyCommand(const std::vector<std::string>& deletions,
-                      std::vector<std::pair<std::string, std::unique_ptr<Property>>> additions,
+::UserPropertyCommand(const std::vector<QString>& deletions,
+                      std::vector<std::pair<QString, std::unique_ptr<Property>>> additions,
                       const std::map<Property*, Property::Configuration>& changes,
                       AbstractPropertyOwner& owner)
-  : Command(QObject::tr("User Property").toStdString())
+  : Command(QObject::tr("User Property"))
   , m_deletions(deletions)
   , m_additions(std::move(additions))
   , m_changes(changes)
@@ -23,9 +23,9 @@ UserPropertyCommand
 void UserPropertyCommand::swap()
 {
   // TODO order is not preserved
-  std::vector<std::pair<std::string, std::unique_ptr<Property>>> removed;
+  std::vector<std::pair<QString, std::unique_ptr<Property>>> removed;
   removed.reserve(m_deletions.size());
-  for (const std::string& key : m_deletions) {
+  for (const QString& key : m_deletions) {
     removed.push_back(std::pair(key, m_owner.extract_property(key)));
   }
 

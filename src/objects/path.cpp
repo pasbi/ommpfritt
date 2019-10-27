@@ -50,15 +50,15 @@ class Style;
 
 Path::Path(Scene* scene) : Object(scene)
 {
-  static const auto category = QObject::tr("path").toStdString();
+  static const auto category = QObject::tr("path");
 
   create_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
-    .set_label(QObject::tr("closed").toStdString()).set_category(category);
+    .set_label(QObject::tr("closed")).set_category(category);
 
   create_property<OptionsProperty>(INTERPOLATION_PROPERTY_KEY)
-    .set_options({ QObject::tr("linear").toStdString(), QObject::tr("smooth").toStdString(),
-                   QObject::tr("bezier").toStdString() })
-    .set_label(QObject::tr("interpolation").toStdString()).set_category(category);
+    .set_options({ QObject::tr("linear"), QObject::tr("smooth"),
+                   QObject::tr("bezier") })
+    .set_label(QObject::tr("interpolation")).set_category(category);
   update();
 }
 
@@ -83,7 +83,7 @@ BoundingBox Path::bounding_box(const ObjectTransformation &transformation) const
   }
 }
 
-std::string Path::type() const { return TYPE; }
+QString Path::type() const { return TYPE; }
 std::unique_ptr<Object> Path::clone() const { return std::make_unique<Path>(*this); }
 
 void Path::set_points(const std::vector<Point>& points)

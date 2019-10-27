@@ -12,18 +12,18 @@ PathTag::PathTag(Object& owner) : Tag(owner)
   create_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
     .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
     .set_required_flags(AbstractPropertyOwner::Flag::IsPathLike)
-    .set_label(QObject::tr("path").toStdString())
-    .set_category(QObject::tr("path").toStdString());
+    .set_label(QObject::tr("path"))
+    .set_category(QObject::tr("path"));
   create_property<FloatProperty>(POSITION_PROPERTY_KEY)
     .set_step(0.001).set_range(0.0, 1.0)
-    .set_label(QObject::tr("position").toStdString())
-    .set_category(QObject::tr("path").toStdString());
+    .set_label(QObject::tr("position"))
+    .set_category(QObject::tr("path"));
   create_property<BoolProperty>(ALIGN_REFERENCE_PROPERTY_KEY)
-    .set_label(QObject::tr("align").toStdString())
-    .set_category(QObject::tr("path").toStdString());
+    .set_label(QObject::tr("align"))
+    .set_category(QObject::tr("path"));
 }
 
-std::string PathTag::type() const { return TYPE; }
+QString PathTag::type() const { return TYPE; }
 std::unique_ptr<Tag> PathTag::clone() const { return std::make_unique<PathTag>(*this); }
 AbstractPropertyOwner::Flag PathTag::flags() const { return Tag::flags(); }
 

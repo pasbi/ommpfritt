@@ -14,8 +14,8 @@ public:
   explicit StyleManager(Scene& scene);
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "StyleManager");
-  std::string type() const override;
-  bool perform_action(const std::string& action_name) override;
+  QString type() const override;
+  bool perform_action(const QString& action_name) override;
 };
 
 }  // namespace omm

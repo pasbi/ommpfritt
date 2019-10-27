@@ -10,7 +10,7 @@
 namespace
 {
 
-std::vector<std::string> languages()
+std::vector<QString> languages()
 {
   static constexpr auto base_path = ":/qm";
   static constexpr auto prefix = ":/qm/omm_";
@@ -18,7 +18,7 @@ std::vector<std::string> languages()
   static constexpr auto suffix = ".qm";
   static constexpr auto suffix_length = std::string_view(suffix).length();
 
-  std::list<std::string> language_codes;
+  std::list<QString> language_codes;
 
   QDirIterator it(base_path);
   while (it.hasNext()) {
@@ -27,7 +27,7 @@ std::vector<std::string> languages()
       const int code_length = filename.size() - prefix_length - suffix_length;
       if (code_length >= 0) {
         const auto code = filename.mid(prefix_length, code_length);
-        language_codes.push_back(code.toStdString());
+        language_codes.push_back(code);
       }
     }
   }
@@ -44,16 +44,16 @@ GeneralPage::GeneralPage()
   , m_available_languages(languages())
 {
   m_ui->setupUi(this);
-  for (const std::string& code : m_available_languages) {
-    const auto language = QLocale(code.c_str()).language();
+  for (const QString& code : m_available_languages) {
+    const auto language = QLocale(code.toUtf8().constData()).language();
     m_ui->cb_language->addItem(tr(QLocale::languageToString(language).toStdString().c_str()));
   }
   const auto locale = QSettings().value(MainWindow::LOCALE_SETTINGS_KEY).toLocale();
   const auto it = std::find_if(m_available_languages.begin(), m_available_languages.end(),
-                               [&locale](const std::string& code)
+                               [&locale](const QString& code)
   {
 
-    return QLocale(code.c_str()).language() == locale.language();
+    return QLocale(code.toUtf8().constData()).language() == locale.language();
   });
   assert(it != m_available_languages.end());
   const int i = std::distance(m_available_languages.begin(), it);
@@ -76,7 +76,7 @@ void GeneralPage::about_to_reject()
 
 void GeneralPage::about_to_accept()
 {
-  const QLocale locale(m_available_languages.at(m_ui->cb_language->currentIndex()).c_str());
+  const QLocale locale(m_available_languages.at(m_ui->cb_language->currentIndex()));
   QSettings().setValue(MainWindow::LOCALE_SETTINGS_KEY, locale);
 }
 

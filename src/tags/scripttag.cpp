@@ -30,19 +30,19 @@ ScriptTag::ScriptTag(Object& owner)
 {
   create_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
     .set_mode(StringProperty::Mode::Code)
-    .set_label(QObject::tr("code").toStdString())
-    .set_category(QObject::tr("script").toStdString());
+    .set_label(QObject::tr("code"))
+    .set_category(QObject::tr("script"));
   create_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY, 0)
-    .set_options({ QObject::tr("on request").toStdString(),
-                   QObject::tr("per frame").toStdString() })
-    .set_label(QObject::tr("update").toStdString())
-    .set_category(QObject::tr("script").toStdString());
+    .set_options({ QObject::tr("on request"),
+                   QObject::tr("per frame") })
+    .set_label(QObject::tr("update"))
+    .set_category(QObject::tr("script"));
   create_property<TriggerProperty>(TRIGGER_UPDATE_PROPERTY_KEY)
-    .set_label(QObject::tr("evaluate").toStdString())
-    .set_category(QObject::tr("script").toStdString());
+    .set_label(QObject::tr("evaluate"))
+    .set_category(QObject::tr("script"));
 }
 
-std::string ScriptTag::type() const { return TYPE; }
+QString ScriptTag::type() const { return TYPE; }
 AbstractPropertyOwner::Flag ScriptTag::flags() const { return Tag::flags() | Flag::HasScript; }
 std::unique_ptr<Tag> ScriptTag::clone() const { return std::make_unique<ScriptTag>(*this); }
 
@@ -58,7 +58,7 @@ void ScriptTag::force_evaluate()
   Scene* scene = owner->scene();
   assert(scene != nullptr);
   using namespace py::literals;
-  const auto code = property(ScriptTag::CODE_PROPERTY_KEY)->value<std::string>();
+  const auto code = property(ScriptTag::CODE_PROPERTY_KEY)->value<QString>();
   auto locals = py::dict( "this"_a=TagWrapper::make(*this),
                           "scene"_a=SceneWrapper(*scene) );
   scene->python_engine.exec(code, locals, this);

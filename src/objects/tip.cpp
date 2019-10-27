@@ -17,7 +17,7 @@ Tip::Tip(Scene *scene)
   : AbstractProceduralPath(scene)
   , m_marker_properties("", *this, default_marker_shape, default_marker_size)
 {
-  const auto tip_category = QObject::tr("Tip").toStdString();
+  const auto tip_category = QObject::tr("Tip");
   m_marker_properties.make_properties(tip_category);
   update();
 }
@@ -33,7 +33,7 @@ std::vector<Point> Tip::points() const
   return m_marker_properties.shape(1.0);
 }
 
-std::string Tip::type() const
+QString Tip::type() const
 {
   return "Tip";
 }

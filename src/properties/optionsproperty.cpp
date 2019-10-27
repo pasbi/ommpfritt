@@ -54,12 +54,12 @@ std::unique_ptr<Property> OptionsProperty::clone() const
   return std::make_unique<OptionsProperty>(*this);
 }
 
-std::vector<std::string> OptionsProperty::options() const
+std::vector<QString> OptionsProperty::options() const
 {
-  return configuration.get<std::vector<std::string>>(OPTIONS_POINTER);
+  return configuration.get<std::vector<QString>>(OPTIONS_POINTER);
 }
 
-OptionsProperty& OptionsProperty::set_options(const std::vector<std::string>& options)
+OptionsProperty& OptionsProperty::set_options(const std::vector<QString>& options)
 {
   configuration[OPTIONS_POINTER] = options;
   assert(options.size() > 0);

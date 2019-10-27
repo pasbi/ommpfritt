@@ -10,7 +10,7 @@ class CommandInterface : virtual public Typed
 {
 public:
   virtual ~CommandInterface() = default;
-  virtual bool perform_action(const std::string& action_name) = 0;
+  virtual bool perform_action(const QString& action_name) = 0;
 };
 
 }  // namespace

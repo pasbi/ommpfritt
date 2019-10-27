@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QString>
 #include <functional>
 #include <memory>
 #include <vector>
@@ -214,7 +215,11 @@ template<std::size_t i=0, typename variant_type>
 void print_variant_value(std::ostream& ostream, const variant_type& variant)
 {
   if (i == variant.index()) {
-    ostream << std::get<i>(variant);
+    if constexpr (std::is_same_v<std::variant_alternative_t<i, variant_type>, QString>) {
+      ostream << std::get<i>(variant).toStdString();
+    } else {
+      ostream << std::get<i>(variant);
+    }
     return;
   }
 
@@ -330,3 +335,13 @@ std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT&> operator&=(EnumT&
 enum class Space { Viewport, Scene };
 
 }
+
+namespace std
+{
+
+template<> struct hash<QString>
+{
+  std::size_t operator()(const QString& s) const { return hash<std::string>()(s.toStdString()); }
+};
+
+}  // namespace std

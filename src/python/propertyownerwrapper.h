@@ -12,7 +12,7 @@ namespace detail
 {
 
 template<typename WrappedT>
-py::object get_property_value(WrappedT&& wrapped, const std::string& key)
+py::object get_property_value(WrappedT&& wrapped, const QString& key)
 {
   if (wrapped.has_property(key)) {
     const auto value = wrapped.property(key)->variant_value();
@@ -29,7 +29,7 @@ py::object get_property_value(WrappedT&& wrapped, const std::string& key)
     }
   } else {
     LERROR << "Failed to find property key '" << key << "'.";
-    for (const std::string& key : wrapped.properties().keys()) {
+    for (const QString& key : wrapped.properties().keys()) {
       LINFO << key;
     }
     return py::none();
@@ -37,7 +37,7 @@ py::object get_property_value(WrappedT&& wrapped, const std::string& key)
 }
 
 bool set_property_value( AbstractPropertyOwner& property_owner,
-                         const std::string& key, const py::object& value );
+                         const QString& key, const py::object& value );
 }  // namespace detail
 
 template<typename WrappedT, typename = void>
@@ -46,20 +46,19 @@ class AbstractPropertyOwnerWrapper : public PyWrapper<WrappedT>
   static_assert(std::is_base_of<AbstractPropertyOwner, std::decay_t<WrappedT>>::value);
 public:
   using PyWrapper<WrappedT>::PyWrapper;
-  py::object get(const std::string& key) const
+  py::object get(const QString& key) const
   {
     return detail::get_property_value(this->wrapped, key);
   }
 
-  bool set(const std::string& key, const py::object& value) const
+  bool set(const QString& key, const py::object& value) const
   {
     return detail::set_property_value(this->wrapped, key, value);
   }
 
   static void define_python_interface(py::object& module)
   {
-    using namespace std::string_literals;
-    const auto type_name = ("Base"s + WrappedT::TYPE).c_str();
+    const auto type_name = (QStringLiteral("Base") + WrappedT::TYPE).toUtf8().constData();
     py::class_<AbstractPropertyOwnerWrapper<WrappedT>>(module, type_name, py::dynamic_attr())
           .def("get", &AbstractPropertyOwnerWrapper<WrappedT>::get)
           .def("set", &AbstractPropertyOwnerWrapper<WrappedT>::set);

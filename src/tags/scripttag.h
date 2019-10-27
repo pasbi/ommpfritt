@@ -9,7 +9,7 @@ class ScriptTag : public Tag
 {
 public:
   explicit ScriptTag(Object& owner);
-  std::string type() const override;
+  QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ScriptTag");
   static constexpr auto CODE_PROPERTY_KEY = "code";
   static constexpr auto UPDATE_MODE_PROPERTY_KEY = "update";

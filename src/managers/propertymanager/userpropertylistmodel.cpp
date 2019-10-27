@@ -8,7 +8,7 @@ namespace omm
 UserPropertyListModel::UserPropertyListModel(AbstractPropertyOwner &owner)
 {
   std::list<UserPropertyListItem> items;
-  for (const std::string& key : owner.properties().keys()) {
+  for (const QString& key : owner.properties().keys()) {
     Property* property = owner.property(key);
     if (property->is_user_property()) {
       UserPropertyListItem item(property);
@@ -31,12 +31,12 @@ QVariant UserPropertyListModel::data(const QModelIndex &index, int role) const
 
   switch (role) {
   case Qt::EditRole:
-    return QString::fromStdString(get_label());;
+    return get_label();
   case Qt::DisplayRole:
-    if (const std::string label = get_label(); label.empty()) {
+    if (const QString label = get_label(); label.isEmpty()) {
       return tr("<unnamed property>");
     } else {
-      return QString::fromStdString(label);
+      return label;
     }
   default:
     return QVariant();
@@ -66,7 +66,7 @@ bool UserPropertyListModel::setData(const QModelIndex &index, const QVariant &da
   assert(index.column() == 0);
   assert(!index.parent().isValid());
   if (role == Qt::EditRole) {
-    m_items.at(index.row()).configuration["label"] = data.toString().toStdString();
+    m_items.at(index.row()).configuration["label"] = data.toString();
     Q_EMIT dataChanged(index, index, { Qt::DisplayRole });
     return true;
   }
@@ -93,7 +93,7 @@ void UserPropertyListModel::add_property(const QString& type)
   const int row = m_items.size();
   beginInsertRows(QModelIndex(), row, row);
   UserPropertyListItem item;
-  item.configuration["type"] = type.toStdString();
+  item.configuration["type"] = type;
   m_items.push_back(item);
   endInsertRows();
 }
@@ -113,23 +113,23 @@ UserPropertyListItem::UserPropertyListItem(Property *property) : m_property(prop
   }
 }
 
-std::string UserPropertyListItem::label() const
+QString UserPropertyListItem::label() const
 {
   const auto label_it = configuration.find("label");
   const auto* label = label_it == configuration.end() ? nullptr
-                                                      : std::get_if<std::string>(&label_it->second);
-  if (label == nullptr || label->empty()) {
+                                                      : std::get_if<QString>(&label_it->second);
+  if (label == nullptr || label->isEmpty()) {
     return property() == nullptr ? "" : property()->label();
   } else {
     return *label;
   }
 }
 
-std::string UserPropertyListItem::type() const
+QString UserPropertyListItem::type() const
 {
   if (property() == nullptr) {
     // if property is null, then there must be a string-typed "type" item in configuration.
-    return *std::get_if<std::string>(&configuration.at("type"));
+    return *std::get_if<QString>(&configuration.at("type"));
   } else {
     return property()->type();
   }

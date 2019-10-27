@@ -67,12 +67,12 @@ void Handle::discretize(Vec2f& vec) const
   }
 }
 
-QColor Handle::ui_color(QPalette::ColorGroup group, const std::string& name) const
+QColor Handle::ui_color(QPalette::ColorGroup group, const QString& name) const
 {
   return omm::ui_color(group, "Handle", name);
 }
 
-QColor Handle::ui_color(const std::string& name) const
+QColor Handle::ui_color(const QString& name) const
 {
   static const std::map<Status, QPalette::ColorGroup> color_group_map {
     { Status::Active, QPalette::Active },

@@ -17,7 +17,7 @@ class Painter;
 
 class Tool
   : public PropertyOwner<AbstractPropertyOwner::Kind::Tool>
-  , public AbstractFactory<std::string, Tool, Scene&>
+  , public AbstractFactory<QString, Tool, Scene&>
 {
   Q_OBJECT
 public:
@@ -46,7 +46,7 @@ public:
   Flag flags() const override { return Flag::None; }
   ObjectTransformation viewport_transformation;
   bool integer_transformation() const;
-  std::string name() const override;
+  QString name() const override;
 
   /**
    * @brief modifies_points returns whether the tool modfies points. Shall return false if does not

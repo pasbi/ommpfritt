@@ -11,7 +11,7 @@ class StringPropertyConfigWidget : public PropertyConfigWidget
 public:
   StringPropertyConfigWidget();
   static constexpr auto TYPE = "StringPropertyConfigWidget";
-  std::string type() const override { return TYPE; }
+  QString type() const override { return TYPE; }
   void init(const Property::Configuration &configuration) override;
   void update(Property::Configuration &configuration) const override;
 

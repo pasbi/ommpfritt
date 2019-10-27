@@ -29,8 +29,8 @@ template<typename ValueType>
 class NumericEdit : public AbstractNumericEdit
 {
 public:
-  const std::string inf = "inf";
-  const std::string neg_inf = "-inf";
+  const QString inf = "inf";
+  const QString neg_inf = "-inf";
 
   using value_type = ValueType;
   NumericEdit(QWidget* parent = nullptr) : AbstractNumericEdit(parent)
@@ -38,7 +38,7 @@ public:
     setContextMenuPolicy(Qt::NoContextMenu);
 
     connect(this, &QLineEdit::textEdited, [this](const QString& text) {
-      const auto value = parse(text.toStdString());
+      const auto value = parse(text);
       if (value != m_last_value) {
         m_value = value;
         m_last_value = m_value;
@@ -189,14 +189,14 @@ private:
     set_value(value_type(new_value));
   }
 
-  value_type parse(const std::string& text) const
+  value_type parse(const QString& text) const
   {
     if (text == inf) {
       return NumericProperty<value_type>::highest_possible_value;
     } else if (text == neg_inf) {
       return NumericProperty<value_type>::lowest_possible_value;
     } else {
-      std::istringstream sstream(text);
+      std::istringstream sstream(text.toStdString());
       value_type value;
       sstream >> value;
       value /= m_multiplier;

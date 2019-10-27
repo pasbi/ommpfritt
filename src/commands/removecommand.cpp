@@ -35,7 +35,7 @@ namespace omm
 
 template<typename StructureT>
 RemoveCommand<StructureT>::RemoveCommand(StructureT& structure, const std::set<item_type*>& items)
-  : Command(QObject::tr("remove").toStdString())
+  : Command(QObject::tr("remove"))
   , m_contextes(std::move(make_contextes(structure, items)))
   , m_structure(structure)
 {

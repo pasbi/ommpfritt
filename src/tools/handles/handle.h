@@ -34,8 +34,8 @@ protected:
 
   void discretize(Vec2f& vec) const;
 
-  QColor ui_color(const std::string& name) const;
-  QColor ui_color(QPalette::ColorGroup status, const std::string& name) const;
+  QColor ui_color(const QString& name) const;
+  QColor ui_color(QPalette::ColorGroup status, const QString& name) const;
 
 private:
   Status m_status = Status::Inactive;

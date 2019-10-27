@@ -49,7 +49,7 @@ public:
       const auto inv_tool_transformation = tool.transformation().inverted();
       const auto t = ObjectTransformation().rotated(angle).transformed(inv_tool_transformation);
       static_cast<ToolT&>(tool).transform_objects(t);
-      static_cast<ToolT&>(tool).tool_info = QString("%1°").arg(angle / M_PI * 180.0).toStdString();
+      static_cast<ToolT&>(tool).tool_info = QString("%1°").arg(angle / M_PI * 180.0);
       return true;
     } else {
       return false;
