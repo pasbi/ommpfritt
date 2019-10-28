@@ -40,7 +40,6 @@ void SelectObjectsTool::reset()
   using tool_t = std::remove_pointer_t<decltype(this)>;
   handles.push_back(std::make_unique<ScaleBandHandle<tool_t>>(*this));
   handles.push_back(std::make_unique<RotateHandle<tool_t>>(*this));
-  handles.push_back(std::make_unique<MoveParticleHandle<tool_t>>(*this));
   handles.push_back(std::make_unique<MoveAxisHandle<tool_t, MoveAxisHandleDirection::X>>(*this));
   handles.push_back(std::make_unique<MoveAxisHandle<tool_t, MoveAxisHandleDirection::Y>>(*this));
   handles.push_back(std::make_unique<BoundingBoxHandle<SelectObjectsTool>>(*this));
@@ -55,6 +54,7 @@ void SelectObjectsTool::reset()
   std::transform(objects.begin(), objects.end(), inserter, [this](Object* o) {
     return std::make_unique<ObjectSelectHandle>(*this, *scene(), *o);
   });
+  handles.push_back(std::make_unique<MoveParticleHandle<tool_t>>(*this));
 }
 
 bool SelectObjectsTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
