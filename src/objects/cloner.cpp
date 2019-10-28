@@ -145,6 +145,16 @@ BoundingBox Cloner::bounding_box(const ObjectTransformation &transformation) con
   }
 }
 
+BoundingBox Cloner::recursive_bounding_box(const ObjectTransformation& transformation) const
+{
+  if (is_active()) {
+    // ignore children
+    return bounding_box(transformation);
+  } else {
+    return Object::recursive_bounding_box(transformation);
+  }
+}
+
 Cloner::Mode Cloner::mode() const { return property(MODE_PROPERTY_KEY)->value<Mode>(); }
 
 bool Cloner::contains(const Vec2f &pos) const

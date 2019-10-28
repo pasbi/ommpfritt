@@ -73,7 +73,7 @@ public:
    * @brief bounding_box returns the bounding box in world coordinates
    */
   virtual BoundingBox bounding_box(const ObjectTransformation& transformation) const = 0;
-  BoundingBox recursive_bounding_box(const ObjectTransformation &transformation) const;
+  virtual BoundingBox recursive_bounding_box(const ObjectTransformation &transformation) const;
   std::unique_ptr<Object> repudiate(Object &repudiatee) override;
   Object & adopt(std::unique_ptr<Object> adoptee, const size_t pos) override;
   using TreeElement::adopt;

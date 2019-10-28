@@ -283,7 +283,10 @@ void Object::draw_recursive(Painter& renderer, RenderOptions options) const
 
 BoundingBox Object::recursive_bounding_box(const ObjectTransformation& transformation) const
 {
-  auto bounding_box = this->bounding_box(transformation);
+  BoundingBox bounding_box;
+  if (is_active()) {
+    bounding_box = this->bounding_box(transformation);
+  }
   for (const auto& child : tree_children()) {
     bounding_box |= child->recursive_bounding_box(transformation.apply(child->transformation()));
   }
