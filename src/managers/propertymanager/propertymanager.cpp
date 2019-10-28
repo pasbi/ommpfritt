@@ -183,11 +183,15 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
       m_selection_label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
 
       const QString icon_filename = types.size() == 1 ? ":/icons/" + *types.begin() + ".png"
-                                                          : ":/icons/UndeterminedType.png";
+                                                      : ":/icons/UndeterminedType.png";
 
       const QImage image(icon_filename);
-      m_icon_label->setPixmap(QPixmap::fromImage(image.scaled(24, 24, Qt::KeepAspectRatio,
-                                                              Qt::SmoothTransformation)));
+      if (image.isNull()) {
+        m_icon_label->clear();
+      } else {
+        m_icon_label->setPixmap(QPixmap::fromImage(image.scaled(24, 24, Qt::KeepAspectRatio,
+                                                                Qt::SmoothTransformation)));
+      }
     }
   }
 }
