@@ -561,12 +561,12 @@ Remove the selected items anyway?</translation>
     <message>
         <source>user properties</source>
         <comment>PropertyManager</comment>
-        <translation>User properties</translation>
+        <translation type="vanished">User properties</translation>
     </message>
     <message>
         <source>edit ...</source>
         <comment>PropertyManager</comment>
-        <translation>Edit ...</translation>
+        <translation type="vanished">Edit ...</translation>
     </message>
     <message>
         <source>run</source>

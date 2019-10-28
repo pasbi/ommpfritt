@@ -561,12 +561,12 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>user properties</source>
         <comment>PropertyManager</comment>
-        <translation>Controles de Atributos Usuarios</translation>
+        <translation type="vanished">Controles de Atributos Usuarios</translation>
     </message>
     <message>
         <source>edit ...</source>
         <comment>PropertyManager</comment>
-        <translation>Editar ...</translation>
+        <translation type="vanished">Editar ...</translation>
     </message>
     <message>
         <source>run</source>

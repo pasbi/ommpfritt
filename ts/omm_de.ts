@@ -561,12 +561,12 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>user properties</source>
         <comment>PropertyManager</comment>
-        <translation>Benutzereigenschaften</translation>
+        <translation type="vanished">Benutzereigenschaften</translation>
     </message>
     <message>
         <source>edit ...</source>
         <comment>PropertyManager</comment>
-        <translation>Berarbeiten ...</translation>
+        <translation type="vanished">Berarbeiten ...</translation>
     </message>
     <message>
         <source>run</source>

@@ -13,18 +13,6 @@ namespace omm
 PropertyManagerTitleBar::PropertyManagerTitleBar(PropertyManager& parent)
   : ManagerTitleBar(parent)
 {
-  auto menu_bar = std::make_unique<QMenuBar>();
-  auto user_properties_menu = menu_bar->addMenu(QObject::tr("user properties", "PropertyManager"));
-  const auto exec_user_property_dialog = [&parent, this]() {
-    auto dialog = UserPropertyDialog(*m_first_selected, &parent);
-    dialog.exec();
-  };
-
-  m_manage_user_properties_action = &action( *user_properties_menu,
-                                             QObject::tr("edit ...", "PropertyManager"),
-                                             exec_user_property_dialog );
-  m_manage_user_properties_action->setEnabled(false);
-
   auto lock_button = std::make_unique<QPushButton>();
   m_lock_button = lock_button.get();
   update_lock_button_icon(m_lock_button->isChecked());
@@ -35,12 +23,22 @@ PropertyManagerTitleBar::PropertyManagerTitleBar(PropertyManager& parent)
     update_lock_button_icon(checked);
   });
 
+  auto open_user_property_dialog_button = std::make_unique<QPushButton>();
+  m_open_user_properties_dialog_button = open_user_property_dialog_button.get();
+  open_user_property_dialog_button->setEnabled(false);
+  open_user_property_dialog_button->setText("U");
+  open_user_property_dialog_button->setFixedSize(24, 24);
+  connect(open_user_property_dialog_button.get(), &QPushButton::clicked, this, [this, &parent]() {
+    auto dialog = UserPropertyDialog(*m_first_selected, &parent);
+    dialog.exec();
+  });
+
   auto container = std::make_unique<QWidget>();
   auto layout = std::make_unique<QHBoxLayout>();
   layout->setContentsMargins(0, 0, 0, 0);
-  layout->addWidget(menu_bar.release());
   layout->addStretch(0);
   layout->addWidget(lock_button.release());
+  layout->addWidget(open_user_property_dialog_button.release());
   container->setLayout(layout.release());
   add_widget(std::move(container));
 }
@@ -49,10 +47,10 @@ void PropertyManagerTitleBar::set_selection(const std::set<AbstractPropertyOwner
 {
   if (selection.size() == 1) {
     m_first_selected = *selection.begin();
-    m_manage_user_properties_action->setEnabled(true);
+    m_open_user_properties_dialog_button->setEnabled(true);
   } else {
     m_first_selected = nullptr;
-    m_manage_user_properties_action->setEnabled(false);
+    m_open_user_properties_dialog_button->setEnabled(false);
   }
 }
 
