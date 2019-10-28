@@ -39,6 +39,7 @@ popd
 sudo apt-get -y remove qt5-qmake qtbase5-dev qtbase5-dev-tools
 sudo apt-get -y install libgl-dev python3-dev libpoppler-qt5-dev g++-8
 sudo apt-get -y install qt512tools qt512translations qt512svg qt512base qt512imageformats
+sudo apt-get -y install libkf5itemmodels-dev
 export PATH=/opt/qt512/bin:$PATH
 
 # script:

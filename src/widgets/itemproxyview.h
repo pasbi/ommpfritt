@@ -48,7 +48,6 @@ public:
   {
     assert(this->model() != nullptr);             // set model first
     m_selection_proxy = std::make_unique<LinkItemSelectionModel>(m_proxy.get(), selection_model);
-    m_selection_proxy->setLinkedItemSelectionModel(selection_model);
     ViewT::setSelectionModel(m_selection_proxy.get());
   }
 

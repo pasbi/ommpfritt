@@ -33,7 +33,7 @@ find_package(Qt5Widgets CONFIG REQUIRED)
 find_package(Qt5Svg REQUIRED)
 find_package(Qt5 COMPONENTS LinguistTools)
 
-find_package(KF5Models)
+find_package(KF5ItemModels REQUIRED)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/translations.qrc ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
 set(RESOURCES resources.qrc ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc)
