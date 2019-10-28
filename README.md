@@ -46,6 +46,8 @@ There is a [screencast on youtube](https://www.youtube.com/watch?v=6X5Lo7kq5eM) 
 - **programmable**: every property can be accessed and modified using an internal python interpreter
 - build complex **object hierarchies** and object groups
 - **flexible GUI** using dockable widgets
+- **dark** and **light** skins
+- highly customizable interface colors
 - properties can be added at runtime
 - **multi-selection** support for properties: compatible intersection of properties of all selected items (objects, tags, styles, tools) is shown and can be modified simultaneously
 - **flexible, customizable key binding sequences** (aka short-cuts)
@@ -55,6 +57,7 @@ There is a [screencast on youtube](https://www.youtube.com/watch?v=6X5Lo7kq5eM) 
 
 ### Styling
 - build complex reusable **style cascades**
+- dynamic **Named Colors**
 
 ### Objects
 - path object: any number of points, closed/open
@@ -90,6 +93,13 @@ There is a [screencast on youtube](https://www.youtube.com/watch?v=6X5Lo7kq5eM) 
 - point-level: select in viewport and rotate, move or scale* along common center of all selected points. Works fine even if many path-objects are selected.
 - optinally transform axes only. Re-set the origin of the object without affecting its geometry.
 - brush-select: select points as if you were painting
+- Bounding Box-Handle
+
+## Animation
+- Keyframe Animation
+- Responsive Timeline
+- Dope Sheet
+- Seamless integration into undo/redo and multi-property- and multi-object-selection
 
 ## Contributing
 
