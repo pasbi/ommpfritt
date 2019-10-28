@@ -73,6 +73,7 @@ void ObjectsTransformationCommand::apply(const ObjectsTransformationCommand::Map
     switch (m_transformation_mode) {
     case TransformationMode::Axis:
       o->set_global_axis_transformation(t, Space::Scene);
+      o->update();
       break;
     case TransformationMode::Object:
       o->set_global_transformation(t, Space::Scene);
