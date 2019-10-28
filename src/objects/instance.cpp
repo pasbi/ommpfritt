@@ -38,6 +38,19 @@ void Instance::polish()
   listen_to_changes([this]() {
     return kind_cast<Object*>(property(REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>());
   });
+
+  connect(&scene()->message_box(), &MessageBox::tag_inserted, this, [this](Object& owner, Tag&) {
+    if (&owner == this) {
+      update();
+    }
+  });
+
+  connect(&scene()->message_box(), &MessageBox::tag_removed, this, [this](Object& owner, Tag&) {
+    if (&owner == this) {
+      update();
+    }
+  });
+
   update();
 }
 
