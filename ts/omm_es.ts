@@ -177,10 +177,6 @@
         <source>Alt</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Keypad</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Property</name>

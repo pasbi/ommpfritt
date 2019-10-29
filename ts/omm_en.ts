@@ -151,35 +151,31 @@
     <name>Preferences</name>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Left</translation>
+        <translation>Left</translation>
     </message>
     <message>
         <source>Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Middle</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Right</translation>
+        <translation>Right</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift</translation>
     </message>
     <message>
         <source>Ctrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl</translation>
     </message>
     <message>
         <source>Meta</source>
-        <translation type="unfinished"></translation>
+        <translation>Meta</translation>
     </message>
     <message>
         <source>Alt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Keypad</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt</translation>
     </message>
 </context>
 <context>
@@ -1767,7 +1763,7 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>&amp;Language:</source>
-        <translation type="unfinished">&amp;Language:</translation>
+        <translation>&amp;Language:</translation>
     </message>
 </context>
 <context>
@@ -1905,11 +1901,11 @@ Do you want to convert them into ordinary colors?</numerusform>
     <name>omm::Preferences</name>
     <message>
         <source>&amp;zoom viewport</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zoom viewport</translation>
     </message>
     <message>
         <source>&amp;shift viewport</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Shift viewport</translation>
     </message>
 </context>
 <context>

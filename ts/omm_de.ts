@@ -151,35 +151,31 @@
     <name>Preferences</name>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Links</translation>
+        <translation>Links</translation>
     </message>
     <message>
         <source>Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Mitte</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Rechts</translation>
+        <translation>Rechts</translation>
     </message>
     <message>
         <source>Shift</source>
-        <translation type="unfinished"></translation>
+        <translation>Umschalt</translation>
     </message>
     <message>
         <source>Ctrl</source>
-        <translation type="unfinished"></translation>
+        <translation>Strg</translation>
     </message>
     <message>
         <source>Meta</source>
-        <translation type="unfinished"></translation>
+        <translation>Meta</translation>
     </message>
     <message>
         <source>Alt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Keypad</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt</translation>
     </message>
 </context>
 <context>
@@ -1767,7 +1763,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>&amp;Language:</source>
-        <translation type="unfinished">&amp;Sprache:</translation>
+        <translation>&amp;Sprache:</translation>
     </message>
 </context>
 <context>
@@ -1905,11 +1901,11 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <name>omm::Preferences</name>
     <message>
         <source>&amp;zoom viewport</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zoom Viewport</translation>
     </message>
     <message>
         <source>&amp;shift viewport</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Verschiebe Viewport</translation>
     </message>
 </context>
 <context>
