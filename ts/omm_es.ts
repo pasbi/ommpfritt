@@ -94,13 +94,6 @@
     </message>
 </context>
 <context>
-    <name>GeneralPage</name>
-    <message>
-        <source>&amp;Language:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>IntegerVectorProperty</name>
     <message>
         <source>IntegerVectorProperty</source>
@@ -151,6 +144,41 @@
     <name>PreferenceDialog</name>
     <message>
         <source>Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Preferences</name>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Izquierdo</translation>
+    </message>
+    <message>
+        <source>Middle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Derecho</translation>
+    </message>
+    <message>
+        <source>Shift</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Meta</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keypad</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -557,16 +585,6 @@ Borrar la selección de todos modos?</translation>
         <source>property manager</source>
         <comment>PropertyManager</comment>
         <translation>Controles de Atributos</translation>
-    </message>
-    <message>
-        <source>user properties</source>
-        <comment>PropertyManager</comment>
-        <translation type="vanished">Controles de Atributos Usuarios</translation>
-    </message>
-    <message>
-        <source>edit ...</source>
-        <comment>PropertyManager</comment>
-        <translation type="vanished">Editar ...</translation>
     </message>
     <message>
         <source>run</source>
@@ -1747,6 +1765,10 @@ Borrar la selección de todos modos?</translation>
         <source>Changing language takes effect after restarting the application.</source>
         <translation type="unfinished">Un cambio de idioma solo tiene efecto cuando reinicies la aplicación.</translation>
     </message>
+    <message>
+        <source>&amp;Language:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::HistoryManager</name>
@@ -1873,6 +1895,17 @@ Do you want to convert them into ordinary colors?</source>
     </message>
     <message>
         <source>General</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::Preferences</name>
+    <message>
+        <source>&amp;zoom viewport</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;shift viewport</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

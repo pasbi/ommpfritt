@@ -5,6 +5,7 @@ file(GLOB SOURCES
   keybindingsproxymodel.cpp
   keybindingstreeviewdelegate.cpp
   keysequenceedit.cpp
+  preferences.cpp
   preferencedialog.cpp
   preferencestree.cpp
   preferencestreeitem.cpp
@@ -22,6 +23,7 @@ file(GLOB HEADERS
   keybindingsproxymodel.h
   keybindingstreeviewdelegate.h
   keysequenceedit.h
+  preferences.h
   preferencedialog.h
   preferencepage.h
   preferencestree.h

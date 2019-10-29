@@ -12,6 +12,7 @@
 #include "preferences/uicolors.h"
 #include "mainwindow/options.h"
 #include <memory>
+#include "preferences/preferences.h"
 
 class QApplication;
 class QAbstractButton;
@@ -47,6 +48,7 @@ public:
 
   KeyBindings key_bindings;
   UiColors ui_colors;
+  Preferences preferences;
 
   PythonEngine python_engine;
   Scene scene;
@@ -100,7 +102,8 @@ private:
   QTimer m_reset_keysequence_timer;
   QKeySequence m_pending_key_sequence;
   std::set<Manager*> m_managers;
-
 };
+
+const Preferences& preferences();
 
 }  // namespace omm

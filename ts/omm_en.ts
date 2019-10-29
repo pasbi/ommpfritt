@@ -94,13 +94,6 @@
     </message>
 </context>
 <context>
-    <name>GeneralPage</name>
-    <message>
-        <source>&amp;Language:</source>
-        <translation>&amp;Language:</translation>
-    </message>
-</context>
-<context>
     <name>IntegerVectorProperty</name>
     <message>
         <source>IntegerVectorProperty</source>
@@ -152,6 +145,41 @@
     <message>
         <source>Preferences</source>
         <translation>Preferences</translation>
+    </message>
+</context>
+<context>
+    <name>Preferences</name>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Left</translation>
+    </message>
+    <message>
+        <source>Middle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Right</translation>
+    </message>
+    <message>
+        <source>Shift</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Meta</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keypad</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -557,16 +585,6 @@ Remove the selected items anyway?</translation>
         <source>property manager</source>
         <comment>PropertyManager</comment>
         <translation>Property manager</translation>
-    </message>
-    <message>
-        <source>user properties</source>
-        <comment>PropertyManager</comment>
-        <translation type="vanished">User properties</translation>
-    </message>
-    <message>
-        <source>edit ...</source>
-        <comment>PropertyManager</comment>
-        <translation type="vanished">Edit ...</translation>
     </message>
     <message>
         <source>run</source>
@@ -1747,6 +1765,10 @@ Remove the selected items anyway?</translation>
         <source>Changing language takes effect after restarting the application.</source>
         <translation>Changing language takes effect after restarting the application.</translation>
     </message>
+    <message>
+        <source>&amp;Language:</source>
+        <translation type="unfinished">&amp;Language:</translation>
+    </message>
 </context>
 <context>
     <name>omm::HistoryManager</name>
@@ -1877,6 +1899,17 @@ Do you want to convert them into ordinary colors?</numerusform>
     <message>
         <source>General</source>
         <translation>General</translation>
+    </message>
+</context>
+<context>
+    <name>omm::Preferences</name>
+    <message>
+        <source>&amp;zoom viewport</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;shift viewport</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

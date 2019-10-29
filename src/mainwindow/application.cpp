@@ -470,4 +470,9 @@ void Application::unregister_manager(Manager& manager)
   m_managers.erase(&manager);
 }
 
+const Preferences& preferences()
+{
+  return Application::instance().preferences;
+}
+
 }  // namespace omm

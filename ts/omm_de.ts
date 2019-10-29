@@ -94,13 +94,6 @@
     </message>
 </context>
 <context>
-    <name>GeneralPage</name>
-    <message>
-        <source>&amp;Language:</source>
-        <translation>&amp;Sprache:</translation>
-    </message>
-</context>
-<context>
     <name>IntegerVectorProperty</name>
     <message>
         <source>IntegerVectorProperty</source>
@@ -152,6 +145,41 @@
     <message>
         <source>Preferences</source>
         <translation>Einstellungen</translation>
+    </message>
+</context>
+<context>
+    <name>Preferences</name>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Links</translation>
+    </message>
+    <message>
+        <source>Middle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Rechts</translation>
+    </message>
+    <message>
+        <source>Shift</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Meta</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keypad</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -557,16 +585,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>property manager</source>
         <comment>PropertyManager</comment>
         <translation>Eigenschaftsmanager</translation>
-    </message>
-    <message>
-        <source>user properties</source>
-        <comment>PropertyManager</comment>
-        <translation type="vanished">Benutzereigenschaften</translation>
-    </message>
-    <message>
-        <source>edit ...</source>
-        <comment>PropertyManager</comment>
-        <translation type="vanished">Berarbeiten ...</translation>
     </message>
     <message>
         <source>run</source>
@@ -1747,6 +1765,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Changing language takes effect after restarting the application.</source>
         <translation>Änderungen an der Sprache werden erst nach einem Neustart wirksam.</translation>
     </message>
+    <message>
+        <source>&amp;Language:</source>
+        <translation type="unfinished">&amp;Sprache:</translation>
+    </message>
 </context>
 <context>
     <name>omm::HistoryManager</name>
@@ -1877,6 +1899,17 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <message>
         <source>General</source>
         <translation>Allgemein</translation>
+    </message>
+</context>
+<context>
+    <name>omm::Preferences</name>
+    <message>
+        <source>&amp;zoom viewport</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;shift viewport</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

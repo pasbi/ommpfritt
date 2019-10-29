@@ -1,6 +1,7 @@
 #include "mainwindow/viewport/viewport.h"
 
 #include "mainwindow/viewport/anchorhud.h"
+#include "mainwindow/application.h"
 
 #include <QPainter>
 #include <QTimer>
@@ -19,6 +20,18 @@ void set_cursor_position(QWidget& widget, const omm::Vec2f& pos)
   auto cursor = widget.cursor();
   cursor.setPos(widget.mapToGlobal(pos.to_point()));
   widget.setCursor(cursor);
+}
+
+bool match_mouse_modifiers(const QMouseEvent& event, const QString& key)
+{
+  const auto mm = omm::preferences().mouse_modifiers().at(key);
+  return mm.modifiers == event.modifiers();
+}
+
+bool match_mouse_button_and_modifiers(const QMouseEvent& event, const QString& key)
+{
+  const auto mm = omm::preferences().mouse_modifiers().at(key);
+  return mm.button == event.button() && mm.modifiers == event.modifiers();
 }
 
 }  // namespace
@@ -90,18 +103,22 @@ void Viewport::paintEvent(QPaintEvent*)
 void Viewport::mousePressEvent(QMouseEvent* event)
 {
   const Vec2f cursor_pos = Vec2f(event->pos());
-  const auto action = [](const QMouseEvent* event) {
-    switch (event->button()) {
-    case Qt::LeftButton: return MousePanController::Action::Pan;
-    case Qt::RightButton: return MousePanController::Action::Zoom;
-    default: return MousePanController::Action::None;
+
+  const auto action = [event]() {
+    if (match_mouse_button_and_modifiers(*event, "shift viewport")) {
+      return MousePanController::Action::Pan;
+    } else if (match_mouse_button_and_modifiers(*event, "zoom viewport")) {
+      return MousePanController::Action::Zoom;
+    } else {
+      return MousePanController::Action::None;
     }
-  };
+  }();
+
   m_pan_controller.start_move( viewport_transformation().inverted().apply_to_position(cursor_pos),
-                               action(event));
+                               action);
   m_last_cursor_pos = cursor_pos;
 
-  if (event->modifiers() & Qt::AltModifier) {
+  if (action != MousePanController::Action::None) {
     event->accept();
   } else if (auto* hud = find_headup_display(event->pos()); hud && hud->mouse_press(*event)) {
     event->accept();
@@ -130,7 +147,9 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
     }
     if (accept) {
       event->accept();
-    } else if (event->modifiers() & Qt::AltModifier) {
+    } else if (match_mouse_modifiers(*event, "zoom viewport")
+               || match_mouse_modifiers(*event, "shift viewport"))
+    {
       m_pan_controller.apply(delta, m_viewport_transformation);
       event->accept();
     } else {

@@ -19,7 +19,7 @@ PreferenceDialog::PreferenceDialog() : m_ui(new Ui::PreferenceDialog)
   connect(m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
   register_preference_page(nullptr, tr("General"),
-                           std::make_unique<GeneralPage>());
+                           std::make_unique<GeneralPage>(app.preferences));
   register_preference_page(nullptr, tr("Ui Colors"),
                            std::make_unique<UiColorsPage>(app.ui_colors));
   register_preference_page(nullptr, tr("Keyindings"),
