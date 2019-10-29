@@ -147,13 +147,17 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
     }
     if (accept) {
       event->accept();
-    } else if (match_mouse_modifiers(*event, "zoom viewport")
-               || match_mouse_modifiers(*event, "shift viewport"))
-    {
-      m_pan_controller.apply(delta, m_viewport_transformation);
-      event->accept();
     } else {
-      ViewportBase::mouseMoveEvent(event);
+      const bool panning = m_pan_controller.action() == MousePanController::Action::Pan
+                           && match_mouse_modifiers(*event, "zoom viewport");
+      const bool zooming = m_pan_controller.action() == MousePanController::Action::Zoom
+                           && match_mouse_modifiers(*event, "shift viewport");
+      if (panning || zooming) {
+        m_pan_controller.apply(delta, m_viewport_transformation);
+        event->accept();
+      } else {
+        ViewportBase::mouseMoveEvent(event);
+      }
     }
   }
   update();
