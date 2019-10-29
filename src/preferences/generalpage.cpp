@@ -49,7 +49,6 @@ const std::vector<std::pair<Qt::KeyboardModifier, QString>> modifier_map {
   { Qt::ControlModifier, QT_TRANSLATE_NOOP("Preferences","Ctrl") },
   { Qt::MetaModifier, QT_TRANSLATE_NOOP("Preferences","Meta") },
   { Qt::AltModifier, QT_TRANSLATE_NOOP("Preferences","Alt") },
-  { Qt::KeypadModifier, QT_TRANSLATE_NOOP("Preferences","Keypad") },
 };
 
 }  // namespace
