@@ -111,7 +111,8 @@ bool model_index_tree_position_compare(QModelIndex a, QModelIndex b)
       }
     }
   }
-  assert(false);
+  Q_UNREACHABLE();
+  return false;
 }
 
 }  // namespace

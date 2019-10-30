@@ -410,7 +410,8 @@ bool Scene::can_remove( QWidget* parent, std::set<AbstractPropertyOwner*> select
     case QMessageBox::Cancel:
       return false;
     default:
-      assert(false);
+      Q_UNREACHABLE();
+      return true;
     }
   } else {
     return true;
