@@ -7,6 +7,7 @@
 
 class QPushButton;
 class QLabel;
+class QValidator;
 
 namespace Ui { class ExportDialog; }
 
@@ -23,6 +24,7 @@ class ExportDialog : public QDialog
   Q_OBJECT
 public:
   ExportDialog(Scene& scene, QWidget* parent);
+  ~ExportDialog();
 
 protected:
   void resizeEvent(QResizeEvent* e) override;
@@ -41,17 +43,23 @@ private:
   void save_as_svg();
   QPicture m_picture;
   QString m_filepath;
+  QString m_animation_directory;
+  static QString filename(QString pattern, int frame_number);
 
-  struct UiExportDialogDeleter
-  {
-    void operator()(::Ui::ExportDialog* ui);
-  };
-
-  std::unique_ptr<::Ui::ExportDialog, UiExportDialogDeleter> m_ui;
+  std::unique_ptr<::Ui::ExportDialog> m_ui;
+  std::unique_ptr<QValidator> m_validator;
 
   static constexpr auto FORMAT_SETTINGS_KEY = "last_format";
   void update_active_view();
   void save_settings();
+
+private Q_SLOTS:
+  void update_pattern_edit_background();
+  void reset_start_frame();
+  void reset_end_frame();
+  void set_maximum_start(int max);
+  void set_minimum_end(int min);
+  void start_export_animation();
 };
 
 }  // namespace

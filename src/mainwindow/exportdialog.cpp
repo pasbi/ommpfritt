@@ -1,4 +1,5 @@
 #include "mainwindow/exportdialog.h"
+#include "animation/animator.h"
 #include "widgets/referencelineedit.h"
 #include <QPushButton>
 #include "widgets/numericedit.h"
@@ -46,6 +47,42 @@ double compute_aspect_ratio(const omm::View* view)
   }
 }
 
+const QChar frame_number_placeholder = '%';
+
+class FilenamePatternValidator : public QValidator
+{
+public:
+  QValidator::State validate(QString& input, int& pos) const override
+  {
+    Q_UNUSED(pos)
+    const std::set<QString> forbidden_subsequences = { "/" };
+    const std::set<QString> allowed_endings = { ".png", ".jpg", ".jpeg" };
+
+    for (const QString& forbidden_subsequence : forbidden_subsequences) {
+      if (input.contains(forbidden_subsequence)) {
+        return QValidator::Invalid;
+      }
+    }
+
+    const int n = input.count(frame_number_placeholder);
+    if (n == 0) {
+      return QValidator::Intermediate;
+    }
+    const int first_occurence = input.indexOf(frame_number_placeholder);
+    const int last_occurence = input.lastIndexOf(frame_number_placeholder);
+    if (last_occurence - first_occurence + 1 != n) {
+      return QValidator::Invalid;
+    }
+
+    for (const QString& allowed_ending : allowed_endings) {
+      if (input.toLower().endsWith(allowed_ending)) {
+        return QValidator::Acceptable;
+      }
+    }
+    return QValidator::Intermediate;
+  }
+};
+
 }
 
 namespace omm
@@ -54,7 +91,9 @@ namespace omm
 ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   : QDialog(parent), m_scene(scene)
   , m_filepath(scene.filename())
+  , m_animation_directory(QFileInfo(m_filepath).dir().path())
   , m_ui(new ::Ui::ExportDialog)
+  , m_validator(new FilenamePatternValidator())
 {
   m_ui->setupUi(this);
 
@@ -94,6 +133,35 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
 
   m_ui->ne_scaling->set_value(100.0);
   m_ui->ne_scaling->set_step(0.01);
+
+  m_ui->le_pattern->setText(scene.animator().filename_pattern);
+  m_ui->cb_overwrite->setChecked(scene.animator().overwrite_file);
+  m_ui->le_pattern->setValidator(m_validator.get());
+
+  connect(m_ui->le_pattern, &QLineEdit::textChanged,
+          this, &ExportDialog::update_pattern_edit_background);
+  update_pattern_edit_background();
+  if (!m_ui->le_pattern->hasAcceptableInput()) {
+    m_ui->le_pattern->setText(tr("frame_%%%%.png"));
+  }
+
+  connect(m_ui->pb_reset_end, &QPushButton::clicked, this, &ExportDialog::reset_end_frame);
+  connect(m_ui->pb_reset_start, &QPushButton::clicked, this, &ExportDialog::reset_start_frame);
+  reset_start_frame();
+  reset_end_frame();
+
+  connect(m_ui->sb_start, SIGNAL(valueChanged(int)), this, SLOT(set_minimum_end(int)));
+  connect(m_ui->sb_end, SIGNAL(valueChanged(int)), this, SLOT(set_maximum_start(int)));
+  set_maximum_start(m_ui->sb_end->value());
+  set_minimum_end(m_ui->sb_start->value());
+
+  m_ui->pb_reset_end->setIcon(QIcon(":/icons/Revert.png"));
+  m_ui->pb_reset_start->setIcon(QIcon(":/icons/Revert.png"));
+  connect(m_ui->pb_start, SIGNAL(clicked()), this, SLOT(start_export_animation()));
+}
+
+ExportDialog::~ExportDialog()
+{
 }
 
 void ExportDialog::update_preview()
@@ -208,6 +276,25 @@ void ExportDialog::save_as_svg()
   }
 }
 
+QString ExportDialog::filename(QString pattern, int frame_number)
+{
+  const int first_occurence = pattern.indexOf(frame_number_placeholder);
+  if (first_occurence < 0) {
+    qWarning() << "Frame number placeholder '" << frame_number_placeholder
+               << "' does not occur in pattern '" << pattern << "'.";
+    return pattern;
+  }
+  const int last_occurence = pattern.lastIndexOf(frame_number_placeholder);
+  const int n = last_occurence - first_occurence + 1;
+  assert(n > 0);
+  if (pattern.mid(first_occurence, n) != QString(frame_number_placeholder).repeated(n)) {
+    qWarning() << "Pattern '" << pattern << "' is illegal: non-contiguous sequence of '"
+               << frame_number_placeholder << "'.";
+  }
+  pattern.replace(first_occurence, n, QString("%1").arg(frame_number, n, 10, QChar('0')));
+  return pattern;
+}
+
 void ExportDialog::update_active_view()
 {
   m_ui->cb_view->update_candidates();
@@ -223,6 +310,67 @@ void ExportDialog::save_settings()
 {
   QSettings settings;
   settings.setValue(FORMAT_SETTINGS_KEY, m_ui->cb_format->currentIndex());
+}
+
+void ExportDialog::update_pattern_edit_background()
+{
+  QPalette palette = m_ui->le_pattern->palette();
+  if (m_ui->le_pattern->hasAcceptableInput()) {
+    palette.setColor(QPalette::Base, ui_color(*this, QPalette::Base));
+    m_ui->pb_start->setEnabled(true);
+  } else {
+    palette.setColor(QPalette::Base, ui_color(*this, "Widget", "invalid base"));
+    m_ui->pb_start->setEnabled(false);
+  }
+  m_ui->le_pattern->setPalette(palette);
+}
+
+void ExportDialog::reset_start_frame()
+{
+  const int start_frame = m_scene.animator().start();
+  m_ui->sb_end->setValue(std::max(m_ui->sb_end->value(), start_frame + 1));
+  m_ui->sb_start->setValue(start_frame);
+}
+
+void ExportDialog::reset_end_frame()
+{
+  const int end_frame = m_scene.animator().end();
+  m_ui->sb_start->setValue(std::min(m_ui->sb_start->value(), end_frame - 1));
+  m_ui->sb_end->setValue(end_frame);
+}
+
+void ExportDialog::set_maximum_start(int max)
+{
+  m_ui->sb_start->setMaximum(max - 1);
+}
+
+void ExportDialog::set_minimum_end(int min)
+{
+  m_ui->sb_end->setMinimum(min + 1);
+}
+
+void ExportDialog::start_export_animation()
+{
+  const QFileDialog::Options options { 0 };
+  const QString path = QFileDialog::getExistingDirectory(this, tr("Export to Animation to ..."),
+                                                         m_animation_directory, options);
+  if (!path.isEmpty()) {
+    m_animation_directory = path;
+    const QString pattern = m_ui->le_pattern->text();
+    const bool allow_overwrite = m_ui->cb_overwrite->isChecked();
+    for (int frame = m_ui->sb_start->value(); frame <= m_ui->sb_end->value(); ++frame) {
+      m_scene.animator().set_current(frame);
+      const QImage result = rasterize(m_ui->ne_resolution_x->value(), m_ui->ne_resolution_y->value());
+      const QString filename = path + "/" + ExportDialog::filename(pattern, frame);
+      if (QFileInfo().exists(filename) && !allow_overwrite) {
+        LINFO << "Did not overwrite '" << filename << "'.";
+      } else if (result.save(filename)) {
+        LINFO << "Wrote '" << filename << "'.";
+      } else {
+        LWARNING << "Failed to write '" << filename << "'";
+      }
+    }
+  }
 }
 
 void ExportDialog::save_as()
@@ -251,12 +399,9 @@ void ExportDialog::showEvent(QShowEvent* e)
 void ExportDialog::hideEvent(QHideEvent *e)
 {
   save_settings();
+  m_scene.animator().filename_pattern = m_ui->le_pattern->text();
+  m_scene.animator().overwrite_file = m_ui->cb_overwrite->isChecked();
   QDialog::hideEvent(e);
-}
-
-void ExportDialog::UiExportDialogDeleter::operator()(Ui::ExportDialog *ui)
-{
-  delete ui;
 }
 
 }  // namespace omm

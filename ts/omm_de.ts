@@ -85,12 +85,52 @@
         <translation>Export</translation>
     </message>
     <message>
-        <source>Resolution:</source>
-        <translation>Auflösung:</translation>
-    </message>
-    <message>
         <source>Scaling:</source>
         <translation>Skalierung:</translation>
+    </message>
+    <message>
+        <source>&amp;Resolution:</source>
+        <translation>&amp;Auflösung</translation>
+    </message>
+    <message>
+        <source>Still</source>
+        <translation>Einzelbild</translation>
+    </message>
+    <message>
+        <source>&amp;Export ...</source>
+        <translation>&amp;Exportieren ...</translation>
+    </message>
+    <message>
+        <source>Animation</source>
+        <translation>Animation</translation>
+    </message>
+    <message>
+        <source>&amp;Start:</source>
+        <translation>&amp;Start:</translation>
+    </message>
+    <message>
+        <source>Frame </source>
+        <translation>Frame </translation>
+    </message>
+    <message>
+        <source>&amp;End:</source>
+        <translation>&amp;Ende:</translation>
+    </message>
+    <message>
+        <source>&amp;Pattern:</source>
+        <translation>&amp;Muster:</translation>
+    </message>
+    <message>
+        <source>frame_%%%%.png</source>
+        <translation>frame_%%%%.png</translation>
+    </message>
+    <message>
+        <source>St&amp;art ...</source>
+        <translation>St&amp;art ...</translation>
+    </message>
+    <message>
+        <source>&amp;Overwrite:</source>
+        <translation>Ü&amp;berschreiben:</translation>
     </message>
 </context>
 <context>
@@ -1746,6 +1786,14 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>SVG (*.svg)</source>
         <translation>SVG (*.svg)</translation>
+    </message>
+    <message>
+        <source>frame_%%%%.png</source>
+        <translation>frame_%%%%.png</translation>
+    </message>
+    <message>
+        <source>Export to Animation to ...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

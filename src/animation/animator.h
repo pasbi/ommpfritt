@@ -37,6 +37,17 @@ public:
   static constexpr auto END_FRAME_POINTER = "end-frame";
   static constexpr auto CURRENT_FRAME_POINTER = "current-frame";
 
+  /**
+   * @brief overwrite_file if true, the user prefers to overwrite existing files without notice.
+   */
+  bool overwrite_file;
+
+  /**
+   * @brief filename_pattern the pattern to save many files.
+   * Percent is replaced by the frame number.
+   */
+  QString filename_pattern;
+
   Scene& scene;
 
 public Q_SLOTS:

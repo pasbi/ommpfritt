@@ -85,12 +85,52 @@
         <translation>Export</translation>
     </message>
     <message>
-        <source>Resolution:</source>
-        <translation>Resolution:</translation>
-    </message>
-    <message>
         <source>Scaling:</source>
         <translation>Scaling:</translation>
+    </message>
+    <message>
+        <source>&amp;Resolution:</source>
+        <translation>&amp;Resolution:</translation>
+    </message>
+    <message>
+        <source>Still</source>
+        <translation>Still</translation>
+    </message>
+    <message>
+        <source>&amp;Export ...</source>
+        <translation>&amp;Export ...</translation>
+    </message>
+    <message>
+        <source>Animation</source>
+        <translation>Animation</translation>
+    </message>
+    <message>
+        <source>&amp;Start:</source>
+        <translation>&amp;Start:</translation>
+    </message>
+    <message>
+        <source>Frame </source>
+        <translation>Frame </translation>
+    </message>
+    <message>
+        <source>&amp;End:</source>
+        <translation>&amp;End:</translation>
+    </message>
+    <message>
+        <source>&amp;Pattern:</source>
+        <translation>&amp;Pattern:</translation>
+    </message>
+    <message>
+        <source>frame_%%%%.png</source>
+        <translation>frame_%%%%.png</translation>
+    </message>
+    <message>
+        <source>St&amp;art ...</source>
+        <translation>St&amp;art ...</translation>
+    </message>
+    <message>
+        <source>&amp;Overwrite:</source>
+        <translation>&amp;Overwrite:</translation>
     </message>
 </context>
 <context>
@@ -1746,6 +1786,14 @@ Remove the selected items anyway?</translation>
     <message>
         <source>SVG (*.svg)</source>
         <translation>SVG (*.svg)</translation>
+    </message>
+    <message>
+        <source>frame_%%%%.png</source>
+        <translation>frame_%%%%.png</translation>
+    </message>
+    <message>
+        <source>Export to Animation to ...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -85,12 +85,52 @@
         <translation>Exportar</translation>
     </message>
     <message>
-        <source>Resolution:</source>
-        <translation>Resolución:</translation>
-    </message>
-    <message>
         <source>Scaling:</source>
         <translation>Escala:</translation>
+    </message>
+    <message>
+        <source>&amp;Resolution:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Still</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Export ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Animation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Start:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frame </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;End:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Pattern:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>frame_%%%%.png</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>St&amp;art ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Overwrite:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1746,6 +1786,14 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>SVG (*.svg)</source>
         <translation>SVG (*.svg)</translation>
+    </message>
+    <message>
+        <source>frame_%%%%.png</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export to Animation to ...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
