@@ -38,7 +38,6 @@ private:
   void update_preview();
   const View* view() const;
   void render(QPaintDevice& device, double scale = 1.0) const;
-  QImage rasterize(int width, int height) const;
   void save_as_raster();
   void save_as_svg();
   QPicture m_picture;

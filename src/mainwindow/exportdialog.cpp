@@ -175,20 +175,18 @@ void ExportDialog::update_preview()
     height = static_cast<int>(width / ar);
   }
 
-  m_ui->lb_preview->setPixmap(QPixmap::fromImage(rasterize(width, height)));
+  QImage image(width, height, QImage::Format_ARGB32_Premultiplied);
+  {
+    QPainter painter(&image);
+    UiColors::draw_background(painter, image.rect());
+  }
+  render(image);
+  m_ui->lb_preview->setPixmap(QPixmap::fromImage(image));
 }
 
 const View* ExportDialog::view() const
 {
   return type_cast<View*>(kind_cast<Object*>(m_ui->cb_view->value()));
-}
-
-QImage ExportDialog::rasterize(int width, int height) const
-{
-  QImage image(width, height, QImage::Format_ARGB32);
-  image.fill(Qt::transparent);
-  render(image);
-  return image;
 }
 
 void ExportDialog::render(QPaintDevice& device, double scale) const
@@ -240,7 +238,13 @@ void ExportDialog::save_as_raster()
     const auto filenames = file_dialog.selectedFiles();
     assert(filenames.size() == 1);
     const auto filename = filenames.front();
-    if (rasterize(m_ui->ne_resolution_x->value(), m_ui->ne_resolution_y->value()).save(filename)) {
+
+    QImage image(m_ui->ne_resolution_x->value(),
+                 m_ui->ne_resolution_y->value(),
+                 QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::transparent);
+    render(image);
+    if (image.save(filename)) {
       m_filepath = filename;
     } else {
       const auto msg = tr("Writing image '%1' failed.").arg(filename);
@@ -359,15 +363,19 @@ void ExportDialog::start_export_animation()
     const QString pattern = m_ui->le_pattern->text();
     const bool allow_overwrite = m_ui->cb_overwrite->isChecked();
     for (int frame = m_ui->sb_start->value(); frame <= m_ui->sb_end->value(); ++frame) {
-      m_scene.animator().set_current(frame);
-      const QImage result = rasterize(m_ui->ne_resolution_x->value(), m_ui->ne_resolution_y->value());
       const QString filename = path + "/" + ExportDialog::filename(pattern, frame);
       if (QFileInfo().exists(filename) && !allow_overwrite) {
         LINFO << "Did not overwrite '" << filename << "'.";
-      } else if (result.save(filename)) {
-        LINFO << "Wrote '" << filename << "'.";
       } else {
-        LWARNING << "Failed to write '" << filename << "'";
+        m_scene.animator().set_current(frame);
+        QImage image(m_ui->ne_resolution_x->value(),
+                     m_ui->ne_resolution_y->value(),
+                     QImage::Format_ARGB32_Premultiplied);
+        if (image.save(filename)) {
+          LINFO << "Wrote '" << filename << "'.";
+        } else {
+          LWARNING << "Failed to write '" << filename << "'";
+        }
       }
     }
   }
