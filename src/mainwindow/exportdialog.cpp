@@ -116,7 +116,7 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   };
   const auto update_resolution_x_edit = [this]() {
     const auto ar = compute_aspect_ratio(view());
-    m_ui->ne_resolution_x->set_value(static_cast<int>(m_ui->ne_resolution_x->value() * ar));
+    m_ui->ne_resolution_x->set_value(static_cast<int>(m_ui->ne_resolution_y->value() * ar));
   };
   connect(m_ui->ne_resolution_y, &AbstractNumericEdit::value_changed, update_resolution_x_edit);
   connect(m_ui->ne_resolution_x, &AbstractNumericEdit::value_changed, update_resolution_y_edit);
