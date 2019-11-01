@@ -2306,6 +2306,29 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
 </context>
 <context>
+    <name>uicolors/Viewport</name>
+    <message>
+        <source>Viewport</source>
+        <translation>Ansichtsfenster</translation>
+    </message>
+    <message>
+        <source>background</source>
+        <translation>Hintergrund</translation>
+    </message>
+    <message>
+        <source>grid coarse</source>
+        <translation>Grobes Netz</translation>
+    </message>
+    <message>
+        <source>grid fine</source>
+        <translation>Feines Netz</translation>
+    </message>
+    <message>
+        <source>grid mid</source>
+        <translation>Mittleres Netz</translation>
+    </message>
+</context>
+<context>
     <name>uicolors/Widget</name>
     <message>
         <source>link</source>
@@ -2382,6 +2405,10 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     <message>
         <source>text</source>
         <translation>Text</translation>
+    </message>
+    <message>
+        <source>invalid base</source>
+        <translation>Ungültig</translation>
     </message>
 </context>
 </TS>

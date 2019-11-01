@@ -146,7 +146,7 @@ void Viewport::paintEvent(QPaintEvent*)
 
   painter.setRenderHint(QPainter::Antialiasing);
   painter.setRenderHint(QPainter::SmoothPixmapTransform);
-  painter.fillRect(rect(), Qt::gray);
+  painter.fillRect(rect(), ui_color("Viewport", "background"));
 
   const auto viewport_transformation = this->viewport_transformation();
   const auto viewport_bounds = compute_viewport_bounds();

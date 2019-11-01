@@ -2306,6 +2306,29 @@ This cannot be undone.</translation>
     </message>
 </context>
 <context>
+    <name>uicolors/Viewport</name>
+    <message>
+        <source>Viewport</source>
+        <translation>Viewport</translation>
+    </message>
+    <message>
+        <source>background</source>
+        <translation>Background</translation>
+    </message>
+    <message>
+        <source>grid coarse</source>
+        <translation>Coarse grid</translation>
+    </message>
+    <message>
+        <source>grid fine</source>
+        <translation>Fine grid</translation>
+    </message>
+    <message>
+        <source>grid mid</source>
+        <translation>Medium grid</translation>
+    </message>
+</context>
+<context>
     <name>uicolors/Widget</name>
     <message>
         <source>link</source>
@@ -2382,6 +2405,10 @@ This cannot be undone.</translation>
     <message>
         <source>text</source>
         <translation>Text</translation>
+    </message>
+    <message>
+        <source>invalid base</source>
+        <translation>Invalid</translation>
     </message>
 </context>
 </TS>
