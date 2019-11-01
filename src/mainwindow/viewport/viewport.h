@@ -8,6 +8,7 @@
 #include "renderers/painter.h"
 #include "scene/scene.h"
 #include "mainwindow/viewport/headupdisplay.h"
+#include "preferences/preferences.h"
 
 #define USE_OPENGL 0
 
@@ -70,7 +71,9 @@ private:
   bool m_fps_brake = false;
   bool m_update_later = false;
 
-  void draw_grid(QPainter& painter) const;
+  void draw_grid(QPainter& painter, const std::pair<Vec2f, Vec2f>& bounds,
+                 Preferences::GridOption::ZOrder zorder) const;
+  std::pair<Vec2f, Vec2f> compute_viewport_bounds() const;
 
   std::vector<std::unique_ptr<HeadUpDisplay>> m_headup_displays;
   HeadUpDisplay* find_headup_display(const QPoint& pos) const;

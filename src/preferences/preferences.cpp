@@ -18,13 +18,13 @@ auto init_mouse_modifiers()
 auto init_grid_options()
 {
   using GridOption = omm::Preferences::GridOption;
-  std::map<double, GridOption> map;
-  map.insert({ 100.0,   GridOption( omm::Preferences::tr("&fine"),
-                                  QColor(0, 0, 0, 100), 0.5)});
-  map.insert({ 1000.0,  GridOption( omm::Preferences::tr("&mid"),
-                                  QColor(0, 0, 0, 128), 1.0)});
-  map.insert({ 10000.0, GridOption( omm::Preferences::tr("&coarse"),
-                                  QColor(0, 0, 0, 255), 2.0)});
+  std::map<QString, GridOption> map;
+  map.insert({ "fine",   GridOption( omm::Preferences::tr("&fine"),
+                                     Qt::SolidLine, 0.5, 100.0) });
+  map.insert({ "mid",    GridOption( omm::Preferences::tr("&mid"),
+                                     Qt::SolidLine, 1.0, 1000.0) });
+  map.insert({ "coarse", GridOption( omm::Preferences::tr("&coarse"),
+                                     Qt::SolidLine, 2.0, 10000.0) });
   return map;
 }
 
@@ -53,8 +53,9 @@ Preferences::Preferences()
   }
   for (const auto& [ key, value ] : grid_options) {
     const QString prefix = "preferences/" + QString("%1").arg(key);
-    set_if_exist<QColor>(settings, prefix + "/color", grid_options.at(key).color);
+    set_if_exist<int>(settings, prefix + "/pen_style", grid_options.at(key).pen_style);
     set_if_exist<double>(settings, prefix + "/pen_width", grid_options.at(key).pen_width);
+    set_if_exist<int>(settings, prefix + "/zorder", grid_options.at(key).zorder);
   }
 }
 
@@ -68,8 +69,9 @@ Preferences::~Preferences()
   }
   for (const auto& [ key, value ] : grid_options) {
     const QString prefix = "preferences/" + QString("%1").arg(key);
-    settings.setValue(prefix + "/color", value.color);
+    settings.setValue(prefix + "/pen_style", static_cast<int>(value.pen_style));
     settings.setValue(prefix + "/pen_width", value.pen_width);
+    settings.setValue(prefix + "/zorder", static_cast<int>(value.zorder));
   }
 }
 
@@ -79,8 +81,10 @@ Preferences::MouseModifier::MouseModifier(const QString& label, Qt::MouseButton 
 {
 }
 
-Preferences::GridOption::GridOption(const QString& label, const QColor& color, double pen_width)
-  : label(label), color(color), pen_width(pen_width)
+Preferences::GridOption::GridOption(const QString& label,
+                                    const Qt::PenStyle& pen_style,
+                                    double pen_width, double base)
+  : label(label), pen_style(pen_style), pen_width(pen_width), base(base)
 {
 }
 

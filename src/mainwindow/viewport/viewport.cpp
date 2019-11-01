@@ -86,12 +86,40 @@ Viewport::Viewport(Scene& scene)
   m_headup_displays.push_back(std::make_unique<AnchorHUD>(*this));
 }
 
-void Viewport::draw_grid(QPainter &painter) const
+void Viewport::draw_grid(QPainter &painter, const std::pair<Vec2f, Vec2f>& bounds,
+                         Preferences::GridOption::ZOrder zorder) const
 {
+  const auto& [min, max] = bounds;
   painter.resetTransform();
-  const auto viewport_transformation = this->viewport_transformation();
-  const auto viewport_transformation_i = viewport_transformation.inverted();
-  painter.setTransform(viewport_transformation.to_qtransform());
+  painter.setTransform(viewport_transformation().to_qtransform());
+  for (const auto& [key, go] : preferences().grid_options) {
+    if (go.zorder == zorder) {
+      QPen pen;
+      pen.setCosmetic(true);
+      pen.setWidth(go.pen_width);
+      pen.setStyle(go.pen_style);
+      pen.setColor(ui_color("Viewport", "grid " + key));
+
+      painter.setPen(pen);
+      const auto base_step = (max - min) / Vec2f(width(), height()) * go.base;
+      for (std::size_t d : { 0, 1 }) {
+        double step = discretize(base_step[d]);
+        for (double t = min[d]; t <= max[d] + step; t += step) {
+          const double tt = t - std::fmod(t, step);
+          Vec2f a = min;
+          Vec2f b = max;
+          a[d] = tt;
+          b[d] = tt;
+          painter.drawLine(a.to_pointf(), b.to_pointf());
+        }
+      }
+    }
+  }
+}
+
+std::pair<Vec2f, Vec2f> Viewport::compute_viewport_bounds() const
+{
+  const auto viewport_transformation_i = viewport_transformation().inverted();
   const auto extrema = {
     viewport_transformation_i.apply_to_position(Vec2f::o()),
     viewport_transformation_i.apply_to_position(Vec2f(0, height())),
@@ -103,36 +131,7 @@ void Viewport::draw_grid(QPainter &painter) const
   const auto minf = static_cast<minmax_t>(Vec2f::min);
   const Vec2f min = std::accumulate(extrema.begin(), extrema.end(), *extrema.begin(), minf);
   const Vec2f max = std::accumulate(extrema.begin(), extrema.end(), *extrema.begin(), maxf);
-
-  struct GridOptions
-  {
-    const double base;
-    const QColor color;
-    const double width;
-  };
-
-  for (const auto& options : { GridOptions { 100.0, QColor(0, 0, 0, 100), 0.5 },
-                               GridOptions { 1000.0, QColor(0, 0, 0, 128), 1.0 },
-                               GridOptions { 10000.0, QColor(0, 0, 0, 255), 2.0 } })
-  {
-    QPen pen;
-    pen.setCosmetic(true);
-    pen.setWidth(options.width);
-    pen.setColor(options.color);
-    painter.setPen(pen);
-    const auto base_step = (max - min) / Vec2f(width(), height()) * options.base;
-    for (std::size_t d : { 0, 1 }) {
-      double step = discretize(base_step[d]);
-      for (double t = min[d]; t <= max[d] + step; t += step) {
-        const double tt = t - std::fmod(t, step);
-        Vec2f a = min;
-        Vec2f b = max;
-        a[d] = tt;
-        b[d] = tt;
-        painter.drawLine(a.to_pointf(), b.to_pointf());
-      }
-    }
-  }
+  return { min, max };
 }
 
 #if USE_OPENGL
@@ -150,9 +149,10 @@ void Viewport::paintEvent(QPaintEvent*)
   painter.fillRect(rect(), Qt::gray);
 
   const auto viewport_transformation = this->viewport_transformation();
+  const auto viewport_bounds = compute_viewport_bounds();
 
   painter.save();
-  draw_grid(painter);
+  draw_grid(painter, viewport_bounds, Preferences::GridOption::ZOrder::Background);
   painter.restore();
 
   m_scene.object_tree().root().set_transformation(viewport_transformation);
@@ -166,6 +166,10 @@ void Viewport::paintEvent(QPaintEvent*)
   tool.viewport_transformation = viewport_transformation;
   tool.draw(m_renderer);
   m_renderer.painter = nullptr;
+  painter.restore();
+
+  painter.save();
+  draw_grid(painter, viewport_bounds, Preferences::GridOption::ZOrder::Foreground);
   painter.restore();
 
   for (const auto& hud : m_headup_displays) {

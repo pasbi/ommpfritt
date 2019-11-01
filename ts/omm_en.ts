@@ -2081,6 +2081,46 @@ This cannot be undone.</translation>
         <source>Alt</source>
         <translation>Alt</translation>
     </message>
+    <message>
+        <source> px</source>
+        <translation> px</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>Invisible</translation>
+    </message>
+    <message>
+        <source>Solid</source>
+        <translation>solid</translation>
+    </message>
+    <message>
+        <source>Dashed</source>
+        <translation>dashed</translation>
+    </message>
+    <message>
+        <source>Dotted</source>
+        <translation>dotted</translation>
+    </message>
+    <message>
+        <source>Invisible</source>
+        <translation>Invisible</translation>
+    </message>
+    <message>
+        <source>Foreground</source>
+        <translation>Foreground</translation>
+    </message>
+    <message>
+        <source>Background</source>
+        <translation>Background</translation>
+    </message>
+    <message>
+        <source>DashDotted</source>
+        <translation>dash/dot</translation>
+    </message>
+    <message>
+        <source>DashDotDotted</source>
+        <translation>dash/dot/dot</translation>
+    </message>
 </context>
 <context>
     <name>uicolors/AnchorHUD</name>

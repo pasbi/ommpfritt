@@ -4,6 +4,7 @@
 #include "preferences/preferences.h"
 #include <map>
 
+class QDoubleSpinBox;
 class QComboBox;
 class QFormLayout;
 class QCheckBox;
@@ -41,11 +42,14 @@ private:
     GridGroup(Preferences::GridOption& model, QFormLayout& layout);
     void apply();
   private:
+    QComboBox* m_cb_penstyle;
+    QComboBox* m_cb_zorder;
+    QDoubleSpinBox* m_sp_penwidth;
     Preferences::GridOption& m_model;
   };
 
   std::map<QString, MouseModifiersGroup> m_mouse_modifiers;
-  std::map<double, GridGroup> m_grid_options;
+  std::map<QString, GridGroup> m_grid_options;
 };
 
 }  // namespace omm

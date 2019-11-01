@@ -2081,6 +2081,46 @@ Dies kann nicht rückgängig gemacht werden.</translation>
         <source>Alt</source>
         <translation>Alt</translation>
     </message>
+    <message>
+        <source> px</source>
+        <translation> px</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>Unsichtbar</translation>
+    </message>
+    <message>
+        <source>Solid</source>
+        <translation>ununterbrochen</translation>
+    </message>
+    <message>
+        <source>Dashed</source>
+        <translation>gestrichelt</translation>
+    </message>
+    <message>
+        <source>Dotted</source>
+        <translation>gepunkted</translation>
+    </message>
+    <message>
+        <source>Invisible</source>
+        <translation>Unsichtbar</translation>
+    </message>
+    <message>
+        <source>Foreground</source>
+        <translation>Vordergrund</translation>
+    </message>
+    <message>
+        <source>Background</source>
+        <translation>Hintegrund</translation>
+    </message>
+    <message>
+        <source>DashDotted</source>
+        <translation>strich/punkt</translation>
+    </message>
+    <message>
+        <source>DashDotDotted</source>
+        <translation>strich/punkt/punkt</translation>
+    </message>
 </context>
 <context>
     <name>uicolors/AnchorHUD</name>

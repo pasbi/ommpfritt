@@ -27,14 +27,17 @@ public:
 
   struct GridOption
   {
-    GridOption(const QString& label, const QColor& color, double pen_width);
+    enum class ZOrder { Invisible = 0, Foreground = 1, Background = 2 };
+    GridOption(const QString& label, const Qt::PenStyle& pen_style, double pen_width, double base);
     const QString label;
-    QColor color;
+    Qt::PenStyle pen_style;
     double pen_width;
+    double base;
+    ZOrder zorder = ZOrder::Background;
   };
 
   std::map<QString, MouseModifier> mouse_modifiers;
-  std::map<double, GridOption> grid_options;
+  std::map<QString, GridOption> grid_options;
 
 };
 

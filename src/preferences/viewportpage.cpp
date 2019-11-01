@@ -5,6 +5,7 @@
 #include <QCheckBox>
 #include <memory>
 #include <QFormLayout>
+#include <QDoubleSpinBox>
 
 namespace
 {
@@ -25,10 +26,6 @@ const std::vector<std::pair<Qt::KeyboardModifier, QString>> modifier_map {
 void set_size_policy(QWidget& widget)
 {
   widget.setSizePolicy(QSizePolicy::Ignored, widget.sizePolicy().verticalPolicy());
-}
-
-std::unique_ptr<QWidget> center(std::unique_ptr<QWidget> widget)
-{
 }
 
 }  // namespace
@@ -76,7 +73,45 @@ MouseModifiersGroup(Preferences::MouseModifier& model, QFormLayout& layout)
 ViewportPage::GridGroup::GridGroup(Preferences::GridOption& model, QFormLayout& layout)
   : m_model(model)
 {
+  auto sp_penwidth = std::make_unique<QDoubleSpinBox>();
+  sp_penwidth->setRange(0, 10);
+  sp_penwidth->setSuffix(tr(" px"));
+  sp_penwidth->setValue(model.pen_width);
+  m_sp_penwidth = sp_penwidth.get();
 
+  auto cb_style = std::make_unique<QComboBox>();
+  cb_style->addItem(tr("None"));
+  cb_style->addItem(tr("Solid"));
+  cb_style->addItem(tr("Dashed"));
+  cb_style->addItem(tr("Dotted"));
+  cb_style->addItem(tr("DashDotted"));
+  cb_style->addItem(tr("DashDotDotted"));
+  cb_style->setCurrentIndex(model.pen_style);
+  m_cb_penstyle = cb_style.get();
+
+  auto cb_zorder = std::make_unique<QComboBox>();
+  cb_zorder->addItem(tr("Invisible"));
+  cb_zorder->addItem(tr("Foreground"));
+  cb_zorder->addItem(tr("Background"));
+  cb_zorder->setCurrentIndex(static_cast<int>(model.zorder));
+  m_cb_zorder = cb_zorder.get();
+
+  auto label = std::make_unique<QLabel>(model.label);
+  label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+  label->setBuddy(sp_penwidth.get());
+
+  auto hlayout = std::make_unique<QHBoxLayout>();
+  hlayout->addWidget(sp_penwidth.release());
+  hlayout->addWidget(cb_style.release());
+  hlayout->addWidget(cb_zorder.release());
+  layout.addRow(label.release(), hlayout.release());
+}
+
+void ViewportPage::GridGroup::apply()
+{
+  m_model.pen_style = static_cast<Qt::PenStyle>(m_cb_penstyle->currentIndex());
+  m_model.pen_width = m_sp_penwidth->value();
+  m_model.zorder = static_cast<decltype(m_model.zorder)>(m_cb_zorder->currentIndex());
 }
 
 void ViewportPage::MouseModifiersGroup::apply()
@@ -127,6 +162,10 @@ void ViewportPage::about_to_accept()
   for (auto&& [ key, value ] : m_mouse_modifiers) {
     value.apply();
   }
+  for (auto&& [ key, value ] : m_grid_options) {
+    value.apply();
+  }
+
 }
 
 
