@@ -65,12 +65,12 @@ public:
 
   static Vec2<element_type> o() { return Vec2<element_type>(element_type(0), element_type(0)); }
 
-  static Vec2<element_type> max(const Vec2<element_type>& a, const Vec2<element_type> b)
+  static Vec2<element_type> max(const Vec2<element_type>& a, const Vec2<element_type>& b)
   {
     return Vec2<element_type>(std::max(a.x, b.x), std::max(a.y, b.y));
   }
 
-  static Vec2<element_type> min(const Vec2<element_type>& a, const Vec2<element_type> b)
+  static Vec2<element_type> min(const Vec2<element_type>& a, const Vec2<element_type>& b)
   {
     return Vec2<element_type>(std::min(a.x, b.x), std::min(a.y, b.y));
   }

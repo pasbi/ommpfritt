@@ -98,7 +98,7 @@ void Viewport::draw_grid(QPainter &painter) const
     viewport_transformation_i.apply_to_position(Vec2f(width(), 0)),
     viewport_transformation_i.apply_to_position(Vec2f(width(), height()))
   };
-  using minmax_t = Vec2f(*)(const Vec2f&, const Vec2f);
+  using minmax_t = Vec2f(*)(const Vec2f&, const Vec2f&);
   const auto maxf = static_cast<minmax_t>(Vec2f::max);
   const auto minf = static_cast<minmax_t>(Vec2f::min);
   const Vec2f min = std::accumulate(extrema.begin(), extrema.end(), *extrema.begin(), minf);
