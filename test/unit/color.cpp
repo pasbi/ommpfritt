@@ -29,10 +29,10 @@ const std::map<std::array<double, 3>, std::array<double, 3>> rgb_hsv {
 const std::map<double, QString> hex_lut {
   { 0.0, "00" },
   { 1.0, "ff" },
-  { 0.1, "1a" },
-  { 0.9, "e6" },
+  { 0.1019608, "1a" },
+  { 0.9019608, "e6" },
   { 0.8, "cc" },
-  { 0.3, "4d" },
+  { 0.3019608, "4d" },
   { 0.2, "33" },
   { 0.6, "99" },
   { 0.4, "66" },
