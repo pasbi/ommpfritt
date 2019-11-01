@@ -134,6 +134,13 @@
     </message>
 </context>
 <context>
+    <name>GeneralPage</name>
+    <message>
+        <source>&amp;Language</source>
+        <translation>&amp;Sprache</translation>
+    </message>
+</context>
+<context>
     <name>IntegerVectorProperty</name>
     <message>
         <source>IntegerVectorProperty</source>
@@ -1792,8 +1799,8 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>frame_%%%%.png</translation>
     </message>
     <message>
-        <source>Export to Animation to ...</source>
-        <translation type="unfinished"></translation>
+        <source>Export animation to ...</source>
+        <translation>Animation exportieren nach ...</translation>
     </message>
 </context>
 <context>
@@ -1808,10 +1815,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>Changing language takes effect after restarting the application.</source>
         <translation>Änderungen an der Sprache werden erst nach einem Neustart wirksam.</translation>
-    </message>
-    <message>
-        <source>&amp;Language:</source>
-        <translation>&amp;Sprache:</translation>
     </message>
 </context>
 <context>
@@ -1944,16 +1947,20 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
+    <message>
+        <source>Viewport</source>
+        <translation>Ansichtsfenster</translation>
+    </message>
 </context>
 <context>
     <name>omm::Preferences</name>
     <message>
-        <source>&amp;zoom viewport</source>
-        <translation>&amp;Zoom Viewport</translation>
+        <source>&amp;zoom</source>
+        <translation>&amp;Zoom</translation>
     </message>
     <message>
-        <source>&amp;shift viewport</source>
-        <translation>&amp;Verschiebe Viewport</translation>
+        <source>&amp;shift</source>
+        <translation>&amp;Verschieben</translation>
     </message>
 </context>
 <context>

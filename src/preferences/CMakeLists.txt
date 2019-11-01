@@ -15,6 +15,7 @@ file(GLOB SOURCES
   uicolors.cpp
   uicolorspage.cpp
   uicolorstreeviewdelegate.cpp
+  viewportpage.cpp
 )
 
 file(GLOB HEADERS
@@ -34,6 +35,7 @@ file(GLOB HEADERS
   uicolors.h
   uicolorspage.h
   uicolorstreeviewdelegate.h
+  viewportpage.h
 )
 
 target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})

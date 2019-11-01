@@ -5,6 +5,7 @@
 #include "preferences/keybindingspage.h"
 #include "preferences/preferencepage.h"
 #include "preferences/generalpage.h"
+#include "preferences/viewportpage.h"
 #include <QApplication>
 
 namespace omm
@@ -20,6 +21,8 @@ PreferenceDialog::PreferenceDialog() : m_ui(new Ui::PreferenceDialog)
 
   register_preference_page(nullptr, tr("General"),
                            std::make_unique<GeneralPage>(app.preferences));
+  register_preference_page(nullptr, tr("Viewport"),
+                           std::make_unique<ViewportPage>(app.preferences));
   register_preference_page(nullptr, tr("Ui Colors"),
                            std::make_unique<UiColorsPage>(app.ui_colors));
   register_preference_page(nullptr, tr("Keyindings"),

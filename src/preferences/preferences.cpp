@@ -9,9 +9,9 @@ auto init_mouse_modifiers()
 {
   using MouseModifier = omm::Preferences::MouseModifier;
   std::map<QString, MouseModifier> map;
-  map.insert({ "zoom viewport", MouseModifier(omm::Preferences::tr("&zoom viewport"),
+  map.insert({ "zoom viewport", MouseModifier(omm::Preferences::tr("&zoom"),
                                               Qt::RightButton, Qt::AltModifier) });
-  map.insert({ "shift viewport", MouseModifier(omm::Preferences::tr("&shift viewport"),
+  map.insert({ "shift viewport", MouseModifier(omm::Preferences::tr("&shift"),
                                                Qt::LeftButton, Qt::AltModifier) });
   return map;
 }

@@ -134,6 +134,13 @@
     </message>
 </context>
 <context>
+    <name>GeneralPage</name>
+    <message>
+        <source>&amp;Language</source>
+        <translation>&amp;Language</translation>
+    </message>
+</context>
+<context>
     <name>IntegerVectorProperty</name>
     <message>
         <source>IntegerVectorProperty</source>
@@ -1792,8 +1799,8 @@ Remove the selected items anyway?</translation>
         <translation>frame_%%%%.png</translation>
     </message>
     <message>
-        <source>Export to Animation to ...</source>
-        <translation type="unfinished"></translation>
+        <source>Export animation to ...</source>
+        <translation>Export animation to ...</translation>
     </message>
 </context>
 <context>
@@ -1808,10 +1815,6 @@ Remove the selected items anyway?</translation>
     <message>
         <source>Changing language takes effect after restarting the application.</source>
         <translation>Changing language takes effect after restarting the application.</translation>
-    </message>
-    <message>
-        <source>&amp;Language:</source>
-        <translation>&amp;Language:</translation>
     </message>
 </context>
 <context>
@@ -1944,16 +1947,20 @@ Do you want to convert them into ordinary colors?</numerusform>
         <source>General</source>
         <translation>General</translation>
     </message>
+    <message>
+        <source>Viewport</source>
+        <translation>Viewport</translation>
+    </message>
 </context>
 <context>
     <name>omm::Preferences</name>
     <message>
-        <source>&amp;zoom viewport</source>
-        <translation>&amp;Zoom viewport</translation>
+        <source>&amp;zoom</source>
+        <translation>&amp;Zoom</translation>
     </message>
     <message>
-        <source>&amp;shift viewport</source>
-        <translation>&amp;Shift viewport</translation>
+        <source>&amp;shift</source>
+        <translation>&amp;Shift</translation>
     </message>
 </context>
 <context>

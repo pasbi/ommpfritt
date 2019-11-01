@@ -134,6 +134,13 @@
     </message>
 </context>
 <context>
+    <name>GeneralPage</name>
+    <message>
+        <source>&amp;Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>IntegerVectorProperty</name>
     <message>
         <source>IntegerVectorProperty</source>
@@ -1792,7 +1799,7 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Export to Animation to ...</source>
+        <source>Export animation to ...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1808,10 +1815,6 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>Changing language takes effect after restarting the application.</source>
         <translation type="unfinished">Un cambio de idioma solo tiene efecto cuando reinicies la aplicación.</translation>
-    </message>
-    <message>
-        <source>&amp;Language:</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1941,15 +1944,19 @@ Do you want to convert them into ordinary colors?</source>
         <source>General</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Viewport</source>
+        <translation type="unfinished">Vista</translation>
+    </message>
 </context>
 <context>
     <name>omm::Preferences</name>
     <message>
-        <source>&amp;zoom viewport</source>
+        <source>&amp;zoom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;shift viewport</source>
+        <source>&amp;shift</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

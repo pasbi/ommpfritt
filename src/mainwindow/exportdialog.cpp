@@ -356,7 +356,7 @@ void ExportDialog::set_minimum_end(int min)
 void ExportDialog::start_export_animation()
 {
   const QFileDialog::Options options { 0 };
-  const QString path = QFileDialog::getExistingDirectory(this, tr("Export to Animation to ..."),
+  const QString path = QFileDialog::getExistingDirectory(this, tr("Export animation to ..."),
                                                          m_animation_directory, options);
   if (!path.isEmpty()) {
     m_animation_directory = path;
