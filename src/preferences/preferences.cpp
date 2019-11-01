@@ -1,5 +1,4 @@
 #include "preferences/preferences.h"
-
 #include <QSettings>
 
 namespace
@@ -13,6 +12,19 @@ auto init_mouse_modifiers()
                                               Qt::RightButton, Qt::AltModifier) });
   map.insert({ "shift viewport", MouseModifier(omm::Preferences::tr("&shift"),
                                                Qt::LeftButton, Qt::AltModifier) });
+  return map;
+}
+
+auto init_grid_options()
+{
+  using GridOption = omm::Preferences::GridOption;
+  std::map<double, GridOption> map;
+  map.insert({ 100.0,   GridOption( omm::Preferences::tr("&fine"),
+                                  QColor(0, 0, 0, 100), 0.5)});
+  map.insert({ 1000.0,  GridOption( omm::Preferences::tr("&mid"),
+                                  QColor(0, 0, 0, 128), 1.0)});
+  map.insert({ 10000.0, GridOption( omm::Preferences::tr("&coarse"),
+                                  QColor(0, 0, 0, 255), 2.0)});
   return map;
 }
 
@@ -30,39 +42,45 @@ namespace omm
 {
 
 Preferences::Preferences()
-  : m_mouse_modifiers(init_mouse_modifiers())
+  : mouse_modifiers(init_mouse_modifiers())
+  , grid_options(init_grid_options())
 {
   QSettings settings;
-  for (const auto& [ key, value ] : m_mouse_modifiers) {
+  for (const auto& [ key, value ] : mouse_modifiers) {
     const QString prefix = "preferences/" + key;
-    set_if_exist<int>(settings, prefix + "/button", m_mouse_modifiers.at(key).button);
-    set_if_exist<int>(settings, prefix + "/modifiers", m_mouse_modifiers.at(key).modifiers);
+    set_if_exist<int>(settings, prefix + "/button", mouse_modifiers.at(key).button);
+    set_if_exist<int>(settings, prefix + "/modifiers", mouse_modifiers.at(key).modifiers);
+  }
+  for (const auto& [ key, value ] : grid_options) {
+    const QString prefix = "preferences/" + QString("%1").arg(key);
+    set_if_exist<QColor>(settings, prefix + "/color", grid_options.at(key).color);
+    set_if_exist<double>(settings, prefix + "/pen_width", grid_options.at(key).pen_width);
   }
 }
 
 Preferences::~Preferences()
 {
   QSettings settings;
-  for (const auto& [ key, value ] : m_mouse_modifiers) {
+  for (const auto& [ key, value ] : mouse_modifiers) {
     const QString prefix = "preferences/" + key;
     settings.setValue(prefix + "/button", static_cast<int>(value.button));
     settings.setValue(prefix + "/modifiers", static_cast<int>(value.modifiers));
   }
-}
-
-const std::map<QString, Preferences::MouseModifier>& Preferences::mouse_modifiers() const
-{
-  return m_mouse_modifiers;
-}
-
-std::map<QString, Preferences::MouseModifier>& Preferences::mouse_modifiers()
-{
-  return m_mouse_modifiers;
+  for (const auto& [ key, value ] : grid_options) {
+    const QString prefix = "preferences/" + QString("%1").arg(key);
+    settings.setValue(prefix + "/color", value.color);
+    settings.setValue(prefix + "/pen_width", value.pen_width);
+  }
 }
 
 Preferences::MouseModifier::MouseModifier(const QString& label, Qt::MouseButton default_button,
                                           Qt::KeyboardModifiers default_modifiers)
   : label(label), button(default_button), modifiers(default_modifiers)
+{
+}
+
+Preferences::GridOption::GridOption(const QString& label, const QColor& color, double pen_width)
+  : label(label), color(color), pen_width(pen_width)
 {
 }
 

@@ -195,37 +195,6 @@
     </message>
 </context>
 <context>
-    <name>Preferences</name>
-    <message>
-        <source>Left</source>
-        <translation>Left</translation>
-    </message>
-    <message>
-        <source>Middle</source>
-        <translation>Middle</translation>
-    </message>
-    <message>
-        <source>Right</source>
-        <translation>Right</translation>
-    </message>
-    <message>
-        <source>Shift</source>
-        <translation>Shift</translation>
-    </message>
-    <message>
-        <source>Ctrl</source>
-        <translation>Ctrl</translation>
-    </message>
-    <message>
-        <source>Meta</source>
-        <translation>Meta</translation>
-    </message>
-    <message>
-        <source>Alt</source>
-        <translation>Alt</translation>
-    </message>
-</context>
-<context>
     <name>Property</name>
     <message>
         <source>user properties</source>
@@ -1962,6 +1931,18 @@ Do you want to convert them into ordinary colors?</numerusform>
         <source>&amp;shift</source>
         <translation>&amp;Shift</translation>
     </message>
+    <message>
+        <source>&amp;fine</source>
+        <translation>&amp;Fine</translation>
+    </message>
+    <message>
+        <source>&amp;mid</source>
+        <translation>&amp;Mid</translation>
+    </message>
+    <message>
+        <source>&amp;coarse</source>
+        <translation>&amp;Coarse</translation>
+    </message>
 </context>
 <context>
     <name>omm::PropertyManager</name>
@@ -2064,6 +2045,41 @@ This cannot be undone.</translation>
     <message>
         <source>&lt;unnamed property&gt;</source>
         <translation>unnamed property</translation>
+    </message>
+</context>
+<context>
+    <name>omm::ViewportPage</name>
+    <message>
+        <source>Button</source>
+        <translation>Button</translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation>Left</translation>
+    </message>
+    <message>
+        <source>Middle</source>
+        <translation>Middle</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation>Right</translation>
+    </message>
+    <message>
+        <source>Shift</source>
+        <translation>Shift</translation>
+    </message>
+    <message>
+        <source>Ctrl</source>
+        <translation>Ctrl</translation>
+    </message>
+    <message>
+        <source>Meta</source>
+        <translation>Meta</translation>
+    </message>
+    <message>
+        <source>Alt</source>
+        <translation>Alt</translation>
     </message>
 </context>
 <context>

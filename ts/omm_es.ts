@@ -195,37 +195,6 @@
     </message>
 </context>
 <context>
-    <name>Preferences</name>
-    <message>
-        <source>Left</source>
-        <translation type="unfinished">Izquierdo</translation>
-    </message>
-    <message>
-        <source>Middle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Right</source>
-        <translation type="unfinished">Derecho</translation>
-    </message>
-    <message>
-        <source>Shift</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Meta</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Property</name>
     <message>
         <source>user properties</source>
@@ -1959,6 +1928,18 @@ Do you want to convert them into ordinary colors?</source>
         <source>&amp;shift</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&amp;fine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;mid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;coarse</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::PropertyManager</name>
@@ -2059,6 +2040,41 @@ This cannot be undone.</source>
     <name>omm::UserPropertyListModel</name>
     <message>
         <source>&lt;unnamed property&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::ViewportPage</name>
+    <message>
+        <source>Button</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Izquierdo</translation>
+    </message>
+    <message>
+        <source>Middle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Derecho</translation>
+    </message>
+    <message>
+        <source>Shift</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Meta</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

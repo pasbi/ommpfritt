@@ -195,37 +195,6 @@
     </message>
 </context>
 <context>
-    <name>Preferences</name>
-    <message>
-        <source>Left</source>
-        <translation>Links</translation>
-    </message>
-    <message>
-        <source>Middle</source>
-        <translation>Mitte</translation>
-    </message>
-    <message>
-        <source>Right</source>
-        <translation>Rechts</translation>
-    </message>
-    <message>
-        <source>Shift</source>
-        <translation>Umschalt</translation>
-    </message>
-    <message>
-        <source>Ctrl</source>
-        <translation>Strg</translation>
-    </message>
-    <message>
-        <source>Meta</source>
-        <translation>Meta</translation>
-    </message>
-    <message>
-        <source>Alt</source>
-        <translation>Alt</translation>
-    </message>
-</context>
-<context>
     <name>Property</name>
     <message>
         <source>user properties</source>
@@ -1962,6 +1931,18 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
         <source>&amp;shift</source>
         <translation>&amp;Verschieben</translation>
     </message>
+    <message>
+        <source>&amp;fine</source>
+        <translation>&amp;Fein</translation>
+    </message>
+    <message>
+        <source>&amp;mid</source>
+        <translation>&amp;Mittel</translation>
+    </message>
+    <message>
+        <source>&amp;coarse</source>
+        <translation>&amp;Grob</translation>
+    </message>
 </context>
 <context>
     <name>omm::PropertyManager</name>
@@ -2064,6 +2045,41 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     <message>
         <source>&lt;unnamed property&gt;</source>
         <translation>unbenannte Eigenschaft</translation>
+    </message>
+</context>
+<context>
+    <name>omm::ViewportPage</name>
+    <message>
+        <source>Button</source>
+        <translation>Taste</translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation>Links</translation>
+    </message>
+    <message>
+        <source>Middle</source>
+        <translation>Mitte</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation>Rechts</translation>
+    </message>
+    <message>
+        <source>Shift</source>
+        <translation>Umschalt</translation>
+    </message>
+    <message>
+        <source>Ctrl</source>
+        <translation>Strg</translation>
+    </message>
+    <message>
+        <source>Meta</source>
+        <translation>Meta</translation>
+    </message>
+    <message>
+        <source>Alt</source>
+        <translation>Alt</translation>
     </message>
 </context>
 <context>

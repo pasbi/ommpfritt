@@ -24,13 +24,13 @@ void set_cursor_position(QWidget& widget, const omm::Vec2f& pos)
 
 bool match_mouse_modifiers(const QMouseEvent& event, const QString& key)
 {
-  const auto mm = omm::preferences().mouse_modifiers().at(key);
+  const auto mm = omm::preferences().mouse_modifiers.at(key);
   return mm.modifiers == event.modifiers();
 }
 
 bool match_mouse_button_and_modifiers(const QMouseEvent& event, const QString& key)
 {
-  const auto mm = omm::preferences().mouse_modifiers().at(key);
+  const auto mm = omm::preferences().mouse_modifiers.at(key);
   return mm.button == event.button() && mm.modifiers == event.modifiers();
 }
 

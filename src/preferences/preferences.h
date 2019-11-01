@@ -4,6 +4,7 @@
 #include <QString>
 #include <QObject>
 #include <Qt>
+#include <QColor>
 
 namespace omm
 {
@@ -24,11 +25,17 @@ public:
     Qt::KeyboardModifiers modifiers;
   };
 
-  const std::map<QString, MouseModifier>& mouse_modifiers() const;
-  std::map<QString, MouseModifier>& mouse_modifiers();
+  struct GridOption
+  {
+    GridOption(const QString& label, const QColor& color, double pen_width);
+    const QString label;
+    QColor color;
+    double pen_width;
+  };
 
-private:
-  std::map<QString, MouseModifier> m_mouse_modifiers;
+  std::map<QString, MouseModifier> mouse_modifiers;
+  std::map<double, GridOption> grid_options;
+
 };
 
 }  // namespace omm
