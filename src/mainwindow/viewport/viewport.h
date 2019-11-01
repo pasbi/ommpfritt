@@ -70,6 +70,8 @@ private:
   bool m_fps_brake = false;
   bool m_update_later = false;
 
+  void draw_grid(QPainter& painter) const;
+
   std::vector<std::unique_ptr<HeadUpDisplay>> m_headup_displays;
   HeadUpDisplay* find_headup_display(const QPoint& pos) const;
 };

@@ -34,6 +34,29 @@ bool match_mouse_button_and_modifiers(const QMouseEvent& event, const QString& k
   return mm.button == event.button() && mm.modifiers == event.modifiers();
 }
 
+double discretize(double value)
+{
+  value = std::log10(std::max(0.00001, value));
+  value -= std::fmod(value, 1.0);
+  return std::pow(10.0, value);
+}
+
+template<typename VecT> VecT fold(const VecT& vec)
+{
+  return vec;
+}
+
+template<typename F, typename VecT, typename... VecTs> VecT fold(const VecT& vec1, const VecT& vec2, const VecTs&... tail)
+{
+  return fold<F>(F(vec1, vec2), tail...);
+}
+
+template<typename... VecTs> auto max(const VecTs&... vecs)
+{
+  using VecT = std::tuple_element_t<0, std::tuple<VecTs...>>;
+  return fold<VecT::max>(vecs...);
+}
+
 }  // namespace
 
 namespace omm
@@ -63,6 +86,55 @@ Viewport::Viewport(Scene& scene)
   m_headup_displays.push_back(std::make_unique<AnchorHUD>(*this));
 }
 
+void Viewport::draw_grid(QPainter &painter) const
+{
+  painter.resetTransform();
+  const auto viewport_transformation = this->viewport_transformation();
+  const auto viewport_transformation_i = viewport_transformation.inverted();
+  painter.setTransform(viewport_transformation.to_qtransform());
+  const auto extrema = {
+    viewport_transformation_i.apply_to_position(Vec2f::o()),
+    viewport_transformation_i.apply_to_position(Vec2f(0, height())),
+    viewport_transformation_i.apply_to_position(Vec2f(width(), 0)),
+    viewport_transformation_i.apply_to_position(Vec2f(width(), height()))
+  };
+  using minmax_t = Vec2f(*)(const Vec2f&, const Vec2f);
+  const auto maxf = static_cast<minmax_t>(Vec2f::max);
+  const auto minf = static_cast<minmax_t>(Vec2f::min);
+  const Vec2f min = std::accumulate(extrema.begin(), extrema.end(), *extrema.begin(), minf);
+  const Vec2f max = std::accumulate(extrema.begin(), extrema.end(), *extrema.begin(), maxf);
+
+  struct GridOptions
+  {
+    const double base;
+    const QColor color;
+    const double width;
+  };
+
+  for (const auto& options : { GridOptions { 100.0, QColor(0, 0, 0, 100), 0.5 },
+                               GridOptions { 1000.0, QColor(0, 0, 0, 128), 1.0 },
+                               GridOptions { 10000.0, QColor(0, 0, 0, 255), 2.0 } })
+  {
+    QPen pen;
+    pen.setCosmetic(true);
+    pen.setWidth(options.width);
+    pen.setColor(options.color);
+    painter.setPen(pen);
+    const auto base_step = (max - min) / Vec2f(width(), height()) * options.base;
+    for (std::size_t d : { 0, 1 }) {
+      double step = discretize(base_step[d]);
+      for (double t = min[d]; t <= max[d] + step; t += step) {
+        const double tt = t - std::fmod(t, step);
+        Vec2f a = min;
+        Vec2f b = max;
+        a[d] = tt;
+        b[d] = tt;
+        painter.drawLine(a.to_pointf(), b.to_pointf());
+      }
+    }
+  }
+}
+
 #if USE_OPENGL
 void Viewport::paintGL()
 #else
@@ -77,7 +149,13 @@ void Viewport::paintEvent(QPaintEvent*)
   painter.setRenderHint(QPainter::SmoothPixmapTransform);
   painter.fillRect(rect(), Qt::gray);
 
-  m_scene.object_tree().root().set_transformation(viewport_transformation());
+  const auto viewport_transformation = this->viewport_transformation();
+
+  painter.save();
+  draw_grid(painter);
+  painter.restore();
+
+  m_scene.object_tree().root().set_transformation(viewport_transformation);
   {
     QSignalBlocker blocker(&m_scene);
     m_scene.evaluate_tags();
@@ -85,7 +163,7 @@ void Viewport::paintEvent(QPaintEvent*)
   m_renderer.render();
 
   auto& tool = m_scene.tool_box().active_tool();
-  tool.viewport_transformation = viewport_transformation();
+  tool.viewport_transformation = viewport_transformation;
   tool.draw(m_renderer);
   m_renderer.painter = nullptr;
   painter.restore();
