@@ -157,6 +157,8 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
 
   m_ui->pb_reset_end->setIcon(QIcon(":/icons/Revert.png"));
   m_ui->pb_reset_start->setIcon(QIcon(":/icons/Revert.png"));
+  Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset_end);
+  Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset_start);
   connect(m_ui->pb_start, SIGNAL(clicked()), this, SLOT(start_export_animation()));
 }
 

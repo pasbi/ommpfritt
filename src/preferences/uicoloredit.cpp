@@ -13,9 +13,11 @@ UiColorEdit::UiColorEdit(QWidget* parent) : QWidget(parent), m_ui(new Ui::UiColo
 {
   m_ui->setupUi(this);
   m_ui->pb_reset->setIcon(QIcon(":/icons/Revert.png"));
+  m_ui->pb_reset->setFocusPolicy(Qt::NoFocus);
 
   connect(m_ui->pb_reset, &QPushButton::clicked, [this]() {
     set_color(m_default_color);
+    close();
   });
   Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset);
 }
@@ -44,6 +46,7 @@ Color UiColorEdit::color() const
 void UiColorEdit::paintEvent(QPaintEvent*)
 {
   QPainter painter(this);
+  UiColors::draw_background(painter, rect());
   painter.fillRect(rect(), m_color.to_qcolor());
 }
 
