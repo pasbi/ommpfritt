@@ -1,6 +1,6 @@
 # ommpfritt
 
-![travis build status](https://travis-ci.org/pasbi/ommpfritt.svg?branch=master)
+[![Build Status](https://travis-ci.org/pasbi/ommpfritt.svg?branch=master)](https://travis-ci.org/pasbi/ommpfritt)
 
 *ommpfritt* or short *omm* is a free and open source vector modelling application.
 It brings the workflow of (3D) modelling tools to the 2D vector graphics world.
