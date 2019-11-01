@@ -46,6 +46,12 @@ Object::Object(Scene* scene) : PropertyOwner(scene), tags(*this)
   }
 
   static const auto category = QObject::tr("basic");
+  create_property<OptionsProperty>(VIEWPORT_VISIBILITY_PROPERTY_KEY, 0)
+    .set_options({ QObject::tr("default"), QObject::tr("hidden"),
+      QObject::tr("visible") })
+    .set_label(QObject::tr("visibility (viewport)"))
+    .set_category(category);
+
   create_property<OptionsProperty>(VISIBILITY_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("default"), QObject::tr("hidden"),
       QObject::tr("visible") })
@@ -255,7 +261,7 @@ void Object::draw_recursive(Painter& renderer, RenderOptions options) const
 {
   renderer.push_transformation(transformation());
   const bool is_enabled = !!(renderer.category_filter & Painter::Category::Objects);
-  if (is_enabled && is_visible()) {
+  if (is_enabled && is_visible(options.viewport)) {
     for (const auto* style : options.styles) {
       draw_object(renderer, *style);
     }
@@ -343,9 +349,11 @@ void Object::on_property_value_changed(Property *property)
     update();
   } else if (property == this->property(NAME_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::OBJECT_COLUMN);
-  } else if (property == this->property(VISIBILITY_PROPERTY_KEY)) {
+  } else if (property == this->property(VIEWPORT_VISIBILITY_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
     Q_EMIT scene()->message_box().appearance_changed();
+  } else if (property == this->property(VISIBILITY_PROPERTY_KEY)) {
+    object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
   }
 }
 
@@ -407,10 +415,11 @@ void Object::set_oriented_position(const Point& op, const bool align)
 
 bool Object::is_active() const { return property(IS_ACTIVE_PROPERTY_KEY)->value<bool>(); }
 
-bool Object::is_visible() const
+bool Object::is_visible(bool viewport) const
 {
-  const auto compute_visibility = [this]() {
-    switch (property(VISIBILITY_PROPERTY_KEY)->value<Visibility>()) {
+  const QString key = viewport ? VIEWPORT_VISIBILITY_PROPERTY_KEY : VISIBILITY_PROPERTY_KEY;
+  const auto compute_visibility = [this, key, viewport]() {
+    switch (property(key)->value<Visibility>()) {
     case Visibility::Hidden:
       return false;
     case Visibility::Visible:
@@ -419,7 +428,7 @@ bool Object::is_visible() const
       if (is_root()) {
         return true;
       } else {
-        return tree_parent().is_visible();
+        return tree_parent().is_visible(viewport);
       }
     }
   };

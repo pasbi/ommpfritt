@@ -39,8 +39,9 @@ Property &PropertyArea::property(const QModelIndex &index) const
   return *view.model()->item_at(index).property(m_property_key);
 }
 
-VisibilityPropertyArea::VisibilityPropertyArea(ObjectTreeView& view)
-  : PropertyArea(QRectF(QPointF(0.5, 0.5), QSizeF(0.5, 0.5)), view, Object::VISIBILITY_PROPERTY_KEY)
+VisibilityPropertyArea::VisibilityPropertyArea(ObjectTreeView& view, const QRectF& rect,
+                                               const QString& key)
+  : PropertyArea(rect, view, key)
 {
 }
 
@@ -128,7 +129,11 @@ IsEnabledPropertyArea::make_command(const QModelIndex &index, bool update_cache)
 ObjectQuickAccessDelegate::ObjectQuickAccessDelegate(ObjectTreeView& view) : m_view(view)
 {
   m_areas.push_back(std::make_unique<IsEnabledPropertyArea>(view));
-  m_areas.push_back(std::make_unique<VisibilityPropertyArea>(view));
+  using VPA = VisibilityPropertyArea;
+  m_areas.push_back(std::make_unique<VPA>(view, QRectF(QPointF(0.5, 0.5), QSizeF(0.5, 0.5)),
+                                                Object::VISIBILITY_PROPERTY_KEY));
+  m_areas.push_back(std::make_unique<VPA>(view, QRectF(QPointF(0.5, 0.0), QSizeF(0.5, 0.5)),
+                                                Object::VIEWPORT_VISIBILITY_PROPERTY_KEY));
 }
 
 void ObjectQuickAccessDelegate::

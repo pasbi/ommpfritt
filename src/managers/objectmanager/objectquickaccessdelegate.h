@@ -33,7 +33,7 @@ private:
 class VisibilityPropertyArea : public PropertyArea
 {
 public:
-  explicit VisibilityPropertyArea(ObjectTreeView& view);
+  explicit VisibilityPropertyArea(ObjectTreeView& view, const QRectF& rect, const QString& key);
   void draw(QPainter &painter, const QModelIndex &index) override;
 
 protected:

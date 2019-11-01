@@ -46,7 +46,7 @@ void SelectObjectsTool::reset()
 
   // ignore object selection. Return a handle for each visible object.
   const auto objects = ::filter_if(scene()->object_tree().items(), [](Object* object) {
-    return object->is_visible();
+    return object->is_visible(true);
   });
 
   handles.reserve(objects.size());
