@@ -64,6 +64,7 @@ void View::to_viewport()
   const auto s = std::abs(sx) < std::abs(sy) ? sx : sy;
   t = ObjectTransformation().scaled(Vec2f(s, s)).apply(t);
   viewport.set_transformation(t);
+  viewport.update();
 }
 
 void View::make_output_unique()

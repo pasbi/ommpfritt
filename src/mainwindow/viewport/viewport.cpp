@@ -189,7 +189,12 @@ ObjectTransformation Viewport::viewport_transformation() const
 }
 
 Scene& Viewport::scene() const { return m_scene; }
-void Viewport::reset() { m_viewport_transformation = ObjectTransformation(); }
+
+void Viewport::reset()
+{
+  m_viewport_transformation = ObjectTransformation();
+  update();
+}
 
 void Viewport::set_transformation(const ObjectTransformation& transformation)
 {
