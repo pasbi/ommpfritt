@@ -21,7 +21,7 @@ public:
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   Flag flags() const override;
   static constexpr auto TEXT_PROPERTY_KEY = "text";
-  void draw_object(Painter& renderer, const Style& style) const override;
+  void draw_object(Painter& renderer, const Style& style, Painter::Options options) const override;
 
   static constexpr auto WIDTH_PROPERTY_KEY = "width";
   QRectF rect(Qt::Alignment alignment) const;

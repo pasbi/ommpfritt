@@ -18,7 +18,6 @@ namespace omm
 class ObjectTree;
 class Scene;
 class Property;
-#include "scene/taglist.h"
 class Path;
 
 class PathDeleter
@@ -57,17 +56,10 @@ public:
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-  virtual void draw_object(Painter& renderer, const Style& style) const;
   virtual void draw_handles(Painter& renderer) const;
 
-  struct RenderOptions
-  {
-    std::vector<const Style*> styles;
-    const Style* default_style = nullptr;
-  };
-
-  void draw_recursive(Painter& renderer, const Style& default_style) const;
-  void draw_recursive(Painter& renderer, RenderOptions options) const;
+  virtual void draw_object(Painter& renderer, const Style& style, Painter::Options options) const;
+  void draw_recursive(Painter& renderer, Painter::Options options) const;
 
   /**
    * @brief bounding_box returns the bounding box in world coordinates
@@ -81,7 +73,7 @@ public:
   virtual std::unique_ptr<Object> convert() const;
   Flag flags() const override;
   bool is_active() const;
-  bool is_visible() const;
+  bool is_visible(bool viewport) const;
   virtual std::vector<const omm::Style*> find_styles() const;
 
   TagList tags;
@@ -95,6 +87,7 @@ public:
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP(ANY_TR_CONTEXT, "Object");
   static constexpr auto VISIBILITY_PROPERTY_KEY = "visibility";
+  static constexpr auto VIEWPORT_VISIBILITY_PROPERTY_KEY = "viewport-visibility";
   static constexpr auto IS_ACTIVE_PROPERTY_KEY = "is_active";
   static constexpr auto POSITION_PROPERTY_KEY = "position";
   static constexpr auto SCALE_PROPERTY_KEY = "scale";

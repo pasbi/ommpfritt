@@ -160,7 +160,9 @@ void Viewport::paintEvent(QPaintEvent*)
     QSignalBlocker blocker(&m_scene);
     m_scene.evaluate_tags();
   }
-  m_renderer.render();
+  Painter::Options options;
+  options.viewport = true;
+  m_renderer.render(options);
 
   auto& tool = m_scene.tool_box().active_tool();
   tool.viewport_transformation = viewport_transformation;

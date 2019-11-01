@@ -16,7 +16,7 @@ class Outline : public Object
 public:
   explicit Outline(Scene* scene);
   Outline(const Outline& other);
-  void draw_object(Painter& renderer, const Style& style) const override;
+  void draw_object(Painter& renderer, const Style& style, Painter::Options options) const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Outline");

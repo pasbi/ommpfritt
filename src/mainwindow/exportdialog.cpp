@@ -218,7 +218,9 @@ void ExportDialog::render(QPaintDevice& device, double scale) const
     m_scene.object_tree().root().set_transformation(get_transformation());
 
     m_scene.evaluate_tags();
-    renderer.render();
+    Painter::Options options;
+    options.viewport = false;
+    renderer.render(options);
   }
 
   QPainter final_painter(&device);

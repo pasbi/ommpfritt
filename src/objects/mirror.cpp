@@ -41,11 +41,12 @@ void Mirror::polish()
   update();
 }
 
-void Mirror::draw_object(Painter &renderer, const Style& style) const
+void Mirror::draw_object(Painter &renderer, const Style& style, Painter::Options options) const
 {
   assert(&renderer.scene == scene());
+  options.default_style = &style;
   if (m_reflection) {
-    m_reflection->draw_recursive(renderer, style);
+    m_reflection->draw_recursive(renderer, options);
   }
 }
 

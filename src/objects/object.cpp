@@ -249,24 +249,17 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
   this->tags.set(std::move(tags));
 }
 
-void Object::draw_recursive(Painter& renderer, const Style& default_style) const
-{
-  RenderOptions options;
-  options.styles = find_styles();
-  options.default_style = &default_style;
-  draw_recursive(renderer, options);
-}
-
-void Object::draw_recursive(Painter& renderer, RenderOptions options) const
+void Object::draw_recursive(Painter& renderer, Painter::Options options) const
 {
   renderer.push_transformation(transformation());
   const bool is_enabled = !!(renderer.category_filter & Painter::Category::Objects);
   if (is_enabled && is_visible(options.viewport)) {
+    options.styles = find_styles();
     for (const auto* style : options.styles) {
-      draw_object(renderer, *style);
+      draw_object(renderer, *style, options);
     }
     if (options.styles.size() == 0) {
-      draw_object(renderer, *options.default_style);
+      draw_object(renderer, *options.default_style, options);
     }
 
     if (!!(renderer.category_filter & Painter::Category::BoundingBox)) {
@@ -281,7 +274,7 @@ void Object::draw_recursive(Painter& renderer, RenderOptions options) const
 
   if (m_draw_children) {
     for (const auto& child : tree_children()) {
-      child->draw_recursive(renderer, *options.default_style);
+      child->draw_recursive(renderer, options);
     }
   }
   renderer.pop_transformation();
@@ -473,7 +466,7 @@ void Object::update_recursive()
 //  Q_EMIT scene()->message_box.appearance_changed(*this);
 }
 
-void Object::draw_object(Painter&, const Style&) const {}
+void Object::draw_object(Painter&, const Style&, Painter::Options options) const {}
 void Object::draw_handles(Painter&) const {}
 std::vector<Point> Object::points() const { return {}; }
 void PathDeleter::operator()(Path *path) { delete path; }

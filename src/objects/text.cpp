@@ -58,8 +58,9 @@ AbstractPropertyOwner::Flag Text::flags() const
   // Flag::IsPathLike   // Maybe this becomes feasible once the convert-trait is implemented.
 }
 
-void Text::draw_object(Painter &renderer, const Style& style) const
+void Text::draw_object(Painter &renderer, const Style& style, Painter::Options options) const
 {
+  Q_UNUSED(options)
   if (is_active()) {
     const QFont font = m_font_properties.get_font();
     const QTextOption option = m_text_option_properties.get_option();

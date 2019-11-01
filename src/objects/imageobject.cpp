@@ -51,8 +51,9 @@ ImageObject::ImageObject(Scene* scene) : Object(scene)
   update();
 }
 
-void ImageObject::draw_object(Painter &renderer, const Style&) const
+void ImageObject::draw_object(Painter &renderer, const Style&, Painter::Options options) const
 {
+  Q_UNUSED(options)
   if (is_active()) {
     const auto path = property(FILEPATH_PROPERTY_KEY)->value<QString>();
     const auto opacity = property(OPACITY_PROPERTY_KEY)->value<double>();

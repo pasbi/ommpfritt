@@ -12,7 +12,7 @@ class AbstractProceduralPath : public Object
 {
 public:
   using Object::Object;
-  void draw_object(Painter& renderer, const Style& style) const override;
+  void draw_object(Painter& renderer, const Style& style, Painter::Options options) const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   std::unique_ptr<Object> convert() const override;
   Flag flags() const override;

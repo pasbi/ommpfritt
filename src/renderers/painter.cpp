@@ -25,9 +25,10 @@ omm::Painter::Painter(omm::Scene &scene, omm::Painter::Category filter)
 
 }
 
-void Painter::render()
+void Painter::render(Options options)
 {
-  scene.object_tree().root().draw_recursive(*this, scene.default_style());
+  options.default_style = &scene.default_style();
+  scene.object_tree().root().draw_recursive(*this, options);
   assert(m_transformation_stack.empty());
 }
 

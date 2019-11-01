@@ -54,14 +54,15 @@ void Instance::polish()
   update();
 }
 
-void Instance::draw_object(Painter &renderer, const Style& default_style) const
+void Instance::draw_object(Painter &renderer, const Style& style, Painter::Options options) const
 {
+  Q_UNUSED(style)
   auto cycle_guard = scene()->make_cycle_guard(this);
   if (!cycle_guard->inside_cycle() && is_active()) {
     const auto* r = illustrated_object();
     if (r != nullptr) {
       renderer.push_transformation(r->global_transformation(Space::Scene).inverted());
-      r->draw_recursive(renderer, default_style);
+      r->draw_recursive(renderer, options);
       renderer.pop_transformation();
     }
   }

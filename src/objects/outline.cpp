@@ -37,11 +37,12 @@ void Outline::polish()
   update();
 }
 
-void Outline::draw_object(Painter &renderer, const Style& style) const
+void Outline::draw_object(Painter &renderer, const Style& style, Painter::Options options) const
 {
   assert(&renderer.scene == scene());
+  options.default_style = &style;
   if (m_outline) {
-    m_outline->draw_recursive(renderer, style);
+    m_outline->draw_recursive(renderer, options);
   }
 }
 

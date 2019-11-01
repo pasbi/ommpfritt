@@ -10,7 +10,7 @@ class ImageObject : public Object
 {
 public:
   explicit ImageObject(Scene* scene);
-  void draw_object(Painter& renderer, const Style&) const override;
+  void draw_object(Painter& renderer, const Style&, Painter::Options options) const override;
   QString type() const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   std::unique_ptr<Object> clone() const override;

@@ -17,7 +17,7 @@ class Cloner : public Object
 public:
   explicit Cloner(Scene* scene);
   explicit Cloner(const Cloner& other);
-  void draw_object(Painter& renderer, const Style& style) const override;
+  void draw_object(Painter& renderer, const Style& style, Painter::Options options) const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   BoundingBox recursive_bounding_box(const ObjectTransformation& transformation) const override;
   QString type() const override;

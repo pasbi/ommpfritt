@@ -124,11 +124,12 @@ void Cloner::polish()
   update();
 }
 
-void Cloner::draw_object(Painter &renderer, const Style& style) const
+void Cloner::draw_object(Painter &renderer, const Style& style, Painter::Options options) const
 {
   assert(&renderer.scene == scene());
+  options.default_style = &style;
   for (auto&& clone : m_clones) {
-    clone->draw_recursive(renderer, style);
+    clone->draw_recursive(renderer, options);
   }
 }
 

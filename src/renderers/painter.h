@@ -25,10 +25,17 @@ class Rectangle;
 class Painter
 {
 public:
+  struct Options
+  {
+    std::vector<const Style*> styles;
+    const Style* default_style = nullptr;
+    bool viewport = true;
+  };
+
   enum class Category { None = 0x0, Objects = 0x1, Handles = 0x2, BoundingBox = 0x4,
                         All = Objects | Handles | BoundingBox };
   explicit Painter(Scene& scene, Category filter);
-  void render();
+  void render(Options options);
 
   void push_transformation(const ObjectTransformation& transformation);
   void pop_transformation();
