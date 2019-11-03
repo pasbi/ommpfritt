@@ -8,36 +8,40 @@ void OptionsProperty::deserialize(AbstractDeserializer& deserializer, const Poin
 {
   TypedProperty::deserialize(deserializer, root);
   set(deserializer.get_size_t(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
-  set_default_value(
-    deserializer.get_size_t(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
 
-  auto options = this->options();
-  if (options.empty()) {
-    // if options are already there, don't overwrite them because they are probably already
-    //  translated.
-    const std::size_t n_options = deserializer.array_size(make_pointer(root, OPTIONS_POINTER));
-    options.reserve(n_options);
-    for (std::size_t i = 0; i < n_options; ++i) {
-      const auto option = deserializer.get_string(make_pointer(root, OPTIONS_POINTER, i));
-      options.push_back(option);
+  if (is_user_property()) {
+    set_default_value(
+      deserializer.get_size_t(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
+
+    auto options = this->options();
+    if (options.empty()) {
+      // if options are already there, don't overwrite them because they are probably already
+      //  translated.
+      const std::size_t n_options = deserializer.array_size(make_pointer(root, OPTIONS_POINTER));
+      options.reserve(n_options);
+      for (std::size_t i = 0; i < n_options; ++i) {
+        const auto option = deserializer.get_string(make_pointer(root, OPTIONS_POINTER, i));
+        options.push_back(option);
+      }
+      configuration[OPTIONS_POINTER] = options;
     }
-    configuration[OPTIONS_POINTER] = options;
   }
-
 }
 
 void OptionsProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   TypedProperty::serialize(serializer, root);
   serializer.set_value( value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
-  serializer.set_value( default_value(),
-                        make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
-  const auto options = this->options();
-  serializer.start_array(options.size(), OPTIONS_POINTER);
-  for (std::size_t i = 0; i < options.size(); ++i) {
-    serializer.set_value(options[i], make_pointer(root, OPTIONS_POINTER, i));
+  if (is_user_property()) {
+    serializer.set_value( default_value(),
+                          make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
+    const auto options = this->options();
+    serializer.start_array(options.size(), OPTIONS_POINTER);
+    for (std::size_t i = 0; i < options.size(); ++i) {
+      serializer.set_value(options[i], make_pointer(root, OPTIONS_POINTER, i));
+    }
+    serializer.end_array();
   }
-  serializer.end_array();
 }
 
 void OptionsProperty::set(const variant_type& variant)
