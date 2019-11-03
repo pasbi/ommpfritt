@@ -220,8 +220,7 @@ bool Scene::load_from(const QString &filename)
     reset();
   };
 
-  try
-  {
+  try {
     auto deserializer = AbstractDeserializer::make( "JSONDeserializer",
                                                     static_cast<std::istream&>(ifstream) );
 

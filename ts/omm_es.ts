@@ -1125,6 +1125,10 @@ Borrar la selección de todos modos?</translation>
         <source>Add Named Color</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>visibility (viewport)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>

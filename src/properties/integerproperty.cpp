@@ -7,16 +7,20 @@ void IntegerProperty::deserialize(AbstractDeserializer& deserializer, const Poin
 {
   NumericProperty::deserialize(deserializer, root);
   set(deserializer.get_int(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
-  set_default_value(
-    deserializer.get_int(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
+  if (is_user_property()) {
+    set_default_value(
+      deserializer.get_int(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
+  }
 }
 
 void IntegerProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   NumericProperty::serialize(serializer, root);
   serializer.set_value( value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
-  serializer.set_value( default_value(),
-                        make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
+  if (is_user_property()) {
+    serializer.set_value( default_value(),
+                          make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
+  }
 }
 
 std::unique_ptr<Property> IntegerProperty::clone() const

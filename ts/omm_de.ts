@@ -1125,6 +1125,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Add Named Color</source>
         <translation>Benannte Farbe hinzufügen</translation>
     </message>
+    <message>
+        <source>visibility (viewport)</source>
+        <translation>Sichtbarkeit (Viewport)</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>

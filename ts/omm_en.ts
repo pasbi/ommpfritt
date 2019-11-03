@@ -1125,6 +1125,10 @@ Remove the selected items anyway?</translation>
         <source>Add Named Color</source>
         <translation>Add Named Color</translation>
     </message>
+    <message>
+        <source>visibility (viewport)</source>
+        <translation>Visibility (Viewport)</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>

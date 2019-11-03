@@ -59,22 +59,26 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root) override
   {
     TypedProperty<T>::deserialize(deserializer, root);
-    for (const QString& key : { D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER }) {
-      this->configuration[key] = deserializer.get<T>(Serializable::make_pointer(root, key));
+    if (this->is_user_property()) {
+      for (const QString& key : { D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER }) {
+        this->configuration[key] = deserializer.get<T>(Serializable::make_pointer(root, key));
+      }
+      this->configuration[D::MULTIPLIER_POINTER]
+          = deserializer.get<double>(Serializable::make_pointer(root, D::MULTIPLIER_POINTER));
     }
-    this->configuration[D::MULTIPLIER_POINTER]
-        = deserializer.get<double>(Serializable::make_pointer(root, D::MULTIPLIER_POINTER));
   }
 
   void serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const override
   {
     TypedProperty<T>::serialize(serializer, root);
-    for (const QString& key : { D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER }) {
-      serializer.set_value(this->configuration.template get<T>(key),
-                                 Serializable::make_pointer(root, key));
+    if (this->is_user_property()) {
+      for (const QString& key : { D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER }) {
+        serializer.set_value(this->configuration.template get<T>(key),
+                                   Serializable::make_pointer(root, key));
+      }
+      serializer.set_value(this->configuration.template get<double>(D::MULTIPLIER_POINTER),
+                           Serializable::make_pointer(root, D::MULTIPLIER_POINTER));
     }
-    serializer.set_value(this->configuration.template get<double>(D::MULTIPLIER_POINTER),
-                         Serializable::make_pointer(root, D::MULTIPLIER_POINTER));
   }
 
   void revise() override

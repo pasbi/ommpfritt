@@ -23,8 +23,10 @@ void Property::revise() {}
 void Property::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   Serializable::serialize(serializer, root);
-  serializer.set_value(label(), make_pointer(root, LABEL_POINTER));
-  serializer.set_value(category(), make_pointer(root, CATEGORY_POINTER));
+  if (is_user_property()) {
+    serializer.set_value(label(), make_pointer(root, LABEL_POINTER));
+    serializer.set_value(category(), make_pointer(root, CATEGORY_POINTER));
+  }
   serializer.set_value(is_animatable(), make_pointer(root, ANIMATABLE_POINTER));
   serializer.set_value(m_track != nullptr, make_pointer(root, IS_ANIMATED_POINTER));
   if (m_track != nullptr) {
@@ -37,8 +39,6 @@ void Property
 {
   Serializable::deserialize(deserializer, root);
 
-  // if m_label and m_category are already set, prefer these values since they are translated.
-  // if m_label and m_category are not set, use the loaded ones (useful for user properties)
   if (configuration.find(LABEL_POINTER) == configuration.end()) {
     configuration[LABEL_POINTER] = deserializer.get_string(make_pointer(root, LABEL_POINTER));
   }
