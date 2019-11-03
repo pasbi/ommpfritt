@@ -9,10 +9,12 @@ repo="$(basename -s .git `git config --get remote.origin.url`)"
 echo "Build $repo on Ubuntu $dist".
 
 echo "installing dependencies ..."
+sudo apt-get clean
 sudo apt update -y
+sudo apt remove mysql-client-5.7 mysql-server-5.7
 sudo apt upgrade -y
 sudo apt install -y ninja-build zlib1g-dev libssl-dev libffi-dev \
-                    libgl-dev python3-dev python3-pytest
+                    libgl-dev python3-dev
 case "$dist" in
 "xenial" | "bionic")
   sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
@@ -31,6 +33,17 @@ case "$dist" in
   QT_PREFIX="/opt/qt512"
   QT_QM_PATH="/opt/qt512/translations/"
 
+  wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz
+  tar xf Python-3.7.0.tar.xz
+  pushd Python-3.7.0
+  ./configure --prefix=/usr
+  sudo make altinstall -j2
+  popd
+
+  # pytest is required to build pybind11
+  sudo python3.7 -m pip install pytest
+
+  # Download cmake binaries
   wget https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.tar.gz
   tar xf cmake-3.14.5-Linux-x86_64.tar.gz
   cmake=$(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake
@@ -60,6 +73,7 @@ case "$dist" in
   QT_QM_PATH="/usr/share/qt5/translations/"
   ;;
 esac
+
 sudo apt install -y libpoppler-qt5-dev libkf5itemmodels-dev
 
 if [ -d build ]; then
