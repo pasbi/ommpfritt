@@ -356,19 +356,23 @@ void MainWindow::update_recent_files_menu()
   recent_document_menu->setToolTipsVisible(true);
   assert(recent_document_menu != nullptr);
   std::size_t count = 0;
+  std::set<QString> filenames;
   for (auto&& fn : QSettings().value(RECENT_DOCUMENTS_SETTINGS_KEY, QStringList()).toStringList()) {
     const QFileInfo file_info(fn);
+    const QString abs_file_path = file_info.absoluteFilePath();
     if (file_info.exists()
-        && QFileInfo(scene.filename()).absoluteFilePath() != file_info.absoluteFilePath())
+        && QFileInfo(scene.filename()).absoluteFilePath() != abs_file_path
+        && !::contains(filenames, abs_file_path))
     {
+      filenames.insert(abs_file_path);
       auto action = std::make_unique<QAction>(file_info.fileName());
       action->setToolTip(fn);
       connect(action.get(), &QAction::triggered, [fn]() {
-        Application::instance().load(fn, false);
+        Application::instance().load(fn);
       });
       recent_document_menu->addAction(action.release());
+      count++;
     }
-    count++;
     if (count > 10) {
       break;
     }

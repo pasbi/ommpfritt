@@ -35,7 +35,7 @@ public:
   bool save(const QString& filename);
   bool can_close();
   void load();
-  void load(const QString& filename, bool force);
+  void load(const QString& filename);
   void reset();
   void quit();
   void update_undo_redo_enabled();

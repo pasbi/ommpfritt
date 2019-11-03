@@ -195,36 +195,32 @@ void Application::reset()
   QTimer::singleShot(0, &scene, SLOT(reset()));
 }
 
-void Application::load(const QString& filename, bool force)
+void Application::load(const QString& filename)
 {
-  if (!force || !can_close()) {
-    return;
+  if (can_close()) {
+    scene.set_selection({});
+    QTimer::singleShot(0, [this, filename]() {
+      if (!scene.load_from(filename)) {
+        QMessageBox::critical( m_main_window,
+                               tr("Error."),
+                               tr("Loading scene from '%1' failed.").arg(filename),
+                               QMessageBox::Ok );
+      }
+    });
   }
-
-  scene.set_selection({});
-  QTimer::singleShot(0, [this, filename]() {
-    if (!scene.load_from(filename)) {
-      QMessageBox::critical( m_main_window,
-                             tr("Error."),
-                             tr("Loading scene from '%1' failed.").arg(filename),
-                             QMessageBox::Ok );
-    }
-  });
 }
 
 void Application::load()
 {
-  if (!can_close()) {
-    return;
-  }
+  if (can_close()) {
+    const QString filename =
+      QFileDialog::getOpenFileName( m_main_window, tr("Load scene ..."), scene.filename());
+    if (filename.isEmpty()) {
+      return;
+    }
 
-  const QString filename =
-    QFileDialog::getOpenFileName( m_main_window, tr("Load scene ..."), scene.filename());
-  if (filename.isEmpty()) {
-    return;
+    load(filename);
   }
-
-  load(filename, true);
 }
 
 bool Application::perform_action(const QString& action_name)
