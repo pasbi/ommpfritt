@@ -1,132 +1,21 @@
 compiler: gcc
 sudo: require
-dist: xenial
+language: cpp
 
-env:
-  global:
-    - PYBIND11_VERSION="2.2.4"
-
-before_install:
-  - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-xenial
-  - sudo apt-get update -qq
-  - sudo apt-get install -y zlib1g-dev libssl-dev libffi-dev qt512tools qt512translations qt512svg qt512base qt512imageformats libgl-dev python3-dev libpoppler-qt5-dev g++-8 libkf5itemmodels-dev
-  - wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz
-  - tar xf Python-3.7.0.tar.xz
-  - wget https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.tar.gz
-  - tar xf cmake-3.14.5-Linux-x86_64.tar.gz
-  - cmake_3_14=$(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake
-  - wget https://github.com/pybind/pybind11/archive/v${PYBIND11_VERSION}.tar.gz
-  - tar xf v${PYBIND11_VERSION}.tar.gz
-  - pybind11_DIR=$(pwd)/pybind11-${PYBIND11_VERSION}
-  - export PATH=/opt/qt512/bin:$PATH
+jobs:
+  include:
+    - os: linux
+      dist: xenial
+    - os: linux
+      dist: bionic
 
 script:
-  # Python
-  - pushd Python-3.7.0
-  - ./configure --prefix=/usr
-  - sudo make altinstall -j2
-  - popd
-  # pybind11
-  - sudo python3.7 -m pip install pytest
-  - mkdir -p $pybind11_DIR/build
-  - pushd $pybind11_DIR/build
-  - $cmake_3_14 ..
-  - sudo make install -j2
-  - popd
-  # ommpfritt
-  - mkdir build
-  - cd build
-  - $cmake_3_14 .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-8 -DQT_QM_PATH=/opt/qt512/translations -DCMAKE_PREFIX_PATH=/opt/qt512 -DCMAKE_INSTALL_PREFIX=/usr # -DCMAKE_PREFIX_PATH=$pybind11_DIR/build
-  - make -j$(nproc)
-  # make DESTDIR=appdir -j$(nproc) install ; find appdir/ # FIXME; "make install" should do the following properly
-  - mkdir -p ./appdir/usr/bin ; cp ommpfritt ./appdir/usr/bin/ # FIXME
-  - mkdir -p ./appdir/usr/share/applications ; cp ../ommpfritt.desktop ./appdir/usr/share/applications/ # FIXME
-  - mkdir -p ./appdir/usr/share/icons/hicolor/scalable/apps ; touch ./appdir/usr/share/icons/hicolor/scalable/apps/ommpfritt.svg # FIXME
-  - mkdir -p ./appdir/usr/lib ; find /usr/lib/ -type d -name 'python3.7' -exec cp -r {} ./appdir/usr/lib/ \;
-  - find appdir/usr/lib/python3.7
-  - wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
-  - chmod a+x linuxdeployqt-continuous-x86_64.AppImage
-  - wget -c "https://github.com/AppImage/AppImageKit/releases/download/continuous/AppRun-x86_64" -O ./appdir/AppRun ; chmod +x appdir/AppRun
-  - |
-    ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -appimage \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_ctypes.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_posixsubprocess.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_opcode.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_lsprof.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_bz2.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_dbm.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_testcapi.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/binascii.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/mmap.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_codecs_cn.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/select.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_testbuffer.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_sha512.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_sha3.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_json.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/pyexpat.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/unicodedata.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_bisect.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/audioop.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_asyncio.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_codecs_tw.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_testimportmultiple.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/resource.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_md5.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_codecs_jp.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_tkinter.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_random.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_sqlite3.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_uuid.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/termios.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/parser.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_sha256.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_ssl.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_datetime.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_curses.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/syslog.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_queue.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_gdbm.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_elementtree.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_struct.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_codecs_iso2022.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/fcntl.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_pickle.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/nis.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_sha1.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/xxlimited.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/zlib.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/readline.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_testmultiphase.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_hashlib.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_csv.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/spwd.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_crypt.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/ossaudiodev.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_blake2.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/array.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_heapq.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/cmath.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/math.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_ctypes_test.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_curses_panel.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_codecs_kr.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_multibytecodec.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/grp.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_xxtestfuzz.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_multiprocessing.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_socket.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_decimal.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_lzma.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_contextvars.*.so) \
-    -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_codecs_hk.*.so)
-
+  - ./build-omm-ubuntu.sh
+  - if [ "$TRAVIS_DIST" = "xenial"]; then ./make-appimage; fi
 after_success:
-  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
-  - bash upload.sh ommpfritt*.AppImage*
+  - if [ "$TRAVIS_DIST" = "xenial"]; then ./upload-appimage; fi
   - touch success
-  
+
 branches:
   except:
     - # Do not build tags that we create when we upload to GitHub Releases
