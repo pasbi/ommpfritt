@@ -11,6 +11,10 @@ echo "Build $repo on Ubuntu $dist".
 echo "installing dependencies ..."
 sudo apt-get clean
 sudo apt update -y
+
+# the mysql packages make a lot of trouble on xenial
+#  https://askubuntu.com/questions/773287/how-to-repair-corrupt-package-installation-mysql/773441
+# we don't need them, so removing is the quickest and cleanest way to avoid these troubles.
 sudo apt remove mysql-client-5.7 mysql-server-5.7
 sudo apt upgrade -y
 sudo apt install -y ninja-build zlib1g-dev libssl-dev libffi-dev \
