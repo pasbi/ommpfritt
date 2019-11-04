@@ -73,15 +73,21 @@ QString KeyBindings::find_action(const QString& context, const QKeySequence& seq
   if (group == nullptr) {
     return "";
   } else {
-    const auto vit = std::find_if(group->values.begin(), group->values.end(), [&sequence](auto&& v) {
-      const auto other = QKeySequence(v->value());
-      return other.matches(sequence) == QKeySequence::ExactMatch;
-    });
-    if (vit == group->values.end()) {
-      return "";
-    } else {
-      return vit->get()->name;
+    QKeySequence candidate = sequence;
+    while (!candidate.isEmpty()) {
+      const auto vit = std::find_if(group->values.begin(), group->values.end(),
+                                    [&candidate](auto&& v)
+      {
+        const auto other = QKeySequence(v->value());
+        return other.matches(candidate) == QKeySequence::ExactMatch;
+      });
+      if (vit != group->values.end()) {
+        return vit->get()->name;
+      } else {
+        candidate = QKeySequence(candidate[1], candidate[2], candidate[3], 0);
+      }
     }
+    return "";
   }
 }
 
