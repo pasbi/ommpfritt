@@ -3,8 +3,10 @@
 pwd
 ls
 
+set -e
+
 mkdir -p ./appdir/usr/bin
-cp ommpfritt ./appdir/usr/bin/ # FIXME
+cp build/ommpfritt ./appdir/usr/bin/ # FIXME
 
 mkdir -p ./appdir/usr/share/applications
 cp build-scripts/ommpfritt.desktop ./appdir/usr/share/applications/ # FIXME
