@@ -10,10 +10,10 @@ jobs:
       dist: bionic
 
 script:
-  - ./build-omm-ubuntu.sh
-  - if [ "$TRAVIS_DIST" = "xenial" ]; then ./make-appimage.sh; fi
+  - ./build-scripts/build-omm-ubuntu.sh
+  - if [ "$TRAVIS_DIST" = "xenial" ]; then ./build-scripts/make-appimage.sh; fi
 after_success:
-  - if [ "$TRAVIS_DIST" = "xenial" ]; then ./upload-appimage.sh; fi
+  - if [ "$TRAVIS_DIST" = "xenial" ]; then ./build-scripts/upload-appimage.sh; fi
   - touch success
 
 branches:
