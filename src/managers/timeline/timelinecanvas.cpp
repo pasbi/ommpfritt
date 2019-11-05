@@ -63,7 +63,7 @@ void TimelineCanvas::draw_lines(QPainter& painter) const
   painter.scale(rect.width(), rect.height());
 
   QPen pen;
-  pen.setColor(ui_color(m_widget, QPalette::ButtonText));
+  pen.setColor(ui_color(m_widget, "TimeLine", "scale vline"));
   pen.setCosmetic(true);
   painter.setPen(pen);
 
@@ -88,7 +88,7 @@ void TimelineCanvas::draw_lines(QPainter& painter) const
       }
     };
 
-    pen.setWidthF(frame % 10 == 0 ? 2.0 : 1.0);
+    pen.setWidthF(frame % 10 == 0 ? 1.0 : 0.5);
     painter.setPen(pen);
 
     const double x = (frame - left_frame) * ppf();
