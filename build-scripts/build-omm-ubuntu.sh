@@ -36,7 +36,7 @@ case "$dist" in
   C_COMPILER=gcc-8
   QT_PREFIX="/opt/qt512"
   QT_QM_PATH="/opt/qt512/translations/"
-  PATH=/opt/qt512/bin:$PATH
+  export PATH=/opt/qt512/bin:$PATH
 
   wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz
   tar xf Python-3.7.0.tar.xz

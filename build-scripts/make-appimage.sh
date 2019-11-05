@@ -2,6 +2,7 @@
 
 pwd
 ls
+echo $PATH
 
 set -e
 
