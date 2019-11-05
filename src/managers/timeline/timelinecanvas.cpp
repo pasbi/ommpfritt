@@ -314,7 +314,6 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
         for (int frame : track.key_frames()) {
           if (left <= frame && frame <= right) {
             m_rubber_band_selection[&track].insert(frame);
-            break;
           }
         }
       } else {
@@ -328,7 +327,6 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
           for (int frame : track.key_frames()) {
             if (left <= frame && frame <= right) {
               m_rubber_band_selection[&track].insert(frame);
-              break;
             }
           }
         }
@@ -438,18 +436,25 @@ double TimelineCanvas::footer_y() const
 bool TimelineCanvas::is_selected(int frame) const
 {
   const auto relevant_tracks = ::filter_if(tracks, [frame](Track* track) {
-      return track->has_keyframe(frame);
+    return track->has_keyframe(frame);
   });
   if (relevant_tracks.empty()) {
     return false;
   }
 
   return std::all_of(relevant_tracks.begin(), relevant_tracks.end(), [this, frame](Track* track) {
-    if (auto it = m_selection.find(track); it != m_selection.end()) {
-      return ::contains(it->second, frame);
-    } else if (auto it = m_rubber_band_selection.find(track); it != m_rubber_band_selection.end()) {
-      return ::contains(it->second, frame);
-    } else {
+    if (auto it = m_selection.find(track); it != m_selection.end()
+        && ::contains(it->second, frame))
+    {
+      return true;
+    }
+    else if (auto it = m_rubber_band_selection.find(track); it != m_rubber_band_selection.end()
+             && ::contains(it->second, frame))
+    {
+      return true;
+    }
+    else
+    {
       return false;
     }
   });

@@ -35,6 +35,7 @@ public:
   }
 
   QAbstractItemModel* model() const { return m_proxy->sourceModel(); }
+  QAbstractProxyModel* proxy() const { return m_proxy.get(); }
 
   void setModel(QAbstractItemModel* model) override
   {

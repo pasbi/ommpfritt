@@ -119,13 +119,13 @@ void DopeSheetView::TimelineCanvasC::disable_context_menu()
 
 QRect DopeSheetView::TimelineCanvasC::track_rect(Track& track)
 {
-  const QModelIndex index = m_self.m_animator.index(track.property());
+  const QModelIndex index = m_self.proxy()->mapFromSource(m_self.m_animator.index(track.property()));
   return m_self.visualRect(index.siblingAtColumn(1));
 }
 
 QRect DopeSheetView::TimelineCanvasC::owner_rect(AbstractPropertyOwner& owner)
 {
-  const QModelIndex index = m_self.m_animator.index(owner);
+  const QModelIndex index = m_self.proxy()->mapFromSource(m_self.m_animator.index(owner));
   return m_self.visualRect(index.siblingAtColumn(1));
 }
 
