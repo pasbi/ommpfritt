@@ -1,10 +1,19 @@
 #!/usr/bin/env bash
 
+echo -e "\n\n\n"
+pwd
+ls
+echo -e "\n\n\n"
+find .
+echo -e "\n\n\n"
+ls ..
+echo -e "\n\n\n"
+
 mkdir -p ./appdir/usr/bin
 cp ommpfritt ./appdir/usr/bin/ # FIXME
 
 mkdir -p ./appdir/usr/share/applications
-cp ../ommpfritt.desktop ./appdir/usr/share/applications/ # FIXME
+cp ommpfritt.desktop ./appdir/usr/share/applications/ # FIXME
 
 mkdir -p ./appdir/usr/share/icons/hicolor/scalable/apps
 touch ./appdir/usr/share/icons/hicolor/scalable/apps/ommpfritt.svg # FIXME
