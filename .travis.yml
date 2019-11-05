@@ -11,9 +11,9 @@ jobs:
 
 script:
   - ./build-omm-ubuntu.sh
-  - if [ "$TRAVIS_DIST" = "xenial"]; then ./make-appimage; fi
+  - if [ "$TRAVIS_DIST" = "xenial" ]; then ./make-appimage; fi
 after_success:
-  - if [ "$TRAVIS_DIST" = "xenial"]; then ./upload-appimage; fi
+  - if [ "$TRAVIS_DIST" = "xenial" ]; then ./upload-appimage; fi
   - touch success
 
 branches:
