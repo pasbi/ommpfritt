@@ -53,6 +53,7 @@ void DopeSheetView::mouseReleaseEvent(QMouseEvent* event)
 
 void DopeSheetView::mousePressEvent(QMouseEvent* event)
 {
+  m_mouse_press_pos = event->pos();
   if (columnAt(event->x()) == 1) {
     const QModelIndex index = indexAt(static_cast<QMouseEvent*>(event)->pos());
     m_track_view_delegate->activate_index(index);
@@ -66,9 +67,7 @@ void DopeSheetView::mousePressEvent(QMouseEvent* event)
 
 void DopeSheetView::mouseMoveEvent(QMouseEvent* event)
 {
-  if (columnAt(event->x()) == 1) {
-    const QModelIndex index = indexAt(static_cast<QMouseEvent*>(event)->pos());
-    m_track_view_delegate->activate_index(index);
+  if (columnAt(m_mouse_press_pos.x()) == 1) {
     m_track_view_delegate->view_event(*event);
   } else {
     QTreeView::mouseMoveEvent(event);

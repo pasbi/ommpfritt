@@ -275,15 +275,14 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
   const double min_ppf = 0.5 / rect.width();
   const double max_ppf = 70 / rect.width();
   const QPointF d = QPointF(m_last_mouse_pos - event.pos()) / rect.width();
+  m_last_mouse_pos = event.pos();
   if (m_pan_active) {
-    QCursor::setPos(map_to_global(m_mouse_down_pos));
     const double min = normalized_to_frame(frame_to_normalized(left_frame) + d.x());
     const double max = normalized_to_frame(frame_to_normalized(right_frame) + d.x());
     left_frame = min;
     right_frame = max;
     update();
   } else if (m_zoom_active) {
-    QCursor::setPos(map_to_global(m_mouse_down_pos));
     const double left = (m_mouse_down_pos.x() - rect.left()) / rect.width();
     const double center_frame = normalized_to_frame(left);
     const double right = 1.0 - left;

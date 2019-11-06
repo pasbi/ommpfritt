@@ -32,6 +32,7 @@ protected:
 private:
   Animator& m_animator;
   TrackViewDelegate* m_track_view_delegate;
+  QPoint m_mouse_press_pos;
 
   class TimelineCanvasC : public TimelineCanvas
   {
