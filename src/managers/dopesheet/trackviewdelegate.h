@@ -1,5 +1,6 @@
 #include <QAbstractItemDelegate>
 #include <set>
+#include "managers/timeline/timelinecanvas.h"
 
 namespace omm
 {
@@ -7,7 +8,6 @@ namespace omm
 class Track;
 class DopeSheetView;
 class Property;
-class TimelineCanvas;
 
 class TrackViewDelegate : public QAbstractItemDelegate
 {
@@ -26,7 +26,8 @@ private:
   TimelineCanvas& m_canvas;
 
   QModelIndex m_mouse_press_index;
-  std::set<Track*> m_expanded_tracks;
+
+  mutable std::map<Track*, TimelineCanvas::ExpandedTrackData> m_expanded_track_data;
   bool display_fcurve(const QModelIndex& index) const;
 };
 

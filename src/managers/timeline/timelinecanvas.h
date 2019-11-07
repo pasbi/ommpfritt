@@ -33,6 +33,13 @@ public:
   double ppf() const;
   double ppfs() const;
 
+  struct ExpandedTrackData {
+    QRectF rect_at_mouse_press;
+    double top = 15;
+    double bottom = -15;
+  };
+  ExpandedTrackData* expanded_track_data = nullptr;
+
   double left_frame = 1;
   double right_frame = 100;
   QRectF rect;
@@ -83,6 +90,7 @@ private:
   double frame_to_pixel(double frame) const;
   double normalized_to_frame(double pixel) const;
   double frame_to_normalized(double frame) const;
+  double normalized_to_value(double y) const;
   double footer_y() const;
   std::set<Track*> tracks_at(double frame) const;
   bool is_selected(int frame) const;

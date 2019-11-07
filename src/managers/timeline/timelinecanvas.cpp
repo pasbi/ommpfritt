@@ -59,8 +59,6 @@ void TimelineCanvas::draw_background(QPainter& painter) const
 void TimelineCanvas::draw_lines(QPainter& painter) const
 {
   painter.save();
-  painter.translate(rect.topLeft());
-  painter.scale(rect.width(), rect.height());
 
   QPen pen;
   pen.setColor(ui_color(m_widget, "TimeLine", "scale vline"));
@@ -113,6 +111,26 @@ void TimelineCanvas::draw_lines(QPainter& painter) const
       painter.drawText(QPointF(-text_width/2.0, footer_y() + margin + fm.height()), text);
     }
     painter.restore();
+  }
+
+  painter.resetTransform();
+  if (expanded_track_data != nullptr) {
+    const auto& bottom = expanded_track_data->bottom;
+    const auto& top = expanded_track_data->top;
+    assert(bottom < top);
+    const auto& mrect = expanded_track_data->rect_at_mouse_press;
+    painter.translate(rect.topLeft());
+    const double vspan = top - bottom;
+    double logvspan = std::log10(vspan);
+    logvspan -= std::fmod(logvspan, 1.0);
+    const double spacing = std::pow(10.0, logvspan - 1);
+    double y = bottom - std::fmod(bottom, spacing);
+    while (y < top) {
+      const double py = (y - bottom) / (top - bottom) * mrect.height();
+      const double x = mrect.width();
+      painter.drawLine(QPointF(0.0, py), QPointF(x, py));
+      y += spacing;
+    }
   }
 
   painter.restore();
@@ -187,7 +205,24 @@ void TimelineCanvas::draw_current(QPainter& painter) const
 
 void TimelineCanvas::draw_fcurve(QPainter& painter) const
 {
-  painter.fillRect(rect, QColor(0, 0, 255, 128));
+  assert(expanded_track_data != nullptr);
+  painter.save();
+  painter.translate(rect.topLeft());
+  const QString top = QString("%1").arg(expanded_track_data->top);
+  const QString bottom = QString("%1").arg(expanded_track_data->bottom);
+  painter.drawText(QPointF(0.0, painter.fontMetrics().height()), top);
+  painter.drawText(QPointF(0.0, rect.height()), bottom);
+  for (Track* track : tracks) {
+    if (track->type() == "Float") {
+      for (int frame = left_frame; frame <= right_frame; ++frame) {
+        if (track->has_keyframe(frame)) {
+          const double x = rect.width() * (frame - left_frame) * ppf();
+          painter.drawLine(QPointF(x, 0), QPointF(x, rect.height()));
+        }
+      }
+    }
+  }
+  painter.restore();
 }
 
 void TimelineCanvas::draw_rubber_band(QPainter& painter) const
@@ -274,9 +309,28 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
 {
   const double min_ppf = 0.5 / rect.width();
   const double max_ppf = 70 / rect.width();
-  const QPointF d = QPointF(m_last_mouse_pos - event.pos()) / rect.width();
+  QPointF d = QPointF(m_last_mouse_pos - event.pos()) / rect.width();
   m_last_mouse_pos = event.pos();
+  if (expanded_track_data != nullptr) {
+    const double dx = std::abs(d.x());
+    const double dy = std::abs(d.y());
+    if (dx > dy) {
+      d.setY(0.0);
+    } else if (dx < dy) {
+      d.setX(0.0);
+    }
+  } else {
+    d.setY(0.0);
+  }
   if (m_pan_active) {
+    if (expanded_track_data != nullptr) {
+      auto& bottom = expanded_track_data->bottom;
+      auto& top = expanded_track_data->top;
+      const double dy = d.y() * (top - bottom) * 380.0 / expanded_track_data->rect_at_mouse_press.height();
+      LINFO << expanded_track_data->rect_at_mouse_press;
+      top += dy;
+      bottom += dy;
+    }
     const double min = normalized_to_frame(frame_to_normalized(left_frame) + d.x());
     const double max = normalized_to_frame(frame_to_normalized(right_frame) + d.x());
     left_frame = min;
@@ -334,7 +388,8 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
 
     update();
   } else if (m_dragging_time) {
-    Q_EMIT current_frame_changed(std::round(pixel_to_frame(event.pos().x() - rect.left())));
+    double x = pixel_to_frame(event.pos().x() - rect.left());
+    Q_EMIT current_frame_changed(std::round(x));
   } else {
     return false;
   }
@@ -414,6 +469,11 @@ double TimelineCanvas::normalized_to_frame(double pixel) const
 double TimelineCanvas::frame_to_normalized(double frame) const
 {
   return (frame - left_frame) * ppf();
+}
+
+double TimelineCanvas::normalized_to_value(double y) const
+{
+  return 0.0;
 }
 
 std::set<Track*> TimelineCanvas::tracks_at(double frame) const

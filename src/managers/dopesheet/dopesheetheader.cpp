@@ -18,6 +18,7 @@ DopeSheetHeader::DopeSheetHeader(TimelineCanvas& canvas)
 void DopeSheetHeader::paintSection(QPainter* painter, const QRect& rect, int logicalIndex) const
 {
   if (logicalIndex == 1) {
+    activate();
     painter->setClipRect(rect);
     m_canvas.rect = rect;
     m_canvas.footer_height = rect.height();
@@ -51,8 +52,9 @@ void DopeSheetHeader::mousePressEvent(QMouseEvent* e)
   }
 }
 
-void DopeSheetHeader::activate()
+void DopeSheetHeader::activate() const
 {
+  m_canvas.expanded_track_data = nullptr;
   m_canvas.rect = QRectF(QPointF(sectionPosition(1), 0),
                          QSizeF(sectionSize(1), height()));
 }

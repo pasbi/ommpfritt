@@ -17,7 +17,7 @@ protected:
   void mouseMoveEvent(QMouseEvent *e) override;
   void mouseReleaseEvent(QMouseEvent *e) override;
   void mousePressEvent(QMouseEvent *e) override;
-  void activate();
+  void activate() const;
 
 private:
   TimelineCanvas& m_canvas;
