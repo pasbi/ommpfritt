@@ -368,7 +368,7 @@ void MainWindow::update_recent_files_menu()
       auto action = std::make_unique<QAction>(file_info.fileName());
       action->setToolTip(fn);
       connect(action.get(), &QAction::triggered, [fn]() {
-        Application::instance().load(fn);
+        Application::instance().load(fn, false);
       });
       recent_document_menu->addAction(action.release());
       count++;

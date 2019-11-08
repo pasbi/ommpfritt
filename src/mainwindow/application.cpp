@@ -195,9 +195,9 @@ void Application::reset()
   QTimer::singleShot(0, &scene, SLOT(reset()));
 }
 
-void Application::load(const QString& filename)
+void Application::load(const QString& filename, bool force)
 {
-  if (can_close()) {
+  if (force || can_close()) {
     scene.set_selection({});
     QTimer::singleShot(0, [this, filename]() {
       if (!scene.load_from(filename)) {
@@ -219,7 +219,7 @@ void Application::load()
       return;
     }
 
-    load(filename);
+    load(filename, true);
   }
 }
 
