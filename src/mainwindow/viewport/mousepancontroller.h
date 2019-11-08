@@ -15,7 +15,7 @@ private:
 public:
   explicit MousePanController(const set_cursor_pos_type& set_cursor_pos);
   enum class Action { None, Pan, Zoom };
-  void start_move(const Vec2f& global_pos, Action actiono);
+  void start_move(const Vec2f& global_pos, Action action);
   bool end_move();
   Vec2f apply(const Vec2f& delta, ObjectTransformation& t);
   Action action() const { return m_action; }
