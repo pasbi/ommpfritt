@@ -109,6 +109,7 @@ sudo apt install cmake
 sudo apt install pybind11-dev
 sudo apt install qtbase5-dev libqt5svg5-dev qttools5-dev  # Qt 5
 sudo apt install libpoppler-qt5-dev
+sudo apt install libkf5itemmodels-dev
 ```
 
 #### Configure, build and run
