@@ -1,5 +1,10 @@
 cmake_minimum_required (VERSION 2.8.4)  # warnings vanish with Version > 3.3
 
+# Suppresses a warning in cmake 3.x concerning a currently unused feature (setting VERSION in project() command)
+if (POLICY CMP0048)
+  cmake_policy(SET CMP0048 NEW)
+endif (POLICY CMP0048)
+
 project (ommpfritt)
 
 set (CMAKE_AUTOMOC ON)
