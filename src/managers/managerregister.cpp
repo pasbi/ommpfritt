@@ -5,6 +5,7 @@
 #include "managers/historymanager/historymanager.h"
 #include "managers/boundingboxmanager/boundingboxmanager.h"
 #include "managers/timeline/timeline.h"
+#include "managers/curvemanager/curvemanager.h"
 #include "dopesheet/dopesheetmanager.h"
 
 namespace omm
@@ -15,6 +16,7 @@ void register_managers()
 #define REGISTER_MANAGER(TYPE) Manager::register_type<TYPE>(#TYPE)
 
   REGISTER_MANAGER(DopeSheetManager);
+  REGISTER_MANAGER(CurveManager);
   REGISTER_MANAGER(ObjectManager);
   REGISTER_MANAGER(PropertyManager);
   REGISTER_MANAGER(StyleManager);

@@ -54,7 +54,6 @@ void DopeSheetHeader::mousePressEvent(QMouseEvent* e)
 
 void DopeSheetHeader::activate() const
 {
-  m_canvas.expanded_track_data = nullptr;
   m_canvas.rect = QRectF(QPointF(sectionPosition(1), 0),
                          QSizeF(sectionSize(1), height()));
 }

@@ -48,20 +48,7 @@ void TrackViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
   }
 
   m_canvas.draw_lines(*painter);
-  const bool is_expanded = [&index, is_property, this]() {
-    if (is_property) {
-      Track* track = m_canvas.animator.property(index)->track();
-      return m_expanded_track_data.find(track) != m_expanded_track_data.end();
-    } else {
-      return false;
-    }
-  }();
-  if (is_expanded) {
-    m_canvas.draw_fcurve(*painter);
-  } else {
-    m_canvas.draw_keyframes(*painter);
-  }
-
+  m_canvas.draw_keyframes(*painter);
   m_canvas.draw_rubber_band(*painter);
 
   painter->restore();
@@ -69,56 +56,21 @@ void TrackViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
 
 QSize TrackViewDelegate::sizeHint(const QStyleOptionViewItem&, const QModelIndex& index) const
 {
-  if (m_canvas.animator.index_type(index) == Animator::IndexType::Property) {
-    Track* track = m_canvas.animator.property(index)->track();
-    if (m_expanded_track_data.find(track) != m_expanded_track_data.end()) {
-      return QSize(200, 200);
-    } else {
-      return QSize(200, 10);
-    }
-  } else {
-    return QSize(0, 0);
-  }
+  Q_UNUSED(index)
+  return QSize(0, 0);
 }
 
 bool TrackViewDelegate::view_event(QEvent& event)
 {
-  if (event.type() == QEvent::MouseButtonPress) {
-    const QModelIndex index = m_view.indexAt(static_cast<QMouseEvent&>(event).pos());
-    const auto index_type = m_canvas.animator.index_type(index);
-    if (index_type == Animator::IndexType::Property) {
-      Track* track = m_canvas.animator.property(index)->track();
-      auto it = m_expanded_track_data.find(track);
-      if (it != m_expanded_track_data.end()) {
-        it->second.rect_at_mouse_press = m_view.visualRect(index);
-      }
-    }
-  }
   return m_canvas.view_event(event);
-}
-
-void TrackViewDelegate::toggle_expanded(const QModelIndex& index)
-{
-  Track* track = m_canvas.animator.property(index)->track();
-  if (const auto it = m_expanded_track_data.find(track); it != m_expanded_track_data.end()) {
-    m_expanded_track_data.erase(it);
-    Q_EMIT sizeHintChanged(index);
-  } else if (track->is_numerical()) {
-    m_expanded_track_data.insert({ track, TimelineCanvas::ExpandedTrackData() });
-    Q_EMIT sizeHintChanged(index);
-  }
 }
 
 void TrackViewDelegate::activate_index(const QModelIndex& index) const
 {
   std::set<Track*> tracks;
-  m_canvas.expanded_track_data = nullptr;
   const auto index_type = m_canvas.animator.index_type(index);
   if (index_type == Animator::IndexType::Property) {
     Track* track = m_canvas.animator.property(index)->track();
-    if (const auto it = m_expanded_track_data.find(track); it != m_expanded_track_data.end()) {
-      m_canvas.expanded_track_data = &it->second;
-    }
     tracks.insert(track);
   } else if (index_type == Animator::IndexType::Owner) {
     for (Property* p : m_canvas.animator.owner(index)->properties().values()) {

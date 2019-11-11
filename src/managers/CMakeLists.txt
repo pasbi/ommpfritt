@@ -15,6 +15,7 @@ file(GLOB HEADERS
 )
 
 add_subdirectory(boundingboxmanager)
+add_subdirectory(curvemanager)
 add_subdirectory(dopesheet)
 add_subdirectory(historymanager)
 add_subdirectory(objectmanager)

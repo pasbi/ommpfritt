@@ -1,5 +1,7 @@
 #include "managers/timeline/timelinecanvas.h"
 
+#include <QWidget>
+
 #include "animation/track.h"
 #include "animation/animator.h"
 #include <QCursor>
@@ -15,7 +17,7 @@ namespace omm
 {
 
 TimelineCanvas::TimelineCanvas(Animator& animator, QWidget& widget)
-  : animator(animator), m_widget(widget)
+  : animator(animator), frame_range(*this), m_widget(widget)
 {
   connect(&animator, &Animator::knot_removed, this, [this](Track& track, int frame) {
     if (const auto it = m_selection.find(&track); it != m_selection.end()) {
@@ -39,8 +41,9 @@ void TimelineCanvas::draw_background(QPainter& painter) const
   painter.save();
   painter.translate(rect.topLeft());
   painter.scale(rect.width(), rect.height());
-  const double left = (animator.start()-left_frame) * ppf() - ppf()/2.0;
-  const double right = (animator.end()-left_frame) * ppf() + ppf()/2.0;
+  const double ppf = frame_range.units_per_pixel();
+  const double left = (animator.start()-frame_range.begin) * ppf - ppf/2.0;
+  const double right = (animator.end()-frame_range.begin) * ppf + ppf/2.0;
   if (left > 0.0) {
     painter.fillRect(QRectF(QPointF(0, 0), QPointF(left, 1.0)),
                      ui_color(m_widget, "TimeLine", "beyond"));
@@ -65,21 +68,24 @@ void TimelineCanvas::draw_lines(QPainter& painter) const
   pen.setCosmetic(true);
   painter.setPen(pen);
 
-  for (int frame = left_frame; frame <= right_frame + 1; ++frame) {
-    if (ppfs() < 10 && (frame % 2 != 0)) {
+  const double ppf = frame_range.units_per_pixel();
+  const double ppfs = ppf * frame_range.pixel_range();
+
+  for (int frame = frame_range.begin; frame <= frame_range.end + 1; ++frame) {
+    if (ppfs < 10 && (frame % 2 != 0)) {
       continue;
-    } else if (ppfs() < 2 && frame % 10 != 0) {
+    } else if (ppfs < 2 && frame % 10 != 0) {
       continue;
-    } else if (ppfs() < 1 && frame % 20 != 0) {
+    } else if (ppfs < 1 && frame % 20 != 0) {
       continue;
     }
 
-    const auto draw_frame_number = [this](int frame) {
-      if (ppfs() < 2) {
+    const auto draw_frame_number = [ppfs](int frame) {
+      if (ppfs < 2) {
         return frame % 100 == 0;
-      } else if (ppfs() < 10) {
+      } else if (ppfs < 10) {
         return frame % 20 == 0;
-      } else if (ppfs() < 20) {
+      } else if (ppfs < 20) {
         return frame % 10 == 0;
       } else {
         return frame % 2 == 0;
@@ -89,7 +95,7 @@ void TimelineCanvas::draw_lines(QPainter& painter) const
     pen.setWidthF(frame % 10 == 0 ? 1.0 : 0.5);
     painter.setPen(pen);
 
-    const double x = (frame - left_frame) * ppf();
+    const double x = (frame - frame_range.begin) * ppf;
     const double line_start = frame % 2 == 0 ? 0 : 0.05;
 
     // there is no way in drawing really tiny text. Hence, we must draw the frame numbers in
@@ -111,26 +117,6 @@ void TimelineCanvas::draw_lines(QPainter& painter) const
       painter.drawText(QPointF(-text_width/2.0, footer_y() + margin + fm.height()), text);
     }
     painter.restore();
-  }
-
-  painter.resetTransform();
-  if (expanded_track_data != nullptr) {
-    const auto& bottom = expanded_track_data->bottom;
-    const auto& top = expanded_track_data->top;
-    assert(bottom < top);
-    const auto& mrect = expanded_track_data->rect_at_mouse_press;
-    painter.translate(rect.topLeft());
-    const double vspan = top - bottom;
-    double logvspan = std::log10(vspan);
-    logvspan -= std::fmod(logvspan, 1.0);
-    const double spacing = std::pow(10.0, logvspan - 1);
-    double y = bottom - std::fmod(bottom, spacing);
-    while (y < top) {
-      const double py = (y - bottom) / (top - bottom) * mrect.height();
-      const double x = mrect.width();
-      painter.drawLine(QPointF(0.0, py), QPointF(x, py));
-      y += spacing;
-    }
   }
 
   painter.restore();
@@ -155,21 +141,21 @@ void TimelineCanvas::draw_keyframes(QPainter& painter) const
   QPen pen;
   pen.setCosmetic(true);
   pen.setColor(ui_color(m_widget, "TimeLine", "key outline"));
-  const QPointF scale(std::clamp(rect.width() * ppf()/2.0, 4.0, 20.0),
+  const QPointF scale(std::clamp(frame_range.width()/2.0, 4.0, 20.0),
                       std::min(footer_y()/2.0, 20.0));
   pen.setWidthF(std::max(0.0, std::min(scale.x(), scale.y())/5.0));
   painter.setPen(pen);
 
   const auto draw_keyframe = [scale, &painter, this](int frame, int y, const QColor& color) {
     painter.save();
-    painter.translate(frame_to_pixel(frame), y);
+    painter.translate(frame_range.unit_to_pixel(frame), y);
     painter.scale(scale.x()*0.8, scale.y()*0.8);
     painter.fillPath(diamond, color);
     painter.drawPath(diamond);
     painter.restore();
   };
 
-  for (int frame = left_frame; frame <= right_frame + 1; ++frame) {
+  for (int frame = frame_range.begin; frame <= frame_range.end + 1; ++frame) {
     const bool draw = std::any_of(tracks.begin(), tracks.end(), [frame](const Track* track) {
       return track->has_keyframe(frame);
     });
@@ -190,9 +176,9 @@ void TimelineCanvas::draw_current(QPainter& painter) const
 {
   painter.save();
   painter.translate(rect.topLeft());
-  const double x = frame_to_pixel(animator.current());
-  const QRectF current_rect(QPointF(x-ppfs()/2.0, footer_y()),
-                            QSizeF(ppfs(), footer_height));
+  const double x = frame_range.unit_to_pixel(animator.current());
+  const QRectF current_rect(QPointF(x-frame_range.units_per_pixel()/2.0, footer_y()),
+                            QSizeF(frame_range.units_per_pixel(), footer_height));
   painter.fillRect(current_rect, ui_color(m_widget, "TimeLine", "slider fill"));
   QPen pen;
   pen.setColor(ui_color(m_widget, "TimeLine", "slider outline"));
@@ -200,28 +186,6 @@ void TimelineCanvas::draw_current(QPainter& painter) const
   pen.setCosmetic(true);
   painter.setPen(pen);
   painter.drawRect(current_rect);
-  painter.restore();
-}
-
-void TimelineCanvas::draw_fcurve(QPainter& painter) const
-{
-  assert(expanded_track_data != nullptr);
-  painter.save();
-  painter.translate(rect.topLeft());
-  const QString top = QString("%1").arg(expanded_track_data->top);
-  const QString bottom = QString("%1").arg(expanded_track_data->bottom);
-  painter.drawText(QPointF(0.0, painter.fontMetrics().height()), top);
-  painter.drawText(QPointF(0.0, rect.height()), bottom);
-  for (Track* track : tracks) {
-    if (track->type() == "Float") {
-      for (int frame = left_frame; frame <= right_frame; ++frame) {
-        if (track->has_keyframe(frame)) {
-          const double x = rect.width() * (frame - left_frame) * ppf();
-          painter.drawLine(QPointF(x, 0), QPointF(x, rect.height()));
-        }
-      }
-    }
-  }
   painter.restore();
 }
 
@@ -237,16 +201,6 @@ void TimelineCanvas::draw_rubber_band(QPainter& painter) const
     painter.drawRect(rubber_band());
     painter.restore();
   }
-}
-
-double TimelineCanvas::ppf() const
-{
-  return 1.0 / (right_frame - left_frame + 1);
-}
-
-double TimelineCanvas::ppfs() const
-{
-  return rect.width() * ppf();
 }
 
 bool TimelineCanvas::view_event(QEvent& event)
@@ -273,7 +227,7 @@ bool TimelineCanvas::mouse_press(QMouseEvent& event)
   m_move_aborted = false;
   m_pan_active = false;
   m_zoom_active = false;
-  const int frame = std::round(pixel_to_frame(event.pos().x() - rect.left()));
+  const int frame = std::round(frame_range.pixel_to_unit(event.pos().x() - rect.left()));
   if (event.modifiers() & Qt::AltModifier) {
     m_pan_active = event.button() == Qt::LeftButton;
     m_zoom_active = event.button() == Qt::RightButton;
@@ -298,7 +252,8 @@ bool TimelineCanvas::mouse_press(QMouseEvent& event)
   } else {
     if (event.button() == Qt::LeftButton) {
       m_dragging_time = true;
-      Q_EMIT current_frame_changed(std::round(pixel_to_frame(event.pos().x() - rect.left())));
+      const int diff = event.pos().x() - rect.left();
+      Q_EMIT current_frame_changed(std::round(frame_range.pixel_to_unit(diff)));
       return true;
     }
   }
@@ -307,46 +262,18 @@ bool TimelineCanvas::mouse_press(QMouseEvent& event)
 
 bool TimelineCanvas::mouse_move(QMouseEvent& event)
 {
-  const double min_ppf = 0.5 / rect.width();
-  const double max_ppf = 70 / rect.width();
-  QPointF d = QPointF(m_last_mouse_pos - event.pos()) / rect.width();
+  QPointF d = QPointF(m_last_mouse_pos - event.pos());
+  d = QPointF(d.x() / rect.width(), d.y() / rect.height());
   m_last_mouse_pos = event.pos();
-  if (expanded_track_data != nullptr) {
-    const double dx = std::abs(d.x());
-    const double dy = std::abs(d.y());
-    if (dx > dy) {
-      d.setY(0.0);
-    } else if (dx < dy) {
-      d.setX(0.0);
-    }
-  } else {
-    d.setY(0.0);
-  }
   if (m_pan_active) {
-    if (expanded_track_data != nullptr) {
-      auto& bottom = expanded_track_data->bottom;
-      auto& top = expanded_track_data->top;
-      const double dy = d.y() * (top - bottom) * 380.0 / expanded_track_data->rect_at_mouse_press.height();
-      LINFO << expanded_track_data->rect_at_mouse_press;
-      top += dy;
-      bottom += dy;
-    }
-    const double min = normalized_to_frame(frame_to_normalized(left_frame) + d.x());
-    const double max = normalized_to_frame(frame_to_normalized(right_frame) + d.x());
-    left_frame = min;
-    right_frame = max;
+    pan(d);
     update();
   } else if (m_zoom_active) {
-    const double left = (m_mouse_down_pos.x() - rect.left()) / rect.width();
-    const double center_frame = normalized_to_frame(left);
-    const double right = 1.0 - left;
-    double ppf = this->ppf() * std::exp(-d.x() * rect.width() / 300.0);
-    ppf = std::clamp(ppf, min_ppf, max_ppf);
-    left_frame = center_frame - left / ppf;
-    right_frame = center_frame + right  / ppf - 1.0;
+    zoom(d);
     update();
   } else if (m_dragging_knots && !m_move_aborted) {
-    m_shift = std::round(pixel_to_frame(event.x()) - pixel_to_frame(m_mouse_down_pos.x()));
+    m_shift = std::round(frame_range.pixel_to_unit(event.x())
+                       - frame_range.pixel_to_unit(m_mouse_down_pos.x()));
     update();
   } else if (m_rubber_band_visible && !m_move_aborted) {
     const QPoint pos = event.pos();
@@ -357,8 +284,8 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
                                     std::clamp<int>(pos.y(), rect.top(), rect.bottom()));
     }
 
-    const int left = pixel_to_frame(rubber_band().left() - rect.left()) + 0.5;
-    const int right = pixel_to_frame(rubber_band().right() - rect.left()) + 0.5;
+    const int left = frame_range.pixel_to_unit(rubber_band().left() - rect.left()) + 0.5;
+    const int right = frame_range.pixel_to_unit(rubber_band().right() - rect.left()) + 0.5;
 
     for (Property* property : animator.accelerator().properties()) {
       Track& track = *property->track();
@@ -388,7 +315,7 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
 
     update();
   } else if (m_dragging_time) {
-    double x = pixel_to_frame(event.pos().x() - rect.left());
+    double x = frame_range.pixel_to_unit(event.pos().x() - rect.left());
     Q_EMIT current_frame_changed(std::round(x));
   } else {
     return false;
@@ -403,7 +330,7 @@ bool TimelineCanvas::mouse_release(QMouseEvent& event)
     m_selection[track].insert(selection.begin(), selection.end());
   }
   m_rubber_band_selection.clear();
-  const int frame = std::round(pixel_to_frame(event.pos().x() - rect.left()));
+  const int frame = std::round(frame_range.pixel_to_unit(event.pos().x() - rect.left()));
   if (m_shift == 0 && !m_move_aborted && m_dragging_knots) {
     if (!(event.modifiers() & Qt::ShiftModifier)) {
       m_selection.clear();
@@ -451,29 +378,16 @@ QRect TimelineCanvas::rubber_band() const
   return QRect(m_rubber_band_corner, m_rubber_band_origin).normalized();
 }
 
-double TimelineCanvas::pixel_to_frame(double pixel) const
+void TimelineCanvas::pan(const QPointF& d)
 {
-  return pixel / ppfs() + left_frame;
+  frame_range.pan(d.x());
 }
 
-double TimelineCanvas::frame_to_pixel(double frame) const
+void TimelineCanvas::zoom(const QPointF& d)
 {
-  return (frame - left_frame) * ppfs();
-}
-
-double TimelineCanvas::normalized_to_frame(double pixel) const
-{
-  return pixel / ppf() + left_frame;
-}
-
-double TimelineCanvas::frame_to_normalized(double frame) const
-{
-  return (frame - left_frame) * ppf();
-}
-
-double TimelineCanvas::normalized_to_value(double y) const
-{
-  return 0.0;
+  const double min_ppf = 0.5 / rect.width();
+  const double max_ppf = 70 / rect.width();
+  frame_range.zoom(m_mouse_down_pos.x(), d.x(), min_ppf, max_ppf);
 }
 
 std::set<Track*> TimelineCanvas::tracks_at(double frame) const
@@ -526,6 +440,114 @@ void TimelineCanvas::select(int frame)
       m_selection[track].insert(frame);
     }
   }
+}
+
+CurveTimelineCanvas::CurveTimelineCanvas(Animator& animator, QWidget& widget)
+  : TimelineCanvas(animator, widget), value_range(*this)
+{
+}
+
+void CurveTimelineCanvas::draw_lines(QPainter& painter) const
+{
+  TimelineCanvas::draw_lines(painter);
+  painter.save();
+  assert(value_range.begin < value_range.end);
+  const double vspan = (value_range.end - value_range.begin) / value_range.pixel_range() * 1000.0;
+  double logvspan = std::log10(vspan);
+  logvspan -= std::fmod(logvspan, 1.0);
+  const double spacing = std::pow(10.0, logvspan - 1);
+  painter.drawText(QPointF(0.0, painter.fontMetrics().height()),
+                   QString("%1").arg(value_range.begin));
+  painter.drawText(QPointF(0.0, rect.height()),
+                   QString("%1").arg(value_range.end));
+  double y = value_range.begin - std::fmod(value_range.begin, spacing);
+  while (y < value_range.end) {
+    const double py = (y - value_range.begin) / (value_range.end - value_range.begin) * rect.height();
+    const double x = rect.width();
+    painter.drawLine(QPointF(0.0, py), QPointF(x, py));
+    y += spacing;
+  }
+  painter.restore();
+}
+
+void CurveTimelineCanvas::draw_fcurve(QPainter& painter) const
+{
+  painter.save();
+  painter.translate(rect.topLeft());
+  for (Track* track : tracks) {
+    if (track->type() == "Float") {
+      for (int frame = frame_range.begin; frame <= frame_range.end; ++frame) {
+        if (track->has_keyframe(frame)) {
+          const double x = rect.width() * (frame - frame_range.begin) * frame_range.units_per_pixel();
+          painter.drawLine(QPointF(x, 0), QPointF(x, rect.height()));
+        }
+      }
+    }
+  }
+  painter.restore();
+}
+
+void CurveTimelineCanvas::pan(const QPointF& d)
+{
+  TimelineCanvas::pan(d);
+  value_range.pan(d.y());
+}
+
+void CurveTimelineCanvas::zoom(const QPointF& d)
+{
+  if (std::abs(d.x()) > std::abs(d.y())) {
+    TimelineCanvas::zoom(d);
+  } else {
+    value_range.zoom(m_mouse_down_pos.y(), d.y(), 0.0, 10000.0);
+  }
+}
+
+double TimelineCanvas::Range::units_per_pixel() const
+{
+  return 1.0 / (end - begin + 1);
+}
+
+double TimelineCanvas::Range::pixel_to_unit(double pixel) const
+{
+  return pixel / (units_per_pixel() * pixel_range()) + begin;
+}
+
+double TimelineCanvas::Range::unit_to_pixel(double unit) const
+{
+  return (unit - begin) * units_per_pixel() * pixel_range();
+}
+
+double TimelineCanvas::Range::unit_to_normalized(double unit) const
+{
+  return (unit - begin) * units_per_pixel();
+}
+
+double TimelineCanvas::Range::normalized_to_unit(double normalized) const
+{
+  return normalized / units_per_pixel() + begin;
+}
+
+double TimelineCanvas::Range::width() const
+{
+  return pixel_range() * units_per_pixel();
+}
+
+void TimelineCanvas::Range::pan(double d)
+{
+  const double b = normalized_to_unit(unit_to_normalized(begin) + d);
+  const double e = normalized_to_unit(unit_to_normalized(end) + d);
+  begin = b;
+  end = e;
+}
+
+void TimelineCanvas::Range::zoom(double origin, double amount, double min_upp, double max_upp)
+{
+  double b = (origin - unit_to_pixel(begin)) / pixel_range();
+  double center = normalized_to_unit(b);
+  double ppf = units_per_pixel() * std::exp(-amount * pixel_range() / 300.0);
+  ppf = std::clamp(ppf, min_upp, max_upp);
+  begin = center - b / ppf;
+  end = center - (b - 1.0) / ppf - 1.0;
 }
 
 }  // namespace omm

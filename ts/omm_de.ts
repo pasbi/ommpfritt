@@ -1731,6 +1731,13 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
 </context>
 <context>
+    <name>omm::CurveManager</name>
+    <message>
+        <source>Curves</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>omm::DopeSheetManager</name>
     <message>
         <source>Dope Sheet</source>

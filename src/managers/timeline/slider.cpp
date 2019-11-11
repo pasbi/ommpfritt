@@ -29,8 +29,8 @@ Slider::Slider(Animator& animator)
 
 void Slider::set_range(double left, double right)
 {
-  m_canvas.left_frame = left;
-  m_canvas.right_frame = right;
+  m_canvas.frame_range.begin = left;
+  m_canvas.frame_range.end = right;
 }
 
 void Slider::paintEvent(QPaintEvent *event)

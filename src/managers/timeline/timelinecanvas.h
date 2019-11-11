@@ -27,25 +27,12 @@ public:
   void draw_lines(QPainter& painter) const;
   void draw_keyframes(QPainter& painter) const;
   void draw_current(QPainter& painter) const;
-  void draw_fcurve(QPainter& painter) const;
   void draw_rubber_band(QPainter& painter) const;
 
-  double ppf() const;
-  double ppfs() const;
-
-  struct ExpandedTrackData {
-    QRectF rect_at_mouse_press;
-    double top = 15;
-    double bottom = -15;
-  };
-  ExpandedTrackData* expanded_track_data = nullptr;
-
-  double left_frame = 1;
-  double right_frame = 100;
-  QRectF rect;
   std::set<Track*> tracks;
   Animator& animator;
   int footer_height = 0;
+  QRectF rect;
 
   bool view_event(QEvent& event);
 
@@ -82,15 +69,35 @@ public:
 Q_SIGNALS:
   void current_frame_changed(int);
 
+public:
+  struct Range
+  {
+    Range(double begin, double end) : begin(begin), end(end) {}
+    double begin;
+    double end;
+    virtual int pixel_range() const = 0;
+    double units_per_pixel() const;
+    double pixel_to_unit(double pixel) const;
+    double unit_to_pixel(double unit) const;
+    double unit_to_normalized(double unit) const;
+    double normalized_to_unit(double normalized) const;
+    double width() const;
+    void pan(double d);
+    void zoom(double origin, double amount, double min_upp, double max_upp);
+  };
+
+  struct PixelRange : Range {
+    PixelRange(TimelineCanvas& self) : Range(1, 100), m_self(self) {}
+    int pixel_range() const override { return m_self.rect.width(); }
+  private:
+    TimelineCanvas& m_self;
+  } frame_range;
+
 private:
-  QWidget& m_widget;
+  const QWidget& m_widget;
   std::map<Track*, std::set<int>> m_selection;
   std::map<Track*, std::set<int>> m_rubber_band_selection;
-  double pixel_to_frame(double pixel) const;
-  double frame_to_pixel(double frame) const;
-  double normalized_to_frame(double pixel) const;
-  double frame_to_normalized(double frame) const;
-  double normalized_to_value(double y) const;
+
   double footer_y() const;
   std::set<Track*> tracks_at(double frame) const;
   bool is_selected(int frame) const;
@@ -103,7 +110,6 @@ private:
   bool m_move_aborted = false;
   int m_shift = 0;
   QPoint m_last_mouse_pos;
-  QPoint m_mouse_down_pos;
 
   bool mouse_press(QMouseEvent& event);
   bool mouse_move(QMouseEvent& event);
@@ -113,6 +119,33 @@ private:
   QPoint m_rubber_band_corner;
   bool m_rubber_band_visible = false;
   QRect rubber_band() const;
+
+protected:
+  QPoint m_mouse_down_pos;
+  virtual void pan(const QPointF& d);
+  virtual void zoom(const QPointF& d);
+};
+
+class CurveTimelineCanvas : public TimelineCanvas
+{
+public:
+  CurveTimelineCanvas(Animator& animator, QWidget& widget);
+  void draw_lines(QPainter& painter) const;
+  void draw_fcurve(QPainter& painter) const;
+
+  double ppv() const;
+  double normalized_to_value(double normalized) const;
+
+  struct ValueRange : Range {
+    ValueRange(CurveTimelineCanvas& self) : Range(-100, 100), m_self(self) {}
+    int pixel_range() const override { return m_self.rect.height(); }
+  private:
+    CurveTimelineCanvas& m_self;
+  } value_range;
+
+protected:
+  void pan(const QPointF& d) override;
+  void zoom(const QPointF& d) override;
 };
 
 }  // namespace omm

@@ -18,7 +18,6 @@ public:
   QSize sizeHint(const QStyleOptionViewItem&, const QModelIndex &index) const override;
 
   bool view_event(QEvent& event);
-  void toggle_expanded(const QModelIndex& index);
   void activate_index(const QModelIndex& index) const;
 
 private:
@@ -27,7 +26,6 @@ private:
 
   QModelIndex m_mouse_press_index;
 
-  mutable std::map<Track*, TimelineCanvas::ExpandedTrackData> m_expanded_track_data;
   bool display_fcurve(const QModelIndex& index) const;
 };
 
