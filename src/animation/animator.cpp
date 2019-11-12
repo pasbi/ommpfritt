@@ -58,6 +58,7 @@ void Animator::serialize(AbstractSerializer &serializer, const Serializable::Poi
   serializer.set_value(m_current_frame, make_pointer(pointer, CURRENT_FRAME_POINTER));
   serializer.set_value(filename_pattern, make_pointer(pointer, "filename-pattern"));
   serializer.set_value(overwrite_file, make_pointer(pointer, "overwrite-file"));
+  serializer.set_value(static_cast<int>(m_play_mode), make_pointer(pointer, "play-mode"));
 }
 
 void Animator::deserialize(AbstractDeserializer &deserializer, const Pointer &pointer)
@@ -69,6 +70,7 @@ void Animator::deserialize(AbstractDeserializer &deserializer, const Pointer &po
   set_current(deserializer.get_int(make_pointer(pointer, CURRENT_FRAME_POINTER)));
   filename_pattern = deserializer.get_string(make_pointer(pointer, "filename-pattern"));
   overwrite_file = deserializer.get_bool(make_pointer(pointer, "overwrite-file"));
+  m_play_mode = static_cast<PlayMode>(deserializer.get_int(make_pointer(pointer, "play-mode")));
   invalidate();
 }
 
@@ -96,28 +98,48 @@ void Animator::set_current(int current)
   }
 }
 
-void Animator::toggle_play_pause(bool play)
+void Animator::set_play_mode(Animator::PlayMode mode)
 {
-  if (m_is_playing != play) {
-    m_is_playing = play;
-    if (play) {
-      m_timer.start();
-    } else {
+  if (m_play_mode != mode) {
+    m_play_mode = mode;
+    Q_EMIT play_mode_changed(mode);
+  }
+}
+
+void Animator::set_play_direction(PlayDirection direction)
+{
+  if (m_current_play_direction != direction) {
+    m_current_play_direction = direction;
+    if (direction == PlayDirection::Stopped) {
       m_timer.stop();
+    } else {
+      m_timer.start();
     }
-    Q_EMIT play_pause_toggled(play);
+    Q_EMIT play_direction_changed(direction);
   }
 }
 
 void Animator::advance()
 {
-  int next = m_current_frame + 1;
-  if (next > m_end_frame) {
-    if (m_play_mode == PlayMode::Repeat) {
-      next = m_start_frame;
-    } else if (m_play_mode == PlayMode::Stop) {
-      next = m_end_frame;
-      m_timer.stop();
+  advance(m_current_play_direction);
+}
+
+void Animator::advance(PlayDirection direction)
+{
+  bool forward = direction == PlayDirection::Forward;
+  int next = m_current_frame + (forward ? 1 : -1);
+  if ((forward && next > m_end_frame) || (!forward && next < m_start_frame)) {
+    switch (m_play_mode) {
+    case PlayMode::Repeat:
+      next = forward ? m_start_frame : m_end_frame;
+      break;
+    case PlayMode::PingPong:
+      set_play_direction(forward ? PlayDirection::Backward : PlayDirection::Forward);
+      break;
+    case PlayMode::Stop:
+      next = forward ? m_end_frame : m_start_frame;
+      set_play_direction(PlayDirection::Stopped);
+      break;
     }
   }
 

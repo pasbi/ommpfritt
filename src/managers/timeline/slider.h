@@ -17,6 +17,7 @@ class Slider : public QWidget
   Q_OBJECT
 public:
   explicit Slider(Animator& animator);
+  std::set<Track*> tracks() const;
 
 public Q_SLOTS:
   void set_range(double left, double right);

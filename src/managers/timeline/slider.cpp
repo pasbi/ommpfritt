@@ -50,6 +50,11 @@ void Slider::paintEvent(QPaintEvent *event)
   QWidget::paintEvent(event);
 }
 
+std::set<Track*> Slider::tracks() const
+{
+  return m_canvas.tracks;
+}
+
 bool Slider::event(QEvent* event)
 {
   if (m_canvas.view_event(*event)) {

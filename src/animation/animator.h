@@ -22,7 +22,8 @@ class Animator : public QAbstractItemModel, public Serializable
 {
   Q_OBJECT
 public:
-  enum class PlayMode { Repeat, Stop };
+  enum class PlayMode { Repeat = 0, PingPong = 1, Stop = 2 };
+  enum class PlayDirection { Forward, Backward, Stopped };
   explicit Animator(Scene& scene);
   ~Animator();
   void serialize(AbstractSerializer&, const Pointer&) const override;
@@ -31,7 +32,8 @@ public:
   int start() const { return m_start_frame; }
   int end() const { return m_end_frame; }
   int current() const { return m_current_frame; }
-  bool is_playing() const { return m_timer.isActive(); }
+  Animator::PlayDirection play_direction() const { return m_current_play_direction; }
+  Animator::PlayMode play_mode() const { return m_play_mode; }
 
   static constexpr auto START_FRAME_POINTER = "start-frame";
   static constexpr auto END_FRAME_POINTER = "end-frame";
@@ -54,8 +56,10 @@ public Q_SLOTS:
   void set_start(int start);
   void set_end(int end);
   void set_current(int current);
-  void toggle_play_pause(bool play);
+  void set_play_direction(PlayDirection direction);
+  void set_play_mode(PlayMode mode);
   void advance();
+  void advance(PlayDirection direction);
   void apply();
 
   /**
@@ -69,7 +73,8 @@ Q_SIGNALS:
   void start_changed(int);
   void end_changed(int);
   void current_changed(int);
-  void play_pause_toggled(bool);
+  void play_direction_changed(PlayDirection direction);
+  void play_mode_changed(PlayMode mode);
   void track_changed(Track&);
   void track_inserted(Track&);
   void track_removed(Track&);
@@ -133,7 +138,7 @@ private:
   int m_start_frame = 1;
   int m_end_frame = 100;
   int m_current_frame = 1;
-  bool m_is_playing = false;
+  PlayDirection m_current_play_direction = PlayDirection::Stopped;
   QTimer m_timer;
   PlayMode m_play_mode = PlayMode::Repeat;
 };

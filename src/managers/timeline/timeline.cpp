@@ -6,6 +6,16 @@
 #include "ui_timelinetitlebar.h"
 #include "mainwindow/application.h"
 
+namespace
+{
+
+QPixmap flip(const QString& fn)
+{
+  return QPixmap::fromImage(QImage(fn).mirrored(true, false));
+}
+
+}  // namespace
+
 namespace omm
 {
 
@@ -26,7 +36,12 @@ TimeLine::TimeLine(Scene &scene)
   m_title_bar->ui()->sp_min->setValue(scene.animator().start());
   m_title_bar->ui()->sp_max->setValue(scene.animator().end());
   m_title_bar->ui()->sp_value->setValue(scene.animator().current());
-  m_title_bar->ui()->pb_reset->setIcon(QIcon(QPixmap::fromImage(QImage(":/icons/Jump-End.png").mirrored(true, false))));
+  m_title_bar->ui()->pb_jump_left->setIcon(QIcon(flip(":/icons/Jump-End.png")));
+  m_title_bar->ui()->pb_jump_right->setIcon(QIcon(":/icons/Jump-End.png"));
+  m_title_bar->ui()->pb_step_left->setIcon(QIcon(flip(":/icons/Next-Frame.png")));
+  m_title_bar->ui()->pb_step_right->setIcon(QIcon(":/icons/Next-Frame.png"));
+  m_title_bar->ui()->pb_jump_left_key->setIcon(QIcon(flip(":/icons/Next-Frame-Key.png")));
+  m_title_bar->ui()->pb_jump_right_key->setIcon(QIcon(":/icons/Next-Frame-Key.png"));
 
   connect(&scene.animator(), &Animator::end_changed, this, [this](int end) {
     m_title_bar->ui()->sp_min->setValue(std::min(end, m_title_bar->ui()->sp_min->value()));
@@ -52,19 +67,92 @@ TimeLine::TimeLine(Scene &scene)
     m_title_bar->ui()->sp_value->setValue(current);
   });
 
-  connect(m_title_bar->ui()->pb_reset, &QPushButton::clicked, &scene.animator(), [&scene]() {
+  connect(m_title_bar->ui()->pb_jump_left, &QPushButton::clicked, &scene.animator(), [&scene]() {
     scene.animator().set_current(scene.animator().start());
   });
-  connect(m_title_bar->ui()->pb_play, SIGNAL(toggled(bool)), &scene.animator(), SLOT(toggle_play_pause(bool)));
-  connect(&scene.animator(), SIGNAL(play_pause_toggled(bool)),
-          this, SLOT(update_play_pause_button(bool)));
-  update_play_pause_button(scene.animator().is_playing());
+  connect(m_title_bar->ui()->pb_jump_right, &QPushButton::clicked, &scene.animator(), [&scene]() {
+    scene.animator().set_current(scene.animator().end());
+  });
+  connect(m_title_bar->ui()->pb_play_left, &QPushButton::clicked, [&scene](bool clicked) {
+    scene.animator().set_play_direction(clicked ? Animator::PlayDirection::Backward
+                                                : Animator::PlayDirection::Stopped);
+  });
+  connect(m_title_bar->ui()->pb_play_right, &QPushButton::clicked, [&scene](bool clicked) {
+    scene.animator().set_play_direction(clicked ? Animator::PlayDirection::Forward
+                                                : Animator::PlayDirection::Stopped);
+  });
+  connect(m_title_bar->ui()->pb_jump_left_key, &QPushButton::clicked, &scene.animator(), [this]() {
+    jump_to_next_keyframe(Animator::PlayDirection::Backward);
+  });
+  connect(m_title_bar->ui()->pb_jump_right_key, &QPushButton::clicked, &scene.animator(), [this]() {
+    jump_to_next_keyframe(Animator::PlayDirection::Forward);
+  });
+  connect(m_title_bar->ui()->pb_step_left, &QPushButton::clicked, &scene.animator(), [&scene]() {
+    scene.animator().advance(Animator::PlayDirection::Backward);
+  });
+  connect(m_title_bar->ui()->pb_step_right, &QPushButton::clicked, &scene.animator(), [&scene]() {
+    scene.animator().advance(Animator::PlayDirection::Forward);
+  });
+  connect(m_title_bar->ui()->cb_mode, qOverload<int>(&QComboBox::currentIndexChanged),
+          &scene.animator(), [&scene](int mode)
+  {
+    scene.animator().set_play_mode(static_cast<Animator::PlayMode>(mode));
+  });
+  connect(&scene.animator(), &Animator::play_direction_changed,
+          this, [this](Animator::PlayDirection d)
+  {
+    update_play_pause_button(d);
+  });
+  update_play_pause_button(scene.animator().play_direction());
+  connect(&scene.animator(), &Animator::play_mode_changed, this, [this](Animator::PlayMode mode) {
+    m_title_bar->ui()->cb_mode->setCurrentIndex(static_cast<int>(mode));
+  });
+  m_title_bar->ui()->cb_mode->setCurrentIndex(static_cast<int>(scene.animator().play_mode()));
+
 }
 
-void TimeLine::update_play_pause_button(bool play)
+void TimeLine::update_play_pause_button(Animator::PlayDirection direction)
 {
-  m_title_bar->ui()->pb_play->setChecked(play);
-  m_title_bar->ui()->pb_play->setIcon(QIcon(QString(":/icons/%1.png").arg(play ? "Pause" : "Play")));
+  const bool forward = direction == Animator::PlayDirection::Forward;
+  const bool backward = direction == Animator::PlayDirection::Backward;
+  static const auto icon_fn = [](bool paused) {
+    return QString(":/icons/%1.png").arg(paused ? "Play" : "Pause");
+  };
+  m_title_bar->ui()->pb_play_left->setChecked(backward);
+  m_title_bar->ui()->pb_play_right->setChecked(forward);
+  m_title_bar->ui()->pb_play_left->setIcon(QIcon(flip(icon_fn(!backward))));
+  m_title_bar->ui()->pb_play_right->setIcon(QIcon(icon_fn(!forward)));
+}
+
+void TimeLine::jump_to_next_keyframe(Animator::PlayDirection direction)
+{
+  std::set<int> key_frames;
+  for (auto&& track : m_slider->tracks()) {
+    const auto kf = track->key_frames();
+    key_frames.insert(kf.begin(), kf.end());
+  }
+
+  const bool forward = direction == Animator::PlayDirection::Forward;
+  bool has_next_keyframe = false;
+  int current_keyframe = scene().animator().current();
+  int next_keyframe = forward ? std::numeric_limits<int>::max() : std::numeric_limits<int>::min();
+  for (auto&& frame : key_frames) {
+    if (forward && frame > current_keyframe && frame < next_keyframe) {
+      has_next_keyframe = true;
+      next_keyframe = frame;
+    } else if (!forward && frame < current_keyframe && frame > next_keyframe) {
+      has_next_keyframe = true;
+      next_keyframe = frame;
+    }
+  }
+
+  if (has_next_keyframe) {
+    scene().animator().set_current(next_keyframe);
+  } else {
+    LWARNING << "There are no more keyframes in "
+             << (direction == Animator::PlayDirection::Forward ? "forward" : "backward")
+             << "-direction.";
+  }
 }
 
 bool TimeLine::perform_action(const QString& name)
