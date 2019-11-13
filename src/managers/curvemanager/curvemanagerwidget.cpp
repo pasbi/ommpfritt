@@ -12,11 +12,6 @@ CurveManagerWidget::CurveManagerWidget(Scene& scene)
 {
 }
 
-void CurveManagerWidget::set_selection(const std::set<AbstractPropertyOwner*>& selection)
-{
-
-}
-
 void CurveManagerWidget::paintEvent(QPaintEvent* event)
 {
   QPainter painter(this);

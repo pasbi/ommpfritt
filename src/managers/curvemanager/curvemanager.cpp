@@ -16,9 +16,6 @@ CurveManager::CurveManager(Scene& scene)
   m_title_bar = title_bar.get();
   setTitleBarWidget(title_bar.release());
 
-  connect(&scene.message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
-          this, SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
-
   auto curve_manager_widget = std::make_unique<CurveManagerWidget>(scene);
   m_widget = curve_manager_widget.get();
   set_widget(std::move(curve_manager_widget));
@@ -27,13 +24,6 @@ CurveManager::CurveManager(Scene& scene)
 bool CurveManager::perform_action(const QString& name)
 {
   return false;
-}
-
-void CurveManager::set_selection(const std::set<AbstractPropertyOwner*>& selection)
-{
-  if (!m_is_locked) {
-    m_widget->set_selection(selection);
-  }
 }
 
 }  // namespace omm

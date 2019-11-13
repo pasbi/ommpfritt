@@ -22,7 +22,6 @@ public:
 private:
 
 public Q_SLOTS:
-  void set_selection(const std::set<AbstractPropertyOwner*>& selection);
   void set_locked(bool locked) { m_is_locked = locked; }
 
 private:

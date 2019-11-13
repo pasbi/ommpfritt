@@ -93,8 +93,9 @@ public:
     TimelineCanvas& m_self;
   } frame_range;
 
-private:
+protected:
   const QWidget& m_widget;
+private:
   std::map<Track*, std::set<int>> m_selection;
   std::map<Track*, std::set<int>> m_rubber_band_selection;
 
@@ -124,28 +125,6 @@ protected:
   QPoint m_mouse_down_pos;
   virtual void pan(const QPointF& d);
   virtual void zoom(const QPointF& d);
-};
-
-class CurveTimelineCanvas : public TimelineCanvas
-{
-public:
-  CurveTimelineCanvas(Animator& animator, QWidget& widget);
-  void draw_lines(QPainter& painter) const;
-  void draw_fcurve(QPainter& painter) const;
-
-  double ppv() const;
-  double normalized_to_value(double normalized) const;
-
-  struct ValueRange : Range {
-    ValueRange(CurveTimelineCanvas& self) : Range(-100, 100), m_self(self) {}
-    int pixel_range() const override { return m_self.rect.height(); }
-  private:
-    CurveTimelineCanvas& m_self;
-  } value_range;
-
-protected:
-  void pan(const QPointF& d) override;
-  void zoom(const QPointF& d) override;
 };
 
 }  // namespace omm

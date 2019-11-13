@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QWidget>
-#include "managers/timeline/timelinecanvas.h"
+#include "managers/curvemanager/curvetimelinecanvas.h"
 
 namespace omm
 {
@@ -13,7 +13,6 @@ class CurveManagerWidget : public QWidget
   Q_OBJECT
 public:
   explicit CurveManagerWidget(Scene& scene);
-  void set_selection(const std::set<AbstractPropertyOwner*>& selection);
 
 protected:
   void paintEvent(QPaintEvent* event);

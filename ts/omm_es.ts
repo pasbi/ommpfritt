@@ -1138,6 +1138,21 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
+    <name>TimeLineTitleBar</name>
+    <message>
+        <source>Repeat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PingPong</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Tool</name>
     <message>
         <source>Tool</source>
