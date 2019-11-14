@@ -30,8 +30,9 @@ TimelineCanvas::TimelineCanvas(Animator& animator, QWidget& widget)
   connect(&animator, &Animator::knot_moved, this, [this](Track& track, int old_frame, int new_frame)
   {
     if (const auto& it = m_selection.find(&track); it != m_selection.end()) {
-      it->second.erase(old_frame);
-      it->second.insert(new_frame);
+      if (it->second.erase(old_frame) > 0) {
+        it->second.insert(new_frame);
+      }
     }
   });
 }
