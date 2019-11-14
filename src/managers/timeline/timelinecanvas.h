@@ -39,11 +39,6 @@ public:
   virtual QPoint map_to_global(const QPoint& pos) const = 0;
 
   /**
-   * @brief update issues a redraw of the gui
-   */
-  virtual void update() = 0;
-
-  /**
    * @brief disable_context_menu disable the context menu (right click) in the view
    */
   virtual void disable_context_menu() = 0;
@@ -65,6 +60,12 @@ public:
    *  empty rect is returned.
    */
   virtual QRect owner_rect(AbstractPropertyOwner& owner) = 0;
+
+public Q_SLOTS:
+  /**
+   * @brief update issues a redraw of the gui
+   */
+  virtual void update() = 0;
 
 Q_SIGNALS:
   void current_frame_changed(int);
@@ -125,6 +126,8 @@ protected:
   QPoint m_mouse_down_pos;
   virtual void pan(const QPointF& d);
   virtual void zoom(const QPointF& d);
+  void synchronize_track_selection_with_animator();
+  void update_tracks(const std::set<AbstractPropertyOwner*>& selection);
 };
 
 }  // namespace omm

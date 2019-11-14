@@ -15,14 +15,8 @@ Slider::Slider(Animator& animator)
   : m_canvas(animator, *this)
   , m_scene(animator.scene)
 {
-  connect(&animator, SIGNAL(start_changed(int)), this, SLOT(update()));
-  connect(&animator, SIGNAL(end_changed(int)), this, SLOT(update()));
-  connect(&animator, SIGNAL(current_changed(int)), this, SLOT(update()));
-  connect(&animator, SIGNAL(track_changed(Track&)), this, SLOT(update()));
-  connect(&animator.scene.message_box(),
-          SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),
-          this, SLOT(update()));
   connect(&m_canvas, SIGNAL(current_frame_changed(int)), this, SIGNAL(value_changed(int)));
+  connect(&animator, SIGNAL(current_changed(int)), this, SLOT(update()));
 
   m_canvas.footer_height = QFontMetrics(font()).height();
 }
@@ -68,18 +62,8 @@ bool Slider::event(QEvent* event)
 Slider::TimelineCanvasC::TimelineCanvasC(Animator& animator, Slider& self)
   : TimelineCanvas(animator, self), m_self(self)
 {
-  connect(&animator.scene.message_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MessageBox::selection_changed),
-          this, &TimelineCanvasC::update_tracks);
+  synchronize_track_selection_with_animator();
   update_tracks(animator.scene.selection());
-  connect(&animator, &Animator::track_inserted, this, [this](Track& track) {
-    m_self.m_canvas.tracks.insert(&track);
-    m_self.m_canvas.update();
-  });
-  connect(&animator, &Animator::track_removed, this, [this](Track& track) {
-    m_self.m_canvas.tracks.erase(&track);
-    m_self.m_canvas.update();
-  });
 }
 
 QPoint Slider::TimelineCanvasC::map_to_global(const QPoint& pos) const
@@ -116,19 +100,6 @@ QRect Slider::TimelineCanvasC::owner_rect(AbstractPropertyOwner& owner)
   // this view never shows owner.
   Q_UNUSED(owner)
   return QRect();
-}
-
-void Slider::TimelineCanvasC::update_tracks(const std::set<AbstractPropertyOwner*>& selection)
-{
-  tracks.clear();
-  for (AbstractPropertyOwner* apo : selection) {
-    for (Property* p : apo->properties().values()) {
-      if (Track* track = p->track(); track != nullptr) {
-        tracks.insert(track);
-      }
-    }
-  }
-  update();
 }
 
 }  // namespace omm

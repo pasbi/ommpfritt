@@ -1,7 +1,6 @@
 #include "managers/timeline/timelinecanvas.h"
-
+#include "scene/messagebox.h"
 #include <QWidget>
-
 #include "animation/track.h"
 #include "animation/animator.h"
 #include <QCursor>
@@ -391,6 +390,28 @@ void TimelineCanvas::zoom(const QPointF& d)
   frame_range.zoom(m_mouse_down_pos.x(), d.x(), min_ppf, max_ppf);
 }
 
+void TimelineCanvas::synchronize_track_selection_with_animator()
+{
+  connect(&animator.scene.message_box(),
+          qOverload<const std::set<AbstractPropertyOwner*>&>(&MessageBox::selection_changed),
+          this, &TimelineCanvas::update_tracks);
+  update_tracks(animator.scene.selection());
+  connect(&animator, &Animator::track_inserted, this, [this](Track& track) {
+    tracks.insert(&track);
+    update();
+  });
+  connect(&animator, &Animator::track_removed, this, [this](Track& track) {
+    tracks.erase(&track);
+    update();
+  });
+  connect(&animator, SIGNAL(start_changed(int)), this, SLOT(update()));
+  connect(&animator, SIGNAL(end_changed(int)), this, SLOT(update()));
+  connect(&animator, SIGNAL(track_changed(Track&)), this, SLOT(update()));
+  connect(&animator.scene.message_box(),
+          SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),
+          this, SLOT(update()));
+}
+
 std::set<Track*> TimelineCanvas::tracks_at(double frame) const
 {
   std::set<Track*> tracks;
@@ -441,6 +462,19 @@ void TimelineCanvas::select(int frame)
       m_selection[track].insert(frame);
     }
   }
+}
+
+void TimelineCanvas::update_tracks(const std::set<AbstractPropertyOwner*>& selection)
+{
+  tracks.clear();
+  for (AbstractPropertyOwner* apo : selection) {
+    for (Property* p : apo->properties().values()) {
+      if (Track* track = p->track(); track != nullptr) {
+        tracks.insert(track);
+      }
+    }
+  }
+  update();
 }
 
 }  // namespace omm

@@ -41,7 +41,8 @@ bool CurveManagerWidget::event(QEvent* event)
 CurveManagerWidget::TimelineCanvasC::TimelineCanvasC(Animator& animator, QWidget& widget)
   : CurveTimelineCanvas(animator, widget), m_self(widget)
 {
-
+  synchronize_track_selection_with_animator();
+  update_tracks(animator.scene.selection());
 }
 
 void CurveManagerWidget::TimelineCanvasC::disable_context_menu()

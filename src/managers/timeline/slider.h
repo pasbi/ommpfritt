@@ -41,7 +41,6 @@ private:
     QRect owner_rect(AbstractPropertyOwner &owner) override;
   private:
     Slider& m_self;
-    void update_tracks(const std::set<AbstractPropertyOwner*>& selection);
   };
 
   TimelineCanvasC m_canvas;
