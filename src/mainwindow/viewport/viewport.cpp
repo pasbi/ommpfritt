@@ -98,7 +98,7 @@ void Viewport::draw_grid(QPainter &painter, const std::pair<Vec2f, Vec2f>& bound
       pen.setCosmetic(true);
       pen.setWidth(go.pen_width);
       pen.setStyle(go.pen_style);
-      pen.setColor(ui_color("Viewport", "grid " + key));
+      pen.setColor(ui_color(*this, "Viewport", "grid " + key));
 
       painter.setPen(pen);
       const auto base_step = (max - min) / Vec2f(width(), height()) * go.base;
@@ -146,7 +146,7 @@ void Viewport::paintEvent(QPaintEvent*)
 
   painter.setRenderHint(QPainter::Antialiasing);
   painter.setRenderHint(QPainter::SmoothPixmapTransform);
-  painter.fillRect(rect(), ui_color("Viewport", "background"));
+  painter.fillRect(rect(), ui_color(*this, "Viewport", "background"));
 
   const auto viewport_transformation = this->viewport_transformation();
   const auto viewport_bounds = compute_viewport_bounds();

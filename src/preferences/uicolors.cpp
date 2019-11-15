@@ -207,9 +207,14 @@ QColor ui_color(const QPalette::ColorGroup& status, const QString& group, const 
   return Application::instance().ui_colors.color(status, group, name).to_qcolor();
 }
 
-QColor ui_color(const QString& group, const QString& name)
+QColor ui_color(const HandleStatus status, const QString& group, const QString& name)
 {
-  return ui_color(QPalette::Active, group, name);
+  static const std::map<HandleStatus, QPalette::ColorGroup> color_group_map {
+    { HandleStatus::Active, QPalette::Active },
+    { HandleStatus::Inactive, QPalette::Inactive },
+    { HandleStatus::Hovered, QPalette::Disabled }
+  };
+  return ui_color(color_group_map.at(status), group, name);
 }
 
 }  // namespace omm

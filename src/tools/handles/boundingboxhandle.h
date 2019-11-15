@@ -52,7 +52,7 @@ public:
   {
     Q_UNUSED(delta)
     Handle::mouse_move(delta, pos, e);
-    if (status() != Status::Active) {
+    if (status() != HandleStatus::Active) {
       return false;
     }
     ToolT& tool = static_cast<ToolT&>(this->tool);

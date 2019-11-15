@@ -20,8 +20,8 @@ void ParticleHandle::draw(QPainter &painter) const
   const auto pos = tool.transformation().null();
   const auto r = draw_epsilon();
 
-  painter.setPen(ui_color(QPalette::Active, "particle"));
-  painter.setBrush(ui_color(QPalette::Active, "particle fill"));
+  painter.setPen(ui_color(HandleStatus::Active, "particle"));
+  painter.setBrush(ui_color(HandleStatus::Active, "particle fill"));
   painter.drawRect(pos.x - r, pos.y - r, 2*r, 2*r);
 }
 

@@ -28,7 +28,7 @@ public:
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override
   {
     Handle::mouse_move(delta, pos, e);
-    if (status() == Status::Active) {
+    if (status() == HandleStatus::Active) {
       const auto inv_tool_transformation = tool.transformation().inverted();
       auto total_delta = inv_tool_transformation.apply_to_direction(pos - press_pos());
       discretize(total_delta);

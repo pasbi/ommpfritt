@@ -35,7 +35,7 @@ bool AbstractSelectHandle::
 mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
   Handle::mouse_move(delta, pos, e);
-  if (status() == Status::Active) {
+  if (status() == HandleStatus::Active) {
     Vec2f total_delta = pos - press_pos();
     discretize(total_delta);
     const auto transformation = omm::ObjectTransformation().translated(total_delta);
@@ -67,8 +67,8 @@ void ObjectSelectHandle::draw(QPainter& painter) const
   const auto pos = transformation().null();
   const auto r = draw_epsilon();
 
-  painter.setPen(is_selected ? ui_color(QPalette::Active, "object") : ui_color("object"));
-  painter.setBrush(is_selected ? ui_color(QPalette::Active, "object fill")
+  painter.setPen(is_selected ? ui_color(HandleStatus::Active, "object") : ui_color("object"));
+  painter.setBrush(is_selected ? ui_color(HandleStatus::Active, "object fill")
                                : ui_color("object fill"));
   painter.drawRect(pos.x - r, pos.y - r, 2*r, 2*r);
 }
@@ -176,7 +176,7 @@ void PointSelectHandle::draw(QPainter &painter) const
   }
 
   painter.translate(pos.to_pointf());
-  painter.setPen(m_point.is_selected ? ui_color(QPalette::Active, "point") : ui_color("point"));
+  painter.setPen(m_point.is_selected ? ui_color(HandleStatus::Active, "point") : ui_color("point"));
 
   const auto r = draw_epsilon();
   painter.drawRect(-r, -r, 2*r, 2*r);

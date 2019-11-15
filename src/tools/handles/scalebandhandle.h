@@ -41,7 +41,7 @@ public:
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override
   {
     Handle::mouse_move(delta, pos, e);
-    if (status() == Status::Active) {
+    if (status() == HandleStatus::Active) {
       const auto ti = tool.transformation().inverted();
       const auto global_pos = ti.apply_to_position(pos);
       const auto origin = ti.apply_to_position(press_pos());

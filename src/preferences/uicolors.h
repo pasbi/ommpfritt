@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common.h"
 #include "preferences/preferencestree.h"
 #include "color/color.h"
 #include <QPalette>
@@ -44,6 +45,6 @@ private:
 QColor ui_color(const QWidget& widget, const QString& group, const QString& name);
 QColor ui_color(const QPalette::ColorGroup& status, const QString& group, const QString& name);
 QColor ui_color(const QWidget& widget, const QPalette::ColorRole& role);
-QColor ui_color(const QString& group, const QString& name);
+QColor ui_color(const HandleStatus status, const QString& group, const QString& name);
 
 }  // namespace omm

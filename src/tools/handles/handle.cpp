@@ -17,7 +17,7 @@ bool Handle::mouse_press(const Vec2f& pos, const QMouseEvent& event)
   m_press_pos = pos;
   if (contains_global(pos)) {
     if (event.button() == Qt::LeftButton) {
-      m_status = Status::Active;
+      m_status = HandleStatus::Active;
     }
     return true;
   } else {
@@ -29,11 +29,11 @@ bool Handle::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent&
 {
   const auto old_status = m_status;
   Q_UNUSED(delta);
-  if (m_status != Status::Active) {
+  if (m_status != HandleStatus::Active) {
     if (contains_global(pos)) {
-      m_status = Status::Hovered;
+      m_status = HandleStatus::Hovered;
     } else {
-      m_status = Status::Inactive;
+      m_status = HandleStatus::Inactive;
     }
   }
   if (m_status != old_status) {
@@ -45,11 +45,11 @@ bool Handle::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent&
 void Handle::mouse_release(const Vec2f& pos, const QMouseEvent&)
 {
   Q_UNUSED(pos);
-  m_status = Status::Inactive;
+  m_status = HandleStatus::Inactive;
 }
 
-Handle::Status Handle::status() const { return m_status; }
-void Handle::deactivate() { m_status = Status::Inactive; }
+HandleStatus Handle::status() const { return m_status; }
+void Handle::deactivate() { m_status = HandleStatus::Inactive; }
 
 double Handle::draw_epsilon() const { return 4.0; }
 double Handle::interact_epsilon() const { return 4.0; }
@@ -67,19 +67,14 @@ void Handle::discretize(Vec2f& vec) const
   }
 }
 
-QColor Handle::ui_color(QPalette::ColorGroup group, const QString& name) const
+QColor Handle::ui_color(HandleStatus status, const QString& name) const
 {
-  return omm::ui_color(group, "Handle", name);
+  return omm::ui_color(status, "Handle", name);
 }
 
 QColor Handle::ui_color(const QString& name) const
 {
-  static const std::map<Status, QPalette::ColorGroup> color_group_map {
-    { Status::Active, QPalette::Active },
-    { Status::Inactive, QPalette::Inactive },
-    { Status::Hovered, QPalette::Disabled }
-  };
-  return ui_color(color_group_map.at(status()), name);
+  return ui_color(status(), name);
 }
 
 }  // namespace omm

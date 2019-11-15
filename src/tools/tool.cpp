@@ -23,10 +23,10 @@ bool Tool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e
     assert(*it != nullptr);
     (*it)->mouse_move(delta, pos, e);
     switch ((*it)->status()) {
-    case Handle::Status::Active:
+    case HandleStatus::Active:
       return true;
-    case Handle::Status::Hovered:
-    case Handle::Status::Inactive:
+    case HandleStatus::Hovered:
+    case HandleStatus::Inactive:
       break;
     }
   }

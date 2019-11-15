@@ -106,8 +106,8 @@ void BrushSelectTool::draw(Painter &renderer) const
   SelectPointsBaseTool::draw(renderer);
   if (m_mouse_down) {
     const double r = property(RADIUS_PROPERTY_KEY)->value<double>();
-    renderer.painter->setPen(ui_color("Handle", "foreground"));
-    renderer.painter->setBrush(ui_color("Handle", "background"));
+    renderer.painter->setPen(ui_color(HandleStatus::Active, "Handle", "foreground"));
+    renderer.painter->setBrush(ui_color(HandleStatus::Active, "Handle", "background"));
     renderer.painter->drawEllipse(m_mouse_pos.x - r, m_mouse_pos.y - r, 2*r, 2*r);
   }
 }

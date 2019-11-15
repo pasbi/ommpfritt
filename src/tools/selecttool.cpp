@@ -84,7 +84,7 @@ void AbstractSelectTool::draw(Painter &renderer) const
   if (!tool_info.isEmpty()) {
     renderer.toast(m_current_position + Vec2f(30.0, 30.0), tool_info);
     const auto line = std::vector { Point(m_init_position), Point(m_current_position) };
-    renderer.painter->setPen(ui_color("Handle", "line"));
+    renderer.painter->setPen(ui_color(HandleStatus::Active, "Handle", "line"));
     renderer.painter->drawLine(m_init_position.x, m_init_position.y,
                                m_current_position.x, m_current_position.y);
   }
