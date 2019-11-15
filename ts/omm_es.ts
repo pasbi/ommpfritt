@@ -1542,6 +1542,10 @@ Borrar la selección de todos modos?</translation>
         <source>Application</source>
         <translation type="unfinished">Aplicación</translation>
     </message>
+    <message>
+        <source>CurveManager</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>keybindings/ObjectManager</name>
@@ -2324,6 +2328,58 @@ This cannot be undone.</source>
     </message>
     <message>
         <source>rubberband outline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bool-0-fcurve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color-0-fcurve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color-1-fcurve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color-2-fcurve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color-3-fcurve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Float-0-fcurve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FloatVector-0-fcurve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FloatVector-1-fcurve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Integer-0-fcurve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IntegerVector-0-fcurve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IntegerVector-1-fcurve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>scale hline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>scale vline</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

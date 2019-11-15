@@ -1141,15 +1141,15 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <name>TimeLineTitleBar</name>
     <message>
         <source>Repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Wiederholen</translation>
     </message>
     <message>
         <source>PingPong</source>
-        <translation type="unfinished"></translation>
+        <translation>Ping-Pong</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop</translation>
     </message>
 </context>
 <context>
@@ -1542,6 +1542,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Application</source>
         <translation>Applikation</translation>
     </message>
+    <message>
+        <source>CurveManager</source>
+        <translation>F-Kurven</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/ObjectManager</name>
@@ -1749,7 +1753,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <name>omm::CurveManager</name>
     <message>
         <source>Curves</source>
-        <translation type="unfinished"></translation>
+        <translation>F-Kurven</translation>
     </message>
 </context>
 <context>
@@ -2329,6 +2333,58 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     <message>
         <source>rubberband outline</source>
         <translation>Gummiband Umriss</translation>
+    </message>
+    <message>
+        <source>Bool-0-fcurve</source>
+        <translation>Bool</translation>
+    </message>
+    <message>
+        <source>Color-0-fcurve</source>
+        <translation>Farbton</translation>
+    </message>
+    <message>
+        <source>Color-1-fcurve</source>
+        <translation>Sättigung</translation>
+    </message>
+    <message>
+        <source>Color-2-fcurve</source>
+        <translation>Helligkeit</translation>
+    </message>
+    <message>
+        <source>Color-3-fcurve</source>
+        <translation>Transparenz</translation>
+    </message>
+    <message>
+        <source>Float-0-fcurve</source>
+        <translation>Fliesskomma</translation>
+    </message>
+    <message>
+        <source>FloatVector-0-fcurve</source>
+        <translation>x</translation>
+    </message>
+    <message>
+        <source>FloatVector-1-fcurve</source>
+        <translation>y</translation>
+    </message>
+    <message>
+        <source>Integer-0-fcurve</source>
+        <translation>Ganzzahl</translation>
+    </message>
+    <message>
+        <source>IntegerVector-0-fcurve</source>
+        <translation>x</translation>
+    </message>
+    <message>
+        <source>IntegerVector-1-fcurve</source>
+        <translation>y</translation>
+    </message>
+    <message>
+        <source>scale hline</source>
+        <translation>Horizontale Skala</translation>
+    </message>
+    <message>
+        <source>scale vline</source>
+        <translation>Vertikale Skala</translation>
     </message>
 </context>
 <context>

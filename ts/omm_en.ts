@@ -1141,15 +1141,15 @@ Remove the selected items anyway?</translation>
     <name>TimeLineTitleBar</name>
     <message>
         <source>Repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>Repeat</translation>
     </message>
     <message>
         <source>PingPong</source>
-        <translation type="unfinished"></translation>
+        <translation>Ping-Pong</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop</translation>
     </message>
 </context>
 <context>
@@ -1542,6 +1542,10 @@ Remove the selected items anyway?</translation>
         <source>Application</source>
         <translation>Application</translation>
     </message>
+    <message>
+        <source>CurveManager</source>
+        <translation>F-Curves</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/ObjectManager</name>
@@ -1749,7 +1753,7 @@ Remove the selected items anyway?</translation>
     <name>omm::CurveManager</name>
     <message>
         <source>Curves</source>
-        <translation type="unfinished"></translation>
+        <translation>F-Curves</translation>
     </message>
 </context>
 <context>
@@ -2329,6 +2333,58 @@ This cannot be undone.</translation>
     <message>
         <source>rubberband outline</source>
         <translation>Rubberband outline</translation>
+    </message>
+    <message>
+        <source>Bool-0-fcurve</source>
+        <translation>Bool</translation>
+    </message>
+    <message>
+        <source>Color-0-fcurve</source>
+        <translation>Hue</translation>
+    </message>
+    <message>
+        <source>Color-1-fcurve</source>
+        <translation>Saturation</translation>
+    </message>
+    <message>
+        <source>Color-2-fcurve</source>
+        <translation>Value</translation>
+    </message>
+    <message>
+        <source>Color-3-fcurve</source>
+        <translation>Alpha</translation>
+    </message>
+    <message>
+        <source>Float-0-fcurve</source>
+        <translation>Float</translation>
+    </message>
+    <message>
+        <source>FloatVector-0-fcurve</source>
+        <translation>x</translation>
+    </message>
+    <message>
+        <source>FloatVector-1-fcurve</source>
+        <translation>y</translation>
+    </message>
+    <message>
+        <source>Integer-0-fcurve</source>
+        <translation>Integer</translation>
+    </message>
+    <message>
+        <source>IntegerVector-0-fcurve</source>
+        <translation>x</translation>
+    </message>
+    <message>
+        <source>IntegerVector-1-fcurve</source>
+        <translation>y</translation>
+    </message>
+    <message>
+        <source>scale hline</source>
+        <translation>Horizontal scale</translation>
+    </message>
+    <message>
+        <source>scale vline</source>
+        <translation>Vertical scale</translation>
     </message>
 </context>
 <context>

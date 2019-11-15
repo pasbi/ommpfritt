@@ -1,5 +1,23 @@
 #include "managers/curvemanager/curvetimelinecanvas.h"
 #include "preferences/uicolors.h"
+#include "tools/handles/handle.h"
+#include "properties/property.h"
+#include "preferences/uicolors.h"
+
+namespace
+{
+
+QPen make_pen(omm::HandleStatus status, const QString& type, std::size_t channel)
+{
+  const QString name = QString("%1-%2-fcurve").arg(type).arg(int(channel));
+  const QColor color = omm::ui_color(status, "TimeLine", name);
+  QPen pen;
+  pen.setColor(color);
+  pen.setWidth(2);
+  return pen;
+}
+
+}  // namespace
 
 namespace omm
 {
@@ -35,16 +53,63 @@ void CurveTimelineCanvas::draw_lines(QPainter& painter) const
   painter.restore();
 }
 
-void CurveTimelineCanvas::draw_fcurve(QPainter& painter) const
+void CurveTimelineCanvas
+::draw_segment(QPainter& painter, Track& track, int kf1, int kf2, std::size_t i) const
+{
+  painter.drawLine( frame_range.unit_to_pixel(kf1),
+                    value_range.unit_to_pixel(get_channel_value(track.knot_at(kf1).value, i)),
+                    frame_range.unit_to_pixel(kf2),
+                    value_range.unit_to_pixel(get_channel_value(track.knot_at(kf2).value, i)) );
+}
+
+void CurveTimelineCanvas
+::draw_keyframe(QPainter& painter, Track& track, int keyframe, std::size_t i) const
+{
+  const QPointF p(frame_range.unit_to_pixel(keyframe),
+                  value_range.unit_to_pixel(get_channel_value(track.knot_at(keyframe).value, i)));
+
+  static const QPointF r(2, 2);
+  painter.fillRect(QRectF(p - r, p + r), Qt::red);
+}
+
+void CurveTimelineCanvas::draw_keyframes(QPainter& painter) const
 {
   painter.save();
   painter.translate(rect.topLeft());
   for (Track* track : tracks) {
-    if (track->type() == "Float") {
-      for (int frame = frame_range.begin; frame <= frame_range.end; ++frame) {
-        if (track->has_keyframe(frame)) {
-          const double x = rect.width() * (frame - frame_range.begin) * frame_range.units_per_pixel();
-          painter.drawLine(QPointF(x, 0), QPointF(x, rect.height()));
+    const std::size_t n = n_channels(track->property().variant_value());
+    const std::vector<int> key_frames = track->key_frames();
+    if (key_frames.size() > 0) {
+      const int front = key_frames.front();
+      const int back = key_frames.back();
+      for (std::size_t i = 0; i < n; ++i) {
+        painter.setPen(make_pen(HandleStatus::Inactive, track->type(), i));
+        if (front >= frame_range.begin) {
+          const double end = std::min<double>(frame_range.end, front);
+          const double y = value_range.unit_to_pixel(get_channel_value(track->knot_at(front).value, i));
+          painter.drawLine(frame_range.unit_to_pixel(frame_range.begin), y,
+                           frame_range.unit_to_pixel(end), y);
+        }
+        if (back <= frame_range.end) {
+          const double begin = std::max<double>(frame_range.begin, back);
+          const double y = value_range.unit_to_pixel(get_channel_value(track->knot_at(back).value, i));
+          painter.drawLine(frame_range.unit_to_pixel(begin), y,
+                           frame_range.unit_to_pixel(frame_range.end), y);
+        }
+
+        const int k1 = key_frames[0];
+        if (frame_range.begin <= k1 && k1 <= frame_range.end) {
+          draw_keyframe(painter, *track, key_frames[0], i);
+        }
+        for (std::size_t k = 1; k < key_frames.size(); ++k) {
+          const int k1 = key_frames[k-1];
+          const int k2 = key_frames[k];
+          if (k2 >= frame_range.begin || k1 <= frame_range.end) {
+            draw_segment(painter, *track, k1, k2, i);
+          }
+          if (frame_range.begin <= k2 && k2 <= frame_range.end) {
+            draw_keyframe(painter, *track, k2, i);
+          }
         }
       }
     }
