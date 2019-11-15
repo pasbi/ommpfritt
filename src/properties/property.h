@@ -178,6 +178,26 @@ Q_SIGNALS:
   void value_changed(Property*);
   void visibility_changed(bool);
 
+
+public:
+  // === Channels
+  std::size_t n_channels() const
+  {
+    return omm::n_channels(variant_value());
+  }
+
+  double numeric_value(std::size_t channel) const
+  {
+    return omm::get_channel_value(variant_value(), channel);
+  }
+
+  void set_numeric_value(std::size_t channel, double value)
+  {
+    const auto v = variant_value();
+    omm::set_channel_value(v, channel, value);
+    set(v);
+  }
+
 };
 
 void register_properties();

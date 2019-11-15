@@ -188,6 +188,12 @@ std::array<double, 4> Color::components(Model model) const
   return convert(model).m_components;
 }
 
+void Color::set_components(Color::Model model, const std::array<double, 4>& components)
+{
+  m_current_model = model;
+  m_components = components;
+}
+
 double& Color::component(Color::Role role)
 {
   assert(model(role, m_current_model) == m_current_model);

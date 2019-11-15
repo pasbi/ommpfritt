@@ -42,6 +42,7 @@ public:
   Color convert(Model to) const;
 
   std::array<double, 4> components(Model model) const;
+  void set_components(Model model, const std::array<double, 4>& components);
   Model model() const { return m_current_model; }
 
 private:
