@@ -25,7 +25,7 @@ def format(disambiguation, text):
 
 if __name__ == "__main__":
     items = set()
-    base_path = os.path.dirname(sys.argv[0])
+    base_path = os.path.dirname(sys.argv[0]) + "/.."
     for fn in glob.glob(base_path + '/**/*.cfg', recursive=True):
         subdir = os.path.split(os.path.dirname(os.path.abspath(fn)))[1]
         for group, item in collect(fn):
