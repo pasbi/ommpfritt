@@ -128,44 +128,17 @@ void TimelineCanvas::draw_keyframes(QPainter& painter) const
   painter.translate(rect.topLeft());
   const int y = footer_y() / 2.0;
 
-  static const QPainterPath diamond = []() {
-    QPainterPath diamond;
-    diamond.moveTo(QPointF( 0,  1));
-    diamond.lineTo(QPointF( 1,  0));
-    diamond.lineTo(QPointF( 0, -1));
-    diamond.lineTo(QPointF(-1,  0));
-    diamond.closeSubpath();
-    return diamond;
-  }();
-
-  QPen pen;
-  pen.setCosmetic(true);
-  pen.setColor(ui_color(m_widget, "TimeLine", "key outline"));
-  const QPointF scale(std::clamp(frame_range.width()/2.0, 4.0, 20.0),
-                      std::min(footer_y()/2.0, 20.0));
-  pen.setWidthF(std::max(0.0, std::min(scale.x(), scale.y())/5.0));
-  painter.setPen(pen);
-
-  const auto draw_keyframe = [scale, &painter, this](int frame, int y, const QColor& color) {
-    painter.save();
-    painter.translate(frame_range.unit_to_pixel(frame), y);
-    painter.scale(scale.x()*0.8, scale.y()*0.8);
-    painter.fillPath(diamond, color);
-    painter.drawPath(diamond);
-    painter.restore();
-  };
-
   for (int frame = frame_range.begin; frame <= frame_range.end + 1; ++frame) {
     const bool draw = std::any_of(tracks.begin(), tracks.end(), [frame](const Track* track) {
       return track->has_keyframe(frame);
     });
     if (draw) {
       const bool is_selected = this->is_selected(frame);
-      draw_keyframe(frame, y, is_selected
-                              ? ui_color(m_widget, "TimeLine", "key selected")
-                              : ui_color(m_widget, "TimeLine", "key normal"));
+      draw_keyframe(painter, frame, y, is_selected
+                                       ? KeyFrameStatus::Selected
+                                       : KeyFrameStatus::Normal);
       if (m_shift != 0 && is_selected) {
-        draw_keyframe(frame + m_shift, y, ui_color(m_widget, "TimeLine", "key dragged"));
+        draw_keyframe(painter, frame + m_shift, y, KeyFrameStatus::Dragged);
       }
     }
   }
@@ -475,6 +448,38 @@ void TimelineCanvas::update_tracks(const std::set<AbstractPropertyOwner*>& selec
     }
   }
   update();
+}
+
+void TimelineCanvas
+::draw_keyframe(QPainter& painter, int frame, double y, KeyFrameStatus status) const
+{
+  static const std::map<KeyFrameStatus, QString> status_name_map = {
+    { KeyFrameStatus::Dragged, "key dragged" },
+    { KeyFrameStatus::Normal, "key normal" },
+    { KeyFrameStatus::Selected, "key selected" },
+  };
+  static const QPainterPath diamond = []() {
+    QPainterPath diamond;
+    diamond.moveTo(QPointF( 0,  1));
+    diamond.lineTo(QPointF( 1,  0));
+    diamond.lineTo(QPointF( 0, -1));
+    diamond.lineTo(QPointF(-1,  0));
+    diamond.closeSubpath();
+    return diamond;
+  }();
+  QPen pen;
+  pen.setCosmetic(true);
+  pen.setColor(ui_color(m_widget, "TimeLine", "key outline"));
+  const QPointF scale(std::clamp(frame_range.width()/2.0, 4.0, 20.0),
+                      std::min(footer_y()/2.0, 20.0));
+  pen.setWidthF(std::max(0.0, std::min(scale.x(), scale.y())/5.0));
+  painter.setPen(pen);
+  painter.save();
+  painter.translate(frame_range.unit_to_pixel(frame), y);
+  painter.scale(scale.x()*0.8, scale.y()*0.8);
+  painter.fillPath(diamond, ui_color(m_widget, "TimeLine", status_name_map.at(status)));
+  painter.drawPath(diamond);
+  painter.restore();
 }
 
 }  // namespace omm

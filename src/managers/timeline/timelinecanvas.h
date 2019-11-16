@@ -104,7 +104,9 @@ private:
   std::set<Track*> tracks_at(double frame) const;
   bool is_selected(int frame) const;
   void select(int frame);
+  bool key_press(QKeyEvent& event);
 
+protected:
   bool m_pan_active = false;
   bool m_zoom_active = false;
   bool m_dragging_knots = false;
@@ -113,10 +115,10 @@ private:
   int m_shift = 0;
   QPoint m_last_mouse_pos;
 
-  bool mouse_press(QMouseEvent& event);
-  bool mouse_move(QMouseEvent& event);
-  bool mouse_release(QMouseEvent& event);
-  bool key_press(QKeyEvent& event);
+  virtual bool mouse_press(QMouseEvent& event);
+  virtual bool mouse_move(QMouseEvent& event);
+  virtual bool mouse_release(QMouseEvent& event);
+
   QPoint m_rubber_band_origin;
   QPoint m_rubber_band_corner;
   bool m_rubber_band_visible = false;
@@ -128,6 +130,8 @@ protected:
   virtual void zoom(const QPointF& d);
   void synchronize_track_selection_with_animator();
   void update_tracks(const std::set<AbstractPropertyOwner*>& selection);
+  enum class KeyFrameStatus { Normal, Selected, Dragged };
+  void draw_keyframe(QPainter& painter, int frame, double y, KeyFrameStatus status) const;
 };
 
 }  // namespace omm
