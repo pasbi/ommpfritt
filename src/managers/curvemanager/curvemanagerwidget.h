@@ -2,6 +2,8 @@
 
 #include <QWidget>
 #include "managers/curvemanager/curvetimelinecanvas.h"
+#include "managers/timeline/timelinecanvas.h"
+#include "managers/range.h"
 
 namespace omm
 {
@@ -16,22 +18,23 @@ public:
 
 protected:
   void paintEvent(QPaintEvent* event);
-  bool event(QEvent* event);
 
-  struct TimelineCanvasC : public CurveTimelineCanvas
+  struct ValueRange : Range
   {
-    TimelineCanvasC(Animator& animator, QWidget& widget);
-    void disable_context_menu() override;
-    void enable_context_menu() override;
-    QPoint map_to_global(const QPoint& pos) const override;
-    void update() override;
-    QRect track_rect(Track& track) override;
-    QRect owner_rect(AbstractPropertyOwner& owner) override;
+    ValueRange(QWidget& canvas) : Range(-100, 100), m_canvas(canvas) {}
+    int pixel_range() const override { return m_canvas.height(); }
   private:
-    QWidget& m_self;
-  };
+    QWidget& m_canvas;
+  } value_range;
 
-  TimelineCanvasC m_canvas;
+  struct FrameRange : Range
+  {
+    FrameRange(QWidget& canvas) : Range(1, 100), m_canvas(canvas) {}
+    int pixel_range() const override { return m_canvas.width(); }
+  private:
+    QWidget& m_canvas;
+  } frame_range;
+
 };
 
 }  // namespace omm

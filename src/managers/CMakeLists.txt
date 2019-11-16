@@ -5,6 +5,7 @@ file(GLOB SOURCES
   manageritemview.cpp
   managerregister.cpp
   managertitlebar.cpp
+  range.cpp
 )
 
 file(GLOB HEADERS
@@ -12,6 +13,7 @@ file(GLOB HEADERS
   manager.h
   manageritemview.h
   managertitlebar.h
+  range.h
 )
 
 add_subdirectory(boundingboxmanager)
