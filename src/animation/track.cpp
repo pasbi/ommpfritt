@@ -226,6 +226,16 @@ Track::Knot Track::knot_at(double frame) const
   }
 }
 
+Track::Knot& Track::knot_ref(int frame)
+{
+  return m_knots.at(frame);
+}
+
+const Track::Knot& Track::knot_ref(int frame) const
+{
+  return m_knots.at(frame);
+}
+
 std::vector<int> Track::key_frames() const
 {
   return ::transform<int, std::vector>(m_knots, [](const auto& p) {

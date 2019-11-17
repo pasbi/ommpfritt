@@ -40,12 +40,12 @@ create_knots(const std::set<omm::Property*>& properties, int frame)
 namespace omm
 {
 
-KeyframeCommand::KeyframeCommand(Animator& animator, const QString& label, int frame,
+KeyFrameCommand::KeyFrameCommand(Animator& animator, const QString& label, int frame,
                                  const std::map<Property*, Track::Knot>& values)
   : Command(label), m_animator(animator), m_frame(frame), m_knots(values)
 { }
 
-void KeyframeCommand::insert()
+void KeyFrameCommand::insert()
 {
   for (auto&& [ property, knot ] : m_knots) {
     Track* track = property->track();
@@ -54,7 +54,7 @@ void KeyframeCommand::insert()
   }
 }
 
-void KeyframeCommand::remove()
+void KeyFrameCommand::remove()
 {
   for (auto&& [ property, value ] : m_knots) {
     Track* track = property->track();
@@ -63,19 +63,19 @@ void KeyframeCommand::remove()
   }
 }
 
-InsertKeyframeCommand::
-InsertKeyframeCommand(Animator& animator, int frame,
+InsertKeyFrameCommand::
+InsertKeyFrameCommand(Animator& animator, int frame,
                       const std::set<Property*>& properties)
-  : KeyframeCommand(animator, QObject::tr("Create Keyframe"), frame,
+  : KeyFrameCommand(animator, QObject::tr("Create Keyframe"), frame,
                     create_knots(properties, frame))
 {
 
 }
 
-RemoveKeyframeCommand::
-RemoveKeyframeCommand(Animator& animator, int frame,
+RemoveKeyFrameCommand::
+RemoveKeyFrameCommand(Animator& animator, int frame,
                       const std::set<Property*>& values)
-  : KeyframeCommand(animator, QObject::tr("Remove Keyframe"),
+  : KeyFrameCommand(animator, QObject::tr("Remove Keyframe"),
                     frame, collect_knots(values, frame))
 {
 
@@ -162,6 +162,27 @@ void MoveKeyFrameCommand::shift_keyframes(bool invert)
   } else {
     Q_UNREACHABLE();
   }
+}
+
+ChangeKeyFrameCommand
+::ChangeKeyFrameCommand(int frame, Property& property, std::size_t channel, double new_value)
+  : Command(QObject::tr("Change Keyframes"))
+  , m_frame(frame), m_property(property), m_channel(channel), m_other_value(new_value)
+{
+}
+
+bool ChangeKeyFrameCommand::mergeWith(const QUndoCommand* other)
+{
+  const ChangeKeyFrameCommand& other_ckfc = static_cast<const ChangeKeyFrameCommand&>(*other);
+  return &other_ckfc.m_property == &m_property;
+}
+
+void ChangeKeyFrameCommand::swap()
+{
+  auto& v = m_property.track()->knot_ref(m_frame).value;
+  double old_value = get_channel_value(v, m_channel);
+  set_channel_value(v, m_channel, m_other_value);
+  m_other_value = old_value;
 }
 
 }  // namespace omm

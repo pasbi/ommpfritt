@@ -56,6 +56,8 @@ public:
   variant_type interpolate(double frame) const;
   Knot interpolate_knot(double frame) const;
   Knot knot_at(double frame) const;
+  Knot& knot_ref(int frame);
+  const Knot& knot_ref(int frame) const;
   std::vector<int> key_frames() const;
   void apply(int frame) const;
   void move_knot(int old_frame, int new_frame);

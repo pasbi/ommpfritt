@@ -6,6 +6,8 @@
 #include <Qt>
 #include <QColor>
 
+class QMouseEvent;
+
 namespace omm
 {
 
@@ -38,6 +40,8 @@ public:
 
   std::map<QString, MouseModifier> mouse_modifiers;
   std::map<QString, GridOption> grid_options;
+
+  bool match(const QString& key, QMouseEvent& event, bool check_modifiers) const;
 
 };
 

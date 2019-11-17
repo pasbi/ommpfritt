@@ -9,10 +9,10 @@ namespace omm
 
 class Animator;
 class Property;
-class KeyframeCommand : public Command
+class KeyFrameCommand : public Command
 {
 protected:
-  KeyframeCommand(Animator& animator, const QString& label, int frame,
+  KeyFrameCommand(Animator& animator, const QString& label, int frame,
                   const std::map<Property*, Track::Knot>& values);
   void insert();
   void remove();
@@ -24,19 +24,19 @@ private:
   const QString m_property_key;
 };
 
-class RemoveKeyframeCommand : public KeyframeCommand
+class RemoveKeyFrameCommand : public KeyFrameCommand
 {
 public:
-  RemoveKeyframeCommand(Animator& animator, int frame,
+  RemoveKeyFrameCommand(Animator& animator, int frame,
                         const std::set<Property*>& properties);
   void undo() override { insert(); }
   void redo() override { remove(); }
 };
 
-class InsertKeyframeCommand : public KeyframeCommand
+class InsertKeyFrameCommand : public KeyFrameCommand
 {
 public:
-  InsertKeyframeCommand(Animator& animator, int frame,
+  InsertKeyFrameCommand(Animator& animator, int frame,
                         const std::set<Property*>& properties);
   void undo() override { remove(); }
   void redo() override { insert(); }
@@ -60,7 +60,23 @@ private:
   const std::set<int> m_old_frames;
   int m_shift;
   void shift_keyframes(bool invert);
+};
 
+class ChangeKeyFrameCommand : public Command
+{
+public:
+  ChangeKeyFrameCommand(int frame, Property& property, std::size_t channel, double new_value);
+  void undo() override { swap(); }
+  void redo() override { swap(); }
+  bool mergeWith(const QUndoCommand* other) override;
+  int id() const override { return CHANGE_KEYFRAMES_COMMAND_ID; }
+
+private:
+  const int m_frame;
+  Property& m_property;
+  const std::size_t m_channel;
+  double m_other_value;
+  void swap();
 };
 
 }  // namespace omm

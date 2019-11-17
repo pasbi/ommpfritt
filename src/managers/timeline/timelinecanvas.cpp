@@ -41,7 +41,7 @@ void TimelineCanvas::draw_background(QPainter& painter) const
   painter.save();
   painter.translate(rect.topLeft());
   painter.scale(rect.width(), rect.height());
-  const double ppf = frame_range.units_per_pixel();
+  const double ppf = 1.0 / (frame_range.end - frame_range.begin);
   const double left = (animator.start()-frame_range.begin) * ppf - ppf/2.0;
   const double right = (animator.end()-frame_range.begin) * ppf + ppf/2.0;
   if (left > 0.0) {
@@ -68,7 +68,7 @@ void TimelineCanvas::draw_lines(QPainter& painter) const
   pen.setCosmetic(true);
   painter.setPen(pen);
 
-  const double ppf = frame_range.units_per_pixel();
+  const double ppf = 1.0 / (frame_range.end - frame_range.begin);
   const double ppfs = ppf * frame_range.pixel_range();
 
   for (int frame = frame_range.begin; frame <= frame_range.end + 1; ++frame) {
@@ -150,8 +150,9 @@ void TimelineCanvas::draw_current(QPainter& painter) const
   painter.save();
   painter.translate(rect.topLeft());
   const double x = frame_range.unit_to_pixel(animator.current());
-  const QRectF current_rect(QPointF(x-frame_range.units_per_pixel()/2.0, footer_y()),
-                            QSizeF(frame_range.units_per_pixel(), footer_height));
+  const double fpp = 1.0/(frame_range.end - frame_range.begin);
+  const QRectF current_rect(QPointF(x-fpp/2.0, footer_y()),
+                            QSizeF(fpp, footer_height));
   painter.fillRect(current_rect, ui_color(m_widget, "TimeLine", "slider fill"));
   QPen pen;
   pen.setColor(ui_color(m_widget, "TimeLine", "slider outline"));
@@ -236,10 +237,9 @@ bool TimelineCanvas::mouse_press(QMouseEvent& event)
 bool TimelineCanvas::mouse_move(QMouseEvent& event)
 {
   QPointF d = QPointF(m_last_mouse_pos - event.pos());
-  d = QPointF(d.x() / rect.width(), d.y() / rect.height());
   m_last_mouse_pos = event.pos();
   if (m_pan_active) {
-    pan(d);
+    pan(QPointF(d.x() / rect.width(), d.y() / rect.height()));
     update();
   } else if (m_zoom_active) {
     zoom(d);
@@ -358,9 +358,9 @@ void TimelineCanvas::pan(const QPointF& d)
 
 void TimelineCanvas::zoom(const QPointF& d)
 {
-  const double min_ppf = 0.5 / rect.width();
-  const double max_ppf = 70 / rect.width();
-  frame_range.zoom(m_mouse_down_pos.x(), d.x(), min_ppf, max_ppf);
+  const double min_ppf = 0.02;
+  const double max_ppf = 2.0;
+  frame_range.zoom(m_mouse_down_pos.x() - rect.left(), d.x(), min_ppf, max_ppf);
 }
 
 void TimelineCanvas::synchronize_track_selection_with_animator()
@@ -470,7 +470,7 @@ void TimelineCanvas
   QPen pen;
   pen.setCosmetic(true);
   pen.setColor(ui_color(m_widget, "TimeLine", "key outline"));
-  const QPointF scale(std::clamp(frame_range.width()/2.0, 4.0, 20.0),
+  const QPointF scale(std::clamp(rect.width()/(frame_range.end - frame_range.begin)/2.0, 4.0, 20.0),
                       std::min(footer_y()/2.0, 20.0));
   pen.setWidthF(std::max(0.0, std::min(scale.x(), scale.y())/5.0));
   painter.setPen(pen);

@@ -22,18 +22,6 @@ void set_cursor_position(QWidget& widget, const omm::Vec2f& pos)
   widget.setCursor(cursor);
 }
 
-bool match_mouse_modifiers(const QMouseEvent& event, const QString& key)
-{
-  const auto mm = omm::preferences().mouse_modifiers.at(key);
-  return mm.modifiers == event.modifiers();
-}
-
-bool match_mouse_button_and_modifiers(const QMouseEvent& event, const QString& key)
-{
-  const auto mm = omm::preferences().mouse_modifiers.at(key);
-  return mm.button == event.button() && mm.modifiers == event.modifiers();
-}
-
 double discretize(double value)
 {
   value = std::log10(std::max(0.00001, value));
@@ -46,7 +34,8 @@ template<typename VecT> VecT fold(const VecT& vec)
   return vec;
 }
 
-template<typename F, typename VecT, typename... VecTs> VecT fold(const VecT& vec1, const VecT& vec2, const VecTs&... tail)
+template<typename F, typename VecT, typename... VecTs>
+VecT fold(const VecT& vec1, const VecT& vec2, const VecTs&... tail)
 {
   return fold<F>(F(vec1, vec2), tail...);
 }
@@ -189,9 +178,9 @@ void Viewport::mousePressEvent(QMouseEvent* event)
   const Vec2f cursor_pos = Vec2f(event->pos());
 
   const auto action = [event]() {
-    if (match_mouse_button_and_modifiers(*event, "shift viewport")) {
+    if (preferences().match("shift viewport", *event, true)) {
       return MousePanController::Action::Pan;
-    } else if (match_mouse_button_and_modifiers(*event, "zoom viewport")) {
+    } else if (preferences().match("zoom viewport", *event, true)) {
       return MousePanController::Action::Zoom;
     } else {
       return MousePanController::Action::None;
@@ -233,9 +222,9 @@ void Viewport::mouseMoveEvent(QMouseEvent* event)
       event->accept();
     } else {
       const bool panning = m_pan_controller.action() == MousePanController::Action::Pan
-                           && match_mouse_modifiers(*event, "shift viewport");
+                           && preferences().match("shift viewport", *event, false);
       const bool zooming = m_pan_controller.action() == MousePanController::Action::Zoom
-                           && match_mouse_modifiers(*event, "zoom viewport");
+                           && preferences().match("zoom viewport", *event, false);
       if (panning || zooming) {
         m_pan_controller.apply(delta, m_viewport_transformation);
         event->accept();

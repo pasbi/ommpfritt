@@ -1,4 +1,5 @@
 #include "preferences/preferences.h"
+#include <QMouseEvent>
 #include <QSettings>
 
 namespace
@@ -72,6 +73,16 @@ Preferences::~Preferences()
     settings.setValue(prefix + "/pen_style", static_cast<int>(value.pen_style));
     settings.setValue(prefix + "/pen_width", value.pen_width);
     settings.setValue(prefix + "/zorder", static_cast<int>(value.zorder));
+  }
+}
+
+bool Preferences::match(const QString& key, QMouseEvent& event, bool check_modifiers) const
+{
+  const auto mm = mouse_modifiers.at(key);
+  if (check_modifiers) {
+    return mm.button == event.button() && mm.modifiers == event.modifiers();
+  } else {
+    return mm.modifiers == event.modifiers();
   }
 }
 

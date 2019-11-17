@@ -120,7 +120,8 @@ Q_SIGNALS:
 
   /**
    * @brief selection_changed is emitted when the selection changed.
-   */ void selection_changed(const std::set<AbstractPropertyOwner*>&);
+   */
+  void selection_changed(const std::set<AbstractPropertyOwner*>&);
 
   /**
    * @brief selection_changed is emitted when tag, style, object or tool selection changed.
