@@ -28,30 +28,37 @@ template<typename ViewT> class ItemProxyView : public ViewT
 {
   static_assert(std::is_base_of_v<QAbstractItemView, ViewT>);
 public:
-  explicit ItemProxyView(QWidget* parent = nullptr)
+  ItemProxyView(std::unique_ptr<QAbstractProxyModel> proxy, QWidget* parent = nullptr)
     : ViewT(parent)
-    , m_proxy(new QIdentityProxyModel)
   {
+    set_proxy(std::move(proxy));
+  }
+
+  explicit ItemProxyView(QWidget* parent = nullptr) : ViewT(parent)
+  {
+    set_proxy(std::make_unique<QIdentityProxyModel>());
   }
 
   QAbstractItemModel* model() const { return m_proxy->sourceModel(); }
   QAbstractProxyModel* proxy() const { return m_proxy.get(); }
 
+  void set_proxy(std::unique_ptr<QAbstractProxyModel> proxy)
+  {
+    assert(ViewT::model() == nullptr);  // only set the proxy if model has not yet been set.
+    m_proxy = std::move(proxy);
+  }
+
   void setModel(QAbstractItemModel* model) override
   {
     m_proxy->setSourceModel(model);
+    m_selection_proxy.reset();
     ViewT::setModel(m_proxy.get());
   }
 
-  void setSelectionModel(QItemSelectionModel* selection_model) override
+  void setSelectionModel(QItemSelectionModel* model) override
   {
-    m_selection_proxy = std::make_unique<LinkItemSelectionModel>(m_proxy.get(), selection_model);
+    m_selection_proxy = std::make_unique<LinkItemSelectionModel>(m_proxy.get(), model);
     ViewT::setSelectionModel(m_selection_proxy.get());
-  }
-
-  void set_proxy(std::unique_ptr<QAbstractProxyModel> proxy)
-  {
-    m_proxy = std::move(proxy);
   }
 
 private:

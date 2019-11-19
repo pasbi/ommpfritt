@@ -12,7 +12,7 @@ HistoryManager::HistoryManager(Scene &scene)
   , m_model(scene.history())
 {
   setObjectName(TYPE);
-  auto view = std::make_unique<ItemProxyView<QListView>>();
+  auto view = std::make_unique<QListView>();
   m_view = view.get();
   set_widget(std::move(view));
   m_view->setModel(&m_model);

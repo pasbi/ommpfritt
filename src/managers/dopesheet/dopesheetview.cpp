@@ -17,15 +17,17 @@ namespace
 class ProxyModel : public QIdentityProxyModel
 {
 public:
-  explicit ProxyModel(omm::Animator& source) : m_animator(source)
+  explicit ProxyModel()
   {
-    setSourceModel(&source);
   }
 
   int columnCount(const QModelIndex& index) const { Q_UNUSED(index) return 2; }
   int rowCount(const QModelIndex& index) const
   {
-    if (m_animator.index_type(mapToSource(index)) == omm::Animator::IndexType::Property) {
+    const auto* const animator = this->animator();
+    if (animator == nullptr) {
+      return 0;
+    } else if (animator->index_type(mapToSource(index)) == omm::Animator::IndexType::Property) {
       return 0;
     } else {
       return QIdentityProxyModel::rowCount(index);
@@ -34,7 +36,10 @@ public:
 
   bool hasChildren(const QModelIndex& index) const
   {
-    if (m_animator.index_type(mapToSource(index)) == omm::Animator::IndexType::Property) {
+    const auto* const animator = this->animator();
+    if (animator == nullptr) {
+      return 0;
+    } else if (animator->index_type(mapToSource(index)) == omm::Animator::IndexType::Property) {
       return false;
     } else {
       return QIdentityProxyModel::hasChildren(index);
@@ -42,7 +47,7 @@ public:
   }
 
 private:
-  omm::Animator& m_animator;
+  omm::Animator* animator() const { return static_cast<omm::Animator*>(sourceModel()); }
 };
 
 }  // namespace omm
@@ -51,10 +56,10 @@ namespace omm
 {
 
 DopeSheetView::DopeSheetView(Animator& animator)
-  : m_animator(animator)
+  : ItemProxyView<QTreeView>(std::make_unique<ProxyModel>())
+  , m_animator(animator)
   , m_canvas(m_animator, *this)
 {
-  set_proxy(std::make_unique<ProxyModel>(animator));
   setModel(&animator);
   setHeader(std::make_unique<DopeSheetHeader>(m_canvas).release());
   auto track_view_delegate = std::make_unique<TrackViewDelegate>(*this, m_canvas);
