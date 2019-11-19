@@ -1,4 +1,5 @@
 #include "managers/objectmanager/objectquickaccessdelegate.h"
+#include "mainwindow/application.h"
 #include <QPainter>
 #include <QEvent>
 #include <QMouseEvent>
@@ -14,23 +15,67 @@
 namespace
 {
 
-omm::Object::Visibility advance_visibility(omm::Object::Visibility visibility)
+using namespace omm;
+
+class PropertyArea : public ObjectQuickAccessDelegate::Area
+{
+public:
+  PropertyArea(const QRectF& area, ObjectTreeView& view, const QString& property_key);
+  bool draw_active = false;
+  ObjectTreeView& view;
+  Property& property(const QModelIndex& index) const;
+  virtual std::unique_ptr<Command> make_command(const QModelIndex& index, bool update_cache) = 0;
+  void begin(const QModelIndex& index) override;
+  void end() override;
+  void perform(const QModelIndex& index) override;
+
+private:
+  const QString m_property_key;
+  std::unique_ptr<Command> m_command_on_hold;
+  std::unique_ptr<Macro> m_macro;
+};
+
+class VisibilityPropertyArea : public PropertyArea
+{
+public:
+  explicit VisibilityPropertyArea(ObjectTreeView& view, const QRectF& rect, const QString& key);
+  void draw(QPainter &painter, const QModelIndex &index) override;
+
+protected:
+  std::unique_ptr<Command> make_command(const QModelIndex& index, bool update_cache) override;
+
+private:
+  Object::Visibility m_new_value;
+};
+
+class IsEnabledPropertyArea : public PropertyArea
+{
+public:
+  explicit IsEnabledPropertyArea(ObjectTreeView& view);
+  void draw(QPainter &painter, const QModelIndex &index) override;
+
+protected:
+  std::unique_ptr<Command> make_command(const QModelIndex& index, bool update_cache) override;
+
+private:
+  bool m_new_value;
+};
+
+
+Object::Visibility advance_visibility(Object::Visibility visibility)
 {
   switch (visibility) {
-  case omm::Object::Visibility::Default: return omm::Object::Visibility::Hidden;
-  case omm::Object::Visibility::Hidden: return omm::Object::Visibility::Visible;
-  case omm::Object::Visibility::Visible: return omm::Object::Visibility::Default;
+  case Object::Visibility::Default: return Object::Visibility::Hidden;
+  case Object::Visibility::Hidden: return Object::Visibility::Visible;
+  case Object::Visibility::Visible: return Object::Visibility::Default;
   }
   Q_UNREACHABLE();
 }
 
-}  // namespace
-
-namespace omm
-{
-
-PropertyArea::PropertyArea(const QRectF& area, ObjectTreeView& view, const QString &property_key)
-  : area(area), view(view), m_property_key(property_key)
+PropertyArea::
+PropertyArea(const QRectF& area, ObjectTreeView& view, const QString &property_key)
+  : ObjectQuickAccessDelegate::Area(area)
+  , view(view), m_property_key(property_key)
 {
 }
 
@@ -39,8 +84,45 @@ Property &PropertyArea::property(const QModelIndex &index) const
   return *view.model()->item_at(index).property(m_property_key);
 }
 
-VisibilityPropertyArea::VisibilityPropertyArea(ObjectTreeView& view, const QRectF& rect,
-                                               const QString& key)
+void PropertyArea::begin(const QModelIndex& index)
+{
+  is_active = true;
+  Scene& scene = Application::instance().scene;
+
+  // unfortunately, commands cannot be copied. Creating it twice should be fine...
+  m_command_on_hold = make_command(index, true);
+  auto command = make_command(index, true);
+  scene.submit(std::move(command));
+}
+
+void PropertyArea::end()
+{
+  is_active = false;
+}
+
+void PropertyArea::perform(const QModelIndex& index)
+{
+  auto command = make_command(index, false);
+  if (command != nullptr) {
+    Scene& scene = Application::instance().scene;
+    // if the macro has not yet been started, start it now.
+    if (m_macro == nullptr) {
+      // move the command that was issued on click inside the macro.
+      scene.history().undo();  // remove the single command
+      const QString label = m_command_on_hold->label();
+      m_macro = scene.history().start_macro(label);
+
+      // commit a copy of the removed single command again, now within the macro.
+      scene.submit(std::move(m_command_on_hold));
+    }
+
+    // commit the actual command
+    scene.submit(std::move(command));
+  }
+}
+
+VisibilityPropertyArea::
+VisibilityPropertyArea(ObjectTreeView& view, const QRectF& rect, const QString& key)
   : PropertyArea(rect, view, key)
 {
 }
@@ -58,9 +140,9 @@ void VisibilityPropertyArea::draw(QPainter &painter, const QModelIndex& index)
   painter.setPen(pen);
   painter.setBrush([visibility, this]() {
     switch (visibility) {
-    case omm::Object::Visibility::Default: return ui_color(view, "ObjectManager", "default fill");
-    case omm::Object::Visibility::Hidden: return ui_color(view, "ObjectManager", "invisible fill");
-    case omm::Object::Visibility::Visible: return ui_color(view, "ObjectManager", "visible fill");
+    case Object::Visibility::Default: return ui_color(view, "ObjectManager", "default fill");
+    case Object::Visibility::Hidden: return ui_color(view, "ObjectManager", "invisible fill");
+    case Object::Visibility::Visible: return ui_color(view, "ObjectManager", "visible fill");
     }
     Q_UNREACHABLE();
     return QColor();
@@ -85,8 +167,9 @@ VisibilityPropertyArea::make_command(const QModelIndex &index, bool update_cache
   }
 }
 
-IsEnabledPropertyArea::IsEnabledPropertyArea(ObjectTreeView &view)
-  : PropertyArea(QRectF(QPointF(0.0, 0.0), QSizeF(0.5, 1.0)), view, Object::IS_ACTIVE_PROPERTY_KEY)
+IsEnabledPropertyArea::IsEnabledPropertyArea(ObjectTreeView& view)
+  : PropertyArea(QRectF(QPointF(0.0, 0.0), QSizeF(0.5, 1.0)),
+                 view, Object::IS_ACTIVE_PROPERTY_KEY)
 {
 }
 
@@ -126,103 +209,21 @@ IsEnabledPropertyArea::make_command(const QModelIndex &index, bool update_cache)
   }
 }
 
-ObjectQuickAccessDelegate::ObjectQuickAccessDelegate(ObjectTreeView& view) : m_view(view)
+}  // namespace
+
+namespace omm
 {
-  m_areas.push_back(std::make_unique<IsEnabledPropertyArea>(view));
+
+ObjectQuickAccessDelegate::ObjectQuickAccessDelegate(QAbstractItemView& view)
+  : QuickAccessDelegate(view)
+{
+  ObjectTreeView& otv = static_cast<ObjectTreeView&>(view);
+  add_area(std::make_unique<IsEnabledPropertyArea>(otv));
   using VPA = VisibilityPropertyArea;
-  m_areas.push_back(std::make_unique<VPA>(view, QRectF(QPointF(0.5, 0.5), QSizeF(0.5, 0.5)),
-                                                Object::VISIBILITY_PROPERTY_KEY));
-  m_areas.push_back(std::make_unique<VPA>(view, QRectF(QPointF(0.5, 0.0), QSizeF(0.5, 0.5)),
-                                                Object::VIEWPORT_VISIBILITY_PROPERTY_KEY));
-}
-
-void ObjectQuickAccessDelegate::
-paint(QPainter *painter, const QStyleOptionViewItem &, const QModelIndex &index) const
-{
-  painter->save();
-  painter->setRenderHint(QPainter::HighQualityAntialiasing);
-  const auto rect = m_view.visualRect(index);
-  painter->translate(rect.topLeft());
-  painter->scale(rect.width(), rect.height());
-  for (auto& area : m_areas) {
-    area->draw(*painter, index);
-  }
-
-  // draw_dot(*painter, export_visibility);
-  painter->restore();
-}
-
-QSize ObjectQuickAccessDelegate::sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const
-{
-  return QSize(-1, -1);
-}
-
-bool ObjectQuickAccessDelegate::on_mouse_button_press(QMouseEvent& event)
-{
-  assert(m_macro == nullptr);
-  const auto index = m_view.indexAt(event.pos());
-  const QPointF pos = to_local(event.pos(), index);
-  for (const auto& area : m_areas) {
-    if (area->area.contains(pos)) {
-      area->is_active = true;
-
-      // unfortunately, commands cannot be copied. Creating it twice should be fine...
-      m_command_on_hold = area->make_command(index, true);
-      auto command = area->make_command(index, true);
-      m_view.scene().submit(std::move(command));
-      return true;
-    }
-  }
-  return false;
-}
-
-void ObjectQuickAccessDelegate::on_mouse_move(QMouseEvent &event)
-{
-  const auto index = m_view.indexAt(event.pos());
-  const QPointF pos = to_local(event.pos(), index);
-  for (auto& area : m_areas) {
-    if (area->is_active && area->area.contains(pos)) {
-      auto command = area->make_command(index, false);
-      if (command != nullptr) {
-
-        // if the macro has not yet been started, start it now.
-        if (m_macro == nullptr) {
-          // move the command that was issued on click inside the macro.
-          m_view.scene().history().undo();  // remove the single command
-          const QString label = m_command_on_hold->label();
-          m_macro = m_view.scene().history().start_macro(label);
-
-          // commit a copy of the removed single command again, now within the macro.
-          m_view.scene().submit(std::move(m_command_on_hold));
-        }
-
-        // commit the actual command
-        m_view.scene().submit(std::move(command));
-      }
-    }
-  }
-}
-
-void ObjectQuickAccessDelegate::on_mouse_release(QMouseEvent &event)
-{
-  Q_UNUSED(event)
-  if (m_macro) {
-    m_macro.reset();  // calls the dtor of m_macro, which will end the macro.
-  }
-  for (auto& area : m_areas) {
-    area->is_active = false;
-  }
-}
-
-QPointF
-ObjectQuickAccessDelegate::to_local(const QPoint &view_global, const QModelIndex& index) const
-{
-  assert(m_view.indexAt(view_global) == index);
-  const auto rect = m_view.visualRect(index);
-  auto pos = QPointF(view_global) - rect.topLeft();
-  pos.setX(pos.x() / rect.width());
-  pos.setY(pos.y() / rect.height());
-  return pos;
+  add_area(std::make_unique<VPA>(otv, QRectF(QPointF(0.5, 0.5), QSizeF(0.5, 0.5)),
+                                             Object::VISIBILITY_PROPERTY_KEY));
+  add_area(std::make_unique<VPA>(otv, QRectF(QPointF(0.5, 0.0), QSizeF(0.5, 0.5)),
+                                             Object::VIEWPORT_VISIBILITY_PROPERTY_KEY));
 }
 
 }  // namespace omm

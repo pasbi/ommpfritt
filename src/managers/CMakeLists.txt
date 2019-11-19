@@ -5,6 +5,7 @@ file(GLOB SOURCES
   manageritemview.cpp
   managerregister.cpp
   managertitlebar.cpp
+  quickaccessdelegate.cpp
   range.cpp
 )
 
@@ -13,6 +14,7 @@ file(GLOB HEADERS
   manager.h
   manageritemview.h
   managertitlebar.h
+  quickaccessdelegate.h
   range.h
 )
 
