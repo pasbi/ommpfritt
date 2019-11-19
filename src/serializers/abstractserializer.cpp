@@ -119,6 +119,8 @@ variant_type AbstractDeserializer::get(const AbstractDeserializer::Pointer &poin
     return get<Vec2f>(pointer);
   } else if (type == "IntegerVector") {
     return get<Vec2i>(pointer);
+  } else if (type == "Reference") {
+    return nullptr;
   } else {
     LERROR << "Unknown variant type: '" << type << "'.";
     Q_UNREACHABLE();
