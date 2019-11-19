@@ -377,15 +377,11 @@ void CurveManagerWidget::remove_track(Track& track)
 
 void CurveManagerWidget::add_knot(Track& track, int frame)
 {
-  if (::contains(m_tracks, &track)) {
-    for (std::size_t channel = 0; channel < n_channels(track.property().variant_value()); ++channel) {
-      KeyFrameHandleKey key(track, frame, channel);
-      const auto [_, was_inserted] = m_keyframe_handles.insert({ key, KeyFrameHandleData() });
-      Q_UNUSED(was_inserted)
-      assert(was_inserted);
-    }
-    update();
+  for (std::size_t channel = 0; channel < n_channels(track.property().variant_value()); ++channel) {
+    KeyFrameHandleKey key(track, frame, channel);
+    m_keyframe_handles.insert({ key, KeyFrameHandleData() });
   }
+  update();
 }
 
 void CurveManagerWidget::remove_knot(Track& track, int frame)
@@ -401,10 +397,9 @@ void CurveManagerWidget::remove_knot(Track& track, int frame)
 
 void CurveManagerWidget::move_knot(Track& track, int old_frame, int new_frame)
 {
-  if (::contains(m_tracks, &track)) {
-    for (std::size_t channel = 0; channel < n_channels(track.property().variant_value()); ++channel) {
-      const auto it = m_keyframe_handles.find(KeyFrameHandleKey(track, old_frame, channel));
-      assert(it != m_keyframe_handles.end());
+  for (std::size_t channel = 0; channel < n_channels(track.property().variant_value()); ++channel) {
+    const auto it = m_keyframe_handles.find(KeyFrameHandleKey(track, old_frame, channel));
+    if (it != m_keyframe_handles.end()) {
       const auto node = m_keyframe_handles.extract(it);
       const auto old_key = node.key();
       const auto old_data = node.mapped();
@@ -412,8 +407,8 @@ void CurveManagerWidget::move_knot(Track& track, int old_frame, int new_frame)
       KeyFrameHandleKey key(old_key.track, new_frame, old_key.channel);
       m_keyframe_handles.insert({ key, old_data });
     }
-    update();
   }
+  update();
 }
 
 double CurveManagerWidget::KeyFrameHandleData
