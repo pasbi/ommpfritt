@@ -39,24 +39,19 @@ public:
 
   void setModel(QAbstractItemModel* model) override
   {
-    assert(!this->model());
-    assert(!m_selection_proxy);
     m_proxy->setSourceModel(model);
     ViewT::setModel(m_proxy.get());
   }
 
   void setSelectionModel(QItemSelectionModel* selection_model) override
   {
-    assert(this->model() != nullptr);             // set model first
     m_selection_proxy = std::make_unique<LinkItemSelectionModel>(m_proxy.get(), selection_model);
     ViewT::setSelectionModel(m_selection_proxy.get());
   }
 
   void set_proxy(std::unique_ptr<QAbstractProxyModel> proxy)
   {
-    assert(this->model() == nullptr);             // set model first
-    assert(this->selectionModel() == nullptr);    // set selection model first
-    m_proxy = proxy;
+    m_proxy = std::move(proxy);
   }
 
 private:
