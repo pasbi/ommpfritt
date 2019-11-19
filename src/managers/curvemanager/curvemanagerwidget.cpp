@@ -57,7 +57,7 @@ void CurveManagerWidget::mouseMoveEvent(QMouseEvent* event)
     update();
   } else if (m_zoom_active) {
     frame_range.zoom(m_mouse_down_pos.x(), d.x(), 0.01, 100.00);
-    value_range.zoom(m_mouse_down_pos.y(), d.y(), 0.0001, 100.00);
+    value_range.zoom(m_mouse_down_pos.y(), d.y(), 0.00001, 10000.00);
     update();
   } else if (m_key_being_dragged) {
     m_frame_shift = std::round(  frame_range.pixel_to_unit(event->x())
@@ -377,38 +377,43 @@ void CurveManagerWidget::remove_track(Track& track)
 
 void CurveManagerWidget::add_knot(Track& track, int frame)
 {
-  for (std::size_t channel = 0; channel < n_channels(track.property().variant_value()); ++channel) {
-    KeyFrameHandleKey key(track, frame, channel);
-    const auto [_, was_inserted] = m_keyframe_handles.insert({ key, KeyFrameHandleData() });
-    Q_UNUSED(was_inserted)
-    assert(was_inserted);
+  if (::contains(m_tracks, &track)) {
+    for (std::size_t channel = 0; channel < n_channels(track.property().variant_value()); ++channel) {
+      KeyFrameHandleKey key(track, frame, channel);
+      const auto [_, was_inserted] = m_keyframe_handles.insert({ key, KeyFrameHandleData() });
+      Q_UNUSED(was_inserted)
+      assert(was_inserted);
+    }
+    update();
   }
-  update();
 }
 
 void CurveManagerWidget::remove_knot(Track& track, int frame)
 {
   for (std::size_t channel = 0; channel < n_channels(track.property().variant_value()); ++channel) {
     const auto it = m_keyframe_handles.find(KeyFrameHandleKey(track, frame, channel));
-    assert(it != m_keyframe_handles.end());
-    m_keyframe_handles.erase(it);
+    if (it != m_keyframe_handles.end()) {
+      m_keyframe_handles.erase(it);
+    }
   }
   update();
 }
 
 void CurveManagerWidget::move_knot(Track& track, int old_frame, int new_frame)
 {
-  for (std::size_t channel = 0; channel < n_channels(track.property().variant_value()); ++channel) {
-    const auto it = m_keyframe_handles.find(KeyFrameHandleKey(track, old_frame, channel));
-    assert(it != m_keyframe_handles.end());
-    const auto node = m_keyframe_handles.extract(it);
-    const auto old_key = node.key();
-    const auto old_data = node.mapped();
+  if (::contains(m_tracks, &track)) {
+    for (std::size_t channel = 0; channel < n_channels(track.property().variant_value()); ++channel) {
+      const auto it = m_keyframe_handles.find(KeyFrameHandleKey(track, old_frame, channel));
+      assert(it != m_keyframe_handles.end());
+      const auto node = m_keyframe_handles.extract(it);
+      const auto old_key = node.key();
+      const auto old_data = node.mapped();
 
-    KeyFrameHandleKey key(old_key.track, new_frame, old_key.channel);
-    m_keyframe_handles.insert({ key, old_data });
+      KeyFrameHandleKey key(old_key.track, new_frame, old_key.channel);
+      m_keyframe_handles.insert({ key, old_data });
+    }
+    update();
   }
-  update();
 }
 
 double CurveManagerWidget::KeyFrameHandleData
