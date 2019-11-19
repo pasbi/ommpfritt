@@ -17,6 +17,7 @@ class AbstractPropertyOwner;
 class Track;
 class Scene;
 class Property;
+class ChannelProxy;
 
 class Animator : public QAbstractItemModel, public Serializable
 {
@@ -84,7 +85,9 @@ Q_SIGNALS:
 
   // == ItemModel
 public:
-  enum class IndexType { Property, Owner, None };
+  enum class IndexType { Owner = 0, Property = 1, Channel = 2, None };
+  static constexpr std::underlying_type_t<Qt::ItemDataRole> type_role = Qt::UserRole + 1;
+  static constexpr std::underlying_type_t<Qt::ItemDataRole> channel_role = Qt::UserRole + 2;
   QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
   QModelIndex parent(const QModelIndex &child) const override;
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -92,9 +95,11 @@ public:
   QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
   Qt::ItemFlags flags(const QModelIndex& index) const override;
   QModelIndex index(Property& property, int column = 0) const;
+  QModelIndex index(const std::pair<Property*, std::size_t>& channel, int column = 0) const;
   QModelIndex index(AbstractPropertyOwner& owner, int column = 0) const;
   IndexType index_type(const QModelIndex& index) const;
   Property* property(const QModelIndex& index) const;
+  ChannelProxy& channel(const QModelIndex& index) const;
   AbstractPropertyOwner* owner(const QModelIndex& index) const;
 
   // == access tracks
@@ -141,6 +146,9 @@ private:
   PlayDirection m_current_play_direction = PlayDirection::Stopped;
   QTimer m_timer;
   PlayMode m_play_mode = PlayMode::Repeat;
+
+  // === channel pointers
+  std::map<std::pair<Track*, std::size_t>, std::unique_ptr<ChannelProxy>> m_channel_proxies;
 };
 
 }  // namespace omm

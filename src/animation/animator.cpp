@@ -1,5 +1,5 @@
 #include "animation/animator.h"
-
+#include "animation/channelproxy.h"
 #include "logging.h"
 #include "serializers/abstractserializer.h"
 #include "animation/track.h"
@@ -12,6 +12,7 @@
 #include <functional>
 #include "scene/messagebox.h"
 #include "mainwindow/application.h"
+#include "animation/channelproxy.h"
 
 namespace omm
 {
@@ -42,6 +43,19 @@ Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
   connect(this, SIGNAL(knot_inserted(Track&, int)), this, SIGNAL(track_changed(Track&)));
   connect(this, SIGNAL(track_inserted(Track&)), this, SIGNAL(track_changed(Track&)));
   connect(this, SIGNAL(track_removed(Track&)), this, SIGNAL(track_changed(Track&)));
+
+  connect(this, &Animator::track_inserted, this, [this](Track& track) {
+    for (std::size_t c = 0; c < n_channels(track.property().variant_value()); c++) {
+      m_channel_proxies.insert({{&track, c}, std::make_unique<ChannelProxy>(track, c)});
+    }
+  });
+  connect(this, &Animator::track_removed, this, [this](Track& track) {
+    for (std::size_t c = 0; c < n_channels(track.property().variant_value()); c++) {
+      m_channel_proxies.erase({&track, c});
+    }
+  });
+
+  invalidate();
 }
 
 Animator::~Animator()
@@ -159,6 +173,12 @@ void Animator::invalidate()
 {
   beginResetModel();
   accelerator.invalidate();
+  for (Property* property : accelerator().properties()) {
+    for (std::size_t c = 0; c < n_channels(property->variant_value()); ++c) {
+      Track* track = property->track();
+      m_channel_proxies.insert({{track, c}, std::make_unique<ChannelProxy>(*track, c)});
+    }
+  }
   endResetModel();
 }
 
@@ -169,11 +189,21 @@ Animator::Accelerator Animator::CachedAnimatedPropertiesGetter::compute() const
 
 QModelIndex Animator::index(int row, int column, const QModelIndex &parent) const
 {
-  if (parent.isValid()) {
-    AbstractPropertyOwner* owner = this->owner(parent);
-    return index(*accelerator().properties(*owner).at(row), column);
-  } else {
+  switch (index_type(parent)) {
+  case IndexType::None:
+    // child of root is owner
     return index(*accelerator().owners()[row], column);
+  case IndexType::Owner:
+    // child of owner is property
+    return index(*accelerator().properties(*this->owner(parent)).at(row), column);
+  case IndexType::Property:
+    // child of property is channel
+    return index({ property(parent), row }, column);
+  case IndexType::Channel:
+    [[fallthrough]];
+  default:
+    Q_UNREACHABLE();  // channel index cannot be parent
+    return QModelIndex();
   }
 }
 
@@ -183,9 +213,14 @@ QModelIndex Animator::parent(const QModelIndex &child) const
   case IndexType::None:
     [[fallthrough]];
   case IndexType::Owner:
+    // parent of owner is root.
     return QModelIndex();
   case IndexType::Property:
+    // parent of property is owner
     return index(*accelerator().owner(*property(child)));
+  case IndexType::Channel:
+    // parent of channel is property
+    return index(channel(child).track.property());
   default:
     Q_UNREACHABLE();
     return QModelIndex();
@@ -200,8 +235,14 @@ int Animator::rowCount(const QModelIndex &parent) const
   case IndexType::Owner:
     return accelerator().properties(*owner(parent)).size();
   case IndexType::Property:
-    [[ fallthrough ]];
+  {
+    Property& pp = *property(parent);
+    return n_channels(pp.variant_value());
+  }
+  case IndexType::Channel:
+    return 0;
   default:
+    Q_UNREACHABLE();
     return 0;
   }
 }
@@ -209,42 +250,39 @@ int Animator::rowCount(const QModelIndex &parent) const
 int Animator::columnCount(const QModelIndex &parent) const
 {
   Q_UNUSED(parent);
-  return 2;
+  return 1;
 }
 
 QVariant Animator::data(const QModelIndex &index, int role) const
 {
+  if (!index.isValid()) {
+    return QVariant();
+  }
+  assert(index.column() == 0);
   switch (index_type(index)) {
   case IndexType::Owner:
-    switch (index.column()) {
-    case 0:
-      switch (role) {
-      case Qt::DisplayRole:
-        return owner(index)->name();
-      case Qt::DecorationRole:
-        return Application::instance().icon_provider.icon(*owner(index));
-      default:
-        return QVariant();
-      }
-    case 1:
-      return QVariant();
+    switch (role) {
+    case Qt::DisplayRole:
+      return owner(index)->name();
+    case Qt::DecorationRole:
+      return Application::instance().icon_provider.icon(*owner(index));
     default:
-      Q_UNREACHABLE();  // there are only two columns
+      return QVariant();
     }
     break;
   case IndexType::Property:
-    switch (index.column()) {
-    case 0:
-      switch (role) {
-      case Qt::DisplayRole:
-        return property(index)->label();
-      default:
-        return QVariant();
-      }
-    case 1:
-      return QVariant();
+    switch (role) {
+    case Qt::DisplayRole:
+      return property(index)->label();
     default:
-      Q_UNREACHABLE();  // there are only two columns
+      return QVariant();
+    }
+  case IndexType::Channel:
+    switch (role) {
+    case Qt::DisplayRole:
+      return QString("%1").arg(channel(index).channel);
+    default:
+      return QVariant();
     }
   default:
     Q_UNREACHABLE();
@@ -275,6 +313,12 @@ QModelIndex Animator::index(AbstractPropertyOwner& owner, int column) const
   return createIndex(row, column, &owner);
 }
 
+QModelIndex Animator::index(const std::pair<Property*, std::size_t>& channel, int column) const
+{
+  const auto [property, c] = channel;
+  return createIndex(c, column, m_channel_proxies.at({property->track(), c}).get());
+}
+
 Animator::IndexType Animator::index_type(const QModelIndex& index) const
 {
   if (!index.isValid()) {
@@ -286,6 +330,8 @@ Animator::IndexType Animator::index_type(const QModelIndex& index) const
     return IndexType::Property;
   } else if (internal_pointer->inherits(AbstractPropertyOwner::staticMetaObject.className())) {
     return IndexType::Owner;
+  } else if (internal_pointer->inherits(ChannelProxy::staticMetaObject.className())) {
+    return IndexType::Channel;
   } else {
     Q_UNREACHABLE();
     return IndexType::None;
@@ -296,6 +342,12 @@ Property* Animator::property(const QModelIndex& index) const
 {
   assert(index_type(index) == IndexType::Property);
   return static_cast<Property*>(index.internalPointer());
+}
+
+ChannelProxy& Animator::channel(const QModelIndex& index) const
+{
+  assert(index_type(index) == IndexType::Channel);
+  return *static_cast<ChannelProxy*>(index.internalPointer());
 }
 
 AbstractPropertyOwner* Animator::owner(const QModelIndex& index) const
