@@ -3,6 +3,8 @@
 #include "managers/manager.h"
 #include "managers/timeline/timelinecanvas.h"
 
+class QSortFilterProxyModel;
+
 namespace omm
 {
 
@@ -20,6 +22,7 @@ public:
   bool perform_action(const QString& name) override;
 
 private:
+  QSortFilterProxyModel* m_proxy;
 
 public Q_SLOTS:
   void set_locked(bool locked) { m_is_locked = locked; }
