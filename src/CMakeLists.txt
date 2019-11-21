@@ -3,6 +3,7 @@ file(GLOB SOURCES
   common.cpp
   logging.cpp
   main.cpp
+  proxychain.cpp
   variant.cpp
 )
 
@@ -16,6 +17,7 @@ file(GLOB HEADERS
   menuhelper.h
   orderedmap.h
   variant.h
+  proxychain.h
   translations.h
 )
 
