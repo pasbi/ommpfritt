@@ -11,6 +11,7 @@ namespace omm
 class AbstractPropertyOwner;
 class CurveManagerTitleBar;
 class CurveManagerWidget;
+class QuickAccessDelegate;
 
 class CurveManager : public Manager
 {
@@ -20,9 +21,6 @@ public:
   static constexpr auto TYPE = "CurveManager";
   QString type() const override { return TYPE; }
   bool perform_action(const QString& name) override;
-
-private:
-  QSortFilterProxyModel* m_proxy;
 
 public Q_SLOTS:
   void set_locked(bool locked) { m_is_locked = locked; }
