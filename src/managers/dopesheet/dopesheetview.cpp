@@ -1,4 +1,5 @@
 #include "managers/dopesheet/dopesheetview.h"
+#include <KF5/KItemModels/KExtraColumnsProxyModel>
 #include <QPainter>
 #include <QHeaderView>
 #include <QMouseEvent>
@@ -10,18 +11,14 @@
 #include "properties/property.h"
 #include "managers/dopesheet/dopesheetheader.h"
 #include "aspects/abstractpropertyowner.h"
+#include "proxychain.h"
 
 namespace
 {
 
-class ProxyModel : public QIdentityProxyModel
+class ChopProxyModel : public QIdentityProxyModel
 {
 public:
-  explicit ProxyModel()
-  {
-  }
-
-  int columnCount(const QModelIndex& index) const { Q_UNUSED(index) return 2; }
   int rowCount(const QModelIndex& index) const
   {
     const auto* const animator = this->animator();
@@ -50,13 +47,37 @@ private:
   omm::Animator* animator() const { return static_cast<omm::Animator*>(sourceModel()); }
 };
 
+class AddColumnProxy : public KExtraColumnsProxyModel
+{
+public:
+  explicit AddColumnProxy()
+  {
+    appendColumn();
+  }
+
+  QVariant
+  extraColumnData(const QModelIndex& parent, int row, int extraColumn, int role) const override
+  {
+    Q_UNUSED(parent)
+    Q_UNUSED(row)
+    Q_UNUSED(extraColumn)
+    Q_UNUSED(role)
+    // the extra column displays a delegate which does not rely on data.
+    return QVariant();
+  }
+};
+
 }  // namespace omm
 
 namespace omm
 {
 
 DopeSheetView::DopeSheetView(Animator& animator)
-  : ItemProxyView<QTreeView>(std::make_unique<ProxyModel>())
+  : ItemProxyView<QTreeView>(std::make_unique<ProxyChain>(
+      ProxyChain::concatenate<std::unique_ptr<QAbstractProxyModel>>(
+        std::make_unique<ChopProxyModel>(),
+        std::make_unique<AddColumnProxy>()
+    )))
   , m_animator(animator)
   , m_canvas(m_animator, *this)
 {
