@@ -102,6 +102,24 @@ public:
   ChannelProxy& channel(const QModelIndex& index) const;
   AbstractPropertyOwner* owner(const QModelIndex& index) const;
 
+  template<typename F> auto visit_item(const QModelIndex& index, F&& f)
+  {
+    if (index.isValid()) {
+      switch (index_type(index)) {
+      case omm::Animator::IndexType::Owner:
+        return f(*owner(index));
+      case omm::Animator::IndexType::Property:
+        return f(*property(index));
+      case omm::Animator::IndexType::Channel:
+        return f(channel(index));
+      case omm::Animator::IndexType::None:
+        Q_UNREACHABLE();
+      }
+    }
+    Q_UNREACHABLE();
+    return f(*owner(index));  // this does not make sence, only silence compiler warning.
+  }
+
   // == access tracks
 public:
   class Accelerator
