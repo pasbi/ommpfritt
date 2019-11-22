@@ -1,4 +1,7 @@
 #include "managers/curvemanager/curvetree.h"
+#include <QMouseEvent>
+#include "mainwindow/application.h"
+#include "animation/channelproxy.h"
 #include "proxychain.h"
 #include "common.h"
 #include <QSortFilterProxyModel>
@@ -16,31 +19,28 @@ namespace
 class FilterSelectedProxyModel : public QSortFilterProxyModel
 {
 public:
-  explicit FilterSelectedProxyModel()
+  explicit FilterSelectedProxyModel(omm::Animator& animator) : m_animator(animator)
   {
   }
 
   bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override
   {
-    return true;
-    const auto* const animator = this->animator();
-    if (animator == nullptr) {
-      return true;
-    } else if (!source_parent.isValid()) {
-      const QModelIndex source_index = animator->index(source_row, 0, QModelIndex());
-      assert(animator->index_type(source_index) == omm::Animator::IndexType::Owner);
-      return ::contains(animator->scene.selection(), animator->owner(source_index));
-    } else if (animator->index_type(source_parent) == omm::Animator::IndexType::Owner) {
-      const QModelIndex source_index = animator->index(source_row, 0, source_parent);
-      assert(animator->index_type(source_index) == omm::Animator::IndexType::Property);
-      return omm::n_channels(animator->property(source_index)->variant_value()) > 0;
+    assert(!source_parent.isValid() || &m_animator == source_parent.model());
+    if (!source_parent.isValid()) {
+      const QModelIndex source_index = m_animator.index(source_row, 0, QModelIndex());
+      assert(m_animator.index_type(source_index) == omm::Animator::IndexType::Owner);
+      return ::contains(m_animator.scene.selection(), m_animator.owner(source_index));
+    } else if (m_animator.index_type(source_parent) == omm::Animator::IndexType::Owner) {
+      const QModelIndex source_index = m_animator.index(source_row, 0, source_parent);
+      assert(m_animator.index_type(source_index) == omm::Animator::IndexType::Property);
+      return omm::n_channels(m_animator.property(source_index)->variant_value()) > 0;
     } else {
       return true;
     }
   }
 
 private:
-  omm::Animator* animator() const { return static_cast<omm::Animator*>(sourceModel()); }
+  omm::Animator& m_animator;
 };
 
 class AddColumnProxy : public KExtraColumnsProxyModel
@@ -70,9 +70,11 @@ namespace omm
 {
 
 CurveTree::CurveTree(Scene& scene)
-  : m_quick_access_delegate(std::make_unique<CurveManagerQuickAccessDelegate>(*this))
+  : m_scene(scene)
+  , m_quick_access_delegate(std::make_unique<CurveManagerQuickAccessDelegate>(scene.animator(),
+                                                                              *this))
 {
-  auto filter_proxy = std::make_unique<FilterSelectedProxyModel>();
+  auto filter_proxy = std::make_unique<FilterSelectedProxyModel>(scene.animator());
   auto add_proxy = std::make_unique<AddColumnProxy>();
   connect(&scene.message_box(), SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),
           filter_proxy.get(), SLOT(invalidate()));
@@ -83,10 +85,167 @@ CurveTree::CurveTree(Scene& scene)
   )));
 
   setModel(&scene.animator());
-  setItemDelegateForColumn(1, m_quick_access_delegate.get());
-  header()->setSectionResizeMode(1, QHeaderView::Fixed);
-  header()->resizeSection(1, quick_access_delegate_width);
-//  header()->hide();
+  setItemDelegateForColumn(m_quick_access_delegate_column, m_quick_access_delegate.get());
+  header()->setSectionResizeMode(QHeaderView::Fixed);
+  header()->setStretchLastSection(true);
+  header()->hide();
+}
+
+CurveTree::~CurveTree()
+{
+
+}
+
+CurveTree::Visibility CurveTree::is_visible(AbstractPropertyOwner& apo) const
+{
+  bool visible = false;
+  bool invisible = false;
+  Animator& animator = Application::instance().scene.animator();
+  for (Property* property : animator.accelerator().properties(apo)) {
+    if (n_channels(property->variant_value()) > 0) {
+      switch(is_visible(*property)) {
+      case Visibility::Hidden:
+        invisible = true;
+        break;
+      case Visibility::Visible:
+        visible = true;
+        break;
+      case Visibility::Undetermined:
+        return Visibility::Undetermined;
+      }
+
+      if (visible && invisible) {
+        return Visibility::Undetermined;
+      }
+    }
+  }
+  if (visible) {
+    return Visibility::Visible;
+  } else {
+    return Visibility::Hidden;
+  }
+}
+
+CurveTree::Visibility CurveTree::is_visible(Property& property) const
+{
+  bool visible = false;
+  bool invisible = false;
+  const std::size_t n = n_channels(property.variant_value());
+  assert(n > 0);
+  for (std::size_t c = 0; c < n; ++c) {
+    switch (is_visible({ &property, c })) {
+    case Visibility::Visible:
+      visible = true;
+      break;
+    case Visibility::Hidden:
+      invisible = true;
+      break;
+    default:
+      Q_UNREACHABLE();
+    }
+
+    if (visible && invisible) {
+      return Visibility::Undetermined;
+    }
+  }
+  if (visible) {
+    return Visibility::Visible;
+  } else if (invisible) {
+    return Visibility::Hidden;
+  } else {
+    Q_UNREACHABLE();
+    return Visibility::Undetermined;
+  }
+}
+
+CurveTree::Visibility CurveTree::is_visible(const std::pair<Property*, std::size_t>& channel) const
+{
+  auto it = m_channel_visible.find(channel);
+  if (it == m_channel_visible.end()) {
+    return Visibility::Visible;  // default
+  } else {
+    return it->second ? Visibility::Visible : Visibility::Hidden;
+  }
+}
+
+CurveTree::Visibility CurveTree::is_visible(const ChannelProxy& channel) const
+{
+  return is_visible({ &channel.track.property(), channel.channel });
+}
+
+void CurveTree::set_visible(AbstractPropertyOwner& apo, bool visible)
+{
+  {
+    QSignalBlocker blocker(this);
+    for (Property* property : m_scene.animator().accelerator().properties(apo)) {
+      set_visible(*property, visible);
+    }
+  }
+  emit_data_changed_upwards(m_scene.animator().index(apo));
+}
+
+void CurveTree::set_visible(Property& property, bool visible)
+{
+  {
+    QSignalBlocker blocker(this);
+    for (std::size_t c = 0; c < n_channels(property.variant_value()); ++c) {
+      set_visible({ &property, c }, visible);
+    }
+  }
+  emit_data_changed_upwards(m_scene.animator().index(property));
+}
+
+void CurveTree::set_visible(const ChannelProxy& channel, bool visible)
+{
+  set_visible({ &channel.track.property(), channel.channel }, visible);
+}
+
+void CurveTree::set_visible(const std::pair<Property*, std::size_t>& channel, bool visible)
+{
+  m_channel_visible[channel] = visible;
+  emit_data_changed_upwards(m_scene.animator().index(channel));
+}
+
+void CurveTree::resizeEvent(QResizeEvent* event)
+{
+  const int width = viewport()->width();
+  header()->resizeSection(0, width - quick_access_delegate_width);
+  ItemProxyView::resizeEvent(event);
+}
+
+void CurveTree::mousePressEvent(QMouseEvent* event)
+{
+  m_mouse_down_index = indexAt(event->pos());
+  if (m_mouse_down_index.column() == m_quick_access_delegate_column) {
+    m_quick_access_delegate->on_mouse_button_press(*event);
+  } else {
+    ItemProxyView::mousePressEvent(event);
+  }
+}
+
+void CurveTree::mouseMoveEvent(QMouseEvent* event)
+{
+  if (m_mouse_down_index.column() == m_quick_access_delegate_column) {
+    m_quick_access_delegate->on_mouse_move(*event);
+  } else {
+    ItemProxyView::mouseMoveEvent(event);
+  }
+}
+
+void CurveTree::mouseReleaseEvent(QMouseEvent* event)
+{
+  m_quick_access_delegate->on_mouse_release(*event);
+  ItemProxyView::mouseReleaseEvent(event);
+}
+
+void CurveTree::emit_data_changed_upwards(const QModelIndex& sindex)
+{
+  ProxyChain& proxy_chain = static_cast<ProxyChain&>(*ItemProxyView::model());
+  QModelIndex index = proxy_chain.mapFromChainSource(sindex).siblingAtColumn(m_quick_access_delegate_column);
+  while (index.isValid()) {
+    Q_EMIT dataChanged(index, index);
+    index = index.parent().siblingAtColumn(m_quick_access_delegate_column);
+  }
 }
 
 }  // namespace omm

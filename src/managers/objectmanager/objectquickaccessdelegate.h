@@ -15,8 +15,6 @@ class Tag;
 class ObjectTreeSelectionModel;
 class Property;
 
-
-
 class ObjectQuickAccessDelegate : public QuickAccessDelegate
 {
 public:

@@ -5,7 +5,7 @@
 #include "scene/messagebox.h"
 #include "managers/curvemanager/curvemanagertitlebar.h"
 #include "managers/curvemanager/curvemanagerwidget.h"
-#include "managers/curvemanager/curvemanagerquickaccessdelegate.h"
+#include "managers/curvemanager/curvetree.h"
 #include <QSplitter>
 #include <QTreeView>
 #include "animation/animator.h"
