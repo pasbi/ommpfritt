@@ -31,7 +31,7 @@ ManagerItemView<ItemViewT, ItemModelT>::ManagerItemView(ItemModelT& model)
 template<typename ItemViewT, typename ItemModelT>
 ItemModelT* ManagerItemView<ItemViewT, ItemModelT>::model() const
 {
-  return static_cast<ItemModelT*>(ItemViewT::model());
+  return static_cast<ItemModelT*>(ItemViewT::model()->chainSourceModel());
 }
 
 template<typename ItemViewT, typename ItemModelT>

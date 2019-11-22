@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <memory>
 #include <KF5/KItemModels/KLinkItemSelectionModel>
+#include "proxychain.h"
 
 namespace omm
 {
@@ -28,7 +29,7 @@ template<typename ViewT> class ItemProxyView : public ViewT
 {
   static_assert(std::is_base_of_v<QAbstractItemView, ViewT>);
 public:
-  ItemProxyView(std::unique_ptr<QAbstractProxyModel> proxy, QWidget* parent = nullptr)
+  ItemProxyView(std::unique_ptr<ProxyChain> proxy, QWidget* parent = nullptr)
     : ViewT(parent)
   {
     set_proxy(std::move(proxy));
@@ -36,13 +37,12 @@ public:
 
   explicit ItemProxyView(QWidget* parent = nullptr) : ViewT(parent)
   {
-    set_proxy(std::make_unique<QIdentityProxyModel>());
+    set_proxy(std::make_unique<ProxyChain>());
   }
 
-  QAbstractItemModel* model() const { return m_proxy->sourceModel(); }
-  QAbstractProxyModel* proxy() const { return m_proxy.get(); }
+  ProxyChain* model() const { return m_proxy.get(); }
 
-  void set_proxy(std::unique_ptr<QAbstractProxyModel> proxy)
+  void set_proxy(std::unique_ptr<ProxyChain> proxy)
   {
     assert(ViewT::model() == nullptr);  // only set the proxy if model has not yet been set.
     m_proxy = std::move(proxy);
@@ -62,7 +62,7 @@ public:
   }
 
 private:
-  std::unique_ptr<QAbstractProxyModel> m_proxy;
+  std::unique_ptr<ProxyChain> m_proxy;
   std::unique_ptr<LinkItemSelectionModel> m_selection_proxy;
 };
 
