@@ -38,7 +38,7 @@ bool QuickAccessDelegate::on_mouse_button_press(QMouseEvent& event)
   const QPointF pos = to_local(event.pos(), index);
   for (const auto& area : m_areas) {
     if (area->area.contains(pos)) {
-      area->begin(index);
+      area->begin(index, event);
       return true;
     }
   }
@@ -51,7 +51,7 @@ void QuickAccessDelegate::on_mouse_move(QMouseEvent &event)
   const QPointF pos = to_local(event.pos(), index);
   for (auto& area : m_areas) {
     if (area->is_active && area->area.contains(pos)) {
-      area->perform(index);
+      area->perform(index, event);
     }
   }
 }

@@ -202,6 +202,15 @@ void CurveTree::set_visible(const ChannelProxy& channel, bool visible)
   set_visible({ &channel.track.property(), channel.channel }, visible);
 }
 
+void CurveTree::hide_everything()
+{
+  for (auto&& [k, v] : m_channel_visible) {
+    v = false;
+  }
+  Q_EMIT m_add_column_proxy->dataChanged(QModelIndex(), QModelIndex());
+  Q_EMIT visibility_changed();
+}
+
 void CurveTree::set_visible(const std::pair<Property*, std::size_t>& channel, bool visible)
 {
   m_channel_visible[channel] = visible;

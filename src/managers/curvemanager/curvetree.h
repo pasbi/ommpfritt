@@ -35,6 +35,7 @@ public:
   void set_visible(Property& property, bool visible);
   void set_visible(const std::pair<Property*, std::size_t>& channel, bool visible);
   void set_visible(const ChannelProxy& channel, bool visible);
+  void hide_everything();
 
 protected:
   void resizeEvent(QResizeEvent* event) override;

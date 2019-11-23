@@ -25,9 +25,9 @@ public:
     virtual void draw(QPainter& painter, const QModelIndex& index) = 0;
     const QRectF area;
     bool is_active = false;
-    virtual void begin(const QModelIndex& index) = 0;
+    virtual void begin(const QModelIndex& index, QMouseEvent& event) = 0;
     virtual void end() = 0;
-    virtual void perform(const QModelIndex& index) = 0;
+    virtual void perform(const QModelIndex& index, QMouseEvent& event) = 0;
   };
 
 protected:

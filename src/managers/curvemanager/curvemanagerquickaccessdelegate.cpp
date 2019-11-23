@@ -1,4 +1,5 @@
 #include "managers/curvemanager/curvemanagerquickaccessdelegate.h"
+#include <QMouseEvent>
 #include "proxychain.h"
 #include "mainwindow/application.h"
 #include "logging.h"
@@ -15,8 +16,8 @@ class VisibilityArea : public omm::QuickAccessDelegate::Area
 public:
   VisibilityArea(omm::CurveTree& view, omm::Animator& animator, const QRectF& area);
   void draw(QPainter& painter, const QModelIndex& index) override;
-  void begin(const QModelIndex& index) override;
-  void perform(const QModelIndex& index) override;
+  void begin(const QModelIndex& index, QMouseEvent& event) override;
+  void perform(const QModelIndex& index, QMouseEvent& event) override;
   void end() override;
 
 private:
@@ -76,12 +77,16 @@ void VisibilityArea::draw(QPainter& painter, const QModelIndex& index)
   painter.fillRect(area, QColor(color));
 }
 
-void VisibilityArea::begin(const QModelIndex& index)
+void VisibilityArea::begin(const QModelIndex& index, QMouseEvent& event)
 {
   is_active = true;
   const auto& proxy_chain = *static_cast<omm::ProxyChain*>(m_view.model());
   const QModelIndex sindex = proxy_chain.mapToChainSource(index.siblingAtColumn(0));
   if (sindex.isValid()) {
+    if (event.modifiers() & Qt::ControlModifier) {
+      is_active = false;
+      m_view.hide_everything();
+    }
     m_animator.visit_item(sindex, [this](auto&& item) {
       m_visibility = omm::CurveTree::Visibility::Visible != m_view.is_visible(item);
       m_view.set_visible(item, m_visibility);
@@ -89,7 +94,7 @@ void VisibilityArea::begin(const QModelIndex& index)
   }
 }
 
-void VisibilityArea::perform(const QModelIndex& index)
+void VisibilityArea::perform(const QModelIndex& index, QMouseEvent& event)
 {
   const auto& proxy_chain = *static_cast<omm::ProxyChain*>(m_view.model());
   const QModelIndex sindex = proxy_chain.mapToChainSource(index.siblingAtColumn(0));
