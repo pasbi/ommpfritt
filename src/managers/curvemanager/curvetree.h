@@ -19,6 +19,7 @@ class ChannelProxy;
 
 class CurveTree : public ItemProxyView<QTreeView>
 {
+  Q_OBJECT
 public:
   explicit CurveTree(Scene& scene);
   ~CurveTree();
@@ -49,7 +50,11 @@ private:
   static constexpr int m_quick_access_delegate_column = 1;
   std::unique_ptr<QuickAccessDelegate> m_quick_access_delegate;
   QModelIndex m_mouse_down_index;
-  void emit_data_changed_upwards(const QModelIndex& sindex);
+  void notify_second_column_changed(const QModelIndex& sindex);
+  QAbstractProxyModel* m_add_column_proxy;
+
+Q_SIGNALS:
+  void visibility_changed();
 };
 
 

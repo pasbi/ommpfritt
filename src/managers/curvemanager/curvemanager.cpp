@@ -22,10 +22,10 @@ CurveManager::CurveManager(Scene& scene)
   m_title_bar = title_bar.get();
   setTitleBarWidget(title_bar.release());
 
-  auto curve_manager_widget = std::make_unique<CurveManagerWidget>(scene);
+  auto tree_widget = std::make_unique<CurveTree>(scene);
+  auto curve_manager_widget = std::make_unique<CurveManagerWidget>(scene, *tree_widget);
   m_widget = curve_manager_widget.get();
 
-  auto tree_widget = std::make_unique<CurveTree>(scene);
 
   auto splitter = std::make_unique<QSplitter>(Qt::Horizontal);
   splitter->addWidget(tree_widget.release());

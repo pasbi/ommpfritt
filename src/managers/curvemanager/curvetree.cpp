@@ -79,6 +79,8 @@ CurveTree::CurveTree(Scene& scene)
   connect(&scene.message_box(), SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),
           filter_proxy.get(), SLOT(invalidate()));
 
+  m_add_column_proxy = add_proxy.get();
+
   set_proxy(std::make_unique<ProxyChain>(ProxyChain::concatenate<std::unique_ptr<QAbstractProxyModel>>(
     std::move(filter_proxy),
     std::move(add_proxy)
@@ -181,7 +183,7 @@ void CurveTree::set_visible(AbstractPropertyOwner& apo, bool visible)
       set_visible(*property, visible);
     }
   }
-  emit_data_changed_upwards(m_scene.animator().index(apo));
+  notify_second_column_changed(m_scene.animator().index(apo));
 }
 
 void CurveTree::set_visible(Property& property, bool visible)
@@ -192,7 +194,7 @@ void CurveTree::set_visible(Property& property, bool visible)
       set_visible({ &property, c }, visible);
     }
   }
-  emit_data_changed_upwards(m_scene.animator().index(property));
+  notify_second_column_changed(m_scene.animator().index(property));
 }
 
 void CurveTree::set_visible(const ChannelProxy& channel, bool visible)
@@ -203,7 +205,7 @@ void CurveTree::set_visible(const ChannelProxy& channel, bool visible)
 void CurveTree::set_visible(const std::pair<Property*, std::size_t>& channel, bool visible)
 {
   m_channel_visible[channel] = visible;
-  emit_data_changed_upwards(m_scene.animator().index(channel));
+  notify_second_column_changed(m_scene.animator().index(channel));
 }
 
 void CurveTree::resizeEvent(QResizeEvent* event)
@@ -238,14 +240,15 @@ void CurveTree::mouseReleaseEvent(QMouseEvent* event)
   ItemProxyView::mouseReleaseEvent(event);
 }
 
-void CurveTree::emit_data_changed_upwards(const QModelIndex& sindex)
+void CurveTree::notify_second_column_changed(const QModelIndex& sindex)
 {
   ProxyChain& proxy_chain = static_cast<ProxyChain&>(*ItemProxyView::model());
   QModelIndex index = proxy_chain.mapFromChainSource(sindex).siblingAtColumn(m_quick_access_delegate_column);
   while (index.isValid()) {
-    Q_EMIT dataChanged(index, index);
+    Q_EMIT m_add_column_proxy->dataChanged(index, index);
     index = index.parent().siblingAtColumn(m_quick_access_delegate_column);
   }
+  Q_EMIT visibility_changed();
 }
 
 }  // namespace omm

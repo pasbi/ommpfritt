@@ -1,4 +1,5 @@
 #include "managers/curvemanager/curvemanagerwidget.h"
+#include "managers/curvemanager/curvetree.h"
 #include "properties/property.h"
 #include "scene/history/historymodel.h"
 #include "scene/scene.h"
@@ -15,17 +16,20 @@
 namespace omm
 {
 
-CurveManagerWidget::CurveManagerWidget(Scene& scene)
-  : value_range(*this), frame_range(*this), m_scene(scene)
+CurveManagerWidget::CurveManagerWidget(Scene& scene, const CurveTree& curve_tree)
+  : value_range(*this), frame_range(*this), m_scene(scene), m_curve_tree(curve_tree)
 {
   connect(&scene.message_box(), SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),
           this, SLOT(set_selection(const std::set<AbstractPropertyOwner*>)));
   connect(&scene.animator(), SIGNAL(track_inserted(Track&)), this, SLOT(add_track(Track&)));
   connect(&scene.animator(), SIGNAL(track_removed(Track&)), this, SLOT(remove_track(Track&)));
   connect(&scene.animator(), SIGNAL(knot_inserted(Track&, int)), this, SLOT(add_knot(Track&, int)));
-  connect(&scene.animator(), SIGNAL(knot_removed(Track&, int)), this, SLOT(remove_knot(Track&, int)));
-  connect(&scene.animator(), SIGNAL(knot_moved(Track&, int, int)), this, SLOT(move_knot(Track&, int, int)));
+  connect(&scene.animator(), SIGNAL(knot_removed(Track&, int)),
+          this, SLOT(remove_knot(Track&, int)));
+  connect(&scene.animator(), SIGNAL(knot_moved(Track&, int, int)),
+          this, SLOT(move_knot(Track&, int, int)));
   setFocusPolicy(Qt::StrongFocus);
+  connect(&curve_tree, SIGNAL(visibility_changed()), this, SLOT(update()));
 }
 
 void CurveManagerWidget::set_selection_locked(bool locked)
@@ -93,7 +97,7 @@ void CurveManagerWidget::mousePressEvent(QMouseEvent* event)
     m_zoom_active = true;
   } else if (const auto ks = keyframe_handles_at(event->pos()); !ks.empty()) {
     const bool is_selected = std::any_of(ks.begin(), ks.end(), [this](const auto* key) {
-      return m_keyframe_handles.at(*key).is_selected;
+      return m_keyframe_handles.at(*key).is_selected && is_visible(*key);
     });
     if (is_selected) {
       // the clicked keyframe is selected
@@ -105,7 +109,9 @@ void CurveManagerWidget::mousePressEvent(QMouseEvent* event)
         }
       }
       for (auto& k : ks) {
-        m_keyframe_handles.at(*k).is_selected = true;
+        if (is_visible(*k)) {
+          m_keyframe_handles.at(*k).is_selected = true;
+        }
       }
       m_key_being_dragged = true;
     }
@@ -122,16 +128,19 @@ void CurveManagerWidget::mousePressEvent(QMouseEvent* event)
 
 void CurveManagerWidget::mouseReleaseEvent(QMouseEvent* event)
 {
+  static const auto is_selected_and_visible = [this](auto&& kd) {
+    return kd.second.is_selected && is_visible(kd.first);
+  };
+
   m_pan_active = false;
   m_zoom_active = false;
   if (m_key_being_dragged && (m_frame_shift != 0 || m_value_shift != 0)) {
-    static const auto is_selected = [](auto&& kd) { return kd.second.is_selected; };
-    if (std::any_of(m_keyframe_handles.begin(), m_keyframe_handles.end(), is_selected)) {
+    if (std::any_of(m_keyframe_handles.begin(), m_keyframe_handles.end(), is_selected_and_visible)) {
       auto& animator = m_scene.animator();
       auto macro = m_scene.history().start_macro("Move Keyframes");
       const auto keyframe_handles = m_keyframe_handles;
       for (auto&& [key, data] : keyframe_handles) {
-        if (data.is_selected) {
+        if (is_selected_and_visible(std::pair{ key, data })) {
           auto& property = key.track.property();
           const double new_value = data.value(key) + m_value_shift;
           m_scene.submit<ChangeKeyFrameCommand>(key.frame, property, key.channel, new_value);
@@ -140,7 +149,7 @@ void CurveManagerWidget::mouseReleaseEvent(QMouseEvent* event)
 
       std::map<Track*, std::set<int>> shifted_keyframes;
       for (auto&& [key, data] : keyframe_handles) {
-        if (data.is_selected) {
+        if (data.is_selected && is_visible(key)) {
           shifted_keyframes[&key.track].insert(key.frame);
         }
       }
@@ -156,7 +165,9 @@ void CurveManagerWidget::mouseReleaseEvent(QMouseEvent* event)
   }
 
   for (auto&& [key, data] : m_keyframe_handles) {
-    data.is_selected |= data.inside_rubberband;
+    if (is_visible(key)) {
+      data.is_selected |= data.inside_rubberband;
+    }
     data.inside_rubberband = false;
   }
 
@@ -184,6 +195,16 @@ void CurveManagerWidget::keyPressEvent(QKeyEvent* event)
   QWidget::keyPressEvent(event);
 }
 
+bool CurveManagerWidget::is_visible(const CurveManagerWidget::KeyFrameHandleKey& key) const
+{
+  return is_visible(key.track, key.channel);
+}
+
+bool CurveManagerWidget::is_visible(const Track& track, std::size_t channel) const
+{
+  return m_curve_tree.is_visible({ &track.property(), channel }) == CurveTree::Visibility::Visible;
+}
+
 std::set<const CurveManagerWidget::KeyFrameHandleKey*>
 CurveManagerWidget::keyframe_handles_at(const QPointF& point) const
 {
@@ -207,23 +228,25 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
   const int frame_advance = std::max(1, frames_per_pixel);
   for (Track* track : m_tracks) {
     for (std::size_t c = 0; c < n_channels(track->property().variant_value()); ++c) {
-      QPen pen;
-      const QString color_name = QString("%1-%2-fcurve").arg(track->type()).arg(c);
-      pen.setColor(ui_color(QPalette::Active, "TimeLine", color_name));
-      painter.setPen(pen);
-      auto last_knot = track->knot_at(std::floor(frame_range.begin - frame_advance));
-      for (int frame = frame_range.begin;
-           frame <= frame_range.end + frame_advance;
-           frame += frame_advance)
-      {
-        auto knot = track->knot_at(frame);
-        const double v0 = get_channel_value(last_knot.value, c);
-        const double v1 = get_channel_value(knot.value, c);
-        painter.drawLine(QPointF(frame_range.unit_to_pixel(frame - frame_advance),
-                                 value_range.unit_to_pixel(v0)),
-                         QPointF(frame_range.unit_to_pixel(frame),
-                                 value_range.unit_to_pixel(v1)));
-        last_knot = knot;
+      if (is_visible(*track, c)) {
+        QPen pen;
+        const QString color_name = QString("%1-%2-fcurve").arg(track->type()).arg(c);
+        pen.setColor(ui_color(QPalette::Active, "TimeLine", color_name));
+        painter.setPen(pen);
+        auto last_knot = track->knot_at(std::floor(frame_range.begin - frame_advance));
+        for (int frame = frame_range.begin;
+             frame <= frame_range.end + frame_advance;
+             frame += frame_advance)
+        {
+          auto knot = track->knot_at(frame);
+          const double v0 = get_channel_value(last_knot.value, c);
+          const double v1 = get_channel_value(knot.value, c);
+          painter.drawLine(QPointF(frame_range.unit_to_pixel(frame - frame_advance),
+                                   value_range.unit_to_pixel(v0)),
+                           QPointF(frame_range.unit_to_pixel(frame),
+                                   value_range.unit_to_pixel(v1)));
+          last_knot = knot;
+        }
       }
     }
   }
@@ -288,23 +311,25 @@ void CurveManagerWidget::draw_scale(QPainter& painter) const
 void CurveManagerWidget::draw_knots(QPainter& painter) const
 {
   for (const auto& [key, data] : m_keyframe_handles) {
-    const QPointF center(frame_range.unit_to_pixel(key.frame),
-                         value_range.unit_to_pixel(data.value(key)));
-    painter.save();
-    if (data.is_selected || data.inside_rubberband) {
-      painter.setBrush(ui_color(QPalette::Active, "TimeLine", "key selected"));
-      painter.drawEllipse(center, radius, radius);
-      if (m_key_being_dragged) {
-        const QPointF center(frame_range.unit_to_pixel(key.frame + m_frame_shift),
-                             value_range.unit_to_pixel(data.value(key) + m_value_shift));
-        painter.setBrush(ui_color(QPalette::Active, "TimeLine", "key dragged"));
+    if (is_visible(key.track, key.channel)) {
+      const QPointF center(frame_range.unit_to_pixel(key.frame),
+                           value_range.unit_to_pixel(data.value(key)));
+      painter.save();
+      if (data.is_selected || data.inside_rubberband) {
+        painter.setBrush(ui_color(QPalette::Active, "TimeLine", "key selected"));
+        painter.drawEllipse(center, radius, radius);
+        if (m_key_being_dragged) {
+          const QPointF center(frame_range.unit_to_pixel(key.frame + m_frame_shift),
+                               value_range.unit_to_pixel(data.value(key) + m_value_shift));
+          painter.setBrush(ui_color(QPalette::Active, "TimeLine", "key dragged"));
+          painter.drawEllipse(center, radius, radius);
+        }
+      } else {
+        painter.setBrush(ui_color(QPalette::Active, "TimeLine", "key normal"));
         painter.drawEllipse(center, radius, radius);
       }
-    } else {
-      painter.setBrush(ui_color(QPalette::Active, "TimeLine", "key normal"));
-      painter.drawEllipse(center, radius, radius);
+      painter.restore();
     }
-    painter.restore();
   }
 }
 

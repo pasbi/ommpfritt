@@ -9,12 +9,13 @@ namespace omm
 {
 
 class Manager;
+class CurveTree;
 
 class CurveManagerWidget : public QWidget
 {
   Q_OBJECT
 public:
-  explicit CurveManagerWidget(Scene& scene);
+  explicit CurveManagerWidget(Scene& scene, const CurveTree& curve_tree);
   void set_selection_locked(bool locked);
 
 protected:
@@ -42,6 +43,7 @@ private:
   } frame_range;
 
   Scene& m_scene;
+  const CurveTree& m_curve_tree;
   bool m_selection_locked = false;
   std::set<Track*> m_tracks;
   QPoint m_mouse_down_pos;
@@ -72,6 +74,8 @@ private:
     double value(const KeyFrameHandleKey& key) const;
   };
   std::map<KeyFrameHandleKey, KeyFrameHandleData> m_keyframe_handles;
+  bool is_visible(const KeyFrameHandleKey& key) const;
+  bool is_visible(const Track& track, std::size_t channel) const;
 
   using kfh_it = decltype(m_keyframe_handles)::iterator;
   std::set<const KeyFrameHandleKey*> keyframe_handles_at(const QPointF& point) const;
