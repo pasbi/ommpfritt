@@ -21,6 +21,7 @@ CurveManagerWidget::CurveManagerWidget(Scene& scene, const CurveTree& curve_tree
 {
   connect(&scene.message_box(), SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),
           this, SLOT(set_selection(const std::set<AbstractPropertyOwner*>)));
+  set_selection(scene.selection());
   connect(&scene.animator(), SIGNAL(track_inserted(Track&)), this, SLOT(add_track(Track&)));
   connect(&scene.animator(), SIGNAL(track_removed(Track&)), this, SLOT(remove_track(Track&)));
   connect(&scene.animator(), SIGNAL(knot_inserted(Track&, int)), this, SLOT(add_knot(Track&, int)));
