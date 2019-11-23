@@ -248,6 +248,22 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
                                    value_range.unit_to_pixel(v1)));
           last_knot = knot;
         }
+
+        {
+          const auto& property = track->property();
+          const QString text = QString("%1 %2").arg(property.label()).arg(c);
+          const double b = frame_range.pixel_to_unit(0.0);
+          const double e = frame_range.pixel_to_unit(painter.fontMetrics().horizontalAdvance(text));
+          const double v1 = omm::get_channel_value(track->knot_at(b).value, c);
+          const double v2 = omm::get_channel_value(track->knot_at(e).value, c);
+          int y = value_range.unit_to_pixel(v1);
+          if (v1 > v2) {
+            y += painter.fontMetrics().height();
+          } else {
+            y -= 2;
+          }
+          painter.drawText(QPointF(0, y), text);
+        }
       }
     }
   }
