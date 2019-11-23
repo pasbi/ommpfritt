@@ -112,6 +112,7 @@ void CurveManagerWidget::mousePressEvent(QMouseEvent* event)
       for (auto& k : ks) {
         if (is_visible(*k)) {
           m_keyframe_handles.at(*k).is_selected = true;
+          break;  // select only the first one.
         }
       }
       m_key_being_dragged = true;
@@ -231,6 +232,7 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
     for (std::size_t c = 0; c < n_channels(track->property().variant_value()); ++c) {
       if (is_visible(*track, c)) {
         QPen pen;
+        pen.setWidthF(1.5);
         const QString color_name = QString("%1-%2-fcurve").arg(track->type()).arg(c);
         pen.setColor(ui_color(QPalette::Active, "TimeLine", color_name));
         painter.setPen(pen);
@@ -251,8 +253,7 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
 
         {
           const auto& property = track->property();
-//          const QString text = QString("%1 %2").arg(property.label()).arg(property.channel_name(c));
-          const QString text = QString("%1 %2").arg(property.label()).arg(c);
+          const QString text = QString("%1 %2").arg(property.label()).arg(property.channel_name(c));
           const double b = frame_range.pixel_to_unit(0.0);
           const double e = frame_range.pixel_to_unit(painter.fontMetrics().horizontalAdvance(text));
           const double v1 = omm::get_channel_value(track->knot_at(b).value, c);
