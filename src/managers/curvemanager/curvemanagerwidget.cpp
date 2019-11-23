@@ -31,6 +31,7 @@ CurveManagerWidget::CurveManagerWidget(Scene& scene, const CurveTree& curve_tree
           this, SLOT(move_knot(Track&, int, int)));
   setFocusPolicy(Qt::StrongFocus);
   connect(&curve_tree, SIGNAL(visibility_changed()), this, SLOT(update()));
+  connect(&scene.animator(), SIGNAL(current_changed(int)), this, SLOT(update()));
 }
 
 void CurveManagerWidget::set_selection_locked(bool locked)
@@ -49,6 +50,17 @@ void CurveManagerWidget::paintEvent(QPaintEvent* event)
   draw_interpolation(painter);
   draw_knots(painter);
   draw_rubberband(painter);
+
+  {
+    painter.save();
+    QPen pen;
+    pen.setColor(ui_color(*this, "TimeLine", "slider outline"));
+    painter.setPen(pen);
+    const double x = frame_range.unit_to_pixel(m_scene.animator().current());
+    painter.drawLine(QPointF(x, 0), QPointF(x, height()));
+    painter.restore();
+  }
+
   QWidget::paintEvent(event);
 }
 
