@@ -28,7 +28,7 @@ protected:
 private:
   struct ValueRange : Range
   {
-    ValueRange(QWidget& canvas) : Range(-10, 10), m_canvas(canvas) {}
+    ValueRange(QWidget& canvas) : Range(-10, 10, Range::Options::Mirror), m_canvas(canvas) {}
     int pixel_range() const override { return m_canvas.height(); }
   private:
     QWidget& m_canvas;

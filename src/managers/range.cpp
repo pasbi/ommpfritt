@@ -8,14 +8,26 @@
 namespace omm
 {
 
+Range::Range(double begin, double end, Range::Options options)
+  : begin(begin), end(end), mirror(!!(options & Options::Mirror))
+{
+}
+
 double Range::pixel_to_unit(double pixel) const
 {
+  if (mirror) {
+    pixel = pixel_range() - pixel;
+  }
   return normalized_to_unit(pixel / pixel_range());
 }
 
 double Range::unit_to_pixel(double unit) const
 {
-  return unit_to_normalized(unit) * pixel_range();
+  double pixel = unit_to_normalized(unit) * pixel_range();
+  if (mirror) {
+    pixel = pixel_range() - pixel;
+  }
+  return pixel;
 }
 
 double Range::unit_to_normalized(double unit) const
@@ -59,6 +71,9 @@ double Range::spacing(double distance) const
 
 void Range::pan(double d)
 {
+  if (mirror) {
+    d *= -1.0;
+  }
   const double b = normalized_to_unit(unit_to_normalized(begin) + d);
   const double e = normalized_to_unit(unit_to_normalized(end) + d);
   begin = b;
