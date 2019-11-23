@@ -1,7 +1,10 @@
 #pragma once
 
+#include <memory>
 #include <QWidget>
 #include <set>
+
+class QMenu;
 
 namespace omm
 {
@@ -9,6 +12,7 @@ namespace omm
 class Property;
 class Animator;
 class AbstractPropertyOwner;
+
 class AnimationButton : public QWidget
 {
   Q_OBJECT
@@ -37,6 +41,7 @@ protected:
 private:
   Animator& m_animator;
   const std::map<AbstractPropertyOwner*, Property*> m_properties;
+  std::unique_ptr<QMenu> make_interpolation_menu() const;
 };
 
 }  // namespace omm

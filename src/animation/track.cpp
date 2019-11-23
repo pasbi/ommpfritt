@@ -112,6 +112,21 @@ omm::Vec2<T> interpolate(const Segment<omm::Vec2<T>>& segment, double t, Interpo
 namespace omm
 {
 
+QString Track::interpolation_label(Track::Interpolation interpolation)
+{
+  switch (interpolation) {
+  case Track::Interpolation::Step:
+    return tr("Step");
+  case Track::Interpolation::Bezier:
+    return tr("Bezier");
+  case Track::Interpolation::Linear:
+    return tr("Linear");
+  default:
+    Q_UNREACHABLE();
+    return "";
+  }
+}
+
 Track::Track(Property &property) : m_property(property)
 {
 }
@@ -282,6 +297,16 @@ bool Track::is_consistent(int frame) const
 bool Track::is_numerical() const
 {
   return property().is_numerical();
+}
+
+void Track::set_interpolation(Track::Interpolation interpolation)
+{
+  m_interpolation = interpolation;
+}
+
+Track::Interpolation Track::interpolation() const
+{
+  return m_interpolation;
 }
 
 Track::Knot::Knot(const variant_type &value)

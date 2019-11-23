@@ -12,6 +12,7 @@ file(GLOB SOURCES
   pointstransformationcommand.cpp
   propertycommand.cpp
   removecommand.cpp
+  setinterpolationcommand.cpp
   trackcommand.cpp
   userpropertycommand.cpp
 )
@@ -30,6 +31,7 @@ file(GLOB HEADERS
   pointstransformationcommand.h
   propertycommand.h
   removecommand.h
+  setinterpolationcommand.h
   trackcommand.h
   userpropertycommand.h
 )

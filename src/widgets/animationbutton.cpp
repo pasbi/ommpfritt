@@ -1,5 +1,6 @@
 #include "widgets/animationbutton.h"
 
+#include "commands/setinterpolationcommand.h"
 #include "scene/scene.h"
 #include <QResizeEvent>
 #include <QPainter>
@@ -181,6 +182,9 @@ void AnimationButton::contextMenuEvent(QContextMenuEvent *event)
   make_action(tr("Remove Track"), &AnimationButton::remove_track, has_track());
   make_action(has_key() ? tr("Replace Key") : tr("Add Key"), &AnimationButton::set_key, true);
   make_action(tr("Remove Key"), &AnimationButton::remove_key, has_key());
+
+  context_menu.addMenu(make_interpolation_menu().release());
+
   context_menu.exec(mapToGlobal(event->pos()));
 }
 
@@ -190,5 +194,64 @@ void AnimationButton::mousePressEvent(QMouseEvent *event)
     set_key();
   }
 }
+
+std::unique_ptr<QMenu> AnimationButton::make_interpolation_menu() const
+{
+  auto menu = std::make_unique<QMenu>(tr("Interpolation"));
+
+  const bool is_numeric = std::all_of(m_properties.begin(), m_properties.end(), [](const auto& op) {
+    const Property* property = op.second;
+    return property->track() != nullptr && property->n_channels() > 0;
+  });
+
+  const std::map<Track::Interpolation, bool> options {
+    { Track::Interpolation::Step, true },
+    { Track::Interpolation::Bezier, is_numeric },
+    { Track::Interpolation::Linear, is_numeric },
+  };
+
+  std::map<Track::Interpolation, QAction*> actions;
+
+  for (auto&& [interpolation, enabled] : options) {
+    const QString label = Track::interpolation_label(interpolation);
+    QAction* action = menu->addAction(label);
+    actions[interpolation] = action;
+    action->setCheckable(true);
+    if (enabled) {
+      connect(action, &QAction::triggered, this, [this, interpolation=interpolation]() {
+        std::set<Property*> properties;
+        for (auto [owner, property] : m_properties) {
+          if (property->track() != nullptr) {
+            properties.insert(property);
+          }
+        }
+        m_animator.scene.submit<SetInterpolationCommand>(properties, interpolation);
+      });
+    } else {
+      action->setEnabled(false);
+    }
+  }
+
+  for (auto&& [interpolation, enabled] : options) {
+    bool all = true;
+    for (auto [owner, property] : m_properties) {
+      if (Track* track = property->track(); track != nullptr) {
+        if (track->interpolation() != interpolation) {
+          all = false;
+          break;
+        }
+      }
+    }
+
+    if (all) {
+      actions[interpolation]->setChecked(true);
+    } else {
+      actions[interpolation]->setChecked(false);
+    }
+
+  }
+  return menu;
+}
+
 
 }  // namespace omm

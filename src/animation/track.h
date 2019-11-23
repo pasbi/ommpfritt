@@ -35,6 +35,7 @@ public:
   };
 
   enum class Interpolation { Step, Linear, Bezier };
+  static QString interpolation_label(Interpolation interpolation);
 
   explicit Track(Property& property);
   static constexpr auto PROPERTY_KEY_KEY = "property";
@@ -91,6 +92,9 @@ public:
   bool is_consistent(int frame) const;
 
   bool is_numerical() const;
+
+  void set_interpolation(Interpolation interpolation);
+  Interpolation interpolation() const;
 
 private:
   Property& m_property;
