@@ -22,7 +22,6 @@ void PreferencesTreeView::
 set_model(QAbstractItemModel& model,
           std::vector<std::unique_ptr<AbstractPreferencesTreeViewDelegate>> delegates)
 {
-  assert(this->model() == nullptr);
   setModel(&model);
   m_column_delegates = std::move(delegates);
   for (std::size_t i = 0; i < m_column_delegates.size(); ++i) {
