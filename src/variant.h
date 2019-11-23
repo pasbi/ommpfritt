@@ -55,7 +55,11 @@ template<typename T> double get_channel_value(const T& v, std::size_t channel)
     assert(channel == 0);
     return static_cast<double>(v);
   } else if constexpr (std::is_same_v<T, omm::Color>) {
-    return v.components(v.model())[channel];
+    Color::Model model = v.model();
+    if (model == Color::Named) {
+      model = Color::Model::RGBA;
+    }
+    return v.components(model)[channel];
   } else if constexpr (std::is_same_v<T, omm::Vec2f> || std::is_same_v<T, omm::Vec2i>) {
     return static_cast<double>(v[channel]);
   } else if constexpr (std::is_same_v<T, bool>) {
