@@ -3,6 +3,8 @@
 namespace omm
 {
 
+const Property::PropertyDetail TriggerProperty::detail { nullptr };
+
 std::unique_ptr<Property> TriggerProperty::clone() const
 {
   return std::make_unique<TriggerProperty>(*this);

@@ -10,6 +10,8 @@
 namespace omm
 {
 
+std::map<QString, const Property::PropertyDetail*> Property::m_details;
+
 Property::Property(const Property &other)
   : QObject()
   , configuration(other.configuration)
@@ -119,6 +121,28 @@ void Property::set_track(std::unique_ptr<Track> track)
 std::unique_ptr<Track> Property::extract_track()
 {
   return std::move(m_track);
+}
+
+std::size_t Property::n_channels() const
+{
+  return omm::n_channels(variant_value());
+}
+
+double Property::channel_value(std::size_t channel) const
+{
+  return omm::get_channel_value(variant_value(), channel);
+}
+
+void Property::set_channel_value(std::size_t channel, double value)
+{
+  auto variant = variant_value();
+  omm::set_channel_value(variant, channel, value);
+  set(variant);
+}
+
+QString Property::channel_name(std::size_t channel) const
+{
+  return m_details.at(type())->channel_name(*this, channel);
 }
 
 }  // namespace omm

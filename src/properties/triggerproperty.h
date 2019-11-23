@@ -14,6 +14,7 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Property", "TriggerProperty");
   std::unique_ptr<Property> clone() const override;
   void trigger();
+  static const PropertyDetail detail;
 };
 
 }  // namespace omm

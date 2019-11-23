@@ -45,12 +45,12 @@ Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
   connect(this, SIGNAL(track_removed(Track&)), this, SIGNAL(track_changed(Track&)));
 
   connect(this, &Animator::track_inserted, this, [this](Track& track) {
-    for (std::size_t c = 0; c < n_channels(track.property().variant_value()); c++) {
+    for (std::size_t c = 0; c < track.property().n_channels(); c++) {
       m_channel_proxies.insert({{&track, c}, std::make_unique<ChannelProxy>(track, c)});
     }
   });
   connect(this, &Animator::track_removed, this, [this](Track& track) {
-    for (std::size_t c = 0; c < n_channels(track.property().variant_value()); c++) {
+    for (std::size_t c = 0; c < track.property().n_channels(); c++) {
       m_channel_proxies.erase({&track, c});
     }
   });
@@ -174,7 +174,7 @@ void Animator::invalidate()
   beginResetModel();
   accelerator.invalidate();
   for (Property* property : accelerator().properties()) {
-    for (std::size_t c = 0; c < n_channels(property->variant_value()); ++c) {
+    for (std::size_t c = 0; c < property->n_channels(); ++c) {
       Track* track = property->track();
       m_channel_proxies.insert({{track, c}, std::make_unique<ChannelProxy>(*track, c)});
     }
@@ -280,7 +280,10 @@ QVariant Animator::data(const QModelIndex &index, int role) const
   case IndexType::Channel:
     switch (role) {
     case Qt::DisplayRole:
-      return QString("%1").arg(channel(index).channel);
+    {
+      const auto& c = this->channel(index);
+      return c.track.property().channel_name(c.channel);
+    }
     default:
       return QVariant();
     }

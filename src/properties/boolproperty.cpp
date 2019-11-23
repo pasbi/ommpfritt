@@ -3,6 +3,11 @@
 namespace omm
 {
 
+const Property::PropertyDetail BoolProperty::detail
+{
+  [](const Property&, std::size_t) { return ""; }
+};
+
 void BoolProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   TypedProperty::deserialize(deserializer, root);

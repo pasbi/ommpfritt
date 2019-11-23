@@ -3,6 +3,8 @@
 namespace omm
 {
 
+const Property::PropertyDetail StringProperty::detail { nullptr };
+
 StringProperty::StringProperty(const QString& default_value)
   : TypedProperty<QString>(default_value)
 {

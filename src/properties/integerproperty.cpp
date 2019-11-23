@@ -3,6 +3,11 @@
 namespace omm
 {
 
+const Property::PropertyDetail IntegerProperty::detail
+{
+  [](const Property&, std::size_t) { return ""; }
+};
+
 void IntegerProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   NumericProperty::deserialize(deserializer, root);

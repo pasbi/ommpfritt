@@ -24,6 +24,7 @@ public:
   static constexpr auto OPTIONS_POINTER = "options";
   bool is_compatible(const Property& other) const override;
   void revise() override;
+  static const PropertyDetail detail;
 };
 
 }  // namespace omm

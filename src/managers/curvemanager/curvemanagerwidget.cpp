@@ -251,6 +251,7 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
 
         {
           const auto& property = track->property();
+//          const QString text = QString("%1 %2").arg(property.label()).arg(property.channel_name(c));
           const QString text = QString("%1 %2").arg(property.label()).arg(c);
           const double b = frame_range.pixel_to_unit(0.0);
           const double e = frame_range.pixel_to_unit(painter.fontMetrics().horizontalAdvance(text));

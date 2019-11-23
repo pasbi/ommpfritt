@@ -10,6 +10,24 @@ namespace
 namespace omm
 {
 
+const Property::PropertyDetail IntegerVectorProperty::detail {
+  [](const Property&, std::size_t channel) {
+    assert(channel < 2);
+    return std::vector {
+      tr("x"), tr("y")
+    }[channel];
+  }
+};
+
+const Property::PropertyDetail FloatVectorProperty::detail {
+  [](const Property&, std::size_t channel) {
+    assert(channel < 2);
+    return std::vector {
+      tr("x"), tr("y")
+    }[channel];
+  }
+};
+
 const Vec2f FloatVectorPropertyLimits::lower(-inf, -inf);
 const Vec2f FloatVectorPropertyLimits::upper( inf,  inf);
 const Vec2f FloatVectorPropertyLimits::step(1.0, 1.0);

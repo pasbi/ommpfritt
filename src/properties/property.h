@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <string>
 #include <typeinfo>
 #include <set>
@@ -181,23 +182,19 @@ Q_SIGNALS:
 
 public:
   // === Channels
-  std::size_t n_channels() const
+  struct PropertyDetail
   {
-    return omm::n_channels(variant_value());
-  }
+    const std::function<QString(const Property&, std::size_t)> channel_name;
+  };
 
-  double numeric_value(std::size_t channel) const
-  {
-    return omm::get_channel_value(variant_value(), channel);
-  }
+  std::size_t n_channels() const;
+  double channel_value(std::size_t channel) const;
+  void set_channel_value(std::size_t channel, double value);
+  QString channel_name(std::size_t channel) const;
 
-  void set_numeric_value(std::size_t channel, double value)
-  {
-    const auto v = variant_value();
-    omm::set_channel_value(v, channel, value);
-    set(v);
-  }
-
+private:
+  static std::map<QString, const PropertyDetail*> m_details;
+  friend void register_properties();
 };
 
 void register_properties();

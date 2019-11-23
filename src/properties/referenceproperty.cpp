@@ -5,6 +5,8 @@
 namespace omm
 {
 
+const Property::PropertyDetail ReferenceProperty::detail { nullptr };
+
 using Flag = AbstractPropertyOwner::Flag;
 using Kind = AbstractPropertyOwner::Kind;
 

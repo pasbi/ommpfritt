@@ -3,6 +3,31 @@
 namespace omm
 {
 
+const Property::PropertyDetail ColorProperty::detail
+{
+  [](const Property& property, std::size_t channel) {
+    assert(channel < 4);
+    switch (std::get<Color>(property.variant_value()).model()) {
+    case Color::Model::HSVA:
+      return std::vector {
+        tr("Hue"),
+        tr("Saturation"),
+        tr("Value"),
+        tr("Alpha")
+      }[channel];
+    case Color::Model::Named:
+      [[fallthrough]];
+    case Color::Model::RGBA:
+      return std::vector {
+        tr("Red"),
+        tr("Green"),
+        tr("Blue"),
+        tr("Alpha")
+      }[channel];
+    }
+  }
+};
+
 void ColorProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   TypedProperty::deserialize(deserializer, root);

@@ -4,6 +4,8 @@
 namespace omm
 {
 
+const Property::PropertyDetail OptionsProperty::detail { nullptr };
+
 void OptionsProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   TypedProperty::deserialize(deserializer, root);

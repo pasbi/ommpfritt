@@ -3,6 +3,11 @@
 namespace omm
 {
 
+const Property::PropertyDetail FloatProperty::detail
+{
+  [](const Property&, std::size_t) { return ""; }
+};
+
 void FloatProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   NumericProperty::deserialize(deserializer, root);

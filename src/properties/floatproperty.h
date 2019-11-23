@@ -15,6 +15,7 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Property", "FloatProperty");
   std::unique_ptr<Property> clone() const override;
+  static const PropertyDetail detail;
 };
 
 }  // namespace omm
