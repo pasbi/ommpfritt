@@ -1129,6 +1129,14 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>visibility (viewport)</source>
         <translation>Sichtbarkeit (Viewport)</translation>
     </message>
+    <message>
+        <source>Change Keyframes</source>
+        <translation>Schlüsselbilder Ändern</translation>
+    </message>
+    <message>
+        <source>Set Interpolation</source>
+        <translation>Interpolationsart setzen</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1688,6 +1696,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Set keyframe</source>
         <translation>Schlüsselbild erzeugen</translation>
     </message>
+    <message>
+        <source>Interpolation</source>
+        <translation>Interpolation</translation>
+    </message>
 </context>
 <context>
     <name>omm::Application</name>
@@ -1740,6 +1752,37 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>ColorCircle</source>
         <translation>Farbkreis</translation>
+    </message>
+</context>
+<context>
+    <name>omm::ColorProperty</name>
+    <message>
+        <source>Hue</source>
+        <translation>Farbton</translation>
+    </message>
+    <message>
+        <source>Saturation</source>
+        <translation>Sättigung</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Helligkeit</translation>
+    </message>
+    <message>
+        <source>Alpha</source>
+        <translation>Alpha</translation>
+    </message>
+    <message>
+        <source>Red</source>
+        <translation>Rot</translation>
+    </message>
+    <message>
+        <source>Green</source>
+        <translation>Green</translation>
+    </message>
+    <message>
+        <source>Blue</source>
+        <translation>Blau</translation>
     </message>
 </context>
 <context>
@@ -1810,6 +1853,17 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
 </context>
 <context>
+    <name>omm::FloatVectorProperty</name>
+    <message>
+        <source>x</source>
+        <translation>x</translation>
+    </message>
+    <message>
+        <source>y</source>
+        <translation>y</translation>
+    </message>
+</context>
+<context>
     <name>omm::GeneralPage</name>
     <message>
         <source>Changing language takes effect after restarting the application.</source>
@@ -1836,6 +1890,17 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source> &lt;-</source>
         <translation> &lt;-</translation>
+    </message>
+</context>
+<context>
+    <name>omm::IntegerVectorProperty</name>
+    <message>
+        <source>x</source>
+        <translation>xx</translation>
+    </message>
+    <message>
+        <source>y</source>
+        <translation>y</translation>
     </message>
 </context>
 <context>
@@ -2025,6 +2090,21 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <message>
         <source>ToolBar</source>
         <translation>Werkzeugkasten</translation>
+    </message>
+</context>
+<context>
+    <name>omm::Track</name>
+    <message>
+        <source>Step</source>
+        <translation>Stufe</translation>
+    </message>
+    <message>
+        <source>Bezier</source>
+        <translation>Bézier</translation>
+    </message>
+    <message>
+        <source>Linear</source>
+        <translation>Linear</translation>
     </message>
 </context>
 <context>

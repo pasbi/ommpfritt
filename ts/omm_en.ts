@@ -1129,6 +1129,14 @@ Remove the selected items anyway?</translation>
         <source>visibility (viewport)</source>
         <translation>Visibility (Viewport)</translation>
     </message>
+    <message>
+        <source>Change Keyframes</source>
+        <translation>Change Keyframes</translation>
+    </message>
+    <message>
+        <source>Set Interpolation</source>
+        <translation>Set interpolation</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1688,6 +1696,10 @@ Remove the selected items anyway?</translation>
         <source>Set keyframe</source>
         <translation>Set keyframe</translation>
     </message>
+    <message>
+        <source>Interpolation</source>
+        <translation>Interpolation</translation>
+    </message>
 </context>
 <context>
     <name>omm::Application</name>
@@ -1740,6 +1752,37 @@ Remove the selected items anyway?</translation>
     <message>
         <source>ColorCircle</source>
         <translation>Color Circle</translation>
+    </message>
+</context>
+<context>
+    <name>omm::ColorProperty</name>
+    <message>
+        <source>Hue</source>
+        <translation>Hue</translation>
+    </message>
+    <message>
+        <source>Saturation</source>
+        <translation>Saturation</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Value</translation>
+    </message>
+    <message>
+        <source>Alpha</source>
+        <translation>Alpha</translation>
+    </message>
+    <message>
+        <source>Red</source>
+        <translation>Red</translation>
+    </message>
+    <message>
+        <source>Green</source>
+        <translation>Grün</translation>
+    </message>
+    <message>
+        <source>Blue</source>
+        <translation>Blue</translation>
     </message>
 </context>
 <context>
@@ -1810,6 +1853,17 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
+    <name>omm::FloatVectorProperty</name>
+    <message>
+        <source>x</source>
+        <translation>x</translation>
+    </message>
+    <message>
+        <source>y</source>
+        <translation>y</translation>
+    </message>
+</context>
+<context>
     <name>omm::GeneralPage</name>
     <message>
         <source>Changing language takes effect after restarting the application.</source>
@@ -1836,6 +1890,17 @@ Remove the selected items anyway?</translation>
     <message>
         <source> &lt;-</source>
         <translation> &lt;-</translation>
+    </message>
+</context>
+<context>
+    <name>omm::IntegerVectorProperty</name>
+    <message>
+        <source>x</source>
+        <translation>x</translation>
+    </message>
+    <message>
+        <source>y</source>
+        <translation>y</translation>
     </message>
 </context>
 <context>
@@ -2025,6 +2090,21 @@ Do you want to convert them into ordinary colors?</numerusform>
     <message>
         <source>ToolBar</source>
         <translation>Tool bar</translation>
+    </message>
+</context>
+<context>
+    <name>omm::Track</name>
+    <message>
+        <source>Step</source>
+        <translation>Step</translation>
+    </message>
+    <message>
+        <source>Bezier</source>
+        <translation>Bézier</translation>
+    </message>
+    <message>
+        <source>Linear</source>
+        <translation>Linear</translation>
     </message>
 </context>
 <context>
