@@ -10,20 +10,23 @@ const Property::PropertyDetail ColorProperty::detail
     switch (std::get<Color>(property.variant_value()).model()) {
     case Color::Model::HSVA:
       return std::vector {
-        tr("Hue"),
-        tr("Saturation"),
-        tr("Value"),
-        tr("Alpha")
+        QObject::tr("Hue"),
+        QObject::tr("Saturation"),
+        QObject::tr("Value"),
+        QObject::tr("Alpha")
       }[channel];
     case Color::Model::Named:
       [[fallthrough]];
     case Color::Model::RGBA:
       return std::vector {
-        tr("Red"),
-        tr("Green"),
-        tr("Blue"),
-        tr("Alpha")
+        QObject::tr("Red"),
+        QObject::tr("Green"),
+        QObject::tr("Blue"),
+        QObject::tr("Alpha")
       }[channel];
+    default:
+      Q_UNREACHABLE();
+      return QString();
     }
   }
 };

@@ -14,7 +14,7 @@ const Property::PropertyDetail IntegerVectorProperty::detail {
   [](const Property&, std::size_t channel) {
     assert(channel < 2);
     return std::vector {
-      tr("x"), tr("y")
+      QObject::tr("x"), QObject::tr("y")
     }[channel];
   }
 };
@@ -23,7 +23,7 @@ const Property::PropertyDetail FloatVectorProperty::detail {
   [](const Property&, std::size_t channel) {
     assert(channel < 2);
     return std::vector {
-      tr("x"), tr("y")
+      QObject::tr("x"), QObject::tr("y")
     }[channel];
   }
 };

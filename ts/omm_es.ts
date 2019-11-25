@@ -1137,6 +1137,42 @@ Borrar la selección de todos modos?</translation>
         <source>Set Interpolation</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Hue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saturation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alpha</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Red</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Green</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x</source>
+        <translation type="unfinished">x</translation>
+    </message>
+    <message>
+        <source>y</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1755,37 +1791,6 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
-    <name>omm::ColorProperty</name>
-    <message>
-        <source>Hue</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saturation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alpha</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Red</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Green</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Blue</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>omm::ColorWidget</name>
     <message>
         <source>ColorWidget</source>
@@ -1853,17 +1858,6 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
-    <name>omm::FloatVectorProperty</name>
-    <message>
-        <source>x</source>
-        <translation type="unfinished">x</translation>
-    </message>
-    <message>
-        <source>y</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>omm::GeneralPage</name>
     <message>
         <source>Changing language takes effect after restarting the application.</source>
@@ -1889,17 +1883,6 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source> &lt;-</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::IntegerVectorProperty</name>
-    <message>
-        <source>x</source>
-        <translation type="unfinished">x</translation>
-    </message>
-    <message>
-        <source>y</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
