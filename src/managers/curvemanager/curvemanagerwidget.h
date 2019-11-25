@@ -64,6 +64,8 @@ private:
     Track& track;
     const int frame;
     const std::size_t channel;
+    double value() const;
+    double value(Track::Knot::Side side) const;
     bool operator<(const KeyFrameHandleKey& other) const;
   };
 
@@ -73,9 +75,11 @@ private:
     bool inside_rubberband = false;
     double value(const KeyFrameHandleKey& key) const;
   };
+
   std::map<KeyFrameHandleKey, KeyFrameHandleData> m_keyframe_handles;
   bool is_visible(const KeyFrameHandleKey& key) const;
   bool is_visible(const Track& track, std::size_t channel) const;
+  const KeyFrameHandleKey* neighbor(const KeyFrameHandleKey& key, Track::Knot::Side side) const;
 
   using kfh_it = decltype(m_keyframe_handles)::iterator;
   std::set<const KeyFrameHandleKey*> keyframe_handles_at(const QPointF& point) const;
@@ -85,6 +89,20 @@ private:
   void draw_scale(QPainter& painter) const;
   void draw_knots(QPainter& painter) const;
   void draw_rubberband(QPainter& painter) const;
+
+  struct TangentHandle
+  {
+    TangentHandle(const KeyFrameHandleKey* key, Track::Knot::Side side) : key(key), side(side) {}
+    TangentHandle() : key(nullptr) {}
+    const KeyFrameHandleKey* key;
+    Track::Knot::Side side;
+    variant_type& offset();
+  };
+
+  static double interpolate_frame(const KeyFrameHandleKey& key, const KeyFrameHandleKey& neighbor);
+
+  TangentHandle tangent_handle_at(const QPointF& point) const;
+  TangentHandle m_dragged_tangent = TangentHandle();
 
 private Q_SLOTS:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);

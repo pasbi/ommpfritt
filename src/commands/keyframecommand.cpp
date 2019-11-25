@@ -14,7 +14,7 @@ collect_knots(const std::set<omm::Property*>& properties, int frame)
     if (property->track() != nullptr) {
       // don't add keyframes to non-existing tracks.
       // You must make sure that the track exists beforehand.
-      omm::Track::Knot knot = property->track()->knot_at(frame);
+      omm::Track::Knot knot = property->track()->knot(frame);
       map.insert(std::pair(property, knot));
     }
   }
@@ -179,7 +179,7 @@ bool ChangeKeyFrameCommand::mergeWith(const QUndoCommand* other)
 
 void ChangeKeyFrameCommand::swap()
 {
-  auto& v = m_property.track()->knot_ref(m_frame).value;
+  auto& v = m_property.track()->knot(m_frame).value;
   double old_value = get_channel_value(v, m_channel);
   set_channel_value(v, m_channel, m_other_value);
   m_other_value = old_value;

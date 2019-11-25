@@ -21,6 +21,13 @@ using variant_type = std::variant< bool, double, Color, int, AbstractPropertyOwn
                                    QString, size_t, TriggerPropertyDummyValueType,
                                    Vec2f, Vec2i >;
 
+template<typename T> T null_value;
+template<> constexpr bool null_value<bool> = false;
+template<> constexpr double null_value<double> = 0.0;
+template<> const Color null_value<Color> = Color(Color::Model::RGBA, { 0.0, 0.0, 0.0, 0.0});
+template<> constexpr int null_value<int> = 0;
+template<> const Vec2f null_value<Vec2f> { 0.0, 0.0 };
+template<> const Vec2i null_value<Vec2i> { 0, 0 };
 
 //=== Channels
 // Channels provide a unified way to read and write numerical values in a variant.
@@ -32,7 +39,7 @@ using variant_type = std::variant< bool, double, Color, int, AbstractPropertyOwn
  *  T == int, double bool: 1
  *  other:                 0
  */
-template<typename T> std::size_t n_channels()
+template<typename T> std::size_t constexpr n_channels()
 {
   if constexpr (std::is_same_v<T, double> || std::is_same_v<T, int> || std::is_same_v<T, bool>) {
     return 1;

@@ -24,14 +24,16 @@ class Track : public QObject, public Serializable
   Q_OBJECT
 public:
   struct Knot {
-    Knot(const variant_type& value);
-    variant_type value;
-    int left_offset;
-    variant_type left_value;
-    int right_offset;
-    variant_type right_value;
+    Knot(const variant_type& variant_value);
+    enum class Side { Left, Right };
+
     bool operator==(const Knot& other) const;
     bool operator!=(const Knot& other) const;
+
+    variant_type value;
+    variant_type& offset(Side side);
+    variant_type left_offset;
+    variant_type right_offset;
   };
 
   enum class Interpolation { Step, Linear, Bezier };
@@ -54,11 +56,12 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& pointer) override;
 
   bool has_keyframe(int frame) const { return m_knots.find(frame) != m_knots.end(); }
+
+  double interpolate(double frame, std::size_t channel) const;
   variant_type interpolate(double frame) const;
-  Knot interpolate_knot(double frame) const;
-  Knot knot_at(double frame) const;
-  Knot& knot_ref(int frame);
-  const Knot& knot_ref(int frame) const;
+  const Knot& knot(int frame) const;
+  Knot& knot(int frame);
+
   std::vector<int> key_frames() const;
   void apply(int frame) const;
   void move_knot(int old_frame, int new_frame);

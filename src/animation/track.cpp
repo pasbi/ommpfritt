@@ -9,105 +9,31 @@ namespace
 
 using Interpolation = omm::Track::Interpolation;
 
-template<typename T> struct Segment
+double interpolate(const std::array<double, 4>& segment, double t, Interpolation interpolation)
 {
-  std::array<T, 4> values;
-  std::array<double, 4> frames;
-
-  template<typename S, typename F> Segment<S> convert(F&& f) const
-  {
-    Segment<S> s;
-    std::transform(values.begin(), values.end(), s.values.begin(), f);
-    return s;
-  }
-};
-
-template<typename T> T step_interpolate(const Segment<T>& segment, double t)
-{
-  if (t == 1.0) {
-    return segment.values.back();
-  } else {
-    return segment.values.front();
-  }
-}
-
-bool interpolate(const Segment<bool>& segment, double t, Interpolation)
-{
-  return step_interpolate(segment, t);
-}
-
-double interpolate(const Segment<double>& segment, double t, Interpolation interpolation)
-{
+  std::array<double, 4> bernstein4 {
+    1.0 * (1-t) * (1-t) * (1-t),
+    3.0 *   t   * (1-t) * (1-t),
+    3.0 *   t   *   t   * (1-t),
+    1.0 *   t   *   t   *   t
+  };
   switch (interpolation) {
   case Interpolation::Step:
-    return step_interpolate(segment, t);
+    return segment[0];
   case Interpolation::Linear:
-    return (1.0-t) * segment.values[0] + t * segment.values[3];
+    return (1.0-t) * segment[0] + t * segment[3];
   case Interpolation::Bezier:
-    return 0.0;
+    return bernstein4[0] * segment[0]
+         + bernstein4[1] * segment[1]
+         + bernstein4[2] * segment[2]
+         + bernstein4[3] * segment[3];
   default:
     Q_UNREACHABLE();
     return 0.0;
   }
 }
 
-omm::Color interpolate(const Segment<omm::Color>& segment, double t, Interpolation interpolation)
-{
-  static constexpr auto model = omm::Color::Model::HSVA;
-
-  const auto seg4 = segment.convert<std::array<double, 4>>([](const omm::Color& color) {
-    return color.components(model);
-  });
-
-  std::array<double, 4> components;
-  for (std::size_t i = 0; i < 4; ++i) {
-    components[i] = interpolate(seg4.convert<double>([i](const std::array<double, 4>& cs) {
-      return cs[i];
-    }), t, interpolation);
-  }
-  return omm::Color(model, components);
-}
-
-int interpolate(const Segment<int>& segment, double t, Interpolation interpolation)
-{
-  const Segment<double> dseg = segment.convert<double>([](int i) {
-    return static_cast<double>(i);
-  });
-
-  return static_cast<int>(interpolate(dseg, t, interpolation));
-}
-
-omm::AbstractPropertyOwner* interpolate(const Segment<omm::AbstractPropertyOwner*>& segment,
-                                        double t, Interpolation)
-{
-  return step_interpolate(segment, t);
-}
-
-QString interpolate(const Segment<QString>& segment, double t, Interpolation)
-{
-  return step_interpolate(segment, t);
-}
-
-std::size_t interpolate(const Segment<std::size_t>& segment, double t, Interpolation)
-{
-  return step_interpolate(segment, t);
-}
-
-omm::TriggerPropertyDummyValueType
-interpolate(const Segment<omm::TriggerPropertyDummyValueType>&, double, Interpolation)
-{
-  return omm::TriggerPropertyDummyValueType();
-}
-
-template<typename T>
-omm::Vec2<T> interpolate(const Segment<omm::Vec2<T>>& segment, double t, Interpolation interpolation)
-{
-  const Segment<T> xs = segment.template convert<T>([](const omm::Vec2<T>& v) { return v[0]; });
-  const Segment<T> ys = segment.template convert<T>([](const omm::Vec2<T>& v) { return v[1]; });
-  return omm::Vec2<T>(interpolate(xs, t, interpolation), interpolate(ys, t, interpolation));
-}
-
-}
+}  // namespace
 
 namespace omm
 {
@@ -143,10 +69,8 @@ void Track::serialize(AbstractSerializer& serializer, const Pointer& pointer) co
     const auto knot_pointer = make_pointer(knots_pointer, i);
     serializer.set_value(frame, make_pointer(knot_pointer, FRAME_KEY));
     serializer.set_value(knot.value, make_pointer(knot_pointer, VALUE_KEY));
-    serializer.set_value(knot.left_offset, make_pointer(knot_pointer, LEFT_OFFSET_KEY));
-    serializer.set_value(knot.left_value, make_pointer(knot_pointer, LEFT_VALUE_KEY));
-    serializer.set_value(knot.right_offset, make_pointer(knot_pointer, RIGHT_OFFSET_KEY));
-    serializer.set_value(knot.right_value, make_pointer(knot_pointer, RIGHT_VALUE_KEY));
+    serializer.set_value(knot.left_offset, make_pointer(knot_pointer, LEFT_VALUE_KEY));
+    serializer.set_value(knot.right_offset, make_pointer(knot_pointer, RIGHT_VALUE_KEY));
   }
   serializer.set_value(m_interpolation, make_pointer(pointer, INTERPOLATION_KEY));
   serializer.end_array();
@@ -162,10 +86,8 @@ void Track::deserialize(AbstractDeserializer& deserializer, const Pointer& point
   for (std::size_t i = 0; i < n; ++i) {
     const auto knot_pointer = make_pointer(knots_pointer, i);
     Knot knot(deserializer.get(make_pointer(knot_pointer, VALUE_KEY), type));
-    knot.left_offset = deserializer.get_int(make_pointer(knot_pointer, LEFT_OFFSET_KEY));
-    knot.left_value = deserializer.get(make_pointer(knot_pointer, LEFT_VALUE_KEY), type);
-    knot.right_offset = deserializer.get_int(make_pointer(knot_pointer, RIGHT_OFFSET_KEY));
-    knot.right_value = deserializer.get(make_pointer(knot_pointer, RIGHT_VALUE_KEY), type);
+    knot.left_offset = deserializer.get(make_pointer(knot_pointer, LEFT_VALUE_KEY), type);
+    knot.right_offset = deserializer.get(make_pointer(knot_pointer, RIGHT_VALUE_KEY), type);
     const int frame = deserializer.get_int(make_pointer(knot_pointer, FRAME_KEY));
     m_knots.insert(std::pair(frame, knot));
   }
@@ -175,6 +97,12 @@ Track::Knot Track::remove_knot(int frame)
 {
   assert (m_knots.find(frame) != m_knots.end());
   return m_knots.extract(frame).mapped();
+}
+
+double Track::interpolate(double frame, std::size_t channel) const
+{
+  // this can be optimized!
+  return get_channel_value(interpolate(frame), channel);
 }
 
 variant_type Track::interpolate(double frame) const
@@ -206,47 +134,38 @@ variant_type Track::interpolate(double frame) const
     return left->value;
   } else {
     assert(left != nullptr && right != nullptr);
-    return std::visit([=](auto&& arg) -> variant_type {
-      using T = std::decay_t<decltype(arg)>; 
-
-      const double span = right_frame - left_frame;
-      const double left_t = left->right_offset / span;
-      const double right_t = (right_frame + right->left_offset - left_frame) / span;
-
-      const Segment<T> segment {
-         { std::get<T>(left->value),       std::get<T>(left->right_value),
-           std::get<T>(right->left_value), std::get<T>(right->value) },
-          { 0.0, left_t, right_t, 1.0 }
-      };
-
-      const double t = (frame - left_frame) / span;
-      return ::interpolate(segment, t, m_interpolation);
-    }, right->value);
+    const std::size_t n = n_channels(left->value);
+    assert(n == n_channels(right->value));
+    if (n == 0) {
+      return left->value;  // non-numerical types cannot be interpolated.
+    } else {
+      const double t = (frame - left_frame) / static_cast<double>(right_frame - left_frame);
+      variant_type interpolated = left->value;
+      assert(interpolated.index() == property().variant_value().index());
+      for (std::size_t channel = 0; channel < n; ++channel) {
+        const double left_value = get_channel_value(left->value, channel);
+        const double right_value = get_channel_value(right->value, channel);
+        const std::array<double, 4> segment {
+          left_value,
+          left_value + get_channel_value(left->right_offset, channel),
+          right_value + get_channel_value(right->left_offset, channel),
+          right_value
+        };
+        const double v = ::interpolate(segment, t, m_interpolation);
+        set_channel_value(interpolated, channel, v);
+      }
+      assert(interpolated.index() == property().variant_value().index());
+      return interpolated;
+    }
   }
 }
 
-Track::Knot Track::interpolate_knot(double frame) const
-{
-  // TODO we need something clever here for Bezier interpolation
-  const variant_type value = interpolate(frame);
-  return Knot(value);
-}
-
-Track::Knot Track::knot_at(double frame) const
-{
-  if (const auto it = m_knots.find(frame); it != m_knots.end()) {
-    return it->second;
-  } else {
-    return interpolate_knot(frame);
-  }
-}
-
-Track::Knot& Track::knot_ref(int frame)
+Track::Knot& Track::knot(int frame)
 {
   return m_knots.at(frame);
 }
 
-const Track::Knot& Track::knot_ref(int frame) const
+const Track::Knot& Track::knot(int frame) const
 {
   return m_knots.at(frame);
 }
@@ -309,16 +228,23 @@ Track::Interpolation Track::interpolation() const
   return m_interpolation;
 }
 
-Track::Knot::Knot(const variant_type &value)
-  : value(value), left_offset(0), left_value(value), right_offset(0), right_value(value)
+Track::Knot::Knot(const variant_type &variant_value)
+  : value(variant_value)
 {
+  std::visit([this](auto&& vv) {
+    using T = std::decay_t<decltype(vv)>;
+    if constexpr (n_channels<T>() > 0) {
+      left_offset = null_value<T>;
+      right_offset = null_value<T>;
+    } else {
+      // don't care about non numeric types.
+    }
+  }, variant_value);
 }
 
 bool Track::Knot::operator==(const Track::Knot& other) const
 {
   return value == other.value
-      && left_value == other.left_value
-      && right_value == other.right_value
       && left_offset == other.left_offset
       && right_offset == other.right_offset;
 }
@@ -326,6 +252,19 @@ bool Track::Knot::operator==(const Track::Knot& other) const
 bool Track::Knot::operator!=(const Track::Knot& other) const
 {
   return !(*this == other);
+}
+
+variant_type& Track::Knot::offset(Track::Knot::Side side)
+{
+  switch (side) {
+  case Side::Left:
+    return left_offset;
+  case Side::Right:
+    return right_offset;
+  default:
+    Q_UNREACHABLE();
+    return right_offset;
+  }
 }
 
 }  // namespace omm
