@@ -65,7 +65,7 @@ private:
 class ChangeKeyFrameCommand : public Command
 {
 public:
-  ChangeKeyFrameCommand(int frame, Property& property, std::size_t channel, double new_value);
+  ChangeKeyFrameCommand(int frame, Property& property, Track::Knot new_value);
   void undo() override { swap(); }
   void redo() override { swap(); }
   bool mergeWith(const QUndoCommand* other) override;
@@ -74,8 +74,7 @@ public:
 private:
   const int m_frame;
   Property& m_property;
-  const std::size_t m_channel;
-  double m_other_value;
+  Track::Knot m_other_value;
   void swap();
 };
 

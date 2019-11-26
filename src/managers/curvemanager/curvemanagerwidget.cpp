@@ -77,10 +77,12 @@ void CurveManagerWidget::mouseMoveEvent(QMouseEvent* event)
     double old_y = value_range.pixel_to_unit(m_last_mouse_pos.y());
     double new_y = value_range.pixel_to_unit(event->y());
     const double diff = new_y - old_y;
-    variant_type& vv = m_dragged_tangent.offset();
-    const std::size_t channel = m_dragged_tangent.key->channel;
-    const double new_offset = get_channel_value(vv, channel) + diff;
-    set_channel_value(vv, channel, new_offset);
+    const KeyFrameHandleKey& key = *m_dragged_tangent.key;
+    Track::Knot new_knot = key.track.knot(key.frame);
+    variant_type& vv = new_knot.offset(m_dragged_tangent.side);
+    const double new_offset = get_channel_value(vv, key.channel) + diff;
+    set_channel_value(vv, key.channel, new_offset);
+    m_scene.submit<ChangeKeyFrameCommand>(key.frame, key.track.property(), new_knot);
   } else if (m_key_being_dragged) {
     m_frame_shift = std::round(  frame_range.pixel_to_unit(event->x())
                                - frame_range.pixel_to_unit(m_mouse_down_pos.x()));
@@ -165,7 +167,9 @@ void CurveManagerWidget::mouseReleaseEvent(QMouseEvent* event)
         if (is_selected_and_visible(std::pair{ key, data })) {
           auto& property = key.track.property();
           const double new_value = data.value(key) + m_value_shift;
-          m_scene.submit<ChangeKeyFrameCommand>(key.frame, property, key.channel, new_value);
+          Track::Knot new_knot = key.track.knot(key.frame);
+          set_channel_value(new_knot.value, key.channel, new_value);
+          m_scene.submit<ChangeKeyFrameCommand>(key.frame, property, new_knot);
         }
       }
 
@@ -415,9 +419,9 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
         for (auto side : { Track::Knot::Side::Left, Track::Knot::Side::Right }) {
           const KeyFrameHandleKey* neighbor = this->neighbor(key, side);
           if (neighbor != nullptr) {
-            const double value = key.value(side);
+            const double offset = key.value(side);
             const double frame = interpolate_frame(key, *neighbor);
-            draw_tangent(value, frame);
+            draw_tangent(offset, frame);
           }
         }
       }

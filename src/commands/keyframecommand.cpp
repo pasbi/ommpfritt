@@ -165,9 +165,9 @@ void MoveKeyFrameCommand::shift_keyframes(bool invert)
 }
 
 ChangeKeyFrameCommand
-::ChangeKeyFrameCommand(int frame, Property& property, std::size_t channel, double new_value)
+::ChangeKeyFrameCommand(int frame, Property& property, Track::Knot new_value)
   : Command(QObject::tr("Change Keyframes"))
-  , m_frame(frame), m_property(property), m_channel(channel), m_other_value(new_value)
+  , m_frame(frame), m_property(property), m_other_value(new_value)
 {
 }
 
@@ -179,10 +179,7 @@ bool ChangeKeyFrameCommand::mergeWith(const QUndoCommand* other)
 
 void ChangeKeyFrameCommand::swap()
 {
-  auto& v = m_property.track()->knot(m_frame).value;
-  double old_value = get_channel_value(v, m_channel);
-  set_channel_value(v, m_channel, m_other_value);
-  m_other_value = old_value;
+  std::swap(m_property.track()->knot(m_frame), m_other_value);
 }
 
 }  // namespace omm
