@@ -200,6 +200,8 @@ void CurveManagerWidget::mouseReleaseEvent(QMouseEvent* event)
   m_rubberband_rect_visible = false;
   m_dragged_tangent = TangentHandle();
   m_key_being_dragged = false;
+  m_frame_shift = 0;
+  m_value_shift = 0.0;
   update();
   QWidget::mouseReleaseEvent(event);
 }
@@ -277,20 +279,35 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
   // drawing the lines with a resolution of more than one sample per frame makes no sense.
   const int frames_per_pixel = static_cast<double>(frame_range.end - frame_range.begin) / width();
   const int frame_advance = std::max(1, frames_per_pixel);
-  for (Track* track : m_tracks) {
-    for (std::size_t c = 0; c < n_channels(track->property().variant_value()); ++c) {
-      if (is_visible(*track, c)) {
+  for (Track* track_ : m_tracks) {
+    for (std::size_t c = 0; c < n_channels(track_->property().variant_value()); ++c) {
+      Track track = *track_;
+      std::set<int> old_frames;
+      for (auto&& [key, data] : m_keyframe_handles) {
+        if (data.is_selected && &key.track == track_) {
+          if (key.channel == c) {
+            auto& v = track.knot(key.frame).value;
+            const double sv = get_channel_value(v, c) + m_value_shift;
+            set_channel_value(v, c, sv);
+          }
+          old_frames.insert(key.frame);
+        }
+      }
+      for (auto it = old_frames.rbegin(); it != old_frames.rend(); ++it) {
+        track.move_knot(*it, *it + m_frame_shift);
+      }
+      if (is_visible(track, c)) {
         QPen pen;
         pen.setWidthF(1.5);
-        const QString color_name = QString("%1-%2-fcurve").arg(track->type()).arg(c);
+        const QString color_name = QString("%1-%2-fcurve").arg(track.type()).arg(c);
         pen.setColor(ui_color(QPalette::Active, "TimeLine", color_name));
         painter.setPen(pen);
-        auto v0 = track->interpolate(std::floor(frame_range.begin - frame_advance), c);
+        auto v0 = track.interpolate(std::floor(frame_range.begin - frame_advance), c);
         for (int frame = frame_range.begin;
              frame <= frame_range.end + frame_advance;
              frame += frame_advance)
         {
-          auto v1 = track->interpolate(frame, c);
+          auto v1 = track.interpolate(frame, c);
           painter.drawLine(QPointF(frame_range.unit_to_pixel(frame - frame_advance),
                                    value_range.unit_to_pixel(v0)),
                            QPointF(frame_range.unit_to_pixel(frame),
@@ -299,12 +316,12 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
         }
 
         {
-          const auto& property = track->property();
+          const auto& property = track.property();
           const QString text = QString("%1 %2").arg(property.label()).arg(property.channel_name(c));
           const double b = frame_range.pixel_to_unit(0.0);
           const double e = frame_range.pixel_to_unit(painter.fontMetrics().horizontalAdvance(text));
-          const double v1 = track->interpolate(b, c);
-          const double v2 = track->interpolate(e, c);
+          const double v1 = track.interpolate(b, c);
+          const double v2 = track.interpolate(e, c);
           int y = value_range.unit_to_pixel(v1);
           if (v1 > v2) {
             y += painter.fontMetrics().height();
@@ -377,10 +394,17 @@ void CurveManagerWidget::draw_scale(QPainter& painter) const
 void CurveManagerWidget::draw_knots(QPainter& painter) const
 {
   for (const auto& [key, data] : m_keyframe_handles) {
+    const double any_channel_selected = std::any_of(m_keyframe_handles.begin(), m_keyframe_handles.end(),
+                                                    [key=key](auto&& kd)
+    {
+      return &kd.first.track == &key.track && kd.first.frame == key.frame && kd.second.is_selected;
+    });
+    const double frame_shift = any_channel_selected ? m_frame_shift : 0.0;
+    const double value_shift = data.is_selected ? m_value_shift : 0.0;
     if (is_visible(key.track, key.channel)) {
       const double value = data.value(key);
-      const QPointF center(frame_range.unit_to_pixel(key.frame),
-                           value_range.unit_to_pixel(value));
+      const QPointF center(frame_range.unit_to_pixel(key.frame + frame_shift),
+                           value_range.unit_to_pixel(value + value_shift));
       painter.save();
       if (data.is_selected || data.inside_rubberband) {
         painter.setBrush(ui_color(QPalette::Active, "TimeLine", "key selected"));
@@ -396,32 +420,34 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
         painter.drawEllipse(center, radius, radius);
       }
 
-      const auto draw_tangent = [this, center, &painter, key=key]
-                                (double value, double frame)
-      {
-        double x = frame_range.unit_to_pixel(frame);
-        double y = value_range.unit_to_pixel(value);
-        const QPointF other(x, y);
-        constexpr double r = 3;
+      if (key.track.interpolation() == Track::Interpolation::Bezier) {
+        const auto draw_tangent = [this, center, &painter, key=key]
+                                  (double value, double frame)
+        {
+          double x = frame_range.unit_to_pixel(frame);
+          double y = value_range.unit_to_pixel(value);
+          const QPointF other(x, y);
+          constexpr double r = 3;
 
-        const QString color_name = QString("%1-%2-fcurve").arg(key.track.type()).arg(key.channel);
-        QPen pen;
-        const QColor color = ui_color(QPalette::Active, "TimeLine", color_name);
-        pen.setColor(color);
-        painter.setPen(pen);
-        painter.setBrush(color);
-        pen.setWidthF(1.2);
-        painter.drawLine(center, other);
-        painter.drawEllipse(other, r, r);
-      };
+          const QString color_name = QString("%1-%2-fcurve").arg(key.track.type()).arg(key.channel);
+          QPen pen;
+          const QColor color = ui_color(QPalette::Active, "TimeLine", color_name);
+          pen.setColor(color);
+          painter.setPen(pen);
+          painter.setBrush(color);
+          pen.setWidthF(1.2);
+          painter.drawLine(center, other);
+          painter.drawEllipse(other, r, r);
+        };
 
-      if (data.is_selected) {
-        for (auto side : { Track::Knot::Side::Left, Track::Knot::Side::Right }) {
-          const KeyFrameHandleKey* neighbor = this->neighbor(key, side);
-          if (neighbor != nullptr) {
-            const double offset = key.value(side);
-            const double frame = interpolate_frame(key, *neighbor);
-            draw_tangent(offset, frame);
+        if (data.is_selected) {
+          for (auto side : { Track::Knot::Side::Left, Track::Knot::Side::Right }) {
+            const KeyFrameHandleKey* neighbor = this->neighbor(key, side);
+            if (neighbor != nullptr) {
+              const double value = key.value(side) + value_shift;
+              const double frame = interpolate_frame(key.frame + frame_shift, neighbor->frame);
+              draw_tangent(value, frame);
+            }
           }
         }
       }
@@ -446,10 +472,9 @@ void CurveManagerWidget::draw_rubberband(QPainter& painter) const
   }
 }
 
-double CurveManagerWidget::interpolate_frame(const CurveManagerWidget::KeyFrameHandleKey& key,
-                                             const CurveManagerWidget::KeyFrameHandleKey& neighbor)
+double CurveManagerWidget::interpolate_frame(int key_frame, int neighbor_frame)
 {
-  return 2.0/3.0 * key.frame + 1.0/3.0 * neighbor.frame;
+  return 2.0/3.0 * key_frame + 1.0/3.0 * neighbor_frame;
 }
 
 CurveManagerWidget::TangentHandle CurveManagerWidget::tangent_handle_at(const QPointF& point) const
@@ -458,7 +483,7 @@ CurveManagerWidget::TangentHandle CurveManagerWidget::tangent_handle_at(const QP
     for (auto side : { Track::Knot::Side::Left, Track::Knot::Side::Right }) {
       const auto* neighbor = this->neighbor(key, side);
       if (neighbor != nullptr) {
-        const QPointF key_pos ( frame_range.unit_to_pixel(interpolate_frame(key, *neighbor)),
+        const QPointF key_pos ( frame_range.unit_to_pixel(interpolate_frame(key.frame, neighbor->frame)),
                                 value_range.unit_to_pixel(key.value(side)) );
         if ((key_pos - point).manhattanLength() < 3) {
           return TangentHandle(&key, side);

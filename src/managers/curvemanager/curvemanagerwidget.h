@@ -81,7 +81,6 @@ private:
   bool is_visible(const Track& track, std::size_t channel) const;
   const KeyFrameHandleKey* neighbor(const KeyFrameHandleKey& key, Track::Knot::Side side) const;
 
-  using kfh_it = decltype(m_keyframe_handles)::iterator;
   std::set<const KeyFrameHandleKey*> keyframe_handles_at(const QPointF& point) const;
 
   void draw_interpolation(QPainter& painter) const;
@@ -99,7 +98,7 @@ private:
     variant_type& offset();
   };
 
-  static double interpolate_frame(const KeyFrameHandleKey& key, const KeyFrameHandleKey& neighbor);
+  static double interpolate_frame(int key, int neighbor);
 
   TangentHandle tangent_handle_at(const QPointF& point) const;
   TangentHandle m_dragged_tangent = TangentHandle();

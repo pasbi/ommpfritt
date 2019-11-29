@@ -1204,6 +1204,21 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
+    <name>Track</name>
+    <message>
+        <source>Step</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bezier</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Linear</source>
+        <translation type="unfinished">Lineal</translation>
+    </message>
+</context>
+<context>
     <name>UiColorsPage</name>
     <message>
         <source>save as ...</source>
@@ -2070,21 +2085,6 @@ Do you want to convert them into ordinary colors?</source>
     <message>
         <source>ToolBar</source>
         <translation>Barra de Herramientas</translation>
-    </message>
-</context>
-<context>
-    <name>omm::Track</name>
-    <message>
-        <source>Step</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bezier</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Linear</source>
-        <translation type="unfinished">Lineal</translation>
     </message>
 </context>
 <context>

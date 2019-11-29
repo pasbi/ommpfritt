@@ -1204,6 +1204,21 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
+    <name>Track</name>
+    <message>
+        <source>Step</source>
+        <translation>Step</translation>
+    </message>
+    <message>
+        <source>Bezier</source>
+        <translation>Bézier</translation>
+    </message>
+    <message>
+        <source>Linear</source>
+        <translation>Linear</translation>
+    </message>
+</context>
+<context>
     <name>UiColorsPage</name>
     <message>
         <source>save as ...</source>
@@ -2073,21 +2088,6 @@ Do you want to convert them into ordinary colors?</numerusform>
     <message>
         <source>ToolBar</source>
         <translation>Tool bar</translation>
-    </message>
-</context>
-<context>
-    <name>omm::Track</name>
-    <message>
-        <source>Step</source>
-        <translation>Step</translation>
-    </message>
-    <message>
-        <source>Bezier</source>
-        <translation>Bézier</translation>
-    </message>
-    <message>
-        <source>Linear</source>
-        <translation>Linear</translation>
     </message>
 </context>
 <context>

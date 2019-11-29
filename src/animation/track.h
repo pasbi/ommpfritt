@@ -6,6 +6,7 @@
 #include <QObject>
 #include "serializers/abstractserializer.h"
 #include "common.h"
+#include <QCoreApplication>
 
 namespace omm
 {
@@ -19,9 +20,9 @@ class Property;
  *  It would be impossible to restore an track at deserialization since the property it belongs
  *  to is not known at that time.
  */
-class Track : public QObject, public Serializable
+class Track : public Serializable
 {
-  Q_OBJECT
+  Q_DECLARE_TR_FUNCTIONS(Track)
 public:
   struct Knot {
     Knot(const variant_type& variant_value);

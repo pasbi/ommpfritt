@@ -1204,6 +1204,21 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
 </context>
 <context>
+    <name>Track</name>
+    <message>
+        <source>Step</source>
+        <translation>Stufe</translation>
+    </message>
+    <message>
+        <source>Bezier</source>
+        <translation>Bézier</translation>
+    </message>
+    <message>
+        <source>Linear</source>
+        <translation>Linear</translation>
+    </message>
+</context>
+<context>
     <name>UiColorsPage</name>
     <message>
         <source>save as ...</source>
@@ -2073,21 +2088,6 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <message>
         <source>ToolBar</source>
         <translation>Werkzeugkasten</translation>
-    </message>
-</context>
-<context>
-    <name>omm::Track</name>
-    <message>
-        <source>Step</source>
-        <translation>Stufe</translation>
-    </message>
-    <message>
-        <source>Bezier</source>
-        <translation>Bézier</translation>
-    </message>
-    <message>
-        <source>Linear</source>
-        <translation>Linear</translation>
     </message>
 </context>
 <context>
