@@ -22,6 +22,7 @@ public:
 
 protected:
   void resizeEvent(QResizeEvent* e) override;
+  void mouseDoubleClickEvent(QMouseEvent* event) override;
 
 public Q_SLOTS:
   void set_selection(const std::set<Style*>& selection);

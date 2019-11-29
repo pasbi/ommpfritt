@@ -1,4 +1,5 @@
 #include "managers/stylemanager/stylelistview.h"
+#include "mainwindow/application.h"
 #include "scene/stylelist.h"
 #include "scene/scene.h"
 
@@ -37,6 +38,12 @@ void StyleListView::set_selection(const std::set<Style*>& selection)
     new_selection.merge(QItemSelection(index, index), QItemSelectionModel::Select);
   }
   selectionModel()->select(new_selection, QItemSelectionModel::ClearAndSelect);
+}
+
+void StyleListView::mouseDoubleClickEvent(QMouseEvent* event)
+{
+  Q_UNUSED(event);
+  Application::instance().perform_action("new style");
 }
 
 }  // namespace omm
