@@ -183,11 +183,13 @@ void IsEnabledPropertyArea::draw(QPainter &painter, const QModelIndex& index)
   } else {
     pen.setColor(ui_color(view, "ObjectManager", "disabled"));
   }
-  pen.setWidth(4.0);
-  pen.setCosmetic(true);
+  const double width = 0.08;
+  pen.setWidthF(width);
+  pen.setCosmetic(false);
   pen.setCapStyle(Qt::RoundCap);
 
-  const auto rect = area - QMarginsF(0.02, 0.02, 0.02, 0.02);
+  const QMarginsF margins = QMarginsF(width, width, width, width);
+  const auto rect = area - margins;
 
   painter.save();
   painter.setPen(pen);

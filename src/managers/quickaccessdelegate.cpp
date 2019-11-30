@@ -18,9 +18,12 @@ paint(QPainter *painter, const QStyleOptionViewItem &, const QModelIndex &index)
   const auto rect = m_view.visualRect(index);
   painter->translate(rect.topLeft());
   painter->scale(rect.width(), rect.height());
+  painter->save();
   for (auto& area : m_areas) {
+    painter->setClipRect(QRectF(0.0, 0.0, 1.0, 1.0));
     area->draw(*painter, index);
   }
+  painter->restore();
 
   // draw_dot(*painter, export_visibility);
   painter->restore();
