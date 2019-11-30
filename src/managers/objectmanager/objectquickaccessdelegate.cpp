@@ -99,6 +99,7 @@ void PropertyArea::begin(const QModelIndex& index, QMouseEvent& event)
 void PropertyArea::end()
 {
   is_active = false;
+  m_macro.reset();
 }
 
 void PropertyArea::perform(const QModelIndex& index, QMouseEvent& event)

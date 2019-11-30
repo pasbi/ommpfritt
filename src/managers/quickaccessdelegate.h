@@ -35,13 +35,6 @@ protected:
 
 private:
   QAbstractItemView& m_view;
-
-  // a mouse click commits a command.
-  // when the mousebutton is hold down and moved, that command is undone and a macro is started.
-  // when the mousebutton is released again, the macro is ended.
-  std::unique_ptr<Macro> m_macro;
-  std::unique_ptr<Command> m_command_on_hold;
-
   std::list<std::unique_ptr<Area>> m_areas;
   QPointF to_local(const QPoint &view_global, const QModelIndex &index) const;
 };

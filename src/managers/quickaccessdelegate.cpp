@@ -36,7 +36,6 @@ QSize QuickAccessDelegate::sizeHint(const QStyleOptionViewItem &, const QModelIn
 
 bool QuickAccessDelegate::on_mouse_button_press(QMouseEvent& event)
 {
-  assert(m_macro == nullptr);
   const auto index = m_view.indexAt(event.pos());
   const QPointF pos = to_local(event.pos(), index);
   for (const auto& area : m_areas) {
@@ -62,9 +61,6 @@ void QuickAccessDelegate::on_mouse_move(QMouseEvent &event)
 void QuickAccessDelegate::on_mouse_release(QMouseEvent &event)
 {
   Q_UNUSED(event)
-  if (m_macro) {
-    m_macro.reset();  // calls the dtor of m_macro, which will end the macro.
-  }
   for (auto& area : m_areas) {
     area->end();
   }
