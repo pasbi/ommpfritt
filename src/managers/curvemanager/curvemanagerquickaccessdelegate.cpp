@@ -96,6 +96,7 @@ void VisibilityArea::begin(const QModelIndex& index, QMouseEvent& event)
 
 void VisibilityArea::perform(const QModelIndex& index, QMouseEvent& event)
 {
+  Q_UNUSED(event)
   const auto& proxy_chain = *static_cast<omm::ProxyChain*>(m_view.model());
   const QModelIndex sindex = proxy_chain.mapToChainSource(index.siblingAtColumn(0));
   if (sindex.isValid()) {

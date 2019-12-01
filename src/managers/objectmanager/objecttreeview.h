@@ -12,6 +12,7 @@
 namespace omm
 {
 
+class ObjectDelegate;
 class Object;
 
 class ObjectTreeView : public ManagerItemView<ItemProxyView<QTreeView>, ObjectTree>
@@ -38,6 +39,8 @@ protected:
   void mousePressEvent(QMouseEvent* e) override;
   void mouseReleaseEvent(QMouseEvent *e) override;
   void focusInEvent(QFocusEvent *e) override;
+  void paintEvent(QPaintEvent* event) override;
+  void keyPressEvent(QKeyEvent* event) override;
 
 private:
   std::unique_ptr<ObjectTreeSelectionModel> m_selection_model;
@@ -50,6 +53,14 @@ private:
   QModelIndex m_mouse_down_index;
 
   void handle_drag_event(QDragMoveEvent* e);
+
+  QPoint m_rubberband_origin;
+  QPoint m_rubberband_corner;
+  QRect rubber_band() const;
+  bool m_rubberband_visible = false;
+  QModelIndexList indices(const QRect rect) const;
+  ObjectDelegate* m_object_delegate;
+  bool m_aborted = false;
 };
 
 }  // namespace

@@ -22,6 +22,19 @@
 #include <QHeaderView>
 #include <QTimer>
 #include "scene/messagebox.h"
+#include "managers/objectmanager/objectdelegate.h"
+#include <QStyledItemDelegate>
+
+namespace
+{
+
+QItemSelectionModel::SelectionFlag get_selection_flag(const QMouseEvent& event)
+{
+  return event.modifiers() & Qt::ControlModifier ? QItemSelectionModel::Toggle
+                                                 : QItemSelectionModel::Select;
+}
+
+}
 
 namespace omm
 {
@@ -56,6 +69,12 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
           this, SLOT(update_tag_column_size()));
 
   update_tag_column_size();
+
+  auto object_delegate = std::make_unique<ObjectDelegate>(*this, *m_selection_model,
+                                                          *ItemProxyView::model());
+  m_object_delegate = object_delegate.get();
+  setItemDelegateForColumn(0, object_delegate.release());
+
 }
 
 std::set<AbstractPropertyOwner*> ObjectTreeView::selected_items() const
@@ -80,6 +99,11 @@ void ObjectTreeView::handle_drag_event(QDragMoveEvent* e)
   setDropIndicatorShown(indexAt(e->pos()).column() != ObjectTree::TAGS_COLUMN);
 }
 
+QRect ObjectTreeView::rubber_band() const
+{
+  return QRect(m_rubberband_corner, m_rubberband_origin).normalized();
+}
+
 void ObjectTreeView::dragEnterEvent(QDragEnterEvent* e)
 {
   handle_drag_event(e);
@@ -94,31 +118,51 @@ void ObjectTreeView::dragMoveEvent(QDragMoveEvent* e)
 
 void ObjectTreeView::mousePressEvent(QMouseEvent* e)
 {
+  m_aborted = false;
   m_mouse_down_index = indexAt(e->pos());
-  switch (columnAt(e->pos().x())) {
-    case 0:
-      [[fallthrough]];
-    case 2:
-      if (e->button() == Qt::LeftButton) {
-        m_mouse_press_pos = e->pos();
-      }
-      ManagerItemView::mousePressEvent(e);
-      break;
-    case 1:
-      // Attempting to drag a cell from this column would always drag another cell since this one
-      // cannot be selected. Hence we must disable dragging for that column.
-      // Not returning Draggable-Flag in flags() is not enough.
-      // It's important to enable dragging if the mouse is released or focus comes from another
-      // widget.
-      setDragEnabled(false);
-      m_object_quick_access_delegate->on_mouse_button_press(*e);
-      break;
+  if (const QModelIndex index = indexAt(e->pos()); !index.isValid()
+      || (index.column() == 2 && m_tags_item_delegate->tag_at(index, e->pos()) == nullptr)) {
+    m_rubberband_visible = true;
+    m_rubberband_origin = e->pos();
+    m_rubberband_corner = e->pos();
+    if (!(e->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier))) {
+      selectionModel()->clearSelection();
+    }
+  } else {
+    switch (columnAt(e->pos().x())) {
+      case 0:
+        [[fallthrough]];
+      case 2:
+        if (e->button() == Qt::LeftButton) {
+          m_mouse_press_pos = e->pos();
+        }
+        ManagerItemView::mousePressEvent(e);
+        break;
+      case 1:
+        // Attempting to drag a cell from this column would always drag another cell since this one
+        // cannot be selected. Hence we must disable dragging for that column.
+        // Not returning Draggable-Flag in flags() is not enough.
+        // It's important to enable dragging if the mouse is released or focus comes from another
+        // widget.
+        setDragEnabled(false);
+        m_object_quick_access_delegate->on_mouse_button_press(*e);
+        break;
+    }
   }
 }
 
 void ObjectTreeView::mouseReleaseEvent(QMouseEvent *e)
 {
   // see ObjectTreeView::mousePressEvent case 1
+  if (m_rubberband_visible && !m_aborted) {
+    m_rubberband_visible = false;
+    const auto indices = this->indices(rubber_band());
+    const auto flag = get_selection_flag(*e);
+    for (const QModelIndex& index : indices) {
+      selectionModel()->select(index, flag);
+    }
+    m_object_delegate->tmp_selection.clear();
+  }
   setDragEnabled(true);
   const int column = indexAt(e->pos()).column();
   ManagerItemView::mouseReleaseEvent(e);
@@ -126,6 +170,7 @@ void ObjectTreeView::mouseReleaseEvent(QMouseEvent *e)
     model()->scene.set_selection(selected_items());
   }
   m_object_quick_access_delegate->on_mouse_release(*e);
+  viewport()->update();
 }
 
 void ObjectTreeView::focusInEvent(QFocusEvent *e)
@@ -135,31 +180,73 @@ void ObjectTreeView::focusInEvent(QFocusEvent *e)
   ManagerItemView::focusInEvent(e);
 }
 
+void ObjectTreeView::paintEvent(QPaintEvent* event)
+{
+  ManagerItemView::paintEvent(event);
+  if (m_rubberband_visible && !m_aborted) {
+    QPainter painter(viewport());
+    const QRect rect = QRect(m_rubberband_origin, m_rubberband_corner).normalized();
+    painter.drawRect(rect);
+  }
+}
+
+void ObjectTreeView::keyPressEvent(QKeyEvent* event)
+{
+  if (event->key() == Qt::Key_Escape) {
+    m_aborted = true;
+    m_object_delegate->tmp_selection.clear();
+    viewport()->update();
+  }
+  QTreeView::keyPressEvent(event);
+}
+
+QModelIndexList ObjectTreeView::indices(const QRect rect) const
+{
+  QModelIndex i = indexAt(rect.topLeft());
+  QModelIndexList list;
+  while (i.isValid() && visualRect(i).intersects(rect)) {
+    list.append(i);
+    i = indexBelow(i);
+  }
+  return list;
+}
+
 void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
 {
-  switch (m_mouse_down_index.column()) {
-  case ObjectTree::VISIBILITY_COLUMN:
-    m_object_quick_access_delegate->on_mouse_move(*e);
-    break;
-  case ObjectTree::TAGS_COLUMN:
-    if ((e->pos() - m_mouse_press_pos).manhattanLength() > QApplication::startDragDistance()) {
-      const auto left_button = e->buttons() & Qt::LeftButton;
-      if (left_button) {
-        const auto selected_tags = m_selection_model->selected_tags_ordered(model()->scene);
-        const auto st_apo = down_cast(selected_tags);
-        if (selected_tags.size() > 0) {
-          auto mime_data = std::make_unique<PropertyOwnerMimeData>(st_apo);
-          auto drag = std::make_unique<QDrag>(this);
-          drag->setMimeData(mime_data.release());
-          // drag->setPixmap()  // TODO
-          drag.release()->exec(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction);
-        }
-        return;
-      }
+  if (m_rubberband_visible) {
+    if (m_aborted) {
+      m_rubberband_visible = false;
+    } else {
+      m_rubberband_corner = e->pos();
+      m_object_delegate->tmp_selection = indices(rubber_band());
+      m_object_delegate->selection_flag = get_selection_flag(*e);
     }
-    [[fallthrough]];
-  case ObjectTree::OBJECT_COLUMN:
-    ManagerItemView::mouseMoveEvent(e);
+    viewport()->update();
+  } else {
+    switch (m_mouse_down_index.column()) {
+    case ObjectTree::VISIBILITY_COLUMN:
+      m_object_quick_access_delegate->on_mouse_move(*e);
+      break;
+    case ObjectTree::TAGS_COLUMN:
+      if ((e->pos() - m_mouse_press_pos).manhattanLength() > QApplication::startDragDistance()) {
+        const auto left_button = e->buttons() & Qt::LeftButton;
+        if (left_button) {
+          const auto selected_tags = m_selection_model->selected_tags_ordered(model()->scene);
+          const auto st_apo = down_cast(selected_tags);
+          if (selected_tags.size() > 0) {
+            auto mime_data = std::make_unique<PropertyOwnerMimeData>(st_apo);
+            auto drag = std::make_unique<QDrag>(this);
+            drag->setMimeData(mime_data.release());
+            // drag->setPixmap()  // TODO
+            drag.release()->exec(Qt::CopyAction | Qt::MoveAction | Qt::LinkAction);
+          }
+          return;
+        }
+      }
+      [[fallthrough]];
+    case ObjectTree::OBJECT_COLUMN:
+      ManagerItemView::mouseMoveEvent(e);
+    }
   }
 }
 

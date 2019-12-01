@@ -1,5 +1,6 @@
 
 file(GLOB SOURCES
+  objectdelegate.cpp
   objectmanager.cpp
   objectquickaccessdelegate.cpp
   objecttreeselectionmodel.cpp
@@ -8,6 +9,7 @@ file(GLOB SOURCES
 )
 
 file(GLOB HEADERS
+  objectdelegate.h
   objectmanager.h
   objectquickaccessdelegate.h
   objecttreeselectionmodel.h
