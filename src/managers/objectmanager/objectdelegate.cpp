@@ -38,6 +38,8 @@ void ObjectDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
         return is_selected || is_tmp_selected;
       case QItemSelectionModel::Toggle:
         return is_selected != is_tmp_selected;
+      case QItemSelectionModel::Deselect:
+        return is_selected && !is_tmp_selected;
       default:
         qFatal("Unexpected selection flag");
         Q_UNREACHABLE();

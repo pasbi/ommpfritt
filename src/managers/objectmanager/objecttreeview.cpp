@@ -30,7 +30,7 @@ namespace
 
 QItemSelectionModel::SelectionFlag get_selection_flag(const QMouseEvent& event)
 {
-  return event.modifiers() & Qt::ControlModifier ? QItemSelectionModel::Toggle
+  return event.modifiers() & Qt::ControlModifier ? QItemSelectionModel::Deselect
                                                  : QItemSelectionModel::Select;
 }
 
@@ -43,7 +43,7 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
   : ManagerItemView(model)
   , m_selection_model(std::make_unique<ObjectTreeSelectionModel>(model).release())
   , m_object_quick_access_delegate(std::make_unique<ObjectQuickAccessDelegate>(*this))
-  , m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this, *m_selection_model))
+  , m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this, *m_selection_model, 2))
   , m_model(model)
 {
   setItemDelegateForColumn(1, m_object_quick_access_delegate.get());
@@ -126,7 +126,7 @@ void ObjectTreeView::mousePressEvent(QMouseEvent* e)
     m_rubberband_origin = e->pos();
     m_rubberband_corner = e->pos();
     if (!(e->modifiers() & (Qt::ShiftModifier | Qt::ControlModifier))) {
-      selectionModel()->clearSelection();
+      m_selection_model->clear_selection();
     }
   } else {
     switch (columnAt(e->pos().x())) {
@@ -156,12 +156,17 @@ void ObjectTreeView::mouseReleaseEvent(QMouseEvent *e)
   // see ObjectTreeView::mousePressEvent case 1
   if (m_rubberband_visible && !m_aborted) {
     m_rubberband_visible = false;
-    const auto indices = this->indices(rubber_band());
     const auto flag = get_selection_flag(*e);
-    for (const QModelIndex& index : indices) {
+    for (const QModelIndex& index : indices(rubber_band())) {
       selectionModel()->select(index, flag);
     }
     m_object_delegate->tmp_selection.clear();
+    for (const QModelIndex& index : indices(viewport()->rect())) {
+      for (Tag* tag : m_tags_item_delegate->tags(index, rubber_band())) {
+        m_selection_model->select(*tag, flag);
+      }
+    }
+    m_tags_item_delegate->rubberband = QRect(-1, -1, 0, 0);
   }
   setDragEnabled(true);
   const int column = indexAt(e->pos()).column();
@@ -195,6 +200,7 @@ void ObjectTreeView::keyPressEvent(QKeyEvent* event)
   if (event->key() == Qt::Key_Escape) {
     m_aborted = true;
     m_object_delegate->tmp_selection.clear();
+    m_tags_item_delegate->rubberband = QRect(-1, -1, 0, 0);
     viewport()->update();
   }
   QTreeView::keyPressEvent(event);
@@ -218,8 +224,12 @@ void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
       m_rubberband_visible = false;
     } else {
       m_rubberband_corner = e->pos();
-      m_object_delegate->tmp_selection = indices(rubber_band());
-      m_object_delegate->selection_flag = get_selection_flag(*e);
+      const QRect rubber_band = this->rubber_band();
+      const QItemSelectionModel::SelectionFlag selection_flag = get_selection_flag(*e);
+      m_object_delegate->tmp_selection = indices(rubber_band);
+      m_object_delegate->selection_flag = selection_flag;
+      m_tags_item_delegate->rubberband = rubber_band;
+      m_tags_item_delegate->selection_flag = selection_flag;
     }
     viewport()->update();
   } else {
