@@ -44,8 +44,13 @@ public:
 
   void set_proxy(std::unique_ptr<ProxyChain> proxy)
   {
-    assert(ViewT::model() == nullptr);  // only set the proxy if model has not yet been set.
-    m_proxy = std::move(proxy);
+    if (m_proxy) {
+      QAbstractItemModel* model = m_proxy->chainSourceModel();
+      m_proxy = std::move(proxy);
+      setModel(model);
+    } else {
+      m_proxy = std::move(proxy);
+    }
   }
 
   void setModel(QAbstractItemModel* model) override

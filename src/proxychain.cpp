@@ -39,7 +39,7 @@ QAbstractItemModel* ProxyChain::chainSourceModel() const
 
 QModelIndex ProxyChain::mapFromChainSource(const QModelIndex &index) const
 {
-  assert(!index.isValid() || index.model() == m_proxies.front()->sourceModel());
+  assert(!index.isValid() || index.model() == chainSourceModel());
   QModelIndex i = index;
   for (auto it = m_proxies.begin(); it != m_proxies.end(); ++it) {
     assert(!i.isValid() || i.model() == it->get()->sourceModel());
@@ -60,7 +60,7 @@ QModelIndex ProxyChain::mapToChainSource(const QModelIndex& index) const
     i = (*it)->mapToSource(i);
     assert(!i.isValid() || i.model() == (*it)->sourceModel());
   }
-  assert(!i.isValid() || i.model() == m_proxies.front()->sourceModel());
+  assert(!i.isValid() || i.model() == chainSourceModel());
   return i;
 }
 
