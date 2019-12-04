@@ -99,7 +99,43 @@ QPainterPath Painter::path(const std::vector<Point> &points, bool closed)
   return path;
 }
 
-QBrush Painter::make_brush(const Style &style)
+QBrush Painter::make_brush(const Style &style, const Object& object)
+{
+  static constexpr auto constrain_size = [](const QSize& size) {
+    static constexpr int max_size = 10000;
+    const double f = max_size / std::max<double>(size.width(), size.height());
+    if (f > 1.0) {
+      return size;
+    } else {
+      return f * size;
+    }
+  };
+
+
+  if (style.property(omm::Style::BRUSH_IS_ACTIVE_KEY)->value<bool>()) {
+    if (style.property("gl-brush")->value<bool>()) {
+      const auto l_bb = object.bounding_box(ObjectTransformation());
+      const auto v_bb = object.bounding_box(object.global_transformation(Space::Viewport));
+      const double fx = std::abs(v_bb.width() / l_bb.width());
+      const double fy = std::abs(v_bb.height() / l_bb.height());
+      const double f = std::max(fx, fy);
+      QSize size = constrain_size(f * QSize(l_bb.width(), l_bb.height()));
+      QPixmap pixmap = style.texture(object, size);
+      QBrush brush(pixmap);
+      QTransform t;
+      t.scale(1.0/f, 1.0/f);
+      t.translate(-pixmap.width() / 2.0, -pixmap.height() / 2.0);
+      brush.setTransform(t);
+      return brush;
+    } else {
+      return make_simple_brush(style);
+    }
+  } else {
+    return QBrush(Qt::NoBrush);
+  }
+}
+
+QBrush Painter::make_simple_brush(const Style &style)
 {
   if (style.property(omm::Style::BRUSH_IS_ACTIVE_KEY)->value<bool>()) {
     QBrush brush(Qt::SolidPattern);
@@ -111,7 +147,13 @@ QBrush Painter::make_brush(const Style &style)
   }
 }
 
-QPen Painter::make_pen(const Style &style)
+QPen Painter::make_pen(const Style &style, const Object& object)
+{
+  Q_UNUSED(object);
+  return make_simple_pen(style);
+}
+
+QPen Painter::make_simple_pen(const Style &style)
 {
   if (style.property(omm::Style::PEN_IS_ACTIVE_KEY)->value<bool>()) {
     QPen pen;
@@ -136,10 +178,10 @@ QPen Painter::make_pen(const Style &style)
   }
 }
 
-void Painter::set_style(const Style &style)
+void Painter::set_style(const Style &style, const Object& object)
 {
-  painter->setPen(make_pen(style));
-  painter->setBrush(make_brush(style));
+  painter->setPen(make_pen(style, object));
+  painter->setBrush(make_brush(style, object));
 }
 
 }  // namespace omm

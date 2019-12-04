@@ -1,4 +1,12 @@
 #include "renderers/style.h"
+#include <QOpenGLVertexArrayObject>
+#include <QOpenGLFunctions>
+#include <QOffscreenSurface>
+#include <QOpenGLShader>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLContext>
+#include <QOpenGLFramebufferObject>
+#include <QApplication>
 #include "properties/boolproperty.h"
 #include "properties/colorproperty.h"
 #include "properties/floatproperty.h"
@@ -69,6 +77,7 @@ Style::Style(Scene *scene)
   create_property<ColorProperty>(BRUSH_COLOR_KEY, Colors::RED)
     .set_label(QObject::tr("color"))
       .set_category(brush_category);
+  create_property<BoolProperty>("gl-brush", false).set_label("gl").set_category(brush_category);
 
   start_marker.make_properties(decoration_category);
   end_marker.make_properties(decoration_category);
@@ -84,6 +93,50 @@ Style::Style(const Style &other)
 
 QString Style::type() const { return TYPE; }
 AbstractPropertyOwner::Flag Style::flags() const { return Flag::None; }
+
+QPixmap Style::texture(const Object& object, const QSize& size) const
+{
+  LINFO << size;
+  Q_UNUSED(object);
+  QImage image(size, QImage::Format_ARGB32_Premultiplied);
+  QOpenGLContext context;
+  bool s;
+  s = context.create();
+  assert(s);
+  QOffscreenSurface surface(nullptr);
+  surface.create();
+  assert(surface.isValid());
+  s = context.makeCurrent(&surface);
+  assert(s);
+  QOpenGLFunctions* const functions = QOpenGLContext::currentContext()->functions();
+
+  QOpenGLFramebufferObject buffer(size);
+  buffer.bind();
+
+  QOpenGLVertexArrayObject vao;
+  s = vao.create();
+  assert(s);
+
+  vao.bind();
+
+  vao.release();
+
+  functions->glDrawArrays(GL_TRIANGLE_STRIP, vao.objectId(), 1);
+  functions->glClearColor(255, 0, 255, 255);
+  functions->glClear(GL_COLOR_BUFFER_BIT);
+  return QPixmap::fromImage(buffer.toImage());
+//  for (int x = 0; x < image.width(); ++x) {
+//    for (int y = 0; y < image.height(); ++y) {
+//      if (y % 10 < 2 || x % 10 < 2) {
+//        image.setPixel(x, y, QColor(Qt::black).rgba());
+//      } else {
+//        QColor color(255.0 * x / image.width(), 255.0 * y / image.height(), 0, 255);
+//        image.setPixel(x, y, color.rgba());
+//      }
+//    }
+//  }
+  return QPixmap::fromImage(image);
+}
 
 void Style::on_property_value_changed(Property *property)
 {

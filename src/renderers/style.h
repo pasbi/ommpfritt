@@ -22,6 +22,7 @@ public:
   static constexpr auto TYPE = "Style";
   std::unique_ptr<Style> clone() const;  // provided for interface consistency
   Flag flags() const override;
+  QPixmap texture(const Object& object, const QSize& size) const;
 
 public:
   static constexpr auto PEN_IS_ACTIVE_KEY = "pen/active";

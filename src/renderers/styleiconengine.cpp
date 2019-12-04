@@ -23,8 +23,8 @@ double adjust_pen_width(double width, const QSize& size)
 void draw_style(QPainter& painter, const QRect& rect, const omm::Style& style)
 {
   painter.save();
-  painter.setBrush(omm::Painter::make_brush(style));
-  auto pen = omm::Painter::make_pen(style);
+  painter.setBrush(omm::Painter::make_simple_brush(style));
+  auto pen = omm::Painter::make_simple_pen(style);
   pen.setWidthF(adjust_pen_width(pen.width(), rect.size()));
   painter.setPen(pen);
   const auto r = 0.8 * std::min(rect.size().width(), rect.size().height());

@@ -20,6 +20,7 @@ namespace omm
 
 class Style;
 class Scene;
+class Object;
 class Rectangle;
 
 class Painter
@@ -44,10 +45,13 @@ public:
   void toast(const Vec2f& pos, const QString& text);
 
   static QPainterPath path(const std::vector<Point>& points, bool closed = false);
-  static QBrush make_brush(const Style& style);
-  static QPen make_pen(const Style& style);
+  QBrush make_brush(const Style& style, const Object& object);
+  QPen make_pen(const Style& style, const Object& object);
 
-  void set_style(const Style& style);
+  static QBrush make_simple_brush(const Style& style);
+  static QPen make_simple_pen(const Style& style);
+
+  void set_style(const Style& style, const Object& object);
 
   Scene& scene;
   Category category_filter;

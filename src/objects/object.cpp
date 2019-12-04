@@ -255,7 +255,7 @@ void Object::draw_recursive(Painter& renderer, Painter::Options options) const
   const bool is_enabled = !!(renderer.category_filter & Painter::Category::Objects);
   if (is_enabled && is_visible(options.viewport)) {
     options.styles = find_styles();
-    for (const auto* style : options.styles) {
+    for (auto* style : options.styles) {
       draw_object(renderer, *style, options);
     }
     if (options.styles.size() == 0) {
@@ -263,7 +263,7 @@ void Object::draw_recursive(Painter& renderer, Painter::Options options) const
     }
 
     if (!!(renderer.category_filter & Painter::Category::BoundingBox)) {
-      renderer.set_style(*m_bounding_box_style);
+      renderer.set_style(*m_bounding_box_style, *this);
       renderer.painter->drawRect(bounding_box(ObjectTransformation()));
     }
 
@@ -466,7 +466,7 @@ void Object::update_recursive()
 //  Q_EMIT scene()->message_box.appearance_changed(*this);
 }
 
-void Object::draw_object(Painter&, const Style&, Painter::Options options) const {}
+void Object::draw_object(Painter&, const Style&, Painter::Options) const {}
 void Object::draw_handles(Painter&) const {}
 std::vector<Point> Object::points() const { return {}; }
 void PathDeleter::operator()(Path *path) { delete path; }

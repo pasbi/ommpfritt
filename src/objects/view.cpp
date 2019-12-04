@@ -80,7 +80,7 @@ void View::make_output_unique()
 void View::draw_handles(Painter &renderer) const
 {
   const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>();
-  renderer.set_style(ContourStyle(Colors::BLACK));
+  renderer.set_style(ContourStyle(Colors::BLACK), *this);
   renderer.painter->drawRect(QRectF(-size.x/2.0, -size.y/2.0, size.x, size.y));
 }
 
