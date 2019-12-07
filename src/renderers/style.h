@@ -9,6 +9,7 @@ namespace omm
 {
 
 class Scene;
+class OffscreenRenderer;
 
 class Style
   : public PropertyOwner<AbstractPropertyOwner::Kind::Style>
@@ -17,6 +18,7 @@ class Style
   Q_OBJECT
 public:
   explicit Style(Scene* scene = nullptr);
+  virtual ~Style();
   Style(const Style& other);
   QString type() const override;
   static constexpr auto TYPE = "Style";
@@ -40,6 +42,10 @@ public:
   const MarkerProperties start_marker;
   const MarkerProperties end_marker;
   void on_property_value_changed(Property* property) override;
+
+private:
+  std::unique_ptr<OffscreenRenderer> m_offscreen_renderer;
+  void init_offscreen_renderer();
 };
 
 class SolidStyle : public Style

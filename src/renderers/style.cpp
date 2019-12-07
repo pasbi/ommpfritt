@@ -1,11 +1,5 @@
 #include "renderers/style.h"
-#include <QOpenGLVertexArrayObject>
-#include <QOpenGLFunctions>
-#include <QOffscreenSurface>
-#include <QOpenGLShader>
-#include <QOpenGLShaderProgram>
-#include <QOpenGLContext>
-#include <QOpenGLFramebufferObject>
+#include "renderers/offscreenrenderer.h"
 #include <QApplication>
 #include "properties/boolproperty.h"
 #include "properties/colorproperty.h"
@@ -81,6 +75,11 @@ Style::Style(Scene *scene)
 
   start_marker.make_properties(decoration_category);
   end_marker.make_properties(decoration_category);
+  init_offscreen_renderer();
+}
+
+Style::~Style()
+{
 }
 
 Style::Style(const Style &other)
@@ -88,7 +87,7 @@ Style::Style(const Style &other)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {
-
+  init_offscreen_renderer();
 }
 
 QString Style::type() const { return TYPE; }
@@ -96,46 +95,8 @@ AbstractPropertyOwner::Flag Style::flags() const { return Flag::None; }
 
 QPixmap Style::texture(const Object& object, const QSize& size) const
 {
-  LINFO << size;
-  Q_UNUSED(object);
-  QImage image(size, QImage::Format_ARGB32_Premultiplied);
-  QOpenGLContext context;
-  bool s;
-  s = context.create();
-  assert(s);
-  QOffscreenSurface surface(nullptr);
-  surface.create();
-  assert(surface.isValid());
-  s = context.makeCurrent(&surface);
-  assert(s);
-  QOpenGLFunctions* const functions = QOpenGLContext::currentContext()->functions();
-
-  QOpenGLFramebufferObject buffer(size);
-  buffer.bind();
-
-  QOpenGLVertexArrayObject vao;
-  s = vao.create();
-  assert(s);
-
-  vao.bind();
-
-  vao.release();
-
-  functions->glDrawArrays(GL_TRIANGLE_STRIP, vao.objectId(), 1);
-  functions->glClearColor(255, 0, 255, 255);
-  functions->glClear(GL_COLOR_BUFFER_BIT);
-  return QPixmap::fromImage(buffer.toImage());
-//  for (int x = 0; x < image.width(); ++x) {
-//    for (int y = 0; y < image.height(); ++y) {
-//      if (y % 10 < 2 || x % 10 < 2) {
-//        image.setPixel(x, y, QColor(Qt::black).rgba());
-//      } else {
-//        QColor color(255.0 * x / image.width(), 255.0 * y / image.height(), 0, 255);
-//        image.setPixel(x, y, color.rgba());
-//      }
-//    }
-//  }
-  return QPixmap::fromImage(image);
+  Q_UNUSED(object)
+  return QPixmap::fromImage(m_offscreen_renderer->render(size));
 }
 
 void Style::on_property_value_changed(Property *property)
@@ -154,6 +115,32 @@ void Style::on_property_value_changed(Property *property)
       Q_EMIT scene->message_box().appearance_changed(*this);
     }
   }
+}
+
+void Style::init_offscreen_renderer()
+{
+  static constexpr auto fragment_code = R"(
+varying highp vec3 vert;
+#define M_PI 3.1415926535897932384626433832795
+
+vec3 hsv2rgb(vec3 c)
+{
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+void main()
+{
+   float arg = atan(vert.y, vert.x);
+   float r = sqrt(vert.y * vert.y + vert.x * vert.x);
+   vec3 hsv = vec3(arg / (2.0 * M_PI), r, 1.0);
+   gl_FragColor = vec4(hsv2rgb(hsv), 1.0);
+}
+
+)";
+  m_offscreen_renderer = std::make_unique<OffscreenRenderer>();
+  m_offscreen_renderer->set_fragment_shader(fragment_code);
 }
 
 std::unique_ptr<Style> Style::clone() const

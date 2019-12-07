@@ -76,6 +76,8 @@ target_link_libraries(libommpfritt -lpthread -lm -ldl -lutil)
 target_link_libraries(ommpfritt -lpthread -lm -ldl -lutil)
 target_link_libraries(libommpfritt KF5ItemModels)
 target_link_libraries(ommpfritt KF5ItemModels)
+target_link_libraries(libommpfritt -lGL)
+target_link_libraries(ommpfritt -lGL)
 
 add_subdirectory(src)
 add_subdirectory(test)
