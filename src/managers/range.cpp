@@ -97,4 +97,66 @@ void Range::zoom(double origin, double amount, double min_upp, double max_upp)
   end = center - right * a;
 }
 
+
+WidgetRange2D::WidgetRange2D(QPointF begin, QPointF end, QWidget& widget,
+              Range::Options h_options, Range::Options v_options)
+  : h_range(begin.x(), end.x(), widget, h_options)
+  , v_range(begin.y(), end.y(), widget, v_options)
+{
+}
+
+QPointF WidgetRange2D::begin() const { return { h_range.begin, v_range.begin }; }
+void WidgetRange2D::set_begin(const QPointF& begin)
+{
+  h_range.begin = begin.x();
+  v_range.begin = begin.y();
+}
+
+QPointF WidgetRange2D::end() const { return { h_range.end, v_range.end }; }
+void WidgetRange2D::set_end(const QPointF& end)
+{
+  h_range.end = end.x();
+  v_range.end = end.y();
+}
+
+QPointF WidgetRange2D::pixel_to_unit(const QPointF& pixel) const
+{
+  return {
+    h_range.pixel_to_unit(pixel.x()), v_range.pixel_to_unit(pixel.y())
+  };
+}
+
+QPointF WidgetRange2D::unit_to_pixel(const QPointF& unit) const
+{
+  return {
+    h_range.unit_to_pixel(unit.x()), v_range.unit_to_pixel(unit.y())
+  };
+}
+
+QPointF WidgetRange2D::unit_to_normalized(const QPointF& unit) const
+{
+  return {
+    h_range.unit_to_normalized(unit.x()), v_range.unit_to_normalized(unit.y())
+  };
+}
+
+QPointF WidgetRange2D::normalized_to_unit(const QPointF& normalized) const
+{
+  return {
+    h_range.normalized_to_unit(normalized.x()), v_range.normalized_to_unit(normalized.y())
+  };
+}
+
+void WidgetRange2D::pan(const QPointF& d)
+{
+  h_range.pan(d.x());
+  v_range.pan(d.y());
+}
+
+void WidgetRange2D::zoom(const QPointF& origin, const QPointF& amount, const QPointF& min_upp, const QPointF& max_upp)
+{
+  h_range.zoom(origin.x(), amount.x(), min_upp.x(), max_upp.x());
+  v_range.zoom(origin.y(), amount.y(), min_upp.y(), max_upp.y());
+}
+
 }  // namespace omm

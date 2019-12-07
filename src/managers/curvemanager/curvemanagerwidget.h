@@ -26,22 +26,7 @@ protected:
   void keyPressEvent(QKeyEvent* event) override;
 
 private:
-  struct ValueRange : Range
-  {
-    ValueRange(QWidget& canvas) : Range(-10, 10, Range::Options::Mirror), m_canvas(canvas) {}
-    int pixel_range() const override { return m_canvas.height(); }
-  private:
-    QWidget& m_canvas;
-  } value_range;
-
-  struct FrameRange : Range
-  {
-    FrameRange(QWidget& canvas) : Range(1, 100), m_canvas(canvas) {}
-    int pixel_range() const override { return m_canvas.width(); }
-  private:
-    QWidget& m_canvas;
-  } frame_range;
-
+  WidgetRange2D range;
   Scene& m_scene;
   const CurveTree& m_curve_tree;
   bool m_selection_locked = false;
