@@ -135,7 +135,8 @@ private:
 private:
   mutable bool m_visibility_cache_is_dirty = true;
   mutable bool m_visibility_cache_value;
-  static std::unique_ptr<Style> m_bounding_box_style;
+  static QPen m_bounding_box_pen;
+  static QBrush m_bounding_box_brush;
 };
 
 void register_objects();

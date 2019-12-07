@@ -9,8 +9,24 @@
 #include "mainwindow/viewport/viewport.h"
 #include "properties/boolproperty.h"
 
+namespace
+{
+
+QPen make_pen()
+{
+  QPen pen;
+  pen.setWidth(1.0);
+  pen.setCosmetic(true);
+  pen.setColor(Qt::black);
+  return pen;
+}
+
+}
+
 namespace omm
 {
+
+QPen View::m_pen = make_pen();
 
 View::View(Scene* scene) : Object(scene)
 {
@@ -80,8 +96,11 @@ void View::make_output_unique()
 void View::draw_handles(Painter &renderer) const
 {
   const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>();
-  renderer.set_style(ContourStyle(Colors::BLACK), *this);
+
+  renderer.painter->save();
+  renderer.painter->setPen(m_pen);
   renderer.painter->drawRect(QRectF(-size.x/2.0, -size.y/2.0, size.x, size.y));
+  renderer.painter->restore();
 }
 
 void View::on_property_value_changed(Property *property)

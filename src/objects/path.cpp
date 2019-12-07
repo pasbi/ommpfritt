@@ -65,8 +65,6 @@ Path::Path(Scene* scene) : Object(scene)
 void Path::draw_object(Painter &renderer, const Style& style, Painter::Options options) const
 {
   Q_UNUSED(options)
-  const auto triangulation_style = ContourStyle(Colors::BLACK, 0.5);
-  const auto marked_triangulation_style = ContourStyle(Colors::GREEN, 2.0);
   renderer.set_style(style, *this);
   renderer.painter->drawPath(m_painter_path);
   const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();

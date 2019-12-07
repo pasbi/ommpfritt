@@ -48,17 +48,4 @@ private:
   void init_offscreen_renderer();
 };
 
-class SolidStyle : public Style
-{
-public:
-  explicit SolidStyle(const Color& color, Scene* scene = nullptr);
-};
-
-class ContourStyle : public Style
-{
-public:
-  explicit ContourStyle(const Color& color, Scene* scene = nullptr);
-  explicit ContourStyle(const Color& color, double width, Scene* scene = nullptr);
-};
-
 }  // namespace omm

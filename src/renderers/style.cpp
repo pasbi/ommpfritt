@@ -150,21 +150,4 @@ std::unique_ptr<Style> Style::clone() const
   return clone;
 }
 
-SolidStyle::SolidStyle(const Color& color, Scene* scene) : Style(scene)
-{
-  property(omm::Style::PEN_IS_ACTIVE_KEY)->set(false);
-  property(omm::Style::BRUSH_IS_ACTIVE_KEY)->set(true);
-  property(omm::Style::BRUSH_COLOR_KEY)->set(color);
-}
-
-ContourStyle::ContourStyle(const Color& color, const double width, Scene* scene) : Style(scene)
-{
-  property(omm::Style::PEN_IS_ACTIVE_KEY)->set(true);
-  property(omm::Style::BRUSH_IS_ACTIVE_KEY)->set(false);
-  property(omm::Style::PEN_COLOR_KEY)->set(color);
-  property(omm::Style::PEN_WIDTH_KEY)->set(width);
-}
-
-ContourStyle::ContourStyle(const Color& color, Scene* scene) : ContourStyle(color, 2.0, scene) { }
-
 }  // namespace omm

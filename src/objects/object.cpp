@@ -32,19 +32,25 @@ static constexpr auto CHILDREN_POINTER = "children";
 static constexpr auto TAGS_POINTER = "tags";
 static constexpr auto TYPE_POINTER = "type";
 
+QPen make_bounding_box_pen()
+{
+  QPen pen;
+  pen.setCosmetic(true);
+  pen.setColor(Qt::black);
+  pen.setWidth(1.0);
+  return pen;
+}
+
 }  // namespace
 
 namespace omm
 {
 
-std::unique_ptr<Style> Object::m_bounding_box_style;
+QPen Object::m_bounding_box_pen = make_bounding_box_pen();
+QBrush Object::m_bounding_box_brush = Qt::NoBrush;
 
 Object::Object(Scene* scene) : PropertyOwner(scene), tags(*this)
 {
-  if (!m_bounding_box_style) {
-    m_bounding_box_style = std::make_unique<ContourStyle>(omm::Colors::BLACK, 1.0);
-  }
-
   static const auto category = QObject::tr("basic");
   create_property<OptionsProperty>(VIEWPORT_VISIBILITY_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("default"), QObject::tr("hidden"),
@@ -263,8 +269,11 @@ void Object::draw_recursive(Painter& renderer, Painter::Options options) const
     }
 
     if (!!(renderer.category_filter & Painter::Category::BoundingBox)) {
-      renderer.set_style(*m_bounding_box_style, *this);
+      renderer.painter->save();
+      renderer.painter->setBrush(Qt::NoBrush);
+      renderer.painter->setPen(m_bounding_box_pen);
       renderer.painter->drawRect(bounding_box(ObjectTransformation()));
+      renderer.painter->restore();
     }
 
     if (!!(renderer.category_filter & Painter::Category::Handles)) {
