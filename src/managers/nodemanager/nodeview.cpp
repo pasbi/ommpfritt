@@ -59,12 +59,14 @@ void NodeView::paintEvent(QPaintEvent*)
       draw_node(painter, node);
     }
     if (m_tmp_connection_origin != nullptr) {
-      if (m_tmp_connection_target == nullptr) {
-        draw_connection(painter, port_pos(*m_tmp_connection_origin),
-                        m_pzc.transform().inverted().map(QPointF(m_pzc.last_mouse_pos())));
+      const QPointF origin = port_pos(*m_tmp_connection_origin);
+      const QPointF target = m_tmp_connection_target == nullptr
+          ? m_pzc.transform().inverted().map(QPointF(m_pzc.last_mouse_pos()))
+          : port_pos(*m_tmp_connection_target);
+      if (m_tmp_connection_origin->is_input) {
+        draw_connection(painter, origin, target);
       } else {
-        draw_connection(painter, port_pos(*m_tmp_connection_origin),
-                                 port_pos(*m_tmp_connection_target));
+        draw_connection(painter, target, origin);
       }
     }
   }
@@ -72,6 +74,7 @@ void NodeView::paintEvent(QPaintEvent*)
 
 void NodeView::mousePressEvent(QMouseEvent* event)
 {
+  m_aborted = false;
   m_pzc.move(event->pos() - offset());
   if (preferences().match("shift viewport", *event, true)) {
     m_pzc.start(PanZoomController::Action::Pan);
@@ -80,20 +83,37 @@ void NodeView::mousePressEvent(QMouseEvent* event)
   } else if (event->button() == Qt::LeftButton) {
     if (m_model != nullptr) {
       [this, event]() {
-        const auto contains = [event, this](const QRectF& rect) {
-          return m_pzc.transform().map(rect).containsPoint(event->pos() - offset(), Qt::OddEvenFill);
-        };
-        m_tmp_connection_origin = port(event->pos());
-        for (Node* node : m_model->nodes()) {
-          if (contains(node_geometry(*node))) {
-            if (!(event->modifiers() & Qt::ShiftModifier) && !::contains(m_selection, node)) {
-              m_selection.clear();
+        if (Port* grabbed_port = port(event->pos()); grabbed_port != nullptr) {
+          if (grabbed_port->is_input) {
+            InputPort& ip = static_cast<InputPort&>(*grabbed_port);
+            if (OutputPort* op = ip.connected_output(); op == nullptr) {
+              m_tmp_connection_origin = &ip;
+            } else {
+              m_former_connection_target = &ip;
+              ip.connect(nullptr);
+              m_tmp_connection_origin = op;
             }
-            m_selection.insert(node);
-            return;
+          } else {
+            m_tmp_connection_origin = grabbed_port;
           }
+        } else {
+          [this, event]() {
+            const auto contains = [event, this](const QRectF& rect) {
+              return m_pzc.transform().map(rect).containsPoint(event->pos() - offset(),
+                                                               Qt::OddEvenFill);
+            };
+            for (Node* node : m_model->nodes()) {
+              if (contains(node_geometry(*node))) {
+                if (!(event->modifiers() & Qt::ShiftModifier) && !::contains(m_selection, node)) {
+                  m_selection.clear();
+                }
+                m_selection.insert(node);
+                return;
+              }
+            }
+            m_selection.clear();
+          }();
         }
-        m_selection.clear();
       }();
     }
   }
@@ -102,22 +122,24 @@ void NodeView::mousePressEvent(QMouseEvent* event)
 
 void NodeView::mouseMoveEvent(QMouseEvent* event)
 {
-  if (m_pzc.move(event->pos() - offset())) {
-  } else if (m_tmp_connection_origin == nullptr && m_model != nullptr) {
-    if (event->buttons() & Qt::LeftButton) {
-      for (Node* node : m_selection) {
-        node->set_pos(node->pos() + m_pzc.d());
+  if (!m_aborted) {
+    if (m_pzc.move(event->pos() - offset())) {
+    } else if (m_tmp_connection_origin == nullptr && m_model != nullptr) {
+      if (event->buttons() & Qt::LeftButton) {
+        for (Node* node : m_selection) {
+          node->set_pos(node->pos() + m_pzc.d());
+        }
+      }
+    } else if (m_tmp_connection_origin != nullptr && m_model != nullptr) {
+      Port* port = this->port(event->pos());
+      if (port != nullptr && m_model->can_connect(*port, *m_tmp_connection_origin)) {
+        m_tmp_connection_target = port;
+      } else {
+        m_tmp_connection_target = nullptr;
       }
     }
-  } else if (m_tmp_connection_origin != nullptr && m_model != nullptr) {
-    Port* port = this->port(event->pos());
-    if (port != nullptr && m_model->can_connect(*port, *m_tmp_connection_origin)) {
-      m_tmp_connection_target = port;
-    } else {
-      m_tmp_connection_target = nullptr;
-    }
+    update();
   }
-  update();
 }
 
 void NodeView::mouseReleaseEvent(QMouseEvent*)
@@ -127,9 +149,26 @@ void NodeView::mouseReleaseEvent(QMouseEvent*)
       m_model->connect(*m_tmp_connection_origin, *m_tmp_connection_target);
     }
   }
+  m_former_connection_target = nullptr;
   m_tmp_connection_origin = nullptr;
   m_tmp_connection_target = nullptr;
+  m_aborted = false;
   m_pzc.end();
+  update();
+}
+
+void NodeView::abort()
+{
+  m_aborted = true;
+  if (m_tmp_connection_origin != nullptr && m_former_connection_target != nullptr) {
+    if (m_former_connection_target->is_input && !m_tmp_connection_origin->is_input) {
+      OutputPort* op = static_cast<OutputPort*>(m_tmp_connection_origin);
+      static_cast<InputPort*>(m_former_connection_target)->connect(op);
+    }
+  }
+  m_tmp_connection_origin = nullptr;
+  m_tmp_connection_target = nullptr;
+  m_former_connection_target = nullptr;
   update();
 }
 
@@ -198,13 +237,20 @@ void NodeView::draw_port(QPainter& painter, const Port& port) const
   painter.restore();
 }
 
-void NodeView::draw_connection(QPainter& painter, const QPointF& p1, const QPointF& p2) const
+void NodeView::draw_connection(QPainter& painter, const QPointF& in, const QPointF& out) const
 {
-  const QPointF c1((2.0 * p1.x() + 1.0 * p2.x())/3.0, p1.y());
-  const QPointF c2((1.0 * p1.x() + 2.0 * p2.x())/3.0, p2.y());
+#define INTERPOLATE_CONNECTION_AWAY_FROM_NODE
+#if defined(INTERPOLATE_CONNECTION_CORRECT_DIRECTION)
+  const QPointF c1((2.0 * in.x() + 1.0 * out.x())/3.0, in.y());
+  const QPointF c2((1.0 * in.x() + 2.0 * out.x())/3.0, out.y());
+#elif defined(INTERPOLATE_CONNECTION_AWAY_FROM_NODE)
+  const double d = 2.0 / 3.0 * abs(in.x() - out.x());
+  const QPointF c1(in.x() - d, in.y());
+  const QPointF c2(out.x() + d, out.y());
+#endif
   QPainterPath path;
-  path.moveTo(p1);
-  path.cubicTo(c1, c2, p2);
+  path.moveTo(in);
+  path.cubicTo(c1, c2, out);
 
   painter.save();
   QPen pen;

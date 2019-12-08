@@ -1,4 +1,5 @@
 #include "managers/nodemanager/nodemanager.h"
+#include "logging.h"
 #include "managers/nodemanager/nodemodel.h"
 #include "ui_nodemanager.h"
 
@@ -26,9 +27,15 @@ void NodeManager::set_model(NodeModel* model)
   m_ui->nodeview->set_model(model);
 }
 
-bool NodeManager::perform_action([[maybe_unused]] const QString& name)
+bool NodeManager::perform_action(const QString& name)
 {
-  return false;
+  if (name == "abort") {
+    m_ui->nodeview->abort();
+  } else {
+    return false;
+  }
+
+  return true;
 }
 
 

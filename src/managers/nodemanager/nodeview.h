@@ -25,6 +25,7 @@ public:
   void set_model(NodeModel* model);
   NodeModel* model() const { return m_model; }
   const QFont font;
+  void abort();
 
 protected:
   void paintEvent(QPaintEvent*) override;
@@ -39,7 +40,7 @@ private:
   void draw_node(QPainter& painter, const Node& node) const;
   void draw_connection(QPainter& painter, const InputPort& input_port) const;
   void draw_port(QPainter& painter, const Port& port) const;
-  void draw_connection(QPainter& painter, const QPointF& p1, const QPointF& p2) const;
+  void draw_connection(QPainter& painter, const QPointF& in, const QPointF& out) const;
   QPointF port_pos(const Port& port) const;
   QRectF node_geometry(const Node& node) const;
   Port* port(const QPointF& pos) const;
@@ -56,6 +57,8 @@ private:
 
   Port* m_tmp_connection_origin = nullptr;
   Port* m_tmp_connection_target = nullptr;
+  Port* m_former_connection_target = nullptr;
+  bool m_aborted = false;
   std::set<Node*> m_selection;
 
 };
