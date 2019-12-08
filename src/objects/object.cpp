@@ -393,7 +393,7 @@ bool Object::is_closed() const { return false; }
 void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t,
                                   Space space)
 {
-  if (path != nullptr && path->kind() == AbstractPropertyOwner::Kind::Object) {
+  if (path != nullptr && path->kind == AbstractPropertyOwner::Kind::Object) {
     auto* path_object = static_cast<Object*>(path);
     if (!path_object->is_ancestor_of(*this)) {
       const auto location = path_object->evaluate(std::clamp(t, 0.0, 1.0));
@@ -448,7 +448,7 @@ std::vector<const omm::Style*> Object::find_styles() const
       const auto* property_owner = tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY)
                                        ->value<omm::ReferenceProperty::value_type>();
       assert(  property_owner == nullptr
-            || property_owner->kind() == omm::AbstractPropertyOwner::Kind::Style );
+            || property_owner->kind == omm::AbstractPropertyOwner::Kind::Style );
       return static_cast<const omm::Style*>(property_owner);
     } else {
       return nullptr;

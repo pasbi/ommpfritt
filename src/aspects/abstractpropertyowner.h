@@ -36,7 +36,7 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PropertyOwner", "AbstractPropertyOwner");
 
 protected:
-  explicit AbstractPropertyOwner(Scene* scene);
+  explicit AbstractPropertyOwner(Kind kind, Scene* scene);
   AbstractPropertyOwner(const AbstractPropertyOwner& other);
 public:
   ~AbstractPropertyOwner() override;
@@ -60,7 +60,6 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual QString name() const;
 
-  virtual Kind kind() const = 0;
   static const QString NAME_PROPERTY_KEY;
 
   Property& add_property(const QString& key, std::unique_ptr<Property> property);
@@ -80,6 +79,7 @@ public:
 
   std::size_t id() const;
   Scene* scene() const { return m_scene; }
+  const Kind kind;
 
 protected Q_SLOTS:
   virtual void on_property_value_changed(Property* property) { Q_UNUSED(property); }

@@ -339,7 +339,7 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
       emit_selection_changed(m_selection, kind);
     } else {
       const auto item_selection = ::filter_if(selection, [kind](const auto* apo) {
-        return apo->kind() == kind;
+        return apo->kind == kind;
       });
       if (item_selection.empty()) {
         // selection is not empty but does not contain objects. Do not touch the object selection.
@@ -448,7 +448,7 @@ void Scene::update_tool()
 
 bool Scene::contains(const AbstractPropertyOwner *apo) const
 {
-  switch (apo->kind()) {
+  switch (apo->kind) {
   case AbstractPropertyOwner::Kind::Tag:
   {
     const auto tags = this->tags();

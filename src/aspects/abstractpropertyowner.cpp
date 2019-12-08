@@ -29,13 +29,13 @@ const OrderedMap<QString, Property>& AbstractPropertyOwner::properties() const
   return m_properties;
 }
 
-AbstractPropertyOwner::AbstractPropertyOwner(Scene *scene)
-  : m_scene(scene)
+AbstractPropertyOwner::AbstractPropertyOwner(Kind kind, Scene *scene)
+  : kind(kind), m_scene(scene)
 {
 }
 
 AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner &other)
-  : m_scene(other.m_scene)
+  : kind(other.kind), m_scene(other.m_scene)
 {
   for (auto&& key : other.m_properties.keys()) {
     add_property(key, other.m_properties.at(key)->clone());
@@ -151,7 +151,7 @@ std::ostream& operator<<(std::ostream& ostream, const AbstractPropertyOwner* apo
   if (apo == nullptr) {
     ostream << "AbstractPropertyOwner[nullptr]";
   } else {
-    const auto kind = static_cast<std::underlying_type_t<decltype(apo->kind())>>(apo->kind());
+    const auto kind = static_cast<std::underlying_type_t<decltype(apo->kind)>>(apo->kind);
     ostream << "AbstractPropertyOwner[" << kind << "]";
   }
   return ostream;

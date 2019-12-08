@@ -12,7 +12,7 @@ filter( const std::vector<omm::AbstractPropertyOwner*> items,
 {
   std::vector<omm::AbstractPropertyOwner*> filtered;
   for (omm::AbstractPropertyOwner* item : items) {
-    if (!!(item->kind() & kinds)) {
+    if (!!(item->kind & kinds)) {
       filtered.push_back(item);
     }
   }

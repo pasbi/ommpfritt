@@ -37,7 +37,7 @@ py::object wrap(AbstractPropertyOwner* owner)
   if (owner == nullptr) {
     return py::none();
   } else {
-    switch (owner->kind()) {
+    switch (owner->kind) {
     case AbstractPropertyOwner::Kind::Tag:
       return wrap(static_cast<Tag&>(*owner));
     case AbstractPropertyOwner::Kind::Style:

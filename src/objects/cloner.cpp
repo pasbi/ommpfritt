@@ -395,7 +395,7 @@ void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
 {
   auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
   if (apo != nullptr) {
-    assert(apo->kind() == AbstractPropertyOwner::Kind::Object);
+    assert(apo->kind == AbstractPropertyOwner::Kind::Object);
     auto& area = static_cast<Object&>(*apo);
 
     auto position = [&rng, &area]() {
