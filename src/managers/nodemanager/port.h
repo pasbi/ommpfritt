@@ -30,7 +30,7 @@ public:
   static constexpr bool IS_INPUT = true;
   bool is_connected(const Port* other) const override;
   void connect(OutputPort* port);
-  OutputPort* connection() const { return m_connection; }
+  OutputPort* connection_origin() const { return m_connection; }
 
   class Tag
   {
@@ -55,6 +55,7 @@ public:
 
   // the Tag is to protect you! Don't call OutputPort::connect unless you're in InputPort::connect
   void connect(InputPort* port, InputPort::Tag);
+  std::set<InputPort*> connected_ports() const;
 
 private:
   std::set<InputPort*> m_connections;

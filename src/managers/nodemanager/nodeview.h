@@ -42,6 +42,7 @@ private:
   void draw_connection(QPainter& painter, const QPointF& p1, const QPointF& p2) const;
   QPointF port_pos(const Port& port) const;
   QRectF node_geometry(const Node& node) const;
+  Port* port(const QPointF& pos) const;
 
   class CachedNodeWidthGetter : public ArgsCachedGetter<double, NodeView, const Node*>
   {
@@ -54,6 +55,7 @@ private:
   } node_width_cache;
 
   Port* m_tmp_connection_origin = nullptr;
+  Port* m_tmp_connection_target = nullptr;
   std::set<Node*> m_selection;
 
 };

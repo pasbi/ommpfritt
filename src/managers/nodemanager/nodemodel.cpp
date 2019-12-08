@@ -3,6 +3,26 @@
 #include "managers/nodemanager/nodes/gradientnode.h"
 #include "managers/nodemanager/port.h"
 
+namespace
+{
+template<typename Port, typename InputPort, typename OutputPort>
+bool sort_ports(Port a, Port b, InputPort &in, OutputPort &out)
+{
+  if (a->is_input && !b->is_input) {
+    out = static_cast<OutputPort>(b);
+    in = static_cast<InputPort>(a);
+    return true;
+  } else if (!a->is_input && b->is_input) {
+    out = static_cast<OutputPort>(a);
+    in = static_cast<InputPort>(b);
+    return true;
+  } else {
+    return false;
+  }
+}
+
+}  // namespace
+
 namespace omm
 {
 
@@ -74,5 +94,67 @@ void NodeModel::deserialize(AbstractDeserializer& deserializer, const Serializab
     add_node(std::move(node));
   }
 }
+
+bool NodeModel::find_path(const Node& start, const Node& end, std::list<const Node*>& path) const
+{
+  path.clear();
+  path.push_back(&start);
+  return find_path(path, end);
+}
+
+bool NodeModel::find_path(std::list<const Node*>& path, const Node& end) const
+{
+  assert(!path.empty());
+  const Node& last = *path.back();
+  if (&last == &end) {
+    return true;
+  } else {
+    for (const Node* node : last.successors()) {
+      if (::contains(path, node)) {
+        LERROR << "Unexpected cycle.";
+      } else {
+        path.push_back(node);
+        if (find_path(path, end)) {
+          return true;
+        }
+        path.pop_back();
+      }
+    }
+  }
+  return false;
+}
+
+bool NodeModel::find_path(const Node& start, const Node& end) const
+{
+  std::list<const Node*> path;
+  return find_path(start, end, path);
+}
+
+bool NodeModel::can_connect(const Port& a, const Port& b) const
+{
+  const InputPort* in;
+  const OutputPort* out;
+  if (sort_ports(&a, &b, in, out)) {
+    return can_connect(*out, *in);
+  } else {
+    return false;
+  }
+}
+
+bool NodeModel::can_connect(const OutputPort& a, const InputPort& b) const
+{
+  return !find_path(b.node, a.node);
+}
+
+void NodeModel::connect(Port& a, Port& b)
+{
+  InputPort* in;
+  OutputPort* out;
+  if (sort_ports(&a, &b, in, out)) {
+    assert(can_connect(*out, *in));
+    in->connect(out);
+  }
+}
+
 
 }  // namespace omm

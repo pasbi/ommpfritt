@@ -47,18 +47,25 @@ void NodeView::paintEvent(QPaintEvent*)
 
   if (m_model != nullptr) {
     const auto nodes = m_model->nodes();
-    for (auto nit = nodes.rbegin(); nit != nodes.rend(); ++nit) {
-      const Node& node = **nit;
-      draw_node(painter, node);
-      for (Port* port : node.ports()) {
+    for (const auto& node : nodes) {
+      for (Port* port : node->ports()) {
         if (port->is_input) {
           draw_connection(painter, *static_cast<InputPort*>(port));
         }
       }
     }
+    for (auto nit = nodes.rbegin(); nit != nodes.rend(); ++nit) {
+      const Node& node = **nit;
+      draw_node(painter, node);
+    }
     if (m_tmp_connection_origin != nullptr) {
-      draw_connection(painter, port_pos(*m_tmp_connection_origin),
-                      m_pzc.transform().inverted().map(QPointF(m_pzc.last_mouse_pos())));
+      if (m_tmp_connection_target == nullptr) {
+        draw_connection(painter, port_pos(*m_tmp_connection_origin),
+                        m_pzc.transform().inverted().map(QPointF(m_pzc.last_mouse_pos())));
+      } else {
+        draw_connection(painter, port_pos(*m_tmp_connection_origin),
+                                 port_pos(*m_tmp_connection_target));
+      }
     }
   }
 }
@@ -73,20 +80,10 @@ void NodeView::mousePressEvent(QMouseEvent* event)
   } else if (event->button() == Qt::LeftButton) {
     if (m_model != nullptr) {
       [this, event]() {
-        const auto d = [event, this](const QPointF& pos) {
-          return (event->pos() - offset() - m_pzc.transform().map(pos)).manhattanLength();
-        };
         const auto contains = [event, this](const QRectF& rect) {
           return m_pzc.transform().map(rect).containsPoint(event->pos() - offset(), Qt::OddEvenFill);
         };
-        for (Node* node : m_model->nodes()) {
-          for (Port* port : node->ports()) {
-            if (d(port_pos(*port)) < port_height / 2.0) {
-              m_tmp_connection_origin = port;
-              return;
-            }
-          }
-        }
+        m_tmp_connection_origin = port(event->pos());
         for (Node* node : m_model->nodes()) {
           if (contains(node_geometry(*node))) {
             if (!(event->modifiers() & Qt::ShiftModifier) && !::contains(m_selection, node)) {
@@ -106,11 +103,18 @@ void NodeView::mousePressEvent(QMouseEvent* event)
 void NodeView::mouseMoveEvent(QMouseEvent* event)
 {
   if (m_pzc.move(event->pos() - offset())) {
-  } else if (m_tmp_connection_origin == nullptr) {
+  } else if (m_tmp_connection_origin == nullptr && m_model != nullptr) {
     if (event->buttons() & Qt::LeftButton) {
       for (Node* node : m_selection) {
         node->set_pos(node->pos() + m_pzc.d());
       }
+    }
+  } else if (m_tmp_connection_origin != nullptr && m_model != nullptr) {
+    Port* port = this->port(event->pos());
+    if (port != nullptr && m_model->can_connect(*port, *m_tmp_connection_origin)) {
+      m_tmp_connection_target = port;
+    } else {
+      m_tmp_connection_target = nullptr;
     }
   }
   update();
@@ -118,7 +122,13 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
 
 void NodeView::mouseReleaseEvent(QMouseEvent*)
 {
+  if (m_tmp_connection_origin != nullptr && m_tmp_connection_target != nullptr) {
+    if (m_model != nullptr) {
+      m_model->connect(*m_tmp_connection_origin, *m_tmp_connection_target);
+    }
+  }
   m_tmp_connection_origin = nullptr;
+  m_tmp_connection_target = nullptr;
   m_pzc.end();
   update();
 }
@@ -156,7 +166,7 @@ void NodeView::draw_node(QPainter& painter, const Node& node) const
 
 void NodeView::draw_connection(QPainter& painter, const InputPort& input_port) const
 {
-  const OutputPort* op = input_port.connection();
+  const OutputPort* op = input_port.connection_origin();
   if (op != nullptr) {
     draw_connection(painter, port_pos(input_port), port_pos(*op));
   }
@@ -218,6 +228,21 @@ QRectF NodeView::node_geometry(const Node& node) const
   }
   const double height = node_header_height + node_footer_height + n * port_height;
   return QRectF(node.pos(), QSizeF(node_width_cache(&node), height));
+}
+
+Port* NodeView::port(const QPointF& pos) const
+{
+  const auto d = [pos, this](const QPointF& candidate) {
+    return (pos - offset() - m_pzc.transform().map(candidate)).manhattanLength();
+  };
+  for (Node* node : m_model->nodes()) {
+    for (Port* port : node->ports()) {
+      if (d(port_pos(*port)) < port_height / 2.0) {
+        return port;
+      }
+    }
+  }
+  return nullptr;
 }
 
 QPointF NodeView::port_pos(const Port& port) const

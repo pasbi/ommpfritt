@@ -14,6 +14,7 @@ class NodeModel;
 class Node
   : public PropertyOwner<AbstractPropertyOwner::Kind::Node>
   , public AbstractFactory<QString, Node, Scene*>
+  , public ReferencePolisher
 {
   Q_OBJECT
 public:
@@ -32,7 +33,23 @@ public:
   void set_pos(const QPointF& pos);
   QPointF pos() const;
 
-  static constexpr auto POS_KEY = "pos";
+  static constexpr auto POS_PTR = "pos";
+  static constexpr auto CONNECTIONS_PTR = "connection";
+  static constexpr auto TARGET_PORT_PTR = "target";
+  static constexpr auto ORIGIN_PORT_PTR = "origin";
+  static constexpr auto CONNECTED_NODE_PTR = "node";
+
+  std::set<Node*> successors() const;
+  template<typename PortT> PortT* find_port(std::size_t index) const
+  {
+    for (auto&& port : m_ports) {
+      if (port->index == index && PortT::IS_INPUT == port->is_input) {
+        assert(PortT::IS_INPUT == port->is_input);
+        return static_cast<PortT*>(port.get());
+      }
+    }
+    return nullptr;
+  }
 
 protected:
   template<typename PortT, typename... Args> void add_port(Args&&... args)
@@ -52,6 +69,14 @@ private:
   NodeModel* m_model;
   std::set<std::unique_ptr<Port>> m_ports;
 
+  // Only required during deserialization.
+  struct ConnectionIds {
+    std::size_t target_port;
+    std::size_t origin_port;
+    std::size_t node_id;
+  };
+  std::list<ConnectionIds> m_connection_ids;
+  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override;
 };
 
 void register_nodes();
