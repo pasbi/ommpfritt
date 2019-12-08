@@ -59,7 +59,7 @@ template<class T> struct always_false : std::false_type {};
 class ReferencePolisher
 {
 protected:
-  virtual void update_referenes(const std::map<std::size_t, AbstractPropertyOwner*>& map) = 0;
+  virtual void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) = 0;
   friend class AbstractDeserializer;
 };
 

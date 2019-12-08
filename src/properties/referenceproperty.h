@@ -38,7 +38,7 @@ public:
 
   static const std::map<AbstractPropertyOwner::Kind, QString> KIND_KEYS;
   static const std::map<AbstractPropertyOwner::Flag, QString> FLAG_KEYS;
-  void update_referenes(const std::map<std::size_t, AbstractPropertyOwner *> &references) override;
+  void update_references(const std::map<std::size_t, AbstractPropertyOwner *> &references) override;
 
   static const PropertyDetail detail;
 

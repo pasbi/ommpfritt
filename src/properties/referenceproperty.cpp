@@ -98,7 +98,7 @@ std::unique_ptr<Property> ReferenceProperty::clone() const
 }
 
 void ReferenceProperty
-::update_referenes(const std::map<std::size_t, AbstractPropertyOwner *> &references)
+::update_references(const std::map<std::size_t, AbstractPropertyOwner *> &references)
 {
   if (m_reference_value_id != 0) {
     try {

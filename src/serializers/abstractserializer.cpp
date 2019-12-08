@@ -40,7 +40,7 @@ AbstractDeserializer::~AbstractDeserializer()
 {
   // polish reference properties
   for (ReferencePolisher* polisher : m_reference_polishers) {
-    polisher->update_referenes(m_id_to_reference);
+    polisher->update_references(m_id_to_reference);
   }
 }
 
