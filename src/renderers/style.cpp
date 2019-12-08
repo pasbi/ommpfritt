@@ -1,9 +1,13 @@
 #include "renderers/style.h"
+#include "mainwindow/application.h"
+#include "managers/nodemanager/nodemanager.h"
+#include "managers/nodemanager/nodemodel.h"
 #include "renderers/offscreenrenderer.h"
 #include <QApplication>
 #include "properties/boolproperty.h"
 #include "properties/colorproperty.h"
 #include "properties/floatproperty.h"
+#include "properties/triggerproperty.h"
 #include "renderers/styleiconengine.h"
 #include "properties/optionsproperty.h"
 #include "objects/tip.h"
@@ -26,6 +30,7 @@ Style::Style(Scene *scene)
   : PropertyOwner(scene)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
+  , m_nodes(std::make_unique<NodeModel>())
 {
   const auto pen_category = QObject::tr("pen");
   const auto brush_category = QObject::tr("brush");
@@ -70,8 +75,12 @@ Style::Style(Scene *scene)
     .set_category(brush_category);
   create_property<ColorProperty>(BRUSH_COLOR_KEY, Colors::RED)
     .set_label(QObject::tr("color"))
-      .set_category(brush_category);
-  create_property<BoolProperty>("gl-brush", false).set_label("gl").set_category(brush_category);
+    .set_category(brush_category);
+  create_property<TriggerProperty>(EDIT_NODES_KEY)
+    .set_label(tr("Edit Nodes ...")).set_category(brush_category);
+  create_property<BoolProperty>("gl-brush", false)
+    .set_label(tr("Use Nodes")).set_category(brush_category);
+
 
   start_marker.make_properties(decoration_category);
   end_marker.make_properties(decoration_category);
@@ -113,6 +122,10 @@ void Style::on_property_value_changed(Property *property)
   {
     if (Scene* scene = this->scene(); scene != nullptr) {
       Q_EMIT scene->message_box().appearance_changed(*this);
+    }
+  } else if (property == this->property(EDIT_NODES_KEY)) {
+    for (NodeManager* nm : Application::instance().managers<NodeManager>()) {
+      nm->set_model(m_nodes.get());
     }
   }
 }

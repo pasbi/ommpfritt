@@ -1,5 +1,6 @@
 #pragma once
 
+#include "managers/manager.h"
 #include <QObject>
 #include "scene/scene.h"
 #include "python/pythonengine.h"
@@ -97,6 +98,17 @@ public:
 
   void register_manager(Manager& manager);
   void unregister_manager(Manager& manager);
+  template<typename ManagerT> std::set<ManagerT*> managers() const
+  {
+    std::set<ManagerT*> managers;
+    for (Manager* m : m_managers) {
+      if (m->type() == ManagerT::TYPE) {
+        managers.insert(static_cast<ManagerT*>(m));
+      }
+    }
+    return managers;
+  }
+
   bool perform_action(const QString& name) override;
 private:
   QTimer m_reset_keysequence_timer;
