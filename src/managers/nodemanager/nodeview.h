@@ -43,7 +43,8 @@ private:
   void draw_connection(QPainter& painter, const QPointF& in, const QPointF& out) const;
   QPointF port_pos(const Port& port) const;
   QRectF node_geometry(const Node& node) const;
-  Port* port(const QPointF& pos) const;
+  Port* port(std::set<Port*> candidates, const QPointF& pos) const;
+  bool select_port_or_node(const QPoint pos, bool extend_selection);
 
   class CachedNodeWidthGetter : public ArgsCachedGetter<double, NodeView, const Node*>
   {

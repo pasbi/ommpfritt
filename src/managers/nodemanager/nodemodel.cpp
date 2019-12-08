@@ -130,6 +130,16 @@ bool NodeModel::find_path(const Node& start, const Node& end) const
   return find_path(start, end, path);
 }
 
+std::set<Port*> NodeModel::ports() const
+{
+  std::set<Port*> ports;
+  for (const auto& node : m_nodes) {
+    const auto ps = node->ports();
+    ports.insert(ps.begin(), ps.end());
+  }
+  return ports;
+}
+
 bool NodeModel::can_connect(const Port& a, const Port& b) const
 {
   const InputPort* in;

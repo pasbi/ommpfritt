@@ -72,6 +72,40 @@ void NodeView::paintEvent(QPaintEvent*)
   }
 }
 
+bool NodeView::select_port_or_node(const QPoint pos, bool extend_selection)
+{
+  const auto contains = [pos, this](const QRectF& rect) {
+    return m_pzc.transform().map(rect).containsPoint(pos, Qt::OddEvenFill);
+  };
+  for (Node* node : m_model->nodes()) {
+    if (Port* grabbed_port = port(node->ports(), pos); grabbed_port != nullptr) {
+      if (grabbed_port->is_input) {
+        InputPort& ip = static_cast<InputPort&>(*grabbed_port);
+        if (OutputPort* op = ip.connected_output(); op == nullptr) {
+          m_tmp_connection_origin = &ip;
+        } else {
+          m_former_connection_target = &ip;
+          ip.connect(nullptr);
+          m_tmp_connection_origin = op;
+        }
+      } else {
+        m_tmp_connection_origin = grabbed_port;
+      }
+      return true;
+    } else {
+      if (contains(node_geometry(*node))) {
+        if (!extend_selection && !::contains(m_selection, node)) {
+          m_selection.clear();
+        }
+        m_selection.insert(node);
+        return true;
+      }
+      m_selection.clear();
+    }
+  }
+  return false;
+}
+
 void NodeView::mousePressEvent(QMouseEvent* event)
 {
   m_aborted = false;
@@ -80,42 +114,8 @@ void NodeView::mousePressEvent(QMouseEvent* event)
     m_pzc.start(PanZoomController::Action::Pan);
   } else if (preferences().match("zoom viewport", *event, true)) {
     m_pzc.start(PanZoomController::Action::Zoom);
-  } else if (event->button() == Qt::LeftButton) {
-    if (m_model != nullptr) {
-      [this, event]() {
-        if (Port* grabbed_port = port(event->pos()); grabbed_port != nullptr) {
-          if (grabbed_port->is_input) {
-            InputPort& ip = static_cast<InputPort&>(*grabbed_port);
-            if (OutputPort* op = ip.connected_output(); op == nullptr) {
-              m_tmp_connection_origin = &ip;
-            } else {
-              m_former_connection_target = &ip;
-              ip.connect(nullptr);
-              m_tmp_connection_origin = op;
-            }
-          } else {
-            m_tmp_connection_origin = grabbed_port;
-          }
-        } else {
-          [this, event]() {
-            const auto contains = [event, this](const QRectF& rect) {
-              return m_pzc.transform().map(rect).containsPoint(event->pos() - offset(),
-                                                               Qt::OddEvenFill);
-            };
-            for (Node* node : m_model->nodes()) {
-              if (contains(node_geometry(*node))) {
-                if (!(event->modifiers() & Qt::ShiftModifier) && !::contains(m_selection, node)) {
-                  m_selection.clear();
-                }
-                m_selection.insert(node);
-                return;
-              }
-            }
-            m_selection.clear();
-          }();
-        }
-      }();
-    }
+  } else if (event->button() == Qt::LeftButton && m_model != nullptr) {
+    select_port_or_node(event->pos() - offset(), event->modifiers() & Qt::ShiftModifier);
   }
   update();
 }
@@ -131,7 +131,7 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
         }
       }
     } else if (m_tmp_connection_origin != nullptr && m_model != nullptr) {
-      Port* port = this->port(event->pos());
+      Port* port = this->port(m_model->ports(), event->pos() - offset());
       if (port != nullptr && m_model->can_connect(*port, *m_tmp_connection_origin)) {
         m_tmp_connection_target = port;
       } else {
@@ -276,16 +276,14 @@ QRectF NodeView::node_geometry(const Node& node) const
   return QRectF(node.pos(), QSizeF(node_width_cache(&node), height));
 }
 
-Port* NodeView::port(const QPointF& pos) const
+Port* NodeView::port(std::set<Port*> candidates, const QPointF& pos) const
 {
   const auto d = [pos, this](const QPointF& candidate) {
-    return (pos - offset() - m_pzc.transform().map(candidate)).manhattanLength();
+    return (pos - m_pzc.transform().map(candidate)).manhattanLength();
   };
-  for (Node* node : m_model->nodes()) {
-    for (Port* port : node->ports()) {
-      if (d(port_pos(*port)) < port_height / 2.0) {
-        return port;
-      }
+  for (Port* port : candidates) {
+    if (d(port_pos(*port)) < port_height / 2.0) {
+      return port;
     }
   }
   return nullptr;

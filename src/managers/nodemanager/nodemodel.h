@@ -39,6 +39,8 @@ public:
   bool find_path(std::list<const Node*>& path, const Node& end) const;
   bool find_path(const Node& start, const Node& end) const;
 
+  std::set<Port*> ports() const;
+
 Q_SIGNALS:
   void appearance_changed();
 
