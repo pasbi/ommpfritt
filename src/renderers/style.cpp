@@ -30,7 +30,7 @@ Style::Style(Scene *scene)
   : PropertyOwner(scene)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
-  , m_nodes(std::make_unique<NodeModel>())
+  , m_nodes(std::make_unique<NodeModel>(scene))
 {
   const auto pen_category = QObject::tr("pen");
   const auto brush_category = QObject::tr("brush");
@@ -81,7 +81,6 @@ Style::Style(Scene *scene)
   create_property<BoolProperty>("gl-brush", false)
     .set_label(tr("Use Nodes")).set_category(brush_category);
 
-
   start_marker.make_properties(decoration_category);
   end_marker.make_properties(decoration_category);
   init_offscreen_renderer();
@@ -106,6 +105,18 @@ QPixmap Style::texture(const Object& object, const QSize& size) const
 {
   Q_UNUSED(object)
   return QPixmap::fromImage(m_offscreen_renderer->render(size));
+}
+
+void Style::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
+{
+  PropertyOwner::serialize(serializer, root);
+  m_nodes->serialize(serializer, make_pointer(root, NODES_POINTER));
+}
+
+void Style::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
+{
+  PropertyOwner::deserialize(deserializer, root);
+  m_nodes->deserialize(deserializer, make_pointer(root, NODES_POINTER));
 }
 
 void Style::on_property_value_changed(Property *property)

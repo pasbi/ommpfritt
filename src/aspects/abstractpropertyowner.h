@@ -27,11 +27,12 @@ class AbstractPropertyOwner
   Q_OBJECT
 public:
   enum class Kind { None = 0x0,
-                    Tag = 0x1, Style = 0x2, Object = 0x4, Tool = 0x8,
-                    Item = Tag | Style | Object, All = Item | Tool };
+                    Tag = 0x1, Style = 0x2, Object = 0x4, Tool = 0x8, Node = 0x10,
+                    Item = Tag | Style | Object, All = Item | Tool | Node };
 
   enum class Flag { None = 0x0,
-                    Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4, IsView = 0x8 };
+                    Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4, IsView = 0x8,
+                    HasNodes = 0x10 };
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PropertyOwner", "AbstractPropertyOwner");
 

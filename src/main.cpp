@@ -16,6 +16,7 @@
 #include <QDirIterator>
 #include "logging.h"
 #include "animation/track.h"
+#include "managers/nodemanager/node.h"
 
 auto load_translator(const QString& prefix, const QLocale& locale)
 {
@@ -62,6 +63,7 @@ int main (int argc, char *argv[])
   omm::register_deserializers();
   omm::register_propertyconfigwidgets();
   omm::register_tools();
+  omm::register_nodes();
 
   QApplication qt_app(argc, argv);
 

@@ -3,7 +3,7 @@
 #include <memory>
 #include <QRectF>
 #include <QObject>
-
+#include "aspects/propertyowner.h"
 #include "managers/nodemanager/port.h"
 
 namespace omm
@@ -11,16 +11,30 @@ namespace omm
 
 class NodeModel;
 
-class Node : public QObject
+class Node
+  : public PropertyOwner<AbstractPropertyOwner::Kind::Node>
+  , public AbstractFactory<QString, Node, Scene*>
 {
   Q_OBJECT
 public:
-  explicit Node();
+  explicit Node(Scene* scene);
   ~Node();
+
+  AbstractPropertyOwner::Flag flags() const override { return AbstractPropertyOwner::Flag::None; }
 
   std::set<Port*> ports() const;
 
   void set_model(NodeModel* model);
+
+  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
+  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+
+  void set_pos(const QPointF& pos);
+  QPointF pos() const;
+
+  static constexpr auto POS_KEY = "pos";
+
+protected:
   template<typename PortT, typename... Args> void add_port(Args&&... args)
   {
     const std::size_t n = std::count_if(m_ports.begin(), m_ports.end(), [](auto&& port) {
@@ -29,9 +43,6 @@ public:
     auto port = std::make_unique<PortT>(*this, n, std::forward<Args...>(args...));
     m_ports.insert(std::move(port));
   }
-
-  void set_pos(const QPointF& pos);
-  QPointF pos() const;
 
 Q_SIGNALS:
   void pos_changed();
@@ -42,5 +53,7 @@ private:
   std::set<std::unique_ptr<Port>> m_ports;
 
 };
+
+void register_nodes();
 
 }  // namespace

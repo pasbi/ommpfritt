@@ -22,7 +22,6 @@ NodeView::NodeView(QWidget* parent)
 
 NodeView::~NodeView()
 {
-
 }
 
 void NodeView::set_model(NodeModel* model)

@@ -17,6 +17,7 @@ file(GLOB HEADERS
   port.h
 )
 
+add_subdirectory(nodes)
 
 target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

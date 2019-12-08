@@ -4,7 +4,7 @@
 namespace omm
 {
 
-Node::Node()
+Node::Node(Scene* scene) : PropertyOwner(scene)
 {
 }
 
@@ -24,6 +24,18 @@ void Node::set_model(NodeModel* model)
   m_model = model;
 }
 
+void Node::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
+{
+  AbstractPropertyOwner::serialize(serializer, root);
+  serializer.set_value(Vec2f(pos()), make_pointer(root, POS_KEY));
+}
+
+void Node::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
+{
+  AbstractPropertyOwner::deserialize(deserializer, root);
+  m_pos = deserializer.get_vec2f(make_pointer(root, POS_KEY)).to_pointf();
+}
+
 void Node::set_pos(const QPointF& pos)
 {
   m_pos = pos;
@@ -34,19 +46,5 @@ QPointF Node::pos() const
 {
   return m_pos;
 }
-
-//std::set<Port*> Node::ports() const
-//{
-//  std::set<Port*> ports;
-//  for (auto&& op : m_outputs) {
-//    ports.insert(op.get());
-//  }
-//  for (auto&& ip : m_inputs) {
-//    ports.insert(ip.get());
-//  }
-//  return ports;
-//}
-
-
 
 }  // namespace omm

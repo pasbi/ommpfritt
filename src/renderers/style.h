@@ -14,7 +14,6 @@ class NodeModel;
 
 class Style
   : public PropertyOwner<AbstractPropertyOwner::Kind::Style>
-  , public virtual Serializable
 {
   Q_OBJECT
 public:
@@ -26,6 +25,9 @@ public:
   std::unique_ptr<Style> clone() const;  // provided for interface consistency
   Flag flags() const override;
   QPixmap texture(const Object& object, const QSize& size) const;
+
+  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
+  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
 
 public:
   static constexpr auto PEN_IS_ACTIVE_KEY = "pen/active";
@@ -40,6 +42,8 @@ public:
   static constexpr auto BRUSH_IS_ACTIVE_KEY = "brush/active";
   static constexpr auto BRUSH_COLOR_KEY = "brush/color";
   static constexpr auto EDIT_NODES_KEY = "brush/edit-nodes";
+
+  static constexpr auto NODES_POINTER = "nodes";
 
   const MarkerProperties start_marker;
   const MarkerProperties end_marker;
