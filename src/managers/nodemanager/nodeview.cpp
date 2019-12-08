@@ -166,7 +166,7 @@ void NodeView::draw_node(QPainter& painter, const Node& node) const
 
 void NodeView::draw_connection(QPainter& painter, const InputPort& input_port) const
 {
-  const OutputPort* op = input_port.connection_origin();
+  const OutputPort* op = input_port.connected_output();
   if (op != nullptr) {
     draw_connection(painter, port_pos(input_port), port_pos(*op));
   }

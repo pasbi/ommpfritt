@@ -35,8 +35,8 @@ public:
 
   static constexpr auto POS_PTR = "pos";
   static constexpr auto CONNECTIONS_PTR = "connection";
-  static constexpr auto TARGET_PORT_PTR = "target";
-  static constexpr auto ORIGIN_PORT_PTR = "origin";
+  static constexpr auto OUTPUT_PORT_PTR = "out";
+  static constexpr auto INPUT_PORT_PTR = "in";
   static constexpr auto CONNECTED_NODE_PTR = "node";
 
   std::set<Node*> successors() const;
@@ -71,8 +71,8 @@ private:
 
   // Only required during deserialization.
   struct ConnectionIds {
-    std::size_t target_port;
-    std::size_t origin_port;
+    std::size_t input_port;
+    std::size_t output_port;
     std::size_t node_id;
   };
   std::list<ConnectionIds> m_connection_ids;

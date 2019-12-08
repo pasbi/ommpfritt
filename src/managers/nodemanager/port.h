@@ -30,7 +30,7 @@ public:
   static constexpr bool IS_INPUT = true;
   bool is_connected(const Port* other) const override;
   void connect(OutputPort* port);
-  OutputPort* connection_origin() const { return m_connection; }
+  OutputPort* connected_output() const { return m_connection; }
 
   class Tag
   {
