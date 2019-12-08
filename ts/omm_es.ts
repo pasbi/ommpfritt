@@ -174,6 +174,13 @@
     </message>
 </context>
 <context>
+    <name>NodeManager</name>
+    <message>
+        <source>Node Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>OptionsPropertyConfigWidget</name>
     <message>
         <source>Unnamed Option</source>
@@ -1370,6 +1377,10 @@ Borrar la selección de todos modos?</translation>
         <source>TimeLine</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>NodeManager</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>keybindings/Application</name>
@@ -1961,6 +1972,13 @@ Do you want to convert them into ordinary colors?</source>
             <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
+    </message>
+</context>
+<context>
+    <name>omm::NodeManager</name>
+    <message>
+        <source>Nodes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

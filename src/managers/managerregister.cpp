@@ -1,4 +1,5 @@
 #include "managers/objectmanager/objectmanager.h"
+#include "managers/nodemanager/nodemanager.h"
 #include "managers/propertymanager/propertymanager.h"
 #include "managers/stylemanager/stylemanager.h"
 #include "managers/pythonconsole/pythonconsole.h"
@@ -24,6 +25,7 @@ void register_managers()
   REGISTER_MANAGER(HistoryManager);
   REGISTER_MANAGER(BoundingBoxManager);
   REGISTER_MANAGER(TimeLine);
+  REGISTER_MANAGER(NodeManager);
 
 #undef REGISTER_MANAGER
 }

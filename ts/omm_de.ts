@@ -174,6 +174,13 @@
     </message>
 </context>
 <context>
+    <name>NodeManager</name>
+    <message>
+        <source>Node Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>OptionsPropertyConfigWidget</name>
     <message>
         <source>Unnamed Option</source>
@@ -1370,6 +1377,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>TimeLine</source>
         <translation>Zeitleiste</translation>
     </message>
+    <message>
+        <source>NodeManager</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>keybindings/Application</name>
@@ -1964,6 +1975,13 @@ Möchten Sie sie in eine normale Farbe umwandeln?</numerusform>
             <numerusform>%n Eigenschaften benutzen diese Benannte Farbe.
 Möchten Sie diese in normale Farben umwandeln?</numerusform>
         </translation>
+    </message>
+</context>
+<context>
+    <name>omm::NodeManager</name>
+    <message>
+        <source>Nodes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
