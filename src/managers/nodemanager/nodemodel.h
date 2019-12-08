@@ -40,6 +40,7 @@ public:
   bool find_path(const Node& start, const Node& end) const;
 
   std::set<Port*> ports() const;
+  Scene* scene() const { return m_scene; }
 
 Q_SIGNALS:
   void appearance_changed();

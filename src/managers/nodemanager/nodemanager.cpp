@@ -31,6 +31,8 @@ bool NodeManager::perform_action(const QString& name)
 {
   if (name == "abort") {
     m_ui->nodeview->abort();
+  } else if (name == "remove nodes") {
+    m_ui->nodeview->remove_selection();
   } else {
     return false;
   }

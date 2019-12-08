@@ -18,6 +18,11 @@ bool omm::InputPort::is_connected(const Port* other) const
   }
 }
 
+bool InputPort::is_connected() const
+{
+  return m_connection != nullptr;
+}
+
 void InputPort::connect(OutputPort* port)
 {
   if (m_connection != nullptr) {
@@ -43,6 +48,11 @@ bool OutputPort::is_connected(const Port* other) const
   }
 }
 
+bool OutputPort::is_connected() const
+{
+  return !m_connections.empty();
+}
+
 void OutputPort::disconnect(InputPort* port, InputPort::Tag)
 {
   m_connections.erase(port);
@@ -51,11 +61,6 @@ void OutputPort::disconnect(InputPort* port, InputPort::Tag)
 void OutputPort::connect(InputPort* port, InputPort::Tag)
 {
   m_connections.insert(port);
-}
-
-std::set<InputPort*> OutputPort::connected_ports() const
-{
-  return m_connections;
 }
 
 Port::Port(bool is_input, Node& node, std::size_t index, const QString& name)

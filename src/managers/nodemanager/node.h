@@ -33,6 +33,8 @@ public:
   void set_pos(const QPointF& pos);
   QPointF pos() const;
 
+  bool is_free() const;
+
   static constexpr auto POS_PTR = "pos";
   static constexpr auto CONNECTIONS_PTR = "connection";
   static constexpr auto OUTPUT_PORT_PTR = "out";

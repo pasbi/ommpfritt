@@ -79,13 +79,23 @@ QPointF Node::pos() const
   return m_pos;
 }
 
+bool Node::is_free() const
+{
+  for (const auto& port : m_ports) {
+    if (port->is_connected()) {
+      return false;
+    }
+  }
+  return true;
+}
+
 std::set<Node*> Node::successors() const
 {
   std::set<Node*> successors;
   for (const auto& port : m_ports) {
     if (!port->is_input) {
       const OutputPort& op = static_cast<OutputPort&>(*port);
-      for (const InputPort* ip : op.connected_ports()) {
+      for (const InputPort* ip : op.connected_inputs()) {
         successors.insert(&ip->node);
       }
     }

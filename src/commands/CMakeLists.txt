@@ -7,6 +7,7 @@ file(GLOB SOURCES
   movecommand.cpp
   movetagscommand.cpp
   namedcolorscommand.cpp
+  nodecommand.cpp
   objectselectioncommand.cpp
   objectstransformationcommand.cpp
   pointstransformationcommand.cpp
@@ -26,6 +27,7 @@ file(GLOB HEADERS
   movecommand.h
   movetagscommand.h
   namedcolorscommand.h
+  nodecommand.h
   objectselectioncommand.h
   objectstransformationcommand.h
   pointstransformationcommand.h

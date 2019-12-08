@@ -42,6 +42,7 @@ Node& NodeModel::add_node(std::unique_ptr<Node> node)
   connect(&ref, SIGNAL(pos_changed()), this, SIGNAL(appearance_changed()));
   node->set_model(this);
   m_nodes.insert(std::move(node));
+  Q_EMIT appearance_changed();
   return ref;
 }
 
@@ -54,9 +55,11 @@ std::unique_ptr<Node> NodeModel::extract_node(Node& node)
   });
 
   if (it != m_nodes.end()) {
+    assert(node.is_free());
     auto node = std::move(m_nodes.extract(it).value());
     disconnect(node.get(), SIGNAL(pos_changed()), this, SIGNAL(appearance_changed()));
     node->set_model(nullptr);
+    Q_EMIT appearance_changed();
     return node;
   } else {
     return nullptr;

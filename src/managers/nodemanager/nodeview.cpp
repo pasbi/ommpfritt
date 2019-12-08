@@ -1,4 +1,5 @@
 #include "managers/nodemanager/nodeview.h"
+#include "commands/nodecommand.h"
 #include "managers/nodemanager/node.h"
 #include "mainwindow/application.h"
 #include "preferences/preferences.h"
@@ -100,9 +101,9 @@ bool NodeView::select_port_or_node(const QPoint pos, bool extend_selection)
         m_selection.insert(node);
         return true;
       }
-      m_selection.clear();
     }
   }
+  m_selection.clear();
   return false;
 }
 
@@ -170,6 +171,14 @@ void NodeView::abort()
   m_tmp_connection_target = nullptr;
   m_former_connection_target = nullptr;
   update();
+}
+
+void NodeView::remove_selection()
+{
+  if (m_model != nullptr) {
+    const auto selection = ::transform<Node*, std::vector>(m_selection);
+    m_model->scene()->submit<RemoveNodesCommand>(*m_model, selection);
+  }
 }
 
 QPoint NodeView::offset() const

@@ -15,6 +15,7 @@ public:
   explicit Port(bool is_input, Node& node, std::size_t index, const QString& name);
   virtual ~Port();
   virtual bool is_connected(const Port* other) const = 0;
+  virtual bool is_connected() const = 0;
   const QString name;
   Node& node;
   const std::size_t index;
@@ -29,6 +30,7 @@ public:
   InputPort(Node& node, std::size_t index, const QString& name);
   static constexpr bool IS_INPUT = true;
   bool is_connected(const Port* other) const override;
+  bool is_connected() const override;
   void connect(OutputPort* port);
   OutputPort* connected_output() const { return m_connection; }
 
@@ -49,13 +51,14 @@ public:
   OutputPort(Node& node, std::size_t index, const QString& name);
   static constexpr bool IS_INPUT = false;
   bool is_connected(const Port* other) const override;
+  bool is_connected() const override;
 
   // the Tag is to protect you! Don't call OutputPort::disconnect unless you're in InputPort::connect
   void disconnect(InputPort* port, InputPort::Tag);
 
   // the Tag is to protect you! Don't call OutputPort::connect unless you're in InputPort::connect
   void connect(InputPort* port, InputPort::Tag);
-  std::set<InputPort*> connected_ports() const;
+  std::set<InputPort*> connected_inputs() const { return m_connections; }
 
 private:
   std::set<InputPort*> m_connections;

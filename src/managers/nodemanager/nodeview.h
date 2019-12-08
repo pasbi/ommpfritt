@@ -26,6 +26,7 @@ public:
   NodeModel* model() const { return m_model; }
   const QFont font;
   void abort();
+  void remove_selection();
 
 protected:
   void paintEvent(QPaintEvent*) override;
