@@ -18,6 +18,10 @@ void PanZoomController::end()
 bool PanZoomController::move(const QPoint& pos)
 {
   m_d = pos - m_last_pos;
+  bool invertible;
+  const QTransform ti = m_transform.inverted(&invertible);
+  assert(invertible);
+  m_e = ti.map(pos) - ti.map(m_last_pos);
   m_last_pos = pos;
   switch (m_current_action) {
   case Action::Pan:

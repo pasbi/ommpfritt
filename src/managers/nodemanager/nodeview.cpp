@@ -128,7 +128,7 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
     } else if (m_tmp_connection_origin == nullptr && m_model != nullptr) {
       if (event->buttons() & Qt::LeftButton) {
         for (Node* node : m_selection) {
-          node->set_pos(node->pos() + m_pzc.d());
+          node->set_pos(node->pos() + m_pzc.e());
         }
       }
     } else if (m_tmp_connection_origin != nullptr && m_model != nullptr) {
