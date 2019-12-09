@@ -100,6 +100,13 @@ template<> PolarCoordinates AbstractDeserializer::get<PolarCoordinates>(const Po
   return get_polarcoordinates(pointer);
 }
 
+template<> TriggerPropertyDummyValueType AbstractDeserializer
+::get<TriggerPropertyDummyValueType>(const Pointer& pointer)
+{
+  Q_UNUSED(pointer)
+  return get_trigger_dummy_value(pointer);
+}
+
 variant_type AbstractDeserializer::get(const AbstractDeserializer::Pointer &pointer,
                                        const QString &type)
 {
@@ -121,6 +128,8 @@ variant_type AbstractDeserializer::get(const AbstractDeserializer::Pointer &poin
     return get<Vec2i>(pointer);
   } else if (type == "Reference") {
     return nullptr;
+  } else if (type == "Trigger") {
+    return get<TriggerPropertyDummyValueType>(pointer);
   } else {
     LERROR << "Unknown variant type: '" << type << "'.";
     Q_UNREACHABLE();

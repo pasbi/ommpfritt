@@ -24,6 +24,7 @@ public:
   void set_value(const Vec2f& value, const Pointer& pointer) override;
   void set_value(const Vec2i& value, const Pointer& pointer) override;
   void set_value(const PolarCoordinates& value, const Pointer& pointer) override;
+  void set_value(const TriggerPropertyDummyValueType&, const Pointer& pointer) override;
 
   QString type() const override;
 
@@ -48,6 +49,7 @@ public:
   Vec2f get_vec2f(const Pointer& pointer) override;
   Vec2i get_vec2i(const Pointer& pointer) override;
   PolarCoordinates get_polarcoordinates(const Pointer& pointer) override;
+  TriggerPropertyDummyValueType get_trigger_dummy_value(const Pointer& pointer) override;
 
   QString type() const override;
 

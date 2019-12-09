@@ -172,6 +172,12 @@ void JSONSerializer::set_value(const PolarCoordinates& value, const Pointer& poi
   set_value(Vec2f(value.argument, value.magnitude), pointer);
 }
 
+void JSONSerializer::
+set_value(const TriggerPropertyDummyValueType&, const AbstractSerializer::Pointer& pointer)
+{
+  Q_UNUSED(pointer)
+}
+
 QString JSONSerializer::type() const { return "JSONSerializer"; }
 
 
@@ -259,6 +265,13 @@ PolarCoordinates JSONDeserializer::get_polarcoordinates(const Pointer& pointer)
 {
   const auto pair = get_vec2f(pointer);
   return PolarCoordinates(pair[0], pair[1]);
+}
+
+TriggerPropertyDummyValueType
+JSONDeserializer::get_trigger_dummy_value(const AbstractDeserializer::Pointer& pointer)
+{
+  Q_UNUSED(pointer)
+  return TriggerPropertyDummyValueType();
 }
 
 QString JSONDeserializer::type() const { return "JSONDeserializer"; }
