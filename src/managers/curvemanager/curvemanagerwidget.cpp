@@ -79,11 +79,11 @@ void CurveManagerWidget::mouseMoveEvent(QMouseEvent* event)
     double new_y = value_range.pixel_to_unit(event->y());
     const double diff = new_y - old_y;
     const KeyFrameHandleKey& key = *m_dragged_tangent.key;
-    Track::Knot new_knot = key.track.knot(key.frame);
-    variant_type& vv = new_knot.offset(m_dragged_tangent.side);
+    std::unique_ptr<Track::Knot> new_knot = key.track.knot(key.frame).clone();
+    variant_type& vv = new_knot->offset(m_dragged_tangent.side);
     const double new_offset = get_channel_value(vv, key.channel) + diff;
     set_channel_value(vv, key.channel, new_offset);
-    m_scene.submit<ChangeKeyFrameCommand>(key.frame, key.track.property(), new_knot);
+    m_scene.submit<ChangeKeyFrameCommand>(key.frame, key.track.property(), std::move(new_knot));
   } else if (m_key_being_dragged) {
     m_frame_shift = std::round(  frame_range.pixel_to_unit(event->x())
                                - frame_range.pixel_to_unit(m_mouse_down_pos.x()));
@@ -166,9 +166,9 @@ void CurveManagerWidget::mouseReleaseEvent(QMouseEvent* event)
         if (is_selected_and_visible(std::pair{ key, data })) {
           auto& property = key.track.property();
           const double new_value = data.value(key) + m_value_shift;
-          Track::Knot new_knot = key.track.knot(key.frame);
-          set_channel_value(new_knot.value, key.channel, new_value);
-          m_scene.submit<ChangeKeyFrameCommand>(key.frame, property, new_knot);
+          auto new_knot = key.track.knot(key.frame).clone();
+          set_channel_value(new_knot->value, key.channel, new_value);
+          m_scene.submit<ChangeKeyFrameCommand>(key.frame, property, std::move(new_knot));
         }
       }
 
@@ -280,12 +280,12 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
   const int frame_advance = std::max(1, frames_per_pixel);
   for (Track* track_ : m_tracks) {
     for (std::size_t c = 0; c < n_channels(track_->property().variant_value()); ++c) {
-      Track track = *track_;
+      auto track = track_->clone();
       std::set<int> old_frames;
       for (auto&& [key, data] : m_keyframe_handles) {
         if (data.is_selected && &key.track == track_) {
           if (key.channel == c) {
-            auto& v = track.knot(key.frame).value;
+            auto& v = track->knot(key.frame).value;
             const double sv = get_channel_value(v, c) + m_value_shift;
             set_channel_value(v, c, sv);
           }
@@ -293,32 +293,32 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
         }
       }
       for (auto it = old_frames.rbegin(); it != old_frames.rend(); ++it) {
-        track.move_knot(*it, *it + m_frame_shift);
+        track->move_knot(*it, *it + m_frame_shift);
       }
-      if (is_visible(track, c)) {
+      if (is_visible(*track, c)) {
         QPen pen;
         pen.setWidthF(1.5);
-        const QString color_name = QString("%1-%2-fcurve").arg(track.type()).arg(c);
+        const QString color_name = QString("%1-%2-fcurve").arg(track->type()).arg(c);
         pen.setColor(ui_color(QPalette::Active, "TimeLine", color_name));
         painter.setPen(pen);
-        auto v0 = track.interpolate(std::floor(frame_range.begin - frame_advance), c);
+        auto v0 = track->interpolate(std::floor(frame_range.begin - frame_advance), c);
         for (int frame = frame_range.begin;
              frame <= frame_range.end + frame_advance;
              frame += frame_advance)
         {
-          auto v1 = track.interpolate(frame, c);
+          auto v1 = track->interpolate(frame, c);
           painter.drawLine(range.unit_to_pixel(QPointF(frame - frame_advance, v0)),
                            range.unit_to_pixel(QPointF(frame, v1)));
           v0 = v1;
         }
 
         {
-          const auto& property = track.property();
+          const auto& property = track->property();
           const QString text = QString("%1 %2").arg(property.label()).arg(property.channel_name(c));
           const double b = frame_range.pixel_to_unit(0.0);
           const double e = frame_range.pixel_to_unit(painter.fontMetrics().horizontalAdvance(text));
-          const double v1 = track.interpolate(b, c);
-          const double v2 = track.interpolate(e, c);
+          const double v1 = track->interpolate(b, c);
+          const double v2 = track->interpolate(e, c);
           int y = range.v_range.unit_to_pixel(v1);
           if (v1 > v2) {
             y += painter.fontMetrics().height();

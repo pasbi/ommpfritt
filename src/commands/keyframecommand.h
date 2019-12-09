@@ -13,14 +13,18 @@ class KeyFrameCommand : public Command
 {
 protected:
   KeyFrameCommand(Animator& animator, const QString& label, int frame,
-                  const std::map<Property*, Track::Knot>& values);
+                  const std::map<Property*, Track::Knot*>& refs,
+                  std::map<Property*, std::unique_ptr<Track::Knot>> owns = {});
+  KeyFrameCommand(Animator& animator, const QString& label, int frame,
+                  std::map<Property*, std::unique_ptr<Track::Knot> > owns);
   void insert();
   void remove();
 
 private:
   Animator& m_animator;
   const int m_frame;
-  const std::map<Property*, Track::Knot> m_knots;
+  const std::map<Property*, Track::Knot*> m_refs;
+  std::map<Property*, std::unique_ptr<Track::Knot>> m_owns;
   const QString m_property_key;
 };
 
@@ -54,7 +58,7 @@ public:
   int id() const override { return MOVE_KEYFRAMES_COMMAND_ID; }
 
 private:
-  std::map<int, Track::Knot> m_removed_values;
+  mutable std::map<int, std::unique_ptr<Track::Knot>> m_removed_values;
   Animator& m_animator;
   Property& m_property;
   const std::set<int> m_old_frames;
@@ -65,7 +69,7 @@ private:
 class ChangeKeyFrameCommand : public Command
 {
 public:
-  ChangeKeyFrameCommand(int frame, Property& property, Track::Knot new_value);
+  ChangeKeyFrameCommand(int frame, Property& property, std::unique_ptr<Track::Knot> new_value);
   void undo() override { swap(); }
   void redo() override { swap(); }
   bool mergeWith(const QUndoCommand* other) override;
@@ -74,7 +78,7 @@ public:
 private:
   const int m_frame;
   Property& m_property;
-  Track::Knot m_other_value;
+  std::unique_ptr<Track::Knot> m_other_value;
   void swap();
 };
 

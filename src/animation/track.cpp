@@ -57,6 +57,21 @@ Track::Track(Property &property) : m_property(property)
 {
 }
 
+Track::~Track()
+{
+  LINFO << "Destory track " << (void*) this;
+}
+
+std::unique_ptr<Track> Track::clone() const
+{
+  auto track = std::make_unique<Track>(m_property);
+  for (auto&& [frame, knot] : m_knots) {
+    track->m_knots.insert({ frame, knot->clone() });
+  }
+  track->m_interpolation = m_interpolation;
+  return track;
+}
+
 void Track::serialize(AbstractSerializer& serializer, const Pointer& pointer) const
 {
   serializer.set_value(type(), make_pointer(pointer, TYPE_KEY));
@@ -65,7 +80,7 @@ void Track::serialize(AbstractSerializer& serializer, const Pointer& pointer) co
   serializer.start_array(key_frames.size(), knots_pointer);
   for (std::size_t i = 0; i < key_frames.size(); ++i) {
     const int frame = key_frames.at(i);
-    const Knot& knot = m_knots.at(frame);
+    const Knot& knot = *m_knots.at(frame);
     const auto knot_pointer = make_pointer(knots_pointer, i);
     serializer.set_value(frame, make_pointer(knot_pointer, FRAME_KEY));
     serializer.set_value(knot.value, make_pointer(knot_pointer, VALUE_KEY));
@@ -87,21 +102,20 @@ void Track::deserialize(AbstractDeserializer& deserializer, const Pointer& point
   const std::size_t n = deserializer.array_size(knots_pointer);
   for (std::size_t i = 0; i < n; ++i) {
     const auto knot_pointer = make_pointer(knots_pointer, i);
-//    Knot knot(deserializer.get(make_pointer(knot_pointer, VALUE_KEY), type));
-    Knot knot(deserializer, make_pointer(knot_pointer, VALUE_KEY), type);
+    auto knot = std::make_unique<Knot>(deserializer, make_pointer(knot_pointer, VALUE_KEY), type);
     if (is_numerical()) {
-      knot.left_offset = deserializer.get(make_pointer(knot_pointer, LEFT_VALUE_KEY), type);
-      knot.right_offset = deserializer.get(make_pointer(knot_pointer, RIGHT_VALUE_KEY), type);
+      knot->left_offset = deserializer.get(make_pointer(knot_pointer, LEFT_VALUE_KEY), type);
+      knot->right_offset = deserializer.get(make_pointer(knot_pointer, RIGHT_VALUE_KEY), type);
     }
     const int frame = deserializer.get_int(make_pointer(knot_pointer, FRAME_KEY));
-    m_knots.insert(std::pair(frame, knot));
+    m_knots.insert(std::pair(frame, std::move(knot)));
   }
 }
 
-Track::Knot Track::remove_knot(int frame)
+std::unique_ptr<Track::Knot> Track::remove_knot(int frame)
 {
   assert (m_knots.find(frame) != m_knots.end());
-  return m_knots.extract(frame).mapped();
+  return std::move(m_knots.extract(frame).mapped());
 }
 
 double Track::interpolate(double frame, std::size_t channel) const
@@ -115,7 +129,7 @@ variant_type Track::interpolate(double frame) const
   assert(!m_knots.empty());
 
   if (const auto it = m_knots.find(frame); it != m_knots.end()) {
-    return it->second.value;
+    return it->second->value;
   }
 
   const Knot* left = nullptr;
@@ -125,10 +139,10 @@ variant_type Track::interpolate(double frame) const
   for (auto it = m_knots.cbegin(); it != m_knots.cend(); ++it) {
     if (it->first <= frame) {
       left_frame = it->first;
-      left = &it->second;
+      left = it->second.get();
     } else if (it->first > frame) {
       right_frame = it->first;
-      right = &it->second;
+      right = it->second.get();
       break;
     }
   }
@@ -165,14 +179,9 @@ variant_type Track::interpolate(double frame) const
   }
 }
 
-Track::Knot& Track::knot(int frame)
+Track::Knot& Track::knot(int frame) const
 {
-  return m_knots.at(frame);
-}
-
-const Track::Knot& Track::knot(int frame) const
-{
-  return m_knots.at(frame);
+  return *m_knots.at(frame);
 }
 
 std::vector<int> Track::key_frames() const
@@ -191,14 +200,15 @@ void Track::apply(int frame) const
 
 void Track::move_knot(int old_frame, int new_frame)
 {
-  m_knots.insert(std::pair(new_frame, m_knots.extract(old_frame).mapped()));
+  auto knot = std::move(m_knots.extract(old_frame).mapped());
+  m_knots.insert({ new_frame, std::move(knot) });
 }
 
-void Track::insert_knot(int frame, const Knot &knot)
+void Track::insert_knot(int frame, std::unique_ptr<Knot> knot)
 {
-  assert(knot.value.index() == property().variant_value().index());
+  assert(knot->value.index() == property().variant_value().index());
   assert(m_knots.find(frame) == m_knots.end());
-  m_knots.insert(std::pair(frame, knot));
+  m_knots.insert({ frame, std::move(knot) });
 }
 
 QString Track::type() const
@@ -212,7 +222,7 @@ QString Track::type() const
 bool Track::is_consistent(int frame) const
 {
   if (const auto it = m_knots.find(frame); it != m_knots.end()) {
-    return it->second.value == property().variant_value();
+    return it->second->value == property().variant_value();
   } else {
     return true;
   }
@@ -248,6 +258,19 @@ Track::Knot::Knot(AbstractDeserializer& deserializer, const Pointer& pointer, co
 Track::Knot::Knot(const variant_type& value) : value(value)
 {
   polish();
+}
+
+void Track::Knot::swap(Track::Knot& other)
+{
+  std::swap(other.value, value);
+  std::swap(other.left_offset, left_offset);
+  std::swap(other.right_offset, right_offset);
+  std::swap(other.m_reference_id, m_reference_id);
+}
+
+std::unique_ptr<Track::Knot> Track::Knot::clone() const
+{
+  return std::unique_ptr<Track::Knot>(new Track::Knot(*this));
 }
 
 void Track::Knot::update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map)

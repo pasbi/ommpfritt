@@ -414,16 +414,16 @@ std::unique_ptr<Track> Animator::extract_track(AbstractPropertyOwner& owner, Pro
   return track;
 }
 
-Track::Knot Animator::remove_knot(Track& track, int frame)
+std::unique_ptr<Track::Knot> Animator::remove_knot(Track& track, int frame)
 {
-  Track::Knot knot = track.remove_knot(frame);
+  auto knot = track.remove_knot(frame);
   Q_EMIT knot_removed(track, frame);
   return knot;
 }
 
-void Animator::insert_knot(Track& track, int frame, const Track::Knot& knot)
+void Animator::insert_knot(Track& track, int frame, std::unique_ptr<Track::Knot> knot)
 {
-  track.insert_knot(frame, knot);
+  track.insert_knot(frame, std::move(knot));
   Q_EMIT knot_inserted(track, frame);
 }
 

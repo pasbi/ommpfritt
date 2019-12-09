@@ -28,6 +28,10 @@ public:
   {
     Knot(AbstractDeserializer& deserializer, const Pointer& pointer, const QString& type);
     Knot(const variant_type& value);
+    Knot& operator=(const Knot& other) = delete;
+    void swap(Knot& other);
+    std::unique_ptr<Knot> clone() const;
+
     enum class Side { Left, Right };
 
     bool operator==(const Knot& other) const;
@@ -39,6 +43,10 @@ public:
     variant_type right_offset;
 
   private:
+    // copying the Knot is dangerous because the Deserializaer
+    // may hold a pointer to this (as ReferencePolisher).
+    // Use Knot::clone explicitely, if you know what you do.
+    Knot(const Knot& other) = default;
     void polish();
 
     // only required for deserialization.
@@ -50,6 +58,8 @@ public:
   static QString interpolation_label(Interpolation interpolation);
 
   explicit Track(Property& property);
+  ~Track();
+  std::unique_ptr<Track> clone() const;
   static constexpr auto PROPERTY_KEY_KEY = "property";
   static constexpr auto OWNER_KEY = "owner";
   static constexpr auto KNOTS_KEY = "knots";
@@ -69,8 +79,7 @@ public:
 
   double interpolate(double frame, std::size_t channel) const;
   variant_type interpolate(double frame) const;
-  const Knot& knot(int frame) const;
-  Knot& knot(int frame);
+  Knot& knot(int frame) const;
 
   std::vector<int> key_frames() const;
   void apply(int frame) const;
@@ -83,7 +92,7 @@ public:
    * @note this function must only be called from the @code Animator instance.
    * @see Animator::set_key
    */
-  void insert_knot(int frame, const Knot& knot);
+  void insert_knot(int frame, std::unique_ptr<Knot> knot);
 
   /**
    * @brief remove_knot removes the key at given frame. Does nothing if there is no such
@@ -92,7 +101,7 @@ public:
    * @note this function must only be called from the @code Animator instance.
    * @see Animator::remove_key
    */
-  Knot remove_knot(int frame);
+  std::unique_ptr<Knot> remove_knot(int frame);
 
   QString type() const;
   Property& property() const { return m_property; }
@@ -111,7 +120,7 @@ public:
 
 private:
   Property& m_property;
-  std::map<int, Knot> m_knots;
+  std::map<int, std::unique_ptr<Knot>> m_knots;
   Interpolation m_interpolation = Interpolation::Linear;
 };
 

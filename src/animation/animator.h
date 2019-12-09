@@ -153,8 +153,8 @@ public:
 public:
   void insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track> track);
   std::unique_ptr<Track> extract_track(AbstractPropertyOwner& owner, Property& property);
-  Track::Knot remove_knot(Track& track, int frame);
-  void insert_knot(Track& track, int frame, const Track::Knot& knot);
+  std::unique_ptr<Track::Knot> remove_knot(Track& track, int frame);
+  void insert_knot(Track& track, int frame, std::unique_ptr<Track::Knot> knot);
   void move_knot(Track& track, int old_frame, int new_frame);
 
 private:
