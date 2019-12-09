@@ -1,4 +1,6 @@
 #include "managers/nodemanager/nodeview.h"
+#include "scene/history/historymodel.h"
+#include "scene/history/macro.h"
 #include "commands/nodecommand.h"
 #include "managers/nodemanager/node.h"
 #include "mainwindow/application.h"
@@ -86,7 +88,7 @@ bool NodeView::select_port_or_node(const QPoint pos, bool extend_selection)
           m_tmp_connection_origin = &ip;
         } else {
           m_former_connection_target = &ip;
-          ip.connect(nullptr);
+          m_about_to_disconnect = &ip;
           m_tmp_connection_origin = op;
         }
       } else {
@@ -127,8 +129,8 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
     if (m_pzc.move(event->pos() - offset())) {
     } else if (m_tmp_connection_origin == nullptr && m_model != nullptr) {
       if (event->buttons() & Qt::LeftButton) {
-        for (Node* node : m_selection) {
-          node->set_pos(node->pos() + m_pzc.e());
+        if (const QPointF e = m_pzc.e(); e.manhattanLength() > 0 && !m_selection.empty()) {
+          m_model->scene()->submit<MoveNodesCommand>(m_selection, m_pzc.e());
         }
       }
     } else if (m_tmp_connection_origin != nullptr && m_model != nullptr) {
@@ -145,14 +147,36 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
 
 void NodeView::mouseReleaseEvent(QMouseEvent*)
 {
+  std::list<std::unique_ptr<Command>> commands;
   if (m_tmp_connection_origin != nullptr && m_tmp_connection_target != nullptr) {
     if (m_model != nullptr) {
-      m_model->connect(*m_tmp_connection_origin, *m_tmp_connection_target);
+      commands.push_back(std::make_unique<ConnectPortsCommand>(*m_tmp_connection_origin,
+                                                               *m_tmp_connection_target));
+      if (m_about_to_disconnect == m_tmp_connection_origin
+          || m_about_to_disconnect == m_tmp_connection_target)
+      {
+        m_about_to_disconnect = nullptr;
+      }
     }
   }
+  if (m_about_to_disconnect != nullptr) {
+    commands.push_back(std::make_unique<DisconnectPortsCommand>(*m_about_to_disconnect));
+  }
+
+  {
+    std::unique_ptr<Macro> macro;
+    if (commands.size() > 1) {
+      macro = m_model->scene()->history().start_macro(tr("Modify Connections"));
+    }
+    for (auto&& command : commands) {
+      m_model->scene()->submit(std::move(command));
+    }
+  }
+
   m_former_connection_target = nullptr;
   m_tmp_connection_origin = nullptr;
   m_tmp_connection_target = nullptr;
+  m_about_to_disconnect = nullptr;
   m_aborted = false;
   m_pzc.end();
   update();
@@ -161,12 +185,7 @@ void NodeView::mouseReleaseEvent(QMouseEvent*)
 void NodeView::abort()
 {
   m_aborted = true;
-  if (m_tmp_connection_origin != nullptr && m_former_connection_target != nullptr) {
-    if (m_former_connection_target->is_input && !m_tmp_connection_origin->is_input) {
-      OutputPort* op = static_cast<OutputPort*>(m_tmp_connection_origin);
-      static_cast<InputPort*>(m_former_connection_target)->connect(op);
-    }
-  }
+  m_about_to_disconnect = nullptr;
   m_tmp_connection_origin = nullptr;
   m_tmp_connection_target = nullptr;
   m_former_connection_target = nullptr;
@@ -214,9 +233,11 @@ void NodeView::draw_node(QPainter& painter, const Node& node) const
 
 void NodeView::draw_connection(QPainter& painter, const InputPort& input_port) const
 {
-  const OutputPort* op = input_port.connected_output();
-  if (op != nullptr) {
-    draw_connection(painter, port_pos(input_port), port_pos(*op));
+  if (&input_port != m_about_to_disconnect) {
+    const OutputPort* op = input_port.connected_output();
+    if (op != nullptr) {
+      draw_connection(painter, port_pos(input_port), port_pos(*op));
+    }
   }
 }
 

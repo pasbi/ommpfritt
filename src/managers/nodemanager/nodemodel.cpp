@@ -143,6 +143,11 @@ std::set<Port*> NodeModel::ports() const
   return ports;
 }
 
+void NodeModel::notify_appearance_changed()
+{
+  Q_EMIT appearance_changed();
+}
+
 bool NodeModel::can_connect(const Port& a, const Port& b) const
 {
   const InputPort* in;
@@ -158,16 +163,5 @@ bool NodeModel::can_connect(const OutputPort& a, const InputPort& b) const
 {
   return !find_path(b.node, a.node);
 }
-
-void NodeModel::connect(Port& a, Port& b)
-{
-  InputPort* in;
-  OutputPort* out;
-  if (sort_ports(&a, &b, in, out)) {
-    assert(can_connect(*out, *in));
-    in->connect(out);
-  }
-}
-
 
 }  // namespace omm

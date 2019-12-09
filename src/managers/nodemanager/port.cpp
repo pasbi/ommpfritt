@@ -1,4 +1,5 @@
 #include "managers/nodemanager/port.h"
+#include "nodemodel.h"
 #include "managers/nodemanager/node.h"
 
 namespace omm
@@ -14,24 +15,26 @@ bool omm::InputPort::is_connected(const Port* other) const
   if (other->is_input) {
     return false;
   } else {
-    return m_connection == other;
+    return m_connected_output == other;
   }
 }
 
 bool InputPort::is_connected() const
 {
-  return m_connection != nullptr;
+  return m_connected_output != nullptr;
 }
 
 void InputPort::connect(OutputPort* port)
 {
-  if (m_connection != nullptr) {
-    m_connection->disconnect(this, Tag());
-  } else if (port != nullptr) {
-    port->connect(this, Tag());
+  if (m_connected_output != port) {
+    if (m_connected_output != nullptr) {
+      m_connected_output->disconnect(this, Tag());
+    } else if (port != nullptr) {
+      port->connect(this, Tag());
+    }
+    m_connected_output = port;
+    node.model()->notify_appearance_changed();
   }
-
-  m_connection = port;
 }
 
 OutputPort::OutputPort(Node& node, std::size_t index, const QString& name)

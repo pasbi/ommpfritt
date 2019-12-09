@@ -295,6 +295,19 @@ template<typename K, typename V> std::set<K> get_keys(const std::map<K, V>& map)
   return keys;
 }
 
+template<typename Map1, typename Map2>
+bool same_keys(const Map1& m1, const Map2& m2)
+{
+  if (m1.size() != m2.size()) {
+    return false;
+  } else {
+    return std::equal(m1.begin(), m1.end(), m2.begin(),  [](const auto& a, const auto& b) {
+      return a.first == b.first;
+    });
+  }
+}
+
+
 namespace omm
 {
 
@@ -342,7 +355,7 @@ std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT&> operator&=(EnumT&
 
 enum class Space { Viewport, Scene };
 
-}
+}  // namespaxe
 
 namespace std
 {

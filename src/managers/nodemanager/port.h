@@ -32,7 +32,7 @@ public:
   bool is_connected(const Port* other) const override;
   bool is_connected() const override;
   void connect(OutputPort* port);
-  OutputPort* connected_output() const { return m_connection; }
+  OutputPort* connected_output() const { return m_connected_output; }
 
   class Tag
   {
@@ -42,7 +42,7 @@ public:
   };
 
 private:
-  OutputPort* m_connection = nullptr;
+  OutputPort* m_connected_output = nullptr;
 };
 
 class OutputPort : public Port

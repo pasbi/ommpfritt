@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QPointF>
 #include "commands/command.h"
 #include <set>
 #include <memory>
@@ -11,11 +12,12 @@ class NodeModel;
 class Node;
 class InputPort;
 class OutputPort;
+class Port;
 
 class ConnectionCommand : public Command
 {
 protected:
-  ConnectionCommand(const QString& label, OutputPort& out, InputPort& in);
+  ConnectionCommand(const QString& label, Port& out, Port& in);
   void connect();
   void disconnect();
 
@@ -27,7 +29,7 @@ private:
 class ConnectPortsCommand : public ConnectionCommand
 {
 public:
-  ConnectPortsCommand(OutputPort& out, InputPort& in);
+  ConnectPortsCommand(Port& a, Port& b);
   void undo() override { disconnect(); }
   void redo() override { connect(); }
 };
@@ -35,7 +37,7 @@ public:
 class DisconnectPortsCommand : public ConnectionCommand
 {
 public:
-  DisconnectPortsCommand(OutputPort& out, InputPort& in);
+  DisconnectPortsCommand(InputPort& port);
   void undo() override { connect(); }
   void redo() override { disconnect(); }
 };
@@ -70,6 +72,20 @@ public:
   AddNodesCommand(NodeModel& model, std::vector<std::unique_ptr<Node>> nodes);
   void undo() override { remove(); }
   void redo() override { add(); }
+};
+
+class MoveNodesCommand : public Command
+{
+public:
+  MoveNodesCommand(std::set<Node*> nodes, const QPointF& direction);
+  void undo() override;
+  void redo() override;
+  int id() const override { return MOVE_NODES_COMMAND_ID; }
+  bool mergeWith(const QUndoCommand* command) override;
+
+private:
+  const std::map<Node*, QPointF> m_old_positions;
+  QPointF m_direction;
 };
 
 }  // namespace omm

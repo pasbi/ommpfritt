@@ -26,7 +26,6 @@ public:
   std::set<Node*> nodes() const;
   bool can_connect(const Port& a, const Port& b) const;
   bool can_connect(const OutputPort& a, const InputPort& b) const;
-  void connect(Port& a, Port& b);
   using QObject::connect;
 
   void serialize(AbstractSerializer&, const Pointer&) const override;
@@ -41,6 +40,7 @@ public:
 
   std::set<Port*> ports() const;
   Scene* scene() const { return m_scene; }
+  void notify_appearance_changed();
 
 Q_SIGNALS:
   void appearance_changed();

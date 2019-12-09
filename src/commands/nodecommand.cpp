@@ -1,14 +1,33 @@
 #include "managers/nodemanager/port.h"
+#include "common.h"
 #include "managers/nodemanager/nodemodel.h"
 #include "managers/nodemanager/node.h"
 #include "commands/nodecommand.h"
 
+namespace
+{
+
+std::map<omm::Node*, QPointF> collect_old_positions(const std::set<omm::Node*>& nodes)
+{
+  std::map<omm::Node*, QPointF> map;
+  for (omm::Node* node : nodes) {
+    map.insert({ node, node->pos() });
+  }
+  return map;
+}
+
+}  // namespace
+
 namespace omm
 {
 
-ConnectionCommand::ConnectionCommand(const QString& label, OutputPort& out, InputPort& in)
-  : Command(label), m_out(out), m_in(in)
+ConnectionCommand::ConnectionCommand(const QString& label, Port& a, Port& b)
+  : Command(label)
+  , m_out(static_cast<OutputPort&>(b.is_input ? a : b))
+  , m_in(static_cast<InputPort&>(a.is_input ? a : b))
 {
+  // require exactly one input and one output.
+  assert(a.is_input != b.is_input);
 }
 
 void ConnectionCommand::connect()
@@ -21,13 +40,13 @@ void ConnectionCommand::disconnect()
   m_in.connect(nullptr);
 }
 
-ConnectPortsCommand::ConnectPortsCommand(OutputPort& out, InputPort& in)
-  : ConnectionCommand(QObject::tr("Connect Ports"), out, in)
+ConnectPortsCommand::ConnectPortsCommand(Port& a, Port& b)
+  : ConnectionCommand(QObject::tr("Connect Ports"), a, b)
 {
 }
 
-DisconnectPortsCommand::DisconnectPortsCommand(OutputPort& out, InputPort& in)
-  : ConnectionCommand(QObject::tr("Disconnect Ports"), out, in)
+DisconnectPortsCommand::DisconnectPortsCommand(InputPort& port)
+  : ConnectionCommand(QObject::tr("Disconnect Ports"), port, *port.connected_output())
 {
 }
 
@@ -70,7 +89,7 @@ void NodeCommand::remove()
         ips = op->connected_inputs();
       }
       for (InputPort* ip : ips) {
-        m_destroyed_connections.emplace_back(*op, *ip);
+        m_destroyed_connections.emplace_back(*ip);
         m_destroyed_connections.back().redo();
       }
     }
@@ -100,5 +119,36 @@ AddNodesCommand::AddNodesCommand(NodeModel& model, std::vector<std::unique_ptr<N
 {
 }
 
+MoveNodesCommand::MoveNodesCommand(std::set<Node*> nodes, const QPointF& direction)
+  : Command(QObject::tr("Move Nodes"))
+  , m_old_positions(collect_old_positions(nodes))
+  , m_direction(direction)
+{
+}
+
+void MoveNodesCommand::undo()
+{
+  for (auto&& [ node, old_pos ] : m_old_positions) {
+    node->set_pos(old_pos);
+  }
+}
+
+void MoveNodesCommand::redo()
+{
+  for (auto&& [ node, old_pos ] : m_old_positions) {
+    node->set_pos(old_pos + m_direction);
+  }
+}
+
+bool MoveNodesCommand::mergeWith(const QUndoCommand* command)
+{
+  const MoveNodesCommand& mn_command = static_cast<const MoveNodesCommand&>(*command);
+  if (::same_keys(mn_command.m_old_positions, m_old_positions)) {
+    m_direction += mn_command.m_direction;
+    return true;
+  } else {
+    return false;
+  }
+}
 
 }  // namespace omm

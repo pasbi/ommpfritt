@@ -60,6 +60,7 @@ private:
   Port* m_tmp_connection_origin = nullptr;
   Port* m_tmp_connection_target = nullptr;
   Port* m_former_connection_target = nullptr;
+  InputPort* m_about_to_disconnect = nullptr;
   bool m_aborted = false;
   std::set<Node*> m_selection;
 

@@ -34,6 +34,7 @@ public:
   QPointF pos() const;
 
   bool is_free() const;
+  NodeModel* model() const { return m_model; }
 
   static constexpr auto POS_PTR = "pos";
   static constexpr auto CONNECTIONS_PTR = "connection";
