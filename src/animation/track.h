@@ -24,8 +24,10 @@ class Track : public Serializable
 {
   Q_DECLARE_TR_FUNCTIONS(Track)
 public:
-  struct Knot {
-    Knot(const variant_type& variant_value);
+  struct Knot : public ReferencePolisher
+  {
+    Knot(AbstractDeserializer& deserializer, const Pointer& pointer, const QString& type);
+    Knot(const variant_type& value);
     enum class Side { Left, Right };
 
     bool operator==(const Knot& other) const;
@@ -35,6 +37,13 @@ public:
     variant_type& offset(Side side);
     variant_type left_offset;
     variant_type right_offset;
+
+  private:
+    void polish();
+
+    // only required for deserialization.
+    void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override;
+    std::size_t m_reference_id;
   };
 
   enum class Interpolation { Step, Linear, Bezier };

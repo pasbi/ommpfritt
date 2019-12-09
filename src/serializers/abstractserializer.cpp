@@ -127,6 +127,9 @@ variant_type AbstractDeserializer::get(const AbstractDeserializer::Pointer &poin
   } else if (type == "IntegerVector") {
     return get<Vec2i>(pointer);
   } else if (type == "Reference") {
+    Q_UNREACHABLE();
+    // Reference values must be treated specially.
+    // See ReferenceProperty for details.
     return nullptr;
   } else if (type == "Trigger") {
     return get<TriggerPropertyDummyValueType>(pointer);

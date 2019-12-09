@@ -87,7 +87,8 @@ void Track::deserialize(AbstractDeserializer& deserializer, const Pointer& point
   const std::size_t n = deserializer.array_size(knots_pointer);
   for (std::size_t i = 0; i < n; ++i) {
     const auto knot_pointer = make_pointer(knots_pointer, i);
-    Knot knot(deserializer.get(make_pointer(knot_pointer, VALUE_KEY), type));
+//    Knot knot(deserializer.get(make_pointer(knot_pointer, VALUE_KEY), type));
+    Knot knot(deserializer, make_pointer(knot_pointer, VALUE_KEY), type);
     if (is_numerical()) {
       knot.left_offset = deserializer.get(make_pointer(knot_pointer, LEFT_VALUE_KEY), type);
       knot.right_offset = deserializer.get(make_pointer(knot_pointer, RIGHT_VALUE_KEY), type);
@@ -232,18 +233,30 @@ Track::Interpolation Track::interpolation() const
   return m_interpolation;
 }
 
-Track::Knot::Knot(const variant_type &variant_value)
-  : value(variant_value)
+Track::Knot::Knot(AbstractDeserializer& deserializer, const Pointer& pointer, const QString& type)
 {
-  std::visit([this](auto&& vv) {
-    using T = std::decay_t<decltype(vv)>;
-    if constexpr (n_channels<T>() > 0) {
-      left_offset = null_value<T>;
-      right_offset = null_value<T>;
-    } else {
-      // don't care about non numeric types.
-    }
-  }, variant_value);
+  if (type == "Reference") {
+    m_reference_id = deserializer.get<std::size_t>(pointer);
+    deserializer.register_reference_polisher(*this);
+    value = nullptr;
+  } else {
+    value = deserializer.get(pointer, type);
+    polish();
+  }
+}
+
+Track::Knot::Knot(const variant_type& value) : value(value)
+{
+  polish();
+}
+
+void Track::Knot::update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map)
+{
+  if (m_reference_id == 0) {
+    value = nullptr;
+  } else {
+    value = map.at(m_reference_id);
+  }
 }
 
 bool Track::Knot::operator==(const Track::Knot& other) const
@@ -269,6 +282,19 @@ variant_type& Track::Knot::offset(Track::Knot::Side side)
     Q_UNREACHABLE();
     return right_offset;
   }
+}
+
+void Track::Knot::polish()
+{
+  std::visit([this](auto&& vv) {
+    using T = std::decay_t<decltype(vv)>;
+    if constexpr (n_channels<T>() > 0) {
+      left_offset = null_value<T>;
+      right_offset = null_value<T>;
+    } else {
+      // don't care about non numeric types.
+    }
+  }, value);
 }
 
 }  // namespace omm
