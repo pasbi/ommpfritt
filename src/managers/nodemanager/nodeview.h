@@ -1,6 +1,6 @@
 #pragma once
 
-#include "managers/nodemanager/panzoomcontroller.h"
+#include "managers/panzoomcontroller.h"
 #include "cachedgetter.h"
 #include <QWidget>
 #include "managers/range.h"
@@ -44,7 +44,8 @@ private:
   QPointF port_pos(const Port& port) const;
   QRectF node_geometry(const Node& node) const;
   Port* port(std::set<Port*> candidates, const QPointF& pos) const;
-  bool select_port_or_node(const QPointF& pos, bool extend_selection);
+  bool select_port_or_node(const QPointF& pos, bool extend_selection, bool toggle_selection);
+  std::set<Node*> nodes(const QRectF& rect) const;
 
   class CachedNodeWidthGetter : public ArgsCachedGetter<double, NodeView, const Node*>
   {
@@ -62,6 +63,7 @@ private:
   InputPort* m_about_to_disconnect = nullptr;
   bool m_aborted = false;
   std::set<Node*> m_selection;
+  std::set<Node*> m_nodes_in_rubberband;
 };
 
 }  // namespace omm

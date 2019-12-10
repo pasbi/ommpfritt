@@ -72,7 +72,6 @@ private:
   void draw_background(QPainter& painter) const;
   void draw_scale(QPainter& painter) const;
   void draw_knots(QPainter& painter) const;
-  void draw_rubberband(QPainter& painter) const;
 
   struct TangentHandle
   {

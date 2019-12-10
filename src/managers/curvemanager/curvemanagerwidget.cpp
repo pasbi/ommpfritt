@@ -1,4 +1,5 @@
 #include "managers/curvemanager/curvemanagerwidget.h"
+#include "managers/panzoomcontroller.h"
 #include "managers/curvemanager/curvetree.h"
 #include "properties/property.h"
 #include "scene/history/historymodel.h"
@@ -50,7 +51,10 @@ void CurveManagerWidget::paintEvent(QPaintEvent* event)
   draw_scale(painter);
   draw_interpolation(painter);
   draw_knots(painter);
-  draw_rubberband(painter);
+  if (m_rubberband_rect_visible) {
+    const QRect rect(m_mouse_down_pos, m_last_mouse_pos);
+    PanZoomController::draw_rubberband(painter, *this, rect.normalized());
+  }
 
   {
     painter.save();
@@ -448,21 +452,6 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
 
       painter.restore();
     }
-  }
-}
-
-void CurveManagerWidget::draw_rubberband(QPainter& painter) const
-{
-  if (m_rubberband_rect_visible) {
-    QRect rubber_band = QRect(m_mouse_down_pos, m_last_mouse_pos).normalized();
-    painter.save();
-    QPen pen;
-    pen.setWidth(2.0);
-    pen.setColor(ui_color(*this, "TimeLine", "rubberband outline"));
-    painter.setPen(pen);
-    painter.fillRect(rubber_band, ui_color(*this, "TimeLine", "rubberband fill"));
-    painter.drawRect(rubber_band);
-    painter.restore();
   }
 }
 

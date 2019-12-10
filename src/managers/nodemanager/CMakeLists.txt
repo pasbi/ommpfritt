@@ -4,7 +4,6 @@ file(GLOB SOURCES
   nodemanager.cpp
   nodemodel.cpp
   nodeview.cpp
-  panzoomcontroller.cpp
   port.cpp
 )
 
@@ -13,7 +12,6 @@ file(GLOB HEADERS
   nodemanager.h
   nodemodel.h
   nodeview.h
-  panzoomcontroller.h
   port.h
 )
 

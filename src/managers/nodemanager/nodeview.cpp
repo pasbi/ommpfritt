@@ -19,6 +19,7 @@ static constexpr double margin = 5.0;
 
 NodeView::NodeView(QWidget* parent)
   : QWidget(parent)
+  , m_pzc(*this)
   , node_width_cache(*this)
 {
 }
@@ -72,10 +73,11 @@ void NodeView::paintEvent(QPaintEvent*)
         draw_connection(painter, target, origin);
       }
     }
+    m_pzc.draw_rubberband(painter);
   }
 }
 
-bool NodeView::select_port_or_node(const QPointF& pos, bool extend_selection)
+bool NodeView::select_port_or_node(const QPointF& pos, bool extend_selection, bool toggle_selection)
 {
   const auto contains = [pos, this](const QRectF& rect) {
     return m_pzc.transform().map(rect).containsPoint(pos, Qt::OddEvenFill);
@@ -97,16 +99,39 @@ bool NodeView::select_port_or_node(const QPointF& pos, bool extend_selection)
       return true;
     } else {
       if (contains(node_geometry(*node))) {
-        if (!extend_selection && !::contains(m_selection, node)) {
-          m_selection.clear();
+        const bool is_selected = ::contains(m_selection, node);
+        if (toggle_selection) {
+          if (is_selected) {
+            m_selection.erase(node);
+          } else {
+            m_selection.insert(node);
+          }
+        } else {
+          if (!extend_selection && !is_selected) {
+            m_selection.clear();
+          }
+          m_selection.insert(node);
         }
-        m_selection.insert(node);
         return true;
       }
     }
   }
-  m_selection.clear();
   return false;
+}
+
+std::set<Node*> NodeView::nodes(const QRectF& rect) const
+{
+  if (m_model == nullptr) {
+    return {};
+  } else {
+    std::set<Node*> nodes;
+    for (Node* node : m_model->nodes()) {
+      if (node_geometry(*node).intersects(rect)) {
+        nodes.insert(node);
+      }
+    }
+    return nodes;
+  }
 }
 
 void NodeView::mousePressEvent(QMouseEvent* event)
@@ -119,8 +144,14 @@ void NodeView::mousePressEvent(QMouseEvent* event)
     m_pzc.start(PanZoomController::Action::Zoom);
   } else if (event->button() == Qt::LeftButton && m_model != nullptr) {
     m_pzc.start(PanZoomController::Action::None);
-    if (select_port_or_node(event->pos()- m_pzc.offset(), event->modifiers() & Qt::ShiftModifier)) {
+    const bool extend_selection = event->modifiers() & Qt::ShiftModifier;
+    const bool toggle_selection = event->modifiers() & Qt::ControlModifier;
+    if (select_port_or_node(event->pos()- m_pzc.offset(), extend_selection, toggle_selection)) {
     } else {
+      m_pzc.rubber_band_visible = true;
+      if (!extend_selection) {
+        m_selection.clear();
+      }
     }
   }
   update();
@@ -130,6 +161,8 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
 {
   if (!m_aborted) {
     if (m_pzc.move(event->pos())) {
+    } else if (m_pzc.rubber_band_visible) {
+      m_nodes_in_rubberband = this->nodes(m_pzc.unit_rubber_band());
     } else if (m_tmp_connection_origin == nullptr && m_model != nullptr) {
       if (event->buttons() & Qt::LeftButton) {
         if (const QPointF e = m_pzc.unit_d(); e.manhattanLength() > 0 && !m_selection.empty()) {
@@ -166,6 +199,12 @@ void NodeView::mouseReleaseEvent(QMouseEvent*)
     commands.push_back(std::make_unique<DisconnectPortsCommand>(*m_about_to_disconnect));
   }
 
+  if (m_pzc.rubber_band_visible) {
+    m_pzc.rubber_band_visible = false;
+    m_selection.insert(m_nodes_in_rubberband.begin(), m_nodes_in_rubberband.end());
+    m_nodes_in_rubberband.clear();
+  }
+
   {
     std::unique_ptr<Macro> macro;
     if (commands.size() > 1) {
@@ -188,6 +227,8 @@ void NodeView::mouseReleaseEvent(QMouseEvent*)
 void NodeView::abort()
 {
   m_aborted = true;
+  m_pzc.rubber_band_visible = false;
+  m_nodes_in_rubberband.clear();
   m_about_to_disconnect = nullptr;
   m_tmp_connection_origin = nullptr;
   m_tmp_connection_target = nullptr;
@@ -213,7 +254,7 @@ void NodeView::draw_node(QPainter& painter, const Node& node) const
     pen.setWidthF(2.2);
     pen.setColor(Qt::black);
     painter.setPen(pen);
-    if (::contains(m_selection, &node)) {
+    if (::contains(m_selection, &node) || ::contains(m_nodes_in_rubberband, &node)) {
       painter.setBrush(QBrush(QColor(210, 210, 50)));
     } else {
       painter.setBrush(QBrush(QColor(180, 180, 180)));

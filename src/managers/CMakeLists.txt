@@ -6,6 +6,7 @@ file(GLOB SOURCES
   managerregister.cpp
   managertitlebar.cpp
   quickaccessdelegate.cpp
+  panzoomcontroller.cpp
   range.cpp
 )
 
@@ -15,6 +16,7 @@ file(GLOB HEADERS
   manageritemview.h
   managertitlebar.h
   quickaccessdelegate.h
+  panzoomcontroller.h
   range.h
 )
 
