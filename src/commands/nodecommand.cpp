@@ -79,13 +79,13 @@ void NodeCommand::remove()
   for (Node* node : m_refs) {
     for (Port* port : node->ports()) {
       std::set<InputPort*> ips;
-      OutputPort* op = nullptr;
       if (port->is_input) {
         InputPort* ip = static_cast<InputPort*>(port);
-        op = ip->connected_output();
-        ips.insert(ip);
+        if (ip->connected_output() != nullptr) {
+          ips.insert(ip);
+        }
       } else {
-        op = static_cast<OutputPort*>(port);
+        const OutputPort* op = static_cast<OutputPort*>(port);
         ips = op->connected_inputs();
       }
       for (InputPort* ip : ips) {
