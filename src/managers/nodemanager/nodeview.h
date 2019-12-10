@@ -6,6 +6,7 @@
 #include "managers/range.h"
 
 class QPainter;
+class QMenu;
 
 namespace omm
 {
@@ -27,6 +28,7 @@ public:
   const QFont font;
   void abort();
   void remove_selection();
+  std::set<Node*> selected_nodes() const { return m_selection; }
 
 protected:
   void paintEvent(QPaintEvent*) override;

@@ -136,13 +136,16 @@ std::set<Node*> NodeView::nodes(const QRectF& rect) const
 
 void NodeView::mousePressEvent(QMouseEvent* event)
 {
+  if (m_model == nullptr) {
+    return;
+  }
   m_aborted = false;
   m_pzc.move(event->pos());
   if (preferences().match("shift viewport", *event, true)) {
     m_pzc.start(PanZoomController::Action::Pan);
   } else if (preferences().match("zoom viewport", *event, true)) {
     m_pzc.start(PanZoomController::Action::Zoom);
-  } else if (event->button() == Qt::LeftButton && m_model != nullptr) {
+  } else {
     m_pzc.start(PanZoomController::Action::None);
     const bool extend_selection = event->modifiers() & Qt::ShiftModifier;
     const bool toggle_selection = event->modifiers() & Qt::ControlModifier;

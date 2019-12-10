@@ -2,6 +2,9 @@
 #include "logging.h"
 #include "managers/nodemanager/nodemodel.h"
 #include "ui_nodemanager.h"
+#include "mainwindow/application.h"
+#include <QMenu>
+#include <QContextMenuEvent>
 
 namespace omm
 {
@@ -27,6 +30,29 @@ void NodeManager::set_model(NodeModel* model)
   m_ui->nodeview->set_model(model);
 }
 
+void NodeManager::contextMenuEvent(QContextMenuEvent* event)
+{
+  Application& app = Application::instance();
+  KeyBindings& kb = app.key_bindings;
+
+  QMenu menu;
+
+  const auto eiff_model_available = [this](auto&& menu) {
+    menu->setEnabled(m_ui->nodeview->model() != nullptr);
+    return menu;
+  };
+  const auto eiff_node_selected = [this](auto&& menu) {
+    menu->setEnabled(!m_ui->nodeview->selected_nodes().empty());
+    return menu;
+  };
+
+  menu.addMenu(eiff_model_available(make_add_nodes_menu().release()));
+  menu.addAction(eiff_node_selected(kb.make_action(*this, "remove nodes").release()));
+
+  menu.move(mapToGlobal(event->pos()));
+  menu.exec();
+}
+
 bool NodeManager::perform_action(const QString& name)
 {
   if (name == "abort") {
@@ -40,6 +66,11 @@ bool NodeManager::perform_action(const QString& name)
   return true;
 }
 
-
+std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu()
+{
+  auto menu = std::make_unique<QMenu>(tr("Add Node ..."));
+  menu->addAction("Hello!");
+  return menu;
+}
 
 }  // namespace omm
