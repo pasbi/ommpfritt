@@ -32,12 +32,11 @@ protected:
   void paintEvent(QPaintEvent*) override;
   void mousePressEvent(QMouseEvent* event) override;
   void mouseMoveEvent(QMouseEvent* event) override;
-  void mouseReleaseEvent(QMouseEvent* e) override;
+  void mouseReleaseEvent(QMouseEvent*) override;
 
 private:
   NodeModel* m_model = nullptr;
   PanZoomController m_pzc;
-  QPoint offset() const;
   void draw_node(QPainter& painter, const Node& node) const;
   void draw_connection(QPainter& painter, const InputPort& input_port) const;
   void draw_port(QPainter& painter, const Port& port) const;
@@ -45,7 +44,7 @@ private:
   QPointF port_pos(const Port& port) const;
   QRectF node_geometry(const Node& node) const;
   Port* port(std::set<Port*> candidates, const QPointF& pos) const;
-  bool select_port_or_node(const QPoint pos, bool extend_selection);
+  bool select_port_or_node(const QPointF& pos, bool extend_selection);
 
   class CachedNodeWidthGetter : public ArgsCachedGetter<double, NodeView, const Node*>
   {
@@ -63,7 +62,6 @@ private:
   InputPort* m_about_to_disconnect = nullptr;
   bool m_aborted = false;
   std::set<Node*> m_selection;
-
 };
 
 }  // namespace omm
