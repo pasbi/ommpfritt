@@ -25,11 +25,12 @@ public:
   void set_model(NodeModel* model);
 
 protected:
-  void contextMenuEvent(QContextMenuEvent* event) override;
+  void mousePressEvent(QMouseEvent* event) override;
 
 private:
   std::unique_ptr<Ui::NodeManager> m_ui;
-  std::unique_ptr<QMenu> make_add_nodes_menu();
+  std::unique_ptr<QMenu> make_add_nodes_menu(KeyBindings& kb);
+  std::unique_ptr<QMenu> make_context_menu();
 };
 
 }  // namespace

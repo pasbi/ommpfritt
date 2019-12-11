@@ -136,28 +136,32 @@ std::set<Node*> NodeView::nodes(const QRectF& rect) const
 
 void NodeView::mousePressEvent(QMouseEvent* event)
 {
-  if (m_model == nullptr) {
-    return;
-  }
   m_aborted = false;
   m_pzc.move(event->pos());
-  if (preferences().match("shift viewport", *event, true)) {
-    m_pzc.start(PanZoomController::Action::Pan);
-  } else if (preferences().match("zoom viewport", *event, true)) {
-    m_pzc.start(PanZoomController::Action::Zoom);
-  } else {
-    m_pzc.start(PanZoomController::Action::None);
-    const bool extend_selection = event->modifiers() & Qt::ShiftModifier;
-    const bool toggle_selection = event->modifiers() & Qt::ControlModifier;
-    if (select_port_or_node(event->pos()- m_pzc.offset(), extend_selection, toggle_selection)) {
+  if (m_model != nullptr) {
+    if (preferences().match("shift viewport", *event, true)) {
+      m_pzc.start(PanZoomController::Action::Pan);
+    } else if (preferences().match("zoom viewport", *event, true)) {
+      m_pzc.start(PanZoomController::Action::Zoom);
     } else {
-      m_pzc.rubber_band_visible = true;
-      if (!extend_selection) {
-        m_selection.clear();
+      m_pzc.start(PanZoomController::Action::None);
+      const bool extend_selection = event->modifiers() & Qt::ShiftModifier;
+      const bool toggle_selection = event->modifiers() & Qt::ControlModifier;
+      if (select_port_or_node(event->pos()- m_pzc.offset(), extend_selection, toggle_selection)) {
+        event->accept();
+      } else if (event->button() == Qt::LeftButton) {
+        m_pzc.rubber_band_visible = true;
+        if (!extend_selection) {
+          m_selection.clear();
+        }
+      } else {
+        QWidget::mousePressEvent(event);
       }
     }
+    update();
+  } else {
+    QWidget::mousePressEvent(event);
   }
-  update();
 }
 
 void NodeView::mouseMoveEvent(QMouseEvent* event)
@@ -245,6 +249,11 @@ void NodeView::remove_selection()
     const auto selection = ::transform<Node*, std::vector>(m_selection);
     m_model->scene()->submit<RemoveNodesCommand>(*m_model, selection);
   }
+}
+
+QPointF NodeView::get_insert_position() const
+{
+  return m_pzc.transform().inverted().map(m_pzc.last_mouse_pos());
 }
 
 void NodeView::draw_node(QPainter& painter, const Node& node) const

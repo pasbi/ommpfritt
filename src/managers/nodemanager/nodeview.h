@@ -29,6 +29,8 @@ public:
   void abort();
   void remove_selection();
   std::set<Node*> selected_nodes() const { return m_selection; }
+  QPointF get_insert_position() const;
+  QRectF node_geometry(const Node& node) const;
 
 protected:
   void paintEvent(QPaintEvent*) override;
@@ -44,7 +46,6 @@ private:
   void draw_port(QPainter& painter, const Port& port) const;
   void draw_connection(QPainter& painter, const QPointF& in, const QPointF& out) const;
   QPointF port_pos(const Port& port) const;
-  QRectF node_geometry(const Node& node) const;
   Port* port(std::set<Port*> candidates, const QPointF& pos) const;
   bool select_port_or_node(const QPointF& pos, bool extend_selection, bool toggle_selection);
   std::set<Node*> nodes(const QRectF& rect) const;

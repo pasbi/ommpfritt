@@ -1,4 +1,6 @@
 #include "managers/nodemanager/nodemanager.h"
+#include "commands/nodecommand.h"
+#include "managers/nodemanager/node.h"
 #include "logging.h"
 #include "managers/nodemanager/nodemodel.h"
 #include "ui_nodemanager.h"
@@ -17,6 +19,7 @@ NodeManager::NodeManager(Scene& scene)
   auto widget = std::make_unique<QWidget>();
   m_ui->setupUi(widget.get());
   set_widget(std::move(widget));
+  setContextMenuPolicy(Qt::PreventContextMenu);  // we implement it ourself.
 }
 
 NodeManager::~NodeManager()
@@ -30,12 +33,22 @@ void NodeManager::set_model(NodeModel* model)
   m_ui->nodeview->set_model(model);
 }
 
-void NodeManager::contextMenuEvent(QContextMenuEvent* event)
+void NodeManager::mousePressEvent(QMouseEvent* event)
+{
+  if (event->button() == Qt::RightButton) {
+    auto menu = make_context_menu();
+    menu->move(mapToGlobal(event->pos()));
+    menu->exec();
+  }
+  Manager::mousePressEvent(event);
+}
+
+std::unique_ptr<QMenu> NodeManager::make_context_menu()
 {
   Application& app = Application::instance();
   KeyBindings& kb = app.key_bindings;
 
-  QMenu menu;
+  auto menu = std::make_unique<QMenu>();
 
   const auto eiff_model_available = [this](auto&& menu) {
     menu->setEnabled(m_ui->nodeview->model() != nullptr);
@@ -46,11 +59,10 @@ void NodeManager::contextMenuEvent(QContextMenuEvent* event)
     return menu;
   };
 
-  menu.addMenu(eiff_model_available(make_add_nodes_menu().release()));
-  menu.addAction(eiff_node_selected(kb.make_action(*this, "remove nodes").release()));
+  menu->addMenu(eiff_model_available(make_add_nodes_menu(kb).release()));
+  menu->addAction(eiff_node_selected(kb.make_action(*this, "remove nodes").release()));
 
-  menu.move(mapToGlobal(event->pos()));
-  menu.exec();
+  return menu;
 }
 
 bool NodeManager::perform_action(const QString& name)
@@ -59,6 +71,14 @@ bool NodeManager::perform_action(const QString& name)
     m_ui->nodeview->abort();
   } else if (name == "remove nodes") {
     m_ui->nodeview->remove_selection();
+  } else if (::contains(Node::keys(), name)) {
+    std::vector<std::unique_ptr<Node>> nodes;
+    nodes.reserve(1);
+    auto node = Node::make(name, &scene());
+    const QSizeF size = m_ui->nodeview->node_geometry(*node).size();
+    node->set_pos(m_ui->nodeview->get_insert_position() - QPointF(size.width(), size.height()) / 2.0);
+    nodes.push_back(std::move(node));
+    scene().submit<AddNodesCommand>(*m_ui->nodeview->model(), std::move(nodes));
   } else {
     return false;
   }
@@ -66,10 +86,14 @@ bool NodeManager::perform_action(const QString& name)
   return true;
 }
 
-std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu()
+std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
 {
   auto menu = std::make_unique<QMenu>(tr("Add Node ..."));
-  menu->addAction("Hello!");
+  for (const QString& name : Node::keys()) {
+    const QString tr_name = QCoreApplication::translate("any-context", name.toStdString().c_str());
+    auto action = kb.make_action(*this, name);
+    menu->addAction(action.release());
+  }
   return menu;
 }
 
