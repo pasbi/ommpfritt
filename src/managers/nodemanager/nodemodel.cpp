@@ -28,8 +28,6 @@ namespace omm
 
 NodeModel::NodeModel(Scene* scene) : m_scene(scene)
 {
-  add_node(std::make_unique<GradientNode>(scene));
-  add_node(std::make_unique<GradientNode>(scene));
 }
 
 NodeModel::~NodeModel()
