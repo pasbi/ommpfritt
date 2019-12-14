@@ -7,6 +7,7 @@ namespace omm
 
 class Action;
 
+// TODO I think this class is obsolete ...
 class Menu : public QMenu
 {
 public:

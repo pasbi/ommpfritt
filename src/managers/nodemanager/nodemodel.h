@@ -9,7 +9,7 @@ namespace omm
 {
 
 class Node;
-class Port;
+class AbstractPort;
 class OutputPort;
 class InputPort;
 class Scene;
@@ -24,7 +24,7 @@ public:
   Node& add_node(std::unique_ptr<Node> node);
   std::unique_ptr<Node> extract_node(Node& node);
   std::set<Node*> nodes() const;
-  bool can_connect(const Port& a, const Port& b) const;
+  bool can_connect(const AbstractPort& a, const AbstractPort& b) const;
   bool can_connect(const OutputPort& a, const InputPort& b) const;
   using QObject::connect;
 
@@ -38,7 +38,7 @@ public:
   bool find_path(std::list<const Node*>& path, const Node& end) const;
   bool find_path(const Node& start, const Node& end) const;
 
-  std::set<Port*> ports() const;
+  std::set<AbstractPort*> ports() const;
   Scene* scene() const { return m_scene; }
   void notify_appearance_changed();
 

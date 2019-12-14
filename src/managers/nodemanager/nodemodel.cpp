@@ -3,26 +3,6 @@
 #include "managers/nodemanager/nodes/gradientnode.h"
 #include "managers/nodemanager/port.h"
 
-namespace
-{
-template<typename Port, typename InputPort, typename OutputPort>
-bool sort_ports(Port a, Port b, InputPort &in, OutputPort &out)
-{
-  if (a->is_input && !b->is_input) {
-    out = static_cast<OutputPort>(b);
-    in = static_cast<InputPort>(a);
-    return true;
-  } else if (!a->is_input && b->is_input) {
-    out = static_cast<OutputPort>(a);
-    in = static_cast<InputPort>(b);
-    return true;
-  } else {
-    return false;
-  }
-}
-
-}  // namespace
-
 namespace omm
 {
 
@@ -131,9 +111,9 @@ bool NodeModel::find_path(const Node& start, const Node& end) const
   return find_path(start, end, path);
 }
 
-std::set<Port*> NodeModel::ports() const
+std::set<AbstractPort*> NodeModel::ports() const
 {
-  std::set<Port*> ports;
+  std::set<AbstractPort*> ports;
   for (const auto& node : m_nodes) {
     const auto ps = node->ports();
     ports.insert(ps.begin(), ps.end());
@@ -146,15 +126,25 @@ void NodeModel::notify_appearance_changed()
   Q_EMIT appearance_changed();
 }
 
-bool NodeModel::can_connect(const Port& a, const Port& b) const
+bool NodeModel::can_connect(const AbstractPort& a, const AbstractPort& b) const
 {
   const InputPort* in;
   const OutputPort* out;
-  if (sort_ports(&a, &b, in, out)) {
-    return can_connect(*out, *in);
+
+  LINFO << (int)b.port_type << " " << (int)a.port_type;
+
+  if (a.port_type == PortType::Input && b.port_type == PortType::Output) {
+    in = static_cast<const InputPort*>(&a);
+    out = static_cast<const OutputPort*>(&b);
+  } else if (a.port_type == PortType::Output && b.port_type == PortType::Input) {
+    in = static_cast<const InputPort*>(&b);
+    out = static_cast<const OutputPort*>(&a);
   } else {
     return false;
   }
+
+  // It's a input and output. Check cycles, types, etc.
+  return can_connect(*out, *in);
 }
 
 bool NodeModel::can_connect(const OutputPort& a, const InputPort& b) const

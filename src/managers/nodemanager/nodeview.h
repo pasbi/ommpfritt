@@ -13,7 +13,7 @@ namespace omm
 
 class NodeModel;
 class InputPort;
-class Port;
+class AbstractPort;
 class Node;
 
 class NodeView : public QWidget
@@ -43,12 +43,13 @@ private:
   PanZoomController m_pzc;
   void draw_node(QPainter& painter, const Node& node) const;
   void draw_connection(QPainter& painter, const InputPort& input_port) const;
-  void draw_port(QPainter& painter, const Port& port) const;
+  void draw_port(QPainter& painter, const AbstractPort& port) const;
   void draw_connection(QPainter& painter, const QPointF& in, const QPointF& out) const;
-  QPointF port_pos(const Port& port) const;
-  Port* port(std::set<Port*> candidates, const QPointF& pos) const;
+  QPointF port_pos(const AbstractPort& port) const;
+  AbstractPort* port(std::set<AbstractPort*> candidates, const QPointF& pos) const;
   bool select_port_or_node(const QPointF& pos, bool extend_selection, bool toggle_selection);
   std::set<Node*> nodes(const QRectF& rect) const;
+  QString header_text(const Node& node) const;
 
   class CachedNodeWidthGetter : public ArgsCachedGetter<double, NodeView, const Node*>
   {
@@ -60,9 +61,9 @@ private:
     const QFontMetricsF m_font_metrics;
   } node_width_cache;
 
-  Port* m_tmp_connection_origin = nullptr;
-  Port* m_tmp_connection_target = nullptr;
-  Port* m_former_connection_target = nullptr;
+  AbstractPort* m_tmp_connection_origin = nullptr;
+  AbstractPort* m_tmp_connection_target = nullptr;
+  AbstractPort* m_former_connection_target = nullptr;
   InputPort* m_about_to_disconnect = nullptr;
   bool m_aborted = false;
   std::set<Node*> m_selection;

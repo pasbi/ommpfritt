@@ -6,13 +6,13 @@ namespace omm
 {
 
 InputPort::InputPort(Node& node, std::size_t index, const QString& name)
-  : Port(true, node, index, name)
+  : Port<PortType::Input>(node, index, name)
 {
 }
 
-bool omm::InputPort::is_connected(const Port* other) const
+bool InputPort::is_connected(const AbstractPort* other) const
 {
-  if (other->is_input) {
+  if (other->port_type == PortType::Input) {
     return false;
   } else {
     return m_connected_output == other;
@@ -38,17 +38,40 @@ void InputPort::connect(OutputPort* port)
 }
 
 OutputPort::OutputPort(Node& node, std::size_t index, const QString& name)
-  : Port(false, node, index, name)
+  : Port<PortType::Output>(node, index, name)
 {
 }
 
-bool OutputPort::is_connected(const Port* other) const
+bool OutputPort::is_connected(const AbstractPort* other) const
 {
-  if (other->is_input) {
+  if (other->port_type == PortType::Input) {
     return static_cast<const InputPort*>(other)->is_connected(this);
   } else {
     return false;
   }
+}
+
+AbstractPort::AbstractPort(PortType port_type, Node& node, std::size_t index, const QString& name)
+  : port_type(port_type), node(node), index(index), name(name)
+{
+}
+
+AbstractPort::~AbstractPort()
+{
+}
+
+bool AbstractPort::is_connected(const AbstractPort* other) const
+{
+  return visit(*this, [other](const auto& port) {
+    return port.is_connected(other);
+  });
+}
+
+bool AbstractPort::is_connected() const
+{
+  return visit(*this, [](const auto& port) {
+    return port.is_connected();
+  });
 }
 
 bool OutputPort::is_connected() const
@@ -64,19 +87,6 @@ void OutputPort::disconnect(InputPort* port, InputPort::Tag)
 void OutputPort::connect(InputPort* port, InputPort::Tag)
 {
   m_connections.insert(port);
-}
-
-Port::Port(bool is_input, Node& node, std::size_t index, const QString& name)
-  : name(name)
-  , node(node)
-  , index(index)
-  , is_input(is_input)
-{
-}
-
-Port::~Port()
-{
-
 }
 
 }  // namespace omm

@@ -21,13 +21,13 @@ std::map<omm::Node*, QPointF> collect_old_positions(const std::set<omm::Node*>& 
 namespace omm
 {
 
-ConnectionCommand::ConnectionCommand(const QString& label, Port& a, Port& b)
+ConnectionCommand::ConnectionCommand(const QString& label, AbstractPort& a, AbstractPort& b)
   : Command(label)
-  , m_out(static_cast<OutputPort&>(b.is_input ? a : b))
-  , m_in(static_cast<InputPort&>(a.is_input ? a : b))
+  , m_out(static_cast<OutputPort&>(b.port_type == PortType::Input ? a : b))
+  , m_in(static_cast<InputPort&>(a.port_type == PortType::Input ? a : b))
 {
   // require exactly one input and one output.
-  assert(a.is_input != b.is_input);
+  assert(a.port_type != b.port_type);
 }
 
 void ConnectionCommand::connect()
@@ -40,7 +40,7 @@ void ConnectionCommand::disconnect()
   m_in.connect(nullptr);
 }
 
-ConnectPortsCommand::ConnectPortsCommand(Port& a, Port& b)
+ConnectPortsCommand::ConnectPortsCommand(AbstractPort& a, AbstractPort& b)
   : ConnectionCommand(QObject::tr("Connect Ports"), a, b)
 {
 }
@@ -77,9 +77,9 @@ void NodeCommand::remove()
 {
   m_owns.reserve(m_refs.size());
   for (Node* node : m_refs) {
-    for (Port* port : node->ports()) {
+    for (AbstractPort* port : node->ports()) {
       std::set<InputPort*> ips;
-      if (port->is_input) {
+      if (port->port_type == PortType::Input) {
         InputPort* ip = static_cast<InputPort*>(port);
         if (ip->connected_output() != nullptr) {
           ips.insert(ip);

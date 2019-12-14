@@ -9,30 +9,66 @@ namespace omm
 
 class Node;
 
-class Port
-{
-public:
-  explicit Port(bool is_input, Node& node, std::size_t index, const QString& name);
-  virtual ~Port();
-  virtual bool is_connected(const Port* other) const = 0;
-  virtual bool is_connected() const = 0;
-  const QString name;
-  Node& node;
-  const std::size_t index;
-  const bool is_input;
-};
+enum class PortType { Input, Output };
 
 class OutputPort;
+class InputPort;
 
-class InputPort : public Port
+class AbstractPort
+{
+public:
+  explicit AbstractPort(PortType port_type, Node& node, std::size_t index, const QString& name);
+  virtual ~AbstractPort();
+  bool is_connected(const AbstractPort* other) const;
+  bool is_connected() const;
+  const PortType port_type;
+  Node& node;
+  const std::size_t index;
+  const QString name;
+};
+
+template<typename PortT,
+         typename F,
+         class = std::enable_if<std::is_base_of_v<AbstractPort, std::decay_t<PortT>>>>
+decltype(auto) visit(PortT&& port, F&& f)
+{
+  // hand over port by (const) reference, but not as pointer.
+  static_assert(!std::is_pointer_v<PortT>);
+  if constexpr (std::is_const_v<std::remove_reference_t<PortT>>) {
+    switch (port.port_type) {
+    case PortType::Input:
+      return f(static_cast<const InputPort&>(port));
+    case PortType::Output:
+      return f(static_cast<const OutputPort&>(port));
+    }
+  } else {
+    switch (port.port_type) {
+    case PortType::Input:
+      return f(static_cast<InputPort&>(port));
+    case PortType::Output:
+      return f(static_cast<OutputPort&>(port));
+    }
+  }
+  Q_UNREACHABLE();
+  return f(static_cast<const InputPort&>(port));
+}
+
+template<PortType port_type_> class Port : public AbstractPort
+{
+public:
+  explicit Port(Node& node, std::size_t index, const QString& name)
+    : AbstractPort(port_type_, node, index, name) {}
+  static constexpr PortType PORT_TYPE = port_type_;
+};
+
+class InputPort : public Port<PortType::Input>
 {
 public:
   InputPort(Node& node, std::size_t index, const QString& name);
-  static constexpr bool IS_INPUT = true;
-  bool is_connected(const Port* other) const override;
-  bool is_connected() const override;
   void connect(OutputPort* port);
   OutputPort* connected_output() const { return m_connected_output; }
+  bool is_connected(const AbstractPort* other) const;
+  bool is_connected() const;
 
   class Tag
   {
@@ -45,13 +81,10 @@ private:
   OutputPort* m_connected_output = nullptr;
 };
 
-class OutputPort : public Port
+class OutputPort : public Port<PortType::Output>
 {
 public:
   OutputPort(Node& node, std::size_t index, const QString& name);
-  static constexpr bool IS_INPUT = false;
-  bool is_connected(const Port* other) const override;
-  bool is_connected() const override;
 
   // the Tag is to protect you! Don't call OutputPort::disconnect unless you're in InputPort::connect
   void disconnect(InputPort* port, InputPort::Tag);
@@ -59,6 +92,9 @@ public:
   // the Tag is to protect you! Don't call OutputPort::connect unless you're in InputPort::connect
   void connect(InputPort* port, InputPort::Tag);
   std::set<InputPort*> connected_inputs() const { return m_connections; }
+
+  bool is_connected(const AbstractPort* other) const;
+  bool is_connected() const;
 
 private:
   std::set<InputPort*> m_connections;

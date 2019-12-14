@@ -12,7 +12,7 @@
 namespace omm
 {
 
-static constexpr double port_height = 40;
+static constexpr double port_height = 20;
 static constexpr double node_header_height = 20;
 static constexpr double node_footer_height = 10;
 static constexpr double margin = 5.0;
@@ -52,8 +52,8 @@ void NodeView::paintEvent(QPaintEvent*)
   if (m_model != nullptr) {
     const auto nodes = m_model->nodes();
     for (const auto& node : nodes) {
-      for (Port* port : node->ports()) {
-        if (port->is_input) {
+      for (AbstractPort* port : node->ports()) {
+        if (port->port_type == PortType::Input) {
           draw_connection(painter, *static_cast<InputPort*>(port));
         }
       }
@@ -67,7 +67,7 @@ void NodeView::paintEvent(QPaintEvent*)
       const QPointF target = m_tmp_connection_target == nullptr
           ? m_pzc.transform().inverted().map(QPointF(m_pzc.last_mouse_pos()))
           : port_pos(*m_tmp_connection_target);
-      if (m_tmp_connection_origin->is_input) {
+      if (m_tmp_connection_origin->port_type == PortType::Input) {
         draw_connection(painter, origin, target);
       } else {
         draw_connection(painter, target, origin);
@@ -83,8 +83,8 @@ bool NodeView::select_port_or_node(const QPointF& pos, bool extend_selection, bo
     return m_pzc.transform().map(rect).containsPoint(pos, Qt::OddEvenFill);
   };
   for (Node* node : m_model->nodes()) {
-    if (Port* grabbed_port = port(node->ports(), pos); grabbed_port != nullptr) {
-      if (grabbed_port->is_input) {
+    if (AbstractPort* grabbed_port = port(node->ports(), pos); grabbed_port != nullptr) {
+      if (grabbed_port->port_type == PortType::Input) {
         InputPort& ip = static_cast<InputPort&>(*grabbed_port);
         if (OutputPort* op = ip.connected_output(); op == nullptr) {
           m_tmp_connection_origin = &ip;
@@ -134,6 +134,11 @@ std::set<Node*> NodeView::nodes(const QRectF& rect) const
   }
 }
 
+QString NodeView::header_text(const Node& node) const
+{
+  return QCoreApplication::translate("any-context", node.type().toStdString().c_str());
+}
+
 void NodeView::mousePressEvent(QMouseEvent* event)
 {
   m_aborted = false;
@@ -177,7 +182,7 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
         }
       }
     } else if (m_tmp_connection_origin != nullptr && m_model != nullptr) {
-      Port* port = this->port(m_model->ports(), event->pos() - m_pzc.offset());
+      AbstractPort* port = this->port(m_model->ports(), event->pos() - m_pzc.offset());
       if (port != nullptr && m_model->can_connect(*port, *m_tmp_connection_origin)) {
         m_tmp_connection_target = port;
       } else {
@@ -260,22 +265,26 @@ void NodeView::draw_node(QPainter& painter, const Node& node) const
 {
   painter.save();
 
-  {
-    painter.save();
-    QPen pen;
-    pen.setWidthF(2.2);
-    pen.setColor(Qt::black);
-    painter.setPen(pen);
-    if (::contains(m_selection, &node) || ::contains(m_nodes_in_rubberband, &node)) {
-      painter.setBrush(QBrush(QColor(210, 210, 50)));
-    } else {
-      painter.setBrush(QBrush(QColor(180, 180, 180)));
-    }
-    painter.drawRoundedRect(node_geometry(node), 5, 5, Qt::AbsoluteSize);
-    painter.restore();
+  const QRectF node_geometry = this->node_geometry(node);
+  painter.save();
+  QPen pen;
+  pen.setWidthF(2.2);
+  pen.setColor(Qt::black);
+  painter.setPen(pen);
+  if (::contains(m_selection, &node) || ::contains(m_nodes_in_rubberband, &node)) {
+    painter.setBrush(QBrush(QColor(210, 210, 50)));
+  } else {
+    painter.setBrush(QBrush(QColor(180, 180, 180)));
   }
+  painter.drawRoundedRect(node_geometry, 5, 5, Qt::AbsoluteSize);
 
-  for (Port* port : node.ports()) {
+  const QRectF header_rect(node_geometry.topLeft(),
+                           QSizeF(node_geometry.width(), node_header_height));
+  painter.drawText(header_rect, Qt::AlignVCenter | Qt::AlignHCenter, header_text(node));
+  painter.restore();
+
+
+  for (AbstractPort* port : node.ports()) {
     draw_port(painter, *port);
   }
 
@@ -292,7 +301,7 @@ void NodeView::draw_connection(QPainter& painter, const InputPort& input_port) c
   }
 }
 
-void NodeView::draw_port(QPainter& painter, const Port& port) const
+void NodeView::draw_port(QPainter& painter, const AbstractPort& port) const
 {
   painter.save();
   const double r = 0.8 * (port_height / 2.0);
@@ -313,8 +322,8 @@ void NodeView::draw_port(QPainter& painter, const Port& port) const
   const double width = node_width_cache(&port.node);
   const QRectF text_rect(node_pos.x() + ph/2.0 + margin,
                          port_pos.y() - ph/2.0, width - ph - margin*2.0, ph);
-  const auto flags = (port.is_input ? Qt::AlignLeft : Qt::AlignRight) | Qt::AlignVCenter;
-  painter.drawText(text_rect, flags, port.name);
+  const auto halign = (port.port_type == PortType::Input ? Qt::AlignLeft : Qt::AlignRight);
+  painter.drawText(text_rect, halign | Qt::AlignVCenter, port.name);
   painter.restore();
 }
 
@@ -348,30 +357,30 @@ void NodeView::draw_connection(QPainter& painter, const QPointF& in, const QPoin
 
 QRectF NodeView::node_geometry(const Node& node) const
 {
-  const std::set<Port*> ports = node.ports();
+  const std::set<AbstractPort*> ports = node.ports();
   std::size_t n = 0;
-  for (const Port* port : ports) {
+  for (const AbstractPort* port : ports) {
     n = std::max(port->index + 1, n);
   }
   const double height = node_header_height + node_footer_height + n * port_height;
   return QRectF(node.pos(), QSizeF(node_width_cache(&node), height));
 }
 
-Port* NodeView::port(std::set<Port*> candidates, const QPointF& pos) const
+AbstractPort* NodeView::port(std::set<AbstractPort*> candidates, const QPointF& pos) const
 {
   static constexpr bool NODE_SELECTION_IN_PIXEL_SPACE = false;
   if constexpr (NODE_SELECTION_IN_PIXEL_SPACE) {
     const auto dist = [pos, this](const QPointF& candidate) -> double {
       return (pos - m_pzc.transform().map(candidate)).manhattanLength();
     };
-    for (Port* port : candidates) {
+    for (AbstractPort* port : candidates) {
       if (dist(port_pos(*port)) < 5) {
         return port;
       }
     }
   } else {
     const QPointF mpos = m_pzc.transform().inverted().map(pos);
-    for (Port* port : candidates) {
+    for (AbstractPort* port : candidates) {
       if ((mpos - port_pos(*port)).manhattanLength() < port_height / 2.0) {
         return port;
       }
@@ -380,10 +389,10 @@ Port* NodeView::port(std::set<Port*> candidates, const QPointF& pos) const
   return nullptr;
 }
 
-QPointF NodeView::port_pos(const Port& port) const
+QPointF NodeView::port_pos(const AbstractPort& port) const
 {
   const double y = (port.index+0.5) * port_height + node_header_height;
-  const double x = port.is_input ? 0.0 : node_width_cache(&port.node);
+  const double x = port.port_type == PortType::Input ? 0.0 : node_width_cache(&port.node);
   return port.node.pos() + QPointF(x, y);
 }
 
@@ -396,7 +405,7 @@ NodeView::CachedNodeWidthGetter::CachedNodeWidthGetter(NodeView& node_view)
 double NodeView::CachedNodeWidthGetter::compute(const Node* node) const
 {
   std::map<std::size_t, double> widths;
-  for (const Port* port : node->ports()) {
+  for (const AbstractPort* port : node->ports()) {
     auto it = widths.find(port->index);
     if (it == widths.end()) {
       it = widths.insert({port->index, 0.0}).first;
@@ -407,7 +416,10 @@ double NodeView::CachedNodeWidthGetter::compute(const Node* node) const
   for (auto&& [index, width] : widths) {
     max_width = std::max(max_width, width);
   }
-  return max_width + port_height + margin * 3.0;
+
+  const double header_width = m_font_metrics.horizontalAdvance(m_self.header_text(*node));
+
+  return std::max(max_width + port_height + margin, header_width) + margin * 2.0;
 }
 
 }  // namespace omm

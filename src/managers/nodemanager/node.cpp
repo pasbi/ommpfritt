@@ -4,7 +4,8 @@
 namespace omm
 {
 
-Node::Node(Scene* scene) : PropertyOwner(scene)
+Node::Node(Scene* scene)
+  : PropertyOwner(scene)
 {
 }
 
@@ -12,9 +13,9 @@ Node::~Node()
 {
 }
 
-std::set<Port*> Node::ports() const
+std::set<AbstractPort*> Node::ports() const
 {
-  return ::transform<Port*>(m_ports, [](const std::unique_ptr<Port>& p) {
+  return ::transform<AbstractPort*>(m_ports, [](const std::unique_ptr<AbstractPort>& p) {
     return p.get();
   });
 }
@@ -32,7 +33,7 @@ void Node::serialize(AbstractSerializer& serializer, const Serializable::Pointer
   std::vector<const InputPort*> connection_inputs;
   connection_inputs.reserve(m_ports.size());
   for (const auto& port : m_ports) {
-    if (port->is_input && static_cast<InputPort&>(*port).connected_output() != nullptr) {
+    if (port->port_type == PortType::Input && static_cast<InputPort&>(*port).connected_output() != nullptr) {
       connection_inputs.push_back(static_cast<const InputPort*>(port.get()));
     }
   }
@@ -93,7 +94,7 @@ std::set<Node*> Node::successors() const
 {
   std::set<Node*> successors;
   for (const auto& port : m_ports) {
-    if (!port->is_input) {
+    if (port->port_type == PortType::Output) {
       const OutputPort& op = static_cast<OutputPort&>(*port);
       for (const InputPort* ip : op.connected_inputs()) {
         successors.insert(&ip->node);

@@ -12,12 +12,12 @@ class NodeModel;
 class Node;
 class InputPort;
 class OutputPort;
-class Port;
+class AbstractPort;
 
 class ConnectionCommand : public Command
 {
 protected:
-  ConnectionCommand(const QString& label, Port& out, Port& in);
+  ConnectionCommand(const QString& label, AbstractPort& out, AbstractPort& in);
   void connect();
   void disconnect();
 
@@ -29,7 +29,7 @@ private:
 class ConnectPortsCommand : public ConnectionCommand
 {
 public:
-  ConnectPortsCommand(Port& a, Port& b);
+  ConnectPortsCommand(AbstractPort& a, AbstractPort& b);
   void undo() override { disconnect(); }
   void redo() override { connect(); }
 };
