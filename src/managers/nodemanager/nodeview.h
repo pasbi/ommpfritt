@@ -50,6 +50,7 @@ private:
   bool select_port_or_node(const QPointF& pos, bool extend_selection, bool toggle_selection);
   std::set<Node*> nodes(const QRectF& rect) const;
   QString header_text(const Node& node) const;
+  void update_scene_selection();
 
   class CachedNodeWidthGetter : public ArgsCachedGetter<double, NodeView, const Node*>
   {

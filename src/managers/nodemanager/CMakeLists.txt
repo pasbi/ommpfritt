@@ -5,6 +5,7 @@ file(GLOB SOURCES
   nodemodel.cpp
   nodeview.cpp
   port.cpp
+  propertyport.cpp
 )
 
 file(GLOB HEADERS
@@ -13,6 +14,7 @@ file(GLOB HEADERS
   nodemodel.h
   nodeview.h
   port.h
+  propertyport.cpp
 )
 
 add_subdirectory(nodes)

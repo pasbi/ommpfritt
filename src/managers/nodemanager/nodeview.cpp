@@ -112,6 +112,7 @@ bool NodeView::select_port_or_node(const QPointF& pos, bool extend_selection, bo
           }
           m_selection.insert(node);
         }
+        update_scene_selection();
         return true;
       }
     }
@@ -139,6 +140,11 @@ QString NodeView::header_text(const Node& node) const
   return QCoreApplication::translate("any-context", node.type().toStdString().c_str());
 }
 
+void NodeView::update_scene_selection()
+{
+  m_model->scene()->set_selection(::transform<AbstractPropertyOwner*>(m_selection, ::identity));
+}
+
 void NodeView::mousePressEvent(QMouseEvent* event)
 {
   m_aborted = false;
@@ -158,6 +164,7 @@ void NodeView::mousePressEvent(QMouseEvent* event)
         m_pzc.rubber_band_visible = true;
         if (!extend_selection) {
           m_selection.clear();
+          update_scene_selection();
         }
       } else {
         QWidget::mousePressEvent(event);
@@ -214,6 +221,7 @@ void NodeView::mouseReleaseEvent(QMouseEvent*)
   if (m_pzc.rubber_band_visible) {
     m_pzc.rubber_band_visible = false;
     m_selection.insert(m_nodes_in_rubberband.begin(), m_nodes_in_rubberband.end());
+    update_scene_selection();
     m_nodes_in_rubberband.clear();
   }
 

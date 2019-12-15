@@ -5,6 +5,7 @@
 #include <QObject>
 #include "aspects/propertyowner.h"
 #include "managers/nodemanager/port.h"
+#include "managers/nodemanager/propertyport.h"
 
 namespace omm
 {
@@ -35,6 +36,7 @@ public:
 
   bool is_free() const;
   NodeModel* model() const { return m_model; }
+  QString name() const override;
 
   static constexpr auto POS_PTR = "pos";
   static constexpr auto CONNECTIONS_PTR = "connection";
@@ -48,6 +50,19 @@ public:
     for (auto&& port : m_ports) {
       if (port->index == index && PortT::PORT_TYPE == port->port_type) {
         return static_cast<PortT*>(port.get());
+      }
+    }
+    return nullptr;
+  }
+
+  template<typename PortT> PropertyPort<PortT::PORT_TYPE>* find_port(const Property& property) const
+  {
+    for (auto&& port : m_ports) {
+      if (PortT::PORT_TYPE == port->port_type && port->flavor == PortFlavor::Property) {
+        auto* property_port = static_cast<PropertyPort<PortT::PORT_TYPE>*>(port.get());
+        if (&property_port->property == &property) {
+          return property_port;
+        }
       }
     }
     return nullptr;

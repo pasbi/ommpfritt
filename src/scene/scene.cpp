@@ -32,6 +32,7 @@
 #include "scene/messagebox.h"
 #include "animation/animator.h"
 #include "color/namedcolors.h"
+#include "managers/nodemanager/node.h"
 
 namespace
 {
@@ -325,6 +326,9 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
       break;
     case AbstractPropertyOwner::Kind::Tool:
       Q_EMIT message_box().selection_changed(kind_cast<Tool>(selection));
+      break;
+    case AbstractPropertyOwner::Kind::Node:
+      Q_EMIT message_box().selection_changed(kind_cast<Node>(selection));
       break;
     default:
       break;

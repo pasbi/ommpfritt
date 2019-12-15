@@ -10,6 +10,7 @@ namespace omm
 class Node;
 
 enum class PortType { Input, Output };
+enum class PortFlavor { Ordinary, Property };
 
 class OutputPort;
 class InputPort;
@@ -17,11 +18,12 @@ class InputPort;
 class AbstractPort
 {
 public:
-  explicit AbstractPort(PortType port_type, Node& node, std::size_t index, const QString& name);
+  AbstractPort(PortFlavor flavor, PortType port_type, Node& node, std::size_t index, const QString& name);
   virtual ~AbstractPort();
   bool is_connected(const AbstractPort* other) const;
   bool is_connected() const;
   const PortType port_type;
+  const PortFlavor flavor;
   Node& node;
   const std::size_t index;
   const QString name;
@@ -55,14 +57,17 @@ decltype(auto) visit(PortT&& port, F&& f)
 
 template<PortType port_type_> class Port : public AbstractPort
 {
+protected:
+  explicit Port(PortFlavor flavor, Node& node, std::size_t index, const QString& name)
+    : AbstractPort(flavor, port_type_, node, index, name) {}
 public:
-  explicit Port(Node& node, std::size_t index, const QString& name)
-    : AbstractPort(port_type_, node, index, name) {}
   static constexpr PortType PORT_TYPE = port_type_;
 };
 
 class InputPort : public Port<PortType::Input>
 {
+protected:
+  InputPort(PortFlavor flavor, Node& node, std::size_t index, const QString& name);
 public:
   InputPort(Node& node, std::size_t index, const QString& name);
   void connect(OutputPort* port);
@@ -83,6 +88,8 @@ private:
 
 class OutputPort : public Port<PortType::Output>
 {
+protected:
+  OutputPort(PortFlavor flavor, Node& node, std::size_t index, const QString& name);
 public:
   OutputPort(Node& node, std::size_t index, const QString& name);
 
@@ -99,5 +106,9 @@ public:
 private:
   std::set<InputPort*> m_connections;
 };
+
+template<PortType> struct ConcretePortSelector;
+template<> struct ConcretePortSelector<PortType::Input> { using T = InputPort; };
+template<> struct ConcretePortSelector<PortType::Output> { using T = OutputPort; };
 
 }

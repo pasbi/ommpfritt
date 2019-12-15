@@ -90,6 +90,11 @@ bool Node::is_free() const
   return true;
 }
 
+QString Node::name() const
+{
+  return QCoreApplication::translate("any-context", type().toStdString().c_str());
+}
+
 std::set<Node*> Node::successors() const
 {
   std::set<Node*> successors;

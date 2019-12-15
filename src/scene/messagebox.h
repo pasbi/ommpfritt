@@ -11,6 +11,7 @@ class Object;
 class Tag;
 class Style;
 class Tool;
+class Node;
 
 class MessageBox : public QObject
 {
@@ -112,6 +113,11 @@ Q_SIGNALS:
    * @brief selection_changed is emitted when the tag selection changed.
    */
   void selection_changed(const std::set<Tag*>&);
+
+  /**
+   * @brief selection_changed is emitted when the node selection changed.
+   */
+  void selection_changed(const std::set<Node*>&);
 
   /**
    * @brief selection_changed is emitted when the tool selection changed.

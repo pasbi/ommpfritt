@@ -8,6 +8,8 @@
 namespace omm
 {
 
+class DisconnectPortsCommand;
+class ConnectPortsCommand;
 class AbstractPropertyOwner;
 
 class UserPropertyCommand : public Command
@@ -20,14 +22,23 @@ public:
                       std::vector<std::pair<QString, std::unique_ptr<Property>>> additions,
                       const std::map<Property*, Property::Configuration>& changes,
                       AbstractPropertyOwner& owner);
-  void undo() override { swap(); }
-  void redo() override { swap(); }
+  ~UserPropertyCommand();
+  void undo() override;
+  void redo() override;
 
 private:
-  std::vector<QString> m_deletions;
-  std::vector<std::pair<QString, std::unique_ptr<Property>>> m_additions;
-  std::map<Property*, Property::Configuration> m_changes;
+  using Properties = std::vector<std::pair<QString, std::unique_ptr<Property>>>;
+  Properties m_deletions;
+  Properties m_additions;
+  using Configurations = std::map<Property*, Property::Configuration>;
+  Configurations m_changes;
+
   AbstractPropertyOwner& m_owner;
+  std::set<std::unique_ptr<DisconnectPortsCommand>> m_broken_connections;
+
+  void extract(Properties& ps);
+  void insert(Properties& ps);
+  void change(Configurations& configurations);
 
   void swap();
 };
