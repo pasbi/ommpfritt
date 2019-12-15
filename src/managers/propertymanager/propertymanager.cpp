@@ -282,7 +282,9 @@ void PropertyManager::activate_tabs(const std::set<int>& indices)
   if (!indices.empty() && !tabs.empty()) {
     m_current_categroy_indices[m_current_selection] = indices;
     for (int index : indices) {
-      tabs[index]->show();
+      if (static_cast<std::size_t>(index) < tabs.size()) {
+        tabs[index]->show();
+      }
     }
   }
 }

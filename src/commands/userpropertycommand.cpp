@@ -103,13 +103,3 @@ void UserPropertyCommand::change(UserPropertyCommand::Configurations& configurat
 }
 
 }  // namespace omm
-
-
-
-//    if (Node* node = kind_cast<Node*>(&m_owner); node != nullptr) {
-//      PropertyPort<PortType::Input>* ip = node->find_port<InputPort>(*property);
-//      assert(ip != nullptr);
-//      if (ip->is_connected()) {
-//        std::make_unique<DisconnectPortsCommand>(*ip);
-//      }
-//    }
