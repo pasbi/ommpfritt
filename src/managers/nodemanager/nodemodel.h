@@ -19,6 +19,7 @@ class NodeModel : public QObject, public Serializable
   Q_OBJECT
 public:
   explicit NodeModel(Scene* scene);
+  NodeModel(const NodeModel& other);
   ~NodeModel();
 
   Node& add_node(std::unique_ptr<Node> node);

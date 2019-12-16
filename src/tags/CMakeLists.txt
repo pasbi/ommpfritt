@@ -1,6 +1,7 @@
 
 file(GLOB SOURCES
   pathtag.cpp
+  nodestag.cpp
   scripttag.cpp
   styletag.cpp
   tag.cpp
@@ -9,6 +10,7 @@ file(GLOB SOURCES
 
 file(GLOB HEADERS
   pathtag.h
+  nodestag.h
   scripttag.h
   styletag.h
   tag.h

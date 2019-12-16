@@ -1,4 +1,5 @@
 #include "tags/styletag.h"
+#include "tags/nodestag.h"
 #include "tags/scripttag.h"
 #include "tags/pathtag.h"
 
@@ -11,6 +12,7 @@ void register_tags()
   REGISTER_TAG(StyleTag);
   REGISTER_TAG(ScriptTag);
   REGISTER_TAG(PathTag);
+  REGISTER_TAG(NodesTag);
 #undef REGISTER_TAG
 }
 

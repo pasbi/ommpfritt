@@ -10,6 +10,11 @@ NodeModel::NodeModel(Scene* scene) : m_scene(scene)
 {
 }
 
+NodeModel::NodeModel(const NodeModel& other)
+{
+  // TODO
+}
+
 NodeModel::~NodeModel()
 {
 }
