@@ -1,4 +1,5 @@
 #include "managers/nodemanager/node.h"
+#include "managers/nodemanager/nodemodel.h"
 #include "common.h"
 
 namespace omm
@@ -107,6 +108,48 @@ std::set<Node*> Node::successors() const
     }
   }
   return successors;
+}
+
+AbstractPort& Node::add_port(std::unique_ptr<AbstractPort> port)
+{
+  auto& ref = *port;
+  m_ports.insert(std::move(port));
+  if (m_model != nullptr) {
+    m_model->notify_appearance_changed();
+  }
+  return ref;
+}
+
+std::unique_ptr<AbstractPort> Node::remove_port(const AbstractPort& port)
+{
+  for (auto it = m_ports.begin(); it != m_ports.end(); ++it) {
+    if (it->get() == &port) {
+      auto port = std::move(m_ports.extract(it).value());
+      m_model->notify_appearance_changed();
+      return port;
+    }
+  }
+  return nullptr;
+}
+
+Property& Node::add_property(const QString& key, std::unique_ptr<Property> property)
+{
+  auto& ref = PropertyOwner::add_property(key, std::move(property));
+  add_port<PropertyPort<PortType::Input>>(ref);
+  add_port<PropertyPort<PortType::Output>>(ref);
+  return ref;
+}
+
+std::unique_ptr<Property> Node::extract_property(const QString& key)
+{
+  auto property = PropertyOwner::extract_property(key);
+  if (InputPort* ip = find_port<InputPort>(*property); ip) {
+    remove_port(*ip);
+  }
+  if (OutputPort* op = find_port<OutputPort>(*property); op) {
+    remove_port(*op);
+  }
+  return property;
 }
 
 void Node::update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map)

@@ -63,7 +63,7 @@ public:
 
   static const QString NAME_PROPERTY_KEY;
 
-  Property& add_property(const QString& key, std::unique_ptr<Property> property);
+  virtual Property& add_property(const QString& key, std::unique_ptr<Property> property);
 
   template<typename PropertyT, typename... Args>
   PropertyT& create_property(const QString& key, Args&&... args)
@@ -75,7 +75,7 @@ public:
     return ref;
   }
 
-  std::unique_ptr<Property> extract_property(const QString& key);
+  virtual std::unique_ptr<Property> extract_property(const QString& key);
   void copy_properties(AbstractPropertyOwner& target) const;
 
   std::size_t id() const;

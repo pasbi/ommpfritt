@@ -33,13 +33,14 @@ UserPropertyCommand
   , m_owner(owner)
 {
   if (Node* node = kind_cast<Node*>(&m_owner); node != nullptr) {
-    for (auto&& [key, property] : m_deletions) {
-      InputPort* ip = node->find_port<InputPort>(*property);
+    for (auto&& [key, _] : m_deletions) {
+      auto& property = *m_owner.property(key);
+      InputPort* ip = node->find_port<InputPort>(property);
       if (ip->is_connected()) {
         m_broken_connections.insert(std::make_unique<DisconnectPortsCommand>(*ip));
       }
 
-      OutputPort* op = node->find_port<OutputPort>(*property);
+      OutputPort* op = node->find_port<OutputPort>(property);
       for (InputPort* ip : op->connected_inputs()) {
         m_broken_connections.insert(std::make_unique<DisconnectPortsCommand>(*ip));
       }

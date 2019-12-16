@@ -69,21 +69,29 @@ public:
   }
 
 protected:
-  template<typename PortT, typename... Args> void add_port(Args&&... args)
+  template<typename PortT, typename... Args> PortT& add_port(Args&&... args)
   {
     const std::size_t n = std::count_if(m_ports.begin(), m_ports.end(), [](auto&& port) {
       return port->port_type == PortT::PORT_TYPE;
     });
     auto port = std::make_unique<PortT>(*this, n, std::forward<Args...>(args...));
-    m_ports.insert(std::move(port));
+    auto& ref = *port;
+    add_port(std::move(port));
+    return ref;
   }
+
+  AbstractPort& add_port(std::unique_ptr<AbstractPort> port);
+  std::unique_ptr<AbstractPort> remove_port(const AbstractPort& port);
+
+  Property& add_property(const QString& key, std::unique_ptr<Property> property) override;
+  std::unique_ptr<Property> extract_property(const QString& key) override;
 
 Q_SIGNALS:
   void pos_changed();
 
 private:
   QPointF m_pos;
-  NodeModel* m_model;
+  NodeModel* m_model = nullptr;
   std::set<std::unique_ptr<AbstractPort>> m_ports;
 
   // Only required during deserialization.
