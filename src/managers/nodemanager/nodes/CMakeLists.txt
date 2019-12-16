@@ -1,5 +1,6 @@
 
 file(GLOB SOURCES
+  constantnode.cpp
   inputnode.cpp
   outputnode.cpp
   gradientnode.cpp
@@ -8,6 +9,7 @@ file(GLOB SOURCES
 )
 
 file(GLOB HEADERS
+  constantnode.h
   inputnode.h
   outputnode.h
   gradientnode.h
