@@ -22,22 +22,41 @@ namespace omm
 {
 
 ConnectionCommand::ConnectionCommand(const QString& label, AbstractPort& a, AbstractPort& b)
-  : Command(label)
-  , m_out(static_cast<OutputPort&>(b.port_type == PortType::Input ? a : b))
-  , m_in(static_cast<InputPort&>(a.port_type == PortType::Input ? a : b))
+  : ConnectionCommand(label,
+                      static_cast<OutputPort&>(b.port_type == PortType::Input ? a : b),
+                      static_cast<InputPort&>(a.port_type == PortType::Input ? a : b))
 {
   // require exactly one input and one output.
   assert(a.port_type != b.port_type);
 }
 
+ConnectionCommand::ConnectionCommand(const QString& label, OutputPort& out, InputPort& in)
+  : Command(label)
+  , m_source_node(out.node)
+  , m_output_index(out.index)
+  , m_target_node(in.node)
+  , m_input_index(in.index)
+{
+}
+
 void ConnectionCommand::connect()
 {
-  m_in.connect(&m_out);
+  input_port().connect(&output_port());
 }
 
 void ConnectionCommand::disconnect()
 {
-  m_in.connect(nullptr);
+  input_port().connect(nullptr);
+}
+
+InputPort& ConnectionCommand::input_port() const
+{
+  return *m_target_node.find_port<InputPort>(m_input_index);
+}
+
+OutputPort& ConnectionCommand::output_port() const
+{
+  return *m_source_node.find_port<OutputPort>(m_output_index);
 }
 
 ConnectPortsCommand::ConnectPortsCommand(AbstractPort& a, AbstractPort& b)

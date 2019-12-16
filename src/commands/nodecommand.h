@@ -18,12 +18,18 @@ class ConnectionCommand : public Command
 {
 protected:
   ConnectionCommand(const QString& label, AbstractPort& out, AbstractPort& in);
+  ConnectionCommand(const QString& label, OutputPort& out, InputPort& in);
   void connect();
   void disconnect();
 
 private:
-  OutputPort& m_out;
-  InputPort& m_in;
+  Node& m_source_node;
+  const std::size_t m_output_index;
+  Node& m_target_node;
+  const std::size_t m_input_index;
+
+  InputPort& input_port() const;
+  omm::OutputPort& output_port() const;
 };
 
 class ConnectPortsCommand : public ConnectionCommand
