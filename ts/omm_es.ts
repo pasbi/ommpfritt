@@ -141,6 +141,13 @@
     </message>
 </context>
 <context>
+    <name>InputNode</name>
+    <message>
+        <source>pos</source>
+        <translation type="unfinished">Posición</translation>
+    </message>
+</context>
+<context>
     <name>IntegerVectorProperty</name>
     <message>
         <source>IntegerVectorProperty</source>
@@ -1180,6 +1187,26 @@ Borrar la selección de todos modos?</translation>
         <source>y</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Connect Ports</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Disconnect Ports</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove Nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move Nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1379,6 +1406,26 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>NodeManager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GradientNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>InputNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OutputNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ConstantNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SpyNode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1980,6 +2027,17 @@ Do you want to convert them into ordinary colors?</source>
         <source>Nodes</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Add Node ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::NodeView</name>
+    <message>
+        <source>Modify Connections</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::ObjectManager</name>
@@ -2095,6 +2153,17 @@ Do you want to convert them into ordinary colors?</source>
     </message>
     <message>
         <source>is view</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::Style</name>
+    <message>
+        <source>Edit Nodes ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Nodes</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

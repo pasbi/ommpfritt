@@ -141,6 +141,13 @@
     </message>
 </context>
 <context>
+    <name>InputNode</name>
+    <message>
+        <source>pos</source>
+        <translation>Position</translation>
+    </message>
+</context>
+<context>
     <name>IntegerVectorProperty</name>
     <message>
         <source>IntegerVectorProperty</source>
@@ -177,7 +184,7 @@
     <name>NodeManager</name>
     <message>
         <source>Node Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Node Manager</translation>
     </message>
 </context>
 <context>
@@ -1180,6 +1187,26 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>y</source>
         <translation>y</translation>
     </message>
+    <message>
+        <source>Connect Ports</source>
+        <translation>Ports verbinden</translation>
+    </message>
+    <message>
+        <source>Disconnect Ports</source>
+        <translation>Ports trennen</translation>
+    </message>
+    <message>
+        <source>Remove Nodes</source>
+        <translation>Nodes entfernen</translation>
+    </message>
+    <message>
+        <source>Add Nodes</source>
+        <translation>Nodes hinzufügen</translation>
+    </message>
+    <message>
+        <source>Move Nodes</source>
+        <translation>Nodes verschieben</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1379,7 +1406,27 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>NodeManager</source>
-        <translation type="unfinished"></translation>
+        <translation>Node Manager</translation>
+    </message>
+    <message>
+        <source>GradientNode</source>
+        <translation>Verlauf Node</translation>
+    </message>
+    <message>
+        <source>InputNode</source>
+        <translation>Eingang Node</translation>
+    </message>
+    <message>
+        <source>OutputNode</source>
+        <translation>Ausgang Node</translation>
+    </message>
+    <message>
+        <source>ConstantNode</source>
+        <translation>Konstanten Node</translation>
+    </message>
+    <message>
+        <source>SpyNode</source>
+        <translation>Spion Node</translation>
     </message>
 </context>
 <context>
@@ -1981,7 +2028,18 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <name>omm::NodeManager</name>
     <message>
         <source>Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodes</translation>
+    </message>
+    <message>
+        <source>Add Node ...</source>
+        <translation>Node hinzufügen ...</translation>
+    </message>
+</context>
+<context>
+    <name>omm::NodeView</name>
+    <message>
+        <source>Modify Connections</source>
+        <translation>Verbindungen verändern</translation>
     </message>
 </context>
 <context>
@@ -2099,6 +2157,17 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <message>
         <source>is view</source>
         <translation>Ansicht</translation>
+    </message>
+</context>
+<context>
+    <name>omm::Style</name>
+    <message>
+        <source>Edit Nodes ...</source>
+        <translation>Nodes bearbeiten ...</translation>
+    </message>
+    <message>
+        <source>Use Nodes</source>
+        <translation>Nodes benutzen</translation>
     </message>
 </context>
 <context>

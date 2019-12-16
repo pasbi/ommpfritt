@@ -141,6 +141,13 @@
     </message>
 </context>
 <context>
+    <name>InputNode</name>
+    <message>
+        <source>pos</source>
+        <translation>Position</translation>
+    </message>
+</context>
+<context>
     <name>IntegerVectorProperty</name>
     <message>
         <source>IntegerVectorProperty</source>
@@ -177,7 +184,7 @@
     <name>NodeManager</name>
     <message>
         <source>Node Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Node Manager</translation>
     </message>
 </context>
 <context>
@@ -1180,6 +1187,26 @@ Remove the selected items anyway?</translation>
         <source>y</source>
         <translation>y</translation>
     </message>
+    <message>
+        <source>Connect Ports</source>
+        <translation>Connect ports</translation>
+    </message>
+    <message>
+        <source>Disconnect Ports</source>
+        <translation>Disconnect ports</translation>
+    </message>
+    <message>
+        <source>Remove Nodes</source>
+        <translation>Remove nodes</translation>
+    </message>
+    <message>
+        <source>Add Nodes</source>
+        <translation>Add Nodes</translation>
+    </message>
+    <message>
+        <source>Move Nodes</source>
+        <translation>Move nodes</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1379,7 +1406,27 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>NodeManager</source>
-        <translation type="unfinished"></translation>
+        <translation>Node Manager</translation>
+    </message>
+    <message>
+        <source>GradientNode</source>
+        <translation>Gradient node</translation>
+    </message>
+    <message>
+        <source>InputNode</source>
+        <translation>Input node</translation>
+    </message>
+    <message>
+        <source>OutputNode</source>
+        <translation>Output node</translation>
+    </message>
+    <message>
+        <source>ConstantNode</source>
+        <translation>Constant node</translation>
+    </message>
+    <message>
+        <source>SpyNode</source>
+        <translation>Spy node</translation>
     </message>
 </context>
 <context>
@@ -1981,7 +2028,18 @@ Do you want to convert them into ordinary colors?</numerusform>
     <name>omm::NodeManager</name>
     <message>
         <source>Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Nodes</translation>
+    </message>
+    <message>
+        <source>Add Node ...</source>
+        <translation>Add Node ...</translation>
+    </message>
+</context>
+<context>
+    <name>omm::NodeView</name>
+    <message>
+        <source>Modify Connections</source>
+        <translation>Modify connections</translation>
     </message>
 </context>
 <context>
@@ -2099,6 +2157,17 @@ Do you want to convert them into ordinary colors?</numerusform>
     <message>
         <source>is view</source>
         <translation>View</translation>
+    </message>
+</context>
+<context>
+    <name>omm::Style</name>
+    <message>
+        <source>Edit Nodes ...</source>
+        <translation>Edit Nodes ...</translation>
+    </message>
+    <message>
+        <source>Use Nodes</source>
+        <translation>Use nodes</translation>
     </message>
 </context>
 <context>
