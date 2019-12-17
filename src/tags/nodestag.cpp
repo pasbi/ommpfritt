@@ -1,4 +1,7 @@
 #include "tags/nodestag.h"
+#include "managers/nodemanager/propertyport.h"
+#include "managers/nodemanager/port.h"
+#include "managers/nodemanager/nodecompiler.h"
 #include "managers/nodemanager/nodemodel.h"
 #include "managers/nodemanager/nodemanager.h"
 #include "mainwindow/application.h"
@@ -23,6 +26,7 @@ namespace omm
 NodesTag::NodesTag(Object& owner)
   : Tag(owner)
   , m_nodes(std::make_unique<NodeModel>(owner.scene()))
+  , m_compiler_cache(*this)
 {
   const QString category = QObject::tr("Nodes");
   create_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY, 0)
@@ -37,6 +41,7 @@ NodesTag::NodesTag(Object& owner)
 NodesTag::NodesTag(const NodesTag& other)
   : Tag(other)
   , m_nodes(std::make_unique<NodeModel>(*other.m_nodes))
+  , m_compiler_cache(*this)
 {
 }
 
@@ -77,10 +82,29 @@ void NodesTag::force_evaluate()
   Scene* scene = owner->scene();
   assert(scene != nullptr);
   using namespace py::literals;
-  const auto code = property(ScriptTag::CODE_PROPERTY_KEY)->value<QString>();
-  auto locals = py::dict( "this"_a=TagWrapper::make(*this),
-                          "scene"_a=SceneWrapper(*scene) );
+
+  const auto code = m_compiler_cache();
+  LINFO << "Compilation: \n" << code;
+  auto locals = py::dict();
+  const NodeCompiler* compiler = m_compiler_cache.compiler();
+  for (OutputPort* port : m_nodes->ports<OutputPort>()) {
+    if (port->flavor == PortFlavor::Property) {
+      Property& property = static_cast<PropertyPort<PortType::Output>*>(port)->property;
+      const auto var_name = py::cast(compiler->uuid(*port).toStdString());
+      locals[var_name] = variant_to_python(property.variant_value());
+    }
+  }
   scene->python_engine.exec(code, locals, this);
+  for (InputPort* port : m_nodes->ports<InputPort>()) {
+    if (port->flavor == PortFlavor::Property) {
+      Property& property = static_cast<PropertyPort<PortType::Input>*>(port)->property;
+      const auto var_name = py::cast(compiler->uuid(*port).toStdString());
+      if (locals.contains(var_name)) {
+        const variant_type var = python_to_variant(locals[var_name], property.data_type());
+        property.set(var);
+      }
+    }
+  }
   owner->update();
 }
 
@@ -89,6 +113,25 @@ void NodesTag::evaluate()
   if (property(UPDATE_MODE_PROPERTY_KEY)->value<std::size_t>() == 1) {
     force_evaluate();
   }
+}
+
+NodesTag::CompilerCache::CompilerCache(NodesTag& self) : CachedGetter<QString, NodesTag>(self)
+{
+  connect(self.m_nodes.get(), &NodeModel::topology_changed, [this]() {
+    invalidate();
+  });
+}
+
+NodesTag::CompilerCache::~CompilerCache()
+{
+  
+}
+
+QString NodesTag::CompilerCache::compute() const
+{
+  m_compiler = std::make_unique<NodeCompiler>(NodeCompiler::Language::Python);
+  m_compiler->compile(*m_self.m_nodes);
+  return m_compiler->compilation();
 }
 
 }  // namespace omm

@@ -82,7 +82,8 @@ public:
   static constexpr auto TRACK_POINTER = "track";
   static constexpr auto IS_ANIMATED_POINTER = "animated";
 
-  virtual QString widget_type() const;
+  QString widget_type() const;
+  QString data_type() const;
 
   template<typename ResultT, typename PropertyT, typename MemFunc> static
   ResultT get_value(const std::set<Property*>& properties, MemFunc&& f)

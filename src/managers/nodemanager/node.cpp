@@ -115,7 +115,7 @@ AbstractPort& Node::add_port(std::unique_ptr<AbstractPort> port)
   auto& ref = *port;
   m_ports.insert(std::move(port));
   if (m_model != nullptr) {
-    m_model->notify_appearance_changed();
+    m_model->notify_topology_changed();
   }
   return ref;
 }
@@ -125,7 +125,7 @@ std::unique_ptr<AbstractPort> Node::remove_port(const AbstractPort& port)
   for (auto it = m_ports.begin(); it != m_ports.end(); ++it) {
     if (it->get() == &port) {
       auto port = std::move(m_ports.extract(it).value());
-      m_model->notify_appearance_changed();
+      m_model->notify_topology_changed();
       return port;
     }
   }
@@ -160,6 +160,16 @@ void Node::update_references(const std::map<std::size_t, AbstractPropertyOwner*>
     OutputPort& output = *node.find_port<OutputPort>(cids.output_port);
     input.connect(&output);
   }
+}
+
+QString Node::definition(NodeCompiler::Language language) const
+{
+  return QString("def %1(*args):\n  return 19.22").arg(name(language));
+}
+
+QString Node::name(NodeCompiler::Language language) const
+{
+  return "foo";
 }
 
 }  // namespace omm

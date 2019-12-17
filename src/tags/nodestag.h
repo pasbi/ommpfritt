@@ -2,15 +2,18 @@
 
 #include <memory>
 #include "tags/tag.h"
+#include "cachedgetter.h"
 #include <Qt>
 
 namespace omm
 {
 
 class NodeModel;
+class NodeCompiler;
 
 class NodesTag : public Tag
 {
+  Q_OBJECT
 public:
   explicit NodesTag(Object& owner);
   NodesTag(const NodesTag& other);
@@ -33,6 +36,17 @@ public:
 
 private:
   std::unique_ptr<NodeModel> m_nodes;
+
+  class CompilerCache : public CachedGetter<QString, NodesTag>
+  {
+  public:
+    CompilerCache(NodesTag& self);
+    ~CompilerCache();
+    NodeCompiler* compiler() const { return m_compiler.get(); }
+  protected:
+    QString compute() const override;
+    mutable std::unique_ptr<NodeCompiler> m_compiler;
+  } m_compiler_cache;
 };
 
 }  // namespace omm

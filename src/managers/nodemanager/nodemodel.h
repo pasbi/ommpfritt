@@ -1,9 +1,11 @@
 #pragma once
 
+#include "common.h"
 #include "aspects/serializable.h"
 #include <QObject>
 #include <set>
 #include <memory>
+#include "managers/nodemanager/port.h"
 
 namespace omm
 {
@@ -40,11 +42,20 @@ public:
   bool find_path(const Node& start, const Node& end) const;
 
   std::set<AbstractPort*> ports() const;
+  template<typename PortT> std::set<PortT*> ports() const
+  {
+    static const auto pred = [](AbstractPort* p) { return p->port_type == PortT::PORT_TYPE; };
+    static const auto conv = [](AbstractPort* p) { return static_cast<PortT*>(p); };
+    return ::transform<PortT*>(::filter_if(ports(), pred), conv);
+  }
+
   Scene* scene() const { return m_scene; }
   void notify_appearance_changed();
+  void notify_topology_changed();
 
 Q_SIGNALS:
   void appearance_changed();
+  void topology_changed();
 
 private:
   std::set<std::unique_ptr<Node>> m_nodes;

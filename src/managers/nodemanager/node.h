@@ -6,6 +6,7 @@
 #include "aspects/propertyowner.h"
 #include "managers/nodemanager/port.h"
 #include "managers/nodemanager/propertyport.h"
+#include "managers/nodemanager/nodecompiler.h"
 
 namespace omm
 {
@@ -25,6 +26,12 @@ public:
   AbstractPropertyOwner::Flag flags() const override { return AbstractPropertyOwner::Flag::None; }
 
   std::set<AbstractPort*> ports() const;
+  template<typename PortT> std::set<PortT*> ports() const
+  {
+    const auto predicate = [](AbstractPort* p) { return p->port_type == PortT::PORT_TYPE; };
+    const auto convert = [](AbstractPort* p) { return static_cast<PortT*>(p); };
+    return ::transform<PortT*>(::filter_if(ports(), predicate), convert);
+  }
 
   void set_model(NodeModel* model);
 
@@ -37,6 +44,9 @@ public:
   bool is_free() const;
   NodeModel* model() const { return m_model; }
   QString name() const override;
+
+  virtual QString definition(NodeCompiler::Language language) const;
+  virtual QString name(NodeCompiler::Language language) const;
 
   static constexpr auto POS_PTR = "pos";
   static constexpr auto CONNECTIONS_PTR = "connection";

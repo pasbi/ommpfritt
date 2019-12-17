@@ -5,7 +5,7 @@ namespace omm
 
 InputNode::InputNode(Scene* scene) : Node(scene)
 {
-  add_port<OutputPort>(tr("pos"));
+  add_port<OutputPort>(QObject::tr("pos"));
 }
 
 }  // namespace omm

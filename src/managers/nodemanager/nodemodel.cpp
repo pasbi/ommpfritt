@@ -8,10 +8,12 @@ namespace omm
 
 NodeModel::NodeModel(Scene* scene) : m_scene(scene)
 {
+  connect(this, SIGNAL(topology_changed()), this, SIGNAL(appearance_changed()));
 }
 
 NodeModel::NodeModel(const NodeModel& other)
 {
+  connect(this, SIGNAL(topology_changed()), this, SIGNAL(appearance_changed()));
   // TODO
 }
 
@@ -25,7 +27,7 @@ Node& NodeModel::add_node(std::unique_ptr<Node> node)
   connect(&ref, SIGNAL(pos_changed()), this, SIGNAL(appearance_changed()));
   node->set_model(this);
   m_nodes.insert(std::move(node));
-  Q_EMIT appearance_changed();
+  Q_EMIT topology_changed();
   return ref;
 }
 
@@ -42,7 +44,7 @@ std::unique_ptr<Node> NodeModel::extract_node(Node& node)
     auto node = std::move(m_nodes.extract(it).value());
     disconnect(node.get(), SIGNAL(pos_changed()), this, SIGNAL(appearance_changed()));
     node->set_model(nullptr);
-    Q_EMIT appearance_changed();
+    Q_EMIT topology_changed();
     return node;
   } else {
     return nullptr;
@@ -131,12 +133,15 @@ void NodeModel::notify_appearance_changed()
   Q_EMIT appearance_changed();
 }
 
+void NodeModel::notify_topology_changed()
+{
+  Q_EMIT topology_changed();
+}
+
 bool NodeModel::can_connect(const AbstractPort& a, const AbstractPort& b) const
 {
   const InputPort* in;
   const OutputPort* out;
-
-  LINFO << (int)b.port_type << " " << (int)a.port_type;
 
   if (a.port_type == PortType::Input && b.port_type == PortType::Output) {
     in = static_cast<const InputPort*>(&a);

@@ -144,7 +144,7 @@
     <name>InputNode</name>
     <message>
         <source>pos</source>
-        <translation type="unfinished">Posición</translation>
+        <translation type="obsolete">Posición</translation>
     </message>
 </context>
 <context>
@@ -1207,6 +1207,10 @@ Borrar la selección de todos modos?</translation>
         <source>Move Nodes</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1426,6 +1430,10 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>SpyNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NodesTag</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1960,6 +1968,13 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
+    <name>omm::InputNode</name>
+    <message>
+        <source>pos</source>
+        <translation type="unfinished">Posición</translation>
+    </message>
+</context>
+<context>
     <name>omm::KeyBindingsPage</name>
     <message>
         <source>Reset all key bindings</source>
@@ -2036,6 +2051,13 @@ Do you want to convert them into ordinary colors?</source>
     <name>omm::NodeView</name>
     <message>
         <source>Modify Connections</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::NodesTag</name>
+    <message>
+        <source>Edit Nodes ...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

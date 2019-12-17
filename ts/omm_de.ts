@@ -144,7 +144,7 @@
     <name>InputNode</name>
     <message>
         <source>pos</source>
-        <translation>Position</translation>
+        <translation type="vanished">Position</translation>
     </message>
 </context>
 <context>
@@ -1207,6 +1207,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Move Nodes</source>
         <translation>Nodes verschieben</translation>
     </message>
+    <message>
+        <source>Nodes</source>
+        <translation type="unfinished">Nodes</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1427,6 +1431,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>SpyNode</source>
         <translation>Spion Node</translation>
+    </message>
+    <message>
+        <source>NodesTag</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1960,6 +1968,13 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
 </context>
 <context>
+    <name>omm::InputNode</name>
+    <message>
+        <source>pos</source>
+        <translation type="unfinished">Position</translation>
+    </message>
+</context>
+<context>
     <name>omm::KeyBindingsPage</name>
     <message>
         <source>Reset all key bindings</source>
@@ -2040,6 +2055,13 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <message>
         <source>Modify Connections</source>
         <translation>Verbindungen verändern</translation>
+    </message>
+</context>
+<context>
+    <name>omm::NodesTag</name>
+    <message>
+        <source>Edit Nodes ...</source>
+        <translation type="unfinished">Nodes bearbeiten ...</translation>
     </message>
 </context>
 <context>

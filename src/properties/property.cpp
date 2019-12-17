@@ -145,4 +145,12 @@ QString Property::channel_name(std::size_t channel) const
   return m_details.at(type())->channel_name(*this, channel);
 }
 
+QString Property::data_type() const
+{
+  const QString type = this->type();
+  static const QString suffix = "Property";
+  assert(type.endsWith(suffix));
+  return type.mid(0, type.size() - suffix.size());
+}
+
 }  // namespace omm

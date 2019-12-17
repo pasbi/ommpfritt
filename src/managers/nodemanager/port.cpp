@@ -38,7 +38,7 @@ void InputPort::connect(OutputPort* port)
       port->connect(this, Tag());
     }
     m_connected_output = port;
-    node.model()->notify_appearance_changed();
+    node.model()->notify_topology_changed();
   }
 }
 

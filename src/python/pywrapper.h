@@ -12,6 +12,9 @@ namespace py = pybind11;
 namespace omm
 {
 
+py::object variant_to_python(const variant_type& variant);
+variant_type python_to_variant(const py::object& object, const QString& type);
+
 py::object wrap(Object& object);
 py::object wrap(Tag& tag);
 py::object wrap(Style& style);
