@@ -1,4 +1,5 @@
 #include "managers/nodemanager/nodeview.h"
+#include "managers/nodemanager/nodes/referencenode.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "commands/nodecommand.h"
@@ -159,7 +160,11 @@ void NodeView::mousePressEvent(QMouseEvent* event)
       const bool extend_selection = event->modifiers() & Qt::ShiftModifier;
       const bool toggle_selection = event->modifiers() & Qt::ControlModifier;
       if (select_port_or_node(event->pos()- m_pzc.offset(), extend_selection, toggle_selection)) {
-        event->accept();
+        if (event->button() == Qt::RightButton) {
+          QWidget::mousePressEvent(event);
+        } else {
+          event->accept();
+        }
       } else if (event->button() == Qt::LeftButton) {
         m_pzc.rubber_band_visible = true;
         if (!extend_selection) {
@@ -331,7 +336,7 @@ void NodeView::draw_port(QPainter& painter, const AbstractPort& port) const
   const QRectF text_rect(node_pos.x() + ph/2.0 + margin,
                          port_pos.y() - ph/2.0, width - ph - margin*2.0, ph);
   const auto halign = (port.port_type == PortType::Input ? Qt::AlignLeft : Qt::AlignRight);
-  painter.drawText(text_rect, halign | Qt::AlignVCenter, port.name);
+  painter.drawText(text_rect, halign | Qt::AlignVCenter, port.label());
   painter.restore();
 }
 
@@ -372,6 +377,16 @@ QRectF NodeView::node_geometry(const Node& node) const
   }
   const double height = node_header_height + node_footer_height + n * port_height;
   return QRectF(node.pos(), QSizeF(node_width_cache(&node), height));
+}
+
+void NodeView::populate_context_menu(QMenu& menu) const
+{
+  if (m_selection.size() == 1) {
+    auto node_menu = (**m_selection.begin()).make_menu();
+    if (node_menu != nullptr) {
+      menu.addMenu(node_menu.release());
+    }
+  }
 }
 
 AbstractPort* NodeView::port(std::set<AbstractPort*> candidates, const QPointF& pos) const
@@ -418,7 +433,7 @@ double NodeView::CachedNodeWidthGetter::compute(const Node* node) const
     if (it == widths.end()) {
       it = widths.insert({port->index, 0.0}).first;
     }
-    it->second += m_font_metrics.horizontalAdvance(port->name);
+    it->second += m_font_metrics.horizontalAdvance(port->label());
   }
   double max_width = 0.0;
   for (auto&& [index, width] : widths) {

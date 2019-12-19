@@ -1,7 +1,7 @@
 #include "managers/nodemanager/nodemodel.h"
 #include "common.h"
-#include "managers/nodemanager/nodes/gradientnode.h"
 #include "managers/nodemanager/port.h"
+#include "managers/nodemanager/node.h"
 
 namespace omm
 {
@@ -118,6 +118,28 @@ bool NodeModel::find_path(const Node& start, const Node& end) const
   return find_path(start, end, path);
 }
 
+bool NodeModel::types_compatible(const QString& from, const QString& to) const
+{
+  static const std::map<QString, std::set<QString>> compatibility_matrix {
+    { "Bool", { "Integer", "Float" } },
+    { "Float", { "Integer", "Bool" } },
+    { "Integer", { "Float", "Bool" } },
+    { "FloatVector", { "IntegerVector" } },
+    { "IntegerVector", { "FloatVector" } }
+  };
+
+  if (to == from) {
+    return true;
+  } else {
+    const auto it = compatibility_matrix.find(from);
+    if (it == compatibility_matrix.end()) {
+      return false;
+    } else {
+      return ::contains(it->second, to);
+    }
+  }
+}
+
 std::set<AbstractPort*> NodeModel::ports() const
 {
   std::set<AbstractPort*> ports;
@@ -159,7 +181,7 @@ bool NodeModel::can_connect(const AbstractPort& a, const AbstractPort& b) const
 
 bool NodeModel::can_connect(const OutputPort& a, const InputPort& b) const
 {
-  return !find_path(b.node, a.node);
+  return !find_path(b.node, a.node) && types_compatible(a.data_type(), b.data_type());
 }
 
 }  // namespace omm

@@ -51,6 +51,7 @@ void OptionsProperty::set(const variant_type& variant)
   if (std::holds_alternative<int>(variant)) {
     TypedProperty<size_t>::set(std::get<int>(variant));
   } else {
+    assert(std::holds_alternative<std::size_t>(variant));
     TypedProperty<size_t>::set(variant);
   }
 }

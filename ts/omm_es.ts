@@ -1208,7 +1208,23 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Nodes</source>
+        <source>Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>a</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>b</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>undefined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Basic</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1413,27 +1429,19 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>GradientNode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>InputNode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OutputNode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>ConstantNode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>SpyNode</source>
+        <source>NodesTag</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>NodesTag</source>
+        <source>MathNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ReferenceNode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1971,7 +1979,7 @@ Borrar la selección de todos modos?</translation>
     <name>omm::InputNode</name>
     <message>
         <source>pos</source>
-        <translation type="unfinished">Posición</translation>
+        <translation type="obsolete">Posición</translation>
     </message>
 </context>
 <context>
@@ -2010,6 +2018,37 @@ This cannot be undone.</source>
     </message>
     <message>
         <source>Save Layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::MathNode</name>
+    <message>
+        <source>+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>*</source>
+        <translation type="unfinished">*</translation>
+    </message>
+    <message>
+        <source>/</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Node</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2141,6 +2180,17 @@ Do you want to convert them into ordinary colors?</source>
             <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
+    </message>
+</context>
+<context>
+    <name>omm::ReferenceNode</name>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reference</source>
+        <translation type="unfinished">Referencia</translation>
     </message>
 </context>
 <context>

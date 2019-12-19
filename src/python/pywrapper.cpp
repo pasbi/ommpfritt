@@ -62,7 +62,7 @@ variant_type python_to_variant(const pybind11::object& object, const QString& ty
     return Vec2f(object.cast<std::vector<double>>());
   } else if (type == "IntegerVector") {
     return Vec2i(object.cast<std::vector<int>>());
-  } else if (type == "Option") {
+  } else if (type == "Options") {
     return object.cast<std::size_t>();
   } else if (type == "Color") {
     // TODO Color-py-wrapper
@@ -78,22 +78,35 @@ variant_type python_to_variant(const pybind11::object& object, const QString& ty
   } else if (type == "Integer") {
     return object.cast<int>();
   } else if (type == "Reference") {
-    return nullptr;  // TODO
+#define get_if(TYPE) \
+  if (static_cast<std::string>(py::str(object.get_type())) == "<class 'omm."#TYPE"'>") { \
+    return &object.cast<TYPE##Wrapper>().wrapped; \
+  }
+
+    if (object.is_none()) {
+      return nullptr;
+    } else get_if(Object)
+    else get_if(Tag)
+    else get_if(Style)
+    else {
+      return nullptr;
+    }
+#undef get_if
   } else {
     return QString("invalid");
   }
 }
 
-pybind11::object variant_to_python(const variant_type& variant)
+pybind11::object variant_to_python(variant_type variant)
 {
   return std::visit([](auto&& v) {
-    using T = decltype (v);
-    if constexpr (std::is_same_v<T, AbstractPropertyOwner*>) {
+    using T = std::decay_t<decltype (v)>;
+    if constexpr (std::is_same_v<AbstractPropertyOwner*, std::decay_t<T>>) {
       return wrap(v);
     } else if constexpr (std::is_same_v<T, QString>) {
       return py::cast(v.toStdString());
     } else if constexpr (std::is_same_v<T, TriggerPropertyDummyValueType>) {
-      return py::none();
+      return static_cast<py::object>(py::none());
     } else if constexpr (std::is_same_v<T, Vec2f>) {
       return py::cast(v.to_stdvec());
     } else if constexpr (std::is_same_v<T, Vec2i>) {

@@ -1209,7 +1209,27 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>Nodes</source>
-        <translation type="unfinished">Nodes</translation>
+        <translation type="obsolete">Nodes</translation>
+    </message>
+    <message>
+        <source>Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>a</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>b</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>undefined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Basic</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1414,15 +1434,15 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>GradientNode</source>
-        <translation>Verlauf Node</translation>
+        <translation type="vanished">Verlauf Node</translation>
     </message>
     <message>
         <source>InputNode</source>
-        <translation>Eingang Node</translation>
+        <translation type="vanished">Eingang Node</translation>
     </message>
     <message>
         <source>OutputNode</source>
-        <translation>Ausgang Node</translation>
+        <translation type="vanished">Ausgang Node</translation>
     </message>
     <message>
         <source>ConstantNode</source>
@@ -1430,10 +1450,18 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>SpyNode</source>
-        <translation>Spion Node</translation>
+        <translation type="vanished">Spion Node</translation>
     </message>
     <message>
         <source>NodesTag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MathNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ReferenceNode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1971,7 +1999,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <name>omm::InputNode</name>
     <message>
         <source>pos</source>
-        <translation type="unfinished">Position</translation>
+        <translation type="obsolete">Position</translation>
     </message>
 </context>
 <context>
@@ -2012,6 +2040,37 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     <message>
         <source>Save Layout</source>
         <translation>Layout speichern</translation>
+    </message>
+</context>
+<context>
+    <name>omm::MathNode</name>
+    <message>
+        <source>+</source>
+        <translation type="unfinished">+</translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished">-</translation>
+    </message>
+    <message>
+        <source>*</source>
+        <translation type="unfinished">*</translation>
+    </message>
+    <message>
+        <source>/</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2144,6 +2203,17 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
             <numerusform>[%n Element]</numerusform>
             <numerusform>[%n Elemente]</numerusform>
         </translation>
+    </message>
+</context>
+<context>
+    <name>omm::ReferenceNode</name>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reference</source>
+        <translation type="unfinished">Referenz</translation>
     </message>
 </context>
 <context>

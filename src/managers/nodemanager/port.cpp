@@ -5,13 +5,13 @@
 namespace omm
 {
 
-InputPort::InputPort(Node& node, std::size_t index, const QString& name)
-  : InputPort(PortFlavor::Ordinary, node, index, name)
+InputPort::InputPort(Node& node, std::size_t index)
+  : InputPort(PortFlavor::Ordinary, node, index)
 {
 }
 
-InputPort::InputPort(PortFlavor flavor, Node& node, std::size_t index, const QString& name)
-  : Port<PortType::Input>(flavor, node, index, name)
+InputPort::InputPort(PortFlavor flavor, Node& node, std::size_t index)
+  : Port<PortType::Input>(flavor, node, index)
 {
 }
 
@@ -42,14 +42,14 @@ void InputPort::connect(OutputPort* port)
   }
 }
 
-OutputPort::OutputPort(PortFlavor flavor, Node& node, std::size_t index, const QString& name)
-  : Port<PortType::Output>(flavor, node, index, name)
+OutputPort::OutputPort(PortFlavor flavor, Node& node, std::size_t index)
+  : Port<PortType::Output>(flavor, node, index)
 {
 
 }
 
-OutputPort::OutputPort(Node& node, std::size_t index, const QString& name)
-  : OutputPort(PortFlavor::Ordinary, node, index, name)
+OutputPort::OutputPort(Node& node, std::size_t index)
+  : OutputPort(PortFlavor::Ordinary, node, index)
 {
 }
 
@@ -62,8 +62,8 @@ bool OutputPort::is_connected(const AbstractPort* other) const
   }
 }
 
-AbstractPort::AbstractPort(PortFlavor flavor, PortType port_type, Node& node, std::size_t index, const QString& name)
-  : port_type(port_type), flavor(flavor), node(node), index(index), name(name)
+AbstractPort::AbstractPort(PortFlavor flavor, PortType port_type, Node& node, std::size_t index)
+  : port_type(port_type), flavor(flavor), node(node), index(index)
 {
 }
 

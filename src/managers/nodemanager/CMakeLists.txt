@@ -19,6 +19,7 @@ file(GLOB HEADERS
   nodetopythoncompiler.h
   port.h
   propertyport.cpp
+  ordinaryport.h
 )
 
 add_subdirectory(nodes)

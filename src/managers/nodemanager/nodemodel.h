@@ -40,6 +40,7 @@ public:
   bool find_path(const Node& start, const Node& end, std::list<const Node*>& path) const;
   bool find_path(std::list<const Node*>& path, const Node& end) const;
   bool find_path(const Node& start, const Node& end) const;
+  bool types_compatible(const QString& from, const QString& to) const;
 
   std::set<AbstractPort*> ports() const;
   template<typename PortT> std::set<PortT*> ports() const

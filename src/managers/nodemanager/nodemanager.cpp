@@ -5,7 +5,7 @@
 #include "managers/nodemanager/nodemodel.h"
 #include "ui_nodemanager.h"
 #include "mainwindow/application.h"
-#include <QMenu>
+#include "keybindings/menu.h"
 #include <QContextMenuEvent>
 
 namespace omm
@@ -37,7 +37,9 @@ void NodeManager::mousePressEvent(QMouseEvent* event)
 {
   if (event->button() == Qt::RightButton) {
     auto menu = make_context_menu();
-    menu->move(mapToGlobal(event->pos()));
+    const QPoint glob_pos = mapToGlobal(event->pos());
+    menu->move(glob_pos);
+    m_ui->nodeview->populate_context_menu(*menu);
     menu->exec();
   }
   Manager::mousePressEvent(event);
@@ -48,7 +50,7 @@ std::unique_ptr<QMenu> NodeManager::make_context_menu()
   Application& app = Application::instance();
   KeyBindings& kb = app.key_bindings;
 
-  auto menu = std::make_unique<QMenu>();
+  auto menu = std::make_unique<Menu>();
 
   const auto eiff_model_available = [this](auto&& menu) {
     menu->setEnabled(m_ui->nodeview->model() != nullptr);

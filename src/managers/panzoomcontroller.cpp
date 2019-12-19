@@ -69,7 +69,6 @@ QRectF PanZoomController::unit_rubber_band() const
 
 void PanZoomController::draw_rubberband(QPainter& painter, const QWidget& widget, const QRectF& rect)
 {
-  LINFO << "draw rubberband: " << rect;
   painter.save();
   painter.resetTransform();
   QPen pen;

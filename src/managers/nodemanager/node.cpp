@@ -162,14 +162,4 @@ void Node::update_references(const std::map<std::size_t, AbstractPropertyOwner*>
   }
 }
 
-QString Node::definition(NodeCompiler::Language language) const
-{
-  return QString("def %1(*args):\n  return 19.22").arg(name(language));
-}
-
-QString Node::name(NodeCompiler::Language language) const
-{
-  return "foo";
-}
-
 }  // namespace omm

@@ -31,6 +31,7 @@ public:
   std::set<Node*> selected_nodes() const { return m_selection; }
   QPointF get_insert_position() const;
   QRectF node_geometry(const Node& node) const;
+  void populate_context_menu(QMenu& menu) const;
 
 protected:
   void paintEvent(QPaintEvent*) override;

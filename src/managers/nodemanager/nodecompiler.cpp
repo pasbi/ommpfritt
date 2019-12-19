@@ -1,5 +1,4 @@
 #include "managers/nodemanager/nodecompiler.h"
-#include "managers/nodemanager/nodes/spynode.h"
 #include "managers/nodemanager/port.h"
 #include "managers/nodemanager/node.h"
 #include "managers/nodemanager/nodemodel.h"
@@ -46,8 +45,8 @@ void NodeCompiler::compile(const NodeModel& model)
   QStringList code;
   while (!todo.empty()) {
     Node* node = todo.extract(todo.begin()).value();
+    code.push_front(compile_node(*node));
     for (InputPort* ip : node->ports<InputPort>()) {
-      code.push_front(compile_node(*node));
       if (OutputPort* op = ip->connected_output(); op != nullptr) {
         code.push_front(compile_connection(*op, *ip));
         if (!::contains(done, &op->node)) {
@@ -75,6 +74,7 @@ void NodeCompiler::compile(const NodeModel& model)
 
 QString NodeCompiler::uuid(const AbstractPort& port) const
 {
+//  return "p_" + port.label();   // TODO that simplifies debugging but port-label might be anything.
   return "p" + address_to_string(&port);
 }
 

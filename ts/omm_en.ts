@@ -1209,7 +1209,27 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Nodes</source>
-        <translation type="unfinished">Nodes</translation>
+        <translation type="obsolete">Nodes</translation>
+    </message>
+    <message>
+        <source>Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>a</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>b</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>undefined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Basic</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1414,15 +1434,15 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>GradientNode</source>
-        <translation>Gradient node</translation>
+        <translation type="vanished">Gradient node</translation>
     </message>
     <message>
         <source>InputNode</source>
-        <translation>Input node</translation>
+        <translation type="vanished">Input node</translation>
     </message>
     <message>
         <source>OutputNode</source>
-        <translation>Output node</translation>
+        <translation type="vanished">Output node</translation>
     </message>
     <message>
         <source>ConstantNode</source>
@@ -1430,10 +1450,18 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>SpyNode</source>
-        <translation>Spy node</translation>
+        <translation type="vanished">Spy node</translation>
     </message>
     <message>
         <source>NodesTag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MathNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ReferenceNode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1971,7 +1999,7 @@ Remove the selected items anyway?</translation>
     <name>omm::InputNode</name>
     <message>
         <source>pos</source>
-        <translation type="unfinished">Position</translation>
+        <translation type="obsolete">Position</translation>
     </message>
 </context>
 <context>
@@ -2012,6 +2040,37 @@ This cannot be undone.</translation>
     <message>
         <source>Save Layout</source>
         <translation>Save layout</translation>
+    </message>
+</context>
+<context>
+    <name>omm::MathNode</name>
+    <message>
+        <source>+</source>
+        <translation type="unfinished">+</translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished">-</translation>
+    </message>
+    <message>
+        <source>*</source>
+        <translation type="unfinished">*</translation>
+    </message>
+    <message>
+        <source>/</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2144,6 +2203,17 @@ Do you want to convert them into ordinary colors?</numerusform>
             <numerusform>[%n Element]</numerusform>
             <numerusform>[%n Elements]</numerusform>
         </translation>
+    </message>
+</context>
+<context>
+    <name>omm::ReferenceNode</name>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reference</source>
+        <translation type="unfinished">Reference</translation>
     </message>
 </context>
 <context>

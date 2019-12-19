@@ -18,7 +18,7 @@ class InputPort;
 class AbstractPort
 {
 public:
-  AbstractPort(PortFlavor flavor, PortType port_type, Node& node, std::size_t index, const QString& name);
+  AbstractPort(PortFlavor flavor, PortType port_type, Node& node, std::size_t index);
   virtual ~AbstractPort();
   bool is_connected(const AbstractPort* other) const;
   bool is_connected() const;
@@ -26,7 +26,8 @@ public:
   const PortFlavor flavor;
   Node& node;
   const std::size_t index;
-  const QString name;
+  virtual QString label() const = 0;
+  virtual QString data_type() const = 0;
 };
 
 template<typename PortT,
@@ -58,8 +59,8 @@ decltype(auto) visit(PortT&& port, F&& f)
 template<PortType port_type_> class Port : public AbstractPort
 {
 protected:
-  explicit Port(PortFlavor flavor, Node& node, std::size_t index, const QString& name)
-    : AbstractPort(flavor, port_type_, node, index, name) {}
+  explicit Port(PortFlavor flavor, Node& node, std::size_t index)
+    : AbstractPort(flavor, port_type_, node, index) {}
 public:
   static constexpr PortType PORT_TYPE = port_type_;
 };
@@ -67,9 +68,9 @@ public:
 class InputPort : public Port<PortType::Input>
 {
 protected:
-  InputPort(PortFlavor flavor, Node& node, std::size_t index, const QString& name);
+  InputPort(PortFlavor flavor, Node& node, std::size_t index);
 public:
-  InputPort(Node& node, std::size_t index, const QString& name);
+  InputPort(Node& node, std::size_t index);
   void connect(OutputPort* port);
   OutputPort* connected_output() const { return m_connected_output; }
   bool is_connected(const AbstractPort* other) const;
@@ -89,9 +90,9 @@ private:
 class OutputPort : public Port<PortType::Output>
 {
 protected:
-  OutputPort(PortFlavor flavor, Node& node, std::size_t index, const QString& name);
+  OutputPort(PortFlavor flavor, Node& node, std::size_t index);
 public:
-  OutputPort(Node& node, std::size_t index, const QString& name);
+  OutputPort(Node& node, std::size_t index);
 
   // the Tag is to protect you! Don't call OutputPort::disconnect unless you're in InputPort::connect
   void disconnect(InputPort* port, InputPort::Tag);

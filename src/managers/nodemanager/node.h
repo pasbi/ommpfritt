@@ -7,11 +7,13 @@
 #include "managers/nodemanager/port.h"
 #include "managers/nodemanager/propertyport.h"
 #include "managers/nodemanager/nodecompiler.h"
+#include "keybindings/menu.h"
 
 namespace omm
 {
 
 class NodeModel;
+class Menu;
 
 class Node
   : public PropertyOwner<AbstractPropertyOwner::Kind::Node>
@@ -45,8 +47,8 @@ public:
   NodeModel* model() const { return m_model; }
   QString name() const override;
 
-  virtual QString definition(NodeCompiler::Language language) const;
-  virtual QString name(NodeCompiler::Language language) const;
+  virtual QString definition(NodeCompiler::Language) const { return ""; }
+  virtual QString name(NodeCompiler::Language) const { return ""; }
 
   static constexpr auto POS_PTR = "pos";
   static constexpr auto CONNECTIONS_PTR = "connection";
@@ -70,7 +72,7 @@ public:
     for (auto&& port : m_ports) {
       if (PortT::PORT_TYPE == port->port_type && port->flavor == PortFlavor::Property) {
         auto* property_port = static_cast<PropertyPort<PortT::PORT_TYPE>*>(port.get());
-        if (&property_port->property == &property) {
+        if (property_port->property() == &property) {
           return property_port;
         }
       }
@@ -78,13 +80,15 @@ public:
     return nullptr;
   }
 
+  virtual std::unique_ptr<Menu> make_menu() { return nullptr; }
+
 protected:
   template<typename PortT, typename... Args> PortT& add_port(Args&&... args)
   {
     const std::size_t n = std::count_if(m_ports.begin(), m_ports.end(), [](auto&& port) {
       return port->port_type == PortT::PORT_TYPE;
     });
-    auto port = std::make_unique<PortT>(*this, n, std::forward<Args...>(args...));
+    auto port = std::make_unique<PortT>(*this, n, std::forward<Args>(args)...);
     auto& ref = *port;
     add_port(std::move(port));
     return ref;

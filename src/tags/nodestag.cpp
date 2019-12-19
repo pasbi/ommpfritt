@@ -28,7 +28,7 @@ NodesTag::NodesTag(Object& owner)
   , m_nodes(std::make_unique<NodeModel>(owner.scene()))
   , m_compiler_cache(*this)
 {
-  const QString category = QObject::tr("Nodes");
+  const QString category = QObject::tr("Basic");
   create_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("on request"), QObject::tr("per frame") })
     .set_label(QObject::tr("update")).set_category(category);
@@ -83,25 +83,36 @@ void NodesTag::force_evaluate()
   assert(scene != nullptr);
   using namespace py::literals;
 
-  const auto code = m_compiler_cache();
+  const auto code = m_compiler_cache() + "\nxxx=12";
   LINFO << "Compilation: \n" << code;
   auto locals = py::dict();
   const NodeCompiler* compiler = m_compiler_cache.compiler();
   for (OutputPort* port : m_nodes->ports<OutputPort>()) {
     if (port->flavor == PortFlavor::Property) {
-      Property& property = static_cast<PropertyPort<PortType::Output>*>(port)->property;
+      Property& property = *static_cast<PropertyPort<PortType::Output>*>(port)->property();
+      LINFO << property.label();
       const auto var_name = py::cast(compiler->uuid(*port).toStdString());
-      locals[var_name] = variant_to_python(property.variant_value());
+      const auto var = variant_to_python(property.variant_value());
+      locals[var_name] = var;
     }
   }
-  scene->python_engine.exec(code, locals, this);
+  try {
+    py::exec(code.toStdString(), py::globals(), locals);
+  } catch (const py::error_already_set& error) {
+    LERROR << "Python error: " << error.what();
+    return;
+  }
+
   for (InputPort* port : m_nodes->ports<InputPort>()) {
-    if (port->flavor == PortFlavor::Property) {
-      Property& property = static_cast<PropertyPort<PortType::Input>*>(port)->property;
-      const auto var_name = py::cast(compiler->uuid(*port).toStdString());
-      if (locals.contains(var_name)) {
-        const variant_type var = python_to_variant(locals[var_name], property.data_type());
-        property.set(var);
+    if (port->flavor == PortFlavor::Property && port->is_connected()) {
+      Property* property = static_cast<PropertyPort<PortType::Input>*>(port)->property();
+      if (property != nullptr) {
+        const auto var_name = compiler->uuid(*port);
+        const auto py_var_name =  py::cast(var_name.toStdString());
+        if (locals.contains(py_var_name)) {
+          const variant_type var = python_to_variant(locals[py_var_name], property->data_type());
+          property->set(var);
+        }
       }
     }
   }

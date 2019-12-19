@@ -7,11 +7,10 @@ namespace omm
 
 class Action;
 
-// TODO I think this class is obsolete ...
 class Menu : public QMenu
 {
 public:
-  explicit Menu(const QString& title);
+  explicit Menu(const QString& title = "");
 
 protected:
   bool eventFilter(QObject* o, QEvent* e) override;
