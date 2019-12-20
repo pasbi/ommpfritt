@@ -382,10 +382,7 @@ QRectF NodeView::node_geometry(const Node& node) const
 void NodeView::populate_context_menu(QMenu& menu) const
 {
   if (m_selection.size() == 1) {
-    auto node_menu = (**m_selection.begin()).make_menu();
-    if (node_menu != nullptr) {
-      menu.addMenu(node_menu.release());
-    }
+    (**m_selection.begin()).populate_menu(menu);
   }
 }
 

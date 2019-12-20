@@ -14,9 +14,9 @@ public:
   static constexpr auto CONSTANT_VALUE_KEY = "constant";
   static constexpr auto REFERENCE_PROPERTY_KEY = "ref";
 
-  std::unique_ptr<Menu> make_menu() override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
+  void populate_menu(QMenu& menu) override;
 
 protected:
   void on_property_value_changed(Property* property) override;

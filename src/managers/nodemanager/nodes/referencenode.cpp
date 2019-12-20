@@ -34,22 +34,23 @@ ReferenceNode::ReferenceNode(Scene* scene)
     .set_label(tr("Reference")).set_category(category);
 }
 
-std::unique_ptr<Menu> ReferenceNode::make_menu()
+void ReferenceNode::populate_menu(QMenu& menu)
 {
-  auto menu = std::make_unique<Menu>(tr("Forwarded Ports"));
+  auto forward_menu = std::make_unique<Menu>(tr("Forwarded Ports"));
   AbstractPropertyOwner* apo = reference();
   if (apo == nullptr) {
-    menu->addAction(tr("No properties."))->setEnabled(false);
+    forward_menu->addAction(tr("No properties."))->setEnabled(false);
   } else {
     for (auto key : apo->properties().keys()) {
       Property* property = apo->property(key);
       auto property_menu = std::make_unique<Menu>(property->label());
       property_menu->addAction(make_property_action(PortType::Input, key).release());
       property_menu->addAction(make_property_action(PortType::Output, key).release());
-      menu->addMenu(property_menu.release());
+      forward_menu->addMenu(property_menu.release());
     }
   }
-  return menu;
+
+  menu.addMenu(forward_menu.release());
 }
 
 void

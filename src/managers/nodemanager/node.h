@@ -80,7 +80,7 @@ public:
     return nullptr;
   }
 
-  virtual std::unique_ptr<Menu> make_menu() { return nullptr; }
+  virtual void populate_menu(QMenu&) {}
 
 protected:
   template<typename PortT, typename... Args> PortT& add_port(Args&&... args)
