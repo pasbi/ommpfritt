@@ -156,9 +156,10 @@ void Node::update_references(const std::map<std::size_t, AbstractPropertyOwner*>
 {
   for (const ConnectionIds& cids : m_connection_ids) {
     Node& node = static_cast<Node&>(*map.at(cids.node_id));
-    InputPort& input = *find_port<InputPort>(cids.input_port);
-    OutputPort& output = *node.find_port<OutputPort>(cids.output_port);
-    input.connect(&output);
+    InputPort* input = find_port<InputPort>(cids.input_port);
+    OutputPort* output = node.find_port<OutputPort>(cids.output_port);
+    assert (input != nullptr && output != nullptr);
+    input->connect(output);
   }
 }
 

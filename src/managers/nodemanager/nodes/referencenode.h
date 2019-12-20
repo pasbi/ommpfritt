@@ -15,6 +15,8 @@ public:
   static constexpr auto REFERENCE_PROPERTY_KEY = "ref";
 
   std::unique_ptr<Menu> make_menu() override;
+  void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+  void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
 
 protected:
   void on_property_value_changed(Property* property) override;
@@ -22,8 +24,8 @@ protected:
 private:
   AbstractPropertyOwner* reference() const;
   std::map<PortType, std::map<QString, AbstractPort*>> m_forwarded_ports;
-  template<PortType port_type>
-  std::unique_ptr<QAction> make_property_action(const QString& label, const QString& key);
+  std::unique_ptr<QAction> make_property_action(PortType port_type, const QString& key);
+  AbstractPort& add_forwarding_port(PortType port_type, const QString& key);
 };
 
 }  // namespace omm
