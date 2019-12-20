@@ -9,6 +9,7 @@
 #include "geometry/vec2.h"
 #include "geometry/polarcoordinates.h"
 #include "variant.h"
+#include "common.h"
 
 namespace omm
 {
@@ -21,6 +22,15 @@ class AbstractPropertyOwner;
 class AbstractSerializer
   : public AbstractFactory<QString, AbstractSerializer, std::ostream&>
 {
+
+private:
+  template<typename T, typename = void> struct is_iterable : std::false_type {};
+  template<typename T> struct is_iterable<T, std::void_t<
+      decltype(std::declval<T>().size())
+    , decltype(std::declval<T>().begin())
+    , decltype(std::declval<T>().end())>> : std::true_type {};
+  template<typename T> static inline constexpr bool is_iterable_v = is_iterable<T>::value;
+
 public:
   using Pointer = Serializable::Pointer;
   explicit AbstractSerializer(std::ostream&) { }
@@ -47,6 +57,24 @@ public:
   }
 
   std::set<AbstractPropertyOwner*> serialized_references() const;
+
+  template<typename A, typename B> void set_value(const std::pair<A, B>& pair, const Pointer& ptr)
+  {
+    set_value(pair.first, Serializable::make_pointer(ptr, "key"));
+    set_value(pair.second, Serializable::make_pointer(ptr, "val"));
+  }
+
+  template<typename Vs> std::enable_if_t<is_iterable_v<Vs>, void>
+  set_value(const Vs& vs, const Pointer& ptr)
+  {
+    start_array(vs.size(), ptr);
+    std::size_t i = 0;
+    for (const auto& v : vs) {
+      set_value(v, Serializable::make_pointer(ptr, i));
+      i += 1;
+    }
+    end_array();
+  }
 
 protected:
   void register_serialzied_reference(AbstractPropertyOwner* reference);
@@ -94,6 +122,38 @@ public:
   template<typename T> std::enable_if_t<std::is_enum_v<T>, T> get(const Pointer& pointer)
   {
     return static_cast<T>(get_size_t(pointer));
+  }
+
+  template<typename T> void get(T& value, const Pointer& pointer)
+  {
+    value = get<T>(pointer);
+  }
+
+  template<typename A, typename B> void get(std::pair<A, B>& value, const Pointer& pointer)
+  {
+    get(value.first, Serializable::make_pointer(pointer, "key"));
+    get(value.second, Serializable::make_pointer(pointer, "val"));
+  }
+
+  template<typename T> void get(std::set<T>& value, const Pointer& pointer)
+  {
+    const std::size_t n = array_size(pointer);
+    for (std::size_t i = 0; i < n; ++i) {
+      T v;
+      get(v, Serializable::make_pointer(pointer, i));
+      value.insert(std::move(v));
+    }
+  }
+
+  template<typename T> void get(std::vector<T>& value, const Pointer& pointer)
+  {
+    const std::size_t n = array_size(pointer);
+    value.reserve(n);
+    for (std::size_t i = 0; i < n; ++i) {
+      T v;
+      get(v, Serializable::make_pointer(pointer, i));
+      value.push_back(std::move(v));
+    }
   }
 
   variant_type get(const Pointer& pointer, const QString& type);
