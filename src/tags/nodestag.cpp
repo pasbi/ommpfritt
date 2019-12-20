@@ -20,6 +20,25 @@
 
 namespace py = pybind11;
 
+namespace
+{
+
+template<omm::PortType port_type>
+void populate_locals(py::object& locals, const omm::NodeCompiler& compiler, const omm::NodeModel& model)
+{
+  using PortT = omm::Port<port_type>;
+  for (PortT* port : model.ports<PortT>()) {
+    if (port->flavor == omm::PortFlavor::Property) {
+      omm::Property& property = *static_cast<omm::PropertyPort<port_type>*>(port)->property();
+      const auto var_name = py::cast(compiler.uuid(*port).toStdString());
+      const auto var = variant_to_python(property.variant_value());
+      locals[var_name] = var;
+    }
+  }
+}
+
+}  // namespace
+
 namespace omm
 {
 
@@ -83,19 +102,13 @@ void NodesTag::force_evaluate()
   assert(scene != nullptr);
   using namespace py::literals;
 
-  const auto code = m_compiler_cache() + "\nxxx=12";
+  const auto code = m_compiler_cache();
   LINFO << "Compilation: \n" << code;
   auto locals = py::dict();
   const NodeCompiler* compiler = m_compiler_cache.compiler();
-  for (OutputPort* port : m_nodes->ports<OutputPort>()) {
-    if (port->flavor == PortFlavor::Property) {
-      Property& property = *static_cast<PropertyPort<PortType::Output>*>(port)->property();
-      LINFO << property.label();
-      const auto var_name = py::cast(compiler->uuid(*port).toStdString());
-      const auto var = variant_to_python(property.variant_value());
-      locals[var_name] = var;
-    }
-  }
+  populate_locals<PortType::Input>(locals, *compiler, *m_nodes);
+  populate_locals<PortType::Output>(locals, *compiler, *m_nodes);
+
   try {
     py::exec(code.toStdString(), py::globals(), locals);
   } catch (const py::error_already_set& error) {
