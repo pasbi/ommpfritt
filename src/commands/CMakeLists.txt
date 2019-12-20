@@ -2,6 +2,7 @@
 file(GLOB SOURCES
   command.cpp
   copycommand.cpp
+  forwardingportcommand.cpp
   keyframecommand.cpp
   modifypointscommand.cpp
   movecommand.cpp
@@ -22,6 +23,7 @@ file(GLOB HEADERS
   addcommand.h
   command.h
   copycommand.h
+  forwardingportcommand.h
   keyframecommand.h
   modifypointscommand.h
   movecommand.h

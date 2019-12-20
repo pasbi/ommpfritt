@@ -1,4 +1,5 @@
 #include "managers/nodemanager/nodes/referencenode.h"
+#include "commands/forwardingportcommand.h"
 #include "keybindings/menu.h"
 #include "properties/referenceproperty.h"
 #include "variant.h"
@@ -106,9 +107,9 @@ ReferenceNode::make_property_action(PortType port_type, const QString& key)
   action->setChecked(map.find(key) != map.end());
   connect(action.get(), &QAction::triggered, [this, port_type, key](bool checked) {
     if (checked) {
-      add_forwarding_port(port_type, key);
+      scene()->submit<AddForwardingPortCommand>(*this, port_type, key);
     } else {
-      remove_port(*m_forwarded_ports[port_type][key]);
+      scene()->submit<RemoveForwardingPortCommand>(*this, port_type, key);
     }
   });
   return action;
@@ -139,6 +140,15 @@ AbstractPort& ReferenceNode::add_forwarding_port(PortType port_type, const QStri
   }();
   m_forwarded_ports[port_type][key] = port;
   return *port;
+}
+
+std::unique_ptr<AbstractPort>
+ReferenceNode::remove_forwarding_port(PortType port_type, const QString& key)
+{
+  const auto it = m_forwarded_ports.at(port_type).find(key);
+  auto owned = Node::remove_port(*it->second);
+  m_forwarded_ports.at(port_type).erase(it);
+  return owned;
 }
 
 }  // namespace
