@@ -110,6 +110,11 @@ std::set<Node*> Node::successors() const
   return successors;
 }
 
+QString Node::title() const
+{
+  return QCoreApplication::translate("any-context", type().toStdString().c_str());
+}
+
 AbstractPort& Node::add_port(std::unique_ptr<AbstractPort> port)
 {
   auto& ref = *port;

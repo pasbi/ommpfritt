@@ -1,4 +1,7 @@
 #include "managers/nodemanager/nodeview.h"
+#include "properties/referenceproperty.h"
+#include <QMimeData>
+#include "scene/propertyownermimedata.h"
 #include "managers/nodemanager/nodes/referencenode.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
@@ -23,6 +26,7 @@ NodeView::NodeView(QWidget* parent)
   , m_pzc(*this)
   , node_width_cache(*this)
 {
+  setAcceptDrops(true);
 }
 
 NodeView::~NodeView()
@@ -34,10 +38,12 @@ void NodeView::set_model(NodeModel* model)
   if (m_model != model) {
     if (m_model != nullptr) {
       disconnect(m_model, SIGNAL(appearance_changed()), this, SLOT(update()));
+      disconnect(m_model, SIGNAL(topology_changed()), this, SLOT(invalidate_caches()));
     }
     m_model = model;
     if (m_model != nullptr) {
       connect(m_model, SIGNAL(appearance_changed()), this, SLOT(update()));
+      connect(m_model, SIGNAL(topology_changed()), this, SLOT(invalidate_caches()));
     }
     update();
   }
@@ -136,14 +142,30 @@ std::set<Node*> NodeView::nodes(const QRectF& rect) const
   }
 }
 
-QString NodeView::header_text(const Node& node) const
-{
-  return QCoreApplication::translate("any-context", node.type().toStdString().c_str());
-}
-
 void NodeView::update_scene_selection()
 {
   m_model->scene()->set_selection(::transform<AbstractPropertyOwner*>(m_selection, ::identity));
+}
+
+bool NodeView::can_drop(const QDropEvent& event) const
+{
+  const auto& mime_data = *event.mimeData();
+  if (event.dropAction() != Qt::LinkAction) {
+    return false;
+  } else if (mime_data.hasFormat(PropertyOwnerMimeData::MIME_TYPE)) {
+    const auto property_owner_mime_data = qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
+    if (property_owner_mime_data != nullptr) {
+      if (property_owner_mime_data->items(m_droppable_kinds).size() >= 1) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+void NodeView::invalidate_caches()
+{
+  node_width_cache.invalidate();
 }
 
 void NodeView::mousePressEvent(QMouseEvent* event)
@@ -249,6 +271,43 @@ void NodeView::mouseReleaseEvent(QMouseEvent*)
   update();
 }
 
+void NodeView::dragEnterEvent(QDragEnterEvent* event)
+{
+  event->setDropAction(Qt::LinkAction);
+  if (can_drop(*event)) {
+    event->accept();
+  } else {
+    event->ignore();
+  }
+}
+
+void NodeView::dropEvent(QDropEvent* event)
+{
+  event->setDropAction(Qt::LinkAction);
+  if (can_drop(*event)) {
+    const auto& mime_data = *event->mimeData();
+    const auto& property_owner_mime_data = *qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
+    const auto items = property_owner_mime_data.items(m_droppable_kinds);
+
+    std::vector<std::unique_ptr<Node>> nodes;
+    nodes.reserve(items.size());
+    Scene& scene = *model()->scene();
+    QPointF insert_pos = get_insert_position(event->pos());
+    for (AbstractPropertyOwner* item : items) {
+      auto node = Node::make(ReferenceNode::TYPE, &scene);
+      auto* const property = node->property(ReferenceNode::REFERENCE_PROPERTY_KEY);
+      property->set(item);
+      const QSizeF size = node_geometry(*node).size();
+      insert_pos -= QPointF(size.width(), size.height()) / 2.0;
+      node->set_pos(insert_pos);
+      nodes.push_back(std::move(node));
+    }
+    scene.submit<AddNodesCommand>(*model(), std::move(nodes));
+  } else {
+    event->ignore();
+  }
+}
+
 void NodeView::abort()
 {
   m_aborted = true;
@@ -267,6 +326,11 @@ void NodeView::remove_selection()
     const auto selection = ::transform<Node*, std::vector>(m_selection);
     m_model->scene()->submit<RemoveNodesCommand>(*m_model, selection);
   }
+}
+
+QPointF NodeView::get_insert_position(const QPoint& pos) const
+{
+  return m_pzc.transform().inverted().map(pos - m_pzc.offset());
 }
 
 QPointF NodeView::get_insert_position() const
@@ -293,7 +357,7 @@ void NodeView::draw_node(QPainter& painter, const Node& node) const
 
   const QRectF header_rect(node_geometry.topLeft(),
                            QSizeF(node_geometry.width(), node_header_height));
-  painter.drawText(header_rect, Qt::AlignVCenter | Qt::AlignHCenter, header_text(node));
+  painter.drawText(header_rect, Qt::AlignVCenter | Qt::AlignHCenter, node.title());
   painter.restore();
 
 
@@ -437,7 +501,7 @@ double NodeView::CachedNodeWidthGetter::compute(const Node* node) const
     max_width = std::max(max_width, width);
   }
 
-  const double header_width = m_font_metrics.horizontalAdvance(m_self.header_text(*node));
+  const double header_width = m_font_metrics.horizontalAdvance(node->title());
 
   return std::max(max_width + port_height + margin, header_width) + margin * 2.0;
 }

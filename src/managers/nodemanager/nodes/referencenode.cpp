@@ -53,6 +53,15 @@ void ReferenceNode::populate_menu(QMenu& menu)
   menu.addMenu(forward_menu.release());
 }
 
+QString ReferenceNode::title() const
+{
+  QString r_name = QObject::tr("< none >", "ReferenceLineEdit");
+  if (AbstractPropertyOwner* apo = reference(); apo != nullptr) {
+    r_name = apo->property(AbstractPropertyOwner::NAME_PROPERTY_KEY)->value<QString>();
+  }
+  return Node::title() + tr(" [%1]").arg(r_name);
+}
+
 void
 ReferenceNode::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
 {

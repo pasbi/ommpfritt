@@ -75,7 +75,6 @@ bool NodeManager::perform_action(const QString& name)
     m_ui->nodeview->remove_selection();
   } else if (::contains(Node::keys(), name)) {
     std::vector<std::unique_ptr<Node>> nodes;
-    nodes.reserve(1);
     auto node = Node::make(name, &scene());
     const QSizeF size = m_ui->nodeview->node_geometry(*node).size();
     node->set_pos(m_ui->nodeview->get_insert_position() - QPointF(size.width(), size.height()) / 2.0);

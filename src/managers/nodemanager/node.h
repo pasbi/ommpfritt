@@ -81,6 +81,7 @@ public:
   }
 
   virtual void populate_menu(QMenu&) {}
+  virtual QString title() const;
 
 protected:
   template<typename PortT, typename... Args> PortT& add_port(Args&&... args)

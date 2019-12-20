@@ -121,7 +121,8 @@ void ReferenceLineEdit::mouseDoubleClickEvent(QMouseEvent*) { set_value(nullptr)
 
 void ReferenceLineEdit::dragEnterEvent(QDragEnterEvent* event)
 {
-  if (can_drop(*event->mimeData())) {
+  event->setDropAction(Qt::LinkAction);
+  if (can_drop(*event)) {
     event->accept();
   } else {
     event->ignore();
@@ -130,20 +131,23 @@ void ReferenceLineEdit::dragEnterEvent(QDragEnterEvent* event)
 
 void ReferenceLineEdit::dropEvent(QDropEvent* event)
 {
-  const auto& mime_data = *event->mimeData();
-  if (!can_drop(mime_data)) {
-    event->ignore();
-  } else {
+  event->setDropAction(Qt::LinkAction);
+  if (can_drop(*event)) {
+    const auto& mime_data = *event->mimeData();
     const auto& property_owner_mime_data = *qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
     AbstractPropertyOwner* reference = property_owner_mime_data.items(m_allowed_kinds).front();
     set_value(reference);
+  } else {
+    event->ignore();
   }
 }
 
-bool ReferenceLineEdit::can_drop(const QMimeData& mime_data) const
+bool ReferenceLineEdit::can_drop(const QDropEvent& event) const
 {
-  if (mime_data.hasFormat(PropertyOwnerMimeData::MIME_TYPE))
-  {
+  const auto& mime_data = *event.mimeData();
+  if (event.dropAction() != Qt::LinkAction) {
+    return false;
+  } else if (mime_data.hasFormat(PropertyOwnerMimeData::MIME_TYPE)) {
     const auto property_owner_mime_data = qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
     if (property_owner_mime_data != nullptr) {
       if (property_owner_mime_data->items(m_allowed_kinds).size() == 1) {

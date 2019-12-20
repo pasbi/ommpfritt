@@ -17,6 +17,7 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void populate_menu(QMenu& menu) override;
+  QString title() const override;
 
 protected:
   void on_property_value_changed(Property* property) override;

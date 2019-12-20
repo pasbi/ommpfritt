@@ -1,5 +1,6 @@
 #pragma once
 
+#include "aspects/abstractpropertyowner.h"
 #include "managers/panzoomcontroller.h"
 #include "cachedgetter.h"
 #include <QWidget>
@@ -30,6 +31,7 @@ public:
   void remove_selection();
   std::set<Node*> selected_nodes() const { return m_selection; }
   QPointF get_insert_position() const;
+  QPointF get_insert_position(const QPoint& pos) const;
   QRectF node_geometry(const Node& node) const;
   void populate_context_menu(QMenu& menu) const;
 
@@ -38,6 +40,8 @@ protected:
   void mousePressEvent(QMouseEvent* event) override;
   void mouseMoveEvent(QMouseEvent* event) override;
   void mouseReleaseEvent(QMouseEvent*) override;
+  void dragEnterEvent(QDragEnterEvent* event) override;
+  void dropEvent(QDropEvent* event) override;
 
 private:
   NodeModel* m_model = nullptr;
@@ -50,8 +54,9 @@ private:
   AbstractPort* port(std::set<AbstractPort*> candidates, const QPointF& pos) const;
   bool select_port_or_node(const QPointF& pos, bool extend_selection, bool toggle_selection);
   std::set<Node*> nodes(const QRectF& rect) const;
-  QString header_text(const Node& node) const;
   void update_scene_selection();
+  bool can_drop(const QDropEvent& event) const;
+  constexpr static auto m_droppable_kinds = AbstractPropertyOwner::Kind::Item;
 
   class CachedNodeWidthGetter : public ArgsCachedGetter<double, NodeView, const Node*>
   {
@@ -70,6 +75,9 @@ private:
   bool m_aborted = false;
   std::set<Node*> m_selection;
   std::set<Node*> m_nodes_in_rubberband;
+
+private Q_SLOTS:
+  void invalidate_caches();
 };
 
 }  // namespace omm

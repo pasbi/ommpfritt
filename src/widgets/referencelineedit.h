@@ -34,7 +34,7 @@ protected:
   void mouseDoubleClickEvent(QMouseEvent*) override;
 
 private:
-  bool can_drop(const QMimeData& mime_data) const;
+  bool can_drop(const QDropEvent& event) const;
   AbstractPropertyOwner* m_value;
   Scene* m_scene = nullptr;
   AbstractPropertyOwner::Kind m_allowed_kinds = AbstractPropertyOwner::Kind::All;
