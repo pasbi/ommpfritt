@@ -121,11 +121,12 @@ bool NodeModel::find_path(const Node& start, const Node& end) const
 bool NodeModel::types_compatible(const QString& from, const QString& to) const
 {
   static const std::map<QString, std::set<QString>> compatibility_matrix {
-    { "Bool", { "Integer", "Float" } },
-    { "Float", { "Integer", "Bool" } },
-    { "Integer", { "Float", "Bool" } },
-    { "FloatVector", { "IntegerVector" } },
-    { "IntegerVector", { "FloatVector" } }
+    { "Bool",    { "Options", "Integer", "Float",         "String" } },
+    { "Float",   { "Options", "Integer",          "Bool", "String" } },
+    { "Integer", { "Options",            "Float", "Bool", "String" } },
+    { "Options", {            "Integer", "Float", "Bool", "String" } },
+    { "FloatVector", { "IntegerVector", "String" } },
+    { "IntegerVector", { "FloatVector", "String" } }
   };
 
   if (to == from) {

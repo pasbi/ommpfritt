@@ -22,7 +22,6 @@ enum class HandleStatus { Hovered, Active, Inactive };
 
 }  // namespace omm
 
-
 enum class Stream { stdout_, stderr_ };
 
 /*
