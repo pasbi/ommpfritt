@@ -11,6 +11,7 @@ namespace omm
 class DisconnectPortsCommand;
 class ConnectPortsCommand;
 class AbstractPropertyOwner;
+class NodeModel;
 
 class UserPropertyCommand : public Command
 {
@@ -41,6 +42,7 @@ private:
   void change(Configurations& configurations);
 
   void swap();
+  NodeModel* m_node_model = nullptr;
 };
 
 }  // namespace omm

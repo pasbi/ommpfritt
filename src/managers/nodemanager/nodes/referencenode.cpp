@@ -1,10 +1,12 @@
 #include "managers/nodemanager/nodes/referencenode.h"
+#include "scene/messagebox.h"
 #include "commands/forwardingportcommand.h"
 #include "keybindings/menu.h"
 #include "properties/referenceproperty.h"
 #include "variant.h"
 #include "scene/scene.h"
 #include "properties/optionsproperty.h"
+#include "managers/nodemanager/nodemodel.h"
 
 namespace
 {
@@ -33,6 +35,16 @@ ReferenceNode::ReferenceNode(Scene* scene)
   const QString category = tr("Node");
   create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
     .set_label(tr("Reference")).set_category(category);
+
+  connect(&scene->message_box(), &MessageBox::property_value_changed,
+          [this](AbstractPropertyOwner& owner, const QString& key, Property&)
+  {
+    if (&owner == property(REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>()) {
+      if (key == AbstractPropertyOwner::NAME_PROPERTY_KEY) {
+        model()->notify_node_shape_changed();
+      }
+    }
+  });
 }
 
 void ReferenceNode::populate_menu(QMenu& menu)
@@ -89,6 +101,9 @@ ReferenceNode::serialize(AbstractSerializer& serializer, const Serializable::Poi
 
 void ReferenceNode::on_property_value_changed(Property* property)
 {
+  if (property == this->property(REFERENCE_PROPERTY_KEY)) {
+    model()->notify_node_shape_changed();
+  }
 }
 
 AbstractPropertyOwner* ReferenceNode::reference() const

@@ -38,12 +38,12 @@ void NodeView::set_model(NodeModel* model)
   if (m_model != model) {
     if (m_model != nullptr) {
       disconnect(m_model, SIGNAL(appearance_changed()), this, SLOT(update()));
-      disconnect(m_model, SIGNAL(topology_changed()), this, SLOT(invalidate_caches()));
+      disconnect(m_model, SIGNAL(node_shape_changed()), this, SLOT(invalidate_caches()));
     }
     m_model = model;
     if (m_model != nullptr) {
       connect(m_model, SIGNAL(appearance_changed()), this, SLOT(update()));
-      connect(m_model, SIGNAL(topology_changed()), this, SLOT(invalidate_caches()));
+      connect(m_model, SIGNAL(node_shape_changed()), this, SLOT(invalidate_caches()));
     }
     update();
   }

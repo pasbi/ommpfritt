@@ -8,13 +8,15 @@ namespace omm
 
 NodeModel::NodeModel(Scene& scene) : m_scene(scene)
 {
-  connect(this, SIGNAL(topology_changed()), this, SIGNAL(appearance_changed()));
+  connect(this, SIGNAL(node_shape_changed()), this, SIGNAL(appearance_changed()));
+  connect(this, SIGNAL(topology_changed()), this, SIGNAL(node_shape_changed()));
 }
 
 NodeModel::NodeModel(const NodeModel& other)
   : NodeModel(other.m_scene)
 {
-  connect(this, SIGNAL(topology_changed()), this, SIGNAL(appearance_changed()));
+  connect(this, SIGNAL(node_shape_changed()), this, SIGNAL(appearance_changed()));
+  connect(this, SIGNAL(topology_changed()), this, SIGNAL(node_shape_changed()));
   // TODO
 }
 
@@ -160,6 +162,11 @@ void NodeModel::notify_appearance_changed()
 void NodeModel::notify_topology_changed()
 {
   Q_EMIT topology_changed();
+}
+
+void NodeModel::notify_node_shape_changed()
+{
+  Q_EMIT node_shape_changed();
 }
 
 bool NodeModel::can_connect(const AbstractPort& a, const AbstractPort& b) const
