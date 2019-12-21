@@ -154,7 +154,7 @@ PropertyManager::~PropertyManager()
 
 void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
-  if (!m_is_locked) {
+  if (!is_locked()) {
     m_current_selection = selection;
     update_property_widgets();
     m_title_bar->set_selection(selection);
@@ -234,8 +234,6 @@ void PropertyManager::update_property_widgets()
   m_layout->addStretch();
   setWindowTitle(make_window_title());
 }
-
-void PropertyManager::set_locked(bool locked) { m_is_locked = locked; }
 
 void PropertyManager::clear()
 {

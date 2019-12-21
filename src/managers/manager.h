@@ -34,8 +34,16 @@ protected:
   void set_widget(std::unique_ptr<QWidget> widget);
   void keyPressEvent(QKeyEvent* e) override;
 
+protected:
+  bool is_locked() const { return m_is_locked; }
+
 private:
   using QDockWidget::setWidget;  // use set_widget instead
+  bool m_is_locked = false;
+
+public Q_SLOTS:
+  void set_locked(bool locked) { m_is_locked = locked; }
+
 };
 
 void register_managers();

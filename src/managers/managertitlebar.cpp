@@ -10,6 +10,7 @@ namespace omm
 {
 
 ManagerTitleBar::ManagerTitleBar(Manager& manager)
+  : m_manager(manager)
 {
   auto pb_normal = std::make_unique<QPushButton>();
   pb_normal->setMaximumSize(QSize(12, 12));
@@ -45,6 +46,36 @@ void ManagerTitleBar::add_widget(std::unique_ptr<QWidget> widget)
   m_layout->insertWidget(0, widget.release());
   m_layout->setStretch(0, 1);
   m_layout->setStretch(1, 0);
+}
+
+std::unique_ptr<QPushButton> ManagerTitleBar::make_lock_button() const
+{
+  auto lock_button = std::make_unique<QPushButton>();
+  const auto update_lock_button_icon = [&btn=*lock_button](bool checked) {
+    btn.setIcon(QPixmap::fromImage(QImage(checked ? ":/icons/LockedLock.png"
+                                                  : ":/icons/OpenLock.png" )));
+  };
+  update_lock_button_icon(lock_button->isChecked());
+  lock_button->setFixedSize(24, 24);
+  lock_button->setCheckable(true);
+  connect(lock_button.get(), &QPushButton::toggled, [this, update_lock_button_icon](bool checked) {
+    m_manager.set_locked(checked);
+    update_lock_button_icon(checked);
+  });
+  return lock_button;
+}
+
+void ManagerTitleBar::apply_standard_layout(std::vector<std::unique_ptr<QWidget>> widgets)
+{
+  auto container = std::make_unique<QWidget>();
+  auto layout = std::make_unique<QHBoxLayout>();
+  layout->setContentsMargins(0, 0, 0, 0);
+  layout->addStretch(0);
+  for (auto&& widget : widgets) {
+    layout->addWidget(widget.release());
+  }
+  container->setLayout(layout.release());
+  add_widget(std::move(container));
 }
 
 QSize ManagerTitleBar::sizeHint() const

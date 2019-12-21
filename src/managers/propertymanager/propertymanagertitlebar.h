@@ -22,10 +22,6 @@ public:
 private:
   AbstractPropertyOwner* m_first_selected = nullptr;
   QPushButton* m_open_user_properties_dialog_button;
-  QPushButton* m_lock_button;
-
-private Q_SLOTS:
-  void update_lock_button_icon(bool checked);
 };
 
 }  // namespace omm

@@ -37,7 +37,6 @@ private:
   OrderedMap<QString, PropertyManagerTab> m_tabs;
   std::set<AbstractPropertyOwner*> m_current_selection;
   QString make_window_title() const;
-  bool m_is_locked = false;
   QVBoxLayout* m_layout;
   std::unique_ptr<QScrollArea> m_scroll_area;
   std::unique_ptr<MultiTabBar> m_tab_bar;
@@ -52,7 +51,6 @@ private Q_SLOTS:
   void activate_tabs(const std::set<int>& indices);
 
 public Q_SLOTS:
-  void set_locked(bool locked);
   void update_property_widgets();
 };
 

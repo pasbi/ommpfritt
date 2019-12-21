@@ -2,6 +2,7 @@
 file(GLOB SOURCES
   node.cpp
   nodemanager.cpp
+  nodemanagertitlebar.cpp
   nodemodel.cpp
   nodeview.cpp
   nodecompiler.cpp
@@ -14,6 +15,7 @@ file(GLOB SOURCES
 file(GLOB HEADERS
   node.h
   nodemanager.h
+  nodemanagertitlebar.h
   nodemodel.h
   nodeview.h
   nodecompiler.h

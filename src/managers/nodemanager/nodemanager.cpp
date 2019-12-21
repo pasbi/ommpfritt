@@ -1,4 +1,5 @@
 #include "managers/nodemanager/nodemanager.h"
+#include "managers/nodemanager/nodemanagertitlebar.h"
 #include "managers/nodemanager/nodesowner.h"
 #include "commands/nodecommand.h"
 #include "managers/nodemanager/node.h"
@@ -25,6 +26,7 @@ NodeManager::NodeManager(Scene& scene)
 
   connect(&scene.message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
+  setTitleBarWidget(std::make_unique<NodeManagerTitleBar>(*this).release());
 }
 
 NodeManager::~NodeManager()
@@ -52,11 +54,13 @@ void NodeManager::mousePressEvent(QMouseEvent* event)
 
 void NodeManager::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
-  for (AbstractPropertyOwner* apo : selection) {
-    if (!!(apo->flags() & AbstractPropertyOwner::Flag::HasNodes)) {
-      NodeModel& nodes_model = dynamic_cast<NodesOwner*>(apo)->node_model();
-      for (NodeManager* nm : Application::instance().managers<NodeManager>()) {
-        nm->set_model(&nodes_model);
+  if (!is_locked()) {
+    for (AbstractPropertyOwner* apo : selection) {
+      if (!!(apo->flags() & AbstractPropertyOwner::Flag::HasNodes)) {
+        NodeModel& nodes_model = dynamic_cast<NodesOwner*>(apo)->node_model();
+        for (NodeManager* nm : Application::instance().managers<NodeManager>()) {
+          nm->set_model(&nodes_model);
+        }
       }
     }
   }

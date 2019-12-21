@@ -4,6 +4,7 @@
 #include <memory>
 
 class QHBoxLayout;
+class QPushButton;
 
 namespace omm
 {
@@ -18,8 +19,13 @@ public:
   QSize sizeHint() const override;
   void add_widget(std::unique_ptr<QWidget> widget);
 
+protected:
+  std::unique_ptr<QPushButton> make_lock_button() const;
+  void apply_standard_layout(std::vector<std::unique_ptr<QWidget> > widgets);
+
 private:
   QHBoxLayout* m_layout;
+  Manager& m_manager;
 };
 
 }  // namespace omm
