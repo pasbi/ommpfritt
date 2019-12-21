@@ -1,4 +1,5 @@
 #include "managers/nodemanager/nodemanager.h"
+#include "managers/nodemanager/nodesowner.h"
 #include "commands/nodecommand.h"
 #include "managers/nodemanager/node.h"
 #include "logging.h"
@@ -6,6 +7,7 @@
 #include "ui_nodemanager.h"
 #include "mainwindow/application.h"
 #include "keybindings/menu.h"
+#include "scene/messagebox.h"
 #include <QContextMenuEvent>
 
 namespace omm
@@ -20,6 +22,9 @@ NodeManager::NodeManager(Scene& scene)
   m_ui->setupUi(widget.get());
   set_widget(std::move(widget));
   setContextMenuPolicy(Qt::PreventContextMenu);  // we implement it ourself.
+
+  connect(&scene.message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
+          this, SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
 }
 
 NodeManager::~NodeManager()
@@ -43,6 +48,18 @@ void NodeManager::mousePressEvent(QMouseEvent* event)
     menu->exec();
   }
   Manager::mousePressEvent(event);
+}
+
+void NodeManager::set_selection(const std::set<AbstractPropertyOwner*>& selection)
+{
+  for (AbstractPropertyOwner* apo : selection) {
+    if (!!(apo->flags() & AbstractPropertyOwner::Flag::HasNodes)) {
+      NodeModel& nodes_model = dynamic_cast<NodesOwner*>(apo)->node_model();
+      for (NodeManager* nm : Application::instance().managers<NodeManager>()) {
+        nm->set_model(&nodes_model);
+      }
+    }
+  }
 }
 
 std::unique_ptr<QMenu> NodeManager::make_context_menu()

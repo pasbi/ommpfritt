@@ -6,6 +6,7 @@ file(GLOB SOURCES
   nodeview.cpp
   nodecompiler.cpp
   nodetopythoncompiler.cpp
+  nodesowner.cpp
   port.cpp
   propertyport.cpp
 )
@@ -17,6 +18,7 @@ file(GLOB HEADERS
   nodeview.h
   nodecompiler.h
   nodetopythoncompiler.h
+  nodesowner.h
   port.h
   propertyport.cpp
   ordinaryport.h

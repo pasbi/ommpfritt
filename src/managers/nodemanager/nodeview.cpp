@@ -144,7 +144,7 @@ std::set<Node*> NodeView::nodes(const QRectF& rect) const
 
 void NodeView::update_scene_selection()
 {
-  m_model->scene()->set_selection(::transform<AbstractPropertyOwner*>(m_selection, ::identity));
+  m_model->scene().set_selection(::transform<AbstractPropertyOwner*>(m_selection, ::identity));
 }
 
 bool NodeView::can_drop(const QDropEvent& event) const
@@ -212,7 +212,7 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
     } else if (m_tmp_connection_origin == nullptr && m_model != nullptr) {
       if (event->buttons() & Qt::LeftButton) {
         if (const QPointF e = m_pzc.unit_d(); e.manhattanLength() > 0 && !m_selection.empty()) {
-          m_model->scene()->submit<MoveNodesCommand>(m_selection, e);
+          m_model->scene().submit<MoveNodesCommand>(m_selection, e);
         }
       }
     } else if (m_tmp_connection_origin != nullptr && m_model != nullptr) {
@@ -255,10 +255,10 @@ void NodeView::mouseReleaseEvent(QMouseEvent*)
   {
     std::unique_ptr<Macro> macro;
     if (commands.size() > 1) {
-      macro = m_model->scene()->history().start_macro(tr("Modify Connections"));
+      macro = m_model->scene().history().start_macro(tr("Modify Connections"));
     }
     for (auto&& command : commands) {
-      m_model->scene()->submit(std::move(command));
+      m_model->scene().submit(std::move(command));
     }
   }
 
@@ -291,7 +291,7 @@ void NodeView::dropEvent(QDropEvent* event)
 
     std::vector<std::unique_ptr<Node>> nodes;
     nodes.reserve(items.size());
-    Scene& scene = *model()->scene();
+    Scene& scene = model()->scene();
     QPointF insert_pos = get_insert_position(event->pos());
     for (AbstractPropertyOwner* item : items) {
       auto node = Node::make(ReferenceNode::TYPE, &scene);
@@ -324,7 +324,7 @@ void NodeView::remove_selection()
 {
   if (m_model != nullptr) {
     const auto selection = ::transform<Node*, std::vector>(m_selection);
-    m_model->scene()->submit<RemoveNodesCommand>(*m_model, selection);
+    m_model->scene().submit<RemoveNodesCommand>(*m_model, selection);
   }
 }
 

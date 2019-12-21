@@ -43,8 +43,7 @@ namespace omm
 {
 
 NodesTag::NodesTag(Object& owner)
-  : Tag(owner)
-  , m_nodes(std::make_unique<NodeModel>(owner.scene()))
+  : Tag(owner), NodesOwner(*owner.scene())
   , m_compiler_cache(*this)
 {
   const QString category = QObject::tr("Basic");
@@ -53,13 +52,10 @@ NodesTag::NodesTag(Object& owner)
     .set_label(QObject::tr("update")).set_category(category);
   create_property<TriggerProperty>(TRIGGER_UPDATE_PROPERTY_KEY)
     .set_label(QObject::tr("evaluate")).set_category(category);
-  create_property<TriggerProperty>(EDIT_NODES_KEY)
-      .set_label(tr("Edit Nodes ...")).set_category(category);
 }
 
 NodesTag::NodesTag(const NodesTag& other)
-  : Tag(other)
-  , m_nodes(std::make_unique<NodeModel>(*other.m_nodes))
+  : Tag(other), NodesOwner(*other.scene())
   , m_compiler_cache(*this)
 {
 }
@@ -69,18 +65,21 @@ NodesTag::~NodesTag()
 }
 
 QString NodesTag::type() const { return TYPE; }
-AbstractPropertyOwner::Flag NodesTag::flags() const { return Tag::flags(); }
+AbstractPropertyOwner::Flag NodesTag::flags() const
+{
+  return Tag::flags() | Flag::HasNodes;
+}
 
 void NodesTag::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
 {
   Tag::serialize(serializer, root);
-  m_nodes->serialize(serializer, make_pointer(root, NODES_POINTER));
+  node_model().serialize(serializer, make_pointer(root, NODES_POINTER));
 }
 
 void NodesTag::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
 {
   Tag::deserialize(deserializer, root);
-  m_nodes->deserialize(deserializer, make_pointer(root, NODES_POINTER));
+  node_model().deserialize(deserializer, make_pointer(root, NODES_POINTER));
 }
 
 std::unique_ptr<Tag> NodesTag::clone() const { return std::make_unique<NodesTag>(*this); }
@@ -89,10 +88,6 @@ void NodesTag::on_property_value_changed(Property *property)
 {
   if (property == this->property(TRIGGER_UPDATE_PROPERTY_KEY)) {
     force_evaluate();
-  } else if (property == this->property(EDIT_NODES_KEY)) {
-    for (NodeManager* nm : Application::instance().managers<NodeManager>()) {
-      nm->set_model(m_nodes.get());
-    }
   }
 }
 
@@ -106,8 +101,8 @@ void NodesTag::force_evaluate()
   LINFO << "Compilation: \n" << code;
   auto locals = py::dict();
   const NodeCompiler* compiler = m_compiler_cache.compiler();
-  populate_locals<PortType::Input>(locals, *compiler, *m_nodes);
-  populate_locals<PortType::Output>(locals, *compiler, *m_nodes);
+  populate_locals<PortType::Input>(locals, *compiler, node_model());
+  populate_locals<PortType::Output>(locals, *compiler, node_model());
 
   try {
     py::exec(code.toStdString(), py::globals(), locals);
@@ -116,7 +111,7 @@ void NodesTag::force_evaluate()
     return;
   }
 
-  for (InputPort* port : m_nodes->ports<InputPort>()) {
+  for (InputPort* port : node_model().ports<InputPort>()) {
     if (port->flavor == PortFlavor::Property && port->is_connected()) {
       Property* property = static_cast<PropertyPort<PortType::Input>*>(port)->property();
       if (property != nullptr) {
@@ -141,7 +136,7 @@ void NodesTag::evaluate()
 
 NodesTag::CompilerCache::CompilerCache(NodesTag& self) : CachedGetter<QString, NodesTag>(self)
 {
-  connect(self.m_nodes.get(), &NodeModel::topology_changed, [this]() {
+  connect(&self.node_model(), &NodeModel::topology_changed, [this]() {
     invalidate();
   });
 }
@@ -154,7 +149,7 @@ NodesTag::CompilerCache::~CompilerCache()
 QString NodesTag::CompilerCache::compute() const
 {
   m_compiler = std::make_unique<NodeCompiler>(NodeCompiler::Language::Python);
-  m_compiler->compile(*m_self.m_nodes);
+  m_compiler->compile(m_self.node_model());
   return m_compiler->compilation();
 }
 

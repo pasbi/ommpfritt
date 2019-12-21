@@ -20,7 +20,7 @@ class NodeModel : public QObject, public Serializable
 {
   Q_OBJECT
 public:
-  explicit NodeModel(Scene* scene);
+  explicit NodeModel(Scene& scene);
   NodeModel(const NodeModel& other);
   ~NodeModel();
 
@@ -50,7 +50,7 @@ public:
     return ::transform<PortT*>(::filter_if(ports(), pred), conv);
   }
 
-  Scene* scene() const { return m_scene; }
+  Scene& scene() const { return m_scene; }
   void notify_appearance_changed();
   void notify_topology_changed();
 
@@ -60,7 +60,7 @@ Q_SIGNALS:
 
 private:
   std::set<std::unique_ptr<Node>> m_nodes;
-  Scene* m_scene;
+  Scene& m_scene;
 };
 
 

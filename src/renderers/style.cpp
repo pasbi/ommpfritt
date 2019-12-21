@@ -27,10 +27,9 @@ namespace omm
 {
 
 Style::Style(Scene *scene)
-  : PropertyOwner(scene)
+  : PropertyOwner(scene), NodesOwner(*scene)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
-  , m_nodes(std::make_unique<NodeModel>(scene))
 {
   const auto pen_category = QObject::tr("pen");
   const auto brush_category = QObject::tr("brush");
@@ -76,8 +75,6 @@ Style::Style(Scene *scene)
   create_property<ColorProperty>(BRUSH_COLOR_KEY, Colors::RED)
     .set_label(QObject::tr("color"))
     .set_category(brush_category);
-  create_property<TriggerProperty>(EDIT_NODES_KEY)
-    .set_label(tr("Edit Nodes ...")).set_category(brush_category);
   create_property<BoolProperty>("gl-brush", false)
     .set_label(tr("Use Nodes")).set_category(brush_category);
 
@@ -91,7 +88,7 @@ Style::~Style()
 }
 
 Style::Style(const Style &other)
-  : PropertyOwner(other)
+  : PropertyOwner(other), NodesOwner(*other.scene())
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {
@@ -99,7 +96,10 @@ Style::Style(const Style &other)
 }
 
 QString Style::type() const { return TYPE; }
-AbstractPropertyOwner::Flag Style::flags() const { return Flag::None; }
+AbstractPropertyOwner::Flag Style::flags() const
+{
+  return Flag::None | Flag::HasNodes;
+}
 
 QPixmap Style::texture(const Object& object, const QSize& size) const
 {
@@ -110,13 +110,13 @@ QPixmap Style::texture(const Object& object, const QSize& size) const
 void Style::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
 {
   PropertyOwner::serialize(serializer, root);
-  m_nodes->serialize(serializer, make_pointer(root, NODES_POINTER));
+  node_model().serialize(serializer, make_pointer(root, NODES_POINTER));
 }
 
 void Style::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
 {
   PropertyOwner::deserialize(deserializer, root);
-  m_nodes->deserialize(deserializer, make_pointer(root, NODES_POINTER));
+  node_model().deserialize(deserializer, make_pointer(root, NODES_POINTER));
 }
 
 void Style::on_property_value_changed(Property *property)
@@ -133,10 +133,6 @@ void Style::on_property_value_changed(Property *property)
   {
     if (Scene* scene = this->scene(); scene != nullptr) {
       Q_EMIT scene->message_box().appearance_changed(*this);
-    }
-  } else if (property == this->property(EDIT_NODES_KEY)) {
-    for (NodeManager* nm : Application::instance().managers<NodeManager>()) {
-      nm->set_model(m_nodes.get());
     }
   }
 }

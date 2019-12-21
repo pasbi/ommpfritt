@@ -4,6 +4,7 @@
 #include "aspects/propertyowner.h"
 #include "color/color.h"
 #include "properties/propertygroups/markerproperties.h"
+#include "managers/nodemanager/nodesowner.h"
 
 namespace omm
 {
@@ -14,6 +15,7 @@ class NodeModel;
 
 class Style
   : public PropertyOwner<AbstractPropertyOwner::Kind::Style>
+  , public NodesOwner
 {
   Q_OBJECT
 public:
@@ -41,7 +43,6 @@ public:
   static constexpr auto END_MARKER = "pen/end-marker";
   static constexpr auto BRUSH_IS_ACTIVE_KEY = "brush/active";
   static constexpr auto BRUSH_COLOR_KEY = "brush/color";
-  static constexpr auto EDIT_NODES_KEY = "brush/edit-nodes";
 
   static constexpr auto NODES_POINTER = "nodes";
 
@@ -52,7 +53,6 @@ public:
 private:
   std::unique_ptr<OffscreenRenderer> m_offscreen_renderer;
   void init_offscreen_renderer();
-  std::unique_ptr<NodeModel> m_nodes;
 };
 
 }  // namespace omm

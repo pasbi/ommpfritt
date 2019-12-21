@@ -1227,6 +1227,25 @@ Borrar la selección de todos modos?</translation>
         <source>Basic</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Remove Forwarding Port</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Forwarding Port</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ReferenceNode</name>
+    <message>
+        <source>input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>output</source>
+        <translation type="unfinished">Output</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1887,6 +1906,13 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
+    <name>omm::ConstantNode</name>
+    <message>
+        <source>Edit ports ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>omm::CurveManager</name>
     <message>
         <source>Curves</source>
@@ -2191,6 +2217,18 @@ Do you want to convert them into ordinary colors?</source>
     <message>
         <source>Reference</source>
         <translation type="unfinished">Referencia</translation>
+    </message>
+    <message>
+        <source>Forwarded Ports</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No properties.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> [%1]</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

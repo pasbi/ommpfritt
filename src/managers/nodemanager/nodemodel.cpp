@@ -6,12 +6,13 @@
 namespace omm
 {
 
-NodeModel::NodeModel(Scene* scene) : m_scene(scene)
+NodeModel::NodeModel(Scene& scene) : m_scene(scene)
 {
   connect(this, SIGNAL(topology_changed()), this, SIGNAL(appearance_changed()));
 }
 
 NodeModel::NodeModel(const NodeModel& other)
+  : NodeModel(other.m_scene)
 {
   connect(this, SIGNAL(topology_changed()), this, SIGNAL(appearance_changed()));
   // TODO
@@ -77,7 +78,7 @@ void NodeModel::deserialize(AbstractDeserializer& deserializer, const Serializab
   for (size_t i = 0; i < n; ++i) {
     const auto node_ptr = Serializable::make_pointer(ptr, NODES_POINTER, i);
     const auto type = deserializer.get_string(make_pointer(node_ptr, TYPE_POINTER));
-    auto node = Node::make(type, m_scene);
+    auto node = Node::make(type, &m_scene);
     node->deserialize(deserializer, node_ptr);
     add_node(std::move(node));
   }

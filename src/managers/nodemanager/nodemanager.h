@@ -10,6 +10,7 @@ class NodeManager;
 namespace omm
 {
 
+class AbstractPropertyOwner;
 class NodeModel;
 class NodeManager : public Manager
 {
@@ -26,6 +27,9 @@ public:
 
 protected:
   void mousePressEvent(QMouseEvent* event) override;
+
+public Q_SLOTS:
+  void set_selection(const std::set<AbstractPropertyOwner*>& selection);
 
 private:
   std::unique_ptr<Ui::NodeManager> m_ui;
