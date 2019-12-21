@@ -1,4 +1,7 @@
 #include "managers/manager.h"
+#include <QGuiApplication>
+#include <QScreen>
+#include <QWindow>
 #include "mainwindow/application.h"
 #include <QContextMenuEvent>
 
@@ -20,6 +23,31 @@ Manager::~Manager()
 }
 
 Scene& Manager::scene() const { return m_scene; }
+
+bool Manager::is_visible() const
+{
+  if (!isVisible()) {
+    return false;
+  } else {
+    QPoint parent_top_left(0, 0);
+    if (isWindow()) {
+      auto screen = [this]() -> const QScreen* {
+        const QWidget* npw = nativeParentWidget();
+        if (npw == nullptr) { return nullptr; }
+        const QWindow* window = npw->windowHandle();
+        if (window == nullptr) { return nullptr; }
+        return window->screen();
+      }();
+
+      if (screen == nullptr) {
+        parent_top_left = QGuiApplication::primaryScreen()->availableVirtualGeometry().topLeft();
+      }
+    }
+
+    const QPoint bottom_right = geometry().bottomRight();
+    return bottom_right.x() >= parent_top_left.x() && bottom_right.y() >= parent_top_left.y();
+  }
+}
 
 void Manager::set_widget(std::unique_ptr<QWidget> widget)
 {

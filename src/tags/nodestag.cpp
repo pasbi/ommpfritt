@@ -1,4 +1,5 @@
 #include "tags/nodestag.h"
+#include "mainwindow/application.h"
 #include "managers/nodemanager/propertyport.h"
 #include "managers/nodemanager/port.h"
 #include "managers/nodemanager/nodecompiler.h"
@@ -52,6 +53,8 @@ NodesTag::NodesTag(Object& owner)
     .set_label(QObject::tr("update")).set_category(category);
   create_property<TriggerProperty>(TRIGGER_UPDATE_PROPERTY_KEY)
     .set_label(QObject::tr("evaluate")).set_category(category);
+  create_property<TriggerProperty>(EDIT_NODES_PROPERTY_KEY)
+    .set_label(QObject::tr("Edit ...")).set_category(category);
 }
 
 NodesTag::NodesTag(const NodesTag& other)
@@ -88,6 +91,20 @@ void NodesTag::on_property_value_changed(Property *property)
 {
   if (property == this->property(TRIGGER_UPDATE_PROPERTY_KEY)) {
     force_evaluate();
+  } else if (property == this->property(EDIT_NODES_PROPERTY_KEY)) {
+    NodeManager* the_manager = nullptr;
+    for (NodeManager* manager : Application::instance().managers<NodeManager>()) {
+      if (manager->is_visible() && !manager->is_locked()) {
+        the_manager = manager;
+        break;
+      }
+    }
+    if (the_manager == nullptr) {
+      auto& manager = Application::instance().spawn_manager(NodeManager::TYPE);
+      the_manager = &static_cast<NodeManager&>(manager);
+    }
+
+    the_manager->set_model(&node_model());
   }
 }
 

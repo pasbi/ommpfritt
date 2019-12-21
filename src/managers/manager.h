@@ -26,6 +26,8 @@ public:
   Manager(Manager&&) = delete;
   virtual ~Manager();
   Scene& scene() const;
+  bool is_visible() const;
+  bool is_locked() const { return m_is_locked; }
 
 protected:
   Manager(const QString& title, Scene& scene);
@@ -34,8 +36,6 @@ protected:
   void set_widget(std::unique_ptr<QWidget> widget);
   void keyPressEvent(QKeyEvent* e) override;
 
-protected:
-  bool is_locked() const { return m_is_locked; }
 
 private:
   using QDockWidget::setWidget;  // use set_widget instead

@@ -23,6 +23,7 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "NodesTag");
   static constexpr auto UPDATE_MODE_PROPERTY_KEY = "update";
   static constexpr auto TRIGGER_UPDATE_PROPERTY_KEY = "trigger";
+  static constexpr auto EDIT_NODES_PROPERTY_KEY = "edit-nodes";
   static constexpr auto NODES_POINTER = "nodes";
 
   std::unique_ptr<Tag> clone() const override;

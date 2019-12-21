@@ -303,11 +303,7 @@ bool Application::perform_action(const QString& action_name)
     }
     for (const auto& key : Manager::keys()) {
       if (key == action_name) {
-        auto manager = Manager::make(key, scene);
-        main_window()->make_unique_manager_name(*manager);
-        auto& ref = *manager;
-        main_window()->addDockWidget(Qt::TopDockWidgetArea, manager.release());
-        ref.setFloating(true);
+        spawn_manager(key);
         return true;
       }
     }
@@ -454,6 +450,16 @@ void Application::register_auto_invert_icon_button(QAbstractButton& button)
     disconnect(connection);
   });
   update_button_icon();
+}
+
+Manager& Application::spawn_manager(const QString& key)
+{
+  auto manager = Manager::make(key, scene);
+  main_window()->make_unique_manager_name(*manager);
+  auto& ref = *manager;
+  main_window()->addDockWidget(Qt::TopDockWidgetArea, manager.release());
+  ref.setFloating(true);
+  return ref;
 }
 
 void Application::register_manager(Manager& manager)

@@ -15,10 +15,6 @@
 
 #include "scene/messagebox.h"
 #include "tools/tool.h"
-#include "managers/objectmanager/objectmanager.h"
-#include "managers/stylemanager/stylemanager.h"
-#include "managers/propertymanager/propertymanager.h"
-#include "managers/boundingboxmanager/boundingboxmanager.h"
 #include "managers/timeline/timeline.h"
 #include "mainwindow/viewport/viewport.h"
 #include "mainwindow/application.h"

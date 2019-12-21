@@ -63,6 +63,8 @@ public:
   static const std::set<int> keyboard_modifiers;
   void register_auto_invert_icon_button(QAbstractButton& button);
 
+  Manager& spawn_manager(const QString& key);
+
 private:
   QApplication& m_app;
   static Application* m_instance;
