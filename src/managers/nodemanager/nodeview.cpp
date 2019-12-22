@@ -69,7 +69,7 @@ void NodeView::paintEvent(QPaintEvent*)
       const Node& node = **nit;
       draw_node(painter, node);
     }
-    if (m_tmp_connection_origin != nullptr) {
+    if (!m_aborted && m_tmp_connection_origin != nullptr) {
       const QPointF origin = port_pos(*m_tmp_connection_origin);
       const QPointF target = m_tmp_connection_target == nullptr
           ? m_pzc.transform().inverted().map(QPointF(m_pzc.last_mouse_pos()))
@@ -183,6 +183,7 @@ void NodeView::mousePressEvent(QMouseEvent* event)
       const bool toggle_selection = event->modifiers() & Qt::ControlModifier;
       if (select_port_or_node(event->pos()- m_pzc.offset(), extend_selection, toggle_selection)) {
         if (event->button() == Qt::RightButton) {
+          m_aborted = true;
           QWidget::mousePressEvent(event);
         } else {
           event->accept();
