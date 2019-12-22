@@ -45,8 +45,8 @@ void NodeView::set_model(NodeModel* model)
       connect(m_model, SIGNAL(appearance_changed()), this, SLOT(update()));
       connect(m_model, SIGNAL(node_shape_changed()), this, SLOT(invalidate_caches()));
     }
-    update();
   }
+  pan_to_center();
 }
 
 void NodeView::paintEvent(QPaintEvent*)
@@ -308,6 +308,11 @@ void NodeView::dropEvent(QDropEvent* event)
   }
 }
 
+void NodeView::mouseDoubleClickEvent(QMouseEvent*)
+{
+  pan_to_center();
+}
+
 void NodeView::abort()
 {
   m_aborted = true;
@@ -397,7 +402,7 @@ void NodeView::draw_port(QPainter& painter, const AbstractPort& port) const
 
   const double ph = port_height;
   const double width = node_width_cache(&port.node);
-  const QRectF text_rect(node_pos.x() + ph/2.0 + margin,
+  const QRectF text_rect(node_pos.x() - width/2.0 + ph/2.0 + margin,
                          port_pos.y() - ph/2.0, width - ph - margin*2.0, ph);
   const auto halign = (port.port_type == PortType::Input ? Qt::AlignLeft : Qt::AlignRight);
   painter.drawText(text_rect, halign | Qt::AlignVCenter, port.label());
@@ -440,13 +445,29 @@ QRectF NodeView::node_geometry(const Node& node) const
     n = std::max(port->index + 1, n);
   }
   const double height = node_header_height + node_footer_height + n * port_height;
-  return QRectF(node.pos(), QSizeF(node_width_cache(&node), height));
+  const QPointF offset(node_width_cache(&node), height);
+  return QRectF(node.pos() - offset/2.0, node.pos() + offset/2.0);
 }
 
 void NodeView::populate_context_menu(QMenu& menu) const
 {
   if (m_selection.size() == 1) {
     (**m_selection.begin()).populate_menu(menu);
+  }
+}
+
+void NodeView::pan_to_center()
+{
+  if (m_model != nullptr) {
+    const auto nodes = m_model->nodes();
+    QPointF mean(0.0, 0.0);
+    for (Node* node : nodes) {
+      mean += node->pos();
+    }
+    mean /= nodes.size();
+
+    m_pzc.translate(-m_pzc.transform().map(mean));
+    update();
   }
 }
 
@@ -475,8 +496,9 @@ AbstractPort* NodeView::port(std::set<AbstractPort*> candidates, const QPointF& 
 
 QPointF NodeView::port_pos(const AbstractPort& port) const
 {
-  const double y = (port.index+0.5) * port_height + node_header_height;
-  const double x = port.port_type == PortType::Input ? 0.0 : node_width_cache(&port.node);
+  const QRectF node_geometry = this->node_geometry(port.node);
+  const double y = (port.index+0.5) * port_height + node_header_height - node_geometry.height()/2.0;
+  const double x = (port.port_type == PortType::Input ? -0.5 : 0.5) * node_geometry.width();
   return port.node.pos() + QPointF(x, y);
 }
 

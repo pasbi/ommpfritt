@@ -24,6 +24,7 @@ public:
   bool rubber_band_visible = false;
   QPointF offset() const;
   QRectF unit_rubber_band() const;
+  void translate(const QPointF& t);
 
 private:
   Action m_current_action = Action::None;
@@ -31,7 +32,6 @@ private:
   QPointF m_start_pos;
   QPointF m_pixel_d;
   QPointF m_unit_d;
-  void pan();
   void zoom();
 
   QTransform m_transform;

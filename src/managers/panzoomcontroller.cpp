@@ -35,7 +35,7 @@ bool PanZoomController::move(QPointF pos)
   m_last_pos = pos;
   switch (m_current_action) {
   case Action::Pan:
-    pan();
+    translate(m_pixel_d);
     return true;
   case Action::Zoom:
     zoom();
@@ -67,6 +67,13 @@ QRectF PanZoomController::unit_rubber_band() const
   return QRectF(ti.map(m_last_pos), ti.map(m_start_pos)).normalized();
 }
 
+void PanZoomController::translate(const QPointF& v)
+{
+  QTransform t;
+  t.translate(v.x(), v.y());
+  m_transform = m_transform * t;
+}
+
 void PanZoomController::draw_rubberband(QPainter& painter, const QWidget& widget, const QRectF& rect)
 {
   painter.save();
@@ -79,13 +86,6 @@ void PanZoomController::draw_rubberband(QPainter& painter, const QWidget& widget
   painter.fillRect(rect, ui_color(widget, "TimeLine", "rubberband fill"));
   painter.drawRect(rect);
   painter.restore();
-}
-
-void PanZoomController::pan()
-{
-  QTransform t;
-  t.translate(m_pixel_d.x(), m_pixel_d.y());
-  m_transform  = m_transform * t;
 }
 
 void PanZoomController::zoom()

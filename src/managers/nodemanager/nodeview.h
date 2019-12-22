@@ -34,6 +34,7 @@ public:
   QPointF get_insert_position(const QPoint& pos) const;
   QRectF node_geometry(const Node& node) const;
   void populate_context_menu(QMenu& menu) const;
+  void pan_to_center();
 
 protected:
   void paintEvent(QPaintEvent*) override;
@@ -42,6 +43,7 @@ protected:
   void mouseReleaseEvent(QMouseEvent*) override;
   void dragEnterEvent(QDragEnterEvent* event) override;
   void dropEvent(QDropEvent* event) override;
+  void mouseDoubleClickEvent(QMouseEvent*) override;
 
 private:
   NodeModel* m_model = nullptr;
