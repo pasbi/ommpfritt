@@ -13,6 +13,7 @@ public:
   QString type() const override;
   static constexpr auto STYLE_REFERENCE_PROPERTY_KEY = "style";
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "StyleTag");
+  static constexpr auto EDIT_STYLE_PROPERTY_KEY = "edit-style";
   std::unique_ptr<Tag> clone() const override;
   void evaluate() override;
   Flag flags() const override;

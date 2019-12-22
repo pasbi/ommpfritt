@@ -63,7 +63,16 @@ public:
   static const std::set<int> keyboard_modifiers;
   void register_auto_invert_icon_button(QAbstractButton& button);
 
-  Manager& spawn_manager(const QString& key);
+  Manager& spawn_manager(const QString& type);
+
+  /**
+   * @brief get_active_manager returns a reference to an active manager.
+   *  Spawns a new manager if no active manager is found.
+   *  A manager is active if it is visible and not locked.
+   * @param type the type of the manager, e.g., PropertyManager::TYPE
+   * @return
+   */
+  Manager& get_active_manager(const QString& type);
 
 private:
   QApplication& m_app;
@@ -100,16 +109,8 @@ public:
 
   void register_manager(Manager& manager);
   void unregister_manager(Manager& manager);
-  template<typename ManagerT> std::set<ManagerT*> managers() const
-  {
-    std::set<ManagerT*> managers;
-    for (Manager* m : m_managers) {
-      if (m->type() == ManagerT::TYPE) {
-        managers.insert(static_cast<ManagerT*>(m));
-      }
-    }
-    return managers;
-  }
+
+  std::set<Manager*> managers(const QString& type) const;
 
   bool perform_action(const QString& name) override;
 private:

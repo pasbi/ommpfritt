@@ -452,14 +452,24 @@ void Application::register_auto_invert_icon_button(QAbstractButton& button)
   update_button_icon();
 }
 
-Manager& Application::spawn_manager(const QString& key)
+Manager& Application::spawn_manager(const QString& type)
 {
-  auto manager = Manager::make(key, scene);
+  auto manager = Manager::make(type, scene);
   main_window()->make_unique_manager_name(*manager);
   auto& ref = *manager;
   main_window()->addDockWidget(Qt::TopDockWidgetArea, manager.release());
   ref.setFloating(true);
   return ref;
+}
+
+Manager& Application::get_active_manager(const QString& type)
+{
+  for (Manager* m : Application::instance().managers(type)) {
+    if (m->is_visible() && !m->is_locked()) {
+      return *m;
+    }
+  }
+  return spawn_manager(type);
 }
 
 void Application::register_manager(Manager& manager)
@@ -470,6 +480,17 @@ void Application::register_manager(Manager& manager)
 void Application::unregister_manager(Manager& manager)
 {
   m_managers.erase(&manager);
+}
+
+std::set<Manager*> Application::managers(const QString& type) const
+{
+  std::set<Manager*> managers;
+  for (Manager* m : m_managers) {
+    if (m->type() == type) {
+      managers.insert(m);
+    }
+  }
+  return managers;
 }
 
 const Preferences& preferences()

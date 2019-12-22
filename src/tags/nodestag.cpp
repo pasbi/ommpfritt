@@ -92,19 +92,8 @@ void NodesTag::on_property_value_changed(Property *property)
   if (property == this->property(TRIGGER_UPDATE_PROPERTY_KEY)) {
     force_evaluate();
   } else if (property == this->property(EDIT_NODES_PROPERTY_KEY)) {
-    NodeManager* the_manager = nullptr;
-    for (NodeManager* manager : Application::instance().managers<NodeManager>()) {
-      if (manager->is_visible() && !manager->is_locked()) {
-        the_manager = manager;
-        break;
-      }
-    }
-    if (the_manager == nullptr) {
-      auto& manager = Application::instance().spawn_manager(NodeManager::TYPE);
-      the_manager = &static_cast<NodeManager&>(manager);
-    }
-
-    the_manager->set_model(&node_model());
+    Manager& manager = Application::instance().get_active_manager(NodeManager::TYPE);
+    static_cast<NodeManager&>(manager).set_model(&node_model());
   }
 }
 
