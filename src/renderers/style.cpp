@@ -27,7 +27,7 @@ namespace omm
 {
 
 Style::Style(Scene *scene)
-  : PropertyOwner(scene), NodesOwner(*scene)
+  : PropertyOwner(scene), NodesOwner(NodeCompiler::Language::GLSL, *scene)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {
@@ -78,6 +78,9 @@ Style::Style(Scene *scene)
   create_property<BoolProperty>("gl-brush", false)
     .set_label(tr("Use Nodes")).set_category(brush_category);
 
+  add_property(EDIT_NODES_PROPERTY_KEY, make_edit_nodes_property())
+    .set_label(QObject::tr("Edit ...")).set_category(brush_category);
+
   start_marker.make_properties(decoration_category);
   end_marker.make_properties(decoration_category);
   init_offscreen_renderer();
@@ -88,7 +91,7 @@ Style::~Style()
 }
 
 Style::Style(const Style &other)
-  : PropertyOwner(other), NodesOwner(*other.scene())
+  : PropertyOwner(other), NodesOwner(other)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {

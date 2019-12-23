@@ -5,6 +5,7 @@ namespace omm
 
 class MathNode : public Node
 {
+  Q_OBJECT
 public:
   explicit MathNode(Scene* scene);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "MathNode");

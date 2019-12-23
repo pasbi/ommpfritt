@@ -6,14 +6,15 @@
 namespace omm
 {
 
-NodeModel::NodeModel(Scene& scene) : m_scene(scene)
+NodeModel::NodeModel(NodeCompiler::Language language, Scene& scene)
+  : m_scene(scene), m_language(language)
 {
   connect(this, SIGNAL(node_shape_changed()), this, SIGNAL(appearance_changed()));
   connect(this, SIGNAL(topology_changed()), this, SIGNAL(node_shape_changed()));
 }
 
 NodeModel::NodeModel(const NodeModel& other)
-  : NodeModel(other.m_scene)
+  : NodeModel(other.m_language, other.m_scene)
 {
   connect(this, SIGNAL(node_shape_changed()), this, SIGNAL(appearance_changed()));
   connect(this, SIGNAL(topology_changed()), this, SIGNAL(node_shape_changed()));
@@ -123,24 +124,31 @@ bool NodeModel::find_path(const Node& start, const Node& end) const
 
 bool NodeModel::types_compatible(const QString& from, const QString& to) const
 {
-  static const std::map<QString, std::set<QString>> compatibility_matrix {
-    { "Bool",    { "Options", "Integer", "Float",         "String" } },
-    { "Float",   { "Options", "Integer",          "Bool", "String" } },
-    { "Integer", { "Options",            "Float", "Bool", "String" } },
-    { "Options", {            "Integer", "Float", "Bool", "String" } },
-    { "FloatVector", { "IntegerVector", "String" } },
-    { "IntegerVector", { "FloatVector", "String" } }
-  };
+  if (m_language == NodeCompiler::Language::Python) {
+    static const std::map<QString, std::set<QString>> compatibility_matrix {
+      { "Bool",    { "Options", "Integer", "Float",         "String" } },
+      { "Float",   { "Options", "Integer",          "Bool", "String" } },
+      { "Integer", { "Options",            "Float", "Bool", "String" } },
+      { "Options", {            "Integer", "Float", "Bool", "String" } },
+      { "FloatVector", { "IntegerVector", "String" } },
+      { "IntegerVector", { "FloatVector", "String" } }
+    };
 
-  if (to == from) {
-    return true;
-  } else {
-    const auto it = compatibility_matrix.find(from);
-    if (it == compatibility_matrix.end()) {
-      return false;
+    if (to == from) {
+      return true;
     } else {
-      return ::contains(it->second, to);
+      const auto it = compatibility_matrix.find(from);
+      if (it == compatibility_matrix.end()) {
+        return false;
+      } else {
+        return ::contains(it->second, to);
+      }
     }
+  } else if (m_language == NodeCompiler::Language::GLSL) {
+    return to == from;
+  } else {
+    Q_UNREACHABLE();
+    return false;
   }
 }
 

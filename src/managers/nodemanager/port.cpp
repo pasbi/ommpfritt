@@ -1,5 +1,5 @@
 #include "managers/nodemanager/port.h"
-#include "nodemodel.h"
+#include "managers/nodemanager/nodemodel.h"
 #include "managers/nodemanager/node.h"
 
 namespace omm

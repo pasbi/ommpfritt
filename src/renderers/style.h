@@ -43,6 +43,7 @@ public:
   static constexpr auto END_MARKER = "pen/end-marker";
   static constexpr auto BRUSH_IS_ACTIVE_KEY = "brush/active";
   static constexpr auto BRUSH_COLOR_KEY = "brush/color";
+  static constexpr auto EDIT_NODES_PROPERTY_KEY = "edit-nodes";
 
   static constexpr auto NODES_POINTER = "nodes";
 

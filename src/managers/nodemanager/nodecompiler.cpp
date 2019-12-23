@@ -19,11 +19,11 @@ QString address_to_string(const void* address)
 namespace omm
 {
 
-NodeCompiler::NodeCompiler(NodeCompiler::Language language) : m_language(language)
+NodeCompiler::NodeCompiler(Language language) : m_language(language)
 {
 }
 
-NodeCompiler::NodeCompiler(NodeCompiler::Language language, const NodeModel& model)
+NodeCompiler::NodeCompiler(Language language, const NodeModel& model)
   : NodeCompiler(language)
 {
   compile(model);

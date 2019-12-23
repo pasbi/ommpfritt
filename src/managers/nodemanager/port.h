@@ -30,32 +30,6 @@ public:
   virtual QString data_type() const = 0;
 };
 
-template<typename PortT,
-         typename F,
-         class = std::enable_if<std::is_base_of_v<AbstractPort, std::decay_t<PortT>>>>
-decltype(auto) visit(PortT&& port, F&& f)
-{
-  // hand over port by (const) reference, but not as pointer.
-  static_assert(!std::is_pointer_v<PortT>);
-  if constexpr (std::is_const_v<std::remove_reference_t<PortT>>) {
-    switch (port.port_type) {
-    case PortType::Input:
-      return f(static_cast<const InputPort&>(port));
-    case PortType::Output:
-      return f(static_cast<const OutputPort&>(port));
-    }
-  } else {
-    switch (port.port_type) {
-    case PortType::Input:
-      return f(static_cast<InputPort&>(port));
-    case PortType::Output:
-      return f(static_cast<OutputPort&>(port));
-    }
-  }
-  Q_UNREACHABLE();
-  return f(static_cast<const InputPort&>(port));
-}
-
 template<PortType port_type_> class Port : public AbstractPort
 {
 protected:
@@ -107,6 +81,32 @@ public:
 private:
   std::set<InputPort*> m_connections;
 };
+
+template<typename PortT,
+         typename F,
+         class = std::enable_if<std::is_base_of_v<AbstractPort, std::decay_t<PortT>>>>
+decltype(auto) visit(PortT&& port, F&& f)
+{
+  // hand over port by (const) reference, but not as pointer.
+  static_assert(!std::is_pointer_v<PortT>);
+  if constexpr (std::is_const_v<std::remove_reference_t<PortT>>) {
+    switch (port.port_type) {
+    case PortType::Input:
+      return f(static_cast<const InputPort&>(port));
+    case PortType::Output:
+      return f(static_cast<const OutputPort&>(port));
+    }
+  } else {
+    switch (port.port_type) {
+    case PortType::Input:
+      return f(static_cast<InputPort&>(port));
+    case PortType::Output:
+      return f(static_cast<OutputPort&>(port));
+    }
+  }
+  Q_UNREACHABLE();
+  return f(static_cast<const InputPort&>(port));
+}
 
 template<PortType> struct ConcretePortSelector;
 template<> struct ConcretePortSelector<PortType::Input> { using T = InputPort; };

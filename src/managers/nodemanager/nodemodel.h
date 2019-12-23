@@ -6,6 +6,7 @@
 #include <set>
 #include <memory>
 #include "managers/nodemanager/port.h"
+#include "managers/nodemanager/nodecompiler.h"
 
 namespace omm
 {
@@ -20,7 +21,7 @@ class NodeModel : public QObject, public Serializable
 {
   Q_OBJECT
 public:
-  explicit NodeModel(Scene& scene);
+  explicit NodeModel(NodeCompiler::Language language, Scene& scene);
   NodeModel(const NodeModel& other);
   ~NodeModel();
 
@@ -63,6 +64,7 @@ Q_SIGNALS:
 private:
   std::set<std::unique_ptr<Node>> m_nodes;
   Scene& m_scene;
+  const NodeCompiler::Language m_language;
 };
 
 

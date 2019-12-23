@@ -5,6 +5,7 @@ namespace omm
 
 class ConstantNode : public Node
 {
+  Q_OBJECT
 public:
   explicit ConstantNode(Scene* scene);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ConstantNode");

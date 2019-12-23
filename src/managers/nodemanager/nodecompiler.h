@@ -10,9 +10,9 @@ namespace omm
 
 class OutputPort;
 class InputPort;
-class NodeModel;
 class Node;
 class AbstractPort;
+class NodeModel;
 
 class NodeCompiler
 {

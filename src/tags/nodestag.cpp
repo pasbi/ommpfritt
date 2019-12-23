@@ -44,7 +44,7 @@ namespace omm
 {
 
 NodesTag::NodesTag(Object& owner)
-  : Tag(owner), NodesOwner(*owner.scene())
+  : Tag(owner), NodesOwner(NodeCompiler::Language::Python, *owner.scene())
   , m_compiler_cache(*this)
 {
   const QString category = QObject::tr("Basic");
@@ -53,12 +53,12 @@ NodesTag::NodesTag(Object& owner)
     .set_label(QObject::tr("update")).set_category(category);
   create_property<TriggerProperty>(TRIGGER_UPDATE_PROPERTY_KEY)
     .set_label(QObject::tr("evaluate")).set_category(category);
-  create_property<TriggerProperty>(EDIT_NODES_PROPERTY_KEY)
+  add_property(EDIT_NODES_PROPERTY_KEY, make_edit_nodes_property())
     .set_label(QObject::tr("Edit ...")).set_category(category);
 }
 
 NodesTag::NodesTag(const NodesTag& other)
-  : Tag(other), NodesOwner(*other.scene())
+  : Tag(other), NodesOwner(other)
   , m_compiler_cache(*this)
 {
 }
@@ -91,9 +91,6 @@ void NodesTag::on_property_value_changed(Property *property)
 {
   if (property == this->property(TRIGGER_UPDATE_PROPERTY_KEY)) {
     force_evaluate();
-  } else if (property == this->property(EDIT_NODES_PROPERTY_KEY)) {
-    Manager& manager = Application::instance().get_active_manager(NodeManager::TYPE);
-    static_cast<NodeManager&>(manager).set_model(&node_model());
   }
 }
 

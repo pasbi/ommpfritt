@@ -5,6 +5,7 @@ namespace omm
 
 class ReferenceNode : public Node
 {
+  Q_OBJECT
 public:
   explicit ReferenceNode(Scene* scene);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ReferenceNode");
