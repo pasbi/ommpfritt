@@ -12,6 +12,7 @@
 #include "managers/nodemanager/nodemodel.h"
 #include <QMouseEvent>
 #include <QPainter>
+#include <QToolTip>
 
 namespace omm
 {
@@ -27,6 +28,7 @@ NodeView::NodeView(QWidget* parent)
   , node_width_cache(*this)
 {
   setAcceptDrops(true);
+  setMouseTracking(true);
 }
 
 NodeView::~NodeView()
@@ -84,47 +86,17 @@ void NodeView::paintEvent(QPaintEvent*)
   }
 }
 
-bool NodeView::select_port_or_node(const QPointF& pos, bool extend_selection, bool toggle_selection)
+std::pair<Node*, AbstractPort*> NodeView::select_port_or_node(const QPointF& pos) const
 {
-  const auto contains = [pos, this](const QRectF& rect) {
-    return m_pzc.transform().map(rect).containsPoint(pos, Qt::OddEvenFill);
-  };
   for (Node* node : m_model->nodes()) {
-    if (AbstractPort* grabbed_port = port(node->ports(), pos); grabbed_port != nullptr) {
-      if (grabbed_port->port_type == PortType::Input) {
-        InputPort& ip = static_cast<InputPort&>(*grabbed_port);
-        if (OutputPort* op = ip.connected_output(); op == nullptr) {
-          m_tmp_connection_origin = &ip;
-        } else {
-          m_former_connection_target = &ip;
-          m_about_to_disconnect = &ip;
-          m_tmp_connection_origin = op;
-        }
-      } else {
-        m_tmp_connection_origin = grabbed_port;
-      }
-      return true;
-    } else {
-      if (contains(node_geometry(*node))) {
-        const bool is_selected = ::contains(m_selection, node);
-        if (toggle_selection) {
-          if (is_selected) {
-            m_selection.erase(node);
-          } else {
-            m_selection.insert(node);
-          }
-        } else {
-          if (!extend_selection && !is_selected) {
-            m_selection.clear();
-          }
-          m_selection.insert(node);
-        }
-        update_scene_selection();
-        return true;
-      }
+    AbstractPort* port = port_at(node->ports(), pos);
+    if (port != nullptr) {
+      return { nullptr, port };
+    } else if (node_at({ node }, pos) != nullptr) {
+      return { node, nullptr };
     }
   }
-  return false;
+  return { nullptr, nullptr };
 }
 
 std::set<Node*> NodeView::nodes(const QRectF& rect) const
@@ -181,7 +153,46 @@ void NodeView::mousePressEvent(QMouseEvent* event)
       m_pzc.start(PanZoomController::Action::None);
       const bool extend_selection = event->modifiers() & Qt::ShiftModifier;
       const bool toggle_selection = event->modifiers() & Qt::ControlModifier;
-      if (select_port_or_node(event->pos()- m_pzc.offset(), extend_selection, toggle_selection)) {
+      const auto [ node, port ] = select_port_or_node(event->pos() - m_pzc.offset());
+
+      const auto press_on_port = [this](AbstractPort* port) {
+        if (port->port_type == PortType::Input) {
+          InputPort& ip = static_cast<InputPort&>(*port);
+          if (OutputPort* op = ip.connected_output(); op == nullptr) {
+            m_tmp_connection_origin = &ip;
+          } else {
+            m_former_connection_target = &ip;
+            m_about_to_disconnect = &ip;
+            m_tmp_connection_origin = op;
+          }
+        } else {
+          m_tmp_connection_origin = port;
+        }
+      };
+
+      const auto press_on_node = [toggle_selection, extend_selection, this](Node* node) {
+        const bool is_selected = ::contains(m_selection, node);
+        if (toggle_selection) {
+          if (is_selected) {
+            m_selection.erase(node);
+          } else {
+            m_selection.insert(node);
+          }
+        } else {
+          if (!extend_selection && !is_selected) {
+            m_selection.clear();
+          }
+          m_selection.insert(node);
+        }
+        update_scene_selection();
+      };
+
+      if (node != nullptr || port != nullptr) {
+        if (node != nullptr) {
+          press_on_node(node);
+        } else if (port != nullptr) {
+          press_on_port(port);
+        }
         if (event->button() == Qt::RightButton) {
           m_aborted = true;
           QWidget::mousePressEvent(event);
@@ -206,7 +217,8 @@ void NodeView::mousePressEvent(QMouseEvent* event)
 
 void NodeView::mouseMoveEvent(QMouseEvent* event)
 {
-  if (!m_aborted) {
+  QToolTip::hideText();
+  if (!m_aborted && event->buttons() != 0) {
     if (m_pzc.move(event->pos())) {
     } else if (m_pzc.rubber_band_visible) {
       m_nodes_in_rubberband = this->nodes(m_pzc.unit_rubber_band());
@@ -217,7 +229,7 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
         }
       }
     } else if (m_tmp_connection_origin != nullptr && m_model != nullptr) {
-      AbstractPort* port = this->port(m_model->ports(), event->pos() - m_pzc.offset());
+      AbstractPort* port = this->port_at(m_model->ports(), event->pos() - m_pzc.offset());
       if (port != nullptr && m_model->can_connect(*port, *m_tmp_connection_origin)) {
         m_tmp_connection_target = port;
       } else {
@@ -312,6 +324,23 @@ void NodeView::dropEvent(QDropEvent* event)
 void NodeView::mouseDoubleClickEvent(QMouseEvent*)
 {
   pan_to_center();
+}
+
+bool NodeView::event(QEvent* event)
+{
+  if (event->type() == QEvent::ToolTip) {
+    const QHelpEvent* help_event = static_cast<const QHelpEvent*>(event);
+    auto [ node, port ] = select_port_or_node(help_event->pos() - m_pzc.offset());
+    if (node != nullptr) {
+      QToolTip::showText(help_event->globalPos(), "node");
+    } else if (port != nullptr) {
+      QToolTip::showText(help_event->globalPos(), "port");
+    } else {
+      QToolTip::hideText();
+    }
+  }
+
+  return QWidget::event(event);
 }
 
 void NodeView::abort()
@@ -438,6 +467,39 @@ void NodeView::draw_connection(QPainter& painter, const QPointF& in, const QPoin
   painter.restore();
 }
 
+AbstractPort* NodeView::port_at(std::set<AbstractPort*> candidates, const QPointF& pos) const
+{
+  static constexpr bool NODE_SELECTION_IN_PIXEL_SPACE = false;
+  if constexpr (NODE_SELECTION_IN_PIXEL_SPACE) {
+    const auto dist = [pos, this](const QPointF& candidate) -> double {
+      return (pos - m_pzc.transform().map(candidate)).manhattanLength();
+    };
+    for (AbstractPort* port : candidates) {
+      if (dist(port_pos(*port)) < 5) {
+        return port;
+      }
+    }
+  } else {
+    const QPointF mpos = m_pzc.transform().inverted().map(pos);
+    for (AbstractPort* port : candidates) {
+      if ((mpos - port_pos(*port)).manhattanLength() < port_height / 2.0) {
+        return port;
+      }
+    }
+  }
+  return nullptr;
+}
+
+Node* NodeView::node_at(std::set<Node*> candidates, const QPointF& pos) const
+{
+  for (Node* node : candidates) {
+    if (m_pzc.transform().map(node_geometry(*node)).containsPoint(pos, Qt::OddEvenFill)) {
+      return node;
+    }
+  }
+  return nullptr;
+}
+
 QRectF NodeView::node_geometry(const Node& node) const
 {
   const std::set<AbstractPort*> ports = node.ports();
@@ -470,29 +532,6 @@ void NodeView::pan_to_center()
     m_pzc.translate(-m_pzc.transform().map(mean));
     update();
   }
-}
-
-AbstractPort* NodeView::port(std::set<AbstractPort*> candidates, const QPointF& pos) const
-{
-  static constexpr bool NODE_SELECTION_IN_PIXEL_SPACE = false;
-  if constexpr (NODE_SELECTION_IN_PIXEL_SPACE) {
-    const auto dist = [pos, this](const QPointF& candidate) -> double {
-      return (pos - m_pzc.transform().map(candidate)).manhattanLength();
-    };
-    for (AbstractPort* port : candidates) {
-      if (dist(port_pos(*port)) < 5) {
-        return port;
-      }
-    }
-  } else {
-    const QPointF mpos = m_pzc.transform().inverted().map(pos);
-    for (AbstractPort* port : candidates) {
-      if ((mpos - port_pos(*port)).manhattanLength() < port_height / 2.0) {
-        return port;
-      }
-    }
-  }
-  return nullptr;
 }
 
 QPointF NodeView::port_pos(const AbstractPort& port) const

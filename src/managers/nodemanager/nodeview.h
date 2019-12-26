@@ -44,6 +44,7 @@ protected:
   void dragEnterEvent(QDragEnterEvent* event) override;
   void dropEvent(QDropEvent* event) override;
   void mouseDoubleClickEvent(QMouseEvent*) override;
+  bool event(QEvent* event) override;
 
 private:
   NodeModel* m_model = nullptr;
@@ -53,8 +54,9 @@ private:
   void draw_port(QPainter& painter, const AbstractPort& port) const;
   void draw_connection(QPainter& painter, const QPointF& in, const QPointF& out) const;
   QPointF port_pos(const AbstractPort& port) const;
-  AbstractPort* port(std::set<AbstractPort*> candidates, const QPointF& pos) const;
-  bool select_port_or_node(const QPointF& pos, bool extend_selection, bool toggle_selection);
+  AbstractPort* port_at(std::set<AbstractPort*> candidates, const QPointF& pos) const;
+  Node* node_at(std::set<Node*> candidates, const QPointF& pos) const;
+  std::pair<Node*, AbstractPort*> select_port_or_node(const QPointF& pos) const;
   std::set<Node*> nodes(const QRectF& rect) const;
   void update_scene_selection();
   bool can_drop(const QDropEvent& event) const;
