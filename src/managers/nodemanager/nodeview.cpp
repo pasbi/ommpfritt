@@ -465,7 +465,7 @@ void NodeView::pan_to_center()
     for (Node* node : nodes) {
       mean += node->pos();
     }
-    mean /= std::min(std::size_t(1), nodes.size());
+    mean /= std::max(std::size_t(1), nodes.size());
 
     m_pzc.translate(-m_pzc.transform().map(mean));
     update();
