@@ -354,14 +354,4 @@ std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT&> operator&=(EnumT&
 
 enum class Space { Viewport, Scene };
 
-}  // namespaxe
-
-namespace std
-{
-
-template<> struct hash<QString>
-{
-  std::size_t operator()(const QString& s) const { return hash<std::string>()(s.toStdString()); }
-};
-
-}  // namespace std
+}  // namespace omm

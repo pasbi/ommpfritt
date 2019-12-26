@@ -30,7 +30,7 @@ void Slider::set_range(double left, double right)
 void Slider::paintEvent(QPaintEvent *event)
 {
   QPainter painter(this);
-  painter.setRenderHint(QPainter::HighQualityAntialiasing);
+  painter.setRenderHint(QPainter::Antialiasing);
   m_canvas.rect = rect();
 
   painter.save();

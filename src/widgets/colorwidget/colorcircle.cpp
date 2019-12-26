@@ -145,7 +145,7 @@ void ColorCircle::paintEvent(QPaintEvent* e)
 {
   Q_UNUSED(e)
   QPainter painter(this);
-  painter.setRenderHint(QPainter::HighQualityAntialiasing);
+  painter.setRenderHint(QPainter::Antialiasing);
 
   QTransform transform;
   transform.translate(width()/2., height()/2.0);
@@ -196,7 +196,7 @@ void ColorCircle::paintEvent(QPaintEvent* e)
     const QRect rect = this->rect();
     QImage image(rect.size(), QImage::Format_ARGB32_Premultiplied);
     QPainter tpainter(&image);
-    tpainter.setRenderHint(QPainter::HighQualityAntialiasing);
+    tpainter.setRenderHint(QPainter::Antialiasing);
     UiColors::draw_background(tpainter, rect);
     QPainterPath all_but_triangle;
     all_but_triangle.addRect(rect);

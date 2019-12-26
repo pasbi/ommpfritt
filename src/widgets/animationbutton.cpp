@@ -128,7 +128,7 @@ void AnimationButton::resizeEvent(QResizeEvent *event)
 void AnimationButton::paintEvent(QPaintEvent *event)
 {
   QPainter painter(this);
-  painter.setRenderHint(QPainter::HighQualityAntialiasing);
+  painter.setRenderHint(QPainter::Antialiasing);
   QWidget::paintEvent(event);
 
   const QRectF rect = this->rect();

@@ -40,7 +40,7 @@ void AnchorHUD::draw(QPainter& painter) const
 {
   const QRectF grid = anchor_grid();
 
-  painter.setRenderHint(QPainter::HighQualityAntialiasing);
+  painter.setRenderHint(QPainter::Antialiasing);
 
   painter.save();
   QPen pen;

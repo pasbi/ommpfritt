@@ -46,7 +46,7 @@ void CurveManagerWidget::paintEvent(QPaintEvent* event)
   QPainter painter(this);
   painter.fillRect(rect(), ui_color(*this, "Widget", "base"));
   painter.setRenderHint(QPainter::TextAntialiasing);
-  painter.setRenderHint(QPainter::HighQualityAntialiasing);
+  painter.setRenderHint(QPainter::Antialiasing);
   draw_background(painter);
   draw_scale(painter);
   draw_interpolation(painter);

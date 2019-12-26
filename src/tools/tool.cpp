@@ -57,7 +57,7 @@ void Tool::draw(Painter& renderer) const
   if (!!(renderer.category_filter & Painter::Category::Handles)) {
     QPainter& painter = *renderer.painter;
     painter.save();
-    painter.setRenderHint(QPainter::HighQualityAntialiasing);
+    painter.setRenderHint(QPainter::Antialiasing);
     for (auto&& handle : handles) {
       painter.save();
       painter.setBrush(Qt::NoBrush);

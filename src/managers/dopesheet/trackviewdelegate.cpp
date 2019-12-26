@@ -29,7 +29,7 @@ void TrackViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
 {
   painter->save();
   painter->setClipRect(option.rect);
-  painter->setRenderHint(QPainter::HighQualityAntialiasing);
+  painter->setRenderHint(QPainter::Antialiasing);
 
   activate_index(index);
   const bool is_property = m_canvas.animator.index_type(index) == Animator::IndexType::Property;

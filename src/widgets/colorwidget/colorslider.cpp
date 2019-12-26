@@ -32,7 +32,7 @@ void ColorSlider::paintEvent(QPaintEvent *e)
   QPainter painter(this);
   UiColors::draw_background(painter, rect());
   painter.fillRect(rect(), gradient);
-  painter.setRenderHint(QPainter::HighQualityAntialiasing);
+  painter.setRenderHint(QPainter::Antialiasing);
 
   painter.translate(color().get(role()) * width(), 0);
   QPainterPath path;
