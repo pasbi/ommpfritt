@@ -1239,6 +1239,14 @@ Remove the selected items anyway?</translation>
         <source>Add Forwarding Port</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Edit ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit style ...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ReferenceNode</name>
@@ -2146,7 +2154,7 @@ Do you want to convert them into ordinary colors?</numerusform>
     <name>omm::NodesTag</name>
     <message>
         <source>Edit Nodes ...</source>
-        <translation type="unfinished">Edit Nodes ...</translation>
+        <translation type="obsolete">Edit Nodes ...</translation>
     </message>
 </context>
 <context>
@@ -2293,7 +2301,7 @@ Do you want to convert them into ordinary colors?</numerusform>
     <name>omm::Style</name>
     <message>
         <source>Edit Nodes ...</source>
-        <translation>Edit Nodes ...</translation>
+        <translation type="vanished">Edit Nodes ...</translation>
     </message>
     <message>
         <source>Use Nodes</source>

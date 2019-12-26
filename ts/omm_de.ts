@@ -1239,6 +1239,14 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Add Forwarding Port</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Edit ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit style ...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ReferenceNode</name>
@@ -2146,7 +2154,7 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <name>omm::NodesTag</name>
     <message>
         <source>Edit Nodes ...</source>
-        <translation type="unfinished">Nodes bearbeiten ...</translation>
+        <translation type="obsolete">Nodes bearbeiten ...</translation>
     </message>
 </context>
 <context>
@@ -2293,7 +2301,7 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <name>omm::Style</name>
     <message>
         <source>Edit Nodes ...</source>
-        <translation>Nodes bearbeiten ...</translation>
+        <translation type="vanished">Nodes bearbeiten ...</translation>
     </message>
     <message>
         <source>Use Nodes</source>

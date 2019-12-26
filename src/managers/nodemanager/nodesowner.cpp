@@ -9,11 +9,13 @@ namespace omm
 
 NodesOwner::NodesOwner(NodeCompiler::Language language, Scene& scene)
   : m_model(std::make_unique<NodeModel>(language, scene))
+  , m_compiler_cache(*this)
 {
 }
 
 NodesOwner::NodesOwner(const NodesOwner& other)
   : m_model(std::make_unique<NodeModel>(*other.m_model))
+  , m_compiler_cache(*this)
 {
 }
 
@@ -30,6 +32,25 @@ std::unique_ptr<Property> NodesOwner::make_edit_nodes_property()
 NodesOwner::~NodesOwner()
 {
 
+}
+
+NodesOwner::CompilerCache::CompilerCache(omm::NodesOwner& self) : CachedGetter<QString, NodesOwner>(self)
+{
+  NodeModel::connect(&self.node_model(), &NodeModel::topology_changed, [this]() {
+    invalidate();
+  });
+}
+
+NodesOwner::CompilerCache::~CompilerCache()
+{
+
+}
+
+QString NodesOwner::CompilerCache::compute() const
+{
+  m_compiler = std::make_unique<NodeCompiler>(NodeCompiler::Language::Python);
+  m_compiler->compile(m_self.node_model());
+  return m_compiler->compilation();
 }
 
 }  // namespace omm

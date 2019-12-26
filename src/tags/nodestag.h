@@ -2,7 +2,6 @@
 
 #include <memory>
 #include "tags/tag.h"
-#include "cachedgetter.h"
 #include <Qt>
 #include "managers/nodemanager/nodesowner.h"
 
@@ -34,18 +33,6 @@ public:
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-
-private:
-  class CompilerCache : public CachedGetter<QString, NodesTag>
-  {
-  public:
-    CompilerCache(NodesTag& self);
-    ~CompilerCache();
-    NodeCompiler* compiler() const { return m_compiler.get(); }
-  protected:
-    QString compute() const override;
-    mutable std::unique_ptr<NodeCompiler> m_compiler;
-  } m_compiler_cache;
 };
 
 }  // namespace omm

@@ -45,7 +45,6 @@ namespace omm
 
 NodesTag::NodesTag(Object& owner)
   : Tag(owner), NodesOwner(NodeCompiler::Language::Python, *owner.scene())
-  , m_compiler_cache(*this)
 {
   const QString category = QObject::tr("Basic");
   create_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY, 0)
@@ -59,7 +58,6 @@ NodesTag::NodesTag(Object& owner)
 
 NodesTag::NodesTag(const NodesTag& other)
   : Tag(other), NodesOwner(other)
-  , m_compiler_cache(*this)
 {
 }
 
@@ -100,15 +98,14 @@ void NodesTag::force_evaluate()
   assert(scene != nullptr);
   using namespace py::literals;
 
-  const auto code = m_compiler_cache();
-  LINFO << "Compilation: \n" << code;
+  LINFO << "Compilation: \n" << code();
   auto locals = py::dict();
-  const NodeCompiler* compiler = m_compiler_cache.compiler();
+  const NodeCompiler* compiler = this->compiler();
   populate_locals<PortType::Input>(locals, *compiler, node_model());
   populate_locals<PortType::Output>(locals, *compiler, node_model());
 
   try {
-    py::exec(code.toStdString(), py::globals(), locals);
+    py::exec(code().toStdString(), py::globals(), locals);
   } catch (const py::error_already_set& error) {
     LERROR << "Python error: " << error.what();
     return;
@@ -135,25 +132,6 @@ void NodesTag::evaluate()
   if (property(UPDATE_MODE_PROPERTY_KEY)->value<std::size_t>() == 1) {
     force_evaluate();
   }
-}
-
-NodesTag::CompilerCache::CompilerCache(NodesTag& self) : CachedGetter<QString, NodesTag>(self)
-{
-  connect(&self.node_model(), &NodeModel::topology_changed, [this]() {
-    invalidate();
-  });
-}
-
-NodesTag::CompilerCache::~CompilerCache()
-{
-  
-}
-
-QString NodesTag::CompilerCache::compute() const
-{
-  m_compiler = std::make_unique<NodeCompiler>(NodeCompiler::Language::Python);
-  m_compiler->compile(m_self.node_model());
-  return m_compiler->compilation();
 }
 
 }  // namespace omm

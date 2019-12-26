@@ -1235,6 +1235,14 @@ Borrar la selección de todos modos?</translation>
         <source>Add Forwarding Port</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Edit ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit style ...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ReferenceNode</name>
@@ -2120,13 +2128,6 @@ Do you want to convert them into ordinary colors?</source>
     </message>
 </context>
 <context>
-    <name>omm::NodesTag</name>
-    <message>
-        <source>Edit Nodes ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>omm::ObjectManager</name>
     <message>
         <source>Attach</source>
@@ -2268,10 +2269,6 @@ Do you want to convert them into ordinary colors?</source>
 </context>
 <context>
     <name>omm::Style</name>
-    <message>
-        <source>Edit Nodes ...</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Use Nodes</source>
         <translation type="unfinished"></translation>
