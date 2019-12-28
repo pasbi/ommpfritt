@@ -1,4 +1,5 @@
 #include "renderers/style.h"
+#include "scene/messagebox.h"
 #include "mainwindow/application.h"
 #include "managers/nodemanager/nodemanager.h"
 #include "managers/nodemanager/nodemodel.h"
@@ -12,7 +13,6 @@
 #include "properties/optionsproperty.h"
 #include "objects/tip.h"
 #include "scene/scene.h"
-#include "scene/messagebox.h"
 
 namespace {
 
