@@ -25,6 +25,17 @@ public:
   {
   }
 
+  explicit PropertyPort(const PropertyPort& other, Node& node)
+    : BasePort(other, node)
+    , m_get_property(other.m_get_property)
+  {
+  }
+
+  std::unique_ptr<AbstractPort> clone(Node& node) const override
+  {
+    return std::make_unique<PropertyPort<port_type_>>(*this, node);
+  }
+
   Property* property() const { return m_get_property(); }
 
   QString label() const override

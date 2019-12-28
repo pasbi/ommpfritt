@@ -10,6 +10,15 @@ Node::Node(Scene* scene)
 {
 }
 
+Node::Node(const Node& other)
+  : PropertyOwner<AbstractPropertyOwner::Kind::Node>(other.scene())
+{
+  for (AbstractPort* port : other.ports()) {
+    add_port(port->clone(*this));
+  }
+  set_pos(other.pos());
+}
+
 Node::~Node()
 {
 }

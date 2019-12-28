@@ -17,6 +17,7 @@ public:
 
   QString definition(NodeCompiler::Language language) const override;
   QString name(NodeCompiler::Language language) const override;
+  std::unique_ptr<Node> clone() const override;
 
 protected:
   void on_property_value_changed(Property* property) override;

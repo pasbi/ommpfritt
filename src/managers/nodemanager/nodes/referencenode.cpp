@@ -166,4 +166,9 @@ ReferenceNode::remove_forwarding_port(PortType port_type, const QString& key)
   return owned;
 }
 
+std::unique_ptr<Node> ReferenceNode::clone() const
+{
+  return std::make_unique<ReferenceNode>(*this);
+}
+
 }  // namespace

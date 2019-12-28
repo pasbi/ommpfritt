@@ -23,6 +23,7 @@ class Node
   Q_OBJECT
 public:
   explicit Node(Scene* scene);
+  explicit Node(const Node& other);
   ~Node();
 
   AbstractPropertyOwner::Flag flags() const override { return AbstractPropertyOwner::Flag::None; }
@@ -82,6 +83,7 @@ public:
 
   virtual void populate_menu(QMenu&) {}
   virtual QString title() const;
+  virtual std::unique_ptr<Node> clone() const = 0;
 
 protected:
   template<typename PortT, typename... Args> PortT& add_port(Args&&... args)

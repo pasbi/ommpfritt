@@ -50,6 +50,11 @@ QString MathNode::name(NodeCompiler::Language language) const
   return "math";
 }
 
+std::unique_ptr<Node> MathNode::clone() const
+{
+  return std::make_unique<MathNode>(*this);
+}
+
 void MathNode::on_property_value_changed(Property* property)
 {
 }

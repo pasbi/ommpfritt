@@ -21,6 +21,11 @@ void ConstantNode::populate_menu(QMenu& menu)
   });
 }
 
+std::unique_ptr<Node> ConstantNode::clone() const
+{
+  return std::make_unique<ConstantNode>(*this);
+}
+
 void ConstantNode::on_property_value_changed(Property* property)
 {
 }

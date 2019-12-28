@@ -18,7 +18,31 @@ NodeModel::NodeModel(const NodeModel& other)
 {
   connect(this, SIGNAL(node_shape_changed()), this, SIGNAL(appearance_changed()));
   connect(this, SIGNAL(topology_changed()), this, SIGNAL(node_shape_changed()));
-  // TODO
+
+  {
+    QSignalBlocker blocker(this);
+
+    std::map<Node*, Node*> node_map;
+    for (const auto& node : other.m_nodes) {
+      auto clone = node->clone();
+      node_map.insert({node.get(), clone.get()});
+      add_node(std::move(clone));
+    }
+
+    for (auto [old_node, new_node] : node_map) {
+      for (InputPort* ip : old_node->ports<InputPort>()) {
+        if (OutputPort* op = ip->connected_output(); op != nullptr) {
+          Node& src_node = *node_map.at(&op->node);
+          InputPort& new_ip = *new_node->find_port<InputPort>(ip->index);
+          OutputPort& new_op = *src_node.find_port<OutputPort>(op->index);
+          assert(can_connect(new_op, new_ip));
+          new_ip.connect(&new_op);
+        }
+      }
+    }
+  }
+
+  Q_EMIT topology_changed();
 }
 
 NodeModel::~NodeModel()
