@@ -47,14 +47,7 @@ public:
     }
   }
 
-  QString data_type() const override
-  {
-    if (Property* property = this->property(); property == nullptr) {
-      return "None";
-    } else {
-      return property->data_type();
-    }
-  }
+  QString data_type() const override;
 
 private:
   const std::function<Property*()> m_get_property;

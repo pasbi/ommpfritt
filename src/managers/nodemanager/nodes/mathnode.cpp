@@ -6,6 +6,74 @@
 #include "scene/scene.h"
 #include "properties/optionsproperty.h"
 
+namespace
+{
+
+using namespace omm::NodeCompilerTypes;
+enum class Operation { Addition, Difference, Multiplication, Division, Power };
+
+auto type_matrix()
+{
+  std::map<std::tuple<Operation, QString, QString>, QString> matrix {
+    { { Operation::Addition, FLOAT_TYPE,         FLOAT_TYPE },         FLOAT_TYPE },
+    { { Operation::Addition, FLOAT_TYPE,         INTEGER_TYPE },       FLOAT_TYPE },
+    { { Operation::Addition, FLOAT_TYPE,         BOOL_TYPE },          FLOAT_TYPE },
+    { { Operation::Addition, INTEGER_TYPE,       INTEGER_TYPE },       INTEGER_TYPE },
+    { { Operation::Addition, INTEGER_TYPE,       BOOL_TYPE },          INTEGER_TYPE },
+    { { Operation::Addition, BOOL_TYPE,          BOOL_TYPE },          BOOL_TYPE },
+    { { Operation::Addition, FLOATVECTOR_TYPE,   FLOATVECTOR_TYPE },   FLOATVECTOR_TYPE },
+    { { Operation::Addition, INTEGERVECTOR_TYPE, FLOATVECTOR_TYPE },   FLOATVECTOR_TYPE },
+    { { Operation::Addition, INTEGERVECTOR_TYPE, INTEGERVECTOR_TYPE }, INTEGERVECTOR_TYPE },
+
+    { { Operation::Multiplication, FLOAT_TYPE,   FLOAT_TYPE },         FLOAT_TYPE },
+    { { Operation::Multiplication, FLOAT_TYPE,   INTEGER_TYPE },       FLOAT_TYPE },
+    { { Operation::Multiplication, FLOAT_TYPE,   BOOL_TYPE },          FLOAT_TYPE },
+    { { Operation::Multiplication, FLOAT_TYPE,   FLOATVECTOR_TYPE },   FLOATVECTOR_TYPE },
+    { { Operation::Multiplication, FLOAT_TYPE,   INTEGERVECTOR_TYPE }, FLOATVECTOR_TYPE },
+    { { Operation::Multiplication, INTEGER_TYPE, INTEGER_TYPE },       INTEGER_TYPE },
+    { { Operation::Multiplication, INTEGER_TYPE, BOOL_TYPE },          INTEGER_TYPE },
+    { { Operation::Multiplication, INTEGER_TYPE, FLOATVECTOR_TYPE },   FLOATVECTOR_TYPE },
+    { { Operation::Multiplication, INTEGER_TYPE, INTEGERVECTOR_TYPE }, INTEGERVECTOR_TYPE },
+
+    { { Operation::Power, FLOAT_TYPE,   FLOAT_TYPE },   FLOAT_TYPE },
+    { { Operation::Power, FLOAT_TYPE,   INTEGER_TYPE }, FLOAT_TYPE },
+    { { Operation::Power, FLOAT_TYPE,   BOOL_TYPE },    FLOAT_TYPE },
+    { { Operation::Power, INTEGER_TYPE, INTEGER_TYPE }, INTEGER_TYPE },
+    { { Operation::Power, INTEGER_TYPE, BOOL_TYPE },    INTEGER_TYPE },
+    { { Operation::Power, BOOL_TYPE,    BOOL_TYPE },    BOOL_TYPE },
+  };
+
+  auto copy = matrix;
+  for (const auto& [in, out] : matrix) {
+    if (std::get<0>(in) == Operation::Addition) {
+      // Difference has the same type inference rules as Addition.
+      copy.insert({ { Operation::Difference, std::get<1>(in), std::get<2>(in) }, out });
+    }
+
+    if (std::get<0>(in) == Operation::Multiplication) {
+      // Division has reversed inference rules as Multiplication:
+      // if A*B yields type C then B/A yields type C.
+      copy.insert({ { Operation::Division, std::get<2>(in), std::get<1>(in) }, out });
+    }
+  }
+
+  matrix = copy;
+  for (const auto& [in, out] : matrix) {
+    if (   std::get<0>(in) == Operation::Addition
+        || std::get<0>(in) == Operation::Difference
+        || std::get<0>(in) == Operation::Multiplication
+        || std::get<0>(in) == Operation::Power)
+    {
+      // Type inference rules of Addition, Difference, Multiplication and Power are symmetric.
+      copy.insert({ { std::get<0>(in), std::get<2>(in), std::get<1>(in) }, out });
+    }
+  }
+
+  return copy;
+};
+
+}  // namespace
+
 namespace omm
 {
 
@@ -20,10 +88,10 @@ MathNode::MathNode(Scene* scene)
       .set_label(QObject::tr("a")).set_category(category);
   create_property<FloatProperty>(B_PROPERTY_KEY, 0.0)
       .set_label(QObject::tr("b")).set_category(category);
-  add_port<OrdinaryPort<PortType::Output>>(tr("result"), "Float");
+  m_result_port = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
 }
 
-QString MathNode::definition(NodeCompiler::Language language) const
+QString MathNode::definition() const
 {
   return QString(R"(
 def %1(op, a, b):
@@ -41,18 +109,37 @@ def %1(op, a, b):
         else:
             return 0.0;
     return float(do_op(op, a, b))
-)").arg(name(language));
+)").arg(uuid());
 }
 
-QString MathNode::name(NodeCompiler::Language language) const
+QString MathNode::uuid() const
 {
-  Q_UNUSED(language)
   return "math";
 }
 
 std::unique_ptr<Node> MathNode::clone() const
 {
   return std::make_unique<MathNode>(*this);
+}
+
+QString MathNode::output_data_type(const OutputPort& port) const
+{
+  if (&port == m_result_port) {
+    const QString type_a = find_port<InputPort>(*property(A_PROPERTY_KEY))->data_type();
+    const QString type_b = find_port<InputPort>(*property(B_PROPERTY_KEY))->data_type();
+    if (language() == NodeCompiler::Language::GLSL) {
+      if (type_a == type_b) {
+        return type_a;
+      }
+    } else if (language() == NodeCompiler::Language::Python) {
+      const auto op = property(OPERATION_PROPERTY_KEY)->value<Operation>();
+      const auto type_matrix = ::type_matrix();
+      if (const auto it = type_matrix.find({op, type_a, type_b}); it != type_matrix.end()) {
+        return it->second;
+      }
+    }
+  }
+  return NodeCompilerTypes::INVALID_TYPE;
 }
 
 void MathNode::on_property_value_changed(Property* property)

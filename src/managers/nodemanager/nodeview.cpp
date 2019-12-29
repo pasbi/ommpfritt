@@ -334,7 +334,9 @@ bool NodeView::event(QEvent* event)
     if (node != nullptr) {
       QToolTip::showText(help_event->globalPos(), "node");
     } else if (port != nullptr) {
-      QToolTip::showText(help_event->globalPos(), "port");
+      const QString tooltip = QString("port\n%1")
+          .arg(port->data_type());
+      QToolTip::showText(help_event->globalPos(), tooltip);
     } else {
       QToolTip::hideText();
     }

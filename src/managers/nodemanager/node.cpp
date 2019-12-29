@@ -105,6 +105,11 @@ QString Node::name() const
   return QCoreApplication::translate("any-context", type().toStdString().c_str());
 }
 
+NodeCompiler::Language Node::language() const
+{
+  return model()->language();
+}
+
 std::set<Node*> Node::successors() const
 {
   std::set<Node*> successors;

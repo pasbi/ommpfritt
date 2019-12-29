@@ -48,8 +48,9 @@ public:
   NodeModel* model() const { return m_model; }
   QString name() const override;
 
-  virtual QString definition(NodeCompiler::Language) const { return ""; }
-  virtual QString name(NodeCompiler::Language) const { return ""; }
+  virtual QString definition() const { return ""; }
+  virtual QString uuid() const { return ""; }
+  NodeCompiler::Language language() const;
 
   static constexpr auto POS_PTR = "pos";
   static constexpr auto CONNECTIONS_PTR = "connection";
@@ -84,6 +85,8 @@ public:
   virtual void populate_menu(QMenu&) {}
   virtual QString title() const;
   virtual std::unique_ptr<Node> clone() const = 0;
+
+  virtual QString output_data_type(const OutputPort& port) const = 0;
 
 protected:
   template<typename PortT, typename... Args> PortT& add_port(Args&&... args)

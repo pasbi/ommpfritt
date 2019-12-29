@@ -22,6 +22,7 @@ public:
   AbstractPort& add_forwarding_port(PortType port_type, const QString& key);
   std::unique_ptr<AbstractPort> remove_forwarding_port(PortType port_type, const QString& key);
   std::unique_ptr<Node> clone() const override;
+  QString output_data_type(const OutputPort& port) const override;
 
 protected:
   void on_property_value_changed(Property* property) override;

@@ -51,6 +51,8 @@ public:
     return ::transform<PortT*>(::filter_if(ports(), pred), conv);
   }
 
+  NodeCompiler::Language language() const { return m_language; }
+
   Scene& scene() const { return m_scene; }
   void notify_appearance_changed();
   void notify_topology_changed();

@@ -26,6 +26,12 @@ std::unique_ptr<Node> ConstantNode::clone() const
   return std::make_unique<ConstantNode>(*this);
 }
 
+QString ConstantNode::output_data_type(const OutputPort&) const
+{
+  Q_UNREACHABLE();
+  return QString();
+}
+
 void ConstantNode::on_property_value_changed(Property* property)
 {
 }

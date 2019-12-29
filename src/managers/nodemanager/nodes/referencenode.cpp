@@ -171,4 +171,9 @@ std::unique_ptr<Node> ReferenceNode::clone() const
   return std::make_unique<ReferenceNode>(*this);
 }
 
+QString ReferenceNode::output_data_type(const OutputPort& port) const
+{
+  return "";
+}
+
 }  // namespace

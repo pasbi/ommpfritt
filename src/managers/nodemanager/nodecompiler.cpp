@@ -55,12 +55,12 @@ void NodeCompiler::compile(const NodeModel& model)
       }
     }
     {
-      const auto name = node->name(m_language);
+      const auto name = node->uuid();
       auto it = node_definitions.find(name);
       if (it == node_definitions.end()) {
-        node_definitions[name] = node->definition(m_language);
+        node_definitions[name] = node->definition();
       } else {
-        assert(it->second == node->definition(m_language));;
+        assert(it->second == node->definition());
       }
     }
     done.insert(node);
@@ -102,7 +102,7 @@ QString NodeCompiler::compile_node(const Node& node)
   assert(ops.size() <= 1);
   if (ops.size() == 1) {
     const OutputPort& op = **ops.begin();
-    return QString("%1 = %2(%3)").arg(uuid(op)).arg(node.name(m_language)).arg(args.join(", "));
+    return QString("%1 = %2(%3)").arg(uuid(op)).arg(node.uuid()).arg(args.join(", "));
   } else {
     return "";
   }

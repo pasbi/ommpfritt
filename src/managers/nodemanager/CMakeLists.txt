@@ -10,6 +10,7 @@ file(GLOB SOURCES
   nodesowner.cpp
   port.cpp
   propertyport.cpp
+  ordinaryport.cpp
 )
 
 file(GLOB HEADERS
