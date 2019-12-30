@@ -142,6 +142,26 @@ QString MathNode::output_data_type(const OutputPort& port) const
   return NodeCompilerTypes::INVALID_TYPE;
 }
 
+bool MathNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+{
+  assert(&port.node == this);
+  assert(port.flavor == PortFlavor::Property);
+  const auto* property = static_cast<const PropertyPort<PortType::Input>&>(port).property();
+  if (property == this->property(OPERATION_PROPERTY_KEY)) {
+    return Node::accepts_input_data_type(type, port);
+  } else {
+    // Math Node input shall accept anything
+    return true;
+  }
+}
+
+QString MathNode::title() const
+{
+  auto&& opp = static_cast<const OptionsProperty&>(*property(OPERATION_PROPERTY_KEY));
+  const std::size_t i = opp.value();
+  return Node::title() + tr(" [%1]").arg( opp.options().at(i));
+}
+
 void MathNode::on_property_value_changed(Property* property)
 {
 }

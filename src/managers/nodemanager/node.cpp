@@ -129,6 +129,23 @@ QString Node::title() const
   return QCoreApplication::translate("any-context", type().toStdString().c_str());
 }
 
+bool Node::accepts_input_data_type(const QString& type, const InputPort& port) const
+{
+  // do not perform any type conversions by default.
+  // If you want your node to be more flexible, override this method.
+  return port.data_type() == type;
+}
+
+bool Node::is_valid() const
+{
+  for (const auto& p : m_ports) {
+    if (p->data_type() == NodeCompilerTypes::INVALID_TYPE) {
+      return false;
+    }
+  }
+  return true;
+}
+
 AbstractPort& Node::add_port(std::unique_ptr<AbstractPort> port)
 {
   auto& ref = *port;

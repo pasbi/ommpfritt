@@ -67,6 +67,7 @@ private:
   std::set<std::unique_ptr<Node>> m_nodes;
   Scene& m_scene;
   const NodeCompiler::Language m_language;
+  void init();
 };
 
 

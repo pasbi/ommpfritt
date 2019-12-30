@@ -54,6 +54,7 @@ public:
   OutputPort* connected_output() const { return m_connected_output; }
   bool is_connected(const AbstractPort* other) const;
   bool is_connected() const;
+  bool accepts_data_type(const QString& type) const;
 
   class Tag
   {

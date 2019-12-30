@@ -77,9 +77,9 @@ void NodeView::paintEvent(QPaintEvent*)
           ? m_pzc.transform().inverted().map(QPointF(m_pzc.last_mouse_pos()))
           : port_pos(*m_tmp_connection_target);
       if (m_tmp_connection_origin->port_type == PortType::Input) {
-        draw_connection(painter, origin, target);
+        draw_connection(painter, origin, target, true);
       } else {
-        draw_connection(painter, target, origin);
+        draw_connection(painter, target, origin, true);
       }
     }
     m_pzc.draw_rubberband(painter);
@@ -384,7 +384,11 @@ void NodeView::draw_node(QPainter& painter, const Node& node) const
   painter.save();
   QPen pen;
   pen.setWidthF(2.2);
-  pen.setColor(Qt::black);
+  if (node.is_valid()) {
+    pen.setColor(ui_color(*this, "NodeView", "node-outline-valid"));
+  } else {
+    pen.setColor(ui_color(*this, "NodeView", "node-outline-invalid"));
+  }
   painter.setPen(pen);
   if (::contains(m_selection, &node) || ::contains(m_nodes_in_rubberband, &node)) {
     painter.setBrush(QBrush(QColor(210, 210, 50)));
@@ -411,7 +415,7 @@ void NodeView::draw_connection(QPainter& painter, const InputPort& input_port) c
   if (&input_port != m_about_to_disconnect) {
     const OutputPort* op = input_port.connected_output();
     if (op != nullptr) {
-      draw_connection(painter, port_pos(input_port), port_pos(*op));
+      draw_connection(painter, port_pos(input_port), port_pos(*op), false);
     }
   }
 }
@@ -426,7 +430,7 @@ void NodeView::draw_port(QPainter& painter, const AbstractPort& port) const
   pen.setColor(Qt::black);
   painter.setPen(pen);
 
-  QBrush brush(QColor(255, 40, 80));
+  QBrush brush(ui_color(*this, "NodeView", QString("port-%1").arg(port.data_type())));
   painter.setBrush(brush);
 
   const QPointF port_pos = this->port_pos(port);
@@ -442,7 +446,8 @@ void NodeView::draw_port(QPainter& painter, const AbstractPort& port) const
   painter.restore();
 }
 
-void NodeView::draw_connection(QPainter& painter, const QPointF& in, const QPointF& out) const
+void NodeView::draw_connection(QPainter& painter, const QPointF& in, const QPointF& out,
+                               bool is_floating) const
 {
 #define INTERPOLATE_CONNECTION_AWAY_FROM_NODE
 #if defined(INTERPOLATE_CONNECTION_CORRECT_DIRECTION)
@@ -458,15 +463,21 @@ void NodeView::draw_connection(QPainter& painter, const QPointF& in, const QPoin
   path.cubicTo(c1, c2, out);
 
   painter.save();
-  QPen pen;
-  pen.setWidth(5.0);
-  pen.setColor(Qt::yellow);
-  painter.setPen(pen);
-  painter.drawPath(path);
-  pen.setWidth(2.0);
-  pen.setColor(Qt::black);
-  painter.setPen(pen);
-  painter.drawPath(path);
+  if (is_floating) {
+    // floating
+    QPen pen;
+    pen.setWidth(2.0);
+    pen.setColor(ui_color(*this, "NodeView", "floating-connection"));
+    painter.setPen(pen);
+    painter.drawPath(path);
+  } else {
+    // fixed
+    QPen pen;
+    pen.setWidth(2.0);
+    pen.setColor(ui_color(*this, "NodeView", "fixed-connection"));
+    painter.setPen(pen);
+    painter.drawPath(path);
+  }
   painter.restore();
 }
 

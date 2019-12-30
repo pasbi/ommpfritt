@@ -52,7 +52,7 @@ private:
   void draw_node(QPainter& painter, const Node& node) const;
   void draw_connection(QPainter& painter, const InputPort& input_port) const;
   void draw_port(QPainter& painter, const AbstractPort& port) const;
-  void draw_connection(QPainter& painter, const QPointF& in, const QPointF& out) const;
+  void draw_connection(QPainter& painter, const QPointF& in, const QPointF& out, bool is_floating) const;
   QPointF port_pos(const AbstractPort& port) const;
   AbstractPort* port_at(std::set<AbstractPort*> candidates, const QPointF& pos) const;
   Node* node_at(std::set<Node*> candidates, const QPointF& pos) const;

@@ -34,6 +34,11 @@ bool InputPort::is_connected() const
   return m_connected_output != nullptr;
 }
 
+bool InputPort::accepts_data_type(const QString& type) const
+{
+  return node.accepts_input_data_type(type, *this);
+}
+
 void InputPort::connect(OutputPort* port)
 {
   if (m_connected_output != port) {

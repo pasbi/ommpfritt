@@ -1,4 +1,6 @@
 #include "managers/nodemanager/nodemodel.h"
+#include "scene/scene.h"
+#include "scene/messagebox.h"
 #include "common.h"
 #include "managers/nodemanager/port.h"
 #include "managers/nodemanager/node.h"
@@ -9,16 +11,13 @@ namespace omm
 NodeModel::NodeModel(NodeCompiler::Language language, Scene& scene)
   : m_scene(scene), m_language(language)
 {
-  connect(this, SIGNAL(node_shape_changed()), this, SIGNAL(appearance_changed()));
-  connect(this, SIGNAL(topology_changed()), this, SIGNAL(node_shape_changed()));
+  init();
 }
 
 NodeModel::NodeModel(const NodeModel& other)
   : NodeModel(other.m_language, other.m_scene)
 {
-  connect(this, SIGNAL(node_shape_changed()), this, SIGNAL(appearance_changed()));
-  connect(this, SIGNAL(topology_changed()), this, SIGNAL(node_shape_changed()));
-
+  init();
   {
     QSignalBlocker blocker(this);
 
@@ -47,6 +46,22 @@ NodeModel::NodeModel(const NodeModel& other)
 
 NodeModel::~NodeModel()
 {
+}
+
+void NodeModel::init()
+{
+  connect(this, SIGNAL(node_shape_changed()), this, SIGNAL(appearance_changed()));
+  connect(this, SIGNAL(topology_changed()), this, SIGNAL(node_shape_changed()));
+  connect(&scene().message_box(), &MessageBox::property_value_changed,
+          [this](AbstractPropertyOwner& apo, const QString& key, Property&)
+  {
+    Q_UNUSED(key)
+    if (apo.kind == AbstractPropertyOwner::Kind::Node
+        && static_cast<const Node&>(apo).model() == this)
+    {
+      Q_EMIT appearance_changed();
+    }
+  });
 }
 
 Node& NodeModel::add_node(std::unique_ptr<Node> node)
@@ -192,7 +207,7 @@ bool NodeModel::can_connect(const AbstractPort& a, const AbstractPort& b) const
 
 bool NodeModel::can_connect(const OutputPort& a, const InputPort& b) const
 {
-  return !find_path(b.node, a.node);
+  return !find_path(b.node, a.node) && b.accepts_data_type(a.data_type());
 }
 
 }  // namespace omm

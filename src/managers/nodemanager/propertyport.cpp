@@ -1,4 +1,5 @@
 #include "managers/nodemanager/propertyport.h"
+#include "managers/nodemanager/node.h"
 
 namespace
 {
@@ -20,6 +21,7 @@ namespace omm
 template<> QString PropertyPort<PortType::Input>::data_type() const
 {
   if (OutputPort* op = connected_output(); op != nullptr) {
+    const QString type_candidate = op->data_type();
     return op->data_type();
   } else {
     return ::data_type(property());
