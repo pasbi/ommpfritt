@@ -308,6 +308,7 @@ void NodeView::dropEvent(QDropEvent* event)
     QPointF insert_pos = get_insert_position(event->pos());
     for (AbstractPropertyOwner* item : items) {
       auto node = Node::make(ReferenceNode::TYPE, &scene);
+      node->set_model(model());
       auto* const property = node->property(ReferenceNode::REFERENCE_PROPERTY_KEY);
       property->set(item);
       const QSizeF size = node_geometry(*node).size();
