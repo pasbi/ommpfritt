@@ -63,7 +63,11 @@ std::unique_ptr<Property> OptionsProperty::clone() const
 
 std::vector<QString> OptionsProperty::options() const
 {
-  return configuration.get<std::vector<QString>>(OPTIONS_POINTER);
+  if (configuration.count(OPTIONS_POINTER) > 0) {
+    return configuration.get<std::vector<QString>>(OPTIONS_POINTER);
+  } else {
+    return std::vector<QString>();
+  }
 }
 
 OptionsProperty& OptionsProperty::set_options(const std::vector<QString>& options)

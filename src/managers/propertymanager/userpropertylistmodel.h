@@ -20,7 +20,7 @@ public:
   Property* property() const { return m_property; }
 
 private:
-  Property* m_property;
+  Property* m_property = nullptr;
 };
 
 class UserPropertyListModel : public QAbstractListModel

@@ -94,10 +94,6 @@ void UserPropertyDialog::submit()
 
 void UserPropertyDialog::update_property_config_page(UserPropertyListItem* item)
 {
-  if (m_current_config_widget != nullptr && m_current_item != nullptr) {
-    m_current_config_widget->update(m_current_item->configuration);
-  }
-
   if (QWidget* current_widget = m_ui->scrollArea->widget(); current_widget != nullptr) {
     current_widget->deleteLater();
   }
