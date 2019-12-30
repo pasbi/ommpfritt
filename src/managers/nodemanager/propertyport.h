@@ -53,4 +53,17 @@ private:
   const std::function<Property*()> m_get_property;
 };
 
+class PropertyOutputPort : public PropertyPort<PortType::Output>
+{
+public:
+  using PropertyPort<PortType::Output>::PropertyPort;
+};
+
+class PropertyInputPort : public PropertyPort<PortType::Input>
+{
+public:
+  using PropertyPort<PortType::Input>::PropertyPort;
+  void connect(OutputPort* port) override;
+};
+
 }  // namespace omm

@@ -33,4 +33,13 @@ template<> QString PropertyPort<PortType::Output>::data_type() const
   return ::data_type(property());
 }
 
+void PropertyInputPort::connect(OutputPort* port)
+{
+  if (Property* property = this->property(); property != nullptr) {
+    property->set_enabledness(port == nullptr);
+  }
+
+  PropertyPort<PortType::Input>::connect(port);
+}
+
 }  // namespace omm

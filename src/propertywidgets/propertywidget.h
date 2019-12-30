@@ -29,6 +29,7 @@ public:
 
 public Q_SLOTS:
   void on_property_value_changed(Property* property);
+  void update_enabledness();
 
 protected:
   void set_default_layout(std::unique_ptr<QWidget> other);

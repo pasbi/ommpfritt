@@ -50,7 +50,7 @@ protected:
   explicit InputPort(const InputPort& other, Node& node);
 public:
   InputPort(Node& node, std::size_t index);
-  void connect(OutputPort* port);
+  virtual void connect(OutputPort* port);
   OutputPort* connected_output() const { return m_connected_output; }
   bool is_connected(const AbstractPort* other) const;
   bool is_connected() const;

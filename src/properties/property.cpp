@@ -153,4 +153,12 @@ QString Property::data_type() const
   return type.mid(0, type.size() - suffix.size());
 }
 
+void Property::set_enabledness(bool enabled)
+{
+  if (m_is_enabled != enabled) {
+    m_is_enabled = enabled;
+    Q_EMIT enabledness_changed(enabled);
+  }
+}
+
 }  // namespace omm

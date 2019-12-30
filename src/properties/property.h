@@ -196,6 +196,15 @@ public:
 private:
   static std::map<QString, const PropertyDetail*> m_details;
   friend void register_properties();
+
+Q_SIGNALS:
+  void enabledness_changed(bool);
+public Q_SLOTS:
+  void set_enabledness(bool enabled);
+public:
+  bool is_enabled() const { return m_is_enabled; }
+private:
+  bool m_is_enabled = true;
 };
 
 void register_properties();

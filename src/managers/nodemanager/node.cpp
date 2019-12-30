@@ -171,8 +171,8 @@ std::unique_ptr<AbstractPort> Node::remove_port(const AbstractPort& port)
 Property& Node::add_property(const QString& key, std::unique_ptr<Property> property)
 {
   auto& ref = PropertyOwner::add_property(key, std::move(property));
-  add_port<PropertyPort<PortType::Input>>(ref);
-  add_port<PropertyPort<PortType::Output>>(ref);
+  add_port<PropertyInputPort>(ref);
+  add_port<PropertyOutputPort>(ref);
   return ref;
 }
 
