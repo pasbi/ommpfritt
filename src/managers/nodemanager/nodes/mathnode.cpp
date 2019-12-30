@@ -94,7 +94,9 @@ MathNode::MathNode(Scene* scene)
 QString MathNode::definition() const
 {
   return QString(R"(
+
 def %1(op, a, b):
+    import numpy as np
     def do_op(op, a, b):
         if op == 0:
             return a + b
@@ -108,7 +110,14 @@ def %1(op, a, b):
             return a ** b
         else:
             return 0.0;
-    return float(do_op(op, a, b))
+    if isinstance(a, list):
+        a = np.array(a)
+    if isinstance(b, list):
+        b = np.array(b)
+    result = do_op(op, a, b)
+    if isinstance(result, np.ndarray):
+        result = list(result)
+    return result
 )").arg(uuid());
 }
 
@@ -159,7 +168,13 @@ QString MathNode::title() const
 {
   auto&& opp = static_cast<const OptionsProperty&>(*property(OPERATION_PROPERTY_KEY));
   const std::size_t i = opp.value();
-  return Node::title() + tr(" [%1]").arg( opp.options().at(i));
+  QString operation_label = tr("invalid");
+  try {
+    operation_label = opp.options().at(i);
+  } catch (const std::out_of_range&) {
+  }
+
+  return Node::title() + tr(" [%1]").arg(operation_label);
 }
 
 void MathNode::on_property_value_changed(Property* property)

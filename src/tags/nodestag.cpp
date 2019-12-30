@@ -118,8 +118,14 @@ void NodesTag::force_evaluate()
         const auto var_name = compiler->uuid(*port);
         const auto py_var_name =  py::cast(var_name.toStdString());
         if (locals.contains(py_var_name)) {
-          const variant_type var = python_to_variant(locals[py_var_name], property->data_type());
-          property->set(var);
+          if (port->data_type() == property->data_type()) {
+            const variant_type var = python_to_variant(locals[py_var_name], port->data_type());
+            property->set(var);
+          } else {
+            // don't set the value if types don't match.
+            // That may be inconvenient, but the type of the property is fixed. A value of another
+            // type cannot be set.
+          }
         }
       }
     }
