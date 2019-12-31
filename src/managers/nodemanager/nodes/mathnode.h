@@ -16,14 +16,12 @@ public:
   static constexpr auto OPERATION_PROPERTY_KEY = "op";
 
   QString definition() const override;
-  QString uuid() const override;
   std::unique_ptr<Node> clone() const override;
   QString output_data_type(const OutputPort& port) const override;
   bool accepts_input_data_type(const QString& type, const InputPort& port) const override;
   QString title() const override;
 
 protected:
-  void on_property_value_changed(Property* property) override;
   OutputPort* m_result_port;
 };
 

@@ -74,7 +74,6 @@ void NodeCompiler::compile(const NodeModel& model)
 
 QString NodeCompiler::uuid(const AbstractPort& port) const
 {
-//  return "p_" + port.label();   // TODO that simplifies debugging but port-label might be anything.
   return "p" + address_to_string(&port);
 }
 

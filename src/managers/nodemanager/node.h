@@ -49,7 +49,7 @@ public:
   QString name() const override;
 
   virtual QString definition() const { return ""; }
-  virtual QString uuid() const { return ""; }
+  QString uuid() const { return "node_definition_" + type(); }
   NodeCompiler::Language language() const;
 
   static constexpr auto POS_PTR = "pos";
@@ -86,7 +86,7 @@ public:
   virtual QString title() const;
   virtual std::unique_ptr<Node> clone() const = 0;
 
-  virtual QString output_data_type(const OutputPort& port) const = 0;
+  virtual QString output_data_type(const OutputPort& port) const;
   virtual bool accepts_input_data_type(const QString& type, const InputPort& port) const;
   virtual bool is_valid() const;
 

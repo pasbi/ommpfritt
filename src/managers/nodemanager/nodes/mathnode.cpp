@@ -121,11 +121,6 @@ def %1(op, a, b):
 )").arg(uuid());
 }
 
-QString MathNode::uuid() const
-{
-  return "math";
-}
-
 std::unique_ptr<Node> MathNode::clone() const
 {
   return std::make_unique<MathNode>(*this);
@@ -175,10 +170,6 @@ QString MathNode::title() const
   }
 
   return Node::title() + tr(" [%1]").arg(operation_label);
-}
-
-void MathNode::on_property_value_changed(Property* property)
-{
 }
 
 }  // namespace

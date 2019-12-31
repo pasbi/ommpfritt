@@ -18,23 +18,21 @@ public:
 
   explicit OrdinaryPort(const OrdinaryPort& other, Node& node)
     : ConcretePortSelector<port_type_>::T(other, node)
-    , m_label(other.label()), m_data_type(other.data_type())
+    , m_label(other.label())
   {
   }
-
-  QString label() const override { return m_label; }
-
-  QString data_type() const override;
 
   std::unique_ptr<AbstractPort> clone(Node& node) const override
   {
     return std::make_unique<OrdinaryPort<port_type_>>(*this, node);
   }
 
-private:
-  const QString m_label;
-  const QString m_data_type;
+  QString data_type() const override;
+  QString label() const override { return m_label; }
+  void set_label(const QString& label) { m_label = label; }
 
+private:
+  QString m_label;
 };
 
 }  // namespace omm
