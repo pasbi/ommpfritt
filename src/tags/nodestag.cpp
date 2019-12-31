@@ -1,4 +1,5 @@
 #include "tags/nodestag.h"
+#include "managers/nodemanager/nodes/spynode.h"
 #include "mainwindow/application.h"
 #include "managers/nodemanager/propertyport.h"
 #include "managers/nodemanager/port.h"
@@ -106,6 +107,17 @@ void NodesTag::force_evaluate()
 
   if (Application::instance().python_engine.exec(code(), locals, this)) {
     for (InputPort* port : node_model().ports<InputPort>()) {
+      if (port->node.type() == SpyNode::TYPE) {
+        SpyNode& spy_node = static_cast<SpyNode&>(port->node);
+        const auto py_var_name = py::cast(compiler->uuid(*port).toStdString());
+        if (locals.contains(py_var_name)) {
+          py::object val = locals[py_var_name];
+          const QString repr = QString::fromStdString(py::str(val));
+          spy_node.set_text(repr);
+        } else {
+          spy_node.set_text(tr("nil"));
+        }
+      }
       if (port->flavor == PortFlavor::Property && port->is_connected()) {
         Property* property = static_cast<PropertyPort<PortType::Input>*>(port)->property();
         if (property != nullptr) {
