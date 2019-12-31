@@ -32,7 +32,14 @@ PythonConsole::PythonConsole(Scene& scene)
 
   auto ref_filter_widget = std::make_unique<ReferenceLineEdit>();
   ref_filter_widget->set_scene(scene);
-  ref_filter_widget->set_filter(AbstractPropertyOwner::Flag::HasScript);
+  ref_filter_widget->set_filter([](const AbstractPropertyOwner* apo) {
+    using Flag = AbstractPropertyOwner::Flag;
+    if (!!(apo->flags() & (Flag::HasScript | Flag::HasPythonNodes))) {
+      return true;
+    } else {
+      return false;
+    }
+  });
   m_associated_item_widget = ref_filter_widget.get();
   m_associated_item_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   header_layout->addWidget(ref_filter_widget.release());
@@ -81,8 +88,10 @@ PythonConsole::~PythonConsole()
 void PythonConsole::on_output(const void* associated_item, QString text, Stream stream)
 {
   if (accept(associated_item)) {
-    m_output->put(text, stream);
-    m_output->scroll_to_bottom();
+    if (!text.isEmpty()) {
+      m_output->put(text, stream);
+      m_output->scroll_to_bottom();
+    }
   }
 }
 

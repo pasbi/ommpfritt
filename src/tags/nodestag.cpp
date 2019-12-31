@@ -68,7 +68,7 @@ NodesTag::~NodesTag()
 QString NodesTag::type() const { return TYPE; }
 AbstractPropertyOwner::Flag NodesTag::flags() const
 {
-  return Tag::flags() | Flag::HasNodes;
+  return Tag::flags() | Flag::HasPythonNodes;
 }
 
 void NodesTag::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
@@ -104,31 +104,29 @@ void NodesTag::force_evaluate()
   populate_locals<PortType::Input>(locals, *compiler, node_model());
   populate_locals<PortType::Output>(locals, *compiler, node_model());
 
-  try {
-    py::exec(code().toStdString(), py::globals(), locals);
-  } catch (const py::error_already_set& error) {
-    LERROR << "Python error: " << error.what();
-    return;
-  }
-
-  for (InputPort* port : node_model().ports<InputPort>()) {
-    if (port->flavor == PortFlavor::Property && port->is_connected()) {
-      Property* property = static_cast<PropertyPort<PortType::Input>*>(port)->property();
-      if (property != nullptr) {
-        const auto var_name = compiler->uuid(*port);
-        const auto py_var_name =  py::cast(var_name.toStdString());
-        if (locals.contains(py_var_name)) {
-          if (port->data_type() == property->data_type()) {
-            const variant_type var = python_to_variant(locals[py_var_name], port->data_type());
-            property->set(var);
-          } else {
-            // don't set the value if types don't match.
-            // That may be inconvenient, but the type of the property is fixed. A value of another
-            // type cannot be set.
+  if (Application::instance().python_engine.exec(code(), locals, this)) {
+    for (InputPort* port : node_model().ports<InputPort>()) {
+      if (port->flavor == PortFlavor::Property && port->is_connected()) {
+        Property* property = static_cast<PropertyPort<PortType::Input>*>(port)->property();
+        if (property != nullptr) {
+          const auto var_name = compiler->uuid(*port);
+          const auto py_var_name =  py::cast(var_name.toStdString());
+          if (locals.contains(py_var_name)) {
+            if (port->data_type() == property->data_type()) {
+              const variant_type var = python_to_variant(locals[py_var_name], port->data_type());
+              property->set(var);
+            } else {
+              // don't set the value if types don't match.
+              // That may be inconvenient, but the type of the property is fixed. A value of another
+              // type cannot be set.
+            }
           }
         }
       }
     }
+    node_model().set_status(NodeModel::Status::Success);
+  } else {
+    node_model().set_status(NodeModel::Status::Fail);
   }
   owner->update();
 }

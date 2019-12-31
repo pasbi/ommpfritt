@@ -32,7 +32,8 @@ public:
 
   enum class Flag { None = 0x0,
                     Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4, IsView = 0x8,
-                    HasNodes = 0x10 };
+                    HasPythonNodes = 0x10, HasGLSLNodes = 0x20,
+                    HasNodes = HasPythonNodes | HasGLSLNodes };
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PropertyOwner", "AbstractPropertyOwner");
 

@@ -1,4 +1,4 @@
-#include "propertywidgets/referencepropertywidget/referencepropertywidget.h"
+﻿#include "propertywidgets/referencepropertywidget/referencepropertywidget.h"
 
 #include "propertywidgets/multivalueedit.h"
 #include "widgets/referencelineedit.h"
@@ -34,13 +34,24 @@ ReferencePropertyWidget
     set_properties_value(o);
   });
 
-  const auto get_allowed_kinds = [](const ReferenceProperty* p) { return p->allowed_kinds(); };
-  const auto get_required_flags = [](const ReferenceProperty* p) { return p->required_flags(); };
 
-  line_edit->set_filter(get<ReferenceProperty, AbstractPropertyOwner::Kind>( properties,
-                                                                             get_allowed_kinds) );
-  line_edit->set_filter(get<ReferenceProperty, AbstractPropertyOwner::Flag>( properties,
-                                                                             get_required_flags) );
+  line_edit->set_filter([properties](const AbstractPropertyOwner* apo) {
+    using Flag = AbstractPropertyOwner::Flag;
+    using Kind = AbstractPropertyOwner::Kind;
+    const auto kind = get<ReferenceProperty, Kind>( properties, [](const ReferenceProperty* p) {
+      return p->allowed_kinds();
+    });
+    const auto flags = get<ReferenceProperty, Flag>( properties, [](const ReferenceProperty* p) {
+      return p->required_flags();
+    });
+    if (!(apo->kind | kind)) {
+      return false;
+    } else if ((apo->flags() & flags) != flags) {
+      return false;
+    } else {
+      return true;
+    }
+  });
 
   m_line_edit = line_edit.get();
   set_default_layout(std::move(line_edit));

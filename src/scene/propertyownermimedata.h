@@ -27,7 +27,7 @@ public:
   std::vector<Tag*> tags() const;
   std::vector<Style*> styles() const;
   std::vector<AbstractPropertyOwner*> items(AbstractPropertyOwner::Kind kinds) const;
-  template<typename T> std::vector<T*> items() const;
+  template<typename T=AbstractPropertyOwner> std::vector<T*> items() const;
 private:
   const std::vector<AbstractPropertyOwner*> m_items;
 };

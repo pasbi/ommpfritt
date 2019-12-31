@@ -16,7 +16,9 @@
 namespace omm
 {
 
-ReferenceLineEdit::ReferenceLineEdit(QWidget* parent) : QComboBox(parent)
+ReferenceLineEdit::ReferenceLineEdit(QWidget* parent)
+  : QComboBox(parent)
+  , m_filter([](const AbstractPropertyOwner*) { return true; })
 {
   setEditable(true);
   setAcceptDrops(true);
@@ -117,6 +119,13 @@ void ReferenceLineEdit::set_inconsistent_value()
 }
 
 ReferenceLineEdit::value_type ReferenceLineEdit::value() const { return m_value; }
+
+void ReferenceLineEdit::set_filter(const std::function<bool (const AbstractPropertyOwner*)>& filter)
+{
+  m_filter = filter;
+  update_candidates();
+}
+
 void ReferenceLineEdit::mouseDoubleClickEvent(QMouseEvent*) { set_value(nullptr); }
 
 void ReferenceLineEdit::dragEnterEvent(QDragEnterEvent* event)
@@ -135,8 +144,9 @@ void ReferenceLineEdit::dropEvent(QDropEvent* event)
   if (can_drop(*event)) {
     const auto& mime_data = *event->mimeData();
     const auto& property_owner_mime_data = *qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
-    AbstractPropertyOwner* reference = property_owner_mime_data.items(m_allowed_kinds).front();
-    set_value(reference);
+    const auto items = ::filter_if(property_owner_mime_data.items(), m_filter);
+    assert(items.size() > 0);
+    set_value(items.front());
   } else {
     event->ignore();
   }
@@ -150,24 +160,12 @@ bool ReferenceLineEdit::can_drop(const QDropEvent& event) const
   } else if (mime_data.hasFormat(PropertyOwnerMimeData::MIME_TYPE)) {
     const auto property_owner_mime_data = qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
     if (property_owner_mime_data != nullptr) {
-      if (property_owner_mime_data->items(m_allowed_kinds).size() == 1) {
+      if (::filter_if(property_owner_mime_data->items(), m_filter).size() == 1) {
         return true;
       }
     }
   }
   return false;
-}
-
-void ReferenceLineEdit::set_filter(AbstractPropertyOwner::Kind allowed_kinds)
-{
-  m_allowed_kinds = allowed_kinds;
-  update_candidates();
-}
-
-void ReferenceLineEdit::set_filter(AbstractPropertyOwner::Flag required_flags)
-{
-  m_required_flags = required_flags;
-  update_candidates();
 }
 
 std::vector<omm::AbstractPropertyOwner*> ReferenceLineEdit::collect_candidates()
@@ -176,22 +174,11 @@ std::vector<omm::AbstractPropertyOwner*> ReferenceLineEdit::collect_candidates()
   auto merge = [&candidates](const auto& ts) {
     candidates.insert(candidates.end(), ts.begin(), ts.end());
   };
-  if (!!(m_allowed_kinds & omm::AbstractPropertyOwner::Kind::Object)) {
-    merge(m_scene->object_tree().items());
-  }
-  if (!!(m_allowed_kinds & omm::AbstractPropertyOwner::Kind::Tag)) {
-    merge(m_scene->tags());
-  }
-  if (!!(m_allowed_kinds & omm::AbstractPropertyOwner::Kind::Style)) {
-    merge(m_scene->styles().items());
-  }
+  merge(m_scene->object_tree().items());
+  merge(m_scene->tags());
+  merge(m_scene->styles().items());
 
-  const auto not_has_required_flags = [this](const omm::AbstractPropertyOwner* apo) {
-    return m_required_flags & ~apo->flags();
-  };
-
-  candidates.erase( std::remove_if(candidates.begin(), candidates.end(), not_has_required_flags),
-                    candidates.end() );
+  candidates = ::filter_if(candidates, m_filter);
   candidates.push_back(nullptr);
   return candidates;
 }

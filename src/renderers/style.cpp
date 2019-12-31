@@ -101,7 +101,7 @@ Style::Style(const Style &other)
 QString Style::type() const { return TYPE; }
 AbstractPropertyOwner::Flag Style::flags() const
 {
-  return Flag::None | Flag::HasNodes;
+  return Flag::None | Flag::HasGLSLNodes;
 }
 
 QPixmap Style::texture(const Object& object, const QSize& size) const

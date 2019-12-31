@@ -22,8 +22,7 @@ public:
   ~ReferenceLineEdit() = default;
   void set_value(const value_type& value) override;
   value_type value() const override;
-  void set_filter(AbstractPropertyOwner::Kind allowed_kinds);
-  void set_filter(AbstractPropertyOwner::Flag required_flags);
+  void set_filter(const std::function<bool(const AbstractPropertyOwner*)>& filter);
   void set_null_label(const QString& value);
   void set_scene(Scene& scene);
 
@@ -37,8 +36,7 @@ private:
   bool can_drop(const QDropEvent& event) const;
   AbstractPropertyOwner* m_value;
   Scene* m_scene = nullptr;
-  AbstractPropertyOwner::Kind m_allowed_kinds = AbstractPropertyOwner::Kind::All;
-  AbstractPropertyOwner::Flag m_required_flags = AbstractPropertyOwner::Flag::None;
+  std::function<bool(const AbstractPropertyOwner*)> m_filter;
   std::vector<AbstractPropertyOwner*> m_possible_references;
 
   std::vector<omm::AbstractPropertyOwner*> collect_candidates();

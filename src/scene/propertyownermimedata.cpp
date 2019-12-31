@@ -85,6 +85,11 @@ template<> std::vector<Style*> PropertyOwnerMimeData::items<Style>() const
   return styles();
 }
 
+template<> std::vector<AbstractPropertyOwner*> PropertyOwnerMimeData::items<AbstractPropertyOwner>() const
+{
+  return m_items;
+}
+
 template<> std::vector<Tag*> PropertyOwnerMimeData::items<Tag>() const
 {
   return tags();
