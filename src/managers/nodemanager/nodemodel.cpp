@@ -48,6 +48,14 @@ NodeModel::~NodeModel()
 {
 }
 
+void NodeModel::set_status(NodeModel::Status status)
+{
+  if (m_status != status) {
+    m_status = status;
+    Q_EMIT appearance_changed();
+  }
+}
+
 void NodeModel::init()
 {
   connect(this, SIGNAL(node_shape_changed()), this, SIGNAL(appearance_changed()));

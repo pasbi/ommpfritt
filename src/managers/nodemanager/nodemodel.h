@@ -25,6 +25,10 @@ public:
   NodeModel(const NodeModel& other);
   ~NodeModel();
 
+  enum class Status { None, Success, Fail };
+  void set_status(Status status);
+  Status status() const { return m_status; }
+
   Node& add_node(std::unique_ptr<Node> node);
   std::unique_ptr<Node> extract_node(Node& node);
   std::set<Node*> nodes() const;
@@ -68,6 +72,7 @@ private:
   Scene& m_scene;
   const NodeCompiler::Language m_language;
   void init();
+  Status m_status = Status::None;
 };
 
 

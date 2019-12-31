@@ -180,7 +180,6 @@ Q_SIGNALS:
   void value_changed(Property*);
   void visibility_changed(bool);
 
-
 public:
   // === Channels
   struct PropertyDetail

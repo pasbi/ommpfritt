@@ -53,12 +53,20 @@ void NodeView::set_model(NodeModel* model)
 
 void NodeView::paintEvent(QPaintEvent*)
 {
-  QPainter painter(this);
-  painter.setRenderHint(QPainter::Antialiasing);
-  painter.translate(width()/2.0, height()/2.0);
-  painter.setTransform(m_pzc.transform(), true);
-
   if (m_model != nullptr) {
+    QPainter painter(this);
+
+    {
+      const QColor background = m_model->status() == NodeModel::Status::Fail
+                                ? ui_color(*this, "NodeView", "canvas-bg-invalid")
+                                : ui_color(*this, "NodeView", "canvas-bg-valid");
+      painter.fillRect(rect(), background);
+    }
+
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.translate(width()/2.0, height()/2.0);
+    painter.setTransform(m_pzc.transform(), true);
+
     const auto nodes = m_model->nodes();
     for (const auto& node : nodes) {
       for (AbstractPort* port : node->ports()) {
