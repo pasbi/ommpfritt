@@ -20,7 +20,6 @@ class AbstractPort
 {
 public:
   AbstractPort(PortFlavor flavor, PortType port_type, Node& node, std::size_t index);
-  explicit AbstractPort(const AbstractPort& other, Node& node);
   virtual ~AbstractPort();
   bool is_connected(const AbstractPort* other) const;
   bool is_connected() const;
@@ -30,7 +29,6 @@ public:
   const std::size_t index;
   virtual QString label() const = 0;
   virtual QString data_type() const = 0;
-  virtual std::unique_ptr<AbstractPort> clone(Node& node) const = 0;
 };
 
 template<PortType port_type_> class Port : public AbstractPort
@@ -47,7 +45,6 @@ class InputPort : public Port<PortType::Input>
 {
 protected:
   InputPort(PortFlavor flavor, Node& node, std::size_t index);
-  explicit InputPort(const InputPort& other, Node& node);
 public:
   InputPort(Node& node, std::size_t index);
   virtual void connect(OutputPort* port);
@@ -71,7 +68,6 @@ class OutputPort : public Port<PortType::Output>
 {
 protected:
   OutputPort(PortFlavor flavor, Node& node, std::size_t index);
-  explicit OutputPort(const OutputPort& other, Node& node);
 public:
   OutputPort(Node& node, std::size_t index);
 

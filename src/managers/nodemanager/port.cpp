@@ -15,11 +15,6 @@ InputPort::InputPort(PortFlavor flavor, Node& node, std::size_t index)
 {
 }
 
-InputPort::InputPort(const InputPort& other, Node& node)
-  : Port<PortType::Input>(other, node)
-{
-}
-
 bool InputPort::is_connected(const AbstractPort* other) const
 {
   if (other->port_type == PortType::Input) {
@@ -63,10 +58,6 @@ OutputPort::OutputPort(Node& node, std::size_t index)
 {
 }
 
-OutputPort::OutputPort(const OutputPort& other, Node& node) : Port<PortType::Output>(other, node)
-{
-}
-
 bool OutputPort::is_connected(const AbstractPort* other) const
 {
   if (other->port_type == PortType::Input) {
@@ -79,12 +70,6 @@ bool OutputPort::is_connected(const AbstractPort* other) const
 AbstractPort::AbstractPort(PortFlavor flavor, PortType port_type, Node& node, std::size_t index)
   : port_type(port_type), flavor(flavor), node(node), index(index)
 {
-}
-
-AbstractPort::AbstractPort(const AbstractPort& other, Node& node)
-  : port_type(other.port_type), flavor(other.flavor), node(node), index(other.index)
-{
-
 }
 
 AbstractPort::~AbstractPort()

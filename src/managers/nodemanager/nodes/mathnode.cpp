@@ -88,7 +88,7 @@ MathNode::MathNode(Scene* scene)
       .set_label(QObject::tr("a")).set_category(category);
   create_property<FloatProperty>(B_PROPERTY_KEY, 0.0)
       .set_label(QObject::tr("b")).set_category(category);
-  m_result_port = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
+  named_ports["result"] = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
 }
 
 QString MathNode::definition() const
@@ -121,26 +121,25 @@ def %1(op, a, b):
 )").arg(uuid());
 }
 
-std::unique_ptr<Node> MathNode::clone() const
-{
-  return std::make_unique<MathNode>(*this);
-}
-
 QString MathNode::output_data_type(const OutputPort& port) const
 {
-  if (&port == m_result_port) {
+  if (&port == named_ports.at("result")) {
     const QString type_a = find_port<InputPort>(*property(A_PROPERTY_KEY))->data_type();
     const QString type_b = find_port<InputPort>(*property(B_PROPERTY_KEY))->data_type();
-    if (language() == NodeCompiler::Language::GLSL) {
+    if (const auto language = this->language(); language == NodeCompiler::Language::GLSL) {
       if (type_a == type_b) {
         return type_a;
       }
-    } else if (language() == NodeCompiler::Language::Python) {
+    } else if (language == NodeCompiler::Language::Python) {
       const auto op = property(OPERATION_PROPERTY_KEY)->value<Operation>();
       const auto type_matrix = ::type_matrix();
       if (const auto it = type_matrix.find({op, type_a, type_b}); it != type_matrix.end()) {
         return it->second;
       }
+    } else {
+      LERROR << "Invalid language: "
+             << static_cast<std::underlying_type_t<NodeCompiler::Language>>(language);
+      Q_UNREACHABLE();
     }
   }
   return NodeCompilerTypes::INVALID_TYPE;

@@ -14,7 +14,6 @@ public:
   static constexpr auto CONSTANT_VALUE_KEY = "constant";
   void populate_menu(QMenu& menu) override;
 
-  std::unique_ptr<Node> clone() const override;
   QString output_data_type(const OutputPort& port) const override;
 
 protected:

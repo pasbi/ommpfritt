@@ -23,7 +23,6 @@ class Node
   Q_OBJECT
 public:
   explicit Node(Scene* scene);
-  explicit Node(const Node& other);
   ~Node();
 
   Flag flags() const override { return Flag::None; }
@@ -84,7 +83,6 @@ public:
 
   virtual void populate_menu(QMenu&) {}
   virtual QString title() const;
-  virtual std::unique_ptr<Node> clone() const = 0;
 
   virtual QString output_data_type(const OutputPort& port) const;
   virtual bool accepts_input_data_type(const QString& type, const InputPort& port) const;
@@ -107,6 +105,8 @@ protected:
 
   Property& add_property(const QString& key, std::unique_ptr<Property> property) override;
   std::unique_ptr<Property> extract_property(const QString& key) override;
+
+  std::map<QString, AbstractPort*> named_ports;
 
 Q_SIGNALS:
   void pos_changed();

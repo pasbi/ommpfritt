@@ -21,11 +21,6 @@ void ConstantNode::populate_menu(QMenu& menu)
   });
 }
 
-std::unique_ptr<Node> ConstantNode::clone() const
-{
-  return std::make_unique<ConstantNode>(*this);
-}
-
 QString ConstantNode::output_data_type(const OutputPort&) const
 {
   Q_UNREACHABLE();

@@ -1,4 +1,5 @@
 #include "managers/nodemanager/nodemodel.h"
+#include "serializers/jsonserializer.h"
 #include "scene/scene.h"
 #include "scene/messagebox.h"
 #include "common.h"
@@ -18,28 +19,19 @@ NodeModel::NodeModel(const NodeModel& other)
   : NodeModel(other.m_language, other.m_scene)
 {
   init();
+  std::ostringstream oss;
+  {
+    JSONSerializer serializer(oss);
+    other.serialize(serializer, "root");
+  }
+  const std::string str = oss.str();
+  LINFO << str;
+
   {
     QSignalBlocker blocker(this);
-
-    std::map<Node*, Node*> node_map;
-    for (const auto& node : other.m_nodes) {
-      auto clone = node->clone();
-      node_map.insert({node.get(), clone.get()});
-      add_node(std::move(clone));
-    }
-
-    for (auto [old_node, new_node] : node_map) {
-      for (InputPort* ip : old_node->ports<InputPort>()) {
-        if (OutputPort* op = ip->connected_output(); op != nullptr) {
-          Node& src_node = *node_map.at(&op->node);
-          InputPort* new_ip = new_node->find_port<InputPort>(ip->index);
-          OutputPort* new_op = src_node.find_port<OutputPort>(op->index);
-          if (new_ip && new_op) {
-            new_ip->connect(new_op);
-          }
-        }
-      }
-    }
+    std::istringstream iss(str);
+    JSONDeserializer deserializer(iss);
+    deserialize(deserializer, "root");
   }
 
   Q_EMIT topology_changed();

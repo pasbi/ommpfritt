@@ -26,11 +26,6 @@ public:
   {
   }
 
-  std::unique_ptr<AbstractPort> clone(Node& node) const override
-  {
-    return std::make_unique<PropertyPort<port_type_>>(*this, node);
-  }
-
   Property* property() const { return m_get_property(); }
 
   QString label() const override
