@@ -13,11 +13,6 @@ template<PortType port_type_> class PropertyPort : public ConcretePortSelector<p
 {
 public:
   using BasePort = typename ConcretePortSelector<port_type_>::T;
-  PropertyPort(Node& node, std::size_t index, Property& property)
-    : BasePort(PortFlavor::Property, node, index)
-    , m_get_property([&property]() { return &property; })
-  {
-  }
 
   PropertyPort(Node& node, std::size_t index, const std::function<Property*()>& get_property)
     : BasePort(PortFlavor::Property, node, index)
