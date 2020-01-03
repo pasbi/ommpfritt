@@ -231,7 +231,7 @@ void PropertyManager::update_property_widgets()
     }
   }
 
-  m_layout->addStretch();
+  m_layout->addStretch(1);
   setWindowTitle(make_window_title());
 }
 
