@@ -68,7 +68,6 @@ private:
   Vec2f m_last_cursor_pos;
 
   QTimer m_fps_limiter;
-  bool m_fps_brake = false;
   bool m_update_later = false;
 
   void draw_grid(QPainter& painter, const std::pair<Vec2f, Vec2f>& bounds,

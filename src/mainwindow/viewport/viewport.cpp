@@ -66,9 +66,11 @@ Viewport::Viewport(Scene& scene)
 
   connect(&scene.message_box(), SIGNAL(appearance_changed()), this, SLOT(update()));
   connect(&m_fps_limiter, &QTimer::timeout, [this]() {
-    m_fps_brake = false;
+    m_fps_limiter.stop();
     if (m_update_later) {
-      update();
+      m_update_later = false;
+      ViewportBase::update();
+      Q_EMIT updated();
     }
   });
 
@@ -299,15 +301,12 @@ void Viewport::resizeEvent(QResizeEvent* event)
 void Viewport::update()
 {
   static constexpr double fps = 30.0;
-  if (!m_fps_brake) {
-    m_fps_brake = true;
-    m_update_later = false;
+  if (m_fps_limiter.isActive()) {
+    m_update_later = true;
+  } else {
     ViewportBase::update();
     Q_EMIT updated();
     m_fps_limiter.start(static_cast<int>(1000.0/fps));
-    m_fps_limiter.setSingleShot(true);
-  } else {
-    m_update_later = true;
   }
 }
 

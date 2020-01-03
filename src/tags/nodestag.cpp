@@ -99,7 +99,7 @@ void NodesTag::force_evaluate()
   assert(scene != nullptr);
   using namespace py::literals;
 
-  LINFO << "Compilation: \n" << code();
+//  LINFO << "Compilation: \n" << code();
   auto locals = py::dict();
   const NodeCompiler* compiler = this->compiler();
   populate_locals<PortType::Input>(locals, *compiler, node_model());
