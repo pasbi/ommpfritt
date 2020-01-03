@@ -16,6 +16,7 @@
 #include "geometry/vec2.h"
 #include "variant.h"
 #include "animation/track.h"
+#include "dnf.h"
 
 namespace omm
 {
@@ -23,7 +24,6 @@ namespace omm
 class Object;
 class Track;
 class Property;
-class AbstractPropertyOwner;
 class OptionsProperty;
 
 class Property
@@ -32,10 +32,30 @@ class Property
   , public virtual Serializable
 {
   Q_OBJECT
+
+
 public:
+  struct Filter : public Serializable {
+    explicit Filter(const Disjunction<Kind>& kind,
+                    const DNF<Flag>& flag);
+    Filter();
+    explicit Filter(const DNF<Flag>& flag);
+    void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
+    void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+    Disjunction<Kind> kind;
+    DNF<Flag> flag;
+    bool evaluate(const AbstractPropertyOwner& apo) const;
+    bool operator==(const Filter& other) const;
+    bool operator!=(const Filter& other) const { return !(*this == other); }
+    bool operator<(const Filter& other) const;
+
+    static Filter accept_anything();
+  };
+
   struct Configuration : std::map<QString, std::variant<bool, int, double, Vec2i, Vec2f,
-                                                            std::size_t, QString,
-                                                            std::vector<QString>>>
+                                                        std::size_t, QString,
+                                                        std::vector<QString>,
+                                                        Filter>>
   {
     using variant_type = value_type::second_type;
     template<typename T> T get(const QString& key) const

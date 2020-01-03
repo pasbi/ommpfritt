@@ -32,7 +32,7 @@ std::ostream& operator<<(std::ostream& ostream, const Tag& tag)
   return ostream;  return ostream;
 }
 
-AbstractPropertyOwner::Flag Tag::flags() const { return Flag::None; }
+Flag Tag::flags() const { return Flag::None; }
 
 std::unique_ptr<Tag> Tag::clone(Object& owner) const
 {

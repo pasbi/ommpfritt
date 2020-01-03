@@ -9,6 +9,7 @@
 #include "python/pointwrapper.h"
 #include "python/objectwrapper.h"
 #include "python/scenewrapper.h"
+#include "properties/stringproperty.h"
 
 namespace
 {
@@ -97,7 +98,7 @@ void ProceduralPath::on_property_value_changed(Property *property)
   }
 }
 
-AbstractPropertyOwner::Flag ProceduralPath::flags() const
+Flag ProceduralPath::flags() const
 {
   return Object::flags() | Flag::IsPathLike | Flag::HasScript | Flag::Convertable;
 }

@@ -67,7 +67,7 @@ BoundingBox View::bounding_box(const ObjectTransformation &transformation) const
   }
 }
 
-View::Flag View::flags() const { return Flag::IsView; }
+Flag View::flags() const { return Flag::IsView; }
 std::unique_ptr<Object> View::clone() const { return std::make_unique<View>(*this); }
 
 void View::to_viewport()

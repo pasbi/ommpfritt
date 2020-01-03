@@ -8,7 +8,7 @@ namespace
 
 std::vector<omm::AbstractPropertyOwner*>
 filter( const std::vector<omm::AbstractPropertyOwner*> items,
-        omm::AbstractPropertyOwner::Kind kinds)
+        omm::Kind kinds)
 {
   std::vector<omm::AbstractPropertyOwner*> filtered;
   for (omm::AbstractPropertyOwner* item : items) {
@@ -70,7 +70,7 @@ std::vector<Style*> PropertyOwnerMimeData::styles() const
 }
 
 std::vector<AbstractPropertyOwner*>
-PropertyOwnerMimeData::items(AbstractPropertyOwner::Kind kinds) const
+PropertyOwnerMimeData::items(Kind kinds) const
 {
   return filter(m_items, kinds);
 }

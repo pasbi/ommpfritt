@@ -283,7 +283,7 @@ std::vector<Path::PointSequence> Path::remove_points(std::vector<std::size_t> in
   return std::vector(sequences.begin(), sequences.end());
 }
 
-AbstractPropertyOwner::Flag Path::flags() const { return Object::flags() | Flag::IsPathLike; }
+Flag Path::flags() const { return Object::flags() | Flag::IsPathLike; }
 
 void Path::set_global_axis_transformation(const ObjectTransformation& global_transformation,
                                            Space space )

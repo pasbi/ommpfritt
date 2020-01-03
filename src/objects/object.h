@@ -27,7 +27,7 @@ public:
 };
 
 class Object
-  : public PropertyOwner<AbstractPropertyOwner::Kind::Object>
+  : public PropertyOwner<Kind::Object>
   , public virtual Serializable
   , public TreeElement<Object>
   , public AbstractFactory<QString, Object, Scene*>

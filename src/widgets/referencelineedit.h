@@ -4,6 +4,7 @@
 #include "propertywidgets/multivalueedit.h"
 #include "aspects/propertyowner.h"
 #include "tags/tag.h"
+#include "properties/referenceproperty.h"
 
 class QMimeData;
 
@@ -22,7 +23,7 @@ public:
   ~ReferenceLineEdit() = default;
   void set_value(const value_type& value) override;
   value_type value() const override;
-  void set_filter(const std::function<bool(const AbstractPropertyOwner*)>& filter);
+  void set_filter(const ReferenceProperty::Filter& filter);
   void set_null_label(const QString& value);
   void set_scene(Scene& scene);
 
@@ -36,7 +37,7 @@ private:
   bool can_drop(const QDropEvent& event) const;
   AbstractPropertyOwner* m_value;
   Scene* m_scene = nullptr;
-  std::function<bool(const AbstractPropertyOwner*)> m_filter;
+  ReferenceProperty::Filter m_filter;
   std::vector<AbstractPropertyOwner*> m_possible_references;
 
   std::vector<omm::AbstractPropertyOwner*> collect_candidates();

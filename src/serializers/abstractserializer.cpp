@@ -24,6 +24,11 @@ void AbstractSerializer::set_value(const variant_type &variant, const Pointer &p
   std::visit([this, pointer](auto&& arg) { set_value(arg, pointer); }, variant);
 }
 
+void AbstractSerializer::set_value(const Serializable& serializable, const AbstractSerializer::Pointer& pointer)
+{
+  serializable.serialize(*this, pointer);
+}
+
 std::set<omm::AbstractPropertyOwner*> AbstractSerializer::serialized_references() const
 {
   return m_serialized_references;
@@ -53,6 +58,11 @@ void AbstractDeserializer::register_reference( const std::size_t id,
 void AbstractDeserializer::register_reference_polisher(ReferencePolisher &polisher)
 {
   m_reference_polishers.insert(&polisher);
+}
+
+void AbstractDeserializer::get(Serializable& serializable, const AbstractDeserializer::Pointer& pointer)
+{
+  serializable.deserialize(*this, pointer);
 }
 
 template<> bool AbstractDeserializer::get<bool>(const Pointer& pointer)

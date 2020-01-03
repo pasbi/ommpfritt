@@ -34,24 +34,11 @@ ReferencePropertyWidget
     set_properties_value(o);
   });
 
-
-  line_edit->set_filter([properties](const AbstractPropertyOwner* apo) {
-    using Flag = AbstractPropertyOwner::Flag;
-    using Kind = AbstractPropertyOwner::Kind;
-    const auto kind = get<ReferenceProperty, Kind>( properties, [](const ReferenceProperty* p) {
-      return p->allowed_kinds();
-    });
-    const auto flags = get<ReferenceProperty, Flag>( properties, [](const ReferenceProperty* p) {
-      return p->required_flags();
-    });
-    if (!(apo->kind | kind)) {
-      return false;
-    } else if ((apo->flags() & flags) != flags) {
-      return false;
-    } else {
-      return true;
-    }
+  const auto filter = get<ReferenceProperty, ReferenceProperty::Filter>(properties, [](const ReferenceProperty* p) {
+    return p->filter();
   });
+
+  line_edit->set_filter(filter);
 
   m_line_edit = line_edit.get();
   set_default_layout(std::move(line_edit));

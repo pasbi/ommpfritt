@@ -37,20 +37,21 @@ void NodeCompiler::compile(const NodeModel& model)
       return !op->is_connected();
     });
   };
-  std::set<Node*> todo = ::filter_if(model.nodes(), is_terminal);
+  std::list<Node*> todo = ::transform<Node*, std::list>(::filter_if(model.nodes(), is_terminal));
   std::set<Node*> done;
 
   std::map<QString, QString> node_definitions;
 
   QStringList code;
   while (!todo.empty()) {
-    Node* node = todo.extract(todo.begin()).value();
+    Node* node = todo.front();
+    todo.pop_front();
     code.push_front(compile_node(*node));
     for (InputPort* ip : node->ports<InputPort>()) {
       if (OutputPort* op = ip->connected_output(); op != nullptr) {
         code.push_front(compile_connection(*op, *ip));
         if (!::contains(done, &op->node)) {
-          todo.insert(&op->node);
+          todo.push_front(&op->node);
         }
       }
     }

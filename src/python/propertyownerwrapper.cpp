@@ -20,7 +20,7 @@ bool set_property_value(const py::object& value, omm::Property& property)
   try {
     const auto wrapper = value.cast<WrapperT>();
     auto& reference_property = static_cast<omm::ReferenceProperty&>(property);
-    if (!!(reference_property.allowed_kinds() & WrappedT::KIND)) {
+    if (reference_property.filter().kind.evaluate(WrappedT::KIND)) {
       property.set(&wrapper.wrapped);
       return true;
     } else {

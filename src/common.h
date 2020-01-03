@@ -18,6 +18,16 @@
 namespace omm
 {
 
+enum class Kind { None = 0x0,
+                  Tag = 0x1, Style = 0x2, Object = 0x4, Tool = 0x8, Node = 0x10,
+                  Item = Tag | Style | Object, All = Item | Tool | Node };
+
+enum class Flag { None = 0x0,
+                  Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4, IsView = 0x8,
+                  HasPythonNodes = 0x10, HasGLSLNodes = 0x20,
+                  HasNodes = HasPythonNodes | HasGLSLNodes,
+                  HasPython = HasPythonNodes | HasScript };
+
 enum class HandleStatus { Hovered, Active, Inactive };
 
 }  // namespace omm
@@ -73,7 +83,7 @@ auto transform(ContainerS&& ss)
 }
 
 template<typename T, template<typename...> class ContainerT, typename ContainerS, typename F>
-auto transform(ContainerS&& ss, F&& mapper)
+auto transform(ContainerS&& ss, F&& mapper = ::identity)
 {
   ContainerT<T> ts;
   reserve(ts, ss.size());
@@ -355,3 +365,6 @@ std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT&> operator&=(EnumT&
 enum class Space { Viewport, Scene };
 
 }  // namespace omm
+
+template<> struct omm::EnableBitMaskOperators<omm::Kind> : std::true_type {};
+template<> struct omm::EnableBitMaskOperators<omm::Flag> : std::true_type {};

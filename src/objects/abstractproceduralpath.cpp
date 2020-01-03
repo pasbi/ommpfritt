@@ -26,7 +26,7 @@ void AbstractProceduralPath::draw_object(Painter &renderer, const Style& style,
   }
 }
 
-AbstractPropertyOwner::Flag AbstractProceduralPath::flags() const
+Flag AbstractProceduralPath::flags() const
 {
   return Object::flags() | Flag::Convertable | Flag::IsPathLike;
 }

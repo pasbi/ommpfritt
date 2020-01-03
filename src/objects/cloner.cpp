@@ -68,8 +68,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_category(category);
 
   create_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
-    .set_allowed_kinds(Kind::Object)
-    .set_required_flags(Flag::IsPathLike)
+    .set_filter(ReferenceProperty::Filter({ Kind::Object }, { { Flag::IsPathLike } }))
     .set_label(QObject::tr("path"))
     .set_category(category);
 
@@ -247,7 +246,7 @@ void Cloner::update_property_visibility(Mode mode)
 
 QString Cloner::type() const { return TYPE; }
 std::unique_ptr<Object> Cloner::clone() const { return std::make_unique<Cloner>(*this); }
-AbstractPropertyOwner::Flag Cloner::flags() const
+Flag Cloner::flags() const
 {
   return Object::flags() | Flag::Convertable | Flag::HasScript;
 }
@@ -395,7 +394,7 @@ void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
 {
   auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
   if (apo != nullptr) {
-    assert(apo->kind == AbstractPropertyOwner::Kind::Object);
+    assert(apo->kind == Kind::Object);
     auto& area = static_cast<Object&>(*apo);
 
     auto position = [&rng, &area]() {

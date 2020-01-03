@@ -315,19 +315,19 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
     Q_EMIT message_box().selection_changed(selection, kind);
 
     switch (kind) {
-    case AbstractPropertyOwner::Kind::Style:
+    case Kind::Style:
       Q_EMIT message_box().selection_changed(kind_cast<Style>(selection));
       break;
-    case AbstractPropertyOwner::Kind::Object:
+    case Kind::Object:
       Q_EMIT message_box().selection_changed(kind_cast<Object>(selection));
       break;
-    case AbstractPropertyOwner::Kind::Tag:
+    case Kind::Tag:
       Q_EMIT message_box().selection_changed(kind_cast<Tag>(selection));
       break;
-    case AbstractPropertyOwner::Kind::Tool:
+    case Kind::Tool:
       Q_EMIT message_box().selection_changed(kind_cast<Tool>(selection));
       break;
-    case AbstractPropertyOwner::Kind::Node:
+    case Kind::Node:
       Q_EMIT message_box().selection_changed(kind_cast<Node>(selection));
       break;
     default:
@@ -335,8 +335,8 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
     }
   };
 
-  for (auto& kind : { AbstractPropertyOwner::Kind::Object, AbstractPropertyOwner::Kind::Style,
-                      AbstractPropertyOwner::Kind::Tag, AbstractPropertyOwner::Kind::Tool })
+  for (auto& kind : { Kind::Object, Kind::Style,
+                      Kind::Tag, Kind::Tool })
   {
     if (selection.size() == 0) {
       m_item_selection.at(kind).clear();
@@ -453,14 +453,14 @@ void Scene::update_tool()
 bool Scene::contains(const AbstractPropertyOwner *apo) const
 {
   switch (apo->kind) {
-  case AbstractPropertyOwner::Kind::Tag:
+  case Kind::Tag:
   {
     const auto tags = this->tags();
     return tags.end() != std::find(tags.begin(), tags.end(), static_cast<const Tag*>(apo));
   }
-  case AbstractPropertyOwner::Kind::Object:
+  case Kind::Object:
     return object_tree().contains(static_cast<const Object&>(*apo));
-  case AbstractPropertyOwner::Kind::Style:
+  case Kind::Style:
     return styles().contains(static_cast<const Style&>(*apo));
   default: return false;
   }

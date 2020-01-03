@@ -161,4 +161,41 @@ void Property::set_enabledness(bool enabled)
   }
 }
 
+void Property::Filter::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
+{
+  deserializer.get(kind, make_pointer(root, "kind"));
+  deserializer.get(flag, make_pointer(root, "flag"));
+}
+
+void Property::Filter::serialize(AbstractSerializer &serializer, const Pointer &root) const
+{
+  serializer.set_value(kind, make_pointer(root, "kind"));
+  serializer.set_value(flag, make_pointer(root, "flag"));
+}
+
+bool Property::Filter::evaluate(const AbstractPropertyOwner& apo) const
+{
+  return flag.evaluate(apo.flags()) && kind.evaluate(apo.kind);
+}
+
+bool Property::Filter::operator==(const Property::Filter& other) const
+{
+  return kind == other.kind && flag == other.flag;
+}
+
+bool Property::Filter::operator<(const Property::Filter& other) const
+{
+  if (kind == other.kind) {
+    return flag < other.flag;
+  } else {
+    return kind == other.kind;
+  }
+}
+
+Property::Filter Property::Filter::accept_anything()
+{
+  return Filter(Disjunction<Kind>(Kind::All, Kind::None), { {} });
+}
+
+
 }  // namespace omm

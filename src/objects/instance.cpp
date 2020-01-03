@@ -21,7 +21,7 @@ Instance::Instance(Scene* scene)
 {
   static const auto category = QObject::tr("Instance");
   create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
-    .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
+    .set_filter(ReferenceProperty::Filter({ Kind::Object }, {{}}))
     .set_label(QObject::tr("reference", "Instance")).set_category(category);
   create_property<BoolProperty>(IDENTICAL_PROPERTY_KEY)
     .set_label(QObject::tr("identical", "Instance")).set_category(category);
@@ -115,7 +115,7 @@ std::unique_ptr<Object> Instance::convert() const
 
 QString Instance::type() const { return TYPE; }
 std::unique_ptr<Object> Instance::clone() const { return std::make_unique<Instance>(*this); }
-Object::Flag Instance::flags() const { return Object::flags() | Flag::Convertable; }
+Flag Instance::flags() const { return Object::flags() | Flag::Convertable; }
 
 void Instance::post_create_hook()
 {

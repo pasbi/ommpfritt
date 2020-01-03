@@ -18,7 +18,8 @@ Outline::Outline(Scene* scene) : Object(scene)
   create_property<FloatProperty>(OFFSET_PROPERTY_KEY)
     .set_label(QObject::tr("Offset")).set_category(category);
   create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
-    .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
+    .set_filter(ReferenceProperty::Filter({ Kind::Object },
+                                            DNF<Flag>{ { Flag::IsPathLike }}))
     .set_label(QObject::tr("Reference")).set_category(category);
   polish();
 }
@@ -53,7 +54,7 @@ BoundingBox Outline::bounding_box(const ObjectTransformation &transformation) co
 
 QString Outline::type() const { return TYPE; }
 std::unique_ptr<Object> Outline::clone() const { return std::make_unique<Outline>(*this); }
-AbstractPropertyOwner::Flag Outline::flags() const
+Flag Outline::flags() const
 {
   return Object::flags() | Flag::Convertable | Flag::IsPathLike; }
 

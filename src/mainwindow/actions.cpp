@@ -190,7 +190,7 @@ void invert_selection(Application& app)
 void convert_objects(Application& app)
 {
   const auto convertables = ::filter_if(app.scene.item_selection<Object>(), [](const Object* o) {
-    return !!(o->flags() & Object::Flag::Convertable);
+    return !!(o->flags() & Flag::Convertable);
   });
   if (convertables.size() > 0) {
     Scene& scene = app.scene;

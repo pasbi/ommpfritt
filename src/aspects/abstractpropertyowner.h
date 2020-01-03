@@ -5,19 +5,22 @@
 #include <memory>
 #include <typeinfo>
 #include <variant>
+#include <QObject>
 
-#include "properties/property.h"
 #include "orderedmap.h"
 #include "external/json_fwd.hpp"
 #include "aspects/serializable.h"
-#include "properties/typedproperty.h"
-#include "properties/stringproperty.h"
 #include "common.h"
 #include <Qt>
 #include "aspects/typed.h"
+#include "properties/property.h"
 
 namespace omm
 {
+
+class Scene;
+class Property;
+class ReferenceProperty;
 
 class AbstractPropertyOwner
     : public QObject
@@ -26,15 +29,6 @@ class AbstractPropertyOwner
 {
   Q_OBJECT
 public:
-  enum class Kind { None = 0x0,
-                    Tag = 0x1, Style = 0x2, Object = 0x4, Tool = 0x8, Node = 0x10,
-                    Item = Tag | Style | Object, All = Item | Tool | Node };
-
-  enum class Flag { None = 0x0,
-                    Convertable = 0x1, HasScript = 0x2, IsPathLike = 0x4, IsView = 0x8,
-                    HasPythonNodes = 0x10, HasGLSLNodes = 0x20,
-                    HasNodes = HasPythonNodes | HasGLSLNodes };
-
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("PropertyOwner", "AbstractPropertyOwner");
 
 protected:

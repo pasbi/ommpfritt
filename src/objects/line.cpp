@@ -35,7 +35,7 @@ std::vector<Point> Line::points() const
   return std::vector { Point(a.to_cartesian()), Point(b.to_cartesian()) };
 }
 
-AbstractPropertyOwner::Flag Line::flags() const
+Flag Line::flags() const
 {
   return Object::flags() | Flag::Convertable | Flag::IsPathLike;
 }

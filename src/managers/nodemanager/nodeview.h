@@ -60,7 +60,7 @@ private:
   std::set<Node*> nodes(const QRectF& rect) const;
   void update_scene_selection();
   bool can_drop(const QDropEvent& event) const;
-  constexpr static auto m_droppable_kinds = AbstractPropertyOwner::Kind::Item;
+  constexpr static auto m_droppable_kinds = Kind::Item;
 
   class CachedNodeWidthGetter : public ArgsCachedGetter<double, NodeView, const Node*>
   {

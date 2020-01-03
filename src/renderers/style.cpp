@@ -13,6 +13,7 @@
 #include "properties/optionsproperty.h"
 #include "objects/tip.h"
 #include "scene/scene.h"
+#include "properties/stringproperty.h"
 
 namespace {
 
@@ -99,7 +100,7 @@ Style::Style(const Style &other)
 }
 
 QString Style::type() const { return TYPE; }
-AbstractPropertyOwner::Flag Style::flags() const
+Flag Style::flags() const
 {
   return Flag::None | Flag::HasGLSLNodes;
 }

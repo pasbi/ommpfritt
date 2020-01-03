@@ -1,6 +1,7 @@
 
 file(GLOB SOURCES
   common.cpp
+  dnf.cpp
   logging.cpp
   main.cpp
   proxychain.cpp
@@ -12,6 +13,7 @@ file(GLOB HEADERS
   cache.h
   cachedgetter.h
   common.h
+  dnf.h
   logging.h
   maybeowner.h
   menuhelper.h

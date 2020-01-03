@@ -1,4 +1,5 @@
 #include "scene/stylelist.h"
+#include "properties/stringproperty.h"
 #include "scene/contextes.h"
 #include "renderers/style.h"
 #include "scene/scene.h"

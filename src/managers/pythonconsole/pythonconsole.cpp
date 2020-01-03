@@ -32,14 +32,9 @@ PythonConsole::PythonConsole(Scene& scene)
 
   auto ref_filter_widget = std::make_unique<ReferenceLineEdit>();
   ref_filter_widget->set_scene(scene);
-  ref_filter_widget->set_filter([](const AbstractPropertyOwner* apo) {
-    using Flag = AbstractPropertyOwner::Flag;
-    if (!!(apo->flags() & (Flag::HasScript | Flag::HasPythonNodes))) {
-      return true;
-    } else {
-      return false;
-    }
-  });
+  using Flag = Flag;
+  ref_filter_widget->set_filter(ReferenceProperty::Filter({ { Flag::HasScript },
+                                                            { Flag::HasPythonNodes } }));
   m_associated_item_widget = ref_filter_widget.get();
   m_associated_item_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   header_layout->addWidget(ref_filter_widget.release());

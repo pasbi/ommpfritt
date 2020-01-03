@@ -11,7 +11,7 @@ Node::Node(Scene* scene)
 }
 
 Node::Node(const Node& other)
-  : PropertyOwner<AbstractPropertyOwner::Kind::Node>(other.scene())
+  : PropertyOwner<Kind::Node>(other)
 {
   for (AbstractPort* port : other.ports()) {
     add_port(port->clone(*this));
@@ -178,8 +178,8 @@ std::unique_ptr<AbstractPort> Node::remove_port(const AbstractPort& port)
 Property& Node::add_property(const QString& key, std::unique_ptr<Property> property)
 {
   auto& ref = PropertyOwner::add_property(key, std::move(property));
-  add_port<PropertyInputPort>(ref);
-  add_port<PropertyOutputPort>(ref);
+  add_port<PropertyInputPort>([this, key]() { return this->property(key); });
+  add_port<PropertyOutputPort>([this, key]() { return this->property(key); });
   return ref;
 }
 
@@ -201,8 +201,10 @@ void Node::update_references(const std::map<std::size_t, AbstractPropertyOwner*>
     Node& node = static_cast<Node&>(*map.at(cids.node_id));
     InputPort* input = find_port<InputPort>(cids.input_port);
     OutputPort* output = node.find_port<OutputPort>(cids.output_port);
-    assert (input != nullptr && output != nullptr);
-    input->connect(output);
+
+    if (input != nullptr && output != nullptr) {
+      input->connect(output);
+    }
   }
 }
 

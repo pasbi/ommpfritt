@@ -32,10 +32,11 @@ NodeModel::NodeModel(const NodeModel& other)
       for (InputPort* ip : old_node->ports<InputPort>()) {
         if (OutputPort* op = ip->connected_output(); op != nullptr) {
           Node& src_node = *node_map.at(&op->node);
-          InputPort& new_ip = *new_node->find_port<InputPort>(ip->index);
-          OutputPort& new_op = *src_node.find_port<OutputPort>(op->index);
-          assert(can_connect(new_op, new_ip));
-          new_ip.connect(&new_op);
+          InputPort* new_ip = new_node->find_port<InputPort>(ip->index);
+          OutputPort* new_op = src_node.find_port<OutputPort>(op->index);
+          if (new_ip && new_op) {
+            new_ip->connect(new_op);
+          }
         }
       }
     }
@@ -64,7 +65,7 @@ void NodeModel::init()
           [this](AbstractPropertyOwner& apo, const QString& key, Property&)
   {
     Q_UNUSED(key)
-    if (apo.kind == AbstractPropertyOwner::Kind::Node
+    if (apo.kind == Kind::Node
         && static_cast<const Node&>(apo).model() == this)
     {
       Q_EMIT appearance_changed();

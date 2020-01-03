@@ -51,6 +51,7 @@ public:
   virtual void set_value(const TriggerPropertyDummyValueType&, const Pointer& pointer) = 0;
   void set_value(const AbstractPropertyOwner* id, const Pointer& pointer);
   void set_value(const variant_type& variant, const Pointer& pointer);
+  void set_value(const Serializable& serializable, const Pointer& pointer);
   template<typename T> std::enable_if_t<std::is_enum_v<T>> set_value(const T& t, const Pointer& ptr)
   {
     set_value(static_cast<std::size_t>(t), ptr);
@@ -126,7 +127,11 @@ public:
 
   template<typename T> void get(T& value, const Pointer& pointer)
   {
-    value = get<T>(pointer);
+    if constexpr (std::is_base_of_v<Serializable, T>) {
+      value.deserialize(*this, pointer);
+    } else {
+      value = get<T>(pointer);
+    }
   }
 
   template<typename A, typename B> void get(std::pair<A, B>& value, const Pointer& pointer)
@@ -155,6 +160,8 @@ public:
       value.push_back(std::move(v));
     }
   }
+
+  void get(Serializable& serializable, const Pointer& pointer);
 
   variant_type get(const Pointer& pointer, const QString& type);
 

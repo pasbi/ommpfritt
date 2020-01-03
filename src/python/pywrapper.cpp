@@ -38,11 +38,11 @@ py::object wrap(AbstractPropertyOwner* owner)
     return py::none();
   } else {
     switch (owner->kind) {
-    case AbstractPropertyOwner::Kind::Tag:
+    case Kind::Tag:
       return wrap(static_cast<Tag&>(*owner));
-    case AbstractPropertyOwner::Kind::Style:
+    case Kind::Style:
       return wrap(static_cast<Style&>(*owner));
-    case AbstractPropertyOwner::Kind::Object:
+    case Kind::Object:
       return wrap(static_cast<Object&>(*owner));
     default:
       return py::none();

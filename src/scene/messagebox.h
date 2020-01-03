@@ -133,7 +133,7 @@ Q_SIGNALS:
    * @brief selection_changed is emitted when tag, style, object or tool selection changed.
    * The kind of selection is transferred via the second argument.
    */
-  void selection_changed(const std::set<AbstractPropertyOwner*>&, AbstractPropertyOwner::Kind);
+  void selection_changed(const std::set<AbstractPropertyOwner*>&, Kind);
 
   /**
    * @brief filename_changed is emitted when the filename of the scene changes.

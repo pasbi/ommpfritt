@@ -3,6 +3,7 @@
 #include "properties/typedproperty.h"
 #include "aspects/propertyowner.h"
 #include <Qt>
+#include "dnf.h"
 
 namespace omm
 {
@@ -20,10 +21,10 @@ public:
   QString type() const override { return TYPE; }
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
-  ReferenceProperty& set_allowed_kinds(AbstractPropertyOwner::Kind allowed_kinds);
-  AbstractPropertyOwner::Kind allowed_kinds() const;
-  ReferenceProperty& set_required_flags(AbstractPropertyOwner::Flag required_flags);
-  AbstractPropertyOwner::Flag required_flags() const;
+
+  static constexpr auto FILTER_POINTER = "filter";
+
+  ReferenceProperty& set_filter(const Filter& filter);
   void revise() override;
   void set(AbstractPropertyOwner *const &value) override;
 
@@ -31,16 +32,16 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Property", "ReferenceProperty");
   std::unique_ptr<Property> clone() const override;
 
-
   static std::vector<omm::AbstractPropertyOwner*>
-  collect_candidates(const Scene& scene, const AbstractPropertyOwner::Kind allowed_kinds,
-                                         const AbstractPropertyOwner::Flag required_flags);
+  collect_candidates(const Scene& scene, const Kind kinds,
+                                         const Flag flags);
 
-  static const std::map<AbstractPropertyOwner::Kind, QString> KIND_KEYS;
-  static const std::map<AbstractPropertyOwner::Flag, QString> FLAG_KEYS;
+  static const std::map<Kind, QString> KIND_KEYS;
+  static const std::map<Flag, QString> FLAG_KEYS;
   void update_references(const std::map<std::size_t, AbstractPropertyOwner *> &references) override;
 
   static const PropertyDetail detail;
+  Filter filter() const;
 
 Q_SIGNALS:
   void reference_changed(AbstractPropertyOwner* old_ref, AbstractPropertyOwner* new_ref);
@@ -48,8 +49,6 @@ Q_SIGNALS:
 private:
   // default is always nullptr
   void set_default_value(const value_type& value) override;
-  AbstractPropertyOwner::Kind m_allowed_kinds = AbstractPropertyOwner::Kind::All;
-  AbstractPropertyOwner::Flag m_required_flags = AbstractPropertyOwner::Flag::None;
 
   // this field is only required temporarily during deserialization
   std::size_t m_reference_value_id;

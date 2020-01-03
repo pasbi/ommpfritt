@@ -1471,6 +1471,10 @@ Borrar la selección de todos modos?</translation>
         <source>ReferenceNode</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>SpyNode</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>keybindings/Application</name>
@@ -2085,6 +2089,14 @@ This cannot be undone.</source>
         <source>Node</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::NamedColors</name>
@@ -2124,6 +2136,13 @@ Do you want to convert them into ordinary colors?</source>
     <name>omm::NodeView</name>
     <message>
         <source>Modify Connections</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::NodesTag</name>
+    <message>
+        <source>nil</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2264,6 +2283,13 @@ Do you want to convert them into ordinary colors?</source>
     </message>
     <message>
         <source>is view</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::SpyNode</name>
+    <message>
+        <source>value</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

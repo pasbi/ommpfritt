@@ -1477,7 +1477,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>SpyNode</source>
-        <translation type="vanished">Spion Node</translation>
+        <translation>Spion Node</translation>
     </message>
     <message>
         <source>NodesTag</source>
@@ -2106,6 +2106,14 @@ Dies kann nicht rückgängig gemacht werden.</translation>
         <source>Node</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::NamedColors</name>
@@ -2155,6 +2163,10 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <message>
         <source>Edit Nodes ...</source>
         <translation type="obsolete">Nodes bearbeiten ...</translation>
+    </message>
+    <message>
+        <source>nil</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2295,6 +2307,13 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <message>
         <source>is view</source>
         <translation>Ansicht</translation>
+    </message>
+</context>
+<context>
+    <name>omm::SpyNode</name>
+    <message>
+        <source>value</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

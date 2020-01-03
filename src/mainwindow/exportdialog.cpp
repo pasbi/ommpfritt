@@ -103,15 +103,9 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
     update_preview();
   });
 
-  m_ui->cb_view->set_filter([](const AbstractPropertyOwner* apo) {
-    if (apo->kind != AbstractPropertyOwner::Kind::Object) {
-      return false;
-    } else if (!(apo->flags() & AbstractPropertyOwner::Flag::IsView)) {
-      return false;
-    } else {
-      return true;
-    }
-  });
+  m_ui->cb_view->set_filter(ReferenceProperty::Filter({ Kind::Object },
+                                                      { { Flag::IsView } }));
+
   m_ui->cb_view->set_null_label(tr("Viewport"));
   m_ui->cb_view->set_scene(scene);
 

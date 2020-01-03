@@ -7,22 +7,29 @@ namespace omm
 
 const Property::PropertyDetail ReferenceProperty::detail { nullptr };
 
-using Flag = AbstractPropertyOwner::Flag;
-using Kind = AbstractPropertyOwner::Kind;
+using Flag = Flag;
+using Kind = Kind;
 
-const std::map<AbstractPropertyOwner::Kind, QString> ReferenceProperty::KIND_KEYS {
-  { Kind::Tag, "tag" }, { Kind::Tool, "tool" },
-  { Kind::Style, "style" }, { Kind::Object, "object" }
+const std::map<Kind, QString> ReferenceProperty::KIND_KEYS {
+  { Kind::Tag,    QT_TRANSLATE_NOOP("ReferencePropertyView", "tag") },
+  { Kind::Tool,   QT_TRANSLATE_NOOP("ReferencePropertyView", "tool") },
+  { Kind::Style,  QT_TRANSLATE_NOOP("ReferencePropertyView", "style") },
+  { Kind::Object, QT_TRANSLATE_NOOP("ReferencePropertyView", "object") }
 };
 
-const std::map<AbstractPropertyOwner::Flag, QString> ReferenceProperty::FLAG_KEYS {
-  { Flag::IsView, "is-view" }, { Flag::HasScript, "has-script" },
-  { Flag::IsPathLike, "is-pathlike"}, { Flag::Convertable, "convertable" }
+const std::map<Flag, QString> ReferenceProperty::FLAG_KEYS {
+  { Flag::IsView,         QT_TRANSLATE_NOOP("ReferencePropertyView", "view") },
+  { Flag::HasScript,      QT_TRANSLATE_NOOP("ReferencePropertyView", "has script") },
+  { Flag::HasPythonNodes, QT_TRANSLATE_NOOP("ReferencePropertyView", "has python nodes") },
+  { Flag::HasGLSLNodes,   QT_TRANSLATE_NOOP("ReferencePropertyView", "has GLSL nodes") },
+  { Flag::IsPathLike,     QT_TRANSLATE_NOOP("ReferencePropertyView", "pathlike") },
+  { Flag::Convertable,    QT_TRANSLATE_NOOP("ReferencePropertyView", "convertable") }
 };
 
 ReferenceProperty::ReferenceProperty()
   : TypedProperty(nullptr)
 {
+  configuration[FILTER_POINTER] = Filter::accept_anything();
   set_default_value(nullptr);
 }
 
@@ -43,21 +50,32 @@ ReferenceProperty::~ReferenceProperty()
 
 void ReferenceProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
-  // TODO serialize allowed_kinds and required_flags
   TypedProperty::serialize(serializer, root);
   serializer.set_value(value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
+  serializer.set_value(configuration.get<Filter>(FILTER_POINTER),
+                       make_pointer(root, ReferenceProperty::FILTER_POINTER));
 }
 
 void ReferenceProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
-  // TODO deserialize allowed_kinds and required_flags
   TypedProperty::deserialize(deserializer, root);
 
   // not all objects are restored yet, hence not all pointers are known.
   // remember the property to set `m_value` later.
   const auto ref_pointer = make_pointer(root, TypedPropertyDetail::VALUE_POINTER);
   m_reference_value_id = deserializer.get_size_t(ref_pointer);
+  {
+    Filter filter;
+    deserializer.get(filter, make_pointer(root, ReferenceProperty::FILTER_POINTER));
+    set_filter(filter);
+  }
   deserializer.register_reference_polisher(*this);
+}
+
+ReferenceProperty& ReferenceProperty::set_filter(const ReferenceProperty::Filter& filter)
+{
+  configuration[FILTER_POINTER] = filter;
+  return *this;
 }
 
 void ReferenceProperty::set_default_value(const value_type& value)
@@ -66,27 +84,11 @@ void ReferenceProperty::set_default_value(const value_type& value)
   TypedProperty::set_default_value(value);
 }
 
-ReferenceProperty& ReferenceProperty::set_allowed_kinds(AbstractPropertyOwner::Kind allowed_kinds)
-{
-  m_allowed_kinds = allowed_kinds;
-  return *this;
-}
-
-ReferenceProperty&
-ReferenceProperty::set_required_flags(AbstractPropertyOwner::Flag required_flags)
-{
-  m_required_flags = required_flags;
-  return *this;
-}
-
-AbstractPropertyOwner::Kind ReferenceProperty::allowed_kinds() const { return m_allowed_kinds; }
-AbstractPropertyOwner::Flag ReferenceProperty::required_flags() const { return m_required_flags; }
-
 bool ReferenceProperty::is_compatible(const Property& other) const
 {
   if (Property::is_compatible(other)) {
     auto& other_reference_property = static_cast<const ReferenceProperty&>(other);
-    return other_reference_property.allowed_kinds() == allowed_kinds();
+    return other_reference_property.configuration.at(FILTER_POINTER) == configuration.at(FILTER_POINTER);
   } else {
     return false;
   }
@@ -109,6 +111,11 @@ void ReferenceProperty
   }
 }
 
+Property::Filter ReferenceProperty::filter() const
+{
+  return configuration.get<Property::Filter>(ReferenceProperty::FILTER_POINTER);
+}
+
 void ReferenceProperty::revise() { set(nullptr); }
 
 void ReferenceProperty::set(AbstractPropertyOwner * const &value)
@@ -116,6 +123,20 @@ void ReferenceProperty::set(AbstractPropertyOwner * const &value)
   AbstractPropertyOwner* const old_value = this->value();
   TypedProperty::set(value);
   Q_EMIT reference_changed(old_value, value);
+}
+
+ReferenceProperty::Filter::Filter(const Disjunction<Kind>& kind, const DNF<Flag>& flag)
+  : kind(kind), flag(flag)
+{
+}
+
+Property::Filter::Filter()
+{
+}
+
+ReferenceProperty::Filter::Filter(const DNF<Flag>& flag)
+  : Filter(Disjunction<Kind>(Kind::All, Kind::None), flag)
+{
 }
 
 }   // namespace omm

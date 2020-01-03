@@ -1,6 +1,7 @@
 #include "aspects/treeelement.h"
 #include "common.h"
 #include "objects/object.h"
+#include <QString>
 
 namespace omm
 {

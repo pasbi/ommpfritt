@@ -16,28 +16,30 @@ template<typename MapT> auto keys(const MapT& map)
 
 auto make_allowed_kinds_checkboxes()
 {
-  std::map<omm::AbstractPropertyOwner::Kind, QCheckBox*> map;
-  map.insert( std::pair(omm::AbstractPropertyOwner::Kind::Tag,
+  std::map<omm::Kind, QCheckBox*> map;
+  map.insert( std::pair(omm::Kind::Tag,
               new QCheckBox(omm::ReferencePropertyConfigWidget::tr("Tag"))) );
-  map.insert( std::pair(omm::AbstractPropertyOwner::Kind::Style,
+  map.insert( std::pair(omm::Kind::Style,
               new QCheckBox(omm::ReferencePropertyConfigWidget::tr("Style"))) );
-  map.insert( std::pair(omm::AbstractPropertyOwner::Kind::Object,
+  map.insert( std::pair(omm::Kind::Object,
               new QCheckBox(omm::ReferencePropertyConfigWidget::tr("Object"))) );
-  map.insert( std::pair(omm::AbstractPropertyOwner::Kind::Tool,
+  map.insert( std::pair(omm::Kind::Tool,
               new QCheckBox(omm::ReferencePropertyConfigWidget::tr("Tool"))) );
+  map.insert( std::pair(omm::Kind::Node,
+              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("Node"))) );
   return map;
 }
 
 auto make_required_flags_checkboxes()
 {
-  std::map<omm::AbstractPropertyOwner::Flag, QCheckBox*> map;
-  map.insert( std::pair(omm::AbstractPropertyOwner::Flag::Convertable,
+  std::map<omm::Flag, QCheckBox*> map;
+  map.insert( std::pair(omm::Flag::Convertable,
               new QCheckBox(omm::ReferencePropertyConfigWidget::tr("convertable"))) );
-  map.insert( std::pair(omm::AbstractPropertyOwner::Flag::HasScript,
+  map.insert( std::pair(omm::Flag::HasScript,
               new QCheckBox(omm::ReferencePropertyConfigWidget::tr("has script"))) );
-  map.insert( std::pair(omm::AbstractPropertyOwner::Flag::IsPathLike,
+  map.insert( std::pair(omm::Flag::IsPathLike,
               new QCheckBox(omm::ReferencePropertyConfigWidget::tr("is path like"))) );
-  map.insert( std::pair(omm::AbstractPropertyOwner::Flag::IsView,
+  map.insert( std::pair(omm::Flag::IsView,
               new QCheckBox(omm::ReferencePropertyConfigWidget::tr("is view"))) );
   return map;
 }
@@ -60,6 +62,7 @@ ReferencePropertyConfigWidget::ReferencePropertyConfigWidget()
   }
   allowed_kind_layout->addStretch();
 
+  required_flags_layout->addWidget(new QLabel(tr("Requirements:")));
   for (auto [_, checkbox] : m_required_flag_checkboxes) {
     required_flags_layout->addWidget(checkbox);
   }
@@ -72,22 +75,60 @@ ReferencePropertyConfigWidget::ReferencePropertyConfigWidget()
 
 void ReferencePropertyConfigWidget::init(const Property::Configuration &configuration)
 {
-  for (auto&& [ flag, checkbox ]: m_required_flag_checkboxes) {
-    checkbox->setChecked(configuration.get<bool>(ReferenceProperty::FLAG_KEYS.at(flag), false));
+  using Filter = ReferenceProperty::Filter;
+  const auto filter = configuration.get<Filter>(ReferenceProperty::FILTER_POINTER,
+                                                Filter::accept_anything());
+  for (auto&& [_, checkbox] : m_allowed_kind_checkboxes) {
+    checkbox->setChecked(false);
   }
-  for (auto&& [ kind, checkbox ]: m_allowed_kind_checkboxes) {
-    checkbox->setChecked(configuration.get<bool>(ReferenceProperty::KIND_KEYS.at(kind), true));
+  for (const Literal<Kind>& literal : filter.kind.terms) {
+    if (literal.value) {
+      m_allowed_kind_checkboxes.at(literal)->setChecked(true);
+    } else {
+      LWARNING << "ReferencePropertyConfigWidet cannot handle negated literals";
+    }
+  }
+
+  for (auto&& [_, checkbox] : m_required_flag_checkboxes) {
+    checkbox->setChecked(false);
+  }
+  if (filter.flag.terms.size() != 1) {
+    LWARNING << "Invalid number of disjunctions. "
+                "ReferencePropertyConfigWidget can only handle a single disjunction.";
+  } else {
+    const auto& conjunction = *filter.flag.terms.begin();
+    for (const auto& literal : conjunction.terms) {
+      if (literal) {
+        m_required_flag_checkboxes.at(literal)->setChecked(true);
+      } else {
+        LWARNING << "ReferencePropertyConfigWidet cannot handle negated literals";
+      }
+    }
   }
 }
 
 void ReferencePropertyConfigWidget::update(Property::Configuration &configuration) const
 {
-  for (auto&& [ flag, checkbox ]: m_required_flag_checkboxes) {
-    configuration[ReferenceProperty::FLAG_KEYS.at(flag)] = checkbox->isChecked();
+  Disjunction<Kind> kinds;
+  DNF<Flag> flags;
+
+  {
+    Conjunction<Flag> conjunction;
+    for (auto&& [ flag, checkbox ]: m_required_flag_checkboxes) {
+      if (checkbox->isChecked()) {
+        conjunction.terms.insert(flag);
+      }
+    }
+    flags.terms.insert(conjunction);
   }
+
   for (auto&& [ kind, checkbox ]: m_allowed_kind_checkboxes) {
-    configuration[ReferenceProperty::KIND_KEYS.at(kind)] = checkbox->isChecked();
+    if (checkbox->isChecked()) {
+      kinds.terms.insert( kind );
+    }
   }
+
+  configuration[ReferenceProperty::FILTER_POINTER] = ReferenceProperty::Filter(kinds, flags);
 }
 
 }  // namespace omm

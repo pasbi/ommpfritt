@@ -52,7 +52,7 @@ std::vector<Point> Ellipse::points() const
   return points;
 }
 
-AbstractPropertyOwner::Flag Ellipse::flags() const
+Flag Ellipse::flags() const
 {
   return Object::flags() | Flag::Convertable | Flag::IsPathLike;
 }

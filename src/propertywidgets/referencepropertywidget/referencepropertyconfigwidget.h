@@ -21,8 +21,8 @@ public:
   void update(Property::Configuration &configuration) const override;
 
 private:
-  std::map<AbstractPropertyOwner::Kind, QCheckBox*> m_allowed_kind_checkboxes;
-  std::map<AbstractPropertyOwner::Flag, QCheckBox*> m_required_flag_checkboxes;
+  std::map<Kind, QCheckBox*> m_allowed_kind_checkboxes;
+  std::map<Flag, QCheckBox*> m_required_flag_checkboxes;
 
 };
 

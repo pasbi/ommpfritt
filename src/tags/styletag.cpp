@@ -17,7 +17,7 @@ StyleTag::StyleTag(Object& owner)
 {
   const QString category = QObject::tr("Basic");
   create_property<ReferenceProperty>(STYLE_REFERENCE_PROPERTY_KEY)
-    .set_allowed_kinds(Kind::Style)
+    .set_filter(ReferenceProperty::Filter({ Kind::Style }, { {} }))
     .set_label(QObject::tr("style"))
     .set_category(category);
 
@@ -28,7 +28,7 @@ StyleTag::StyleTag(Object& owner)
 QString StyleTag::type() const { return TYPE; }
 std::unique_ptr<Tag> StyleTag::clone() const { return std::make_unique<StyleTag>(*this); }
 void StyleTag::evaluate() {}
-AbstractPropertyOwner::Flag StyleTag::flags() const { return Tag::flags(); }
+Flag StyleTag::flags() const { return Tag::flags(); }
 
 void StyleTag::on_property_value_changed(Property *property)
 {

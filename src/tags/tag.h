@@ -12,7 +12,7 @@ class Object;
 class Scene;
 
 class Tag
-  : public PropertyOwner<AbstractPropertyOwner::Kind::Tag>
+  : public PropertyOwner<Kind::Tag>
   , public AbstractFactory<QString, Tag, Object&>
 {
 public:

@@ -5,11 +5,11 @@
 namespace omm
 {
 
-template<AbstractPropertyOwner::Kind kind_> class PropertyOwner : public AbstractPropertyOwner
+template<Kind kind_> class PropertyOwner : public AbstractPropertyOwner
 {
 public:
   PropertyOwner(Scene* scene) : AbstractPropertyOwner(kind_, scene) {}
-  static constexpr AbstractPropertyOwner::Kind KIND = kind_;
+  static constexpr Kind KIND = kind_;
 };
 
 std::ostream& operator<<(std::ostream& ostream, const AbstractPropertyOwner* apo);
@@ -36,6 +36,3 @@ ContainerT<AbstractPropertyOwner*> down_cast(const ContainerT<T*>& ss)
 }
 
 }  // namespace omm
-
-template<> struct omm::EnableBitMaskOperators<omm::AbstractPropertyOwner::Kind> : std::true_type {};
-template<> struct omm::EnableBitMaskOperators<omm::AbstractPropertyOwner::Flag> : std::true_type {};

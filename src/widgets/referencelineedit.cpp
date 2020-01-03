@@ -18,7 +18,7 @@ namespace omm
 
 ReferenceLineEdit::ReferenceLineEdit(QWidget* parent)
   : QComboBox(parent)
-  , m_filter([](const AbstractPropertyOwner*) { return true; })
+  , m_filter(ReferenceProperty::Filter::accept_anything())
 {
   setEditable(true);
   setAcceptDrops(true);
@@ -48,7 +48,7 @@ void ReferenceLineEdit::set_scene(Scene &scene)
   m_scene = &scene;
   assert(m_scene != nullptr);
   const auto update_candidates_maybe = [this](Object&, AbstractPropertyOwner& object) {
-    if (static_cast<bool>(object.flags() & AbstractPropertyOwner::Flag::HasScript)) {
+    if (!!(object.flags() & Flag::HasPython)) {
       update_candidates();
     }
   };
@@ -61,7 +61,8 @@ void ReferenceLineEdit::set_scene(Scene &scene)
   connect(&m_scene->message_box(), &MessageBox::property_value_changed, this,
           [this](AbstractPropertyOwner& owner, const QString& key, Property&)
   {
-    if (static_cast<bool>(owner.flags() & AbstractPropertyOwner::Flag::HasScript)) {
+    using Flag = Flag;
+    if (!!(owner.flags() & Flag::HasScript | Flag::HasPython)) {
       if (key == AbstractPropertyOwner::NAME_PROPERTY_KEY) {
         update_candidates();
       }
@@ -120,10 +121,12 @@ void ReferenceLineEdit::set_inconsistent_value()
 
 ReferenceLineEdit::value_type ReferenceLineEdit::value() const { return m_value; }
 
-void ReferenceLineEdit::set_filter(const std::function<bool (const AbstractPropertyOwner*)>& filter)
+void ReferenceLineEdit::set_filter(const ReferenceProperty::Filter& filter)
 {
-  m_filter = filter;
-  update_candidates();
+  if (m_filter != filter) {
+    m_filter = filter;
+    update_candidates();
+  }
 }
 
 void ReferenceLineEdit::mouseDoubleClickEvent(QMouseEvent*) { set_value(nullptr); }
@@ -144,7 +147,11 @@ void ReferenceLineEdit::dropEvent(QDropEvent* event)
   if (can_drop(*event)) {
     const auto& mime_data = *event->mimeData();
     const auto& property_owner_mime_data = *qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
-    const auto items = ::filter_if(property_owner_mime_data.items(), m_filter);
+    const auto items = ::filter_if(property_owner_mime_data.items(),
+                                   [this](const AbstractPropertyOwner* apo)
+    {
+      return m_filter.evaluate(*apo);
+    });
     assert(items.size() > 0);
     set_value(items.front());
   } else {
@@ -160,9 +167,8 @@ bool ReferenceLineEdit::can_drop(const QDropEvent& event) const
   } else if (mime_data.hasFormat(PropertyOwnerMimeData::MIME_TYPE)) {
     const auto property_owner_mime_data = qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
     if (property_owner_mime_data != nullptr) {
-      if (::filter_if(property_owner_mime_data->items(), m_filter).size() == 1) {
-        return true;
-      }
+      const auto items = property_owner_mime_data->items();
+      return items.size() == 1 && m_filter.evaluate(*items.front());
     }
   }
   return false;
@@ -178,7 +184,9 @@ std::vector<omm::AbstractPropertyOwner*> ReferenceLineEdit::collect_candidates()
   merge(m_scene->tags());
   merge(m_scene->styles().items());
 
-  candidates = ::filter_if(candidates, m_filter);
+  candidates = ::filter_if(candidates, [this](const AbstractPropertyOwner* apo) {
+    return m_filter.evaluate(*apo);
+  });
   candidates.push_back(nullptr);
   return candidates;
 }

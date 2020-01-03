@@ -69,7 +69,7 @@ BoundingBox Mirror::bounding_box(const ObjectTransformation &transformation) con
 
 QString Mirror::type() const { return TYPE; }
 std::unique_ptr<Object> Mirror::clone() const { return std::make_unique<Mirror>(*this); }
-AbstractPropertyOwner::Flag Mirror::flags() const { return Object::flags() | Flag::Convertable; }
+Flag Mirror::flags() const { return Object::flags() | Flag::Convertable; }
 
 std::unique_ptr<Object> Mirror::convert() const
 {
@@ -94,7 +94,7 @@ void Mirror::update()
       m_draw_children = false;
       if (n_children == 1) {
         Object& child = this->tree_child(0);
-        if (!!(child.flags() & Object::Flag::IsPathLike) && !child.is_closed()) {
+        if (!!(child.flags() & Flag::IsPathLike) && !child.is_closed()) {
           auto combined_path = std::make_unique<Path>(scene());
           auto points = child.points();
           for (auto& p : points) {

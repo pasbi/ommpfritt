@@ -27,9 +27,9 @@ std::unique_ptr<Object> RectangleObject::clone() const
   return std::make_unique<RectangleObject>(*this);
 }
 
-AbstractPropertyOwner::Flag RectangleObject::flags() const
+Flag RectangleObject::flags() const
 {
-  return Object::Flag::IsPathLike | Object::Flag::Convertable;
+  return Flag::IsPathLike | Flag::Convertable;
 }
 
 std::vector<Point> RectangleObject::points() const

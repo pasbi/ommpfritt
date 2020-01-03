@@ -16,7 +16,7 @@ class Scene;
 class Painter;
 
 class Tool
-  : public PropertyOwner<AbstractPropertyOwner::Kind::Tool>
+  : public PropertyOwner<Kind::Tool>
   , public AbstractFactory<QString, Tool, Scene&>
 {
   Q_OBJECT

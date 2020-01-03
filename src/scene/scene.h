@@ -88,7 +88,7 @@ public:
   bool contains(const AbstractPropertyOwner* apo) const;
   PointSelection point_selection;
 private:
-  std::map<AbstractPropertyOwner::Kind, std::set<AbstractPropertyOwner*>> m_item_selection;
+  std::map<Kind, std::set<AbstractPropertyOwner*>> m_item_selection;
   std::set<AbstractPropertyOwner*> m_selection;
   std::unique_ptr<Object> make_root();
 

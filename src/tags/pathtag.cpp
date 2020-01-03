@@ -10,8 +10,7 @@ namespace omm
 PathTag::PathTag(Object& owner) : Tag(owner)
 {
   create_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
-    .set_allowed_kinds(AbstractPropertyOwner::Kind::Object)
-    .set_required_flags(AbstractPropertyOwner::Flag::IsPathLike)
+    .set_filter(ReferenceProperty::Filter({ Kind::Object }, { { Flag::IsPathLike }}))
     .set_label(QObject::tr("path"))
     .set_category(QObject::tr("path"));
   create_property<FloatProperty>(POSITION_PROPERTY_KEY)
@@ -25,7 +24,7 @@ PathTag::PathTag(Object& owner) : Tag(owner)
 
 QString PathTag::type() const { return TYPE; }
 std::unique_ptr<Tag> PathTag::clone() const { return std::make_unique<PathTag>(*this); }
-AbstractPropertyOwner::Flag PathTag::flags() const { return Tag::flags(); }
+Flag PathTag::flags() const { return Tag::flags(); }
 
 void PathTag::evaluate()
 {

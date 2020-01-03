@@ -67,7 +67,7 @@ NodesTag::~NodesTag()
 }
 
 QString NodesTag::type() const { return TYPE; }
-AbstractPropertyOwner::Flag NodesTag::flags() const
+Flag NodesTag::flags() const
 {
   return Tag::flags() | Flag::HasPythonNodes;
 }

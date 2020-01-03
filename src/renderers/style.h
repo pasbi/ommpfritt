@@ -14,7 +14,7 @@ class OffscreenRenderer;
 class NodeModel;
 
 class Style
-  : public PropertyOwner<AbstractPropertyOwner::Kind::Style>
+  : public PropertyOwner<Kind::Style>
   , public NodesOwner
 {
   Q_OBJECT

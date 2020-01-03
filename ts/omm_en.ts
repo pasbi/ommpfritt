@@ -1477,7 +1477,7 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>SpyNode</source>
-        <translation type="vanished">Spy node</translation>
+        <translation>Spy node</translation>
     </message>
     <message>
         <source>NodesTag</source>
@@ -2106,6 +2106,14 @@ This cannot be undone.</translation>
         <source>Node</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::NamedColors</name>
@@ -2155,6 +2163,10 @@ Do you want to convert them into ordinary colors?</numerusform>
     <message>
         <source>Edit Nodes ...</source>
         <translation type="obsolete">Edit Nodes ...</translation>
+    </message>
+    <message>
+        <source>nil</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2295,6 +2307,13 @@ Do you want to convert them into ordinary colors?</numerusform>
     <message>
         <source>is view</source>
         <translation>View</translation>
+    </message>
+</context>
+<context>
+    <name>omm::SpyNode</name>
+    <message>
+        <source>value</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

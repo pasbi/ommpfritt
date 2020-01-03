@@ -16,7 +16,7 @@ class NodeModel;
 class Menu;
 
 class Node
-  : public PropertyOwner<AbstractPropertyOwner::Kind::Node>
+  : public PropertyOwner<Kind::Node>
   , public AbstractFactory<QString, Node, Scene*>
   , public ReferencePolisher
 {
@@ -26,7 +26,7 @@ public:
   explicit Node(const Node& other);
   ~Node();
 
-  AbstractPropertyOwner::Flag flags() const override { return AbstractPropertyOwner::Flag::None; }
+  Flag flags() const override { return Flag::None; }
 
   std::set<AbstractPort*> ports() const;
   template<typename PortT> std::set<PortT*> ports() const
