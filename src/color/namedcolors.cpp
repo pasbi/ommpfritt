@@ -145,7 +145,7 @@ Color NamedColors::color(const QString& name) const
 
 void NamedColors::serialize(AbstractSerializer& serializer, const Serializable::Pointer& p) const
 {
-  serializer.start_array(m_named_colors.size(), p);
+  serializer.start_array(m_named_colors.size(), Serializable::make_pointer(p));
   for (std::size_t i = 0; i < m_named_colors.size(); ++i) {
     const auto& [name, color] = m_named_colors[i];
     serializer.set_value(name, Serializable::make_pointer(p, i, "name"));

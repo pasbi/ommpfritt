@@ -111,7 +111,8 @@ void JSONSerializer::start_array(size_t size, const Pointer& pointer)
 {
   Q_UNUSED(size);
   Q_UNUSED(pointer);
-  // no action required
+
+  m_store[ptr(pointer)] = nlohmann::json::value_type::array();
 }
 
 void JSONSerializer::end_array()
