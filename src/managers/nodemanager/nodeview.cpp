@@ -343,8 +343,8 @@ bool NodeView::event(QEvent* event)
     if (node != nullptr) {
       QToolTip::showText(help_event->globalPos(), "node");
     } else if (port != nullptr) {
-      const QString tooltip = QString("port\n%1")
-          .arg(port->data_type());
+      const QString tooltip = QString("port\n%1\n%2")
+          .arg(port->data_type()).arg(port->uuid());
       QToolTip::showText(help_event->globalPos(), tooltip);
     } else {
       QToolTip::hideText();
