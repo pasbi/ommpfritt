@@ -2,6 +2,8 @@
 #include "managers/nodemanager/nodes/spynode.h"
 #include "managers/nodemanager/nodes/constantnode.h"
 #include "managers/nodemanager/nodes/referencenode.h"
+#include "managers/nodemanager/nodes/composenode.h"
+#include "managers/nodemanager/nodes/decomposenode.h"
 
 namespace omm
 {
@@ -13,6 +15,8 @@ void register_nodes()
   REGISTER_NODE(MathNode);
   REGISTER_NODE(SpyNode);
   REGISTER_NODE(ConstantNode);
+  REGISTER_NODE(DecomposeNode);
+  REGISTER_NODE(ComposeNode);
 #undef REGISTER_NODE
 }
 

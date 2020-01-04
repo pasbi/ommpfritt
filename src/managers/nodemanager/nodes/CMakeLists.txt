@@ -1,6 +1,8 @@
 
 file(GLOB SOURCES
   constantnode.cpp
+  composenode.cpp
+  decomposenode.cpp
   nodesregister.cpp
   mathnode.cpp
   referencenode.cpp
@@ -9,6 +11,8 @@ file(GLOB SOURCES
 
 file(GLOB HEADERS
   constantnode.h
+  composenode.h
+  decomposenode.h
   mathnode.h
   referencenode.h
   spynode.h
