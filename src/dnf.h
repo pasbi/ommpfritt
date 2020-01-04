@@ -22,6 +22,7 @@ template<typename T> struct DisjunctionImpl
   {
     return std::any_of(s.begin(), s.end(), [v](const T& term) { return term.evaluate(v); });
   }
+  static constexpr auto operator_symbol = "∨";
 };
 
 template<typename T> struct ConjunctionImpl
@@ -30,6 +31,7 @@ template<typename T> struct ConjunctionImpl
   {
     return std::all_of(s.begin(), s.end(), [v](const T& term) { return term.evaluate(v); });
   }
+  static constexpr auto operator_symbol = "∧";
 };
 
 }  // namespace DNF_detail
@@ -95,9 +97,7 @@ public:
   }
 
   bool is_valid() const { return i != std::size_t(-1); }
-
   operator E() const { return static_cast<E>(1 << i); }
-  operator bool() const { return value; }
 
   std::size_t i = -1;
   bool value = false;
@@ -165,11 +165,40 @@ public:
   std::set<T> terms;
 };
 
-
 }  // namespace DNF_detail
 
 template<typename E, typename T = Literal<E>> using Conjunction = DNF_detail::Term<E, T, DNF_detail::ConjunctionImpl<T>>;
 template<typename E, typename T = Literal<E>> using Disjunction = DNF_detail::Term<E, T, DNF_detail::DisjunctionImpl<T>>;
 template<typename E> using DNF = Disjunction<E, Conjunction<E>>;
+
+template<typename E, typename T, typename Junction>
+std::ostream& operator<<(std::ostream& ostream, const DNF_detail::Term<E, T, Junction>& dnf)
+{
+  ostream << "( ";
+  auto it = dnf.terms.begin();
+  while (it != dnf.terms.end()) {
+    if (it != dnf.terms.begin()) {
+      ostream << " " << Junction::operator_symbol << " ";
+    }
+    ostream << *it;
+    it++;
+  }
+  ostream << ") ";
+  return ostream;
+}
+
+template<typename E> std::ostream& operator<<(std::ostream& ostream, const Literal<E>& literal)
+{
+  if (!literal.value) {
+    ostream << "¬";
+  }
+  if constexpr (std::is_enum_v<E>) {
+    ostream << static_cast<std::underlying_type_t<E>>(literal.i);
+  } else {
+    ostream << static_cast<E>(literal);
+  }
+
+  return ostream;
+}
 
 }  // namespace omm

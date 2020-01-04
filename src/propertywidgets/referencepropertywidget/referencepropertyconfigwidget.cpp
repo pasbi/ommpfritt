@@ -98,7 +98,7 @@ void ReferencePropertyConfigWidget::init(const Property::Configuration &configur
   } else {
     const auto& conjunction = *filter.flag.terms.begin();
     for (const auto& literal : conjunction.terms) {
-      if (literal) {
+      if (literal.value) {
         m_required_flag_checkboxes.at(literal)->setChecked(true);
       } else {
         LWARNING << "ReferencePropertyConfigWidet cannot handle negated literals";

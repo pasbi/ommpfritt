@@ -44,7 +44,8 @@ public:
     void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
     Disjunction<Kind> kind;
     DNF<Flag> flag;
-    bool evaluate(const AbstractPropertyOwner& apo) const;
+    bool accepts(const AbstractPropertyOwner& apo) const;
+    bool accepts(Kind kind, Flag flag) const;
     bool operator==(const Filter& other) const;
     bool operator!=(const Filter& other) const { return !(*this == other); }
     bool operator<(const Filter& other) const;
@@ -228,4 +229,6 @@ private:
 
 void register_properties();
 
-}  // namespace ommAbstractPropertyOwner
+std::ostream& operator<<(std::ostream& ostream, const Property::Filter& filter);
+
+}  // namespace omm

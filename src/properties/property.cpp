@@ -167,15 +167,20 @@ void Property::Filter::deserialize(AbstractDeserializer& deserializer, const Ser
   deserializer.get(flag, make_pointer(root, "flag"));
 }
 
+bool Property::Filter::accepts(Kind kind, Flag flag) const
+{
+  return this->flag.evaluate(flag) && this->kind.evaluate(kind);
+}
+
 void Property::Filter::serialize(AbstractSerializer &serializer, const Pointer &root) const
 {
   serializer.set_value(kind, make_pointer(root, "kind"));
   serializer.set_value(flag, make_pointer(root, "flag"));
 }
 
-bool Property::Filter::evaluate(const AbstractPropertyOwner& apo) const
+bool Property::Filter::accepts(const AbstractPropertyOwner& apo) const
 {
-  return flag.evaluate(apo.flags()) && kind.evaluate(apo.kind);
+  return accepts(apo.kind, apo.flags());
 }
 
 bool Property::Filter::operator==(const Property::Filter& other) const
@@ -197,5 +202,10 @@ Property::Filter Property::Filter::accept_anything()
   return Filter(Disjunction<Kind>(Kind::All, Kind::None), { {} });
 }
 
+std::ostream& operator<<(std::ostream& ostream, const Property::Filter& filter)
+{
+  ostream << "Filter(Flag(" << filter.flag << "), Kind(" << filter.kind << "))";
+  return ostream;
+}
 
 }  // namespace omm
