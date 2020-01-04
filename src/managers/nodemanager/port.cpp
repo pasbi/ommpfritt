@@ -90,6 +90,13 @@ bool AbstractPort::is_connected() const
   });
 }
 
+QString AbstractPort::uuid() const
+{
+  std::stringstream ss;
+  ss << static_cast<const void*>(this);
+  return "p" + QString::fromStdString(ss.str());
+}
+
 bool OutputPort::is_connected() const
 {
   return !m_connections.empty();

@@ -14,8 +14,6 @@ public:
   static constexpr auto CONSTANT_VALUE_KEY = "constant";
   void populate_menu(QMenu& menu) override;
 
-  QString output_data_type(const OutputPort& port) const override;
-
 protected:
   void on_property_value_changed(Property* property) override;
 

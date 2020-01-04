@@ -4,18 +4,6 @@
 #include "managers/nodemanager/nodemodel.h"
 #include <sstream>
 
-namespace
-{
-
-QString address_to_string(const void* address)
-{
-  std::stringstream ss;
-  ss << address;
-  return QString::fromStdString(ss.str());
-}
-
-}  // namespace
-
 namespace omm
 {
 
@@ -51,7 +39,7 @@ void NodeCompiler::compile(const NodeModel& model)
       if (OutputPort* op = ip->connected_output(); op != nullptr) {
         code.push_front(compile_connection(*op, *ip));
         if (!::contains(done, &op->node)) {
-          todo.push_front(&op->node);
+          todo.push_back(&op->node);
         }
       }
     }
@@ -73,16 +61,6 @@ void NodeCompiler::compile(const NodeModel& model)
   m_compilation += code.join("\n");
 }
 
-QString NodeCompiler::uuid(const AbstractPort& port) const
-{
-  return "p" + address_to_string(&port);
-}
-
-QString NodeCompiler::uuid(const Node& node) const
-{
-  return "n" + address_to_string(&node);
-}
-
 QString NodeCompiler::compile_node(const Node& node)
 {
   auto ops = ::filter_if(node.ports<OutputPort>(), [](OutputPort* op) {
@@ -95,14 +73,15 @@ QString NodeCompiler::compile_node(const Node& node)
     return ip1->index < ip2->index;
   });
 
-  const QStringList args = ::transform<QString, QList>(ips, [this](InputPort* ip) {
-    return uuid(*ip);
+  const QStringList args = ::transform<QString, QList>(ips, [](InputPort* ip) {
+    return ip->uuid();
   });
 
-  assert(ops.size() <= 1);
-  if (ops.size() == 1) {
-    const OutputPort& op = **ops.begin();
-    return QString("%1 = %2(%3)").arg(uuid(op)).arg(node.uuid()).arg(args.join(", "));
+  if (ops.size() > 1) {
+    const QStringList uuids = ::transform<QString, QList>(ops, [](const OutputPort* op) {
+      return op->uuid();
+    });
+    return QString("%1 = %2(%3)").arg(uuids.join(", ")).arg(node.uuid()).arg(args.join(", "));
   } else {
     return "";
   }
@@ -110,7 +89,22 @@ QString NodeCompiler::compile_node(const Node& node)
 
 QString NodeCompiler::compile_connection(const OutputPort& op, const InputPort& ip)
 {
-  return QString("%1 = %2").arg(uuid(ip)).arg(uuid(op));
+  return QString("%1 = %2").arg(ip.uuid()).arg(op.uuid());
+}
+
+bool NodeCompilerTypes::is_integral(const QString& type)
+{
+  return type == BOOL_TYPE || type == INTEGER_TYPE || type == OPTIONS_TYPE;
+}
+
+bool NodeCompilerTypes::is_numeric(const QString& type)
+{
+  return is_integral(type) || type == FLOAT_TYPE;
+}
+
+bool NodeCompilerTypes::is_vector(const QString& type)
+{
+  return type == INTEGERVECTOR_TYPE || type == FLOATVECTOR_TYPE;
 }
 
 }  // namespace omm

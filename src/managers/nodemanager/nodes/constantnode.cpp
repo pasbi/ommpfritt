@@ -21,12 +21,6 @@ void ConstantNode::populate_menu(QMenu& menu)
   });
 }
 
-QString ConstantNode::output_data_type(const OutputPort&) const
-{
-  Q_UNREACHABLE();
-  return QString();
-}
-
 void ConstantNode::on_property_value_changed(Property* property)
 {
 }

@@ -26,13 +26,13 @@ namespace
 {
 
 template<omm::PortType port_type>
-void populate_locals(py::object& locals, const omm::NodeCompiler& compiler, const omm::NodeModel& model)
+void populate_locals(py::object& locals, const omm::NodeModel& model)
 {
   using PortT = omm::Port<port_type>;
   for (PortT* port : model.ports<PortT>()) {
     if (port->flavor == omm::PortFlavor::Property) {
       omm::Property& property = *static_cast<omm::PropertyPort<port_type>*>(port)->property();
-      const auto var_name = py::cast(compiler.uuid(*port).toStdString());
+      const auto var_name = py::cast(port->uuid().toStdString());
       const auto var = variant_to_python(property.variant_value());
       locals[var_name] = var;
     }
@@ -99,17 +99,16 @@ void NodesTag::force_evaluate()
   assert(scene != nullptr);
   using namespace py::literals;
 
-//  LINFO << "Compilation: \n" << code();
+  LINFO << "Compilation: \n" << code();
   auto locals = py::dict();
-  const NodeCompiler* compiler = this->compiler();
-  populate_locals<PortType::Input>(locals, *compiler, node_model());
-  populate_locals<PortType::Output>(locals, *compiler, node_model());
+  populate_locals<PortType::Input>(locals, node_model());
+  populate_locals<PortType::Output>(locals, node_model());
 
   if (Application::instance().python_engine.exec(code(), locals, this)) {
     for (InputPort* port : node_model().ports<InputPort>()) {
       if (port->node.type() == SpyNode::TYPE) {
         SpyNode& spy_node = static_cast<SpyNode&>(port->node);
-        const auto py_var_name = py::cast(compiler->uuid(*port).toStdString());
+        const auto py_var_name = py::cast(port->uuid().toStdString());
         if (locals.contains(py_var_name)) {
           py::object val = locals[py_var_name];
           const QString repr = QString::fromStdString(py::str(val));
@@ -121,7 +120,7 @@ void NodesTag::force_evaluate()
       if (port->flavor == PortFlavor::Property && port->is_connected()) {
         Property* property = static_cast<PropertyPort<PortType::Input>*>(port)->property();
         if (property != nullptr) {
-          const auto var_name = compiler->uuid(*port);
+          const auto var_name = port->uuid();
           const auto py_var_name =  py::cast(var_name.toStdString());
           if (locals.contains(py_var_name)) {
             if (port->data_type() == property->data_type()) {

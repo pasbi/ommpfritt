@@ -166,9 +166,4 @@ ReferenceNode::remove_forwarding_port(PortType port_type, const QString& key)
   return owned;
 }
 
-QString ReferenceNode::output_data_type(const OutputPort& port) const
-{
-  return "";
-}
-
 }  // namespace

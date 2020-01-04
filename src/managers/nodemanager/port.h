@@ -29,6 +29,7 @@ public:
   const std::size_t index;
   virtual QString label() const = 0;
   virtual QString data_type() const = 0;
+  QString uuid() const;
 };
 
 template<PortType port_type_> class Port : public AbstractPort

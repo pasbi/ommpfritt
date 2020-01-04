@@ -26,6 +26,10 @@ namespace NodeCompilerTypes
   static constexpr auto COLOR_TYPE = "Color";
   static constexpr auto REFERENCE_TYPE = "Reference";
   static constexpr auto BOOL_TYPE = "Bool";
+
+  bool is_numeric(const QString& type);
+  bool is_integral(const QString& type);
+  bool is_vector(const QString& type);
 }
 
 class NodeCompiler
@@ -39,14 +43,11 @@ public:
   QString compilation() const { return m_compilation; }
   QString error_message() const { return m_error_message; }
   bool has_error() const { return !m_error_message.isEmpty(); }
-  QString uuid(const AbstractPort& port) const;
-  QString uuid(const Node& node) const;
 
 private:
   const Language m_language;
   QString m_error_message;
   QString m_compilation;
-  void book(const Node& node);
   QString compile_node(const Node& node);
   QString compile_connection(const OutputPort& op, const InputPort& ip);
 };
