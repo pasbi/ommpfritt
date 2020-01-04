@@ -1,8 +1,10 @@
 FILE(GLOB SRC_FILES
   "color.cpp"
   "cubic.cpp"
+  "dnftest.cpp"
   "geometry.cpp"
   "path.cpp"
+  "propertytest.cpp"
   "main.cpp"
   "tree.cpp"
 )
