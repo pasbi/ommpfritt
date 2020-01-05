@@ -1,0 +1,58 @@
+#include "enumnames.h"
+#include "common.h"
+
+namespace omm
+{
+
+template<> const char* enum_name_impl<Kind>(Kind e)
+{
+  switch (e) {
+  case Kind::Tag:
+    return QT_TRANSLATE_NOOP("Enum", "Tag");
+  case Kind::Node:
+    return QT_TRANSLATE_NOOP("Enum", "Node");
+  case Kind::Object:
+    return QT_TRANSLATE_NOOP("Enum", "Object");
+  case Kind::Style:
+    return QT_TRANSLATE_NOOP("Enum", "Style");
+  case Kind::Tool:
+    return QT_TRANSLATE_NOOP("Enum", "Tool");
+  default:
+    Q_UNREACHABLE();
+    return "";
+  }
+}
+
+template<> std::set<Kind> enumerate_enum<Kind>()
+{
+  return { Kind::Tag, Kind::Node, Kind::Style, Kind::Tool };
+}
+
+template<> const char* enum_name_impl<Flag>(Flag f)
+{
+  switch (f) {
+  case Flag::Convertable:
+    return QT_TRANSLATE_NOOP("Enum", "Convertable");
+  case Flag::HasScript:
+    return QT_TRANSLATE_NOOP("Enum", "HasScript");
+  case Flag::IsPathLike:
+    return QT_TRANSLATE_NOOP("Enum", "IsPathLike");
+  case Flag::IsView:
+    return QT_TRANSLATE_NOOP("Enum", "IsView");
+  case Flag::HasPythonNodes:
+    return QT_TRANSLATE_NOOP("Enum", "HasPythonNodes");
+  case Flag::HasGLSLNodes:
+    return QT_TRANSLATE_NOOP("Enum", "HasGLSLNodes");
+  default:
+    Q_UNREACHABLE();
+    return "";
+  }
+}
+
+template<> std::set<Flag> enumerate_enum<Flag>()
+{
+  return { Flag::Convertable, Flag::HasScript, Flag::IsPathLike, Flag::IsView, Flag::HasPythonNodes,
+           Flag::HasGLSLNodes };
+}
+
+}  // namespace omm

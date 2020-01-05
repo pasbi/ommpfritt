@@ -1,6 +1,7 @@
 
 file(GLOB SOURCES
   common.cpp
+  enumnames.cpp
   dnf.cpp
   logging.cpp
   main.cpp
@@ -13,6 +14,7 @@ file(GLOB HEADERS
   cache.h
   cachedgetter.h
   common.h
+  enumnames.h
   dnf.h
   logging.h
   maybeowner.h

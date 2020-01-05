@@ -1,5 +1,7 @@
 #include "propertywidgets/referencepropertywidget/referencepropertyconfigwidget.h"
 
+#include "enumnames.h"
+
 #include <QCheckBox>
 #include <QLayout>
 #include <QLabel>
@@ -14,33 +16,12 @@ template<typename MapT> auto keys(const MapT& map)
   });
 }
 
-auto make_allowed_kinds_checkboxes()
+template<typename E> auto make_checkboxes()
 {
-  std::map<omm::Kind, QCheckBox*> map;
-  map.insert( std::pair(omm::Kind::Tag,
-              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("Tag"))) );
-  map.insert( std::pair(omm::Kind::Style,
-              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("Style"))) );
-  map.insert( std::pair(omm::Kind::Object,
-              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("Object"))) );
-  map.insert( std::pair(omm::Kind::Tool,
-              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("Tool"))) );
-  map.insert( std::pair(omm::Kind::Node,
-              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("Node"))) );
-  return map;
-}
-
-auto make_required_flags_checkboxes()
-{
-  std::map<omm::Flag, QCheckBox*> map;
-  map.insert( std::pair(omm::Flag::Convertable,
-              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("convertable"))) );
-  map.insert( std::pair(omm::Flag::HasScript,
-              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("has script"))) );
-  map.insert( std::pair(omm::Flag::IsPathLike,
-              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("is path like"))) );
-  map.insert( std::pair(omm::Flag::IsView,
-              new QCheckBox(omm::ReferencePropertyConfigWidget::tr("is view"))) );
+  std::map<E, QCheckBox*> map;
+  for (E kind : omm::enumerate_enum<E>()) {
+    map.insert({ kind, new QCheckBox(omm::enum_name(kind, true)) });
+  }
   return map;
 }
 
@@ -50,8 +31,8 @@ namespace omm
 {
 
 ReferencePropertyConfigWidget::ReferencePropertyConfigWidget()
-  : m_allowed_kind_checkboxes(make_allowed_kinds_checkboxes())
-  , m_required_flag_checkboxes(make_required_flags_checkboxes())
+  : m_allowed_kind_checkboxes(make_checkboxes<Kind>())
+  , m_required_flag_checkboxes(make_checkboxes<Flag>())
 {
   auto layout = std::make_unique<QHBoxLayout>();
   auto allowed_kind_layout = std::make_unique<QVBoxLayout>();
