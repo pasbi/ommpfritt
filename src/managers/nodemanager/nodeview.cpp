@@ -338,16 +338,18 @@ void NodeView::mouseDoubleClickEvent(QMouseEvent*)
 bool NodeView::event(QEvent* event)
 {
   if (event->type() == QEvent::ToolTip) {
-    const QHelpEvent* help_event = static_cast<const QHelpEvent*>(event);
-    auto [ node, port ] = select_port_or_node(help_event->pos() - m_pzc.offset());
-    if (node != nullptr) {
-      QToolTip::showText(help_event->globalPos(), "node");
-    } else if (port != nullptr) {
-      const QString tooltip = QString("port\n%1\n%2")
-          .arg(port->data_type()).arg(port->uuid());
-      QToolTip::showText(help_event->globalPos(), tooltip);
-    } else {
-      QToolTip::hideText();
+    if (m_model != nullptr) {
+      const QHelpEvent* help_event = static_cast<const QHelpEvent*>(event);
+      auto [ node, port ] = select_port_or_node(help_event->pos() - m_pzc.offset());
+      if (node != nullptr) {
+        QToolTip::showText(help_event->globalPos(), "node");
+      } else if (port != nullptr) {
+        const QString tooltip = QString("port\n%1\n%2")
+            .arg(port->data_type()).arg(port->uuid());
+        QToolTip::showText(help_event->globalPos(), tooltip);
+      } else {
+        QToolTip::hideText();
+      }
     }
   }
 
