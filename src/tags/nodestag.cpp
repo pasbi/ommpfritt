@@ -31,10 +31,12 @@ void populate_locals(py::object& locals, const omm::NodeModel& model)
   using PortT = omm::Port<port_type>;
   for (PortT* port : model.ports<PortT>()) {
     if (port->flavor == omm::PortFlavor::Property) {
-      omm::Property& property = *static_cast<omm::PropertyPort<port_type>*>(port)->property();
-      const auto var_name = py::cast(port->uuid().toStdString());
-      const auto var = variant_to_python(property.variant_value());
-      locals[var_name] = var;
+      omm::Property* property = static_cast<omm::PropertyPort<port_type>*>(port)->property();
+      if (property != nullptr) {
+        const auto var_name = py::cast(port->uuid().toStdString());
+        const auto var = variant_to_python(property->variant_value());
+        locals[var_name] = var;
+      }
     }
   }
 }
