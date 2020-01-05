@@ -5,7 +5,6 @@
 #include "commands/addcommand.h"
 #include "commands/removecommand.h"
 #include "properties/optionsproperty.h"
-#include "tags/scripttag.h"
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
 #include <QUndoStack>
@@ -146,14 +145,6 @@ void subdivide(Application& app)
   if (map.size() > 0) {
     app.scene.submit<AddPointsCommand>(map);
     app.scene.tool_box().active_tool().reset();
-  }
-}
-
-void evaluate(Application& app)
-{
-  for (Tag* tag : app.scene.tags()) {
-    auto* script_tag = type_cast<ScriptTag*>(tag);
-    if (script_tag != nullptr) { script_tag->force_evaluate(); }
   }
 }
 

@@ -28,8 +28,9 @@ public:
   std::unique_ptr<Tag> clone() const override;
   void on_property_value_changed(Property* property) override;
   void evaluate() override;
-  void force_evaluate();
+  void force_evaluate() override;
   Flag flags() const override;
+  std::set<Node*> nodes() const;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;

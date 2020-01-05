@@ -41,6 +41,7 @@ public:
   void quit();
   void update_undo_redo_enabled();
   void set_main_window(MainWindow& main_window);
+  void evaluate() const;
   QKeySequence default_key_sequence(const QString& name) const;
   static Application& instance();
 

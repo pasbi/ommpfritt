@@ -74,6 +74,11 @@ Flag NodesTag::flags() const
   return Tag::flags() | Flag::HasPythonNodes;
 }
 
+std::set<Node*> NodesTag::nodes() const
+{
+  return node_model().nodes();
+}
+
 void NodesTag::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
 {
   Tag::serialize(serializer, root);
@@ -101,7 +106,7 @@ void NodesTag::force_evaluate()
   assert(scene != nullptr);
   using namespace py::literals;
 
-  LINFO << "Compilation: \n" << code();
+//  LINFO << "Compilation: \n" << code();
   auto locals = py::dict();
   populate_locals<PortType::Input>(locals, node_model());
   populate_locals<PortType::Output>(locals, node_model());

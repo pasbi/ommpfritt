@@ -147,10 +147,7 @@ void Viewport::paintEvent(QPaintEvent*)
   painter.restore();
 
   m_scene.object_tree().root().set_transformation(viewport_transformation);
-  {
-    QSignalBlocker blocker(&m_scene);
-    m_scene.evaluate_tags();
-  }
+
   Painter::Options options;
   options.viewport = true;
   m_renderer.render(options);

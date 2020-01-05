@@ -67,6 +67,53 @@
     </message>
 </context>
 <context>
+    <name>Enum</name>
+    <message>
+        <source>Tag</source>
+        <translation type="unfinished">Tag</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Object</source>
+        <translation type="unfinished">Object</translation>
+    </message>
+    <message>
+        <source>Style</source>
+        <translation type="unfinished">Style</translation>
+    </message>
+    <message>
+        <source>Tool</source>
+        <translation type="unfinished">Tool</translation>
+    </message>
+    <message>
+        <source>Convertable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HasScript</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IsPathLike</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IsView</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HasPythonNodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HasGLSLNodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ExportDialog</name>
     <message>
         <source>Raster</source>
@@ -1260,6 +1307,49 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
+    <name>ReferencePropertyView</name>
+    <message>
+        <source>tag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>tool</source>
+        <translation type="unfinished">Tool</translation>
+    </message>
+    <message>
+        <source>style</source>
+        <translation type="unfinished">Style</translation>
+    </message>
+    <message>
+        <source>object</source>
+        <translation type="unfinished">Object</translation>
+    </message>
+    <message>
+        <source>view</source>
+        <translation type="unfinished">View</translation>
+    </message>
+    <message>
+        <source>has script</source>
+        <translation type="unfinished">Script</translation>
+    </message>
+    <message>
+        <source>has python nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>has GLSL nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pathlike</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>convertable</source>
+        <translation type="unfinished">Convertable</translation>
+    </message>
+</context>
+<context>
     <name>Tag</name>
     <message>
         <source>Tag</source>
@@ -1489,6 +1579,14 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>ReferenceNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ComposeNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DecomposeNode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1934,6 +2032,29 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
+    <name>omm::ComposeNode</name>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x</source>
+        <translation type="unfinished">x</translation>
+    </message>
+    <message>
+        <source>y</source>
+        <translation type="unfinished">y</translation>
+    </message>
+    <message>
+        <source>vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compose</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>omm::ConstantNode</name>
     <message>
         <source>Edit ports ...</source>
@@ -1945,6 +2066,29 @@ Remove the selected items anyway?</translation>
     <message>
         <source>Curves</source>
         <translation>F-Curves</translation>
+    </message>
+</context>
+<context>
+    <name>omm::DecomposeNode</name>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>in</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x</source>
+        <translation type="unfinished">x</translation>
+    </message>
+    <message>
+        <source>y</source>
+        <translation type="unfinished">y</translation>
+    </message>
+    <message>
+        <source>Decompose</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2278,35 +2422,39 @@ Do you want to convert them into ordinary colors?</numerusform>
     <name>omm::ReferencePropertyConfigWidget</name>
     <message>
         <source>Tag</source>
-        <translation>Tag</translation>
+        <translation type="vanished">Tag</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation>Style</translation>
+        <translation type="vanished">Style</translation>
     </message>
     <message>
         <source>Object</source>
-        <translation>Object</translation>
+        <translation type="vanished">Object</translation>
     </message>
     <message>
         <source>convertable</source>
-        <translation>Convertable</translation>
+        <translation type="vanished">Convertable</translation>
     </message>
     <message>
         <source>has script</source>
-        <translation>Script</translation>
+        <translation type="vanished">Script</translation>
     </message>
     <message>
         <source>is path like</source>
-        <translation>Path-like</translation>
+        <translation type="vanished">Path-like</translation>
     </message>
     <message>
         <source>Tool</source>
-        <translation>Tool</translation>
+        <translation type="vanished">Tool</translation>
     </message>
     <message>
         <source>is view</source>
-        <translation>View</translation>
+        <translation type="vanished">View</translation>
+    </message>
+    <message>
+        <source>Requirements:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

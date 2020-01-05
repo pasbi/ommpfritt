@@ -8,6 +8,7 @@
 #include <fstream>
 #include <QApplication>
 
+#include "tags/nodestag.h"
 #include "objects/empty.h"
 #include "external/json.hpp"
 #include "properties/stringproperty.h"
@@ -299,12 +300,25 @@ std::set<Tag*> Scene::tags() const
 
 std::set<AbstractPropertyOwner*> Scene::property_owners() const
 {
-  return merge(std::set<AbstractPropertyOwner*>(), object_tree().items(), tags(), styles().items());
+  return merge(std::set<AbstractPropertyOwner*>(),
+               object_tree().items(), styles().items(),
+               tags(), nodes());
 }
 
 Style& Scene::default_style() const
 {
   return *m_default_style;
+}
+
+std::set<Node*> Scene::nodes() const
+{
+  std::set<Node*> nodes;
+  for (Tag* tag : tags()) {
+    if (tag->type() == NodesTag::TYPE) {
+      ::merge(nodes, static_cast<NodesTag*>(tag)->nodes());
+    }
+  }
+  return nodes;
 }
 
 void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
@@ -385,7 +399,9 @@ template<> std::set<Style*> Scene::find_items<Style>(const QString& name) const
 
 void Scene::evaluate_tags()
 {
-  for (Tag* tag : tags()) { tag->evaluate(); }
+  for (Tag* tag : tags()) {
+    tag->evaluate();
+  }
 }
 
 bool Scene::can_remove( QWidget* parent, std::set<AbstractPropertyOwner*> selection,

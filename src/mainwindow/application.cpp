@@ -5,6 +5,9 @@
 #include <QFileDialog>
 #include <QApplication>
 
+#include "tags/scripttag.h"
+#include "tags/nodestag.h"
+
 #include "mainwindow/mainwindow.h"
 #include "managers/manager.h"
 #include "scene/scene.h"
@@ -108,6 +111,13 @@ Application& Application::instance()
 void Application::set_main_window(MainWindow& main_window)
 {
   m_main_window = &main_window;
+}
+
+void Application::evaluate() const
+{
+  for (Tag* tag : scene.tags()) {
+    tag->evaluate();
+  }
 }
 
 void Application::quit()
@@ -254,7 +264,7 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "subdivide") {
     actions::subdivide(*this);
   } else if (action_name == "evaluate") {
-    actions::evaluate(*this);
+    evaluate();
   } else if (action_name == "restore default layout") {
     main_window()->restore_default_layout();
   } else if (action_name == "save layout ...") {

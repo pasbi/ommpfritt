@@ -16,7 +16,6 @@ void make_smooth(Application& app);
 void make_linear(Application& app);
 void remove_selected_points(Application& app);
 void subdivide(Application& app);
-void evaluate(Application& app);
 void select_all(Application& app);
 void deselect_all(Application& app);
 void invert_selection(Application& app);

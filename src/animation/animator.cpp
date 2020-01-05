@@ -167,6 +167,7 @@ void Animator::apply()
   for (Property* property : accelerator().properties()) {
     property->track()->apply(m_current_frame);
   }
+  scene.evaluate_tags();
 }
 
 void Animator::invalidate()
@@ -457,17 +458,8 @@ Animator::Accelerator::Accelerator(Scene& scene) : m_scene(&scene)
 
 std::list<AbstractPropertyOwner*> Animator::Accelerator::animatable_owners() const
 {
-  std::list<AbstractPropertyOwner*> animatables;
-  for (Object* object : m_scene->object_tree().items()) {
-    animatables.push_back(object);
-    for (Tag* tag : object->tags.items()) {
-      animatables.push_back(tag);
-    }
-  }
-  for (Style* style : m_scene->styles().items()) {
-    animatables.push_back(style);
-  }
-  return animatables;
+  auto owners = m_scene->property_owners();
+  return std::list<AbstractPropertyOwner*>(owners.begin(), owners.end());
 }
 
 

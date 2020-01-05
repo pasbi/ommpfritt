@@ -17,7 +17,7 @@ public:
   std::unique_ptr<Tag> clone() const override;
   void on_property_value_changed(Property* property) override;
   void evaluate() override;
-  void force_evaluate();
+  void force_evaluate() override;
   Flag flags() const override;
 };
 

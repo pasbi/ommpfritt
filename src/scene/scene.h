@@ -29,6 +29,7 @@ class HistoryModel;
 class Animator;
 class NamedColors;
 class ColorProperty;
+class Node;
 
 template<typename T> struct SceneStructure;
 template<> struct SceneStructure<Object> { using type = ObjectTree; };
@@ -128,6 +129,10 @@ private:
   std::unique_ptr<Style> m_default_style;
   std::unique_ptr<StyleList> m_styles;
 
+
+  // === Nodes ===
+public:
+  std::set<Node*> nodes() const;
 
   // === Commands ===
 private:

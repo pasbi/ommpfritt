@@ -23,6 +23,7 @@ public:
   std::unique_ptr<Tag> clone(Object& owner) const;
   Object* owner;
   virtual void evaluate() = 0;
+  virtual void force_evaluate() { evaluate(); }
   Flag flags() const override;
 };
 
