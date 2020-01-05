@@ -6,6 +6,7 @@
 #include <QCoreApplication>
 #include <QPushButton>
 #include <QTabWidget>
+#include <QHash>
 
 #include "managers/propertymanager/propertymanagertitlebar.h"
 #include "scene/messagebox.h"
