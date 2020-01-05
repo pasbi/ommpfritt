@@ -1,5 +1,6 @@
 #pragma once
 
+#include "enumnames.h"
 #include "python/pywrapper.h"
 #include <type_traits>
 #include "geometry/vec2.h"
@@ -56,10 +57,19 @@ public:
     return detail::set_property_value(this->wrapped, key, value);
   }
 
+  py::str str() const
+  {
+    std::ostringstream ostream;
+    const auto* apo = &this->wrapped;
+    ostream << enum_name(apo->kind, true) << "[" << static_cast<const void*>(apo) << "]";
+    return ostream.str();
+  }
+
   static void define_python_interface(py::object& module)
   {
     const auto type_name = (QStringLiteral("Base") + WrappedT::TYPE).toUtf8().constData();
     py::class_<AbstractPropertyOwnerWrapper<WrappedT>>(module, type_name, py::dynamic_attr())
+          .def("__str__", &AbstractPropertyOwnerWrapper<WrappedT>::str)
           .def("get", &AbstractPropertyOwnerWrapper<WrappedT>::get)
           .def("set", &AbstractPropertyOwnerWrapper<WrappedT>::set);
   }

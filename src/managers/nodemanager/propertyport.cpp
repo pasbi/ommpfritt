@@ -7,7 +7,7 @@ namespace
 QString data_type(const omm::Property* property)
 {
   if (property == nullptr) {
-    return "None";
+    return omm::NodeCompilerTypes::INVALID_TYPE;
   } else {
     return property->data_type();
   }
