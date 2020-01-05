@@ -6,7 +6,6 @@
 #include <QCoreApplication>
 #include <QPushButton>
 #include <QTabWidget>
-#include <QHash>
 
 #include "managers/propertymanager/propertymanagertitlebar.h"
 #include "scene/messagebox.h"
@@ -37,9 +36,9 @@ get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
 
   const auto* the_entity = *selection.begin();
   auto keys = the_entity->properties().keys();
-  std::unordered_map<QString, omm::Property*> the_properties;
+  std::map<QString, omm::Property*> the_properties;
   for (auto&& key : keys) {
-    the_properties.insert(std::make_pair(key, the_entity->property(key)));
+    the_properties.insert({ key, the_entity->property(key) });
   }
 
   for (auto it = std::next(selection.begin()); it != selection.end(); ++it) {
