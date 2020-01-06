@@ -47,14 +47,14 @@ class AbstractPropertyOwnerWrapper : public PyWrapper<WrappedT>
   static_assert(std::is_base_of<AbstractPropertyOwner, std::decay_t<WrappedT>>::value);
 public:
   using PyWrapper<WrappedT>::PyWrapper;
-  py::object get(const QString& key) const
+  py::object get(const std::string& key) const
   {
-    return detail::get_property_value(this->wrapped, key);
+    return detail::get_property_value(this->wrapped, QString::fromStdString(key));
   }
 
-  bool set(const QString& key, const py::object& value) const
+  bool set(const std::string& key, const py::object& value) const
   {
-    return detail::set_property_value(this->wrapped, key, value);
+    return detail::set_property_value(this->wrapped, QString::fromStdString(key), value);
   }
 
   py::str str() const
