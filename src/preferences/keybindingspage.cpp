@@ -24,7 +24,7 @@ KeyBindingsPage::KeyBindingsPage(KeyBindings& key_bindings, QWidget* parent)
 {
   m_ui->setupUi(this);
   std::vector<std::unique_ptr<AbstractPreferencesTreeViewDelegate>> delegates(1);
-  delegates.at(0) = std::make_unique<KeyBindingsTreeViewDelegate>();
+  delegates.at(0) = std::make_unique<KeyBindingsTreeViewDelegate>(*m_ui->treeView);
   m_ui->treeView->set_model(m_proxy_model, std::move(delegates));
   m_ui->treeView->header()->hide();
   connect(m_ui->pb_reset, SIGNAL(clicked()), this, SLOT(reset()));
@@ -83,18 +83,21 @@ void KeyBindingsPage::reset()
 
 void KeyBindingsPage::reset_filter()
 {
+  m_ui->treeView->close_all_editors();
   m_ui->le_name_filter->clear();
   m_ui->le_sequence_filter->clear();
 }
 
 void KeyBindingsPage::set_name_filter(const QString& filter)
 {
+  m_ui->treeView->close_all_editors();
   m_proxy_model.set_action_name_filter(filter);
   update_expand();
 }
 
 void KeyBindingsPage::set_sequence_filter(const QKeySequence& sequence)
 {
+  m_ui->treeView->close_all_editors();
   m_proxy_model.set_action_sequence_filter(sequence.toString(QKeySequence::NativeText));
   update_expand();
 }

@@ -21,7 +21,7 @@ public:
   KeyBindings();
   ~KeyBindings();
 
-  static constexpr auto keybindings_group = "keybindings";
+  static constexpr auto TRANSLATION_CONTEXT = "keybindings";
   static constexpr auto SEPARATOR = "separator";
 
   std::unique_ptr<QAction>
@@ -37,7 +37,7 @@ public:
   bool set_data(int column, PreferencesTreeValueItem &item, const QVariant &value) override;
 
 protected:
-  QString translation_context() const override { return "keybindings"; }
+  QString translation_context() const override { return TRANSLATION_CONTEXT; }
 
 private:
   QKeySequence make_key_sequence(const QKeyEvent& event) const;

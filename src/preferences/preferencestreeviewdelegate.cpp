@@ -1,8 +1,15 @@
 #include "preferences/preferencestreeviewdelegate.h"
+#include <QAbstractItemView>
+#include "logging.h"
 
 namespace omm
 {
 
+
+AbstractPreferencesTreeViewDelegate::AbstractPreferencesTreeViewDelegate(QAbstractItemView& view)
+  : m_view(view)
+{
+}
 
 void AbstractPreferencesTreeViewDelegate::transfer_editor_data_to_model()
 {
@@ -16,5 +23,11 @@ void AbstractPreferencesTreeViewDelegate::set_model(QAbstractItemModel& model)
   m_model = &model;
 }
 
+void AbstractPreferencesTreeViewDelegate::close_current_editor()
+{
+  m_view.closePersistentEditor(m_current_editor_index);
+  m_current_editor = nullptr;
+  m_current_editor_index = QModelIndex();
+}
 
 }  // namespace omm

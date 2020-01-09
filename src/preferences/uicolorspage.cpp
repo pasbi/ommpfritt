@@ -17,7 +17,7 @@ UiColorsPage::UiColorsPage(UiColors& colors)
 
   std::vector<std::unique_ptr<AbstractPreferencesTreeViewDelegate>> delegates(3);
   for (std::size_t i = 0; i < 3; ++i) {
-    delegates.at(i) = std::make_unique<UiColorsTreeViewDelegate>();
+    delegates.at(i) = std::make_unique<UiColorsTreeViewDelegate>(*m_ui->treeView);
   }
   m_ui->treeView->set_model(colors, std::move(delegates));
 

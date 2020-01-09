@@ -8,19 +8,27 @@ namespace omm
 
 class AbstractPreferencesTreeViewDelegate : public QItemDelegate
 {
+  Q_OBJECT
 public:
+  explicit AbstractPreferencesTreeViewDelegate(QAbstractItemView& view);
   void transfer_editor_data_to_model();
   void set_model(QAbstractItemModel& model);
+
+public Q_SLOTS:
+  void close_current_editor();
 
 protected:
   QAbstractItemModel* m_model;
   mutable QWidget* m_current_editor = nullptr;
   mutable QModelIndex m_current_editor_index;
+  QAbstractItemView& m_view;
 };
 
 template<typename EditorT>
 class PreferencesTreeViewDelegate : public AbstractPreferencesTreeViewDelegate
 {
+public:
+  using AbstractPreferencesTreeViewDelegate::AbstractPreferencesTreeViewDelegate;
 protected:
   QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem&, const QModelIndex& index) const override
   {

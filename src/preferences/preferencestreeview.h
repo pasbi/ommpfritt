@@ -12,7 +12,7 @@ namespace omm
 class AbstractPreferencesTreeViewDelegate;
 class KeyBindings;
 
-class PreferencesTreeView: public ItemProxyView<QTreeView>
+class PreferencesTreeView: public QTreeView
 {
   Q_OBJECT
 public:
@@ -21,6 +21,7 @@ public:
   void set_model(QAbstractItemModel& key_bindings,
                  std::vector<std::unique_ptr<AbstractPreferencesTreeViewDelegate>> delegates);
   void transfer_editor_data_to_model();
+  void close_all_editors();
 
 protected:
   void resizeEvent(QResizeEvent* event) override;

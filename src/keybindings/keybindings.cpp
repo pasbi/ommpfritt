@@ -59,12 +59,12 @@ namespace omm
 
 KeyBindings::KeyBindings() : PreferencesTree(":/keybindings/default_keybindings.cfg")
 {
-  load_from_qsettings(keybindings_group);
+  load_from_qsettings(TRANSLATION_CONTEXT);
 }
 
 KeyBindings::~KeyBindings()
 {
-  save_in_qsettings(keybindings_group);
+  save_in_qsettings(TRANSLATION_CONTEXT);
 }
 
 QString KeyBindings::find_action(const QString& context, const QKeySequence& sequence) const
