@@ -27,7 +27,8 @@ QIcon IconProvider::icon(const QString& name) const
   // Fallback: load icon file
   const QString filename = ":/icons/" + name + ".png";
   if (m_cached_icons_from_file.find(filename) == m_cached_icons_from_file.end()) {
-    QIcon icon(filename);
+    const QPixmap pixmap(filename);
+    const auto icon = pixmap.isNull() ? QIcon() : QIcon(pixmap);
     m_cached_icons_from_file.insert(std::pair(filename, icon));
   }
   return m_cached_icons_from_file.at(filename);
