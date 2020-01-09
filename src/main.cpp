@@ -5,7 +5,8 @@
 #include "objects/object.h"
 #include "managers/manager.h"
 #include "tags/tag.h"
-#include "tools/tool.h"
+#include "tools/selectobjectstool.h"
+#include "tools/toolbox.h"
 #include "serializers/abstractserializer.h"
 #include "propertywidgets/propertyconfigwidget.h"
 #include <QApplication>
@@ -79,6 +80,8 @@ int main (int argc, char *argv[])
   if (argc > 1) {
     app.scene.load_from(argv[1]);
   }
+
+  app.scene.tool_box().set_active_tool(omm::SelectObjectsTool::TYPE);
 
   return qt_app.exec();
 }
