@@ -22,8 +22,6 @@ namespace omm
 TimeLine::TimeLine(Scene &scene)
   : Manager(QCoreApplication::translate("any-context", "TimeLine"), scene)
 {
-  setObjectName(TYPE);
-
   auto title_bar = std::make_unique<TimeLineTitleBar>(*this);
   m_title_bar = title_bar.get();
   setTitleBarWidget(title_bar.release());

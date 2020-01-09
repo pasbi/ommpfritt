@@ -20,7 +20,6 @@ ObjectManager::ObjectManager(Scene& scene)
   : ItemManager( QCoreApplication::translate("any-context", "ObjectManager"),
                  scene, scene.object_tree() )
 {
-  setObjectName(TYPE);
   connect(&scene.message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           &item_view(), SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
 }

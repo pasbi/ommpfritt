@@ -256,19 +256,19 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
 
 Viewport& MainWindow::viewport() const { return *m_viewport; }
 
-void MainWindow::make_unique_manager_name(QDockWidget& widget) const
+void MainWindow::make_unique_manager_name(Manager& manager) const
 {
   const auto names = ::transform<QString, std::set>(dock_widgets(), [](const auto* w) {
     return w->objectName();
   });
   std::size_t i = 0;
-  const QString base = widget.objectName();
+  const QString base = manager.type();
   QString name = base;
   while (::contains(names, name)) {
     name += QString("_%1").arg(i);
     i++;
   }
-  widget.setObjectName(name);
+  manager.setObjectName(name);
 }
 
 QString MainWindow::get_last_layout_filename() const

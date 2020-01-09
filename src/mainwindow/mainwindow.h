@@ -32,7 +32,7 @@ public:
 
   std::unique_ptr<QMenu> make_about_menu();
   static std::vector<QString> available_translations();
-  void make_unique_manager_name(QDockWidget& widget) const;
+  void make_unique_manager_name(Manager& manager) const;
 
   void save_layout();
   void save_layout(QSettings& settings);

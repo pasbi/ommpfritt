@@ -18,7 +18,6 @@ NodeManager::NodeManager(Scene& scene)
   : Manager(tr("Nodes"), scene)
   , m_ui(std::make_unique<Ui::NodeManager>())
 {
-  setObjectName(TYPE);
   auto widget = std::make_unique<QWidget>();
   m_ui->setupUi(widget.get());
   set_widget(std::move(widget));

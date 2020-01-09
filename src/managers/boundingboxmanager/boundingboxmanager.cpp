@@ -74,8 +74,6 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   , m_ui(new ::Ui::BoundingBoxManager)
   , m_transform_points_helper(Space::Scene)
 {
-  setObjectName(TYPE);
-
   auto widget = std::make_unique<QWidget>();
   m_ui->setupUi(widget.get());
   set_widget(std::move(widget));

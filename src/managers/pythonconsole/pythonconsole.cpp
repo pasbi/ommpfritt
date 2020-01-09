@@ -18,8 +18,6 @@ namespace omm
 PythonConsole::PythonConsole(Scene& scene)
   : Manager(QCoreApplication::translate("any-context", "PythonConsole"), scene)
 {
-  setObjectName(TYPE);
-
   setTitleBarWidget(std::make_unique<PythonConsoleTitleBar>(*this).release());
 
   auto widget = std::make_unique<QWidget>();

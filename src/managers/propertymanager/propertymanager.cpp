@@ -138,7 +138,6 @@ PropertyManager::PropertyManager(Scene& scene)
   set_widget(std::move(central_widget));
 
   setWindowTitle(make_window_title());
-  setObjectName(TYPE);
 
   connect(m_tab_bar.get(), SIGNAL(current_indices_changed(const std::set<int>&)),
           this, SLOT(activate_tabs(const std::set<int>&)));
