@@ -183,12 +183,12 @@ MainWindow::MainWindow(Application& app)
   connect(&app.message_box(), &MessageBox::filename_changed, [&app, this] {
     QSettings settings;
     auto fns = settings.value(RECENT_DOCUMENTS_SETTINGS_KEY, QStringList()).toStringList();
-    const auto fn = app.scene.filename();
+    const auto fn = QDir::cleanPath(QDir::current().absoluteFilePath(app.scene.filename()));
     if (!fn.isEmpty()) {
       fns.removeAll(fn);
       fns.append(QFileInfo(fn).absoluteFilePath());
-      settings.setValue(RECENT_DOCUMENTS_SETTINGS_KEY, fns);
     }
+    settings.setValue(RECENT_DOCUMENTS_SETTINGS_KEY, fns);
     update_recent_files_menu();
   });
 }
