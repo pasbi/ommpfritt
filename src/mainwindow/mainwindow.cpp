@@ -126,6 +126,7 @@ std::vector<QString> MainWindow::main_menu_entries()
   entries.insert(entries.end(), {
     QStringLiteral("window/") + KeyBindings::SEPARATOR,
     "window/restore default layout",
+    "window/new toolbar",
 #ifndef NDEBUG  // these functions facialiate the creation of profiles.
                 // they should not be used by the user since the file content is not validated.
     "window/save layout ...",
@@ -325,7 +326,6 @@ void MainWindow:: load_layout(QSettings& settings)
     if (!restoreDockWidget(manager.release())) {
       LWARNING << "Failed to restore geometry of manager.";
     }
-
   }
   settings.endArray();
 }

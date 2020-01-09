@@ -1,4 +1,5 @@
 #include "keybindings/keybindings.h"
+#include "mainwindow/application.h"
 #include <QSettings>
 #include "keybindings/commandinterface.h"
 #include <QKeyEvent>
@@ -52,6 +53,52 @@ std::unique_ptr<QMenu> add_menu(const QString& path, std::map<QString, QMenu*>& 
   }
 }
 
+enum class Target { ToolBar, Menu };
+
+std::unique_ptr<QAction>
+make_action(const omm::PreferencesTreeGroupItem* group, omm::CommandInterface& context,
+            const QString& action_name, Target target)
+{
+#ifndef NDEBUG
+  if (group == nullptr) {
+    LERROR << "Failed to find context " << context.type();
+    LFATAL("Missing context");
+  }
+#endif  // NDEBUG
+
+  const auto it = std::find_if(group->values.begin(), group->values.end(),
+                               [action_name](const auto& value)
+  {
+    return action_name == value->name;
+  });
+
+#ifndef NDEBUG
+  if (it == group->values.end()) {
+    LERROR << "Failed to find keybinding for " << context.type() << "::" << action_name;
+    LFATAL("Missing keybinding");
+  }
+#endif  // NDEBUG
+
+  std::unique_ptr<QAction> action;
+  if (target == Target::ToolBar) {
+    action = std::make_unique<QAction>();
+    const QIcon icon = omm::Application::instance().icon_provider.icon(action_name);
+    if (icon.isNull()) {
+      action->setText((*it)->translated_name(context.type()));
+    } else {
+      action->setIcon(icon);
+    }
+  } else if (target == Target::Menu) {
+    action = std::make_unique<omm::Action>(**it);
+  } else {
+    Q_UNREACHABLE();
+  }
+  QObject::connect(action.get(), &QAction::triggered, [&context, action_name] {
+    context.perform_action(action_name);
+  });
+  return action;
+}
+
 }  // namespace
 
 namespace omm
@@ -65,6 +112,18 @@ KeyBindings::KeyBindings() : PreferencesTree(":/keybindings/default_keybindings.
 KeyBindings::~KeyBindings()
 {
   save_in_qsettings(TRANSLATION_CONTEXT);
+}
+
+std::unique_ptr<QAction> KeyBindings::make_menu_action(CommandInterface& context,
+                                                       const QString& action_name) const
+{
+  return make_action(group(context.type()), context, action_name, Target::Menu);
+}
+
+std::unique_ptr<QAction> KeyBindings::make_toolbar_action(CommandInterface &context,
+                                                          const QString &action_name) const
+{
+  return make_action(group(context.type()), context, action_name, Target::ToolBar);
 }
 
 QString KeyBindings::find_action(const QString& context, const QKeySequence& sequence) const
@@ -170,38 +229,6 @@ bool KeyBindings::collides(const PreferencesTreeValueItem& candidate) const
   return it != group.values.end();
 }
 
-std::unique_ptr<QAction>
-KeyBindings::make_action(CommandInterface& context, const QString& action_name) const
-{
-  const auto* group = this->group(context.type());
-
-#ifndef NDEBUG
-  if (group == nullptr) {
-    LERROR << "Failed to find context " << context.type();
-    LFATAL("Missing context");
-  }
-#endif  // NDEBUG
-
-  const auto it = std::find_if(group->values.begin(), group->values.end(),
-                               [action_name](const auto& value)
-  {
-    return action_name == value->name;
-  });
-
-#ifndef NDEBUG
-  if (it == group->values.end()) {
-    LERROR << "Failed to find keybinding for " << context.type() << "::" << action_name;
-    LFATAL("Missing keybinding");
-  }
-#endif  // NDEBUG
-
-  auto action = std::make_unique<Action>(**it);
-  QObject::connect(action.get(), &QAction::triggered, [&context, action_name] {
-    context.perform_action(action_name);
-  });
-  return action;
-}
-
 std::vector<std::unique_ptr<QMenu>>
 KeyBindings::make_menus(CommandInterface& context, const std::vector<QString>& actions) const
 {
@@ -212,7 +239,7 @@ KeyBindings::make_menus(CommandInterface& context, const std::vector<QString>& a
     if (action_name == SEPARATOR) {
       menu->addSeparator();
     } else if (!action_name.isEmpty()) {
-      menu->addAction(make_action(context, action_name).release());
+      menu->addAction(make_menu_action(context, action_name).release());
     }
   }
 

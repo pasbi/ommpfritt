@@ -8,25 +8,19 @@
 namespace omm
 {
 
-ToolBar::ToolBar(QWidget* parent, ToolBox& tool_box, const std::vector<QString>& tools)
-  : QToolBar(tr("ToolBar"), parent)
-  , m_tools(tools)
+ToolBar::ToolBar()
 {
   setAttribute(Qt::WA_DeleteOnClose);
-  setObjectName("ToolBar");
-  auto& icon_provider = Application::instance().icon_provider;
-  for (auto&& tool_class : tools) {
-    auto& tool = tool_box.tool(tool_class);
-    auto* action = addAction(icon_provider.icon(tool.type()), tool.name());
-    connect(action, &QAction::triggered, [tool_class, &tool_box]() {
-      tool_box.set_active_tool(tool_class);
-    });
-  }
-}
 
-const std::vector<QString>& ToolBar::tools() const
-{
-  return m_tools;
+  auto& app = Application::instance();
+  auto action = app.key_bindings.make_toolbar_action(app, "undo");
+  connect(action.get(), &QAction::triggered, []() {
+    LINFO << "undoS{!";
+  });
+  addAction(action.release());
+  connect(addAction("Hello!"), &QAction::triggered, []() {
+    LINFO << "hello!";
+  });
 }
 
 }  // namespace omm

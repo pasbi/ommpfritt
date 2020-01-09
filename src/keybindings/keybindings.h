@@ -25,7 +25,10 @@ public:
   static constexpr auto SEPARATOR = "separator";
 
   std::unique_ptr<QAction>
-  make_action(CommandInterface& context, const QString& action_name) const;
+  make_menu_action(CommandInterface& context, const QString& action_name) const;
+
+  std::unique_ptr<QAction>
+  make_toolbar_action(CommandInterface& context, const QString& action_name) const;
 
   std::vector<std::unique_ptr<QMenu>>
   make_menus(CommandInterface& context, const std::vector<QString>& actions) const;

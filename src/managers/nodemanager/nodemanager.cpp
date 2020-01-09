@@ -83,7 +83,7 @@ std::unique_ptr<QMenu> NodeManager::make_context_menu()
   };
 
   menu->addMenu(eiff_model_available(make_add_nodes_menu(kb).release()));
-  menu->addAction(eiff_node_selected(kb.make_action(*this, "remove nodes").release()));
+  menu->addAction(eiff_node_selected(kb.make_menu_action(*this, "remove nodes").release()));
 
   return menu;
 }
@@ -113,7 +113,7 @@ std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
   auto menu = std::make_unique<QMenu>(tr("Add Node ..."));
   for (const QString& name : Node::keys()) {
     const QString tr_name = QCoreApplication::translate("any-context", name.toStdString().c_str());
-    auto action = kb.make_action(*this, name);
+    auto action = kb.make_menu_action(*this, name);
     menu->addAction(action.release());
   }
   return menu;

@@ -4,10 +4,12 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QApplication>
+#include <QAbstractButton>
 
 #include "tags/scripttag.h"
 #include "tags/nodestag.h"
 
+#include "mainwindow/toolbar.h"
 #include "mainwindow/mainwindow.h"
 #include "managers/manager.h"
 #include "scene/scene.h"
@@ -25,7 +27,6 @@
 #include "scene/stylelist.h"
 #include "managers/manager.h"
 #include "preferences/preferencedialog.h"
-#include <QAbstractButton>
 
 namespace
 {
@@ -271,6 +272,8 @@ bool Application::perform_action(const QString& action_name)
     main_window()->save_layout();
   } else if (action_name == "load layout ...") {
     main_window()->load_layout();
+  } else if (action_name == "new toolbar") {
+    main_window()->addToolBar(new ToolBar());
   } else if (action_name == "switch between object and point selection") {
     scene.tool_box().switch_between_object_and_point_selection();
   } else if (action_name == "previous tool") {
