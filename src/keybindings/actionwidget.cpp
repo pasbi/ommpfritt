@@ -20,8 +20,7 @@ ActionWidget::ActionWidget(QWidget* parent, const PreferencesTreeValueItem& key_
 
   auto icon_label = std::make_unique<QLabel>();
   icon_label->setFixedSize(12, 12);
-  const QIcon icon = Application::instance().icon_provider.icon(key_binding.name);
-  icon_label->setPixmap(icon.pixmap(icon_label->size()));
+  icon_label->setPixmap(key_binding.icon().pixmap(icon_label->size()));
 
   auto shortcut_label = std::make_unique<QLabel>();
   m_shortcut_label = shortcut_label.get();
@@ -48,7 +47,7 @@ ActionWidget::ActionWidget(QWidget* parent, const PreferencesTreeValueItem& key_
   });
   const QKeySequence sequence(key_binding.value());
   m_shortcut_label->setText(sequence.toString(QKeySequence::NativeText));
-  m_name_label->setText(key_binding.translated_name("keybindings"));
+  m_name_label->setText(key_binding.translated_name(KeyBindings::TRANSLATION_CONTEXT));
   setAutoFillBackground(true);
   set_highlighted(false);
 }

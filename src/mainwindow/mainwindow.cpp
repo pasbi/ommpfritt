@@ -58,6 +58,22 @@ QMenu* find_menu(QMenuBar* bar, const QString& object_name)
   return nullptr;
 }
 
+QString make_unique(const QString& base, const std::set<QString>& blacklist)
+{
+  std::size_t i = 0;
+  QString name = base;
+  while (::contains(blacklist, name)) {
+    name = base + QString("_%1").arg(i);
+    i++;
+  }
+  return name;
+}
+
+QString get_object_name(const QObject* object)
+{
+  return object->objectName();
+}
+
 }  // namespace
 
 namespace omm
@@ -256,19 +272,16 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
 
 Viewport& MainWindow::viewport() const { return *m_viewport; }
 
-void MainWindow::make_unique_manager_name(Manager& manager) const
+void MainWindow::assign_unique_objectname(Manager &manager) const
 {
-  const auto names = ::transform<QString, std::set>(dock_widgets(), [](const auto* w) {
-    return w->objectName();
-  });
-  std::size_t i = 0;
-  const QString base = manager.type();
-  QString name = base;
-  while (::contains(names, name)) {
-    name += QString("_%1").arg(i);
-    i++;
-  }
-  manager.setObjectName(name);
+  const auto blacklist = ::transform<QString, std::set>(dock_widgets(), get_object_name);
+  manager.setObjectName(make_unique(manager.type(), blacklist));
+}
+
+void MainWindow::assign_unique_objectname(ToolBar& toolbar) const
+{
+  const auto blacklist = ::transform<QString, std::set>(findChildren<QToolBar*>(), get_object_name);
+  toolbar.setObjectName(make_unique(toolbar.type(), blacklist));
 }
 
 QString MainWindow::get_last_layout_filename() const
@@ -312,36 +325,81 @@ void MainWindow:: load_layout(QSettings& settings)
   for (Manager* manager : findChildren<Manager*>()) {
     delete manager;
   }
+  for (QToolBar* toolbar : findChildren<QToolBar*>()) {
+    delete toolbar;
+  }
+
+  {
+    const auto size = settings.beginReadArray(QString::fromStdString(TOOLBAR_SETTINGS_KEY));
+    for (std::remove_const_t<decltype(size)> i = 0; i < size; ++i) {
+      settings.setArrayIndex(i);
+      const QString type = settings.value(TOOLBAR_TYPE_SETTINGS_KEY).toString();
+      const QString name = settings.value(TOOLBAR_NAME_SETTINGS_KEY).toString();
+      const QString tools = settings.value(TOOLBAR_TOOLS_SETTINGS_KEY).toString();
+
+      if (type != ToolBar::TYPE) {
+        LWARNING << "Unexpected type of toolbar: '" << type << "'.";
+      }
+      auto toolbar = std::make_unique<ToolBar>(tools);
+      toolbar->setObjectName(name);
+      assert(toolbar);
+      addToolBar(toolbar.release());
+    }
+    settings.endArray();
+  }
 
   restoreState(settings.value(WINDOWSTATE_SETTINGS_KEY).toByteArray());
-  auto size = settings.beginReadArray(QString::fromStdString(MANAGER_SETTINGS_KEY));
-  for (decltype(size) i = 0; i < size; ++i) {
-    settings.setArrayIndex(i);
-    const QString type = settings.value(MANAGER_TYPE_SETTINGS_KEY).toString();
-    const QString name = settings.value(MANAGER_NAME_SETTINGS_KEY).toString();
 
-    auto manager = Manager::make(type, m_app.scene);
-    manager->setObjectName(name);
-    assert(manager);
-    if (!restoreDockWidget(manager.release())) {
-      LWARNING << "Failed to restore geometry of manager.";
+  {
+    const auto size = settings.beginReadArray(QString::fromStdString(MANAGER_SETTINGS_KEY));
+    for (std::remove_const_t<decltype(size)> i = 0; i < size; ++i) {
+      settings.setArrayIndex(i);
+      const QString type = settings.value(MANAGER_TYPE_SETTINGS_KEY).toString();
+      const QString name = settings.value(MANAGER_NAME_SETTINGS_KEY).toString();
+
+      auto manager = Manager::make(type, m_app.scene);
+      manager->setObjectName(name);
+      assert(manager);
+      if (!restoreDockWidget(manager.release())) {
+        LWARNING << "Failed to restore geometry of manager.";
+      }
     }
+    settings.endArray();
   }
-  settings.endArray();
 }
 
 void MainWindow::save_layout(QSettings& settings)
 {
   settings.setValue(WINDOWSTATE_SETTINGS_KEY, saveState());
-  int i = 0;
-  settings.beginWriteArray(MANAGER_SETTINGS_KEY);
-  for (Manager* manager : findChildren<Manager*>()) {
-    settings.setArrayIndex(i);
-    settings.setValue(MANAGER_TYPE_SETTINGS_KEY, manager->type());
-    settings.setValue(MANAGER_NAME_SETTINGS_KEY, manager->objectName());
-    i += 1;
+
+  {
+    std::set<QString> names;
+    settings.beginWriteArray(MANAGER_SETTINGS_KEY);
+    for (Manager* manager : findChildren<Manager*>()) {
+      if (const QString name = manager->objectName(); !::contains(names, name)) {
+        settings.setArrayIndex(names.size());
+        settings.setValue(MANAGER_TYPE_SETTINGS_KEY, manager->type());
+        settings.setValue(MANAGER_NAME_SETTINGS_KEY, name);
+        names.insert(name);
+      }
+    }
+    settings.endArray();
   }
-  settings.endArray();
+
+  {
+    std::set<QString> names;
+    settings.beginWriteArray(TOOLBAR_SETTINGS_KEY);
+    for (ToolBar* toolbar : findChildren<ToolBar*>()) {
+      if (const QString name = toolbar->objectName(); !::contains(names, name)) {
+        settings.setArrayIndex(names.size());
+        settings.setValue(TOOLBAR_TYPE_SETTINGS_KEY, toolbar->type());
+        settings.setValue(TOOLBAR_NAME_SETTINGS_KEY, name);
+        settings.setValue(TOOLBAR_TOOLS_SETTINGS_KEY, toolbar->tools());
+        names.insert(name);
+      }
+    }
+    settings.endArray();
+  }
 }
 
 void MainWindow::update_recent_files_menu()

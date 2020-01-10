@@ -5,6 +5,7 @@
 #include "common.h"
 #include "logging.h"
 #include "keybindings/actionwidget.h"
+#include "keybindings/keybindings.h"
 
 namespace omm
 {
@@ -12,6 +13,8 @@ namespace omm
 Action::Action(const PreferencesTreeValueItem& key_binding)
   : QWidgetAction(nullptr), m_key_binding(key_binding)
 {
+  setIcon(key_binding.icon());
+  setText(key_binding.translated_name(KeyBindings::TRANSLATION_CONTEXT));
 }
 
 QWidget* Action::createWidget(QWidget* parent)

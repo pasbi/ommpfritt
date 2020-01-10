@@ -1,4 +1,5 @@
 #include "preferences/preferencestreeitem.h"
+#include "mainwindow/application.h"
 #include <QCoreApplication>
 #include "logging.h"
 
@@ -57,6 +58,11 @@ QString PreferencesTreeValueItem::translated_name(const QString& context) const
 {
   return QCoreApplication::translate((context + "/" + group).toUtf8().constData(),
                                      name.toUtf8().constData());
+}
+
+QIcon PreferencesTreeValueItem::icon() const
+{
+  return Application::instance().icon_provider.icon(name);
 }
 
 QString PreferencesTreeValueItem::value(const QString& value, std::size_t column)

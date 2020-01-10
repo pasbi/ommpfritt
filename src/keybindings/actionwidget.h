@@ -1,4 +1,5 @@
 #include <QWidget>
+#include <QIcon>
 
 class QLabel;
 

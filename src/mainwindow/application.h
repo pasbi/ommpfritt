@@ -23,6 +23,7 @@ namespace omm
 
 class MainWindow;
 class Manager;
+class ToolBar;
 class Options;
 
 class Application : public QObject, public CommandInterface
@@ -65,6 +66,7 @@ public:
   void register_auto_invert_icon_button(QAbstractButton& button);
 
   Manager& spawn_manager(const QString& type);
+  ToolBar& spawn_toolbar();
 
   /**
    * @brief get_active_manager returns a reference to an active manager.

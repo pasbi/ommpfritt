@@ -14,6 +14,7 @@ class Application;
 class Scene;
 class Manager;
 class Viewport;
+class ToolBar;
 
 class MainWindow : public QMainWindow
 {
@@ -32,7 +33,8 @@ public:
 
   std::unique_ptr<QMenu> make_about_menu();
   static std::vector<QString> available_translations();
-  void make_unique_manager_name(Manager& manager) const;
+  void assign_unique_objectname(Manager& manager) const;
+  void assign_unique_objectname(ToolBar& toolbar) const;
 
   void save_layout();
   void save_layout(QSettings& settings);
@@ -42,7 +44,8 @@ public:
   static constexpr auto LOCALE_SETTINGS_KEY = "locale";
   static constexpr auto SKIN_SETTINGS_KEY = "skin";
   static constexpr auto TOOLBAR_SETTINGS_KEY = "mainwindow/toolbars";
-  static constexpr auto TOOLBAR_TOOL_SETTINGS_KEY = "tool";
+  static constexpr auto TOOLBAR_TYPE_SETTINGS_KEY = "type";
+  static constexpr auto TOOLBAR_NAME_SETTINGS_KEY = "name";
   static constexpr auto TOOLBAR_TOOLS_SETTINGS_KEY = "tools";
   static constexpr auto MANAGER_SETTINGS_KEY = "mainwindow/managers";
   static constexpr auto MANAGER_TYPE_SETTINGS_KEY = "type";

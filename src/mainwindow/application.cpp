@@ -273,7 +273,7 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "load layout ...") {
     main_window()->load_layout();
   } else if (action_name == "new toolbar") {
-    main_window()->addToolBar(new ToolBar());
+    spawn_toolbar();
   } else if (action_name == "switch between object and point selection") {
     scene.tool_box().switch_between_object_and_point_selection();
   } else if (action_name == "previous tool") {
@@ -468,10 +468,19 @@ void Application::register_auto_invert_icon_button(QAbstractButton& button)
 Manager& Application::spawn_manager(const QString& type)
 {
   auto manager = Manager::make(type, scene);
-  main_window()->make_unique_manager_name(*manager);
+  main_window()->assign_unique_objectname(*manager);
   auto& ref = *manager;
   main_window()->addDockWidget(Qt::TopDockWidgetArea, manager.release());
   ref.setFloating(true);
+  return ref;
+}
+
+ToolBar& Application::spawn_toolbar()
+{
+  auto toolbar = std::make_unique<ToolBar>();
+  main_window()->assign_unique_objectname(*toolbar);
+  auto& ref = *toolbar;
+  main_window()->addToolBar(toolbar.release());
   return ref;
 }
 

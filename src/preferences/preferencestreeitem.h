@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QIcon>
 #include <QObject>
 #include <string>
 #include <memory>
@@ -33,6 +34,7 @@ public:
   bool is_group() const override { return false; }
   void reset();
   QString translated_name(const QString& context) const override;
+  QIcon icon() const;
 
   const QString group;
   static QString value(const QString& value, std::size_t column);
