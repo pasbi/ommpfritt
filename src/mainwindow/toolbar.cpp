@@ -1,4 +1,6 @@
 #include "mainwindow/toolbar.h"
+#include "mainwindow/toolbardialog.h"
+#include <QContextMenuEvent>
 #include <QToolButton>
 #include "tools/toolbox.h"
 #include "application.h"
@@ -14,6 +16,15 @@ public:
   explicit StackToolButton(QWidget* parent = nullptr) : QToolButton(parent)
   {
     connect(this, SIGNAL(triggered(QAction*)), this, SLOT(setDefaultAction(QAction*)));
+  }
+};
+
+class ToolBarSpacer : public QWidget
+{
+public:
+  explicit ToolBarSpacer(QWidget* parent = nullptr) : QWidget(parent)
+  {
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   }
 };
 
@@ -53,6 +64,13 @@ void ToolBar::configure(const QString& tools)
       }
     }
   }
+  addWidget(std::make_unique<ToolBarSpacer>().release());
+  connect(addAction(tr("E")), &QAction::triggered, [this]() {
+    ToolBarDialog dialog(this->tools());
+    if (dialog.exec() == QDialog::Accepted) {
+      configure(dialog.tools());
+    }
+  });
 }
 
 }  // namespace omm

@@ -7,6 +7,7 @@ file(GLOB SOURCES
   mainwindow.cpp
   options.cpp
   toolbar.cpp
+  toolbardialog.cpp
 )
 
 file(GLOB HEADERS
@@ -18,6 +19,7 @@ file(GLOB HEADERS
   mainwindow.h
   options.h
   toolbar.h
+  toolbardialog.h
 )
 
 add_subdirectory(viewport)
