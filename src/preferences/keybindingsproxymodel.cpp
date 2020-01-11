@@ -25,7 +25,8 @@ bool KeyBindingsProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
       const auto name = value->translated_name(KeyBindings::TRANSLATION_CONTEXT);
       const auto sequence = QKeySequence(value->value()).toString(QKeySequence::NativeText);
       const bool name_matches = name.contains(m_action_name_filter, Qt::CaseInsensitive);
-      const bool sequence_matches = sequence.contains(m_action_sequence_filter, Qt::CaseInsensitive);
+      const QString seq = this->m_action_sequence_filter.toString(QKeySequence::NativeText);
+      const bool sequence_matches = sequence.contains(seq, Qt::CaseInsensitive);
       return (m_action_name_filter.isEmpty() || name_matches)
           && (m_action_sequence_filter.isEmpty() || sequence_matches);
     }
@@ -38,10 +39,10 @@ void KeyBindingsProxyModel::set_action_name_filter(const QString& action_name)
   invalidate();
 }
 
-void KeyBindingsProxyModel::set_action_sequence_filter(const QString& action_sequence)
+void KeyBindingsProxyModel::set_action_sequence_filter(const QKeySequence& sequence)
 {
-  m_action_sequence_filter = action_sequence;
+  m_action_sequence_filter = sequence;
   invalidate();
 }
 
-};
+}  // namespace omm

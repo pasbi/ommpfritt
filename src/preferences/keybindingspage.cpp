@@ -98,7 +98,7 @@ void KeyBindingsPage::set_name_filter(const QString& filter)
 void KeyBindingsPage::set_sequence_filter(const QKeySequence& sequence)
 {
   m_ui->treeView->close_all_editors();
-  m_proxy_model.set_action_sequence_filter(sequence.toString(QKeySequence::NativeText));
+  m_proxy_model.set_action_sequence_filter(sequence);
   update_expand();
 }
 
