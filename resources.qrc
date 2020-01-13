@@ -35,5 +35,6 @@
         <file>uicolors/ui-colors-light.cfg</file>
         <file>icons/Next-Frame-Key.png</file>
         <file>icons/Next-Frame.png</file>
+        <file>icons/NodesTag.png</file>
     </qresource>
 </RCC>
