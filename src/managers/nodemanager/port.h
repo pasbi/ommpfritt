@@ -88,7 +88,7 @@ private:
 
 template<typename PortT,
          typename F,
-         class = std::enable_if<std::is_base_of_v<AbstractPort, std::decay_t<PortT>>>>
+         typename = std::enable_if<std::is_base_of_v<AbstractPort, std::decay_t<PortT>>>>
 decltype(auto) visit(PortT&& port, F&& f)
 {
   // hand over port by (const) reference, but not as pointer.

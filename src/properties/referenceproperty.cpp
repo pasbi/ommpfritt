@@ -10,22 +10,6 @@ const Property::PropertyDetail ReferenceProperty::detail { nullptr };
 using Flag = Flag;
 using Kind = Kind;
 
-const std::map<Kind, QString> ReferenceProperty::KIND_KEYS {
-  { Kind::Tag,    QT_TRANSLATE_NOOP("ReferencePropertyView", "tag") },
-  { Kind::Tool,   QT_TRANSLATE_NOOP("ReferencePropertyView", "tool") },
-  { Kind::Style,  QT_TRANSLATE_NOOP("ReferencePropertyView", "style") },
-  { Kind::Object, QT_TRANSLATE_NOOP("ReferencePropertyView", "object") }
-};
-
-const std::map<Flag, QString> ReferenceProperty::FLAG_KEYS {
-  { Flag::IsView,         QT_TRANSLATE_NOOP("ReferencePropertyView", "view") },
-  { Flag::HasScript,      QT_TRANSLATE_NOOP("ReferencePropertyView", "has script") },
-  { Flag::HasPythonNodes, QT_TRANSLATE_NOOP("ReferencePropertyView", "has python nodes") },
-  { Flag::HasGLSLNodes,   QT_TRANSLATE_NOOP("ReferencePropertyView", "has GLSL nodes") },
-  { Flag::IsPathLike,     QT_TRANSLATE_NOOP("ReferencePropertyView", "pathlike") },
-  { Flag::Convertible,    QT_TRANSLATE_NOOP("ReferencePropertyView", "convertible") }
-};
-
 ReferenceProperty::ReferenceProperty()
   : TypedProperty(nullptr)
 {

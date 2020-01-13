@@ -9,6 +9,7 @@ template<PortType> class OrdinaryPort;
 
 class ComposeNode : public Node
 {
+  Q_OBJECT
 public:
   explicit ComposeNode(Scene* scene);
   static constexpr auto INPUT_X_PROPERTY_KEY = "x";
