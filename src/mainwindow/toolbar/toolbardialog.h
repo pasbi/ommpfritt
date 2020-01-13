@@ -16,6 +16,7 @@ class ToolBarItemModel;
 
 class ToolBarDialog : public QDialog
 {
+  Q_OBJECT
 public:
   ToolBarDialog(const QString& tools, QWidget* parent = nullptr);
   ~ToolBarDialog();
