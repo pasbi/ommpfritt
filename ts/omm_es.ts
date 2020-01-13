@@ -67,6 +67,59 @@
     </message>
 </context>
 <context>
+    <name>ComposeNode</name>
+    <message>
+        <source>x</source>
+        <translation type="unfinished">x</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compose</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ConstantNode</name>
+    <message>
+        <source>Edit ports ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DecomposeNode</name>
+    <message>
+        <source>x</source>
+        <translation type="unfinished">x</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>in</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decompose</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Enum</name>
     <message>
         <source>Tag</source>
@@ -89,10 +142,6 @@
         <translation type="unfinished">Herramienta</translation>
     </message>
     <message>
-        <source>Convertable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>HasScript</source>
         <translation type="unfinished"></translation>
     </message>
@@ -110,6 +159,10 @@
     </message>
     <message>
         <source>HasGLSLNodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convertible</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -188,13 +241,6 @@
     </message>
 </context>
 <context>
-    <name>InputNode</name>
-    <message>
-        <source>pos</source>
-        <translation type="obsolete">Posición</translation>
-    </message>
-</context>
-<context>
     <name>IntegerVectorProperty</name>
     <message>
         <source>IntegerVectorProperty</source>
@@ -209,6 +255,45 @@
     </message>
     <message>
         <source>name filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MathNode</name>
+    <message>
+        <source>*</source>
+        <translation type="unfinished">*</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> [%1]</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1301,48 +1386,32 @@ Borrar la selección de todos modos?</translation>
         <source>output</source>
         <translation type="unfinished">Output</translation>
     </message>
+    <message>
+        <source>Reference</source>
+        <translation type="unfinished">Referencia</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Forwarded Ports</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No properties.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
-    <name>ReferencePropertyView</name>
+    <name>SpyNode</name>
     <message>
-        <source>tag</source>
+        <source>value</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>tool</source>
-        <translation type="unfinished">Herramienta</translation>
-    </message>
-    <message>
-        <source>style</source>
-        <translation type="unfinished">Estilo</translation>
-    </message>
-    <message>
-        <source>object</source>
-        <translation type="unfinished">Objeto</translation>
-    </message>
-    <message>
-        <source>view</source>
-        <translation type="unfinished">Punto de Vista</translation>
-    </message>
-    <message>
-        <source>has script</source>
-        <translation type="unfinished">Script</translation>
-    </message>
-    <message>
-        <source>has python nodes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>has GLSL nodes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>pathlike</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>convertable</source>
-        <translation type="unfinished">Convertible</translation>
     </message>
 </context>
 <context>
@@ -1372,6 +1441,37 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>Tool</source>
         <translation>Herramienta</translation>
+    </message>
+</context>
+<context>
+    <name>ToolBarDialog</name>
+    <message>
+        <source>Name filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Del</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>add spacer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>add group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>remove</source>
+        <translation type="unfinished">Borrar elemento</translation>
+    </message>
+    <message>
+        <source>Customize tool bar</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1808,6 +1908,57 @@ Borrar la selección de todos modos?</translation>
         <source>CurveManager</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>NodeManager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NodesTag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>new toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>keybindings/NodeManager</name>
+    <message>
+        <source>ComposeNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ConstantNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DecomposeNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MathNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NodeManager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ReferenceNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SpyNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>abort</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>remove nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>keybindings/ObjectManager</name>
@@ -2016,62 +2167,9 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
-    <name>omm::ComposeNode</name>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>x</source>
-        <translation type="unfinished">x</translation>
-    </message>
-    <message>
-        <source>y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>vector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Compose</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::ConstantNode</name>
-    <message>
-        <source>Edit ports ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>omm::CurveManager</name>
     <message>
         <source>Curves</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::DecomposeNode</name>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>in</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>x</source>
-        <translation type="unfinished">x</translation>
-    </message>
-    <message>
-        <source>y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Decompose</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2158,13 +2256,6 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
-    <name>omm::InputNode</name>
-    <message>
-        <source>pos</source>
-        <translation type="obsolete">Posición</translation>
-    </message>
-</context>
-<context>
     <name>omm::KeyBindingsPage</name>
     <message>
         <source>Reset all key bindings</source>
@@ -2200,45 +2291,6 @@ This cannot be undone.</source>
     </message>
     <message>
         <source>Save Layout</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::MathNode</name>
-    <message>
-        <source>+</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>*</source>
-        <translation type="unfinished">*</translation>
-    </message>
-    <message>
-        <source>/</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>pow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>result</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>invalid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> [%1]</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2373,67 +2425,9 @@ Do you want to convert them into ordinary colors?</source>
     </message>
 </context>
 <context>
-    <name>omm::ReferenceNode</name>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reference</source>
-        <translation type="unfinished">Referencia</translation>
-    </message>
-    <message>
-        <source>Forwarded Ports</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No properties.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> [%1]</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>omm::ReferencePropertyConfigWidget</name>
     <message>
-        <source>Tag</source>
-        <translation type="vanished">Tag</translation>
-    </message>
-    <message>
-        <source>Style</source>
-        <translation type="vanished">Estilo</translation>
-    </message>
-    <message>
-        <source>Object</source>
-        <translation type="vanished">Objeto</translation>
-    </message>
-    <message>
-        <source>convertable</source>
-        <translation type="vanished">Convertible</translation>
-    </message>
-    <message>
-        <source>has script</source>
-        <translation type="vanished">Script</translation>
-    </message>
-    <message>
-        <source>is path like</source>
-        <translation type="vanished">De clase Trayecto</translation>
-    </message>
-    <message>
-        <source>Tool</source>
-        <translation type="obsolete">Herramienta</translation>
-    </message>
-    <message>
         <source>Requirements:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::SpyNode</name>
-    <message>
-        <source>value</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2447,8 +2441,19 @@ Do you want to convert them into ordinary colors?</source>
 <context>
     <name>omm::ToolBar</name>
     <message>
-        <source>ToolBar</source>
-        <translation>Barra de Herramientas</translation>
+        <source>E</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::ToolBarItemModel</name>
+    <message>
+        <source>group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>separator</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2662,6 +2667,77 @@ This cannot be undone.</source>
     </message>
     <message>
         <source>background</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>uicolors/NodeView</name>
+    <message>
+        <source>NodeView</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>canvas-bg-invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>canvas-bg-valid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>fixed-connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>floating-connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>node-outline-invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>node-outline-valid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>port-Bool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>port-Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>port-Float</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>port-FloatVector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>port-Integer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>port-IntegerVector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>port-Invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>port-Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>port-Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>port-String</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
