@@ -77,6 +77,7 @@ ToolBarDialog::ToolBarDialog(const QString& tools, QWidget* parent)
   , m_toolbar_item_model(std::make_unique<ToolBarItemModel>(tools))
 {
   m_ui->setupUi(this);
+  setWindowTitle(tr("Customize tool bar"));
 
   m_proxy->setSourceModel(&m_key_bindings);
   m_ui->tv_actions->setModel(m_proxy.get());

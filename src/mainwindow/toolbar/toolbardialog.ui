@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>883</width>
-    <height>688</height>
+    <width>958</width>
+    <height>706</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -93,21 +93,21 @@
        <item>
         <widget class="QPushButton" name="pb_add_separator">
          <property name="text">
-          <string>S</string>
+          <string>add spacer</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pb_add_button">
          <property name="text">
-          <string>TB</string>
+          <string>add group</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pb_remove_items">
          <property name="text">
-          <string>X</string>
+          <string>remove</string>
          </property>
          <property name="shortcut">
           <string>Del</string>
