@@ -83,11 +83,8 @@ make_action(const omm::PreferencesTreeGroupItem* group, omm::CommandInterface& c
   if (target == Target::ToolBar) {
     action = std::make_unique<QAction>();
     const QIcon icon = omm::Application::instance().icon_provider.icon(action_name);
-    if (icon.isNull()) {
-      action->setText((*it)->translated_name(context.type()));
-    } else {
-      action->setIcon(icon);
-    }
+    action->setText((*it)->translated_name(omm::KeyBindings::TRANSLATION_CONTEXT));
+    action->setIcon(icon);
   } else if (target == Target::Menu) {
     action = std::make_unique<omm::Action>(**it);
   } else {
