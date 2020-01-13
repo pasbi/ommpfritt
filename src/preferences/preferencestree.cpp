@@ -343,6 +343,8 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
       switch(role) {
       case Qt::DisplayRole:
         return value(index).translated_name(translation_context());
+      case Qt::DecorationRole:
+        return value(index).icon();
       default:
         return QVariant();
       }
