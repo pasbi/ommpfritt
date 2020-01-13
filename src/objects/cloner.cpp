@@ -248,7 +248,7 @@ QString Cloner::type() const { return TYPE; }
 std::unique_ptr<Object> Cloner::clone() const { return std::make_unique<Cloner>(*this); }
 Flag Cloner::flags() const
 {
-  return Object::flags() | Flag::Convertable | Flag::HasScript;
+  return Object::flags() | Flag::Convertible | Flag::HasScript;
 }
 
 std::unique_ptr<Object> Cloner::convert() const

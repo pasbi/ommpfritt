@@ -23,7 +23,7 @@ const std::map<Flag, QString> ReferenceProperty::FLAG_KEYS {
   { Flag::HasPythonNodes, QT_TRANSLATE_NOOP("ReferencePropertyView", "has python nodes") },
   { Flag::HasGLSLNodes,   QT_TRANSLATE_NOOP("ReferencePropertyView", "has GLSL nodes") },
   { Flag::IsPathLike,     QT_TRANSLATE_NOOP("ReferencePropertyView", "pathlike") },
-  { Flag::Convertable,    QT_TRANSLATE_NOOP("ReferencePropertyView", "convertable") }
+  { Flag::Convertible,    QT_TRANSLATE_NOOP("ReferencePropertyView", "convertible") }
 };
 
 ReferenceProperty::ReferenceProperty()

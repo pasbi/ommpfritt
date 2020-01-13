@@ -56,7 +56,7 @@ QString Outline::type() const { return TYPE; }
 std::unique_ptr<Object> Outline::clone() const { return std::make_unique<Outline>(*this); }
 Flag Outline::flags() const
 {
-  return Object::flags() | Flag::Convertable | Flag::IsPathLike; }
+  return Object::flags() | Flag::Convertible | Flag::IsPathLike; }
 
 void Outline::update()
 {

@@ -51,7 +51,7 @@ Flag Text::flags() const
 {
   return Object::flags();
 
-  // Flag::Convertable  // TODO in future, the text should be convertable to a path.
+  // Flag::Convertible  // TODO in future, the text should be convertible to a path.
   // currently this is a tough problem because paths cannot have multiple segments.
   // either implement multi-segment-paths or create many paths in a hierarchy.
 

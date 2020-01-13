@@ -28,7 +28,7 @@ void AbstractProceduralPath::draw_object(Painter &renderer, const Style& style,
 
 Flag AbstractProceduralPath::flags() const
 {
-  return Object::flags() | Flag::Convertable | Flag::IsPathLike;
+  return Object::flags() | Flag::Convertible | Flag::IsPathLike;
 }
 
 std::unique_ptr<Object> AbstractProceduralPath::convert() const

@@ -54,7 +54,7 @@ std::vector<Point> Ellipse::points() const
 
 Flag Ellipse::flags() const
 {
-  return Object::flags() | Flag::Convertable | Flag::IsPathLike;
+  return Object::flags() | Flag::Convertible | Flag::IsPathLike;
 }
 
 void Ellipse::on_property_value_changed(Property *property)

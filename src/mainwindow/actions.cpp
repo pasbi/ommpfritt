@@ -41,27 +41,27 @@ void modify_tangents(omm::Path::InterpolationMode mode, omm::Application& app)
   }
 }
 
-std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Object*> convertables)
+std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Object*> convertibles)
 {
   using namespace omm;
 
-  // spit convertables into [`convertables`, `leftover_convertables`]
-  // s.t. `convertables` only contains top-level items, i.e. no item in `convertables` has a parent
-  // in `convertables`. That's important because the children of a converted object must not change.
+  // spit convertibles into [`convertibles`, `leftover_convertibles`]
+  // s.t. `convertibles` only contains top-level items, i.e. no item in `convertibles` has a parent
+  // in `convertibles`. That's important because the children of a converted object must not change.
   // Porcess the left-over items later.
-  std::set<Object*> leftover_convertables;
+  std::set<Object*> leftover_convertibles;
   {
-    const auto all_convertables = convertables;
-    Object::remove_internal_children(convertables);
-    std::set_difference(all_convertables.begin(), all_convertables.end(),
-        convertables.begin(), convertables.end(),
-        std::inserter(leftover_convertables, leftover_convertables.end()));
+    const auto all_convertibles = convertibles;
+    Object::remove_internal_children(convertibles);
+    std::set_difference(all_convertibles.begin(), all_convertibles.end(),
+        convertibles.begin(), convertibles.end(),
+        std::inserter(leftover_convertibles, leftover_convertibles.end()));
   }
 
   std::set<Object*> converted_objects;
-  if (convertables.size() > 0) {
+  if (convertibles.size() > 0) {
     std::list<ObjectTreeMoveContext> move_contextes;
-    for (auto&& c : convertables) {
+    for (auto&& c : convertibles) {
       auto converted = c->convert();
       converted->set_object_tree(app.scene.object_tree());
       assert(!c->is_root());
@@ -87,12 +87,12 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
     app.scene.template submit<MoveCommand<ObjectTree>>(app.scene.object_tree(),
                                                        std::vector(move_contextes.begin(),
                                                                    move_contextes.end()));
-    const auto selection = ::transform<Object*, std::set>(convertables, ::identity);
+    const auto selection = ::transform<Object*, std::set>(convertibles, ::identity);
     using remove_command = RemoveCommand<ObjectTree>;
     app.scene.template submit<remove_command>(app.scene.object_tree(), selection);
 
     // process the left over items
-    const auto cos = convert_objects(app, leftover_convertables);
+    const auto cos = convert_objects(app, leftover_convertibles);
     converted_objects.insert(cos.begin(), cos.end());
   }
   return converted_objects;
@@ -180,14 +180,14 @@ void invert_selection(Application& app)
 
 void convert_objects(Application& app)
 {
-  const auto convertables = ::filter_if(app.scene.item_selection<Object>(), [](const Object* o) {
-    return !!(o->flags() & Flag::Convertable);
+  const auto convertibles = ::filter_if(app.scene.item_selection<Object>(), [](const Object* o) {
+    return !!(o->flags() & Flag::Convertible);
   });
-  if (convertables.size() > 0) {
+  if (convertibles.size() > 0) {
     Scene& scene = app.scene;
     auto macro = scene.history().start_macro(QObject::tr("convert"));
-    scene.submit<ObjectSelectionCommand>(app.scene, convertables);
-    const auto converted_objects = ::convert_objects(app, convertables);
+    scene.submit<ObjectSelectionCommand>(app.scene, convertibles);
+    const auto converted_objects = ::convert_objects(app, convertibles);
     scene.submit<ObjectSelectionCommand>(app.scene, converted_objects);
   }
 }

@@ -29,7 +29,7 @@ std::unique_ptr<Object> RectangleObject::clone() const
 
 Flag RectangleObject::flags() const
 {
-  return Flag::IsPathLike | Flag::Convertable;
+  return Flag::IsPathLike | Flag::Convertible;
 }
 
 std::vector<Point> RectangleObject::points() const

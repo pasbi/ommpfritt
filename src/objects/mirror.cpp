@@ -69,7 +69,7 @@ BoundingBox Mirror::bounding_box(const ObjectTransformation &transformation) con
 
 QString Mirror::type() const { return TYPE; }
 std::unique_ptr<Object> Mirror::clone() const { return std::make_unique<Mirror>(*this); }
-Flag Mirror::flags() const { return Object::flags() | Flag::Convertable; }
+Flag Mirror::flags() const { return Object::flags() | Flag::Convertible; }
 
 std::unique_ptr<Object> Mirror::convert() const
 {

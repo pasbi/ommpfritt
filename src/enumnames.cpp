@@ -31,8 +31,8 @@ template<> std::set<Kind> enumerate_enum<Kind>()
 template<> const char* enum_name_impl<Flag>(Flag f)
 {
   switch (f) {
-  case Flag::Convertable:
-    return QT_TRANSLATE_NOOP("Enum", "Convertable");
+  case Flag::Convertible:
+    return QT_TRANSLATE_NOOP("Enum", "Convertible");
   case Flag::HasScript:
     return QT_TRANSLATE_NOOP("Enum", "HasScript");
   case Flag::IsPathLike:
@@ -51,7 +51,7 @@ template<> const char* enum_name_impl<Flag>(Flag f)
 
 template<> std::set<Flag> enumerate_enum<Flag>()
 {
-  return { Flag::Convertable, Flag::HasScript, Flag::IsPathLike, Flag::IsView, Flag::HasPythonNodes,
+  return { Flag::Convertible, Flag::HasScript, Flag::IsPathLike, Flag::IsView, Flag::HasPythonNodes,
            Flag::HasGLSLNodes };
 }
 

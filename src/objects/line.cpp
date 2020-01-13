@@ -37,7 +37,7 @@ std::vector<Point> Line::points() const
 
 Flag Line::flags() const
 {
-  return Object::flags() | Flag::Convertable | Flag::IsPathLike;
+  return Object::flags() | Flag::Convertible | Flag::IsPathLike;
 }
 
 void Line::on_property_value_changed(Property *property)
