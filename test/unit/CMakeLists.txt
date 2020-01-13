@@ -7,6 +7,7 @@ FILE(GLOB SRC_FILES
   "propertytest.cpp"
   "main.cpp"
   "tree.cpp"
+  "toolbartest.cpp"
 )
 
 # Add executable

@@ -5,25 +5,28 @@
 
 namespace Ui { class ToolBarDialog; }
 
+class QIdentityProxyModel;
 
 namespace omm
 {
 
 class KeyBindings;
 class KeyBindingsProxyModel;
+class ToolBarItemModel;
 
 class ToolBarDialog : public QDialog
 {
 public:
   ToolBarDialog(const QString& tools, QWidget* parent = nullptr);
   ~ToolBarDialog();
-  QString tools() const { return m_tools; }
+  QString tools() const;
+  static constexpr auto mime_type = "application/command";
 
 private:
-  QString m_tools;
   KeyBindings& m_key_bindings;
   std::unique_ptr<Ui::ToolBarDialog> m_ui;
-  std::unique_ptr<KeyBindingsProxyModel> m_filter_proxy;
+  std::unique_ptr<KeyBindingsProxyModel> m_proxy;;
+  std::unique_ptr<ToolBarItemModel> m_toolbar_item_model;
 };
 
 }

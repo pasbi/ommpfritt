@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,0">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,0">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
@@ -46,17 +46,52 @@
         </layout>
        </item>
        <item>
-        <widget class="QTreeView" name="tv_actions"/>
+        <widget class="QTreeView" name="tv_actions">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="dragEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::DragOnly</enum>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectColumns</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>false</bool>
+         </property>
+         <property name="animated">
+          <bool>false</bool>
+         </property>
+         <property name="headerHidden">
+          <bool>true</bool>
+         </property>
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+        </widget>
        </item>
       </layout>
      </item>
      <item>
-      <widget class="QTreeView" name="tv_toolbar"/>
+      <widget class="omm::ToolBarItemView" name="tv_toolbar">
+       <property name="dragEnabled">
+        <bool>true</bool>
+       </property>
+       <attribute name="headerDefaultSectionSize">
+        <number>26</number>
+       </attribute>
+      </widget>
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QPushButton" name="pb_add_spacer">
+        <widget class="QPushButton" name="pb_add_separator">
          <property name="text">
           <string>S</string>
          </property>
@@ -73,6 +108,9 @@
         <widget class="QPushButton" name="pb_remove_items">
          <property name="text">
           <string>X</string>
+         </property>
+         <property name="shortcut">
+          <string>Del</string>
          </property>
         </widget>
        </item>
@@ -108,6 +146,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>omm::ToolBarItemView</class>
+   <extends>QTreeView</extends>
+   <header>mainwindow/toolbaritemview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
