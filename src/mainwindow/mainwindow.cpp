@@ -198,15 +198,17 @@ MainWindow::MainWindow(Application& app)
 
   connect(&app.message_box(), SIGNAL(filename_changed()), this, SLOT(update_window_title()));
   connect(&app.message_box(), &MessageBox::filename_changed, [&app, this] {
-    QSettings settings;
-    auto fns = settings.value(RECENT_DOCUMENTS_SETTINGS_KEY, QStringList()).toStringList();
-    const auto fn = QDir::cleanPath(QDir::current().absoluteFilePath(app.scene.filename()));
-    if (!fn.isEmpty()) {
-      fns.removeAll(fn);
-      fns.append(QFileInfo(fn).absoluteFilePath());
+    if (QString fn = app.scene.filename(); !fn.isEmpty()) {
+      QSettings settings;
+      auto fns = settings.value(RECENT_DOCUMENTS_SETTINGS_KEY, QStringList()).toStringList();
+      fn = QDir::cleanPath(QDir::current().absoluteFilePath(fn));
+      if (!fn.isEmpty()) {
+        fns.removeAll(fn);
+        fns.append(QFileInfo(fn).absoluteFilePath());
+      }
+      settings.setValue(RECENT_DOCUMENTS_SETTINGS_KEY, fns);
+      update_recent_files_menu();
     }
-    settings.setValue(RECENT_DOCUMENTS_SETTINGS_KEY, fns);
-    update_recent_files_menu();
   });
 }
 
@@ -414,7 +416,7 @@ void MainWindow::update_recent_files_menu()
   for (auto&& fn : QSettings().value(RECENT_DOCUMENTS_SETTINGS_KEY, QStringList()).toStringList()) {
     const QFileInfo file_info(fn);
     const QString abs_file_path = file_info.absoluteFilePath();
-    if (file_info.exists()
+    if (file_info.exists() && file_info.isFile()
         && QFileInfo(scene.filename()).absoluteFilePath() != abs_file_path
         && !::contains(filenames, abs_file_path))
     {
