@@ -150,7 +150,7 @@
   <customwidget>
    <class>omm::ToolBarItemView</class>
    <extends>QTreeView</extends>
-   <header>mainwindow/toolbaritemview.h</header>
+   <header>mainwindow/toolbar/toolbaritemview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

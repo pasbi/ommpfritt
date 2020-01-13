@@ -6,11 +6,6 @@ file(GLOB SOURCES
   iconprovider.cpp
   mainwindow.cpp
   options.cpp
-  toolbar.cpp
-  toolbardialog.cpp
-  toolbaractiontreewidget.cpp
-  toolbaritemmodel.cpp
-  toolbaritemview.cpp
 )
 
 file(GLOB HEADERS
@@ -21,14 +16,10 @@ file(GLOB HEADERS
   languageskinmenu.h
   mainwindow.h
   options.h
-  toolbar.h
-  toolbardialog.h
-  toolbaractiontreewidget.h
-  toolbaritemmodel.h
-  toolbaritemview.h
 )
 
 add_subdirectory(viewport)
+add_subdirectory(toolbar)
 
 target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

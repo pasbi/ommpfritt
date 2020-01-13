@@ -1,10 +1,10 @@
-#include "mainwindow/toolbar.h"
-#include "mainwindow/toolbardialog.h"
+#include "mainwindow/toolbar/toolbar.h"
+#include "mainwindow/toolbar/toolbardialog.h"
 #include <QContextMenuEvent>
 #include <QToolButton>
 #include "tools/toolbox.h"
-#include "application.h"
-#include "iconprovider.h"
+#include "mainwindow/application.h"
+#include "mainwindow/iconprovider.h"
 #include <QApplication>
 
 namespace omm

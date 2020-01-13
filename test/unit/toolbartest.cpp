@@ -1,4 +1,4 @@
-#include "mainwindow/toolbar.h"
+#include "mainwindow/toolbar/toolbar.h"
 #include "common.h"
 #include "logging.h"
 #include <gtest/gtest.h>

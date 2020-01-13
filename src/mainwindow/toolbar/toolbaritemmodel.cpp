@@ -1,6 +1,6 @@
-#include "mainwindow/toolbaritemmodel.h"
-#include "mainwindow/toolbardialog.h"
-#include "mainwindow/toolbar.h"
+#include "mainwindow/toolbar/toolbaritemmodel.h"
+#include "mainwindow/toolbar/toolbardialog.h"
+#include "mainwindow/toolbar/toolbar.h"
 #include <QMimeData>
 #include <QTreeWidgetItem>
 #include "mainwindow/application.h"

@@ -1,6 +1,6 @@
-#include "mainwindow/toolbaritemview.h"
+#include "mainwindow/toolbar/toolbaritemview.h"
 #include <QDropEvent>
-#include "mainwindow/toolbaritemmodel.h"
+#include "mainwindow/toolbar/toolbaritemmodel.h"
 #include "logging.h"
 
 namespace omm

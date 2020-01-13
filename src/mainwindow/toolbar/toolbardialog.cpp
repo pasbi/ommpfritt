@@ -1,6 +1,6 @@
-#include "mainwindow/toolbardialog.h"
-#include "mainwindow/toolbaritemmodel.h"
-#include "mainwindow/toolbar.h"
+#include "mainwindow/toolbar/toolbardialog.h"
+#include "mainwindow/toolbar/toolbaritemmodel.h"
+#include "mainwindow/toolbar/toolbar.h"
 #include "mainwindow/application.h"
 #include "ui_toolbardialog.h"
 #include <QSortFilterProxyModel>

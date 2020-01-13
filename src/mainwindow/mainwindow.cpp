@@ -18,7 +18,7 @@
 #include "managers/timeline/timeline.h"
 #include "mainwindow/viewport/viewport.h"
 #include "mainwindow/application.h"
-#include "mainwindow/toolbar.h"
+#include "mainwindow/toolbar/toolbar.h"
 #include "managers/manager.h"
 #include "tags/tag.h"
 #include "logging.h"

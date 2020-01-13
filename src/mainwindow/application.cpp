@@ -9,7 +9,7 @@
 #include "tags/scripttag.h"
 #include "tags/nodestag.h"
 
-#include "mainwindow/toolbar.h"
+#include "mainwindow/toolbar/toolbar.h"
 #include "mainwindow/mainwindow.h"
 #include "managers/manager.h"
 #include "scene/scene.h"
