@@ -10,7 +10,9 @@ namespace omm
 
 void register_nodes()
 {
-#define REGISTER_NODE(TYPE) Node::register_type<TYPE>(#TYPE)
+#define REGISTER_NODE(TYPE) Node::register_type<TYPE>(#TYPE); \
+  Node::m_details[#TYPE] = &TYPE::detail
+
   REGISTER_NODE(ReferenceNode);
   REGISTER_NODE(MathNode);
   REGISTER_NODE(SpyNode);

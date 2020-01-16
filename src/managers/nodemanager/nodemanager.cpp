@@ -110,10 +110,15 @@ bool NodeManager::perform_action(const QString& name)
 std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
 {
   auto menu = std::make_unique<QMenu>(tr("Add Node ..."));
-  for (const QString& name : Node::keys()) {
-    const QString tr_name = QCoreApplication::translate("any-context", name.toStdString().c_str());
-    auto action = kb.make_menu_action(*this, name);
-    menu->addAction(action.release());
+  if (const NodeModel* model = m_ui->nodeview->model(); model != nullptr) {
+    const auto language = model->language();
+    for (const QString& name : Node::keys()) {
+      if (::contains(Node::detail(name).languages, language)) {
+        const QString tr_name = QCoreApplication::translate("any-context", name.toStdString().c_str());
+        auto action = kb.make_menu_action(*this, name);
+        menu->addAction(action.release());
+      }
+    }
   }
   return menu;
 }

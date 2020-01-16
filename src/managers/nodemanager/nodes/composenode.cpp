@@ -6,6 +6,8 @@
 namespace omm
 {
 
+const Node::Detail ComposeNode::detail { { NodeCompiler::Language::Python } };
+
 ComposeNode::ComposeNode(Scene* scene) : Node(scene)
 {
   const QString category = tr("Node");

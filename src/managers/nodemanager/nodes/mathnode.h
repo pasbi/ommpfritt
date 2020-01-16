@@ -19,6 +19,7 @@ public:
   QString output_data_type(const OutputPort& port) const override;
   bool accepts_input_data_type(const QString& type, const InputPort& port) const override;
   QString title() const override;
+  static const Detail detail;
 
 private:
   OutputPort* m_result_port;

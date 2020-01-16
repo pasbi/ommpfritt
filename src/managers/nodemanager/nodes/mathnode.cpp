@@ -17,6 +17,8 @@ enum class Operation { Addition, Difference, Multiplication, Division, Power };
 namespace omm
 {
 
+const Node::Detail MathNode::detail { { NodeCompiler::Language::Python } };
+
 MathNode::MathNode(Scene* scene)
   : Node(scene)
 {

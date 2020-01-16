@@ -124,6 +124,18 @@ private:
   };
   std::list<ConnectionIds> m_connection_ids;
   void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override;
+  friend void register_nodes();
+
+public:
+  struct Detail
+  {
+    std::set<NodeCompiler::Language> languages;
+  };
+
+  static const Detail& detail(const QString& name) { return *m_details.at(name); }
+
+private:
+  static std::map<QString, const Detail*> m_details;
 };
 
 void register_nodes();

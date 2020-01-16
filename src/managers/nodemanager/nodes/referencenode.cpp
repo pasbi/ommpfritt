@@ -29,6 +29,8 @@ QString to_string(omm::PortType port_type)
 namespace omm
 {
 
+const Node::Detail ReferenceNode::detail { { NodeCompiler::Language::Python } };
+
 ReferenceNode::ReferenceNode(Scene* scene)
   : Node(scene)
 {

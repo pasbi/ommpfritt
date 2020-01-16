@@ -6,6 +6,8 @@
 namespace omm
 {
 
+const Node::Detail DecomposeNode::detail { { NodeCompiler::Language::Python } };
+
 DecomposeNode::DecomposeNode(Scene* scene) : Node(scene)
 {
   const QString category = tr("Node");
