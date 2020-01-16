@@ -5,6 +5,8 @@
 #include <QOpenGLBuffer>
 #include <memory>
 #include <QOffscreenSurface>
+#include <QOpenGLShaderProgram>
+#include "logging.h"
 
 class QOpenGLFunctions;
 class QOpenGLShaderProgram;
@@ -19,6 +21,16 @@ public:
   ~OffscreenRenderer();
   QImage render(const QSize& size);
   void set_fragment_shader(const QString& fragment_code);
+  QOpenGLContext& context() { return m_context; }
+  QOpenGLShaderProgram& program() const { return *m_program; }
+  void make_current();
+
+  template<typename T> void set_uniform(const QString& name, const T& value)
+  {
+    make_current();
+    m_program->bind();
+    m_program->setUniformValue(name.toStdString().c_str(), value);
+  }
 
 private:
   QOffscreenSurface m_surface;

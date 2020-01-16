@@ -35,7 +35,9 @@ MathNode::MathNode(Scene* scene)
 
 QString MathNode::definition() const
 {
-  return QString(R"(
+  switch (language()) {
+  case NodeCompiler::Language::Python:
+    return QString(R"(
 def %1(op, a, b):
     import numpy as np
     def do_op(op, a, b):
@@ -60,6 +62,12 @@ def %1(op, a, b):
         result = list(result)
     return result
 )").arg(uuid());
+  case NodeCompiler::Language::GLSL:
+    return "";
+  default:
+    Q_UNREACHABLE();
+    return "";
+  }
 }
 
 QString MathNode::output_data_type(const OutputPort& port) const
@@ -67,11 +75,14 @@ QString MathNode::output_data_type(const OutputPort& port) const
   if (&port == m_result_port) {
     const QString type_a = find_port<InputPort>(*property(A_PROPERTY_KEY))->data_type();
     const QString type_b = find_port<InputPort>(*property(B_PROPERTY_KEY))->data_type();
-    if (const auto language = this->language(); language == NodeCompiler::Language::GLSL) {
+    switch (language()) {
+    case NodeCompiler::Language::GLSL:
       if (type_a == type_b) {
         return type_a;
+      } else {
+        return INVALID_TYPE;
       }
-    } else if (language == NodeCompiler::Language::Python) {
+    case NodeCompiler::Language::Python:
       using namespace NodeCompilerTypes;
       if (is_integral(type_a) && is_integral(type_b)) {
         return INTEGER_TYPE;
@@ -86,9 +97,7 @@ QString MathNode::output_data_type(const OutputPort& port) const
       } else {
         return INVALID_TYPE;
       }
-    } else {
-      LERROR << "Invalid language: "
-             << static_cast<std::underlying_type_t<NodeCompiler::Language>>(language);
+    default:
       Q_UNREACHABLE();
     }
   }

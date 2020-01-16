@@ -4,6 +4,7 @@
 #include "managers/nodemanager/nodes/referencenode.h"
 #include "managers/nodemanager/nodes/composenode.h"
 #include "managers/nodemanager/nodes/decomposenode.h"
+#include "managers/nodemanager/nodes/fragmentnode.h"
 
 namespace omm
 {
@@ -19,6 +20,7 @@ void register_nodes()
   REGISTER_NODE(ConstantNode);
   REGISTER_NODE(DecomposeNode);
   REGISTER_NODE(ComposeNode);
+  REGISTER_NODE(FragmentNode);
 #undef REGISTER_NODE
 }
 

@@ -76,6 +76,11 @@ void OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
   assert(m_program->isLinked());
 }
 
+void OffscreenRenderer::make_current()
+{
+  assert_or_call(m_context.makeCurrent(&m_surface));
+}
+
 QImage OffscreenRenderer::render(const QSize& size)
 {
   assert_or_call(m_context.makeCurrent(&m_surface));

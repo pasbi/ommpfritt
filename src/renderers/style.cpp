@@ -1,4 +1,5 @@
 #include "renderers/style.h"
+#include <QOpenGLFunctions>
 #include "scene/messagebox.h"
 #include "mainwindow/application.h"
 #include "managers/nodemanager/nodemanager.h"
@@ -14,6 +15,7 @@
 #include "objects/tip.h"
 #include "scene/scene.h"
 #include "properties/stringproperty.h"
+#include <QOpenGLShaderProgram>
 
 namespace {
 
@@ -28,7 +30,7 @@ namespace omm
 {
 
 Style::Style(Scene *scene)
-  : PropertyOwner(scene), NodesOwner(NodeCompiler::Language::GLSL, *scene)
+  : PropertyOwner(scene), NodesOwner(false, NodeCompiler::Language::GLSL, *scene)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {
@@ -144,7 +146,11 @@ void Style::on_property_value_changed(Property *property)
 void Style::init_offscreen_renderer()
 {
   static constexpr auto fragment_code = R"(
+#version 330
 varying highp vec3 vert;
+
+uniform float xxv;
+
 #define M_PI 3.1415926535897932384626433832795
 
 vec3 hsv2rgb(vec3 c)
@@ -158,13 +164,32 @@ void main()
 {
    float arg = atan(vert.y, vert.x);
    float r = sqrt(vert.y * vert.y + vert.x * vert.x);
-   vec3 hsv = vec3(arg / (2.0 * M_PI), r, 1.0);
+   vec3 hsv = vec3(arg / (2.0 * M_PI), r, xxv);
    gl_FragColor = vec4(hsv2rgb(hsv), 1.0);
 }
 
 )";
   m_offscreen_renderer = std::make_unique<OffscreenRenderer>();
   m_offscreen_renderer->set_fragment_shader(fragment_code);
+//  set_on_compilation_successful_cb([this](const QString& code) {
+//    m_offscreen_renderer->set_fragment_shader(code);
+//    LINFO << "set fragment shader: " << code;
+//    update_uniform_values();
+//  });
+  connect(&scene()->message_box(), &MessageBox::property_value_changed,
+          [this](AbstractPropertyOwner&, const QString&, Property&)
+  {
+    update_uniform_values();
+  });
+  update_uniform_values();
+}
+
+void Style::update_uniform_values()
+{
+  Property* property = this->property("x");
+  if (property) {
+    m_offscreen_renderer->set_uniform<GLfloat>("xxv", static_cast<FloatProperty*>(property)->value());
+  }
 }
 
 std::unique_ptr<Style> Style::clone() const

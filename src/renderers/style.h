@@ -54,6 +54,7 @@ public:
 private:
   std::unique_ptr<OffscreenRenderer> m_offscreen_renderer;
   void init_offscreen_renderer();
+  void update_uniform_values();
 };
 
 }  // namespace omm

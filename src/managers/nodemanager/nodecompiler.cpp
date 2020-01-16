@@ -58,7 +58,18 @@ void NodeCompiler::compile(const NodeModel& model)
   for (auto [name, definition] : node_definitions) {
     m_compilation += definition + "\n";
   }
-  m_compilation += code.join("\n");
+
+  if (model.language() == Language::GLSL) {
+    m_compilation += "void main() {\n";
+    for (QString& string : code) {
+      string = "  " + string;
+    }
+    m_compilation += code.join("\n");
+    m_compilation += "\n}\n";
+  } else {
+    m_compilation += code.join("\n");
+  }
+
 }
 
 QString NodeCompiler::compile_node(const Node& node)

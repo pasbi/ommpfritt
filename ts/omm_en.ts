@@ -234,6 +234,17 @@
     </message>
 </context>
 <context>
+    <name>FragmentNode</name>
+    <message>
+        <source>Node</source>
+        <translation>Node</translation>
+    </message>
+    <message>
+        <source>color</source>
+        <translation>Color</translation>
+    </message>
+</context>
+<context>
     <name>GeneralPage</name>
     <message>
         <source>&amp;Language</source>
@@ -1379,10 +1390,6 @@ Remove the selected items anyway?</translation>
 <context>
     <name>ReferenceNode</name>
     <message>
-        <source>input</source>
-        <translation>Input</translation>
-    </message>
-    <message>
         <source>output</source>
         <translation>Output</translation>
     </message>
@@ -1405,6 +1412,16 @@ Remove the selected items anyway?</translation>
     <message>
         <source> [%1]</source>
         <translation> [%1]</translation>
+    </message>
+    <message>
+        <source>input</source>
+        <comment>ReferenceNode</comment>
+        <translation>Input</translation>
+    </message>
+    <message>
+        <source>output</source>
+        <comment>ReferenceNode</comment>
+        <translation>Output</translation>
     </message>
 </context>
 <context>
@@ -1672,6 +1689,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>DecomposeNode</source>
         <translation>Decompose node</translation>
+    </message>
+    <message>
+        <source>FragmentNode</source>
+        <translation>Fragment node</translation>
     </message>
 </context>
 <context>

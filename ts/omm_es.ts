@@ -234,6 +234,17 @@
     </message>
 </context>
 <context>
+    <name>FragmentNode</name>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>color</source>
+        <translation type="unfinished">Color</translation>
+    </message>
+</context>
+<context>
     <name>GeneralPage</name>
     <message>
         <source>&amp;Language</source>
@@ -1379,10 +1390,6 @@ Borrar la selección de todos modos?</translation>
 <context>
     <name>ReferenceNode</name>
     <message>
-        <source>input</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>output</source>
         <translation type="unfinished">Output</translation>
     </message>
@@ -1405,6 +1412,16 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source> [%1]</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>input</source>
+        <comment>ReferenceNode</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>output</source>
+        <comment>ReferenceNode</comment>
+        <translation type="unfinished">Output</translation>
     </message>
 </context>
 <context>
@@ -1671,6 +1688,10 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>DecomposeNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FragmentNode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

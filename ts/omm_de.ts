@@ -234,6 +234,17 @@
     </message>
 </context>
 <context>
+    <name>FragmentNode</name>
+    <message>
+        <source>Node</source>
+        <translation>Node</translation>
+    </message>
+    <message>
+        <source>color</source>
+        <translation>Farbe</translation>
+    </message>
+</context>
+<context>
     <name>GeneralPage</name>
     <message>
         <source>&amp;Language</source>
@@ -1379,10 +1390,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
 <context>
     <name>ReferenceNode</name>
     <message>
-        <source>input</source>
-        <translation>Eingabe</translation>
-    </message>
-    <message>
         <source>output</source>
         <translation>Ausgabe</translation>
     </message>
@@ -1405,6 +1412,16 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source> [%1]</source>
         <translation> [%1]</translation>
+    </message>
+    <message>
+        <source>input</source>
+        <comment>ReferenceNode</comment>
+        <translation>Eingabe</translation>
+    </message>
+    <message>
+        <source>output</source>
+        <comment>ReferenceNode</comment>
+        <translation>Ausgabe</translation>
     </message>
 </context>
 <context>
@@ -1672,6 +1689,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>DecomposeNode</source>
         <translation>Aufteil-Node</translation>
+    </message>
+    <message>
+        <source>FragmentNode</source>
+        <translation>Fragment Node</translation>
     </message>
 </context>
 <context>
