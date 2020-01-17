@@ -15,7 +15,6 @@ QString to_string(omm::PortType port_type)
 {
   switch (port_type) {
   case omm::PortType::Input:
-    return QT_TRANSLATE_NOOP("ReferenceNode", "input");
   case omm::PortType::Output:
     return QT_TRANSLATE_NOOP("ReferenceNode", "output");
   default:
@@ -29,7 +28,8 @@ QString to_string(omm::PortType port_type)
 namespace omm
 {
 
-const Node::Detail ReferenceNode::detail { { NodeCompiler::Language::Python } };
+const Node::Detail ReferenceNode::detail { { NodeCompiler::Language::Python,
+                                             NodeCompiler::Language::GLSL } };
 
 ReferenceNode::ReferenceNode(Scene* scene)
   : Node(scene)
@@ -58,10 +58,17 @@ void ReferenceNode::populate_menu(QMenu& menu)
   } else {
     for (auto key : apo->properties().keys()) {
       Property* property = apo->property(key);
-      auto property_menu = std::make_unique<Menu>(property->label());
-      property_menu->addAction(make_property_action(PortType::Input, key).release());
-      property_menu->addAction(make_property_action(PortType::Output, key).release());
-      forward_menu->addMenu(property_menu.release());
+      if (language() == NodeCompiler::Language::Python) {
+        auto property_menu = std::make_unique<Menu>(property->label());
+        property_menu->addAction(make_property_action(PortType::Input, key,
+                                                      tr("input", "ReferenceNode")).release());
+        property_menu->addAction(make_property_action(PortType::Output, key,
+                                                      tr("output", "ReferenceNode")).release());
+        forward_menu->addMenu(property_menu.release());
+      } else if (language() == NodeCompiler::Language::GLSL) {
+        forward_menu->addAction(make_property_action(PortType::Output, key,
+                                                     property->label()).release());
+      }
     }
   }
 
@@ -114,10 +121,8 @@ AbstractPropertyOwner* ReferenceNode::reference() const
 }
 
 std::unique_ptr<QAction>
-ReferenceNode::make_property_action(PortType port_type, const QString& key)
+ReferenceNode::make_property_action(PortType port_type, const QString& key, const QString& label)
 {
-  const QString label = QCoreApplication::translate("ReferenceNode",
-                                                    to_string(port_type).toStdString().c_str());
   auto action = std::make_unique<QAction>(label);
   action->setCheckable(true);
   auto map = m_forwarded_ports[port_type];

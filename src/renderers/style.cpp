@@ -171,11 +171,11 @@ void main()
 )";
   m_offscreen_renderer = std::make_unique<OffscreenRenderer>();
   m_offscreen_renderer->set_fragment_shader(fragment_code);
-//  set_on_compilation_successful_cb([this](const QString& code) {
+  set_on_compilation_successful_cb([this](const QString& code) {
+    LINFO << "code: " << code;
 //    m_offscreen_renderer->set_fragment_shader(code);
-//    LINFO << "set fragment shader: " << code;
-//    update_uniform_values();
-//  });
+    update_uniform_values();
+  });
   connect(&scene()->message_box(), &MessageBox::property_value_changed,
           [this](AbstractPropertyOwner&, const QString&, Property&)
   {
@@ -187,8 +187,9 @@ void main()
 void Style::update_uniform_values()
 {
   Property* property = this->property("x");
-  if (property) {
+  if (property != nullptr) {
     m_offscreen_renderer->set_uniform<GLfloat>("xxv", static_cast<FloatProperty*>(property)->value());
+    Q_EMIT scene()->message_box().appearance_changed();
   }
 }
 

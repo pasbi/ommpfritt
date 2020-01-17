@@ -29,7 +29,9 @@ protected:
 private:
   AbstractPropertyOwner* reference() const;
   std::map<PortType, std::map<QString, AbstractPort*>> m_forwarded_ports;
-  std::unique_ptr<QAction> make_property_action(PortType port_type, const QString& key);
+
+  std::unique_ptr<QAction>
+  make_property_action(PortType port_type, const QString& key, const QString& label);
 };
 
 }  // namespace omm
