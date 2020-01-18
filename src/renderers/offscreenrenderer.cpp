@@ -67,13 +67,17 @@ OffscreenRenderer::~OffscreenRenderer()
 
 void OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
 {
+  LINFO << "code: " << fragment_code;
+#define deb(X) if (!(X)) { LERROR << #X" failed."; return; }
+
   m_program = std::make_unique<QOpenGLShaderProgram>();
-  assert_or_call(m_context.makeCurrent(&m_surface));
-  assert_or_call(m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader_source));
-  assert_or_call(m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_code));
+  deb(m_context.makeCurrent(&m_surface));
+  deb(m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader_source));
+  deb(m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_code));
   m_program->bindAttributeLocation("vertex", 0);
-  assert_or_call(m_program->link());
-  assert(m_program->isLinked());
+  deb(m_program->link());
+  deb(m_program->isLinked());
+#undef deb
 }
 
 void OffscreenRenderer::make_current()
