@@ -35,12 +35,9 @@ NodesOwner::~NodesOwner()
 {
 }
 
-void NodesOwner::set_on_compilation_successful_cb(const std::function<void(const QString&)>& cb)
-{
-  m_on_compilation_successful = cb;
-}
-
-NodesOwner::CompilerCache::CompilerCache(omm::NodesOwner& self) : CachedGetter<QString, NodesOwner>(self)
+NodesOwner::CompilerCache::CompilerCache(omm::NodesOwner& self)
+  : CachedGetter<QString, NodesOwner>(self)
+  , m_compiler(std::make_unique<NodeCompiler>(m_self.node_model().language()))
 {
   NodeModel::connect(&self.node_model(), &NodeModel::topology_changed, [this]() {
     invalidate();
@@ -57,7 +54,6 @@ NodesOwner::CompilerCache::~CompilerCache()
 
 QString NodesOwner::CompilerCache::compute() const
 {
-  m_compiler = std::make_unique<NodeCompiler>(NodeCompiler::Language::Python);
   m_compiler->compile(m_self.node_model());
   const QString compilation = m_compiler->compilation();
   m_self.m_on_compilation_successful(compilation);

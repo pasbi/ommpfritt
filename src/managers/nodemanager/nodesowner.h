@@ -22,7 +22,6 @@ public:
 
   QString code() const { return m_compiler_cache(); }
   NodeCompiler* compiler() const { return m_compiler_cache.compiler(); }
-  void set_on_compilation_successful_cb(const std::function<void(const QString&)>& cb);
 
 private:
   std::unique_ptr<NodeModel> m_model;

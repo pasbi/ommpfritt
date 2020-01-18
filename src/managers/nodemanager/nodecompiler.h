@@ -43,6 +43,7 @@ public:
   QString compilation() const { return m_compilation; }
   QString error_message() const { return m_error_message; }
   bool has_error() const { return !m_error_message.isEmpty(); }
+  void set_on_compilation_success_cb(const std::function<void(const QString&)>& cb);
 
 private:
   const Language m_language;
@@ -50,6 +51,7 @@ private:
   QString m_compilation;
   QString compile_node(const Node& node);
   QString compile_connection(const OutputPort& op, const InputPort& ip);
+  std::function<void(const QString&)> m_on_compilation_success_cb;
 };
 
 }  // namespace omm

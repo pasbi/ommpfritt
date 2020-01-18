@@ -117,6 +117,7 @@ void NodeModel::serialize(AbstractSerializer& serializer, const Serializable::Po
 
 void NodeModel::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& ptr)
 {
+  QSignalBlocker blocker(this);
   const auto n = deserializer.array_size(Serializable::make_pointer(ptr, NODES_POINTER));
   for (size_t i = 0; i < n; ++i) {
     const auto node_ptr = Serializable::make_pointer(ptr, NODES_POINTER, i);

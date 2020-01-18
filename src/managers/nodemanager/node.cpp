@@ -190,6 +190,7 @@ std::unique_ptr<Property> Node::extract_property(const QString& key)
 
 void Node::update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map)
 {
+  QSignalBlocker blocker(model());
   for (const ConnectionIds& cids : m_connection_ids) {
     Node& node = static_cast<Node&>(*map.at(cids.node_id));
     InputPort* input = find_port<InputPort>(cids.input_port);

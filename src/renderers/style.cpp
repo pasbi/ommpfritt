@@ -86,7 +86,6 @@ Style::Style(Scene *scene)
 
   start_marker.make_properties(decoration_category);
   end_marker.make_properties(decoration_category);
-  init_offscreen_renderer();
 }
 
 Style::~Style()
@@ -98,7 +97,6 @@ Style::Style(const Style &other)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {
-  init_offscreen_renderer();
 }
 
 QString Style::type() const { return TYPE; }
@@ -110,6 +108,9 @@ Flag Style::flags() const
 QPixmap Style::texture(const Object& object, const QSize& size) const
 {
   Q_UNUSED(object)
+  if (!m_offscreen_renderer) {
+    m_offscreen_renderer = init_offscreen_renderer();
+  }
   return QPixmap::fromImage(m_offscreen_renderer->render(size));
 }
 
@@ -143,7 +144,7 @@ void Style::on_property_value_changed(Property *property)
   }
 }
 
-void Style::init_offscreen_renderer()
+std::unique_ptr<OffscreenRenderer> Style::init_offscreen_renderer() const
 {
   static constexpr auto fragment_code = R"(
 #version 330
@@ -169,11 +170,10 @@ void main()
 }
 
 )";
-  m_offscreen_renderer = std::make_unique<OffscreenRenderer>();
-  m_offscreen_renderer->set_fragment_shader(fragment_code);
-  set_on_compilation_successful_cb([this](const QString& code) {
-    LINFO << "code: " << code;
-//    m_offscreen_renderer->set_fragment_shader(code);
+  auto offscreen_renderer = std::make_unique<OffscreenRenderer>();
+  offscreen_renderer->set_fragment_shader(fragment_code);
+  compiler()->set_on_compilation_success_cb([o_r = offscreen_renderer.get(), this](const QString& code) {
+    o_r->set_fragment_shader(code);
     update_uniform_values();
   });
   connect(&scene()->message_box(), &MessageBox::property_value_changed,
@@ -181,10 +181,13 @@ void main()
   {
     update_uniform_values();
   });
+  offscreen_renderer->set_fragment_shader(code());
   update_uniform_values();
+
+  return offscreen_renderer;
 }
 
-void Style::update_uniform_values()
+void Style::update_uniform_values() const
 {
   Property* property = this->property("x");
   if (property != nullptr) {

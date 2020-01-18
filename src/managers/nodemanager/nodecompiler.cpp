@@ -19,6 +19,8 @@ NodeCompiler::NodeCompiler(Language language, const NodeModel& model)
 
 void NodeCompiler::compile(const NodeModel& model)
 {
+  m_error_message.clear();
+
   static const auto is_terminal = [](Node* node) {
     const auto output_ports = node->ports<OutputPort>();
     return std::all_of(output_ports.begin(), output_ports.end(), [](OutputPort* op) {
@@ -70,6 +72,14 @@ void NodeCompiler::compile(const NodeModel& model)
     m_compilation += code.join("\n");
   }
 
+  if (m_on_compilation_success_cb) {
+    m_on_compilation_success_cb(m_compilation);
+  }
+}
+
+void NodeCompiler::set_on_compilation_success_cb(const std::function<void (const QString&)>& cb)
+{
+  m_on_compilation_success_cb = cb;
 }
 
 QString NodeCompiler::compile_node(const Node& node)

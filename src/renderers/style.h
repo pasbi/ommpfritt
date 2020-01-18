@@ -52,9 +52,9 @@ public:
   void on_property_value_changed(Property* property) override;
 
 private:
-  std::unique_ptr<OffscreenRenderer> m_offscreen_renderer;
-  void init_offscreen_renderer();
-  void update_uniform_values();
+  mutable std::unique_ptr<OffscreenRenderer> m_offscreen_renderer;
+  std::unique_ptr<OffscreenRenderer> init_offscreen_renderer() const;
+  void update_uniform_values() const;
 };
 
 }  // namespace omm
