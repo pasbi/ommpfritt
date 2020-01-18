@@ -92,7 +92,25 @@ QString NodeCompiler::compile_node(const Node& node)
     const QStringList uuids = ::transform<QString, QList>(ops, [](const OutputPort* op) {
       return op->uuid();
     });
-    return QString("%1 = %2(%3)").arg(uuids.join(", ")).arg(node.uuid()).arg(args.join(", "));
+    switch (m_language) {
+    case Language::Python:
+      return QString("%1 = %2(%3)").arg(uuids.join(", ")).arg(node.uuid()).arg(args.join(", "));
+    case Language::GLSL:
+      {
+        if (ops.size() > 1) {
+          LINFO <<  "Encountered GLSL node with " << ops.size() << " outputs.\n"
+                    "GLSL nodes must not have more than one output.";
+        }
+        const OutputPort* port = *ops.begin();
+        return QString("const %1 %2 = %3(%4);")
+            .arg(port->data_type())
+            .arg(port->uuid())
+            .arg(node.uuid())
+            .arg(args.join(", "));
+      }
+    default:
+      Q_UNREACHABLE();
+    }
   } else {
     return "";
   }
@@ -100,7 +118,21 @@ QString NodeCompiler::compile_node(const Node& node)
 
 QString NodeCompiler::compile_connection(const OutputPort& op, const InputPort& ip)
 {
-  return QString("%1 = %2").arg(ip.uuid()).arg(op.uuid());
+  switch (m_language) {
+  case Language::Python:
+    return QString("%1 = %2").arg(ip.uuid()).arg(op.uuid());
+  case Language::GLSL:
+  {
+    const QString data_type = op.data_type();
+    assert(data_type != NodeCompilerTypes::INVALID_TYPE);
+    Property* prop = static_cast<const PropertyPort<PortType::Output>&>(op).property();
+    LINFO << "data type: " << data_type << "  property: " << (!prop ? "null" : prop->type());
+  }
+    return QString("const %1 %2 = %3;").arg(op.data_type()).arg(ip.uuid()).arg(op.uuid());
+  default:
+    Q_UNREACHABLE();
+    return "";
+  }
 }
 
 bool NodeCompilerTypes::is_integral(const QString& type)
