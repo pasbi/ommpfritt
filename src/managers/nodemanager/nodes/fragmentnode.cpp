@@ -15,7 +15,13 @@ FragmentNode::FragmentNode(Scene* scene)
   : Node(scene)
 {
   const QString category = tr("Node");
-  add_port<OrdinaryPort<PortType::Input>>(tr("color"));
+  m_input_port = &add_port<OrdinaryPort<PortType::Input>>(tr("color"));
+}
+
+bool FragmentNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+{
+  assert(&port == m_input_port);
+  return type == NodeCompilerTypes::COLOR_TYPE;
 }
 
 QString FragmentNode::definition() const

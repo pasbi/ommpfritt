@@ -1390,10 +1390,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
 <context>
     <name>ReferenceNode</name>
     <message>
-        <source>output</source>
-        <translation>Ausgabe</translation>
-    </message>
-    <message>
         <source>Node</source>
         <translation>Node</translation>
     </message>

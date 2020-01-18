@@ -3,6 +3,8 @@
 namespace omm
 {
 
+template<PortType> class OrdinaryPort;
+
 class FragmentNode : public Node
 {
   Q_OBJECT
@@ -10,11 +12,15 @@ public:
   explicit FragmentNode(Scene* scene);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "FragmentNode");
   QString type() const override { return TYPE; }
+  bool accepts_input_data_type(const QString& type, const InputPort& port) const override;
 
   static constexpr auto COLOR_PROPERTY_KEY = "color";
 
   QString definition() const override;
   static const Detail detail;
+
+private:
+  OrdinaryPort<PortType::Input>* m_input_port = nullptr;
 };
 
 }  // namespace omm

@@ -236,12 +236,12 @@
 <context>
     <name>FragmentNode</name>
     <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>color</source>
         <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1390,12 +1390,13 @@ Borrar la selección de todos modos?</translation>
 <context>
     <name>ReferenceNode</name>
     <message>
-        <source>output</source>
-        <translation type="unfinished">Output</translation>
-    </message>
-    <message>
         <source>Reference</source>
         <translation type="unfinished">Referencia</translation>
+    </message>
+    <message>
+        <source>output</source>
+        <comment>ReferenceNode</comment>
+        <translation type="unfinished">Output</translation>
     </message>
     <message>
         <source>Node</source>
@@ -1410,18 +1411,13 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> [%1]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>input</source>
         <comment>ReferenceNode</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>output</source>
-        <comment>ReferenceNode</comment>
-        <translation type="unfinished">Output</translation>
+        <source> [%1]</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

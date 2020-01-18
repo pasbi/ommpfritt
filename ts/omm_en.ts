@@ -1390,10 +1390,6 @@ Remove the selected items anyway?</translation>
 <context>
     <name>ReferenceNode</name>
     <message>
-        <source>output</source>
-        <translation>Output</translation>
-    </message>
-    <message>
         <source>Node</source>
         <translation>Node</translation>
     </message>

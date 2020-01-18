@@ -8,23 +8,6 @@
 #include "properties/optionsproperty.h"
 #include "managers/nodemanager/nodemodel.h"
 
-namespace
-{
-
-QString to_string(omm::PortType port_type)
-{
-  switch (port_type) {
-  case omm::PortType::Input:
-  case omm::PortType::Output:
-    return QT_TRANSLATE_NOOP("ReferenceNode", "output");
-  default:
-    Q_UNREACHABLE();
-    return "";
-  }
-}
-
-}  // namespace
-
 namespace omm
 {
 
