@@ -44,6 +44,7 @@ public:
   QString error_message() const { return m_error_message; }
   bool has_error() const { return !m_error_message.isEmpty(); }
   void set_on_compilation_success_cb(const std::function<void(const QString&)>& cb);
+  QString translate_type(const QString& type) const;
 
 private:
   const Language m_language;

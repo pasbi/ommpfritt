@@ -1,5 +1,6 @@
 #pragma once
 
+#include "variant.h"
 #include <QOpenGLContext>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
@@ -7,6 +8,7 @@
 #include <QOffscreenSurface>
 #include <QOpenGLShaderProgram>
 #include "logging.h"
+#include "aspects/abstractpropertyowner.h"
 
 class QOpenGLFunctions;
 class QOpenGLShaderProgram;
@@ -25,12 +27,7 @@ public:
   QOpenGLShaderProgram& program() const { return *m_program; }
   void make_current();
 
-  template<typename T> void set_uniform(const QString& name, const T& value)
-  {
-    make_current();
-    m_program->bind();
-    m_program->setUniformValue(name.toStdString().c_str(), value);
-  }
+  void set_uniform(const QString& name, const variant_type& value);
 
 private:
   QOffscreenSurface m_surface;

@@ -112,8 +112,8 @@ QString NodeCompiler::compile_node(const Node& node)
                     "GLSL nodes must not have more than one output.";
         }
         const OutputPort* port = *ops.begin();
-        return QString("const %1 %2 = %3(%4);")
-            .arg(port->data_type())
+        return QString("%1 %2 = %3(%4);")
+            .arg(translate_type(port->data_type()))
             .arg(port->uuid())
             .arg(node.uuid())
             .arg(args.join(", "));
@@ -138,11 +138,25 @@ QString NodeCompiler::compile_connection(const OutputPort& op, const InputPort& 
     Property* prop = static_cast<const PropertyPort<PortType::Output>&>(op).property();
     LINFO << "data type: " << data_type << "  property: " << (!prop ? "null" : prop->type());
   }
-    return QString("const %1 %2 = %3;").arg(op.data_type()).arg(ip.uuid()).arg(op.uuid());
+    return QString("%1 %2 = %3;")
+        .arg(translate_type(op.data_type()))
+        .arg(ip.uuid())
+        .arg(op.uuid());
   default:
     Q_UNREACHABLE();
     return "";
   }
+}
+
+QString NodeCompiler::translate_type(const QString& type) const
+{
+  assert(m_language == NodeCompiler::Language::GLSL);  // python typing is implicit
+  static const std::map<QString, QString> dict {
+    { "Color", "vec4" },
+    { "Reference", "uint" },
+  };
+
+  return dict.at(type);
 }
 
 bool NodeCompilerTypes::is_integral(const QString& type)

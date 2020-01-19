@@ -1,4 +1,8 @@
 #include "renderers/style.h"
+#include "managers/nodemanager/nodes/fragmentnode.h"
+#include "managers/nodemanager/node.h"
+#include "managers/nodemanager/propertyport.h"
+#include "managers/nodemanager/nodemodel.h"
 #include <QOpenGLFunctions>
 #include "scene/messagebox.h"
 #include "mainwindow/application.h"
@@ -110,6 +114,7 @@ QPixmap Style::texture(const Object& object, const QSize& size) const
   Q_UNUSED(object)
   if (!m_offscreen_renderer) {
     m_offscreen_renderer = init_offscreen_renderer();
+    update_uniform_values();
   }
   return QPixmap::fromImage(m_offscreen_renderer->render(size));
 }
@@ -146,34 +151,9 @@ void Style::on_property_value_changed(Property *property)
 
 std::unique_ptr<OffscreenRenderer> Style::init_offscreen_renderer() const
 {
-  static constexpr auto fragment_code = R"(
-#version 330
-varying highp vec3 vert;
-
-uniform float xxv;
-
-#define M_PI 3.1415926535897932384626433832795
-
-vec3 hsv2rgb(vec3 c)
-{
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-}
-
-void main()
-{
-   float arg = atan(vert.y, vert.x);
-   float r = sqrt(vert.y * vert.y + vert.x * vert.x);
-   vec3 hsv = vec3(arg / (2.0 * M_PI), r, xxv);
-   gl_FragColor = vec4(hsv2rgb(hsv), 1.0);
-}
-
-)";
   auto offscreen_renderer = std::make_unique<OffscreenRenderer>();
-  offscreen_renderer->set_fragment_shader(fragment_code);
   compiler()->set_on_compilation_success_cb([o_r = offscreen_renderer.get(), this](const QString& code) {
-    o_r->set_fragment_shader(code);
+    o_r->set_fragment_shader(polish_code(code));
     update_uniform_values();
   });
   connect(&scene()->message_box(), &MessageBox::property_value_changed,
@@ -181,19 +161,52 @@ void main()
   {
     update_uniform_values();
   });
-  offscreen_renderer->set_fragment_shader(code());
-  update_uniform_values();
-
+  offscreen_renderer->set_fragment_shader(polish_code(code()));
   return offscreen_renderer;
 }
 
 void Style::update_uniform_values() const
 {
-  Property* property = this->property("x");
-  if (property != nullptr) {
-    m_offscreen_renderer->set_uniform<GLfloat>("xxv", static_cast<FloatProperty*>(property)->value());
-    Q_EMIT scene()->message_box().appearance_changed();
+  if (m_offscreen_renderer) {
+    for (Port<PortType::Output>* port : node_model().ports<OutputPort>()) {
+      if (port->flavor == omm::PortFlavor::Property) {
+        const Property* property = static_cast<const PropertyOutputPort*>(port)->property();
+        LINFO << "set uniform: " << property->variant_value();
+        m_offscreen_renderer->set_uniform(port->uuid(), property->variant_value());
+      }
+    }
   }
+}
+
+QString Style::polish_code(QString code) const
+{
+  const QString output_variable_name = "out_color";
+
+  QStringList lines { "#version 330", QString("out vec4 %1;").arg(output_variable_name) };
+
+  for (Port<PortType::Output>* port : node_model().ports<OutputPort>()) {
+    if (port->flavor == omm::PortFlavor::Property) {
+      lines.push_back(QString("uniform %1 %2;")
+                      .arg(compiler()->translate_type(port->data_type()))
+                      .arg(port->uuid()));
+    }
+  }
+
+  lines.push_back(code);
+  code = lines.join("\n");
+
+  const auto fragment_nodes = ::filter_if(node_model().nodes(), [](const Node* node) {
+    return node->type() == FragmentNode::TYPE;
+  });
+
+  if (fragment_nodes.size() != 1) {
+    LWARNING << "expected exactly one fragment node but found " << fragment_nodes.size() << ".";
+  } else {
+    auto fn = static_cast<const FragmentNode*>(*fragment_nodes.begin());
+    code = code.replace("vec4 " + fn->port_name(), output_variable_name);
+  }
+
+  return code;
 }
 
 std::unique_ptr<Style> Style::clone() const

@@ -55,6 +55,8 @@ private:
   mutable std::unique_ptr<OffscreenRenderer> m_offscreen_renderer;
   std::unique_ptr<OffscreenRenderer> init_offscreen_renderer() const;
   void update_uniform_values() const;
+  std::set<Property*> m_uniform_values;
+  QString polish_code(QString code) const;
 };
 
 }  // namespace omm

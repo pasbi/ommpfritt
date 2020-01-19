@@ -30,4 +30,9 @@ QString FragmentNode::definition() const
   return "";
 }
 
+QString FragmentNode::port_name() const
+{
+  return m_input_port->uuid();
+}
+
 }  // namespace

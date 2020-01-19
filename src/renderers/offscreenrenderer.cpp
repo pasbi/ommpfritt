@@ -67,7 +67,6 @@ OffscreenRenderer::~OffscreenRenderer()
 
 void OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
 {
-  LINFO << "code: " << fragment_code;
 #define deb(X) if (!(X)) { LERROR << #X" failed."; return; }
 
   m_program = std::make_unique<QOpenGLShaderProgram>();
@@ -83,6 +82,26 @@ void OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
 void OffscreenRenderer::make_current()
 {
   assert_or_call(m_context.makeCurrent(&m_surface));
+}
+
+void OffscreenRenderer::set_uniform(const QString& name, const variant_type& value)
+{
+  make_current();
+  m_program->bind();
+  const char* cname = name.toStdString().c_str();
+  std::visit([program=m_program.get(), cname](auto&& v) {
+    using V = std::decay_t<decltype(v)>;
+    if constexpr (std::is_same_v<V, double>) {
+      program->setUniformValue(cname, GLfloat(v));
+    } else if constexpr (std::is_same_v<V, AbstractPropertyOwner*>) {
+      program->setUniformValue(cname, GLuint(v->id()));
+    } else if constexpr (std::is_same_v<V, Color>) {
+      auto [r, g, b, a] = v.components(Color::Model::RGBA);
+      program->setUniformValue(cname, QVector4D(r, g, b, a));
+    } else {
+      Q_UNIMPLEMENTED();
+    }
+  }, value);
 }
 
 QImage OffscreenRenderer::render(const QSize& size)

@@ -18,6 +18,7 @@ public:
 
   QString definition() const override;
   static const Detail detail;
+  QString port_name() const;
 
 private:
   OrdinaryPort<PortType::Input>* m_input_port = nullptr;
