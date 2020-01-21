@@ -11,8 +11,8 @@
 namespace omm
 {
 
-const Node::Detail ReferenceNode::detail { { NodeCompiler::Language::Python,
-                                             NodeCompiler::Language::GLSL } };
+const Node::Detail ReferenceNode::detail { { AbstractNodeCompiler::Language::Python,
+                                             AbstractNodeCompiler::Language::GLSL } };
 
 ReferenceNode::ReferenceNode(Scene* scene)
   : Node(scene)
@@ -41,14 +41,14 @@ void ReferenceNode::populate_menu(QMenu& menu)
   } else {
     for (auto key : apo->properties().keys()) {
       Property* property = apo->property(key);
-      if (language() == NodeCompiler::Language::Python) {
+      if (language() == AbstractNodeCompiler::Language::Python) {
         auto property_menu = std::make_unique<Menu>(property->label());
         property_menu->addAction(make_property_action(PortType::Input, key,
                                                       tr("input", "ReferenceNode")).release());
         property_menu->addAction(make_property_action(PortType::Output, key,
                                                       tr("output", "ReferenceNode")).release());
         forward_menu->addMenu(property_menu.release());
-      } else if (language() == NodeCompiler::Language::GLSL) {
+      } else if (language() == AbstractNodeCompiler::Language::GLSL) {
         forward_menu->addAction(make_property_action(PortType::Output, key,
                                                      property->label()).release());
       }

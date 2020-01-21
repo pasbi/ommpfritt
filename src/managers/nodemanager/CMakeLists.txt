@@ -6,6 +6,8 @@ file(GLOB SOURCES
   nodemodel.cpp
   nodeview.cpp
   nodecompiler.cpp
+  nodecompilerpython.cpp
+  nodecompilerglsl.cpp
   nodetopythoncompiler.cpp
   nodesowner.cpp
   port.cpp
@@ -20,6 +22,8 @@ file(GLOB HEADERS
   nodemodel.h
   nodeview.h
   nodecompiler.h
+  nodecompilerpython.h
+  nodecompilerglsl.cpp
   nodetopythoncompiler.h
   nodesowner.h
   port.h

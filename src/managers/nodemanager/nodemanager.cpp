@@ -56,7 +56,7 @@ void NodeManager::set_selection(const std::set<AbstractPropertyOwner*>& selectio
   if (!is_locked()) {
     for (AbstractPropertyOwner* apo : selection) {
       if (!!(apo->flags() & Flag::HasNodes)) {
-        NodeModel& nodes_model = dynamic_cast<NodesOwner*>(apo)->node_model();
+        NodeModel& nodes_model = dynamic_cast<AbstractNodesOwner*>(apo)->node_model();
         for (Manager* nm : Application::instance().managers(NodeManager::TYPE)) {
           static_cast<NodeManager*>(nm)->set_model(&nodes_model);
         }

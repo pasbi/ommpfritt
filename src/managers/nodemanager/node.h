@@ -49,7 +49,7 @@ public:
 
   virtual QString definition() const { return ""; }
   QString uuid() const { return "node_definition_" + type(); }
-  NodeCompiler::Language language() const;
+  AbstractNodeCompiler::Language language() const;
 
   static constexpr auto POS_PTR = "pos";
   static constexpr auto CONNECTIONS_PTR = "connection";
@@ -129,7 +129,7 @@ private:
 public:
   struct Detail
   {
-    std::set<NodeCompiler::Language> languages;
+    std::set<AbstractNodeCompiler::Language> languages;
   };
 
   static const Detail& detail(const QString& name) { return *m_details.at(name); }

@@ -1,4 +1,6 @@
 #include "managers/nodemanager/nodesowner.h"
+#include "managers/nodemanager/nodecompilerglsl.h"
+#include "managers/nodemanager/nodecompilerpython.h"
 #include "managers/nodemanager/nodemodel.h"
 #include "properties/triggerproperty.h"
 #include "managers/nodemanager/nodemanager.h"
@@ -7,21 +9,17 @@
 namespace omm
 {
 
-NodesOwner::NodesOwner(bool evaluate_lazy, NodeCompiler::Language language, Scene& scene)
+AbstractNodesOwner::AbstractNodesOwner(AbstractNodeCompiler::Language language, Scene& scene)
   : m_model(std::make_unique<NodeModel>(language, scene))
-  , m_compiler_cache(*this)
-  , m_evaluate_lazy(evaluate_lazy)
 {
 }
 
-NodesOwner::NodesOwner(const NodesOwner& other)
+AbstractNodesOwner::AbstractNodesOwner(const AbstractNodesOwner& other)
   : m_model(std::make_unique<NodeModel>(*other.m_model))
-  , m_compiler_cache(*this)
-  , m_evaluate_lazy(other.m_evaluate_lazy)
 {
 }
 
-std::unique_ptr<Property> NodesOwner::make_edit_nodes_property()
+std::unique_ptr<Property> AbstractNodesOwner::make_edit_nodes_property()
 {
   auto property = std::make_unique<TriggerProperty>();
   QObject::connect(property.get(), &Property::value_changed, property.get(), [this]() {
@@ -31,33 +29,43 @@ std::unique_ptr<Property> NodesOwner::make_edit_nodes_property()
   return property;
 }
 
-NodesOwner::~NodesOwner()
+template<typename ConcreteCompiler> NodesOwner<ConcreteCompiler>
+::NodesOwner(Scene& scene)
+  : AbstractNodesOwner(ConcreteCompiler::language, scene)
+  , m_compiler_cache(*this)
 {
 }
 
-NodesOwner::CompilerCache::CompilerCache(omm::NodesOwner& self)
+template<typename ConcreteCompiler> NodesOwner<ConcreteCompiler>
+::NodesOwner(const NodesOwner& other)
+  : AbstractNodesOwner(other)
+  , m_compiler_cache(*this)
+{
+}
+
+template<typename ConcreteCompiler> NodesOwner<ConcreteCompiler>::~NodesOwner()
+{
+}
+
+template<typename ConcreteCompiler> NodesOwner<ConcreteCompiler>
+::CompilerCache::CompilerCache(const omm::NodesOwner<ConcreteCompiler>& self)
   : CachedGetter<QString, NodesOwner>(self)
-  , m_compiler(std::make_unique<NodeCompiler>(m_self.node_model().language()))
+  , m_compiler(std::make_unique<ConcreteCompiler>(self.node_model()))
 {
   NodeModel::connect(&self.node_model(), &NodeModel::topology_changed, [this]() {
-    invalidate();
-    if (!m_self.m_evaluate_lazy) {
+    this->invalidate();
+    if (!ConcreteCompiler::lazy) {
       // if lazy, wait until compute is called elsewhere.
       compute();
     }
   });
 }
 
-NodesOwner::CompilerCache::~CompilerCache()
+template<typename ConcreteCompiler> NodesOwner<ConcreteCompiler>::CompilerCache::~CompilerCache()
 {
 }
 
-QString NodesOwner::CompilerCache::compute() const
-{
-  m_compiler->compile(m_self.node_model());
-  const QString compilation = m_compiler->compilation();
-  m_self.m_on_compilation_successful(compilation);
-  return compilation;
-}
+template class NodesOwner<NodeCompilerPython>;
+template class NodesOwner<NodeCompilerGLSL>;
 
 }  // namespace omm

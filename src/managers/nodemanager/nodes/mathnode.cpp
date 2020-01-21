@@ -17,7 +17,7 @@ enum class Operation { Addition, Difference, Multiplication, Division, Power };
 namespace omm
 {
 
-const Node::Detail MathNode::detail { { NodeCompiler::Language::Python } };
+const Node::Detail MathNode::detail { { AbstractNodeCompiler::Language::Python } };
 
 MathNode::MathNode(Scene* scene)
   : Node(scene)
@@ -36,7 +36,7 @@ MathNode::MathNode(Scene* scene)
 QString MathNode::definition() const
 {
   switch (language()) {
-  case NodeCompiler::Language::Python:
+  case AbstractNodeCompiler::Language::Python:
     return QString(R"(
 def %1(op, a, b):
     import numpy as np
@@ -62,7 +62,7 @@ def %1(op, a, b):
         result = list(result)
     return result
 )").arg(uuid());
-  case NodeCompiler::Language::GLSL:
+  case AbstractNodeCompiler::Language::GLSL:
     return "";
   default:
     Q_UNREACHABLE();
@@ -76,13 +76,13 @@ QString MathNode::output_data_type(const OutputPort& port) const
     const QString type_a = find_port<InputPort>(*property(A_PROPERTY_KEY))->data_type();
     const QString type_b = find_port<InputPort>(*property(B_PROPERTY_KEY))->data_type();
     switch (language()) {
-    case NodeCompiler::Language::GLSL:
+    case AbstractNodeCompiler::Language::GLSL:
       if (type_a == type_b) {
         return type_a;
       } else {
         return INVALID_TYPE;
       }
-    case NodeCompiler::Language::Python:
+    case AbstractNodeCompiler::Language::Python:
       using namespace NodeCompilerTypes;
       if (is_integral(type_a) && is_integral(type_b)) {
         return INTEGER_TYPE;

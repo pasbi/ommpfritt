@@ -6,7 +6,7 @@
 namespace omm
 {
 
-const Node::Detail DecomposeNode::detail { { NodeCompiler::Language::Python } };
+const Node::Detail DecomposeNode::detail { { AbstractNodeCompiler::Language::Python } };
 
 DecomposeNode::DecomposeNode(Scene* scene) : Node(scene)
 {

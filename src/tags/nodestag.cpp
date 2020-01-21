@@ -47,7 +47,7 @@ namespace omm
 {
 
 NodesTag::NodesTag(Object& owner)
-  : Tag(owner), NodesOwner(true, NodeCompiler::Language::Python, *owner.scene())
+  : Tag(owner), NodesOwner(*owner.scene())
 {
   const QString category = QObject::tr("Basic");
   create_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY, 0)

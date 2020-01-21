@@ -4,14 +4,14 @@
 #include "tags/tag.h"
 #include <Qt>
 #include "managers/nodemanager/nodesowner.h"
+#include "managers/nodemanager/nodecompilerpython.h"
 
 namespace omm
 {
 
 class NodeModel;
-class NodeCompiler;
 
-class NodesTag : public Tag, public NodesOwner
+class NodesTag : public Tag, public NodesOwner<NodeCompilerPython>
 {
   Q_OBJECT
 public:

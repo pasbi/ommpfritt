@@ -5,6 +5,7 @@
 #include "color/color.h"
 #include "properties/propertygroups/markerproperties.h"
 #include "managers/nodemanager/nodesowner.h"
+#include "managers/nodemanager/nodecompilerglsl.h"
 
 namespace omm
 {
@@ -15,7 +16,7 @@ class NodeModel;
 
 class Style
   : public PropertyOwner<Kind::Style>
-  , public NodesOwner
+  , public NodesOwner<NodeCompilerGLSL>
 {
   Q_OBJECT
 public:
@@ -56,7 +57,6 @@ private:
   std::unique_ptr<OffscreenRenderer> init_offscreen_renderer() const;
   void update_uniform_values() const;
   std::set<Property*> m_uniform_values;
-  QString polish_code(QString code) const;
 };
 
 }  // namespace omm

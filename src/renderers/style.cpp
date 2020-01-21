@@ -34,7 +34,7 @@ namespace omm
 {
 
 Style::Style(Scene *scene)
-  : PropertyOwner(scene), NodesOwner(false, NodeCompiler::Language::GLSL, *scene)
+  : PropertyOwner(scene), NodesOwner(*scene)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {
@@ -152,8 +152,10 @@ void Style::on_property_value_changed(Property *property)
 std::unique_ptr<OffscreenRenderer> Style::init_offscreen_renderer() const
 {
   auto offscreen_renderer = std::make_unique<OffscreenRenderer>();
-  compiler()->set_on_compilation_success_cb([o_r = offscreen_renderer.get(), this](const QString& code) {
-    o_r->set_fragment_shader(polish_code(code));
+  connect(compiler(), &AbstractNodeCompiler::compilation_succeeded,
+          [this, o_r = offscreen_renderer.get()](const QString& code)
+  {
+    o_r->set_fragment_shader(code);
     update_uniform_values();
   });
   connect(&scene()->message_box(), &MessageBox::property_value_changed,
@@ -161,7 +163,7 @@ std::unique_ptr<OffscreenRenderer> Style::init_offscreen_renderer() const
   {
     update_uniform_values();
   });
-  offscreen_renderer->set_fragment_shader(polish_code(code()));
+  offscreen_renderer->set_fragment_shader(code());
   return offscreen_renderer;
 }
 
@@ -171,42 +173,10 @@ void Style::update_uniform_values() const
     for (Port<PortType::Output>* port : node_model().ports<OutputPort>()) {
       if (port->flavor == omm::PortFlavor::Property) {
         const Property* property = static_cast<const PropertyOutputPort*>(port)->property();
-        LINFO << "set uniform: " << property->variant_value();
         m_offscreen_renderer->set_uniform(port->uuid(), property->variant_value());
       }
     }
   }
-}
-
-QString Style::polish_code(QString code) const
-{
-  const QString output_variable_name = "out_color";
-
-  QStringList lines { "#version 330", QString("out vec4 %1;").arg(output_variable_name) };
-
-  for (Port<PortType::Output>* port : node_model().ports<OutputPort>()) {
-    if (port->flavor == omm::PortFlavor::Property) {
-      lines.push_back(QString("uniform %1 %2;")
-                      .arg(compiler()->translate_type(port->data_type()))
-                      .arg(port->uuid()));
-    }
-  }
-
-  lines.push_back(code);
-  code = lines.join("\n");
-
-  const auto fragment_nodes = ::filter_if(node_model().nodes(), [](const Node* node) {
-    return node->type() == FragmentNode::TYPE;
-  });
-
-  if (fragment_nodes.size() != 1) {
-    LWARNING << "expected exactly one fragment node but found " << fragment_nodes.size() << ".";
-  } else {
-    auto fn = static_cast<const FragmentNode*>(*fragment_nodes.begin());
-    code = code.replace("vec4 " + fn->port_name(), output_variable_name);
-  }
-
-  return code;
 }
 
 std::unique_ptr<Style> Style::clone() const

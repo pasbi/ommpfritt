@@ -9,7 +9,7 @@
 namespace omm
 {
 
-NodeModel::NodeModel(NodeCompiler::Language language, Scene& scene)
+NodeModel::NodeModel(AbstractNodeCompiler::Language language, Scene& scene)
   : m_scene(scene), m_language(language)
 {
   init();

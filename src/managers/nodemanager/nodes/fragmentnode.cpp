@@ -9,7 +9,7 @@
 namespace omm
 {
 
-const Node::Detail FragmentNode::detail { { NodeCompiler::Language::GLSL } };
+const Node::Detail FragmentNode::detail { { AbstractNodeCompiler::Language::GLSL } };
 
 FragmentNode::FragmentNode(Scene* scene)
   : Node(scene)
@@ -26,7 +26,7 @@ bool FragmentNode::accepts_input_data_type(const QString& type, const InputPort&
 
 QString FragmentNode::definition() const
 {
-  assert(language() == NodeCompiler::Language::GLSL);
+  assert(language() == AbstractNodeCompiler::Language::GLSL);
   return "";
 }
 

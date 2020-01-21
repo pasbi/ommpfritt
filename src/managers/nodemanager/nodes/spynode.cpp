@@ -5,7 +5,7 @@
 namespace omm
 {
 
-const Node::Detail SpyNode::detail { { NodeCompiler::Language::Python } };
+const Node::Detail SpyNode::detail { { AbstractNodeCompiler::Language::Python } };
 
 SpyNode::SpyNode(Scene* scene)
   : Node(scene)

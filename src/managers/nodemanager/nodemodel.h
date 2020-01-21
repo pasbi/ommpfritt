@@ -21,7 +21,7 @@ class NodeModel : public QObject, public Serializable
 {
   Q_OBJECT
 public:
-  explicit NodeModel(NodeCompiler::Language language, Scene& scene);
+  explicit NodeModel(AbstractNodeCompiler::Language language, Scene& scene);
   NodeModel(const NodeModel& other);
   ~NodeModel();
 
@@ -55,7 +55,7 @@ public:
     return ::transform<PortT*>(::filter_if(ports(), pred), conv);
   }
 
-  NodeCompiler::Language language() const { return m_language; }
+  AbstractNodeCompiler::Language language() const { return m_language; }
 
   Scene& scene() const { return m_scene; }
   void notify_appearance_changed();
@@ -70,7 +70,7 @@ Q_SIGNALS:
 private:
   std::set<std::unique_ptr<Node>> m_nodes;
   Scene& m_scene;
-  const NodeCompiler::Language m_language;
+  const AbstractNodeCompiler::Language m_language;
   void init();
   Status m_status = Status::None;
 };

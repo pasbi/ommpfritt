@@ -7,7 +7,7 @@
 namespace omm
 {
 
-const Node::Detail ConstantNode::detail { { NodeCompiler::Language::Python } };
+const Node::Detail ConstantNode::detail { { AbstractNodeCompiler::Language::Python } };
 
 ConstantNode::ConstantNode(Scene* scene)
   : Node(scene)

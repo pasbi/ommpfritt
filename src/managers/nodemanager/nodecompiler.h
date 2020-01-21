@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QObject>
 #include <QString>
 #include <QStringList>
 #include <list>
@@ -32,27 +33,66 @@ namespace NodeCompilerTypes
   bool is_vector(const QString& type);
 }
 
-class NodeCompiler
+class AbstractNodeCompiler : public QObject
 {
+  Q_OBJECT
 public:
   enum class Language { Python, GLSL };
-  explicit NodeCompiler(Language language);
-  NodeCompiler(Language language, const NodeModel& model);
-  void compile(const NodeModel& model);
-
-  QString compilation() const { return m_compilation; }
-  QString error_message() const { return m_error_message; }
-  bool has_error() const { return !m_error_message.isEmpty(); }
-  void set_on_compilation_success_cb(const std::function<void(const QString&)>& cb);
-  QString translate_type(const QString& type) const;
-
+protected:
+  AbstractNodeCompiler(const NodeModel& model);
+  std::set<Node*> nodes() const;
+  struct Statement
+  {
+    Statement(const OutputPort& source, const InputPort& target);
+    Statement(const Node& node);
+    const bool is_connection;
+    const OutputPort* const source = nullptr;
+    const InputPort* const target = nullptr;
+    const Node* const node = nullptr;
+  };
+  void generate_statements(std::set<QString>& used_node_types, std::list<Statement>& statements);
+  const NodeModel& model() const { return m_model; }
+Q_SIGNALS:
+  void compilation_succeeded(const QString& code);
 private:
-  const Language m_language;
-  QString m_error_message;
-  QString m_compilation;
-  QString compile_node(const Node& node);
-  QString compile_connection(const OutputPort& op, const InputPort& ip);
-  std::function<void(const QString&)> m_on_compilation_success_cb;
+  const NodeModel& m_model;
+};
+
+template<typename ConcreteCompiler> class NodeCompiler : public AbstractNodeCompiler
+{
+public:
+  QString compile()
+  {
+    std::set<QString> used_node_types;
+    std::list<Statement> statements;
+    generate_statements(used_node_types, statements);
+    QStringList lines;
+    const auto& self = static_cast<const ConcreteCompiler&>(*this);
+    lines.push_back(self.header());
+    for (const QString& type : used_node_types) {
+      lines.push_back(self.define_node(type));
+    }
+
+    lines.push_back(self.start_program());
+    for (const Statement& statement : statements) {
+      if (statement.is_connection) {
+        lines.push_back(self.compile_connection(*statement.source, *statement.target));
+      } else {
+        lines.push_back(self.compile_node(*statement.node));
+      }
+    }
+    lines.push_back(self.end_program());
+    const QString code = lines.join("\n");
+    Q_EMIT compilation_succeeded(code);
+    return code;
+  }
+
+protected:
+  explicit NodeCompiler(const NodeModel& model)
+    : AbstractNodeCompiler(model)
+  {}
+
+  void statements();
 };
 
 }  // namespace omm
