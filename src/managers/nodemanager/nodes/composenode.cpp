@@ -8,7 +8,7 @@ namespace omm
 
 const Node::Detail ComposeNode::detail { { AbstractNodeCompiler::Language::Python } };
 
-ComposeNode::ComposeNode(Scene* scene) : Node(scene)
+ComposeNode::ComposeNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
   create_property<FloatProperty>(INPUT_X_PROPERTY_KEY, 0.0)

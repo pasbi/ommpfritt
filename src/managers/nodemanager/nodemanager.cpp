@@ -95,11 +95,12 @@ bool NodeManager::perform_action(const QString& name)
     m_ui->nodeview->remove_selection();
   } else if (::contains(Node::keys(), name)) {
     std::vector<std::unique_ptr<Node>> nodes;
-    auto node = Node::make(name, &scene());
+    auto& model = *m_ui->nodeview->model();
+    auto node = Node::make(name, model);
     const QSizeF size = m_ui->nodeview->node_geometry(*node).size();
     node->set_pos(m_ui->nodeview->get_insert_position() - QPointF(size.width(), size.height()) / 2.0);
     nodes.push_back(std::move(node));
-    scene().submit<AddNodesCommand>(*m_ui->nodeview->model(), std::move(nodes));
+    scene().submit<AddNodesCommand>(model, std::move(nodes));
   } else {
     return false;
   }

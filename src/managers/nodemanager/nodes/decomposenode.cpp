@@ -8,7 +8,7 @@ namespace omm
 
 const Node::Detail DecomposeNode::detail { { AbstractNodeCompiler::Language::Python } };
 
-DecomposeNode::DecomposeNode(Scene* scene) : Node(scene)
+DecomposeNode::DecomposeNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
   create_property<FloatVectorProperty>(INPUT_PROPERTY_KEY, Vec2f(0.0, 0.0))

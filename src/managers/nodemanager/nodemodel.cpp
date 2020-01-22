@@ -57,8 +57,7 @@ void NodeModel::init()
           [this](AbstractPropertyOwner& apo, const QString& key, Property&)
   {
     Q_UNUSED(key)
-    if (apo.kind == Kind::Node
-        && static_cast<const Node&>(apo).model() == this)
+    if (apo.kind == Kind::Node && &static_cast<const Node&>(apo).model() == this)
     {
       Q_EMIT appearance_changed();
     }
@@ -69,7 +68,7 @@ Node& NodeModel::add_node(std::unique_ptr<Node> node)
 {
   Node& ref = *node;
   connect(&ref, SIGNAL(pos_changed()), this, SIGNAL(appearance_changed()));
-  node->set_model(this);
+  assert(&node->model() == this);
   m_nodes.insert(std::move(node));
   Q_EMIT topology_changed();
   return ref;
@@ -87,7 +86,6 @@ std::unique_ptr<Node> NodeModel::extract_node(Node& node)
     assert(node.is_free());
     auto node = std::move(m_nodes.extract(it).value());
     disconnect(node.get(), SIGNAL(pos_changed()), this, SIGNAL(appearance_changed()));
-    node->set_model(nullptr);
     Q_EMIT topology_changed();
     return node;
   } else {
@@ -122,7 +120,7 @@ void NodeModel::deserialize(AbstractDeserializer& deserializer, const Serializab
   for (size_t i = 0; i < n; ++i) {
     const auto node_ptr = Serializable::make_pointer(ptr, NODES_POINTER, i);
     const auto type = deserializer.get_string(make_pointer(node_ptr, TYPE_POINTER));
-    auto node = Node::make(type, &m_scene);
+    auto node = Node::make(type, *this);
     node->deserialize(deserializer, node_ptr);
     add_node(std::move(node));
   }

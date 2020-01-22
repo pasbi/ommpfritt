@@ -7,7 +7,7 @@ class ReferenceNode : public Node
 {
   Q_OBJECT
 public:
-  explicit ReferenceNode(Scene* scene);
+  explicit ReferenceNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ReferenceNode");
   QString type() const override { return TYPE; }
 

@@ -7,7 +7,7 @@ class MathNode : public Node
 {
   Q_OBJECT
 public:
-  explicit MathNode(Scene* scene);
+  explicit MathNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "MathNode");
   QString type() const override { return TYPE; }
 

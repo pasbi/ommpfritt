@@ -7,7 +7,7 @@ class ConstantNode : public Node
 {
   Q_OBJECT
 public:
-  explicit ConstantNode(Scene* scene);
+  explicit ConstantNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ConstantNode");
   QString type() const override { return TYPE; }
 

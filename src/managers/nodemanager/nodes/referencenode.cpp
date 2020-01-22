@@ -14,19 +14,19 @@ namespace omm
 const Node::Detail ReferenceNode::detail { { AbstractNodeCompiler::Language::Python,
                                              AbstractNodeCompiler::Language::GLSL } };
 
-ReferenceNode::ReferenceNode(Scene* scene)
-  : Node(scene)
+ReferenceNode::ReferenceNode(NodeModel& model)
+  : Node(model)
 {
   const QString category = tr("Node");
   create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
     .set_label(tr("Reference")).set_category(category);
 
-  connect(&scene->message_box(), &MessageBox::property_value_changed,
+  connect(&scene()->message_box(), &MessageBox::property_value_changed,
           [this](AbstractPropertyOwner& owner, const QString& key, Property&)
   {
     if (&owner == property(REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>()) {
       if (key == AbstractPropertyOwner::NAME_PROPERTY_KEY) {
-        model()->notify_node_shape_changed();
+        this->model().notify_node_shape_changed();
       }
     }
   });
@@ -94,7 +94,7 @@ ReferenceNode::serialize(AbstractSerializer& serializer, const Serializable::Poi
 void ReferenceNode::on_property_value_changed(Property* property)
 {
   if (property == this->property(REFERENCE_PROPERTY_KEY)) {
-    model()->notify_node_shape_changed();
+    model().notify_node_shape_changed();
   }
 }
 

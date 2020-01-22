@@ -7,8 +7,9 @@ namespace omm
 
 std::map<QString, const Node::Detail*> Node::m_details;
 
-Node::Node(Scene* scene)
-  : PropertyOwner(scene)
+Node::Node(NodeModel& model)
+  : PropertyOwner(&model.scene())
+  , m_model(model)
 {
 }
 
@@ -21,11 +22,6 @@ std::set<AbstractPort*> Node::ports() const
   return ::transform<AbstractPort*>(m_ports, [](const std::unique_ptr<AbstractPort>& p) {
     return p.get();
   });
-}
-
-void Node::set_model(NodeModel* model)
-{
-  m_model = model;
 }
 
 void Node::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
@@ -100,7 +96,7 @@ QString Node::name() const
 
 AbstractNodeCompiler::Language Node::language() const
 {
-  return model()->language();
+  return model().language();
 }
 
 std::set<Node*> Node::successors() const
@@ -150,9 +146,7 @@ AbstractPort& Node::add_port(std::unique_ptr<AbstractPort> port)
 {
   auto& ref = *port;
   m_ports.insert(std::move(port));
-  if (m_model != nullptr) {
-    m_model->notify_topology_changed();
-  }
+  m_model.notify_topology_changed();
   return ref;
 }
 
@@ -161,7 +155,7 @@ std::unique_ptr<AbstractPort> Node::remove_port(const AbstractPort& port)
   for (auto it = m_ports.begin(); it != m_ports.end(); ++it) {
     if (it->get() == &port) {
       auto port = std::move(m_ports.extract(it).value());
-      m_model->notify_topology_changed();
+      m_model.notify_topology_changed();
       return port;
     }
   }

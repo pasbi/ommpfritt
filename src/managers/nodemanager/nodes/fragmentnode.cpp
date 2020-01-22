@@ -11,8 +11,8 @@ namespace omm
 
 const Node::Detail FragmentNode::detail { { AbstractNodeCompiler::Language::GLSL } };
 
-FragmentNode::FragmentNode(Scene* scene)
-  : Node(scene)
+FragmentNode::FragmentNode(NodeModel& model)
+  : Node(model)
 {
   const QString category = tr("Node");
   m_input_port = &add_port<OrdinaryPort<PortType::Input>>(tr("color"));

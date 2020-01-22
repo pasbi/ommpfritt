@@ -10,7 +10,7 @@ template<PortType> class OrdinaryPort;
 class DecomposeNode : public Node
 {
 public:
-  explicit DecomposeNode(Scene* scene);
+  explicit DecomposeNode(NodeModel& model);
   static constexpr auto INPUT_PROPERTY_KEY = "in";
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "DecomposeNode");
 

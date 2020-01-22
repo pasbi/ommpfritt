@@ -17,12 +17,12 @@ class Menu;
 
 class Node
   : public PropertyOwner<Kind::Node>
-  , public AbstractFactory<QString, Node, Scene*>
+  , public AbstractFactory<QString, Node, NodeModel&>
   , public ReferencePolisher
 {
   Q_OBJECT
 public:
-  explicit Node(Scene* scene);
+  explicit Node(NodeModel& model);
   ~Node();
 
   Flag flags() const override { return Flag::None; }
@@ -35,8 +35,6 @@ public:
     return ::transform<PortT*>(::filter_if(ports(), predicate), convert);
   }
 
-  void set_model(NodeModel* model);
-
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
 
@@ -44,7 +42,7 @@ public:
   QPointF pos() const;
 
   bool is_free() const;
-  NodeModel* model() const { return m_model; }
+  NodeModel& model() const { return m_model; }
   QString name() const override;
 
   virtual QString definition() const { return ""; }
@@ -113,7 +111,6 @@ Q_SIGNALS:
 
 private:
   QPointF m_pos;
-  NodeModel* m_model = nullptr;
   std::set<std::unique_ptr<AbstractPort>> m_ports;
 
   // Only required during deserialization.
@@ -125,6 +122,7 @@ private:
   std::list<ConnectionIds> m_connection_ids;
   void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override;
   friend void register_nodes();
+  NodeModel& m_model;
 
 public:
   struct Detail

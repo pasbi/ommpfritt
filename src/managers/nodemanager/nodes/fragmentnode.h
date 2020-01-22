@@ -9,7 +9,7 @@ class FragmentNode : public Node
 {
   Q_OBJECT
 public:
-  explicit FragmentNode(Scene* scene);
+  explicit FragmentNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "FragmentNode");
   QString type() const override { return TYPE; }
   bool accepts_input_data_type(const QString& type, const InputPort& port) const override;

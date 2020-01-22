@@ -11,7 +11,7 @@ class ComposeNode : public Node
 {
   Q_OBJECT
 public:
-  explicit ComposeNode(Scene* scene);
+  explicit ComposeNode(NodeModel& model);
   static constexpr auto INPUT_X_PROPERTY_KEY = "x";
   static constexpr auto INPUT_Y_PROPERTY_KEY = "y";
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ComposeNode");

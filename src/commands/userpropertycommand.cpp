@@ -46,7 +46,7 @@ UserPropertyCommand
         m_broken_connections.insert(std::make_unique<DisconnectPortsCommand>(*ip));
       }
     }
-    m_node_model = node->model();
+    m_node_model = &node->model();
   }
 }
 

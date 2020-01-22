@@ -9,7 +9,7 @@ class SpyNode : public Node
 {
   Q_OBJECT
 public:
-  explicit SpyNode(Scene* scene);
+  explicit SpyNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SpyNode");
   QString type() const override { return TYPE; }
 

@@ -19,20 +19,6 @@ namespace omm
 
 const Node::Detail MathNode::detail { { AbstractNodeCompiler::Language::Python } };
 
-MathNode::MathNode(Scene* scene)
-  : Node(scene)
-{
-  const QString category = tr("Node");
-  create_property<OptionsProperty>(OPERATION_PROPERTY_KEY, 0.0)
-      .set_options({ tr("+"), tr("-"), tr("*"), tr("/"), tr("pow") })
-      .set_label(QObject::tr("Operation")).set_category(category);
-  create_property<FloatProperty>(A_PROPERTY_KEY, 0.0)
-      .set_label(QObject::tr("a")).set_category(category);
-  create_property<FloatProperty>(B_PROPERTY_KEY, 0.0)
-      .set_label(QObject::tr("b")).set_category(category);
-  m_result_port = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
-}
-
 QString MathNode::definition() const
 {
   switch (language()) {
@@ -68,6 +54,19 @@ def %1(op, a, b):
     Q_UNREACHABLE();
     return "";
   }
+
+MathNode::MathNode(NodeModel& model)
+  : Node(model)
+{
+  const QString category = tr("Node");
+  create_property<OptionsProperty>(OPERATION_PROPERTY_KEY, 0.0)
+      .set_options({ tr("+"), tr("-"), tr("*"), tr("/"), tr("pow") })
+      .set_label(QObject::tr("Operation")).set_category(category);
+  create_property<FloatProperty>(A_PROPERTY_KEY, 0.0)
+      .set_label(QObject::tr("a")).set_category(category);
+  create_property<FloatProperty>(B_PROPERTY_KEY, 0.0)
+      .set_label(QObject::tr("b")).set_category(category);
+  m_result_port = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
 }
 
 QString MathNode::output_data_type(const OutputPort& port) const

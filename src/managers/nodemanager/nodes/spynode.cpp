@@ -7,8 +7,8 @@ namespace omm
 
 const Node::Detail SpyNode::detail { { AbstractNodeCompiler::Language::Python } };
 
-SpyNode::SpyNode(Scene* scene)
-  : Node(scene)
+SpyNode::SpyNode(NodeModel& model)
+  : Node(model)
 {
   m_port = &add_port<OrdinaryPort<PortType::Input>>(tr("value"));
 }
@@ -22,7 +22,7 @@ bool SpyNode::accepts_input_data_type(const QString& type, const InputPort& port
 void SpyNode::set_text(const QString& text)
 {
   m_port->set_label(text);
-  model()->notify_node_shape_changed();
+  model().notify_node_shape_changed();
 }
 
 }  // namespace
