@@ -6,7 +6,15 @@
 namespace omm
 {
 
-const Node::Detail ComposeNode::detail { { AbstractNodeCompiler::Language::Python } };
+const Node::Detail ComposeNode::detail { {
+    { AbstractNodeCompiler::Language::Python, QString(R"(
+def %1(a, b):
+  return [a, b]
+)").arg(ComposeNode::TYPE) },
+    { AbstractNodeCompiler::Language::GLSL, QString(R"(
+vec2 %1(float a, float b) { return vec2(a, b); }
+)").arg(ComposeNode::TYPE) }
+    } };
 
 ComposeNode::ComposeNode(NodeModel& model) : Node(model)
 {
@@ -16,14 +24,6 @@ ComposeNode::ComposeNode(NodeModel& model) : Node(model)
   create_property<FloatProperty>(INPUT_Y_PROPERTY_KEY, 0.0)
       .set_label(tr("y")).set_category(category);
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("vector"));
-}
-
-QString ComposeNode::definition() const
-{
-  return QString(R"(
-def %1(a, b):
-  return [a, b]
-)").arg(uuid());
 }
 
 QString ComposeNode::output_data_type(const OutputPort& port) const

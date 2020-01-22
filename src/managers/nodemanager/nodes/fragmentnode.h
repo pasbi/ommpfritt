@@ -16,7 +16,6 @@ public:
 
   static constexpr auto COLOR_PROPERTY_KEY = "color";
 
-  QString definition() const override;
   static const Detail detail;
   QString port_name() const;
 

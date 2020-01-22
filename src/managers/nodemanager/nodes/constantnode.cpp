@@ -7,7 +7,10 @@
 namespace omm
 {
 
-const Node::Detail ConstantNode::detail { { AbstractNodeCompiler::Language::Python } };
+const Node::Detail ConstantNode::detail { {
+    { AbstractNodeCompiler::Language::Python, "" },
+    { AbstractNodeCompiler::Language::GLSL, "" }
+} };
 
 ConstantNode::ConstantNode(NodeModel& model) : Node(model)
 {

@@ -15,7 +15,6 @@ public:
   static constexpr auto B_PROPERTY_KEY = "b";
   static constexpr auto OPERATION_PROPERTY_KEY = "op";
 
-  QString definition() const override;
   QString output_data_type(const OutputPort& port) const override;
   bool accepts_input_data_type(const QString& type, const InputPort& port) const override;
   QString title() const override;

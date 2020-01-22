@@ -45,8 +45,6 @@ public:
   NodeModel& model() const { return m_model; }
   QString name() const override;
 
-  virtual QString definition() const { return ""; }
-  QString uuid() const { return "node_definition_" + type(); }
   AbstractNodeCompiler::Language language() const;
 
   static constexpr auto POS_PTR = "pos";
@@ -127,7 +125,7 @@ private:
 public:
   struct Detail
   {
-    std::set<AbstractNodeCompiler::Language> languages;
+    std::map<AbstractNodeCompiler::Language, QString> definitions;
   };
 
   static const Detail& detail(const QString& name) { return *m_details.at(name); }

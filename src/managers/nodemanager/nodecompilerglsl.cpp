@@ -16,6 +16,11 @@ QString translate_type(const QString& type)
   static const std::map<QString, QString> dict {
     { "Color", "vec4" },
     { "Reference", "uint" },
+    { "Bool", "bool" },
+    { "Integer", "int" },
+    { "FloatVector", "vec2" },
+    { "IntegerVector", "vec2i" },
+    { "Options", "int" }
   };
 
   return dict.at(type);
@@ -30,7 +35,10 @@ NodeCompilerGLSL::NodeCompilerGLSL(const NodeModel& model) : NodeCompiler(model)
 
 QString NodeCompilerGLSL::header() const
 {
-  QStringList lines { "#version 330", QString("out vec4 %1;").arg(output_variable_name) };
+  QStringList lines {
+    "#version 330",
+    QString("out vec4 %1;").arg(output_variable_name)
+  };
 
   for (Port<PortType::Output>* port : model().ports<OutputPort>()) {
     if (port->flavor == omm::PortFlavor::Property) {
@@ -81,18 +89,16 @@ QString NodeCompilerGLSL::compile_node(const Node& node) const
     return ip->uuid();
   });
 
-  if (ops.size() != 1) {
-    LINFO <<  "Encountered GLSL node with " << ops.size() << " outputs.\n"
-              "GLSL nodes must have exactly one output.";
-    return "";
-  } else {
-    const OutputPort* port = *ops.begin();
-    return QString("%1 %2 = %3(%4);")
+  QStringList lines;
+  for (OutputPort* port : ops) {
+    lines.push_back(QString("%1 %2 = %3_%4(%5);")
         .arg(translate_type(port->data_type()))
         .arg(port->uuid())
-        .arg(node.uuid())
-        .arg(args.join(", "));
+        .arg(lines.size())
+        .arg(node.type())
+        .arg(args.join(", ")));
   }
+  return lines.join("\n");
 }
 
 QString NodeCompilerGLSL::compile_connection(const OutputPort& op, const InputPort& ip) const
@@ -107,7 +113,7 @@ QString NodeCompilerGLSL::compile_connection(const OutputPort& op, const InputPo
 
 QString NodeCompilerGLSL::define_node(const QString& node_type) const
 {
-  return "";
+  return Node::detail(node_type).definitions.at(language);
 }
 
 }  // namespace omm

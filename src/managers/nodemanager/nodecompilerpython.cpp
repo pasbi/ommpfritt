@@ -43,7 +43,7 @@ QString NodeCompilerPython::compile_node(const Node& node) const
     const QStringList uuids = ::transform<QString, QList>(ops, [](const OutputPort* op) {
       return op->uuid();
     });
-    return QString("%1 = %2(%3)").arg(uuids.join(", ")).arg(node.uuid()).arg(args.join(", "));
+    return QString("%1 = %2(%3)").arg(uuids.join(", ")).arg(node.type()).arg(args.join(", "));
   } else {
     return "";
   }
@@ -56,7 +56,7 @@ QString NodeCompilerPython::compile_connection(const OutputPort& op, const Input
 
 QString NodeCompilerPython::define_node(const QString& node_type) const
 {
-  return "";
+  return Node::detail(node_type).definitions.at(language);
 }
 
 }  // namespace omm

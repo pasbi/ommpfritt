@@ -17,13 +17,8 @@ enum class Operation { Addition, Difference, Multiplication, Division, Power };
 namespace omm
 {
 
-const Node::Detail MathNode::detail { { AbstractNodeCompiler::Language::Python } };
-
-QString MathNode::definition() const
-{
-  switch (language()) {
-  case AbstractNodeCompiler::Language::Python:
-    return QString(R"(
+const Node::Detail MathNode::detail { {
+    { AbstractNodeCompiler::Language::Python, QString(R"(
 def %1(op, a, b):
     import numpy as np
     def do_op(op, a, b):
@@ -47,13 +42,8 @@ def %1(op, a, b):
     if isinstance(result, np.ndarray):
         result = list(result)
     return result
-)").arg(uuid());
-  case AbstractNodeCompiler::Language::GLSL:
-    return "";
-  default:
-    Q_UNREACHABLE();
-    return "";
-  }
+)").arg(MathNode::TYPE) }
+                                      } };
 
 MathNode::MathNode(NodeModel& model)
   : Node(model)

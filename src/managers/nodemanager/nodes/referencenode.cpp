@@ -11,8 +11,10 @@
 namespace omm
 {
 
-const Node::Detail ReferenceNode::detail { { AbstractNodeCompiler::Language::Python,
-                                             AbstractNodeCompiler::Language::GLSL } };
+const Node::Detail ReferenceNode::detail { {
+    { AbstractNodeCompiler::Language::Python, "" },
+    { AbstractNodeCompiler::Language::GLSL, "" }
+ } };
 
 ReferenceNode::ReferenceNode(NodeModel& model)
   : Node(model)

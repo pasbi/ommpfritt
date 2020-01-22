@@ -9,7 +9,8 @@
 namespace omm
 {
 
-const Node::Detail FragmentNode::detail { { AbstractNodeCompiler::Language::GLSL } };
+const Node::Detail FragmentNode::detail { {
+    { AbstractNodeCompiler::Language::GLSL, "" } } };
 
 FragmentNode::FragmentNode(NodeModel& model)
   : Node(model)
@@ -22,12 +23,6 @@ bool FragmentNode::accepts_input_data_type(const QString& type, const InputPort&
 {
   assert(&port == m_input_port);
   return type == NodeCompilerTypes::COLOR_TYPE;
-}
-
-QString FragmentNode::definition() const
-{
-  assert(language() == AbstractNodeCompiler::Language::GLSL);
-  return "";
 }
 
 QString FragmentNode::port_name() const
