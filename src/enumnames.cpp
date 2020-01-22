@@ -25,7 +25,7 @@ template<> const char* enum_name_impl<Kind>(Kind e)
 
 template<> std::set<Kind> enumerate_enum<Kind>()
 {
-  return { Kind::Tag, Kind::Node, Kind::Style, Kind::Tool };
+  return { Kind::Tag, Kind::Node, Kind::Object, Kind::Style, Kind::Tool };
 }
 
 template<> const char* enum_name_impl<Flag>(Flag f)
