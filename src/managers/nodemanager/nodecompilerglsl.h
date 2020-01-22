@@ -10,7 +10,7 @@ class NodeCompilerGLSL : public NodeCompiler<NodeCompilerGLSL>
 public:
   explicit NodeCompilerGLSL(const NodeModel& model);
   static constexpr auto language = AbstractNodeCompiler::Language::GLSL;
-  static constexpr bool lazy = true;
+  static constexpr bool lazy = false;
   QString header() const;
   QString start_program() const;
   QString end_program() const;

@@ -10,7 +10,7 @@ class NodeCompilerPython : public NodeCompiler<NodeCompilerPython>
 public:
   explicit NodeCompilerPython(const NodeModel& model);
   static constexpr auto language = AbstractNodeCompiler::Language::Python;
-  static constexpr bool lazy = false;
+  static constexpr bool lazy = true;
   QString header() const;
   QString start_program() const;
   QString end_program() const;
