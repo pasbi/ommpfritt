@@ -18,7 +18,8 @@ class UserPropertyDialog: public QDialog
   Q_OBJECT
 public:
   explicit UserPropertyDialog(AbstractPropertyOwner& owner, QWidget* parent = nullptr);
-
+  explicit UserPropertyDialog(AbstractPropertyOwner& owner, const std::set<QString>& disabled_types,
+                              QWidget* parent = nullptr);
 public Q_SLOTS:
   void submit();
 

@@ -8,13 +8,25 @@
 #include "scene/history/historymodel.h"
 #include "commands/userpropertycommand.h"
 
+namespace
+{
+
+std::vector<QString> remove(const std::vector<QString>& types, const std::set<QString>& banned)
+{
+  return ::filter_if(types, [&banned](const QString& type) { return !::contains(banned, type); });
+}
+
+}  // namespace
+
 namespace omm
 {
 
-UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner &owner, QWidget *parent)
+UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner& owner,
+                                       const std::set<QString>& disabled_types,
+                                       QWidget* parent)
   : QDialog(parent)
   , m_ui(new Ui::UserPropertyDialog)
-  , m_property_types(::transform<QString, std::vector>(Property::keys()))
+  , m_property_types(remove(::transform<QString, std::vector>(Property::keys()), disabled_types))
   , m_owner(owner)
   , m_user_property_list_model(owner)
 {
@@ -52,6 +64,11 @@ UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner &owner, QWidget *pa
   connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(submit()));
   m_ui->cb_type->hide();
   m_ui->cb_animatable->hide();
+}
+
+UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner &owner, QWidget *parent)
+  : UserPropertyDialog(owner, {}, parent)
+{
 }
 
 void UserPropertyDialog::submit()
