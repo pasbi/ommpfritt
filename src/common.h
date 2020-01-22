@@ -173,12 +173,22 @@ template<typename T, typename Predicate> void erase_if(std::vector<T>& ts, const
   ts.erase(std::remove_if(ts.begin(), ts.end(), p), ts.end());
 }
 
-template<typename Ts, typename S> bool contains(const Ts& set, S&& key)
+template<template<typename...> typename Container, typename S, typename... Ts>
+bool contains(const Container<Ts...>& set, S&& key)
 {
   if constexpr (std::is_pointer_v<S> || std::is_reference_v<S>) {
     return std::find(set.begin(), set.end(), const_cast<std::remove_const_t<S>>(key)) != set.end();
   } else {
     return std::find(set.begin(), set.end(), key) != set.end();
+  }
+}
+
+template<typename S, typename... Ts> bool contains(const std::map<Ts...>& map, S&& key)
+{
+  if constexpr (std::is_pointer_v<S> || std::is_reference_v<S>) {
+    return map.find(const_cast<std::remove_const_t<S>>(key)) != map.end();
+  } else {
+    return map.find(key) != map.end();
   }
 }
 
