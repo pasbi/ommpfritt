@@ -51,10 +51,14 @@ protected:
     const InputPort* const target = nullptr;
     const Node* const node = nullptr;
     bool operator<(const Statement& other) const;
+    friend std::ostream& operator<<(std::ostream& ostream, const Statement& statement);
+
   private:
     std::set<const AbstractPort*> defines() const;
     std::set<const AbstractPort*> uses() const;
   };
+
+  friend std::ostream& operator<<(std::ostream& ostream, const omm::AbstractNodeCompiler::Statement& statement);
   void generate_statements(std::set<QString>& used_node_types, std::list<Statement>& statements);
   const NodeModel& model() const { return m_model; }
 Q_SIGNALS:

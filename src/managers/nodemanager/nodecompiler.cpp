@@ -61,6 +61,18 @@ bool AbstractNodeCompiler::Statement::operator<(const AbstractNodeCompiler::Stat
   }
 }
 
+std::ostream& operator<<(std::ostream& ostream, const AbstractNodeCompiler::Statement& statement)
+{
+  const auto format = [](const auto& set) -> QStringList {
+    return ::transform<QString, QList>(set, [](const auto* port) { return port->uuid(); });
+  };
+  ostream << QString("%1[%2 <= %3]")
+      .arg(statement.is_connection ? "connection" : "node")
+      .arg(format(statement.defines()).join(", "))
+      .arg(format(statement.uses()).join(", ")).toStdString();
+  return ostream;
+}
+
 std::set<const AbstractPort*> AbstractNodeCompiler::Statement::defines() const
 {
   if (is_connection) {
