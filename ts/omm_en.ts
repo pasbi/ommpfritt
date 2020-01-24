@@ -1595,6 +1595,13 @@ Remove the selected items anyway?</translation>
     </message>
 </context>
 <context>
+    <name>VertexNode</name>
+    <message>
+        <source>position</source>
+        <translation>Position</translation>
+    </message>
+</context>
+<context>
     <name>any-context</name>
     <message>
         <source>Cloner</source>
@@ -1759,6 +1766,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>DecomposeColorNode</source>
         <translation>Color decompose node</translation>
+    </message>
+    <message>
+        <source>VertexNode</source>
+        <translation>Vertex node</translation>
     </message>
 </context>
 <context>

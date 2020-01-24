@@ -69,12 +69,16 @@
 <context>
     <name>ComposeColorNode</name>
     <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>r</source>
         <translation type="unfinished">Radio</translation>
+    </message>
+    <message>
+        <source>color</source>
+        <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>g</source>
@@ -91,10 +95,6 @@
     <message>
         <source>Compose Color</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>color</source>
-        <translation type="unfinished">Color</translation>
     </message>
 </context>
 <context>
@@ -130,12 +130,16 @@
 <context>
     <name>DecomposeColorNode</name>
     <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>r</source>
         <translation type="unfinished">Radio</translation>
+    </message>
+    <message>
+        <source>color</source>
+        <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>g</source>
@@ -153,10 +157,6 @@
         <source>Decompose Color</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>color</source>
-        <translation type="unfinished">Color</translation>
-    </message>
 </context>
 <context>
     <name>DecomposeNode</name>
@@ -169,15 +169,15 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Decompose</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>vector</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1595,6 +1595,13 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
+    <name>VertexNode</name>
+    <message>
+        <source>position</source>
+        <translation type="unfinished">Posición</translation>
+    </message>
+</context>
+<context>
     <name>any-context</name>
     <message>
         <source>Cloner</source>
@@ -1758,6 +1765,10 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>DecomposeColorNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VertexNode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

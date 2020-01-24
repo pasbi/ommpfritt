@@ -10,6 +10,7 @@ file(GLOB SOURCES
   mathnode.cpp
   referencenode.cpp
   spynode.cpp
+  vertexnode.cpp
 )
 
 file(GLOB HEADERS
@@ -22,6 +23,7 @@ file(GLOB HEADERS
   mathnode.h
   referencenode.h
   spynode.h
+  vertexnode.h
 )
 
 target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})

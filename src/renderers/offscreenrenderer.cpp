@@ -9,14 +9,16 @@
 namespace
 {
 
-static constexpr auto vertex_shader_source = R"(
-attribute vec4 vertex;
-varying vec3 vert;
+static constexpr auto vertex_position_attribute_name = "vertex_attr";
+
+static const auto vertex_shader_source = QString(R"(
+attribute vec4 %1;
+varying vec2 %2;
 void main() {
-   vert = vertex.xyz;
-   gl_Position = vertex * 20.0;
+   %2 = %1.xy;
+   gl_Position = %1 * 20.0;
 }
-)";
+)").arg(vertex_position_attribute_name).arg(omm::OffscreenRenderer::vertex_position_name);
 
 static constexpr std::array<float, 18> m_quad = {
   -1.0, -1.0, 0.0,
@@ -69,11 +71,13 @@ void OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
 {
 #define deb(X) if (!(X)) { LERROR << #X" failed."; return; }
 
+  LINFO << "code:\n" << fragment_code;
+
   m_program = std::make_unique<QOpenGLShaderProgram>();
   deb(m_context.makeCurrent(&m_surface));
   deb(m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader_source));
   deb(m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_code));
-  m_program->bindAttributeLocation("vertex", 0);
+  m_program->bindAttributeLocation(vertex_position_attribute_name, 0);
   deb(m_program->link());
   deb(m_program->isLinked());
 #undef deb

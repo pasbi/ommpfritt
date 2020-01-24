@@ -28,6 +28,7 @@ public:
   void make_current();
 
   void set_uniform(const QString& name, const variant_type& value);
+  static constexpr auto vertex_position_name = "vertex";
 
 private:
   QOffscreenSurface m_surface;

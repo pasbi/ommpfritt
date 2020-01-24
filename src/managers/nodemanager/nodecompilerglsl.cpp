@@ -1,4 +1,5 @@
 #include "managers/nodemanager/nodecompilerglsl.h"
+#include "managers/nodemanager/nodes/vertexnode.h"
 #include "managers/nodemanager/ordinaryport.h"
 #include "managers/nodemanager/nodes/fragmentnode.h"
 #include "managers/nodemanager/nodemodel.h"
@@ -6,6 +7,7 @@
 #include "common.h"
 #include "managers/nodemanager/port.h"
 #include "managers/nodemanager/node.h"
+#include "renderers/offscreenrenderer.h"
 
 namespace
 {
@@ -69,6 +71,7 @@ QString NodeCompilerGLSL::header() const
   m_uniform_ports.clear();
   QStringList lines {
     "#version 330",
+    QString("varying vec2 %1;").arg(OffscreenRenderer::vertex_position_name),
     QString("out vec4 %1;").arg(output_variable_name)
   };
 
@@ -141,12 +144,22 @@ QString NodeCompilerGLSL::compile_node(const Node& node) const
       return op->flavor == PortFlavor::Ordinary;
     });
     for (OutputPort* port : sort_ports(ordinary_output_ports)) {
-      lines.push_back(QString("%1 %2 = %3_%4(%5);")
-          .arg(translate_type(port->data_type()))
-          .arg(port->uuid())
-          .arg(node.type())
-          .arg(lines.size())
-          .arg(args.join(", ")));
+      if (const Node& node = port->node; node.type() == VertexNode::TYPE) {
+        const auto& vertex_node = static_cast<const VertexNode&>(node);
+        if (port == &vertex_node.position_port()) {
+          lines.push_back(QString("%1 %2 = %3;")
+                          .arg(translate_type(port->data_type()))
+                          .arg(port->uuid())
+                          .arg(OffscreenRenderer::vertex_position_name));
+        }
+      } else {
+        lines.push_back(QString("%1 %2 = %3_%4(%5);")
+            .arg(translate_type(port->data_type()))
+            .arg(port->uuid())
+            .arg(node.type())
+            .arg(lines.size())
+            .arg(args.join(", ")));
+      }
     }
   }
 
