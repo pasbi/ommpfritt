@@ -25,9 +25,4 @@ bool FragmentNode::accepts_input_data_type(const QString& type, const InputPort&
   return type == NodeCompilerTypes::COLOR_TYPE;
 }
 
-QString FragmentNode::port_name() const
-{
-  return m_input_port->uuid();
-}
-
 }  // namespace

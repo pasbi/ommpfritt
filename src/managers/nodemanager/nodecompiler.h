@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -49,6 +50,10 @@ protected:
     const OutputPort* const source = nullptr;
     const InputPort* const target = nullptr;
     const Node* const node = nullptr;
+    bool operator<(const Statement& other) const;
+  private:
+    std::set<const AbstractPort*> defines() const;
+    std::set<const AbstractPort*> uses() const;
   };
   void generate_statements(std::set<QString>& used_node_types, std::list<Statement>& statements);
   const NodeModel& model() const { return m_model; }

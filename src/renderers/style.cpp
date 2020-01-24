@@ -170,11 +170,10 @@ std::unique_ptr<OffscreenRenderer> Style::init_offscreen_renderer() const
 void Style::update_uniform_values() const
 {
   if (m_offscreen_renderer) {
-    for (Port<PortType::Output>* port : node_model().ports<OutputPort>()) {
-      if (port->flavor == omm::PortFlavor::Property) {
-        const Property* property = static_cast<const PropertyOutputPort*>(port)->property();
-        m_offscreen_renderer->set_uniform(port->uuid(), property->variant_value());
-      }
+    for (AbstractPort* port : compiler()->uniform_ports()) {
+      assert(port->flavor == omm::PortFlavor::Property);
+      const Property* property = static_cast<const PropertyInputPort*>(port)->property();
+      m_offscreen_renderer->set_uniform(port->uuid(), property->variant_value());
     }
   }
 }

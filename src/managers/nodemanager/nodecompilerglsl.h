@@ -17,6 +17,10 @@ public:
   QString compile_node(const Node& node) const;
   QString compile_connection(const OutputPort& op, const InputPort& ip) const;
   QString define_node(const QString& node_type) const;
+  std::set<InputPort*> uniform_ports() const { return m_uniform_ports; }
+
+private:
+  mutable std::set<InputPort*> m_uniform_ports;
 };
 
 }  // namespace omm

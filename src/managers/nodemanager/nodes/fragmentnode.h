@@ -17,7 +17,7 @@ public:
   static constexpr auto COLOR_PROPERTY_KEY = "color";
 
   static const Detail detail;
-  QString port_name() const;
+  OrdinaryPort<PortType::Input>& input_port() const { return *m_input_port; }
 
 private:
   OrdinaryPort<PortType::Input>* m_input_port = nullptr;
