@@ -21,7 +21,7 @@ DecomposeNode::DecomposeNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
   create_property<FloatVectorProperty>(INPUT_PROPERTY_KEY, Vec2f(0.0, 0.0))
-      .set_label(tr("in")).set_category(category);
+      .set_label(tr("vector")).set_category(category);
   m_output_x_port = &add_port<OrdinaryPort<PortType::Output>>(tr("x"));
   m_output_y_port = &add_port<OrdinaryPort<PortType::Output>>(tr("y"));
 }

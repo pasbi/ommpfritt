@@ -67,6 +67,37 @@
     </message>
 </context>
 <context>
+    <name>ComposeColorNode</name>
+    <message>
+        <source>Node</source>
+        <translation>Node</translation>
+    </message>
+    <message>
+        <source>r</source>
+        <translation>r</translation>
+    </message>
+    <message>
+        <source>g</source>
+        <translation>g</translation>
+    </message>
+    <message>
+        <source>b</source>
+        <translation>b</translation>
+    </message>
+    <message>
+        <source>a</source>
+        <translation>a</translation>
+    </message>
+    <message>
+        <source>Compose Color</source>
+        <translation>Farbe erstellen</translation>
+    </message>
+    <message>
+        <source>color</source>
+        <translation>Farbe</translation>
+    </message>
+</context>
+<context>
     <name>ComposeNode</name>
     <message>
         <source>Node</source>
@@ -97,14 +128,41 @@
     </message>
 </context>
 <context>
-    <name>DecomposeNode</name>
+    <name>DecomposeColorNode</name>
     <message>
         <source>Node</source>
         <translation>Node</translation>
     </message>
     <message>
-        <source>in</source>
-        <translation>Eingang</translation>
+        <source>r</source>
+        <translation>r</translation>
+    </message>
+    <message>
+        <source>g</source>
+        <translation>g</translation>
+    </message>
+    <message>
+        <source>b</source>
+        <translation>b</translation>
+    </message>
+    <message>
+        <source>a</source>
+        <translation>a</translation>
+    </message>
+    <message>
+        <source>Decompose Color</source>
+        <translation>Farbe dekonstruieren</translation>
+    </message>
+    <message>
+        <source>color</source>
+        <translation>Farbe</translation>
+    </message>
+</context>
+<context>
+    <name>DecomposeNode</name>
+    <message>
+        <source>Node</source>
+        <translation>Node</translation>
     </message>
     <message>
         <source>x</source>
@@ -117,6 +175,10 @@
     <message>
         <source>Decompose</source>
         <translation>Aufteilen</translation>
+    </message>
+    <message>
+        <source>vector</source>
+        <translation>Vektor</translation>
     </message>
 </context>
 <context>
@@ -1689,6 +1751,14 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>FragmentNode</source>
         <translation>Fragment Node</translation>
+    </message>
+    <message>
+        <source>ComposeColorNode</source>
+        <translation>Farbe Konstruieren Node</translation>
+    </message>
+    <message>
+        <source>DecomposeColorNode</source>
+        <translation>Farbe Dekonstruieren Node</translation>
     </message>
 </context>
 <context>

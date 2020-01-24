@@ -67,6 +67,37 @@
     </message>
 </context>
 <context>
+    <name>ComposeColorNode</name>
+    <message>
+        <source>Node</source>
+        <translation>Node</translation>
+    </message>
+    <message>
+        <source>r</source>
+        <translation>r</translation>
+    </message>
+    <message>
+        <source>g</source>
+        <translation>g</translation>
+    </message>
+    <message>
+        <source>b</source>
+        <translation>b</translation>
+    </message>
+    <message>
+        <source>a</source>
+        <translation>a</translation>
+    </message>
+    <message>
+        <source>Compose Color</source>
+        <translation>Compose Color</translation>
+    </message>
+    <message>
+        <source>color</source>
+        <translation>Color</translation>
+    </message>
+</context>
+<context>
     <name>ComposeNode</name>
     <message>
         <source>x</source>
@@ -97,14 +128,41 @@
     </message>
 </context>
 <context>
-    <name>DecomposeNode</name>
+    <name>DecomposeColorNode</name>
     <message>
         <source>Node</source>
         <translation>Node</translation>
     </message>
     <message>
-        <source>in</source>
-        <translation>Input</translation>
+        <source>r</source>
+        <translation>r</translation>
+    </message>
+    <message>
+        <source>g</source>
+        <translation>g</translation>
+    </message>
+    <message>
+        <source>b</source>
+        <translation>b</translation>
+    </message>
+    <message>
+        <source>a</source>
+        <translation>a</translation>
+    </message>
+    <message>
+        <source>Decompose Color</source>
+        <translation>Decompose Color</translation>
+    </message>
+    <message>
+        <source>color</source>
+        <translation>Color</translation>
+    </message>
+</context>
+<context>
+    <name>DecomposeNode</name>
+    <message>
+        <source>Node</source>
+        <translation>Node</translation>
     </message>
     <message>
         <source>x</source>
@@ -117,6 +175,10 @@
     <message>
         <source>Decompose</source>
         <translation>Decompose</translation>
+    </message>
+    <message>
+        <source>vector</source>
+        <translation>vector</translation>
     </message>
 </context>
 <context>
@@ -1689,6 +1751,14 @@ Remove the selected items anyway?</translation>
     <message>
         <source>FragmentNode</source>
         <translation>Fragment node</translation>
+    </message>
+    <message>
+        <source>ComposeColorNode</source>
+        <translation>Compose color node</translation>
+    </message>
+    <message>
+        <source>DecomposeColorNode</source>
+        <translation>Color decompose node</translation>
     </message>
 </context>
 <context>
