@@ -1,4 +1,5 @@
 #include "managers/nodemanager/nodes/mathnode.h"
+#include "managers/nodemanager/nodecompilerglsl.h"
 #include "managers/nodemanager/ordinaryport.h"
 #include "properties/floatproperty.h"
 #include "managers/nodemanager/propertyport.h"
@@ -10,14 +11,34 @@ namespace
 {
 
 using namespace omm::NodeCompilerTypes;
-enum class Operation { Addition, Difference, Multiplication, Division, Power };
+enum class Operation { Addition, Difference, Multiplication, Division };
+std::set<QString> supported_glsl_types {
+  FLOATVECTOR_TYPE, INTEGER_TYPE, FLOAT_TYPE, COLOR_TYPE, INTEGERVECTOR_TYPE
+};
 
 }  // namespace
 
 namespace omm
 {
 
-const Node::Detail MathNode::detail { {
+const QString glsl_definition_template(R"(
+%1 %2_0(int op, %1 a, %1 b) {
+  if (op == 0) {
+    return a + b;
+  } else if (op == 1) {
+    return a - b;
+  } else if (op == 2) {
+    return a * b;
+  } else if (op == 3) {
+    return a / b;
+  } else {
+    // unreachable
+    return %1(0.0);
+  }
+})");
+
+const Node::Detail MathNode::detail {
+  {
     { AbstractNodeCompiler::Language::Python, QString(R"(
 def %1(op, a, b):
     import numpy as np
@@ -30,8 +51,6 @@ def %1(op, a, b):
             return a * b
         elif op == 3:
             return a / b
-        elif op == 4:
-            return a ** b
         else:
             return 0.0;
     if isinstance(a, list):
@@ -42,35 +61,36 @@ def %1(op, a, b):
     if isinstance(result, np.ndarray):
         result = list(result)
     return result
-)").arg(MathNode::TYPE) }
-                                      } };
+)").arg(MathNode::TYPE) },
+    { AbstractNodeCompiler::Language::GLSL,
+      ::transform<QString, QList>(supported_glsl_types, [](const QString& type) {
+        return glsl_definition_template.arg(NodeCompilerGLSL::translate_type(type));
+      }).join("\n").arg(MathNode::TYPE)
+    }
+  }
+};
 
 MathNode::MathNode(NodeModel& model)
   : Node(model)
 {
   const QString category = tr("Node");
-  create_property<OptionsProperty>(OPERATION_PROPERTY_KEY, 0.0)
-      .set_options({ tr("+"), tr("-"), tr("*"), tr("/"), tr("pow") })
+  auto& operation_property = create_property<OptionsProperty>(OPERATION_PROPERTY_KEY, 0.0)
+      .set_options({ tr("+"), tr("-"), tr("*"), tr("/") })
       .set_label(QObject::tr("Operation")).set_category(category);
-  create_property<FloatProperty>(A_PROPERTY_KEY, 0.0)
-      .set_label(QObject::tr("a")).set_category(category);
-  create_property<FloatProperty>(B_PROPERTY_KEY, 0.0)
-      .set_label(QObject::tr("b")).set_category(category);
-  m_result_port = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
+  m_a_input = &add_port<OrdinaryPort<PortType::Input>>(tr("afjei"));
+  m_b_input = &add_port<OrdinaryPort<PortType::Input>>(tr("bckeijr"));
+  m_output = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
+  m_operation_input = find_port<InputPort>(operation_property);
 }
 
 QString MathNode::output_data_type(const OutputPort& port) const
 {
-  if (&port == m_result_port) {
-    const QString type_a = find_port<InputPort>(*property(A_PROPERTY_KEY))->data_type();
-    const QString type_b = find_port<InputPort>(*property(B_PROPERTY_KEY))->data_type();
+  if (&port == m_output) {
+    const QString type_a = m_a_input->data_type();
+    const QString type_b = m_b_input->data_type();
     switch (language()) {
     case AbstractNodeCompiler::Language::GLSL:
-      if (type_a == type_b) {
-        return type_a;
-      } else {
-        return INVALID_TYPE;
-      }
+      return type_a;
     case AbstractNodeCompiler::Language::Python:
       using namespace NodeCompilerTypes;
       if (is_integral(type_a) && is_integral(type_b)) {
@@ -93,16 +113,45 @@ QString MathNode::output_data_type(const OutputPort& port) const
   return INVALID_TYPE;
 }
 
+QString MathNode::input_data_type(const InputPort& port) const
+{
+  Q_UNUSED(port)
+  if (const OutputPort* o_a = m_a_input->connected_output(); o_a != nullptr) {
+    return o_a->data_type();
+  } if (const OutputPort* o_b = m_b_input->connected_output(); o_b != nullptr) {
+    return o_b->data_type();
+  } else {
+    return NodeCompilerTypes::FLOAT_TYPE;
+  }
+}
+
 bool MathNode::accepts_input_data_type(const QString& type, const InputPort& port) const
 {
+  const auto glsl_accepts_type = [this, type, &port]() {
+    const InputPort& other_port = &port == m_a_input ? *m_b_input : *m_a_input;
+    using InputSet = std::set<const InputPort*>;
+    assert((InputSet { &port, &other_port }) == (InputSet { m_a_input, m_b_input }));
+    if (other_port.is_connected()) {
+      return type == other_port.data_type();
+    } else {
+      return ::contains(supported_glsl_types, type);
+    }
+  };
+
   assert(&port.node == this);
-  assert(port.flavor == PortFlavor::Property);
-  const auto* property = static_cast<const PropertyPort<PortType::Input>&>(port).property();
-  if (property == this->property(OPERATION_PROPERTY_KEY)) {
-    return Node::accepts_input_data_type(type, port);
+  if (&port == m_operation_input) {
+    return port.data_type() == type;
   } else {
-    // Math Node input shall accept anything
-    return true;
+    switch (language()) {
+    case AbstractNodeCompiler::Language::GLSL:
+      return glsl_accepts_type();
+    case AbstractNodeCompiler::Language::Python:
+      // Math Node input shall accept anything
+      return true;
+    default:
+      Q_UNREACHABLE();
+      return true;
+    }
   }
 }
 

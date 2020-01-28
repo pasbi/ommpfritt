@@ -14,26 +14,10 @@ namespace
 
 static constexpr auto output_variable_name = "out_color";
 
-QString translate_type(const QString& type)
-{
-  static const std::map<QString, QString> dict {
-    { "Color", "vec4" },
-    { "Reference", "uint" },
-    { "Bool", "bool" },
-    { "Float", "float" },
-    { "Integer", "int" },
-    { "FloatVector", "vec2" },
-    { "IntegerVector", "vec2i" },
-    { "Options", "int" }
-  };
-
-  return dict.at(type);
-}
-
 QString format_connection(const omm::AbstractPort& lhs, const omm::AbstractPort& rhs)
 {
   return QString("%1 %2 = %3;")
-      .arg(translate_type(lhs.data_type()))
+      .arg(omm::NodeCompilerGLSL::translate_type(lhs.data_type()))
       .arg(lhs.uuid())
       .arg(rhs.uuid());
 }
@@ -63,6 +47,23 @@ omm::AbstractPort* get_sibling(const omm::AbstractPort* port)
 
 namespace omm
 {
+
+QString NodeCompilerGLSL::translate_type(const QString& type)
+{
+  static const std::map<QString, QString> dict {
+    { "Color", "vec4" },
+    { "Reference", "uint" },
+    { "Bool", "bool" },
+    { "Float", "float" },
+    { "Integer", "int" },
+    { "FloatVector", "vec2" },
+    { "IntegerVector", "ivec2" },
+    { "Options", "int" }
+  };
+
+  return dict.at(type);
+}
+
 
 NodeCompilerGLSL::NodeCompilerGLSL(const NodeModel& model) : NodeCompiler(model) {  }
 

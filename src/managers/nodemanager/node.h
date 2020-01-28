@@ -81,6 +81,7 @@ public:
   virtual QString title() const;
 
   virtual QString output_data_type(const OutputPort& port) const;
+  virtual QString input_data_type(const InputPort& port) const;
   virtual bool accepts_input_data_type(const QString& type, const InputPort& port) const;
   virtual bool is_valid() const;
 

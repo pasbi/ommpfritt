@@ -125,6 +125,15 @@ QString Node::output_data_type(const OutputPort& port) const
   return NodeCompilerTypes::INVALID_TYPE;
 }
 
+QString Node::input_data_type(const InputPort& port) const
+{
+  if (OutputPort* op = port.connected_output(); op != nullptr) {
+    return op->data_type();
+  } else {
+    return NodeCompilerTypes::INVALID_TYPE;
+  }
+}
+
 bool Node::accepts_input_data_type(const QString& type, const InputPort& port) const
 {
   // do not perform any type conversions by default.

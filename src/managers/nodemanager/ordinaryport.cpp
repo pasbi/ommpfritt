@@ -6,11 +6,7 @@ namespace omm
 
 template<> QString OrdinaryPort<PortType::Input>::data_type() const
 {
-  if (OutputPort* op = connected_output(); op != nullptr) {
-    return op->data_type();
-  } else {
-    return NodeCompilerTypes::INVALID_TYPE;
-  }
+  return node.input_data_type(*this);
 }
 
 template<> QString OrdinaryPort<PortType::Output>::data_type() const
