@@ -8,6 +8,7 @@
 #include "managers/nodemanager/nodes/composecolornode.h"
 #include "managers/nodemanager/nodes/fragmentnode.h"
 #include "managers/nodemanager/nodes/vertexnode.h"
+#include "managers/nodemanager/nodes/colorconvertnode.h"
 
 namespace omm
 {
@@ -27,6 +28,7 @@ void register_nodes()
   REGISTER_NODE(DecomposeColorNode);
   REGISTER_NODE(ComposeColorNode);
   REGISTER_NODE(VertexNode);
+  REGISTER_NODE(ColorConvertNode);
 #undef REGISTER_NODE
 }
 

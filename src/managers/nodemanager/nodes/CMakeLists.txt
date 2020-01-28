@@ -2,6 +2,7 @@
 file(GLOB SOURCES
   constantnode.cpp
   composenode.cpp
+  colorconvertnode.cpp
   decomposenode.cpp
   decomposecolornode.cpp
   composecolornode.cpp
@@ -16,6 +17,7 @@ file(GLOB SOURCES
 file(GLOB HEADERS
   constantnode.h
   composenode.h
+  colorconvertnode.h
   decomposenode.h
   decomposecolornode.h
   composecolornode.h
