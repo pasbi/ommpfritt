@@ -79,7 +79,7 @@ QString ColorConvertNode::output_data_type(const OutputPort& port) const
 
 QString ColorConvertNode::title() const
 {
-  return tr("Compose");
+  return tr("Convert");
 }
 
 }  // namespace omm

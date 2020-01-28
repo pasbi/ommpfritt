@@ -77,8 +77,8 @@ MathNode::MathNode(NodeModel& model)
   auto& operation_property = create_property<OptionsProperty>(OPERATION_PROPERTY_KEY, 0.0)
       .set_options({ tr("+"), tr("-"), tr("*"), tr("/") })
       .set_label(QObject::tr("Operation")).set_category(category);
-  m_a_input = &add_port<OrdinaryPort<PortType::Input>>(tr("afjei"));
-  m_b_input = &add_port<OrdinaryPort<PortType::Input>>(tr("bckeijr"));
+  m_a_input = &add_port<OrdinaryPort<PortType::Input>>(tr("a"));
+  m_b_input = &add_port<OrdinaryPort<PortType::Input>>(tr("b"));
   m_output = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
   m_operation_input = find_port<InputPort>(operation_property);
 }

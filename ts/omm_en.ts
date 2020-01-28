@@ -32,6 +32,25 @@
     </message>
 </context>
 <context>
+    <name>ColorConvertNode</name>
+    <message>
+        <source>Node</source>
+        <translation>Node</translation>
+    </message>
+    <message>
+        <source>conversion</source>
+        <translation>Conversion</translation>
+    </message>
+    <message>
+        <source>color</source>
+        <translation>Color</translation>
+    </message>
+    <message>
+        <source>Convert</source>
+        <translation>Convert</translation>
+    </message>
+</context>
+<context>
     <name>ColorWidget</name>
     <message>
         <source>...</source>
@@ -71,22 +90,6 @@
     <message>
         <source>Node</source>
         <translation>Node</translation>
-    </message>
-    <message>
-        <source>r</source>
-        <translation>r</translation>
-    </message>
-    <message>
-        <source>g</source>
-        <translation>g</translation>
-    </message>
-    <message>
-        <source>b</source>
-        <translation>b</translation>
-    </message>
-    <message>
-        <source>a</source>
-        <translation>a</translation>
     </message>
     <message>
         <source>Compose Color</source>
@@ -350,10 +353,6 @@
         <translation>*</translation>
     </message>
     <message>
-        <source>pow</source>
-        <translation>Power</translation>
-    </message>
-    <message>
         <source>result</source>
         <translation>Result</translation>
     </message>
@@ -368,6 +367,14 @@
     <message>
         <source>/</source>
         <translation>/</translation>
+    </message>
+    <message>
+        <source>a</source>
+        <translation>a</translation>
+    </message>
+    <message>
+        <source>b</source>
+        <translation>b</translation>
     </message>
 </context>
 <context>
@@ -1417,14 +1424,6 @@ Remove the selected items anyway?</translation>
         <translation>Operation</translation>
     </message>
     <message>
-        <source>a</source>
-        <translation>a</translation>
-    </message>
-    <message>
-        <source>b</source>
-        <translation>b</translation>
-    </message>
-    <message>
         <source>undefined</source>
         <translation>undefined</translation>
     </message>
@@ -1770,6 +1769,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>VertexNode</source>
         <translation>Vertex node</translation>
+    </message>
+    <message>
+        <source>ColorConvertNode</source>
+        <translation>Color convert node</translation>
     </message>
 </context>
 <context>
@@ -2255,6 +2258,21 @@ Remove the selected items anyway?</translation>
     <message>
         <source>ColorCircle</source>
         <translation>Color Circle</translation>
+    </message>
+</context>
+<context>
+    <name>omm::ColorConvertNode</name>
+    <message>
+        <source>Identity</source>
+        <translation>Identity</translation>
+    </message>
+    <message>
+        <source>RGBA -&gt; HSVA</source>
+        <translation>RGBA -&gt; HSVA</translation>
+    </message>
+    <message>
+        <source>HSVA -&gt; RGBA</source>
+        <translation>HSVA -&gt; RGBA</translation>
     </message>
 </context>
 <context>

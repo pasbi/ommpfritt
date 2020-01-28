@@ -32,6 +32,25 @@
     </message>
 </context>
 <context>
+    <name>ColorConvertNode</name>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>conversion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>color</source>
+        <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Convert</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ColorWidget</name>
     <message>
         <source>...</source>
@@ -69,27 +88,11 @@
 <context>
     <name>ComposeColorNode</name>
     <message>
-        <source>r</source>
-        <translation type="unfinished">Radio</translation>
-    </message>
-    <message>
         <source>color</source>
         <translation type="unfinished">Color</translation>
     </message>
     <message>
         <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>g</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>b</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>a</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -354,10 +357,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>pow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>result</source>
         <translation type="unfinished"></translation>
     </message>
@@ -367,6 +366,14 @@
     </message>
     <message>
         <source> [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>a</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>b</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1417,14 +1424,6 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>a</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>b</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>undefined</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1769,6 +1768,10 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>VertexNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ColorConvertNode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2254,6 +2257,21 @@ Borrar la selección de todos modos?</translation>
     <name>omm::ColorCircle</name>
     <message>
         <source>ColorCircle</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::ColorConvertNode</name>
+    <message>
+        <source>Identity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RGBA -&gt; HSVA</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HSVA -&gt; RGBA</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

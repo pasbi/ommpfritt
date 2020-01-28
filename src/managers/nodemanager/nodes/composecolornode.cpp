@@ -21,16 +21,16 @@ ComposeColorNode::ComposeColorNode(NodeModel& model) : Node(model)
   const QString category = tr("Node");
   create_property<FloatProperty>(INPUT_R_PROPERTY_KEY, 0.0)
       .set_step(0.01).set_range(0.0, 1.0)
-      .set_label(tr("r")).set_category(category);
+      .set_label(tr("")).set_category(category);
   create_property<FloatProperty>(INPUT_G_PROPERTY_KEY, 0.0)
       .set_step(0.01).set_range(0.0, 1.0)
-      .set_label(tr("g")).set_category(category);
+      .set_label(tr("")).set_category(category);
   create_property<FloatProperty>(INPUT_B_PROPERTY_KEY, 0.0)
       .set_step(0.01).set_range(0.0, 1.0)
-      .set_label(tr("b")).set_category(category);
+      .set_label(tr("")).set_category(category);
   create_property<FloatProperty>(INPUT_A_PROPERTY_KEY, 0.0)
       .set_step(0.01).set_range(0.0, 1.0)
-      .set_label(tr("a")).set_category(category);
+      .set_label(tr("")).set_category(category);
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("color"));
 }
 

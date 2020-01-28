@@ -32,6 +32,25 @@
     </message>
 </context>
 <context>
+    <name>ColorConvertNode</name>
+    <message>
+        <source>Node</source>
+        <translation>Node</translation>
+    </message>
+    <message>
+        <source>conversion</source>
+        <translation>Konvertieren</translation>
+    </message>
+    <message>
+        <source>color</source>
+        <translation>Farbe</translation>
+    </message>
+    <message>
+        <source>Convert</source>
+        <translation>Konvertieren</translation>
+    </message>
+</context>
+<context>
     <name>ColorWidget</name>
     <message>
         <source>...</source>
@@ -71,22 +90,6 @@
     <message>
         <source>Node</source>
         <translation>Node</translation>
-    </message>
-    <message>
-        <source>r</source>
-        <translation>r</translation>
-    </message>
-    <message>
-        <source>g</source>
-        <translation>g</translation>
-    </message>
-    <message>
-        <source>b</source>
-        <translation>b</translation>
-    </message>
-    <message>
-        <source>a</source>
-        <translation>a</translation>
     </message>
     <message>
         <source>Compose Color</source>
@@ -350,10 +353,6 @@
         <translation>*</translation>
     </message>
     <message>
-        <source>pow</source>
-        <translation>Potenz</translation>
-    </message>
-    <message>
         <source>result</source>
         <translation>Ergebnis</translation>
     </message>
@@ -368,6 +367,14 @@
     <message>
         <source>/</source>
         <translation>/</translation>
+    </message>
+    <message>
+        <source>a</source>
+        <translation>a</translation>
+    </message>
+    <message>
+        <source>b</source>
+        <translation>b</translation>
     </message>
 </context>
 <context>
@@ -1417,14 +1424,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Operation</translation>
     </message>
     <message>
-        <source>a</source>
-        <translation>a</translation>
-    </message>
-    <message>
-        <source>b</source>
-        <translation>b</translation>
-    </message>
-    <message>
         <source>undefined</source>
         <translation>undefiniert</translation>
     </message>
@@ -1770,6 +1769,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>VertexNode</source>
         <translation>Vertex Node</translation>
+    </message>
+    <message>
+        <source>ColorConvertNode</source>
+        <translation>Farbe Konvertieren Node</translation>
     </message>
 </context>
 <context>
@@ -2255,6 +2258,21 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>ColorCircle</source>
         <translation>Farbkreis</translation>
+    </message>
+</context>
+<context>
+    <name>omm::ColorConvertNode</name>
+    <message>
+        <source>Identity</source>
+        <translation>Identität</translation>
+    </message>
+    <message>
+        <source>RGBA -&gt; HSVA</source>
+        <translation>RGBA -&gt; HSVA</translation>
+    </message>
+    <message>
+        <source>HSVA -&gt; RGBA</source>
+        <translation>HSVA -&gt; RGBA</translation>
     </message>
 </context>
 <context>
