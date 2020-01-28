@@ -103,35 +103,30 @@ std::set<Node*> AbstractNodeCompiler::nodes() const
 void AbstractNodeCompiler::
 generate_statements(std::set<QString>& used_node_types, std::list<Statement>& statements)
 {
-  static const auto is_terminal = [](Node* node) {
-    const auto output_ports = node->ports<OutputPort>();
-    return std::all_of(output_ports.begin(), output_ports.end(), [](OutputPort* op) {
-      return !op->is_connected();
-    });
-  };
-  std::list<Node*> todo = ::transform<Node*, std::list>(::filter_if(nodes(), is_terminal));
-  std::set<Node*> done;
-
-  statements.clear();
-  used_node_types.clear();
-
-  while (!todo.empty()) {
-    Node* node = todo.front();
-    used_node_types.insert(node->type());
-    todo.pop_front();
-    if (!::contains(done, node)) {
-      statements.emplace_front(*node);
-      for (const InputPort* ip : node->ports<InputPort>()) {
-        if (const OutputPort* op = ip->connected_output(); op != nullptr) {
-          statements.emplace_front(*op, *ip);
-          todo.push_back(&op->node);
-        }
+  const auto successors =  [](Node* node) {
+    std::set<Node*> descendants;
+    for (OutputPort* op : node->ports<OutputPort>()) {
+      for (InputPort* ip : op->connected_inputs()) {
+        descendants.insert(&ip->node);
       }
-      done.insert(node);
+    }
+    return descendants;
+  };
+
+  const auto [ has_cycle, sequence ] = topological_sort<Node*>(nodes(), successors);
+  assert(!has_cycle);
+
+  for (Node* node : sequence) {
+    used_node_types.insert(node->type());
+    statements.emplace_back(*node);
+    for (OutputPort* op : node->ports<OutputPort>()) {
+      for (InputPort* ip : op->connected_inputs()) {
+        statements.emplace_back(*op, *ip);
+      }
     }
   }
 
-  statements.sort();
 }
+
 
 }  // namespace omm

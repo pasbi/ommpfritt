@@ -372,6 +372,56 @@ std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT&> operator&=(EnumT&
   return a;
 }
 
+template<typename Vertex> std::pair<bool, std::list<Vertex>>
+topological_sort(std::set<Vertex> vertices,
+                 const std::function<std::set<Vertex>(Vertex)>& successors)
+{
+  // Kahn's algorithm
+
+  std::list<Vertex> sequence;
+  std::set<Vertex> next_vertices = vertices;
+  std::map<Vertex, std::set<Vertex>> edges;
+  for (Vertex vertex : vertices) {
+    for (Vertex successor : successors(vertex)) {
+      edges[successor].insert(vertex);
+      next_vertices.erase(successor);
+    }
+  }
+
+  while (!next_vertices.empty()) {
+    auto it = next_vertices.begin();
+    Vertex vertex = *it;
+    next_vertices.erase(it);
+    sequence.push_back(vertex);
+    for (Vertex successor : successors(vertex)) {
+      edges[successor].erase(vertex);
+      if (edges[successor].empty()) {
+        next_vertices.insert(successor);
+      }
+    }
+  }
+
+  const bool has_cycles = edges.empty();
+  return { has_cycles, sequence };
+}
+
+template<typename Vertex> bool
+find_path(Vertex start, Vertex target, std::list<Vertex>& path,
+          const std::function<std::set<Vertex>(Vertex)>& get_successors)
+{
+  if (start == target) {
+    return true;
+  } else {
+    for (Vertex successor : get_successors(start)) {
+      if (find_path(successor, target, path, get_successors)) {
+        path.push_back(successor);
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
 enum class Space { Viewport, Scene };
 
 }  // namespace omm
