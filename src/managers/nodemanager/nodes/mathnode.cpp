@@ -11,7 +11,6 @@ namespace
 {
 
 using namespace omm::NodeCompilerTypes;
-enum class Operation { Addition, Difference, Multiplication, Division };
 std::set<QString> supported_glsl_types {
   FLOATVECTOR_TYPE, INTEGER_TYPE, FLOAT_TYPE, COLOR_TYPE, INTEGERVECTOR_TYPE
 };

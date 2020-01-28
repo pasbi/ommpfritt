@@ -7,6 +7,8 @@ file(GLOB SOURCES
   decomposecolornode.cpp
   composecolornode.cpp
   fragmentnode.cpp
+  functionnode.cpp
+  function2node.cpp
   nodesregister.cpp
   mathnode.cpp
   referencenode.cpp
@@ -22,6 +24,8 @@ file(GLOB HEADERS
   decomposecolornode.h
   composecolornode.h
   fragmentnode.h
+  functionnode.h
+  function2node.h
   mathnode.h
   referencenode.h
   spynode.h
