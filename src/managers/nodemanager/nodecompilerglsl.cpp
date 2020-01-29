@@ -114,7 +114,9 @@ QString NodeCompilerGLSL::end_program() const
     const auto* fragment_node = static_cast<const FragmentNode*>(*fragment_nodes.begin());
     const auto& port = fragment_node->input_port();
     if (port.is_connected()) {
-      lines.push_back(QString("%1 = %2;").arg(output_variable_name).arg(port.uuid()));
+      lines.push_back(QString("%1 = vec4(%2.a * %2.rgb, %2.a);")
+                      .arg(output_variable_name)
+                      .arg(port.uuid()));
     }
   }
 
