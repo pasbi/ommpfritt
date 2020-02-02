@@ -84,6 +84,7 @@ public:
   virtual QString input_data_type(const InputPort& port) const;
   virtual bool accepts_input_data_type(const QString& type, const InputPort& port) const;
   virtual bool is_valid() const;
+  std::unique_ptr<Node> clone(NodeModel& model) const;
 
 protected:
   template<typename PortT, typename... Args> PortT& add_port(Args&&... args)

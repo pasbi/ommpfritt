@@ -151,6 +151,14 @@ bool Node::is_valid() const
   return true;
 }
 
+std::unique_ptr<Node> Node::clone(NodeModel& model) const
+{
+  auto clone = Node::make(type(), model);
+  copy_properties(*clone, CopiedProperties::User | CopiedProperties::Compatible);
+  clone->set_pos(pos());
+  return clone;
+}
+
 AbstractPort& Node::add_port(std::unique_ptr<AbstractPort> port)
 {
   auto& ref = *port;
