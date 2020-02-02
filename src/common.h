@@ -396,12 +396,13 @@ topological_sort(std::set<Vertex> vertices,
     for (Vertex successor : successors(vertex)) {
       edges[successor].erase(vertex);
       if (edges[successor].empty()) {
+        edges.erase(successor);
         next_vertices.insert(successor);
       }
     }
   }
 
-  const bool has_cycles = edges.empty();
+  const bool has_cycles = !edges.empty();
   return { has_cycles, sequence };
 }
 

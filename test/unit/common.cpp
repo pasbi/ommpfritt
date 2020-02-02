@@ -17,35 +17,64 @@ private:
   int id;
 };
 
-std::map<int, Vertex*> test_case()
+using id_type = int;
+using test_case_type = std::map<id_type, std::unique_ptr<Vertex>>;
+
+test_case_type make_test(const std::set<int>& ids)
 {
-  // Wikipedia has a drawing of our test graph:
+  test_case_type vertices;
+  for (int id : ids) {
+    vertices.insert({ id, std::make_unique<Vertex>(id) });
+  }
+  return vertices;
+}
+
+void connect(const test_case_type& vertices, id_type from, id_type to)
+{
+  vertices.at(from)->successors.insert(vertices.at(to).get());
+}
+
+test_case_type wiki_test_case()
+{
+  // Wikipedia has a drawing of test test graph:
   // https://en.wikipedia.org/wiki/Topological_sorting#/media/File:Directed_acyclic_graph_2.svg
 
-  std::map<int, Vertex*> vertices;
-  for (int id : { 2, 3, 5, 7, 8, 9, 10, 11 }) {
-    vertices.insert({ id, new Vertex(id) });
-  }
-
-  vertices[5]->successors.insert(vertices[11]);
-  vertices[11]->successors.insert(vertices[2]);
-  vertices[11]->successors.insert(vertices[9]);
-  vertices[11]->successors.insert(vertices[10]);
-  vertices[7]->successors.insert(vertices[11]);
-  vertices[7]->successors.insert(vertices[8]);
-  vertices[3]->successors.insert(vertices[8]);
-  vertices[3]->successors.insert(vertices[10]);
-  vertices[8]->successors.insert(vertices[9]);
+  test_case_type vertices = make_test({ 2, 3, 5, 7, 8, 9, 10, 11 });
+  connect(vertices,  5, 11);
+  connect(vertices, 11,  2);
+  connect(vertices, 11,  9);
+  connect(vertices, 11, 10);
+  connect(vertices,  7, 11);
+  connect(vertices,  7,  8);
+  connect(vertices,  3,  8);
+  connect(vertices,  3, 10);
+  connect(vertices,  8,  9);
 
   assert(vertices.size() == 8);
   return vertices;
 }
 
-void clean_up_test_case(std::map<int, Vertex*> vertices)
+test_case_type empty_test_case()
 {
-  for (auto [_ ,v] : vertices) {
-    delete v;
-  }
+  return make_test({ });
+}
+
+test_case_type single_vertex_test_case()
+{
+  return make_test({ 0 });
+}
+
+test_case_type cycle_test_case()
+{
+  test_case_type vertices = make_test({ 0, 1 });
+  connect(vertices, 0, 1);
+  connect(vertices, 1, 0);
+  return vertices;
+}
+
+template<typename T> std::set<Vertex*> get_vertices(const std::map<T, std::unique_ptr<Vertex>>& map)
+{
+  return ::transform<Vertex*, std::set>(map, [](auto&& p) { return p.second.get(); });
 }
 
 std::set<Vertex*> get_successors(const Vertex* v)
@@ -53,18 +82,23 @@ std::set<Vertex*> get_successors(const Vertex* v)
   return v->successors;
 }
 
+decltype(auto) topological_sort(const test_case_type& test_case)
+{
+  return omm::topological_sort<Vertex*>(get_vertices(test_case), get_successors);
+}
+
 }  // namespace
 
 TEST(common, find_path)
 {
-  const auto vs = test_case();
+  const auto test_case = wiki_test_case();
 
 #define check_path(start_id, end_id, expect_exists) \
   do { \
     std::list<Vertex*> path; \
-    Vertex* start = vs.at(start_id); \
-    Vertex* end = vs.at(end_id); \
-    bool actual_exists = omm::find_path<Vertex*>(start, end, path, get_successors); \
+    Vertex& start = *test_case.at(start_id); \
+    Vertex& end = *test_case.at(end_id); \
+    bool actual_exists = omm::find_path<Vertex*>(&start, &end, path, get_successors); \
     EXPECT_EQ(actual_exists, expect_exists); \
   } while (false)
 
@@ -131,19 +165,33 @@ TEST(common, find_path)
   check_path(10, 2,  false);
   check_path(10, 9,  false);
   check_path(10, 5,  false);
+}
 
-  clean_up_test_case(vs);
+TEST(common, tsort_simple)
+{
+  {
+    const auto [has_cycle, sequence] = ::topological_sort(empty_test_case());
+    EXPECT_FALSE(has_cycle);
+    EXPECT_TRUE(sequence.empty());
+  }
+  {
+    const auto [ has_cycle, sequence ] = ::topological_sort(single_vertex_test_case());
+    EXPECT_FALSE(has_cycle);
+  }
+}
+
+TEST(common, tsort_cycle)
+{
+  {
+    const auto [ has_cycle, sequence ] = topological_sort(cycle_test_case());
+    EXPECT_TRUE(has_cycle);
+  }
 }
 
 TEST(common, tsort)
 {
-  const auto vs = test_case();
-
-  std::set<Vertex*> vertices;
-  for (auto [id, v] : vs) {
-    vertices.insert(v);
-  }
-  const auto [ has_cycle, sequence ] = omm::topological_sort<Vertex*>(vertices, get_successors);
+  const auto test_case = wiki_test_case();
+  const auto [ has_cycle, sequence ] = topological_sort(test_case);
   const std::vector v_seq(sequence.begin(), sequence.end());
   for (std::size_t i = 0; i < v_seq.size(); ++i) {
     for (std::size_t j = 0; j < i; ++j) {
@@ -152,6 +200,5 @@ TEST(common, tsort)
       EXPECT_FALSE(omm::find_path<Vertex*>(v_seq.at(i), v_seq.at(j), path_i_j, get_successors));
     }
   }
-
-  clean_up_test_case(vs);
+  EXPECT_FALSE(has_cycle);
 }
