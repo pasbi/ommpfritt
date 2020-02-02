@@ -1,4 +1,8 @@
 #include "managers/nodemanager/nodeview.h"
+#include "commands/nodecommand.h"
+#include "managers/nodemanager/nodemimedata.h"
+#include <QClipboard>
+#include <QApplication>
 #include "properties/referenceproperty.h"
 #include <QMimeData>
 #include "scene/propertyownermimedata.h"
@@ -127,9 +131,83 @@ void NodeView::update_scene_selection()
   m_model->scene().set_selection(::transform<AbstractPropertyOwner*>(m_selection, ::identity));
 }
 
+bool NodeView::accepts_paste(const QMimeData &mime_data) const
+{
+  if (NodeModel* model = this->model(); model != nullptr) {
+    return mime_data.hasFormat(NodeMimeData::MIME_TYPES.at(model->language()));
+  } else {
+    return false;
+  }
+}
+
+void NodeView::copy_to_clipboard()
+{
+  if (NodeModel* model = this->model(); model != nullptr) {
+    auto mime_data = std::make_unique<NodeMimeData>(model->language(), selected_nodes());
+    QApplication::clipboard()->setMimeData(mime_data.release());
+  }
+}
+
+void NodeView::paste_from_clipboard()
+{
+  const QMimeData& mime_data = *QApplication::clipboard()->mimeData();
+  if (accepts_paste(mime_data)) {
+    NodeModel& model = *this->model();
+    const auto nodes = ::transform<Node*, std::vector>(static_cast<const NodeMimeData&>(mime_data).nodes());
+
+    std::map<const Node*, Node*> copy_map;
+    auto copies = ::transform<std::unique_ptr<Node>, std::vector>(nodes,
+                                                                  [&model, &copy_map](Node* node)
+    {
+      auto clone = node->clone(model);
+      copy_map[node] = clone.get();
+      return clone;
+    });
+
+    { // set position
+      const auto old_center = std::accumulate(nodes.begin(), nodes.end(), QPointF(),
+                                          [](const QPointF& p, const Node* node)
+      {
+        return node->pos() + p;
+      }) / nodes.size();
+      const auto diff = get_insert_position(mapFromGlobal(QCursor::pos())) - old_center;
+      for (auto& node : copies) {
+        node->set_pos(node->pos() + diff);
+      }
+    }
+
+    if (!copies.empty()) {
+      Scene& scene = model.scene();
+
+      auto macro = scene.history().start_macro(tr("Copy Nodes"));
+
+      { // restore connections
+        for (auto&& [o_target, c_target] : copy_map) {
+          for (const InputPort* o_input : o_target->ports<InputPort>()) {
+            if (const OutputPort* o_output = o_input->connected_output(); o_output != nullptr) {
+              const Node& o_source = o_output->node;
+              if (::contains(copy_map, &o_source)) {
+                const Node& c_source = *copy_map.at(&o_source);
+                OutputPort& c_output = *c_source.find_port<OutputPort>(o_output->index);
+                InputPort& c_input = *c_target->find_port<InputPort>(o_input->index);
+                scene.submit<ConnectPortsCommand>(c_output, c_input);
+              }
+            }
+          }
+        }
+      }
+
+      // insert nodes
+      scene.submit<AddNodesCommand>(model, std::move(copies));
+    }
+
+    m_selection = ::transform<Node*, std::set>(copy_map, [](auto&& pair) { return pair.second; });
+  }
+}
+
 bool NodeView::can_drop(const QDropEvent& event) const
 {
-  const auto& mime_data = *event.mimeData();
+  const QMimeData& mime_data = *event.mimeData();
   if (event.dropAction() != Qt::LinkAction) {
     return false;
   } else if (mime_data.hasFormat(PropertyOwnerMimeData::MIME_TYPE)) {

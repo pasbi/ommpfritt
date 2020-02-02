@@ -8,7 +8,7 @@ file(GLOB SOURCES
   nodecompiler.cpp
   nodecompilerpython.cpp
   nodecompilerglsl.cpp
-  nodetopythoncompiler.cpp
+  nodemimedata.cpp
   nodesowner.cpp
   port.cpp
   propertyport.cpp
@@ -24,7 +24,7 @@ file(GLOB HEADERS
   nodecompiler.h
   nodecompilerpython.h
   nodecompilerglsl.cpp
-  nodetopythoncompiler.h
+  nodemimedata.h
   nodesowner.h
   port.h
   propertyport.cpp

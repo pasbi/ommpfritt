@@ -8,6 +8,7 @@
 
 class QPainter;
 class QMenu;
+class QMimeData;
 
 namespace omm
 {
@@ -35,6 +36,11 @@ public:
   QRectF node_geometry(const Node& node) const;
   void populate_context_menu(QMenu& menu) const;
   void pan_to_center();
+  bool accepts_paste(const QMimeData& mime_data) const;
+
+public Q_SLOTS:
+  void copy_to_clipboard();
+  void paste_from_clipboard();
 
 protected:
   void paintEvent(QPaintEvent*) override;

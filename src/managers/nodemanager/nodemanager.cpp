@@ -1,4 +1,6 @@
 #include "managers/nodemanager/nodemanager.h"
+#include <QMimeData>
+#include <QClipboard>
 #include "managers/nodemanager/nodemanagertitlebar.h"
 #include "managers/nodemanager/nodesowner.h"
 #include "commands/nodecommand.h"
@@ -80,9 +82,15 @@ std::unique_ptr<QMenu> NodeManager::make_context_menu()
     menu->setEnabled(!m_ui->nodeview->selected_nodes().empty());
     return menu;
   };
+  const auto eiff_clipboard_has_nodes = [this](auto&& menu) {
+    menu->setEnabled(m_ui->nodeview->accepts_paste(*QApplication::clipboard()->mimeData()));
+    return menu;
+  };
 
   menu->addMenu(eiff_model_available(make_add_nodes_menu(kb).release()));
   menu->addAction(eiff_node_selected(kb.make_menu_action(*this, "remove nodes").release()));
+  menu->addAction(eiff_node_selected(kb.make_menu_action(*this, "copy").release()));
+  menu->addAction(eiff_clipboard_has_nodes(kb.make_menu_action(*this, "paste").release()));
 
   return menu;
 }
@@ -93,6 +101,10 @@ bool NodeManager::perform_action(const QString& name)
     m_ui->nodeview->abort();
   } else if (name == "remove nodes") {
     m_ui->nodeview->remove_selection();
+  } else if (name == "copy") {
+    m_ui->nodeview->copy_to_clipboard();
+  } else if (name == "paste") {
+    m_ui->nodeview->paste_from_clipboard();
   } else if (::contains(Node::keys(), name)) {
     std::vector<std::unique_ptr<Node>> nodes;
     auto& model = *m_ui->nodeview->model();
