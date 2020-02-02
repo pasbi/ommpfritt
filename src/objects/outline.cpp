@@ -125,7 +125,7 @@ void Outline::on_property_value_changed(Property *property)
 std::unique_ptr<Object> Outline::convert() const
 {
   auto converted = m_outline->clone();
-  copy_properties(*converted);
+  copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
   copy_tags(*converted);
   converted->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
   return std::unique_ptr<Object>(converted.release());

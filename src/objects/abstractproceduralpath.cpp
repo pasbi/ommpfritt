@@ -34,7 +34,7 @@ Flag AbstractProceduralPath::flags() const
 std::unique_ptr<Object> AbstractProceduralPath::convert() const
 {
   auto converted = std::make_unique<Path>(scene());
-  copy_properties(*converted);
+  copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
   copy_tags(*converted);
   converted->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed());
   converted->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);

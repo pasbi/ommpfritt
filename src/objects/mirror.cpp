@@ -74,7 +74,7 @@ Flag Mirror::flags() const { return Object::flags() | Flag::Convertible; }
 std::unique_ptr<Object> Mirror::convert() const
 {
   std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
-  copy_properties(*converted);
+  copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
   copy_tags(*converted);
 
   if (m_reflection) {

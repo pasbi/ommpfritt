@@ -159,17 +159,31 @@ std::ostream& operator<<(std::ostream& ostream, const AbstractPropertyOwner* apo
   return ostream;
 }
 
-void AbstractPropertyOwner::copy_properties(AbstractPropertyOwner& target) const
+void AbstractPropertyOwner::copy_properties(AbstractPropertyOwner& target, CopiedProperties flags) const
 {
   const auto keys = [](const AbstractPropertyOwner& o) {
     return ::transform<QString, std::set>(o.properties().keys(), ::identity);
   };
 
-  for (const auto& key : ::intersect(keys(target), keys(*this))) {
+  const auto target_keys = keys(target);
+  const auto this_keys = keys(*this);
+  if (!!(flags & CopiedProperties::Compatible)) {
+    for (const auto& key : ::intersect(target_keys, this_keys)) {
+      const auto& p = *property(key);
+      auto& other_property = *target.property(key);
+      if (other_property.is_compatible(p)) {
+        other_property.set(p.variant_value());
+      }
+    }
+  }
+
+  for (const auto& key : this_keys) {
     const auto& p = *property(key);
-    auto& other_property = *target.property(key);
-    if (other_property.is_compatible(p)) {
-      other_property.set(p.variant_value());
+    const bool key_exists = ::contains(target_keys, key);
+    if (!!(flags & CopiedProperties::New) && !key_exists) {
+      target.add_property(key, p.clone());
+    } else if (!!(flags & CopiedProperties::User) && p.is_user_property() && !key_exists) {
+      target.add_property(key, p.clone());
     }
   }
 }

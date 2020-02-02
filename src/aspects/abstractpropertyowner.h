@@ -71,7 +71,8 @@ public:
   }
 
   virtual std::unique_ptr<Property> extract_property(const QString& key);
-  void copy_properties(AbstractPropertyOwner& target) const;
+  enum class CopiedProperties { Compatible = 0x1, New = 0x2, User = 0x3 };
+  void copy_properties(AbstractPropertyOwner& target, CopiedProperties flags) const;
 
   std::size_t id() const;
   Scene* scene() const { return m_scene; }
@@ -96,5 +97,6 @@ public:
 
 };
 
-
 }  // namespace omm
+
+template<> struct omm::EnableBitMaskOperators<omm::AbstractPropertyOwner::CopiedProperties> : std::true_type {};

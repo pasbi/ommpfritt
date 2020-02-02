@@ -254,7 +254,7 @@ Flag Cloner::flags() const
 std::unique_ptr<Object> Cloner::convert() const
 {
   std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
-  copy_properties(*converted);
+  copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
   copy_tags(*converted);
 
   for (std::size_t i = 0; i < m_clones.size(); ++i) {

@@ -181,7 +181,7 @@ void Style::update_uniform_values() const
 std::unique_ptr<Style> Style::clone() const
 {
   auto clone = std::make_unique<Style>(scene());
-  copy_properties(*clone);
+  copy_properties(*clone, CopiedProperties::Compatible);
   return clone;
 }
 

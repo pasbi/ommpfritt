@@ -103,7 +103,7 @@ std::unique_ptr<Object> Instance::convert() const
     const auto* reference = referenced_object();
     if (reference != nullptr) {
       clone = reference->clone();
-      copy_properties(*clone);
+      copy_properties(*clone, CopiedProperties::Compatible | CopiedProperties::User);
       copy_tags(*clone);
     }
   }
