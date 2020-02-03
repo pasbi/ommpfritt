@@ -1,4 +1,5 @@
 #include "managers/nodemanager/nodecompiler.h"
+#include "properties/stringproperty.h"
 #include "managers/nodemanager/port.h"
 #include "managers/nodemanager/node.h"
 #include "managers/nodemanager/nodemodel.h"
@@ -88,6 +89,21 @@ std::set<const AbstractPort*> AbstractNodeCompiler::Statement::uses() const
     return { source };
   } else {
     return ::transform<const AbstractPort*>(node->ports<InputPort>(), ::identity);
+  }
+}
+
+const std::set<QString> AbstractNodeCompiler::supported_types(AbstractNodeCompiler::Language language)
+{
+  switch (language) {
+  case AbstractNodeCompiler::Language::Python:
+    return Property::keys();
+  case AbstractNodeCompiler::Language::GLSL:
+    return ::filter_if(Property::keys(), [](const auto& c) {
+      return c != StringProperty::TYPE;
+    });
+  default:
+    Q_UNREACHABLE();
+    return std::set<QString>();
   }
 }
 

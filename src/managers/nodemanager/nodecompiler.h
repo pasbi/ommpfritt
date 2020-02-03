@@ -39,6 +39,7 @@ class AbstractNodeCompiler : public QObject
   Q_OBJECT
 public:
   enum class Language { Python, GLSL };
+  static const std::set<QString> supported_types(Language language);
 protected:
   AbstractNodeCompiler(const NodeModel& model);
   std::set<Node*> nodes() const;

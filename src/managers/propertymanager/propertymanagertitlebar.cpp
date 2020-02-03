@@ -19,7 +19,7 @@ PropertyManagerTitleBar::PropertyManagerTitleBar(PropertyManager& parent)
   open_user_property_dialog_button->setText("U");
   open_user_property_dialog_button->setFixedSize(24, 24);
   connect(open_user_property_dialog_button.get(), &QPushButton::clicked, this, [this, &parent]() {
-    auto dialog = UserPropertyDialog(*m_first_selected, &parent);
+    auto dialog = UserPropertyDialog(*m_first_selected, Property::keys(), &parent);
     dialog.exec();
   });
 
