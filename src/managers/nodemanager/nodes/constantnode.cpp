@@ -1,4 +1,5 @@
 #include "managers/nodemanager/nodes/constantnode.h"
+#include "managers/nodemanager/nodemodel.h"
 #include "properties/stringproperty.h"
 #include "variant.h"
 #include "scene/scene.h"
@@ -21,7 +22,8 @@ void ConstantNode::populate_menu(QMenu& menu)
 {
   QAction* edit_port_action = menu.addAction(tr("Edit ports ..."));
   connect(edit_port_action, &QAction::triggered, [this, &menu]() {
-    auto dialog = UserPropertyDialog(*this, { StringProperty::TYPE }, &menu);
+    const std::set<QString> types = AbstractNodeCompiler::supported_types(model().language());
+    auto dialog = UserPropertyDialog(*this, types, &menu);
     dialog.exec();
   });
 }

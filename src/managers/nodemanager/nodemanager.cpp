@@ -1,4 +1,6 @@
 #include "managers/nodemanager/nodemanager.h"
+#include "managers/nodemanager/nodes/constantnode.h"
+#include "managers/nodemanager/nodecompiler.h"
 #include <QMimeData>
 #include <QClipboard>
 #include "managers/nodemanager/nodemanagertitlebar.h"
@@ -123,7 +125,7 @@ bool NodeManager::perform_action(const QString& name)
 std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
 {
   auto menu = std::make_unique<QMenu>(tr("Add Node ..."));
-  if (const NodeModel* model = m_ui->nodeview->model(); model != nullptr) {
+  if (NodeModel* model = m_ui->nodeview->model(); model != nullptr) {
     const auto language = model->language();
     for (const QString& name : Node::keys()) {
       if (::contains(Node::detail(name).definitions, language)) {
@@ -131,6 +133,27 @@ std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
         auto action = kb.make_menu_action(*this, name);
         menu->addAction(action.release());
       }
+    }
+
+    {
+      auto quick_constant_node_actions_menu = std::make_unique<QMenu>(tr("Constant ..."));
+      const auto types = AbstractNodeCompiler::supported_types(model->language());
+      for (const QString& type : types) {
+        const QString label = QApplication::translate("Property", type.toStdString().c_str());
+        auto action = std::make_unique<QAction>(label);
+        connect(action.get(), &QAction::triggered, [type, model, label, this]() {
+          auto node = std::make_unique<ConstantNode>(*model);
+          auto property = Property::make(type);
+          property->set_category(Property::USER_PROPERTY_CATEGROY_NAME);
+          property->set_label(label);
+          node->add_property(type, std::move(property));
+          std::vector<std::unique_ptr<Node>> nodes;
+          nodes.push_back(std::move(node));
+          scene().submit<AddNodesCommand>(*model, std::move(nodes));
+        });
+        quick_constant_node_actions_menu->addAction(action.release());
+      }
+      menu->addMenu(quick_constant_node_actions_menu.release());
     }
   }
   return menu;

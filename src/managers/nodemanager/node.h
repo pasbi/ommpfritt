@@ -100,11 +100,12 @@ protected:
 
   AbstractPort& add_port(std::unique_ptr<AbstractPort> port);
   std::unique_ptr<AbstractPort> remove_port(const AbstractPort& port);
+  std::map<QString, AbstractPort*> named_ports;
 
+public:
   Property& add_property(const QString& key, std::unique_ptr<Property> property) override;
   std::unique_ptr<Property> extract_property(const QString& key) override;
 
-  std::map<QString, AbstractPort*> named_ports;
 
 Q_SIGNALS:
   void pos_changed();
