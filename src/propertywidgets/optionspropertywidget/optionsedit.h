@@ -6,7 +6,17 @@
 namespace omm
 {
 
-class OptionsEdit : public QComboBox, public MultiValueEdit<size_t>
+class PrefixComboBox : public QComboBox
+{
+public:
+  using QComboBox::QComboBox;
+  QString prefix;
+
+protected:
+  void paintEvent(QPaintEvent*) override;
+};
+
+class OptionsEdit : public PrefixComboBox, public MultiValueEdit<size_t>
 {
 public:
   void set_options(const std::vector<QString>& options);

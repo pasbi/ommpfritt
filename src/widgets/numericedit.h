@@ -20,6 +20,10 @@ class AbstractNumericEdit : public QLineEdit
   Q_OBJECT
 public:
   using QLineEdit::QLineEdit;
+  QString label;
+
+protected:
+  void paintEvent(QPaintEvent*) override;
 
 Q_SIGNALS:
   void value_changed();

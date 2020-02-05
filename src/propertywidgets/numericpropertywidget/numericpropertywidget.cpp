@@ -20,7 +20,8 @@ template<typename NumericPropertyT> NumericPropertyWidget<NumericPropertyT>
     this->set_properties_value(spinbox->value());
   });
   m_spinbox = spinbox.get();
-  this->set_default_layout(std::move(spinbox));
+  spinbox->label = this->label();
+  this->set_widget(std::move(spinbox));
 
   using P = NumericPropertyDetail;
   const auto lower = this->template configuration<value_type>(P::LOWER_VALUE_POINTER);

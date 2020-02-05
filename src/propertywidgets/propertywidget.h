@@ -5,7 +5,9 @@
 #include "scene/scene.h"
 #include "commands/propertycommand.h"
 #include <QTimer>
+#include <QBoxLayout>
 #include "scene/history/macro.h"
+#include <QLabel>
 
 namespace omm
 {
@@ -32,14 +34,48 @@ public Q_SLOTS:
   void update_enabledness();
 
 protected:
-  void set_default_layout(std::unique_ptr<QWidget> other);
   Scene& scene;
+  void set_widget(std::unique_ptr<QWidget> widget);
+  QString label() const;
+
+  class LabelLayout : public QHBoxLayout
+  {
+  public:
+    explicit LabelLayout();
+    void set_label(const QString& label);
+    template<typename T> void set_thing(std::unique_ptr<T> thing)
+    {
+      this->remove_old_thing();
+      assert(count() == 1);
+      assert(thing->parent() == nullptr);
+      if constexpr (std::is_base_of_v<QWidget, T>) {
+//        insertWidget(1, thing.release(), 0);
+        addWidget(thing.release(), 1);
+      } else if constexpr (std::is_base_of_v<QLayout, T>) {
+//        insertLayout(1, thing.release(), 1);
+        addLayout(thing.release(), 1);
+      } else {
+        Q_UNREACHABLE();
+      }
+    }
+
+    void set_layout(std::unique_ptr<QLayout> layout);
+
+  private:
+    QLabel* m_label = nullptr;
+
+    using QHBoxLayout::addItem;
+    using QHBoxLayout::addWidget;
+    using QHBoxLayout::addLayout;
+    using QHBoxLayout::removeItem;
+    using QHBoxLayout::removeWidget;
+    void remove_old_thing();
+  };
 
 protected Q_SLOTS:
   virtual void update_edit() = 0;
 
 private:
-  const QString m_label;
   std::set<Property*> m_properties;
   template<typename PropertyT> friend class PropertyWidget;
   QTimer m_update_timer;

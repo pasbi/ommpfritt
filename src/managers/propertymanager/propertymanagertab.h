@@ -4,7 +4,7 @@
 #include <set>
 #include <memory>
 
-class QFormLayout;
+class QVBoxLayout;
 
 namespace omm
 {
@@ -22,7 +22,7 @@ public:
                       const std::map<AbstractPropertyOwner*, Property*> &property_map);
 
 private:
-  QFormLayout* m_layout;
+  QVBoxLayout* m_layout;
 };
 
 }  // namespace omm

@@ -4,6 +4,8 @@
 #include "properties/typedproperty.h"
 #include "propertywidgets/stringpropertywidget/texteditadapter.h"
 
+#include <QLabel>
+
 namespace omm
 {
 
@@ -16,35 +18,35 @@ StringPropertyWidget
   auto edit = [this, mode]() {
     switch (mode) {
     case StringProperty::Mode::MultiLine: {
-      auto edit = std::make_unique<TextEditAdapter<QTextEdit>>(this);
+      auto edit = std::make_unique<TextEditAdapter<QTextEdit>>();
       QObject::connect(edit.get(), &QTextEdit::textChanged, [edit=edit.get(), this]() {
         set_properties_value(edit->value());
       });
       return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
     }
     case StringProperty::Mode::SingleLine: {
-      auto edit = std::make_unique<TextEditAdapter<QLineEdit>>(this);
+      auto edit = std::make_unique<TextEditAdapter<QLineEdit>>();
       QObject::connect(edit.get(), &QLineEdit::textChanged, [this](const QString& text) {
         set_properties_value(text);
       });
       return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
     }
     case StringProperty::Mode::FilePath: {
-      auto edit = std::make_unique<TextEditAdapter<FilePathEdit>>(this);
+      auto edit = std::make_unique<TextEditAdapter<FilePathEdit>>();
       QObject::connect(edit.get(), &FilePathEdit::path_changed, [this](const QString& text) {
         set_properties_value(text);
       });
       return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
     }
     case StringProperty::Mode::Code: {
-      auto edit = std::make_unique<TextEditAdapter<CodeEdit>>(this);
+      auto edit = std::make_unique<TextEditAdapter<CodeEdit>>();
       QObject::connect(edit.get(), &CodeEdit::code_changed, [this](const QString& text) {
         set_properties_value(text);
       });
       return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
     }
     case StringProperty::Mode::Font: {
-      auto edit = std::make_unique<TextEditAdapter<QFontComboBox>>(this);
+      auto edit = std::make_unique<TextEditAdapter<QFontComboBox>>();
       QObject::connect(edit.get(), &QFontComboBox::currentTextChanged, [this](const QString& text) {
         set_properties_value(text);
       });
@@ -61,7 +63,10 @@ StringPropertyWidget
 //  });
 
   auto text_edit_widget = std::unique_ptr<QWidget>(edit.release()->as_widget());
-  set_default_layout(std::move(text_edit_widget));
+  auto vlayout = std::make_unique<LabelLayout>();
+  vlayout->set_label(label());
+  vlayout->set_thing(std::move(text_edit_widget));
+  setLayout(vlayout.release());
 
   update_edit();
 }

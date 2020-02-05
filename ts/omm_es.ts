@@ -35,7 +35,19 @@
     <name>ColorConvertNode</name>
     <message>
         <source>color</source>
-        <translation type="obsolete">Color</translation>
+        <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>conversion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -77,32 +89,99 @@
     <name>ComposeColorNode</name>
     <message>
         <source>color</source>
-        <translation type="obsolete">Color</translation>
+        <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compose Color</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>ComposeNode</name>
     <message>
         <source>x</source>
-        <translation type="obsolete">x</translation>
+        <translation type="unfinished">x</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compose</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ConstantNode</name>
+    <message>
+        <source>Edit ports ...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DecomposeColorNode</name>
     <message>
         <source>r</source>
-        <translation type="obsolete">Radio</translation>
+        <translation type="unfinished">Radio</translation>
     </message>
     <message>
         <source>color</source>
-        <translation type="obsolete">Color</translation>
+        <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>g</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>b</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>a</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decompose Color</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DecomposeNode</name>
     <message>
         <source>x</source>
-        <translation type="obsolete">x</translation>
+        <translation type="unfinished">x</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decompose</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -223,7 +302,153 @@
     <name>FragmentNode</name>
     <message>
         <source>color</source>
-        <translation type="obsolete">Color</translation>
+        <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Function2Node</name>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>atan2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>length</source>
+        <translation type="unfinished">Longitud</translation>
+    </message>
+    <message>
+        <source>pow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>max</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>a</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>b</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>FunctionNode</name>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>abs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sqrt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>log2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>exp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>exp2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cos</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>tan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>asin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>acos</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>atan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>frac</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ceil</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>floor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sign</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>rad</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>deg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x</source>
+        <translation type="unfinished">x</translation>
+    </message>
+    <message>
+        <source>result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> [%1]</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -255,7 +480,43 @@
     <name>MathNode</name>
     <message>
         <source>*</source>
-        <translation type="obsolete">*</translation>
+        <translation type="unfinished">*</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>a</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>b</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> [%1]</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1333,12 +1594,40 @@ Borrar la selección de todos modos?</translation>
     <name>ReferenceNode</name>
     <message>
         <source>Reference</source>
-        <translation type="obsolete">Referencia</translation>
+        <translation type="unfinished">Referencia</translation>
     </message>
     <message>
         <source>output</source>
         <comment>ReferenceNode</comment>
-        <translation type="obsolete">Output</translation>
+        <translation type="unfinished">Output</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Forwarded Ports</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No properties.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>input</source>
+        <comment>ReferenceNode</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SpyNode</name>
+    <message>
+        <source>value</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1450,7 +1739,7 @@ Borrar la selección de todos modos?</translation>
     <name>VertexNode</name>
     <message>
         <source>position</source>
-        <translation type="obsolete">Posición</translation>
+        <translation type="unfinished">Posición</translation>
     </message>
 </context>
 <context>
@@ -2042,6 +2331,13 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
+    <name>omm::AbstractNumericEdit</name>
+    <message>
+        <source>%1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>omm::AnimationButton</name>
     <message>
         <source>Remove Track</source>
@@ -2135,22 +2431,6 @@ Borrar la selección de todos modos?</translation>
         <source>HSVA -&gt; RGBA</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>conversion</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>color</source>
-        <translation type="unfinished">Color</translation>
-    </message>
-    <message>
-        <source>Convert</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>omm::ColorWidget</name>
@@ -2160,108 +2440,9 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
-    <name>omm::ComposeColorNode</name>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>color</source>
-        <translation type="unfinished">Color</translation>
-    </message>
-    <message>
-        <source>Compose Color</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::ComposeNode</name>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>x</source>
-        <translation type="unfinished">x</translation>
-    </message>
-    <message>
-        <source>y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>vector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Compose</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::ConstantNode</name>
-    <message>
-        <source>Edit ports ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>omm::CurveManager</name>
     <message>
         <source>Curves</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::DecomposeColorNode</name>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>color</source>
-        <translation type="unfinished">Color</translation>
-    </message>
-    <message>
-        <source>r</source>
-        <translation type="unfinished">Radio</translation>
-    </message>
-    <message>
-        <source>g</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>b</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>a</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Decompose Color</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::DecomposeNode</name>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>vector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>x</source>
-        <translation type="unfinished">x</translation>
-    </message>
-    <message>
-        <source>y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Decompose</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2316,159 +2497,6 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>...</source>
         <translation>...</translation>
-    </message>
-</context>
-<context>
-    <name>omm::FragmentNode</name>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>color</source>
-        <translation type="unfinished">Color</translation>
-    </message>
-</context>
-<context>
-    <name>omm::Function2Node</name>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>atan2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>length</source>
-        <translation type="unfinished">Longitud</translation>
-    </message>
-    <message>
-        <source>pow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>min</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>max</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>a</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>b</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>result</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>invalid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> [%1]</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::FunctionNode</name>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>abs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>sqrt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>log</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>log2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>exp</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>exp2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>sin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>cos</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>tan</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>asin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>acos</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>atan</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>frac</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ceil</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>floor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>sign</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>rad</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>deg</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>x</source>
-        <translation type="unfinished">x</translation>
-    </message>
-    <message>
-        <source>result</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>invalid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> [%1]</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2540,49 +2568,6 @@ This cannot be undone.</source>
     </message>
 </context>
 <context>
-    <name>omm::MathNode</name>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>+</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>*</source>
-        <translation type="unfinished">*</translation>
-    </message>
-    <message>
-        <source>/</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>a</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>b</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>result</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>invalid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> [%1]</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>omm::NamedColors</name>
     <message>
         <source>Unnamed Color</source>
@@ -2615,11 +2600,19 @@ Do you want to convert them into ordinary colors?</source>
         <source>Add Node ...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Constant ...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::NodeView</name>
     <message>
         <source>Modify Connections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy Nodes</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2702,6 +2695,13 @@ Do you want to convert them into ordinary colors?</source>
     </message>
 </context>
 <context>
+    <name>omm::PrefixComboBox</name>
+    <message>
+        <source>%1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>omm::PropertyManager</name>
     <message numerus="yes">
         <source>[%n Elements]</source>
@@ -2713,49 +2713,9 @@ Do you want to convert them into ordinary colors?</source>
     </message>
 </context>
 <context>
-    <name>omm::ReferenceNode</name>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reference</source>
-        <translation type="unfinished">Referencia</translation>
-    </message>
-    <message>
-        <source>Forwarded Ports</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No properties.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>input</source>
-        <comment>ReferenceNode</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>output</source>
-        <comment>ReferenceNode</comment>
-        <translation type="unfinished">Output</translation>
-    </message>
-    <message>
-        <source> [%1]</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>omm::ReferencePropertyConfigWidget</name>
     <message>
         <source>Requirements:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::SpyNode</name>
-    <message>
-        <source>value</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2831,13 +2791,6 @@ This cannot be undone.</source>
     <message>
         <source>&lt;unnamed property&gt;</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::VertexNode</name>
-    <message>
-        <source>position</source>
-        <translation type="unfinished">Posición</translation>
     </message>
 </context>
 <context>

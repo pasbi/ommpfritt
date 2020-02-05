@@ -8,6 +8,7 @@ file(GLOB SOURCES
   itemproxyview.cpp
   keysequenceedit.cpp
   multitabbar.cpp
+  numericedit.cpp
   pointdialog.cpp
   pointedit.cpp
   referencelineedit.cpp

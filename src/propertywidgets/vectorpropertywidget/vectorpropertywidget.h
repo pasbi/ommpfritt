@@ -4,6 +4,7 @@
 #include "properties/vectorproperty.h"
 #include "propertywidgets/numericpropertywidget/numericmultivalueedit.h"
 #include <QHBoxLayout>
+#include <QLabel>
 
 namespace omm
 {
@@ -17,35 +18,44 @@ public:
   explicit VectorPropertyWidget(Scene& scene, const std::set<Property*>& properties)
     : PropertyWidget<VectorPropertyT>(scene, properties)
   {
-    m_x_edit = std::make_unique<NumericMultiValueEdit<elem_type>>().release();
+    auto x_edit = std::make_unique<NumericMultiValueEdit<elem_type>>();
+    m_x_edit = x_edit.get();
     QObject::connect(m_x_edit, &NumericMultiValueEdit<elem_type>::value_changed, [this]() {
       set_properties_value<0>(m_x_edit->value());
     });
 
-    m_y_edit = std::make_unique<NumericMultiValueEdit<elem_type>>().release();
+    auto y_edit = std::make_unique<NumericMultiValueEdit<elem_type>>();
+    m_y_edit = y_edit.get();
     QObject::connect(m_y_edit, &NumericMultiValueEdit<elem_type>::value_changed, [this]() {
       set_properties_value<1>(m_y_edit->value());
     });
 
     const auto step = this->template configuration<value_type>(NumericPropertyDetail::STEP_POINTER);
-    m_x_edit->set_step(step.x);
-    m_y_edit->set_step(step.y);
+    x_edit->set_step(step.x);
+    y_edit->set_step(step.y);
 
     const auto mult = this->template configuration<double>(NumericPropertyDetail::MULTIPLIER_POINTER);
-    m_x_edit->set_multiplier(mult);
-    m_y_edit->set_multiplier(mult);
+    x_edit->set_multiplier(mult);
+    y_edit->set_multiplier(mult);
 
     const auto lower = this->template configuration<value_type>(NumericPropertyDetail::LOWER_VALUE_POINTER);
     const auto upper = this->template configuration<value_type>(NumericPropertyDetail::UPPER_VALUE_POINTER);
-    m_x_edit->set_range(lower.x, upper.x);
-    m_y_edit->set_range(lower.y, upper.y);
+    x_edit->set_range(lower.x, upper.x);
+    y_edit->set_range(lower.y, upper.y);
 
-    auto container = std::make_unique<QWidget>(this);
-    auto* layout = std::make_unique<QHBoxLayout>(container.get()).release();
+    auto layout = std::make_unique<QHBoxLayout>();
     layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(m_x_edit);
-    layout->addWidget(m_y_edit);
-    this->set_default_layout(std::move(container));
+    layout->addWidget(x_edit.release());
+    layout->addWidget(y_edit.release());
+
+    auto container = std::make_unique<QWidget>();
+    container->setLayout(layout.release());
+
+    auto vlayout = std::make_unique<AbstractPropertyWidget::LabelLayout>();
+    vlayout->set_label(this->label());
+    vlayout->set_thing(std::move(container));
+
+    this->setLayout(vlayout.release());
 
     update_edit();
   }

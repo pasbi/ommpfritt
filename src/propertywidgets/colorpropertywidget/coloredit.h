@@ -12,8 +12,10 @@ class ColorEdit : public QWidget, public MultiValueEdit<Color>
 {
   Q_OBJECT
 public:
+  explicit ColorEdit();
   void set_value(const value_type& value) override;
   value_type value() const override;
+  QString text = "";
 
 protected:
   void set_inconsistent_value() override;
@@ -26,6 +28,8 @@ Q_SIGNALS:
 private:
   bool m_is_consistent = false;
   Color m_current_color = Colors::BLACK;
+  QColor m_contrast_color;
+  QColor compute_contrast_color() const;
 };
 
 }  // namespace omm

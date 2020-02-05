@@ -14,6 +14,19 @@ void ColorEdit::paintEvent(QPaintEvent*)
   QPainter painter(this);
   UiColors::draw_background(painter, rect());
   painter.fillRect(rect(), m_current_color.to_qcolor());
+  {
+    static const QMargins text_margins(3, 3, 3, 3);
+    const auto rect = this->rect().marginsRemoved(text_margins);
+    const auto elided_text = painter.fontMetrics().elidedText(text, Qt::ElideMiddle, rect.width());
+    painter.setPen(m_contrast_color);
+    painter.drawText(rect, Qt::AlignCenter, elided_text);
+  }
+}
+
+ColorEdit::ColorEdit()
+  : m_contrast_color(compute_contrast_color())
+{
+
 }
 
 void ColorEdit::set_value(const value_type& value)
@@ -21,6 +34,7 @@ void ColorEdit::set_value(const value_type& value)
   if (m_current_color != value) {
     m_current_color = value;
     Q_EMIT value_changed(value);
+    m_contrast_color = compute_contrast_color();
     update();
   }
 }
@@ -38,6 +52,16 @@ void ColorEdit::mouseDoubleClickEvent(QMouseEvent*)
   const auto [color, accepted] = ColorDialog::get_color(m_current_color, this);
   if (accepted) {
     set_value(color);
+  }
+}
+
+QColor ColorEdit::compute_contrast_color() const
+{
+  auto color = this->value();
+  if (color.components(Color::Model::HSVA)[2] > 0.5) {
+    return Qt::black;
+  } else {
+    return Qt::white;
   }
 }
 

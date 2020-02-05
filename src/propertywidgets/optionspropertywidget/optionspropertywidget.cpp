@@ -2,6 +2,9 @@
 #include "properties/typedproperty.h"
 #include "propertywidgets/optionspropertywidget/optionsedit.h"
 
+#include <QLabel>
+#include <QVBoxLayout>
+
 namespace omm
 {
 
@@ -17,7 +20,8 @@ OptionsPropertyWidget::OptionsPropertyWidget(Scene& scene, const std::set<Proper
   QSignalBlocker blocker(m_options_edit);
   m_options_edit->set_options(
     Property::get_value<std::vector<QString>, OptionsProperty>(properties, get_options));
-  set_default_layout(std::move(options_edit));
+  m_options_edit->prefix = label();
+  set_widget(std::move(options_edit));
   update_edit();
 }
 

@@ -10,12 +10,12 @@ namespace omm
 BoolPropertyWidget::BoolPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget(scene, properties)
 {
-  auto checkbox = std::make_unique<CheckBox>();
+  auto checkbox = std::make_unique<CheckBox>(label());
   m_checkbox = checkbox.get();
   connect(m_checkbox, &QAbstractButton::clicked, [this]() {
     set_properties_value(m_checkbox->checkState() == Qt::Checked);
   });
-  set_default_layout(std::move(checkbox));
+  set_widget(std::move(checkbox));
 
   update_edit();
 }

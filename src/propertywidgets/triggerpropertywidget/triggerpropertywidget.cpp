@@ -11,9 +11,9 @@ namespace omm
 TriggerPropertyWidget::TriggerPropertyWidget(Scene& scene, const std::set<Property*>& properties)
   : PropertyWidget(scene, properties)
 {
-  auto button = std::make_unique<QPushButton>();
+  auto button = std::make_unique<QPushButton>(label());
   connect(button.get(), &QPushButton::clicked, this, &TriggerPropertyWidget::trigger);
-  set_default_layout(std::move(button));
+  set_widget(std::move(button));
 }
 
 void TriggerPropertyWidget::trigger()

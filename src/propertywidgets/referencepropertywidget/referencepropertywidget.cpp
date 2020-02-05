@@ -4,6 +4,9 @@
 #include "widgets/referencelineedit.h"
 #include "properties/typedproperty.h"
 
+#include <QLabel>
+#include <QVBoxLayout>
+
 namespace
 {
 
@@ -41,7 +44,10 @@ ReferencePropertyWidget
   line_edit->set_filter(filter);
 
   m_line_edit = line_edit.get();
-  set_default_layout(std::move(line_edit));
+  auto vlayout = std::make_unique<LabelLayout>();
+  vlayout->set_label(label());
+  vlayout->set_thing(std::make_unique<QLabel>());
+  set_widget(std::move(line_edit));
 
   update_edit();
 }

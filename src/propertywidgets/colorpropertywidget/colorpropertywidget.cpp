@@ -13,7 +13,8 @@ ColorPropertyWidget::ColorPropertyWidget(Scene& scene, const std::set<Property*>
     set_properties_value(color);
   });
   m_color_edit = color_edit.get();
-  set_default_layout(std::move(color_edit));
+  color_edit->text = label();
+  set_widget(std::move(color_edit));
 
   update_edit();
 }

@@ -20,15 +20,6 @@ AbstractPropertyWidget::AbstractPropertyWidget(Scene& scene, const std::set<Prop
   update_enabledness();
 }
 
-void AbstractPropertyWidget::set_default_layout(std::unique_ptr<QWidget> other)
-{
-  other->setParent(this);
-  auto layout = std::make_unique<QHBoxLayout>();
-  layout->addWidget(other.release(), 1);
-  layout->setContentsMargins(0, 3, 0, 3);
-  setLayout(layout.release());
-}
-
 void AbstractPropertyWidget::on_property_value_changed(Property*)
 {
   // wait until other properties have updated (important for MultiValueEdit)
@@ -44,6 +35,46 @@ void AbstractPropertyWidget::update_enabledness()
   });
 
   setEnabled(is_enabled);
+}
+
+void AbstractPropertyWidget::set_widget(std::unique_ptr<QWidget> widget)
+{
+  auto layout = std::make_unique<QHBoxLayout>();
+  layout->setContentsMargins(0, 0, 0, 0);
+  layout->addWidget(widget.release());
+  setLayout(layout.release());
+}
+
+QString AbstractPropertyWidget::label() const
+{
+  return Property::get_value<QString>(m_properties, std::mem_fn(&Property::label));
+}
+
+AbstractPropertyWidget::LabelLayout::LabelLayout()
+{
+  setContentsMargins(0, 0, 0, 0);
+  auto label = std::make_unique<QLabel>();
+  m_label = label.get();
+  addWidget(label.release());
+}
+
+void AbstractPropertyWidget::LabelLayout::set_label(const QString& label)
+{
+  m_label->setText(label);
+}
+
+void AbstractPropertyWidget::LabelLayout::remove_old_thing()
+{
+  if (count() == 2) {
+    QLayoutItem* item = itemAt(1);
+    if (QLayout* layout = item->layout(); layout != nullptr) {
+      removeItem(layout);
+      delete layout;
+    } else if (QWidget* widget = item->widget(); widget != nullptr) {
+      removeWidget(widget);
+      delete widget;
+    }
+  }
 }
 
 }  // namespace omm
