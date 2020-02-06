@@ -1,4 +1,5 @@
 #include "managers/nodemanager/nodeview.h"
+#include "propertywidgets/propertywidget.h"
 #include "commands/nodecommand.h"
 #include "managers/nodemanager/nodemimedata.h"
 #include <QClipboard>
@@ -17,6 +18,20 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QToolTip>
+
+namespace
+{
+
+std::pair<omm::InputPort*, omm::OutputPort*>
+find_ports(const omm::Node& node, const omm::Property& property)
+{
+  return {
+    node.find_port<omm::InputPort>(property),
+    node.find_port<omm::OutputPort>(property)
+  };
+}
+
+}  // namespace
 
 namespace omm
 {
@@ -37,6 +52,7 @@ NodeView::NodeView(QWidget* parent)
 
 NodeView::~NodeView()
 {
+  m_property_widgets.clear();
 }
 
 void NodeView::set_model(NodeModel* model)
@@ -47,6 +63,7 @@ void NodeView::set_model(NodeModel* model)
       disconnect(m_model, SIGNAL(node_shape_changed()), this, SLOT(invalidate_caches()));
     }
     m_model = model;
+    m_property_widgets.clear();
     if (m_model != nullptr) {
       connect(m_model, SIGNAL(appearance_changed()), this, SLOT(update()));
       connect(m_model, SIGNAL(node_shape_changed()), this, SLOT(invalidate_caches()));
@@ -55,8 +72,9 @@ void NodeView::set_model(NodeModel* model)
   pan_to_center();
 }
 
-void NodeView::paintEvent(QPaintEvent*)
+void NodeView::paintEvent(QPaintEvent* e)
 {
+  update_widgets();
   if (m_model != nullptr) {
     QPainter painter(this);
 
@@ -219,6 +237,30 @@ bool NodeView::can_drop(const QDropEvent& event) const
     }
   }
   return false;
+}
+
+void NodeView::update_widgets()
+{
+  NodeModel* model = this->model();
+  if (model == nullptr) {
+    m_property_widgets.clear();
+  } else {
+    for (auto&& [node, map] : m_property_widgets) {
+      if (!::contains(model->nodes(), node)) {
+        m_property_widgets.erase(node);
+      }
+    }
+    for (Node* node : model->nodes()) {
+      if (!::contains(m_property_widgets, node)) {
+        for (Property* property : node->properties().values()) {
+          auto widget = AbstractPropertyWidget::make(property->widget_type(),
+                                                     model->scene(),
+                                                     std::set { property });
+          m_property_widgets[node][property] = std::move(widget);
+        }
+      }
+    }
+  }
 }
 
 void NodeView::invalidate_caches()
@@ -465,8 +507,6 @@ QPointF NodeView::get_insert_position() const
 
 void NodeView::draw_node(QPainter& painter, const Node& node) const
 {
-  painter.save();
-
   const QRectF node_geometry = this->node_geometry(node);
   painter.save();
   QPen pen;
@@ -489,12 +529,34 @@ void NodeView::draw_node(QPainter& painter, const Node& node) const
   painter.drawText(header_rect, Qt::AlignVCenter | Qt::AlignHCenter, node.title());
   painter.restore();
 
-
   for (AbstractPort* port : node.ports()) {
-    draw_port(painter, *port);
+    draw_port(painter, *port, port->flavor != PortFlavor::Property);
   }
 
-  painter.restore();
+  const auto pw_it = m_property_widgets.find(&node);
+  const QPointF margin(port_height/2.0, 0.5);
+  const double width = node_width_cache(&node) - 2*margin.x();
+  const double height = port_height - 2 * margin.y();
+  if (pw_it != m_property_widgets.end()) {
+    for (auto&& [property, widget] : pw_it->second) {
+      auto [ip, op] = ::find_ports(node, *property);
+      AbstractPort* p = nullptr;
+      if (ip != nullptr) {
+        p = ip;
+      } else if (op != nullptr) {
+        p = op;
+      } else {
+        continue;
+      }
+
+      assert(p != nullptr);
+      painter.save();
+      painter.translate(node.pos().x(), port_pos(*p).y());
+      widget->resize(width, height);
+      widget->render(&painter, (-QPointF(width, height)/2.0).toPoint());
+      painter.restore();
+    }
+  }
 }
 
 void NodeView::draw_connection(QPainter& painter, const InputPort& input_port) const
@@ -507,7 +569,7 @@ void NodeView::draw_connection(QPainter& painter, const InputPort& input_port) c
   }
 }
 
-void NodeView::draw_port(QPainter& painter, const AbstractPort& port) const
+void NodeView::draw_port(QPainter& painter, const AbstractPort& port, bool text) const
 {
   painter.save();
   const double r = 0.8 * (port_height / 2.0);
@@ -524,12 +586,14 @@ void NodeView::draw_port(QPainter& painter, const AbstractPort& port) const
   const QPointF node_pos = port.node.pos();
   painter.drawEllipse(port_pos, r, r);
 
-  const double ph = port_height;
-  const double width = node_width_cache(&port.node);
-  const QRectF text_rect(node_pos.x() - width/2.0 + ph/2.0 + margin,
-                         port_pos.y() - ph/2.0, width - ph - margin*2.0, ph);
-  const auto halign = (port.port_type == PortType::Input ? Qt::AlignLeft : Qt::AlignRight);
-  painter.drawText(text_rect, halign | Qt::AlignVCenter, port.label());
+  if (text) {
+    const double ph = port_height;
+    const double width = node_width_cache(&port.node);
+    const QRectF text_rect(node_pos.x() - width/2.0 + ph/2.0 + margin,
+                           port_pos.y() - ph/2.0, width - ph - margin*2.0, ph);
+    const auto halign = (port.port_type == PortType::Input ? Qt::AlignLeft : Qt::AlignRight);
+    painter.drawText(text_rect, halign | Qt::AlignVCenter, port.label());
+  }
   painter.restore();
 }
 
