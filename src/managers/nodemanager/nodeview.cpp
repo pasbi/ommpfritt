@@ -22,13 +22,30 @@
 namespace
 {
 
-std::pair<omm::InputPort*, omm::OutputPort*>
-find_ports(const omm::Node& node, const omm::Property& property)
+QPoint find_leaf_widget(QWidget* &parent, const QPoint& widget_local_pos)
 {
-  return {
-    node.find_port<omm::InputPort>(property),
-    node.find_port<omm::OutputPort>(property)
-  };
+  QPoint pos = widget_local_pos;
+  while (true) {
+    QWidget* const child = parent->childAt(widget_local_pos);
+    if (child == nullptr) {
+      break;
+    } else {
+      pos = child->mapFromParent(pos);
+      parent = child;
+    }
+  }
+  return pos - widget_local_pos;
+}
+
+omm::AbstractPort* find_port(const omm::Node& node, const omm::Property& property)
+{
+  if (omm::InputPort* ip = node.find_port<omm::InputPort>(property); ip != nullptr) {
+    return ip;
+  } else if (omm::OutputPort* op = node.find_port<omm::OutputPort>(property); op != nullptr) {
+    return op;
+  } else {
+    return nullptr;
+  }
 }
 
 }  // namespace
@@ -72,7 +89,7 @@ void NodeView::set_model(NodeModel* model)
   pan_to_center();
 }
 
-void NodeView::paintEvent(QPaintEvent* e)
+void NodeView::paintEvent(QPaintEvent*)
 {
   update_widgets();
   if (m_model != nullptr) {
@@ -263,6 +280,32 @@ void NodeView::update_widgets()
   }
 }
 
+QRectF NodeView::widget_geometry(const AbstractPort& p) const
+{
+  static constexpr QPointF margin(port_height/2.0, 0.5);
+  const Node& node = p.node;
+  const double width = node_width_cache(&node) - 2*margin.x();
+  const double height = port_height - 2*margin.y();
+  return QRectF(node.pos().x() - width/2.0,
+                port_pos(p).y() - height/2.0,
+                width,
+                height);
+}
+
+NodeView::WidgetInfo NodeView::widget_at(const QPointF& pos) const
+{
+  for (auto&& [node, map] : m_property_widgets) {
+    for (auto&& [property, widget] : map) {
+      if (AbstractPort* p = find_port(*node, *property); p != nullptr) {
+        if (const QRectF geom = widget_geometry(*p); geom.contains(pos)) {
+          return WidgetInfo(pos.toPoint(), *p, geom, widget.get());
+        }
+      }
+    }
+  }
+  return NodeView::WidgetInfo();
+}
+
 void NodeView::invalidate_caches()
 {
   node_width_cache.invalidate();
@@ -449,6 +492,69 @@ void NodeView::dropEvent(QDropEvent* event)
   }
 }
 
+bool NodeView::forward_mouse_event(const QMouseEvent& event) const
+{
+  static WidgetInfo wi;
+  const QPointF fpos = m_pzc.transform().inverted().map(event.pos() - m_pzc.offset());
+  if (event.type() == QEvent::MouseButtonPress || event.type() == QEvent::MouseButtonDblClick) {
+    wi = widget_at(fpos);
+  }
+  if (wi.valid()) {
+    wi.update_pos(fpos.toPoint());
+    auto new_event = std::make_unique<QMouseEvent>(event.type(),
+                                                   wi.leaf_widget_pos,
+                                                   event.button(),
+                                                   event.buttons(),
+                                                   event.modifiers());
+    QApplication::sendEvent(wi.leaf_widget, &*new_event);
+    if (event.type() == QEvent::MouseButtonRelease) {
+      wi = WidgetInfo();
+    }
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool NodeView::forward_dnd_event(const QDropEvent& event) const
+{
+  static QWidget* last_widget = nullptr;
+  const auto make_event = [](QEvent::Type type, auto&&... args) -> std::unique_ptr<QEvent> {
+    switch (type) {
+    case QEvent::Drop:
+      return std::make_unique<QDropEvent>(std::forward<decltype(args)>(args)...);
+    case QEvent::DragMove:
+      return std::make_unique<QDragMoveEvent>(std::forward<decltype(args)>(args)...);
+    case QEvent::DragEnter:
+      return std::make_unique<QDragEnterEvent>(std::forward<decltype(args)>(args)...);
+    default:
+      Q_UNREACHABLE();
+      return nullptr;
+    }
+  };
+  const QPointF fpos = m_pzc.transform().inverted().map(event.pos() - m_pzc.offset());
+  const WidgetInfo wi = widget_at(fpos);
+  QEvent::Type new_event_type = event.type();
+  if (last_widget != wi.leaf_widget) {
+    if (last_widget != nullptr) {
+      QDragLeaveEvent leave_event;
+      QApplication::sendEvent(wi.leaf_widget, &leave_event);
+    }
+    if (wi.leaf_widget != nullptr) {
+      new_event_type = QEvent::DragEnter;
+    }
+  }
+
+  if (wi.valid()) {
+    auto new_event = make_event(new_event_type, wi.leaf_widget_pos, event.possibleActions(),
+                                event.mimeData(), event.mouseButtons(), event.keyboardModifiers());
+    QApplication::sendEvent(wi.leaf_widget, &*new_event);
+    return true;
+  } else {
+    return false;
+  }
+}
+
 void NodeView::mouseDoubleClickEvent(QMouseEvent*)
 {
   pan_to_center();
@@ -456,6 +562,10 @@ void NodeView::mouseDoubleClickEvent(QMouseEvent*)
 
 bool NodeView::event(QEvent* event)
 {
+  static const std::set mouse_event_types { QEvent::MouseButtonPress, QEvent::MouseButtonRelease,
+                                            QEvent::MouseButtonDblClick, QEvent::MouseMove        };
+
+  static const std::set dnd_even_types { QEvent::Drop, QEvent::DragMove };
   if (event->type() == QEvent::ToolTip) {
     if (m_model != nullptr) {
       const QHelpEvent* help_event = static_cast<const QHelpEvent*>(event);
@@ -469,6 +579,16 @@ bool NodeView::event(QEvent* event)
       } else {
         QToolTip::hideText();
       }
+    }
+  } else if (::contains(mouse_event_types, event->type())) {
+    if (forward_mouse_event(static_cast<const QMouseEvent&>(*event))) {
+      update();
+      return true;
+    }
+  } else if (::contains(dnd_even_types, event->type())) {
+    if (forward_dnd_event(static_cast<QDropEvent&>(*event))) {
+      update();
+      return true;
     }
   }
 
@@ -534,27 +654,17 @@ void NodeView::draw_node(QPainter& painter, const Node& node) const
   }
 
   const auto pw_it = m_property_widgets.find(&node);
-  const QPointF margin(port_height/2.0, 0.5);
-  const double width = node_width_cache(&node) - 2*margin.x();
-  const double height = port_height - 2 * margin.y();
   if (pw_it != m_property_widgets.end()) {
     for (auto&& [property, widget] : pw_it->second) {
-      auto [ip, op] = ::find_ports(node, *property);
-      AbstractPort* p = nullptr;
-      if (ip != nullptr) {
-        p = ip;
-      } else if (op != nullptr) {
-        p = op;
-      } else {
-        continue;
+      if (AbstractPort* p = find_port(node, *property); p != nullptr) {
+        painter.save();
+        const QRectF geometry = widget_geometry(*p);
+        painter.translate(geometry.topLeft());
+        widget->move(mapToGlobal((m_pzc.transform().map(geometry.topLeft()) + m_pzc.offset()).toPoint()));
+        widget->resize(geometry.size().toSize());
+        widget->render(&painter);
+        painter.restore();
       }
-
-      assert(p != nullptr);
-      painter.save();
-      painter.translate(node.pos().x(), port_pos(*p).y());
-      widget->resize(width, height);
-      widget->render(&painter, (-QPointF(width, height)/2.0).toPoint());
-      painter.restore();
     }
   }
 }
@@ -651,8 +761,26 @@ AbstractPort* NodeView::port_at(std::set<AbstractPort*> candidates, const QPoint
         return port;
       }
     }
+
   }
   return nullptr;
+}
+
+NodeView::WidgetInfo::WidgetInfo(const QPoint& pos, const AbstractPort& port, const QRectF& geom, QWidget* widget)
+  : widget(widget)
+  , widget_pos(pos)
+  , port(&port)
+{
+  leaf_widget_pos = (pos - geom.topLeft()).toPoint();
+  leaf_widget = widget;
+  find_leaf_widget(leaf_widget, leaf_widget_pos);
+}
+
+void NodeView::WidgetInfo::update_pos(const QPoint& pos)
+{
+  const QPoint diff = pos - widget_pos;
+  widget_pos = pos;
+  leaf_widget_pos += diff;
 }
 
 Node* NodeView::node_at(std::set<Node*> candidates, const QPointF& pos) const

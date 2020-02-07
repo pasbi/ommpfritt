@@ -29,9 +29,8 @@ public:
 
 protected:
   void set_inconsistent_value() override;
-  void dragEnterEvent(QDragEnterEvent* event) override;
-  void dropEvent(QDropEvent* event) override;
   void mouseDoubleClickEvent(QMouseEvent*) override;
+  bool eventFilter(QObject* o, QEvent* e) override;
 
 private:
   bool can_drop(const QDropEvent& event) const;
@@ -42,6 +41,9 @@ private:
 
   std::vector<omm::AbstractPropertyOwner*> collect_candidates();
   QString m_null_label;
+
+  bool drag_enter(QDragEnterEvent& event);
+  bool drop(QDropEvent& event);
 
 public Q_SLOTS:
   void update_candidates();

@@ -29,6 +29,9 @@ ReferenceLineEdit::ReferenceLineEdit(QWidget* parent)
   };
   connect(this, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), set_value);
   QTimer::singleShot(1, this, SLOT(convert_text_to_placeholder_text()));
+
+  lineEdit()->installEventFilter(this);
+  installEventFilter(this);
 }
 
 void ReferenceLineEdit::set_null_label(const QString& value)
@@ -131,21 +134,38 @@ void ReferenceLineEdit::set_filter(const ReferenceProperty::Filter& filter)
 
 void ReferenceLineEdit::mouseDoubleClickEvent(QMouseEvent*) { set_value(nullptr); }
 
-void ReferenceLineEdit::dragEnterEvent(QDragEnterEvent* event)
+bool ReferenceLineEdit::eventFilter(QObject* o, QEvent* e)
 {
-  event->setDropAction(Qt::LinkAction);
-  if (can_drop(*event)) {
-    event->accept();
+  if (o == this || o == lineEdit()) {
+    switch (e->type()) {
+    case QEvent::Drop:
+      return drop(static_cast<QDropEvent&>(*e));
+    case QEvent::DragEnter:
+      return drag_enter(static_cast<QDragEnterEvent&>(*e));
+    default:
+      ;
+    }
+  }
+  return QComboBox::eventFilter(o, e);
+}
+
+bool ReferenceLineEdit::drag_enter(QDragEnterEvent& event)
+{
+  event.setDropAction(Qt::LinkAction);
+  if (can_drop(event)) {
+    event.accept();
+    return true;
   } else {
-    event->ignore();
+    event.ignore();
+    return false;
   }
 }
 
-void ReferenceLineEdit::dropEvent(QDropEvent* event)
+bool ReferenceLineEdit::drop(QDropEvent& event)
 {
-  event->setDropAction(Qt::LinkAction);
-  if (can_drop(*event)) {
-    const auto& mime_data = *event->mimeData();
+  event.setDropAction(Qt::LinkAction);
+  if (can_drop(event)) {
+    const auto& mime_data = *event.mimeData();
     const auto& property_owner_mime_data = *qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
     const auto items = ::filter_if(property_owner_mime_data.items(),
                                    [this](const AbstractPropertyOwner* apo)
@@ -154,8 +174,10 @@ void ReferenceLineEdit::dropEvent(QDropEvent* event)
     });
     assert(items.size() > 0);
     set_value(items.front());
+    return true;
   } else {
-    event->ignore();
+    event.ignore();
+    return false;
   }
 }
 

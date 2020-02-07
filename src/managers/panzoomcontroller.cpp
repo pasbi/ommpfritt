@@ -101,7 +101,7 @@ void PanZoomController::zoom()
   const double det = m_transform.determinant();
   assert(det > 0);
   static constexpr auto lower = 0.01;
-  static constexpr auto upper = 100.0;
+  static constexpr auto upper = 1.0;
   if ((det >= lower || s > 1.0) && (det <= upper || s < 1.0)) {
     ts.scale(s, s);
   }

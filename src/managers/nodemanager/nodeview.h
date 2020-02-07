@@ -87,6 +87,25 @@ private:
   std::set<Node*> m_nodes_in_rubberband;
   std::map<const Node*, std::map<Property*, std::unique_ptr<QWidget>>> m_property_widgets;
   void update_widgets();
+  QRectF widget_geometry(const AbstractPort& p) const;
+
+  struct WidgetInfo
+  {
+    WidgetInfo(const QPoint& pos, const AbstractPort& port, const QRectF& geom, QWidget* widget);
+    WidgetInfo() {}
+    void update_pos(const QPoint& pos);
+    QWidget* widget = nullptr;
+    QPoint widget_pos;
+    QWidget* leaf_widget = nullptr;
+    QPoint leaf_widget_pos;
+    const AbstractPort* port = nullptr;
+
+    bool valid() const { return widget != nullptr; }
+  };
+
+  WidgetInfo widget_at(const QPointF& pos) const;
+  bool forward_mouse_event(const QMouseEvent& event) const;
+  bool forward_dnd_event(const QDropEvent& event) const;
 
 private Q_SLOTS:
   void invalidate_caches();
