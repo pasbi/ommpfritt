@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QApplication>
 #include <QLineEdit>
 #include <sstream>
 #include <numeric>
@@ -19,11 +20,14 @@ class AbstractNumericEdit : public QLineEdit
 {
   Q_OBJECT
 public:
-  using QLineEdit::QLineEdit;
+  static constexpr auto slider_button = Qt::LeftButton;
+  AbstractNumericEdit(QWidget* parent = nullptr);
   QString label;
 
 protected:
   void paintEvent(QPaintEvent*) override;
+  void focusOutEvent(QFocusEvent* e) override;
+  void mouseDoubleClickEvent(QMouseEvent* e) override;
 
 Q_SIGNALS:
   void value_changed();
@@ -139,9 +143,10 @@ protected:
 
   void mousePressEvent(QMouseEvent* e) override
   {
-    if (e->button() == Qt::RightButton) {
+    if (e->button() == slider_button) {
       m_mouse_press_pos = e->pos();
       e->accept();
+      QApplication::setOverrideCursor(Qt::BlankCursor);
     } else {
       QLineEdit::mousePressEvent(e);
     }
@@ -149,14 +154,20 @@ protected:
 
   void mouseMoveEvent(QMouseEvent* e) override
   {
-    if (e->buttons() & Qt::RightButton) {
-      QPoint distance = m_mouse_press_pos - e->pos();
-      increment(distance.y());
+    if (e->buttons() & slider_button && isReadOnly()) {
+      QPoint distance = e->pos() - m_mouse_press_pos;
+      increment(distance.x());
       QCursor::setPos(mapToGlobal(m_mouse_press_pos));
       e->accept();
     } else {
       QLineEdit::mouseMoveEvent(e);
     }
+  }
+
+  void mouseReleaseEvent(QMouseEvent* e) override
+  {
+    QApplication::restoreOverrideCursor();
+    QLineEdit::mouseReleaseEvent(e);
   }
 
   void keyPressEvent(QKeyEvent* e) override
