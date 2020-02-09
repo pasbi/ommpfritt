@@ -9,6 +9,7 @@ template<PortType> class OrdinaryPort;
 
 class DecomposeNode : public Node
 {
+  Q_OBJECT
 public:
   explicit DecomposeNode(NodeModel& model);
   static constexpr auto INPUT_PROPERTY_KEY = "in";

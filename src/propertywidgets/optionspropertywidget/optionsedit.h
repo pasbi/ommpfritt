@@ -8,6 +8,7 @@ namespace omm
 
 class PrefixComboBox : public QComboBox
 {
+  Q_OBJECT
 public:
   using QComboBox::QComboBox;
   QString prefix;
