@@ -27,7 +27,7 @@ public:
 protected:
   void paintEvent(QPaintEvent*) override;
   void focusOutEvent(QFocusEvent* e) override;
-  void mouseDoubleClickEvent(QMouseEvent* e) override;
+  void mouseDoubleClickEvent(QMouseEvent*) override;
 
 Q_SIGNALS:
   void value_changed();
@@ -103,10 +103,10 @@ public:
     if (std::isnan(value)) {
       set_invalid_value();
     } else {
-      if (value != this->value() || !hasFocus()) {
+      if (value != this->value()) {
         set_text(value);
         m_value = value;
-        if (hasFocus()) { Q_EMIT value_changed(); }
+        Q_EMIT value_changed();
       }
     }
   }

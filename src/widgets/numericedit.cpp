@@ -19,7 +19,7 @@ void AbstractNumericEdit::focusOutEvent(QFocusEvent* e)
   QLineEdit::focusOutEvent(e);
 }
 
-void AbstractNumericEdit::mouseDoubleClickEvent(QMouseEvent* e)
+void AbstractNumericEdit::mouseDoubleClickEvent(QMouseEvent*)
 {
   setReadOnly(false);
   selectAll();
