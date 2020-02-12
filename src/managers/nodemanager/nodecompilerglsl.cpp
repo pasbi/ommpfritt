@@ -76,7 +76,7 @@ QString NodeCompilerGLSL::header() const
     QString("out vec4 %1;").arg(output_variable_name)
   };
 
-  for (Port<PortType::Output>* port : model().ports<OutputPort>()) {
+  for (OutputPort* port : model().ports<OutputPort>()) {
     // only property ports can be uniform
     if (port->flavor == omm::PortFlavor::Property) {
       // inputs cannot be uniform
@@ -85,10 +85,10 @@ QString NodeCompilerGLSL::header() const
         // if the sibling (same property) input port is connected, the non-uniform value is forwarded.
         // We don't need a uniform.
         if (sibling == nullptr || !sibling->is_connected()) {
-          m_uniform_ports.insert(static_cast<InputPort*>(sibling));
+          m_uniform_ports.insert(port);
           lines.push_back(QString("uniform %1 %2;")
-                          .arg(translate_type(sibling->data_type()))
-                          .arg(sibling->uuid()));
+                          .arg(translate_type(port->data_type()))
+                          .arg(port->uuid()));
         }
       }
     }
