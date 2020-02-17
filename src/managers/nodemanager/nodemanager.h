@@ -25,9 +25,6 @@ public:
 
   void set_model(NodeModel* model);
 
-protected:
-  void mousePressEvent(QMouseEvent* event) override;
-
 public Q_SLOTS:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
 

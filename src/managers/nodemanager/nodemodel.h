@@ -66,6 +66,8 @@ Q_SIGNALS:
   void appearance_changed();
   void topology_changed();
   void node_shape_changed();
+  void node_about_to_be_removed(Node&);
+  void node_added(Node&);
 
 private:
   std::set<std::unique_ptr<Node>> m_nodes;

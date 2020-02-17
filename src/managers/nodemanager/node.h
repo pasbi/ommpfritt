@@ -108,7 +108,8 @@ public:
 
 
 Q_SIGNALS:
-  void pos_changed();
+  void pos_changed(const QPointF& pos);
+  void ports_changed();
 
 private:
   QPointF m_pos;

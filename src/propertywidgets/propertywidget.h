@@ -49,17 +49,13 @@ protected:
       assert(count() == 1);
       assert(thing->parent() == nullptr);
       if constexpr (std::is_base_of_v<QWidget, T>) {
-//        insertWidget(1, thing.release(), 0);
         addWidget(thing.release(), 1);
       } else if constexpr (std::is_base_of_v<QLayout, T>) {
-//        insertLayout(1, thing.release(), 1);
         addLayout(thing.release(), 1);
       } else {
         Q_UNREACHABLE();
       }
     }
-
-    void set_layout(std::unique_ptr<QLayout> layout);
 
   private:
     QLabel* m_label = nullptr;

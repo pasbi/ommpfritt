@@ -1,9 +1,11 @@
 
 file(GLOB SOURCES
   node.cpp
+  nodeitem.cpp
   nodemanager.cpp
   nodemanagertitlebar.cpp
   nodemodel.cpp
+  nodescene.cpp
   nodeview.cpp
   nodecompiler.cpp
   nodecompilerpython.cpp
@@ -11,15 +13,18 @@ file(GLOB SOURCES
   nodemimedata.cpp
   nodesowner.cpp
   port.cpp
+  portitem.cpp
   propertyport.cpp
   ordinaryport.cpp
 )
 
 file(GLOB HEADERS
   node.h
+  nodeitem.h
   nodemanager.h
   nodemanagertitlebar.h
   nodemodel.h
+  nodescene.h
   nodeview.h
   nodecompiler.h
   nodecompilerpython.h
@@ -27,6 +32,7 @@ file(GLOB HEADERS
   nodemimedata.h
   nodesowner.h
   port.h
+  portitem.h
   propertyport.cpp
   ordinaryport.h
 )

@@ -70,8 +70,10 @@ void Node::deserialize(AbstractDeserializer& deserializer, const Serializable::P
 
 void Node::set_pos(const QPointF& pos)
 {
-  m_pos = pos;
-  Q_EMIT pos_changed();
+  if (pos != m_pos) {
+    m_pos = pos;
+    Q_EMIT pos_changed(pos);
+  }
 }
 
 QPointF Node::pos() const
@@ -164,6 +166,7 @@ AbstractPort& Node::add_port(std::unique_ptr<AbstractPort> port)
   auto& ref = *port;
   m_ports.insert(std::move(port));
   m_model.notify_topology_changed();
+  Q_EMIT ports_changed();
   return ref;
 }
 
@@ -173,6 +176,7 @@ std::unique_ptr<AbstractPort> Node::remove_port(const AbstractPort& port)
     if (it->get() == &port) {
       auto port = std::move(m_ports.extract(it).value());
       m_model.notify_topology_changed();
+      Q_EMIT ports_changed();
       return port;
     }
   }

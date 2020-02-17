@@ -21,7 +21,11 @@ template<typename NumericPropertyT> NumericPropertyWidget<NumericPropertyT>
   });
   m_spinbox = spinbox.get();
   spinbox->label = this->label();
-  this->set_widget(std::move(spinbox));
+
+  auto label_layout = std::make_unique<AbstractPropertyWidget::LabelLayout>();
+  label_layout->set_label(this->label());
+  label_layout->set_thing(std::move(spinbox));
+  this->setLayout(label_layout.release());
 
   using P = NumericPropertyDetail;
   const auto lower = this->template configuration<value_type>(P::LOWER_VALUE_POINTER);

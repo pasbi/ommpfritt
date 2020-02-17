@@ -24,6 +24,13 @@ NodeManager::NodeManager(Scene& scene)
 {
   auto widget = std::make_unique<QWidget>();
   m_ui->setupUi(widget.get());
+  connect(m_ui->nodeview, &NodeView::customContextMenuRequested, [this](const QPoint& pos) {
+    auto menu = make_context_menu();
+    const QPoint glob_pos = m_ui->nodeview->mapToGlobal(pos);
+    menu->move(glob_pos);
+    m_ui->nodeview->populate_context_menu(*menu);
+    menu->exec();
+  });
   set_widget(std::move(widget));
   setContextMenuPolicy(Qt::PreventContextMenu);  // we implement it ourself.
 
@@ -41,18 +48,6 @@ QString NodeManager::type() const { return TYPE; }
 void NodeManager::set_model(NodeModel* model)
 {
   m_ui->nodeview->set_model(model);
-}
-
-void NodeManager::mousePressEvent(QMouseEvent* event)
-{
-  if (event->button() == Qt::RightButton) {
-    auto menu = make_context_menu();
-    const QPoint glob_pos = mapToGlobal(event->pos());
-    menu->move(glob_pos);
-    m_ui->nodeview->populate_context_menu(*menu);
-    menu->exec();
-  }
-  Manager::mousePressEvent(event);
 }
 
 void NodeManager::set_selection(const std::set<AbstractPropertyOwner*>& selection)
@@ -111,8 +106,8 @@ bool NodeManager::perform_action(const QString& name)
     std::vector<std::unique_ptr<Node>> nodes;
     auto& model = *m_ui->nodeview->model();
     auto node = Node::make(name, model);
-    const QSizeF size = m_ui->nodeview->node_geometry(*node).size();
-    node->set_pos(m_ui->nodeview->get_insert_position() - QPointF(size.width(), size.height()) / 2.0);
+    const QPointF gpos = m_ui->nodeview->mapFromGlobal(QCursor::pos());
+    node->set_pos(m_ui->nodeview->transform().map(gpos));
     nodes.push_back(std::move(node));
     scene().submit<AddNodesCommand>(model, std::move(nodes));
   } else {

@@ -97,6 +97,23 @@ QString AbstractPort::uuid() const
   return "p" + QString::fromStdString(ss.str());
 }
 
+std::set<AbstractPort*> AbstractPort::connected_ports() const
+{
+  switch (port_type) {
+  case PortType::Input:
+    if (AbstractPort* op = static_cast<const InputPort*>(this)->connected_output(); op != nullptr) {
+      return { op };
+    } else {
+      return {};
+    }
+  case PortType::Output:
+    return ::transform<AbstractPort*>(static_cast<const OutputPort*>(this)->connected_inputs());
+  default:
+    Q_UNREACHABLE();
+    return {};
+  }
+}
+
 bool OutputPort::is_connected() const
 {
   return !m_connections.empty();

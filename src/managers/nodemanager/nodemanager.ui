@@ -15,16 +15,19 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="omm::NodeView" name="nodeview" native="true"/>
+    <widget class="omm::NodeView" name="nodeview">
+     <property name="contextMenuPolicy">
+      <enum>Qt::CustomContextMenu</enum>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
    <class>omm::NodeView</class>
-   <extends>QWidget</extends>
+   <extends>QGraphicsView</extends>
    <header>managers/nodemanager/nodeview.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -67,10 +67,11 @@ void NodeModel::init()
 Node& NodeModel::add_node(std::unique_ptr<Node> node)
 {
   Node& ref = *node;
-  connect(&ref, SIGNAL(pos_changed()), this, SIGNAL(appearance_changed()));
+  connect(&ref, SIGNAL(pos_changed(const QPointF&)), this, SIGNAL(appearance_changed()));
   assert(&node->model() == this);
   m_nodes.insert(std::move(node));
   Q_EMIT topology_changed();
+  Q_EMIT node_added(ref);
   return ref;
 }
 
@@ -85,7 +86,8 @@ std::unique_ptr<Node> NodeModel::extract_node(Node& node)
   if (it != m_nodes.end()) {
     assert(node.is_free());
     auto node = std::move(m_nodes.extract(it).value());
-    disconnect(node.get(), SIGNAL(pos_changed()), this, SIGNAL(appearance_changed()));
+    Q_EMIT node_about_to_be_removed(*node);
+    disconnect(node.get(), SIGNAL(pos_changed(const QPointF&)), this, SIGNAL(appearance_changed()));
     Q_EMIT topology_changed();
     return node;
   } else {
