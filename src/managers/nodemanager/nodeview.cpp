@@ -46,6 +46,7 @@ NodeView::NodeView(QWidget* parent)
   setAcceptDrops(true);
   setMouseTracking(true);
   setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+  setDragMode(QGraphicsView::RubberBandDrag);
 }
 
 NodeView::~NodeView()
@@ -212,7 +213,7 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
     viewport()->update();
   } else {
     m_tmp_connection_target = nullptr;
-    if (event->buttons() == Qt::LeftButton) {
+    if (rubberBandRect().isNull() && event->buttons() == Qt::LeftButton) {
       if (auto* item = itemAt(event->pos()); item != nullptr && item->type() == NodeItem::TYPE) {
         const QPointF current = mapToScene(event->pos());
         const QPointF last = mapToScene(m_last_mouse_position);
