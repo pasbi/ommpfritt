@@ -179,6 +179,7 @@ void NodeView::drawForeground(QPainter* painter, const QRectF&)
 
 void NodeView::mousePressEvent(QMouseEvent* event)
 {
+  m_last_mouse_position = event->pos();
   if (PortItem* port_item = port_item_at(event->pos()); port_item != nullptr) {
     m_tmp_connection_origin = port_item;
     viewport()->update();
@@ -202,7 +203,6 @@ void NodeView::mousePressEvent(QMouseEvent* event)
 
 void NodeView::mouseMoveEvent(QMouseEvent* event)
 {
-  m_last_mouse_position = event->pos();
   if (m_tmp_connection_origin != nullptr) {
     if (PortItem* port_item = port_item_at(event->pos()); port_item != nullptr
         && model()->can_connect(m_tmp_connection_origin->port, port_item->port))
@@ -214,7 +214,15 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
     viewport()->update();
   } else {
     m_tmp_connection_target = nullptr;
+    if (event->buttons() == Qt::LeftButton) {
+      if (auto* item = itemAt(event->pos()); item != nullptr && item->type() == NodeItem::TYPE) {
+        const QPointF current = mapToScene(event->pos());
+        const QPointF last = mapToScene(m_last_mouse_position);
+        m_model->scene().submit<MoveNodesCommand>(selected_nodes(), current - last);
+      }
+    }
   }
+  m_last_mouse_position = event->pos();
   QGraphicsView::mouseMoveEvent(event);
 }
 
@@ -225,8 +233,8 @@ void NodeView::mouseReleaseEvent(QMouseEvent *event)
     if (m_model != nullptr) {
       commands.push_back(std::make_unique<ConnectPortsCommand>(m_tmp_connection_origin->port,
                                                                m_tmp_connection_target->port));
-      if (m_about_to_disconnect == &m_tmp_connection_origin->port
-          || m_about_to_disconnect == &m_tmp_connection_target->port)
+      if (m_about_to_disconnect == &m_tmp_connection_origin->port ||
+          m_about_to_disconnect == &m_tmp_connection_target->port)
       {
         m_about_to_disconnect = nullptr;
       }

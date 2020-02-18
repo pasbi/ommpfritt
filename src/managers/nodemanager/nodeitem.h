@@ -24,6 +24,8 @@ public:
   QRectF boundingRect() const override;
   void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
   PortItem* port_item(const AbstractPort& port) const;
+  static constexpr auto TYPE = QGraphicsItem::UserType + 2;
+  int type() const override { return TYPE; }
 
 protected:
   QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;

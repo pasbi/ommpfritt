@@ -22,6 +22,7 @@ public:
   void set_model(NodeModel* model);
   void clear();
   NodeItem& node_item(Node& node) const;
+  NodeModel* model() const { return m_model; }
 
 private:
   NodeModel* m_model;
