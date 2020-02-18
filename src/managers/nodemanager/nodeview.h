@@ -17,7 +17,7 @@ class NodeModel;
 class InputPort;
 class AbstractPort;
 class Node;
-class NodeScene;
+class NodeModel;
 class PortItem;
 
 class NodeView : public QGraphicsView
@@ -67,9 +67,6 @@ private:
   InputPort* m_about_to_disconnect = nullptr;
   bool m_aborted = false;
   QPoint m_last_mouse_position;
-
-private:
-  std::unique_ptr<NodeScene> m_graphics_scene;
 };
 
 }  // namespace omm

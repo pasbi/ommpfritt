@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+#include <memory>
 #include "common.h"
 #include "aspects/serializable.h"
 #include <QObject>
@@ -7,6 +9,7 @@
 #include <memory>
 #include "managers/nodemanager/port.h"
 #include "managers/nodemanager/nodecompiler.h"
+#include <QGraphicsScene>
 
 namespace omm
 {
@@ -16,8 +19,10 @@ class AbstractPort;
 class OutputPort;
 class InputPort;
 class Scene;
+class PortItem;
+class NodeItem;
 
-class NodeModel : public QObject, public Serializable
+class NodeModel : public QGraphicsScene, public Serializable
 {
   Q_OBJECT
 public:
@@ -35,6 +40,8 @@ public:
   bool can_connect(const AbstractPort& a, const AbstractPort& b) const;
   bool can_connect(const OutputPort& a, const InputPort& b) const;
   using QObject::connect;
+  void clear();
+  NodeItem& node_item(Node& node) const;
 
   void serialize(AbstractSerializer&, const Pointer&) const override;
   void deserialize(AbstractDeserializer&deserializer, const Pointer&ptr) override;
@@ -66,8 +73,6 @@ Q_SIGNALS:
   void appearance_changed();
   void topology_changed();
   void node_shape_changed();
-  void node_about_to_be_removed(Node&);
-  void node_added(Node&);
 
 private:
   std::set<std::unique_ptr<Node>> m_nodes;
@@ -75,6 +80,10 @@ private:
   const AbstractNodeCompiler::Language m_language;
   void init();
   Status m_status = Status::None;
+  std::map<Node*, std::unique_ptr<NodeItem>> m_node_items;
+  std::list<QMetaObject::Connection> m_node_connections;
+  std::map<const AbstractPort*, PortItem*> m_port_map;
+
 };
 
 

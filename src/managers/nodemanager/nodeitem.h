@@ -14,7 +14,7 @@ class PropertyInputPort;
 template<PortType> class OrdinaryPort;
 class Property;
 class PortItem;
-class NodeScene;
+class NodeModel;
 
 class NodeItem : public QGraphicsItem
 {
@@ -41,7 +41,7 @@ private:
   void add_port(AbstractPort& p, double pos_y);
   void add_property_widget(Property& property, double pos_y);
   void adjust_port_pos();
-  NodeScene* scene() const;
+  NodeModel* model() const;
 
   std::map<PortType, std::set<std::unique_ptr<PortItem>>> m_port_items;
   std::set<std::unique_ptr<QGraphicsProxyWidget>> m_centered_items;

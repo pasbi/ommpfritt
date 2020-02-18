@@ -1,5 +1,5 @@
 #include "managers/nodemanager/nodeitem.h"
-#include "managers/nodemanager/nodescene.h"
+#include "managers/nodemanager/nodemodel.h"
 #include "preferences/uicolors.h"
 #include "propertywidgets/propertywidget.h"
 #include <QPainter>
@@ -139,9 +139,9 @@ void NodeItem::update_children()
 
 void NodeItem::clear_ports()
 {
-  const auto remove_all = [scene=this->scene()](auto&& items) {
+  const auto remove_all = [this](auto&& items) {
     for (const auto& item : items) {
-      scene->removeItem(item.get());
+      model()->removeItem(item.get());
     }
     items.clear();
   };
@@ -190,9 +190,9 @@ void NodeItem::add_property_widget(Property& property, double pos_y)
   m_centered_items.insert(std::move(pw_item));
 }
 
-NodeScene* NodeItem::scene() const
+NodeModel* NodeItem::model() const
 {
-  return static_cast<NodeScene*>(QGraphicsItem::scene());
+  return static_cast<NodeModel*>(QGraphicsItem::scene());
 }
 
 void NodeItem::add_port(PropertyInputPort* ip, PropertyOutputPort* op, double pos_y)

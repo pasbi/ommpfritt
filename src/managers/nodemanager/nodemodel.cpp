@@ -1,4 +1,5 @@
 #include "managers/nodemanager/nodemodel.h"
+#include "managers/nodemanager/nodeitem.h"
 #include "serializers/jsonserializer.h"
 #include "scene/scene.h"
 #include "scene/messagebox.h"
@@ -71,7 +72,11 @@ Node& NodeModel::add_node(std::unique_ptr<Node> node)
   assert(&node->model() == this);
   m_nodes.insert(std::move(node));
   Q_EMIT topology_changed();
-  Q_EMIT node_added(ref);
+
+  auto node_item = std::make_unique<NodeItem>(ref);
+  addItem(node_item.get());
+  m_node_items.insert({ &ref, std::move(node_item) });
+
   return ref;
 }
 
@@ -84,9 +89,14 @@ std::unique_ptr<Node> NodeModel::extract_node(Node& node)
   });
 
   if (it != m_nodes.end()) {
+    {
+      auto it = m_node_items.find(&node);
+      removeItem(it->second.get());
+      m_node_items.erase(it);
+    }
+
     assert(node.is_free());
     auto node = std::move(m_nodes.extract(it).value());
-    Q_EMIT node_about_to_be_removed(*node);
     disconnect(node.get(), SIGNAL(pos_changed(const QPointF&)), this, SIGNAL(appearance_changed()));
     Q_EMIT topology_changed();
     return node;
@@ -210,6 +220,24 @@ bool NodeModel::can_connect(const AbstractPort& a, const AbstractPort& b) const
 bool NodeModel::can_connect(const OutputPort& a, const InputPort& b) const
 {
   return !find_path(b.node, a.node) && b.accepts_data_type(a.data_type());
+}
+
+void NodeModel::clear()
+{
+  for (auto&& [node, node_item] : m_node_items) {
+    removeItem(node_item.get());
+  }
+  for (auto& connection : m_node_connections) {
+    QObject::disconnect(connection);
+  }
+
+  m_node_connections.clear();
+  m_node_items.clear();
+}
+
+NodeItem& NodeModel::node_item(Node& node) const
+{
+  return *m_node_items.at(&node);
 }
 
 }  // namespace omm

@@ -21,14 +21,14 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QToolTip>
-#include "managers/nodemanager/nodescene.h"
+#include "managers/nodemanager/nodemodel.h"
 
 namespace
 {
 
-omm::PortItem* get_port_item(omm::NodeScene& scene, omm::AbstractPort& port)
+omm::PortItem* get_port_item(omm::NodeModel& model, omm::AbstractPort& port)
 {
-  omm::NodeItem& node_item = scene.node_item(port.node);
+  omm::NodeItem& node_item = model.node_item(port.node);
   return node_item.port_item(port);
 }
 
@@ -42,11 +42,9 @@ namespace omm
 NodeView::NodeView(QWidget* parent)
   : QGraphicsView(parent)
   , m_pzc(*this)
-  , m_graphics_scene(std::make_unique<NodeScene>())
 {
   setAcceptDrops(true);
   setMouseTracking(true);
-  setScene(m_graphics_scene.get());
   setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 }
 
@@ -56,7 +54,7 @@ NodeView::~NodeView()
 
 void NodeView::set_model(NodeModel *model)
 {
-  m_graphics_scene->set_model(model);
+  setScene(model);
   m_model = model;
   pan_to_center();
 }
@@ -69,7 +67,7 @@ NodeModel* NodeView::model() const
 std::set<Node*> NodeView::selected_nodes() const
 {
   return ::filter_if(m_model->nodes(), [this](Node* node) {
-    return m_graphics_scene->node_item(*node).isSelected();
+    return m_model->node_item(*node).isSelected();
   });
 }
 
@@ -157,8 +155,8 @@ void NodeView::drawForeground(QPainter* painter, const QRectF&)
     for (Node* node : model->nodes()) {
       for (InputPort* ip : node->ports<InputPort>()) {
         if (OutputPort* op = ip->connected_output(); op != nullptr) {
-          const QPointF input_port_item_pos = get_port_item(*m_graphics_scene, *ip)->scenePos();
-          const QPointF output_port_item_pos = get_port_item(*m_graphics_scene, *op)->scenePos();
+          const QPointF input_port_item_pos = get_port_item(*m_model, *ip)->scenePos();
+          const QPointF output_port_item_pos = get_port_item(*m_model, *op)->scenePos();
           draw_connection(*painter, input_port_item_pos, output_port_item_pos, false, false);
         }
       }
@@ -191,7 +189,7 @@ void NodeView::mousePressEvent(QMouseEvent* event)
       } else {
         m_former_connection_target = &ip;
         m_about_to_disconnect = &ip;
-        m_tmp_connection_origin = m_graphics_scene->node_item(op->node).port_item(*op);
+        m_tmp_connection_origin = m_model->node_item(op->node).port_item(*op);
       }
     } else {
       m_tmp_connection_origin = port_item;
