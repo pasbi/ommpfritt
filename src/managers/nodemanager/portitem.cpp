@@ -23,6 +23,7 @@ PortItem::PortItem(AbstractPort& port, NodeItem& parent)
 
 void PortItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* options, QWidget* widget)
 {
+  painter->setRenderHint(QPainter::Antialiasing);
   static constexpr QRectF ellipse( -radius,  -radius,
                                   2*radius, 2*radius);
   static constexpr double big_number = 10000.0;

@@ -42,6 +42,7 @@ QRectF NodeItem::boundingRect() const
 
 void NodeItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
+  painter->setRenderHint(QPainter::Antialiasing);
   QPainterPath path;
   path.addRoundedRect(m_shape, 10, 10, Qt::AbsoluteSize);
 

@@ -151,6 +151,7 @@ void NodeView::drawForeground(QPainter* painter, const QRectF&)
     return origin.port.port_type == PortType::Output;
   };
   painter->save();
+  painter->setRenderHint(QPainter::Antialiasing);
   painter->setTransform(viewportTransform());
   if (NodeModel* model = this->model(); model != nullptr) {
     for (Node* node : model->nodes()) {
