@@ -41,7 +41,7 @@ public:
   std::map<QString, MouseModifier> mouse_modifiers;
   std::map<QString, GridOption> grid_options;
 
-  bool match(const QString& key, QMouseEvent& event, bool check_modifiers) const;
+  bool match(const QString& key, const QMouseEvent& event, bool check_modifiers) const;
 
 };
 

@@ -76,7 +76,7 @@ Preferences::~Preferences()
   }
 }
 
-bool Preferences::match(const QString& key, QMouseEvent& event, bool check_modifiers) const
+bool Preferences::match(const QString& key, const QMouseEvent& event, bool check_modifiers) const
 {
   const auto mm = mouse_modifiers.at(key);
   if (check_modifiers) {
