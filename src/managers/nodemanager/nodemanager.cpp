@@ -31,8 +31,8 @@ NodeManager::NodeManager(Scene& scene)
     m_ui->nodeview->populate_context_menu(*menu);
     menu->exec();
   });
+  widget->setContextMenuPolicy(Qt::NoContextMenu);
   set_widget(std::move(widget));
-  setContextMenuPolicy(Qt::PreventContextMenu);  // we implement it ourself.
 
   connect(&scene.message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(set_selection(std::set<AbstractPropertyOwner*>)));

@@ -33,8 +33,7 @@ public:
   void set_model(NodeModel* model);
   NodeModel* model() const;
   std::set<Node*> selected_nodes() const;
-  QPointF get_insert_position() const;
-  QPointF get_insert_position(const QPoint& pos) const;
+  QPointF last_mouse_scene_pos() const;
   void populate_context_menu(QMenu& menu) const;
   void pan_to_center();
   bool accepts_paste(const QMimeData& mime_data) const;
@@ -53,7 +52,7 @@ protected:
 
 private:
   NodeModel* m_model = nullptr;
-  PanZoomController m_pzc;
+  PanZoomController m_pan_zoom_controller;
   void draw_connection(QPainter& painter, const QPointF& in, const QPointF& out,
                        bool is_floating, bool reverse) const;
   std::pair<Node*, AbstractPort*> select_port_or_node(const QPointF& pos) const;

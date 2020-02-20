@@ -14,6 +14,25 @@
 #include "scene/scene.h"
 #include "animation/animator.h"
 
+namespace
+{
+
+void draw_rubberband(QPainter& painter, const QWidget& widget, const QRectF& rect)
+{
+  painter.save();
+  painter.resetTransform();
+  QPen pen;
+  pen.setWidth(2.0);
+  pen.setCosmetic(true);
+  pen.setColor(omm::ui_color(widget, "TimeLine", "rubberband outline"));
+  painter.setPen(pen);
+  painter.fillRect(rect, omm::ui_color(widget, "TimeLine", "rubberband fill"));
+  painter.drawRect(rect);
+  painter.restore();
+}
+
+}  // namespace
+
 namespace omm
 {
 
@@ -53,7 +72,7 @@ void CurveManagerWidget::paintEvent(QPaintEvent* event)
   draw_knots(painter);
   if (m_rubberband_rect_visible) {
     const QRect rect(m_mouse_down_pos, m_last_mouse_pos);
-    PanZoomController::draw_rubberband(painter, *this, rect.normalized());
+    draw_rubberband(painter, *this, rect.normalized());
   }
 
   {

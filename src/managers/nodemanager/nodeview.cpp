@@ -32,7 +32,6 @@ omm::PortItem* get_port_item(omm::NodeModel& model, omm::AbstractPort& port)
   return node_item.port_item(port);
 }
 
-
 }  // namespace
 
 namespace omm
@@ -41,12 +40,15 @@ namespace omm
 
 NodeView::NodeView(QWidget* parent)
   : QGraphicsView(parent)
-  , m_pzc(*this)
+  , m_pan_zoom_controller(*this)
 {
   setAcceptDrops(true);
   setMouseTracking(true);
   setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
   setDragMode(QGraphicsView::RubberBandDrag);
+  setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  setTransformationAnchor(QGraphicsView::NoAnchor);
 }
 
 NodeView::~NodeView()
@@ -57,7 +59,6 @@ void NodeView::set_model(NodeModel *model)
 {
   setScene(model);
   m_model = model;
-  pan_to_center();
 }
 
 NodeModel* NodeView::model() const
@@ -70,6 +71,11 @@ std::set<Node*> NodeView::selected_nodes() const
   return ::filter_if(m_model->nodes(), [this](Node* node) {
     return m_model->node_item(*node).isSelected();
   });
+}
+
+QPointF NodeView::last_mouse_scene_pos() const
+{
+  return mapToScene(m_pan_zoom_controller.last_mouse_pos().toPoint());
 }
 
 bool NodeView::accepts_paste(const QMimeData &mime_data) const
@@ -111,7 +117,7 @@ void NodeView::paste_from_clipboard()
       {
         return node->pos() + p;
       }) / nodes.size();
-      const auto diff = get_insert_position(mapFromGlobal(QCursor::pos())) - old_center;
+      const auto diff = mapToScene(mapFromGlobal(QCursor::pos())) - old_center;
       for (auto& node : copies) {
         node->set_pos(node->pos() + diff);
       }
@@ -180,7 +186,9 @@ void NodeView::drawForeground(QPainter* painter, const QRectF&)
 void NodeView::mousePressEvent(QMouseEvent* event)
 {
   m_last_mouse_position = event->pos();
-  if (PortItem* port_item = port_item_at(event->pos()); port_item != nullptr) {
+  if (m_pan_zoom_controller.press(*event)) {
+    event->accept();
+  } else if (PortItem* port_item = port_item_at(event->pos()); port_item != nullptr) {
     m_tmp_connection_origin = port_item;
     viewport()->update();
     AbstractPort& port = port_item->port;
@@ -196,6 +204,9 @@ void NodeView::mousePressEvent(QMouseEvent* event)
     } else {
       m_tmp_connection_origin = port_item;
     }
+    event->accept();
+  } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
+    Q_EMIT customContextMenuRequested(event->pos());
   } else {
     QGraphicsView::mousePressEvent(event);
   }
@@ -203,7 +214,9 @@ void NodeView::mousePressEvent(QMouseEvent* event)
 
 void NodeView::mouseMoveEvent(QMouseEvent* event)
 {
-  if (m_tmp_connection_origin != nullptr) {
+  if (m_pan_zoom_controller.move(*event)) {
+    event->accept();
+  } else if (m_tmp_connection_origin != nullptr) {
     if (PortItem* port_item = port_item_at(event->pos()); port_item != nullptr
         && model()->can_connect(m_tmp_connection_origin->port, port_item->port))
     {
@@ -257,6 +270,7 @@ void NodeView::mouseReleaseEvent(QMouseEvent *event)
   m_about_to_disconnect = nullptr;
   m_tmp_connection_origin = nullptr;
   m_tmp_connection_target = nullptr;
+  m_pan_zoom_controller.release();
   viewport()->update();
   QGraphicsView::mouseReleaseEvent(event);
 }
@@ -471,7 +485,6 @@ PortItem* NodeView::port_item_at(const QPoint& pos) const
 void NodeView::abort()
 {
   m_aborted = true;
-  m_pzc.rubber_band_visible = false;
   m_about_to_disconnect = nullptr;
   m_tmp_connection_origin = nullptr;
   m_tmp_connection_target = nullptr;
@@ -485,16 +498,6 @@ void NodeView::remove_selection()
     const auto selection = ::transform<Node*, std::vector>(selected_nodes());
     m_model->scene().submit<RemoveNodesCommand>(*m_model, selection);
   }
-}
-
-QPointF NodeView::get_insert_position(const QPoint& pos) const
-{
-  return m_pzc.transform().inverted().map(pos - m_pzc.offset());
-}
-
-QPointF NodeView::get_insert_position() const
-{
-  return m_pzc.transform().inverted().map(m_pzc.last_mouse_pos());
 }
 
 void NodeView::draw_connection(QPainter& painter, const QPointF& in, const QPointF& out,
@@ -536,17 +539,17 @@ void NodeView::populate_context_menu(QMenu& menu) const
 
 void NodeView::pan_to_center()
 {
-  if (m_model != nullptr) {
-    const auto nodes = m_model->nodes();
-    QPointF mean(0.0, 0.0);
-    for (Node* node : nodes) {
-      mean += node->pos();
-    }
-    mean /= std::max(std::size_t(1), nodes.size());
+//  if (m_model != nullptr) {
+//    const auto nodes = m_model->nodes();
+//    QPointF mean(0.0, 0.0);
+//    for (Node* node : nodes) {
+//      mean += node->pos();
+//    }
+//    mean /= std::max(std::size_t(1), nodes.size());
 
-    m_pzc.translate(-m_pzc.transform().map(mean));
-    update();
-  }
+//    m_pzc.translate(-m_pzc.transform().map(mean));
+//    update();
+//  }
 }
 
 }  // namespace omm

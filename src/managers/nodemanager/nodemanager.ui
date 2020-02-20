@@ -10,6 +10,9 @@
     <height>300</height>
    </rect>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::NoContextMenu</enum>
+  </property>
   <property name="windowTitle">
    <string>Node Manager</string>
   </property>
@@ -17,7 +20,7 @@
    <item>
     <widget class="omm::NodeView" name="nodeview">
      <property name="contextMenuPolicy">
-      <enum>Qt::CustomContextMenu</enum>
+      <enum>Qt::NoContextMenu</enum>
      </property>
     </widget>
    </item>
