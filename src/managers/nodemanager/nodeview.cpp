@@ -68,9 +68,13 @@ NodeModel* NodeView::model() const
 
 std::set<Node*> NodeView::selected_nodes() const
 {
-  return ::filter_if(m_model->nodes(), [this](Node* node) {
-    return m_model->node_item(*node).isSelected();
-  });
+  if (m_model == nullptr) {
+    return {};
+  } else {
+    return ::filter_if(m_model->nodes(), [this](Node* node) {
+      return m_model->node_item(*node).isSelected();
+    });
+  }
 }
 
 QPointF NodeView::last_mouse_scene_pos() const
