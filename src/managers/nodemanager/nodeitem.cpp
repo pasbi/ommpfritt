@@ -105,6 +105,12 @@ void NodeItem::update_children()
       } else {
         properties[property].second = static_cast<PropertyOutputPort*>(p);
       }
+    } else {
+      if (p->port_type == PortType::Input) {
+        ordinary_inputs.insert(static_cast<OrdinaryPort<PortType::Input>*>(p));
+      } else {
+        ordinary_outputs.insert(static_cast<OrdinaryPort<PortType::Output>*>(p));
+      }
     }
   }
 
