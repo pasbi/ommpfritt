@@ -49,6 +49,13 @@ NodeView::NodeView(QWidget* parent)
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setTransformationAnchor(QGraphicsView::NoAnchor);
+  {
+    QTransform t;
+    t.translate(viewport()->width() / 2.0, viewport()->height() / 2.0);
+    setTransform(t.inverted());
+  }
+  reset_scene_rect();
+  m_viewport_center = mapToScene(viewport()->rect().center());
 }
 
 NodeView::~NodeView()
@@ -59,6 +66,9 @@ void NodeView::set_model(NodeModel *model)
 {
   setScene(model);
   m_model = model;
+  const QRectF scene_rect = viewport()->rect();
+  setSceneRect(scene_rect);
+  pan_to_center();
 }
 
 NodeModel* NodeView::model() const
@@ -77,11 +87,6 @@ std::set<Node*> NodeView::selected_nodes() const
   }
 }
 
-QPointF NodeView::last_mouse_scene_pos() const
-{
-  return mapToScene(m_pan_zoom_controller.last_mouse_pos().toPoint());
-}
-
 bool NodeView::accepts_paste(const QMimeData &mime_data) const
 {
   if (NodeModel* model = this->model(); model != nullptr) {
@@ -89,6 +94,13 @@ bool NodeView::accepts_paste(const QMimeData &mime_data) const
   } else {
     return false;
   }
+}
+
+void NodeView::reset_scene_rect()
+{
+  const QRectF vr = viewport()->rect();
+  const QTransform ti = transform().inverted();
+  setSceneRect(QRectF(ti.map(vr.topLeft()), ti.map(vr.bottomRight())));
 }
 
 void NodeView::copy_to_clipboard()
@@ -129,7 +141,6 @@ void NodeView::paste_from_clipboard()
 
     if (!copies.empty()) {
       Scene& scene = model.scene();
-
       auto macro = scene.history().start_macro(tr("Copy Nodes"));
 
       { // restore connections
@@ -151,7 +162,6 @@ void NodeView::paste_from_clipboard()
       // insert nodes
       scene.submit<AddNodesCommand>(model, std::move(copies));
     }
-
   }
 }
 
@@ -210,15 +220,30 @@ void NodeView::mousePressEvent(QMouseEvent* event)
     }
     event->accept();
   } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
+    m_node_insert_pos = mapToScene(event->pos());
     Q_EMIT customContextMenuRequested(event->pos());
   } else {
     QGraphicsView::mousePressEvent(event);
   }
 }
 
+void NodeView::resizeEvent(QResizeEvent* event)
+{
+  static const auto s2p = [](const QSize& size) { return QPoint(size.width(), size.height()); };
+  const QPointF d = (mapToScene(s2p(event->size())) - mapToScene(s2p(event->oldSize())))/2.0;
+  translate(d.x(), d.y());
+  reset_scene_rect();
+}
+
+void NodeView::mouseDoubleClickEvent(QMouseEvent*)
+{
+  pan_to_center();
+}
+
 void NodeView::mouseMoveEvent(QMouseEvent* event)
 {
   if (m_pan_zoom_controller.move(*event)) {
+    m_viewport_center = mapToScene(viewport()->rect().center());
     event->accept();
   } else if (m_tmp_connection_origin != nullptr) {
     if (PortItem* port_item = port_item_at(event->pos()); port_item != nullptr
@@ -543,17 +568,17 @@ void NodeView::populate_context_menu(QMenu& menu) const
 
 void NodeView::pan_to_center()
 {
-//  if (m_model != nullptr) {
-//    const auto nodes = m_model->nodes();
-//    QPointF mean(0.0, 0.0);
-//    for (Node* node : nodes) {
-//      mean += node->pos();
-//    }
-//    mean /= std::max(std::size_t(1), nodes.size());
-
-//    m_pzc.translate(-m_pzc.transform().map(mean));
-//    update();
-//  }
+  if (m_model != nullptr) {
+    const auto nodes = m_model->nodes();
+    const auto f = [](const QPointF& p, const Node* n) { return p + n->pos(); };
+    const double n = nodes.size();
+    const auto center = std::accumulate(nodes.begin(), nodes.end(), QPointF(), f) / std::max(1.0, n);
+    reset_scene_rect();
+    const auto d = mapToScene(viewport()->rect().center()) - center;
+    translate(d.x(), d.y());
+    reset_scene_rect();
+    update();
+  }
 }
 
 }  // namespace omm

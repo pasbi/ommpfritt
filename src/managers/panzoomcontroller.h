@@ -4,15 +4,16 @@
 #include <QPoint>
 
 class QMouseEvent;
-class QGraphicsView;
 
 namespace omm
 {
 
+class NodeView;
+
 class PanZoomController
 {
 public:
-  PanZoomController(QGraphicsView& view);
+  PanZoomController(NodeView& view);
   enum class Action { Pan, Zoom, None };
   bool press(const QMouseEvent& event);
   bool move(const QMouseEvent& event);
@@ -29,7 +30,7 @@ private:
   QPointF m_start_scene_pos;
 
   QTransform m_transform;
-  QGraphicsView& m_view;
+  NodeView& m_view;
 
   static constexpr double min_scale = 0.1;
   static constexpr double max_scale = 2.0;

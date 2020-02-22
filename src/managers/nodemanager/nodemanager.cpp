@@ -106,8 +106,7 @@ bool NodeManager::perform_action(const QString& name)
     std::vector<std::unique_ptr<Node>> nodes;
     auto& model = *m_ui->nodeview->model();
     auto node = Node::make(name, model);
-    const QPointF gpos = m_ui->nodeview->mapFromGlobal(QCursor::pos());
-    node->set_pos(m_ui->nodeview->transform().map(gpos));
+    node->set_pos(m_ui->nodeview->node_insert_pos());
     nodes.push_back(std::move(node));
     scene().submit<AddNodesCommand>(model, std::move(nodes));
   } else {
@@ -124,7 +123,6 @@ std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
     const auto language = model->language();
     for (const QString& name : Node::keys()) {
       if (::contains(Node::detail(name).definitions, language)) {
-        const QString tr_name = QCoreApplication::translate("any-context", name.toStdString().c_str());
         auto action = kb.make_menu_action(*this, name);
         menu->addAction(action.release());
       }

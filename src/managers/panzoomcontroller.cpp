@@ -8,32 +8,12 @@
 #include <cmath>
 #include "mainwindow/application.h"
 #include <QGraphicsView>
-
-namespace
-{
-
-QPointF scale(const QPointF& p, double f, const QPointF& origin)
-{
-  return (p - origin) * f + origin;
-}
-
-QRectF scale(const QRectF& r, double f, const QPointF& origin)
-{
-  return QRectF(scale(r.topLeft(), f, origin),
-                scale(r.bottomRight(), f, origin));
-}
-
-QRectF mapAABB(const QRectF& r, const QTransform& t)
-{
-  return QRectF(t.map(r.topLeft()), t.map(r.bottomRight()));
-}
-
-}
+#include "managers/nodemanager/nodeview.h"
 
 namespace omm
 {
 
-PanZoomController::PanZoomController(QGraphicsView& view) : m_view(view)
+PanZoomController::PanZoomController(NodeView& view) : m_view(view)
 {
 
 }
@@ -86,11 +66,10 @@ bool PanZoomController::move(const QMouseEvent& event)
       f = std::max(1.0, f);
     }
     m_view.scale(f, f);
-    scene_rect = mapAABB(m_view.rect(), m_view.transform().inverted());
-    m_view.setSceneRect(scene_rect);
+    m_view.reset_scene_rect();
     QPointF current_scene_pos = m_view.mapToScene(m_start_widget_pos);
-    scene_rect.translate(m_start_scene_pos - current_scene_pos);
-    m_view.setSceneRect(scene_rect);
+    const QPointF d = m_start_scene_pos - current_scene_pos;
+    m_view.setSceneRect(m_view.sceneRect().translated(d));
   }
     break;
   case Action::Pan:
@@ -100,7 +79,6 @@ bool PanZoomController::move(const QMouseEvent& event)
   default:
     return false;
   }
-  LINFO << scene_rect;
   return true;
 }
 
@@ -108,29 +86,5 @@ void PanZoomController::release()
 {
   m_current_action = Action::None;
 }
-
-//void PanZoomController::zoom()
-//{
-//  const double sign = std::abs(m_pixel_d.x()) > std::abs(m_pixel_d.y()) ? m_pixel_d.x() : m_pixel_d.y();
-//  const double d2 = std::copysign(std::sqrt(QPointF::dotProduct(m_unit_d, m_unit_d)), sign);
-//  const double s = std::exp(d2 / 600.0);
-
-//  QTransform tt;
-//  tt.translate(-m_start_pos.x(), -m_start_pos.y());
-
-//  QTransform ts;
-//  const double det = m_transform.determinant();
-//  assert(det > 0);
-//  static constexpr auto lower = 0.01;
-//  static constexpr auto upper = 1.0;
-//  if ((det >= lower || s > 1.0) && (det <= upper || s < 1.0)) {
-//    ts.scale(s, s);
-//  }
-
-//  QTransform tti;
-//  tti.translate(m_start_pos.x(), m_start_pos.y());
-
-//  m_transform = m_transform * tt * ts * tti;
-//}
 
 }  // namespace

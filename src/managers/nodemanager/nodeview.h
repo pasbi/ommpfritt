@@ -33,10 +33,11 @@ public:
   void set_model(NodeModel* model);
   NodeModel* model() const;
   std::set<Node*> selected_nodes() const;
-  QPointF last_mouse_scene_pos() const;
+  QPointF node_insert_pos() const { return m_node_insert_pos; }
   void populate_context_menu(QMenu& menu) const;
   void pan_to_center();
   bool accepts_paste(const QMimeData& mime_data) const;
+  void reset_scene_rect();
 
 public Q_SLOTS:
   void copy_to_clipboard();
@@ -49,6 +50,8 @@ protected:
   void mouseReleaseEvent(QMouseEvent* event);
   void drawForeground(QPainter* painter, const QRectF&) override;
   void mousePressEvent(QMouseEvent* event) override;
+  void resizeEvent(QResizeEvent*) override;
+  void mouseDoubleClickEvent(QMouseEvent*) override;
 
 private:
   NodeModel* m_model = nullptr;
@@ -66,6 +69,8 @@ private:
   InputPort* m_about_to_disconnect = nullptr;
   bool m_aborted = false;
   QPoint m_last_mouse_position;
+  QPointF m_node_insert_pos;
+  QPointF m_viewport_center;
 };
 
 }  // namespace omm
