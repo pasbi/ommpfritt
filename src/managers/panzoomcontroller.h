@@ -30,6 +30,9 @@ private:
 
   QTransform m_transform;
   QGraphicsView& m_view;
+
+  static constexpr double min_scale = 0.1;
+  static constexpr double max_scale = 2.0;
 };
 
 }  // namespace omm

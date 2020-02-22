@@ -76,7 +76,15 @@ bool PanZoomController::move(const QMouseEvent& event)
   switch (m_current_action) {
   case Action::Zoom:
   {
-    const double f = std::pow(1.005, d.x());
+    double f = std::pow(1.005, d.x());
+    const double current_scale = m_view.transform().determinant();
+    if (current_scale > max_scale) {
+      // only allow zoom out
+      f = std::min(1.0, f);
+    } else if (current_scale < min_scale) {
+      // only allow zoom in
+      f = std::max(1.0, f);
+    }
     m_view.scale(f, f);
     scene_rect = mapAABB(m_view.rect(), m_view.transform().inverted());
     m_view.setSceneRect(scene_rect);
