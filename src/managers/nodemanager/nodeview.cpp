@@ -149,7 +149,15 @@ void NodeView::paste_from_clipboard()
       }
 
       // insert nodes
+      auto references = ::transform<Node*>(copies, [](const std::unique_ptr<Node>& node) {
+        return node.get();
+      });
       scene.submit<AddNodesCommand>(model, std::move(copies));
+      model.clearSelection();
+      for (Node* node : references) {
+        model.node_item(*node).setSelected(true);
+      }
+
     }
   }
 }

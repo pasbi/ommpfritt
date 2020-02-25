@@ -78,17 +78,21 @@ void NodeModel::init()
 
 Node& NodeModel::add_node(std::unique_ptr<Node> node)
 {
-  Node& ref = *node;
-  connect(&ref, SIGNAL(pos_changed(const QPointF&)), this, SIGNAL(appearance_changed()));
+  Node& node_ref = *node;
+  connect(&node_ref, SIGNAL(pos_changed(const QPointF&)), this, SIGNAL(appearance_changed()));
   assert(&node->model() == this);
   m_nodes.insert(std::move(node));
   Q_EMIT topology_changed();
 
-  auto node_item = std::make_unique<NodeItem>(ref);
+  auto node_item = std::make_unique<NodeItem>(node_ref);
+  auto& node_item_ref = *node_item;
   addItem(node_item.get());
-  m_node_items.insert({ &ref, std::move(node_item) });
+  m_node_items.insert({ &node_ref, std::move(node_item) });
 
-  return ref;
+  clearSelection();
+  node_item_ref.setSelected(true);
+
+  return node_ref;
 }
 
 std::unique_ptr<Node> NodeModel::extract_node(Node& node)
