@@ -14,6 +14,9 @@ NodeModel::NodeModel(AbstractNodeCompiler::Language language, Scene& scene)
   : m_scene(scene), m_language(language)
 {
   init();
+  connect(this, &NodeModel::selectionChanged, [this]() {
+    m_scene.set_selection(::transform<AbstractPropertyOwner*>(selected_nodes()));
+  });
 }
 
 NodeModel::NodeModel(const NodeModel& other)
@@ -40,6 +43,14 @@ NodeModel::NodeModel(const NodeModel& other)
 
 NodeModel::~NodeModel()
 {
+  clearSelection();
+}
+
+std::set<Node*> NodeModel::selected_nodes() const
+{
+  return ::filter_if(nodes(), [this](Node* node) {
+    return node_item(*node).isSelected();
+  });
 }
 
 void NodeModel::set_status(NodeModel::Status status)

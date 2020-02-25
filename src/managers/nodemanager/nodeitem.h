@@ -26,12 +26,12 @@ public:
   PortItem* port_item(const AbstractPort& port) const;
   static constexpr auto TYPE = QGraphicsItem::UserType + 2;
   int type() const override { return TYPE; }
+  Node& node;
 
 protected:
   QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
 
 private:
-  Node& m_node;
   void update_children();
   QRectF m_shape;
 

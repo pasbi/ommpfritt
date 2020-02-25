@@ -60,7 +60,7 @@ public:
 };
 
 NodeItem::NodeItem(Node& node)
-  : m_node(node)
+  : node(node)
 {
   update_children();
   setFlags(ItemIsSelectable | ItemIsMovable | ItemSendsScenePositionChanges);
@@ -98,7 +98,7 @@ void NodeItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
   };
 
   draw_outline(isSelected() ? Qt::yellow : Qt::black, node_pen_width);
-  if (!m_node.is_valid()) {
+  if (!node.is_valid()) {
     draw_outline(ui_color(*widget, "NodeView", "node-outline-valid"), node_pen_width/2.0);
   }
 }
@@ -120,7 +120,7 @@ PortItem* NodeItem::port_item(const AbstractPort& port) const
 QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant& value)
 {
   if (change == ItemPositionChange) {
-    m_node.set_pos(value.toPointF());
+    node.set_pos(value.toPointF());
   }
   return value;
 }
@@ -129,22 +129,34 @@ void NodeItem::update_children()
 {
   prepareGeometryChange();
   clear_ports();
-  std::map<Property*, std::pair<PropertyInputPort*, PropertyOutputPort*>> properties;
+  struct PropertyPorts {
+    explicit PropertyPorts(Property& property)
+      : property(property), i(nullptr), o(nullptr) {}
+    Property& property;
+    PropertyInputPort* i;
+    PropertyOutputPort* o;
+  };
+
+  std::list<PropertyPorts> properties;
   std::set<OrdinaryPort<PortType::Input>*> ordinary_inputs;
   std::set<OrdinaryPort<PortType::Output>*> ordinary_outputs;
-  for (AbstractPort* p : m_node.ports()) {
+  for (AbstractPort* p : node.ports()) {
     if (p->flavor == PortFlavor::Property) {
       Property* property = p->port_type == PortType::Input
                         ? static_cast<PropertyInputPort&>(*p).property()
                         : static_cast<PropertyOutputPort&>(*p).property();
-
-      if (const auto it = properties.find(property); it == properties.end()) {
-        properties.insert({ property, { nullptr, nullptr } });
+      const auto it = std::find_if(properties.begin(), properties.end(),
+                                   [property](const PropertyPorts& pp)
+      {
+        return property == &pp.property;
+      });
+      if (it == properties.end()) {
+        properties.push_back(PropertyPorts(*property));
       }
       if (p->port_type == PortType::Input) {
-        properties[property].first = static_cast<PropertyInputPort*>(p);
+        it->i = static_cast<PropertyInputPort*>(p);
       } else {
-        properties[property].second = static_cast<PropertyOutputPort*>(p);
+        it->o = static_cast<PropertyOutputPort*>(p);
       }
     } else {
       if (p->port_type == PortType::Input) {
@@ -159,9 +171,9 @@ void NodeItem::update_children()
   static constexpr double footer_height = 10;
   double pos_y = header_height;
 
-  for (auto [property, ports]: properties) {
-    add_port(ports.first, ports.second, pos_y);
-    add_property_widget(*property, pos_y);
+  for (const PropertyPorts& pp : properties) {
+    add_port(pp.i, pp.o, pos_y);
+    add_property_widget(pp.property, pos_y);
     pos_y += PortItem::height;
   }
 
@@ -228,7 +240,7 @@ void NodeItem::add_port(AbstractPort& p, double pos_y)
 void NodeItem::add_property_widget(Property& property, double pos_y)
 {
   auto pw = AbstractPropertyWidget::make(property.widget_type(),
-                                         *m_node.scene(),
+                                         *node.scene(),
                                          std::set { &property });
   pw->resize(pw->width(), PortItem::height);
   auto& ref = *pw;

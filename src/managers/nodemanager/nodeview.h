@@ -32,7 +32,6 @@ public:
   void remove_selection();
   void set_model(NodeModel* model);
   NodeModel* model() const;
-  std::set<Node*> selected_nodes() const;
   QPointF node_insert_pos() const { return m_node_insert_pos; }
   void populate_context_menu(QMenu& menu) const;
   void pan_to_center();
@@ -58,7 +57,6 @@ private:
   PanZoomController m_pan_zoom_controller;
   void draw_connection(QPainter& painter, const QPointF& in, const QPointF& out,
                        bool is_floating, bool reverse) const;
-  std::pair<Node*, AbstractPort*> select_port_or_node(const QPointF& pos) const;
   bool can_drop(const QDropEvent& event) const;
   constexpr static auto m_droppable_kinds = Kind::Item;
   PortItem* port_item_at(const QPoint& pos) const;

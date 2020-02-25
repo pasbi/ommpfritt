@@ -42,6 +42,7 @@ public:
   using QObject::connect;
   void clear();
   NodeItem& node_item(Node& node) const;
+  std::set<Node*> selected_nodes() const;
 
   void serialize(AbstractSerializer&, const Pointer&) const override;
   void deserialize(AbstractDeserializer&deserializer, const Pointer&ptr) override;

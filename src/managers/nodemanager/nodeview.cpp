@@ -76,21 +76,10 @@ NodeModel* NodeView::model() const
   return m_model;
 }
 
-std::set<Node*> NodeView::selected_nodes() const
-{
-  if (m_model == nullptr) {
-    return {};
-  } else {
-    return ::filter_if(m_model->nodes(), [this](Node* node) {
-      return m_model->node_item(*node).isSelected();
-    });
-  }
-}
-
 bool NodeView::accepts_paste(const QMimeData &mime_data) const
 {
-  if (NodeModel* model = this->model(); model != nullptr) {
-    return mime_data.hasFormat(NodeMimeData::MIME_TYPES.at(model->language()));
+  if (m_model != nullptr) {
+    return mime_data.hasFormat(NodeMimeData::MIME_TYPES.at(m_model->language()));
   } else {
     return false;
   }
@@ -106,7 +95,7 @@ void NodeView::reset_scene_rect()
 void NodeView::copy_to_clipboard()
 {
   if (NodeModel* model = this->model(); model != nullptr) {
-    auto mime_data = std::make_unique<NodeMimeData>(model->language(), selected_nodes());
+    auto mime_data = std::make_unique<NodeMimeData>(model->language(), model->selected_nodes());
     QApplication::clipboard()->setMimeData(mime_data.release());
   }
 }
@@ -254,13 +243,13 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
       m_tmp_connection_target = nullptr;
     }
     viewport()->update();
-  } else {
+  } else if (NodeModel* model = this->model(); model != nullptr) {
     m_tmp_connection_target = nullptr;
     if (rubberBandRect().isNull() && event->buttons() == Qt::LeftButton) {
       if (auto* item = itemAt(event->pos()); item != nullptr && item->type() == NodeItem::TYPE) {
         const QPointF current = mapToScene(event->pos());
         const QPointF last = mapToScene(m_last_mouse_position);
-        m_model->scene().submit<MoveNodesCommand>(selected_nodes(), current - last);
+        m_model->scene().submit<MoveNodesCommand>(model->selected_nodes(), current - last);
       }
     }
   }
@@ -524,7 +513,7 @@ void NodeView::abort()
 void NodeView::remove_selection()
 {
   if (m_model != nullptr) {
-    const auto selection = ::transform<Node*, std::vector>(selected_nodes());
+    const auto selection = ::transform<Node*, std::vector>(m_model->selected_nodes());
     m_model->scene().submit<RemoveNodesCommand>(*m_model, selection);
   }
 }
@@ -561,8 +550,10 @@ void NodeView::draw_connection(QPainter& painter, const QPointF& in, const QPoin
 
 void NodeView::populate_context_menu(QMenu& menu) const
 {
-  if (const auto selection = selected_nodes(); selection.size() == 1) {
-    (**selection.begin()).populate_menu(menu);
+  if (m_model != nullptr) {
+    if (const auto selection = m_model->selected_nodes(); selection.size() == 1) {
+      (**selection.begin()).populate_menu(menu);
+    }
   }
 }
 
