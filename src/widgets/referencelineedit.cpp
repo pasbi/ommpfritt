@@ -139,6 +139,9 @@ bool ReferenceLineEdit::eventFilter(QObject* o, QEvent* e)
       return drop(static_cast<QDropEvent&>(*e));
     case QEvent::DragEnter:
       return drag_enter(static_cast<QDragEnterEvent&>(*e));
+    case QEvent::DragMove:
+      e->accept();
+      return true;
     default:
       ;
     }

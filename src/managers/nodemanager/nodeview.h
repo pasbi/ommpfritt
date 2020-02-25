@@ -44,8 +44,6 @@ public Q_SLOTS:
 
 protected:
   void mouseMoveEvent(QMouseEvent* event) override;
-//  void dragEnterEvent(QDragEnterEvent* event) override;
-//  void dropEvent(QDropEvent* event) override;
   void mouseReleaseEvent(QMouseEvent* event);
   void drawForeground(QPainter* painter, const QRectF&) override;
   void mousePressEvent(QMouseEvent* event) override;
@@ -57,7 +55,6 @@ private:
   PanZoomController m_pan_zoom_controller;
   void draw_connection(QPainter& painter, const QPointF& in, const QPointF& out,
                        bool is_floating, bool reverse) const;
-  bool can_drop(const QDropEvent& event) const;
   constexpr static auto m_droppable_kinds = Kind::Item;
   PortItem* port_item_at(const QPoint& pos) const;
 

@@ -30,6 +30,7 @@ public:
 
 protected:
   QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
+  void dragEnterEvent(QGraphicsSceneDragDropEvent* event) override;
 
 private:
   void update_children();

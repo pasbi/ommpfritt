@@ -10,6 +10,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsProxyWidget>
 #include <QApplication>
+#include <QGraphicsSceneDragDropEvent>
 #include "managers/nodemanager/node.h"
 #include "managers/nodemanager/ordinaryport.h"
 #include "managers/nodemanager/portitem.h"
@@ -123,6 +124,12 @@ QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant& value)
     node.set_pos(value.toPointF());
   }
   return value;
+}
+
+void NodeItem::dragEnterEvent(QGraphicsSceneDragDropEvent* event)
+{
+  // don't accept the drag on the node itself. Drags may be accepted on children.
+  event->ignore();
 }
 
 void NodeItem::update_children()
@@ -245,6 +252,8 @@ void NodeItem::add_property_widget(Property& property, double pos_y)
   pw->resize(pw->width(), PortItem::height);
   auto& ref = *pw;
   auto pw_item = std::make_unique<PropertyWidgetItem>(this, std::move(pw));
+  setAcceptDrops(true);
+  pw_item->setAcceptDrops(true);
 
   if (ref.type() == OptionsPropertyWidget::TYPE) {
     auto combobox = static_cast<OptionsPropertyWidget*>(&ref)->combobox();
