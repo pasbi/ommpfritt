@@ -142,6 +142,7 @@ std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
           property->set_label(label);
           node->add_property(type, std::move(property));
           std::vector<std::unique_ptr<Node>> nodes;
+          node->set_pos(m_ui->nodeview->node_insert_pos());
           nodes.push_back(std::move(node));
           scene().submit<AddNodesCommand>(*model, std::move(nodes));
         });
