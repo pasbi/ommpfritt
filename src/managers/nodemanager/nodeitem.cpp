@@ -69,6 +69,10 @@ NodeItem::NodeItem(Node& node)
   QObject::connect(&node, &Node::pos_changed, &m_context, [this](const QPointF& pos) {
     setPos(pos);
   });
+  QObject::connect(&node, &Node::ports_changed, &m_context, [this]() {
+    update_children();
+  });
+  QTimer::singleShot(0, [this]() { update_children(); });
 }
 
 NodeItem::~NodeItem()
@@ -157,13 +161,18 @@ void NodeItem::update_children()
       {
         return property == &pp.property;
       });
-      if (it == properties.end()) {
+      PropertyPorts* current = nullptr;
+      if (it == properties.end() && property != nullptr) {
         properties.push_back(PropertyPorts(*property));
-      }
-      if (p->port_type == PortType::Input) {
-        it->i = static_cast<PropertyInputPort*>(p);
+        current = &properties.back();
       } else {
-        it->o = static_cast<PropertyOutputPort*>(p);
+        current = &*it;
+      }
+
+      if (p->port_type == PortType::Input) {
+        current->i = static_cast<PropertyInputPort*>(p);
+      } else {
+        current->o = static_cast<PropertyOutputPort*>(p);
       }
     } else {
       if (p->port_type == PortType::Input) {
