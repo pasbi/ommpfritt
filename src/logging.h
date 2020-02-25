@@ -5,36 +5,33 @@
 #include <sstream>
 #include "common.h"
 
-#if defined(LDEBUG) || defined(LINFO) ||defined(LERROR) || defined(LWARNING)
+#if defined(LDEBUG) || defined(LINFO) || defined(LERROR) || defined(LWARNING)
 #error Failed to define logging-macros due to name collision.
 #endif
 
 namespace omm
 {
 
-std::string current_time();
+struct LogPrefix
+{
+  explicit LogPrefix(const QString& level, const char* file, int line)
+    : level(level), file(file), line(line) {}
+  const QString level;
+  const char* file;
+  const int line;
+};
+
+QDebug operator<<(QDebug d, const LogPrefix& prefix);
 
 }  // namespace omm
 
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
 
-#define LDEBUG qDebug().nospace().noquote()\
-  << "Debug @" __FILE__ ":" STRINGIZE(__LINE__) " ["\
-  << QString::fromStdString(omm::current_time()) << "]: "
-
-#define LINFO qInfo().nospace().noquote()\
-  << "Info @" __FILE__ ":" << STRINGIZE(__LINE__) << " ["\
-  << QString::fromStdString(omm::current_time()) << "]: "
-
-#define LWARNING qCritical().nospace().noquote()\
-  << "Warning @" __FILE__ ":" << STRINGIZE(__LINE__) << " ["\
-  << QString::fromStdString(omm::current_time()) << "]: "
-
-#define LERROR qCritical().nospace().noquote()\
-  << "Error @" __FILE__ ":" STRINGIZE(__LINE__) " "\
-  << QString::fromStdString(omm::current_time()) << ": "
-
+#define LDEBUG qDebug().nospace().noquote() << omm::LogPrefix("Debug", __FILE__, __LINE__)
+#define LINFO qInfo().nospace().noquote() << omm::LogPrefix("Info", __FILE__, __LINE__)
+#define LWARNING qCritical().nospace().noquote() << omm::LogPrefix("Warning", __FILE__, __LINE__)
+#define LERROR qCritical().nospace().noquote() << omm::LogPrefix("Error", __FILE__, __LINE__)
 #define LFATAL(...) qFatal(__VA_ARGS__)
 
 QDebug operator<< (QDebug d, const std::string& string);

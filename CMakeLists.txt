@@ -12,6 +12,11 @@ set (CMAKE_AUTORCC ON)
 set (CMAKE_AUTOUIC ON)
 set (OMMPFRITT_VERSION_MAJOR 1)
 set (OMMPFRITT_VERSION_MINOR 0)
+
+option(LOG_LOCATION "print filename and line numbers in logs" ON)
+option(LOG_TIMESTAMP "print timestamp in logs" ON)
+option(LOG_LEVEL "print severity level in logs" ON)
+
 set (QT_QM_PATH CACHE PATH
     "path where to find the Qt translation files (qt_en.qm, qtbase_de.qm, etc.")
 
@@ -56,6 +61,16 @@ foreach (lang de en es)
     file(COPY ${QT_QM_PATH}/${pref}_${lang}.qm DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
   endforeach(pref)
 endforeach(lang)
+
+if (LOG_LOCATION)
+  add_definitions(-DLOG_LOCATION)
+endif()
+if (LOG_TIMESTAMP)
+  add_definitions(-DLOG_TIMESTAMP)
+endif()
+if (LOG_LEVEL)
+  add_definitions(-DLOG_LEVEL)
+endif()
 
 add_library(libommpfritt)
 
