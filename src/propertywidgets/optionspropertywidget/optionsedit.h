@@ -6,15 +6,24 @@
 namespace omm
 {
 
+class NodeView;
 class PrefixComboBox : public QComboBox
 {
   Q_OBJECT
 public:
-  using QComboBox::QComboBox;
+  explicit PrefixComboBox(QWidget* parent = nullptr);
   QString prefix;
+  bool eventFilter(QObject* o, QEvent* e) override;
+  void showPopup() override;
+  bool prevent_popup = false;
+
+Q_SIGNALS:
+  void popup_shown();
+  void popup_hidden();
 
 protected:
   void paintEvent(QPaintEvent*) override;
+  QFrame* m_popup = nullptr;
 };
 
 class OptionsEdit : public PrefixComboBox, public MultiValueEdit<size_t>

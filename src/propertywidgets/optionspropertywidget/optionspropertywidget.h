@@ -12,6 +12,7 @@ class OptionsPropertyWidget : public PropertyWidget<OptionsProperty>
 {
 public:
   explicit OptionsPropertyWidget(Scene& scene, const std::set<Property*>& properties);
+  OptionsEdit* combobox() const { return m_options_edit; }
 
 protected:
   void update_edit() override;

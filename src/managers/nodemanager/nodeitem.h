@@ -3,11 +3,10 @@
 #include <QGraphicsItem>
 #include "managers/nodemanager/port.h"
 
-class QGraphicsProxyWidget;
-
 namespace omm
 {
 
+class PropertyWidgetItem;
 class Node;
 class PropertyOutputPort;
 class PropertyInputPort;
@@ -15,6 +14,7 @@ template<PortType> class OrdinaryPort;
 class Property;
 class PortItem;
 class NodeModel;
+class NodeView;
 
 class NodeItem : public QGraphicsItem
 {
@@ -44,7 +44,7 @@ private:
   NodeModel* model() const;
 
   std::map<PortType, std::set<std::unique_ptr<PortItem>>> m_port_items;
-  std::set<std::unique_ptr<QGraphicsProxyWidget>> m_centered_items;
+  std::set<std::unique_ptr<PropertyWidgetItem>> m_property_items;
   QObject m_context;
 };
 
