@@ -32,6 +32,18 @@ omm::PortItem* get_port_item(omm::NodeModel& model, omm::AbstractPort& port)
   return node_item.port_item(port);
 }
 
+std::vector<omm::AbstractPropertyOwner*> items(const QDropEvent& event)
+{
+  const QMimeData& mime_data = *event.mimeData();
+  if (mime_data.hasFormat(omm::PropertyOwnerMimeData::MIME_TYPE)) {
+    const auto pomd = qobject_cast<const omm::PropertyOwnerMimeData*>(&mime_data);
+    if (pomd != nullptr) {
+      return pomd->items();
+    }
+  }
+  return {};
+}
+
 }  // namespace
 
 namespace omm
@@ -237,6 +249,32 @@ void NodeView::mouseDoubleClickEvent(QMouseEvent*)
   pan_to_center();
 }
 
+void NodeView::dragMoveEvent(QDragMoveEvent* event)
+{
+  if (m_model != nullptr && can_drop(*event)) {
+    event->accept();
+  } else {
+    QGraphicsView::dragMoveEvent(event);
+  }
+}
+
+void NodeView::dropEvent(QDropEvent* event)
+{
+  if (m_model != nullptr && can_drop(*event)) {
+    QPointF pos = mapToScene(event->pos());
+    auto nodes = ::transform<std::unique_ptr<Node>>(::items(*event), [&pos, this](auto* apo) {
+      auto reference_node = std::make_unique<ReferenceNode>(*m_model);
+      reference_node->property(ReferenceNode::REFERENCE_PROPERTY_KEY)->set(apo);
+      reference_node->set_pos(pos);
+      pos += QPointF(50, 50);
+      return reference_node;
+    });
+    m_model->scene().submit<AddNodesCommand>(*m_model, std::move(nodes));
+  } else {
+    QGraphicsView::dropEvent(event);
+  }
+}
+
 void NodeView::mouseMoveEvent(QMouseEvent* event)
 {
   if (m_pan_zoom_controller.move(*event)) {
@@ -308,6 +346,15 @@ PortItem* NodeView::port_item_at(const QPoint& pos) const
     return static_cast<PortItem*>(item);
   } else {
     return nullptr;
+  }
+}
+
+bool NodeView::can_drop(const QDropEvent& event)
+{
+  if (itemAt(event.pos()) != nullptr) {
+    return false;  // drop on items is handled elsewhere
+  } else {
+    return ::items(event).size() > 0;
   }
 }
 

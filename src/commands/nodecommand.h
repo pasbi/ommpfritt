@@ -48,7 +48,6 @@ public:
   void redo() override { disconnect(); }
 };
 
-
 class NodeCommand : public Command
 {
 protected:

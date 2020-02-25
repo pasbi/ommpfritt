@@ -44,11 +44,14 @@ public Q_SLOTS:
 
 protected:
   void mouseMoveEvent(QMouseEvent* event) override;
-  void mouseReleaseEvent(QMouseEvent* event);
+  void mouseReleaseEvent(QMouseEvent* event) override;
   void drawForeground(QPainter* painter, const QRectF&) override;
   void mousePressEvent(QMouseEvent* event) override;
   void resizeEvent(QResizeEvent*) override;
   void mouseDoubleClickEvent(QMouseEvent*) override;
+  void dragMoveEvent(QDragMoveEvent*) override;
+  void dropEvent(QDropEvent*) override;
+
 
 private:
   NodeModel* m_model = nullptr;
@@ -57,6 +60,7 @@ private:
                        bool is_floating, bool reverse) const;
   constexpr static auto m_droppable_kinds = Kind::Item;
   PortItem* port_item_at(const QPoint& pos) const;
+  bool can_drop(const QDropEvent& event);
 
   PortItem* m_tmp_connection_origin = nullptr;
   PortItem* m_tmp_connection_target = nullptr;
