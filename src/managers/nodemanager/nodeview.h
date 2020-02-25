@@ -48,10 +48,8 @@ protected:
   void drawForeground(QPainter* painter, const QRectF&) override;
   void mousePressEvent(QMouseEvent* event) override;
   void resizeEvent(QResizeEvent*) override;
-  void mouseDoubleClickEvent(QMouseEvent*) override;
   void dragMoveEvent(QDragMoveEvent*) override;
   void dropEvent(QDropEvent*) override;
-
 
 private:
   NodeModel* m_model = nullptr;

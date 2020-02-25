@@ -244,11 +244,6 @@ void NodeView::resizeEvent(QResizeEvent* event)
   reset_scene_rect();
 }
 
-void NodeView::mouseDoubleClickEvent(QMouseEvent*)
-{
-  pan_to_center();
-}
-
 void NodeView::dragMoveEvent(QDragMoveEvent* event)
 {
   if (m_model != nullptr && can_drop(*event)) {
