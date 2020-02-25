@@ -50,16 +50,11 @@ void ReferenceLineEdit::set_scene(Scene &scene)
   assert(m_scene == nullptr);
   m_scene = &scene;
   assert(m_scene != nullptr);
-  const auto update_candidates_maybe = [this](Object&, AbstractPropertyOwner& object) {
-    if (!!(object.flags() & Flag::HasPython)) {
-      update_candidates();
-    }
-  };
 
-  connect(&m_scene->message_box(), &MessageBox::object_removed, this, update_candidates_maybe);
-  connect(&m_scene->message_box(), &MessageBox::object_inserted, this, update_candidates_maybe);
-  connect(&m_scene->message_box(), &MessageBox::tag_inserted, this, update_candidates_maybe);
-  connect(&m_scene->message_box(), &MessageBox::tag_removed, this, update_candidates_maybe);
+  connect(&m_scene->message_box(), SIGNAL(abstract_property_owner_inserted(AbstractPropertyOwner&)),
+          this, SLOT(update_candidates()));
+  connect(&m_scene->message_box(), SIGNAL(abstract_property_owner_removed(AbstractPropertyOwner&)),
+          this, SLOT(update_candidates()));
   connect(&m_scene->message_box(), SIGNAL(scene_reseted()), this, SLOT(update_candidates()));
   connect(&m_scene->message_box(), &MessageBox::property_value_changed, this,
           [this](AbstractPropertyOwner& owner, const QString& key, Property&)
@@ -71,6 +66,8 @@ void ReferenceLineEdit::set_scene(Scene &scene)
       }
     }
   });
+
+  QTimer::singleShot(0, this, SLOT(update_candidates()));
   update_candidates();
 }
 
