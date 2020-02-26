@@ -92,7 +92,8 @@ void NodeItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
   path.addRoundedRect(m_shape, 10, 10, Qt::AbsoluteSize);
 
   painter->fillPath(path, Qt::gray);
-  painter->drawText(m_shape, Qt::AlignTop | Qt::AlignLeft, QString("%1, %2").arg(pos().x()).arg(pos().y()));
+  painter->setPen(Qt::black);
+  painter->drawText(m_shape, Qt::AlignTop | Qt::AlignHCenter, node.title());
 
   const auto draw_outline = [&path, painter](const QColor& color, double width) {
     QPen pen;
