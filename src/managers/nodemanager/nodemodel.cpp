@@ -57,29 +57,16 @@ void NodeModel::set_status(NodeModel::Status status)
 {
   if (m_status != status) {
     m_status = status;
-    Q_EMIT appearance_changed();
   }
 }
 
 void NodeModel::init()
 {
-  connect(this, SIGNAL(node_shape_changed()), this, SIGNAL(appearance_changed()));
-  connect(this, SIGNAL(topology_changed()), this, SIGNAL(node_shape_changed()));
-  connect(&scene().message_box(), &MessageBox::property_value_changed,
-          [this](AbstractPropertyOwner& apo, const QString& key, Property&)
-  {
-    Q_UNUSED(key)
-    if (apo.kind == Kind::Node && &static_cast<const Node&>(apo).model() == this)
-    {
-      Q_EMIT appearance_changed();
-    }
-  });
 }
 
 Node& NodeModel::add_node(std::unique_ptr<Node> node)
 {
   Node& node_ref = *node;
-  connect(&node_ref, SIGNAL(pos_changed(const QPointF&)), this, SIGNAL(appearance_changed()));
   assert(&node->model() == this);
   m_nodes.insert(std::move(node));
   Q_EMIT topology_changed();
@@ -112,7 +99,6 @@ std::unique_ptr<Node> NodeModel::extract_node(Node& node)
 
     assert(node.is_free());
     auto node = std::move(m_nodes.extract(it).value());
-    disconnect(node.get(), SIGNAL(pos_changed(const QPointF&)), this, SIGNAL(appearance_changed()));
     Q_EMIT topology_changed();
     return node;
   } else {
@@ -198,21 +184,6 @@ std::set<AbstractPort*> NodeModel::ports() const
   return ports;
 }
 
-void NodeModel::notify_appearance_changed()
-{
-  Q_EMIT appearance_changed();
-}
-
-void NodeModel::notify_topology_changed()
-{
-  Q_EMIT topology_changed();
-}
-
-void NodeModel::notify_node_shape_changed()
-{
-  Q_EMIT node_shape_changed();
-}
-
 bool NodeModel::can_connect(const AbstractPort& a, const AbstractPort& b) const
 {
   const InputPort* in;
@@ -242,11 +213,6 @@ void NodeModel::clear()
   for (auto&& [node, node_item] : m_node_items) {
     removeItem(node_item.get());
   }
-  for (auto& connection : m_node_connections) {
-    QObject::disconnect(connection);
-  }
-
-  m_node_connections.clear();
   m_node_items.clear();
 }
 

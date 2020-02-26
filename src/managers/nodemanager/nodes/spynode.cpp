@@ -24,7 +24,6 @@ bool SpyNode::accepts_input_data_type(const QString& type, const InputPort& port
 void SpyNode::set_text(const QString& text)
 {
   m_port->set_label(text);
-  model().notify_node_shape_changed();
 }
 
 }  // namespace

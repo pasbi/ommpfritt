@@ -23,9 +23,6 @@ public:
   std::unique_ptr<AbstractPort> remove_forwarding_port(PortType port_type, const QString& key);
   static const Detail detail;
 
-protected:
-  void on_property_value_changed(Property* property) override;
-
 private:
   AbstractPropertyOwner* reference() const;
   std::map<PortType, std::map<QString, AbstractPort*>> m_forwarded_ports;

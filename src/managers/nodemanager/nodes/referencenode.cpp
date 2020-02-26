@@ -22,16 +22,6 @@ ReferenceNode::ReferenceNode(NodeModel& model)
   const QString category = tr("Node");
   create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY, PortType::Output)
     .set_label(tr("Reference")).set_category(category);
-
-  connect(&scene()->message_box(), &MessageBox::property_value_changed,
-          [this](AbstractPropertyOwner& owner, const QString& key, Property&)
-  {
-    if (&owner == property(REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>()) {
-      if (key == AbstractPropertyOwner::NAME_PROPERTY_KEY) {
-        this->model().notify_node_shape_changed();
-      }
-    }
-  });
 }
 
 void ReferenceNode::populate_menu(QMenu& menu)
@@ -90,13 +80,6 @@ ReferenceNode::serialize(AbstractSerializer& serializer, const Serializable::Poi
   for (auto [type, map] : m_forwarded_ports) {
     auto pointer = make_pointer(root, type == PortType::Input ? "input" : "output");
     serializer.set_value(::get_keys(map), pointer);
-  }
-}
-
-void ReferenceNode::on_property_value_changed(Property* property)
-{
-  if (property == this->property(REFERENCE_PROPERTY_KEY)) {
-    model().notify_node_shape_changed();
   }
 }
 

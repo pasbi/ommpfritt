@@ -66,9 +66,6 @@ void UserPropertyCommand::undo()
   change(m_changes);
   Scene& scene = *m_owner.scene();
   Q_EMIT scene.message_box().selection_changed(scene.selection());
-  if (m_node_model) {
-    m_node_model->notify_node_shape_changed();
-  }
 }
 
 void UserPropertyCommand::redo()
@@ -83,9 +80,6 @@ void UserPropertyCommand::redo()
   change(m_changes);
   Scene& scene = *m_owner.scene();
   Q_EMIT scene.message_box().selection_changed(scene.selection());
-  if (m_node_model) {
-    m_node_model->notify_node_shape_changed();
-  }
 }
 
 void UserPropertyCommand::extract(UserPropertyCommand::Properties& ps)

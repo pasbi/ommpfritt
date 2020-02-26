@@ -66,14 +66,9 @@ public:
   AbstractNodeCompiler::Language language() const { return m_language; }
 
   Scene& scene() const { return m_scene; }
-  void notify_appearance_changed();
-  void notify_topology_changed();
-  void notify_node_shape_changed();
 
 Q_SIGNALS:
-  void appearance_changed();
   void topology_changed();
-  void node_shape_changed();
 
 private:
   std::set<std::unique_ptr<Node>> m_nodes;
@@ -82,7 +77,6 @@ private:
   void init();
   Status m_status = Status::None;
   std::map<Node*, std::unique_ptr<NodeItem>> m_node_items;
-  std::list<QMetaObject::Connection> m_node_connections;
   std::map<const AbstractPort*, PortItem*> m_port_map;
 
 };
