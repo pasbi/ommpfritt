@@ -97,10 +97,12 @@ void OffscreenRenderer::set_uniform(const QString& name, const variant_type& val
     using V = std::decay_t<decltype(v)>;
     if constexpr (std::is_same_v<V, double>) {
       program->setUniformValue(cname, GLfloat(v));
-    } else if constexpr (std::is_same_v<V, int*>) {
-      program->setUniformValue(cname, GLint(v->id()));
     } else if constexpr (std::is_same_v<V, AbstractPropertyOwner*>) {
-      program->setUniformValue(cname, GLuint(v->id()));
+      if (v == nullptr) {
+        program->setUniformValue(cname, 0);
+      } else {
+        program->setUniformValue(cname, GLuint(v->id()));
+      }
     } else if constexpr (std::is_same_v<V, Color>) {
       auto [r, g, b, a] = v.components(Color::Model::RGBA);
       program->setUniformValue(cname, QVector4D(r, g, b, a));
