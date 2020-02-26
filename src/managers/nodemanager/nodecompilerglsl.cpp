@@ -180,14 +180,13 @@ QString NodeCompilerGLSL::compile_node(const Node& node) const
       // The remainding ones represent uniform variables. see NodeCompilerGLSL::header
       if (op->flavor == PortFlavor::Property) {
         AbstractPort* sibling_input_port = get_sibling(op);
-        if (sibling_input_port != nullptr) {
+        if (sibling_input_port != nullptr && sibling_input_port->is_connected()) {
           assert(sibling_input_port->port_type == PortType::Input);
           lines.push_back(format_connection(*op, *sibling_input_port));
         }
       }
     }
   }
-
 
   return lines.join("\n");
 }
