@@ -61,7 +61,12 @@ QString NodeCompilerGLSL::translate_type(const QString& type)
     { "Options", "int" }
   };
 
-  return dict.at(type);
+  const auto it = dict.find(type);
+  if (it == dict.end()) {
+    return QString("INVALID[%1]").arg(type);
+  } else {
+    return dict.at(type);
+  }
 }
 
 
