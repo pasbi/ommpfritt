@@ -32,6 +32,16 @@ protected:
   QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
   void dragEnterEvent(QGraphicsSceneDragDropEvent* event) override;
 
+  template<typename PropertyT, typename... Args>
+  PropertyT& create_property(const QString& key, Args&&... args)
+  {
+    static_assert(std::is_base_of<Property, PropertyT>::value);
+    auto property = std::make_unique<PropertyT>(std::forward<Args>(args)...);
+    PropertyT& ref = *property;
+    add_property(key, std::move(property));
+    return ref;
+  }
+
 private:
   void update_children();
   QRectF m_shape;

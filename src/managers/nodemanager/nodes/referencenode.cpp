@@ -20,7 +20,7 @@ ReferenceNode::ReferenceNode(NodeModel& model)
   : Node(model)
 {
   const QString category = tr("Node");
-  create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
+  create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY, PortType::Output)
     .set_label(tr("Reference")).set_category(category);
 
   connect(&scene()->message_box(), &MessageBox::property_value_changed,

@@ -185,10 +185,21 @@ std::unique_ptr<AbstractPort> Node::remove_port(const AbstractPort& port)
 
 Property& Node::add_property(const QString& key, std::unique_ptr<Property> property)
 {
+  return add_property(key, std::move(property), PortType::Both);
+}
+
+Property& Node::add_property(const QString &key, std::unique_ptr<Property> property, PortType type)
+{
   auto& ref = PropertyOwner::add_property(key, std::move(property));
-  auto& ip = add_port<PropertyInputPort>([this, key]() { return this->property(key); });
-  auto& op = add_port<PropertyOutputPort>([this, key]() { return this->property(key); });
-  if (ip.index != op.index) {
+  InputPort* ip = nullptr;
+  OutputPort* op = nullptr;
+  if (!!(type & PortType::Input)) {
+    ip = &add_port<PropertyInputPort>([this, key]() { return this->property(key); });
+  }
+  if (!!(type & PortType::Output)) {
+    op = &add_port<PropertyOutputPort>([this, key]() { return this->property(key); });
+  }
+  if (ip != nullptr && op != nullptr && ip->index != op->index) {
     LERROR << "indices of sibling ports are not identical.";
     LINFO << "rearrange the ports of this node.";
     abort();

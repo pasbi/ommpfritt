@@ -98,6 +98,23 @@ protected:
     return ref;
   }
 
+  template<typename PropertyT, typename... Args>
+  PropertyT& create_property(const QString& key, PortType type, Args&&... args)
+  {
+    static_assert(std::is_base_of<Property, PropertyT>::value);
+    auto property = std::make_unique<PropertyT>(std::forward<Args>(args)...);
+    PropertyT& ref = *property;
+    add_property(key, std::move(property), type);
+    return ref;
+  }
+
+  template<typename PropertyT, typename... Args>
+  PropertyT& create_property(const QString& key, Args&&... args)
+  {
+    return create_property<PropertyT>(key, PortType::Both, std::forward<Args>(args)...);
+  }
+
+  Property& add_property(const QString& key, std::unique_ptr<Property> property, PortType type);
   AbstractPort& add_port(std::unique_ptr<AbstractPort> port);
   std::unique_ptr<AbstractPort> remove_port(const AbstractPort& port);
   std::map<QString, AbstractPort*> named_ports;
