@@ -45,6 +45,20 @@ std::vector<omm::AbstractPropertyOwner*> items(const QDropEvent& event)
   return {};
 }
 
+QGraphicsItem* root(QGraphicsItem* item)
+{
+  QGraphicsItem* parent = nullptr;
+  while (true) {
+    if (parent = item->parentItem(); parent != nullptr) {
+      item = parent;
+    } else {
+      return item;
+    }
+  }
+  Q_UNREACHABLE();
+  return nullptr;
+}
+
 }  // namespace
 
 namespace omm
@@ -247,6 +261,14 @@ void NodeView::mousePressEvent(QMouseEvent* event)
     }
     event->accept();
   } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
+    if (auto* item = itemAt(event->pos()); item != nullptr) {
+      if (auto* root = ::root(item); root->type() == NodeItem::TYPE && !root->isSelected()) {
+        scene()->clearSelection();
+        root->setSelected(true);
+      }
+    } else {
+      scene()->clearSelection();
+    }
     m_node_insert_pos = mapToScene(event->pos());
     Q_EMIT customContextMenuRequested(event->pos());
   } else {
