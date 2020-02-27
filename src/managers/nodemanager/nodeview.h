@@ -5,6 +5,7 @@
 #include "cachedgetter.h"
 #include <QGraphicsView>
 #include "managers/range.h"
+#include <memory>
 
 class QPainter;
 class QMenu;
@@ -13,7 +14,7 @@ class QMimeData;
 namespace omm
 {
 
-class NodeModel;
+class NodeScene;
 class InputPort;
 class AbstractPort;
 class Node;
@@ -37,6 +38,7 @@ public:
   void pan_to_center();
   bool accepts_paste(const QMimeData& mime_data) const;
   void reset_scene_rect();
+  std::set<Node*> selected_nodes() const;
 
 public Q_SLOTS:
   void copy_to_clipboard();
@@ -52,7 +54,6 @@ protected:
   void dropEvent(QDropEvent*) override;
 
 private:
-  NodeModel* m_model = nullptr;
   PanZoomController m_pan_zoom_controller;
   void draw_connection(QPainter& painter, const QPointF& in, const QPointF& out,
                        bool is_floating, bool reverse) const;
@@ -68,6 +69,7 @@ private:
   QPoint m_last_mouse_position;
   QPointF m_node_insert_pos;
   QPointF m_viewport_center;
+  std::unique_ptr<NodeScene> m_node_scene;
 };
 
 }  // namespace omm

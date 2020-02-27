@@ -14,6 +14,7 @@
 #include "managers/nodemanager/node.h"
 #include "managers/nodemanager/ordinaryport.h"
 #include "managers/nodemanager/portitem.h"
+#include "managers/nodemanager/nodescene.h"
 
 namespace
 {
@@ -218,7 +219,7 @@ void NodeItem::clear_ports()
 {
   const auto remove_all = [this](auto&& items) {
     for (const auto& item : items) {
-      model()->removeItem(item.get());
+      scene()->removeItem(item.get());
     }
     items.clear();
   };
@@ -298,9 +299,9 @@ void NodeItem::add_property_widget(Property& property, double pos_y)
   m_property_items.insert(std::move(pw_item));
 }
 
-NodeModel* NodeItem::model() const
+NodeScene* NodeItem::scene() const
 {
-  return static_cast<NodeModel*>(QGraphicsItem::scene());
+  return static_cast<NodeScene*>(QGraphicsItem::scene());
 }
 
 void NodeItem::add_port(PropertyInputPort* ip, PropertyOutputPort* op, double pos_y)

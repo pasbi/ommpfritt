@@ -5,6 +5,7 @@ file(GLOB SOURCES
   nodemanager.cpp
   nodemanagertitlebar.cpp
   nodemodel.cpp
+  nodescene.cpp
   nodeview.cpp
   nodecompiler.cpp
   nodecompilerpython.cpp
@@ -23,6 +24,7 @@ file(GLOB HEADERS
   nodemanager.h
   nodemanagertitlebar.h
   nodemodel.h
+  nodescene.h
   nodeview.h
   nodecompiler.h
   nodecompilerpython.h

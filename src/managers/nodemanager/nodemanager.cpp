@@ -56,9 +56,7 @@ void NodeManager::set_selection(const std::set<AbstractPropertyOwner*>& selectio
     for (AbstractPropertyOwner* apo : selection) {
       if (!!(apo->flags() & Flag::HasNodes)) {
         NodeModel& nodes_model = dynamic_cast<AbstractNodesOwner*>(apo)->node_model();
-        for (Manager* nm : Application::instance().managers(NodeManager::TYPE)) {
-          static_cast<NodeManager*>(nm)->set_model(&nodes_model);
-        }
+        set_model(&nodes_model);
       }
     }
   }
@@ -76,8 +74,7 @@ std::unique_ptr<QMenu> NodeManager::make_context_menu()
     return menu;
   };
   const auto eiff_node_selected = [this](auto&& menu) {
-    NodeModel* model = m_ui->nodeview->model();
-    menu->setEnabled(model != nullptr && !model->selected_nodes().empty());
+    menu->setEnabled(m_ui->nodeview->selected_nodes().empty());
     return menu;
   };
   const auto eiff_clipboard_has_nodes = [this](auto&& menu) {

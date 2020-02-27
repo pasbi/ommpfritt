@@ -22,13 +22,14 @@
 #include <QPainter>
 #include <QToolTip>
 #include "managers/nodemanager/nodemodel.h"
+#include "managers/nodemanager/nodescene.h"
 
 namespace
 {
 
-omm::PortItem* get_port_item(omm::NodeModel& model, omm::AbstractPort& port)
+omm::PortItem* get_port_item(omm::NodeScene& scene, omm::AbstractPort& port)
 {
-  omm::NodeItem& node_item = model.node_item(port.node);
+  omm::NodeItem& node_item = scene.node_item(port.node);
   return node_item.port_item(port);
 }
 
@@ -48,7 +49,6 @@ std::vector<omm::AbstractPropertyOwner*> items(const QDropEvent& event)
 
 namespace omm
 {
-
 
 NodeView::NodeView(QWidget* parent)
   : QGraphicsView(parent)
@@ -76,8 +76,13 @@ NodeView::~NodeView()
 
 void NodeView::set_model(NodeModel *model)
 {
-  setScene(model);
-  m_model = model;
+  if (m_node_scene == nullptr) {
+    m_node_scene = std::make_unique<NodeScene>(model->scene());
+  } else {
+    assert(&m_node_scene->scene == &model->scene());
+  }
+  m_node_scene->set_model(model);
+  setScene(m_node_scene.get());
   const QRectF scene_rect = viewport()->rect();
   setSceneRect(scene_rect);
   pan_to_center();
@@ -85,13 +90,17 @@ void NodeView::set_model(NodeModel *model)
 
 NodeModel* NodeView::model() const
 {
-  return m_model;
+  if (m_node_scene == nullptr) {
+    return nullptr;
+  } else {
+    return m_node_scene->model();
+  }
 }
 
 bool NodeView::accepts_paste(const QMimeData &mime_data) const
 {
-  if (m_model != nullptr) {
-    return mime_data.hasFormat(NodeMimeData::MIME_TYPES.at(m_model->language()));
+  if (auto model = this->model(); model != nullptr) {
+    return mime_data.hasFormat(NodeMimeData::MIME_TYPES.at(model->language()));
   } else {
     return false;
   }
@@ -104,10 +113,19 @@ void NodeView::reset_scene_rect()
   setSceneRect(QRectF(ti.map(vr.topLeft()), ti.map(vr.bottomRight())));
 }
 
+std::set<Node*> NodeView::selected_nodes() const
+{
+  if (m_node_scene == nullptr) {
+    return {};
+  } else {
+    return m_node_scene->selected_nodes();
+  }
+}
+
 void NodeView::copy_to_clipboard()
 {
   if (NodeModel* model = this->model(); model != nullptr) {
-    auto mime_data = std::make_unique<NodeMimeData>(model->language(), model->selected_nodes());
+    auto mime_data = std::make_unique<NodeMimeData>(model->language(), selected_nodes());
     QApplication::clipboard()->setMimeData(mime_data.release());
   }
 }
@@ -165,9 +183,9 @@ void NodeView::paste_from_clipboard()
         return node.get();
       });
       scene.submit<AddNodesCommand>(model, std::move(copies));
-      model.clearSelection();
+      m_node_scene->clearSelection();
       for (Node* node : references) {
-        model.node_item(*node).setSelected(true);
+        m_node_scene->node_item(*node).setSelected(true);
       }
 
     }
@@ -186,8 +204,8 @@ void NodeView::drawForeground(QPainter* painter, const QRectF&)
     for (Node* node : model->nodes()) {
       for (InputPort* ip : node->ports<InputPort>()) {
         if (OutputPort* op = ip->connected_output(); op != nullptr) {
-          const QPointF input_port_item_pos = get_port_item(*m_model, *ip)->scenePos();
-          const QPointF output_port_item_pos = get_port_item(*m_model, *op)->scenePos();
+          const QPointF input_port_item_pos = get_port_item(*m_node_scene, *ip)->scenePos();
+          const QPointF output_port_item_pos = get_port_item(*m_node_scene, *op)->scenePos();
           draw_connection(*painter, input_port_item_pos, output_port_item_pos, false, false);
         }
       }
@@ -222,7 +240,7 @@ void NodeView::mousePressEvent(QMouseEvent* event)
       } else {
         m_former_connection_target = &ip;
         m_about_to_disconnect = &ip;
-        m_tmp_connection_origin = m_model->node_item(op->node).port_item(*op);
+        m_tmp_connection_origin = m_node_scene->node_item(op->node).port_item(*op);
       }
     } else {
       m_tmp_connection_origin = port_item;
@@ -246,7 +264,7 @@ void NodeView::resizeEvent(QResizeEvent* event)
 
 void NodeView::dragMoveEvent(QDragMoveEvent* event)
 {
-  if (m_model != nullptr && can_drop(*event)) {
+  if (model() != nullptr && can_drop(*event)) {
     event->accept();
   } else {
     QGraphicsView::dragMoveEvent(event);
@@ -255,16 +273,16 @@ void NodeView::dragMoveEvent(QDragMoveEvent* event)
 
 void NodeView::dropEvent(QDropEvent* event)
 {
-  if (m_model != nullptr && can_drop(*event)) {
+  if (auto model = this->model(); model != nullptr && can_drop(*event)) {
     QPointF pos = mapToScene(event->pos());
-    auto nodes = ::transform<std::unique_ptr<Node>>(::items(*event), [&pos, this](auto* apo) {
-      auto reference_node = std::make_unique<ReferenceNode>(*m_model);
+    auto nodes = ::transform<std::unique_ptr<Node>>(::items(*event), [&pos, model](auto* apo) {
+      auto reference_node = std::make_unique<ReferenceNode>(*model);
       reference_node->property(ReferenceNode::REFERENCE_PROPERTY_KEY)->set(apo);
       reference_node->set_pos(pos);
       pos += QPointF(50, 50);
       return reference_node;
     });
-    m_model->scene().submit<AddNodesCommand>(*m_model, std::move(nodes));
+    model->scene().submit<AddNodesCommand>(*model, std::move(nodes));
   } else {
     QGraphicsView::dropEvent(event);
   }
@@ -290,7 +308,7 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
       if (auto* item = itemAt(event->pos()); item != nullptr && item->type() == NodeItem::TYPE) {
         const QPointF current = mapToScene(event->pos());
         const QPointF last = mapToScene(m_last_mouse_position);
-        m_model->scene().submit<MoveNodesCommand>(model->selected_nodes(), current - last);
+        model->scene().submit<MoveNodesCommand>(selected_nodes(), current - last);
       }
     }
   }
@@ -302,7 +320,7 @@ void NodeView::mouseReleaseEvent(QMouseEvent *event)
 {
   std::list<std::unique_ptr<Command>> commands;
   if (m_tmp_connection_origin != nullptr && m_tmp_connection_target != nullptr) {
-    if (m_model != nullptr) {
+    if (model() != nullptr) {
       commands.push_back(std::make_unique<ConnectPortsCommand>(m_tmp_connection_origin->port,
                                                                m_tmp_connection_target->port));
       if (m_about_to_disconnect == &m_tmp_connection_origin->port ||
@@ -316,13 +334,13 @@ void NodeView::mouseReleaseEvent(QMouseEvent *event)
     commands.push_back(std::make_unique<DisconnectPortsCommand>(*m_about_to_disconnect));
   }
 
-  {
+  if (auto model = this->model(); model != nullptr) {
     std::unique_ptr<Macro> macro;
     if (commands.size() > 1) {
-      macro = m_model->scene().history().start_macro(tr("Modify Connections"));
+      macro = model->scene().history().start_macro(tr("Modify Connections"));
     }
     for (auto&& command : commands) {
-      m_model->scene().submit(std::move(command));
+      model->scene().submit(std::move(command));
     }
   }
 
@@ -365,9 +383,9 @@ void NodeView::abort()
 
 void NodeView::remove_selection()
 {
-  if (m_model != nullptr) {
-    const auto selection = ::transform<Node*, std::vector>(m_model->selected_nodes());
-    m_model->scene().submit<RemoveNodesCommand>(*m_model, selection);
+  if (auto model = this->model(); model != nullptr) {
+    const auto selection = ::transform<Node*, std::vector>(selected_nodes());
+    model->scene().submit<RemoveNodesCommand>(*model, selection);
   }
 }
 
@@ -403,17 +421,15 @@ void NodeView::draw_connection(QPainter& painter, const QPointF& in, const QPoin
 
 void NodeView::populate_context_menu(QMenu& menu) const
 {
-  if (m_model != nullptr) {
-    if (const auto selection = m_model->selected_nodes(); selection.size() == 1) {
-      (**selection.begin()).populate_menu(menu);
-    }
+  if (const auto selection = selected_nodes(); selection.size() == 1) {
+    (**selection.begin()).populate_menu(menu);
   }
 }
 
 void NodeView::pan_to_center()
 {
-  if (m_model != nullptr) {
-    const auto nodes = m_model->nodes();
+  if (auto model = this->model(); model != nullptr) {
+    const auto nodes = model->nodes();
     const auto f = [](const QPointF& p, const Node* n) { return p + n->pos(); };
     const double n = nodes.size();
     const auto center = std::accumulate(nodes.begin(), nodes.end(), QPointF(), f) / std::max(1.0, n);
