@@ -31,6 +31,8 @@ public:
 protected:
   QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
   void dragEnterEvent(QGraphicsSceneDragDropEvent* event) override;
+  void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) override;
+  void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 
   template<typename PropertyT, typename... Args>
   PropertyT& create_property(const QString& key, Args&&... args)
@@ -43,6 +45,7 @@ protected:
   }
 
 private:
+  bool m_is_expanded = false;
   void update_children();
   QRectF m_shape;
 
@@ -50,12 +53,13 @@ private:
   void align_ports();
   void add_port(PropertyInputPort* ip, PropertyOutputPort* op, double pos_y);
   void add_port(AbstractPort& p, double pos_y);
-  void add_property_widget(Property& property, double pos_y);
+  void add_property_widget(Property& property, double pos_y, double height);
   void adjust_port_pos();
   NodeScene* scene() const;
 
   std::map<PortType, std::set<std::unique_ptr<PortItem>>> m_port_items;
   std::set<std::unique_ptr<PropertyWidgetItem>> m_property_items;
+  std::set<std::unique_ptr<QGraphicsItem>> m_other_port_items;
   QObject m_context;
 };
 

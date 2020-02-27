@@ -32,6 +32,36 @@ std::unique_ptr<QGraphicsItem> create_facade(const QGraphicsProxyWidget& widget_
   return facade;
 }
 
+class TextItem : public QGraphicsItem
+{
+public:
+  explicit TextItem(const QRectF& rect, const QString& text, QGraphicsItem* parent)
+    : QGraphicsItem(parent), m_rect(rect), m_text(text) {  }
+
+  QRectF boundingRect() const override { return m_rect; }
+  void paint(QPainter* painter, const QStyleOptionGraphicsItem* options, QWidget* widget) override
+  {
+    Q_UNUSED(widget)
+    Q_UNUSED(options)
+    painter->setPen(Qt::black);
+    painter->drawText(m_rect, Qt::AlignCenter, m_text);
+  }
+
+private:
+  const QRectF m_rect;
+  const QString m_text;
+};
+
+void stack_before_siblings(QGraphicsItem& item)
+{
+  const auto is_top_level_item = [](const auto* item) { return item->parentItem() == nullptr; };
+  const auto siblings = is_top_level_item(&item) ? ::filter_if(item.scene()->items(), is_top_level_item)
+                                                 : item.parentItem()->childItems();
+  for (QGraphicsItem* sibling : siblings) {
+    sibling->stackBefore(&item);
+  }
+}
+
 }  // namespace
 
 namespace omm
@@ -49,11 +79,7 @@ public:
 protected:
   void focusInEvent(QFocusEvent* event) override
   {
-    auto siblings = parentItem()->childItems();
-    for (QGraphicsItem* sibling : siblings) {
-      sibling->stackBefore(this);
-    }
-
+    stack_before_siblings(*this);
     QGraphicsProxyWidget::focusInEvent(event);
   }
 
@@ -138,6 +164,20 @@ void NodeItem::dragEnterEvent(QGraphicsSceneDragDropEvent* event)
   event->ignore();
 }
 
+void NodeItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
+{
+  Q_UNUSED(event);
+  m_is_expanded = !m_is_expanded;
+  stack_before_siblings(*this);
+  update_children();
+}
+
+void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
+{
+  stack_before_siblings(*this);
+  QGraphicsItem::mousePressEvent(event);
+}
+
 void NodeItem::update_children()
 {
   prepareGeometryChange();
@@ -185,14 +225,27 @@ void NodeItem::update_children()
     }
   }
 
-  static constexpr double header_height = 50;
-  static constexpr double footer_height = 10;
+  static constexpr double header_height = 30;
+  static constexpr double footer_height = 0;
+  static constexpr double small_slot_height = 13.0;
+  static constexpr double large_slot_height = 30.0;
+
   double pos_y = header_height;
+  const double slot_height = m_is_expanded ? large_slot_height : small_slot_height;
 
   for (const PropertyPorts& pp : properties) {
     add_port(pp.i, pp.o, pos_y);
-    add_property_widget(pp.property, pos_y);
-    pos_y += PortItem::height;
+    if (m_is_expanded) {
+      add_property_widget(pp.property, pos_y, slot_height);
+    } else {
+      QRectF rect = boundingRect();
+      rect.setTop(pos_y-slot_height/2.0);
+      rect.setHeight(slot_height);
+      auto item = std::make_unique<TextItem>(rect, pp.property.label(), this);
+      item->setPos(0, 0);
+      m_other_port_items.insert(std::move(item));
+    }
+    pos_y += slot_height;
   }
 
   double input_pos_y = pos_y;
@@ -200,16 +253,16 @@ void NodeItem::update_children()
 
   for (auto* op : ordinary_outputs) {
     add_port(*op, output_pos_y);
-    output_pos_y += PortItem::height;
+    output_pos_y += small_slot_height;
   }
 
   for (auto* ip : ordinary_inputs) {
     add_port(*ip, input_pos_y);
-    input_pos_y += PortItem::height;
+    input_pos_y += small_slot_height;
   }
 
   const double height = std::max(output_pos_y, input_pos_y) + footer_height;
-  const double width = 300;
+  const double width = m_is_expanded ? 300 : 150;
   m_shape = QRectF(-width/2, 0, width, height);
 
   align_ports();
@@ -228,6 +281,7 @@ void NodeItem::clear_ports()
     remove_all(items);
   }
   remove_all(m_property_items);
+  remove_all(m_other_port_items);
 }
 
 void NodeItem::align_ports()
@@ -255,12 +309,12 @@ void NodeItem::add_port(AbstractPort& p, double pos_y)
   m_port_items[p.port_type].insert(std::move(port_item));
 }
 
-void NodeItem::add_property_widget(Property& property, double pos_y)
+void NodeItem::add_property_widget(Property& property, double pos_y, double height)
 {
   auto pw = AbstractPropertyWidget::make(property.widget_type(),
                                          *node.scene(),
                                          std::set { &property });
-  pw->resize(pw->width(), PortItem::height);
+  pw->resize(pw->width(), height);
   auto& ref = *pw;
   auto pw_item = std::make_unique<PropertyWidgetItem>(this, std::move(pw));
   setAcceptDrops(true);
@@ -295,7 +349,7 @@ void NodeItem::add_property_widget(Property& property, double pos_y)
       });
     });
   }
-  pw_item->setY(pos_y - PortItem::height/2.0);
+  pw_item->setY(pos_y - height/2.0);
   m_property_items.insert(std::move(pw_item));
 }
 

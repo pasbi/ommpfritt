@@ -16,9 +16,8 @@ public:
 
   void paint(QPainter* painter, const QStyleOptionGraphicsItem* options, QWidget* widget) override;
   QRectF boundingRect() const override;
-  static constexpr double height = 30.0;
-  static constexpr double radius = 8.0;
   static constexpr auto TYPE = QGraphicsItem::UserType + 1;
+  static constexpr double radius = 6;
   int type() const override { return TYPE; }
   NodeItem& node_item;
   AbstractPort& port;

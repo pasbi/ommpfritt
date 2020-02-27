@@ -23,11 +23,13 @@ PortItem::PortItem(AbstractPort& port, NodeItem& parent)
 
 void PortItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* options, QWidget* widget)
 {
-  painter->setRenderHint(QPainter::Antialiasing);
   static constexpr QRectF ellipse( -radius,  -radius,
                                   2*radius, 2*radius);
   static constexpr double big_number = 10000.0;
-  static constexpr double margin = 10.0;
+  static constexpr double margin = 5.0;
+
+  painter->setRenderHint(QPainter::Antialiasing);
+
   QPainterPath path;
   path.addEllipse(ellipse);
   QBrush brush(ui_color(*widget, "NodeView", QString("port-%1").arg(port.data_type())));
@@ -39,8 +41,9 @@ void PortItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* options,
   painter->drawPath(path);
   if (port.flavor == PortFlavor::Ordinary) {
     QRectF text_rect;
-    text_rect.setHeight(height*2);
-    text_rect.setY(-height*2);
+    const double h = painter->fontMetrics().height() * 2.0;
+    text_rect.setHeight(h);
+    text_rect.setY(h);
     int flags = Qt::AlignVCenter;
     if (port.port_type == PortType::Input) {
       text_rect.setLeft(ellipse.right() + margin);
