@@ -60,36 +60,6 @@ protected:
 
 };
 
-class TextItem : public DoubleClickableGraphicsItem<QGraphicsItem>
-{
-public:
-  explicit TextItem(const QRectF& rect, const QString& text, omm::NodeItem* parent)
-    : DoubleClickableGraphicsItem(parent), m_rect(rect), m_text(text)
-  {
-    assert(parent != nullptr);
-  }
-
-  QRectF boundingRect() const override { return m_rect; }
-  void paint(QPainter* painter, const QStyleOptionGraphicsItem* options, QWidget* widget) override
-  {
-    Q_UNUSED(widget)
-    Q_UNUSED(options)
-    painter->setPen(Qt::black);
-    painter->drawText(m_rect, Qt::AlignCenter, m_text);
-  }
-
-protected:
-  void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) override
-  {
-    Q_UNUSED(event)
-    static_cast<omm::NodeItem*>(parentItem())->toggle_expanded();
-  }
-
-private:
-  const QRectF m_rect;
-  const QString m_text;
-};
-
 void stack_before_siblings(QGraphicsItem& item)
 {
   const auto is_top_level_item = [](const auto* item) { return item->parentItem() == nullptr; };
@@ -199,6 +169,14 @@ void NodeItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
   if (!node.is_valid()) {
     draw_outline(ui_color(*widget, "NodeView", "node-outline-valid"), node_pen_width/2.0);
   }
+
+  for (auto&& [pos_y, text] : m_property_labels) {
+    QRectF rect = boundingRect();
+    rect.setTop(pos_y - small_slot_height/2.0);
+    rect.setHeight(small_slot_height);
+    painter->setPen(Qt::black);
+    painter->drawText(rect, Qt::AlignCenter, text);
+  }
 }
 
 PortItem* NodeItem::port_item(const AbstractPort& port) const
@@ -300,8 +278,6 @@ void NodeItem::update_children()
 
   static constexpr double header_height = 30;
   static constexpr double footer_height = 0;
-  static constexpr double small_slot_height = 13.0;
-  static constexpr double large_slot_height = 30.0;
 
   double pos_y = header_height;
   const double slot_height = m_is_expanded ? large_slot_height : small_slot_height;
@@ -311,12 +287,7 @@ void NodeItem::update_children()
     if (m_is_expanded) {
       add_property_widget(pp.property, pos_y, slot_height);
     } else {
-      QRectF rect = boundingRect();
-      rect.setTop(pos_y-slot_height/2.0);
-      rect.setHeight(slot_height);
-      auto item = std::make_unique<TextItem>(rect, pp.property.label(), this);
-      item->setPos(0, 0);
-      m_other_port_items.insert(std::move(item));
+      m_property_labels.push_back({ pos_y, pp.property.label() });
     }
     pos_y += slot_height;
   }
@@ -354,7 +325,7 @@ void NodeItem::clear_ports()
     remove_all(items);
   }
   remove_all(m_property_items);
-  remove_all(m_other_port_items);
+  m_property_labels.clear();
 }
 
 void NodeItem::align_ports()

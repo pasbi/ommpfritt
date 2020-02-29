@@ -25,6 +25,8 @@ public:
   void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
   PortItem* port_item(const AbstractPort& port) const;
   static constexpr auto TYPE = QGraphicsItem::UserType + 2;
+  static constexpr double small_slot_height = 13.0;
+  static constexpr double large_slot_height = 30.0;
   int type() const override { return TYPE; }
   Node& node;
   void toggle_expanded();
@@ -60,7 +62,7 @@ private:
 
   std::map<PortType, std::set<std::unique_ptr<PortItem>>> m_port_items;
   std::set<std::unique_ptr<PropertyWidgetItem>> m_property_items;
-  std::set<std::unique_ptr<QGraphicsItem>> m_other_port_items;
+  std::list<std::pair<double, QString>> m_property_labels;
   QObject m_context;
 };
 
