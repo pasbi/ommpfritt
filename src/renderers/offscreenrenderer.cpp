@@ -71,7 +71,11 @@ void OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
 {
 #define deb(X) if (!(X)) { LERROR << #X" failed."; return; }
 
-  LINFO << "code:\n" << fragment_code;
+  QStringList lines = fragment_code.split("\n");
+  for (int i = 0; i < lines.size(); ++i) {
+    lines[i] = QString("%1 %2").arg(i+1, log(lines.size()+1)/log(10) + 1).arg(lines[i]);
+  }
+  LINFO << "code:\n" << lines.join("\n");
 
   m_program = std::make_unique<QOpenGLShaderProgram>();
   deb(m_context.makeCurrent(&m_surface));

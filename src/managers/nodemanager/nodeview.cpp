@@ -260,13 +260,6 @@ void NodeView::mousePressEvent(QMouseEvent* event)
       m_tmp_connection_origin = port_item;
     }
     event->accept();
-  } else if (QGraphicsItem* item = itemAt(event->pos()); item != nullptr
-             && ::root(item)->type() == NodeItem::TYPE)
-  {
-    // if a node is selected and user clicks it, make sure that the property manager shows the
-    // node's properties.
-    QGraphicsView::mousePressEvent(event);
-    Q_EMIT scene()->selectionChanged();
   } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
     if (auto* item = itemAt(event->pos()); item != nullptr) {
       if (auto* root = ::root(item); root->type() == NodeItem::TYPE && !root->isSelected()) {
@@ -277,6 +270,7 @@ void NodeView::mousePressEvent(QMouseEvent* event)
       scene()->clearSelection();
     }
     m_node_insert_pos = mapToScene(event->pos());
+    Q_EMIT scene()->selectionChanged();
     Q_EMIT customContextMenuRequested(event->pos());
   } else {
     QGraphicsView::mousePressEvent(event);

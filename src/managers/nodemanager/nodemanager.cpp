@@ -74,7 +74,7 @@ std::unique_ptr<QMenu> NodeManager::make_context_menu()
     return menu;
   };
   const auto eiff_node_selected = [this](auto&& menu) {
-    menu->setEnabled(m_ui->nodeview->selected_nodes().empty());
+    menu->setEnabled(!m_ui->nodeview->selected_nodes().empty());
     return menu;
   };
   const auto eiff_clipboard_has_nodes = [this](auto&& menu) {
