@@ -8,22 +8,25 @@ namespace omm
 
 NodeCompilerPython::NodeCompilerPython(const NodeModel& model) : NodeCompiler(model) {  }
 
-QString NodeCompilerPython::header() const
+QString NodeCompilerPython::generate_header(QStringList& lines) const
 {
+  Q_UNUSED(lines)
   return "";
 }
 
-QString NodeCompilerPython::start_program() const
+QString NodeCompilerPython::start_program(QStringList& lines) const
 {
+  Q_UNUSED(lines)
   return "";
 }
 
-QString NodeCompilerPython::end_program() const
+QString NodeCompilerPython::end_program(QStringList& lines) const
 {
+  Q_UNUSED(lines)
   return "";
 }
 
-QString NodeCompilerPython::compile_node(const Node& node) const
+QString NodeCompilerPython::compile_node(const Node& node, QStringList& lines) const
 {
   auto ops = ::filter_if(node.ports<OutputPort>(), [](OutputPort* op) {
     return op->flavor == PortFlavor::Ordinary;
@@ -43,20 +46,21 @@ QString NodeCompilerPython::compile_node(const Node& node) const
     const QStringList uuids = ::transform<QString, QList>(ops, [](const OutputPort* op) {
       return op->uuid();
     });
-    return QString("%1 = %2(%3)").arg(uuids.join(", ")).arg(node.type()).arg(args.join(", "));
-  } else {
-    return "";
+    lines.append(QString("%1 = %2(%3)").arg(uuids.join(", ")).arg(node.type()).arg(args.join(", ")));
   }
+  return "";
 }
 
-QString NodeCompilerPython::compile_connection(const OutputPort& op, const InputPort& ip) const
+QString NodeCompilerPython::compile_connection(const OutputPort& op, const InputPort& ip, QStringList& lines) const
 {
-  return QString("%1 = %2").arg(ip.uuid()).arg(op.uuid());
+  lines.append(QString("%1 = %2").arg(ip.uuid()).arg(op.uuid()));
+  return "";
 }
 
-QString NodeCompilerPython::define_node(const QString& node_type) const
+QString NodeCompilerPython::define_node(const QString& node_type, QStringList& lines) const
 {
-  return Node::detail(node_type).definitions.at(language);
+  lines.append(Node::detail(node_type).definitions.at(language));
+  return "";
 }
 
 }  // namespace omm

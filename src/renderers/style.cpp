@@ -163,7 +163,11 @@ std::unique_ptr<OffscreenRenderer> Style::init_offscreen_renderer() const
   {
     update_uniform_values();
   });
-  offscreen_renderer->set_fragment_shader(code());
+  if (const QString error = compiler()->last_error(); error.isEmpty()) {
+    if (offscreen_renderer->set_fragment_shader(code())) {
+
+    }
+  }
   return offscreen_renderer;
 }
 

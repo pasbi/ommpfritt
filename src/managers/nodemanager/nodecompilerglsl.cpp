@@ -72,14 +72,12 @@ QString NodeCompilerGLSL::translate_type(const QString& type)
 
 NodeCompilerGLSL::NodeCompilerGLSL(const NodeModel& model) : NodeCompiler(model) {  }
 
-QString NodeCompilerGLSL::header() const
+QString NodeCompilerGLSL::generate_header(QStringList& lines) const
 {
   m_uniform_ports.clear();
-  QStringList lines {
-    "#version 330",
-    QString("varying vec2 %1;").arg(OffscreenRenderer::vertex_position_name),
-    QString("out vec4 %1;").arg(output_variable_name)
-  };
+  lines.append("#version 330");
+  lines.append(QString("varying vec2 %1;").arg(OffscreenRenderer::vertex_position_name));
+  lines.append(QString("out vec4 %1;").arg(output_variable_name));
 
   for (OutputPort* port : model().ports<OutputPort>()) {
     // only property ports can be uniform
@@ -98,23 +96,26 @@ QString NodeCompilerGLSL::header() const
       }
     }
   }
-  return lines.join("\n");
+  return "";
 }
 
-QString NodeCompilerGLSL::start_program() const
+QString NodeCompilerGLSL::start_program(QStringList& lines) const
 {
-  return "void main() {";
+   lines.append("void main() {");
+   return "";
 }
 
-QString NodeCompilerGLSL::end_program() const
+QString NodeCompilerGLSL::end_program(QStringList& lines) const
 {
   const auto fragment_nodes = ::filter_if(model().nodes(), [](const Node* node) {
     return node->type() == FragmentNode::TYPE;
   });
 
-  QStringList lines;
   if (fragment_nodes.size() != 1) {
-    LWARNING << "expected exactly one fragment node but found " << fragment_nodes.size() << ".";
+    const QString msg = QString("expected exactly one fragment node but found %1.")
+                          .arg(fragment_nodes.size());
+    LWARNING << msg;
+    return msg;
   } else {
     const auto* fragment_node = static_cast<const FragmentNode*>(*fragment_nodes.begin());
     const auto& port = fragment_node->input_port();
@@ -125,11 +126,12 @@ QString NodeCompilerGLSL::end_program() const
     }
   }
 
-  lines.push_back("}  // main()");
-  return lines.join("\n");
+  lines.append("}");
+
+  return "";
 }
 
-QString NodeCompilerGLSL::compile_node(const Node& node) const
+QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines) const
 {
   static const auto sort_ports = [](const auto& ports) {
     using PortT = std::decay_t<typename std::decay_t<decltype(ports)>::value_type>;
@@ -141,7 +143,6 @@ QString NodeCompilerGLSL::compile_node(const Node& node) const
     return vec;
   };
 
-  QStringList lines;
   {
     auto ips = sort_ports(node.ports<InputPort>());
     const QStringList args = ::transform<QString, QList>(ips, [](InputPort* ip) {
@@ -187,21 +188,23 @@ QString NodeCompilerGLSL::compile_node(const Node& node) const
       }
     }
   }
-
-  return lines.join("\n");
+  return "";
 }
 
-QString NodeCompilerGLSL::compile_connection(const OutputPort& op, const InputPort& ip) const
+QString NodeCompilerGLSL::compile_connection(const OutputPort& op, const InputPort& ip,
+                                             QStringList& lines) const
 {
   const QString data_type = op.data_type();
   assert(data_type != NodeCompilerTypes::INVALID_TYPE);
 
-  return format_connection(ip, op);
+  lines.append(format_connection(ip, op));
+  return "";
 }
 
-QString NodeCompilerGLSL::define_node(const QString& node_type) const
+QString NodeCompilerGLSL::define_node(const QString& node_type, QStringList& lines) const
 {
-  return Node::detail(node_type).definitions.at(language);
+  lines.append(Node::detail(node_type).definitions.at(language));
+  return "";
 }
 
 }  // namespace omm

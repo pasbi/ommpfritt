@@ -67,9 +67,9 @@ OffscreenRenderer::~OffscreenRenderer()
 {
 }
 
-void OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
+bool OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
 {
-#define deb(X) if (!(X)) { LERROR << #X" failed."; return; }
+#define CHECK(X) if (!(X)) { LERROR << #X" failed."; return false; }
 
   QStringList lines = fragment_code.split("\n");
   for (int i = 0; i < lines.size(); ++i) {
@@ -78,13 +78,15 @@ void OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
   LINFO << "code:\n" << lines.join("\n");
 
   m_program = std::make_unique<QOpenGLShaderProgram>();
-  deb(m_context.makeCurrent(&m_surface));
-  deb(m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader_source));
-  deb(m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_code));
+  CHECK(m_context.makeCurrent(&m_surface));
+  CHECK(m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader_source));
+  CHECK(m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_code));
   m_program->bindAttributeLocation(vertex_position_attribute_name, 0);
-  deb(m_program->link());
-  deb(m_program->isLinked());
-#undef deb
+  CHECK(m_program->link());
+  CHECK(m_program->isLinked());
+#undef CHECK
+
+  return true;
 }
 
 void OffscreenRenderer::make_current()

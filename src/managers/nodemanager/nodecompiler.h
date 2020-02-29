@@ -40,6 +40,8 @@ class AbstractNodeCompiler : public QObject
 public:
   enum class Language { Python, GLSL };
   static const std::set<QString> supported_types(Language language);
+  QString last_error() const { return m_last_error; }
+
 protected:
   AbstractNodeCompiler(const NodeModel& model);
   std::set<Node*> nodes() const;
@@ -62,10 +64,16 @@ protected:
   friend std::ostream& operator<<(std::ostream& ostream, const omm::AbstractNodeCompiler::Statement& statement);
   void generate_statements(std::set<QString>& used_node_types, std::list<Statement>& statements);
   const NodeModel& model() const { return m_model; }
+
 Q_SIGNALS:
   void compilation_succeeded(const QString& code);
+  void compilation_error(const QString& reason);
+
 private:
   const NodeModel& m_model;
+
+protected:
+  QString m_last_error = "";
 };
 
 template<typename ConcreteCompiler> class NodeCompiler : public AbstractNodeCompiler
@@ -73,25 +81,37 @@ template<typename ConcreteCompiler> class NodeCompiler : public AbstractNodeComp
 public:
   QString compile()
   {
+    QStringList lines;
     std::set<QString> used_node_types;
     std::list<Statement> statements;
     generate_statements(used_node_types, statements);
-    QStringList lines;
     const auto& self = static_cast<const ConcreteCompiler&>(*this);
-    lines.push_back(self.header());
+
+#define CHECK(statement) \
+  if (const QString msg = statement; !msg.isEmpty()) { \
+    m_last_error = msg; \
+    Q_EMIT compilation_error(msg); \
+    return ""; \
+  }
+
+    CHECK(self.generate_header(lines))
     for (const QString& type : used_node_types) {
-      lines.push_back(self.define_node(type));
+      CHECK(self.define_node(type, lines));
     }
 
-    lines.push_back(self.start_program());
+    CHECK(self.start_program(lines));
+
     for (const Statement& statement : statements) {
       if (statement.is_connection) {
-        lines.push_back(self.compile_connection(*statement.source, *statement.target));
+        CHECK(self.compile_connection(*statement.source, *statement.target, lines))
       } else {
-        lines.push_back(self.compile_node(*statement.node));
+        CHECK(self.compile_node(*statement.node, lines))
       }
     }
-    lines.push_back(self.end_program());
+    CHECK(self.end_program(lines));
+
+#undef CHECK
+
     const QString code = lines.join("\n");
     Q_EMIT compilation_succeeded(code);
     return code;

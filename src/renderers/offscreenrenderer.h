@@ -22,7 +22,7 @@ public:
   OffscreenRenderer();
   ~OffscreenRenderer();
   QImage render(const QSize& size);
-  void set_fragment_shader(const QString& fragment_code);
+  bool set_fragment_shader(const QString& fragment_code);
   QOpenGLContext& context() { return m_context; }
   QOpenGLShaderProgram& program() const { return *m_program; }
   void make_current();

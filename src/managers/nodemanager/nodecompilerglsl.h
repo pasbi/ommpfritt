@@ -11,12 +11,12 @@ public:
   explicit NodeCompilerGLSL(const NodeModel& model);
   static constexpr auto language = AbstractNodeCompiler::Language::GLSL;
   static constexpr bool lazy = false;
-  QString header() const;
-  QString start_program() const;
-  QString end_program() const;
-  QString compile_node(const Node& node) const;
-  QString compile_connection(const OutputPort& op, const InputPort& ip) const;
-  QString define_node(const QString& node_type) const;
+  QString generate_header(QStringList& lines) const;
+  QString start_program(QStringList& lines) const;
+  QString end_program(QStringList& lines) const;
+  QString compile_node(const Node& node, QStringList& lines) const;
+  QString compile_connection(const OutputPort& op, const InputPort& ip, QStringList& lines) const;
+  QString define_node(const QString& node_type, QStringList& lines) const;
   std::set<OutputPort*> uniform_ports() const { return m_uniform_ports; }
   static QString translate_type(const QString& type);
 
