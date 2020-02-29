@@ -27,6 +27,7 @@ public:
   static constexpr auto TYPE = QGraphicsItem::UserType + 2;
   int type() const override { return TYPE; }
   Node& node;
+  void toggle_expanded();
 
 protected:
   QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;

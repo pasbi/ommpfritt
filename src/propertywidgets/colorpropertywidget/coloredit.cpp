@@ -49,7 +49,7 @@ ColorEdit::value_type ColorEdit::value() const { return m_current_color; }
 
 void ColorEdit::mouseDoubleClickEvent(QMouseEvent*)
 {
-  const auto [color, accepted] = ColorDialog::get_color(m_current_color, this);
+  const auto [color, accepted] = ColorDialog::get_color(m_current_color, nullptr);
   if (accepted) {
     set_value(color);
   }

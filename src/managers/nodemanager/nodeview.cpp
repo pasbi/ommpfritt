@@ -243,7 +243,7 @@ void NodeView::mousePressEvent(QMouseEvent* event)
   m_last_mouse_position = event->pos();
   if (m_pan_zoom_controller.press(*event)) {
     event->accept();
-  } else if (PortItem* port_item = port_item_at(event->pos()); port_item != nullptr) {
+  } else if (PortItem* port_item = item_at<PortItem>(event->pos()); port_item != nullptr) {
     m_tmp_connection_origin = port_item;
     viewport()->update();
     AbstractPort& port = port_item->port;
@@ -260,6 +260,13 @@ void NodeView::mousePressEvent(QMouseEvent* event)
       m_tmp_connection_origin = port_item;
     }
     event->accept();
+  } else if (QGraphicsItem* item = itemAt(event->pos()); item != nullptr
+             && ::root(item)->type() == NodeItem::TYPE)
+  {
+    // if a node is selected and user clicks it, make sure that the property manager shows the
+    // node's properties.
+    QGraphicsView::mousePressEvent(event);
+    Q_EMIT scene()->selectionChanged();
   } else if (event->button() == Qt::RightButton && event->modifiers() == Qt::NoModifier) {
     if (auto* item = itemAt(event->pos()); item != nullptr) {
       if (auto* root = ::root(item); root->type() == NodeItem::TYPE && !root->isSelected()) {
@@ -316,7 +323,7 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
     m_viewport_center = mapToScene(viewport()->rect().center());
     event->accept();
   } else if (m_tmp_connection_origin != nullptr) {
-    if (PortItem* port_item = port_item_at(event->pos()); port_item != nullptr
+    if (PortItem* port_item = item_at<PortItem>(event->pos()); port_item != nullptr
         && model()->can_connect(m_tmp_connection_origin->port, port_item->port))
     {
       m_tmp_connection_target = port_item;
@@ -372,16 +379,6 @@ void NodeView::mouseReleaseEvent(QMouseEvent *event)
   m_pan_zoom_controller.release();
   viewport()->update();
   QGraphicsView::mouseReleaseEvent(event);
-}
-
-PortItem* NodeView::port_item_at(const QPoint& pos) const
-{
-  QGraphicsItem* item = itemAt(pos);
-  if (item != nullptr && item->type() == PortItem::TYPE) {
-    return static_cast<PortItem*>(item);
-  } else {
-    return nullptr;
-  }
 }
 
 bool NodeView::can_drop(const QDropEvent& event)

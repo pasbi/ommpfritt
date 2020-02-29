@@ -17,6 +17,7 @@ class Scene;
 
 class NodeScene : public QGraphicsScene
 {
+  Q_OBJECT
 public:
   explicit NodeScene(Scene& scene);
   ~NodeScene();
@@ -26,9 +27,11 @@ public:
   std::set<Node*> selected_nodes() const;
   Scene& scene;
 
+  void clear();
+
+public Q_SLOTS:
   void add_node(Node& node, bool select = true);
   void remove_node(Node& node);
-  void clear();
 
 private:
   std::map<Node*, std::unique_ptr<NodeItem>> m_node_items;

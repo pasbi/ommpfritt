@@ -32,11 +32,42 @@ std::unique_ptr<QGraphicsItem> create_facade(const QGraphicsProxyWidget& widget_
   return facade;
 }
 
-class TextItem : public QGraphicsItem
+/**
+ * From the docs:
+ *    Note that an item will not receive double click events if it is neither selectable nor
+ *    movable (single mouse clicks are ignored in this case, and that stops the generation of
+ *    double clicks).
+ */
+template<class BaseItem> class DoubleClickableGraphicsItem : public BaseItem
 {
 public:
-  explicit TextItem(const QRectF& rect, const QString& text, QGraphicsItem* parent)
-    : QGraphicsItem(parent), m_rect(rect), m_text(text) {  }
+  using BaseItem::BaseItem;
+
+protected:
+  void mousePressEvent(QGraphicsSceneMouseEvent* event) override
+  {
+    Q_UNUSED(event);
+    BaseItem::mousePressEvent(event);
+    event->accept();
+  }
+
+  void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override
+  {
+    Q_UNUSED(event)
+    BaseItem::mouseReleaseEvent(event);
+    event->accept();
+  }
+
+};
+
+class TextItem : public DoubleClickableGraphicsItem<QGraphicsItem>
+{
+public:
+  explicit TextItem(const QRectF& rect, const QString& text, omm::NodeItem* parent)
+    : DoubleClickableGraphicsItem(parent), m_rect(rect), m_text(text)
+  {
+    assert(parent != nullptr);
+  }
 
   QRectF boundingRect() const override { return m_rect; }
   void paint(QPainter* painter, const QStyleOptionGraphicsItem* options, QWidget* widget) override
@@ -45,6 +76,13 @@ public:
     Q_UNUSED(options)
     painter->setPen(Qt::black);
     painter->drawText(m_rect, Qt::AlignCenter, m_text);
+  }
+
+protected:
+  void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) override
+  {
+    Q_UNUSED(event)
+    static_cast<omm::NodeItem*>(parentItem())->toggle_expanded();
   }
 
 private:
@@ -62,16 +100,31 @@ void stack_before_siblings(QGraphicsItem& item)
   }
 }
 
+QWidget* leaf_widget(QWidget* widget, QPoint& pos)
+{
+  while (true) {
+    QWidget* child = widget->childAt(pos);
+    if (child == nullptr) {
+      return widget;
+    } else {
+      widget = child;
+      pos = child->mapFromParent(pos);
+    }
+  }
+  Q_UNREACHABLE();
+  return nullptr;
+}
+
 }  // namespace
 
 namespace omm
 {
 
-class PropertyWidgetItem : public QGraphicsProxyWidget
+class PropertyWidgetItem : public DoubleClickableGraphicsItem<QGraphicsProxyWidget>
 {
 public:
   PropertyWidgetItem(QGraphicsItem* parent, std::unique_ptr<AbstractPropertyWidget> widget)
-    : QGraphicsProxyWidget(parent), widget(widget.get())
+    : DoubleClickableGraphicsItem(parent), widget(widget.get())
   {
     setWidget(widget.release());
   }
@@ -81,6 +134,18 @@ protected:
   {
     stack_before_siblings(*this);
     QGraphicsProxyWidget::focusInEvent(event);
+  }
+
+  void mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event) override
+  {
+    if (widget != nullptr) {
+      QPoint pos = event->pos().toPoint();
+      QWidget* leaf_widget = ::leaf_widget(widget, pos);
+
+      QMouseEvent mdbce(QEvent::MouseButtonDblClick, pos, event->button(),
+                        event->buttons(), event->modifiers());
+      qApp->sendEvent(leaf_widget, &mdbce);
+    }
   }
 
 public:
@@ -150,6 +215,12 @@ PortItem* NodeItem::port_item(const AbstractPort& port) const
   return nullptr;
 }
 
+void NodeItem::toggle_expanded()
+{
+  m_is_expanded = !m_is_expanded;
+  update_children();
+}
+
 QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant& value)
 {
   if (change == ItemPositionChange) {
@@ -166,10 +237,12 @@ void NodeItem::dragEnterEvent(QGraphicsSceneDragDropEvent* event)
 
 void NodeItem::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
-  Q_UNUSED(event);
-  m_is_expanded = !m_is_expanded;
-  stack_before_siblings(*this);
-  update_children();
+  if (scene()->itemAt(event->scenePos(), QTransform()) == this) {
+    stack_before_siblings(*this);
+    toggle_expanded();
+  } else {
+    QGraphicsItem::mouseDoubleClickEvent(event);
+  }
 }
 
 void NodeItem::mousePressEvent(QGraphicsSceneMouseEvent* event)

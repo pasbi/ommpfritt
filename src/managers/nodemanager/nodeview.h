@@ -6,6 +6,7 @@
 #include <QGraphicsView>
 #include "managers/range.h"
 #include <memory>
+#include <QGraphicsItem>
 
 class QPainter;
 class QMenu;
@@ -58,7 +59,15 @@ private:
   void draw_connection(QPainter& painter, const QPointF& in, const QPointF& out,
                        bool is_floating, bool reverse) const;
   constexpr static auto m_droppable_kinds = Kind::Item;
-  PortItem* port_item_at(const QPoint& pos) const;
+  template<typename ItemT> ItemT* item_at(const QPoint& pos) const
+  {
+    if (QGraphicsItem* item = itemAt(pos); item != nullptr && item->type() == ItemT::TYPE) {
+      return static_cast<ItemT*>(item);
+    } else {
+      return nullptr;
+    }
+  }
+
   bool can_drop(const QDropEvent& event);
 
   PortItem* m_tmp_connection_origin = nullptr;
