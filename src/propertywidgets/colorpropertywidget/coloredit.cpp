@@ -19,6 +19,11 @@ void ColorEdit::paintEvent(QPaintEvent*)
     const auto rect = this->rect().marginsRemoved(text_margins);
     const auto elided_text = painter.fontMetrics().elidedText(text, Qt::ElideMiddle, rect.width());
     painter.setPen(m_contrast_color);
+    if (!isEnabled()) {
+      QFont font = painter.font();
+      font.setStrikeOut(true);
+      painter.setFont(font);
+    }
     painter.drawText(rect, Qt::AlignCenter, elided_text);
   }
 }
@@ -26,7 +31,6 @@ void ColorEdit::paintEvent(QPaintEvent*)
 ColorEdit::ColorEdit()
   : m_contrast_color(compute_contrast_color())
 {
-
 }
 
 void ColorEdit::set_value(const value_type& value)
