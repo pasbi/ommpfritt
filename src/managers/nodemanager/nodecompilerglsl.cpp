@@ -126,9 +126,12 @@ QString NodeCompilerGLSL::end_program(QStringList& lines) const
     const auto* fragment_node = static_cast<const FragmentNode*>(*fragment_nodes.begin());
     const auto& port = fragment_node->input_port();
     if (port.is_connected()) {
-      lines.push_back(QString("%1 = vec4(%2.a * %2.rgb, %2.a);")
-                      .arg(output_variable_name)
-                      .arg(port.uuid()));
+      const QString alpha = QString("clamp(0.0, 1.0, %1.a)").arg(port.uuid());
+      const QString rgb = QString("clamp(vec3(0.0), vec3(1.0), %2.rgb)").arg(port.uuid());
+      lines.push_back(QString("%1 = vec4(%2 * %3, %2);")
+                        .arg(output_variable_name)
+                        .arg(alpha)
+                        .arg(rgb));
     }
   }
 
