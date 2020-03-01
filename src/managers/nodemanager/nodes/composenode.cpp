@@ -12,7 +12,7 @@ def %1(a, b):
   return [a, b]
 )").arg(ComposeNode::TYPE) },
     { AbstractNodeCompiler::Language::GLSL, QString(R"(
-vec2 %1(float a, float b) { return vec2(a, b); }
+vec2 %1_0(float a, float b) { return vec2(a, b); }
 )").arg(ComposeNode::TYPE) }
     } };
 
