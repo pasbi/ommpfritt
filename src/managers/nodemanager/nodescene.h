@@ -22,7 +22,7 @@ public:
   explicit NodeScene(Scene& scene);
   ~NodeScene();
   NodeItem& node_item(Node& node) const;
-  void set_model(NodeModel* model);
+  void set_model(omm::NodeModel* model);
   NodeModel* model() const { return m_model; }
   std::set<Node*> selected_nodes() const;
   Scene& scene;

@@ -34,7 +34,7 @@ namespace omm
 {
 
 Style::Style(Scene *scene)
-  : PropertyOwner(scene), NodesOwner(*scene)
+  : PropertyOwner(scene), NodesOwner(AbstractNodeCompiler::Language::GLSL, *scene)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {
@@ -151,22 +151,28 @@ void Style::on_property_value_changed(Property *property)
 
 std::unique_ptr<OffscreenRenderer> Style::init_offscreen_renderer() const
 {
+  NodeModel& model = node_model();
+  AbstractNodeCompiler& compiler = model.compiler();
   auto offscreen_renderer = std::make_unique<OffscreenRenderer>();
-  connect(compiler(), &AbstractNodeCompiler::compilation_succeeded,
-          [this, o_r = offscreen_renderer.get()](const QString& code)
-  {
-    o_r->set_fragment_shader(code);
-    update_uniform_values();
-  });
+  const auto set_code = [this, &model, o_r=offscreen_renderer.get()](const QString& code) {
+    if (o_r->set_fragment_shader(code)) {
+      update_uniform_values();
+      model.set_error("");
+    } else {
+      model.set_error(tr("Compilation failed"));
+    }
+  };
+  connect(&compiler, &AbstractNodeCompiler::compilation_succeeded, set_code);
+  connect(&compiler, SIGNAL(compilation_failed(QString)), &model, SLOT(set_error(QString)));
   connect(&scene()->message_box(), &MessageBox::property_value_changed,
           [this](AbstractPropertyOwner&, const QString&, Property&)
   {
     update_uniform_values();
   });
-  if (const QString error = compiler()->last_error(); error.isEmpty()) {
-    if (offscreen_renderer->set_fragment_shader(code())) {
-
-    }
+  if (const QString error = compiler.last_error(); error.isEmpty()) {
+    set_code(compiler.code());
+  } else {
+    model.set_error(error);
   }
   return offscreen_renderer;
 }
@@ -174,7 +180,8 @@ std::unique_ptr<OffscreenRenderer> Style::init_offscreen_renderer() const
 void Style::update_uniform_values() const
 {
   if (m_offscreen_renderer) {
-    for (AbstractPort* port : compiler()->uniform_ports()) {
+    auto& compiler = static_cast<NodeCompilerGLSL&>(node_model().compiler());
+    for (AbstractPort* port : compiler.uniform_ports()) {
       assert(port->flavor == omm::PortFlavor::Property);
       const Property* property = static_cast<const PropertyOutputPort*>(port)->property();
       if (property != nullptr) {

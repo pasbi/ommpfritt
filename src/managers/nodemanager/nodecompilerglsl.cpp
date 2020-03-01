@@ -69,6 +69,12 @@ QString NodeCompilerGLSL::translate_type(const QString& type)
   }
 }
 
+void NodeCompilerGLSL::invalidate()
+{
+  AbstractNodeCompiler::invalidate();
+  compile();
+}
+
 
 NodeCompilerGLSL::NodeCompilerGLSL(const NodeModel& model) : NodeCompiler(model) {  }
 

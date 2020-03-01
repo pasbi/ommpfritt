@@ -9,8 +9,7 @@ class NodeCompilerPython : public NodeCompiler<NodeCompilerPython>
 {
 public:
   explicit NodeCompilerPython(const NodeModel& model);
-  static constexpr auto language = AbstractNodeCompiler::Language::Python;
-  static constexpr bool lazy = true;
+  static constexpr auto LANGUAGE = AbstractNodeCompiler::Language::Python;
 
   QString generate_header(QStringList& lines) const;
   QString start_program(QStringList& lines) const;

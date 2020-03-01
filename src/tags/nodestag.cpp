@@ -47,7 +47,7 @@ namespace omm
 {
 
 NodesTag::NodesTag(Object& owner)
-  : Tag(owner), NodesOwner(*owner.scene())
+  : Tag(owner), NodesOwner(AbstractNodeCompiler::Language::Python, *owner.scene())
 {
   const QString category = QObject::tr("Basic");
   create_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY, 0)
@@ -108,11 +108,12 @@ void NodesTag::force_evaluate()
 
 //  LINFO << "Compilation: \n" << code();
   auto locals = py::dict();
-  populate_locals<PortType::Input>(locals, node_model());
-  populate_locals<PortType::Output>(locals, node_model());
+  NodeModel& model = node_model();
+  populate_locals<PortType::Input>(locals, model);
+  populate_locals<PortType::Output>(locals, model);
 
-  if (Application::instance().python_engine.exec(code(), locals, this)) {
-    for (InputPort* port : node_model().ports<InputPort>()) {
+  if (Application::instance().python_engine.exec(model.compiler().code(), locals, this)) {
+    for (InputPort* port : model.ports<InputPort>()) {
       if (port->node.type() == SpyNode::TYPE) {
         SpyNode& spy_node = static_cast<SpyNode&>(port->node);
         const auto py_var_name = py::cast(port->uuid().toStdString());
@@ -142,9 +143,9 @@ void NodesTag::force_evaluate()
         }
       }
     }
-    node_model().set_status(NodeModel::Status::Success);
+    model.set_error("");
   } else {
-    node_model().set_status(NodeModel::Status::Fail);
+    model.set_error(tr("Fail."));
   }
   owner->update();
 }

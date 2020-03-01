@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "common.h"
 #include <QObject>
@@ -43,7 +43,7 @@ public:
   QString last_error() const { return m_last_error; }
 
 protected:
-  AbstractNodeCompiler(const NodeModel& model);
+  AbstractNodeCompiler(Language language, const NodeModel& model);
   std::set<Node*> nodes() const;
   struct Statement
   {
@@ -62,25 +62,39 @@ protected:
   };
 
   friend std::ostream& operator<<(std::ostream& ostream, const omm::AbstractNodeCompiler::Statement& statement);
-  void generate_statements(std::set<QString>& used_node_types, std::list<Statement>& statements);
+  void generate_statements(std::set<QString>& used_node_types, std::list<Statement>& statements) const;
+
+public:
+  const Language language;
   const NodeModel& model() const { return m_model; }
+  QString code();
+  QString error();
+  virtual bool compile() = 0;
 
 Q_SIGNALS:
   void compilation_succeeded(const QString& code);
-  void compilation_error(const QString& reason);
+  void compilation_failed(const QString& reason);
 
-private:
-  const NodeModel& m_model;
+public Q_SLOTS:
+  virtual void invalidate();
 
 protected:
   QString m_last_error = "";
+  QString m_code = "";
+  bool m_is_dirty = true;
+
+private:
+  const NodeModel& m_model;
 };
 
 template<typename ConcreteCompiler> class NodeCompiler : public AbstractNodeCompiler
 {
 public:
-  QString compile()
+  bool compile() override
   {
+    m_is_dirty = false;
+    m_code = "";
+    m_last_error = "";
     QStringList lines;
     std::set<QString> used_node_types;
     std::list<Statement> statements;
@@ -90,8 +104,8 @@ public:
 #define CHECK(statement) \
   if (const QString msg = statement; !msg.isEmpty()) { \
     m_last_error = msg; \
-    Q_EMIT compilation_error(msg); \
-    return ""; \
+    Q_EMIT compilation_failed(msg); \
+    return false; \
   }
 
     CHECK(self.generate_header(lines))
@@ -112,14 +126,14 @@ public:
 
 #undef CHECK
 
-    const QString code = lines.join("\n");
-    Q_EMIT compilation_succeeded(code);
-    return code;
+    m_code = lines.join("\n");
+    Q_EMIT compilation_succeeded(m_code);
+    return true;
   }
 
 protected:
   explicit NodeCompiler(const NodeModel& model)
-    : AbstractNodeCompiler(model)
+    : AbstractNodeCompiler(ConcreteCompiler::LANGUAGE, model)
   {}
 
   void statements();

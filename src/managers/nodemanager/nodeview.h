@@ -49,6 +49,7 @@ protected:
   void mouseMoveEvent(QMouseEvent* event) override;
   void mouseReleaseEvent(QMouseEvent* event) override;
   void drawForeground(QPainter* painter, const QRectF&) override;
+  void drawBackground(QPainter* painter, const QRectF&) override;
   void mousePressEvent(QMouseEvent* event) override;
   void resizeEvent(QResizeEvent*) override;
   void dragMoveEvent(QDragMoveEvent*) override;

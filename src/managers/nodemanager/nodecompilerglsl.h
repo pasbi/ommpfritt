@@ -9,8 +9,7 @@ class NodeCompilerGLSL : public NodeCompiler<NodeCompilerGLSL>
 {
 public:
   explicit NodeCompilerGLSL(const NodeModel& model);
-  static constexpr auto language = AbstractNodeCompiler::Language::GLSL;
-  static constexpr bool lazy = false;
+  static constexpr auto LANGUAGE = AbstractNodeCompiler::Language::GLSL;
   QString generate_header(QStringList& lines) const;
   QString start_program(QStringList& lines) const;
   QString end_program(QStringList& lines) const;
@@ -19,6 +18,7 @@ public:
   QString define_node(const QString& node_type, QStringList& lines) const;
   std::set<OutputPort*> uniform_ports() const { return m_uniform_ports; }
   static QString translate_type(const QString& type);
+  void invalidate() override;
 
 private:
   mutable std::set<OutputPort*> m_uniform_ports;

@@ -16,17 +16,25 @@ template<typename WrappedT>
 py::object get_property_value(WrappedT&& wrapped, const QString& key)
 {
   if (wrapped.has_property(key)) {
-    const auto value = wrapped.property(key)->variant_value();
+    const variant_type value = wrapped.property(key)->variant_value();
     if (std::holds_alternative<AbstractPropertyOwner*>(value)) {
       return wrap(std::get<AbstractPropertyOwner*>(value));
     } else if (std::holds_alternative<TriggerPropertyDummyValueType>(value)) {
       return py::none();
     } else if (std::holds_alternative<Vec2f>(value)) {
-      return pybind11::cast(std::get<Vec2f>(value).to_stdvec());
+      return py::cast(std::get<Vec2f>(value).to_stdvec());
     } else if (std::holds_alternative<Vec2i>(value)) {
-      return pybind11::cast(std::get<Vec2i>(value).to_stdvec());
+      return py::cast(std::get<Vec2i>(value).to_stdvec());
+    } else if (std::holds_alternative<double>(value)) {
+      return py::cast(std::get<double>(value));
+    } else if (std::holds_alternative<int>(value)) {
+      return py::cast(std::get<int>(value));
+    } else if (std::holds_alternative<bool>(value)) {
+      return py::cast(std::get<bool>(value));
+    } else if (std::holds_alternative<Color>(value)) {
+      return py::cast(std::get<Color>(value));
     } else {
-      return py::cast(value);
+      return py::none();
     }
   } else {
     LERROR << "Failed to find property key '" << key << "'.";

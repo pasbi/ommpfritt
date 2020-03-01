@@ -107,7 +107,8 @@ const std::set<QString> AbstractNodeCompiler::supported_types(AbstractNodeCompil
   }
 }
 
-AbstractNodeCompiler::AbstractNodeCompiler(const NodeModel& model) : m_model(model)
+AbstractNodeCompiler::AbstractNodeCompiler(Language language, const NodeModel& model)
+  : language(language), m_model(model)
 {
 }
 
@@ -117,7 +118,7 @@ std::set<Node*> AbstractNodeCompiler::nodes() const
 }
 
 void AbstractNodeCompiler::
-generate_statements(std::set<QString>& used_node_types, std::list<Statement>& statements)
+generate_statements(std::set<QString>& used_node_types, std::list<Statement>& statements) const
 {
   const auto successors =  [](Node* node) {
     std::set<Node*> descendants;
@@ -141,7 +142,27 @@ generate_statements(std::set<QString>& used_node_types, std::list<Statement>& st
       }
     }
   }
+}
 
+QString AbstractNodeCompiler::code()
+{
+  if (m_is_dirty) {
+    compile();
+  }
+  return m_code;
+}
+
+QString AbstractNodeCompiler::error()
+{
+  if (m_is_dirty) {
+    compile();
+  }
+  return m_last_error;
+}
+
+void AbstractNodeCompiler::invalidate()
+{
+  m_is_dirty = true;
 }
 
 

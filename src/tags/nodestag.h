@@ -3,6 +3,7 @@
 #include <memory>
 #include "tags/tag.h"
 #include <Qt>
+#include "managers/nodemanager/nodemodel.h"
 #include "managers/nodemanager/nodesowner.h"
 #include "managers/nodemanager/nodecompilerpython.h"
 
@@ -11,7 +12,7 @@ namespace omm
 
 class NodeModel;
 
-class NodesTag : public Tag, public NodesOwner<NodeCompilerPython>
+class NodesTag : public Tag, public NodesOwner
 {
   Q_OBJECT
 public:

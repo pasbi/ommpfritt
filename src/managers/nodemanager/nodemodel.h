@@ -8,6 +8,7 @@
 #include <memory>
 #include "managers/nodemanager/port.h"
 #include "managers/nodemanager/nodecompiler.h"
+#include "cachedgetter.h"
 
 namespace omm
 {
@@ -25,10 +26,6 @@ public:
   explicit NodeModel(AbstractNodeCompiler::Language language, Scene& scene);
   NodeModel(const NodeModel& other);
   ~NodeModel();
-
-  enum class Status { None, Success, Fail };
-  void set_status(Status status);
-  Status status() const { return m_status; }
 
   Node& add_node(std::unique_ptr<Node> node);
   std::unique_ptr<Node> extract_node(Node& node);
@@ -56,9 +53,13 @@ public:
     return ::transform<PortT*>(::filter_if(ports(), pred), conv);
   }
 
-  AbstractNodeCompiler::Language language() const { return m_language; }
-
+  AbstractNodeCompiler::Language language() const { return m_compiler->language; }
   Scene& scene() const { return m_scene; }
+  AbstractNodeCompiler& compiler() const;
+  QString error() const { return m_error; }
+
+public Q_SLOTS:
+  void set_error(const QString& error);
 
 Q_SIGNALS:
   void topology_changed();
@@ -68,10 +69,9 @@ Q_SIGNALS:
 private:
   std::set<std::unique_ptr<Node>> m_nodes;
   Scene& m_scene;
-  const AbstractNodeCompiler::Language m_language;
   void init();
-  Status m_status = Status::None;
+  std::unique_ptr<AbstractNodeCompiler> m_compiler;
+  QString m_error;
 };
-
 
 }  // namespace omm

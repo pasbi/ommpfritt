@@ -4,6 +4,7 @@
 #include "aspects/propertyowner.h"
 #include "color/color.h"
 #include "properties/propertygroups/markerproperties.h"
+#include "managers/nodemanager/nodemodel.h"
 #include "managers/nodemanager/nodesowner.h"
 #include "managers/nodemanager/nodecompilerglsl.h"
 
@@ -16,7 +17,7 @@ class NodeModel;
 
 class Style
   : public PropertyOwner<Kind::Style>
-  , public NodesOwner<NodeCompilerGLSL>
+  , public NodesOwner
 {
   Q_OBJECT
 public:

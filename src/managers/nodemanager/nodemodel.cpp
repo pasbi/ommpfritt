@@ -5,20 +5,43 @@
 #include "common.h"
 #include "managers/nodemanager/port.h"
 #include "managers/nodemanager/node.h"
+#include "managers/nodemanager/nodecompilerglsl.h"
+#include "managers/nodemanager/nodecompilerpython.h"
+
+namespace
+{
+
+std::unique_ptr<omm::AbstractNodeCompiler>
+make_compiler(omm::AbstractNodeCompiler::Language language, omm::NodeModel& model)
+{
+  using Language = omm::AbstractNodeCompiler::Language;
+  switch (language) {
+  case Language::GLSL:
+    return std::make_unique<omm::NodeCompilerGLSL>(model);
+  case Language::Python:
+    return std::make_unique<omm::NodeCompilerPython>(model);
+  default:
+    Q_UNREACHABLE();
+    return nullptr;
+  }
+}
+
+}  // namespace
 
 namespace omm
 {
 
 NodeModel::NodeModel(AbstractNodeCompiler::Language language, Scene& scene)
-  : m_scene(scene), m_language(language)
+  : m_scene(scene), m_compiler(make_compiler(language, *this))
 {
   init();
   connect(this, SIGNAL(node_added(Node&)), this, SIGNAL(topology_changed()));
   connect(this, SIGNAL(node_removed(Node&)), this, SIGNAL(topology_changed()));
+  connect(this, SIGNAL(topology_changed()), m_compiler.get(), SLOT(invalidate()));
 }
 
 NodeModel::NodeModel(const NodeModel& other)
-  : NodeModel(other.m_language, other.m_scene)
+  : NodeModel(other.compiler().language, other.m_scene)
 {
   init();
   std::ostringstream oss;
@@ -41,13 +64,6 @@ NodeModel::NodeModel(const NodeModel& other)
 
 NodeModel::~NodeModel()
 {
-}
-
-void NodeModel::set_status(NodeModel::Status status)
-{
-  if (m_status != status) {
-    m_status = status;
-  }
 }
 
 void NodeModel::init()
@@ -160,6 +176,16 @@ std::set<AbstractPort*> NodeModel::ports() const
     ports.insert(ps.begin(), ps.end());
   }
   return ports;
+}
+
+AbstractNodeCompiler& NodeModel::compiler() const
+{
+  return *m_compiler;
+}
+
+void NodeModel::set_error(const QString& error)
+{
+  m_error = error;
 }
 
 bool NodeModel::can_connect(const AbstractPort& a, const AbstractPort& b) const

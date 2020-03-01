@@ -9,17 +9,21 @@
 namespace omm
 {
 
-AbstractNodesOwner::AbstractNodesOwner(AbstractNodeCompiler::Language language, Scene& scene)
-  : m_model(std::make_unique<NodeModel>(language, scene))
+NodesOwner::NodesOwner(AbstractNodeCompiler::Language language, Scene& scene)
+  : m_node_model(std::make_unique<NodeModel>(language, scene))
 {
 }
 
-AbstractNodesOwner::AbstractNodesOwner(const AbstractNodesOwner& other)
-  : m_model(std::make_unique<NodeModel>(*other.m_model))
+NodesOwner::NodesOwner(const NodesOwner& other)
+  : m_node_model(std::make_unique<NodeModel>(other.node_model()))
 {
 }
 
-std::unique_ptr<Property> AbstractNodesOwner::make_edit_nodes_property()
+NodesOwner::~NodesOwner()
+{
+}
+
+std::unique_ptr<Property> NodesOwner::make_edit_nodes_property() const
 {
   auto property = std::make_unique<TriggerProperty>();
   QObject::connect(property.get(), &Property::value_changed, property.get(), [this]() {
@@ -29,43 +33,10 @@ std::unique_ptr<Property> AbstractNodesOwner::make_edit_nodes_property()
   return property;
 }
 
-template<typename ConcreteCompiler> NodesOwner<ConcreteCompiler>
-::NodesOwner(Scene& scene)
-  : AbstractNodesOwner(ConcreteCompiler::language, scene)
-  , m_compiler_cache(*this)
+NodeModel& NodesOwner::node_model() const
 {
+  return *m_node_model;
 }
-
-template<typename ConcreteCompiler> NodesOwner<ConcreteCompiler>
-::NodesOwner(const NodesOwner& other)
-  : AbstractNodesOwner(other)
-  , m_compiler_cache(*this)
-{
-}
-
-template<typename ConcreteCompiler> NodesOwner<ConcreteCompiler>::~NodesOwner()
-{
-}
-
-template<typename ConcreteCompiler> NodesOwner<ConcreteCompiler>
-::CompilerCache::CompilerCache(const omm::NodesOwner<ConcreteCompiler>& self)
-  : CachedGetter<QString, NodesOwner>(self)
-  , m_compiler(std::make_unique<ConcreteCompiler>(self.node_model()))
-{
-  NodeModel::connect(&self.node_model(), &NodeModel::topology_changed, [this]() {
-    this->invalidate();
-    if (!ConcreteCompiler::lazy) {
-      // if lazy, wait until compute is called elsewhere.
-      compute();
-    }
-  });
-}
-
-template<typename ConcreteCompiler> NodesOwner<ConcreteCompiler>::CompilerCache::~CompilerCache()
-{
-}
-
-template class NodesOwner<NodeCompilerPython>;
-template class NodesOwner<NodeCompilerGLSL>;
 
 }  // namespace omm
+
