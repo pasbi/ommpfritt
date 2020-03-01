@@ -158,6 +158,7 @@ QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines) con
     auto ordinary_output_ports = ::filter_if(node.ports<OutputPort>(), [](OutputPort* op) {
       return op->flavor == PortFlavor::Ordinary;
     });
+    std::size_t i = 0;
     for (OutputPort* port : sort_ports(ordinary_output_ports)) {
       if (const Node& node = port->node; node.type() == VertexNode::TYPE) {
         const auto& vertex_node = static_cast<const VertexNode&>(node);
@@ -172,9 +173,10 @@ QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines) con
             .arg(translate_type(port->data_type()))
             .arg(port->uuid())
             .arg(node.type())
-            .arg(lines.size())
+            .arg(i)
             .arg(args.join(", ")));
       }
+      i += 1;
     }
   }
 
