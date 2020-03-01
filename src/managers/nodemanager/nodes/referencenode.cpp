@@ -31,18 +31,21 @@ void ReferenceNode::populate_menu(QMenu& menu)
   if (apo == nullptr) {
     forward_menu->addAction(tr("No properties."))->setEnabled(false);
   } else {
+    const auto supported_types = AbstractNodeCompiler::supported_types(language());
     for (auto key : apo->properties().keys()) {
       Property* property = apo->property(key);
-      if (language() == AbstractNodeCompiler::Language::Python) {
-        auto property_menu = std::make_unique<Menu>(property->label());
-        property_menu->addAction(make_property_action(PortType::Input, key,
-                                                      tr("input", "ReferenceNode")).release());
-        property_menu->addAction(make_property_action(PortType::Output, key,
-                                                      tr("output", "ReferenceNode")).release());
-        forward_menu->addMenu(property_menu.release());
-      } else if (language() == AbstractNodeCompiler::Language::GLSL) {
-        forward_menu->addAction(make_property_action(PortType::Output, key,
-                                                     property->label()).release());
+      if (::contains(supported_types, property->type())) {
+        if (language() == AbstractNodeCompiler::Language::Python) {
+          auto property_menu = std::make_unique<Menu>(property->label());
+          property_menu->addAction(make_property_action(PortType::Input, key,
+                                                        tr("input", "ReferenceNode")).release());
+          property_menu->addAction(make_property_action(PortType::Output, key,
+                                                        tr("output", "ReferenceNode")).release());
+          forward_menu->addMenu(property_menu.release());
+        } else if (language() == AbstractNodeCompiler::Language::GLSL) {
+          forward_menu->addAction(make_property_action(PortType::Output, key,
+                                                       property->label()).release());
+        }
       }
     }
   }
