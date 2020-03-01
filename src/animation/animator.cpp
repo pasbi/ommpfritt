@@ -109,6 +109,7 @@ void Animator::set_current(int current)
   if (m_current_frame != current) {
     m_current_frame = current;
     Q_EMIT current_changed(current);
+    Q_EMIT scene.message_box().appearance_changed();
   }
 }
 
