@@ -152,6 +152,12 @@ QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines) con
   {
     auto ips = sort_ports(node.ports<InputPort>());
     const QStringList args = ::transform<QString, QList>(ips, [](InputPort* ip) {
+      if (!ip->is_connected() && ip->flavor == PortFlavor::Property) {
+        AbstractPort* op = get_sibling(ip);
+        if (op != nullptr) {
+          return op->uuid();
+        }
+      }
       return ip->uuid();
     });
 
