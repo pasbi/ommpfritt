@@ -242,9 +242,13 @@ void NodeItem::update_children()
   };
 
   std::list<PropertyPorts> properties;
-  std::set<OrdinaryPort<PortType::Input>*> ordinary_inputs;
-  std::set<OrdinaryPort<PortType::Output>*> ordinary_outputs;
-  for (AbstractPort* p : node.ports()) {
+  std::list<OrdinaryPort<PortType::Input>*> ordinary_inputs;
+  std::list<OrdinaryPort<PortType::Output>*> ordinary_outputs;
+  auto ports = ::transform<AbstractPort*, std::vector>(node.ports());
+  std::sort(ports.begin(), ports.end(), [](const AbstractPort* a, const AbstractPort* b) {
+    return a->index < b->index;
+  });
+  for (AbstractPort* p : ports) {
     if (p->flavor == PortFlavor::Property) {
       Property* property = p->port_type == PortType::Input
                         ? static_cast<PropertyInputPort&>(*p).property()
@@ -269,9 +273,9 @@ void NodeItem::update_children()
       }
     } else {
       if (p->port_type == PortType::Input) {
-        ordinary_inputs.insert(static_cast<OrdinaryPort<PortType::Input>*>(p));
+        ordinary_inputs.push_back(static_cast<OrdinaryPort<PortType::Input>*>(p));
       } else {
-        ordinary_outputs.insert(static_cast<OrdinaryPort<PortType::Output>*>(p));
+        ordinary_outputs.push_back(static_cast<OrdinaryPort<PortType::Output>*>(p));
       }
     }
   }
