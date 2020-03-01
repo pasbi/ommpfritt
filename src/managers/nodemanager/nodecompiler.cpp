@@ -1,5 +1,6 @@
 #include "managers/nodemanager/nodecompiler.h"
 #include "properties/stringproperty.h"
+#include "properties/triggerproperty.h"
 #include "managers/nodemanager/port.h"
 #include "managers/nodemanager/node.h"
 #include "managers/nodemanager/nodemodel.h"
@@ -99,7 +100,7 @@ const std::set<QString> AbstractNodeCompiler::supported_types(AbstractNodeCompil
     return Property::keys();
   case AbstractNodeCompiler::Language::GLSL:
     return ::filter_if(Property::keys(), [](const auto& c) {
-      return c != StringProperty::TYPE;
+      return c != StringProperty::TYPE && c != TriggerProperty::TYPE;
     });
   default:
     Q_UNREACHABLE();
