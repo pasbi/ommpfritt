@@ -240,18 +240,19 @@ void NodeView::drawForeground(QPainter* painter, const QRectF&)
 
 void NodeView::drawBackground(QPainter* painter, const QRectF&)
 {
-  const NodeModel* model = this->model();
-  assert(model != nullptr);  // if model is null, this function will not be called.
-
   painter->save();
   painter->resetTransform();
-  if (QString error = model->error(); !error.isEmpty()) {
-    const QRect rect = viewport()->rect();
-    painter->fillRect(rect, QColor(255, 0, 0, 40));
+  if (const NodeModel* model = this->model(); model != nullptr) {
+    if (QString error = model->error(); !error.isEmpty()) {
+      const QRect rect = viewport()->rect();
+      painter->fillRect(rect, QColor(255, 0, 0, 40));
 
-    const QRect status_bar(rect.bottomLeft() - QPoint(0, 20), rect.bottomRight());
-    painter->fillRect(status_bar, QColor(0, 0, 0, 140));
-    painter->drawText(status_bar, Qt::AlignVCenter | Qt::AlignLeft, error);
+      const QRect status_bar(rect.bottomLeft() - QPoint(0, 20), rect.bottomRight());
+      painter->fillRect(status_bar, QColor(0, 0, 0, 140));
+      painter->drawText(status_bar, Qt::AlignVCenter | Qt::AlignLeft, error);
+    }
+  } else {
+    painter->fillRect(rect(), Qt::yellow);
   }
   painter->restore();
 }
