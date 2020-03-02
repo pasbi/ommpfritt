@@ -224,9 +224,9 @@ void Node::update_references(const std::map<std::size_t, AbstractPropertyOwner*>
   QSignalBlocker blocker(model());
   for (const ConnectionIds& cids : m_connection_ids) {
     Node& node = static_cast<Node&>(*map.at(cids.node_id));
+    assert(&node.model() == &model());
     InputPort* input = find_port<InputPort>(cids.input_port);
     OutputPort* output = node.find_port<OutputPort>(cids.output_port);
-
     if (input != nullptr && output != nullptr) {
       input->connect(output);
     }

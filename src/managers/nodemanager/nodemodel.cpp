@@ -50,13 +50,15 @@ NodeModel::NodeModel(const NodeModel& other)
     other.serialize(serializer, "root");
   }
   const std::string str = oss.str();
-  LINFO << str;
 
   {
     QSignalBlocker blocker(this);
     std::istringstream iss(str);
     JSONDeserializer deserializer(iss);
     deserialize(deserializer, "root");
+  }
+  for (Node* node : nodes()) {
+    node->new_id();
   }
 
   Q_EMIT topology_changed();

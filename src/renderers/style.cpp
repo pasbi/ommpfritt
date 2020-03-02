@@ -101,6 +101,7 @@ Style::Style(const Style &other)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
 {
+  other.copy_properties(*this, CopiedProperties::Compatible);
 }
 
 QString Style::type() const { return TYPE; }
@@ -193,8 +194,7 @@ void Style::update_uniform_values() const
 
 std::unique_ptr<Style> Style::clone() const
 {
-  auto clone = std::make_unique<Style>(scene());
-  copy_properties(*clone, CopiedProperties::Compatible);
+  auto clone = std::make_unique<Style>(*this);
   return clone;
 }
 

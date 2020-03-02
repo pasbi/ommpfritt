@@ -123,7 +123,6 @@ public:
   Property& add_property(const QString& key, std::unique_ptr<Property> property) override;
   std::unique_ptr<Property> extract_property(const QString& key) override;
 
-
 Q_SIGNALS:
   void pos_changed(const QPointF& pos);
   void ports_changed();

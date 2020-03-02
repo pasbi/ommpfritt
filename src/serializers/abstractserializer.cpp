@@ -37,7 +37,7 @@ std::set<omm::AbstractPropertyOwner*> AbstractSerializer::serialized_references(
 void AbstractDeserializer::add_references(const std::set<AbstractPropertyOwner*>& references)
 {
   for (AbstractPropertyOwner* reference : references) {
-    m_id_to_reference.insert(std::make_pair(reference->id(), reference));
+    register_reference(reference->id(), *reference);
   }
 }
 
@@ -52,7 +52,12 @@ AbstractDeserializer::~AbstractDeserializer()
 void AbstractDeserializer::register_reference( const std::size_t id,
                                                AbstractPropertyOwner& reference )
 {
-  m_id_to_reference[id] = &reference;
+  const auto it = m_id_to_reference.find(id);
+  if (it == m_id_to_reference.end()) {
+    m_id_to_reference.insert({id, &reference});
+  } else {
+    assert(it->second == &reference);
+  }
 }
 
 void AbstractDeserializer::register_reference_polisher(ReferencePolisher &polisher)
