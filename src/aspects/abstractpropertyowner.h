@@ -77,6 +77,7 @@ public:
   std::size_t id() const;
   Scene* scene() const { return m_scene; }
   const Kind kind;
+  void new_id() const;
 
 protected Q_SLOTS:
   virtual void on_property_value_changed(Property* property) { Q_UNUSED(property); }

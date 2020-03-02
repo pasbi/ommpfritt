@@ -8,6 +8,7 @@
 #include "scene/scene.h"
 #include "scene/messagebox.h"
 #include "animation/track.h"
+#include <random>
 
 namespace
 {
@@ -191,9 +192,17 @@ void AbstractPropertyOwner::copy_properties(AbstractPropertyOwner& target, Copie
 std::size_t AbstractPropertyOwner::id() const
 {
   if (m_id == 0) {
-    m_id = std::hash<const void*>()(this);
+    new_id();
   }
   return m_id;
+}
+
+void AbstractPropertyOwner::new_id() const
+{
+  static std::random_device rd;
+  static std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+  static std::uniform_int_distribution<std::size_t> dis(1, std::numeric_limits<std::size_t>::max());
+  m_id = dis(gen);
 }
 
 }  // namespace omm
