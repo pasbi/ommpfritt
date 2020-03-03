@@ -170,12 +170,28 @@ void NodeItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     draw_outline(ui_color(*widget, "NodeView", "node-outline-valid"), node_pen_width/2.0);
   }
 
-  for (auto&& [pos_y, text] : m_property_labels) {
+  const double hmargin = PortItem::radius + 5;
+  for (const Slot& slot : m_slots) {
     QRectF rect = boundingRect();
-    rect.setTop(pos_y - small_slot_height/2.0);
+    rect.setTop(slot.pos_y - small_slot_height/2.0);
     rect.setHeight(small_slot_height);
+    rect.adjust(hmargin, 0, -hmargin, 0);
+    slot.adjust(rect);
     painter->setPen(Qt::black);
-    painter->drawText(rect, Qt::AlignCenter, text);
+    QRectF actual_text_rect;
+    painter->drawText(rect, Qt::AlignVCenter | slot.alignment(), slot.text, &actual_text_rect);
+    if (slot.type == PortType::Both && !slot.text.isEmpty()) {
+      const auto draw_maybe = [painter, y=rect.center().y()](double x1, double x2) {
+        if (x1 < x2) {
+          painter->drawLine(x1, y, x2, y);
+        }
+      };
+      painter->save();
+      painter->setPen(QColor(0, 0, 0, 50));
+      draw_maybe(rect.left(), actual_text_rect.left() - 5);
+      draw_maybe(actual_text_rect.right() + 5, rect.right());
+      painter->restore();
+    }
   }
 }
 
@@ -291,7 +307,7 @@ void NodeItem::update_children()
     if (m_is_expanded) {
       add_property_widget(pp.property, pos_y, slot_height);
     } else {
-      m_property_labels.push_back({ pos_y, pp.property.label() });
+      m_slots.push_back({ pos_y, PortType::Both, pp.property.label() });
     }
     pos_y += slot_height;
   }
@@ -301,11 +317,13 @@ void NodeItem::update_children()
 
   for (auto* op : ordinary_outputs) {
     add_port(*op, output_pos_y);
+    m_slots.push_back({ output_pos_y, PortType::Output, op->label() });
     output_pos_y += small_slot_height;
   }
 
   for (auto* ip : ordinary_inputs) {
     add_port(*ip, input_pos_y);
+    m_slots.push_back({ input_pos_y, PortType::Input, ip->label() });
     input_pos_y += small_slot_height;
   }
 
@@ -329,7 +347,7 @@ void NodeItem::clear_ports()
     remove_all(items);
   }
   remove_all(m_property_items);
-  m_property_labels.clear();
+  m_slots.clear();
 }
 
 void NodeItem::align_ports()
@@ -413,6 +431,30 @@ void NodeItem::add_port(PropertyInputPort* ip, PropertyOutputPort* op, double po
   }
   if (op != nullptr) {
     add_port(*op, pos_y);
+  }
+}
+
+void NodeItem::Slot::adjust(QRectF& rect) const
+{
+  if (type == PortType::Input) {
+    rect.setRight(0);
+  } else if (type == PortType::Output) {
+    rect.setLeft(0);
+  }
+}
+
+Qt::Alignment NodeItem::Slot::alignment() const
+{
+  switch (type) {
+  case PortType::Input:
+    return Qt::AlignLeft;
+  case PortType::Output:
+    return Qt::AlignRight;
+  case PortType::Both:
+    return Qt::AlignCenter;
+  default:
+    Q_UNREACHABLE();
+    return 0;
   }
 }
 

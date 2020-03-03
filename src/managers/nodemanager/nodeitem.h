@@ -62,7 +62,17 @@ private:
 
   std::map<PortType, std::set<std::unique_ptr<PortItem>>> m_port_items;
   std::set<std::unique_ptr<PropertyWidgetItem>> m_property_items;
-  std::list<std::pair<double, QString>> m_property_labels;
+
+  struct Slot
+  {
+    const double pos_y;
+    const PortType type;
+    const QString text;
+    void adjust(QRectF& rect) const;
+    Qt::Alignment alignment() const;
+  };
+
+  std::list<Slot> m_slots;
   QObject m_context;
 };
 
