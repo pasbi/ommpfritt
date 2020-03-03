@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QObject>
 #include <iosfwd>
 #include <unordered_map>
 
@@ -20,9 +21,10 @@ class ReferenceProperty;
 class AbstractPropertyOwner;
 
 class AbstractSerializer
-  : public AbstractFactory<QString, AbstractSerializer, std::ostream&>
+  : public QObject
+  , public AbstractFactory<QString, AbstractSerializer, std::ostream&>
 {
-
+  Q_OBJECT
 private:
   template<typename T, typename = void> struct is_iterable : std::false_type {};
   template<typename T> struct is_iterable<T, std::void_t<
@@ -94,8 +96,10 @@ protected:
 };
 
 class AbstractDeserializer
-  : public AbstractFactory<QString, AbstractDeserializer, std::istream&>
+  : public QObject
+  , public AbstractFactory<QString, AbstractDeserializer, std::istream&>
 {
+  Q_OBJECT
 public:
   using Pointer = Serializable::Pointer;
   explicit AbstractDeserializer(std::istream&) { }
@@ -107,8 +111,8 @@ public:
   virtual size_t array_size(const Pointer& pointer) = 0;
   virtual bool get_bool(const Pointer& pointer) = 0;
   virtual int  get_int(const Pointer& pointer) = 0;
-  virtual double  get_double(const Pointer& pointer) = 0;
-  virtual QString  get_string(const Pointer& pointer) = 0;
+  virtual double get_double(const Pointer& pointer) = 0;
+  virtual QString get_string(const Pointer& pointer) = 0;
   virtual std::size_t get_size_t(const Pointer& pointer) = 0;
   virtual Color get_color(const Pointer& pointer) = 0;
   virtual Vec2f get_vec2f(const Pointer& pointer) = 0;
