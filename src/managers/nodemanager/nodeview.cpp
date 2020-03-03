@@ -23,6 +23,7 @@
 #include <QToolTip>
 #include "managers/nodemanager/nodemodel.h"
 #include "managers/nodemanager/nodescene.h"
+#include "managers/nodemanager/nodes/fragmentnode.h"
 
 namespace
 {
@@ -421,8 +422,9 @@ void NodeView::abort()
 
 void NodeView::remove_selection()
 {
+  static const auto can_remove = [](const Node* n) { return n->type() != FragmentNode::TYPE; };
   if (auto model = this->model(); model != nullptr) {
-    const auto selection = ::transform<Node*, std::vector>(selected_nodes());
+    auto selection = ::filter_if(::transform<Node*, std::vector>(selected_nodes()), can_remove);
     model->scene().submit<RemoveNodesCommand>(*model, selection);
   }
 }

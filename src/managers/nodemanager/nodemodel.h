@@ -18,6 +18,7 @@ class AbstractPort;
 class OutputPort;
 class InputPort;
 class Scene;
+class FragmentNode;
 
 class NodeModel : public QObject, public Serializable
 {
@@ -72,6 +73,7 @@ private:
   void init();
   std::unique_ptr<AbstractNodeCompiler> m_compiler;
   QString m_error;
+  FragmentNode* m_fragment_node = nullptr;
 };
 
 }  // namespace omm

@@ -14,6 +14,7 @@
 #include "keybindings/menu.h"
 #include "scene/messagebox.h"
 #include <QContextMenuEvent>
+#include "managers/nodemanager/nodes/fragmentnode.h"
 
 namespace omm
 {
@@ -120,8 +121,10 @@ std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
     const auto language = model->language();
     for (const QString& name : Node::keys()) {
       if (::contains(Node::detail(name).definitions, language)) {
-        auto action = kb.make_menu_action(*this, name);
-        menu->addAction(action.release());
+        if (name != FragmentNode::TYPE) {
+          auto action = kb.make_menu_action(*this, name);
+          menu->addAction(action.release());
+        }
       }
     }
 

@@ -5,6 +5,7 @@
 #include "common.h"
 #include "managers/nodemanager/port.h"
 #include "managers/nodemanager/node.h"
+#include "managers/nodemanager/nodes/fragmentnode.h"
 #include "managers/nodemanager/nodecompilerglsl.h"
 #include "managers/nodemanager/nodecompilerpython.h"
 
@@ -70,6 +71,11 @@ void NodeModel::init()
   connect(this, SIGNAL(node_added(Node&)), this, SIGNAL(topology_changed()));
   connect(this, SIGNAL(node_removed(Node&)), this, SIGNAL(topology_changed()));
   connect(this, SIGNAL(topology_changed()), m_compiler.get(), SLOT(invalidate()));
+  if (m_compiler->language == AbstractNodeCompiler::Language::GLSL) {
+    auto fragment_node = std::make_unique<FragmentNode>(*this);
+    m_fragment_node = fragment_node.get();
+    add_node(std::move(fragment_node));
+  }
 }
 
 Node& NodeModel::add_node(std::unique_ptr<Node> node)
@@ -78,7 +84,6 @@ Node& NodeModel::add_node(std::unique_ptr<Node> node)
   assert(&node->model() == this);
   m_nodes.insert(std::move(node));
   Q_EMIT node_added(node_ref);
-
 
   return node_ref;
 }
@@ -130,9 +135,14 @@ void NodeModel::deserialize(AbstractDeserializer& deserializer, const Serializab
     for (size_t i = 0; i < n; ++i) {
       const auto node_ptr = Serializable::make_pointer(ptr, NODES_POINTER, i);
       const auto type = deserializer.get_string(make_pointer(node_ptr, TYPE_POINTER));
-      auto node = Node::make(type, *this);
-      node->deserialize(deserializer, node_ptr);
-      add_node(std::move(node));
+      if (type == FragmentNode::TYPE) {
+        assert(m_fragment_node != nullptr);
+        m_fragment_node->deserialize(deserializer, node_ptr);
+      } else {
+        auto node = Node::make(type, *this);
+        node->deserialize(deserializer, node_ptr);
+        add_node(std::move(node));
+      }
     }
   }
   // Nodes are not yet connected. They will be connected when the Deserializer gets destroyed.
