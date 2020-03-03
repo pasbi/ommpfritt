@@ -266,6 +266,7 @@ void NodeView::drawBackground(QPainter* painter, const QRectF&)
 
 void NodeView::mousePressEvent(QMouseEvent* event)
 {
+  Q_EMIT scene()->selectionChanged();
   m_last_mouse_position = event->pos();
   if (m_pan_zoom_controller.press(*event)) {
     event->accept();
@@ -296,7 +297,6 @@ void NodeView::mousePressEvent(QMouseEvent* event)
       scene()->clearSelection();
     }
     m_node_insert_pos = mapToScene(event->pos());
-    Q_EMIT scene()->selectionChanged();
     Q_EMIT customContextMenuRequested(event->pos());
   } else {
     QGraphicsView::mousePressEvent(event);
