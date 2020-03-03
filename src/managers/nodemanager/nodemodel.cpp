@@ -35,15 +35,11 @@ NodeModel::NodeModel(AbstractNodeCompiler::Language language, Scene& scene)
   : m_scene(scene), m_compiler(make_compiler(language, *this))
 {
   init();
-  connect(this, SIGNAL(node_added(Node&)), this, SIGNAL(topology_changed()));
-  connect(this, SIGNAL(node_removed(Node&)), this, SIGNAL(topology_changed()));
-  connect(this, SIGNAL(topology_changed()), m_compiler.get(), SLOT(invalidate()));
 }
 
 NodeModel::NodeModel(const NodeModel& other)
   : NodeModel(other.compiler().language, other.m_scene)
 {
-  init();
   std::ostringstream oss;
   {
     JSONSerializer serializer(oss);
@@ -61,6 +57,7 @@ NodeModel::NodeModel(const NodeModel& other)
     node->new_id();
   }
 
+  init();
   Q_EMIT topology_changed();
 }
 
@@ -70,6 +67,9 @@ NodeModel::~NodeModel()
 
 void NodeModel::init()
 {
+  connect(this, SIGNAL(node_added(Node&)), this, SIGNAL(topology_changed()));
+  connect(this, SIGNAL(node_removed(Node&)), this, SIGNAL(topology_changed()));
+  connect(this, SIGNAL(topology_changed()), m_compiler.get(), SLOT(invalidate()));
 }
 
 Node& NodeModel::add_node(std::unique_ptr<Node> node)

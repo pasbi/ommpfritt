@@ -95,7 +95,13 @@ void NodeView::set_model(NodeModel *model)
   } else {
     assert(&m_node_scene->scene == &model->scene());
   }
+  if (auto* model = m_node_scene->model(); model != nullptr) {
+    disconnect(model, SIGNAL(topology_changed()), m_node_scene.get(), SLOT(update()));
+  }
   m_node_scene->set_model(model);
+  if (auto* model = m_node_scene->model(); model != nullptr) {
+    connect(model, SIGNAL(topology_changed()), m_node_scene.get(), SLOT(update()));
+  }
   setScene(m_node_scene.get());
   const QRectF scene_rect = viewport()->rect();
   setSceneRect(scene_rect);
