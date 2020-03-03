@@ -37,6 +37,7 @@ Style::Style(Scene *scene)
   : PropertyOwner(scene), NodesOwner(AbstractNodeCompiler::Language::GLSL, *scene)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
+  , m_offscreen_renderer(std::make_unique<OffscreenRenderer>())
 {
   const auto pen_category = QObject::tr("pen");
   const auto brush_category = QObject::tr("brush");
@@ -90,6 +91,7 @@ Style::Style(Scene *scene)
 
   start_marker.make_properties(decoration_category);
   end_marker.make_properties(decoration_category);
+  init();
 }
 
 Style::~Style()
@@ -100,8 +102,18 @@ Style::Style(const Style &other)
   : PropertyOwner(other), NodesOwner(other)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
+  , m_offscreen_renderer(std::make_unique<OffscreenRenderer>())
 {
   other.copy_properties(*this, CopiedProperties::Compatible);
+  init();
+}
+
+void Style::init()
+{
+  NodeModel& model = node_model();
+  AbstractNodeCompiler& compiler = model.compiler();
+  connect(&compiler, SIGNAL(compilation_succeeded(QString)), this, SLOT(set_code(QString)));
+  connect(&compiler, SIGNAL(compilation_failed(QString)), this, SLOT(set_error(QString)));
 }
 
 QString Style::type() const { return TYPE; }
@@ -113,10 +125,7 @@ Flag Style::flags() const
 QPixmap Style::texture(const Object& object, const QSize& size) const
 {
   Q_UNUSED(object)
-  if (!m_offscreen_renderer) {
-    m_offscreen_renderer = init_offscreen_renderer();
-    update_uniform_values();
-  }
+  update_uniform_values();
   return QPixmap::fromImage(m_offscreen_renderer->render(size));
 }
 
@@ -150,46 +159,33 @@ void Style::on_property_value_changed(Property *property)
   }
 }
 
-std::unique_ptr<OffscreenRenderer> Style::init_offscreen_renderer() const
-{
-  NodeModel& model = node_model();
-  AbstractNodeCompiler& compiler = model.compiler();
-  auto offscreen_renderer = std::make_unique<OffscreenRenderer>();
-  const auto set_code = [this, &model, o_r=offscreen_renderer.get()](const QString& code) {
-    if (o_r->set_fragment_shader(code)) {
-      update_uniform_values();
-      model.set_error("");
-    } else {
-      model.set_error(tr("Compilation failed"));
-    }
-  };
-  connect(&compiler, &AbstractNodeCompiler::compilation_succeeded, set_code);
-  connect(&compiler, SIGNAL(compilation_failed(QString)), &model, SLOT(set_error(QString)));
-  connect(&scene()->message_box(), &MessageBox::property_value_changed,
-          [this](AbstractPropertyOwner&, const QString&, Property&)
-  {
-    update_uniform_values();
-  });
-  if (const QString error = compiler.last_error(); error.isEmpty()) {
-    set_code(compiler.code());
-  } else {
-    model.set_error(error);
-  }
-  return offscreen_renderer;
-}
-
 void Style::update_uniform_values() const
 {
-  if (m_offscreen_renderer) {
-    auto& compiler = static_cast<NodeCompilerGLSL&>(node_model().compiler());
-    for (AbstractPort* port : compiler.uniform_ports()) {
-      assert(port->flavor == omm::PortFlavor::Property);
-      const Property* property = static_cast<const PropertyOutputPort*>(port)->property();
-      if (property != nullptr) {
-        m_offscreen_renderer->set_uniform(port->uuid(), property->variant_value());
-      }
+  auto& compiler = static_cast<NodeCompilerGLSL&>(node_model().compiler());
+  for (AbstractPort* port : compiler.uniform_ports()) {
+    assert(port->flavor == omm::PortFlavor::Property);
+    const Property* property = static_cast<const PropertyOutputPort*>(port)->property();
+    if (property != nullptr) {
+      m_offscreen_renderer->set_uniform(port->uuid(), property->variant_value());
     }
   }
+}
+
+void Style::set_code(const QString& code) const
+{
+  NodeModel& model = node_model();
+  if (m_offscreen_renderer->set_fragment_shader(code)) {
+    update_uniform_values();
+    model.set_error("");
+  } else {
+    model.set_error(tr("Compilation failed"));
+  }
+}
+
+void Style::set_error(const QString& error) const
+{
+  node_model().set_error(error);
+  m_offscreen_renderer->set_fragment_shader("");
 }
 
 std::unique_ptr<Style> Style::clone() const

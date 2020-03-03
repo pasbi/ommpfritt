@@ -54,10 +54,13 @@ public:
   void on_property_value_changed(Property* property) override;
 
 private:
-  mutable std::unique_ptr<OffscreenRenderer> m_offscreen_renderer;
-  std::unique_ptr<OffscreenRenderer> init_offscreen_renderer() const;
+  std::unique_ptr<OffscreenRenderer> m_offscreen_renderer;
   void update_uniform_values() const;
   std::set<Property*> m_uniform_values;
+  void init();
+private Q_SLOTS:
+  void set_code(const QString& code) const;
+  void set_error(const QString& error) const;
 };
 
 }  // namespace omm

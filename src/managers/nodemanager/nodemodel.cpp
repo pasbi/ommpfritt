@@ -124,15 +124,19 @@ void NodeModel::serialize(AbstractSerializer& serializer, const Serializable::Po
 
 void NodeModel::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& ptr)
 {
-  QSignalBlocker blocker(this);
-  const auto n = deserializer.array_size(Serializable::make_pointer(ptr, NODES_POINTER));
-  for (size_t i = 0; i < n; ++i) {
-    const auto node_ptr = Serializable::make_pointer(ptr, NODES_POINTER, i);
-    const auto type = deserializer.get_string(make_pointer(node_ptr, TYPE_POINTER));
-    auto node = Node::make(type, *this);
-    node->deserialize(deserializer, node_ptr);
-    add_node(std::move(node));
+  {
+    QSignalBlocker blocker(this);
+    const auto n = deserializer.array_size(Serializable::make_pointer(ptr, NODES_POINTER));
+    for (size_t i = 0; i < n; ++i) {
+      const auto node_ptr = Serializable::make_pointer(ptr, NODES_POINTER, i);
+      const auto type = deserializer.get_string(make_pointer(node_ptr, TYPE_POINTER));
+      auto node = Node::make(type, *this);
+      node->deserialize(deserializer, node_ptr);
+      add_node(std::move(node));
+    }
   }
+  // Nodes are not yet connected. They will be connected when the Deserializer gets destroyed.
+  connect(&deserializer, SIGNAL(destroyed()), this, SIGNAL(topology_changed()));
 }
 
 bool NodeModel::find_path(const Node& start, const Node& end, std::list<const Node*>& path) const

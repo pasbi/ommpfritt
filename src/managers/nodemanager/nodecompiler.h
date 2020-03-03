@@ -101,12 +101,17 @@ public:
     generate_statements(used_node_types, statements);
     const auto& self = static_cast<const ConcreteCompiler&>(*this);
 
-#define CHECK(statement) \
-  if (const QString msg = statement; !msg.isEmpty()) { \
-    m_last_error = msg; \
-    Q_EMIT compilation_failed(msg); \
-    return false; \
-  }
+    const auto check = [this](const QString& msg) {
+      if (msg.isEmpty()) {
+        return true;
+      } else {
+        m_last_error = msg;
+        Q_EMIT compilation_failed(msg);
+        return false;
+      }
+    };
+
+#define CHECK(statement) if (!check(statement)) { return false; }
 
     CHECK(self.generate_header(lines))
     for (const QString& type : used_node_types) {
