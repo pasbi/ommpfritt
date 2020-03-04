@@ -211,8 +211,11 @@ PortItem* NodeItem::port_item(const AbstractPort& port) const
 
 void NodeItem::toggle_expanded()
 {
-  m_is_expanded = !m_is_expanded;
-  update_children();
+  const bool will_expand = !m_is_expanded && can_expand();
+  if (will_expand != m_is_expanded) {
+    m_is_expanded = will_expand;
+    update_children();
+  }
 }
 
 QVariant NodeItem::itemChange(GraphicsItemChange change, const QVariant& value)
@@ -422,6 +425,14 @@ void NodeItem::add_property_widget(Property& property, double pos_y, double heig
 NodeScene* NodeItem::scene() const
 {
   return static_cast<NodeScene*>(QGraphicsItem::scene());
+}
+
+bool NodeItem::can_expand() const
+{
+  const auto ports = node.ports();
+  return std::any_of(ports.begin(), ports.end(), [](const AbstractPort* port) {
+    return port->flavor == PortFlavor::Property;
+  });
 }
 
 void NodeItem::add_port(PropertyInputPort* ip, PropertyOutputPort* op, double pos_y)

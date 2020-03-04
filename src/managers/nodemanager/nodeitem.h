@@ -59,6 +59,7 @@ private:
   void add_property_widget(Property& property, double pos_y, double height);
   void adjust_port_pos();
   NodeScene* scene() const;
+  bool can_expand() const;
 
   std::map<PortType, std::set<std::unique_ptr<PortItem>>> m_port_items;
   std::set<std::unique_ptr<PropertyWidgetItem>> m_property_items;
