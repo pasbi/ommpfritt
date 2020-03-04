@@ -1,4 +1,5 @@
 #include "managers/nodemanager/node.h"
+#include "renderers/offscreenrenderer.h"
 
 namespace omm
 {
@@ -13,12 +14,20 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "VertexNode");
   QString type() const override { return TYPE; }
   QString output_data_type(const OutputPort& port) const override;
-
   static const Detail detail;
-  OrdinaryPort<PortType::Output>& position_port() const { return *m_position_port; }
+
+  struct PortInfo {
+    const OffscreenRenderer::VaryingInfo varying_info;
+    OrdinaryPort<PortType::Output>* const port;
+    bool operator==(const PortInfo& other) const { return other.port == this->port; }
+    bool operator==(const AbstractPort* port) const;
+    bool operator<(const PortInfo& other) const { return this->port < other.port; }
+  };
+
+  const std::set<PortInfo>& varying_ports() const { return m_varying_ports; }
 
 private:
-  OrdinaryPort<PortType::Output>* m_position_port = nullptr;
+  std::set<PortInfo> m_varying_ports;
 };
 
 }  // namespace omm

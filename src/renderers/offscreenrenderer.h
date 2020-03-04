@@ -28,7 +28,14 @@ public:
   void make_current();
 
   void set_uniform(const QString& name, const variant_type& value);
-  static constexpr auto vertex_position_name = "vertex";
+
+  struct VaryingInfo {
+    const QString type;
+    const char* name;
+    QString tr_name() const;
+  };
+
+  static const std::vector<VaryingInfo> varyings;
 
 private:
   QOffscreenSurface m_surface;

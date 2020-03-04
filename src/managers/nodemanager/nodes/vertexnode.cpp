@@ -15,13 +15,22 @@ const Node::Detail VertexNode::detail { {
 VertexNode::VertexNode(NodeModel& model)
   : Node(model)
 {
-  m_position_port = &add_port<OrdinaryPort<PortType::Output>>(tr("position"));
+  for (const auto& varying : OffscreenRenderer::varyings) {
+    auto& port = add_port<OrdinaryPort<PortType::Output>>(varying.tr_name());
+    m_varying_ports.insert({ varying, &port });
+  }
 }
 
 QString VertexNode::output_data_type(const OutputPort& port) const
 {
-  Q_UNUSED(port);
-  return NodeCompilerTypes::FLOATVECTOR_TYPE;
+  const auto it = std::find(m_varying_ports.begin(), m_varying_ports.end(), &port);
+  assert(it != m_varying_ports.end());
+  return it->varying_info.type;
+}
+
+bool VertexNode::PortInfo::operator==(const AbstractPort* port) const
+{
+  return port == this->port;
 }
 
 }  // namespace

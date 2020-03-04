@@ -82,7 +82,9 @@ QString NodeCompilerGLSL::generate_header(QStringList& lines) const
 {
   m_uniform_ports.clear();
   lines.append("#version 330");
-  lines.append(QString("varying vec2 %1;").arg(OffscreenRenderer::vertex_position_name));
+  for (const auto& varying_info : OffscreenRenderer::varyings) {
+    lines.append(QString("varying vec2 %1;").arg(varying_info.name));
+  }
   lines.append(QString("out vec4 %1;").arg(output_variable_name));
 
   for (OutputPort* port : model().ports<OutputPort>()) {
@@ -171,11 +173,13 @@ QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines) con
     for (OutputPort* port : sort_ports(ordinary_output_ports)) {
       if (const Node& node = port->node; node.type() == VertexNode::TYPE) {
         const auto& vertex_node = static_cast<const VertexNode&>(node);
-        if (port == &vertex_node.position_port()) {
+        const auto ports = vertex_node.varying_ports();
+        const auto it = std::find(ports.begin(), ports.end(), port);
+        if (it != ports.end()) {
           lines.push_back(QString("%1 %2 = %3;")
                           .arg(translate_type(port->data_type()))
                           .arg(port->uuid())
-                          .arg(OffscreenRenderer::vertex_position_name));
+                          .arg(it->varying_info.name));
         }
       } else {
         lines.push_back(QString("%1 %2 = %3_%4(%5);")

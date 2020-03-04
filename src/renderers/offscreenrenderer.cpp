@@ -5,20 +5,57 @@
 #include <QOpenGLShaderProgram>
 #include <QDebug>
 #include <QImage>
+#include "managers/nodemanager/nodecompilerglsl.h"
+#include <QApplication>
+
+namespace omm
+{
+
+const std::vector<OffscreenRenderer::VaryingInfo> OffscreenRenderer::varyings = {
+  {
+    NodeCompilerTypes::FLOATVECTOR_TYPE,
+    QT_TRANSLATE_NOOP("OffscreenRenderer", "local_pos_centered")
+  },
+  {
+    NodeCompilerTypes::FLOATVECTOR_TYPE,
+    QT_TRANSLATE_NOOP("OffscreenRenderer", "local_pos")
+  },
+  {
+    NodeCompilerTypes::FLOATVECTOR_TYPE,
+    QT_TRANSLATE_NOOP("OffscreenRenderer", "global_pos")
+  },
+  {
+    NodeCompilerTypes::FLOATVECTOR_TYPE,
+    QT_TRANSLATE_NOOP("OffscreenRenderer", "viewport_pos")
+  },
+};
+
+QString OffscreenRenderer::VaryingInfo::tr_name() const
+{
+  return QApplication::translate("OffscreenRenderer", name);
+}
+
+}  // namespace omm
 
 namespace
 {
 
 static constexpr auto vertex_position_attribute_name = "vertex_attr";
 
-static const auto vertex_shader_source = QString(R"(
-attribute vec4 %1;
-varying vec2 %2;
+using S = omm::OffscreenRenderer;
+static constexpr auto vertex_shader_source = R"(
+attribute vec4 vertex_attr;
+varying vec2 local_pos_centered;
+varying vec2 local_pos;
+varying vec2 global_pos;
+varying vec2 viewport_pos;
 void main() {
-   %2 = %1.xy;
-   gl_Position = %1 * 20.0;
+   local_pos_centered = vertex_attr.xy;
+   local_pos = (local_pos_centered + vec2(1.0))/2.0;
+   global_pos = vec2(0.5);
+   gl_Position = vertex_attr;
 }
-)").arg(vertex_position_attribute_name).arg(omm::OffscreenRenderer::vertex_position_name);
+)";
 
 static constexpr std::array<float, 18> m_quad = {
   -1.0, -1.0, 0.0,
