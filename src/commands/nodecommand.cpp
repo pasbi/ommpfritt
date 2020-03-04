@@ -98,20 +98,22 @@ void NodeCommand::remove()
     NodeModel::TopologyChangeSignalBlocker blocker(m_model);
     m_owns.reserve(m_refs.size());
     for (Node* node : m_refs) {
-      for (AbstractPort* port : node->ports()) {
-        std::set<InputPort*> ips;
-        if (port->port_type == PortType::Input) {
-          InputPort* ip = static_cast<InputPort*>(port);
-          if (ip->connected_output() != nullptr) {
-            ips.insert(ip);
+      const auto break_connection = [this](InputPort& ip) {
+        m_destroyed_connections.emplace_back(ip);
+        m_destroyed_connections.back().redo();
+      };
+      for (InputPort* ip : node->ports<InputPort>()) {
+        if (OutputPort* op = ip->connected_output(); op != nullptr) {
+          if (!::contains(m_refs, &op->node)) {
+            break_connection(*ip);
           }
-        } else {
-          const OutputPort* op = static_cast<OutputPort*>(port);
-          ips = op->connected_inputs();
         }
-        for (InputPort* ip : ips) {
-          m_destroyed_connections.emplace_back(*ip);
-          m_destroyed_connections.back().redo();
+      }
+      for (OutputPort* op : node->ports<OutputPort>()) {
+        for (InputPort* ip : op->connected_inputs()) {
+          if (!::contains(m_refs, &ip->node)) {
+            break_connection(*ip);
+          }
         }
       }
       m_owns.push_back(m_model.extract_node(*node));

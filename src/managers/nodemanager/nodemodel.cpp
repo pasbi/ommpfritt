@@ -97,7 +97,6 @@ std::unique_ptr<Node> NodeModel::extract_node(Node& node)
   });
 
   if (it != m_nodes.end()) {
-    assert(node.is_free());
     auto node = std::move(m_nodes.extract(it).value());
     Q_EMIT node_removed(*node);
     return node;
