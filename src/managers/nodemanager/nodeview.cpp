@@ -156,6 +156,7 @@ void NodeView::paste_from_clipboard()
   const QMimeData& mime_data = *QApplication::clipboard()->mimeData();
   if (accepts_paste(mime_data)) {
     NodeModel& model = *this->model();
+    auto blocker = std::make_unique<NodeModel::TopologyChangeSignalBlocker>(model);
     const auto nodes = ::transform<Node*, std::vector>(static_cast<const NodeMimeData&>(mime_data).nodes());
 
     std::map<const Node*, Node*> copy_map;
@@ -180,35 +181,38 @@ void NodeView::paste_from_clipboard()
     }
 
     if (!copies.empty()) {
-      Scene& scene = model.scene();
-      auto macro = scene.history().start_macro(tr("Copy Nodes"));
+      {
+        Scene& scene = model.scene();
+        auto macro = scene.history().start_macro(tr("Copy Nodes"));
 
-      { // restore connections
-        for (auto&& [o_target, c_target] : copy_map) {
-          for (const InputPort* o_input : o_target->ports<InputPort>()) {
-            if (const OutputPort* o_output = o_input->connected_output(); o_output != nullptr) {
-              const Node& o_source = o_output->node;
-              if (::contains(copy_map, &o_source)) {
-                const Node& c_source = *copy_map.at(&o_source);
-                OutputPort& c_output = *c_source.find_port<OutputPort>(o_output->index);
-                InputPort& c_input = *c_target->find_port<InputPort>(o_input->index);
-                scene.submit<ConnectPortsCommand>(c_output, c_input);
+        { // restore connections
+          for (auto&& [o_target, c_target] : copy_map) {
+            for (const InputPort* o_input : o_target->ports<InputPort>()) {
+              if (const OutputPort* o_output = o_input->connected_output(); o_output != nullptr) {
+                const Node& o_source = o_output->node;
+                if (::contains(copy_map, &o_source)) {
+                  const Node& c_source = *copy_map.at(&o_source);
+                  OutputPort& c_output = *c_source.find_port<OutputPort>(o_output->index);
+                  InputPort& c_input = *c_target->find_port<InputPort>(o_input->index);
+                  scene.submit<ConnectPortsCommand>(c_output, c_input);
+                }
               }
             }
           }
         }
-      }
 
-      // insert nodes
-      auto references = ::transform<Node*>(copies, [](const std::unique_ptr<Node>& node) {
-        return node.get();
-      });
-      scene.submit<AddNodesCommand>(model, std::move(copies));
-      m_node_scene->clearSelection();
-      for (Node* node : references) {
-        m_node_scene->node_item(*node).setSelected(true);
+        // insert nodes
+        auto references = ::transform<Node*>(copies, [](const std::unique_ptr<Node>& node) {
+          return node.get();
+        });
+        scene.submit<AddNodesCommand>(model, std::move(copies));
+        m_node_scene->clearSelection();
+        for (Node* node : references) {
+          m_node_scene->node_item(*node).setSelected(true);
+        }
       }
-
+      blocker.reset();
+      model.emit_topology_changed();
     }
   }
 }

@@ -43,7 +43,7 @@ void InputPort::connect(OutputPort* port)
       port->connect(this, Tag());
     }
     m_connected_output = port;
-    Q_EMIT node.model().topology_changed();
+    node.model().emit_topology_changed();
   }
 }
 

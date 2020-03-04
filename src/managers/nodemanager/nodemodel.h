@@ -59,6 +59,16 @@ public:
   AbstractNodeCompiler& compiler() const;
   QString error() const { return m_error; }
 
+  friend class TopologyChangeSignalBlocker;
+  class TopologyChangeSignalBlocker
+  {
+  public:
+    explicit TopologyChangeSignalBlocker(NodeModel& model);
+    ~TopologyChangeSignalBlocker();
+  private:
+    NodeModel& m_model;
+  };
+
 public Q_SLOTS:
   void set_error(const QString& error);
 
@@ -67,6 +77,9 @@ Q_SIGNALS:
   void node_added(Node&);
   void node_removed(Node&);
 
+public Q_SLOTS:
+  void emit_topology_changed();
+
 private:
   std::set<std::unique_ptr<Node>> m_nodes;
   Scene& m_scene;
@@ -74,6 +87,7 @@ private:
   std::unique_ptr<AbstractNodeCompiler> m_compiler;
   QString m_error;
   FragmentNode* m_fragment_node = nullptr;
+  bool m_emit_topology_changed_blocked = false;
 };
 
 }  // namespace omm

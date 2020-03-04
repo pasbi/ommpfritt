@@ -59,7 +59,7 @@ NodeModel::NodeModel(const NodeModel& other)
   }
 
   init();
-  Q_EMIT topology_changed();
+  emit_topology_changed();
 }
 
 NodeModel::~NodeModel()
@@ -68,8 +68,8 @@ NodeModel::~NodeModel()
 
 void NodeModel::init()
 {
-  connect(this, SIGNAL(node_added(Node&)), this, SIGNAL(topology_changed()));
-  connect(this, SIGNAL(node_removed(Node&)), this, SIGNAL(topology_changed()));
+  connect(this, SIGNAL(node_added(Node&)), this, SLOT(emit_topology_changed()));
+  connect(this, SIGNAL(node_removed(Node&)), this, SLOT(emit_topology_changed()));
   connect(this, SIGNAL(topology_changed()), m_compiler.get(), SLOT(invalidate()));
   if (m_compiler->language == AbstractNodeCompiler::Language::GLSL) {
     auto fragment_node = std::make_unique<FragmentNode>(*this);
@@ -99,7 +99,6 @@ std::unique_ptr<Node> NodeModel::extract_node(Node& node)
   if (it != m_nodes.end()) {
     assert(node.is_free());
     auto node = std::move(m_nodes.extract(it).value());
-    Q_EMIT topology_changed();
     Q_EMIT node_removed(*node);
     return node;
   } else {
@@ -146,7 +145,7 @@ void NodeModel::deserialize(AbstractDeserializer& deserializer, const Serializab
     }
   }
   // Nodes are not yet connected. They will be connected when the Deserializer gets destroyed.
-  connect(&deserializer, SIGNAL(destroyed()), this, SIGNAL(topology_changed()));
+  connect(&deserializer, SIGNAL(destroyed()), this, SLOT(emit_topology_changed()));
 }
 
 bool NodeModel::find_path(const Node& start, const Node& end, std::list<const Node*>& path) const
@@ -226,6 +225,24 @@ bool NodeModel::can_connect(const AbstractPort& a, const AbstractPort& b) const
 bool NodeModel::can_connect(const OutputPort& a, const InputPort& b) const
 {
   return !find_path(b.node, a.node) && b.accepts_data_type(a.data_type());
+}
+
+NodeModel::TopologyChangeSignalBlocker::TopologyChangeSignalBlocker(NodeModel& model)
+  : m_model(model)
+{
+  m_model.m_emit_topology_changed_blocked = true;
+}
+
+NodeModel::TopologyChangeSignalBlocker::~TopologyChangeSignalBlocker()
+{
+  m_model.m_emit_topology_changed_blocked = false;
+}
+
+void NodeModel::emit_topology_changed()
+{
+  if (!m_emit_topology_changed_blocked) {
+    Q_EMIT topology_changed();
+  }
 }
 
 }  // namespace omm

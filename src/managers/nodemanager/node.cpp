@@ -165,7 +165,7 @@ AbstractPort& Node::add_port(std::unique_ptr<AbstractPort> port)
 {
   auto& ref = *port;
   m_ports.insert(std::move(port));
-  Q_EMIT m_model.topology_changed();
+  m_model.emit_topology_changed();
   Q_EMIT ports_changed();
   return ref;
 }
@@ -175,7 +175,7 @@ std::unique_ptr<AbstractPort> Node::remove_port(const AbstractPort& port)
   for (auto it = m_ports.begin(); it != m_ports.end(); ++it) {
     if (it->get() == &port) {
       auto port = std::move(m_ports.extract(it).value());
-      Q_EMIT m_model.topology_changed();
+      Q_EMIT m_model.emit_topology_changed();
       Q_EMIT ports_changed();
       return port;
     }

@@ -94,38 +94,46 @@ NodeCommand::NodeCommand(const QString& label, NodeModel& model,
 
 void NodeCommand::remove()
 {
-  m_owns.reserve(m_refs.size());
-  for (Node* node : m_refs) {
-    for (AbstractPort* port : node->ports()) {
-      std::set<InputPort*> ips;
-      if (port->port_type == PortType::Input) {
-        InputPort* ip = static_cast<InputPort*>(port);
-        if (ip->connected_output() != nullptr) {
-          ips.insert(ip);
+  {
+    NodeModel::TopologyChangeSignalBlocker blocker(m_model);
+    m_owns.reserve(m_refs.size());
+    for (Node* node : m_refs) {
+      for (AbstractPort* port : node->ports()) {
+        std::set<InputPort*> ips;
+        if (port->port_type == PortType::Input) {
+          InputPort* ip = static_cast<InputPort*>(port);
+          if (ip->connected_output() != nullptr) {
+            ips.insert(ip);
+          }
+        } else {
+          const OutputPort* op = static_cast<OutputPort*>(port);
+          ips = op->connected_inputs();
         }
-      } else {
-        const OutputPort* op = static_cast<OutputPort*>(port);
-        ips = op->connected_inputs();
+        for (InputPort* ip : ips) {
+          m_destroyed_connections.emplace_back(*ip);
+          m_destroyed_connections.back().redo();
+        }
       }
-      for (InputPort* ip : ips) {
-        m_destroyed_connections.emplace_back(*ip);
-        m_destroyed_connections.back().redo();
-      }
+      m_owns.push_back(m_model.extract_node(*node));
     }
-    m_owns.push_back(m_model.extract_node(*node));
   }
+  m_model.emit_topology_changed();
 }
 
 void NodeCommand::add()
 {
-  for (auto&& node : m_owns) {
-    m_model.add_node(std::move(node));
+  {
+    NodeModel::TopologyChangeSignalBlocker blocker(m_model);
+    for (auto&& node : m_owns) {
+      m_model.add_node(std::move(node));
+    }
+    for (auto it = m_destroyed_connections.rbegin(); it != m_destroyed_connections.rend(); ++it) {
+      it->undo();
+    }
+    m_destroyed_connections.clear();
+    m_owns.clear();
   }
-  for (auto it = m_destroyed_connections.rbegin(); it != m_destroyed_connections.rend(); ++it) {
-    it->undo();
-  }
-  m_destroyed_connections.clear();
-  m_owns.clear();
+  m_model.emit_topology_changed();
 }
 
 RemoveNodesCommand::RemoveNodesCommand(NodeModel& model, std::vector<Node*> nodes)

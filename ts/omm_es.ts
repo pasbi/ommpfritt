@@ -295,6 +295,25 @@
     </message>
 </context>
 <context>
+    <name>OffscreenRenderer</name>
+    <message>
+        <source>local_pos_centered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>local_pos</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>global_pos</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>viewport_pos</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>OptionsPropertyConfigWidget</name>
     <message>
         <source>Unnamed Option</source>
@@ -2651,6 +2670,10 @@ Do you want to convert them into ordinary colors?</source>
         <source>nil</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Fail.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::ObjectManager</name>
@@ -2794,6 +2817,10 @@ Do you want to convert them into ordinary colors?</source>
         <source>Use Nodes</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Compilation failed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>omm::ToolBar</name>
@@ -2866,7 +2893,7 @@ This cannot be undone.</source>
     <name>omm::VertexNode</name>
     <message>
         <source>position</source>
-        <translation type="unfinished">Posición</translation>
+        <translation type="obsolete">Posición</translation>
     </message>
 </context>
 <context>
