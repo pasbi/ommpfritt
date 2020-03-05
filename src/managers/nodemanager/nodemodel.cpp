@@ -58,7 +58,6 @@ NodeModel::NodeModel(const NodeModel& other)
     node->new_id();
   }
 
-  init();
   emit_topology_changed();
 }
 
