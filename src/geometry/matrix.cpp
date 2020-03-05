@@ -118,4 +118,15 @@ QMatrix Matrix::to_qmatrix() const
                  m[0][2], m[1][2]);
 }
 
+QMatrix3x3 Matrix::to_qmatrix3x3() const
+{
+  QMatrix3x3 mat;
+  for (std::size_t i = 0; i < 3; ++i) {
+    for (std::size_t j = 0; j < 3; ++j) {
+      mat(i, j) = m[i][j];
+    }
+  }
+  return mat;
+}
+
 }  // namespace omm

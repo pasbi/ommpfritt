@@ -67,6 +67,57 @@ static constexpr std::array<float, 18> m_quad = {
    1.0,  1.0, 0.0,
 };
 
+template<typename T>
+void set_uniform(omm::OffscreenRenderer& self, const QString& name, const T& value)
+{
+  using namespace omm;
+  self.make_current();
+  auto* program = self.program();
+  if (program == nullptr) {
+    // the compilation has failed for whatever reason
+    return;
+  }
+  program->bind();
+  const auto ba = name.toUtf8();
+  const char* cname = ba.constData();
+  assert(QString(cname) == name);
+  if constexpr (std::is_same_v<T, double>) {
+    program->setUniformValue(cname, GLfloat(value));
+  } else if constexpr (std::is_same_v<T, int>) {
+    program->setUniformValue(cname, value);
+  } else if constexpr (std::is_same_v<T, AbstractPropertyOwner*>) {
+    if (value == nullptr) {
+      program->setUniformValue(cname, 0);
+    } else {
+      program->setUniformValue(cname, GLuint(value->id()));
+    }
+  } else if constexpr (std::is_same_v<T, Color>) {
+    auto [r, g, b, a] = value.components(Color::Model::RGBA);
+    program->setUniformValue(cname, QVector4D(r, g, b, a));
+  } else if constexpr (std::is_same_v<T, std::size_t>) {
+    program->setUniformValue(cname, GLint(value));
+  } else if constexpr (std::is_same_v<T, Vec2f>) {
+    program->setUniformValue(cname, GLfloat(value.x), GLfloat(value.y));
+  } else if constexpr (std::is_same_v<T, Vec2i>) {
+    program->setUniformValue(cname, GLint(value.x), GLint(value.y));
+  } else if constexpr (std::is_same_v<T, bool>) {
+    program->setUniformValue(cname, GLboolean(value));
+  } else if constexpr (std::is_same_v<T, QString>) {
+    // string is not available in GLSL
+  } else if constexpr (std::is_same_v<T, TriggerPropertyDummyValueType>) {
+    // string is not available in GLSL
+  } else if constexpr (std::is_same_v<T, ObjectTransformation>) {
+    set_uniform(self, name, value.to_mat());
+  } else if constexpr (std::is_same_v<T, Matrix>) {
+    const auto mat = value.to_qmatrix3x3();
+    program->setUniformValue(cname, mat);
+  } else {
+    // statically fail here. If you're data type is not supported, add it explicitely.
+    static_assert(std::is_same_v<T, int> && !std::is_same_v<T, int>);
+    Q_UNIMPLEMENTED();
+  }
+}
+
 }  // namespace
 
 #ifdef NDEBUG
@@ -138,44 +189,7 @@ void OffscreenRenderer::make_current()
 
 void OffscreenRenderer::set_uniform(const QString& name, const variant_type& value)
 {
-  make_current();
-  if (m_program == nullptr) {
-    // if the shader has never been built successfully, `m_program` will be null.
-    return;
-  }
-  m_program->bind();
-  const char* cname = name.toStdString().c_str();
-  std::visit([program=m_program.get(), cname](auto&& v) {
-    using V = std::decay_t<decltype(v)>;
-    if constexpr (std::is_same_v<V, double>) {
-      program->setUniformValue(cname, GLfloat(v));
-    } else if constexpr (std::is_same_v<V, AbstractPropertyOwner*>) {
-      if (v == nullptr) {
-        program->setUniformValue(cname, 0);
-      } else {
-        program->setUniformValue(cname, GLuint(v->id()));
-      }
-    } else if constexpr (std::is_same_v<V, Color>) {
-      auto [r, g, b, a] = v.components(Color::Model::RGBA);
-      program->setUniformValue(cname, QVector4D(r, g, b, a));
-    } else if constexpr (std::is_same_v<V, std::size_t>) {
-      program->setUniformValue(cname, GLint(v));
-    } else if constexpr (std::is_same_v<V, Vec2f>) {
-      program->setUniformValue(cname, GLfloat(v.x), GLfloat(v.y));
-    } else if constexpr (std::is_same_v<V, Vec2i>) {
-      program->setUniformValue(cname, GLint(v.x), GLint(v.y));
-    } else if constexpr (std::is_same_v<V, bool>) {
-      program->setUniformValue(cname, GLboolean(v));
-    } else if constexpr (std::is_same_v<V, QString>) {
-      // string is not available in GLSL
-    } else if constexpr (std::is_same_v<V, TriggerPropertyDummyValueType>) {
-      // string is not available in GLSL
-    } else {
-      // statically fail here.
-      static_assert(std::is_same_v<V, int>);
-      Q_UNIMPLEMENTED();
-    }
-  }, value);
+  std::visit([this, name](auto&& v) { ::set_uniform(*this, name, v); }, value);
 }
 
 QImage OffscreenRenderer::render(const QSize& size)

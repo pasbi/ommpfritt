@@ -3,6 +3,7 @@
 #include "geometry/vec2.h"
 
 #include <QMatrix>
+#include <QGenericMatrix>
 
 namespace omm
 {
@@ -23,7 +24,9 @@ public:
   static Matrix zeros();
   bool has_nan() const;
 
+  // QMatrix is deprecate, however it is by far the most convenient way to initialize QTransform.
   QMatrix to_qmatrix() const;
+  QMatrix3x3 to_qmatrix3x3() const;
 
 private:
   Vec2f apply(const std::vector<double>& vec) const;

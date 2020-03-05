@@ -24,7 +24,7 @@ public:
   QImage render(const QSize& size);
   bool set_fragment_shader(const QString& fragment_code);
   QOpenGLContext& context() { return m_context; }
-  QOpenGLShaderProgram& program() const { return *m_program; }
+  QOpenGLShaderProgram* program() const { return m_program.get(); }
   void make_current();
 
   void set_uniform(const QString& name, const variant_type& value);
