@@ -161,8 +161,10 @@ void NodeItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     QPen pen;
     pen.setColor(color);
     pen.setWidthF(width);
+    painter->save();
     painter->setPen(pen);
     painter->drawPath(path);
+    painter->restore();
   };
 
   draw_outline(isSelected() ? Qt::yellow : Qt::black, node_pen_width);
@@ -171,27 +173,13 @@ void NodeItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
   }
 
   const double hmargin = PortItem::radius + 5;
-  for (const Slot& slot : m_slots) {
+  for (auto&& [pos_y, slot] : m_slots) {
     QRectF rect = boundingRect();
-    rect.setTop(slot.pos_y - small_slot_height/2.0);
+
+    rect.setTop(pos_y - small_slot_height/2.0);
     rect.setHeight(small_slot_height);
     rect.adjust(hmargin, 0, -hmargin, 0);
-    slot.adjust(rect);
-    painter->setPen(Qt::black);
-    QRectF actual_text_rect;
-    painter->drawText(rect, Qt::AlignVCenter | slot.alignment(), slot.text, &actual_text_rect);
-    if (slot.type == PortType::Both && !slot.text.isEmpty()) {
-      const auto draw_maybe = [painter, y=rect.center().y()](double x1, double x2) {
-        if (x1 < x2) {
-          painter->drawLine(x1, y, x2, y);
-        }
-      };
-      painter->save();
-      painter->setPen(QColor(0, 0, 0, 50));
-      draw_maybe(rect.left(), actual_text_rect.left() - 5);
-      draw_maybe(actual_text_rect.right() + 5, rect.right());
-      painter->restore();
-    }
+    slot.draw(*painter, rect);
   }
 }
 
@@ -310,7 +298,7 @@ void NodeItem::update_children()
     if (m_is_expanded) {
       add_property_widget(pp.property, pos_y, slot_height);
     } else {
-      m_slots.push_back({ pos_y, PortType::Both, pp.property.label() });
+      m_slots[pos_y].center_text = pp.property.label();
     }
     pos_y += slot_height;
   }
@@ -320,13 +308,13 @@ void NodeItem::update_children()
 
   for (auto* op : ordinary_outputs) {
     add_port(*op, output_pos_y);
-    m_slots.push_back({ output_pos_y, PortType::Output, op->label() });
+    m_slots[output_pos_y].right_text = op->label();
     output_pos_y += small_slot_height;
   }
 
   for (auto* ip : ordinary_inputs) {
     add_port(*ip, input_pos_y);
-    m_slots.push_back({ input_pos_y, PortType::Input, ip->label() });
+    m_slots[input_pos_y].left_text = ip->label();
     input_pos_y += small_slot_height;
   }
 
@@ -445,27 +433,38 @@ void NodeItem::add_port(PropertyInputPort* ip, PropertyOutputPort* op, double po
   }
 }
 
-void NodeItem::Slot::adjust(QRectF& rect) const
+void NodeItem::Slot::draw(QPainter& painter, const QRectF& slot_rect) const
 {
-  if (type == PortType::Input) {
-    rect.setRight(0);
-  } else if (type == PortType::Output) {
-    rect.setLeft(0);
+  assert((left_text || right_text) != center_text);
+  if (left_text) {
+    QRectF rect = slot_rect;
+    if (right_text) {
+      rect.setRight(0);
+    }
+    painter.drawText(rect, Qt::AlignVCenter | Qt::AlignLeft, left_text.value());
   }
-}
-
-Qt::Alignment NodeItem::Slot::alignment() const
-{
-  switch (type) {
-  case PortType::Input:
-    return Qt::AlignLeft;
-  case PortType::Output:
-    return Qt::AlignRight;
-  case PortType::Both:
-    return Qt::AlignCenter;
-  default:
-    Q_UNREACHABLE();
-    return 0;
+  if (right_text) {
+    QRectF rect = slot_rect;
+    if (left_text) {
+      rect.setLeft(0);
+    }
+    painter.drawText(rect, Qt::AlignVCenter | Qt::AlignRight, right_text.value());
+  }
+  if (center_text) {
+    const auto draw_maybe = [&painter, y=slot_rect.center().y()](double x1, double x2) {
+      if (x1 < x2) {
+        painter.drawLine(x1, y, x2, y);
+      }
+    };
+    QRectF actual;
+    painter.drawText(slot_rect, Qt::AlignVCenter | Qt::AlignCenter, center_text.value(), &actual);
+    painter.save();
+    painter.setPen(QColor(0, 0, 0, 50));
+    if (!center_text->isEmpty()) {
+      draw_maybe(slot_rect.left(), actual.left() - 5);
+      draw_maybe(actual.right() + 5, slot_rect.right());
+    }
+    painter.restore();
   }
 }
 
