@@ -124,9 +124,8 @@ Flag Style::flags() const
 
 QPixmap Style::texture(const Object& object, const QSize& size) const
 {
-  Q_UNUSED(object)
   update_uniform_values();
-  return QPixmap::fromImage(m_offscreen_renderer->render(size));
+  return QPixmap::fromImage(m_offscreen_renderer->render(object, size));
 }
 
 void Style::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const

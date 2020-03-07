@@ -21,7 +21,7 @@ class OffscreenRenderer
 public:
   OffscreenRenderer();
   ~OffscreenRenderer();
-  QImage render(const QSize& size);
+  QImage render(const Object& object, const QSize& size);
   bool set_fragment_shader(const QString& fragment_code);
   QOpenGLContext& context() { return m_context; }
   QOpenGLShaderProgram* program() const { return m_program.get(); }

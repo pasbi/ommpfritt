@@ -6,16 +6,14 @@
 #include <QDebug>
 #include <QImage>
 #include "managers/nodemanager/nodecompilerglsl.h"
+#include "geometry/objecttransformation.h"
 #include <QApplication>
+#include "objects/object.h"
 
 namespace omm
 {
 
 const std::vector<OffscreenRenderer::VaryingInfo> OffscreenRenderer::varyings = {
-  {
-    NodeCompilerTypes::FLOATVECTOR_TYPE,
-    QT_TRANSLATE_NOOP("OffscreenRenderer", "local_pos_centered")
-  },
   {
     NodeCompilerTypes::FLOATVECTOR_TYPE,
     QT_TRANSLATE_NOOP("OffscreenRenderer", "local_pos")
@@ -26,7 +24,11 @@ const std::vector<OffscreenRenderer::VaryingInfo> OffscreenRenderer::varyings = 
   },
   {
     NodeCompilerTypes::FLOATVECTOR_TYPE,
-    QT_TRANSLATE_NOOP("OffscreenRenderer", "viewport_pos")
+    QT_TRANSLATE_NOOP("OffscreenRenderer", "local_normalized_pos")
+  },
+  {
+    NodeCompilerTypes::FLOATVECTOR_TYPE,
+    QT_TRANSLATE_NOOP("OffscreenRenderer", "size")
   },
 };
 
@@ -43,17 +45,30 @@ namespace
 static constexpr auto vertex_position_attribute_name = "vertex_attr";
 
 using S = omm::OffscreenRenderer;
-static constexpr auto vertex_shader_source = R"(
+static constexpr auto vertex_code = R"(
+#version 330
+
 attribute vec4 vertex_attr;
-varying vec2 local_pos_centered;
 varying vec2 local_pos;
+varying vec2 local_normalized_pos;
 varying vec2 global_pos;
-varying vec2 viewport_pos;
+varying vec2 size;
+uniform vec2 top_left;
+uniform vec2 bottom_right;
+uniform mat3 global_transform;
+
+vec2 unc(vec2 centered) {
+    return (centered + vec2(1.0, 1.0)) / 2.0;
+}
+
 void main() {
-   local_pos_centered = vertex_attr.xy;
-   local_pos = (local_pos_centered + vec2(1.0))/2.0;
-   global_pos = vec2(0.5);
-   gl_Position = vertex_attr;
+  vec2 local_normalized_centered_pos = vertex_attr.xy * vec2(1.0, -1.0);
+  size = bottom_right - top_left;
+  vec2 local_centered_pos = local_normalized_centered_pos * size / 2.0;
+  global_pos = (global_transform * vec3(local_centered_pos, 1.0)).xy;
+  local_pos = unc(local_normalized_centered_pos) * size / 2.0;
+  local_normalized_pos = unc(local_normalized_centered_pos);
+  gl_Position = vec4(vertex_attr.xy, 0.0, 1.0);
 }
 )";
 
@@ -163,15 +178,15 @@ bool OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
   } else {
 #define CHECK(X) if (!(X)) { LERROR << #X" failed."; return false; }
 
-    QStringList lines = fragment_code.split("\n");
-    for (int i = 0; i < lines.size(); ++i) {
-      lines[i] = QString("%1 %2").arg(i+1, log(lines.size()+1)/log(10) + 1).arg(lines[i]);
-    }
-    LINFO << "code:\n" << lines.join("\n");
+//    QStringList lines = fragment_code.split("\n");
+//    for (int i = 0; i < lines.size(); ++i) {
+//      lines[i] = QString("%1 %2").arg(i+1, log(lines.size()+1)/log(10) + 1).arg(lines[i]);
+//    }
+//    LINFO << "code:\n" << lines.join("\n");
 
     m_program = std::make_unique<QOpenGLShaderProgram>();
     CHECK(m_context.makeCurrent(&m_surface));
-    CHECK(m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_shader_source));
+    CHECK(m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertex_code));
     CHECK(m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragment_code));
     m_program->bindAttributeLocation(vertex_position_attribute_name, 0);
     CHECK(m_program->link());
@@ -192,7 +207,7 @@ void OffscreenRenderer::set_uniform(const QString& name, const variant_type& val
   std::visit([this, name](auto&& v) { ::set_uniform(*this, name, v); }, value);
 }
 
-QImage OffscreenRenderer::render(const QSize& size)
+QImage OffscreenRenderer::render(const Object& object, const QSize& size)
 {
   if (m_program == nullptr) {
     return QImage(size, QImage::Format_ARGB32_Premultiplied);
@@ -204,11 +219,16 @@ QImage OffscreenRenderer::render(const QSize& size)
 
   m_functions->glViewport(0, 0, size.width(), size.height());
   m_program->bind();
+  const auto bb = object.bounding_box(ObjectTransformation());
+  ::set_uniform(*this, "top_left", Vec2f(bb.left(), bb.top()));
+  ::set_uniform(*this, "bottom_right", Vec2f(bb.right(), bb.bottom()));
+  ::set_uniform(*this, "global_transform", object.global_transformation(Space::Scene));
+
+  m_vertices.bind();
 
   QOpenGLFramebufferObject fbo(size);
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  m_program->bind();
   {
     QOpenGLVertexArrayObject::Binder vao_binder(&m_vao);
     glDrawArrays(GL_TRIANGLES, 0, m_quad.size());
