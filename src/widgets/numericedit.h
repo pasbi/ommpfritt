@@ -27,6 +27,7 @@ public:
 protected:
   void paintEvent(QPaintEvent*) override;
   void focusOutEvent(QFocusEvent* e) override;
+  void focusInEvent(QFocusEvent* e) override;
   void mouseDoubleClickEvent(QMouseEvent*) override;
 
 Q_SIGNALS:
@@ -156,7 +157,11 @@ protected:
   {
     if (e->buttons() & slider_button && isReadOnly()) {
       QPoint distance = e->pos() - m_mouse_press_pos;
-      increment(distance.x());
+      if (e->modifiers() & Qt::ControlModifier) {
+        increment(distance.x() / 100.0);
+      } else {
+        increment(distance.x());
+      }
       QCursor::setPos(mapToGlobal(m_mouse_press_pos));
       e->accept();
     } else {
