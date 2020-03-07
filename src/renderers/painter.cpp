@@ -119,7 +119,7 @@ QBrush Painter::make_brush(const Style &style, const Object& object)
       const double fx = std::abs(v_bb.width() / l_bb.width());
       const double fy = std::abs(v_bb.height() / l_bb.height());
       const double f = std::max(fx, fy);
-      QSize size = constrain_size(f * QSize(l_bb.width(), l_bb.height()));
+      QSize size = constrain_size((f * QSizeF(l_bb.width(), l_bb.height())).toSize());
       QPixmap pixmap = style.texture(object, size);
       QBrush brush(pixmap);
       QTransform t;
