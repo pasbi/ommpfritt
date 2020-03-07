@@ -9,6 +9,7 @@
 #include <QOpenGLShaderProgram>
 #include "logging.h"
 #include "aspects/abstractpropertyowner.h"
+#include "renderers/painter.h"
 
 class QOpenGLFunctions;
 class QOpenGLShaderProgram;
@@ -21,7 +22,7 @@ class OffscreenRenderer
 public:
   OffscreenRenderer();
   ~OffscreenRenderer();
-  QImage render(const Object& object, const QSize& size);
+  QImage render(const Object& object, const QSize& size, const Painter::Options& options);
   bool set_fragment_shader(const QString& fragment_code);
   QOpenGLContext& context() { return m_context; }
   QOpenGLShaderProgram* program() const { return m_program.get(); }

@@ -148,8 +148,7 @@ void Viewport::paintEvent(QPaintEvent*)
 
   m_scene.object_tree().root().set_transformation(viewport_transformation);
 
-  Painter::Options options;
-  options.viewport = true;
+  Painter::Options options(*this);
   m_renderer.render(options);
 
   auto& tool = m_scene.tool_box().active_tool();

@@ -65,7 +65,7 @@ void Text::draw_object(Painter &renderer, const Style& style, Painter::Options o
     const QFont font = m_font_properties.get_font();
     const QTextOption option = m_text_option_properties.get_option();
     renderer.painter->setFont(font);
-    renderer.set_style(style, *this);
+    renderer.set_style(style, *this, options);
 
     const QRectF rect = this->rect(option.alignment());
     const QString text = property(TEXT_PROPERTY_KEY)->value<QString>();

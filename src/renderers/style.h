@@ -28,7 +28,7 @@ public:
   static constexpr auto TYPE = "Style";
   std::unique_ptr<Style> clone() const;  // provided for interface consistency
   Flag flags() const override;
-  QPixmap texture(const Object& object, const QSize& size) const;
+  QPixmap texture(const Object& object, const QSize& size, const Painter::Options& options) const;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;

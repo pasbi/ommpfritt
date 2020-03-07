@@ -2,6 +2,7 @@
 #include "geometry/util.h"
 #include "scene/scene.h"
 #include "renderers/style.h"
+#include <QWidget>
 
 namespace
 {
@@ -99,7 +100,7 @@ QPainterPath Painter::path(const std::vector<Point> &points, bool closed)
   return path;
 }
 
-QBrush Painter::make_brush(const Style &style, const Object& object)
+QBrush Painter::make_brush(const Style &style, const Object& object, const Painter::Options& options)
 {
   static constexpr auto constrain_size = [](const QSize& size) {
     static constexpr int max_size = 10000;
@@ -120,7 +121,7 @@ QBrush Painter::make_brush(const Style &style, const Object& object)
       const double fy = std::abs(v_bb.height() / l_bb.height());
       const double f = std::max(fx, fy);
       QSize size = constrain_size((f * QSizeF(l_bb.width(), l_bb.height())).toSize());
-      QPixmap pixmap = style.texture(object, size);
+      QPixmap pixmap = style.texture(object, size, options);
       QBrush brush(pixmap);
       QTransform t;
       t.scale(1.0/f, 1.0/f);
@@ -178,10 +179,22 @@ QPen Painter::make_simple_pen(const Style &style)
   }
 }
 
-void Painter::set_style(const Style &style, const Object& object)
+void Painter::set_style(const Style &style, const Object& object, const Painter::Options& options)
 {
   painter->setPen(make_pen(style, object));
-  painter->setBrush(make_brush(style, object));
+  painter->setBrush(make_brush(style, object, options));
+}
+
+Painter::Options::Options(const QWidget& viewport)
+  : device_is_viewport(true)
+  , device(viewport)
+{
+}
+
+Painter::Options::Options(const QPaintDevice& device)
+  : device_is_viewport(false)
+  , device(device)
+{
 }
 
 }  // namespace omm

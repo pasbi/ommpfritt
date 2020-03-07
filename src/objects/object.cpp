@@ -259,7 +259,9 @@ void Object::draw_recursive(Painter& renderer, Painter::Options options) const
 {
   renderer.push_transformation(transformation());
   const bool is_enabled = !!(renderer.category_filter & Painter::Category::Objects);
-  if (is_enabled && is_visible(options.viewport)) {
+  if (is_enabled && is_visible(options.device_is_viewport)) {
+    // TODO options.styles is overriden before being used. Why not use a local variable instead?
+    // Remove the styles field from Painter::Options
     options.styles = find_styles();
     for (auto* style : options.styles) {
       draw_object(renderer, *style, options);

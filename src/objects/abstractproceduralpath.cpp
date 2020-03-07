@@ -15,9 +15,8 @@ class Style;
 void AbstractProceduralPath::draw_object(Painter &renderer, const Style& style,
                                          Painter::Options options) const
 {
-  Q_UNUSED(options)
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
-    renderer.set_style(style, *this);
+    renderer.set_style(style, *this, options);
     painter->drawPath(m_painter_path);
     const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
     const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();

@@ -30,6 +30,10 @@ const std::vector<OffscreenRenderer::VaryingInfo> OffscreenRenderer::varyings = 
     NodeCompilerTypes::FLOATVECTOR_TYPE,
     QT_TRANSLATE_NOOP("OffscreenRenderer", "size")
   },
+  {
+    NodeCompilerTypes::FLOATVECTOR_TYPE,
+    QT_TRANSLATE_NOOP("OffscreenRenderer", "view_pos")
+  },
 };
 
 QString OffscreenRenderer::VaryingInfo::tr_name() const
@@ -52,10 +56,13 @@ attribute vec4 vertex_attr;
 varying vec2 local_pos;
 varying vec2 local_normalized_pos;
 varying vec2 global_pos;
+varying vec2 view_pos;
 varying vec2 size;
 uniform vec2 top_left;
 uniform vec2 bottom_right;
 uniform mat3 global_transform;
+uniform mat3 view_transform;
+uniform vec2 view_size;
 
 vec2 unc(vec2 centered) {
     return (centered + vec2(1.0, 1.0)) / 2.0;
@@ -66,6 +73,7 @@ void main() {
   size = bottom_right - top_left;
   vec2 local_centered_pos = local_normalized_centered_pos * size / 2.0;
   global_pos = (global_transform * vec3(local_centered_pos, 1.0)).xy;
+  view_pos = (view_transform * vec3(local_centered_pos, 1.0)).xy / view_size;
   local_pos = unc(local_normalized_centered_pos) * size / 2.0;
   local_normalized_pos = unc(local_normalized_centered_pos);
   gl_Position = vec4(vertex_attr.xy, 0.0, 1.0);
@@ -207,7 +215,8 @@ void OffscreenRenderer::set_uniform(const QString& name, const variant_type& val
   std::visit([this, name](auto&& v) { ::set_uniform(*this, name, v); }, value);
 }
 
-QImage OffscreenRenderer::render(const Object& object, const QSize& size)
+QImage OffscreenRenderer::render(const Object& object, const QSize& size,
+                                 const Painter::Options& options)
 {
   if (m_program == nullptr) {
     return QImage(size, QImage::Format_ARGB32_Premultiplied);
@@ -223,6 +232,8 @@ QImage OffscreenRenderer::render(const Object& object, const QSize& size)
   ::set_uniform(*this, "top_left", Vec2f(bb.left(), bb.top()));
   ::set_uniform(*this, "bottom_right", Vec2f(bb.right(), bb.bottom()));
   ::set_uniform(*this, "global_transform", object.global_transformation(Space::Scene));
+  ::set_uniform(*this, "view_transform", object.global_transformation(Space::Viewport));
+  ::set_uniform(*this, "view_size", Vec2f(options.device.width(), options.device.height()));
 
   m_vertices.bind();
 
