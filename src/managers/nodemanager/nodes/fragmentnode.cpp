@@ -9,8 +9,17 @@
 namespace omm
 {
 
-const Node::Detail FragmentNode::detail { {
-    { AbstractNodeCompiler::Language::GLSL, "" } } };
+const Node::Detail FragmentNode::detail {
+  {
+    {
+      AbstractNodeCompiler::Language::GLSL,
+      ""
+    },
+  },
+  {
+    // No Menu Path
+  }
+};
 
 FragmentNode::FragmentNode(NodeModel& model)
   : Node(model)

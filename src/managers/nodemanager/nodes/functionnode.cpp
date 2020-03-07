@@ -7,8 +7,11 @@
 namespace omm
 {
 
-const Node::Detail FunctionNode::detail { {
-    { AbstractNodeCompiler::Language::Python, QString(R"(
+const Node::Detail FunctionNode::detail {
+  {
+    {
+      AbstractNodeCompiler::Language::Python,
+      QString(R"(
 import math
 def %1(op, v):
   if op == 0:
@@ -49,8 +52,11 @@ def %1(op, v):
     return v - math.degrees(v)
   else:
     return 0.0
-)").arg(FunctionNode::TYPE) },
-    { AbstractNodeCompiler::Language::GLSL, QString(R"(
+)").arg(FunctionNode::TYPE)
+    },
+    {
+      AbstractNodeCompiler::Language::GLSL,
+      QString(R"(
 float %1_0(int op, float v) {
   if (op == 0) {
     return abs(v);
@@ -95,8 +101,13 @@ float %1_0(int op, float v) {
 float %1_0(int op, int v) {
   return %1_0(op, float(v));
 }
-)").arg(FunctionNode::TYPE) }
-    } };
+)").arg(FunctionNode::TYPE)
+    }
+  },
+  {
+    QT_TRANSLATE_NOOP("NodeMenuPath", "Math"),
+  },
+};
 
 FunctionNode::FunctionNode(NodeModel& model) : Node(model)
 {

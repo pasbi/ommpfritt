@@ -38,7 +38,9 @@ const QString glsl_definition_template(R"(
 
 const Node::Detail MathNode::detail {
   {
-    { AbstractNodeCompiler::Language::Python, QString(R"(
+    {
+      AbstractNodeCompiler::Language::Python,
+      QString(R"(
 def %1(op, a, b):
     import numpy as np
     def do_op(op, a, b):
@@ -60,12 +62,17 @@ def %1(op, a, b):
     if isinstance(result, np.ndarray):
         result = list(result)
     return result
-)").arg(MathNode::TYPE) },
-    { AbstractNodeCompiler::Language::GLSL,
+)").arg(MathNode::TYPE)
+    },
+    {
+      AbstractNodeCompiler::Language::GLSL,
       ::transform<QString, QList>(supported_glsl_types, [](const QString& type) {
         return glsl_definition_template.arg(NodeCompilerGLSL::translate_type(type));
       }).join("\n").arg(MathNode::TYPE)
     }
+  },
+  {
+    QT_TRANSLATE_NOOP("NodeMenuPath", "Math"),
   }
 };
 

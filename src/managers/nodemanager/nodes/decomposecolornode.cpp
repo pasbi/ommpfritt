@@ -6,18 +6,29 @@
 namespace omm
 {
 
-const Node::Detail DecomposeColorNode::detail { {
-    { AbstractNodeCompiler::Language::Python, QString(R"(
+const Node::Detail DecomposeColorNode::detail {
+  {
+    {
+      AbstractNodeCompiler::Language::Python,
+      QString(R"(
 def %1(c):
     return c
-)") },
-    { AbstractNodeCompiler::Language::GLSL, QString(R"(
+)")
+    },
+    {
+      AbstractNodeCompiler::Language::GLSL,
+      QString(R"(
 float %1_0(vec4 c) { return c.r; }
 float %1_1(vec4 c) { return c.g; }
 float %1_2(vec4 c) { return c.b; }
 float %1_3(vec4 c) { return c.a; }
-)").arg(DecomposeColorNode::TYPE) }
-                                           } };
+)").arg(DecomposeColorNode::TYPE)
+    }
+  },
+  {
+    QT_TRANSLATE_NOOP("NodeMenuPath", "Vector"),
+  },
+};
 
 DecomposeColorNode::DecomposeColorNode(NodeModel& model) : Node(model)
 {

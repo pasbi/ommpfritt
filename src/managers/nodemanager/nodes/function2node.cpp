@@ -7,8 +7,11 @@
 namespace omm
 {
 
-const Node::Detail Function2Node::detail { {
-    { AbstractNodeCompiler::Language::Python, QString(R"(
+const Node::Detail Function2Node::detail {
+  {
+    {
+      AbstractNodeCompiler::Language::Python,
+      QString(R"(
 import math
 def %1(op, x, y):
   if op == 0:
@@ -23,8 +26,11 @@ def %1(op, x, y):
     return math.max(x, y)
   else:
     return 0.0
-)").arg(Function2Node::TYPE) },
-    { AbstractNodeCompiler::Language::GLSL, QString(R"(
+)").arg(Function2Node::TYPE)
+    },
+    {
+      AbstractNodeCompiler::Language::GLSL,
+      QString(R"(
 float %1_0(int op, float x, float y) {
   if (op == 0) {
     return atan(y, x);
@@ -43,8 +49,13 @@ float %1_0(int op, float x, float y) {
 float %1_0(int op, int x, int y) {
   return %1_0(op, float(x), float(y));
 }
-)").arg(Function2Node::TYPE) }
-    } };
+)").arg(Function2Node::TYPE)
+    }
+  },
+  {
+    QT_TRANSLATE_NOOP("NodeMenuPath", "Math"),
+  },
+};
 
 Function2Node::Function2Node(NodeModel& model) : Node(model)
 {

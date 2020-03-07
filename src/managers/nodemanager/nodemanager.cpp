@@ -16,6 +16,18 @@
 #include <QContextMenuEvent>
 #include "managers/nodemanager/nodes/fragmentnode.h"
 
+namespace
+{
+
+using namespace omm;
+
+bool accept_node(const NodeModel& model, const QString& name)
+{
+  return ::contains(Node::detail(name).definitions, model.language());
+}
+
+}  // namespace
+
 namespace omm
 {
 
@@ -119,14 +131,32 @@ bool NodeManager::perform_action(const QString& name)
 
 std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
 {
-  auto menu = std::make_unique<QMenu>(tr("Add Node ..."));
+  auto root_menu = std::make_unique<QMenu>(tr("Add Node ..."));
+  std::map<QString, QMenu*> sub_menus;
+  const auto find_menu = [&sub_menus](QMenu* root, const auto& path) -> QMenu& {
+    for (const char* token : path) {
+      auto it = sub_menus.find(token);
+      if (it == sub_menus.end()) {
+        const QString tr_menu_name = QApplication::translate("NodeMenuPath", token);
+        auto menu = std::make_unique<QMenu>(tr_menu_name);
+        QMenu& ref = *menu;
+        sub_menus.insert({ tr_menu_name, &ref });
+        root->addMenu(menu.release());
+        root = &ref;
+      } else {
+        root = it->second;
+      }
+    }
+    return *root;
+  };
+
   if (NodeModel* model = m_ui->nodeview->model(); model != nullptr) {
-    const auto language = model->language();
     for (const QString& name : Node::keys()) {
-      if (::contains(Node::detail(name).definitions, language)) {
-        if (name != FragmentNode::TYPE) {
-          auto action = kb.make_menu_action(*this, name);
-          menu->addAction(action.release());
+      if (accept_node(*model, name)) {
+        auto action = kb.make_menu_action(*this, name);
+        if (const auto menu_path = Node::detail(name).menu_path; !menu_path.empty()) {
+          QMenu& menu = find_menu(root_menu.get(), menu_path);
+          menu.addAction(action.release());
         }
       }
     }
@@ -150,10 +180,13 @@ std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
         });
         quick_constant_node_actions_menu->addAction(action.release());
       }
-      menu->addMenu(quick_constant_node_actions_menu.release());
+      const auto path = {
+        QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
+      };
+      find_menu(root_menu.get(), path).addMenu(quick_constant_node_actions_menu.release());
     }
   }
-  return menu;
+  return root_menu;
 }
 
 }  // namespace omm

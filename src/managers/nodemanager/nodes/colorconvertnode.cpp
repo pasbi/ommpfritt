@@ -17,8 +17,11 @@ static const std::vector<QString> conversion_options {
 namespace omm
 {
 
-const Node::Detail ColorConvertNode::detail { {
-    { AbstractNodeCompiler::Language::Python, QString(R"(
+const Node::Detail ColorConvertNode::detail {
+  {
+    {
+      AbstractNodeCompiler::Language::Python,
+      QString(R"(
 def %1(option, color):
   if option == 0:
     return color
@@ -29,8 +32,11 @@ def %1(option, color):
   else:
     // unreachable
     return [ 0.0, 0.0, 0.0, 1.0 ]
-)").arg(ColorConvertNode::TYPE) },
-    { AbstractNodeCompiler::Language::GLSL, QString(R"(
+)").arg(ColorConvertNode::TYPE)
+    },
+    {
+      AbstractNodeCompiler::Language::GLSL,
+      QString(R"(
 vec4 %1_0(int option, vec4 color) {
   if (option == 0) {
     return color;
@@ -53,9 +59,14 @@ vec4 %1_0(int option, vec4 color) {
     // unreachable
     return vec4(0.0, 0.0, 0.0, 1.0);
   }
-})").arg(ColorConvertNode::TYPE) }
+})").arg(ColorConvertNode::TYPE)
+    }
+  },
+  {
+    QT_TRANSLATE_NOOP("NodeMenuPath", "Color"),
+  },
 
-    } };
+};
 
 ColorConvertNode::ColorConvertNode(NodeModel& model) : Node(model)
 {

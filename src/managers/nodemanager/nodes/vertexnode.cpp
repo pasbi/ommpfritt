@@ -9,8 +9,14 @@
 namespace omm
 {
 
-const Node::Detail VertexNode::detail { {
-    { AbstractNodeCompiler::Language::GLSL, "" } } };
+const Node::Detail VertexNode::detail {
+  {
+    { AbstractNodeCompiler::Language::GLSL, "" }
+  },
+  {
+    QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
+  },
+};
 
 VertexNode::VertexNode(NodeModel& model)
   : Node(model)

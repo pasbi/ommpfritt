@@ -9,10 +9,15 @@
 namespace omm
 {
 
-const Node::Detail ConstantNode::detail { {
+const Node::Detail ConstantNode::detail {
+  {
     { AbstractNodeCompiler::Language::Python, "" },
     { AbstractNodeCompiler::Language::GLSL, "" }
-} };
+  },
+  {
+    QT_TRANSLATE_NOOP("NodeMenuPath", "General")
+  }
+};
 
 ConstantNode::ConstantNode(NodeModel& model) : Node(model)
 {

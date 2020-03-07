@@ -146,6 +146,7 @@ public:
   struct Detail
   {
     std::map<AbstractNodeCompiler::Language, QString> definitions;
+    std::vector<const char*> menu_path;
   };
 
   static const Detail& detail(const QString& name) { return *m_details.at(name); }

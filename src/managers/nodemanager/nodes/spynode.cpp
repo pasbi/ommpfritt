@@ -5,9 +5,14 @@
 namespace omm
 {
 
-const Node::Detail SpyNode::detail { {
+const Node::Detail SpyNode::detail {
+  {
     { AbstractNodeCompiler::Language::Python, "" }
-} };
+  },
+  {
+    QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
+  },
+};
 
 SpyNode::SpyNode(NodeModel& model)
   : Node(model)

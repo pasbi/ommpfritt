@@ -11,10 +11,15 @@
 namespace omm
 {
 
-const Node::Detail ReferenceNode::detail { {
+const Node::Detail ReferenceNode::detail {
+  {
     { AbstractNodeCompiler::Language::Python, "" },
-    { AbstractNodeCompiler::Language::GLSL, "" }
- } };
+    { AbstractNodeCompiler::Language::GLSL, "" },
+  },
+  {
+    QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
+  },
+};
 
 ReferenceNode::ReferenceNode(NodeModel& model)
   : Node(model)
