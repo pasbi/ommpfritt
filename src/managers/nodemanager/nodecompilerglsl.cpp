@@ -83,7 +83,8 @@ QString NodeCompilerGLSL::generate_header(QStringList& lines) const
   m_uniform_ports.clear();
   lines.append("#version 330");
   for (const auto& varying_info : OffscreenRenderer::varyings) {
-    lines.append(QString("varying vec2 %1;").arg(varying_info.name));
+    lines.append(QString("varying %1 %2;").arg(translate_type(varying_info.type))
+                                          .arg(varying_info.name));
   }
   lines.append(QString("out vec4 %1;").arg(output_variable_name));
 
