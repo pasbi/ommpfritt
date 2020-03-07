@@ -99,8 +99,10 @@ std::unique_ptr<QMenu> NodeManager::make_context_menu()
 
   menu->addMenu(eiff_model_available(make_add_nodes_menu(kb).release()));
   menu->addAction(eiff_node_selected(kb.make_menu_action(*this, "remove nodes").release()));
+  menu->addSeparator();
   menu->addAction(eiff_node_selected(kb.make_menu_action(*this, "copy").release()));
   menu->addAction(eiff_clipboard_has_nodes(kb.make_menu_action(*this, "paste").release()));
+  menu->addAction(eiff_node_selected(kb.make_menu_action(*this, "cut").release()));
 
   return menu;
 }
@@ -113,6 +115,9 @@ bool NodeManager::perform_action(const QString& name)
     m_ui->nodeview->remove_selection();
   } else if (name == "copy") {
     m_ui->nodeview->copy_to_clipboard();
+  } else if (name == "cut") {
+    m_ui->nodeview->copy_to_clipboard();
+    m_ui->nodeview->remove_selection();
   } else if (name == "paste") {
     m_ui->nodeview->paste_from_clipboard();
   } else if (::contains(Node::keys(), name)) {
