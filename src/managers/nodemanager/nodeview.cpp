@@ -377,9 +377,20 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
 
 void NodeView::mouseReleaseEvent(QMouseEvent *event)
 {
+
   std::list<std::unique_ptr<Command>> commands;
+  const auto maybe_disconnect = [&commands](AbstractPort& port) {
+    if (port.port_type == PortType::Input) {
+      auto& ip = static_cast<InputPort&>(port);
+      if (ip.is_connected()) {
+        commands.push_back(std::make_unique<DisconnectPortsCommand>(ip));
+      }
+    }
+  };
   if (m_tmp_connection_origin != nullptr && m_tmp_connection_target != nullptr) {
     if (model() != nullptr) {
+      maybe_disconnect(m_tmp_connection_origin->port);
+      maybe_disconnect(m_tmp_connection_target->port);
       commands.push_back(std::make_unique<ConnectPortsCommand>(m_tmp_connection_origin->port,
                                                                m_tmp_connection_target->port));
       if (m_about_to_disconnect == &m_tmp_connection_origin->port ||
