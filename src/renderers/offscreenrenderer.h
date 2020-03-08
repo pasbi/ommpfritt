@@ -10,6 +10,7 @@
 #include "logging.h"
 #include "aspects/abstractpropertyowner.h"
 #include "renderers/painter.h"
+#include "renderers/texture.h"
 
 class QOpenGLFunctions;
 class QOpenGLShaderProgram;
@@ -22,7 +23,7 @@ class OffscreenRenderer
 public:
   OffscreenRenderer();
   ~OffscreenRenderer();
-  QImage render(const Object& object, const QSize& size, const Painter::Options& options);
+  Texture render(const Object& object, const QSize& size, const QRectF& roi, const Painter::Options& options);
   bool set_fragment_shader(const QString& fragment_code);
   QOpenGLContext& context() { return m_context; }
   QOpenGLShaderProgram* program() const { return m_program.get(); }
@@ -30,13 +31,15 @@ public:
 
   void set_uniform(const QString& name, const variant_type& value);
 
-  struct VaryingInfo {
+  struct ShaderInput {
+    enum class Kind { Uniform, Varying };
     const QString type;
     const char* name;
+    const Kind kind;
     QString tr_name() const;
   };
 
-  static const std::vector<VaryingInfo> varyings;
+  static const std::vector<ShaderInput> fragment_shader_inputs;
 
 private:
   QOffscreenSurface m_surface;

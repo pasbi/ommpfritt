@@ -121,11 +121,15 @@ QBrush Painter::make_brush(const Style &style, const Object& object, const Paint
       const double fy = std::abs(v_bb.height() / l_bb.height());
       const double f = std::max(fx, fy);
       QSize size = constrain_size((f * QSizeF(l_bb.width(), l_bb.height())).toSize());
-      QPixmap pixmap = style.texture(object, size, options);
+      QRectF roi(QPointF(-1.0, -1.0),
+                 QPointF( 1.0,  1.0));
+      Texture texture = style.render_texture(object, size, roi, options);
+      QPixmap pixmap = QPixmap::fromImage(texture.image);
       QBrush brush(pixmap);
       QTransform t;
       t.scale(1.0/f, 1.0/f);
-      t.translate(-pixmap.width() / 2.0, -pixmap.height() / 2.0);
+      t.translate(-size.width() / 2.0 + texture.offset.x(),
+                  -size.height() / 2.0 + texture.offset.y());
       brush.setTransform(t);
       return brush;
     } else {

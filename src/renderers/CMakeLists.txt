@@ -5,6 +5,7 @@ file(GLOB SOURCES
   offscreenrenderer.cpp
   style.cpp
   styleiconengine.cpp
+  texture.cpp
 )
 
 file(GLOB HEADERS
@@ -13,8 +14,8 @@ file(GLOB HEADERS
   offscreenrenderer.h
   style.h
   styleiconengine.h
+  texture.h
 )
-
 
 target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

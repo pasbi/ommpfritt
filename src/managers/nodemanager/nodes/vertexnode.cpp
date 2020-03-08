@@ -21,17 +21,17 @@ const Node::Detail VertexNode::detail {
 VertexNode::VertexNode(NodeModel& model)
   : Node(model)
 {
-  for (const auto& varying : OffscreenRenderer::varyings) {
-    auto& port = add_port<OrdinaryPort<PortType::Output>>(varying.tr_name());
-    m_varying_ports.insert({ varying, &port });
+  for (const auto& shader_input : OffscreenRenderer::fragment_shader_inputs) {
+    auto& port = add_port<OrdinaryPort<PortType::Output>>(shader_input.tr_name());
+    m_shader_inputs.insert({ shader_input, &port });
   }
 }
 
 QString VertexNode::output_data_type(const OutputPort& port) const
 {
-  const auto it = std::find(m_varying_ports.begin(), m_varying_ports.end(), &port);
-  assert(it != m_varying_ports.end());
-  return it->varying_info.type;
+  const auto it = std::find(m_shader_inputs.begin(), m_shader_inputs.end(), &port);
+  assert(it != m_shader_inputs.end());
+  return it->input_info.type;
 }
 
 bool VertexNode::PortInfo::operator==(const AbstractPort* port) const

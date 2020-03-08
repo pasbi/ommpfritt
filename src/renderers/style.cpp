@@ -122,11 +122,11 @@ Flag Style::flags() const
   return Flag::None | Flag::HasGLSLNodes;
 }
 
-QPixmap Style::texture(const Object& object, const QSize& size,
-                       const Painter::Options& options) const
+Texture Style::render_texture(const Object& object, const QSize& size, const QRectF& roi,
+                              const Painter::Options& options) const
 {
   update_uniform_values();
-  return QPixmap::fromImage(m_offscreen_renderer->render(object, size, options));
+  return m_offscreen_renderer->render(object, size, roi, options);
 }
 
 void Style::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const

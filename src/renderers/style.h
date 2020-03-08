@@ -7,6 +7,7 @@
 #include "managers/nodemanager/nodemodel.h"
 #include "managers/nodemanager/nodesowner.h"
 #include "managers/nodemanager/nodecompilerglsl.h"
+#include "renderers/texture.h"
 
 namespace omm
 {
@@ -28,7 +29,8 @@ public:
   static constexpr auto TYPE = "Style";
   std::unique_ptr<Style> clone() const;  // provided for interface consistency
   Flag flags() const override;
-  QPixmap texture(const Object& object, const QSize& size, const Painter::Options& options) const;
+  Texture render_texture(const Object& object, const QSize& size, const QRectF& roi,
+                         const Painter::Options& options) const;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;

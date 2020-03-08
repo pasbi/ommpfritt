@@ -13,30 +13,35 @@
 namespace omm
 {
 
-const std::vector<OffscreenRenderer::VaryingInfo> OffscreenRenderer::varyings = {
+const std::vector<OffscreenRenderer::ShaderInput> OffscreenRenderer::fragment_shader_inputs = {
   {
     NodeCompilerTypes::FLOATVECTOR_TYPE,
-    QT_TRANSLATE_NOOP("OffscreenRenderer", "local_pos")
+    QT_TRANSLATE_NOOP("OffscreenRenderer", "local_pos"),
+    ShaderInput::Kind::Varying,
   },
   {
     NodeCompilerTypes::FLOATVECTOR_TYPE,
-    QT_TRANSLATE_NOOP("OffscreenRenderer", "global_pos")
+    QT_TRANSLATE_NOOP("OffscreenRenderer", "global_pos"),
+    ShaderInput::Kind::Varying,
   },
   {
     NodeCompilerTypes::FLOATVECTOR_TYPE,
-    QT_TRANSLATE_NOOP("OffscreenRenderer", "local_normalized_pos")
+    QT_TRANSLATE_NOOP("OffscreenRenderer", "local_normalized_pos"),
+    ShaderInput::Kind::Varying,
   },
   {
     NodeCompilerTypes::FLOATVECTOR_TYPE,
-    QT_TRANSLATE_NOOP("OffscreenRenderer", "size")
+    QT_TRANSLATE_NOOP("OffscreenRenderer", "object_size"),
+    ShaderInput::Kind::Uniform,
   },
   {
     NodeCompilerTypes::FLOATVECTOR_TYPE,
-    QT_TRANSLATE_NOOP("OffscreenRenderer", "view_pos")
+    QT_TRANSLATE_NOOP("OffscreenRenderer", "view_pos"),
+    ShaderInput::Kind::Varying,
   },
 };
 
-QString OffscreenRenderer::VaryingInfo::tr_name() const
+QString OffscreenRenderer::ShaderInput::tr_name() const
 {
   return QApplication::translate("OffscreenRenderer", name);
 }
@@ -57,24 +62,34 @@ varying vec2 local_pos;
 varying vec2 local_normalized_pos;
 varying vec2 global_pos;
 varying vec2 view_pos;
-varying vec2 size;
-uniform vec2 top_left;
-uniform vec2 bottom_right;
+uniform vec2 object_size;
 uniform mat3 global_transform;
 uniform mat3 view_transform;
 uniform vec2 view_size;
+uniform vec2 roi_tl;
+uniform vec2 roi_br;
 
 vec2 unc(vec2 centered) {
-    return (centered + vec2(1.0, 1.0)) / 2.0;
+  return (centered + vec2(1.0, 1.0)) / 2.0;
+}
+
+vec2 c(vec2 uncentered) {
+  return (uncentered * 2.0) - vec2(1.0, 1.0);
 }
 
 void main() {
-  vec2 local_normalized_centered_pos = vertex_attr.xy * vec2(1.0, -1.0);
-  size = bottom_right - top_left;
-  vec2 local_centered_pos = local_normalized_centered_pos * size / 2.0;
+  vec2 lncp = vertex_attr.xy * vec2(1.0, -1.0);
+
+  lncp = unc(lncp);
+  lncp *= (roi_br - roi_tl) / 2.0;
+  lncp += (roi_tl + vec2(1.0, 1.0))/2.0;
+  lncp = c(lncp);
+
+  vec2 local_normalized_centered_pos = lncp;
+  vec2 local_centered_pos = local_normalized_centered_pos * object_size / 2.0;
   global_pos = (global_transform * vec3(local_centered_pos, 1.0)).xy;
   view_pos = (view_transform * vec3(local_centered_pos, 1.0)).xy / view_size;
-  local_pos = unc(local_normalized_centered_pos) * size / 2.0;
+  local_pos = unc(local_normalized_centered_pos) * object_size / 2.0;
   local_normalized_pos = unc(local_normalized_centered_pos);
   gl_Position = vec4(vertex_attr.xy, 0.0, 1.0);
 }
@@ -215,29 +230,35 @@ void OffscreenRenderer::set_uniform(const QString& name, const variant_type& val
   std::visit([this, name](auto&& v) { ::set_uniform(*this, name, v); }, value);
 }
 
-QImage OffscreenRenderer::render(const Object& object, const QSize& size,
-                                 const Painter::Options& options)
+Texture OffscreenRenderer::render(const Object& object, const QSize& size, const QRectF& roi,
+                                  const Painter::Options& options)
 {
+  const QSize adjusted_size = QSize(size.width()  * roi.width()  / 2.0,
+                                    size.height() * roi.height() / 2.0);
   if (m_program == nullptr) {
-    return QImage(size, QImage::Format_ARGB32_Premultiplied);
+    return Texture(adjusted_size);
   }
   assert_or_call(m_context.makeCurrent(&m_surface));
   assert_or_call(m_context.isValid());
   QOpenGLFunctions* functions = m_context.functions();
   assert (functions != nullptr);
 
-  m_functions->glViewport(0, 0, size.width(), size.height());
+  m_functions->glViewport(0,
+                          0,
+                          adjusted_size.width(),
+                          adjusted_size.height());
   m_program->bind();
   const auto bb = object.bounding_box(ObjectTransformation());
-  ::set_uniform(*this, "top_left", Vec2f(bb.left(), bb.top()));
-  ::set_uniform(*this, "bottom_right", Vec2f(bb.right(), bb.bottom()));
+  ::set_uniform(*this, "object_size", Vec2f(bb.width(), bb.height()));
   ::set_uniform(*this, "global_transform", object.global_transformation(Space::Scene));
   ::set_uniform(*this, "view_transform", object.global_transformation(Space::Viewport));
   ::set_uniform(*this, "view_size", Vec2f(options.device.width(), options.device.height()));
+  ::set_uniform(*this, "roi_tl", Vec2f(roi.topLeft()));
+  ::set_uniform(*this, "roi_br", Vec2f(roi.bottomRight()));
 
   m_vertices.bind();
 
-  QOpenGLFramebufferObject fbo(size);
+  QOpenGLFramebufferObject fbo(adjusted_size);
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   {
@@ -247,7 +268,9 @@ QImage OffscreenRenderer::render(const Object& object, const QSize& size,
   m_program->release();
   m_vertices.release();
   m_vao.release();
-  return fbo.toImage();
+  const QPoint offset( (1.0 + roi.left()) / 2.0 * size.width(),
+                       (1.0 + roi.top())  / 2.0 * size.height() );
+  return Texture(fbo.toImage(), offset);
 }
 
 }  // namespace omm

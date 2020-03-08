@@ -17,17 +17,17 @@ public:
   static const Detail detail;
 
   struct PortInfo {
-    const OffscreenRenderer::VaryingInfo varying_info;
+    const OffscreenRenderer::ShaderInput input_info;
     OrdinaryPort<PortType::Output>* const port;
     bool operator==(const PortInfo& other) const { return other.port == this->port; }
     bool operator==(const AbstractPort* port) const;
     bool operator<(const PortInfo& other) const { return this->port < other.port; }
   };
 
-  const std::set<PortInfo>& varying_ports() const { return m_varying_ports; }
+  const std::set<PortInfo>& shader_inputs() const { return m_shader_inputs; }
 
 private:
-  std::set<PortInfo> m_varying_ports;
+  std::set<PortInfo> m_shader_inputs;
 };
 
 }  // namespace omm

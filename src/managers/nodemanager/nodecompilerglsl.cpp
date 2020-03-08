@@ -82,9 +82,15 @@ QString NodeCompilerGLSL::generate_header(QStringList& lines) const
 {
   m_uniform_ports.clear();
   lines.append("#version 330");
-  for (const auto& varying_info : OffscreenRenderer::varyings) {
-    lines.append(QString("varying %1 %2;").arg(translate_type(varying_info.type))
-                                          .arg(varying_info.name));
+  using Kind = OffscreenRenderer::ShaderInput::Kind;
+  static const std::map<Kind, QString> input_kind_identifier_map = {
+    { Kind::Uniform, "uniform" },
+    { Kind::Varying, "varying" },
+  };
+  for (const auto& shader_input : OffscreenRenderer::fragment_shader_inputs) {
+    lines.append(QString("%1 %2 %3;").arg(input_kind_identifier_map.at(shader_input.kind))
+                                     .arg(translate_type(shader_input.type))
+                                     .arg(shader_input.name));
   }
   lines.append(QString("out vec4 %1;").arg(output_variable_name));
 
@@ -174,13 +180,13 @@ QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines) con
     for (OutputPort* port : sort_ports(ordinary_output_ports)) {
       if (const Node& node = port->node; node.type() == VertexNode::TYPE) {
         const auto& vertex_node = static_cast<const VertexNode&>(node);
-        const auto ports = vertex_node.varying_ports();
+        const auto ports = vertex_node.shader_inputs();
         const auto it = std::find(ports.begin(), ports.end(), port);
         if (it != ports.end()) {
           lines.push_back(QString("%1 %2 = %3;")
                           .arg(translate_type(port->data_type()))
                           .arg(port->uuid())
-                          .arg(it->varying_info.name));
+                          .arg(it->input_info.name));
         }
       } else {
         lines.push_back(QString("%1 %2 = %3_%4(%5);")
