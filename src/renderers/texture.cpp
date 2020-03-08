@@ -7,9 +7,13 @@ namespace
 QImage uniform_image(const QSize& size)
 {
   QImage image(size, QImage::Format_ARGB32_Premultiplied);
-  QPainter painter(&image);
-  painter.fillRect(image.rect(), Qt::blue);
-  return image;
+  if (size.isEmpty()) {
+    return image;
+  } else {
+    QPainter painter(&image);
+    painter.fillRect(image.rect(), Qt::blue);
+    return image;
+  }
 }
 
 }  // namespace
@@ -22,6 +26,8 @@ Texture::Texture(const QSize& size)
   , offset(QPoint(0, 0))
 {
 }
+
+Texture::Texture() : Texture(QSize(0, 0)) {}
 
 Texture::Texture(const QImage& image, const QPoint& offset)
   : image(image)

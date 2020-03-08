@@ -7,6 +7,28 @@
 namespace
 {
 
+QRectF get_roi(const omm::ObjectTransformation& viewport_transform,
+               const QRectF bounding_box,
+               const omm::Painter::Options& options)
+{
+  static const auto get_relative_roi = [](const QRectF& rect, const QRectF& absolute_roi) {
+    const double x = rect.center().x();
+    const double y = rect.center().y();
+    const double left   = (x - absolute_roi.left())   / (rect.left()   - x);
+    const double top    = (y - absolute_roi.top())    / (rect.top()    - y);
+    const double right  = (x + absolute_roi.right())  / (rect.right()  - x);
+    const double bottom = (y + absolute_roi.bottom()) / (rect.bottom() - y);
+    return QRectF(QPointF(left,  top),
+                  QPointF(right, bottom));
+  };
+
+  const QRectF vp_outline(0, 0, options.device.width(), options.device.height());
+  const QPolygonF vp_outline_t = viewport_transform.to_qtransform().inverted().map(vp_outline);
+  const QRectF absolute_roi = vp_outline_t.intersected(bounding_box).boundingRect();
+  const QRectF relative_roi = get_relative_roi(bounding_box, absolute_roi);
+  return relative_roi;
+}
+
 QTransform to_transformation(const omm::ObjectTransformation& transformation)
 {
   const auto& m = transformation.to_mat();
@@ -102,17 +124,6 @@ QPainterPath Painter::path(const std::vector<Point> &points, bool closed)
 
 QBrush Painter::make_brush(const Style &style, const Object& object, const Painter::Options& options)
 {
-  static constexpr auto constrain_size = [](const QSize& size) {
-    static constexpr int max_size = 10000;
-    const double f = max_size / std::max<double>(size.width(), size.height());
-    if (f > 1.0) {
-      return size;
-    } else {
-      return f * size;
-    }
-  };
-
-
   if (style.property(omm::Style::BRUSH_IS_ACTIVE_KEY)->value<bool>()) {
     if (style.property("gl-brush")->value<bool>()) {
       const auto l_bb = object.bounding_box(ObjectTransformation());
@@ -120,9 +131,8 @@ QBrush Painter::make_brush(const Style &style, const Object& object, const Paint
       const double fx = std::abs(v_bb.width() / l_bb.width());
       const double fy = std::abs(v_bb.height() / l_bb.height());
       const double f = std::max(fx, fy);
-      QSize size = constrain_size((f * QSizeF(l_bb.width(), l_bb.height())).toSize());
-      QRectF roi(QPointF(-1.0, -1.0),
-                 QPointF( 1.0,  1.0));
+      QSize size = (f * QSizeF(l_bb.width(), l_bb.height())).toSize();
+      const QRectF roi = get_roi(object.global_transformation(Space::Viewport), l_bb, options);
       Texture texture = style.render_texture(object, size, roi, options);
       QPixmap pixmap = QPixmap::fromImage(texture.image);
       QBrush brush(pixmap);

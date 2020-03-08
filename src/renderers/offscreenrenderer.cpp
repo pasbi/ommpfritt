@@ -237,6 +237,8 @@ Texture OffscreenRenderer::render(const Object& object, const QSize& size, const
                                     size.height() * roi.height() / 2.0);
   if (m_program == nullptr) {
     return Texture(adjusted_size);
+  } else if (adjusted_size.isEmpty()) {
+    return Texture();
   }
   assert_or_call(m_context.makeCurrent(&m_surface));
   assert_or_call(m_context.isValid());
