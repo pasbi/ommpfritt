@@ -59,11 +59,11 @@ void Instance::draw_object(Painter &renderer, const Style& style, Painter::Optio
   Q_UNUSED(style)
   auto cycle_guard = scene()->make_cycle_guard(this);
   if (!cycle_guard->inside_cycle() && is_active()) {
-    const auto* r = illustrated_object();
+    auto* r = illustrated_object();
     if (r != nullptr) {
-      renderer.push_transformation(r->global_transformation(Space::Scene).inverted());
+      r->set_virtual_parent(this);
       r->draw_recursive(renderer, options);
-      renderer.pop_transformation();
+      r->set_virtual_parent(nullptr);
     }
   }
 }

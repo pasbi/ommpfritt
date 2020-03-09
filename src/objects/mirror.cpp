@@ -125,6 +125,7 @@ void Mirror::update()
       m_draw_children = true;
       if (n_children > 0) {
         m_reflection = this->tree_children().front()->clone();
+        m_reflection->set_virtual_parent(this);
         m_reflection->set_transformation(mirror_t.apply(m_reflection->transformation()));
         m_reflection->update();
       }

@@ -46,6 +46,7 @@ public:
   enum class Visibility { Default, Hidden, Visible };
 
   void transform(const ObjectTransformation& transformation);
+  void set_virtual_parent(const Object* parent);
   ObjectTransformation transformation() const;
   ObjectTransformation global_transformation(Space space) const;
   void set_transformation(const ObjectTransformation& transformation);
@@ -131,6 +132,7 @@ public:
   void set_object_tree(ObjectTree& object_tree);
 private:
   ObjectTree* m_object_tree = nullptr;
+  const Object* m_virtual_parent = nullptr;
 
 private:
   mutable bool m_visibility_cache_is_dirty = true;

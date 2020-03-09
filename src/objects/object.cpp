@@ -121,7 +121,11 @@ ObjectTransformation Object::transformation() const
 
 ObjectTransformation Object::global_transformation(Space space) const
 {
-  if (is_root() || (space == Space::Scene && tree_parent().is_root())) {
+  if (m_virtual_parent != nullptr) {
+    return m_virtual_parent->global_transformation(space).apply(transformation());
+  } else if (is_root()) {
+    return transformation();
+  } else if (space == Space::Scene && tree_parent().is_root()) {
     return transformation();
   } else {
     // TODO caching could gain some speed
@@ -173,6 +177,11 @@ void Object::set_global_axis_transformation( const ObjectTransformation& global_
 void Object::transform(const ObjectTransformation& transformation)
 {
   set_transformation(transformation.apply(this->transformation()));
+}
+
+void Object::set_virtual_parent(const Object* parent)
+{
+  m_virtual_parent = parent;
 }
 
 std::ostream& operator<<(std::ostream& ostream, const Object& object)

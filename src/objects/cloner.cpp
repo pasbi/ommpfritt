@@ -314,6 +314,7 @@ std::vector<std::unique_ptr<Object>> Cloner::copy_children(const std::size_t cou
     clones.reserve(count);
     for (std::size_t i = 0; i < count; ++i) {
       auto clone = tree_child(i % n_children).clone();
+      clone->set_virtual_parent(this);
       clone->update();
       clones.push_back(std::move(clone));
     }
