@@ -1,5 +1,4 @@
 #include "managers/propertymanager/propertymanagertab.h"
-
 #include <memory>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -39,28 +38,27 @@ PropertyManagerTab::add_properties(Scene& scene, const QString& key,
   const auto properties = ::transform<Property*, std::set>(property_map, [](const auto& pair) {
     return pair.second;
   });
-  auto container_widget = std::make_unique<QWidget>(this);
-  auto container_widget_layout = std::make_unique<QHBoxLayout>();
-  container_widget_layout->setSpacing(0);
-  if (Property::get_value<bool>(properties, std::mem_fn(&Property::is_animatable))) {
-    auto animation_button = std::make_unique<AnimationButton>(scene.animator(), property_map);
-    animation_button->setFixedSize(animation_button_size);
-    container_widget_layout->addWidget(animation_button.release(), 0);
-  } else {
-    container_widget_layout->addSpacing(animation_button_size.width());
-  }
+  if ((*properties.begin())->is_visible()) {
+    auto container_widget = std::make_unique<QWidget>(this);
+    auto container_widget_layout = std::make_unique<QHBoxLayout>();
+    container_widget_layout->setSpacing(0);
+    if (Property::get_value<bool>(properties, std::mem_fn(&Property::is_animatable))) {
+      auto animation_button = std::make_unique<AnimationButton>(scene.animator(), property_map);
+      animation_button->setFixedSize(animation_button_size);
+      container_widget_layout->addWidget(animation_button.release(), 0);
+    } else {
+      container_widget_layout->addSpacing(animation_button_size.width());
+    }
 
-  const auto widget_type = (*properties.begin())->widget_type();
-  auto property_widget = AbstractPropertyWidget::make(widget_type, scene, properties);
-  container_widget_layout->addWidget(property_widget.release(), 1);
+    const auto widget_type = (*properties.begin())->widget_type();
+    auto property_widget = AbstractPropertyWidget::make(widget_type, scene, properties);
+    container_widget_layout->addWidget(property_widget.release(), 1);
 
-  connect(*properties.begin(), SIGNAL(visibility_changed(bool)),
-          container_widget.get(), SLOT(setVisible(bool)));
-  if (!(*properties.begin())->is_visible()) {
-    container_widget->hide();
+    connect(*properties.begin(), SIGNAL(visibility_changed(bool)),
+            container_widget.get(), SLOT(setVisible(bool)));
+    container_widget->setToolTip(key);
+    m_layout->addLayout(container_widget_layout.release());
   }
-  container_widget->setToolTip(key);
-  m_layout->addLayout(container_widget_layout.release());
 }
 
 }  // namespace omm

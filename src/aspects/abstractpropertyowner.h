@@ -82,6 +82,9 @@ public:
 protected Q_SLOTS:
   virtual void on_property_value_changed(Property* property) { Q_UNUSED(property); }
 
+Q_SIGNALS:
+  void property_visibility_changed();
+
 private:
   OrderedMap<QString, Property> m_properties;
   Scene* m_scene = nullptr;

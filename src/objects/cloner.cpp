@@ -242,6 +242,7 @@ void Cloner::update_property_visibility(Mode mode)
       property(pk)->set_visible(::contains(visibility_map.at(mode), pk));
     }
   }
+  Q_EMIT property_visibility_changed();
 }
 
 QString Cloner::type() const { return TYPE; }

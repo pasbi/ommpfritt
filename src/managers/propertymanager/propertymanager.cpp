@@ -154,7 +154,17 @@ PropertyManager::~PropertyManager()
 void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& selection)
 {
   if (!is_locked()) {
+    for (auto* apo : m_current_selection) {
+      disconnect(apo, SIGNAL(property_visibility_changed()),
+                 this, SLOT(update_property_widgets()));
+    }
+
     m_current_selection = selection;
+    for (auto* apo : m_current_selection) {
+      connect(apo, SIGNAL(property_visibility_changed()),
+              this, SLOT(update_property_widgets()), Qt::QueuedConnection);
+    }
+
     update_property_widgets();
     m_title_bar->set_selection(selection);
 

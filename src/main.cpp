@@ -28,7 +28,7 @@ auto load_translator(const QString& prefix, const QLocale& locale)
     return translator;
   } else {
     LWARNING << "No translator '" << prefix << "' found for " << locale_name
-                 << ". Using fallback-translator.";
+             << ". Using fallback-translator.";
     if (translator->load(prefix + "_", ":/qm", "_", ".qm")) {
       LINFO << "Installing fallback-translator.";
       return translator;
