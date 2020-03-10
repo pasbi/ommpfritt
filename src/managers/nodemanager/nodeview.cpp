@@ -160,13 +160,15 @@ void NodeView::paste_from_clipboard()
     const auto nodes = ::transform<Node*, std::vector>(static_cast<const NodeMimeData&>(mime_data).nodes());
 
     std::map<const Node*, Node*> copy_map;
-    auto copies = ::transform<std::unique_ptr<Node>, std::vector>(nodes,
-                                                                  [&model, &copy_map](Node* node)
-    {
+    const auto copyable_nodes =  ::filter_if(nodes, [](const auto& node) {
+      return node->copyable();
+    });
+    const auto make_copy = [&model, &copy_map](Node* node) {
       auto clone = node->clone(model);
       copy_map[node] = clone.get();
       return clone;
-    });
+    };
+    auto copies = ::transform<std::unique_ptr<Node>, std::vector>(copyable_nodes, make_copy);
 
     { // set position
       const auto old_center = std::accumulate(nodes.begin(), nodes.end(), QPointF(),

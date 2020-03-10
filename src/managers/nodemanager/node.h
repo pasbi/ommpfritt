@@ -122,6 +122,7 @@ protected:
 public:
   Property& add_property(const QString& key, std::unique_ptr<Property> property) override;
   std::unique_ptr<Property> extract_property(const QString& key) override;
+  virtual bool copyable() const { return true; }
 
 Q_SIGNALS:
   void pos_changed(const QPointF& pos);

@@ -18,6 +18,7 @@ public:
 
   static const Detail detail;
   OrdinaryPort<PortType::Input>& input_port() const { return *m_input_port; }
+  bool copyable() const override { return false; }
 
 private:
   OrdinaryPort<PortType::Input>* m_input_port = nullptr;
