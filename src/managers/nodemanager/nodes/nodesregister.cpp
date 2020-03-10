@@ -11,6 +11,7 @@
 #include "managers/nodemanager/nodes/colorconvertnode.h"
 #include "managers/nodemanager/nodes/functionnode.h"
 #include "managers/nodemanager/nodes/function2node.h"
+#include "managers/nodemanager/nodes/linepatternnode.h"
 
 namespace omm
 {
@@ -33,6 +34,7 @@ void register_nodes()
   REGISTER_NODE(ColorConvertNode);
   REGISTER_NODE(FunctionNode);
   REGISTER_NODE(Function2Node);
+  REGISTER_NODE(LinePatternNode);
 #undef REGISTER_NODE
 }
 
