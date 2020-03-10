@@ -145,7 +145,7 @@ std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
         const QString tr_menu_name = QApplication::translate("NodeMenuPath", token);
         auto menu = std::make_unique<QMenu>(tr_menu_name);
         QMenu& ref = *menu;
-        sub_menus.insert({ tr_menu_name, &ref });
+        sub_menus.insert({ token, &ref });
         root->addMenu(menu.release());
         root = &ref;
       } else {
