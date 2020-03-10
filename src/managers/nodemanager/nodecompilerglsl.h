@@ -16,12 +16,12 @@ public:
   QString compile_node(const Node& node, QStringList& lines) const;
   QString compile_connection(const OutputPort& op, const InputPort& ip, QStringList& lines) const;
   QString define_node(const QString& node_type, QStringList& lines) const;
-  std::set<OutputPort*> uniform_ports() const { return m_uniform_ports; }
+  std::set<AbstractPort*> uniform_ports() const { return m_uniform_ports; }
   static QString translate_type(const QString& type);
   void invalidate() override;
 
 private:
-  mutable std::set<OutputPort*> m_uniform_ports;
+  mutable std::set<AbstractPort*> m_uniform_ports;
 };
 
 }  // namespace omm

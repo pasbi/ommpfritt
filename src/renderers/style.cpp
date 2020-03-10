@@ -164,7 +164,9 @@ void Style::update_uniform_values() const
   auto& compiler = static_cast<NodeCompilerGLSL&>(node_model().compiler());
   for (AbstractPort* port : compiler.uniform_ports()) {
     assert(port->flavor == omm::PortFlavor::Property);
-    const Property* property = static_cast<const PropertyOutputPort*>(port)->property();
+    const Property* property = port->port_type == PortType::Input
+                                ? static_cast<PropertyInputPort*>(port)->property()
+                                : static_cast<PropertyOutputPort*>(port)->property();
     if (property != nullptr) {
       m_offscreen_renderer->set_uniform(port->uuid(), property->variant_value());
     }

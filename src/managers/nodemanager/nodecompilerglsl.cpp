@@ -97,19 +97,27 @@ QString NodeCompilerGLSL::generate_header(QStringList& lines) const
   for (OutputPort* port : model().ports<OutputPort>()) {
     // only property ports can be uniform
     if (port->flavor == omm::PortFlavor::Property) {
-      // inputs cannot be uniform
-      if (port->port_type == PortType::Output) {
-        AbstractPort* sibling = get_sibling(port);
-        // if the sibling (same property) input port is connected, the non-uniform value is forwarded.
-        // We don't need a uniform.
-        if (sibling == nullptr || !sibling->is_connected()) {
-          m_uniform_ports.insert(port);
-          lines.push_back(QString("uniform %1 %2;")
-                          .arg(translate_type(port->data_type()))
-                          .arg(port->uuid()));
-        }
+      AbstractPort* sibling = get_sibling(port);
+      // if the sibling (same property) input port is connected, the non-uniform value is forwarded.
+      // We don't need a uniform.
+      if (sibling == nullptr || !sibling->is_connected()) {
+        m_uniform_ports.insert(port);
       }
     }
+  }
+  for (InputPort* port : model().ports<InputPort>()) {
+    // only property ports can be uniform
+    if (port->flavor == omm::PortFlavor::Property) {
+      PropertyInputPort* ip = static_cast<PropertyInputPort*>(port);
+      if (!ip->is_connected() && get_sibling(port) == nullptr) {
+        m_uniform_ports.insert(port);
+      }
+    }
+  }
+  for (AbstractPort* port : m_uniform_ports) {
+    lines.push_back(QString("uniform %1 %2;")
+                    .arg(translate_type(port->data_type()))
+                    .arg(port->uuid()));
   }
   return "";
 }
