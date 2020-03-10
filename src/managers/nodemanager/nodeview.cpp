@@ -9,21 +9,21 @@
 #include "properties/referenceproperty.h"
 #include <QMimeData>
 #include "scene/propertyownermimedata.h"
-#include "managers/nodemanager/nodes/referencenode.h"
+#include "nodesystem/nodes/referencenode.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
 #include "commands/nodecommand.h"
-#include "managers/nodemanager/node.h"
+#include "nodesystem/node.h"
 #include "mainwindow/application.h"
 #include "preferences/preferences.h"
-#include "managers/nodemanager/nodemodel.h"
+#include "nodesystem/nodemodel.h"
 #include <QGraphicsItem>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QToolTip>
-#include "managers/nodemanager/nodemodel.h"
+#include "nodesystem/nodemodel.h"
 #include "managers/nodemanager/nodescene.h"
-#include "managers/nodemanager/nodes/fragmentnode.h"
+#include "nodesystem/nodes/fragmentnode.h"
 
 namespace
 {

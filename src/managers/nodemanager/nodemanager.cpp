@@ -1,20 +1,20 @@
 #include "managers/nodemanager/nodemanager.h"
-#include "managers/nodemanager/nodes/constantnode.h"
-#include "managers/nodemanager/nodecompiler.h"
+#include "nodesystem/nodes/constantnode.h"
+#include "nodesystem/nodecompiler.h"
 #include <QMimeData>
 #include <QClipboard>
 #include "managers/nodemanager/nodemanagertitlebar.h"
-#include "managers/nodemanager/nodesowner.h"
+#include "nodesystem/nodesowner.h"
 #include "commands/nodecommand.h"
-#include "managers/nodemanager/node.h"
+#include "nodesystem/node.h"
 #include "logging.h"
-#include "managers/nodemanager/nodemodel.h"
+#include "nodesystem/nodemodel.h"
 #include "ui_nodemanager.h"
 #include "mainwindow/application.h"
 #include "keybindings/menu.h"
 #include "scene/messagebox.h"
 #include <QContextMenuEvent>
-#include "managers/nodemanager/nodes/fragmentnode.h"
+#include "nodesystem/nodes/fragmentnode.h"
 
 namespace
 {

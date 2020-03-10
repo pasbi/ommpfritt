@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QMimeData>
-#include "managers/nodemanager/nodecompiler.h"
+#include "nodesystem/nodecompiler.h"
 #include "logging.h"
 
 namespace omm

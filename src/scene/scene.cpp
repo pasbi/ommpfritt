@@ -33,7 +33,7 @@
 #include "scene/messagebox.h"
 #include "animation/animator.h"
 #include "color/namedcolors.h"
-#include "managers/nodemanager/node.h"
+#include "nodesystem/node.h"
 
 namespace
 {

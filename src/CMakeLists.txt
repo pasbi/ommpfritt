@@ -45,6 +45,7 @@ add_subdirectory(serializers)
 add_subdirectory(tags)
 add_subdirectory(tools)
 add_subdirectory(widgets)
+add_subdirectory(nodesystem)
 
 target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

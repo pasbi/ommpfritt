@@ -1,7 +1,7 @@
-#include "managers/nodemanager/port.h"
+#include "nodesystem/port.h"
 #include "common.h"
-#include "managers/nodemanager/nodemodel.h"
-#include "managers/nodemanager/node.h"
+#include "nodesystem/nodemodel.h"
+#include "nodesystem/node.h"
 #include "commands/nodecommand.h"
 
 namespace

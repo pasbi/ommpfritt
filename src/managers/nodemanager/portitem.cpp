@@ -1,7 +1,7 @@
 #include "managers/nodemanager/portitem.h"
 #include "managers/nodemanager/nodeitem.h"
 #include "preferences/uicolors.h"
-#include "managers/nodemanager/port.h"
+#include "nodesystem/port.h"
 #include <QPainter>
 
 namespace

@@ -4,9 +4,9 @@
 #include "aspects/propertyowner.h"
 #include "color/color.h"
 #include "properties/propertygroups/markerproperties.h"
-#include "managers/nodemanager/nodemodel.h"
-#include "managers/nodemanager/nodesowner.h"
-#include "managers/nodemanager/nodecompilerglsl.h"
+#include "nodesystem/nodemodel.h"
+#include "nodesystem/nodesowner.h"
+#include "nodesystem/nodecompilerglsl.h"
 #include "renderers/texture.h"
 
 namespace omm

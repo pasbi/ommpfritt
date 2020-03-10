@@ -1,5 +1,5 @@
 #include "commands/forwardingportcommand.h"
-#include "managers/nodemanager/nodes/referencenode.h"
+#include "nodesystem/nodes/referencenode.h"
 
 namespace omm
 {

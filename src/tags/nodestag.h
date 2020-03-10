@@ -3,9 +3,9 @@
 #include <memory>
 #include "tags/tag.h"
 #include <Qt>
-#include "managers/nodemanager/nodemodel.h"
-#include "managers/nodemanager/nodesowner.h"
-#include "managers/nodemanager/nodecompilerpython.h"
+#include "nodesystem/nodemodel.h"
+#include "nodesystem/nodesowner.h"
+#include "nodesystem/nodecompilerpython.h"
 
 namespace omm
 {

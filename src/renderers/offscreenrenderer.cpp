@@ -5,7 +5,7 @@
 #include <QOpenGLShaderProgram>
 #include <QDebug>
 #include <QImage>
-#include "managers/nodemanager/nodecompilerglsl.h"
+#include "nodesystem/nodecompilerglsl.h"
 #include "geometry/objecttransformation.h"
 #include <QApplication>
 #include "objects/object.h"

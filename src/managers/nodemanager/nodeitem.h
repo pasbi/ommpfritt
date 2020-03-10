@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QGraphicsItem>
-#include "managers/nodemanager/port.h"
+#include "nodesystem/port.h"
 
 namespace omm
 {

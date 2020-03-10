@@ -1,6 +1,6 @@
 #include "managers/nodemanager/nodescene.h"
-#include "managers/nodemanager/node.h"
-#include "managers/nodemanager/nodemodel.h"
+#include "nodesystem/node.h"
+#include "nodesystem/nodemodel.h"
 #include "scene/scene.h"
 #include "managers/nodemanager/nodeitem.h"
 

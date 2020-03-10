@@ -3,7 +3,7 @@
 #include "managers/nodemanager/nodeview.h"
 #include "propertywidgets/optionspropertywidget/optionsedit.h"
 #include "propertywidgets/optionspropertywidget/optionspropertywidget.h"
-#include "managers/nodemanager/nodemodel.h"
+#include "nodesystem/nodemodel.h"
 #include "preferences/uicolors.h"
 #include "propertywidgets/propertywidget.h"
 #include <QPainter>
@@ -11,8 +11,8 @@
 #include <QGraphicsProxyWidget>
 #include <QApplication>
 #include <QGraphicsSceneDragDropEvent>
-#include "managers/nodemanager/node.h"
-#include "managers/nodemanager/ordinaryport.h"
+#include "nodesystem/node.h"
+#include "nodesystem/ordinaryport.h"
 #include "managers/nodemanager/portitem.h"
 #include "managers/nodemanager/nodescene.h"
 

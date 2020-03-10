@@ -17,7 +17,7 @@
 #include <QDirIterator>
 #include "logging.h"
 #include "animation/track.h"
-#include "managers/nodemanager/node.h"
+#include "nodesystem/node.h"
 
 auto load_translator(const QString& prefix, const QLocale& locale)
 {
