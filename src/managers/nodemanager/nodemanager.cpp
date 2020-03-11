@@ -158,8 +158,8 @@ std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
   if (NodeModel* model = m_ui->nodeview->model(); model != nullptr) {
     for (const QString& name : Node::keys()) {
       if (accept_node(*model, name)) {
-        auto action = kb.make_menu_action(*this, name);
         if (const auto menu_path = Node::detail(name).menu_path; !menu_path.empty()) {
+          auto action = kb.make_menu_action(*this, name);
           QMenu& menu = find_menu(root_menu.get(), menu_path);
           menu.addAction(action.release());
         }

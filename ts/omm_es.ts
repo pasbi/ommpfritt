@@ -32,13 +32,6 @@
     </message>
 </context>
 <context>
-    <name>ColorConvertNode</name>
-    <message>
-        <source>color</source>
-        <translation type="obsolete">Color</translation>
-    </message>
-</context>
-<context>
     <name>ColorWidget</name>
     <message>
         <source>...</source>
@@ -71,38 +64,6 @@
     <message>
         <source>&amp;S:</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ComposeColorNode</name>
-    <message>
-        <source>color</source>
-        <translation type="obsolete">Color</translation>
-    </message>
-</context>
-<context>
-    <name>ComposeNode</name>
-    <message>
-        <source>x</source>
-        <translation type="obsolete">x</translation>
-    </message>
-</context>
-<context>
-    <name>DecomposeColorNode</name>
-    <message>
-        <source>r</source>
-        <translation type="obsolete">Radio</translation>
-    </message>
-    <message>
-        <source>color</source>
-        <translation type="obsolete">Color</translation>
-    </message>
-</context>
-<context>
-    <name>DecomposeNode</name>
-    <message>
-        <source>x</source>
-        <translation type="obsolete">x</translation>
     </message>
 </context>
 <context>
@@ -220,27 +181,6 @@
     </message>
 </context>
 <context>
-    <name>FragmentNode</name>
-    <message>
-        <source>color</source>
-        <translation type="obsolete">Color</translation>
-    </message>
-</context>
-<context>
-    <name>Function2Node</name>
-    <message>
-        <source>length</source>
-        <translation type="obsolete">Longitud</translation>
-    </message>
-</context>
-<context>
-    <name>FunctionNode</name>
-    <message>
-        <source>x</source>
-        <translation type="obsolete">x</translation>
-    </message>
-</context>
-<context>
     <name>GeneralPage</name>
     <message>
         <source>&amp;Language</source>
@@ -266,13 +206,6 @@
     </message>
 </context>
 <context>
-    <name>MathNode</name>
-    <message>
-        <source>*</source>
-        <translation type="obsolete">*</translation>
-    </message>
-</context>
-<context>
     <name>NamedColorsDialog</name>
     <message>
         <source>Manage Named Colors</source>
@@ -295,11 +228,30 @@
     </message>
 </context>
 <context>
-    <name>OffscreenRenderer</name>
+    <name>NodeMenuPath</name>
     <message>
-        <source>local_pos_centered</source>
+        <source>General</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Math</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pattern</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OffscreenRenderer</name>
     <message>
         <source>local_pos</source>
         <translation type="unfinished"></translation>
@@ -309,7 +261,15 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>viewport_pos</source>
+        <source>local_normalized_pos</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>object_size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>view_pos</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1363,18 +1323,6 @@ Borrar la selección de todos modos?</translation>
     </message>
 </context>
 <context>
-    <name>ReferenceNode</name>
-    <message>
-        <source>Reference</source>
-        <translation type="obsolete">Referencia</translation>
-    </message>
-    <message>
-        <source>output</source>
-        <comment>ReferenceNode</comment>
-        <translation type="obsolete">Output</translation>
-    </message>
-</context>
-<context>
     <name>Tag</name>
     <message>
         <source>Tag</source>
@@ -1477,13 +1425,6 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>User Property Dialog</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>VertexNode</name>
-    <message>
-        <source>position</source>
-        <translation type="obsolete">Posición</translation>
     </message>
 </context>
 <context>
@@ -1657,15 +1598,19 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ColorConvertNode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Function2Node</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>FunctionNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LinePatternNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ColorConvertNode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1954,6 +1899,50 @@ Borrar la selección de todos modos?</translation>
         <source>remove nodes</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>ColorConvertNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ComposeColorNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DecomposeColorNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FragmentNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Function2Node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FunctionNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LinePatternNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VertexNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>copy</source>
+        <translation type="unfinished">Copiar</translation>
+    </message>
+    <message>
+        <source>cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>paste</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>keybindings/ObjectManager</name>
@@ -2199,6 +2188,22 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>G</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>color</source>
         <translation type="unfinished">Color</translation>
     </message>
@@ -2255,19 +2260,19 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished">Color</translation>
     </message>
     <message>
-        <source>r</source>
-        <translation type="unfinished">Radio</translation>
-    </message>
-    <message>
-        <source>g</source>
+        <source>R</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>b</source>
+        <source>G</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>a</source>
+        <source>B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2542,6 +2547,41 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>Do you really want to reset all key bindings to the default value?
 This cannot be undone.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::LinePatternNode</name>
+    <message>
+        <source>Lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>freq</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ratio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>left ramp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>right ramp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>position</source>
+        <translation type="unfinished">Posición</translation>
+    </message>
+    <message>
+        <source>lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line Pattern</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2887,13 +2927,6 @@ This cannot be undone.</source>
     <message>
         <source>&lt;unnamed property&gt;</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>omm::VertexNode</name>
-    <message>
-        <source>position</source>
-        <translation type="obsolete">Posición</translation>
     </message>
 </context>
 <context>

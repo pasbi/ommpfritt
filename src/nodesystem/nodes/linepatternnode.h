@@ -7,6 +7,7 @@ namespace omm
 
 class LinePatternNode : public Node
 {
+  Q_OBJECT
 public:
   explicit LinePatternNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "LinePatternNode");

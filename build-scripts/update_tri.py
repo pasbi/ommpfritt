@@ -35,9 +35,12 @@ if __name__ == "__main__":
     lines = [ format(disambiguation, text) for disambiguation, text in items ]
     lines = sorted(lines)
 
-    with open(base_path + "/src/translations.h", 'w') as f:
+    fn = base_path + "/src/translations.h"
+    print(f"Writing translations into '{fn}'...")
+    with open(fn, 'w') as f:
         for line in lines:
             f.write(line + "\n")
+        print("done.")
 
 
 
