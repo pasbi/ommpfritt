@@ -20,12 +20,6 @@ class Scene;
 class Property;
 class Path;
 
-class PathDeleter
-{
-public:
-  void operator()(Path* path);
-};
-
 class Object
   : public PropertyOwner<Kind::Object>
   , public virtual Serializable
@@ -33,12 +27,9 @@ class Object
   , public AbstractFactory<QString, Object, Scene*>
 {
   Q_OBJECT
-
   Scene* m_scene;
 
 public:
-  using PathUniquePtr = std::unique_ptr<Path, PathDeleter>;
-
   explicit Object(Scene* scene);
   explicit Object(const Object& other);
   ~Object();
@@ -105,7 +96,7 @@ public:
   void set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t,
                             Space space);
   void set_oriented_position(const Point &op, const bool align);
-  virtual PathUniquePtr outline(const double offset) const;
+  virtual std::unique_ptr<Path> outline(const double offset) const;
   virtual std::vector<Point> points() const;
 
   virtual bool contains(const Vec2f& pos) const;

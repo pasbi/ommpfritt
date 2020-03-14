@@ -36,7 +36,7 @@ protected:
   void on_property_value_changed(Property *property) override;
 
 private:
-  PathUniquePtr m_outline;
+  std::unique_ptr<Path> m_outline;
   void polish();
 };
 

@@ -39,7 +39,7 @@ public:
 
   std::map<Point*, Point>
   modified_points(const bool constrain_to_selection, InterpolationMode mode);
-  PathUniquePtr outline(const double t) const override;
+  std::unique_ptr<Path> outline(const double t) const override;
 
   struct PointSequence
   {

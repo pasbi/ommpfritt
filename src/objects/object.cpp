@@ -489,9 +489,8 @@ void Object::update_recursive()
 void Object::draw_object(Painter&, const Style&, Painter::Options) const {}
 void Object::draw_handles(Painter&) const {}
 std::vector<Point> Object::points() const { return {}; }
-void PathDeleter::operator()(Path *path) { delete path; }
 
-Object::PathUniquePtr Object::outline(const double offset) const
+std::unique_ptr<Path> Object::outline(const double offset) const
 {
   Q_UNUSED(offset)
   return nullptr;

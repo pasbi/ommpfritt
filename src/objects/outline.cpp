@@ -25,7 +25,7 @@ Outline::Outline(Scene* scene) : Object(scene)
 }
 
 Outline::Outline(const Outline &other)
-  : Object(other), m_outline(other.m_outline ? PathUniquePtr(new Path(*other.m_outline)) : nullptr)
+  : Object(other), m_outline(other.m_outline ? std::make_unique<Path>(*other.m_outline) : nullptr)
 {
   polish();
 }
