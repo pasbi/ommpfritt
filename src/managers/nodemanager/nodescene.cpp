@@ -26,13 +26,17 @@ void NodeScene::set_model(NodeModel* model)
   m_block_selection_change_notification = true;
   clear();
   if (m_model) {
-    disconnect(m_model, SIGNAL(node_added(Node&)), this, SLOT(add_node(Node&)));
+    disconnect(&m_model->compiler(), SIGNAL(compilation_failed(QString)), this, SLOT(update()));
+    disconnect(&m_model->compiler(), SIGNAL(compilation_succeeded(QString)), this, SLOT(update()));
     disconnect(m_model, SIGNAL(node_removed(Node&)), this, SLOT(remove_node(Node&)));
+    disconnect(m_model, SIGNAL(node_added(Node&)), this, SLOT(add_node(Node&)));
   }
   m_model = model;
   if (m_model) {
     connect(m_model, SIGNAL(node_added(Node&)), this, SLOT(add_node(Node&)));
     connect(m_model, SIGNAL(node_removed(Node&)), this, SLOT(remove_node(Node&)));
+    connect(&m_model->compiler(), SIGNAL(compilation_succeeded(QString)), this, SLOT(update()));
+    connect(&m_model->compiler(), SIGNAL(compilation_failed(QString)), this, SLOT(update()));
   }
   if (m_model != nullptr) {
     for (Node* node : model->nodes()) {

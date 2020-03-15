@@ -85,7 +85,7 @@ private:
   Scene& m_scene;
   void init();
   std::unique_ptr<AbstractNodeCompiler> m_compiler;
-  QString m_error;
+  QString m_error = "";
   FragmentNode* m_fragment_node = nullptr;
   bool m_emit_topology_changed_blocked = false;
 };

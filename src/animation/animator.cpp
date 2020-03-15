@@ -81,7 +81,7 @@ void Animator::deserialize(AbstractDeserializer &deserializer, const Pointer &po
 
   set_start(deserializer.get_int(make_pointer(pointer, START_FRAME_POINTER)));
   set_end(deserializer.get_int(make_pointer(pointer, END_FRAME_POINTER)));
-  set_current(deserializer.get_int(make_pointer(pointer, CURRENT_FRAME_POINTER)));
+  m_current_frame = deserializer.get_int(make_pointer(pointer, CURRENT_FRAME_POINTER));
   filename_pattern = deserializer.get_string(make_pointer(pointer, "filename-pattern"));
   overwrite_file = deserializer.get_bool(make_pointer(pointer, "overwrite-file"));
   m_play_mode = static_cast<PlayMode>(deserializer.get_int(make_pointer(pointer, "play-mode")));

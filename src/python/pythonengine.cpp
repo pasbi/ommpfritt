@@ -79,10 +79,17 @@ bool PythonEngine
   PythonStreamRedirect py_output_redirect {};
   try {
     py::exec(code.toStdString(), py::globals(), locals);
-    Q_EMIT output(associated_item, py_output_redirect.stdout_(), Stream::stdout_);
-    Q_EMIT output(associated_item, py_output_redirect.stderr_(), Stream::stderr_);
+    if (const auto stdout_ = py_output_redirect.stdout_(); !stdout_.isEmpty()) {
+      Q_EMIT output(associated_item, stdout_, Stream::stdout_);
+      LINFO << "Python output: " << stdout_;
+    }
+    if (const auto stderr_ = py_output_redirect.stderr_(); !stderr_.isEmpty()) {
+      Q_EMIT output(associated_item, stderr_, Stream::stderr_);
+      LERROR << "Python error:  " << stderr_;
+    }
     return true;
   } catch (const std::exception& e) {
+    LERROR << "Python exception: " << e.what();
     Q_EMIT output(associated_item, e.what(), Stream::stderr_);
     return false;
   }
