@@ -28,9 +28,4 @@ void FloatProperty::serialize(AbstractSerializer& serializer, const Pointer& roo
   }
 }
 
-std::unique_ptr<Property> FloatProperty::clone() const
-{
-  return std::make_unique<FloatProperty>(*this);
-}
-
 }  // namespace omm

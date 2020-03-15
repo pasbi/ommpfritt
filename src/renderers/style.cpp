@@ -117,6 +117,12 @@ void Style::init()
 }
 
 QString Style::type() const { return TYPE; }
+
+std::unique_ptr<Style> Style::clone() const
+{
+  return std::make_unique<Style>(*this);
+}
+
 Flag Style::flags() const
 {
   return Flag::None | Flag::HasGLSLNodes;
@@ -188,12 +194,6 @@ void Style::set_error(const QString& error) const
 {
   node_model().set_error(error);
   m_offscreen_renderer->set_fragment_shader("");
-}
-
-std::unique_ptr<Style> Style::clone() const
-{
-  auto clone = std::make_unique<Style>(*this);
-  return clone;
 }
 
 }  // namespace omm

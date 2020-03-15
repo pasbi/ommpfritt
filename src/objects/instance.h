@@ -23,7 +23,6 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Instance");
   static constexpr auto REFERENCE_PROPERTY_KEY = "reference";
   static constexpr auto IDENTICAL_PROPERTY_KEY = "identical";
-  std::unique_ptr<Object> clone() const override;
   std::unique_ptr<Object> convert() const override;
   Flag flags() const override;
   void post_create_hook() override;

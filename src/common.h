@@ -195,15 +195,19 @@ template<typename S, typename... Ts> bool contains(const std::map<Ts...>& map, S
 template<typename T> struct is_unique_ptr : std::true_type {};
 template<typename... T> struct is_unique_ptr<std::unique_ptr<T...>> : std::true_type {};
 
-// https://stackoverflow.com/a/87846/4248972
-template<typename T> struct HasCloneMethod
-{
-  struct big_t { char x; char y; };
-  template<typename U, std::unique_ptr<T> (U::*)() const> struct SFINAE {};
-  template<typename U> static char Test(SFINAE<U, &U::clone>*);
-  template<typename U> static big_t Test(...);
-  static constexpr bool value = sizeof(Test<T>(0)) == sizeof(char);
+template<typename C>
+struct HasCloneMethod {
+private:
+  template<typename T> using X = decltype(std::declval<T>().clone());
+  template<typename T> using U = typename std::is_same<X<T>, std::unique_ptr<T>>::type;
+  template<typename T> static constexpr auto check(T*) -> U<T>;
+  template<typename> static constexpr std::false_type check(...);
+  using type = decltype(check<C>(0));
+
+public:
+  static constexpr bool value = type::value;
 };
+
 
 template<typename T, template<typename...> class ContainerT>
 ContainerT<std::unique_ptr<T>> copy(const ContainerT<std::unique_ptr<T>>& other)

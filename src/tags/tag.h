@@ -13,14 +13,14 @@ class Scene;
 
 class Tag
   : public PropertyOwner<Kind::Tag>
-  , public AbstractFactory<QString, Tag, Object&>
+  , public AbstractFactory<QString, true, Tag, Object&>
 {
 public:
   explicit Tag(Object& owner);
   ~Tag();
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Tag", "Tag");
-  virtual std::unique_ptr<Tag> clone() const = 0;
   std::unique_ptr<Tag> clone(Object& owner) const;
+  std::unique_ptr<Tag> clone() const { return AbstractFactory::clone(); }
   Object* owner;
   virtual void evaluate() = 0;
   virtual void force_evaluate() { evaluate(); }

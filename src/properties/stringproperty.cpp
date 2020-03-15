@@ -43,10 +43,4 @@ StringProperty &StringProperty::set_mode(StringProperty::Mode mode)
   return *this;
 }
 
-std::unique_ptr<Property> StringProperty::clone() const
-{
-  return std::make_unique<StringProperty>(*this);
-}
-
-
 }  // namespace omm

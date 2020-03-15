@@ -91,7 +91,6 @@ void NodesTag::deserialize(AbstractDeserializer& deserializer, const Serializabl
   node_model().deserialize(deserializer, make_pointer(root, NODES_POINTER));
 }
 
-std::unique_ptr<Tag> NodesTag::clone() const { return std::make_unique<NodesTag>(*this); }
 
 void NodesTag::on_property_value_changed(Property *property)
 {

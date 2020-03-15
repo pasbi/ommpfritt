@@ -23,7 +23,6 @@ public:
   static constexpr auto OFFSET_PROPERTY_KEY = "offset";
   static constexpr auto REFERENCE_PROPERTY_KEY = "ref";
 
-  std::unique_ptr<Object> clone() const override;
   virtual Flag flags() const override;
   std::unique_ptr<Object> convert() const override;
   void update() override;

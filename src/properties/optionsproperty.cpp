@@ -56,11 +56,6 @@ void OptionsProperty::set(const variant_type& variant)
   }
 }
 
-std::unique_ptr<Property> OptionsProperty::clone() const
-{
-  return std::make_unique<OptionsProperty>(*this);
-}
-
 std::vector<QString> OptionsProperty::options() const
 {
   if (configuration.count(OPTIONS_POINTER) > 0) {

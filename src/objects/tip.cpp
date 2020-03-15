@@ -38,11 +38,6 @@ QString Tip::type() const
   return "Tip";
 }
 
-std::unique_ptr<Object> Tip::clone() const
-{
-  return std::make_unique<Tip>(*this);
-}
-
 bool Tip::is_closed() const
 {
   return true;

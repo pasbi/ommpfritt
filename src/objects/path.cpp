@@ -82,7 +82,6 @@ BoundingBox Path::bounding_box(const ObjectTransformation &transformation) const
 }
 
 QString Path::type() const { return TYPE; }
-std::unique_ptr<Object> Path::clone() const { return std::make_unique<Path>(*this); }
 
 void Path::set_points(const std::vector<Point>& points)
 {

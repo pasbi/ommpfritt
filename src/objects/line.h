@@ -10,7 +10,6 @@ public:
   explicit Line(Scene* scene);
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Line");
-  std::unique_ptr<Object> clone() const override;
   Flag flags() const override;
 
   static constexpr auto LENGTH_PROPERTY_KEY = "length";

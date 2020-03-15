@@ -44,7 +44,6 @@ ScriptTag::ScriptTag(Object& owner)
 
 QString ScriptTag::type() const { return TYPE; }
 Flag ScriptTag::flags() const { return Tag::flags() | Flag::HasScript; }
-std::unique_ptr<Tag> ScriptTag::clone() const { return std::make_unique<ScriptTag>(*this); }
 
 void ScriptTag::on_property_value_changed(Property *property)
 {

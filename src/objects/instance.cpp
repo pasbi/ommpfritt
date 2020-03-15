@@ -114,7 +114,6 @@ std::unique_ptr<Object> Instance::convert() const
 }
 
 QString Instance::type() const { return TYPE; }
-std::unique_ptr<Object> Instance::clone() const { return std::make_unique<Instance>(*this); }
 Flag Instance::flags() const { return Object::flags() | Flag::Convertible; }
 
 void Instance::post_create_hook()

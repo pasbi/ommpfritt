@@ -28,7 +28,7 @@ class OptionsProperty;
 
 class Property
   : public QObject
-  , public AbstractFactory<QString, Property>
+  , public AbstractFactory<QString, true, Property>
   , public virtual Serializable
 {
   Q_OBJECT
@@ -135,8 +135,6 @@ public:
 
   // tracks of numeric properties can be displayed as fcurve.
   virtual bool is_numerical() const = 0;
-
-  virtual std::unique_ptr<Property> clone() const = 0;
 
   virtual void revise();
 

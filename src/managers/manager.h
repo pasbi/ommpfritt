@@ -17,7 +17,7 @@ class Scene;
 
 class Manager
   : public QDockWidget
-  , virtual public AbstractFactory<QString, Manager, Scene&>
+  , virtual public AbstractFactory<QString, false, Manager, Scene&>
   , virtual public CommandInterface
 {
   Q_OBJECT   // Required for MainWindow::save_state

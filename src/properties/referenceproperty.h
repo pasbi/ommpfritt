@@ -30,7 +30,6 @@ public:
 
   bool is_compatible(const Property& other) const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Property", "ReferenceProperty");
-  std::unique_ptr<Property> clone() const override;
 
   static std::vector<omm::AbstractPropertyOwner*>
   collect_candidates(const Scene& scene, const Kind kinds,

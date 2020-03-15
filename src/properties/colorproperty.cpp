@@ -51,9 +51,4 @@ void ColorProperty::serialize(AbstractSerializer& serializer, const Pointer& roo
   }
 }
 
-std::unique_ptr<Property> ColorProperty::clone() const
-{
-  return std::make_unique<ColorProperty>(*this);
-}
-
 }  // namespace omm

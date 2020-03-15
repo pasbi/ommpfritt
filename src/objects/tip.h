@@ -11,7 +11,6 @@ public:
   Tip(const Tip& other);
   std::vector<Point> points() const override;
   QString type() const override;
-  std::unique_ptr<Object> clone() const override;
   bool is_closed() const override;
   void on_property_value_changed(Property* property) override;
 

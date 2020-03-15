@@ -21,7 +21,6 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Property", "FloatVectorProperty");
-  std::unique_ptr<Property> clone() const override;
   static const PropertyDetail detail;
 };
 
@@ -40,7 +39,6 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("IntegerVectorProperty", "IntegerVectorProperty");
-  std::unique_ptr<Property> clone() const override;
   static const PropertyDetail detail;
 };
 

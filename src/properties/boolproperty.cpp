@@ -28,9 +28,4 @@ void BoolProperty::serialize(AbstractSerializer& serializer, const Pointer& root
   }
 }
 
-std::unique_ptr<Property> BoolProperty::clone() const
-{
-  return std::make_unique<BoolProperty>(*this);
-}
-
 }  // namespace omm

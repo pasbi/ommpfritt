@@ -76,7 +76,6 @@ void ImageObject::draw_object(Painter &renderer, const Style&, Painter::Options 
 }
 
 QString ImageObject::type() const { return TYPE; }
-std::unique_ptr<Object> ImageObject::clone() const { return std::make_unique<ImageObject>(*this); }
 
 QPointF ImageObject::pos(const QSizeF &size) const
 {

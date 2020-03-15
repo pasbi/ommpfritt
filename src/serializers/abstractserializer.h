@@ -22,7 +22,7 @@ class AbstractPropertyOwner;
 
 class AbstractSerializer
   : public QObject
-  , public AbstractFactory<QString, AbstractSerializer, std::ostream&>
+  , public AbstractFactory<QString, false, AbstractSerializer, std::ostream&>
 {
   Q_OBJECT
 private:
@@ -97,7 +97,7 @@ protected:
 
 class AbstractDeserializer
   : public QObject
-  , public AbstractFactory<QString, AbstractDeserializer, std::istream&>
+  , public AbstractFactory<QString, false, AbstractDeserializer, std::istream&>
 {
   Q_OBJECT
 public:

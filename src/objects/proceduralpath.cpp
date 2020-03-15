@@ -50,11 +50,6 @@ ProceduralPath::ProceduralPath(Scene* scene) : AbstractProceduralPath(scene)
 }
 
 
-std::unique_ptr<Object> ProceduralPath::clone() const
-{
-  return std::make_unique<ProceduralPath>(*this);
-}
-
 QString ProceduralPath::type() const { return TYPE; }
 std::vector<Point> ProceduralPath::points() const { return m_points; }
 

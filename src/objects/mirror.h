@@ -27,7 +27,6 @@ public:
   static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";
   static constexpr auto IS_INVERTED_PROPERTY_KEY = "inverted";
 
-  std::unique_ptr<Object> clone() const override;
   virtual Flag flags() const override;
   std::unique_ptr<Object> convert() const override;
   void update() override;

@@ -22,11 +22,6 @@ RectangleObject::RectangleObject(Scene *scene)
 
 QString RectangleObject::type() const { return TYPE; }
 
-std::unique_ptr<Object> RectangleObject::clone() const
-{
-  return std::make_unique<RectangleObject>(*this);
-}
-
 Flag RectangleObject::flags() const
 {
   return Flag::IsPathLike | Flag::Convertible;

@@ -13,7 +13,6 @@ public:
   explicit ProceduralPath(Scene* scene);
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ProceduralPath");
-  std::unique_ptr<Object> clone() const override;
   Flag flags() const override;
 
   static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";

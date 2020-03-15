@@ -45,7 +45,6 @@ BoundingBox Text::bounding_box(const ObjectTransformation &transformation) const
 }
 
 QString Text::type() const { return TYPE; }
-std::unique_ptr<Object> Text::clone() const { return std::make_unique<Text>(*this); }
 
 Flag Text::flags() const
 {

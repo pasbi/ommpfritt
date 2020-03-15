@@ -10,6 +10,5 @@ BoundingBox Empty::bounding_box(const ObjectTransformation &transformation) cons
   return BoundingBox({ o });
 }
 QString Empty::type() const { return TYPE; }
-std::unique_ptr<Object> Empty::clone() const { return std::make_unique<Empty>(*this); }
 
 }  // namespace omm

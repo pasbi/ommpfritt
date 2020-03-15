@@ -18,7 +18,6 @@ public:
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Path");
-  std::unique_ptr<Object> clone() const override;
   std::vector<Point> points() const override;
   std::vector<Point*> points_ref();
   Point& point(std::size_t i);

@@ -52,11 +52,6 @@ void FloatVectorProperty::serialize(AbstractSerializer& serializer, const Pointe
   }
 }
 
-std::unique_ptr<Property> FloatVectorProperty::clone() const
-{
-  return std::make_unique<FloatVectorProperty>(*this);
-}
-
 const Vec2i IntegerVectorPropertyLimits::lower(int_low,  int_low);
 const Vec2i IntegerVectorPropertyLimits::upper(int_high, int_high);
 const Vec2i IntegerVectorPropertyLimits::step(1, 1);
@@ -81,11 +76,6 @@ void IntegerVectorProperty::serialize(AbstractSerializer& serializer, const Poin
     serializer.set_value( default_value(),
                           make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
   }
-}
-
-std::unique_ptr<Property> IntegerVectorProperty::clone() const
-{
-  return std::make_unique<IntegerVectorProperty>(*this);
 }
 
 }  // namespace omm

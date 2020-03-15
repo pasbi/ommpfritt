@@ -24,7 +24,7 @@ class Object
   : public PropertyOwner<Kind::Object>
   , public virtual Serializable
   , public TreeElement<Object>
-  , public AbstractFactory<QString, Object, Scene*>
+  , public AbstractFactory<QString, true, Object, Scene*>
 {
   Q_OBJECT
   Scene* m_scene;
@@ -61,7 +61,6 @@ public:
   std::unique_ptr<Object> repudiate(Object &repudiatee) override;
   Object & adopt(std::unique_ptr<Object> adoptee, const size_t pos) override;
   using TreeElement::adopt;
-  virtual std::unique_ptr<Object> clone() const = 0;
   virtual std::unique_ptr<Object> convert() const;
   Flag flags() const override;
   bool is_active() const;

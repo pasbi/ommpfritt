@@ -7,6 +7,7 @@
 #include "properties/optionsproperty.h"
 #include "properties/vectorproperty.h"
 #include "properties/colorproperty.h"
+#include "properties/triggerproperty.h"
 
 namespace omm
 {
@@ -26,6 +27,7 @@ void register_properties()
   REGISTER_PROPERTY(OptionsProperty);
   REGISTER_PROPERTY(FloatVectorProperty);
   REGISTER_PROPERTY(IntegerVectorProperty);
+  REGISTER_PROPERTY(TriggerProperty);
 
 #undef REGISTER_PROPERTY
 }

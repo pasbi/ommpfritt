@@ -40,6 +40,7 @@ namespace omm
 {
 
 StyleIconEngine::StyleIconEngine(const Style* style) : m_style(style) {}
+
 QIconEngine* StyleIconEngine::clone() const
 {
   return std::make_unique<StyleIconEngine>(*this).release();

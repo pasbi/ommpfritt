@@ -27,7 +27,6 @@ Ellipse::Ellipse(Scene* scene) : AbstractProceduralPath(scene)
 }
 
 QString Ellipse::type() const { return TYPE; }
-std::unique_ptr<Object> Ellipse::clone() const { return std::make_unique<Ellipse>(*this); }
 bool Ellipse::is_closed() const { return true; }
 
 std::vector<Point> Ellipse::points() const

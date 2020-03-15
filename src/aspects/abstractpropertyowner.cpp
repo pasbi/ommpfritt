@@ -54,6 +54,7 @@ AbstractPropertyOwner::~AbstractPropertyOwner()
 Property *AbstractPropertyOwner::property(const QString& key) const
 {
   if (has_property(key)) {
+    assert(m_properties.at(key) != nullptr);
     return m_properties.at(key).get();
   } else {
     return nullptr;
@@ -125,6 +126,7 @@ Property
 {
   Property& ref = *property;
   assert(!m_properties.contains(key));
+  assert(property.get() != nullptr);
   m_properties.insert(key, std::move(property));
   connect(&ref, SIGNAL(value_changed(Property*)),
           this, SLOT(on_property_value_changed(Property*)));

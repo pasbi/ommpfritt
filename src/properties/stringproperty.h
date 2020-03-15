@@ -17,7 +17,6 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Property", "StringProperty");
   StringProperty& set_mode(Mode mode);
   static constexpr auto MODE_PROPERTY_KEY = "mode";
-  std::unique_ptr<Property> clone() const override;
 
   static const PropertyDetail detail;
 };

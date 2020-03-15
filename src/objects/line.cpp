@@ -22,7 +22,6 @@ Line::Line(Scene* scene) : AbstractProceduralPath(scene)
 }
 
 QString Line::type() const { return TYPE; }
-std::unique_ptr<Object> Line::clone() const { return std::make_unique<Line>(*this); }
 bool Line::is_closed() const { return false; }
 
 std::vector<Point> Line::points() const

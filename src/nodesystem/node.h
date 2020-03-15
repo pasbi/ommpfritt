@@ -17,7 +17,7 @@ class Menu;
 
 class Node
   : public PropertyOwner<Kind::Node>
-  , public AbstractFactory<QString, Node, NodeModel&>
+  , public AbstractFactory<QString, false, Node, NodeModel&>
   , public ReferencePolisher
 {
   Q_OBJECT

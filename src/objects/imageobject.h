@@ -13,7 +13,6 @@ public:
   void draw_object(Painter& renderer, const Style&, Painter::Options options) const override;
   QString type() const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
-  std::unique_ptr<Object> clone() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ImageObject");
   static constexpr auto FILEPATH_PROPERTY_KEY = "filename";
   static constexpr auto WIDTH_PROPERTY_KEY = "width";

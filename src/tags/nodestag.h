@@ -26,7 +26,6 @@ public:
   static constexpr auto EDIT_NODES_PROPERTY_KEY = "edit-nodes";
   static constexpr auto NODES_POINTER = "nodes";
 
-  std::unique_ptr<Tag> clone() const override;
   void on_property_value_changed(Property* property) override;
   void evaluate() override;
   void force_evaluate() override;

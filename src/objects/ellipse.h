@@ -14,7 +14,6 @@ public:
   explicit Ellipse(Scene* scene);
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Ellipse");
-  std::unique_ptr<Object> clone() const override;
   Flag flags() const override;
 
   static constexpr auto RADIUS_PROPERTY_KEY = "r";

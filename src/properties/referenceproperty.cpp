@@ -78,11 +78,6 @@ bool ReferenceProperty::is_compatible(const Property& other) const
   }
 }
 
-std::unique_ptr<Property> ReferenceProperty::clone() const
-{
-  return std::make_unique<ReferenceProperty>(*this);
-}
-
 void ReferenceProperty
 ::update_references(const std::map<std::size_t, AbstractPropertyOwner *> &references)
 {

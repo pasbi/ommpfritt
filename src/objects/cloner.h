@@ -37,7 +37,6 @@ public:
   static constexpr auto ANCHOR_PROPERTY_KEY = "anchor";
 
   enum class Mode { Linear, Grid, Radial, Path, Script, FillRandom  };
-  std::unique_ptr<Object> clone() const override;
   virtual Flag flags() const override;
   std::unique_ptr<Object> convert() const override;
   Mode mode() const;
