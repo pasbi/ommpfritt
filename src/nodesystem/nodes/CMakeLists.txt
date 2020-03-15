@@ -9,6 +9,7 @@ file(GLOB SOURCES
   fragmentnode.cpp
   functionnode.cpp
   function2node.cpp
+  interpolatenode.cpp
   linepatternnode.cpp
   nodesregister.cpp
   mathnode.cpp
@@ -27,6 +28,7 @@ file(GLOB HEADERS
   fragmentnode.h
   functionnode.h
   function2node.h
+  interpolatenode.h
   linepatternnode.h
   mathnode.h
   referencenode.h
