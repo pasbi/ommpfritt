@@ -330,6 +330,16 @@ bool same_keys(const Map1& m1, const Map2& m2)
   }
 }
 
+template<typename R, typename Ts, typename P, typename F> auto
+find_if(Ts&& items, P&& predicate, F&& f, R&& default_)
+{
+  for (auto&& t : items) {
+    if (predicate(t)) {
+      return f(t);
+    }
+  }
+  return default_;
+}
 
 namespace omm
 {

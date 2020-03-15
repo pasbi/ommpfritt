@@ -1,4 +1,5 @@
 #include "nodesystem/nodes/mathnode.h"
+#include "nodesystem/nodes/interpolatenode.h"
 #include "nodesystem/nodes/spynode.h"
 #include "nodesystem/nodes/constantnode.h"
 #include "nodesystem/nodes/referencenode.h"
@@ -35,6 +36,7 @@ void register_nodes()
   REGISTER_NODE(FunctionNode);
   REGISTER_NODE(Function2Node);
   REGISTER_NODE(LinePatternNode);
+  REGISTER_NODE(InterpolateNode);
 #undef REGISTER_NODE
 }
 

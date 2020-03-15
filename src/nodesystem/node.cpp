@@ -233,4 +233,13 @@ void Node::update_references(const std::map<std::size_t, AbstractPropertyOwner*>
   }
 }
 
+QString Node::fst_con_ptype(const std::vector<InputPort*>& ports, const QString& default_t)
+{
+  const auto get_connected_output = [](const InputPort* ip) { return ip->connected_output(); };
+  return ::find_if(::transform<OutputPort*>(ports, get_connected_output),
+                   [](const OutputPort* op) { return op != nullptr; },
+                   [](const OutputPort* op) { return op->data_type(); },
+                   default_t);
+}
+
 }  // namespace omm

@@ -151,6 +151,7 @@ public:
   };
 
   static const Detail& detail(const QString& name) { return *m_details.at(name); }
+  static QString fst_con_ptype(const std::vector<InputPort*>& ports, const QString& default_t);
 
 private:
   static std::map<QString, const Detail*> m_details;

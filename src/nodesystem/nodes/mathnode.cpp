@@ -41,27 +41,19 @@ const Node::Detail MathNode::detail {
     {
       AbstractNodeCompiler::Language::Python,
       QString(R"(
+@listarithm_decorator
 def %1(op, a, b):
-    import numpy as np
-    def do_op(op, a, b):
-        if op == 0:
-            return a + b
-        elif op == 1:
-            return a - b
-        elif op == 2:
-            return a * b
-        elif op == 3:
-            return a / b
-        else:
-            return 0.0;
-    if isinstance(a, list):
-        a = np.array(a)
-    if isinstance(b, list):
-        b = np.array(b)
-    result = do_op(op, a, b)
-    if isinstance(result, np.ndarray):
-        result = list(result)
-    return result
+    if op == 0:
+        return a + b
+    elif op == 1:
+        return a - b
+    elif op == 2:
+        return a * b
+    elif op == 3:
+        return a / b
+    else:
+        # unreachable
+        return 0.0;
 )").arg(MathNode::TYPE)
     },
     {
@@ -98,7 +90,6 @@ QString MathNode::output_data_type(const OutputPort& port) const
     case AbstractNodeCompiler::Language::GLSL:
       return type_a;
     case AbstractNodeCompiler::Language::Python:
-      using namespace NodeCompilerTypes;
       if (is_integral(type_a) && is_integral(type_b)) {
         return INTEGER_TYPE;
       } else if (is_numeric(type_a) && is_numeric(type_b)) {
@@ -122,13 +113,7 @@ QString MathNode::output_data_type(const OutputPort& port) const
 QString MathNode::input_data_type(const InputPort& port) const
 {
   Q_UNUSED(port)
-  if (const OutputPort* o_a = m_a_input->connected_output(); o_a != nullptr) {
-    return o_a->data_type();
-  } if (const OutputPort* o_b = m_b_input->connected_output(); o_b != nullptr) {
-    return o_b->data_type();
-  } else {
-    return NodeCompilerTypes::FLOAT_TYPE;
-  }
+  return fst_con_ptype({ m_a_input, m_b_input }, NodeCompilerTypes::FLOAT_TYPE);
 }
 
 bool MathNode::accepts_input_data_type(const QString& type, const InputPort& port) const

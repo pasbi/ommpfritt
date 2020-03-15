@@ -10,7 +10,17 @@ NodeCompilerPython::NodeCompilerPython(const NodeModel& model) : NodeCompiler(mo
 
 QString NodeCompilerPython::generate_header(QStringList& lines) const
 {
-  Q_UNUSED(lines)
+  lines.append(QString(R"(
+def listarithm_decorator(func):
+  def wrapper(*args, **kwargs):
+      import numpy as np
+      to_np = lambda x: np.array(x) if isinstance(x, list) else x
+      fr_np = lambda x: list(x) if isinstance(x, np.ndarray) else x
+      args = [ to_np(arg) for arg in args ]
+      kwargs = { key: to_np(arg) for key, arg in kwargs }
+      return fr_np(func(*args, **kwargs))
+  return wrapper
+)"));
   return "";
 }
 

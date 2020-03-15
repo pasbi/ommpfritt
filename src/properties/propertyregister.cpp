@@ -14,7 +14,7 @@ namespace omm
 
 void register_properties()
 {
-#define REGISTER_PROPERTY(TYPE)\
+#define REGISTER_PROPERTY(TYPE) \
   Property::register_type<TYPE>(#TYPE); \
   Property::m_details[#TYPE] = &TYPE::detail;
 
