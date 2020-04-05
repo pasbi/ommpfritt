@@ -19,6 +19,7 @@ public:
     double right_offset;
     bool operator==(const Knot& other) const;
     bool operator!=(const Knot& other) const { return !(*this == other); }
+    bool operator<(const Knot& other) const;
     double get_value(const Side side) const;
     void set_value(const Side side, double value);
   };
@@ -96,6 +97,7 @@ public:
 
   bool operator==(const SplineType& other) const;
   bool operator!=(const SplineType& other) const { return !(*this == other); }
+  bool operator<(const SplineType& other) const;
   knot_map_type::iterator move(knot_map_type::const_iterator it, double new_t);
 
 Q_SIGNALS:

@@ -45,6 +45,11 @@ bool SplineType::operator==(const SplineType& other) const
   return knots == other.knots;
 }
 
+bool SplineType::operator<(const SplineType& other) const
+{
+  return  knots < other.knots;
+}
+
 SplineType::knot_map_type::iterator SplineType::move(knot_map_type::const_iterator it, double new_t)
 {
   assert(it != knots.end());
@@ -69,6 +74,15 @@ bool SplineType::Knot::operator==(const SplineType::Knot& other) const
   return value == other.value
       && left_offset == other.left_offset
       && right_offset == other.right_offset;
+}
+
+bool SplineType::Knot::operator<(const SplineType::Knot& other) const
+{
+  const auto to_array = [](const SplineType::Knot& knot) {
+    return std::array { knot.value, knot.left_offset, knot.right_offset };
+  };
+
+  return to_array(*this) < to_array(other);
 }
 
 double SplineType::Knot::get_value(const SplineType::Knot::Side side) const

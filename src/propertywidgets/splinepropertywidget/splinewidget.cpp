@@ -1,4 +1,4 @@
-#include "widgets/splinewidget.h"
+#include "propertywidgets/splinepropertywidget/splinewidget.h"
 #include "logging.h"
 #include "splinetype.h"
 #include <QMouseEvent>
@@ -41,9 +41,9 @@ SplineWidget::SplineWidget(QWidget* parent)
 {
 }
 
-void SplineWidget::set_model(SplineType* spline)
+void SplineWidget::set_value(const value_type& spline)
 {
-  m_model = spline;
+  m_spline = spline;
   update();
 }
 
@@ -53,16 +53,9 @@ void SplineWidget::paintEvent(QPaintEvent*)
   painter.setRenderHint(QPainter::Antialiasing);
 
   painter.save();
+  painter.fillRect(rect(), Qt::white);
   painter.setTransform(transform());
-  if (m_model == nullptr) {
-    painter.fillRect(rect(), Qt::gray);
-  } else {
-    painter.fillRect(rect(), Qt::white);
-
-    painter.save();
-    draw_spline(painter);
-    painter.restore();
-  }
+  draw_spline(painter);
   painter.restore();
 }
 
@@ -74,54 +67,56 @@ void SplineWidget::resizeEvent(QResizeEvent* event)
 
 void SplineWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
-  if (m_model != nullptr) {
-    if (const auto cp = knot_at(event->pos()); cp.is_valid() && cp.side() == Side::Middle) {
-      m_model->knots.erase(cp.iterator());
-    } else {
-      const QPointF p = transform().inverted().map(QPointF(event->pos()));
-      m_model->knots.insert({p.x(), SplineType::Knot(p.y())});
-    }
-    update();
+  if (const auto cp = knot_at(event->pos()); cp.is_valid() && cp.side() == Side::Middle) {
+    m_spline.knots.erase(cp.iterator());
+  } else {
+    const QPointF p = transform().inverted().map(QPointF(event->pos()));
+    m_spline.knots.insert({p.x(), SplineType::Knot(p.y())});
   }
+  Q_EMIT value_changed(m_spline);
+  update();
 }
 
 void SplineWidget::mousePressEvent(QMouseEvent* event)
 {
-  if (m_model != nullptr) {
-    if (const auto clicked_knot = knot_at(event->pos()); clicked_knot.is_valid()) {
-      m_grabbed_knot = clicked_knot;
-    }
+  if (const auto clicked_knot = knot_at(event->pos()); clicked_knot.is_valid()) {
+    m_grabbed_knot = clicked_knot;
   }
 }
 
-void SplineWidget::mouseReleaseEvent(QMouseEvent* event)
+void SplineWidget::mouseReleaseEvent(QMouseEvent*)
 {
-  m_grabbed_knot = m_model->invalid();
+  m_grabbed_knot = m_spline.invalid();
+  Q_EMIT value_changed(m_spline);
 }
 
 void SplineWidget::mouseMoveEvent(QMouseEvent* event)
 {
   if (m_grabbed_knot.is_valid()) {
-    assert(m_model != nullptr);
     const auto p = transform().inverted().map(QPointF(event->pos()));;
     m_grabbed_knot.knot().set_value(m_grabbed_knot.side(), std::clamp(p.y(), 0.0, 1.0));
     if (m_grabbed_knot.side() == Side::Middle) {
-      const auto it = m_model->move(m_grabbed_knot.iterator(), std::clamp(p.x(), 0.0, 1.0));
+      const auto it = m_spline.move(m_grabbed_knot.iterator(), std::clamp(p.x(), 0.0, 1.0));
       m_grabbed_knot.iterator() = it;
     }
     update();
   }
 }
 
+void SplineWidget::set_inconsistent_value()
+{
+  set_value(SplineType());
+}
+
 void SplineWidget::draw_spline(QPainter& painter)
 {
-  const auto& knots = m_model->knots;
+  const auto& knots = m_spline.knots;
   if (knots.empty()) {
     return;
   }
 
-    painter.save();
-  for (auto cp = m_model->begin(); cp.is_valid(); cp.advance()) {
+  painter.save();
+  for (auto cp = m_spline.begin(); cp.is_valid(); cp.advance()) {
     if (cp.side() != Side::Middle) {
       const QPointF origin = knot_pos(cp.iterator(), Side::Middle);
       const QPointF sat_pos = knot_pos(cp.iterator(), cp.side());
@@ -134,7 +129,7 @@ void SplineWidget::draw_spline(QPainter& painter)
     }
   }
 
-  for (auto cp = m_model->begin(); cp.is_valid(); cp.advance()) {
+  for (auto cp = m_spline.begin(); cp.is_valid(); cp.advance()) {
     const QPointF sat_pos = knot_pos(cp.iterator(), cp.side());
     QPainterPath path;
     const auto r = cp.side() == Side::Middle ? 5.0 : 4.0;
@@ -181,22 +176,20 @@ QTransform SplineWidget::transform() const
   return t;
 }
 
-SplineType::ControlPoint SplineWidget::knot_at(const QPoint& pos) const
+SplineType::ControlPoint SplineWidget::knot_at(const QPoint& pos)
 {
-  assert(m_model != nullptr);
-
   const auto is_close = [this, pos](const auto& cp) {
     const QPointF d = this->transform().map(knot_pos(cp.iterator(), cp.side())) - pos;
     return QPointF::dotProduct(d, d) < closeness_threshold_px * closeness_threshold_px;
     return false;
   };
 
-  for (SplineType::ControlPoint cp = m_model->begin(); cp.is_valid(); cp.advance()) {
+  for (SplineType::ControlPoint cp = m_spline.begin(); cp.is_valid(); cp.advance()) {
     if (is_close(cp)) {
       return cp;
     }
   }
-  return m_model->invalid();
+  return m_spline.invalid();
 }
 
 }  // namespace omm
