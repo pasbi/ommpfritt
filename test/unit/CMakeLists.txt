@@ -7,6 +7,7 @@ FILE(GLOB SRC_FILES
   "path.cpp"
   "propertytest.cpp"
   "main.cpp"
+  "splinetypetest.cpp"
   "tree.cpp"
   "toolbartest.cpp"
 )

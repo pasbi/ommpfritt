@@ -6,6 +6,7 @@ file(GLOB SOURCES
   logging.cpp
   main.cpp
   proxychain.cpp
+  splinetype.cpp
   variant.cpp
 )
 
@@ -22,6 +23,7 @@ file(GLOB HEADERS
   orderedmap.h
   variant.h
   proxychain.h
+  splinetype.h
   translations.h
 )
 

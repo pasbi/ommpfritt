@@ -12,6 +12,7 @@ file(GLOB SOURCES
   pointdialog.cpp
   pointedit.cpp
   referencelineedit.cpp
+  splinewidget.cpp
 )
 
 file(GLOB HEADERS
@@ -27,6 +28,7 @@ file(GLOB HEADERS
   pointdialog.h
   pointedit.h
   referencelineedit.h
+  splinewidget.h
 )
 
 add_subdirectory(colorwidget)
