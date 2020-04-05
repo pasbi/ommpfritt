@@ -55,9 +55,7 @@ int main (int argc, char *argv[])
   QCoreApplication::setOrganizationName(QObject::tr("omm"));
   QCoreApplication::setApplicationName(QObject::tr("ommpfritt"));
 
-  omm::register_properties();
   omm::register_managers();
-  omm::register_propertywidgets();
   omm::register_objects();
   omm::register_tags();
   omm::register_serializers();

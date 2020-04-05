@@ -118,6 +118,7 @@ template<PortType> struct ConcretePortSelector;
 template<> struct ConcretePortSelector<PortType::Input> { using T = InputPort; };
 template<> struct ConcretePortSelector<PortType::Output> { using T = OutputPort; };
 
-}
+}  // namespace omm
 
 template<> struct omm::EnableBitMaskOperators<omm::PortType> : std::true_type {};
+

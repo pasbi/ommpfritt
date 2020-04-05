@@ -7,7 +7,6 @@ file(GLOB SOURCES
   numericproperty.cpp
   optionsproperty.cpp
   property.cpp
-  propertyregister.cpp
   referenceproperty.cpp
   stringproperty.cpp
   splineproperty.cpp

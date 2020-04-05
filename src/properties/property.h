@@ -213,7 +213,6 @@ public:
 
 private:
   static std::map<QString, const PropertyDetail*> m_details;
-  friend void register_properties();
 
 Q_SIGNALS:
   void enabledness_changed(bool);
@@ -224,8 +223,6 @@ public:
 private:
   bool m_is_enabled = true;
 };
-
-void register_properties();
 
 std::ostream& operator<<(std::ostream& ostream, const Property::Filter& filter);
 

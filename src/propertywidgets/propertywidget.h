@@ -112,6 +112,4 @@ protected:
 template<typename PropertyT> const QString
 PropertyWidget<PropertyT>::TYPE = QString(PropertyT::TYPE) + "Widget";
 
-void register_propertywidgets();
-
 }  // namespace omm
