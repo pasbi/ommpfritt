@@ -16,7 +16,6 @@ public:
 
 protected:
   void update_edit() override;
-  QString type() const override;
 
 private:
   SplineWidget* m_spline_edit;

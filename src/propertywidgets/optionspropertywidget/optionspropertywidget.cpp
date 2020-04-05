@@ -31,9 +31,4 @@ void OptionsPropertyWidget::update_edit()
   m_options_edit->set_values(get_properties_values());
 }
 
-QString OptionsPropertyWidget::type() const
-{
-  return TYPE;
-}
-
 }  // namespace omm

@@ -16,7 +16,6 @@ public:
 
 protected:
   void update_edit() override;
-  QString type() const override;
 
 private:
   AbstractTextEditAdapter* m_text_edit;

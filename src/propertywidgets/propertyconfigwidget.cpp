@@ -10,7 +10,7 @@
 namespace omm
 {
 
-void PropertyConfigWidget::hideEvent(QHideEvent *event)
+void AbstractPropertyConfigWidget::hideEvent(QHideEvent *event)
 {
   QWidget::hideEvent(event);
   Q_EMIT hidden();

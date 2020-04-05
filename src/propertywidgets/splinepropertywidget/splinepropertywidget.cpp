@@ -14,9 +14,4 @@ void SplinePropertyWidget::update_edit()
 
 }
 
-QString SplinePropertyWidget::type() const
-{
-  return TYPE;
-}
-
 }  // namespace omm

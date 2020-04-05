@@ -11,10 +11,11 @@
 namespace omm
 {
 
-template<typename T>
-class VectorPropertyConfigWidget : public PropertyConfigWidget
+template<typename PropertyT>
+class VectorPropertyConfigWidget : public PropertyConfigWidget<PropertyT>
 {
 public:
+  using T = typename PropertyT::value_type;
   using ElementT = typename T::element_type;
   explicit VectorPropertyConfigWidget()
   {
@@ -50,7 +51,7 @@ public:
       layout->addRow(QObject::tr(NumericPropertyDetail::MULTIPLIER_POINTER, "NumericProperty"),
                      m_edits[NumericPropertyDetail::MULTIPLIER_POINTER]);
     }
-    setLayout(layout.release());
+    this->setLayout(layout.release());
   }
 
   void init(const Property::Configuration &configuration) override
@@ -93,23 +94,19 @@ private:
 };
 
 class IntegerVectorPropertyConfigWidget
-    : public VectorPropertyConfigWidget<IntegerVectorProperty::value_type>
+    : public VectorPropertyConfigWidget<IntegerVectorProperty>
 {
   Q_OBJECT
 public:
-  using VectorPropertyConfigWidget<IntegerVectorProperty::value_type>::VectorPropertyConfigWidget;
-  static constexpr auto TYPE = "IntegerVectorPropertyConfigWidget";
-  QString type() const override { return TYPE; }
+  using VectorPropertyConfigWidget<IntegerVectorProperty>::VectorPropertyConfigWidget;
 };
 
 class FloatVectorPropertyConfigWidget
-    : public VectorPropertyConfigWidget<FloatVectorProperty::value_type>
+    : public VectorPropertyConfigWidget<FloatVectorProperty>
 {
   Q_OBJECT
 public:
-  using VectorPropertyConfigWidget<FloatVectorProperty::value_type>::VectorPropertyConfigWidget;
-  static constexpr auto TYPE = "FloatVectorPropertyConfigWidget";
-  QString type() const override { return TYPE; }
+  using VectorPropertyConfigWidget<FloatVectorProperty>::VectorPropertyConfigWidget;
 };
 
 }  // namespace omm

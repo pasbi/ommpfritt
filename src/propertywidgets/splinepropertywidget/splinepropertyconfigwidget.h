@@ -6,12 +6,10 @@
 namespace omm
 {
 
-class SplinePropertyConfigWidget : public PropertyConfigWidget
+class SplinePropertyConfigWidget : public PropertyConfigWidget<SplineProperty>
 {
 public:
   SplinePropertyConfigWidget();
-  static constexpr auto TYPE = "SplinePropertyConfigWidget";
-  QString type() const override { return TYPE; }
   void init(const Property::Configuration &configuration) override;
   void update(Property::Configuration &configuration) const override;
 };

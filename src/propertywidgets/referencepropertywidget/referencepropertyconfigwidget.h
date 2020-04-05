@@ -10,13 +10,11 @@ class QCheckBox;
 namespace omm
 {
 
-class ReferencePropertyConfigWidget : public PropertyConfigWidget
+class ReferencePropertyConfigWidget : public PropertyConfigWidget<ReferenceProperty>
 {
   Q_OBJECT
 public:
   ReferencePropertyConfigWidget();
-  static constexpr auto TYPE = "ReferencePropertyConfigWidget";
-  QString type() const override { return TYPE; }
   void init(const Property::Configuration &configuration) override;
   void update(Property::Configuration &configuration) const override;
 

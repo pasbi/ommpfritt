@@ -15,7 +15,6 @@ public:
 
 protected:
   void update_edit() override;
-  QString type() const override;
 
 private:
   ColorEdit* m_color_edit;

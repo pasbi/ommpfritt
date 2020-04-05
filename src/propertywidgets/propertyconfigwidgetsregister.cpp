@@ -14,7 +14,7 @@ namespace omm
 void register_propertyconfigwidgets()
 {
 #define REGISTER_PROPERTY(TYPE) \
-  PropertyConfigWidget::register_type<TYPE>(#TYPE);
+  AbstractPropertyConfigWidget::register_type<TYPE>(#TYPE);
 
   REGISTER_PROPERTY(BoolPropertyConfigWidget);
   REGISTER_PROPERTY(ColorPropertyConfigWidget);

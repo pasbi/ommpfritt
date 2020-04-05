@@ -8,12 +8,10 @@ class QListWidget;
 namespace omm
 {
 
-class OptionsPropertyConfigWidget : public PropertyConfigWidget
+class OptionsPropertyConfigWidget : public PropertyConfigWidget<OptionsProperty>
 {
 public:
   OptionsPropertyConfigWidget();
-  static constexpr auto TYPE = "OptionsPropertyConfigWidget";
-  QString type() const override { return TYPE; }
   void init(const Property::Configuration &configuration) override;
   void update(Property::Configuration &configuration) const override;
 

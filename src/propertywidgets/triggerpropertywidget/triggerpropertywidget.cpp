@@ -23,7 +23,6 @@ void TriggerPropertyWidget::trigger()
   }
 }
 
-QString TriggerPropertyWidget::type() const { return TYPE; }
 void TriggerPropertyWidget::update_edit() {}
 
 }  // namespace omm

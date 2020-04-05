@@ -77,9 +77,4 @@ void StringPropertyWidget::update_edit()
   m_text_edit->set_values(get_properties_values());
 }
 
-QString StringPropertyWidget::type() const
-{
-  return TYPE;
-}
-
 }  // namespace omm

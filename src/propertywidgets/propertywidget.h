@@ -106,6 +106,7 @@ protected:
   }
 
   const std::set<Property*>& properties() const { return m_properties; }
+  QString type() const override { return TYPE; }
 };
 
 template<typename PropertyT> const QString

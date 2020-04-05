@@ -12,16 +12,17 @@ class QFormLayout;
 namespace omm
 {
 
-class PropertyConfigWidget
+class AbstractPropertyConfigWidget
   : public QWidget
-  , public AbstractFactory<QString, false, PropertyConfigWidget>
+  , public AbstractFactory<QString, false, AbstractPropertyConfigWidget>
 {
   Q_OBJECT
 
 public:
-  explicit PropertyConfigWidget() = default;
+  explicit AbstractPropertyConfigWidget() = default;
   virtual void init(const Property::Configuration& configuration) = 0;
   virtual void update(Property::Configuration& configuration) const = 0;
+
 
 protected:
   void hideEvent(QHideEvent *event) override;
@@ -29,6 +30,16 @@ protected:
 Q_SIGNALS:
   void hidden();
 };
+
+template<typename PropertyT> class PropertyConfigWidget : public AbstractPropertyConfigWidget
+{
+public:
+  static const QString TYPE;
+  QString type() const override { return TYPE; }
+};
+
+template<typename PropertyT> const QString
+PropertyConfigWidget<PropertyT>::TYPE = QString(PropertyT::TYPE) + "ConfigWidget";
 
 void register_propertyconfigwidgets();
 

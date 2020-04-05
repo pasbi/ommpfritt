@@ -26,9 +26,4 @@ void BoolPropertyWidget::update_edit()
   m_checkbox->set_values(get_properties_values());
 }
 
-QString BoolPropertyWidget::type() const
-{
-  return TYPE;
-}
-
 }  // namespace omm

@@ -55,7 +55,6 @@ public:
     return std::is_same_v<bool, ValueT> || std::is_same_v<double, ValueT>
         || std::is_same_v<int, ValueT> || std::is_same_v<Vec2f, ValueT>
         || std::is_same_v<Vec2i, ValueT>;
-
   }
 
 private:

@@ -96,14 +96,12 @@ class IntegerVectorPropertyWidget : public VectorPropertyWidget<IntegerVectorPro
 {
 public:
   using VectorPropertyWidget::VectorPropertyWidget;
-  QString type() const override { return TYPE; }
 };
 
 class FloatVectorPropertyWidget : public VectorPropertyWidget<FloatVectorProperty>
 {
 public:
   using VectorPropertyWidget::VectorPropertyWidget;
-  QString type() const override { return TYPE; }
 };
 
 

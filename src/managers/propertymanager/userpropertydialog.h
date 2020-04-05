@@ -11,7 +11,7 @@ namespace Ui { class UserPropertyDialog; }
 namespace omm
 {
 
-class PropertyConfigWidget;
+class AbstractPropertyConfigWidget;
 
 class UserPropertyDialog: public QDialog
 {
@@ -28,7 +28,7 @@ private:
   AbstractPropertyOwner& m_owner;
   UserPropertyListModel m_user_property_list_model;
   UserPropertyListItem* m_current_item = nullptr;
-  PropertyConfigWidget* m_current_config_widget = nullptr;
+  AbstractPropertyConfigWidget* m_current_config_widget = nullptr;
   void update_property_config_page(UserPropertyListItem *item);
 
 };

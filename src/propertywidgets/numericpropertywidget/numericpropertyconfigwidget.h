@@ -11,10 +11,11 @@
 namespace omm
 {
 
-template<typename T>
-class NumericPropertyConfigWidget : public PropertyConfigWidget
+template<typename PropertyT>
+class NumericPropertyConfigWidget : public PropertyConfigWidget<PropertyT>
 {
 public:
+  using T = typename PropertyT::value_type;
   NumericPropertyConfigWidget()
   {
     auto [ min_edit, max_edit ] = NumericEdit<T>::make_range_edits();
@@ -31,7 +32,7 @@ public:
     layout->addRow(QObject::tr(NumericPropertyDetail::UPPER_VALUE_POINTER, "NumericProperty"), max_edit.release());
     layout->addRow(QObject::tr(NumericPropertyDetail::STEP_POINTER, "NumericProperty"), step_edit.release());
     layout->addRow(QObject::tr(NumericPropertyDetail::MULTIPLIER_POINTER, "NumericProperty"), mult_edit.release());
-    setLayout(layout.release());
+    this->setLayout(layout.release());
   }
 
   void init(const Property::Configuration &configuration) override
@@ -67,20 +68,16 @@ private:
   NumericEdit<double>* m_mult_edit;
 };
 
-class IntegerPropertyConfigWidget : public NumericPropertyConfigWidget<IntegerProperty::value_type>
+class IntegerPropertyConfigWidget : public NumericPropertyConfigWidget<IntegerProperty>
 {
 public:
-  using NumericPropertyConfigWidget<IntegerProperty::value_type>::NumericPropertyConfigWidget;
-  static constexpr auto TYPE = "FloatPropertyConfigWidget";
-  QString type() const override { return TYPE; }
+  using NumericPropertyConfigWidget<IntegerProperty>::NumericPropertyConfigWidget;
 };
 
-class FloatPropertyConfigWidget : public NumericPropertyConfigWidget<FloatProperty::value_type>
+class FloatPropertyConfigWidget : public NumericPropertyConfigWidget<FloatProperty>
 {
 public:
-  using NumericPropertyConfigWidget<FloatProperty::value_type>::NumericPropertyConfigWidget;
-  static constexpr auto TYPE = "FloatPropertyConfigWidget";
-  QString type() const override { return TYPE; }
+  using NumericPropertyConfigWidget<FloatProperty>::NumericPropertyConfigWidget;
 };
 
 }  // namespace omm

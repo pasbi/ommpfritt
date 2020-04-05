@@ -120,8 +120,8 @@ void UserPropertyDialog::update_property_config_page(UserPropertyListItem* item)
     }
 
     const QString config_widget_type = type + "ConfigWidget";
-    auto config_widget = PropertyConfigWidget::make(config_widget_type);
-    connect(config_widget.get(), &PropertyConfigWidget::hidden,
+    auto config_widget = AbstractPropertyConfigWidget::make(config_widget_type);
+    connect(config_widget.get(), &AbstractPropertyConfigWidget::hidden,
             [this, config_widget=config_widget.get()]()
     {
       UserPropertyListItem* item = m_user_property_list_model.item(m_ui->listView->currentIndex());

@@ -17,7 +17,6 @@ public:
 
 protected:
   void update_edit() override;
-  QString type() const override;
 
 private:
   CheckBox* m_checkbox;

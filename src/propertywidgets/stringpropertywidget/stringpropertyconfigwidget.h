@@ -6,12 +6,10 @@
 namespace omm
 {
 
-class StringPropertyConfigWidget : public PropertyConfigWidget
+class StringPropertyConfigWidget : public PropertyConfigWidget<StringProperty>
 {
 public:
   StringPropertyConfigWidget();
-  static constexpr auto TYPE = "StringPropertyConfigWidget";
-  QString type() const override { return TYPE; }
   void init(const Property::Configuration &configuration) override;
   void update(Property::Configuration &configuration) const override;
 

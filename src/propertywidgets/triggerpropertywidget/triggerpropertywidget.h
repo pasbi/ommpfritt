@@ -13,7 +13,6 @@ public:
   void trigger();
 
 protected:
-  QString type() const override;
   void update_edit() override;
 };
 
