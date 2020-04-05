@@ -10,6 +10,7 @@ file(GLOB SOURCES
   propertyregister.cpp
   referenceproperty.cpp
   stringproperty.cpp
+  splineproperty.cpp
   triggerproperty.cpp
   vectorproperty.cpp
 )
@@ -24,6 +25,7 @@ file(GLOB HEADERS
   property.h
   referenceproperty.h
   stringproperty.h
+  splineproperty.h
   triggerproperty.h
   typedproperty.h
   vectorproperty.h

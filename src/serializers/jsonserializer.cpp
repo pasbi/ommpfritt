@@ -179,6 +179,15 @@ set_value(const TriggerPropertyDummyValueType&, const AbstractSerializer::Pointe
   Q_UNUSED(pointer)
 }
 
+void JSONSerializer::set_value(const SplineType& spline, const Pointer& pointer)
+{
+  auto& array = m_store[ptr(pointer)];
+  array = nlohmann::json::value_type::array();
+  for (const auto& [t, knot] : spline.knots) {
+    array.push_back({ t, knot.value, knot.left_offset, knot.right_offset });
+  }
+}
+
 QString JSONSerializer::type() const { return "JSONSerializer"; }
 
 
@@ -273,6 +282,16 @@ JSONDeserializer::get_trigger_dummy_value(const AbstractDeserializer::Pointer& p
 {
   Q_UNUSED(pointer)
   return TriggerPropertyDummyValueType();
+}
+
+SplineType JSONDeserializer::get_spline(const AbstractDeserializer::Pointer& pointer)
+{
+  SplineType::knot_map_type map;
+  for (const auto& item : m_store[ptr(pointer)]) {
+    map.insert({ item.at(0), SplineType::Knot(item.at(1), item.at(2), item.at(3) )});
+  }
+
+  return SplineType(map);
 }
 
 QString JSONDeserializer::type() const { return "JSONDeserializer"; }

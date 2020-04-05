@@ -1,6 +1,7 @@
 #pragma once
 
 #include "color/color.h"
+#include "splinetype.h"
 #include <variant>
 #include "geometry/vec2.h"
 #include <QString>
@@ -19,7 +20,7 @@ public:
 
 using variant_type = std::variant< bool, double, Color, int, AbstractPropertyOwner*,
                                    QString, size_t, TriggerPropertyDummyValueType,
-                                   Vec2f, Vec2i >;
+                                   Vec2f, Vec2i, SplineType >;
 
 template<typename T> T null_value;
 template<> constexpr bool null_value<bool> = false;
@@ -28,6 +29,7 @@ template<> const Color null_value<Color> = Color(Color::Model::RGBA, { 0.0, 0.0,
 template<> constexpr int null_value<int> = 0;
 template<> const Vec2f null_value<Vec2f> { 0.0, 0.0 };
 template<> const Vec2i null_value<Vec2i> { 0, 0 };
+template<> const SplineType null_value<SplineType> = SplineType();
 
 //=== Channels
 // Channels provide a unified way to read and write numerical values in a variant.

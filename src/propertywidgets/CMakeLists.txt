@@ -19,6 +19,7 @@ add_subdirectory(numericpropertywidget)
 add_subdirectory(optionspropertywidget)
 add_subdirectory(referencepropertywidget)
 add_subdirectory(stringpropertywidget)
+add_subdirectory(splinepropertywidget)
 add_subdirectory(triggerpropertywidget)
 add_subdirectory(vectorpropertywidget)
 

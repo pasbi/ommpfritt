@@ -144,6 +144,8 @@ void set_uniform(omm::OffscreenRenderer& self, const QString& name, const T& val
     // string is not available in GLSL
   } else if constexpr (std::is_same_v<T, TriggerPropertyDummyValueType>) {
     // string is not available in GLSL
+  } else if constexpr (std::is_same_v<T, SplineType>) {
+    // SplineType is not yet supported in GLSL.
   } else if constexpr (std::is_same_v<T, ObjectTransformation>) {
     set_uniform(self, name, value.to_mat());
   } else if constexpr (std::is_same_v<T, Matrix>) {

@@ -6,6 +6,7 @@
 #include "propertywidgets/optionspropertywidget/optionspropertyconfigwidget.h"
 #include "propertywidgets/triggerpropertywidget/triggerpropertyconfigwidget.h"
 #include "propertywidgets/vectorpropertywidget/vectorpropertyconfigwidget.h"
+#include "propertywidgets/splinepropertywidget/splinepropertyconfigwidget.h"
 
 namespace omm
 {
@@ -25,6 +26,7 @@ void register_propertyconfigwidgets()
   REGISTER_PROPERTY(TriggerPropertyConfigWidget);
   REGISTER_PROPERTY(IntegerVectorPropertyConfigWidget);
   REGISTER_PROPERTY(FloatVectorPropertyConfigWidget);
+  REGISTER_PROPERTY(SplinePropertyConfigWidget)
 
 #undef REGISTER_PROPERTY
 }

@@ -8,6 +8,7 @@
 #include "properties/vectorproperty.h"
 #include "properties/colorproperty.h"
 #include "properties/triggerproperty.h"
+#include "properties/splineproperty.h"
 
 namespace omm
 {
@@ -28,6 +29,7 @@ void register_properties()
   REGISTER_PROPERTY(FloatVectorProperty);
   REGISTER_PROPERTY(IntegerVectorProperty);
   REGISTER_PROPERTY(TriggerProperty);
+  REGISTER_PROPERTY(SplineProperty);
 
 #undef REGISTER_PROPERTY
 }

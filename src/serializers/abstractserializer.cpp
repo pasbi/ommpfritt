@@ -115,6 +115,11 @@ template<> PolarCoordinates AbstractDeserializer::get<PolarCoordinates>(const Po
   return get_polarcoordinates(pointer);
 }
 
+template<> SplineType AbstractDeserializer::get<SplineType>(const Pointer& pointer)
+{
+  return get_spline(pointer);
+}
+
 template<> TriggerPropertyDummyValueType AbstractDeserializer
 ::get<TriggerPropertyDummyValueType>(const Pointer& pointer)
 {
@@ -141,6 +146,8 @@ variant_type AbstractDeserializer::get(const AbstractDeserializer::Pointer &poin
     return get<Vec2f>(pointer);
   } else if (type == "IntegerVector") {
     return get<Vec2i>(pointer);
+  } else if (type == "SplineType") {
+    return get<SplineType>(pointer);
   } else if (type == "Reference") {
     Q_UNREACHABLE();
     // Reference values must be treated specially.
