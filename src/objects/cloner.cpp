@@ -4,7 +4,7 @@
 
 #include "properties/integerproperty.h"
 #include "properties/stringproperty.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/vectorproperty.h"
 #include "properties/referenceproperty.h"
@@ -39,7 +39,7 @@ class Style;
 Cloner::Cloner(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("Cloner");
-  auto& mode_property = create_property<OptionsProperty>(MODE_PROPERTY_KEY);
+  auto& mode_property = create_property<OptionProperty>(MODE_PROPERTY_KEY);
   mode_property.set_options({ QObject::tr("Linear"),
     QObject::tr("Grid"), QObject::tr("Radial"),
     QObject::tr("Path"), QObject::tr("Script"),
@@ -86,7 +86,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_label(QObject::tr("align"))
     .set_category(category);
 
-  create_property<OptionsProperty>(BORDER_PROPERTY_KEY)
+  create_property<OptionProperty>(BORDER_PROPERTY_KEY)
     .set_options( { QObject::tr("Clamp"), QObject::tr("Wrap"),
       QObject::tr("Hide"), QObject::tr("Reflect") } )
     .set_label(QObject::tr("border"))
@@ -100,7 +100,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
   create_property<IntegerProperty>(SEED_PROPERTY_KEY, 12345)
     .set_label(QObject::tr("seed")).set_category(category);
 
-  create_property<OptionsProperty>(ANCHOR_PROPERTY_KEY, 0)
+  create_property<OptionProperty>(ANCHOR_PROPERTY_KEY, 0)
       .set_options( { QObject::tr("Path"), QObject::tr("this") } )
       .set_label(QObject::tr("anchor")).set_category(category);
 

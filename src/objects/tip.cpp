@@ -1,5 +1,5 @@
 #include "objects/tip.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "properties/floatproperty.h"
 
 namespace

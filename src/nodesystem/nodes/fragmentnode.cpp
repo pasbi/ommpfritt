@@ -4,7 +4,7 @@
 #include "nodesystem/propertyport.h"
 #include "variant.h"
 #include "scene/scene.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 
 namespace omm
 {

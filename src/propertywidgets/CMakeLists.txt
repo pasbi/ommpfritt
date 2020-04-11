@@ -15,7 +15,7 @@ file(GLOB HEADERS
 add_subdirectory(boolpropertywidget)
 add_subdirectory(colorpropertywidget)
 add_subdirectory(numericpropertywidget)
-add_subdirectory(optionspropertywidget)
+add_subdirectory(optionpropertywidget)
 add_subdirectory(referencepropertywidget)
 add_subdirectory(stringpropertywidget)
 add_subdirectory(splinepropertywidget)

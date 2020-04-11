@@ -1,12 +1,12 @@
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include <algorithm>
 
 namespace omm
 {
 
-const Property::PropertyDetail OptionsProperty::detail { nullptr };
+const Property::PropertyDetail OptionProperty::detail { nullptr };
 
-void OptionsProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void OptionProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   TypedProperty::deserialize(deserializer, root);
   set(deserializer.get_size_t(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
@@ -30,7 +30,7 @@ void OptionsProperty::deserialize(AbstractDeserializer& deserializer, const Poin
   }
 }
 
-void OptionsProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
+void OptionProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   TypedProperty::serialize(serializer, root);
   serializer.set_value( value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
@@ -46,7 +46,7 @@ void OptionsProperty::serialize(AbstractSerializer& serializer, const Pointer& r
   }
 }
 
-void OptionsProperty::set(const variant_type& variant)
+void OptionProperty::set(const variant_type& variant)
 {
   if (std::holds_alternative<int>(variant)) {
     TypedProperty<size_t>::set(std::get<int>(variant));
@@ -56,7 +56,7 @@ void OptionsProperty::set(const variant_type& variant)
   }
 }
 
-std::vector<QString> OptionsProperty::options() const
+std::vector<QString> OptionProperty::options() const
 {
   if (configuration.count(OPTIONS_POINTER) > 0) {
     return configuration.get<std::vector<QString>>(OPTIONS_POINTER);
@@ -65,7 +65,7 @@ std::vector<QString> OptionsProperty::options() const
   }
 }
 
-OptionsProperty& OptionsProperty::set_options(const std::vector<QString>& options)
+OptionProperty& OptionProperty::set_options(const std::vector<QString>& options)
 {
   configuration[OPTIONS_POINTER] = options;
   assert(options.size() > 0);
@@ -73,17 +73,17 @@ OptionsProperty& OptionsProperty::set_options(const std::vector<QString>& option
   return *this;
 }
 
-bool OptionsProperty::is_compatible(const Property& other) const
+bool OptionProperty::is_compatible(const Property& other) const
 {
   if (TypedProperty::is_compatible(other)) {
-    const auto& other_op = static_cast<const OptionsProperty&>(other);
+    const auto& other_op = static_cast<const OptionProperty&>(other);
     return options() == other_op.options();
   } else {
     return false;
   }
 }
 
-void OptionsProperty::revise()
+void OptionProperty::revise()
 {
   set(std::clamp<std::size_t>(0, this->value(), options().size() - 1));
 }

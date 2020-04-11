@@ -5,7 +5,7 @@
 
 #include "properties/stringproperty.h"
 #include "properties/boolproperty.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "properties/triggerproperty.h"
 
 #include "python/tagwrapper.h"
@@ -32,7 +32,7 @@ ScriptTag::ScriptTag(Object& owner)
     .set_mode(StringProperty::Mode::Code)
     .set_label(QObject::tr("code"))
     .set_category(QObject::tr("script"));
-  create_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY, 0)
+  create_property<OptionProperty>(UPDATE_MODE_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("on request"),
                    QObject::tr("per frame") })
     .set_label(QObject::tr("update"))

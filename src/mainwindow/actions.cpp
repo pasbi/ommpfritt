@@ -4,7 +4,7 @@
 #include "commands/propertycommand.h"
 #include "commands/addcommand.h"
 #include "commands/removecommand.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
 #include <QUndoStack>
@@ -35,8 +35,8 @@ void modify_tangents(omm::Path::InterpolationMode mode, omm::Application& app)
 
   if (map.size() > 0) {
     auto macro = app.scene.history().start_macro(QObject::tr("modify tangents"));
-    using OptionsPropertyCommand = omm::PropertiesCommand<omm::OptionsProperty>;
-    app.scene.submit<OptionsPropertyCommand>(interpolation_properties, bezier_mode);
+    using OptionPropertyCommand = omm::PropertiesCommand<omm::OptionProperty>;
+    app.scene.submit<OptionPropertyCommand>(interpolation_properties, bezier_mode);
     app.scene.submit<omm::ModifyPointsCommand>(map);
   }
 }

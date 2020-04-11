@@ -1,4 +1,4 @@
-#include "propertywidgets/optionspropertywidget/optionsedit.h"
+#include "propertywidgets/optionpropertywidget/optionsedit.h"
 #include "managers/nodemanager/nodeview.h"
 #include <QApplication>
 #include <QLineEdit>

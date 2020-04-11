@@ -1,5 +1,5 @@
 #include "properties/propertygroups/markerproperties.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "properties/floatproperty.h"
 #include "properties/boolproperty.h"
 #include "objects/tip.h"
@@ -18,7 +18,7 @@ MarkerProperties
 
 void MarkerProperties::make_properties(const QString &category) const
 {
-  create_property<OptionsProperty>(SHAPE_PROPERTY_KEY, static_cast<std::size_t>(m_default_shape))
+  create_property<OptionProperty>(SHAPE_PROPERTY_KEY, static_cast<std::size_t>(m_default_shape))
     .set_options(shapes()).set_category(category)
     .set_label(QObject::tr("Shape"));
 

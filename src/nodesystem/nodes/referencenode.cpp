@@ -5,7 +5,6 @@
 #include "properties/referenceproperty.h"
 #include "variant.h"
 #include "scene/scene.h"
-#include "properties/optionsproperty.h"
 #include "nodesystem/nodemodel.h"
 
 namespace omm

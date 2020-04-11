@@ -84,7 +84,7 @@ public:
   using AbstractPropertyWidget::AbstractPropertyWidget;
   using property_type = PropertyT;
   using value_type = typename property_type::value_type;
-  static const QString TYPE;
+  static QString TYPE() { return QString(PropertyT::TYPE()) + "Widget"; }
 
 protected:
   virtual void set_properties_value(const value_type& value)
@@ -106,10 +106,7 @@ protected:
   }
 
   const std::set<Property*>& properties() const { return m_properties; }
-  QString type() const override { return TYPE; }
+  QString type() const override { return TYPE(); }
 };
-
-template<typename PropertyT> const QString
-PropertyWidget<PropertyT>::TYPE = QString(PropertyT::TYPE) + "Widget";
 
 }  // namespace omm

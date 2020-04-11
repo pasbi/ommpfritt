@@ -8,8 +8,8 @@
 #include "propertywidgets/referencepropertywidget/referencepropertywidget.h"
 #include "propertywidgets/stringpropertywidget/stringpropertyconfigwidget.h"
 #include "propertywidgets/stringpropertywidget/stringpropertywidget.h"
-#include "propertywidgets/optionspropertywidget/optionspropertyconfigwidget.h"
-#include "propertywidgets/optionspropertywidget/optionspropertywidget.h"
+#include "propertywidgets/optionpropertywidget/optionpropertyconfigwidget.h"
+#include "propertywidgets/optionpropertywidget/optionpropertywidget.h"
 #include "propertywidgets/triggerpropertywidget/triggerpropertyconfigwidget.h"
 #include "propertywidgets/triggerpropertywidget/triggerpropertywidget.h"
 #include "propertywidgets/vectorpropertywidget/vectorpropertyconfigwidget.h"
@@ -33,7 +33,7 @@ void register_propertyconfigwidgets()
   REGISTER_PROPERTY(IntegerProperty);
   REGISTER_PROPERTY(ReferenceProperty);
   REGISTER_PROPERTY(StringProperty);
-  REGISTER_PROPERTY(OptionsProperty);
+  REGISTER_PROPERTY(OptionProperty);
   REGISTER_PROPERTY(TriggerProperty);
   REGISTER_PROPERTY(IntegerVectorProperty);
   REGISTER_PROPERTY(FloatVectorProperty);

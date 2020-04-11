@@ -1,14 +1,14 @@
 
 file(GLOB SOURCES
   optionsedit.cpp
-  optionspropertyconfigwidget.cpp
-  optionspropertywidget.cpp
+  optionpropertyconfigwidget.cpp
+  optionpropertywidget.cpp
 )
 
 file(GLOB HEADERS
   optionsedit.h
-  optionspropertyconfigwidget.h
-  optionspropertywidget.h
+  optionpropertyconfigwidget.h
+  optionpropertywidget.h
 )
 
 

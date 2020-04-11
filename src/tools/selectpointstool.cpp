@@ -2,7 +2,7 @@
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
 #include "objects/path.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "tools/handles/boundingboxhandle.h"
 #include "scene/messagebox.h"
 
@@ -14,13 +14,13 @@ SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene)
   , m_transform_points_helper(Space::Viewport)
 {
   const auto category = QObject::tr("tool");
-  create_property<OptionsProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
+  create_property<OptionProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("Mirror"), QObject::tr("Individual") })
     .set_label(QObject::tr("tangent"))
     .set_category(category)
     .set_animatable(false);
 
-  create_property<OptionsProperty>(BOUNDING_BOX_MODE_PROPERTY_KEY, 1)
+  create_property<OptionProperty>(BOUNDING_BOX_MODE_PROPERTY_KEY, 1)
     .set_options( { QObject::tr("Include Tangents"),
                     QObject::tr("Exclude Tangents"),
                     QObject::tr("None") })

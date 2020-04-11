@@ -4,7 +4,7 @@
 #include "properties/floatproperty.h"
 #include "mainwindow/viewport/viewport.h"
 #include "properties/integerproperty.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 
 namespace
 {
@@ -37,13 +37,13 @@ ImageObject::ImageObject(Scene* scene) : Object(scene)
     .set_range(0, IntegerProperty::highest_possible_value)
     .set_label(QObject::tr("Page")).set_category(category);
 
-  create_property<OptionsProperty>(HANCHOR_PROPERTY_KEY, 1)
+  create_property<OptionProperty>(HANCHOR_PROPERTY_KEY, 1)
     .set_options({ QObject::tr("Left"),
                    QObject::tr("Center"),
                    QObject::tr("Right") })
     .set_label(QObject::tr("Horizontal")).set_category(category);
 
-  create_property<OptionsProperty>(VANCHOR_PROPERTY_KEY, 1)
+  create_property<OptionProperty>(VANCHOR_PROPERTY_KEY, 1)
     .set_options({ QObject::tr("Top"),
                    QObject::tr("Center"),
                    QObject::tr("Bottom") })

@@ -261,7 +261,15 @@ void print_variant_value(std::ostream& ostream, const variant_type& variant)
 
 template<typename T, typename S> T type_cast(S* s)
 {
-  if (s != nullptr && s->type() == std::decay_t<std::remove_pointer_t<T>>::TYPE) {
+  const auto type = []() {
+    using DecayedT = std::decay_t<std::remove_pointer_t<T>>;
+    if constexpr (std::is_same_v<decltype(DecayedT::TYPE), QString()>) {
+      return DecayedT::TYPE();
+    } else {
+      return DecayedT::TYPE;
+    }
+  }();
+  if (s != nullptr && s->type() == type) {
     return static_cast<T>(s);
   } else {
     return nullptr;

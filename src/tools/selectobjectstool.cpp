@@ -5,7 +5,7 @@
 #include "tools/handles/scalebandhandle.h"
 #include "tools/handles/particlehandle.h"
 #include "scene/scene.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "tools/handles/boundingboxhandle.h"
 
 namespace omm
@@ -14,7 +14,7 @@ namespace omm
 SelectObjectsTool::SelectObjectsTool(Scene& scene)
   : AbstractSelectTool(scene)
 {
-  create_property<OptionsProperty>(TRANSFORMATION_MODE_KEY, 0)
+  create_property<OptionProperty>(TRANSFORMATION_MODE_KEY, 0)
     .set_options({ QObject::tr("Object"), QObject::tr("Axis") })
     .set_label(QObject::tr("Mode"))
     .set_category(QObject::tr("tool"))

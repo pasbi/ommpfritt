@@ -41,7 +41,7 @@ bool set_property_value( AbstractPropertyOwner& property_owner,
 {
   if (property_owner.has_property(key)) {
     auto& property = *property_owner.property(key);
-    if (property.type() == ReferenceProperty::TYPE) {
+    if (property.type() == ReferenceProperty::TYPE()) {
       if (value.is_none()) {
         // TODO replace return-status with throw exception
         property.set(nullptr);
@@ -56,12 +56,12 @@ bool set_property_value( AbstractPropertyOwner& property_owner,
         LWARNING << "Attempted to set non-allowed kind of reference.";
         return false;
       }
-    } else if (property.type() == TriggerProperty::TYPE) {
+    } else if (property.type() == TriggerProperty::TYPE()) {
       return false;
-    } else if (property.type() == FloatVectorProperty::TYPE) {
+    } else if (property.type() == FloatVectorProperty::TYPE()) {
       property.set(Vec2f(value.cast<std::vector<Vec2f::element_type>>()));
       return true;
-    } else if (property.type() == IntegerVectorProperty::TYPE) {
+    } else if (property.type() == IntegerVectorProperty::TYPE()) {
       property.set(Vec2i(value.cast<std::vector<Vec2i::element_type>>()));
       return true;
     } else {

@@ -12,7 +12,7 @@
 
 #include "properties/stringproperty.h"
 #include "properties/boolproperty.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "properties/triggerproperty.h"
 
 #include "python/tagwrapper.h"
@@ -50,7 +50,7 @@ NodesTag::NodesTag(Object& owner)
   : Tag(owner), NodesOwner(AbstractNodeCompiler::Language::Python, *owner.scene())
 {
   const QString category = QObject::tr("Basic");
-  create_property<OptionsProperty>(UPDATE_MODE_PROPERTY_KEY, 0)
+  create_property<OptionProperty>(UPDATE_MODE_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("on request"), QObject::tr("per frame") })
     .set_label(QObject::tr("update")).set_category(category);
   create_property<TriggerProperty>(TRIGGER_UPDATE_PROPERTY_KEY)
@@ -105,13 +105,14 @@ void NodesTag::force_evaluate()
   assert(scene != nullptr);
   using namespace py::literals;
 
-//  LINFO << "Compilation: \n" << code();
   auto locals = py::dict();
   NodeModel& model = node_model();
   populate_locals<PortType::Input>(locals, model);
   populate_locals<PortType::Output>(locals, model);
 
-  if (Application::instance().python_engine.exec(model.compiler().code(), locals, this)) {
+  const auto code = model.compiler().code();
+  LINFO << "Compilation: \n" << code;
+  if (Application::instance().python_engine.exec(code, locals, this)) {
     for (InputPort* port : model.ports<InputPort>()) {
       if (port->node.type() == SpyNode::TYPE) {
         SpyNode& spy_node = static_cast<SpyNode&>(port->node);

@@ -26,7 +26,12 @@ private:
   template<typename SpecialT>
   static std::unique_ptr<GeneralT> clone_(const GeneralT& original)
   {
-    assert(original.type() == SpecialT::TYPE);
+    if constexpr (std::is_same_v<decltype(SpecialT::TYPE), QString()>) {
+      assert(original.type() == SpecialT::TYPE());
+    } else {
+      assert(original.type() == SpecialT::TYPE);
+    }
+
     return std::make_unique<SpecialT>(static_cast<const SpecialT&>(original));
   }
 

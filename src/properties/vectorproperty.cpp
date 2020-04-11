@@ -56,8 +56,6 @@ const Vec2i IntegerVectorPropertyLimits::lower(int_low,  int_low);
 const Vec2i IntegerVectorPropertyLimits::upper(int_high, int_high);
 const Vec2i IntegerVectorPropertyLimits::step(1, 1);
 
-QString IntegerVectorProperty::type() const { return TYPE; }
-
 void IntegerVectorProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   NumericProperty::deserialize(deserializer, root);

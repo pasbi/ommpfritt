@@ -18,7 +18,6 @@ public:
   ReferenceProperty();
   explicit ReferenceProperty(const ReferenceProperty& other);
   ~ReferenceProperty() override;
-  QString type() const override { return TYPE; }
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
 
@@ -29,7 +28,6 @@ public:
   void set(AbstractPropertyOwner *const &value) override;
 
   bool is_compatible(const Property& other) const override;
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("Property", "ReferenceProperty");
 
   static std::vector<omm::AbstractPropertyOwner*>
   collect_candidates(const Scene& scene, const Kind kinds,

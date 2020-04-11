@@ -9,7 +9,7 @@
 
 #include "managers/propertymanager/propertymanagertitlebar.h"
 #include "scene/messagebox.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "managers/propertymanager/propertymanagertab.h"
 #include "propertywidgets/propertywidget.h"
 #include "aspects/propertyowner.h"

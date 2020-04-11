@@ -3,7 +3,7 @@
 #include <cassert>
 #include "objects/object.h"
 
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include <Qt>
 #include "animation/track.h"
 

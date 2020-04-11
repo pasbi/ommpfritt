@@ -34,12 +34,9 @@ Q_SIGNALS:
 template<typename PropertyT> class PropertyConfigWidget : public AbstractPropertyConfigWidget
 {
 public:
-  static const QString TYPE;
-  QString type() const override { return TYPE; }
+  static QString TYPE() { return QString(PropertyT::TYPE()) + "ConfigWidget"; }
+  QString type() const override { return TYPE(); }
 };
-
-template<typename PropertyT> const QString
-PropertyConfigWidget<PropertyT>::TYPE = QString(PropertyT::TYPE) + "ConfigWidget";
 
 void register_propertyconfigwidgets();
 

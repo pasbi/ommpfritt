@@ -1,5 +1,4 @@
 #include "objects/empty.h"
-#include "properties/optionsproperty.h"
 
 namespace omm
 {

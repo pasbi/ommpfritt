@@ -3,7 +3,7 @@
 #include "properties/stringproperty.h"
 #include "variant.h"
 #include "scene/scene.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "managers/propertymanager/userpropertydialog.h"
 
 namespace omm

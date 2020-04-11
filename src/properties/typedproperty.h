@@ -32,6 +32,13 @@ public:
   TypedProperty(ValueT defaultValue = ValueT())
     : m_value(defaultValue), m_default_value(defaultValue) {}
 
+  static QString TYPE()
+  {
+    return QString::fromStdString(std::string(variant_type_name<ValueT>())) + "Property";
+  }
+
+  QString type() const override { return TYPE(); }
+
 public:
   variant_type variant_value() const override { return m_value; }
   ValueT value() const { return Property::value<ValueT>(); }
@@ -48,7 +55,6 @@ public:
   virtual ValueT default_value() const { return m_default_value; }
   virtual void set_default_value(const ValueT& value) { m_default_value = value; }
   virtual void reset() { m_value = m_default_value; }
-  QString type() const override = 0;
 
   bool is_numerical() const override
   {
@@ -61,13 +67,5 @@ private:
   ValueT m_value;
   ValueT m_default_value;
 };
-
-template<typename ValueT> QString TypedProperty<ValueT>::type() const
-{
-  // TypedProperty<ValueT> has no meaningful way to provide type(), which is realised
-  // by overriding the virtual type() member in any of the derived types.
-  LFATAL("It is tempting to call me. However, I'm useless. Don't call me.");
-  return "";
-}
 
 }  // namespace

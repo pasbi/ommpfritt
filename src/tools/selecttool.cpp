@@ -5,7 +5,7 @@
 #include "objects/path.h"
 #include "menuhelper.h"
 #include "properties/floatproperty.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
 #include <QCoreApplication>
@@ -28,7 +28,7 @@ AbstractSelectTool::AbstractSelectTool(Scene& scene)
 
 {
   const QString category = QObject::tr("tool");
-  create_property<OptionsProperty>(ALIGNMENT_PROPERTY_KEY, 1)
+  create_property<OptionProperty>(ALIGNMENT_PROPERTY_KEY, 1)
     .set_options({ QObject::tr("global"), QObject::tr("local") })
     .set_label(QObject::tr("Alignment"))
     .set_category(category)

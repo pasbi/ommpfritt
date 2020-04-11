@@ -3,7 +3,7 @@
 #include <memory>
 #include "renderers/painter.h"
 #include "objects/object.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "scene/scene.h"
 #include <QApplication>
 #include <QKeyEvent>

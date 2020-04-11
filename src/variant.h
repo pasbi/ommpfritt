@@ -31,6 +31,33 @@ template<> const Vec2f null_value<Vec2f> { 0.0, 0.0 };
 template<> const Vec2i null_value<Vec2i> { 0, 0 };
 template<> const SplineType null_value<SplineType> = SplineType();
 
+template<typename T> constexpr std::string_view variant_type_name() noexcept
+{
+  if constexpr (std::is_same_v<T, bool>) {
+    return QT_TRANSLATE_NOOP("DataType", "Bool");
+  } else if constexpr (std::is_same_v<T, double>) {
+    return QT_TRANSLATE_NOOP("DataType", "Float");
+  } else if constexpr (std::is_same_v<T, Color>) {
+    return QT_TRANSLATE_NOOP("DataType", "Color");
+  } else if constexpr (std::is_same_v<T, int>) {
+    return QT_TRANSLATE_NOOP("DataType", "Integer");
+  } else if constexpr (std::is_same_v<T, AbstractPropertyOwner*>) {
+    return QT_TRANSLATE_NOOP("DataType", "Reference");
+  } else if constexpr (std::is_same_v<T, QString>) {
+    return QT_TRANSLATE_NOOP("DataType", "String");
+  } else if constexpr (std::is_same_v<T, size_t>) {
+    return QT_TRANSLATE_NOOP("DataType", "Option");
+  } else if constexpr (std::is_same_v<T, TriggerPropertyDummyValueType>) {
+    return QT_TRANSLATE_NOOP("DataType", "Trigger");
+  } else if constexpr (std::is_same_v<T, Vec2f>) {
+    return QT_TRANSLATE_NOOP("DataType", "FloatVector");
+  } else if constexpr (std::is_same_v<T, Vec2i>) {
+    return QT_TRANSLATE_NOOP("DataType", "IntegerVector");
+  } else if constexpr (std::is_same_v<T, SplineType>) {
+    return QT_TRANSLATE_NOOP("DataType", "Spline");
+  }
+}
+
 //=== Channels
 // Channels provide a unified way to read and write numerical values in a variant.
 

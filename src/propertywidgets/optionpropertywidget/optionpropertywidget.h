@@ -1,6 +1,6 @@
 #pragma once
 
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "propertywidgets/propertywidget.h"
 
 namespace omm
@@ -8,10 +8,10 @@ namespace omm
 
 class OptionsEdit;
 
-class OptionsPropertyWidget : public PropertyWidget<OptionsProperty>
+class OptionPropertyWidget : public PropertyWidget<OptionProperty>
 {
 public:
-  explicit OptionsPropertyWidget(Scene& scene, const std::set<Property*>& properties);
+  explicit OptionPropertyWidget(Scene& scene, const std::set<Property*>& properties);
   OptionsEdit* combobox() const { return m_options_edit; }
 
 protected:

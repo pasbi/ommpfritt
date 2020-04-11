@@ -5,7 +5,7 @@ file(GLOB SOURCES
   floatproperty.cpp
   integerproperty.cpp
   numericproperty.cpp
-  optionsproperty.cpp
+  optionproperty.cpp
   property.cpp
   referenceproperty.cpp
   stringproperty.cpp
@@ -20,7 +20,7 @@ file(GLOB HEADERS
   floatproperty.h
   integerproperty.h
   numericproperty.h
-  optionsproperty.h
+  optionproperty.h
   property.h
   referenceproperty.h
   stringproperty.h

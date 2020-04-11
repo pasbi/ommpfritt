@@ -1,8 +1,8 @@
 #include "managers/nodemanager/nodeitem.h"
 #include <QAbstractItemView>
 #include "managers/nodemanager/nodeview.h"
-#include "propertywidgets/optionspropertywidget/optionsedit.h"
-#include "propertywidgets/optionspropertywidget/optionspropertywidget.h"
+#include "propertywidgets/optionpropertywidget/optionsedit.h"
+#include "propertywidgets/optionpropertywidget/optionpropertywidget.h"
 #include "nodesystem/nodemodel.h"
 #include "preferences/uicolors.h"
 #include "propertywidgets/propertywidget.h"
@@ -377,8 +377,8 @@ void NodeItem::add_property_widget(Property& property, double pos_y, double heig
   setAcceptDrops(true);
   pw_item->setAcceptDrops(true);
 
-  if (ref.type() == OptionsPropertyWidget::TYPE) {
-    auto combobox = static_cast<OptionsPropertyWidget*>(&ref)->combobox();
+  if (ref.type() == OptionPropertyWidget::TYPE()) {
+    auto combobox = static_cast<OptionPropertyWidget*>(&ref)->combobox();
     combobox->prevent_popup = true;
     QObject::connect(combobox, &OptionsEdit::popup_shown, [pw_item=pw_item.get(), combobox]() {
       NodeView* view = []() {

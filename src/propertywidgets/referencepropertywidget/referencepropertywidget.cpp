@@ -62,9 +62,4 @@ void ReferencePropertyWidget::update_edit()
   m_line_edit->set_values(get_properties_values());
 }
 
-QString ReferencePropertyWidget::type() const
-{
-  return TYPE;
-}
-
 }  // namespace omm

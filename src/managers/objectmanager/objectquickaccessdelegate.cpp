@@ -8,7 +8,7 @@
 #include "scene/scene.h"
 #include "commands/propertycommand.h"
 #include "properties/boolproperty.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "scene/history/historymodel.h"
 #include "preferences/uicolors.h"
 
@@ -166,7 +166,7 @@ VisibilityPropertyArea::make_command(const QModelIndex &index, bool update_cache
     return nullptr;
   } else {
     const auto value_s = static_cast<std::size_t>(m_new_value);
-    return std::make_unique<PropertiesCommand<OptionsProperty>>(std::set{ &property }, value_s);
+    return std::make_unique<PropertiesCommand<OptionProperty>>(std::set{ &property }, value_s);
   }
 }
 

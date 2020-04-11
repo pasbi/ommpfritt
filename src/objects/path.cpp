@@ -3,7 +3,7 @@
 #include <QObject>
 #include "commands/modifypointscommand.h"
 #include "properties/boolproperty.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "scene/scene.h"
 #include "geometry/cubics.h"
 #include "common.h"
@@ -55,7 +55,7 @@ Path::Path(Scene* scene) : Object(scene)
   create_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
     .set_label(QObject::tr("closed")).set_category(category);
 
-  create_property<OptionsProperty>(INTERPOLATION_PROPERTY_KEY)
+  create_property<OptionProperty>(INTERPOLATION_PROPERTY_KEY)
     .set_options({ QObject::tr("linear"), QObject::tr("smooth"),
                    QObject::tr("bezier") })
     .set_label(QObject::tr("interpolation")).set_category(category);

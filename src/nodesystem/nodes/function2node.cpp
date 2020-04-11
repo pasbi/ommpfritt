@@ -2,7 +2,7 @@
 #include "properties/floatproperty.h"
 #include "properties/vectorproperty.h"
 #include "nodesystem/ordinaryport.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 
 namespace omm
 {
@@ -60,7 +60,7 @@ float %1_0(int op, int x, int y) {
 Function2Node::Function2Node(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
-  create_property<OptionsProperty>(OPERATION_PROPERTY_KEY, 0)
+  create_property<OptionProperty>(OPERATION_PROPERTY_KEY, 0)
       .set_options({ tr("atan2"), tr("length"), tr("pow"), tr("min"), tr("max") })
       .set_label(QObject::tr("Operation")).set_category(category);
   create_property<FloatProperty>(INPUT_A_PROPERTY_KEY, 0.0)
@@ -85,7 +85,7 @@ bool Function2Node::accepts_input_data_type(const QString &type, const InputPort
 
 QString Function2Node::title() const
 {
-  auto&& opp = static_cast<const OptionsProperty&>(*property(OPERATION_PROPERTY_KEY));
+  auto&& opp = static_cast<const OptionProperty&>(*property(OPERATION_PROPERTY_KEY));
   const std::size_t i = opp.value();
   QString operation_label = tr("invalid");
   try {

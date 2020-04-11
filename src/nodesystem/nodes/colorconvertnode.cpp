@@ -1,6 +1,6 @@
 #include "nodesystem/nodes/colorconvertnode.h"
 #include "properties/colorproperty.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "nodesystem/ordinaryport.h"
 
 namespace
@@ -71,7 +71,7 @@ vec4 %1_0(int option, vec4 color) {
 ColorConvertNode::ColorConvertNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
-  create_property<OptionsProperty>(CONVERSION_PROPERTY_KEY)
+  create_property<OptionProperty>(CONVERSION_PROPERTY_KEY)
       .set_options(conversion_options)
       .set_label(tr("conversion")).set_category(category);
   create_property<ColorProperty>(COLOR_PROPERTY_KEY, Color())

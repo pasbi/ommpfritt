@@ -24,7 +24,7 @@ namespace omm
 class Object;
 class Track;
 class Property;
-class OptionsProperty;
+class OptionProperty;
 
 class Property
   : public QObject

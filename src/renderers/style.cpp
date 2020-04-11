@@ -15,7 +15,7 @@
 #include "properties/floatproperty.h"
 #include "properties/triggerproperty.h"
 #include "renderers/styleiconengine.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "objects/tip.h"
 #include "scene/scene.h"
 #include "properties/stringproperty.h"
@@ -57,19 +57,19 @@ Style::Style(Scene *scene)
     .set_range(0, std::numeric_limits<double>::infinity())
     .set_label(QObject::tr("width"))
     .set_category(pen_category);
-  create_property<OptionsProperty>(STROKE_STYLE_KEY, 0)
+  create_property<OptionProperty>(STROKE_STYLE_KEY, 0)
     .set_options({ QObject::tr("Solid"),
                    QObject::tr("Dashed"),
                    QObject::tr("Dotted"),
                    QObject::tr("DashDotted"),
                    QObject::tr("DashDotDotted") })
     .set_label(QObject::tr("Stroke Style")).set_category(pen_category);
-  create_property<OptionsProperty>(JOIN_STYLE_KEY, 2)
+  create_property<OptionProperty>(JOIN_STYLE_KEY, 2)
     .set_options({ QObject::tr("Bevel"),
                    QObject::tr("Miter"),
                    QObject::tr("Round") })
     .set_label(QObject::tr("Join")).set_category(pen_category);
-  create_property<OptionsProperty>(CAP_STYLE_KEY, 1)
+  create_property<OptionProperty>(CAP_STYLE_KEY, 1)
     .set_options({ QObject::tr("Square"),
                    QObject::tr("Flat"),
                    QObject::tr("Round") })

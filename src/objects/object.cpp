@@ -18,7 +18,7 @@
 #include "tags/styletag.h"
 #include "scene/contextes.h"
 #include "properties/boolproperty.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "properties/vectorproperty.h"
 #include "logging.h"
 #include "objects/path.h"
@@ -52,13 +52,13 @@ QBrush Object::m_bounding_box_brush = Qt::NoBrush;
 Object::Object(Scene* scene) : PropertyOwner(scene), tags(*this)
 {
   static const auto category = QObject::tr("basic");
-  create_property<OptionsProperty>(VIEWPORT_VISIBILITY_PROPERTY_KEY, 0)
+  create_property<OptionProperty>(VIEWPORT_VISIBILITY_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("default"), QObject::tr("hidden"),
       QObject::tr("visible") })
     .set_label(QObject::tr("visibility (viewport)"))
     .set_category(category);
 
-  create_property<OptionsProperty>(VISIBILITY_PROPERTY_KEY, 0)
+  create_property<OptionProperty>(VISIBILITY_PROPERTY_KEY, 0)
     .set_options({ QObject::tr("default"), QObject::tr("hidden"),
       QObject::tr("visible") })
     .set_label(QObject::tr("visibility"))

@@ -2,7 +2,7 @@
 #include "aspects/propertyowner.h"
 #include "properties/floatproperty.h"
 #include "properties/stringproperty.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "properties/boolproperty.h"
 #include <QDebug>
 #include <properties/integerproperty.h>
@@ -29,7 +29,7 @@ void FontProperties::make_properties(const QString& category) const
     .set_label(QObject::tr("Overline")).set_category(category);
   create_property<BoolProperty>(STRIKEOUT_PROPERTY_KEY)
     .set_label(QObject::tr("Strikeout")).set_category(category);
-  create_property<OptionsProperty>(CAPITALIZATION_PROPERTY_KEY)
+  create_property<OptionProperty>(CAPITALIZATION_PROPERTY_KEY)
     .set_options({ QObject::tr("Mixed"),
                    QObject::tr("All upper"),
                    QObject::tr("All lower"),
@@ -40,7 +40,7 @@ void FontProperties::make_properties(const QString& category) const
     .set_label(QObject::tr("Fixed pitch")).set_category(category);
   create_property<BoolProperty>(KERNING_PROPERTY_KEY)
     .set_label(QObject::tr("Kerning")).set_category(category);
-  create_property<OptionsProperty>(LETTER_SPACING_TYPE_PROPERTY_KEY)
+  create_property<OptionProperty>(LETTER_SPACING_TYPE_PROPERTY_KEY)
     .set_options({ QObject::tr("Relative"), QObject::tr("Absolute") })
     .set_label(QObject::tr("Letter spacing mode")).set_category(category);
   create_property<FloatProperty>(LETTER_SPACING_PROPERTY_KEY)

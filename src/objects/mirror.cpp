@@ -2,7 +2,7 @@
 
 #include <QObject>
 #include "objects/empty.h"
-#include "properties/optionsproperty.h"
+#include "properties/optionproperty.h"
 #include "properties/boolproperty.h"
 #include "geometry/vec2.h"
 #include "objects/path.h"
@@ -14,11 +14,11 @@ namespace omm
 Mirror::Mirror(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("Mirror");
-  create_property<OptionsProperty>(DIRECTION_PROPERTY_KEY)
+  create_property<OptionProperty>(DIRECTION_PROPERTY_KEY)
     .set_options({ QObject::tr("Horizontal"),
                    QObject::tr("Vertical") })
     .set_label(QObject::tr("Direction")).set_category(category);
-  auto& mode_property = create_property<OptionsProperty>(AS_PATH_PROPERTY_KEY);
+  auto& mode_property = create_property<OptionProperty>(AS_PATH_PROPERTY_KEY);
   mode_property.set_options({ QObject::tr("Object"),
                               QObject::tr("Path") })
     .set_label(QObject::tr("Mode")).set_category(category);

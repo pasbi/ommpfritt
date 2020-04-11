@@ -99,7 +99,7 @@ const std::set<QString> AbstractNodeCompiler::supported_types(AbstractNodeCompil
     return Property::keys();
   case AbstractNodeCompiler::Language::GLSL:
     return ::filter_if(Property::keys(), [](const auto& c) {
-      return c != StringProperty::TYPE && c != TriggerProperty::TYPE;
+      return c != StringProperty::TYPE() && c != TriggerProperty::TYPE();
     });
   default:
     Q_UNREACHABLE();
