@@ -12,6 +12,21 @@ namespace omm
 namespace detail
 {
 
+template<std::size_t i=0>
+pybind11::object pycast_variant(const variant_type& value)
+{
+  using Head = std::decay_t<decltype(std::get<i>(value))>;
+  if (std::holds_alternative<Head>(value)) {
+    return pybind11::cast(std::get<Head>(value));
+  } else {
+    if constexpr (i+1 < std::variant_size_v<variant_type>) {
+      return pycast_variant<i+1>(value);
+    } else {
+      return py::none();
+    }
+  }
+}
+
 template<typename WrappedT>
 py::object get_property_value(WrappedT&& wrapped, const QString& key)
 {
@@ -21,20 +36,8 @@ py::object get_property_value(WrappedT&& wrapped, const QString& key)
       return wrap(std::get<AbstractPropertyOwner*>(value));
     } else if (std::holds_alternative<TriggerPropertyDummyValueType>(value)) {
       return py::none();
-    } else if (std::holds_alternative<Vec2f>(value)) {
-      return py::cast(std::get<Vec2f>(value).to_stdvec());
-    } else if (std::holds_alternative<Vec2i>(value)) {
-      return py::cast(std::get<Vec2i>(value).to_stdvec());
-    } else if (std::holds_alternative<double>(value)) {
-      return py::cast(std::get<double>(value));
-    } else if (std::holds_alternative<int>(value)) {
-      return py::cast(std::get<int>(value));
-    } else if (std::holds_alternative<bool>(value)) {
-      return py::cast(std::get<bool>(value));
-    } else if (std::holds_alternative<Color>(value)) {
-      return py::cast(std::get<Color>(value));
     } else {
-      return py::none();
+      return pycast_variant(value);
     }
   } else {
     LERROR << "Failed to find property key '" << key << "'.";
@@ -48,6 +51,7 @@ py::object get_property_value(WrappedT&& wrapped, const QString& key)
 bool set_property_value( AbstractPropertyOwner& property_owner,
                          const QString& key, const py::object& value );
 }  // namespace detail
+
 
 template<typename WrappedT, typename = void>
 class AbstractPropertyOwnerWrapper : public PyWrapper<WrappedT>

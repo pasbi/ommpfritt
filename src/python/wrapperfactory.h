@@ -8,9 +8,9 @@ template<typename GeneralWrappedT, typename GeneralWrapperT>
 class WrapperFactory
 {
 private:
-  template<typename SpecialWrapperT> static py::object make(GeneralWrappedT& wrapped)
+  template<typename SpecialWrapperT> static pybind11::object make(GeneralWrappedT& wrapped)
   {
-    return py::cast(SpecialWrapperT(wrapped));
+    return pybind11::cast(SpecialWrapperT(wrapped));
   }
 
 public:
@@ -20,7 +20,7 @@ public:
     m_creator_map.insert(std::make_pair(type, &make<SpecialWrapperT>));
   }
 
-  static py::object make(GeneralWrappedT& wrapped)
+  static pybind11::object make(GeneralWrappedT& wrapped)
   {
     const auto type = wrapped.type();
     if (m_creator_map.count(type) == 0) {
@@ -30,7 +30,7 @@ public:
     }
   }
 
-  using creator_type = py::object(*)(GeneralWrappedT&);
+  using creator_type = pybind11::object(*)(GeneralWrappedT&);
   using creator_map_type = std::map<QString, creator_type>;
 
 private:
