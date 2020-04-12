@@ -12,6 +12,8 @@ public:
   QString type() const override { return TYPE; }
 
   static constexpr auto OPERATION_PROPERTY_KEY = "op";
+  static constexpr auto A_VALUE_KEY = "a";
+  static constexpr auto B_VALUE_KEY = "b";
 
   QString output_data_type(const OutputPort& port) const override;
   QString input_data_type(const InputPort& port) const override;
@@ -22,8 +24,7 @@ public:
 private:
   InputPort* m_operation_input;
   OutputPort* m_output;
-  InputPort* m_a_input;
-  InputPort* m_b_input;
+
 };
 
 }  // namespace omm

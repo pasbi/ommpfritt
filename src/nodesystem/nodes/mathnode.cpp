@@ -75,8 +75,10 @@ MathNode::MathNode(NodeModel& model)
   auto& operation_property = create_property<OptionProperty>(OPERATION_PROPERTY_KEY, 0.0)
       .set_options({ tr("+"), tr("-"), tr("*"), tr("/") })
       .set_label(QObject::tr("Operation")).set_category(category);
-  m_a_input = &add_port<OrdinaryPort<PortType::Input>>(tr("a"));
-  m_b_input = &add_port<OrdinaryPort<PortType::Input>>(tr("b"));
+  create_property<FloatProperty>(A_VALUE_KEY, PortType::Input, 0)
+      .set_label(QObject::tr("a")).set_category(category);
+  create_property<FloatProperty>(B_VALUE_KEY, PortType::Input, 0)
+      .set_label(QObject::tr("b")).set_category(category);
   m_output = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
   m_operation_input = find_port<InputPort>(operation_property);
 }
@@ -84,8 +86,8 @@ MathNode::MathNode(NodeModel& model)
 QString MathNode::output_data_type(const OutputPort& port) const
 {
   if (&port == m_output) {
-    const QString type_a = m_a_input->data_type();
-    const QString type_b = m_b_input->data_type();
+    const QString type_a = find_port<InputPort>(A_VALUE_KEY)->data_type();
+    const QString type_b = find_port<InputPort>(B_VALUE_KEY)->data_type();
     switch (language()) {
     case AbstractNodeCompiler::Language::GLSL:
       return type_a;
@@ -113,15 +115,21 @@ QString MathNode::output_data_type(const OutputPort& port) const
 QString MathNode::input_data_type(const InputPort& port) const
 {
   Q_UNUSED(port)
-  return fst_con_ptype({ m_a_input, m_b_input }, NodeCompilerTypes::FLOAT_TYPE);
+  const auto ports = std::vector {
+    find_port<InputPort>(A_VALUE_KEY),
+    find_port<InputPort>(B_VALUE_KEY)
+  };
+  return fst_con_ptype(ports, NodeCompilerTypes::FLOAT_TYPE);
 }
 
 bool MathNode::accepts_input_data_type(const QString& type, const InputPort& port) const
 {
   const auto glsl_accepts_type = [this, type, &port]() {
-    const InputPort& other_port = &port == m_a_input ? *m_b_input : *m_a_input;
+    const auto a_input = find_port<InputPort>(A_VALUE_KEY);
+    const auto b_input = find_port<InputPort>(B_VALUE_KEY);
+    const InputPort& other_port = &port == a_input ? *b_input : *a_input;
     using InputSet = std::set<const InputPort*>;
-    assert((InputSet { &port, &other_port }) == (InputSet { m_a_input, m_b_input }));
+    assert((InputSet { &port, &other_port }) == (InputSet { a_input, b_input }));
     if (other_port.is_connected()) {
       return type == other_port.data_type();
     } else {
