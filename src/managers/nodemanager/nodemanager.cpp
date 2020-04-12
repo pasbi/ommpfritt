@@ -185,10 +185,7 @@ std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
         });
         quick_constant_node_actions_menu->addAction(action.release());
       }
-      const auto path = {
-        QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
-      };
-      find_menu(root_menu.get(), path).addMenu(quick_constant_node_actions_menu.release());
+      root_menu->addMenu(quick_constant_node_actions_menu.release());
     }
   }
   return root_menu;
