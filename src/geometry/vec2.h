@@ -117,6 +117,7 @@ public:
   Vec2<element_type>& operator/=(const element_type& e) { return (*this) *= 1.0/e; }
   double arg() const { return std::atan2(y, x); }
   bool has_nan() const { return std::isnan(x) || std::isnan(y); }
+  bool has_inf() const { return std::isinf(x) || std::isinf(y); }
 };
 
 template<typename ValueT>

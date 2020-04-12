@@ -68,7 +68,9 @@ std::vector<Vec2f> Cubic::interpolate(const std::size_t n) const
   std::vector<Vec2f> points;
   points.reserve(n);
   for (std::size_t i = 0; i < n; ++i) {
-    points.push_back(pos(double(i)/double(n-1)));
+    const auto pos = this->pos(static_cast<double>(i)/static_cast<double>(n-1));
+    assert(!pos.has_nan());
+    points.push_back(pos);
   }
   return points;
 }

@@ -34,6 +34,11 @@ bool PolarCoordinates::has_nan() const
   return std::isnan(argument) || std::isnan(magnitude);
 }
 
+bool PolarCoordinates::has_inf() const
+{
+  return std::isinf(argument) || std::isinf(magnitude);
+}
+
 bool PolarCoordinates::operator<(const PolarCoordinates &other) const
 {
   if (magnitude == other.magnitude) {

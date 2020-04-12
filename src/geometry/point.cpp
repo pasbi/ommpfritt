@@ -36,6 +36,11 @@ bool Point::has_nan() const
   return position.has_nan() || left_tangent.has_nan() || right_tangent.has_nan();
 }
 
+bool Point::has_inf() const
+{
+  return position.has_inf() || left_tangent.has_inf() || right_tangent.has_inf();
+}
+
 Point Point::smoothed(Vec2f& left, const Vec2f& right) const
 {
   auto copy = *this;

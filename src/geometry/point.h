@@ -26,6 +26,7 @@ public:
   bool is_selected = false;
   void swap(Point& other);
   bool has_nan() const;
+  bool has_inf() const;
 
   PolarCoordinates left_tangent;
   PolarCoordinates right_tangent;

@@ -43,7 +43,11 @@ std::unique_ptr<Object> AbstractProceduralPath::convert() const
 
 Point AbstractProceduralPath::evaluate(const double t) const
 {
-  return Cubics(m_points, is_closed()).evaluate(t);
+  if (m_points.size() > 1) {
+    return Cubics(m_points, is_closed()).evaluate(t);
+  } else {
+    return Point();
+  }
 }
 
 BoundingBox AbstractProceduralPath::bounding_box(const ObjectTransformation &transformation) const
@@ -82,7 +86,9 @@ std::unique_ptr<Path> AbstractProceduralPath::outline(const double t) const
 
 void AbstractProceduralPath::update()
 {
-  m_points = points();
+  m_points = ::filter_if(points(), [](const auto& point) {
+    return !point.has_nan() && !point.has_inf();
+  });
   m_painter_path = Painter::path(m_points, is_closed());
   Object::update();
 }
