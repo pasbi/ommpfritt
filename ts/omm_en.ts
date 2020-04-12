@@ -67,6 +67,53 @@
     </message>
 </context>
 <context>
+    <name>DataType</name>
+    <message>
+        <source>Bool</source>
+        <translation>Bool</translation>
+    </message>
+    <message>
+        <source>Float</source>
+        <translation>Float</translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation>Color</translation>
+    </message>
+    <message>
+        <source>Integer</source>
+        <translation>Integer</translation>
+    </message>
+    <message>
+        <source>Reference</source>
+        <translation>Reference</translation>
+    </message>
+    <message>
+        <source>String</source>
+        <translation>String</translation>
+    </message>
+    <message>
+        <source>Option</source>
+        <translation>Option</translation>
+    </message>
+    <message>
+        <source>Trigger</source>
+        <translation>Trigger</translation>
+    </message>
+    <message>
+        <source>FloatVector</source>
+        <translation>Float vector</translation>
+    </message>
+    <message>
+        <source>IntegerVector</source>
+        <translation>Integer vector</translation>
+    </message>
+    <message>
+        <source>Spline</source>
+        <translation>Spline</translation>
+    </message>
+</context>
+<context>
     <name>Enum</name>
     <message>
         <source>Tag</source>
@@ -188,13 +235,6 @@
     </message>
 </context>
 <context>
-    <name>IntegerVectorProperty</name>
-    <message>
-        <source>IntegerVectorProperty</source>
-        <translation>Integer vector property</translation>
-    </message>
-</context>
-<context>
     <name>KeyBindingsPage</name>
     <message>
         <source>Reset All</source>
@@ -249,6 +289,10 @@
         <source>Pattern</source>
         <translation>Pattern</translation>
     </message>
+    <message>
+        <source>Interpolation</source>
+        <translation>Interpolation</translation>
+    </message>
 </context>
 <context>
     <name>OffscreenRenderer</name>
@@ -274,7 +318,7 @@
     </message>
 </context>
 <context>
-    <name>OptionsPropertyConfigWidget</name>
+    <name>OptionPropertyConfigWidget</name>
     <message>
         <source>Unnamed Option</source>
         <translation>Unbennante Option</translation>
@@ -299,42 +343,6 @@
     <message>
         <source>user properties</source>
         <translation>User properties</translation>
-    </message>
-    <message>
-        <source>StringProperty</source>
-        <translation>String property</translation>
-    </message>
-    <message>
-        <source>BoolProperty</source>
-        <translation>Boolean Property</translation>
-    </message>
-    <message>
-        <source>ColorProperty</source>
-        <translation>Color property</translation>
-    </message>
-    <message>
-        <source>FloatProperty</source>
-        <translation>Float property</translation>
-    </message>
-    <message>
-        <source>IntegerProperty</source>
-        <translation>Integer property</translation>
-    </message>
-    <message>
-        <source>OptionsProperty</source>
-        <translation>Options property</translation>
-    </message>
-    <message>
-        <source>ReferenceProperty</source>
-        <translation>Reference property</translation>
-    </message>
-    <message>
-        <source>TriggerProperty</source>
-        <translation>Trigger property</translation>
-    </message>
-    <message>
-        <source>FloatVectorProperty</source>
-        <translation>Float vector property</translation>
     </message>
 </context>
 <context>
@@ -731,16 +739,6 @@ Remove the selected items anyway?</translation>
         <source>reference</source>
         <comment>Instance</comment>
         <translation>Reference</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <comment>OptionsPropertyConfigWidget</comment>
-        <translation>Warning</translation>
-    </message>
-    <message>
-        <source>Cannot remove last option.</source>
-        <comment>OptionsPropertyConfigWidget</comment>
-        <translation>Cannot remove last option.</translation>
     </message>
     <message>
         <source>single line</source>
@@ -1321,6 +1319,28 @@ Remove the selected items anyway?</translation>
         <source>Edit style ...</source>
         <translation>Edit style ...</translation>
     </message>
+    <message>
+        <source>t</source>
+        <translation>t</translation>
+    </message>
+    <message>
+        <source>left</source>
+        <translation>left</translation>
+    </message>
+    <message>
+        <source>right</source>
+        <translation>right</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <comment>OptionPropertyConfigWidget</comment>
+        <translation>Warning</translation>
+    </message>
+    <message>
+        <source>Cannot remove last option.</source>
+        <comment>OptionPropertyConfigWidget</comment>
+        <translation>Cannot remove last option.</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1612,6 +1632,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>ColorConvertNode</source>
         <translation>Color convert</translation>
+    </message>
+    <message>
+        <source>InterpolateNode</source>
+        <translation>Interpolation</translation>
     </message>
 </context>
 <context>
@@ -2536,6 +2560,17 @@ Remove the selected items anyway?</translation>
     <message>
         <source> &lt;-</source>
         <translation> &lt;-</translation>
+    </message>
+</context>
+<context>
+    <name>omm::InterpolateNode</name>
+    <message>
+        <source>result</source>
+        <translation>Result</translation>
+    </message>
+    <message>
+        <source>Node</source>
+        <translation>Node</translation>
     </message>
 </context>
 <context>

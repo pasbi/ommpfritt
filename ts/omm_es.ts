@@ -67,6 +67,53 @@
     </message>
 </context>
 <context>
+    <name>DataType</name>
+    <message>
+        <source>Bool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Float</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Integer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reference</source>
+        <translation type="unfinished">Referencia</translation>
+    </message>
+    <message>
+        <source>String</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Option</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trigger</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FloatVector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IntegerVector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spline</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Enum</name>
     <message>
         <source>Tag</source>
@@ -188,13 +235,6 @@
     </message>
 </context>
 <context>
-    <name>IntegerVectorProperty</name>
-    <message>
-        <source>IntegerVectorProperty</source>
-        <translation>Atributo Vector de Número Entero</translation>
-    </message>
-</context>
-<context>
     <name>KeyBindingsPage</name>
     <message>
         <source>Reset All</source>
@@ -249,6 +289,10 @@
         <source>Pattern</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OffscreenRenderer</name>
@@ -274,7 +318,7 @@
     </message>
 </context>
 <context>
-    <name>OptionsPropertyConfigWidget</name>
+    <name>OptionPropertyConfigWidget</name>
     <message>
         <source>Unnamed Option</source>
         <translation type="unfinished"></translation>
@@ -299,42 +343,6 @@
     <message>
         <source>user properties</source>
         <translation>Atributo</translation>
-    </message>
-    <message>
-        <source>StringProperty</source>
-        <translation type="unfinished">Atributo Texto</translation>
-    </message>
-    <message>
-        <source>BoolProperty</source>
-        <translation type="unfinished">Atributo Booleano</translation>
-    </message>
-    <message>
-        <source>ColorProperty</source>
-        <translation type="unfinished">Atributo Color</translation>
-    </message>
-    <message>
-        <source>FloatProperty</source>
-        <translation type="unfinished">Atributo Numérico de Punto Flotante</translation>
-    </message>
-    <message>
-        <source>IntegerProperty</source>
-        <translation type="unfinished">Atributo Número Entero</translation>
-    </message>
-    <message>
-        <source>OptionsProperty</source>
-        <translation type="unfinished">Atributo Opción</translation>
-    </message>
-    <message>
-        <source>ReferenceProperty</source>
-        <translation type="unfinished">Atributo Referencia</translation>
-    </message>
-    <message>
-        <source>TriggerProperty</source>
-        <translation type="unfinished">Atributo Activador</translation>
-    </message>
-    <message>
-        <source>FloatVectorProperty</source>
-        <translation type="unfinished">Atributo Vector de Punto Flotante</translation>
     </message>
 </context>
 <context>
@@ -731,16 +739,6 @@ Borrar la selección de todos modos?</translation>
         <source>reference</source>
         <comment>Instance</comment>
         <translation>Referencia</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <comment>OptionsPropertyConfigWidget</comment>
-        <translation>Advertencia</translation>
-    </message>
-    <message>
-        <source>Cannot remove last option.</source>
-        <comment>OptionsPropertyConfigWidget</comment>
-        <translation>La última opción no se puede borrar.</translation>
     </message>
     <message>
         <source>single line</source>
@@ -1321,6 +1319,28 @@ Borrar la selección de todos modos?</translation>
         <source>Edit style ...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>t</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <comment>OptionPropertyConfigWidget</comment>
+        <translation type="unfinished">Advertencia</translation>
+    </message>
+    <message>
+        <source>Cannot remove last option.</source>
+        <comment>OptionPropertyConfigWidget</comment>
+        <translation type="unfinished">La última opción no se puede borrar.</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1611,6 +1631,10 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>ColorConvertNode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>InterpolateNode</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2535,6 +2559,17 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source> &lt;-</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::InterpolateNode</name>
+    <message>
+        <source>result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Node</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
