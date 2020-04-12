@@ -92,13 +92,30 @@ public:
   ControlPoint begin();
   ControlPoint invalid() { return ControlPoint(); }
 
+  enum class Initialization { Linear, Ease, Valley };
+
   explicit SplineType(const std::multimap<double, Knot>& knots);
+  explicit SplineType(Initialization initialization, bool flip);
   explicit SplineType() = default;
 
   bool operator==(const SplineType& other) const;
   bool operator!=(const SplineType& other) const { return !(*this == other); }
   bool operator<(const SplineType& other) const;
   knot_map_type::iterator move(knot_map_type::const_iterator it, double new_t);
+  static constexpr auto TYPE = "SplineType";
+
+  struct Interpolation
+  {
+    std::optional<std::pair<double, Knot>> right;
+    std::optional<std::pair<double, Knot>> left;
+    double t;
+    double local_t() const;
+    double value() const;
+    double derivative() const;
+    std::array<double, 4> coefficients() const;
+  };
+
+  Interpolation evaluate(double t) const;
 
 Q_SIGNALS:
   void value_changed();

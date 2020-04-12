@@ -23,15 +23,15 @@ template<typename Wrapper> QString type()
 }
 
 template<typename Head, typename... Tail>
-omm::variant_type python_to_propertyowner(const pybind11::object& object)
+omm::variant_type unwrap_python_object(const pybind11::object& object)
 {
   if (static_cast<std::string>(py::str(object.get_type())) == type<Head>().toStdString()) {
     return &object.cast<Head>().wrapped;
   } else {
     if constexpr (sizeof...(Tail) == 0) {
-      return nullptr;
+      return {};
     } else {
-      return python_to_propertyowner<Tail...>(object);
+      return unwrap_python_object<Tail...>(object);
     }
   }
 }
@@ -51,6 +51,16 @@ omm::variant_type python_to_variant(const pybind11::object& object, const QStrin
   }
 }
 
+template<typename VecT> VecT vector_from_pyobject(const pybind11::object& object)
+{
+  return VecT(object.cast<std::vector<typename VecT::element_type>>());
+}
+
+template<typename Wrapper>
+typename Wrapper::wrapped_type wrapped_object_from_pyobject(const pybind11::object& object)
+{
+  return object.cast<Wrapper>().wrapped;
+}
 
 }  // namespace
 
@@ -92,17 +102,10 @@ py::object wrap(AbstractPropertyOwner* owner)
   }
 }
 
-pybind11::object wrap(SplineType& spline)
-{
-  return py::cast(SplineWrapper(spline));
-}
-
 variant_type python_to_variant(const pybind11::object& object, const QString& type)
 {
   if (type == "String") {
     return QString::fromStdString(py::str(object));
-  } else if (type == "Reference") {
-    return python_to_propertyowner<ObjectWrapper, TagWrapper, StyleWrapper>(object);
   } else if (type == "Color") {
     // TODO Color-py-wrapper
     auto rgba = object.cast<std::vector<double>>();
@@ -115,9 +118,12 @@ variant_type python_to_variant(const pybind11::object& object, const QString& ty
       return Color();
     }
   } else if (type == "FloatVector") {
+    return vector_from_pyobject<Vec2f>(object);
     return Vec2f(object.cast<std::vector<double>>());
   } else if (type == "IntegerVector") {
-    return Vec2i(object.cast<std::vector<int>>());
+    return vector_from_pyobject<Vec2i>(object);
+  } else if (::contains(std::set{ "SplineType", "Reference" }, type)) {
+    return unwrap_python_object<ObjectWrapper, TagWrapper, StyleWrapper>(object);
   } else {
     return ::python_to_variant(object, type);
   }
@@ -127,7 +133,7 @@ pybind11::object variant_to_python(variant_type variant)
 {
   return std::visit([](auto&& v) {
     using T = std::decay_t<decltype (v)>;
-    if constexpr (std::is_same_v<AbstractPropertyOwner*, std::decay_t<T>>) {
+    if constexpr (std::is_same_v<std::decay_t<T>, AbstractPropertyOwner*>) {
       return wrap(v);
     } else if constexpr (std::is_same_v<T, QString>) {
       return py::cast(v.toStdString());
@@ -144,7 +150,6 @@ pybind11::object variant_to_python(variant_type variant)
     }
   }, variant);
 }
-
 
 }  // namespace omm
 

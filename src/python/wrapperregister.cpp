@@ -6,6 +6,7 @@
 #include "python/stylewrapper.h"
 #include "python/pointwrapper.h"
 #include "python/pathwrapper.h"
+#include "python/splinewrapper.h"
 
 namespace omm
 {
@@ -25,6 +26,7 @@ void register_wrappers(py::object& module)
 
   SceneWrapper::define_python_interface(module);
   PointWrapper::define_python_interface(module);
+  SplineWrapper::define_python_interface(module);
 }
 
 }  // namespace omm

@@ -9,20 +9,22 @@ class InterpolateNode : public Node
 {
   Q_OBJECT
 public:
-  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "InterpolateNode");
-  static constexpr auto T_PROPERTY_KEY = "t";
   explicit InterpolateNode(NodeModel& model);
-  static const Detail detail;
-  QString type() const { return TYPE; }
-  bool accepts_input_data_type(const QString& type, const InputPort& port) const override;
-  QString input_data_type(const InputPort& port) const override;
+  static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "InterpolateNode");
+  QString type() const override { return TYPE; }
   QString output_data_type(const OutputPort& port) const override;
+  QString input_data_type(const InputPort& port) const override;
+  bool accepts_input_data_type(const QString& type, const InputPort& port) const override;
+  static const Detail detail;
+
+  static constexpr auto RAMP_PROPERTY_KEY = "ramp";
+  static constexpr auto LEFT_VALUE_KEY = "left";
+  static constexpr auto RIGHT_VALUE_KEY = "right";
+  static constexpr auto BALANCE_PROPERTY_KEY = "balance";
 
 private:
-  InputPort* m_a_input = nullptr;
-  InputPort* m_b_input = nullptr;
-  InputPort* m_t_input = nullptr;
-  OutputPort* m_output = nullptr;
+  OutputPort* m_output;
+
 };
 
-}  // namespace
+}  // namespace omm

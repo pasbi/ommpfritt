@@ -64,7 +64,7 @@ public:
     return nullptr;
   }
 
-  template<typename PortT> PropertyPort<PortT::PORT_TYPE>* find_port(const Property& property) const
+  template<typename PortT> PortT* find_port(const Property& property) const
   {
     for (auto&& port : m_ports) {
       if (PortT::PORT_TYPE == port->port_type && port->flavor == PortFlavor::Property) {
@@ -75,6 +75,11 @@ public:
       }
     }
     return nullptr;
+  }
+
+  template<typename PortT> PortT* find_port(const QString& key) const
+  {
+    return find_port<PortT>(*property(key));
   }
 
   virtual void populate_menu(QMenu&) {}

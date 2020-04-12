@@ -144,28 +144,22 @@ void SplineWidget::draw_spline(QPainter& painter)
     painter.restore();
   }
 
-  QPainterPath path;
   {
-    const auto pos = knot_pos(knots.begin(), Side::Middle);
-    path.moveTo(QPointF{0.0, pos.y()});
-    path.lineTo(pos);
+    QPainterPath path;
+    std::size_t n = width()/2;
+    path.moveTo({0.0, m_spline.evaluate(0).value()});
+    for (std::size_t i = 1; i <= n; ++i) {
+      const double t = static_cast<double>(i) / static_cast<double>(n);
+      const double v = m_spline.evaluate(t).value();
+      path.lineTo({t, v});
+    }
+    QPen pen;
+    pen.setCosmetic(true);
+    pen.setWidth(2.0);
+    pen.setColor(Qt::red);
+    painter.setPen(pen);
+    painter.drawPath(path);
   }
-  for (auto it = std::next(knots.begin()); it != knots.end(); ++it) {
-    const QPointF& ctrl_pt_1 = knot_pos(std::prev(it), Side::Right);
-    const QPointF& ctrl_pt_2 = knot_pos(it, Side::Left);
-    const QPointF& end_pt = knot_pos(it, Side::Middle);
-    path.cubicTo(ctrl_pt_1, ctrl_pt_2, end_pt);
-  }
-  {
-    const auto pos = knot_pos(std::prev(knots.end()), Side::Middle);
-    path.lineTo(QPointF{1.0, pos.y()});
-  }
-  QPen pen;
-  pen.setCosmetic(true);
-  pen.setWidth(2.0);
-  pen.setColor(Qt::red);
-  painter.setPen(pen);
-  painter.drawPath(path);
   painter.restore();
 }
 
@@ -173,6 +167,8 @@ QTransform SplineWidget::transform() const
 {
   QTransform t;
   t.scale(width(), height());
+  t.translate(0.0, 1.0);
+  t.scale(1.0, -1.0);
   return t;
 }
 

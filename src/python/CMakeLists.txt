@@ -9,6 +9,7 @@ file(GLOB SOURCES
   scenewrapper.cpp
   scripttagwrapper.cpp
   scopedinterpreterwrapper.cpp
+  splinewrapper.cpp
   stylewrapper.cpp
   tagwrapper.cpp
   wrapperregister.cpp
@@ -24,6 +25,7 @@ file(GLOB HEADERS
   scenewrapper.h
   scopedinterpreterwrapper.h
   scripttagwrapper.h
+  splinewrapper.h
   stylewrapper.h
   tagwrapper.h
   wrapperfactory.h

@@ -1,82 +1,63 @@
 #include "nodesystem/nodes/interpolatenode.h"
+#include "nodesystem/nodecompiler.h"
 #include "properties/floatproperty.h"
+#include "properties/splineproperty.h"
 #include "nodesystem/ordinaryport.h"
 
 namespace omm
 {
 
+using namespace omm::NodeCompilerTypes;
 const Node::Detail InterpolateNode::detail {
   {
     {
       AbstractNodeCompiler::Language::Python,
-      QString(R"(
-@listarithm_decorator
-def %1(t, a, b):
-  return (1-t) * a + t * b
+          QString(R"(
+def %1(x, y, balance, ramp):
+  t = ramp.value(balance)
+  return (1-t) * x + t * y
 )").arg(InterpolateNode::TYPE)
-    },
-    {
-      AbstractNodeCompiler::Language::GLSL,
-      ""
     },
   },
   {
     QT_TRANSLATE_NOOP("NodeMenuPath", "Interpolation"),
-  },
-
+  }
 };
 
 InterpolateNode::InterpolateNode(NodeModel& model) : Node(model)
 {
-  const QString category = tr("Interpolation");
-  const auto& t_property = create_property<FloatProperty>(T_PROPERTY_KEY, 0.0)
+  const QString category = tr("Node");
+  create_property<FloatProperty>(LEFT_VALUE_KEY, 0)
+      .set_label(QObject::tr("left")).set_category(category);
+  create_property<FloatProperty>(RIGHT_VALUE_KEY, 0)
+      .set_label(QObject::tr("right")).set_category(category);
+  create_property<FloatProperty>(BALANCE_PROPERTY_KEY, 0)
       .set_range(0.0, 1.0).set_step(0.01)
       .set_label(QObject::tr("t")).set_category(category);
-  m_a_input = &add_port<OrdinaryPort<PortType::Input>>(tr("a"));
-  m_b_input = &add_port<OrdinaryPort<PortType::Input>>(tr("b"));
+  const auto linear_spline = SplineType::Initialization::Linear;
+  create_property<SplineProperty>(RAMP_PROPERTY_KEY, SplineType(linear_spline, false))
+      .set_label(QObject::tr("")).set_category(category);
   m_output = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
-  m_t_input = find_port<InputPort>(t_property);
-}
-
-bool InterpolateNode::accepts_input_data_type(const QString& type, const InputPort& port) const
-{
-  using namespace NodeCompilerTypes;
-  if (&port == m_t_input) {
-    return type == FLOAT_TYPE;
-  } else {
-    switch (language()) {
-    case AbstractNodeCompiler::Language::GLSL:
-      return false;
-    case AbstractNodeCompiler::Language::Python:
-      return true;
-    default:
-      Q_UNREACHABLE();
-      return false;
-    }
-  }
-}
-
-QString InterpolateNode::input_data_type(const InputPort& port) const
-{
-  Q_UNUSED(port)
-  return fst_con_ptype({ m_a_input, m_b_input }, QString(NodeCompilerTypes::FLOAT_TYPE));
 }
 
 QString InterpolateNode::output_data_type(const OutputPort& port) const
 {
-  using namespace NodeCompilerTypes;
   if (&port == m_output) {
-    const QString type_a = m_a_input->data_type();
-    const QString type_b = m_b_input->data_type();
+    const QString type_a = find_port<InputPort>(LEFT_VALUE_KEY)->data_type();
+    const QString type_b = find_port<InputPort>(RIGHT_VALUE_KEY)->data_type();
     switch (language()) {
     case AbstractNodeCompiler::Language::GLSL:
       return type_a;
     case AbstractNodeCompiler::Language::Python:
-      if (is_numeric(type_a) && is_numeric(type_b)) {
+      if (is_integral(type_a) && is_integral(type_b)) {
+        return INTEGER_TYPE;
+      } else if (is_numeric(type_a) && is_numeric(type_b)) {
         return FLOAT_TYPE;
-      } else if ((type_a == INTEGERVECTOR_TYPE && type_b == INTEGERVECTOR_TYPE)) {
-        return FLOATVECTOR_TYPE;
-      } else if ((type_a == FLOATVECTOR_TYPE && type_b == FLOATVECTOR_TYPE)) {
+      } else if ((type_a == INTEGERVECTOR_TYPE || is_integral(type_a))
+              && (type_b == INTEGERVECTOR_TYPE || is_integral(type_b))) {
+        return INTEGERVECTOR_TYPE;
+      } else if ((is_vector(type_a) || is_numeric(type_a))
+              && (is_vector(type_b) || is_numeric(type_b))) {
         return FLOATVECTOR_TYPE;
       } else {
         return INVALID_TYPE;
@@ -86,6 +67,34 @@ QString InterpolateNode::output_data_type(const OutputPort& port) const
     }
   }
   return INVALID_TYPE;
+}
+
+QString InterpolateNode::input_data_type(const InputPort& port) const
+{
+  Q_UNUSED(port)
+  const auto ports = std::vector {
+    find_port<InputPort>(LEFT_VALUE_KEY),
+    find_port<InputPort>(RIGHT_VALUE_KEY)
+  };
+  return fst_con_ptype(ports, NodeCompilerTypes::FLOAT_TYPE);
+}
+
+bool InterpolateNode::accepts_input_data_type(const QString& type, const InputPort& port) const
+{
+  if (&port == find_port<InputPort>(RAMP_PROPERTY_KEY)
+      || &port == find_port<InputPort>(BALANCE_PROPERTY_KEY)) {
+    return port.data_type() == type;
+  } else {
+    switch (language()) {
+    case AbstractNodeCompiler::Language::Python:
+      return true;
+    case AbstractNodeCompiler::Language::GLSL:
+      return true;
+    default:
+      Q_UNREACHABLE();
+      return true;
+    }
+  }
 }
 
 }  // namespace omm

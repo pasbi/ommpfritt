@@ -6,6 +6,7 @@
 #include "aspects/propertyowner.h"
 #include "scene/scene.h"
 #include "tags/scripttag.h"
+#include "splinetype.h"
 
 namespace py = pybind11;
 
@@ -19,6 +20,7 @@ py::object wrap(Object& object);
 py::object wrap(Tag& tag);
 py::object wrap(Style& style);
 py::object wrap(AbstractPropertyOwner* owner);
+py::object wrap(SplineType& spline);
 
 template<typename Ts>
 py::object wrap(const Ts& items)
@@ -29,12 +31,17 @@ py::object wrap(const Ts& items)
   }));
 }
 
+class AbstractPyWrapper
+{
+public:
+  virtual ~AbstractPyWrapper() = default;
+};
+
 template<typename WrappedT>
-class PyWrapper
+class PyWrapper : AbstractPyWrapper
 {
 public:
   explicit PyWrapper(WrappedT& wrapped) : wrapped(wrapped) { }
-  virtual ~PyWrapper() = default;
   using wrapped_type = WrappedT;
   WrappedT& wrapped;
 };
