@@ -1,4 +1,5 @@
 #include "managers/nodemanager/nodemanager.h"
+#include "managers/nodemanager/nodescene.h"
 #include "nodesystem/nodes/constantnode.h"
 #include "nodesystem/nodecompiler.h"
 #include <QMimeData>
@@ -49,6 +50,15 @@ NodeManager::NodeManager(Scene& scene)
 
   connect(&scene.message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
+  connect(&scene.message_box(), &MessageBox::abstract_property_owner_removed,
+          [this](const auto& apo)
+  {
+    const auto nodes_owner = dynamic_cast<const NodesOwner*>(&apo);
+    const auto node_model = nodes_owner == nullptr ? nullptr : &nodes_owner->node_model();
+    if (node_model == m_ui->nodeview->model()) {
+      set_model(nullptr);
+    }
+  });
   setTitleBarWidget(std::make_unique<NodeManagerTitleBar>(*this).release());
 }
 
@@ -60,6 +70,10 @@ QString NodeManager::type() const { return TYPE; }
 
 void NodeManager::set_model(NodeModel* model)
 {
+  if (NodeScene* scene = m_ui->nodeview->scene(); scene != nullptr) {
+    QSignalBlocker blocker(scene);
+    scene->clearSelection();
+  }
   m_ui->nodeview->set_model(model);
 }
 

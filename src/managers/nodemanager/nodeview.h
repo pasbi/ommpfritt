@@ -34,6 +34,7 @@ public:
   void remove_selection();
   void set_model(NodeModel* model);
   NodeModel* model() const;
+  NodeScene* scene() const { return m_node_scene.get(); }
   QPointF node_insert_pos() const { return m_node_insert_pos; }
   void populate_context_menu(QMenu& menu) const;
   void pan_to_center();
