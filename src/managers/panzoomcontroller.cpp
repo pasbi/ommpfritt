@@ -18,11 +18,9 @@ PanZoomController::PanZoomController(NodeView& view) : m_view(view)
 
 }
 
-void PanZoomController::translate(const QPointF& v)
+double PanZoomController::current_scale() const
 {
-  QTransform t;
-  t.translate(v.x(), v.y());
-  m_transform = m_transform * t;
+  return std::sqrt(m_view.transform().determinant());
 }
 
 bool PanZoomController::press(const QMouseEvent& event)
@@ -57,7 +55,7 @@ bool PanZoomController::move(const QMouseEvent& event)
   case Action::Zoom:
   {
     double f = std::pow(1.005, d.x());
-    const double current_scale = m_view.transform().determinant();
+    const double current_scale = this->current_scale();
     if (current_scale > max_scale) {
       // only allow zoom out
       f = std::min(1.0, f);

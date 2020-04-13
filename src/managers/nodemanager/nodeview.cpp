@@ -60,6 +60,25 @@ QGraphicsItem* root(QGraphicsItem* item)
   return nullptr;
 }
 
+std::vector<double> linspace(double left, double right, double step)
+{
+  const auto mod = [step](const double v) {
+    return std::fmod(std::fmod(v, step) + step, step);
+  };
+
+  left = left - mod(left);
+  right = right - mod(right) + step;
+
+  const size_t n = (right - left) / step;
+  std::vector<double> linspace;
+  linspace.reserve(n+1);
+  for (std::size_t i = 0; i < n+1; ++i) {
+    const double v = left + static_cast<double>(i) * step;
+    linspace.push_back(v);
+  }
+  return linspace;
+}
+
 }  // namespace
 
 namespace omm
@@ -219,6 +238,21 @@ void NodeView::paste_from_clipboard()
   }
 }
 
+void NodeView::draw_status_bar(QPainter& painter)
+{
+  if (const NodeModel* model = this->model(); model != nullptr) {
+    if (QString error = model->error(); !error.isEmpty()) {
+      painter.save();
+      painter.resetTransform();
+      const QRect rect = viewport()->rect();
+      const QRect status_bar(rect.bottomLeft() - QPoint(0, 20), rect.bottomRight());
+      painter.fillRect(status_bar, QColor(0, 0, 0, 140));
+      painter.drawText(status_bar, Qt::AlignVCenter | Qt::AlignLeft, error);
+      painter.restore();
+    }
+  }
+}
+
 void NodeView::drawForeground(QPainter* painter, const QRectF&)
 {
   static const auto reverse_connection = [](const PortItem& origin) {
@@ -249,24 +283,39 @@ void NodeView::drawForeground(QPainter* painter, const QRectF&)
     }
   }
   painter->restore();
+
+  draw_status_bar(*painter);
 }
 
 void NodeView::drawBackground(QPainter* painter, const QRectF&)
 {
   painter->save();
-  painter->resetTransform();
-  if (const NodeModel* model = this->model(); model != nullptr) {
-    if (QString error = model->error(); !error.isEmpty()) {
-      const QRect rect = viewport()->rect();
-      painter->fillRect(rect, QColor(255, 0, 0, 40));
+  const auto top_left = sceneRect().topLeft();
+  const auto bottom_right = sceneRect().bottomRight();
+  const double scale = std::min((bottom_right.x() - top_left.x())/viewport()->width(),
+                                (bottom_right.y() - top_left.y())/viewport()->height());
 
-      const QRect status_bar(rect.bottomLeft() - QPoint(0, 20), rect.bottomRight());
-      painter->fillRect(status_bar, QColor(0, 0, 0, 140));
-      painter->drawText(status_bar, Qt::AlignVCenter | Qt::AlignLeft, error);
-    }
+  const double step = scale > 1.2 ? 100.0 : 50.0;
+
+  if (const NodeModel* model = this->model(); model != nullptr && !model->error().isEmpty()) {
+    painter->fillRect(sceneRect(), ui_color(*this, "NodeView", "canvas-bg-invalid"));
   } else {
-    painter->fillRect(rect(), Qt::yellow);
+    painter->fillRect(sceneRect(), ui_color(*this, "NodeView", "canvas-bg-valid"));
   }
+
+  QPen pen;
+  pen.setCosmetic(true);
+  pen.setWidthF(0.5);
+  pen.setColor(QColor(255, 255, 255, 50));
+  painter->setPen(pen);
+
+  for (double y : linspace(top_left.y(), bottom_right.y(), step)) {
+    painter->drawLine(QPointF{top_left.x(), y}, QPointF{bottom_right.x(), y});
+  }
+  for (double x : linspace(top_left.x(), bottom_right.x(), step)) {
+    painter->drawLine(QPointF{x, top_left.y()}, QPointF{x, bottom_right.y()});
+  }
+
   painter->restore();
 }
 

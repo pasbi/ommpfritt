@@ -21,7 +21,7 @@ public:
 
   QTransform transform() const { return m_transform; }
   QPointF last_mouse_pos() const { return m_last_pos; }
-  void translate(const QPointF& t);
+  double current_scale() const;
 
 private:
   Action m_current_action = Action::None;
@@ -32,8 +32,8 @@ private:
   QTransform m_transform;
   NodeView& m_view;
 
-  static constexpr double min_scale = 0.1;
-  static constexpr double max_scale = 2.0;
+  static constexpr double min_scale = 0.31;
+  static constexpr double max_scale = 1.41;
 };
 
 }  // namespace omm
