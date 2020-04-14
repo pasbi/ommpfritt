@@ -206,7 +206,6 @@ double SplineType::Interpolation::local_t() const
 {
   const double left = this->left.has_value() ? this->left->first : 0.0;
   const double right = this->right.has_value() ? this->right->first : 1.0;
-  LINFO << "left: " << left << " right: " << right;
   assert(left <= right);
   if (abs(left - right) < 0.00001) {
     return 0.0;

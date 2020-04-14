@@ -21,7 +21,7 @@ namespace NodeCompilerTypes
   static constexpr auto INVALID_TYPE = "Invalid";
   static constexpr auto FLOAT_TYPE = "Float";
   static constexpr auto INTEGER_TYPE = "Integer";
-  static constexpr auto OPTIONS_TYPE = "Options";
+  static constexpr auto OPTION_TYPE = "Option";
   static constexpr auto FLOATVECTOR_TYPE = "FloatVector";
   static constexpr auto INTEGERVECTOR_TYPE = "IntegerVector";
   static constexpr auto STRING_TYPE = "String";

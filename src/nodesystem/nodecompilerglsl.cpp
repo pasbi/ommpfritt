@@ -51,14 +51,14 @@ namespace omm
 QString NodeCompilerGLSL::translate_type(const QString& type)
 {
   static const std::map<QString, QString> dict {
-    { "Color", "vec4" },
-    { "Reference", "uint" },
-    { "Bool", "bool" },
-    { "Float", "float" },
-    { "Integer", "int" },
-    { "FloatVector", "vec2" },
-    { "IntegerVector", "ivec2" },
-    { "Options", "int" }
+    { NodeCompilerTypes::COLOR_TYPE, "vec4" },
+    { NodeCompilerTypes::REFERENCE_TYPE, "uint" },
+    { NodeCompilerTypes::BOOL_TYPE, "bool" },
+    { NodeCompilerTypes::FLOAT_TYPE, "float" },
+    { NodeCompilerTypes::INTEGER_TYPE, "int" },
+    { NodeCompilerTypes::FLOATVECTOR_TYPE, "vec2" },
+    { NodeCompilerTypes::INTEGERVECTOR_TYPE, "ivec2" },
+    { NodeCompilerTypes::OPTION_TYPE, "int" },
   };
 
   const auto it = dict.find(type);
@@ -143,8 +143,8 @@ QString NodeCompilerGLSL::end_program(QStringList& lines) const
     const auto* fragment_node = static_cast<const FragmentNode*>(*fragment_nodes.begin());
     const auto& port = fragment_node->input_port();
     if (port.is_connected()) {
-      const QString alpha = QString("clamp(0.0, 1.0, %1.a)").arg(port.uuid());
-      const QString rgb = QString("clamp(vec3(0.0), vec3(1.0), %2.rgb)").arg(port.uuid());
+      const QString alpha = QString("clamp(%1.a, 0.0, 1.0)").arg(port.uuid());
+      const QString rgb = QString("clamp(%2.rgb, vec3(0.0), vec3(1.0))").arg(port.uuid());
       lines.push_back(QString("%1 = vec4(%2 * %3, %2);")
                         .arg(output_variable_name)
                         .arg(alpha)

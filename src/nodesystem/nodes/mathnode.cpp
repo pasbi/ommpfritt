@@ -15,11 +15,6 @@ std::set<QString> supported_glsl_types {
   FLOATVECTOR_TYPE, INTEGER_TYPE, FLOAT_TYPE, COLOR_TYPE, INTEGERVECTOR_TYPE
 };
 
-}  // namespace
-
-namespace omm
-{
-
 const QString glsl_definition_template(R"(
 %1 %2_0(int op, %1 a, %1 b) {
   if (op == 0) {
@@ -35,6 +30,11 @@ const QString glsl_definition_template(R"(
     return %1(0.0);
   }
 })");
+
+}  // namespace
+
+namespace omm
+{
 
 const Node::Detail MathNode::detail {
   {
