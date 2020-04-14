@@ -258,7 +258,7 @@ public:
     });
     connect(max_edit.get(), &AbstractNumericEdit::value_changed, [&min_edit_ref, &max_edit_ref]() {
       const auto low = NumericProperty<value_type>::lowest_possible_value;
-      min_edit_ref.set_range(low, min_edit_ref.value());
+      min_edit_ref.set_range(low, max_edit_ref.value());
     });
     return std::pair(std::move(min_edit), std::move(max_edit));
   }
