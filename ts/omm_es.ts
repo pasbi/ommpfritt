@@ -1341,6 +1341,14 @@ Borrar la selección de todos modos?</translation>
         <comment>OptionPropertyConfigWidget</comment>
         <translation type="unfinished">La última opción no se puede borrar.</translation>
     </message>
+    <message>
+        <source>a</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>b</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -2667,14 +2675,6 @@ This cannot be undone.</source>
     </message>
     <message>
         <source>/</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>a</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>b</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

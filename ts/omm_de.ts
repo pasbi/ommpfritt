@@ -1341,6 +1341,14 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <comment>OptionPropertyConfigWidget</comment>
         <translation>Letzte Option kann nicht entfernt werden.</translation>
     </message>
+    <message>
+        <source>a</source>
+        <translation type="unfinished">a</translation>
+    </message>
+    <message>
+        <source>b</source>
+        <translation type="unfinished">b</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -2672,11 +2680,11 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     </message>
     <message>
         <source>a</source>
-        <translation>a</translation>
+        <translation type="vanished">a</translation>
     </message>
     <message>
         <source>b</source>
-        <translation>b</translation>
+        <translation type="vanished">b</translation>
     </message>
     <message>
         <source>result</source>

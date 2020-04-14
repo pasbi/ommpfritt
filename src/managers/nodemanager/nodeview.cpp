@@ -246,7 +246,7 @@ void NodeView::draw_status_bar(QPainter& painter)
       painter.resetTransform();
       const QRect rect = viewport()->rect();
       const QRect status_bar(rect.bottomLeft() - QPoint(0, 20), rect.bottomRight());
-      painter.fillRect(status_bar, QColor(0, 0, 0, 140));
+      painter.fillRect(status_bar, ui_color(*this, "NodeView", "statusbar-bg"));
       painter.drawText(status_bar, Qt::AlignVCenter | Qt::AlignLeft, error);
       painter.restore();
     }
@@ -306,7 +306,7 @@ void NodeView::drawBackground(QPainter* painter, const QRectF&)
   QPen pen;
   pen.setCosmetic(true);
   pen.setWidthF(0.5);
-  pen.setColor(QColor(255, 255, 255, 50));
+  pen.setColor(ui_color(*this, "NodeView", "grid-color"));
   painter->setPen(pen);
 
   for (double y : linspace(top_left.y(), bottom_right.y(), step)) {
