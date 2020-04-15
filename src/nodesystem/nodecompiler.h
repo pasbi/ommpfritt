@@ -28,6 +28,7 @@ namespace NodeCompilerTypes
   static constexpr auto COLOR_TYPE = "Color";
   static constexpr auto REFERENCE_TYPE = "Reference";
   static constexpr auto BOOL_TYPE = "Bool";
+  static constexpr auto SPLINE_TYPE = "Spline";
 
   bool is_numeric(const QString& type);
   bool is_integral(const QString& type);

@@ -19,6 +19,7 @@ public:
   std::set<AbstractPort*> uniform_ports() const { return m_uniform_ports; }
   static QString translate_type(const QString& type);
   void invalidate() override;
+  static constexpr std::size_t SPLINE_SIZE = 256;
 
 private:
   mutable std::set<AbstractPort*> m_uniform_ports;

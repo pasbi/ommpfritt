@@ -14,6 +14,7 @@
 
 class QOpenGLFunctions;
 class QOpenGLShaderProgram;
+class QOpenGLTexture;
 
 namespace omm
 {
@@ -40,6 +41,13 @@ public:
   };
 
   static const std::vector<ShaderInput> fragment_shader_inputs;
+  struct GLTexture
+  {
+    GLuint layout_location;
+    std::unique_ptr<QOpenGLTexture> texture;
+  };
+
+  std::map<GLuint, GLTexture> textures;
 
 private:
   QOffscreenSurface m_surface;

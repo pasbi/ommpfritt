@@ -59,6 +59,7 @@ QString NodeCompilerGLSL::translate_type(const QString& type)
     { NodeCompilerTypes::FLOATVECTOR_TYPE, "vec2" },
     { NodeCompilerTypes::INTEGERVECTOR_TYPE, "ivec2" },
     { NodeCompilerTypes::OPTION_TYPE, "int" },
+    { NodeCompilerTypes::SPLINE_TYPE, "float[SPLINE_SIZE]" }
   };
 
   const auto it = dict.find(type);
@@ -75,13 +76,13 @@ void NodeCompilerGLSL::invalidate()
   compile();
 }
 
-
 NodeCompilerGLSL::NodeCompilerGLSL(const NodeModel& model) : NodeCompiler(model) {  }
 
 QString NodeCompilerGLSL::generate_header(QStringList& lines) const
 {
   m_uniform_ports.clear();
   lines.append("#version 330");
+  lines.append(QString("const int SPLINE_SIZE = %1;").arg(SPLINE_SIZE));
   using Kind = OffscreenRenderer::ShaderInput::Kind;
   static const std::map<Kind, QString> input_kind_identifier_map = {
     { Kind::Uniform, "uniform" },
@@ -231,7 +232,7 @@ QString NodeCompilerGLSL::compile_connection(const OutputPort& op, const InputPo
                                              QStringList& lines) const
 {
   const QString data_type = op.data_type();
-  assert(data_type != NodeCompilerTypes::INVALID_TYPE);
+//  assert(data_type != NodeCompilerTypes::INVALID_TYPE);
 
   lines.append(format_connection(ip, op));
   return "";

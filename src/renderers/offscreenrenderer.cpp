@@ -5,6 +5,7 @@
 #include <QOpenGLShaderProgram>
 #include <QDebug>
 #include <QImage>
+#include <QOpenGLTexture>
 #include "nodesystem/nodecompilerglsl.h"
 #include "geometry/objecttransformation.h"
 #include <QApplication>
@@ -105,9 +106,30 @@ static constexpr std::array<float, 18> m_quad = {
    1.0,  1.0, 0.0,
 };
 
+template<typename T> std::vector<T> sample(const omm::SplineType& spline, std::size_t n)
+{
+  std::vector<T> values;
+  values.reserve(n);
+  for (std::size_t i = 0; i < n; ++i) {
+    const double t = static_cast<double>(i) / static_cast<double>(n - 1);
+    const double v = spline.evaluate(t).value();
+//    LINFO << "s(" << t << ") = " << v;
+    values.push_back(v);
+  }
+  return values;
+}
+
+std::size_t get_max_number_textures()
+{
+  GLint n;
+  glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &n);
+  return n;
+}
+
 template<typename T>
 void set_uniform(omm::OffscreenRenderer& self, const QString& name, const T& value)
 {
+  static const std::size_t max_number_textures = get_max_number_textures();
   using namespace omm;
   self.make_current();
   auto* program = self.program();
@@ -116,41 +138,42 @@ void set_uniform(omm::OffscreenRenderer& self, const QString& name, const T& val
     return;
   }
   program->bind();
-  const auto ba = name.toUtf8();
-  const char* cname = ba.constData();
-  assert(QString(cname) == name);
+  GLuint location = program->uniformLocation(name);
   if constexpr (std::is_same_v<T, double>) {
-    program->setUniformValue(cname, GLfloat(value));
+    program->setUniformValue(location, GLfloat(value));
   } else if constexpr (std::is_same_v<T, int>) {
-    program->setUniformValue(cname, value);
+    program->setUniformValue(location, value);
   } else if constexpr (std::is_same_v<T, AbstractPropertyOwner*>) {
     if (value == nullptr) {
-      program->setUniformValue(cname, 0);
+      program->setUniformValue(location, 0);
     } else {
-      program->setUniformValue(cname, GLuint(value->id()));
+      program->setUniformValue(location, GLuint(value->id()));
     }
   } else if constexpr (std::is_same_v<T, Color>) {
     auto [r, g, b, a] = value.components(Color::Model::RGBA);
-    program->setUniformValue(cname, QVector4D(r, g, b, a));
+    program->setUniformValue(location, QVector4D(r, g, b, a));
   } else if constexpr (std::is_same_v<T, std::size_t>) {
-    program->setUniformValue(cname, GLint(value));
+    program->setUniformValue(location, GLint(value));
   } else if constexpr (std::is_same_v<T, Vec2f>) {
-    program->setUniformValue(cname, GLfloat(value.x), GLfloat(value.y));
+    program->setUniformValue(location, GLfloat(value.x), GLfloat(value.y));
   } else if constexpr (std::is_same_v<T, Vec2i>) {
-    program->setUniformValue(cname, GLint(value.x), GLint(value.y));
+    program->setUniformValue(location, GLint(value.x), GLint(value.y));
   } else if constexpr (std::is_same_v<T, bool>) {
-    program->setUniformValue(cname, GLboolean(value));
+    program->setUniformValue(location, GLboolean(value));
   } else if constexpr (std::is_same_v<T, QString>) {
     // string is not available in GLSL
   } else if constexpr (std::is_same_v<T, TriggerPropertyDummyValueType>) {
     // string is not available in GLSL
   } else if constexpr (std::is_same_v<T, SplineType>) {
-    // SplineType is not yet supported in GLSL.
+    static constexpr std::size_t n = NodeCompilerGLSL::SPLINE_SIZE;
+    const auto samples = sample<GLfloat>(value, n);
+    LINFO << "Set array: " << location;
+    program->setUniformValueArray(location, samples.data(), n, 1);
   } else if constexpr (std::is_same_v<T, ObjectTransformation>) {
     set_uniform(self, name, value.to_mat());
   } else if constexpr (std::is_same_v<T, Matrix>) {
     const auto mat = value.to_qmatrix3x3();
-    program->setUniformValue(cname, mat);
+    program->setUniformValue(location, mat);
   } else {
     // statically fail here. If you're data type is not supported, add it explicitely.
     static_assert(std::is_same_v<T, int> && !std::is_same_v<T, int>);
@@ -193,10 +216,13 @@ OffscreenRenderer::OffscreenRenderer()
 
 OffscreenRenderer::~OffscreenRenderer()
 {
+  // destroy the textures before m_context is destroyed.
+  textures.clear();
 }
 
 bool OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
 {
+  textures.clear();
   if (fragment_code.isEmpty()) {
     m_program.reset();
     return false;
