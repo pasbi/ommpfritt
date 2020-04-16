@@ -66,10 +66,11 @@ private:
 
   struct Slot
   {
+    using get_text_f = std::function<QString()>;
     Slot() {}
-    std::optional<QString> left_text;
-    std::optional<QString> right_text;
-    std::optional<QString> center_text;
+    get_text_f get_left_text;
+    get_text_f get_right_text;
+    get_text_f get_center_text;
     void draw(QPainter& painter, const QRectF& slot_rect) const;
   };
 

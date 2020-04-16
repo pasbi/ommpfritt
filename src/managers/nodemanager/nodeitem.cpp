@@ -154,6 +154,7 @@ void NodeItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
   path.addRoundedRect(m_shape, 10, 10, Qt::AbsoluteSize);
 
   painter->fillPath(path, Qt::gray);
+
   painter->setPen(Qt::black);
   painter->drawText(m_shape, Qt::AlignTop | Qt::AlignHCenter, node.title());
 
@@ -298,7 +299,7 @@ void NodeItem::update_children()
     if (m_is_expanded) {
       add_property_widget(pp.property, pos_y, slot_height);
     } else {
-      m_slots[pos_y].center_text = pp.property.label();
+      m_slots[pos_y].get_center_text = [pp]() { return pp.property.label(); };
     }
     pos_y += slot_height;
   }
@@ -308,13 +309,13 @@ void NodeItem::update_children()
 
   for (auto* op : ordinary_outputs) {
     add_port(*op, output_pos_y);
-    m_slots[output_pos_y].right_text = op->label();
+    m_slots[output_pos_y].get_right_text = [op]() { return op->label(); };
     output_pos_y += small_slot_height;
   }
 
   for (auto* ip : ordinary_inputs) {
     add_port(*ip, input_pos_y);
-    m_slots[input_pos_y].left_text = ip->label();
+    m_slots[input_pos_y].get_left_text = [ip]() { return ip->label(); };
     input_pos_y += small_slot_height;
   }
 
@@ -435,32 +436,33 @@ void NodeItem::add_port(PropertyInputPort* ip, PropertyOutputPort* op, double po
 
 void NodeItem::Slot::draw(QPainter& painter, const QRectF& slot_rect) const
 {
-  assert((left_text || right_text) != center_text);
-  if (left_text) {
+  assert((get_left_text || get_right_text) != !!get_center_text);
+  if (get_left_text) {
     QRectF rect = slot_rect;
-    if (right_text) {
+    if (get_right_text) {
       rect.setRight(0);
     }
-    painter.drawText(rect, Qt::AlignVCenter | Qt::AlignLeft, left_text.value());
+    painter.drawText(rect, Qt::AlignVCenter | Qt::AlignLeft, get_left_text());
   }
-  if (right_text) {
+  if (get_right_text) {
     QRectF rect = slot_rect;
-    if (left_text) {
+    if (get_left_text) {
       rect.setLeft(0);
     }
-    painter.drawText(rect, Qt::AlignVCenter | Qt::AlignRight, right_text.value());
+    painter.drawText(rect, Qt::AlignVCenter | Qt::AlignRight, get_right_text());
   }
-  if (center_text) {
+  if (get_center_text) {
     const auto draw_maybe = [&painter, y=slot_rect.center().y()](double x1, double x2) {
       if (x1 < x2) {
         painter.drawLine(x1, y, x2, y);
       }
     };
     QRectF actual;
-    painter.drawText(slot_rect, Qt::AlignVCenter | Qt::AlignCenter, center_text.value(), &actual);
+    const QString center_text = get_center_text();
+    painter.drawText(slot_rect, Qt::AlignVCenter | Qt::AlignCenter, center_text, &actual);
     painter.save();
     painter.setPen(QColor(0, 0, 0, 50));
-    if (!center_text->isEmpty()) {
+    if (!center_text.isEmpty()) {
       draw_maybe(slot_rect.left(), actual.left() - 5);
       draw_maybe(actual.right() + 5, slot_rect.right());
     }

@@ -111,7 +111,6 @@ void NodesTag::force_evaluate()
   populate_locals<PortType::Output>(locals, model);
 
   const auto code = model.compiler().code();
-  LINFO << "Compilation: \n" << code;
   if (Application::instance().python_engine.exec(code, locals, this)) {
     for (InputPort* port : model.ports<InputPort>()) {
       if (port->node.type() == SpyNode::TYPE) {
