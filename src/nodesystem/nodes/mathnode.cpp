@@ -50,6 +50,20 @@ def %1(op, a, b):
     elif op == 2:
         return a * b
     elif op == 3:
+      import numpy as np
+      def isinteger(v):
+          if isinstance(v, int):
+              return True
+          elif isinstance(v, np.ndarray):
+              return issubclass(v.dtype.type, np.integer)
+          else:
+              return False
+
+      if isinstance(a, int) and isinstance(b, int):
+        return int(a / b)
+      elif  isinteger(a) and isinteger(b):
+          return (a / b).astype(np.int)
+      else:
         return a / b
     else:
         # unreachable
@@ -101,7 +115,9 @@ QString MathNode::output_data_type(const OutputPort& port) const
         return INTEGERVECTOR_TYPE;
       } else if ((is_vector(type_a) || is_numeric(type_a))
               && (is_vector(type_b) || is_numeric(type_b))) {
-        return FLOATVECTOR_TYPE;
+      } else if ((type_a == COLOR_TYPE || is_numeric(type_a))
+              && (type_b == COLOR_TYPE || is_numeric(type_b))) {
+        return COLOR_TYPE;
       } else {
         return INVALID_TYPE;
       }
@@ -145,8 +161,7 @@ bool MathNode::accepts_input_data_type(const QString& type, const InputPort& por
     case AbstractNodeCompiler::Language::GLSL:
       return glsl_accepts_type();
     case AbstractNodeCompiler::Language::Python:
-      // Math Node input shall accept anything
-      return true;
+      return is_numeric(type) || is_vector(type) || type == COLOR_TYPE;
     default:
       Q_UNREACHABLE();
       return true;
