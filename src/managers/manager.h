@@ -46,7 +46,5 @@ public Q_SLOTS:
 
 };
 
-void register_managers();
-
 } // namespace omm
 

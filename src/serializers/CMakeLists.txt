@@ -2,7 +2,6 @@
 file(GLOB SOURCES
   abstractserializer.cpp
   jsonserializer.cpp
-  serializerregister.cpp
 )
 
 file(GLOB HEADERS

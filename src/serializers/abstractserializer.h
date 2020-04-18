@@ -183,9 +183,5 @@ private:
   std::set<ReferencePolisher*> m_reference_polishers;
 };
 
-void register_serializers();
-void register_deserializers();
-
-
 }  // namespace omm
 

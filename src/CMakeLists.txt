@@ -8,6 +8,7 @@ file(GLOB SOURCES
   proxychain.cpp
   splinetype.cpp
   variant.cpp
+  registers.cpp
 )
 
 file(GLOB HEADERS
@@ -25,6 +26,7 @@ file(GLOB HEADERS
   proxychain.h
   splinetype.h
   translations.h
+  register.h
 )
 
 add_subdirectory(animation)

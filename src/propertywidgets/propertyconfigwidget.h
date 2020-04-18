@@ -38,6 +38,4 @@ public:
   QString type() const override { return TYPE(); }
 };
 
-void register_propertyconfigwidgets();
-
 }  // namespace omm

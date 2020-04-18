@@ -222,6 +222,9 @@ public:
   bool is_enabled() const { return m_is_enabled; }
 private:
   bool m_is_enabled = true;
+
+private:
+  friend void register_properties();
 };
 
 std::ostream& operator<<(std::ostream& ostream, const Property::Filter& filter);

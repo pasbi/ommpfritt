@@ -9,7 +9,6 @@ file(GLOB SOURCES
   line.cpp
   mirror.cpp
   object.cpp
-  objectregister.cpp
   outline.cpp
   path.cpp
   proceduralpath.cpp

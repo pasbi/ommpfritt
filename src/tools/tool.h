@@ -65,6 +65,4 @@ protected:
   double epsilon = 10.0;
 };
 
-void register_tools();
-
 }  // namespace omm

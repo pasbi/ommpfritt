@@ -11,7 +11,6 @@ file(GLOB SOURCES
   function2node.cpp
   interpolatenode.cpp
   linepatternnode.cpp
-  nodesregister.cpp
   mathnode.cpp
   referencenode.cpp
   spynode.cpp

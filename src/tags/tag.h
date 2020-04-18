@@ -27,7 +27,6 @@ public:
   Flag flags() const override;
 };
 
-void register_tags();
 std::ostream& operator<<(std::ostream& ostream, const Tag& tag);
 
 }  // namespace omm

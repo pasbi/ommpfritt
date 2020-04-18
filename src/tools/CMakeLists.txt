@@ -8,7 +8,6 @@ file(GLOB SOURCES
   selecttool.cpp
   toolbox.cpp
   tool.cpp
-  toolregister.cpp
 )
 
 file(GLOB HEADERS

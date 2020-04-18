@@ -131,7 +131,6 @@ private:
   static QBrush m_bounding_box_brush;
 };
 
-void register_objects();
 std::ostream& operator<<(std::ostream& ostream, const Object& object);
 std::ostream& operator<<(std::ostream& ostream, const Object* object);
 

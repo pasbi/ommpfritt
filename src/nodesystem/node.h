@@ -162,6 +162,4 @@ private:
   static std::map<QString, const Detail*> m_details;
 };
 
-void register_nodes();
-
 }  // namespace

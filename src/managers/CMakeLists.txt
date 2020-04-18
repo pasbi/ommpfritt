@@ -3,7 +3,6 @@ file(GLOB SOURCES
   itemmanager.cpp
   manager.cpp
   manageritemview.cpp
-  managerregister.cpp
   managertitlebar.cpp
   quickaccessdelegate.cpp
   panzoomcontroller.cpp
