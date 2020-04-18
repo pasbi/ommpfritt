@@ -50,8 +50,6 @@ void Instance::polish()
       update();
     }
   });
-
-  update();
 }
 
 void Instance::draw_object(Painter &renderer, const Style& style, Painter::Options options) const
