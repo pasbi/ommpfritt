@@ -52,7 +52,7 @@ Style::Style(Scene *scene)
   create_property<ColorProperty>(PEN_COLOR_KEY, Colors::BLACK)
     .set_label(QObject::tr("color"))
     .set_category(pen_category);
-  create_property<FloatProperty>(PEN_WIDTH_KEY, 1.0)
+  create_property<FloatProperty>(PEN_WIDTH_KEY, 5.0)
     .set_step(0.1)
     .set_range(0, std::numeric_limits<double>::infinity())
     .set_label(QObject::tr("width"))
@@ -77,10 +77,10 @@ Style::Style(Scene *scene)
   create_property<BoolProperty>(COSMETIC_KEY, true).set_label(QObject::tr("Cosmetic"))
       .set_category(pen_category);
 
-  create_property<BoolProperty>(BRUSH_IS_ACTIVE_KEY, false)
+  create_property<BoolProperty>(BRUSH_IS_ACTIVE_KEY, true)
     .set_label(QObject::tr("active"))
     .set_category(brush_category);
-  create_property<ColorProperty>(BRUSH_COLOR_KEY, Colors::RED)
+  create_property<ColorProperty>(BRUSH_COLOR_KEY, Colors::CERULEAN)
     .set_label(QObject::tr("color"))
     .set_category(brush_category);
   create_property<BoolProperty>("gl-brush", false)

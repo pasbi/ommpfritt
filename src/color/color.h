@@ -65,12 +65,13 @@ private:
 namespace Colors
 {
 
-static const Color RED   (Color::Model::RGBA, { 1.0, 0.0, 0.0, 1.0 });
-static const Color GREEN (Color::Model::RGBA, { 0.0, 1.0, 0.0, 1.0 });
-static const Color BLUE  (Color::Model::RGBA, { 0.0, 0.0, 1.0, 1.0 });
-static const Color YELLOW(Color::Model::RGBA, { 1.0, 1.0, 0.0, 1.0 });
-static const Color BLACK (Color::Model::RGBA, { 0.0, 0.0, 0.0, 1.0 });
-static const Color WHITE (Color::Model::RGBA, { 1.0, 1.0, 1.0, 1.0 });
+static const Color RED      (Color::Model::RGBA, { 1.0, 0.0, 0.0, 1.0 });
+static const Color GREEN    (Color::Model::RGBA, { 0.0, 1.0, 0.0, 1.0 });
+static const Color BLUE     (Color::Model::RGBA, { 0.0, 0.0, 1.0, 1.0 });
+static const Color YELLOW   (Color::Model::RGBA, { 1.0, 1.0, 0.0, 1.0 });
+static const Color BLACK    (Color::Model::RGBA, { 0.0, 0.0, 0.0, 1.0 });
+static const Color WHITE    (Color::Model::RGBA, { 1.0, 1.0, 1.0, 1.0 });
+static const Color CERULEAN (Color::Model::RGBA, { 0.1, 0.52, 0.82, 1.0 });
 
 }
 
