@@ -138,6 +138,7 @@ void Instance::update()
       Object* r = referenced_object();
       if (r != nullptr) {
         m_reference = r->clone();
+        m_reference->set_transformation(ObjectTransformation());
       }
     }
 
