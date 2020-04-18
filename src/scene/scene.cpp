@@ -300,25 +300,22 @@ std::set<Tag*> Scene::tags() const
 
 std::set<AbstractPropertyOwner*> Scene::property_owners() const
 {
-  return merge(std::set<AbstractPropertyOwner*>(),
-               object_tree().items(), styles().items(),
-               tags(), nodes());
+  auto apos = merge(std::set<AbstractPropertyOwner*>(),
+                    object_tree().items(), styles().items(),
+                    tags());
+  for (auto&& apo : apos) {
+    if (!!(apo->flags() & Flag::HasNodes)) {
+      const NodesOwner& nodes_owner = dynamic_cast<const NodesOwner&>(*apo);
+      const auto nodes = nodes_owner.node_model().nodes();
+      apos.insert(nodes.begin(), nodes.end());
+    }
+  }
+  return apos;
 }
 
 Style& Scene::default_style() const
 {
   return *m_default_style;
-}
-
-std::set<Node*> Scene::nodes() const
-{
-  std::set<Node*> nodes;
-  for (Tag* tag : tags()) {
-    if (tag->type() == NodesTag::TYPE) {
-      ::merge(nodes, static_cast<NodesTag*>(tag)->nodes());
-    }
-  }
-  return nodes;
 }
 
 void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)

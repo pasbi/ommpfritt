@@ -128,12 +128,10 @@ public:
     Accelerator() = default;
     explicit Accelerator(Scene& scene);
     const std::vector<AbstractPropertyOwner*>& owners() const { return m_owner_order; }
-    const std::vector<Property*>& properties(AbstractPropertyOwner& owner) const
-    { return m_by_owner.at(&owner); }
-    bool contains(AbstractPropertyOwner& owner) const
-    { return m_by_owner.find(&owner) != m_by_owner.end(); }
+    const std::vector<Property*>& properties(AbstractPropertyOwner& owner) const;
+    bool contains(AbstractPropertyOwner& owner) const;
     const std::set<Property*>& properties() const { return m_properties; }
-    AbstractPropertyOwner* owner(Property& property) const { return m_by_property.at(&property); }
+    AbstractPropertyOwner* owner(Property& property) const;
   private:
     Scene* m_scene;
     std::list<AbstractPropertyOwner*> animatable_owners() const;

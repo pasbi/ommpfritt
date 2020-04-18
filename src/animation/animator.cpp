@@ -457,6 +457,21 @@ Animator::Accelerator::Accelerator(Scene& scene) : m_scene(&scene)
   m_owner_order = std::vector(owner_order.begin(), owner_order.end());
 }
 
+const std::vector<Property*>& Animator::Accelerator::properties(AbstractPropertyOwner& owner) const
+{
+  return m_by_owner.at(&owner);
+}
+
+bool Animator::Accelerator::contains(AbstractPropertyOwner& owner) const
+{
+  return m_by_owner.find(&owner) != m_by_owner.end();
+}
+
+AbstractPropertyOwner* Animator::Accelerator::owner(Property& property) const
+{
+  return m_by_property.at(&property);
+}
+
 std::list<AbstractPropertyOwner*> Animator::Accelerator::animatable_owners() const
 {
   auto owners = m_scene->property_owners();

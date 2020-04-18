@@ -59,7 +59,6 @@ Track::Track(Property &property) : m_property(property)
 
 Track::~Track()
 {
-  LINFO << "Destory track " << (void*) this;
 }
 
 std::unique_ptr<Track> Track::clone() const
