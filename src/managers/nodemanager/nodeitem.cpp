@@ -147,7 +147,7 @@ QRectF NodeItem::boundingRect() const
   return m_shape.adjusted(-hnpw, -hnpw, hnpw, hnpw);
 }
 
-void NodeItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+void NodeItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* widget)
 {
   painter->setRenderHint(QPainter::Antialiasing);
   QPainterPath path;
@@ -242,14 +242,14 @@ void NodeItem::update_children()
   prepareGeometryChange();
   clear_ports();
   struct PropertyPorts {
-    explicit PropertyPorts(Property& property)
+    explicit PropertyPorts(Property* property)
       : property(property), i(nullptr), o(nullptr) {}
-    Property& property;
+    Property* property;
     PropertyInputPort* i;
     PropertyOutputPort* o;
   };
 
-  std::list<PropertyPorts> properties;
+  std::list<PropertyPorts> property_ports;
   std::list<OrdinaryPort<PortType::Input>*> ordinary_inputs;
   std::list<OrdinaryPort<PortType::Output>*> ordinary_outputs;
   auto ports = ::transform<AbstractPort*, std::vector>(node.ports());
@@ -261,15 +261,15 @@ void NodeItem::update_children()
       Property* property = p->port_type == PortType::Input
                         ? static_cast<PropertyInputPort&>(*p).property()
                         : static_cast<PropertyOutputPort&>(*p).property();
-      const auto it = std::find_if(properties.begin(), properties.end(),
+      const auto it = std::find_if(property_ports.begin(), property_ports.end(),
                                    [property](const PropertyPorts& pp)
       {
-        return property == &pp.property;
+        return property == pp.property;
       });
       PropertyPorts* current = nullptr;
-      if (it == properties.end() && property != nullptr) {
-        properties.push_back(PropertyPorts(*property));
-        current = &properties.back();
+      if (it == property_ports.end()) {
+        property_ports.push_back(PropertyPorts(property));
+        current = &property_ports.back();
       } else {
         current = &*it;
       }
@@ -294,12 +294,16 @@ void NodeItem::update_children()
   double pos_y = header_height;
   const double slot_height = m_is_expanded ? large_slot_height : small_slot_height;
 
-  for (const PropertyPorts& pp : properties) {
+  for (const PropertyPorts& pp : property_ports) {
     add_port(pp.i, pp.o, pos_y);
-    if (m_is_expanded) {
-      add_property_widget(pp.property, pos_y, slot_height);
+    if (pp.property != nullptr) {
+      if (m_is_expanded) {
+        add_property_widget(*pp.property, pos_y, slot_height);
+      } else {
+        m_slots[pos_y].get_center_text = [pp]() { return pp.property->label(); };
+      }
     } else {
-      m_slots[pos_y].get_center_text = [pp]() { return pp.property.label(); };
+      m_slots[pos_y].get_center_text = []() { return "Undefined."; };
     }
     pos_y += slot_height;
   }

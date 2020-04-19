@@ -22,7 +22,7 @@ public:
   explicit NodeItem(Node& node);
   ~NodeItem();
   QRectF boundingRect() const override;
-  void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
+  void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* widget) override;
   PortItem* port_item(const AbstractPort& port) const;
   static constexpr auto TYPE = QGraphicsItem::UserType + 2;
   static constexpr double small_slot_height = 13.0;

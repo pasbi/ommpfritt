@@ -59,7 +59,7 @@ NodeManager::NodeManager(Scene& scene)
       set_model(nullptr);
     }
   });
-  connect(&scene.message_box(), &MessageBox::about_to_reset, [this]{ set_model(nullptr); });
+  connect(&scene.message_box(), &MessageBox::about_to_reset, this, [this]{ set_model(nullptr); });
   setTitleBarWidget(std::make_unique<NodeManagerTitleBar>(*this).release());
 }
 

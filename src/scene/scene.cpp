@@ -100,6 +100,7 @@ Scene::~Scene()
 
 void Scene::prepare_reset()
 {
+  Q_EMIT message_box().about_to_reset();
   set_selection({});
 
   // make sure that there are no references (via ReferenceProperties) across objects.
@@ -266,7 +267,6 @@ bool Scene::load_from(const QString &filename)
 void Scene::reset()
 {
   assert(selection().size() == 0);
-  Q_EMIT message_box().about_to_reset();
   prepare_reset();
   history().reset();
   history().set_saved_index();

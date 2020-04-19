@@ -148,4 +148,12 @@ ReferenceNode::remove_forwarding_port(PortType port_type, const QString& key)
   return owned;
 }
 
+void ReferenceNode::on_property_value_changed(Property* property)
+{
+  if (property == this->property(REFERENCE_PROPERTY_KEY)) {
+    Q_EMIT ports_changed();
+  }
+  return Node::on_property_value_changed(property);
+}
+
 }  // namespace
