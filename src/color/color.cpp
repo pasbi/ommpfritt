@@ -113,6 +113,27 @@ bool decode_hex(const QString& code, std::array<double, 4>& rgb)
 namespace omm
 {
 
+const std::map<Color::Model, std::array<QString, 4>> Color::component_names {
+  {
+    Color::Model::HSVA,
+    {
+      QT_TRANSLATE_NOOP("Color", "Hue"),
+      QT_TRANSLATE_NOOP("Color", "Saturation"),
+      QT_TRANSLATE_NOOP("Color", "Value"),
+      QT_TRANSLATE_NOOP("Color", "Alpha"),
+    }
+  },
+  {
+    Color::Model::RGBA,
+    {
+      QT_TRANSLATE_NOOP("Color", "Red"),
+      QT_TRANSLATE_NOOP("Color", "Green"),
+      QT_TRANSLATE_NOOP("Color", "Blue"),
+      QT_TRANSLATE_NOOP("Color", "Alpha"),
+    }
+  }
+};
+
 Color::Color() : Color(Model::RGBA, { 0.0, 0.0, 0.0, 1.0 }) {}
 
 Color::Color(Color::Model model, const std::array<double, 3> components, double alpha)

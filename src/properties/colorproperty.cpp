@@ -5,29 +5,10 @@ namespace omm
 
 const Property::PropertyDetail ColorProperty::detail
 {
-  [](const Property& property, std::size_t channel) {
-    assert(channel < 4);
-    switch (std::get<Color>(property.variant_value()).model()) {
-    case Color::Model::HSVA:
-      return std::vector {
-        QObject::tr("Hue"),
-        QObject::tr("Saturation"),
-        QObject::tr("Value"),
-        QObject::tr("Alpha")
-      }[channel];
-    case Color::Model::Named:
-      [[fallthrough]];
-    case Color::Model::RGBA:
-      return std::vector {
-        QObject::tr("Red"),
-        QObject::tr("Green"),
-        QObject::tr("Blue"),
-        QObject::tr("Alpha")
-      }[channel];
-    default:
-      Q_UNREACHABLE();
-      return QString();
-    }
+  [](const Property& property, std::size_t channel) -> QString {
+    const auto color = std::get<Color>(property.variant_value());
+    const auto name = Color::component_names.at(color.model())[channel];
+    return qApp->translate("Color", name.toStdString().c_str());
   }
 };
 

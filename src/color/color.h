@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 #include <QColor>
+#include <map>
 
 namespace omm
 {
@@ -44,6 +45,8 @@ public:
   std::array<double, 4> components(Model model) const;
   void set_components(Model model, const std::array<double, 4>& components);
   Model model() const { return m_current_model; }
+
+  static const std::map<Model, std::array<QString, 4>> component_names;
 
 private:
   Model m_current_model;

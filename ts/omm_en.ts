@@ -32,6 +32,37 @@
     </message>
 </context>
 <context>
+    <name>Color</name>
+    <message>
+        <source>Hue</source>
+        <translation>Hue</translation>
+    </message>
+    <message>
+        <source>Saturation</source>
+        <translation>Saturation</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Value</translation>
+    </message>
+    <message>
+        <source>Alpha</source>
+        <translation>Alpha</translation>
+    </message>
+    <message>
+        <source>Red</source>
+        <translation>Red</translation>
+    </message>
+    <message>
+        <source>Green</source>
+        <translation>Grün</translation>
+    </message>
+    <message>
+        <source>Blue</source>
+        <translation>Blue</translation>
+    </message>
+</context>
+<context>
     <name>ColorWidget</name>
     <message>
         <source>...</source>
@@ -1236,34 +1267,6 @@ Remove the selected items anyway?</translation>
         <translation>Set interpolation</translation>
     </message>
     <message>
-        <source>Hue</source>
-        <translation>Hue</translation>
-    </message>
-    <message>
-        <source>Saturation</source>
-        <translation>Saturation</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation>Value</translation>
-    </message>
-    <message>
-        <source>Alpha</source>
-        <translation>Alpha</translation>
-    </message>
-    <message>
-        <source>Red</source>
-        <translation>Red</translation>
-    </message>
-    <message>
-        <source>Green</source>
-        <translation>Grün</translation>
-    </message>
-    <message>
-        <source>Blue</source>
-        <translation>Blue</translation>
-    </message>
-    <message>
         <source>x</source>
         <translation>x</translation>
     </message>
@@ -1343,11 +1346,11 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>a</source>
-        <translation type="unfinished">a</translation>
+        <translation>a</translation>
     </message>
     <message>
         <source>b</source>
-        <translation type="unfinished">b</translation>
+        <translation>b</translation>
     </message>
 </context>
 <context>
@@ -2677,14 +2680,6 @@ This cannot be undone.</translation>
     <message>
         <source>/</source>
         <translation>/</translation>
-    </message>
-    <message>
-        <source>a</source>
-        <translation type="vanished">a</translation>
-    </message>
-    <message>
-        <source>b</source>
-        <translation type="vanished">b</translation>
     </message>
     <message>
         <source>result</source>

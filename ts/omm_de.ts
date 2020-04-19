@@ -32,6 +32,37 @@
     </message>
 </context>
 <context>
+    <name>Color</name>
+    <message>
+        <source>Hue</source>
+        <translation>Farbton</translation>
+    </message>
+    <message>
+        <source>Saturation</source>
+        <translation>Sättigung</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Helligkeit</translation>
+    </message>
+    <message>
+        <source>Alpha</source>
+        <translation>Alpha</translation>
+    </message>
+    <message>
+        <source>Red</source>
+        <translation>Rot</translation>
+    </message>
+    <message>
+        <source>Green</source>
+        <translation>Green</translation>
+    </message>
+    <message>
+        <source>Blue</source>
+        <translation>Blau</translation>
+    </message>
+</context>
+<context>
     <name>ColorWidget</name>
     <message>
         <source>...</source>
@@ -1236,34 +1267,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Interpolationsart setzen</translation>
     </message>
     <message>
-        <source>Hue</source>
-        <translation>Farbton</translation>
-    </message>
-    <message>
-        <source>Saturation</source>
-        <translation>Sättigung</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation>Helligkeit</translation>
-    </message>
-    <message>
-        <source>Alpha</source>
-        <translation>Alpha</translation>
-    </message>
-    <message>
-        <source>Red</source>
-        <translation>Rot</translation>
-    </message>
-    <message>
-        <source>Green</source>
-        <translation>Green</translation>
-    </message>
-    <message>
-        <source>Blue</source>
-        <translation>Blau</translation>
-    </message>
-    <message>
         <source>x</source>
         <translation>x</translation>
     </message>
@@ -1343,11 +1346,11 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>a</source>
-        <translation type="unfinished">a</translation>
+        <translation>a</translation>
     </message>
     <message>
         <source>b</source>
-        <translation type="unfinished">b</translation>
+        <translation>b</translation>
     </message>
 </context>
 <context>
@@ -2677,14 +2680,6 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     <message>
         <source>/</source>
         <translation>/</translation>
-    </message>
-    <message>
-        <source>a</source>
-        <translation type="vanished">a</translation>
-    </message>
-    <message>
-        <source>b</source>
-        <translation type="vanished">b</translation>
     </message>
     <message>
         <source>result</source>
