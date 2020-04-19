@@ -371,15 +371,15 @@ double Color::get(Color::Role role) const
 
 bool operator==(const Color& a, const Color& b)
 {
-  if (a.m_current_model != b.m_current_model) {
+  if (a.m_current_model == b.m_current_model) {
+    if (a.m_current_model == Color::Model::Named) {
+      return a.m_name == b.m_name;
+    } else {
+      return a.m_components == b.m_components;
+    }
+  } else {
     return false;
   }
-  for (std::size_t i = 0; i < a.m_components.size(); ++i) {
-    if (a.m_components[i] != b.m_components[i]) {
-      return false;
-    }
-  }
-  return true;
 }
 
 bool operator!=(const Color& a, const Color& b) { return !(a == b); }
@@ -391,23 +391,31 @@ bool operator<(const Color& a, const Color& b)
   } else if (a.m_current_model > b.m_current_model) {
     return false;
   } else {
-    for (size_t i = 0; i < a.m_components.size(); ++i) {
-      if (a.m_components[i] < b.m_components[i]) {
-        return true;
-      } else if (a.m_components[i] > b.m_components[i]) {
-        return false;
-      }
+    if (a.m_current_model == Color::Model::Named) {
+      assert(b.m_current_model == Color::Model::Named);
+      return a.m_name < b.m_name;
+    } else {
+      return a.m_components < b.m_components;
     }
-    return false;
   }
 }
 
 std::ostream& operator<<(std::ostream& ostream, const Color& color)
 {
-  const Color copy = color.convert(Color::Model::RGBA);
-  using Role = Color::Role;
-  ostream << "Color[" << copy.get(Role::Red) << ", " << copy.get(Role::Green) << ", "
-          << copy.get(Role::Blue) << ", " << copy.get(Role::Alpha) << "]";
+  const QString id = [color]() {
+    if (color.model() == Color::Model::Named) {
+      return color.name();
+    } else {
+      QStringList cs;
+      const auto components = color.components(color.model());
+      for (std::size_t i = 0; i < components.size(); ++i) {
+        const auto component_names = Color::component_names.at(color.model());
+        cs.append(QString("%1: %2").arg(component_names[i]).arg(components[i]));
+      }
+      return cs.join(", ");
+    }
+  }();
+  ostream << QString("Color[%1]").arg(id).toStdString();
   return ostream;
 }
 
