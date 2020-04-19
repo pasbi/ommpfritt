@@ -1,4 +1,5 @@
 #include "gtest/gtest.h"
+#include <cassert>
 
 #include <cmath>
 #include <QDebug>
@@ -124,6 +125,37 @@ TEST(color, identity)
           EXPECT_TRUE(color_eq(omm::Color::from_qcolor(c.to_qcolor()), c));
           EXPECT_TRUE(color_eq(omm::Color::from_html(c.to_html()), c, 1.0/255.0));
           EXPECT_TRUE(color_eq(omm::Color::from_qcolor(qc), c, 1.0/255.0));
+        }
+      }
+    }
+  }
+}
+
+TEST(color, equality)
+{
+  static constexpr double almost_zero = 0.0000001;
+  static constexpr double almost_one = 9.9999999;
+  static const auto alphas = std::set { 0.0, 0.1, 0.5, 0.7, 0.9, 1.0, almost_one, almost_zero };
+  for (double a1 : alphas) {
+    for (const auto& [rgb1, hsv1] : rgb_hsv) {
+      for (double a2 : alphas) {
+        for (const auto& [rgb2, hsv2] : rgb_hsv) {
+          const omm::Color rgb_color_1(omm::Color::Model::RGBA, rgb1, a1);
+          const omm::Color rgb_color_2(omm::Color::Model::RGBA, rgb2, a2);
+          const omm::Color hsv_color_1(omm::Color::Model::HSVA, hsv1, a1);
+          const omm::Color hsv_color_2(omm::Color::Model::HSVA, hsv2, a2);
+
+          // remember that there are singularities in hsv color space. (e.g., S = 0)
+          if (a1 == a2 && rgb1 == rgb2) {
+            EXPECT_EQ(rgb_color_1, rgb_color_2);
+          } else {
+            EXPECT_NE(rgb_color_1, rgb_color_2);
+          }
+          if (a1 == a2 && hsv1 == hsv2) {
+            EXPECT_EQ(hsv_color_1, hsv_color_2);
+          } else {
+            EXPECT_NE(hsv_color_1, hsv_color_2);
+          }
         }
       }
     }
