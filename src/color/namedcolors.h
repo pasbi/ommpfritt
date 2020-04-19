@@ -31,6 +31,7 @@ public:
   QModelIndex add(const QString& name, const Color& color);
   void remove(const QString& name);
   Color color(const QString& name) const;
+  void clear();
 
   void serialize(AbstractSerializer&serializer, const Pointer&p) const override;
   void deserialize(AbstractDeserializer&deserializer, const Pointer&p) override;

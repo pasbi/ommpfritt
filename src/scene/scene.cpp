@@ -266,6 +266,7 @@ bool Scene::load_from(const QString &filename)
 void Scene::reset()
 {
   assert(selection().size() == 0);
+  Q_EMIT message_box().about_to_reset();
   prepare_reset();
   history().reset();
   history().set_saved_index();
@@ -273,6 +274,7 @@ void Scene::reset()
   styles().set(std::vector<std::unique_ptr<Style>> {});
   m_filename.clear();
   animator().invalidate();
+  m_named_colors->clear();
   Q_EMIT message_box().filename_changed();
 }
 

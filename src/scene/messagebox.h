@@ -184,6 +184,8 @@ Q_SIGNALS:
    * I.e., if the new owner decides to delete the object, the reference is dangling.
    */
   void abstract_property_owner_removed(AbstractPropertyOwner& property_owner);
+
+  void about_to_reset();
 };
 
 }  // namespace omm

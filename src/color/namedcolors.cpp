@@ -143,6 +143,13 @@ Color NamedColors::color(const QString& name) const
   return m_named_colors[index.row()].second;
 }
 
+void NamedColors::clear()
+{
+  beginResetModel();
+  m_named_colors.clear();
+  endResetModel();
+}
+
 void NamedColors::serialize(AbstractSerializer& serializer, const Serializable::Pointer& p) const
 {
   serializer.start_array(m_named_colors.size(), Serializable::make_pointer(p));
