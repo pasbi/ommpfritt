@@ -34,8 +34,4 @@ void ConstantNode::populate_menu(QMenu& menu)
   });
 }
 
-void ConstantNode::on_property_value_changed(Property* property)
-{
-}
-
 }  // namespace
