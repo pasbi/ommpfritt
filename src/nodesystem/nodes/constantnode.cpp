@@ -5,6 +5,7 @@
 #include "scene/scene.h"
 #include "properties/optionproperty.h"
 #include "managers/propertymanager/userpropertydialog.h"
+#include <QMenu>
 
 namespace omm
 {

@@ -1,4 +1,7 @@
 #include "nodesystem/node.h"
+#include <memory>
+
+class QAction;
 
 namespace omm
 {

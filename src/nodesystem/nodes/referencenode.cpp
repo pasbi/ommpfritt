@@ -1,11 +1,11 @@
 #include "nodesystem/nodes/referencenode.h"
 #include "scene/messagebox.h"
 #include "commands/forwardingportcommand.h"
-#include "keybindings/menu.h"
 #include "properties/referenceproperty.h"
 #include "variant.h"
 #include "scene/scene.h"
 #include "nodesystem/nodemodel.h"
+#include <QMenu>
 
 namespace omm
 {
@@ -30,7 +30,7 @@ ReferenceNode::ReferenceNode(NodeModel& model)
 
 void ReferenceNode::populate_menu(QMenu& menu)
 {
-  auto forward_menu = std::make_unique<Menu>(tr("Forwarded Ports"));
+  auto forward_menu = std::make_unique<QMenu>(tr("Forwarded Ports"));
   AbstractPropertyOwner* apo = reference();
   if (apo == nullptr) {
     forward_menu->addAction(tr("No properties."))->setEnabled(false);
@@ -40,7 +40,7 @@ void ReferenceNode::populate_menu(QMenu& menu)
       Property* property = apo->property(key);
       if (::contains(supported_types, property->type())) {
         if (language() == AbstractNodeCompiler::Language::Python) {
-          auto property_menu = std::make_unique<Menu>(property->label());
+          auto property_menu = std::make_unique<QMenu>(property->label());
           property_menu->addAction(make_property_action(PortType::Input, key,
                                                         tr("input", "ReferenceNode")).release());
           property_menu->addAction(make_property_action(PortType::Output, key,

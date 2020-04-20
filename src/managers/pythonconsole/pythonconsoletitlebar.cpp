@@ -1,6 +1,5 @@
 #include "managers/pythonconsole/pythonconsoletitlebar.h"
 #include "managers/pythonconsole/pythonconsole.h"
-#include "keybindings/menu.h"
 #include "menuhelper.h"
 #include <QLabel>
 #include <QMenuBar>
@@ -13,7 +12,7 @@ namespace omm
 PythonConsoleTitleBar::PythonConsoleTitleBar(PythonConsole& parent)
   : ManagerTitleBar(parent)
 {
-  auto python_menu = std::make_unique<Menu>(QObject::tr("Python", "PythonConsole"));
+  auto python_menu = std::make_unique<QMenu>(QObject::tr("Python", "PythonConsole"));
 
   auto& app = Application::instance();
   python_menu->addAction(app.key_bindings.make_menu_action(parent, "clear console").release());

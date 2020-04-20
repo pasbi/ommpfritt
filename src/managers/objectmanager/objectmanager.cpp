@@ -10,8 +10,8 @@
 #include "objects/empty.h"
 #include "scene/messagebox.h"
 #include "mainwindow/actions.h"
-#include "keybindings/menu.h"
 #include <QContextMenuEvent>
+#include "managers/objectmanager/objecttreeview.h"
 
 namespace omm
 {
@@ -46,11 +46,11 @@ void ObjectManager::contextMenuEvent(QContextMenuEvent* event)
     action->setEnabled(object_selected);
     return action;
   };
-  Menu menu(QCoreApplication::translate("any-context", ObjectManager::TYPE));
+  QMenu menu(QCoreApplication::translate("any-context", ObjectManager::TYPE));
   menu.addAction(e_os(kb.make_menu_action(app, "convert objects").release()));
   menu.addAction(e_os(kb.make_menu_action(*this, "remove objects and tags").release()));
   menu.addAction(e_os(kb.make_menu_action(*this, "group objects").release()));
-  Menu attach_menu(tr("Attach"));
+  QMenu attach_menu(tr("Attach"));
   menu.addMenu(&attach_menu);
   for (const QString& tag_type : Tag::keys()) {
     attach_menu.addAction(e_os(kb.make_menu_action(app, tag_type).release()));

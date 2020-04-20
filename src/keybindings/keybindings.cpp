@@ -11,7 +11,6 @@
 #include <QMenu>
 #include <QCoreApplication>
 #include <QApplication>
-#include "keybindings/menu.h"
 #include "logging.h"
 #include <QKeySequence>
 
@@ -38,7 +37,7 @@ std::unique_ptr<QMenu> add_menu(const QString& path, std::map<QString, QMenu*>& 
   } else {
     const auto [ rest_path, menu_name ] = split(path);
     const auto menu_label = QCoreApplication::translate("menu_name", menu_name.toUtf8().constData());
-    std::unique_ptr<QMenu> menu = std::make_unique<omm::Menu>(menu_label);
+    auto menu = std::make_unique<QMenu>(menu_label);
     menu->setObjectName(menu_name);
     menu_map.insert({ path, menu.get() });
 

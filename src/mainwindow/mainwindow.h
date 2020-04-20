@@ -58,6 +58,7 @@ public:
 
 protected:
   void closeEvent(QCloseEvent *event) override;
+  bool eventFilter(QObject* o, QEvent* e) override;
 
 private:
   Application& m_app;

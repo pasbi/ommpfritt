@@ -7,13 +7,13 @@
 #include "nodesystem/port.h"
 #include "nodesystem/propertyport.h"
 #include "nodesystem/nodecompiler.h"
-#include "keybindings/menu.h"
+
+class QMenu;
 
 namespace omm
 {
 
 class NodeModel;
-class Menu;
 
 class Node
   : public PropertyOwner<Kind::Node>

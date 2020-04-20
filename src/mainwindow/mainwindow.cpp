@@ -210,6 +210,8 @@ MainWindow::MainWindow(Application& app)
       update_recent_files_menu();
     }
   });
+
+  installEventFilter(this);
 }
 
 std::unique_ptr<QMenu> MainWindow::make_about_menu()
@@ -261,6 +263,14 @@ void MainWindow::closeEvent(QCloseEvent *event)
   } else {
     event->ignore();
   }
+}
+
+bool omm::MainWindow::eventFilter(QObject* o, QEvent* e)
+{
+  if (o == this && e->type() == QEvent::ShortcutOverride) {
+    e->accept();
+  }
+  return QMainWindow::eventFilter(o, e);
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* e)

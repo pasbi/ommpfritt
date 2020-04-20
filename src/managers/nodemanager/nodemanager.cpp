@@ -12,10 +12,10 @@
 #include "nodesystem/nodemodel.h"
 #include "ui_nodemanager.h"
 #include "mainwindow/application.h"
-#include "keybindings/menu.h"
 #include "scene/messagebox.h"
 #include <QContextMenuEvent>
 #include "nodesystem/nodes/fragmentnode.h"
+#include <QMenu>
 
 namespace
 {
@@ -97,7 +97,7 @@ std::unique_ptr<QMenu> NodeManager::make_context_menu()
   Application& app = Application::instance();
   KeyBindings& kb = app.key_bindings;
 
-  auto menu = std::make_unique<Menu>();
+  auto menu = std::make_unique<QMenu>();
 
   const auto eiff_model_available = [this](auto&& menu) {
     menu->setEnabled(m_ui->nodeview->model() != nullptr);
