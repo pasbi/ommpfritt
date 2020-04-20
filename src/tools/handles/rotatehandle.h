@@ -19,8 +19,24 @@ public:
   void draw(QPainter& painter) const override
   {
     painter.setTransform(tool.transformation().to_qtransform(), true);
-    painter.setPen(ui_color("rotate-ring"));
-    painter.drawEllipse(-RADIUS, -RADIUS, 2*RADIUS, 2*RADIUS);
+    static const auto path = []() {
+      QPainterPath path;
+      path.addEllipse(-RADIUS, -RADIUS, 2*RADIUS, 2*RADIUS);
+      return path;
+    }();
+
+    QPen pen;
+    pen.setCosmetic(true);
+
+    pen.setColor(ui_color("rotate-ring-fill"));
+    pen.setWidthF(8.0);
+    painter.setPen(pen);
+    painter.drawPath(path);
+
+    pen.setColor(ui_color("rotate-ring-outline"));
+    pen.setWidthF(2.0);
+    painter.setPen(pen);
+    painter.drawPath(path);
   }
 
   bool contains_global(const Vec2f& point) const override

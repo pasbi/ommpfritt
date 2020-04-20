@@ -58,25 +58,38 @@ public:
 
   void draw(QPainter& painter) const override
   {
-    painter.setTransform(tool.transformation().to_qtransform(), true);
-    const double magnitude = m_direction.euclidean_norm();
-    const double argument = m_direction.arg();
-
-    const auto right = to_qpoint(PolarCoordinates(argument-0.1, magnitude*0.9).to_cartesian());
-    const auto left = to_qpoint(PolarCoordinates(argument+0.1, magnitude*0.9).to_cartesian());
-
     static const std::map<MoveAxisHandleDirection, QString> name_map {
       { MoveAxisHandleDirection::X, "x-axis" },
       { MoveAxisHandleDirection::Y, "y-axis" },
     };
-    const QString name = name_map.at(direction);
 
+    painter.setTransform(tool.transformation().to_qtransform(), true);
+    const QPainterPath path = [this]() {
+      const double magnitude = 0.9 * m_direction.euclidean_norm();
+      const double argument = m_direction.arg();
+      const auto right = to_qpoint(PolarCoordinates(argument-0.1, magnitude).to_cartesian());
+      const auto left  = to_qpoint(PolarCoordinates(argument+0.1, magnitude).to_cartesian());
+      const auto p = (left + right)/2.0;
+
+      QPainterPath path;
+      path.moveTo({0.0, 0.0});
+      path.lineTo(p);
+      path.lineTo(left);
+      path.lineTo(to_qpoint(m_direction));
+      path.lineTo(right);
+      path.lineTo(p);
+      path.closeSubpath();
+      return path;
+    }();
 
     painter.save();
-    painter.setPen(ui_color(name));
-    painter.drawLine(QPointF(0.0, 0.0), to_qpoint(m_direction));
-    const QPointF polyline[] = { left, to_qpoint(m_direction), right, left };
-    painter.drawPolyline(polyline, 4);
+    const QString name = name_map.at(direction);
+    QPen pen;
+    pen.setColor(ui_color(name + "-outline"));
+    pen.setWidthF(2.0);
+    painter.setPen(pen);
+    painter.fillPath(path, ui_color(name + "-fill"));
+    painter.drawPath(path);
     painter.restore();
   }
 
