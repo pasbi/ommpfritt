@@ -113,23 +113,14 @@ template<typename T> std::vector<T> sample(const omm::SplineType& spline, std::s
   for (std::size_t i = 0; i < n; ++i) {
     const double t = static_cast<double>(i) / static_cast<double>(n - 1);
     const double v = spline.evaluate(t).value();
-//    LINFO << "s(" << t << ") = " << v;
     values.push_back(v);
   }
   return values;
 }
 
-std::size_t get_max_number_textures()
-{
-  GLint n;
-  glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &n);
-  return n;
-}
-
 template<typename T>
 void set_uniform(omm::OffscreenRenderer& self, const QString& name, const T& value)
 {
-  static const std::size_t max_number_textures = get_max_number_textures();
   using namespace omm;
   self.make_current();
   auto* program = self.program();
