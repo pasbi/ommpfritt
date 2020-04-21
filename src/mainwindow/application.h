@@ -14,6 +14,8 @@
 #include "mainwindow/options.h"
 #include <memory>
 #include "preferences/preferences.h"
+#include <set>
+
 
 class QApplication;
 class QAbstractButton;
@@ -30,7 +32,7 @@ class Application : public QObject, public CommandInterface
 {
   Q_OBJECT
 public:
-  Application(QApplication& app);
+  Application(QCoreApplication& app);
   ~Application();
   bool save();
   bool save_as();
@@ -78,7 +80,7 @@ public:
   Manager& get_active_manager(const QString& type);
 
 private:
-  QApplication& m_app;
+  QCoreApplication& m_app;
   static Application* m_instance;
   MainWindow* m_main_window;
 
@@ -120,6 +122,10 @@ private:
   QTimer m_reset_keysequence_timer;
   QKeySequence m_pending_key_sequence;
   std::set<Manager*> m_managers;
+
+  void install_translators();
+  std::set<std::unique_ptr<QTranslator>> m_translators;
+  const QLocale m_locale;
 };
 
 const Preferences& preferences();

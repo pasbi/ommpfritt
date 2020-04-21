@@ -1352,6 +1352,66 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>b</source>
         <translation>b</translation>
     </message>
+    <message>
+        <source>app-description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The input scene file.</source>
+        <translation>Die Eingabe Szenedatei.</translation>
+    </message>
+    <message>
+        <source>Where to save the batch renderings. Use `%1` as framenumber placeholder.</source>
+        <translation>Wo die renderings gespeichert werden. Benutze `#1` als Platzhalter für die Frame-Nummer.</translation>
+    </message>
+    <message>
+        <source>Overwrite existing files without warning.</source>
+        <translation>Überschreibe existierende Dateien ohne Warnung.</translation>
+    </message>
+    <message>
+        <source>Resolution of the rendering (optional).</source>
+        <translation>Auflösung (optional)</translation>
+    </message>
+    <message>
+        <source>start-frame of the rendering (optional).</source>
+        <translation>Erster zu rendernder Frame (optional).</translation>
+    </message>
+    <message>
+        <source>S</source>
+        <translation>S</translation>
+    </message>
+    <message>
+        <source>name of the view.</source>
+        <translation>Name der Ansicht.</translation>
+    </message>
+    <message>
+        <source>N</source>
+        <translation>N</translation>
+    </message>
+    <message>
+        <source>number of frames (optional).</source>
+        <translation>Anzahl zu rendernder Frames (optional).</translation>
+    </message>
+    <message>
+        <source>Expected integer argument for &apos;%1&apos;, but got &apos;%2&apos;.</source>
+        <translation>Erwartete ganze Zahl als Argument &apos;%1&apos;, nicht &apos;%2&apos;.</translation>
+    </message>
+    <message>
+        <source>Framenumber placeholder must be contiguous.</source>
+        <translation>Platzhalter für Frame-Nummer müssen zusammenhängen.</translation>
+    </message>
+    <message>
+        <source>Refuse to overwrite existing file &apos;%1&apos;.</source>
+        <translation>Verweigere &apos;%1&apos; zu überschreiben.</translation>
+    </message>
+    <message>
+        <source>W%1H</source>
+        <translation>W%1H</translation>
+    </message>
+    <message>
+        <source>Expected two integers, separated by &apos;%1&apos; for &apos;%2&apos;, but got &apos;%3&apos;.</source>
+        <translation>Erwartete zwei ganze Zahlen als Argument &apos;%2&apos; getrennt durch &apos;%1&apos;, nicht &apos;%3&apos;.</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>

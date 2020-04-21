@@ -1352,6 +1352,66 @@ Remove the selected items anyway?</translation>
         <source>b</source>
         <translation>b</translation>
     </message>
+    <message>
+        <source>app-description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The input scene file.</source>
+        <translation>The input scene file.</translation>
+    </message>
+    <message>
+        <source>Where to save the batch renderings. Use `%1` as framenumber placeholder.</source>
+        <translation>Where to save the batch rendering. Use `#1` as placeholder for the frame numbers.</translation>
+    </message>
+    <message>
+        <source>Overwrite existing files without warning.</source>
+        <translation>Overwrite existing files without warning.</translation>
+    </message>
+    <message>
+        <source>Resolution of the rendering (optional).</source>
+        <translation>Resolution (optional)</translation>
+    </message>
+    <message>
+        <source>start-frame of the rendering (optional).</source>
+        <translation>First frame to render (optional).</translation>
+    </message>
+    <message>
+        <source>S</source>
+        <translation>S</translation>
+    </message>
+    <message>
+        <source>name of the view.</source>
+        <translation>Name of the view.</translation>
+    </message>
+    <message>
+        <source>N</source>
+        <translation>N</translation>
+    </message>
+    <message>
+        <source>number of frames (optional).</source>
+        <translation>Number of frames to render (optional).</translation>
+    </message>
+    <message>
+        <source>Expected integer argument for &apos;%1&apos;, but got &apos;%2&apos;.</source>
+        <translation>Expected integer argument for &apos;%1&apos;, but got &apos;%2&apos;.</translation>
+    </message>
+    <message>
+        <source>Framenumber placeholder must be contiguous.</source>
+        <translation>Frame number placeholder must be contiguous.</translation>
+    </message>
+    <message>
+        <source>Refuse to overwrite existing file &apos;%1&apos;.</source>
+        <translation>Refuse to overwrite &apos;%1&apos;.</translation>
+    </message>
+    <message>
+        <source>W%1H</source>
+        <translation>W%1H</translation>
+    </message>
+    <message>
+        <source>Expected two integers, separated by &apos;%1&apos; for &apos;%2&apos;, but got &apos;%3&apos;.</source>
+        <translation>Expected two integers, separated by &apos;%1&apos; for &apos;%2&apos;, but got &apos;%3&apos;.</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>

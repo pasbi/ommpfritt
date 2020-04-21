@@ -1,5 +1,6 @@
 #include "application.h"
 
+#include <QSettings>
 #include <cassert>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -27,10 +28,32 @@
 #include "scene/stylelist.h"
 #include "managers/manager.h"
 #include "preferences/preferencedialog.h"
+#include <QTranslator>
+#include "registers.h"
 
 namespace
 {
 constexpr auto FILE_ENDING = ".omm";
+
+auto load_translator(const QString& prefix, const QLocale& locale)
+{
+  auto translator = std::make_unique<QTranslator>();
+  const auto locale_name = locale.name().toStdString();
+  if (translator->load(prefix + "_" + locale.name(), ":/qm", "_", ".qm")) {
+    LINFO << "Installing translator '" << prefix << "' for " << locale_name << ".";
+    return translator;
+  } else {
+    LWARNING << "No translator '" << prefix << "' found for " << locale_name
+             << ". Using fallback-translator.";
+    if (translator->load(prefix + "_", ":/qm", "_", ".qm")) {
+      LINFO << "Installing fallback-translator.";
+      return translator;
+    } else {
+      LERROR << "failed to load fallback-translator.";
+      return std::unique_ptr<QTranslator>(nullptr);
+    }
+  }
+}
 
 int img_mean(const QImage& image)
 {
@@ -70,6 +93,19 @@ QKeySequence push_back(const QKeySequence& s, int t)
   }
 }
 
+auto load_locale()
+{
+  const auto locale = QSettings().value(omm::MainWindow::LOCALE_SETTINGS_KEY).toLocale();
+  return locale;
+}
+
+void init()
+{
+  omm::register_everything();
+  QCoreApplication::setOrganizationName(QObject::tr("omm"));
+  QCoreApplication::setApplicationName(::QApplication::translate("QObject", "ommpfritt"));
+}
+
 }  // namespace
 
 namespace omm
@@ -79,10 +115,11 @@ const std::set<int> Application::keyboard_modifiers { Qt::Key_Shift, Qt::Key_Con
                                                       Qt::Key_Meta };
 Application* Application::m_instance = nullptr;
 
-Application::Application(QApplication& app)
-  : scene(python_engine)
+Application::Application(QCoreApplication& app)
+  : scene((init(), python_engine))
   , m_app(app)
   , m_options(new Options)
+  , m_locale(load_locale())
 {
   if (m_instance == nullptr) {
     m_instance = this;
@@ -97,6 +134,8 @@ Application::Application(QApplication& app)
   connect(&m_reset_keysequence_timer, &QTimer::timeout, this, [this]() {
     m_pending_key_sequence = QKeySequence();
   });
+
+  install_translators();
 }
 
 Application::~Application()
@@ -520,4 +559,15 @@ const Preferences& preferences()
   return Application::instance().preferences;
 }
 
+void Application::install_translators()
+{
+  const auto qms = { "qtbase", "omm" };
+  for (const QString& qm : qms) {
+    auto translator = load_translator(qm, m_locale);
+    if (translator) {
+      m_app.installTranslator(translator.get());
+      m_translators.insert(std::move(translator));
+    };
+  }
+}
 }  // namespace omm

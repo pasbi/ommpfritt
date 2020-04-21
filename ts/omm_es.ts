@@ -1352,6 +1352,66 @@ Borrar la selección de todos modos?</translation>
         <source>b</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>app-description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The input scene file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Where to save the batch renderings. Use `%1` as framenumber placeholder.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overwrite existing files without warning.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resolution of the rendering (optional).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>start-frame of the rendering (optional).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>name of the view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>N</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>number of frames (optional).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expected integer argument for &apos;%1&apos;, but got &apos;%2&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Framenumber placeholder must be contiguous.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refuse to overwrite existing file &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>W%1H</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expected two integers, separated by &apos;%1&apos; for &apos;%2&apos;, but got &apos;%3&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
