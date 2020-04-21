@@ -183,7 +183,7 @@ void ExportDialog::update_preview()
     QPainter painter(&image);
     UiColors::draw_background(painter, image.rect());
   }
-  render(image);
+  render(m_scene, view(), image);
   m_ui->lb_preview->setPixmap(QPixmap::fromImage(image));
 }
 
@@ -192,17 +192,17 @@ const View* ExportDialog::view() const
   return type_cast<View*>(kind_cast<Object*>(m_ui->cb_view->value()));
 }
 
-void ExportDialog::render(QPaintDevice& device, double scale) const
+void ExportDialog::render(Scene& scene, const View* view, QPaintDevice& device, double scale)
 {
   QPicture picture;
   {
     QPainter painter(&picture);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    Painter renderer(m_scene, Painter::Category::Objects);
+    Painter renderer(scene, Painter::Category::Objects);
     renderer.painter = &painter;
 
-    auto get_transformation = [&device, view=this->view()]() {
+    const auto transformation = [&device, view](){
       if (view == nullptr) {
         const auto t = viewport().viewport_transformation();
         const auto s = device.width() / double(viewport().width());
@@ -214,11 +214,11 @@ void ExportDialog::render(QPaintDevice& device, double scale) const
         const auto d = view_size/2.0;
         return ObjectTransformation().scaled(Vec2f(s, s)).apply(t.translated(d));
       }
-    };
+    }();
 
-    m_scene.object_tree().root().set_transformation(get_transformation());
+    scene.object_tree().root().set_transformation(transformation);
+    scene.evaluate_tags();
 
-    m_scene.evaluate_tags();
     Painter::Options options(device);
     renderer.render(options);
   }
@@ -247,7 +247,7 @@ void ExportDialog::save_as_raster()
                  m_ui->ne_resolution_y->value(),
                  QImage::Format_ARGB32_Premultiplied);
     image.fill(Qt::transparent);
-    render(image);
+    render(m_scene, view(), image);
     if (image.save(filename)) {
       m_filepath = filename;
     } else {
@@ -279,7 +279,7 @@ void ExportDialog::save_as_svg()
     auto view_box_size = view()->property(View::SIZE_PROPERTY_KEY)->value<Vec2f>();
     view_box_size *= scale / view_box_size.x;
     generator.setViewBox(QRectF(0.0, 0.0, view_box_size.x, view_box_size.y));
-    render(generator, -scale * 4.0 / 3.0);
+    render(m_scene, view(), generator, -scale * 4.0 / 3.0);
     m_filepath = filename;
   }
 }

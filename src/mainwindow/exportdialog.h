@@ -26,6 +26,8 @@ public:
   ExportDialog(Scene& scene, QWidget* parent);
   ~ExportDialog();
 
+  static void render(Scene& scene, const View* view, QPaintDevice& device, double scale = 1.0);
+
 protected:
   void resizeEvent(QResizeEvent* e) override;
   void showEvent(QShowEvent* e) override;
@@ -37,7 +39,6 @@ private:
   void save_as();
   void update_preview();
   const View* view() const;
-  void render(QPaintDevice& device, double scale = 1.0) const;
   void save_as_raster();
   void save_as_svg();
   QPicture m_picture;
