@@ -1353,10 +1353,6 @@ Remove the selected items anyway?</translation>
         <translation>b</translation>
     </message>
     <message>
-        <source>app-description</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>The input scene file.</source>
         <translation>The input scene file.</translation>
     </message>
@@ -1411,6 +1407,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>Expected two integers, separated by &apos;%1&apos; for &apos;%2&apos;, but got &apos;%3&apos;.</source>
         <translation>Expected two integers, separated by &apos;%1&apos; for &apos;%2&apos;, but got &apos;%3&apos;.</translation>
+    </message>
+    <message>
+        <source>Unrecognized command: %1. Try &apos;%2 --help&apos; for more information.</source>
+        <translation>Unrecognized command %1. Try &apos;%2 --help&apos; for more information.</translation>
     </message>
 </context>
 <context>

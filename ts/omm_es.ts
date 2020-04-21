@@ -1353,10 +1353,6 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>app-description</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>The input scene file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1410,6 +1406,10 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>Expected two integers, separated by &apos;%1&apos; for &apos;%2&apos;, but got &apos;%3&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unrecognized command: %1. Try &apos;%2 --help&apos; for more information.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

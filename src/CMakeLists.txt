@@ -6,6 +6,7 @@ file(GLOB SOURCES
   logging.cpp
   proxychain.cpp
   splinetype.cpp
+  subcommandlineparser.cpp
   variant.cpp
   registers.cpp
 )
@@ -24,6 +25,7 @@ file(GLOB HEADERS
   variant.h
   proxychain.h
   splinetype.h
+  subcommandlineparser.h
   translations.h
   register.h
 )

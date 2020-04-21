@@ -1353,10 +1353,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>b</translation>
     </message>
     <message>
-        <source>app-description</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>The input scene file.</source>
         <translation>Die Eingabe Szenedatei.</translation>
     </message>
@@ -1411,6 +1407,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>Expected two integers, separated by &apos;%1&apos; for &apos;%2&apos;, but got &apos;%3&apos;.</source>
         <translation>Erwartete zwei ganze Zahlen als Argument &apos;%2&apos; getrennt durch &apos;%1&apos;, nicht &apos;%3&apos;.</translation>
+    </message>
+    <message>
+        <source>Unrecognized command: %1. Try &apos;%2 --help&apos; for more information.</source>
+        <translation>Unbekanntes Kommando: %1. Versuche &apos;%2 --help&apos; für mehr Informationen.</translation>
     </message>
 </context>
 <context>
