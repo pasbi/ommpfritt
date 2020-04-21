@@ -14,6 +14,8 @@
 #include "registers.h"
 
 static constexpr auto FRAMENUMBER_PLACEHOLDER = '#';
+static constexpr auto RESOLUTION_SEPARATOR = 'x';
+static constexpr QSize DEFAULT_RESOLUTION(1000, 1000);
 
 auto make_cmd_line_parser()
 {
@@ -38,8 +40,11 @@ auto make_cmd_line_parser()
     {
       { "r", "resolution" },
       QObject::tr("Resolution of the rendering (optional)."),
-      QObject::tr("WxH"),
-      QObject::tr("1000x1000")
+      QObject::tr("W%1H").arg(RESOLUTION_SEPARATOR),
+      QString("%1%2%3")
+                    .arg(DEFAULT_RESOLUTION.width())
+                    .arg(RESOLUTION_SEPARATOR)
+                    .arg(DEFAULT_RESOLUTION.height())
     },
     {
       { "s", "start-frame" },
@@ -70,7 +75,7 @@ int get_int(const QCommandLineParser& args, const QString& name)
   const auto value = args.value(name);
   const auto ivalue = value.toInt(&ok);
   if (!ok) {
-    LERROR << "Expected integer argument for '" << name << "', but got '" << value << "'.";
+    LERROR << QObject::tr("Expected integer argument for '%1', but got '%2'.").arg(name).arg(value);
     exit(EXIT_FAILURE);
   }
   return ivalue;
@@ -79,7 +84,7 @@ int get_int(const QCommandLineParser& args, const QString& name)
 QSize get_size(const QCommandLineParser& args, const QString& name)
 {
   const auto value = args.value(name);
-  const auto tokens = value.split("x");
+  const auto tokens = value.split(RESOLUTION_SEPARATOR);
   static const auto get_int = [](const QString& s, int& i) {
     bool ok;
     i = s.toInt(&ok);
@@ -87,8 +92,8 @@ QSize get_size(const QCommandLineParser& args, const QString& name)
   };
   int w, h;
   if (tokens.size() != 2 || !get_int(tokens[0], w) || !get_int(tokens[1], h)) {
-    LERROR << "Expected two integers, separated by 'x', but got '" << value << "'.";
-    exit(1);
+    LERROR << QObject::tr("Expected two integers, separated by '%1' for '%2', but got '%3'.").arg(value);
+    exit(EXIT_FAILURE);
   }
   return QSize(w, h);
 }
@@ -102,15 +107,16 @@ const omm::View& find_view(omm::Scene& scene, const QString& name)
     return c->name() == name;
   });
   if (views.size() == 0) {
-    LERROR << "View '" << name << "' not found.";
+    LERROR << QString("View '%1' not found.").arg(name);
     const QStringList view_names = ::transform<QString, QList>(all_views, [](const auto* v) {
       return v->name();
     });
-    LINFO << "There are " << view_names.size() << " views in this scene:\n"
-          << view_names.join("\n");
-    exit(1);
+    LINFO << QString("There are %1 views in this scene:\n%2")
+             .arg(view_names.size())
+             .arg(view_names.join("\n"));
+    exit(EXIT_FAILURE);
   } else if (views.size() > 1) {
-    LWARNING << "View '" << name << "' is ambiguous (" << views.size() << ") occurences.";
+    LWARNING << QString("View '%1' is ambiguous (%2) occurences.").arg(name).arg(views.size());
   }
   return static_cast<const omm::View&>(**views.begin());
 }
@@ -125,8 +131,8 @@ QString interpolate_filename(QString fn_template, int i)
   const int last_match = fn_template.lastIndexOf(FRAMENUMBER_PLACEHOLDER);
   const QString placeholder = fn_template.mid(first_match, last_match - first_match + 1);
   if (placeholder.count(FRAMENUMBER_PLACEHOLDER) != placeholder.size()) {
-    LERROR << "Framenumber placeholder must be contiguous.";
-    exit(1);
+    LERROR << QObject::tr("Framenumber placeholder must be contiguous.");
+    exit(EXIT_FAILURE);
   }
 
   const auto formatted_number = QString("%1").arg(i, placeholder.size(), 10, QChar('0'));
@@ -138,9 +144,9 @@ QString require(const QCommandLineParser& args, const QString& name)
 {
   const QString value = args.value(name);
   if (value.isEmpty()) {
-    LERROR << "<" << name << "> must be specified.";
+    LERROR << QString("<%1> must be specified.").arg(name);
     std::cout << args.helpText().toStdString();
-    exit(1);
+    exit(EXIT_FAILURE);
   }
   return value;
 }
@@ -167,8 +173,8 @@ int main(int argc, char* argv[])
   const auto render = [&view, resolution, fn_template, force](Animator& animator) {
     const QString filename = interpolate_filename(fn_template, animator.current());
     if (QFileInfo::exists(filename) && !force) {
-      LERROR << "Refuse to overwrite existing file '" << filename << "'.";
-      exit(1);
+      LERROR << QObject::tr("Refuse to overwrite existing file '%1'.").arg(filename);
+      exit(EXIT_FAILURE);
     }
     QImage image(resolution, QImage::Format_ARGB32_Premultiplied);
     image.fill(Qt::red);
