@@ -50,6 +50,12 @@ View::View(const View &other) : Object(other)
 }
 
 QString View::type() const { return TYPE; }
+
+void View::draw_object(Painter&, const Style&, Painter::Options) const
+{
+  // do nothing
+}
+
 BoundingBox View::bounding_box(const ObjectTransformation &transformation) const
 {
   if (is_active()) {
@@ -95,9 +101,13 @@ void View::make_output_unique()
 void View::draw_handles(Painter &renderer) const
 {
   const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>();
-
+  const auto status = is_active() ? QPalette::Active : QPalette::Inactive;
+  QPen pen;
+  pen.setColor(ui_color(status, "Handle", "camera-outline"));
+  pen.setCosmetic(true);
   renderer.painter->save();
-  renderer.painter->setPen(m_pen);
+  renderer.painter->setPen(pen);
+  renderer.painter->setBrush(ui_color(status, "Handle", "camera-fill"));
   renderer.painter->drawRect(QRectF(-size.x/2.0, -size.y/2.0, size.x, size.y));
   renderer.painter->restore();
 }
