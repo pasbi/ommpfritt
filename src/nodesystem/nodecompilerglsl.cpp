@@ -131,25 +131,27 @@ QString NodeCompilerGLSL::start_program(QStringList& lines) const
 
 QString NodeCompilerGLSL::end_program(QStringList& lines) const
 {
-  const auto fragment_nodes = ::filter_if(model().nodes(), [](const Node* node) {
-    return node->type() == FragmentNode::TYPE;
-  });
+  if (const auto nodes = model().nodes(); nodes.size() > 0) {
+    const auto fragment_nodes = ::filter_if(nodes, [](const Node* node) {
+      return node->type() == FragmentNode::TYPE;
+    });
 
-  if (fragment_nodes.size() != 1) {
-    const QString msg = QString("expected exactly one fragment node but found %1.")
-                          .arg(fragment_nodes.size());
-    LWARNING << msg;
-    return msg;
-  } else {
-    const auto* fragment_node = static_cast<const FragmentNode*>(*fragment_nodes.begin());
-    const auto& port = fragment_node->input_port();
-    if (port.is_connected()) {
-      const QString alpha = QString("clamp(%1.a, 0.0, 1.0)").arg(port.uuid());
-      const QString rgb = QString("clamp(%2.rgb, vec3(0.0), vec3(1.0))").arg(port.uuid());
-      lines.push_back(QString("%1 = vec4(%2 * %3, %2);")
-                        .arg(output_variable_name)
-                        .arg(alpha)
-                        .arg(rgb));
+    if (fragment_nodes.size() != 1) {
+      const QString msg = QString("expected exactly one fragment node but found %1.")
+                            .arg(fragment_nodes.size());
+      LWARNING << msg;
+      return msg;
+    } else {
+      const auto* fragment_node = static_cast<const FragmentNode*>(*fragment_nodes.begin());
+      const auto& port = fragment_node->input_port();
+      if (port.is_connected()) {
+        const QString alpha = QString("clamp(%1.a, 0.0, 1.0)").arg(port.uuid());
+        const QString rgb = QString("clamp(%2.rgb, vec3(0.0), vec3(1.0))").arg(port.uuid());
+        lines.push_back(QString("%1 = vec4(%2 * %3, %2);")
+                          .arg(output_variable_name)
+                          .arg(alpha)
+                          .arg(rgb));
+      }
     }
   }
 
