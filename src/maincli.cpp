@@ -12,28 +12,29 @@
 #include "scene/scene.h"
 #include "subcommandlineparser.h"
 
-
-const omm::View& find_view(omm::Scene& scene, const QString& name)
+template<typename T> const T& find(omm::Scene& scene, const QString& name)
 {
-  const auto all_views = ::filter_if(scene.object_tree().items(), [](const auto* c) {
-    return c->type() == omm::View::TYPE;
+  const auto type_matches = ::filter_if(scene.object_tree().items(), [](const auto* c) {
+    return c->type() == T::TYPE || std::is_same_v<T, omm::Object>;
   });
-  const auto views = ::filter_if(all_views, [name](const auto* c) {
+  const auto name_type_matches = ::filter_if(type_matches, [name](const auto* c) {
     return c->name() == name;
   });
-  if (views.size() == 0) {
-    LERROR << QString("View '%1' not found.").arg(name);
-    const QStringList view_names = ::transform<QString, QList>(all_views, [](const auto* v) {
+  if (name_type_matches.size() == 0) {
+    LERROR << QString("%1 '%2' not found.").arg(T::TYPE).arg(name);
+    const QStringList view_names = ::transform<QString, QList>(type_matches, [](const auto* v) {
       return v->name();
     });
-    LINFO << QString("There are %1 views in this scene:\n%2")
+    LINFO << QString("There are %1 objects of type [%2] in this scene:\n%3")
              .arg(view_names.size())
+             .arg(T::TYPE)
              .arg(view_names.join("\n"));
     exit(EXIT_FAILURE);
-  } else if (views.size() > 1) {
-    LWARNING << QString("View '%1' is ambiguous (%2) occurences.").arg(name).arg(views.size());
+  } else if (name_type_matches.size() > 1) {
+    LWARNING << QString("%1 '%2' is ambiguous (%3) occurences.")
+                .arg(T::TYPE).arg(name).arg(name_type_matches.size());
   }
-  return static_cast<const omm::View&>(**views.begin());
+  return static_cast<const omm::View&>(**name_type_matches.begin());
 }
 
 QString interpolate_filename(QString fn_template, int i)
@@ -68,15 +69,30 @@ void print_tree(const omm::Object& root, const QString& prefix = "")
   }
 }
 
+void prepare_scene(omm::Scene& scene, const omm::SubcommandLineParser& args)
+{
+  const QString& object_name = args.get<QString>("object", "");
+  if (!object_name.isEmpty()) {
+    const auto& object = find<omm::Object>(scene, object_name);
+    for (auto other : scene.object_tree().items()) {
+      if (!object.is_ancestor_of(*other)) {
+        other->property(omm::Object::VISIBILITY_PROPERTY_KEY)->set(omm::Object::Visibility::Hidden);
+      }
+    }
+    object.property(omm::Object::VISIBILITY_PROPERTY_KEY)->set(omm::Object::Visibility::Visible);
+  }
+}
+
 void render(omm::Application& app, const omm::SubcommandLineParser& args)
 {
   const QString scene_filename = args.get<QString>("input");
   const QString fn_template = args.get<QString>("output");
   app.scene.load_from(scene_filename);
+  prepare_scene(app.scene, args);
   const int start_frame = args.get<int>("start-frame", 1);
   const int n_frames = args.get<int>("sequence-length", 1);
   const QSize resolution = args.get<QSize>("resolution");
-  const omm::View& view = find_view(app.scene, args.get<QString>("view"));
+  const omm::View& view = find<omm::View>(app.scene, args.get<QString>("view"));
   const bool force = args.isSet("overwrite");
 
   const auto render = [&view, resolution, fn_template, force](omm::Animator& animator) {

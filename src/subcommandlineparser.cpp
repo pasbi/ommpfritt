@@ -42,18 +42,24 @@ static const std::map<QString, QList<QCommandLineOption>> options {
       {
         { "s", "start-frame" },
         QObject::tr("start-frame of the rendering (optional)."),
-        QObject::tr("S"),
+        QObject::tr("#FRAME"),
         "1"
       },
       {
         { "v", "view" },
         QObject::tr("name of the view."),
-        QObject::tr("N"),
+        QObject::tr("NAME"),
+      },
+      {
+        { "q", "object" },
+        QObject::tr("The name of the object to render. Keep clear to render the whole scene."),
+        QObject::tr("NAME"),
+        "",
       },
       {
         { "n", "sequence-length" },
         QObject::tr("number of frames (optional)."),
-        QObject::tr("N"),
+        QObject::tr("#FRAMES"),
         "1"
       },
     }

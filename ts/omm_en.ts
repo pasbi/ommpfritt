@@ -1373,16 +1373,8 @@ Remove the selected items anyway?</translation>
         <translation>First frame to render (optional).</translation>
     </message>
     <message>
-        <source>S</source>
-        <translation>S</translation>
-    </message>
-    <message>
         <source>name of the view.</source>
         <translation>Name of the view.</translation>
-    </message>
-    <message>
-        <source>N</source>
-        <translation>N</translation>
     </message>
     <message>
         <source>number of frames (optional).</source>
@@ -1411,6 +1403,22 @@ Remove the selected items anyway?</translation>
     <message>
         <source>Unrecognized command: %1. Try &apos;%2 --help&apos; for more information.</source>
         <translation>Unrecognized command %1. Try &apos;%2 --help&apos; for more information.</translation>
+    </message>
+    <message>
+        <source>#FRAME</source>
+        <translation>#FRAME</translation>
+    </message>
+    <message>
+        <source>NAME</source>
+        <translation>NAME</translation>
+    </message>
+    <message>
+        <source>The name of the object to render. Keep clear to render the whole scene.</source>
+        <translation>The name of the object to render. Keep clear to render the whole scene.</translation>
+    </message>
+    <message>
+        <source>#FRAMES</source>
+        <translation>#FRAMES</translation>
     </message>
 </context>
 <context>

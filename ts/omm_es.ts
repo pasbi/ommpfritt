@@ -1373,15 +1373,7 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>S</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>name of the view.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>N</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1410,6 +1402,22 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>Unrecognized command: %1. Try &apos;%2 --help&apos; for more information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>#FRAME</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NAME</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The name of the object to render. Keep clear to render the whole scene.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>#FRAMES</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
