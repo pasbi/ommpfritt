@@ -80,14 +80,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -149,7 +149,7 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "interpolation",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 2
                                     }
                                 ],
@@ -198,14 +198,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -325,14 +325,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -454,14 +454,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -589,14 +589,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -717,14 +717,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -810,14 +810,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -872,7 +872,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "mode",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -949,7 +949,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "border",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
@@ -970,7 +970,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "anchor",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             }
                         ],
@@ -1078,14 +1078,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -1147,7 +1147,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "interpolation",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 2
                             }
                         ],
@@ -1311,14 +1311,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -1380,7 +1380,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "interpolation",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             }
                         ],
@@ -1434,14 +1434,14 @@
                                                 "animatable": true,
                                                 "animated": false,
                                                 "key": "viewport-visibility",
-                                                "type": "OptionsProperty",
+                                                "type": "OptionProperty",
                                                 "value": 0
                                             },
                                             {
                                                 "animatable": true,
                                                 "animated": false,
                                                 "key": "visibility",
-                                                "type": "OptionsProperty",
+                                                "type": "OptionProperty",
                                                 "value": 0
                                             },
                                             {
@@ -1562,14 +1562,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -1624,14 +1624,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "direction",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "as_path",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -1659,14 +1659,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -1785,14 +1785,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -1910,7 +1910,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "capitalization",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
@@ -1931,7 +1931,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "letter_spacing_type",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
@@ -1952,14 +1952,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "halign",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "valign",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -1973,14 +1973,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "direction",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "wrap",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             }
                         ],
@@ -2076,14 +2076,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -2145,7 +2145,7 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "interpolation",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 2
                                     }
                                 ],
@@ -2195,14 +2195,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -2257,7 +2257,7 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "shape",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 1
                                     },
                                     {
@@ -2369,14 +2369,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -2439,14 +2439,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -2501,7 +2501,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "shape",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -2574,14 +2574,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -2665,14 +2665,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -2727,7 +2727,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "shape",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -2800,14 +2800,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -2934,14 +2934,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -3028,14 +3028,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -3119,14 +3119,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -3181,7 +3181,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "shape",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -3254,14 +3254,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -3388,14 +3388,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -3450,14 +3450,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "direction",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "as_path",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
@@ -3628,14 +3628,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -3697,7 +3697,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "interpolation",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 2
                             }
                         ],
@@ -3779,14 +3779,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -3848,7 +3848,7 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "interpolation",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 2
                                     }
                                 ],
@@ -3928,14 +3928,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -3997,7 +3997,7 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "interpolation",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 2
                                     }
                                 ],
@@ -4046,14 +4046,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -4118,14 +4118,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -4180,7 +4180,7 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "shape",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 1
                                     },
                                     {
@@ -4250,14 +4250,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -4322,14 +4322,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -4414,14 +4414,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -4506,14 +4506,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -4597,14 +4597,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -4701,14 +4701,14 @@
                                                 "animatable": true,
                                                 "animated": false,
                                                 "key": "viewport-visibility",
-                                                "type": "OptionsProperty",
+                                                "type": "OptionProperty",
                                                 "value": 0
                                             },
                                             {
                                                 "animatable": true,
                                                 "animated": false,
                                                 "key": "visibility",
-                                                "type": "OptionsProperty",
+                                                "type": "OptionProperty",
                                                 "value": 0
                                             },
                                             {
@@ -4770,7 +4770,7 @@
                                                 "animatable": true,
                                                 "animated": false,
                                                 "key": "interpolation",
-                                                "type": "OptionsProperty",
+                                                "type": "OptionProperty",
                                                 "value": 2
                                             }
                                         ],
@@ -4784,14 +4784,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -4846,14 +4846,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "direction",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "as_path",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 1
                                     },
                                     {
@@ -4975,14 +4975,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -5044,7 +5044,7 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "interpolation",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     }
                                 ],
@@ -5093,14 +5093,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -5197,14 +5197,14 @@
                                                 "animatable": true,
                                                 "animated": false,
                                                 "key": "viewport-visibility",
-                                                "type": "OptionsProperty",
+                                                "type": "OptionProperty",
                                                 "value": 0
                                             },
                                             {
                                                 "animatable": true,
                                                 "animated": false,
                                                 "key": "visibility",
-                                                "type": "OptionsProperty",
+                                                "type": "OptionProperty",
                                                 "value": 0
                                             },
                                             {
@@ -5266,7 +5266,7 @@
                                                 "animatable": true,
                                                 "animated": false,
                                                 "key": "interpolation",
-                                                "type": "OptionsProperty",
+                                                "type": "OptionProperty",
                                                 "value": 2
                                             }
                                         ],
@@ -5280,14 +5280,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -5342,14 +5342,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "direction",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "as_path",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 1
                                     },
                                     {
@@ -5457,14 +5457,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -5526,7 +5526,7 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "interpolation",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 2
                                     }
                                 ],
@@ -5575,14 +5575,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -5681,14 +5681,14 @@
                                                         "animatable": true,
                                                         "animated": false,
                                                         "key": "viewport-visibility",
-                                                        "type": "OptionsProperty",
+                                                        "type": "OptionProperty",
                                                         "value": 0
                                                     },
                                                     {
                                                         "animatable": true,
                                                         "animated": false,
                                                         "key": "visibility",
-                                                        "type": "OptionsProperty",
+                                                        "type": "OptionProperty",
                                                         "value": 0
                                                     },
                                                     {
@@ -5750,7 +5750,7 @@
                                                         "animatable": true,
                                                         "animated": false,
                                                         "key": "interpolation",
-                                                        "type": "OptionsProperty",
+                                                        "type": "OptionProperty",
                                                         "value": 2
                                                     }
                                                 ],
@@ -5809,14 +5809,14 @@
                                                         "animatable": true,
                                                         "animated": false,
                                                         "key": "viewport-visibility",
-                                                        "type": "OptionsProperty",
+                                                        "type": "OptionProperty",
                                                         "value": 0
                                                     },
                                                     {
                                                         "animatable": true,
                                                         "animated": false,
                                                         "key": "visibility",
-                                                        "type": "OptionsProperty",
+                                                        "type": "OptionProperty",
                                                         "value": 0
                                                     },
                                                     {
@@ -5909,14 +5909,14 @@
                                                 "animatable": true,
                                                 "animated": false,
                                                 "key": "viewport-visibility",
-                                                "type": "OptionsProperty",
+                                                "type": "OptionProperty",
                                                 "value": 0
                                             },
                                             {
                                                 "animatable": true,
                                                 "animated": false,
                                                 "key": "visibility",
-                                                "type": "OptionsProperty",
+                                                "type": "OptionProperty",
                                                 "value": 0
                                             },
                                             {
@@ -5978,14 +5978,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -6040,14 +6040,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "direction",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 1
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "as_path",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -6076,14 +6076,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -6177,14 +6177,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -6278,14 +6278,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -6415,14 +6415,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 2
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 2
                             },
                             {
@@ -6484,14 +6484,14 @@
                         "animatable": true,
                         "animated": false,
                         "key": "viewport-visibility",
-                        "type": "OptionsProperty",
+                        "type": "OptionProperty",
                         "value": 0
                     },
                     {
                         "animatable": true,
                         "animated": false,
                         "key": "visibility",
-                        "type": "OptionsProperty",
+                        "type": "OptionProperty",
                         "value": 0
                     },
                     {
@@ -6554,14 +6554,14 @@
                         "animatable": true,
                         "animated": false,
                         "key": "viewport-visibility",
-                        "type": "OptionsProperty",
+                        "type": "OptionProperty",
                         "value": 1
                     },
                     {
                         "animatable": true,
                         "animated": false,
                         "key": "visibility",
-                        "type": "OptionsProperty",
+                        "type": "OptionProperty",
                         "value": 1
                     },
                     {
@@ -6657,14 +6657,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -6791,14 +6791,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
@@ -6853,7 +6853,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "mode",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 4
                             },
                             {
@@ -6930,7 +6930,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "border",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
@@ -6951,7 +6951,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "anchor",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             }
                         ],
@@ -7026,14 +7026,14 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "viewport-visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 0
                                     },
                                     {
@@ -7095,7 +7095,7 @@
                                         "animatable": true,
                                         "animated": false,
                                         "key": "interpolation",
-                                        "type": "OptionsProperty",
+                                        "type": "OptionProperty",
                                         "value": 2
                                     }
                                 ],
@@ -7109,14 +7109,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
@@ -7171,14 +7171,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "direction",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "as_path",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -7242,14 +7242,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "viewport-visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
@@ -7367,7 +7367,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "capitalization",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
@@ -7388,7 +7388,7 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "letter_spacing_type",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
@@ -7409,14 +7409,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "halign",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "valign",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 1
                             },
                             {
@@ -7430,14 +7430,14 @@
                                 "animatable": true,
                                 "animated": false,
                                 "key": "direction",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "wrap",
-                                "type": "OptionsProperty",
+                                "type": "OptionProperty",
                                 "value": 0
                             }
                         ],
@@ -7486,14 +7486,14 @@
                         "animatable": true,
                         "animated": false,
                         "key": "viewport-visibility",
-                        "type": "OptionsProperty",
+                        "type": "OptionProperty",
                         "value": 1
                     },
                     {
                         "animatable": true,
                         "animated": false,
                         "key": "visibility",
-                        "type": "OptionsProperty",
+                        "type": "OptionProperty",
                         "value": 1
                     },
                     {
@@ -7555,14 +7555,14 @@
                 "animatable": true,
                 "animated": false,
                 "key": "viewport-visibility",
-                "type": "OptionsProperty",
+                "type": "OptionProperty",
                 "value": 0
             },
             {
                 "animatable": true,
                 "animated": false,
                 "key": "visibility",
-                "type": "OptionsProperty",
+                "type": "OptionProperty",
                 "value": 0
             },
             {
@@ -7663,21 +7663,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -7726,7 +7726,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -7754,7 +7754,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -7826,21 +7826,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -7889,7 +7889,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -7917,7 +7917,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -7989,21 +7989,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -8052,7 +8052,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -8080,7 +8080,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -8152,21 +8152,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -8215,7 +8215,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -8243,7 +8243,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -8315,21 +8315,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -8378,7 +8378,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -8406,7 +8406,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -8478,21 +8478,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -8541,7 +8541,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -8569,7 +8569,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -8641,21 +8641,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -8704,7 +8704,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -8732,7 +8732,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -8804,21 +8804,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -8867,7 +8867,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -8895,7 +8895,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -8967,21 +8967,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -9030,7 +9030,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -9058,7 +9058,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -9130,21 +9130,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -9193,7 +9193,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -9221,7 +9221,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -9293,21 +9293,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -9356,7 +9356,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -9384,7 +9384,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -9456,21 +9456,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -9519,7 +9519,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -9547,7 +9547,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -9619,21 +9619,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -9682,7 +9682,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -9710,7 +9710,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -9782,21 +9782,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -9845,7 +9845,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -9873,7 +9873,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -9945,21 +9945,21 @@
                     "animatable": true,
                     "animated": false,
                     "key": "pen/stroke",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/join",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 2
                 },
                 {
                     "animatable": true,
                     "animated": false,
                     "key": "pen/cap",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 1
                 },
                 {
@@ -10008,7 +10008,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "startshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
@@ -10036,7 +10036,7 @@
                     "animatable": true,
                     "animated": false,
                     "key": "endshape",
-                    "type": "OptionsProperty",
+                    "type": "OptionProperty",
                     "value": 0
                 },
                 {
