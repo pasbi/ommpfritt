@@ -106,6 +106,15 @@ void init()
   QCoreApplication::setApplicationName(::QApplication::translate("QObject", "ommpfritt"));
 }
 
+QString scene_directory_hint(const QString& scene_filename)
+{
+  if (QFileInfo::exists(scene_filename)) {
+    return QFileInfo(scene_filename).dir().path();
+  } else {
+    return QDir::homePath();
+  }
+}
+
 }  // namespace
 
 namespace omm
@@ -225,7 +234,7 @@ bool Application::save_as()
   LINFO << m_main_window;
   QFileDialog dialog(m_main_window);
   dialog.setWindowTitle(tr("Save scene as ..."));
-  dialog.setDirectoryUrl(scene.filename());
+  dialog.setDirectoryUrl(scene_directory_hint(scene.filename()));
   dialog.setDefaultSuffix(FILE_ENDING);
   if (dialog.exec() == QDialog::Accepted) {
     const auto files = dialog.selectedFiles();
@@ -264,7 +273,9 @@ void Application::load()
 {
   if (can_close()) {
     const QString filename =
-      QFileDialog::getOpenFileName( m_main_window, tr("Load scene ..."), scene.filename());
+      QFileDialog::getOpenFileName(m_main_window,
+                                   tr("Load scene ..."),
+                                   scene_directory_hint(scene.filename()));
     if (filename.isEmpty()) {
       return;
     }
