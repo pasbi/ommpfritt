@@ -254,6 +254,7 @@ bool Scene::load_from(const QString &filename)
     animator().deserialize(*deserializer, ANIMATOR_POINTER);
 
     named_colors().deserialize(*deserializer, NAMED_COLORS_POINTER);
+    deserializer->polish();
     return true;
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
     error_handler(deserialize_error.what());

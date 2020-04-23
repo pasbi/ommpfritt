@@ -106,6 +106,11 @@ public:
   explicit AbstractDeserializer(std::istream&) { }
   virtual ~AbstractDeserializer();
 
+  /**
+   * @brief polish sets all registered references.
+   */
+  void polish();
+
   void add_references(const std::set<AbstractPropertyOwner*>& existing_references);
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972

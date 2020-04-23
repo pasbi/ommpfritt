@@ -43,6 +43,10 @@ void AbstractDeserializer::add_references(const std::set<AbstractPropertyOwner*>
 
 AbstractDeserializer::~AbstractDeserializer()
 {
+}
+
+void AbstractDeserializer::polish()
+{
   // polish reference properties
   for (ReferencePolisher* polisher : m_reference_polishers) {
     polisher->update_references(m_id_to_reference);
@@ -56,7 +60,13 @@ void AbstractDeserializer::register_reference( const std::size_t id,
   if (it == m_id_to_reference.end()) {
     m_id_to_reference.insert({id, &reference});
   } else {
-    assert(it->second == &reference);
+    if (it->second != &reference) {
+      const QString msg = "Ambiguous id: %1.";
+      // Unfortunately, it's not clear if the objects have already been deserialized.
+      // Hence it does not make much sense to print their names.
+      // User must search for the id in the json file to resolve the issue.
+      throw DeserializeError(msg.arg(id).toStdString().c_str());
+    }
   }
 }
 
