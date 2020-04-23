@@ -1716,6 +1716,10 @@ Borrar la selección de todos modos?</translation>
         <source>InterpolateNode</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Tip</source>
+        <translation type="unfinished">Punta</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/Application</name>

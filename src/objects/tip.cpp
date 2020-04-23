@@ -33,11 +33,6 @@ std::vector<Point> Tip::points() const
   return m_marker_properties.shape(1.0);
 }
 
-QString Tip::type() const
-{
-  return "Tip";
-}
-
 bool Tip::is_closed() const
 {
   return true;

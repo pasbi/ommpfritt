@@ -1716,6 +1716,10 @@ Remove the selected items anyway?</translation>
         <source>InterpolateNode</source>
         <translation>Interpolation</translation>
     </message>
+    <message>
+        <source>Tip</source>
+        <translation>Tip</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/Application</name>
