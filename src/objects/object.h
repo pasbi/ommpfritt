@@ -100,6 +100,7 @@ public:
 
   virtual bool contains(const Vec2f& pos) const;
   void update_recursive();
+  QString path() const;
 
   virtual void post_create_hook();
 

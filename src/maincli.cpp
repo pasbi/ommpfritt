@@ -1,4 +1,5 @@
 #include <iostream>
+#include <QRegularExpression>
 #include "tags/tag.h"
 #include "mainwindow/application.h"
 #include "objects/view.h"
@@ -11,6 +12,7 @@
 #include "logging.h"
 #include "scene/scene.h"
 #include "subcommandlineparser.h"
+
 
 template<typename T> const T& find(omm::Scene& scene, const QString& name)
 {
@@ -69,18 +71,42 @@ void print_tree(const omm::Object& root, const QString& prefix = "")
   }
 }
 
+void prepare_scene(omm::Scene& scene, const std::set<omm::Object*>& visible_objects)
+{
+  for (auto other : scene.object_tree().items()) {
+    const auto is_descendant_of = [&other](const auto* object) {
+      return object->is_ancestor_of(*other);
+    };
+    if (std::none_of(visible_objects.begin(), visible_objects.end(), is_descendant_of)) {
+      other->property(omm::Object::VISIBILITY_PROPERTY_KEY)->set(omm::Object::Visibility::Hidden);
+    }
+  }
+  for (auto object : visible_objects) {
+    object->property(omm::Object::VISIBILITY_PROPERTY_KEY)->set(omm::Object::Visibility::Visible);
+  }
+}
+
 void prepare_scene(omm::Scene& scene, const omm::SubcommandLineParser& args)
 {
   const QString& object_name = args.get<QString>("object", "");
-  if (!object_name.isEmpty()) {
-    const auto& object = find<omm::Object>(scene, object_name);
-    for (auto other : scene.object_tree().items()) {
-      if (!object.is_ancestor_of(*other)) {
-        other->property(omm::Object::VISIBILITY_PROPERTY_KEY)->set(omm::Object::Visibility::Hidden);
-      }
-    }
-    object.property(omm::Object::VISIBILITY_PROPERTY_KEY)->set(omm::Object::Visibility::Visible);
+  const QString& object_path = args.get<QString>("path", "");
+  if (!object_name.isEmpty() + !object_path.isEmpty() > 1) {
+    LERROR << "options path and object are mutual exclusive.";
+    exit(1);
   }
+
+  const auto predicate = [object_name, object_path](const auto* object) {
+    if (!object_name.isEmpty()) {
+      return QRegularExpression(object_name).match(object->name()).hasMatch();
+    } else if (!object_path.isEmpty()) {
+      return QRegularExpression(object_path).match(object->path()).hasMatch();
+    } else {
+      return true;
+    }
+  };
+
+  prepare_scene(scene, ::filter_if(scene.object_tree().items(), predicate));
+}
 
 QSize calculate_resolution(int width, const omm::View& view)
 {

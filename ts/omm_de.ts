@@ -1365,10 +1365,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Überschreibe existierende Dateien ohne Warnung.</translation>
     </message>
     <message>
-        <source>Resolution of the rendering (optional).</source>
-        <translation>Auflösung (optional)</translation>
-    </message>
-    <message>
         <source>start-frame of the rendering (optional).</source>
         <translation>Erster zu rendernder Frame (optional).</translation>
     </message>
@@ -1393,14 +1389,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Verweigere &apos;%1&apos; zu überschreiben.</translation>
     </message>
     <message>
-        <source>W%1H</source>
-        <translation>W%1H</translation>
-    </message>
-    <message>
-        <source>Expected two integers, separated by &apos;%1&apos; for &apos;%2&apos;, but got &apos;%3&apos;.</source>
-        <translation>Erwartete zwei ganze Zahlen als Argument &apos;%2&apos; getrennt durch &apos;%1&apos;, nicht &apos;%3&apos;.</translation>
-    </message>
-    <message>
         <source>Unrecognized command: %1. Try &apos;%2 --help&apos; for more information.</source>
         <translation>Unbekanntes Kommando: %1. Versuche &apos;%2 --help&apos; für mehr Informationen.</translation>
     </message>
@@ -1413,12 +1401,24 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>NAME</translation>
     </message>
     <message>
-        <source>The name of the object to render. Keep clear to render the whole scene.</source>
-        <translation>Der Name des zu rendernden Objects. Leer lassen um die ganze Szene zu rendern.</translation>
-    </message>
-    <message>
         <source>#FRAMES</source>
         <translation>#FRAMES</translation>
+    </message>
+    <message>
+        <source>The width of the rendering. Height is calculated based on the aspect ratio of the selected view.</source>
+        <translation>Die Breite des Renderings. Die Höhe wird aus dem Seitenverhältnis der ausgewählten Ansicht erstellt.</translation>
+    </message>
+    <message>
+        <source>W</source>
+        <translation>W</translation>
+    </message>
+    <message>
+        <source>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation>Der Pfad des zu rendernden Objektes. Leer lassen um die ganze Szene zu rendern. Der Pfad muss nicht unbedingt eindeutig sein. In diesem Fall werden alle passenden Objekte gerendert. Perl-artige reguläre Ausdrücke werden unterstüzt.</translation>
+    </message>
+    <message>
+        <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation>Der Name des zu rendernden Objektes. Leer lassen um die ganze Szene zu rendern. Der Pfad muss nicht unbedingt eindeutig sein. In diesem Fall werden alle passenden Objekte gerendert. Perl-artige reguläre Ausdrücke werden unterstüzt.</translation>
     </message>
 </context>
 <context>

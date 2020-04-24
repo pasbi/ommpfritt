@@ -1365,10 +1365,6 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Resolution of the rendering (optional).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>start-frame of the rendering (optional).</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1393,14 +1389,6 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>W%1H</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Expected two integers, separated by &apos;%1&apos; for &apos;%2&apos;, but got &apos;%3&apos;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Unrecognized command: %1. Try &apos;%2 --help&apos; for more information.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1413,11 +1401,23 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The name of the object to render. Keep clear to render the whole scene.</source>
+        <source>#FRAMES</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>#FRAMES</source>
+        <source>The width of the rendering. Height is calculated based on the aspect ratio of the selected view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>W</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

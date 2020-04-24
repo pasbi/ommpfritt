@@ -47,7 +47,21 @@ static const std::map<QString, QList<QCommandLineOption>> options {
       },
       {
         { "q", "object" },
-        QObject::tr("The name of the object to render. Keep clear to render the whole scene."),
+        QObject::tr("The name of the object to render. "
+                    "Keep clear to render the whole scene. "
+                    "The name does not need to be unique. "
+                    "In this case, all matching objects are rendered. "
+                    "Perl-like regular expressions are supported."),
+        QObject::tr("NAME"),
+        "",
+      },
+      {
+        { "p", "path" },
+        QObject::tr("The path of the object to render. "
+                    "Keep clear to render the whole scene. "
+                    "The path does not need to be unique. "
+                    "In this case, all matching objects are rendered. "
+                    "Perl-like regular expressions are supported."),
         QObject::tr("NAME"),
         "",
       },

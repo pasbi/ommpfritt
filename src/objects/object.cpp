@@ -483,7 +483,13 @@ void Object::update_recursive()
     child->update_recursive();
   }
   update();
-//  Q_EMIT scene()->message_box.appearance_changed(*this);
+  //  Q_EMIT scene()->message_box.appearance_changed(*this);
+}
+
+QString Object::path() const
+{
+  const QString path = is_root() ? "" : tree_parent().path();
+  return path + "/" + name();
 }
 
 void Object::draw_object(Painter&, const Style&, Painter::Options) const {}

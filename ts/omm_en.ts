@@ -1365,10 +1365,6 @@ Remove the selected items anyway?</translation>
         <translation>Overwrite existing files without warning.</translation>
     </message>
     <message>
-        <source>Resolution of the rendering (optional).</source>
-        <translation>Resolution (optional)</translation>
-    </message>
-    <message>
         <source>start-frame of the rendering (optional).</source>
         <translation>First frame to render (optional).</translation>
     </message>
@@ -1393,14 +1389,6 @@ Remove the selected items anyway?</translation>
         <translation>Refuse to overwrite &apos;%1&apos;.</translation>
     </message>
     <message>
-        <source>W%1H</source>
-        <translation>W%1H</translation>
-    </message>
-    <message>
-        <source>Expected two integers, separated by &apos;%1&apos; for &apos;%2&apos;, but got &apos;%3&apos;.</source>
-        <translation>Expected two integers, separated by &apos;%1&apos; for &apos;%2&apos;, but got &apos;%3&apos;.</translation>
-    </message>
-    <message>
         <source>Unrecognized command: %1. Try &apos;%2 --help&apos; for more information.</source>
         <translation>Unrecognized command %1. Try &apos;%2 --help&apos; for more information.</translation>
     </message>
@@ -1413,12 +1401,24 @@ Remove the selected items anyway?</translation>
         <translation>NAME</translation>
     </message>
     <message>
-        <source>The name of the object to render. Keep clear to render the whole scene.</source>
-        <translation>The name of the object to render. Keep clear to render the whole scene.</translation>
-    </message>
-    <message>
         <source>#FRAMES</source>
         <translation>#FRAMES</translation>
+    </message>
+    <message>
+        <source>The width of the rendering. Height is calculated based on the aspect ratio of the selected view.</source>
+        <translation>The width of the rendering. Height is calculated based on the aspect ratio of the selected view.</translation>
+    </message>
+    <message>
+        <source>W</source>
+        <translation>W</translation>
+    </message>
+    <message>
+        <source>The path of the object to render. Keep clear to render the whole scene. The path does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation>The path of the object to render. Keep clear to render the whole Scene. The path does not need to be unique. In this case, all matchings are rendered. Perl-like regular expressions are supported.</translation>
+    </message>
+    <message>
+        <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
+        <translation>The name of the object to render. Keep clear to render the whole Scene. The path does not need to be unique. In this case, all matchings are rendered. Perl-like regular expressions are supported.</translation>
     </message>
 </context>
 <context>
