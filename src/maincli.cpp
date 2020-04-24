@@ -81,6 +81,11 @@ void prepare_scene(omm::Scene& scene, const omm::SubcommandLineParser& args)
     }
     object.property(omm::Object::VISIBILITY_PROPERTY_KEY)->set(omm::Object::Visibility::Visible);
   }
+
+QSize calculate_resolution(int width, const omm::View& view)
+{
+  const auto size = view.property(omm::View::SIZE_PROPERTY_KEY)->value<omm::Vec2f>();
+  return QSize(width, width / size.x * size.y);
 }
 
 void render(omm::Application& app, const omm::SubcommandLineParser& args)
@@ -91,9 +96,9 @@ void render(omm::Application& app, const omm::SubcommandLineParser& args)
   prepare_scene(app.scene, args);
   const int start_frame = args.get<int>("start-frame", 1);
   const int n_frames = args.get<int>("sequence-length", 1);
-  const QSize resolution = args.get<QSize>("resolution");
   const omm::View& view = find<omm::View>(app.scene, args.get<QString>("view"));
   const bool force = args.isSet("overwrite");
+  const auto resolution = calculate_resolution(args.get<int>("width"), view);
 
   const auto render = [&view, resolution, fn_template, force](omm::Animator& animator) {
     const QString filename = interpolate_filename(fn_template, animator.current());

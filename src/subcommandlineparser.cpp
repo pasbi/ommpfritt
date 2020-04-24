@@ -3,9 +3,6 @@
 #include "logging.h"
 #include <QSize>
 
-static constexpr QSize DEFAULT_RESOLUTION(1000, 1000);
-static constexpr auto RESOLUTION_SEPARATOR = 'x';
-
 QCommandLineOption make_input_option()
 {
   return  {
@@ -31,13 +28,11 @@ static const std::map<QString, QList<QCommandLineOption>> options {
         QObject::tr("Overwrite existing files without warning.")
       },
       {
-        { "r", "resolution" },
-        QObject::tr("Resolution of the rendering (optional)."),
-        QObject::tr("W%1H").arg(RESOLUTION_SEPARATOR),
-        QString("%1%2%3")
-                      .arg(DEFAULT_RESOLUTION.width())
-                      .arg(RESOLUTION_SEPARATOR)
-                      .arg(DEFAULT_RESOLUTION.height())
+        { "w", "width" },
+        QObject::tr("The width of the rendering. "
+                    "Height is calculated based on the aspect ratio of the selected view."),
+        QObject::tr("W"),
+        QString("1000")
       },
       {
         { "s", "start-frame" },
@@ -124,23 +119,6 @@ template<> int SubcommandLineParser::get<int>(const QString& name) const
     exit(EXIT_FAILURE);
   }
   return ivalue;
-}
-
-template<> QSize SubcommandLineParser::get<QSize>(const QString& name) const
-{
-  const auto value = get<QString>(name);
-  const auto tokens = value.split(RESOLUTION_SEPARATOR);
-  static const auto get_int = [](const QString& s, int& i) {
-    bool ok;
-    i = s.toInt(&ok);
-    return ok;
-  };
-  int w, h;
-  if (tokens.size() != 2 || !get_int(tokens[0], w) || !get_int(tokens[1], h)) {
-    LERROR << QObject::tr("Expected two integers, separated by '%1' for '%2', but got '%3'.").arg(value);
-    exit(EXIT_FAILURE);
-  }
-  return QSize(w, h);
 }
 
 void SubcommandLineParser::print_help() const
