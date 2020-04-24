@@ -1,49 +1,100 @@
 #include "logging.h"
+#include <QDir>
+#include <QApplication>
+#include <QFile>
+#include <iostream>
 #include <iomanip>
 #include <ctime>
+#include <QStandardPaths>
+#include <QDateTime>
+
 
 namespace
 {
 
-#ifdef LOG_TIMESTAMP
-std::string current_time()
-{
-  std::ostringstream oss;
-  const auto time = std::time(nullptr);
-  const auto time_m = *std::localtime(&time);
-  oss << std::put_time(&time_m, "%Y-%m-%d %H:%M:%S");
-  return oss.str();
-}
-#endif
+const std::map<QString, int> loglevels {
+  { omm::LogLevel::DEBUG,    0 },
+  { omm::LogLevel::INFO,     1 },
+  { omm::LogLevel::WARNING,  2 },
+  { omm::LogLevel::CRITICAL, 3 },
+  { omm::LogLevel::FATAL,    4 }
+};
+
+const std::map<QtMsgType, QString> printlevels {
+  { QtDebugMsg,    omm::LogLevel::DEBUG },
+  { QtInfoMsg,     omm::LogLevel::INFO },
+  { QtWarningMsg,  omm::LogLevel::WARNING },
+  { QtCriticalMsg, omm::LogLevel::CRITICAL },
+  { QtFatalMsg,    omm::LogLevel::FATAL }
+};
 
 }  // namespace
-
-namespace omm
-{
-
-QDebug operator<<(QDebug d, const LogPrefix& prefix)
-{
-  Q_UNUSED(prefix)
-
-#ifdef LOG_LEVEL
-  d << prefix.level;
-#endif
-#ifdef LOG_LOCATION
-  d << " @" << prefix.file << ":" << std::to_string(prefix.line);
-#endif
-#ifdef LOG_TIMESTAMP
-  d << " [" << QString::fromStdString(current_time()) << "]";
-#endif
-#if defined(LOG_LEVEL) || defined(LOG_LOCATION) || defined(LOG_TIMESTAMP)
-  d << ": ";
-#endif
-  return d;
-}
-
-}  // namespace omm
 
 QDebug operator<< (QDebug d, const std::string& string)
 {
   d << QString::fromStdString(string);
   return d;
 }
+
+namespace omm
+{
+
+void setup_logfile(QFile& logfile)
+{
+  const QString dir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+  if (!QDir().mkpath(dir)) {
+    std::cerr << "Failed to create directory " << dir.toStdString() << ".\n";
+    std::cerr << std::flush;
+    exit(2);
+  }
+
+  const QString timestamp = QDateTime::currentDateTime().toString(Qt::ISODate);
+  const QString filename = QString("%1/%2-log_%3.txt").arg(dir).arg(qAppName()).arg(timestamp);
+  logfile.setFileName(filename);
+  if (!logfile.open(QIODevice::WriteOnly)) {
+    std::cerr << "Failed to open log file " << filename.toStdString() << " for writing.\n";
+    std::cerr << std::flush;
+    exit(2);
+  }
+
+  static const auto hex = [](const QByteArray& data) { return QString(data.toHex()); };
+
+  logfile.write(QString("Log of the %1 application.\n").arg(qAppName()).toUtf8());
+  logfile.write(QString("Application started at %1.\n").arg(timestamp).toUtf8());
+  logfile.write(QString("boot unique id:   %1\n").arg(hex(QSysInfo::bootUniqueId())).toUtf8());
+  logfile.write(QString("build ABI:        %1\n").arg(QSysInfo::buildAbi()).toUtf8());
+  logfile.write(QString("build CPU arch:   %1\n").arg(QSysInfo::buildCpuArchitecture()).toUtf8());
+  logfile.write(QString("current CPU arch: %1\n").arg(QSysInfo::currentCpuArchitecture()).toUtf8());
+  logfile.write(QString("kernel type:      %1\n").arg(QSysInfo::kernelType()).toUtf8());
+  logfile.write(QString("kernel version:   %1\n").arg(QSysInfo::kernelVersion()).toUtf8());
+  logfile.write(QString("host name:        %1\n").arg(QSysInfo::machineHostName()).toUtf8());
+  logfile.write(QString("machine id:       %1\n").arg(hex(QSysInfo::bootUniqueId())).toUtf8());
+  logfile.write(QString("product name:     %1\n").arg(QSysInfo::prettyProductName()).toUtf8());
+  logfile.write(QString("product type:     %1\n").arg(QSysInfo::productType()).toUtf8());
+  logfile.write(QString("product version:  %1\n").arg(QSysInfo::productVersion()).toUtf8());
+  logfile.write("\n");
+  logfile.flush();
+}
+
+void handle_log(QFile& logfile, const QString& level, bool print_long_message,
+                QtMsgType type, const QMessageLogContext& ctx, const QString& msg)
+{
+  const auto timestamp = QDateTime::currentDateTime().toString(Qt::ISODate);
+  const auto long_message = QString("[%1] %2 %3:%4: %5\n")
+      .arg(printlevels.at(type)).arg(timestamp)
+      .arg(ctx.file).arg(ctx.line).arg(msg);
+  if (loglevels.at(printlevels.at(type)) >= loglevels.at(level)) {
+    if (print_long_message) {
+      fprintf(stderr, "%s", long_message.toUtf8().constData());
+    } else {
+      fprintf(stderr, "%s\n", msg.toUtf8().constData());
+    }
+  }
+
+  logfile.write(long_message.toUtf8().constData());
+  if (printlevels.at(type) >= loglevels.at(CRITICAL)) {
+    logfile.flush();
+  }
+}
+
+}  // namespace omm

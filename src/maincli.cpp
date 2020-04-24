@@ -1,17 +1,18 @@
 #include <iostream>
+#include "logging.h"
 #include <QRegularExpression>
 #include "tags/tag.h"
 #include "mainwindow/application.h"
 #include "objects/view.h"
 #include "mainwindow/exportdialog.h"
 #include "animation/animator.h"
-#include <stdio.h>
 #include <memory>
 #include <QApplication>
-#include <QFileInfo>
 #include "logging.h"
 #include "scene/scene.h"
 #include "subcommandlineparser.h"
+#include <QFileInfo>
+#include <QFile>
 
 
 template<typename T> const T& find(omm::Scene& scene, const QString& name)
@@ -155,13 +156,23 @@ void tree(omm::Application& app, const omm::SubcommandLineParser& args)
   print_tree(app.scene.object_tree().root());
 }
 
+QString level = "";
+QFile logfile;
+bool print_long_message = true;
+
 int main(int argc, char* argv[])
 {
   using namespace omm;
   QApplication app(argc, argv);
-  Application omm(app);
-
   SubcommandLineParser args(argc, argv);
+  level = args.get<QString>("verbosity", "warning");
+
+  setup_logfile(logfile);
+  qInstallMessageHandler([](QtMsgType type, const QMessageLogContext& ctx, const QString &msg) {
+    handle_log(logfile, level, print_long_message, type, ctx, msg);
+  });
+
+  Application omm(app);
 
   using subcommand_t = std::function<void(Application&, const SubcommandLineParser&)>;
   static const std::map<QString, subcommand_t> f_map {

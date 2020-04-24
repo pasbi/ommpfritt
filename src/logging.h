@@ -9,30 +9,36 @@
 #error Failed to define logging-macros due to name collision.
 #endif
 
-namespace omm
-{
-
-struct LogPrefix
-{
-  explicit LogPrefix(const QString& level, const char* file, int line)
-    : level(level), file(file), line(line) {}
-  const QString level;
-  const char* file;
-  const int line;
-};
-
-QDebug operator<<(QDebug d, const LogPrefix& prefix);
-
-}  // namespace omm
-
 #define STRINGIZE_DETAIL(x) #x
 #define STRINGIZE(x) STRINGIZE_DETAIL(x)
 
-#define LDEBUG qDebug().nospace().noquote() << omm::LogPrefix("Debug", __FILE__, __LINE__)
-#define LINFO qInfo().nospace().noquote() << omm::LogPrefix("Info", __FILE__, __LINE__)
-#define LWARNING qCritical().nospace().noquote() << omm::LogPrefix("Warning", __FILE__, __LINE__)
-#define LERROR qCritical().nospace().noquote() << omm::LogPrefix("Error", __FILE__, __LINE__)
+#define LDEBUG qDebug().nospace().noquote()
+#define LINFO qInfo().nospace().noquote()
+#define LWARNING qCritical().nospace().noquote()
+#define LERROR qCritical().nospace().noquote()
 #define LFATAL(...) qFatal(__VA_ARGS__)
+
+class QFile;
+
+namespace omm
+{
+
+namespace LogLevel
+{
+
+static constexpr auto DEBUG = "debug";
+static constexpr auto INFO = "info";
+static constexpr auto WARNING = "warning";
+static constexpr auto CRITICAL = "critical";
+static constexpr auto FATAL = "fatal";
+
+}  // namespace LogLevel
+
+void handle_log(QFile& logfile, const QString& level, bool print_long_message,
+                QtMsgType type, const QMessageLogContext& ctx, const QString& msg);
+void setup_logfile(QFile& logfile);
+
+}  // namespace omm
 
 QDebug operator<< (QDebug d, const std::string& string);
 

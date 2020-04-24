@@ -1,20 +1,29 @@
 #include "mainwindow/application.h"
-#include "ommpfrittconfig.h"
+#include <iostream>
 #include "tools/selectobjectstool.h"
 #include "tools/toolbox.h"
 #include <QApplication>
-#include <QTranslator>
 #include "mainwindow/mainwindow.h"
 #include <QSettings>
 #include <QVariant>
 #include <QDirIterator>
 #include "logging.h"
-#include "animation/track.h"
 #include "qapplication.h"
+#include "logging.h"
+
+QString level = "warning";
+QFile logfile;
+bool print_long_message = true;
 
 int main (int argc, char *argv[])
 {
   QApplication qt_app(argc, argv);
+
+  omm::setup_logfile(logfile);
+  qInstallMessageHandler([](QtMsgType type, const QMessageLogContext& ctx, const QString &msg) {
+    omm::handle_log(logfile, level, print_long_message, type, ctx, msg);
+  });
+
   omm::Application app(qt_app);
 
   omm::MainWindow window(app);

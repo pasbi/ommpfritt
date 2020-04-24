@@ -3,12 +3,21 @@
 #include "logging.h"
 #include <QSize>
 
+QCommandLineOption make_verbosity_option()
+{
+  return  {
+    { "v", "verbosity" },
+    QObject::tr("The verbosity (fatal|critical|warning|info|debug)."),
+    QObject::tr("LEVEL")
+  };
+}
+
 QCommandLineOption make_input_option()
 {
   return  {
     { "f", "input" },
     QObject::tr("The input scene file."),
-    QObject::tr("filename")
+    QObject::tr("FILENAME")
   };
 }
 
@@ -17,11 +26,12 @@ static const std::map<QString, QList<QCommandLineOption>> options {
     "render",
     {
       make_input_option(),
+      make_verbosity_option(),
       {
         { "o", "output" },
         QObject::tr("Where to save the batch renderings. Use `%1` as framenumber placeholder.")
                       .arg(QString(omm::SubcommandLineParser::FRAMENUMBER_PLACEHOLDER).repeated(4)),
-        QObject::tr("filename")
+        QObject::tr("FILENAME")
       },
       {
         { "y", "overwrite" },
@@ -77,6 +87,7 @@ static const std::map<QString, QList<QCommandLineOption>> options {
     "tree",
     {
       make_input_option(),
+      make_verbosity_option(),
     }
   },
 };
