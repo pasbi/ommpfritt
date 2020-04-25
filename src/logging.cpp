@@ -9,27 +9,6 @@
 #include <QDateTime>
 
 
-namespace
-{
-
-const std::map<QString, int> loglevels {
-  { omm::LogLevel::DEBUG,    0 },
-  { omm::LogLevel::INFO,     1 },
-  { omm::LogLevel::WARNING,  2 },
-  { omm::LogLevel::CRITICAL, 3 },
-  { omm::LogLevel::FATAL,    4 }
-};
-
-const std::map<QtMsgType, QString> printlevels {
-  { QtDebugMsg,    omm::LogLevel::DEBUG },
-  { QtInfoMsg,     omm::LogLevel::INFO },
-  { QtWarningMsg,  omm::LogLevel::WARNING },
-  { QtCriticalMsg, omm::LogLevel::CRITICAL },
-  { QtFatalMsg,    omm::LogLevel::FATAL }
-};
-
-}  // namespace
-
 QDebug operator<< (QDebug d, const std::string& string)
 {
   d << QString::fromStdString(string);
@@ -79,6 +58,7 @@ void setup_logfile(QFile& logfile)
 void handle_log(QFile& logfile, const QString& level, bool print_long_message,
                 QtMsgType type, const QMessageLogContext& ctx, const QString& msg)
 {
+  using namespace LogLevel;
   const auto timestamp = QDateTime::currentDateTime().toString(Qt::ISODate);
   const auto long_message = QString("[%1] %2 %3:%4: %5\n")
       .arg(printlevels.at(type)).arg(timestamp)
@@ -92,7 +72,7 @@ void handle_log(QFile& logfile, const QString& level, bool print_long_message,
   }
 
   logfile.write(long_message.toUtf8().constData());
-  if (printlevels.at(type) >= loglevels.at(CRITICAL)) {
+  if (printlevels.at(type) >= loglevels.at(LogLevel::CRITICAL)) {
     logfile.flush();
   }
 }

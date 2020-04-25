@@ -51,7 +51,7 @@ static const std::map<QString, QList<QCommandLineOption>> options {
         "1"
       },
       {
-        { "v", "view" },
+        { "V", "view" },
         QObject::tr("name of the view."),
         QObject::tr("NAME"),
       },

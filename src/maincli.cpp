@@ -166,6 +166,12 @@ int main(int argc, char* argv[])
   QApplication app(argc, argv);
   SubcommandLineParser args(argc, argv);
   level = args.get<QString>("verbosity", "warning");
+  if (!::contains(omm::LogLevel::loglevels, level)) {
+    const auto levels = ::transform<QString, QList>(::get_keys(omm::LogLevel::loglevels));
+    std::cerr << "Unknown log level '" << level << "'. Use " << levels.join("|") << ".\n";
+    std::cerr << std::flush;
+    exit(2);
+  }
 
   setup_logfile(logfile);
   qInstallMessageHandler([](QtMsgType type, const QMessageLogContext& ctx, const QString &msg) {

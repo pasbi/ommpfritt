@@ -10,8 +10,9 @@
 #include "logging.h"
 #include "qapplication.h"
 #include "logging.h"
+#include "serializers/abstractserializer.h"
 
-QString level = "warning";
+QString level = "debug";
 QFile logfile;
 bool print_long_message = true;
 
@@ -25,6 +26,8 @@ int main (int argc, char *argv[])
   });
 
   omm::Application app(qt_app);
+
+  LINFO << omm::AbstractSerializer::keys();
 
   omm::MainWindow window(app);
   app.set_main_window(window);

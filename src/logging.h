@@ -32,6 +32,22 @@ static constexpr auto WARNING = "warning";
 static constexpr auto CRITICAL = "critical";
 static constexpr auto FATAL = "fatal";
 
+const std::map<QString, int> loglevels {
+  { omm::LogLevel::DEBUG,    0 },
+  { omm::LogLevel::INFO,     1 },
+  { omm::LogLevel::WARNING,  2 },
+  { omm::LogLevel::CRITICAL, 3 },
+  { omm::LogLevel::FATAL,    4 }
+};
+
+const std::map<QtMsgType, QString> printlevels {
+  { QtDebugMsg,    omm::LogLevel::DEBUG },
+  { QtInfoMsg,     omm::LogLevel::INFO },
+  { QtWarningMsg,  omm::LogLevel::WARNING },
+  { QtCriticalMsg, omm::LogLevel::CRITICAL },
+  { QtFatalMsg,    omm::LogLevel::FATAL }
+};
+
 }  // namespace LogLevel
 
 void handle_log(QFile& logfile, const QString& level, bool print_long_message,
