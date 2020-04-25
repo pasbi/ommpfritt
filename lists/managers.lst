@@ -1,0 +1,19 @@
+{
+  "clazz": "Manager",
+  "category": "managers",
+  "items": [
+    "BoundingBoxManager",
+    "CurveManager",
+    "DopeSheetManager",
+    "HistoryManager",
+    "NodeManager",
+    "ObjectManager",
+    "PropertyManager",
+    "PythonConsole",
+    "StyleManager",
+    "TimeLine"
+  ],
+  "register": "{clazz}::register_type<{item}>(\"{item}\");",
+  "include": "#include \"managers/{lc_item}/{lc_item}.h\""
+}
+

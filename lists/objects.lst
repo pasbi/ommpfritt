@@ -1,0 +1,23 @@
+{
+  "clazz": "Object",
+  "category": "objects",
+  "items": [
+    "Cloner",
+    "Ellipse",
+    "Empty",
+    "ImageObject",
+    "Instance",
+    "Line",
+    "Mirror",
+    "Outline",
+    "Path",
+    "ProceduralPath",
+    "RectangleObject",
+    "Text",
+    "Tip",
+    "View"
+  ],
+  "register": "{clazz}::register_type<omm::{item}>(\"{item}\");",
+  "include": "#include \"objects/{lc_item}.h\""
+}
+

@@ -211,9 +211,6 @@ public:
   void set_channel_value(std::size_t channel, double value);
   QString channel_name(std::size_t channel) const;
 
-private:
-  static std::map<QString, const PropertyDetail*> m_details;
-
 Q_SIGNALS:
   void enabledness_changed(bool);
 public Q_SLOTS:
@@ -223,8 +220,8 @@ public:
 private:
   bool m_is_enabled = true;
 
-private:
-  friend void register_properties();
+public:
+  static std::map<QString, const PropertyDetail*> m_details;
 };
 
 std::ostream& operator<<(std::ostream& ostream, const Property::Filter& filter);

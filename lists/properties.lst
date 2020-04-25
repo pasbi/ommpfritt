@@ -1,0 +1,29 @@
+{
+  "clazz": "Property",
+  "category": "properties",
+  "items": [
+    "BoolProperty",
+    "ColorProperty",
+    "FloatProperty",
+    "IntegerProperty",
+    "OptionProperty",
+    "ReferenceProperty",
+    "StringProperty",
+    "SplineProperty",
+    "TriggerProperty",
+    "FloatVectorProperty",
+    "IntegerVectorProperty"
+  ],
+  "register": [
+     "Property::register_type<{item}>(\"{item}\");",
+     "Property::m_details[\"{item}\"] = &{item}::detail;",
+     "AbstractPropertyWidget::register_type<{item}Widget>(\"{item}Widget\");",
+     "AbstractPropertyConfigWidget::register_type<{item}ConfigWidget>(\"{item}ConfigWidget\");"
+  ],
+  "include": [
+    "#include \"properties/{lc_item}.h\"",
+    "#include \"propertywidgets/{lc_item}widget/{lc_item}widget.h\"",
+    "#include \"propertywidgets/{lc_item}widget/{lc_item}configwidget.h\""
+  ]
+}
+

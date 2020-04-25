@@ -1,0 +1,14 @@
+{
+  "clazz": "Tool",
+  "category": "tools",
+  "items": [
+    "BrushSelectTool",
+    "KnifeTool",
+    "PathTool",
+    "SelectObjectsTool",
+    "SelectPointsTool"
+  ],
+  "register": "{clazz}::register_type<{item}>(\"{item}\");",
+  "include": "#include \"tools/{lc_item}.h\""
+}
+

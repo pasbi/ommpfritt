@@ -1,0 +1,27 @@
+{
+  "clazz": "Node",
+  "category": "nodes",
+  "items": [
+    "ConstantNode",
+    "ComposeNode",
+    "ColorConvertNode",
+    "DecomposeNode",
+    "DecomposeColorNode",
+    "ComposeColorNode",
+    "FragmentNode",
+    "FunctionNode",
+    "Function2Node",
+    "InterpolateNode",
+    "LinePatternNode",
+    "MathNode",
+    "ReferenceNode",
+    "SpyNode",
+    "VertexNode"
+  ],
+  "register": [
+    "{clazz}::register_type<{item}>(\"{item}\");",
+    "{clazz}::m_details[\"{item}\"] = &{item}::detail;"
+  ],
+  "include": "#include \"nodesystem/nodes/{lc_item}.h\""
+}
+

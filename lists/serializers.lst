@@ -1,0 +1,13 @@
+{
+  "clazz": "Serializer",
+  "category": "serializers",
+  "items": [
+    "JSON"
+  ],
+  "register": [
+    "AbstractSerializer::register_type<{item}Serializer>(\"{item}Serializer\");",
+    "AbstractDeserializer::register_type<{item}Deserializer>(\"{item}Deserializer\");"
+  ],
+  "include": "#include \"serializers/{lc_item}serializer.h\""
+}
+

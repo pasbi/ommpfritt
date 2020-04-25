@@ -1,0 +1,13 @@
+{
+  "clazz": "Tag",
+  "category": "tags",
+  "items": [
+    "PathTag",
+    "NodesTag",
+    "ScriptTag",
+    "StyleTag"
+  ],
+  "register": "{clazz}::register_type<{item}>(\"{item}\");",
+  "include": "#include \"tags/{lc_item}.h\""
+}
+

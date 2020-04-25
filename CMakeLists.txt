@@ -17,6 +17,28 @@ option(LOG_LOCATION "print filename and line numbers in logs" ON)
 option(LOG_TIMESTAMP "print timestamp in logs" ON)
 option(LOG_LEVEL "print severity level in logs" ON)
 
+SET(generated_src ${CMAKE_BINARY_DIR}/generated)
+SET(generator ${CMAKE_SOURCE_DIR}/build-scripts/generate-code.py)
+file(MAKE_DIRECTORY ${generated_src})
+include_directories(AFTER ${generated_src})
+
+SET(classes tags managers nodes properties tools objects serializers)
+add_custom_target(registers)
+foreach(R IN LISTS classes)
+    SET(generated_cpp ${CMAKE_BINARY_DIR}/generated/register_${R}.cpp)
+    SET(spec_file ${CMAKE_SOURCE_DIR}/lists/${R}.lst)
+    message("${PYTHON_EXECUTABLE} ${generator} ${spec_file} ${generated_cpp}")
+    add_custom_command(
+        OUTPUT ${generated_cpp}
+        COMMAND ${PYTHON_EXECUTABLE} ${generator} ${spec_file} ${generated_cpp}
+        DEPENDS ${spec_file} ${generator}
+        COMMENT "Generating ${R} register."
+        VERBATIM
+    )
+    add_custom_target(${R}_register DEPENDS ${generated_cpp})
+    add_dependencies(registers ${R}_register)
+endforeach()
+
 set (QT_QM_PATH CACHE PATH
     "path where to find the Qt translation files (qt_en.qm, qtbase_de.qm, etc.")
 
@@ -73,6 +95,7 @@ if (LOG_LEVEL)
 endif()
 
 add_library(libommpfritt)
+add_dependencies(libommpfritt registers)
 add_executable(ommpfritt ${RESOURCES})
 add_executable(ommpfritt-cli ${RESOURCES})
 

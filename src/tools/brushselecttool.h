@@ -35,6 +35,4 @@ private:
   void modify_selection(const Vec2f& pos, const QMouseEvent& event);
 };
 
-void register_tools();
-
 }  // namespace omm
