@@ -13,10 +13,6 @@ set (CMAKE_AUTOUIC ON)
 set (OMMPFRITT_VERSION_MAJOR 1)
 set (OMMPFRITT_VERSION_MINOR 0)
 
-option(LOG_LOCATION "print filename and line numbers in logs" ON)
-option(LOG_TIMESTAMP "print timestamp in logs" ON)
-option(LOG_LEVEL "print severity level in logs" ON)
-
 SET(generated_src ${CMAKE_BINARY_DIR}/generated)
 SET(generator ${CMAKE_SOURCE_DIR}/build-scripts/generate-code.py)
 file(MAKE_DIRECTORY ${generated_src})
@@ -27,7 +23,6 @@ add_custom_target(registers)
 foreach(R IN LISTS classes)
     SET(generated_cpp ${CMAKE_BINARY_DIR}/generated/register_${R}.cpp)
     SET(spec_file ${CMAKE_SOURCE_DIR}/lists/${R}.lst)
-    message("${PYTHON_EXECUTABLE} ${generator} ${spec_file} ${generated_cpp}")
     add_custom_command(
         OUTPUT ${generated_cpp}
         COMMAND ${PYTHON_EXECUTABLE} ${generator} ${spec_file} ${generated_cpp}
@@ -84,15 +79,6 @@ foreach (lang de en es)
   endforeach(pref)
 endforeach(lang)
 
-if (LOG_LOCATION)
-  add_definitions(-DLOG_LOCATION)
-endif()
-if (LOG_TIMESTAMP)
-  add_definitions(-DLOG_TIMESTAMP)
-endif()
-if (LOG_LEVEL)
-  add_definitions(-DLOG_LEVEL)
-endif()
 
 add_library(libommpfritt)
 add_dependencies(libommpfritt registers)
