@@ -1,5 +1,5 @@
-#include "managers/dopesheet/dopesheetmanager.h"
-#include "managers/dopesheet/dopesheetview.h"
+#include "managers/dopesheetmanager/dopesheetmanager.h"
+#include "managers/dopesheetmanager/dopesheetview.h"
 #include "scene/scene.h"
 #include "animation/animator.h"
 

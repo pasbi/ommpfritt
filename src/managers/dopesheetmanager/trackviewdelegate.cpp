@@ -1,4 +1,4 @@
-#include "managers/dopesheet/trackviewdelegate.h"
+#include "managers/dopesheetmanager/trackviewdelegate.h"
 #include "animation/animator.h"
 #include <QPainter>
 #include "logging.h"
@@ -7,7 +7,7 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <algorithm>
-#include "managers/dopesheet/dopesheetview.h"
+#include "managers/dopesheetmanager/dopesheetview.h"
 #include "scene/scene.h"
 #include "scene/history/historymodel.h"
 #include "commands/keyframecommand.h"

@@ -1,15 +1,15 @@
-#include "managers/dopesheet/dopesheetview.h"
+#include "managers/dopesheetmanager/dopesheetview.h"
 #include <KF5/KItemModels/KExtraColumnsProxyModel>
 #include <QPainter>
 #include <QHeaderView>
 #include <QMouseEvent>
-#include "managers/dopesheet/trackviewdelegate.h"
+#include "managers/dopesheetmanager/trackviewdelegate.h"
 #include <memory>
 #include "animation/animator.h"
 #include "logging.h"
 #include "animation/track.h"
 #include "properties/property.h"
-#include "managers/dopesheet/dopesheetheader.h"
+#include "managers/dopesheetmanager/dopesheetheader.h"
 #include "aspects/abstractpropertyowner.h"
 #include "proxychain.h"
 

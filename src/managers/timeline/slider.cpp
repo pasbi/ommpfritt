@@ -6,7 +6,7 @@
 #include "animation/animator.h"
 #include "scene/scene.h"
 #include "scene/messagebox.h"
-#include "managers/dopesheet/trackviewdelegate.h"
+#include "managers/dopesheetmanager/trackviewdelegate.h"
 
 namespace omm
 {

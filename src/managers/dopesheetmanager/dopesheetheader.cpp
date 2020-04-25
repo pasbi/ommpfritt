@@ -1,4 +1,4 @@
-#include "managers/dopesheet/dopesheetheader.h"
+#include "managers/dopesheetmanager/dopesheetheader.h"
 #include "managers/timeline/timelinecanvas.h"
 #include "animation/animator.h"
 #include "logging.h"
