@@ -1,6 +1,5 @@
 #include "nodesystem/nodes/functionnode.h"
 #include "properties/floatproperty.h"
-#include "properties/vectorproperty.h"
 #include "nodesystem/ordinaryport.h"
 #include "properties/optionproperty.h"
 

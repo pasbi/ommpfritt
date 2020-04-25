@@ -1,10 +1,6 @@
 file(GLOB HEADERS
-  vectorpropertyconfigwidget.h
   integervectorpropertyconfigwidget.h
-  floatvectorpropertyconfigwidget.h
-  vectorpropertywidget.h
   integervectorpropertywidget.h
-  floatvectorpropertywidget.h
 )
 
 target_sources(libommpfritt PRIVATE ${HEADERS})

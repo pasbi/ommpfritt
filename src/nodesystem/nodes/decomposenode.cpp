@@ -1,6 +1,6 @@
 #include "nodesystem/nodes/decomposenode.h"
 #include "properties/floatproperty.h"
-#include "properties/vectorproperty.h"
+#include "properties/floatvectorproperty.h"
 #include "nodesystem/ordinaryport.h"
 
 namespace omm

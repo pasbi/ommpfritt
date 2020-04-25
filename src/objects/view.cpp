@@ -1,5 +1,5 @@
 #include "objects/view.h"
-#include "properties/vectorproperty.h"
+#include "properties/floatvectorproperty.h"
 #include <QObject>
 #include "geometry/point.h"
 #include "renderers/style.h"

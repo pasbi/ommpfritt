@@ -11,7 +11,8 @@ file(GLOB SOURCES
   stringproperty.cpp
   splineproperty.cpp
   triggerproperty.cpp
-  vectorproperty.cpp
+  floatvectorproperty.cpp
+  integervectorproperty.cpp
 )
 
 file(GLOB HEADERS
@@ -27,7 +28,8 @@ file(GLOB HEADERS
   splineproperty.h
   triggerproperty.h
   typedproperty.h
-  vectorproperty.h
+  floatvectorproperty.h
+  integervectorproperty.h
 )
 
 add_subdirectory(propertygroups)

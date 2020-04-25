@@ -9,6 +9,5 @@ file(GLOB HEADERS
   numericpropertywidget.h
 )
 
-
 target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

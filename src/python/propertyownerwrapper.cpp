@@ -7,7 +7,8 @@
 #include "properties/triggerproperty.h"
 #include "renderers/style.h"
 #include "objects/object.h"
-#include "properties/vectorproperty.h"
+#include "properties/floatvectorproperty.h"
+#include "properties/integervectorproperty.h"
 #include "tags/tag.h"
 #include "logging.h"
 

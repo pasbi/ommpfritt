@@ -145,7 +145,6 @@ private:
   };
   std::list<ConnectionIds> m_connection_ids;
   void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override;
-  friend void register_nodes();
   NodeModel& m_model;
 
 public:
@@ -158,7 +157,7 @@ public:
   static const Detail& detail(const QString& name) { return *m_details.at(name); }
   static QString fst_con_ptype(const std::vector<InputPort*>& ports, const QString& default_t);
 
-private:
+public:
   static std::map<QString, const Detail*> m_details;
 };
 

@@ -68,16 +68,4 @@ private:
   NumericEdit<double>* m_mult_edit;
 };
 
-class IntegerPropertyConfigWidget : public NumericPropertyConfigWidget<IntegerProperty>
-{
-public:
-  using NumericPropertyConfigWidget<IntegerProperty>::NumericPropertyConfigWidget;
-};
-
-class FloatPropertyConfigWidget : public NumericPropertyConfigWidget<FloatProperty>
-{
-public:
-  using NumericPropertyConfigWidget<FloatProperty>::NumericPropertyConfigWidget;
-};
-
 }  // namespace omm

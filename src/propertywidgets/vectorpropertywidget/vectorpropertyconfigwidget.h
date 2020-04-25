@@ -1,7 +1,6 @@
 #pragma once
 
 #include "propertywidgets/propertyconfigwidget.h"
-#include "properties/vectorproperty.h"
 #include "widgets/numericedit.h"
 #include <memory>
 #include <QHBoxLayout>
@@ -91,22 +90,6 @@ public:
 
 private:
   std::map<QString, AbstractNumericEdit*> m_edits;
-};
-
-class IntegerVectorPropertyConfigWidget
-    : public VectorPropertyConfigWidget<IntegerVectorProperty>
-{
-  Q_OBJECT
-public:
-  using VectorPropertyConfigWidget<IntegerVectorProperty>::VectorPropertyConfigWidget;
-};
-
-class FloatVectorPropertyConfigWidget
-    : public VectorPropertyConfigWidget<FloatVectorProperty>
-{
-  Q_OBJECT
-public:
-  using VectorPropertyConfigWidget<FloatVectorProperty>::VectorPropertyConfigWidget;
 };
 
 }  // namespace omm

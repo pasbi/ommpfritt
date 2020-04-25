@@ -3,7 +3,7 @@
 #include <QObject>
 #include "properties/floatproperty.h"
 #include "objects/path.h"
-#include "properties/vectorproperty.h"
+#include "properties/floatvectorproperty.h"
 #include "properties/integerproperty.h"
 #include "properties/boolproperty.h"
 #include "scene/scene.h"

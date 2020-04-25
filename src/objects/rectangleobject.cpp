@@ -1,5 +1,5 @@
 #include "objects/rectangleobject.h"
-#include "properties/vectorproperty.h"
+#include "properties/floatvectorproperty.h"
 
 
 namespace omm

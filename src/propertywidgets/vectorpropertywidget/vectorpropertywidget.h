@@ -1,7 +1,6 @@
 #pragma once
 
 #include "propertywidgets/propertywidget.h"
-#include "properties/vectorproperty.h"
 #include "propertywidgets/numericpropertywidget/numericmultivalueedit.h"
 #include <QHBoxLayout>
 #include <QLabel>
@@ -91,19 +90,5 @@ private:
   NumericMultiValueEdit<elem_type>* m_x_edit;
   NumericMultiValueEdit<elem_type>* m_y_edit;
 };
-
-class IntegerVectorPropertyWidget : public VectorPropertyWidget<IntegerVectorProperty>
-{
-public:
-  using VectorPropertyWidget::VectorPropertyWidget;
-};
-
-class FloatVectorPropertyWidget : public VectorPropertyWidget<FloatVectorProperty>
-{
-public:
-  using VectorPropertyWidget::VectorPropertyWidget;
-};
-
-
 
 }  // namespace omm

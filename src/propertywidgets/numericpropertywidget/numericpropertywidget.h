@@ -23,18 +23,4 @@ private:
   NumericMultiValueEdit<value_type>* m_spinbox;
 };
 
-class IntegerPropertyWidget : public NumericPropertyWidget<IntegerProperty>
-{
-public:
-  using NumericPropertyWidget::NumericPropertyWidget;
-  static constexpr auto TYPE = "IntegerPropertyWidget";
-};
-
-class FloatPropertyWidget : public NumericPropertyWidget<FloatProperty>
-{
-public:
-  using NumericPropertyWidget::NumericPropertyWidget;
-  static constexpr auto TYPE = "FloatPropertyWidget";
-};
-
 }  // namespace omm
