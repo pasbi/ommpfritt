@@ -52,10 +52,5 @@ add_subdirectory(tools)
 add_subdirectory(widgets)
 add_subdirectory(nodesystem)
 
-file(GLOB APP_SOURCES main.cpp)
-file(GLOB CLI_SOURCES maincli.cpp)
-
-target_sources(ommpfritt PUBLIC ${APP_SOURCES})
-target_sources(ommpfritt-cli PUBLIC ${CLI_SOURCES})
 target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

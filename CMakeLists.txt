@@ -62,28 +62,90 @@ find_package(Qt5 COMPONENTS LinguistTools)
 
 find_package(KF5ItemModels REQUIRED)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/translations.qrc ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
-set(RESOURCES resources.qrc ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc)
+file(GLOB_RECURSE TS_SOURCES "*.cpp" "*.h" "*.ui")
+SET(qm_dir "${CMAKE_BINARY_DIR}/qm/")
+SET(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
+file(MAKE_DIRECTORY ${qm_dir})
 
-file (GLOB TS_FILES
-  ts/omm_de.ts
-  ts/omm_en.ts
-  ts/omm_es.ts
+add_custom_target(translations_ts)
+foreach (lang de en es)
+    SET(ts "${ts_dir}/omm_${lang}.ts")
+    add_custom_command(
+        TARGET translations_ts
+        BYPRODUCTS ${ts}
+        DEPENDS ${TS_SOURCES}
+        COMMAND ${Qt5_LUPDATE_EXECUTABLE} -recursive ${CMAKE_CURRENT_SOURCE_DIR} -ts ${ts}
+        COMMENT "Update ts files ${lang}"
+    )
+endforeach()
+
+add_custom_command(
+    OUTPUT "${qm_dir}/translations.qrc"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_CURRENT_SOURCE_DIR}/translations.qrc"
+            "${qm_dir}/translations.qrc"
+    COMMENT "copy translations.qrc"
 )
 
-qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
+add_custom_target(translations_qm
+    DEPENDS "${qm_dir}/translations.qrc"
+)
+set_source_files_properties("${qm_dir}/translations.qrc" PROPERTIES SKIP_AUTORCC ON)
 
 foreach (lang de en es)
-  foreach (pref qt qtbase qt_help qtlocation)
-    file(COPY ${QT_QM_PATH}/${pref}_${lang}.qm DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-  endforeach(pref)
-endforeach(lang)
+    SET(qm "${qm_dir}/omm_${lang}.qm")
+    SET(ts "${ts_dir}/omm_${lang}.ts")
+    add_custom_command(
+        OUTPUT
+          "${qm}"
+          "${qm_dir}/qt_${lang}.qm"
+          "${qm_dir}/qtbase_${lang}.qm"
+          "${qm_dir}/qt_help_${lang}.qm"
+          "${qm_dir}/qtlocation_${lang}.qm"
+        DEPENDS ${TS_SOURCES}
+        COMMAND ${Qt5_LRELEASE_EXECUTABLE} ${ts} -qm ${qm}
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${QT_QM_PATH}/qt_${lang}.qm" "${qm_dir}"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${QT_QM_PATH}/qtbase_${lang}.qm" "${qm_dir}"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${QT_QM_PATH}/qt_help_${lang}.qm" "${qm_dir}"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${QT_QM_PATH}/qtlocation_${lang}.qm" "${qm_dir}"
+        COMMENT "Update prepare translation files ${lang}"
+    )
+    add_custom_target("ts_${lang}" DEPENDS ${ts})
+    add_custom_target("qm_${lang}"
+        DEPENDS ${qm}
+                "${qm_dir}/qt_${lang}.qm"
+                "${qm_dir}/qtbase_${lang}.qm"
+                "${qm_dir}/qt_help_${lang}.qm"
+                "${qm_dir}/qtlocation_${lang}.qm"
+    )
+    add_dependencies("qm_${lang}" "ts_${lang}")
+    add_dependencies(translations_qm "qm_${lang}")
+endforeach()
 
+SET(qrc_translations_cpp "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
+add_custom_command(
+    OUTPUT ${qrc_translations_cpp}
+    COMMAND Qt5::rcc
+      "${qm_dir}/translations.qrc"
+      -o ${qrc_translations_cpp}
+    COMMENT "Pack translations"
+)
+add_custom_target(translations_qrc DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
 
 add_library(libommpfritt)
-add_dependencies(libommpfritt registers)
-add_executable(ommpfritt ${RESOURCES})
-add_executable(ommpfritt-cli ${RESOURCES})
+add_dependencies(translations_qm translations_ts)
+add_dependencies(translations_qrc translations_qm)
+add_dependencies(libommpfritt registers translations_qrc)
+
+SET(RESOURCES "${CMAKE_CURRENT_BINARY_DIR}/qm/translations.qrc" resources.qrc)
+add_executable(ommpfritt src/main.cpp ${RESOURCES})
+add_dependencies(ommpfritt libommpfritt)
+add_executable(ommpfritt-cli src/maincli.cpp ${RESOURCES})
+add_dependencies(ommpfritt-cli libommpfritt)
 
 target_compile_features(libommpfritt PUBLIC cxx_std_17)
 target_link_libraries(libommpfritt ${PYTHON_LIBRARIES})
