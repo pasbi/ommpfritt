@@ -213,7 +213,7 @@ void PropertyManager::update_property_widgets()
     assert(properties.size() > 0);
     const auto tab_label = get_tab_label(properties);
     if (!m_tabs.contains(tab_label)) {
-      m_tabs.insert(tab_label, std::make_unique<PropertyManagerTab>());
+      m_tabs.insert(tab_label, std::make_unique<PropertyManagerTab>(tab_label));
     }
 
     m_tabs.at(tab_label)->add_properties(m_scene, key, properties);
@@ -234,7 +234,7 @@ void PropertyManager::update_property_widgets()
   {
     const auto it = m_current_categroy_indices.find(m_current_selection);
     if (it == m_current_categroy_indices.cend()) {
-      activate_tabs({0});
+      activate_tabs({});
     } else {
       activate_tabs(it->second);
     }
@@ -286,12 +286,20 @@ void PropertyManager::activate_tabs(const std::set<int>& indices)
   for (PropertyManagerTab* w : tabs) {
     w->hide();
   }
+
+  const bool header_visible = indices.size() != 1 && m_tabs.size() > 1;
   if (!indices.empty() && !tabs.empty()) {
     m_current_categroy_indices[m_current_selection] = indices;
     for (int index : indices) {
       if (static_cast<std::size_t>(index) < tabs.size()) {
         tabs[index]->show();
+        tabs[index]->set_header_visible(header_visible);
       }
+    }
+  } else if (indices.empty()) {
+    for (auto&& tab : tabs) {
+      tab->show();
+      tab->set_header_visible(header_visible);
     }
   }
 }

@@ -12,18 +12,41 @@ namespace
 
 static constexpr QSize animation_button_size(28, 28);
 
+auto make_header(const QString& text)
+{
+  const auto make_line = []() {
+    auto line = std::make_unique<QFrame>();
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    return line;
+  };
+
+  auto layout = std::make_unique<QHBoxLayout>();
+  layout->addWidget(make_line().release(), 1);
+  layout->addWidget(std::make_unique<QLabel>(text).release(), 0);
+  layout->addWidget(make_line().release(), 1);
+
+  auto widget = std::make_unique<QWidget>();
+  widget->setLayout(layout.release());
+  return widget;
+}
+
 }  // namespace
 
 namespace omm
 {
 
-PropertyManagerTab::PropertyManagerTab()
+PropertyManagerTab::PropertyManagerTab(const QString& title)
 {
   auto layout = std::make_unique<QVBoxLayout>();
   m_layout = layout.get();
   m_layout->setSpacing(6);
   m_layout->setContentsMargins(0, 0, 0, 0);
   setLayout(layout.release());
+
+  auto header = make_header(title);
+  m_header= header.get();
+  m_layout->addWidget(header.release());
 }
 
 PropertyManagerTab::~PropertyManagerTab()
@@ -59,6 +82,11 @@ PropertyManagerTab::add_properties(Scene& scene, const QString& key,
     container_widget->setToolTip(key);
     m_layout->addLayout(container_widget_layout.release());
   }
+}
+
+void PropertyManagerTab::set_header_visible(bool visible)
+{
+  m_header->setVisible(visible);
 }
 
 }  // namespace omm
