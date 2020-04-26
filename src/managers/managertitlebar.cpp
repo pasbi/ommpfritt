@@ -52,8 +52,8 @@ std::unique_ptr<QPushButton> ManagerTitleBar::make_lock_button() const
 {
   auto lock_button = std::make_unique<QPushButton>();
   const auto update_lock_button_icon = [&btn=*lock_button](bool checked) {
-    btn.setIcon(QPixmap::fromImage(QImage(checked ? ":/icons/LockedLock.png"
-                                                  : ":/icons/OpenLock.png" )));
+    btn.setIcon(QPixmap::fromImage(QImage(checked ? ":/icons/lock-closed.png"
+                                                  : ":/icons/lock-open.png" )));
   };
   update_lock_button_icon(lock_button->isChecked());
   lock_button->setFixedSize(24, 24);

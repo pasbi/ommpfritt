@@ -34,8 +34,8 @@ CurveManagerTitleBar::CurveManagerTitleBar(CurveManager& parent)
 
 void CurveManagerTitleBar::update_lock_button_icon(bool checked)
 {
-  m_lock_button->setIcon(QPixmap::fromImage(QImage(checked ? ":/icons/LockedLock.png"
-                                                           : ":/icons/OpenLock.png" )));
+  m_lock_button->setIcon(QPixmap::fromImage(QImage(checked ? ":/icons/lock-closed.png"
+                                                           : ":/icons/lock-open.png" )));
 }
 
 

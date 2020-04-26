@@ -192,7 +192,7 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
       m_selection_label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
 
       const QString icon_filename = types.size() == 1 ? ":/icons/" + *types.begin() + ".png"
-                                                      : ":/icons/UndeterminedType.png";
+                                                      : ":/icons/undetermined-type.png";
 
       const QImage image(icon_filename);
       if (image.isNull()) {

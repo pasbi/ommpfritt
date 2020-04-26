@@ -1,40 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/BrushSelectTool.png</file>
-        <file>icons/KnifeTool.png</file>
-        <file>icons/PathTool.png</file>
-        <file>icons/SelectObjectsTool.png</file>
-        <file>icons/SelectPointsTool.png</file>
-        <file>icons/Ellipse.png</file>
-        <file>icons/Line.png</file>
-        <file>icons/Outline.png</file>
-        <file>icons/Cloner.png</file>
-        <file>icons/Mirror.png</file>
-        <file>icons/Path.png</file>
-        <file>icons/Text.png</file>
-        <file>icons/View.png</file>
-        <file>icons/Instance.png</file>
-        <file>icons/ProceduralPath.png</file>
-        <file>icons/Empty.png</file>
-        <file>icons/ImageObject.png</file>
-        <file>icons/RectangleObject.png</file>
-        <file>icons/omm.png</file>
-        <file>icons/ScriptTag.png</file>
-        <file>icons/PathTag.png</file>
-        <file>icons/Play.png</file>
-        <file>icons/Pause.png</file>
-        <file>icons/Jump-End.png</file>
         <file>layouts/default.layout</file>
-        <file>icons/Revert.png</file>
-        <file>icons/Tip.png</file>
-        <file>icons/LockedLock.png</file>
-        <file>icons/OpenLock.png</file>
-        <file>icons/UndeterminedType.png</file>
         <file>keybindings/default_keybindings.cfg</file>
         <file>uicolors/ui-colors-dark.cfg</file>
         <file>uicolors/ui-colors-light.cfg</file>
-        <file>icons/Next-Frame-Key.png</file>
-        <file>icons/Next-Frame.png</file>
-        <file>icons/NodesTag.png</file>
     </qresource>
 </RCC>

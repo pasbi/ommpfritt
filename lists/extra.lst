@@ -8,6 +8,8 @@
     "pause",
     "revert",
     "lock-closed",
-    "lock-open"
+    "lock-open",
+    "omm",
+    "undetermined-type"
   ]
 }

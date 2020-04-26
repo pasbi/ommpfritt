@@ -34,12 +34,12 @@ TimeLine::TimeLine(Scene &scene)
   m_title_bar->ui()->sp_min->setValue(scene.animator().start());
   m_title_bar->ui()->sp_max->setValue(scene.animator().end());
   m_title_bar->ui()->sp_value->setValue(scene.animator().current());
-  m_title_bar->ui()->pb_jump_left->setIcon(QIcon(flip(":/icons/Jump-End.png")));
-  m_title_bar->ui()->pb_jump_right->setIcon(QIcon(":/icons/Jump-End.png"));
-  m_title_bar->ui()->pb_step_left->setIcon(QIcon(flip(":/icons/Next-Frame.png")));
-  m_title_bar->ui()->pb_step_right->setIcon(QIcon(":/icons/Next-Frame.png"));
-  m_title_bar->ui()->pb_jump_left_key->setIcon(QIcon(flip(":/icons/Next-Frame-Key.png")));
-  m_title_bar->ui()->pb_jump_right_key->setIcon(QIcon(":/icons/Next-Frame-Key.png"));
+  m_title_bar->ui()->pb_jump_left->setIcon(QIcon(flip(":/icons/jump-end.png")));
+  m_title_bar->ui()->pb_jump_right->setIcon(QIcon(":/icons/jump-end.png"));
+  m_title_bar->ui()->pb_step_left->setIcon(QIcon(flip(":/icons/next-frame.png")));
+  m_title_bar->ui()->pb_step_right->setIcon(QIcon(":/icons/next-frame.png"));
+  m_title_bar->ui()->pb_jump_left_key->setIcon(QIcon(flip(":/icons/next-frame-key.png")));
+  m_title_bar->ui()->pb_jump_right_key->setIcon(QIcon(":/icons/next-frame-key.png"));
 
   connect(&scene.animator(), &Animator::end_changed, this, [this](int end) {
     m_title_bar->ui()->sp_min->setValue(std::min(end, m_title_bar->ui()->sp_min->value()));
@@ -114,7 +114,7 @@ void TimeLine::update_play_pause_button(Animator::PlayDirection direction)
   const bool forward = direction == Animator::PlayDirection::Forward;
   const bool backward = direction == Animator::PlayDirection::Backward;
   static const auto icon_fn = [](bool paused) {
-    return QString(":/icons/%1.png").arg(paused ? "Play" : "Pause");
+    return QString(":/icons/%1.png").arg(paused ? "play" : "pause");
   };
   m_title_bar->ui()->pb_play_left->setChecked(backward);
   m_title_bar->ui()->pb_play_right->setChecked(forward);

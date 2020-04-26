@@ -17,7 +17,7 @@ KeySequenceEdit::KeySequenceEdit(QWidget *parent)
 {
   m_ui->setupUi(this);
   m_ui->pb_clear->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCloseButton));
-  m_ui->pb_reset->setIcon(QIcon(":/icons/Revert.png"));
+  m_ui->pb_reset->setIcon(QIcon(":/icons/revert.png"));
 
   connect(m_ui->pb_reset, &QPushButton::clicked, [this]() {
     m_ui->key_sequence_edit->setKeySequence(m_default_key_sequence);

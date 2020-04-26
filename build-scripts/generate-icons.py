@@ -9,7 +9,7 @@ import subprocess
 def generate_qrc(items):
     lines = []
     lines.append('<RCC>')
-    lines.append('    <qresource prefix="/">')
+    lines.append('    <qresource prefix="/icons">')
     ind = ' '*8
     for item in items:
         lines.append(ind + f'<file>{item}.png</file>')

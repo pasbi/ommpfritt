@@ -162,8 +162,8 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   set_maximum_start(m_ui->sb_end->value());
   set_minimum_end(m_ui->sb_start->value());
 
-  m_ui->pb_reset_end->setIcon(QIcon(":/icons/Revert.png"));
-  m_ui->pb_reset_start->setIcon(QIcon(":/icons/Revert.png"));
+  m_ui->pb_reset_end->setIcon(QIcon(":/icons/revert.png"));
+  m_ui->pb_reset_start->setIcon(QIcon(":/icons/revert.png"));
   Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset_end);
   Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset_start);
   connect(m_ui->pb_start, SIGNAL(clicked()), this, SLOT(start_export_animation()));
