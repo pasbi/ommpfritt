@@ -1,14 +1,17 @@
-function(generate_translations translations_qrc ts_dir languages)
+function(generate_translations translations_qrc ts_dir languages prefixes)
     set(qm_dir "${CMAKE_BINARY_DIR}/qm/")
 
     file(MAKE_DIRECTORY ${qm_dir})
+    set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/generate-translations_qrc.py")
 
     add_custom_command(
         OUTPUT "${qm_dir}/translations.qrc"
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                "${CMAKE_CURRENT_SOURCE_DIR}/translations.qrc"
-                "${translations_qrc}"
-        COMMENT "copy translations.qrc"
+        COMMAND_EXPAND_LISTS
+        COMMAND ${PYTHON_EXECUTABLE} "${script}"
+          --languages "${languages}"
+          --prefixes "${prefixes}"
+          --qrc "${translations_qrc}"
+        COMMENT "generate translations.qrc"
     )
 
     add_custom_target(translations_qm

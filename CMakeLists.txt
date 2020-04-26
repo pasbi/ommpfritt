@@ -53,7 +53,8 @@ SET(qrc_translations_cpp "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
 list(APPEND languages de en es)
 
 set(translations_qrc "${CMAKE_CURRENT_BINARY_DIR}/qm/translations.qrc")
-generate_translations("${translations_qrc}" "${ts_dir}" "${languages}")
+set(prefixes omm qtlocation qt_help qt)
+generate_translations("${translations_qrc}" "${ts_dir}" "${languages}" "${prefixes}")
 
 set(icons_qrc "${CMAKE_CURRENT_BINARY_DIR}/icons/icons.qrc")
 generate_icons("${icons_qrc}" "${classes};extra")
