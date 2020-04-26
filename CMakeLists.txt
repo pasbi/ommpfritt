@@ -67,18 +67,6 @@ SET(qm_dir "${CMAKE_BINARY_DIR}/qm/")
 SET(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
 file(MAKE_DIRECTORY ${qm_dir})
 
-add_custom_target(translations_ts)
-foreach (lang de en es)
-    SET(ts "${ts_dir}/omm_${lang}.ts")
-    add_custom_command(
-        TARGET translations_ts
-        BYPRODUCTS ${ts}
-        DEPENDS ${TS_SOURCES}
-        COMMAND ${Qt5_LUPDATE_EXECUTABLE} -recursive ${CMAKE_CURRENT_SOURCE_DIR} -ts ${ts}
-        COMMENT "Update ts files ${lang}"
-    )
-endforeach()
-
 add_custom_command(
     OUTPUT "${qm_dir}/translations.qrc"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -114,7 +102,6 @@ foreach (lang de en es)
                 "${QT_QM_PATH}/qtlocation_${lang}.qm" "${qm_dir}"
         COMMENT "Update prepare translation files ${lang}"
     )
-    add_custom_target("ts_${lang}" DEPENDS ${ts})
     add_custom_target("qm_${lang}"
         DEPENDS ${qm}
                 "${qm_dir}/qt_${lang}.qm"
@@ -137,7 +124,6 @@ add_custom_command(
 add_custom_target(translations_qrc DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
 
 add_library(libommpfritt)
-add_dependencies(translations_qm translations_ts)
 add_dependencies(translations_qrc translations_qm)
 add_dependencies(libommpfritt registers translations_qrc)
 
