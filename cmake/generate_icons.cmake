@@ -7,15 +7,16 @@ function(generate_icons icons_qrc classes)
   list(TRANSFORM specs APPEND ".lst")
 
   set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/generate-icons.py")
+  set(scenefile "${CMAKE_CURRENT_SOURCE_DIR}/icons/icons.omm")
 
   add_custom_command(
     OUTPUT "${icons_qrc}"
-    DEPENDS "${specs}" "${script}"
+    DEPENDS "${specs}" "${script}" "${scenefile}"
     COMMAND_EXPAND_LISTS
     COMMAND ${PYTHON_EXECUTABLE} "${script}"
       --specs ${specs}
       --command "${CMAKE_CURRENT_BINARY_DIR}/ommpfritt-cli"
-      --scenefile "${CMAKE_CURRENT_SOURCE_DIR}/icons/icons.omm"
+      --scenefile "${scenefile}"
       --output "${icons_dir}"
       --qrc "${icons_qrc}"
     COMMENT "generate icons and qrc"
