@@ -27,8 +27,6 @@ int main (int argc, char *argv[])
 
   omm::Application app(qt_app);
 
-  LINFO << omm::AbstractSerializer::keys();
-
   omm::MainWindow window(app);
   app.set_main_window(window);
   window.show();

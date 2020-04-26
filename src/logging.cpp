@@ -1,4 +1,5 @@
 #include "logging.h"
+#include "ommpfrittconfig.h"
 #include <QDir>
 #include <QApplication>
 #include <QFile>
@@ -60,9 +61,10 @@ void handle_log(QFile& logfile, const QString& level, bool print_long_message,
 {
   using namespace LogLevel;
   const auto timestamp = QDateTime::currentDateTime().toString(Qt::ISODate);
+  const QString rel_fn = QDir(source_directory).relativeFilePath(ctx.file);
   const auto long_message = QString("[%1] %2 %3:%4: %5\n")
       .arg(printlevels.at(type)).arg(timestamp)
-      .arg(ctx.file).arg(ctx.line).arg(msg);
+      .arg(rel_fn).arg(ctx.line).arg(msg);
   if (loglevels.at(printlevels.at(type)) >= loglevels.at(level)) {
     if (print_long_message) {
       fprintf(stderr, "%s", long_message.toUtf8().constData());
