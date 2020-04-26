@@ -365,7 +365,11 @@ void Object::on_property_value_changed(Property *property)
     object_tree_data_changed(ObjectTree::OBJECT_COLUMN);
   } else if (property == this->property(VIEWPORT_VISIBILITY_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
-    Q_EMIT scene()->message_box().appearance_changed();
+    if (is_root()) {
+      Q_EMIT scene()->message_box().appearance_changed();
+    } else {
+      Q_EMIT scene()->message_box().appearance_changed(tree_parent());
+    }
   } else if (property == this->property(VISIBILITY_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
   }
