@@ -13,7 +13,7 @@ function(generate_icons icons_qrc classes)
     OUTPUT "${icons_qrc}"
     DEPENDS "${specs}" "${script}" "${scenefile}"
     COMMAND_EXPAND_LISTS
-    COMMAND ${PYTHON_EXECUTABLE} "${script}"
+    COMMAND Python3::Interpreter "${script}"
       --specs ${specs}
       --command "${CMAKE_CURRENT_BINARY_DIR}/ommpfritt-cli"
       --scenefile "${scenefile}"

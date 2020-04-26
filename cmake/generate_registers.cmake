@@ -11,7 +11,7 @@ function(generate_registers classes)
         add_custom_command(
             OUTPUT ${generated_cpp}
             DEPENDS ${spec_file} ${script}
-            COMMAND ${PYTHON_EXECUTABLE} ${script} ${spec_file} ${generated_cpp}
+            COMMAND Python3::Interpreter ${script} ${spec_file} ${generated_cpp}
             COMMENT "Generating ${R} register."
             VERBATIM
         )

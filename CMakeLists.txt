@@ -16,6 +16,8 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_registers.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_translations.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_icons.cmake)
 
+find_package(Python3 COMPONENTS Interpreter)
+
 list(APPEND classes tags managers nodes properties tools objects serializers)
 generate_registers("${classes}")
 

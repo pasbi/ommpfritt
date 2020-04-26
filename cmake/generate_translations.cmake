@@ -7,7 +7,7 @@ function(generate_translations translations_qrc ts_dir languages prefixes)
     add_custom_command(
         OUTPUT "${qm_dir}/translations.qrc"
         COMMAND_EXPAND_LISTS
-        COMMAND ${PYTHON_EXECUTABLE} "${script}"
+        COMMAND Python3::Interpreter "${script}"
           --languages "${languages}"
           --prefixes "${prefixes}"
           --qrc "${translations_qrc}"
