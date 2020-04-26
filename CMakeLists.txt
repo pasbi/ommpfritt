@@ -109,11 +109,12 @@ foreach (lang de en es)
                 "${qm_dir}/qt_help_${lang}.qm"
                 "${qm_dir}/qtlocation_${lang}.qm"
     )
-    add_dependencies("qm_${lang}" "ts_${lang}")
     add_dependencies(translations_qm "qm_${lang}")
 endforeach()
 
 SET(qrc_translations_cpp "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
+set_property(SOURCE ${qm_dir}/translations.qrc PROPERTY SKIP_AUTOGEN ON)
+set_property(SOURCE ${qrc_translations_cpp} PROPERTY SKIP_AUTOGEN ON)
 add_custom_command(
     OUTPUT ${qrc_translations_cpp}
     COMMAND Qt5::rcc
@@ -126,8 +127,7 @@ add_custom_target(translations_qrc DEPENDS "${CMAKE_CURRENT_BINARY_DIR}/qrc_tran
 add_library(libommpfritt)
 add_dependencies(translations_qrc translations_qm)
 add_dependencies(libommpfritt registers translations_qrc)
-
-SET(RESOURCES "${CMAKE_CURRENT_BINARY_DIR}/qm/translations.qrc" resources.qrc)
+SET(RESOURCES "${qrc_translations_cpp}" resources.qrc)
 add_executable(ommpfritt src/main.cpp ${RESOURCES})
 add_dependencies(ommpfritt libommpfritt)
 add_executable(ommpfritt-cli src/maincli.cpp ${RESOURCES})
