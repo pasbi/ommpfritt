@@ -138,6 +138,7 @@ void Instance::update()
         m_reference = r->clone();
         m_reference->set_transformation(ObjectTransformation());
         m_reference->property(Object::VISIBILITY_PROPERTY_KEY)->set(Object::Visibility::Default);
+        m_reference->property(Object::VIEWPORT_VISIBILITY_PROPERTY_KEY)->set(Object::Visibility::Default);
       }
     }
 
