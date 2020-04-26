@@ -1,0 +1,13 @@
+{
+  "category": "extra",
+  "items": [
+    "play",
+    "next-frame",
+    "next-frame-key",
+    "jump-end",
+    "pause",
+    "revert",
+    "lock-closed",
+    "lock-open"
+  ]
+}

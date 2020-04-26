@@ -1,6 +1,6 @@
 function(generate_registers classes)
     SET(generated_src ${CMAKE_BINARY_DIR}/generated)
-    SET(generator ${CMAKE_SOURCE_DIR}/build-scripts/generate-code.py)
+    SET(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/generate-code.py")
     file(MAKE_DIRECTORY ${generated_src})
     include_directories(AFTER ${generated_src})
 
@@ -10,8 +10,8 @@ function(generate_registers classes)
         SET(spec_file ${CMAKE_SOURCE_DIR}/lists/${R}.lst)
         add_custom_command(
             OUTPUT ${generated_cpp}
-            COMMAND ${PYTHON_EXECUTABLE} ${generator} ${spec_file} ${generated_cpp}
-            DEPENDS ${spec_file} ${generator}
+            DEPENDS ${spec_file} ${script}
+            COMMAND ${PYTHON_EXECUTABLE} ${script} ${spec_file} ${generated_cpp}
             COMMENT "Generating ${R} register."
             VERBATIM
         )
