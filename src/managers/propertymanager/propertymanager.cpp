@@ -234,7 +234,7 @@ void PropertyManager::update_property_widgets()
   {
     const auto it = m_current_categroy_indices.find(m_current_selection);
     if (it == m_current_categroy_indices.cend()) {
-      activate_tabs({0});
+      activate_tabs({});
     } else {
       activate_tabs(it->second);
     }
@@ -292,6 +292,10 @@ void PropertyManager::activate_tabs(const std::set<int>& indices)
       if (static_cast<std::size_t>(index) < tabs.size()) {
         tabs[index]->show();
       }
+    }
+  } else if (indices.empty()) {
+    for (auto&& tab : tabs) {
+      tab->show();
     }
   }
 }

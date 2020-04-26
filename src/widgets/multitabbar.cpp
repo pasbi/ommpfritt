@@ -38,14 +38,13 @@ void MultiTabBar::add_tab(const QString &text)
   auto tab = std::make_unique<QPushButton>(text);
   tab->setCheckable(true);
   connect(tab.get(), &QAbstractButton::clicked,
-          [tab=tab.get(), i=m_tabs.size(), this]() {
-
-    if (extend_selection()) {
-      // do what you want!
-    } else {
+          [tab=tab.get(), i=m_tabs.size(), this](bool checked)
+  {
+    if (!checked && current_indices().size() == 0) {
+      set_current_indices({});
+    } else if (!extend_selection()) {
       set_current_indices({ static_cast<int>(i) });
     }
-
     Q_EMIT current_indices_changed(current_indices());
   });
   tab->installEventFilter(this);
@@ -105,10 +104,16 @@ bool MultiTabBar::eventFilter(QObject *o, QEvent *e)
 
 void MultiTabBar::set_current_indices(const std::set<int> &indices)
 {
-  for (std::size_t i = 0; i < m_tabs.size(); ++i) {
-    QAbstractButton* button = m_tabs[i].get();
-    QSignalBlocker blocker(button);
-    button->setChecked(::contains(indices, i));
+  if (indices.empty()) {
+    for (auto&& button : m_tabs) {
+      button->setChecked(true);
+    }
+  } else {
+    for (std::size_t i = 0; i < m_tabs.size(); ++i) {
+      QAbstractButton* button = m_tabs[i].get();
+      QSignalBlocker blocker(button);
+      button->setChecked(::contains(indices, i));
+    }
   }
 }
 
