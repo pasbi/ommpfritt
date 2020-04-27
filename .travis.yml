@@ -9,6 +9,9 @@ jobs:
     - os: linux
       dist: bionic
 
+services:
+  - xvfb
+
 notifications:
   webhooks:
     urls:
