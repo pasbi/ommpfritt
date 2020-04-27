@@ -12,32 +12,22 @@ jobs:
       dist: xenial
       name: "Build on Ubuntu Xenial"
       script:
-        - ./build-scripts/build-omm-ubuntu.sh
-        - ./build-scripts/make-appimage.sh
+        - build-scripts/build-omm-ubuntu.sh
+        - build-scripts/make-appimage.sh
       after_success:
-        - ./build-scripts/upload-appimage.sh
+        - build/test/unit/ommpfritt_unit_tests
+        - build-scripts/upload-appimage.sh
         - touch success
-
-    - stage: "test"
-      name: "Test on Ubuntu Xenial"
-      os: linux
-      dist: xenial
-      script: build/test/unit/ommpfritt_unit_tests
 
     - stage: "build"
       os: linux
       dist: bionic
       name: "Build on Ubuntu Bionic"
       script:
-        - ./build-scripts/build-omm-ubuntu.sh
+        - build-scripts/build-omm-ubuntu.sh
       after_success:
+        - build/test/unit/ommpfritt_unit_tests
         - touch success
-
-    - stage: "test"
-      os: linux
-      dist: bionic
-      name: "Test on Ubuntu Bionic"
-      script: build/test/unit/ommpfritt_unit_tests
 
 notifications:
   webhooks:
