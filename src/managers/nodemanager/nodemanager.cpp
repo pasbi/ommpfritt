@@ -54,7 +54,7 @@ NodeManager::NodeManager(Scene& scene)
           [this](const auto& apo)
   {
     const auto nodes_owner = dynamic_cast<const NodesOwner*>(&apo);
-    const auto node_model = nodes_owner == nullptr ? nullptr : &nodes_owner->node_model();
+    const auto node_model = nodes_owner == nullptr ? nullptr : nodes_owner->node_model();
     if (node_model == m_ui->nodeview->model()) {
       set_model(nullptr);
     }
@@ -83,9 +83,9 @@ void NodeManager::set_selection(const std::set<AbstractPropertyOwner*>& selectio
   if (!is_locked()) {
     for (AbstractPropertyOwner* apo : selection) {
       if (!!(apo->flags() & Flag::HasNodes)) {
-        NodeModel& model = dynamic_cast<NodesOwner*>(apo)->node_model();
-        if (m_ui->nodeview->model() != &model) {
-          set_model(&model);
+        NodeModel* model = dynamic_cast<NodesOwner*>(apo)->node_model();
+        if (m_ui->nodeview->model() != model) {
+          set_model(model);
         }
       }
     }

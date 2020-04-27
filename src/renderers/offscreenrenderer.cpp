@@ -1,4 +1,5 @@
 #include "offscreenrenderer.h"
+#include "mainwindow/application.h"
 #include <QOpenGLFramebufferObject>
 #include <QOpenGLFunctions>
 #include <QOffscreenSurface>
@@ -247,6 +248,15 @@ void OffscreenRenderer::make_current()
 void OffscreenRenderer::set_uniform(const QString& name, const variant_type& value)
 {
   std::visit([this, name](auto&& v) { ::set_uniform(*this, name, v); }, value);
+}
+
+std::unique_ptr<OffscreenRenderer> OffscreenRenderer::make()
+{
+  if (Application::instance().options().have_opengl) {
+    return std::make_unique<OffscreenRenderer>();
+  } else {
+    return nullptr;
+  }
 }
 
 Texture OffscreenRenderer::render(const Object& object, const QSize& size, const QRectF& roi,

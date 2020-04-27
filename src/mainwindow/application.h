@@ -32,7 +32,7 @@ class Application : public QObject, public CommandInterface
 {
   Q_OBJECT
 public:
-  Application(QCoreApplication& app);
+  Application(QCoreApplication& app, std::unique_ptr<Options> options);
   ~Application();
   bool save();
   bool save_as();

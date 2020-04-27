@@ -76,7 +76,6 @@ Scene::Scene(PythonEngine& python_engine)
   , point_selection(*this)
   , m_message_box(new MessageBox())
   , m_object_tree(new ObjectTree(make_root(), *this))
-  , m_default_style(new Style(this))
   , m_styles(new StyleList(*this))
   , m_history(new HistoryModel())
   , m_tool_box(new ToolBox(*this))
@@ -90,6 +89,9 @@ Scene::Scene(PythonEngine& python_engine)
   connect(&history(), SIGNAL(index_changed()), &message_box(), SIGNAL(filename_changed()));
   connect(&message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(update_tool()));
+
+  // Styles cannot be used until the application and scene are fully constructed.
+  QTimer::singleShot(0, this, [this]() { m_default_style = std::make_unique<Style>(this); });
 }
 
 Scene::~Scene()
@@ -309,8 +311,10 @@ std::set<AbstractPropertyOwner*> Scene::property_owners() const
   for (auto&& apo : apos) {
     if (!!(apo->flags() & Flag::HasNodes)) {
       const NodesOwner& nodes_owner = dynamic_cast<const NodesOwner&>(*apo);
-      const auto nodes = nodes_owner.node_model().nodes();
-      apos.insert(nodes.begin(), nodes.end());
+      if (const auto* node_model = nodes_owner.node_model()) {
+        const auto nodes = node_model->nodes();
+        apos.insert(nodes.begin(), nodes.end());
+      }
     }
   }
   return apos;

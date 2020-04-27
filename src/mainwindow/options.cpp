@@ -4,6 +4,12 @@
 namespace omm
 {
 
+Options::Options(bool is_cli, bool have_opengl)
+  : is_cli(is_cli)
+  , have_opengl(have_opengl)
+{
+}
+
 Options::Anchor Options::anchor() const
 {
   return m_anchor;
@@ -32,6 +38,11 @@ QPointF Options::anchor_position(const QRectF& grid, const Options::Anchor& anch
 QPointF Options::anchor_position(const QRectF& grid) const
 {
   return anchor_position(grid, anchor());
+}
+
+bool Options::require_gui() const
+{
+  return have_opengl;
 }
 
 void Options::set_anchor(Options::Anchor anchor)

@@ -23,7 +23,7 @@ QCommandLineOption make_input_option()
 
 static const std::map<QString, QList<QCommandLineOption>> options {
   {
-    "render",
+    omm::SubcommandLineParser::COMMAND_RENDER,
     {
       make_input_option(),
       make_verbosity_option(),
@@ -81,10 +81,15 @@ static const std::map<QString, QList<QCommandLineOption>> options {
         QObject::tr("#FRAMES"),
         "1"
       },
+      {
+        { "G", "no-opengl" },
+        QObject::tr("disable OpenGL. OpenGL is enabled by default when using the `%1'-command.")
+            .arg(omm::SubcommandLineParser::COMMAND_RENDER),
+      }
     }
   },
   {
-    "tree",
+    omm::SubcommandLineParser::COMMAND_TREE,
     {
       make_input_option(),
       make_verbosity_option(),
@@ -121,6 +126,10 @@ SubcommandLineParser::SubcommandLineParser(int argc, char* argv[])
     }
   }
   process(args);
+}
+
+SubcommandLineParser::SubcommandLineParser()
+{
 }
 
 template<> QString SubcommandLineParser::get<QString>(const QString& name) const

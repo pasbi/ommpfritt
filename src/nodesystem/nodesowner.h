@@ -20,7 +20,7 @@ protected:
   std::unique_ptr<Property> make_edit_nodes_property() const;
 
 public:
-  NodeModel& node_model() const;
+  NodeModel* node_model() const;
 
 private:
   std::unique_ptr<NodeModel> m_node_model;

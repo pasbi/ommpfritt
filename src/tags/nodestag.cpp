@@ -76,19 +76,19 @@ Flag NodesTag::flags() const
 
 std::set<Node*> NodesTag::nodes() const
 {
-  return node_model().nodes();
+  return node_model()->nodes();
 }
 
 void NodesTag::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
 {
   Tag::serialize(serializer, root);
-  node_model().serialize(serializer, make_pointer(root, NODES_POINTER));
+  node_model()->serialize(serializer, make_pointer(root, NODES_POINTER));
 }
 
 void NodesTag::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
 {
   Tag::deserialize(deserializer, root);
-  node_model().deserialize(deserializer, make_pointer(root, NODES_POINTER));
+  node_model()->deserialize(deserializer, make_pointer(root, NODES_POINTER));
 }
 
 
@@ -106,7 +106,7 @@ void NodesTag::force_evaluate()
   using namespace py::literals;
 
   auto locals = py::dict();
-  NodeModel& model = node_model();
+  NodeModel& model = *node_model();
   populate_locals<PortType::Input>(locals, model);
   populate_locals<PortType::Output>(locals, model);
 

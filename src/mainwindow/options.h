@@ -15,14 +15,23 @@ class Options : public QObject
   Q_OBJECT
 
 public:
+  explicit Options(bool is_cli, bool have_opengl);
   enum class Anchor { TopLeft, BottomLeft, TopRight, BottomRight, Center, None };
   Anchor anchor() const;
   static QPointF anchor_position(const QRectF& grid, const Anchor& anchor);
   QPointF anchor_position(const QRectF& grid) const;
+
+  const bool is_cli;
+  const bool have_opengl;
+
+  bool require_gui() const;
+
 public Q_SLOTS:
   void set_anchor(Anchor anchor);
+
 Q_SIGNALS:
   void anchor_changed(Anchor);
+
 private:
   Anchor m_anchor = Anchor::Center;
 

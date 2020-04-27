@@ -25,7 +25,11 @@ int main (int argc, char *argv[])
     omm::handle_log(logfile, level, print_long_message, type, ctx, msg);
   });
 
-  omm::Application app(qt_app);
+  auto options = std::make_unique<omm::Options>(
+        false,    // is_cli
+        true      // have_opengl
+  );
+  omm::Application app(qt_app, std::move(options));
 
   omm::MainWindow window(app);
   app.set_main_window(window);

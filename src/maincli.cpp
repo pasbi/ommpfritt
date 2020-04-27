@@ -156,6 +156,19 @@ void tree(omm::Application& app, const omm::SubcommandLineParser& args)
   print_tree(app.scene.object_tree().root());
 }
 
+std::unique_ptr<omm::Options> make_options(const omm::SubcommandLineParser& args)
+{
+  const auto have_opengl = [&args]() {
+    if (args.command() == omm::SubcommandLineParser::COMMAND_RENDER) {
+      return !args.isSet("no-opengl");
+    } else {
+      // other commands don't require opengl.
+      return false;
+    }
+  }();
+  return std::make_unique<omm::Options>(true, have_opengl);
+}
+
 QString level = "";
 QFile logfile;
 bool print_long_message = true;
@@ -163,8 +176,9 @@ bool print_long_message = true;
 int main(int argc, char* argv[])
 {
   using namespace omm;
-  QApplication app(argc, argv);
+  QGuiApplication app(argc, argv);
   SubcommandLineParser args(argc, argv);
+
   level = args.get<QString>("verbosity", "warning");
   if (!::contains(omm::LogLevel::loglevels, level)) {
     const auto levels = ::transform<QString, QList>(::get_keys(omm::LogLevel::loglevels));
@@ -178,7 +192,7 @@ int main(int argc, char* argv[])
     handle_log(logfile, level, print_long_message, type, ctx, msg);
   });
 
-  Application omm(app);
+  Application omm(app, make_options(args));
 
   using subcommand_t = std::function<void(Application&, const SubcommandLineParser&)>;
   static const std::map<QString, subcommand_t> f_map {

@@ -34,10 +34,11 @@ namespace omm
 {
 
 Style::Style(Scene *scene)
-  : PropertyOwner(scene), NodesOwner(AbstractNodeCompiler::Language::GLSL, *scene)
+  : PropertyOwner(scene)
+  , NodesOwner(AbstractNodeCompiler::Language::GLSL, *scene)
   , start_marker(start_marker_prefix, *this, default_marker_shape, default_marker_size)
   , end_marker(end_marker_prefix, *this, default_marker_shape, default_marker_size)
-  , m_offscreen_renderer(std::make_unique<OffscreenRenderer>())
+  , m_offscreen_renderer(OffscreenRenderer::make())
 {
   const auto pen_category = QObject::tr("pen");
   const auto brush_category = QObject::tr("brush");
@@ -110,10 +111,11 @@ Style::Style(const Style &other)
 
 void Style::init()
 {
-  NodeModel& model = node_model();
-  AbstractNodeCompiler& compiler = model.compiler();
-  connect(&compiler, SIGNAL(compilation_succeeded(QString)), this, SLOT(set_code(QString)));
-  connect(&compiler, SIGNAL(compilation_failed(QString)), this, SLOT(set_error(QString)));
+  if (const NodeModel* model = node_model(); model != nullptr) {
+    AbstractNodeCompiler& compiler = model->compiler();
+    connect(&compiler, SIGNAL(compilation_succeeded(QString)), this, SLOT(set_code(QString)));
+    connect(&compiler, SIGNAL(compilation_failed(QString)), this, SLOT(set_error(QString)));
+  }
 }
 
 QString Style::type() const { return TYPE; }
@@ -138,13 +140,17 @@ Texture Style::render_texture(const Object& object, const QSize& size, const QRe
 void Style::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
 {
   PropertyOwner::serialize(serializer, root);
-  node_model().serialize(serializer, make_pointer(root, NODES_POINTER));
+  if (NodeModel* node_model = this->node_model(); node_model != nullptr) {
+    node_model->serialize(serializer, make_pointer(root, NODES_POINTER));
+  }
 }
 
 void Style::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
 {
   PropertyOwner::deserialize(deserializer, root);
-  node_model().deserialize(deserializer, make_pointer(root, NODES_POINTER));
+  if (NodeModel* node_model = this->node_model(); node_model != nullptr) {
+    node_model->deserialize(deserializer, make_pointer(root, NODES_POINTER));
+  }
 }
 
 void Style::on_property_value_changed(Property *property)
@@ -167,33 +173,38 @@ void Style::on_property_value_changed(Property *property)
 
 void Style::update_uniform_values() const
 {
-  auto& compiler = static_cast<NodeCompilerGLSL&>(node_model().compiler());
-  for (AbstractPort* port : compiler.uniform_ports()) {
-    assert(port->flavor == omm::PortFlavor::Property);
-    const Property* property = port->port_type == PortType::Input
-                                ? static_cast<PropertyInputPort*>(port)->property()
-                                : static_cast<PropertyOutputPort*>(port)->property();
-    if (property != nullptr) {
-      m_offscreen_renderer->set_uniform(port->uuid(), property->variant_value());
+  if (const NodeModel* node_model = this->node_model(); node_model != nullptr) {
+    auto& compiler = static_cast<NodeCompilerGLSL&>(node_model->compiler());
+    for (AbstractPort* port : compiler.uniform_ports()) {
+      assert(port->flavor == omm::PortFlavor::Property);
+      const Property* property = port->port_type == PortType::Input
+                                  ? static_cast<PropertyInputPort*>(port)->property()
+                                  : static_cast<PropertyOutputPort*>(port)->property();
+      if (property != nullptr) {
+        m_offscreen_renderer->set_uniform(port->uuid(), property->variant_value());
+      }
     }
   }
 }
 
 void Style::set_code(const QString& code) const
 {
-  NodeModel& model = node_model();
-  if (m_offscreen_renderer->set_fragment_shader(code)) {
-    update_uniform_values();
-    model.set_error("");
-  } else {
-    model.set_error(tr("Compilation failed"));
+  if (NodeModel* node_model = this->node_model(); node_model != nullptr) {
+    if (m_offscreen_renderer->set_fragment_shader(code)) {
+      update_uniform_values();
+      node_model->set_error("");
+    } else {
+      node_model->set_error(tr("Compilation failed"));
+    }
   }
 }
 
 void Style::set_error(const QString& error) const
 {
-  node_model().set_error(error);
-  m_offscreen_renderer->set_fragment_shader("");
+  if (NodeModel* node_model = this->node_model(); node_model != nullptr) {
+    node_model->set_error(error);
+    m_offscreen_renderer->set_fragment_shader("");
+  }
 }
 
 }  // namespace omm

@@ -124,10 +124,10 @@ const std::set<int> Application::keyboard_modifiers { Qt::Key_Shift, Qt::Key_Con
                                                       Qt::Key_Meta };
 Application* Application::m_instance = nullptr;
 
-Application::Application(QCoreApplication& app)
+Application::Application(QCoreApplication& app, std::unique_ptr<Options> options)
   : scene((init(), python_engine))
   , m_app(app)
-  , m_options(new Options)
+  , m_options(std::move(options))
   , m_locale(load_locale())
 {
   if (m_instance == nullptr) {
@@ -135,14 +135,16 @@ Application::Application(QCoreApplication& app)
   } else {
     LFATAL("Resetting application instance.");
   }
-  ui_colors.apply();
-  scene.set_selection({});
 
-  m_reset_keysequence_timer.setSingleShot(true);
-  m_reset_keysequence_timer.setInterval(1000);
-  connect(&m_reset_keysequence_timer, &QTimer::timeout, this, [this]() {
-    m_pending_key_sequence = QKeySequence();
-  });
+  scene.set_selection({});
+  if (!this->options().is_cli) {
+    ui_colors.apply();
+    m_reset_keysequence_timer.setSingleShot(true);
+    m_reset_keysequence_timer.setInterval(1000);
+    connect(&m_reset_keysequence_timer, &QTimer::timeout, this, [this]() {
+      m_pending_key_sequence = QKeySequence();
+    });
+  }
 
   install_translators();
 }

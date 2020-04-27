@@ -8,7 +8,7 @@ const Property::PropertyDetail ColorProperty::detail
   [](const Property& property, std::size_t channel) -> QString {
     const auto color = std::get<Color>(property.variant_value());
     const auto name = Color::component_names.at(color.model())[channel];
-    return qApp->translate("Color", name.toStdString().c_str());
+    return QCoreApplication::translate("Color", name.toStdString().c_str());
   }
 };
 

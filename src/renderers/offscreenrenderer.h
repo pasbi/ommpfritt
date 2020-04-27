@@ -48,6 +48,7 @@ public:
   };
 
   std::map<GLuint, GLTexture> textures;
+  static std::unique_ptr<OffscreenRenderer> make();
 
 private:
   QOffscreenSurface m_surface;
