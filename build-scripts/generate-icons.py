@@ -67,7 +67,8 @@ if __name__ == "__main__":
             "-w", "128",
             "-p", f"_root_/{category}/{item}$",
             "-o", f"{args.output}/{item}.png",
-            "-y"
+            "-y",
+            "--no-opengl
         ]
         cp = subprocess.run(command, capture_output=True)
         print(f"Render icon for {category}/{item} ...", end="")

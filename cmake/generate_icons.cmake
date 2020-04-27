@@ -19,7 +19,6 @@ function(generate_icons icons_qrc classes)
       --scenefile "${scenefile}"
       --output "${icons_dir}"
       --qrc "${icons_qrc}"
-      --no-opengl
     COMMENT "generate icons and qrc"
   )
   add_custom_target(icons_png "${icons_qrc}")
