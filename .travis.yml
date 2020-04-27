@@ -7,8 +7,8 @@ services:
 
 jobs:
   include:
-    - name: "Build on Ubuntu Xenial"
-      os: linux
+    - os: linux
+      name: "Build on Ubuntu Xenial"
       dist: xenial
       - stage: "build"
         script:
@@ -19,8 +19,8 @@ jobs:
           - touch success
       - stage: "test"
         script: build/test/unit/ommpfritt_unit_tests
-    - name: "Build on Ubuntu Bionic"
-      os: linux
+    - os: linux
+      name: "Build on Ubuntu Bionic"
       dist: bionic
       - stage: "build"
         script:
