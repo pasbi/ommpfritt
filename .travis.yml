@@ -13,9 +13,9 @@ jobs:
       name: "Build on Ubuntu Xenial"
       script:
         - ./build-scripts/build-omm-ubuntu.sh
-        - ./build-scripts/make-appimage.sh; fi
+        - ./build-scripts/make-appimage.sh
       after_success:
-        - ./build-scripts/upload-appimage.sh; fi
+        - ./build-scripts/upload-appimage.sh
         - touch success
     - stage: "build"
       os: linux
