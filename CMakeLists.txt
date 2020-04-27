@@ -16,7 +16,7 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_registers.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_translations.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_icons.cmake)
 
-find_package(Python3 COMPONENTS Interpreter)
+find_package(Python3 3.7 REQUIRED COMPONENTS Interpreter)
 
 list(APPEND classes tags managers nodes properties tools objects serializers)
 generate_registers("${classes}")
@@ -121,3 +121,4 @@ target_link_libraries(ommpfritt-cli libommpfritt)
 
 install(TARGETS ommpfritt RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib/static)
 install(TARGETS libommpfritt RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib/static)
+

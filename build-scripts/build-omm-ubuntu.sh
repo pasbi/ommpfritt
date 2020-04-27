@@ -42,7 +42,7 @@ case "$dist" in
   tar xf Python-3.7.0.tar.xz
   pushd Python-3.7.0
   ./configure --prefix=/usr
-  sudo make install -j2
+  sudo make altinstall -j2
   popd
 
   # pytest is required to build pybind11
