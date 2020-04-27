@@ -147,6 +147,7 @@ Application::Application(QCoreApplication& app, std::unique_ptr<Options> options
   }
 
   install_translators();
+  scene.polish();
 }
 
 Application::~Application()

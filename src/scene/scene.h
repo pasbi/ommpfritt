@@ -40,6 +40,13 @@ class Scene : public QObject
 public:
   Scene(PythonEngine& python_engine);
   ~Scene();
+
+  /**
+   * @brief polish do some late initializations
+   *  Call this function before using the scene but after the application was initialized.
+   */
+  void polish();
+
 private:
   Scene(const Scene& other) = delete;
   Scene(Scene&& other) = delete;

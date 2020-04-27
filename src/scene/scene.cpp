@@ -89,15 +89,17 @@ Scene::Scene(PythonEngine& python_engine)
   connect(&history(), SIGNAL(index_changed()), &message_box(), SIGNAL(filename_changed()));
   connect(&message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(update_tool()));
-
-  // Styles cannot be used until the application and scene are fully constructed.
-  QTimer::singleShot(0, this, [this]() { m_default_style = std::make_unique<Style>(this); });
 }
 
 Scene::~Scene()
 {
   history().disconnect();
   prepare_reset();
+}
+
+void Scene::polish()
+{
+  m_default_style = std::make_unique<Style>(this);
 }
 
 void Scene::prepare_reset()
