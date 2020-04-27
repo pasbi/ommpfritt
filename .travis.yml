@@ -17,6 +17,13 @@ jobs:
       after_success:
         - ./build-scripts/upload-appimage.sh
         - touch success
+
+    - stage: "test"
+      name: "Test on Ubuntu Xenial"
+      os: linux
+      dist: xenial
+      script: build/test/unit/ommpfritt_unit_tests
+
     - stage: "build"
       os: linux
       dist: bionic
@@ -27,6 +34,9 @@ jobs:
         - touch success
 
     - stage: "test"
+      os: linux
+      dist: bionic
+      name: "Test on Ubuntu Bionic"
       script: build/test/unit/ommpfritt_unit_tests
 
 notifications:
