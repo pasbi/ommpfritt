@@ -7,28 +7,27 @@ services:
 
 jobs:
   include:
-    - os: linux
-      name: "Build on Ubuntu Xenial"
+    - stage: "build"
+      os: linux
       dist: xenial
-      - stage: "build"
-        script:
-          - ./build-scripts/build-omm-ubuntu.sh
-          - ./build-scripts/make-appimage.sh; fi
-        after_success:
-          - then ./build-scripts/upload-appimage.sh; fi
-          - touch success
-      - stage: "test"
-        script: build/test/unit/ommpfritt_unit_tests
-    - os: linux
-      name: "Build on Ubuntu Bionic"
+      name: "Build on Ubuntu Xenial"
+      script:
+        - ./build-scripts/build-omm-ubuntu.sh
+        - ./build-scripts/make-appimage.sh; fi
+      after_success:
+        - ./build-scripts/upload-appimage.sh; fi
+        - touch success
+    - stage: "build"
+      os: linux
       dist: bionic
-      - stage: "build"
-        script:
-          - ./build-scripts/build-omm-ubuntu.sh
-        after_success:
-          - touch success
-      - stage: "test"
-        script: build/test/unit/ommpfritt_unit_tests
+      name: "Build on Ubuntu Bionic"
+      script:
+        - ./build-scripts/build-omm-ubuntu.sh
+      after_success:
+        - touch success
+
+    - stage: "test"
+      script: build/test/unit/ommpfritt_unit_tests
 
 notifications:
   webhooks:
