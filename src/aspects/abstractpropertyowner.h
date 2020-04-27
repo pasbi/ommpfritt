@@ -71,7 +71,7 @@ public:
   }
 
   virtual std::unique_ptr<Property> extract_property(const QString& key);
-  enum class CopiedProperties { Compatible = 0x1, New = 0x2, User = 0x3 };
+  enum class CopiedProperties { Compatible = 0x1, New = 0x2, User = 0x4 };
   void copy_properties(AbstractPropertyOwner& target, CopiedProperties flags) const;
 
   std::size_t id() const;
