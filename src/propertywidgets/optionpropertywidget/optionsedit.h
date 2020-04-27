@@ -29,9 +29,11 @@ protected:
 class OptionsEdit : public PrefixComboBox, public MultiValueEdit<size_t>
 {
 public:
+  explicit OptionsEdit(QWidget* parent = nullptr);
   void set_options(const std::vector<QString>& options);
   void set_value(const value_type& value) override;
   value_type value() const override;
+  void wheelEvent(QWheelEvent* event) override;
 
 protected:
   void set_inconsistent_value() override;

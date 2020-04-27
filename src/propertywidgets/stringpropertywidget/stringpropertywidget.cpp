@@ -46,7 +46,7 @@ StringPropertyWidget
       return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
     }
     case StringProperty::Mode::Font: {
-      auto edit = std::make_unique<TextEditAdapter<QFontComboBox>>();
+      auto edit = std::make_unique<TextEditAdapter<FontComboBox>>();
       QObject::connect(edit.get(), &QFontComboBox::currentTextChanged, [this](const QString& text) {
         set_properties_value(text);
       });

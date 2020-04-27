@@ -23,6 +23,13 @@ void OptionsEdit::set_value(const value_type& value) { setCurrentIndex(value); }
 void OptionsEdit::set_inconsistent_value() { setCurrentIndex(-1); }
 OptionsEdit::value_type OptionsEdit::value() const { return currentIndex(); }
 
+void OptionsEdit::wheelEvent(QWheelEvent* event)
+{
+  if (hasFocus()) {
+    PrefixComboBox::wheelEvent(event);
+  }
+}
+
 bool PrefixComboBox::eventFilter(QObject* o, QEvent* e)
 {
   const bool handled = QComboBox::eventFilter(o, e);
@@ -38,6 +45,12 @@ void PrefixComboBox::showPopup()
     QComboBox::showPopup();
   }
   Q_EMIT popup_shown();
+}
+
+OptionsEdit::OptionsEdit(QWidget* parent)
+  : PrefixComboBox(parent)
+{
+  setFocusPolicy(Qt::StrongFocus);
 }
 
 void OptionsEdit::set_options(const std::vector<QString>& options)

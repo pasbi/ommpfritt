@@ -87,14 +87,14 @@ QWidget* TextEditAdapter<CodeEdit>::as_widget() { return this; }
 
 // TextEditAdapter<QFontComboBox>
 
-void TextEditAdapter<QFontComboBox>::set_value(const QString& text)
+void TextEditAdapter<FontComboBox>::set_value(const QString& text)
 {
   QFontComboBox::setCurrentFont(QFont(text));
 }
 
-void TextEditAdapter<QFontComboBox>::set_inconsistent_value() { setCurrentIndex(-1); }
-void TextEditAdapter<QFontComboBox>::clear() { QFontComboBox::clear(); }
-QString TextEditAdapter<QFontComboBox>::value() const { return currentText(); }
-QWidget* TextEditAdapter<QFontComboBox>::as_widget() { return this; }
+void TextEditAdapter<FontComboBox>::set_inconsistent_value() { setCurrentIndex(-1); }
+void TextEditAdapter<FontComboBox>::clear() { FontComboBox::clear(); }
+QString TextEditAdapter<FontComboBox>::value() const { return currentText(); }
+QWidget* TextEditAdapter<FontComboBox>::as_widget() { return this; }
 
 }  // namespace omm

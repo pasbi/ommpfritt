@@ -3,7 +3,7 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 #include <QLineEdit>
-#include <QFontComboBox>
+#include "propertywidgets/stringpropertywidget/fontcombobox.h"
 #include "propertywidgets/multivalueedit.h"
 #include "properties/stringproperty.h"
 #include "widgets/filepathedit.h"
@@ -75,12 +75,12 @@ public:
   QWidget* as_widget() override;
 };
 
-template<> class TextEditAdapter<QFontComboBox>
-  : public QFontComboBox, public AbstractTextEditAdapter
+template<> class TextEditAdapter<FontComboBox>
+  : public FontComboBox, public AbstractTextEditAdapter
 {
 public:
-  using edit_type = QFontComboBox;
-  using QFontComboBox::QFontComboBox;
+  using edit_type = FontComboBox;
+  using FontComboBox::FontComboBox;
   void set_inconsistent_value() override;
   void set_value(const QString& ph) override;
   void clear() override;
