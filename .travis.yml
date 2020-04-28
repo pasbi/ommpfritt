@@ -19,7 +19,7 @@ jobs:
         - build-scripts/upload-appimage.sh
         - touch success
         - build-scripts/notify-telegram.sh
-      after-failure:
+      after_failure:
         - build-scripts/notify-telegram.sh
 
     - stage: "build"
@@ -32,7 +32,7 @@ jobs:
         - build/test/unit/ommpfritt_unit_tests
         - touch success
         - build-scripts/notify-telegram.sh
-      after-failure:
+      after_failure:
         - build-scripts/notify-telegram.sh
 
 notifications:
