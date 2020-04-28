@@ -469,7 +469,7 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
 
 void Scene::update_tool()
 {
-  tool_box().active_tool().reset();
+  m_tool_box->active_tool().reset();
 }
 
 bool Scene::contains(const AbstractPropertyOwner *apo) const

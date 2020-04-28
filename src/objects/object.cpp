@@ -107,7 +107,9 @@ Object::Object(const Object& other)
 
 Object::~Object()
 {
-  assert(!::contains(scene()->selection(), this));
+  if (const Scene* scene = this->scene(); scene != nullptr) {
+    assert(!::contains(scene->selection(), this));
+  }
 }
 
 ObjectTransformation Object::transformation() const
@@ -379,7 +381,9 @@ void Object::post_create_hook() { }
 
 void Object::update()
 {
-  Q_EMIT scene()->message_box().appearance_changed(*this);
+  if (Scene* scene = this->scene(); scene != nullptr) {
+    Q_EMIT scene->message_box().appearance_changed(*this);
+  }
 }
 
 double Object::apply_border(double t, Border border)

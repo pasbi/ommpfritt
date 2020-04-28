@@ -24,7 +24,7 @@ Q_SIGNALS:
   void active_tool_changed(const Tool& active_tool);
 
 private:
-  Tool* m_active_tool;
+  Tool* m_active_tool = nullptr;
   const std::map<QString, std::unique_ptr<Tool>> m_tools;
   Scene& m_scene;
   std::list<QString> m_history;
