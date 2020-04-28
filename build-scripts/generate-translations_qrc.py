@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 
 import os
-import json
-import sys
 import argparse
-import subprocess
 
 def generate_qrc(items):
     lines = []
