@@ -1,0 +1,30 @@
+###########################################################################
+extraction:
+  cpp:
+    prepare:
+      packages:
+        - zlib1g-dev
+        - libssl-dev
+        - libffi-dev
+        - pybind11-dev
+        - libgl-dev
+        - python3-dev
+        - qtbase5-dev-tools
+        - qtbase5-dev
+        - qt5-default
+        - qtchooser
+        - qt5-qmake
+        - libqt5svg5-dev
+        - qttools5-dev
+        - cmake
+        - gcc
+        - build-essential
+    configure:
+      command:
+        - mkdir build
+        - cd build
+        - cmake -DCMAKE_BUILD_TYPE=Release -DQT_QM_PATH="/usr/share/qt5/translations/" ..
+    index:
+      build_command:
+        - cd build
+        - make
