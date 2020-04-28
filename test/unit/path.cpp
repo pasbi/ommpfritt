@@ -14,42 +14,28 @@ bool operator==(const std::vector<omm::Point*>& lhs, const std::vector<omm::Poin
   return true;
 }
 
-void remove_add_points( const std::vector<omm::Point>& initial_points,
-                        const std::vector<std::size_t>& indices)
+void prepare_indices(std::vector<std::size_t>& indices)
 {
-  return; // TODO fix the test.
-  omm::Scene* scene = nullptr;
-  omm::Path path(scene);
+  for (std::size_t i = 0; i < indices.size(); ++i) {
+    indices[i] -= i;
+  }
+}
+
+/**
+ * @brief remove_add_points remove @code indices from @code initial_points then add them again.
+ *  Test some invariants.
+ * @param initial_points the base set of points
+ * @param indices the points to remove from the path
+ */
+void remove_add_points( const std::vector<omm::Point>& initial_points,
+                        std::vector<std::size_t> indices)
+{
+  prepare_indices(indices);
+  omm::Path path(nullptr);
   path.set_points(initial_points);
-
-  LINFO << "=============\n\n\n";
-  LINFO << "original:     " << path.points();
   const auto sequences = path.remove_points(indices);
-  LINFO << "after remove: " << path.points();
   ASSERT_EQ( path.points().size(), initial_points.size() - indices.size() );
-
-
-  LINFO << "sequences:";
-  for (const auto& sequence : sequences) {
-    LINFO << " >> " << sequence.position << " " << sequence.sequence;
-  }
-
-  std::size_t i = 0;
-  for (const auto& sequence : sequences) {
-    const std::size_t pos = sequence.position;
-    if (i == pos) {
-      for (auto it = sequence.sequence.begin(); it != sequence.sequence.end(); ++it) {
-        EXPECT_EQ(*it, initial_points[i]);
-        i++;
-      }
-    } else {
-      i++;
-    }
-  }
-
   path.add_points(sequences);
-
-  LINFO << "after insert: " << path.points();
 
   ASSERT_EQ( path.points().size(), initial_points.size() );
   for (std::size_t i = 0; i < initial_points.size(); ++i) {
@@ -58,22 +44,15 @@ void remove_add_points( const std::vector<omm::Point>& initial_points,
 }
 
 void test_invariant_1( const std::vector<omm::Point>& initial_points,
-                       const std::vector<std::size_t>& indices)
+                       std::vector<std::size_t> indices)
 {
+  prepare_indices(indices);
   omm::Scene* scene = nullptr;
   omm::Path path(scene);
   path.set_points(initial_points);
 
-  LINFO << "=============\n\n\n";
-  LINFO << "original:     " << path.points();
   const auto sequences = path.remove_points(indices);
-  LINFO << "after remove: " << path.points();
-  LINFO << "sequences: " << sequences.size();
-  for (const auto& sequence : sequences) {
-    LINFO << " >> " << sequence.position << " " << sequence.sequence;
-  }
   path.add_points(sequences);
-  LINFO << "after insert: " << path.points();
   EXPECT_TRUE(path.points() == initial_points);
 }
 
@@ -84,52 +63,35 @@ void test_invariant_2( const std::vector<omm::Point> initial_points,
   omm::Path path(scene);
   path.set_points(initial_points);
 
-  LINFO << "=============\n\n\n";
-  LINFO << "original:     " << path.points();
-  LINFO << "sequences: " << sequences.size();
-  for (const auto& sequence : sequences) {
-    LINFO << " >> " << sequence.position << " " << sequence.sequence;
-  }
   std::vector<std::size_t> indices = path.add_points(sequences);
-  LINFO << "indices: " << indices.size() << " " << indices;
-  LINFO << "after insert: " << path.points();
   path.remove_points(indices);
-  LINFO << "after remove: " << path.points();
-
 
   EXPECT_TRUE(path.points() == initial_points);
 }
 
 TEST(path, remove_add_points)
 {
-  return; // TODO fix tests
   static const std::vector<omm::Point> points3 ({
-    omm::Point(omm::Vec2f(0, 0)),
-    omm::Point(omm::Vec2f(1, 0)),
-    omm::Point(omm::Vec2f(2, 0))
+    omm::Point({0, 0}),
+    omm::Point({1, 0}),
+    omm::Point({2, 0})
   });
 
   static const std::vector<omm::Point> points10 ({
-    omm::Point(omm::Vec2f(0, 0)),
-    omm::Point(omm::Vec2f(1, 0)),
-    omm::Point(omm::Vec2f(2, 0)),
-    omm::Point(omm::Vec2f(3, 0)),
-    omm::Point(omm::Vec2f(4, 0)),
-    omm::Point(omm::Vec2f(5, 0)),
-    omm::Point(omm::Vec2f(6, 0)),
-    omm::Point(omm::Vec2f(7, 0)),
-    omm::Point(omm::Vec2f(8, 0)),
-    omm::Point(omm::Vec2f(9, 0)),
+    omm::Point({0, 0}),
+    omm::Point({1, 0}),
+    omm::Point({2, 0}),
+    omm::Point({3, 0}),
+    omm::Point({4, 0}),
+    omm::Point({5, 0}),
+    omm::Point({6, 0}),
+    omm::Point({7, 0}),
+    omm::Point({8, 0}),
+    omm::Point({9, 0}),
   });
 
-  // assertion shall fail if candidate points are in wrong order
-  ASSERT_DEATH(remove_add_points(points3, { 1, 0 }), "");
-  ASSERT_DEATH(remove_add_points(points3, { 2, 0 }), "");
-  ASSERT_DEATH(remove_add_points(points10, { 0, 1, 3, 2 }), "");
-  ASSERT_DEATH(remove_add_points(points10, { 1, 0, 2, 3 }), "");
   ASSERT_DEATH(remove_add_points(points3, { 4, 4 }), "");
 
-  // remove shall succeed if order is correct
   remove_add_points(points3, {});
   remove_add_points(points3, { 0, 1, 2 });
   remove_add_points(points10, { 0, 1 });
@@ -155,7 +117,6 @@ TEST(path, remove_add_points)
   test_invariant_1(points10, {0, 1, 2, 3, 4, 6, 8});
   test_invariant_1(points10, {5, 6, 7, 9});
   test_invariant_1(points10, {5, 6, 7, 8, 9});
-
   test_invariant_1(points10, {0, 6, 7, 8, 9});
 
   test_invariant_2(points3, {
@@ -174,21 +135,17 @@ TEST(path, remove_add_points)
     omm::Path::PointSequence{ 0, { omm::Point(omm::Vec2f(0, 1)), omm::Point(omm::Vec2f(0, 2)) } }
   });
 
-  ASSERT_DEATH( // interleaving sequences
-    test_invariant_2(points3, {
-      omm::Path::PointSequence{ 0, { omm::Point(omm::Vec2f(0, 1)),
-                                     omm::Point(omm::Vec2f(0, 2)) } },
-      omm::Path::PointSequence{ 1, { omm::Point(omm::Vec2f(0, 3)),
-                                     omm::Point(omm::Vec2f(0, 4)) } }
-    }) , "");
+  test_invariant_2(points3, {
+    omm::Path::PointSequence{ 0, { omm::Point(omm::Vec2f(0, 1)),
+                                   omm::Point(omm::Vec2f(0, 2)) } },
+    omm::Path::PointSequence{ 1, { omm::Point(omm::Vec2f(0, 3)),
+                                   omm::Point(omm::Vec2f(0, 4)) } } });
 
-  ASSERT_DEATH( // subsequent sequences
-    test_invariant_2(points3, {
-      omm::Path::PointSequence{ 0, { omm::Point(omm::Vec2f(0, 1)),
-                                     omm::Point(omm::Vec2f(0, 2)) } },
-      omm::Path::PointSequence{ 2, { omm::Point(omm::Vec2f(0, 3)),
-                                     omm::Point(omm::Vec2f(0, 4)) } }
-    }) , "");
+  test_invariant_2(points3, {
+    omm::Path::PointSequence{ 0, { omm::Point(omm::Vec2f(0, 1)),
+                                   omm::Point(omm::Vec2f(0, 2)) } },
+    omm::Path::PointSequence{ 2, { omm::Point(omm::Vec2f(0, 3)),
+                                   omm::Point(omm::Vec2f(0, 4)) } } });
 
   test_invariant_2(points3, {
     omm::Path::PointSequence{ 0, { omm::Point(omm::Vec2f(0, 1)),

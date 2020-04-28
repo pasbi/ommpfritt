@@ -112,7 +112,9 @@ void remove_selected_points(Application& app)
   for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
     auto selected_points = path->selected_points();
     std::sort(selected_points.begin(), selected_points.end());
-    for (std::size_t i = 0; i < selected_points.size(); ++i) { selected_points[i] -= i; }
+    for (std::size_t i = 0; i < selected_points.size(); ++i) {
+      selected_points[i] -= i;
+    }
     map[path] = selected_points;
   }
   if (!map.empty()) {
