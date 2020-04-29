@@ -1,8 +1,12 @@
 ###########################################################################
+path_classifiers:
+  test:
+    - test
 extraction:
   cpp:
     prepare:
       packages:
+        - libpoppler-qt5-dev
         - zlib1g-dev
         - libssl-dev
         - libffi-dev
@@ -16,6 +20,7 @@ extraction:
         - qt5-qmake
         - libqt5svg5-dev
         - qttools5-dev
+        - qttranslations5-l10n
         - cmake
         - gcc
         - build-essential
