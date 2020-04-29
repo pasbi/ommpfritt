@@ -15,6 +15,7 @@ set (OMMPFRITT_VERSION_MINOR 0)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_registers.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_translations.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_icons.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_resources.cmake)
 
 find_package(Python3 3.7 REQUIRED COMPONENTS Interpreter)
 
@@ -58,34 +59,13 @@ set(translations_qrc "${CMAKE_CURRENT_BINARY_DIR}/qm/translations.qrc")
 set(prefixes omm qtlocation qt_help qt)
 generate_translations("${translations_qrc}" "${ts_dir}" "${languages}" "${prefixes}")
 
-set(icons_qrc "${CMAKE_CURRENT_BINARY_DIR}/icons/icons.qrc")
-generate_icons("${icons_qrc}" "${classes};extra")
-
-set(manual_qrc "${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc")
-
+set(qrc_files_cli
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc"
+    ${translations_qrc}
+)
 set(compiled_resource_file_cli ${CMAKE_CURRENT_BINARY_DIR}/qrc_resources_cli.cpp)
-add_custom_command(
-    OUTPUT "${compiled_resource_file_cli}"
-    DEPENDS "${manual_qrc}" "${translations_qrc}"
-    COMMAND Qt5::rcc
-      -o "${compiled_resource_file_cli}"
-      "${manual_qrc}" "${translations_qrc}"
-    COMMENT "Compile ${compiled_resource_file_cli}."
-)
-add_custom_target(resources_cli DEPENDS "${compiled_resource_file_cli}")
+generate_resources(resources_cli ${compiled_resource_file_cli} "${qrc_files_cli}")
 add_dependencies(resources_cli translations_qm)
-
-set(compiled_resource_file ${CMAKE_CURRENT_BINARY_DIR}/qrc_resources.cpp)
-add_custom_command(
-    OUTPUT "${compiled_resource_file}"
-    DEPENDS "${manual_qrc}" "${translations_qrc}" "${icons_qrc}"
-    COMMAND Qt5::rcc
-      -o "${compiled_resource_file}"
-      "${manual_qrc}" "${translations_qrc}" "${icons_qrc}"
-    COMMENT "Compile ${compiled_resource_file}."
-)
-add_custom_target(resources DEPENDS "${compiled_resource_file}")
-add_dependencies(resources translations_qm)
 
 add_library(libommpfritt)
 add_dependencies(libommpfritt registers)
@@ -93,7 +73,16 @@ add_dependencies(libommpfritt registers)
 add_executable(ommpfritt-cli src/maincli.cpp "${compiled_resource_file_cli}")
 add_dependencies(ommpfritt-cli libommpfritt resources_cli)
 
+
+set(icons_qrc "${CMAKE_CURRENT_BINARY_DIR}/icons/icons.qrc")
+generate_icons("${icons_qrc}" "${classes};extra")
 add_dependencies(icons_png ommpfritt-cli)
+
+set(qrc_files "${qrc_files_cli}")
+list(APPEND qrc_files ${icons_qrc})
+set(compiled_resource_file ${CMAKE_CURRENT_BINARY_DIR}/qrc_resources.cpp)
+generate_resources(resources ${compiled_resource_file} "${qrc_files}")
+add_dependencies(resources translations_qm)
 add_dependencies(resources ommpfritt-cli)
 
 add_executable(ommpfritt src/main.cpp "${compiled_resource_file}")
