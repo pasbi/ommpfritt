@@ -58,6 +58,18 @@ public:
 
   static const QString NAME_PROPERTY_KEY;
 
+  /**
+   * @brief add_property adds a property to this abstract PropertyOwner.
+   * @param key the key
+   * @param property the property
+   * @return a reference to the added property.
+   * @note this function is used in the copy constructor, although it's virtual.
+   *  Since one cannot call virtual members in constructors, it is called statically.
+   *  That means, if your class relies on some overriden `add_property`-method, it should
+   *  delete the copy-constructor since it probably will not do what you expect.
+   *  An example is the Node class: it overrides `add_property`, consequently deletes the
+   *  copy constructor and implements a serialization-based copy mechanism instead.
+   */
   virtual Property& add_property(const QString& key, std::unique_ptr<Property> property);
 
   template<typename PropertyT, typename... Args>

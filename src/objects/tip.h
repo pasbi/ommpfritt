@@ -1,3 +1,5 @@
+#pragma once
+
 #include "objects/abstractproceduralpath.h"
 #include "properties/propertygroups/markerproperties.h"
 

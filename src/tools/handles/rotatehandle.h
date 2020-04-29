@@ -54,7 +54,6 @@ public:
       const auto transformation = tool.transformation();
       const auto global_pos = transformation.inverted().apply_to_position(pos);
       const auto origin = transformation.inverted().apply_to_position(press_pos());
-      const auto delta = global_pos - origin;
 
       double angle = global_pos.arg() - origin.arg();
       if (tool.integer_transformation()) {

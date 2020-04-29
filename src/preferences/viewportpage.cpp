@@ -60,11 +60,11 @@ MouseModifiersGroup(Preferences::MouseModifier& model, QFormLayout& layout)
     if (!!(model.modifiers & modifier_map.at(i).first)) {
       cb->setChecked(true);
     }
-    auto layout = std::make_unique<QHBoxLayout>();
-    layout->setAlignment(Qt::AlignHCenter);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(cb.release());
-    hlayout->addLayout(layout.release());
+    auto cb_layout = std::make_unique<QHBoxLayout>();
+    cb_layout->setAlignment(Qt::AlignHCenter);
+    cb_layout->setContentsMargins(0, 0, 0, 0);
+    cb_layout->addWidget(cb.release());
+    hlayout->addLayout(cb_layout.release());
   }
 
   layout.addRow(label.release(), hlayout.release());

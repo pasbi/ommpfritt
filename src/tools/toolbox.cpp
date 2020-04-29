@@ -53,6 +53,7 @@ Tool& ToolBox::tool(const QString& key) const
     return *m_tools.at(key);
   } catch (const std::out_of_range&) {
     LFATAL("Failed to load tool '%s'.", key.toUtf8().constData());
+    return *m_tools.begin()->second; // something must be returned.
   }
 }
 

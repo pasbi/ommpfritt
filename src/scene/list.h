@@ -17,6 +17,7 @@ public:
   constexpr static bool is_tree = false;
   using Structure<T>::Structure;
   explicit List(const List<T>& other);
+  List& operator=(const List& other) = delete;
   ~List();
   virtual void insert(ListOwningContext<T>& context);
   virtual void remove(ListOwningContext<T>& t);

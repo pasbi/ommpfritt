@@ -45,8 +45,7 @@ public:
       const auto ti = tool.transformation().inverted();
       const auto global_pos = ti.apply_to_position(pos);
       const auto origin = ti.apply_to_position(press_pos());
-      const auto delta = global_pos - origin;
-      double s = global_pos.euclidean_norm() / (global_pos - delta).euclidean_norm();
+      double s = global_pos.euclidean_norm() / origin.euclidean_norm();
       if (tool.integer_transformation()) {
         static constexpr auto step = 0.1;
         if (std::abs(s) > step) { // s must never be zero.

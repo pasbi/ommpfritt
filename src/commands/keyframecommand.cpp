@@ -179,11 +179,11 @@ void MoveKeyFrameCommand::shift_keyframes(bool invert)
     }
   };
 
-  if (m_shift < 0 == invert) {
+  if ((m_shift < 0) == invert) {
     for (auto it = m_old_frames.rbegin(); it != m_old_frames.rend(); ++it) {
       move_knot(*it);
     }
-  } else if (m_shift > 0 == invert) {
+  } else if ((m_shift > 0) == invert) {
     for (auto it = m_old_frames.begin(); it != m_old_frames.end(); ++it) {
       move_knot(*it);
     }

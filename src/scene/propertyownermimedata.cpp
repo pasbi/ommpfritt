@@ -48,10 +48,10 @@ QStringList PropertyOwnerMimeData::formats() const
 
 QVariant PropertyOwnerMimeData::retrieveData(const QString &mimeType, QVariant::Type type) const
 {
-  (void) mimeType;
-  (void) type;
+  Q_UNUSED(mimeType)
+  Q_UNUSED(type)
   LFATAL("This function shall not be called.");
-  assert(false);
+  return QVariant();
 }
 
 std::vector<Object*> PropertyOwnerMimeData::objects() const

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <QStandardItemModel>
 
 class QItemSelection;
@@ -21,8 +23,10 @@ public Q_SLOTS:
   void remove_selection(const QItemSelection& selection);
 
 protected:
-  bool canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) const override;
-  bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) override;
+  bool canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column,
+                       const QModelIndex& parent) const override;
+  bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column,
+                    const QModelIndex& parent) override;
   QMimeData* mimeData(const QModelIndexList& indices) const override;
 
 };

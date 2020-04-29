@@ -41,8 +41,8 @@ py::object get_property_value(WrappedT&& wrapped, const QString& key)
     }
   } else {
     LERROR << "Failed to find property key '" << key << "'.";
-    for (const QString& key : wrapped.properties().keys()) {
-      LINFO << key;
+    for (const QString& other_key : wrapped.properties().keys()) {
+      LINFO << other_key;
     }
     return py::none();
   }

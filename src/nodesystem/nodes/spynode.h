@@ -1,3 +1,5 @@
+#pragma once
+
 #include "nodesystem/node.h"
 
 namespace omm

@@ -138,7 +138,6 @@ void subdivide(Application& app)
           sequence.sequence.push_back(cubics.segment(i).evaluate((j+1.0)/(n+1.0)));
         }
         sequences.push_back(sequence);
-      } else {
       }
     }
     map[path] = std::vector(sequences.begin(), sequences.end());

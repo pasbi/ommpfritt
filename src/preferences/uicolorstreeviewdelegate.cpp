@@ -1,3 +1,5 @@
+#pragma once
+
 #include "preferences/uicolorstreeviewdelegate.h"
 #include "uicolors.h"
 #include <QPainter>

@@ -17,6 +17,7 @@ public:
   TreeElement() = default;
   virtual ~TreeElement() = default;
   explicit TreeElement(const TreeElement& other);
+  TreeElement& operator=(const TreeElement& other) = delete;
   bool is_root() const;
   T& tree_parent() const;
   virtual T& adopt(std::unique_ptr<T> adoptee, const size_t pos);

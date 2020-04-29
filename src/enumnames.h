@@ -1,3 +1,5 @@
+#pragma once
+
 #include <QString>
 #include <bitset>
 #include <QApplication>

@@ -96,9 +96,9 @@ std::unique_ptr<Node> NodeModel::extract_node(Node& node)
   });
 
   if (it != m_nodes.end()) {
-    auto node = std::move(m_nodes.extract(it).value());
-    Q_EMIT node_removed(*node);
-    return node;
+    auto own_node = std::move(m_nodes.extract(it).value());
+    Q_EMIT node_removed(*own_node);
+    return own_node;
   } else {
     return nullptr;
   }

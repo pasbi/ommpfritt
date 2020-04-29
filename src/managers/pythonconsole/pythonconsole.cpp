@@ -146,7 +146,6 @@ void PythonConsole::get_previous_command()
   if (m_command_stack_pointer != m_command_stack.begin()) {
     std::advance(m_command_stack_pointer, -1);
     m_commandline->set_code(*m_command_stack_pointer);
-  } else {
   }
 }
 
@@ -156,7 +155,6 @@ void PythonConsole::get_next_command()
   if (m_command_stack_pointer != m_command_stack.end()) {
     m_commandline->set_code(*m_command_stack_pointer);
     std::advance(m_command_stack_pointer, 1);
-  } else {
   }
 }
 

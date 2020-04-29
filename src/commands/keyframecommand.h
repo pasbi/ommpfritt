@@ -1,3 +1,5 @@
+#pragma once
+
 #include "commands/command.h"
 #include "variant.h"
 #include <map>

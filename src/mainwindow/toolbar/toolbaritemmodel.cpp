@@ -175,7 +175,8 @@ void ToolBarItemModel::decode(const QString& code, int row, const QModelIndex& p
   }
 }
 
-bool ToolBarItemModel::canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) const
+bool ToolBarItemModel::canDropMimeData(const QMimeData* data, Qt::DropAction action,
+                                       int row, int column, const QModelIndex& parent) const
 {
   Q_UNUSED(column)
   Q_UNUSED(row)
@@ -183,7 +184,8 @@ bool ToolBarItemModel::canDropMimeData(const QMimeData* data, Qt::DropAction act
   return data->hasFormat(ToolBarDialog::mime_type) && ::contains(std::set{ Qt::MoveAction, Qt::LinkAction}, action);
 }
 
-bool ToolBarItemModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+bool ToolBarItemModel::dropMimeData(const QMimeData* data, Qt::DropAction action,
+                                    int row, int column, const QModelIndex& parent)
 {
   assert(canDropMimeData(data, action, row, column, parent));
   QDataStream stream(data->data(ToolBarDialog::mime_type));

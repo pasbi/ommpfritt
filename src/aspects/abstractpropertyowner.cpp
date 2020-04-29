@@ -39,7 +39,7 @@ AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner &other)
   : kind(other.kind), m_scene(other.m_scene)
 {
   for (auto&& key : other.m_properties.keys()) {
-    add_property(key, other.m_properties.at(key)->clone());
+    AbstractPropertyOwner::add_property(key, other.m_properties.at(key)->clone());
   }
 }
 
@@ -117,7 +117,6 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
       property->deserialize(deserializer, property_pointer);
       add_property(property_key, std::move(property));
     }
-
   }
 }
 

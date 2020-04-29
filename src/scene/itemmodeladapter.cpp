@@ -104,10 +104,10 @@ bool model_index_tree_position_compare(QModelIndex a, QModelIndex b)
   std::vector<QModelIndex> a_descendants = find_ancestors(a);
   std::vector<QModelIndex> b_descendants = find_ancestors(b);
 
-  for (const auto& a : a_descendants) {
-    for (const auto& b : b_descendants) {
-      if (a.parent() == b.parent()) {
-        return a.row() < b.row();
+  for (const auto& item_a : a_descendants) {
+    for (const auto& item_b : b_descendants) {
+      if (item_a.parent() == item_b.parent()) {
+        return item_a.row() < item_b.row();
       }
     }
   }

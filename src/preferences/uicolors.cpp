@@ -195,8 +195,11 @@ void UiColors::draw_background(QPainter& painter, const QRectF& rect)
   int my = rect.bottom();
   for (int x = rect.left(); x < rect.right(); x += size) {
     for (int y = rect.top(); y < rect.bottom(); y += size) {
-      QRect rect(QPoint(x, y), QPoint(std::min(mx, x+size), std::min(my, y+size)));
-      painter.fillRect(rect, bg_colors[static_cast<std::size_t>(x/size+y/size)%bg_colors.size()]);
+      QRect transformed_rect(QPoint(x, y),
+                             QPoint(std::min(mx, x+size), std::min(my, y+size)));
+      const auto bg_color = bg_colors[static_cast<std::size_t>(x/size+y/size)%bg_colors.size()];
+      painter.fillRect(transformed_rect, bg_color);
+
     }
   }
   painter.restore();

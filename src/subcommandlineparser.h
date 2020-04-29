@@ -1,3 +1,5 @@
+#pragma once
+
 #include <QCommandLineParser>
 #include "logging.h"
 #include <iostream>

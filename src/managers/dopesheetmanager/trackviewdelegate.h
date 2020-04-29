@@ -1,3 +1,5 @@
+#pragma once
+
 #include <QAbstractItemDelegate>
 #include <set>
 #include "managers/timeline/timelinecanvas.h"

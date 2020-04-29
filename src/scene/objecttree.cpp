@@ -43,8 +43,7 @@ void drop_tags_behind( omm::Scene& scene, omm::Object& object, omm::Tag* current
                         const std::vector<omm::Tag*>& tags, Qt::DropAction action )
 {
   if (current_tag_predecessor != nullptr && current_tag_predecessor->owner != &object) {
-    const auto& tags = object.tags;
-    current_tag_predecessor = last(tags.ordered_items());
+    current_tag_predecessor = last(object.tags.ordered_items());
   }
   if (tags.size() > 0) {
     switch (action) {
