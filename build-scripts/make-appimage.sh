@@ -2,9 +2,9 @@
 
 pwd
 ls
-echo $PATH
-export PATH=/opt/qt512/bin:$PATH
-echo $PATH
+echo "$PATH"
+export "PATH=/opt/qt512/bin:$PATH"
+echo "$PATH"
 
 set -e
 

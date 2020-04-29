@@ -44,4 +44,4 @@ if __name__ == "__main__":
                 f.write(line.format(clazz=spec["clazz"], item=item))
         f.write("}\n")
         f.write("}  // namespace\n")
-    
+

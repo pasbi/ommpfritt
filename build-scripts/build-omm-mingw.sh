@@ -1,7 +1,9 @@
+#!/usr/bin/env bash
+
 echo "Run this script inside MinGW64 shell"
 
-cd $(dirname $0)/..
-repo="$(basename -s .git `git config --get remote.origin.url`)"
+cd "$(dirname $0)/.."
+repo="$(basename -s .git $(git config --get remote.origin.url))"
 
 echo "Build $repo on MinGW64."
 
@@ -20,3 +22,4 @@ cmake -G"Unix Makefiles" \
        ..
 
 make -j4
+

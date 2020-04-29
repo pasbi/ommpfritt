@@ -37,7 +37,7 @@ if __name__ == "__main__":
             help="The output directory.",
             required=True)
     args = parser.parse_args()
-    
+
     args.output = os.path.abspath(args.output)
     args.qrc = os.path.abspath(args.qrc)
 
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     with open(args.qrc, 'w') as f:
         f.write(generate_qrc([item for _, item in items]))
-    
+
     for category, item in items:
         command = [
             args.command,

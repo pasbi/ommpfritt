@@ -16,7 +16,7 @@ def collect(fn):
                 item = line.split(":")[0]
                 yield group, item
 
-def format(disambiguation, text):
+def format_line(disambiguation, text):
     def escape_cpp(text):
         return text.replace("\n", "\\n").replace("\\", "\\\\").replace("\"", "\\\"");
     disambiguation = escape_cpp(disambiguation)
@@ -32,7 +32,7 @@ if __name__ == "__main__":
             disambiguation = subdir + "/" + group
             items.add((disambiguation, item))
 
-    lines = [ format(disambiguation, text) for disambiguation, text in items ]
+    lines = [ format_line(disambiguation, text) for disambiguation, text in items ]
     lines = sorted(lines)
 
     fn = base_path + "/src/translations.h"

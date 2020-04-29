@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 forge() {
-  pushd $1 > /dev/null
+  pushd "$1" > /dev/null
   echo "" > CMakeLists.txt
 
   echo "file(GLOB SOURCES" >> CMakeLists.txt
@@ -23,7 +23,7 @@ forge() {
   for d in *; do
     if [ -d "$d" ]; then
       echo "add_subdirectory($d)" >> CMakeLists.txt
-      forge $d
+      forge "$d"
     fi
   done
   echo -e "" >> CMakeLists.txt
@@ -32,5 +32,5 @@ forge() {
   popd > /dev/null
 }
 
-forge $(dirname $0)/src
+forge "$(dirname $0)/src"
 

@@ -21,14 +21,8 @@ Vec2f get_scale(const Vec2f& pos, const Vec2f& delta, const Vec2f& direction)
       double s = new_pos / old_pos;
       s = std::pow(s, std::abs(constraint));
       return s;
-      if (std::abs(s) < 0.1) {
-        return std::copysign(1.0, s);
-      } else {
-        return s;
-      }
     }
   };
-  const Vec2f old_pos = pos - delta;
   const Vec2f d = direction / direction.euclidean_norm();
   return Vec2f(factor(pos.x, delta.x, d.x), factor(pos.y, delta.y, d.y));
 }
