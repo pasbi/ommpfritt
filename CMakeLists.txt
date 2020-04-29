@@ -12,6 +12,8 @@ set (CMAKE_AUTOUIC ON)
 set (OMMPFRITT_VERSION_MAJOR 1)
 set (OMMPFRITT_VERSION_MINOR 0)
 
+option(GENERATE_ICONS "There will be no icons in the application if this option is disabled." ON)
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_registers.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_translations.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_icons.cmake)
@@ -75,15 +77,22 @@ add_dependencies(ommpfritt-cli libommpfritt resources_cli)
 
 
 set(icons_qrc "${CMAKE_CURRENT_BINARY_DIR}/icons/icons.qrc")
-generate_icons("${icons_qrc}" "${classes};extra")
-add_dependencies(icons_png ommpfritt-cli)
+if (GENERATE_ICONS)
+  generate_icons("${icons_qrc}" "${classes};extra")
+  add_dependencies(icons_png ommpfritt-cli)
+endif()
 
 set(qrc_files "${qrc_files_cli}")
-list(APPEND qrc_files ${icons_qrc})
+if (GENERATE_ICONS)
+  list(APPEND qrc_files ${icons_qrc})
+endif()
 set(compiled_resource_file ${CMAKE_CURRENT_BINARY_DIR}/qrc_resources.cpp)
 generate_resources(resources ${compiled_resource_file} "${qrc_files}")
 add_dependencies(resources translations_qm)
-add_dependencies(resources ommpfritt-cli)
+
+if (GENERATE_ICONS)
+  add_dependencies(resources ommpfritt-cli)
+endif()
 
 add_executable(ommpfritt src/main.cpp "${compiled_resource_file}")
 add_dependencies(ommpfritt libommpfritt resources)
