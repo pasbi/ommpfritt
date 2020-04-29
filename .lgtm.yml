@@ -28,7 +28,7 @@ extraction:
       command:
         - mkdir build
         - cd build
-        - cmake -DCMAKE_BUILD_TYPE=Release -DQT_QM_PATH="/usr/share/qt5/translations/" ..
+        - cmake -DGENERATE_ICONS=off -DCMAKE_BUILD_TYPE=Release -DQT_QM_PATH="/usr/share/qt5/translations/" ..
     index:
       build_command:
         - cd build
