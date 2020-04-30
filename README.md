@@ -19,13 +19,13 @@ Primary use case is creating and editing (animated) info graphics, diagrams, ico
 
 ### Linux ([AppImage](https://appimage.org/))
 
--   Download the `.AppImage` file from https://github.com/pasbi/ommpfritt/releases/tag/continuous
+-   Download the [`.AppImage` file](https://github.com/pasbi/ommpfritt/releases/tag/continuous)
 -   Open a terminal in the directory where the file was downloaded and run `chmod a+x ommpfritt*.AppImage`
 -   Double click the `.AppImage` file in your file explorer (e.g. nautilus)
 
 ### Windows
 
--   Download the `.zip` file from https://github.com/pasbi/ommpfritt/releases/tag/v0.1.2
+-   Download the [`.zip`-file](https://github.com/pasbi/ommpfritt/releases/tag/v0.1.2)
 -   Extract the contents, go into the folder and double-click `ommpfritt.exe`
 
 ### macOS

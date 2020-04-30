@@ -39,7 +39,7 @@ Not tested, no problems expected.
 pacman -S gcc cmake python3 poppler-qt5 qt5-base qt5-imageformats qt5-svg qt5-translations qt5-tools
 ```
 
-2.   Clone and install [github.com/pybind/pybind11](pybind11). pacman also comes with `pybind11`-packages, however pybind11 is developing quickly. Maybe you have luck with the packages but I recommend installing it from github.
+2.   Clone and install [pybind11](github.com/pybind/pybind11). pacman also comes with `pybind11`-packages, however pybind11 is developing quickly. Maybe you have luck with the packages but I recommend installing it from github.
 3.   get omm: `git clone https://github.com/pasbi/ommpfritt`
 4.   configure it:
 
@@ -68,7 +68,7 @@ sudo apt install libgl-dev python3-dev libpoppler-qt5-dev g++-8
 ```
 
 2.  make the new Qt visible: `export PATH=/opt/qt512/bin/:$PATH`
-3.  get recent [cmake.org/download/](cmake binaries) and unpack them to some directory.
+3.  get recent [cmake binaries](cmake.org/download/) and unpack them to some directory.
 4.  get recent python:
 ```
 wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz
@@ -77,8 +77,8 @@ cd Python-3.7.0
 ./configure
 sudo make altinstall
 ```
-5.   clone and install (github.com/pybind/pybind11)[pybind11]
-6.   get (github.com/pasbi/ommpfritt)[ommpfritt]
+5.   clone and install [pybind11](github.com/pybind/pybind11)
+6.   get [ommpfritt](github.com/pasbi/ommpfritt)
 7.   configure it:
 ```
 cd ommpfritt
@@ -129,3 +129,4 @@ make
 ### Contributing to the build instructions
 
 Pull requests are welcome (both for new and existing platforms)!
+
