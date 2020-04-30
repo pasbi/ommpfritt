@@ -18,8 +18,9 @@ template<typename T> T* last(const std::vector<T*>& ts)
   return ts.size() == 0 ? nullptr : ts.back();
 }
 
-void drop_tags_onto_object( omm::Scene& scene, omm::Object& object,
-                            const std::vector<omm::Tag*>& tags, Qt::DropAction action )
+template<typename T> void drop_tags(omm::Scene& scene, omm::Object& object, omm::Tag* predecessor,
+                                    const std::vector<omm::Tag*>& tags, Qt::DropAction action,
+                                    T&& make_context )
 {
   if (tags.size() > 0) {
     switch (action) {
@@ -27,16 +28,24 @@ void drop_tags_onto_object( omm::Scene& scene, omm::Object& object,
     {
       auto macro = scene.history().start_macro(QObject::tr("copy tags", "ObjectTreeAdapter"));
       for (auto* tag : tags) {
-        scene.submit<AddTagCommand>(object.tags, tag->clone(object));
+        scene.submit<AddTagCommand>(object.tags, make_context(tag));
       }
       break;
     }
     case Qt::MoveAction:
-      scene.submit<omm::MoveTagsCommand>(tags, object, last(object.tags.ordered_items()));
+      scene.submit<omm::MoveTagsCommand>(tags, object, predecessor);
       break;
     default: break;
     }
   }
+}
+
+void drop_tags_onto_object( omm::Scene& scene, omm::Object& object,
+                            const std::vector<omm::Tag*>& tags, Qt::DropAction action )
+{
+
+  const auto make_context = [&object](const omm::Tag* tag) { return tag->clone(object); };
+  drop_tags(scene, object, last(object.tags.ordered_items()), tags, action, make_context);
 }
 
 void drop_tags_behind( omm::Scene& scene, omm::Object& object, omm::Tag* current_tag_predecessor,
@@ -45,23 +54,10 @@ void drop_tags_behind( omm::Scene& scene, omm::Object& object, omm::Tag* current
   if (current_tag_predecessor != nullptr && current_tag_predecessor->owner != &object) {
     current_tag_predecessor = last(object.tags.ordered_items());
   }
-  if (tags.size() > 0) {
-    switch (action) {
-    case Qt::CopyAction:
-    {
-      auto macro = scene.history().start_macro(QObject::tr("copy tags", "ObjectTreeAdapter"));
-      for (auto* tag : tags) {
-        omm::ListOwningContext<omm::Tag> context(tag->clone(object), current_tag_predecessor);
-        scene.submit<AddTagCommand>(object.tags, std::move(context));
-      }
-      break;
-    }
-    case Qt::MoveAction:
-      scene.submit<omm::MoveTagsCommand>(tags, object, current_tag_predecessor);
-      break;
-    default: break;
-    }
-  }
+  const auto make_context = [&object, current_tag_predecessor](const omm::Tag* tag) {
+    return omm::ListOwningContext<omm::Tag>(tag->clone(object), current_tag_predecessor);
+  };
+  drop_tags(scene, object, current_tag_predecessor, tags, action, make_context);
 }
 
 void drop_style_onto_object( omm::Scene& scene, omm::Object& object,

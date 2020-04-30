@@ -38,6 +38,28 @@
 namespace
 {
 
+template<typename PropertyT, typename PropertyOwners> std::set<PropertyT*>
+find_properties(const PropertyOwners& property_owners,
+                const std::function<bool(const typename PropertyT::value_type&)>& predicate)
+{
+  std::set<PropertyT*> properties;
+  for (const auto& property_owner : property_owners) {
+    const auto& property_map = property_owner->properties();
+    for (const auto& key : property_map.keys()) {
+      auto& property = *property_map.at(key);
+      if (property.type() == PropertyT::TYPE()) {
+        const auto variant = property.variant_value();
+        const auto* value = std::get_if<typename PropertyT::value_type>(&variant);
+        assert(value != nullptr);
+        if (predicate(*value)) {
+           properties.insert(static_cast<PropertyT*>(&property));
+        }
+      }
+    }
+  }
+  return properties;
+}
+
 template<typename StructureT, typename ItemsT>
 void remove_items(omm::Scene& scene, StructureT& structure, const ItemsT& selection)
 {
@@ -132,21 +154,9 @@ std::unique_ptr<CycleGuard> Scene::make_cycle_guard(const Object *guarded)
 std::set<ReferenceProperty*>
 Scene::find_reference_holders(const AbstractPropertyOwner& candidate) const
 {
-  std::set<ReferenceProperty*> reference_holders;
-  for (const auto& property_owner : property_owners()) {
-    const auto& property_map = property_owner->properties();
-    for (const auto& key : property_map.keys()) {
-      auto& property = *property_map.at(key);
-      using value_type = ReferenceProperty::value_type;
-      const auto variant = property.variant_value();
-      if (const auto* value = std::get_if<value_type>(&variant); value != nullptr) {
-        if (*value == &candidate) {
-          reference_holders.insert(static_cast<ReferenceProperty*>(&property));
-        }
-      }
-    }
-  }
-  return reference_holders;
+  return find_properties<ReferenceProperty>(property_owners(), [&candidate](auto&& reference) {
+    return reference == &candidate;
+  });
 }
 
 std::map<const AbstractPropertyOwner*, std::set<ReferenceProperty*>>
@@ -164,21 +174,9 @@ Scene::find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates
 
 std::set<ColorProperty*> Scene::find_named_color_holders(const QString& name) const
 {
-  std::set<ColorProperty*> properties;
-  for (const auto& property_owner : property_owners()) {
-    const auto& property_map = property_owner->properties();
-    for (const auto& key : property_map.keys()) {
-      auto& property = *property_map.at(key);
-      using value_type = ColorProperty::value_type;
-      const auto variant = property.variant_value();
-      if (const auto* value = std::get_if<value_type>(&variant); value != nullptr) {
-        if (value->model() == Color::Model::Named && value->name() == name) {
-          properties.insert(static_cast<ColorProperty*>(&property));
-        }
-      }
-    }
-  }
-  return properties;
+  return find_properties<ColorProperty>(property_owners(), [name](auto&& color) {
+    return color.model() == Color::Model::Named && color.name() == name;
+  });
 }
 
 bool Scene::save_as(const QString &filename)
