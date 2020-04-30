@@ -36,7 +36,7 @@ if __name__ == "__main__":
     for prefix in args.prefixes:
         for language in args.languages:
             items.append(f"{prefix}_{language}")
-    
+
     with open(args.qrc, 'w') as f:
         f.write(generate_qrc(items))
 
