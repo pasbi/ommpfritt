@@ -372,7 +372,7 @@ void Cloner::set_path(Object& object, std::size_t i)
     return;
   }
   const bool align = property(ALIGN_PROPERTY_KEY)->value<bool>();
-  const double t = get_t(i, o == nullptr ? false : !o->is_closed());
+  const double t = get_t(i, !o->is_closed());
   Point p = o->evaluate(t);
   if (property(ANCHOR_PROPERTY_KEY)->value<std::size_t>() == 0) {
     p = o->global_transformation(Space::Scene).apply(p);

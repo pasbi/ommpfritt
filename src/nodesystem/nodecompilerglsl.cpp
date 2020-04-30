@@ -233,9 +233,6 @@ QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines) con
 QString NodeCompilerGLSL::compile_connection(const OutputPort& op, const InputPort& ip,
                                              QStringList& lines) const
 {
-  const QString data_type = op.data_type();
-//  assert(data_type != NodeCompilerTypes::INVALID_TYPE);
-
   lines.append(format_connection(ip, op));
   return "";
 }

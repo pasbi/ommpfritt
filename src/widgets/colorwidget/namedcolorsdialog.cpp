@@ -120,7 +120,7 @@ void NamedColorsDialog::remove()
     }
 
     if (can_remove) {
-      auto macro = scene().history().start_macro(cmd->label());
+      [[maybe_unused]] auto macro = scene().history().start_macro(cmd->label());
       for (ColorProperty* property : properties) {
         Color color = property->value();
         color.to_ordinary_color();

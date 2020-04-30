@@ -447,7 +447,7 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
 {
   std::set<Property *> properties;
   if (can_remove(parent, selection, properties)) {
-    auto macro = history().start_macro(QObject::tr("Remove Selection"));
+    [[maybe_unused]] auto macro = history().start_macro(QObject::tr("Remove Selection"));
     if (properties.size() > 0) {
       using command_type = PropertiesCommand<ReferenceProperty>;
       submit<command_type>(properties, nullptr);

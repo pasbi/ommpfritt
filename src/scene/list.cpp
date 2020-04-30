@@ -68,8 +68,7 @@ template<typename T> size_t List<T>::position(const T& item) const
   });
 
   assert(it != m_items.end());
-  auto i = std::distance(m_items.begin(), it);
-  assert(i >= 0);
+  const auto i = std::distance(m_items.begin(), it);
   return static_cast<std::size_t>(i);
 }
 

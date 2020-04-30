@@ -56,7 +56,7 @@ void test_invariant_1( const std::vector<omm::Point>& initial_points,
   EXPECT_TRUE(path.points() == initial_points);
 }
 
-void test_invariant_2( const std::vector<omm::Point> initial_points,
+void test_invariant_2( const std::vector<omm::Point>& initial_points,
                        const std::vector<omm::Path::PointSequence>& sequences )
 {
   omm::Scene* scene = nullptr;

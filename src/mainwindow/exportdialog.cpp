@@ -32,7 +32,10 @@ public:
 class Line : public QFrame
 {
 public:
-  Line(QFrame::Shape shape) : QFrame() { setFrameShape(shape); setFrameShadow(QFrame::Sunken); }
+  explicit Line(QFrame::Shape shape) : QFrame()
+  {
+    setFrameShape(shape); setFrameShadow(QFrame::Sunken);
+  }
 };
 
 omm::Viewport& viewport() { return omm::Application::instance().main_window()->viewport(); }

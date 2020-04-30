@@ -45,7 +45,7 @@ protected:
   std::unique_ptr<Command> make_command(const QModelIndex& index, bool update_cache) override;
 
 private:
-  Object::Visibility m_new_value;
+  Object::Visibility m_new_value = Object::Visibility::Default;
 };
 
 class IsEnabledPropertyArea : public PropertyArea

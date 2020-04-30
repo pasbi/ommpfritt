@@ -24,7 +24,6 @@ const Node::Detail FragmentNode::detail {
 FragmentNode::FragmentNode(NodeModel& model)
   : Node(model)
 {
-  const QString category = tr("Node");
   m_input_port = &add_port<OrdinaryPort<PortType::Input>>(tr("color"));
 }
 

@@ -104,7 +104,6 @@ std::vector<double> Cubics::lengths() const
 
 double Cubics::length() const
 {
-  const auto lengths = this->lengths();
   return std::accumulate(m_lengths.begin(), m_lengths.end(), 0.0);
 }
 

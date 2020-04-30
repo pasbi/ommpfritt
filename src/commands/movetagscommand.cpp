@@ -15,7 +15,6 @@ auto make_new_contextes(std::vector<omm::Tag*> tags, omm::Object& owner, omm::Ta
 {
   return ::transform<omm::MoveTagContext>(tags, [&predecessor, &owner](omm::Tag* tag) {
     const auto context = omm::MoveTagContext(*tag, owner, predecessor);
-    predecessor = tag;
     return context;
   });
 }

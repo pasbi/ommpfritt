@@ -115,8 +115,9 @@ std::ostream& operator<<(std::ostream& ostream, const Point* pc)
 {
   if (pc == nullptr) {
     ostream << "Point[nullptr]";
+  } else {
+    ostream << *pc;
   }
-  ostream << *pc;
   return ostream;
 }
 

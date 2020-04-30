@@ -383,7 +383,7 @@ bool Application::perform_action(const QString& action_name)
       if (key == action_name) {
         const auto object_selection = scene.item_selection<Object>();
         if (!object_selection.empty()) {
-          auto macro = scene.history().start_macro(tr("Add Tag"));
+          [[maybe_unused]] auto macro = scene.history().start_macro(tr("Add Tag"));
           for (auto&& object : object_selection) {
             using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
             scene.submit<AddTagCommand>(object->tags, Tag::make(key, *object));

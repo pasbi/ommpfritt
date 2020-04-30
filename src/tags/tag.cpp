@@ -29,7 +29,7 @@ Tag::~Tag()
 std::ostream& operator<<(std::ostream& ostream, const Tag& tag)
 {
   ostream << tag.type() << "[" << tag.name() << "]";
-  return ostream;  return ostream;
+  return ostream;
 }
 
 Flag Tag::flags() const { return Flag::None; }

@@ -61,8 +61,6 @@ void KnifeTool::draw(Painter &renderer) const
 {
   SelectPointsBaseTool::draw(renderer);
   if (m_is_cutting) {
-    const auto line = std::vector { Point(m_mouse_press_pos), Point(m_mouse_move_pos) };
-
     renderer.painter->setPen(ui_color(HandleStatus::Active, "Handle", "foreground"));
     renderer.painter->drawLine(m_mouse_press_pos.x, m_mouse_press_pos.y,
                                m_mouse_move_pos.x, m_mouse_move_pos.y);

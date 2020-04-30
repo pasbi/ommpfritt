@@ -30,8 +30,8 @@ namespace
 
 QItemSelectionModel::SelectionFlag get_selection_flag(const QMouseEvent& event)
 {
-  return event.modifiers() & Qt::ControlModifier ? QItemSelectionModel::Deselect
-                                                 : QItemSelectionModel::Select;
+  return (event.modifiers() & Qt::ControlModifier) ? QItemSelectionModel::Deselect
+                                                   : QItemSelectionModel::Select;
 }
 
 }

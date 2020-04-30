@@ -7,7 +7,7 @@ namespace
 {
 
 std::vector<omm::AbstractPropertyOwner*>
-filter( const std::vector<omm::AbstractPropertyOwner*> items,
+filter( const std::vector<omm::AbstractPropertyOwner*>& items,
         omm::Kind kinds)
 {
   std::vector<omm::AbstractPropertyOwner*> filtered;
@@ -20,7 +20,7 @@ filter( const std::vector<omm::AbstractPropertyOwner*> items,
 }
 
 template<typename ItemType>
-std::vector<ItemType*> filter(const std::vector<omm::AbstractPropertyOwner*> items)
+std::vector<ItemType*> filter(const std::vector<omm::AbstractPropertyOwner*>& items)
 {
   const auto filtered = filter(items, ItemType::KIND);
   return ::transform<ItemType*>(filtered, [](auto item) { return static_cast<ItemType*>(item); });

@@ -317,7 +317,7 @@ bool TimelineCanvas::mouse_release(QMouseEvent& event)
                                                                  selected_frames, m_shift));
     }
     if (!commands.empty()) {
-      auto macro = animator.scene.history().start_macro(QObject::tr("Move knots"));
+      [[maybe_unused]] auto macro = animator.scene.history().start_macro(QObject::tr("Move knots"));
       for (auto&& command : commands) {
         animator.scene.submit(std::move(command));
       }

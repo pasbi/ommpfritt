@@ -177,7 +177,6 @@ SplineType::ControlPoint SplineWidget::knot_at(const QPoint& pos)
   const auto is_close = [this, pos](const auto& cp) {
     const QPointF d = this->transform().map(knot_pos(cp.iterator(), cp.side())) - pos;
     return QPointF::dotProduct(d, d) < closeness_threshold_px * closeness_threshold_px;
-    return false;
   };
 
   for (SplineType::ControlPoint cp = m_spline.begin(); cp.is_valid(); cp.advance()) {

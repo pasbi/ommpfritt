@@ -9,7 +9,7 @@ namespace
 
 struct Vertex
 {
-  Vertex(int id) : id(id) {}
+  explicit Vertex(int id) : id(id) {}
   std::set<Vertex*> successors;
   operator int() const { return id; }
   bool operator==(const Vertex& other) { return other.id == id; }

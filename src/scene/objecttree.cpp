@@ -68,7 +68,8 @@ void drop_style_onto_object( omm::Scene& scene, omm::Object& object,
                              const std::vector<omm::Style*>& styles )
 {
   if (styles.size() > 0) {
-    auto macro = scene.history().start_macro(QObject::tr("set styles tags", "ObjectTreeAdapter"));
+    const QString label = QObject::tr("set styles tags", "ObjectTreeAdapter");
+    [[maybe_unused]] auto macro = scene.history().start_macro(label);
     for (auto* style : styles) {
       auto style_tag = std::make_unique<omm::StyleTag>(object);
       style_tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY)->set(style);

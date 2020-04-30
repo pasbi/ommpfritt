@@ -139,7 +139,8 @@ variant_type Track::interpolate(double frame) const
     if (it->first <= frame) {
       left_frame = it->first;
       left = it->second.get();
-    } else if (it->first > frame) {
+    } else {
+      assert(it->first > frame);
       right_frame = it->first;
       right = it->second.get();
       break;

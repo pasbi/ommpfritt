@@ -119,7 +119,6 @@ variant_type python_to_variant(const pybind11::object& object, const QString& ty
     }
   } else if (type == "FloatVector") {
     return vector_from_pyobject<Vec2f>(object);
-    return Vec2f(object.cast<std::vector<double>>());
   } else if (type == "IntegerVector") {
     return vector_from_pyobject<Vec2i>(object);
   } else if (::contains(std::set{ "SplineType", "Reference" }, type)) {

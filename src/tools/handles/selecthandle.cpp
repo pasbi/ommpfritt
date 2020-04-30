@@ -195,14 +195,13 @@ transform_tangent(const Vec2f& delta, TangentMode mode, TangentHandle::Tangent t
   {
     auto& master_pos = tangent == TangentHandle::Tangent::Left ? new_point.left_tangent
                                                                : new_point.right_tangent;
-    auto& slave_pos  = tangent == TangentHandle::Tangent::Left ? new_point.right_tangent
-                                                               : new_point.left_tangent;
-
     const auto old_master_pos = master_pos;
     const auto transformation = ObjectTransformation().translated(delta);
     master_pos = transformation.transformed(this->transformation()).apply_to_position(master_pos);
     if (mode == TangentMode::Mirror && !(QGuiApplication::keyboardModifiers() & Qt::ShiftModifier))
     {
+      auto& slave_pos  = tangent == TangentHandle::Tangent::Left ? new_point.right_tangent
+                                                                 : new_point.left_tangent;
       slave_pos = Point::mirror_tangent(slave_pos, old_master_pos, master_pos);
     }
   }
