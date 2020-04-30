@@ -2,6 +2,10 @@
 
 [![Build Status](https://travis-ci.org/pasbi/ommpfritt.svg?branch=master)](https://travis-ci.org/pasbi/ommpfritt)
 [![Gitter](https://badges.gitter.im/ommpfritt/community.svg)](https://gitter.im/ommpfritt/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/pasbi/ommpfritt.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/pasbi/ommpfritt/alerts/)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/pasbi/ommpfritt.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/pasbi/ommpfritt/context:python)
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/pasbi/ommpfritt.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/pasbi/ommpfritt/context:cpp)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7c6bfee90e434bae8824a21de8e036fb)](https://www.codacy.com/manual/pasbi/ommpfritt?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pasbi/ommpfritt&amp;utm_campaign=Badge_Grade)
 
 *ommpfritt* or short *omm* is a free and open source vector modelling application.
 It brings the workflow of (3D) modelling tools to the 2D vector graphics world.
@@ -62,27 +66,27 @@ There is a [screencast on youtube](https://www.youtube.com/watch?v=6X5Lo7kq5eM) 
 
 ### Objects
 -   path object: any number of points, closed/open
-   - **bézier** mode: modify the tangents of any point individually
-   - **smooth** mode: tangents are set automatically
-   - **linear** mode: no tangents
-   - subdivide/remove points
+    - **bézier** mode: modify the tangents of any point individually
+    - **smooth** mode: tangents are set automatically
+    - **linear** mode: no tangents
+    - subdivide/remove points
 -   **procedural** path: control the points and tangents using python
 -   **ellipse**, **rectangle**, **line**
 -   **empty**: no geometry, but useful as group parent
 -   **image**: load JPG, PNG, SVG, PDF as object
 -   **instance**: all changes of the reference are updated in the instance-object, too
 -   **cloner**: many instances in a regular arrangement
-   - grid
-   - linear
-   - along any path
-   - radial
-   - by python script
+    - grid
+    - linear
+    - along any path
+    - radial
+    - by python script
 -   **mirror**
 -   **view**: define a view onto the scene for export
-   - set the export region comfortably within the editor
-   - adjust to viewport or vice versa
-   - switch between any number of self-defined views
-   - supports translation, scaling, rotation and shear
+    - set the export region comfortably within the editor
+    - adjust to viewport or vice versa
+    - switch between any number of self-defined views
+    - supports translation, scaling, rotation and shear
 
 ### Tags
 -   **path tag**: constrain position of any object to any path
