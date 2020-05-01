@@ -25,7 +25,7 @@
 -   dynamic **Named Colors**
 -   interactive OpenGL-Shaders
 
-[!styling](../sample-scenes/glshader.png)
+![styling](../sample-scenes/glshader.png)
 
 ## Objects
 -   path object: any number of points, closed/open
@@ -69,16 +69,16 @@
 -   Dope Sheet
 -   Seamless integration into undo/redo and multi-property- and multi-object-selection
 
-[!animation](../sample-scenes/animation.png)
+![animation](../sample-scenes/animation.png)
 
 ## Programmable
 -   **programmable**: every property can be controlled via embedded python scripting
 
-[python](../sample-scenes/python.png)
+![python](../sample-scenes/python.png)
 
 -   visual node-based scripting alternative
 
-[nodes](../sample-scenes/nodes.png)
+![nodes](../sample-scenes/nodes.png)
 
 -   user properties can be added at runtime to any object
 
