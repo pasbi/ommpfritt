@@ -1,0 +1,173 @@
+{
+    "animation": {
+        "current-frame": 92,
+        "end-frame": 100,
+        "filename-pattern": "",
+        "overwrite-file": true,
+        "play-mode": 0,
+        "start-frame": 1
+    },
+    "colors": [],
+    "root": {
+        "children": [
+            {
+                "children": [],
+                "id": 12249644710846474893,
+                "properties": [
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "viewport-visibility",
+                        "type": "OptionProperty",
+                        "value": 0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "visibility",
+                        "type": "OptionProperty",
+                        "value": 0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "is_active",
+                        "type": "BoolProperty",
+                        "value": true
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "name",
+                        "type": "StringProperty",
+                        "value": "ProceduralPath"
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "position",
+                        "type": "FloatVectorProperty",
+                        "value": [
+                            0.0,
+                            0.0
+                        ]
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "scale",
+                        "type": "FloatVectorProperty",
+                        "value": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "rotation",
+                        "type": "FloatProperty",
+                        "value": 0.0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "shear",
+                        "type": "FloatProperty",
+                        "value": 0.0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "code",
+                        "type": "StringProperty",
+                        "value": "import math\nimport numpy as np\n\nprint(\"Hello Python!\")\nfor i, p in enumerate(points):\n  r = {0: 10, 1: 40, 2: 100, 3: 40}[i % 4]\n  theta = i/len(points)*math.pi*2\n  pos = np.array([math.cos(theta),\n                  math.sin(theta)])\n  tangent = np.array([pos[1], -pos[0]])\n  p.set_position(r*pos)\n  print(i, pos)\n  r /= 10\n  p.set_left_tangent(r*tangent)\n  p.set_right_tangent(-r*tangent)\n"
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "count",
+                        "type": "IntegerProperty",
+                        "value": 10
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "closed",
+                        "type": "BoolProperty",
+                        "value": true
+                    }
+                ],
+                "tags": [],
+                "type": "ProceduralPath"
+            }
+        ],
+        "id": 8205071648709527265,
+        "properties": [
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "viewport-visibility",
+                "type": "OptionProperty",
+                "value": 0
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "visibility",
+                "type": "OptionProperty",
+                "value": 0
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "is_active",
+                "type": "BoolProperty",
+                "value": true
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "name",
+                "type": "StringProperty",
+                "value": "_root_"
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "position",
+                "type": "FloatVectorProperty",
+                "value": [
+                    309.3004068441389,
+                    309.78696679514405
+                ]
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "scale",
+                "type": "FloatVectorProperty",
+                "value": [
+                    3.3465809156731354,
+                    3.3465809156731354
+                ]
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "rotation",
+                "type": "FloatProperty",
+                "value": 0.0
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "shear",
+                "type": "FloatProperty",
+                "value": 0.0
+            }
+        ],
+        "tags": []
+    },
+    "styles": []
+}

@@ -1,0 +1,236 @@
+{
+    "animation": {
+        "current-frame": 21,
+        "end-frame": 100,
+        "filename-pattern": "",
+        "overwrite-file": true,
+        "play-mode": 0,
+        "start-frame": 1
+    },
+    "colors": [],
+    "root": {
+        "children": [
+            {
+                "children": [],
+                "id": 11657966089213757796,
+                "properties": [
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "viewport-visibility",
+                        "type": "OptionProperty",
+                        "value": 0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "visibility",
+                        "type": "OptionProperty",
+                        "value": 0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "is_active",
+                        "type": "BoolProperty",
+                        "value": true
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "name",
+                        "type": "StringProperty",
+                        "value": "Ellipse 0"
+                    },
+                    {
+                        "animatable": true,
+                        "animated": true,
+                        "key": "position",
+                        "track": {
+                            "interpolation": 1,
+                            "knots": [
+                                {
+                                    "frame": 7,
+                                    "left-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "right-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "value": [
+                                        -24.12706242497248,
+                                        0.0
+                                    ]
+                                },
+                                {
+                                    "frame": 96,
+                                    "left-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "right-value": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "value": [
+                                        16.810498543209462,
+                                        -14.380444716337081
+                                    ]
+                                }
+                            ],
+                            "type": "FloatVector"
+                        },
+                        "type": "FloatVectorProperty",
+                        "value": [
+                            -17.687446092898917,
+                            -2.262092427288979
+                        ]
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "scale",
+                        "type": "FloatVectorProperty",
+                        "value": [
+                            0.6000000000000001,
+                            0.9999999999999999
+                        ]
+                    },
+                    {
+                        "animatable": true,
+                        "animated": true,
+                        "key": "rotation",
+                        "track": {
+                            "interpolation": 1,
+                            "knots": [
+                                {
+                                    "frame": 7,
+                                    "left-value": 0.0,
+                                    "right-value": 0.0,
+                                    "value": 22.360642563818065
+                                },
+                                {
+                                    "frame": 21,
+                                    "left-value": 0.0,
+                                    "right-value": 0.0,
+                                    "value": -95.7122105142338
+                                },
+                                {
+                                    "frame": 96,
+                                    "left-value": 0.0,
+                                    "right-value": 0.0,
+                                    "value": 68.52483264812918
+                                }
+                            ],
+                            "type": "Float"
+                        },
+                        "type": "FloatProperty",
+                        "value": -95.7122105142338
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "shear",
+                        "type": "FloatProperty",
+                        "value": 0.0
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "r",
+                        "type": "FloatVectorProperty",
+                        "value": [
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "n",
+                        "type": "IntegerProperty",
+                        "value": 12
+                    },
+                    {
+                        "animatable": true,
+                        "animated": false,
+                        "key": "smooth",
+                        "type": "BoolProperty",
+                        "value": true
+                    }
+                ],
+                "tags": [],
+                "type": "Ellipse"
+            }
+        ],
+        "id": 14530128855743225119,
+        "properties": [
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "viewport-visibility",
+                "type": "OptionProperty",
+                "value": 0
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "visibility",
+                "type": "OptionProperty",
+                "value": 0
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "is_active",
+                "type": "BoolProperty",
+                "value": true
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "name",
+                "type": "StringProperty",
+                "value": "_root_"
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "position",
+                "type": "FloatVectorProperty",
+                "value": [
+                    968.8560921163163,
+                    467.2059867313434
+                ]
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "scale",
+                "type": "FloatVectorProperty",
+                "value": [
+                    46.79989657946607,
+                    46.79989657946579
+                ]
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "rotation",
+                "type": "FloatProperty",
+                "value": 0.0
+            },
+            {
+                "animatable": true,
+                "animated": false,
+                "key": "shear",
+                "type": "FloatProperty",
+                "value": 0.0
+            }
+        ],
+        "tags": []
+    },
+    "styles": []
+}
