@@ -12,9 +12,8 @@ You're of course welcome to solve one of the [brain twisters](https://github.com
 Currently *omm* is translated into
 -   English (complete)
 -   German (complete)
--   Spanish (incomplete)
-
-[New languages are welcome!](translate.md)
+-   Spanish ([incomplete](#-i-want-to-improve-existing-translation))
+-   [New languages are welcome!](#-i-want-to-translate-omm-into-a-new-language)
 
 ## Documentation
 There is no manual yet, the screen cast must be updated and improved.
