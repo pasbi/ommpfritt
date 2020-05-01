@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
-import datetime
 import json
 import sys
+import generated_file_header
 
 
 def ensure_list(list_or_string):
@@ -15,14 +15,9 @@ if __name__ == "__main__":
     with open(sys.argv[1], 'r') as f:
         spec = json.load(f)
 
-    timestamp = datetime.datetime.now().isoformat()
 
     with open(sys.argv[2], 'w') as f:
-        f.write("///////////////////////////////////////////\n")
-        f.write("// this file was auto generated.         //\n")
-        f.write(f"// {timestamp}            //\n")
-        f.write("// any changes will become overwritten.  //\n")
-        f.write("///////////////////////////////////////////\n")
+        f.write(generated_file_header.header())
         f.write("\n")
         for item in spec["items"]:
             for inc in ensure_list(spec["include"]):
@@ -44,4 +39,5 @@ if __name__ == "__main__":
                 f.write(line.format(clazz=spec["clazz"], item=item))
         f.write("}\n")
         f.write("}  // namespace\n")
+        f.write("\n")
 
