@@ -1420,6 +1420,22 @@ Borrar la selección de todos modos?</translation>
         <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>The verbosity (fatal|critical|warning|info|debug).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LEVEL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FILENAME</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>disable OpenGL. OpenGL is enabled by default when using the `%1&apos;-command.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -2050,6 +2066,10 @@ Borrar la selección de todos modos?</translation>
         <source>paste</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>InterpolateNode</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>keybindings/ObjectManager</name>
@@ -2465,10 +2485,6 @@ Borrar la selección de todos modos?</translation>
 </context>
 <context>
     <name>omm::FragmentNode</name>
-    <message>
-        <source>Node</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>color</source>
         <translation type="unfinished">Color</translation>
@@ -3140,15 +3156,7 @@ This cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>x-axis</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>object fill</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>y-axis</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3161,10 +3169,6 @@ This cannot be undone.</source>
     </message>
     <message>
         <source>band</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>rotate-ring</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3201,6 +3205,38 @@ This cannot be undone.</source>
     </message>
     <message>
         <source>background</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>camera-fill</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>camera-outline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>rotate-ring-fill</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>rotate-ring-outline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x-axis-fill</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x-axis-outline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>y-axis-fill</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>y-axis-outline</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3263,15 +3299,27 @@ This cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>port-Options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>port-Reference</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>port-String</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>grid-color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>port-Option</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>port-Spline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>statusbar-bg</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -1420,6 +1420,22 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
         <translation>Der Name des zu rendernden Objektes. Leer lassen um die ganze Szene zu rendern. Der Pfad muss nicht unbedingt eindeutig sein. In diesem Fall werden alle passenden Objekte gerendert. Perl-artige reguläre Ausdrücke werden unterstüzt.</translation>
     </message>
+    <message>
+        <source>The verbosity (fatal|critical|warning|info|debug).</source>
+        <translation>Grad der Ausführlichkeit (fatal|critical|warning|info|debug).</translation>
+    </message>
+    <message>
+        <source>LEVEL</source>
+        <translation>GRAD</translation>
+    </message>
+    <message>
+        <source>FILENAME</source>
+        <translation>DATEINAME</translation>
+    </message>
+    <message>
+        <source>disable OpenGL. OpenGL is enabled by default when using the `%1&apos;-command.</source>
+        <translation>OpenGL deaktivieren. OpenGL ist normalerweise akiviert, wenn der `%1&apos;-Befehl benutzt wird.</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -2050,6 +2066,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>paste</source>
         <translation>Einfügen</translation>
     </message>
+    <message>
+        <source>InterpolateNode</source>
+        <translation>Interpolation</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/ObjectManager</name>
@@ -2465,10 +2485,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
 </context>
 <context>
     <name>omm::FragmentNode</name>
-    <message>
-        <source>Node</source>
-        <translation>Node</translation>
-    </message>
     <message>
         <source>color</source>
         <translation>Farbe</translation>
@@ -3144,16 +3160,8 @@ Dies kann nicht rückgängig gemacht werden.</translation>
         <translation>Fordergrund</translation>
     </message>
     <message>
-        <source>x-axis</source>
-        <translation>X-Achse</translation>
-    </message>
-    <message>
         <source>object fill</source>
         <translation>Objekt Füllung</translation>
-    </message>
-    <message>
-        <source>y-axis</source>
-        <translation>Y-Achse</translation>
     </message>
     <message>
         <source>band fill</source>
@@ -3166,10 +3174,6 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     <message>
         <source>band</source>
         <translation>Band</translation>
-    </message>
-    <message>
-        <source>rotate-ring</source>
-        <translation>Rotationsring</translation>
     </message>
     <message>
         <source>point</source>
@@ -3206,6 +3210,38 @@ Dies kann nicht rückgängig gemacht werden.</translation>
     <message>
         <source>background</source>
         <translation>Hintergrund</translation>
+    </message>
+    <message>
+        <source>camera-fill</source>
+        <translation>Kamera Füllung</translation>
+    </message>
+    <message>
+        <source>camera-outline</source>
+        <translation>Kamera Umriß</translation>
+    </message>
+    <message>
+        <source>rotate-ring-fill</source>
+        <translation>Rotierring Füllung</translation>
+    </message>
+    <message>
+        <source>rotate-ring-outline</source>
+        <translation>Rotierring Umriß</translation>
+    </message>
+    <message>
+        <source>x-axis-fill</source>
+        <translation>X-Achse Füllung</translation>
+    </message>
+    <message>
+        <source>x-axis-outline</source>
+        <translation>X-Achse Umriß</translation>
+    </message>
+    <message>
+        <source>y-axis-fill</source>
+        <translation>Y-Achse Füllung</translation>
+    </message>
+    <message>
+        <source>y-axis-outline</source>
+        <translation>Y-Achse Umriß</translation>
     </message>
 </context>
 <context>
@@ -3267,16 +3303,28 @@ Dies kann nicht rückgängig gemacht werden.</translation>
         <translation>Ungültiger Port</translation>
     </message>
     <message>
-        <source>port-Options</source>
-        <translation>Options-Port</translation>
-    </message>
-    <message>
         <source>port-Reference</source>
         <translation>Referenz-Port</translation>
     </message>
     <message>
         <source>port-String</source>
         <translation>String-Port</translation>
+    </message>
+    <message>
+        <source>grid-color</source>
+        <translation>Netzfarbe</translation>
+    </message>
+    <message>
+        <source>port-Option</source>
+        <translation>Option-port</translation>
+    </message>
+    <message>
+        <source>port-Spline</source>
+        <translation>Spline-Port</translation>
+    </message>
+    <message>
+        <source>statusbar-bg</source>
+        <translation>Statusbar Hintergrund</translation>
     </message>
 </context>
 <context>

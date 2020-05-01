@@ -1420,6 +1420,22 @@ Remove the selected items anyway?</translation>
         <source>The name of the object to render. Keep clear to render the whole scene. The name does not need to be unique. In this case, all matching objects are rendered. Perl-like regular expressions are supported.</source>
         <translation>The name of the object to render. Keep clear to render the whole Scene. The path does not need to be unique. In this case, all matchings are rendered. Perl-like regular expressions are supported.</translation>
     </message>
+    <message>
+        <source>The verbosity (fatal|critical|warning|info|debug).</source>
+        <translation>The verbosity (fatal|critical|warning|info|debug).</translation>
+    </message>
+    <message>
+        <source>LEVEL</source>
+        <translation>LEVEL</translation>
+    </message>
+    <message>
+        <source>FILENAME</source>
+        <translation>FILENAME</translation>
+    </message>
+    <message>
+        <source>disable OpenGL. OpenGL is enabled by default when using the `%1&apos;-command.</source>
+        <translation>disable OpenGL. OpenGL is enabled by default when using the `%1&apos;-command.</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -2050,6 +2066,10 @@ Remove the selected items anyway?</translation>
         <source>paste</source>
         <translation>Paste</translation>
     </message>
+    <message>
+        <source>InterpolateNode</source>
+        <translation>Interpolation</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/ObjectManager</name>
@@ -2465,10 +2485,6 @@ Remove the selected items anyway?</translation>
 </context>
 <context>
     <name>omm::FragmentNode</name>
-    <message>
-        <source>Node</source>
-        <translation>Node</translation>
-    </message>
     <message>
         <source>color</source>
         <translation>Color</translation>
@@ -3144,16 +3160,8 @@ This cannot be undone.</translation>
         <translation>Foreground</translation>
     </message>
     <message>
-        <source>x-axis</source>
-        <translation>X-axis</translation>
-    </message>
-    <message>
         <source>object fill</source>
         <translation>Object fill</translation>
-    </message>
-    <message>
-        <source>y-axis</source>
-        <translation>Y-axis</translation>
     </message>
     <message>
         <source>band fill</source>
@@ -3166,10 +3174,6 @@ This cannot be undone.</translation>
     <message>
         <source>band</source>
         <translation>Band</translation>
-    </message>
-    <message>
-        <source>rotate-ring</source>
-        <translation>Rotate-ring</translation>
     </message>
     <message>
         <source>point</source>
@@ -3206,6 +3210,38 @@ This cannot be undone.</translation>
     <message>
         <source>background</source>
         <translation>Background</translation>
+    </message>
+    <message>
+        <source>camera-fill</source>
+        <translation>Camera fill</translation>
+    </message>
+    <message>
+        <source>camera-outline</source>
+        <translation>Camera outline</translation>
+    </message>
+    <message>
+        <source>rotate-ring-fill</source>
+        <translation>Rotate ring fill</translation>
+    </message>
+    <message>
+        <source>rotate-ring-outline</source>
+        <translation>Rotate ring outline</translation>
+    </message>
+    <message>
+        <source>x-axis-fill</source>
+        <translation>X-axis fill</translation>
+    </message>
+    <message>
+        <source>x-axis-outline</source>
+        <translation>X-axis outline</translation>
+    </message>
+    <message>
+        <source>y-axis-fill</source>
+        <translation>Y-axis fill</translation>
+    </message>
+    <message>
+        <source>y-axis-outline</source>
+        <translation>y-axis outline</translation>
     </message>
 </context>
 <context>
@@ -3267,16 +3303,28 @@ This cannot be undone.</translation>
         <translation>Invalid port</translation>
     </message>
     <message>
-        <source>port-Options</source>
-        <translation>Options port</translation>
-    </message>
-    <message>
         <source>port-Reference</source>
         <translation>Reference port</translation>
     </message>
     <message>
         <source>port-String</source>
         <translation>String port</translation>
+    </message>
+    <message>
+        <source>grid-color</source>
+        <translation>Grid color</translation>
+    </message>
+    <message>
+        <source>port-Option</source>
+        <translation>Option port</translation>
+    </message>
+    <message>
+        <source>port-Spline</source>
+        <translation>Spline port</translation>
+    </message>
+    <message>
+        <source>statusbar-bg</source>
+        <translation>Statusbar background</translation>
     </message>
 </context>
 <context>
