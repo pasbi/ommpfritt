@@ -1358,7 +1358,7 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Where to save the batch renderings. Use `%1` as framenumber placeholder.</source>
-        <translation>Where to save the batch rendering. Use `#1` as placeholder for the frame numbers.</translation>
+        <translation>Where to save the batch rendering. Use `%1` as placeholder for the frame numbers.</translation>
     </message>
     <message>
         <source>Overwrite existing files without warning.</source>
@@ -1816,10 +1816,6 @@ Remove the selected items anyway?</translation>
         <translation>Save</translation>
     </message>
     <message>
-        <source>save document as</source>
-        <translation>Save as ...</translation>
-    </message>
-    <message>
         <source>SelectObjectsTool</source>
         <translation>Select objects</translation>
     </message>
@@ -1932,10 +1928,6 @@ Remove the selected items anyway?</translation>
         <translation>Property manager</translation>
     </message>
     <message>
-        <source>load document</source>
-        <translation>Open ...</translation>
-    </message>
-    <message>
         <source>switch between object and point selection</source>
         <translation>Switch between object- and point-selection</translation>
     </message>
@@ -1982,6 +1974,14 @@ Remove the selected items anyway?</translation>
     <message>
         <source>new toolbar</source>
         <translation>New toolbar</translation>
+    </message>
+    <message>
+        <source>save document as ...</source>
+        <translation>Save scene as ...</translation>
+    </message>
+    <message>
+        <source>load document ...</source>
+        <translation>Load scene ...</translation>
     </message>
 </context>
 <context>
@@ -2970,7 +2970,7 @@ Do you want to convert them into ordinary colors?</numerusform>
     <name>omm::ReferencePropertyConfigWidget</name>
     <message>
         <source>Requirements:</source>
-        <translation>Requirements</translation>
+        <translation>Requirements:</translation>
     </message>
 </context>
 <context>

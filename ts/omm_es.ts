@@ -1816,10 +1816,6 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished">Guardar</translation>
     </message>
     <message>
-        <source>save document as</source>
-        <translation type="unfinished">Guardar como ...</translation>
-    </message>
-    <message>
         <source>SelectObjectsTool</source>
         <translation type="unfinished">Seleccionar objetos</translation>
     </message>
@@ -1932,10 +1928,6 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished">Controles de Atributos</translation>
     </message>
     <message>
-        <source>load document</source>
-        <translation type="unfinished">Abrir ...</translation>
-    </message>
-    <message>
         <source>switch between object and point selection</source>
         <translation type="unfinished">Cambiar entre la selección de objectos y puntos</translation>
     </message>
@@ -1981,6 +1973,14 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>new toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>save document as ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>load document ...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

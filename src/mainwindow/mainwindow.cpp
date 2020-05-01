@@ -115,8 +115,8 @@ std::vector<QString> MainWindow::main_menu_entries()
   std::list<QString> entries = {
     QT_TRANSLATE_NOOP("menu_name", "file")"/new document",
     "file/save document",
-    "file/save document as",
-    "file/load document",
+    "file/save document as ...",
+    "file/load document ...",
     "file/" QT_TRANSLATE_NOOP("menu_name", "load recent document") "/",
     QStringLiteral("file/") + KeyBindings::SEPARATOR,
     "file/export",

@@ -215,7 +215,7 @@
     </message>
     <message>
         <source>&amp;Resolution:</source>
-        <translation>&amp;Auflösung</translation>
+        <translation>&amp;Auflösung:</translation>
     </message>
     <message>
         <source>Still</source>
@@ -1358,7 +1358,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>Where to save the batch renderings. Use `%1` as framenumber placeholder.</source>
-        <translation>Wo die renderings gespeichert werden. Benutze `#1` als Platzhalter für die Frame-Nummer.</translation>
+        <translation>Wo die renderings gespeichert werden. Benutze `%1` als Platzhalter für die Frame-Nummer.</translation>
     </message>
     <message>
         <source>Overwrite existing files without warning.</source>
@@ -1456,7 +1456,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation>Stop</translation>
+       <translation>Stop</translation>
     </message>
 </context>
 <context>
@@ -1816,10 +1816,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Speichern</translation>
     </message>
     <message>
-        <source>save document as</source>
-        <translation>Speichern als ...</translation>
-    </message>
-    <message>
         <source>SelectObjectsTool</source>
         <translation>Objekte selektieren</translation>
     </message>
@@ -1932,10 +1928,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Eigenschaften-Manager</translation>
     </message>
     <message>
-        <source>load document</source>
-        <translation>Öffnen ...</translation>
-    </message>
-    <message>
         <source>switch between object and point selection</source>
         <translation>Zwischen Objekt- und Punk-Selektion wechseln</translation>
     </message>
@@ -1982,6 +1974,14 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>new toolbar</source>
         <translation>Neue Toolbar</translation>
+    </message>
+    <message>
+        <source>save document as ...</source>
+        <translation>Szene speichern als ...</translation>
+    </message>
+    <message>
+        <source>load document ...</source>
+        <translation>Szene laden ...</translation>
     </message>
 </context>
 <context>
@@ -2970,7 +2970,7 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <name>omm::ReferencePropertyConfigWidget</name>
     <message>
         <source>Requirements:</source>
-        <translation>Voraussetzungen</translation>
+        <translation>Voraussetzungen:</translation>
     </message>
 </context>
 <context>
