@@ -1456,7 +1456,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>Stop</source>
-       <translation>Stop</translation>
+        <translation>Stop</translation>
     </message>
 </context>
 <context>

@@ -299,9 +299,9 @@ bool Application::perform_action(const QString& action_name)
     reset();
   } else if (action_name == "save document") {
     save();
-  } else if (action_name == "save document as") {
+  } else if (action_name == "save document as ...") {
     save_as();
-  } else if (action_name == "load document") {
+  } else if (action_name == "load document ...") {
     load();
   } else if (action_name == "export") {
     static ExportDialog* export_dialog = nullptr;
