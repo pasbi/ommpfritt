@@ -1,45 +1,59 @@
 # Building ommpfritt
 
-## General Notes
+## Overview
 
-omm is very recent software. You need recent build tools and updated 3rd party libraries to build:
+*omm* uses the [cmake](cmake.org) build system generator.
+The sources contain
 
-### Compiler
+-    implementation (`*.cpp`), header (`*.h`) and interface files (`*.ui`).
+-    configuration files (`*.cfg`)
+-    translation files (`*.ts`)
+-    resource files (`*.qrc`)
+-    list files (`*.lst`)
+-    cmake files (`CMakeLists.txt`)
+
+Some implementation, header and resource files will be generated during the
+build process.
+That is an automated process and should not require any manual intervention.
+The process is described in [contribute.md](contribute.md) and in
+[`CMakeLists.txt`](../CMakeLists.txt).
+
+## Build environment
+
+*omm* is known to successfully compile and run on Arch Linux, Ubuntu Linux and 
+Windows/MSYS2.
+Neither building nor running on Mac has ever been tested, but it should work in theory!
 We recommend using **g++8.x** or later. g++7.x or earlier will not work.
 Building with a recent **clang** is possible (tested with 8.0.0).
-MSVC is not recommended until it implements c++17 reasonably well.
+A very recent Visual Studio might work, C++17 support is required.
 
 ### cmake
-**cmake 3.14** and later works. cmake 3.5 is too old.
-
-### Windows
-We recommend using a MSYS/MinGW environment to build omm on windows. Make sure that you meet all the requirements listed above.
-
-### Linux
-No extra notes. It just works. See [Examples](#examples).
-
-### Mac
-Not tested, no problems expected.
+**cmake 3.14** or later is required.
 
 ### Dependencies
 
--   Qt5.12 or later
--   python3.7
--   poppler
--   opengl
--   pybind11
+-   `Qt5.12` or later
+-   `python3.7`
+-   `poppler`
+-   `opengl`
+-   `pybind11`
 
 ## Examples
 
 ### Arch
 
-1.   Install the dependencies using pacman. They should be available in the required version.
+1.   Install the dependencies using `pacman`.
+They should be available in the required version.
 
 ```bash
 pacman -S gcc cmake python3 poppler-qt5 qt5-base qt5-imageformats qt5-svg qt5-translations qt5-tools
 ```
 
-2.   Clone and install [pybind11](github.com/pybind/pybind11). pacman also comes with `pybind11`-packages, however pybind11 is developing quickly. Maybe you have luck with the packages but I recommend installing it from github.
+2.   Clone and install [`pybind11`](github.com/pybind/pybind11).
+`pacman` also comes with `pybind11`-packages, however `pybind11` is developing
+quickly.
+Maybe you have luck with the packages but I recommend installing it from
+github.
 3.   get omm: `git clone https://github.com/pasbi/ommpfritt`
 4.   configure it:
 
@@ -56,7 +70,14 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 
 ### Ubuntu 16.04 Xenial
 
-If your ubuntu is more recent, you might be able to skip some of the steps. E.g., if you already have python3.7, Qt5.12, g++8, etc. installed, you don't need to install it again! (see e.g. instructions below for 19.04 Disco)
+[There is a build script](../build-scripts/build-omm-ubuntu.sh) which supports
+Xenial.
+Use it with care, it requires root and might damage your system.
+You are responsible!
+
+If your ubuntu is more recent, you might be able to skip some of the steps.
+E.g., if you already have python3.7, Qt5.12, g++8, etc. installed, you don't
+need to install it again! (see e.g. instructions below for 19.04 Disco)
 
 1.   install g++-8 and Qt:
 ```bash
@@ -68,7 +89,10 @@ sudo apt install libgl-dev python3-dev libpoppler-qt5-dev g++-8
 ```
 
 2.  make the new Qt visible: `export PATH=/opt/qt512/bin/:$PATH`
-3.  get recent [cmake binaries](cmake.org/download/) and unpack them to some directory.
+
+3.  get recent [cmake binaries](cmake.org/download/) and unpack them to some
+directory.
+
 4.  get recent python:
 ```bash
 wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz
@@ -77,8 +101,11 @@ cd Python-3.7.0
 ./configure
 sudo make altinstall
 ```
+
 5.   clone and install [pybind11](github.com/pybind/pybind11)
+
 6.   get [ommpfritt](github.com/pasbi/ommpfritt)
+
 7.   configure it:
 ```bash
 cd ommpfritt
@@ -90,16 +117,17 @@ cd build
                                 -DCMAKE_PREFIX_PATH=/opt/qt512 \
                                 ..
 ```
+
 8.   build it: `make`
+
 9.   run it: `./ommpfritt`
 
 ### Ubuntu 19.04 Disco Dingo
 
-At the time of writing this release of ubuntu provides all dependencies for
-ommpfritt at the right versions straight from the standard repositories.
-As these installation instructions were not put together on a completely fresh
-system, some necessary package install commands might be missing below (in that case
-you could speculatively try `sudo apt install build-essential python3-dev` and/or follow up to the error messages cmake gives you, which are usually very helpful - note down the missing file/library and google e.g. `ubuntu disco package <the-missing-thing>` to find out which package to `sudo apt install <the-required-package>`).
+[There is a build script](../build-scripts/build-omm-ubuntu.sh) which supports
+Disco.
+Use it with care, it requires root and might damage your system.
+You are responsible!
 
 #### Install dependencies
 
@@ -125,8 +153,4 @@ cmake -DCMAKE_BUILD_TYPE=Debug \
 make
 ./ommpfritt
 ```
-
-### Contributing to the build instructions
-
-Pull requests are welcome (both for new and existing platforms)!
 
