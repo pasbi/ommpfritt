@@ -269,7 +269,7 @@
     <name>KeyBindingsPage</name>
     <message>
         <source>Reset All</source>
-        <translation>Reset all</translation>
+        <translation>Alle zurücksetzen</translation>
     </message>
     <message>
         <source>name filter</source>
@@ -1520,7 +1520,7 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     </message>
     <message>
         <source>Reset All</source>
-        <translation>Reset all</translation>
+        <translation>Alle zurücksetzen</translation>
     </message>
 </context>
 <context>
@@ -3035,14 +3035,14 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
 <context>
     <name>omm::UiColorsPage</name>
     <message>
-        <source>Reset all key bindings</source>
-        <translation>Alle Tastaturbelegungen zurücksetzen</translation>
-    </message>
-    <message>
         <source>Do you really want to reset all colors for in the current color schema?
 This cannot be undone.</source>
         <translation>Möchten Sie wirklich alle Farben dieses Schemas auf den Standardwert zurücksetzen?
 Dies kann nicht rückgängig gemacht werden.</translation>
+    </message>
+    <message>
+        <source>Reset all colors</source>
+        <translation>Farben zurücksetzen</translation>
     </message>
 </context>
 <context>

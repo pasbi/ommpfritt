@@ -32,7 +32,7 @@ UiColorsPage::UiColorsPage(UiColors& colors)
 #endif
 
   connect(m_ui->pb_reset, &QPushButton::clicked, this, [this]() {
-    if (QMessageBox::question(this, tr("Reset all key bindings"),
+    if (QMessageBox::question(this, tr("Reset all colors"),
         tr("Do you really want to reset all colors for in the current color schema?\nThis cannot be undone."))
         == QMessageBox::Yes)
     {

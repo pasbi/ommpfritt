@@ -3032,12 +3032,12 @@ Do you want to convert them into ordinary colors?</source>
 <context>
     <name>omm::UiColorsPage</name>
     <message>
-        <source>Reset all key bindings</source>
+        <source>Do you really want to reset all colors for in the current color schema?
+This cannot be undone.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Do you really want to reset all colors for in the current color schema?
-This cannot be undone.</source>
+        <source>Reset all colors</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

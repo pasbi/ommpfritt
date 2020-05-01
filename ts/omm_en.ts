@@ -269,7 +269,7 @@
     <name>KeyBindingsPage</name>
     <message>
         <source>Reset All</source>
-        <translation>Alle zurücksetzen</translation>
+        <translation>Reset all</translation>
     </message>
     <message>
         <source>name filter</source>
@@ -1520,7 +1520,7 @@ Remove the selected items anyway?</translation>
     </message>
     <message>
         <source>Reset All</source>
-        <translation>Alle zurücksetzen</translation>
+        <translation>Reset all</translation>
     </message>
 </context>
 <context>
@@ -3035,14 +3035,14 @@ Do you want to convert them into ordinary colors?</numerusform>
 <context>
     <name>omm::UiColorsPage</name>
     <message>
-        <source>Reset all key bindings</source>
-        <translation>Reset all key bindings</translation>
-    </message>
-    <message>
         <source>Do you really want to reset all colors for in the current color schema?
 This cannot be undone.</source>
         <translation>Do you really want to reset all colors for in the current color schema?
 This cannot be undone.</translation>
+    </message>
+    <message>
+        <source>Reset all colors</source>
+        <translation>Reset colors</translation>
     </message>
 </context>
 <context>
