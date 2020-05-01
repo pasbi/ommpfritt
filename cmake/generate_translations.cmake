@@ -11,7 +11,7 @@ function(generate_translations translations_qrc ts_dir languages prefixes)
 
     add_custom_command(
         OUTPUT "${translations_h}" ${ts_files}
-        DEPENDS "${CFG_FILES}" "${script}" ${TS_SOURCES}
+        DEPENDS ${CFG_FILES} "${script}" ${TS_SOURCES}
         COMMAND_EXPAND_LISTS
         COMMAND touch /tmp/x
         COMMAND Python3::Interpreter "${script}"
