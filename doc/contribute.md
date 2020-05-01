@@ -14,7 +14,7 @@ Currently *omm* is translated into
 -   German (complete)
 -   Spanish (incomplete)
 
-[New languages are welcome!](doc/translate.md)
+[New languages are welcome!](translate.md)
 
 ## Documentation
 There is no manual yet, the screen cast must be updated and improved.
