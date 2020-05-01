@@ -12,7 +12,7 @@ It brings the workflow of (3D) modelling tools to the 2D vector graphics world.
 The design of the application encourages and supports the user to produce maintainable documents,
 using concepts like procedural modelling and non-destructive editing.
 
-The concept lies in between traditional vector graphic editors (e.g., _inkscape_), CAD applications
+The concept lies in between traditional vector graphic editors (e.g., *inkscape*), CAD applications
 and (3D) modelling tools.
 
 Primary use case is creating and editing (animated) info graphics, diagrams, icons and semi-technical drawings.
@@ -66,27 +66,27 @@ There is a [screencast on youtube](https://www.youtube.com/watch?v=6X5Lo7kq5eM) 
 
 ### Objects
 -   path object: any number of points, closed/open
-    - **bézier** mode: modify the tangents of any point individually
-    - **smooth** mode: tangents are set automatically
-    - **linear** mode: no tangents
-    - subdivide/remove points
+    -   **bézier** mode: modify the tangents of any point individually
+    -   **smooth** mode: tangents are set automatically
+    -   **linear** mode: no tangents
+    -   subdivide/remove points
 -   **procedural** path: control the points and tangents using python
 -   **ellipse**, **rectangle**, **line**
 -   **empty**: no geometry, but useful as group parent
 -   **image**: load JPG, PNG, SVG, PDF as object
 -   **instance**: all changes of the reference are updated in the instance-object, too
 -   **cloner**: many instances in a regular arrangement
-    - grid
-    - linear
-    - along any path
-    - radial
-    - by python script
+    -   grid
+    -   linear
+    -   along any path
+    -   radial
+    -   by python script
 -   **mirror**
 -   **view**: define a view onto the scene for export
-    - set the export region comfortably within the editor
-    - adjust to viewport or vice versa
-    - switch between any number of self-defined views
-    - supports translation, scaling, rotation and shear
+    -   set the export region comfortably within the editor
+    -   adjust to viewport or vice versa
+    -   switch between any number of self-defined views
+    -   supports translation, scaling, rotation and shear
 
 ### Tags
 -   **path tag**: constrain position of any object to any path
@@ -117,3 +117,4 @@ Currently we're looking for
 ## Building
 
 see [build.md](build.md)
+

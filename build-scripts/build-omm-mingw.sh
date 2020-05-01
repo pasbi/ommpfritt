@@ -2,7 +2,7 @@
 
 echo "Run this script inside MinGW64 shell"
 
-cd "$(dirname $0)/.."
+cd "$(dirname "$0")/.."
 repo="$(basename -s .git $(git config --get remote.origin.url))"
 
 echo "Build $repo on MinGW64."

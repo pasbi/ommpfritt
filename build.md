@@ -35,7 +35,7 @@ Not tested, no problems expected.
 
 1.   Install the dependencies using pacman. They should be available in the required version.
 
-```
+```bash
 pacman -S gcc cmake python3 poppler-qt5 qt5-base qt5-imageformats qt5-svg qt5-translations qt5-tools
 ```
 
@@ -43,7 +43,7 @@ pacman -S gcc cmake python3 poppler-qt5 qt5-base qt5-imageformats qt5-svg qt5-tr
 3.   get omm: `git clone https://github.com/pasbi/ommpfritt`
 4.   configure it:
 
-```
+```bash
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release \
@@ -59,7 +59,7 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 If your ubuntu is more recent, you might be able to skip some of the steps. E.g., if you already have python3.7, Qt5.12, g++8, etc. installed, you don't need to install it again! (see e.g. instructions below for 19.04 Disco)
 
 1.   install g++-8 and Qt:
-```
+```bash
 sudo apt-add-repository ppa:ubuntu-toolchain-r/test
 sudo apt-add-repository ppa:beineri/opt-qt-5.12.3-xenial
 sudo apt update
@@ -70,7 +70,7 @@ sudo apt install libgl-dev python3-dev libpoppler-qt5-dev g++-8
 2.  make the new Qt visible: `export PATH=/opt/qt512/bin/:$PATH`
 3.  get recent [cmake binaries](cmake.org/download/) and unpack them to some directory.
 4.  get recent python:
-```
+```bash
 wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz
 tar xvf Python-3.7.0.tar.xz
 cd Python-3.7.0
@@ -80,7 +80,7 @@ sudo make altinstall
 5.   clone and install [pybind11](github.com/pybind/pybind11)
 6.   get [ommpfritt](github.com/pasbi/ommpfritt)
 7.   configure it:
-```
+```bash
 cd ommpfritt
 mkdir build
 cd build
