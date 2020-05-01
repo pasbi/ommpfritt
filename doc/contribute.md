@@ -130,9 +130,9 @@ you must add a (possibly empty) key binding to
 Properties, however, work slightly different.
 Each property of type `X` requires the definition of three classes:
 
--   XProperty
--   XPropertyWidget
--   XPropertyConfigWidget
+-   `XProperty`
+-   `XPropertyWidget`
+-   `XPropertyConfigWidget`
 
 However, only the `XProperty` needs to be added to the
 [`properties.lst`](../lists/properties.lst).
