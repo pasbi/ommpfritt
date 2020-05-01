@@ -21,7 +21,7 @@ still graphics, diagrams, icons and drawings.
 
 ![screenshot](sample-scenes/basic.png)
 
-## How to Get it?
+## How to Get It
 
 *omm* is [free](https://en.wikipedia.org/wiki/Free_software).
 You can get it's source from [github](https://github.com/pasbi/ommpfritt) and

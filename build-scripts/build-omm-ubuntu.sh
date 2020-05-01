@@ -2,7 +2,7 @@
 
 set -e
 
-cd "$(dirname $0)/.."
+cd $(dirname "$0")/..
 
 dist="$(lsb_release -cs)"
 repo="$(basename -s .git $(git config --get remote.origin.url))"

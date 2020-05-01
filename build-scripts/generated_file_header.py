@@ -3,8 +3,6 @@ import sys
 
 
 def header():
-    timestamp = datetime.datetime.now().isoformat()
-
     return f"""\
 /**
  * Created by {sys.argv[0]}

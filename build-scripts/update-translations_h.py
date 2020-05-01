@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-import sys
-import glob
 import argparse
 import generated_file_header
 
