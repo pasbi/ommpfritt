@@ -1,5 +1,3 @@
-#pragma once
-
 #include "nodesystem/nodes/referencenode.h"
 #include "scene/messagebox.h"
 #include "commands/forwardingportcommand.h"
