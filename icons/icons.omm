@@ -319,6 +319,141 @@
                     },
                     {
                         "children": [],
+                        "id": 14378140305558211068,
+                        "properties": [
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "viewport-visibility",
+                                "type": "OptionProperty",
+                                "value": 1
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "visibility",
+                                "type": "OptionProperty",
+                                "value": 1
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "is_active",
+                                "type": "BoolProperty",
+                                "value": true
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "name",
+                                "type": "StringProperty",
+                                "value": "ProceduralPath"
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "position",
+                                "type": "FloatVectorProperty",
+                                "value": [
+                                    -10.647908060371265,
+                                    -5.684341886080802e-14
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "scale",
+                                "type": "FloatVectorProperty",
+                                "value": [
+                                    0.6249421724723997,
+                                    0.6249421724723995
+                                ]
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "rotation",
+                                "type": "FloatProperty",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "shear",
+                                "type": "FloatProperty",
+                                "value": 0.0
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "code",
+                                "type": "StringProperty",
+                                "value": "import math\nimport numpy as np\n\nfor i, p in enumerate(points):\n  r = 50 if i % 2 else 200\n  theta = i/len(points)*math.pi*2\n  pos = np.array([math.cos(theta), math.sin(theta)])\n  tangent = np.array([pos[1], -pos[0]])\n  p.set_position(r*pos)\n  r /= 10\n  p.set_left_tangent(r*tangent)\n  p.set_right_tangent(-r*tangent)\n"
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "count",
+                                "type": "IntegerProperty",
+                                "value": 10
+                            },
+                            {
+                                "animatable": true,
+                                "animated": false,
+                                "key": "closed",
+                                "type": "BoolProperty",
+                                "value": true
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "id": 16893829389173397027,
+                                "properties": [
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "name",
+                                        "type": "StringProperty",
+                                        "value": "StyleTag 0"
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "filter": {
+                                            "flag": {
+                                                "terms": [
+                                                    {
+                                                        "terms": []
+                                                    }
+                                                ]
+                                            },
+                                            "kind": {
+                                                "terms": [
+                                                    {
+                                                        "i": 1,
+                                                        "v": true
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "key": "style",
+                                        "type": "ReferenceProperty",
+                                        "value": 94472847672064
+                                    },
+                                    {
+                                        "animatable": true,
+                                        "animated": false,
+                                        "key": "edit-style",
+                                        "type": "TriggerProperty"
+                                    }
+                                ],
+                                "type": "StyleTag"
+                            }
+                        ],
+                        "type": "ProceduralPath"
+                    },
+                    {
+                        "children": [],
                         "id": 94472848487760,
                         "properties": [
                             {
@@ -9207,8 +9342,8 @@
                 "key": "position",
                 "type": "FloatVectorProperty",
                 "value": [
-                    769.0,
-                    354.0
+                    469.5,
+                    400.5
                 ]
             },
             {
