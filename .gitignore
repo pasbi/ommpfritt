@@ -4,3 +4,5 @@ build
 compile_commands.json
 .vs
 **/CMakeLists.txt.user.*
+**/__pycache__/
+
