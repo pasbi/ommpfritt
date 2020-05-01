@@ -52,7 +52,6 @@ find_package(Qt5 COMPONENTS LinguistTools)
 
 find_package(KF5ItemModels REQUIRED)
 
-file(GLOB_RECURSE TS_SOURCES "*.cpp" "*.h" "*.ui")
 SET(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
 SET(qrc_translations_cpp "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
 list(APPEND languages de en es)

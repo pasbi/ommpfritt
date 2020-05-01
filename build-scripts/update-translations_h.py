@@ -3,6 +3,8 @@
 import os
 import sys
 import glob
+import argparse
+import generated_file_header
 
 def collect(fn):
     with open(fn) as f:
@@ -24,9 +26,12 @@ def format_line(disambiguation, text):
     return f'QT_TRANSLATE_NOOP("{disambiguation}", "{text}");'
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", required=True, help="The output file. (should end on '.h')")
+    parser.add_argument("--input", required=True, help="The input files.", nargs='+')
+    args = parser.parse_args()
     items = set()
-    base_path = os.path.dirname(sys.argv[0]) + "/.."
-    for fn in glob.glob(base_path + '/**/*.cfg', recursive=True):
+    for fn in args.input:
         subdir = os.path.split(os.path.dirname(os.path.abspath(fn)))[1]
         for group, item in collect(fn):
             disambiguation = subdir + "/" + group
@@ -35,12 +40,11 @@ if __name__ == "__main__":
     lines = [ format_line(disambiguation, text) for disambiguation, text in items ]
     lines = sorted(lines)
 
-    fn = base_path + "/src/translations.h"
-    print(f"Writing translations into '{fn}'...")
-    with open(fn, 'w') as f:
+    print(f"Writing translations into '{args.output}'...")
+    with open(args.output, 'w') as f:
+        f.write(generated_file_header.header())
         for line in lines:
             f.write(line + "\n")
+        f.write("\n")
         print("done.")
-
-
 
