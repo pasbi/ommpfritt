@@ -209,9 +209,8 @@ bool Scene::save_as(const QString &filename)
 
 bool Scene::load_from(const QString &filename)
 {
-  assert(selection().size() == 0);
-  prepare_reset();
-  history().reset();
+  reset();
+
   std::ifstream ifstream(filename.toStdString());
   if (!ifstream) {
     LERROR << "Failed to open '" << filename << "'.";
@@ -221,7 +220,6 @@ bool Scene::load_from(const QString &filename)
   auto error_handler = [this, filename](const QString& msg) {
     LERROR << "Failed to deserialize file at '" << filename << "'.";
     LINFO << msg;
-    animator().invalidate();
     reset();
   };
 
@@ -242,7 +240,6 @@ bool Scene::load_from(const QString &filename)
       styles.push_back(std::move(style));
     }
 
-    set_selection({});
     m_filename = filename;
     history().set_saved_index();
     Q_EMIT message_box().filename_changed();
@@ -269,7 +266,7 @@ bool Scene::load_from(const QString &filename)
 
 void Scene::reset()
 {
-  assert(selection().size() == 0);
+  set_selection({});
   prepare_reset();
   history().reset();
   history().set_saved_index();

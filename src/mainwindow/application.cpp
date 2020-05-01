@@ -260,7 +260,6 @@ void Application::reset()
 void Application::load(const QString& filename, bool force)
 {
   if (force || can_close()) {
-    scene.set_selection({});
     QTimer::singleShot(0, [this, filename]() {
       if (!scene.load_from(filename)) {
         QMessageBox::critical( m_main_window,

@@ -36,6 +36,7 @@ CurveManager::CurveManager(Scene& scene)
 
 bool CurveManager::perform_action(const QString& name)
 {
+  Q_UNUSED(name)
   return false;
 }
 
