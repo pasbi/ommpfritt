@@ -1,4 +1,5 @@
 #include "nodesystem/nodemodel.h"
+#include "mainwindow/application.h"
 #include "serializers/jsonserializer.h"
 #include "scene/scene.h"
 #include "scene/messagebox.h"
@@ -36,6 +37,16 @@ NodeModel::NodeModel(AbstractNodeCompiler::Language language, Scene& scene)
   : m_scene(scene), m_compiler(make_compiler(language, *this))
 {
   init();
+}
+
+std::unique_ptr<NodeModel> NodeModel::make(AbstractNodeCompiler::Language language, Scene& scene)
+{
+  const bool no_opengl = !Application::instance().options().have_opengl;
+  if (language == AbstractNodeCompiler::Language::GLSL && no_opengl) {
+    return nullptr;
+  } else {
+    return std::make_unique<NodeModel>(language, scene);
+  }
 }
 
 NodeModel::NodeModel(const NodeModel& other)

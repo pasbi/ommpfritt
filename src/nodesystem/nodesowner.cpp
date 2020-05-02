@@ -8,9 +8,7 @@ namespace omm
 {
 
 NodesOwner::NodesOwner(AbstractNodeCompiler::Language language, Scene& scene)
-  : m_node_model(Application::instance().options().have_opengl
-                   ? std::make_unique<NodeModel>(language, scene)
-                   : nullptr)
+  : m_node_model(NodeModel::make(language, scene))
 {
 }
 

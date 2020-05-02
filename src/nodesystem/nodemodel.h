@@ -25,6 +25,7 @@ class NodeModel : public QObject, public Serializable
   Q_OBJECT
 public:
   explicit NodeModel(AbstractNodeCompiler::Language language, Scene& scene);
+  static std::unique_ptr<NodeModel> make(AbstractNodeCompiler::Language language, Scene& scene);
   NodeModel(const NodeModel& other);
   ~NodeModel();
 
