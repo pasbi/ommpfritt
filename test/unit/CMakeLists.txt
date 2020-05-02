@@ -13,13 +13,5 @@ FILE(GLOB SRC_FILES
   "toolbartest.cpp"
 )
 
-# Add executable
-add_executable(ommpfritt_unit_tests ${SRC_FILES} ${compiled_resource_file_cli})
-
-# Link ommpfritt
-target_link_libraries(ommpfritt_unit_tests libommpfritt)
-
-# Link gtest
-target_link_libraries(ommpfritt_unit_tests gtest)
-target_link_libraries(ommpfritt_unit_tests gtest_main)
+target_sources(ommpfritt_unit_tests PRIVATE ${SRC_FILES} ${compiled_resource_file_cli})
 include_directories(${gtest_SOURCE_DIR}/include)

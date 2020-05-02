@@ -66,19 +66,10 @@ set(qrc_files_cli
 )
 set(compiled_resource_file_cli ${CMAKE_CURRENT_BINARY_DIR}/qrc_resources_cli.cpp)
 generate_resources(resources_cli ${compiled_resource_file_cli} "${qrc_files_cli}")
-add_dependencies(resources_cli translations_qm)
-
-add_library(libommpfritt)
-add_dependencies(libommpfritt registers)
-
-add_executable(ommpfritt-cli src/maincli.cpp "${compiled_resource_file_cli}")
-add_dependencies(ommpfritt-cli libommpfritt resources_cli)
-
 
 set(icons_qrc "${CMAKE_CURRENT_BINARY_DIR}/icons/icons.qrc")
 if (GENERATE_ICONS)
   generate_icons("${icons_qrc}" "${classes};extra")
-  add_dependencies(icons_png ommpfritt-cli)
 endif()
 
 set(qrc_files "${qrc_files_cli}")
@@ -87,14 +78,22 @@ if (GENERATE_ICONS)
 endif()
 set(compiled_resource_file ${CMAKE_CURRENT_BINARY_DIR}/qrc_resources.cpp)
 generate_resources(resources ${compiled_resource_file} "${qrc_files}")
-add_dependencies(resources translations_qm)
+
+add_library(libommpfritt)
+add_executable(ommpfritt-cli src/maincli.cpp "${compiled_resource_file_cli}")
+add_executable(ommpfritt src/main.cpp "${compiled_resource_file}")
+add_executable(ommpfritt_unit_tests)
 
 if (GENERATE_ICONS)
   add_dependencies(resources ommpfritt-cli)
+  add_dependencies(icons_png ommpfritt-cli)
 endif()
-
-add_executable(ommpfritt src/main.cpp "${compiled_resource_file}")
+add_dependencies(resources_cli translations_qm)
+add_dependencies(resources translations_qm)
+add_dependencies(libommpfritt registers)
 add_dependencies(ommpfritt libommpfritt resources)
+add_dependencies(ommpfritt_unit_tests resources_cli)
+add_dependencies(ommpfritt-cli libommpfritt resources_cli)
 
 target_compile_features(libommpfritt PUBLIC cxx_std_17)
 target_link_libraries(libommpfritt ${PYTHON_LIBRARIES})
@@ -103,6 +102,12 @@ target_link_libraries(libommpfritt Qt5::Widgets Qt5::Svg)
 target_link_libraries(libommpfritt poppler-qt5)
 target_link_libraries(libommpfritt -lpthread -lm)
 target_link_libraries(libommpfritt KF5ItemModels)
+target_link_libraries(ommpfritt libommpfritt)
+target_link_libraries(ommpfritt-cli libommpfritt)
+target_link_libraries(ommpfritt_unit_tests libommpfritt)
+target_link_libraries(ommpfritt_unit_tests gtest)
+target_link_libraries(ommpfritt_unit_tests gtest_main)
+
 if (WIN32)
   target_link_libraries(libommpfritt -lopengl32)
 else()
@@ -113,9 +118,17 @@ endif()
 add_subdirectory(src)
 add_subdirectory(test)
 
-target_link_libraries(ommpfritt libommpfritt)
-target_link_libraries(ommpfritt-cli libommpfritt)
+install(
+    TARGETS ommpfritt
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib/static
+)
 
-install(TARGETS ommpfritt RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib/static)
-install(TARGETS libommpfritt RUNTIME DESTINATION bin LIBRARY DESTINATION lib ARCHIVE DESTINATION lib/static)
+install(
+    TARGETS libommpfritt
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib/static
+)
 
