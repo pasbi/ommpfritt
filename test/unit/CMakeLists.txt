@@ -4,6 +4,7 @@ FILE(GLOB SRC_FILES
   "common.cpp"
   "dnftest.cpp"
   "geometry.cpp"
+  "application.cpp"
   "path.cpp"
   "propertytest.cpp"
   "main.cpp"
@@ -13,7 +14,7 @@ FILE(GLOB SRC_FILES
 )
 
 # Add executable
-add_executable(ommpfritt_unit_tests ${SRC_FILES})
+add_executable(ommpfritt_unit_tests ${SRC_FILES} ${compiled_resource_file_cli})
 
 # Link ommpfritt
 target_link_libraries(ommpfritt_unit_tests libommpfritt)
