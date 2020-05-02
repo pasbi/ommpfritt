@@ -42,8 +42,11 @@ void StyleListView::set_selection(const std::set<Style*>& selection)
 
 void StyleListView::mouseDoubleClickEvent(QMouseEvent* event)
 {
-  Q_UNUSED(event);
-  Application::instance().perform_action("new style");
+  if (indexAt(event->pos()).isValid()) {
+    ManagerItemView::mouseDoubleClickEvent(event);
+  } else {
+    Application::instance().perform_action("new style");
+  }
 }
 
 }  // namespace omm
