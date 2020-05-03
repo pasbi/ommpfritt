@@ -29,6 +29,7 @@ StyleListView::StyleListView(StyleList& model)
   // The style delegate simply styles the ListMode such that it looks like IconMode.
   setItemDelegate(&m_item_delegate);
   connect(&model, &StyleList::modelReset, this, &StyleListView::update_text_height);
+  connect(&model, &StyleList::rowsInserted, this, &StyleListView::update_text_height);
 }
 
 void StyleListView::mouseReleaseEvent(QMouseEvent *e)
