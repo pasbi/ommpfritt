@@ -1,4 +1,5 @@
 #include "managers/curvemanager/curvemanagerwidget.h"
+#include "properties/numericproperty.h"
 #include "managers/panzoomcontroller.h"
 #include "managers/curvemanager/curvetree.h"
 #include "properties/property.h"
@@ -16,6 +17,12 @@
 
 namespace
 {
+
+double multiplier(const omm::Track& track)
+{
+  const auto value = track.property().configuration[omm::NumericPropertyDetail::MULTIPLIER_POINTER];
+  return std::get<double>(value);
+}
 
 void draw_rubberband(QPainter& painter, const QWidget& widget, const QRectF& rect)
 {
@@ -188,7 +195,7 @@ void CurveManagerWidget::mouseReleaseEvent(QMouseEvent* event)
       for (auto&& [key, data] : keyframe_handles) {
         if (is_selected_and_visible(std::pair{ key, data })) {
           auto& property = key.track.property();
-          const double new_value = key.value() + m_value_shift;
+          const double new_value = (key.value() + m_value_shift) / multiplier(key.track);
           auto new_knot = key.track.knot(key.frame).clone();
           set_channel_value(new_knot->value, key.channel, new_value);
           m_scene.submit<ChangeKeyFrameCommand>(key.frame, property, std::move(new_knot));
@@ -309,7 +316,7 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
         if (data.is_selected && &key.track == track_) {
           if (key.channel == c) {
             auto& v = track->knot(key.frame).value;
-            const double sv = get_channel_value(v, c) + m_value_shift;
+            const double sv = get_channel_value(v, c) + m_value_shift / multiplier(key.track);
             set_channel_value(v, c, sv);
           }
           old_frames.insert(key.frame);
@@ -319,20 +326,25 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
         track->move_knot(*it, *it + m_frame_shift);
       }
       if (is_visible(*track, c)) {
+        const double m = multiplier(*track);
         QPen pen;
         pen.setWidthF(1.5);
         const QString color_name = QString("%1-%2-fcurve").arg(track->type()).arg(c);
         pen.setColor(ui_color(QPalette::Active, "TimeLine", color_name));
         painter.setPen(pen);
-        auto v0 = track->interpolate(std::floor(frame_range.begin - frame_advance), c);
-        for (int frame = frame_range.begin;
-             frame <= frame_range.end + frame_advance;
-             frame += frame_advance)
+
         {
-          auto v1 = track->interpolate(frame, c);
-          painter.drawLine(range.unit_to_pixel(QPointF(frame - frame_advance, v0)),
-                           range.unit_to_pixel(QPointF(frame, v1)));
-          v0 = v1;
+          const int frame = std::floor(frame_range.begin - frame_advance);
+          auto v0 = m * track->interpolate(frame, c);
+          for (int frame = frame_range.begin;
+               frame <= frame_range.end + frame_advance;
+               frame += frame_advance)
+          {
+            auto v1 = m * track->interpolate(frame, c);
+            painter.drawLine(range.unit_to_pixel(QPointF(frame - frame_advance, v0)),
+                             range.unit_to_pixel(QPointF(frame, v1)));
+            v0 = v1;
+          }
         }
 
         {
@@ -340,8 +352,8 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
           const QString text = QString("%1 %2").arg(property.label()).arg(property.channel_name(c));
           const double b = frame_range.pixel_to_unit(0.0);
           const double e = frame_range.pixel_to_unit(painter.fontMetrics().horizontalAdvance(text));
-          const double v1 = track->interpolate(b, c);
-          const double v2 = track->interpolate(e, c);
+          const double v1 = m * track->interpolate(b, c);
+          const double v2 = m * track->interpolate(e, c);
           int y = range.v_range.unit_to_pixel(v1);
           if (v1 < v2) {
             y += painter.fontMetrics().height();
@@ -586,12 +598,13 @@ void CurveManagerWidget::move_knot(Track& track, int old_frame, int new_frame)
 
 double CurveManagerWidget::KeyFrameHandleKey::value(Track::Knot::Side side) const
 {
-  return get_channel_value(track.knot(frame).offset(side), channel) + value();
+  const double v = get_channel_value(track.knot(frame).offset(side), channel);
+  return multiplier(track) * v + value();
 }
 
 double CurveManagerWidget::KeyFrameHandleKey::value() const
 {
-  return get_channel_value(track.knot(frame).value, channel);
+  return multiplier(track) * get_channel_value(track.knot(frame).value, channel);
 }
 
 bool CurveManagerWidget::KeyFrameHandleKey::
