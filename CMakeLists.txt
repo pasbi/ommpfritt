@@ -13,11 +13,24 @@ set (OMMPFRITT_VERSION_MAJOR 1)
 set (OMMPFRITT_VERSION_MINOR 0)
 
 option(GENERATE_ICONS "There will be no icons in the application if this option is disabled." ON)
+option(BUILD_TESTS "build the unit tests." ON)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_registers.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_translations.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_icons.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate_resources.cmake)
+find_package(Qt5Widgets CONFIG REQUIRED)
+find_package(Qt5Svg REQUIRED)
+find_package(Qt5 COMPONENTS LinguistTools)
+find_package(PkgConfig)
+find_package(PythonLibs 3 REQUIRED)
+find_package(KF5ItemModels REQUIRED)
+find_package(pybind11 REQUIRED)
+
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/" ${CMAKE_MODULE_PATH})
+include(generate_registers)
+include(generate_translations)
+include(generate_icons)
+include(generate_resources)
+if (BUILD_TESTS)
+    include(DownloadGoogleTest)
+endif()
 
 find_package(Python3 3.7 REQUIRED COMPONENTS Interpreter)
 
@@ -34,28 +47,17 @@ configure_file (
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
 include_directories("${PROJECT_BINARY_DIR}")
-
-find_package(PkgConfig)
-
-find_package(PythonLibs 3 REQUIRED)
-link_directories(${PythonLibs_LIBRARY_DIRS})
 include_directories(${PythonLibs_INCLUDE_DIRS})
-
-find_package(pybind11 REQUIRED)
-link_directories(${pybind11_LIBRARY_DIRS})
 include_directories(${pybind11_INCLUDE_DIRS})
 
+link_directories(${PythonLibs_LIBRARY_DIRS})
+link_directories(${pybind11_LIBRARY_DIRS})
+
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
-find_package(Qt5Widgets CONFIG REQUIRED)
-find_package(Qt5Svg REQUIRED)
-find_package(Qt5 COMPONENTS LinguistTools)
 
-find_package(KF5ItemModels REQUIRED)
-
-SET(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
-SET(qrc_translations_cpp "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
-list(APPEND languages de en es)
-
+set(ts_dir "${CMAKE_CURRENT_SOURCE_DIR}/ts/")
+set(qrc_translations_cpp "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
+set(languages de en es)
 set(translations_qrc "${CMAKE_CURRENT_BINARY_DIR}/qm/translations.qrc")
 set(prefixes omm qtlocation qt_help qt)
 generate_translations("${translations_qrc}" "${ts_dir}" "${languages}" "${prefixes}")
