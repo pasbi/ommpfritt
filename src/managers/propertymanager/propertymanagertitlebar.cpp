@@ -23,11 +23,9 @@ PropertyManagerTitleBar::PropertyManagerTitleBar(PropertyManager& parent)
     dialog.exec();
   });
 
-  std::vector<std::unique_ptr<QWidget>> widgets;
-  widgets.reserve(2);
-  widgets.push_back(make_lock_button());
-  widgets.push_back(std::move(open_user_property_dialog_button));
-  apply_standard_layout(std::move(widgets));
+  add_widget(make_lock_button());
+  add_widget(std::move(open_user_property_dialog_button));
+  add_widget(std::make_unique<QLabel>(parent.windowTitle()));
 }
 
 void PropertyManagerTitleBar::set_selection(const std::set<AbstractPropertyOwner*>& selection)

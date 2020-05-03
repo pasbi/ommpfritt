@@ -65,19 +65,6 @@ std::unique_ptr<QPushButton> ManagerTitleBar::make_lock_button() const
   return lock_button;
 }
 
-void ManagerTitleBar::apply_standard_layout(std::vector<std::unique_ptr<QWidget>> widgets)
-{
-  auto container = std::make_unique<QWidget>();
-  auto layout = std::make_unique<QHBoxLayout>();
-  layout->setContentsMargins(0, 0, 0, 0);
-  layout->addStretch(0);
-  for (auto&& widget : widgets) {
-    layout->addWidget(widget.release());
-  }
-  container->setLayout(layout.release());
-  add_widget(std::move(container));
-}
-
 QSize ManagerTitleBar::sizeHint() const
 {
   return QSize(0, 24);

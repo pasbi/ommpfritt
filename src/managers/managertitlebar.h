@@ -21,7 +21,6 @@ public:
 
 protected:
   std::unique_ptr<QPushButton> make_lock_button() const;
-  void apply_standard_layout(std::vector<std::unique_ptr<QWidget> > widgets);
 
 private:
   QHBoxLayout* m_layout;
