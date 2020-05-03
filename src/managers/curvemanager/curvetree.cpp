@@ -43,23 +43,31 @@ private:
   omm::Animator& m_animator;
 };
 
-class AddColumnProxy : public KExtraColumnsProxyModel
+class AddColumnProxy
+  : public QIdentityProxyModel
 {
 public:
-  explicit AddColumnProxy()
+  explicit AddColumnProxy() { }
+
+  QModelIndex index(int row, int column, const QModelIndex &parent) const override
   {
-    appendColumn();
+    const auto index = QIdentityProxyModel::index(row, 0, parent);
+    return createIndex(row, column, index.internalPointer());
   }
 
-  QVariant
-  extraColumnData(const QModelIndex& parent, int row, int extraColumn, int role) const override
+  int columnCount(const QModelIndex& index) const override
   {
-    Q_UNUSED(parent)
-    Q_UNUSED(row)
-    Q_UNUSED(extraColumn)
-    Q_UNUSED(role)
-    // the extra column displays a delegate which does not rely on data.
-    return QVariant();
+    return sourceModel()->columnCount(mapToSource(index)) + 1;
+  }
+
+  QVariant data(const QModelIndex& index, int role) const override
+  {
+    if (index.column() < sourceModel()->columnCount(mapToSource(index))) {
+      return mapToSource(index).data(role);
+    } else {
+      // the extra column displays a delegate which does not rely on data.
+      return QVariant();
+    }
   }
 };
 

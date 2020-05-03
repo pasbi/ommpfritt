@@ -25,13 +25,11 @@ CurveManager::CurveManager(Scene& scene)
   auto curve_manager_widget = std::make_unique<CurveManagerWidget>(scene, *tree_widget);
   m_widget = curve_manager_widget.get();
 
-
   auto splitter = std::make_unique<QSplitter>(Qt::Horizontal);
   splitter->addWidget(tree_widget.release());
   splitter->addWidget(curve_manager_widget.release());
 
   set_widget(std::move(splitter));
-
 }
 
 bool CurveManager::perform_action(const QString& name)
