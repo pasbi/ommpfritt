@@ -28,6 +28,15 @@
 namespace
 {
 
+QPolygonF rect_to_polygon(const QRectF& rect)
+{
+  QPolygonF polygon(rect);
+  // it should be closed.
+  assert(polygon.front() == polygon.back());
+  polygon.removeLast();
+  return polygon;
+}
+
 omm::PortItem* get_port_item(omm::NodeScene& scene, omm::AbstractPort& port)
 {
   omm::NodeItem& node_item = scene.node_item(port.node);
@@ -101,7 +110,6 @@ NodeView::NodeView(QWidget* parent)
     setTransform(t.inverted());
   }
   reset_scene_rect();
-  m_viewport_center = mapToScene(viewport()->rect().center());
 }
 
 NodeView::~NodeView()
@@ -366,10 +374,36 @@ void NodeView::mousePressEvent(QMouseEvent* event)
 
 void NodeView::resizeEvent(QResizeEvent* event)
 {
-  static const auto s2p = [](const QSize& size) { return QPoint(size.width(), size.height()); };
-  const QPointF d = (mapToScene(s2p(event->size())) - mapToScene(s2p(event->oldSize())))/2.0;
-  translate(d.x(), d.y());
+  const QPointF m_start_widget_pos { event->oldSize().width()/2.0,
+                                     event->oldSize().height()/2.0 };
+
+  auto scene_rect = sceneRect();
+  const auto vrect = QRectF(viewport()->rect());
+
+  QTransform old_t;
+  QTransform::quadToQuad(rect_to_polygon(vrect), rect_to_polygon(scene_rect), old_t);
+  const QPointF m_start_scene_pos = old_t.map(m_start_widget_pos);
+
+//  {
+//    const double sx = width() / scene_rect.width();
+//    const double sy = height() / scene_rect.height();
+//    const QSizeF sdiff = event->size() - event->oldSize();
+//    QPointF diff { sdiff.width()/sx/2.0, sdiff.height()/sy/2.0 };
+
+//    translate(diff.x(), diff.y());
+//    reset_scene_rect();
+//  }
   reset_scene_rect();
+
+  scene_rect = sceneRect();
+
+  QTransform new_t;
+  QTransform::quadToQuad(rect_to_polygon(viewport()->rect()), rect_to_polygon(scene_rect), new_t);
+
+  QPointF current_scene_pos = new_t.map(m_start_widget_pos);
+  const QPointF d = m_start_scene_pos - current_scene_pos;
+  scene_rect.translate(d);
+  setSceneRect(scene_rect);
 }
 
 void NodeView::dragMoveEvent(QDragMoveEvent* event)
@@ -401,7 +435,6 @@ void NodeView::dropEvent(QDropEvent* event)
 void NodeView::mouseMoveEvent(QMouseEvent* event)
 {
   if (m_pan_zoom_controller.move(*event)) {
-    m_viewport_center = mapToScene(viewport()->rect().center());
     event->accept();
   } else if (m_tmp_connection_origin != nullptr) {
     if (PortItem* port_item = item_at<PortItem>(event->pos()); port_item != nullptr

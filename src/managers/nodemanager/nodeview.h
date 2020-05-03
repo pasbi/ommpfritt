@@ -80,7 +80,6 @@ private:
   bool m_aborted = false;
   QPoint m_last_mouse_position;
   QPointF m_node_insert_pos;
-  QPointF m_viewport_center;
   std::unique_ptr<NodeScene> m_node_scene;
 };
 
