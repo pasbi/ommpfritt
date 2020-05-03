@@ -343,7 +343,7 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
           const double v1 = track->interpolate(b, c);
           const double v2 = track->interpolate(e, c);
           int y = range.v_range.unit_to_pixel(v1);
-          if (v1 > v2) {
+          if (v1 < v2) {
             y += painter.fontMetrics().height();
           } else {
             y -= 2;
