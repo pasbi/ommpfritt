@@ -1,21 +1,20 @@
-function(generate_translations translations_qrc ts_dir languages prefixes)
+function(generate_translations translations_qrc ts_dir languages prefixes cfg_files)
     set(qm_dir "${CMAKE_BINARY_DIR}/qm/")
 
     file(MAKE_DIRECTORY ${qm_dir})
-    file(GLOB_RECURSE TS_SOURCES "*.cpp" "*.h" "*.ui")
-    file(GLOB ts_files "${ts_dir}/*.ts")
-    file(GLOB_RECURSE CFG_FILES "*.cfg")
+    list(TRANSFORM languages APPEND ".ts" OUTPUT_VARIABLE ts_files)
+    list(TRANSFORM ts_files PREPEND "${ts_dir}/omm_")
     set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/update-translations_h.py")
     set(translations_h "${CMAKE_CURRENT_SOURCE_DIR}/src/translations.h")
     list(REMOVE_ITEM TS_SOURCES "${translations_h}")
 
     add_custom_command(
         OUTPUT "${translations_h}" ${ts_files}
-        DEPENDS ${CFG_FILES} "${script}" ${TS_SOURCES}
+        DEPENDS ${cfg_files} "${script}" ${TS_SOURCES}
         COMMAND_EXPAND_LISTS
         COMMAND touch /tmp/x
         COMMAND Python3::Interpreter "${script}"
-          --input "${CFG_FILES}"
+          --input "${cfg_files}"
           --output "${translations_h}"
         COMMAND Qt5::lupdate
           -noobsolete

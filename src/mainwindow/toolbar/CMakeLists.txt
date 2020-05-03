@@ -1,19 +1,10 @@
-
-file(GLOB SOURCES
-  toolbar.cpp
-  toolbardialog.cpp
-  toolbaractiontreewidget.cpp
-  toolbaritemmodel.cpp
-  toolbaritemview.cpp
+target_sources(libommpfritt PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/toolbar.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/toolbar.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/toolbardialog.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/toolbardialog.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/toolbaritemmodel.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/toolbaritemmodel.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/toolbaritemview.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/toolbaritemview.h
 )
-
-file(GLOB HEADERS
-  toolbar.h
-  toolbardialog.h
-  toolbaractiontreewidget.h
-  toolbaritemmodel.h
-  toolbaritemview.h
-)
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

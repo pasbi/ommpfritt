@@ -1,15 +1,7 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   coloredit.cpp
-  colorpropertywidget.cpp
-)
-
-file(GLOB HEADERS
   coloredit.h
-  colorpropertyconfigwidget.h
+  colorpropertywidget.cpp
   colorpropertywidget.h
+  colorpropertyconfigwidget.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

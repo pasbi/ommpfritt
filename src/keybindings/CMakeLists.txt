@@ -1,17 +1,9 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   action.cpp
-  keybinding.cpp
-  keybindings.cpp
-)
-
-file(GLOB HEADERS
   action.h
   commandinterface.h
-  keybinding.h
-  keybindingsdialog.h
+  keybindings.cpp
   keybindings.h
 )
 
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

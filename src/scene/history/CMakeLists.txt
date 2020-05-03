@@ -1,14 +1,6 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   historymodel.cpp
-  macro.cpp
-)
-
-file(GLOB HEADERS
   historymodel.h
+  macro.cpp
   macro.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

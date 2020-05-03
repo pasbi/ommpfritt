@@ -1,19 +1,12 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   curvemanager.cpp
-  curvemanagerwidget.cpp
-  curvemanagertitlebar.cpp
-  curvemanagerquickaccessdelegate.cpp
-  curvetree.cpp
-)
-
-file(GLOB HEADERS
   curvemanager.h
+  curvemanagerwidget.cpp
   curvemanagerwidget.h
+  curvemanagertitlebar.cpp
   curvemanagertitlebar.h
+  curvemanagerquickaccessdelegate.cpp
   curvemanagerquickaccessdelegate.h
+  curvetree.cpp
   curvetree.h
 )
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

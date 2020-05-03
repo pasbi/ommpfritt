@@ -1,16 +1,11 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   boolpropertyconfigwidget.cpp
-  boolpropertywidget.cpp
-  checkbox.cpp
-)
-
-file(GLOB HEADERS
   boolpropertyconfigwidget.h
+  boolpropertywidget.cpp
   boolpropertywidget.h
+  checkbox.cpp
   checkbox.h
 )
 
 
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

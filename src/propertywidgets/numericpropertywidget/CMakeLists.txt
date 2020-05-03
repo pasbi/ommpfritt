@@ -1,13 +1,6 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   numericpropertywidget.cpp
-)
-
-file(GLOB HEADERS
+  numericpropertywidget.h
   numericmultivalueedit.h
   numericpropertyconfigwidget.h
-  numericpropertywidget.h
 )
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

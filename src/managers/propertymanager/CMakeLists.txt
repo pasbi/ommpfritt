@@ -1,19 +1,12 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   propertymanager.cpp
-  propertymanagertab.cpp
-  propertymanagertitlebar.cpp
-  userpropertydialog.cpp
-  userpropertylistmodel.cpp
-)
-
-file(GLOB HEADERS
   propertymanager.h
+  propertymanagertab.cpp
   propertymanagertab.h
+  propertymanagertitlebar.cpp
   propertymanagertitlebar.h
+  userpropertydialog.cpp
   userpropertydialog.h
+  userpropertylistmodel.cpp
   userpropertylistmodel.h
 )
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

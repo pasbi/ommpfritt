@@ -1,21 +1,17 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   itemmanager.cpp
-  manager.cpp
-  manageritemview.cpp
-  managertitlebar.cpp
-  quickaccessdelegate.cpp
-  panzoomcontroller.cpp
-  range.cpp
-)
-
-file(GLOB HEADERS
   itemmanager.h
+  manager.cpp
   manager.h
+  manageritemview.cpp
   manageritemview.h
+  managertitlebar.cpp
   managertitlebar.h
+  quickaccessdelegate.cpp
   quickaccessdelegate.h
+  panzoomcontroller.cpp
   panzoomcontroller.h
+  range.cpp
   range.h
 )
 
@@ -29,6 +25,3 @@ add_subdirectory(propertymanager)
 add_subdirectory(pythonconsole)
 add_subdirectory(stylemanager)
 add_subdirectory(timeline)
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

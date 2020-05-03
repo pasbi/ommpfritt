@@ -1,16 +1,8 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   stylelistviewitemdelegate.cpp
-  stylelistview.cpp
-  stylemanager.cpp
-)
-
-file(GLOB HEADERS
   stylelistviewitemdelegate.h
+  stylelistview.cpp
   stylelistview.h
+  stylemanager.cpp
   stylemanager.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

@@ -1,14 +1,6 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   abstractserializer.cpp
-  jsonserializer.cpp
-)
-
-file(GLOB HEADERS
   abstractserializer.h
+  jsonserializer.cpp
   jsonserializer.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

@@ -1,16 +1,9 @@
-
-file(GLOB SOURCES
-  animator.cpp
-  channelproxy.cpp
-  track.cpp
-  trackregister.cpp
+target_sources(libommpfritt PRIVATE
+    animator.cpp
+    animator.h
+    channelproxy.cpp
+    channelproxy.h
+    track.cpp
+    track.h
+    trackregister.cpp
 )
-
-file(GLOB HEADERS
-  animator.h
-  channelproxy.h
-  track.h
-)
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

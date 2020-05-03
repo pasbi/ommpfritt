@@ -1,14 +1,10 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   propertyconfigwidget.cpp
+  propertyconfigwidget.h
   propertywidget.cpp
-)
-
-file(GLOB HEADERS
+  propertywidget.h
   abstractedit.h
   multivalueedit.h
-  propertyconfigwidget.h
-  propertywidget.h
 )
 
 add_subdirectory(boolpropertywidget)
@@ -24,6 +20,3 @@ add_subdirectory(stringpropertywidget)
 add_subdirectory(splinepropertywidget)
 add_subdirectory(triggerpropertywidget)
 add_subdirectory(vectorpropertywidget)
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

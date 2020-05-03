@@ -1,35 +1,25 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   animationbutton.cpp
-  codeedit.cpp
-  combobox.cpp
-  coordinateedit.cpp
-  filepathedit.cpp
-  itemproxyview.cpp
-  keysequenceedit.cpp
-  multitabbar.cpp
-  numericedit.cpp
-  pointdialog.cpp
-  pointedit.cpp
-  referencelineedit.cpp
-)
-
-file(GLOB HEADERS
   animationbutton.h
+  codeedit.cpp
   codeedit.h
+  combobox.cpp
   combobox.h
+  coordinateedit.cpp
   coordinateedit.h
+  filepathedit.cpp
   filepathedit.h
-  temproxyview.h
-  keysequenceedit.h
+  itemproxyview.cpp
+  multitabbar.cpp
   multitabbar.h
+  numericedit.cpp
   numericedit.h
+  pointdialog.cpp
   pointdialog.h
+  pointedit.cpp
   pointedit.h
+  referencelineedit.cpp
   referencelineedit.h
 )
 
 add_subdirectory(colorwidget)
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

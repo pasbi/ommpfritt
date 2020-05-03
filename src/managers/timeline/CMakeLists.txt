@@ -1,18 +1,10 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   slider.cpp
-  timeline.cpp
-  timelinecanvas.cpp
-  timelinetitlebar.cpp
-)
-
-file(GLOB HEADERS
   slider.h
   timeline.h
+  timeline.cpp
+  timelinecanvas.cpp
   timelinecanvas.h
+  timelinetitlebar.cpp
   timelinetitlebar.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

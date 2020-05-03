@@ -1,27 +1,20 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   abstractcolorcomponentwidget.cpp
-  colorcircle.cpp
-  colordialog.cpp
-  colorcomponentspinbox.cpp
-  colorpicker.cpp
-  colorslab.cpp
-  colorslider.cpp
-  colorwidget.cpp
-  namedcolorsdialog.cpp
-)
-
-file(GLOB HEADERS
   abstractcolorcomponentwidget.h
+  colorcircle.cpp
   colorcircle.h
+  colordialog.cpp
   colordialog.h
+  colorcomponentspinbox.cpp
   colorcomponentspinbox.h
+  colorpicker.cpp
   colorpicker.h
+  colorslab.cpp
   colorslab.h
-  colorslider.h
+  colorwidget.cpp
   colorwidget.h
+  colorslider.cpp
+  colorslider.h
+  namedcolorsdialog.cpp
   namedcolorsdialog.h
 )
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

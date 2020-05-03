@@ -1,12 +1,4 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   historymanager.cpp
-)
-
-file(GLOB HEADERS
   historymanager.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

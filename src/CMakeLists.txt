@@ -1,40 +1,35 @@
-
-file(GLOB SOURCES
-  common.cpp
-  enumnames.cpp
-  dnf.cpp
-  logging.cpp
-  proxychain.cpp
-  splinetype.cpp
-  subcommandlineparser.cpp
-  variant.cpp
-  registers.cpp
-)
-
-file(GLOB HEADERS
-  abstractfactory.h
+target_sources(libommpfritt PRIVATE
   cache.h
   cachedgetter.h
+  common.cpp
   common.h
+  enumnames.cpp
   enumnames.h
+  dnf.cpp
   dnf.h
+  logging.cpp
   logging.h
   maybeowner.h
   menuhelper.h
   orderedmap.h
+  variant.cpp
   variant.h
+  proxychain.cpp
   proxychain.h
+  splinetype.cpp
   splinetype.h
+  subcommandlineparser.cpp
   subcommandlineparser.h
+  abstractfactory.h
   translations.h
-  register.h
+  registers.cpp
+  registers.h
 )
 
 add_subdirectory(animation)
 add_subdirectory(aspects)
 add_subdirectory(color)
 add_subdirectory(commands)
-add_subdirectory(external)
 add_subdirectory(geometry)
 add_subdirectory(keybindings)
 add_subdirectory(mainwindow)
@@ -51,6 +46,3 @@ add_subdirectory(tags)
 add_subdirectory(tools)
 add_subdirectory(widgets)
 add_subdirectory(nodesystem)
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

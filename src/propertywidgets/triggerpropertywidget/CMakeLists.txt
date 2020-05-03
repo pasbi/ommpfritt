@@ -1,14 +1,6 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   triggerpropertyconfigwidget.cpp
-  triggerpropertywidget.cpp
-)
-
-file(GLOB HEADERS
   triggerpropertyconfigwidget.h
+  triggerpropertywidget.cpp
   triggerpropertywidget.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

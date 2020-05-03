@@ -1,29 +1,22 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   node.cpp
-  nodemodel.cpp
-  nodecompiler.cpp
-  nodecompilerpython.cpp
-  nodecompilerglsl.cpp
-  nodesowner.cpp
-  port.cpp
-  propertyport.cpp
-  ordinaryport.cpp
-)
-
-file(GLOB HEADERS
   node.h
+  propertyport.cpp
+  propertyport.h
+  nodemodel.cpp
   nodemodel.h
+  nodecompiler.cpp
   nodecompiler.h
+  nodecompilerpython.cpp
   nodecompilerpython.h
   nodecompilerglsl.cpp
+  nodecompilerglsl.cpp
+  nodesowner.cpp
   nodesowner.h
+  port.cpp
   port.h
-  propertyport.cpp
+  ordinaryport.cpp
   ordinaryport.h
 )
 
 add_subdirectory(nodes)
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

@@ -1,7 +1,4 @@
-file(GLOB HEADERS
+target_sources(libommpfritt PRIVATE
   floatvectorpropertyconfigwidget.h
   floatvectorpropertywidget.h
 )
-
-target_sources(libommpfritt PRIVATE ${HEADERS})
-

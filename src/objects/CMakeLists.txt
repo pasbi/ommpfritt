@@ -1,42 +1,34 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   abstractproceduralpath.cpp
-  cloner.cpp
-  ellipse.cpp
-  empty.cpp
-  imageobject.cpp
-  instance.cpp
-  line.cpp
-  mirror.cpp
-  object.cpp
-  outline.cpp
-  path.cpp
-  proceduralpath.cpp
-  rectangleobject.cpp
-  text.cpp
-  tip.cpp
-  view.cpp
-)
-
-file(GLOB HEADERS
   abstractproceduralpath.h
+  cloner.cpp
   cloner.h
+  ellipse.cpp
   ellipse.h
+  empty.cpp
   empty.h
+  imageobject.cpp
   imageobject.h
+  instance.cpp
   instance.h
+  line.cpp
   line.h
+  mirror.cpp
   mirror.h
+  object.cpp
   object.h
+  outline.cpp
   outline.h
+  path.cpp
   path.h
+  proceduralpath.cpp
   proceduralpath.h
+  rectangleobject.cpp
   rectangleobject.h
+  text.cpp
   text.h
+  tip.cpp
   tip.h
+  view.cpp
   view.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

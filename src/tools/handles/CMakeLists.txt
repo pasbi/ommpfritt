@@ -1,22 +1,14 @@
-
-file(GLOB SOURCES
-  handle.cpp
-  particlehandle.cpp
-  selecthandle.cpp
-  tangenthandle.cpp
-)
-
-file(GLOB HEADERS
+target_sources(libommpfritt PRIVATE
   boundingboxhandle.h
+  handle.cpp
   handle.h
   moveaxishandle.h
+  particlehandle.cpp
   particlehandle.h
   rotatehandle.h
   scalebandhandle.h
+  selecthandle.cpp
   selecthandle.h
+  tangenthandle.cpp
   tangenthandle.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

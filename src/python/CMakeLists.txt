@@ -1,36 +1,28 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   objectwrapper.cpp
+  objectwrapper.h
   pathwrapper.cpp
+  pathwrapper.h
   pointwrapper.cpp
+  pointwrapper.h
   propertyownerwrapper.cpp
+  propertyownerwrapper.h
   pythonengine.cpp
+  pythonengine.h
   pywrapper.cpp
+  pywrapper.h
   scenewrapper.cpp
+  scenewrapper.h
   scripttagwrapper.cpp
+  scripttagwrapper.h
+  scopedinterpreterwrapper.h
   scopedinterpreterwrapper.cpp
   splinewrapper.cpp
-  stylewrapper.cpp
-  tagwrapper.cpp
-  wrapperregister.cpp
-)
-
-file(GLOB HEADERS
-  objectwrapper.h
-  pathwrapper.h
-  pointwrapper.h
-  propertyownerwrapper.h
-  pythonengine.h
-  pywrapper.h
-  scenewrapper.h
-  scopedinterpreterwrapper.h
-  scripttagwrapper.h
   splinewrapper.h
-  stylewrapper.h
+  tagwrapper.cpp
   tagwrapper.h
+  stylewrapper.cpp
+  stylewrapper.h
+  wrapperregister.cpp
   wrapperfactory.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

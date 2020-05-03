@@ -1,29 +1,21 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   boundingbox.cpp
-  cubic.cpp
-  cubics.cpp
-  matrix.cpp
-  objecttransformation.cpp
-  point.cpp
-  polarcoordinates.cpp
-  rectangle.cpp
-  util.cpp
-)
-
-file(GLOB HEADERS
   boundingbox.h
+  cubic.cpp
   cubic.h
+  cubics.cpp
   cubics.h
+  matrix.cpp
   matrix.h
+  objecttransformation.cpp
   objecttransformation.h
+  point.cpp
   point.h
+  polarcoordinates.cpp
   polarcoordinates.h
+  rectangle.cpp
   rectangle.h
+  util.cpp
   util.h
   vec2.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

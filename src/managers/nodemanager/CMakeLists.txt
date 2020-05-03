@@ -1,23 +1,16 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   nodeitem.cpp
-  nodemanager.cpp
-  nodemanagertitlebar.cpp
-  nodescene.cpp
-  nodeview.cpp
-  nodemimedata.cpp
-  nodesowner.cpp
-  portitem.cpp
-)
-
-file(GLOB HEADERS
   nodeitem.h
+  nodemanager.cpp
   nodemanager.h
+  nodemanagertitlebar.cpp
   nodemanagertitlebar.h
+  nodescene.cpp
   nodescene.h
+  nodeview.cpp
   nodeview.h
-  nodesowner.h
+  nodemimedata.cpp
+  nodemimedata.h
+  portitem.cpp
   portitem.h
 )
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})

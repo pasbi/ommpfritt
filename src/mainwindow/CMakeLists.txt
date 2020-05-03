@@ -1,25 +1,17 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   actions.cpp
-  application.cpp
-  exportdialog.cpp
-  iconprovider.cpp
-  mainwindow.cpp
-  options.cpp
-)
-
-file(GLOB HEADERS
   actions.h
+  application.cpp
   application.h
+  exportdialog.cpp
   exportdialog.h
+  iconprovider.cpp
   iconprovider.h
-  languageskinmenu.h
+  mainwindow.cpp
   mainwindow.h
+  options.cpp
   options.h
 )
 
 add_subdirectory(viewport)
 add_subdirectory(toolbar)
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

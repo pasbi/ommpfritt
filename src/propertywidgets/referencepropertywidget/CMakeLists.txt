@@ -1,14 +1,6 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   referencepropertyconfigwidget.cpp
-  referencepropertywidget.cpp
-)
-
-file(GLOB HEADERS
   referencepropertyconfigwidget.h
+  referencepropertywidget.cpp
   referencepropertywidget.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

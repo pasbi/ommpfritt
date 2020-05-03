@@ -1,17 +1,10 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   dopesheetmanager.cpp
-  dopesheetview.cpp
-  dopesheetheader.cpp
-  trackviewdelegate.cpp
-)
-
-file(GLOB HEADERS
   dopesheetmanager.h
+  dopesheetview.cpp
   dopesheetview.h
+  dopesheetheader.cpp
   dopesheetheader.h
+  trackviewdelegate.cpp
   trackviewdelegate.h
 )
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

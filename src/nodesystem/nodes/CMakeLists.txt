@@ -1,39 +1,32 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   constantnode.cpp
-  composenode.cpp
-  colorconvertnode.cpp
-  decomposenode.cpp
-  decomposecolornode.cpp
-  composecolornode.cpp
-  fragmentnode.cpp
-  functionnode.cpp
-  function2node.cpp
-  interpolatenode.cpp
-  linepatternnode.cpp
-  mathnode.cpp
-  referencenode.cpp
-  spynode.cpp
-  vertexnode.cpp
-)
-
-file(GLOB HEADERS
   constantnode.h
+  composenode.cpp
   composenode.h
+  colorconvertnode.cpp
   colorconvertnode.h
+  decomposenode.cpp
   decomposenode.h
+  decomposecolornode.cpp
   decomposecolornode.h
+  composecolornode.cpp
   composecolornode.h
+  fragmentnode.cpp
   fragmentnode.h
+  functionnode.cpp
   functionnode.h
+  function2node.cpp
   function2node.h
+  interpolatenode.cpp
   interpolatenode.h
+  linepatternnode.cpp
   linepatternnode.h
+  mathnode.cpp
   mathnode.h
+  referencenode.cpp
   referencenode.h
+  spynode.cpp
   spynode.h
+  vertexnode.cpp
   vertexnode.h
 )
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

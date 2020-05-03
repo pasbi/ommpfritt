@@ -1,27 +1,20 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   brushselecttool.cpp
-  knifetool.cpp
-  pathtool.cpp
-  selectobjectstool.cpp
-  selectpointstool.cpp
-  selecttool.cpp
-  toolbox.cpp
-  tool.cpp
-)
-
-file(GLOB HEADERS
   brushselecttool.h
+  knifetool.cpp
   knifetool.h
+  pathtool.cpp
   pathtool.h
+  selectobjectstool.cpp
   selectobjectstool.h
+  selectpointstool.cpp
   selectpointstool.h
+  selecttool.cpp
   selecttool.h
+  toolbox.cpp
   toolbox.h
+  tool.cpp
   tool.h
 )
 
 add_subdirectory(handles)
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

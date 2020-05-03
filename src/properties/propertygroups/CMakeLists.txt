@@ -1,18 +1,10 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   fontproperties.cpp
-  markerproperties.cpp
-  propertygroup.cpp
-  textoptionproperties.cpp
-)
-
-file(GLOB HEADERS
   fontproperties.h
+  markerproperties.cpp
   markerproperties.h
+  propertygroup.cpp
   propertygroup.h
+  textoptionproperties.cpp
   textoptionproperties.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

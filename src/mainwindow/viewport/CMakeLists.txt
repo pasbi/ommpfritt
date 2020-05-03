@@ -1,17 +1,9 @@
-
-file(GLOB SOURCES
-  anchorhud.cpp
-  mousepancontroller.cpp
-  viewport.cpp
+target_sources(libommpfritt PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/anchorhud.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/anchorhud.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/headupdisplay.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/mousepancontroller.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/mousepancontroller.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/viewport.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/viewport.h
 )
-
-file(GLOB HEADERS
-  anchorhud.h
-  headupdisplay.h
-  mousepancontroller.h
-  viewport.h
-)
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

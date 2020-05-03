@@ -1,38 +1,31 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   boolproperty.cpp
-  colorproperty.cpp
-  floatproperty.cpp
-  integerproperty.cpp
-  numericproperty.cpp
-  optionproperty.cpp
-  property.cpp
-  referenceproperty.cpp
-  stringproperty.cpp
-  splineproperty.cpp
-  triggerproperty.cpp
-  floatvectorproperty.cpp
-  integervectorproperty.cpp
-)
-
-file(GLOB HEADERS
   boolproperty.h
+  colorproperty.cpp
   colorproperty.h
+  floatproperty.cpp
   floatproperty.h
+  integerproperty.cpp
   integerproperty.h
+  numericproperty.cpp
   numericproperty.h
+  optionproperty.cpp
   optionproperty.h
+  property.cpp
   property.h
+  referenceproperty.cpp
   referenceproperty.h
+  stringproperty.cpp
   stringproperty.h
+  splineproperty.cpp
   splineproperty.h
+  triggerproperty.cpp
   triggerproperty.h
   typedproperty.h
+  floatvectorproperty.cpp
   floatvectorproperty.h
+  integervectorproperty.cpp
   integervectorproperty.h
 )
 
 add_subdirectory(propertygroups)
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

@@ -1,20 +1,12 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   pathtag.cpp
-  nodestag.cpp
-  scripttag.cpp
-  styletag.cpp
-  tag.cpp
-)
-
-file(GLOB HEADERS
   pathtag.h
+  nodestag.cpp
   nodestag.h
+  scripttag.cpp
   scripttag.h
+  styletag.cpp
   styletag.h
+  tag.cpp
   tag.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

@@ -1,18 +1,13 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   abstractpropertyowner.cpp
-  propertyowner.cpp
-  treeelement.cpp
-)
-
-file(GLOB HEADERS
   abstractpropertyowner.h
+  propertyowner.cpp
   propertyowner.h
-  serializable.h
+  treeelement.cpp
   treeelement.h
+  serializable.h
   typed.h
 )
 
 
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

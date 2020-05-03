@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.12)
+cmake_minimum_required (VERSION 3.13)
 
 # Suppresses a warning in cmake 3.x concerning a currently unused feature (setting VERSION in project() command)
 if (POLICY CMP0048)
@@ -60,7 +60,12 @@ set(qrc_translations_cpp "${CMAKE_CURRENT_BINARY_DIR}/qrc_translations.cpp")
 set(languages de en es)
 set(translations_qrc "${CMAKE_CURRENT_BINARY_DIR}/qm/translations.qrc")
 set(prefixes omm qtlocation qt_help qt)
-generate_translations("${translations_qrc}" "${ts_dir}" "${languages}" "${prefixes}")
+set(cfg_files
+  ${CMAKE_CURRENT_SOURCE_DIR}/uicolors/ui-colors-light.cfg
+  ${CMAKE_CURRENT_SOURCE_DIR}/uicolors/ui-colors-dark.cfg
+  ${CMAKE_CURRENT_SOURCE_DIR}/keybindings/default_keybindings.cfg
+)
+generate_translations("${translations_qrc}" "${ts_dir}" "${languages}" "${prefixes}" "${cfg_files}")
 
 set(qrc_files_cli
     "${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc"

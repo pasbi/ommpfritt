@@ -1,14 +1,6 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   pythonconsole.cpp
-  pythonconsoletitlebar.cpp
-)
-
-file(GLOB HEADERS
   pythonconsole.h
+  pythonconsoletitlebar.cpp
   pythonconsoletitlebar.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

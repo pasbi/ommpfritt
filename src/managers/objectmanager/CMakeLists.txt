@@ -1,22 +1,14 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   objectdelegate.cpp
-  objectmanager.cpp
-  objectquickaccessdelegate.cpp
-  objecttreeselectionmodel.cpp
-  objecttreeview.cpp
-  tagsitemdelegate.cpp
-)
-
-file(GLOB HEADERS
   objectdelegate.h
+  objectmanager.cpp
   objectmanager.h
+  objectquickaccessdelegate.cpp
   objectquickaccessdelegate.h
+  objecttreeselectionmodel.cpp
   objecttreeselectionmodel.h
+  objecttreeview.cpp
   objecttreeview.h
+  tagsitemdelegate.cpp
   tagsitemdelegate.h
 )
-
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

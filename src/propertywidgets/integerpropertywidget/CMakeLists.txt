@@ -1,7 +1,4 @@
-file(GLOB HEADERS
+target_sources(libommpfritt PRIVATE
   integerpropertyconfigwidget.h
   integerpropertywidget.h
 )
-
-target_sources(libommpfritt PRIVATE ${HEADERS})
-

@@ -1,45 +1,40 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   command.cpp
-  copycommand.cpp
-  forwardingportcommand.cpp
-  keyframecommand.cpp
-  modifypointscommand.cpp
-  movecommand.cpp
-  movetagscommand.cpp
-  namedcolorscommand.cpp
-  nodecommand.cpp
-  objectselectioncommand.cpp
-  objectstransformationcommand.cpp
-  pointstransformationcommand.cpp
-  propertycommand.cpp
-  removecommand.cpp
-  setinterpolationcommand.cpp
-  trackcommand.cpp
-  userpropertycommand.cpp
-)
-
-file(GLOB HEADERS
-  addcommand.h
   command.h
+  addcommand.h
+  copycommand.cpp
   copycommand.h
-  forwardingportcommand.h
+  keyframecommand.cpp
   keyframecommand.h
+  modifypointscommand.cpp
   modifypointscommand.h
+  forwardingportcommand.h
+  forwardingportcommand.cpp
+  movecommand.cpp
   movecommand.h
+  movetagscommand.cpp
   movetagscommand.h
+  namedcolorscommand.cpp
   namedcolorscommand.h
+  nodecommand.cpp
   nodecommand.h
+  objectselectioncommand.cpp
   objectselectioncommand.h
+  objectstransformationcommand.cpp
   objectstransformationcommand.h
+  pointstransformationcommand.cpp
   pointstransformationcommand.h
+  propertycommand.cpp
   propertycommand.h
+  removecommand.cpp
   removecommand.h
+  setinterpolationcommand.cpp
   setinterpolationcommand.h
+  trackcommand.cpp
   trackcommand.h
+  userpropertycommand.cpp
   userpropertycommand.h
 )
 
 
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
 

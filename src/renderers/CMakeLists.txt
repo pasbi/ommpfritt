@@ -1,21 +1,14 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   imagecache.cpp
-  painter.cpp
-  offscreenrenderer.cpp
-  style.cpp
-  styleiconengine.cpp
-  texture.cpp
-)
-
-file(GLOB HEADERS
   imagecache.h
+  painter.cpp
   painter.h
+  offscreenrenderer.cpp
   offscreenrenderer.h
-  style.h
+  styleiconengine.cpp
   styleiconengine.h
+  style.cpp
+  style.h
+  texture.cpp
   texture.h
 )
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-

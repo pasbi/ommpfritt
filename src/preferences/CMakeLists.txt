@@ -1,42 +1,35 @@
-
-file(GLOB SOURCES
+target_sources(libommpfritt PRIVATE
   generalpage.cpp
-  keybindingspage.cpp
-  keybindingsproxymodel.cpp
-  keybindingstreeviewdelegate.cpp
-  keysequenceedit.cpp
-  preferences.cpp
-  preferencedialog.cpp
-  preferencestree.cpp
-  preferencestreeitem.cpp
-  preferencestreeview.cpp
-  preferencestreeviewdelegate.cpp
-  uicoloredit.cpp
-  uicolors.cpp
-  uicolorspage.cpp
-  uicolorstreeviewdelegate.cpp
-  viewportpage.cpp
-)
-
-file(GLOB HEADERS
   generalpage.h
+  keybindingspage.cpp
   keybindingspage.h
+  keybindingsproxymodel.cpp
   keybindingsproxymodel.h
+  keybindingstreeviewdelegate.cpp
   keybindingstreeviewdelegate.h
+  keysequenceedit.cpp
   keysequenceedit.h
+  preferences.cpp
   preferences.h
+  preferencedialog.cpp
   preferencedialog.h
   preferencepage.h
+  preferencestree.cpp
   preferencestree.h
   preferencestreeitem.h
   preferencestreeview.h
+  preferencestreeviewdelegate.cpp
   preferencestreeviewdelegate.h
+  preferencestreeitem.cpp
+  preferencestreeview.cpp
+  uicoloredit.cpp
   uicoloredit.h
+  uicolors.cpp
   uicolors.h
+  uicolorspage.cpp
   uicolorspage.h
+  uicolorstreeviewdelegate.cpp
   uicolorstreeviewdelegate.h
+  viewportpage.cpp
   viewportpage.h
 )
-
-target_sources(libommpfritt PRIVATE ${SOURCES} ${HEADERS})
-
