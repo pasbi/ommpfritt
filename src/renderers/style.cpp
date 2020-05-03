@@ -87,12 +87,12 @@ Style::Style(Scene *scene)
   create_property<BoolProperty>("gl-brush", false)
     .set_label(tr("Use Nodes")).set_category(brush_category);
 
-  add_property(EDIT_NODES_PROPERTY_KEY, make_edit_nodes_property())
+  create_property<TriggerProperty>(EDIT_NODES_PROPERTY_KEY)
     .set_label(QObject::tr("Edit ...")).set_category(brush_category);
 
   start_marker.make_properties(decoration_category);
   end_marker.make_properties(decoration_category);
-  init();
+  polish();
 }
 
 Style::~Style()
@@ -106,15 +106,16 @@ Style::Style(const Style &other)
   , m_offscreen_renderer(std::make_unique<OffscreenRenderer>())
 {
   other.copy_properties(*this, CopiedProperties::Compatible);
-  init();
+  polish();
 }
 
-void Style::init()
+void Style::polish()
 {
   if (const NodeModel* model = node_model(); model != nullptr) {
     AbstractNodeCompiler& compiler = model->compiler();
     connect(&compiler, SIGNAL(compilation_succeeded(QString)), this, SLOT(set_code(QString)));
     connect(&compiler, SIGNAL(compilation_failed(QString)), this, SLOT(set_error(QString)));
+    connect_edit_property(static_cast<TriggerProperty&>(*property(EDIT_NODES_PROPERTY_KEY)), *this);
   }
 }
 

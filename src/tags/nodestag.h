@@ -34,6 +34,9 @@ public:
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
+
+private:
+  void polish();
 };
 
 }  // namespace omm

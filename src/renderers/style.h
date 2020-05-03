@@ -59,7 +59,7 @@ private:
   std::unique_ptr<OffscreenRenderer> m_offscreen_renderer;
   void update_uniform_values() const;
   std::set<Property*> m_uniform_values;
-  void init();
+  void polish();
 private Q_SLOTS:
   void set_code(const QString& code) const;
   void set_error(const QString& error) const;

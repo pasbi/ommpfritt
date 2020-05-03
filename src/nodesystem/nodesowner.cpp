@@ -22,17 +22,16 @@ NodesOwner::~NodesOwner()
 {
 }
 
-std::unique_ptr<Property> NodesOwner::make_edit_nodes_property() const
+void NodesOwner::connect_edit_property(TriggerProperty& property, QObject& self)
 {
-  auto property = std::make_unique<TriggerProperty>();
-  QObject::connect(property.get(), &Property::value_changed, property.get(), [this]() {
+  self.connect(&property, &Property::value_changed, &self, [this]() {
     Manager& manager = Application::instance().get_active_manager(NodeManager::TYPE);
-    if (auto* node_model = this->node_model() ; node_model != nullptr) {
-      static_cast<NodeManager&>(manager).set_model(node_model);
+    if (m_node_model) {
+      QTimer::singleShot(1, [this, &manager]() {
+        static_cast<NodeManager&>(manager).set_model(m_node_model.get());
+      });
     }
-
   });
-  return property;
 }
 
 NodeModel* NodesOwner::node_model() const

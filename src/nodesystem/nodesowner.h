@@ -10,6 +10,7 @@ namespace omm
 class Scene;
 class Property;
 class NodeModel;
+class TriggerProperty;
 
 class NodesOwner
 {
@@ -17,7 +18,8 @@ protected:
   NodesOwner(AbstractNodeCompiler::Language language, Scene& scene);
   NodesOwner(const NodesOwner& other);
   ~NodesOwner();
-  std::unique_ptr<Property> make_edit_nodes_property() const;
+
+  void connect_edit_property(TriggerProperty& property, QObject& self);
 
 public:
   NodeModel* node_model() const;

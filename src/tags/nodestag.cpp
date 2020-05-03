@@ -55,13 +55,15 @@ NodesTag::NodesTag(Object& owner)
     .set_label(QObject::tr("update")).set_category(category);
   create_property<TriggerProperty>(TRIGGER_UPDATE_PROPERTY_KEY)
     .set_label(QObject::tr("evaluate")).set_category(category);
-  add_property(EDIT_NODES_PROPERTY_KEY, make_edit_nodes_property())
+  create_property<TriggerProperty>(EDIT_NODES_PROPERTY_KEY)
     .set_label(QObject::tr("Edit ...")).set_category(category);
+  polish();
 }
 
 NodesTag::NodesTag(const NodesTag& other)
   : Tag(other), NodesOwner(other)
 {
+  polish();
 }
 
 NodesTag::~NodesTag()
@@ -91,6 +93,10 @@ void NodesTag::deserialize(AbstractDeserializer& deserializer, const Serializabl
   node_model()->deserialize(deserializer, make_pointer(root, NODES_POINTER));
 }
 
+void NodesTag::polish()
+{
+  connect_edit_property(static_cast<TriggerProperty&>(*property(EDIT_NODES_PROPERTY_KEY)), *this);
+}
 
 void NodesTag::on_property_value_changed(Property *property)
 {
