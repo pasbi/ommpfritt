@@ -28,13 +28,8 @@
 namespace
 {
 
-QPolygonF rect_to_polygon(const QRectF& rect)
+QTransform quad2quad(const QRectF& src, const QRectF dst)
 {
-  QPolygonF polygon(rect);
-  // it should be closed.
-  assert(polygon.front() == polygon.back());
-  polygon.removeLast();
-  return polygon;
 }
 
 omm::PortItem* get_port_item(omm::NodeScene& scene, omm::AbstractPort& port)
@@ -374,36 +369,26 @@ void NodeView::mousePressEvent(QMouseEvent* event)
 
 void NodeView::resizeEvent(QResizeEvent* event)
 {
-  const QPointF m_start_widget_pos { event->oldSize().width()/2.0,
-                                     event->oldSize().height()/2.0 };
+  static const auto rect_to_polygon = [](const QRectF& rect) {
+    QPolygonF polygon(rect);
+    // it should be closed.
+    assert(polygon.front() == polygon.back());
+    polygon.removeLast();
+    return polygon;
+  };
 
-  auto scene_rect = sceneRect();
-  const auto vrect = QRectF(viewport()->rect());
+  const auto scene_center = [this](const QSizeF& viewport_size) {
+    QTransform t;
+    QTransform::quadToQuad(rect_to_polygon({QPointF(), viewport_size}),
+                           rect_to_polygon(sceneRect()),
+                           t);
+    return t.map(QPointF {viewport_size.width(), viewport_size.height()} / 2.0);
+  };
 
-  QTransform old_t;
-  QTransform::quadToQuad(rect_to_polygon(vrect), rect_to_polygon(scene_rect), old_t);
-  const QPointF m_start_scene_pos = old_t.map(m_start_widget_pos);
-
-//  {
-//    const double sx = width() / scene_rect.width();
-//    const double sy = height() / scene_rect.height();
-//    const QSizeF sdiff = event->size() - event->oldSize();
-//    QPointF diff { sdiff.width()/sx/2.0, sdiff.height()/sy/2.0 };
-
-//    translate(diff.x(), diff.y());
-//    reset_scene_rect();
-//  }
+  const auto old_scene_pos = scene_center(event->oldSize());
   reset_scene_rect();
-
-  scene_rect = sceneRect();
-
-  QTransform new_t;
-  QTransform::quadToQuad(rect_to_polygon(viewport()->rect()), rect_to_polygon(scene_rect), new_t);
-
-  QPointF current_scene_pos = new_t.map(m_start_widget_pos);
-  const QPointF d = m_start_scene_pos - current_scene_pos;
-  scene_rect.translate(d);
-  setSceneRect(scene_rect);
+  const QPointF d = old_scene_pos - scene_center(event->size());
+  setSceneRect(sceneRect().translated(d));
 }
 
 void NodeView::dragMoveEvent(QDragMoveEvent* event)
