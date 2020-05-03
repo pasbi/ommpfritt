@@ -239,7 +239,8 @@ int Animator::rowCount(const QModelIndex &parent) const
   case IndexType::Property:
   {
     Property& pp = *property(parent);
-    return n_channels(pp.variant_value());
+    const auto n = n_channels(pp.variant_value());
+    return n;
   }
   case IndexType::Channel:
     return 0;

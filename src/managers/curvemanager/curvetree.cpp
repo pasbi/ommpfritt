@@ -26,16 +26,22 @@ public:
   bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override
   {
     assert(!source_parent.isValid() || &m_animator == source_parent.model());
-    if (!source_parent.isValid()) {
-      const QModelIndex source_index = m_animator.index(source_row, 0, QModelIndex());
+    const QModelIndex source_index = m_animator.index(source_row, 0, source_parent);
+    switch (m_animator.index_type(source_parent)) {
+    case omm::Animator::IndexType::None:
       assert(m_animator.index_type(source_index) == omm::Animator::IndexType::Owner);
       return ::contains(m_animator.scene.selection(), m_animator.owner(source_index));
-    } else if (m_animator.index_type(source_parent) == omm::Animator::IndexType::Owner) {
-      const QModelIndex source_index = m_animator.index(source_row, 0, source_parent);
+    case omm::Animator::IndexType::Owner:
       assert(m_animator.index_type(source_index) == omm::Animator::IndexType::Property);
       return omm::n_channels(m_animator.property(source_index)->variant_value()) > 0;
-    } else {
-      return true;
+    case omm::Animator::IndexType::Property:
+      assert(m_animator.index_type(source_index) == omm::Animator::IndexType::Channel);
+      return sourceModel()->rowCount(source_parent) > 1;
+    case omm::Animator::IndexType::Channel:
+      [[fallthrough]];
+    default:
+      Q_UNREACHABLE();
+      return false;
     }
   }
 
