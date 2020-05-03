@@ -370,10 +370,17 @@ void MainWindow:: load_layout(QSettings& settings)
       const QString name = settings.value(MANAGER_NAME_SETTINGS_KEY).toString();
 
       auto manager = Manager::make(type, m_app.scene);
-      manager->setObjectName(name);
       assert(manager);
-      if (!restoreDockWidget(manager.release())) {
+      manager->setObjectName(name);
+
+      if (restoreDockWidget(manager.get())) {
+        if (manager->isFloating()) {
+          manager->setFloating(true);
+        }
+        manager.release();  // ownership is handled by qt
+      } else {
         LWARNING << "Failed to restore geometry of manager.";
+        // delete the dock widget.
       }
     }
     settings.endArray();
