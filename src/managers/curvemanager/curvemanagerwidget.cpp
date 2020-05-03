@@ -116,7 +116,7 @@ void CurveManagerWidget::mouseMoveEvent(QMouseEvent* event)
     const QRectF rect = QRectF(range.pixel_to_unit(m_mouse_down_pos),
                                range.pixel_to_unit(m_last_mouse_pos)).normalized();
     for (auto&& [key, data] : m_keyframe_handles) {
-      const QPointF p(key.frame, data.value(key));
+      const QPointF p(key.frame, key.value());
       data.inside_rubberband = rect.contains(p);
     }
   }
@@ -188,7 +188,7 @@ void CurveManagerWidget::mouseReleaseEvent(QMouseEvent* event)
       for (auto&& [key, data] : keyframe_handles) {
         if (is_selected_and_visible(std::pair{ key, data })) {
           auto& property = key.track.property();
-          const double new_value = data.value(key) + m_value_shift;
+          const double new_value = key.value() + m_value_shift;
           auto new_knot = key.track.knot(key.frame).clone();
           set_channel_value(new_knot->value, key.channel, new_value);
           m_scene.submit<ChangeKeyFrameCommand>(key.frame, property, std::move(new_knot));
@@ -286,7 +286,7 @@ CurveManagerWidget::keyframe_handles_at(const QPointF& point) const
   std::set<const KeyFrameHandleKey*> its;
 
   for (auto&& [key, data] : m_keyframe_handles) {
-    const QPointF pos = range.unit_to_pixel(QPointF(key.frame, data.value(key)));
+    const QPointF pos = range.unit_to_pixel(QPointF(key.frame, key.value()));
     if (QPointF::dotProduct(pos - point, pos - point) < radius * radius) {
       its.insert(&key);
     }
@@ -422,7 +422,7 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
     const double frame_shift = any_channel_selected ? m_frame_shift : 0.0;
     const double value_shift = data.is_selected ? m_value_shift : 0.0;
     if (is_visible(key.track, key.channel)) {
-      const double value = data.value(key);
+      const double value = key.value();
       const QPointF center = range.unit_to_pixel({key.frame + frame_shift, value + value_shift});
       painter.save();
       if (data.is_selected || data.inside_rubberband) {
@@ -582,12 +582,6 @@ void CurveManagerWidget::move_knot(Track& track, int old_frame, int new_frame)
     }
   }
   update();
-}
-
-double CurveManagerWidget::KeyFrameHandleData
-::value(const CurveManagerWidget::KeyFrameHandleKey& key) const
-{
-  return get_channel_value(key.track.knot(key.frame).value, key.channel);
 }
 
 double CurveManagerWidget::KeyFrameHandleKey::value(Track::Knot::Side side) const

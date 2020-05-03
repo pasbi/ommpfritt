@@ -58,7 +58,6 @@ private:
   {
     bool is_selected = false;;
     bool inside_rubberband = false;
-    double value(const KeyFrameHandleKey& key) const;
   };
 
   std::map<KeyFrameHandleKey, KeyFrameHandleData> m_keyframe_handles;
