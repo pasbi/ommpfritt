@@ -2260,7 +2260,7 @@ Remove the selected items anyway?</translation>
     <name>omm::BoundingBoxManager</name>
     <message>
         <source>Bounding Box Manager</source>
-        <translation>Boundin Box Manager</translation>
+        <translation>Bounding Box Manager</translation>
     </message>
 </context>
 <context>
