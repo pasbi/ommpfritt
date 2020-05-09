@@ -16,6 +16,10 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "StyleManager");
   QString type() const override;
   bool perform_action(const QString& action_name) override;
+
+protected:
+  void contextMenuEvent(QContextMenuEvent* e) override;
+
 };
 
 }  // namespace omm
