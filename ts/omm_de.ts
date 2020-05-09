@@ -1983,6 +1983,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>load document ...</source>
         <translation>Szene laden ...</translation>
     </message>
+    <message>
+        <source>remove unused styles</source>
+        <translation>Unbenutzte Styles entfernen</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>

@@ -337,10 +337,12 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "invert selection") {
     actions::invert_selection(*this);
   } else if (action_name == "new style") {
-      using command_type = AddCommand<List<Style>>;
-      auto style = scene.default_style().clone();
-      assert(style->scene() == &scene);
-      scene.submit<command_type>(scene.styles(), std::move(style));
+    using command_type = AddCommand<List<Style>>;
+    auto style = scene.default_style().clone();
+    assert(style->scene() == &scene);
+    scene.submit<command_type>(scene.styles(), std::move(style));
+  } else if (action_name == "remove unused styles") {
+    actions::remove_unused_styles(*this);
   } else if (action_name == "convert objects") {
     actions::convert_objects(*this);
   } else if (action_name == "reset viewport") {

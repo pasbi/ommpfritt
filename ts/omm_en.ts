@@ -1983,6 +1983,10 @@ Remove the selected items anyway?</translation>
         <source>load document ...</source>
         <translation>Load scene ...</translation>
     </message>
+    <message>
+        <source>remove unused styles</source>
+        <translation>Remove unused styles</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>

@@ -21,5 +21,6 @@ void deselect_all(Application& app);
 void invert_selection(Application& app);
 void remove_selection(Application& app);
 void convert_objects(Application& app);
+void remove_unused_styles(Application& app);
 
 } // namespace omm::actions

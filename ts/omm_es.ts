@@ -1983,6 +1983,10 @@ Borrar la selección de todos modos?</translation>
         <source>load document ...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>remove unused styles</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>

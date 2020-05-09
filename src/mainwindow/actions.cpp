@@ -193,4 +193,13 @@ void convert_objects(Application& app)
   }
 }
 
+void remove_unused_styles(Application& app)
+{
+  auto& scene = app.scene;
+  const auto unused_styles = ::filter_if(app.scene.styles().items(), [&scene](const auto* style) {
+    return scene.find_reference_holders(*style).empty();
+  });
+  scene.submit<RemoveCommand<StyleList>>(scene.styles(), unused_styles);
+}
+
 }  // namespace omm::actions
