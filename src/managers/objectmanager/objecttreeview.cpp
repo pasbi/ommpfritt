@@ -197,13 +197,15 @@ void ObjectTreeView::paintEvent(QPaintEvent* event)
 
 void ObjectTreeView::keyPressEvent(QKeyEvent* event)
 {
-  if (event->key() == Qt::Key_Escape) {
+  if (!m_aborted && event->key() == Qt::Key_Escape) {
     m_aborted = true;
     m_object_delegate->tmp_selection.clear();
     m_tags_item_delegate->rubberband = QRect(-1, -1, 0, 0);
     viewport()->update();
+  } else {
+    event->ignore();
   }
-  QTreeView::keyPressEvent(event);
+  ManagerItemView::keyPressEvent(event);
 }
 
 QModelIndexList ObjectTreeView::indices(const QRect rect) const
