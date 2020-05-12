@@ -10,16 +10,13 @@
 namespace omm
 {
 
-enum class MoveAxisHandleDirection { X, Y };
-
-template<typename ToolT, MoveAxisHandleDirection direction>
+template<typename ToolT, AxisHandleDirection direction>
 class MoveAxisHandle : public Handle
 {
 public:
   MoveAxisHandle(ToolT& tool)
     : Handle(tool)
-    , m_direction(direction == MoveAxisHandleDirection::X ? Vec2f(100.0, 0.0)
-                                                          : Vec2f(0.0, 100.0))
+    , m_direction(axis_directions.at(direction))
   {
   }
 
@@ -41,7 +38,7 @@ public:
       const auto inv_tool_transformation = tool.transformation().inverted();
       auto total_delta = inv_tool_transformation.apply_to_direction(pos - press_pos());
       total_delta = project_onto_axis(total_delta);
-      discretize(total_delta);
+      total_delta = discretize(total_delta, true, 10.0);
       {
         auto transformation = omm::ObjectTransformation().translated(total_delta);
         transformation = transformation.transformed(inv_tool_transformation);
@@ -58,11 +55,6 @@ public:
 
   void draw(QPainter& painter) const override
   {
-    static const std::map<MoveAxisHandleDirection, QString> name_map {
-      { MoveAxisHandleDirection::X, "x-axis" },
-      { MoveAxisHandleDirection::Y, "y-axis" },
-    };
-
     painter.setTransform(tool.transformation().to_qtransform(), true);
     const QPainterPath path = [this]() {
       const double magnitude = 0.9 * m_direction.euclidean_norm();
@@ -83,7 +75,7 @@ public:
     }();
 
     painter.save();
-    const QString name = name_map.at(direction);
+    const QString name = axis_names.at(direction);
     QPen pen;
     pen.setColor(ui_color(name + "-outline"));
     pen.setWidthF(2.0);
@@ -94,15 +86,15 @@ public:
   }
 
 private:
-  Vec2f project_onto_axis(const Vec2f& v) const
+  const Vec2f m_direction;
+
+  Vec2f project_onto_axis(const Vec2f& vec) const
   {
     const Vec2f s = m_direction;
 
     // project v onto the line through o and s
-    return Vec2f::dot(v, s) / Vec2f::dot(s, s) * s;
+    return Vec2f::dot(vec, s) / Vec2f::dot(s, s) * s;
   }
-
-  const Vec2f m_direction;
 };
 
 }  // namespace omm

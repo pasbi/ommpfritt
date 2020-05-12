@@ -55,15 +55,32 @@ double Handle::draw_epsilon() const { return 4.0; }
 double Handle::interact_epsilon() const { return 4.0; }
 Vec2f Handle::press_pos() const { return m_press_pos; }
 
-void Handle::discretize(Vec2f& vec) const
+double Handle::discretize(double s, double step) const
 {
   if (tool.integer_transformation()) {
-    vec = tool.viewport_transformation.inverted().apply_to_direction(vec);
-    static constexpr double step = 10.0;
-    for (auto i : { 0u, 1u }) {
-      vec[i] = step * static_cast<int>(vec[i] / step);
+    LINFO << s << " " << step;
+    return step * static_cast<int>(s / step);
+  } else {
+    return s;
+  }
+}
+
+Vec2f Handle::discretize(const Vec2f& vec, bool local, double step) const
+{
+  if (tool.integer_transformation()) {
+    auto dvec = vec;
+    if (!local) {
+      dvec = tool.viewport_transformation.inverted().apply_to_direction(vec);
     }
-    vec = tool.viewport_transformation.apply_to_direction(vec);
+    for (auto i : { 0u, 1u }) {
+      dvec[i] = discretize(dvec[i], step);
+    }
+    if (!local) {
+      dvec = tool.viewport_transformation.apply_to_direction(vec);
+    }
+    return dvec;
+  } else {
+    return vec;
   }
 }
 
@@ -76,5 +93,16 @@ QColor Handle::ui_color(const QString& name) const
 {
   return ui_color(status(), name);
 }
+
+const std::map<AxisHandleDirection, Vec2f> Handle::axis_directions {
+  { AxisHandleDirection::X, Vec2f{100, 0} },
+  { AxisHandleDirection::Y, Vec2f{0, 100} },
+};
+
+const std::map<AxisHandleDirection, QString> Handle::axis_names {
+  { AxisHandleDirection::X, "x-axis" },
+  { AxisHandleDirection::Y, "y-axis" },
+};
+
 
 }  // namespace omm

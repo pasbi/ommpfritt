@@ -45,20 +45,17 @@ public:
       const auto ti = tool.transformation().inverted();
       const auto global_pos = ti.apply_to_position(pos);
       const auto origin = ti.apply_to_position(press_pos());
-      double s = global_pos.euclidean_norm() / origin.euclidean_norm();
-      if (tool.integer_transformation()) {
-        static constexpr auto step = 0.1;
-        if (std::abs(s) > step) { // s must never be zero.
-          s = step * static_cast<int>(s / step);
-        }
-      }
-      if (constexpr auto eps = 10e-10; std::abs(s) < eps) { s = std::copysign(eps, s); }
 
-      {
-        auto t = omm::ObjectTransformation().scaled(Vec2f(s, s));
-        t = t.transformed(ti);
-        static_cast<ToolT&>(tool).transform_objects(t);
+      double s = global_pos.euclidean_norm() / origin.euclidean_norm();
+      s = discretize(s, 0.1);
+
+      if (constexpr auto eps = 10e-10; std::abs(s) < eps) {
+        s = std::copysign(eps, s);
       }
+
+      auto t = omm::ObjectTransformation().scaled(Vec2f(s, s));
+      t = t.transformed(ti);
+      static_cast<ToolT&>(tool).transform_objects(t);
       static_cast<ToolT&>(tool).tool_info = QString("%1").arg(s);
       return true;
     } else {

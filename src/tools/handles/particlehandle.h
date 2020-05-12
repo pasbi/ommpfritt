@@ -31,7 +31,7 @@ public:
     if (status() == HandleStatus::Active) {
       const auto inv_tool_transformation = tool.transformation().inverted();
       auto total_delta = inv_tool_transformation.apply_to_direction(pos - press_pos());
-      discretize(total_delta);
+      total_delta = discretize(total_delta, false, 10.0);
       {
         auto transformation = omm::ObjectTransformation().translated(total_delta);
         transformation = transformation.transformed(inv_tool_transformation);

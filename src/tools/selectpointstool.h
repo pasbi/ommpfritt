@@ -3,6 +3,7 @@
 #include "tools/selecttool.h"
 #include "tools/handles/moveaxishandle.h"
 #include "tools/handles/rotatehandle.h"
+#include "tools/handles/scaleaxishandle.h"
 #include "tools/handles/scalebandhandle.h"
 #include "tools/handles/particlehandle.h"
 #include "commands/pointstransformationcommand.h"
@@ -44,10 +45,12 @@ public:
     tool.handles.push_back(std::make_unique<ScaleBandHandle<ToolT>>(tool));
     tool.handles.push_back(std::make_unique<RotateHandle<ToolT>>(tool));
 
-    static constexpr auto X = MoveAxisHandleDirection::X;
-    static constexpr auto Y = MoveAxisHandleDirection::Y;
+    static constexpr auto X = AxisHandleDirection::X;
+    static constexpr auto Y = AxisHandleDirection::Y;
     tool.handles.push_back(std::make_unique<MoveAxisHandle<ToolT, X>>(tool));
     tool.handles.push_back(std::make_unique<MoveAxisHandle<ToolT, Y>>(tool));
+    tool.handles.push_back(std::make_unique<ScaleAxisHandle<ToolT, X>>(tool));
+    tool.handles.push_back(std::make_unique<ScaleAxisHandle<ToolT, Y>>(tool));
 
     tool.handles.push_back(std::make_unique<MoveParticleHandle<ToolT>>(tool));
 

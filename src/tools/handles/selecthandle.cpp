@@ -36,8 +36,7 @@ mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
   Handle::mouse_move(delta, pos, e);
   if (status() == HandleStatus::Active) {
-    Vec2f total_delta = pos - press_pos();
-    discretize(total_delta);
+    Vec2f total_delta = discretize(pos-press_pos(), false, 10.0);
     const auto transformation = omm::ObjectTransformation().translated(total_delta);
     static_cast<AbstractSelectTool&>(tool).transform_objects(transformation);
     const auto tool_info = QString("%1").arg(total_delta.euclidean_norm());

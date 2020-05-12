@@ -3,6 +3,7 @@
 #include "tools/handles/moveaxishandle.h"
 #include "tools/handles/rotatehandle.h"
 #include "tools/handles/scalebandhandle.h"
+#include "tools/handles/scaleaxishandle.h"
 #include "tools/handles/particlehandle.h"
 #include "scene/scene.h"
 #include "properties/optionproperty.h"
@@ -40,8 +41,10 @@ void SelectObjectsTool::reset()
   using tool_t = std::remove_pointer_t<decltype(this)>;
   handles.push_back(std::make_unique<ScaleBandHandle<tool_t>>(*this));
   handles.push_back(std::make_unique<RotateHandle<tool_t>>(*this));
-  handles.push_back(std::make_unique<MoveAxisHandle<tool_t, MoveAxisHandleDirection::X>>(*this));
-  handles.push_back(std::make_unique<MoveAxisHandle<tool_t, MoveAxisHandleDirection::Y>>(*this));
+  handles.push_back(std::make_unique<MoveAxisHandle<tool_t, AxisHandleDirection::X>>(*this));
+  handles.push_back(std::make_unique<MoveAxisHandle<tool_t, AxisHandleDirection::Y>>(*this));
+  handles.push_back(std::make_unique<ScaleAxisHandle<tool_t, AxisHandleDirection::X>>(*this));
+  handles.push_back(std::make_unique<ScaleAxisHandle<tool_t, AxisHandleDirection::Y>>(*this));
   handles.push_back(std::make_unique<BoundingBoxHandle<SelectObjectsTool>>(*this));
 
   // ignore object selection. Return a handle for each visible object.

@@ -7,6 +7,7 @@ target_sources(libommpfritt PRIVATE
   particlehandle.h
   rotatehandle.h
   scalebandhandle.h
+  scaleaxishandle.h
   selecthandle.cpp
   selecthandle.h
   tangenthandle.cpp
