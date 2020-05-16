@@ -19,7 +19,7 @@ find_package(Qt5Widgets CONFIG REQUIRED)
 find_package(Qt5Svg REQUIRED)
 find_package(Qt5 COMPONENTS LinguistTools)
 find_package(PkgConfig)
-find_package(PythonLibs 3 REQUIRED)
+find_package(Python3 3.7 REQUIRED COMPONENTS Interpreter Development)
 find_package(KF5ItemModels REQUIRED)
 find_package(pybind11 REQUIRED)
 
@@ -32,8 +32,6 @@ if (BUILD_TESTS)
     include(DownloadGoogleTest)
 endif()
 
-find_package(Python3 3.7 REQUIRED COMPONENTS Interpreter)
-
 list(APPEND classes tags managers nodes properties tools objects serializers)
 generate_registers("${classes}")
 
@@ -44,14 +42,6 @@ configure_file (
   "${PROJECT_SOURCE_DIR}/ommpfrittconfig.h.in"
   "${PROJECT_BINARY_DIR}/ommpfrittconfig.h"
 )
-
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
-include_directories("${PROJECT_BINARY_DIR}")
-include_directories(${PythonLibs_INCLUDE_DIRS})
-include_directories(${pybind11_INCLUDE_DIRS})
-
-link_directories(${PythonLibs_LIBRARY_DIRS})
-link_directories(${pybind11_LIBRARY_DIRS})
 
 ADD_DEFINITIONS(-DQT_NO_KEYWORDS)
 
@@ -115,8 +105,12 @@ add_dependencies(ommpfritt libommpfritt resources)
 add_dependencies(ommpfritt_unit_tests resources_cli)
 add_dependencies(ommpfritt-cli libommpfritt resources_cli)
 
+target_include_directories(libommpfritt PUBLIC
+    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    "${PROJECT_BINARY_DIR}"
+)
 target_compile_features(libommpfritt PUBLIC cxx_std_17)
-target_link_libraries(libommpfritt ${PYTHON_LIBRARIES})
+target_link_libraries(libommpfritt Python3::Python)
 target_link_libraries(libommpfritt pybind11::embed)
 target_link_libraries(libommpfritt Qt5::Widgets Qt5::Svg)
 target_link_libraries(libommpfritt poppler-qt5)
