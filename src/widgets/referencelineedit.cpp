@@ -60,7 +60,7 @@ void ReferenceLineEdit::set_scene(Scene &scene)
           [this](AbstractPropertyOwner& owner, const QString& key, Property&)
   {
     using Flag = Flag;
-    if (!!(owner.flags() & Flag::HasScript | Flag::HasPython)) {
+    if (!!(owner.flags() & (Flag::HasScript | Flag::HasPython))) {
       if (key == AbstractPropertyOwner::NAME_PROPERTY_KEY) {
         update_candidates();
       }

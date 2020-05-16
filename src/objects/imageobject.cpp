@@ -92,9 +92,9 @@ QPointF ImageObject::pos(const QSizeF &size) const
                   dim(size.height(), property(VANCHOR_PROPERTY_KEY)->value<std::size_t>()) );
 }
 
-BoundingBox ImageObject::bounding_box(const ObjectTransformation &transformation) const
+BoundingBox ImageObject::bounding_box(const ObjectTransformation &) const
 {
-  // implementing this is relly a problem.
+  // implementing this is really a problem.
   // The height of the image is not known at this point.
   return BoundingBox();
 }

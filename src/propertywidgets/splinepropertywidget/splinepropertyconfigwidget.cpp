@@ -8,12 +8,12 @@ SplinePropertyConfigWidget::SplinePropertyConfigWidget()
 
 }
 
-void SplinePropertyConfigWidget::init(const Property::Configuration& configuration)
+void SplinePropertyConfigWidget::init(const Property::Configuration&)
 {
 
 }
 
-void SplinePropertyConfigWidget::update(Property::Configuration& configuration) const
+void SplinePropertyConfigWidget::update(Property::Configuration&) const
 {
 
 }

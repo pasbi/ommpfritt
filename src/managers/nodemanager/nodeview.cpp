@@ -28,10 +28,6 @@
 namespace
 {
 
-QTransform quad2quad(const QRectF& src, const QRectF dst)
-{
-}
-
 omm::PortItem* get_port_item(omm::NodeScene& scene, omm::AbstractPort& port)
 {
   omm::NodeItem& node_item = scene.node_item(port.node);

@@ -26,7 +26,7 @@ public:
 private:
   KeyBindings& m_key_bindings;
   std::unique_ptr<Ui::ToolBarDialog> m_ui;
-  std::unique_ptr<KeyBindingsProxyModel> m_proxy;;
+  std::unique_ptr<KeyBindingsProxyModel> m_proxy;
   std::unique_ptr<ToolBarItemModel> m_toolbar_item_model;
 };
 

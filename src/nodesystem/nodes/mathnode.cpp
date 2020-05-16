@@ -115,6 +115,7 @@ QString MathNode::output_data_type(const OutputPort& port) const
         return INTEGERVECTOR_TYPE;
       } else if ((is_vector(type_a) || is_numeric(type_a))
               && (is_vector(type_b) || is_numeric(type_b))) {
+        return FLOATVECTOR_TYPE;
       } else if ((type_a == COLOR_TYPE || is_numeric(type_a))
               && (type_b == COLOR_TYPE || is_numeric(type_b))) {
         return COLOR_TYPE;

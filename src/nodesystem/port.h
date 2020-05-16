@@ -101,6 +101,8 @@ decltype(auto) visit(PortT&& port, F&& f)
       return f(static_cast<const InputPort&>(port));
     case PortType::Output:
       return f(static_cast<const OutputPort&>(port));
+    case PortType::Both:
+      Q_UNREACHABLE();
     }
   } else {
     switch (port.port_type) {
@@ -108,6 +110,8 @@ decltype(auto) visit(PortT&& port, F&& f)
       return f(static_cast<InputPort&>(port));
     case PortType::Output:
       return f(static_cast<OutputPort&>(port));
+    case PortType::Both:
+      Q_UNREACHABLE();
     }
   }
   Q_UNREACHABLE();

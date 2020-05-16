@@ -32,4 +32,4 @@ private:
   Vec2f apply(const std::vector<double>& vec) const;
 };
 
-};
+}  // namespace omm

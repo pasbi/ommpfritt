@@ -21,7 +21,7 @@ PortItem::PortItem(AbstractPort& port, NodeItem& parent)
 {
 }
 
-void PortItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* options, QWidget* widget)
+void PortItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* widget)
 {
   static constexpr QRectF ellipse( -radius,  -radius,
                                   2*radius, 2*radius);

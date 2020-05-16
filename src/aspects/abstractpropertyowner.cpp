@@ -36,7 +36,8 @@ AbstractPropertyOwner::AbstractPropertyOwner(Kind kind, Scene *scene)
 }
 
 AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner &other)
-  : kind(other.kind), m_scene(other.m_scene)
+  : QObject()  // from QObject's perspective, the copy is a new object.
+  , kind(other.kind), m_scene(other.m_scene)
 {
   for (auto&& key : other.m_properties.keys()) {
     AbstractPropertyOwner::add_property(key, other.m_properties.at(key)->clone());

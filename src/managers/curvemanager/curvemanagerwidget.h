@@ -56,7 +56,7 @@ private:
 
   struct KeyFrameHandleData
   {
-    bool is_selected = false;;
+    bool is_selected = false;
     bool inside_rubberband = false;
   };
 

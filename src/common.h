@@ -131,7 +131,7 @@ std::unique_ptr<T> extract(ContainerT<std::unique_ptr<T>>& container, const T& o
   assert(it != std::end(container));
   std::unique_ptr<T> uptr = std::move(*it);
   container.erase(it);
-  return std::move(uptr);
+  return uptr;
 }
 
 template<typename Ts, typename Predicate>

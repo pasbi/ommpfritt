@@ -134,6 +134,9 @@ QVariant UiColors::headerData(int section, Qt::Orientation orientation, int role
       return tr("Inactive");
     case 3:
       return tr("Disabled");
+    default:
+      Q_UNREACHABLE();
+      return "";
     }
   default:
     return QVariant();

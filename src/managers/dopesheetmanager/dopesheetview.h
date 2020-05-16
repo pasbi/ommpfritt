@@ -14,7 +14,7 @@ class TrackViewDelegate;
 
 class DopeSheetView : public ItemProxyView<QTreeView>
 {
-  Q_OBJECT;
+  Q_OBJECT
 public:
   explicit DopeSheetView(Animator& animator);
 
