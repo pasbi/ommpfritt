@@ -27,8 +27,6 @@ public:
   void set_value(const TriggerPropertyDummyValueType&, const Pointer& pointer) override;
   void set_value(const SplineType&, const Pointer& pointer) override;
 
-  QString type() const override;
-
 private:
   nlohmann::json m_store;
   std::ostream& m_ostream;
@@ -52,8 +50,6 @@ public:
   PolarCoordinates get_polarcoordinates(const Pointer& pointer) override;
   TriggerPropertyDummyValueType get_trigger_dummy_value(const Pointer& pointer) override;
   SplineType get_spline(const Pointer& pointer) override;
-
-  QString type() const override;
 
 private:
   nlohmann::json m_store;

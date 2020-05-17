@@ -32,7 +32,7 @@ if (BUILD_TESTS)
     include(DownloadGoogleTest)
 endif()
 
-list(APPEND classes tags managers nodes properties tools objects serializers)
+list(APPEND classes tags managers nodes properties tools objects)
 generate_registers("${classes}")
 
 set (QT_QM_PATH CACHE PATH

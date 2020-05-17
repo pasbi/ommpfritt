@@ -13,7 +13,7 @@
 #include "external/json.hpp"
 #include "properties/stringproperty.h"
 #include "properties/boolproperty.h"
-#include "serializers/abstractserializer.h"
+#include "serializers/jsonserializer.h"
 #include "commands/command.h"
 #include "properties/referenceproperty.h"
 #include "properties/colorproperty.h"
@@ -187,18 +187,17 @@ bool Scene::save_as(const QString &filename)
     return false;
   }
 
-  auto serializer = AbstractSerializer::make( "JSONSerializer",
-                                              static_cast<std::ostream&>(ofstream) );
-  object_tree().root().serialize(*serializer, ROOT_POINTER);
+  JSONSerializer serializer(static_cast<std::ostream&>(ofstream));
+  object_tree().root().serialize(serializer, ROOT_POINTER);
 
-  serializer->start_array(styles().items().size(), Serializable::make_pointer(STYLES_POINTER));
+  serializer.start_array(styles().items().size(), Serializable::make_pointer(STYLES_POINTER));
   for (size_t i = 0; i < styles().items().size(); ++i) {
-    styles().item(i).serialize(*serializer, Serializable::make_pointer(STYLES_POINTER, i));
+    styles().item(i).serialize(serializer, Serializable::make_pointer(STYLES_POINTER, i));
   }
-  serializer->end_array();
+  serializer.end_array();
 
-  animator().serialize(*serializer, ANIMATOR_POINTER);
-  named_colors().serialize(*serializer, NAMED_COLORS_POINTER);
+  animator().serialize(serializer, ANIMATOR_POINTER);
+  named_colors().serialize(serializer, NAMED_COLORS_POINTER);
 
   LINFO << "Saved current scene to '" << filename << "'.";
   history().set_saved_index();
@@ -224,19 +223,18 @@ bool Scene::load_from(const QString &filename)
   };
 
   try {
-    auto deserializer = AbstractDeserializer::make( "JSONDeserializer",
-                                                    static_cast<std::istream&>(ifstream) );
+    JSONDeserializer deserializer(static_cast<std::istream&>(ifstream));
 
     auto new_root = make_root();
-    new_root->deserialize(*deserializer, ROOT_POINTER);
+    new_root->deserialize(deserializer, ROOT_POINTER);
 
-    const auto n_styles = deserializer->array_size(Serializable::make_pointer(STYLES_POINTER));
+    const auto n_styles = deserializer.array_size(Serializable::make_pointer(STYLES_POINTER));
     std::vector<std::unique_ptr<Style>> styles;
     styles.reserve(n_styles);
     for (size_t i = 0; i < n_styles; ++i) {
       const auto style_pointer = Serializable::make_pointer(STYLES_POINTER, i);
       auto style = std::make_unique<Style>(this);
-      style->deserialize(*deserializer, style_pointer);
+      style->deserialize(deserializer, style_pointer);
       styles.push_back(std::move(style));
     }
 
@@ -250,10 +248,10 @@ bool Scene::load_from(const QString &filename)
 
     object_tree().root().update_recursive();
 
-    animator().deserialize(*deserializer, ANIMATOR_POINTER);
+    animator().deserialize(deserializer, ANIMATOR_POINTER);
 
-    named_colors().deserialize(*deserializer, NAMED_COLORS_POINTER);
-    deserializer->polish();
+    named_colors().deserialize(deserializer, NAMED_COLORS_POINTER);
+    deserializer.polish();
     return true;
   } catch (const AbstractDeserializer::DeserializeError& deserialize_error) {
     error_handler(deserialize_error.what());

@@ -188,8 +188,6 @@ void JSONSerializer::set_value(const SplineType& spline, const Pointer& pointer)
   }
 }
 
-QString JSONSerializer::type() const { return "JSONSerializer"; }
-
 
 
 JSONDeserializer::JSONDeserializer(std::istream& istream)
@@ -293,7 +291,5 @@ SplineType JSONDeserializer::get_spline(const AbstractDeserializer::Pointer& poi
 
   return SplineType(map);
 }
-
-QString JSONDeserializer::type() const { return "JSONDeserializer"; }
 
 }  // namespace omm

@@ -4,7 +4,6 @@
 #include "register_managers.cpp"
 #include "register_objects.cpp"
 #include "register_tags.cpp"
-#include "register_serializers.cpp"
 #include "register_properties.cpp"
 #include "register_tools.cpp"
 #include "register_nodes.cpp"
@@ -17,7 +16,6 @@ void register_everything()
   register_managers();
   register_objects();
   register_tags();
-  register_serializers();
   register_properties();
   register_tools();
   register_nodes();
