@@ -341,14 +341,6 @@ void Path::update_tangents()
   }
 }
 
-std::unique_ptr<Path> Path::outline(const double t) const
-{
-  auto outline = std::make_unique<Path>(scene());
-  outline->set_points(Point::offset(t, m_points, is_closed()));
-  outline->property(IS_CLOSED_PROPERTY_KEY)->set(is_closed());
-  return std::unique_ptr<Path>(outline.release());
-}
-
 Path::PointSequence::PointSequence(int position) : position(position) {}
 
 Path::PointSequence::PointSequence(int position, const std::initializer_list<Point> &points)

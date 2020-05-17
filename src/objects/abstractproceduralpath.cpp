@@ -76,14 +76,6 @@ std::vector<double> AbstractProceduralPath::cut(const Vec2f& c_start, const Vec2
                                             gti.apply_to_position(c_end) );
 }
 
-std::unique_ptr<Path> AbstractProceduralPath::outline(const double t) const
-{
-  auto outline = std::make_unique<Path>(scene());
-  outline->set_points(Point::offset(t, m_points, is_closed()));
-  outline->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed());
-  return std::unique_ptr<Path>(outline.release());
-}
-
 void AbstractProceduralPath::update()
 {
   m_points = ::filter_if(points(), [](const auto& point) {

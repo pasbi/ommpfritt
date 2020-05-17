@@ -22,7 +22,6 @@ public:
   bool contains(const Vec2f &pos) const override;
 
   std::vector<double> cut(const Vec2f& c_start, const Vec2f& c_end);
-  std::unique_ptr<Path> outline(const double t) const override;
 
   void update() override;
 

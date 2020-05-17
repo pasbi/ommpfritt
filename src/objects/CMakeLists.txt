@@ -17,8 +17,6 @@ target_sources(libommpfritt PRIVATE
   mirror.h
   object.cpp
   object.h
-  outline.cpp
-  outline.h
   path.cpp
   path.h
   proceduralpath.cpp

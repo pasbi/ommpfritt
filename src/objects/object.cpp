@@ -505,12 +505,6 @@ void Object::draw_object(Painter&, const Style&, Painter::Options) const {}
 void Object::draw_handles(Painter&) const {}
 std::vector<Point> Object::points() const { return {}; }
 
-std::unique_ptr<Path> Object::outline(const double offset) const
-{
-  Q_UNUSED(offset)
-  return nullptr;
-}
-
 void Object::set_object_tree(ObjectTree &object_tree)
 {
   if (m_object_tree == nullptr) {
