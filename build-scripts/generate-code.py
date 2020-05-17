@@ -23,20 +23,26 @@ if __name__ == "__main__":
             for inc in ensure_list(spec["include"]):
                 f.write(inc.format(lc_item=item.lower()) + "\n")
 
+        f.write("#include \"logging.h\"\n")
         f.write("namespace\n")
         f.write("{\n")
 
         # the register_*s function is used for sure, but most code highlighters
         # don't get it.
         # Add the [[maybe_unused]] attribute to silence false warnings.
-        f.write(f"[[maybe_unused]] void register_{spec['category']}()\n")
+        category = spec['category']
+        clazz = spec["clazz"]
+        f.write(f"[[maybe_unused]] void register_{category}()\n")
         f.write("{\n")
         f.write("  using namespace omm;\n")
+        f.write(f"  LDEBUG << \"registering {category}\";\n")
         for item in spec["items"]:
-            d = { "clazz": spec["clazz"], "item": item }
+            d = { "clazz": clazz, "item": item }
             for line in ensure_list(spec["register"]):
                 line = "  " + line + "\n"
-                f.write(line.format(clazz=spec["clazz"], item=item))
+                f.write(line.format(clazz=clazz, item=item))
+        f.write(f"  LDEBUG << \"registered \" << {clazz}::keys().size() << "\
+                f"\" {category}.\";\n")
         f.write("}\n")
         f.write("}  // namespace\n")
         f.write("\n")
