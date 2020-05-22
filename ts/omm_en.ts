@@ -1025,18 +1025,6 @@ Remove the selected items anyway?</translation>
         <translation>Center</translation>
     </message>
     <message>
-        <source>Outline</source>
-        <translation>Outline</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation>Offset</translation>
-    </message>
-    <message>
-        <source>Reference</source>
-        <translation>Reference</translation>
-    </message>
-    <message>
         <source>Line</source>
         <translation>Line</translation>
     </message>
@@ -1641,10 +1629,6 @@ Remove the selected items anyway?</translation>
         <translation>Line</translation>
     </message>
     <message>
-        <source>Outline</source>
-        <translation>Outline</translation>
-    </message>
-    <message>
         <source>HistoryManager</source>
         <translation>History</translation>
     </message>
@@ -1754,10 +1738,6 @@ Remove the selected items anyway?</translation>
     <message>
         <source>previous tool</source>
         <translation>Previous tool</translation>
-    </message>
-    <message>
-        <source>Outline</source>
-        <translation>Outline</translation>
     </message>
     <message>
         <source>load layout ...</source>

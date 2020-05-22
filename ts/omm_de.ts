@@ -1025,18 +1025,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Zentrum</translation>
     </message>
     <message>
-        <source>Outline</source>
-        <translation>Umriss</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation>Versatz</translation>
-    </message>
-    <message>
-        <source>Reference</source>
-        <translation>Referenz</translation>
-    </message>
-    <message>
         <source>Line</source>
         <translation>Linie</translation>
     </message>
@@ -1641,10 +1629,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Linie</translation>
     </message>
     <message>
-        <source>Outline</source>
-        <translation>Umriss</translation>
-    </message>
-    <message>
         <source>HistoryManager</source>
         <translation>Verlaufsmanager</translation>
     </message>
@@ -1754,10 +1738,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>previous tool</source>
         <translation>Vorheriges Werkzeug</translation>
-    </message>
-    <message>
-        <source>Outline</source>
-        <translation>Umriss</translation>
     </message>
     <message>
         <source>load layout ...</source>

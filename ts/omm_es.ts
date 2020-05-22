@@ -1025,18 +1025,6 @@ Borrar la selección de todos modos?</translation>
         <translation>Centro</translation>
     </message>
     <message>
-        <source>Outline</source>
-        <translation>Trazo</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation>Desplazamiento</translation>
-    </message>
-    <message>
-        <source>Reference</source>
-        <translation>Referencia</translation>
-    </message>
-    <message>
         <source>Line</source>
         <translation>Línea</translation>
     </message>
@@ -1641,10 +1629,6 @@ Borrar la selección de todos modos?</translation>
         <translation>Línea</translation>
     </message>
     <message>
-        <source>Outline</source>
-        <translation>Trazo</translation>
-    </message>
-    <message>
         <source>HistoryManager</source>
         <translation>Historia de acciones</translation>
     </message>
@@ -1754,10 +1738,6 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>previous tool</source>
         <translation type="unfinished">Herramienta previa</translation>
-    </message>
-    <message>
-        <source>Outline</source>
-        <translation type="unfinished">Trazo</translation>
     </message>
     <message>
         <source>load layout ...</source>
