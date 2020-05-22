@@ -495,9 +495,9 @@ void Object::update_recursive()
   //  Q_EMIT scene()->message_box.appearance_changed(*this);
 }
 
-QString Object::path() const
+QString Object::tree_path() const
 {
-  const QString path = is_root() ? "" : tree_parent().path();
+  const QString path = is_root() ? "" : tree_parent().tree_path();
   return path + "/" + name();
 }
 

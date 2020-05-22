@@ -100,7 +100,7 @@ void prepare_scene(omm::Scene& scene, const omm::SubcommandLineParser& args)
     if (!object_name.isEmpty()) {
       return QRegularExpression(object_name).match(object->name()).hasMatch();
     } else if (!object_path.isEmpty()) {
-      return QRegularExpression(object_path).match(object->path()).hasMatch();
+      return QRegularExpression(object_path).match(object->tree_path()).hasMatch();
     } else {
       return true;
     }

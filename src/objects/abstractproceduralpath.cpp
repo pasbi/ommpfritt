@@ -85,5 +85,4 @@ void AbstractProceduralPath::update()
   Object::update();
 }
 
-
 }  // namespace omm
