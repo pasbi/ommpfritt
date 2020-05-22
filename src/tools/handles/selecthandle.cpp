@@ -228,7 +228,7 @@ void PointSelectHandle::set_selected(bool selected)
 
 void PointSelectHandle::clear()
 {
-  m_path.deselect_all_points();
+//  m_path.deselect_all_points();
 }
 
 bool PointSelectHandle::is_selected() const

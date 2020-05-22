@@ -1,4 +1,5 @@
 #include "objects/abstractproceduralpath.h"
+#include "objects/empty.h"
 #include <QObject>
 #include "properties/floatproperty.h"
 #include "objects/path.h"
@@ -32,13 +33,14 @@ Flag AbstractProceduralPath::flags() const
 
 std::unique_ptr<Object> AbstractProceduralPath::convert() const
 {
-  auto converted = std::make_unique<Path>(scene());
-  copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
-  copy_tags(*converted);
-  converted->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed());
-  converted->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
-  converted->set_points(m_points);
-  return std::unique_ptr<Object>(converted.release());
+//  auto converted = std::make_unique<Path>(scene());
+//  copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
+//  copy_tags(*converted);
+//  converted->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed());
+//  converted->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
+//  converted->set_points(m_points);
+//  return std::unique_ptr<Object>(converted.release());
+  return std::make_unique<Empty>(scene());
 }
 
 Point AbstractProceduralPath::evaluate(const double t) const

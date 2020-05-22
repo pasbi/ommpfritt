@@ -61,12 +61,13 @@ bool PointsTransformationCommand::is_noop() const
 
 void PointsTransformationCommand::apply(const PointsTransformationCommand::Map &map)
 {
-  for (auto&& [k, v] : map) {
-    Path* path = k.first;
-    std::size_t index = k.second;
-    path->point(index) = map.at(k);
-    path->update();
-  }
+  Q_UNUSED(map)
+//  for (auto&& [k, v] : map) {
+//    Path* path = k.first;
+//    std::size_t index = k.second;
+//    path->point(index) = map.at(k);
+//    path->update();
+//  }
 }
 
 std::set<std::pair<Path*, std::size_t>> PointsTransformationCommand::affected_points() const

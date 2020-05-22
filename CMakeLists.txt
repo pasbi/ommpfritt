@@ -80,7 +80,7 @@ macro(set_warning_level target)
   if(MSVC)
     target_compile_options(${target} PRIVATE /W4 /WX)
   else()
-    target_compile_options(${target} PRIVATE -Wall -Wextra -pedantic -Werror)
+    target_compile_options(${target} PRIVATE -Wall -Wextra -pedantic) # -Werror)
   endif()
 endmacro()
 

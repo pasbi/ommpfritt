@@ -28,25 +28,25 @@ private:
 class AbstractPointsCommand : public Command
 {
 protected:
-  AbstractPointsCommand( const QString& label,
-                         const std::map<Path*, std::vector<Path::PointSequence>>& points );
+//  AbstractPointsCommand( const QString& label,
+//                         const std::map<Path*, std::vector<Path::PointSequence>>& points );
   AbstractPointsCommand( const QString& label,
                          const std::map<Path*, std::vector<std::size_t>>& points );
-  void add();
-  void remove();
+//  void add();
+//  void remove();
 
   Scene& scene() const;
 
 private:
   std::map<Path*, std::vector<std::size_t>> m_removed_points;
-  std::map<Path*, std::vector<Path::PointSequence>> m_added_points;
+//  std::map<Path*, std::vector<Path::PointSequence>> m_added_points;
 
 };
 
 class AddPointsCommand : public AbstractPointsCommand
 {
 public:
-  AddPointsCommand(const std::map<Path*, std::vector<Path::PointSequence>>& points);
+//  AddPointsCommand(const std::map<Path*, std::vector<Path::PointSequence>>& points);
   void redo() override;
   void undo() override;
 };

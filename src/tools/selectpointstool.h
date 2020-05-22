@@ -42,26 +42,26 @@ public:
 
   template<typename ToolT> static void make_handles(ToolT& tool, bool force_subhandles = false)
   {
-    tool.handles.push_back(std::make_unique<ScaleBandHandle<ToolT>>(tool));
-    tool.handles.push_back(std::make_unique<RotateHandle<ToolT>>(tool));
+//    tool.handles.push_back(std::make_unique<ScaleBandHandle<ToolT>>(tool));
+//    tool.handles.push_back(std::make_unique<RotateHandle<ToolT>>(tool));
 
-    static constexpr auto X = AxisHandleDirection::X;
-    static constexpr auto Y = AxisHandleDirection::Y;
-    tool.handles.push_back(std::make_unique<MoveAxisHandle<ToolT, X>>(tool));
-    tool.handles.push_back(std::make_unique<MoveAxisHandle<ToolT, Y>>(tool));
-    tool.handles.push_back(std::make_unique<ScaleAxisHandle<ToolT, X>>(tool));
-    tool.handles.push_back(std::make_unique<ScaleAxisHandle<ToolT, Y>>(tool));
+//    static constexpr auto X = AxisHandleDirection::X;
+//    static constexpr auto Y = AxisHandleDirection::Y;
+//    tool.handles.push_back(std::make_unique<MoveAxisHandle<ToolT, X>>(tool));
+//    tool.handles.push_back(std::make_unique<MoveAxisHandle<ToolT, Y>>(tool));
+//    tool.handles.push_back(std::make_unique<ScaleAxisHandle<ToolT, X>>(tool));
+//    tool.handles.push_back(std::make_unique<ScaleAxisHandle<ToolT, Y>>(tool));
 
-    tool.handles.push_back(std::make_unique<MoveParticleHandle<ToolT>>(tool));
+//    tool.handles.push_back(std::make_unique<MoveParticleHandle<ToolT>>(tool));
 
-    for (auto* path : type_cast<Path*>(tool.scene()->template item_selection<Object>())) {
-      tool.handles.reserve(tool.handles.size() + path->points().size());
-      for (auto* point : path->points_ref()) {
-        auto handle = std::make_unique<PointSelectHandle>(tool, *path, *point);
-        handle->force_draw_subhandles = force_subhandles;
-        tool.handles.push_back(std::move(handle));
-      }
-    }
+//    for (auto* path : type_cast<Path*>(tool.scene()->template item_selection<Object>())) {
+//      tool.handles.reserve(tool.handles.size() + path->points().size());
+//      for (auto* point : path->points_ref()) {
+//        auto handle = std::make_unique<PointSelectHandle>(tool, *path, *point);
+//        handle->force_draw_subhandles = force_subhandles;
+//        tool.handles.push_back(std::move(handle));
+//      }
+//    }
   }
 
   BoundingBox bounding_box() const;

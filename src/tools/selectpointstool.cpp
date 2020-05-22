@@ -62,9 +62,9 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
     return true;
   } else {
     for (auto* path : paths) {
-      for (auto* point : path->points_ref()) {
-        point->is_selected = false;
-      }
+//      for (auto* point : path->points_ref()) {
+//        point->is_selected = false;
+//      }
     }
     return false;
   }
@@ -73,11 +73,11 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
 bool SelectPointsBaseTool::has_transformation() const
 {
   for (auto* path : type_cast<Path*>(scene()->template item_selection<Object>())) {
-    for (auto* point : path->points_ref()) {
-      if (point->is_selected) {
-        return true;
-      }
-    }
+//    for (auto* point : path->points_ref()) {
+//      if (point->is_selected) {
+//        return true;
+//      }
+//    }
   }
   return false;
 }
@@ -177,13 +177,13 @@ void TransformPointsHelper::update()
 {
   m_initial_points.clear();
   for (Path* path : m_paths) {
-    const std::vector<std::size_t> selected_points = path->selected_points();
-    if (selected_points.size() > 0) {
-      m_paths.insert(path);
-    }
-    for (const std::size_t i : selected_points) {
-      m_initial_points.insert(std::make_pair(std::make_pair(path, i), path->point(i)));
-    }
+//    const std::vector<std::size_t> selected_points = path->selected_points();
+//    if (selected_points.size() > 0) {
+//      m_paths.insert(path);
+//    }
+//    for (const std::size_t i : selected_points) {
+//      m_initial_points.insert(std::make_pair(std::make_pair(path, i), path->point(i)));
+//    }
   }
 }
 

@@ -50,12 +50,12 @@ bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)
   return true;
 }
 
-AbstractPointsCommand::AbstractPointsCommand(
-  const QString& label, const std::map<Path*, std::vector<Path::PointSequence>>& points )
-  : Command(label), m_added_points(points)
-{
-  assert(m_added_points.size() > 0);
-}
+//AbstractPointsCommand::AbstractPointsCommand(
+//  const QString& label, const std::map<Path*, std::vector<Path::PointSequence>>& points )
+//  : Command(label), m_added_points(points)
+//{
+//  assert(m_added_points.size() > 0);
+//}
 
 AbstractPointsCommand::AbstractPointsCommand(
   const QString& label, const std::map<Path*, std::vector<std::size_t>>& points )
@@ -64,54 +64,68 @@ AbstractPointsCommand::AbstractPointsCommand(
   assert(m_removed_points.size() > 0);
 }
 
-Scene &AbstractPointsCommand::scene() const
+//Scene &AbstractPointsCommand::scene() const
+//{
+//  Scene* scene = m_added_points.size() > 0 ? m_added_points.begin()->first->scene()
+//                                           : m_removed_points.begin()->first->scene();
+//#ifndef NDEBUG
+//  for (auto&& [path, points] : m_added_points) {
+//    assert(scene == path->scene());
+//  }
+//  for (auto&& [path, points] : m_removed_points) {
+//    assert(scene == path->scene());
+//  }
+//#endif  // NDEBUG
+//  return *scene;
+//}
+
+//void AbstractPointsCommand::remove()
+//{
+//  assert(m_added_points.size() == 0);
+//  for (auto&& [path, points] : m_removed_points) {
+//    m_added_points[path] = path->remove_points(points);
+//    path->update_tangents();
+//  }
+//  m_removed_points.clear();
+//  scene().update_tool();
+//}
+
+//void AbstractPointsCommand::add()
+//{
+//  assert(m_removed_points.size() == 0);
+//  for (auto&& [path, points] : m_added_points) {
+//    m_removed_points[path] = path->add_points(points);
+//    path->update_tangents();
+//  }
+//  m_added_points.clear();
+//  scene().update_tool();
+//}
+
+//AddPointsCommand::AddPointsCommand(const std::map<Path*, std::vector<Path::PointSequence>>& points)
+//  : AbstractPointsCommand(QObject::tr("AddPointsCommand"), points) {}
+
+void AddPointsCommand::redo()
 {
-  Scene* scene = m_added_points.size() > 0 ? m_added_points.begin()->first->scene()
-                                           : m_removed_points.begin()->first->scene();
-#ifndef NDEBUG
-  for (auto&& [path, points] : m_added_points) {
-    assert(scene == path->scene());
-  }
-  for (auto&& [path, points] : m_removed_points) {
-    assert(scene == path->scene());
-  }
-#endif  // NDEBUG
-  return *scene;
+//  add();
 }
 
-void AbstractPointsCommand::remove()
+void AddPointsCommand::undo()
 {
-  assert(m_added_points.size() == 0);
-  for (auto&& [path, points] : m_removed_points) {
-    m_added_points[path] = path->remove_points(points);
-    path->update_tangents();
-  }
-  m_removed_points.clear();
-  scene().update_tool();
+//  remove();
 }
-
-void AbstractPointsCommand::add()
-{
-  assert(m_removed_points.size() == 0);
-  for (auto&& [path, points] : m_added_points) {
-    m_removed_points[path] = path->add_points(points);
-    path->update_tangents();
-  }
-  m_added_points.clear();
-  scene().update_tool();
-}
-
-AddPointsCommand::AddPointsCommand(const std::map<Path*, std::vector<Path::PointSequence>>& points)
-  : AbstractPointsCommand(QObject::tr("AddPointsCommand"), points) {}
-
-void AddPointsCommand::redo() { add(); }
-void AddPointsCommand::undo() { remove(); }
 
 RemovePointsCommand::RemovePointsCommand(const std::map<Path*, std::vector<std::size_t>>& points)
   : AbstractPointsCommand(QObject::tr("RemovePointsCommand"), points) {}
 
-void RemovePointsCommand::redo() { remove(); }
-void RemovePointsCommand::undo() { add(); }
+void RemovePointsCommand::redo()
+{
+//  remove();
+}
+
+void RemovePointsCommand::undo()
+{
+//  add();
+}
 
 
 }  // namespace omm

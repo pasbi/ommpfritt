@@ -55,21 +55,22 @@ QString PathTool::type() const { return TYPE; }
 
 void PathTool::add_point(const Vec2f &pos)
 {
-  if (!m_path) {
-    const auto insert_mode = Application::InsertionMode::Default;
-    m_path = static_cast<Path*>(&Application::instance().insert_object(Path::TYPE, insert_mode));
-    m_path->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
-    scene()->set_selection({m_path});
-  }
+  Q_UNUSED(pos)
+//  if (!m_path) {
+//    const auto insert_mode = Application::InsertionMode::Default;
+//    m_path = static_cast<Path*>(&Application::instance().insert_object(Path::TYPE, insert_mode));
+//    m_path->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
+//    scene()->set_selection({m_path});
+//  }
 
-  const auto gpos = viewport_transformation.inverted().apply_to_position(pos);
+//  const auto gpos = viewport_transformation.inverted().apply_to_position(pos);
 
-  Path::PointSequence point_sequence(m_path->points().size(), { Point(gpos) });
+//  Path::PointSequence point_sequence(m_path->points().size(), { Point(gpos) });
 
-  scene()->submit<AddPointsCommand>(std::map{ std::pair{ m_path, std::vector{ point_sequence } } });
-  m_current_point = m_path->points_ref().back();
-  m_path->update();
-  reset();
+//  scene()->submit<AddPointsCommand>(std::map{ std::pair{ m_path, std::vector{ point_sequence } } });
+//  m_current_point = m_path->points_ref().back();
+//  m_path->update();
+//  reset();
 }
 
 void PathTool::end()

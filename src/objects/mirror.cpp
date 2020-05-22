@@ -85,53 +85,53 @@ std::unique_ptr<Object> Mirror::convert() const
 
 void Mirror::update()
 {
-  m_reflection.reset();
-  const ObjectTransformation mirror_t = get_mirror_t();
-  if (is_active()) {
-    const auto n_children = this->n_children();
-    if (property(AS_PATH_PROPERTY_KEY)->value<Mode>() == Mode::Path) {
-      m_draw_children = false;
-      if (n_children == 1) {
-        Object& child = this->tree_child(0);
-        if (!!(child.flags() & Flag::IsPathLike) && !child.is_closed()) {
-          auto combined_path = std::make_unique<Path>(scene());
-          auto points = child.points();
-          for (auto& p : points) {
-            p = child.transformation().apply(p);
-          }
-          auto mirrored_points = ::transform<Point>(points, [=](const Point& p) {
-            return mirror_t.apply(p);
-          });
+//  m_reflection.reset();
+//  const ObjectTransformation mirror_t = get_mirror_t();
+//  if (is_active()) {
+//    const auto n_children = this->n_children();
+//    if (property(AS_PATH_PROPERTY_KEY)->value<Mode>() == Mode::Path) {
+//      m_draw_children = false;
+//      if (n_children == 1) {
+//        Object& child = this->tree_child(0);
+//        if (!!(child.flags() & Flag::IsPathLike) && !child.is_closed()) {
+//          auto combined_path = std::make_unique<Path>(scene());
+//          auto points = child.points();
+//          for (auto& p : points) {
+//            p = child.transformation().apply(p);
+//          }
+//          auto mirrored_points = ::transform<Point>(points, [=](const Point& p) {
+//            return mirror_t.apply(p);
+//          });
 
-          if (property(IS_INVERTED_PROPERTY_KEY)->value<bool>()) {
-            for (auto& p : mirrored_points) {
-              const auto aux = p.left_tangent;
-              p.left_tangent = p.right_tangent;
-              p.right_tangent = aux;
-            }
-            points.insert(points.end(), mirrored_points.rbegin(), mirrored_points.rend());
-          } else {
-            points.insert(points.end(), mirrored_points.begin(), mirrored_points.end());
-          }
-          combined_path->add_points(std::vector { Path::PointSequence(0, points) });
-          const auto is_closed = property(IS_CLOSED_PROPERTY_KEY)->value<bool>();
-          combined_path->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed);
-          m_reflection.reset(combined_path.release());
-          m_reflection->update();
-        }
-      }
-    } else {
-      m_draw_children = true;
-      if (n_children > 0) {
-        m_reflection = this->tree_children().front()->clone();
-        m_reflection->set_virtual_parent(this);
-        m_reflection->set_transformation(mirror_t.apply(m_reflection->transformation()));
-        m_reflection->update();
-      }
-    }
-  } else {
-    m_draw_children = true;
-  }
+//          if (property(IS_INVERTED_PROPERTY_KEY)->value<bool>()) {
+//            for (auto& p : mirrored_points) {
+//              const auto aux = p.left_tangent;
+//              p.left_tangent = p.right_tangent;
+//              p.right_tangent = aux;
+//            }
+//            points.insert(points.end(), mirrored_points.rbegin(), mirrored_points.rend());
+//          } else {
+//            points.insert(points.end(), mirrored_points.begin(), mirrored_points.end());
+//          }
+//          combined_path->add_points(std::vector { Path::PointSequence(0, points) });
+//          const auto is_closed = property(IS_CLOSED_PROPERTY_KEY)->value<bool>();
+//          combined_path->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed);
+//          m_reflection.reset(combined_path.release());
+//          m_reflection->update();
+//        }
+//      }
+//    } else {
+//      m_draw_children = true;
+//      if (n_children > 0) {
+//        m_reflection = this->tree_children().front()->clone();
+//        m_reflection->set_virtual_parent(this);
+//        m_reflection->set_transformation(mirror_t.apply(m_reflection->transformation()));
+//        m_reflection->update();
+//      }
+//    }
+//  } else {
+//    m_draw_children = true;
+//  }
 }
 
 void Mirror::on_property_value_changed(Property *property)
