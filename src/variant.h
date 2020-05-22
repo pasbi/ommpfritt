@@ -113,7 +113,8 @@ template<typename T> double get_channel_value(const T& v, std::size_t channel)
  */
 template<typename T> void set_channel_value(T& v, std::size_t channel, double value)
 {
-  Q_UNUSED(channel);
+  Q_UNUSED(channel)
+  Q_UNUSED(value)
   if constexpr (std::is_same_v<T, double> || std::is_same_v<T, int>) {
     assert(channel == 0);
     v = value;
