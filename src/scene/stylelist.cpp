@@ -68,6 +68,7 @@ std::vector<std::unique_ptr<Style>> StyleList::set(std::vector<std::unique_ptr<S
 
 int StyleList::rowCount(const QModelIndex &parent) const
 {
+  Q_UNUSED(parent)
   assert(!parent.isValid());
   return List::items().size();
 }
@@ -116,6 +117,7 @@ bool StyleList::setData(const QModelIndex &index, const QVariant &value, int rol
 
 Qt::ItemFlags StyleList::flags(const QModelIndex &index) const
 {
+  Q_UNUSED(index)
   assert(!index.parent().isValid());
   return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled
       | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | Qt::ItemNeverHasChildren;

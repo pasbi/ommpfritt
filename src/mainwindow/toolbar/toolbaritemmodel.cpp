@@ -187,6 +187,8 @@ bool ToolBarItemModel::canDropMimeData(const QMimeData* data, Qt::DropAction act
 bool ToolBarItemModel::dropMimeData(const QMimeData* data, Qt::DropAction action,
                                     int row, int column, const QModelIndex& parent)
 {
+  Q_UNUSED(action)
+  Q_UNUSED(column)
   assert(canDropMimeData(data, action, row, column, parent));
   QDataStream stream(data->data(ToolBarDialog::mime_type));
   QString code;

@@ -10,6 +10,7 @@ namespace omm
 int NamedColors::rowCount(const QModelIndex& parent) const
 {
   assert(!parent.isValid());
+  Q_UNUSED(parent)
   return m_named_colors.size();
 }
 
