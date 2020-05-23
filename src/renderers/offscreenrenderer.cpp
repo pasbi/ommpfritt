@@ -131,6 +131,7 @@ void set_uniform(omm::OffscreenRenderer& self, const QString& name, const T& val
   }
   program->bind();
   GLuint location = program->uniformLocation(name);
+  Q_UNUSED(location)
   if constexpr (std::is_same_v<T, double>) {
     program->setUniformValue(location, GLfloat(value));
   } else if constexpr (std::is_same_v<T, int>) {
@@ -155,11 +156,10 @@ void set_uniform(omm::OffscreenRenderer& self, const QString& name, const T& val
   } else if constexpr (std::is_same_v<T, QString>) {
     // string is not available in GLSL
   } else if constexpr (std::is_same_v<T, TriggerPropertyDummyValueType>) {
-    // string is not available in GLSL
+    // trigger is not available in GLSL
   } else if constexpr (std::is_same_v<T, SplineType>) {
     static constexpr std::size_t n = NodeCompilerGLSL::SPLINE_SIZE;
     const auto samples = sample<GLfloat>(value, n);
-    LINFO << "Set array: " << location;
     program->setUniformValueArray(location, samples.data(), n, 1);
   } else if constexpr (std::is_same_v<T, ObjectTransformation>) {
     set_uniform(self, name, value.to_mat());
