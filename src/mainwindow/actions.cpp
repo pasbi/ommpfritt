@@ -152,32 +152,32 @@ void subdivide(Application& app)
 
 void select_all(Application& app)
 {
-//  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-//    for (auto* point : path->points_ref()) {
-//      point->is_selected = true;
-//    }
-//  }
-//  Q_EMIT app.message_box().appearance_changed();
+  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+    for (auto&& point : *path) {
+      point.is_selected = true;
+    }
+  }
+  Q_EMIT app.message_box().appearance_changed();
 }
 
 void deselect_all(Application& app)
 {
-//  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-//    for (auto* point : path->points_ref()) {
-//      point->is_selected = false;
-//    }
-//  }
-//  Q_EMIT app.message_box().appearance_changed();
+  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+    for (auto&& point : *path) {
+      point.is_selected = false;
+    }
+  }
+  Q_EMIT app.message_box().appearance_changed();
 }
 
 void invert_selection(Application& app)
 {
-//  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-//    for (auto* point : path->points_ref()) {
-//      point->is_selected = !point->is_selected;
-//    }
-//  }
-//  Q_EMIT app.message_box().appearance_changed();
+  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+    for (auto&& point : *path) {
+      point.is_selected = !point.is_selected;
+    }
+  }
+  Q_EMIT app.message_box().appearance_changed();
 }
 
 void convert_objects(Application& app)
