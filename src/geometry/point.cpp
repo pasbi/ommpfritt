@@ -1,4 +1,5 @@
 #include "geometry/point.h"
+#include "serializers/abstractserializer.h"
 #include <cmath>
 #include <ostream>
 #include "logging.h"
@@ -69,6 +70,20 @@ Point Point::rotated(const double rad) const
   copy.left_tangent.argument += rad;
   copy.right_tangent.argument += rad;
   return copy;
+}
+
+void Point::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
+{
+  serializer.set_value(position, make_pointer(root, POSITION_POINTER));
+  serializer.set_value(left_tangent, make_pointer(root, LEFT_TANGENT_POINTER));
+  serializer.set_value(right_tangent, make_pointer(root, RIGHT_TANGENT_POINTER));
+}
+
+void Point::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
+{
+  position = deserializer.get_vec2f(make_pointer(root, POSITION_POINTER));
+  left_tangent = deserializer.get_polarcoordinates(make_pointer(root, LEFT_TANGENT_POINTER));
+  right_tangent = deserializer.get_polarcoordinates(make_pointer(root, RIGHT_TANGENT_POINTER));
 }
 
 Point Point::flattened(const double t) const
