@@ -1,10 +1,12 @@
 #pragma once
 
+#include <QDebug>
 #include "objects/object.h"
 #include "geometry/point.h"
 #include <list>
 #include "geometry/cubics.h"
 #include "cachedgetter.h"
+#include <type_traits>
 
 namespace omm
 {
@@ -31,11 +33,86 @@ public:
   Flag flags() const override;
   void update() override;
 
-  using Segment = std::list<Point>;
+  using Segment = std::vector<Point>;
 
-private:
-public:
-  std::vector<Segment> m_segments = { Segment{} };
+  template<typename R, typename Path, typename F> static auto foreach_point(Path path, F&& f)
+  {
+    static constexpr auto use_return = !std::is_same_v<R, void>;
+    std::conditional_t<use_return, std::list<R>, int> rs;
+    for (auto&& segment : path.segments) {
+      for (auto&& p : segment) {
+        if constexpr (use_return) {
+          rs.push_back(f(p));
+        }
+      }
+    }
+    if constexpr (use_return) {
+      return rs;
+    }
+  }
+
+  std::vector<Segment> segments;
+
+  template<typename PathRef>
+  struct Iterator
+  {
+    using value_type = Point;
+    static constexpr bool Const = std::is_const_v<PathRef>;
+    using reference = std::conditional_t<Const, const value_type&, value_type&>;
+    using pointer = std::conditional_t<Const, const value_type&, value_type&>;
+    using difference_type = int;
+    using iterator_category = std::forward_iterator_tag;
+
+    Iterator(PathRef path, std::size_t segment, std::size_t point)
+      : path(&path), segment(segment), point(point) {}
+
+    std::add_pointer_t<std::remove_const_t<PathRef>> path;
+    std::size_t segment;
+    std::size_t point;
+
+    bool operator<(const Iterator& other) const
+    {
+      return segment == other.segment ? point < other.point : segment < other.segment;
+    }
+
+    bool operator>(const Iterator& other) const
+    {
+      return segment == other.segment ? point > other.point : segment > other.segment;
+    }
+
+    bool operator==(const Iterator& other) const
+    {
+      if (is_end() && other.is_end()) {
+        return true;
+      } else {
+        return segment == other.segment && point == other.point;
+      }
+    }
+
+    bool is_end() const { return segment >= path->segments.size(); }
+    decltype(auto) operator*() const { return path->segments[segment][point]; }
+    bool operator!=(const Iterator& other) const { return !(*this == other); }
+
+    Iterator& operator++()
+    {
+      point += 1;
+      if (path->segments[segment].size() == point) {
+        point = 0;
+        segment += 1;
+      }
+      return *this;
+    }
+  };
+
+  using const_iterator = Iterator<const Path&>;
+  using iterator = Iterator<Path&>;
+
+  const_iterator begin() const;
+  const_iterator end() const;
+  iterator begin();
+  iterator end();
+  iterator remove_const(const const_iterator& it);
+  std::size_t count() const;
 
   struct CachedQPainterPathGetter : CachedGetter<QPainterPath, Path>
   {
@@ -44,143 +121,16 @@ public:
     QPainterPath compute() const override;
   } painter_path;
   friend struct CachedQPainterPathGetter;
-
-  template<bool Const>
-  struct Iterator
-  {
-  public:
-    using difference_type = int;
-    using value_type = Path;
-    using pointer = std::conditional_t<Const, const Path*, Path*>;
-    using reference = std::conditional_t<Const, const Path& , Path&>;
-    using iterator_category = std::bidirectional_iterator_tag;
-
-    using point_iterator_type = std::conditional_t<Const, Segment::const_iterator,
-                                                          Segment::iterator>;
-    using segment_iterator_type = std::conditional_t<Const, std::vector<Segment>::const_iterator,
-                                                            std::vector<Segment>::iterator>;
-    explicit Iterator(reference path, const segment_iterator_type& segment_iterator,
-                                      const point_iterator_type& point_iterator)
-      : m_path(path)
-      , m_segment_iterator(segment_iterator)
-      , m_point_iterator(point_iterator)
-    {
-    }
-
-    static auto begin(reference path)
-    {
-      assert(!path.m_segments.empty());
-      return Iterator{path, path.m_segments.begin(), path.m_segments.front().begin()};
-    }
-
-    static auto end(reference path)
-    {
-      assert(!path.m_segments.empty());
-      return Iterator(path, path.m_segments.end() - 1, path.m_segments.back().end());
-    }
-
-    bool operator==(const Iterator& other) const
-    {
-      LINFO << (this->m_point_iterator == other.m_point_iterator);
-      return &this->m_path == &other.m_path
-          && this->m_segment_iterator == other.m_segment_iterator
-          && this->m_point_iterator == other.m_point_iterator;
-    }
-
-    bool operator!=(const Iterator& other) const
-    {
-      return !(*this == other);
-    }
-
-    Iterator& operator--()
-    {
-      if (m_point_iterator == m_segment_iterator->begin()) {
-        --m_segment_iterator;
-        m_point_iterator == m_segment_iterator->end();
-      } else {
-        --m_point_iterator;
-      }
-      return *this;
-    }
-
-    Iterator& operator++()
-    {
-      ++m_point_iterator;
-      if (m_point_iterator == m_segment_iterator->end()) {
-        ++m_segment_iterator;
-        if (m_segment_iterator == m_path.m_segments.end()) {
-          --m_segment_iterator;
-          m_point_iterator = m_segment_iterator->end();
-        } else {
-          m_point_iterator = m_segment_iterator->begin();
-        }
-      }
-      return *this;
-    }
-
-    decltype(auto) operator*() const
-    {
-      return *m_point_iterator;
-    }
-
-    operator Iterator<true>() const
-    {
-      return Iterator<true>{m_path, m_segment_iterator, m_point_iterator};
-    }
-
-    point_iterator_type point_iterator() const
-    {
-      return m_point_iterator;
-    }
-
-    segment_iterator_type segment_iterator() const
-    {
-      return m_segment_iterator;
-    }
-
-    bool is_segment_begin() const
-    {
-      return m_point_iterator == m_segment_iterator->begin();
-    }
-
-    bool is_segment_ultimo() const
-    {
-      auto end = m_segment_iterator->end();
-      --end;
-      return m_point_iterator == end;
-    }
-
-  private:
-    reference m_path;
-    segment_iterator_type m_segment_iterator;
-    point_iterator_type m_point_iterator;
-    friend class Path;
-  };
-
-  template<bool> friend struct Iterator;
-
-public:
-  using iterator = Iterator<false>;
-  using const_iterator = Iterator<true>;
-  decltype(auto) begin() { return iterator::begin(*this); }
-  decltype(auto) end() { return iterator::end(*this); }
-  decltype(auto) begin() const { return const_iterator::begin(*this); }
-  decltype(auto) end() const { return const_iterator::end(*this); }
-  iterator remove_const(const const_iterator& it)
-  {
-    assert(&it.m_path == this);
-    const auto seg_it = m_segments.erase(it.m_segment_iterator, it.m_segment_iterator);
-    const auto pt_it = seg_it->erase(it.m_point_iterator, it.m_point_iterator);
-    return iterator{*this, seg_it, pt_it};
-  }
-
-  void insert(const const_iterator& pos, const Segment& points);
-  const auto& segments() const { return m_segments; }
 };
 
-Path::const_iterator begin(const Path& path);
-Path::const_iterator end(const Path& path);
-Path::iterator begin(Path& path);
-Path::iterator end(Path& path);
+template<typename PathRef> auto begin(PathRef p)
+{
+  return Path::Iterator<PathRef>{p, 0, 0};
+}
+
+template<typename PathRef> auto end(PathRef p)
+{
+  return Path::Iterator<PathRef>{p, p.segments.size(), 0};
+}
 
 }  // namespace omm

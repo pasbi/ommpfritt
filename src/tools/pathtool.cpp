@@ -28,18 +28,11 @@ bool PathTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEven
 
 bool PathTool::mouse_press(const Vec2f &pos, const QMouseEvent &event)
 {
-  if (SelectPointsBaseTool::mouse_press(pos, event)) {
+  if (SelectPointsBaseTool::mouse_press(pos, event, false)) {
     return true;
   } else {
-    switch (event.button()) {
-    case Qt::LeftButton:
+    if (event.button() == Qt::LeftButton) {
       add_point(pos);
-      break;
-    case Qt::RightButton:
-      end();
-      break;
-    default:
-      break;
     }
     return false;
   }
@@ -64,21 +57,32 @@ void PathTool::add_point(const Vec2f &pos)
   }
 
   const auto gpos = viewport_transformation.inverted().apply_to_position(pos);
-  static const auto is_selected = [](const auto& point) { return point.is_selected; };
+  static const auto is_selected = [](const auto& point) {
+    return point.is_selected;
+  };
 
   const auto link = [this]() {
     const auto first_selected = std::find_if(m_path->begin(), m_path->end(), is_selected);
-    const auto single_selected = first_selected != m_path->end()
-        && std::find_if(first_selected, m_path->end(), is_selected) == m_path->end();
-    if (single_selected) {
-      if (first_selected.is_segment_begin() || first_selected.is_segment_ultimo()) {
-        return first_selected;
+    if (first_selected != m_path->end()) {
+      const auto n_selected_points = std::count_if(m_path->begin(), m_path->end(), is_selected);
+      if (n_selected_points == 1) {
+        if (first_selected.point == 0) {
+          return first_selected;
+        } else if (first_selected.point + 1 == m_path->segments[first_selected.segment].size()) {
+          return Path::iterator{*m_path, first_selected.segment, first_selected.point + 1};
+        }
       }
     }
     return m_path->end();
   }();
+
   const AddPointsCommand::LocatedSegment segment{link, {Point(gpos)}};
-  scene()->submit<AddPointsCommand>(*m_path, std::vector{ segment });
+  scene()->submit<AddPointsCommand>(*m_path, std::vector{segment});
+
+  for (Point& p : *m_path) {
+    p.is_selected = false;
+  }
+  (*link).is_selected = true;
 
   m_path->update();
   reset();

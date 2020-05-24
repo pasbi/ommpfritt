@@ -56,16 +56,23 @@ void SelectPointsBaseTool::transform_objects(ObjectTransformation t)
 
 bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
+  return mouse_press(pos, event, true);
+}
+
+bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& event, bool allow_clear)
+{
   const auto paths = type_cast<Path*>(scene()->template item_selection<Object>());
   if (AbstractSelectTool::mouse_press(pos, event)) {
     m_transform_points_helper.update(paths);
     return true;
-  } else {
+  } else if (allow_clear) {
     for (auto* path : paths) {
       for (auto&& point : *path) {
         point.is_selected = false;
       }
     }
+    return false;
+  } else {
     return false;
   }
 }

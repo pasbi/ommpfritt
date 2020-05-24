@@ -58,12 +58,12 @@ void Path::serialize(AbstractSerializer& serializer, const Pointer& root) const
   Object::serialize(serializer, root);
 
   const auto subpath_ptr = make_pointer(root, SUBPATH_POINTER);
-  serializer.start_array(m_segments.size(), subpath_ptr);
-  for (std::size_t i = 0; i < m_segments.size(); ++i) {
+  serializer.start_array(segments.size(), subpath_ptr);
+  for (std::size_t i = 0; i < segments.size(); ++i) {
     const auto pts_ptr = make_pointer(subpath_ptr, i);
-    serializer.start_array(m_segments.size(), subpath_ptr);
+    serializer.start_array(segments.size(), subpath_ptr);
     std::size_t j = 0;
-    for (auto&& point : m_segments[i]) {
+    for (auto&& point : segments[i]) {
       point.serialize(serializer, make_pointer(pts_ptr, j));
       j += 1;
     }
@@ -78,16 +78,16 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 
   const auto subpath_ptr = make_pointer(root, SUBPATH_POINTER);
   const std::size_t n_paths = deserializer.array_size(subpath_ptr);
-  m_segments.clear();
-  m_segments.reserve(n_paths);
+  segments.clear();
+  segments.reserve(n_paths);
   for (size_t i = 0; i < n_paths; ++i) {
     const auto pts_ptr = make_pointer(subpath_ptr, i);
     const std::size_t n_points = deserializer.array_size(pts_ptr);
-    m_segments.push_back({});
+    segments.push_back({});
     for (size_t j = 0; j < n_points; ++j) {
       Point p;
       p.deserialize(deserializer, make_pointer(pts_ptr, j));
-      m_segments[i].push_back(p);
+      segments[i].push_back(p);
     }
   }
   update();
@@ -99,26 +99,13 @@ void Path::update()
   Object::update();
 }
 
-void Path::insert(const const_iterator& pos, const Segment& points)
-{
-  assert(!m_segments.empty());
-  if (pos.segment_iterator() == m_segments.end()) {
-    m_segments.push_back(Segment{});
-    m_segments.back().insert(m_segments.back().begin(), points.begin(), points.end());
-  } else {
-    const auto ncpos = remove_const(pos);
-    Segment& segment = *ncpos.segment_iterator();
-    segment.insert(ncpos.point_iterator(), points.begin(), points.end());
-  }
-}
-
 Flag Path::flags() const { return Object::flags() | Flag::IsPathLike; }
 
 QPainterPath Path::CachedQPainterPathGetter::compute() const
 {
   static const auto p = [](const Vec2f& v) { return QPointF{v.x, v.y}; };
   QPainterPath path;
-  for (auto&& points : m_self.m_segments) {
+  for (auto&& points : m_self.segments) {
     if (!points.empty()) {
       path.moveTo(p(points.front().position));
     }
@@ -141,9 +128,21 @@ QPainterPath Path::CachedQPainterPathGetter::compute() const
   return path;
 }
 
-Path::const_iterator begin(const Path& path) { return path.begin(); }
-Path::const_iterator end(const Path& path) { return path.end(); }
-Path::iterator begin(Path& path) { return path.begin(); }
-Path::iterator end(Path& path) { return path.end(); }
+Path::const_iterator Path::end() const { return ::omm::end<const Path&>(*this); }
+Path::const_iterator Path::begin() const { return ::omm::begin<const Path&>(*this); }
+Path::iterator Path::end() { return ::omm::end<Path&>(*this); }
+Path::iterator Path::begin() { return ::omm::begin<Path&>(*this); }
+
+Path::iterator Path::remove_const(const const_iterator& it)
+{
+  return {*this, it.segment, it.point};
+}
+
+std::size_t Path::count() const
+{
+  return std::distance(begin(), end());
+}
 
 }  // namespace omm
+
+
