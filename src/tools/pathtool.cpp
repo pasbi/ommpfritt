@@ -56,21 +56,32 @@ QString PathTool::type() const { return TYPE; }
 void PathTool::add_point(const Vec2f &pos)
 {
   Q_UNUSED(pos)
-//  if (!m_path) {
-//    const auto insert_mode = Application::InsertionMode::Default;
-//    m_path = static_cast<Path*>(&Application::instance().insert_object(Path::TYPE, insert_mode));
-//    m_path->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
-//    scene()->set_selection({m_path});
-//  }
+  if (!m_path) {
+    const auto insert_mode = Application::InsertionMode::Default;
+    m_path = static_cast<Path*>(&Application::instance().insert_object(Path::TYPE, insert_mode));
+    m_path->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
+    scene()->set_selection({m_path});
+  }
 
-//  const auto gpos = viewport_transformation.inverted().apply_to_position(pos);
+  const auto gpos = viewport_transformation.inverted().apply_to_position(pos);
+  static const auto is_selected = [](const auto& point) { return point.is_selected; };
 
-//  Path::PointSequence point_sequence(m_path->points().size(), { Point(gpos) });
+  const auto link = [this]() {
+    const auto first_selected = std::find_if(m_path->begin(), m_path->end(), is_selected);
+    const auto single_selected = first_selected != m_path->end()
+        && std::find_if(first_selected, m_path->end(), is_selected) == m_path->end();
+    if (single_selected) {
+      if (first_selected.is_segment_begin() || first_selected.is_segment_ultimo()) {
+        return first_selected;
+      }
+    }
+    return m_path->end();
+  }();
+  const AddPointsCommand::LocatedSegment segment{link, {Point(gpos)}};
+  scene()->submit<AddPointsCommand>(*m_path, std::vector{ segment });
 
-//  scene()->submit<AddPointsCommand>(std::map{ std::pair{ m_path, std::vector{ point_sequence } } });
-//  m_current_point = m_path->points_ref().back();
-//  m_path->update();
-//  reset();
+  m_path->update();
+  reset();
 }
 
 void PathTool::end()
