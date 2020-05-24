@@ -82,9 +82,9 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
   m_segments.reserve(n_paths);
   for (size_t i = 0; i < n_paths; ++i) {
     const auto pts_ptr = make_pointer(subpath_ptr, i);
-    deserializer.array_size(pts_ptr);
+    const std::size_t n_points = deserializer.array_size(pts_ptr);
     m_segments.push_back({});
-    for (size_t j = 0; j < n_paths; ++j) {
+    for (size_t j = 0; j < n_points; ++j) {
       Point p;
       p.deserialize(deserializer, make_pointer(pts_ptr, j));
       m_segments[i].push_back(p);
