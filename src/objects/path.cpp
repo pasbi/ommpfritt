@@ -33,6 +33,9 @@ Path::Path(Scene* scene)
 void Path::draw_object(Painter &renderer, const Style& style, Painter::Options options) const
 {
   renderer.set_style(style, *this, options);
+  if (!is_closed()) {
+    renderer.painter->setBrush(Qt::NoBrush);
+  }
   renderer.painter->drawPath(painter_path());
   const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
   const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();
