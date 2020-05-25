@@ -143,6 +143,17 @@ std::size_t Path::count() const
   return std::distance(begin(), end());
 }
 
+bool Path::is_closed() const
+{
+  return property(IS_CLOSED_PROPERTY_KEY)->value<bool>();
+}
+
+void Path::on_property_value_changed(Property* property)
+{
+  Object::on_property_value_changed(property);
+  if (property == this->property(IS_CLOSED_PROPERTY_KEY)) {
+    update();
+  }
+}
+
 }  // namespace omm
-
-

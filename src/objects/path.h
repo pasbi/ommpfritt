@@ -114,6 +114,8 @@ public:
   iterator end();
   iterator remove_const(const const_iterator& it);
   std::size_t count() const;
+  bool is_closed() const override;
+  void on_property_value_changed(Property* property) override;
 
   struct CachedQPainterPathGetter : CachedGetter<QPainterPath, Path>
   {
