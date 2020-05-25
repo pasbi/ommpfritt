@@ -4,12 +4,11 @@
 namespace
 {
 
-auto get_old_points(const std::set<std::pair<omm::Path*, std::size_t>>& keys)
+auto get_old_points(const std::set<omm::Path::iterator>& keys)
 {
   omm::PointsTransformationCommand::Map map;
-  for (auto&& [path, index] : keys) {
-    const auto key = std::make_pair(path, index);
-    map.insert(std::make_pair(key, path->points()[index]));
+  for (auto&& it : keys) {
+    map.insert({it, *it});
   }
   return map;
 }
@@ -51,26 +50,26 @@ bool PointsTransformationCommand::mergeWith(const QUndoCommand* command)
 
 bool PointsTransformationCommand::is_noop() const
 {
-  for (const auto& key : affected_points()) {
-    if (m_old_points.at(key) != m_new_points.at(key)) {
-      return false;
-    }
-  }
-  return true;
+  const auto aps = this->affected_points();
+  return std::any_of(aps.begin(), aps.end(), [this](const auto& key) {
+    return m_old_points.at(key) != m_new_points.at(key);
+  });
 }
 
 void PointsTransformationCommand::apply(const PointsTransformationCommand::Map &map)
 {
   Q_UNUSED(map)
-//  for (auto&& [k, v] : map) {
-//    Path* path = k.first;
-//    std::size_t index = k.second;
-//    path->point(index) = map.at(k);
-//    path->update();
-//  }
+  std::set<Path*> paths;
+  for (auto&& [k, v] : map) {
+    *k = v;
+    paths.insert(k.path);
+  }
+  for (auto&& path : paths) {
+    path->update();
+  }
 }
 
-std::set<std::pair<Path*, std::size_t>> PointsTransformationCommand::affected_points() const
+std::set<Path::iterator> PointsTransformationCommand::affected_points() const
 {
   const auto keys = ::get_keys(m_old_points);
   assert(keys == ::get_keys(m_new_points));

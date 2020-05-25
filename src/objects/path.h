@@ -91,6 +91,7 @@ public:
 
     bool is_end() const { return segment >= path->segments.size(); }
     decltype(auto) operator*() const { return path->segments[segment][point]; }
+    decltype(auto) operator->() const { return &**this; }
     bool operator!=(const Iterator& other) const { return !(*this == other); }
 
     Iterator& operator++()

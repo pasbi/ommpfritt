@@ -27,26 +27,44 @@ private:
 
 class AbstractPointsCommand : public Command
 {
+public:
+  struct LocatedSegment
+  {
+    Path::iterator index;
+    Path::Segment points;
+    bool operator<(const LocatedSegment& other) const;
+    bool operator>(const LocatedSegment& other) const;
+  };
+
+  struct Range
+  {
+    Path::iterator begin;
+    std::size_t length;
+    bool intersects(const Range& other) const;
+    bool operator<(const Range& other) const;
+    bool operator>(const Range& other) const;
+  };
+
 protected:
-//  AbstractPointsCommand( const QString& label,
-//                         const std::map<Path*, std::vector<Path::PointSequence>>& points );
-  AbstractPointsCommand( const QString& label,
-                         const std::map<Path*, std::vector<std::size_t>>& points );
-//  void add();
-//  void remove();
+  AbstractPointsCommand(const QString& label, Path& path,
+                        const std::vector<LocatedSegment>& added_points);
+  AbstractPointsCommand(const QString& label, Path& path,
+                        const std::vector<Range>& removed_points);
+  void add();
+  void remove();
 
   Scene& scene() const;
 
 private:
-  std::map<Path*, std::vector<std::size_t>> m_removed_points;
-//  std::map<Path*, std::vector<Path::PointSequence>> m_added_points;
-
+  Path& m_path;
+  std::vector<LocatedSegment> m_points_to_add;
+  std::vector<Range> m_points_to_remove;
 };
 
 class AddPointsCommand : public AbstractPointsCommand
 {
 public:
-//  AddPointsCommand(const std::map<Path*, std::vector<Path::PointSequence>>& points);
+  AddPointsCommand(Path& path, const std::vector<LocatedSegment>& added_points);
   void redo() override;
   void undo() override;
 };
@@ -54,7 +72,7 @@ public:
 class RemovePointsCommand : public AbstractPointsCommand
 {
 public:
-  RemovePointsCommand(const std::map<Path*, std::vector<std::size_t>>& points);
+  RemovePointsCommand(Path& path, const std::vector<Range>& removed_points);
   void redo() override;
   void undo() override;
 };

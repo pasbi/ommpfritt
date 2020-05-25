@@ -154,7 +154,7 @@ TransformPointsHelper::make_command(const ObjectTransformation &t) const
 
   bool is_noop = true;
   for (auto&& [key, point] : m_initial_points) {
-    const ObjectTransformation premul = cache.get(key.first);
+    const ObjectTransformation premul = cache.get(key.path);
     auto p = premul.apply(point);
     if (p.is_selected != point.is_selected) {
       p.is_selected = point.is_selected;
@@ -178,16 +178,15 @@ void TransformPointsHelper::update(const std::set<Path*>& paths)
 
 void TransformPointsHelper::update()
 {
-//  m_initial_points.clear();
-//  for (Path* path : m_paths) {
-//    const std::vector<std::size_t> selected_points = path->selected_points();
-//    if (selected_points.size() > 0) {
-//      m_paths.insert(path);
-//    }
-//    for (const std::size_t i : selected_points) {
-//      m_initial_points.insert(std::make_pair(std::make_pair(path, i), path->point(i)));
-//    }
-//  }
+  m_initial_points.clear();
+  for (Path* path : m_paths) {
+    for (Path::iterator it = path->begin(); it != path->end(); ++it) {
+      if (it->is_selected) {
+        m_paths.insert(path);
+        m_initial_points.insert({it, *it});
+      }
+    }
+  }
 }
 
 }  // namespace omm
