@@ -31,6 +31,8 @@ class Options;
 class Application : public QObject, public CommandInterface
 {
   Q_OBJECT
+private:
+  std::nullptr_t first_member;
 public:
   Application(QCoreApplication& app, std::unique_ptr<Options> options);
   ~Application();

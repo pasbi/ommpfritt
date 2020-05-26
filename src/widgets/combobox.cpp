@@ -53,6 +53,7 @@ void ComboBox::reset()
 
 void ComboBox::insert(const QModelIndex& index, int first, int last)
 {
+  Q_UNUSED(index)
   assert(!index.isValid());
   for (int i = first; i <= last; ++i) {
     set_item(i, true);
@@ -61,6 +62,7 @@ void ComboBox::insert(const QModelIndex& index, int first, int last)
 
 void ComboBox::remove(const QModelIndex& index, int first, int last)
 {
+  Q_UNUSED(index)
   assert(!index.isValid());
   int current_index = m_combo_box->currentIndex();
   if (current_index < 0) {

@@ -107,8 +107,6 @@ void NodesTag::on_property_value_changed(Property *property)
 
 void NodesTag::force_evaluate()
 {
-  Scene* scene = owner->scene();
-  assert(scene != nullptr);
   using namespace py::literals;
 
   auto locals = py::dict();

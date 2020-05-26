@@ -52,6 +52,7 @@ protected:
   void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
   {
     const bool s = set_model_data(*static_cast<EditorT*>(editor), *model, index);
+    Q_UNUSED(s)
     assert(s);
   }
 };

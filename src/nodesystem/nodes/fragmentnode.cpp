@@ -29,6 +29,7 @@ FragmentNode::FragmentNode(NodeModel& model)
 
 bool FragmentNode::accepts_input_data_type(const QString& type, const InputPort& port) const
 {
+  Q_UNUSED(port)
   assert(&port == m_input_port);
   return type == NodeCompilerTypes::COLOR_TYPE;
 }

@@ -145,8 +145,7 @@ bool MathNode::accepts_input_data_type(const QString& type, const InputPort& por
     const auto a_input = find_port<InputPort>(A_VALUE_KEY);
     const auto b_input = find_port<InputPort>(B_VALUE_KEY);
     const InputPort& other_port = &port == a_input ? *b_input : *a_input;
-    using InputSet = std::set<const InputPort*>;
-    assert((InputSet { &port, &other_port }) == (InputSet { a_input, b_input }));
+    assert((std::set{ &port, &other_port } == std::set<const InputPort*>{ a_input, b_input }));
     if (other_port.is_connected()) {
       return type == other_port.data_type();
     } else {

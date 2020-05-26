@@ -271,9 +271,6 @@ Texture OffscreenRenderer::render(const Object& object, const QSize& size, const
   }
   assert_or_call(m_context.makeCurrent(&m_surface));
   assert_or_call(m_context.isValid());
-  QOpenGLFunctions* functions = m_context.functions();
-  assert (functions != nullptr);
-
   m_functions->glViewport(0,
                           0,
                           adjusted_size.width(),
