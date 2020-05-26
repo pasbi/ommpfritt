@@ -70,29 +70,25 @@ public:
     std::size_t segment;
     std::size_t point;
 
-    bool operator<(const Iterator& other) const
-    {
-      return segment == other.segment ? point < other.point : segment < other.segment;
-    }
-
-    bool operator>(const Iterator& other) const
-    {
-      return segment == other.segment ? point > other.point : segment > other.segment;
-    }
+    bool operator<(const Iterator& other) const { return to_tuple() < other.to_tuple(); }
+    bool operator>(const Iterator& other) const { return to_tuple() > other.to_tuple(); }
 
     bool operator==(const Iterator& other) const
     {
-      if (is_end() && other.is_end()) {
+      if (path != other.path) {
+        return false;
+      } if (is_end() && other.is_end()) {
         return true;
       } else {
         return segment == other.segment && point == other.point;
       }
     }
 
+    bool operator!=(const Iterator& other) const { return !(*this == other); }
+
     bool is_end() const { return segment >= path->segments.size(); }
     decltype(auto) operator*() const { return path->segments[segment][point]; }
     decltype(auto) operator->() const { return &**this; }
-    bool operator!=(const Iterator& other) const { return !(*this == other); }
 
     Iterator& operator++()
     {
@@ -103,6 +99,10 @@ public:
       }
       return *this;
     }
+
+  private:
+    auto to_tuple() const { return std::tuple{path, segment, point}; };
+
   };
 
   using const_iterator = Iterator<const Path&>;
