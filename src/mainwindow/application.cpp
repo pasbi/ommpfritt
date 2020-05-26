@@ -125,7 +125,8 @@ const std::set<int> Application::keyboard_modifiers { Qt::Key_Shift, Qt::Key_Con
 Application* Application::m_instance = nullptr;
 
 Application::Application(QCoreApplication& app, std::unique_ptr<Options> options)
-  : scene((init(), python_engine))
+  : first_member((init(), nullptr))
+  , scene(python_engine)
   , m_app(app)
   , m_options(std::move(options))
   , m_locale(load_locale())
