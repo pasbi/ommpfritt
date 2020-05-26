@@ -63,14 +63,18 @@ void Path::serialize(AbstractSerializer& serializer, const Pointer& root) const
   const auto subpath_ptr = make_pointer(root, SUBPATH_POINTER);
   serializer.start_array(segments.size(), subpath_ptr);
   for (std::size_t i = 0; i < segments.size(); ++i) {
-    const auto pts_ptr = make_pointer(subpath_ptr, i);
-    serializer.start_array(segments.size(), subpath_ptr);
-    std::size_t j = 0;
-    for (auto&& point : segments[i]) {
-      point.serialize(serializer, make_pointer(pts_ptr, j));
-      j += 1;
+    if (segments.size() == 0) {
+      LWARNING << "Ignoring empty sub-path.";
+    } else {
+      const auto pts_ptr = make_pointer(subpath_ptr, i);
+      serializer.start_array(segments.size(), pts_ptr);
+      std::size_t j = 0;
+      for (auto&& point : segments[i]) {
+        point.serialize(serializer, make_pointer(pts_ptr, j));
+        j += 1;
+        serializer.end_array();
+      }
     }
-    serializer.end_array();
   }
   serializer.end_array();
 }
@@ -86,6 +90,9 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
   for (size_t i = 0; i < n_paths; ++i) {
     const auto pts_ptr = make_pointer(subpath_ptr, i);
     const std::size_t n_points = deserializer.array_size(pts_ptr);
+    if (n_points == 0) {
+      throw AbstractDeserializer::DeserializeError("Empty sub-paths are not allowed.");
+    }
     segments.push_back({});
     for (size_t j = 0; j < n_points; ++j) {
       Point p;
