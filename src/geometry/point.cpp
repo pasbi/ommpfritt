@@ -42,26 +42,9 @@ bool Point::has_inf() const
   return position.has_inf() || left_tangent.has_inf() || right_tangent.has_inf();
 }
 
-Point Point::smoothed(Vec2f& left, const Vec2f& right) const
-{
-  auto copy = *this;
-  const Vec2f d = left - right;
-  copy.right_tangent = PolarCoordinates(-d/6.0);
-  copy.left_tangent = PolarCoordinates(d/6.0);
-  return copy;
-}
-
 double Point::rotation() const
 {
   return PolarCoordinates(left_tangent).argument;
-}
-
-Point Point::nibbed() const
-{
-  auto copy = *this;
-  copy.left_tangent.magnitude = 0;
-  copy.right_tangent.magnitude = 0;
-  return copy;
 }
 
 Point Point::rotated(const double rad) const
@@ -69,6 +52,14 @@ Point Point::rotated(const double rad) const
   auto copy = *this;
   copy.left_tangent.argument += rad;
   copy.right_tangent.argument += rad;
+  return copy;
+}
+
+Point Point::nibbed() const
+{
+  auto copy = *this;
+  copy.left_tangent.magnitude = 0;
+  copy.right_tangent.magnitude = 0;
   return copy;
 }
 

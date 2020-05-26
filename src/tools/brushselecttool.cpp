@@ -44,9 +44,10 @@ bool BrushSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
       return true;
     }
     for (Object* object : scene()->item_selection<Object>()) {
-      auto* path = type_cast<Path*>(object);
-      if (path != nullptr) {
-//        path->deselect_all_points();
+      if (auto* path = type_cast<Path*>(object); path != nullptr) {
+        for (auto&& point : *path) {
+          point.is_selected = false;
+        }
       }
     }
   }
@@ -74,18 +75,18 @@ void BrushSelectTool
   for (Object* object : scene()->item_selection<Object>()) {
     Path* path = type_cast<Path*>(object);
     if (path) {
-//      for (Point* point : path->points_ref()) {
-//        // we can't transform `pos` with path's inverse transformation because if it scales,
-//        // `radius` will be wrong.
-//        const auto gt = path->global_transformation(Space::Viewport);
-//        const auto gpos = gt.apply_to_position(point->position);
-//        if ((gpos - pos).euclidean_norm() < radius) {
-//          if (point->is_selected != extend_selection) {
-//            is_noop = false;
-//            point->is_selected = extend_selection;
-//          }
-//        }
-//      }
+      for (auto&& point : *path) {
+        // we can't transform `pos` with path's inverse transformation because if it scales,
+        // `radius` will be wrong.
+        const auto gt = path->global_transformation(Space::Viewport);
+        const auto gpos = gt.apply_to_position(point.position);
+        if ((gpos - pos).euclidean_norm() < radius) {
+          if (point.is_selected != extend_selection) {
+            is_noop = false;
+            point.is_selected = extend_selection;
+          }
+        }
+      }
     }
   }
   if (!is_noop) {

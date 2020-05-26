@@ -1,11 +1,12 @@
 #include "commands/modifypointscommand.h"
+#include "common.h"
 #include "scene/scene.h"
 
 namespace omm
 {
 
 ModifyPointsCommand
-::ModifyPointsCommand(const std::map<Path*, std::map<Point*, Point>>& points)
+::ModifyPointsCommand(const std::map<Path::iterator, Point>& points)
   : Command(QObject::tr("ModifyPointsCommand")), m_data(points)
 {
   assert(points.size() > 0);
@@ -17,10 +18,12 @@ int ModifyPointsCommand::id() const { return Command::MODIFY_TANGENTS_COMMAND_ID
 
 void ModifyPointsCommand::swap()
 {
-  for (auto& [path, points] : m_data) {
-    for (auto& [point_ptr, other] : points) {
-      point_ptr->swap(other);
-    }
+  std::set<Path*> paths;
+  for (auto& [it, point] : m_data) {
+    it->swap(point);
+    paths.insert(it.path);
+  }
+  for (Path* path : paths) {
     path->update();
   }
 }
@@ -29,25 +32,7 @@ bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)
 {
   // merging happens automatically!
   const auto& mtc = static_cast<const ModifyPointsCommand&>(*command);
-
-  if (m_data.size() != mtc.m_data.size()) {
-    return false;
-  }
-  for (auto&& [path, points] : m_data) {
-    if (mtc.m_data.count(path) == 0) {
-      return false;
-    }
-    auto& other_points = mtc.m_data.at(path);
-    if (points.size() != other_points.size()) {
-      return false;
-    }
-    for (auto&& [point, other] : points) {
-      if (other_points.count(point) == 0) {
-        return false;
-      }
-    }
-  }
-  return true;
+  return ::get_keys(m_data) == ::get_keys(mtc.m_data);
 }
 
 AbstractPointsCommand::

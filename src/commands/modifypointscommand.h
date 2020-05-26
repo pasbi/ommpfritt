@@ -12,7 +12,7 @@ class Path;
 class ModifyPointsCommand : public Command
 {
 public:
-  using map_type = std::map<Path*, std::map<Point*, Point>>;
+  using map_type = std::map<Path::iterator, Point>;
   ModifyPointsCommand(const map_type& points);
   void redo() override;
   void undo() override;
@@ -20,7 +20,7 @@ public:
   bool mergeWith(const QUndoCommand* command) override;
 
 private:
-  std::map<Path*, std::map<Point*, Point>> m_data;
+  std::map<Path::iterator, Point> m_data;
   Path::InterpolationMode m_old_interpolation_mode;
   void swap();
 };

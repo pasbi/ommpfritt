@@ -4,6 +4,7 @@
 #include "tools/handles/tangenthandle.h"
 #include "tools/handles/handle.h"
 #include "tools/handles/particlehandle.h"
+#include "objects/path.h"
 
 namespace omm
 {
@@ -47,7 +48,7 @@ class PointSelectHandle : public AbstractSelectHandle
 {
 public:
   enum class TangentMode { Mirror, Individual };
-  explicit PointSelectHandle(Tool& tool, Path& path, Point& point);
+  explicit PointSelectHandle(Tool& tool, const Path::iterator& iterator);
   bool contains_global(const Vec2f& point) const override;
   void draw(QPainter& painter) const override;
   bool mouse_press( const Vec2f& pos, const QMouseEvent& event) override;
@@ -64,8 +65,7 @@ protected:
   bool is_selected() const override;
 
 private:
-  Path& m_path;
-  Point& m_point;
+  const Path::iterator m_iterator;
   std::unique_ptr<TangentHandle> m_left_tangent_handle;
   std::unique_ptr<TangentHandle> m_right_tangent_handle;
   bool tangents_active() const;

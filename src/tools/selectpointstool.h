@@ -58,8 +58,8 @@ public:
 
     for (auto* path : type_cast<Path*>(tool.scene()->template item_selection<Object>())) {
       tool.handles.reserve(tool.handles.size() + path->points().size());
-      for (auto&& point : *path) {
-        auto handle = std::make_unique<PointSelectHandle>(tool, *path, point);
+      for (auto it = path->begin(); it != path->end(); ++it) {
+        auto handle = std::make_unique<PointSelectHandle>(tool, it);
         handle->force_draw_subhandles = force_subhandles;
         tool.handles.push_back(std::move(handle));
       }

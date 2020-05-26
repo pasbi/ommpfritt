@@ -33,10 +33,10 @@ auto make_tangent_layout( omm::CoordinateEdit*& coordinate_edit_ref,
 namespace omm
 {
 
-PointEdit::PointEdit(Point& point, Path* path, QWidget* parent)
-  : QWidget(parent), m_point(point), m_path(path)
+PointEdit::PointEdit(const Path::iterator& iterator, QWidget* parent)
+  : QWidget(parent), m_iterator(iterator)
 {
-  if (point.is_selected) {
+  if (iterator->is_selected) {
     QPalette palette = this->palette();
     palette.setColor(QPalette::Window, palette.color(QPalette::AlternateBase));
     setPalette(palette);
@@ -66,9 +66,9 @@ PointEdit::PointEdit(Point& point, Path* path, QWidget* parent)
 
   setLayout(main.release());
 
-  m_left_tangent_edit->set_coordinates(point.left_tangent.to_cartesian());
-  m_right_tangent_edit->set_coordinates(point.right_tangent.to_cartesian());
-  m_position_edit->set_coordinates(point.position);
+  m_left_tangent_edit->set_coordinates(iterator->left_tangent.to_cartesian());
+  m_right_tangent_edit->set_coordinates(iterator->right_tangent.to_cartesian());
+  m_position_edit->set_coordinates(iterator->position);
   m_position_edit->set_display_mode(DisplayMode::Cartesian);
 
   connect(m_mirror_from_left, SIGNAL(clicked()), this, SLOT(mirror_from_left()));
@@ -136,14 +136,14 @@ PointEdit::set_right_maybe(const PolarCoordinates& old_left, const PolarCoordina
 void PointEdit::update_point()
 {
   if (m_path == nullptr || m_path->scene() == nullptr) {
-    m_point.left_tangent = m_left_tangent_edit->to_polar();
-    m_point.position = m_position_edit->to_cartesian();
-    m_point.right_tangent = m_right_tangent_edit->to_polar();
+    m_iterator->left_tangent = m_left_tangent_edit->to_polar();
+    m_iterator->position = m_position_edit->to_cartesian();
+    m_iterator->right_tangent = m_right_tangent_edit->to_polar();
   } else {
     ModifyPointsCommand::map_type map;
-    map[m_path][&m_point] = Point( m_position_edit->to_cartesian(),
-                                   m_left_tangent_edit->to_polar(),
-                                   m_right_tangent_edit->to_polar() );
+    *m_iterator = Point( m_position_edit->to_cartesian(),
+                         m_left_tangent_edit->to_polar(),
+                         m_right_tangent_edit->to_polar() );
     m_path->scene()->submit<ModifyPointsCommand>(map);
   }
 }

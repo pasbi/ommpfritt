@@ -99,10 +99,9 @@ bool ObjectSelectHandle::is_selected() const
   return ::contains(m_scene.item_selection<Object>(), &m_object);
 }
 
-PointSelectHandle::PointSelectHandle(Tool& tool, Path& path, Point& point)
+PointSelectHandle::PointSelectHandle(Tool& tool, const Path::iterator& iterator)
   : AbstractSelectHandle(tool)
-  , m_path(path)
-  , m_point(point)
+  , m_iterator(iterator)
   , m_left_tangent_handle(std::make_unique<TangentHandle>(tool, *this,
                                                           TangentHandle::Tangent::Left))
   , m_right_tangent_handle(std::make_unique<TangentHandle>(tool, *this,
@@ -112,12 +111,13 @@ PointSelectHandle::PointSelectHandle(Tool& tool, Path& path, Point& point)
 
 ObjectTransformation PointSelectHandle::transformation() const
 {
-  return m_path.global_transformation(Space::Viewport);
+  return m_iterator.path->global_transformation(Space::Viewport);
 }
 
 bool PointSelectHandle::contains_global(const Vec2f& point) const
 {
-  const auto d = (point - transformation().apply_to_position(m_point.position)).euclidean_norm();
+  const auto tpoint = transformation().apply_to_position(m_iterator->position);
+  const auto d = (point - tpoint).euclidean_norm();
   return d < interact_epsilon();
 }
 
@@ -157,9 +157,9 @@ void PointSelectHandle::mouse_release(const Vec2f& pos, const QMouseEvent& event
 
 void PointSelectHandle::draw(QPainter &painter) const
 {
-  const auto pos = transformation().apply_to_position(m_point.position);
-  const auto left_pos = transformation().apply_to_position(m_point.left_position());
-  const auto right_pos = transformation().apply_to_position(m_point.right_position());
+  const auto pos = transformation().apply_to_position(m_iterator->position);
+  const auto left_pos = transformation().apply_to_position(m_iterator->left_position());
+  const auto right_pos = transformation().apply_to_position(m_iterator->right_position());
 
   const auto treat_sub_handle = [&painter, pos, this](auto& sub_handle, const auto& other_pos) {
     sub_handle.position = other_pos;
@@ -175,7 +175,8 @@ void PointSelectHandle::draw(QPainter &painter) const
   }
 
   painter.translate(pos.to_pointf());
-  painter.setPen(m_point.is_selected ? ui_color(HandleStatus::Active, "point") : ui_color("point"));
+  painter.setPen(m_iterator->is_selected ? ui_color(HandleStatus::Active, "point")
+                                         : ui_color("point"));
 
   const auto r = draw_epsilon();
   painter.drawRect(-r, -r, 2*r, 2*r);
@@ -190,7 +191,7 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentHandle::Tan
 void PointSelectHandle::
 transform_tangent(const Vec2f& delta, TangentMode mode, TangentHandle::Tangent tangent)
 {
-  auto new_point = m_point;
+  auto new_point = *m_iterator;
   {
     auto& master_pos = tangent == TangentHandle::Tangent::Left ? new_point.left_tangent
                                                                : new_point.right_tangent;
@@ -205,37 +206,37 @@ transform_tangent(const Vec2f& delta, TangentMode mode, TangentHandle::Tangent t
     }
   }
 
-  std::map<Path*, std::map<Point*, Point>> map;
-  map[&m_path][&m_point] = new_point;
+  std::map<Path::iterator, Point> map;
+  map[m_iterator] = new_point;
   tool.scene()->submit<ModifyPointsCommand>(map);
 }
 
 bool PointSelectHandle::tangents_active() const
 {
-  const auto& imode_property = m_path.property(Path::INTERPOLATION_PROPERTY_KEY);
+  const auto& imode_property = m_iterator.path->property(Path::INTERPOLATION_PROPERTY_KEY);
   const auto interpolation_mode = imode_property->value<Path::InterpolationMode>();
   const bool is_bezier = interpolation_mode == Path::InterpolationMode::Bezier;
-  return (is_bezier && m_point.is_selected) || force_draw_subhandles;
+  return (is_bezier && m_iterator->is_selected) || force_draw_subhandles;
 }
 
 void PointSelectHandle::set_selected(bool selected)
 {
-  if (m_point.is_selected != selected) {
-    m_point.is_selected = selected;
+  if (m_iterator->is_selected != selected) {
+    m_iterator->is_selected = selected;
     Q_EMIT tool.scene()->message_box().point_selection_changed();
   }
 }
 
 void PointSelectHandle::clear()
 {
-  for (auto&& point : m_path) {
+  for (auto&& point : *m_iterator.path) {
     point.is_selected = false;
   }
 }
 
 bool PointSelectHandle::is_selected() const
 {
-  return m_point.is_selected;
+  return m_iterator->is_selected;
 }
 
 }  // namespace omm

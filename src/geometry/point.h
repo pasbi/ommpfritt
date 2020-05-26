@@ -32,9 +32,8 @@ public:
   PolarCoordinates left_tangent;
   PolarCoordinates right_tangent;
 
-  Point smoothed(Vec2f &left_neighbor, const Vec2f &right_neighbor) const;
-  Point nibbed() const;
   Point rotated(const double rad) const;
+  Point nibbed() const;
 
   static constexpr auto POSITION_POINTER = "position";
   static constexpr auto LEFT_TANGENT_POINTER = "left";

@@ -20,25 +20,67 @@
 namespace
 {
 
+using namespace omm;
+
+Point smoothen_point(const Path::Segment& segment, bool is_closed, std::size_t i)
+{
+  const std::size_t n = segment.size();
+  Vec2f left, right;
+  if (i == 0) {
+   left = is_closed ? segment[n-1].position : segment[0].position;
+   right = segment[1].position;
+  } else if (i == n-1) {
+   left = segment[n-2].position;
+   right = is_closed ? segment[0].position : segment[n-1].position;
+  } else {
+   left = segment[i-1].position;
+   right = segment[i+1].position;
+  }
+  const Vec2f d = left - right;
+  auto copy = segment[i];
+  copy.right_tangent = PolarCoordinates(-d/6.0);
+  copy.left_tangent = PolarCoordinates(d/6.0);
+  return copy;
+}
+
 void modify_tangents(omm::Path::InterpolationMode mode, omm::Application& app)
 {
-//  const auto paths = omm::Object::cast<omm::Path>(app.scene.item_selection<omm::Object>());
-//  std::map<omm::Path*, std::map<omm::Point*, omm::Point>> map;
-//  for (omm::Path* path : paths) {
-//    map[path] = path->modified_points(true, mode);
-//  }
+  using namespace omm;
+  const auto paths = Object::cast<Path>(app.scene.item_selection<Object>());
+  std::map<Path::iterator, omm::Point> map;
+  for (omm::Path* path : paths) {
+    const bool is_closed = path->is_closed();
+    for (std::size_t s = 0; s < path->segments.size(); ++s) {
+      const Path::Segment& segment = path->segments[s];
+      const std::size_t n = segment.size();
+      for (std::size_t i = 0; i < n; ++i) {
+        if (segment[i].is_selected) {
+          const Path::iterator it{*path, s, i};
+          switch (mode) {
+          case Path::InterpolationMode::Bezier:
+            break;  // do nothing.
+          case Path::InterpolationMode::Smooth:
+            map[it] = smoothen_point(segment, is_closed, i);
+            break;
+          case Path::InterpolationMode::Linear:
+            map[it] = segment[i].nibbed();
+          }
+        }
+      }
+    }
+  }
 
-//  constexpr auto bezier_mode = static_cast<std::size_t>(omm::Path::InterpolationMode::Bezier);
-//  const auto interpolation_properties = ::transform<omm::Property*>(paths, [](omm::Path* path) {
-//    return path->property(omm::Path::INTERPOLATION_PROPERTY_KEY);
-//  });
+  constexpr auto bezier_mode = static_cast<std::size_t>(omm::Path::InterpolationMode::Bezier);
+  const auto interpolation_properties = ::transform<omm::Property*>(paths, [](omm::Path* path) {
+    return path->property(omm::Path::INTERPOLATION_PROPERTY_KEY);
+  });
 
-//  if (map.size() > 0) {
-//    auto macro = app.scene.history().start_macro(QObject::tr("modify tangents"));
-//    using OptionPropertyCommand = omm::PropertiesCommand<omm::OptionProperty>;
-//    app.scene.submit<OptionPropertyCommand>(interpolation_properties, bezier_mode);
-//    app.scene.submit<omm::ModifyPointsCommand>(map);
-//  }
+  if (map.size() > 0) {
+    auto macro = app.scene.history().start_macro(QObject::tr("modify tangents"));
+    using OptionPropertyCommand = omm::PropertiesCommand<omm::OptionProperty>;
+    app.scene.submit<OptionPropertyCommand>(interpolation_properties, bezier_mode);
+    app.scene.submit<omm::ModifyPointsCommand>(map);
+  }
 }
 
 std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Object*> convertibles)
@@ -109,18 +151,36 @@ void make_smooth(Application& app) { modify_tangents(Path::InterpolationMode::Sm
 void remove_selected_points(Application& app)
 {
 //  std::map<Path*, std::vector<std::size_t>> map;
-//  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-//    auto selected_points = path->selected_points();
-//    std::sort(selected_points.begin(), selected_points.end());
-//    for (std::size_t i = 0; i < selected_points.size(); ++i) {
-//      selected_points[i] -= i;
-//    }
-//    map[path] = selected_points;
-//  }
-//  if (!map.empty()) {
-//    app.scene.submit<RemovePointsCommand>(map);
-//    app.scene.update_tool();
-//  }
+  std::unique_ptr<Macro> macro;
+  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+    std::vector<RemovePointsCommand::Range> removed_points;
+    auto last = path->end();
+    const auto is_contiguos = [&last](const Path::iterator& it) {
+      if (it.path != last.path || it.segment != last.segment) {
+        return false;
+      } else {
+        return it.point == last.point + 1;
+      }
+    };
+    for (auto it = path->begin(); it != path->end(); ++it) {
+      if (it->is_selected) {
+        if (is_contiguos(it)) {
+          removed_points.back().length += 1;
+        } else {
+          removed_points.push_back(RemovePointsCommand::Range{it, 1});
+        }
+        last = it;
+      }
+    }
+    if (!removed_points.empty()) {
+      auto command = std::make_unique<RemovePointsCommand>(*path, removed_points);
+      if (!macro) {
+        macro = app.scene.history().start_macro(command->label());
+      }
+      app.scene.submit(std::move(command));
+      app.scene.update_tool();
+    }
+  }
 }
 
 void subdivide(Application& app)

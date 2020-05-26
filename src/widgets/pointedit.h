@@ -2,6 +2,7 @@
 
 #include <QWidget>
 #include "geometry/point.h"
+#include "objects/path.h"
 
 class QPushButton;
 
@@ -10,14 +11,13 @@ namespace omm
 
 class CoordinateEdit;
 class Point;
-class Path;
 enum class DisplayMode;
 
 class PointEdit : public QWidget
 {
   Q_OBJECT
 public:
-  PointEdit(Point& point, Path* path, QWidget* parent = nullptr);
+  PointEdit(const Path::iterator& iterator, QWidget* parent = nullptr);
   void set_display_mode(const DisplayMode& display_mode);
 
 private:
@@ -29,7 +29,7 @@ private:
   CoordinateEdit* m_left_tangent_edit;
   CoordinateEdit* m_right_tangent_edit;
   CoordinateEdit* m_position_edit;
-  Point& m_point;
+  Path::iterator m_iterator;
   Path* m_path;
 
 private Q_SLOTS:
