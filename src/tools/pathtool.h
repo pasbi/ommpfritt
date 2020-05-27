@@ -21,10 +21,9 @@ public:
   void reset() override;
 
 private:
-  void add_point(const Vec2f& pos);
-
+  Path::iterator add_point(const Vec2f& pos);
   Path* m_path = nullptr;
-  Point* m_current_point = nullptr;
+  std::optional<Path::iterator> m_current_point;
 
 };
 

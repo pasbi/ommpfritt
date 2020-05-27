@@ -15,10 +15,10 @@ bool PathTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEven
 {
   if (SelectPointsBaseTool::mouse_move(delta, pos, event)) {
       return true;
-  } else if (m_path != nullptr && m_current_point != nullptr) {
-    const auto lt = PolarCoordinates(m_current_point->left_tangent.to_cartesian() - delta);
-    m_current_point->left_tangent = lt;
-    m_current_point->right_tangent = -lt;
+  } else if (m_path != nullptr && m_current_point) {
+    const auto lt = PolarCoordinates((*m_current_point)->left_tangent.to_cartesian() - delta);
+    (*m_current_point)->left_tangent = lt;
+    (*m_current_point)->right_tangent = -lt;
     m_path->update();
     return true;
   } else {
@@ -32,7 +32,7 @@ bool PathTool::mouse_press(const Vec2f &pos, const QMouseEvent &event)
     return true;
   } else {
     if (event.button() == Qt::LeftButton) {
-      add_point(pos);
+      m_current_point = add_point(pos);
     }
     return false;
   }
@@ -41,12 +41,12 @@ bool PathTool::mouse_press(const Vec2f &pos, const QMouseEvent &event)
 void PathTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
 {
   SelectPointsBaseTool::mouse_release(pos, event);
-  m_current_point = nullptr;
+  m_current_point.reset();
 }
 
 QString PathTool::type() const { return TYPE; }
 
-void PathTool::add_point(const Vec2f &pos)
+Path::iterator PathTool::add_point(const Vec2f &pos)
 {
   Q_UNUSED(pos)
   if (!m_path) {
@@ -86,6 +86,7 @@ void PathTool::add_point(const Vec2f &pos)
 
   m_path->update();
   reset();
+  return link;
 }
 
 void PathTool::end()
