@@ -5,7 +5,6 @@ target_sources(ommpfritt_unit_tests PRIVATE
   dnftest.cpp
   geometry.cpp
   application.cpp
-  path.cpp
   propertytest.cpp
   main.cpp
   splinetypetest.cpp
