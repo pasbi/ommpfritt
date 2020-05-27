@@ -34,86 +34,41 @@ public:
   void update() override;
 
   using Segment = std::vector<Point>;
-
-  template<typename R, typename Path, typename F> static auto foreach_point(Path path, F&& f)
-  {
-    static constexpr auto use_return = !std::is_same_v<R, void>;
-    std::conditional_t<use_return, std::list<R>, int> rs;
-    for (auto&& segment : path.segments) {
-      for (auto&& p : segment) {
-        if constexpr (use_return) {
-          rs.push_back(f(p));
-        }
-      }
-    }
-    if constexpr (use_return) {
-      return rs;
-    }
-  }
-
   std::vector<Segment> segments;
 
   template<typename PathRef>
   struct Iterator
   {
     using value_type = Point;
-    static constexpr bool Const = std::is_const_v<PathRef>;
+    static_assert(std::is_reference_v<PathRef>);
+    static constexpr bool Const = std::is_const_v<std::remove_reference_t<PathRef>>;
     using reference = std::conditional_t<Const, const value_type&, value_type&>;
-    using pointer = std::conditional_t<Const, const value_type&, value_type&>;
+    using pointer = std::conditional_t<Const, const value_type*, value_type*>;
     using difference_type = int;
     using iterator_category = std::forward_iterator_tag;
 
-    Iterator(PathRef path, std::size_t segment, std::size_t point)
-      : path(&path), segment(segment), point(point) {}
+    Iterator(PathRef path, std::size_t segment, std::size_t point);
 
-    std::add_pointer_t<std::remove_const_t<PathRef>> path;
+    std::add_pointer_t<std::remove_reference_t<PathRef>> path;
     std::size_t segment;
     std::size_t point;
 
-    bool operator<(const Iterator& other) const { return to_tuple() < other.to_tuple(); }
-    bool operator>(const Iterator& other) const { return to_tuple() > other.to_tuple(); }
+    bool operator<(const Iterator& other) const;
+    bool operator>(const Iterator& other) const;
+    bool operator==(const Iterator& other) const;
+    bool operator!=(const Iterator& other) const;
 
-    bool operator==(const Iterator& other) const
-    {
-      if (path != other.path) {
-        return false;
-      } if (is_end() && other.is_end()) {
-        return true;
-      } else {
-        return segment == other.segment && point == other.point;
-      }
-    }
+    bool is_end() const;
+    reference operator*() const;
+    pointer operator->() const;
 
-    bool operator!=(const Iterator& other) const { return !(*this == other); }
-
-    bool is_end() const { return segment >= path->segments.size(); }
-    decltype(auto) operator*() const { return path->segments[segment][point]; }
-    decltype(auto) operator->() const { return &**this; }
-
-    Iterator& operator++()
-    {
-      point += 1;
-      if (path->segments[segment].size() == point) {
-        point = 0;
-        segment += 1;
-      }
-      return *this;
-    }
-
-  private:
-    auto to_tuple() const { return std::tuple{path, segment, point}; };
-
+    Iterator& operator++();
   };
 
-  using const_iterator = Iterator<const Path&>;
   using iterator = Iterator<Path&>;
 
-  const_iterator begin() const;
-  const_iterator end() const;
   iterator begin();
   iterator end();
-  iterator remove_const(const const_iterator& it);
-  std::size_t count() const;
   bool is_closed() const override;
   void on_property_value_changed(Property* property) override;
 

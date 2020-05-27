@@ -9,6 +9,17 @@
 #include "common.h"
 #include "renderers/style.h"
 
+namespace
+{
+
+template<typename Iterator>
+auto iterator_to_tuple(const Iterator& it)
+{
+  return std::tuple{it.path, it.segment, it.point};
+}
+
+}  // namespace
+
 namespace omm
 {
 
@@ -138,20 +149,8 @@ QPainterPath Path::CachedQPainterPathGetter::compute() const
   return path;
 }
 
-Path::const_iterator Path::end() const { return ::omm::end<const Path&>(*this); }
-Path::const_iterator Path::begin() const { return ::omm::begin<const Path&>(*this); }
 Path::iterator Path::end() { return ::omm::end<Path&>(*this); }
 Path::iterator Path::begin() { return ::omm::begin<Path&>(*this); }
-
-Path::iterator Path::remove_const(const const_iterator& it)
-{
-  return {*this, it.segment, it.point};
-}
-
-std::size_t Path::count() const
-{
-  return std::distance(begin(), end());
-}
 
 bool Path::is_closed() const
 {
@@ -165,5 +164,71 @@ void Path::on_property_value_changed(Property* property)
     update();
   }
 }
+
+template<typename PathRef>
+Path::Iterator<PathRef>::Iterator(PathRef path, std::size_t segment, std::size_t point)
+  : path(&path), segment(segment), point(point) {}
+
+template<typename PathRef>
+bool Path::Iterator<PathRef>::operator<(const Path::Iterator<PathRef>& other) const
+{
+  return iterator_to_tuple(*this) < iterator_to_tuple(other);
+}
+
+template<typename PathRef>
+bool Path::Iterator<PathRef>::operator>(const Path::Iterator<PathRef>& other) const
+{
+  return iterator_to_tuple(*this) > iterator_to_tuple(other);
+}
+
+template<typename PathRef>
+bool Path::Iterator<PathRef>::operator==(const Path::Iterator<PathRef>& other) const
+{
+  if (path != other.path) {
+    return false;
+  } if (is_end() && other.is_end()) {
+    return true;
+  } else {
+    return segment == other.segment && point == other.point;
+  }
+}
+
+template<typename PathRef>
+bool Path::Iterator<PathRef>::operator!=(const Path::Iterator<PathRef>& other) const
+{
+  return !(*this == other);
+}
+
+template<typename PathRef>
+bool Path::Iterator<PathRef>::is_end() const
+{
+  return segment >= path->segments.size();
+}
+
+template<typename PathRef>
+typename Path::Iterator<PathRef>::reference Path::Iterator<PathRef>::operator*() const
+{
+  return path->segments[segment][point];
+}
+
+template<typename PathRef>
+typename Path::Iterator<PathRef>::pointer Path::Iterator<PathRef>::operator->() const
+{
+  return &**this;
+}
+
+template<typename PathRef>
+Path::Iterator<PathRef>& Path::Iterator<PathRef>::operator++()
+{
+  point += 1;
+  if (path->segments[segment].size() == point) {
+    point = 0;
+    segment += 1;
+  }
+  return *this;
+}
+
+template struct Path::Iterator<Path&>;
+template struct Path::Iterator<const Path&>;
 
 }  // namespace omm
