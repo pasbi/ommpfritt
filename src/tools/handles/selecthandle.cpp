@@ -175,11 +175,14 @@ void PointSelectHandle::draw(QPainter &painter) const
   }
 
   painter.translate(pos.to_pointf());
-  painter.setPen(m_iterator->is_selected ? ui_color(HandleStatus::Active, "point")
-                                         : ui_color("point"));
+  const auto color = m_iterator->is_selected ? ui_color(HandleStatus::Active, "point")
+                                             : ui_color("point");
 
   const auto r = draw_epsilon();
-  painter.drawRect(-r, -r, 2*r, 2*r);
+  const QRectF rect {-r, -r, 2*r, 2*r};
+  painter.setPen(color);
+  painter.drawRect(rect);
+  painter.fillRect(rect, color);
 
 }
 
