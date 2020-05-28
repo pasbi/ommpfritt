@@ -25,7 +25,7 @@ namespace omm
 class Style;
 
 Path::Path(Scene* scene)
-  : Object(scene)
+  : AbstractPath(scene)
   , painter_path(*this)
 {
   static const auto category = QObject::tr("path");

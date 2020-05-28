@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QDebug>
-#include "objects/object.h"
+#include "objects/abstractpath.h"
 #include "geometry/point.h"
 #include <list>
 #include "cachedgetter.h"
@@ -12,7 +12,7 @@ namespace omm
 
 class Scene;
 
-class Path : public Object
+class Path : public AbstractPath
 {
 public:
   explicit Path(Scene* scene);
