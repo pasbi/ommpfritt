@@ -8,7 +8,7 @@ namespace omm
 
 class Style;
 
-Line::Line(Scene* scene) : AbstractProceduralPath(scene)
+Line::Line(Scene* scene) : AbstractPath(scene)
 {
   static const auto category = QObject::tr("Line");
   create_property<FloatProperty>(LENGTH_PROPERTY_KEY, 100.0 )
@@ -47,7 +47,7 @@ void Line::on_property_value_changed(Property *property)
   {
     update();
   } else {
-    AbstractProceduralPath::on_property_value_changed(property);
+    AbstractPath::on_property_value_changed(property);
   }
 }
 

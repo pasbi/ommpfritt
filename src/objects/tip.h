@@ -1,12 +1,12 @@
 #pragma once
 
-#include "objects/abstractproceduralpath.h"
+#include "objects/abstractpath.h"
 #include "properties/propertygroups/markerproperties.h"
 
 namespace omm
 {
 
-class Tip : public AbstractProceduralPath
+class Tip : public AbstractPath
 {
 public:
   explicit Tip(Scene *scene);

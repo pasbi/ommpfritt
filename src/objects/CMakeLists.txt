@@ -1,6 +1,6 @@
 target_sources(libommpfritt PRIVATE
-  abstractproceduralpath.cpp
-  abstractproceduralpath.h
+  abstractpath.cpp
+  abstractpath.h
   cloner.cpp
   cloner.h
   ellipse.cpp

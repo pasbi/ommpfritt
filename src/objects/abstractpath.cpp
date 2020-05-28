@@ -1,4 +1,4 @@
-#include "objects/abstractproceduralpath.h"
+#include "objects/abstractpath.h"
 #include "objects/empty.h"
 #include <QObject>
 #include "properties/floatproperty.h"
@@ -12,7 +12,7 @@ namespace omm
 
 class Style;
 
-void AbstractProceduralPath::draw_object(Painter &renderer, const Style& style,
+void AbstractPath::draw_object(Painter &renderer, const Style& style,
                                          Painter::Options options) const
 {
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
@@ -25,12 +25,12 @@ void AbstractProceduralPath::draw_object(Painter &renderer, const Style& style,
   }
 }
 
-Flag AbstractProceduralPath::flags() const
+Flag AbstractPath::flags() const
 {
   return Object::flags() | Flag::Convertible | Flag::IsPathLike;
 }
 
-std::unique_ptr<Object> AbstractProceduralPath::convert() const
+std::unique_ptr<Object> AbstractPath::convert() const
 {
 //  auto converted = std::make_unique<Path>(scene());
 //  copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
@@ -42,13 +42,13 @@ std::unique_ptr<Object> AbstractProceduralPath::convert() const
   return std::make_unique<Empty>(scene());
 }
 
-Point AbstractProceduralPath::evaluate(const double t) const
+Point AbstractPath::evaluate(const double t) const
 {
   Q_UNUSED(t)
   return Point();
 }
 
-BoundingBox AbstractProceduralPath::bounding_box(const ObjectTransformation &transformation) const
+BoundingBox AbstractPath::bounding_box(const ObjectTransformation &transformation) const
 {
   if (is_active()) {
     return BoundingBox((m_painter_path * transformation.to_qtransform()).boundingRect());
@@ -57,18 +57,18 @@ BoundingBox AbstractProceduralPath::bounding_box(const ObjectTransformation &tra
   }
 }
 
-double AbstractProceduralPath::path_length() const
+double AbstractPath::path_length() const
 {
   return 0.0;
 }
 
-bool AbstractProceduralPath::contains(const Vec2f &pos) const
+bool AbstractPath::contains(const Vec2f &pos) const
 {
   Q_UNUSED(pos)
   return false;
 }
 
-std::vector<double> AbstractProceduralPath::cut(const Vec2f& c_start, const Vec2f& c_end)
+std::vector<double> AbstractPath::cut(const Vec2f& c_start, const Vec2f& c_end)
 {
   Q_UNUSED(c_start)
   Q_UNUSED(c_end)
@@ -78,7 +78,7 @@ std::vector<double> AbstractProceduralPath::cut(const Vec2f& c_start, const Vec2
 //                                            gti.apply_to_position(c_end) );
 }
 
-void AbstractProceduralPath::update()
+void AbstractPath::update()
 {
   m_points = ::filter_if(points(), [](const auto& point) {
     return !point.has_nan() && !point.has_inf();

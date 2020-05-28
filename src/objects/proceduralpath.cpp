@@ -35,7 +35,7 @@ namespace omm
 
 class Style;
 
-ProceduralPath::ProceduralPath(Scene* scene) : AbstractProceduralPath(scene)
+ProceduralPath::ProceduralPath(Scene* scene) : AbstractPath(scene)
 {
   static const auto category = QObject::tr("ProceduralPath");
   create_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
@@ -73,7 +73,7 @@ void ProceduralPath::update()
                                   "scene"_a=SceneWrapper(*scene()) );
     scene()->python_engine.exec(code, locals, this);
   }
-  AbstractProceduralPath::update();
+  AbstractPath::update();
 }
 
 bool ProceduralPath::is_closed() const
@@ -89,7 +89,7 @@ void ProceduralPath::on_property_value_changed(Property *property)
   {
     update();
   } else {
-    AbstractProceduralPath::on_property_value_changed(property);
+    AbstractPath::on_property_value_changed(property);
   }
 }
 

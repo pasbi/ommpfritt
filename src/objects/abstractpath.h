@@ -8,7 +8,7 @@ namespace omm
 
 class Scene;
 
-class AbstractProceduralPath : public Object
+class AbstractPath : public Object
 {
 public:
   using Object::Object;
