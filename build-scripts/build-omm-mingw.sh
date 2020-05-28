@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+echo "This script needs an update."
+echo "Some dependencies have been added which this script is not aware of."
+exit 1
+
 echo "Run this script inside MinGW64 shell"
 
 cd "$(dirname "$0")/.."

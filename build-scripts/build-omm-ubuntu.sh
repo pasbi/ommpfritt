@@ -81,6 +81,14 @@ esac
 
 sudo apt install -y libpoppler-qt5-dev libkf5itemmodels-dev
 
+git clone git@gitlab.com:inkscape/lib2geom.git
+pushd lib2geom
+git checkout 37876ed4
+$cmake -B build -GNinja -DCMAKE_INSTALL_PREFIX=build/install
+$cmake --build build --target install
+lib2geom_path="$(pwd)/build/install/lib/cmake"
+popd
+
 if [ -d build ]; then
   rm -r build
 fi
@@ -93,7 +101,7 @@ $cmake -GNinja \
        -DCMAKE_C_COMPILER="$C_COMPILER" \
        -DQT_QM_PATH="$QT_QM_PATH" \
        -DCMAKE_PREFIX_PATH="$QT_PREFIX" \
-       -DCMAKE_INSTALL_PREFIX=/usr \
+       -DCMAKE_INSTALL_PREFIX="/usr;$lib2geom_path" \
        ..
 
 ninja
