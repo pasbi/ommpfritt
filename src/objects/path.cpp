@@ -5,7 +5,6 @@
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
 #include "scene/scene.h"
-#include "geometry/cubics.h"
 #include "common.h"
 #include "renderers/style.h"
 

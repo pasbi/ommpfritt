@@ -4,7 +4,6 @@
 #include "objects/object.h"
 #include "geometry/point.h"
 #include <list>
-#include "geometry/cubics.h"
 #include "cachedgetter.h"
 #include <type_traits>
 

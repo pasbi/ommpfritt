@@ -4,7 +4,6 @@
 #include "properties/floatproperty.h"
 #include "objects/path.h"
 #include "common.h"
-#include "geometry/cubics.h"
 #include "renderers/style.h"
 #include "objects/tip.h"
 
@@ -45,11 +44,8 @@ std::unique_ptr<Object> AbstractProceduralPath::convert() const
 
 Point AbstractProceduralPath::evaluate(const double t) const
 {
-  if (m_points.size() > 1) {
-    return Cubics(m_points, is_closed()).evaluate(t);
-  } else {
-    return Point();
-  }
+  Q_UNUSED(t)
+  return Point();
 }
 
 BoundingBox AbstractProceduralPath::bounding_box(const ObjectTransformation &transformation) const
@@ -63,19 +59,23 @@ BoundingBox AbstractProceduralPath::bounding_box(const ObjectTransformation &tra
 
 double AbstractProceduralPath::path_length() const
 {
-  return Cubics(m_points, is_closed()).length();
+  return 0.0;
 }
 
 bool AbstractProceduralPath::contains(const Vec2f &pos) const
 {
-  return Cubics(m_points, is_closed()).contains(pos);
+  Q_UNUSED(pos)
+  return false;
 }
 
 std::vector<double> AbstractProceduralPath::cut(const Vec2f& c_start, const Vec2f& c_end)
 {
-  const auto gti = global_transformation(Space::Viewport).inverted();
-  return Cubics(m_points, is_closed()).cut( gti.apply_to_position(c_start),
-                                            gti.apply_to_position(c_end) );
+  Q_UNUSED(c_start)
+  Q_UNUSED(c_end)
+  return {};
+//  const auto gti = global_transformation(Space::Viewport).inverted();
+//  return Cubics(m_points, is_closed()).cut( gti.apply_to_position(c_start),
+//                                            gti.apply_to_position(c_end) );
 }
 
 void AbstractProceduralPath::update()

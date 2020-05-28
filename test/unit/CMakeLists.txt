@@ -1,6 +1,5 @@
 target_sources(ommpfritt_unit_tests PRIVATE
   color.cpp
-  cubic.cpp
   common.cpp
   dnftest.cpp
   geometry.cpp

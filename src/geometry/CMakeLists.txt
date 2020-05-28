@@ -1,10 +1,6 @@
 target_sources(libommpfritt PRIVATE
   boundingbox.cpp
   boundingbox.h
-  cubic.cpp
-  cubic.h
-  cubics.cpp
-  cubics.h
   matrix.cpp
   matrix.h
   objecttransformation.cpp

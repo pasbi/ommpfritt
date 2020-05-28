@@ -10,7 +10,6 @@
 #include <QUndoStack>
 #include "common.h"
 #include "properties/referenceproperty.h"
-#include "geometry/cubics.h"
 #include "commands/movecommand.h"
 #include "commands/objectselectioncommand.h"
 #include "scene/history/historymodel.h"
