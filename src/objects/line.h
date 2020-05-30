@@ -16,12 +16,11 @@ public:
   static constexpr auto ANGLE_PROPERTY_KEY = "angle";
   static constexpr auto CENTER_PROPERTY_KEY = "center";
 
+  Geom::PathVector paths() const override;
+  bool is_closed() const override { return false; }
+
 protected:
   void on_property_value_changed(Property* property) override;
-
-private:
-  std::vector<Point> points() const override;
-  bool is_closed() const override;
 };
 
 }  // namespace omm

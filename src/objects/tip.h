@@ -11,11 +11,11 @@ class Tip : public AbstractPath
 public:
   explicit Tip(Scene *scene);
   Tip(const Tip& other);
-  std::vector<Point> points() const override;
   QString type() const override { return TYPE; }
-  bool is_closed() const override;
   void on_property_value_changed(Property* property) override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Tip");
+  Geom::PathVector paths() const override;
+  bool is_closed() const override { return true; }
 
 private:
   MarkerProperties m_marker_properties;

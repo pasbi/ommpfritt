@@ -27,7 +27,7 @@ Flag RectangleObject::flags() const
   return Flag::IsPathLike | Flag::Convertible;
 }
 
-std::vector<Point> RectangleObject::points() const
+Geom::PathVector RectangleObject::paths() const
 {
   std::list<Point> points;
   const auto size = property(SIZE_PROPERTY_KEY)->value<Vec2f>()/2.0;
@@ -57,13 +57,19 @@ std::vector<Point> RectangleObject::points() const
   }
   points.push_back(Point(Vec2f( size.x-ar.x, -size.y     ), h, null));
 
-  return std::vector(points.begin(), points.end());
+  const Segment segment(points.begin(), points.end());
+  const auto path = segment_to_path(segment, is_closed());
+  return Geom::PathVector(path);
 }
 
-bool RectangleObject::is_closed() const
-{
-  return true;
-}
+//std::vector<Point> RectangleObject::points() const
+//{
+//}
+
+//bool RectangleObject::is_closed() const
+//{
+//  return true;
+//}
 
 void RectangleObject::on_property_value_changed(Property *property)
 {

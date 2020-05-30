@@ -28,16 +28,6 @@ Tip::Tip(const Tip &other)
 {
 }
 
-std::vector<Point> Tip::points() const
-{
-  return m_marker_properties.shape(1.0);
-}
-
-bool Tip::is_closed() const
-{
-  return true;
-}
-
 void Tip::on_property_value_changed(Property *property)
 {
   if (   property == this->property(MarkerProperties::SHAPE_PROPERTY_KEY)
@@ -49,6 +39,12 @@ void Tip::on_property_value_changed(Property *property)
   } else {
     Object::on_property_value_changed(property);
   }
+}
+
+Geom::PathVector Tip::paths() const
+{
+  const auto path = segment_to_path(m_marker_properties.shape(1.0), is_closed());
+  return Geom::PathVector(path);
 }
 
 }  // namespace omm

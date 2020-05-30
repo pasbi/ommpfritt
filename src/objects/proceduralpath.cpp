@@ -51,7 +51,6 @@ ProceduralPath::ProceduralPath(Scene* scene) : AbstractPath(scene)
 
 
 QString ProceduralPath::type() const { return TYPE; }
-std::vector<Point> ProceduralPath::points() const { return m_points; }
 
 void ProceduralPath::update()
 {
@@ -76,9 +75,10 @@ void ProceduralPath::update()
   AbstractPath::update();
 }
 
-bool ProceduralPath::is_closed() const
+Geom::PathVector ProceduralPath::paths() const
 {
-  return property(IS_CLOSED_PROPERTY_KEY)->value<bool>();
+  const bool is_closed = property(IS_CLOSED_PROPERTY_KEY)->value<bool>();
+  return segments_to_path_vector({ m_points }, is_closed);
 }
 
 void ProceduralPath::on_property_value_changed(Property *property)

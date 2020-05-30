@@ -27,9 +27,25 @@ Ellipse::Ellipse(Scene* scene) : AbstractPath(scene)
 }
 
 QString Ellipse::type() const { return TYPE; }
-bool Ellipse::is_closed() const { return true; }
 
-std::vector<Point> Ellipse::points() const
+Flag Ellipse::flags() const
+{
+  return Object::flags() | Flag::Convertible | Flag::IsPathLike;
+}
+
+void Ellipse::on_property_value_changed(Property *property)
+{
+  if (   property == this->property(RADIUS_PROPERTY_KEY)
+      || property == this->property(CORNER_COUNT_PROPERTY_KEY)
+      || property == this->property(SMOOTH_PROPERTY_KEY))
+  {
+    update();
+  } else {
+    AbstractPath::on_property_value_changed(property);
+  }
+}
+
+Geom::PathVector Ellipse::paths() const
 {
   const auto n_raw = property(CORNER_COUNT_PROPERTY_KEY)->value<int>();
   const auto n = static_cast<std::size_t>(std::max(3, n_raw));
@@ -48,24 +64,8 @@ std::vector<Point> Ellipse::points() const
       points.push_back(Point(Vec2f(x, y)));
     }
   }
-  return points;
-}
-
-Flag Ellipse::flags() const
-{
-  return Object::flags() | Flag::Convertible | Flag::IsPathLike;
-}
-
-void Ellipse::on_property_value_changed(Property *property)
-{
-  if (   property == this->property(RADIUS_PROPERTY_KEY)
-      || property == this->property(CORNER_COUNT_PROPERTY_KEY)
-      || property == this->property(SMOOTH_PROPERTY_KEY))
-  {
-    update();
-  } else {
-    AbstractPath::on_property_value_changed(property);
-  }
+  const auto path = segment_to_path(points, true);
+  return Geom::PathVector(path);
 }
 
 }  // namespace omm

@@ -20,10 +20,10 @@ public:
   static constexpr auto CORNER_COUNT_PROPERTY_KEY = "n";
   static constexpr auto SMOOTH_PROPERTY_KEY = "smooth";
   void on_property_value_changed(Property* property) override;
+  bool is_closed() const override { return true; }
 
 private:
-  std::vector<Point> points() const override;
-  bool is_closed() const override;
+  Geom::PathVector paths() const override;
 };
 
 }  // namespace omm

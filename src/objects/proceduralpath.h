@@ -19,9 +19,8 @@ public:
   static constexpr auto CODE_PROPERTY_KEY = "code";
   static constexpr auto COUNT_PROPERTY_KEY = "count";
 
-  std::vector<Point> points() const override;
   void update() override;
-  bool is_closed() const override;
+  Geom::PathVector paths() const override;
 
 protected:
   void on_property_value_changed(Property* property);

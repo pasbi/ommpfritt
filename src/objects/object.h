@@ -41,8 +41,7 @@ public:
   ObjectTransformation transformation() const;
   ObjectTransformation global_transformation(Space space) const;
   void set_transformation(const ObjectTransformation& transformation);
-  void set_global_transformation( const ObjectTransformation& global_transformation,
-                                  Space space );
+  void set_global_transformation(const ObjectTransformation& global_transformation, Space space);
   virtual void set_global_axis_transformation( const ObjectTransformation& global_transformation,
                                                Space space);
 
@@ -67,6 +66,13 @@ public:
   bool is_visible(bool viewport) const;
   virtual std::vector<const omm::Style*> find_styles() const;
 
+  virtual Point pos(double t) const;
+  virtual Point pos(std::size_t segment, double t) const;
+  virtual double length() const;
+  virtual double length(std::size_t segment) const;
+  virtual bool is_closed() const;
+  virtual bool contains(const Vec2f& pos) const;
+
   TagList tags;
   template<typename T, template<typename...> class ContainerT>
   static ContainerT<T*> cast(const ContainerT<Object*> object)
@@ -89,15 +95,8 @@ public:
 
   enum class Border { Clamp, Wrap, Hide, Reflect };
   static double apply_border(double t, Border border);
-  virtual Point evaluate(const double t) const;
-  virtual double path_length() const;
-  virtual bool is_closed() const;
-  void set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t,
-                            Space space);
-  void set_oriented_position(const Point &op, const bool align);
   virtual std::vector<Point> points() const;
 
-  virtual bool contains(const Vec2f& pos) const;
   void update_recursive();
   QString tree_path() const;
 
@@ -120,6 +119,8 @@ private:
 
 public:
   void set_object_tree(ObjectTree& object_tree);
+  void set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t, Space space);
+  void set_oriented_position(const Point& op, const bool align);
 private:
   ObjectTree* m_object_tree = nullptr;
   const Object* m_virtual_parent = nullptr;

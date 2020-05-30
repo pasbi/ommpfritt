@@ -31,8 +31,9 @@ public:
   enum class InterpolationMode { Linear, Smooth, Bezier };
   Flag flags() const override;
   void update() override;
+  bool is_closed() const override;
+  void set(const Geom::PathVector& paths);
 
-  using Segment = std::vector<Point>;
   std::vector<Segment> segments;
 
   template<typename PathRef>
@@ -68,16 +69,9 @@ public:
 
   iterator begin();
   iterator end();
-  bool is_closed() const override;
   void on_property_value_changed(Property* property) override;
+  Geom::PathVector paths() const override;
 
-  struct CachedQPainterPathGetter : CachedGetter<QPainterPath, Path>
-  {
-    using CachedGetter::CachedGetter;
-  private:
-    QPainterPath compute() const override;
-  } painter_path;
-  friend struct CachedQPainterPathGetter;
 };
 
 template<typename PathRef> auto begin(PathRef p)

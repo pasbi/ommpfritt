@@ -22,21 +22,21 @@ Line::Line(Scene* scene) : AbstractPath(scene)
 }
 
 QString Line::type() const { return TYPE; }
-bool Line::is_closed() const { return false; }
 
-std::vector<Point> Line::points() const
+Flag Line::flags() const
+{
+  return Object::flags() | Flag::Convertible | Flag::IsPathLike;
+}
+
+Geom::PathVector Line::paths() const
 {
   const auto length = property(LENGTH_PROPERTY_KEY)->value<double>();
   const auto angle = property(ANGLE_PROPERTY_KEY)->value<double>();
   const auto centered = property(CENTER_PROPERTY_KEY)->value<bool>();
   const PolarCoordinates a(angle, centered ? -length / 2.0 : 0.0);
   const PolarCoordinates b(angle, centered ?  length / 2.0 : length);
-  return std::vector { Point(a.to_cartesian()), Point(b.to_cartesian()) };
-}
-
-Flag Line::flags() const
-{
-  return Object::flags() | Flag::Convertible | Flag::IsPathLike;
+  std::vector<Point> segment = { Point(a.to_cartesian()), Point(b.to_cartesian()) };
+  return segments_to_path_vector({segment}, false);
 }
 
 void Line::on_property_value_changed(Property *property)

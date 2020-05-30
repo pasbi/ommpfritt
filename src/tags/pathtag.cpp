@@ -25,6 +25,12 @@ PathTag::PathTag(Object& owner) : Tag(owner)
 QString PathTag::type() const { return TYPE; }
 Flag PathTag::flags() const { return Tag::flags(); }
 
+void PathTag::on_property_value_changed(Property* property)
+{
+  evaluate();
+  Tag::on_property_value_changed(property);
+}
+
 void PathTag::evaluate()
 {
   auto* o = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();

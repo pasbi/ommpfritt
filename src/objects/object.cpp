@@ -401,22 +401,13 @@ double Object::apply_border(double t, Border border)
   Q_UNREACHABLE();
 }
 
-Point Object::evaluate(const double t) const
-{
-  Q_UNUSED(t)
-  return Point();
-}
-
-double Object::path_length() const { return -1.0; }
-bool Object::is_closed() const { return false; }
-
 void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t,
                                   Space space)
 {
   if (path != nullptr && path->kind == Kind::Object) {
     auto* path_object = static_cast<Object*>(path);
     if (!path_object->is_ancestor_of(*this)) {
-      const auto location = path_object->evaluate(std::clamp(t, 0.0, 1.0));
+      const auto location = path_object->pos(t);
       const auto global_location = path_object->global_transformation(space).apply(location);
       set_oriented_position(global_location, align);
     } else {
@@ -428,10 +419,12 @@ void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align,
 
 void Object::set_oriented_position(const Point& op, const bool align)
 {
-  auto transformation = global_transformation(Space::Viewport);
-  if (align) { transformation.set_rotation(op.rotation()); }
+  auto transformation = global_transformation(Space::Scene);
+  if (align) {
+    transformation.set_rotation(op.rotation());
+  }
   transformation.set_translation(op.position);
-  set_global_transformation(transformation, Space::Viewport);
+  set_global_transformation(transformation, Space::Scene);
 }
 
 
@@ -477,6 +470,31 @@ std::vector<const omm::Style*> Object::find_styles() const
 
   const auto tags = this->tags.ordered_items();
   return ::filter_if(::transform<const omm::Style*>(tags, get_style), ::is_not_null);
+}
+
+Point Object::pos(double) const
+{
+  return Point({0.0, 0.0});
+}
+
+Point Object::pos(std::size_t, double) const
+{
+  return Point({0.0, 0.0});
+}
+
+double Object::length() const
+{
+  return 0.0;
+}
+
+double Object::length(std::size_t) const
+{
+  return 0.0;
+}
+
+bool Object::is_closed() const
+{
+  return false;
 }
 
 bool Object::contains(const Vec2f &point) const

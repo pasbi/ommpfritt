@@ -26,7 +26,6 @@ class Style;
 
 Path::Path(Scene* scene)
   : AbstractPath(scene)
-  , painter_path(*this)
 {
   static const auto category = QObject::tr("path");
 
@@ -42,15 +41,11 @@ Path::Path(Scene* scene)
 
 void Path::draw_object(Painter &renderer, const Style& style, Painter::Options options) const
 {
-  renderer.set_style(style, *this, options);
-  if (!is_closed()) {
-    renderer.painter->setBrush(Qt::NoBrush);
-  }
-  renderer.painter->drawPath(painter_path());
+  AbstractPath::draw_object(renderer, style, options);
   const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
   const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();
-  style.start_marker.draw_marker(renderer, evaluate(0.0).rotated(0.5 * M_PI), marker_color, width);
-  style.end_marker.draw_marker(renderer, evaluate(1.0).rotated(1.5 * M_PI), marker_color, width);
+  style.start_marker.draw_marker(renderer, pos(0.0).rotated(0.5 * M_PI), marker_color, width);
+  style.end_marker.draw_marker(renderer, pos(1.0).rotated(1.5 * M_PI), marker_color, width);
 }
 
 BoundingBox Path::bounding_box(const ObjectTransformation &transformation) const
@@ -116,45 +111,42 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 void Path::update()
 {
   painter_path.invalidate();
+  geom_paths.invalidate();
   Object::update();
 }
-
-Flag Path::flags() const { return Object::flags() | Flag::IsPathLike; }
-
-QPainterPath Path::CachedQPainterPathGetter::compute() const
-{
-  static const auto p = [](const Vec2f& v) { return QPointF{v.x, v.y}; };
-  QPainterPath path;
-  for (auto&& points : m_self.segments) {
-    if (!points.empty()) {
-      path.moveTo(p(points.front().position));
-    }
-    auto previous = points.begin();
-    auto current = previous;
-    ++current;
-    while (current != points.end()) {
-      path.cubicTo(p(previous->right_position()),
-                   p(current->left_position()),
-                   p(current->position));
-      previous = current;
-      ++current;
-    }
-    if (m_self.is_closed()) {
-      path.cubicTo(p(points.back().right_position()),
-                   p(points.front().left_position()),
-                   p(points.front().position));
-    }
-  }
-  return path;
-}
-
-Path::iterator Path::end() { return ::omm::end<Path&>(*this); }
-Path::iterator Path::begin() { return ::omm::begin<Path&>(*this); }
 
 bool Path::is_closed() const
 {
   return property(IS_CLOSED_PROPERTY_KEY)->value<bool>();
 }
+
+void Path::set(const Geom::PathVector& paths)
+{
+  const auto path_to_segment = [is_closed=this->is_closed()](const Geom::Path& path) {
+    Segment segment;
+    segment.reserve(path.size_default() + 1);
+    for (auto&& curve : path) {
+      const auto& c = dynamic_cast<const Geom::CubicBezier&>(curve);
+      if (segment.empty()) {
+        segment.push_back(Point({c[0].x(), c[0].y()}));
+      }
+      segment.back().right_tangent = PolarCoordinates(c[1].x(), c[1].y());
+      segment.push_back(Point({c[3].x(), c[3].y()}));
+      segment.back().left_tangent = PolarCoordinates(c[2].x(), c[2].y());
+    }
+    if (is_closed) {
+      segment.front().left_tangent = segment.back().left_tangent;
+      segment.back().right_tangent = segment.front().right_tangent;
+    }
+    return segment;
+  };
+  segments = ::transform<Segment, std::vector>(paths, path_to_segment);
+}
+
+Flag Path::flags() const { return Object::flags() | Flag::IsPathLike; }
+
+Path::iterator Path::end() { return ::omm::end<Path&>(*this); }
+Path::iterator Path::begin() { return ::omm::begin<Path&>(*this); }
 
 void Path::on_property_value_changed(Property* property)
 {
@@ -162,6 +154,11 @@ void Path::on_property_value_changed(Property* property)
   if (property == this->property(IS_CLOSED_PROPERTY_KEY)) {
     update();
   }
+}
+
+Geom::PathVector Path::paths() const
+{
+  return segments_to_path_vector(segments, is_closed());
 }
 
 template<typename PathRef>

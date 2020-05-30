@@ -17,6 +17,7 @@ public:
   static constexpr auto POSITION_PROPERTY_KEY = "t";
   void evaluate() override;
   Flag flags() const override;
+  void on_property_value_changed(Property* property) override;
 };
 
 }  // namespace omm
