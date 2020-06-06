@@ -1,11 +1,11 @@
 #pragma once
 
-#include "objects/abstractpath.h"
+#include "objects/object.h"
 
 namespace omm
 {
 
-class RectangleObject : public AbstractPath
+class RectangleObject : public Object
 {
 public:
   explicit RectangleObject(Scene* scene);

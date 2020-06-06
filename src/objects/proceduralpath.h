@@ -1,13 +1,13 @@
 #pragma once
 
-#include "objects/abstractpath.h"
+#include "objects/object.h"
 
 namespace omm
 {
 
 class Scene;
 
-class ProceduralPath : public AbstractPath
+class ProceduralPath : public Object
 {
 public:
   explicit ProceduralPath(Scene* scene);

@@ -1,14 +1,10 @@
 target_sources(libommpfritt PRIVATE
-  abstractpath.cpp
-  abstractpath.h
   cloner.cpp
   cloner.h
   ellipse.cpp
   ellipse.h
   empty.cpp
   empty.h
-  imageobject.cpp
-  imageobject.h
   instance.cpp
   instance.h
   line.cpp

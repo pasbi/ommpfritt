@@ -1,10 +1,10 @@
 #pragma once
-#include "objects/abstractpath.h"
+#include "objects/object.h"
 
 namespace omm
 {
 
-class Line : public AbstractPath
+class Line : public Object
 {
 public:
   explicit Line(Scene* scene);

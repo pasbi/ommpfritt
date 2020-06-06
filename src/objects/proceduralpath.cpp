@@ -35,7 +35,7 @@ namespace omm
 
 class Style;
 
-ProceduralPath::ProceduralPath(Scene* scene) : AbstractPath(scene)
+ProceduralPath::ProceduralPath(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("ProceduralPath");
   create_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
@@ -72,7 +72,7 @@ void ProceduralPath::update()
                                   "scene"_a=SceneWrapper(*scene()) );
     scene()->python_engine.exec(code, locals, this);
   }
-  AbstractPath::update();
+  Object::update();
 }
 
 Geom::PathVector ProceduralPath::paths() const
@@ -89,7 +89,7 @@ void ProceduralPath::on_property_value_changed(Property *property)
   {
     update();
   } else {
-    AbstractPath::on_property_value_changed(property);
+    Object::on_property_value_changed(property);
   }
 }
 

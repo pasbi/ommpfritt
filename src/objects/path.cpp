@@ -25,7 +25,7 @@ namespace omm
 class Style;
 
 Path::Path(Scene* scene)
-  : AbstractPath(scene)
+  : Object(scene)
 {
   static const auto category = QObject::tr("path");
 
@@ -37,15 +37,6 @@ Path::Path(Scene* scene)
                    QObject::tr("bezier") })
     .set_label(QObject::tr("interpolation")).set_category(category);
   update();
-}
-
-void Path::draw_object(Painter &renderer, const Style& style, Painter::Options options) const
-{
-  AbstractPath::draw_object(renderer, style, options);
-  const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
-  const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();
-  style.start_marker.draw_marker(renderer, pos(0.0).rotated(0.5 * M_PI), marker_color, width);
-  style.end_marker.draw_marker(renderer, pos(1.0).rotated(1.5 * M_PI), marker_color, width);
 }
 
 BoundingBox Path::bounding_box(const ObjectTransformation &transformation) const
@@ -122,17 +113,21 @@ bool Path::is_closed() const
 
 void Path::set(const Geom::PathVector& paths)
 {
+
   const auto path_to_segment = [is_closed=this->is_closed()](const Geom::Path& path) {
+    const auto to_vec = [](const Geom::Point& p) -> Vec2f { return {p.x(), p.y()}; };
     Segment segment;
     segment.reserve(path.size_default() + 1);
     for (auto&& curve : path) {
       const auto& c = dynamic_cast<const Geom::CubicBezier&>(curve);
+      const auto p0 = to_vec(c[0]);
       if (segment.empty()) {
-        segment.push_back(Point({c[0].x(), c[0].y()}));
+        segment.push_back(Point(p0));
       }
-      segment.back().right_tangent = PolarCoordinates(c[1].x(), c[1].y());
-      segment.push_back(Point({c[3].x(), c[3].y()}));
-      segment.back().left_tangent = PolarCoordinates(c[2].x(), c[2].y());
+      segment.back().right_tangent = PolarCoordinates(to_vec(c[1]) - p0);
+      const auto p1 = to_vec(c[3]);
+      segment.push_back(Point(p1));
+      segment.back().left_tangent = PolarCoordinates(to_vec(c[2]) - p1);
     }
     if (is_closed) {
       segment.front().left_tangent = segment.back().left_tangent;
@@ -141,6 +136,13 @@ void Path::set(const Geom::PathVector& paths)
     return segment;
   };
   segments = ::transform<Segment, std::vector>(paths, path_to_segment);
+}
+
+std::size_t Path::count() const
+{
+  return std::accumulate(cbegin(segments), cend(segments), 0, [](std::size_t n, auto&& segment) {
+    return n + segment.size();
+  });
 }
 
 Flag Path::flags() const { return Object::flags() | Flag::IsPathLike; }

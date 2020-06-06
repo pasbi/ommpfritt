@@ -6,7 +6,7 @@ namespace omm
 {
 
 RectangleObject::RectangleObject(Scene *scene)
-  : AbstractPath(scene)
+  : Object(scene)
 {
   static const auto category = QObject::tr("rectangle");
   create_property<FloatVectorProperty>(SIZE_PROPERTY_KEY, Vec2f(200.0, 200.0) )
@@ -61,15 +61,6 @@ Geom::PathVector RectangleObject::paths() const
   const auto path = segment_to_path(segment, is_closed());
   return Geom::PathVector(path);
 }
-
-//std::vector<Point> RectangleObject::points() const
-//{
-//}
-
-//bool RectangleObject::is_closed() const
-//{
-//  return true;
-//}
 
 void RectangleObject::on_property_value_changed(Property *property)
 {

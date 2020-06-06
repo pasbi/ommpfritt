@@ -183,6 +183,11 @@ void Cloner::update()
   Object::update();
 }
 
+Geom::PathVector Cloner::paths() const
+{
+  return join(m_clones);
+}
+
 void Cloner::on_property_value_changed(Property *property)
 {
   if (   property == this->property(COUNT_PROPERTY_KEY)

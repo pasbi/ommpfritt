@@ -42,6 +42,20 @@ QPen make_bounding_box_pen()
   return pen;
 }
 
+omm::Point geom_to_point(const Geom::Point& point)
+{
+  return omm::Point({point.x(), point.y()});
+}
+
+double multclamp(double t, std::size_t n)
+{
+  if (n == 0) {
+    return 0.0;
+  } else {
+    return std::clamp<double>(t * n, 0.0, n);
+  }
+}
+
 }  // namespace
 
 namespace omm
@@ -50,7 +64,11 @@ namespace omm
 QPen Object::m_bounding_box_pen = make_bounding_box_pen();
 QBrush Object::m_bounding_box_brush = Qt::NoBrush;
 
-Object::Object(Scene* scene) : PropertyOwner(scene), tags(*this)
+Object::Object(Scene* scene)
+  : PropertyOwner(scene)
+  , painter_path(*this)
+  , geom_paths(*this)
+  , tags(*this)
 {
   static const auto category = QObject::tr("basic");
   create_property<OptionProperty>(VIEWPORT_VISIBILITY_PROPERTY_KEY, 0)
@@ -96,6 +114,8 @@ Object::Object(Scene* scene) : PropertyOwner(scene), tags(*this)
 Object::Object(const Object& other)
   : PropertyOwner(other)
   , TreeElement(other)
+  , painter_path(*this)
+  , geom_paths(*this)
   , tags(other.tags, *this)
   , m_draw_children(other.m_draw_children)
   , m_object_tree(other.m_object_tree)
@@ -108,6 +128,8 @@ Object::Object(const Object& other)
 Object::~Object()
 {
   if (const Scene* scene = this->scene(); scene != nullptr) {
+    // the object must not be selected when it gets deleted.
+    // Bad things will happen otherwise.
     assert(!::contains(scene->selection(), this));
   }
 }
@@ -303,6 +325,15 @@ void Object::draw_recursive(Painter& renderer, Painter::Options options) const
   renderer.pop_transformation();
 }
 
+BoundingBox Object::bounding_box(const ObjectTransformation& transformation) const
+{
+  if (is_active()) {
+    return BoundingBox((painter_path() * transformation.to_qtransform()).boundingRect());
+  } else {
+    return BoundingBox();
+  }
+}
+
 BoundingBox Object::recursive_bounding_box(const ObjectTransformation& transformation) const
 {
   BoundingBox bounding_box;
@@ -331,7 +362,17 @@ Object &Object::adopt(std::unique_ptr<Object> adoptee, const size_t pos)
   return o;
 }
 
-std::unique_ptr<Object> Object::convert() const { return clone(); }
+std::unique_ptr<Object> Object::convert() const
+{
+  auto converted = std::make_unique<Path>(scene());
+  copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
+  copy_tags(*converted);
+  converted->set(geom_paths());
+  converted->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed());
+  converted->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
+  return std::unique_ptr<Object>(converted.release());
+}
+
 Flag Object::flags() const { return Flag::None; }
 
 void Object::copy_tags(Object& other) const
@@ -381,6 +422,8 @@ void Object::post_create_hook() { }
 
 void Object::update()
 {
+  painter_path.invalidate();
+  geom_paths.invalidate();
   if (Scene* scene = this->scene(); scene != nullptr) {
     Q_EMIT scene->message_box().appearance_changed(*this);
   }
@@ -419,14 +462,13 @@ void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align,
 
 void Object::set_oriented_position(const Point& op, const bool align)
 {
-  auto transformation = global_transformation(Space::Scene);
+  auto transformation = global_transformation(Space::Viewport);
   if (align) {
     transformation.set_rotation(op.rotation());
   }
   transformation.set_translation(op.position);
-  set_global_transformation(transformation, Space::Scene);
+  set_global_transformation(transformation, Space::Viewport);
 }
-
 
 bool Object::is_active() const { return property(IS_ACTIVE_PROPERTY_KEY)->value<bool>(); }
 
@@ -472,14 +514,29 @@ std::vector<const omm::Style*> Object::find_styles() const
   return ::filter_if(::transform<const omm::Style*>(tags, get_style), ::is_not_null);
 }
 
-Point Object::pos(double) const
+Point Object::pos(double t) const
 {
-  return Point({0.0, 0.0});
+  auto&& paths = geom_paths();
+  if (const auto n = paths.curveCount(); n == 0) {
+    return geom_to_point(paths.initialPoint());
+  } else {
+    return geom_to_point(paths.pointAt(multclamp(t, n)));
+  }
 }
 
-Point Object::pos(std::size_t, double) const
+Point Object::pos(std::size_t segment, double t) const
 {
-  return Point({0.0, 0.0});
+  const Geom::PathVector paths = geom_paths()[segment];
+  if (segment > paths.size()) {
+    return geom_to_point(paths.initialPoint());
+  } else {
+    const Geom::Path path = paths.at(segment);
+    if (const auto n = path.size_default(); n == 0) {
+      return geom_to_point(path.initialPoint());
+    } else {
+      return geom_to_point(path.pointAt(multclamp(t, path.size_default())));
+    }
+  }
 }
 
 double Object::length() const
@@ -503,6 +560,11 @@ bool Object::contains(const Vec2f &point) const
   return false;
 }
 
+Geom::PathVector Object::paths() const
+{
+  return Geom::PathVector();
+}
+
 void Object::update_recursive()
 {
   // it's important to first update the children because of the way e.g. Cloner does its caching.
@@ -519,9 +581,24 @@ QString Object::tree_path() const
   return path + "/" + name();
 }
 
-void Object::draw_object(Painter&, const Style&, Painter::Options) const {}
+void Object::draw_object(Painter& renderer, const Style& style, Painter::Options options) const
+{
+  if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
+    if (const auto paths = painter_path(); !paths.isEmpty()) {
+      renderer.set_style(style, *this, options);
+      if (!is_closed()) {
+        renderer.painter->setBrush(Qt::NoBrush);
+      }
+      painter->drawPath(paths);
+      const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
+      const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();
+      style.start_marker.draw_marker(renderer, pos(0.0).rotated(.5 * M_PI), marker_color, width);
+      style.end_marker.draw_marker(renderer, pos(1.0).rotated(3/2 * M_PI), marker_color, width);
+    }
+  }
+}
+
 void Object::draw_handles(Painter&) const {}
-std::vector<Point> Object::points() const { return {}; }
 
 void Object::set_object_tree(ObjectTree &object_tree)
 {
@@ -574,6 +651,47 @@ void Object::listen_to_children_changes()
   connect(&scene()->message_box(), &MessageBox::transformation_changed, this, on_change);
   connect(&scene()->message_box(), qOverload<Object&>(&MessageBox::appearance_changed),
           this, on_change);
+}
+
+Geom::Path Object::segment_to_path(const Segment& segment, bool is_closed) const
+{
+  const auto pts = [](const std::array<Vec2f, 4>& pts) {
+    return ::transform<Geom::Point, std::vector>(pts, [](const auto& p) {
+      return Geom::Point(p.x, p.y);
+    });
+  };
+
+  std::vector<Geom::CubicBezier> bzs;
+  const std::size_t n = segment.size();
+  const std::size_t m = is_closed ? n : n - 1;
+  for (std::size_t i = 0; i < m; ++i) {
+    const std::size_t j = (i+1) % n;
+    bzs.emplace_back(pts({ segment[i].position,
+                           segment[i].right_position(),
+                           segment[j].left_position(),
+                           segment[j].position }));
+  }
+  return Geom::Path(bzs.begin(), bzs.end(), is_closed);
+}
+
+QPainterPath Object::CachedQPainterPathGetter::compute() const
+{
+  static const auto qpoint = [](const Geom::Point& point) { return QPointF{point[0], point[1]}; };
+  const auto path_vector = m_self.paths();
+  QPainterPath pp;
+  for (const Geom::Path& path : path_vector) {
+    pp.moveTo(qpoint(path.initialPoint()));
+    for (const Geom::Curve& curve : path) {
+      const auto& cbc = dynamic_cast<const Geom::CubicBezier&>(curve);
+      pp.cubicTo(qpoint(cbc[1]), qpoint(cbc[2]), qpoint(cbc[3]));
+    }
+  }
+  return pp;
+}
+
+Geom::PathVector Object::CachedGeomPathVectorGetter::compute() const
+{
+  return m_self.paths();
 }
 
 }  // namespace omm

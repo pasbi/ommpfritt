@@ -13,7 +13,7 @@ namespace omm
 
 class Style;
 
-Ellipse::Ellipse(Scene* scene) : AbstractPath(scene)
+Ellipse::Ellipse(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("ellipse");
   create_property<FloatVectorProperty>(RADIUS_PROPERTY_KEY, Vec2f(100.0, 100.0) )
@@ -41,7 +41,7 @@ void Ellipse::on_property_value_changed(Property *property)
   {
     update();
   } else {
-    AbstractPath::on_property_value_changed(property);
+    Object::on_property_value_changed(property);
   }
 }
 

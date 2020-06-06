@@ -11,6 +11,8 @@
 #include "renderers/painter.h"
 #include "scene/taglist.h"
 #include "geometry/point.h"
+#include "2geom/pathvector.h"
+#include "cachedgetter.h"
 
 namespace omm
 {
@@ -55,7 +57,7 @@ public:
   /**
    * @brief bounding_box returns the bounding box in world coordinates
    */
-  virtual BoundingBox bounding_box(const ObjectTransformation& transformation) const = 0;
+  virtual BoundingBox bounding_box(const ObjectTransformation& transformation) const;
   virtual BoundingBox recursive_bounding_box(const ObjectTransformation &transformation) const;
   std::unique_ptr<Object> repudiate(Object &repudiatee) override;
   Object & adopt(std::unique_ptr<Object> adoptee, const size_t pos) override;
@@ -72,6 +74,37 @@ public:
   virtual double length(std::size_t segment) const;
   virtual bool is_closed() const;
   virtual bool contains(const Vec2f& pos) const;
+  virtual Geom::PathVector paths() const;
+
+  struct CachedQPainterPathGetter : CachedGetter<QPainterPath, Object>
+  {
+    using CachedGetter::CachedGetter;
+  private:
+    QPainterPath compute() const override;
+  } painter_path;
+
+  struct CachedGeomPathVectorGetter : CachedGetter<Geom::PathVector, Object>
+  {
+    using CachedGetter::CachedGetter;
+  private:
+    Geom::PathVector compute() const override;
+  } geom_paths;
+
+  friend struct CachedQPainterPathGetter;
+
+  using Segment = std::vector<Point>;
+
+  Geom::Path segment_to_path(const Segment& segment, bool is_closed) const;
+
+  template<typename Segments=std::vector<Segment>>
+  Geom::PathVector segments_to_path_vector(const Segments& segments, bool is_closed) const
+  {
+    Geom::PathVector paths;
+    for (auto&& segment : segments) {
+      paths.push_back(segment_to_path(segment, is_closed));
+    }
+    return paths;
+  }
 
   TagList tags;
   template<typename T, template<typename...> class ContainerT>
@@ -95,7 +128,6 @@ public:
 
   enum class Border { Clamp, Wrap, Hide, Reflect };
   static double apply_border(double t, Border border);
-  virtual std::vector<Point> points() const;
 
   void update_recursive();
   QString tree_path() const;
@@ -105,9 +137,10 @@ public:
 public Q_SLOTS:
   virtual void update();
 
+public:
+  void copy_tags(Object& other) const;
 protected:
   bool m_draw_children = true;
-  void copy_tags(Object& other) const;
   void on_property_value_changed(Property* property) override;
   void on_child_added(Object &child) override;
   void on_child_removed(Object &child) override;
@@ -121,6 +154,7 @@ public:
   void set_object_tree(ObjectTree& object_tree);
   void set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t, Space space);
   void set_oriented_position(const Point& op, const bool align);
+
 private:
   ObjectTree* m_object_tree = nullptr;
   const Object* m_virtual_parent = nullptr;
@@ -130,6 +164,18 @@ private:
   mutable bool m_visibility_cache_value;
   static QPen m_bounding_box_pen;
   static QBrush m_bounding_box_brush;
+
+protected:
+  template<typename Iterable> static Geom::PathVector join(const Iterable& items)
+  {
+    Geom::PathVector paths;
+    for (auto&& item : items) {
+      const auto cps = item->paths();
+      paths.insert(paths.end(), cps.begin(), cps.end());
+    }
+    return paths;
+  }
+
 };
 
 std::ostream& operator<<(std::ostream& ostream, const Object& object);

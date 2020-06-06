@@ -27,6 +27,7 @@ public:
   Flag flags() const override;
   void post_create_hook() override;
   void update() override;
+  Geom::PathVector paths() const override;
 
 protected:
   void on_property_value_changed(Property *property) override;

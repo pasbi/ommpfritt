@@ -100,6 +100,11 @@ QRectF Text::rect(Qt::Alignment alignment) const
   return QRectF(QPointF(left, top), QSizeF(width, height));
 }
 
+Geom::PathVector Text::paths() const
+{
+  return Geom::PathVector();
+}
+
 void Text::on_property_value_changed(Property *property)
 {
   if (   property == this->property(TEXT_PROPERTY_KEY)

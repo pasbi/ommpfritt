@@ -21,6 +21,7 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "View");
   void on_property_value_changed(Property* property) override;
   Flag flags() const override;
+
 private:
   void from_viewport();
   void to_viewport();

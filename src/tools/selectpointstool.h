@@ -57,7 +57,7 @@ public:
     tool.handles.push_back(std::make_unique<MoveParticleHandle<ToolT>>(tool));
 
     for (auto* path : type_cast<Path*>(tool.scene()->template item_selection<Object>())) {
-      tool.handles.reserve(tool.handles.size() + path->points().size());
+      tool.handles.reserve(tool.handles.size() + path->count());
       for (auto it = path->begin(); it != path->end(); ++it) {
         auto handle = std::make_unique<PointSelectHandle>(tool, it);
         handle->force_draw_subhandles = force_subhandles;

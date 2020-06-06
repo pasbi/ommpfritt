@@ -1,5 +1,6 @@
 #pragma once
 
+#include <variant>
 #include "objects/object.h"
 #include "objects/instance.h"
 #include <Qt>
@@ -27,7 +28,8 @@ public:
   static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";
   static constexpr auto IS_INVERTED_PROPERTY_KEY = "inverted";
 
-  virtual Flag flags() const override;
+  Geom::PathVector paths() const override;
+  Flag flags() const override;
   std::unique_ptr<Object> convert() const override;
   void update() override;
 
@@ -40,7 +42,8 @@ private:
   std::unique_ptr<Object> m_reflection;
   ObjectTransformation get_mirror_t() const;
   void polish();
-
+  void perform_update_object_mode();
+  void perform_update_path_mode();
 };
 
 }  // namespace omm

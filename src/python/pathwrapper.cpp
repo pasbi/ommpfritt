@@ -13,10 +13,10 @@ void PathWrapper::define_python_interface(py::object& module)
 
 py::object PathWrapper::points()
 {
-  auto points = static_cast<wrapped_type&>(wrapped).points();
+  auto& path = static_cast<wrapped_type&>(wrapped);
   std::vector<PointWrapper> point_wrappers;
-  point_wrappers.reserve(points.size());
-  for (Point& point : points) {
+  point_wrappers.reserve(path.count());
+  for (Point& point : path) {
     point_wrappers.emplace_back(point);
   }
   return py::cast(point_wrappers);

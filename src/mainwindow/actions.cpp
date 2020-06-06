@@ -104,6 +104,11 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
     std::list<ObjectTreeMoveContext> move_contextes;
     for (auto&& c : convertibles) {
       auto converted = c->convert();
+
+      using Props = AbstractPropertyOwner::CopiedProperties;
+      c->copy_properties(*converted, Props::Compatible | Props::User);
+      c->copy_tags(*converted);
+
       converted->set_object_tree(app.scene.object_tree());
       assert(!c->is_root());
       ObjectTreeOwningContext context(*converted, c->tree_parent(), c);

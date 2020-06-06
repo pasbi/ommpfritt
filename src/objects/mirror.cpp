@@ -8,6 +8,17 @@
 #include "objects/path.h"
 #include "scene/scene.h"
 
+namespace
+{
+
+Geom::Point transform_point(const Geom::Point& point, const omm::ObjectTransformation& t)
+{
+  const auto tp = t.apply_to_position(omm::Vec2f{point.x(), point.y()});
+  return Geom::Point{ tp.x, tp.y };
+}
+
+}  // namespace
+
 namespace omm
 {
 
@@ -44,9 +55,13 @@ void Mirror::polish()
 void Mirror::draw_object(Painter &renderer, const Style& style, Painter::Options options) const
 {
   assert(&renderer.scene == scene());
-  options.default_style = &style;
-  if (m_reflection) {
-    m_reflection->draw_recursive(renderer, options);
+  if (is_active()) {
+    options.default_style = &style;
+    if (m_reflection) {
+      m_reflection->draw_recursive(renderer, options);
+    }
+  } else {
+    Object::draw_object(renderer, style, options);
   }
 }
 
@@ -72,66 +87,119 @@ Flag Mirror::flags() const { return Object::flags() | Flag::Convertible; }
 
 std::unique_ptr<Object> Mirror::convert() const
 {
-  std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
-  copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
-  copy_tags(*converted);
-
-  if (m_reflection) {
+  if (m_draw_children) {
+    std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
     converted->adopt(m_reflection->clone());
+    return converted;
+  } else {
+    return m_reflection->clone();
   }
+}
 
-  return converted;
+Geom::PathVector Mirror::paths() const
+{
+  if (m_reflection && is_active()) {
+    return m_reflection->paths();
+  } else {
+    return Geom::PathVector();
+  }
+}
+
+void Mirror::perform_update_object_mode()
+{
+  const ObjectTransformation mirror_t = get_mirror_t();
+  const auto n_children = this->n_children();
+  if (n_children > 0) {
+    m_reflection = this->tree_children().front()->clone();
+    m_reflection->set_virtual_parent(this);
+    m_reflection->set_transformation(mirror_t.apply(m_reflection->transformation()));
+    m_reflection->update();
+  }
+}
+
+void Mirror::perform_update_path_mode()
+{
+  const auto n_children = this->n_children();
+  if (n_children != 1) {
+    m_reflection.reset();
+  } else {
+    Object& child = this->tree_child(0);
+    const auto transform_path = [](const ObjectTransformation& t, const auto& path, bool reverse) {
+      return ::transform<Geom::CubicBezier, std::list>(path, [t, reverse](const auto& curve) {
+        const auto& cubic = dynamic_cast<const Geom::CubicBezier&>(curve);
+        auto control_points = ::transform<Geom::Point>(cubic.controlPoints(), [t](auto&& point) {
+          return transform_point(point, t);
+        });
+        if (reverse) {
+          std::reverse(control_points.begin(), control_points.end());
+        }
+        return Geom::CubicBezier(control_points);
+      });
+    };
+
+    const auto are_close = [](const Geom::Point& a, const Geom::Point& b) {
+      return (a - b).length() < 10;
+    };
+
+    const auto child_paths = child.paths();
+    std::vector<Geom::Path> paths;
+    paths.reserve(child_paths.size());
+    std::vector<bool> wants_to_be_closed;
+    wants_to_be_closed.reserve(child_paths.size());
+    const bool child_is_closed = child.is_closed();
+
+    const auto t = child.transformation();
+    const auto mt = get_mirror_t().apply(t);
+    for (auto&& path : child_paths) {
+      if (!path.empty()) {
+        const std::list<Geom::CubicBezier> reflected_path = transform_path(mt, path, true);
+        std::list<Geom::CubicBezier> original_path = transform_path(t, path, false);
+
+        const bool close_ends = are_close(transform_point(path.finalPoint(), t),
+                                          transform_point(path.finalPoint(), mt));
+        const bool close_mids = are_close(transform_point(path.initialPoint(), t),
+                                          transform_point(path.initialPoint(), mt));
+        wants_to_be_closed.push_back(child_is_closed || (close_ends && close_mids));
+        if (close_mids && !child_is_closed) {
+          original_path.insert(original_path.begin(), reflected_path.rbegin(), reflected_path.rend());
+          paths.emplace_back(original_path.begin(), original_path.end());
+        } else if (close_ends && !child_is_closed) {
+          original_path.insert(original_path.end(), reflected_path.rbegin(), reflected_path.rend());
+          paths.emplace_back(original_path.begin(), original_path.end());
+        } else {
+          paths.emplace_back(original_path.begin(), original_path.end());
+          paths.emplace_back(reflected_path.rbegin(), reflected_path.rend());
+        }
+      }
+    }
+    auto reflection = std::make_unique<Path>(scene());
+    reflection->set(Geom::PathVector(paths.begin(), paths.end()));
+
+    reflection->property(Path::IS_CLOSED_PROPERTY_KEY)->set(std::all_of(wants_to_be_closed.begin(),
+                                                                        wants_to_be_closed.end(),
+                                                                        ::identity));
+    m_reflection.reset(reflection.release());
+  }
 }
 
 void Mirror::update()
 {
-//  m_reflection.reset();
-//  const ObjectTransformation mirror_t = get_mirror_t();
-//  if (is_active()) {
-//    const auto n_children = this->n_children();
-//    if (property(AS_PATH_PROPERTY_KEY)->value<Mode>() == Mode::Path) {
-//      m_draw_children = false;
-//      if (n_children == 1) {
-//        Object& child = this->tree_child(0);
-//        if (!!(child.flags() & Flag::IsPathLike) && !child.is_closed()) {
-//          auto combined_path = std::make_unique<Path>(scene());
-//          auto points = child.points();
-//          for (auto& p : points) {
-//            p = child.transformation().apply(p);
-//          }
-//          auto mirrored_points = ::transform<Point>(points, [=](const Point& p) {
-//            return mirror_t.apply(p);
-//          });
-
-//          if (property(IS_INVERTED_PROPERTY_KEY)->value<bool>()) {
-//            for (auto& p : mirrored_points) {
-//              const auto aux = p.left_tangent;
-//              p.left_tangent = p.right_tangent;
-//              p.right_tangent = aux;
-//            }
-//            points.insert(points.end(), mirrored_points.rbegin(), mirrored_points.rend());
-//          } else {
-//            points.insert(points.end(), mirrored_points.begin(), mirrored_points.end());
-//          }
-//          combined_path->add_points(std::vector { Path::PointSequence(0, points) });
-//          const auto is_closed = property(IS_CLOSED_PROPERTY_KEY)->value<bool>();
-//          combined_path->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed);
-//          m_reflection.reset(combined_path.release());
-//          m_reflection->update();
-//        }
-//      }
-//    } else {
-//      m_draw_children = true;
-//      if (n_children > 0) {
-//        m_reflection = this->tree_children().front()->clone();
-//        m_reflection->set_virtual_parent(this);
-//        m_reflection->set_transformation(mirror_t.apply(m_reflection->transformation()));
-//        m_reflection->update();
-//      }
-//    }
-//  } else {
-//    m_draw_children = true;
-//  }
+  if (is_active()) {
+    switch (property(AS_PATH_PROPERTY_KEY)->value<Mode>()) {
+    case Mode::Path:
+      perform_update_path_mode();
+      m_draw_children = false;
+      break;
+    case Mode::Object:
+      perform_update_object_mode();
+      m_draw_children = true;
+      break;
+    default:
+      Q_UNREACHABLE();
+    }
+  } else {
+    m_draw_children = true;
+  }
 }
 
 void Mirror::on_property_value_changed(Property *property)

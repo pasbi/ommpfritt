@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QDebug>
-#include "objects/abstractpath.h"
+#include "objects/object.h"
 #include "geometry/point.h"
 #include <list>
 #include "cachedgetter.h"
@@ -12,11 +12,10 @@ namespace omm
 
 class Scene;
 
-class Path : public AbstractPath
+class Path : public Object
 {
 public:
   explicit Path(Scene* scene);
-  void draw_object(Painter& renderer, const Style& style, Painter::Options options) const override;
   BoundingBox bounding_box(const ObjectTransformation& transformation) const override;
   QString type() const override;
 
@@ -35,6 +34,7 @@ public:
   void set(const Geom::PathVector& paths);
 
   std::vector<Segment> segments;
+  std::size_t count() const;
 
   template<typename PathRef>
   struct Iterator
@@ -70,8 +70,7 @@ public:
   iterator begin();
   iterator end();
   void on_property_value_changed(Property* property) override;
-  Geom::PathVector paths() const override;
-
+  Geom::PathVector paths() const override;  
 };
 
 template<typename PathRef> auto begin(PathRef p)

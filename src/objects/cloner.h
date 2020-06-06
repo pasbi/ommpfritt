@@ -42,6 +42,7 @@ public:
   Mode mode() const;
   bool contains(const Vec2f &pos) const override;
   void update() override;
+  Geom::PathVector paths() const override;
 
 protected:
   void on_property_value_changed(Property* property) override;

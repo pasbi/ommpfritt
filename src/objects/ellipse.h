@@ -1,6 +1,6 @@
 #pragma once
 
-#include "objects/abstractpath.h"
+#include "objects/object.h"
 #include <Qt>
 
 namespace omm
@@ -8,7 +8,7 @@ namespace omm
 
 class Scene;
 
-class Ellipse : public AbstractPath
+class Ellipse : public Object
 {
 public:
   explicit Ellipse(Scene* scene);

@@ -147,6 +147,15 @@ void Instance::update()
   Object::update();
 }
 
+Geom::PathVector Instance::paths() const
+{
+  if (m_reference) {
+    return m_reference->paths();
+  } else {
+    return Geom::PathVector();
+  }
+}
+
 void Instance::on_property_value_changed(Property *property)
 {
   if (    property == this->property(REFERENCE_PROPERTY_KEY)
