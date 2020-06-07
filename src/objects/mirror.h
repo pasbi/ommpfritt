@@ -25,11 +25,9 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Mirror");
   static constexpr auto DIRECTION_PROPERTY_KEY = "direction";
   static constexpr auto AS_PATH_PROPERTY_KEY = "as_path";
-  static constexpr auto IS_CLOSED_PROPERTY_KEY = "closed";
-  static constexpr auto IS_INVERTED_PROPERTY_KEY = "inverted";
+  static constexpr auto TOLERANCE_PROPERTY_KEY = "eps";
 
   Geom::PathVector paths() const override;
-  Flag flags() const override;
   std::unique_ptr<Object> convert() const override;
   void update() override;
 
@@ -44,6 +42,7 @@ private:
   void polish();
   void perform_update_object_mode();
   void perform_update_path_mode();
+  void update_property_visibility();
 };
 
 }  // namespace omm

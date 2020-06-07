@@ -3,6 +3,7 @@
 #include <QObject>
 #include "objects/empty.h"
 #include "properties/optionproperty.h"
+#include "properties/floatproperty.h"
 #include "properties/boolproperty.h"
 #include "geometry/vec2.h"
 #include "objects/path.h"
@@ -33,10 +34,9 @@ Mirror::Mirror(Scene* scene) : Object(scene)
   mode_property.set_options({ QObject::tr("Object"),
                               QObject::tr("Path") })
     .set_label(QObject::tr("Mode")).set_category(category);
-  create_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY, true)
-    .set_label(QObject::tr("Close")).set_category(category);
-  create_property<BoolProperty>(IS_INVERTED_PROPERTY_KEY, true)
-    .set_label(QObject::tr("Invert")).set_category(category);
+  create_property<FloatProperty>(TOLERANCE_PROPERTY_KEY)
+      .set_range(0.0, std::numeric_limits<double>::max()).set_step(0.1)
+      .set_label(QObject::tr("Snap tolerance")).set_category(category);
   polish();
 }
 
@@ -83,7 +83,6 @@ BoundingBox Mirror::bounding_box(const ObjectTransformation &transformation) con
 }
 
 QString Mirror::type() const { return TYPE; }
-Flag Mirror::flags() const { return Object::flags() | Flag::Convertible; }
 
 std::unique_ptr<Object> Mirror::convert() const
 {
@@ -137,8 +136,9 @@ void Mirror::perform_update_path_mode()
       });
     };
 
-    const auto are_close = [](const Geom::Point& a, const Geom::Point& b) {
-      return (a - b).length() < 10;
+    const auto eps = property(TOLERANCE_PROPERTY_KEY)->value<double>();
+    const auto are_close = [eps](const Geom::Point& a, const Geom::Point& b) {
+      return (a - b).length() < eps;
     };
 
     const auto child_paths = child.paths();
@@ -175,11 +175,20 @@ void Mirror::perform_update_path_mode()
     auto reflection = std::make_unique<Path>(scene());
     reflection->set(Geom::PathVector(paths.begin(), paths.end()));
 
-    reflection->property(Path::IS_CLOSED_PROPERTY_KEY)->set(std::all_of(wants_to_be_closed.begin(),
-                                                                        wants_to_be_closed.end(),
-                                                                        ::identity));
+    const bool reflection_closed = child_is_closed
+                                 || std::all_of(wants_to_be_closed.begin(),
+                                                wants_to_be_closed.end(), ::identity);
+    reflection->property(Path::IS_CLOSED_PROPERTY_KEY)->set(reflection_closed);
+    const auto interpolation = child.property(Path::INTERPOLATION_PROPERTY_KEY)->variant_value();
+    reflection->property(Path::INTERPOLATION_PROPERTY_KEY)->set(interpolation);
     m_reflection.reset(reflection.release());
   }
+}
+
+void Mirror::update_property_visibility()
+{
+  const auto mode = property(AS_PATH_PROPERTY_KEY)->value<Mode>();
+  property(TOLERANCE_PROPERTY_KEY)->set_enabledness(mode == Mode::Path);
 }
 
 void Mirror::update()
@@ -204,14 +213,11 @@ void Mirror::update()
 
 void Mirror::on_property_value_changed(Property *property)
 {
-  if (   property == this->property(DIRECTION_PROPERTY_KEY)
-      || property == this->property(IS_CLOSED_PROPERTY_KEY)
-      || property == this->property(IS_INVERTED_PROPERTY_KEY))
-  {
+
+  if (pmatch(property, {DIRECTION_PROPERTY_KEY, TOLERANCE_PROPERTY_KEY})) {
     update();
-  } else if (property == this->property(AS_PATH_PROPERTY_KEY)) {
-    this->property(IS_CLOSED_PROPERTY_KEY)->set_visible(property->value<Mode>() == Mode::Path);
-    this->property(IS_INVERTED_PROPERTY_KEY)->set_visible(property->value<Mode>() == Mode::Path);
+  } else if (pmatch(property, {AS_PATH_PROPERTY_KEY})) {
+    update_property_visibility();
     update();
   } else {
     Object::on_property_value_changed(property);

@@ -207,4 +207,11 @@ void AbstractPropertyOwner::new_id() const
   m_id = dis(gen);
 }
 
+bool AbstractPropertyOwner::pmatch(const Property* property, const std::set<QString>& keys) const
+{
+  return std::any_of(keys.begin(), keys.end(), [this, property](const QString& key) {
+    return this->property(key) == property;
+  });
+}
+
 }  // namespace omm

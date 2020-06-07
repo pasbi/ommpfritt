@@ -29,4 +29,9 @@ Geom::PathVector Empty::paths() const
   }
 }
 
+Flag Empty::flags() const
+{
+  return Flag::None;
+}
+
 }  // namespace omm

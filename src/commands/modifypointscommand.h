@@ -21,7 +21,6 @@ public:
 
 private:
   std::map<Path::iterator, Point> m_data;
-  Path::InterpolationMode m_old_interpolation_mode;
   void swap();
 };
 

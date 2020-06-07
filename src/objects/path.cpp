@@ -145,22 +145,21 @@ std::size_t Path::count() const
   });
 }
 
-Flag Path::flags() const { return Object::flags() | Flag::IsPathLike; }
-
 Path::iterator Path::end() { return ::omm::end<Path&>(*this); }
 Path::iterator Path::begin() { return ::omm::begin<Path&>(*this); }
 
 void Path::on_property_value_changed(Property* property)
 {
-  Object::on_property_value_changed(property);
-  if (property == this->property(IS_CLOSED_PROPERTY_KEY)) {
+  if (pmatch(property, {INTERPOLATION_PROPERTY_KEY, IS_CLOSED_PROPERTY_KEY})) {
     update();
   }
+  Object::on_property_value_changed(property);
 }
 
 Geom::PathVector Path::paths() const
 {
-  return segments_to_path_vector(segments, is_closed());
+  const auto interpolation = property(INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>();
+  return segments_to_path_vector(segments, is_closed(), interpolation);
 }
 
 template<typename PathRef>
@@ -224,6 +223,27 @@ Path::Iterator<PathRef>& Path::Iterator<PathRef>::operator++()
     segment += 1;
   }
   return *this;
+}
+
+Point Path::smoothen_point(const Path::Segment& segment, bool is_closed, std::size_t i)
+{
+  const std::size_t n = segment.size();
+  Vec2f left, right;
+  if (i == 0) {
+   left = is_closed ? segment[n-1].position : segment[0].position;
+   right = segment[1].position;
+  } else if (i == n-1) {
+   left = segment[n-2].position;
+   right = is_closed ? segment[0].position : segment[n-1].position;
+  } else {
+   left = segment[i-1].position;
+   right = segment[i+1].position;
+  }
+  const Vec2f d = left - right;
+  auto copy = segment[i];
+  copy.right_tangent = PolarCoordinates(-d/6.0);
+  copy.left_tangent = PolarCoordinates(d/6.0);
+  return copy;
 }
 
 template struct Path::Iterator<Path&>;

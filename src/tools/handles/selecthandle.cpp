@@ -217,8 +217,8 @@ transform_tangent(const Vec2f& delta, TangentMode mode, TangentHandle::Tangent t
 bool PointSelectHandle::tangents_active() const
 {
   const auto& imode_property = m_iterator.path->property(Path::INTERPOLATION_PROPERTY_KEY);
-  const auto interpolation_mode = imode_property->value<Path::InterpolationMode>();
-  const bool is_bezier = interpolation_mode == Path::InterpolationMode::Bezier;
+  const auto interpolation_mode = imode_property->value<InterpolationMode>();
+  const bool is_bezier = interpolation_mode == InterpolationMode::Bezier;
   return (is_bezier && m_iterator->is_selected) || force_draw_subhandles;
 }
 

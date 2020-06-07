@@ -10,7 +10,6 @@ class RectangleObject : public Object
 public:
   explicit RectangleObject(Scene* scene);
   QString type() const override;
-  Flag flags() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "RectangleObject");
   Geom::PathVector paths() const override;
   bool is_closed() const override { return true; }

@@ -48,7 +48,7 @@ QString Text::type() const { return TYPE; }
 
 Flag Text::flags() const
 {
-  return Object::flags();
+  return Flag::None;
 
   // Flag::Convertible  // TODO in future, the text should be convertible to a path.
   // currently this is a tough problem because paths cannot have multiple segments.

@@ -369,11 +369,11 @@ std::unique_ptr<Object> Object::convert() const
   copy_tags(*converted);
   converted->set(geom_paths());
   converted->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed());
-  converted->property(Path::INTERPOLATION_PROPERTY_KEY)->set(Path::InterpolationMode::Bezier);
+  converted->property(Path::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
   return std::unique_ptr<Object>(converted.release());
 }
 
-Flag Object::flags() const { return Flag::None; }
+Flag Object::flags() const { return Flag::Convertible; }
 
 void Object::copy_tags(Object& other) const
 {
@@ -653,7 +653,8 @@ void Object::listen_to_children_changes()
           this, on_change);
 }
 
-Geom::Path Object::segment_to_path(const Segment& segment, bool is_closed) const
+Geom::Path Object::segment_to_path(Segment segment, bool is_closed,
+                                   InterpolationMode interpolation) const
 {
   const auto pts = [](const std::array<Vec2f, 4>& pts) {
     return ::transform<Geom::Point, std::vector>(pts, [](const auto& p) {
@@ -664,12 +665,37 @@ Geom::Path Object::segment_to_path(const Segment& segment, bool is_closed) const
   std::vector<Geom::CubicBezier> bzs;
   const std::size_t n = segment.size();
   const std::size_t m = is_closed ? n : n - 1;
+
+  if (interpolation == InterpolationMode::Smooth) {
+    segment = [&segment, is_closed]() {
+      Segment new_segment;
+      new_segment.reserve(segment.size());
+      for (std::size_t i = 0; i < segment.size(); ++i) {
+        new_segment.push_back(Path::smoothen_point(segment, is_closed, i));
+      }
+      return new_segment;
+    }();
+  }
+
   for (std::size_t i = 0; i < m; ++i) {
     const std::size_t j = (i+1) % n;
-    bzs.emplace_back(pts({ segment[i].position,
-                           segment[i].right_position(),
-                           segment[j].left_position(),
-                           segment[j].position }));
+    switch (interpolation) {
+    case InterpolationMode::Bezier:
+      [[fallthrough]];
+    case InterpolationMode::Smooth:
+      bzs.emplace_back(pts({ segment[i].position,
+                             segment[i].right_position(),
+                             segment[j].left_position(),
+                             segment[j].position }));
+      break;
+    case InterpolationMode::Linear:
+      bzs.emplace_back(pts({ segment[i].position,
+                             (2.0 * segment[i].position + 1.0 * segment[j].position) / 3.0,
+                             (1.0 * segment[i].position + 2.0 * segment[j].position) / 3.0,
+                             segment[j].position }));
+      break;
+    }
+
   }
   return Geom::Path(bzs.begin(), bzs.end(), is_closed);
 }

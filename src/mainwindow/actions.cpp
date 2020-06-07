@@ -21,28 +21,7 @@ namespace
 
 using namespace omm;
 
-Point smoothen_point(const Path::Segment& segment, bool is_closed, std::size_t i)
-{
-  const std::size_t n = segment.size();
-  Vec2f left, right;
-  if (i == 0) {
-   left = is_closed ? segment[n-1].position : segment[0].position;
-   right = segment[1].position;
-  } else if (i == n-1) {
-   left = segment[n-2].position;
-   right = is_closed ? segment[0].position : segment[n-1].position;
-  } else {
-   left = segment[i-1].position;
-   right = segment[i+1].position;
-  }
-  const Vec2f d = left - right;
-  auto copy = segment[i];
-  copy.right_tangent = PolarCoordinates(-d/6.0);
-  copy.left_tangent = PolarCoordinates(d/6.0);
-  return copy;
-}
-
-void modify_tangents(omm::Path::InterpolationMode mode, omm::Application& app)
+void modify_tangents(omm::InterpolationMode mode, omm::Application& app)
 {
   using namespace omm;
   const auto paths = Object::cast<Path>(app.scene.item_selection<Object>());
@@ -56,12 +35,12 @@ void modify_tangents(omm::Path::InterpolationMode mode, omm::Application& app)
         if (segment[i].is_selected) {
           const Path::iterator it{*path, s, i};
           switch (mode) {
-          case Path::InterpolationMode::Bezier:
+          case InterpolationMode::Bezier:
             break;  // do nothing.
-          case Path::InterpolationMode::Smooth:
-            map[it] = smoothen_point(segment, is_closed, i);
+          case InterpolationMode::Smooth:
+            map[it] = Path::smoothen_point(segment, is_closed, i);
             break;
-          case Path::InterpolationMode::Linear:
+          case InterpolationMode::Linear:
             map[it] = segment[i].nibbed();
           }
         }
@@ -69,7 +48,7 @@ void modify_tangents(omm::Path::InterpolationMode mode, omm::Application& app)
     }
   }
 
-  constexpr auto bezier_mode = static_cast<std::size_t>(omm::Path::InterpolationMode::Bezier);
+  constexpr auto bezier_mode = static_cast<std::size_t>(omm::InterpolationMode::Bezier);
   const auto interpolation_properties = ::transform<omm::Property*>(paths, [](omm::Path* path) {
     return path->property(omm::Path::INTERPOLATION_PROPERTY_KEY);
   });
@@ -149,8 +128,8 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
 namespace omm::actions
 {
 
-void make_linear(Application& app) { modify_tangents(Path::InterpolationMode::Linear, app); }
-void make_smooth(Application& app) { modify_tangents(Path::InterpolationMode::Smooth, app); }
+void make_linear(Application& app) { modify_tangents(InterpolationMode::Linear, app); }
+void make_smooth(Application& app) { modify_tangents(InterpolationMode::Smooth, app); }
 
 void remove_selected_points(Application& app)
 {

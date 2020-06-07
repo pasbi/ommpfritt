@@ -111,6 +111,8 @@ public:
   // A set of ReferenceProperties which reference `this`.
   std::set<ReferenceProperty*> m_referees;
 
+protected:
+  bool pmatch(const Property* property, const std::set<QString>& keys) const;
 };
 
 }  // namespace omm

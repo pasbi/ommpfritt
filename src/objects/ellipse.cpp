@@ -28,11 +28,6 @@ Ellipse::Ellipse(Scene* scene) : Object(scene)
 
 QString Ellipse::type() const { return TYPE; }
 
-Flag Ellipse::flags() const
-{
-  return Object::flags() | Flag::Convertible | Flag::IsPathLike;
-}
-
 void Ellipse::on_property_value_changed(Property *property)
 {
   if (   property == this->property(RADIUS_PROPERTY_KEY)

@@ -20,7 +20,6 @@ namespace omm
 class ObjectTree;
 class Scene;
 class Property;
-class Path;
 
 class Object
   : public PropertyOwner<Kind::Object>
@@ -94,14 +93,16 @@ public:
 
   using Segment = std::vector<Point>;
 
-  Geom::Path segment_to_path(const Segment& segment, bool is_closed) const;
+  Geom::Path segment_to_path(Segment segment, bool is_closed,
+                             InterpolationMode interpolation = InterpolationMode::Bezier) const;
 
-  template<typename Segments=std::vector<Segment>>
-  Geom::PathVector segments_to_path_vector(const Segments& segments, bool is_closed) const
+  template<typename Segments=std::vector<Segment>> Geom::PathVector
+  segments_to_path_vector(const Segments& segments, bool is_closed,
+                          InterpolationMode interpolation = InterpolationMode::Bezier) const
   {
     Geom::PathVector paths;
     for (auto&& segment : segments) {
-      paths.push_back(segment_to_path(segment, is_closed));
+      paths.push_back(segment_to_path(segment, is_closed, interpolation));
     }
     return paths;
   }

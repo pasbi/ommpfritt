@@ -69,7 +69,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_category(category);
 
   create_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
-    .set_filter(ReferenceProperty::Filter({ Kind::Object }, { { Flag::IsPathLike } }))
+    .set_filter(ReferenceProperty::Filter({ Kind::Object }, {}))
     .set_label(QObject::tr("path"))
     .set_category(category);
 
@@ -254,7 +254,7 @@ void Cloner::update_property_visibility(Mode mode)
 QString Cloner::type() const { return TYPE; }
 Flag Cloner::flags() const
 {
-  return Object::flags() | Flag::Convertible | Flag::HasScript;
+  return Object::flags() | Flag::HasScript;
 }
 
 std::unique_ptr<Object> Cloner::convert() const

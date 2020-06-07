@@ -95,7 +95,7 @@ void ProceduralPath::on_property_value_changed(Property *property)
 
 Flag ProceduralPath::flags() const
 {
-  return Object::flags() | Flag::IsPathLike | Flag::HasScript | Flag::Convertible;
+  return Object::flags() | Flag::HasScript;
 }
 
 }  // namespace omm

@@ -22,11 +22,6 @@ RectangleObject::RectangleObject(Scene *scene)
 
 QString RectangleObject::type() const { return TYPE; }
 
-Flag RectangleObject::flags() const
-{
-  return Flag::IsPathLike | Flag::Convertible;
-}
-
 Geom::PathVector RectangleObject::paths() const
 {
   std::list<Point> points;

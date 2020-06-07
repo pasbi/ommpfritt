@@ -27,8 +27,6 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
 
-  enum class InterpolationMode { Linear, Smooth, Bezier };
-  Flag flags() const override;
   void update() override;
   bool is_closed() const override;
   void set(const Geom::PathVector& paths);
@@ -70,7 +68,8 @@ public:
   iterator begin();
   iterator end();
   void on_property_value_changed(Property* property) override;
-  Geom::PathVector paths() const override;  
+  Geom::PathVector paths() const override;
+  static Point smoothen_point(const Segment& segment, bool is_closed, std::size_t i);
 };
 
 template<typename PathRef> auto begin(PathRef p)

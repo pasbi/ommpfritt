@@ -23,10 +23,12 @@ enum class Kind { None = 0x0,
                   Item = Tag | Style | Object, All = Item | Tool | Node };
 
 enum class Flag { None = 0x0,
-                  Convertible = 0x1, HasScript = 0x2, IsPathLike = 0x4, IsView = 0x8,
+                  Convertible = 0x1, HasScript = 0x2, IsView = 0x8,
                   HasPythonNodes = 0x10, HasGLSLNodes = 0x20,
                   HasNodes = HasPythonNodes | HasGLSLNodes,
                   HasPython = HasPythonNodes | HasScript };
+
+enum class InterpolationMode { Linear, Smooth, Bezier };
 
 enum class HandleStatus { Hovered, Active, Inactive };
 

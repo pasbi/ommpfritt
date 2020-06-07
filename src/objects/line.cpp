@@ -25,7 +25,7 @@ QString Line::type() const { return TYPE; }
 
 Flag Line::flags() const
 {
-  return Object::flags() | Flag::Convertible | Flag::IsPathLike;
+  return Object::flags() | Flag::Convertible;
 }
 
 Geom::PathVector Line::paths() const
