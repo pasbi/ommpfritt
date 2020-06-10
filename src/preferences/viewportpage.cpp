@@ -117,7 +117,7 @@ void ViewportPage::GridGroup::apply()
 void ViewportPage::MouseModifiersGroup::apply()
 {
   m_model.button = button_map.at(m_button_cb->currentIndex()).first;
-  m_model.modifiers = 0;
+  m_model.modifiers = {};
   for (std::size_t i = 0; i < m_modifier_cbs.size(); ++i) {
     const auto modifier = modifier_map.at(i).first;
     if (m_modifier_cbs.at(modifier)->isChecked()) {

@@ -64,7 +64,7 @@ public:
   Qt::ItemFlags flags(const QModelIndex& index) const override
   {
     if (!index.isValid()) {
-      return 0;
+      return {};
     }
     if constexpr (is_combobox) {
       return mapToSource(index).flags() | Qt::ItemIsSelectable;

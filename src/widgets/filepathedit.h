@@ -17,7 +17,7 @@ public:
   void set_path(const QString& path);
   QString path() const;
   QFileDialog::FileMode mode = QFileDialog::AnyFile;
-  QFileDialog::Options options = 0;
+  QFileDialog::Options options {};
   void clear();
   void set_placeholder_text(const QString& text);
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "widgets/colorwidget/colorpicker.h"
+#include <QPainterPath>
 
 namespace omm
 {

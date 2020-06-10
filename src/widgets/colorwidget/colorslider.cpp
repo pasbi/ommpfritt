@@ -3,6 +3,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include "preferences/uicolors.h"
+#include <QPainterPath>
 
 namespace omm
 {

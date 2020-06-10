@@ -1,6 +1,7 @@
 #include "widgets/colorwidget/colorslab.h"
 #include "preferences/uicolors.h"
 #include <QPainter>
+#include <QPainterPath>
 
 namespace omm
 {

@@ -3,6 +3,7 @@
 #include "splinetype.h"
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPainterPath>
 
 namespace
 {
