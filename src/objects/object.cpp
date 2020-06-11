@@ -516,14 +516,21 @@ std::vector<const omm::Style*> Object::find_styles() const
 
 Point pos(const Geom::Path& path, double t)
 {
-  double s;
-  const auto& curve = path.curveAt(multclamp(t, path.size_default()), &s);
-  const auto tangent = curve.unitTangentAt(std::min(0.9999999, s));
-  auto position = curve.pointAt(s);
-  const auto convert = [](const Geom::Point& p) { return Vec2{p.x(), p.y()}; };
-  return Point(convert(position),
-               PolarCoordinates(convert(tangent)),
-               PolarCoordinates(-convert(tangent)));
+  if (const auto n = path.size_default(); n == 0) {
+    return {};
+  } else {
+    double s;
+    const auto& curve = path.curveAt(multclamp(t, n), &s);
+
+    // the tangent behaves strange if s is very close to
+    // 1.0 and the curve is the last one in the path.
+    const auto tangent = curve.unitTangentAt(std::min(0.9999999, s));
+    auto position = curve.pointAt(s);
+    const auto convert = [](const Geom::Point& p) { return Vec2{p.x(), p.y()}; };
+    return Point(convert(position),
+                 PolarCoordinates(convert(tangent)),
+                 PolarCoordinates(-convert(tangent)));
+  }
 }
 
 Point Object::pos(double t) const
@@ -606,8 +613,8 @@ void Object::draw_object(Painter& renderer, const Style& style, Painter::Options
       painter->drawPath(paths);
       const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
       const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();
-      style.start_marker.draw_marker(renderer, pos(0.0).rotated(.5 * M_PI), marker_color, width);
-      style.end_marker.draw_marker(renderer, pos(1.0).rotated(3/2 * M_PI), marker_color, width);
+      style.start_marker.draw_marker(renderer, pos(0.0).rotated(M_PI_2), marker_color, width);
+      style.end_marker.draw_marker(renderer, pos(1.0).rotated(M_PI_2), marker_color, width);
     }
   }
 }

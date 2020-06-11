@@ -2534,14 +2534,14 @@
                                 "animated": false,
                                 "key": "viewport-visibility",
                                 "type": "OptionProperty",
-                                "value": 1
+                                "value": 2
                             },
                             {
                                 "animatable": true,
                                 "animated": false,
                                 "key": "visibility",
                                 "type": "OptionProperty",
-                                "value": 1
+                                "value": 2
                             },
                             {
                                 "animatable": true,
@@ -3557,8 +3557,8 @@
                                         "key": "position",
                                         "type": "FloatVectorProperty",
                                         "value": [
-                                            11.017721088586086,
-                                            -66.66156262398155
+                                            11.017721088585972,
+                                            -66.66156262398147
                                         ]
                                     },
                                     {
@@ -3567,8 +3567,8 @@
                                         "key": "scale",
                                         "type": "FloatVectorProperty",
                                         "value": [
-                                            1.0000000000003597,
-                                            0.9999999999999007
+                                            1.0000000000003606,
+                                            0.9999999999999004
                                         ]
                                     },
                                     {
@@ -3576,14 +3576,14 @@
                                         "animated": false,
                                         "key": "rotation",
                                         "type": "FloatProperty",
-                                        "value": 0.0
+                                        "value": -1.1572027711819104
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "shear",
                                         "type": "FloatProperty",
-                                        "value": 3.335529561013214e-14
+                                        "value": 3.302913498260498e-14
                                     },
                                     {
                                         "animatable": true,
@@ -9283,8 +9283,8 @@
                 "key": "position",
                 "type": "FloatVectorProperty",
                 "value": [
-                    867.2895461072185,
-                    490.0043725614235
+                    707.7405147984769,
+                    398.463718642349
                 ]
             },
             {
@@ -9293,8 +9293,8 @@
                 "key": "scale",
                 "type": "FloatVectorProperty",
                 "value": [
-                    2.1529472221415884,
-                    2.1529472221415875
+                    1.3114180653372072,
+                    1.3114180653372072
                 ]
             },
             {
