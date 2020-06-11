@@ -518,7 +518,7 @@ Point Object::pos(double t) const
 {
   auto&& paths = geom_paths();
   if (const auto n = paths.curveCount(); n == 0) {
-    return geom_to_point(paths.initialPoint());
+    return Point();
   } else {
     return geom_to_point(paths.pointAt(multclamp(t, n)));
   }
