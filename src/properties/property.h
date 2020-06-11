@@ -91,6 +91,16 @@ public:
         }
       }
     }
+
+    template<typename T>
+    void deserialize_field(const QString& field, AbstractDeserializer& deserializer,
+                           const Serializable::Pointer& root)
+    {
+      if (this->find(field) == this->end()) {
+        (*this)[field] = deserializer.get<T>(Serializable::make_pointer(root, field));
+      }
+    }
+
   };
 
   Property() = default;

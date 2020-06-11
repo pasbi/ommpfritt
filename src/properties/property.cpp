@@ -41,15 +41,10 @@ void Property
 {
   Serializable::deserialize(deserializer, root);
 
-  if (configuration.find(LABEL_POINTER) == configuration.end()) {
-    configuration[LABEL_POINTER] = deserializer.get_string(make_pointer(root, LABEL_POINTER));
-  }
-  if (configuration.find(CATEGORY_POINTER) == configuration.end()) {
-    configuration[CATEGORY_POINTER] = deserializer.get_string(make_pointer(root, CATEGORY_POINTER));
-  }
-  if (configuration.find(ANIMATABLE_POINTER) == configuration.end()) {
-    configuration[ANIMATABLE_POINTER] = deserializer.get_bool(make_pointer(root, ANIMATABLE_POINTER));
-  }
+  configuration.deserialize_field<QString>(LABEL_POINTER, deserializer, root);
+  configuration.deserialize_field<QString>(CATEGORY_POINTER, deserializer, root);
+  configuration.deserialize_field<bool>(ANIMATABLE_POINTER, deserializer, root);
+
   if (deserializer.get_bool(make_pointer(root, IS_ANIMATED_POINTER))) {
     m_track = std::make_unique<Track>(*this);
     m_track->deserialize(deserializer, make_pointer(root, TRACK_POINTER));

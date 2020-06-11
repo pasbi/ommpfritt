@@ -171,5 +171,4 @@ variant_type AbstractDeserializer::get(const AbstractDeserializer::Pointer &poin
   }
 }
 
-
 }  // namespace omm
