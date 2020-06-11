@@ -179,7 +179,9 @@ void Mirror::perform_update_path_mode()
                                  || std::all_of(wants_to_be_closed.begin(),
                                                 wants_to_be_closed.end(), ::identity);
     reflection->property(Path::IS_CLOSED_PROPERTY_KEY)->set(reflection_closed);
-    const auto interpolation = child.property(Path::INTERPOLATION_PROPERTY_KEY)->variant_value();
+    const auto interpolation =  child.has_property(Path::INTERPOLATION_PROPERTY_KEY)
+        ? child.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>()
+        : InterpolationMode::Bezier;
     reflection->property(Path::INTERPOLATION_PROPERTY_KEY)->set(interpolation);
     m_reflection.reset(reflection.release());
   }
