@@ -56,7 +56,7 @@ Path::iterator PathTool::add_point(const Vec2f &pos)
     scene()->set_selection({m_path});
   }
 
-  const auto gpos = viewport_transformation.inverted().apply_to_position(pos);
+  const auto gpos = m_path->global_transformation(Space::Viewport).inverted().apply_to_position(pos);
   static const auto is_selected = [](const auto& point) {
     return point.is_selected;
   };
