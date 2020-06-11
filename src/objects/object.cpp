@@ -514,13 +514,27 @@ std::vector<const omm::Style*> Object::find_styles() const
   return ::filter_if(::transform<const omm::Style*>(tags, get_style), ::is_not_null);
 }
 
+Point pos(const Geom::Path& path, double t)
+{
+  double s;
+  const auto& curve = path.curveAt(multclamp(t, path.size_default()), &s);
+  const auto tangent = curve.unitTangentAt(std::min(0.9999999, s));
+  auto position = curve.pointAt(s);
+  const auto convert = [](const Geom::Point& p) { return Vec2{p.x(), p.y()}; };
+  return Point(convert(position),
+               PolarCoordinates(convert(tangent)),
+               PolarCoordinates(-convert(tangent)));
+}
+
 Point Object::pos(double t) const
 {
   auto&& paths = geom_paths();
   if (const auto n = paths.curveCount(); n == 0) {
     return Point();
   } else {
-    return geom_to_point(paths.pointAt(multclamp(t, n)));
+    double pt;
+    const auto& path = paths.pathAt(t, &pt);
+    return omm::pos(path, pt);
   }
 }
 
@@ -534,7 +548,7 @@ Point Object::pos(std::size_t segment, double t) const
     if (const auto n = path.size_default(); n == 0) {
       return geom_to_point(path.initialPoint());
     } else {
-      return geom_to_point(path.pointAt(multclamp(t, path.size_default())));
+      return omm::pos(path, t);
     }
   }
 }
