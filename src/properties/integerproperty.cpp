@@ -28,4 +28,10 @@ void IntegerProperty::serialize(AbstractSerializer& serializer, const Pointer& r
   }
 }
 
+IntegerProperty& IntegerProperty::set_special_value(const QString& label)
+{
+  special_value_label = label;
+  return *this;
+}
+
 }  // namespace omm

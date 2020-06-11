@@ -13,6 +13,10 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   static const PropertyDetail detail;
+  IntegerProperty& set_special_value(const QString& label);
+
+public:
+  QString special_value_label;
 };
 
 }  // namespace omm

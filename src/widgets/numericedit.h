@@ -235,11 +235,15 @@ private:
   void set_text(const value_type& value)
   {
     m_value = value;
-    std::ostringstream ss;
-    ss << std::setprecision(3) << std::fixed << value_type(m_multiplier * value);
-    const auto new_text = QString::fromStdString(ss.str());
-    if (text() != new_text) {
-      setText(new_text);
+    if (value == m_min && m_special_value_text) {
+      setText(*m_special_value_text);
+    } else {
+      std::ostringstream ss;
+      ss << std::setprecision(3) << std::fixed << value_type(m_multiplier * value);
+      const auto new_text = QString::fromStdString(ss.str());
+      if (text() != new_text) {
+        setText(new_text);
+      }
     }
     m_last_value = value;
   }
@@ -263,9 +267,16 @@ public:
     return std::pair(std::move(min_edit), std::move(max_edit));
   }
 
+  void set_special_value_text(const QString& text)
+  {
+    m_special_value_text = text;
+    set_text(m_value);
+  }
+
 private:
   ValueType m_last_value;
   ValueType m_value;
+  std::optional<QString> m_special_value_text;
 };
 
 using IntNumericEdit = NumericEdit<int>;

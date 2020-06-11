@@ -9,7 +9,7 @@ namespace omm
 class IntegerPropertyWidget : public NumericPropertyWidget<IntegerProperty>
 {
 public:
-  using NumericPropertyWidget::NumericPropertyWidget;
+  IntegerPropertyWidget(Scene& scene, const std::set<Property*>& properties);
   static constexpr auto TYPE = "IntegerPropertyWidget";
 };
 

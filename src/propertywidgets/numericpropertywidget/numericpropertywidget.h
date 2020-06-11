@@ -18,6 +18,7 @@ public:
 
 protected:
   void update_edit() override;
+  auto spinbox() const { return m_spinbox; }
 
 private:
   NumericMultiValueEdit<value_type>* m_spinbox;
