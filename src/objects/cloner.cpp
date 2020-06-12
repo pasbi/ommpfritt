@@ -378,7 +378,7 @@ void Cloner::set_path(Object& object, std::size_t i)
   }
   const bool align = property(ALIGN_PROPERTY_KEY)->value<bool>();
   const double t = get_t(i, !o->is_closed());
-  Point p = o->pos(t);
+  Point p = o->pos(o->compute_path_vector_time(t));
   if (property(ANCHOR_PROPERTY_KEY)->value<std::size_t>() == 0) {
     p = o->global_transformation(Space::Scene).apply(p);
     p = global_transformation(Space::Scene).inverted().apply(p);
@@ -420,7 +420,7 @@ void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
       LINFO << "Return a random point on edge instead.";
 
       const auto t = dist(rng);
-      return area.pos(t).position;
+      return area.pos(area.compute_path_vector_time(t)).position;
     }();
 
 

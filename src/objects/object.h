@@ -67,13 +67,18 @@ public:
   bool is_visible(bool viewport) const;
   virtual std::vector<const omm::Style*> find_styles() const;
 
-  virtual Point pos(double t) const;
-  virtual Point pos(std::size_t segment, double t) const;
+  virtual Point pos(const Geom::PathVectorTime& t) const;
   virtual double length() const;
   virtual double length(std::size_t segment) const;
   virtual bool is_closed() const;
   virtual bool contains(const Vec2f& pos) const;
   virtual Geom::PathVector paths() const;
+
+  enum class Interpolation { Natural, Distance };
+  Geom::PathVectorTime compute_path_vector_time(double t,
+                                                Interpolation = Interpolation::Natural) const;
+  Geom::PathVectorTime compute_path_vector_time(std::size_t path_index, double t,
+                                                Interpolation = Interpolation::Natural) const;
 
   struct CachedQPainterPathGetter : CachedGetter<QPainterPath, Object>
   {
@@ -153,7 +158,7 @@ private:
 
 public:
   void set_object_tree(ObjectTree& object_tree);
-  void set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t, Space space);
+  void set_position_on_path(const Object& path, const bool align, const Geom::PathVectorTime& t);
   void set_oriented_position(const Point& op, const bool align);
 
 private:

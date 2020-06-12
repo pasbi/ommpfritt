@@ -29,6 +29,7 @@
 namespace
 {
 
+static constexpr auto almost_one = 0.9999999;
 static constexpr auto CHILDREN_POINTER = "children";
 static constexpr auto TAGS_POINTER = "tags";
 static constexpr auto TYPE_POINTER = "type";
@@ -47,12 +48,44 @@ omm::Point geom_to_point(const Geom::Point& point)
   return omm::Point({point.x(), point.y()});
 }
 
-double multclamp(double t, std::size_t n)
+double length(const Geom::Curve& curve)
 {
-  if (n == 0) {
-    return 0.0;
+  return curve.length();
+}
+
+double length(const Geom::Path& path)
+{
+  return std::accumulate(path.begin(), path.end(), 0.0, [](double l, const Geom::Curve& curve) {
+    return l + curve.length();
+  });
+}
+
+template<typename Geometry>
+std::pair<std::size_t, double> factor_time_by_distance(const Geometry& geom, double t)
+{
+  if (const auto n = geom.size(); n == 0) {
+    return {0, 0.0};
   } else {
-    return std::clamp<double>(t * n, 0.0, n);
+    std::vector<double> accumulated_lengths;
+    accumulated_lengths.reserve(n+1);
+    double accu = 0.0;
+    accumulated_lengths.push_back(accu);
+    for (auto it = geom.begin(); it != geom.end(); ++it) {
+      accu += length(*it);
+      accumulated_lengths.push_back(accu);
+    }
+
+    t *= accumulated_lengths.back();
+    const auto segment_end = std::find_if(accumulated_lengths.begin(), accumulated_lengths.end(),
+                                          [t](double l) { return l > t; });
+    if (segment_end == accumulated_lengths.begin()) {
+      return {0, 0.0};
+    } else {
+      const auto segment_begin = std::next(segment_end, -1);
+      t -= *segment_begin;
+      t /= *segment_end - *segment_begin;
+      return {std::distance(accumulated_lengths.begin(), segment_begin), t};
+    }
   }
 }
 
@@ -444,19 +477,16 @@ double Object::apply_border(double t, Border border)
   Q_UNREACHABLE();
 }
 
-void Object::set_position_on_path(AbstractPropertyOwner* path, const bool align, const double t,
-                                  Space space)
+void
+Object::set_position_on_path(const Object& path, const bool align, const Geom::PathVectorTime& t)
 {
-  if (path != nullptr && path->kind == Kind::Object) {
-    auto* path_object = static_cast<Object*>(path);
-    if (!path_object->is_ancestor_of(*this)) {
-      const auto location = path_object->pos(t);
-      const auto global_location = path_object->global_transformation(space).apply(location);
-      set_oriented_position(global_location, align);
-    } else {
-      // it wouldn't crash but ux would be really bad. Don't allow cycles.
-      LWARNING << "cycle.";
-    }
+  if (!path.is_ancestor_of(*this)) {
+    const auto location = path.pos(t);
+    const auto global_location = path.global_transformation(Space::Viewport).apply(location);
+    set_oriented_position(global_location, align);
+  } else {
+    // it wouldn't crash but ux would be really bad. Don't allow cycles.
+    LWARNING << "cycle.";
   }
 }
 
@@ -514,49 +544,27 @@ std::vector<const omm::Style*> Object::find_styles() const
   return ::filter_if(::transform<const omm::Style*>(tags, get_style), ::is_not_null);
 }
 
-Point pos(const Geom::Path& path, double t)
+Point Object::pos(const Geom::PathVectorTime& t) const
 {
-  if (const auto n = path.size_default(); n == 0) {
-    return {};
+  auto&& paths = geom_paths();
+  if (const auto n = paths.curveCount(); n == 0) {
+    return Point();
+  } else if (t.path_index >= paths.size()) {
+    return Point();
+  } else if (auto&& path = paths[t.path_index]; t.curve_index >= path.size()) {
+    return Point();
   } else {
-    double s;
-    const auto& curve = path.curveAt(multclamp(t, n), &s);
+    auto&& curve = path[t.curve_index];
 
     // the tangent behaves strange if s is very close to
     // 1.0 and the curve is the last one in the path.
-    const auto tangent = curve.unitTangentAt(std::min(0.9999999, s));
+    const double s = std::clamp(t.t, 0.0, almost_one);
+    const auto tangent = curve.unitTangentAt(s);
     auto position = curve.pointAt(s);
     const auto convert = [](const Geom::Point& p) { return Vec2{p.x(), p.y()}; };
     return Point(convert(position),
                  PolarCoordinates(convert(tangent)),
                  PolarCoordinates(-convert(tangent)));
-  }
-}
-
-Point Object::pos(double t) const
-{
-  auto&& paths = geom_paths();
-  if (const auto n = paths.curveCount(); n == 0) {
-    return Point();
-  } else {
-    double pt;
-    const auto& path = paths.pathAt(t, &pt);
-    return omm::pos(path, pt);
-  }
-}
-
-Point Object::pos(std::size_t segment, double t) const
-{
-  const Geom::PathVector paths = geom_paths()[segment];
-  if (segment > paths.size()) {
-    return geom_to_point(paths.initialPoint());
-  } else {
-    const Geom::Path path = paths.at(segment);
-    if (const auto n = path.size_default(); n == 0) {
-      return geom_to_point(path.initialPoint());
-    } else {
-      return omm::pos(path, t);
-    }
   }
 }
 
@@ -586,6 +594,64 @@ Geom::PathVector Object::paths() const
   return Geom::PathVector();
 }
 
+Geom::PathVectorTime Object::compute_path_vector_time(double t,
+                                                      Interpolation interpolation) const
+{
+  t = std::clamp(t, 0.0, almost_one);
+  const auto path_vector = paths();
+  if (path_vector.empty()) {
+    return Geom::PathVectorTime(0, 0, 0.0);
+  }
+
+  switch (interpolation) {
+  case Interpolation::Natural:
+  {
+    double path_index;
+    const double path_position = std::modf(t * path_vector.size(), &path_index);
+    return compute_path_vector_time(path_index, path_position, interpolation);
+  }
+  case Interpolation::Distance:
+  {
+    const auto [i, tp] = factor_time_by_distance(path_vector, t);
+    return compute_path_vector_time(i, tp, interpolation);
+  }
+  default:
+    return {};
+  }
+}
+
+Geom::PathVectorTime Object::compute_path_vector_time(std::size_t path_index, double t,
+                                                      Interpolation interpolation) const
+{
+  t = std::clamp(t, 0.0, almost_one);
+  const auto path_vector = paths();
+  if (path_index >= path_vector.size()) {
+    return Geom::PathVectorTime(path_index, 0, 0.0);
+  }
+
+  const auto path = path_vector[path_index];
+  if (path.empty()) {
+    return Geom::PathVectorTime(path_index, 0, 0.0);
+  }
+
+  switch (interpolation) {
+  case Interpolation::Natural:
+  {
+    double curve_index;
+    const double curve_position = std::modf(t * path.size(), &curve_index);
+    return Geom::PathVectorTime(path_index, curve_index, curve_position);
+  }
+  case Interpolation::Distance:
+  {
+    const auto [i, tc] = factor_time_by_distance(path, t);
+    return Geom::PathVectorTime(path_index, i, tc);
+  }
+  default:
+    return {};
+  }
+
+}
+
 void Object::update_recursive()
 {
   // it's important to first update the children because of the way e.g. Cloner does its caching.
@@ -605,16 +671,24 @@ QString Object::tree_path() const
 void Object::draw_object(Painter& renderer, const Style& style, Painter::Options options) const
 {
   if (QPainter* painter = renderer.painter; painter != nullptr && is_active()) {
-    if (const auto paths = painter_path(); !paths.isEmpty()) {
+    if (const auto painter_path = this->painter_path(); !painter_path.isEmpty()) {
       renderer.set_style(style, *this, options);
       if (!is_closed()) {
         renderer.painter->setBrush(Qt::NoBrush);
       }
-      painter->drawPath(paths);
+      painter->drawPath(painter_path);
       const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
       const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();
-      style.start_marker.draw_marker(renderer, pos(0.0).rotated(M_PI_2), marker_color, width);
-      style.end_marker.draw_marker(renderer, pos(1.0).rotated(M_PI_2), marker_color, width);
+
+      const auto paths = this->paths();
+      for (std::size_t path_index = 0; path_index < paths.size(); ++path_index) {
+        const auto pos = [this, path_index](const double t) {
+          const auto tt = compute_path_vector_time(path_index, t);
+          return this->pos(tt).rotated(M_PI_2);
+        };
+        style.start_marker.draw_marker(renderer, pos(0.0), marker_color, width);
+        style.end_marker.draw_marker(renderer, pos(1.0), marker_color, width);
+      }
     }
   }
 }
