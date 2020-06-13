@@ -150,7 +150,7 @@ void Instance::update()
 Geom::PathVector Instance::paths() const
 {
   if (m_reference) {
-    return m_reference->paths();
+    return m_reference->geom_paths();
   } else {
     return Geom::PathVector();
   }

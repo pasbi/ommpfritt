@@ -8,33 +8,6 @@
 namespace
 {
 
-std::vector<omm::Point> get_points(const Geom::Path& path)
-{
-  static const auto to_vec2f = [](const Geom::Point& pt) { return omm::Vec2f{pt.x(), pt.y()}; };
-  static constexpr auto eps2 = 0.00001;
-  std::list<omm::Point> points;
-  const auto make_tangent = [&points](const Geom::Point& pos) {
-    return omm::PolarCoordinates(to_vec2f(pos) - points.back().position);
-  };
-  for (const auto& curve : path) {
-    if (const auto* bz = dynamic_cast<const Geom::CubicBezier*>(&curve); bz != nullptr) {
-      if (points.empty()) {
-        points.emplace_back(to_vec2f(bz->controlPoint(0)));
-      } else {
-        if ((points.back().position - to_vec2f(bz->controlPoint(0))).euclidean_norm2() > eps2) {
-          LWARNING << "non-continuous spline.";
-        }
-        points.back().right_tangent = make_tangent(bz->controlPoint(1));
-      }
-
-      points.emplace_back(to_vec2f(bz->controlPoint(3)));
-      points.back().left_tangent = make_tangent(bz->controlPoint(2));
-    }
-  }
-
-  return std::vector(points.begin(), points.end());
-}
-
 using F = std::function<Geom::PathVector(Geom::PathIntersectionGraph&)>;
 static const std::vector<std::pair<QString, F>> dispatcher = {
   {QObject::tr("Union"),              [](auto& pig) { return pig.getUnion(); }},
@@ -98,8 +71,8 @@ Geom::PathVector Boolean::paths() const
 {
   const auto children = tree_children();
   if (is_active() && children.size() == 2) {
-    Geom::PathIntersectionGraph pig(transform(children[0]->paths(), children[0]->transformation()),
-                                    transform(children[1]->paths(), children[1]->transformation()));
+    Geom::PathIntersectionGraph pig(transform(children[0]->geom_paths(), children[0]->transformation()),
+                                    transform(children[1]->geom_paths(), children[1]->transformation()));
     if (pig.valid()) {
       const auto i = property(MODE_PROPERTY_KEY)->value<std::size_t>();
       return dispatcher[i].second(pig);

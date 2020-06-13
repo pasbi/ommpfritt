@@ -98,7 +98,7 @@ std::unique_ptr<Object> Mirror::convert() const
 Geom::PathVector Mirror::paths() const
 {
   if (m_reflection && is_active()) {
-    return m_reflection->paths();
+    return m_reflection->geom_paths();
   } else {
     return Geom::PathVector();
   }
@@ -141,7 +141,7 @@ void Mirror::perform_update_path_mode()
       return (a - b).length() < eps;
     };
 
-    const auto child_paths = child.paths();
+    const auto child_paths = child.geom_paths();
     std::vector<Geom::Path> paths;
     paths.reserve(child_paths.size());
     std::vector<bool> wants_to_be_closed;

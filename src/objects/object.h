@@ -72,8 +72,17 @@ public:
   virtual double length(std::size_t segment) const;
   virtual bool is_closed() const;
   virtual bool contains(const Vec2f& pos) const;
+
+private:
+  /**
+   * @brief paths re-implement this if you're class has geometry that can be expressed as paths.
+   *  The drawing, converting and other nice features will be handled automatically.
+   * @note use `Object::geom_paths` or `Object::painter_path` to access the paths.
+   * @return the paths.
+   */
   virtual Geom::PathVector paths() const;
 
+public:
   enum class Interpolation { Natural, Distance };
   Geom::PathVectorTime compute_path_vector_time(double t,
                                                 Interpolation = Interpolation::Natural) const;
