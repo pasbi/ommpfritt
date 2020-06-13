@@ -2,6 +2,7 @@
   "clazz": "Object",
   "category": "objects",
   "items": [
+    "Boolean",
     "Cloner",
     "Ellipse",
     "Empty",

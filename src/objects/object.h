@@ -182,6 +182,10 @@ protected:
     return paths;
   }
 
+  static Geom::PathVector transform(const Geom::PathVector&, const ObjectTransformation&);
+  static Geom::Path transform(const Geom::Path&, const ObjectTransformation&);
+  static std::unique_ptr<Geom::Curve> transform(const Geom::Curve&, const ObjectTransformation&);
+
 };
 
 std::ostream& operator<<(std::ostream& ostream, const Object& object);

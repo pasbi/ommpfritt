@@ -113,7 +113,6 @@ bool Path::is_closed() const
 
 void Path::set(const Geom::PathVector& paths)
 {
-
   const auto path_to_segment = [is_closed=this->is_closed()](const Geom::Path& path) {
     const auto to_vec = [](const Geom::Point& p) -> Vec2f { return {p.x(), p.y()}; };
     Segment segment;
@@ -135,6 +134,7 @@ void Path::set(const Geom::PathVector& paths)
     }
     return segment;
   };
+
   segments = ::transform<Segment, std::vector>(paths, path_to_segment);
 }
 

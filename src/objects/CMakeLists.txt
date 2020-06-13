@@ -1,4 +1,6 @@
 target_sources(libommpfritt PRIVATE
+  boolean.cpp
+  boolean.h
   cloner.cpp
   cloner.h
   ellipse.cpp
