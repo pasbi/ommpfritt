@@ -17,7 +17,7 @@ class PointEdit : public QWidget
 {
   Q_OBJECT
 public:
-  PointEdit(const Path::iterator& iterator, QWidget* parent = nullptr);
+  PointEdit(Point& point, QWidget* parent = nullptr);
   void set_display_mode(const DisplayMode& display_mode);
 
 private:
@@ -29,7 +29,7 @@ private:
   CoordinateEdit* m_left_tangent_edit;
   CoordinateEdit* m_right_tangent_edit;
   CoordinateEdit* m_position_edit;
-  Path::iterator m_iterator;
+  Point& m_point;
   Path* m_path;
 
 private Q_SLOTS:
