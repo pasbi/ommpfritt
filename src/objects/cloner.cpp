@@ -37,7 +37,9 @@ namespace omm
 
 class Style;
 
-Cloner::Cloner(Scene* scene) : Object(scene)
+Cloner::Cloner(Scene* scene)
+  : Object(scene)
+  , path_properties("", *this)
 {
   static const auto category = QObject::tr("Cloner");
   auto& mode_property = create_property<OptionProperty>(MODE_PROPERTY_KEY);
@@ -68,10 +70,7 @@ Cloner::Cloner(Scene* scene) : Object(scene)
     .set_label(QObject::tr("radius"))
     .set_category(category);
 
-  create_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
-    .set_filter(ReferenceProperty::Filter({ Kind::Object }, {}))
-    .set_label(QObject::tr("path"))
-    .set_category(category);
+  path_properties.make_properties(category);
 
   create_property<FloatProperty>(START_PROPERTY_KEY, 0.0)
     .set_step(0.01)
@@ -81,10 +80,6 @@ Cloner::Cloner(Scene* scene) : Object(scene)
   create_property<FloatProperty>(END_PROPERTY_KEY, 1.0)
     .set_step(0.01)
     .set_label(QObject::tr("end"))
-    .set_category(category);
-
-  create_property<BoolProperty>(ALIGN_PROPERTY_KEY, true)
-    .set_label(QObject::tr("align"))
     .set_category(category);
 
   create_property<OptionProperty>(BORDER_PROPERTY_KEY)
@@ -108,20 +103,23 @@ Cloner::Cloner(Scene* scene) : Object(scene)
   polish();
 }
 
-Cloner::Cloner(const Cloner &other) : Object(other)
+Cloner::Cloner(const Cloner &other)
+  : Object(other)
+  , path_properties("", *this)
 {
   polish();
 }
 
 void Cloner::polish()
 {
-  listen_to_changes([this]() {
-    const Property* property = this->property(PATH_REFERENCE_PROPERTY_KEY);
-    return kind_cast<Object*>(property->value<AbstractPropertyOwner*>());
-  });
-  listen_to_children_changes();
   update_property_visibility(property(MODE_PROPERTY_KEY)->value<Mode>());
   update();
+}
+
+const Object* Cloner::path_object_reference() const
+{
+  const auto property = this->property(PathProperties::PATH_REFERENCE_PROPERTY_KEY);
+  return kind_cast<const Object*>(property->value<AbstractPropertyOwner*>());
 }
 
 void Cloner::draw_object(Painter &renderer, const Style& style, Painter::Options options) const
@@ -190,19 +188,13 @@ Geom::PathVector Cloner::paths() const
 
 void Cloner::on_property_value_changed(Property *property)
 {
-  if (   property == this->property(COUNT_PROPERTY_KEY)
-      || property == this->property(COUNT_2D_PROPERTY_KEY)
-      || property == this->property(DISTANCE_2D_PROPERTY_KEY)
-      || property == this->property(RADIUS_PROPERTY_KEY)
-      || property == this->property(PATH_REFERENCE_PROPERTY_KEY)
-      || property == this->property(START_PROPERTY_KEY)
-      || property == this->property(END_PROPERTY_KEY)
-      || property == this->property(ALIGN_PROPERTY_KEY)
-      || property == this->property(BORDER_PROPERTY_KEY)
-      || property == this->property(CODE_PROPERTY_KEY)
-      || property == this->property(SEED_PROPERTY_KEY)
-      || property == this->property(ANCHOR_PROPERTY_KEY))
-  {
+  static const std::set<QString> common = {
+    COUNT_PROPERTY_KEY, COUNT_2D_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY, RADIUS_PROPERTY_KEY,
+    START_PROPERTY_KEY, END_PROPERTY_KEY, BORDER_PROPERTY_KEY, CODE_PROPERTY_KEY,
+    SEED_PROPERTY_KEY, ANCHOR_PROPERTY_KEY
+  };
+
+  if (pmatch(property, ::merge(common, path_properties.keys))) {
     update();
   } else if (property == this->property(MODE_PROPERTY_KEY)) {
     update_property_visibility(property->value<Mode>());
@@ -226,23 +218,25 @@ void Cloner::on_child_removed(Object &child)
 
 void Cloner::update_property_visibility(Mode mode)
 {
-  static const std::set<QString> properties {
+  static const std::set<QString> properties = ::merge(std::set<QString>{
     CODE_PROPERTY_KEY, COUNT_PROPERTY_KEY, COUNT_2D_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY,
-    RADIUS_PROPERTY_KEY, PATH_REFERENCE_PROPERTY_KEY, START_PROPERTY_KEY, END_PROPERTY_KEY,
-    BORDER_PROPERTY_KEY, ALIGN_PROPERTY_KEY, SEED_PROPERTY_KEY, ANCHOR_PROPERTY_KEY
-  };
+    RADIUS_PROPERTY_KEY, START_PROPERTY_KEY, END_PROPERTY_KEY,
+    BORDER_PROPERTY_KEY, SEED_PROPERTY_KEY, ANCHOR_PROPERTY_KEY
+  }, PathProperties::keys);
   static const std::map<Mode, std::set<QString>> visibility_map {
     { Mode::Linear, { COUNT_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY } },
     { Mode::Radial, { COUNT_PROPERTY_KEY, RADIUS_PROPERTY_KEY, START_PROPERTY_KEY,
-                      END_PROPERTY_KEY, ALIGN_PROPERTY_KEY, BORDER_PROPERTY_KEY } },
-    { Mode::Path, { COUNT_PROPERTY_KEY, PATH_REFERENCE_PROPERTY_KEY, START_PROPERTY_KEY,
-                    END_PROPERTY_KEY, ALIGN_PROPERTY_KEY, BORDER_PROPERTY_KEY,
-                    ANCHOR_PROPERTY_KEY }},
+                      END_PROPERTY_KEY, PathProperties::ALIGN_PROPERTY_KEY,
+                      BORDER_PROPERTY_KEY } },
+    { Mode::Path, ::merge(std::set<QString>{ COUNT_PROPERTY_KEY,
+                    START_PROPERTY_KEY, END_PROPERTY_KEY, PathProperties::ALIGN_PROPERTY_KEY,
+                    BORDER_PROPERTY_KEY, ANCHOR_PROPERTY_KEY }, PathProperties::keys)},
     { Mode::Script, { COUNT_PROPERTY_KEY, CODE_PROPERTY_KEY }},
-    { Mode::FillRandom, { COUNT_PROPERTY_KEY, PATH_REFERENCE_PROPERTY_KEY, SEED_PROPERTY_KEY,
-                          ANCHOR_PROPERTY_KEY }},
+    { Mode::FillRandom, { COUNT_PROPERTY_KEY, PathProperties::PATH_REFERENCE_PROPERTY_KEY,
+                          SEED_PROPERTY_KEY, ANCHOR_PROPERTY_KEY }},
     { Mode::Grid, { COUNT_2D_PROPERTY_KEY, DISTANCE_2D_PROPERTY_KEY }}
   };
+
   for (const QString& pk : properties) {
     if (::contains(properties, pk)) {
       property(pk)->set_visible(::contains(visibility_map.at(mode), pk));
@@ -366,24 +360,20 @@ void Cloner::set_radial(Object& object, std::size_t i)
   const double angle = 2*M_PI * get_t(i, false);
   const double r = property(RADIUS_PROPERTY_KEY)->value<double>();
   const Point op({std::cos(angle) * r, std::sin(angle) * r}, angle + M_PI/2.0);
-  object.set_oriented_position(op, property(ALIGN_PROPERTY_KEY)->value<bool>());
+  object.set_oriented_position(op, property(PathProperties::ALIGN_PROPERTY_KEY)->value<bool>());
 }
 
 void Cloner::set_path(Object& object, std::size_t i)
 {
-  auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
-  auto* o = kind_cast<Object*>(apo);
-  if (o == nullptr) {
+  if (const auto* const o = path_object_reference(); o == nullptr) {
     return;
+  } else {
+    const double t = get_t(i, !o->is_closed());
+    const auto transformation = (property(ANCHOR_PROPERTY_KEY)->value<std::size_t>() == 0)
+      ? o->global_transformation(Space::Scene).apply(global_transformation(Space::Scene).inverted())
+      : ObjectTransformation();
+    path_properties.apply_transformation(object, t, transformation);
   }
-  const bool align = property(ALIGN_PROPERTY_KEY)->value<bool>();
-  const double t = get_t(i, !o->is_closed());
-  Point p = o->pos(o->compute_path_vector_time(t));
-  if (property(ANCHOR_PROPERTY_KEY)->value<std::size_t>() == 0) {
-    p = o->global_transformation(Space::Scene).apply(p);
-    p = global_transformation(Space::Scene).inverted().apply(p);
-  }
-  object.set_oriented_position(p, align);
 }
 
 void Cloner::set_by_script(Object& object, std::size_t i)
@@ -399,19 +389,15 @@ void Cloner::set_by_script(Object& object, std::size_t i)
 
 void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
 {
-  auto* apo = property(PATH_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
-  if (apo != nullptr) {
-    assert(apo->kind == Kind::Object);
-    auto& area = static_cast<Object&>(*apo);
-
-    auto position = [&rng, &area]() {
+  if (const auto* const o = path_object_reference(); o != nullptr) {
+    auto position = [&rng, o]() {
       static constexpr auto max_rejections = 1000;
       auto dist = std::uniform_real_distribution<double>(0, 1);
-      const BoundingBox bb = area.bounding_box(ObjectTransformation());
+      const BoundingBox bb = o->bounding_box(ObjectTransformation());
       for (std::size_t i = 0; i < max_rejections; ++i) {
         const Vec2f p( dist(rng) * bb.width() + bb.left(),
                        dist(rng) * bb.height() + bb.top() );
-        if (area.contains(p)) {
+        if (o->contains(p)) {
           return p;
         }
       }
@@ -420,13 +406,13 @@ void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
       LINFO << "Return a random point on edge instead.";
 
       const auto t = dist(rng);
-      return area.pos(area.compute_path_vector_time(t)).position;
+      return o->pos(o->compute_path_vector_time(t)).position;
     }();
 
 
     if (property(ANCHOR_PROPERTY_KEY)->value<std::size_t>() == 0) {
       const auto gti = global_transformation(Space::Scene).inverted();
-      position = area.global_transformation(Space::Scene).apply_to_position(position);
+      position = o->global_transformation(Space::Scene).apply_to_position(position);
       position = gti.apply_to_position(position);
     }
 

@@ -4,6 +4,7 @@
 #include "objects/instance.h"
 #include <Qt>
 #include <random>
+#include "properties/propertygroups/pathproperties.h"
 
 namespace omm
 {
@@ -28,11 +29,9 @@ public:
   static constexpr auto COUNT_2D_PROPERTY_KEY = "count2d";
   static constexpr auto DISTANCE_2D_PROPERTY_KEY = "distance2d";
   static constexpr auto RADIUS_PROPERTY_KEY = "radius";
-  static constexpr auto PATH_REFERENCE_PROPERTY_KEY = "path";
   static constexpr auto START_PROPERTY_KEY = "start";
   static constexpr auto END_PROPERTY_KEY = "end";
   static constexpr auto BORDER_PROPERTY_KEY = "border";
-  static constexpr auto ALIGN_PROPERTY_KEY = "align";
   static constexpr auto SEED_PROPERTY_KEY = "seed";
   static constexpr auto ANCHOR_PROPERTY_KEY = "anchor";
 
@@ -43,6 +42,7 @@ public:
   bool contains(const Vec2f &pos) const override;
   void update() override;
   Geom::PathVector paths() const override;
+  PathProperties path_properties;
 
 protected:
   void on_property_value_changed(Property* property) override;
@@ -64,6 +64,7 @@ private:
   std::vector<std::unique_ptr<Object>> m_clones;
   std::set<Property*> m_clone_dependencies;
   void polish();
+  const Object* path_object_reference() const;
 };
 
 }  // namespace omm
