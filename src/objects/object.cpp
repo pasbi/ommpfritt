@@ -472,27 +472,14 @@ double Object::apply_border(double t, Border border)
   Q_UNREACHABLE();
 }
 
-void
-Object::set_position_on_path(const Object& path, const bool align, const Geom::PathVectorTime& t)
-{
-  if (!path.is_ancestor_of(*this)) {
-    const auto location = path.pos(t);
-    const auto global_location = path.global_transformation(Space::Viewport).apply(location);
-    set_oriented_position(global_location, align);
-  } else {
-    // it wouldn't crash but ux would be really bad. Don't allow cycles.
-    LWARNING << "cycle.";
-  }
-}
-
 void Object::set_oriented_position(const Point& op, const bool align)
 {
-  auto transformation = global_transformation(Space::Viewport);
+  auto transformation = global_transformation(Space::Scene);
   if (align) {
     transformation.set_rotation(op.rotation());
   }
   transformation.set_translation(op.position);
-  set_global_transformation(transformation, Space::Viewport);
+  set_global_transformation(transformation, Space::Scene);
 }
 
 Geom::PathVector Object::transform(const Geom::PathVector& pv, const ObjectTransformation& t)
@@ -643,12 +630,16 @@ Geom::PathVectorTime Object::compute_path_vector_time(double t,
   }
 }
 
-Geom::PathVectorTime Object::compute_path_vector_time(std::size_t path_index, double t,
+Geom::PathVectorTime Object::compute_path_vector_time(int path_index, double t,
                                                       Interpolation interpolation) const
 {
+  if (path_index < 0) {
+    return compute_path_vector_time(t, interpolation);
+  }
+
   t = std::clamp(t, 0.0, almost_one);
   const auto path_vector = paths();
-  if (path_index >= path_vector.size()) {
+  if (static_cast<std::size_t>(path_index) >= path_vector.size()) {
     return Geom::PathVectorTime(path_index, 0, 0.0);
   }
 
@@ -672,7 +663,6 @@ Geom::PathVectorTime Object::compute_path_vector_time(std::size_t path_index, do
   default:
     return {};
   }
-
 }
 
 void Object::update_recursive()

@@ -86,7 +86,7 @@ public:
   enum class Interpolation { Natural, Distance };
   Geom::PathVectorTime compute_path_vector_time(double t,
                                                 Interpolation = Interpolation::Natural) const;
-  Geom::PathVectorTime compute_path_vector_time(std::size_t path_index, double t,
+  Geom::PathVectorTime compute_path_vector_time(int path_index, double t,
                                                 Interpolation = Interpolation::Natural) const;
 
   struct CachedQPainterPathGetter : CachedGetter<QPainterPath, Object>
