@@ -19,18 +19,20 @@ public:
 private:
   const QString m_prefix;
   AbstractPropertyOwner& m_property_owner;
+  mutable std::set<QString> m_keys;
 
 protected:
-  QString key(const QString& key) const;
   template<typename T> T property_value(const QString& key) const
   {
-    return m_property_owner.property(this->key(key))->value<T>();
+    return m_property_owner.property(m_prefix + key)->value<T>();
   }
 
   template<typename PropertyT, typename... Args>
   decltype(auto) create_property(const QString& key, Args&&... args) const
   {
-    return m_property_owner.create_property<PropertyT>(this->key(key), std::forward<Args>(args)...);
+    const auto pkey = m_prefix + key;
+    m_keys.insert(pkey);
+    return m_property_owner.create_property<PropertyT>(pkey, std::forward<Args>(args)...);
   }
 };
 

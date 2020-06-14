@@ -1,6 +1,7 @@
 #pragma once
 
 #include "tags/tag.h"
+#include "properties/propertygroups/pathproperties.h"
 #include <Qt>
 
 namespace omm
@@ -10,6 +11,7 @@ class PathTag : public Tag
 {
 public:
   explicit PathTag(Object& owner);
+  explicit PathTag(const PathTag& other);
   QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PathTag");
   static constexpr auto PATH_REFERENCE_PROPERTY_KEY = "path";
@@ -20,6 +22,8 @@ public:
   void evaluate() override;
   Flag flags() const override;
   void on_property_value_changed(Property* property) override;
+
+  const PathProperties path_properties;
 
 };
 

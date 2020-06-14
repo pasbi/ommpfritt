@@ -152,6 +152,13 @@ template<typename SetA, typename SetB=SetA> SetA merge(SetA&& a, SetB&& b)
   return a;
 }
 
+template<typename SetA, typename SetB=SetA> SetA merge(const SetA& a, SetB&& b)
+{
+  auto copy = a;
+  copy.insert(b.begin(), b.end());
+  return copy;
+}
+
 template<typename SetA, typename SetB, typename... Sets>
 SetA merge(SetA&& a, SetB&& b, Sets&&... sets)
 {

@@ -3,6 +3,8 @@ target_sources(libommpfritt PRIVATE
   fontproperties.h
   markerproperties.cpp
   markerproperties.h
+  pathproperties.cpp
+  pathproperties.h
   propertygroup.cpp
   propertygroup.h
   textoptionproperties.cpp
