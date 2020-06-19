@@ -71,8 +71,8 @@ Geom::PathVector Boolean::paths() const
 {
   const auto children = tree_children();
   if (is_active() && children.size() == 2) {
-    Geom::PathIntersectionGraph pig(transform(children[0]->geom_paths(), children[0]->transformation()),
-                                    transform(children[1]->geom_paths(), children[1]->transformation()));
+    Geom::PathIntersectionGraph pig(children[0]->transformation().apply(children[0]->geom_paths()),
+                                    children[1]->transformation().apply(children[1]->geom_paths()));
     if (pig.valid()) {
       const auto i = property(MODE_PROPERTY_KEY)->value<std::size_t>();
       return dispatcher[i].second(pig);
