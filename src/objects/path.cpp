@@ -135,6 +135,7 @@ void Path::set(const Geom::PathVector& paths)
     return segment;
   };
 
+  update();
   segments = ::transform<Segment, std::vector>(paths, path_to_segment);
 }
 

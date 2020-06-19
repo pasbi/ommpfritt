@@ -19,6 +19,9 @@ public:
   QString name() const override;
   void cancel() override;
 
+protected:
+  void reset() override;
+
 private:
   bool m_is_cutting = false;
   Vec2f m_mouse_press_pos;

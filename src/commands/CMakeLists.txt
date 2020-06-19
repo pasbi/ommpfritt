@@ -4,6 +4,8 @@ target_sources(libommpfritt PRIVATE
   addcommand.h
   copycommand.cpp
   copycommand.h
+  cutpathcommand.cpp
+  cutpathcommand.h
   keyframecommand.cpp
   keyframecommand.h
   modifypointscommand.cpp

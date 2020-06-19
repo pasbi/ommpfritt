@@ -45,7 +45,7 @@ bool Tool::mouse_press(const Vec2f& pos, const QMouseEvent& e)
   return false;
 }
 
-void Tool:: mouse_release(const Vec2f& pos, const QMouseEvent& e)
+void Tool::mouse_release(const Vec2f& pos, const QMouseEvent& e)
 {
   for (auto it = handles.rbegin(); it != handles.rend(); ++it) {
     (*it)->mouse_release(pos, e);
