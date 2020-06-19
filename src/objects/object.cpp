@@ -482,34 +482,6 @@ void Object::set_oriented_position(const Point& op, const bool align)
   set_global_transformation(transformation, Space::Scene);
 }
 
-Geom::PathVector Object::transform(const Geom::PathVector& pv, const ObjectTransformation& t)
-{
-  std::vector<Geom::Path> transformed;
-  transformed.reserve(pv.size());
-  std::transform(pv.begin(), pv.end(), std::back_inserter(transformed), [t](auto&& path) {
-    return transform(path, t);
-  });
-  return Geom::PathVector(transformed.begin(), transformed.end());
-}
-
-Geom::Path Object::transform(const Geom::Path& path, const ObjectTransformation& t)
-{
-  Geom::Path transformed;
-  for (auto&& curve : path) {
-    transformed.append(transform(curve, t).release());
-  }
-  return transformed;
-}
-
-std::unique_ptr<Geom::Curve>
-Object::transform(const Geom::Curve& curve, const ObjectTransformation& t)
-{
-  auto copy = std::unique_ptr<Geom::Curve>(curve.duplicate());
-  const auto m = t.to_mat().m;
-  copy->transform(Geom::Affine(m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]));
-  return copy;
-}
-
 bool Object::is_active() const { return property(IS_ACTIVE_PROPERTY_KEY)->value<bool>(); }
 
 bool Object::is_visible(bool viewport) const

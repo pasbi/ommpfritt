@@ -265,11 +265,62 @@ bool ObjectTransformation::has_nan() const
          || std::isnan(m_shearing) || std::isnan(m_rotation);
 }
 
+ObjectTransformation::operator Geom::Affine() const
+{
+  const auto m = to_mat().m;
+  return Geom::Affine(m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]);
+}
+
 ObjectTransformation ObjectTransformation::transformed(const ObjectTransformation& other) const
 {
   const auto o = other.to_mat();
   return ObjectTransformation(o.inverted() * to_mat() * o);
 }
 
+Geom::PathVector
+ObjectTransformation::apply(const Geom::PathVector& pv) const
+{
+  return transform(pv, *this);
+}
+
+Geom::Path
+ObjectTransformation::apply(const Geom::Path& path) const
+{
+  return transform(path, *this);
+}
+
+std::unique_ptr<Geom::Curve>
+ObjectTransformation::apply(const Geom::Curve& curve) const
+{
+  return transform(curve, *this);
+}
+
+Geom::PathVector ObjectTransformation::transform(const Geom::PathVector& pv,
+                                                 const Geom::Affine& affine)
+{
+  std::vector<Geom::Path> transformed;
+  transformed.reserve(pv.size());
+  std::transform(pv.begin(), pv.end(), std::back_inserter(transformed), [affine](auto&& path) {
+    return transform(path, affine);
+  });
+  return Geom::PathVector(transformed.begin(), transformed.end());
+}
+
+Geom::Path ObjectTransformation::transform(const Geom::Path& path, const Geom::Affine& affine)
+{
+  Geom::Path transformed;
+  for (auto&& curve : path) {
+    transformed.append(transform(curve, affine).release());
+  }
+  return transformed;
+}
+
+std::unique_ptr<Geom::Curve> ObjectTransformation::transform(const Geom::Curve& curve,
+                                                             const Geom::Affine& affine)
+{
+  auto copy = std::unique_ptr<Geom::Curve>(curve.duplicate());
+  copy->transform(affine);
+  return copy;
+}
 
 }  // namespace omm

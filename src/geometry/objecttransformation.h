@@ -1,5 +1,6 @@
 #pragma once
 
+#include <2geom/pathvector.h>
 #include "external/json_fwd.hpp"
 #include "geometry/vec2.h"
 #include "geometry/point.h"
@@ -63,11 +64,21 @@ public:
   QTransform to_qtransform() const;
 
   bool has_nan() const;
+
+  Geom::PathVector apply(const Geom::PathVector& pv) const;
+  Geom::Path apply(const Geom::Path& path) const;
+  std::unique_ptr<Geom::Curve> apply(const Geom::Curve& curve) const;
+  operator Geom::Affine() const;
+
 private:
   Vec2f m_translation;
   Vec2f m_scaling;
   double m_shearing;
   double m_rotation;
+
+  static Geom::PathVector transform(const Geom::PathVector& pv, const Geom::Affine& affine);
+  static Geom::Path transform(const Geom::Path& path, const Geom::Affine& affine);
+  static std::unique_ptr<Geom::Curve> transform(const Geom::Curve& curve, const Geom::Affine& affine);
 };
 
 std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t);
