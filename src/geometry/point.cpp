@@ -130,8 +130,8 @@ std::ostream& operator<<(std::ostream& ostream, const Point* pc)
 bool Point::operator==(const Point& point) const
 {
   return position == point.position
-    && left_tangent == point.left_tangent
-    && right_tangent == point.right_tangent;
+    && left_tangent.to_cartesian() == point.left_tangent.to_cartesian()
+    && right_tangent.to_cartesian() == point.right_tangent.to_cartesian();
 }
 
 bool Point::operator!=(const Point& point) const { return !(*this == point); }
