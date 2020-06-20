@@ -5,6 +5,16 @@
 namespace omm
 {
 
+HistoryModel::HistoryModel()
+{
+  connect(&m_undo_stack, &QUndoStack::indexChanged, [this](int index) {
+    const auto before = this->index(std::max(0, index), 0);
+    const auto after = this->index(std::min(m_undo_stack.count()-1, index+1), 0);
+    Q_EMIT dataChanged(before, after);
+  });
+  connect(&m_undo_stack, SIGNAL(indexChanged(int)), this, SIGNAL(index_changed()));
+}
+
 QVariant HistoryModel::data(const QModelIndex &index, int role) const
 {
   const auto decorate_name = [this](QString name, int row) {
@@ -88,16 +98,6 @@ void HistoryModel::set_saved_index()
   const QModelIndex new_index = this->index(m_saved_index, 0);
   Q_EMIT dataChanged(old_index, old_index);
   Q_EMIT dataChanged(new_index, new_index);
-}
-
-HistoryModel::HistoryModel()
-{
-  connect(&m_undo_stack, &QUndoStack::indexChanged, [this](int index) {
-    const auto before = this->index(std::max(0, index), 0);
-    const auto after = this->index(std::min(m_undo_stack.count()-1, index+1), 0);
-    Q_EMIT dataChanged(before, after);
-  });
-  connect(&m_undo_stack, SIGNAL(indexChanged(int)), this, SIGNAL(index_changed()));
 }
 
 int HistoryModel::rowCount(const QModelIndex &parent) const

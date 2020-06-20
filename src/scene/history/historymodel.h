@@ -27,7 +27,7 @@ public:
    * @note caution! if the command is still on the stack, modifying it may cause bad things.
    *   There is a good reason Qt decided to return only const-pointers to commands on the command
    *   stack. (https://doc.qt.io/qt-5/qundostack.html#command).
-   *   There are goof reasons not to follow this policy here, too. Just be careful.
+   *   There are good reasons not to follow this policy here, too. Just be careful.
    *   If the command is not on the stack, it has probably been deleted. The caller is responsible
    *   for ensuring not to access a deleted object.
    * @note this function is merge-proof. if the last command was auto-deleted because its contents

@@ -109,6 +109,14 @@ Scene::Scene(PythonEngine& python_engine)
     m_item_selection[kind] = {};
   }
   connect(&history(), SIGNAL(index_changed()), &message_box(), SIGNAL(filename_changed()));
+  connect(&history(), &HistoryModel::index_changed, [this]() {
+    const auto keep_in_selection = [this](const auto* apo) { return contains(apo); };
+    const auto old_selection = selection();
+    const auto new_selection = ::filter_if(old_selection, keep_in_selection);
+    if (old_selection.size() > new_selection.size()) {
+      set_selection(new_selection);
+    }
+  });
   connect(&message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(update_tool()));
 }
