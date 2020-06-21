@@ -37,7 +37,7 @@ public:
 
   enum class Mode { Linear, Grid, Radial, Path, Script, FillRandom  };
   virtual Flag flags() const override;
-  std::unique_ptr<Object> convert() const override;
+  ConvertedObject convert() const override;
   Mode mode() const;
   bool contains(const Vec2f &pos) const override;
   void update() override;

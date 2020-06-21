@@ -65,7 +65,7 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
 {
   using namespace omm;
 
-  // spit convertibles into [`convertibles`, `leftover_convertibles`]
+  // split convertibles into [`convertibles`, `leftover_convertibles`]
   // s.t. `convertibles` only contains top-level items, i.e. no item in `convertibles` has a parent
   // in `convertibles`. That's important because the children of a converted object must not change.
   // Porcess the left-over items later.
@@ -82,11 +82,7 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
   if (convertibles.size() > 0) {
     std::list<ObjectTreeMoveContext> move_contextes;
     for (auto&& c : convertibles) {
-      auto converted = c->convert();
-
-      using Props = AbstractPropertyOwner::CopiedProperties;
-      c->copy_properties(*converted, Props::Compatible | Props::User);
-      c->copy_tags(*converted);
+      auto [converted, move_children] = c->convert();
 
       converted->set_object_tree(app.scene.object_tree());
       assert(!c->is_root());
@@ -101,12 +97,14 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
       converted_ref.set_transformation(c->transformation());
       converted_objects.insert(&converted_ref);
 
-      const auto make_move_context = [&converted_ref](auto* cc) {
-        return ObjectTreeMoveContext(*cc, converted_ref, nullptr);
-      };
-      const auto old_children = c->tree_children();
-      std::transform(old_children.rbegin(), old_children.rend(),
-                     std::back_inserter(move_contextes), make_move_context);
+      if (move_children) {
+        const auto make_move_context = [&converted_ref](auto* cc) {
+          return ObjectTreeMoveContext(*cc, converted_ref, nullptr);
+        };
+        const auto old_children = c->tree_children();
+        std::transform(old_children.rbegin(), old_children.rend(),
+                       std::back_inserter(move_contextes), make_move_context);
+      }
     }
 
     app.scene.template submit<MoveCommand<ObjectTree>>(app.scene.object_tree(),

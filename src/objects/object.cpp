@@ -390,7 +390,7 @@ Object &Object::adopt(std::unique_ptr<Object> adoptee, const size_t pos)
   return o;
 }
 
-std::unique_ptr<Object> Object::convert() const
+Object::ConvertedObject Object::convert() const
 {
   auto converted = std::make_unique<Path>(scene());
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
@@ -398,7 +398,7 @@ std::unique_ptr<Object> Object::convert() const
   converted->set(geom_paths());
   converted->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed());
   converted->property(Path::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
-  return std::unique_ptr<Object>(converted.release());
+  return {std::unique_ptr<Object>(converted.release()), true};
 }
 
 Flag Object::flags() const { return Flag::Convertible; }

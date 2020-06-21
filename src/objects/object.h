@@ -61,7 +61,14 @@ public:
   std::unique_ptr<Object> repudiate(Object &repudiatee) override;
   Object & adopt(std::unique_ptr<Object> adoptee, const size_t pos) override;
   using TreeElement::adopt;
-  virtual std::unique_ptr<Object> convert() const;
+
+  struct ConvertedObject
+  {
+    std::unique_ptr<Object> object;
+    bool keep_children;
+  };
+  virtual ConvertedObject convert() const;
+
   Flag flags() const override;
   bool is_active() const;
   bool is_visible(bool viewport) const;

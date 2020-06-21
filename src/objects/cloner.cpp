@@ -251,7 +251,7 @@ Flag Cloner::flags() const
   return Object::flags() | Flag::HasScript;
 }
 
-std::unique_ptr<Object> Cloner::convert() const
+Object::ConvertedObject Cloner::convert() const
 {
   std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
@@ -265,7 +265,7 @@ std::unique_ptr<Object> Cloner::convert() const
     clone.set_transformation(local_transformation);
   }
 
-  return converted;
+  return {std::move(converted), !is_active()};
 }
 
 std::vector<std::unique_ptr<Object>> Cloner::make_clones()

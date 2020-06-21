@@ -84,14 +84,16 @@ BoundingBox Mirror::bounding_box(const ObjectTransformation &transformation) con
 
 QString Mirror::type() const { return TYPE; }
 
-std::unique_ptr<Object> Mirror::convert() const
+Object::ConvertedObject Mirror::convert() const
 {
   if (m_draw_children) {
     std::unique_ptr<Object> converted = std::make_unique<Empty>(scene());
-    converted->adopt(m_reflection->clone());
-    return converted;
+    auto reflection = m_reflection->clone();
+    reflection->update();
+    converted->adopt(std::move(reflection));
+    return {std::move(converted), true};
   } else {
-    return m_reflection->clone();
+    return {m_reflection->clone(), false};
   }
 }
 

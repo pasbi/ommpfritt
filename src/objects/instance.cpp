@@ -94,7 +94,7 @@ Object *Instance::illustrated_object() const
   }
 }
 
-std::unique_ptr<Object> Instance::convert() const
+Object::ConvertedObject Instance::convert() const
 {
   std::unique_ptr<Object> clone;
   if (is_active()) {
@@ -108,7 +108,7 @@ std::unique_ptr<Object> Instance::convert() const
   if (!clone) {
     clone = std::make_unique<Empty>(scene());
   }
-  return clone;
+  return {std::move(clone), true};
 }
 
 QString Instance::type() const { return TYPE; }
