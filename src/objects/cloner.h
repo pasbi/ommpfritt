@@ -36,6 +36,7 @@ public:
   static constexpr auto ANCHOR_PROPERTY_KEY = "anchor";
 
   enum class Mode { Linear, Grid, Radial, Path, Script, FillRandom  };
+  enum class Anchor { Path, This };
   virtual Flag flags() const override;
   ConvertedObject convert() const override;
   Mode mode() const;

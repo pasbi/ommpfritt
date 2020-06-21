@@ -45,6 +45,7 @@ public:
   void set_global_transformation(const ObjectTransformation& global_transformation, Space space);
   virtual void set_global_axis_transformation( const ObjectTransformation& global_transformation,
                                                Space space);
+  bool is_transformation_property(const Property& property) const;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;

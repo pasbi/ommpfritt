@@ -158,12 +158,9 @@ Cloner::Mode Cloner::mode() const { return property(MODE_PROPERTY_KEY)->value<Mo
 
 bool Cloner::contains(const Vec2f &pos) const
 {
-  for (auto&& clone : m_clones) {
-    if (clone->contains(clone->transformation().apply_to_position(pos))) {
-      return true;
-    }
-  }
-  return false;
+  return std::any_of(m_clones.begin(), m_clones.end(), [pos](auto&& object) {
+    return object->contains(object->transformation().apply_to_position(pos));
+  });
 }
 
 void Cloner::update()
@@ -200,6 +197,11 @@ void Cloner::on_property_value_changed(Property *property)
     update_property_visibility(property->value<Mode>());
     update();
   } else {
+    if (is_transformation_property(*property)
+        && this->property(ANCHOR_PROPERTY_KEY)->value<Anchor>() == Anchor::Path)
+    {
+      update();
+    }
     Object::on_property_value_changed(property);
   }
 }
@@ -369,7 +371,7 @@ void Cloner::set_path(Object& object, std::size_t i)
     return;
   } else {
     const double t = get_t(i, !o->is_closed());
-    const auto transformation = (property(ANCHOR_PROPERTY_KEY)->value<std::size_t>() == 0)
+    const auto transformation = (property(ANCHOR_PROPERTY_KEY)->value<Anchor>() == Anchor::Path)
       ? o->global_transformation(Space::Scene).apply(global_transformation(Space::Scene).inverted())
       : ObjectTransformation();
     path_properties.apply_transformation(object, t, transformation);
@@ -409,8 +411,7 @@ void Cloner::set_fillrandom(Object &object, std::mt19937& rng)
       return o->pos(o->compute_path_vector_time(t)).position;
     }();
 
-
-    if (property(ANCHOR_PROPERTY_KEY)->value<std::size_t>() == 0) {
+    if (property(ANCHOR_PROPERTY_KEY)->value<Anchor>() == Anchor::Path) {
       const auto gti = global_transformation(Space::Scene).inverted();
       position = o->global_transformation(Space::Scene).apply_to_position(position);
       position = gti.apply_to_position(position);

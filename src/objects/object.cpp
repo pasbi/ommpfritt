@@ -227,6 +227,17 @@ void Object::set_global_axis_transformation( const ObjectTransformation& global_
   }
 }
 
+bool Object::is_transformation_property(const Property& property) const
+{
+  const std::set<QString> transformation_property_keys{
+    POSITION_PROPERTY_KEY,
+    SCALE_PROPERTY_KEY,
+    ROTATION_PROPERTY_KEY,
+    SHEAR_PROPERTY_KEY,
+  };
+  return pmatch(&property, transformation_property_keys);
+}
+
 void Object::transform(const ObjectTransformation& transformation)
 {
   set_transformation(transformation.apply(this->transformation()));
