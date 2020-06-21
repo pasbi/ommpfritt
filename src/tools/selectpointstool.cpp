@@ -95,7 +95,7 @@ BoundingBox SelectPointsBaseTool::bounding_box() const
     return BoundingBox(::transform<Point>(scene()->point_selection.points(Space::Viewport),
                                                        remove_tangents));
   case BoundingBoxMode::None:
-    [[ fallthrough ]];
+    [[fallthrough]];
   default:
     return BoundingBox();
   }

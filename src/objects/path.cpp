@@ -39,17 +39,6 @@ Path::Path(Scene* scene)
   update();
 }
 
-BoundingBox Path::bounding_box(const ObjectTransformation &transformation) const
-{
-  Q_UNUSED(transformation);
-  return BoundingBox();
-  if (is_active()) {
-    return BoundingBox((painter_path() * transformation.to_qtransform()).boundingRect());
-  } else {
-    return BoundingBox();
-  }
-}
-
 QString Path::type() const { return TYPE; }
 
 void Path::serialize(AbstractSerializer& serializer, const Pointer& root) const

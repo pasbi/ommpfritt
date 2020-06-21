@@ -567,8 +567,9 @@ bool Object::is_closed() const
 
 bool Object::contains(const Vec2f &point) const
 {
-  Q_UNUSED(point)
-  return false;
+  const auto path_vector = geom_paths();
+  const auto winding = path_vector.winding(Geom::Point{point.x, point.y});
+  return std::abs(winding) % 2 == 1;
 }
 
 Geom::PathVector Object::paths() const
