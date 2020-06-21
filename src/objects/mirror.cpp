@@ -115,6 +115,8 @@ void Mirror::perform_update_object_mode()
     m_reflection->set_virtual_parent(this);
     m_reflection->set_transformation(mirror_t.apply(m_reflection->transformation()));
     m_reflection->update();
+  } else {
+    m_reflection.reset();
   }
 }
 
