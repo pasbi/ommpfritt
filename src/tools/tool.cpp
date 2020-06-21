@@ -20,9 +20,9 @@ ObjectTransformation Tool::transformation() const { return ObjectTransformation(
 bool Tool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
   for (auto it = handles.rbegin(); it != handles.rend(); ++it) {
-    assert(*it != nullptr);
-    (*it)->mouse_move(delta, pos, e);
-    switch ((*it)->status()) {
+    auto& handle = **it;
+    handle.mouse_move(delta, pos, e);
+    switch (handle.status()) {
     case HandleStatus::Active:
       return true;
     case HandleStatus::Hovered:
