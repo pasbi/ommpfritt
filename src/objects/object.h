@@ -75,8 +75,6 @@ public:
   virtual std::vector<const omm::Style*> find_styles() const;
 
   virtual Point pos(const Geom::PathVectorTime& t) const;
-  virtual double length() const;
-  virtual double length(std::size_t segment) const;
   virtual bool is_closed() const;
   virtual bool contains(const Vec2f& pos) const;
 

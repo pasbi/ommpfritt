@@ -550,16 +550,6 @@ Point Object::pos(const Geom::PathVectorTime& t) const
   }
 }
 
-double Object::length() const
-{
-  return 0.0;
-}
-
-double Object::length(std::size_t) const
-{
-  return 0.0;
-}
-
 bool Object::is_closed() const
 {
   return false;
