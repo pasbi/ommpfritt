@@ -21,9 +21,10 @@ public:
 
   void update() override;
   Geom::PathVector paths() const override;
+  bool is_closed() const override;
 
 protected:
-  void on_property_value_changed(Property* property);
+  void on_property_value_changed(Property* property) override;
 
 private:
   std::vector<Point> m_points;
