@@ -29,8 +29,8 @@ enum class Flag { None = 0x0,
                   HasPython = HasPythonNodes | HasScript };
 
 enum class InterpolationMode { Linear, Smooth, Bezier };
-
 enum class HandleStatus { Hovered, Active, Inactive };
+enum class SceneMode { Object, Vertex };
 
 }  // namespace omm
 

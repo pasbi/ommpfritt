@@ -327,8 +327,22 @@ bool Application::perform_action(const QString& action_name)
     main_window()->load_layout();
   } else if (action_name == "new toolbar") {
     spawn_toolbar();
-  } else if (action_name == "switch between object and point selection") {
-    scene.tool_box().switch_between_object_and_point_selection();
+  } else if (action_name == "object_mode") {
+    scene.set_mode(SceneMode::Object);
+  } else if (action_name == "vertex_mode") {
+    scene.set_mode(SceneMode::Vertex);
+  } else if (action_name == "cycle_modes") {
+    scene.set_mode([mode=scene.current_mode()]{
+      switch (mode) {
+      case SceneMode::Object:
+        return SceneMode::Vertex;
+      case SceneMode::Vertex:
+        return SceneMode::Object;
+      default:
+        Q_UNREACHABLE();
+        return SceneMode::Object;
+      }
+    }());
   } else if (action_name == "previous tool") {
     scene.tool_box().set_previous_tool();
   } else if (action_name == "select all") {

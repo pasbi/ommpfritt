@@ -6,6 +6,7 @@
 
 namespace
 {
+
 auto make_tool_map(omm::Scene& scene)
 {
   std::map<QString, std::unique_ptr<omm::Tool>> map;
@@ -15,7 +16,7 @@ auto make_tool_map(omm::Scene& scene)
   return map;
 }
 
-template<typename T> void unique(std::list<T>& ls)
+template<typename T> void remove_duplicates(std::list<T>& ls)
 {
   std::set<T> occurences;
   ls.remove_if([&occurences](const T& item) {
@@ -28,6 +29,14 @@ template<typename T> void unique(std::list<T>& ls)
   });
 }
 
+template<typename Map> auto collect_default_tools(Map&& tool_map)
+{
+  return std::map<omm::SceneMode, omm::Tool*> {
+    { omm::SceneMode::Object, tool_map.at(omm::SelectObjectsTool::TYPE).get() },
+    { omm::SceneMode::Vertex, tool_map.at(omm::SelectPointsTool::TYPE).get() },
+  };
+}
+
 }  // namespace
 
 namespace omm
@@ -35,6 +44,7 @@ namespace omm
 
 ToolBox::ToolBox(Scene& scene)
   : m_tools(make_tool_map(scene))
+  , m_default_tools(collect_default_tools(m_tools))
   , m_scene(scene)
 {
   if (m_tools.size() > 0) {
@@ -47,30 +57,25 @@ Tool& ToolBox::active_tool() const
   return *m_active_tool;
 }
 
-Tool& ToolBox::tool(const QString& key) const
-{
-  try {
-    return *m_tools.at(key);
-  } catch (const std::out_of_range&) {
-    LFATAL("Failed to load tool '%s'.", key.toUtf8().constData());
-    return *m_tools.begin()->second; // something must be returned.
-  }
-}
-
 void ToolBox::set_active_tool(const QString &key)
 {
-  if (m_active_tool->type() == key) {
-    return;
+  return set_active_tool(m_tools.at(key).get());
+}
+
+void ToolBox::set_active_tool(Tool* tool)
+{
+  if (m_active_tool != tool) {
+    m_scene.set_mode(tool->scene_mode());
+    if (m_active_tool) {
+      m_history.push_front(m_active_tool);
+      ::remove_duplicates(m_history);
+      m_active_tool->end();
+    }
+    m_active_tool = tool;
+    m_scene.set_selection(std::set<AbstractPropertyOwner*> { m_active_tool });
+    m_active_tool->reset();
+    Q_EMIT active_tool_changed(*m_active_tool);
   }
-  m_history.push_front(key);
-  ::unique(m_history);
-  if (m_active_tool) {
-    m_active_tool->end();
-  }
-  m_active_tool = m_tools.at(key).get();
-  m_scene.set_selection(std::set<AbstractPropertyOwner*> { m_active_tool });
-  m_active_tool->reset();
-  Q_EMIT active_tool_changed(*m_active_tool);
 }
 
 void ToolBox::set_previous_tool()
@@ -81,25 +86,17 @@ void ToolBox::set_previous_tool()
   }
 }
 
-void ToolBox::switch_between_object_and_point_selection()
+void ToolBox::set_scene_mode(SceneMode mode)
 {
-  if (m_active_tool->type() == SelectPointsTool::TYPE) {
-    set_active_tool(SelectObjectsTool::TYPE);
-  } else if (m_active_tool->type() == SelectObjectsTool::TYPE) {
-    set_active_tool(SelectPointsTool::TYPE);
+  const auto it = std::find_if(m_history.rbegin(), m_history.rend(), [mode](const Tool* candidate) {
+    return candidate->scene_mode() == mode;
+  });
+
+  if (it == m_history.rend()) {
+    set_active_tool(m_default_tools.at(mode));
   } else {
-    for (auto&& tool : m_history) {
-      if (tool == SelectPointsTool::TYPE) {
-        set_active_tool(SelectPointsTool::TYPE);
-        return;
-      } else if (tool == SelectObjectsTool::TYPE) {
-        set_active_tool(SelectObjectsTool::TYPE);
-        return;
-      }
-    }
-    set_active_tool(SelectObjectsTool::TYPE);
+    set_active_tool(*it);
   }
-  return;
 }
 
 }  // namespace

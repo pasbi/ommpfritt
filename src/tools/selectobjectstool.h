@@ -47,6 +47,7 @@ public:
   void reset() override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
   BoundingBox bounding_box() const;
+  SceneMode scene_mode() const override { return SceneMode::Object; }
 
 protected:
   bool has_transformation() const override;

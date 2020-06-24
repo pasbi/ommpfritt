@@ -47,15 +47,7 @@ public:
   ObjectTransformation viewport_transformation;
   bool integer_transformation() const;
   QString name() const override;
-
-  /**
-   * @brief modifies_points returns whether the tool modfies points. Shall return false if does not
-   *  modify points.
-   *  e.g., SelectObjectsTool::modifies_points() shall return false as it works on objects
-   *  e.g., KnifeTool::modifes_points() shall return true as it modifies points.
-   * @return The default implementation returns false.
-   */
-  virtual bool modifies_points() const;
+  virtual SceneMode scene_mode() const = 0;
 
 public Q_SLOTS:
   virtual void reset() {}

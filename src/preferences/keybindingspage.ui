@@ -44,7 +44,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QKeySequenceEdit" name="le_sequence_filter"/>
+      <widget class="QKeySequenceEdit" name="le_sequence_filter">
+       <property name="focusPolicy">
+        <enum>Qt::ClickFocus</enum>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pb_reset_filter">

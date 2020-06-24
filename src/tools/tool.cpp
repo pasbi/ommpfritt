@@ -104,6 +104,4 @@ QString Tool::name() const
   return QCoreApplication::translate("any-context", type().toUtf8().constData());
 }
 
-bool Tool::modifies_points() const { return false; }
-
 }  // namespace omm

@@ -135,6 +135,11 @@ QString KnifeTool::name() const
 QString KnifeTool::type() const { return TYPE; }
 void KnifeTool::cancel() { m_is_cutting = false; }
 
+SceneMode KnifeTool::scene_mode() const
+{
+  return SceneMode::Vertex;
+}
+
 void KnifeTool::reset()
 {
   handles.clear();

@@ -83,10 +83,10 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   });
 
   const auto adjust_mode =  [this](const Tool& tool) {
-    if (tool.modifies_points()) {
-      m_current_mode = Mode::Points;
-    } else {
+    if (tool.scene_mode() == SceneMode::Object) {
       m_current_mode = Mode::Objects;
+    } else {
+      m_current_mode = Mode::Points;
     }
     reset_transformation();
   };

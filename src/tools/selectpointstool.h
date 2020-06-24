@@ -68,8 +68,8 @@ public:
 
   BoundingBox bounding_box() const;
   void transform_objects_absolute(ObjectTransformation t);
-  bool modifies_points() const override;
   void on_property_value_changed(Property* property) override;
+  SceneMode scene_mode() const override { return SceneMode::Vertex; }
 
 protected:
   Vec2f selection_center() const override;

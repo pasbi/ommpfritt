@@ -473,6 +473,19 @@ void Scene::update_tool()
   m_tool_box->active_tool().reset();
 }
 
+SceneMode Scene::current_mode() const
+{
+  return m_mode;
+}
+
+void Scene::set_mode(SceneMode mode)
+{
+  if (m_mode != mode) {
+    m_mode = mode;
+    m_tool_box->set_scene_mode(mode);
+  }
+}
+
 bool Scene::contains(const AbstractPropertyOwner *apo) const
 {
   switch (apo->kind) {

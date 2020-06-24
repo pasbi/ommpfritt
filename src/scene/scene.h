@@ -147,6 +147,7 @@ public:
   }
   void submit(std::unique_ptr<Command> command);
 
+
   // === Tools ===
 private:
   std::unique_ptr<ToolBox> m_tool_box;
@@ -156,11 +157,20 @@ public Q_SLOTS:
   void update_tool();
 
 
+  // === Mode ===
+public:
+  SceneMode current_mode() const;
+  void set_mode(SceneMode mode);
+private:
+  SceneMode m_mode = SceneMode::Object;
+
+
   // === Animation ===
 private:
   std::unique_ptr<Animator> m_animator;
 public:
   Animator& animator() { return *m_animator; }
+
 
   // === NamedColors ===
 private:

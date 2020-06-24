@@ -28,6 +28,7 @@ public:
   void draw(Painter& renderer) const override;
   static constexpr auto RADIUS_PROPERTY_KEY = "radius";
   QString name() const override;
+  SceneMode scene_mode() const override { return SceneMode::Vertex; }
 
 private:
   bool m_mouse_down = false;

@@ -101,8 +101,6 @@ BoundingBox SelectPointsBaseTool::bounding_box() const
   }
 }
 
-bool SelectPointsBaseTool::modifies_points() const { return true; }
-
 void SelectPointsBaseTool::on_property_value_changed(Property *property)
 {
   if (property == this->property(BOUNDING_BOX_MODE_PROPERTY_KEY)) {
