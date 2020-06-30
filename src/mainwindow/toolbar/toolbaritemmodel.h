@@ -22,9 +22,12 @@ public:
   void add_items(const QString& code, int row = 0, const QModelIndex& parent = QModelIndex());
   void populate(QToolBar& tool_bar) const;
   void reset(const QString& configuration);
+  static constexpr auto items_key = "items";
 
 public Q_SLOTS:
   void remove_selection(const QItemSelection& selection);
+  void add_group();
+  void add_separator();
 
 protected:
   bool canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column,

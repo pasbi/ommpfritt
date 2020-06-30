@@ -10,12 +10,18 @@
 namespace
 {
 
+constexpr auto type_key = "type";
+constexpr auto action_item_id = QStandardItem::UserType + 1;
+constexpr auto group_item_id = QStandardItem::UserType + 2;
+constexpr auto separator_item_id = QStandardItem::UserType + 3;
+
 using namespace omm;
 
-class Item : public QStandardItem
+class AbstractItem : public QStandardItem
 {
 protected:
-  explicit Item() : QStandardItem(0, 1)
+  using QStandardItem::QStandardItem;
+  explicit AbstractItem() : QStandardItem(0, 1)
   {
     setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled);
   }
@@ -24,10 +30,19 @@ public:
   virtual std::unique_ptr<QAction> make_action() const = 0;
 };
 
-class ActionItem : public Item
+template<int item_id>
+class Item : public AbstractItem
 {
 public:
-  static constexpr int TYPE = QStandardItem::UserType + 1;
+  static constexpr auto TYPE = item_id;
+  int type() const override { return TYPE; }
+protected:
+  using AbstractItem::AbstractItem;
+};
+
+class ActionItem : public Item<action_item_id>
+{
+public:
   explicit ActionItem(const QString& command_name) : command_name(command_name)
   {
     const auto& key_bindings = omm::Application::instance().key_bindings;
@@ -43,7 +58,6 @@ public:
     return key_bindings.make_toolbar_action(app, command_name);
   }
 
-  int type() const override { return TYPE; }
   nlohmann::json encode() const override
   {
     return command_name.toStdString();
@@ -53,15 +67,36 @@ private:
   const QString command_name;
 };
 
-class GroupItem : public Item
+template<int type>
+class HyperItem : public Item<type>
 {
 public:
-  static constexpr int TYPE = QStandardItem::UserType + 2;
-  explicit GroupItem()
+  HyperItem(const QString& label)
   {
-    setData(omm::ToolBarItemModel::tr("group"), Qt::DisplayRole);
-    setFlags(flags() | Qt::ItemIsDropEnabled);
+    this->setData(label, Qt::DisplayRole);
+    this->setFlags(this->flags() | Qt::ItemIsDropEnabled);
   }
+
+protected:
+  nlohmann::json encode() const override { return {{type_key, type}}; }
+  std::unique_ptr<QToolButton> children_toolbutton() const
+  {
+    auto button = std::make_unique<QToolButton>();
+    QObject::connect(button.get(), &QToolButton::triggered,
+                     button.get(), &QToolButton::setDefaultAction);
+    for (int row = 0; row < this->rowCount(); ++row) {
+      const auto item = this->child(row);
+      button->addAction(static_cast<const AbstractItem*>(item)->make_action().release());
+    }
+    button->setDefaultAction(button->actions().first());
+    return button;
+  }
+};
+
+class GroupItem : public HyperItem<group_item_id>
+{
+public:
+  explicit GroupItem() : HyperItem(omm::ToolBarItemModel::tr("group")) {}
 
   nlohmann::json encode() const override
   {
@@ -69,42 +104,23 @@ public:
     for (int i = 0; i < rowCount(); ++i) {
       items.push_back(static_cast<const Item*>(child(i, 0))->encode());
     }
-    return {
-      {"type", "group"},
-      {"items", items}
-    };
+    auto j = HyperItem::encode();
+    j[omm::ToolBarItemModel::items_key] = items;
+    return j;
   }
 
   std::unique_ptr<QAction> make_action() const override
   {
-    auto button = std::make_unique<QToolButton>();
-    QObject::connect(button.get(), &QToolButton::triggered,
-                     button.get(), &QToolButton::setDefaultAction);
-    for (int row = 0; row < rowCount(); ++row) {
-      button->addAction(static_cast<const Item*>(child(row))->make_action().release());
-    }
-    button->setDefaultAction(button->actions().first());
     auto action = std::make_unique<QWidgetAction>(nullptr);
-    action->setDefaultWidget(button.release());
+    action->setDefaultWidget(children_toolbutton().release());
     return action;
   }
-
-  int type() const override { return TYPE; }
 };
 
-class SeparatorItem : public Item
+class SeparatorItem : public HyperItem<separator_item_id>
 {
 public:
-  static constexpr int TYPE = QStandardItem::UserType + 3;
-  explicit SeparatorItem()
-  {
-    setData(omm::ToolBarItemModel::tr("separator"), Qt::DisplayRole);
-  }
-
-  nlohmann::json encode() const override
-  {
-    return {{"type", "separator"}};
-  }
+  explicit SeparatorItem() : HyperItem(omm::ToolBarItemModel::tr("separator")) {}
 
   std::unique_ptr<QAction> make_action() const override
   {
@@ -112,9 +128,6 @@ public:
     action->setSeparator(true);
     return action;
   }
-
-
-  int type() const override { return TYPE; }
 };
 
 }  // namespace
@@ -146,10 +159,10 @@ nlohmann::json ToolBarItemModel::encode(const QModelIndexList& indices) const
     if (filter(index)) {
       continue;
     }
-    items.push_back(static_cast<const Item*>(itemFromIndex(index))->encode());
+    items.push_back(static_cast<const AbstractItem*>(itemFromIndex(index))->encode());
   }
   return {
-    {"items", items}
+    {items_key, items}
   };
 }
 
@@ -193,6 +206,19 @@ void ToolBarItemModel::remove_selection(const QItemSelection& selection)
   }
 }
 
+void ToolBarItemModel::add_group()
+{
+  add_items(nlohmann::json{ {items_key, { {
+             {type_key, SeparatorItem::TYPE},
+             {items_key, nlohmann::json::array()}
+            } }} }, rowCount());
+}
+
+void ToolBarItemModel::add_separator()
+{
+  add_items(nlohmann::json{ {items_key, { {{type_key, SeparatorItem::TYPE}} }} }, rowCount());
+}
+
 void ToolBarItemModel::add_items(const QString& code, int row, const QModelIndex& parent)
 {
   try {
@@ -206,12 +232,14 @@ void ToolBarItemModel::add_items(const QString& code, int row, const QModelIndex
 
 void ToolBarItemModel::add_items(const nlohmann::json& code, int row, const QModelIndex& parent)
 {
+  LINFO << code.dump();
   QList<QStandardItem*> items;
   std::list<std::pair<GroupItem*, nlohmann::json>> groups;
-  for (auto&& item : code.at("items")) {
+  for (auto&& item : code.at(items_key)) {
     switch (item.type()) {
     case nlohmann::json::value_t::object:
-      if (const auto type = item["type"]; type == "group") {
+      switch (static_cast<int>(item[type_key])) {
+      case GroupItem::TYPE:
         if (parent.isValid()) {
           LWARNING << "Nested groups are not allowed in tool bars.";
           return;
@@ -220,10 +248,12 @@ void ToolBarItemModel::add_items(const nlohmann::json& code, int row, const QMod
           groups.emplace_back(group_item.get(), item);
           items.push_back(group_item.release());
         }
-      } else if (type == "separator") {
+        break;
+      case SeparatorItem::TYPE:
         items.push_back(std::make_unique<SeparatorItem>().release());
-      } else {
-        LWARNING << "ignoring data of unkown type: " << QString::fromStdString(item.dump());
+        break;
+      default:
+        Q_UNREACHABLE();
       }
       break;
     case nlohmann::json::value_t::string:
@@ -255,7 +285,7 @@ void ToolBarItemModel::add_items(const nlohmann::json& code, int row, const QMod
 void ToolBarItemModel::populate(QToolBar& tool_bar) const
 {
   for (int row = 0; row < rowCount(); ++row) {
-    tool_bar.addAction(static_cast<const Item*>(item(row, 0))->make_action().release());
+    tool_bar.addAction(static_cast<const AbstractItem*>(item(row, 0))->make_action().release());
   }
   Q_UNUSED(tool_bar)
 }

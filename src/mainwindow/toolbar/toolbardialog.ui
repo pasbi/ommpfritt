@@ -93,7 +93,7 @@
        <item>
         <widget class="QPushButton" name="pb_add_separator">
          <property name="text">
-          <string>add spacer</string>
+          <string>add separator</string>
          </property>
         </widget>
        </item>

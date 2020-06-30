@@ -55,13 +55,13 @@ public:
         jitems.push_back(item->name.toStdString());
       }
       return nlohmann::json {
-        {"items", jitems}
+        {omm::ToolBarItemModel::items_key, jitems}
       };
     }();
 
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    stream <<  QString::fromStdString(json.dump());
+    stream << QString::fromStdString(json.dump());
 
     auto mime_data = std::make_unique<QMimeData>();
     mime_data->setData(omm::ToolBarDialog::mime_type, data);
@@ -101,13 +101,13 @@ ToolBarDialog::ToolBarDialog(ToolBarItemModel& model, QWidget* parent)
     m_ui->le_sequence_filter->clear();
   });
 
-  connect(m_ui->le_name_filter, SIGNAL(textChanged(const QString&)),
-          m_proxy.get(), SLOT(set_action_name_filter(const QString&)));
-  connect(m_ui->le_sequence_filter, SIGNAL(keySequenceChanged(const QKeySequence&)),
-          m_proxy.get(), SLOT(set_action_sequence_filter(const QKeySequence&)));
-  connect(m_ui->pb_add_button, SIGNAL(clicked()), &m_model, SLOT(add_button()));
-  connect(m_ui->pb_add_separator, SIGNAL(clicked()),
-          &m_model, SLOT(add_separator()));
+  connect(m_ui->le_name_filter, &QLineEdit::textChanged,
+          m_proxy.get(), &DragDropProxy::set_action_name_filter);
+  connect(m_ui->le_sequence_filter, &QKeySequenceEdit::keySequenceChanged,
+          m_proxy.get(), &DragDropProxy::set_action_sequence_filter);
+  connect(m_ui->pb_add_button, &QPushButton::clicked, &m_model, &ToolBarItemModel::add_group);
+  connect(m_ui->pb_add_separator, &QPushButton::clicked,
+          &m_model, &ToolBarItemModel::add_separator);
   connect(m_ui->pb_remove_items, &QPushButton::clicked, [this]() {
     m_model.remove_selection(m_ui->tv_toolbar->selectionModel()->selection());
   });
