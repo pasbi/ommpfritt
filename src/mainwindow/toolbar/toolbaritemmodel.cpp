@@ -3,10 +3,14 @@
 #include "mainwindow/toolbar/toolbar.h"
 #include <QMimeData>
 #include <QTreeWidgetItem>
+#include <QWidgetAction>
 #include "mainwindow/application.h"
+#include <QToolButton>
 
 namespace
 {
+
+using namespace omm;
 
 class Item : public QStandardItem
 {
@@ -16,14 +20,15 @@ protected:
     setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled);
   }
 public:
-  virtual QString encode() const = 0;
+  virtual nlohmann::json encode() const = 0;
+  virtual std::unique_ptr<QAction> make_action() const = 0;
 };
 
 class ActionItem : public Item
 {
 public:
   static constexpr int TYPE = QStandardItem::UserType + 1;
-  explicit ActionItem(const QString& code) : command_name(code)
+  explicit ActionItem(const QString& command_name) : command_name(command_name)
   {
     const auto& key_bindings = omm::Application::instance().key_bindings;
     const auto* item = key_bindings.value(omm::Application::TYPE, command_name);
@@ -31,11 +36,20 @@ public:
     setData(item->icon(), Qt::DecorationRole);
   }
 
-  int type() const override { return TYPE; }
-  QString encode() const override
+  std::unique_ptr<QAction> make_action() const override
   {
-    return command_name;
+    auto& app = Application::instance();
+    const auto& key_bindings = omm::Application::instance().key_bindings;
+    return key_bindings.make_toolbar_action(app, command_name);
   }
+
+  int type() const override { return TYPE; }
+  nlohmann::json encode() const override
+  {
+    return command_name.toStdString();
+  }
+
+private:
   const QString command_name;
 };
 
@@ -49,13 +63,30 @@ public:
     setFlags(flags() | Qt::ItemIsDropEnabled);
   }
 
-  QString encode() const override
+  nlohmann::json encode() const override
   {
-    QStringList items;
+    nlohmann::json items;
     for (int i = 0; i < rowCount(); ++i) {
       items.push_back(static_cast<const Item*>(child(i, 0))->encode());
     }
-    return QString("[%1]").arg(items.join(omm::ToolBar::separator));
+    return {
+      {"type", "group"},
+      {"items", items}
+    };
+  }
+
+  std::unique_ptr<QAction> make_action() const override
+  {
+    auto button = std::make_unique<QToolButton>();
+    QObject::connect(button.get(), &QToolButton::triggered,
+                     button.get(), &QToolButton::setDefaultAction);
+    for (int row = 0; row < rowCount(); ++row) {
+      button->addAction(static_cast<const Item*>(child(row))->make_action().release());
+    }
+    button->setDefaultAction(button->actions().first());
+    auto action = std::make_unique<QWidgetAction>(nullptr);
+    action->setDefaultWidget(button.release());
+    return action;
   }
 
   int type() const override { return TYPE; }
@@ -70,10 +101,18 @@ public:
     setData(omm::ToolBarItemModel::tr("separator"), Qt::DisplayRole);
   }
 
-  QString encode() const override
+  nlohmann::json encode() const override
   {
-    return omm::ToolBar::separator_identifier;
+    return {{"type", "separator"}};
   }
+
+  std::unique_ptr<QAction> make_action() const override
+  {
+    auto action = std::make_unique<QAction>();
+    action->setSeparator(true);
+    return action;
+  }
+
 
   int type() const override { return TYPE; }
 };
@@ -83,40 +122,54 @@ public:
 namespace omm
 {
 
-ToolBarItemModel::ToolBarItemModel(const QString& code)
+nlohmann::json ToolBarItemModel::encode(const QModelIndexList& indices) const
 {
-  decode(code, 0, QModelIndex());
-}
+  const auto filter = [indices](const QModelIndex& index) {
+    const auto is_descendant_of = [index](QModelIndex potential_descendant) {
+      while (true) {
+        if (potential_descendant == index) {
+          return true;
+        } else if (potential_descendant.isValid()) {
+          potential_descendant = potential_descendant.parent();
+        } else {
+          return false;
+        }
+      }
+      Q_UNREACHABLE();
+      return false;
+    };
+    return index.column() == 0 && std::none_of(indices.begin(), indices.end(), is_descendant_of);
+  };
 
-QString ToolBarItemModel::encode(int row_begin, int row_end, const QModelIndex& parent) const
-{
-  QStringList items;
-  for (int row = row_begin; row < row_end; ++row) {
-    const Item* item = static_cast<const Item*>(itemFromIndex(index(row, 0, parent)));
-    items.push_back(item->encode());
+  nlohmann::json items;
+  for (const QModelIndex& index : indices) {
+    if (filter(index)) {
+      continue;
+    }
+    items.push_back(static_cast<const Item*>(itemFromIndex(index))->encode());
   }
-  return items.join(ToolBar::separator);
+  return {
+    {"items", items}
+  };
 }
 
-QString ToolBarItemModel::encode() const
+QString ToolBarItemModel::encode_str(const QModelIndexList& indices) const
 {
-  return encode(0, rowCount(), QModelIndex());
+  return QString::fromStdString(encode(indices).dump());
 }
 
-void ToolBarItemModel::add_button()
+QString ToolBarItemModel::encode_str() const
 {
-  const int row = rowCount();
-  beginInsertRows(QModelIndex(), row, row);
-  insertRow(row, new GroupItem());
-  endInsertRows();
+  return QString::fromStdString(encode().dump());
 }
 
-void ToolBarItemModel::add_separator()
+nlohmann::json ToolBarItemModel::encode() const
 {
-  const int row = rowCount();
-  beginInsertRows(QModelIndex(), row, row);
-  insertRow(row, new SeparatorItem());
-  endInsertRows();
+  if (const std::size_t n = rowCount(); n == 0) {
+    return {};
+  } else {
+    return encode(QItemSelectionRange(index(0, 0), index(n-1, 0)).indexes());
+  }
 }
 
 void ToolBarItemModel::remove_selection(const QItemSelection& selection)
@@ -140,20 +193,44 @@ void ToolBarItemModel::remove_selection(const QItemSelection& selection)
   }
 }
 
-void ToolBarItemModel::decode(const QString& code, int row, const QModelIndex& parent)
+void ToolBarItemModel::add_items(const QString& code, int row, const QModelIndex& parent)
+{
+  try {
+    const auto json = nlohmann::json::parse(code.toStdString());
+    add_items(json, row, parent);
+  } catch (const nlohmann::json::exception& e) {
+    LWARNING << "Decode ToolBar: Failed to parse json document.";
+    LINFO << e.what() << " " << code;
+  }
+}
+
+void ToolBarItemModel::add_items(const nlohmann::json& code, int row, const QModelIndex& parent)
 {
   QList<QStandardItem*> items;
-  std::map<GroupItem*, QString> groups;
-  for (QString item : ToolBar::split(code)) {
-    if (item.startsWith(ToolBar::group_identifiers.first)) {
-      assert(item.endsWith(ToolBar::group_identifiers.second));
-      auto group_item = std::make_unique<GroupItem>();
-      groups[group_item.get()] = item.mid(1, item.size() - 2);
-      items.push_back(group_item.release());
-    } else if (item == ToolBar::separator_identifier) {
-      items.push_back(std::make_unique<SeparatorItem>().release());
-    } else {
-      items.push_back(std::make_unique<ActionItem>(item).release());
+  std::list<std::pair<GroupItem*, nlohmann::json>> groups;
+  for (auto&& item : code.at("items")) {
+    switch (item.type()) {
+    case nlohmann::json::value_t::object:
+      if (const auto type = item["type"]; type == "group") {
+        if (parent.isValid()) {
+          LWARNING << "Nested groups are not allowed in tool bars.";
+          return;
+        } else {
+          auto group_item = std::make_unique<GroupItem>();
+          groups.emplace_back(group_item.get(), item);
+          items.push_back(group_item.release());
+        }
+      } else if (type == "separator") {
+        items.push_back(std::make_unique<SeparatorItem>().release());
+      } else {
+        LWARNING << "ignoring data of unkown type: " << QString::fromStdString(item.dump());
+      }
+      break;
+    case nlohmann::json::value_t::string:
+      items.push_back(std::make_unique<ActionItem>(QString::fromStdString(item)).release());
+      break;
+    default:
+      LWARNING << "ignoring data of unexpected type: " << QString::fromStdString(item.dump());
     }
   }
 
@@ -168,11 +245,27 @@ void ToolBarItemModel::decode(const QString& code, int row, const QModelIndex& p
   }
   endInsertRows();
 
-  for (const auto& [group_item, actions] : groups) {
+  for (const auto& [group_item, configuration] : groups) {
     const QModelIndex index = indexFromItem(group_item);
     assert(index.isValid());
-    decode(actions, 0, index);
+    add_items(configuration, 0, index);
   }
+}
+
+void ToolBarItemModel::populate(QToolBar& tool_bar) const
+{
+  for (int row = 0; row < rowCount(); ++row) {
+    tool_bar.addAction(static_cast<const Item*>(item(row, 0))->make_action().release());
+  }
+  Q_UNUSED(tool_bar)
+}
+
+void ToolBarItemModel::reset(const QString& configuration)
+{
+  beginResetModel();
+  clear();
+  add_items(configuration);
+  endResetModel();
 }
 
 bool ToolBarItemModel::canDropMimeData(const QMimeData* data, Qt::DropAction action,
@@ -181,7 +274,8 @@ bool ToolBarItemModel::canDropMimeData(const QMimeData* data, Qt::DropAction act
   Q_UNUSED(column)
   Q_UNUSED(row)
   Q_UNUSED(parent)
-  return data->hasFormat(ToolBarDialog::mime_type) && ::contains(std::set{ Qt::MoveAction, Qt::LinkAction}, action);
+  return data->hasFormat(ToolBarDialog::mime_type)
+      && ::contains(std::set{ Qt::MoveAction, Qt::LinkAction}, action);
 }
 
 bool ToolBarItemModel::dropMimeData(const QMimeData* data, Qt::DropAction action,
@@ -193,33 +287,22 @@ bool ToolBarItemModel::dropMimeData(const QMimeData* data, Qt::DropAction action
   QDataStream stream(data->data(ToolBarDialog::mime_type));
   QString code;
   stream >> code;
-  decode(code, row, parent);
+  const auto json_code = nlohmann::json::parse(code.toStdString());
+  add_items(json_code, row, parent);
   return false;
 }
 
 QMimeData* ToolBarItemModel::mimeData(const QModelIndexList& indices) const
 {
-  QByteArray data;
-
+  QByteArray buffer;
   {
-    QDataStream stream(&data, QIODevice::WriteOnly);
-
-    const QModelIndexList filtered_indices = ::filter_if(indices, [](const QModelIndex& index)
-    {
-      return index.column() == 0;
-    });
-
-    QStringList items;
-    for (const QModelIndex& index : filtered_indices) {
-      if (index.isValid() && index.column() == 0) {
-        items.push_back(static_cast<const Item*>(itemFromIndex(index))->encode());
-      }
-    }
-    stream << items.join(ToolBar::separator);
+    const auto json = encode(indices);
+    QDataStream stream(&buffer, QIODevice::WriteOnly);
+    const auto code = QString::fromStdString(json.dump());
+    stream << code;
   }
-
   auto mime_data = std::make_unique<QMimeData>();
-  mime_data->setData(omm::ToolBarDialog::mime_type, data);
+  mime_data->setData(omm::ToolBarDialog::mime_type, buffer);
   return mime_data.release();
 }
 

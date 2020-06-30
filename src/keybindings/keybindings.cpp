@@ -6,7 +6,6 @@
 #include "common.h"
 #include <map>
 #include <list>
-#include "keybindings/action.h"
 #include <memory>
 #include <QMenu>
 #include <QCoreApplication>
@@ -78,16 +77,20 @@ make_action(const omm::PreferencesTreeGroupItem* group, omm::CommandInterface& c
   }
 #endif  // NDEBUG
 
-  std::unique_ptr<QAction> action;
-  if (target == Target::ToolBar) {
-    action = std::make_unique<QAction>();
-    const QIcon icon = omm::Application::instance().icon_provider.icon(action_name);
-    action->setText((*it)->translated_name(omm::KeyBindings::TRANSLATION_CONTEXT));
-    action->setIcon(icon);
-  } else if (target == Target::Menu) {
-    action = std::make_unique<omm::Action>(**it);
-  } else {
-    Q_UNREACHABLE();
+  auto action = std::make_unique<QAction>();
+  const auto& item = **it;
+  action->setIcon(item.icon());
+  const auto label = item.translated_name(omm::KeyBindings::TRANSLATION_CONTEXT);
+  action->setText(label);
+  action->setToolTip(label);
+  if (target == Target::Menu) {
+    using namespace omm;
+    QObject::connect(&item, &PreferencesTreeValueItem::value_changed,
+                     action.get(), [action=action.get()](const QString& s)
+    {
+      action->setShortcut(QKeySequence(s));
+    });
+    action->setShortcut(QKeySequence(item.value()));
   }
   QObject::connect(action.get(), &QAction::triggered, [&context, action_name] {
     context.perform_action(action_name);

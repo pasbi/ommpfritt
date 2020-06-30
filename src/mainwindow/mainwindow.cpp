@@ -244,7 +244,7 @@ std::vector<QDockWidget*> MainWindow::dock_widgets() const
 
 void MainWindow::restore_default_layout()
 {
-  QSettings settings(":/layouts/default.layout", QSettings::IniFormat);
+  QSettings settings(":/layouts/default_layout.ini", QSettings::IniFormat);
   load_layout(settings);
 }
 
@@ -332,7 +332,7 @@ void MainWindow::save_layout()
   }
 }
 
-void MainWindow:: load_layout(QSettings& settings)
+void MainWindow::load_layout(QSettings& settings)
 {
   for (Manager* manager : findChildren<Manager*>()) {
     delete manager;
@@ -347,12 +347,12 @@ void MainWindow:: load_layout(QSettings& settings)
       settings.setArrayIndex(i);
       const QString type = settings.value(TOOLBAR_TYPE_SETTINGS_KEY).toString();
       const QString name = settings.value(TOOLBAR_NAME_SETTINGS_KEY).toString();
-      const QString tools = settings.value(TOOLBAR_TOOLS_SETTINGS_KEY).toString();
+      const QString configuration = settings.value(TOOLBAR_TOOLS_SETTINGS_KEY).toString();
 
       if (type != ToolBar::TYPE) {
         LWARNING << "Unexpected type of toolbar: '" << type << "'.";
       }
-      auto toolbar = std::make_unique<ToolBar>(tools);
+      auto toolbar = std::make_unique<ToolBar>(configuration);
       toolbar->setObjectName(name);
       assert(toolbar);
       addToolBar(toolbar.release());
@@ -413,7 +413,8 @@ void MainWindow::save_layout(QSettings& settings)
         settings.setArrayIndex(names.size());
         settings.setValue(TOOLBAR_TYPE_SETTINGS_KEY, toolbar->type());
         settings.setValue(TOOLBAR_NAME_SETTINGS_KEY, name);
-        settings.setValue(TOOLBAR_TOOLS_SETTINGS_KEY, toolbar->tools());
+        const auto configuration = toolbar->configuration();
+        settings.setValue(TOOLBAR_TOOLS_SETTINGS_KEY, configuration);
         names.insert(name);
       }
     }

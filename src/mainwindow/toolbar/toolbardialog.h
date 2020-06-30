@@ -2,6 +2,7 @@
 
 #include <QDialog>
 #include <memory>
+#include "external/json_fwd.hpp"
 
 namespace Ui { class ToolBarDialog; }
 
@@ -18,16 +19,15 @@ class ToolBarDialog : public QDialog
 {
   Q_OBJECT
 public:
-  ToolBarDialog(const QString& tools, QWidget* parent = nullptr);
+  ToolBarDialog(ToolBarItemModel& model, QWidget* parent = nullptr);
   ~ToolBarDialog();
-  QString tools() const;
   static constexpr auto mime_type = "application/command";
 
 private:
   KeyBindings& m_key_bindings;
   std::unique_ptr<Ui::ToolBarDialog> m_ui;
   std::unique_ptr<KeyBindingsProxyModel> m_proxy;
-  std::unique_ptr<ToolBarItemModel> m_toolbar_item_model;
+  ToolBarItemModel& m_model;
 };
 
 }

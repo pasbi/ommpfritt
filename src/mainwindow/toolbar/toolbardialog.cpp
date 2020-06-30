@@ -48,15 +48,20 @@ public:
       }
     }
 
-    QStringList codes;
-    for (const omm::PreferencesTreeValueItem* item : items) {
-      assert(item->group == omm::Application::TYPE);
-      codes.push_back(item->name);
-    }
+    const auto json = [items]{
+      nlohmann::json jitems;
+      for (const omm::PreferencesTreeValueItem* item : items) {
+        assert(item->group == omm::Application::TYPE);
+        jitems.push_back(item->name.toStdString());
+      }
+      return nlohmann::json {
+        {"items", jitems}
+      };
+    }();
 
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
-    stream << codes.join(omm::ToolBar::separator);
+    stream <<  QString::fromStdString(json.dump());
 
     auto mime_data = std::make_unique<QMimeData>();
     mime_data->setData(omm::ToolBarDialog::mime_type, data);
@@ -69,12 +74,12 @@ public:
 namespace omm
 {
 
-ToolBarDialog::ToolBarDialog(const QString& tools, QWidget* parent)
+ToolBarDialog::ToolBarDialog(ToolBarItemModel& model, QWidget* parent)
   : QDialog(parent)
   , m_key_bindings(Application::instance().key_bindings)
   , m_ui(std::make_unique<Ui::ToolBarDialog>())
   , m_proxy(std::make_unique<DragDropProxy>(m_key_bindings))
-  , m_toolbar_item_model(std::make_unique<ToolBarItemModel>(tools))
+  , m_model(model)
 {
   m_ui->setupUi(this);
 
@@ -100,14 +105,14 @@ ToolBarDialog::ToolBarDialog(const QString& tools, QWidget* parent)
           m_proxy.get(), SLOT(set_action_name_filter(const QString&)));
   connect(m_ui->le_sequence_filter, SIGNAL(keySequenceChanged(const QKeySequence&)),
           m_proxy.get(), SLOT(set_action_sequence_filter(const QKeySequence&)));
-  connect(m_ui->pb_add_button, SIGNAL(clicked()), m_toolbar_item_model.get(), SLOT(add_button()));
+  connect(m_ui->pb_add_button, SIGNAL(clicked()), &m_model, SLOT(add_button()));
   connect(m_ui->pb_add_separator, SIGNAL(clicked()),
-          m_toolbar_item_model.get(), SLOT(add_separator()));
+          &m_model, SLOT(add_separator()));
   connect(m_ui->pb_remove_items, &QPushButton::clicked, [this]() {
-    m_toolbar_item_model->remove_selection(m_ui->tv_toolbar->selectionModel()->selection());
+    m_model.remove_selection(m_ui->tv_toolbar->selectionModel()->selection());
   });
 
-  m_ui->tv_toolbar->setModel(m_toolbar_item_model.get());
+  m_ui->tv_toolbar->setModel(&m_model);
   m_ui->tv_toolbar->setAcceptDrops(true);
   m_ui->tv_toolbar->setDragEnabled(true);
   m_ui->tv_toolbar->setAnimated(true);
@@ -119,11 +124,6 @@ ToolBarDialog::ToolBarDialog(const QString& tools, QWidget* parent)
 
 ToolBarDialog::~ToolBarDialog()
 {
-}
-
-QString ToolBarDialog::tools() const
-{
-  return m_toolbar_item_model->encode();
 }
 
 }  // namespace

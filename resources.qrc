@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>layouts/default.layout</file>
+        <file>layouts/default_layout.ini</file>
         <file>keybindings/default_keybindings.cfg</file>
         <file>uicolors/ui-colors-dark.cfg</file>
         <file>uicolors/ui-colors-light.cfg</file>

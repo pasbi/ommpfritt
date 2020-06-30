@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QToolBar>
+#include "external/json.hpp"
+#include "mainwindow/toolbar/toolbaritemmodel.h"
 
 namespace omm
 {
@@ -11,20 +13,16 @@ class ToolBar : public QToolBar
 {
   Q_OBJECT
 public:
-  explicit ToolBar(const QString& tools = "");
-  QString tools() const { return m_tools; }
-  void configure(const QString& tools);
+  explicit ToolBar(const QString& configuration);
+  explicit ToolBar();
 
   static constexpr auto TYPE = "ToolBar";
   virtual QString type() const { return TYPE; }
-
-  static QStringList split(const QString& string);
-  static constexpr auto separator = ';';
-  static constexpr auto group_identifiers = std::pair { '[', ']' };
-  static constexpr auto separator_identifier = "|";
+  QString configuration() const;
 
 private:
-  QString m_tools;
+  void update();
+  ToolBarItemModel m_model;
 };
 
 }  // namespace omm

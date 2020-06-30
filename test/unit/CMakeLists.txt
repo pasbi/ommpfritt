@@ -9,7 +9,6 @@ target_sources(ommpfritt_unit_tests PRIVATE
   main.cpp
   splinetypetest.cpp
   tree.cpp
-  toolbartest.cpp
 )
 
 include_directories(${gtest_SOURCE_DIR}/include)
