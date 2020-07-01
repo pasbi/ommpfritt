@@ -21,7 +21,7 @@ class PreferencesTree : public QAbstractItemModel
 {
   Q_OBJECT
 public:
-  PreferencesTree(const QString filename);
+  PreferencesTree(const QString& translation_context, const QString filename);
   ~PreferencesTree();
   void reset();
 
@@ -61,7 +61,6 @@ Q_SIGNALS:
 protected:
   virtual bool set_data(int column, PreferencesTreeValueItem& item, const QVariant& value) = 0;
   virtual QVariant data(int column, const PreferencesTreeValueItem& item, int role) const = 0;
-  virtual QString translation_context() const = 0;
 
 private:
   /**
@@ -70,6 +69,7 @@ private:
    */
   mutable std::vector<std::unique_ptr<PreferencesTreeGroupItem>> m_groups;
   std::map<QString, std::map<QString, QString>> m_stored_values;
+  const QString m_translation_context;
 };
 
 }  // namespace omm

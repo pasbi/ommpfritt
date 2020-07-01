@@ -9,7 +9,8 @@
 namespace omm
 {
 
-PreferencesTree::PreferencesTree(const QString filename)
+PreferencesTree::PreferencesTree(const QString& translation_context, const QString filename)
+  : m_translation_context(translation_context)
 {
   if (!load_from_file(filename)) {
     LERROR << "Failed to read file '" << filename << "'.";
@@ -147,7 +148,8 @@ bool PreferencesTree::load_from_file(const QString& filename)
       PreferencesTreeGroupItem* group = nullptr;
       if (git == m_groups.end()) {
         if (insert_mode) {
-          m_groups.push_back(std::make_unique<PreferencesTreeGroupItem>(group_name));
+          auto item = std::make_unique<PreferencesTreeGroupItem>(group_name, m_translation_context);
+          m_groups.push_back(std::move(item));
         } else {
           LWARNING << "Ignore unexpected group '" << group_name << "'.";
           goto line_loop;
@@ -165,7 +167,9 @@ bool PreferencesTree::load_from_file(const QString& filename)
 
       if (vit == group->values.end()) {
         if (insert_mode) {
-          group->values.push_back(std::make_unique<PreferencesTreeValueItem>(group->name, name, value));
+          auto item = std::make_unique<PreferencesTreeValueItem>(group->name, name,
+                                                                 value, m_translation_context);
+          group->values.push_back(std::move(item));
         } else {
           LWARNING << "No such item '" << group_name << "'::'" << name << "'.";
         }
@@ -330,7 +334,7 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
     case 0:
       switch (role) {
       case Qt::DisplayRole:
-        return group(index).translated_name(translation_context());
+        return group(index).translated_name();
       default:
         return QVariant();
       }
@@ -342,7 +346,7 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
     case 0:
       switch(role) {
       case Qt::DisplayRole:
-        return value(index).translated_name(translation_context());
+        return value(index).translated_name();
       case Qt::DecorationRole:
         return value(index).icon();
       default:

@@ -235,7 +235,6 @@ bool Application::save()
 
 bool Application::save_as()
 {
-  LINFO << m_main_window;
   QFileDialog dialog(m_main_window);
   dialog.setWindowTitle(tr("Save scene as ..."));
   dialog.setDirectoryUrl(scene_directory_hint(scene.filename()));

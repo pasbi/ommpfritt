@@ -54,7 +54,7 @@ omm::Color color_from_html(const QString& html)
 namespace omm
 {
 
-UiColors::UiColors() : PreferencesTree(":/uicolors/ui-colors-dark.cfg")
+UiColors::UiColors() : PreferencesTree("uicolors", ":/uicolors/ui-colors-dark.cfg")
 {
 // set this macro to print Qt's default color.
 //#define PRINT_DEFAULT_COLOR_SCHEMA

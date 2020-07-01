@@ -1,4 +1,5 @@
 #include "mainwindow/toolbar/toolbaritemmodel.h"
+#include "common.h"
 #include "mainwindow/toolbar/toolbardialog.h"
 #include "mainwindow/toolbar/toolbar.h"
 #include <QMimeData>
@@ -14,6 +15,7 @@ constexpr auto type_key = "type";
 constexpr auto action_item_id = QStandardItem::UserType + 1;
 constexpr auto group_item_id = QStandardItem::UserType + 2;
 constexpr auto separator_item_id = QStandardItem::UserType + 3;
+constexpr auto switch_item_id = QStandardItem::UserType + 4;
 
 using namespace omm;
 
@@ -47,7 +49,7 @@ public:
   {
     const auto& key_bindings = omm::Application::instance().key_bindings;
     const auto* item = key_bindings.value(omm::Application::TYPE, command_name);
-    setData(item->translated_name(omm::KeyBindings::TRANSLATION_CONTEXT), Qt::DisplayRole);
+    setData(item->translated_name(), Qt::DisplayRole);
     setData(item->icon(), Qt::DecorationRole);
   }
 
@@ -79,18 +81,6 @@ public:
 
 protected:
   nlohmann::json encode() const override { return {{type_key, type}}; }
-  std::unique_ptr<QToolButton> children_toolbutton() const
-  {
-    auto button = std::make_unique<QToolButton>();
-    QObject::connect(button.get(), &QToolButton::triggered,
-                     button.get(), &QToolButton::setDefaultAction);
-    for (int row = 0; row < this->rowCount(); ++row) {
-      const auto item = this->child(row);
-      button->addAction(static_cast<const AbstractItem*>(item)->make_action().release());
-    }
-    button->setDefaultAction(button->actions().first());
-    return button;
-  }
 };
 
 class GroupItem : public HyperItem<group_item_id>
@@ -111,10 +101,57 @@ public:
 
   std::unique_ptr<QAction> make_action() const override
   {
+    auto button = std::make_unique<QToolButton>();
+    QObject::connect(button.get(), &QToolButton::triggered,
+                     button.get(), &QToolButton::setDefaultAction);
+    for (int row = 0; row < this->rowCount(); ++row) {
+      const auto item = this->child(row);
+      button->addAction(static_cast<const AbstractItem*>(item)->make_action().release());
+    }
+    button->setDefaultAction(button->actions().first());
     auto action = std::make_unique<QWidgetAction>(nullptr);
-    action->setDefaultWidget(children_toolbutton().release());
+    action->setDefaultWidget(button.release());
     return action;
   }
+};
+
+class SwitchItem : public HyperItem<switch_item_id>
+{
+public:
+  explicit SwitchItem(const nlohmann::json& item)
+    : HyperItem(ToolBarItemModel::ModeSelector(item).cycle_action)
+    , m_mode_selector(item)
+  {
+  }
+
+  nlohmann::json encode() const override
+  {
+    auto j1 = HyperItem::encode();
+    const auto j2 = m_mode_selector.encode();
+    j1.insert(j2.begin(), j2.end());
+    return j1;
+  }
+
+  std::unique_ptr<QAction> make_action() const override
+  {
+    auto button = std::make_unique<QToolButton>();
+    button->setPopupMode(QToolButton::InstantPopup);
+    QObject::connect(button.get(), &QToolButton::triggered,
+                     button.get(), &QToolButton::setDefaultAction);
+    auto& app = Application::instance();
+    const auto& key_bindings = omm::Application::instance().key_bindings;
+    for (auto&& command_name : m_mode_selector.activation_actions) {
+      auto action = key_bindings.make_toolbar_action(app, command_name);
+      button->addAction(action.release());
+    }
+    button->setDefaultAction(button->actions().first());
+    auto action = std::make_unique<QWidgetAction>(nullptr);
+    action->setDefaultWidget(button.release());
+    return action;
+  }
+
+private:
+  ToolBarItemModel::ModeSelector m_mode_selector;
 };
 
 class SeparatorItem : public HyperItem<separator_item_id>
@@ -134,6 +171,10 @@ public:
 
 namespace omm
 {
+
+const std::vector<ToolBarItemModel::ModeSelector> ToolBarItemModel::mode_selectors {
+  {"cycle_modes", {"object_mode", "vertex_mode"}}
+};
 
 nlohmann::json ToolBarItemModel::encode(const QModelIndexList& indices) const
 {
@@ -208,15 +249,20 @@ void ToolBarItemModel::remove_selection(const QItemSelection& selection)
 
 void ToolBarItemModel::add_group()
 {
-  add_items(nlohmann::json{ {items_key, { {
-             {type_key, SeparatorItem::TYPE},
-             {items_key, nlohmann::json::array()}
-            } }} }, rowCount());
+  add_single_item({
+     {type_key, SeparatorItem::TYPE},
+     {items_key, nlohmann::json::array()}
+  });
 }
 
 void ToolBarItemModel::add_separator()
 {
-  add_items(nlohmann::json{ {items_key, { {{type_key, SeparatorItem::TYPE}} }} }, rowCount());
+  add_single_item({{type_key, SeparatorItem::TYPE}});
+}
+
+void ToolBarItemModel::add_switch(const ToolBarItemModel::ModeSelector& mode_selector)
+{
+  add_single_item(mode_selector.encode());
 }
 
 void ToolBarItemModel::add_items(const QString& code, int row, const QModelIndex& parent)
@@ -232,7 +278,6 @@ void ToolBarItemModel::add_items(const QString& code, int row, const QModelIndex
 
 void ToolBarItemModel::add_items(const nlohmann::json& code, int row, const QModelIndex& parent)
 {
-  LINFO << code.dump();
   QList<QStandardItem*> items;
   std::list<std::pair<GroupItem*, nlohmann::json>> groups;
   for (auto&& item : code.at(items_key)) {
@@ -251,6 +296,9 @@ void ToolBarItemModel::add_items(const nlohmann::json& code, int row, const QMod
         break;
       case SeparatorItem::TYPE:
         items.push_back(std::make_unique<SeparatorItem>().release());
+        break;
+      case SwitchItem::TYPE:
+        items.push_back(std::make_unique<SwitchItem>(item).release());
         break;
       default:
         Q_UNREACHABLE();
@@ -334,6 +382,36 @@ QMimeData* ToolBarItemModel::mimeData(const QModelIndexList& indices) const
   auto mime_data = std::make_unique<QMimeData>();
   mime_data->setData(omm::ToolBarDialog::mime_type, buffer);
   return mime_data.release();
+}
+
+void ToolBarItemModel::add_single_item(const nlohmann::json& config)
+{
+  add_items(nlohmann::json{{items_key, {config}}}, rowCount());
+}
+
+ToolBarItemModel::ModeSelector::ModeSelector(const nlohmann::json& j)
+  : cycle_action(QString::fromStdString(j[cycle_action_key]))
+  , activation_actions(::transform<QString, std::vector>(j[activation_actions_key], [](auto&& j) {
+  return QString::fromStdString(j);
+}))
+{
+}
+
+ToolBarItemModel::ModeSelector::ModeSelector(const QString& cycle_action,
+                                             const std::vector<QString>& activation_actions)
+  : cycle_action(cycle_action), activation_actions(activation_actions)
+{
+}
+
+nlohmann::json ToolBarItemModel::ModeSelector::encode() const
+{
+  nlohmann::json j;
+  for (auto&& action : activation_actions) {
+    j[activation_actions_key].push_back(action.toStdString());
+  }
+  j[cycle_action_key] = cycle_action.toStdString();
+  j[type_key] = switch_item_id;
+  return j;
 }
 
 

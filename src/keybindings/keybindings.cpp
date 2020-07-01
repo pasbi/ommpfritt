@@ -51,59 +51,13 @@ std::unique_ptr<QMenu> add_menu(const QString& path, std::map<QString, QMenu*>& 
   }
 }
 
-enum class Target { ToolBar, Menu };
-
-std::unique_ptr<QAction>
-make_action(const omm::PreferencesTreeGroupItem* group, omm::CommandInterface& context,
-            const QString& action_name, Target target)
-{
-#ifndef NDEBUG
-  if (group == nullptr) {
-    LERROR << "Failed to find context " << context.type();
-    LFATAL("Missing context");
-  }
-#endif  // NDEBUG
-
-  const auto it = std::find_if(group->values.begin(), group->values.end(),
-                               [action_name](const auto& value)
-  {
-    return action_name == value->name;
-  });
-
-#ifndef NDEBUG
-  if (it == group->values.end()) {
-    LERROR << "Failed to find keybinding for " << context.type() << "::" << action_name;
-    LFATAL("Missing keybinding");
-  }
-#endif  // NDEBUG
-
-  auto action = std::make_unique<QAction>();
-  const auto& item = **it;
-  action->setIcon(item.icon());
-  const auto label = item.translated_name(omm::KeyBindings::TRANSLATION_CONTEXT);
-  action->setText(label);
-  action->setToolTip(label);
-  if (target == Target::Menu) {
-    using namespace omm;
-    QObject::connect(&item, &PreferencesTreeValueItem::value_changed,
-                     action.get(), [action=action.get()](const QString& s)
-    {
-      action->setShortcut(QKeySequence(s));
-    });
-    action->setShortcut(QKeySequence(item.value()));
-  }
-  QObject::connect(action.get(), &QAction::triggered, [&context, action_name] {
-    context.perform_action(action_name);
-  });
-  return action;
-}
-
 }  // namespace
 
 namespace omm
 {
 
-KeyBindings::KeyBindings() : PreferencesTree(":/keybindings/default_keybindings.cfg")
+KeyBindings::KeyBindings()
+  : PreferencesTree(TRANSLATION_CONTEXT, ":/keybindings/default_keybindings.cfg")
 {
   load_from_qsettings(TRANSLATION_CONTEXT);
 }
@@ -116,18 +70,18 @@ KeyBindings::~KeyBindings()
 std::unique_ptr<QAction> KeyBindings::make_menu_action(CommandInterface& context,
                                                        const QString& action_name) const
 {
-  return make_action(group(context.type()), context, action_name, Target::Menu);
+  return make_action(context, action_name, Target::Menu);
 }
 
 std::unique_ptr<QAction> KeyBindings::make_toolbar_action(CommandInterface &context,
                                                           const QString &action_name) const
 {
-  return make_action(group(context.type()), context, action_name, Target::ToolBar);
+  return make_action(context, action_name, Target::ToolBar);
 }
 
 QString KeyBindings::find_action(const QString& context, const QKeySequence& sequence) const
 {
-  auto* group = this->group(context);
+  const auto* group = this->group(context);
   if (group == nullptr) {
     return "";
   } else {
@@ -148,6 +102,24 @@ QString KeyBindings::find_action(const QString& context, const QKeySequence& seq
     return "";
   }
 }
+
+const PreferencesTreeValueItem*
+KeyBindings::find_action(const QString& context, const QString& action_name) const
+{
+  const auto* group = this->group(context);
+  const auto it = std::find_if(group->values.begin(), group->values.end(),
+                               [action_name](const auto& value)
+  {
+    LINFO << action_name << " " << value->name;
+    return action_name == value->name;
+  });
+  if (it == group->values.end()) {
+    return nullptr;
+  } else {
+    return it->get();
+  }
+}
+
 
 QVariant KeyBindings::data(int column, const PreferencesTreeValueItem& item, int role) const
 {
@@ -242,8 +214,39 @@ KeyBindings::make_menus(CommandInterface& context, const std::vector<QString>& a
     }
   }
 
-  return std::vector( std::make_move_iterator(menus.begin()),
-                      std::make_move_iterator(menus.end()) );
+  return std::vector(std::make_move_iterator(menus.begin()), std::make_move_iterator(menus.end()));
 }
+
+std::unique_ptr<QAction>
+KeyBindings::make_action(CommandInterface& context, const QString& action_name, Target target) const
+{
+  auto&& item = find_action(context.type(), action_name);
+#ifndef NDEBUG
+  if (!item) {
+    LERROR << "Failed to find keybinding for " << context.type() << "::" << action_name;
+    LFATAL("Missing keybinding");
+  }
+#endif  // NDEBUG
+
+  auto action = std::make_unique<QAction>();
+  action->setIcon(item->icon());
+  const auto label = item->translated_name();
+  action->setText(label);
+  action->setToolTip(label);
+  if (target == Target::Menu) {
+    using namespace omm;
+    QObject::connect(item, &PreferencesTreeValueItem::value_changed,
+                     action.get(), [action=action.get()](const QString& s)
+    {
+      action->setShortcut(QKeySequence(s));
+    });
+    action->setShortcut(QKeySequence(item->value()));
+  }
+  QObject::connect(action.get(), &QAction::triggered, [&context, action_name] {
+    context.perform_action(action_name);
+  });
+  return action;
+}
+
 
 }  // namespace omm

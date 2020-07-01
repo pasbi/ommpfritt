@@ -34,13 +34,11 @@ public:
   make_menus(CommandInterface& context, const std::vector<QString>& actions) const;
 
   QString find_action(const QString& context, const QKeySequence& sequence) const;
+  const PreferencesTreeValueItem* find_action(const QString& context, const QString& action_name) const;
 
 public:
   QVariant data(int column, const PreferencesTreeValueItem &item, int role) const override;
   bool set_data(int column, PreferencesTreeValueItem &item, const QVariant &value) override;
-
-protected:
-  QString translation_context() const override { return TRANSLATION_CONTEXT; }
 
 private:
   QKeySequence make_key_sequence(const QKeyEvent& event) const;
@@ -51,6 +49,10 @@ private:
   bool call_global_command(const QKeySequence& sequence, const CommandInterface& source) const;
 
   bool collides(const PreferencesTreeValueItem& candidate) const;
+
+  enum class Target { ToolBar, Menu };
+  std::unique_ptr<QAction>
+  make_action(CommandInterface& context, const QString& action_name, Target target) const;
 };
 
 }  // namespace omm

@@ -14,7 +14,8 @@ namespace
 class DragDropProxy : public omm::KeyBindingsProxyModel
 {
 public:
-  explicit DragDropProxy(omm::KeyBindings& key_bindings) : KeyBindingsProxyModel(key_bindings)
+  explicit DragDropProxy(omm::KeyBindings& key_bindings)
+    : KeyBindingsProxyModel(key_bindings)
   {
   }
 
@@ -38,26 +39,17 @@ public:
 
   QMimeData* mimeData(const QModelIndexList& indices) const override
   {
-    std::list<const omm::PreferencesTreeValueItem*> items;
+    nlohmann::json json;
     for (const QModelIndex& index : indices) {
       if (const QModelIndex sindex = mapToSource(index); sindex.isValid() && sindex.column() == 0) {
         const auto* ptr = static_cast<const omm::PreferencesTreeItem*>(sindex.internalPointer());
         if (!ptr->is_group()) {
-          items.push_back(static_cast<const omm::PreferencesTreeValueItem*>(ptr));
+          const auto* item = static_cast<const omm::PreferencesTreeValueItem*>(ptr);
+          assert(item->group == omm::Application::TYPE);
+          json[omm::ToolBarItemModel::items_key].push_back(item->name.toStdString());
         }
       }
     }
-
-    const auto json = [items]{
-      nlohmann::json jitems;
-      for (const omm::PreferencesTreeValueItem* item : items) {
-        assert(item->group == omm::Application::TYPE);
-        jitems.push_back(item->name.toStdString());
-      }
-      return nlohmann::json {
-        {omm::ToolBarItemModel::items_key, jitems}
-      };
-    }();
 
     QByteArray data;
     QDataStream stream(&data, QIODevice::WriteOnly);
@@ -111,6 +103,21 @@ ToolBarDialog::ToolBarDialog(ToolBarItemModel& model, QWidget* parent)
   connect(m_ui->pb_remove_items, &QPushButton::clicked, [this]() {
     m_model.remove_selection(m_ui->tv_toolbar->selectionModel()->selection());
   });
+
+  {
+    auto&& key_bindings = omm::Application::instance().key_bindings;
+    for (auto&& mode_selector : ToolBarItemModel::mode_selectors) {
+      const auto* item = key_bindings.find_action(omm::Application::TYPE, mode_selector.cycle_action);
+      if (item == nullptr) {
+        LFATAL("Failed to find action '%s'", mode_selector.cycle_action.toUtf8().data());
+      }
+      auto action = std::make_unique<QAction>(item->translated_name());
+      connect(action.get(), &QAction::triggered, [this, mode_selector]() {
+        m_model.add_switch(mode_selector);
+      });
+      m_ui->tb_add_switch->addAction(action.release());
+    }
+  }
 
   m_ui->tv_toolbar->setModel(&m_model);
   m_ui->tv_toolbar->setAcceptDrops(true);
