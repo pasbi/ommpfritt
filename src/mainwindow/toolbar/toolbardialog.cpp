@@ -105,15 +105,11 @@ ToolBarDialog::ToolBarDialog(ToolBarItemModel& model, QWidget* parent)
   });
 
   {
-    auto&& key_bindings = omm::Application::instance().key_bindings;
-    for (auto&& mode_selector : ToolBarItemModel::mode_selectors) {
-      const auto* item = key_bindings.find_action(omm::Application::TYPE, mode_selector.cycle_action);
-      if (item == nullptr) {
-        LFATAL("Failed to find action '%s'", mode_selector.cycle_action.toUtf8().data());
-      }
-      auto action = std::make_unique<QAction>(item->translated_name());
-      connect(action.get(), &QAction::triggered, [this, mode_selector]() {
-        m_model.add_switch(mode_selector);
+    for (auto&& [name, mode_selector] : Application::instance().mode_selectors) {
+      const auto tr_name = qApp->translate(KeyBindings::TRANSLATION_CONTEXT, name.toUtf8().data());
+      auto action = std::make_unique<QAction>(tr_name);
+      connect(action.get(), &QAction::triggered, [this, name=name]() {
+        m_model.add_mode_selector(name);
       });
       m_ui->tb_add_switch->addAction(action.release());
     }

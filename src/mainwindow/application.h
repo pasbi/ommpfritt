@@ -13,6 +13,7 @@
 #include "preferences/uicolors.h"
 #include "mainwindow/options.h"
 #include <memory>
+#include <map>
 #include "preferences/preferences.h"
 #include <set>
 
@@ -27,6 +28,7 @@ class MainWindow;
 class Manager;
 class ToolBar;
 class Options;
+class ModeSelector;
 
 class Application : public QObject, public CommandInterface
 {
@@ -56,6 +58,7 @@ public:
   KeyBindings key_bindings;
   UiColors ui_colors;
   Preferences preferences;
+  const std::map<QString, std::unique_ptr<ModeSelector>> mode_selectors;
 
   PythonEngine python_engine;
   Scene scene;

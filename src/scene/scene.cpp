@@ -34,6 +34,8 @@
 #include "animation/animator.h"
 #include "color/namedcolors.h"
 #include "nodesystem/node.h"
+#include "mainwindow/application.h"
+#include "keybindings/modeselector.h"
 
 namespace
 {
@@ -130,6 +132,11 @@ Scene::~Scene()
 void Scene::polish()
 {
   m_default_style = std::make_unique<Style>(this);
+
+  connect(Application::instance().mode_selectors.at("scene_mode").get(),
+          &ModeSelector::mode_changed, this, [this](int mode) {
+    this->set_mode(static_cast<SceneMode>(mode));
+  });
 }
 
 void Scene::prepare_reset()

@@ -13,11 +13,12 @@ namespace omm
 ToolBar::ToolBar()
 {
   setAttribute(Qt::WA_DeleteOnClose);
+  update();
 }
 
 ToolBar::ToolBar(const QString& configuration)
-  : ToolBar()
 {
+  setAttribute(Qt::WA_DeleteOnClose);
   m_model.reset(configuration);
   update();
 }

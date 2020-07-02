@@ -7,6 +7,7 @@
 #include <QWidgetAction>
 #include "mainwindow/application.h"
 #include <QToolButton>
+#include "keybindings/modeselector.h"
 
 namespace
 {
@@ -119,39 +120,41 @@ class SwitchItem : public HyperItem<switch_item_id>
 {
 public:
   explicit SwitchItem(const nlohmann::json& item)
-    : HyperItem(ToolBarItemModel::ModeSelector(item).cycle_action)
-    , m_mode_selector(item)
+    : HyperItem(QString::fromStdString(item["name"]))
+    , m_mode_selector(QString::fromStdString(item["name"]))
   {
   }
 
   nlohmann::json encode() const override
   {
-    auto j1 = HyperItem::encode();
-    const auto j2 = m_mode_selector.encode();
-    j1.insert(j2.begin(), j2.end());
-    return j1;
+    auto j = HyperItem::encode();
+    j["name"] = m_mode_selector.toStdString();
+    return j;
   }
 
   std::unique_ptr<QAction> make_action() const override
   {
+    const auto& mode_selector = *Application::instance().mode_selectors.at(m_mode_selector);
     auto button = std::make_unique<QToolButton>();
     button->setPopupMode(QToolButton::InstantPopup);
     QObject::connect(button.get(), &QToolButton::triggered,
                      button.get(), &QToolButton::setDefaultAction);
     auto& app = Application::instance();
     const auto& key_bindings = omm::Application::instance().key_bindings;
-    for (auto&& command_name : m_mode_selector.activation_actions) {
+    for (auto&& command_name : mode_selector.activation_actions) {
       auto action = key_bindings.make_toolbar_action(app, command_name);
       button->addAction(action.release());
     }
-    button->setDefaultAction(button->actions().first());
+    button->setDefaultAction(button->actions()[mode_selector.mode()]);
+    QObject::connect(&mode_selector, &ModeSelector::mode_changed, button.get(),
+                     [button=button.get()](int mode) { button->actions()[mode]->trigger(); });
     auto action = std::make_unique<QWidgetAction>(nullptr);
     action->setDefaultWidget(button.release());
     return action;
   }
 
 private:
-  ToolBarItemModel::ModeSelector m_mode_selector;
+  const QString m_mode_selector;
 };
 
 class SeparatorItem : public HyperItem<separator_item_id>
@@ -171,10 +174,6 @@ public:
 
 namespace omm
 {
-
-const std::vector<ToolBarItemModel::ModeSelector> ToolBarItemModel::mode_selectors {
-  {"cycle_modes", {"object_mode", "vertex_mode"}}
-};
 
 nlohmann::json ToolBarItemModel::encode(const QModelIndexList& indices) const
 {
@@ -250,7 +249,7 @@ void ToolBarItemModel::remove_selection(const QItemSelection& selection)
 void ToolBarItemModel::add_group()
 {
   add_single_item({
-     {type_key, SeparatorItem::TYPE},
+     {type_key, GroupItem::TYPE},
      {items_key, nlohmann::json::array()}
   });
 }
@@ -260,9 +259,12 @@ void ToolBarItemModel::add_separator()
   add_single_item({{type_key, SeparatorItem::TYPE}});
 }
 
-void ToolBarItemModel::add_switch(const ToolBarItemModel::ModeSelector& mode_selector)
+void ToolBarItemModel::add_mode_selector(const QString& mode_selector_name)
 {
-  add_single_item(mode_selector.encode());
+  add_single_item({
+     {type_key, SwitchItem::TYPE},
+     {"name", mode_selector_name.toStdString()}
+  });
 }
 
 void ToolBarItemModel::add_items(const QString& code, int row, const QModelIndex& parent)
@@ -388,32 +390,5 @@ void ToolBarItemModel::add_single_item(const nlohmann::json& config)
 {
   add_items(nlohmann::json{{items_key, {config}}}, rowCount());
 }
-
-ToolBarItemModel::ModeSelector::ModeSelector(const nlohmann::json& j)
-  : cycle_action(QString::fromStdString(j[cycle_action_key]))
-  , activation_actions(::transform<QString, std::vector>(j[activation_actions_key], [](auto&& j) {
-  return QString::fromStdString(j);
-}))
-{
-}
-
-ToolBarItemModel::ModeSelector::ModeSelector(const QString& cycle_action,
-                                             const std::vector<QString>& activation_actions)
-  : cycle_action(cycle_action), activation_actions(activation_actions)
-{
-}
-
-nlohmann::json ToolBarItemModel::ModeSelector::encode() const
-{
-  nlohmann::json j;
-  for (auto&& action : activation_actions) {
-    j[activation_actions_key].push_back(action.toStdString());
-  }
-  j[cycle_action_key] = cycle_action.toStdString();
-  j[type_key] = switch_item_id;
-  return j;
-}
-
-
 
 }  // namespace omm

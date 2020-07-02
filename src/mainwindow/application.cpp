@@ -30,6 +30,7 @@
 #include "preferences/preferencedialog.h"
 #include <QTranslator>
 #include "registers.h"
+#include "keybindings/modeselector.h"
 
 namespace
 {
@@ -115,6 +116,20 @@ QString scene_directory_hint(const QString& scene_filename)
   }
 }
 
+auto init_mode_selectors()
+{
+  std::map<QString, std::unique_ptr<omm::ModeSelector>> map;
+  const auto insert = [&map](const QString& name, const QString& cycle_action,
+                             const std::vector<QString>& activation_actions)
+  {
+    map.insert({name, std::make_unique<omm::ModeSelector>(cycle_action, activation_actions)});
+  };
+
+  insert(QT_TRANSLATE_NOOP(omm::KeyBindings::TRANSLATION_CONTEXT, "scene_mode"),
+         "scene_mode.cycle", {"scene_mode.object", "scene_mode.vertex"});
+  return map;
+}
+
 }  // namespace
 
 namespace omm
@@ -126,6 +141,7 @@ Application* Application::m_instance = nullptr;
 
 Application::Application(QCoreApplication& app, std::unique_ptr<Options> options)
   : first_member((init(), nullptr))
+  , mode_selectors(init_mode_selectors())
   , scene(python_engine)
   , m_app(app)
   , m_options(std::move(options))
@@ -326,22 +342,8 @@ bool Application::perform_action(const QString& action_name)
     main_window()->load_layout();
   } else if (action_name == "new toolbar") {
     spawn_toolbar();
-  } else if (action_name == "object_mode") {
-    scene.set_mode(SceneMode::Object);
-  } else if (action_name == "vertex_mode") {
-    scene.set_mode(SceneMode::Vertex);
-  } else if (action_name == "cycle_modes") {
-    scene.set_mode([mode=scene.current_mode()]{
-      switch (mode) {
-      case SceneMode::Object:
-        return SceneMode::Vertex;
-      case SceneMode::Vertex:
-        return SceneMode::Object;
-      default:
-        Q_UNREACHABLE();
-        return SceneMode::Object;
-      }
-    }());
+  } else if (action_name.startsWith("scene_mode.")) {
+    mode_selectors.at("scene_mode")->on_action(action_name);
   } else if (action_name == "previous tool") {
     scene.tool_box().set_previous_tool();
   } else if (action_name == "select all") {

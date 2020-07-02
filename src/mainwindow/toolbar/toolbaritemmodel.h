@@ -24,25 +24,11 @@ public:
   void reset(const QString& configuration);
   static constexpr auto items_key = "items";
 
-  struct ModeSelector
-  {
-    static constexpr auto cycle_action_key = "cycle_action";
-    static constexpr auto activation_actions_key = "activation_actions";
-    ModeSelector(const nlohmann::json& j);
-    ModeSelector(const QString& cycle_action, const std::vector<QString>& activation_actions);
-    nlohmann::json encode() const;
-
-    const QString cycle_action;  // the name of the action that cycles through the modes
-    const std::vector<QString> activation_actions;  // the actions than enable the available modes
-  };
-
-  static const std::vector<ModeSelector> mode_selectors;
-
 public Q_SLOTS:
   void remove_selection(const QItemSelection& selection);
   void add_group();
   void add_separator();
-  void add_switch(const ModeSelector& mode_selector);
+  void add_mode_selector(const QString& mode_selector_name);
 
 protected:
   bool canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column,
