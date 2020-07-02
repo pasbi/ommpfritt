@@ -171,10 +171,6 @@
         <translation>Hat Skript</translation>
     </message>
     <message>
-        <source>IsPathLike</source>
-        <translation>Ist pfadähnlich</translation>
-    </message>
-    <message>
         <source>IsView</source>
         <translation>Ist Ansicht</translation>
     </message>
@@ -536,18 +532,6 @@
     <message>
         <source>n</source>
         <translation>Ecken</translation>
-    </message>
-    <message>
-        <source>filename</source>
-        <translation>Dateiname</translation>
-    </message>
-    <message>
-        <source>Opacity</source>
-        <translation>Deckkraft</translation>
-    </message>
-    <message>
-        <source>image</source>
-        <translation>Bild</translation>
     </message>
     <message>
         <source>visible</source>
@@ -1029,14 +1013,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Linie</translation>
     </message>
     <message>
-        <source>Close</source>
-        <translation>Geschlossen</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation>Rückwärts</translation>
-    </message>
-    <message>
         <source>rectangle</source>
         <translation>Rechteck</translation>
     </message>
@@ -1047,10 +1023,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>output</source>
         <translation>Ausgabe</translation>
-    </message>
-    <message>
-        <source>Page</source>
-        <translation>Seite</translation>
     </message>
     <message>
         <source>Solid</source>
@@ -1424,6 +1396,66 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>disable OpenGL. OpenGL is enabled by default when using the `%1&apos;-command.</source>
         <translation>OpenGL deaktivieren. OpenGL ist normalerweise akiviert, wenn der `%1&apos;-Befehl benutzt wird.</translation>
     </message>
+    <message>
+        <source>Union</source>
+        <translation>Vereinigung</translation>
+    </message>
+    <message>
+        <source>Intersection</source>
+        <translation>Schnitt</translation>
+    </message>
+    <message>
+        <source>Exclusive Or</source>
+        <translation>Exklusives Oder</translation>
+    </message>
+    <message>
+        <source>Difference</source>
+        <translation>Differenz</translation>
+    </message>
+    <message>
+        <source>Inverse Difference</source>
+        <translation>Inverse Differenz</translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation>Boolean</translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <translation>Nullobjekt</translation>
+    </message>
+    <message>
+        <source>join</source>
+        <translation>vereinigen</translation>
+    </message>
+    <message>
+        <source>Snap tolerance</source>
+        <translation>Snap-Toleranz</translation>
+    </message>
+    <message>
+        <source>segment</source>
+        <translation>Segment</translation>
+    </message>
+    <message>
+        <source>Natural</source>
+        <translation>Natürlich</translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation>Distanz</translation>
+    </message>
+    <message>
+        <source>Interpolation</source>
+        <translation>Interpolation</translation>
+    </message>
+    <message>
+        <source>CutPathCommand</source>
+        <translation>Pfad Schneiden</translation>
+    </message>
+    <message>
+        <source>Cut Path</source>
+        <translation>Pfad schneiden</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1469,10 +1501,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Entf</translation>
     </message>
     <message>
-        <source>add spacer</source>
-        <translation>Trenner einfügen</translation>
-    </message>
-    <message>
         <source>add group</source>
         <translation>Gruppe einfügen</translation>
     </message>
@@ -1483,6 +1511,14 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>Customize tool bar</source>
         <translation>Toolbar anpassen</translation>
+    </message>
+    <message>
+        <source>add separator</source>
+        <translation>Separator</translation>
+    </message>
+    <message>
+        <source>add switch ...</source>
+        <translation>Schalter</translation>
     </message>
 </context>
 <context>
@@ -1543,10 +1579,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>Empty</source>
         <translation>Nullobjekt</translation>
-    </message>
-    <message>
-        <source>ImageObject</source>
-        <translation>Bildobjekt</translation>
     </message>
     <message>
         <source>Instance</source>
@@ -1719,6 +1751,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>Tip</source>
         <translation>Spitze</translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation>Boolean</translation>
     </message>
 </context>
 <context>
@@ -1908,10 +1944,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Eigenschaften-Manager</translation>
     </message>
     <message>
-        <source>switch between object and point selection</source>
-        <translation>Zwischen Objekt- und Punk-Selektion wechseln</translation>
-    </message>
-    <message>
         <source>invert selection</source>
         <translation>Selektion invertieren</translation>
     </message>
@@ -1966,6 +1998,22 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>remove unused styles</source>
         <translation>Unbenutzte Styles entfernen</translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation>Boolean</translation>
+    </message>
+    <message>
+        <source>scene_mode.cycle</source>
+        <translation>Nächster Szenen Modus</translation>
+    </message>
+    <message>
+        <source>scene_mode.object</source>
+        <translation>Objekt-Modus</translation>
+    </message>
+    <message>
+        <source>scene_mode.vertex</source>
+        <translation>Vertex-Modus</translation>
     </message>
 </context>
 <context>

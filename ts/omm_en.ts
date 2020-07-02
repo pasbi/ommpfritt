@@ -171,10 +171,6 @@
         <translation>Has Script</translation>
     </message>
     <message>
-        <source>IsPathLike</source>
-        <translation>Is path like</translation>
-    </message>
-    <message>
         <source>IsView</source>
         <translation>Is view</translation>
     </message>
@@ -536,18 +532,6 @@
     <message>
         <source>n</source>
         <translation>Count</translation>
-    </message>
-    <message>
-        <source>filename</source>
-        <translation>Filename</translation>
-    </message>
-    <message>
-        <source>Opacity</source>
-        <translation>Opacity</translation>
-    </message>
-    <message>
-        <source>image</source>
-        <translation>Image</translation>
     </message>
     <message>
         <source>visible</source>
@@ -1029,14 +1013,6 @@ Remove the selected items anyway?</translation>
         <translation>Line</translation>
     </message>
     <message>
-        <source>Close</source>
-        <translation>Close</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation>Invert</translation>
-    </message>
-    <message>
         <source>rectangle</source>
         <translation>Rectangle</translation>
     </message>
@@ -1047,10 +1023,6 @@ Remove the selected items anyway?</translation>
     <message>
         <source>output</source>
         <translation>Output</translation>
-    </message>
-    <message>
-        <source>Page</source>
-        <translation>Page</translation>
     </message>
     <message>
         <source>Solid</source>
@@ -1424,6 +1396,66 @@ Remove the selected items anyway?</translation>
         <source>disable OpenGL. OpenGL is enabled by default when using the `%1&apos;-command.</source>
         <translation>disable OpenGL. OpenGL is enabled by default when using the `%1&apos;-command.</translation>
     </message>
+    <message>
+        <source>Union</source>
+        <translation>Union</translation>
+    </message>
+    <message>
+        <source>Intersection</source>
+        <translation>Intersection</translation>
+    </message>
+    <message>
+        <source>Exclusive Or</source>
+        <translation>Exclusive Or</translation>
+    </message>
+    <message>
+        <source>Difference</source>
+        <translation>Difference</translation>
+    </message>
+    <message>
+        <source>Inverse Difference</source>
+        <translation>Inverse Difference</translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation>Boolean</translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <translation>Empty</translation>
+    </message>
+    <message>
+        <source>join</source>
+        <translation>join</translation>
+    </message>
+    <message>
+        <source>Snap tolerance</source>
+        <translation>Snap tolerance</translation>
+    </message>
+    <message>
+        <source>segment</source>
+        <translation>Segment</translation>
+    </message>
+    <message>
+        <source>Natural</source>
+        <translation>Natural</translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation>Distance</translation>
+    </message>
+    <message>
+        <source>Interpolation</source>
+        <translation>Interpolation</translation>
+    </message>
+    <message>
+        <source>CutPathCommand</source>
+        <translation>Cut path</translation>
+    </message>
+    <message>
+        <source>Cut Path</source>
+        <translation>Cut path</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1469,10 +1501,6 @@ Remove the selected items anyway?</translation>
         <translation>Del</translation>
     </message>
     <message>
-        <source>add spacer</source>
-        <translation>Add spacer</translation>
-    </message>
-    <message>
         <source>add group</source>
         <translation>Add group</translation>
     </message>
@@ -1483,6 +1511,14 @@ Remove the selected items anyway?</translation>
     <message>
         <source>Customize tool bar</source>
         <translation>Customize toolbar</translation>
+    </message>
+    <message>
+        <source>add separator</source>
+        <translation>Add separator</translation>
+    </message>
+    <message>
+        <source>add switch ...</source>
+        <translation>Add switch</translation>
     </message>
 </context>
 <context>
@@ -1543,10 +1579,6 @@ Remove the selected items anyway?</translation>
     <message>
         <source>Empty</source>
         <translation>Empty</translation>
-    </message>
-    <message>
-        <source>ImageObject</source>
-        <translation>Image object</translation>
     </message>
     <message>
         <source>Instance</source>
@@ -1719,6 +1751,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>Tip</source>
         <translation>Tip</translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation>Boolean</translation>
     </message>
 </context>
 <context>
@@ -1908,10 +1944,6 @@ Remove the selected items anyway?</translation>
         <translation>Property manager</translation>
     </message>
     <message>
-        <source>switch between object and point selection</source>
-        <translation>Switch between object- and point-selection</translation>
-    </message>
-    <message>
         <source>invert selection</source>
         <translation>Invert selection</translation>
     </message>
@@ -1966,6 +1998,22 @@ Remove the selected items anyway?</translation>
     <message>
         <source>remove unused styles</source>
         <translation>Remove unused styles</translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation>Boolean</translation>
+    </message>
+    <message>
+        <source>scene_mode.cycle</source>
+        <translation>Next scene mode</translation>
+    </message>
+    <message>
+        <source>scene_mode.object</source>
+        <translation>Object mode</translation>
+    </message>
+    <message>
+        <source>scene_mode.vertex</source>
+        <translation>Vertex mode</translation>
     </message>
 </context>
 <context>
@@ -2990,7 +3038,7 @@ Do you want to convert them into ordinary colors?</numerusform>
     </message>
     <message>
         <source>separator</source>
-        <translation>Trenner</translation>
+        <translation>Separator</translation>
     </message>
 </context>
 <context>

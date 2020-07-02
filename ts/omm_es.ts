@@ -171,10 +171,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>IsPathLike</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>IsView</source>
         <translation type="unfinished"></translation>
     </message>
@@ -536,18 +532,6 @@
     <message>
         <source>n</source>
         <translation>Puntos</translation>
-    </message>
-    <message>
-        <source>filename</source>
-        <translation>Nombre de fichero</translation>
-    </message>
-    <message>
-        <source>Opacity</source>
-        <translation>Opacidad</translation>
-    </message>
-    <message>
-        <source>image</source>
-        <translation>Imagen</translation>
     </message>
     <message>
         <source>visible</source>
@@ -1029,14 +1013,6 @@ Borrar la selección de todos modos?</translation>
         <translation>Línea</translation>
     </message>
     <message>
-        <source>Close</source>
-        <translation>Cerrado</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation>Inverso</translation>
-    </message>
-    <message>
         <source>rectangle</source>
         <translation>Rectángulo</translation>
     </message>
@@ -1047,10 +1023,6 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>output</source>
         <translation>Output</translation>
-    </message>
-    <message>
-        <source>Page</source>
-        <translation>Página</translation>
     </message>
     <message>
         <source>Solid</source>
@@ -1424,6 +1396,66 @@ Borrar la selección de todos modos?</translation>
         <source>disable OpenGL. OpenGL is enabled by default when using the `%1&apos;-command.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Union</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exclusive Or</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Difference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inverse Difference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty</source>
+        <translation type="unfinished">Objeto vacío</translation>
+    </message>
+    <message>
+        <source>join</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Snap tolerance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>segment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Natural</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CutPathCommand</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cut Path</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1469,10 +1501,6 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>add spacer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>add group</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1482,6 +1510,14 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>Customize tool bar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>add separator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>add switch ...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1543,10 +1579,6 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>Empty</source>
         <translation>Objeto vacío</translation>
-    </message>
-    <message>
-        <source>ImageObject</source>
-        <translation>Objeto Imagen</translation>
     </message>
     <message>
         <source>Instance</source>
@@ -1719,6 +1751,10 @@ Borrar la selección de todos modos?</translation>
     <message>
         <source>Tip</source>
         <translation type="unfinished">Punta</translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1908,10 +1944,6 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished">Controles de Atributos</translation>
     </message>
     <message>
-        <source>switch between object and point selection</source>
-        <translation type="unfinished">Cambiar entre la selección de objectos y puntos</translation>
-    </message>
-    <message>
         <source>invert selection</source>
         <translation type="unfinished">Invertir selección</translation>
     </message>
@@ -1965,6 +1997,22 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>remove unused styles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boolean</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>scene_mode.cycle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>scene_mode.object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>scene_mode.vertex</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
