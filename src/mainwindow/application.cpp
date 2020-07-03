@@ -100,13 +100,6 @@ auto load_locale()
   return locale;
 }
 
-void init()
-{
-  omm::register_everything();
-  QCoreApplication::setOrganizationName(QObject::tr("omm"));
-  QCoreApplication::setApplicationName(::QApplication::translate("QObject", "ommpfritt"));
-}
-
 QString scene_directory_hint(const QString& scene_filename)
 {
   if (QFileInfo::exists(scene_filename)) {
@@ -122,11 +115,13 @@ auto init_mode_selectors()
   const auto insert = [&map](const QString& name, const QString& cycle_action,
                              const std::vector<QString>& activation_actions)
   {
-    map.insert({name, std::make_unique<omm::ModeSelector>(cycle_action, activation_actions)});
+    map.insert({name, std::make_unique<omm::ModeSelector>(omm::Application::instance(),
+                                                          name,
+                                                          cycle_action,
+                                                          activation_actions)});
   };
 
-  insert(QT_TRANSLATE_NOOP(omm::KeyBindings::TRANSLATION_CONTEXT, "scene_mode"),
-         "scene_mode.cycle", {"scene_mode.object", "scene_mode.vertex"});
+  insert("scene_mode", "scene_mode.cycle", {"scene_mode.object", "scene_mode.vertex"});
   return map;
 }
 
@@ -140,19 +135,13 @@ const std::set<int> Application::keyboard_modifiers { Qt::Key_Shift, Qt::Key_Con
 Application* Application::m_instance = nullptr;
 
 Application::Application(QCoreApplication& app, std::unique_ptr<Options> options)
-  : first_member((init(), nullptr))
+  : first_member((init(this), nullptr))
   , mode_selectors(init_mode_selectors())
   , scene(python_engine)
   , m_app(app)
   , m_options(std::move(options))
   , m_locale(load_locale())
 {
-  if (m_instance == nullptr) {
-    m_instance = this;
-  } else {
-    LFATAL("Resetting application instance.");
-  }
-
   scene.set_selection({});
   if (!this->options().is_cli) {
     ui_colors.apply();
@@ -166,6 +155,19 @@ Application::Application(QCoreApplication& app, std::unique_ptr<Options> options
   install_translators();
   scene.polish();
 }
+
+void Application::init(omm::Application* instance)
+{
+  register_everything();
+  QCoreApplication::setOrganizationName(QObject::tr("omm"));
+  QCoreApplication::setApplicationName(::QApplication::translate("QObject", "ommpfritt"));
+  if (Application::m_instance == nullptr) {
+    Application::m_instance = instance;
+  } else {
+    LFATAL("Resetting application instance.");
+  }
+}
+
 
 Application::~Application()
 {

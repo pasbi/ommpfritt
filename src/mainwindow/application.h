@@ -123,6 +123,7 @@ public:
   std::set<Manager*> managers(const QString& type) const;
 
   bool perform_action(const QString& name) override;
+
 private:
   QTimer m_reset_keysequence_timer;
   QKeySequence m_pending_key_sequence;
@@ -131,6 +132,7 @@ private:
   void install_translators();
   std::set<std::unique_ptr<QTranslator>> m_translators;
   const QLocale m_locale;
+  static void init(omm::Application* instance);
 };
 
 const Preferences& preferences();

@@ -5,16 +5,20 @@
 namespace omm
 {
 
+class CommandInterface;
+
 class ModeSelector : public QObject
 {
   Q_OBJECT
 
 public:
-  ModeSelector(const QString& cycle_action, const std::vector<QString>& activation_actions);
+  ModeSelector(CommandInterface& context, const QString& name, const QString& cycle_action,
+               const std::vector<QString>& activation_actions);
   virtual ~ModeSelector();
 
 public:
   int mode() const { return m_mode; }
+  QString translated_name() const;
 
 Q_SIGNALS:
   void mode_changed(int mode);
@@ -28,8 +32,10 @@ private:
   int m_mode = 0;
 
 public:
+  const CommandInterface& context;
+  const QString name;
   const QString cycle_action;
-  std::vector<QString> activation_actions;
+  const std::vector<QString> activation_actions;
 };
 
 }  // namespace omm

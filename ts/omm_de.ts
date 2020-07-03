@@ -2015,6 +2015,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>scene_mode.vertex</source>
         <translation>Vertex-Modus</translation>
     </message>
+    <message>
+        <source>scene_mode</source>
+        <translation>Szenen Modus</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>

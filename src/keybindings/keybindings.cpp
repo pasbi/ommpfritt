@@ -110,7 +110,6 @@ KeyBindings::find_action(const QString& context, const QString& action_name) con
   const auto it = std::find_if(group->values.begin(), group->values.end(),
                                [action_name](const auto& value)
   {
-    LINFO << action_name << " " << value->name;
     return action_name == value->name;
   });
   if (it == group->values.end()) {

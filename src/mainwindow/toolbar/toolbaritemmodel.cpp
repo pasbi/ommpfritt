@@ -74,7 +74,7 @@ template<int type>
 class HyperItem : public Item<type>
 {
 public:
-  HyperItem(const QString& label)
+  void set_label(const QString& label)
   {
     this->setData(label, Qt::DisplayRole);
   }
@@ -86,8 +86,11 @@ protected:
 class GroupItem : public HyperItem<group_item_id>
 {
 public:
-  explicit GroupItem() : HyperItem(omm::ToolBarItemModel::tr("group")) {}
+  explicit GroupItem() : HyperItem()
+  {
+    set_label(omm::ToolBarItemModel::tr("group"));
     this->setFlags(this->flags() | Qt::ItemIsDropEnabled);
+  }
 
   nlohmann::json encode() const override
   {
@@ -125,9 +128,11 @@ class SwitchItem : public HyperItem<switch_item_id>
 {
 public:
   explicit SwitchItem(const nlohmann::json& item)
-    : HyperItem(QString::fromStdString(item["name"]))
+    : HyperItem()
     , m_mode_selector(QString::fromStdString(item["name"]))
   {
+    const auto& mode_selector = *Application::instance().mode_selectors.at(m_mode_selector);
+    set_label(mode_selector.translated_name());
   }
 
   nlohmann::json encode() const override
@@ -165,7 +170,10 @@ private:
 class SeparatorItem : public HyperItem<separator_item_id>
 {
 public:
-  explicit SeparatorItem() : HyperItem(omm::ToolBarItemModel::tr("separator")) {}
+  explicit SeparatorItem() : HyperItem()
+  {
+    set_label(omm::ToolBarItemModel::tr("separator"));
+  }
 
   std::unique_ptr<QAction> make_action() const override
   {
@@ -340,7 +348,9 @@ void ToolBarItemModel::add_items(const nlohmann::json& code, int row, const QMod
 void ToolBarItemModel::populate(QToolBar& tool_bar) const
 {
   for (int row = 0; row < rowCount(); ++row) {
-    tool_bar.addAction(static_cast<const AbstractItem*>(item(row, 0))->make_action().release());
+    if (auto action = static_cast<const AbstractItem*>(item(row, 0))->make_action(); action) {
+      tool_bar.addAction(action.release());
+    }
   }
   Q_UNUSED(tool_bar)
 }

@@ -61,8 +61,9 @@ void PreferencesTreeValueItem::reset()
 
 QString PreferencesTreeValueItem::translated_name() const
 {
-  return QCoreApplication::translate((translation_context + "/" + group).toUtf8().constData(),
-                                     name.toUtf8().constData());
+  const QByteArray context = (translation_context + "/" + group).toUtf8();
+  const QByteArray text = name.toUtf8();
+  return QCoreApplication::translate(context.constData(), text.constData());
 }
 
 QIcon PreferencesTreeValueItem::icon() const

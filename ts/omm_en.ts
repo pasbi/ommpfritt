@@ -2015,6 +2015,10 @@ Remove the selected items anyway?</translation>
         <source>scene_mode.vertex</source>
         <translation>Vertex mode</translation>
     </message>
+    <message>
+        <source>scene_mode</source>
+        <translation>Scene mode</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>
@@ -3034,7 +3038,7 @@ Do you want to convert them into ordinary colors?</numerusform>
     <name>omm::ToolBarItemModel</name>
     <message>
         <source>group</source>
-        <translation>Gruppe</translation>
+        <translation type="unfinished">Group</translation>
     </message>
     <message>
         <source>separator</source>

@@ -7,6 +7,7 @@
 #include "preferences/keybindingsproxymodel.h"
 #include <QIdentityProxyModel>
 #include <QMimeData>
+#include "keybindings/modeselector.h"
 
 namespace
 {
@@ -106,7 +107,7 @@ ToolBarDialog::ToolBarDialog(ToolBarItemModel& model, QWidget* parent)
 
   {
     for (auto&& [name, mode_selector] : Application::instance().mode_selectors) {
-      const auto tr_name = qApp->translate(KeyBindings::TRANSLATION_CONTEXT, name.toUtf8().data());
+      const auto tr_name = mode_selector->translated_name();
       auto action = std::make_unique<QAction>(tr_name);
       connect(action.get(), &QAction::triggered, [this, name=name]() {
         m_model.add_mode_selector(name);

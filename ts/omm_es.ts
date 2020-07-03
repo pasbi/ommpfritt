@@ -2015,6 +2015,10 @@ Borrar la selección de todos modos?</translation>
         <source>scene_mode.vertex</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>scene_mode</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>

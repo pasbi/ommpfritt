@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import re
 import os
 import argparse
 import generated_file_header
@@ -16,12 +17,22 @@ def collect(fn):
                 item = line.split(":")[0]
                 yield group, item
 
+def generate_prefixes(text):
+    tokens = re.split(r"\b\.\b", text)
+    print("TEXT: ", text)
+    for i in range(0, len(tokens)):
+        prefix = ".".join(tokens[:i+1])
+        print("prefix: ", prefix)
+        yield prefix
+
 def format_line(disambiguation, text):
     def escape_cpp(text):
         return text.replace("\n", "\\n").replace("\\", "\\\\").replace("\"", "\\\"");
+
     disambiguation = escape_cpp(disambiguation)
-    text = escape_cpp(text)
-    return f'QT_TRANSLATE_NOOP("{disambiguation}", "{text}");'
+    for prefix in generate_prefixes(text):
+        prefix = escape_cpp(prefix)
+        yield f'QT_TRANSLATE_NOOP("{disambiguation}", "{prefix}");'
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -35,7 +46,11 @@ if __name__ == "__main__":
             disambiguation = subdir + "/" + group
             items.add((disambiguation, item))
 
-    lines = [ format_line(disambiguation, text) for disambiguation, text in items ]
+    lines = set()
+    for disambiguation, text in items:
+        for line in format_line(disambiguation, text):
+            lines.add(line)
+
     lines = sorted(lines)
 
     print(f"Writing translations into '{args.output}'...")
