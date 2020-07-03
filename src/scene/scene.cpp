@@ -490,6 +490,7 @@ void Scene::set_mode(SceneMode mode)
   if (m_mode != mode) {
     m_mode = mode;
     m_tool_box->set_scene_mode(mode);
+    Application::instance().mode_selectors.at("scene_mode")->set_mode(static_cast<int>(mode));
   }
 }
 

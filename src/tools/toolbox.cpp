@@ -73,6 +73,7 @@ void ToolBox::set_active_tool(Tool* tool)
     }
     m_active_tool = tool;
     m_scene.set_selection(std::set<AbstractPropertyOwner*> { m_active_tool });
+    m_scene.set_mode(m_active_tool->scene_mode());
     m_active_tool->reset();
     Q_EMIT active_tool_changed(*m_active_tool);
   }
@@ -88,14 +89,16 @@ void ToolBox::set_previous_tool()
 
 void ToolBox::set_scene_mode(SceneMode mode)
 {
-  const auto it = std::find_if(m_history.rbegin(), m_history.rend(), [mode](const Tool* candidate) {
-    return candidate->scene_mode() == mode;
-  });
+  if (m_active_tool && m_active_tool->scene_mode() != mode) {
+    const auto it = std::find_if(m_history.begin(), m_history.end(), [mode](const Tool* candidate) {
+      return candidate->scene_mode() == mode;
+    });
 
-  if (it == m_history.rend()) {
-    set_active_tool(m_default_tools.at(mode));
-  } else {
-    set_active_tool(*it);
+    if (it == m_history.end()) {
+      set_active_tool(m_default_tools.at(mode));
+    } else {
+      set_active_tool(*it);
+    }
   }
 }
 
