@@ -109,10 +109,15 @@ public:
       const auto item = this->child(row);
       button->addAction(static_cast<const AbstractItem*>(item)->make_action().release());
     }
-    button->setDefaultAction(button->actions().first());
-    auto action = std::make_unique<QWidgetAction>(nullptr);
-    action->setDefaultWidget(button.release());
-    return action;
+    if (button->actions().empty()) {
+      LWARNING << "Skip empty group.";
+      return nullptr;
+    } else {
+      button->setDefaultAction(button->actions().first());
+      auto action = std::make_unique<QWidgetAction>(nullptr);
+      action->setDefaultWidget(button.release());
+      return action;
+    }
   }
 };
 
