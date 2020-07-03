@@ -77,7 +77,6 @@ public:
   HyperItem(const QString& label)
   {
     this->setData(label, Qt::DisplayRole);
-    this->setFlags(this->flags() | Qt::ItemIsDropEnabled);
   }
 
 protected:
@@ -88,6 +87,7 @@ class GroupItem : public HyperItem<group_item_id>
 {
 public:
   explicit GroupItem() : HyperItem(omm::ToolBarItemModel::tr("group")) {}
+    this->setFlags(this->flags() | Qt::ItemIsDropEnabled);
 
   nlohmann::json encode() const override
   {
