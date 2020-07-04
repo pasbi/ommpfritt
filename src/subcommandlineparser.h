@@ -11,6 +11,7 @@ class SubcommandLineParser : public QCommandLineParser
 {
 public:
   static constexpr auto COMMAND_TREE = "tree";
+  static constexpr auto STATUS_CODE = "status";
   static constexpr auto COMMAND_RENDER = "render";
   explicit SubcommandLineParser(int argc, char* argv[]);
   explicit SubcommandLineParser();

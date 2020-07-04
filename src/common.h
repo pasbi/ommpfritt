@@ -28,6 +28,14 @@ enum class Flag { None = 0x0,
                   HasNodes = HasPythonNodes | HasGLSLNodes,
                   HasPython = HasPythonNodes | HasScript };
 
+enum class ExitStatus {
+  object_type_not_found = 1,
+  object_name_not_found = 2,
+  invalid_input_format = 3,
+  non_unique_object_reference = 4,
+  refuse_overwrite_file = 5,
+};
+
 enum class InterpolationMode { Linear, Smooth, Bezier };
 enum class HandleStatus { Hovered, Active, Inactive };
 enum class SceneMode { Object, Vertex };

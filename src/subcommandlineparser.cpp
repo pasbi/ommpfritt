@@ -95,6 +95,21 @@ static const std::map<QString, QList<QCommandLineOption>> options {
       make_verbosity_option(),
     }
   },
+  {
+    omm::SubcommandLineParser::STATUS_CODE,
+    {
+      make_verbosity_option(),
+      {
+        { "c", "get-code" },
+        QObject::tr("Get status code for given description."),
+        QObject::tr("DESCRIPTION"),
+      },
+      {
+        { "l", "list" },
+        QObject::tr("List status codes and descriptions.")
+      }
+    }
+  }
 };
 
 namespace omm

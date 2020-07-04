@@ -1,4 +1,5 @@
 #include <iostream>
+#include "enumnames.h"
 #include "logging.h"
 #include <QRegularExpression>
 #include "tags/tag.h"
@@ -14,6 +15,15 @@
 #include <QFileInfo>
 #include <QFile>
 
+namespace
+{
+
+void exit(omm::ExitStatus status)
+{
+  ::exit(static_cast<int>(status));
+}
+
+}  // namespace
 
 template<typename T> const T& find(omm::Scene& scene, const QString& name)
 {
@@ -32,7 +42,7 @@ template<typename T> const T& find(omm::Scene& scene, const QString& name)
              .arg(view_names.size())
              .arg(T::TYPE)
              .arg(view_names.join("\n"));
-    exit(EXIT_FAILURE);
+    exit(omm::ExitStatus::object_type_not_found);
   } else if (name_type_matches.size() > 1) {
     LWARNING << QString("%1 '%2' is ambiguous (%3) occurences.")
                 .arg(T::TYPE).arg(name).arg(name_type_matches.size());
@@ -51,7 +61,7 @@ QString interpolate_filename(QString fn_template, int i)
   const QString placeholder = fn_template.mid(first_match, last_match - first_match + 1);
   if (placeholder.count(omm::SubcommandLineParser::FRAMENUMBER_PLACEHOLDER) != placeholder.size()) {
     LERROR << QObject::tr("Framenumber placeholder must be contiguous.");
-    exit(EXIT_FAILURE);
+    exit(omm::ExitStatus::invalid_input_format);
   }
 
   const auto formatted_number = QString("%1").arg(i, placeholder.size(), 10, QChar('0'));
@@ -91,9 +101,9 @@ void prepare_scene(omm::Scene& scene, const omm::SubcommandLineParser& args)
 {
   const QString& object_name = args.get<QString>("object", "");
   const QString& object_path = args.get<QString>("path", "");
-  if (!object_name.isEmpty() + !object_path.isEmpty() > 1) {
+  if (!object_name.isEmpty() && !object_path.isEmpty()) {
     LERROR << "options path and object are mutual exclusive.";
-    exit(1);
+    exit(omm::ExitStatus::invalid_input_format);
   }
 
   const auto predicate = [object_name, object_path](const auto* object) {
@@ -131,7 +141,7 @@ void render(omm::Application& app, const omm::SubcommandLineParser& args)
     const QString filename = interpolate_filename(fn_template, animator.current());
     if (QFileInfo::exists(filename) && !force) {
       LERROR << QObject::tr("Refuse to overwrite existing file '%1'.").arg(filename);
-      exit(EXIT_FAILURE);
+      exit(omm::ExitStatus::refuse_overwrite_file);
     }
     QImage image(resolution, QImage::Format_ARGB32_Premultiplied);
     image.fill(Qt::red);
@@ -154,6 +164,46 @@ void tree(omm::Application& app, const omm::SubcommandLineParser& args)
   const QString scene_filename = args.get<QString>("input");
   app.scene.load_from(scene_filename);
   print_tree(app.scene.object_tree().root());
+}
+
+void status(omm::Application&, const omm::SubcommandLineParser& args)
+{
+  static const auto& statuses = omm::enumerate_enum<omm::ExitStatus>();
+  if (args.isSet("list")) {
+    std::cout << statuses.size() << " status codes:\n";
+    for (auto&& status : statuses) {
+      std::cout << std::setw(3) << std::setfill(' ') << static_cast<int>(status);
+      const auto name = omm::enum_name(status, false);
+      const auto tr_name = omm::enum_name(status, true);
+      std::cout << " " << tr_name.toStdString();
+      if (name != tr_name) {
+        std::cout << " (" << name.toStdString() << ")";
+      }
+      std::cout << "\n";
+    }
+  } else if (args.isSet("get-code")) {
+    const auto description = args.get<QString>("get-code");
+    const auto handle_match = [d=description](bool translate) {
+      const auto it = std::find_if(statuses.begin(), statuses.end(), [d, translate](auto&& c) {
+        return omm::enum_name(c, translate) == d;
+      });
+      if (it == statuses.end()) {
+        return false;
+      } else {
+        std::cout << static_cast<int>(*it);
+        return true;
+      }
+    };
+
+    if (!handle_match(false)) {
+      if (!handle_match(true)) {
+        LERROR << "Description '" << description << "not found.";
+        exit(omm::ExitStatus::invalid_input_format);
+      }
+    }
+  } else {
+    std::cout << args.helpText().toStdString();
+  }
 }
 
 std::unique_ptr<omm::Options> make_options(const omm::SubcommandLineParser& args)
@@ -184,7 +234,7 @@ int main(int argc, char* argv[])
     const auto levels = ::transform<QString, QList>(::get_keys(omm::LogLevel::loglevels));
     std::cerr << "Unknown log level '" << level << "'. Use " << levels.join("|") << ".\n";
     std::cerr << std::flush;
-    exit(2);
+    exit(omm::ExitStatus::invalid_input_format);
   }
 
   setup_logfile(logfile);
@@ -198,6 +248,7 @@ int main(int argc, char* argv[])
   static const std::map<QString, subcommand_t> f_map {
     { "render", &render },
     { "tree", &tree },
+    { "status", &status },
   };
 
   if (const auto it = f_map.find(args.command()); it == f_map.end()) {

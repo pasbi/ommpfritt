@@ -8,16 +8,17 @@
 namespace omm
 {
 
-template<typename E> QString enum_name(E e, bool translate);
-
 template<typename E> const char* enum_name_impl(E e);
+
+template<typename E> std::set<E> enumerate_enum();
+template<typename E> bool is_flag();
 
 template<typename E> QString enum_name(E e, bool translate)
 {
   using U = std::underlying_type_t<E>;
   const auto u = static_cast<U>(e);
   const bool one_bit_set = u && !(u & (u-1));
-  if (one_bit_set) {
+  if (one_bit_set || !is_flag<E>()) {
     if (translate) {
       return QApplication::translate("Enum", enum_name_impl(e));
     } else {
@@ -35,7 +36,5 @@ template<typename E> QString enum_name(E e, bool translate)
     return items.join(" | ");
   }
 }
-
-template<typename E> std::set<E> enumerate_enum();
 
 }  // namespace om
