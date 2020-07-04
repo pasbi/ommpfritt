@@ -18,6 +18,46 @@ def generate_qrc(items):
     lines.append('')
     return "\n".join(lines)
 
+def lst_decoder(fn):
+    with open(fn, 'r') as f:
+        spec = json.load(f)
+    category = spec["category"]
+    for item in spec["items"]:
+        yield category, item
+
+def cfg_decoder(fn):
+    with open(fn, 'r') as f:
+        category = None
+        for line in f.readlines():
+            line = line.strip()
+            if line.startswith("[") and line.endswith("]"):
+                category = line[1:-1]
+            elif line.startswith("#"):
+                pass
+            elif len(line.strip()) == 0:
+                pass
+            else:
+                item = line.split(":")[0]
+                yield "actions", item
+
+def get_omm_status_code(omm_command, description):
+    command = [
+        omm_command,
+        "status",
+        "-c", description
+    ]
+    cp = subprocess.run(command, capture_output=True)
+    if cp.returncode == 0:
+        try:
+            return int(cp.stdout)
+        except ValueError:
+            print("Failed to parse status code '{cp.stdout}' as int.")
+            sys.exit(1);
+    else:
+        print(f"Failed to retrieve return code for '{description}'.")
+        sys.exit(2);
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--specs',
@@ -48,16 +88,21 @@ if __name__ == "__main__":
         sys.exit(1)
 
     items = []
+    decoders = {
+        ".lst": lst_decoder,
+        ".cfg": cfg_decoder
+    }
     for fn in args.specs:
-        with open(fn, 'r') as f:
-            spec = json.load(f)
-        category = spec["category"]
-        for item in spec["items"]:
-            items.append((category, item))
+        for ext, decoder in decoders.items():
+            if fn.endswith(ext):
+                for item in decoder(fn):
+                    items.append(item)
+                break
 
-    with open(args.qrc, 'w') as f:
-        f.write(generate_qrc([item for _, item in items]))
-
+    object_name_not_found_code = get_omm_status_code(args.command,
+                                                     "object name not found")
+    
+    rendered_icons = []
     for category, item in items:
         command = [
             args.command,
@@ -68,11 +113,15 @@ if __name__ == "__main__":
             "-p", f"_root_/{category}/{item}$",
             "-o", f"{args.output}/{item}.png",
             "-y",
-            "--no-opengl"
+            "--no-opengl",
+            "--unique"
         ]
         cp = subprocess.run(command, capture_output=True)
         print(f"Render icon for {category}/{item} ...", end="")
-        if cp.returncode != 0:
+        print(" ".join(command))
+        if cp.returncode == object_name_not_found_code:
+            print(f" skip (undefined in {args.scenefile}).")
+        elif cp.returncode != 0:
             print(f" failed with code {cp.returncode}.")
             print("Command was:")
             print(cp.args)
@@ -80,5 +129,10 @@ if __name__ == "__main__":
             print(cp.stderr)
             exit(1)
         else:
+            rendered_icons.append(item)
             print(" done.")
+
+    with open(args.qrc, 'w') as f:
+        f.write(generate_qrc(rendered_icons))
+
 

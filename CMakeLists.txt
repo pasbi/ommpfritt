@@ -64,7 +64,11 @@ generate_resources(resources_cli ${compiled_resource_file_cli} "${qrc_files_cli}
 
 set(icons_qrc "${CMAKE_CURRENT_BINARY_DIR}/icons/icons.qrc")
 if (GENERATE_ICONS)
-  generate_icons("${icons_qrc}" "${classes};extra")
+  set(specs "${classes};extra")
+  list(TRANSFORM specs PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/lists/")
+  list(TRANSFORM specs APPEND ".lst")
+  set(specs "${specs};${CMAKE_CURRENT_SOURCE_DIR}/keybindings/default_keybindings.cfg")
+  generate_icons("${icons_qrc}" "${specs}")
 endif()
 
 set(qrc_files "${qrc_files_cli}")

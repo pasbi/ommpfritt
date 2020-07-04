@@ -1,10 +1,6 @@
-function(generate_icons icons_qrc classes)
+function(generate_icons icons_qrc specs)
   set(icons_dir "${CMAKE_CURRENT_BINARY_DIR}/icons")
   file(MAKE_DIRECTORY "${icons_dir}")
-
-  set(specs "${classes}")
-  list(TRANSFORM specs PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/lists/")
-  list(TRANSFORM specs APPEND ".lst")
 
   set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/generate-icons.py")
   set(scenefile "${CMAKE_CURRENT_SOURCE_DIR}/icons/icons.omm")
