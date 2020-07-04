@@ -16,7 +16,7 @@ PythonConsoleTitleBar::PythonConsoleTitleBar(PythonConsole& parent)
 
   auto& app = Application::instance();
   python_menu->addAction(app.key_bindings.make_menu_action(parent, "clear console").release());
-  python_menu->addAction(app.key_bindings.make_menu_action(parent, "evaluate").release());
+  python_menu->addAction(app.key_bindings.make_menu_action(parent, "py-evaluate").release());
 
   auto menu_bar = std::make_unique<QMenuBar>();
   menu_bar->setSizePolicy(QSizePolicy::Preferred, menu_bar->sizePolicy().verticalPolicy());
