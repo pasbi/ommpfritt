@@ -1,4 +1,5 @@
 #include "tools/toolbox.h"
+#include "common.h"
 #include "scene/scene.h"
 #include "tools/selecttool.h"
 #include "tools/selectpointstool.h"
@@ -100,6 +101,13 @@ void ToolBox::set_scene_mode(SceneMode mode)
       set_active_tool(*it);
     }
   }
+}
+
+std::set<Tool*> ToolBox::tools() const
+{
+  return ::transform<Tool*, std::set>(m_tools, [](auto&& pair) {
+    return pair.second.get();
+  });
 }
 
 }  // namespace

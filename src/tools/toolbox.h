@@ -20,6 +20,7 @@ public:
   void set_active_tool(Tool* tool);
   void set_previous_tool();
   void set_scene_mode(SceneMode mode);
+  std::set<Tool*> tools() const;
 
 Q_SIGNALS:
   void active_tool_changed(const Tool& active_tool);

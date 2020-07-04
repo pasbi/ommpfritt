@@ -232,6 +232,10 @@ void convert_objects(Application& app)
     scene.submit<ObjectSelectionCommand>(app.scene, convertibles);
     const auto converted_objects = ::convert_objects(app, convertibles);
     scene.submit<ObjectSelectionCommand>(app.scene, converted_objects);
+    const auto is_path = [](auto&& object) { return object->type() == Path::TYPE; };
+    if (std::all_of(converted_objects.begin(), converted_objects.end(), is_path)) {
+      scene.set_mode(SceneMode::Vertex);
+    }
   }
 }
 

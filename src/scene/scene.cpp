@@ -506,6 +506,8 @@ bool Scene::contains(const AbstractPropertyOwner *apo) const
     return object_tree().contains(static_cast<const Object&>(*apo));
   case Kind::Style:
     return styles().contains(static_cast<const Style&>(*apo));
+  case Kind::Tool:
+    return ::contains(m_tool_box->tools(), apo);
   default: return false;
   }
 }
