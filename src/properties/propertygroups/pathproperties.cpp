@@ -33,7 +33,7 @@ void omm::PathProperties::make_properties(const QString& category) const
     .set_category(category);
   create_property<BoolProperty>(ALIGN_PROPERTY_KEY)
     .set_label(QObject::tr("align"))
-      .set_category(category);
+    .set_category(category);
 }
 
 void PathProperties::apply_transformation(Object& object, double t,

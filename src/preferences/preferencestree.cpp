@@ -18,6 +18,7 @@ PreferencesTree::PreferencesTree(const QString& translation_context, const QStri
   } else {
     LINFO << "initialized SettingTree from '" << filename << "': " << m_groups.size() << " groups.";
   }
+
   connect(this, &PreferencesTree::data_changed, [this](const PreferencesTreeGroupItem& group)
   {
     const int n = columnCount(group_index(group.name)) - 1;
@@ -122,10 +123,9 @@ bool PreferencesTree::load_from_file(const QString& filename)
   QTextStream stream(&file);
   while (!stream.atEnd()) {
   line_loop:
-    QString line = stream.readLine();
-    line = line.trimmed();
+    const QString line = stream.readLine().trimmed();
     if (line.startsWith("#") || line.isEmpty()) {
-      continue;  // comment
+      continue;  // line is a comment
     }
 
     if (context_regexp.exactMatch(line)) {
@@ -139,7 +139,7 @@ bool PreferencesTree::load_from_file(const QString& filename)
       }
       const auto name = tokens[0].trimmed();
       const auto value = tokens[1].trimmed();
-      auto git = std::find_if(m_groups.begin(), m_groups.end(),
+      const auto git = std::find_if(m_groups.begin(), m_groups.end(),
                               [group_name](const std::unique_ptr<PreferencesTreeGroupItem>& group)
       {
         return group->name == group_name;
@@ -160,7 +160,7 @@ bool PreferencesTree::load_from_file(const QString& filename)
       }
 
       const auto vit = std::find_if(group->values.begin(), group->values.end(),
-                                    [name](const std::unique_ptr<PreferencesTreeValueItem>& value_item)
+                                    [name](auto&& value_item)
       {
         return value_item->name == name;
       });
