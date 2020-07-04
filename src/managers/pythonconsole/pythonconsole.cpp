@@ -169,7 +169,7 @@ bool PythonConsole::perform_action(const QString& name)
 {
   if (name == "clear console") {
     clear();
-  } else if (name == "evaluate") {
+  } else if (name == "py-evaluate") {
     eval();
   } else {
     return false;

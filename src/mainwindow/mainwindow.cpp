@@ -82,7 +82,7 @@ namespace omm
 std::vector<QString> MainWindow::object_menu_entries()
 {
   std::list<QString> entries {
-    "object/remove selection",
+    "object/remove selected items",
     "object/convert objects",
   };
 

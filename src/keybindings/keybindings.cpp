@@ -60,6 +60,19 @@ KeyBindings::KeyBindings()
   : PreferencesTree(TRANSLATION_CONTEXT, ":/keybindings/default_keybindings.cfg")
 {
   load_from_qsettings(TRANSLATION_CONTEXT);
+  std::set<QString> names;
+  for (auto&& group : groups()) {
+    for (auto&& value : group->values) {
+      const auto name = value->name;
+      if (::contains(names, name)) {
+        LERROR << "Duplicate action name: '" << name << "'.";
+        LERROR << "Action names must be unique, even across contextes.";
+        LFATAL("Duplicate action name.");
+      } else {
+        names.insert(name);
+      }
+    }
+  }
 }
 
 KeyBindings::~KeyBindings()

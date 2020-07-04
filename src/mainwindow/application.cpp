@@ -310,7 +310,7 @@ bool Application::perform_action(const QString& action_name)
     scene.history().undo();
   } else if (action_name == "redo") {
     scene.history().redo();
-  } else if (action_name == "remove selection") {
+  } else if (action_name == "remove selected items") {
     scene.remove(main_window(), scene.selection());
   } else if (action_name == "new document") {
     reset();
