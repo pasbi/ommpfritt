@@ -66,6 +66,12 @@ static const std::map<QString, QList<QCommandLineOption>> options {
         "",
       },
       {
+        { "u", "unique" },
+        QObject::tr("If this option is set, the target object (see 'path' or 'object' argument) "
+                    "must be unique, i.e., there must be exactly one such object. "
+                    "The application terminates if this requirement is violated."),
+      },
+      {
         { "p", "path" },
         QObject::tr("The path of the object to render. "
                     "Keep clear to render the whole scene. "

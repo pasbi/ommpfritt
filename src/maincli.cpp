@@ -116,7 +116,16 @@ void prepare_scene(omm::Scene& scene, const omm::SubcommandLineParser& args)
     }
   };
 
-  prepare_scene(scene, ::filter_if(scene.object_tree().items(), predicate));
+  const auto visible_objects = ::filter_if(scene.object_tree().items(), predicate);
+  if (args.isSet("unique") && visible_objects.size() != 1) {
+    LERROR << "Expected exactly one matching object but found " << visible_objects.size() << ".";
+    if (visible_objects.empty()) {
+      exit(omm::ExitStatus::object_name_not_found);
+    } else {
+      exit(omm::ExitStatus::non_unique_object_reference);
+    }
+  }
+  prepare_scene(scene, visible_objects);
 }
 
 QSize calculate_resolution(int width, const omm::View& view)
