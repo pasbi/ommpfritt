@@ -186,6 +186,26 @@
         <source>Convertible</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>invalid input format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>object name not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>object type not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>refuse overwrite file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>non unique object reference</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ExportDialog</name>
@@ -1456,6 +1476,22 @@ Borrar la selección de todos modos?</translation>
         <source>Cut Path</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>If this option is set, the target object (see &apos;path&apos; or &apos;object&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Get status code for given description.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DESCRIPTION</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>List status codes and descriptions.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1864,10 +1900,6 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished">Controles de Estilos</translation>
     </message>
     <message>
-        <source>remove selection</source>
-        <translation type="unfinished">Borrar selección</translation>
-    </message>
-    <message>
         <source>make linear</source>
         <translation type="unfinished">Borrar tangentes</translation>
     </message>
@@ -2019,6 +2051,10 @@ Borrar la selección de todos modos?</translation>
         <source>scene_mode</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>remove selected items</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>
@@ -2125,16 +2161,16 @@ Borrar la selección de todos modos?</translation>
 <context>
     <name>keybindings/PythonConsole</name>
     <message>
-        <source>evaluate</source>
-        <translation type="unfinished">Evaluar</translation>
-    </message>
-    <message>
         <source>clear console</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>PythonConsole</source>
         <translation type="unfinished">Consola Python</translation>
+    </message>
+    <message>
+        <source>py-evaluate</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2171,11 +2207,11 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>remove selection</source>
-        <translation type="unfinished">Borrar selección</translation>
+        <source>TimeLine</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>TimeLine</source>
+        <source>remove selected keys</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

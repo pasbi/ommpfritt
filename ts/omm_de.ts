@@ -186,6 +186,26 @@
         <source>Convertible</source>
         <translation>Konvertierbar</translation>
     </message>
+    <message>
+        <source>invalid input format</source>
+        <translation>Ungültiges Eingabeformat</translation>
+    </message>
+    <message>
+        <source>object name not found</source>
+        <translation>Objektname nicht gefunden</translation>
+    </message>
+    <message>
+        <source>object type not found</source>
+        <translation>Objekttyp nicht gefunden</translation>
+    </message>
+    <message>
+        <source>refuse overwrite file</source>
+        <translation>existierende Datei kann nicht überschrieben werden</translation>
+    </message>
+    <message>
+        <source>non unique object reference</source>
+        <translation>nicht-eindeutige Objektreferenz</translation>
+    </message>
 </context>
 <context>
     <name>ExportDialog</name>
@@ -1456,6 +1476,22 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Cut Path</source>
         <translation>Pfad schneiden</translation>
     </message>
+    <message>
+        <source>If this option is set, the target object (see &apos;path&apos; or &apos;object&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
+        <translation>Wenn diese Option aktiv ist, dann muss das Zielobjet (siehe &apos;path&apos;- oder &apos;object&apos;-Option) eindeutig sein, es muss also genau ein passendes Objekt in der Szene geben. Die Applikation bricht ab falls diese Bedingung verletzt ist.</translation>
+    </message>
+    <message>
+        <source>Get status code for given description.</source>
+        <translation>Erhalte den Status-Code für eine Beschreibung.</translation>
+    </message>
+    <message>
+        <source>DESCRIPTION</source>
+        <translation>BESCHREIBUNG</translation>
+    </message>
+    <message>
+        <source>List status codes and descriptions.</source>
+        <translation>Liste alle Status Codes und Beschreibungen.</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1864,10 +1900,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Style-Manager</translation>
     </message>
     <message>
-        <source>remove selection</source>
-        <translation>Selektion entfernen</translation>
-    </message>
-    <message>
         <source>make linear</source>
         <translation>Tangenten entfernen</translation>
     </message>
@@ -2019,6 +2051,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>scene_mode</source>
         <translation>Szenen Modus</translation>
     </message>
+    <message>
+        <source>remove selected items</source>
+        <translation>Entferne Selektion</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>
@@ -2125,16 +2161,16 @@ Soll die Selektion trotzdem entfernt werden?</translation>
 <context>
     <name>keybindings/PythonConsole</name>
     <message>
-        <source>evaluate</source>
-        <translation>Auswerten</translation>
-    </message>
-    <message>
         <source>clear console</source>
         <translation>Konsole leeren</translation>
     </message>
     <message>
         <source>PythonConsole</source>
         <translation>Python Konsole</translation>
+    </message>
+    <message>
+        <source>py-evaluate</source>
+        <translation>evaluieren</translation>
     </message>
 </context>
 <context>
@@ -2171,12 +2207,12 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Selektion aufheben</translation>
     </message>
     <message>
-        <source>remove selection</source>
-        <translation>Selektion entfernen</translation>
-    </message>
-    <message>
         <source>TimeLine</source>
         <translation>Zeitleiste</translation>
+    </message>
+    <message>
+        <source>remove selected keys</source>
+        <translation>Selektierte Schlüsselbilder entfernen</translation>
     </message>
 </context>
 <context>

@@ -186,6 +186,26 @@
         <source>Convertible</source>
         <translation>Convertible</translation>
     </message>
+    <message>
+        <source>invalid input format</source>
+        <translation>invalid input format</translation>
+    </message>
+    <message>
+        <source>object name not found</source>
+        <translation>objejct name not found</translation>
+    </message>
+    <message>
+        <source>object type not found</source>
+        <translation>object type not found</translation>
+    </message>
+    <message>
+        <source>refuse overwrite file</source>
+        <translation>refuse to overwrite existing file</translation>
+    </message>
+    <message>
+        <source>non unique object reference</source>
+        <translation>non-unique object reference</translation>
+    </message>
 </context>
 <context>
     <name>ExportDialog</name>
@@ -1456,6 +1476,22 @@ Remove the selected items anyway?</translation>
         <source>Cut Path</source>
         <translation>Cut path</translation>
     </message>
+    <message>
+        <source>If this option is set, the target object (see &apos;path&apos; or &apos;object&apos; argument) must be unique, i.e., there must be exactly one such object. The application terminates if this requirement is violated.</source>
+        <translation>If this option is set, the target object (see &apos;path&apos; or &apos;object&apos; option) must be unique, i.e., there must be exactly one matching object. The application terminates if this requirement is violated.</translation>
+    </message>
+    <message>
+        <source>Get status code for given description.</source>
+        <translation>Get status code for given descritption.</translation>
+    </message>
+    <message>
+        <source>DESCRIPTION</source>
+        <translation>DESCRIPTION</translation>
+    </message>
+    <message>
+        <source>List status codes and descriptions.</source>
+        <translation>List status codes and descriptions.</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1864,10 +1900,6 @@ Remove the selected items anyway?</translation>
         <translation>Style manager</translation>
     </message>
     <message>
-        <source>remove selection</source>
-        <translation>Remove selection</translation>
-    </message>
-    <message>
         <source>make linear</source>
         <translation>Vanish tangents</translation>
     </message>
@@ -2019,6 +2051,10 @@ Remove the selected items anyway?</translation>
         <source>scene_mode</source>
         <translation>Scene mode</translation>
     </message>
+    <message>
+        <source>remove selected items</source>
+        <translation>Remove selection</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>
@@ -2125,16 +2161,16 @@ Remove the selected items anyway?</translation>
 <context>
     <name>keybindings/PythonConsole</name>
     <message>
-        <source>evaluate</source>
-        <translation>Evaluate</translation>
-    </message>
-    <message>
         <source>clear console</source>
         <translation>Clear console</translation>
     </message>
     <message>
         <source>PythonConsole</source>
         <translation>Python Console</translation>
+    </message>
+    <message>
+        <source>py-evaluate</source>
+        <translation>evaluate</translation>
     </message>
 </context>
 <context>
@@ -2171,12 +2207,12 @@ Remove the selected items anyway?</translation>
         <translation>Clear selection</translation>
     </message>
     <message>
-        <source>remove selection</source>
-        <translation>Remove selection</translation>
-    </message>
-    <message>
         <source>TimeLine</source>
         <translation>Timeline</translation>
+    </message>
+    <message>
+        <source>remove selected keys</source>
+        <translation>Remove selected key frames</translation>
     </message>
 </context>
 <context>
@@ -3038,7 +3074,7 @@ Do you want to convert them into ordinary colors?</numerusform>
     <name>omm::ToolBarItemModel</name>
     <message>
         <source>group</source>
-        <translation type="unfinished">Group</translation>
+        <translation>Group</translation>
     </message>
     <message>
         <source>separator</source>
