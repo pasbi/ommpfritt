@@ -69,6 +69,7 @@ public:
   void on_property_value_changed(Property* property) override;
   Geom::PathVector paths() const override;
   static Point smoothen_point(const Segment& segment, bool is_closed, std::size_t i);
+  Flag flags() const override;
 };
 
 template<typename PathRef> auto begin(PathRef p)

@@ -236,6 +236,11 @@ Point Path::smoothen_point(const Path::Segment& segment, bool is_closed, std::si
   return copy;
 }
 
+Flag Path::flags() const
+{
+  return Flag::None;
+}
+
 template struct Path::Iterator<Path&>;
 template struct Path::Iterator<const Path&>;
 
