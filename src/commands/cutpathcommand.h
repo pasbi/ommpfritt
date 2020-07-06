@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commands/command.h"
+#include "commands/modifysegmentscommand.h"
 #include <2geom/pathvector.h>
 
 namespace omm
@@ -8,17 +8,10 @@ namespace omm
 
 class Path;
 
-class CutPathCommand : public Command
+class CutPathCommand : public ModifySegmentsCommand
 {
 public:
   explicit CutPathCommand(Path& path, const std::vector<Geom::PathVectorTime>& cuts);
-  void undo() override;
-  void redo() override;
-
-private:
-  Path& m_path;
-  const Geom::PathVector m_original;
-  const Geom::PathVector m_cut;
 };
 
 }  // namespace omm

@@ -59,27 +59,34 @@ Geom::PathVector cut(const Geom::PathVector& paths, std::vector<Geom::PathVector
   return Geom::PathVector(cut_paths.begin(), cut_paths.end());
 }
 
+
+using namespace omm;
+
+auto cut_segments(const Path& path, const std::vector<Geom::PathVectorTime>& cuts)
+{
+  const auto path_vector = cut(path.paths(), cuts);
+  ModifySegmentsCommand::Segments segments;
+  segments.reserve(path_vector.size());
+  for (std::size_t i = 0; i < path_vector.size(); ++i) {
+    const auto n_old_points = path_vector[i].size() + 1;
+    if (n_old_points == path.segments[i].size()) {
+      segments.push_back({});
+    } else {
+      segments.push_back(Object::path_to_segment(path_vector[i], path.is_closed()));
+    }
+  }
+  return segments;
+}
+
 }  // namespace
 
 namespace omm
 {
 
 CutPathCommand::CutPathCommand(Path& path, const std::vector<Geom::PathVectorTime>& cuts)
-  : Command(QObject::tr("CutPathCommand"))
-  , m_path(path)
-  , m_original(path.geom_paths())
-  , m_cut(cut(path.geom_paths(), cuts))
+  : ModifySegmentsCommand(QObject::tr("CutPathCommand"), path, cut_segments(path, cuts))
 {
 }
 
-void CutPathCommand::undo()
-{
-  m_path.set(m_original);
-}
-
-void CutPathCommand::redo()
-{
-  m_path.set(m_cut);
-}
 
 }  // namespace omm

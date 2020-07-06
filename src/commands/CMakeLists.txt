@@ -10,6 +10,8 @@ target_sources(libommpfritt PRIVATE
   keyframecommand.h
   modifypointscommand.cpp
   modifypointscommand.h
+  modifysegmentscommand.cpp
+  modifysegmentscommand.h
   forwardingportcommand.h
   forwardingportcommand.cpp
   movecommand.cpp

@@ -735,8 +735,31 @@ void Object::listen_to_children_changes()
           this, on_change);
 }
 
+Path::Segment Object::path_to_segment(const Geom::Path& path, bool is_closed)
+{
+  const auto to_vec = [](const Geom::Point& p) -> Vec2f { return {p.x(), p.y()}; };
+  Path::Segment segment;
+  segment.reserve(path.size_default() + 1);
+  for (auto&& curve : path) {
+    const auto& c = dynamic_cast<const Geom::CubicBezier&>(curve);
+    const auto p0 = to_vec(c[0]);
+    if (segment.empty()) {
+      segment.push_back(Point(p0));
+    }
+    segment.back().right_tangent = PolarCoordinates(to_vec(c[1]) - p0);
+    const auto p1 = to_vec(c[3]);
+    segment.push_back(Point(p1));
+    segment.back().left_tangent = PolarCoordinates(to_vec(c[2]) - p1);
+  }
+  if (is_closed) {
+    segment.front().left_tangent = segment.back().left_tangent;
+    segment.back().right_tangent = segment.front().right_tangent;
+  }
+  return segment;
+}
+
 Geom::Path Object::segment_to_path(Segment segment, bool is_closed,
-                                   InterpolationMode interpolation) const
+                                   InterpolationMode interpolation)
 {
   const auto pts = [](const std::array<Vec2f, 4>& pts) {
     return ::transform<Geom::Point, std::vector>(pts, [](const auto& p) {

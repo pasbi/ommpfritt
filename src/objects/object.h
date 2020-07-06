@@ -113,12 +113,13 @@ public:
 
   using Segment = std::vector<Point>;
 
-  Geom::Path segment_to_path(Segment segment, bool is_closed,
-                             InterpolationMode interpolation = InterpolationMode::Bezier) const;
+  static Segment path_to_segment(const Geom::Path& path, bool is_closed);
+  static Geom::Path segment_to_path(Segment segment, bool is_closed,
+                                    InterpolationMode interpolation = InterpolationMode::Bezier);
 
-  template<typename Segments=std::vector<Segment>> Geom::PathVector
+  template<typename Segments=std::vector<Segment>> static Geom::PathVector
   segments_to_path_vector(const Segments& segments, bool is_closed,
-                          InterpolationMode interpolation = InterpolationMode::Bezier) const
+                          InterpolationMode interpolation = InterpolationMode::Bezier)
   {
     Geom::PathVector paths;
     for (auto&& segment : segments) {

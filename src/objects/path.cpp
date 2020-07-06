@@ -103,25 +103,7 @@ bool Path::is_closed() const
 void Path::set(const Geom::PathVector& paths)
 {
   const auto path_to_segment = [is_closed=this->is_closed()](const Geom::Path& path) {
-    const auto to_vec = [](const Geom::Point& p) -> Vec2f { return {p.x(), p.y()}; };
-    Segment segment;
-    segment.reserve(path.size_default() + 1);
-    for (auto&& curve : path) {
-      const auto& c = dynamic_cast<const Geom::CubicBezier&>(curve);
-      const auto p0 = to_vec(c[0]);
-      if (segment.empty()) {
-        segment.push_back(Point(p0));
-      }
-      segment.back().right_tangent = PolarCoordinates(to_vec(c[1]) - p0);
-      const auto p1 = to_vec(c[3]);
-      segment.push_back(Point(p1));
-      segment.back().left_tangent = PolarCoordinates(to_vec(c[2]) - p1);
-    }
-    if (is_closed) {
-      segment.front().left_tangent = segment.back().left_tangent;
-      segment.back().right_tangent = segment.front().right_tangent;
-    }
-    return segment;
+    return Object::path_to_segment(path, is_closed);
   };
 
   update();
