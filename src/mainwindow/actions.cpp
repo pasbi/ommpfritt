@@ -1,4 +1,5 @@
 #include "mainwindow/actions.h"
+#include "commands/subdividepathcommand.h"
 #include "scene/scene.h"
 #include "commands/modifypointscommand.h"
 #include "commands/propertycommand.h"
@@ -167,28 +168,26 @@ void remove_selected_points(Application& app)
 void subdivide(Application& app)
 {
   Q_UNUSED(app)
+
 //  constexpr auto n = 1;
-//  std::map<Path*, std::vector<Path::PointSequence>> map;
 
-//  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-//    std::list<Path::PointSequence> sequences;
-//    const auto cubics = path->cubics();
-//    for (std::size_t i = 0; i < cubics.n_segments(); ++i) {
-//      if (cubics.segment(i).is_selected()) {
-//        Path::PointSequence sequence(i+1);
-//        for (std::size_t j = 0; j < n; ++j) {
-//          sequence.sequence.push_back(cubics.segment(i).evaluate((j+1.0)/(n+1.0)));
-//        }
-//        sequences.push_back(sequence);
-//      }
-//    }
-//    map[path] = std::vector(sequences.begin(), sequences.end());
-//  }
+  std::list<std::unique_ptr<SubdividePathCommand>> cmds;
+  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+    if (path) {
+      auto cmd = std::make_unique<SubdividePathCommand>(*path);
+      if (!cmd->is_noop()) {
+        cmds.push_back(std::move(cmd));
+      }
+    }
+  }
 
-//  if (map.size() > 0) {
-//    app.scene.submit<AddPointsCommand>(map);
-//    app.scene.tool_box().active_tool().reset();
-//  }
+  std::unique_ptr<Macro> macro;
+  if (cmds.size() > 0) {
+    macro = app.scene.history().start_macro(QObject::tr("Subdivide Paths"));
+  }
+  for (auto&& cmd : cmds) {
+    app.scene.submit(std::move(cmd));
+  }
 }
 
 void select_all(Application& app)

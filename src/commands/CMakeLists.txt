@@ -34,6 +34,8 @@ target_sources(libommpfritt PRIVATE
   removecommand.h
   setinterpolationcommand.cpp
   setinterpolationcommand.h
+  subdividepathcommand.cpp
+  subdividepathcommand.h
   trackcommand.cpp
   trackcommand.h
   userpropertycommand.cpp

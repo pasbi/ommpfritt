@@ -82,7 +82,6 @@ bool KnifeTool::mouse_press(const Vec2f &pos, const QMouseEvent &event)
   }
 }
 
-
 void KnifeTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
 {
   Q_UNUSED(pos)

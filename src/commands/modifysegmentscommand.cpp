@@ -1,4 +1,6 @@
 #include "commands/modifysegmentscommand.h"
+#include "scene/scene.h"
+#include "tools/toolbox.h"
 
 namespace
 {
@@ -53,6 +55,7 @@ void ModifySegmentsCommand::apply(const ModifySegmentsCommand::Segments& segment
     }
   }
   m_path.update();
+  m_path.scene()->tool_box().active_tool().reset();
 }
 
 
