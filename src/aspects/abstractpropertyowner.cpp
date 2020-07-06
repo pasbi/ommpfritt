@@ -118,6 +118,7 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
       property->deserialize(deserializer, property_pointer);
       Property& ref = add_property(property_key, std::move(property));
       assert(ref.is_user_property());
+      Q_UNUSED(ref)
     }
   }
 }
