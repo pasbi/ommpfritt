@@ -47,13 +47,19 @@ public:
     return RADIUS - interact_epsilon() <= r && r <= RADIUS + interact_epsilon();
   }
 
+  bool mouse_press(const Vec2f& pos, const QMouseEvent& e) override
+  {
+    m_transformation = tool.transformation();
+    return Handle::mouse_press(pos, e);
+  }
+
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override
   {
     Handle::mouse_move(delta, pos, e);
     if (status() == HandleStatus::Active) {
-      const auto transformation = tool.transformation();
-      const auto global_pos = transformation.inverted().apply_to_position(pos);
-      const auto origin = transformation.inverted().apply_to_position(press_pos());
+      const auto ti = m_transformation.inverted();
+      const auto global_pos = ti.apply_to_position(pos);
+      const auto origin = ti.apply_to_position(press_pos());
 
       double angle = global_pos.arg() - origin.arg();
       if (tool.integer_transformation()) {
@@ -61,8 +67,7 @@ public:
         angle = step * static_cast<int>(angle / step);
       }
 
-      const auto inv_tool_transformation = tool.transformation().inverted();
-      const auto t = ObjectTransformation().rotated(angle).transformed(inv_tool_transformation);
+      const auto t = ObjectTransformation().rotated(angle).transformed(ti);
       static_cast<ToolT&>(tool).transform_objects(t);
       static_cast<ToolT&>(tool).tool_info = QString("%1°").arg(angle / M_PI * 180.0);
       return true;
@@ -73,6 +78,7 @@ public:
 
 private:
   static constexpr double RADIUS = 100;
+  ObjectTransformation m_transformation;
 };
 
 }  // namespace omm
