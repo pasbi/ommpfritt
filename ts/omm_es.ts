@@ -1492,6 +1492,14 @@ Borrar la selección de todos modos?</translation>
         <source>List status codes and descriptions.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Subdivide Paths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Both</source>
+        <translation type="unfinished">Ambas</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -2910,6 +2918,13 @@ Do you want to convert them into ordinary colors?</source>
     </message>
     <message>
         <source>Fail.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>omm::Object</name>
+    <message>
+        <source>Subdivide Path</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

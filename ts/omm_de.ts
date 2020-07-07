@@ -1492,6 +1492,14 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>List status codes and descriptions.</source>
         <translation>Liste alle Status Codes und Beschreibungen.</translation>
     </message>
+    <message>
+        <source>Subdivide Paths</source>
+        <translation>Pfade unterteilen</translation>
+    </message>
+    <message>
+        <source>Both</source>
+        <translation>Beide</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -2914,6 +2922,13 @@ Möchten Sie diese in normale Farben umwandeln?</numerusform>
     <message>
         <source>Fail.</source>
         <translation>Fehler.</translation>
+    </message>
+</context>
+<context>
+    <name>omm::Object</name>
+    <message>
+        <source>Subdivide Path</source>
+        <translation>Pfad unterteilen</translation>
     </message>
 </context>
 <context>

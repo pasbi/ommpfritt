@@ -1492,6 +1492,14 @@ Remove the selected items anyway?</translation>
         <source>List status codes and descriptions.</source>
         <translation>List status codes and descriptions.</translation>
     </message>
+    <message>
+        <source>Subdivide Paths</source>
+        <translation>Subdivide paths</translation>
+    </message>
+    <message>
+        <source>Both</source>
+        <translation>Both</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -2914,6 +2922,13 @@ Do you want to convert them into ordinary colors?</numerusform>
     <message>
         <source>Fail.</source>
         <translation>Fail.</translation>
+    </message>
+</context>
+<context>
+    <name>omm::Object</name>
+    <message>
+        <source>Subdivide Path</source>
+        <translation>Subdivide path</translation>
     </message>
 </context>
 <context>

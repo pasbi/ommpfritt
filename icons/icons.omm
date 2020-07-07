@@ -3891,7 +3891,7 @@
                                         "key": "scale",
                                         "type": "FloatVectorProperty",
                                         "value": [
-                                            1.000000000000362,
+                                            1.0000000000003624,
                                             0.9999999999999004
                                         ]
                                     },
@@ -3907,7 +3907,7 @@
                                         "animated": false,
                                         "key": "shear",
                                         "type": "FloatProperty",
-                                        "value": 3.325117958753006e-14
+                                        "value": 3.3195668436298794e-14
                                     },
                                     {
                                         "animatable": true,
@@ -9520,147 +9520,8 @@
                             {
                                 "children": [
                                     {
-                                        "children": [
-                                            {
-                                                "children": [],
-                                                "id": 11086548918401084738,
-                                                "properties": [
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
-                                                        "key": "viewport-visibility",
-                                                        "type": "OptionProperty",
-                                                        "value": 0
-                                                    },
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
-                                                        "key": "visibility",
-                                                        "type": "OptionProperty",
-                                                        "value": 0
-                                                    },
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
-                                                        "key": "is_active",
-                                                        "type": "BoolProperty",
-                                                        "value": true
-                                                    },
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
-                                                        "key": "name",
-                                                        "type": "StringProperty",
-                                                        "value": "Ellipse 2"
-                                                    },
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
-                                                        "key": "position",
-                                                        "type": "FloatVectorProperty",
-                                                        "value": [
-                                                            76.0,
-                                                            -81.0
-                                                        ]
-                                                    },
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
-                                                        "key": "scale",
-                                                        "type": "FloatVectorProperty",
-                                                        "value": [
-                                                            1.0,
-                                                            1.0
-                                                        ]
-                                                    },
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
-                                                        "key": "rotation",
-                                                        "type": "FloatProperty",
-                                                        "value": 0.0
-                                                    },
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
-                                                        "key": "shear",
-                                                        "type": "FloatProperty",
-                                                        "value": 0.0
-                                                    },
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
-                                                        "key": "r",
-                                                        "type": "FloatVectorProperty",
-                                                        "value": [
-                                                            30.0,
-                                                            30.0
-                                                        ]
-                                                    },
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
-                                                        "key": "n",
-                                                        "type": "IntegerProperty",
-                                                        "value": 12
-                                                    },
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
-                                                        "key": "smooth",
-                                                        "type": "BoolProperty",
-                                                        "value": true
-                                                    }
-                                                ],
-                                                "tags": [
-                                                    {
-                                                        "id": 2138195538729346226,
-                                                        "properties": [
-                                                            {
-                                                                "animatable": true,
-                                                                "animated": false,
-                                                                "key": "name",
-                                                                "type": "StringProperty",
-                                                                "value": "StyleTag 0"
-                                                            },
-                                                            {
-                                                                "animatable": true,
-                                                                "animated": false,
-                                                                "filter": {
-                                                                    "flag": {
-                                                                        "terms": [
-                                                                            {
-                                                                                "terms": []
-                                                                            }
-                                                                        ]
-                                                                    },
-                                                                    "kind": {
-                                                                        "terms": [
-                                                                            {
-                                                                                "i": 1,
-                                                                                "v": true
-                                                                            }
-                                                                        ]
-                                                                    }
-                                                                },
-                                                                "key": "style",
-                                                                "type": "ReferenceProperty",
-                                                                "value": 14248155982412193847
-                                                            },
-                                                            {
-                                                                "animatable": true,
-                                                                "animated": false,
-                                                                "key": "edit-style",
-                                                                "type": "TriggerProperty"
-                                                            }
-                                                        ],
-                                                        "type": "StyleTag"
-                                                    }
-                                                ],
-                                                "type": "Ellipse"
-                                            }
-                                        ],
-                                        "id": 3306040264509399991,
+                                        "children": [],
+                                        "id": 11086548918401084738,
                                         "properties": [
                                             {
                                                 "animatable": true,
@@ -9688,7 +9549,7 @@
                                                 "animated": false,
                                                 "key": "name",
                                                 "type": "StringProperty",
-                                                "value": "Mirror 1"
+                                                "value": "Ellipse 2"
                                             },
                                             {
                                                 "animatable": true,
@@ -9696,8 +9557,8 @@
                                                 "key": "position",
                                                 "type": "FloatVectorProperty",
                                                 "value": [
-                                                    0.0,
-                                                    0.0
+                                                    76.0,
+                                                    -81.0
                                                 ]
                                             },
                                             {
@@ -9727,27 +9588,74 @@
                                             {
                                                 "animatable": true,
                                                 "animated": false,
-                                                "key": "direction",
-                                                "type": "OptionProperty",
-                                                "value": 1
+                                                "key": "r",
+                                                "type": "FloatVectorProperty",
+                                                "value": [
+                                                    30.0,
+                                                    30.0
+                                                ]
                                             },
                                             {
                                                 "animatable": true,
                                                 "animated": false,
-                                                "key": "as_path",
-                                                "type": "OptionProperty",
-                                                "value": 0
+                                                "key": "n",
+                                                "type": "IntegerProperty",
+                                                "value": 12
                                             },
                                             {
                                                 "animatable": true,
                                                 "animated": false,
-                                                "key": "eps",
-                                                "type": "FloatProperty",
-                                                "value": 0.0
+                                                "key": "smooth",
+                                                "type": "BoolProperty",
+                                                "value": true
                                             }
                                         ],
-                                        "tags": [],
-                                        "type": "Mirror"
+                                        "tags": [
+                                            {
+                                                "id": 2138195538729346226,
+                                                "properties": [
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "name",
+                                                        "type": "StringProperty",
+                                                        "value": "StyleTag 0"
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "filter": {
+                                                            "flag": {
+                                                                "terms": [
+                                                                    {
+                                                                        "terms": []
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "kind": {
+                                                                "terms": [
+                                                                    {
+                                                                        "i": 1,
+                                                                        "v": true
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        "key": "style",
+                                                        "type": "ReferenceProperty",
+                                                        "value": 14248155982412193847
+                                                    },
+                                                    {
+                                                        "animatable": true,
+                                                        "animated": false,
+                                                        "key": "edit-style",
+                                                        "type": "TriggerProperty"
+                                                    }
+                                                ],
+                                                "type": "StyleTag"
+                                            }
+                                        ],
+                                        "type": "Ellipse"
                                     }
                                 ],
                                 "id": 13654086510411244392,
@@ -9819,7 +9727,7 @@
                                         "animated": false,
                                         "key": "direction",
                                         "type": "OptionProperty",
-                                        "value": 0
+                                        "value": 2
                                     },
                                     {
                                         "animatable": true,
@@ -10477,8 +10385,8 @@
                 "key": "position",
                 "type": "FloatVectorProperty",
                 "value": [
-                    250.5,
-                    405.5
+                    1050.5,
+                    585.5
                 ]
             },
             {

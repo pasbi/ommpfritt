@@ -15,7 +15,7 @@ class Scene;
 class Mirror : public Object
 {
 public:
-  enum class Direction { Horizontal, Vertical };
+  enum class Direction { Horizontal, Vertical, Both };
   enum class Mode { Object, Path };
   explicit Mirror(Scene* scene);
   Mirror(const Mirror& other);
@@ -38,7 +38,6 @@ protected:
 
 private:
   std::unique_ptr<Object> m_reflection;
-  ObjectTransformation get_mirror_t() const;
   void polish();
   void perform_update_object_mode();
   void perform_update_path_mode();

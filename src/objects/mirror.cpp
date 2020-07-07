@@ -12,10 +12,42 @@
 namespace
 {
 
+using namespace omm;
+
 Geom::Point transform_point(const Geom::Point& point, const omm::ObjectTransformation& t)
 {
-  const auto tp = t.apply_to_position(omm::Vec2f{point.x(), point.y()});
+  const auto tp = t.apply_to_position(Vec2f{point.x(), point.y()});
   return Geom::Point{ tp.x, tp.y };
+}
+
+ObjectTransformation get_mirror_t(Mirror::Direction direction)
+{
+  switch (direction) {
+  case Mirror::Direction::Horizontal:
+    return ObjectTransformation().scaled(Vec2f(-1.0,  1.0));
+  case Mirror::Direction::Vertical:
+    return ObjectTransformation().scaled(Vec2f( 1.0, -1.0));
+  case Mirror::Direction::Both:
+    return ObjectTransformation().scaled(Vec2f( -1.0, -1.0));
+  default:
+    Q_UNREACHABLE();
+    return ObjectTransformation();
+  }
+}
+
+std::list<Geom::CubicBezier> transform_path(const ObjectTransformation& t,
+                                            const Geom::Path& path, bool reverse)
+{
+  return ::transform<Geom::CubicBezier, std::list>(path, [t, reverse](const auto& curve) {
+    const auto& cubic = dynamic_cast<const Geom::CubicBezier&>(curve);
+    auto control_points = ::transform<Geom::Point>(cubic.controlPoints(), [t](auto&& point) {
+      return transform_point(point, t);
+    });
+    if (reverse) {
+      std::reverse(control_points.begin(), control_points.end());
+    }
+    return Geom::CubicBezier(control_points);
+  });
 }
 
 }  // namespace
@@ -28,7 +60,8 @@ Mirror::Mirror(Scene* scene) : Object(scene)
   static const auto category = QObject::tr("Mirror");
   create_property<OptionProperty>(DIRECTION_PROPERTY_KEY)
     .set_options({ QObject::tr("Horizontal"),
-                   QObject::tr("Vertical") })
+                   QObject::tr("Vertical"),
+                   QObject::tr("Both") })
     .set_label(QObject::tr("Direction")).set_category(category);
   auto& mode_property = create_property<OptionProperty>(AS_PATH_PROPERTY_KEY);
   mode_property.set_options({ QObject::tr("Object"),
@@ -108,13 +141,25 @@ Geom::PathVector Mirror::paths() const
 
 void Mirror::perform_update_object_mode()
 {
-  const ObjectTransformation mirror_t = get_mirror_t();
   const auto n_children = this->n_children();
   if (n_children > 0) {
-    m_reflection = this->tree_children().front()->clone();
-    m_reflection->set_virtual_parent(this);
-    m_reflection->set_transformation(mirror_t.apply(m_reflection->transformation()));
-    m_reflection->update();
+    const auto direction = property(DIRECTION_PROPERTY_KEY)->value<Mirror::Direction>();
+    const auto make_reflection = [this](auto&& parent, Direction direction) {
+      auto reflection = this->tree_children().front()->clone();
+      reflection->set_virtual_parent(parent);
+      reflection->set_transformation(get_mirror_t(direction).apply(reflection->transformation()));
+      reflection->update();
+      return reflection;
+    };
+    if (direction == Direction::Both) {
+      m_reflection = std::make_unique<Empty>(this->scene());
+      m_reflection->set_virtual_parent(this);
+      m_reflection->adopt(make_reflection(m_reflection.get(), Direction::Horizontal));
+      m_reflection->adopt(make_reflection(m_reflection.get(), Direction::Vertical));
+      m_reflection->adopt(make_reflection(m_reflection.get(), Direction::Both));
+    } else {
+      m_reflection = make_reflection(this, direction);
+    }
   } else {
     m_reflection.reset();
   }
@@ -127,62 +172,61 @@ void Mirror::perform_update_path_mode()
     m_reflection.reset();
   } else {
     Object& child = this->tree_child(0);
-    const auto transform_path = [](const ObjectTransformation& t, const auto& path, bool reverse) {
-      return ::transform<Geom::CubicBezier, std::list>(path, [t, reverse](const auto& curve) {
-        const auto& cubic = dynamic_cast<const Geom::CubicBezier&>(curve);
-        auto control_points = ::transform<Geom::Point>(cubic.controlPoints(), [t](auto&& point) {
-          return transform_point(point, t);
-        });
-        if (reverse) {
-          std::reverse(control_points.begin(), control_points.end());
-        }
-        return Geom::CubicBezier(control_points);
-      });
-    };
-
     const auto eps = property(TOLERANCE_PROPERTY_KEY)->value<double>();
-    const auto are_close = [eps](const Geom::Point& a, const Geom::Point& b) {
-      return (a - b).length() < eps;
-    };
-
-    const auto child_paths = child.geom_paths();
-    std::vector<Geom::Path> paths;
-    paths.reserve(child_paths.size());
-    std::vector<bool> wants_to_be_closed;
-    wants_to_be_closed.reserve(child_paths.size());
+    const auto pv = child.geom_paths();
     const bool child_is_closed = child.is_closed();
-
     const auto t = child.transformation();
-    const auto mt = get_mirror_t().apply(t);
-    for (auto&& path : child_paths) {
-      if (!path.empty()) {
-        const std::list<Geom::CubicBezier> reflected_path = transform_path(mt, path, true);
-        std::list<Geom::CubicBezier> original_path = transform_path(t, path, false);
+    bool wants_to_be_closed = true;
 
-        const bool close_ends = are_close(transform_point(path.finalPoint(), t),
-                                          transform_point(path.finalPoint(), mt));
-        const bool close_mids = are_close(transform_point(path.initialPoint(), t),
-                                          transform_point(path.initialPoint(), mt));
-        wants_to_be_closed.push_back(child_is_closed || (close_ends && close_mids));
-        if (close_mids && !child_is_closed) {
-          original_path.insert(original_path.begin(), reflected_path.rbegin(), reflected_path.rend());
-          paths.emplace_back(original_path.begin(), original_path.end());
-        } else if (close_ends && !child_is_closed) {
-          original_path.insert(original_path.end(), reflected_path.rbegin(), reflected_path.rend());
-          paths.emplace_back(original_path.begin(), original_path.end());
-        } else {
-          paths.emplace_back(original_path.begin(), original_path.end());
-          paths.emplace_back(reflected_path.rbegin(), reflected_path.rend());
+    const auto reflect = [child_is_closed, &wants_to_be_closed, eps, t]
+                         (const Geom::PathVector& pv, Mirror::Direction direction)
+    {
+      const auto mt = get_mirror_t(direction).apply(t);
+      const auto are_close = [eps](const Geom::Point& a, const Geom::Point& b) {
+        return (a - b).length() < eps;
+      };
+      std::vector<Geom::Path> paths;
+      paths.reserve(pv.size());
+      for (auto&& path : pv) {
+        if (!path.empty()) {
+          const std::list<Geom::CubicBezier> reflected_path = transform_path(mt, path, true);
+          std::list<Geom::CubicBezier> original_path = transform_path(t, path, false);
+
+          const bool close_ends = are_close(transform_point(path.finalPoint(), t),
+                                            transform_point(path.finalPoint(), mt));
+          const bool close_mids = are_close(transform_point(path.initialPoint(), t),
+                                            transform_point(path.initialPoint(), mt));
+          if (!child_is_closed && (!close_ends || !close_mids)) {
+            wants_to_be_closed = false;
+          }
+
+          if (close_mids && !child_is_closed) {
+            original_path.insert(original_path.begin(), reflected_path.rbegin(), reflected_path.rend());
+            paths.emplace_back(original_path.begin(), original_path.end());
+          } else if (close_ends && !child_is_closed) {
+            original_path.insert(original_path.end(), reflected_path.rbegin(), reflected_path.rend());
+            paths.emplace_back(original_path.begin(), original_path.end());
+          } else {
+            paths.emplace_back(original_path.begin(), original_path.end());
+            paths.emplace_back(reflected_path.rbegin(), reflected_path.rend());
+          }
         }
       }
-    }
-    auto reflection = std::make_unique<Path>(scene());
-    reflection->set(Geom::PathVector(paths.begin(), paths.end()));
+      return Geom::PathVector(paths.begin(), paths.end());
+    };
 
-    const bool reflection_closed = child_is_closed
-                                 || std::all_of(wants_to_be_closed.begin(),
-                                                wants_to_be_closed.end(), ::identity);
-    reflection->property(Path::IS_CLOSED_PROPERTY_KEY)->set(reflection_closed);
+    auto reflection = std::make_unique<Path>(scene());
+    if (const auto direction = property(DIRECTION_PROPERTY_KEY)->value<Mirror::Direction>();
+        direction == Direction::Both)
+    {
+      const auto r = reflect(pv, Direction::Horizontal);
+      wants_to_be_closed = !wants_to_be_closed;
+      reflection->set(reflect(r, Direction::Vertical));
+    } else {
+      reflection->set(reflect(pv, direction));
+    }
+
+    reflection->property(Path::IS_CLOSED_PROPERTY_KEY)->set(wants_to_be_closed);
     const auto interpolation =  child.has_property(Path::INTERPOLATION_PROPERTY_KEY)
         ? child.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>()
         : InterpolationMode::Bezier;
@@ -240,17 +284,6 @@ void Mirror::on_child_removed(Object &child)
 {
   Object::on_child_removed(child);
   update();
-}
-
-ObjectTransformation Mirror::get_mirror_t() const
-{
-  switch (property(DIRECTION_PROPERTY_KEY)->value<Mirror::Direction>()) {
-  case omm::Mirror::Direction::Horizontal:
-    return omm::ObjectTransformation().scaled(omm::Vec2f(-1.0,  1.0));
-  case omm::Mirror::Direction::Vertical:
-    return omm::ObjectTransformation().scaled(omm::Vec2f( 1.0, -1.0));
-  }
-  Q_UNREACHABLE();
 }
 
 }  // namespace omm
