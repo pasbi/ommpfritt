@@ -740,20 +740,30 @@ Path::Segment Object::path_to_segment(const Geom::Path& path, bool is_closed)
   const auto to_vec = [](const Geom::Point& p) -> Vec2f { return {p.x(), p.y()}; };
   Path::Segment segment;
   segment.reserve(path.size_default() + 1);
-  for (auto&& curve : path) {
-    const auto& c = dynamic_cast<const Geom::CubicBezier&>(curve);
+  const auto n = path.size();
+  for (std::size_t i = 0; i < n; ++i) {
+    const auto& c = dynamic_cast<const Geom::CubicBezier&>(path[i]);
     const auto p0 = to_vec(c[0]);
     if (segment.empty()) {
       segment.push_back(Point(p0));
     }
     segment.back().right_tangent = PolarCoordinates(to_vec(c[1]) - p0);
     const auto p1 = to_vec(c[3]);
-    segment.push_back(Point(p1));
-    segment.back().left_tangent = PolarCoordinates(to_vec(c[2]) - p1);
+    auto& pref = [wrap = is_closed && i==n-1, p1, &segment]() -> decltype(auto) {
+      if (wrap) {
+        return segment.front();
+      } else {
+        segment.push_back(Point(p1));
+        return segment.back();
+      }
+    }();
+    pref.left_tangent = PolarCoordinates(to_vec(c[2]) - p1);
   }
   if (is_closed) {
-    segment.front().left_tangent = segment.back().left_tangent;
-    segment.back().right_tangent = segment.front().right_tangent;
+    assert(path.size() == segment.size());
+  } else {
+    // path counts number of curves, segments counts number of points
+    assert(path.size() + 1 == segment.size());
   }
   return segment;
 }
