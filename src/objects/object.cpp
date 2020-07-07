@@ -406,8 +406,8 @@ Object::ConvertedObject Object::convert() const
   auto converted = std::make_unique<Path>(scene());
   copy_properties(*converted, CopiedProperties::Compatible | CopiedProperties::User);
   copy_tags(*converted);
-  converted->set(geom_paths());
   converted->property(Path::IS_CLOSED_PROPERTY_KEY)->set(is_closed());
+  converted->set(geom_paths());
   converted->property(Path::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
   return {std::unique_ptr<Object>(converted.release()), true};
 }
@@ -612,7 +612,7 @@ Geom::PathVectorTime Object::compute_path_vector_time(int path_index, double t,
   }
 
   t = std::clamp(t, 0.0, almost_one);
-  const auto path_vector = paths();
+  const auto path_vector = geom_paths();
   if (static_cast<std::size_t>(path_index) >= path_vector.size()) {
     return Geom::PathVectorTime(path_index, 0, 0.0);
   }
@@ -667,7 +667,7 @@ void Object::draw_object(Painter& renderer, const Style& style, Painter::Options
       const auto marker_color = style.property(Style::PEN_COLOR_KEY)->value<Color>();
       const auto width = style.property(Style::PEN_WIDTH_KEY)->value<double>();
 
-      const auto paths = this->paths();
+      const auto paths = this->geom_paths();
       for (std::size_t path_index = 0; path_index < paths.size(); ++path_index) {
         const auto pos = [this, path_index](const double t) {
           const auto tt = compute_path_vector_time(path_index, t);
@@ -780,6 +780,7 @@ Geom::Path Object::segment_to_path(Segment segment, bool is_closed,
   std::vector<Geom::CubicBezier> bzs;
   const std::size_t n = segment.size();
   const std::size_t m = is_closed ? n : n - 1;
+  bzs.reserve(m);
 
   if (interpolation == InterpolationMode::Smooth) {
     segment = [&segment, is_closed]() {
