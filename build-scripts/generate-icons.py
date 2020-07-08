@@ -27,11 +27,11 @@ def lst_decoder(fn):
 
 def cfg_decoder(fn):
     with open(fn, 'r') as f:
-        category = None
         for line in f.readlines():
             line = line.strip()
             if line.startswith("[") and line.endswith("]"):
-                category = line[1:-1]
+                # category = line[1:-1]
+                pass
             elif line.startswith("#"):
                 pass
             elif len(line.strip()) == 0:
