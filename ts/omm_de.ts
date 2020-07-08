@@ -1912,10 +1912,6 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <translation>Tangenten entfernen</translation>
     </message>
     <message>
-        <source>remove points</source>
-        <translation>Punkte entfernen</translation>
-    </message>
-    <message>
         <source>subdivide</source>
         <translation>Unterteilen</translation>
     </message>
@@ -2062,6 +2058,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>remove selected items</source>
         <translation>Entferne Selektion</translation>
+    </message>
+    <message>
+        <source>remove selected points</source>
+        <translation>Selektierte Punkte entfernen</translation>
     </message>
 </context>
 <context>

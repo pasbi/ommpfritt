@@ -1912,10 +1912,6 @@ Borrar la selección de todos modos?</translation>
         <translation type="unfinished">Borrar tangentes</translation>
     </message>
     <message>
-        <source>remove points</source>
-        <translation type="unfinished">Borrar puntos</translation>
-    </message>
-    <message>
         <source>subdivide</source>
         <translation type="unfinished">Subdividir</translation>
     </message>
@@ -2061,6 +2057,10 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>remove selected items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>remove selected points</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

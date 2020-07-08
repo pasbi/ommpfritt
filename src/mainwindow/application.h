@@ -58,6 +58,7 @@ public:
   KeyBindings key_bindings;
   UiColors ui_colors;
   Preferences preferences;
+  bool handle_mode(const QString& action_name);
   const std::map<QString, std::unique_ptr<ModeSelector>> mode_selectors;
 
   PythonEngine python_engine;

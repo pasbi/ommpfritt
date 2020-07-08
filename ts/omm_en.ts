@@ -1912,10 +1912,6 @@ Remove the selected items anyway?</translation>
         <translation>Vanish tangents</translation>
     </message>
     <message>
-        <source>remove points</source>
-        <translation>Remove points</translation>
-    </message>
-    <message>
         <source>subdivide</source>
         <translation>Subdivide</translation>
     </message>
@@ -2062,6 +2058,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>remove selected items</source>
         <translation>Remove selection</translation>
+    </message>
+    <message>
+        <source>remove selected points</source>
+        <translation>Remove selected points</translation>
     </message>
 </context>
 <context>

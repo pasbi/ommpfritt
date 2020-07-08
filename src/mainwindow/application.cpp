@@ -306,6 +306,12 @@ void Application::load()
 
 bool Application::perform_action(const QString& action_name)
 {
+#ifndef NDEBUG
+  for (auto&& action_name : actions::available_actions()) {
+    assert(key_bindings.find_action(Application::TYPE, action_name) != nullptr);
+  }
+#endif
+
   if (action_name == "undo") {
     scene.history().undo();
   } else if (action_name == "redo") {
@@ -326,14 +332,6 @@ bool Application::perform_action(const QString& action_name)
       export_dialog = new omm::ExportDialog(scene, main_window());
     }
     export_dialog->exec();
-  } else if (action_name == "make smooth") {
-    actions::make_smooth(*this);
-  } else if (action_name == "make linear") {
-    actions::make_linear(*this);
-  } else if (action_name == "remove points") {
-    actions::remove_selected_points(*this);
-  } else if (action_name == "subdivide") {
-    actions::subdivide(*this);
   } else if (action_name == "evaluate") {
     evaluate();
   } else if (action_name == "restore default layout") {
@@ -344,25 +342,13 @@ bool Application::perform_action(const QString& action_name)
     main_window()->load_layout();
   } else if (action_name == "new toolbar") {
     spawn_toolbar();
-  } else if (action_name.startsWith("scene_mode.")) {
-    mode_selectors.at("scene_mode")->on_action(action_name);
   } else if (action_name == "previous tool") {
     scene.tool_box().set_previous_tool();
-  } else if (action_name == "select all") {
-    actions::select_all(*this);
-  } else if (action_name == "deselect all") {
-    actions::deselect_all(*this);
-  } else if (action_name == "invert selection") {
-    actions::invert_selection(*this);
   } else if (action_name == "new style") {
     using command_type = AddCommand<List<Style>>;
     auto style = scene.default_style().clone();
     assert(style->scene() == &scene);
     scene.submit<command_type>(scene.styles(), std::move(style));
-  } else if (action_name == "remove unused styles") {
-    actions::remove_unused_styles(*this);
-  } else if (action_name == "convert objects") {
-    actions::convert_objects(*this);
   } else if (action_name == "reset viewport") {
     main_window()->viewport().reset();
   } else if (action_name == "show point dialog") {
@@ -372,6 +358,10 @@ bool Application::perform_action(const QString& action_name)
     }
   } else if (action_name == "preferences") {
     PreferenceDialog().exec();
+  } else if (omm::actions::perform_action(action_name, *this)) {
+    // action was handled by perform_action.
+  } else if (handle_mode(action_name)) {
+    // action was handled as mode
   } else {
     for (const auto& key : Object::keys()) {
       if (key == action_name) {
@@ -454,6 +444,16 @@ bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers)
 }
 
 QString Application::type() const { return TYPE; }
+
+bool Application::handle_mode(const QString& action_name)
+{
+  for (auto&& [name, mode_selector] : mode_selectors) {
+    if (action_name.startsWith(name + ".")) {
+      return mode_selector->handle(action_name);
+    }
+  }
+  return false;
+}
 
 MessageBox &Application::message_box()
 {

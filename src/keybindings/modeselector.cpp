@@ -27,22 +27,28 @@ QString ModeSelector::translated_name() const
   return QCoreApplication::translate(ctx.constData(), name.constData());
 }
 
+bool ModeSelector::handle(const QString& action_name)
+{
+  const auto prefix = this->name + ".";
+  if (action_name.startsWith(prefix)) {
+    if (action_name == cycle_action) {
+      cycle();
+    } else {
+      const auto it = std::find(activation_actions.begin(), activation_actions.end(), action_name);
+      assert(it != activation_actions.end());
+      set_mode(std::distance(activation_actions.begin(), it));
+    }
+    return true;
+  } else {
+    return false;
+  }
+}
+
 void ModeSelector::set_mode(int mode)
 {
   if (m_mode != mode) {
     m_mode = mode;
     Q_EMIT mode_changed(mode);
-  }
-}
-
-void ModeSelector::on_action(const QString& action)
-{
-  if (action == cycle_action) {
-    cycle();
-  } else {
-    const auto it = std::find(activation_actions.begin(), activation_actions.end(), action);
-    assert(it != activation_actions.end());
-    set_mode(std::distance(activation_actions.begin(), it));
   }
 }
 

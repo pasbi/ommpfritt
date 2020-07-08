@@ -1,4 +1,5 @@
 #include "mainwindow/actions.h"
+#include <set>
 #include "commands/subdividepathcommand.h"
 #include "scene/scene.h"
 #include "commands/modifypointscommand.h"
@@ -16,6 +17,8 @@
 #include "scene/history/historymodel.h"
 #include "scene/messagebox.h"
 #include "tools/toolbox.h"
+#include <map>
+#include <functional>
 
 namespace
 {
@@ -122,129 +125,144 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
   return converted_objects;
 }
 
+using namespace omm;
+
+const std::map<QString, std::function<void(Application& app)>> actions {
+  {"make linear", [](Application& app) { modify_tangents(InterpolationMode::Linear, app); }},
+  {"make smooth", [](Application& app) { modify_tangents(InterpolationMode::Smooth, app); }},
+
+  {"remove selected points", [](Application& app) {
+    std::unique_ptr<Macro> macro;
+    for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+      std::vector<RemovePointsCommand::Range> removed_points;
+      auto last = path->end();
+      const auto is_contiguos = [&last](const Path::iterator& it) {
+        if (it.path != last.path || it.segment != last.segment) {
+          return false;
+        } else {
+          return it.point == last.point + 1;
+        }
+      };
+      for (auto it = path->begin(); it != path->end(); ++it) {
+        if (it->is_selected) {
+          if (is_contiguos(it)) {
+            removed_points.back().length += 1;
+          } else {
+            removed_points.push_back(RemovePointsCommand::Range{it, 1});
+          }
+          last = it;
+        }
+      }
+      if (!removed_points.empty()) {
+        auto command = std::make_unique<RemovePointsCommand>(*path, removed_points);
+        if (!macro) {
+          macro = app.scene.history().start_macro(command->label());
+        }
+        app.scene.submit(std::move(command));
+        app.scene.update_tool();
+      }
+    }
+  }},
+
+  {"subdivide", [](Application& app) {
+    Q_UNUSED(app)
+    std::list<std::unique_ptr<SubdividePathCommand>> cmds;
+    for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+      if (path) {
+        auto cmd = std::make_unique<SubdividePathCommand>(*path);
+        if (!cmd->is_noop()) {
+          cmds.push_back(std::move(cmd));
+        }
+      }
+    }
+
+    std::unique_ptr<Macro> macro;
+    if (cmds.size() > 0) {
+      macro = app.scene.history().start_macro(QObject::tr("Subdivide Paths"));
+    }
+    for (auto&& cmd : cmds) {
+      app.scene.submit(std::move(cmd));
+    }
+  }},
+
+  {"select all", [](Application& app) {
+    for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+      for (auto&& point : *path) {
+        point.is_selected = true;
+      }
+    }
+    Q_EMIT app.message_box().appearance_changed();
+  }},
+
+  {"deselect all", [](Application& app) {
+    for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+      for (auto&& point : *path) {
+        point.is_selected = false;
+      }
+    }
+    Q_EMIT app.message_box().appearance_changed();
+  }},
+
+  {"invert selection", [](Application& app) {
+    for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+      for (auto&& point : *path) {
+        point.is_selected = !point.is_selected;
+      }
+    }
+    Q_EMIT app.message_box().appearance_changed();
+  }},
+
+  {"convert objects", [](Application& app) {
+    const auto convertibles = ::filter_if(app.scene.item_selection<Object>(), [](const Object* o) {
+      return !!(o->flags() & Flag::Convertible);
+    });
+    if (convertibles.size() > 0) {
+      Scene& scene = app.scene;
+      auto macro = scene.history().start_macro(QObject::tr("convert"));
+      scene.submit<ObjectSelectionCommand>(app.scene, convertibles);
+      const auto converted_objects = ::convert_objects(app, convertibles);
+      scene.submit<ObjectSelectionCommand>(app.scene, converted_objects);
+      const auto is_path = [](auto&& object) { return object->type() == Path::TYPE; };
+      if (std::all_of(converted_objects.begin(), converted_objects.end(), is_path)) {
+        scene.set_mode(SceneMode::Vertex);
+      }
+    }
+  }},
+
+  {"remove unused styles", [](Application& app) {
+    auto& scene = app.scene;
+    const auto unused_styles = ::filter_if(app.scene.styles().items(), [&scene](const auto* style) {
+      return scene.find_reference_holders(*style).empty();
+    });
+    scene.submit<RemoveCommand<StyleList>>(scene.styles(), unused_styles);
+  }},
+};
+
 }  // namespace
 
 namespace omm::actions
 {
 
-void make_linear(Application& app) { modify_tangents(InterpolationMode::Linear, app); }
-void make_smooth(Application& app) { modify_tangents(InterpolationMode::Smooth, app); }
-
-void remove_selected_points(Application& app)
+bool perform_action(const QString& name, Application& app)
 {
-//  std::map<Path*, std::vector<std::size_t>> map;
-  std::unique_ptr<Macro> macro;
-  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-    std::vector<RemovePointsCommand::Range> removed_points;
-    auto last = path->end();
-    const auto is_contiguos = [&last](const Path::iterator& it) {
-      if (it.path != last.path || it.segment != last.segment) {
-        return false;
-      } else {
-        return it.point == last.point + 1;
-      }
-    };
-    for (auto it = path->begin(); it != path->end(); ++it) {
-      if (it->is_selected) {
-        if (is_contiguos(it)) {
-          removed_points.back().length += 1;
-        } else {
-          removed_points.push_back(RemovePointsCommand::Range{it, 1});
-        }
-        last = it;
-      }
-    }
-    if (!removed_points.empty()) {
-      auto command = std::make_unique<RemovePointsCommand>(*path, removed_points);
-      if (!macro) {
-        macro = app.scene.history().start_macro(command->label());
-      }
-      app.scene.submit(std::move(command));
-      app.scene.update_tool();
-    }
+  auto it = ::actions.find(name);
+  if (it == ::actions.end()) {
+    return false;
+  } else {
+    it->second(app);
+    return true;
   }
 }
 
-void subdivide(Application& app)
+std::set<QString> available_actions()
 {
-  Q_UNUSED(app)
-
-//  constexpr auto n = 1;
-
-  std::list<std::unique_ptr<SubdividePathCommand>> cmds;
-  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-    if (path) {
-      auto cmd = std::make_unique<SubdividePathCommand>(*path);
-      if (!cmd->is_noop()) {
-        cmds.push_back(std::move(cmd));
-      }
-    }
-  }
-
-  std::unique_ptr<Macro> macro;
-  if (cmds.size() > 0) {
-    macro = app.scene.history().start_macro(QObject::tr("Subdivide Paths"));
-  }
-  for (auto&& cmd : cmds) {
-    app.scene.submit(std::move(cmd));
-  }
+  std::set<QString> names;
+  const auto get_first = [](auto&& pair) { return pair.first; };
+  std::transform(::actions.begin(), ::actions.end(), std::inserter(names, names.end()), get_first);
+  return names;
 }
 
-void select_all(Application& app)
-{
-  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-    for (auto&& point : *path) {
-      point.is_selected = true;
-    }
-  }
-  Q_EMIT app.message_box().appearance_changed();
-}
 
-void deselect_all(Application& app)
-{
-  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-    for (auto&& point : *path) {
-      point.is_selected = false;
-    }
-  }
-  Q_EMIT app.message_box().appearance_changed();
-}
 
-void invert_selection(Application& app)
-{
-  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-    for (auto&& point : *path) {
-      point.is_selected = !point.is_selected;
-    }
-  }
-  Q_EMIT app.message_box().appearance_changed();
-}
-
-void convert_objects(Application& app)
-{
-  const auto convertibles = ::filter_if(app.scene.item_selection<Object>(), [](const Object* o) {
-    return !!(o->flags() & Flag::Convertible);
-  });
-  if (convertibles.size() > 0) {
-    Scene& scene = app.scene;
-    auto macro = scene.history().start_macro(QObject::tr("convert"));
-    scene.submit<ObjectSelectionCommand>(app.scene, convertibles);
-    const auto converted_objects = ::convert_objects(app, convertibles);
-    scene.submit<ObjectSelectionCommand>(app.scene, converted_objects);
-    const auto is_path = [](auto&& object) { return object->type() == Path::TYPE; };
-    if (std::all_of(converted_objects.begin(), converted_objects.end(), is_path)) {
-      scene.set_mode(SceneMode::Vertex);
-    }
-  }
-}
-
-void remove_unused_styles(Application& app)
-{
-  auto& scene = app.scene;
-  const auto unused_styles = ::filter_if(app.scene.styles().items(), [&scene](const auto* style) {
-    return scene.find_reference_holders(*style).empty();
-  });
-  scene.submit<RemoveCommand<StyleList>>(scene.styles(), unused_styles);
-}
 
 }  // namespace omm::actions

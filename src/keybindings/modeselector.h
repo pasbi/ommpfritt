@@ -19,13 +19,13 @@ public:
 public:
   int mode() const { return m_mode; }
   QString translated_name() const;
+  bool handle(const QString& action_name);
 
 Q_SIGNALS:
   void mode_changed(int mode);
 
 public Q_SLOTS:
   void set_mode(int mode);
-  void on_action(const QString& action);
   void cycle();
 
 private:
