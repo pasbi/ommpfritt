@@ -34,9 +34,10 @@ std::unique_ptr<QMenu> add_menu(const QString& path, std::map<QString, QMenu*>& 
   if (menu_map.count(path) > 0) {
     return nullptr;
   } else {
-    const auto [ rest_path, menu_name ] = split(path);
+    const auto [rest_path, menu_name] = split(path);
     const auto menu_label = QCoreApplication::translate("menu_name", menu_name.toUtf8().constData());
     auto menu = std::make_unique<QMenu>(menu_label);
+    menu->setTearOffEnabled(true);
     menu->setObjectName(menu_name);
     menu_map.insert({ path, menu.get() });
 
