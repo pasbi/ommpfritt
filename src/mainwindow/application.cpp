@@ -179,6 +179,11 @@ Application& Application::instance()
   return *m_instance;
 }
 
+SceneMode Application::scene_mode() const
+{
+  return scene.current_mode();
+}
+
 void Application::set_main_window(MainWindow& main_window)
 {
   m_main_window = &main_window;

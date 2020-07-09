@@ -51,6 +51,7 @@ public:
   void evaluate() const;
   QKeySequence default_key_sequence(const QString& name) const;
   static Application& instance();
+  SceneMode scene_mode() const;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "Application");
   QString type() const override;

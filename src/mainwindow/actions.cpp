@@ -186,28 +186,56 @@ const std::map<QString, std::function<void(Application& app)>> actions {
   }},
 
   {"select all", [](Application& app) {
-    for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-      for (auto&& point : *path) {
-        point.is_selected = true;
+    switch (app.scene_mode()) {
+    case SceneMode::Vertex:
+      for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+        for (auto&& point : *path) {
+          point.is_selected = true;
+        }
       }
+      break;
+    case SceneMode::Object:
+      app.scene.set_selection(down_cast(app.scene.object_tree().items()));
+      break;
     }
     Q_EMIT app.message_box().appearance_changed();
   }},
 
   {"deselect all", [](Application& app) {
-    for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-      for (auto&& point : *path) {
-        point.is_selected = false;
+    switch (app.scene_mode()) {
+    case SceneMode::Vertex:
+      for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+        for (auto&& point : *path) {
+          point.is_selected = false;
+        }
       }
+      break;
+    case SceneMode::Object:
+      app.scene.set_selection({});
+      break;
     }
     Q_EMIT app.message_box().appearance_changed();
   }},
 
   {"invert selection", [](Application& app) {
-    for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-      for (auto&& point : *path) {
-        point.is_selected = !point.is_selected;
+    switch (app.scene_mode()) {
+    case SceneMode::Vertex:
+      for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+        for (auto&& point : *path) {
+          point.is_selected = !point.is_selected;
+        }
       }
+      break;
+    case SceneMode::Object:
+    {
+      const auto object_selection = app.scene.item_selection<Object>();
+      auto difference = app.scene.object_tree().items();
+      for (auto&& s : object_selection) {
+        difference.erase(s);
+      }
+      app.scene.set_selection(down_cast(difference));
+      break;
+    }
     }
     Q_EMIT app.message_box().appearance_changed();
   }},
