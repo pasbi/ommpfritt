@@ -2071,6 +2071,14 @@ Borrar la selección de todos modos?</translation>
         <source>fill selection</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>extend selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>shrink selection</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>

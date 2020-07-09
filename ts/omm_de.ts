@@ -2071,6 +2071,14 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>fill selection</source>
         <translation>Selektion füllen</translation>
     </message>
+    <message>
+        <source>extend selection</source>
+        <translation>Selektion erweitern</translation>
+    </message>
+    <message>
+        <source>shrink selection</source>
+        <translation>Selektion verkleinern</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>

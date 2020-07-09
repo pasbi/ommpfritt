@@ -76,6 +76,18 @@ void modify_tangents(omm::InterpolationMode mode, omm::Application& app)
   }
 }
 
+std::set<std::size_t> neighbors_of_selected(const Path::Segment& segment)
+{
+  std::set<std::size_t> selection;
+  for (std::size_t i = 1; i < segment.size() - 1; ++i) {
+    if (segment[i].is_selected) {
+      selection.insert(i-1);
+      selection.insert(i+1);
+    }
+  }
+  return selection;
+}
+
 std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Object*> convertibles)
 {
   using namespace omm;
@@ -304,6 +316,30 @@ const std::map<QString, std::function<void(Application& app)>> actions {
       auto last_it = std::find_if(segment.rbegin(), segment.rend(), is_selected);
       if (first_it != segment.end() && last_it != segment.rend()) {
         std::for_each(first_it, last_it.base(), set_selected);
+      }
+    });
+    Q_EMIT app.message_box().appearance_changed();
+  }},
+
+  {"extend selection", [](Application& app) {
+    foreach_segment(app, [](auto&& segment) {
+      for (auto&& i : neighbors_of_selected(segment)) {
+        segment[i].is_selected = true;
+      }
+    });
+    Q_EMIT app.message_box().appearance_changed();
+  }},
+
+  {"shrink selection", [](Application& app) {
+    foreach_segment(app, [](auto&& segment) {
+      std::set<std::size_t> selection_fringe;
+      for (std::size_t i = 1; i < segment.size() - 1; ++i) {
+        if (!segment[i-1].is_selected || !segment[i+1].is_selected) {
+          selection_fringe.insert(i);
+        }
+      }
+      for (auto&& i : selection_fringe) {
+        segment[i].is_selected = false;
       }
     });
     Q_EMIT app.message_box().appearance_changed();

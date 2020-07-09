@@ -2071,6 +2071,14 @@ Remove the selected items anyway?</translation>
         <source>fill selection</source>
         <translation>Fill selection</translation>
     </message>
+    <message>
+        <source>extend selection</source>
+        <translation>Extend selection</translation>
+    </message>
+    <message>
+        <source>shrink selection</source>
+        <translation>Shrink selection</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>
