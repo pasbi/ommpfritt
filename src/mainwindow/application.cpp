@@ -15,7 +15,7 @@
 #include "managers/manager.h"
 #include "scene/scene.h"
 #include "commands/addcommand.h"
-#include "mainwindow/actions.h"
+#include "mainwindow/pathactions.h"
 #include "objects/object.h"
 #include "tools/toolbox.h"
 #include "tags/tag.h"
@@ -312,7 +312,7 @@ void Application::load()
 bool Application::perform_action(const QString& action_name)
 {
 #ifndef NDEBUG
-  for (auto&& action_name : actions::available_actions()) {
+  for (auto&& action_name : path_actions::available_actions()) {
     assert(key_bindings.find_action(Application::TYPE, action_name) != nullptr);
   }
 #endif
@@ -363,7 +363,7 @@ bool Application::perform_action(const QString& action_name)
     }
   } else if (action_name == "preferences") {
     PreferenceDialog().exec();
-  } else if (omm::actions::perform_action(action_name, *this)) {
+  } else if (omm::path_actions::perform_action(action_name, *this)) {
     // action was handled by perform_action.
   } else if (handle_mode(action_name)) {
     // action was handled as mode

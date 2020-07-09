@@ -1,6 +1,6 @@
 target_sources(libommpfritt PRIVATE
-  actions.cpp
-  actions.h
+  pathactions.cpp
+  pathactions.h
   application.cpp
   application.h
   exportdialog.cpp

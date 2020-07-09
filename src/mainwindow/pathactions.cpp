@@ -1,4 +1,4 @@
-#include "mainwindow/actions.h"
+#include "mainwindow/pathactions.h"
 #include <set>
 #include "commands/subdividepathcommand.h"
 #include "scene/scene.h"
@@ -268,7 +268,7 @@ const std::map<QString, std::function<void(Application& app)>> actions {
 
 }  // namespace
 
-namespace omm::actions
+namespace omm::path_actions
 {
 
 bool perform_action(const QString& name, Application& app)

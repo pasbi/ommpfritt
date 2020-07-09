@@ -9,7 +9,6 @@
 #include "commands/movecommand.h"
 #include "objects/empty.h"
 #include "scene/messagebox.h"
-#include "mainwindow/actions.h"
 #include <QContextMenuEvent>
 #include "managers/objectmanager/objecttreeview.h"
 
