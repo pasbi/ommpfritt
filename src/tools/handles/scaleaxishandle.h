@@ -32,11 +32,17 @@ public:
     return (global_point - v).euclidean_norm() < this->interact_epsilon();
   }
 
+  bool mouse_press(const Vec2f& pos, const QMouseEvent& e) override
+  {
+    m_transformation = tool.transformation();
+    return Handle::mouse_press(pos, e);
+  }
+
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override
   {
     Handle::mouse_move(delta, pos, e);
     if (this->status() == HandleStatus::Active) {
-      const auto inv_tool_transformation = this->tool.transformation().inverted();
+      const auto inv_tool_transformation = m_transformation.inverted();
       const Vec2f s = [this, inv_tool_transformation, pos, &e] {
         if (!!(e.modifiers() & Qt::ControlModifier)) {
           auto total_delta = inv_tool_transformation.apply_to_direction(pos - this->press_pos());
@@ -89,6 +95,7 @@ public:
 
 private:
   const Vec2f m_direction;
+  ObjectTransformation m_transformation;
 
   Vec2f project_onto_axis(const Vec2f& vec) const
   {
