@@ -16,7 +16,7 @@ jobs:
         - build-scripts/make-appimage.sh
       after_success:
         - build/test/unit/ommpfritt_unit_tests
-        - build-scripts/upload-appimage.sh
+        # - build-scripts/upload-appimage.sh
         - touch success
         - build-scripts/notify-telegram.sh
       after_failure:
