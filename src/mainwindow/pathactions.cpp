@@ -25,6 +25,17 @@ namespace
 
 using namespace omm;
 
+bool is_selected (const Point& point) { return point.is_selected; }
+void set_selected (Point& point) { point.is_selected = true; }
+template<typename F> void foreach_segment(Application& app, F&& f)
+{
+  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+    for (auto&& segment : path->segments) {
+      f(segment);
+    }
+  }
+}
+
 void modify_tangents(omm::InterpolationMode mode, omm::Application& app)
 {
   using namespace omm;
@@ -278,15 +289,23 @@ const std::map<QString, std::function<void(Application& app)>> actions {
   }},
 
   {"select connected points", [](Application& app) {
-    for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-      for (auto&& segment : path->segments) {
-        const auto is_selected = [](const auto& point) { return point.is_selected; };
-        if (std::any_of(segment.begin(), segment.end(), is_selected)) {
-          const auto set_selected = [](auto& point) { point.is_selected = true; };
-          std::for_each(segment.begin(), segment.end(), set_selected);
-        }
+    foreach_segment(app, [](auto&& segment) {
+      if (std::any_of(segment.begin(), segment.end(), is_selected)) {
+        std::for_each(segment.begin(), segment.end(), set_selected);
       }
-    }
+    });
+    Q_EMIT app.message_box().appearance_changed();
+  }},
+
+  {"fill selection", [](Application& app) {
+    foreach_segment(app, [](auto&& segment) {
+      const auto is_selected = [](const auto& point) { return point.is_selected; };
+      auto first_it = std::find_if(segment.begin(), segment.end(), is_selected);
+      auto last_it = std::find_if(segment.rbegin(), segment.rend(), is_selected);
+      if (first_it != segment.end() && last_it != segment.rend()) {
+        std::for_each(first_it, last_it.base(), set_selected);
+      }
+    });
     Q_EMIT app.message_box().appearance_changed();
   }},
 };

@@ -2067,6 +2067,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>select connected points</source>
         <translation>Selektiere Zusammenhängende Punkte</translation>
     </message>
+    <message>
+        <source>fill selection</source>
+        <translation>Selektion füllen</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>
