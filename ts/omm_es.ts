@@ -2063,6 +2063,10 @@ Borrar la selección de todos modos?</translation>
         <source>remove selected points</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>select connected points</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>

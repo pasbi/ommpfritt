@@ -2063,6 +2063,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>remove selected points</source>
         <translation>Selektierte Punkte entfernen</translation>
     </message>
+    <message>
+        <source>select connected points</source>
+        <translation>Selektiere Zusammenhängende Punkte</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>

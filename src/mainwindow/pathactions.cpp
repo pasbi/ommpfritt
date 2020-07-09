@@ -276,6 +276,19 @@ const std::map<QString, std::function<void(Application& app)>> actions {
     });
     scene.submit<RemoveCommand<StyleList>>(scene.styles(), unused_styles);
   }},
+
+  {"select connected points", [](Application& app) {
+    for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+      for (auto&& segment : path->segments) {
+        const auto is_selected = [](const auto& point) { return point.is_selected; };
+        if (std::any_of(segment.begin(), segment.end(), is_selected)) {
+          const auto set_selected = [](auto& point) { point.is_selected = true; };
+          std::for_each(segment.begin(), segment.end(), set_selected);
+        }
+      }
+    }
+    Q_EMIT app.message_box().appearance_changed();
+  }},
 };
 
 }  // namespace

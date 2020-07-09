@@ -2063,6 +2063,10 @@ Remove the selected items anyway?</translation>
         <source>remove selected points</source>
         <translation>Remove selected points</translation>
     </message>
+    <message>
+        <source>select connected points</source>
+        <translation>Select connected points</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/NodeManager</name>
