@@ -44,7 +44,9 @@ void TracksCommand::remove()
 {
   assert(m_tracks.empty());
   for (auto&& [ owner, property ] : m_properties) {
-    m_tracks.insert(std::pair(owner, m_animator.extract_track(*owner, *property)));
+    if (auto track = m_animator.extract_track(*owner, *property); track) {
+      m_tracks.insert(std::pair(owner, std::move(track)));
+    }
   }
 }
 

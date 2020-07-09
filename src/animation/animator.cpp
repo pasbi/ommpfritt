@@ -364,6 +364,7 @@ AbstractPropertyOwner* Animator::owner(const QModelIndex& index) const
 
 void Animator::insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track> track)
 {
+  assert(track);
   Track& track_ref = *track;
   const auto accelerator = this->accelerator();
   if (accelerator.contains(owner)) {
@@ -411,9 +412,11 @@ std::unique_ptr<Track> Animator::extract_track(AbstractPropertyOwner& owner, Pro
                                 std::find(properties.begin(), properties.end(), &property));
   beginRemoveRows(parent, row, row);
   auto track = property.extract_track();
-  this->accelerator.invalidate();
-  endRemoveRows();
-  Q_EMIT track_removed(*track);
+  if (track) {
+    this->accelerator.invalidate();
+    endRemoveRows();
+    Q_EMIT track_removed(*track);
+  }
   return track;
 }
 
