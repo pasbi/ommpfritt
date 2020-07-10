@@ -49,24 +49,25 @@ They should be available in the required version.
 pacman -S gcc cmake python3 poppler-qt5 qt5-base qt5-imageformats qt5-svg qt5-translations qt5-tools
 ```
 
-2.   Clone and install [`pybind11`](github.com/pybind/pybind11).
+2.   Install [`lib2geom-git`](https://aur.archlinux.org/packages/lib2geom-git/) from AUR.
+3.   Clone and install [`pybind11`](https://github.com/pybind/pybind11).
 `pacman` also comes with `pybind11`-packages, however `pybind11` is developing
 quickly.
 Maybe you have luck with the packages but I recommend installing it from
 github.
-3.   get omm: `git clone https://github.com/pasbi/ommpfritt`
-4.   configure it:
+4.   get omm: `git clone https://github.com/pasbi/ommpfritt`
+5.   configure it:
 
 ```bash
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release \
-      -DQT_QM_PATH/usr/share/qt/translations \
+      -DQT_QM_PATH=/usr/share/qt/translations \
       ..
 ```
 
-5.   build it `make`, this may take a few minutes.
-6.   start it: `./ommpfritt`
+6.   build it `make`, this may take a few minutes.
+7.   start it: `./ommpfritt`
 
 ### Ubuntu 16.04 Xenial
 
