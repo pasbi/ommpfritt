@@ -31,7 +31,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
     if (row == 0) {
       return tr("foundation");
     } else {
-      return command(row-1).label();
+      return m_undo_stack.command(row-1)->actionText();
     }
   };
 
@@ -59,21 +59,6 @@ int HistoryModel::count() const
   return m_undo_stack.count();
 }
 
-const Command &HistoryModel::command(int index) const
-{
-  return static_cast<const Command&>(*m_undo_stack.command(index));
-}
-
-Command *HistoryModel::last_command() const
-{
-  if (m_undo_stack.count() > 0) {
-    QUndoCommand* cmd = const_cast<QUndoCommand*>(m_undo_stack.command(m_undo_stack.count() - 1));
-    return static_cast<Command*>(cmd);
-  } else {
-    return nullptr;
-  }
-}
-
 void HistoryModel::set_index(const int index)
 {
   m_undo_stack.setIndex(index);
@@ -89,6 +74,37 @@ void HistoryModel::reset()
   beginResetModel();
   m_undo_stack.clear();
   endResetModel();
+}
+
+Command* HistoryModel::last_command() const
+{
+  if (const auto n = count(); n == 0) {
+    return nullptr;
+  } else {
+    const auto* cmd = m_undo_stack.command(n-1);
+    if (cmd->childCount() > 0) {
+      // macro
+      return nullptr;
+    } else {
+      return const_cast<Command*>(static_cast<const Command*>(cmd));
+    }
+  }
+}
+
+void HistoryModel::make_last_command_obsolete()
+{
+  if (auto* cmd = last_command(); cmd) {
+    return cmd->setObsolete(true);
+  }
+}
+
+bool HistoryModel::last_command_is_noop()
+{
+  if (const auto* cmd = last_command(); cmd) {
+    return cmd->is_noop();
+  } else {
+    return false;
+  }
 }
 
 void HistoryModel::set_saved_index()

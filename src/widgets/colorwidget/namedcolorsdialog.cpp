@@ -47,7 +47,7 @@ public:
       const auto props = ::transform<omm::Property*>(cprops);
 
       auto cmd = std::make_unique<omm::ChangeNamedColorNameCommand>(old_name, new_name);
-      auto macro = scene().history().start_macro(cmd->label());
+      auto macro = scene().history().start_macro(cmd->actionText());
       if (props.size() > 0) {
         scene().submit<omm::PropertiesCommand<omm::ColorProperty>>(props, omm::Color(new_name));
       }
@@ -120,7 +120,7 @@ void NamedColorsDialog::remove()
     }
 
     if (can_remove) {
-      [[maybe_unused]] auto macro = scene().history().start_macro(cmd->label());
+      [[maybe_unused]] auto macro = scene().history().start_macro(cmd->actionText());
       for (ColorProperty* property : properties) {
         Color color = property->value();
         color.to_ordinary_color();

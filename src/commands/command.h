@@ -14,7 +14,6 @@ protected:
   Command(const QString& label);
 
 public:
-  QString label() const;
   virtual bool is_noop() const { return false; }
 
 protected:

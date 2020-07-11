@@ -112,7 +112,7 @@ void PropertyArea::perform(const QModelIndex& index, QMouseEvent& event)
     if (m_macro == nullptr) {
       // move the command that was issued on click inside the macro.
       scene.history().undo();  // remove the single command
-      const QString label = m_command_on_hold->label();
+      const QString label = m_command_on_hold->actionText();
       m_macro = scene.history().start_macro(label);
 
       // commit a copy of the removed single command again, now within the macro.

@@ -93,10 +93,9 @@ void AbstractSelectTool::cancel()
 {
   transform_objects(ObjectTransformation());
 
-  Command* cmd = scene()->history().last_command();
   Tool::cancel();
-  if (cmd != nullptr && cmd->is_noop()) {
-    cmd->setObsolete(true);
+  if (auto&& h = scene()->history(); h.last_command_is_noop()) {
+    h.make_last_command_obsolete();
     QSignalBlocker(&scene()->history());
     scene()->history().undo();
   }

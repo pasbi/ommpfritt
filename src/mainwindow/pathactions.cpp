@@ -174,7 +174,7 @@ void remove_selected_points(Application& app)
     if (!removed_points.empty()) {
       auto command = std::make_unique<RemovePointsCommand>(*path, removed_points);
       if (!macro) {
-        macro = app.scene.history().start_macro(command->label());
+        macro = app.scene.history().start_macro(command->actionText());
       }
       app.scene.submit(std::move(command));
       app.scene.update_tool();
