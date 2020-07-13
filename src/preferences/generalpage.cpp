@@ -55,9 +55,15 @@ GeneralPage::GeneralPage(Preferences& preferences)
   {
     return QLocale(code.toUtf8().constData()).language() == locale.language();
   });
-  assert(it != m_available_languages.end());
-  const int i = std::distance(m_available_languages.begin(), it);
-  m_ui->cb_language->setCurrentIndex(i);
+
+  m_ui->cb_language->setCurrentIndex([it, this]() -> int {
+    if (it != m_available_languages.end()) {
+      return std::distance(m_available_languages.begin(), it);
+    } else {
+      return -1;
+    }
+  }());
+
   connect(m_ui->cb_language, qOverload<int>(&QComboBox::currentIndexChanged), this, [this]()
   {
     const auto msg = tr("Changing language takes effect after restarting the application.");
@@ -71,8 +77,10 @@ GeneralPage::~GeneralPage()
 
 void GeneralPage::about_to_accept()
 {
-  const QLocale locale(m_available_languages.at(m_ui->cb_language->currentIndex()));
-  QSettings().setValue(MainWindow::LOCALE_SETTINGS_KEY, locale);
+  if (const int i = m_ui->cb_language->currentIndex(); i >= 0) {
+    const QLocale locale(m_available_languages.at(i));
+    QSettings().setValue(MainWindow::LOCALE_SETTINGS_KEY, locale);
+  }
 }
 
 }  // namespace omm
