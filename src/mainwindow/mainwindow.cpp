@@ -108,6 +108,8 @@ std::vector<QString> MainWindow::path_menu_entries()
     "path/invert selection",
     "path/select connected points",
     "path/fill selection",
+    "path/extend selection",
+    "path/shrink selection",
     "path/show point dialog",
   };
 }
