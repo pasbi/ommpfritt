@@ -79,10 +79,23 @@ public:
 public:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
   std::set<AbstractPropertyOwner*> selection() const;
-  template<typename ItemT> std::set<ItemT*> item_selection() const
+
+  template<typename ItemT>
+  std::enable_if_t<std::is_same_v<typename ItemT::factory_item_type, ItemT>, std::set<ItemT*>>
+  item_selection() const
   {
     return kind_cast<ItemT>(m_item_selection.at(ItemT::KIND));
   }
+
+  template<typename ItemT>
+  std::enable_if_t<!std::is_same_v<typename ItemT::factory_item_type, ItemT>, std::set<ItemT*>>
+  item_selection() const
+  {
+    static const auto type_matches = [](const auto* v) { return v->type() == ItemT::TYPE; };
+    const auto items = item_selection<typename ItemT::factory_item_type>();
+    return type_cast<ItemT*>(::filter_if(items, type_matches));
+  }
+
   std::set<AbstractPropertyOwner*> property_owners() const;
   std::set<ReferenceProperty*>
   find_reference_holders(const AbstractPropertyOwner& candidate) const;

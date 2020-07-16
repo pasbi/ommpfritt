@@ -36,6 +36,7 @@ private:
   }
 
 public:
+  using factory_item_type = GeneralT;
   template<typename SpecialT> static void register_type(Key key)
   {
     m_creator_map[key] = &make_<SpecialT>;

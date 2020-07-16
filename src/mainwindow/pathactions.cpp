@@ -29,7 +29,7 @@ bool is_selected (const Point& point) { return point.is_selected; }
 void set_selected (Point& point) { point.is_selected = true; }
 template<typename F> void foreach_segment(Application& app, F&& f)
 {
-  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+  for (auto* path : app.scene.item_selection<Path>()) {
     for (auto&& segment : path->segments) {
       f(segment);
     }
@@ -39,8 +39,8 @@ template<typename F> void foreach_segment(Application& app, F&& f)
 void modify_tangents(omm::InterpolationMode mode, omm::Application& app)
 {
   using namespace omm;
-  const auto paths = Object::cast<Path>(app.scene.item_selection<Object>());
   std::map<Path::iterator, omm::Point> map;
+  const auto paths = app.scene.item_selection<Path>();
   for (omm::Path* path : paths) {
     const bool is_closed = path->is_closed();
     for (std::size_t s = 0; s < path->segments.size(); ++s) {
@@ -151,7 +151,7 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
 void remove_selected_points(Application& app)
 {
   std::unique_ptr<Macro> macro;
-  for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+  for (auto* path : app.scene.item_selection<Path>()) {
     std::vector<RemovePointsCommand::Range> removed_points;
     auto last = path->end();
     const auto is_contiguos = [&last](const Path::iterator& it) {
@@ -202,12 +202,10 @@ const std::map<QString, std::function<void(Application& app)>> actions {
   {"subdivide", [](Application& app) {
     Q_UNUSED(app)
     std::list<std::unique_ptr<SubdividePathCommand>> cmds;
-    for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
-      if (path) {
-        auto cmd = std::make_unique<SubdividePathCommand>(*path);
-        if (!cmd->is_noop()) {
-          cmds.push_back(std::move(cmd));
-        }
+    for (auto* path : app.scene.item_selection<Path>()) {
+      auto cmd = std::make_unique<SubdividePathCommand>(*path);
+      if (!cmd->is_noop()) {
+        cmds.push_back(std::move(cmd));
       }
     }
 
@@ -223,7 +221,7 @@ const std::map<QString, std::function<void(Application& app)>> actions {
   {"select all", [](Application& app) {
     switch (app.scene_mode()) {
     case SceneMode::Vertex:
-      for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+      for (auto* path : app.scene.item_selection<Path>()) {
         for (auto&& point : *path) {
           point.is_selected = true;
         }
@@ -239,7 +237,7 @@ const std::map<QString, std::function<void(Application& app)>> actions {
   {"deselect all", [](Application& app) {
     switch (app.scene_mode()) {
     case SceneMode::Vertex:
-      for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+      for (auto* path : app.scene.item_selection<Path>()) {
         for (auto&& point : *path) {
           point.is_selected = false;
         }
@@ -255,7 +253,7 @@ const std::map<QString, std::function<void(Application& app)>> actions {
   {"invert selection", [](Application& app) {
     switch (app.scene_mode()) {
     case SceneMode::Vertex:
-      for (auto* path : Object::cast<Path>(app.scene.item_selection<Object>())) {
+      for (auto* path : app.scene.item_selection<Path>()) {
         for (auto&& point : *path) {
           point.is_selected = !point.is_selected;
         }
@@ -343,6 +341,10 @@ const std::map<QString, std::function<void(Application& app)>> actions {
       }
     });
     Q_EMIT app.message_box().appearance_changed();
+  }},
+
+  {"select by similar normal", [](Application& app) {
+    Q_UNUSED(app)
   }},
 };
 
