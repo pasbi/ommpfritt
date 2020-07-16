@@ -6,6 +6,7 @@ function(generate_translations translations_qrc ts_dir languages prefixes cfg_fi
     list(TRANSFORM ts_files PREPEND "${ts_dir}/omm_")
     set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/update-translations_h.py")
     set(translations_h "${CMAKE_CURRENT_SOURCE_DIR}/src/translations.h")
+    file(GLOB_RECURSE TS_SOURCES "*.cpp" "*.h" "*.ui")
     list(REMOVE_ITEM TS_SOURCES "${translations_h}")
 
     add_custom_command(
