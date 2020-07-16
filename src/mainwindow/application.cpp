@@ -355,8 +355,7 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "reset viewport") {
     main_window()->viewport().reset();
   } else if (action_name == "show point dialog") {
-    const auto paths = Object::cast<Path>(scene.item_selection<Object>());
-    if (paths.size() > 0) {
+    if (const auto paths = scene.item_selection<Path>(); paths.size() > 0) {
       PointDialog(paths, main_window()).exec();
     }
   } else if (action_name == "preferences") {

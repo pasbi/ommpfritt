@@ -129,13 +129,6 @@ public:
   }
 
   TagList tags;
-  template<typename T, template<typename...> class ContainerT>
-  static ContainerT<T*> cast(const ContainerT<Object*> object)
-  {
-    const auto type_matches = [](const Object* o) { return o->type() == T::TYPE; };
-    const auto to_type = [](Object* o) { return static_cast<T*>(o); };
-    return ::transform<T*>(::filter_if(object, type_matches), to_type);
-  }
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP(ANY_TR_CONTEXT, "Object");
   static constexpr auto VISIBILITY_PROPERTY_KEY = "visibility";
