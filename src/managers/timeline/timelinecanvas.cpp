@@ -11,6 +11,7 @@
 #include "scene/scene.h"
 #include "scene/history/historymodel.h"
 #include "preferences/uicolors.h"
+#include "mainwindow/application.h"
 
 namespace omm
 {
@@ -202,10 +203,13 @@ bool TimelineCanvas::mouse_press(QMouseEvent& event)
   m_pan_active = false;
   m_zoom_active = false;
   const int frame = std::round(frame_range.pixel_to_unit(event.pos().x() - rect.left()));
-  if (event.modifiers() & Qt::AltModifier) {
-    m_pan_active = event.button() == Qt::LeftButton;
-    m_zoom_active = event.button() == Qt::RightButton;
+  if (preferences().match("shift viewport", event, true)) {
+    m_pan_active = true;
     disable_context_menu();
+    return true;
+  } else if (preferences().match("zoom viewport", event, true)) {
+    disable_context_menu();
+    m_zoom_active = true;
     return true;
   } else if (event.pos().y() - rect.top() < footer_y()) {
     if (event.button() == Qt::LeftButton) {
