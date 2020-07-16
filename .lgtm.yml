@@ -26,9 +26,15 @@ extraction:
         - build-essential
     configure:
       command:
+        - git clone https://gitlab.com/inkscape/lib2geom.git
+        - pushd lib2geom
+        - git checkout 37876ed4
+        - cmake -B build -GNinja -DCMAKE_INSTALL_PREFIX=build/install -D2GEOM_TESTING=OFF
+        - cmake --build build --target install
+        - popd
         - mkdir build
         - cd build
-        - cmake -DGENERATE_ICONS=off -DCMAKE_BUILD_TYPE=Release -DQT_QM_PATH="/usr/share/qt5/translations/" ..
+        - cmake -DGENERATE_ICONS=off -DCMAKE_BUILD_TYPE=Release -DQT_QM_PATH="/usr/share/qt5/translations/" -DCMAKE_INSTALL_PREFIX="/usr;../lib2geom/build/install/lib/cmake" ..
     index:
       build_command:
         - cd build
