@@ -71,6 +71,7 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
         point.is_selected = false;
       }
     }
+    Q_EMIT scene()->message_box().point_selection_changed();
     return false;
   } else {
     return false;
