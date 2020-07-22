@@ -1500,6 +1500,34 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Both</source>
         <translation>Beide</translation>
     </message>
+    <message>
+        <source>threshold</source>
+        <translation>Schwellwert</translation>
+    </message>
+    <message>
+        <source>apply</source>
+        <translation>Anwenden</translation>
+    </message>
+    <message>
+        <source>similarity</source>
+        <translation>Ähnlichkeit</translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation>Einer</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation>Alle</translation>
+    </message>
+    <message>
+        <source>strategy</source>
+        <translation>Startegie</translation>
+    </message>
+    <message>
+        <source>normal</source>
+        <translation>Normale</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1800,6 +1828,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
         <source>Boolean</source>
         <translation>Boolean</translation>
     </message>
+    <message>
+        <source>SelectSimilarTool</source>
+        <translation type="unfinished">Ähnliche selektieren</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/Application</name>
@@ -2078,6 +2110,10 @@ Soll die Selektion trotzdem entfernt werden?</translation>
     <message>
         <source>shrink selection</source>
         <translation>Selektion verkleinern</translation>
+    </message>
+    <message>
+        <source>SelectSimilarTool</source>
+        <translation>Ähnliche selektieren</translation>
     </message>
 </context>
 <context>

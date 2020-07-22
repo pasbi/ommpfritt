@@ -1500,6 +1500,34 @@ Borrar la selección de todos modos?</translation>
         <source>Both</source>
         <translation type="unfinished">Ambas</translation>
     </message>
+    <message>
+        <source>threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>apply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>similarity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>strategy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>normal</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1800,6 +1828,10 @@ Borrar la selección de todos modos?</translation>
         <source>Boolean</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>SelectSimilarTool</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>keybindings/Application</name>
@@ -2077,6 +2109,10 @@ Borrar la selección de todos modos?</translation>
     </message>
     <message>
         <source>shrink selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SelectSimilarTool</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

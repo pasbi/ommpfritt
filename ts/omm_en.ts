@@ -1500,6 +1500,34 @@ Remove the selected items anyway?</translation>
         <source>Both</source>
         <translation>Both</translation>
     </message>
+    <message>
+        <source>threshold</source>
+        <translation>Threshold</translation>
+    </message>
+    <message>
+        <source>apply</source>
+        <translation>Apply</translation>
+    </message>
+    <message>
+        <source>similarity</source>
+        <translation>Similarity</translation>
+    </message>
+    <message>
+        <source>Any</source>
+        <translation>Any</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation>All</translation>
+    </message>
+    <message>
+        <source>strategy</source>
+        <translation>Strategy</translation>
+    </message>
+    <message>
+        <source>normal</source>
+        <translation>Normal</translation>
+    </message>
 </context>
 <context>
     <name>Tag</name>
@@ -1800,6 +1828,10 @@ Remove the selected items anyway?</translation>
         <source>Boolean</source>
         <translation>Boolean</translation>
     </message>
+    <message>
+        <source>SelectSimilarTool</source>
+        <translation>Select Similar</translation>
+    </message>
 </context>
 <context>
     <name>keybindings/Application</name>
@@ -2078,6 +2110,10 @@ Remove the selected items anyway?</translation>
     <message>
         <source>shrink selection</source>
         <translation>Shrink selection</translation>
+    </message>
+    <message>
+        <source>SelectSimilarTool</source>
+        <translation>Select similar</translation>
     </message>
 </context>
 <context>
