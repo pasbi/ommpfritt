@@ -16,6 +16,7 @@ public:
 
 protected:
   void update_edit() override;
+  void update_configuration() override;
 
 private:
   AbstractTextEditAdapter* m_text_edit;

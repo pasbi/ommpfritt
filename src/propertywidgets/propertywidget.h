@@ -70,6 +70,7 @@ protected:
 
 protected Q_SLOTS:
   virtual void update_edit() = 0;
+  virtual void update_configuration() {}
 
 private:
   std::set<Property*> m_properties;

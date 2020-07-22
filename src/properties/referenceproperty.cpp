@@ -59,6 +59,7 @@ void ReferenceProperty::deserialize(AbstractDeserializer& deserializer, const Po
 ReferenceProperty& ReferenceProperty::set_filter(const ReferenceProperty::Filter& filter)
 {
   configuration[FILTER_POINTER] = filter;
+  Q_EMIT this->configuration_changed();
   return *this;
 }
 

@@ -207,6 +207,16 @@ private:
 
 Q_SIGNALS:
   void value_changed(Property*);
+
+  /**
+   * @brief configuration_changed is emitted when the configuration has changed.
+   * @note property widgets should listen to this signal and update themselves accordingly.
+   *  However, this feature is not implemented yet for most properties.
+   *  It should be fairly simple to implement.
+   *  Remove this note once the update mechanism is implemented in all PropertyWidgets.
+   */
+  void configuration_changed();
+
   void visibility_changed(bool);
 
 public:

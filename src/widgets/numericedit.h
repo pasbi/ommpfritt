@@ -33,6 +33,7 @@ protected:
   void focusOutEvent(QFocusEvent* e) override;
   void focusInEvent(QFocusEvent* e) override;
   void mouseDoubleClickEvent(QMouseEvent*) override;
+  virtual void update_text() = 0;
 
 Q_SIGNALS:
   void value_changed();
@@ -113,11 +114,16 @@ public:
       set_invalid_value();
     } else {
       if (value != this->value()) {
-        set_text(value);
         m_value = value;
+        update_text();
         Q_EMIT value_changed();
       }
     }
+  }
+
+  void update_text() override
+  {
+    set_text(m_value);
   }
 
   void set_invalid_value() { setText(QObject::tr("< invalid >", "property")); }

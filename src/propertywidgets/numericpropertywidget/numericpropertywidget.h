@@ -18,6 +18,7 @@ public:
 
 protected:
   void update_edit() override;
+  void update_configuration() override;
   auto spinbox() const { return m_spinbox; }
 
 private:

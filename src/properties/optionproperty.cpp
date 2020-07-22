@@ -70,6 +70,7 @@ OptionProperty& OptionProperty::set_options(const std::vector<QString>& options)
   configuration[OPTIONS_POINTER] = options;
   assert(options.size() > 0);
   set(std::clamp(value(), std::size_t(0), options.size()));
+  Q_EMIT this->configuration_changed();
   return *this;
 }
 

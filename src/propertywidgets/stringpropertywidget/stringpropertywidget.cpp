@@ -77,4 +77,9 @@ void StringPropertyWidget::update_edit()
   m_text_edit->set_values(get_properties_values());
 }
 
+void StringPropertyWidget::update_configuration()
+{
+  // TODO
+}
+
 }  // namespace omm

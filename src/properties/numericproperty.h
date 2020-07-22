@@ -45,30 +45,35 @@ public:
   {
     this->configuration[D::LOWER_VALUE_POINTER] = lower;
     this->configuration[D::UPPER_VALUE_POINTER] = upper;
+    Q_EMIT this->configuration_changed();
     return *this;
   }
 
   NumericProperty<T>& set_prefix(const QString& prefix)
   {
     this->configuration[D::PREFIX_POINTER] = prefix;
+    Q_EMIT this->configuration_changed();
     return *this;
   }
 
   NumericProperty<T>& set_suffix(const QString& suffix)
   {
     this->configuration[D::SUFFIX_POINTER] = suffix;
+    Q_EMIT this->configuration_changed();
     return *this;
   }
 
   NumericProperty<T>& set_step(const T& step)
   {
     this->configuration[D::STEP_POINTER] = step;
+    Q_EMIT this->configuration_changed();
     return *this;
   }
 
   NumericProperty<T>& set_multiplier(double multiplier)
   {
     this->configuration[D::MULTIPLIER_POINTER] = multiplier;
+    Q_EMIT this->configuration_changed();
     return *this;
   }
 

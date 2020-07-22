@@ -16,6 +16,8 @@ AbstractPropertyWidget::AbstractPropertyWidget(Scene& scene, const std::set<Prop
             this, SLOT(on_property_value_changed(Property*)));
     connect(property, SIGNAL(enabledness_changed(bool)),
             this, SLOT(update_enabledness()));
+    connect(property, &Property::configuration_changed,
+            this, &AbstractPropertyWidget::update_configuration);
   }
   update_enabledness();
 }
