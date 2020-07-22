@@ -143,6 +143,12 @@ Q_SIGNALS:
 
   /**
    * @brief point_selection_changed is emitted when points become (de)selected.
+   * If you implement a feature that directly selects or deselects, i.e., alters the
+   * `Point::is_selected` field, you should emit this signal to inform the scene.
+   * You may defer the emission of the signal, e.g., if you select multiple points or if the
+   * selection-modifications are tentative and become permanent later.
+   * That's also the reason why it is required to emit this signal manually:
+   * Often it's too early to emit it at the moment when the selection of a single point was changed.
    */
   void point_selection_changed();
 

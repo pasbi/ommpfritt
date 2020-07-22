@@ -342,10 +342,6 @@ const std::map<QString, std::function<void(Application& app)>> actions {
     });
     Q_EMIT app.message_box().appearance_changed();
   }},
-
-  {"select by similar normal", [](Application& app) {
-    Q_UNUSED(app)
-  }},
 };
 
 }  // namespace

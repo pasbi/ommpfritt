@@ -16,7 +16,7 @@ const std::set<QString> PathProperties::keys {
   INTERPOLATION_KEY
 };
 
-void omm::PathProperties::make_properties(const QString& category) const
+void PathProperties::make_properties(const QString& category) const
 {
   create_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
     .set_filter(ReferenceProperty::Filter({ Kind::Object }, {{{}}}))

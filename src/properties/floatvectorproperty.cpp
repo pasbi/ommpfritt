@@ -26,8 +26,8 @@ void FloatVectorProperty::deserialize(AbstractDeserializer& deserializer, const 
   NumericProperty::deserialize(deserializer, root);
   set(deserializer.get_vec2f(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
   if (is_user_property()) {
-    set_default_value(
-      deserializer.get_vec2f(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
+    const auto ptr = make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER);
+    set_default_value(deserializer.get_vec2f(ptr));
   }
 }
 

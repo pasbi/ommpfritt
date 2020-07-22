@@ -12,10 +12,10 @@ AbstractPropertyWidget::AbstractPropertyWidget(Scene& scene, const std::set<Prop
   , m_properties(properties)
 {
   for (Property* property : properties) {
-    connect(property, SIGNAL(value_changed(Property*)),
-            this, SLOT(on_property_value_changed(Property*)));
-    connect(property, SIGNAL(enabledness_changed(bool)),
-            this, SLOT(update_enabledness()));
+    connect(property, &Property::value_changed,
+            this, &AbstractPropertyWidget::on_property_value_changed);
+    connect(property, &Property::enabledness_changed,
+            this, &AbstractPropertyWidget::update_enabledness);
     connect(property, &Property::configuration_changed,
             this, &AbstractPropertyWidget::update_configuration);
   }
