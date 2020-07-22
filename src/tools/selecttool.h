@@ -27,6 +27,7 @@ public:
   ObjectTransformation transformation() const override;
 
 protected:
+  void on_property_value_changed(Property* property) override;
   virtual Vec2f selection_center() const = 0;
   ObjectTransformation m_last_object_transformation;
 

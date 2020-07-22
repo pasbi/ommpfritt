@@ -1,4 +1,5 @@
 #include "tools/selecttool.h"
+#include "scene/messagebox.h"
 #include <memory>
 #include <algorithm>
 #include "scene/scene.h"
@@ -76,6 +77,15 @@ ObjectTransformation AbstractSelectTool::transformation() const
     }
   }
   return transformation;
+}
+
+void AbstractSelectTool::on_property_value_changed(Property* property)
+{
+  if (pmatch(property, {ALIGNMENT_PROPERTY_KEY})) {
+    Q_EMIT scene()->message_box().appearance_changed(*this);
+  } else {
+    Tool::on_property_value_changed(property);
+  }
 }
 
 void AbstractSelectTool::draw(Painter &renderer) const
