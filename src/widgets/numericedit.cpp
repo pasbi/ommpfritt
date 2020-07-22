@@ -9,6 +9,18 @@ AbstractNumericEdit::AbstractNumericEdit(QWidget* parent) : QLineEdit(parent)
   setFocusPolicy(Qt::StrongFocus);
 }
 
+void AbstractNumericEdit::set_prefix(const QString& prefix)
+{
+  m_prefix = prefix;
+  update_text();
+}
+
+void AbstractNumericEdit::set_suffix(const QString& suffix)
+{
+  m_suffix = suffix;
+  update_text();
+}
+
 void AbstractNumericEdit::paintEvent(QPaintEvent* e)
 {
   QLineEdit::paintEvent(e);

@@ -23,6 +23,10 @@ public:
   static constexpr auto slider_button = Qt::LeftButton;
   AbstractNumericEdit(QWidget* parent = nullptr);
   QString label;
+  void set_prefix(const QString& prefix);
+  void set_suffix(const QString& suffix);
+  QString prefix() const { return m_prefix; }
+  QString suffix() const { return m_suffix; }
 
 protected:
   void paintEvent(QPaintEvent*) override;
@@ -32,6 +36,10 @@ protected:
 
 Q_SIGNALS:
   void value_changed();
+
+private:
+  QString m_prefix;
+  QString m_suffix;
 };
 
 template<typename ValueType>
@@ -240,7 +248,7 @@ private:
     } else {
       std::ostringstream ss;
       ss << std::setprecision(3) << std::fixed << value_type(m_multiplier * value);
-      const auto new_text = QString::fromStdString(ss.str());
+      const auto new_text = prefix() + QString::fromStdString(ss.str()) + suffix();
       if (text() != new_text) {
         setText(new_text);
       }

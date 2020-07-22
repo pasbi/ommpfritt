@@ -12,6 +12,8 @@ public:
   static constexpr auto UPPER_VALUE_POINTER = "upper_value";
   static constexpr auto STEP_POINTER = "step";
   static constexpr auto MULTIPLIER_POINTER = "multiplier";
+  static constexpr auto PREFIX_POINTER = "prefix";
+  static constexpr auto SUFFIX_POINTER = "suffix";
 };
 
 template<typename T> class NumericProperty : public TypedProperty<T>
@@ -26,6 +28,8 @@ public:
     this->configuration[D::STEP_POINTER] = default_step;
     this->configuration[D::LOWER_VALUE_POINTER] = lowest_possible_value;
     this->configuration[D::UPPER_VALUE_POINTER] = highest_possible_value;
+    this->configuration[D::PREFIX_POINTER] = "";
+    this->configuration[D::SUFFIX_POINTER] = "";
   }
 
   void set(const variant_type& variant) override
@@ -41,6 +45,18 @@ public:
   {
     this->configuration[D::LOWER_VALUE_POINTER] = lower;
     this->configuration[D::UPPER_VALUE_POINTER] = upper;
+    return *this;
+  }
+
+  NumericProperty<T>& set_prefix(const QString& prefix)
+  {
+    this->configuration[D::PREFIX_POINTER] = prefix;
+    return *this;
+  }
+
+  NumericProperty<T>& set_suffix(const QString& suffix)
+  {
+    this->configuration[D::SUFFIX_POINTER] = suffix;
     return *this;
   }
 

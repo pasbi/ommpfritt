@@ -26,12 +26,24 @@ public:
     m_step_edit->set_lower(NumericProperty<T>::smallest_step);
     auto mult_edit = std::make_unique<NumericEdit<double>>();
     m_mult_edit = mult_edit.get();
+    auto pref_edit = std::make_unique<QLineEdit>();
+    m_pref_edit = pref_edit.get();
+    auto suff_edit = std::make_unique<QLineEdit>();
+    m_suff_edit = suff_edit.get();
 
     auto layout = std::make_unique<QFormLayout>();
-    layout->addRow(QObject::tr(NumericPropertyDetail::LOWER_VALUE_POINTER, "NumericProperty"), min_edit.release());
-    layout->addRow(QObject::tr(NumericPropertyDetail::UPPER_VALUE_POINTER, "NumericProperty"), max_edit.release());
-    layout->addRow(QObject::tr(NumericPropertyDetail::STEP_POINTER, "NumericProperty"), step_edit.release());
-    layout->addRow(QObject::tr(NumericPropertyDetail::MULTIPLIER_POINTER, "NumericProperty"), mult_edit.release());
+    layout->addRow(QObject::tr(NumericPropertyDetail::LOWER_VALUE_POINTER, "NumericProperty"),
+        min_edit.release());
+    layout->addRow(QObject::tr(NumericPropertyDetail::UPPER_VALUE_POINTER, "NumericProperty"),
+        max_edit.release());
+    layout->addRow(QObject::tr(NumericPropertyDetail::STEP_POINTER, "NumericProperty"),
+        step_edit.release());
+    layout->addRow(QObject::tr(NumericPropertyDetail::MULTIPLIER_POINTER, "NumericProperty"),
+        mult_edit.release());
+    layout->addRow(QObject::tr(NumericPropertyDetail::PREFIX_POINTER, "NumericProperty"),
+        pref_edit.release());
+    layout->addRow(QObject::tr(NumericPropertyDetail::SUFFIX_POINTER, "NumericProperty"),
+        suff_edit.release());
     this->setLayout(layout.release());
   }
 
@@ -43,6 +55,8 @@ public:
     const auto upper = configuration.get<T>(NumericPropertyDetail::UPPER_VALUE_POINTER, uupper);
     const auto step = configuration.get<T>(NumericPropertyDetail::STEP_POINTER, T(1));
     const auto mult = configuration.get<double>(NumericPropertyDetail::MULTIPLIER_POINTER, 1.0);
+    const auto pref = configuration.get<QString>(NumericPropertyDetail::PREFIX_POINTER, "");
+    const auto suff = configuration.get<QString>(NumericPropertyDetail::SUFFIX_POINTER, "");
 
     m_min_edit->set_range(llower, upper);
     m_min_edit->set_value(lower);
@@ -51,6 +65,8 @@ public:
     m_step_edit->set_lower(NumericProperty<T>::smallest_step);
     m_step_edit->set_value(step);
     m_mult_edit->set_value(mult);
+    m_pref_edit->setText(pref);
+    m_suff_edit->setText(suff);
   }
 
   void update(Property::Configuration &configuration) const override
@@ -59,6 +75,8 @@ public:
     configuration[NumericPropertyDetail::UPPER_VALUE_POINTER] = m_max_edit->value();
     configuration[NumericPropertyDetail::STEP_POINTER] = m_step_edit->value();
     configuration[NumericPropertyDetail::MULTIPLIER_POINTER] = m_mult_edit->value();
+    configuration[NumericPropertyDetail::PREFIX_POINTER] = m_pref_edit->text();
+    configuration[NumericPropertyDetail::SUFFIX_POINTER] = m_suff_edit->text();
   }
 
 private:
@@ -66,6 +84,8 @@ private:
   NumericEdit<T>* m_max_edit;
   NumericEdit<T>* m_step_edit;
   NumericEdit<double>* m_mult_edit;
+  QLineEdit* m_pref_edit;
+  QLineEdit* m_suff_edit;
 };
 
 }  // namespace omm

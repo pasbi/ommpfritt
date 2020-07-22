@@ -33,9 +33,14 @@ template<typename NumericPropertyT> NumericPropertyWidget<NumericPropertyT>
 
   const auto mult = this->template configuration<double>(P::MULTIPLIER_POINTER);
   const auto step = this->template configuration<value_type>(P::STEP_POINTER);
+  const auto pref = this->template configuration<QString>(P::PREFIX_POINTER);
+  const auto suff = this->template configuration<QString>(P::SUFFIX_POINTER);
+
   m_spinbox->set_range(lower, upper);
   m_spinbox->set_multiplier(mult);
   m_spinbox->set_step(step);
+  m_spinbox->set_prefix(pref);
+  m_spinbox->set_suffix(suff);
 
   update_edit();
 }
