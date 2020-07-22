@@ -6,7 +6,8 @@
     "KnifeTool",
     "PathTool",
     "SelectObjectsTool",
-    "SelectPointsTool"
+    "SelectPointsTool",
+    "SelectSimilarTool"
   ],
   "register": "{clazz}::register_type<{item}>(\"{item}\");",
   "include": "#include \"tools/{lc_item}.h\""

@@ -11,6 +11,8 @@ target_sources(libommpfritt PRIVATE
   selectpointstool.h
   selecttool.cpp
   selecttool.h
+  selectsimilartool.cpp
+  selectsimilartool.h
   toolbox.cpp
   toolbox.h
   tool.cpp
