@@ -69,7 +69,7 @@ ObjectTransformation AbstractSelectTool::transformation() const
 {
   ObjectTransformation transformation;
   transformation.translate(selection_center());
-  if (this->property(ALIGNMENT_PROPERTY_KEY)->template value<size_t>() == 1) {
+  if (property(ALIGNMENT_PROPERTY_KEY)->template value<Alignment>() == Alignment::Local) {
     if (scene()->item_selection<Object>().size() == 1) {
       const auto* lonely_object = *scene()->item_selection<Object>().begin();
       transformation.rotate(lonely_object->global_transformation(Space::Viewport).rotation());

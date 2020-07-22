@@ -14,6 +14,7 @@ class AbstractSelectTool : public Tool
 {
 public:
   explicit AbstractSelectTool(Scene& scene);
+  enum class Alignment {Global, Local};
   static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";
   static constexpr auto SYMMETRIC_PROPERTY_KEY = "symmetric";
   virtual void transform_objects(ObjectTransformation t) = 0;
