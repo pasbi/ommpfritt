@@ -6,8 +6,9 @@
 namespace omm
 {
 
-class TransformObjectsHelper
+class TransformObjectsHelper : public QObject
 {
+  Q_OBJECT
 public:
   explicit TransformObjectsHelper();
   using TransformationMode = ObjectsTransformationCommand::TransformationMode;
@@ -25,6 +26,9 @@ public:
   void update(const std::set<Object*>& objects);
   void update();
   bool is_empty() const { return m_initial_transformations.size() == 0; }
+
+Q_SIGNALS:
+  void initial_transformations_changed();
 
 private:
   ObjectsTransformationCommand::Map m_initial_transformations;

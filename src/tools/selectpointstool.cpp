@@ -1,4 +1,6 @@
 #include "tools/selectpointstool.h"
+#include "scene/scene.h"
+#include "scene/messagebox.h"
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
 #include "objects/path.h"
@@ -11,7 +13,7 @@ namespace omm
 
 SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene)
   : AbstractSelectTool(scene)
-  , m_transform_points_helper(Space::Viewport)
+  , m_transform_points_helper(scene, Space::Viewport)
 {
   const auto category = QObject::tr("tool");
   create_property<OptionProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
@@ -124,9 +126,13 @@ void SelectPointsTool::reset()
   handles.push_back(std::make_unique<BoundingBoxHandle<SelectPointsTool>>(*this));
 }
 
-TransformPointsHelper::TransformPointsHelper(Space space) : m_space(space)
+TransformPointsHelper::TransformPointsHelper(Scene& scene, Space space)
+  : m_scene(scene)
+  , m_space(space)
 {
   update();
+  connect(&m_scene.message_box(), &MessageBox::point_selection_changed,
+          this, qOverload<>(&TransformPointsHelper::update));
 }
 
 std::unique_ptr<PointsTransformationCommand>
@@ -186,6 +192,7 @@ void TransformPointsHelper::update()
       }
     }
   }
+  Q_EMIT initial_transformations_changed();
 }
 
 }  // namespace omm

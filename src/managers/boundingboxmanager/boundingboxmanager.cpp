@@ -24,18 +24,15 @@ find_transformation(const omm::BoundingBox& old_bb, const omm::BoundingBox& new_
   omm::Vec2f s(1.0, 1.0);
 
   // if width (or height) of both bounding boxes are zero, the scale should be 1.0 rather than nan.
-  if (std::abs(old_bb.width()) < eps) {
-    assert(std::abs(new_bb.width()) < eps);
-    s.x = 1.0;
-  } else {
-    s.x = new_bb.width() / old_bb.width();
-  }
-  if (std::abs(old_bb.height()) < eps) {
-    assert(std::abs(new_bb.height()) < eps);
-    s.y = 1.0;
-  } else {
-    s.y = new_bb.height() / old_bb.height();
-  }
+  static const auto get_scale = [](double old_s, double new_s) {
+    if (std::abs(old_s) < eps && std::abs(new_s) < eps) {
+      return 1.0;
+    } else {
+      return new_s / old_s;
+    }
+  };
+  s.x = get_scale(old_bb.width(), new_bb.width());
+  s.y = get_scale(old_bb.height(), new_bb.height());
 
   const auto& options = omm::Application::instance().options();
   const omm::Vec2f ap = options.anchor_position(old_bb);
@@ -72,7 +69,7 @@ namespace omm
 BoundingBoxManager::BoundingBoxManager(Scene& scene)
   : Manager(tr("Bounding Box Manager"), scene)
   , m_ui(new ::Ui::BoundingBoxManager)
-  , m_transform_points_helper(Space::Scene)
+  , m_transform_points_helper(scene, Space::Scene)
 {
   auto widget = std::make_unique<QWidget>();
   m_ui->setupUi(widget.get());
@@ -105,7 +102,7 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   {
     Path* path = type_cast<Path*>(&o);
     if (path != nullptr) {
-       update_manager();
+      update_manager();
     }
   });
 
@@ -132,6 +129,16 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   m_ui->sp_x->installEventFilter(this);
   m_ui->sp_y->installEventFilter(this);
 
+  const auto update_spinbox_enabledness = [this]() {
+    const auto bb = bounding_box();
+    m_ui->sp_w->setEnabled(bb.width() > eps);
+    m_ui->sp_h->setEnabled(bb.height() > eps);
+  };
+
+  connect(&m_transform_points_helper, &TransformPointsHelper::initial_transformations_changed,
+          this, update_spinbox_enabledness);
+  connect(&m_transform_objects_helper, &TransformObjectsHelper::initial_transformations_changed,
+          this, update_spinbox_enabledness);
 }
 
 QString BoundingBoxManager::type() const { return TYPE;  }
@@ -159,27 +166,20 @@ BoundingBox BoundingBoxManager::update_manager()
     }
   }();
 
-  block_signals();
+  auto blockers = acquire_signal_blockers();
   const auto& options = Application::instance().options();
   const Vec2f anchor = options.anchor_position(bb);
   m_ui->sp_x->set_value(anchor.x);
   m_ui->sp_y->set_value(anchor.y);
   m_ui->sp_w->set_value(bb.width());
   m_ui->sp_h->set_value(bb.height());
-  unblock_signals();
 
-  if (m_ui->cb_aspectratio->isChecked()) {
-    if (!m_ui->sp_w->hasFocus() && !m_ui->sp_h->hasFocus()) {
-      m_ui->sp_w->setEnabled(bb.width() > eps);
-      m_ui->sp_h->setEnabled(bb.height() > eps);
-    }
-  } else {
-    if (!m_ui->sp_w->hasFocus()) {
-      m_ui->sp_w->setEnabled(bb.width() > eps);
-    }
-    if (!m_ui->sp_h->hasFocus()) {
-      m_ui->sp_h->setEnabled(bb.height() > eps);
-    }
+  if (bb.width() > eps) {
+    m_ui->sp_w->setEnabled(true);
+  }
+
+  if (bb.height() > eps) {
+    m_ui->sp_h->setEnabled(true);
   }
 
   return bb;
@@ -187,7 +187,7 @@ BoundingBox BoundingBoxManager::update_manager()
 
 void BoundingBoxManager::update_bounding_box()
 {
-  block_signals();
+  auto blockers = acquire_signal_blockers();
   const BoundingBox new_bounding_box = bounding_box();
 
   if (m_old_bounding_box == new_bounding_box) {
@@ -209,14 +209,11 @@ void BoundingBoxManager::update_bounding_box()
                                                      aspect_ratio );
   switch (m_current_mode) {
   case Mode::Points:
-    scene().submit(m_transform_points_helper.make_command(t));
-    break;
+    return scene().submit(m_transform_points_helper.make_command(t));
   case Mode::Objects:
-    scene().submit(m_transform_objects_helper.make_command(t.to_mat()));
-    break;
+    return scene().submit(m_transform_objects_helper.make_command(t.to_mat()));
   }
 
-  unblock_signals();
 }
 
 void BoundingBoxManager::reset_transformation()
@@ -232,20 +229,15 @@ void BoundingBoxManager::reset_transformation()
   }
 }
 
-void BoundingBoxManager::block_signals()
+std::vector<std::unique_ptr<QSignalBlocker> > BoundingBoxManager::acquire_signal_blockers()
 {
-  m_ui->sp_x->blockSignals(true);
-  m_ui->sp_y->blockSignals(true);
-  m_ui->sp_w->blockSignals(true);
-  m_ui->sp_h->blockSignals(true);
-}
-
-void BoundingBoxManager::unblock_signals()
-{
-  m_ui->sp_x->blockSignals(false);
-  m_ui->sp_y->blockSignals(false);
-  m_ui->sp_w->blockSignals(false);
-  m_ui->sp_h->blockSignals(false);
+  const auto os = {m_ui->sp_x, m_ui->sp_y, m_ui->sp_w, m_ui->sp_h};
+  std::vector<std::unique_ptr<QSignalBlocker>> blockers;
+  blockers.reserve(os.size());
+  for (auto&& o : os) {
+    blockers.push_back(std::make_unique<QSignalBlocker>(o));
+  };
+  return blockers;
 }
 
 BoundingBox BoundingBoxManager::bounding_box() const
@@ -286,8 +278,6 @@ bool BoundingBoxManager::eventFilter(QObject *o, QEvent *e)
   if (o == m_ui->sp_h || o == m_ui->sp_w || o == m_ui->sp_x || o == m_ui->sp_y) {
     if (e->type() == QEvent::FocusOut) {
       reset_transformation();
-      m_ui->sp_h->setEnabled(m_ui->sp_h->value() > eps);
-      m_ui->sp_w->setEnabled(m_ui->sp_w->value() > eps);
     }
   }
   return Manager::eventFilter(o, e);

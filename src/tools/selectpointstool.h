@@ -11,18 +11,23 @@
 namespace omm
 {
 
-class TransformPointsHelper
+class TransformPointsHelper : public QObject
 {
+  Q_OBJECT
 public:
-  explicit TransformPointsHelper(Space space);
+  explicit TransformPointsHelper(Scene& scene, Space space);
   std::unique_ptr<PointsTransformationCommand> make_command(const ObjectTransformation& t) const;
   void update(const std::set<Path *> &paths);
   void update();
   bool is_empty() const { return m_initial_points.size() == 0; }
 
+Q_SIGNALS:
+  void initial_transformations_changed();
+
 private:
   PointsTransformationCommand::Map m_initial_points;
   std::set<Path*> m_paths;
+  Scene& m_scene;
   const Space m_space;
 };
 

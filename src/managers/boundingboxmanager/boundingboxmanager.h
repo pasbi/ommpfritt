@@ -50,8 +50,7 @@ private Q_SLOTS:
   void update_bounding_box();
   void reset_transformation();
 
-  void block_signals();
-  void unblock_signals();
+  std::vector<std::unique_ptr<QSignalBlocker>> acquire_signal_blockers();
 };
 
 }  // namespace omm

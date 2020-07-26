@@ -123,6 +123,7 @@ void TransformObjectsHelper::update()
   for (auto&& o : m_objects) {
     m_initial_transformations.insert(std::pair(o, o->global_transformation(Space::Scene)));
   }
+  Q_EMIT initial_transformations_changed();
 }
 
 }  // namespace omm
