@@ -226,6 +226,7 @@ const std::map<QString, std::function<void(Application& app)>> actions {
           point.is_selected = true;
         }
       }
+      Q_EMIT app.scene.message_box().point_selection_changed();
       break;
     case SceneMode::Object:
       app.scene.set_selection(down_cast(app.scene.object_tree().items()));
@@ -242,6 +243,7 @@ const std::map<QString, std::function<void(Application& app)>> actions {
           point.is_selected = false;
         }
       }
+      Q_EMIT app.scene.message_box().point_selection_changed();
       break;
     case SceneMode::Object:
       app.scene.set_selection({});
@@ -258,6 +260,7 @@ const std::map<QString, std::function<void(Application& app)>> actions {
           point.is_selected = !point.is_selected;
         }
       }
+      Q_EMIT app.scene.message_box().point_selection_changed();
       break;
     case SceneMode::Object:
     {
