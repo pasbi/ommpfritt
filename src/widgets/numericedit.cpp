@@ -29,6 +29,7 @@ void AbstractNumericEdit::paintEvent(QPaintEvent* e)
 void AbstractNumericEdit::focusOutEvent(QFocusEvent* e)
 {
   setReadOnly(true);
+  QApplication::restoreOverrideCursor();
   QLineEdit::focusOutEvent(e);
 }
 
