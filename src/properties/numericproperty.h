@@ -28,8 +28,8 @@ public:
     this->configuration[D::STEP_POINTER] = default_step;
     this->configuration[D::LOWER_VALUE_POINTER] = lowest_possible_value;
     this->configuration[D::UPPER_VALUE_POINTER] = highest_possible_value;
-    this->configuration[D::PREFIX_POINTER] = "";
-    this->configuration[D::SUFFIX_POINTER] = "";
+    this->configuration[D::PREFIX_POINTER] = QStringLiteral("");
+    this->configuration[D::SUFFIX_POINTER] = QStringLiteral("");
   }
 
   void set(const variant_type& variant) override
