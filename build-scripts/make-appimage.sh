@@ -12,7 +12,9 @@ cp build-scripts/ommpfritt.desktop ./appdir/usr/share/applications/
 
 mkdir -p ./appdir/usr/share/icons/hicolor/scalable/apps
 for resolution in 16 22 32 48 64 128; do
-  cp build/icons/omm_$resolution.png ./appdir/usr/share/icons/hicolor/${resolution}x${resolution}/ommpfritt.png
+  dir=./appdir/usr/share/icons/hicolor/${resolution}x${resolution}
+  mkdir $dir
+  cp build/icons/omm_$resolution.png $dir/ommpfritt.png
 done
 
 mkdir -p ./appdir/usr/lib
