@@ -259,11 +259,11 @@ void Mirror::update()
   } else {
     m_draw_children = true;
   }
+  Object::update();
 }
 
 void Mirror::on_property_value_changed(Property *property)
 {
-
   if (pmatch(property, {DIRECTION_PROPERTY_KEY, TOLERANCE_PROPERTY_KEY})) {
     update();
   } else if (pmatch(property, {AS_PATH_PROPERTY_KEY})) {
