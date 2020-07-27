@@ -16,9 +16,10 @@ QString level = "debug";
 QFile logfile;
 bool print_long_message = true;
 
-int main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   QApplication qt_app(argc, argv);
+  qt_app.setWindowIcon(QIcon(":/icons/omm_48.png"));
 
   omm::setup_logfile(logfile);
   qInstallMessageHandler([](QtMsgType type, const QMessageLogContext& ctx, const QString &msg) {

@@ -1,26 +1,23 @@
 #!/usr/bin/env bash
 
-pwd
-ls
-echo "$PATH"
 export "PATH=/opt/qt512/bin:$PATH"
-echo "$PATH"
 
 set -e
 
 mkdir -p ./appdir/usr/bin
-cp build/ommpfritt ./appdir/usr/bin/ # FIXME
+cp build/ommpfritt ./appdir/usr/bin/
 
 mkdir -p ./appdir/usr/share/applications
-cp build-scripts/ommpfritt.desktop ./appdir/usr/share/applications/ # FIXME
+cp build-scripts/ommpfritt.desktop ./appdir/usr/share/applications/
 
 mkdir -p ./appdir/usr/share/icons/hicolor/scalable/apps
-touch ./appdir/usr/share/icons/hicolor/scalable/apps/ommpfritt.svg # FIXME
+for resolution in 16 22 32 48 64 128; do
+  cp build/icons/omm_$resolution.png ./appdir/usr/share/icons/hicolor/${resolution}x${resolution}/ommpfritt.png
+done
 
 mkdir -p ./appdir/usr/lib
 find /usr/lib/ -type d -name 'python3.7' -exec cp -r {} ./appdir/usr/lib/ \;
 
-find appdir/usr/lib/python3.7
 wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
 
 chmod a+x linuxdeployqt-continuous-x86_64.AppImage
@@ -98,3 +95,4 @@ chmod +x appdir/AppRun
   -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_lzma.*.so) \
   -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_contextvars.*.so) \
   -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_codecs_hk.*.so)
+
