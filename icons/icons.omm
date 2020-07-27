@@ -3891,7 +3891,7 @@
                                         "key": "scale",
                                         "type": "FloatVectorProperty",
                                         "value": [
-                                            1.0000000000003624,
+                                            1.0000000000003628,
                                             0.9999999999999004
                                         ]
                                     },
@@ -7075,6 +7075,20 @@
                                                         0.0
                                                     ],
                                                     "position": [
+                                                        -0.8196296937429111,
+                                                        -12.244652263947614
+                                                    ],
+                                                    "right": [
+                                                        3.141592653589793,
+                                                        0.0
+                                                    ]
+                                                },
+                                                {
+                                                    "left": [
+                                                        0.0,
+                                                        0.0
+                                                    ],
+                                                    "position": [
                                                         67.90111194465526,
                                                         -11.187129810771523
                                                     ],
@@ -7085,16 +7099,30 @@
                                                 },
                                                 {
                                                     "left": [
-                                                        -1.564269723091719,
-                                                        17.49792743359024
+                                                        -0.6620635891792206,
+                                                        9.241007635413842
                                                     ],
                                                     "position": [
                                                         71.68479134368121,
                                                         95.31613248347753
                                                     ],
                                                     "right": [
-                                                        1.5773229304980723,
-                                                        17.497927433590228
+                                                        2.479529064410571,
+                                                        9.241007635413835
+                                                    ]
+                                                },
+                                                {
+                                                    "left": [
+                                                        0.0,
+                                                        0.0
+                                                    ],
+                                                    "position": [
+                                                        0.024419195752614087,
+                                                        99.16980114946588
+                                                    ],
+                                                    "right": [
+                                                        3.141592653589793,
+                                                        0.0
                                                     ]
                                                 }
                                             ]
@@ -7105,14 +7133,14 @@
                                                 "animated": false,
                                                 "key": "viewport-visibility",
                                                 "type": "OptionProperty",
-                                                "value": 0
+                                                "value": 1
                                             },
                                             {
                                                 "animatable": true,
                                                 "animated": false,
                                                 "key": "visibility",
                                                 "type": "OptionProperty",
-                                                "value": 0
+                                                "value": 1
                                             },
                                             {
                                                 "animatable": true,
@@ -7188,14 +7216,14 @@
                                         "animated": false,
                                         "key": "viewport-visibility",
                                         "type": "OptionProperty",
-                                        "value": 0
+                                        "value": 1
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
                                         "type": "OptionProperty",
-                                        "value": 0
+                                        "value": 1
                                     },
                                     {
                                         "animatable": true,
@@ -7264,7 +7292,7 @@
                                         "animated": false,
                                         "key": "eps",
                                         "type": "FloatProperty",
-                                        "value": 0.0
+                                        "value": 3.3
                                     }
                                 ],
                                 "tags": [
@@ -7374,14 +7402,14 @@
                                         "animated": false,
                                         "key": "viewport-visibility",
                                         "type": "OptionProperty",
-                                        "value": 0
+                                        "value": 1
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
                                         "type": "OptionProperty",
-                                        "value": 0
+                                        "value": 1
                                     },
                                     {
                                         "animatable": true,
@@ -7443,7 +7471,7 @@
                                         "animated": false,
                                         "key": "interpolation",
                                         "type": "OptionProperty",
-                                        "value": 0
+                                        "value": 2
                                     }
                                 ],
                                 "tags": [
@@ -8005,42 +8033,7 @@
                                                 ]
                                             }
                                         ],
-                                        "tags": [
-                                            {
-                                                "id": 93825010361648,
-                                                "properties": [
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
-                                                        "key": "name",
-                                                        "type": "StringProperty",
-                                                        "value": "StyleTag 1"
-                                                    },
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
-                                                        "filter": {
-                                                            "flag": {
-                                                                "terms": []
-                                                            },
-                                                            "kind": {
-                                                                "terms": []
-                                                            }
-                                                        },
-                                                        "key": "style",
-                                                        "type": "ReferenceProperty",
-                                                        "value": 93825009891456
-                                                    },
-                                                    {
-                                                        "animatable": true,
-                                                        "animated": false,
-                                                        "key": "edit-style",
-                                                        "type": "TriggerProperty"
-                                                    }
-                                                ],
-                                                "type": "StyleTag"
-                                            }
-                                        ],
+                                        "tags": [],
                                         "type": "RectangleObject"
                                     }
                                 ],
@@ -8228,7 +8221,42 @@
                                         "value": 0
                                     }
                                 ],
-                                "tags": [],
+                                "tags": [
+                                    {
+                                        "id": 93825010361648,
+                                        "properties": [
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "name",
+                                                "type": "StringProperty",
+                                                "value": "StyleTag 1"
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "filter": {
+                                                    "flag": {
+                                                        "terms": []
+                                                    },
+                                                    "kind": {
+                                                        "terms": []
+                                                    }
+                                                },
+                                                "key": "style",
+                                                "type": "ReferenceProperty",
+                                                "value": 93825009891456
+                                            },
+                                            {
+                                                "animatable": true,
+                                                "animated": false,
+                                                "key": "edit-style",
+                                                "type": "TriggerProperty"
+                                            }
+                                        ],
+                                        "type": "StyleTag"
+                                    }
+                                ],
                                 "type": "Cloner"
                             },
                             {
@@ -8240,16 +8268,30 @@
                                             [
                                                 {
                                                     "left": [
-                                                        1.288381419792437,
-                                                        53.07757107205057
+                                                        -0.021288756782666507,
+                                                        22.798967010131253
                                                     ],
                                                     "position": [
-                                                        -51.65888005433929,
-                                                        -28.12667854946656
+                                                        -0.43324179008877195,
+                                                        5.103836250100102
                                                     ],
                                                     "right": [
-                                                        -3.070062860358841,
-                                                        10.774082971281869
+                                                        3.120303896807124,
+                                                        22.79896701013126
+                                                    ]
+                                                },
+                                                {
+                                                    "left": [
+                                                        1.4732931435006897,
+                                                        15.811111455481822
+                                                    ],
+                                                    "position": [
+                                                        -45.032761504983725,
+                                                        -28.126678549466547
+                                                    ],
+                                                    "right": [
+                                                        -2.6121474788553725,
+                                                        4.557961056917823
                                                     ]
                                                 },
                                                 {
@@ -8268,30 +8310,30 @@
                                                 },
                                                 {
                                                     "left": [
-                                                        0.0,
-                                                        0.0
+                                                        -1.7945344087454416,
+                                                        14.399421975020871
                                                     ],
                                                     "position": [
-                                                        -55.446314770628504,
-                                                        99.49143976367569
+                                                        -55.44631477072534,
+                                                        99.49143976340156
                                                     ],
                                                     "right": [
-                                                        0.0,
-                                                        0.0
+                                                        1.3470582448443529,
+                                                        14.399421975020882
                                                     ]
                                                 },
                                                 {
                                                     "left": [
-                                                        -2.678657502886962,
-                                                        7.271724568976227
+                                                        -3.0246712773213624,
+                                                        44.64202352609849
                                                     ],
                                                     "position": [
-                                                        -47.18282084417919,
-                                                        106.3776847023847
+                                                        -0.43324179008880037,
+                                                        113.83241790088876
                                                     ],
                                                     "right": [
-                                                        -0.35806726581111975,
-                                                        36.213795413914376
+                                                        0.11692137626843208,
+                                                        44.64202352609849
                                                     ]
                                                 }
                                             ]
@@ -8461,7 +8503,7 @@
                                         "animated": false,
                                         "key": "eps",
                                         "type": "FloatProperty",
-                                        "value": 0.0
+                                        "value": 2.0999999999999757
                                     }
                                 ],
                                 "tags": [
@@ -10385,8 +10427,8 @@
                 "key": "position",
                 "type": "FloatVectorProperty",
                 "value": [
-                    1050.5,
-                    585.5
+                    994.9421379589346,
+                    400.01408299053764
                 ]
             },
             {
@@ -10395,8 +10437,8 @@
                 "key": "scale",
                 "type": "FloatVectorProperty",
                 "value": [
-                    1.0,
-                    1.0
+                    2.3695309891294274,
+                    2.369530989129425
                 ]
             },
             {
