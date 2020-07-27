@@ -25,7 +25,7 @@ QIcon IconProvider::icon(AbstractPropertyOwner& owner) const
 QIcon IconProvider::icon(const QString& name) const
 {
   // Fallback: load icon file
-  const QString filename = ":/icons/" + name + ".png";
+  const QString filename = ":/icons/" + name + "_128.png";
   if (m_cached_icons_from_file.find(filename) == m_cached_icons_from_file.end()) {
     const QPixmap pixmap(filename);
     const auto icon = pixmap.isNull() ? QIcon() : QIcon(pixmap);

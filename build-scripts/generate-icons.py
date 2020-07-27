@@ -11,8 +11,8 @@ def generate_qrc(items):
     lines.append('<RCC>')
     lines.append('    <qresource prefix="/icons">')
     ind = ' '*8
-    for item in items:
-        lines.append(ind + f'<file>{item}.png</file>')
+    for resolution, item in items:
+        lines.append(ind + f'<file>{item}_{resolution}.png</file>')
     lines.append('    </qresource>')
     lines.append('</RCC>')
     lines.append('')
@@ -101,36 +101,43 @@ if __name__ == "__main__":
 
     object_name_not_found_code = get_omm_status_code(args.command,
                                                      "object name not found")
-    
-    rendered_icons = []
-    for category, item in items:
-        command = [
-            args.command,
-            "render",
-            "-f", args.scenefile,
-            "-V", "view",
-            "-w", "128",
-            "-p", f"_root_/{category}/{item}$",
-            "-o", f"{args.output}/{item}.png",
-            "-y",
-            "--no-opengl",
-            "--unique"
-        ]
-        cp = subprocess.run(command, capture_output=True)
-        print(f"Render icon for {category}/{item} ...", end="")
-        print(" ".join(command))
-        if cp.returncode == object_name_not_found_code:
-            print(f" skip (undefined in {args.scenefile}).")
-        elif cp.returncode != 0:
-            print(f" failed with code {cp.returncode}.")
-            print("Command was:")
-            print(cp.args)
-            print("Message:")
-            print(cp.stderr)
-            exit(1)
+
+    def required_resolutions(item):
+        if item == "omm":
+            return {16, 22, 32, 48, 64, 128, 2048}
         else:
-            rendered_icons.append(item)
-            print(" done.")
+            return {128}
+    
+    rendered_icons = set()
+    for category, item in items:
+        for resolution in required_resolutions(item):
+            command = [
+                args.command,
+                "render",
+                "-f", args.scenefile,
+                "-V", "view",
+                "-w", f"{resolution}",
+                "-p", f"_root_/{category}/{item}$",
+                "-o", f"{args.output}/{item}_{resolution}.png",
+                "-y",
+                "--no-opengl",
+                "--unique"
+            ]
+            cp = subprocess.run(command, capture_output=True)
+            print(f"Render icon for {category}/{item} @{resolution}...", end="")
+            print(" ".join(command))
+            if cp.returncode == object_name_not_found_code:
+                print(f" skip (undefined in {args.scenefile}).")
+            elif cp.returncode != 0:
+                print(f" failed with code {cp.returncode}.")
+                print("Command was:")
+                print(cp.args)
+                print("Message:")
+                print(cp.stderr)
+                exit(1)
+            else:
+                rendered_icons.add((resolution, item))
+                print(" done.")
 
     with open(args.qrc, 'w') as f:
         f.write(generate_qrc(rendered_icons))

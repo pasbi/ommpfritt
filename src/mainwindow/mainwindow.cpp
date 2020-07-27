@@ -227,7 +227,7 @@ std::unique_ptr<QMenu> MainWindow::make_about_menu()
     ::Ui::AboutDialog ui;
     ui.setupUi(&about_dialog);
     ui.te_gpl30->hide();
-    ui.lb_splash->setPixmap(QPixmap::fromImage(QImage(":/icons/omm.png")));
+    ui.lb_splash->setPixmap(QPixmap::fromImage(QImage(":/icons/omm_2048.png")));
     about_dialog.exec();
   });
 

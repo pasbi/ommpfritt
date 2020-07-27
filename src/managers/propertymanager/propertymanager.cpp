@@ -191,8 +191,8 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
       // text in m_selection_label can get huge but is not very important. Don't mess up the layout.
       m_selection_label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
 
-      const QString icon_filename = types.size() == 1 ? ":/icons/" + *types.begin() + ".png"
-                                                      : ":/icons/undetermined-type.png";
+      const QString icon_filename = types.size() == 1 ? ":/icons/" + *types.begin() + "_128.png"
+                                                      : ":/icons/undetermined-type_128.png";
 
       const QImage image(icon_filename);
       if (image.isNull()) {
