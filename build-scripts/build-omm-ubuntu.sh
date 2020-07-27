@@ -19,7 +19,7 @@ sudo apt remove mysql-client-5.7 mysql-server-5.7
 sudo apt upgrade -y
 sudo apt install -y ninja-build zlib1g-dev libssl-dev libffi-dev \
                     libgl-dev python3-dev libboost-all-dev libdouble-conversion-dev \
-                    libgsl-dev
+                    libgsl-dev libcairo2-dev
 case "$dist" in
 "xenial" | "bionic")
   sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
