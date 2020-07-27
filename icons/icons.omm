@@ -7216,14 +7216,14 @@
                                         "animated": false,
                                         "key": "viewport-visibility",
                                         "type": "OptionProperty",
-                                        "value": 1
+                                        "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
                                         "type": "OptionProperty",
-                                        "value": 1
+                                        "value": 0
                                     },
                                     {
                                         "animatable": true,
@@ -7402,14 +7402,14 @@
                                         "animated": false,
                                         "key": "viewport-visibility",
                                         "type": "OptionProperty",
-                                        "value": 1
+                                        "value": 0
                                     },
                                     {
                                         "animatable": true,
                                         "animated": false,
                                         "key": "visibility",
                                         "type": "OptionProperty",
-                                        "value": 1
+                                        "value": 0
                                     },
                                     {
                                         "animatable": true,
