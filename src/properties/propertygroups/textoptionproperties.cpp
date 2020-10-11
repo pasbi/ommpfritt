@@ -50,7 +50,7 @@ QTextOption TextOptionProperties::get_option() const
     case 1: return Qt::AlignHCenter;
     case 2: return Qt::AlignRight;
     case 3: return Qt::AlignJustify;
-    default: qFatal("Unexpected case.");
+    default: qFatal("Unexpected case."); return Qt::AlignCenter;
     }
   }();
   alignment |= [f=property_value<std::size_t>(ALIGNV_PROPERTY_KEY)]() {
@@ -59,7 +59,7 @@ QTextOption TextOptionProperties::get_option() const
     case 1: return Qt::AlignVCenter;
     case 2: return Qt::AlignBottom;
     case 3: return Qt::AlignBaseline;   // is never reached (see @code make_properties)
-    default: qFatal("Unexpected case.");
+    default: qFatal("Unexpected case."); return Qt::AlignCenter;
     }
   }();
   option.setAlignment(alignment);
@@ -76,7 +76,7 @@ QTextOption TextOptionProperties::get_option() const
     case 1: return QTextOption::WordWrap;
     case 2: return QTextOption::WrapAnywhere;
     case 3: return QTextOption::WrapAtWordBoundaryOrAnywhere;
-    default: qFatal("Unexpected case.");
+    default: qFatal("Unexpected case."); return QTextOption::NoWrap;
     }
   }();
   option.setWrapMode(wrap_mode);
