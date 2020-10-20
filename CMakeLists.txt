@@ -149,3 +149,5 @@ install(
     ARCHIVE DESTINATION lib/static
 )
 
+include(CPack)
+
