@@ -6,6 +6,7 @@
 [![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/pasbi/ommpfritt.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/pasbi/ommpfritt/context:python)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/pasbi/ommpfritt.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/pasbi/ommpfritt/context:cpp)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7c6bfee90e434bae8824a21de8e036fb)](https://www.codacy.com/manual/pasbi/ommpfritt?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pasbi/ommpfritt&amp;utm_campaign=Badge_Grade)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3924/badge)](https://bestpractices.coreinfrastructure.org/projects/3924)
 [![AppImageBade](https://img.shields.io/badge/AppImage-download-blue)](https://github.com/pasbi/ommpfritt/releases/tag/continuous)
 
 *ommpfritt* or short *omm* is a free and open source vector modelling and
