@@ -25,16 +25,20 @@ still graphics, diagrams, icons and drawings.
 
 ## How to Get It
 *omm* is [free](https://en.wikipedia.org/wiki/Free_software).
-You can get it's source from [github](https://github.com/pasbi/ommpfritt) and
+You can get its source from [github](https://github.com/pasbi/ommpfritt) and
 build it.
 You may find [build instructions](doc/build.md) helpful.
 
 
 ### Linux
+
+#### Any distro
 You can download the latest
 [AppImage](https://github.com/pasbi/ommpfritt/releases/tag/continuous),
 make the [downloaded file executable and just run it](https://docs.appimage.org/introduction/quickstart.html#ref-quickstart).
 
+#### Arch Linux
+You can install [ommpfritt-git](https://aur.archlinux.org/packages/ommpfritt-git) from the AUR if you prefer a native package on arch.
 
 ### Windows
 The last [Windows release](https://github.com/pasbi/ommpfritt/releases/tag/v0.1.2)
