@@ -28,6 +28,7 @@ function(generate_translations translations_qrc ts_dir languages prefixes cfg_fi
     set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/generate-translations_qrc.py")
     add_custom_command(
         OUTPUT "${qm_dir}/translations.qrc"
+        DEPENDS ts_target
         COMMAND_EXPAND_LISTS
         COMMAND Python3::Interpreter "${script}"
           --languages "${languages}"
@@ -37,7 +38,6 @@ function(generate_translations translations_qrc ts_dir languages prefixes cfg_fi
     )
 
     add_custom_target(translations_qm DEPENDS "${translations_qrc}" )
-    add_dependencies(translations_qm ts_target)
 
     set_source_files_properties("${translations_qrc}" PROPERTIES SKIP_AUTORCC ON)
 

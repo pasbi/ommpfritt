@@ -7,7 +7,7 @@ function(generate_icons icons_qrc specs)
 
   add_custom_command(
     OUTPUT "${icons_qrc}"
-    DEPENDS "${specs}" "${script}" "${scenefile}"
+    DEPENDS ommpfritt-cli "${specs}" "${script}" "${scenefile}"
     COMMAND_EXPAND_LISTS
     COMMAND Python3::Interpreter "${script}"
       --specs ${specs}

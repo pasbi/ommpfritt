@@ -97,9 +97,12 @@ set_warning_level(ommpfritt_unit_tests)
 set_warning_level(libommpfritt)
 
 if (GENERATE_ICONS)
-  add_dependencies(resources icons_png)
+  add_dependencies(resources ommpfritt-cli)
   add_dependencies(icons_png ommpfritt-cli)
 endif()
+
+add_dependencies(resources_cli translations_qm)
+add_dependencies(resources translations_qm)
 add_dependencies(libommpfritt registers)
 add_dependencies(ommpfritt libommpfritt resources)
 add_dependencies(ommpfritt_unit_tests resources_cli)
