@@ -1,74 +1,79 @@
 compiler: gcc
 sudo: require
 language: cpp
-
 services:
-  - xvfb
-
+- xvfb
 jobs:
   include:
-    - stage: "build"
-      os: linux
-      dist: xenial
-      name: "Build on Ubuntu Xenial"
-      script:
-        - build-scripts/build-omm-ubuntu.sh
-        - build-scripts/make-appimage.sh
-
-    - stage: "build"
-      os: linux
-      dist: bionic
-      name: "Build on Ubuntu Bionic"
-      script:
-        - build-scripts/build-omm-ubuntu.sh
-
-    - stage: "build"
-      os: windows
-      name: "Build on Windows/MinGW64"
-      before_install:
-      - |-
-        [[ ! -f C:/tools/msys64/msys2_shell.cmd ]] && rm -rf C:/tools/msys64
-        choco uninstall -y mingw
-        choco upgrade --no-progress -y msys2
-        export msys2='cmd //C RefreshEnv.cmd '
-        export msys2+='& set MSYS=winsymlinks:nativestrict '
-        export msys2+='& C:\\tools\\msys64\\msys2_shell.cmd -defterm -no-start'
-        export mingw64="$msys2 -mingw64 -full-path -here -c "\"\$@"\" --"
-        export msys2+=" -msys2 -c "\"\$@"\" --"
-        $msys2 pacman --sync --noconfirm --needed mingw-w64-x86_64-toolchain
-        ## Install more MSYS2 packages from https://packages.msys2.org/base here
-        taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
-        export PATH=/C/tools/msys64/mingw64/bin:$PATH
-        export MAKE=mingw32-make  # so that Autotools can find it
-      before_cache:
-      - |-
-        # https://unix.stackexchange.com/a/137322/107554
-        $msys2 pacman --sync --clean --noconfirm
-        ;;
-      cache:
-        directories:
-        - "$HOME/AppData/Local/Temp/chocolatey"
-        - "/C/tools/msys64"
-      script:
-        - build-scripts/build-omm-mingw.sh
-
+  - stage: build
+    os: linux
+    dist: xenial
+    name: Build on Ubuntu Xenial
+    script:
+    - build-scripts/build-omm-ubuntu.sh
+    - build-scripts/make-appimage.sh
+  - stage: build
+    os: linux
+    dist: bionic
+    name: Build on Ubuntu Bionic
+    script:
+    - build-scripts/build-omm-ubuntu.sh
+  - stage: build
+    os: windows
+    name: Build on Windows/MinGW64
+    before_install:
+    - |-
+      [[ ! -f C:/tools/msys64/msys2_shell.cmd ]] && rm -rf C:/tools/msys64
+      choco uninstall -y mingw
+      choco upgrade --no-progress -y msys2
+      export msys2='cmd //C RefreshEnv.cmd '
+      export msys2+='& set MSYS=winsymlinks:nativestrict '
+      export msys2+='& C:\\tools\\msys64\\msys2_shell.cmd -defterm -no-start'
+      export mingw64="$msys2 -mingw64 -full-path -here -c "\"\$@"\" --"
+      export msys2+=" -msys2 -c "\"\$@"\" --"
+      $msys2 pacman --sync --noconfirm --needed mingw-w64-x86_64-toolchain
+      ## Install more MSYS2 packages from https://packages.msys2.org/base here
+      taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
+      export PATH=/C/tools/msys64/mingw64/bin:$PATH
+      export MAKE=mingw32-make  # so that Autotools can find it
+    before_cache:
+    - |-
+      # https://unix.stackexchange.com/a/137322/107554
+      $msys2 pacman --sync --clean --noconfirm
+      ;;
+    cache:
+      directories:
+      - "$HOME/AppData/Local/Temp/chocolatey"
+      - "/C/tools/msys64"
+    script:
+    - build-scripts/build-omm-mingw.sh
 after_success:
-  - if [ "$TRAVIS_OS_NAME" -ne "windows" ]; then build/test/unit/ommpfritt_unit_tests fi
-  - touch success
-  - build-scripts/notify-telegram.sh
+- if [ "$TRAVIS_OS_NAME" -ne "windows" ]; then build/test/unit/ommpfritt_unit_tests
+  fi
+- touch success
+- build-scripts/notify-telegram.sh
 after_failure:
-  - build-scripts/notify-telegram.sh
-
+- build-scripts/notify-telegram.sh
 notifications:
   webhooks:
     urls:
-      - https://webhooks.gitter.im/e/9931d1c2db52be0aa323
-    on_success: change  # options: [always|never|change] default: always
-    on_failure: always  # options: [always|never|change] default: always
-    on_start: never     # options: [always|never|change] default: always
-
+    - https://webhooks.gitter.im/e/9931d1c2db52be0aa323
+    on_success: change
+    on_failure: always
+    on_start: never
 branches:
   except:
-    - # Do not build tags that we create when we upload to GitHub Releases
-    - /^(?i:continuous)/
-
+  -
+  - "/^(?i:continuous)/"
+deploy:
+  provider: releases
+  api_key:
+    secure: LmZaJBVmy3lTvPO7bEBIf961wyaRI4y+A/3IpHnr9NmDtFg3crmvMsAxI1SEsBWsWHTjG/B4bCjQglfDryBd/7RJ5VAuQQJgnM/yYh5ft1ijzoh88HOUA/+gndwMSz6esaaUyt1y6I23dQzXdkHo0M1IrAqApbw42d4+u1kyRazz0PgzgVuMmosj2rpeGiIpXMRR452QyH6LkXosc5/rYjcAQGDRJxQeAYAeuf6JslqVidUqGNtHX1ZhZeAAx7L7H+Vc0bzxtNSCz7ogQlTr7/nS1O0AufAITBjt7uAiapJ5CEBlpUbwY5tI+NXmSDDHx4xqhuL2bL02rQevul3HL0mCwH2Vv8js2ktrVwq3QvNZAQkuTfRjI6pUG5ES89jezQcOejZilklL6YaGMT9ACPgMAexfFV02FRyZ61qDE9z6RXiJQbSHjL7t8lyoKIunw7FmJ4pgqo8UYUYJHjNmx9Kd+ttlHq6w6kZeXgMGOxVYb0SZa3AH0MDwQE74RnhJJ5N0jPMmyQMGKJ+ZfwdUq4hYu+simbiyL6RlvN9mjWsU4tE8V1rj0Xg0lbm1hnONjoJw9+kWDTM+vmvMB3Dkuuauv8OuI0TiBgrG0a+Cv2N4Tc5nFOBdVjZzviiX6If9NXPRSw3jWdXZZwqbxXnj5S7IPvCFKgTV4ML4Jpi9jKQ=
+  file:
+  - build/ommpfritt
+  - build/ommpfritt.exe
+  - build/ommpfritt-0.1.0-win64.exe
+  - build/ommpfritt-0.1.0-Linux.sh
+  on:
+    repo: pasbi/ommpfritt
+  skip_cleanup: 'true'
