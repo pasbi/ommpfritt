@@ -1,29 +1,37 @@
 #!/usr/bin/env bash
 
-echo "This script needs an update."
-echo "Some dependencies have been added which this script is not aware of."
-exit 1
+# "Run this script inside MinGW64 shell"
 
-echo "Run this script inside MinGW64 shell"
-
+set -e
 cd "$(dirname "$0")/.."
-repo="$(basename -s .git $(git config --get remote.origin.url))"
 
-echo "Build $repo on MinGW64."
+pacman --noconfirm -S \
+    mingw-w64-x86_64-ninja \
+    mingw-w64-x86_64-qt5 \
+    mingw-w64-x86_64-poppler \
+    mingw-w64-x86_64-python \
+    mingw-w64-x86_64-pybind11 \
+    mingw-w64-x86_64-kitemmodels-qt5 \
+    mingw-w64-x86_64-openssl \
+    mingw-w64-x86_64-libffi \
+    mingw-w64-x86_64-zlib \
+    mingw-w64-x86_64-python-pytest \
+    mingw-w64-x86_64-dlfcn \
+    mingw-w64-x86_64-nsis \
+    make
 
 QT_QM_PATH=/mingw64/share/qt5/translations/
-PYTHON_INSTALL_LOCATION="$HOME"
+# PYTHON_INSTALL_LOCATION="$HOME"
 
-if [ ! -d build ]; then
-  mkdir build
-fi
-cd build
+build_directory="build"
 cmake -G"Unix Makefiles" \
        -DCMAKE_BUILD_TYPE=Release \
        -DQT_QM_PATH="$QT_QM_PATH" \
-       -DCMAKE_CXX_FLAGS='-I/c/msys64/mingw64/include/QtCore/ -I/c/msys64/mingw64/include/QtGui/ -I/c/msys64/mingw64/include/QtWidgets/ -I/c/msys64/mingw64/include/python3.8/ -I/c/msys64/mingw64/include/QtSvg/' \
-       -DCMAKE_PREFIX_PATH="$PYTHON_INSTALL_LOCATION" \
-       ..
+       -S . \
+       -B "$build_directory"
 
-make -j4
+cmake --build "$build_directory" --target package
+
+# -DCMAKE_CXX_FLAGS='-I/c/msys64/mingw64/include/QtCore/ -I/c/msys64/mingw64/include/QtGui/ -I/c/msys64/mingw64/include/QtWidgets/ -I/c/msys64/mingw64/include/python3.8/ -I/c/msys64/mingw64/include/QtSvg/'
+# -DCMAKE_PREFIX_PATH="$PYTHON_INSTALL_LOCATION"
 

@@ -14,13 +14,6 @@ jobs:
       script:
         - build-scripts/build-omm-ubuntu.sh
         - build-scripts/make-appimage.sh
-      after_success:
-        - build/test/unit/ommpfritt_unit_tests
-        - build-scripts/upload-appimage.sh
-        - touch success
-        - build-scripts/notify-telegram.sh
-      after_failure:
-        - build-scripts/notify-telegram.sh
 
     - stage: "build"
       os: linux
@@ -28,12 +21,43 @@ jobs:
       name: "Build on Ubuntu Bionic"
       script:
         - build-scripts/build-omm-ubuntu.sh
-      after_success:
-        - build/test/unit/ommpfritt_unit_tests
-        - touch success
-        - build-scripts/notify-telegram.sh
-      after_failure:
-        - build-scripts/notify-telegram.sh
+
+    - stage: "build"
+      os: windows
+      name: "Build on Windows/MinGW64"
+      before_install:
+      - |-
+        [[ ! -f C:/tools/msys64/msys2_shell.cmd ]] && rm -rf C:/tools/msys64
+        choco uninstall -y mingw
+        choco upgrade --no-progress -y msys2
+        export msys2='cmd //C RefreshEnv.cmd '
+        export msys2+='& set MSYS=winsymlinks:nativestrict '
+        export msys2+='& C:\\tools\\msys64\\msys2_shell.cmd -defterm -no-start'
+        export mingw64="$msys2 -mingw64 -full-path -here -c "\"\$@"\" --"
+        export msys2+=" -msys2 -c "\"\$@"\" --"
+        $msys2 pacman --sync --noconfirm --needed mingw-w64-x86_64-toolchain
+        ## Install more MSYS2 packages from https://packages.msys2.org/base here
+        taskkill //IM gpg-agent.exe //F  # https://travis-ci.community/t/4967
+        export PATH=/C/tools/msys64/mingw64/bin:$PATH
+        export MAKE=mingw32-make  # so that Autotools can find it
+      before_cache:
+      - |-
+        # https://unix.stackexchange.com/a/137322/107554
+        $msys2 pacman --sync --clean --noconfirm
+        ;;
+      cache:
+        directories:
+        - "$HOME/AppData/Local/Temp/chocolatey"
+        - "/C/tools/msys64"
+      script:
+        - build-scripts/build-omm-mingw.sh
+
+after_success:
+  - if [ "$TRAVIS_OS_NAME" -ne "windows" ]; then build/test/unit/ommpfritt_unit_tests fi
+  - touch success
+  - build-scripts/notify-telegram.sh
+after_failure:
+  - build-scripts/notify-telegram.sh
 
 notifications:
   webhooks:
