@@ -45,7 +45,7 @@ jobs:
       - "$HOME/AppData/Local/Temp/chocolatey"
       - "/C/tools/msys64"
     script:
-    - build-scripts/build-omm-mingw.sh
+    - $mingw64 build-scripts/build-omm-mingw.sh
 after_success:
 - if [ "$TRAVIS_OS_NAME" -ne "windows" ]; then build/test/unit/ommpfritt_unit_tests
   fi
