@@ -2,7 +2,7 @@
 
 # "Run this script inside MinGW64 shell"
 
-set -e
+# set -e
 cd "$(dirname "$0")/.."
 
 pacman --noconfirm -S \
@@ -24,12 +24,14 @@ QT_QM_PATH=/mingw64/share/qt5/translations/
 # PYTHON_INSTALL_LOCATION="$HOME"
 
 build_directory="build"
+echo "CONFIGURE::"
 cmake -G"Unix Makefiles" \
        -DCMAKE_BUILD_TYPE=Release \
        -DQT_QM_PATH="$QT_QM_PATH" \
        -S . \
        -B "$build_directory"
-
+cat $build_directory/CMakeFiles/CMakeOutput.log
+echo "BUILD::"
 cmake --build "$build_directory" --target package
 
 # -DCMAKE_CXX_FLAGS='-I/c/msys64/mingw64/include/QtCore/ -I/c/msys64/mingw64/include/QtGui/ -I/c/msys64/mingw64/include/QtWidgets/ -I/c/msys64/mingw64/include/python3.8/ -I/c/msys64/mingw64/include/QtSvg/'
