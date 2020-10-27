@@ -2,7 +2,7 @@
 
 # "Run this script inside MinGW64 shell"
 
-set -e
+# set -e
 cd "$(dirname "$0")/.."
 
 pacman --noconfirm -S \
