@@ -149,4 +149,38 @@ install(
 )
 
 include(CPack)
+if (MINGW)
+  message(STATUS "  Installing system libraries mingw dll")
+  get_filename_component(MinGWPath ${CMAKE_CXX_COMPILER} PATH)
+  message(STATUS "mingw path: ${MinGWPath}")
+  set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS
+      ${MinGWPath}/libbrotlicommon.dll
+      ${MinGWPath}/libbrotlidec.dll
+      ${MinGWPath}/libbz2-1.dll
+      ${MinGWPath}/libdouble-conversion.dll
+      ${MinGWPath}/libfreetype-6.dll
+      ${MinGWPath}/libgcc_s_seh-1.dll
+      ${MinGWPath}/libglib-2.0-0.dll
+      ${MinGWPath}/libgraphite2.dll
+      ${MinGWPath}/libharfbuzz-0.dll
+      ${MinGWPath}/libiconv-2.dll
+      ${MinGWPath}/libicudt67.dll
+      ${MinGWPath}/libicuin67.dll
+      ${MinGWPath}/libicuuc67.dll
+      ${MinGWPath}/libintl-8.dll
+      ${MinGWPath}/libpcre-1.dll
+      ${MinGWPath}/libpcre2-16-0.dll
+      ${MinGWPath}/libpng16-16.dll
+      ${MinGWPath}/libstdc++-6.dll
+      ${MinGWPath}/libwinpthread-1.dll
+      ${MinGWPath}/libzstd.dll
+      ${MinGWPath}/Qt5Core.dll
+      ${MinGWPath}/Qt5Gui.dll
+      ${MinGWPath}/Qt5Widgets.dll
+      ${MinGWPath}/Qt5WinExtras.dll
+      ${MinGWPath}/zlib1.dll
+      )
+      install(FILES ${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll DESTINATION bin/platforms)
+endif()
+include(InstallRequiredSystemLibraries)
 

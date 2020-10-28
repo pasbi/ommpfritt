@@ -26,7 +26,10 @@ pacman --noconfirm -S \
     mingw-w64-x86_64-gtkmm3
 
 git clone https://gitlab.com/inkscape/lib2geom
+pushd lib2geom
+git fetch --unshallow  # we need more depth to check out that commit (next line)
 git checkout 37876ed4
+popd
 echo "CONFIGURE LIB2GEOM:"
 cmake -G"Unix Makefiles" \
   -B build-lib2geom \
@@ -51,13 +54,13 @@ cmake -G"Unix Makefiles" \
 echo "Build omm"
 cmake --build "$build_directory" --target package
 
-echo "> ls"
-ls
-echo "> ls build"
-ls build
-echo "> find"
-find
-
+# echo "> ls"
+# ls
+# echo "> ls build"
+# ls build
+# echo "> find"
+# find
+#
 # -DCMAKE_CXX_FLAGS='-I/c/msys64/mingw64/include/QtCore/ -I/c/msys64/mingw64/include/QtGui/ -I/c/msys64/mingw64/include/QtWidgets/ -I/c/msys64/mingw64/include/python3.8/ -I/c/msys64/mingw64/include/QtSvg/'
 # -DCMAKE_PREFIX_PATH="$PYTHON_INSTALL_LOCATION"
 
