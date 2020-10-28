@@ -5,7 +5,7 @@
 # set -e
 cd "$(dirname "$0")/.."
 
-pacman --noconfirm -S \
+pacman --noconfirm --needed -S \
     make \
     mingw-w64-x86_64-ninja \
     mingw-w64-x86_64-qt5 \
@@ -52,15 +52,8 @@ cmake -G"Unix Makefiles" \
        -DCMAKE_PREFIX_PATH="install-lib2geom/lib/cmake"
 
 echo "Build omm"
-cmake --build "$build_directory" --target package
+cmake --build "build" --target package
 
-# echo "> ls"
-# ls
-# echo "> ls build"
-# ls build
-# echo "> find"
-# find
-#
 # -DCMAKE_CXX_FLAGS='-I/c/msys64/mingw64/include/QtCore/ -I/c/msys64/mingw64/include/QtGui/ -I/c/msys64/mingw64/include/QtWidgets/ -I/c/msys64/mingw64/include/python3.8/ -I/c/msys64/mingw64/include/QtSvg/'
 # -DCMAKE_PREFIX_PATH="$PYTHON_INSTALL_LOCATION"
 
