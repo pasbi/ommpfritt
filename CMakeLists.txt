@@ -90,6 +90,76 @@ add_executable(ommpfritt src/main.cpp "${compiled_resource_file}")
 add_executable(ommpfritt_unit_tests)
 add_library(libommpfritt STATIC)
 
+if (MINGW)
+  get_filename_component(MinGWPath ${CMAKE_CXX_COMPILER} PATH)
+  SET(required_system_dlls
+        libbrotlicommon.dll
+        libbrotlidec.dll
+        libbz2-1.dll
+        libcrypto-1_1-x64.dll
+        libcurl-4.dll
+        libdouble-conversion.dll
+        libfreetype-6.dll
+        libgcc_s_seh-1.dll
+        libglib-2.0-0.dll
+        libgraphite2.dll
+        libgsl-25.dll
+        libgslcblas-0.dll
+        libharfbuzz-0.dll
+        libiconv-2.dll
+        libicudt67.dll
+        libicuin67.dll
+        libicuuc67.dll
+        libidn2-0.dll
+        libintl-8.dll
+        libjpeg-8.dll
+        libKF5ItemModels.dll
+        liblcms2-2.dll
+        liblzma-5.dll
+        libnghttp2-14.dll
+        libnspr4.dll
+        libopenjp2-7.dll
+        libpcre-1.dll
+        libpcre2-16-0.dll
+        libplc4.dll
+        libplds4.dll
+        libpng16-16.dll
+        libpoppler-103.dll
+        libpoppler-qt5-1.dll
+        libpsl-5.dll
+        libpython3.8.dll
+        libssh2-1.dll
+        libssl-1_1-x64.dll
+        libstdc++-6.dll
+        libtiff-5.dll
+        libunistring-2.dll
+        libwinpthread-1.dll
+        libzstd.dll
+        nss3.dll
+        nssutil3.dll
+        Qt5Core.dll
+        Qt5Gui.dll
+        Qt5Svg.dll
+        Qt5Widgets.dll
+        Qt5WinExtras.dll
+        Qt5Xml.dll
+        smime3.dll
+        zlib1.dll
+  )
+  message(STATUS "mingw path: ${MinGWPath}")
+  list(TRANSFORM required_system_dlls PREPEND "${MinGWPath}/")
+  set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${required_system_dlls})
+  install(FILES ${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll DESTINATION bin/platforms)
+
+  add_custom_command(TARGET ommpfritt-cli POST_BUILD
+          COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/platforms"
+          COMMAND ${CMAKE_COMMAND} -E copy "${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll" "${PROJECT_BINARY_DIR}/platforms/"
+          COMMAND ${CMAKE_COMMAND} -E copy ${required_system_dlls} ${PROJECT_BINARY_DIR}
+          COMMAND_EXPAND_LISTS
+          COMMENT "Copying dependncies into build directory."
+          )
+endif()
+
 set_warning_level(ommpfritt-cli)
 set_warning_level(ommpfritt)
 set_warning_level(ommpfritt_unit_tests)
@@ -149,38 +219,5 @@ install(
 )
 
 include(CPack)
-if (MINGW)
-  message(STATUS "  Installing system libraries mingw dll")
-  get_filename_component(MinGWPath ${CMAKE_CXX_COMPILER} PATH)
-  message(STATUS "mingw path: ${MinGWPath}")
-  set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS
-      ${MinGWPath}/libbrotlicommon.dll
-      ${MinGWPath}/libbrotlidec.dll
-      ${MinGWPath}/libbz2-1.dll
-      ${MinGWPath}/libdouble-conversion.dll
-      ${MinGWPath}/libfreetype-6.dll
-      ${MinGWPath}/libgcc_s_seh-1.dll
-      ${MinGWPath}/libglib-2.0-0.dll
-      ${MinGWPath}/libgraphite2.dll
-      ${MinGWPath}/libharfbuzz-0.dll
-      ${MinGWPath}/libiconv-2.dll
-      ${MinGWPath}/libicudt67.dll
-      ${MinGWPath}/libicuin67.dll
-      ${MinGWPath}/libicuuc67.dll
-      ${MinGWPath}/libintl-8.dll
-      ${MinGWPath}/libpcre-1.dll
-      ${MinGWPath}/libpcre2-16-0.dll
-      ${MinGWPath}/libpng16-16.dll
-      ${MinGWPath}/libstdc++-6.dll
-      ${MinGWPath}/libwinpthread-1.dll
-      ${MinGWPath}/libzstd.dll
-      ${MinGWPath}/Qt5Core.dll
-      ${MinGWPath}/Qt5Gui.dll
-      ${MinGWPath}/Qt5Widgets.dll
-      ${MinGWPath}/Qt5WinExtras.dll
-      ${MinGWPath}/zlib1.dll
-      )
-      install(FILES ${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll DESTINATION bin/platforms)
-endif()
 include(InstallRequiredSystemLibraries)
 
