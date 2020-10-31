@@ -44,12 +44,16 @@ QT_QM_PATH=/mingw64/share/qt5/translations/
 # PYTHON_INSTALL_LOCATION="$HOME"
 
 echo "Configure omm"
-cmake -G"Unix Makefiles" \
+rm -rf build/libommpfritt_autogen build/qm build/qrc_resources_cli.cpp \
+       build/ommpfritt-cli_autogen build/ommpfritt_unit_tests_autogen \
+       build/ommpfritt_autogen build/qrc_resources.cpp
+cmake -GNinja \
        -DCMAKE_BUILD_TYPE=Release \
        -DQT_QM_PATH="$QT_QM_PATH" \
        -S . \
        -B build \
-       -DCMAKE_PREFIX_PATH="install-lib2geom/lib/cmake"
+       -DCMAKE_PREFIX_PATH="install-lib2geom/lib/cmake" \
+       -DCMAKE_INSTALL_PREFIX=install
 
 echo "Build omm"
 export PYTHONHOME=/mingw64/
