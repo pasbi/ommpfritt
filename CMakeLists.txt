@@ -206,7 +206,7 @@ add_subdirectory(src)
 add_subdirectory(test)
 
 install(
-    TARGETS ommpfritt
+    TARGETS ommpfritt ommpfritt-cli
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib/static
