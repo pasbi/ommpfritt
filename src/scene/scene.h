@@ -24,7 +24,7 @@ class PythonEngine;
 class StyleList;
 class ObjectTree;
 class ToolBox;
-class MessageBox;
+class MailBox;
 class HistoryModel;
 class Animator;
 class NamedColors;
@@ -120,11 +120,11 @@ private:
   std::set<const Object*> m_cycle_guarded_objects;
 
 
-  // === MessageBox ===
+  // === MailBox ===
 private:
-  std::unique_ptr<MessageBox> m_message_box;
+  std::unique_ptr<MailBox> m_mail_box;
 public:
-  MessageBox& message_box() const { return *m_message_box; }
+  MailBox& mail_box() const { return *m_mail_box; }
 
 
   // === Objects  ====

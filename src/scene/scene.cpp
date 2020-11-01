@@ -30,7 +30,7 @@
 #include "tools/toolbox.h"
 #include "scene/stylelist.h"
 #include "scene/objecttree.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "animation/animator.h"
 #include "color/namedcolors.h"
 #include "nodesystem/node.h"
@@ -98,7 +98,7 @@ namespace omm
 Scene::Scene(PythonEngine& python_engine)
   : python_engine(python_engine)
   , point_selection(*this)
-  , m_message_box(new MessageBox())
+  , m_mail_box(new MailBox())
   , m_object_tree(new ObjectTree(make_root(), *this))
   , m_styles(new StyleList(*this))
   , m_history(new HistoryModel())
@@ -110,7 +110,7 @@ Scene::Scene(PythonEngine& python_engine)
   for (auto kind : { Object::KIND, Tag::KIND, Style::KIND, Tool::KIND }) {
     m_item_selection[kind] = {};
   }
-  connect(&history(), SIGNAL(index_changed()), &message_box(), SIGNAL(filename_changed()));
+  connect(&history(), SIGNAL(index_changed()), &mail_box(), SIGNAL(filename_changed()));
   connect(&history(), &HistoryModel::index_changed, [this]() {
     const auto keep_in_selection = [this](const auto* apo) { return contains(apo); };
     const auto old_selection = selection();
@@ -119,7 +119,7 @@ Scene::Scene(PythonEngine& python_engine)
       set_selection(new_selection);
     }
   });
-  connect(&message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
+  connect(&mail_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(update_tool()));
 }
 
@@ -141,7 +141,7 @@ void Scene::polish()
 
 void Scene::prepare_reset()
 {
-  Q_EMIT message_box().about_to_reset();
+  Q_EMIT mail_box().about_to_reset();
   set_selection({});
 
   // make sure that there are no references (via ReferenceProperties) across objects.
@@ -217,7 +217,7 @@ bool Scene::save_as(const QString &filename)
   LINFO << "Saved current scene to '" << filename << "'.";
   history().set_saved_index();
   m_filename = filename;
-  Q_EMIT message_box().filename_changed();
+  Q_EMIT mail_box().filename_changed();
   return true;
 }
 
@@ -255,7 +255,7 @@ bool Scene::load_from(const QString &filename)
 
     m_filename = filename;
     history().set_saved_index();
-    Q_EMIT message_box().filename_changed();
+    Q_EMIT mail_box().filename_changed();
 
     this->object_tree().replace_root(std::move(new_root));
     this->styles().set(std::move(styles));
@@ -288,7 +288,7 @@ void Scene::reset()
   m_filename.clear();
   animator().invalidate();
   m_named_colors->clear();
-  Q_EMIT message_box().filename_changed();
+  Q_EMIT mail_box().filename_changed();
 }
 
 QString Scene::filename() const
@@ -300,7 +300,7 @@ void Scene::submit(std::unique_ptr<Command> command)
 {
   if (command != nullptr) {
     history().push(std::move(command));
-    Q_EMIT message_box().filename_changed();
+    Q_EMIT mail_box().filename_changed();
   }
 }
 
@@ -340,23 +340,23 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
   m_selection = selection;
 
   static const auto emit_selection_changed = [this](const auto& selection, const auto kind) {
-    Q_EMIT message_box().selection_changed(selection, kind);
+    Q_EMIT mail_box().selection_changed(selection, kind);
 
     switch (kind) {
     case Kind::Style:
-      Q_EMIT message_box().selection_changed(kind_cast<Style>(selection));
+      Q_EMIT mail_box().selection_changed(kind_cast<Style>(selection));
       break;
     case Kind::Object:
-      Q_EMIT message_box().selection_changed(kind_cast<Object>(selection));
+      Q_EMIT mail_box().selection_changed(kind_cast<Object>(selection));
       break;
     case Kind::Tag:
-      Q_EMIT message_box().selection_changed(kind_cast<Tag>(selection));
+      Q_EMIT mail_box().selection_changed(kind_cast<Tag>(selection));
       break;
     case Kind::Tool:
-      Q_EMIT message_box().selection_changed(kind_cast<Tool>(selection));
+      Q_EMIT mail_box().selection_changed(kind_cast<Tool>(selection));
       break;
     case Kind::Node:
-      Q_EMIT message_box().selection_changed(kind_cast<Node>(selection));
+      Q_EMIT mail_box().selection_changed(kind_cast<Node>(selection));
       break;
     default:
       break;
@@ -384,7 +384,7 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
     }
   }
 
-  Q_EMIT message_box().selection_changed(m_selection);
+  Q_EMIT mail_box().selection_changed(m_selection);
 }
 
 std::set<AbstractPropertyOwner*> Scene::selection() const { return m_selection; }

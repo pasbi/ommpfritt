@@ -15,7 +15,7 @@
 #include "commands/movecommand.h"
 #include "commands/objectselectioncommand.h"
 #include "scene/history/historymodel.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "tools/toolbox.h"
 #include <map>
 #include <functional>
@@ -226,13 +226,13 @@ const std::map<QString, std::function<void(Application& app)>> actions {
           point.is_selected = true;
         }
       }
-      Q_EMIT app.scene.message_box().point_selection_changed();
+      Q_EMIT app.scene.mail_box().point_selection_changed();
       break;
     case SceneMode::Object:
       app.scene.set_selection(down_cast(app.scene.object_tree().items()));
       break;
     }
-    Q_EMIT app.message_box().appearance_changed();
+    Q_EMIT app.mail_box().appearance_changed();
   }},
 
   {"deselect all", [](Application& app) {
@@ -243,13 +243,13 @@ const std::map<QString, std::function<void(Application& app)>> actions {
           point.is_selected = false;
         }
       }
-      Q_EMIT app.scene.message_box().point_selection_changed();
+      Q_EMIT app.scene.mail_box().point_selection_changed();
       break;
     case SceneMode::Object:
       app.scene.set_selection({});
       break;
     }
-    Q_EMIT app.message_box().appearance_changed();
+    Q_EMIT app.mail_box().appearance_changed();
   }},
 
   {"invert selection", [](Application& app) {
@@ -260,7 +260,7 @@ const std::map<QString, std::function<void(Application& app)>> actions {
           point.is_selected = !point.is_selected;
         }
       }
-      Q_EMIT app.scene.message_box().point_selection_changed();
+      Q_EMIT app.scene.mail_box().point_selection_changed();
       break;
     case SceneMode::Object:
     {
@@ -273,7 +273,7 @@ const std::map<QString, std::function<void(Application& app)>> actions {
       break;
     }
     }
-    Q_EMIT app.message_box().appearance_changed();
+    Q_EMIT app.mail_box().appearance_changed();
   }},
 
   {"convert objects", [](Application& app) {
@@ -307,7 +307,7 @@ const std::map<QString, std::function<void(Application& app)>> actions {
         std::for_each(segment.begin(), segment.end(), set_selected);
       }
     });
-    Q_EMIT app.message_box().appearance_changed();
+    Q_EMIT app.mail_box().appearance_changed();
   }},
 
   {"fill selection", [](Application& app) {
@@ -319,7 +319,7 @@ const std::map<QString, std::function<void(Application& app)>> actions {
         std::for_each(first_it, last_it.base(), set_selected);
       }
     });
-    Q_EMIT app.message_box().appearance_changed();
+    Q_EMIT app.mail_box().appearance_changed();
   }},
 
   {"extend selection", [](Application& app) {
@@ -328,7 +328,7 @@ const std::map<QString, std::function<void(Application& app)>> actions {
         segment[i].is_selected = true;
       }
     });
-    Q_EMIT app.message_box().appearance_changed();
+    Q_EMIT app.mail_box().appearance_changed();
   }},
 
   {"shrink selection", [](Application& app) {
@@ -343,7 +343,7 @@ const std::map<QString, std::function<void(Application& app)>> actions {
         segment[i].is_selected = false;
       }
     });
-    Q_EMIT app.message_box().appearance_changed();
+    Q_EMIT app.mail_box().appearance_changed();
   }},
 };
 

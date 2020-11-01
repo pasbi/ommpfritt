@@ -9,7 +9,7 @@
 #include "animation/animator.h"
 #include "properties/property.h"
 #include "scene/scene.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "managers/curvemanager/curvemanagerquickaccessdelegate.h"
 #include <QHeaderView>
 
@@ -90,7 +90,7 @@ CurveTree::CurveTree(Scene& scene)
 {
   auto filter_proxy = std::make_unique<FilterSelectedProxyModel>(scene.animator());
   auto add_proxy = std::make_unique<AddColumnProxy>();
-  connect(&scene.message_box(), SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),
+  connect(&scene.mail_box(), SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),
           filter_proxy.get(), SLOT(invalidate()));
 
   m_add_column_proxy = add_proxy.get();

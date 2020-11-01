@@ -21,7 +21,7 @@
 #include "mainwindow/mainwindow.h"
 #include <QHeaderView>
 #include <QTimer>
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "managers/objectmanager/objectdelegate.h"
 #include <QStyledItemDelegate>
 
@@ -61,11 +61,11 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
     setExpanded(index, true);
   });
 
-  connect(&scene().message_box(), SIGNAL(tag_inserted(Object&, Tag&)),
+  connect(&scene().mail_box(), SIGNAL(tag_inserted(Object&, Tag&)),
           this, SLOT(update_tag_column_size()));
-  connect(&scene().message_box(), SIGNAL(tag_removed(Object&, Tag&)),
+  connect(&scene().mail_box(), SIGNAL(tag_removed(Object&, Tag&)),
           this, SLOT(update_tag_column_size()));
-  connect(&scene().message_box(), SIGNAL(scene_reseted()),
+  connect(&scene().mail_box(), SIGNAL(scene_reseted()),
           this, SLOT(update_tag_column_size()));
 
   update_tag_column_size();

@@ -13,11 +13,11 @@ class Style;
 class Tool;
 class Node;
 
-class MessageBox : public QObject
+class MailBox : public QObject
 {
   Q_OBJECT
 public:
-  explicit MessageBox();
+  explicit MailBox();
 
 Q_SIGNALS:
   /**

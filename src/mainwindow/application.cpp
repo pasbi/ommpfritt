@@ -457,9 +457,9 @@ bool Application::handle_mode(const QString& action_name)
   return false;
 }
 
-MessageBox &Application::message_box()
+MailBox &Application::mail_box()
 {
-  return scene.message_box();
+  return scene.mail_box();
 }
 
 MainWindow* Application::main_window() const { return m_main_window; }

@@ -6,7 +6,7 @@
 #include "serializers/abstractserializer.h"
 #include "properties/referenceproperty.h"
 #include "scene/scene.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "animation/track.h"
 #include <random>
 
@@ -135,7 +135,7 @@ Property
   connect(&ref, &Property::value_changed, [this, key](Property* property) {
     assert(property != nullptr);
     if (Scene* scene = this->scene(); scene != nullptr) {
-      Q_EMIT scene->message_box().property_value_changed(*this, key, *property);
+      Q_EMIT scene->mail_box().property_value_changed(*this, key, *property);
     }
   });
   return ref;

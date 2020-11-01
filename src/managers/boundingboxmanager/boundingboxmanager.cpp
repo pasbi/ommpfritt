@@ -8,7 +8,7 @@
 #include "ui_boundingboxmanager.h"
 #include "objects/path.h"
 #include "tools/toolbox.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "mainwindow/application.h"
 
 namespace {
@@ -91,13 +91,13 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   connect(&scene.tool_box(), &ToolBox::active_tool_changed, this, adjust_mode);
   adjust_mode(scene.tool_box().active_tool());
 
-  connect(&scene.message_box(), qOverload<const std::set<Object*>&>(&MessageBox::selection_changed),
+  connect(&scene.mail_box(), qOverload<const std::set<Object*>&>(&MailBox::selection_changed),
           this, [this](const std::set<Object*>&)
   {
     update_manager();
   });
 
-  connect(&scene.message_box(), qOverload<Object&>(&MessageBox::appearance_changed), this,
+  connect(&scene.mail_box(), qOverload<Object&>(&MailBox::appearance_changed), this,
                [this](Object& o)
   {
     Path* path = type_cast<Path*>(&o);
@@ -106,11 +106,11 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
     }
   });
 
-  connect(&scene.message_box(), &MessageBox::point_selection_changed, this, [this]() {
+  connect(&scene.mail_box(), &MailBox::point_selection_changed, this, [this]() {
     update_manager();
   });
 
-  connect(&scene.message_box(), &MessageBox::transformation_changed, this, [this]() {
+  connect(&scene.mail_box(), &MailBox::transformation_changed, this, [this]() {
     update_manager();
   });
 

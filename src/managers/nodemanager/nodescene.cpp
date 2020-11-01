@@ -4,7 +4,7 @@
 #include "nodesystem/nodemodel.h"
 #include "scene/scene.h"
 #include "managers/nodemanager/nodeitem.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 
 namespace omm
 {
@@ -16,7 +16,7 @@ NodeScene::NodeScene(Scene& scene) : scene(scene)
       scene.set_selection(::transform<AbstractPropertyOwner*>(selected_nodes()));
     }
   });
-  connect(&scene.message_box(), &MessageBox::property_value_changed,
+  connect(&scene.mail_box(), &MailBox::property_value_changed,
           this, [this](AbstractPropertyOwner& owner, const QString&, Property&)
   {
     if (Node* node = kind_cast<Node*>(&owner); node != nullptr && &node->model() == m_model) {

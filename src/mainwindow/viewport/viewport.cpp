@@ -9,7 +9,7 @@
 
 #include "scene/scene.h"
 #include "python/pythonengine.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "tools/toolbox.h"
 
 namespace
@@ -61,10 +61,10 @@ Viewport::Viewport(Scene& scene)
   setFocusPolicy(Qt::StrongFocus);
 
   setMouseTracking(true);
-  connect(&scene.message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
+  connect(&scene.mail_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(update()));
 
-  connect(&scene.message_box(), SIGNAL(appearance_changed()), this, SLOT(update()));
+  connect(&scene.mail_box(), SIGNAL(appearance_changed()), this, SLOT(update()));
   connect(&m_fps_limiter, &QTimer::timeout, [this]() {
     m_fps_limiter.stop();
     if (m_update_later) {

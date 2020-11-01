@@ -12,7 +12,7 @@
 #include "nodesystem/nodemodel.h"
 #include "ui_nodemanager.h"
 #include "mainwindow/application.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include <QContextMenuEvent>
 #include "nodesystem/nodes/fragmentnode.h"
 #include <QMenu>
@@ -48,9 +48,9 @@ NodeManager::NodeManager(Scene& scene)
   widget->setContextMenuPolicy(Qt::NoContextMenu);
   set_widget(std::move(widget));
 
-  connect(&scene.message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
+  connect(&scene.mail_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
-  connect(&scene.message_box(), &MessageBox::abstract_property_owner_removed,
+  connect(&scene.mail_box(), &MailBox::abstract_property_owner_removed,
           [this](const auto& apo)
   {
     const auto nodes_owner = dynamic_cast<const NodesOwner*>(&apo);
@@ -59,7 +59,7 @@ NodeManager::NodeManager(Scene& scene)
       set_model(nullptr);
     }
   });
-  connect(&scene.message_box(), &MessageBox::about_to_reset, this, [this]{ set_model(nullptr); });
+  connect(&scene.mail_box(), &MailBox::about_to_reset, this, [this]{ set_model(nullptr); });
   setTitleBarWidget(std::make_unique<NodeManagerTitleBar>(*this).release());
 }
 

@@ -8,7 +8,7 @@
 #include <QTabWidget>
 
 #include "managers/propertymanager/propertymanagertitlebar.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "properties/optionproperty.h"
 #include "managers/propertymanager/propertymanagertab.h"
 #include "propertywidgets/propertywidget.h"
@@ -141,7 +141,7 @@ PropertyManager::PropertyManager(Scene& scene)
 
   connect(m_tab_bar.get(), SIGNAL(current_indices_changed(const std::set<int>&)),
           this, SLOT(activate_tabs(const std::set<int>&)));
-  connect(&scene.message_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
+  connect(&scene.mail_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
           this, SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
   m_scroll_area->setFrameShape(QFrame::NoFrame);
 }

@@ -1,5 +1,5 @@
 #include "nodesystem/nodes/referencenode.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "commands/forwardingportcommand.h"
 #include "properties/referenceproperty.h"
 #include "variant.h"

@@ -28,7 +28,9 @@ void setup_logfile(QFile& logfile)
     exit(2);
   }
 
-  const QString timestamp = QDateTime::currentDateTime().toString(Qt::ISODate);
+  // Remove colon from timestamp, as colons are not supported in windows filenames.
+  // Do the same on other platforms to ensure harmony.
+  const QString timestamp = QDateTime::currentDateTime().toString(Qt::ISODate).replace(":", "");
   const QString filename = QString("%1/%2-log_%3.txt").arg(dir).arg(qAppName()).arg(timestamp);
   logfile.setFileName(filename);
   if (!logfile.open(QIODevice::WriteOnly)) {

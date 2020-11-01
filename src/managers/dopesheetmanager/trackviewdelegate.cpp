@@ -11,7 +11,7 @@
 #include "scene/scene.h"
 #include "scene/history/historymodel.h"
 #include "commands/keyframecommand.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "managers/timeline/slider.h"
 #include "animation/track.h"
 

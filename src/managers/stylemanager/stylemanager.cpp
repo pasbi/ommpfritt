@@ -8,7 +8,7 @@
 #include "commands/addcommand.h"
 #include "mainwindow/application.h"
 #include <QCoreApplication>
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include <QContextMenuEvent>
 
 namespace omm
@@ -19,7 +19,7 @@ StyleManager::StyleManager(Scene& scene)
   : ItemManager( QCoreApplication::translate("any-context", "StyleManager"),
                  scene, scene.styles())
 {
-  connect(&scene.message_box(), SIGNAL(selection_changed(std::set<Style*>)),
+  connect(&scene.mail_box(), SIGNAL(selection_changed(std::set<Style*>)),
           &item_view(), SLOT(set_selection(std::set<Style*>)));
 }
 

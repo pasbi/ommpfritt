@@ -2,7 +2,7 @@
 #include "mainwindow/application.h"
 #include "serializers/jsonserializer.h"
 #include "scene/scene.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "common.h"
 #include "nodesystem/port.h"
 #include "nodesystem/node.h"

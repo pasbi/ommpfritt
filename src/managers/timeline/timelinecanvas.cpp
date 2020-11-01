@@ -1,5 +1,5 @@
 #include "managers/timeline/timelinecanvas.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include <QWidget>
 #include "animation/track.h"
 #include "animation/animator.h"
@@ -369,8 +369,8 @@ void TimelineCanvas::zoom(const QPointF& d)
 
 void TimelineCanvas::synchronize_track_selection_with_animator()
 {
-  connect(&animator.scene.message_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MessageBox::selection_changed),
+  connect(&animator.scene.mail_box(),
+          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
           this, &TimelineCanvas::update_tracks);
   update_tracks(animator.scene.selection());
   connect(&animator, &Animator::track_inserted, this, [this](Track& track) {
@@ -384,7 +384,7 @@ void TimelineCanvas::synchronize_track_selection_with_animator()
   connect(&animator, SIGNAL(start_changed(int)), this, SLOT(update()));
   connect(&animator, SIGNAL(end_changed(int)), this, SLOT(update()));
   connect(&animator, SIGNAL(track_changed(Track&)), this, SLOT(update()));
-  connect(&animator.scene.message_box(),
+  connect(&animator.scene.mail_box(),
           SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),
           this, SLOT(update()));
 }

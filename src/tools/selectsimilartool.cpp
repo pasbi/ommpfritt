@@ -1,6 +1,6 @@
 #include "tools/selectsimilartool.h"
 #include <cmath>
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "logging.h"
 #include "scene/scene.h"
 #include "objects/path.h"
@@ -73,7 +73,7 @@ SelectSimilarTool::SelectSimilarTool(Scene& scene) : SelectPointsBaseTool(scene)
     .set_label(QObject::tr("apply"))
     .set_category(category)
     .set_animatable(false);
-  connect(&scene.message_box(), &MessageBox::point_selection_changed,
+  connect(&scene.mail_box(), &MailBox::point_selection_changed,
           this, &SelectSimilarTool::update_base_selection);
   update_property_appearance();
 }
@@ -119,7 +119,7 @@ void SelectSimilarTool::update_selection()
       }
     }
   }
-  Q_EMIT scene()->message_box().appearance_changed(*this);
+  Q_EMIT scene()->mail_box().appearance_changed(*this);
 }
 
 void SelectSimilarTool::update_base_selection()
@@ -160,7 +160,7 @@ bool SelectSimilarTool::is_similar(const Path::iterator& a, const Path::iterator
 
 void SelectSimilarTool::end()
 {
-  Q_EMIT scene()->message_box().point_selection_changed();
+  Q_EMIT scene()->mail_box().point_selection_changed();
 }
 
 void SelectSimilarTool::start()

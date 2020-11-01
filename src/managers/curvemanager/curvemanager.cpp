@@ -2,7 +2,7 @@
 #include <QHeaderView>
 #include <QEvent>
 #include "scene/scene.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "managers/curvemanager/curvemanagertitlebar.h"
 #include "managers/curvemanager/curvemanagerwidget.h"
 #include "managers/curvemanager/curvetree.h"

@@ -8,7 +8,7 @@
 #include "commands/keyframecommand.h"
 #include "mainwindow/application.h"
 #include <QMouseEvent>
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include <QPainter>
 #include <QEvent>
 #include "managers/manager.h"
@@ -47,7 +47,7 @@ CurveManagerWidget::CurveManagerWidget(Scene& scene, const CurveTree& curve_tree
   : range({1, -10}, {100, 10}, *this, Range::Options::Default, Range::Options::Mirror)
   , m_scene(scene), m_curve_tree(curve_tree)
 {
-  connect(&scene.message_box(), SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),
+  connect(&scene.mail_box(), SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),
           this, SLOT(set_selection(const std::set<AbstractPropertyOwner*>)));
   set_selection(scene.selection());
   connect(&scene.animator(), SIGNAL(track_inserted(Track&)), this, SLOT(add_track(Track&)));

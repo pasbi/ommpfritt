@@ -1,12 +1,12 @@
 #include "tools/selectpointstool.h"
 #include "scene/scene.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
 #include "objects/path.h"
 #include "properties/optionproperty.h"
 #include "tools/handles/boundingboxhandle.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 
 namespace omm
 {
@@ -73,7 +73,7 @@ bool SelectPointsBaseTool::mouse_press(const Vec2f& pos, const QMouseEvent& even
         point.is_selected = false;
       }
     }
-    Q_EMIT scene()->message_box().point_selection_changed();
+    Q_EMIT scene()->mail_box().point_selection_changed();
     return false;
   } else {
     return false;
@@ -107,7 +107,7 @@ BoundingBox SelectPointsBaseTool::bounding_box() const
 void SelectPointsBaseTool::on_property_value_changed(Property *property)
 {
   if (property == this->property(BOUNDING_BOX_MODE_PROPERTY_KEY)) {
-    Q_EMIT scene()->message_box().appearance_changed(*this);
+    Q_EMIT scene()->mail_box().appearance_changed(*this);
   }
   AbstractSelectTool::on_property_value_changed(property);
 }
@@ -131,7 +131,7 @@ TransformPointsHelper::TransformPointsHelper(Scene& scene, Space space)
   , m_space(space)
 {
   update();
-  connect(&m_scene.message_box(), &MessageBox::point_selection_changed,
+  connect(&m_scene.mail_box(), &MailBox::point_selection_changed,
           this, qOverload<>(&TransformPointsHelper::update));
 }
 

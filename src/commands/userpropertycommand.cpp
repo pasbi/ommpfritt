@@ -4,7 +4,7 @@
 #include "nodesystem/node.h"
 #include "aspects/propertyowner.h"
 #include "scene/scene.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 
 namespace
 {
@@ -65,7 +65,7 @@ void UserPropertyCommand::undo()
 
   change(m_changes);
   Scene& scene = *m_owner.scene();
-  Q_EMIT scene.message_box().selection_changed(scene.selection());
+  Q_EMIT scene.mail_box().selection_changed(scene.selection());
 }
 
 void UserPropertyCommand::redo()
@@ -79,7 +79,7 @@ void UserPropertyCommand::redo()
 
   change(m_changes);
   Scene& scene = *m_owner.scene();
-  Q_EMIT scene.message_box().selection_changed(scene.selection());
+  Q_EMIT scene.mail_box().selection_changed(scene.selection());
 }
 
 void UserPropertyCommand::extract(UserPropertyCommand::Properties& ps)

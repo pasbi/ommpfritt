@@ -13,7 +13,7 @@
 #include <QLocale>
 #include <QFileDialog>
 
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "tools/tool.h"
 #include "managers/timeline/timeline.h"
 #include "mainwindow/viewport/viewport.h"
@@ -200,8 +200,8 @@ MainWindow::MainWindow(Application& app)
   menuBar()->addMenu(make_about_menu().release());
   update_recent_files_menu();
 
-  connect(&app.message_box(), SIGNAL(filename_changed()), this, SLOT(update_window_title()));
-  connect(&app.message_box(), &MessageBox::filename_changed, [&app, this] {
+  connect(&app.mail_box(), SIGNAL(filename_changed()), this, SLOT(update_window_title()));
+  connect(&app.mail_box(), &MailBox::filename_changed, [&app, this] {
     if (QString fn = app.scene.filename(); !fn.isEmpty()) {
       QSettings settings;
       auto fns = settings.value(RECENT_DOCUMENTS_SETTINGS_KEY, QStringList()).toStringList();

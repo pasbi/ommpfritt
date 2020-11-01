@@ -4,7 +4,7 @@
 #include "nodesystem/propertyport.h"
 #include "nodesystem/nodemodel.h"
 #include <QOpenGLFunctions>
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "mainwindow/application.h"
 #include "managers/nodemanager/nodemanager.h"
 #include "nodesystem/nodemodel.h"
@@ -167,7 +167,7 @@ void Style::on_property_value_changed(Property *property)
        || property == this->property(BRUSH_COLOR_KEY) )
   {
     if (Scene* scene = this->scene(); scene != nullptr) {
-      Q_EMIT scene->message_box().appearance_changed(*this);
+      Q_EMIT scene->mail_box().appearance_changed(*this);
     }
   }
 }

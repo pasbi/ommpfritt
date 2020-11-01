@@ -10,7 +10,7 @@
 #include "scene/stylelist.h"
 #include <list>
 #include <functional>
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "mainwindow/application.h"
 #include "animation/channelproxy.h"
 
@@ -22,7 +22,7 @@ Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
   m_timer.setInterval(1000.0/30.0);
   connect(&m_timer, SIGNAL(timeout()), this, SLOT(advance()));
   connect(this, SIGNAL(current_changed(int)), this, SLOT(apply()));
-  connect(&scene.message_box(), &MessageBox::property_value_changed, this,
+  connect(&scene.mail_box(), &MailBox::property_value_changed, this,
           [this](AbstractPropertyOwner& owner, const QString& key, Property&)
   {
     if (key == AbstractPropertyOwner::NAME_PROPERTY_KEY) {
@@ -34,9 +34,9 @@ Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
     }
   });
 
-  connect(&scene.message_box(), SIGNAL(abstract_property_owner_inserted(AbstractPropertyOwner&)),
+  connect(&scene.mail_box(), SIGNAL(abstract_property_owner_inserted(AbstractPropertyOwner&)),
           this, SLOT(invalidate()));
-  connect(&scene.message_box(), SIGNAL(abstract_property_owner_removed(AbstractPropertyOwner&)),
+  connect(&scene.mail_box(), SIGNAL(abstract_property_owner_removed(AbstractPropertyOwner&)),
           this, SLOT(invalidate()));
   connect(this, SIGNAL(knot_moved(Track&, int, int)), this, SIGNAL(track_changed(Track&)));
   connect(this, SIGNAL(knot_removed(Track&, int)), this, SIGNAL(track_changed(Track&)));
@@ -109,7 +109,7 @@ void Animator::set_current(int current)
   if (m_current_frame != current) {
     m_current_frame = current;
     Q_EMIT current_changed(current);
-    Q_EMIT scene.message_box().appearance_changed();
+    Q_EMIT scene.mail_box().appearance_changed();
   }
 }
 

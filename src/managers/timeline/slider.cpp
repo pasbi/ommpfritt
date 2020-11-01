@@ -5,7 +5,7 @@
 #include <cmath>
 #include "animation/animator.h"
 #include "scene/scene.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "managers/dopesheetmanager/trackviewdelegate.h"
 
 namespace omm

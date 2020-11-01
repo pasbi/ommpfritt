@@ -10,7 +10,7 @@
 #include "objects/object.h"
 #include "scene/scene.h"
 #include "renderers/style.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 #include "scene/stylelist.h"
 
 namespace omm
@@ -51,12 +51,12 @@ void ReferenceLineEdit::set_scene(Scene &scene)
   m_scene = &scene;
   assert(m_scene != nullptr);
 
-  connect(&m_scene->message_box(), SIGNAL(abstract_property_owner_inserted(AbstractPropertyOwner&)),
+  connect(&m_scene->mail_box(), SIGNAL(abstract_property_owner_inserted(AbstractPropertyOwner&)),
           this, SLOT(update_candidates()));
-  connect(&m_scene->message_box(), SIGNAL(abstract_property_owner_removed(AbstractPropertyOwner&)),
+  connect(&m_scene->mail_box(), SIGNAL(abstract_property_owner_removed(AbstractPropertyOwner&)),
           this, SLOT(update_candidates()));
-  connect(&m_scene->message_box(), SIGNAL(scene_reseted()), this, SLOT(update_candidates()));
-  connect(&m_scene->message_box(), &MessageBox::property_value_changed, this,
+  connect(&m_scene->mail_box(), SIGNAL(scene_reseted()), this, SLOT(update_candidates()));
+  connect(&m_scene->mail_box(), &MailBox::property_value_changed, this,
           [this](AbstractPropertyOwner& owner, const QString& key, Property&)
   {
     using Flag = Flag;

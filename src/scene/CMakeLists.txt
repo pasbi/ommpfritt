@@ -7,8 +7,8 @@ target_sources(libommpfritt PRIVATE
   itemmodeladapter.h
   list.cpp
   list.h
-  messagebox.cpp
-  messagebox.h
+  mailbox.cpp
+  mailbox.h
   objecttree.h
   objecttree.cpp
   pointselection.h

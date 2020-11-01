@@ -9,7 +9,7 @@
 #include "tags/tag.h"
 #include "tags/scripttag.h"
 #include "tags/styletag.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 
 namespace omm
 {
@@ -39,13 +39,13 @@ void Instance::polish()
     return kind_cast<Object*>(property(REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>());
   });
 
-  connect(&scene()->message_box(), &MessageBox::tag_inserted, this, [this](Object& owner, Tag&) {
+  connect(&scene()->mail_box(), &MailBox::tag_inserted, this, [this](Object& owner, Tag&) {
     if (&owner == this) {
       update();
     }
   });
 
-  connect(&scene()->message_box(), &MessageBox::tag_removed, this, [this](Object& owner, Tag&) {
+  connect(&scene()->mail_box(), &MailBox::tag_removed, this, [this](Object& owner, Tag&) {
     if (&owner == this) {
       update();
     }
@@ -181,7 +181,7 @@ Object* Instance::referenced_object() const
 void Instance::update_tags()
 {
   if (m_reference) {
-    QSignalBlocker blocker(&scene()->message_box());
+    QSignalBlocker blocker(&scene()->mail_box());
     const auto instance_style_tags = type_cast<StyleTag*>(tags.ordered_items());
     if (!instance_style_tags.empty()) {
       for (Tag* tag : type_cast<StyleTag*>(m_reference->tags.ordered_items())) {

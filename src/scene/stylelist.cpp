@@ -5,7 +5,7 @@
 #include "scene/scene.h"
 #include "commands/propertycommand.h"
 #include "mainwindow/application.h"
-#include "scene/messagebox.h"
+#include "scene/mailbox.h"
 
 namespace omm
 {
@@ -14,7 +14,7 @@ StyleList::StyleList(Scene &scene)
   : ItemModelAdapter<StyleList, Style, QAbstractListModel>(scene, *this)
   , scene(scene)
 {
-  connect(&scene.message_box(), qOverload<Style&>(&MessageBox::appearance_changed),
+  connect(&scene.mail_box(), qOverload<Style&>(&MailBox::appearance_changed),
           this, [this](Style& style)
   {
     if (this->contains(style)) {
@@ -30,7 +30,7 @@ void StyleList::insert(ListOwningContext<Style> &context)
   beginInsertRows(QModelIndex(), row, row);
   List::insert(context);
   endInsertRows();
-  Q_EMIT scene.message_box().style_inserted(context.get_subject());
+  Q_EMIT scene.mail_box().style_inserted(context.get_subject());
 }
 
 void StyleList::remove(ListOwningContext<Style> &context)
@@ -39,7 +39,7 @@ void StyleList::remove(ListOwningContext<Style> &context)
   beginRemoveRows(QModelIndex(), row, row);
   List::remove(context);
   endRemoveRows();
-  Q_EMIT scene.message_box().style_removed(context.get_subject());
+  Q_EMIT scene.mail_box().style_removed(context.get_subject());
 }
 
 std::unique_ptr<Style> StyleList::remove(Style &t)
@@ -48,14 +48,14 @@ std::unique_ptr<Style> StyleList::remove(Style &t)
   beginRemoveRows(QModelIndex(), row, row);
   auto removed_item = List::remove(t);
   endRemoveRows();
-  Q_EMIT scene.message_box().style_removed(t);
+  Q_EMIT scene.mail_box().style_removed(t);
   return removed_item;
 }
 
 void StyleList::move(ListMoveContext<Style> &context)
 {
   List::move(context);
-  Q_EMIT scene.message_box().style_moved(context.get_subject());
+  Q_EMIT scene.mail_box().style_moved(context.get_subject());
 }
 
 std::vector<std::unique_ptr<Style>> StyleList::set(std::vector<std::unique_ptr<Style>> items)
