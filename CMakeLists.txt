@@ -150,6 +150,7 @@ if (MINGW)
   list(TRANSFORM required_system_dlls PREPEND "${MinGWPath}/")
   set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${required_system_dlls})
   install(FILES ${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll DESTINATION bin/platforms)
+  install(DIRECTORY ${MinGWPath}/../lib/python3.8 DESTINATION lib/)
 
   add_custom_command(TARGET ommpfritt-cli POST_BUILD
           COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/platforms"
