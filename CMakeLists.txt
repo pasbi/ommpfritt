@@ -212,13 +212,6 @@ install(
     ARCHIVE DESTINATION lib/static
 )
 
-install(
-    TARGETS libommpfritt
-    RUNTIME DESTINATION bin
-    LIBRARY DESTINATION lib
-    ARCHIVE DESTINATION lib/static
-)
-
 include(CPack)
 include(InstallRequiredSystemLibraries)
 
