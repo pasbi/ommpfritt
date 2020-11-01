@@ -25,10 +25,11 @@ pacman --noconfirm --needed -S \
     mingw-w64-x86_64-gtk3 \
     mingw-w64-x86_64-gtkmm3
 
-if false; then
-git clone https://gitlab.com/inkscape/lib2geom
+if true; then
+[ -d lib2geom ] || git clone https://gitlab.com/inkscape/lib2geom
 pushd lib2geom
-git fetch --unshallow  # we need more depth to check out that commit (next line)
+# we need more depth to check out that commit (next line)
+[ $TRAVIS ] && git fetch --unshallow
 git checkout 37876ed4
 popd
 echo "CONFIGURE LIB2GEOM:"
