@@ -1,4 +1,5 @@
-build
+build/
+install/
 *.user
 *.autosave
 compile_commands.json
