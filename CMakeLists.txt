@@ -9,8 +9,9 @@ project (ommpfritt)
 
 set (CMAKE_AUTOMOC ON)
 set (CMAKE_AUTOUIC ON)
-set (OMMPFRITT_VERSION_MAJOR 1)
-set (OMMPFRITT_VERSION_MINOR 0)
+set (OMMPFRITT_VERSION_MAJOR 0)
+set (OMMPFRITT_VERSION_MINOR 1)
+set (OMMPFRITT_VERSION_PATCH 2)
 
 option(GENERATE_ICONS "There will be no icons in the application if this option is disabled." ON)
 option(BUILD_TESTS "build the unit tests." ON)
