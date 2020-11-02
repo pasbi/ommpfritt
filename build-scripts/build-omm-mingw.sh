@@ -5,6 +5,10 @@
 set -e
 cd "$(dirname "$0")/.."
 
+echo "INSTALLED PACKAGES:"
+pacman -Q
+echo "END INSTALLED PACKAGES."
+
 echo "Installing required packages ..."
 pacman --noconfirm --needed -S \
     make \
@@ -62,25 +66,7 @@ cmake -GNinja \
 fi
 
 echo "Build omm"
-if [ $TRAVIS ]; then
-  echo "start travis."
-  export PYTHONHOME="C:/tools/msys64/mingw64/"
-  echo "Set PYTHONHOME to $PYTHONHOME"
-  echo "ls PYTHONHOME:"
-  ls $PYTHONHOME
-  echo "ls PYTHONHOME/bin:"
-  ls $PYTHONHOME/bin || echo "ls failed."
-  echo "ls /mingw64/"
-  ls /mingw64/ || echo "ls failed."
-  echo "ls /mingw/bin/"
-  ls /mingw64/bin/ || echo "ls failed."
-  echo "ls /c/tools/msys64/mingw/bin/"
-  ls /c/tools/msys64/mingw64/bin/  || echo "ls failed."
-  echo "end travis".
-else
-  echo "non-travis."
-  export PYTHONHOME=/mingw64/
-fi
+export PYTHONHOME=/mingw64/
 cmake --build "build" --target package
 
 # -DCMAKE_CXX_FLAGS='-I/c/msys64/mingw64/include/QtCore/ -I/c/msys64/mingw64/include/QtGui/ -I/c/msys64/mingw64/include/QtWidgets/ -I/c/msys64/mingw64/include/python3.8/ -I/c/msys64/mingw64/include/QtSvg/'
