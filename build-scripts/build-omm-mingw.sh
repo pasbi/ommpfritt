@@ -5,6 +5,7 @@
 set -e
 cd "$(dirname "$0")/.."
 
+echo "Installing required packages ..."
 pacman --noconfirm --needed -S \
     make \
     mingw-w64-x86_64-ninja \
@@ -26,19 +27,20 @@ pacman --noconfirm --needed -S \
     mingw-w64-x86_64-gtkmm3
 
 if true; then
+echo "Install lib2geom ..."
 [ -d lib2geom ] || git clone https://gitlab.com/inkscape/lib2geom
 pushd lib2geom
 # we need more depth to check out that commit (next line)
 git checkout 37876ed4
 popd
-echo "CONFIGURE LIB2GEOM:"
+echo "configure lib2geom:"
 cmake -G"Unix Makefiles" \
   -B build-lib2geom \
   -S lib2geom \
   -DCMAKE_INSTALL_PREFIX=install-lib2geom \
   -D2GEOM_TESTING=OFF
 
-echo "BUILD LIB2GEOM:"
+echo "build lib2geom:"
 cmake --build build-lib2geom --target install
 fi
 
