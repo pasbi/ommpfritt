@@ -69,13 +69,13 @@ if [ $TRAVIS ]; then
   echo "ls PYTHONHOME:"
   ls $PYTHONHOME
   echo "ls PYTHONHOME/bin:"
-  ls $PYTHONHOME/bin
-  echo "ls /mingw/"
-  ls /mingw/
+  ls $PYTHONHOME/bin || echo "ls failed."
+  echo "ls /mingw64/"
+  ls /mingw64/ || echo "ls failed."
   echo "ls /mingw/bin/"
-  ls /mingw/bin/
+  ls /mingw64/bin/ || echo "ls failed."
   echo "ls /c/tools/msys64/mingw/bin/"
-  ls /c/tools/msys64/mingw/bin/
+  ls /c/tools/msys64/mingw64/bin/  || echo "ls failed."
   echo "end travis".
 else
   echo "non-travis."
