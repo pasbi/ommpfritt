@@ -7,6 +7,7 @@ cd "$(dirname "$0")/.."
 
 pacman --noconfirm --needed -S \
     make \
+    python \
     mingw-w64-x86_64-ninja \
     mingw-w64-x86_64-qt5 \
     mingw-w64-x86_64-poppler \
