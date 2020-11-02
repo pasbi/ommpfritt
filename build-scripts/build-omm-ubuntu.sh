@@ -73,7 +73,7 @@ popd
 
 echo "configure lib2geom"
 $cmake -B build-lib2geom \
-  -S lib2geom
+  -S lib2geom \
   -GNinja \
   -D2GEOM_TESTING=OFF
 
