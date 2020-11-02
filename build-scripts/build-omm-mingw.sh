@@ -63,8 +63,22 @@ fi
 
 echo "Build omm"
 if [ $TRAVIS ]; then
+  echo "start travis."
   export PYTHONHOME="C:/tools/msys64/mingw64/"
+  echo "Set PYTHONHOME to $PYTHONHOME"
+  echo "ls PYTHONHOME:"
+  ls $PYTHONHOME
+  echo "ls PYTHONHOME/bin:"
+  ls $PYTHONHOME/bin
+  echo "ls /mingw/"
+  ls /mingw/
+  echo "ls /mingw/bin/"
+  ls /mingw/bin/
+  echo "ls /c/tools/msys64/mingw/bin/"
+  ls /c/tools/msys64/mingw/bin/
+  echo "end travis".
 else
+  echo "non-travis."
   export PYTHONHOME=/mingw64/
 fi
 cmake --build "build" --target package
