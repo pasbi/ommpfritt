@@ -66,12 +66,11 @@ esac
 echo "clone lib2geom"
 [ -d lib2geom ] || git clone https://gitlab.com/inkscape/lib2geom.git
 pushd lib2geom
-git checkout 37876ed4
-popd
-
 # it has been tested with this (arbitrary) commit.
 # Feel free to update, but make sure to test functionalities.
 git checkout 37876ed4
+popd
+
 echo "configure lib2geom"
 $cmake -B build-lib2geom \
   -S lib2geom
