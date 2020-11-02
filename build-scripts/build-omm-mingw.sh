@@ -62,7 +62,11 @@ cmake -GNinja \
 fi
 
 echo "Build omm"
-export PYTHONHOME=/mingw64/
+if [ $TRAVIS ]; then
+  export PYTHONHOME="C:/tools/msys64/mingw64/"
+else
+  export PYTHONHOME=/mingw64/
+fi
 cmake --build "build" --target package
 
 # -DCMAKE_CXX_FLAGS='-I/c/msys64/mingw64/include/QtCore/ -I/c/msys64/mingw64/include/QtGui/ -I/c/msys64/mingw64/include/QtWidgets/ -I/c/msys64/mingw64/include/python3.8/ -I/c/msys64/mingw64/include/QtSvg/'
