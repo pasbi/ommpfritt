@@ -64,8 +64,9 @@ case "$dist" in
 esac
 
 echo "clone lib2geom"
+[ -d lib2geom ] || git clone https://gitlab.com/inkscape/lib2geom.git
 pushd lib2geom
-git clone https://gitlab.com/inkscape/lib2geom.git
+git checkout 37876ed4
 popd
 
 # it has been tested with this (arbitrary) commit.
