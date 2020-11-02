@@ -66,7 +66,6 @@ esac
 echo "clone lib2geom"
 pushd lib2geom
 git clone https://gitlab.com/inkscape/lib2geom.git
-git fetch --unshallow  # we need more depth to check out that commit (next line)
 popd
 
 # it has been tested with this (arbitrary) commit.

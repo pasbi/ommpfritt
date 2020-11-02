@@ -3,6 +3,9 @@ sudo: require
 language: cpp
 services:
 - xvfb
+git:
+  # Shallowly cloning lib2geom may be a problem, since we want a particular commit.
+  depth: false
 jobs:
   include:
   - stage: build

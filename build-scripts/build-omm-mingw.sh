@@ -29,7 +29,6 @@ if true; then
 [ -d lib2geom ] || git clone https://gitlab.com/inkscape/lib2geom
 pushd lib2geom
 # we need more depth to check out that commit (next line)
-[ $TRAVIS ] && git fetch --unshallow
 git checkout 37876ed4
 popd
 echo "CONFIGURE LIB2GEOM:"
