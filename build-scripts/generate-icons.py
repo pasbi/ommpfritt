@@ -46,6 +46,9 @@ def get_omm_status_code(omm_command, description):
         "status",
         "-c", description
     ]
+    print("run command: ", omm_command)
+    import os
+    print(os.listdir())
     cp = subprocess.run(command, capture_output=True)
     if cp.returncode == 0:
         try:
