@@ -55,6 +55,8 @@ def get_omm_status_code(omm_command, description):
             sys.exit(1);
     else:
         print(f"Failed to retrieve return code for '{description}'.")
+        print("STDOUT: \n", cp.stdout):
+        print("STDERR: \n", cp.stderr):
         sys.exit(2);
 
 
