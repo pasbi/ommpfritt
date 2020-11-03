@@ -46,7 +46,6 @@ def get_omm_status_code(omm_command, description):
         "status",
         "-c", description
     ]
-    print("run command: ", omm_command)
     import os
     print(os.listdir())
     cp = subprocess.run(command, capture_output=True)
@@ -58,6 +57,7 @@ def get_omm_status_code(omm_command, description):
             sys.exit(1);
     else:
         print(f"Failed to retrieve return code for '{description}'.")
+        print(f"command: {command} exited with code '{cp.returncode}'.")
         print("STDOUT: \n", cp.stdout)
         print("STDERR: \n", cp.stderr)
         sys.exit(2);
