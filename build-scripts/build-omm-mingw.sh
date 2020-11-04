@@ -5,10 +5,6 @@
 set -e
 cd "$(dirname "$0")/.."
 
-echo "INSTALLED PACKAGES:"
-pacman -Q
-echo "END INSTALLED PACKAGES."
-
 echo "Installing required packages ..."
 pacman --noconfirm --needed -S \
     make \
@@ -30,6 +26,10 @@ pacman --noconfirm --needed -S \
     mingw-w64-x86_64-cython \
     mingw-w64-x86_64-gtk3 \
     mingw-w64-x86_64-gtkmm3
+
+echo "INSTALLED PACKAGES:"
+pacman -Q
+echo "END INSTALLED PACKAGES."
 
 if true; then
 echo "Install lib2geom ..."
