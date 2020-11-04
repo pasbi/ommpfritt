@@ -39,7 +39,7 @@ pushd lib2geom
 git checkout 37876ed4
 popd
 echo "configure lib2geom:"
-cmake -G"Unix Makefiles" \
+cmake -G"MSYS Makefiles" \
   -B build-lib2geom \
   -S lib2geom \
   -DCMAKE_INSTALL_PREFIX=install-lib2geom \
@@ -57,7 +57,7 @@ echo "Configure omm"
 rm -rf build/libommpfritt_autogen build/qm build/qrc_resources_cli.cpp \
        build/ommpfritt-cli_autogen build/ommpfritt_unit_tests_autogen \
        build/ommpfritt_autogen build/qrc_resources.cpp
-cmake -GNinja \
+cmake -G"MSYS Makefiles" \
        -DCMAKE_BUILD_TYPE=Release \
        -DQT_QM_PATH="$QT_QM_PATH" \
        -S . \
