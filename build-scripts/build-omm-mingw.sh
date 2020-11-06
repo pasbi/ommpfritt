@@ -69,11 +69,7 @@ fi
 
 echo "Build omm"
 export PYTHONHOME=/mingw64/
-cmake --build "build" --target ommpfritt-cli
-
-echo "CYCCHECK BEGIN"
-cygcheck.exe ./build/ommpfritt-cli
-echo "CYCCHECK END"
+cmake --build "build" --target package
 
 # -DCMAKE_CXX_FLAGS='-I/c/msys64/mingw64/include/QtCore/ -I/c/msys64/mingw64/include/QtGui/ -I/c/msys64/mingw64/include/QtWidgets/ -I/c/msys64/mingw64/include/python3.8/ -I/c/msys64/mingw64/include/QtSvg/'
 # -DCMAKE_PREFIX_PATH="$PYTHON_INSTALL_LOCATION"
