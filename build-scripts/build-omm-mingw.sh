@@ -5,10 +5,6 @@
 set -e
 cd "$(dirname "$0")/.."
 
-echo "INSTALLED PACKAGES:"
-pacman -Q
-echo "END INSTALLED PACKAGES."
-
 echo "Installing required packages ..."
 pacman --noconfirm --needed -S \
     make \
@@ -29,17 +25,22 @@ pacman --noconfirm --needed -S \
     mingw-w64-x86_64-gsl \
     mingw-w64-x86_64-cython \
     mingw-w64-x86_64-gtk3 \
+    mingw-w64-x86_64-cmake \
+    mingw-w64-x86_64-mesa \
     mingw-w64-x86_64-gtkmm3
+
+echo "INSTALLED PACKAGES:"
+pacman -Q
+echo "END INSTALLED PACKAGES."
 
 if true; then
 echo "Install lib2geom ..."
 [ -d lib2geom ] || git clone https://gitlab.com/inkscape/lib2geom
 pushd lib2geom
-# we need more depth to check out that commit (next line)
 git checkout 37876ed4
 popd
 echo "configure lib2geom:"
-cmake -G"Unix Makefiles" \
+cmake -G"MSYS Makefiles" \
   -B build-lib2geom \
   -S lib2geom \
   -DCMAKE_INSTALL_PREFIX=install-lib2geom \
@@ -57,7 +58,7 @@ echo "Configure omm"
 rm -rf build/libommpfritt_autogen build/qm build/qrc_resources_cli.cpp \
        build/ommpfritt-cli_autogen build/ommpfritt_unit_tests_autogen \
        build/ommpfritt_autogen build/qrc_resources.cpp
-cmake -GNinja \
+cmake -G"MSYS Makefiles" \
        -DCMAKE_BUILD_TYPE=Release \
        -DQT_QM_PATH="$QT_QM_PATH" \
        -S . \
@@ -68,7 +69,11 @@ fi
 
 echo "Build omm"
 export PYTHONHOME=/mingw64/
-cmake --build "build" --target package
+cmake --build "build" --target ommpfritt-cli
+
+echo "CYCCHECK BEGIN"
+cygcheck.exe ./build/ommpfritt-cli
+echo "CYCCHECK END"
 
 # -DCMAKE_CXX_FLAGS='-I/c/msys64/mingw64/include/QtCore/ -I/c/msys64/mingw64/include/QtGui/ -I/c/msys64/mingw64/include/QtWidgets/ -I/c/msys64/mingw64/include/python3.8/ -I/c/msys64/mingw64/include/QtSvg/'
 # -DCMAKE_PREFIX_PATH="$PYTHON_INSTALL_LOCATION"
