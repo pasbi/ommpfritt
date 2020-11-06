@@ -25,6 +25,7 @@ pacman --noconfirm --needed -S \
     mingw-w64-x86_64-gsl \
     mingw-w64-x86_64-cython \
     mingw-w64-x86_64-gtk3 \
+    mingw-w64-x86_64-cmake \
     mingw-w64-x86_64-gtkmm3
 
 echo "INSTALLED PACKAGES:"
@@ -35,7 +36,6 @@ if true; then
 echo "Install lib2geom ..."
 [ -d lib2geom ] || git clone https://gitlab.com/inkscape/lib2geom
 pushd lib2geom
-# we need more depth to check out that commit (next line)
 git checkout 37876ed4
 popd
 echo "configure lib2geom:"
@@ -68,7 +68,11 @@ fi
 
 echo "Build omm"
 export PYTHONHOME=/mingw64/
-cmake --build "build" --target package
+cmake --build "build" --target ommpfritt-cli
+
+echo "CYCCHECK BEGIN"
+cygcheck.exe ./build/ommpfritt-cli
+echo "CYCCHECK END"
 
 # -DCMAKE_CXX_FLAGS='-I/c/msys64/mingw64/include/QtCore/ -I/c/msys64/mingw64/include/QtGui/ -I/c/msys64/mingw64/include/QtWidgets/ -I/c/msys64/mingw64/include/python3.8/ -I/c/msys64/mingw64/include/QtSvg/'
 # -DCMAKE_PREFIX_PATH="$PYTHON_INSTALL_LOCATION"
