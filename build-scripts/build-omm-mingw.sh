@@ -26,6 +26,7 @@ pacman --noconfirm --needed -S \
     mingw-w64-x86_64-cython \
     mingw-w64-x86_64-gtk3 \
     mingw-w64-x86_64-cmake \
+    mingw-w64-x86_64-mesa \
     mingw-w64-x86_64-gtkmm3
 
 echo "INSTALLED PACKAGES:"
