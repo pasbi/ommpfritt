@@ -46,7 +46,7 @@ def get_omm_status_code(omm_command, description):
         "status",
         "-c", description
     ]
-    print("run command: ", omm_command)
+    print("run command: ", command)
     import os
     print(os.listdir())
     cp = subprocess.run(command, capture_output=True)
@@ -54,7 +54,7 @@ def get_omm_status_code(omm_command, description):
         try:
             return int(cp.stdout)
         except ValueError:
-            print("Failed to parse status code '{cp.stdout}' as int.")
+            print(f"Failed to parse status code '{cp.stdout}' as int.")
             sys.exit(1);
     else:
         print(f"Failed to retrieve return code for '{description}'.")
