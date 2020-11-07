@@ -22,7 +22,7 @@ ManagerTitleBar::ManagerTitleBar(Manager& manager)
   auto pb_close = std::make_unique<QPushButton>();
   pb_close->setMaximumSize(QSize(12, 12));
   pb_close->setIcon(style()->standardIcon(QStyle::SP_TitleBarCloseButton));
-  connect(pb_close.get(), SIGNAL(clicked()), &manager, SLOT(close()));
+  connect(pb_close.get(), &QPushButton::clicked, &manager, &Manager::close);
 
   auto hlayout = std::make_unique<QHBoxLayout>();
   hlayout->addWidget(pb_normal.release());

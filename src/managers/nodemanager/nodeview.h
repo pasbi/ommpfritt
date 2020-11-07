@@ -81,6 +81,7 @@ private:
   QPoint m_last_mouse_position;
   QPointF m_node_insert_pos;
   std::unique_ptr<NodeScene> m_node_scene;
+  QMetaObject::Connection m_view_scene_connection;
 };
 
 }  // namespace omm

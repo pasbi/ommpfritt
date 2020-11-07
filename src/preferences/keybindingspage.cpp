@@ -27,12 +27,12 @@ KeyBindingsPage::KeyBindingsPage(KeyBindings& key_bindings, QWidget* parent)
   delegates.at(0) = std::make_unique<KeyBindingsTreeViewDelegate>(*m_ui->treeView);
   m_ui->treeView->set_model(m_proxy_model, std::move(delegates));
   m_ui->treeView->header()->hide();
-  connect(m_ui->pb_reset, SIGNAL(clicked()), this, SLOT(reset()));
-  connect(m_ui->pb_reset_filter, SIGNAL(clicked()), this, SLOT(reset_filter()));
-  connect(m_ui->le_name_filter, SIGNAL(textChanged(const QString&)),
-          this, SLOT(set_name_filter(const QString&)));
-  connect(m_ui->le_sequence_filter, SIGNAL(keySequenceChanged(const QKeySequence&)),
-          this, SLOT(set_sequence_filter(const QKeySequence&)));
+  connect(m_ui->pb_reset, &QPushButton::clicked, this, &KeyBindingsPage::reset);
+  connect(m_ui->pb_reset_filter, &QPushButton::clicked, this, &KeyBindingsPage::reset_filter);
+  connect(m_ui->le_name_filter, &QLineEdit::textChanged,
+          this, &KeyBindingsPage::set_name_filter);
+  connect(m_ui->le_sequence_filter, &QKeySequenceEdit::keySequenceChanged,
+          this, &KeyBindingsPage::set_sequence_filter);
   m_ui->pb_reset_filter->setIcon(style()->standardIcon(QStyle::SP_DialogCloseButton));
 
   QSettings settings;

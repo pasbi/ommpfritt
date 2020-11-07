@@ -71,8 +71,8 @@ PointEdit::PointEdit(Point& point, QWidget* parent)
   m_position_edit->set_coordinates(m_point.position);
   m_position_edit->set_display_mode(DisplayMode::Cartesian);
 
-  connect(m_mirror_from_left, SIGNAL(clicked()), this, SLOT(mirror_from_left()));
-  connect(m_mirror_from_right, SIGNAL(clicked()), this, SLOT(mirror_from_right()));
+  connect(m_mirror_from_left, &QPushButton::clicked, this, &PointEdit::mirror_from_left);
+  connect(m_mirror_from_right, &QPushButton::clicked, this, &PointEdit::mirror_from_right);
   connect(m_vanish_left, &QPushButton::clicked, [this]() {
     QSignalBlocker m_left(m_left_tangent_edit);
     m_left_tangent_edit->set_magnitude(0.0);
@@ -83,17 +83,20 @@ PointEdit::PointEdit(Point& point, QWidget* parent)
     m_right_tangent_edit->set_magnitude(0.0);
     update_point();
   });
-  connect( m_left_tangent_edit,
-           SIGNAL(value_changed(const PolarCoordinates&, const PolarCoordinates&)),
-           this, SLOT(set_right_maybe(const PolarCoordinates&, const PolarCoordinates&)) );
-  connect( m_right_tangent_edit,
-           SIGNAL(value_changed(const PolarCoordinates&, const PolarCoordinates&)),
-           this, SLOT(set_left_maybe(const PolarCoordinates&, const PolarCoordinates&)) );
+
+  using PC = PolarCoordinates;
+  connect(m_left_tangent_edit, qOverload<const PC&, const PC&>(&CoordinateEdit::value_changed),
+          this, &PointEdit::set_right_maybe);
+  connect(m_right_tangent_edit, qOverload<const PC&, const PC&>(&CoordinateEdit::value_changed),
+          this, &PointEdit::set_left_maybe);
 
   {
-    connect(m_left_tangent_edit, SIGNAL(value_changed()), this, SLOT(update_point()));
-    connect(m_right_tangent_edit, SIGNAL(value_changed()), this, SLOT(update_point()));
-    connect(m_position_edit, SIGNAL(value_changed()), this, SLOT(update_point()));
+    connect(m_left_tangent_edit, qOverload<>(&CoordinateEdit::value_changed),
+            this, &PointEdit::update_point);
+    connect(m_right_tangent_edit, qOverload<>(&CoordinateEdit::value_changed),
+            this, &PointEdit::update_point);
+    connect(m_position_edit, qOverload<>(&CoordinateEdit::value_changed),
+            this, &PointEdit::update_point);
   }
 }
 

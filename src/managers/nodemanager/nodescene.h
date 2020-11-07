@@ -37,6 +37,7 @@ private:
   std::map<Node*, std::unique_ptr<NodeItem>> m_node_items;
   NodeModel* m_model = nullptr;
   bool m_block_selection_change_notification = false;
+  std::list<QMetaObject::Connection> m_scene_model_connections;
 };
 
 }  // namespace omm

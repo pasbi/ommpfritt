@@ -16,8 +16,8 @@ PreferenceDialog::PreferenceDialog() : m_ui(new Ui::PreferenceDialog)
   m_ui->setupUi(this);
   Application& app = Application::instance();
 
-  connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-  connect(m_ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+  connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &PreferenceDialog::accept);
+  connect(m_ui->buttonBox, &QDialogButtonBox::rejected, this, &PreferenceDialog::reject);
 
   register_preference_page(nullptr, tr("General"),
                            std::make_unique<GeneralPage>(app.preferences));

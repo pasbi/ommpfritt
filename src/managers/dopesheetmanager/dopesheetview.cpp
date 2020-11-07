@@ -86,11 +86,16 @@ DopeSheetView::DopeSheetView(Animator& animator)
   auto track_view_delegate = std::make_unique<TrackViewDelegate>(*this, m_canvas);
   m_track_view_delegate = track_view_delegate.get();
   setItemDelegateForColumn(1, track_view_delegate.release());
-  connect(&m_animator, SIGNAL(start_changed(int)), this, SLOT(update_second_column()));
-  connect(&m_animator, SIGNAL(end_changed(int)), this, SLOT(update_second_column()));
-  connect(&m_animator, SIGNAL(current_changed(int)), this, SLOT(update_second_column()));
-  connect(&m_animator, SIGNAL(track_changed(Track&)), this, SLOT(update_second_column()));
-  connect(&m_canvas, SIGNAL(current_frame_changed(int)), &m_animator, SLOT(set_current(int)));
+  connect(&m_animator, &Animator::start_changed,
+          this, qOverload<>(&DopeSheetView::update_second_column));
+  connect(&m_animator, &Animator::end_changed,
+          this, qOverload<>(&DopeSheetView::update_second_column));
+  connect(&m_animator, &Animator::current_changed,
+          this, qOverload<>(&DopeSheetView::update_second_column));
+  connect(&m_animator, &Animator::track_changed,
+          this, qOverload<>(&DopeSheetView::update_second_column));
+  connect(&m_canvas, &TimelineCanvasC::current_frame_changed,
+          &m_animator, &Animator::set_current);
   setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 }
 

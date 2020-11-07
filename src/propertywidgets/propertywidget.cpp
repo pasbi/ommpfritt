@@ -25,7 +25,7 @@ AbstractPropertyWidget::AbstractPropertyWidget(Scene& scene, const std::set<Prop
 void AbstractPropertyWidget::on_property_value_changed(Property*)
 {
   // wait until other properties have updated (important for MultiValueEdit)
-  QTimer::singleShot(1, this, SLOT(update_edit()));
+  QTimer::singleShot(1, this, &AbstractPropertyWidget::update_edit);
 }
 
 void AbstractPropertyWidget::update_enabledness()

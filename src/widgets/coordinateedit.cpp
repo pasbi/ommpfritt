@@ -48,15 +48,15 @@ CoordinateEdit::CoordinateEdit(QWidget *parent) : QWidget(parent)
 
   setLayout(grid_layout.release());
 
-  connect(m_x_edit, SIGNAL(textChanged(QString)), this, SLOT(update_polar()));
-  connect(m_y_edit, SIGNAL(textChanged(QString)), this, SLOT(update_polar()));
-  connect(m_arg_edit, SIGNAL(textChanged(QString)), this, SLOT(update_cartesian()));
-  connect(m_mag_edit, SIGNAL(textChanged(QString)), this, SLOT(update_cartesian()));
+  connect(m_x_edit, &QLineEdit::textChanged, this, &CoordinateEdit::update_polar);
+  connect(m_y_edit, &QLineEdit::textChanged, this, &CoordinateEdit::update_polar);
+  connect(m_arg_edit, &QLineEdit::textChanged, this, &CoordinateEdit::update_cartesian);
+  connect(m_mag_edit, &QLineEdit::textChanged, this, &CoordinateEdit::update_cartesian);
 
-  connect(m_x_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed()));
-  connect(m_y_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed()));
-  connect(m_arg_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed()));
-  connect(m_mag_edit, SIGNAL(textChanged(QString)), this, SLOT(emit_value_changed()));
+  connect(m_x_edit, &QLineEdit::textChanged, this, &CoordinateEdit::emit_value_changed);
+  connect(m_y_edit, &QLineEdit::textChanged, this, &CoordinateEdit::emit_value_changed);
+  connect(m_arg_edit, &QLineEdit::textChanged, this, &CoordinateEdit::emit_value_changed);
+  connect(m_mag_edit, &QLineEdit::textChanged, this, &CoordinateEdit::emit_value_changed);
   update();
 
   set_display_mode(DisplayMode::Both);

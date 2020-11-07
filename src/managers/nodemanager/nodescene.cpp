@@ -34,18 +34,21 @@ void NodeScene::set_model(NodeModel* model)
 {
   m_block_selection_change_notification = true;
   clear();
-  if (m_model) {
-    disconnect(&m_model->compiler(), SIGNAL(compilation_failed(QString)), this, SLOT(update()));
-    disconnect(&m_model->compiler(), SIGNAL(compilation_succeeded(QString)), this, SLOT(update()));
-    disconnect(m_model, SIGNAL(node_removed(Node&)), this, SLOT(remove_node(Node&)));
-    disconnect(m_model, SIGNAL(node_added(Node&)), this, SLOT(add_node(Node&)));
+  for (auto&& connection : m_scene_model_connections) {
+    QObject::disconnect(connection);
   }
+  m_scene_model_connections.clear();
   m_model = model;
   if (m_model) {
-    connect(m_model, SIGNAL(node_added(Node&)), this, SLOT(add_node(Node&)));
-    connect(m_model, SIGNAL(node_removed(Node&)), this, SLOT(remove_node(Node&)));
-    connect(&m_model->compiler(), SIGNAL(compilation_succeeded(QString)), this, SLOT(update()));
-    connect(&m_model->compiler(), SIGNAL(compilation_failed(QString)), this, SLOT(update()));
+    m_scene_model_connections = {
+      connect(m_model, &NodeModel::node_added, this, [this](Node& node) { add_node(node); }),
+      connect(m_model, &NodeModel::node_added, this, [this](Node& node) { add_node(node); }),
+      connect(m_model, &NodeModel::node_removed, this, &NodeScene::remove_node),
+      connect(&m_model->compiler(), &AbstractNodeCompiler::compilation_succeeded,
+              this, [this](){ update(); }),
+      connect(&m_model->compiler(), &AbstractNodeCompiler::compilation_failed,
+              this, [this](){ update(); }),
+    };
   }
   if (m_model != nullptr) {
     for (Node* node : model->nodes()) {

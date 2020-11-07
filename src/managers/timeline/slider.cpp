@@ -15,8 +15,8 @@ Slider::Slider(Animator& animator)
   : m_canvas(animator, *this)
   , m_scene(animator.scene)
 {
-  connect(&m_canvas, SIGNAL(current_frame_changed(int)), this, SIGNAL(value_changed(int)));
-  connect(&animator, SIGNAL(current_changed(int)), this, SLOT(update()));
+  connect(&m_canvas, &TimelineCanvasC::current_frame_changed, this, &Slider::value_changed);
+  connect(&animator, &Animator::current_changed, this, [this](){ update(); });
 
   m_canvas.footer_height = QFontMetrics(font()).height();
 }

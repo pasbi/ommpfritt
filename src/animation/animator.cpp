@@ -20,8 +20,8 @@ namespace omm
 Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
 {
   m_timer.setInterval(1000.0/30.0);
-  connect(&m_timer, SIGNAL(timeout()), this, SLOT(advance()));
-  connect(this, SIGNAL(current_changed(int)), this, SLOT(apply()));
+  connect(&m_timer, &QTimer::timeout, this, qOverload<>(&Animator::advance));
+  connect(this, &Animator::current_changed, this, &Animator::apply);
   connect(&scene.mail_box(), &MailBox::property_value_changed, this,
           [this](AbstractPropertyOwner& owner, const QString& key, Property&)
   {
@@ -34,15 +34,15 @@ Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
     }
   });
 
-  connect(&scene.mail_box(), SIGNAL(abstract_property_owner_inserted(AbstractPropertyOwner&)),
-          this, SLOT(invalidate()));
-  connect(&scene.mail_box(), SIGNAL(abstract_property_owner_removed(AbstractPropertyOwner&)),
-          this, SLOT(invalidate()));
-  connect(this, SIGNAL(knot_moved(Track&, int, int)), this, SIGNAL(track_changed(Track&)));
-  connect(this, SIGNAL(knot_removed(Track&, int)), this, SIGNAL(track_changed(Track&)));
-  connect(this, SIGNAL(knot_inserted(Track&, int)), this, SIGNAL(track_changed(Track&)));
-  connect(this, SIGNAL(track_inserted(Track&)), this, SIGNAL(track_changed(Track&)));
-  connect(this, SIGNAL(track_removed(Track&)), this, SIGNAL(track_changed(Track&)));
+  connect(&scene.mail_box(), &MailBox::abstract_property_owner_inserted,
+          this, &Animator::invalidate);
+  connect(&scene.mail_box(), &MailBox::abstract_property_owner_removed,
+          this, &Animator::invalidate);
+  connect(this, &Animator::knot_moved, this, &Animator::track_changed);
+  connect(this, &Animator::knot_removed, this, &Animator::track_changed);
+  connect(this, &Animator::knot_inserted, this, &Animator::track_changed);
+  connect(this, &Animator::track_inserted, this, &Animator::track_changed);
+  connect(this, &Animator::track_removed, this, &Animator::track_changed);
 
   connect(this, &Animator::track_inserted, this, [this](Track& track) {
     for (std::size_t c = 0; c < track.property().n_channels(); c++) {

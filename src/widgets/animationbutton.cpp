@@ -40,7 +40,7 @@ AnimationButton::AnimationButton(Animator& animator, const std::map<AbstractProp
 {
   setContextMenuPolicy(Qt::DefaultContextMenu);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  connect(&animator, SIGNAL(current_changed(int)), this, SLOT(update()));
+  connect(&animator, &Animator::current_changed, this, qOverload<>(&AnimationButton::update));
   connect(&animator, &Animator::track_changed, this, [this](Track&) {
     // update is very cheap and checking whether the track belongs to the butto is expensive.
     // since update never hurts, update even if this is track does not belong to the button.
@@ -48,7 +48,7 @@ AnimationButton::AnimationButton(Animator& animator, const std::map<AbstractProp
   });
   for (auto&& [ owner, property ] : m_properties) {
     Q_UNUSED(owner)
-    connect(property, SIGNAL(value_changed(Property*)), this, SLOT(update()));
+    connect(property, &Property::value_changed, this, qOverload<>(&AnimationButton::update));
   }
 }
 

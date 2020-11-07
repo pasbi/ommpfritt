@@ -10,8 +10,8 @@ namespace omm
 PreferencesTreeView::PreferencesTreeView(QWidget* parent)
   : QTreeView(parent)
 {
-  connect(this, SIGNAL(collapsed(const QModelIndex&)), this, SLOT(update_column_width()));
-  connect(this, SIGNAL(expanded(const QModelIndex&)), this, SLOT(update_column_width()));
+  connect(this, &PreferencesTreeView::collapsed, this, &PreferencesTreeView::update_column_width);
+  connect(this, &PreferencesTreeView::expanded, this, &PreferencesTreeView::update_column_width);
 }
 
 PreferencesTreeView::~PreferencesTreeView()

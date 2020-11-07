@@ -19,8 +19,8 @@ ColorDialog::ColorDialog(QWidget* parent) : QDialog(parent)
 
   auto button_box = std::make_unique<QDialogButtonBox>(QDialogButtonBox::Ok |
                                                        QDialogButtonBox::Cancel);
-  connect(button_box.get(), SIGNAL(accepted()), this, SLOT(accept()));
-  connect(button_box.get(), SIGNAL(rejected()), this, SLOT(reject()));
+  connect(button_box.get(), &QDialogButtonBox::accepted, this, &ColorDialog::accept);
+  connect(button_box.get(), &QDialogButtonBox::rejected, this, &ColorDialog::reject);
   layout->addWidget(button_box.release());
 
   setLayout(layout.release());

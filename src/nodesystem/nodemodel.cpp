@@ -78,9 +78,9 @@ NodeModel::~NodeModel()
 
 void NodeModel::init()
 {
-  connect(this, SIGNAL(node_added(Node&)), this, SLOT(emit_topology_changed()));
-  connect(this, SIGNAL(node_removed(Node&)), this, SLOT(emit_topology_changed()));
-  connect(this, SIGNAL(topology_changed()), m_compiler.get(), SLOT(invalidate()));
+  connect(this, &NodeModel::node_added, this, &NodeModel::emit_topology_changed);
+  connect(this, &NodeModel::node_removed, this, &NodeModel::emit_topology_changed);
+  connect(this, &NodeModel::topology_changed, m_compiler.get(), &AbstractNodeCompiler::invalidate);
   if (m_compiler->language == AbstractNodeCompiler::Language::GLSL) {
     auto fragment_node = std::make_unique<FragmentNode>(*this);
     m_fragment_node = fragment_node.get();
@@ -154,7 +154,7 @@ void NodeModel::deserialize(AbstractDeserializer& deserializer, const Serializab
     }
   }
   // Nodes are not yet connected. They will be connected when the Deserializer gets destroyed.
-  connect(&deserializer, SIGNAL(destroyed()), this, SLOT(emit_topology_changed()));
+  connect(&deserializer, &AbstractDeserializer::destroyed, this, &NodeModel::emit_topology_changed);
 }
 
 bool NodeModel::find_path(const Node& start, const Node& end, std::list<const Node*>& path) const

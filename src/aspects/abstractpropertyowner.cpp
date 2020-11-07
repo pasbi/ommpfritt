@@ -130,8 +130,8 @@ Property
   assert(!m_properties.contains(key));
   assert(property.get() != nullptr);
   m_properties.insert(key, std::move(property));
-  connect(&ref, SIGNAL(value_changed(Property*)),
-          this, SLOT(on_property_value_changed(Property*)));
+  connect(&ref, &Property::value_changed,
+          this, &AbstractPropertyOwner::on_property_value_changed);
   connect(&ref, &Property::value_changed, [this, key](Property* property) {
     assert(property != nullptr);
     if (Scene* scene = this->scene(); scene != nullptr) {

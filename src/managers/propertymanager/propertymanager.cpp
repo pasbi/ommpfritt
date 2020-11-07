@@ -139,10 +139,11 @@ PropertyManager::PropertyManager(Scene& scene)
 
   setWindowTitle(make_window_title());
 
-  connect(m_tab_bar.get(), SIGNAL(current_indices_changed(const std::set<int>&)),
-          this, SLOT(activate_tabs(const std::set<int>&)));
-  connect(&scene.mail_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
-          this, SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
+  connect(m_tab_bar.get(), &MultiTabBar::current_indices_changed,
+          this, &PropertyManager::activate_tabs);
+  connect(&scene.mail_box(),
+          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
+          this, &PropertyManager::set_selection);
   m_scroll_area->setFrameShape(QFrame::NoFrame);
 }
 
@@ -155,14 +156,14 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
 {
   if (!is_locked()) {
     for (auto* apo : m_current_selection) {
-      disconnect(apo, SIGNAL(property_visibility_changed()),
-                 this, SLOT(update_property_widgets()));
+      disconnect(apo, &AbstractPropertyOwner::property_visibility_changed,
+                 this, &PropertyManager::update_property_widgets);
     }
 
     m_current_selection = selection;
     for (auto* apo : m_current_selection) {
-      connect(apo, SIGNAL(property_visibility_changed()),
-              this, SLOT(update_property_widgets()), Qt::QueuedConnection);
+      connect(apo, &AbstractPropertyOwner::property_visibility_changed,
+              this, &PropertyManager::update_property_widgets, Qt::QueuedConnection);
     }
 
     update_property_widgets();

@@ -113,8 +113,8 @@ void Style::polish()
 {
   if (const NodeModel* model = node_model(); model != nullptr) {
     AbstractNodeCompiler& compiler = model->compiler();
-    connect(&compiler, SIGNAL(compilation_succeeded(QString)), this, SLOT(set_code(QString)));
-    connect(&compiler, SIGNAL(compilation_failed(QString)), this, SLOT(set_error(QString)));
+    connect(&compiler, &AbstractNodeCompiler::compilation_succeeded, this, &Style::set_code);
+    connect(&compiler, &AbstractNodeCompiler::compilation_failed, this, &Style::set_error);
     connect_edit_property(static_cast<TriggerProperty&>(*property(EDIT_NODES_PROPERTY_KEY)), *this);
   }
 }

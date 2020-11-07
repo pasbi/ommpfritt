@@ -25,10 +25,10 @@ ReferenceLineEdit::ReferenceLineEdit(QWidget* parent)
   const auto set_value = [this](int index) {
     this->set_value(m_possible_references[static_cast<std::size_t>(index)]);
     QSignalBlocker blocker(this);
-    QTimer::singleShot(1, this, SLOT(convert_text_to_placeholder_text()));
+    QTimer::singleShot(1, this, &ReferenceLineEdit::convert_text_to_placeholder_text);
   };
   connect(this, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), set_value);
-  QTimer::singleShot(1, this, SLOT(convert_text_to_placeholder_text()));
+  QTimer::singleShot(1, this, &ReferenceLineEdit::convert_text_to_placeholder_text);
 
   lineEdit()->installEventFilter(this);
   installEventFilter(this);
@@ -51,11 +51,12 @@ void ReferenceLineEdit::set_scene(Scene &scene)
   m_scene = &scene;
   assert(m_scene != nullptr);
 
-  connect(&m_scene->mail_box(), SIGNAL(abstract_property_owner_inserted(AbstractPropertyOwner&)),
-          this, SLOT(update_candidates()));
-  connect(&m_scene->mail_box(), SIGNAL(abstract_property_owner_removed(AbstractPropertyOwner&)),
-          this, SLOT(update_candidates()));
-  connect(&m_scene->mail_box(), SIGNAL(scene_reseted()), this, SLOT(update_candidates()));
+  connect(&m_scene->mail_box(), &MailBox::abstract_property_owner_inserted,
+          this, &ReferenceLineEdit::update_candidates);
+  connect(&m_scene->mail_box(), &MailBox::abstract_property_owner_removed,
+          this, &ReferenceLineEdit::update_candidates);
+  connect(&m_scene->mail_box(), &MailBox::scene_reseted,
+          this, &ReferenceLineEdit::update_candidates);
   connect(&m_scene->mail_box(), &MailBox::property_value_changed, this,
           [this](AbstractPropertyOwner& owner, const QString& key, Property&)
   {
@@ -67,7 +68,7 @@ void ReferenceLineEdit::set_scene(Scene &scene)
     }
   });
 
-  QTimer::singleShot(0, this, SLOT(update_candidates()));
+  QTimer::singleShot(0, this, &ReferenceLineEdit::update_candidates);
   update_candidates();
 }
 
