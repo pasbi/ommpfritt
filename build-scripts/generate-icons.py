@@ -80,6 +80,11 @@ if __name__ == "__main__":
     parser.add_argument('--output',
             help="The output directory.",
             required=True)
+    parser.add_argument('--canned_icons',
+            help="Filenames of additional icons that are not in the icons.omm spec file",
+            nargs="+",
+            required=False,
+            default=[])
     args = parser.parse_args()
 
     args.output = os.path.abspath(args.output)
@@ -112,7 +117,7 @@ if __name__ == "__main__":
         else:
             return {128}
     
-    rendered_icons = set()
+    processed_icons = set()
     for category, item in items:
         for resolution in required_resolutions(item):
             command = [
@@ -140,10 +145,25 @@ if __name__ == "__main__":
                 print(cp.stderr)
                 exit(1)
             else:
-                rendered_icons.add((resolution, item))
+                processed_icons.add((resolution, item))
                 print(" done.")
 
+    for item in args.canned_icons:
+        filename = item
+        item = os.path.splitext(os.path.basename(filename))[0]
+        for resolution in required_resolutions(item):
+            cp = subprocess.run([
+                'convert',
+                filename,
+                "-resize", f'{resolution}x{resolution}!',
+                f'{args.output}/{item}_{resolution}.png'
+            ])
+            if cp.returncode == 0:
+                processed_icons.add((resolution, item))
+            else:
+                print(f"Error: Failed to convert image {filename} (code {cp.returncode}).")
+
     with open(args.qrc, 'w') as f:
-        f.write(generate_qrc(rendered_icons))
+        f.write(generate_qrc(processed_icons))
 
 
