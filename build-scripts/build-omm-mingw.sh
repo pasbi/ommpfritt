@@ -71,6 +71,11 @@ echo "Build omm"
 export PYTHONHOME=/mingw64/
 cmake --build "build" --target package
 
+echo "> ls"
+ls
+echo "> ls build"
+ls build
+
 # -DCMAKE_CXX_FLAGS='-I/c/msys64/mingw64/include/QtCore/ -I/c/msys64/mingw64/include/QtGui/ -I/c/msys64/mingw64/include/QtWidgets/ -I/c/msys64/mingw64/include/python3.8/ -I/c/msys64/mingw64/include/QtSvg/'
 # -DCMAKE_PREFIX_PATH="$PYTHON_INSTALL_LOCATION"
 

@@ -98,3 +98,10 @@ chmod +x appdir/AppRun
   -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_contextvars.*.so) \
   -executable=$(readlink -f appdir/usr/lib/python3.7/lib-dynload/_codecs_hk.*.so)
 
+echo "> pwd"
+pwd
+echo "> ls"
+ls
+echo "> ls build"
+ls build
+

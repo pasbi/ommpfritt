@@ -97,6 +97,4 @@ echo "> ls"
 ls
 echo "> ls build"
 ls build
-echo "> find"
-find
 
