@@ -19,10 +19,8 @@ def collect(fn):
 
 def generate_prefixes(text):
     tokens = re.split(r"\b\.\b", text)
-    print("TEXT: ", text)
     for i in range(0, len(tokens)):
         prefix = ".".join(tokens[:i+1])
-        print("prefix: ", prefix)
         yield prefix
 
 def format_line(disambiguation, text):

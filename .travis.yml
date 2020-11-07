@@ -1,5 +1,4 @@
 compiler: gcc
-sudo: require
 language: cpp
 services:
 - xvfb

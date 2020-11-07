@@ -5,13 +5,10 @@ if (POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
 endif (POLICY CMP0048)
 
-project (ommpfritt)
+project (ommpfritt VERSION 0.1.1)
 
-set (CMAKE_AUTOMOC ON)
-set (CMAKE_AUTOUIC ON)
-set (OMMPFRITT_VERSION_MAJOR 0)
-set (OMMPFRITT_VERSION_MINOR 1)
-set (OMMPFRITT_VERSION_PATCH 2)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
 
 option(GENERATE_ICONS "There will be no icons in the application if this option is disabled." ON)
 option(BUILD_TESTS "build the unit tests." ON)
