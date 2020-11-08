@@ -110,7 +110,7 @@ Scene::Scene(PythonEngine& python_engine)
   for (auto kind : { Object::KIND, Tag::KIND, Style::KIND, Tool::KIND }) {
     m_item_selection[kind] = {};
   }
-  connect(&history(), SIGNAL(index_changed()), &mail_box(), SIGNAL(filename_changed()));
+  connect(&history(), &HistoryModel::index_changed, &mail_box(), &MailBox::filename_changed);
   connect(&history(), &HistoryModel::index_changed, [this]() {
     const auto keep_in_selection = [this](const auto* apo) { return contains(apo); };
     const auto old_selection = selection();
@@ -119,8 +119,9 @@ Scene::Scene(PythonEngine& python_engine)
       set_selection(new_selection);
     }
   });
-  connect(&mail_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
-          this, SLOT(update_tool()));
+  connect(&mail_box(),
+          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
+          this, &Scene::update_tool);
 }
 
 Scene::~Scene()

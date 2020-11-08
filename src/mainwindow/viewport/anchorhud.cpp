@@ -25,10 +25,10 @@ AnchorHUD::AnchorHUD(QWidget& widget)
   : m_widget(widget), m_anchor(Application::instance().options().anchor())
 
 {
-  connect(&Application::instance().options(), SIGNAL(anchor_changed(Anchor)),
-          this, SLOT(set_anchor(Anchor)));
-  connect(this, SIGNAL(anchor_changed(Anchor)),
-          &Application::instance().options(), SLOT(set_anchor(Anchor)));
+  connect(&Application::instance().options(), &Options::anchor_changed,
+          this, &AnchorHUD::set_anchor);
+  connect(this, &AnchorHUD::anchor_changed,
+          &Application::instance().options(), &Options::set_anchor);
 }
 
 QSize AnchorHUD::size() const

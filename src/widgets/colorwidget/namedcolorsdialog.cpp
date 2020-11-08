@@ -65,8 +65,8 @@ NamedColorsDialog::NamedColorsDialog(QWidget* parent)
   : QDialog(parent), m_ui(new Ui::NamedColorsDialog), m_delegate(new NamedColorNameEditorDelegate)
 {
   m_ui->setupUi(this);
-  connect(m_ui->pb_add, SIGNAL(clicked()), this, SLOT(add()));
-  connect(m_ui->pb_remove, SIGNAL(clicked()), this, SLOT(remove()));
+  connect(m_ui->pb_add, &QPushButton::clicked, this, &NamedColorsDialog::add);
+  connect(m_ui->pb_remove, &QPushButton::clicked, this, &NamedColorsDialog::remove);
 
   using ListViewNCHPM = NamedColorsHighlighProxyModel<QListView>;
   m_proxy = std::make_unique<ListViewNCHPM>(scene().named_colors(), *m_ui->listView);
@@ -74,8 +74,8 @@ NamedColorsDialog::NamedColorsDialog(QWidget* parent)
   m_ui->listView->setItemDelegateForColumn(0, m_delegate.get());
 
   connect(m_ui->listView->selectionModel(),
-          SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)),
-          this, SLOT(setCurrent(const QModelIndex&)));
+          &QItemSelectionModel::currentChanged,
+          this, &NamedColorsDialog::setCurrent);
   connect(m_ui->w_colorwidget, &ColorWidget::color_changed, [this](const Color& color) {
     const QModelIndex index = m_ui->listView->currentIndex();
     if (index.isValid()) {

@@ -44,7 +44,8 @@ UiColorsPage::UiColorsPage(UiColors& colors)
   m_ui->comboBox->clear();
   m_ui->comboBox->addItems(m_colors.skin_names());
   m_ui->comboBox->setCurrentIndex(m_colors.skin_index());
-  connect(m_ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(load_skin(int)));
+  connect(m_ui->comboBox, qOverload<int>(&QComboBox::currentIndexChanged),
+          this, &UiColorsPage::load_skin);
 }
 
 UiColorsPage::~UiColorsPage()

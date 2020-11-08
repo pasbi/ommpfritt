@@ -277,7 +277,7 @@ void Application::reset()
 
   LINFO << "reset scene.";
   scene.set_selection({});
-  QTimer::singleShot(0, &scene, SLOT(reset()));
+  QTimer::singleShot(0, &scene, &Scene::reset);
 }
 
 void Application::load(const QString& filename, bool force)

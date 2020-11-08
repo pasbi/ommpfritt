@@ -51,7 +51,7 @@ UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner& owner,
   connect(m_ui->pb_del, &QPushButton::clicked, [this]() {
     m_user_property_list_model.del_property(m_ui->listView->currentIndex());
   });
-  connect(m_ui->buttonBox, SIGNAL(accepted()), this, SLOT(submit()));
+  connect(m_ui->buttonBox, &QDialogButtonBox::accepted, this, &UserPropertyDialog::submit);
   m_ui->cb_type->hide();
   m_ui->cb_animatable->hide();
 }

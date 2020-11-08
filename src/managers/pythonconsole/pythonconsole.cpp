@@ -65,8 +65,7 @@ PythonConsole::PythonConsole(Scene& scene)
   m_layout->setContentsMargins(0, 0, 0, 0);
   set_widget(std::move(widget));
 
-  connect(&scene.python_engine, SIGNAL(output(const void*, QString, Stream)),
-          this, SLOT(on_output(const void*, QString, Stream)));
+  connect(&scene.python_engine, &PythonEngine::output, this, &PythonConsole::on_output);
   {
     using namespace pybind11::literals;
     m_locals = new pybind11::dict("scene"_a=SceneWrapper(scene));

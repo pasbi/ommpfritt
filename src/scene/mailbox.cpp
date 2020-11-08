@@ -8,12 +8,17 @@ namespace omm
 
 MailBox::MailBox()
 {
-  connect(this, SIGNAL(transformation_changed(Object&)), this, SIGNAL(appearance_changed()));
-  connect(this, SIGNAL(appearance_changed(Object&)), this, SIGNAL(appearance_changed()));
-  connect(this, SIGNAL(appearance_changed(Tool&)), this, SIGNAL(appearance_changed()));
-  connect(this, SIGNAL(appearance_changed(Style&)), this, SIGNAL(appearance_changed()));
-  connect(this, SIGNAL(scene_reseted()), this, SIGNAL(appearance_changed()));
-  connect(this, SIGNAL(appearance_changed(Tool&)), this, SIGNAL(appearance_changed()));
+  connect(this, &MailBox::transformation_changed, this, qOverload<>(&MailBox::appearance_changed));
+  connect(this, qOverload<Object&>(&MailBox::appearance_changed),
+          this, qOverload<>(&MailBox::appearance_changed));
+  connect(this, qOverload<Tool&>(&MailBox::appearance_changed),
+          this, qOverload<>(&MailBox::appearance_changed));
+  connect(this, qOverload<Style&>(&MailBox::appearance_changed),
+          this, qOverload<>(&MailBox::appearance_changed));
+  connect(this, &MailBox::scene_reseted,
+          this, qOverload<>(&MailBox::appearance_changed));
+  connect(this, qOverload<Tool&>(&MailBox::appearance_changed),
+          this, qOverload<>(&MailBox::appearance_changed));
   connect(this, &MailBox::transformation_changed, [this](Object& o) {
     if (!o.is_root()) {
       Q_EMIT appearance_changed(o.tree_parent());

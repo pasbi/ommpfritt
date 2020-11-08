@@ -12,7 +12,7 @@ HistoryModel::HistoryModel()
     const auto after = this->index(std::min(m_undo_stack.count()-1, index+1), 0);
     Q_EMIT dataChanged(before, after);
   });
-  connect(&m_undo_stack, SIGNAL(indexChanged(int)), this, SIGNAL(index_changed()));
+  connect(&m_undo_stack, &QUndoStack::indexChanged, this, &HistoryModel::index_changed);
 }
 
 QVariant HistoryModel::data(const QModelIndex &index, int role) const

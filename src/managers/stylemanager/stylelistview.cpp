@@ -59,7 +59,7 @@ void StyleListView::update_text_height()
     });
     if (!heights.empty()) {
       m_item_delegate.set_text_height(*std::max_element(heights.begin(), heights.end()));
-      QTimer::singleShot(1, this, SLOT(update_layout()));
+      QTimer::singleShot(1, this, &StyleListView::update_layout);
     }
   }
 }

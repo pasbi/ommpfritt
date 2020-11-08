@@ -111,7 +111,7 @@ void NodeView::set_model(NodeModel *model)
 {
   NodeModel* current_model = m_node_scene == nullptr ? nullptr : m_node_scene->model();
   if (current_model != nullptr) {
-    disconnect(model, SIGNAL(topology_changed()), m_node_scene.get(), SLOT(update()));
+    QObject::disconnect(m_view_scene_connection);
   }
   if (model == nullptr) {
     m_node_scene = nullptr;
@@ -119,7 +119,8 @@ void NodeView::set_model(NodeModel *model)
   } else {
     m_node_scene = std::make_unique<NodeScene>(model->scene());
     m_node_scene->set_model(model);
-    connect(model, SIGNAL(topology_changed()), m_node_scene.get(), SLOT(update()));
+    m_view_scene_connection = connect(model, &NodeModel::topology_changed,
+                                      m_node_scene.get(), [s=m_node_scene.get()](){ s->update(); });
     setScene(m_node_scene.get());
     const QRectF scene_rect = viewport()->rect();
     setSceneRect(scene_rect);

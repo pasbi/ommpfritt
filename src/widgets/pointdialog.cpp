@@ -48,7 +48,7 @@ PointDialog::PointDialog(const std::set<Path*>& paths, QWidget* parent) : QDialo
     tab_widget->addTab( make_tab_widget_page(*path, m_point_edits).release(), path->name());
   }
   auto button_box = std::make_unique<QDialogButtonBox>(QDialogButtonBox::Ok);
-  connect(button_box.get(), SIGNAL(accepted()), this, SLOT(accept()));
+  connect(button_box.get(), &QDialogButtonBox::accepted, this, &PointDialog::accept);
 
   auto mode_combobox = std::make_unique<QComboBox>();
   m_mode_combobox = mode_combobox.get();

@@ -27,13 +27,13 @@ ColorWidget::ColorWidget(QWidget* parent)
   for (auto&& [role, cwidgets] : m_component_widgets) {
     for (AbstractColorComponentWidget* cwidget : cwidgets) {
       cwidget->set_role(role);
-      connect(cwidget, SIGNAL(color_changed(const Color&)), this, SLOT(set_color(const Color&)));
-      connect(this, SIGNAL(color_changed(const Color&)), cwidget, SLOT(set_color(const Color&)));
+      connect(cwidget, &AbstractColorComponentWidget::color_changed, this, &ColorWidget::set_color);
+      connect(this, &ColorWidget::color_changed, cwidget, &AbstractColorComponentWidget::set_color);
     }
   }
 
   add_color_picker(std::make_unique<ColorCircle>());
-  connect(m_ui->pb_named_colors, SIGNAL(clicked()), this, SLOT(show_named_colors_dialog()));
+  connect(m_ui->pb_named_colors, &QPushButton::clicked, this, &ColorWidget::show_named_colors_dialog);
 
   NamedColors& model = Application::instance().scene.named_colors();
   using ComboBoxNCHPM = NamedColorsHighlighProxyModel<QComboBox>;
@@ -100,8 +100,8 @@ void ColorWidget::set_color(const Color& color)
 void ColorWidget::add_color_picker(std::unique_ptr<ColorPicker> picker)
 {
   m_color_pickers.push_back(picker.get());
-  connect(picker.get(), SIGNAL(color_changed(const Color&)), this, SLOT(set_color(const Color&)));
-  connect(this, SIGNAL(color_changed(const Color&)), picker.get(), SLOT(set_color(const Color&)));
+  connect(picker.get(), &ColorPicker::color_changed, this, &ColorWidget::set_color);
+  connect(this, &ColorWidget::color_changed, picker.get(), &ColorPicker::set_color);
   m_ui->cb_color_widget->addItem(picker->name());
   m_ui->sw_color_widgets->addWidget(picker.release());
 }

@@ -381,12 +381,12 @@ void TimelineCanvas::synchronize_track_selection_with_animator()
     tracks.erase(&track);
     update();
   });
-  connect(&animator, SIGNAL(start_changed(int)), this, SLOT(update()));
-  connect(&animator, SIGNAL(end_changed(int)), this, SLOT(update()));
-  connect(&animator, SIGNAL(track_changed(Track&)), this, SLOT(update()));
+  connect(&animator, &Animator::start_changed, this, &TimelineCanvas::update);
+  connect(&animator, &Animator::end_changed, this, &TimelineCanvas::update);
+  connect(&animator, &Animator::track_changed, this, &TimelineCanvas::update);
   connect(&animator.scene.mail_box(),
-          SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),
-          this, SLOT(update()));
+          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
+          this, &TimelineCanvas::update);
 }
 
 std::set<Track*> TimelineCanvas::tracks_at(double frame) const

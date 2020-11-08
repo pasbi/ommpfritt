@@ -77,8 +77,8 @@ PropertyManagerTab::add_properties(Scene& scene, const QString& key,
     auto property_widget = AbstractPropertyWidget::make(widget_type, scene, properties);
     container_widget_layout->addWidget(property_widget.release(), 1);
 
-    connect(*properties.begin(), SIGNAL(visibility_changed(bool)),
-            container_widget.get(), SLOT(setVisible(bool)));
+    connect(*properties.begin(), &Property::visibility_changed,
+            container_widget.get(), &QWidget::setVisible);
     container_widget->setToolTip(key);
     m_layout->addLayout(container_widget_layout.release());
   }

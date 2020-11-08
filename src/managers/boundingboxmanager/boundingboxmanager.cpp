@@ -114,10 +114,14 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
     update_manager();
   });
 
-  connect(m_ui->sp_x, SIGNAL(value_changed()), this, SLOT(update_bounding_box()));
-  connect(m_ui->sp_y, SIGNAL(value_changed()), this, SLOT(update_bounding_box()));
-  connect(m_ui->sp_w, SIGNAL(value_changed()), this, SLOT(update_bounding_box()));
-  connect(m_ui->sp_h, SIGNAL(value_changed()), this, SLOT(update_bounding_box()));
+  connect(m_ui->sp_x, &DoubleNumericEdit::value_changed,
+          this, &BoundingBoxManager::update_bounding_box);
+  connect(m_ui->sp_y, &DoubleNumericEdit::value_changed,
+          this, &BoundingBoxManager::update_bounding_box);
+  connect(m_ui->sp_w, &DoubleNumericEdit::value_changed,
+          this, &BoundingBoxManager::update_bounding_box);
+  connect(m_ui->sp_h, &DoubleNumericEdit::value_changed,
+          this, &BoundingBoxManager::update_bounding_box);
 
   m_ui->sp_w->set_lower(0.0);
   m_ui->sp_h->set_lower(0.0);

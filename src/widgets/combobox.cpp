@@ -15,19 +15,17 @@ ComboBox::ComboBox(QWidget* widget) : QWidget(widget)
   layout->addWidget(cb.release());
   layout->setContentsMargins(0, 0, 0, 0);
   setLayout(layout.release());
-  connect(m_combo_box, SIGNAL(currentIndexChanged(int)), this, SIGNAL(current_index_changed(int)));
+  connect(m_combo_box, qOverload<int>(&QComboBox::currentIndexChanged), this,
+          &ComboBox::current_index_changed);
 }
 
 void ComboBox::set_model(QAbstractItemModel& model)
 {
   m_model = &model;
-  connect(&model, SIGNAL(modelReset()), this, SLOT(reset()));
-  connect(&model, SIGNAL(rowsInserted(const QModelIndex&, int, int)),
-          this, SLOT(insert(const QModelIndex&, int, int)));
-  connect(&model, SIGNAL(rowsRemoved(const QModelIndex&, int, int)),
-          this, SLOT(remove(const QModelIndex&, int, int)));
-  connect(&model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&, const QVector<int>&)),
-          this, SLOT(change(const QModelIndex&, const QModelIndex&, const QVector<int>&)));
+  connect(&model, &QAbstractItemModel::modelReset, this, &ComboBox::reset);
+  connect(&model, &QAbstractItemModel::rowsInserted, this, &ComboBox::insert);
+  connect(&model, &QAbstractItemModel::rowsRemoved, this, &ComboBox::remove);
+  connect(&model, &QAbstractItemModel::dataChanged, this, &ComboBox::change);
   reset();
 }
 

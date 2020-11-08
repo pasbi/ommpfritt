@@ -19,8 +19,9 @@ ObjectManager::ObjectManager(Scene& scene)
   : ItemManager( QCoreApplication::translate("any-context", "ObjectManager"),
                  scene, scene.object_tree() )
 {
-  connect(&scene.mail_box(), SIGNAL(selection_changed(std::set<AbstractPropertyOwner*>)),
-          &item_view(), SLOT(set_selection(std::set<AbstractPropertyOwner*>)));
+  connect(&scene.mail_box(),
+          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
+          &item_view(), &ObjectTreeView::set_selection);
 }
 
 bool ObjectManager::perform_action(const QString& name)

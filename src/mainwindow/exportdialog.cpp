@@ -160,8 +160,10 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   reset_start_frame();
   reset_end_frame();
 
-  connect(m_ui->sb_start, SIGNAL(valueChanged(int)), this, SLOT(set_minimum_end(int)));
-  connect(m_ui->sb_end, SIGNAL(valueChanged(int)), this, SLOT(set_maximum_start(int)));
+  connect(m_ui->sb_start, qOverload<int>(&QSpinBox::valueChanged),
+          this, &ExportDialog::set_minimum_end);
+  connect(m_ui->sb_end, qOverload<int>(&QSpinBox::valueChanged),
+          this, &ExportDialog::set_maximum_start);
   set_maximum_start(m_ui->sb_end->value());
   set_minimum_end(m_ui->sb_start->value());
 
@@ -169,7 +171,7 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   m_ui->pb_reset_start->setIcon(QIcon(":/icons/revert.png"));
   Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset_end);
   Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset_start);
-  connect(m_ui->pb_start, SIGNAL(clicked()), this, SLOT(start_export_animation()));
+  connect(m_ui->pb_start, &QPushButton::clicked, this, &ExportDialog::start_export_animation);
 }
 
 ExportDialog::~ExportDialog()

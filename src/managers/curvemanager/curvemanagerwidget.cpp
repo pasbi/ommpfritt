@@ -47,19 +47,20 @@ CurveManagerWidget::CurveManagerWidget(Scene& scene, const CurveTree& curve_tree
   : range({1, -10}, {100, 10}, *this, Range::Options::Default, Range::Options::Mirror)
   , m_scene(scene), m_curve_tree(curve_tree)
 {
-  connect(&scene.mail_box(), SIGNAL(selection_changed(const std::set<AbstractPropertyOwner*>&)),
-          this, SLOT(set_selection(const std::set<AbstractPropertyOwner*>)));
+  connect(&scene.mail_box(),
+          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
+          this, &CurveManagerWidget::set_selection);
   set_selection(scene.selection());
-  connect(&scene.animator(), SIGNAL(track_inserted(Track&)), this, SLOT(add_track(Track&)));
-  connect(&scene.animator(), SIGNAL(track_removed(Track&)), this, SLOT(remove_track(Track&)));
-  connect(&scene.animator(), SIGNAL(knot_inserted(Track&, int)), this, SLOT(add_knot(Track&, int)));
-  connect(&scene.animator(), SIGNAL(knot_removed(Track&, int)),
-          this, SLOT(remove_knot(Track&, int)));
-  connect(&scene.animator(), SIGNAL(knot_moved(Track&, int, int)),
-          this, SLOT(move_knot(Track&, int, int)));
+  connect(&scene.animator(), &Animator::track_inserted, this, &CurveManagerWidget::add_track);
+  connect(&scene.animator(), &Animator::track_removed, this, &CurveManagerWidget::remove_track);
+  connect(&scene.animator(), &Animator::knot_inserted, this, &CurveManagerWidget::add_knot);
+  connect(&scene.animator(), &Animator::knot_removed, this, &CurveManagerWidget::remove_knot);
+  connect(&scene.animator(), &Animator::knot_moved, this, &CurveManagerWidget::move_knot);
   setFocusPolicy(Qt::StrongFocus);
-  connect(&curve_tree, SIGNAL(visibility_changed()), this, SLOT(update()));
-  connect(&scene.animator(), SIGNAL(current_changed(int)), this, SLOT(update()));
+  connect(&curve_tree, &CurveTree::visibility_changed, this,
+          qOverload<>(&CurveManagerWidget::update));
+  connect(&scene.animator(), &Animator::current_changed, this,
+          qOverload<>(&CurveManagerWidget::update));
 }
 
 void CurveManagerWidget::set_selection_locked(bool locked)

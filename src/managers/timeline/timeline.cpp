@@ -47,13 +47,13 @@ TimeLine::TimeLine(Scene &scene)
   connect(&scene.animator(), &Animator::start_changed, this, [this](int start) {
     m_title_bar->ui()->sp_max->setValue(std::max(start, m_title_bar->ui()->sp_max->value()));
   });
-  connect(m_slider, SIGNAL(value_changed(int)), &scene.animator(), SLOT(set_current(int)));
-  connect(m_title_bar->ui()->sp_max, SIGNAL(valueChanged(int)),
-          &scene.animator(), SLOT(set_end(int)));
-  connect(m_title_bar->ui()->sp_min, SIGNAL(valueChanged(int)),
-          &scene.animator(), SLOT(set_start(int)));
-  connect(m_title_bar->ui()->sp_value, SIGNAL(valueChanged(int)),
-          &scene.animator(), SLOT(set_current(int)));
+  connect(m_slider, &Slider::value_changed, &scene.animator(), &Animator::set_current);
+  connect(m_title_bar->ui()->sp_max, qOverload<int>(&QSpinBox::valueChanged),
+          &scene.animator(), &Animator::set_end);
+  connect(m_title_bar->ui()->sp_min, qOverload<int>(&QSpinBox::valueChanged),
+          &scene.animator(), &Animator::set_start);
+  connect(m_title_bar->ui()->sp_value, qOverload<int>(&QSpinBox::valueChanged),
+          &scene.animator(), &Animator::set_current);
 
   connect(&scene.animator(), &Animator::end_changed, this, [this](int start) {
     m_title_bar->ui()->sp_max->setValue(start);
