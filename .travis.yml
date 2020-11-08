@@ -56,6 +56,7 @@ after_success:
   fi
 - touch success
 - build-scripts/notify-telegram.sh
+- ccache -s
 after_failure:
 - build-scripts/notify-telegram.sh
 notifications:
