@@ -14,12 +14,14 @@ jobs:
     script:
     - build-scripts/build-omm-ubuntu.sh
     - build-scripts/make-appimage.sh
+    cache: ccache
   - stage: build
     os: linux
     dist: bionic
     name: Build on Ubuntu Bionic
     script:
     - build-scripts/build-omm-ubuntu.sh
+    cache: ccache
   - stage: build
     os: windows
     name: Build on Windows/MinGW64
@@ -46,6 +48,7 @@ jobs:
       directories:
       - "$HOME/AppData/Local/Temp/chocolatey"
       - "/C/tools/msys64"
+      ccache: true
     script:
     - $mingw64 build-scripts/build-omm-mingw.sh
 after_success:
