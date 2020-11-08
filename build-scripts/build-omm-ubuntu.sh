@@ -71,6 +71,8 @@ pushd lib2geom
 git checkout 37876ed4
 popd
 
+echo "CCACHE_DIR: $CCACHE_DIR"
+
 echo "configure lib2geom"
 $cmake -B build-lib2geom \
   -S lib2geom \
