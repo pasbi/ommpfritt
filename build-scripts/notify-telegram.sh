@@ -19,7 +19,7 @@ send_msg () {
 # Note that for Markdown, you need to escape any backtick (inline-code)
 # characters, since they're reserved in bash
 send_msg "
-Build *${build_status}*: ${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}
+Build *${build_status}*: ${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}@${TRAVIS_OS_NAME}
 *Commit Msg:* ${TRAVIS_COMMIT_MESSAGE}
 [Job Log here](${TRAVIS_JOB_WEB_URL})
 "
