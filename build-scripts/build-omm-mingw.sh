@@ -68,6 +68,10 @@ cmake -G"MSYS Makefiles" \
        -DCMAKE_INSTALL_PREFIX=install
 fi
 
+echo "> ls"
+ls
+echo "> ls build"
+ls build
 echo "Build omm"
 export PYTHONHOME=/mingw64/
 cmake --build "build" --target package
