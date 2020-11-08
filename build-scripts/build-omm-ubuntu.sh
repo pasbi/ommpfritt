@@ -20,7 +20,8 @@ sudo apt upgrade -y
 sudo apt install -y ninja-build zlib1g-dev libssl-dev libffi-dev \
                     libgl-dev python3-dev libboost-all-dev libdouble-conversion-dev \
                     libgsl-dev libcairo2-dev \
-                    libpoppler-qt5-dev libkf5itemmodels-dev
+                    libpoppler-qt5-dev libkf5itemmodels-dev imagemagick
+
 case "$dist" in
 "xenial" | "bionic")
   sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test

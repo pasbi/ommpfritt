@@ -27,7 +27,8 @@ pacman --noconfirm --needed -S \
     mingw-w64-x86_64-gtk3 \
     mingw-w64-x86_64-cmake \
     mingw-w64-x86_64-mesa \
-    mingw-w64-x86_64-gtkmm3
+    mingw-w64-x86_64-gtkmm3 \
+    mingw-w64-x86_64-imagemagick
 
 echo "INSTALLED PACKAGES:"
 pacman -Q
@@ -69,7 +70,7 @@ fi
 
 echo "ls /C/tools/msys64/mingw64/bin/"
 ls /C/tools/msys64/mingw64/bin/
-echo "ls /C/tools/msys64/mingw64/bin/g++.exe
+echo "ls /C/tools/msys64/mingw64/bin/g++.exe"
 ls /C/tools/msys64/mingw64/bin/g++.exe
 echo "Build omm"
 export PYTHONHOME=/mingw64/
