@@ -74,6 +74,7 @@ jobs:
       ccache: true
     script:
     - $mingw64 build-scripts/build-omm-mingw.sh
+    - find .
 after_success:
 - if [ "$TRAVIS_OS_NAME" -ne "windows" ]; then build/test/unit/ommpfritt_unit_tests
   fi
