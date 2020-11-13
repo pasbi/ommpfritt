@@ -88,6 +88,7 @@ $cmake -GNinja \
        -DCMAKE_CXX_COMPILER="$CXX_COMPILER" \
        -DCMAKE_C_COMPILER="$C_COMPILER" \
        -DQT_QM_PATH="$QT_QM_PATH" \
+       -DUSE_CCACHE=ON \
        -DCMAKE_PREFIX_PATH="$QT_PREFIX" \
        -S . \
        -B build

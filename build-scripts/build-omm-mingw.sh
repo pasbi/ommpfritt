@@ -20,6 +20,7 @@ cmake -G"MSYS Makefiles" \
   -B build-lib2geom \
   -S lib2geom \
   -DCMAKE_INSTALL_PREFIX=install-lib2geom \
+  -DUSE_CCACHE=OFF \
   -D2GEOM_TESTING=OFF
 
 echo "build lib2geom:"
