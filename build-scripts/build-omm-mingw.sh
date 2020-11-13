@@ -16,11 +16,10 @@ git checkout 37876ed4
 popd
 echo "configure lib2geom:"
 cmake -G"MSYS Makefiles" \
-  -B build-lib2geom \
-  -S lib2geom \
-  -DCMAKE_INSTALL_PREFIX=install-lib2geom \
-  -DUSE_CCACHE=OFF \
-  -D2GEOM_TESTING=OFF
+      -B build-lib2geom \
+      -S lib2geom \
+      -DCMAKE_INSTALL_PREFIX=install-lib2geom \
+      -D2GEOM_TESTING=OFF
 
 echo "build lib2geom:"
 cmake --build build-lib2geom --target install
@@ -30,12 +29,13 @@ QT_QM_PATH=/mingw64/share/qt5/translations/
 
 echo "Configure omm"
 cmake -G"MSYS Makefiles" \
-       -DCMAKE_BUILD_TYPE=Release \
-       -DQT_QM_PATH="$QT_QM_PATH" \
-       -S . \
-       -B build \
-       -DCMAKE_PREFIX_PATH="install-lib2geom/lib/cmake" \
-       -DCMAKE_INSTALL_PREFIX=install
+      -DCMAKE_BUILD_TYPE=Release \
+      -DQT_QM_PATH="$QT_QM_PATH" \
+      -S . \
+      -B build \
+      -DCMAKE_PREFIX_PATH="install-lib2geom/lib/cmake" \
+      -DUSE_CCACHE=OFF \
+      -DCMAKE_INSTALL_PREFIX=install
 
 echo "Build omm"
 export PYTHONHOME=/mingw64/
