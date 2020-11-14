@@ -154,10 +154,10 @@ Ts filter_if(const Ts& ts, const Predicate& p)
 
 bool is_not_null(const void* p);
 
-template<typename SetA, typename SetB=SetA> SetA merge(SetA&& a, SetB&& b)
+template<typename SetA, typename SetB=SetA> decltype(auto) merge(SetA&& a, SetB&& b)
 {
   a.insert(b.begin(), b.end());
-  return a;
+  return std::move(a);
 }
 
 template<typename SetA, typename SetB=SetA> SetA merge(const SetA& a, SetB&& b)
