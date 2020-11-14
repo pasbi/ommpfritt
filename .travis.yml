@@ -31,6 +31,16 @@ jobs:
     script:
     - build-scripts/build-omm-ubuntu.sh clang++ clang
   - stage: build
+    os: linux
+    dist: focal
+    name: Check Format
+    before_install:
+      - sudo apt update -y
+      - sudo apt upgrade -y
+      - sudo apt install -y clang
+    script:
+      - build-scripts/format.sh check
+  - stage: build
     os: windows
     name: Build on Windows/MinGW64
     before_install:
