@@ -56,6 +56,8 @@ case "$dist" in
                       qtbase5-dev-tools qt5-default \
                       libqt5svg5-dev qttools5-dev \
                       qttranslations5-l10n qttools5-dev
+  clang --version
+  ls /usr/bin/clang++ && /usr/bin/clang++ --version
   CXX_COMPILER=${1:-g++}
   C_COMPILER=${2:-gcc}
   cmake=cmake

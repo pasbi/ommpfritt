@@ -38,7 +38,7 @@ jobs:
     before_install:
     - sudo apt update -y
     - sudo apt upgrade -y
-    - sudo apt install -y clang
+    - sudo apt install -y clang-format
     - echo "clang-format version:"
     - clang-format --version
     script:
