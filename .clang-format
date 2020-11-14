@@ -5,10 +5,10 @@ AccessModifierOffset: -2
 AlignAfterOpenBracket: Align
 AlignConsecutiveMacros: false
 AlignConsecutiveAssignments: false
-AlignConsecutiveBitFields: false
+# AlignConsecutiveBitFields: false  # not available in clang-format 10
 AlignConsecutiveDeclarations: false
 AlignEscapedNewlines: DontAlign
-AlignOperands:   Align
+AlignOperands: true
 AlignTrailingComments: false
 AllowAllArgumentsOnNextLine: false
 AllowAllConstructorInitializersOnNextLine: true
@@ -39,8 +39,8 @@ BraceWrapping:
   AfterExternBlock: true
   BeforeCatch:     false
   BeforeElse:      false
-  BeforeLambdaBody: false
-  BeforeWhile:     false
+  # BeforeLambdaBody: false  # not available in clang-format 10
+  # BeforeWhile:     false  # not available in clang-format 10
   IndentBraces:    false
   SplitEmptyFunction: true
   SplitEmptyRecord: true
@@ -84,13 +84,13 @@ IncludeCategories:
 IncludeIsMainRegex: '(Test)?$'
 IncludeIsMainSourceRegex: ''
 IndentCaseLabels: false
-IndentCaseBlocks: false
+# IndentCaseBlocks: false  # not available in clang-format 10
 IndentGotoLabels: false
 IndentPPDirectives: AfterHash
-IndentExternBlock: AfterExternBlock
+# IndentExternBlock: AfterExternBlock  # not available in clang-format 10
 IndentWidth:     2
 IndentWrappedFunctionNames: false
-InsertTrailingCommas: Wrapped
+# InsertTrailingCommas: Wrapped  # not available in clang-format 10
 # JavaScriptQuotes: Leave
 # JavaScriptWrapImports: true
 KeepEmptyLinesAtTheStartOfBlocks: false
