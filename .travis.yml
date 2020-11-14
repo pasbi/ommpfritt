@@ -38,6 +38,8 @@ jobs:
       - sudo apt update -y
       - sudo apt upgrade -y
       - sudo apt install -y clang
+      - echo "clang-format version:"
+      - clang-format --version
     script:
       - build-scripts/format.sh check
   - stage: build
