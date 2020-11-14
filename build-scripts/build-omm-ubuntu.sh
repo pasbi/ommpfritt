@@ -50,14 +50,14 @@ case "$dist" in
   cmake=$(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake
 
   ;;
-"disco" | "eoan")
-  sudo apt install -y g++ gcc cmake
-  sudo apt install -y qtbase5-dev qtchooser qt5-qmake \
+"disco" | "eoan" | "focal")
+  sudo apt install -y g++ gcc cmake clang \
+                      qtbase5-dev qtchooser qt5-qmake \
                       qtbase5-dev-tools qt5-default \
                       libqt5svg5-dev qttools5-dev \
                       qttools5-dev
-  CXX_COMPILER=g++
-  C_COMPILER=gcc
+  CXX_COMPILER=${1:-g++}
+  C_COMPILER=${2:-gcc}
   cmake=cmake
   QT_PREFIX=""
   QT_QM_PATH="/usr/share/qt5/translations/"

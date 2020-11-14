@@ -1,4 +1,3 @@
-compiler: gcc
 language: cpp
 services:
 - xvfb
@@ -19,7 +18,18 @@ jobs:
     dist: bionic
     name: Build on Ubuntu Bionic
     script:
-    - build-scripts/build-omm-ubuntu.sh
+  - stage: build
+    os: linux
+    dist: focal
+    name: Build on Ubuntu Focal with GCC
+    script:
+    - build-scripts/build-omm-ubuntu.sh g++ gcc
+  - stage: build
+    os: linux
+    dist: focal
+    name: Build on Ubuntu Focal with clang
+    script:
+    - build-scripts/build-omm-ubuntu.sh clang++ clang
   - stage: build
     os: windows
     name: Build on Windows/MinGW64
