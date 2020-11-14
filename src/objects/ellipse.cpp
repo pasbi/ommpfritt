@@ -19,7 +19,7 @@ Ellipse::Ellipse(Scene* scene) : Object(scene)
   create_property<FloatVectorProperty>(RADIUS_PROPERTY_KEY, Vec2f(100.0, 100.0) )
     .set_label(QObject::tr("r")).set_category(category);
   create_property<IntegerProperty>(CORNER_COUNT_PROPERTY_KEY, 12)
-    .set_range(3, IntegerProperty::highest_possible_value)
+    .set_range(3, IntegerProperty::highest_possible_value())
     .set_label(QObject::tr("n")).set_category(category);
   create_property<BoolProperty>(SMOOTH_PROPERTY_KEY, true)
     .set_label(QObject::tr("smooth")).set_category(category);

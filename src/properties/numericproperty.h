@@ -2,6 +2,14 @@
 
 #include "properties/typedproperty.h"
 
+namespace NumericPropertyDetail
+{
+  static constexpr int int_high = std::numeric_limits<int>::max();
+  static constexpr int int_low = std::numeric_limits<int>::lowest();
+  static constexpr double inf = std::numeric_limits<double>::infinity();
+}  // namespace Numeric PropertyDetail
+
+
 namespace omm
 {
 
@@ -25,9 +33,9 @@ public:
   explicit NumericProperty(const T& default_value = T()) : TypedProperty<T>(default_value)
   {
     this->configuration[D::MULTIPLIER_POINTER] = 1.0;
-    this->configuration[D::STEP_POINTER] = default_step;
-    this->configuration[D::LOWER_VALUE_POINTER] = lowest_possible_value;
-    this->configuration[D::UPPER_VALUE_POINTER] = highest_possible_value;
+    this->configuration[D::STEP_POINTER] = default_step();
+    this->configuration[D::LOWER_VALUE_POINTER] = lowest_possible_value();
+    this->configuration[D::UPPER_VALUE_POINTER] = highest_possible_value();
     this->configuration[D::PREFIX_POINTER] = QStringLiteral("");
     this->configuration[D::SUFFIX_POINTER] = QStringLiteral("");
   }
@@ -109,12 +117,11 @@ public:
                    this->configuration.template get<T>(D::UPPER_VALUE_POINTER)));
   }
 
-  static const T highest_possible_value;
-  static const T lowest_possible_value;
-  static const T smallest_step;
-  static const T default_step;
+  static T highest_possible_value();
+  static T lowest_possible_value();
+  static T smallest_step();
+  static T default_step();
 
 };
-
 
 }  // namespace omm

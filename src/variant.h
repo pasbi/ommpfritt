@@ -22,14 +22,7 @@ using variant_type = std::variant< bool, double, Color, int, AbstractPropertyOwn
                                    QString, size_t, TriggerPropertyDummyValueType,
                                    Vec2f, Vec2i, SplineType >;
 
-template<typename T> T null_value;
-template<> constexpr bool null_value<bool> = false;
-template<> constexpr double null_value<double> = 0.0;
-template<> const Color null_value<Color> = Color(Color::Model::RGBA, { 0.0, 0.0, 0.0, 0.0});
-template<> constexpr int null_value<int> = 0;
-template<> const Vec2f null_value<Vec2f> { 0.0, 0.0 };
-template<> const Vec2i null_value<Vec2i> { 0, 0 };
-template<> const SplineType null_value<SplineType> = SplineType();
+template<typename T> T null_value();
 
 template<typename T> constexpr std::string_view variant_type_name() noexcept
 {

@@ -23,7 +23,7 @@ public:
     m_max_edit = max_edit.get();
     auto step_edit = std::make_unique<NumericEdit<T>>();
     m_step_edit = step_edit.get();
-    m_step_edit->set_lower(NumericProperty<T>::smallest_step);
+    m_step_edit->set_lower(NumericProperty<T>::smallest_step());
     auto mult_edit = std::make_unique<NumericEdit<double>>();
     m_mult_edit = mult_edit.get();
     auto pref_edit = std::make_unique<QLineEdit>();
@@ -49,8 +49,8 @@ public:
 
   void init(const Property::Configuration &configuration) override
   {
-    const auto llower =  NumericProperty<T>::lowest_possible_value;
-    const auto uupper = NumericProperty<T>::highest_possible_value;
+    const auto llower =  NumericProperty<T>::lowest_possible_value();
+    const auto uupper = NumericProperty<T>::highest_possible_value();
     const auto lower = configuration.get<T>(NumericPropertyDetail::LOWER_VALUE_POINTER, llower);
     const auto upper = configuration.get<T>(NumericPropertyDetail::UPPER_VALUE_POINTER, uupper);
     const auto step = configuration.get<T>(NumericPropertyDetail::STEP_POINTER, T(1));
@@ -62,7 +62,7 @@ public:
     m_min_edit->set_value(lower);
     m_max_edit->set_range(lower, uupper);
     m_max_edit->set_value(upper);
-    m_step_edit->set_lower(NumericProperty<T>::smallest_step);
+    m_step_edit->set_lower(NumericProperty<T>::smallest_step());
     m_step_edit->set_value(step);
     m_mult_edit->set_value(mult);
     m_pref_edit->setText(pref);

@@ -26,7 +26,7 @@ public:
       // ownership is only temporarily passed to this.
       m_edits[d + NumericPropertyDetail::UPPER_VALUE_POINTER] = max_edit.release();
       auto step_edit = std::make_unique<NumericEdit<ElementT>>();
-      step_edit->set_lower(NumericProperty<ElementT>::smallest_step);
+      step_edit->set_lower(NumericProperty<ElementT>::smallest_step());
 
       // ownership is only temporarily passed to this.
       m_edits[d + NumericPropertyDetail::STEP_POINTER] = step_edit.release();
@@ -55,8 +55,8 @@ public:
 
   void init(const Property::Configuration &configuration) override
   {
-    const ElementT llower = NumericProperty<ElementT>::lowest_possible_value;
-    const ElementT uupper = NumericProperty<ElementT>::highest_possible_value;
+    const ElementT llower = NumericProperty<ElementT>::lowest_possible_value();
+    const ElementT uupper = NumericProperty<ElementT>::highest_possible_value();
 
     const T lower = configuration.get(NumericPropertyDetail::LOWER_VALUE_POINTER, T(llower, llower));
     const T upper = configuration.get(NumericPropertyDetail::UPPER_VALUE_POINTER, T(uupper, uupper));
@@ -68,7 +68,7 @@ public:
       static_cast<NumericEdit<ElementT>*>(m_edits[d + NumericPropertyDetail::LOWER_VALUE_POINTER])->set_value(lower[i]);
       static_cast<NumericEdit<ElementT>*>(m_edits[d + NumericPropertyDetail::UPPER_VALUE_POINTER])->set_range(lower[i], uupper);
       static_cast<NumericEdit<ElementT>*>(m_edits[d + NumericPropertyDetail::UPPER_VALUE_POINTER])->set_value(upper[i]);
-      static_cast<NumericEdit<ElementT>*>(m_edits[d + NumericPropertyDetail::STEP_POINTER])->set_lower(NumericProperty<ElementT>::smallest_step);
+      static_cast<NumericEdit<ElementT>*>(m_edits[d + NumericPropertyDetail::STEP_POINTER])->set_lower(NumericProperty<ElementT>::smallest_step());
       static_cast<NumericEdit<ElementT>*>(m_edits[d + NumericPropertyDetail::STEP_POINTER])->set_value(step[i]);
     }
     static_cast<NumericEdit<double>*>(m_edits[NumericPropertyDetail::MULTIPLIER_POINTER])->set_value(mult);

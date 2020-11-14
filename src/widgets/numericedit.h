@@ -203,8 +203,8 @@ protected:
   }
 
 private:
-  value_type m_min = NumericProperty<value_type>::lowest_possible_value;
-  value_type m_max = NumericProperty<value_type>::highest_possible_value;
+  value_type m_min = NumericProperty<value_type>::lowest_possible_value();
+  value_type m_max = NumericProperty<value_type>::highest_possible_value();
   value_type m_step = 1;
   double m_multiplier = 1.0;
   QPoint m_mouse_press_pos;
@@ -226,9 +226,9 @@ private:
   value_type parse(const QString& text) const
   {
     if (text == inf) {
-      return NumericProperty<value_type>::highest_possible_value;
+      return NumericProperty<value_type>::highest_possible_value();
     } else if (text == neg_inf) {
-      return NumericProperty<value_type>::lowest_possible_value;
+      return NumericProperty<value_type>::lowest_possible_value();
     } else {
       std::istringstream sstream(text.toStdString());
       value_type value;
@@ -271,11 +271,11 @@ public:
     auto max_edit = std::make_unique<NumericEdit<ValueType>>();
     auto& max_edit_ref = *max_edit;
     connect(min_edit.get(), &AbstractNumericEdit::value_changed, [&min_edit_ref, &max_edit_ref]() {
-      const auto high = NumericProperty<value_type>::highest_possible_value;
+      const auto high = NumericProperty<value_type>::highest_possible_value();
       max_edit_ref.set_range(min_edit_ref.value(), high);
     });
     connect(max_edit.get(), &AbstractNumericEdit::value_changed, [&min_edit_ref, &max_edit_ref]() {
-      const auto low = NumericProperty<value_type>::lowest_possible_value;
+      const auto low = NumericProperty<value_type>::lowest_possible_value();
       min_edit_ref.set_range(low, max_edit_ref.value());
     });
     return std::pair(std::move(min_edit), std::move(max_edit));

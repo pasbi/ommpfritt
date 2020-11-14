@@ -312,8 +312,8 @@ void Track::Knot::polish()
   std::visit([this](auto&& vv) {
     using T = std::decay_t<decltype(vv)>;
     if constexpr (n_channels<T>() > 0) {
-      left_offset = null_value<T>;
-      right_offset = null_value<T>;
+      left_offset = null_value<T>();
+      right_offset = null_value<T>();
     } else {
       // don't care about non numeric types.
     }

@@ -35,4 +35,12 @@ std::ostream& operator<<(std::ostream& ostream, const variant_type& v)
   return ostream;
 }
 
+template<> bool null_value<bool>() { return false; }
+template<> double null_value<double>() { return 0.0; }
+template<> Color null_value<Color>() { return Color(Color::Model::RGBA, {0.0, 0.0, 0.0, 0.0}); }
+template<> int null_value<int>() { return 0; }
+template<> Vec2f null_value<Vec2f>() { return {0.0, 0.0}; }
+template<> Vec2i null_value<Vec2i>() { return {0, 0}; }
+template<> SplineType null_value<SplineType>() { return SplineType(); }
+
 }  // namespace omm
