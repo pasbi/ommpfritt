@@ -22,7 +22,7 @@ private:
   void on_property_value_changed(Property *property) override;
   void polish();
   bool is_closed() const override;
-  Geom::PathVector paths() const;
+  Geom::PathVector paths() const override;
 };
 
 }  // namespace omm
