@@ -1,7 +1,8 @@
 #include "serializers/jsonserializer.h"
 
-#include "logging.h"
+#include <iomanip>
 #include <typeinfo>
+#include "logging.h"
 #include "common.h"
 #include "aspects/serializable.h"
 

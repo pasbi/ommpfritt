@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <QString>
+#include "variant.h"
 
 namespace omm
 {

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include "enumnames.h"
 #include "logging.h"
 #include <QRegularExpression>
