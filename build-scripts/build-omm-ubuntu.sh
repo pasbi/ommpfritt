@@ -55,7 +55,7 @@ case "$dist" in
                       qtbase5-dev qtchooser qt5-qmake \
                       qtbase5-dev-tools qt5-default \
                       libqt5svg5-dev qttools5-dev \
-                      qttools5-dev
+                      qttranslations5-l10n qttools5-dev
   CXX_COMPILER=${1:-g++}
   C_COMPILER=${2:-gcc}
   cmake=cmake
