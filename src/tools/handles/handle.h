@@ -42,7 +42,6 @@ protected:
 
 private:
   HandleStatus m_status = HandleStatus::Inactive;
-  bool m_enabled = false;
   Vec2f m_press_pos;
 
 public:
