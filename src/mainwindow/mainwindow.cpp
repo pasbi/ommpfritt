@@ -27,6 +27,7 @@
 #include "keybindings/commandinterface.h"
 #include "mainwindow/application.h"
 #include "widgets/colorwidget/colorwidget.h"
+#include "mainwindow/gpl3.h"
 
 namespace
 {
@@ -227,6 +228,7 @@ std::unique_ptr<QMenu> MainWindow::make_about_menu()
     ::Ui::AboutDialog ui;
     ui.setupUi(&about_dialog);
     ui.te_gpl30->hide();
+    ui.te_gpl30->setText(QString::fromStdString(std::string(GPL3_TEXT)));
     ui.lb_splash->setPixmap(QPixmap::fromImage(QImage(":/icons/omm_2048.png")));
     about_dialog.exec();
   });
