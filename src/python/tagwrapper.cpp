@@ -2,7 +2,6 @@
 
 namespace omm
 {
-
 py::object TagWrapper::owner() const
 {
   return wrap(*wrapped.owner);
@@ -11,7 +10,7 @@ py::object TagWrapper::owner() const
 void TagWrapper::define_python_interface(py::object& module)
 {
   py::class_<TagWrapper, AbstractPropertyOwnerWrapper<Tag>>(module, wrapped_type::TYPE)
-        .def("owner", &TagWrapper::owner);
+      .def("owner", &TagWrapper::owner);
 }
 
 }  // namespace omm

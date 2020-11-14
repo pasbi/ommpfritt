@@ -6,8 +6,9 @@
 
 namespace omm
 {
-
-class TagWrapper : public AbstractPropertyOwnerWrapper<Tag>, public WrapperFactory<Tag, TagWrapper>
+class TagWrapper
+    : public AbstractPropertyOwnerWrapper<Tag>
+    , public WrapperFactory<Tag, TagWrapper>
 {
 public:
   using AbstractPropertyOwnerWrapper<Tag>::AbstractPropertyOwnerWrapper;

@@ -7,14 +7,16 @@ class QAction;
 
 namespace omm
 {
-
 class ReferenceNode : public Node
 {
   Q_OBJECT
 public:
   explicit ReferenceNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "ReferenceNode");
-  QString type() const override { return TYPE; }
+  QString type() const override
+  {
+    return TYPE;
+  }
 
   static constexpr auto TYPE_PROPERTY_KEY = "data-type";
   static constexpr auto CONSTANT_VALUE_KEY = "constant";

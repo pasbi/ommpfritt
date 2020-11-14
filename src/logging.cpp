@@ -1,16 +1,15 @@
 #include "logging.h"
 #include "ommpfrittconfig.h"
-#include <QDir>
 #include <QApplication>
-#include <QFile>
-#include <iostream>
-#include <iomanip>
-#include <ctime>
-#include <QStandardPaths>
 #include <QDateTime>
+#include <QDir>
+#include <QFile>
+#include <QStandardPaths>
+#include <ctime>
+#include <iomanip>
+#include <iostream>
 
-
-QDebug operator<< (QDebug d, const std::string& string)
+QDebug operator<<(QDebug d, const std::string& string)
 {
   d << QString::fromStdString(string);
   return d;
@@ -18,7 +17,6 @@ QDebug operator<< (QDebug d, const std::string& string)
 
 namespace omm
 {
-
 void setup_logfile(QFile& logfile)
 {
   const QString dir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
@@ -58,15 +56,22 @@ void setup_logfile(QFile& logfile)
   logfile.flush();
 }
 
-void handle_log(QFile& logfile, const QString& level, bool print_long_message,
-                QtMsgType type, const QMessageLogContext& ctx, const QString& msg)
+void handle_log(QFile& logfile,
+                const QString& level,
+                bool print_long_message,
+                QtMsgType type,
+                const QMessageLogContext& ctx,
+                const QString& msg)
 {
   using namespace LogLevel;
   const auto timestamp = QDateTime::currentDateTime().toString(Qt::ISODate);
   const QString rel_fn = QDir(source_directory).relativeFilePath(ctx.file);
   const auto long_message = QString("[%1] %2 %3:%4: %5\n")
-      .arg(printlevels.at(type)).arg(timestamp)
-      .arg(rel_fn).arg(ctx.line).arg(msg);
+                                .arg(printlevels.at(type))
+                                .arg(timestamp)
+                                .arg(rel_fn)
+                                .arg(ctx.line)
+                                .arg(msg);
   if (loglevels.at(printlevels.at(type)) >= loglevels.at(level)) {
     if (print_long_message) {
       fprintf(stderr, "%s", long_message.toUtf8().constData());

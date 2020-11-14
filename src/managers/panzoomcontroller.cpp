@@ -1,21 +1,19 @@
 #include "managers/panzoomcontroller.h"
-#include <QMouseEvent>
-#include "preferences/preferences.h"
-#include <QWidget>
 #include "logging.h"
-#include <QPainter>
-#include "preferences/uicolors.h"
-#include <cmath>
 #include "mainwindow/application.h"
-#include <QGraphicsView>
 #include "managers/nodemanager/nodeview.h"
+#include "preferences/preferences.h"
+#include "preferences/uicolors.h"
+#include <QGraphicsView>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QWidget>
+#include <cmath>
 
 namespace omm
 {
-
 PanZoomController::PanZoomController(NodeView& view) : m_view(view)
 {
-
 }
 
 double PanZoomController::current_scale() const
@@ -52,8 +50,7 @@ bool PanZoomController::move(const QMouseEvent& event)
   m_last_pos = current_pos;
   QRectF scene_rect = m_view.sceneRect();
   switch (m_current_action) {
-  case Action::Zoom:
-  {
+  case Action::Zoom: {
     double f = std::pow(1.005, d.x());
     const double current_scale = this->current_scale();
     if (current_scale > max_scale) {
@@ -68,8 +65,7 @@ bool PanZoomController::move(const QMouseEvent& event)
     QPointF current_scene_pos = m_view.mapToScene(m_start_widget_pos);
     const QPointF d = m_start_scene_pos - current_scene_pos;
     m_view.setSceneRect(m_view.sceneRect().translated(d));
-  }
-    break;
+  } break;
   case Action::Pan:
     scene_rect.translate(map_direction_to_scene(-d));
     m_view.setSceneRect(scene_rect);
@@ -85,4 +81,4 @@ void PanZoomController::release()
   m_current_action = Action::None;
 }
 
-}  // namespace
+}  // namespace omm

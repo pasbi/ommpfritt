@@ -1,30 +1,30 @@
 #pragma once
 
+#include "geometry/util.h"
 #include "geometry/vec2.h"
 #include "tools/handles/handle.h"
-#include "geometry/util.h"
 #include "tools/tool.h"
 
 namespace omm
 {
-
 class ParticleHandle : public Handle
 {
 public:
   explicit ParticleHandle(Tool& tool);
   bool contains_global(const Vec2f& point) const override;
-  void draw(QPainter&painter) const override;
+  void draw(QPainter& painter) const override;
   Vec2f position = Vec2f::o();
 
 protected:
   bool transform_in_tool_space;
 };
 
-template<typename ToolT>
-class MoveParticleHandle : public ParticleHandle
+template<typename ToolT> class MoveParticleHandle : public ParticleHandle
 {
 public:
-  MoveParticleHandle(ToolT& tool) : ParticleHandle(tool) {}
+  MoveParticleHandle(ToolT& tool) : ParticleHandle(tool)
+  {
+  }
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override
   {
     Handle::mouse_move(delta, pos, e);

@@ -1,11 +1,10 @@
 #pragma once
 
-#include <memory>
 #include <QIdentityProxyModel>
+#include <memory>
 
 namespace omm
 {
-
 // Model <--> Proxy 0 <--> Proxy 1 <--> ... <--> Proxy N <--> View
 //            \___________________ ____________________/
 //                                V
@@ -21,8 +20,7 @@ public:
   QModelIndex mapToChainSource(const QModelIndex& index) const;
   QModelIndex mapFromChainSource(const QModelIndex& index) const;
 
-  template<typename T, typename... Ts>
-  static std::vector<T> concatenate(Ts... ps)
+  template<typename T, typename... Ts> static std::vector<T> concatenate(Ts... ps)
   {
     std::vector<T> vs;
     vs.reserve(sizeof...(Ts));
@@ -36,8 +34,7 @@ public:
     return concatenate_priv<T>(std::forward<std::vector<T>>(vs), std::forward<Ts>(ps)...);
   }
 
-  template<typename T>
-  static std::vector<T> concatenate_priv(std::vector<T> vs, T p)
+  template<typename T> static std::vector<T> concatenate_priv(std::vector<T> vs, T p)
   {
     vs.push_back(std::forward<T>(p));
     return vs;
@@ -50,4 +47,4 @@ private:
   std::vector<std::unique_ptr<QAbstractProxyModel>> m_proxies;
 };
 
-}
+}  // namespace omm

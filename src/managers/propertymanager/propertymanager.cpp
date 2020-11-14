@@ -1,25 +1,25 @@
 #include "managers/propertymanager/propertymanager.h"
 
-#include <algorithm>
-#include <set>
-#include <QTimer>
 #include <QCoreApplication>
 #include <QPushButton>
 #include <QTabWidget>
+#include <QTimer>
+#include <algorithm>
+#include <set>
 
-#include "managers/propertymanager/propertymanagertitlebar.h"
-#include "scene/mailbox.h"
-#include "properties/optionproperty.h"
-#include "managers/propertymanager/propertymanagertab.h"
-#include "propertywidgets/propertywidget.h"
 #include "aspects/propertyowner.h"
 #include "common.h"
 #include "logging.h"
+#include "managers/propertymanager/propertymanagertab.h"
+#include "managers/propertymanager/propertymanagertitlebar.h"
+#include "properties/optionproperty.h"
+#include "propertywidgets/propertywidget.h"
+#include "scene/mailbox.h"
 
 namespace
 {
-
-QString tab_display_name(const QString& tab_name) {
+QString tab_display_name(const QString& tab_name)
+{
   if (tab_name == omm::Property::USER_PROPERTY_CATEGROY_NAME) {
     return QObject::tr(tab_name.toUtf8().constData());
   } else {
@@ -27,8 +27,7 @@ QString tab_display_name(const QString& tab_name) {
   }
 }
 
-std::vector<QString>
-get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
+std::vector<QString> get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
 {
   if (selection.size() == 0) {
     return std::vector<QString>();
@@ -38,7 +37,7 @@ get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
   auto keys = the_entity->properties().keys();
   std::map<QString, omm::Property*> the_properties;
   for (auto&& key : keys) {
-    the_properties.insert({ key, the_entity->property(key) });
+    the_properties.insert({key, the_entity->property(key)});
   }
 
   for (auto it = std::next(selection.begin()); it != selection.end(); ++it) {
@@ -58,8 +57,7 @@ get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
   return keys;
 }
 
-auto collect_properties( const QString& key,
-                         const std::set<omm::AbstractPropertyOwner*>& selection )
+auto collect_properties(const QString& key, const std::set<omm::AbstractPropertyOwner*>& selection)
 {
   std::map<omm::AbstractPropertyOwner*, omm::Property*> collection;
   for (omm::AbstractPropertyOwner* owner : selection) {
@@ -73,12 +71,12 @@ QString get_tab_label(const std::map<omm::AbstractPropertyOwner*, omm::Property*
   assert(properties.size() > 0);
   const auto tab_label = (*properties.begin()).second->category();
 #ifndef NDEBUG
-  for (auto&& [_, property ] : properties) {
+  for (auto&& [_, property] : properties) {
     Q_UNUSED(_)
     assert(property != nullptr);
     if (tab_label != property->category()) {
-      LWARNING << "category is not consistent: '" << tab_label
-                   << "' != '" << property->category() << "'.";
+      LWARNING << "category is not consistent: '" << tab_label << "' != '" << property->category()
+               << "'.";
     }
   }
 #endif
@@ -101,9 +99,8 @@ QString join(const std::list<QString>& strings, const QString& separator)
 
 namespace omm
 {
-
 PropertyManager::PropertyManager(Scene& scene)
-  : Manager(QCoreApplication::translate("any-context", "Properties"), scene)
+    : Manager(QCoreApplication::translate("any-context", "Properties"), scene)
 {
   auto title_bar = std::make_unique<PropertyManagerTitleBar>(*this);
   m_title_bar = title_bar.get();
@@ -139,11 +136,14 @@ PropertyManager::PropertyManager(Scene& scene)
 
   setWindowTitle(make_window_title());
 
-  connect(m_tab_bar.get(), &MultiTabBar::current_indices_changed,
-          this, &PropertyManager::activate_tabs);
+  connect(m_tab_bar.get(),
+          &MultiTabBar::current_indices_changed,
+          this,
+          &PropertyManager::activate_tabs);
   connect(&scene.mail_box(),
           qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this, &PropertyManager::set_selection);
+          this,
+          &PropertyManager::set_selection);
   m_scroll_area->setFrameShape(QFrame::NoFrame);
 }
 
@@ -156,14 +156,19 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
 {
   if (!is_locked()) {
     for (auto* apo : m_current_selection) {
-      disconnect(apo, &AbstractPropertyOwner::property_visibility_changed,
-                 this, &PropertyManager::update_property_widgets);
+      disconnect(apo,
+                 &AbstractPropertyOwner::property_visibility_changed,
+                 this,
+                 &PropertyManager::update_property_widgets);
     }
 
     m_current_selection = selection;
     for (auto* apo : m_current_selection) {
-      connect(apo, &AbstractPropertyOwner::property_visibility_changed,
-              this, &PropertyManager::update_property_widgets, Qt::QueuedConnection);
+      connect(apo,
+              &AbstractPropertyOwner::property_visibility_changed,
+              this,
+              &PropertyManager::update_property_widgets,
+              Qt::QueuedConnection);
     }
 
     update_property_widgets();
@@ -173,7 +178,7 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
     m_selection_label->setVisible(selection.size() > 0);
     if (selection.size() > 0) {
       const auto types = ::transform<QString>(selection, [](AbstractPropertyOwner* owner) {
-          return owner->type();
+        return owner->type();
       });
       std::list<QString> tokens;
 
@@ -181,11 +186,10 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
         tokens.push_back(tr("[%n Elements]", "PropertyManager", selection.size()));
       }
       tokens.push_back(types.size() == 1 ? *types.begin() : "");
-      const auto names = ::transform<QString, std::list>(selection,
-                                                             [](AbstractPropertyOwner* owner)
-      {
-        return owner->name();
-      });
+      const auto names
+          = ::transform<QString, std::list>(selection, [](AbstractPropertyOwner* owner) {
+              return owner->name();
+            });
       tokens.push_back("[" + join(names, ", ") + "]");
       m_selection_label->setText(join(tokens, " "));
 
@@ -199,8 +203,8 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
       if (image.isNull()) {
         m_icon_label->clear();
       } else {
-        m_icon_label->setPixmap(QPixmap::fromImage(image.scaled(24, 24, Qt::KeepAspectRatio,
-                                                                Qt::SmoothTransformation)));
+        m_icon_label->setPixmap(QPixmap::fromImage(
+            image.scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
       }
     }
   }
@@ -262,7 +266,10 @@ void PropertyManager::clear()
   }
 }
 
-QString PropertyManager::type() const { return TYPE; }
+QString PropertyManager::type() const
+{
+  return TYPE;
+}
 
 bool PropertyManager::perform_action(const QString& name)
 {

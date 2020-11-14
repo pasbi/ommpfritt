@@ -1,12 +1,11 @@
 #include "widgets/combobox.h"
-#include <QComboBox>
 #include <QAbstractItemModel>
-#include <memory>
+#include <QComboBox>
 #include <QHBoxLayout>
+#include <memory>
 
 namespace omm
 {
-
 ComboBox::ComboBox(QWidget* widget) : QWidget(widget)
 {
   auto layout = std::make_unique<QHBoxLayout>();
@@ -15,7 +14,9 @@ ComboBox::ComboBox(QWidget* widget) : QWidget(widget)
   layout->addWidget(cb.release());
   layout->setContentsMargins(0, 0, 0, 0);
   setLayout(layout.release());
-  connect(m_combo_box, qOverload<int>(&QComboBox::currentIndexChanged), this,
+  connect(m_combo_box,
+          qOverload<int>(&QComboBox::currentIndexChanged),
+          this,
           &ComboBox::current_index_changed);
 }
 
@@ -84,7 +85,7 @@ void ComboBox::remove(const QModelIndex& index, int first, int last)
   }
 
   m_combo_box->setCurrentIndex(current_index);
-//  Q_EMIT current_index_changed(current_index);
+  //  Q_EMIT current_index_changed(current_index);
 }
 
 void ComboBox::change(const QModelIndex& tl, const QModelIndex& br, const QVector<int>& roles)

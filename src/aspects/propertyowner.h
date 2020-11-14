@@ -4,11 +4,12 @@
 
 namespace omm
 {
-
 template<Kind kind_> class PropertyOwner : public AbstractPropertyOwner
 {
 public:
-  PropertyOwner(Scene* scene) : AbstractPropertyOwner(kind_, scene) {}
+  PropertyOwner(Scene* scene) : AbstractPropertyOwner(kind_, scene)
+  {
+  }
   static constexpr Kind KIND = kind_;
 };
 

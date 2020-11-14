@@ -1,12 +1,12 @@
 #pragma once
 
 #include "aspects/abstractpropertyowner.h"
-#include "managers/panzoomcontroller.h"
 #include "cachedgetter.h"
-#include <QGraphicsView>
+#include "managers/panzoomcontroller.h"
 #include "managers/range.h"
-#include <memory>
 #include <QGraphicsItem>
+#include <QGraphicsView>
+#include <memory>
 
 class QPainter;
 class QMenu;
@@ -14,7 +14,6 @@ class QMimeData;
 
 namespace omm
 {
-
 class NodeScene;
 class InputPort;
 class AbstractPort;
@@ -34,8 +33,14 @@ public:
   void remove_selection();
   void set_model(NodeModel* model);
   NodeModel* model() const;
-  NodeScene* scene() const { return m_node_scene.get(); }
-  QPointF node_insert_pos() const { return m_node_insert_pos; }
+  NodeScene* scene() const
+  {
+    return m_node_scene.get();
+  }
+  QPointF node_insert_pos() const
+  {
+    return m_node_insert_pos;
+  }
   void populate_context_menu(QMenu& menu) const;
   void pan_to_center();
   bool accepts_paste(const QMimeData& mime_data) const;
@@ -59,8 +64,11 @@ protected:
 
 private:
   PanZoomController m_pan_zoom_controller;
-  void draw_connection(QPainter& painter, const QPointF& in, const QPointF& out,
-                       bool is_floating, bool reverse) const;
+  void draw_connection(QPainter& painter,
+                       const QPointF& in,
+                       const QPointF& out,
+                       bool is_floating,
+                       bool reverse) const;
   constexpr static auto m_droppable_kinds = Kind::Item;
   template<typename ItemT> ItemT* item_at(const QPoint& pos) const
   {

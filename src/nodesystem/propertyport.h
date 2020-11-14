@@ -1,12 +1,11 @@
 #pragma once
 
 #include "aspects/abstractpropertyowner.h"
-#include "properties/property.h"
 #include "nodesystem/port.h"
+#include "properties/property.h"
 
 namespace omm
 {
-
 class Property;
 
 template<PortType port_type_> class PropertyPort : public ConcretePortSelector<port_type_>::T
@@ -15,18 +14,19 @@ public:
   using BasePort = typename ConcretePortSelector<port_type_>::T;
 
   PropertyPort(Node& node, std::size_t index, const std::function<Property*()>& get_property)
-    : BasePort(PortFlavor::Property, node, index)
-    , m_get_property(get_property)
+      : BasePort(PortFlavor::Property, node, index), m_get_property(get_property)
   {
   }
 
   explicit PropertyPort(const PropertyPort& other, Node& node)
-    : BasePort(other, node)
-    , m_get_property(other.m_get_property)
+      : BasePort(other, node), m_get_property(other.m_get_property)
   {
   }
 
-  Property* property() const { return m_get_property(); }
+  Property* property() const
+  {
+    return m_get_property();
+  }
 
   QString label() const override
   {

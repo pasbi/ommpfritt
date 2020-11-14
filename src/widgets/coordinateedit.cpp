@@ -1,12 +1,11 @@
 #include "coordinateedit.h"
+#include "geometry/polarcoordinates.h"
 #include "widgets/numericedit.h"
 #include <QGridLayout>
 #include <QLabel>
-#include "geometry/polarcoordinates.h"
 
 namespace
 {
-
 auto make_label(const QString& text, QLabel*& label_ref)
 {
   auto label = std::make_unique<QLabel>(text);
@@ -15,12 +14,11 @@ auto make_label(const QString& text, QLabel*& label_ref)
   return label;
 }
 
-}
+}  // namespace
 
 namespace omm
 {
-
-CoordinateEdit::CoordinateEdit(QWidget *parent) : QWidget(parent)
+CoordinateEdit::CoordinateEdit(QWidget* parent) : QWidget(parent)
 {
   auto grid_layout = std::make_unique<QGridLayout>();
 
@@ -35,7 +33,7 @@ CoordinateEdit::CoordinateEdit(QWidget *parent) : QWidget(parent)
   grid_layout->addWidget(y_edit.release(), 0, 2);
 
   auto arg_edit = std::make_unique<NumericEdit<double>>();
-  arg_edit->set_multiplier(M_1_PI *180.0);
+  arg_edit->set_multiplier(M_1_PI * 180.0);
   m_arg_edit = arg_edit.get();
   grid_layout->addWidget(arg_edit.release(), 1, 0);
 
@@ -72,7 +70,7 @@ PolarCoordinates CoordinateEdit::to_polar() const
   return PolarCoordinates(m_arg_edit->value(), m_mag_edit->value());
 }
 
-void CoordinateEdit::set_coordinates(const Vec2f &coordinates)
+void CoordinateEdit::set_coordinates(const Vec2f& coordinates)
 {
   m_x_edit->set_value(coordinates.x);
   m_y_edit->set_value(coordinates.y);
@@ -129,4 +127,3 @@ void CoordinateEdit::set_magnitude(const double magnitude)
 }
 
 }  // namespace omm
-

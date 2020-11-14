@@ -2,7 +2,10 @@
 
 #include "managers/managertitlebar.h"
 
-namespace Ui { class TimeLineTitleBar; }
+namespace Ui
+{
+class TimeLineTitleBar;
+}
 
 namespace omm
 {
@@ -12,7 +15,10 @@ class TimeLineTitleBar : public ManagerTitleBar
 public:
   explicit TimeLineTitleBar(Manager& parent);
   ~TimeLineTitleBar();
-  ::Ui::TimeLineTitleBar* ui() const { return m_ui.get(); }
+  ::Ui::TimeLineTitleBar* ui() const
+  {
+    return m_ui.get();
+  }
 
 private:
   std::unique_ptr<::Ui::TimeLineTitleBar> m_ui;

@@ -1,12 +1,12 @@
 #pragma once
 
+#include "common.h"
 #include <QDebug>
 #include <QString>
 #include <sstream>
-#include "common.h"
 
 #if defined(LDEBUG) || defined(LINFO) || defined(LERROR) || defined(LWARNING)
-#error Failed to define logging-macros due to name collision.
+#  error Failed to define logging-macros due to name collision.
 #endif
 
 #define STRINGIZE_DETAIL(x) #x
@@ -22,48 +22,46 @@ class QFile;
 
 namespace omm
 {
-
 namespace LogLevel
 {
-
 static constexpr auto DEBUG = "debug";
 static constexpr auto INFO = "info";
 static constexpr auto WARNING = "warning";
 static constexpr auto CRITICAL = "critical";
 static constexpr auto FATAL = "fatal";
 
-const std::map<QString, int> loglevels {
-  { omm::LogLevel::DEBUG,    0 },
-  { omm::LogLevel::INFO,     1 },
-  { omm::LogLevel::WARNING,  2 },
-  { omm::LogLevel::CRITICAL, 3 },
-  { omm::LogLevel::FATAL,    4 }
-};
+const std::map<QString, int> loglevels{{omm::LogLevel::DEBUG, 0},
+                                       {omm::LogLevel::INFO, 1},
+                                       {omm::LogLevel::WARNING, 2},
+                                       {omm::LogLevel::CRITICAL, 3},
+                                       {omm::LogLevel::FATAL, 4}};
 
-const std::map<QtMsgType, QString> printlevels {
-  { QtDebugMsg,    omm::LogLevel::DEBUG },
-  { QtInfoMsg,     omm::LogLevel::INFO },
-  { QtWarningMsg,  omm::LogLevel::WARNING },
-  { QtCriticalMsg, omm::LogLevel::CRITICAL },
-  { QtFatalMsg,    omm::LogLevel::FATAL }
-};
+const std::map<QtMsgType, QString> printlevels{{QtDebugMsg, omm::LogLevel::DEBUG},
+                                               {QtInfoMsg, omm::LogLevel::INFO},
+                                               {QtWarningMsg, omm::LogLevel::WARNING},
+                                               {QtCriticalMsg, omm::LogLevel::CRITICAL},
+                                               {QtFatalMsg, omm::LogLevel::FATAL}};
 
 }  // namespace LogLevel
 
-void handle_log(QFile& logfile, const QString& level, bool print_long_message,
-                QtMsgType type, const QMessageLogContext& ctx, const QString& msg);
+void handle_log(QFile& logfile,
+                const QString& level,
+                bool print_long_message,
+                QtMsgType type,
+                const QMessageLogContext& ctx,
+                const QString& msg);
 void setup_logfile(QFile& logfile);
 
 }  // namespace omm
 
-QDebug operator<< (QDebug d, const std::string& string);
+QDebug operator<<(QDebug d, const std::string& string);
 
 // this enables streaming to qDebug and friends for
 // each type which can be streamed into std::ostream.
 // disable this function for enums. It will create ambiguities.
 // Qt-Enums are handled by the default qDebug very well. Other enums will fallback to int.
-template<typename T> std::enable_if_t<!std::is_enum_v<T>, QDebug>
-operator<<(QDebug ostream, const T& t)
+template<typename T>
+std::enable_if_t<!std::is_enum_v<T>, QDebug> operator<<(QDebug ostream, const T& t)
 {
   std::ostringstream oss;
   oss << t;

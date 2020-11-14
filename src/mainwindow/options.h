@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 /**
  * @brief The Options class stored application wide options that are not persistent, i.e.,
  *  - loading/saving the scene does not change them
@@ -34,7 +33,6 @@ Q_SIGNALS:
 
 private:
   Anchor m_anchor = Anchor::Center;
-
 };
 
 }  // namespace omm

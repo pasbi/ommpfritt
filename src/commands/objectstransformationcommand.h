@@ -1,13 +1,12 @@
 #pragma once
 
 #include "commands/command.h"
+#include "geometry/objecttransformation.h"
 #include <map>
 #include <set>
-#include "geometry/objecttransformation.h"
 
 namespace omm
 {
-
 class Object;
 
 class ObjectsTransformationCommand : public Command

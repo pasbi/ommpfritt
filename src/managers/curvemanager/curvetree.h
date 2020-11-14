@@ -1,13 +1,12 @@
 #pragma once
 
-#include <map>
-#include <QTreeView>
 #include "widgets/itemproxyview.h"
+#include <QTreeView>
+#include <map>
 #include <memory>
 
 namespace omm
 {
-
 class QuickAccessDelegate;
 class Scene;
 class Track;
@@ -57,6 +56,5 @@ private:
 Q_SIGNALS:
   void visibility_changed();
 };
-
 
 }  // namespace omm

@@ -5,13 +5,15 @@
 
 namespace omm
 {
-
 class Path;
 
 class CutPathCommand : public ModifySegmentsCommand
 {
 protected:
-  explicit CutPathCommand(const QString& label, Path& path, const std::vector<Geom::PathVectorTime>& cuts);
+  explicit CutPathCommand(const QString& label,
+                          Path& path,
+                          const std::vector<Geom::PathVectorTime>& cuts);
+
 public:
   explicit CutPathCommand(Path& path, const std::vector<Geom::PathVectorTime>& cuts);
 };

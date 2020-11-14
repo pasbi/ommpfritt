@@ -1,12 +1,11 @@
 #pragma once
 
-#include <QCommandLineParser>
 #include "logging.h"
+#include <QCommandLineParser>
 #include <iostream>
 
 namespace omm
 {
-
 class SubcommandLineParser : public QCommandLineParser
 {
 public:
@@ -15,7 +14,10 @@ public:
   static constexpr auto COMMAND_RENDER = "render";
   explicit SubcommandLineParser(int argc, char* argv[]);
   explicit SubcommandLineParser();
-  QString command() const { return m_command; }
+  QString command() const
+  {
+    return m_command;
+  }
 
   template<typename T> T get(const QString& name) const;
   template<typename T> T get(const QString& name, const T& default_value) const

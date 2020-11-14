@@ -1,26 +1,31 @@
 #include "properties/property.h"
+#include "objects/object.h"
 #include <algorithm>
 #include <cassert>
-#include "objects/object.h"
 
+#include "animation/track.h"
 #include "properties/optionproperty.h"
 #include <Qt>
-#include "animation/track.h"
 
 namespace omm
 {
-
 std::map<QString, const Property::PropertyDetail*> Property::m_details;
 
-Property::Property(const Property &other)
-  : QObject()
-  , configuration(other.configuration)
+Property::Property(const Property& other) : QObject(), configuration(other.configuration)
 {
 }
 
-QString Property::widget_type() const { return type() + "Widget"; }
-bool Property::is_user_property() const { return category() == USER_PROPERTY_CATEGROY_NAME; }
-void Property::revise() {}
+QString Property::widget_type() const
+{
+  return type() + "Widget";
+}
+bool Property::is_user_property() const
+{
+  return category() == USER_PROPERTY_CATEGROY_NAME;
+}
+void Property::revise()
+{
+}
 
 void Property::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
@@ -36,8 +41,7 @@ void Property::serialize(AbstractSerializer& serializer, const Pointer& root) co
   }
 }
 
-void Property
-::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
+void Property ::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
   Serializable::deserialize(deserializer, root);
 
@@ -96,13 +100,13 @@ bool Property::is_animatable() const
   return configuration.get(ANIMATABLE_POINTER, true);
 }
 
-Property &Property::set_animatable(bool animatable)
+Property& Property::set_animatable(bool animatable)
 {
   configuration[ANIMATABLE_POINTER] = animatable;
   return *this;
 }
 
-Track *Property::track() const
+Track* Property::track() const
 {
   return m_track.get();
 }
@@ -156,7 +160,8 @@ void Property::set_enabledness(bool enabled)
   }
 }
 
-void Property::Filter::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
+void Property::Filter::deserialize(AbstractDeserializer& deserializer,
+                                   const Serializable::Pointer& root)
 {
   deserializer.get(kind, make_pointer(root, "kind"));
   deserializer.get(flag, make_pointer(root, "flag"));
@@ -167,7 +172,7 @@ bool Property::Filter::accepts(Kind kind, Flag flag) const
   return this->flag.evaluate(flag) && this->kind.evaluate(kind);
 }
 
-void Property::Filter::serialize(AbstractSerializer &serializer, const Pointer &root) const
+void Property::Filter::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   serializer.set_value(kind, make_pointer(root, "kind"));
   serializer.set_value(flag, make_pointer(root, "flag"));
@@ -194,7 +199,7 @@ bool Property::Filter::operator<(const Property::Filter& other) const
 
 Property::Filter Property::Filter::accept_anything()
 {
-  return Filter(Disjunction<Kind>(Kind::All, Kind::None), { {} });
+  return Filter(Disjunction<Kind>(Kind::All, Kind::None), {{}});
 }
 
 std::ostream& operator<<(std::ostream& ostream, const Property::Filter& filter)

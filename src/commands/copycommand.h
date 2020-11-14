@@ -5,9 +5,7 @@
 
 namespace omm
 {
-
-template<typename Structure>
-class CopyCommand : public Command
+template<typename Structure> class CopyCommand : public Command
 {
 public:
   using Context = typename Contextes<typename Structure::item_type>::Owning;
@@ -21,4 +19,4 @@ private:
   Structure& m_structure;
 };
 
-}  // namespace
+}  // namespace omm

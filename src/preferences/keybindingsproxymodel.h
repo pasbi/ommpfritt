@@ -1,11 +1,10 @@
 #pragma once
 
-#include <QSortFilterProxyModel>
 #include <QKeySequence>
+#include <QSortFilterProxyModel>
 
 namespace omm
 {
-
 class KeyBindings;
 
 class KeyBindingsProxyModel : public QSortFilterProxyModel
@@ -13,7 +12,7 @@ class KeyBindingsProxyModel : public QSortFilterProxyModel
   Q_OBJECT
 public:
   KeyBindingsProxyModel(KeyBindings& key_bindings);
-  bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
+  bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
 
 public Q_SLOTS:
   /**

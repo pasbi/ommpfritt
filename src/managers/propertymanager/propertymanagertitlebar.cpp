@@ -1,17 +1,15 @@
 #include "managers/propertymanager/propertymanagertitlebar.h"
+#include "managers/propertymanager/propertymanager.h"
+#include "menuhelper.h"
 #include <QHBoxLayout>
 #include <QMenu>
 #include <QMenuBar>
 #include <QPushButton>
 #include <memory>
-#include "managers/propertymanager/propertymanager.h"
-#include "menuhelper.h"
 
 namespace omm
 {
-
-PropertyManagerTitleBar::PropertyManagerTitleBar(PropertyManager& parent)
-  : ManagerTitleBar(parent)
+PropertyManagerTitleBar::PropertyManagerTitleBar(PropertyManager& parent) : ManagerTitleBar(parent)
 {
   auto open_user_property_dialog_button = std::make_unique<QPushButton>();
   m_open_user_properties_dialog_button = open_user_property_dialog_button.get();
@@ -38,7 +36,5 @@ void PropertyManagerTitleBar::set_selection(const std::set<AbstractPropertyOwner
     m_open_user_properties_dialog_button->setEnabled(false);
   }
 }
-
-
 
 }  // namespace omm

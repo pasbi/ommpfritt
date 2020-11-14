@@ -5,14 +5,16 @@
 
 namespace omm
 {
-
 class OptionsEdit;
 
 class OptionPropertyWidget : public PropertyWidget<OptionProperty>
 {
 public:
   explicit OptionPropertyWidget(Scene& scene, const std::set<Property*>& properties);
-  OptionsEdit* combobox() const { return m_options_edit; }
+  OptionsEdit* combobox() const
+  {
+    return m_options_edit;
+  }
 
 protected:
   void update_edit() override;

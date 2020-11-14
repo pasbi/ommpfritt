@@ -1,41 +1,48 @@
 #include "properties/propertygroups/markerproperties.h"
-#include "properties/optionproperty.h"
-#include "properties/floatproperty.h"
-#include "properties/boolproperty.h"
-#include "objects/tip.h"
 #include "geometry/util.h"
+#include "objects/tip.h"
+#include "properties/boolproperty.h"
+#include "properties/floatproperty.h"
+#include "properties/optionproperty.h"
 
 namespace omm
 {
-
-MarkerProperties
-::MarkerProperties(const QString &prefix, omm::AbstractPropertyOwner &property_owner,
-                   const Shape default_shape, const double default_size)
-  : PropertyGroup(prefix, property_owner)
-  , m_default_shape(default_shape)
-  , m_default_size(default_size)
-{}
-
-void MarkerProperties::make_properties(const QString &category) const
+MarkerProperties ::MarkerProperties(const QString& prefix,
+                                    omm::AbstractPropertyOwner& property_owner,
+                                    const Shape default_shape,
+                                    const double default_size)
+    : PropertyGroup(prefix, property_owner), m_default_shape(default_shape),
+      m_default_size(default_size)
 {
-  create_property<OptionProperty>(SHAPE_PROPERTY_KEY, static_cast<std::size_t>(m_default_shape))
-    .set_options(shapes()).set_category(category)
-    .set_label(QObject::tr("Shape"));
-
-  create_property<FloatProperty>(SIZE_PROPERTY_KEY, m_default_size)
-    .set_step(0.1).set_range(0.0, FloatProperty::highest_possible_value())
-    .set_label(QObject::tr("Size")).set_category(category);
-
-  create_property<FloatProperty>(ASPECT_RATIO_PROPERTY_KEY)
-    .set_step(0.001)
-    .set_label(QObject::tr("Aspect Ratio")).set_category(category);
-
-  create_property<BoolProperty>(REVERSE_PROPERTY_KEY)
-      .set_label(QObject::tr("Reverse")).set_category(category);
 }
 
-void MarkerProperties
-::draw_marker(Painter &painter, const Point &location, const Color& color, const double width) const
+void MarkerProperties::make_properties(const QString& category) const
+{
+  create_property<OptionProperty>(SHAPE_PROPERTY_KEY, static_cast<std::size_t>(m_default_shape))
+      .set_options(shapes())
+      .set_category(category)
+      .set_label(QObject::tr("Shape"));
+
+  create_property<FloatProperty>(SIZE_PROPERTY_KEY, m_default_size)
+      .set_step(0.1)
+      .set_range(0.0, FloatProperty::highest_possible_value())
+      .set_label(QObject::tr("Size"))
+      .set_category(category);
+
+  create_property<FloatProperty>(ASPECT_RATIO_PROPERTY_KEY)
+      .set_step(0.001)
+      .set_label(QObject::tr("Aspect Ratio"))
+      .set_category(category);
+
+  create_property<BoolProperty>(REVERSE_PROPERTY_KEY)
+      .set_label(QObject::tr("Reverse"))
+      .set_category(category);
+}
+
+void MarkerProperties ::draw_marker(Painter& painter,
+                                    const Point& location,
+                                    const Color& color,
+                                    const double width) const
 {
   QPainter& p = *painter.painter;
   p.save();
@@ -54,11 +61,11 @@ void MarkerProperties
 
 std::vector<QString> MarkerProperties::shapes() const
 {
-  return { QObject::tr("None"),
-           QObject::tr("Arrow"),
-           QObject::tr("Bar"),
-           QObject::tr("Circle"),
-           QObject::tr("Diamond") };
+  return {QObject::tr("None"),
+          QObject::tr("Arrow"),
+          QObject::tr("Bar"),
+          QObject::tr("Circle"),
+          QObject::tr("Diamond")};
 }
 
 std::vector<Point> MarkerProperties::shape(const double width) const
@@ -69,11 +76,16 @@ std::vector<Point> MarkerProperties::shape(const double width) const
 
   const Vec2f size(base, base * std::exp(ar));
   switch (shape) {
-  case Shape::None: return {};
-  case Shape::Arrow: return arrow(size);
-  case Shape::Bar: return bar(size);
-  case Shape::Circle: return circle(size);
-  case Shape::Diamond: return diamond(size);
+  case Shape::None:
+    return {};
+  case Shape::Arrow:
+    return arrow(size);
+  case Shape::Bar:
+    return bar(size);
+  case Shape::Circle:
+    return circle(size);
+  case Shape::Diamond:
+    return diamond(size);
   }
   Q_UNREACHABLE();
 }
@@ -81,19 +93,19 @@ std::vector<Point> MarkerProperties::shape(const double width) const
 std::vector<Point> MarkerProperties::arrow(const Vec2f& size) const
 {
   return {
-    Point(Vec2f(size.x, 0.0)),
-    Point(Vec2f(0.0, size.y)),
-    Point(Vec2f(0.0, -size.y)),
+      Point(Vec2f(size.x, 0.0)),
+      Point(Vec2f(0.0, size.y)),
+      Point(Vec2f(0.0, -size.y)),
   };
 }
 
 std::vector<Point> MarkerProperties::bar(const Vec2f& size) const
 {
   return {
-    Point(Vec2f(-size.x, size.y)),
-    Point(Vec2f(-size.x, -size.y)),
-    Point(Vec2f(size.x, -size.y)),
-    Point(Vec2f(size.x, size.y)),
+      Point(Vec2f(-size.x, size.y)),
+      Point(Vec2f(-size.x, -size.y)),
+      Point(Vec2f(size.x, -size.y)),
+      Point(Vec2f(size.x, size.y)),
   };
 }
 
@@ -103,13 +115,13 @@ std::vector<Point> MarkerProperties::circle(const Vec2f& size) const
   return {};
 }
 
-std::vector<Point> MarkerProperties::diamond(const Vec2f &size) const
+std::vector<Point> MarkerProperties::diamond(const Vec2f& size) const
 {
   return {
-    Point(Vec2f(-size.x, 0.0)),
-    Point(Vec2f(0.0, -size.y)),
-    Point(Vec2f(size.x, 0.0)),
-    Point(Vec2f(0.0, size.y)),
+      Point(Vec2f(-size.x, 0.0)),
+      Point(Vec2f(0.0, -size.y)),
+      Point(Vec2f(size.x, 0.0)),
+      Point(Vec2f(0.0, size.y)),
   };
 }
 

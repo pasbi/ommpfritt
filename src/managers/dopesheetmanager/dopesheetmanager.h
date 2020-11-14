@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class DopeSheet;
 class DopeSheetView;
 
@@ -15,8 +14,11 @@ class DopeSheetManager : public Manager
 public:
   explicit DopeSheetManager(Scene& scene);
   static constexpr auto TYPE = "DopeSheetManager";
-  QString type() const override { return TYPE; }
-  bool perform_action(const QString &name) override;
+  QString type() const override
+  {
+    return TYPE;
+  }
+  bool perform_action(const QString& name) override;
 
 private:
   DopeSheetView* m_dope_sheet_view;

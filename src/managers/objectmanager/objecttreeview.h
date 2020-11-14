@@ -1,17 +1,16 @@
 #pragma once
 
-#include <QTreeView>
 #include "common.h"
 #include "managers/manageritemview.h"
-#include "managers/objectmanager/tagsitemdelegate.h"
 #include "managers/objectmanager/objectquickaccessdelegate.h"
 #include "managers/objectmanager/objecttreeselectionmodel.h"
+#include "managers/objectmanager/tagsitemdelegate.h"
 #include "scene/objecttree.h"
 #include "widgets/itemproxyview.h"
+#include <QTreeView>
 
 namespace omm
 {
-
 class ObjectDelegate;
 class Object;
 
@@ -37,8 +36,8 @@ protected:
   void dragMoveEvent(QDragMoveEvent* e) override;
   void mouseMoveEvent(QMouseEvent* e) override;
   void mousePressEvent(QMouseEvent* e) override;
-  void mouseReleaseEvent(QMouseEvent *e) override;
-  void focusInEvent(QFocusEvent *e) override;
+  void mouseReleaseEvent(QMouseEvent* e) override;
+  void focusInEvent(QFocusEvent* e) override;
   void paintEvent(QPaintEvent* event) override;
   void keyPressEvent(QKeyEvent* event) override;
 
@@ -63,4 +62,4 @@ private:
   bool m_aborted = false;
 };
 
-}  // namespace
+}  // namespace omm

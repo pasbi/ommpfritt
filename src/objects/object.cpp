@@ -1,34 +1,33 @@
 #include "objects/object.h"
 
-#include <cassert>
-#include <algorithm>
-#include <map>
-#include <functional>
 #include <QObject>
+#include <algorithm>
+#include <cassert>
+#include <functional>
+#include <map>
 
-#include "scene/objecttree.h"
-#include "tags/tag.h"
-#include "properties/stringproperty.h"
-#include "properties/integerproperty.h"
-#include "properties/floatproperty.h"
-#include "properties/referenceproperty.h"
 #include "common.h"
-#include "serializers/jsonserializer.h"
-#include "renderers/style.h"
-#include "tags/styletag.h"
-#include "scene/contextes.h"
-#include "properties/boolproperty.h"
-#include "properties/optionproperty.h"
-#include "properties/integervectorproperty.h"
-#include "properties/floatvectorproperty.h"
 #include "logging.h"
 #include "objects/path.h"
-#include "scene/scene.h"
+#include "properties/boolproperty.h"
+#include "properties/floatproperty.h"
+#include "properties/floatvectorproperty.h"
+#include "properties/integerproperty.h"
+#include "properties/integervectorproperty.h"
+#include "properties/optionproperty.h"
+#include "properties/referenceproperty.h"
+#include "properties/stringproperty.h"
+#include "renderers/style.h"
+#include "scene/contextes.h"
 #include "scene/mailbox.h"
+#include "scene/objecttree.h"
+#include "scene/scene.h"
+#include "serializers/jsonserializer.h"
+#include "tags/styletag.h"
+#include "tags/tag.h"
 
 namespace
 {
-
 static constexpr auto almost_one = 0.9999999;
 static constexpr auto CHILDREN_POINTER = "children";
 static constexpr auto TAGS_POINTER = "tags";
@@ -62,7 +61,7 @@ std::pair<std::size_t, double> factor_time_by_distance(const Geometry& geom, dou
     return {0, 0.0};
   } else {
     std::vector<double> accumulated_lengths;
-    accumulated_lengths.reserve(n+1);
+    accumulated_lengths.reserve(n + 1);
     double accu = 0.0;
     accumulated_lengths.push_back(accu);
     for (auto it = geom.begin(); it != geom.end(); ++it) {
@@ -71,7 +70,8 @@ std::pair<std::size_t, double> factor_time_by_distance(const Geometry& geom, dou
     }
 
     t *= accumulated_lengths.back();
-    const auto segment_end = std::find_if(accumulated_lengths.begin(), accumulated_lengths.end(),
+    const auto segment_end = std::find_if(accumulated_lengths.begin(),
+                                          accumulated_lengths.end(),
                                           [t](double l) { return l > t; });
     if (segment_end == accumulated_lengths.begin()) {
       return {0, 0.0};
@@ -88,65 +88,55 @@ std::pair<std::size_t, double> factor_time_by_distance(const Geometry& geom, dou
 
 namespace omm
 {
-
 QPen Object::m_bounding_box_pen = make_bounding_box_pen();
 QBrush Object::m_bounding_box_brush = Qt::NoBrush;
 
 Object::Object(Scene* scene)
-  : PropertyOwner(scene)
-  , painter_path(*this)
-  , geom_paths(*this)
-  , tags(*this)
+    : PropertyOwner(scene), painter_path(*this), geom_paths(*this), tags(*this)
 {
   static const auto category = QObject::tr("basic");
   create_property<OptionProperty>(VIEWPORT_VISIBILITY_PROPERTY_KEY, 0)
-    .set_options({ QObject::tr("default"), QObject::tr("hidden"),
-      QObject::tr("visible") })
-    .set_label(QObject::tr("visibility (viewport)"))
-    .set_category(category);
+      .set_options({QObject::tr("default"), QObject::tr("hidden"), QObject::tr("visible")})
+      .set_label(QObject::tr("visibility (viewport)"))
+      .set_category(category);
 
   create_property<OptionProperty>(VISIBILITY_PROPERTY_KEY, 0)
-    .set_options({ QObject::tr("default"), QObject::tr("hidden"),
-      QObject::tr("visible") })
-    .set_label(QObject::tr("visibility"))
-    .set_category(category);
+      .set_options({QObject::tr("default"), QObject::tr("hidden"), QObject::tr("visible")})
+      .set_label(QObject::tr("visibility"))
+      .set_category(category);
 
   create_property<BoolProperty>(IS_ACTIVE_PROPERTY_KEY, true)
-    .set_label(QObject::tr("active"))
-    .set_category(category);
+      .set_label(QObject::tr("active"))
+      .set_category(category);
 
   create_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>"))
-    .set_label(QObject::tr("Name"))
-    .set_category(category);
+      .set_label(QObject::tr("Name"))
+      .set_category(category);
 
   create_property<FloatVectorProperty>(POSITION_PROPERTY_KEY, Vec2f(0.0, 0.0))
-    .set_label(QObject::tr("pos"))
-    .set_category(category);
+      .set_label(QObject::tr("pos"))
+      .set_category(category);
 
   create_property<FloatVectorProperty>(SCALE_PROPERTY_KEY, Vec2f(1.0, 1.0))
-    .set_step(Vec2f(0.1, 0.1))
-    .set_label(QObject::tr("scale"))
-    .set_category(category);
+      .set_step(Vec2f(0.1, 0.1))
+      .set_label(QObject::tr("scale"))
+      .set_category(category);
 
   create_property<FloatProperty>(ROTATION_PROPERTY_KEY, 0.0)
-    .set_multiplier(180.0 / M_PI)
-    .set_label(QObject::tr("rotation"))
-    .set_category(category);
+      .set_multiplier(180.0 / M_PI)
+      .set_label(QObject::tr("rotation"))
+      .set_category(category);
 
   create_property<FloatProperty>(SHEAR_PROPERTY_KEY, 0.0)
-    .set_step(0.01)
-    .set_label(QObject::tr("shear"))
-    .set_category(category);
+      .set_step(0.01)
+      .set_label(QObject::tr("shear"))
+      .set_category(category);
 }
 
 Object::Object(const Object& other)
-  : PropertyOwner(other)
-  , TreeElement(other)
-  , painter_path(*this)
-  , geom_paths(*this)
-  , tags(other.tags, *this)
-  , m_draw_children(other.m_draw_children)
-  , m_object_tree(other.m_object_tree)
+    : PropertyOwner(other), TreeElement(other), painter_path(*this), geom_paths(*this),
+      tags(other.tags, *this), m_draw_children(other.m_draw_children),
+      m_object_tree(other.m_object_tree)
 {
   for (Tag* tag : tags.items()) {
     tag->owner = this;
@@ -164,12 +154,10 @@ Object::~Object()
 
 ObjectTransformation Object::transformation() const
 {
-  return ObjectTransformation(
-    property(POSITION_PROPERTY_KEY)->value<Vec2f>(),
-    property(SCALE_PROPERTY_KEY)->value<Vec2f>(),
-    property(ROTATION_PROPERTY_KEY)->value<double>(),
-    property(SHEAR_PROPERTY_KEY)->value<double>()
-  );
+  return ObjectTransformation(property(POSITION_PROPERTY_KEY)->value<Vec2f>(),
+                              property(SCALE_PROPERTY_KEY)->value<Vec2f>(),
+                              property(ROTATION_PROPERTY_KEY)->value<double>(),
+                              property(SHEAR_PROPERTY_KEY)->value<double>());
 }
 
 ObjectTransformation Object::global_transformation(Space space) const
@@ -195,16 +183,16 @@ void Object::set_transformation(const ObjectTransformation& transformation)
   property(SHEAR_PROPERTY_KEY)->set(transformation.shearing());
 }
 
-void Object::
-set_global_transformation(const ObjectTransformation& global_transformation, Space space)
+void Object::set_global_transformation(const ObjectTransformation& global_transformation,
+                                       Space space)
 {
   ObjectTransformation local_transformation;
   if (is_root() || (space == Space::Scene && tree_parent().is_root())) {
     local_transformation = global_transformation;
   } else {
     try {
-      local_transformation =
-        tree_parent().global_transformation(space).inverted().apply(global_transformation);
+      local_transformation
+          = tree_parent().global_transformation(space).inverted().apply(global_transformation);
     } catch (const std::runtime_error&) {
       assert(false);
     }
@@ -212,15 +200,12 @@ set_global_transformation(const ObjectTransformation& global_transformation, Spa
   set_transformation(local_transformation);
 }
 
-
-void Object::set_global_axis_transformation( const ObjectTransformation& global_transformation,
-                                             Space space )
+void Object::set_global_axis_transformation(const ObjectTransformation& global_transformation,
+                                            Space space)
 {
-  const auto get_glob_trans = [space](const auto* c) {
-    return c->global_transformation(space);
-  };
-  const auto child_transformations = ::transform<ObjectTransformation>(tree_children(),
-                                                                       get_glob_trans);
+  const auto get_glob_trans = [space](const auto* c) { return c->global_transformation(space); };
+  const auto child_transformations
+      = ::transform<ObjectTransformation>(tree_children(), get_glob_trans);
   set_global_transformation(global_transformation, space);
   for (std::size_t i = 0; i < child_transformations.size(); ++i) {
     tree_children()[i]->set_global_transformation(child_transformations[i], space);
@@ -230,10 +215,10 @@ void Object::set_global_axis_transformation( const ObjectTransformation& global_
 bool Object::is_transformation_property(const Property& property) const
 {
   const std::set<QString> transformation_property_keys{
-    POSITION_PROPERTY_KEY,
-    SCALE_PROPERTY_KEY,
-    ROTATION_PROPERTY_KEY,
-    SHEAR_PROPERTY_KEY,
+      POSITION_PROPERTY_KEY,
+      SCALE_PROPERTY_KEY,
+      ROTATION_PROPERTY_KEY,
+      SHEAR_PROPERTY_KEY,
   };
   return pmatch(&property, transformation_property_keys);
 }
@@ -254,7 +239,7 @@ std::ostream& operator<<(std::ostream& ostream, const Object& object)
   return ostream;
 }
 
-std::ostream &operator<<(std::ostream &ostream, const Object *object)
+std::ostream& operator<<(std::ostream& ostream, const Object* object)
 {
   if (object != nullptr) {
     ostream << *object;
@@ -308,7 +293,7 @@ void Object::deserialize(AbstractDeserializer& deserializer, const Pointer& root
       const auto t = child->transformation();
       adopt(std::move(child)).set_transformation(t);
     } catch (std::out_of_range&) {
-      const auto message = QObject::tr("Failed to retrieve object type '%1'.") .arg(child_type);
+      const auto message = QObject::tr("Failed to retrieve object type '%1'.").arg(child_type);
       LERROR << message;
       throw AbstractDeserializer::DeserializeError(message.toStdString());
     }
@@ -385,7 +370,7 @@ BoundingBox Object::recursive_bounding_box(const ObjectTransformation& transform
   return bounding_box;
 }
 
-std::unique_ptr<Object> Object::repudiate(Object &repudiatee)
+std::unique_ptr<Object> Object::repudiate(Object& repudiatee)
 {
   const auto global_transformation = repudiatee.global_transformation(Space::Scene);
   auto o = TreeElement<Object>::repudiate(repudiatee);
@@ -393,7 +378,7 @@ std::unique_ptr<Object> Object::repudiate(Object &repudiatee)
   return o;
 }
 
-Object &Object::adopt(std::unique_ptr<Object> adoptee, const size_t pos)
+Object& Object::adopt(std::unique_ptr<Object> adoptee, const size_t pos)
 {
   const auto global_transformation = adoptee->global_transformation(Space::Scene);
   Object& o = TreeElement<Object>::adopt(std::move(adoptee), pos);
@@ -412,7 +397,10 @@ Object::ConvertedObject Object::convert() const
   return {std::unique_ptr<Object>(converted.release()), true};
 }
 
-Flag Object::flags() const { return Flag::Convertible; }
+Flag Object::flags() const
+{
+  return Flag::Convertible;
+}
 
 void Object::copy_tags(Object& other) const
 {
@@ -422,7 +410,7 @@ void Object::copy_tags(Object& other) const
   }
 }
 
-void Object::on_property_value_changed(Property *property)
+void Object::on_property_value_changed(Property* property)
 {
   const auto object_tree_data_changed = [this](int column) {
     if (m_object_tree != nullptr) {
@@ -431,11 +419,10 @@ void Object::on_property_value_changed(Property *property)
     }
   };
 
-  if (   property == this->property(POSITION_PROPERTY_KEY)
+  if (property == this->property(POSITION_PROPERTY_KEY)
       || property == this->property(ROTATION_PROPERTY_KEY)
       || property == this->property(SHEAR_PROPERTY_KEY)
-      || property == this->property(SCALE_PROPERTY_KEY) )
-  {
+      || property == this->property(SCALE_PROPERTY_KEY)) {
     Q_EMIT scene()->mail_box().transformation_changed(*this);
   } else if (property == this->property(IS_ACTIVE_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
@@ -457,7 +444,9 @@ void Object::on_property_value_changed(Property *property)
   }
 }
 
-void Object::post_create_hook() { }
+void Object::post_create_hook()
+{
+}
 
 void Object::update()
 {
@@ -471,13 +460,16 @@ void Object::update()
 double Object::apply_border(double t, Border border)
 {
   switch (border) {
-  case Border::Clamp: return std::min(1.0, std::max(0.0, t));
-  case Border::Wrap: return fmod(fmod(t, 1.0) + 1.0, 1.0);
-  case Border::Hide: return (t >= 0.0 && t <= 1.0) ? t : -1.0;
+  case Border::Clamp:
+    return std::min(1.0, std::max(0.0, t));
+  case Border::Wrap:
+    return fmod(fmod(t, 1.0) + 1.0, 1.0);
+  case Border::Hide:
+    return (t >= 0.0 && t <= 1.0) ? t : -1.0;
   case Border::Reflect: {
     const bool flip = int(t / 1.0) % 2 == 1;
     t = apply_border(t, Border::Wrap);
-    return flip ? (1.0-t) : t;
+    return flip ? (1.0 - t) : t;
   }
   }
   Q_UNREACHABLE();
@@ -493,7 +485,10 @@ void Object::set_oriented_position(const Point& op, const bool align)
   set_global_transformation(transformation, Space::Scene);
 }
 
-bool Object::is_active() const { return property(IS_ACTIVE_PROPERTY_KEY)->value<bool>(); }
+bool Object::is_active() const
+{
+  return property(IS_ACTIVE_PROPERTY_KEY)->value<bool>();
+}
 
 bool Object::is_visible(bool viewport) const
 {
@@ -525,8 +520,7 @@ std::vector<const omm::Style*> Object::find_styles() const
     if (tag->type() == omm::StyleTag::TYPE) {
       const auto* property_owner = tag->property(omm::StyleTag::STYLE_REFERENCE_PROPERTY_KEY)
                                        ->value<omm::ReferenceProperty::value_type>();
-      assert(  property_owner == nullptr
-            || property_owner->kind == omm::Kind::Style );
+      assert(property_owner == nullptr || property_owner->kind == omm::Kind::Style);
       return static_cast<const omm::Style*>(property_owner);
     } else {
       return nullptr;
@@ -566,7 +560,7 @@ bool Object::is_closed() const
   return false;
 }
 
-bool Object::contains(const Vec2f &point) const
+bool Object::contains(const Vec2f& point) const
 {
   const auto path_vector = geom_paths();
   const auto winding = path_vector.winding(Geom::Point{point.x, point.y});
@@ -578,8 +572,7 @@ Geom::PathVector Object::paths() const
   return Geom::PathVector();
 }
 
-Geom::PathVectorTime Object::compute_path_vector_time(double t,
-                                                      Interpolation interpolation) const
+Geom::PathVectorTime Object::compute_path_vector_time(double t, Interpolation interpolation) const
 {
   t = std::clamp(t, 0.0, almost_one);
   const auto path_vector = paths();
@@ -588,14 +581,12 @@ Geom::PathVectorTime Object::compute_path_vector_time(double t,
   }
 
   switch (interpolation) {
-  case Interpolation::Natural:
-  {
+  case Interpolation::Natural: {
     double path_index;
     const double path_position = std::modf(t * path_vector.size(), &path_index);
     return compute_path_vector_time(path_index, path_position, interpolation);
   }
-  case Interpolation::Distance:
-  {
+  case Interpolation::Distance: {
     const auto [i, tp] = factor_time_by_distance(path_vector, t);
     return compute_path_vector_time(i, tp, interpolation);
   }
@@ -604,8 +595,8 @@ Geom::PathVectorTime Object::compute_path_vector_time(double t,
   }
 }
 
-Geom::PathVectorTime Object::compute_path_vector_time(int path_index, double t,
-                                                      Interpolation interpolation) const
+Geom::PathVectorTime
+Object::compute_path_vector_time(int path_index, double t, Interpolation interpolation) const
 {
   if (path_index < 0) {
     return compute_path_vector_time(t, interpolation);
@@ -623,14 +614,12 @@ Geom::PathVectorTime Object::compute_path_vector_time(int path_index, double t,
   }
 
   switch (interpolation) {
-  case Interpolation::Natural:
-  {
+  case Interpolation::Natural: {
     double curve_index;
     const double curve_position = std::modf(t * path.size(), &curve_index);
     return Geom::PathVectorTime(path_index, curve_index, curve_position);
   }
-  case Interpolation::Distance:
-  {
+  case Interpolation::Distance: {
     const auto [i, tc] = factor_time_by_distance(path, t);
     return Geom::PathVectorTime(path_index, i, tc);
   }
@@ -680,9 +669,11 @@ void Object::draw_object(Painter& renderer, const Style& style, Painter::Options
   }
 }
 
-void Object::draw_handles(Painter&) const {}
+void Object::draw_handles(Painter&) const
+{
+}
 
-void Object::set_object_tree(ObjectTree &object_tree)
+void Object::set_object_tree(ObjectTree& object_tree)
 {
   if (m_object_tree == nullptr) {
     m_object_tree = &object_tree;
@@ -691,36 +682,37 @@ void Object::set_object_tree(ObjectTree &object_tree)
   }
 }
 
-void Object::on_child_added(Object &child)
+void Object::on_child_added(Object& child)
 {
   TreeElement::on_child_added(child);
   Q_EMIT scene()->mail_box().appearance_changed(*this);
 }
 
-void Object::on_child_removed(Object &child)
+void Object::on_child_removed(Object& child)
 {
   TreeElement::on_child_removed(child);
   Q_EMIT scene()->mail_box().appearance_changed(*this);
 }
 
-void Object::listen_to_changes(const std::function<Object *()> &get_watched)
+void Object::listen_to_changes(const std::function<Object*()>& get_watched)
 {
-  connect(&scene()->mail_box(), qOverload<Object&>(&MailBox::appearance_changed), this,
-          [get_watched, this](Object& o)
-  {
-    Object* r = get_watched();
-    if (r != nullptr) {
-      if (r->is_ancestor_of(*this)) {
-        {
-          QSignalBlocker blocker(&scene()->mail_box());
-          update();
-        }
-        Q_EMIT scene()->mail_box().appearance_changed();
-      } else if (r->is_ancestor_of(o)) {
-        update();
-      }
-    }
-  });
+  connect(&scene()->mail_box(),
+          qOverload<Object&>(&MailBox::appearance_changed),
+          this,
+          [get_watched, this](Object& o) {
+            Object* r = get_watched();
+            if (r != nullptr) {
+              if (r->is_ancestor_of(*this)) {
+                {
+                  QSignalBlocker blocker(&scene()->mail_box());
+                  update();
+                }
+                Q_EMIT scene()->mail_box().appearance_changed();
+              } else if (r->is_ancestor_of(o)) {
+                update();
+              }
+            }
+          });
 }
 
 void Object::listen_to_children_changes()
@@ -731,8 +723,7 @@ void Object::listen_to_children_changes()
     }
   };
   connect(&scene()->mail_box(), &MailBox::transformation_changed, this, on_change);
-  connect(&scene()->mail_box(), qOverload<Object&>(&MailBox::appearance_changed),
-          this, on_change);
+  connect(&scene()->mail_box(), qOverload<Object&>(&MailBox::appearance_changed), this, on_change);
 }
 
 Path::Segment Object::path_to_segment(const Geom::Path& path, bool is_closed)
@@ -749,7 +740,7 @@ Path::Segment Object::path_to_segment(const Geom::Path& path, bool is_closed)
     }
     segment.back().right_tangent = PolarCoordinates(to_vec(c[1]) - p0);
     const auto p1 = to_vec(c[3]);
-    auto& pref = [wrap = is_closed && i==n-1, p1, &segment]() -> decltype(auto) {
+    auto& pref = [wrap = is_closed && i == n - 1, p1, &segment]() -> decltype(auto) {
       if (wrap) {
         return segment.front();
       } else {
@@ -768,8 +759,7 @@ Path::Segment Object::path_to_segment(const Geom::Path& path, bool is_closed)
   return segment;
 }
 
-Geom::Path Object::segment_to_path(Segment segment, bool is_closed,
-                                   InterpolationMode interpolation)
+Geom::Path Object::segment_to_path(Segment segment, bool is_closed, InterpolationMode interpolation)
 {
   const auto pts = [](const std::array<Vec2f, 4>& pts) {
     return ::transform<Geom::Point, std::vector>(pts, [](const auto& p) {
@@ -794,24 +784,23 @@ Geom::Path Object::segment_to_path(Segment segment, bool is_closed,
   }
 
   for (std::size_t i = 0; i < m; ++i) {
-    const std::size_t j = (i+1) % n;
+    const std::size_t j = (i + 1) % n;
     switch (interpolation) {
     case InterpolationMode::Bezier:
       [[fallthrough]];
     case InterpolationMode::Smooth:
-      bzs.emplace_back(pts({ segment[i].position,
-                             segment[i].right_position(),
-                             segment[j].left_position(),
-                             segment[j].position }));
+      bzs.emplace_back(pts({segment[i].position,
+                            segment[i].right_position(),
+                            segment[j].left_position(),
+                            segment[j].position}));
       break;
     case InterpolationMode::Linear:
-      bzs.emplace_back(pts({ segment[i].position,
-                             (2.0 * segment[i].position + 1.0 * segment[j].position) / 3.0,
-                             (1.0 * segment[i].position + 2.0 * segment[j].position) / 3.0,
-                             segment[j].position }));
+      bzs.emplace_back(pts({segment[i].position,
+                            (2.0 * segment[i].position + 1.0 * segment[j].position) / 3.0,
+                            (1.0 * segment[i].position + 2.0 * segment[j].position) / 3.0,
+                            segment[j].position}));
       break;
     }
-
   }
   return Geom::Path(bzs.begin(), bzs.end(), is_closed);
 }

@@ -1,31 +1,30 @@
 #pragma once
 
-#include <vector>
-#include <memory>
+#include "2geom/pathvector.h"
+#include "abstractfactory.h"
+#include "aspects/propertyowner.h"
+#include "aspects/treeelement.h"
+#include "cachedgetter.h"
+#include "common.h"
 #include "external/json_fwd.hpp"
 #include "geometry/objecttransformation.h"
-#include "aspects/propertyowner.h"
-#include "abstractfactory.h"
-#include "aspects/treeelement.h"
-#include "common.h"
+#include "geometry/point.h"
 #include "renderers/painter.h"
 #include "scene/taglist.h"
-#include "geometry/point.h"
-#include "2geom/pathvector.h"
-#include "cachedgetter.h"
+#include <memory>
+#include <vector>
 
 namespace omm
 {
-
 class ObjectTree;
 class Scene;
 class Property;
 
 class Object
-  : public PropertyOwner<Kind::Object>
-  , public virtual Serializable
-  , public TreeElement<Object>
-  , public AbstractFactory<QString, true, Object, Scene*>
+    : public PropertyOwner<Kind::Object>
+    , public virtual Serializable
+    , public TreeElement<Object>
+    , public AbstractFactory<QString, true, Object, Scene*>
 {
   Q_OBJECT
   Scene* m_scene;
@@ -43,8 +42,8 @@ public:
   ObjectTransformation global_transformation(Space space) const;
   void set_transformation(const ObjectTransformation& transformation);
   void set_global_transformation(const ObjectTransformation& global_transformation, Space space);
-  virtual void set_global_axis_transformation( const ObjectTransformation& global_transformation,
-                                               Space space);
+  virtual void set_global_axis_transformation(const ObjectTransformation& global_transformation,
+                                              Space space);
   bool is_transformation_property(const Property& property) const;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
@@ -58,13 +57,12 @@ public:
    * @brief bounding_box returns the bounding box in world coordinates
    */
   virtual BoundingBox bounding_box(const ObjectTransformation& transformation) const;
-  virtual BoundingBox recursive_bounding_box(const ObjectTransformation &transformation) const;
-  std::unique_ptr<Object> repudiate(Object &repudiatee) override;
-  Object & adopt(std::unique_ptr<Object> adoptee, const size_t pos) override;
+  virtual BoundingBox recursive_bounding_box(const ObjectTransformation& transformation) const;
+  std::unique_ptr<Object> repudiate(Object& repudiatee) override;
+  Object& adopt(std::unique_ptr<Object> adoptee, const size_t pos) override;
   using TreeElement::adopt;
 
-  struct ConvertedObject
-  {
+  struct ConvertedObject {
     std::unique_ptr<Object> object;
     bool keep_children;
   };
@@ -92,19 +90,19 @@ public:
   enum class Interpolation { Natural, Distance };
   Geom::PathVectorTime compute_path_vector_time(double t,
                                                 Interpolation = Interpolation::Natural) const;
-  Geom::PathVectorTime compute_path_vector_time(int path_index, double t,
-                                                Interpolation = Interpolation::Natural) const;
+  Geom::PathVectorTime
+  compute_path_vector_time(int path_index, double t, Interpolation = Interpolation::Natural) const;
 
-  struct CachedQPainterPathGetter : CachedGetter<QPainterPath, Object>
-  {
+  struct CachedQPainterPathGetter : CachedGetter<QPainterPath, Object> {
     using CachedGetter::CachedGetter;
+
   private:
     QPainterPath compute() const override;
   } painter_path;
 
-  struct CachedGeomPathVectorGetter : CachedGetter<Geom::PathVector, Object>
-  {
+  struct CachedGeomPathVectorGetter : CachedGetter<Geom::PathVector, Object> {
     using CachedGetter::CachedGetter;
+
   private:
     Geom::PathVector compute() const override;
   } geom_paths;
@@ -114,12 +112,15 @@ public:
   using Segment = std::vector<Point>;
 
   static Segment path_to_segment(const Geom::Path& path, bool is_closed);
-  static Geom::Path segment_to_path(Segment segment, bool is_closed,
+  static Geom::Path segment_to_path(Segment segment,
+                                    bool is_closed,
                                     InterpolationMode interpolation = InterpolationMode::Bezier);
 
-  template<typename Segments=std::vector<Segment>> static Geom::PathVector
-  segments_to_path_vector(const Segments& segments, bool is_closed,
-                          InterpolationMode interpolation = InterpolationMode::Bezier)
+  template<typename Segments = std::vector<Segment>>
+  static Geom::PathVector segments_to_path_vector(const Segments& segments,
+                                                  bool is_closed,
+                                                  InterpolationMode interpolation
+                                                  = InterpolationMode::Bezier)
   {
     Geom::PathVector paths;
     for (auto&& segment : segments) {
@@ -154,11 +155,12 @@ public Q_SLOTS:
 
 public:
   void copy_tags(Object& other) const;
+
 protected:
   bool m_draw_children = true;
   void on_property_value_changed(Property* property) override;
-  void on_child_added(Object &child) override;
-  void on_child_removed(Object &child) override;
+  void on_child_added(Object& child) override;
+  void on_child_removed(Object& child) override;
   void listen_to_changes(const std::function<Object*()>& get_watched);
   void listen_to_children_changes();
 

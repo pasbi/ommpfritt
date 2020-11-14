@@ -1,26 +1,28 @@
 #include "tools/handles/tangenthandle.h"
-#include "tools/handles/selecthandle.h"
 #include "renderers/painter.h"
+#include "tools/handles/selecthandle.h"
 
 namespace omm
 {
-
 TangentHandle::TangentHandle(Tool& tool, PointSelectHandle& master_handle, Tangent tangent)
-  : Handle(tool), m_master_handle(master_handle), m_tangent(tangent)
+    : Handle(tool), m_master_handle(master_handle), m_tangent(tangent)
 {
 }
 
-double TangentHandle::draw_epsilon() const { return 2.0; }
+double TangentHandle::draw_epsilon() const
+{
+  return 2.0;
+}
 
 void TangentHandle::draw(QPainter& painter) const
 {
   painter.setPen(ui_color("tangent"));
   painter.setBrush(ui_color("tangent fill"));
   const auto r = draw_epsilon();
-  painter.drawEllipse(position.x - r, position.y - r, 2*r, 2*r);
+  painter.drawEllipse(position.x - r, position.y - r, 2 * r, 2 * r);
 }
 
-bool TangentHandle::contains_global(const Vec2f &point) const
+bool TangentHandle::contains_global(const Vec2f& point) const
 {
   const double dist = (point - position).euclidean_norm();
   return dist < interact_epsilon();

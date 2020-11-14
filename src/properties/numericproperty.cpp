@@ -2,7 +2,6 @@
 
 namespace omm
 {
-
 template<> double NumericProperty<double>::highest_possible_value()
 {
   return std::numeric_limits<double>::infinity();
@@ -22,7 +21,6 @@ template<> double NumericProperty<double>::default_step()
 {
   return 1.0;
 }
-
 
 template<> int NumericProperty<int>::highest_possible_value()
 {
@@ -46,18 +44,14 @@ template<> int NumericProperty<int>::default_step()
 
 template<> Vec2i NumericProperty<Vec2i>::highest_possible_value()
 {
-  return {
-    NumericProperty<int>::highest_possible_value(),
-    NumericProperty<int>::highest_possible_value()
-  };
+  return {NumericProperty<int>::highest_possible_value(),
+          NumericProperty<int>::highest_possible_value()};
 }
 
 template<> Vec2i NumericProperty<Vec2i>::lowest_possible_value()
 {
-  return {
-    NumericProperty<int>::lowest_possible_value(),
-    NumericProperty<int>::lowest_possible_value()
-  };
+  return {NumericProperty<int>::lowest_possible_value(),
+          NumericProperty<int>::lowest_possible_value()};
 }
 
 template<> Vec2i NumericProperty<Vec2i>::smallest_step()
@@ -72,18 +66,14 @@ template<> Vec2i NumericProperty<Vec2i>::default_step()
 
 template<> Vec2f NumericProperty<Vec2f>::highest_possible_value()
 {
-  return {
-    NumericProperty<double>::highest_possible_value(),
-    NumericProperty<double>::highest_possible_value()
-  };
+  return {NumericProperty<double>::highest_possible_value(),
+          NumericProperty<double>::highest_possible_value()};
 }
 
 template<> Vec2f NumericProperty<Vec2f>::lowest_possible_value()
 {
-  return {
-    NumericProperty<double>::lowest_possible_value(),
-    NumericProperty<double>::lowest_possible_value()
-  };
+  return {NumericProperty<double>::lowest_possible_value(),
+          NumericProperty<double>::lowest_possible_value()};
 }
 
 template<> Vec2f NumericProperty<Vec2f>::smallest_step()
@@ -93,8 +83,8 @@ template<> Vec2f NumericProperty<Vec2f>::smallest_step()
 
 template<> Vec2f NumericProperty<Vec2f>::default_step()
 {
-  return {1.0, 1.0};;
+  return {1.0, 1.0};
+  ;
 }
-
 
 }  // namespace omm

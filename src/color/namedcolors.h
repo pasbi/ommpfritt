@@ -1,17 +1,18 @@
 #pragma once
 
-#include <QComboBox>
-#include <QAbstractItemView>
-#include <QIdentityProxyModel>
-#include <QAbstractListModel>
-#include "color/color.h"
-#include <cmath>
 #include "aspects/serializable.h"
+#include "color/color.h"
+#include <QAbstractItemView>
+#include <QAbstractListModel>
+#include <QComboBox>
+#include <QIdentityProxyModel>
+#include <cmath>
 
 namespace omm
 {
-
-class NamedColors : public QAbstractListModel, public Serializable
+class NamedColors
+    : public QAbstractListModel
+    , public Serializable
 {
   Q_OBJECT
 public:
@@ -33,8 +34,8 @@ public:
   Color color(const QString& name) const;
   void clear();
 
-  void serialize(AbstractSerializer&serializer, const Pointer&p) const override;
-  void deserialize(AbstractDeserializer&deserializer, const Pointer&p) override;
+  void serialize(AbstractSerializer& serializer, const Pointer& p) const override;
+  void deserialize(AbstractDeserializer& deserializer, const Pointer& p) override;
 
   QString generate_default_name() const;
 
@@ -44,14 +45,13 @@ private:
   std::vector<std::pair<QString, Color>> m_named_colors;
 };
 
-template<typename ViewT>
-class NamedColorsHighlighProxyModel : public QIdentityProxyModel
+template<typename ViewT> class NamedColorsHighlighProxyModel : public QIdentityProxyModel
 {
   static constexpr bool is_combobox = std::is_base_of_v<QComboBox, ViewT>;
   static constexpr bool is_itemview = std::is_base_of_v<QAbstractItemView, ViewT>;
+
 public:
-  explicit NamedColorsHighlighProxyModel(NamedColors& model, const ViewT& view)
-    : m_view(view)
+  explicit NamedColorsHighlighProxyModel(NamedColors& model, const ViewT& view) : m_view(view)
   {
     setSourceModel(&model);
     if constexpr (std::is_base_of_v<QComboBox, ViewT>) {

@@ -1,14 +1,15 @@
 #pragma once
 
-#include "scene/list.h"
 #include "scene/itemmodeladapter.h"
+#include "scene/list.h"
 #include <QAbstractListModel>
 
 namespace omm
 {
-
 class Style;
-class StyleList : public ItemModelAdapter<StyleList, Style, QAbstractListModel>, public List<Style>
+class StyleList
+    : public ItemModelAdapter<StyleList, Style, QAbstractListModel>
+    , public List<Style>
 {
   Q_OBJECT
 public:

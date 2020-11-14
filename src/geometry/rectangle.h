@@ -1,12 +1,11 @@
 #pragma once
 
-#include <QRectF>
-#include "geometry/vec2.h"
 #include "geometry/point.h"
+#include "geometry/vec2.h"
+#include <QRectF>
 
 namespace omm
 {
-
 class Rectangle
 {
 public:
@@ -38,7 +37,6 @@ private:
   Vec2f m_top_left;
   Vec2f m_bottom_right;
   bool m_is_empty;
-
 };
 
 bool operator==(const Rectangle& a, const Rectangle& b);

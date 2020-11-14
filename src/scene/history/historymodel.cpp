@@ -4,18 +4,17 @@
 
 namespace omm
 {
-
 HistoryModel::HistoryModel()
 {
   connect(&m_undo_stack, &QUndoStack::indexChanged, [this](int index) {
     const auto before = this->index(std::max(0, index), 0);
-    const auto after = this->index(std::min(m_undo_stack.count()-1, index+1), 0);
+    const auto after = this->index(std::min(m_undo_stack.count() - 1, index + 1), 0);
     Q_EMIT dataChanged(before, after);
   });
   connect(&m_undo_stack, &QUndoStack::indexChanged, this, &HistoryModel::index_changed);
 }
 
-QVariant HistoryModel::data(const QModelIndex &index, int role) const
+QVariant HistoryModel::data(const QModelIndex& index, int role) const
 {
   const auto decorate_name = [this](QString name, int row) {
     if (row == m_saved_index) {
@@ -31,7 +30,7 @@ QVariant HistoryModel::data(const QModelIndex &index, int role) const
     if (row == 0) {
       return tr("foundation");
     } else {
-      return m_undo_stack.command(row-1)->actionText();
+      return m_undo_stack.command(row - 1)->actionText();
     }
   };
 
@@ -81,7 +80,7 @@ Command* HistoryModel::last_command() const
   if (const auto n = count(); n == 0) {
     return nullptr;
   } else {
-    const auto* cmd = m_undo_stack.command(n-1);
+    const auto* cmd = m_undo_stack.command(n - 1);
     if (cmd->childCount() > 0) {
       // macro
       return nullptr;
@@ -116,11 +115,11 @@ void HistoryModel::set_saved_index()
   Q_EMIT dataChanged(new_index, new_index);
 }
 
-int HistoryModel::rowCount(const QModelIndex &parent) const
+int HistoryModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent)
   assert(!parent.isValid());
-  return count()+1;
+  return count() + 1;
 }
 
 void HistoryModel::undo()
@@ -138,8 +137,8 @@ std::unique_ptr<Macro> HistoryModel::start_macro(const QString& text)
   return std::make_unique<Macro>(text, m_undo_stack);
 }
 
-std::unique_ptr<Macro>
-HistoryModel::start_remember_selection_macro(const QString& text, Scene& scene)
+std::unique_ptr<Macro> HistoryModel::start_remember_selection_macro(const QString& text,
+                                                                    Scene& scene)
 {
   return std::make_unique<RememberSelectionMacro>(scene, text, m_undo_stack);
 }

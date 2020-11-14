@@ -1,23 +1,22 @@
 #pragma once
 
-#include <map>
-#include <memory>
-#include <vector>
-#include <set>
-#include <cstdint>
 #include <QAbstractItemModel>
 #include <QUndoStack>
+#include <cstdint>
+#include <map>
+#include <memory>
+#include <set>
+#include <vector>
 
-#include "external/json_fwd.hpp"
-#include "scene/cycleguard.h"
-#include "scene/contextes.h"
 #include "cachedgetter.h"
+#include "external/json_fwd.hpp"
+#include "scene/contextes.h"
+#include "scene/cycleguard.h"
 #include "scene/list.h"
 #include "scene/pointselection.h"
 
 namespace omm
 {
-
 class Command;
 class Project;
 class PythonEngine;
@@ -31,8 +30,12 @@ class NamedColors;
 class ColorProperty;
 
 template<typename T> struct SceneStructure;
-template<> struct SceneStructure<Object> { using type = ObjectTree; };
-template<> struct SceneStructure<Style> { using type = StyleList; };
+template<> struct SceneStructure<Object> {
+  using type = ObjectTree;
+};
+template<> struct SceneStructure<Style> {
+  using type = StyleList;
+};
 
 class Scene : public QObject
 {
@@ -50,16 +53,17 @@ public:
 private:
   Scene(const Scene& other) = delete;
   Scene(Scene&& other) = delete;
+
 private:
   void prepare_reset();
 public Q_SLOTS:
   void reset();
+
 private:
   /**
    * holds the last filename this scene was associated to. Is set in `save_as` and `load_from`
    */
   QString m_filename;
-
 
   // === Save/Load ====
 public:
@@ -69,11 +73,9 @@ public:
 
   static constexpr auto TYPE = "Scene";
 
-
   // === Python ===
 public:
   PythonEngine& python_engine;
-
 
   // === Objects, Tags and Styles and Selections ===
 public:
@@ -97,102 +99,121 @@ public:
   }
 
   std::set<AbstractPropertyOwner*> property_owners() const;
-  std::set<ReferenceProperty*>
-  find_reference_holders(const AbstractPropertyOwner& candidate) const;
+  std::set<ReferenceProperty*> find_reference_holders(const AbstractPropertyOwner& candidate) const;
   std::map<const AbstractPropertyOwner*, std::set<ReferenceProperty*>>
   find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates) const;
   template<typename T> std::set<T*> find_items(const QString& name) const;
-  bool can_remove( QWidget* parent, std::set<AbstractPropertyOwner*> selection,
-                   std::set<Property*>& properties ) const;
+  bool can_remove(QWidget* parent,
+                  std::set<AbstractPropertyOwner*> selection,
+                  std::set<Property*>& properties) const;
   bool remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& selection);
   bool contains(const AbstractPropertyOwner* apo) const;
   PointSelection point_selection;
+
 private:
   std::map<Kind, std::set<AbstractPropertyOwner*>> m_item_selection;
   std::set<AbstractPropertyOwner*> m_selection;
   std::unique_ptr<Object> make_root();
 
-
   // === guards ===
 public:
   [[nodiscard]] std::unique_ptr<CycleGuard> make_cycle_guard(const Object* guarded);
+
 private:
   std::set<const Object*> m_cycle_guarded_objects;
-
 
   // === MailBox ===
 private:
   std::unique_ptr<MailBox> m_mail_box;
-public:
-  MailBox& mail_box() const { return *m_mail_box; }
 
+public:
+  MailBox& mail_box() const
+  {
+    return *m_mail_box;
+  }
 
   // === Objects  ====
 private:
   std::unique_ptr<ObjectTree> m_object_tree;
-public:
-  ObjectTree& object_tree() const { return *m_object_tree; }
 
+public:
+  ObjectTree& object_tree() const
+  {
+    return *m_object_tree;
+  }
 
   // === Tags ===
 public:
   std::set<Tag*> tags() const;
   void evaluate_tags();
 
-
   // === Styles ===
 public:
   Style& default_style() const;
-  StyleList& styles() const { return *m_styles; }
+  StyleList& styles() const
+  {
+    return *m_styles;
+  }
+
 private:
   std::unique_ptr<Style> m_default_style;
   std::unique_ptr<StyleList> m_styles;
 
-
   // === Commands ===
 private:
   std::unique_ptr<HistoryModel> m_history;
+
 public:
-  HistoryModel& history() const { return *m_history; }
+  HistoryModel& history() const
+  {
+    return *m_history;
+  }
   template<typename CommandT, typename... Args> void submit(Args&&... args)
   {
     submit(std::make_unique<CommandT>(std::forward<Args>(args)...));
   }
   void submit(std::unique_ptr<Command> command);
 
-
   // === Tools ===
 private:
   std::unique_ptr<ToolBox> m_tool_box;
+
 public:
-  ToolBox& tool_box() { return *m_tool_box; }
+  ToolBox& tool_box()
+  {
+    return *m_tool_box;
+  }
 public Q_SLOTS:
   void update_tool();
-
 
   // === Mode ===
 public:
   SceneMode current_mode() const;
   void set_mode(SceneMode mode);
+
 private:
   SceneMode m_mode = SceneMode::Object;
-
 
   // === Animation ===
 private:
   std::unique_ptr<Animator> m_animator;
-public:
-  Animator& animator() { return *m_animator; }
 
+public:
+  Animator& animator()
+  {
+    return *m_animator;
+  }
 
   // === NamedColors ===
 private:
   std::unique_ptr<NamedColors> m_named_colors;
-public:
-  NamedColors& named_colors() { return *m_named_colors; }
-  std::set<ColorProperty*> find_named_color_holders(const QString& name) const;
 
+public:
+  NamedColors& named_colors()
+  {
+    return *m_named_colors;
+  }
+  std::set<ColorProperty*> find_named_color_holders(const QString& name) const;
 };
 
 }  // namespace omm
-

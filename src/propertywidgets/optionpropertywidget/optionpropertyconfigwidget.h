@@ -1,19 +1,18 @@
 #pragma once
 
-#include "propertywidgets/propertyconfigwidget.h"
 #include "properties/optionproperty.h"
+#include "propertywidgets/propertyconfigwidget.h"
 
 class QListWidget;
 
 namespace omm
 {
-
 class OptionPropertyConfigWidget : public PropertyConfigWidget<OptionProperty>
 {
 public:
   OptionPropertyConfigWidget();
-  void init(const Property::Configuration &configuration) override;
-  void update(Property::Configuration &configuration) const override;
+  void init(const Property::Configuration& configuration) override;
+  void update(Property::Configuration& configuration) const override;
 
 protected:
   bool eventFilter(QObject* watched, QEvent* event) override;

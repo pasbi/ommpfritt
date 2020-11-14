@@ -1,20 +1,19 @@
 #include "managers/objectmanager/objectquickaccessdelegate.h"
-#include "mainwindow/application.h"
-#include <QPainter>
-#include <QEvent>
-#include <QMouseEvent>
-#include "managers/objectmanager/objecttreeview.h"
-#include <QDebug>
-#include "scene/scene.h"
 #include "commands/propertycommand.h"
+#include "mainwindow/application.h"
+#include "managers/objectmanager/objecttreeview.h"
+#include "preferences/uicolors.h"
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
 #include "scene/history/historymodel.h"
-#include "preferences/uicolors.h"
+#include "scene/scene.h"
+#include <QDebug>
+#include <QEvent>
+#include <QMouseEvent>
+#include <QPainter>
 
 namespace
 {
-
 using namespace omm;
 
 class PropertyArea : public ObjectQuickAccessDelegate::Area
@@ -39,7 +38,7 @@ class VisibilityPropertyArea : public PropertyArea
 {
 public:
   explicit VisibilityPropertyArea(ObjectTreeView& view, const QRectF& rect, const QString& key);
-  void draw(QPainter &painter, const QModelIndex &index) override;
+  void draw(QPainter& painter, const QModelIndex& index) override;
 
 protected:
   std::unique_ptr<Command> make_command(const QModelIndex& index, bool update_cache) override;
@@ -52,7 +51,7 @@ class IsEnabledPropertyArea : public PropertyArea
 {
 public:
   explicit IsEnabledPropertyArea(ObjectTreeView& view);
-  void draw(QPainter &painter, const QModelIndex &index) override;
+  void draw(QPainter& painter, const QModelIndex& index) override;
 
 protected:
   std::unique_ptr<Command> make_command(const QModelIndex& index, bool update_cache) override;
@@ -61,25 +60,25 @@ private:
   bool m_new_value;
 };
 
-
 Object::Visibility advance_visibility(Object::Visibility visibility)
 {
   switch (visibility) {
-  case Object::Visibility::Default: return Object::Visibility::Hidden;
-  case Object::Visibility::Hidden: return Object::Visibility::Visible;
-  case Object::Visibility::Visible: return Object::Visibility::Default;
+  case Object::Visibility::Default:
+    return Object::Visibility::Hidden;
+  case Object::Visibility::Hidden:
+    return Object::Visibility::Visible;
+  case Object::Visibility::Visible:
+    return Object::Visibility::Default;
   }
   Q_UNREACHABLE();
 }
 
-PropertyArea::
-PropertyArea(const QRectF& area, ObjectTreeView& view, const QString &property_key)
-  : ObjectQuickAccessDelegate::Area(area)
-  , view(view), m_property_key(property_key)
+PropertyArea::PropertyArea(const QRectF& area, ObjectTreeView& view, const QString& property_key)
+    : ObjectQuickAccessDelegate::Area(area), view(view), m_property_key(property_key)
 {
 }
 
-Property &PropertyArea::property(const QModelIndex &index) const
+Property& PropertyArea::property(const QModelIndex& index) const
 {
   return *view.model()->item_at(index).property(m_property_key);
 }
@@ -124,13 +123,14 @@ void PropertyArea::perform(const QModelIndex& index, QMouseEvent& event)
   }
 }
 
-VisibilityPropertyArea::
-VisibilityPropertyArea(ObjectTreeView& view, const QRectF& rect, const QString& key)
-  : PropertyArea(rect, view, key)
+VisibilityPropertyArea::VisibilityPropertyArea(ObjectTreeView& view,
+                                               const QRectF& rect,
+                                               const QString& key)
+    : PropertyArea(rect, view, key)
 {
 }
 
-void VisibilityPropertyArea::draw(QPainter &painter, const QModelIndex& index)
+void VisibilityPropertyArea::draw(QPainter& painter, const QModelIndex& index)
 {
   static constexpr QMarginsF margins(0.05, 0.05, 0.05, 0.05);
   const auto visibility = property(index).value<Object::Visibility>();
@@ -143,9 +143,12 @@ void VisibilityPropertyArea::draw(QPainter &painter, const QModelIndex& index)
   painter.setPen(pen);
   painter.setBrush([visibility, this]() {
     switch (visibility) {
-    case Object::Visibility::Default: return ui_color(view, "ObjectManager", "default fill");
-    case Object::Visibility::Hidden: return ui_color(view, "ObjectManager", "invisible fill");
-    case Object::Visibility::Visible: return ui_color(view, "ObjectManager", "visible fill");
+    case Object::Visibility::Default:
+      return ui_color(view, "ObjectManager", "default fill");
+    case Object::Visibility::Hidden:
+      return ui_color(view, "ObjectManager", "invisible fill");
+    case Object::Visibility::Visible:
+      return ui_color(view, "ObjectManager", "visible fill");
     }
     Q_UNREACHABLE();
     return QColor();
@@ -154,8 +157,8 @@ void VisibilityPropertyArea::draw(QPainter &painter, const QModelIndex& index)
   painter.restore();
 }
 
-std::unique_ptr<Command>
-VisibilityPropertyArea::make_command(const QModelIndex &index, bool update_cache)
+std::unique_ptr<Command> VisibilityPropertyArea::make_command(const QModelIndex& index,
+                                                              bool update_cache)
 {
   auto& property = this->property(index);
   const auto old_value = property.value<Object::Visibility>();
@@ -166,17 +169,18 @@ VisibilityPropertyArea::make_command(const QModelIndex &index, bool update_cache
     return nullptr;
   } else {
     const auto value_s = static_cast<std::size_t>(m_new_value);
-    return std::make_unique<PropertiesCommand<OptionProperty>>(std::set{ &property }, value_s);
+    return std::make_unique<PropertiesCommand<OptionProperty>>(std::set{&property}, value_s);
   }
 }
 
 IsEnabledPropertyArea::IsEnabledPropertyArea(ObjectTreeView& view)
-  : PropertyArea(QRectF(QPointF(0.0, 0.0), QSizeF(0.5, 1.0)),
-                 view, Object::IS_ACTIVE_PROPERTY_KEY)
+    : PropertyArea(QRectF(QPointF(0.0, 0.0), QSizeF(0.5, 1.0)),
+                   view,
+                   Object::IS_ACTIVE_PROPERTY_KEY)
 {
 }
 
-void IsEnabledPropertyArea::draw(QPainter &painter, const QModelIndex& index)
+void IsEnabledPropertyArea::draw(QPainter& painter, const QModelIndex& index)
 {
   QPen pen;
   if (property(index).value<bool>()) {
@@ -199,8 +203,8 @@ void IsEnabledPropertyArea::draw(QPainter &painter, const QModelIndex& index)
   painter.restore();
 }
 
-std::unique_ptr<Command>
-IsEnabledPropertyArea::make_command(const QModelIndex &index, bool update_cache)
+std::unique_ptr<Command> IsEnabledPropertyArea::make_command(const QModelIndex& index,
+                                                             bool update_cache)
 {
   auto& property = this->property(index);
   const auto old_value = property.value<bool>();
@@ -210,7 +214,7 @@ IsEnabledPropertyArea::make_command(const QModelIndex &index, bool update_cache)
   if (m_new_value == old_value) {
     return nullptr;
   } else {
-    return std::make_unique<PropertiesCommand<BoolProperty>>(std::set { &property }, m_new_value);
+    return std::make_unique<PropertiesCommand<BoolProperty>>(std::set{&property}, m_new_value);
   }
 }
 
@@ -218,17 +222,18 @@ IsEnabledPropertyArea::make_command(const QModelIndex &index, bool update_cache)
 
 namespace omm
 {
-
 ObjectQuickAccessDelegate::ObjectQuickAccessDelegate(QAbstractItemView& view)
-  : QuickAccessDelegate(view)
+    : QuickAccessDelegate(view)
 {
   ObjectTreeView& otv = static_cast<ObjectTreeView&>(view);
   add_area(std::make_unique<IsEnabledPropertyArea>(otv));
   using VPA = VisibilityPropertyArea;
-  add_area(std::make_unique<VPA>(otv, QRectF(QPointF(0.5, 0.5), QSizeF(0.5, 0.5)),
-                                             Object::VISIBILITY_PROPERTY_KEY));
-  add_area(std::make_unique<VPA>(otv, QRectF(QPointF(0.5, 0.0), QSizeF(0.5, 0.5)),
-                                             Object::VIEWPORT_VISIBILITY_PROPERTY_KEY));
+  add_area(std::make_unique<VPA>(otv,
+                                 QRectF(QPointF(0.5, 0.5), QSizeF(0.5, 0.5)),
+                                 Object::VISIBILITY_PROPERTY_KEY));
+  add_area(std::make_unique<VPA>(otv,
+                                 QRectF(QPointF(0.5, 0.0), QSizeF(0.5, 0.5)),
+                                 Object::VIEWPORT_VISIBILITY_PROPERTY_KEY));
 }
 
 }  // namespace omm

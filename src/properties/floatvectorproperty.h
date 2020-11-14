@@ -5,9 +5,7 @@
 
 namespace omm
 {
-
-struct FloatVectorPropertyLimits
-{
+struct FloatVectorPropertyLimits {
   static const Vec2f lower;
   static const Vec2f upper;
   static const Vec2f step;

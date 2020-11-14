@@ -1,12 +1,11 @@
 #pragma once
 
-#include "tags/tag.h"
 #include "properties/propertygroups/pathproperties.h"
+#include "tags/tag.h"
 #include <Qt>
 
 namespace omm
 {
-
 class PathTag : public Tag
 {
 public:
@@ -24,7 +23,6 @@ public:
   void on_property_value_changed(Property* property) override;
 
   const PathProperties path_properties;
-
 };
 
 }  // namespace omm

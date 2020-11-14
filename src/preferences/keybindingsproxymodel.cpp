@@ -4,14 +4,13 @@
 
 namespace omm
 {
-
-KeyBindingsProxyModel::KeyBindingsProxyModel(KeyBindings &key_bindings)
-  : QSortFilterProxyModel(nullptr)
+KeyBindingsProxyModel::KeyBindingsProxyModel(KeyBindings& key_bindings)
+    : QSortFilterProxyModel(nullptr)
 {
   setSourceModel(&key_bindings);
 }
 
-bool KeyBindingsProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+bool KeyBindingsProxyModel::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
 {
   if (!source_parent.isValid()) {
     return true;
@@ -28,7 +27,7 @@ bool KeyBindingsProxyModel::filterAcceptsRow(int source_row, const QModelIndex &
       const QString seq = this->m_action_sequence_filter.toString(QKeySequence::NativeText);
       const bool sequence_matches = sequence.contains(seq, Qt::CaseInsensitive);
       return (m_action_name_filter.isEmpty() || name_matches)
-          && (m_action_sequence_filter.isEmpty() || sequence_matches);
+             && (m_action_sequence_filter.isEmpty() || sequence_matches);
     }
   }
 }

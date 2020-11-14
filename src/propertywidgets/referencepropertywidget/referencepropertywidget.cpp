@@ -1,15 +1,14 @@
 ﻿#include "propertywidgets/referencepropertywidget/referencepropertywidget.h"
 
+#include "properties/typedproperty.h"
 #include "propertywidgets/multivalueedit.h"
 #include "widgets/referencelineedit.h"
-#include "properties/typedproperty.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
 
 namespace
 {
-
 template<typename PropertyT, typename ReturnT, typename F>
 ReturnT get(const std::set<omm::Property*>& properties, const F& getter)
 {
@@ -26,10 +25,9 @@ ReturnT get(const std::set<omm::Property*>& properties, const F& getter)
 
 namespace omm
 {
-
-ReferencePropertyWidget
-::ReferencePropertyWidget(Scene& scene, const std::set<Property*>& properties)
-  : PropertyWidget(scene, properties)
+ReferencePropertyWidget ::ReferencePropertyWidget(Scene& scene,
+                                                  const std::set<Property*>& properties)
+    : PropertyWidget(scene, properties)
 {
   auto line_edit = std::make_unique<ReferenceLineEdit>();
   line_edit->set_scene(scene);
@@ -37,9 +35,9 @@ ReferencePropertyWidget
     set_properties_value(o);
   });
 
-  const auto filter = get<ReferenceProperty, ReferenceProperty::Filter>(properties, [](const ReferenceProperty* p) {
-    return p->filter();
-  });
+  const auto filter = get<ReferenceProperty, ReferenceProperty::Filter>(
+      properties,
+      [](const ReferenceProperty* p) { return p->filter(); });
 
   line_edit->set_filter(filter);
 

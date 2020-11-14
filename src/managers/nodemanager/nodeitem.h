@@ -1,11 +1,10 @@
 #pragma once
 
-#include <QGraphicsItem>
 #include "nodesystem/port.h"
+#include <QGraphicsItem>
 
 namespace omm
 {
-
 class PropertyWidgetItem;
 class Node;
 class PropertyOutputPort;
@@ -27,7 +26,10 @@ public:
   static constexpr auto TYPE = QGraphicsItem::UserType + 2;
   static constexpr double small_slot_height = 13.0;
   static constexpr double large_slot_height = 30.0;
-  int type() const override { return TYPE; }
+  int type() const override
+  {
+    return TYPE;
+  }
   Node& node;
   void toggle_expanded();
 
@@ -64,10 +66,11 @@ private:
   std::map<PortType, std::set<std::unique_ptr<PortItem>>> m_port_items;
   std::set<std::unique_ptr<PropertyWidgetItem>> m_property_items;
 
-  struct Slot
-  {
+  struct Slot {
     using get_text_f = std::function<QString()>;
-    Slot() {}
+    Slot()
+    {
+    }
     get_text_f get_left_text;
     get_text_f get_right_text;
     get_text_f get_center_text;

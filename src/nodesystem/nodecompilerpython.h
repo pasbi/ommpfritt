@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 class NodeCompilerPython : public NodeCompiler<NodeCompilerPython>
 {
 public:

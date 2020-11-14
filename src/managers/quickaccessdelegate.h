@@ -1,20 +1,20 @@
 #pragma once
 
+#include "commands/command.h"
+#include "scene/history/macro.h"
 #include <QAbstractItemDelegate>
 #include <memory>
-#include "scene/history/macro.h"
-#include "commands/command.h"
 
 namespace omm
 {
-
 class QuickAccessDelegate : public QAbstractItemDelegate
 {
 public:
   explicit QuickAccessDelegate(QAbstractItemView& view);
-  void paint( QPainter *painter, const QStyleOptionViewItem &option,
-              const QModelIndex &index ) const override;
-  QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+  void paint(QPainter* painter,
+             const QStyleOptionViewItem& option,
+             const QModelIndex& index) const override;
+  QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
   bool on_mouse_button_press(QMouseEvent& event);
   void on_mouse_move(QMouseEvent& event);
@@ -24,7 +24,9 @@ public:
   {
   public:
     explicit Area(const QRectF& area);
-    virtual ~Area() {}
+    virtual ~Area()
+    {
+    }
     virtual void draw(QPainter& painter, const QModelIndex& index) = 0;
     const QRectF area;
     bool is_active = false;
@@ -39,7 +41,7 @@ protected:
 private:
   QAbstractItemView& m_view;
   std::list<std::unique_ptr<Area>> m_areas;
-  QPointF to_local(const QPoint &view_global, const QModelIndex &index) const;
+  QPointF to_local(const QPoint& view_global, const QModelIndex& index) const;
 };
 
 }  // namespace omm

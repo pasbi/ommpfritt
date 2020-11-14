@@ -8,7 +8,6 @@ class QPushButton;
 
 namespace omm
 {
-
 class Manager;
 
 class ManagerTitleBar : public QWidget

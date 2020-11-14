@@ -1,33 +1,30 @@
 #include "managers/nodemanager/nodeview.h"
-#include "managers/nodemanager/nodeitem.h"
-#include "managers/nodemanager/portitem.h"
-#include "propertywidgets/propertywidget.h"
 #include "commands/nodecommand.h"
+#include "mainwindow/application.h"
+#include "managers/nodemanager/nodeitem.h"
 #include "managers/nodemanager/nodemimedata.h"
-#include <QClipboard>
-#include <QApplication>
-#include "properties/referenceproperty.h"
-#include <QMimeData>
-#include "scene/propertyownermimedata.h"
+#include "managers/nodemanager/nodescene.h"
+#include "managers/nodemanager/portitem.h"
+#include "nodesystem/node.h"
+#include "nodesystem/nodemodel.h"
+#include "nodesystem/nodes/fragmentnode.h"
 #include "nodesystem/nodes/referencenode.h"
+#include "preferences/preferences.h"
+#include "properties/referenceproperty.h"
+#include "propertywidgets/propertywidget.h"
 #include "scene/history/historymodel.h"
 #include "scene/history/macro.h"
-#include "commands/nodecommand.h"
-#include "nodesystem/node.h"
-#include "mainwindow/application.h"
-#include "preferences/preferences.h"
-#include "nodesystem/nodemodel.h"
+#include "scene/propertyownermimedata.h"
+#include <QApplication>
+#include <QClipboard>
 #include <QGraphicsItem>
+#include <QMimeData>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QToolTip>
-#include "nodesystem/nodemodel.h"
-#include "managers/nodemanager/nodescene.h"
-#include "nodesystem/nodes/fragmentnode.h"
 
 namespace
 {
-
 omm::PortItem* get_port_item(omm::NodeScene& scene, omm::AbstractPort& port)
 {
   omm::NodeItem& node_item = scene.node_item(port.node);
@@ -62,17 +59,15 @@ QGraphicsItem* root(QGraphicsItem* item)
 
 std::vector<double> linspace(double left, double right, double step)
 {
-  const auto mod = [step](const double v) {
-    return std::fmod(std::fmod(v, step) + step, step);
-  };
+  const auto mod = [step](const double v) { return std::fmod(std::fmod(v, step) + step, step); };
 
   left = left - mod(left);
   right = right - mod(right) + step;
 
   const size_t n = (right - left) / step;
   std::vector<double> linspace;
-  linspace.reserve(n+1);
-  for (std::size_t i = 0; i < n+1; ++i) {
+  linspace.reserve(n + 1);
+  for (std::size_t i = 0; i < n + 1; ++i) {
     const double v = left + static_cast<double>(i) * step;
     linspace.push_back(v);
   }
@@ -83,10 +78,7 @@ std::vector<double> linspace(double left, double right, double step)
 
 namespace omm
 {
-
-NodeView::NodeView(QWidget* parent)
-  : QGraphicsView(parent)
-  , m_pan_zoom_controller(*this)
+NodeView::NodeView(QWidget* parent) : QGraphicsView(parent), m_pan_zoom_controller(*this)
 {
   setAcceptDrops(true);
   setMouseTracking(true);
@@ -107,7 +99,7 @@ NodeView::~NodeView()
 {
 }
 
-void NodeView::set_model(NodeModel *model)
+void NodeView::set_model(NodeModel* model)
 {
   NodeModel* current_model = m_node_scene == nullptr ? nullptr : m_node_scene->model();
   if (current_model != nullptr) {
@@ -119,8 +111,10 @@ void NodeView::set_model(NodeModel *model)
   } else {
     m_node_scene = std::make_unique<NodeScene>(model->scene());
     m_node_scene->set_model(model);
-    m_view_scene_connection = connect(model, &NodeModel::topology_changed,
-                                      m_node_scene.get(), [s=m_node_scene.get()](){ s->update(); });
+    m_view_scene_connection = connect(model,
+                                      &NodeModel::topology_changed,
+                                      m_node_scene.get(),
+                                      [s = m_node_scene.get()]() { s->update(); });
     setScene(m_node_scene.get());
     const QRectF scene_rect = viewport()->rect();
     setSceneRect(scene_rect);
@@ -137,7 +131,7 @@ NodeModel* NodeView::model() const
   }
 }
 
-bool NodeView::accepts_paste(const QMimeData &mime_data) const
+bool NodeView::accepts_paste(const QMimeData& mime_data) const
 {
   if (auto model = this->model(); model != nullptr) {
     return mime_data.hasFormat(NodeMimeData::MIME_TYPES.at(model->language()));
@@ -176,12 +170,12 @@ void NodeView::paste_from_clipboard()
   if (accepts_paste(mime_data)) {
     NodeModel& model = *this->model();
     auto blocker = std::make_unique<NodeModel::TopologyChangeSignalBlocker>(model);
-    const auto nodes = ::transform<Node*, std::vector>(static_cast<const NodeMimeData&>(mime_data).nodes());
+    const auto nodes
+        = ::transform<Node*, std::vector>(static_cast<const NodeMimeData&>(mime_data).nodes());
 
     std::map<const Node*, Node*> copy_map;
-    const auto copyable_nodes =  ::filter_if(nodes, [](const auto& node) {
-      return node->copyable();
-    });
+    const auto copyable_nodes
+        = ::filter_if(nodes, [](const auto& node) { return node->copyable(); });
     const auto make_copy = [&model, &copy_map](Node* node) {
       auto clone = node->clone(model);
       copy_map[node] = clone.get();
@@ -189,12 +183,13 @@ void NodeView::paste_from_clipboard()
     };
     auto copies = ::transform<std::unique_ptr<Node>, std::vector>(copyable_nodes, make_copy);
 
-    { // set position
-      const auto old_center = std::accumulate(nodes.begin(), nodes.end(), QPointF(),
-                                          [](const QPointF& p, const Node* node)
-      {
-        return node->pos() + p;
-      }) / nodes.size();
+    {  // set position
+      const auto old_center
+          = std::accumulate(nodes.begin(),
+                            nodes.end(),
+                            QPointF(),
+                            [](const QPointF& p, const Node* node) { return node->pos() + p; })
+            / nodes.size();
       const auto diff = mapToScene(mapFromGlobal(QCursor::pos())) - old_center;
       for (auto& node : copies) {
         node->set_pos(node->pos() + diff);
@@ -206,7 +201,7 @@ void NodeView::paste_from_clipboard()
         Scene& scene = model.scene();
         auto macro = scene.history().start_macro(tr("Copy Nodes"));
 
-        { // restore connections
+        {  // restore connections
           for (auto&& [o_target, c_target] : copy_map) {
             for (const InputPort* o_input : o_target->ports<InputPort>()) {
               if (const OutputPort* o_output = o_input->connected_output(); o_output != nullptr) {
@@ -255,9 +250,8 @@ void NodeView::draw_status_bar(QPainter& painter)
 
 void NodeView::drawForeground(QPainter* painter, const QRectF&)
 {
-  static const auto reverse_connection = [](const PortItem& origin) {
-    return origin.port.port_type == PortType::Output;
-  };
+  static const auto reverse_connection
+      = [](const PortItem& origin) { return origin.port.port_type == PortType::Output; };
   painter->save();
   painter->setRenderHint(QPainter::Antialiasing);
   painter->setTransform(viewportTransform());
@@ -292,8 +286,8 @@ void NodeView::drawBackground(QPainter* painter, const QRectF&)
   painter->save();
   const auto top_left = sceneRect().topLeft();
   const auto bottom_right = sceneRect().bottomRight();
-  const double scale = std::min((bottom_right.x() - top_left.x())/viewport()->width(),
-                                (bottom_right.y() - top_left.y())/viewport()->height());
+  const double scale = std::min((bottom_right.x() - top_left.x()) / viewport()->width(),
+                                (bottom_right.y() - top_left.y()) / viewport()->height());
 
   const double step = scale > 1.2 ? 100.0 : 50.0;
 
@@ -379,7 +373,7 @@ void NodeView::resizeEvent(QResizeEvent* event)
     QTransform::quadToQuad(rect_to_polygon({QPointF(), viewport_size}),
                            rect_to_polygon(sceneRect()),
                            t);
-    return t.map(QPointF {viewport_size.width(), viewport_size.height()} / 2.0);
+    return t.map(QPointF{viewport_size.width(), viewport_size.height()} / 2.0);
   };
 
   const auto old_scene_pos = scene_center(event->oldSize());
@@ -419,9 +413,9 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
   if (m_pan_zoom_controller.move(*event)) {
     event->accept();
   } else if (m_tmp_connection_origin != nullptr) {
-    if (PortItem* port_item = item_at<PortItem>(event->pos()); port_item != nullptr
-        && model()->can_connect(m_tmp_connection_origin->port, port_item->port))
-    {
+    if (PortItem* port_item = item_at<PortItem>(event->pos());
+        port_item != nullptr
+        && model()->can_connect(m_tmp_connection_origin->port, port_item->port)) {
       m_tmp_connection_target = port_item;
     } else {
       m_tmp_connection_target = nullptr;
@@ -441,9 +435,8 @@ void NodeView::mouseMoveEvent(QMouseEvent* event)
   QGraphicsView::mouseMoveEvent(event);
 }
 
-void NodeView::mouseReleaseEvent(QMouseEvent *event)
+void NodeView::mouseReleaseEvent(QMouseEvent* event)
 {
-
   std::list<std::unique_ptr<Command>> commands;
   const auto maybe_disconnect = [&commands](AbstractPort& port) {
     if (port.port_type == PortType::Input) {
@@ -459,9 +452,8 @@ void NodeView::mouseReleaseEvent(QMouseEvent *event)
       maybe_disconnect(m_tmp_connection_target->port);
       commands.push_back(std::make_unique<ConnectPortsCommand>(m_tmp_connection_origin->port,
                                                                m_tmp_connection_target->port));
-      if (m_about_to_disconnect == &m_tmp_connection_origin->port ||
-          m_about_to_disconnect == &m_tmp_connection_target->port)
-      {
+      if (m_about_to_disconnect == &m_tmp_connection_origin->port
+          || m_about_to_disconnect == &m_tmp_connection_target->port) {
         m_about_to_disconnect = nullptr;
       }
     }
@@ -516,16 +508,19 @@ void NodeView::remove_selection()
   }
 }
 
-void NodeView::draw_connection(QPainter& painter, const QPointF& in, const QPointF& out,
-                               bool is_floating, bool reverse) const
+void NodeView::draw_connection(QPainter& painter,
+                               const QPointF& in,
+                               const QPointF& out,
+                               bool is_floating,
+                               bool reverse) const
 {
   if (reverse) {
     draw_connection(painter, out, in, is_floating, false);
   } else {
 #define INTERPOLATE_CONNECTION_AWAY_FROM_NODE
 #if defined(INTERPOLATE_CONNECTION_CORRECT_DIRECTION)
-    const QPointF c1((2.0 * in.x() + 1.0 * out.x())/3.0, in.y());
-    const QPointF c2((1.0 * in.x() + 2.0 * out.x())/3.0, out.y());
+    const QPointF c1((2.0 * in.x() + 1.0 * out.x()) / 3.0, in.y());
+    const QPointF c2((1.0 * in.x() + 2.0 * out.x()) / 3.0, out.y());
 #elif defined(INTERPOLATE_CONNECTION_AWAY_FROM_NODE)
     const double d = 2.0 / 3.0 * abs(in.x() - out.x());
     const QPointF c1(in.x() - d, in.y());
@@ -538,8 +533,8 @@ void NodeView::draw_connection(QPainter& painter, const QPointF& in, const QPoin
     painter.save();
     QPen pen;
     pen.setWidth(2.0);
-    pen.setColor(ui_color(*this, "NodeView", is_floating ? "floating-connection"
-                                                         : "fixed-connection"));
+    pen.setColor(
+        ui_color(*this, "NodeView", is_floating ? "floating-connection" : "fixed-connection"));
     painter.setPen(pen);
     painter.drawPath(path);
     painter.restore();
@@ -559,7 +554,8 @@ void NodeView::pan_to_center()
     const auto nodes = model->nodes();
     const auto f = [](const QPointF& p, const Node* n) { return p + n->pos(); };
     const double n = nodes.size();
-    const auto center = std::accumulate(nodes.begin(), nodes.end(), QPointF(), f) / std::max(1.0, n);
+    const auto center
+        = std::accumulate(nodes.begin(), nodes.end(), QPointF(), f) / std::max(1.0, n);
     reset_scene_rect();
     const auto d = mapToScene(viewport()->rect().center()) - center;
     translate(d.x(), d.y());

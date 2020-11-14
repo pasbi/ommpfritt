@@ -1,40 +1,40 @@
 #include "scene/itemmodeladapter.h"
-#include "scene/contextes.h"
-#include "scene/propertyownermimedata.h"
+#include "commands/copycommand.h"
+#include "commands/movecommand.h"
 #include "objects/object.h"
 #include "renderers/style.h"
+#include "scene/contextes.h"
+#include "scene/propertyownermimedata.h"
 #include "scene/scene.h"
-#include "commands/movecommand.h"
-#include "commands/copycommand.h"
 #include <QAbstractItemModel>
 #include <QAbstractListModel>
 #include <type_traits>
 
 namespace
 {
-
-template<typename item_type, typename StructureT> bool
-can_move_drop_items( StructureT& structure,
-                     const std::vector<typename omm::Contextes<item_type>::Move>& contextes )
+template<typename item_type, typename StructureT>
+bool can_move_drop_items(StructureT& structure,
+                         const std::vector<typename omm::Contextes<item_type>::Move>& contextes)
 {
   using move_context_type = typename omm::Contextes<item_type>::Move;
   const auto is_strictly_valid = [&structure](const move_context_type& context) {
     return context.is_strictly_valid(structure);
   };
 
-  const auto is_valid = [](const typename omm::Contextes<item_type>::Move& context) {
-    return context.is_valid();
-  };
+  const auto is_valid
+      = [](const typename omm::Contextes<item_type>::Move& context) { return context.is_valid(); };
 
   // all contextes may be moved and at least one move is no noop
   return std::all_of(contextes.begin(), contextes.end(), is_valid)
-      && std::any_of(contextes.begin(), contextes.end(), is_strictly_valid);
+         && std::any_of(contextes.begin(), contextes.end(), is_strictly_valid);
 }
 
 template<typename ContextT, typename ItemModelAdapterT>
 typename std::enable_if<ContextT::is_tree_context, std::vector<ContextT>>::type
-make_contextes( const ItemModelAdapterT& adapter,
-                const QMimeData* data, int row, const QModelIndex& parent )
+make_contextes(const ItemModelAdapterT& adapter,
+               const QMimeData* data,
+               int row,
+               const QModelIndex& parent)
 {
   std::vector<ContextT> contextes;
   using item_type = typename ContextT::item_type;
@@ -60,11 +60,13 @@ make_contextes( const ItemModelAdapterT& adapter,
 
 template<typename ContextT, typename ItemModelAdapterT>
 typename std::enable_if<!ContextT::is_tree_context, std::vector<ContextT>>::type
-make_contextes( const ItemModelAdapterT& adapter,
-                const QMimeData* data, int row, const QModelIndex& parent )
+make_contextes(const ItemModelAdapterT& adapter,
+               const QMimeData* data,
+               int row,
+               const QModelIndex& parent)
 {
   if (parent.isValid()) {
-    return std::vector<ContextT>(); // it's a list, not a tree.
+    return std::vector<ContextT>();  // it's a list, not a tree.
   }
 
   using item_type = typename ContextT::item_type;
@@ -78,8 +80,8 @@ make_contextes( const ItemModelAdapterT& adapter,
   std::vector<ContextT> contextes;
   contextes.reserve(items.size());
   const size_t pos = row < 0 ? adapter.rowCount() : row;
-  const item_type* predecessor = (pos == 0) ? nullptr
-                                            : &adapter.item_at(adapter.index(pos - 1, 0, parent));
+  const item_type* predecessor
+      = (pos == 0) ? nullptr : &adapter.item_at(adapter.index(pos - 1, 0, parent));
   for (item_type* subject : items) {
     contextes.emplace_back(*subject, predecessor);
     predecessor = subject;
@@ -119,38 +121,45 @@ bool model_index_tree_position_compare(QModelIndex a, QModelIndex b)
 
 namespace omm
 {
-
 template<typename StructureT, typename ItemT, typename ItemModel>
-ItemModelAdapter<StructureT, ItemT, ItemModel>
-::ItemModelAdapter(Scene& scene, StructureT& structure)
-  : scene(scene)
-  , structure(structure)
+ItemModelAdapter<StructureT, ItemT, ItemModel>::ItemModelAdapter(Scene& scene,
+                                                                 StructureT& structure)
+    : scene(scene), structure(structure)
 {
 }
 
-template<typename StructureT, typename ItemT, typename ItemModel> Qt::DropActions
-ItemModelAdapter<StructureT, ItemT, ItemModel>::supportedDragActions() const
+template<typename StructureT, typename ItemT, typename ItemModel>
+Qt::DropActions ItemModelAdapter<StructureT, ItemT, ItemModel>::supportedDragActions() const
 {
   return Qt::LinkAction | Qt::MoveAction | Qt::CopyAction;
 }
 
-template<typename StructureT, typename ItemT, typename ItemModel> Qt::DropActions
-ItemModelAdapter<StructureT, ItemT, ItemModel>::supportedDropActions() const
+template<typename StructureT, typename ItemT, typename ItemModel>
+Qt::DropActions ItemModelAdapter<StructureT, ItemT, ItemModel>::supportedDropActions() const
 {
   return Qt::MoveAction | Qt::CopyAction;
 }
 
 template<typename StructureT, typename ItemT, typename ItemModel>
-bool ItemModelAdapter<StructureT, ItemT, ItemModel>
-::canDropMimeData( const QMimeData *data, Qt::DropAction action,
-                   int row, int column, const QModelIndex &parent ) const
+bool ItemModelAdapter<StructureT, ItemT, ItemModel>::canDropMimeData(
+    const QMimeData* data,
+    Qt::DropAction action,
+    int row,
+    int column,
+    const QModelIndex& parent) const
 {
   Q_UNUSED(column);
-  if (!data->hasFormat(PropertyOwnerMimeData::MIME_TYPE)) { return false; }
+  if (!data->hasFormat(PropertyOwnerMimeData::MIME_TYPE)) {
+    return false;
+  }
   const auto* pdata = qobject_cast<const PropertyOwnerMimeData*>(data);
-  if (pdata == nullptr) { return false; }
+  if (pdata == nullptr) {
+    return false;
+  }
   const auto items = pdata->items<typename structure_type::item_type>();
-  if (items.size() == 0) { return false; }
+  if (items.size() == 0) {
+    return false;
+  }
 
   switch (action) {
   case Qt::MoveAction: {
@@ -158,15 +167,19 @@ bool ItemModelAdapter<StructureT, ItemT, ItemModel>
     const auto move_contextes = make_contextes<Context>(*this, data, row, parent);
     return can_move_drop_items<typename structure_type::item_type>(structure, move_contextes);
   }
-  case Qt::CopyAction: return true;
-  default: return false;
+  case Qt::CopyAction:
+    return true;
+  default:
+    return false;
   }
 }
 
-template<typename StructureT, typename ItemT, typename ItemModel> bool
-ItemModelAdapter<StructureT, ItemT, ItemModel>
-::dropMimeData( const QMimeData *data, Qt::DropAction action,
-                int row, int column, const QModelIndex &parent )
+template<typename StructureT, typename ItemT, typename ItemModel>
+bool ItemModelAdapter<StructureT, ItemT, ItemModel>::dropMimeData(const QMimeData* data,
+                                                                  Qt::DropAction action,
+                                                                  int row,
+                                                                  int column,
+                                                                  const QModelIndex& parent)
 {
   using MoveContext = typename Contextes<typename structure_type::item_type>::Move;
   using OwningContext = typename Contextes<typename structure_type::item_type>::Owning;
@@ -177,13 +190,17 @@ ItemModelAdapter<StructureT, ItemT, ItemModel>
     switch (action) {
     case Qt::MoveAction: {
       auto move_contextes = make_contextes<MoveContext>(*this, data, row, parent);
-      if (move_contextes.size() == 0) { return false; }
+      if (move_contextes.size() == 0) {
+        return false;
+      }
       scene.submit<MoveCommand<StructureT>>(structure, move_contextes);
       break;
     }
     case Qt::CopyAction: {
       auto copy_contextes = make_contextes<OwningContext>(*this, data, row, parent);
-      if (copy_contextes.size() == 0) { return false; }
+      if (copy_contextes.size() == 0) {
+        return false;
+      }
       scene.submit<CopyCommand<StructureT>>(structure, std::move(copy_contextes));
       break;
     }
@@ -197,18 +214,17 @@ ItemModelAdapter<StructureT, ItemT, ItemModel>
 template<typename StructureT, typename ItemT, typename ItemModel>
 QStringList ItemModelAdapter<StructureT, ItemT, ItemModel>::mimeTypes() const
 {
-  return { PropertyOwnerMimeData::MIME_TYPE };
+  return {PropertyOwnerMimeData::MIME_TYPE};
 }
 
 template<typename StructureT, typename ItemT, typename ItemModel>
-QMimeData* ItemModelAdapter<StructureT, ItemT, ItemModel>::mimeData(const QModelIndexList &indexes) const
+QMimeData*
+ItemModelAdapter<StructureT, ItemT, ItemModel>::mimeData(const QModelIndexList& indexes) const
 {
   if (indexes.isEmpty()) {
     return nullptr;
   } else {
-    const auto f = [this](const QModelIndex& index) {
-      return &this->item_at(index);
-    };
+    const auto f = [this](const QModelIndex& index) { return &this->item_at(index); };
 
     auto sorted_indexes = indexes;
     // TODO replace this very inefficient approach with topological_context_sort

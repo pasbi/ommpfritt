@@ -1,13 +1,12 @@
 #pragma once
 
-#include <variant>
-#include "objects/object.h"
 #include "objects/instance.h"
+#include "objects/object.h"
 #include <Qt>
+#include <variant>
 
 namespace omm
 {
-
 class Property;
 class Tag;
 class Scene;
@@ -33,8 +32,8 @@ public:
 
 protected:
   void on_property_value_changed(Property* property) override;
-  void on_child_added(Object &child) override;
-  void on_child_removed(Object &child) override;
+  void on_child_added(Object& child) override;
+  void on_child_removed(Object& child) override;
 
 private:
   std::unique_ptr<Object> m_reflection;

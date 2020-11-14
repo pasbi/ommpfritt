@@ -1,13 +1,12 @@
 #pragma once
 
 #include "commands/command.h"
-#include <vector>
-#include <memory>
 #include "properties/property.h"
+#include <memory>
+#include <vector>
 
 namespace omm
 {
-
 class DisconnectPortsCommand;
 class ConnectPortsCommand;
 class AbstractPropertyOwner;

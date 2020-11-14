@@ -1,11 +1,10 @@
 #pragma once
 
-#include <pybind11/embed.h>
 #include <QString>
 #include <map>
+#include <pybind11/embed.h>
 
-template<typename GeneralWrappedT, typename GeneralWrapperT>
-class WrapperFactory
+template<typename GeneralWrappedT, typename GeneralWrapperT> class WrapperFactory
 {
 private:
   template<typename SpecialWrapperT> static pybind11::object make(GeneralWrappedT& wrapped)
@@ -30,7 +29,7 @@ public:
     }
   }
 
-  using creator_type = pybind11::object(*)(GeneralWrappedT&);
+  using creator_type = pybind11::object (*)(GeneralWrappedT&);
   using creator_map_type = std::map<QString, creator_type>;
 
 private:
@@ -39,4 +38,4 @@ private:
 
 template<typename GeneralWrappedT, typename GeneralWrapperT>
 typename WrapperFactory<GeneralWrappedT, GeneralWrapperT>::creator_map_type
-WrapperFactory<GeneralWrappedT, GeneralWrapperT>::m_creator_map;
+    WrapperFactory<GeneralWrappedT, GeneralWrapperT>::m_creator_map;

@@ -1,36 +1,35 @@
 #include "application.h"
 
+#include <QAbstractButton>
+#include <QApplication>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QSettings>
 #include <cassert>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QApplication>
-#include <QAbstractButton>
 
-#include "tags/scripttag.h"
 #include "tags/nodestag.h"
+#include "tags/scripttag.h"
 
-#include "mainwindow/toolbar/toolbar.h"
-#include "mainwindow/mainwindow.h"
-#include "managers/manager.h"
-#include "scene/scene.h"
 #include "commands/addcommand.h"
-#include "mainwindow/pathactions.h"
-#include "objects/object.h"
-#include "tools/toolbox.h"
-#include "tags/tag.h"
-#include "mainwindow/viewport/viewport.h"
-#include "mainwindow/exportdialog.h"
-#include "logging.h"
-#include "widgets/pointdialog.h"
 #include "commands/movecommand.h"
-#include "scene/history/historymodel.h"
-#include "scene/stylelist.h"
-#include "managers/manager.h"
-#include "preferences/preferencedialog.h"
-#include <QTranslator>
-#include "registers.h"
 #include "keybindings/modeselector.h"
+#include "logging.h"
+#include "mainwindow/exportdialog.h"
+#include "mainwindow/mainwindow.h"
+#include "mainwindow/pathactions.h"
+#include "mainwindow/toolbar/toolbar.h"
+#include "mainwindow/viewport/viewport.h"
+#include "managers/manager.h"
+#include "objects/object.h"
+#include "preferences/preferencedialog.h"
+#include "registers.h"
+#include "scene/history/historymodel.h"
+#include "scene/scene.h"
+#include "scene/stylelist.h"
+#include "tags/tag.h"
+#include "tools/toolbox.h"
+#include "widgets/pointdialog.h"
+#include <QTranslator>
 
 namespace
 {
@@ -112,13 +111,14 @@ QString scene_directory_hint(const QString& scene_filename)
 auto init_mode_selectors()
 {
   std::map<QString, std::unique_ptr<omm::ModeSelector>> map;
-  const auto insert = [&map](const QString& name, const QString& cycle_action,
-                             const std::vector<QString>& activation_actions)
-  {
-    map.insert({name, std::make_unique<omm::ModeSelector>(omm::Application::instance(),
-                                                          name,
-                                                          cycle_action,
-                                                          activation_actions)});
+  const auto insert = [&map](const QString& name,
+                             const QString& cycle_action,
+                             const std::vector<QString>& activation_actions) {
+    map.insert({name,
+                std::make_unique<omm::ModeSelector>(omm::Application::instance(),
+                                                    name,
+                                                    cycle_action,
+                                                    activation_actions)});
   };
 
   insert("scene_mode", "scene_mode.cycle", {"scene_mode.object", "scene_mode.vertex"});
@@ -129,18 +129,15 @@ auto init_mode_selectors()
 
 namespace omm
 {
-
-const std::set<int> Application::keyboard_modifiers { Qt::Key_Shift, Qt::Key_Control, Qt::Key_Alt,
-                                                      Qt::Key_Meta };
+const std::set<int> Application::keyboard_modifiers{Qt::Key_Shift,
+                                                    Qt::Key_Control,
+                                                    Qt::Key_Alt,
+                                                    Qt::Key_Meta};
 Application* Application::m_instance = nullptr;
 
 Application::Application(QCoreApplication& app, std::unique_ptr<Options> options)
-  : first_member((init(this), nullptr))
-  , mode_selectors(init_mode_selectors())
-  , scene(python_engine)
-  , m_app(app)
-  , m_options(std::move(options))
-  , m_locale(load_locale())
+    : first_member((init(this), nullptr)), mode_selectors(init_mode_selectors()),
+      scene(python_engine), m_app(app), m_options(std::move(options)), m_locale(load_locale())
 {
   scene.set_selection({});
   if (!this->options().is_cli) {
@@ -167,7 +164,6 @@ void Application::init(omm::Application* instance)
     LFATAL("Resetting application instance.");
   }
 }
-
 
 Application::~Application()
 {
@@ -213,16 +209,19 @@ void Application::update_undo_redo_enabled()
 bool Application::can_close()
 {
   if (scene.history().has_pending_changes()) {
-    const auto decision =
-      QMessageBox::question( m_main_window,
-                             tr("Question."),
-                             tr("Some pending changes will be lost if you don't save."),
-                             QMessageBox::Close | QMessageBox::Cancel | QMessageBox::Save,
-                             QMessageBox::Save );
+    const auto decision
+        = QMessageBox::question(m_main_window,
+                                tr("Question."),
+                                tr("Some pending changes will be lost if you don't save."),
+                                QMessageBox::Close | QMessageBox::Cancel | QMessageBox::Save,
+                                QMessageBox::Save);
     switch (decision) {
-    case QMessageBox::Close: return true;
-    case QMessageBox::Cancel: return false;
-    case QMessageBox::Save: return save();
+    case QMessageBox::Close:
+      return true;
+    case QMessageBox::Cancel:
+      return false;
+    case QMessageBox::Save:
+      return save();
     default:
       qCritical() << "Unexpected response code: " << decision;
       return false;
@@ -236,10 +235,11 @@ bool Application::save(const QString& filename)
 {
   if (!scene.save_as(filename)) {
     LWARNING << "Error saving scene as '" << filename << "'.";
-    QMessageBox::critical( m_main_window,
-                           tr("Error."),
-                           tr("The scene could not be saved at '%1'.").arg(filename),
-                           QMessageBox::Ok, QMessageBox::Ok );
+    QMessageBox::critical(m_main_window,
+                          tr("Error."),
+                          tr("The scene could not be saved at '%1'.").arg(filename),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok);
     return false;
   } else {
     return true;
@@ -273,7 +273,9 @@ bool Application::save_as()
 
 void Application::reset()
 {
-  if (!can_close()) { return; }
+  if (!can_close()) {
+    return;
+  }
 
   LINFO << "reset scene.";
   scene.set_selection({});
@@ -285,10 +287,10 @@ void Application::load(const QString& filename, bool force)
   if (force || can_close()) {
     QTimer::singleShot(0, [this, filename]() {
       if (!scene.load_from(filename)) {
-        QMessageBox::critical( m_main_window,
-                               tr("Error."),
-                               tr("Loading scene from '%1' failed.").arg(filename),
-                               QMessageBox::Ok );
+        QMessageBox::critical(m_main_window,
+                              tr("Error."),
+                              tr("Loading scene from '%1' failed.").arg(filename),
+                              QMessageBox::Ok);
       }
     });
   }
@@ -297,10 +299,9 @@ void Application::load(const QString& filename, bool force)
 void Application::load()
 {
   if (can_close()) {
-    const QString filename =
-      QFileDialog::getOpenFileName(m_main_window,
-                                   tr("Load scene ..."),
-                                   scene_directory_hint(scene.filename()));
+    const QString filename = QFileDialog::getOpenFileName(m_main_window,
+                                                          tr("Load scene ..."),
+                                                          scene_directory_hint(scene.filename()));
     if (filename.isEmpty()) {
       return;
     }
@@ -445,7 +446,10 @@ bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers)
   return dispatch_key(key, modifiers, Application::instance());
 }
 
-QString Application::type() const { return TYPE; }
+QString Application::type() const
+{
+  return TYPE;
+}
 
 bool Application::handle_mode(const QString& action_name)
 {
@@ -457,16 +461,19 @@ bool Application::handle_mode(const QString& action_name)
   return false;
 }
 
-MailBox &Application::mail_box()
+MailBox& Application::mail_box()
 {
   return scene.mail_box();
 }
 
-MainWindow* Application::main_window() const { return m_main_window; }
-
-Object& Application::insert_object(const QString &key, InsertionMode mode)
+MainWindow* Application::main_window() const
 {
-  const auto translated_key =QApplication::translate("any-context", key.toUtf8().constData());
+  return m_main_window;
+}
+
+Object& Application::insert_object(const QString& key, InsertionMode mode)
+{
+  const auto translated_key = QApplication::translate("any-context", key.toUtf8().constData());
   auto macro = scene.history().start_macro(tr("Create %1").arg(translated_key));
   using add_command_type = AddCommand<ObjectTree>;
   auto object = Object::make(key, &scene);
@@ -489,7 +496,7 @@ Object& Application::insert_object(const QString &key, InsertionMode mode)
     parent = children.empty() ? &scene.object_tree().root() : &children.back()->tree_parent();
     if (!children.empty()) {
       if (std::size_t pos = children.back()->position(); pos > 0) {
-        predecessor = parent->tree_children()[pos-1];
+        predecessor = parent->tree_children()[pos - 1];
       }
     }
     break;
@@ -510,11 +517,11 @@ Object& Application::insert_object(const QString &key, InsertionMode mode)
     move_context_t move_context(ref, *parent, predecessor);
     if (move_context.is_strictly_valid(scene.object_tree())) {
       // the move will fail if the object is already at the correct position.
-      scene.submit<move_command_t>(scene.object_tree(), std::vector { move_context });
+      scene.submit<move_command_t>(scene.object_tree(), std::vector{move_context});
     }
   } else if (parent != nullptr) {
     const move_context_t move_context(ref, *parent, nullptr);
-    scene.submit<move_command_t>(scene.object_tree(), std::vector { move_context });
+    scene.submit<move_command_t>(scene.object_tree(), std::vector{move_context});
   }
 
   ref.post_create_hook();
@@ -533,9 +540,7 @@ void Application::register_auto_invert_icon_button(QAbstractButton& button)
   };
 
   const auto connection = connect(qApp, &QApplication::paletteChanged, update_button_icon);
-  connect(&button, &QObject::destroyed, this, [connection]() {
-    disconnect(connection);
-  });
+  connect(&button, &QObject::destroyed, this, [connection]() { disconnect(connection); });
   update_button_icon();
 }
 
@@ -596,7 +601,7 @@ const Preferences& preferences()
 
 void Application::install_translators()
 {
-  const auto qms = { "qtbase", "omm" };
+  const auto qms = {"qtbase", "omm"};
   for (const QString& qm : qms) {
     auto translator = load_translator(qm, m_locale);
     if (translator) {

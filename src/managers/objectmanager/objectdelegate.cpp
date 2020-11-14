@@ -1,25 +1,25 @@
-#include <QIdentityProxyModel>
-#include "preferences/uicolors.h"
-#include "managers/objectmanager/objecttreeselectionmodel.h"
 #include "managers/objectmanager/objectdelegate.h"
 #include "common.h"
-#include <QPainter>
-#include "proxychain.h"
+#include "managers/objectmanager/objecttreeselectionmodel.h"
 #include "managers/objectmanager/objecttreeview.h"
+#include "preferences/uicolors.h"
+#include "proxychain.h"
+#include <QIdentityProxyModel>
+#include <QPainter>
 
 namespace omm
 {
-
-
 ObjectDelegate::ObjectDelegate(ObjectTreeView& object_tree_view,
-               ObjectTreeSelectionModel& selection_model, ProxyChain& proxy_chain)
-  : m_object_tree_view(object_tree_view)
-  , m_selection_model(selection_model)
-  , m_proxy_chain(proxy_chain)
+                               ObjectTreeSelectionModel& selection_model,
+                               ProxyChain& proxy_chain)
+    : m_object_tree_view(object_tree_view), m_selection_model(selection_model),
+      m_proxy_chain(proxy_chain)
 {
 }
 
-void ObjectDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+void ObjectDelegate::paint(QPainter* painter,
+                           const QStyleOptionViewItem& option,
+                           const QModelIndex& index) const
 {
   QRect rect = option.rect;
   rect.setLeft(0);
@@ -29,7 +29,7 @@ void ObjectDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
   painter->save();
   painter->setClipRect(rect);
 
-  { // background
+  {  // background
     const bool is_selected = [this, index]() {
       const bool is_selected = m_selection_model.isSelected(m_proxy_chain.mapToChainSource(index));
       const bool is_tmp_selected = ::contains(tmp_selection, index);
@@ -55,13 +55,13 @@ void ObjectDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
 
   const int w = rect.height();
 
-  { // icon
+  {  // icon
     const QIcon decoration = index.data(Qt::DecorationRole).value<QIcon>();
     const QPixmap pixmap = decoration.pixmap(QSize(w, w), QIcon::Normal, QIcon::On);
     painter->drawPixmap(option.rect.topLeft() + QPointF(0, 0), pixmap, pixmap.rect());
   }
 
-  { // text
+  {  // text
     QString text = index.data(Qt::DisplayRole).toString();
     QRect text_rect = option.rect;
     text_rect.setLeft(text_rect.left() + w + 10);
@@ -69,7 +69,7 @@ void ObjectDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option
     painter->drawText(text_rect, Qt::AlignLeft | Qt::AlignVCenter, text);
   }
 
-  { // expand-arrow
+  {  // expand-arrow
     if (index.model()->rowCount(index) > 0) {
       const QString hint = m_object_tree_view.isExpanded(index) ? "▼" : "▶";
       const QRect hint_rect(option.rect.left() - w, option.rect.top(), w, w);

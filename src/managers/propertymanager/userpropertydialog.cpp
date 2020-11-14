@@ -1,36 +1,32 @@
 #include "managers/propertymanager/userpropertydialog.h"
 #include "aspects/propertyowner.h"
+#include "commands/userpropertycommand.h"
 #include "logging.h"
 #include "propertywidgets/propertyconfigwidget.h"
+#include "scene/history/historymodel.h"
+#include "scene/scene.h"
 #include <iomanip>
 #include <ostream>
-#include "scene/scene.h"
-#include "scene/history/historymodel.h"
-#include "commands/userpropertycommand.h"
 
 namespace omm
 {
-
 UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner& owner,
                                        const std::set<QString>& types,
                                        QWidget* parent)
-  : QDialog(parent)
-  , m_ui(new Ui::UserPropertyDialog)
-  , m_property_types(::transform<QString, std::vector>(types))
-  , m_owner(owner)
-  , m_user_property_list_model(owner)
+    : QDialog(parent), m_ui(new Ui::UserPropertyDialog),
+      m_property_types(::transform<QString, std::vector>(types)), m_owner(owner),
+      m_user_property_list_model(owner)
 {
   m_ui->setupUi(this);
   m_ui->listView->setModel(&m_user_property_list_model);
-  connect(m_ui->listView->selectionModel(), &QItemSelectionModel::currentChanged,
-          [this](const QModelIndex& index)
-  {
-    update_property_config_page(m_user_property_list_model.item(index));
-    m_ui->listView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
-  });
+  connect(m_ui->listView->selectionModel(),
+          &QItemSelectionModel::currentChanged,
+          [this](const QModelIndex& index) {
+            update_property_config_page(m_user_property_list_model.item(index));
+            m_ui->listView->selectionModel()->select(index, QItemSelectionModel::ClearAndSelect);
+          });
 
-  m_ui->cb_type->addItems(::transform<QString, QList>(m_property_types, [](const QString& s)
-  {
+  m_ui->cb_type->addItems(::transform<QString, QList>(m_property_types, [](const QString& s) {
     return tr(s.toUtf8().constData(), "Property");
   }));
   connect(m_ui->cb_type, qOverload<int>(&QComboBox::currentIndexChanged), [this](int index) {
@@ -44,7 +40,7 @@ UserPropertyDialog::UserPropertyDialog(AbstractPropertyOwner& owner,
   connect(m_ui->pb_add, &QPushButton::clicked, [this]() {
     m_user_property_list_model.add_property(m_ui->cb_type->currentText());
     const int n = m_user_property_list_model.rowCount(QModelIndex());
-    const QModelIndex index = m_user_property_list_model.index(n-1, 0);
+    const QModelIndex index = m_user_property_list_model.index(n - 1, 0);
     m_ui->listView->selectionModel()->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
     m_ui->listView->edit(index);
   });
@@ -90,7 +86,9 @@ void UserPropertyDialog::submit()
   additions.shrink_to_fit();
   if (deletions.size() > 0 || additions.size() > 0 || changes.size() > 0) {
     m_owner.scene()->submit<UserPropertyCommand>(std::vector(deletions.begin(), deletions.end()),
-                                                 std::move(additions), changes, m_owner);
+                                                 std::move(additions),
+                                                 changes,
+                                                 m_owner);
   }
 }
 
@@ -121,12 +119,13 @@ void UserPropertyDialog::update_property_config_page(UserPropertyListItem* item)
 
     const QString config_widget_type = type + "ConfigWidget";
     auto config_widget = AbstractPropertyConfigWidget::make(config_widget_type);
-    connect(config_widget.get(), &AbstractPropertyConfigWidget::hidden,
-            [this, config_widget=config_widget.get()]()
-    {
-      UserPropertyListItem* item = m_user_property_list_model.item(m_ui->listView->currentIndex());
-      config_widget->update(item->configuration);
-    });
+    connect(config_widget.get(),
+            &AbstractPropertyConfigWidget::hidden,
+            [this, config_widget = config_widget.get()]() {
+              UserPropertyListItem* item
+                  = m_user_property_list_model.item(m_ui->listView->currentIndex());
+              config_widget->update(item->configuration);
+            });
     m_current_config_widget = config_widget.get();
     config_widget->init(m_current_item->configuration);
     m_ui->scrollArea->setWidget(config_widget.release());

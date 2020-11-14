@@ -1,19 +1,18 @@
 #include "objects/proceduralpath.h"
+#include "objects/path.h"
+#include "properties/boolproperty.h"
+#include "properties/integerproperty.h"
+#include "properties/stringproperty.h"
+#include "python/objectwrapper.h"
+#include "python/pointwrapper.h"
+#include "python/pythonengine.h"
+#include "python/scenewrapper.h"
+#include "scene/scene.h"
 #include <QObject>
 #include <pybind11/stl.h>
-#include "properties/integerproperty.h"
-#include "properties/boolproperty.h"
-#include "objects/path.h"
-#include "python/pythonengine.h"
-#include "scene/scene.h"
-#include "python/pointwrapper.h"
-#include "python/objectwrapper.h"
-#include "python/scenewrapper.h"
-#include "properties/stringproperty.h"
 
 namespace
 {
-
 constexpr auto default_script = R"(import math
 import numpy as np
 
@@ -32,25 +31,29 @@ for i, p in enumerate(points):
 
 namespace omm
 {
-
 class Style;
 
 ProceduralPath::ProceduralPath(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("ProceduralPath");
   create_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
-    .set_mode(StringProperty::Mode::Code)
-    .set_label(QObject::tr("code")).set_category(category);
+      .set_mode(StringProperty::Mode::Code)
+      .set_label(QObject::tr("code"))
+      .set_category(category);
   create_property<IntegerProperty>(COUNT_PROPERTY_KEY, 10)
-    .set_range(0, std::numeric_limits<int>::max())
-    .set_label(QObject::tr("count")).set_category(category);
+      .set_range(0, std::numeric_limits<int>::max())
+      .set_label(QObject::tr("count"))
+      .set_category(category);
   create_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
-    .set_label(QObject::tr("closed")).set_category(category);
+      .set_label(QObject::tr("closed"))
+      .set_category(category);
   update();
 }
 
-
-QString ProceduralPath::type() const { return TYPE; }
+QString ProceduralPath::type() const
+{
+  return TYPE;
+}
 
 void ProceduralPath::update()
 {
@@ -67,9 +70,9 @@ void ProceduralPath::update()
   }
 
   if (m_points.size() > 0) {
-    auto locals = pybind11::dict( "points"_a=point_wrappers,
-                                  "this"_a=ObjectWrapper::make(*this),
-                                  "scene"_a=SceneWrapper(*scene()) );
+    auto locals = pybind11::dict("points"_a = point_wrappers,
+                                 "this"_a = ObjectWrapper::make(*this),
+                                 "scene"_a = SceneWrapper(*scene()));
     scene()->python_engine.exec(code, locals, this);
   }
   Object::update();
@@ -77,7 +80,7 @@ void ProceduralPath::update()
 
 Geom::PathVector ProceduralPath::paths() const
 {
-  return segments_to_path_vector({ m_points }, is_closed());
+  return segments_to_path_vector({m_points}, is_closed());
 }
 
 bool ProceduralPath::is_closed() const
@@ -85,12 +88,11 @@ bool ProceduralPath::is_closed() const
   return property(IS_CLOSED_PROPERTY_KEY)->value<bool>();
 }
 
-void ProceduralPath::on_property_value_changed(Property *property)
+void ProceduralPath::on_property_value_changed(Property* property)
 {
-  if (   property == this->property(CODE_PROPERTY_KEY)
+  if (property == this->property(CODE_PROPERTY_KEY)
       || property == this->property(COUNT_PROPERTY_KEY)
-      || property == this->property(IS_CLOSED_PROPERTY_KEY))
-  {
+      || property == this->property(IS_CLOSED_PROPERTY_KEY)) {
     update();
   } else {
     Object::on_property_value_changed(property);

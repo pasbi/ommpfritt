@@ -1,31 +1,30 @@
 #include "nodesystem/nodes/referencenode.h"
-#include "scene/mailbox.h"
 #include "commands/forwardingportcommand.h"
-#include "properties/referenceproperty.h"
-#include "variant.h"
-#include "scene/scene.h"
 #include "nodesystem/nodemodel.h"
+#include "properties/referenceproperty.h"
+#include "scene/mailbox.h"
+#include "scene/scene.h"
+#include "variant.h"
 #include <QMenu>
 
 namespace omm
 {
-
-const Node::Detail ReferenceNode::detail {
-  {
-    { AbstractNodeCompiler::Language::Python, "" },
-    { AbstractNodeCompiler::Language::GLSL, "" },
-  },
-  {
-    QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
-  },
+const Node::Detail ReferenceNode::detail{
+    {
+        {AbstractNodeCompiler::Language::Python, ""},
+        {AbstractNodeCompiler::Language::GLSL, ""},
+    },
+    {
+        QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
+    },
 };
 
-ReferenceNode::ReferenceNode(NodeModel& model)
-  : Node(model)
+ReferenceNode::ReferenceNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
   create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY, PortType::Output)
-    .set_label(tr("Reference")).set_category(category);
+      .set_label(tr("Reference"))
+      .set_category(category);
 }
 
 void ReferenceNode::populate_menu(QMenu& menu)
@@ -41,14 +40,14 @@ void ReferenceNode::populate_menu(QMenu& menu)
       if (::contains(supported_types, property->type())) {
         if (language() == AbstractNodeCompiler::Language::Python) {
           auto property_menu = std::make_unique<QMenu>(property->label());
-          property_menu->addAction(make_property_action(PortType::Input, key,
-                                                        tr("input", "ReferenceNode")).release());
-          property_menu->addAction(make_property_action(PortType::Output, key,
-                                                        tr("output", "ReferenceNode")).release());
+          property_menu->addAction(
+              make_property_action(PortType::Input, key, tr("input", "ReferenceNode")).release());
+          property_menu->addAction(
+              make_property_action(PortType::Output, key, tr("output", "ReferenceNode")).release());
           forward_menu->addMenu(property_menu.release());
         } else if (language() == AbstractNodeCompiler::Language::GLSL) {
-          forward_menu->addAction(make_property_action(PortType::Output, key,
-                                                       property->label()).release());
+          forward_menu->addAction(
+              make_property_action(PortType::Output, key, property->label()).release());
         }
       }
     }
@@ -66,11 +65,11 @@ QString ReferenceNode::title() const
   return Node::title() + tr(" [%1]").arg(r_name);
 }
 
-void
-ReferenceNode::deserialize(AbstractDeserializer& deserializer, const Serializable::Pointer& root)
+void ReferenceNode::deserialize(AbstractDeserializer& deserializer,
+                                const Serializable::Pointer& root)
 {
   Node::deserialize(deserializer, root);
-  for (auto type : { PortType::Input, PortType::Output }) {
+  for (auto type : {PortType::Input, PortType::Output}) {
     auto pointer = make_pointer(root, type == PortType::Input ? "input" : "output");
     std::set<QString> keys;
     deserializer.get(keys, pointer);
@@ -80,8 +79,8 @@ ReferenceNode::deserialize(AbstractDeserializer& deserializer, const Serializabl
   }
 }
 
-void
-ReferenceNode::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
+void ReferenceNode::serialize(AbstractSerializer& serializer,
+                              const Serializable::Pointer& root) const
 {
   Node::serialize(serializer, root);
   for (auto [type, map] : m_forwarded_ports) {
@@ -139,8 +138,8 @@ AbstractPort& ReferenceNode::add_forwarding_port(PortType port_type, const QStri
   return *port;
 }
 
-std::unique_ptr<AbstractPort>
-ReferenceNode::remove_forwarding_port(PortType port_type, const QString& key)
+std::unique_ptr<AbstractPort> ReferenceNode::remove_forwarding_port(PortType port_type,
+                                                                    const QString& key)
 {
   const auto it = m_forwarded_ports.at(port_type).find(key);
   auto owned = Node::remove_port(*it->second);
@@ -156,4 +155,4 @@ void ReferenceNode::on_property_value_changed(Property* property)
   return Node::on_property_value_changed(property);
 }
 
-}  // namespace
+}  // namespace omm

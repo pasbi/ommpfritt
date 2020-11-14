@@ -5,13 +5,10 @@
 
 namespace omm
 {
-
 class FloatVectorPropertyWidget : public VectorPropertyWidget<FloatVectorProperty>
 {
 public:
   using VectorPropertyWidget::VectorPropertyWidget;
 };
-
-
 
 }  // namespace omm

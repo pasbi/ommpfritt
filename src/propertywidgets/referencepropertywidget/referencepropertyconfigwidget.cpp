@@ -3,12 +3,11 @@
 #include "enumnames.h"
 
 #include <QCheckBox>
-#include <QLayout>
 #include <QLabel>
+#include <QLayout>
 
 namespace
 {
-
 template<typename MapT> auto keys(const MapT& map)
 {
   return ::transform<typename MapT::value_type::second_type, std::set>(map, [](const auto& kv) {
@@ -20,7 +19,7 @@ template<typename E> auto make_checkboxes()
 {
   std::map<E, QCheckBox*> map;
   for (E kind : omm::enumerate_enum<E>()) {
-    map.insert({ kind, new QCheckBox(omm::enum_name(kind, true)) });
+    map.insert({kind, new QCheckBox(omm::enum_name(kind, true))});
   }
   return map;
 }
@@ -29,10 +28,9 @@ template<typename E> auto make_checkboxes()
 
 namespace omm
 {
-
 ReferencePropertyConfigWidget::ReferencePropertyConfigWidget()
-  : m_allowed_kind_checkboxes(make_checkboxes<Kind>())
-  , m_required_flag_checkboxes(make_checkboxes<Flag>())
+    : m_allowed_kind_checkboxes(make_checkboxes<Kind>()),
+      m_required_flag_checkboxes(make_checkboxes<Flag>())
 {
   auto layout = std::make_unique<QHBoxLayout>();
   auto allowed_kind_layout = std::make_unique<QVBoxLayout>();
@@ -54,11 +52,11 @@ ReferencePropertyConfigWidget::ReferencePropertyConfigWidget()
   setLayout(layout.release());
 }
 
-void ReferencePropertyConfigWidget::init(const Property::Configuration &configuration)
+void ReferencePropertyConfigWidget::init(const Property::Configuration& configuration)
 {
   using Filter = ReferenceProperty::Filter;
-  const auto filter = configuration.get<Filter>(ReferenceProperty::FILTER_POINTER,
-                                                Filter::accept_anything());
+  const auto filter
+      = configuration.get<Filter>(ReferenceProperty::FILTER_POINTER, Filter::accept_anything());
   for (auto&& [_, checkbox] : m_allowed_kind_checkboxes) {
     checkbox->setChecked(false);
   }
@@ -88,14 +86,14 @@ void ReferencePropertyConfigWidget::init(const Property::Configuration &configur
   }
 }
 
-void ReferencePropertyConfigWidget::update(Property::Configuration &configuration) const
+void ReferencePropertyConfigWidget::update(Property::Configuration& configuration) const
 {
   Disjunction<Kind> kinds;
   DNF<Flag> flags;
 
   {
     Conjunction<Flag> conjunction;
-    for (auto&& [ flag, checkbox ]: m_required_flag_checkboxes) {
+    for (auto&& [flag, checkbox] : m_required_flag_checkboxes) {
       if (checkbox->isChecked()) {
         conjunction.terms.insert(flag);
       }
@@ -103,9 +101,9 @@ void ReferencePropertyConfigWidget::update(Property::Configuration &configuratio
     flags.terms.insert(conjunction);
   }
 
-  for (auto&& [ kind, checkbox ]: m_allowed_kind_checkboxes) {
+  for (auto&& [kind, checkbox] : m_allowed_kind_checkboxes) {
     if (checkbox->isChecked()) {
-      kinds.terms.insert( kind );
+      kinds.terms.insert(kind);
     }
   }
 

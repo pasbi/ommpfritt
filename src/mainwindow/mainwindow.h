@@ -1,15 +1,14 @@
 #pragma once
 
-#include <memory>
-#include <map>
-#include <QMainWindow>
 #include "keybindings/keybindings.h"
+#include <QMainWindow>
+#include <map>
+#include <memory>
 
 class QSettings;
 
 namespace omm
 {
-
 class Application;
 class Scene;
 class Manager;
@@ -57,7 +56,7 @@ public:
   static constexpr auto LAST_LAYOUT_FILE_NAME = "last_layout_file_name";
 
 protected:
-  void closeEvent(QCloseEvent *event) override;
+  void closeEvent(QCloseEvent* event) override;
   bool eventFilter(QObject* o, QEvent* e) override;
 
 private:
@@ -66,7 +65,6 @@ private:
   std::vector<QDockWidget*> dock_widgets() const;
   void update_recent_files_menu();
   QString get_last_layout_filename() const;
-
 
 private Q_SLOTS:
   void update_window_title();

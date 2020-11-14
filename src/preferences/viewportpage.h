@@ -11,7 +11,6 @@ class QCheckBox;
 
 namespace omm
 {
-
 class ViewportPage : public PreferencePage
 {
   Q_OBJECT
@@ -41,6 +40,7 @@ private:
   public:
     GridGroup(Preferences::GridOption& model, QFormLayout& layout);
     void apply();
+
   private:
     QComboBox* m_cb_penstyle;
     QComboBox* m_cb_zorder;

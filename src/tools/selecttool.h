@@ -7,23 +7,22 @@
 
 namespace omm
 {
-
 class Command;
 
 class AbstractSelectTool : public Tool
 {
 public:
   explicit AbstractSelectTool(Scene& scene);
-  enum class Alignment {Global, Local};
+  enum class Alignment { Global, Local };
   static constexpr auto ALIGNMENT_PROPERTY_KEY = "alignment";
   static constexpr auto SYMMETRIC_PROPERTY_KEY = "symmetric";
   virtual void transform_objects(ObjectTransformation t) = 0;
   void cancel() override;
-  bool mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEvent &e) override;
-  bool mouse_press(const Vec2f &pos, const QMouseEvent &e) override;
-  void draw(Painter &renderer) const override;
+  bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
+  bool mouse_press(const Vec2f& pos, const QMouseEvent& e) override;
+  void draw(Painter& renderer) const override;
   QString tool_info;
-  void mouse_release(const Vec2f &pos, const QMouseEvent &event) override;
+  void mouse_release(const Vec2f& pos, const QMouseEvent& event) override;
   ObjectTransformation transformation() const override;
 
 protected:

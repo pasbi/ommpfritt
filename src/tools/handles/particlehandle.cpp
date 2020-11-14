@@ -3,7 +3,6 @@
 
 namespace omm
 {
-
 ParticleHandle::ParticleHandle(Tool& tool) : Handle(tool)
 {
 }
@@ -15,12 +14,12 @@ bool ParticleHandle::contains_global(const Vec2f& point) const
   return dist < interact_epsilon();
 }
 
-void ParticleHandle::draw(QPainter &painter) const
+void ParticleHandle::draw(QPainter& painter) const
 {
   const auto pos = tool.transformation().null();
   const auto r = draw_epsilon();
 
-  const QRectF rect{pos.x - r, pos.y - r, 2*r, 2*r};
+  const QRectF rect{pos.x - r, pos.y - r, 2 * r, 2 * r};
   painter.fillRect(rect, ui_color(HandleStatus::Active, "particle"));
 }
 

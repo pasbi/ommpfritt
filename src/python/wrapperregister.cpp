@@ -1,16 +1,15 @@
-#include "python/scenewrapper.h"
 #include "python/objectwrapper.h"
-#include "python/tagwrapper.h"
-#include "python/propertyownerwrapper.h"
-#include "python/scripttagwrapper.h"
-#include "python/stylewrapper.h"
-#include "python/pointwrapper.h"
 #include "python/pathwrapper.h"
+#include "python/pointwrapper.h"
+#include "python/propertyownerwrapper.h"
+#include "python/scenewrapper.h"
+#include "python/scripttagwrapper.h"
 #include "python/splinewrapper.h"
+#include "python/stylewrapper.h"
+#include "python/tagwrapper.h"
 
 namespace omm
 {
-
 void register_wrappers(py::object& module)
 {
   AbstractPropertyOwnerWrapper<Object>::define_python_interface(module);

@@ -1,15 +1,12 @@
 #include "nodesystem/node.h"
-#include "nodesystem/nodemodel.h"
 #include "common.h"
+#include "nodesystem/nodemodel.h"
 
 namespace omm
 {
-
 std::map<QString, const Node::Detail*> Node::m_details;
 
-Node::Node(NodeModel& model)
-  : PropertyOwner(&model.scene())
-  , m_model(model)
+Node::Node(NodeModel& model) : PropertyOwner(&model.scene()), m_model(model)
 {
 }
 
@@ -19,9 +16,8 @@ Node::~Node()
 
 std::set<AbstractPort*> Node::ports() const
 {
-  return ::transform<AbstractPort*>(m_ports, [](const std::unique_ptr<AbstractPort>& p) {
-    return p.get();
-  });
+  return ::transform<AbstractPort*>(m_ports,
+                                    [](const std::unique_ptr<AbstractPort>& p) { return p.get(); });
 }
 
 void Node::serialize(AbstractSerializer& serializer, const Serializable::Pointer& root) const
@@ -32,7 +28,8 @@ void Node::serialize(AbstractSerializer& serializer, const Serializable::Pointer
   std::vector<const InputPort*> connection_inputs;
   connection_inputs.reserve(m_ports.size());
   for (const auto& port : m_ports) {
-    if (port->port_type == PortType::Input && static_cast<InputPort&>(*port).connected_output() != nullptr) {
+    if (port->port_type == PortType::Input
+        && static_cast<InputPort&>(*port).connected_output() != nullptr) {
       connection_inputs.push_back(static_cast<const InputPort*>(port.get()));
     }
   }
@@ -188,7 +185,7 @@ Property& Node::add_property(const QString& key, std::unique_ptr<Property> prope
   return add_property(key, std::move(property), PortType::Both);
 }
 
-Property& Node::add_property(const QString &key, std::unique_ptr<Property> property, PortType type)
+Property& Node::add_property(const QString& key, std::unique_ptr<Property> property, PortType type)
 {
   auto& ref = PropertyOwner::add_property(key, std::move(property));
   InputPort* ip = nullptr;
@@ -236,10 +233,11 @@ void Node::update_references(const std::map<std::size_t, AbstractPropertyOwner*>
 QString Node::fst_con_ptype(const std::vector<InputPort*>& ports, const QString& default_t)
 {
   const auto get_connected_output = [](const InputPort* ip) { return ip->connected_output(); };
-  return ::find_if(::transform<OutputPort*>(ports, get_connected_output),
-                   [](const OutputPort* op) { return op != nullptr; },
-                   [](const OutputPort* op) { return op->data_type(); },
-                   default_t);
+  return ::find_if(
+      ::transform<OutputPort*>(ports, get_connected_output),
+      [](const OutputPort* op) { return op != nullptr; },
+      [](const OutputPort* op) { return op->data_type(); },
+      default_t);
 }
 
 }  // namespace omm

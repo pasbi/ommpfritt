@@ -1,14 +1,12 @@
 #include "scene/propertyownermimedata.h"
 #include "objects/object.h"
-#include "tags/tag.h"
 #include "renderers/style.h"
+#include "tags/tag.h"
 
 namespace
 {
-
 std::vector<omm::AbstractPropertyOwner*>
-filter( const std::vector<omm::AbstractPropertyOwner*>& items,
-        omm::Kind kinds)
+filter(const std::vector<omm::AbstractPropertyOwner*>& items, omm::Kind kinds)
 {
   std::vector<omm::AbstractPropertyOwner*> filtered;
   for (omm::AbstractPropertyOwner* item : items) {
@@ -30,9 +28,8 @@ std::vector<ItemType*> filter(const std::vector<omm::AbstractPropertyOwner*>& it
 
 namespace omm
 {
-
 PropertyOwnerMimeData::PropertyOwnerMimeData(const std::vector<AbstractPropertyOwner*>& items)
-  : m_items(items)
+    : m_items(items)
 {
 }
 
@@ -43,10 +40,10 @@ bool PropertyOwnerMimeData::hasFormat(const QString& mimeType) const
 
 QStringList PropertyOwnerMimeData::formats() const
 {
-  return { MIME_TYPE };
+  return {MIME_TYPE};
 }
 
-QVariant PropertyOwnerMimeData::retrieveData(const QString &mimeType, QVariant::Type type) const
+QVariant PropertyOwnerMimeData::retrieveData(const QString& mimeType, QVariant::Type type) const
 {
   Q_UNUSED(mimeType)
   Q_UNUSED(type)
@@ -69,8 +66,7 @@ std::vector<Style*> PropertyOwnerMimeData::styles() const
   return filter<Style>(m_items);
 }
 
-std::vector<AbstractPropertyOwner*>
-PropertyOwnerMimeData::items(Kind kinds) const
+std::vector<AbstractPropertyOwner*> PropertyOwnerMimeData::items(Kind kinds) const
 {
   return filter(m_items, kinds);
 }
@@ -85,7 +81,8 @@ template<> std::vector<Style*> PropertyOwnerMimeData::items<Style>() const
   return styles();
 }
 
-template<> std::vector<AbstractPropertyOwner*> PropertyOwnerMimeData::items<AbstractPropertyOwner>() const
+template<>
+std::vector<AbstractPropertyOwner*> PropertyOwnerMimeData::items<AbstractPropertyOwner>() const
 {
   return m_items;
 }

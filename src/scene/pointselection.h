@@ -1,12 +1,11 @@
 #pragma once
 
+#include "common.h"
 #include "geometry/point.h"
 #include <set>
-#include "common.h"
 
 namespace omm
 {
-
 class Path;
 class Scene;
 
@@ -21,4 +20,4 @@ private:
   Scene& m_scene;
 };
 
-}  // namespace
+}  // namespace omm

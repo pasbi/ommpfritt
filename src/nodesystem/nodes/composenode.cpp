@@ -1,39 +1,36 @@
 #include "nodesystem/nodes/composenode.h"
+#include "nodesystem/ordinaryport.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
-#include "nodesystem/ordinaryport.h"
 
 namespace omm
 {
-
-const Node::Detail ComposeNode::detail {
-  {
-    {
-      AbstractNodeCompiler::Language::Python,
+const Node::Detail ComposeNode::detail{
+    {{AbstractNodeCompiler::Language::Python,
       QString(R"(
 def %1(a, b):
   return [a, b]
-)").arg(ComposeNode::TYPE)
-    },
-    {
-      AbstractNodeCompiler::Language::GLSL,
+)")
+          .arg(ComposeNode::TYPE)},
+     {AbstractNodeCompiler::Language::GLSL,
       QString(R"(
 vec2 %1_0(float a, float b) { return vec2(a, b); }
-)").arg(ComposeNode::TYPE)
-    }
-  },
-  {
-    QT_TRANSLATE_NOOP("NodeMenuPath", "Vector"),
-  },
+)")
+          .arg(ComposeNode::TYPE)}},
+    {
+        QT_TRANSLATE_NOOP("NodeMenuPath", "Vector"),
+    },
 };
 
 ComposeNode::ComposeNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
   create_property<FloatProperty>(INPUT_X_PROPERTY_KEY, 0.0)
-      .set_label(tr("x")).set_category(category);
+      .set_label(tr("x"))
+      .set_category(category);
   create_property<FloatProperty>(INPUT_Y_PROPERTY_KEY, 0.0)
-      .set_label(tr("y")).set_category(category);
+      .set_label(tr("y"))
+      .set_category(category);
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("vector"));
 }
 
@@ -60,7 +57,7 @@ QString ComposeNode::title() const
   return tr("Compose");
 }
 
-bool ComposeNode::accepts_input_data_type(const QString &type, const InputPort &port) const
+bool ComposeNode::accepts_input_data_type(const QString& type, const InputPort& port) const
 {
   Q_UNUSED(port)
   return NodeCompilerTypes::is_numeric(type);

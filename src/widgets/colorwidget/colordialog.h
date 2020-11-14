@@ -1,12 +1,11 @@
 #pragma once
 
 #include "color/color.h"
-#include <memory>
 #include <QDialog>
+#include <memory>
 
 namespace omm
 {
-
 class ColorWidget;
 
 class ColorDialog : public QDialog
@@ -21,7 +20,6 @@ public:
 
 private:
   ColorWidget* m_color_widget;
-
 };
 
-}  // namespace
+}  // namespace omm

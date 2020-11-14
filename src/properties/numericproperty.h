@@ -4,15 +4,13 @@
 
 namespace NumericPropertyDetail
 {
-  static constexpr int int_high = std::numeric_limits<int>::max();
-  static constexpr int int_low = std::numeric_limits<int>::lowest();
-  static constexpr double inf = std::numeric_limits<double>::infinity();
-}  // namespace Numeric PropertyDetail
-
+static constexpr int int_high = std::numeric_limits<int>::max();
+static constexpr int int_low = std::numeric_limits<int>::lowest();
+static constexpr double inf = std::numeric_limits<double>::infinity();
+}  // namespace NumericPropertyDetail
 
 namespace omm
 {
-
 class NumericPropertyDetail
 {
 public:
@@ -89,7 +87,7 @@ public:
   {
     TypedProperty<T>::deserialize(deserializer, root);
     if (this->is_user_property()) {
-      for (const QString& key : { D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER }) {
+      for (const QString& key : {D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER}) {
         this->configuration[key] = deserializer.get<T>(Serializable::make_pointer(root, key));
       }
       this->configuration[D::MULTIPLIER_POINTER]
@@ -101,9 +99,9 @@ public:
   {
     TypedProperty<T>::serialize(serializer, root);
     if (this->is_user_property()) {
-      for (const QString& key : { D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER }) {
+      for (const QString& key : {D::LOWER_VALUE_POINTER, D::UPPER_VALUE_POINTER, D::STEP_POINTER}) {
         serializer.set_value(this->configuration.template get<T>(key),
-                                   Serializable::make_pointer(root, key));
+                             Serializable::make_pointer(root, key));
       }
       serializer.set_value(this->configuration.template get<double>(D::MULTIPLIER_POINTER),
                            Serializable::make_pointer(root, D::MULTIPLIER_POINTER));
@@ -121,7 +119,6 @@ public:
   static T lowest_possible_value();
   static T smallest_step();
   static T default_step();
-
 };
 
 }  // namespace omm

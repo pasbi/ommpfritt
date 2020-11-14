@@ -1,12 +1,11 @@
 #include "color/namedcolors.h"
-#include <ostream>
-#include <iomanip>
 #include "logging.h"
 #include "serializers/abstractserializer.h"
+#include <iomanip>
+#include <ostream>
 
 namespace omm
 {
-
 int NamedColors::rowCount(const QModelIndex& parent) const
 {
   assert(!parent.isValid());
@@ -19,7 +18,7 @@ QVariant NamedColors::data(const QModelIndex& index, int role) const
   if (!index.isValid()) {
     return QVariant();
   }
-  const auto& [ name, color ] = m_named_colors[index.row()];
+  const auto& [name, color] = m_named_colors[index.row()];
   switch (role) {
   case Qt::BackgroundRole:
     return color.to_qcolor();
@@ -32,11 +31,9 @@ QVariant NamedColors::data(const QModelIndex& index, int role) const
 
 Color* NamedColors::resolve(const QString& name)
 {
-  const auto it = std::find_if(m_named_colors.begin(), m_named_colors.end(),
-                               [name](const auto& pair)
-  {
-    return pair.first == name;
-  });
+  const auto it = std::find_if(m_named_colors.begin(),
+                               m_named_colors.end(),
+                               [name](const auto& pair) { return pair.first == name; });
   if (it == m_named_colors.end()) {
     return nullptr;
   } else {
@@ -77,21 +74,17 @@ QString NamedColors::name(const QModelIndex& index) const
 
 QModelIndex NamedColors::index(const QString& name) const
 {
-  const auto it = std::find_if(m_named_colors.begin(), m_named_colors.end(),
-                               [name](const auto& pair)
-  {
-    return pair.first == name;
-  });
+  const auto it = std::find_if(m_named_colors.begin(),
+                               m_named_colors.end(),
+                               [name](const auto& pair) { return pair.first == name; });
   return index(std::distance(m_named_colors.begin(), it), 0);
 }
 
 bool NamedColors::has_color(const QString& name) const
 {
-  const auto it = std::find_if(m_named_colors.begin(), m_named_colors.end(),
-                               [name](const auto& pair)
-  {
-    return pair.first == name;
-  });
+  const auto it = std::find_if(m_named_colors.begin(),
+                               m_named_colors.end(),
+                               [name](const auto& pair) { return pair.first == name; });
   return it != m_named_colors.end();
 }
 
@@ -105,7 +98,7 @@ void NamedColors::set_color(const QModelIndex& index, const Color& color)
 {
   assert(index.isValid() && index.model() == this);
   m_named_colors[index.row()].second = color;
-  Q_EMIT dataChanged(index, index, { Qt::BackgroundRole, Qt::ForegroundRole });
+  Q_EMIT dataChanged(index, index, {Qt::BackgroundRole, Qt::ForegroundRole});
 }
 
 void NamedColors::change(const QString& name, const Color& color)
@@ -121,7 +114,7 @@ void NamedColors::rename(const QString& old_name, const QString& new_name)
   assert(has_color(old_name));
   const QModelIndex index = this->index(old_name);
   auto& pair = m_named_colors[index.row()];
-  Q_EMIT dataChanged(index, index, { Qt::DisplayRole });
+  Q_EMIT dataChanged(index, index, {Qt::DisplayRole});
   pair.first = new_name;
 }
 

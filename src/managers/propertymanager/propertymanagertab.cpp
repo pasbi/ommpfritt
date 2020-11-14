@@ -1,15 +1,14 @@
 #include "managers/propertymanager/propertymanagertab.h"
-#include <memory>
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QPushButton>
 #include "properties/typedproperty.h"
 #include "propertywidgets/propertywidget.h"
 #include "widgets/animationbutton.h"
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <memory>
 
 namespace
 {
-
 static constexpr QSize animation_button_size(28, 28);
 
 auto make_header(const QString& text)
@@ -35,7 +34,6 @@ auto make_header(const QString& text)
 
 namespace omm
 {
-
 PropertyManagerTab::PropertyManagerTab(const QString& title)
 {
   auto layout = std::make_unique<QVBoxLayout>();
@@ -45,7 +43,7 @@ PropertyManagerTab::PropertyManagerTab(const QString& title)
   setLayout(layout.release());
 
   auto header = make_header(title);
-  m_header= header.get();
+  m_header = header.get();
   m_layout->addWidget(header.release());
 }
 
@@ -53,9 +51,10 @@ PropertyManagerTab::~PropertyManagerTab()
 {
 }
 
-void
-PropertyManagerTab::add_properties(Scene& scene, const QString& key,
-                                   const std::map<AbstractPropertyOwner*, Property*>& property_map)
+void PropertyManagerTab::add_properties(
+    Scene& scene,
+    const QString& key,
+    const std::map<AbstractPropertyOwner*, Property*>& property_map)
 {
   assert(property_map.size() > 0);
   const auto properties = ::transform<Property*, std::set>(property_map, [](const auto& pair) {
@@ -77,8 +76,10 @@ PropertyManagerTab::add_properties(Scene& scene, const QString& key,
     auto property_widget = AbstractPropertyWidget::make(widget_type, scene, properties);
     container_widget_layout->addWidget(property_widget.release(), 1);
 
-    connect(*properties.begin(), &Property::visibility_changed,
-            container_widget.get(), &QWidget::setVisible);
+    connect(*properties.begin(),
+            &Property::visibility_changed,
+            container_widget.get(),
+            &QWidget::setVisible);
     container_widget->setToolTip(key);
     m_layout->addLayout(container_widget_layout.release());
   }

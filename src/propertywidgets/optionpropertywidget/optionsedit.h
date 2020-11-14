@@ -1,11 +1,10 @@
 #pragma once
 
-#include <QComboBox>
 #include "propertywidgets/multivalueedit.h"
+#include <QComboBox>
 
 namespace omm
 {
-
 class NodeView;
 class PrefixComboBox : public QComboBox
 {
@@ -26,7 +25,9 @@ protected:
   QFrame* m_popup = nullptr;
 };
 
-class OptionsEdit : public PrefixComboBox, public MultiValueEdit<size_t>
+class OptionsEdit
+    : public PrefixComboBox
+    , public MultiValueEdit<size_t>
 {
 public:
   explicit OptionsEdit(QWidget* parent = nullptr);

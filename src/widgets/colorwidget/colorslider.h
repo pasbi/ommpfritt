@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 class ColorSlider : public AbstractColorComponentWidget
 {
   Q_OBJECT
@@ -19,7 +18,6 @@ protected:
 
 private:
   void set_value(int x);
-
 };
 
 }  // namespace omm

@@ -5,9 +5,7 @@
 
 namespace omm
 {
-
-struct PolarCoordinates
-{
+struct PolarCoordinates {
   explicit PolarCoordinates(const double argument, const double magnitude);
   explicit PolarCoordinates(const Vec2f& cartesian);
   explicit PolarCoordinates();
@@ -33,7 +31,5 @@ struct PolarCoordinates
    */
   static double normalize_angle(double rad);
 };
-
-
 
 }  // namespace omm

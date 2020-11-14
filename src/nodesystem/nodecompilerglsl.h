@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 class NodeCompilerGLSL : public NodeCompiler<NodeCompilerGLSL>
 {
 public:
@@ -16,7 +15,10 @@ public:
   QString compile_node(const Node& node, QStringList& lines) const;
   QString compile_connection(const OutputPort& op, const InputPort& ip, QStringList& lines) const;
   QString define_node(const QString& node_type, QStringList& lines) const;
-  std::set<AbstractPort*> uniform_ports() const { return m_uniform_ports; }
+  std::set<AbstractPort*> uniform_ports() const
+  {
+    return m_uniform_ports;
+  }
   static QString translate_type(const QString& type);
   void invalidate() override;
   static constexpr std::size_t SPLINE_SIZE = 256;

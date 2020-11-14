@@ -1,29 +1,28 @@
 #include "managers/pythonconsole/pythonconsole.h"
-#include <QTextEdit>
-#include <QPushButton>
-#include <QEvent>
-#include <QKeyEvent>
-#include "widgets/codeedit.h"
-#include "scene/scene.h"
+#include "mainwindow/application.h"
+#include "managers/pythonconsole/pythonconsoletitlebar.h"
 #include "python/pythonengine.h"
 #include "python/scenewrapper.h"
+#include "scene/scene.h"
+#include "widgets/codeedit.h"
 #include "widgets/referencelineedit.h"
-#include "mainwindow/application.h"
 #include <QCoreApplication>
-#include "managers/pythonconsole/pythonconsoletitlebar.h"
+#include <QEvent>
+#include <QKeyEvent>
+#include <QPushButton>
+#include <QTextEdit>
 
 namespace omm
 {
-
 PythonConsole::PythonConsole(Scene& scene)
-  : Manager(QCoreApplication::translate("any-context", "PythonConsole"), scene)
+    : Manager(QCoreApplication::translate("any-context", "PythonConsole"), scene)
 {
   setTitleBarWidget(std::make_unique<PythonConsoleTitleBar>(*this).release());
 
   auto widget = std::make_unique<QWidget>();
   auto layout = std::make_unique<QVBoxLayout>(widget.get());
   m_layout = layout.get();
-  layout.release(); // ownership is managed by Qt
+  layout.release();  // ownership is managed by Qt
 
   auto header_layout = std::make_unique<QHBoxLayout>().release();
   m_layout->addLayout(header_layout);
@@ -31,8 +30,8 @@ PythonConsole::PythonConsole(Scene& scene)
   auto ref_filter_widget = std::make_unique<ReferenceLineEdit>();
   ref_filter_widget->set_scene(scene);
   using Flag = Flag;
-  ref_filter_widget->set_filter(ReferenceProperty::Filter({ { Flag::HasScript },
-                                                            { Flag::HasPythonNodes } }));
+  ref_filter_widget->set_filter(
+      ReferenceProperty::Filter({{Flag::HasScript}, {Flag::HasPythonNodes}}));
   m_associated_item_widget = ref_filter_widget.get();
   m_associated_item_widget->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   header_layout->addWidget(ref_filter_widget.release());
@@ -68,7 +67,7 @@ PythonConsole::PythonConsole(Scene& scene)
   connect(&scene.python_engine, &PythonEngine::output, this, &PythonConsole::on_output);
   {
     using namespace pybind11::literals;
-    m_locals = new pybind11::dict("scene"_a=SceneWrapper(scene));
+    m_locals = new pybind11::dict("scene"_a = SceneWrapper(scene));
   }
 }
 
@@ -119,9 +118,9 @@ bool PythonConsole::eventFilter(QObject* object, QEvent* event)
       if (!(key_event->modifiers() & caption_modifiers)) {
         switch (key_event->key()) {
         case Qt::Key_Return:
-            eval();
-            key_event->accept();
-            return true;
+          eval();
+          key_event->accept();
+          return true;
           break;
         case Qt::Key_Up:
           get_previous_command();
@@ -176,6 +175,9 @@ bool PythonConsole::perform_action(const QString& name)
   return true;
 }
 
-QString PythonConsole::type() const { return TYPE; }
+QString PythonConsole::type() const
+{
+  return TYPE;
+}
 
 }  // namespace omm

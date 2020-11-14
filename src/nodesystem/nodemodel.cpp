@@ -1,18 +1,17 @@
 #include "nodesystem/nodemodel.h"
-#include "mainwindow/application.h"
-#include "serializers/jsonserializer.h"
-#include "scene/scene.h"
-#include "scene/mailbox.h"
 #include "common.h"
-#include "nodesystem/port.h"
+#include "mainwindow/application.h"
 #include "nodesystem/node.h"
-#include "nodesystem/nodes/fragmentnode.h"
 #include "nodesystem/nodecompilerglsl.h"
 #include "nodesystem/nodecompilerpython.h"
+#include "nodesystem/nodes/fragmentnode.h"
+#include "nodesystem/port.h"
+#include "scene/mailbox.h"
+#include "scene/scene.h"
+#include "serializers/jsonserializer.h"
 
 namespace
 {
-
 std::unique_ptr<omm::AbstractNodeCompiler>
 make_compiler(omm::AbstractNodeCompiler::Language language, omm::NodeModel& model)
 {
@@ -32,9 +31,8 @@ make_compiler(omm::AbstractNodeCompiler::Language language, omm::NodeModel& mode
 
 namespace omm
 {
-
 NodeModel::NodeModel(AbstractNodeCompiler::Language language, Scene& scene)
-  : m_scene(scene), m_compiler(make_compiler(language, *this))
+    : m_scene(scene), m_compiler(make_compiler(language, *this))
 {
   init();
 }
@@ -49,8 +47,7 @@ std::unique_ptr<NodeModel> NodeModel::make(AbstractNodeCompiler::Language langua
   }
 }
 
-NodeModel::NodeModel(const NodeModel& other)
-  : NodeModel(other.compiler().language, other.m_scene)
+NodeModel::NodeModel(const NodeModel& other) : NodeModel(other.compiler().language, other.m_scene)
 {
   std::ostringstream oss;
   {
@@ -100,11 +97,10 @@ Node& NodeModel::add_node(std::unique_ptr<Node> node)
 
 std::unique_ptr<Node> NodeModel::extract_node(Node& node)
 {
-  const auto it = std::find_if(m_nodes.begin(), m_nodes.end(),
-                               [&node](const std::unique_ptr<Node>& candidate)
-  {
-    return candidate.get() == &node;
-  });
+  const auto it = std::find_if(
+      m_nodes.begin(),
+      m_nodes.end(),
+      [&node](const std::unique_ptr<Node>& candidate) { return candidate.get() == &node; });
 
   if (it != m_nodes.end()) {
     auto own_node = std::move(m_nodes.extract(it).value());
@@ -117,9 +113,7 @@ std::unique_ptr<Node> NodeModel::extract_node(Node& node)
 
 std::set<Node*> NodeModel::nodes() const
 {
-  return ::transform<Node*>(m_nodes, [](const std::unique_ptr<Node>& node) {
-    return node.get();
-  });
+  return ::transform<Node*>(m_nodes, [](const std::unique_ptr<Node>& node) { return node.get(); });
 }
 
 void NodeModel::serialize(AbstractSerializer& serializer, const Serializable::Pointer& ptr) const
@@ -237,7 +231,7 @@ bool NodeModel::can_connect(const OutputPort& a, const InputPort& b) const
 }
 
 NodeModel::TopologyChangeSignalBlocker::TopologyChangeSignalBlocker(NodeModel& model)
-  : m_model(model)
+    : m_model(model)
 {
   m_model.m_emit_topology_changed_blocked = true;
 }

@@ -1,23 +1,19 @@
 #pragma once
 
-#include <QMouseEvent>
-#include "geometry/vec2.h"
-#include "tools/handles/handle.h"
-#include "renderers/painter.h"
 #include "geometry/util.h"
-#include "tools/tool.h"
+#include "geometry/vec2.h"
 #include "preferences/uicolors.h"
+#include "renderers/painter.h"
+#include "tools/handles/handle.h"
+#include "tools/tool.h"
+#include <QMouseEvent>
 
 namespace omm
 {
-
-template<typename ToolT, AxisHandleDirection direction>
-class ScaleAxisHandle : public Handle
+template<typename ToolT, AxisHandleDirection direction> class ScaleAxisHandle : public Handle
 {
 public:
-  ScaleAxisHandle(ToolT& tool)
-    : Handle(tool)
-    , m_direction(-Handle::axis_directions.at(direction))
+  ScaleAxisHandle(ToolT& tool) : Handle(tool), m_direction(-Handle::axis_directions.at(direction))
   {
   }
 
@@ -47,16 +43,13 @@ public:
         if (!!(e.modifiers() & Qt::ControlModifier)) {
           auto total_delta = inv_tool_transformation.apply_to_direction(pos - this->press_pos());
           total_delta = -this->discretize(this->project_onto_axis(total_delta), true, 10.0);
-          return Vec2f {
-            std::pow(2.0, total_delta.x/120.0),
-            std::pow(2.0, total_delta.y/120.0)
-          };
+          return Vec2f{std::pow(2.0, total_delta.x / 120.0), std::pow(2.0, total_delta.y / 120.0)};
         } else {
           const auto global_pos = inv_tool_transformation.apply_to_position(pos);
           const auto origin = inv_tool_transformation.apply_to_position(this->press_pos());
           auto s = project_onto_axis(global_pos - origin) / origin;
           s = this->discretize(s, true, 0.2) + Vec2f{1, 1};
-          for (auto i : { 0u, 1u }) {
+          for (auto i : {0u, 1u}) {
             if (constexpr auto eps = 10e-10; std::abs(s[i]) < eps) {
               s[i] = std::copysign(eps, s[i]);
             }
@@ -87,7 +80,7 @@ public:
     painter.setPen(pen);
     painter.drawLine(QPointF{0, 0}, to_qpoint(m_direction));
     const auto size = Vec2{1.0, 1.0} * 0.1 * m_direction.euclidean_norm();
-    const QRectF rect(to_qpoint(m_direction - size/2.0), QSizeF(size.x, size.y));
+    const QRectF rect(to_qpoint(m_direction - size / 2.0), QSizeF(size.x, size.y));
     painter.fillRect(rect, this->ui_color(name + "-fill"));
     painter.drawRect(rect);
     painter.restore();

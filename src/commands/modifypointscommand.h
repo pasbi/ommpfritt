@@ -1,13 +1,12 @@
 #pragma once
 
-#include <list>
 #include "commands/command.h"
 #include "geometry/point.h"
 #include "objects/path.h"
+#include <list>
 
 namespace omm
 {
-
 class Path;
 class ModifyPointsCommand : public Command
 {
@@ -27,16 +26,14 @@ private:
 class AbstractPointsCommand : public Command
 {
 public:
-  struct LocatedSegment
-  {
+  struct LocatedSegment {
     Path::iterator index;
     Path::Segment points;
     bool operator<(const LocatedSegment& other) const;
     bool operator>(const LocatedSegment& other) const;
   };
 
-  struct Range
-  {
+  struct Range {
     Path::iterator begin;
     std::size_t length;
     bool intersects(const Range& other) const;
@@ -45,10 +42,10 @@ public:
   };
 
 protected:
-  AbstractPointsCommand(const QString& label, Path& path,
+  AbstractPointsCommand(const QString& label,
+                        Path& path,
                         const std::vector<LocatedSegment>& added_points);
-  AbstractPointsCommand(const QString& label, Path& path,
-                        const std::vector<Range>& removed_points);
+  AbstractPointsCommand(const QString& label, Path& path, const std::vector<Range>& removed_points);
   void add();
   void remove();
 
@@ -76,4 +73,4 @@ public:
   void undo() override;
 };
 
-}  // namespace
+}  // namespace omm

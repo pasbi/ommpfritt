@@ -1,16 +1,15 @@
 #include "color/color.h"
 
 #include "color/namedcolors.h"
-#include <cassert>
-#include <algorithm>
-#include <cmath>
-#include <QtGlobal>
 #include "logging.h"
 #include "mainwindow/application.h"
+#include <QtGlobal>
+#include <algorithm>
+#include <cassert>
+#include <cmath>
 
 namespace
 {
-
 std::array<double, 3> rgb_to_hsv(const std::array<double, 3>& rgb)
 {
   const double r = std::clamp(rgb[0], 0.0, 1.0);
@@ -26,32 +25,32 @@ std::array<double, 3> rgb_to_hsv(const std::array<double, 3>& rgb)
   if (delta == 0.0) {
     h = 0.0;
   } else if (cmax == r) {
-    h = std::fmod((g - b)/delta, 6.0);
+    h = std::fmod((g - b) / delta, 6.0);
   } else if (cmax == g) {
-    h = ((b - r)/delta + 2.0);
+    h = ((b - r) / delta + 2.0);
   } else if (cmax == b) {
-    h = ((r - g)/delta + 4.0);
+    h = ((r - g) / delta + 4.0);
   } else {
     Q_UNREACHABLE();
   }
-  h *= M_PI/3.0;
+  h *= M_PI / 3.0;
   if (h < 0.0) {
-    h += 2*M_PI;
+    h += 2 * M_PI;
   }
 
   const double s = cmax == 0.0 ? 0.0 : delta / cmax;
   const double v = cmax;
   h /= 2 * M_PI;
 
-  return { h, s, v };
+  return {h, s, v};
 }
 
 std::array<double, 3> hsv_to_rgb(const std::array<double, 3>& hsv)
 {
   double h = hsv[0] * 2.0 * M_PI;
-  h = std::fmod(h, 2*M_PI);
+  h = std::fmod(h, 2 * M_PI);
   if (h < 0.0) {
-    h += 2*M_PI;
+    h += 2 * M_PI;
   }
   h = h * 3.0 / M_PI;
   const double c = hsv[2] * hsv[1];
@@ -59,17 +58,17 @@ std::array<double, 3> hsv_to_rgb(const std::array<double, 3>& hsv)
   const double m = hsv[2] - c;
   switch (static_cast<int>(h)) {
   case 0:
-    return {c+m, x+m, m};
+    return {c + m, x + m, m};
   case 1:
-    return {x+m, c+m, m};
+    return {x + m, c + m, m};
   case 2:
-    return {m, c+m, x+m};
+    return {m, c + m, x + m};
   case 3:
-    return {m, x+m, c+m};
+    return {m, x + m, c + m};
   case 4:
-    return {x+m, m, c+m};
+    return {x + m, m, c + m};
   case 5:
-    return {c+m, m, x+m};
+    return {c + m, m, x + m};
   case 6:
   default:
     Q_UNREACHABLE();
@@ -112,38 +111,33 @@ bool decode_hex(const QString& code, std::array<double, 4>& rgb)
 
 namespace omm
 {
+const std::map<Color::Model, std::array<QString, 4>> Color::component_names{
+    {Color::Model::HSVA,
+     {
+         QT_TRANSLATE_NOOP("Color", "Hue"),
+         QT_TRANSLATE_NOOP("Color", "Saturation"),
+         QT_TRANSLATE_NOOP("Color", "Value"),
+         QT_TRANSLATE_NOOP("Color", "Alpha"),
+     }},
+    {Color::Model::RGBA,
+     {
+         QT_TRANSLATE_NOOP("Color", "Red"),
+         QT_TRANSLATE_NOOP("Color", "Green"),
+         QT_TRANSLATE_NOOP("Color", "Blue"),
+         QT_TRANSLATE_NOOP("Color", "Alpha"),
+     }}};
 
-const std::map<Color::Model, std::array<QString, 4>> Color::component_names {
-  {
-    Color::Model::HSVA,
-    {
-      QT_TRANSLATE_NOOP("Color", "Hue"),
-      QT_TRANSLATE_NOOP("Color", "Saturation"),
-      QT_TRANSLATE_NOOP("Color", "Value"),
-      QT_TRANSLATE_NOOP("Color", "Alpha"),
-    }
-  },
-  {
-    Color::Model::RGBA,
-    {
-      QT_TRANSLATE_NOOP("Color", "Red"),
-      QT_TRANSLATE_NOOP("Color", "Green"),
-      QT_TRANSLATE_NOOP("Color", "Blue"),
-      QT_TRANSLATE_NOOP("Color", "Alpha"),
-    }
-  }
-};
-
-Color::Color() : Color(Model::RGBA, { 0.0, 0.0, 0.0, 1.0 }) {}
+Color::Color() : Color(Model::RGBA, {0.0, 0.0, 0.0, 1.0})
+{
+}
 
 Color::Color(Color::Model model, const std::array<double, 3> components, double alpha)
-  : Color(model, { components[0], components[1], components[2], alpha })
+    : Color(model, {components[0], components[1], components[2], alpha})
 {
 }
 
 Color::Color(Color::Model model, const std::array<double, 4> components)
-  : m_components(components)
-  , m_current_model(model)
+    : m_components(components), m_current_model(model)
 {
 }
 
@@ -151,24 +145,24 @@ Color::Color(const QString& name) : m_current_model(Model::Named), m_name(name)
 {
 }
 
-Color::Color(const QColor& c) : Color(Color::RGBA, { c.redF(), c.greenF(), c.blueF(), c.alphaF() })
+Color::Color(const QColor& c) : Color(Color::RGBA, {c.redF(), c.greenF(), c.blueF(), c.alphaF()})
 {
 }
 
-std::array<double, 4> Color::convert(Color::Model from, Color::Model to,
-                                     const std::array<double, 4> values)
+std::array<double, 4>
+Color::convert(Color::Model from, Color::Model to, const std::array<double, 4> values)
 {
   static const auto pack = [](const std::array<double, 3>& triple, double fourth) {
-    return std::array<double, 4> { triple[0], triple[1], triple[2], fourth };
+    return std::array<double, 4>{triple[0], triple[1], triple[2], fourth};
   };
-  static constexpr std::array<double, 4> invalid { 0.0, 0.0, 0.0, 0.0 };
+  static constexpr std::array<double, 4> invalid{0.0, 0.0, 0.0, 0.0};
   switch (from) {
   case Model::HSVA:
     switch (to) {
     case Model::HSVA:
       return values;
     case Model::RGBA:
-      return pack(hsv_to_rgb({ values[0], values[1], values[2] }), values[3]);
+      return pack(hsv_to_rgb({values[0], values[1], values[2]}), values[3]);
     default:
       Q_UNREACHABLE();
       return invalid;
@@ -176,7 +170,7 @@ std::array<double, 4> Color::convert(Color::Model from, Color::Model to,
   case Model::RGBA:
     switch (to) {
     case Model::HSVA:
-      return pack(rgb_to_hsv({ values[0], values[1], values[2] }), values[3]);
+      return pack(rgb_to_hsv({values[0], values[1], values[2]}), values[3]);
     case Model::RGBA:
       return values;
     default:
@@ -269,7 +263,7 @@ Color::Model Color::model(Role role, Model tie)
 QString Color::to_html() const
 {
   static const auto to_hex = [](float f) {
-    const int i = std::clamp(static_cast<int>(std::round(f*255)), 0, 255);
+    const int i = std::clamp(static_cast<int>(std::round(f * 255)), 0, 255);
     const QString str = QString("%1").arg(static_cast<int>(i), 2, 16, QChar('0'));
     assert(str.size() == 2);
     return str;
@@ -281,7 +275,7 @@ QString Color::to_html() const
 
 Color Color::from_html(const QString& html, bool* ok)
 {
-  Color color(Model::RGBA, { 0.0, 0.0, 0.0, 1.0 });
+  Color color(Model::RGBA, {0.0, 0.0, 0.0, 1.0});
   if (decode_hex(html, color.m_components)) {
     if (ok != nullptr) {
       *ok = true;
@@ -296,7 +290,7 @@ Color Color::from_html(const QString& html, bool* ok)
 
 Color Color::from_qcolor(const QColor& color)
 {
-  return Color(Color::Model::RGBA, { color.redF(), color.greenF(), color.blueF(), color.alphaF() });
+  return Color(Color::Model::RGBA, {color.redF(), color.greenF(), color.blueF(), color.alphaF()});
 }
 
 QColor Color::to_qcolor() const
@@ -314,7 +308,7 @@ void Color::to_ordinary_color()
 {
   if (model() == Model::Named) {
     if (!Application::instance().scene.named_colors().resolve(m_name, *this)) {
-      m_components = { 0, 0, 0, 1 };
+      m_components = {0, 0, 0, 1};
       m_current_model = Model::RGBA;
       LWARNING << "Failed to resolve color '" << m_name << "'.";
     }
@@ -368,7 +362,6 @@ double Color::get(Color::Role role) const
   return copy.component(role);
 }
 
-
 bool operator==(const Color& a, const Color& b)
 {
   if (a.m_current_model == b.m_current_model) {
@@ -382,7 +375,10 @@ bool operator==(const Color& a, const Color& b)
   }
 }
 
-bool operator!=(const Color& a, const Color& b) { return !(a == b); }
+bool operator!=(const Color& a, const Color& b)
+{
+  return !(a == b);
+}
 
 bool operator<(const Color& a, const Color& b)
 {

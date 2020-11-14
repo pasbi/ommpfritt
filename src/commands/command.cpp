@@ -2,11 +2,10 @@
 
 #include "commands/command.h"
 
-
 namespace omm
 {
-
-Command::Command(const QString& label) : QUndoCommand(label) { }
+Command::Command(const QString& label) : QUndoCommand(label)
+{
+}
 
 }  // namespace omm
-

@@ -1,24 +1,22 @@
-#include <iostream>
-#include <iomanip>
+#include "animation/animator.h"
 #include "enumnames.h"
 #include "logging.h"
-#include <QRegularExpression>
-#include "tags/tag.h"
 #include "mainwindow/application.h"
-#include "objects/view.h"
 #include "mainwindow/exportdialog.h"
-#include "animation/animator.h"
-#include <memory>
-#include <QApplication>
-#include "logging.h"
+#include "objects/view.h"
 #include "scene/scene.h"
 #include "subcommandlineparser.h"
-#include <QFileInfo>
+#include "tags/tag.h"
+#include <QApplication>
 #include <QFile>
+#include <QFileInfo>
+#include <QRegularExpression>
+#include <iomanip>
+#include <iostream>
+#include <memory>
 
 namespace
 {
-
 void exit(omm::ExitStatus status)
 {
   ::exit(static_cast<int>(status));
@@ -31,22 +29,22 @@ template<typename T> const T& find(omm::Scene& scene, const QString& name)
   const auto type_matches = ::filter_if(scene.object_tree().items(), [](const auto* c) {
     return c->type() == T::TYPE || std::is_same_v<T, omm::Object>;
   });
-  const auto name_type_matches = ::filter_if(type_matches, [name](const auto* c) {
-    return c->name() == name;
-  });
+  const auto name_type_matches
+      = ::filter_if(type_matches, [name](const auto* c) { return c->name() == name; });
   if (name_type_matches.size() == 0) {
     LERROR << QString("%1 '%2' not found.").arg(T::TYPE).arg(name);
-    const QStringList view_names = ::transform<QString, QList>(type_matches, [](const auto* v) {
-      return v->name();
-    });
+    const QStringList view_names
+        = ::transform<QString, QList>(type_matches, [](const auto* v) { return v->name(); });
     LINFO << QString("There are %1 objects of type [%2] in this scene:\n%3")
-             .arg(view_names.size())
-             .arg(T::TYPE)
-             .arg(view_names.join("\n"));
+                 .arg(view_names.size())
+                 .arg(T::TYPE)
+                 .arg(view_names.join("\n"));
     exit(omm::ExitStatus::object_type_not_found);
   } else if (name_type_matches.size() > 1) {
     LWARNING << QString("%1 '%2' is ambiguous (%3) occurences.")
-                .arg(T::TYPE).arg(name).arg(name_type_matches.size());
+                    .arg(T::TYPE)
+                    .arg(name)
+                    .arg(name_type_matches.size());
   }
   return static_cast<const omm::View&>(**name_type_matches.begin());
 }
@@ -58,7 +56,8 @@ QString interpolate_filename(QString fn_template, int i)
     return fn_template;
   }
 
-  const int last_match = fn_template.lastIndexOf(omm::SubcommandLineParser::FRAMENUMBER_PLACEHOLDER);
+  const int last_match
+      = fn_template.lastIndexOf(omm::SubcommandLineParser::FRAMENUMBER_PLACEHOLDER);
   const QString placeholder = fn_template.mid(first_match, last_match - first_match + 1);
   if (placeholder.count(omm::SubcommandLineParser::FRAMENUMBER_PLACEHOLDER) != placeholder.size()) {
     LERROR << QObject::tr("Framenumber placeholder must be contiguous.");
@@ -73,8 +72,8 @@ QString interpolate_filename(QString fn_template, int i)
 void print_tree(const omm::Object& root, const QString& prefix = "")
 {
   const auto tags = ::transform<QString, QList>(root.tags.items(), [](const omm::Tag* tag) {
-    return tag->type();
-  }).join(", ");
+                      return tag->type();
+                    }).join(", ");
   const auto label = QString("%1[%2] (%3)").arg(root.type()).arg(root.name()).arg(tags);
   std::cout << prefix.toStdString() << label.toStdString() << "\n";
 
@@ -86,9 +85,8 @@ void print_tree(const omm::Object& root, const QString& prefix = "")
 void prepare_scene(omm::Scene& scene, const std::set<omm::Object*>& visible_objects)
 {
   for (auto other : scene.object_tree().items()) {
-    const auto is_descendant_of = [&other](const auto* object) {
-      return object->is_ancestor_of(*other);
-    };
+    const auto is_descendant_of
+        = [&other](const auto* object) { return object->is_ancestor_of(*other); };
     if (std::none_of(visible_objects.begin(), visible_objects.end(), is_descendant_of)) {
       other->property(omm::Object::VISIBILITY_PROPERTY_KEY)->set(omm::Object::Visibility::Hidden);
     }
@@ -193,7 +191,7 @@ void status(omm::Application&, const omm::SubcommandLineParser& args)
     }
   } else if (args.isSet("get-code")) {
     const auto description = args.get<QString>("get-code");
-    const auto handle_match = [d=description](bool translate) {
+    const auto handle_match = [d = description](bool translate) {
       const auto it = std::find_if(statuses.begin(), statuses.end(), [d, translate](auto&& c) {
         return omm::enum_name(c, translate) == d;
       });
@@ -248,17 +246,17 @@ int main(int argc, char* argv[])
   }
 
   setup_logfile(logfile);
-  qInstallMessageHandler([](QtMsgType type, const QMessageLogContext& ctx, const QString &msg) {
+  qInstallMessageHandler([](QtMsgType type, const QMessageLogContext& ctx, const QString& msg) {
     handle_log(logfile, level, print_long_message, type, ctx, msg);
   });
 
   Application omm(app, make_options(args));
 
   using subcommand_t = std::function<void(Application&, const SubcommandLineParser&)>;
-  static const std::map<QString, subcommand_t> f_map {
-    { "render", &render },
-    { "tree", &tree },
-    { "status", &status },
+  static const std::map<QString, subcommand_t> f_map{
+      {"render", &render},
+      {"tree", &tree},
+      {"status", &status},
   };
 
   if (const auto it = f_map.find(args.command()); it == f_map.end()) {
@@ -268,4 +266,3 @@ int main(int argc, char* argv[])
     return EXIT_SUCCESS;
   }
 }
-

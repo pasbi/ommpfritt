@@ -1,32 +1,43 @@
 #pragma once
 
 #include <QString>
-#include <functional>
-#include <memory>
-#include <vector>
-#include <cassert>
-#include <set>
 #include <algorithm>
-#include <type_traits>
-#include <variant>
-#include <typeinfo>
-#include <utility>
-#include <sstream>
+#include <cassert>
+#include <functional>
 #include <list>
 #include <map>
+#include <memory>
+#include <set>
+#include <sstream>
+#include <type_traits>
+#include <typeinfo>
+#include <utility>
+#include <variant>
+#include <vector>
 
 namespace omm
 {
+enum class Kind {
+  None = 0x0,
+  Tag = 0x1,
+  Style = 0x2,
+  Object = 0x4,
+  Tool = 0x8,
+  Node = 0x10,
+  Item = Tag | Style | Object,
+  All = Item | Tool | Node
+};
 
-enum class Kind { None = 0x0,
-                  Tag = 0x1, Style = 0x2, Object = 0x4, Tool = 0x8, Node = 0x10,
-                  Item = Tag | Style | Object, All = Item | Tool | Node };
-
-enum class Flag { None = 0x0,
-                  Convertible = 0x1, HasScript = 0x2, IsView = 0x8,
-                  HasPythonNodes = 0x10, HasGLSLNodes = 0x20,
-                  HasNodes = HasPythonNodes | HasGLSLNodes,
-                  HasPython = HasPythonNodes | HasScript };
+enum class Flag {
+  None = 0x0,
+  Convertible = 0x1,
+  HasScript = 0x2,
+  IsView = 0x8,
+  HasPythonNodes = 0x10,
+  HasGLSLNodes = 0x20,
+  HasNodes = HasPythonNodes | HasGLSLNodes,
+  HasPython = HasPythonNodes | HasScript
+};
 
 enum class ExitStatus {
   object_type_not_found = 1,
@@ -64,30 +75,34 @@ template<typename T> void reserve(std::vector<T>& c, size_t n)
   c.reserve(n);
 }
 
-static constexpr struct identity_t
-{
-  template<typename T>
-  constexpr decltype(auto) operator()(T&& t) const noexcept { return std::forward<T>(t); }
-} identity {};
+static constexpr struct identity_t {
+  template<typename T> constexpr decltype(auto) operator()(T&& t) const noexcept
+  {
+    return std::forward<T>(t);
+  }
+} identity{};
 
 /**
  * @brief makes a container similar to `Container<S>` but with `value_type T`.
  */
 template<typename T, template<typename...> class Container, typename S>
-auto make_container(const Container<S>&) { return Container<T>(); }
+auto make_container(const Container<S>&)
+{
+  return Container<T>();
+}
 
-template<typename T, typename ContainerS, typename F>
-auto transform(ContainerS&& ss, F&& mapper)
+template<typename T, typename ContainerS, typename F> auto transform(ContainerS&& ss, F&& mapper)
 {
   auto ts = make_container<T>(ss);
   reserve(ts, ss.size());
-  std::transform( std::begin(ss), std::end(ss),
-                  std::inserter(ts, std::end(ts)), std::forward<F>(mapper) );
+  std::transform(std::begin(ss),
+                 std::end(ss),
+                 std::inserter(ts, std::end(ts)),
+                 std::forward<F>(mapper));
   return ts;
 }
 
-template<typename T, typename ContainerS>
-auto transform(ContainerS&& ss)
+template<typename T, typename ContainerS> auto transform(ContainerS&& ss)
 {
   return ::transform<T, ContainerS>(std::forward<ContainerS>(ss), ::identity);
 }
@@ -97,8 +112,10 @@ auto transform(ContainerS&& ss, F&& mapper = ::identity)
 {
   ContainerT<T> ts;
   reserve(ts, ss.size());
-  std::transform( std::begin(ss), std::end(ss),
-                  std::inserter(ts, std::end(ts)), std::forward<F>(mapper) );
+  std::transform(std::begin(ss),
+                 std::end(ss),
+                 std::inserter(ts, std::end(ts)),
+                 std::forward<F>(mapper));
   return ts;
 }
 
@@ -108,15 +125,19 @@ auto transform(ContainerS&& ss)
   return ::transform<T, ContainerT>(std::forward<ContainerS>(ss), ::identity);
 }
 
-template<typename Ts, typename F=identity_t, typename EqualT=std::equal_to<>>
-auto is_uniform( const Ts& container,
-                 const F& mapper=::identity,
-                 const EqualT& equal_to = std::equal_to<>() )
+template<typename Ts, typename F = identity_t, typename EqualT = std::equal_to<>>
+auto is_uniform(const Ts& container,
+                const F& mapper = ::identity,
+                const EqualT& equal_to = std::equal_to<>())
 {
-  if (container.size() == 0) { return true; }
+  if (container.size() == 0) {
+    return true;
+  }
   decltype(auto) first = mapper(*std::begin(container));
   for (const auto& v : container) {
-    if (!equal_to(mapper(v), first)) { return false; }
+    if (!equal_to(mapper(v), first)) {
+      return false;
+    }
   }
   return true;
 }
@@ -136,7 +157,7 @@ T& insert(ContainerT<std::unique_ptr<T>>& container, std::unique_ptr<T> obj, siz
 template<typename T, template<typename...> class ContainerT>
 std::unique_ptr<T> extract(ContainerT<std::unique_ptr<T>>& container, const T& obj)
 {
-  const auto is_obj = [&obj] (const std::unique_ptr<T>& a) { return a.get() == &obj; };
+  const auto is_obj = [&obj](const std::unique_ptr<T>& a) { return a.get() == &obj; };
   const auto it = std::find_if(std::begin(container), std::end(container), is_obj);
   assert(it != std::end(container));
   std::unique_ptr<T> uptr = std::move(*it);
@@ -144,8 +165,7 @@ std::unique_ptr<T> extract(ContainerT<std::unique_ptr<T>>& container, const T& o
   return uptr;
 }
 
-template<typename Ts, typename Predicate>
-Ts filter_if(const Ts& ts, const Predicate& p)
+template<typename Ts, typename Predicate> Ts filter_if(const Ts& ts, const Predicate& p)
 {
   Ts filtered;
   std::copy_if(ts.begin(), ts.end(), std::inserter(filtered, filtered.end()), p);
@@ -154,13 +174,13 @@ Ts filter_if(const Ts& ts, const Predicate& p)
 
 bool is_not_null(const void* p);
 
-template<typename SetA, typename SetB=SetA> decltype(auto) merge(SetA&& a, SetB&& b)
+template<typename SetA, typename SetB = SetA> decltype(auto) merge(SetA&& a, SetB&& b)
 {
   a.insert(b.begin(), b.end());
   return std::move(a);
 }
 
-template<typename SetA, typename SetB=SetA> SetA merge(const SetA& a, SetB&& b)
+template<typename SetA, typename SetB = SetA> SetA merge(const SetA& a, SetB&& b)
 {
   auto copy = a;
   copy.insert(b.begin(), b.end());
@@ -209,11 +229,12 @@ template<typename S, typename... Ts> bool contains(const std::map<Ts...>& map, S
   }
 }
 
-template<typename T> struct is_unique_ptr : std::true_type {};
-template<typename... T> struct is_unique_ptr<std::unique_ptr<T...>> : std::true_type {};
+template<typename T> struct is_unique_ptr : std::true_type {
+};
+template<typename... T> struct is_unique_ptr<std::unique_ptr<T...>> : std::true_type {
+};
 
-template<typename C>
-struct HasCloneMethod {
+template<typename C> struct HasCloneMethod {
 private:
   template<typename T> using X = decltype(std::declval<T>().clone());
   template<typename T> using U = typename std::is_same<X<T>, std::unique_ptr<T>>::type;
@@ -225,18 +246,15 @@ public:
   static constexpr bool value = type::value;
 };
 
-
 template<typename T, template<typename...> class ContainerT>
 ContainerT<std::unique_ptr<T>> copy(const ContainerT<std::unique_ptr<T>>& other)
 {
   if constexpr (HasCloneMethod<T>::value) {
     return ::transform<std::unique_ptr<T>>(other, [](const auto& i) { return i->clone(); });
   } else {
-    return ::transform<std::unique_ptr<T>>(other, [](const auto& i) {
-      return std::make_unique<T>(*i);
-    });
+    return ::transform<std::unique_ptr<T>>(other,
+                                           [](const auto& i) { return std::make_unique<T>(*i); });
   }
-
 }
 
 template<typename T, template<typename...> class ContainerT>
@@ -259,7 +277,7 @@ constexpr decltype(auto) conditional(T1&& t1, T2&& t2) noexcept
   }
 }
 
-template<std::size_t i=0, typename variant_type>
+template<std::size_t i = 0, typename variant_type>
 void print_variant_value(std::ostream& ostream, const variant_type& variant)
 {
   if (i == variant.index()) {
@@ -271,8 +289,8 @@ void print_variant_value(std::ostream& ostream, const variant_type& variant)
     return;
   }
 
-  if constexpr (i+1 < std::variant_size_v<variant_type>) {
-    print_variant_value<i+1, variant_type>(ostream, variant);
+  if constexpr (i + 1 < std::variant_size_v<variant_type>) {
+    print_variant_value<i + 1, variant_type>(ostream, variant);
   }
 }
 
@@ -309,13 +327,14 @@ Container<T> type_cast(const Container<S>& apos)
   return ::filter_if(casted, ::is_not_null);
 }
 
-
 template<typename T> std::ostream& operator<<(std::ostream& ostream, const std::vector<T>& vs)
 {
   ostream << "[ ";
   if (vs.size() > 0) {
     ostream << vs[0];
-    for (std::size_t i = 1; i < vs.size(); ++i) { ostream << ", " << vs[i]; }
+    for (std::size_t i = 1; i < vs.size(); ++i) {
+      ostream << ", " << vs[i];
+    }
   }
   ostream << " ]";
   return ostream;
@@ -337,26 +356,25 @@ template<typename K, typename V> std::set<K> get_keys(const std::map<K, V>& map)
 {
   std::set<K> keys;
   for (auto&& [k, v] : map) {
-    (void) v;
+    (void)v;
     keys.insert(k);
   }
   return keys;
 }
 
-template<typename Map1, typename Map2>
-bool same_keys(const Map1& m1, const Map2& m2)
+template<typename Map1, typename Map2> bool same_keys(const Map1& m1, const Map2& m2)
 {
   if (m1.size() != m2.size()) {
     return false;
   } else {
-    return std::equal(m1.begin(), m1.end(), m2.begin(),  [](const auto& a, const auto& b) {
+    return std::equal(m1.begin(), m1.end(), m2.begin(), [](const auto& a, const auto& b) {
       return a.first == b.first;
     });
   }
 }
 
-template<typename R, typename Ts, typename P, typename F> auto
-find_if(Ts&& items, P&& predicate, F&& f, R&& default_)
+template<typename R, typename Ts, typename P, typename F>
+auto find_if(Ts&& items, P&& predicate, F&& f, R&& default_)
 {
   for (auto&& t : items) {
     if (predicate(t)) {
@@ -368,8 +386,8 @@ find_if(Ts&& items, P&& predicate, F&& f, R&& default_)
 
 namespace omm
 {
-
-template<typename T> struct EnableBitMaskOperators : std::false_type {};
+template<typename T> struct EnableBitMaskOperators : std::false_type {
+};
 
 template<typename EnumT>
 std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT> operator|(EnumT a, EnumT b)
@@ -411,7 +429,8 @@ std::enable_if_t<EnableBitMaskOperators<EnumT>::value, EnumT&> operator&=(EnumT&
   return a;
 }
 
-template<typename Vertex> std::pair<bool, std::list<Vertex>>
+template<typename Vertex>
+std::pair<bool, std::list<Vertex>>
 topological_sort(std::set<Vertex> vertices,
                  const std::function<std::set<Vertex>(Vertex)>& successors)
 {
@@ -442,12 +461,14 @@ topological_sort(std::set<Vertex> vertices,
   }
 
   const bool has_cycles = !edges.empty();
-  return { has_cycles, sequence };
+  return {has_cycles, sequence};
 }
 
-template<typename Vertex> bool
-find_path(Vertex start, Vertex target, std::list<Vertex>& path,
-          const std::function<std::set<Vertex>(Vertex)>& get_successors)
+template<typename Vertex>
+bool find_path(Vertex start,
+               Vertex target,
+               std::list<Vertex>& path,
+               const std::function<std::set<Vertex>(Vertex)>& get_successors)
 {
   if (start == target) {
     return true;
@@ -466,5 +487,7 @@ enum class Space { Viewport, Scene };
 
 }  // namespace omm
 
-template<> struct omm::EnableBitMaskOperators<omm::Kind> : std::true_type {};
-template<> struct omm::EnableBitMaskOperators<omm::Flag> : std::true_type {};
+template<> struct omm::EnableBitMaskOperators<omm::Kind> : std::true_type {
+};
+template<> struct omm::EnableBitMaskOperators<omm::Flag> : std::true_type {
+};

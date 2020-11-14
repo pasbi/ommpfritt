@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class NodeItem;
 class AbstractPort;
 
@@ -18,9 +17,12 @@ public:
   QRectF boundingRect() const override;
   static constexpr auto TYPE = QGraphicsItem::UserType + 1;
   static constexpr double radius = 6;
-  int type() const override { return TYPE; }
+  int type() const override
+  {
+    return TYPE;
+  }
   NodeItem& node_item;
   AbstractPort& port;
 };
 
-}
+}  // namespace omm

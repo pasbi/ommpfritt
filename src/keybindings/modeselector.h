@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 class CommandInterface;
 
 class ModeSelector : public QObject
@@ -12,12 +11,17 @@ class ModeSelector : public QObject
   Q_OBJECT
 
 public:
-  ModeSelector(CommandInterface& context, const QString& name, const QString& cycle_action,
+  ModeSelector(CommandInterface& context,
+               const QString& name,
+               const QString& cycle_action,
                const std::vector<QString>& activation_actions);
   virtual ~ModeSelector();
 
 public:
-  int mode() const { return m_mode; }
+  int mode() const
+  {
+    return m_mode;
+  }
   QString translated_name() const;
   bool handle(const QString& action_name);
 

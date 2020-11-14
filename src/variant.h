@@ -1,26 +1,39 @@
 #pragma once
 
 #include "color/color.h"
-#include "splinetype.h"
-#include <variant>
 #include "geometry/vec2.h"
+#include "splinetype.h"
 #include <QString>
+#include <variant>
 
 namespace omm
 {
-
 class AbstractPropertyOwner;
 
 class TriggerPropertyDummyValueType
 {
 public:
-  bool operator==(const TriggerPropertyDummyValueType&) const { return true; }
-  bool operator!=(const TriggerPropertyDummyValueType&) const { return false; }
+  bool operator==(const TriggerPropertyDummyValueType&) const
+  {
+    return true;
+  }
+  bool operator!=(const TriggerPropertyDummyValueType&) const
+  {
+    return false;
+  }
 };
 
-using variant_type = std::variant< bool, double, Color, int, AbstractPropertyOwner*,
-                                   QString, size_t, TriggerPropertyDummyValueType,
-                                   Vec2f, Vec2i, SplineType >;
+using variant_type = std::variant<bool,
+                                  double,
+                                  Color,
+                                  int,
+                                  AbstractPropertyOwner*,
+                                  QString,
+                                  size_t,
+                                  TriggerPropertyDummyValueType,
+                                  Vec2f,
+                                  Vec2i,
+                                  SplineType>;
 
 template<typename T> T null_value();
 

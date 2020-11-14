@@ -4,7 +4,6 @@
 
 namespace
 {
-
 using namespace omm;
 using Segments = ModifySegmentsCommand::Segments;
 auto get_old_segments(const Path& path, const Segments& new_segments)
@@ -26,13 +25,11 @@ auto get_old_segments(const Path& path, const Segments& new_segments)
 
 namespace omm
 {
-
-ModifySegmentsCommand
-::ModifySegmentsCommand(const QString& label, Path& path, const Segments& segments)
-  : Command(label)
-  , m_path(path)
-  , m_old_segments(get_old_segments(path, segments))
-  , m_new_segments(segments)
+ModifySegmentsCommand ::ModifySegmentsCommand(const QString& label,
+                                              Path& path,
+                                              const Segments& segments)
+    : Command(label), m_path(path), m_old_segments(get_old_segments(path, segments)),
+      m_new_segments(segments)
 {
 }
 
@@ -57,6 +54,5 @@ void ModifySegmentsCommand::apply(const ModifySegmentsCommand::Segments& segment
   m_path.update();
   m_path.scene()->tool_box().active_tool().reset();
 }
-
 
 }  // namespace omm

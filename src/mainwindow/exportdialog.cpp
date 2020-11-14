@@ -1,32 +1,34 @@
 #include "mainwindow/exportdialog.h"
 #include "animation/animator.h"
-#include "widgets/referencelineedit.h"
-#include <QPushButton>
-#include "widgets/numericedit.h"
-#include <QFrame>
-#include "objects/view.h"
-#include <QPainter>
-#include <QSettings>
-#include "renderers/painter.h"
-#include "scene/scene.h"
+#include "geometry/vec2.h"
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
 #include "mainwindow/viewport/viewport.h"
+#include "objects/view.h"
+#include "renderers/painter.h"
+#include "scene/scene.h"
+#include "ui_exportdialog.h"
+#include "widgets/numericedit.h"
+#include "widgets/referencelineedit.h"
 #include <QFileDialog>
-#include <QMessageBox>
+#include <QFrame>
 #include <QLabel>
+#include <QMessageBox>
+#include <QPainter>
+#include <QPushButton>
+#include <QSettings>
 #include <QVBoxLayout>
 #include <QtSvg/QSvgGenerator>
-#include "geometry/vec2.h"
-#include "ui_exportdialog.h"
 
 namespace
 {
-
 class XLabel : public QLabel
 {
 public:
-  XLabel() : QLabel("x") { setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred); }
+  XLabel() : QLabel("x")
+  {
+    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
+  }
 };
 
 class Line : public QFrame
@@ -34,11 +36,15 @@ class Line : public QFrame
 public:
   explicit Line(QFrame::Shape shape) : QFrame()
   {
-    setFrameShape(shape); setFrameShadow(QFrame::Sunken);
+    setFrameShape(shape);
+    setFrameShadow(QFrame::Sunken);
   }
 };
 
-omm::Viewport& viewport() { return omm::Application::instance().main_window()->viewport(); }
+omm::Viewport& viewport()
+{
+  return omm::Application::instance().main_window()->viewport();
+}
 
 double compute_aspect_ratio(const omm::View* view)
 {
@@ -58,8 +64,8 @@ public:
   QValidator::State validate(QString& input, int& pos) const override
   {
     Q_UNUSED(pos)
-    const std::set<QString> forbidden_subsequences = { "/" };
-    const std::set<QString> allowed_endings = { ".png", ".jpg", ".jpeg" };
+    const std::set<QString> forbidden_subsequences = {"/"};
+    const std::set<QString> allowed_endings = {".png", ".jpg", ".jpeg"};
 
     for (const QString& forbidden_subsequence : forbidden_subsequences) {
       if (input.contains(forbidden_subsequence)) {
@@ -86,28 +92,24 @@ public:
   }
 };
 
-}
+}  // namespace
 
 namespace omm
 {
-
 ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
-  : QDialog(parent), m_scene(scene)
-  , m_filepath(scene.filename())
-  , m_animation_directory(QFileInfo(m_filepath).dir().path())
-  , m_ui(new ::Ui::ExportDialog)
-  , m_validator(new FilenamePatternValidator())
+    : QDialog(parent), m_scene(scene), m_filepath(scene.filename()),
+      m_animation_directory(QFileInfo(m_filepath).dir().path()), m_ui(new ::Ui::ExportDialog),
+      m_validator(new FilenamePatternValidator())
 {
   m_ui->setupUi(this);
 
   QObject::connect(m_ui->cb_view, &ReferenceLineEdit::value_changed, [this]() {
-    m_ui->ne_resolution_y->set_value(int(m_ui->ne_resolution_x->value()
-                                         / compute_aspect_ratio(view())));
+    m_ui->ne_resolution_y->set_value(
+        int(m_ui->ne_resolution_x->value() / compute_aspect_ratio(view())));
     update_preview();
   });
 
-  m_ui->cb_view->set_filter(ReferenceProperty::Filter({ Kind::Object },
-                                                      { { Flag::IsView } }));
+  m_ui->cb_view->set_filter(ReferenceProperty::Filter({Kind::Object}, {{Flag::IsView}}));
 
   m_ui->cb_view->set_null_label(tr("Viewport"));
   m_ui->cb_view->set_scene(scene);
@@ -148,8 +150,10 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   m_ui->cb_overwrite->setChecked(scene.animator().overwrite_file);
   m_ui->le_pattern->setValidator(m_validator.get());
 
-  connect(m_ui->le_pattern, &QLineEdit::textChanged,
-          this, &ExportDialog::update_pattern_edit_background);
+  connect(m_ui->le_pattern,
+          &QLineEdit::textChanged,
+          this,
+          &ExportDialog::update_pattern_edit_background);
   update_pattern_edit_background();
   if (!m_ui->le_pattern->hasAcceptableInput()) {
     m_ui->le_pattern->setText(tr("frame_%%%%.png"));
@@ -160,10 +164,14 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   reset_start_frame();
   reset_end_frame();
 
-  connect(m_ui->sb_start, qOverload<int>(&QSpinBox::valueChanged),
-          this, &ExportDialog::set_minimum_end);
-  connect(m_ui->sb_end, qOverload<int>(&QSpinBox::valueChanged),
-          this, &ExportDialog::set_maximum_start);
+  connect(m_ui->sb_start,
+          qOverload<int>(&QSpinBox::valueChanged),
+          this,
+          &ExportDialog::set_minimum_end);
+  connect(m_ui->sb_end,
+          qOverload<int>(&QSpinBox::valueChanged),
+          this,
+          &ExportDialog::set_maximum_start);
   set_maximum_start(m_ui->sb_end->value());
   set_minimum_end(m_ui->sb_start->value());
 
@@ -213,7 +221,7 @@ void ExportDialog::render(Scene& scene, const View* view, QPaintDevice& device, 
     Painter renderer(scene, Painter::Category::Objects);
     renderer.painter = &painter;
 
-    const auto transformation = [&device, view](){
+    const auto transformation = [&device, view]() {
       if (view == nullptr) {
         const auto t = viewport().viewport_transformation();
         const auto s = device.width() / double(viewport().width());
@@ -222,7 +230,7 @@ void ExportDialog::render(Scene& scene, const View* view, QPaintDevice& device, 
         const auto t = view->global_transformation(Space::Scene).inverted();
         const auto view_size = view->property(omm::View::SIZE_PROPERTY_KEY)->value<omm::Vec2f>();
         const auto s = device.width() / double(view_size.x);
-        const auto d = view_size/2.0;
+        const auto d = view_size / 2.0;
         return ObjectTransformation().scaled(Vec2f(s, s)).apply(t.translated(d));
       }
     }();
@@ -370,9 +378,11 @@ void ExportDialog::set_minimum_end(int min)
 
 void ExportDialog::start_export_animation()
 {
-  const QFileDialog::Options options {};
-  const QString path = QFileDialog::getExistingDirectory(this, tr("Export animation to ..."),
-                                                         m_animation_directory, options);
+  const QFileDialog::Options options{};
+  const QString path = QFileDialog::getExistingDirectory(this,
+                                                         tr("Export animation to ..."),
+                                                         m_animation_directory,
+                                                         options);
   if (!path.isEmpty()) {
     m_animation_directory = path;
     const QString pattern = m_ui->le_pattern->text();
@@ -399,10 +409,13 @@ void ExportDialog::start_export_animation()
 void ExportDialog::save_as()
 {
   switch (m_ui->cb_format->currentIndex()) {
-  case 0: save_as_raster(); break;
-  case 1: save_as_svg(); break;
+  case 0:
+    save_as_raster();
+    break;
+  case 1:
+    save_as_svg();
+    break;
   }
-
 }
 
 void ExportDialog::resizeEvent(QResizeEvent* e)
@@ -419,7 +432,7 @@ void ExportDialog::showEvent(QShowEvent* e)
   QDialog::showEvent(e);
 }
 
-void ExportDialog::hideEvent(QHideEvent *e)
+void ExportDialog::hideEvent(QHideEvent* e)
 {
   save_settings();
   m_scene.animator().filename_pattern = m_ui->le_pattern->text();

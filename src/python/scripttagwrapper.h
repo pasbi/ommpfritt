@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class ScriptTagWrapper : public TagWrapper
 {
 public:

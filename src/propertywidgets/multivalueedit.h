@@ -1,13 +1,12 @@
 #pragma once
 
-#include <set>
+#include <cassert>
 #include <functional>
+#include <set>
 
 namespace omm
 {
-
-template<typename ValueT, typename EqualT = std::equal_to<ValueT>>
-class MultiValueEdit
+template<typename ValueT, typename EqualT = std::equal_to<ValueT>> class MultiValueEdit
 {
 public:
   using value_type = ValueT;

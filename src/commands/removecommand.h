@@ -8,13 +8,11 @@
 
 namespace omm
 {
-
 class Object;
 class Tag;
 template<typename> class Tree;
 
-template<typename StructureT>
-class RemoveCommand : public Command
+template<typename StructureT> class RemoveCommand : public Command
 {
 public:
   // TODO is this the most elegant way to select a context type?
@@ -30,4 +28,4 @@ private:
   StructureT& m_structure;
 };
 
-}  // namespace
+}  // namespace omm

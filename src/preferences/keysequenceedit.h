@@ -1,13 +1,12 @@
 #pragma once
 
+#include "ui_keysequenceedit.h"
 #include <QKeySequence>
 #include <QWidget>
 #include <memory>
-#include "ui_keysequenceedit.h"
 
 namespace omm
 {
-
 class KeySequenceEdit : public QWidget
 {
   Q_OBJECT
@@ -16,7 +15,7 @@ public:
   void set_key_sequence(const QKeySequence& key_sequence);
   void set_default_key_sequence(const QKeySequence& key_sequence);
   QKeySequence key_sequence() const;
-  void focusInEvent(QFocusEvent *event) override;
+  void focusInEvent(QFocusEvent* event) override;
   bool focusNextPrevChild(bool next) override;
 
 private:

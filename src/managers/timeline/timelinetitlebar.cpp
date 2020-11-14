@@ -1,15 +1,13 @@
 #include "managers/timeline/timelinetitlebar.h"
-#include <QStyle>
 #include "ui_timelinetitlebar.h"
 #include <QDockWidget>
 #include <QPainter>
+#include <QStyle>
 
 namespace omm
 {
-
 TimeLineTitleBar::TimeLineTitleBar(Manager& parent)
-  : ManagerTitleBar(parent)
-  , m_ui(new Ui::TimeLineTitleBar)
+    : ManagerTitleBar(parent), m_ui(new Ui::TimeLineTitleBar)
 {
   auto widget = std::make_unique<QWidget>();
   m_ui->setupUi(widget.get());

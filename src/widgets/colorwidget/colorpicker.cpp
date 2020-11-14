@@ -2,7 +2,6 @@
 
 namespace omm
 {
-
 Color ColorPicker::color() const
 {
   return m_color;
@@ -16,4 +15,4 @@ void ColorPicker::set_color(const Color& color)
   }
 }
 
-}
+}  // namespace omm

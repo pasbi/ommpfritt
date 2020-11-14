@@ -1,13 +1,12 @@
 #pragma once
 
 #include "logging.h"
-#include <QWidget>
-#include "managers/timeline/timelinecanvas.h"
 #include "managers/range.h"
+#include "managers/timeline/timelinecanvas.h"
+#include <QWidget>
 
 namespace omm
 {
-
 class Manager;
 class CurveTree;
 
@@ -42,10 +41,11 @@ private:
   bool m_rubberband_rect_visible;
   static constexpr double radius = 5.0;
 
-  struct KeyFrameHandleKey
-  {
+  struct KeyFrameHandleKey {
     KeyFrameHandleKey(Track& track, int frame, std::size_t channel)
-      : track(track), frame(frame), channel(channel) { }
+        : track(track), frame(frame), channel(channel)
+    {
+    }
     Track& track;
     const int frame;
     const std::size_t channel;
@@ -54,8 +54,7 @@ private:
     bool operator<(const KeyFrameHandleKey& other) const;
   };
 
-  struct KeyFrameHandleData
-  {
+  struct KeyFrameHandleData {
     bool is_selected = false;
     bool inside_rubberband = false;
   };
@@ -72,10 +71,13 @@ private:
   void draw_scale(QPainter& painter) const;
   void draw_knots(QPainter& painter) const;
 
-  struct TangentHandle
-  {
-    TangentHandle(const KeyFrameHandleKey* key, Track::Knot::Side side) : key(key), side(side) {}
-    TangentHandle() : key(nullptr) {}
+  struct TangentHandle {
+    TangentHandle(const KeyFrameHandleKey* key, Track::Knot::Side side) : key(key), side(side)
+    {
+    }
+    TangentHandle() : key(nullptr)
+    {
+    }
     const KeyFrameHandleKey* key;
     Track::Knot::Side side;
     variant_type& offset();
@@ -93,7 +95,6 @@ private Q_SLOTS:
   void add_knot(Track& track, int frame);
   void remove_knot(Track& track, int frame);
   void move_knot(Track& track, int old_frame, int new_frame);
-
 };
 
 }  // namespace omm

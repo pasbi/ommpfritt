@@ -1,17 +1,15 @@
 #include "propertywidgets/stringpropertywidget/stringpropertywidget.h"
 
-#include "propertywidgets/multivalueedit.h"
 #include "properties/typedproperty.h"
+#include "propertywidgets/multivalueedit.h"
 #include "propertywidgets/stringpropertywidget/texteditadapter.h"
 
 #include <QLabel>
 
 namespace omm
 {
-
-StringPropertyWidget
-::StringPropertyWidget(Scene& scene, const std::set<Property*>& properties)
-  : PropertyWidget(scene, properties)
+StringPropertyWidget ::StringPropertyWidget(Scene& scene, const std::set<Property*>& properties)
+    : PropertyWidget(scene, properties)
 {
   const auto mode = configuration<StringProperty::Mode>(StringProperty::MODE_PROPERTY_KEY);
 
@@ -19,7 +17,7 @@ StringPropertyWidget
     switch (mode) {
     case StringProperty::Mode::MultiLine: {
       auto edit = std::make_unique<TextEditAdapter<QTextEdit>>();
-      QObject::connect(edit.get(), &QTextEdit::textChanged, [edit=edit.get(), this]() {
+      QObject::connect(edit.get(), &QTextEdit::textChanged, [edit = edit.get(), this]() {
         set_properties_value(edit->value());
       });
       return std::unique_ptr<AbstractTextEditAdapter>(edit.release());
@@ -58,9 +56,9 @@ StringPropertyWidget
   }();
 
   m_text_edit = edit.get();
-//  connect(m_text_edit, &AbstractTextEditAdapter::value_changed, [this](QString text) {
-//    this->set_properties_value(text);
-//  });
+  //  connect(m_text_edit, &AbstractTextEditAdapter::value_changed, [this](QString text) {
+  //    this->set_properties_value(text);
+  //  });
 
   auto text_edit_widget = std::unique_ptr<QWidget>(edit.release()->as_widget());
   auto vlayout = std::make_unique<LabelLayout>();

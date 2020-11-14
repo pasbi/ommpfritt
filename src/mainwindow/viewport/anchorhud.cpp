@@ -1,34 +1,36 @@
 #include "mainwindow/viewport/anchorhud.h"
 #include "mainwindow/application.h"
-#include <cmath>
-#include <QPainter>
-#include <QMouseEvent>
-#include <QTimer>
 #include "preferences/uicolors.h"
+#include <QMouseEvent>
+#include <QPainter>
+#include <QTimer>
+#include <cmath>
 
 namespace
 {
-
-QRectF anchor_rect(const QPointF &pos)
+QRectF anchor_rect(const QPointF& pos)
 {
   constexpr auto ANCHOR_RADIUS = omm::AnchorHUD::ANCHOR_RADIUS;
   return QRectF(QPointF(pos.x() - ANCHOR_RADIUS, pos.y() - ANCHOR_RADIUS),
-                QSizeF(2*ANCHOR_RADIUS, 2*ANCHOR_RADIUS));
+                QSizeF(2 * ANCHOR_RADIUS, 2 * ANCHOR_RADIUS));
 }
 
 }  // namespace
 
 namespace omm
 {
-
 AnchorHUD::AnchorHUD(QWidget& widget)
-  : m_widget(widget), m_anchor(Application::instance().options().anchor())
+    : m_widget(widget), m_anchor(Application::instance().options().anchor())
 
 {
-  connect(&Application::instance().options(), &Options::anchor_changed,
-          this, &AnchorHUD::set_anchor);
-  connect(this, &AnchorHUD::anchor_changed,
-          &Application::instance().options(), &Options::set_anchor);
+  connect(&Application::instance().options(),
+          &Options::anchor_changed,
+          this,
+          &AnchorHUD::set_anchor);
+  connect(this,
+          &AnchorHUD::anchor_changed,
+          &Application::instance().options(),
+          &Options::set_anchor);
 }
 
 QSize AnchorHUD::size() const
@@ -98,7 +100,7 @@ void AnchorHUD::set_anchor(const AnchorHUD::Anchor& anchor)
 QRectF AnchorHUD::anchor_grid() const
 {
   return QRectF(QPointF(ANCHOR_RADIUS, ANCHOR_RADIUS),
-                size() - QSizeF(2*ANCHOR_RADIUS, 2*ANCHOR_RADIUS));
+                size() - QSizeF(2 * ANCHOR_RADIUS, 2 * ANCHOR_RADIUS));
 }
 
 void AnchorHUD::draw_anchor(QPainter& painter, const QRectF& grid, Anchor anchor) const

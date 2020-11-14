@@ -1,32 +1,37 @@
 #pragma once
 
+#include "common.h"
+#include "renderers/painter.h"
 #include "tools/handles/handle.h"
 #include "tools/tool.h"
-#include "renderers/painter.h"
 #include <QMouseEvent>
-#include "common.h"
 
 namespace omm
 {
-
 class AbstractBoundingBoxHandle : public Handle
 {
 protected:
   using Handle::Handle;
-  enum class Fringe { None = 0x0, Left = 0x1, Bottom = 0x2, Right = 0x4, Top = 0x8,
-                      Horizontal = Left | Right, Vertical = Bottom | Top };
+  enum class Fringe {
+    None = 0x0,
+    Left = 0x1,
+    Bottom = 0x2,
+    Right = 0x4,
+    Top = 0x8,
+    Horizontal = Left | Right,
+    Vertical = Bottom | Top
+  };
 };
 
 }  // namespace omm
 
-
-template<> struct omm::EnableBitMaskOperators<omm::AbstractBoundingBoxHandle::Fringe> : std::true_type {};
+template<>
+struct omm::EnableBitMaskOperators<omm::AbstractBoundingBoxHandle::Fringe> : std::true_type {
+};
 
 namespace omm
 {
-
-template<typename ToolT>
-class BoundingBoxHandle : public AbstractBoundingBoxHandle
+template<typename ToolT> class BoundingBoxHandle : public AbstractBoundingBoxHandle
 {
 public:
   explicit BoundingBoxHandle(ToolT& tool) : AbstractBoundingBoxHandle(tool)
@@ -48,7 +53,7 @@ public:
     return get_fringe(point) != Fringe::None;
   }
 
-  bool mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEvent &e) override
+  bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override
   {
     Q_UNUSED(delta)
     Handle::mouse_move(delta, pos, e);
@@ -97,13 +102,13 @@ public:
       } else {
         n = std::max(std::abs(s.x), std::abs(s.y));
       }
-      for (std::size_t i : { 0u, 1u }) {
+      for (std::size_t i : {0u, 1u}) {
         s[i] = std::copysign(n, s[i]);
       }
     }
 
     if (discrete) {
-      for (const std::size_t i : { 0u, 1u }) {
+      for (const std::size_t i : {0u, 1u}) {
         static constexpr double step = 0.1;
         s[i] = step * static_cast<int>(s[i] / step);
       }
@@ -118,7 +123,7 @@ public:
     return true;
   }
 
-  void draw(QPainter &painter) const override
+  void draw(QPainter& painter) const override
   {
     const BoundingBox bounding_box = static_cast<const ToolT&>(tool).bounding_box();
     painter.setPen(ui_color("bounding-box"));
@@ -142,9 +147,8 @@ public:
       f |= Fringe::Bottom;
     }
 
-    if (    (!!(f & Fringe::Bottom) && !!(f & Fringe::Top))
-         || (!!(f & Fringe::Right) && !!(f & Fringe::Left)) )
-    {
+    if ((!!(f & Fringe::Bottom) && !!(f & Fringe::Top))
+        || (!!(f & Fringe::Right) && !!(f & Fringe::Left))) {
       // It's only possible to select left and right or top and bottom at the same time if the
       // bounding box is smaller than epsilon. In this case it's very very unlikely that anything
       // sane happens in response to the event. Hence, behave as if nothing was selected.
@@ -153,12 +157,10 @@ public:
     return f;
   }
 
-
   BoundingBox m_bounding_box;
   bool m_symmetric = false;
   mutable Vec2f m_tool_origin = Vec2f::o();
   Fringe m_active_fringe;
-
 };
 
 }  // namespace omm

@@ -1,37 +1,30 @@
 #include "commands/userpropertycommand.h"
-#include "nodesystem/nodemodel.h"
+#include "aspects/propertyowner.h"
 #include "commands/nodecommand.h"
 #include "nodesystem/node.h"
-#include "aspects/propertyowner.h"
-#include "scene/scene.h"
+#include "nodesystem/nodemodel.h"
 #include "scene/mailbox.h"
+#include "scene/scene.h"
 
 namespace
 {
-
 auto transform(const std::vector<QString>& keys)
 {
   using pair_type = std::pair<QString, std::unique_ptr<omm::Property>>;
-  return ::transform<pair_type>(keys, [](const QString& key) {
-    return pair_type { key, nullptr };
-  });
+  return ::transform<pair_type>(keys, [](const QString& key) { return pair_type{key, nullptr}; });
 }
 
 }  // namespace
 
 namespace omm
 {
-
-UserPropertyCommand
-::UserPropertyCommand(const std::vector<QString>& deletions,
-                      std::vector<std::pair<QString, std::unique_ptr<Property>>> additions,
-                      const std::map<Property*, Property::Configuration>& changes,
-                      AbstractPropertyOwner& owner)
-  : Command(QObject::tr("User Property"))
-  , m_deletions(transform(deletions))
-  , m_additions(std::move(additions))
-  , m_changes(changes)
-  , m_owner(owner)
+UserPropertyCommand ::UserPropertyCommand(
+    const std::vector<QString>& deletions,
+    std::vector<std::pair<QString, std::unique_ptr<Property>>> additions,
+    const std::map<Property*, Property::Configuration>& changes,
+    AbstractPropertyOwner& owner)
+    : Command(QObject::tr("User Property")), m_deletions(transform(deletions)),
+      m_additions(std::move(additions)), m_changes(changes), m_owner(owner)
 {
   if (Node* node = kind_cast<Node*>(&m_owner); node != nullptr) {
     for (auto&& [key, _] : m_deletions) {

@@ -1,17 +1,15 @@
 #include "nodesystem/port.h"
-#include "nodesystem/nodemodel.h"
 #include "nodesystem/node.h"
+#include "nodesystem/nodemodel.h"
 
 namespace omm
 {
-
-InputPort::InputPort(Node& node, std::size_t index)
-  : InputPort(PortFlavor::Ordinary, node, index)
+InputPort::InputPort(Node& node, std::size_t index) : InputPort(PortFlavor::Ordinary, node, index)
 {
 }
 
 InputPort::InputPort(PortFlavor flavor, Node& node, std::size_t index)
-  : Port<PortType::Input>(flavor, node, index)
+    : Port<PortType::Input>(flavor, node, index)
 {
 }
 
@@ -48,13 +46,12 @@ void InputPort::connect(OutputPort* port)
 }
 
 OutputPort::OutputPort(PortFlavor flavor, Node& node, std::size_t index)
-  : Port<PortType::Output>(flavor, node, index)
+    : Port<PortType::Output>(flavor, node, index)
 {
-
 }
 
 OutputPort::OutputPort(Node& node, std::size_t index)
-  : OutputPort(PortFlavor::Ordinary, node, index)
+    : OutputPort(PortFlavor::Ordinary, node, index)
 {
 }
 
@@ -68,7 +65,7 @@ bool OutputPort::is_connected(const AbstractPort* other) const
 }
 
 AbstractPort::AbstractPort(PortFlavor flavor, PortType port_type, Node& node, std::size_t index)
-  : port_type(port_type), flavor(flavor), node(node), index(index)
+    : port_type(port_type), flavor(flavor), node(node), index(index)
 {
 }
 
@@ -78,16 +75,12 @@ AbstractPort::~AbstractPort()
 
 bool AbstractPort::is_connected(const AbstractPort* other) const
 {
-  return visit(*this, [other](const auto& port) {
-    return port.is_connected(other);
-  });
+  return visit(*this, [other](const auto& port) { return port.is_connected(other); });
 }
 
 bool AbstractPort::is_connected() const
 {
-  return visit(*this, [](const auto& port) {
-    return port.is_connected();
-  });
+  return visit(*this, [](const auto& port) { return port.is_connected(); });
 }
 
 QString AbstractPort::uuid() const
@@ -102,7 +95,7 @@ std::set<AbstractPort*> AbstractPort::connected_ports() const
   switch (port_type) {
   case PortType::Input:
     if (AbstractPort* op = static_cast<const InputPort*>(this)->connected_output(); op != nullptr) {
-      return { op };
+      return {op};
     } else {
       return {};
     }

@@ -1,15 +1,14 @@
 #pragma once
 
-#include <QWidget>
-#include "geometry/vec2.h"
-#include "geometry/polarcoordinates.h"
 #include "common.h"
+#include "geometry/polarcoordinates.h"
+#include "geometry/vec2.h"
+#include <QWidget>
 
 class QLabel;
 
 namespace omm
 {
-
 template<typename> class NumericEdit;
 
 enum class DisplayMode { Polar = 0x1, Cartesian = 0x2, Both = Polar | Cartesian };
@@ -18,8 +17,7 @@ class CoordinateEdit : public QWidget
 {
   Q_OBJECT
 public:
-
-  explicit CoordinateEdit(QWidget *parent = nullptr);
+  explicit CoordinateEdit(QWidget* parent = nullptr);
 
   Vec2f to_cartesian() const;
   PolarCoordinates to_polar() const;
@@ -29,7 +27,7 @@ Q_SIGNALS:
   void value_changed();
 
 public Q_SLOTS:
-  void set_coordinates(const PolarCoordinates &coordinates);
+  void set_coordinates(const PolarCoordinates& coordinates);
   void set_coordinates(const Vec2f& coordinates);
   void set_display_mode(const DisplayMode& display_mode);
   void set_magnitude(const double magnitude);
@@ -53,4 +51,5 @@ private Q_SLOTS:
 
 }  // namespace omm
 
-template<> struct omm::EnableBitMaskOperators<omm::DisplayMode> : std::true_type {};
+template<> struct omm::EnableBitMaskOperators<omm::DisplayMode> : std::true_type {
+};

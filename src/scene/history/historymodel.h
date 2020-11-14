@@ -1,13 +1,12 @@
 #pragma once
 
-#include <QAbstractListModel>
 #include "commands/command.h"
-#include <memory>
 #include "scene/history/macro.h"
+#include <QAbstractListModel>
+#include <memory>
 
 namespace omm
 {
-
 class HistoryModel : public QAbstractListModel
 {
   Q_OBJECT
@@ -34,8 +33,8 @@ public:
   void set_saved_index();
 
   [[nodiscard]] std::unique_ptr<Macro> start_macro(const QString& text);
-  [[nodiscard]]
-  std::unique_ptr<Macro> start_remember_selection_macro(const QString& text, Scene& scene);
+  [[nodiscard]] std::unique_ptr<Macro> start_remember_selection_macro(const QString& text,
+                                                                      Scene& scene);
 
 Q_SIGNALS:
   void index_changed();

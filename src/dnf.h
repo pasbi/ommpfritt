@@ -1,23 +1,19 @@
 #pragma once
 
-#include "logging.h"
-#include <bitset>
-#include "serializers/abstractserializer.h"
-#include <set>
 #include "aspects/serializable.h"
+#include "logging.h"
+#include "serializers/abstractserializer.h"
+#include <bitset>
+#include <set>
 
 namespace omm
 {
-
 namespace DNF_detail
 {
+template<typename E>
+using underlying_type_t = std::conditional_t<std::is_enum_v<E>, std::underlying_type_t<E>, E>;
 
-template<typename E> using underlying_type_t = std::conditional_t<std::is_enum_v<E>,
-                                                                  std::underlying_type_t<E>,
-                                                                  E>;
-
-template<typename T> struct DisjunctionImpl
-{
+template<typename T> struct DisjunctionImpl {
   template<typename V> static bool evaluate(const std::set<T>& s, const V& v)
   {
     return std::any_of(s.begin(), s.end(), [v](const T& term) { return term.evaluate(v); });
@@ -25,8 +21,7 @@ template<typename T> struct DisjunctionImpl
   static constexpr auto operator_symbol = "∨";
 };
 
-template<typename T> struct ConjunctionImpl
-{
+template<typename T> struct ConjunctionImpl {
   template<typename V> static bool evaluate(const std::set<T>& s, const V& v)
   {
     return std::all_of(s.begin(), s.end(), [v](const T& term) { return term.evaluate(v); });
@@ -55,9 +50,15 @@ template<typename E> class Literal : public Serializable
   }
 
 public:
-  explicit Literal(std::size_t i, bool value = true) : i(i), value(value) {}
-  Literal(E e, bool value = true) : i(from_enum(e)), value(value) {}
-  Literal() {}
+  explicit Literal(std::size_t i, bool value = true) : i(i), value(value)
+  {
+  }
+  Literal(E e, bool value = true) : i(from_enum(e)), value(value)
+  {
+  }
+  Literal()
+  {
+  }
 
   bool evaluate(const std::vector<bool>& value) const
   {
@@ -96,15 +97,21 @@ public:
     }
   }
 
-  bool is_valid() const { return i != std::size_t(-1); }
-  operator E() const { return static_cast<E>(1 << i); }
+  bool is_valid() const
+  {
+    return i != std::size_t(-1);
+  }
+  operator E() const
+  {
+    return static_cast<E>(1 << i);
+  }
 
   std::size_t i = -1;
   bool value = false;
 };
 
-namespace DNF_detail {
-
+namespace DNF_detail
+{
 template<typename E, typename T, typename Junction> class Term : public Serializable
 {
   static constexpr bool is_top_level = std::is_same_v<T, Literal<E>>;
@@ -129,10 +136,14 @@ template<typename E, typename T, typename Junction> class Term : public Serializ
   }
 
 public:
-  Term(std::initializer_list<T> ts) : terms(ts) {}
-  Term() {}
-  template<typename = typename std::enable_if<is_top_level>> Term(E positives, E negatives)
-    : terms(convert_literals(positives, negatives))
+  Term(std::initializer_list<T> ts) : terms(ts)
+  {
+  }
+  Term()
+  {
+  }
+  template<typename = typename std::enable_if<is_top_level>>
+  Term(E positives, E negatives) : terms(convert_literals(positives, negatives))
   {
   }
 
@@ -158,8 +169,10 @@ public:
 
   bool operator<(const Term<E, T, Junction>& other) const
   {
-    return std::lexicographical_compare(terms.begin(), terms.end(),
-                                        other.terms.begin(), other.terms.end());
+    return std::lexicographical_compare(terms.begin(),
+                                        terms.end(),
+                                        other.terms.begin(),
+                                        other.terms.end());
   }
 
   std::set<T> terms;
@@ -167,8 +180,10 @@ public:
 
 }  // namespace DNF_detail
 
-template<typename E, typename T = Literal<E>> using Conjunction = DNF_detail::Term<E, T, DNF_detail::ConjunctionImpl<T>>;
-template<typename E, typename T = Literal<E>> using Disjunction = DNF_detail::Term<E, T, DNF_detail::DisjunctionImpl<T>>;
+template<typename E, typename T = Literal<E>>
+using Conjunction = DNF_detail::Term<E, T, DNF_detail::ConjunctionImpl<T>>;
+template<typename E, typename T = Literal<E>>
+using Disjunction = DNF_detail::Term<E, T, DNF_detail::DisjunctionImpl<T>>;
 template<typename E> using DNF = Disjunction<E, Conjunction<E>>;
 
 template<typename E, typename T, typename Junction>

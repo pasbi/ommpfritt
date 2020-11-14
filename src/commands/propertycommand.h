@@ -1,13 +1,12 @@
 #pragma once
 
 #include "commands/command.h"
-#include "properties/typedproperty.h"
-#include "properties/numericproperty.h"
 #include "common.h"
+#include "properties/numericproperty.h"
+#include "properties/typedproperty.h"
 
 namespace omm
 {
-
 class AbstractPropertiesCommand : public Command
 {
 public:
@@ -19,8 +18,7 @@ private:
   std::set<Property*> m_properties;
 };
 
-template<typename PropertyT>
-class PropertiesCommand : public AbstractPropertiesCommand
+template<typename PropertyT> class PropertiesCommand : public AbstractPropertiesCommand
 {
 public:
   using value_type = typename PropertyT::value_type;
@@ -28,32 +26,42 @@ public:
   {
   public:
     PropertyBiState(Property* property, const value_type& new_value)
-      : property(property) , old_value(property->value<value_type>()), new_value(new_value) {}
+        : property(property), old_value(property->value<value_type>()), new_value(new_value)
+    {
+    }
 
-    void undo() const { property->set(old_value); }
-    void redo() const { property->set(new_value); }
+    void undo() const
+    {
+      property->set(old_value);
+    }
+    void redo() const
+    {
+      property->set(new_value);
+    }
 
     Property* property;
     value_type old_value;
     value_type new_value;
 
-    bool operator <(const PropertyBiState& other) const
+    bool operator<(const PropertyBiState& other) const
     {
       return property < other.property;
     }
   };
 
 protected:
-  PropertiesCommand( const std::set<Property*>& properties,
-                     const std::set<PropertyBiState>& properties_bi_states )
-    : AbstractPropertiesCommand(properties)
+  PropertiesCommand(const std::set<Property*>& properties,
+                    const std::set<PropertyBiState>& properties_bi_states)
+      : AbstractPropertiesCommand(properties)
   {
-    for (auto&& pbs : properties_bi_states) { m_properties_bi_states.emplace(pbs.property, pbs); }
+    for (auto&& pbs : properties_bi_states) {
+      m_properties_bi_states.emplace(pbs.property, pbs);
+    }
   }
 
 private:
   template<typename Properties>
-  static auto get_bi_states( const Properties& properties, const value_type& new_value)
+  static auto get_bi_states(const Properties& properties, const value_type& new_value)
   {
     return ::transform<PropertyBiState>(properties, [new_value](const auto& property) {
       return PropertyBiState(property, new_value);
@@ -62,18 +70,22 @@ private:
 
 public:
   PropertiesCommand(const std::set<Property*>& properties, const value_type& new_value)
-    : PropertiesCommand(properties, get_bi_states(properties, new_value))
+      : PropertiesCommand(properties, get_bi_states(properties, new_value))
   {
   }
 
   void undo() override
   {
-    for (const auto& [_, property_bi_state] : m_properties_bi_states) { property_bi_state.undo(); }
+    for (const auto& [_, property_bi_state] : m_properties_bi_states) {
+      property_bi_state.undo();
+    }
   }
 
   void redo() override
   {
-    for (const auto& [_, property_bi_state] : m_properties_bi_states) { property_bi_state.redo(); }
+    for (const auto& [_, property_bi_state] : m_properties_bi_states) {
+      property_bi_state.redo();
+    }
   }
 
   bool mergeWith(const QUndoCommand* command) override
@@ -115,7 +127,7 @@ private:
 
 public:
   VectorPropertiesCommand(const std::set<Property*>& properties, const elem_type& new_value)
-    : PropertiesCommand<PropertyT>(properties, get_bi_states(properties, new_value))
+      : PropertiesCommand<PropertyT>(properties, get_bi_states(properties, new_value))
   {
   }
 };

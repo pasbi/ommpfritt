@@ -1,14 +1,13 @@
 #include "serializers/jsonserializer.h"
 
+#include "aspects/serializable.h"
+#include "common.h"
+#include "logging.h"
 #include <iomanip>
 #include <typeinfo>
-#include "logging.h"
-#include "common.h"
-#include "aspects/serializable.h"
 
 namespace
 {
-
 constexpr auto inf_value = "inf";
 constexpr auto neg_inf_value = "-inf";
 
@@ -23,8 +22,8 @@ double get_double(const nlohmann::json& json_val)
     } else if (value == neg_inf_value) {
       return -std::numeric_limits<double>::infinity();
     } else {
-      const std::string msg = std::string("Expected '") + inf_value + "' or '"
-                            + neg_inf_value + "' but got '" + value + "'.";
+      const std::string msg = std::string("Expected '") + inf_value + "' or '" + neg_inf_value
+                              + "' but got '" + value + "'.";
       throw omm::AbstractDeserializer::DeserializeError(msg);
     }
   } else {
@@ -74,16 +73,15 @@ T get_t(const nlohmann::json& json, const nlohmann::json::json_pointer& pointer)
       throw omm::AbstractDeserializer::DeserializeError(message.str());
     }
   } catch (const nlohmann::json::out_of_range& json_exception) {
-    throw omm::AbstractDeserializer::DeserializeError(
-      "Cannot find '" + std::string(pointer) + "'.");
+    throw omm::AbstractDeserializer::DeserializeError("Cannot find '" + std::string(pointer)
+                                                      + "'.");
   } catch (const nlohmann::json::parse_error& json_exception) {
-    throw omm::AbstractDeserializer::DeserializeError(
-      "Invalid pointer '" + std::string(pointer) + "'.");
+    throw omm::AbstractDeserializer::DeserializeError("Invalid pointer '" + std::string(pointer)
+                                                      + "'.");
   }
 }
 
-template<typename T, typename PointerT>
-T get_t(const nlohmann::json& json, const PointerT& pointer)
+template<typename T, typename PointerT> T get_t(const nlohmann::json& json, const PointerT& pointer)
 {
   return get_t<T>(json, nlohmann::json::json_pointer(pointer.toStdString()));
 }
@@ -92,10 +90,8 @@ T get_t(const nlohmann::json& json, const PointerT& pointer)
 
 namespace omm
 {
-
 JSONSerializer::JSONSerializer(std::ostream& ostream)
-  : AbstractSerializer(ostream)
-  , m_ostream(ostream)
+    : AbstractSerializer(ostream), m_ostream(ostream)
 {
 }
 
@@ -152,7 +148,7 @@ void JSONSerializer::set_value(const Color& color, const Pointer& pointer)
   auto& rgba = m_store[ptr(Serializable::make_pointer(pointer, "rgba"))];
   if (color.model() == Color::Model::Named) {
     name = color.name().toStdString();
-    rgba = { 0.0, 0.0, 0.0, 0.0 };
+    rgba = {0.0, 0.0, 0.0, 0.0};
   } else {
     name = "";
     rgba = color.components(Color::Model::RGBA);
@@ -161,12 +157,12 @@ void JSONSerializer::set_value(const Color& color, const Pointer& pointer)
 
 void JSONSerializer::set_value(const Vec2f& value, const Pointer& pointer)
 {
-  m_store[ptr(pointer)] = { set_double(value[0]), set_double(value[1]) };
+  m_store[ptr(pointer)] = {set_double(value[0]), set_double(value[1])};
 }
 
 void JSONSerializer::set_value(const Vec2i& value, const Pointer& pointer)
 {
-  m_store[ptr(pointer)] = { value[0], value[1] };
+  m_store[ptr(pointer)] = {value[0], value[1]};
 }
 
 void JSONSerializer::set_value(const PolarCoordinates& value, const Pointer& pointer)
@@ -174,8 +170,8 @@ void JSONSerializer::set_value(const PolarCoordinates& value, const Pointer& poi
   set_value(Vec2f(value.argument, value.magnitude), pointer);
 }
 
-void JSONSerializer::
-set_value(const TriggerPropertyDummyValueType&, const AbstractSerializer::Pointer& pointer)
+void JSONSerializer::set_value(const TriggerPropertyDummyValueType&,
+                               const AbstractSerializer::Pointer& pointer)
 {
   Q_UNUSED(pointer)
 }
@@ -185,14 +181,11 @@ void JSONSerializer::set_value(const SplineType& spline, const Pointer& pointer)
   auto& array = m_store[ptr(pointer)];
   array = nlohmann::json::value_type::array();
   for (const auto& [t, knot] : spline.knots) {
-    array.push_back({ t, knot.value, knot.left_offset, knot.right_offset });
+    array.push_back({t, knot.value, knot.left_offset, knot.right_offset});
   }
 }
 
-
-
-JSONDeserializer::JSONDeserializer(std::istream& istream)
-  : AbstractDeserializer(istream)
+JSONDeserializer::JSONDeserializer(std::istream& istream) : AbstractDeserializer(istream)
 {
   try {
     istream >> m_store;
@@ -238,7 +231,7 @@ Color JSONDeserializer::get_color(const Pointer& pointer)
     const auto v = get_t<std::vector<double>>(m_store, Serializable::make_pointer(pointer, "rgba"));
     const auto n = get_string(Serializable::make_pointer(pointer, "name"));
     if (n.isEmpty()) {
-      return Color(Color::Model::RGBA, { v.at(0), v.at(1), v.at(2), v.at(3) });
+      return Color(Color::Model::RGBA, {v.at(0), v.at(1), v.at(2), v.at(3)});
     } else {
       return Color(n);
     }
@@ -287,7 +280,7 @@ SplineType JSONDeserializer::get_spline(const AbstractDeserializer::Pointer& poi
 {
   SplineType::knot_map_type map;
   for (const auto& item : m_store[ptr(pointer)]) {
-    map.insert({ item.at(0), SplineType::Knot(item.at(1), item.at(2), item.at(3) )});
+    map.insert({item.at(0), SplineType::Knot(item.at(1), item.at(2), item.at(3))});
   }
 
   return SplineType(map);

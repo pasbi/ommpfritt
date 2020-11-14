@@ -4,12 +4,12 @@
 
 namespace omm
 {
-
 void SplineWrapper::define_python_interface(py::object& module)
 {
   py::class_<SplineType>(module, "SplineType")
       .def("value", [](const SplineType& spline, double t) { return spline.evaluate(t).value(); })
-      .def("derivative", [](const SplineType& spline, double t) {return spline.evaluate(t).derivative(); });
+      .def("derivative",
+           [](const SplineType& spline, double t) { return spline.evaluate(t).derivative(); });
 }
 
 }  // namespace omm

@@ -1,12 +1,11 @@
 #pragma once
 
-#include <string>
-#include "propertywidgets/propertywidget.h"
 #include "properties/splineproperty.h"
+#include "propertywidgets/propertywidget.h"
+#include <string>
 
 namespace omm
 {
-
 class SplineWidget;
 
 class SplinePropertyWidget : public PropertyWidget<SplineProperty>

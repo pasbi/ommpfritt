@@ -3,7 +3,6 @@
 
 namespace omm
 {
-
 QString CommandInterface::translate_action_name(const QString& context, const QString& action_name)
 {
   const auto* tr_context = ("keybindings/" + context).toUtf8().constData();
@@ -16,4 +15,3 @@ QString CommandInterface::translate_action_name(const QString& action_name) cons
 }
 
 }  // namespace omm
-

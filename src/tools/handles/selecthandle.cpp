@@ -1,23 +1,24 @@
 #include "tools/handles/selecthandle.h"
-#include "geometry/vec2.h"
-#include "renderers/painter.h"
-#include "scene/scene.h"
-#include "objects/path.h"
-#include "common.h"
-#include "tools/selecttool.h"
 #include "commands/modifypointscommand.h"
+#include "common.h"
+#include "geometry/rectangle.h"
+#include "geometry/vec2.h"
+#include "objects/path.h"
+#include "renderers/painter.h"
+#include "scene/mailbox.h"
+#include "scene/scene.h"
+#include "tools/selectpointstool.h"
+#include "tools/selecttool.h"
 #include <QGuiApplication>
 #include <QMouseEvent>
-#include "geometry/rectangle.h"
-#include "tools/selectpointstool.h"
-#include "scene/mailbox.h"
 
 namespace omm
 {
+AbstractSelectHandle::AbstractSelectHandle(Tool& tool) : Handle(tool)
+{
+}
 
-AbstractSelectHandle::AbstractSelectHandle(Tool& tool) : Handle(tool) { }
-
-bool AbstractSelectHandle::mouse_press(const Vec2f &pos, const QMouseEvent &event)
+bool AbstractSelectHandle::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
   if (Handle::mouse_press(pos, event)) {
     if (event.modifiers() != extend_selection_modifier) {
@@ -31,12 +32,11 @@ bool AbstractSelectHandle::mouse_press(const Vec2f &pos, const QMouseEvent &even
   }
 }
 
-bool AbstractSelectHandle::
-mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
+bool AbstractSelectHandle::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
   Handle::mouse_move(delta, pos, e);
   if (status() == HandleStatus::Active) {
-    Vec2f total_delta = discretize(pos-press_pos(), false, 10.0);
+    Vec2f total_delta = discretize(pos - press_pos(), false, 10.0);
     const auto transformation = omm::ObjectTransformation().translated(total_delta);
     static_cast<AbstractSelectTool&>(tool).transform_objects(transformation);
     const auto tool_info = QString("%1").arg(total_delta.euclidean_norm());
@@ -48,9 +48,7 @@ mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 }
 
 ObjectSelectHandle::ObjectSelectHandle(Tool& tool, Scene& scene, Object& object)
-  : AbstractSelectHandle(tool)
-  , m_scene(scene)
-  , m_object(object)
+    : AbstractSelectHandle(tool), m_scene(scene), m_object(object)
 {
 }
 
@@ -69,9 +67,8 @@ void ObjectSelectHandle::draw(QPainter& painter) const
   painter.setPen(is_selected ? ui_color(HandleStatus::Active, "object") : ui_color("object"));
   painter.setBrush(is_selected ? ui_color(HandleStatus::Active, "object fill")
                                : ui_color("object fill"));
-  painter.drawRect(pos.x - r, pos.y - r, 2*r, 2*r);
+  painter.drawRect(pos.x - r, pos.y - r, 2 * r, 2 * r);
 }
-
 
 ObjectTransformation ObjectSelectHandle::transformation() const
 {
@@ -100,12 +97,11 @@ bool ObjectSelectHandle::is_selected() const
 }
 
 PointSelectHandle::PointSelectHandle(Tool& tool, const Path::iterator& iterator)
-  : AbstractSelectHandle(tool)
-  , m_iterator(iterator)
-  , m_left_tangent_handle(std::make_unique<TangentHandle>(tool, *this,
-                                                          TangentHandle::Tangent::Left))
-  , m_right_tangent_handle(std::make_unique<TangentHandle>(tool, *this,
-                                                           TangentHandle::Tangent::Right))
+    : AbstractSelectHandle(tool), m_iterator(iterator),
+      m_left_tangent_handle(
+          std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Left)),
+      m_right_tangent_handle(
+          std::make_unique<TangentHandle>(tool, *this, TangentHandle::Tangent::Right))
 {
 }
 
@@ -134,8 +130,7 @@ bool PointSelectHandle::mouse_press(const Vec2f& pos, const QMouseEvent& event)
   }
 }
 
-bool PointSelectHandle
-::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& event)
+bool PointSelectHandle ::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& event)
 {
   if (AbstractSelectHandle::mouse_move(delta, pos, event)) {
     return true;
@@ -155,7 +150,7 @@ void PointSelectHandle::mouse_release(const Vec2f& pos, const QMouseEvent& event
   m_right_tangent_handle->mouse_release(pos, event);
 }
 
-void PointSelectHandle::draw(QPainter &painter) const
+void PointSelectHandle::draw(QPainter& painter) const
 {
   const auto pos = transformation().apply_to_position(m_iterator->position);
   const auto left_pos = transformation().apply_to_position(m_iterator->left_position());
@@ -175,15 +170,14 @@ void PointSelectHandle::draw(QPainter &painter) const
   }
 
   painter.translate(pos.to_pointf());
-  const auto color = m_iterator->is_selected ? ui_color(HandleStatus::Active, "point")
-                                             : ui_color("point");
+  const auto color
+      = m_iterator->is_selected ? ui_color(HandleStatus::Active, "point") : ui_color("point");
 
   const auto r = draw_epsilon();
-  const QRectF rect {-r, -r, 2*r, 2*r};
+  const QRectF rect{-r, -r, 2 * r, 2 * r};
   painter.setPen(color);
   painter.drawRect(rect);
   painter.fillRect(rect, color);
-
 }
 
 void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentHandle::Tangent tangent)
@@ -191,8 +185,9 @@ void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentHandle::Tan
   transform_tangent(delta, static_cast<SelectPointsTool&>(tool).tangent_mode(), tangent);
 }
 
-void PointSelectHandle::
-transform_tangent(const Vec2f& delta, TangentMode mode, TangentHandle::Tangent tangent)
+void PointSelectHandle::transform_tangent(const Vec2f& delta,
+                                          TangentMode mode,
+                                          TangentHandle::Tangent tangent)
 {
   auto new_point = *m_iterator;
   {
@@ -201,10 +196,10 @@ transform_tangent(const Vec2f& delta, TangentMode mode, TangentHandle::Tangent t
     const auto old_master_pos = master_pos;
     const auto transformation = ObjectTransformation().translated(delta);
     master_pos = transformation.transformed(this->transformation()).apply_to_position(master_pos);
-    if (mode == TangentMode::Mirror && !(QGuiApplication::keyboardModifiers() & Qt::ShiftModifier))
-    {
-      auto& slave_pos  = tangent == TangentHandle::Tangent::Left ? new_point.right_tangent
-                                                                 : new_point.left_tangent;
+    if (mode == TangentMode::Mirror
+        && !(QGuiApplication::keyboardModifiers() & Qt::ShiftModifier)) {
+      auto& slave_pos = tangent == TangentHandle::Tangent::Left ? new_point.right_tangent
+                                                                : new_point.left_tangent;
       slave_pos = Point::mirror_tangent(slave_pos, old_master_pos, master_pos);
     }
   }

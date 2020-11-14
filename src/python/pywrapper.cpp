@@ -3,20 +3,19 @@
 #include <pybind11/embed.h>
 #include <pybind11/stl.h>
 
-#include "python/pywrapper.h"
 #include "python/objectwrapper.h"
+#include "python/pywrapper.h"
 #include "python/splinewrapper.h"
 #include "python/stylewrapper.h"
 #include "python/tagwrapper.h"
-#include "scene/scene.h"
 #include "renderers/style.h"
+#include "scene/scene.h"
 #include "variant.h"
 
 namespace py = pybind11;
 
 namespace
 {
-
 template<typename Wrapper> QString type()
 {
   return QString("<class 'omm.%1'>").arg(Wrapper::wrapped_type::TYPE);
@@ -36,15 +35,15 @@ omm::variant_type unwrap_python_object(const pybind11::object& object)
   }
 }
 
-template<std::size_t i=0>
+template<std::size_t i = 0>
 omm::variant_type python_to_variant(const pybind11::object& object, const QString& type)
 {
   using T = std::decay_t<decltype(std::get<i>(omm::variant_type()))>;
   if (type.toStdString() == omm::variant_type_name<T>()) {
     return object.cast<T>();
   } else {
-    if constexpr (i+1 < std::variant_size_v<omm::variant_type>) {
-      return python_to_variant<i+1>(object, type);
+    if constexpr (i + 1 < std::variant_size_v<omm::variant_type>) {
+      return python_to_variant<i + 1>(object, type);
     } else {
       return QString("Invalid");
     }
@@ -66,7 +65,6 @@ typename Wrapper::wrapped_type wrapped_object_from_pyobject(const pybind11::obje
 
 namespace omm
 {
-
 py::object wrap(Object& object)
 {
   auto py_object = ObjectWrapper::make(object);
@@ -113,7 +111,7 @@ variant_type python_to_variant(const pybind11::object& object, const QString& ty
       rgba.push_back(1.0);
     }
     if (rgba.size() == 4) {
-      return Color(Color::Model::RGBA, { rgba[0], rgba[1], rgba[2], rgba[3] });
+      return Color(Color::Model::RGBA, {rgba[0], rgba[1], rgba[2], rgba[3]});
     } else {
       return Color();
     }
@@ -121,7 +119,7 @@ variant_type python_to_variant(const pybind11::object& object, const QString& ty
     return vector_from_pyobject<Vec2f>(object);
   } else if (type == "IntegerVector") {
     return vector_from_pyobject<Vec2i>(object);
-  } else if (::contains(std::set{ "SplineType", "Reference" }, type)) {
+  } else if (::contains(std::set{"SplineType", "Reference"}, type)) {
     return unwrap_python_object<ObjectWrapper, TagWrapper, StyleWrapper>(object);
   } else {
     return ::python_to_variant(object, type);
@@ -130,26 +128,26 @@ variant_type python_to_variant(const pybind11::object& object, const QString& ty
 
 pybind11::object variant_to_python(variant_type variant)
 {
-  return std::visit([](auto&& v) {
-    using T = std::decay_t<decltype (v)>;
-    if constexpr (std::is_same_v<std::decay_t<T>, AbstractPropertyOwner*>) {
-      return wrap(v);
-    } else if constexpr (std::is_same_v<T, QString>) {
-      return py::cast(v.toStdString());
-    } else if constexpr (std::is_same_v<T, TriggerPropertyDummyValueType>) {
-      return static_cast<py::object>(py::none());
-    } else if constexpr (std::is_same_v<T, Vec2f>) {
-      return py::cast(v.to_stdvec());
-    } else if constexpr (std::is_same_v<T, Vec2i>) {
-      return py::cast(v.to_stdvec());
-    } else if constexpr (std::is_same_v<T, Color>) {
-      return py::cast(v.components(Color::Model::RGBA));
-    } else {
-      return py::cast(v);
-    }
-  }, variant);
+  return std::visit(
+      [](auto&& v) {
+        using T = std::decay_t<decltype(v)>;
+        if constexpr (std::is_same_v<std::decay_t<T>, AbstractPropertyOwner*>) {
+          return wrap(v);
+        } else if constexpr (std::is_same_v<T, QString>) {
+          return py::cast(v.toStdString());
+        } else if constexpr (std::is_same_v<T, TriggerPropertyDummyValueType>) {
+          return static_cast<py::object>(py::none());
+        } else if constexpr (std::is_same_v<T, Vec2f>) {
+          return py::cast(v.to_stdvec());
+        } else if constexpr (std::is_same_v<T, Vec2i>) {
+          return py::cast(v.to_stdvec());
+        } else if constexpr (std::is_same_v<T, Color>) {
+          return py::cast(v.components(Color::Model::RGBA));
+        } else {
+          return py::cast(v);
+        }
+      },
+      variant);
 }
 
 }  // namespace omm
-
-

@@ -1,11 +1,10 @@
 #include "mainwindow/toolbar/toolbaritemview.h"
-#include <QDropEvent>
-#include "mainwindow/toolbar/toolbaritemmodel.h"
 #include "logging.h"
+#include "mainwindow/toolbar/toolbaritemmodel.h"
+#include <QDropEvent>
 
 namespace omm
 {
-
 void ToolBarItemView::setModel(QAbstractItemModel* model)
 {
   assert(model->inherits(ToolBarItemModel::staticMetaObject.className()));

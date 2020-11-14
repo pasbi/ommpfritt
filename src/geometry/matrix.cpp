@@ -3,8 +3,9 @@
 
 namespace omm
 {
-
-Matrix::Matrix(const std::array<std::array<double, 3>, 3>& ll) : m(ll) {}
+Matrix::Matrix(const std::array<std::array<double, 3>, 3>& ll) : m(ll)
+{
+}
 Matrix::Matrix(const std::initializer_list<std::initializer_list<double>>& ll)
 {
   for (std::size_t i = 0; i < 3; ++i) {
@@ -44,12 +45,12 @@ Matrix::Matrix(Initialization initialization)
 Matrix Matrix::inverted() const
 {
   // https://stackoverflow.com/a/18504573/4248972
-  const double det = m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) -
-                     m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
-                     m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+  const double det = m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2])
+                     - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0])
+                     + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
   const double i_det = 1.0 / det;
 
-  Matrix inv(Initialization::None); // inverse of matrix m
+  Matrix inv(Initialization::None);  // inverse of matrix m
   inv.m[0][0] = (m[1][1] * m[2][2] - m[2][1] * m[1][2]) * i_det;
   inv.m[0][1] = (m[0][2] * m[2][1] - m[0][1] * m[2][2]) * i_det;
   inv.m[0][2] = (m[0][1] * m[1][2] - m[0][2] * m[1][1]) * i_det;
@@ -77,17 +78,17 @@ Matrix Matrix::operator*(const Matrix& other) const
 
 Vec2f Matrix::apply_to_position(const Vec2f& p) const
 {
-  return apply(std::vector{ p.x, p.y, 1.0 });
+  return apply(std::vector{p.x, p.y, 1.0});
 }
 
 Vec2f Matrix::apply_to_direction(const Vec2f& d) const
 {
-  return apply(std::vector{ d.x, d.y, 0.0 });
+  return apply(std::vector{d.x, d.y, 0.0});
 }
 
 Vec2f Matrix::apply(const std::vector<double>& vec) const
 {
-  std::vector<double> result { 0.0, 0.0, 0.0 };
+  std::vector<double> result{0.0, 0.0, 0.0};
   for (std::size_t i = 0; i < 3; ++i) {
     for (std::size_t j = 0; j < 3; ++j) {
       result[i] += vec[j] * m[i][j];
@@ -113,9 +114,7 @@ bool Matrix::has_nan() const
 
 QMatrix Matrix::to_qmatrix() const
 {
-  return QMatrix(m[0][0], m[1][0],
-                 m[0][1], m[1][1],
-                 m[0][2], m[1][2]);
+  return QMatrix(m[0][0], m[1][0], m[0][1], m[1][1], m[0][2], m[1][2]);
 }
 
 QMatrix3x3 Matrix::to_qmatrix3x3() const

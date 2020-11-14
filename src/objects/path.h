@@ -1,15 +1,14 @@
 #pragma once
 
-#include <QDebug>
-#include "objects/object.h"
-#include "geometry/point.h"
-#include <list>
 #include "cachedgetter.h"
+#include "geometry/point.h"
+#include "objects/object.h"
+#include <QDebug>
+#include <list>
 #include <type_traits>
 
 namespace omm
 {
-
 class Scene;
 
 class Path : public Object
@@ -33,9 +32,7 @@ public:
   std::vector<Segment> segments;
   std::size_t count() const;
 
-  template<typename PathRef>
-  struct Iterator
-  {
+  template<typename PathRef> struct Iterator {
     using value_type = Point;
     static_assert(std::is_reference_v<PathRef>);
     static constexpr bool Const = std::is_const_v<std::remove_reference_t<PathRef>>;

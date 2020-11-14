@@ -1,14 +1,13 @@
 #pragma once
 
-#include "objects/object.h"
 #include "objects/instance.h"
+#include "objects/object.h"
+#include "properties/propertygroups/pathproperties.h"
 #include <Qt>
 #include <random>
-#include "properties/propertygroups/pathproperties.h"
 
 namespace omm
 {
-
 class Property;
 class Tag;
 class Scene;
@@ -35,20 +34,20 @@ public:
   static constexpr auto SEED_PROPERTY_KEY = "seed";
   static constexpr auto ANCHOR_PROPERTY_KEY = "anchor";
 
-  enum class Mode { Linear, Grid, Radial, Path, Script, FillRandom  };
+  enum class Mode { Linear, Grid, Radial, Path, Script, FillRandom };
   enum class Anchor { Path, This };
   virtual Flag flags() const override;
   ConvertedObject convert() const override;
   Mode mode() const;
-  bool contains(const Vec2f &pos) const override;
+  bool contains(const Vec2f& pos) const override;
   void update() override;
   Geom::PathVector paths() const override;
   PathProperties path_properties;
 
 protected:
   void on_property_value_changed(Property* property) override;
-  void on_child_added(Object &child) override;
-  void on_child_removed(Object &child) override;
+  void on_child_added(Object& child) override;
+  void on_child_removed(Object& child) override;
   void update_property_visibility(Mode mode);
 
 private:
@@ -61,7 +60,7 @@ private:
   void set_radial(Object& object, std::size_t i);
   void set_path(Object& object, std::size_t i);
   void set_by_script(Object& object, std::size_t i);
-  void set_fillrandom(Object& object, std::mt19937 &rng);
+  void set_fillrandom(Object& object, std::mt19937& rng);
   std::vector<std::unique_ptr<Object>> m_clones;
   std::set<Property*> m_clone_dependencies;
   void polish();

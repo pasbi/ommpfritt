@@ -1,16 +1,16 @@
 #pragma once
 
-#include "variant.h"
-#include <QOpenGLContext>
-#include <QOpenGLVertexArrayObject>
-#include <QOpenGLBuffer>
-#include <memory>
-#include <QOffscreenSurface>
-#include <QOpenGLShaderProgram>
-#include "logging.h"
 #include "aspects/abstractpropertyowner.h"
+#include "logging.h"
 #include "renderers/painter.h"
 #include "renderers/texture.h"
+#include "variant.h"
+#include <QOffscreenSurface>
+#include <QOpenGLBuffer>
+#include <QOpenGLContext>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLVertexArrayObject>
+#include <memory>
 
 class QOpenGLFunctions;
 class QOpenGLShaderProgram;
@@ -18,16 +18,24 @@ class QOpenGLTexture;
 
 namespace omm
 {
-
 class OffscreenRenderer
 {
 public:
   OffscreenRenderer();
   ~OffscreenRenderer();
-  Texture render(const Object& object, const QSize& size, const QRectF& roi, const Painter::Options& options);
+  Texture render(const Object& object,
+                 const QSize& size,
+                 const QRectF& roi,
+                 const Painter::Options& options);
   bool set_fragment_shader(const QString& fragment_code);
-  QOpenGLContext& context() { return m_context; }
-  QOpenGLShaderProgram* program() const { return m_program.get(); }
+  QOpenGLContext& context()
+  {
+    return m_context;
+  }
+  QOpenGLShaderProgram* program() const
+  {
+    return m_program.get();
+  }
   void make_current();
 
   void set_uniform(const QString& name, const variant_type& value);
@@ -41,8 +49,7 @@ public:
   };
 
   static const std::vector<ShaderInput> fragment_shader_inputs;
-  struct GLTexture
-  {
+  struct GLTexture {
     GLuint layout_location;
     std::unique_ptr<QOpenGLTexture> texture;
   };

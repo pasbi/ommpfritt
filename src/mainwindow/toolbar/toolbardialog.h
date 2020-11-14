@@ -1,16 +1,18 @@
 #pragma once
 
+#include "external/json_fwd.hpp"
 #include <QDialog>
 #include <memory>
-#include "external/json_fwd.hpp"
 
-namespace Ui { class ToolBarDialog; }
+namespace Ui
+{
+class ToolBarDialog;
+}
 
 class QIdentityProxyModel;
 
 namespace omm
 {
-
 class KeyBindings;
 class KeyBindingsProxyModel;
 class ToolBarItemModel;
@@ -30,4 +32,4 @@ private:
   ToolBarItemModel& m_model;
 };
 
-}
+}  // namespace omm

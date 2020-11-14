@@ -1,17 +1,15 @@
 #pragma once
 
-#include <vector>
-#include <memory>
-#include <set>
+#include "aspects/propertyowner.h"
 #include "scene/contextes_fwd.h"
 #include "scene/structure.h"
-#include "aspects/propertyowner.h"
+#include <memory>
+#include <set>
+#include <vector>
 
 namespace omm
 {
-
-template<typename T>
-class List : public Structure<T>
+template<typename T> class List : public Structure<T>
 {
 public:
   constexpr static bool is_tree = false;

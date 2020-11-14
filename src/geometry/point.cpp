@@ -1,29 +1,40 @@
 #include "geometry/point.h"
+#include "logging.h"
 #include "serializers/abstractserializer.h"
 #include <cmath>
 #include <ostream>
-#include "logging.h"
 
 namespace omm
 {
-
 Point::Point(const Vec2f& position,
-             const PolarCoordinates& left_tangent, const PolarCoordinates& right_tangent)
-  : position(position), left_tangent(left_tangent), right_tangent(right_tangent)
+             const PolarCoordinates& left_tangent,
+             const PolarCoordinates& right_tangent)
+    : position(position), left_tangent(left_tangent), right_tangent(right_tangent)
 {
 }
 
 Point::Point(const Vec2f& position, const double rotation, const double tangent_length)
-  : Point( position, PolarCoordinates(rotation, tangent_length),
-                     PolarCoordinates(M_PI + rotation, tangent_length) )
+    : Point(position,
+            PolarCoordinates(rotation, tangent_length),
+            PolarCoordinates(M_PI + rotation, tangent_length))
 {
 }
 
-Point::Point(const Vec2f& position) : Point(position, 0.0, 0.0) { }
-Point::Point() : Point(Vec2f::o()) { }
+Point::Point(const Vec2f& position) : Point(position, 0.0, 0.0)
+{
+}
+Point::Point() : Point(Vec2f::o())
+{
+}
 
-Vec2f Point::left_position() const { return position + left_tangent.to_cartesian(); }
-Vec2f Point::right_position() const { return position + right_tangent.to_cartesian(); }
+Vec2f Point::left_position() const
+{
+  return position + left_tangent.to_cartesian();
+}
+Vec2f Point::right_position() const
+{
+  return position + right_tangent.to_cartesian();
+}
 
 void Point::swap(Point& other)
 {
@@ -80,17 +91,15 @@ void Point::deserialize(AbstractDeserializer& deserializer, const Serializable::
 Point Point::flattened(const double t) const
 {
   Point copy(*this);
-  auto center = 0.5*(left_tangent.argument + right_tangent.argument);
+  auto center = 0.5 * (left_tangent.argument + right_tangent.argument);
   if (center - left_tangent.argument < 0) {
     center += M_PI;
   }
 
   const auto lerp_angle = [](double rad1, double rad2, const double t) {
-
-    const Vec2f v =   t   * PolarCoordinates(rad2, 1.0).to_cartesian()
-                  + (1-t) * PolarCoordinates(rad1, 1.0).to_cartesian();
-    return (v/2.0).arg();
-
+    const Vec2f v = t * PolarCoordinates(rad2, 1.0).to_cartesian()
+                    + (1 - t) * PolarCoordinates(rad1, 1.0).to_cartesian();
+    return (v / 2.0).arg();
   };
 
   copy.left_tangent.argument = lerp_angle(left_tangent.argument, center - M_PI_2, t);
@@ -130,15 +139,18 @@ std::ostream& operator<<(std::ostream& ostream, const Point* pc)
 bool Point::operator==(const Point& point) const
 {
   return position == point.position
-    && left_tangent.to_cartesian() == point.left_tangent.to_cartesian()
-    && right_tangent.to_cartesian() == point.right_tangent.to_cartesian();
+         && left_tangent.to_cartesian() == point.left_tangent.to_cartesian()
+         && right_tangent.to_cartesian() == point.right_tangent.to_cartesian();
 }
 
-bool Point::operator!=(const Point& point) const { return !(*this == point); }
+bool Point::operator!=(const Point& point) const
+{
+  return !(*this == point);
+}
 
-PolarCoordinates Point::mirror_tangent( const PolarCoordinates& old_pos,
-                                        const PolarCoordinates& old_other_pos,
-                                        const PolarCoordinates& new_other_pos )
+PolarCoordinates Point::mirror_tangent(const PolarCoordinates& old_pos,
+                                       const PolarCoordinates& old_other_pos,
+                                       const PolarCoordinates& new_other_pos)
 {
   PolarCoordinates new_pos;
   static constexpr double mag_eps = 0.00001;
@@ -151,7 +163,7 @@ PolarCoordinates Point::mirror_tangent( const PolarCoordinates& old_pos,
   return new_pos;
 }
 
-double Point::get_direction(const Point *left_neighbor, const Point *right_neighbor) const
+double Point::get_direction(const Point* left_neighbor, const Point* right_neighbor) const
 {
   double left_arg = 0;
   double right_arg = 0;
@@ -176,7 +188,7 @@ double Point::get_direction(const Point *left_neighbor, const Point *right_neigh
   }
 
   if (has_left_direction && has_right_direction) {
-    auto a = 0.5  * (left_arg + right_arg);
+    auto a = 0.5 * (left_arg + right_arg);
     if (a - right_arg < 0) {
       a -= M_PI;
     }
@@ -192,7 +204,7 @@ double Point::get_direction(const Point *left_neighbor, const Point *right_neigh
   }
 }
 
-Point Point::offset(double t, const Point *left_neighbor, const Point *right_neighbor) const
+Point Point::offset(double t, const Point* left_neighbor, const Point* right_neighbor) const
 {
   const double arg = get_direction(left_neighbor, right_neighbor);
   const auto direction = PolarCoordinates(arg, 1.0).to_cartesian();
@@ -211,8 +223,8 @@ Point Point::offset(double t, const Point *left_neighbor, const Point *right_nei
   return offset.flattened(std::clamp(tn, 0.0, 1.0));
 }
 
-std::vector<Point> Point::offset(const double t,
-                                 const std::vector<Point>& points, const bool is_closed)
+std::vector<Point>
+Point::offset(const double t, const std::vector<Point>& points, const bool is_closed)
 {
   const auto n = points.size();
   if (n >= 2) {
@@ -221,15 +233,15 @@ std::vector<Point> Point::offset(const double t,
     const auto* left = is_closed ? &points.back() : nullptr;
     off_points.push_back(points[0].offset(t, left, &points[1]));
 
-    for (std::size_t i = 1; i < n-1; ++i) {
-      off_points.push_back(points[i].offset(t, &points[i-1], &points[i+1]));
+    for (std::size_t i = 1; i < n - 1; ++i) {
+      off_points.push_back(points[i].offset(t, &points[i - 1], &points[i + 1]));
     }
 
     const auto* right = is_closed ? &points.front() : nullptr;
-    off_points.push_back(points[n-1].offset(t, &points[n-2], right));
+    off_points.push_back(points[n - 1].offset(t, &points[n - 2], right));
     return off_points;
   } else if (n == 1) {
-    return { points[0].offset(t, nullptr, nullptr) };
+    return {points[0].offset(t, nullptr, nullptr)};
   } else {
     return {};
   }
@@ -248,11 +260,10 @@ bool Point::operator<(const Point& point) const
   }
 }
 
-bool fuzzy_eq(const Point &a, const Point &b)
+bool fuzzy_eq(const Point& a, const Point& b)
 {
-  return fuzzy_eq(a.position, b.position)
-      && fuzzy_eq(a.left_position(), b.left_position())
-      && fuzzy_eq(a.right_position(), b.right_position());
+  return fuzzy_eq(a.position, b.position) && fuzzy_eq(a.left_position(), b.left_position())
+         && fuzzy_eq(a.right_position(), b.right_position());
 }
 
 }  // namespace omm

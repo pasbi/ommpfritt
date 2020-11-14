@@ -1,11 +1,10 @@
 #include "splinetype.h"
 #include "logging.h"
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 
 namespace
 {
-
 using namespace omm;
 
 template<typename Knots> auto find_knot(Knots&& knots, double t)
@@ -45,48 +44,40 @@ double convolve(const std::array<double, 4>& coefficients,
 using Knot = omm::SplineType::Knot;
 using SpInit = omm::SplineType::Initialization;
 
-static const std::map<SpInit, omm::SplineType::knot_map_type> predefined {
-  {
-    SpInit::Linear,
-    {
-      { 0.0, Knot(0.0, -1.0/3.0, 1.0/3.0) },
-      { 1.0, Knot(1.0, -1.0/3.0, 1.0/3.0) },
-    }
-  },
-  {
-    SpInit::Ease,
-    {
-      { 0.0, Knot(0.0, 0.0, 0.0) },
-      { 1.0, Knot(1.0, 0.0, 0.0) },
-    }
-  },
-  {
-    SpInit::Valley,
-    {
-      { 0.0, Knot(1.0, 0.0, 0.0) },
-      { 0.5, Knot(0.0, 0.0, 0.0) },
-      { 1.0, Knot(1.0, 0.0, 0.0) },
-    }
-  },
+static const std::map<SpInit, omm::SplineType::knot_map_type> predefined{
+    {SpInit::Linear,
+     {
+         {0.0, Knot(0.0, -1.0 / 3.0, 1.0 / 3.0)},
+         {1.0, Knot(1.0, -1.0 / 3.0, 1.0 / 3.0)},
+     }},
+    {SpInit::Ease,
+     {
+         {0.0, Knot(0.0, 0.0, 0.0)},
+         {1.0, Knot(1.0, 0.0, 0.0)},
+     }},
+    {SpInit::Valley,
+     {
+         {0.0, Knot(1.0, 0.0, 0.0)},
+         {0.5, Knot(0.0, 0.0, 0.0)},
+         {1.0, Knot(1.0, 0.0, 0.0)},
+     }},
 };
 
 }  // namespace
 
 namespace omm
 {
-
 SplineType::ControlPoint SplineType::begin()
 {
   return ControlPoint(knots, knots.begin(), Knot::Side::Middle);
 }
 
-SplineType::SplineType(const std::multimap<double, SplineType::Knot>& knots)
-  : knots(knots)
+SplineType::SplineType(const std::multimap<double, SplineType::Knot>& knots) : knots(knots)
 {
 }
 
 SplineType::SplineType(Initialization initialization, bool flip)
-  : knots(predefined.at(initialization))
+    : knots(predefined.at(initialization))
 {
   if (flip) {
     for (auto& [t, knot] : knots) {
@@ -104,7 +95,7 @@ bool SplineType::operator==(const SplineType& other) const
 
 bool SplineType::operator<(const SplineType& other) const
 {
-  return  knots < other.knots;
+  return knots < other.knots;
 }
 
 SplineType::knot_map_type::iterator SplineType::move(knot_map_type::const_iterator it, double new_t)
@@ -150,21 +141,20 @@ SplineType::Interpolation SplineType::evaluate(double t) const
 }
 
 SplineType::Knot::Knot(double value, double left_offset, double right_offset)
-  : value(value), left_offset(left_offset), right_offset(right_offset)
+    : value(value), left_offset(left_offset), right_offset(right_offset)
 {
 }
 
 bool SplineType::Knot::operator==(const SplineType::Knot& other) const
 {
-  return value == other.value
-      && left_offset == other.left_offset
-      && right_offset == other.right_offset;
+  return value == other.value && left_offset == other.left_offset
+         && right_offset == other.right_offset;
 }
 
 bool SplineType::Knot::operator<(const SplineType::Knot& other) const
 {
   const auto to_array = [](const SplineType::Knot& knot) {
-    return std::array { knot.value, knot.left_offset, knot.right_offset };
+    return std::array{knot.value, knot.left_offset, knot.right_offset};
   };
 
   return to_array(*this) < to_array(other);
@@ -216,22 +206,22 @@ double SplineType::Interpolation::local_t() const
 
 double SplineType::Interpolation::value() const
 {
-  static constexpr std::array<std::array<double, 4>, 4> b {
-    std::array<double, 4> { 1.0, -3.0,  3.0, -1.0 },
-    std::array<double, 4> { 0.0,  3.0, -6.0,  3.0 },
-    std::array<double, 4> { 0.0,  0.0,  3.0, -3.0 },
-    std::array<double, 4> { 0.0,  0.0,  0.0,  1.0 },
+  static constexpr std::array<std::array<double, 4>, 4> b{
+      std::array<double, 4>{1.0, -3.0, 3.0, -1.0},
+      std::array<double, 4>{0.0, 3.0, -6.0, 3.0},
+      std::array<double, 4>{0.0, 0.0, 3.0, -3.0},
+      std::array<double, 4>{0.0, 0.0, 0.0, 1.0},
   };
   return convolve(coefficients(), b, local_t());
 }
 
 double SplineType::Interpolation::derivative() const
 {
-  static constexpr std::array<std::array<double, 3>, 4> b {
-    std::array<double, 3> { -3.0,   6.0, -3.0 },
-    std::array<double, 3> {  3.0, -12.0,  9.0 },
-    std::array<double, 3> {  0.0,   6.0, -9.0 },
-    std::array<double, 3> {  0.0,   0.0,  3.0 },
+  static constexpr std::array<std::array<double, 3>, 4> b{
+      std::array<double, 3>{-3.0, 6.0, -3.0},
+      std::array<double, 3>{3.0, -12.0, 9.0},
+      std::array<double, 3>{0.0, 6.0, -9.0},
+      std::array<double, 3>{0.0, 0.0, 3.0},
   };
   return convolve(coefficients(), b, local_t());
 }
@@ -240,20 +230,18 @@ std::array<double, 4> SplineType::Interpolation::coefficients() const
 {
   using Side = SplineType::Knot::Side;
   if (left.has_value() && right.has_value()) {
-    return {
-      left->second.get_value(Side::Middle),
-      left->second.get_value(Side::Right),
-      right->second.get_value(Side::Left),
-      right->second.get_value(Side::Middle)
-    };
+    return {left->second.get_value(Side::Middle),
+            left->second.get_value(Side::Right),
+            right->second.get_value(Side::Left),
+            right->second.get_value(Side::Middle)};
   } else if (left.has_value()) {
     const double v = left->second.get_value(Side::Middle);
-    return { v, v, v, v };
+    return {v, v, v, v};
   } else if (right.has_value()) {
     const double v = right->second.get_value(Side::Middle);
-    return { v, v, v, v };
+    return {v, v, v, v};
   } else {
-    return { 0.0, 0.0, 0.0, 0.0 };
+    return {0.0, 0.0, 0.0, 0.0};
   }
 }
 

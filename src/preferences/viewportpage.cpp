@@ -1,26 +1,25 @@
 #include "preferences/viewportpage.h"
-#include <QGridLayout>
-#include <QComboBox>
-#include <QLabel>
 #include <QCheckBox>
-#include <memory>
-#include <QFormLayout>
+#include <QComboBox>
 #include <QDoubleSpinBox>
+#include <QFormLayout>
+#include <QGridLayout>
+#include <QLabel>
+#include <memory>
 
 namespace
 {
-
-const std::vector<std::pair<Qt::MouseButton, QString>> button_map {
-  { Qt::LeftButton, QT_TRANSLATE_NOOP("omm::ViewportPage","Left") },
-  { Qt::MiddleButton, QT_TRANSLATE_NOOP("omm::ViewportPage","Middle") },
-  { Qt::RightButton, QT_TRANSLATE_NOOP("omm::ViewportPage","Right") },
+const std::vector<std::pair<Qt::MouseButton, QString>> button_map{
+    {Qt::LeftButton, QT_TRANSLATE_NOOP("omm::ViewportPage", "Left")},
+    {Qt::MiddleButton, QT_TRANSLATE_NOOP("omm::ViewportPage", "Middle")},
+    {Qt::RightButton, QT_TRANSLATE_NOOP("omm::ViewportPage", "Right")},
 };
 
-const std::vector<std::pair<Qt::KeyboardModifier, QString>> modifier_map {
-  { Qt::ShiftModifier, QT_TRANSLATE_NOOP("omm::ViewportPage","Shift") },
-  { Qt::ControlModifier, QT_TRANSLATE_NOOP("omm::ViewportPage","Ctrl") },
-  { Qt::MetaModifier, QT_TRANSLATE_NOOP("omm::ViewportPage","Meta") },
-  { Qt::AltModifier, QT_TRANSLATE_NOOP("omm::ViewportPage","Alt") },
+const std::vector<std::pair<Qt::KeyboardModifier, QString>> modifier_map{
+    {Qt::ShiftModifier, QT_TRANSLATE_NOOP("omm::ViewportPage", "Shift")},
+    {Qt::ControlModifier, QT_TRANSLATE_NOOP("omm::ViewportPage", "Ctrl")},
+    {Qt::MetaModifier, QT_TRANSLATE_NOOP("omm::ViewportPage", "Meta")},
+    {Qt::AltModifier, QT_TRANSLATE_NOOP("omm::ViewportPage", "Alt")},
 };
 
 void set_size_policy(QWidget& widget)
@@ -32,10 +31,9 @@ void set_size_policy(QWidget& widget)
 
 namespace omm
 {
-
-ViewportPage::MouseModifiersGroup::
-MouseModifiersGroup(Preferences::MouseModifier& model, QFormLayout& layout)
-  : m_model(model)
+ViewportPage::MouseModifiersGroup::MouseModifiersGroup(Preferences::MouseModifier& model,
+                                                       QFormLayout& layout)
+    : m_model(model)
 {
   auto cb = std::make_unique<QComboBox>();
   for (const auto& [_, label] : button_map) {
@@ -56,7 +54,7 @@ MouseModifiersGroup(Preferences::MouseModifier& model, QFormLayout& layout)
   hlayout->addWidget(cb.release());
   for (std::size_t i = 0; i < modifier_map.size(); ++i) {
     auto cb = std::make_unique<QCheckBox>();
-    m_modifier_cbs.insert({ modifier_map.at(i).first, cb.get() });
+    m_modifier_cbs.insert({modifier_map.at(i).first, cb.get()});
     if (!!(model.modifiers & modifier_map.at(i).first)) {
       cb->setChecked(true);
     }
@@ -71,7 +69,7 @@ MouseModifiersGroup(Preferences::MouseModifier& model, QFormLayout& layout)
 }
 
 ViewportPage::GridGroup::GridGroup(Preferences::GridOption& model, QFormLayout& layout)
-  : m_model(model)
+    : m_model(model)
 {
   auto sp_penwidth = std::make_unique<QDoubleSpinBox>();
   sp_penwidth->setRange(0, 10);
@@ -126,8 +124,7 @@ void ViewportPage::MouseModifiersGroup::apply()
   }
 }
 
-ViewportPage::ViewportPage(Preferences& preferences)
-  : m_preferences(preferences)
+ViewportPage::ViewportPage(Preferences& preferences) : m_preferences(preferences)
 {
   auto layout = std::make_unique<QFormLayout>();
 
@@ -159,15 +156,12 @@ ViewportPage::~ViewportPage()
 
 void ViewportPage::about_to_accept()
 {
-  for (auto&& [ key, value ] : m_mouse_modifiers) {
+  for (auto&& [key, value] : m_mouse_modifiers) {
     value.apply();
   }
-  for (auto&& [ key, value ] : m_grid_options) {
+  for (auto&& [key, value] : m_grid_options) {
     value.apply();
   }
-
 }
 
-
-
-}  // namespace
+}  // namespace omm

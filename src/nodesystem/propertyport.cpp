@@ -3,7 +3,6 @@
 
 namespace
 {
-
 QString data_type(const omm::Property* property)
 {
   if (property == nullptr) {
@@ -17,7 +16,6 @@ QString data_type(const omm::Property* property)
 
 namespace omm
 {
-
 template<> QString PropertyPort<PortType::Input>::data_type() const
 {
   if (OutputPort* op = connected_output(); op != nullptr) {

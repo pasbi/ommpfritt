@@ -1,12 +1,11 @@
 #pragma once
 
+#include "aspects/propertyowner.h"
 #include <QObject>
 #include <set>
-#include "aspects/propertyowner.h"
 
 namespace omm
 {
-
 class Object;
 class Tag;
 class Style;

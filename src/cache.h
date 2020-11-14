@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 /**
  * This class is deprecated. You should not use it.
  * Use CachedGetter instead. The class is currently being used but will be replaced with
@@ -24,14 +23,16 @@ public:
     }
     return m_cache.at(key);
   }
-  void clear() { m_cache.clear(); }
+  void clear()
+  {
+    m_cache.clear();
+  }
 
 protected:
   virtual V retrieve(const K& key) const = 0;
 
 private:
   mutable std::map<K, V> m_cache;
-
 };
 
-}  // namespace
+}  // namespace omm

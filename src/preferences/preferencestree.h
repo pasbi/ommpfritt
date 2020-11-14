@@ -1,13 +1,12 @@
 #pragma once
 
-#include <string>
-#include <map>
-#include <QAbstractItemModel>
 #include "preferences/preferencestreeitem.h"
+#include <QAbstractItemModel>
+#include <map>
+#include <string>
 
 namespace omm
 {
-
 /**
  * @brief The SettingsTree class represents an abstract store for settings.
  * A settings is identified by its group and key.
@@ -33,7 +32,8 @@ public:
   PreferencesTreeGroupItem* group(const QString& name) const;
   std::vector<PreferencesTreeGroupItem*> groups() const;
   PreferencesTreeValueItem* value(const QString group_name, const QString& key) const;
-  const QString stored_value(const QString& group_name, const QString& key, std::size_t column) const;
+  const QString
+  stored_value(const QString& group_name, const QString& key, std::size_t column) const;
 
   void store();
   void restore();
@@ -41,12 +41,12 @@ public:
   // == reimplemented from QAbstractItemModel
   QModelIndex group_index(const QString& group_name) const;
   QModelIndex value_index(const QString& group_name, const QString& key) const;
-  QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
-  QModelIndex parent(const QModelIndex &child) const override;
+  QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
+  QModelIndex parent(const QModelIndex& child) const override;
   int rowCount(const QModelIndex& parent) const override;
-  int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+  int columnCount(const QModelIndex& parent = QModelIndex()) const override;
   QVariant data(const QModelIndex& index, int role) const override;
-  bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+  bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
   Qt::ItemFlags flags(const QModelIndex& index) const override;
   bool is_group(const QModelIndex& index) const;
   PreferencesTreeGroupItem& group(const QModelIndex& index) const;

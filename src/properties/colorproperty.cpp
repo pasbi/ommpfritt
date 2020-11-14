@@ -2,15 +2,12 @@
 
 namespace omm
 {
-
-const Property::PropertyDetail ColorProperty::detail
-{
-  [](const Property& property, std::size_t channel) -> QString {
-    const auto color = std::get<Color>(property.variant_value());
-    const auto name = Color::component_names.at(color.model())[channel];
-    return QCoreApplication::translate("Color", name.toStdString().c_str());
-  }
-};
+const Property::PropertyDetail ColorProperty::detail{
+    [](const Property& property, std::size_t channel) -> QString {
+      const auto color = std::get<Color>(property.variant_value());
+      const auto name = Color::component_names.at(color.model())[channel];
+      return QCoreApplication::translate("Color", name.toStdString().c_str());
+    }};
 
 void ColorProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {

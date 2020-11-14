@@ -1,13 +1,12 @@
 #include "iconprovider.h"
 #include "aspects/propertyowner.h"
 #include "renderers/style.h"
-#include "tags/tag.h"
-#include "tags/styletag.h"
 #include "renderers/styleiconengine.h"
+#include "tags/styletag.h"
+#include "tags/tag.h"
 
 namespace omm
 {
-
 QIcon IconProvider::icon(AbstractPropertyOwner& owner) const
 {
   if (Tag* tag = kind_cast<Tag*>(&owner); tag != nullptr) {

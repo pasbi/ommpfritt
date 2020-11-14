@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 template<typename ReceiverT, typename F>
 QAction& action(QMenu& menu, const QString& label, ReceiverT& receiver, F f)
 {

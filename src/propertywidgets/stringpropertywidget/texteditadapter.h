@@ -1,17 +1,16 @@
 #pragma once
 
+#include "properties/stringproperty.h"
+#include "propertywidgets/multivalueedit.h"
+#include "propertywidgets/stringpropertywidget/fontcombobox.h"
+#include "widgets/codeedit.h"
+#include "widgets/filepathedit.h"
+#include <QLineEdit>
 #include <QTextEdit>
 #include <QVBoxLayout>
-#include <QLineEdit>
-#include "propertywidgets/stringpropertywidget/fontcombobox.h"
-#include "propertywidgets/multivalueedit.h"
-#include "properties/stringproperty.h"
-#include "widgets/filepathedit.h"
-#include "widgets/codeedit.h"
 
 namespace omm
 {
-
 class AbstractTextEditAdapter : public MultiValueEdit<QString>
 {
 public:
@@ -22,8 +21,10 @@ public:
 
 template<typename TextEdit> class TextEditAdapter;
 
-template<> class TextEditAdapter<QLineEdit>
-  : public QLineEdit, public AbstractTextEditAdapter
+template<>
+class TextEditAdapter<QLineEdit>
+    : public QLineEdit
+    , public AbstractTextEditAdapter
 {
 public:
   using edit_type = QLineEdit;
@@ -35,8 +36,10 @@ public:
   QWidget* as_widget() override;
 };
 
-template<> class TextEditAdapter<QTextEdit>
-  : public QTextEdit, public AbstractTextEditAdapter
+template<>
+class TextEditAdapter<QTextEdit>
+    : public QTextEdit
+    , public AbstractTextEditAdapter
 {
 public:
   using edit_type = QTextEdit;
@@ -49,8 +52,10 @@ public:
   QWidget* as_widget() override;
 };
 
-template<> class TextEditAdapter<FilePathEdit>
-  : public FilePathEdit, public AbstractTextEditAdapter
+template<>
+class TextEditAdapter<FilePathEdit>
+    : public FilePathEdit
+    , public AbstractTextEditAdapter
 {
 public:
   using edit_type = FilePathEdit;
@@ -62,8 +67,10 @@ public:
   QWidget* as_widget() override;
 };
 
-template<> class TextEditAdapter<CodeEdit>
-  : public CodeEdit, public AbstractTextEditAdapter
+template<>
+class TextEditAdapter<CodeEdit>
+    : public CodeEdit
+    , public AbstractTextEditAdapter
 {
 public:
   using edit_type = CodeEdit;
@@ -75,8 +82,10 @@ public:
   QWidget* as_widget() override;
 };
 
-template<> class TextEditAdapter<FontComboBox>
-  : public FontComboBox, public AbstractTextEditAdapter
+template<>
+class TextEditAdapter<FontComboBox>
+    : public FontComboBox
+    , public AbstractTextEditAdapter
 {
 public:
   using edit_type = FontComboBox;

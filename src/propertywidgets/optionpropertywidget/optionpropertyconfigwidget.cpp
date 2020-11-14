@@ -1,15 +1,14 @@
 #include "propertywidgets/optionpropertywidget/optionpropertyconfigwidget.h"
-#include <functional>
+#include "logging.h"
+#include <QEvent>
 #include <QLayout>
 #include <QListWidget>
-#include <QEvent>
-#include <QMouseEvent>
 #include <QMessageBox>
-#include "logging.h"
+#include <QMouseEvent>
+#include <functional>
 
 namespace
 {
-
 std::unique_ptr<QListWidgetItem> make_item(const QString& label)
 {
   auto item = std::make_unique<QListWidgetItem>(label);
@@ -17,14 +16,12 @@ std::unique_ptr<QListWidgetItem> make_item(const QString& label)
   return item;
 }
 
-
 }  // namespace
 
 namespace omm
 {
-
-static constexpr auto unnamed_option_label = QT_TRANSLATE_NOOP( "OptionPropertyConfigWidget",
-                                                                "Unnamed Option" );
+static constexpr auto unnamed_option_label
+    = QT_TRANSLATE_NOOP("OptionPropertyConfigWidget", "Unnamed Option");
 
 OptionPropertyConfigWidget ::OptionPropertyConfigWidget()
 {
@@ -37,11 +34,10 @@ OptionPropertyConfigWidget ::OptionPropertyConfigWidget()
   setLayout(layout.release());
 }
 
-void OptionPropertyConfigWidget::init(const Property::Configuration &configuration)
+void OptionPropertyConfigWidget::init(const Property::Configuration& configuration)
 {
   m_list_widget->clear();
-  const auto items
-      = configuration.get<std::vector<QString>>(OptionProperty::OPTIONS_POINTER, {});
+  const auto items = configuration.get<std::vector<QString>>(OptionProperty::OPTIONS_POINTER, {});
   for (const QString& label : items) {
     m_list_widget->insertItem(m_list_widget->count(), make_item(label).release());
   }
@@ -51,7 +47,7 @@ void OptionPropertyConfigWidget::init(const Property::Configuration &configurati
   }
 }
 
-void OptionPropertyConfigWidget::update(Property::Configuration &configuration) const
+void OptionPropertyConfigWidget::update(Property::Configuration& configuration) const
 {
   std::vector<QString> items;
   const int n = m_list_widget->count();
@@ -77,9 +73,9 @@ void OptionPropertyConfigWidget::remove_option(int index)
     delete m_list_widget->takeItem(index);
   } else {
     LWARNING << "Prevented attempt to remove last option";
-    QMessageBox::warning(this, QObject::tr("Warning", "OptionPropertyConfigWidget"),
-                               QObject::tr( "Cannot remove last option.",
-                                            "OptionPropertyConfigWidget" ));
+    QMessageBox::warning(this,
+                         QObject::tr("Warning", "OptionPropertyConfigWidget"),
+                         QObject::tr("Cannot remove last option.", "OptionPropertyConfigWidget"));
   }
 }
 
@@ -110,8 +106,7 @@ bool OptionPropertyConfigWidget::eventFilter(QObject* watched, QEvent* event)
     }
   };
 
-  if (watched == m_list_widget->viewport())
-  {
+  if (watched == m_list_widget->viewport()) {
     switch (event->type()) {
     case QEvent::MouseButtonPress:
       if (attempt_remove_item(static_cast<QMouseEvent*>(event))) {
@@ -130,5 +125,4 @@ bool OptionPropertyConfigWidget::eventFilter(QObject* watched, QEvent* event)
   return PropertyConfigWidget::eventFilter(watched, event);
 }
 
-}  // namespace pmm
-
+}  // namespace omm

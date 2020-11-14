@@ -7,18 +7,19 @@
 
 namespace omm
 {
-
-template<typename NumericPropertyT> NumericPropertyWidget<NumericPropertyT>
-::NumericPropertyWidget(Scene& scene, const std::set<Property*>& properties)
-  : PropertyWidget<NumericPropertyT>(scene, properties)
+template<typename NumericPropertyT>
+NumericPropertyWidget<NumericPropertyT>::NumericPropertyWidget(
+    Scene& scene,
+    const std::set<Property*>& properties)
+    : PropertyWidget<NumericPropertyT>(scene, properties)
 {
   using value_type = typename NumericPropertyT::value_type;
   using edit_type = NumericMultiValueEdit<value_type>;
   auto spinbox = std::make_unique<edit_type>();
-  QObject::connect(spinbox.get(), &AbstractNumericEdit::value_changed,
-                   [this, spinbox=spinbox.get()]() {
-    this->set_properties_value(spinbox->value());
-  });
+  QObject::connect(
+      spinbox.get(),
+      &AbstractNumericEdit::value_changed,
+      [this, spinbox = spinbox.get()]() { this->set_properties_value(spinbox->value()); });
   m_spinbox = spinbox.get();
   spinbox->label = this->label();
 
@@ -51,8 +52,7 @@ void NumericPropertyWidget<NumericPropertyT>::update_configuration()
   update_edit();
 }
 
-template<typename NumericPropertyT>
-void NumericPropertyWidget<NumericPropertyT>::update_edit()
+template<typename NumericPropertyT> void NumericPropertyWidget<NumericPropertyT>::update_edit()
 {
   QSignalBlocker blocker(m_spinbox);
   m_spinbox->set_values(NumericPropertyWidget<NumericPropertyT>::get_properties_values());
@@ -61,4 +61,4 @@ void NumericPropertyWidget<NumericPropertyT>::update_edit()
 template class NumericPropertyWidget<IntegerProperty>;
 template class NumericPropertyWidget<FloatProperty>;
 
-} // namespace omm
+}  // namespace omm

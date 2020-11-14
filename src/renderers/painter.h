@@ -1,23 +1,22 @@
 #pragma once
 
-#include <string>
 #include <stack>
+#include <string>
 
-#include "geometry/objecttransformation.h"
-#include "geometry/boundingbox.h"
-#include "geometry/point.h"
+#include "color/color.h"
 #include "common.h"
+#include "geometry/boundingbox.h"
+#include "geometry/objecttransformation.h"
+#include "geometry/point.h"
+#include "renderers/imagecache.h"
 #include <QPainter>
 #include <QPainterPath>
-#include "renderers/imagecache.h"
-#include "color/color.h"
 
 class QFont;
 class QTextOption;
 
 namespace omm
 {
-
 class Style;
 class Scene;
 class Object;
@@ -27,8 +26,7 @@ class Viewport;
 class Painter
 {
 public:
-  struct Options
-  {
+  struct Options {
     explicit Options(const QWidget& viewport);
     explicit Options(const QPaintDevice& device);
     std::vector<const Style*> styles;
@@ -37,8 +35,13 @@ public:
     const QPaintDevice& device;
   };
 
-  enum class Category { None = 0x0, Objects = 0x1, Handles = 0x2, BoundingBox = 0x4,
-                        All = Objects | Handles | BoundingBox };
+  enum class Category {
+    None = 0x0,
+    Objects = 0x1,
+    Handles = 0x2,
+    BoundingBox = 0x4,
+    All = Objects | Handles | BoundingBox
+  };
   explicit Painter(Scene& scene, Category filter);
   void render(Options options);
 
@@ -71,4 +74,5 @@ private:
 
 }  // namespace omm
 
-template<> struct omm::EnableBitMaskOperators<omm::Painter::Category> : std::true_type {};
+template<> struct omm::EnableBitMaskOperators<omm::Painter::Category> : std::true_type {
+};

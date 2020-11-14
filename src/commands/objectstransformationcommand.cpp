@@ -4,7 +4,6 @@
 
 namespace
 {
-
 auto get_old_transformations(std::set<omm::Object*> objects)
 {
   omm::Object::remove_internal_children(objects);
@@ -26,22 +25,26 @@ auto get_new_transformations(const omm::ObjectsTransformationCommand::Map& new_t
   return map;
 }
 
-}
+}  // namespace
 
 namespace omm
 {
-
-ObjectsTransformationCommand::
-ObjectsTransformationCommand(const Map &transformations, TransformationMode t_mode)
-  : Command(QObject::tr("ObjectsTransformation"))
-  , m_old_transformations(get_old_transformations(::get_keys(transformations)))
-  , m_new_transformations(get_new_transformations(transformations))
-  , m_transformation_mode(t_mode)
+ObjectsTransformationCommand::ObjectsTransformationCommand(const Map& transformations,
+                                                           TransformationMode t_mode)
+    : Command(QObject::tr("ObjectsTransformation")),
+      m_old_transformations(get_old_transformations(::get_keys(transformations))),
+      m_new_transformations(get_new_transformations(transformations)), m_transformation_mode(t_mode)
 {
 }
 
-void ObjectsTransformationCommand::undo() { apply(m_old_transformations); }
-void ObjectsTransformationCommand::redo() { apply(m_new_transformations); }
+void ObjectsTransformationCommand::undo()
+{
+  apply(m_old_transformations);
+}
+void ObjectsTransformationCommand::redo()
+{
+  apply(m_new_transformations);
+}
 
 bool ObjectsTransformationCommand::is_noop() const
 {
@@ -54,7 +57,7 @@ bool ObjectsTransformationCommand::is_noop() const
   return true;
 }
 
-bool ObjectsTransformationCommand::mergeWith(const QUndoCommand *command)
+bool ObjectsTransformationCommand::mergeWith(const QUndoCommand* command)
 {
   const auto& ot_command = static_cast<const ObjectsTransformationCommand&>(*command);
   if (affected_objects() != ot_command.affected_objects()) {
@@ -67,7 +70,7 @@ bool ObjectsTransformationCommand::mergeWith(const QUndoCommand *command)
   return true;
 }
 
-void ObjectsTransformationCommand::apply(const ObjectsTransformationCommand::Map &map)
+void ObjectsTransformationCommand::apply(const ObjectsTransformationCommand::Map& map)
 {
   for (auto&& [o, t] : map) {
     switch (m_transformation_mode) {
@@ -82,13 +85,16 @@ void ObjectsTransformationCommand::apply(const ObjectsTransformationCommand::Map
   }
 }
 
-std::set<Object *> ObjectsTransformationCommand::affected_objects() const
+std::set<Object*> ObjectsTransformationCommand::affected_objects() const
 {
   const auto keys = ::get_keys(m_new_transformations);
   assert(keys == ::get_keys(m_old_transformations));
   return keys;
 }
 
-int ObjectsTransformationCommand::id() const { return OBJECTS_TRANSFORMATION_COMMAND_ID; }
-
+int ObjectsTransformationCommand::id() const
+{
+  return OBJECTS_TRANSFORMATION_COMMAND_ID;
 }
+
+}  // namespace omm

@@ -1,50 +1,48 @@
 #include "managers/objectmanager/objecttreeview.h"
 
-#include <memory>
-#include <QMouseEvent>
 #include <QApplication>
 #include <QDebug>
 #include <QDrag>
+#include <QMouseEvent>
+#include <memory>
 
-#include "menuhelper.h"
-#include "scene/contextes.h"
-#include "commands/removecommand.h"
 #include "commands/addcommand.h"
-#include "renderers/style.h"
-#include "scene/scene.h"
 #include "commands/propertycommand.h"
-#include "properties/referenceproperty.h"
+#include "commands/removecommand.h"
 #include "common.h"
-#include "scene/propertyownermimedata.h"
-#include "tags/tag.h"
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
-#include <QHeaderView>
-#include <QTimer>
-#include "scene/mailbox.h"
 #include "managers/objectmanager/objectdelegate.h"
+#include "menuhelper.h"
+#include "properties/referenceproperty.h"
+#include "renderers/style.h"
+#include "scene/contextes.h"
+#include "scene/mailbox.h"
+#include "scene/propertyownermimedata.h"
+#include "scene/scene.h"
+#include "tags/tag.h"
+#include <QHeaderView>
 #include <QStyledItemDelegate>
+#include <QTimer>
 
 namespace
 {
-
 QItemSelectionModel::SelectionFlag get_selection_flag(const QMouseEvent& event)
 {
   return (event.modifiers() & Qt::ControlModifier) ? QItemSelectionModel::Deselect
                                                    : QItemSelectionModel::Select;
 }
 
-}
+}  // namespace
 
 namespace omm
 {
-
 ObjectTreeView::ObjectTreeView(ObjectTree& model)
-  : ManagerItemView(model)
-  , m_selection_model(std::make_unique<ObjectTreeSelectionModel>(model).release())
-  , m_object_quick_access_delegate(std::make_unique<ObjectQuickAccessDelegate>(*this))
-  , m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this, *m_selection_model, 2))
-  , m_model(model)
+    : ManagerItemView(model),
+      m_selection_model(std::make_unique<ObjectTreeSelectionModel>(model).release()),
+      m_object_quick_access_delegate(std::make_unique<ObjectQuickAccessDelegate>(*this)),
+      m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this, *m_selection_model, 2)),
+      m_model(model)
 {
   setItemDelegateForColumn(1, m_object_quick_access_delegate.get());
   header()->setSectionResizeMode(1, QHeaderView::Fixed);
@@ -61,20 +59,25 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
     setExpanded(index, true);
   });
 
-  connect(&scene().mail_box(), &MailBox::tag_inserted,
-          this, &ObjectTreeView::update_tag_column_size);
-  connect(&scene().mail_box(), &MailBox::tag_removed,
-          this, &ObjectTreeView::update_tag_column_size);
-  connect(&scene().mail_box(), &MailBox::scene_reseted,
-          this, &ObjectTreeView::update_tag_column_size);
+  connect(&scene().mail_box(),
+          &MailBox::tag_inserted,
+          this,
+          &ObjectTreeView::update_tag_column_size);
+  connect(&scene().mail_box(),
+          &MailBox::tag_removed,
+          this,
+          &ObjectTreeView::update_tag_column_size);
+  connect(&scene().mail_box(),
+          &MailBox::scene_reseted,
+          this,
+          &ObjectTreeView::update_tag_column_size);
 
   update_tag_column_size();
 
-  auto object_delegate = std::make_unique<ObjectDelegate>(*this, *m_selection_model,
-                                                          *ItemProxyView::model());
+  auto object_delegate
+      = std::make_unique<ObjectDelegate>(*this, *m_selection_model, *ItemProxyView::model());
   m_object_delegate = object_delegate.get();
   setItemDelegateForColumn(0, object_delegate.release());
-
 }
 
 std::set<AbstractPropertyOwner*> ObjectTreeView::selected_items() const
@@ -120,7 +123,8 @@ void ObjectTreeView::mousePressEvent(QMouseEvent* e)
 {
   m_aborted = false;
   m_mouse_down_index = indexAt(e->pos());
-  if (const QModelIndex index = indexAt(e->pos()); !index.isValid()
+  if (const QModelIndex index = indexAt(e->pos());
+      !index.isValid()
       || (index.column() == 2 && m_tags_item_delegate->tag_at(index, e->pos()) == nullptr)) {
     m_rubberband_visible = true;
     m_rubberband_origin = e->pos();
@@ -130,28 +134,28 @@ void ObjectTreeView::mousePressEvent(QMouseEvent* e)
     }
   } else {
     switch (columnAt(e->pos().x())) {
-      case 0:
-        [[fallthrough]];
-      case 2:
-        if (e->button() == Qt::LeftButton) {
-          m_mouse_press_pos = e->pos();
-        }
-        ManagerItemView::mousePressEvent(e);
-        break;
-      case 1:
-        // Attempting to drag a cell from this column would always drag another cell since this one
-        // cannot be selected. Hence we must disable dragging for that column.
-        // Not returning Draggable-Flag in flags() is not enough.
-        // It's important to enable dragging if the mouse is released or focus comes from another
-        // widget.
-        setDragEnabled(false);
-        m_object_quick_access_delegate->on_mouse_button_press(*e);
-        break;
+    case 0:
+      [[fallthrough]];
+    case 2:
+      if (e->button() == Qt::LeftButton) {
+        m_mouse_press_pos = e->pos();
+      }
+      ManagerItemView::mousePressEvent(e);
+      break;
+    case 1:
+      // Attempting to drag a cell from this column would always drag another cell since this one
+      // cannot be selected. Hence we must disable dragging for that column.
+      // Not returning Draggable-Flag in flags() is not enough.
+      // It's important to enable dragging if the mouse is released or focus comes from another
+      // widget.
+      setDragEnabled(false);
+      m_object_quick_access_delegate->on_mouse_button_press(*e);
+      break;
     }
   }
 }
 
-void ObjectTreeView::mouseReleaseEvent(QMouseEvent *e)
+void ObjectTreeView::mouseReleaseEvent(QMouseEvent* e)
 {
   // see ObjectTreeView::mousePressEvent case 1
   if (m_rubberband_visible && !m_aborted) {
@@ -178,7 +182,7 @@ void ObjectTreeView::mouseReleaseEvent(QMouseEvent *e)
   viewport()->update();
 }
 
-void ObjectTreeView::focusInEvent(QFocusEvent *e)
+void ObjectTreeView::focusInEvent(QFocusEvent* e)
 {
   // see ObjectTreeView::mousePressEvent case 1
   setDragEnabled(true);
@@ -274,6 +278,9 @@ void ObjectTreeView::update_tag_column_size()
   setColumnWidth(ObjectTree::TAGS_COLUMN, n_tags * tags_width);
 }
 
-Scene &ObjectTreeView::scene() const { return m_model.scene; }
+Scene& ObjectTreeView::scene() const
+{
+  return m_model.scene;
+}
 
 }  // namespace omm

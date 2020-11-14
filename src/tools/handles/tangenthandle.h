@@ -3,7 +3,6 @@
 
 namespace omm
 {
-
 class PointSelectHandle;
 class TangentHandle : public Handle
 {
@@ -12,7 +11,7 @@ public:
   TangentHandle(Tool& tool, PointSelectHandle& master_handle, Tangent tangent);
   double draw_epsilon() const override;
   void draw(QPainter& painter) const override;
-  bool contains_global(const Vec2f &point) const override;
+  bool contains_global(const Vec2f& point) const override;
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
 
 public:
@@ -21,7 +20,6 @@ public:
 private:
   PointSelectHandle& m_master_handle;
   const Tangent m_tangent;
-
 };
 
 }  // namespace omm

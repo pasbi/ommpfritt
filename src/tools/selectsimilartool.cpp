@@ -1,17 +1,16 @@
 #include "tools/selectsimilartool.h"
-#include <cmath>
-#include "scene/mailbox.h"
 #include "logging.h"
-#include "scene/scene.h"
 #include "objects/path.h"
-#include "tools/handles/boundingboxhandle.h"
+#include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 #include "properties/triggerproperty.h"
-#include "properties/floatproperty.h"
+#include "scene/mailbox.h"
+#include "scene/scene.h"
+#include "tools/handles/boundingboxhandle.h"
+#include <cmath>
 
 namespace
 {
-
 constexpr auto MODE_PROPERTY_KEY = "mode";
 constexpr auto STRATEGY_PROPERTY_KEY = "strategy";
 constexpr auto THRESHOLD_PROPERTY_KEY = "threshold";
@@ -26,10 +25,8 @@ double normal_distance(const It& a, const It& b)
     return M_1_PI * 180.0 * omm::PolarCoordinates::normalize_angle(std::abs(a - b)) - M_PI_2;
   };
 
-  return std::min(
-    normalize(a->left_tangent.argument, b->left_tangent.argument),
-    normalize(a->right_tangent.argument, b->right_tangent.argument)
-  );
+  return std::min(normalize(a->left_tangent.argument, b->left_tangent.argument),
+                  normalize(a->right_tangent.argument, b->right_tangent.argument));
 }
 
 omm::Vec2f distance(const It& a, const It& b, omm::SelectSimilarTool::Alignment alignment)
@@ -49,32 +46,33 @@ omm::Vec2f distance(const It& a, const It& b, omm::SelectSimilarTool::Alignment 
 
 namespace omm
 {
-
 SelectSimilarTool::SelectSimilarTool(Scene& scene) : SelectPointsBaseTool(scene)
 {
   const auto category = QObject::tr("tool");
   create_property<OptionProperty>(MODE_PROPERTY_KEY, 0)
-    .set_options({QObject::tr("normal"), QObject::tr("x"), QObject::tr("y"),
-                  QObject::tr("distance")})
-    .set_label(QObject::tr("similarity"))
-    .set_category(category)
-    .set_animatable(false);
+      .set_options(
+          {QObject::tr("normal"), QObject::tr("x"), QObject::tr("y"), QObject::tr("distance")})
+      .set_label(QObject::tr("similarity"))
+      .set_category(category)
+      .set_animatable(false);
   create_property<OptionProperty>(STRATEGY_PROPERTY_KEY, 0)
-    .set_options({QObject::tr("Any"), QObject::tr("All")})
-    .set_label(QObject::tr("strategy"))
-    .set_category(category)
-    .set_animatable(false);
+      .set_options({QObject::tr("Any"), QObject::tr("All")})
+      .set_label(QObject::tr("strategy"))
+      .set_category(category)
+      .set_animatable(false);
   create_property<FloatProperty>(THRESHOLD_PROPERTY_KEY, 1.0)
-    .set_step(0.1)
-    .set_label(QObject::tr("threshold"))
-    .set_category(category)
-    .set_animatable(false);
+      .set_step(0.1)
+      .set_label(QObject::tr("threshold"))
+      .set_category(category)
+      .set_animatable(false);
   create_property<TriggerProperty>(APPLY_PROPERTY_KEY)
-    .set_label(QObject::tr("apply"))
-    .set_category(category)
-    .set_animatable(false);
-  connect(&scene.mail_box(), &MailBox::point_selection_changed,
-          this, &SelectSimilarTool::update_base_selection);
+      .set_label(QObject::tr("apply"))
+      .set_category(category)
+      .set_animatable(false);
+  connect(&scene.mail_box(),
+          &MailBox::point_selection_changed,
+          this,
+          &SelectSimilarTool::update_base_selection);
   update_property_appearance();
 }
 
@@ -138,19 +136,17 @@ bool SelectSimilarTool::is_similar(const Path::iterator& a, const Path::iterator
 {
   using It = Path::iterator;
   const auto alignment = property(ALIGNMENT_PROPERTY_KEY)->value<Alignment>();
-  LINFO << (int) alignment << " " << (int) Alignment::Global << " " << (int) Alignment::Local;
-  const std::map<Mode, std::function<double(const It&, const It)>> mode_map {
-    {Mode::Normal, normal_distance},
-    {Mode::X, [alignment](auto&& a, auto&& b) {
-      return std::abs(::distance(a, b, alignment).x); }
-    },
-    {Mode::Y, [alignment](auto&& a, auto&& b) {
-      return std::abs(::distance(a, b, alignment).y); }
-    },
-    {Mode::Distance, [alignment](auto&& a, auto&& b) {
-      return ::distance(a, b, alignment).euclidean_norm();
-    },
-    },
+  LINFO << (int)alignment << " " << (int)Alignment::Global << " " << (int)Alignment::Local;
+  const std::map<Mode, std::function<double(const It&, const It)>> mode_map{
+      {Mode::Normal, normal_distance},
+      {Mode::X,
+       [alignment](auto&& a, auto&& b) { return std::abs(::distance(a, b, alignment).x); }},
+      {Mode::Y,
+       [alignment](auto&& a, auto&& b) { return std::abs(::distance(a, b, alignment).y); }},
+      {
+          Mode::Distance,
+          [alignment](auto&& a, auto&& b) { return ::distance(a, b, alignment).euclidean_norm(); },
+      },
   };
 
   const auto mode = property(MODE_PROPERTY_KEY)->value<Mode>();
@@ -172,11 +168,11 @@ void SelectSimilarTool::update_property_appearance()
 {
   const auto mode = property(MODE_PROPERTY_KEY)->value<Mode>();
   auto* const threshold_property = static_cast<FloatProperty*>(property(THRESHOLD_PROPERTY_KEY));
-  static const std::map<Mode, std::tuple<QString, double>> threshold_config {
-    {Mode::Normal, {"°", 180.0}},
-    {Mode::X, {"", std::numeric_limits<double>::max()}},
-    {Mode::Y, {"", std::numeric_limits<double>::max()}},
-    {Mode::Distance, {"", std::numeric_limits<double>::max()}},
+  static const std::map<Mode, std::tuple<QString, double>> threshold_config{
+      {Mode::Normal, {"°", 180.0}},
+      {Mode::X, {"", std::numeric_limits<double>::max()}},
+      {Mode::Y, {"", std::numeric_limits<double>::max()}},
+      {Mode::Distance, {"", std::numeric_limits<double>::max()}},
   };
   const auto [suffix, upper_limit] = threshold_config.at(mode);
   threshold_property->set_suffix(suffix);

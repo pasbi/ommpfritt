@@ -1,14 +1,13 @@
 #include "propertywidgets/boolpropertywidget/boolpropertywidget.h"
 
-#include "propertywidgets/multivalueedit.h"
 #include "properties/typedproperty.h"
 #include "propertywidgets/boolpropertywidget/checkbox.h"
+#include "propertywidgets/multivalueedit.h"
 
 namespace omm
 {
-
 BoolPropertyWidget::BoolPropertyWidget(Scene& scene, const std::set<Property*>& properties)
-  : PropertyWidget(scene, properties)
+    : PropertyWidget(scene, properties)
 {
   auto checkbox = std::make_unique<CheckBox>(label());
   m_checkbox = checkbox.get();

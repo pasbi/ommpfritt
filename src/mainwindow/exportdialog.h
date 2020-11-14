@@ -1,19 +1,21 @@
 #pragma once
 
 #include <QDialog>
-#include <memory>
-#include <QPicture>
 #include <QImage>
+#include <QPicture>
+#include <memory>
 
 class QPushButton;
 class QLabel;
 class QValidator;
 
-namespace Ui { class ExportDialog; }
+namespace Ui
+{
+class ExportDialog;
+}
 
 namespace omm
 {
-
 class Scene;
 template<typename> class NumericEdit;
 class ReferenceLineEdit;
@@ -62,4 +64,4 @@ private Q_SLOTS:
   void start_export_animation();
 };
 
-}  // namespace
+}  // namespace omm

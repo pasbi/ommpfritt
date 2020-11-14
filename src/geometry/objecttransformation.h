@@ -1,24 +1,25 @@
 #pragma once
 
-#include <2geom/pathvector.h>
 #include "external/json_fwd.hpp"
-#include "geometry/vec2.h"
-#include "geometry/point.h"
 #include "geometry/boundingbox.h"
 #include "geometry/matrix.h"
+#include "geometry/point.h"
+#include "geometry/vec2.h"
+#include <2geom/pathvector.h>
 #include <QTransform>
 #include <Qt>
 
 namespace omm
 {
-
 class ObjectTransformation
 {
 public:
   explicit ObjectTransformation();
   explicit ObjectTransformation(const Matrix& mat);
-  explicit ObjectTransformation( const Vec2f& translation, const Vec2f& scale,
-                                 const double rotation, const double shear );
+  explicit ObjectTransformation(const Vec2f& translation,
+                                const Vec2f& scale,
+                                const double rotation,
+                                const double shear);
 
   void set_translation(const Vec2f& translation_vector);
   void translate(const Vec2f& translation_vector);
@@ -78,7 +79,8 @@ private:
 
   static Geom::PathVector transform(const Geom::PathVector& pv, const Geom::Affine& affine);
   static Geom::Path transform(const Geom::Path& path, const Geom::Affine& affine);
-  static std::unique_ptr<Geom::Curve> transform(const Geom::Curve& curve, const Geom::Affine& affine);
+  static std::unique_ptr<Geom::Curve> transform(const Geom::Curve& curve,
+                                                const Geom::Affine& affine);
 };
 
 std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t);

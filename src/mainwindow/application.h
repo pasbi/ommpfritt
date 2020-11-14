@@ -1,40 +1,41 @@
 #pragma once
 
-#include "managers/manager.h"
-#include <QObject>
-#include "scene/scene.h"
-#include "python/pythonengine.h"
-#include "keybindings/keybindings.h"
 #include "keybindings/commandinterface.h"
-#include <Qt>
+#include "keybindings/keybindings.h"
 #include "mainwindow/iconprovider.h"
-#include <QTimer>
-#include <QKeySequence>
-#include "preferences/uicolors.h"
 #include "mainwindow/options.h"
-#include <memory>
-#include <map>
+#include "managers/manager.h"
 #include "preferences/preferences.h"
+#include "preferences/uicolors.h"
+#include "python/pythonengine.h"
+#include "scene/scene.h"
+#include <QKeySequence>
+#include <QObject>
+#include <QTimer>
+#include <Qt>
+#include <map>
+#include <memory>
 #include <set>
-
 
 class QApplication;
 class QAbstractButton;
 
 namespace omm
 {
-
 class MainWindow;
 class Manager;
 class ToolBar;
 class Options;
 class ModeSelector;
 
-class Application : public QObject, public CommandInterface
+class Application
+    : public QObject
+    , public CommandInterface
 {
   Q_OBJECT
 private:
   std::nullptr_t first_member;
+
 public:
   Application(QCoreApplication& app, std::unique_ptr<Options> options);
   ~Application();
@@ -69,7 +70,7 @@ public:
   const IconProvider icon_provider;
 
   enum class InsertionMode { Default, AsParent, AsChild };
-  Object &insert_object(const QString& key, InsertionMode mode);
+  Object& insert_object(const QString& key, InsertionMode mode);
 
   static const std::set<int> keyboard_modifiers;
   void register_auto_invert_icon_button(QAbstractButton& button);
@@ -92,7 +93,11 @@ private:
   MainWindow* m_main_window;
 
 public:
-  Options& options() { return *m_options; }
+  Options& options()
+  {
+    return *m_options;
+  }
+
 private:
   std::unique_ptr<Options> m_options;
 

@@ -3,26 +3,26 @@
 
 namespace omm
 {
-
 StyleListViewItemDelegate::StyleListViewItemDelegate(omm::StyleListView& view,
                                                      const QSize& icon_size)
-  : m_view(view)
-  , m_icon_size(icon_size)
+    : m_view(view), m_icon_size(icon_size)
 {
 }
 
-void StyleListViewItemDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
+void StyleListViewItemDelegate::setModelData(QWidget* editor,
+                                             QAbstractItemModel* model,
                                              const QModelIndex& index) const
 {
   QStyledItemDelegate::setModelData(editor, model, index);
   m_view.update_text_height();
 }
 
-void StyleListViewItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option,
+void StyleListViewItemDelegate::paint(QPainter* painter,
+                                      const QStyleOptionViewItem& option,
                                       const QModelIndex& index) const
 {
   if (!!(option.state & QStyle::State_Selected)) {
-    const auto group = [widget=option.widget]() {
+    const auto group = [widget = option.widget]() {
       if (widget == nullptr) {
         return QPalette::Active;
       } else if (!widget->isEnabled()) {

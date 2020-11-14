@@ -4,12 +4,10 @@
 
 namespace omm
 {
-
 class Style;
 
 class StyleIconEngine : public QIconEngine
 {
-
 public:
   explicit StyleIconEngine(const Style* style);
   StyleIconEngine(const StyleIconEngine& style) = default;

@@ -7,9 +7,7 @@ class QItemSelection;
 
 namespace omm
 {
-
-template<typename ItemViewT>
-class ItemManager : public Manager
+template<typename ItemViewT> class ItemManager : public Manager
 {
 protected:
   using item_model_type = typename ItemViewT::model_type;

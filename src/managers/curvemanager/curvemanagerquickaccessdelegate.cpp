@@ -1,16 +1,15 @@
 #include "managers/curvemanager/curvemanagerquickaccessdelegate.h"
-#include <QMouseEvent>
-#include "proxychain.h"
-#include "mainwindow/application.h"
-#include "logging.h"
-#include "scene/scene.h"
 #include "animation/animator.h"
-#include <QPainter>
+#include "logging.h"
+#include "mainwindow/application.h"
 #include "managers/curvemanager/curvetree.h"
+#include "proxychain.h"
+#include "scene/scene.h"
+#include <QMouseEvent>
+#include <QPainter>
 
 namespace
 {
-
 class VisibilityArea : public omm::QuickAccessDelegate::Area
 {
 public:
@@ -30,10 +29,9 @@ private:
 
 namespace omm
 {
-
-CurveManagerQuickAccessDelegate::
-CurveManagerQuickAccessDelegate(Animator& animator, CurveTree& view)
-  : QuickAccessDelegate(view)
+CurveManagerQuickAccessDelegate::CurveManagerQuickAccessDelegate(Animator& animator,
+                                                                 CurveTree& view)
+    : QuickAccessDelegate(view)
 {
   add_area(std::make_unique<VisibilityArea>(view, animator, QRectF(0.0, 0.0, 1.0, 1.0)));
 }
@@ -41,8 +39,7 @@ CurveManagerQuickAccessDelegate(Animator& animator, CurveTree& view)
 }  // namespace omm
 
 VisibilityArea::VisibilityArea(omm::CurveTree& view, omm::Animator& animator, const QRectF& area)
-  : omm::QuickAccessDelegate::Area(area)
-  , m_view(view), m_animator(animator)
+    : omm::QuickAccessDelegate::Area(area), m_view(view), m_animator(animator)
 {
 }
 
@@ -56,9 +53,8 @@ void VisibilityArea::draw(QPainter& painter, const QModelIndex& index)
   const QModelIndex sindex = proxy_chain.mapToChainSource(index.siblingAtColumn(0));
   assert(!sindex.isValid() || sindex.model() == &m_animator);
 
-  const auto visibility = m_animator.visit_item(sindex, [this](auto&& item) {
-    return m_view.is_visible(item);
-  });
+  const auto visibility
+      = m_animator.visit_item(sindex, [this](auto&& item) { return m_view.is_visible(item); });
 
   const auto color = [visibility]() {
     switch (visibility) {
@@ -100,9 +96,7 @@ void VisibilityArea::perform(const QModelIndex& index, QMouseEvent& event)
   const auto& proxy_chain = *static_cast<omm::ProxyChain*>(m_view.model());
   const QModelIndex sindex = proxy_chain.mapToChainSource(index.siblingAtColumn(0));
   if (sindex.isValid()) {
-    m_animator.visit_item(sindex, [this](auto&& item) {
-      m_view.set_visible(item, m_visibility);
-    });
+    m_animator.visit_item(sindex, [this](auto&& item) { m_view.set_visible(item, m_visibility); });
   }
 }
 

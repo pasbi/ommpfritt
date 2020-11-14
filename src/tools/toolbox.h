@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class Scene;
 
 class ToolBox : public QObject

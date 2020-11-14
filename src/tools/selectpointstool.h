@@ -1,25 +1,27 @@
 #pragma once
 
-#include "tools/selecttool.h"
+#include "commands/pointstransformationcommand.h"
 #include "tools/handles/moveaxishandle.h"
+#include "tools/handles/particlehandle.h"
 #include "tools/handles/rotatehandle.h"
 #include "tools/handles/scaleaxishandle.h"
 #include "tools/handles/scalebandhandle.h"
-#include "tools/handles/particlehandle.h"
-#include "commands/pointstransformationcommand.h"
+#include "tools/selecttool.h"
 
 namespace omm
 {
-
 class TransformPointsHelper : public QObject
 {
   Q_OBJECT
 public:
   explicit TransformPointsHelper(Scene& scene, Space space);
   std::unique_ptr<PointsTransformationCommand> make_command(const ObjectTransformation& t) const;
-  void update(const std::set<Path *> &paths);
+  void update(const std::set<Path*>& paths);
   void update();
-  bool is_empty() const { return m_initial_points.size() == 0; }
+  bool is_empty() const
+  {
+    return m_initial_points.size() == 0;
+  }
 
 Q_SIGNALS:
   void initial_transformations_changed();
@@ -37,7 +39,7 @@ public:
   explicit SelectPointsBaseTool(Scene& scene);
   static constexpr auto TANGENT_MODE_PROPERTY_KEY = "tangent_mode";
   static constexpr auto BOUNDING_BOX_MODE_PROPERTY_KEY = "bounding_box_mode";
-  enum class BoundingBoxMode {IncludeTangents, ExcludeTangents, None};
+  enum class BoundingBoxMode { IncludeTangents, ExcludeTangents, None };
   PointSelectHandle::TangentMode tangent_mode() const;
   std::unique_ptr<QMenu> make_context_menu(QWidget* parent) override;
   void transform_objects(ObjectTransformation t) override;
@@ -74,7 +76,10 @@ public:
   BoundingBox bounding_box() const;
   void transform_objects_absolute(ObjectTransformation t);
   void on_property_value_changed(Property* property) override;
-  SceneMode scene_mode() const override { return SceneMode::Vertex; }
+  SceneMode scene_mode() const override
+  {
+    return SceneMode::Vertex;
+  }
 
 protected:
   Vec2f selection_center() const override;
@@ -94,4 +99,4 @@ protected:
   void reset() override;
 };
 
-}  // namespace
+}  // namespace omm

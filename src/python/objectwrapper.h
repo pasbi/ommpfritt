@@ -5,10 +5,9 @@
 
 namespace omm
 {
-
 class ObjectWrapper
-  : public AbstractPropertyOwnerWrapper<Object>
-  , public WrapperFactory<Object, ObjectWrapper>
+    : public AbstractPropertyOwnerWrapper<Object>
+    , public WrapperFactory<Object, ObjectWrapper>
 {
 public:
   using AbstractPropertyOwnerWrapper<Object>::AbstractPropertyOwnerWrapper;

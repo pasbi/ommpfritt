@@ -4,18 +4,14 @@
 
 namespace omm
 {
-
-const Node::Detail SpyNode::detail {
-  {
-    { AbstractNodeCompiler::Language::Python, "" }
-  },
-  {
-    QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
-  },
+const Node::Detail SpyNode::detail{
+    {{AbstractNodeCompiler::Language::Python, ""}},
+    {
+        QT_TRANSLATE_NOOP("NodeMenuPath", "General"),
+    },
 };
 
-SpyNode::SpyNode(NodeModel& model)
-  : Node(model)
+SpyNode::SpyNode(NodeModel& model) : Node(model)
 {
   m_port = &add_port<OrdinaryPort<PortType::Input>>(tr("value"));
 }
@@ -31,4 +27,4 @@ void SpyNode::set_text(const QString& text)
   m_port->set_label(text);
 }
 
-}  // namespace
+}  // namespace omm

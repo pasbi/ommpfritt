@@ -1,20 +1,19 @@
 #include "mainwindow/viewport/viewport.h"
 
-#include "mainwindow/viewport/anchorhud.h"
 #include "mainwindow/application.h"
+#include "mainwindow/viewport/anchorhud.h"
 
+#include <QMouseEvent>
 #include <QPainter>
 #include <QTimer>
-#include <QMouseEvent>
 
-#include "scene/scene.h"
 #include "python/pythonengine.h"
 #include "scene/mailbox.h"
+#include "scene/scene.h"
 #include "tools/toolbox.h"
 
 namespace
 {
-
 void set_cursor_position(QWidget& widget, const omm::Vec2f& pos)
 {
   auto cursor = widget.cursor();
@@ -50,12 +49,10 @@ template<typename... VecTs> auto max(const VecTs&... vecs)
 
 namespace omm
 {
-
 Viewport::Viewport(Scene& scene)
-  : m_scene(scene)
-  , m_timer(std::make_unique<QTimer>())
-  , m_pan_controller([this](const Vec2f& pos) { set_cursor_position(*this, pos); })
-  , m_renderer(scene, Painter::Category::Handles | Painter::Category::Objects)
+    : m_scene(scene), m_timer(std::make_unique<QTimer>()),
+      m_pan_controller([this](const Vec2f& pos) { set_cursor_position(*this, pos); }),
+      m_renderer(scene, Painter::Category::Handles | Painter::Category::Objects)
 {
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
   setFocusPolicy(Qt::StrongFocus);
@@ -63,7 +60,8 @@ Viewport::Viewport(Scene& scene)
   setMouseTracking(true);
   connect(&scene.mail_box(),
           qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this, &Viewport::update);
+          this,
+          &Viewport::update);
 
   connect(&scene.mail_box(), qOverload<>(&MailBox::appearance_changed), this, &Viewport::update);
   connect(&m_fps_limiter, &QTimer::timeout, [this]() {
@@ -78,7 +76,8 @@ Viewport::Viewport(Scene& scene)
   m_headup_displays.push_back(std::make_unique<AnchorHUD>(*this));
 }
 
-void Viewport::draw_grid(QPainter &painter, const std::pair<Vec2f, Vec2f>& bounds,
+void Viewport::draw_grid(QPainter& painter,
+                         const std::pair<Vec2f, Vec2f>& bounds,
                          Preferences::GridOption::ZOrder zorder) const
 {
   const auto& [min, max] = bounds;
@@ -94,7 +93,7 @@ void Viewport::draw_grid(QPainter &painter, const std::pair<Vec2f, Vec2f>& bound
 
       painter.setPen(pen);
       const auto base_step = (max - min) / Vec2f(width(), height()) * go.base;
-      for (std::size_t d : { 0, 1 }) {
+      for (std::size_t d : {0, 1}) {
         double step = discretize(base_step[d]);
         for (double t = min[d]; t <= max[d] + step; t += step) {
           const double tt = t - std::fmod(t, step);
@@ -112,18 +111,16 @@ void Viewport::draw_grid(QPainter &painter, const std::pair<Vec2f, Vec2f>& bound
 std::pair<Vec2f, Vec2f> Viewport::compute_viewport_bounds() const
 {
   const auto viewport_transformation_i = viewport_transformation().inverted();
-  const auto extrema = {
-    viewport_transformation_i.apply_to_position(Vec2f::o()),
-    viewport_transformation_i.apply_to_position(Vec2f(0, height())),
-    viewport_transformation_i.apply_to_position(Vec2f(width(), 0)),
-    viewport_transformation_i.apply_to_position(Vec2f(width(), height()))
-  };
-  using minmax_t = Vec2f(*)(const Vec2f&, const Vec2f&);
+  const auto extrema = {viewport_transformation_i.apply_to_position(Vec2f::o()),
+                        viewport_transformation_i.apply_to_position(Vec2f(0, height())),
+                        viewport_transformation_i.apply_to_position(Vec2f(width(), 0)),
+                        viewport_transformation_i.apply_to_position(Vec2f(width(), height()))};
+  using minmax_t = Vec2f (*)(const Vec2f&, const Vec2f&);
   const auto maxf = static_cast<minmax_t>(Vec2f::max);
   const auto minf = static_cast<minmax_t>(Vec2f::min);
   const Vec2f min = std::accumulate(extrema.begin(), extrema.end(), *extrema.begin(), minf);
   const Vec2f max = std::accumulate(extrema.begin(), extrema.end(), *extrema.begin(), maxf);
-  return { min, max };
+  return {min, max};
 }
 
 #if USE_OPENGL
@@ -186,8 +183,8 @@ void Viewport::mousePressEvent(QMouseEvent* event)
     }
   }();
 
-  m_pan_controller.start_move( viewport_transformation().inverted().apply_to_position(cursor_pos),
-                               action);
+  m_pan_controller.start_move(viewport_transformation().inverted().apply_to_position(cursor_pos),
+                              action);
   m_last_cursor_pos = cursor_pos;
 
   if (action != MousePanController::Action::None) {
@@ -257,10 +254,13 @@ void Viewport::mouseReleaseEvent(QMouseEvent* event)
 
 ObjectTransformation Viewport::viewport_transformation() const
 {
-  return m_viewport_transformation.translated(Vec2f(width(), height())/2.0);
+  return m_viewport_transformation.translated(Vec2f(width(), height()) / 2.0);
 }
 
-Scene& Viewport::scene() const { return m_scene; }
+Scene& Viewport::scene() const
+{
+  return m_scene;
+}
 
 void Viewport::reset()
 {
@@ -274,7 +274,7 @@ void Viewport::set_transformation(const ObjectTransformation& transformation)
   m_viewport_transformation.normalized();
 }
 
-void Viewport::keyPressEvent(QKeyEvent *event)
+void Viewport::keyPressEvent(QKeyEvent* event)
 {
   if (!m_scene.tool_box().active_tool().key_press(*event)) {
     ViewportBase::keyPressEvent(event);
@@ -303,7 +303,7 @@ void Viewport::update()
   } else {
     ViewportBase::update();
     Q_EMIT updated();
-    m_fps_limiter.start(static_cast<int>(1000.0/fps));
+    m_fps_limiter.start(static_cast<int>(1000.0 / fps));
   }
 }
 

@@ -1,12 +1,11 @@
 #include "preferences/uicolorstreeviewdelegate.h"
-#include "uicolors.h"
-#include <QPainter>
 #include "logging.h"
 #include "preferences/preferencestree.h"
+#include "uicolors.h"
+#include <QPainter>
 
 namespace omm
 {
-
 void UiColorsTreeViewDelegate::set_editor_data(UiColorEdit& editor, const QModelIndex& index) const
 {
   const Color color = Color::from_html(index.data(Qt::EditRole).toString());
@@ -15,13 +14,15 @@ void UiColorsTreeViewDelegate::set_editor_data(UiColorEdit& editor, const QModel
   editor.set_color(color);
 }
 
-bool UiColorsTreeViewDelegate::set_model_data(UiColorEdit& editor, QAbstractItemModel& model,
-                                               const QModelIndex& index) const
+bool UiColorsTreeViewDelegate::set_model_data(UiColorEdit& editor,
+                                              QAbstractItemModel& model,
+                                              const QModelIndex& index) const
 {
   return model.setData(index, editor.color().to_qcolor(), Qt::EditRole);
 }
 
-void UiColorsTreeViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option,
+void UiColorsTreeViewDelegate::paint(QPainter* painter,
+                                     const QStyleOptionViewItem& option,
                                      const QModelIndex& index) const
 {
   assert(index.isValid());

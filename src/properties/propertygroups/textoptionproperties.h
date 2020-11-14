@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 class TextOptionProperties : public PropertyGroup
 {
 public:

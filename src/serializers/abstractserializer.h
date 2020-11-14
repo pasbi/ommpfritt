@@ -7,34 +7,37 @@
 #include "abstractfactory.h"
 #include "aspects/serializable.h"
 #include "color/color.h"
-#include "geometry/vec2.h"
-#include "geometry/polarcoordinates.h"
-#include "variant.h"
 #include "common.h"
+#include "geometry/polarcoordinates.h"
+#include "geometry/vec2.h"
+#include "variant.h"
 
 namespace omm
 {
-
 class ObjectTransformation;
 class Scene;
 class ReferenceProperty;
 class AbstractPropertyOwner;
 
-class AbstractSerializer
-  : public QObject
+class AbstractSerializer : public QObject
 {
   Q_OBJECT
 private:
-  template<typename T, typename = void> struct is_iterable : std::false_type {};
-  template<typename T> struct is_iterable<T, std::void_t<
-      decltype(std::declval<T>().size())
-    , decltype(std::declval<T>().begin())
-    , decltype(std::declval<T>().end())>> : std::true_type {};
+  template<typename T, typename = void> struct is_iterable : std::false_type {
+  };
+  template<typename T>
+  struct is_iterable<T,
+                     std::void_t<decltype(std::declval<T>().size()),
+                                 decltype(std::declval<T>().begin()),
+                                 decltype(std::declval<T>().end())>> : std::true_type {
+  };
   template<typename T> static inline constexpr bool is_iterable_v = is_iterable<T>::value;
 
 public:
   using Pointer = Serializable::Pointer;
-  explicit AbstractSerializer(std::ostream&) { }
+  explicit AbstractSerializer(std::ostream&)
+  {
+  }
   virtual ~AbstractSerializer() = default;
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
@@ -67,8 +70,8 @@ public:
     set_value(pair.second, Serializable::make_pointer(ptr, "val"));
   }
 
-  template<typename Vs> std::enable_if_t<is_iterable_v<Vs>, void>
-  set_value(const Vs& vs, const Pointer& ptr)
+  template<typename Vs>
+  std::enable_if_t<is_iterable_v<Vs>, void> set_value(const Vs& vs, const Pointer& ptr)
   {
     start_array(vs.size(), ptr);
     std::size_t i = 0;
@@ -81,29 +84,34 @@ public:
 
 protected:
   void register_serialzied_reference(AbstractPropertyOwner* reference);
+
 private:
   std::set<AbstractPropertyOwner*> m_serialized_references;
-
 };
 
-template<class T> struct always_false : std::false_type {};
+template<class T> struct always_false : std::false_type {
+};
 
 class ReferencePolisher
 {
 public:
-  virtual ~ReferencePolisher() {}
+  virtual ~ReferencePolisher()
+  {
+  }
+
 protected:
   virtual void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) = 0;
   friend class AbstractDeserializer;
 };
 
-class AbstractDeserializer
-  : public QObject
+class AbstractDeserializer : public QObject
 {
   Q_OBJECT
 public:
   using Pointer = Serializable::Pointer;
-  explicit AbstractDeserializer(std::istream&) { }
+  explicit AbstractDeserializer(std::istream&)
+  {
+  }
   virtual ~AbstractDeserializer();
 
   /**
@@ -116,7 +124,7 @@ public:
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
   virtual size_t array_size(const Pointer& pointer) = 0;
   virtual bool get_bool(const Pointer& pointer) = 0;
-  virtual int  get_int(const Pointer& pointer) = 0;
+  virtual int get_int(const Pointer& pointer) = 0;
   virtual double get_double(const Pointer& pointer) = 0;
   virtual QString get_string(const Pointer& pointer) = 0;
   virtual std::size_t get_size_t(const Pointer& pointer) = 0;
@@ -189,4 +197,3 @@ private:
 };
 
 }  // namespace omm
-

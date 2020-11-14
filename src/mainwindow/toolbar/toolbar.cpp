@@ -1,15 +1,14 @@
 #include "mainwindow/toolbar/toolbar.h"
-#include "mainwindow/toolbar/toolbardialog.h"
-#include <QContextMenuEvent>
-#include <QToolButton>
-#include "tools/toolbox.h"
 #include "mainwindow/application.h"
 #include "mainwindow/iconprovider.h"
+#include "mainwindow/toolbar/toolbardialog.h"
+#include "tools/toolbox.h"
 #include <QApplication>
+#include <QContextMenuEvent>
+#include <QToolButton>
 
 namespace omm
 {
-
 ToolBar::ToolBar()
 {
   setAttribute(Qt::WA_DeleteOnClose);

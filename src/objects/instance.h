@@ -1,12 +1,11 @@
 #pragma once
 
+#include "logging.h"
 #include "objects/object.h"
 #include <Qt>
-#include "logging.h"
 
 namespace omm
 {
-
 class Property;
 class Tag;
 class Scene;
@@ -30,7 +29,7 @@ public:
   Geom::PathVector paths() const override;
 
 protected:
-  void on_property_value_changed(Property *property) override;
+  void on_property_value_changed(Property* property) override;
 
 private:
   Object* illustrated_object() const;

@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class Tag;
 class Object;
 
@@ -14,8 +13,7 @@ class Object;
  *  more complicated than moving other items since they can be moved across structures.
  *  I.e., from the tag list of one object to the tag list of another.
  */
-struct MoveTagContext
-{
+struct MoveTagContext {
   explicit MoveTagContext(Tag& tag);
   MoveTagContext(Tag& tag, Object& owner, Tag* predecessor);
   Tag* subject;

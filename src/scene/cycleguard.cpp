@@ -4,11 +4,9 @@
 
 namespace omm
 {
-
-CycleGuard::CycleGuard(std::set<const Object *> &guarded_objects, const Object *guarded)
-  : m_guarded_objects(guarded_objects)
-  , m_guarded(guarded)
-  , m_inside_cycle(::contains(m_guarded_objects, m_guarded))
+CycleGuard::CycleGuard(std::set<const Object*>& guarded_objects, const Object* guarded)
+    : m_guarded_objects(guarded_objects), m_guarded(guarded),
+      m_inside_cycle(::contains(m_guarded_objects, m_guarded))
 {
   m_guarded_objects.insert(m_guarded);
 }

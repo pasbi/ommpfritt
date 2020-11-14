@@ -1,21 +1,18 @@
 #include "managers/stylemanager/stylelistview.h"
-#include "renderers/style.h"
-#include <QLineEdit>
-#include <QStyledItemDelegate>
-#include <QMouseEvent>
 #include "mainwindow/application.h"
-#include "scene/stylelist.h"
+#include "renderers/style.h"
 #include "scene/scene.h"
+#include "scene/stylelist.h"
+#include <QLineEdit>
+#include <QMouseEvent>
+#include <QStyledItemDelegate>
 
 #include <QResizeEvent>
 
 namespace omm
 {
-
 StyleListView::StyleListView(StyleList& model)
-  : ManagerItemView(model)
-  , m_icon_size(QSize(50, 50))
-  , m_item_delegate(*this, m_icon_size)
+    : ManagerItemView(model), m_icon_size(QSize(50, 50)), m_item_delegate(*this, m_icon_size)
 {
   setWrapping(true);
   setIconSize(m_icon_size);
@@ -32,7 +29,7 @@ StyleListView::StyleListView(StyleList& model)
   connect(&model, &StyleList::rowsInserted, this, &StyleListView::update_text_height);
 }
 
-void StyleListView::mouseReleaseEvent(QMouseEvent *e)
+void StyleListView::mouseReleaseEvent(QMouseEvent* e)
 {
   this->model()->scene.set_selection(this->selected_items());
   ManagerItemView::mouseReleaseEvent(e);

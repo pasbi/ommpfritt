@@ -1,20 +1,21 @@
 #include "tools/pathtool.h"
+#include "commands/addcommand.h"
+#include "commands/modifypointscommand.h"
 #include "scene/scene.h"
 #include "tools/selecttool.h"
 #include <QMouseEvent>
-#include "commands/addcommand.h"
 #include <mainwindow/application.h>
-#include "commands/modifypointscommand.h"
 
 namespace omm
 {
+PathTool::PathTool(Scene& scene) : SelectPointsBaseTool(scene)
+{
+}
 
-PathTool::PathTool(Scene &scene) : SelectPointsBaseTool(scene) {  }
-
-bool PathTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEvent &event)
+bool PathTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& event)
 {
   if (SelectPointsBaseTool::mouse_move(delta, pos, event)) {
-      return true;
+    return true;
   } else if (m_path != nullptr && m_current_point) {
     const auto lt = PolarCoordinates((*m_current_point)->left_tangent.to_cartesian() - delta);
     (*m_current_point)->left_tangent = lt;
@@ -26,7 +27,7 @@ bool PathTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEven
   }
 }
 
-bool PathTool::mouse_press(const Vec2f &pos, const QMouseEvent &event)
+bool PathTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
   if (SelectPointsBaseTool::mouse_press(pos, event, false)) {
     return true;
@@ -38,15 +39,18 @@ bool PathTool::mouse_press(const Vec2f &pos, const QMouseEvent &event)
   }
 }
 
-void PathTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
+void PathTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
 {
   SelectPointsBaseTool::mouse_release(pos, event);
   m_current_point.reset();
 }
 
-QString PathTool::type() const { return TYPE; }
+QString PathTool::type() const
+{
+  return TYPE;
+}
 
-Path::iterator PathTool::add_point(const Vec2f &pos)
+Path::iterator PathTool::add_point(const Vec2f& pos)
 {
   Q_UNUSED(pos)
   if (!m_path) {
@@ -56,10 +60,9 @@ Path::iterator PathTool::add_point(const Vec2f &pos)
     scene()->set_selection({m_path});
   }
 
-  const auto gpos = m_path->global_transformation(Space::Viewport).inverted().apply_to_position(pos);
-  static const auto is_selected = [](const auto& point) {
-    return point.is_selected;
-  };
+  const auto gpos
+      = m_path->global_transformation(Space::Viewport).inverted().apply_to_position(pos);
+  static const auto is_selected = [](const auto& point) { return point.is_selected; };
 
   const auto link = [this]() {
     const auto first_selected = std::find_if(m_path->begin(), m_path->end(), is_selected);
@@ -110,4 +113,4 @@ void PathTool::reset()
   SelectPointsTool::make_handles(*this, true);
 }
 
-}  // namespace
+}  // namespace omm

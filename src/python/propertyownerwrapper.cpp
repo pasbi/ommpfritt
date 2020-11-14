@@ -1,20 +1,19 @@
 #include "python/propertyownerwrapper.h"
 
-#include "python/objectwrapper.h"
-#include "python/tagwrapper.h"
-#include "python/stylewrapper.h"
-#include "properties/referenceproperty.h"
-#include "properties/triggerproperty.h"
-#include "renderers/style.h"
+#include "logging.h"
 #include "objects/object.h"
 #include "properties/floatvectorproperty.h"
 #include "properties/integervectorproperty.h"
+#include "properties/referenceproperty.h"
+#include "properties/triggerproperty.h"
+#include "python/objectwrapper.h"
+#include "python/stylewrapper.h"
+#include "python/tagwrapper.h"
+#include "renderers/style.h"
 #include "tags/tag.h"
-#include "logging.h"
 
 namespace
 {
-
 template<typename WrappedT, typename WrapperT>
 bool set_property_value(const py::object& value, omm::Property& property)
 {
@@ -36,9 +35,9 @@ bool set_property_value(const py::object& value, omm::Property& property)
 
 namespace omm::detail
 {
-
-bool set_property_value( AbstractPropertyOwner& property_owner,
-                         const QString& key, const py::object& value )
+bool set_property_value(AbstractPropertyOwner& property_owner,
+                        const QString& key,
+                        const py::object& value)
 {
   if (property_owner.has_property(key)) {
     auto& property = *property_owner.property(key);
@@ -75,4 +74,4 @@ bool set_property_value( AbstractPropertyOwner& property_owner,
   }
 }
 
-}  // namespace omm
+}  // namespace omm::detail

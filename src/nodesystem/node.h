@@ -1,31 +1,33 @@
 #pragma once
 
-#include <memory>
-#include <QRectF>
-#include <QObject>
 #include "aspects/propertyowner.h"
+#include "nodesystem/nodecompiler.h"
 #include "nodesystem/port.h"
 #include "nodesystem/propertyport.h"
-#include "nodesystem/nodecompiler.h"
+#include <QObject>
+#include <QRectF>
+#include <memory>
 
 class QMenu;
 
 namespace omm
 {
-
 class NodeModel;
 
 class Node
-  : public PropertyOwner<Kind::Node>
-  , public AbstractFactory<QString, false, Node, NodeModel&>
-  , public ReferencePolisher
+    : public PropertyOwner<Kind::Node>
+    , public AbstractFactory<QString, false, Node, NodeModel&>
+    , public ReferencePolisher
 {
   Q_OBJECT
 public:
   explicit Node(NodeModel& model);
   ~Node();
 
-  Flag flags() const override { return Flag::None; }
+  Flag flags() const override
+  {
+    return Flag::None;
+  }
 
   std::set<AbstractPort*> ports() const;
   template<typename PortT> std::set<PortT*> ports() const
@@ -42,7 +44,10 @@ public:
   QPointF pos() const;
 
   bool is_free() const;
-  NodeModel& model() const { return m_model; }
+  NodeModel& model() const
+  {
+    return m_model;
+  }
   QString name() const override;
 
   AbstractNodeCompiler::Language language() const;
@@ -82,7 +87,9 @@ public:
     return find_port<PortT>(*property(key));
   }
 
-  virtual void populate_menu(QMenu&) {}
+  virtual void populate_menu(QMenu&)
+  {
+  }
   virtual QString title() const;
 
   virtual QString output_data_type(const OutputPort& port) const;
@@ -127,7 +134,10 @@ protected:
 public:
   Property& add_property(const QString& key, std::unique_ptr<Property> property) override;
   std::unique_ptr<Property> extract_property(const QString& key) override;
-  virtual bool copyable() const { return true; }
+  virtual bool copyable() const
+  {
+    return true;
+  }
 
 Q_SIGNALS:
   void pos_changed(const QPointF& pos);
@@ -148,17 +158,19 @@ private:
   NodeModel& m_model;
 
 public:
-  struct Detail
-  {
+  struct Detail {
     std::map<AbstractNodeCompiler::Language, QString> definitions;
     std::vector<const char*> menu_path;
   };
 
-  static const Detail& detail(const QString& name) { return *m_details.at(name); }
+  static const Detail& detail(const QString& name)
+  {
+    return *m_details.at(name);
+  }
   static QString fst_con_ptype(const std::vector<InputPort*>& ports, const QString& default_t);
 
 public:
   static std::map<QString, const Detail*> m_details;
 };
 
-}  // namespace
+}  // namespace omm

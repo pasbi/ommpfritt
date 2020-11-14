@@ -1,11 +1,10 @@
 #pragma once
 
-#include "propertywidgets/propertywidget.h"
 #include "properties/triggerproperty.h"
+#include "propertywidgets/propertywidget.h"
 
 namespace omm
 {
-
 class TriggerPropertyWidget : public PropertyWidget<TriggerProperty>
 {
 public:

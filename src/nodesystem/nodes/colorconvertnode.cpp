@@ -1,26 +1,22 @@
 #include "nodesystem/nodes/colorconvertnode.h"
+#include "nodesystem/ordinaryport.h"
 #include "properties/colorproperty.h"
 #include "properties/optionproperty.h"
-#include "nodesystem/ordinaryport.h"
 
 namespace
 {
-
-static const std::vector<QString> conversion_options {
-  omm::ColorConvertNode::tr("Identity"),
-  omm::ColorConvertNode::tr("RGBA -> HSVA"),
-  omm::ColorConvertNode::tr("HSVA -> RGBA"),
+static const std::vector<QString> conversion_options{
+    omm::ColorConvertNode::tr("Identity"),
+    omm::ColorConvertNode::tr("RGBA -> HSVA"),
+    omm::ColorConvertNode::tr("HSVA -> RGBA"),
 };
 
 }
 
 namespace omm
 {
-
-const Node::Detail ColorConvertNode::detail {
-  {
-    {
-      AbstractNodeCompiler::Language::Python,
+const Node::Detail ColorConvertNode::detail{
+    {{AbstractNodeCompiler::Language::Python,
       QString(R"(
 def %1(option, color):
   if option == 0:
@@ -32,10 +28,9 @@ def %1(option, color):
   else:
     // unreachable
     return [ 0.0, 0.0, 0.0, 1.0 ]
-)").arg(ColorConvertNode::TYPE)
-    },
-    {
-      AbstractNodeCompiler::Language::GLSL,
+)")
+          .arg(ColorConvertNode::TYPE)},
+     {AbstractNodeCompiler::Language::GLSL,
       QString(R"(
 vec4 %1_0(int option, vec4 color) {
   if (option == 0) {
@@ -59,12 +54,11 @@ vec4 %1_0(int option, vec4 color) {
     // unreachable
     return vec4(0.0, 0.0, 0.0, 1.0);
   }
-})").arg(ColorConvertNode::TYPE)
-    }
-  },
-  {
-    QT_TRANSLATE_NOOP("NodeMenuPath", "Color"),
-  },
+})")
+          .arg(ColorConvertNode::TYPE)}},
+    {
+        QT_TRANSLATE_NOOP("NodeMenuPath", "Color"),
+    },
 
 };
 
@@ -73,9 +67,11 @@ ColorConvertNode::ColorConvertNode(NodeModel& model) : Node(model)
   const QString category = tr("Node");
   create_property<OptionProperty>(CONVERSION_PROPERTY_KEY)
       .set_options(conversion_options)
-      .set_label(tr("conversion")).set_category(category);
+      .set_label(tr("conversion"))
+      .set_category(category);
   create_property<ColorProperty>(COLOR_PROPERTY_KEY, Color())
-      .set_label(tr("color")).set_category(category);
+      .set_label(tr("color"))
+      .set_category(category);
   m_vector_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("color"));
 }
 

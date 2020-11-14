@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class TriggerProperty : public TypedProperty<TriggerPropertyDummyValueType>
 {
 public:

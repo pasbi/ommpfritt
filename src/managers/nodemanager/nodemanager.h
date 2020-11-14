@@ -9,7 +9,6 @@ class NodeManager;
 
 namespace omm
 {
-
 class AbstractPropertyOwner;
 class NodeModel;
 class NodeManager : public Manager
@@ -21,7 +20,7 @@ public:
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "NodeManager");
   QString type() const override;
-  bool perform_action(const QString &name) override;
+  bool perform_action(const QString& name) override;
 
   void set_model(NodeModel* model);
 
@@ -34,4 +33,4 @@ private:
   std::unique_ptr<QMenu> make_context_menu();
 };
 
-}  // namespace
+}  // namespace omm

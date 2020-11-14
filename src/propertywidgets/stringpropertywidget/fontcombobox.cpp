@@ -2,9 +2,7 @@
 
 namespace omm
 {
-
-FontComboBox::FontComboBox(QWidget* parent)
-  : QFontComboBox(parent)
+FontComboBox::FontComboBox(QWidget* parent) : QFontComboBox(parent)
 {
   setFocusPolicy(Qt::StrongFocus);
 }

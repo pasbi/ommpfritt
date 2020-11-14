@@ -1,21 +1,19 @@
 #pragma once
 
-#include <QApplication>
-#include <QLineEdit>
-#include <sstream>
-#include <numeric>
-#include <cmath>
-#include <QWheelEvent>
-#include <memory>
-#include <sstream>
-#include <iomanip>
-#include <QCoreApplication>
 #include "logging.h"
 #include "properties/numericproperty.h"
+#include <QApplication>
+#include <QCoreApplication>
+#include <QLineEdit>
+#include <QWheelEvent>
+#include <cmath>
+#include <iomanip>
+#include <memory>
+#include <numeric>
+#include <sstream>
 
 namespace omm
 {
-
 class AbstractNumericEdit : public QLineEdit
 {
   Q_OBJECT
@@ -25,8 +23,14 @@ public:
   QString label;
   void set_prefix(const QString& prefix);
   void set_suffix(const QString& suffix);
-  QString prefix() const { return m_prefix; }
-  QString suffix() const { return m_suffix; }
+  QString prefix() const
+  {
+    return m_prefix;
+  }
+  QString suffix() const
+  {
+    return m_suffix;
+  }
 
 protected:
   void paintEvent(QPaintEvent*) override;
@@ -43,8 +47,7 @@ private:
   QString m_suffix;
 };
 
-template<typename ValueType>
-class NumericEdit : public AbstractNumericEdit
+template<typename ValueType> class NumericEdit : public AbstractNumericEdit
 {
 public:
   const QString inf = "inf";
@@ -105,7 +108,10 @@ public:
     m_step = step;
   }
 
-  void set_multiplier(double multiplier) { m_multiplier = multiplier; }
+  void set_multiplier(double multiplier)
+  {
+    m_multiplier = multiplier;
+  }
 
   void set_value(value_type value)
   {
@@ -126,7 +132,10 @@ public:
     set_text(m_value);
   }
 
-  void set_invalid_value() { setText(QObject::tr("< invalid >", "property")); }
+  void set_invalid_value()
+  {
+    setText(QObject::tr("< invalid >", "property"));
+  }
   value_type value() const
   {
     return std::clamp(m_value, m_min, m_max);
@@ -296,4 +305,4 @@ private:
 using IntNumericEdit = NumericEdit<int>;
 using DoubleNumericEdit = NumericEdit<double>;
 
-}  // namespace
+}  // namespace omm

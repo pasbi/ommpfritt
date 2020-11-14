@@ -5,9 +5,7 @@
 
 namespace omm
 {
-
-class IntegerVectorPropertyConfigWidget
-    : public VectorPropertyConfigWidget<IntegerVectorProperty>
+class IntegerVectorPropertyConfigWidget : public VectorPropertyConfigWidget<IntegerVectorProperty>
 {
   Q_OBJECT
 public:

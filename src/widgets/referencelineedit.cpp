@@ -1,24 +1,22 @@
 #include "widgets/referencelineedit.h"
 
 #include <QDragEnterEvent>
-#include <QMimeData>
 #include <QLineEdit>
+#include <QMimeData>
 #include <QTimer>
 
-#include "properties/referenceproperty.h"
-#include "scene/propertyownermimedata.h"
 #include "objects/object.h"
-#include "scene/scene.h"
+#include "properties/referenceproperty.h"
 #include "renderers/style.h"
 #include "scene/mailbox.h"
+#include "scene/propertyownermimedata.h"
+#include "scene/scene.h"
 #include "scene/stylelist.h"
 
 namespace omm
 {
-
 ReferenceLineEdit::ReferenceLineEdit(QWidget* parent)
-  : QComboBox(parent)
-  , m_filter(ReferenceProperty::Filter::accept_anything())
+    : QComboBox(parent), m_filter(ReferenceProperty::Filter::accept_anything())
 {
   setEditable(true);
   setAcceptDrops(true);
@@ -27,7 +25,7 @@ ReferenceLineEdit::ReferenceLineEdit(QWidget* parent)
     QSignalBlocker blocker(this);
     QTimer::singleShot(1, this, &ReferenceLineEdit::convert_text_to_placeholder_text);
   };
-  connect(this, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), set_value);
+  connect(this, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), set_value);
   QTimer::singleShot(1, this, &ReferenceLineEdit::convert_text_to_placeholder_text);
 
   lineEdit()->installEventFilter(this);
@@ -40,7 +38,7 @@ void ReferenceLineEdit::set_null_label(const QString& value)
   update_candidates();
 }
 
-void ReferenceLineEdit::set_scene(Scene &scene)
+void ReferenceLineEdit::set_scene(Scene& scene)
 {
   set_null_label(QObject::tr("< none >", "ReferenceLineEdit"));
 
@@ -51,22 +49,29 @@ void ReferenceLineEdit::set_scene(Scene &scene)
   m_scene = &scene;
   assert(m_scene != nullptr);
 
-  connect(&m_scene->mail_box(), &MailBox::abstract_property_owner_inserted,
-          this, &ReferenceLineEdit::update_candidates);
-  connect(&m_scene->mail_box(), &MailBox::abstract_property_owner_removed,
-          this, &ReferenceLineEdit::update_candidates);
-  connect(&m_scene->mail_box(), &MailBox::scene_reseted,
-          this, &ReferenceLineEdit::update_candidates);
-  connect(&m_scene->mail_box(), &MailBox::property_value_changed, this,
-          [this](AbstractPropertyOwner& owner, const QString& key, Property&)
-  {
-    using Flag = Flag;
-    if (!!(owner.flags() & (Flag::HasScript | Flag::HasPython))) {
-      if (key == AbstractPropertyOwner::NAME_PROPERTY_KEY) {
-        update_candidates();
-      }
-    }
-  });
+  connect(&m_scene->mail_box(),
+          &MailBox::abstract_property_owner_inserted,
+          this,
+          &ReferenceLineEdit::update_candidates);
+  connect(&m_scene->mail_box(),
+          &MailBox::abstract_property_owner_removed,
+          this,
+          &ReferenceLineEdit::update_candidates);
+  connect(&m_scene->mail_box(),
+          &MailBox::scene_reseted,
+          this,
+          &ReferenceLineEdit::update_candidates);
+  connect(&m_scene->mail_box(),
+          &MailBox::property_value_changed,
+          this,
+          [this](AbstractPropertyOwner& owner, const QString& key, Property&) {
+            using Flag = Flag;
+            if (!!(owner.flags() & (Flag::HasScript | Flag::HasPython))) {
+              if (key == AbstractPropertyOwner::NAME_PROPERTY_KEY) {
+                update_candidates();
+              }
+            }
+          });
 
   QTimer::singleShot(0, this, &ReferenceLineEdit::update_candidates);
   update_candidates();
@@ -120,7 +125,10 @@ void ReferenceLineEdit::set_inconsistent_value()
   setEditText(QObject::tr("<multiple values>", "ReferenceLineEdit"));
 }
 
-ReferenceLineEdit::value_type ReferenceLineEdit::value() const { return m_value; }
+ReferenceLineEdit::value_type ReferenceLineEdit::value() const
+{
+  return m_value;
+}
 
 void ReferenceLineEdit::set_filter(const ReferenceProperty::Filter& filter)
 {
@@ -130,7 +138,10 @@ void ReferenceLineEdit::set_filter(const ReferenceProperty::Filter& filter)
   }
 }
 
-void ReferenceLineEdit::mouseDoubleClickEvent(QMouseEvent*) { set_value(nullptr); }
+void ReferenceLineEdit::mouseDoubleClickEvent(QMouseEvent*)
+{
+  set_value(nullptr);
+}
 
 bool ReferenceLineEdit::eventFilter(QObject* o, QEvent* e)
 {
@@ -143,8 +154,7 @@ bool ReferenceLineEdit::eventFilter(QObject* o, QEvent* e)
     case QEvent::DragMove:
       e->accept();
       return true;
-    default:
-      ;
+    default:;
     }
   }
   return QComboBox::eventFilter(o, e);
@@ -168,11 +178,9 @@ bool ReferenceLineEdit::drop(QDropEvent& event)
   if (can_drop(event)) {
     const auto& mime_data = *event.mimeData();
     const auto& property_owner_mime_data = *qobject_cast<const PropertyOwnerMimeData*>(&mime_data);
-    const auto items = ::filter_if(property_owner_mime_data.items(),
-                                   [this](const AbstractPropertyOwner* apo)
-    {
-      return m_filter.accepts(*apo);
-    });
+    const auto items
+        = ::filter_if(property_owner_mime_data.items(),
+                      [this](const AbstractPropertyOwner* apo) { return m_filter.accepts(*apo); });
     assert(items.size() > 0);
     set_value(items.front());
     return true;
@@ -199,7 +207,7 @@ bool ReferenceLineEdit::can_drop(const QDropEvent& event) const
 
 std::vector<omm::AbstractPropertyOwner*> ReferenceLineEdit::collect_candidates()
 {
-  std::vector<omm::AbstractPropertyOwner*> candidates = { };
+  std::vector<omm::AbstractPropertyOwner*> candidates = {};
   auto merge = [&candidates](const auto& ts) {
     candidates.insert(candidates.end(), ts.begin(), ts.end());
   };

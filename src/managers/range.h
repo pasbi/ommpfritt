@@ -1,14 +1,12 @@
 #pragma once
 
 #include "common.h"
-#include <vector>
 #include <QWidget>
+#include <vector>
 
 namespace omm
 {
-
-struct Range
-{
+struct Range {
   enum class Options { Default = 0, Mirror = 1 };
   Range(double begin, double end, Options options = Options::Default);
   double begin;
@@ -27,10 +25,11 @@ protected:
   const bool mirror;
 };
 
-template<Qt::Orientation orientation> struct WidgetRange : public Range
-{
+template<Qt::Orientation orientation> struct WidgetRange : public Range {
   WidgetRange(double begin, double end, QWidget& widget, Options options = Options::Default)
-    : Range(begin, end, options), m_widget(widget) {}
+      : Range(begin, end, options), m_widget(widget)
+  {
+  }
   int pixel_range() const override
   {
     if constexpr (orientation == Qt::Horizontal) {
@@ -44,9 +43,10 @@ private:
   QWidget& m_widget;
 };
 
-struct WidgetRange2D
-{
-  WidgetRange2D(QPointF begin, QPointF end, QWidget& widget,
+struct WidgetRange2D {
+  WidgetRange2D(QPointF begin,
+                QPointF end,
+                QWidget& widget,
                 Range::Options h_options = Range::Options::Default,
                 Range::Options v_options = Range::Options::Default);
   QPointF begin() const;
@@ -59,7 +59,10 @@ struct WidgetRange2D
   QPointF unit_to_normalized(const QPointF& normalized) const;
   QPointF normalized_to_unit(const QPointF& unit) const;
   void pan(const QPointF& d);
-  void zoom(const QPointF& origin, const QPointF& amount, const QPointF& min_upp, const QPointF& max_upp);
+  void zoom(const QPointF& origin,
+            const QPointF& amount,
+            const QPointF& min_upp,
+            const QPointF& max_upp);
 
   WidgetRange<Qt::Horizontal> h_range;
   WidgetRange<Qt::Vertical> v_range;
@@ -67,4 +70,5 @@ struct WidgetRange2D
 
 }  // namespace omm
 
-template<> struct omm::EnableBitMaskOperators<omm::Range::Options> : std::true_type {};
+template<> struct omm::EnableBitMaskOperators<omm::Range::Options> : std::true_type {
+};

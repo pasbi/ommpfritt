@@ -4,8 +4,9 @@
 
 namespace omm
 {
-
-PointSelection::PointSelection(Scene &scene) : m_scene(scene) {}
+PointSelection::PointSelection(Scene& scene) : m_scene(scene)
+{
+}
 
 std::set<Point> PointSelection::points(Space space) const
 {

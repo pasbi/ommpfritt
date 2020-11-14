@@ -1,23 +1,22 @@
 #pragma once
 
+#include <QObject>
 #include <cassert>
 #include <map>
 #include <memory>
 #include <typeinfo>
 #include <variant>
-#include <QObject>
 
-#include "orderedmap.h"
-#include "external/json_fwd.hpp"
 #include "aspects/serializable.h"
-#include "common.h"
-#include <Qt>
 #include "aspects/typed.h"
+#include "common.h"
+#include "external/json_fwd.hpp"
+#include "orderedmap.h"
 #include "properties/property.h"
+#include <Qt>
 
 namespace omm
 {
-
 class Scene;
 class Property;
 class ReferenceProperty;
@@ -34,6 +33,7 @@ public:
 protected:
   explicit AbstractPropertyOwner(Kind kind, Scene* scene);
   AbstractPropertyOwner(const AbstractPropertyOwner& other);
+
 public:
   ~AbstractPropertyOwner() override;
   Property* property(const QString& key) const;
@@ -87,12 +87,18 @@ public:
   void copy_properties(AbstractPropertyOwner& target, CopiedProperties flags) const;
 
   std::size_t id() const;
-  Scene* scene() const { return m_scene; }
+  Scene* scene() const
+  {
+    return m_scene;
+  }
   const Kind kind;
   void new_id() const;
 
 protected Q_SLOTS:
-  virtual void on_property_value_changed(Property* property) { Q_UNUSED(property); }
+  virtual void on_property_value_changed(Property* property)
+  {
+    Q_UNUSED(property);
+  }
 
 Q_SIGNALS:
   void property_visibility_changed();
@@ -117,4 +123,6 @@ protected:
 
 }  // namespace omm
 
-template<> struct omm::EnableBitMaskOperators<omm::AbstractPropertyOwner::CopiedProperties> : std::true_type {};
+template<>
+struct omm::EnableBitMaskOperators<omm::AbstractPropertyOwner::CopiedProperties> : std::true_type {
+};

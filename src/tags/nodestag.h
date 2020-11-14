@@ -1,18 +1,19 @@
 #pragma once
 
-#include <memory>
-#include "tags/tag.h"
-#include <Qt>
+#include "nodesystem/nodecompilerpython.h"
 #include "nodesystem/nodemodel.h"
 #include "nodesystem/nodesowner.h"
-#include "nodesystem/nodecompilerpython.h"
+#include "tags/tag.h"
+#include <Qt>
+#include <memory>
 
 namespace omm
 {
-
 class NodeModel;
 
-class NodesTag : public Tag, public NodesOwner
+class NodesTag
+    : public Tag
+    , public NodesOwner
 {
   Q_OBJECT
 public:

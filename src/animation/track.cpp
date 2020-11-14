@@ -1,32 +1,27 @@
 #include "animation/track.h"
-#include "logging.h"
 #include "common.h"
+#include "logging.h"
 #include "properties/property.h"
 #include "scene/scene.h"
 
 namespace
 {
-
 using Interpolation = omm::Track::Interpolation;
 
 double interpolate(const std::array<double, 4>& segment, double t, Interpolation interpolation)
 {
-  std::array<double, 4> bernstein4 {
-    1.0 * (1-t) * (1-t) * (1-t),
-    3.0 *   t   * (1-t) * (1-t),
-    3.0 *   t   *   t   * (1-t),
-    1.0 *   t   *   t   *   t
-  };
+  std::array<double, 4> bernstein4{1.0 * (1 - t) * (1 - t) * (1 - t),
+                                   3.0 * t * (1 - t) * (1 - t),
+                                   3.0 * t * t * (1 - t),
+                                   1.0 * t * t * t};
   switch (interpolation) {
   case Interpolation::Step:
     return segment[0];
   case Interpolation::Linear:
-    return (1.0-t) * segment[0] + t * segment[3];
+    return (1.0 - t) * segment[0] + t * segment[3];
   case Interpolation::Bezier:
-    return bernstein4[0] * segment[0]
-         + bernstein4[1] * segment[1]
-         + bernstein4[2] * segment[2]
-         + bernstein4[3] * segment[3];
+    return bernstein4[0] * segment[0] + bernstein4[1] * segment[1] + bernstein4[2] * segment[2]
+           + bernstein4[3] * segment[3];
   default:
     Q_UNREACHABLE();
     return 0.0;
@@ -37,7 +32,6 @@ double interpolate(const std::array<double, 4>& segment, double t, Interpolation
 
 namespace omm
 {
-
 QString Track::interpolation_label(Track::Interpolation interpolation)
 {
   switch (interpolation) {
@@ -53,7 +47,7 @@ QString Track::interpolation_label(Track::Interpolation interpolation)
   }
 }
 
-Track::Track(Property &property) : m_property(property)
+Track::Track(Property& property) : m_property(property)
 {
 }
 
@@ -65,7 +59,7 @@ std::unique_ptr<Track> Track::clone() const
 {
   auto track = std::make_unique<Track>(m_property);
   for (auto&& [frame, knot] : m_knots) {
-    track->m_knots.insert({ frame, knot->clone() });
+    track->m_knots.insert({frame, knot->clone()});
   }
   track->m_interpolation = m_interpolation;
   return track;
@@ -113,7 +107,7 @@ void Track::deserialize(AbstractDeserializer& deserializer, const Pointer& point
 
 std::unique_ptr<Track::Knot> Track::remove_knot(int frame)
 {
-  assert (m_knots.find(frame) != m_knots.end());
+  assert(m_knots.find(frame) != m_knots.end());
   return std::move(m_knots.extract(frame).mapped());
 }
 
@@ -164,12 +158,11 @@ variant_type Track::interpolate(double frame) const
       for (std::size_t channel = 0; channel < n; ++channel) {
         const double left_value = get_channel_value(left->value, channel);
         const double right_value = get_channel_value(right->value, channel);
-        const std::array<double, 4> segment {
-          left_value,
-          left_value + get_channel_value(left->right_offset, channel),
-          right_value + get_channel_value(right->left_offset, channel),
-          right_value
-        };
+        const std::array<double, 4> segment{
+            left_value,
+            left_value + get_channel_value(left->right_offset, channel),
+            right_value + get_channel_value(right->left_offset, channel),
+            right_value};
         const double v = ::interpolate(segment, t, m_interpolation);
         set_channel_value(interpolated, channel, v);
       }
@@ -186,9 +179,7 @@ Track::Knot& Track::knot(int frame) const
 
 std::vector<int> Track::key_frames() const
 {
-  return ::transform<int, std::vector>(m_knots, [](const auto& p) {
-    return p.first;
-  });
+  return ::transform<int, std::vector>(m_knots, [](const auto& p) { return p.first; });
 }
 
 void Track::apply(int frame) const
@@ -201,14 +192,14 @@ void Track::apply(int frame) const
 void Track::move_knot(int old_frame, int new_frame)
 {
   auto knot = std::move(m_knots.extract(old_frame).mapped());
-  m_knots.insert({ new_frame, std::move(knot) });
+  m_knots.insert({new_frame, std::move(knot)});
 }
 
 void Track::insert_knot(int frame, std::unique_ptr<Knot> knot)
 {
   assert(knot->value.index() == property().variant_value().index());
   assert(m_knots.find(frame) == m_knots.end());
-  m_knots.insert({ frame, std::move(knot) });
+  m_knots.insert({frame, std::move(knot)});
 }
 
 QString Track::type() const
@@ -284,9 +275,8 @@ void Track::Knot::update_references(const std::map<std::size_t, AbstractProperty
 
 bool Track::Knot::operator==(const Track::Knot& other) const
 {
-  return value == other.value
-      && left_offset == other.left_offset
-      && right_offset == other.right_offset;
+  return value == other.value && left_offset == other.left_offset
+         && right_offset == other.right_offset;
 }
 
 bool Track::Knot::operator!=(const Track::Knot& other) const
@@ -309,15 +299,17 @@ variant_type& Track::Knot::offset(Track::Knot::Side side)
 
 void Track::Knot::polish()
 {
-  std::visit([this](auto&& vv) {
-    using T = std::decay_t<decltype(vv)>;
-    if constexpr (n_channels<T>() > 0) {
-      left_offset = null_value<T>();
-      right_offset = null_value<T>();
-    } else {
-      // don't care about non numeric types.
-    }
-  }, value);
+  std::visit(
+      [this](auto&& vv) {
+        using T = std::decay_t<decltype(vv)>;
+        if constexpr (n_channels<T>() > 0) {
+          left_offset = null_value<T>();
+          right_offset = null_value<T>();
+        } else {
+          // don't care about non numeric types.
+        }
+      },
+      value);
 }
 
 }  // namespace omm

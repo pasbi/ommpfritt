@@ -1,14 +1,16 @@
 #pragma once
 
-#include <memory>
 #include <QDialog>
 #include <QTreeWidget>
+#include <memory>
 
-namespace Ui { class PreferenceDialog; }
+namespace Ui
+{
+class PreferenceDialog;
+}
 
 namespace omm
 {
-
 class PreferencePage;
 class PreferenceDialog : public QDialog
 {
@@ -23,11 +25,11 @@ public Q_SLOTS:
 
 private:
   std::unique_ptr<Ui::PreferenceDialog> m_ui;
-  QTreeWidgetItem* register_preference_page(QTreeWidgetItem* parent, const QString& label,
+  QTreeWidgetItem* register_preference_page(QTreeWidgetItem* parent,
+                                            const QString& label,
                                             std::unique_ptr<PreferencePage> page);
 
   std::map<QTreeWidgetItem*, PreferencePage*> m_page_map;
-
 };
 
 }  // namespace omm

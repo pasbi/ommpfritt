@@ -1,15 +1,12 @@
 #include "nodesystem/nodes/functionnode.h"
-#include "properties/floatproperty.h"
 #include "nodesystem/ordinaryport.h"
+#include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
 
 namespace omm
 {
-
-const Node::Detail FunctionNode::detail {
-  {
-    {
-      AbstractNodeCompiler::Language::Python,
+const Node::Detail FunctionNode::detail{
+    {{AbstractNodeCompiler::Language::Python,
       QString(R"(
 import math
 def %1(op, v):
@@ -51,10 +48,9 @@ def %1(op, v):
     return v - math.degrees(v)
   else:
     return 0.0
-)").arg(FunctionNode::TYPE)
-    },
-    {
-      AbstractNodeCompiler::Language::GLSL,
+)")
+          .arg(FunctionNode::TYPE)},
+     {AbstractNodeCompiler::Language::GLSL,
       QString(R"(
 float %1_0(int op, float v) {
   if (op == 0) {
@@ -100,25 +96,40 @@ float %1_0(int op, float v) {
 float %1_0(int op, int v) {
   return %1_0(op, float(v));
 }
-)").arg(FunctionNode::TYPE)
-    }
-  },
-  {
-    QT_TRANSLATE_NOOP("NodeMenuPath", "Math"),
-  },
+)")
+          .arg(FunctionNode::TYPE)}},
+    {
+        QT_TRANSLATE_NOOP("NodeMenuPath", "Math"),
+    },
 };
 
 FunctionNode::FunctionNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
   create_property<OptionProperty>(OPERATION_PROPERTY_KEY, 0)
-      .set_options({ tr("abs"), tr("sqrt"), tr("log"), tr("log2"), tr("exp"), tr("exp2"),
-                     tr("sin"), tr("cos"), tr("tan"), tr("asin"), tr("acos"), tr("atan"),
-                     tr("frac"), tr("ceil"), tr("floor"), tr("sign"), tr("rad"), tr("deg")
-                   })
-      .set_label(QObject::tr("Operation")).set_category(category);
+      .set_options({tr("abs"),
+                    tr("sqrt"),
+                    tr("log"),
+                    tr("log2"),
+                    tr("exp"),
+                    tr("exp2"),
+                    tr("sin"),
+                    tr("cos"),
+                    tr("tan"),
+                    tr("asin"),
+                    tr("acos"),
+                    tr("atan"),
+                    tr("frac"),
+                    tr("ceil"),
+                    tr("floor"),
+                    tr("sign"),
+                    tr("rad"),
+                    tr("deg")})
+      .set_label(QObject::tr("Operation"))
+      .set_category(category);
   create_property<FloatProperty>(INPUT_A_PROPERTY_KEY, 0.0)
-      .set_label(tr("x")).set_category(category);
+      .set_label(tr("x"))
+      .set_category(category);
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
 }
 
@@ -129,7 +140,7 @@ QString FunctionNode::output_data_type(const OutputPort& port) const
   return FLOAT_TYPE;
 }
 
-bool FunctionNode::accepts_input_data_type(const QString &type, const InputPort &port) const
+bool FunctionNode::accepts_input_data_type(const QString& type, const InputPort& port) const
 {
   Q_UNUSED(port)
   return NodeCompilerTypes::is_numeric(type);

@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class BoolProperty : public TypedProperty<bool>
 {
 public:

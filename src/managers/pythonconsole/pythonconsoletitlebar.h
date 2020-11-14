@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 class PythonConsole;
 
 class PythonConsoleTitleBar : public ManagerTitleBar

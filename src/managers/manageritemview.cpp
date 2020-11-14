@@ -1,22 +1,21 @@
 #include "managers/manageritemview.h"
 
-#include <QApplication>
-#include <QMessageBox>
-#include <QContextMenuEvent>
-#include <QMenu>
-#include "renderers/style.h"
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
 #include "properties/referenceproperty.h"
+#include "renderers/style.h"
+#include <QApplication>
+#include <QContextMenuEvent>
+#include <QMenu>
+#include <QMessageBox>
 
-#include "managers/stylemanager/stylelistview.h"
-#include "managers/objectmanager/objecttreeview.h"
-#include "scene/scene.h"
 #include "mainwindow/application.h"
+#include "managers/objectmanager/objecttreeview.h"
+#include "managers/stylemanager/stylelistview.h"
+#include "scene/scene.h"
 
 namespace omm
 {
-
 template<typename ItemViewT, typename ItemModelT>
 ManagerItemView<ItemViewT, ItemModelT>::ManagerItemView(ItemModelT& model)
 {
@@ -35,7 +34,7 @@ ItemModelT* ManagerItemView<ItemViewT, ItemModelT>::model() const
 }
 
 template<typename ItemViewT, typename ItemModelT>
-void ManagerItemView<ItemViewT, ItemModelT>::mousePressEvent(QMouseEvent *e)
+void ManagerItemView<ItemViewT, ItemModelT>::mousePressEvent(QMouseEvent* e)
 {
   ItemViewT::mousePressEvent(e);
   if (e->button() == Qt::RightButton) {
@@ -50,16 +49,19 @@ void ManagerItemView<ItemViewT, ItemModelT>::mousePressEvent(QMouseEvent *e)
 }
 
 template<typename ItemViewT, typename ItemModelT>
-void ManagerItemView<ItemViewT, ItemModelT>::keyPressEvent(QKeyEvent *e)
+void ManagerItemView<ItemViewT, ItemModelT>::keyPressEvent(QKeyEvent* e)
 {
   // workaround for  https://bugreports.qt.io/browse/QTBUG-62283.
   if (e->key() == Qt::Key_Shift) {
     this->setDragEnabled(false);
   } else {
     switch (e->key()) {
-    case Qt::Key_Left: [[fallthrough]];
-    case Qt::Key_Right: [[fallthrough]];
-    case Qt::Key_Up: [[fallthrough]];
+    case Qt::Key_Left:
+      [[fallthrough]];
+    case Qt::Key_Right:
+      [[fallthrough]];
+    case Qt::Key_Up:
+      [[fallthrough]];
     case Qt::Key_Down:
       // use the QAbstractItemView key press handler only for selected keys.
       ItemViewT::keyPressEvent(e);
@@ -74,7 +76,7 @@ void ManagerItemView<ItemViewT, ItemModelT>::keyPressEvent(QKeyEvent *e)
 }
 
 template<typename ItemViewT, typename ItemModelT>
-void ManagerItemView<ItemViewT, ItemModelT>::keyReleaseEvent(QKeyEvent *e)
+void ManagerItemView<ItemViewT, ItemModelT>::keyReleaseEvent(QKeyEvent* e)
 {
   // workaround for  https://bugreports.qt.io/browse/QTBUG-62283.
   if (e->key() == Qt::Key_Shift) {
@@ -84,7 +86,7 @@ void ManagerItemView<ItemViewT, ItemModelT>::keyReleaseEvent(QKeyEvent *e)
 }
 
 template<typename ItemViewT, typename ItemModelT>
-void ManagerItemView<ItemViewT, ItemModelT>::focusInEvent(QFocusEvent *e)
+void ManagerItemView<ItemViewT, ItemModelT>::focusInEvent(QFocusEvent* e)
 {
   // workaround for  https://bugreports.qt.io/browse/QTBUG-62283.
   this->setDragEnabled(!(QApplication::keyboardModifiers() & Qt::ShiftModifier));
@@ -94,9 +96,7 @@ void ManagerItemView<ItemViewT, ItemModelT>::focusInEvent(QFocusEvent *e)
 template<typename ItemViewT, typename ItemModelT>
 std::set<AbstractPropertyOwner*> ManagerItemView<ItemViewT, ItemModelT>::selected_items() const
 {
-  const auto get_object = [this](const QModelIndex& index) {
-    return &model()->item_at(index);
-  };
+  const auto get_object = [this](const QModelIndex& index) { return &model()->item_at(index); };
 
   const auto selected_indexes = this->selectionModel()->selectedIndexes();
   return ::transform<AbstractPropertyOwner*, std::set>(selected_indexes, get_object);

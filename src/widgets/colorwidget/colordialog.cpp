@@ -1,13 +1,12 @@
 #include "widgets/colorwidget/colordialog.h"
 #include "logging.h"
-#include <QResizeEvent>
-#include <QVBoxLayout>
 #include "widgets/colorwidget/colorwidget.h"
 #include <QDialogButtonBox>
+#include <QResizeEvent>
+#include <QVBoxLayout>
 
 namespace omm
 {
-
 ColorDialog::ColorDialog(QWidget* parent) : QDialog(parent)
 {
   auto layout = std::make_unique<QVBoxLayout>();
@@ -16,9 +15,8 @@ ColorDialog::ColorDialog(QWidget* parent) : QDialog(parent)
   m_color_widget = color_widget.get();
   layout->addWidget(color_widget.release());
 
-
-  auto button_box = std::make_unique<QDialogButtonBox>(QDialogButtonBox::Ok |
-                                                       QDialogButtonBox::Cancel);
+  auto button_box
+      = std::make_unique<QDialogButtonBox>(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
   connect(button_box.get(), &QDialogButtonBox::accepted, this, &ColorDialog::accept);
   connect(button_box.get(), &QDialogButtonBox::rejected, this, &ColorDialog::reject);
   layout->addWidget(button_box.release());
@@ -37,12 +35,12 @@ std::pair<Color, bool> ColorDialog::get_color(const Color& old, QWidget* parent)
   dialog.set_color(old);
   switch (dialog.exec()) {
   case QDialog::Accepted:
-    return { dialog.color(), true };
+    return {dialog.color(), true};
   case QDialog::Rejected:
-    return { Color(), false };
+    return {Color(), false};
   default:
     Q_UNREACHABLE();
-    return { Color(), false };
+    return {Color(), false};
   }
 }
 
@@ -56,4 +54,4 @@ Color ColorDialog::color() const
   return m_color_widget->color();
 }
 
-}  // namespace
+}  // namespace omm

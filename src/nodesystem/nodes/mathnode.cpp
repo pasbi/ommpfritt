@@ -1,19 +1,20 @@
 #include "nodesystem/nodes/mathnode.h"
 #include "nodesystem/nodecompilerglsl.h"
 #include "nodesystem/ordinaryport.h"
-#include "properties/floatproperty.h"
 #include "nodesystem/propertyport.h"
-#include "variant.h"
-#include "scene/scene.h"
+#include "properties/floatproperty.h"
 #include "properties/optionproperty.h"
+#include "scene/scene.h"
+#include "variant.h"
 
 namespace
 {
-
 using namespace omm::NodeCompilerTypes;
-std::set<QString> supported_glsl_types {
-  FLOATVECTOR_TYPE, INTEGER_TYPE, FLOAT_TYPE, COLOR_TYPE, INTEGERVECTOR_TYPE
-};
+std::set<QString> supported_glsl_types{FLOATVECTOR_TYPE,
+                                       INTEGER_TYPE,
+                                       FLOAT_TYPE,
+                                       COLOR_TYPE,
+                                       INTEGERVECTOR_TYPE};
 
 const QString glsl_definition_template(R"(
 %1 %2_0(int op, %1 a, %1 b) {
@@ -35,11 +36,8 @@ const QString glsl_definition_template(R"(
 
 namespace omm
 {
-
-const Node::Detail MathNode::detail {
-  {
-    {
-      AbstractNodeCompiler::Language::Python,
+const Node::Detail MathNode::detail{
+    {{AbstractNodeCompiler::Language::Python,
       QString(R"(
 @listarithm_decorator
 def %1(op, a, b):
@@ -68,31 +66,33 @@ def %1(op, a, b):
     else:
         # unreachable
         return 0.0;
-)").arg(MathNode::TYPE)
-    },
+)")
+          .arg(MathNode::TYPE)},
+     {AbstractNodeCompiler::Language::GLSL,
+      ::transform<QString, QList>(supported_glsl_types,
+                                  [](const QString& type) {
+                                    return glsl_definition_template.arg(
+                                        NodeCompilerGLSL::translate_type(type));
+                                  })
+          .join("\n")
+          .arg(MathNode::TYPE)}},
     {
-      AbstractNodeCompiler::Language::GLSL,
-      ::transform<QString, QList>(supported_glsl_types, [](const QString& type) {
-        return glsl_definition_template.arg(NodeCompilerGLSL::translate_type(type));
-      }).join("\n").arg(MathNode::TYPE)
-    }
-  },
-  {
-    QT_TRANSLATE_NOOP("NodeMenuPath", "Math"),
-  }
-};
+        QT_TRANSLATE_NOOP("NodeMenuPath", "Math"),
+    }};
 
-MathNode::MathNode(NodeModel& model)
-  : Node(model)
+MathNode::MathNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
   auto& operation_property = create_property<OptionProperty>(OPERATION_PROPERTY_KEY, 0.0)
-      .set_options({ tr("+"), tr("-"), tr("*"), tr("/") })
-      .set_label(QObject::tr("Operation")).set_category(category);
+                                 .set_options({tr("+"), tr("-"), tr("*"), tr("/")})
+                                 .set_label(QObject::tr("Operation"))
+                                 .set_category(category);
   create_property<FloatProperty>(A_VALUE_KEY, PortType::Input, 0)
-      .set_label(QObject::tr("a")).set_category(category);
+      .set_label(QObject::tr("a"))
+      .set_category(category);
   create_property<FloatProperty>(B_VALUE_KEY, PortType::Input, 0)
-      .set_label(QObject::tr("b")).set_category(category);
+      .set_label(QObject::tr("b"))
+      .set_category(category);
   m_output = &add_port<OrdinaryPort<PortType::Output>>(tr("result"));
   m_operation_input = find_port<InputPort>(operation_property);
 }
@@ -111,13 +111,13 @@ QString MathNode::output_data_type(const OutputPort& port) const
       } else if (is_numeric(type_a) && is_numeric(type_b)) {
         return FLOAT_TYPE;
       } else if ((type_a == INTEGERVECTOR_TYPE || is_integral(type_a))
-              && (type_b == INTEGERVECTOR_TYPE || is_integral(type_b))) {
+                 && (type_b == INTEGERVECTOR_TYPE || is_integral(type_b))) {
         return INTEGERVECTOR_TYPE;
       } else if ((is_vector(type_a) || is_numeric(type_a))
-              && (is_vector(type_b) || is_numeric(type_b))) {
+                 && (is_vector(type_b) || is_numeric(type_b))) {
         return FLOATVECTOR_TYPE;
       } else if ((type_a == COLOR_TYPE || is_numeric(type_a))
-              && (type_b == COLOR_TYPE || is_numeric(type_b))) {
+                 && (type_b == COLOR_TYPE || is_numeric(type_b))) {
         return COLOR_TYPE;
       } else {
         return INVALID_TYPE;
@@ -132,10 +132,8 @@ QString MathNode::output_data_type(const OutputPort& port) const
 QString MathNode::input_data_type(const InputPort& port) const
 {
   Q_UNUSED(port)
-  const auto ports = std::vector {
-    find_port<InputPort>(A_VALUE_KEY),
-    find_port<InputPort>(B_VALUE_KEY)
-  };
+  const auto ports
+      = std::vector{find_port<InputPort>(A_VALUE_KEY), find_port<InputPort>(B_VALUE_KEY)};
   return fst_con_ptype(ports, NodeCompilerTypes::FLOAT_TYPE);
 }
 
@@ -145,7 +143,7 @@ bool MathNode::accepts_input_data_type(const QString& type, const InputPort& por
     const auto a_input = find_port<InputPort>(A_VALUE_KEY);
     const auto b_input = find_port<InputPort>(B_VALUE_KEY);
     const InputPort& other_port = &port == a_input ? *b_input : *a_input;
-    assert((std::set{ &port, &other_port } == std::set<const InputPort*>{ a_input, b_input }));
+    assert((std::set{&port, &other_port} == std::set<const InputPort*>{a_input, b_input}));
     if (other_port.is_connected()) {
       return type == other_port.data_type();
     } else {
@@ -182,4 +180,4 @@ QString MathNode::title() const
   return Node::title() + tr(" [%1]").arg(operation_label);
 }
 
-}  // namespace
+}  // namespace omm

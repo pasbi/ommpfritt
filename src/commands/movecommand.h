@@ -6,9 +6,7 @@
 
 namespace omm
 {
-
-template<typename StructureT>
-class MoveCommand : public Command
+template<typename StructureT> class MoveCommand : public Command
 {
 public:
   using context_type = typename Contextes<typename StructureT::item_type>::Move;

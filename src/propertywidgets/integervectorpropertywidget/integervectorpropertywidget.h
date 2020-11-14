@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class IntegerVectorPropertyWidget : public VectorPropertyWidget<IntegerVectorProperty>
 {
 public:

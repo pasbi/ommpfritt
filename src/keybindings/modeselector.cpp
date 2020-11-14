@@ -1,15 +1,16 @@
 #include "keybindings/modeselector.h"
-#include <QCoreApplication>
 #include "keybindings/commandinterface.h"
 #include "keybindings/keybindings.h"
+#include <QCoreApplication>
 
 namespace omm
 {
-
-ModeSelector::ModeSelector(CommandInterface& context, const QString& name,
+ModeSelector::ModeSelector(CommandInterface& context,
+                           const QString& name,
                            const QString& cycle_action,
                            const std::vector<QString>& activation_actions)
-  : context(context), name(name), cycle_action(cycle_action), activation_actions(activation_actions)
+    : context(context), name(name), cycle_action(cycle_action),
+      activation_actions(activation_actions)
 {
 }
 

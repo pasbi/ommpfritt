@@ -1,15 +1,13 @@
 #include "widgets/filepathedit.h"
+#include <QDebug>
+#include <QHBoxLayout>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QHBoxLayout>
 #include <memory>
-#include <QDebug>
 
 namespace omm
 {
-
-FilePathEdit::FilePathEdit(QWidget* parent)
-  : QWidget(parent)
+FilePathEdit::FilePathEdit(QWidget* parent) : QWidget(parent)
 {
   m_line_edit = std::make_unique<QLineEdit>(this).release();
   m_button = std::make_unique<QPushButton>(tr("..."), this).release();
@@ -29,7 +27,9 @@ FilePathEdit::FilePathEdit(QWidget* parent)
     }
     if (QDialog::Accepted == dialog.exec()) {
       const auto paths = dialog.selectedFiles();
-      if (paths.size() > 0) { set_path(paths.front()); }
+      if (paths.size() > 0) {
+        set_path(paths.front());
+      }
     }
   });
 
@@ -48,11 +48,17 @@ void FilePathEdit::set_path(const QString& path)
   }
 }
 
-QString FilePathEdit::path() const { return m_path; }
-void FilePathEdit::clear() { set_path(tr("")); }
-void FilePathEdit::set_placeholder_text(const QString &text)
+QString FilePathEdit::path() const
+{
+  return m_path;
+}
+void FilePathEdit::clear()
+{
+  set_path(tr(""));
+}
+void FilePathEdit::set_placeholder_text(const QString& text)
 {
   m_line_edit->setPlaceholderText(text);
 }
 
-}  // namespace
+}  // namespace omm

@@ -6,7 +6,6 @@
 
 namespace omm
 {
-
 class AbstractPropertyOwner;
 class UserPropertyConfigCommand : public Command
 {

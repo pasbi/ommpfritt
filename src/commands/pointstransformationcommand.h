@@ -1,14 +1,13 @@
 #pragma once
 
-#include "common.h"
 #include "commands/command.h"
+#include "common.h"
 #include "geometry/objecttransformation.h"
 #include "geometry/point.h"
 #include "objects/path.h"
 
 namespace omm
 {
-
 class Object;
 class Path;
 class PointsTransformationCommand : public Command

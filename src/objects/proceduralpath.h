@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 class Scene;
 
 class ProceduralPath : public Object
@@ -28,7 +27,6 @@ protected:
 
 private:
   std::vector<Point> m_points;
-
 };
 
 }  // namespace omm

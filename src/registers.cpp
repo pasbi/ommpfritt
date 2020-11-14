@@ -3,17 +3,15 @@
 #include <list>
 
 #include "register_managers.cpp"
-#include "register_objects.cpp"
-#include "register_tags.cpp"
-#include "register_properties.cpp"
-#include "register_tools.cpp"
 #include "register_nodes.cpp"
+#include "register_objects.cpp"
+#include "register_properties.cpp"
+#include "register_tags.cpp"
+#include "register_tools.cpp"
 
 namespace
 {
-
-template<typename Ts>
-void merge(std::list<QString>& accu, Ts&& ts)
+template<typename Ts> void merge(std::list<QString>& accu, Ts&& ts)
 {
   accu.insert(accu.end(), ts.begin(), ts.end());
 }
@@ -22,7 +20,6 @@ void merge(std::list<QString>& accu, Ts&& ts)
 
 namespace omm
 {
-
 void register_everything()
 {
   std::list<QString> keys;
@@ -49,7 +46,6 @@ void register_everything()
       }
     }
   }
-
 }
 
 }  // namespace omm

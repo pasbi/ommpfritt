@@ -1,34 +1,32 @@
+#include "logging.h"
 #include "mainwindow/application.h"
-#include <iostream>
+#include "mainwindow/mainwindow.h"
+#include "qapplication.h"
+#include "serializers/abstractserializer.h"
 #include "tools/selectobjectstool.h"
 #include "tools/toolbox.h"
 #include <QApplication>
-#include "mainwindow/mainwindow.h"
+#include <QDirIterator>
 #include <QSettings>
 #include <QVariant>
-#include <QDirIterator>
-#include "logging.h"
-#include "qapplication.h"
-#include "logging.h"
-#include "serializers/abstractserializer.h"
+#include <iostream>
 
 QString level = "debug";
 QFile logfile;
 bool print_long_message = true;
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
   QApplication qt_app(argc, argv);
   qt_app.setWindowIcon(QIcon(":/icons/omm_48.png"));
 
   omm::setup_logfile(logfile);
-  qInstallMessageHandler([](QtMsgType type, const QMessageLogContext& ctx, const QString &msg) {
+  qInstallMessageHandler([](QtMsgType type, const QMessageLogContext& ctx, const QString& msg) {
     omm::handle_log(logfile, level, print_long_message, type, ctx, msg);
   });
 
-  auto options = std::make_unique<omm::Options>(
-        false,    // is_cli
-        true      // have_opengl
+  auto options = std::make_unique<omm::Options>(false,  // is_cli
+                                                true  // have_opengl
   );
   omm::Application app(qt_app, std::move(options));
 

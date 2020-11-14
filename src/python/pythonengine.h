@@ -1,14 +1,13 @@
 #pragma once
 
-#include <string>
-#include <pybind11/embed.h>
+#include "common.h"
 #include "python/scopedinterpreterwrapper.h"
 #include <QObject>
-#include "common.h"
+#include <pybind11/embed.h>
+#include <string>
 
 namespace omm
 {
-
 class Scene;
 class AbstractPropertyOwner;
 
@@ -17,10 +16,8 @@ class PythonEngine : public QObject
   Q_OBJECT
 public:
   explicit PythonEngine();
-  bool
-  exec(const QString& code, pybind11::object& locals, const void* association);
-  pybind11::object
-  eval(const QString& code, pybind11::object& locals, const void* association);
+  bool exec(const QString& code, pybind11::object& locals, const void* association);
+  pybind11::object eval(const QString& code, pybind11::object& locals, const void* association);
 
 private:
   // the scoped_interpeter has same lifetime as the application.

@@ -1,20 +1,28 @@
 #pragma once
 
-#include <map>
-#include <vector>
-#include <type_traits>
 #include "common.h"
+#include <map>
+#include <type_traits>
+#include <vector>
 
-template<typename KeyT, typename ValueT>
-class OrderedMap
+template<typename KeyT, typename ValueT> class OrderedMap
 {
 public:
   using key_type = KeyT;
   using mapped_type = std::unique_ptr<ValueT>;
   using value_type = std::pair<key_type, mapped_type>;
-  mapped_type& at(const key_type& key) { return m_values.at(key); }
-  const mapped_type& at(const key_type& key) const { return m_values.at(key); }
-  const std::vector<key_type>& keys() const { return m_keys; }
+  mapped_type& at(const key_type& key)
+  {
+    return m_values.at(key);
+  }
+  const mapped_type& at(const key_type& key) const
+  {
+    return m_values.at(key);
+  }
+  const std::vector<key_type>& keys() const
+  {
+    return m_keys;
+  }
   explicit OrderedMap(const OrderedMap<KeyT, ValueT>& other)
   {
     for (auto&& key : other.m_keys) {
@@ -38,13 +46,15 @@ public:
     }
   }
 
-  bool contains(const key_type& key) const { return m_values.count(key) == 1; }
-
-  template<typename mapped_type_>
-  bool insert(const key_type& key, mapped_type_&& value)
+  bool contains(const key_type& key) const
   {
-    const auto [_, was_inserted] = m_values.insert(std::pair( key,
-                                                              std::forward<mapped_type_>(value)) );
+    return m_values.count(key) == 1;
+  }
+
+  template<typename mapped_type_> bool insert(const key_type& key, mapped_type_&& value)
+  {
+    const auto [_, was_inserted]
+        = m_values.insert(std::pair(key, std::forward<mapped_type_>(value)));
     if (was_inserted) {
       m_keys.push_back(key);
       return true;
@@ -94,7 +104,10 @@ public:
   }
 #endif
 
-  size_t size() const { return m_keys.size(); }
+  size_t size() const
+  {
+    return m_keys.size();
+  }
 
 private:
   std::vector<key_type> m_keys;

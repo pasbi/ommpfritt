@@ -1,30 +1,30 @@
 #include "serializers/abstractserializer.h"
 
+#include <functional>
+#include <istream>
 #include <numeric>
 #include <ostream>
-#include <istream>
-#include <functional>
 
-#include "scene/scene.h"
-#include "tags/tag.h"
 #include "objects/object.h"
 #include "properties/referenceproperty.h"
+#include "scene/scene.h"
+#include "tags/tag.h"
 
 namespace omm
 {
-
 void AbstractSerializer::set_value(const AbstractPropertyOwner* ref, const Pointer& pointer)
 {
   m_serialized_references.insert(const_cast<AbstractPropertyOwner*>(ref));
   set_value(ref == nullptr ? 0 : ref->id(), pointer);
 }
 
-void AbstractSerializer::set_value(const variant_type &variant, const Pointer &pointer)
+void AbstractSerializer::set_value(const variant_type& variant, const Pointer& pointer)
 {
   std::visit([this, pointer](auto&& arg) { set_value(arg, pointer); }, variant);
 }
 
-void AbstractSerializer::set_value(const Serializable& serializable, const AbstractSerializer::Pointer& pointer)
+void AbstractSerializer::set_value(const Serializable& serializable,
+                                   const AbstractSerializer::Pointer& pointer)
 {
   serializable.serialize(*this, pointer);
 }
@@ -53,8 +53,8 @@ void AbstractDeserializer::polish()
   }
 }
 
-void AbstractDeserializer::register_reference( const std::size_t id,
-                                               AbstractPropertyOwner& reference )
+void AbstractDeserializer::register_reference(const std::size_t id,
+                                              AbstractPropertyOwner& reference)
 {
   const auto it = m_id_to_reference.find(id);
   if (it == m_id_to_reference.end()) {
@@ -70,12 +70,13 @@ void AbstractDeserializer::register_reference( const std::size_t id,
   }
 }
 
-void AbstractDeserializer::register_reference_polisher(ReferencePolisher &polisher)
+void AbstractDeserializer::register_reference_polisher(ReferencePolisher& polisher)
 {
   m_reference_polishers.insert(&polisher);
 }
 
-void AbstractDeserializer::get(Serializable& serializable, const AbstractDeserializer::Pointer& pointer)
+void AbstractDeserializer::get(Serializable& serializable,
+                               const AbstractDeserializer::Pointer& pointer)
 {
   serializable.deserialize(*this, pointer);
 }
@@ -130,15 +131,16 @@ template<> SplineType AbstractDeserializer::get<SplineType>(const Pointer& point
   return get_spline(pointer);
 }
 
-template<> TriggerPropertyDummyValueType AbstractDeserializer
-::get<TriggerPropertyDummyValueType>(const Pointer& pointer)
+template<>
+TriggerPropertyDummyValueType
+AbstractDeserializer ::get<TriggerPropertyDummyValueType>(const Pointer& pointer)
 {
   Q_UNUSED(pointer)
   return get_trigger_dummy_value(pointer);
 }
 
-variant_type AbstractDeserializer::get(const AbstractDeserializer::Pointer &pointer,
-                                       const QString &type)
+variant_type AbstractDeserializer::get(const AbstractDeserializer::Pointer& pointer,
+                                       const QString& type)
 {
   if (type == "Bool") {
     return get<bool>(pointer);

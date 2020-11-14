@@ -5,12 +5,9 @@
 
 namespace omm
 {
-
 template<typename Structure>
 CopyCommand<Structure>::CopyCommand(Structure& structure, std::vector<Context> contextes)
-  : Command(QObject::tr("copy"))
-  , m_contextes(std::move(contextes))
-  , m_structure(structure)
+    : Command(QObject::tr("copy")), m_contextes(std::move(contextes)), m_structure(structure)
 {
   const auto* predecessor = m_contextes.front().predecessor;
   for (auto& context : m_contextes) {

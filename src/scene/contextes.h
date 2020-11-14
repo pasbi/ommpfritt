@@ -1,19 +1,18 @@
 #pragma once
 
-#include <functional>
-#include <cassert>
-#include <memory>
-#include <algorithm>
-#include <vector>
 #include "aspects/treeelement.h"
-#include "scene/structure.h"
 #include "scene/contextes_fwd.h"
 #include "scene/list.h"
 #include "scene/objecttree.h"
+#include "scene/structure.h"
+#include <algorithm>
+#include <cassert>
+#include <functional>
+#include <memory>
+#include <vector>
 
 namespace omm
 {
-
 class AbstractContext
 {
 public:
@@ -25,16 +24,19 @@ public:
   virtual ~AbstractContext() = default;
 };
 
-template<typename T, template<typename...> class Wrapper>
-class ListContext : public AbstractContext
+template<typename T, template<typename...> class Wrapper> class ListContext : public AbstractContext
 {
 public:
   using item_type = T;
-  ListContext(T& subject, const T* predecessor)
-    : subject(subject), predecessor(predecessor) { }
+  ListContext(T& subject, const T* predecessor) : subject(subject), predecessor(predecessor)
+  {
+  }
 
   Wrapper<T> subject;
-  T& get_subject() const { return subject; }
+  T& get_subject() const
+  {
+    return subject;
+  }
 
   /**
    * @brief the predecessing sibling of `subject`
@@ -42,7 +44,10 @@ public:
    * @details the parent of `predecessor` must be `parent`.
    */
   const T* predecessor;
-  virtual bool is_sane() const { return true; }
+  virtual bool is_sane() const
+  {
+    return true;
+  }
   static constexpr bool is_tree_context = false;
 };
 
@@ -50,12 +55,17 @@ template<typename T, template<typename...> class Wrapper>
 class TreeContext : public ListContext<T, Wrapper>
 {
   static_assert(std::is_base_of<TreeElement<T>, T>::value, "T must be derived from TreeElement.");
+
 public:
   TreeContext(T& subject, T& parent, const T* predecessor)
-    : ListContext<T, Wrapper>(subject, predecessor), parent(parent) { }
+      : ListContext<T, Wrapper>(subject, predecessor), parent(parent)
+  {
+  }
 
   TreeContext(T& subject, const T* predecessor)
-    : ListContext<T, Wrapper>(subject, predecessor), parent(subject.tree_parent()) { }
+      : ListContext<T, Wrapper>(subject, predecessor), parent(subject.tree_parent())
+  {
+  }
 
   /**
    * @brief the parent of `subject`
@@ -70,7 +80,7 @@ public:
   static constexpr bool is_tree_context = true;
 };
 
-template<typename T, template<typename, template<typename...> class > class ContextT>
+template<typename T, template<typename, template<typename...> class> class ContextT>
 class MoveContext : public ContextT<T, std::reference_wrapper>
 {
 public:
@@ -98,11 +108,13 @@ protected:
     return this->predecessor == structure.predecessor(this->get_subject());
   }
 
-  bool subject_is_predecessor() const { return this->predecessor == &this->get_subject(); }
+  bool subject_is_predecessor() const
+  {
+    return this->predecessor == &this->get_subject();
+  }
 };
 
-template<typename T>
-class TreeMoveContext : public MoveContext<T, TreeContext>
+template<typename T> class TreeMoveContext : public MoveContext<T, TreeContext>
 {
 public:
   using MoveContext<T, TreeContext>::MoveContext;
@@ -117,7 +129,10 @@ public:
   }
 
 private:
-  bool is_root() const { return this->get_subject().is_root(); }
+  bool is_root() const
+  {
+    return this->get_subject().is_root();
+  }
   bool moves_into_itself() const
   {
     // subject cannot become its own parent (illogical)
@@ -134,8 +149,7 @@ private:
   }
 };
 
-template<typename T>
-class ListMoveContext : public MoveContext<T, ListContext>
+template<typename T> class ListMoveContext : public MoveContext<T, ListContext>
 {
 public:
   using MoveContext<T, ListContext>::MoveContext;
@@ -150,15 +164,16 @@ public:
   }
 
 private:
-  bool is_root() const { return this->get_subject().is_root(); }
+  bool is_root() const
+  {
+    return this->get_subject().is_root();
+  }
 };
 
-template<typename ContextT>
-void topological_context_sort(std::vector<ContextT>& ts)
+template<typename ContextT> void topological_context_sort(std::vector<ContextT>& ts)
 {
   // Stupid because I guess it's O(n^2). It's possible to do it in O(n).
-  const auto move_if = [](auto begin, auto end, const auto& predicate)
-  {
+  const auto move_if = [](auto begin, auto end, const auto& predicate) {
     const auto it = std::find_if(begin, end, predicate);
     if (it != end) {
       std::iter_swap(it, std::prev(end));
@@ -174,8 +189,8 @@ void topological_context_sort(std::vector<ContextT>& ts)
   while (begin_ts != end_ts) {
     end_ts = move_if(begin_ts, end_ts, [&begin_ts, &end_ts](const auto& t) {
       return end_ts == std::find_if(begin_ts, end_ts, [&t](const auto& s) {
-        return t.predecessor == &s.subject.get();
-      });
+               return t.predecessor == &s.subject.get();
+             });
     });
 
     while (true) {
@@ -193,9 +208,7 @@ void topological_context_sort(std::vector<ContextT>& ts)
 
 namespace
 {
-
-template<typename StructureT>
-const auto* last_sibling(const StructureT& s)
+template<typename StructureT> const auto* last_sibling(const StructureT& s)
 {
   const auto get_siblings = [&s]() {
     if constexpr (StructureT::is_tree) {
@@ -210,7 +223,7 @@ const auto* last_sibling(const StructureT& s)
 
 }  // namespace
 
-template<typename T, template<typename, template<typename...> class > class ContextT>
+template<typename T, template<typename, template<typename...> class> class ContextT>
 using OwningContext = ContextT<T, MaybeOwner>;
 
 template<typename T> class ListOwningContext : public OwningContext<T, ListContext>
@@ -218,17 +231,16 @@ template<typename T> class ListOwningContext : public OwningContext<T, ListConte
 public:
   using OwningContext<T, ListContext>::OwningContext;
   ListOwningContext(std::unique_ptr<T> item, List<T>& structure)
-    : OwningContext<T, ListContext>(*item, last_sibling(structure))
+      : OwningContext<T, ListContext>(*item, last_sibling(structure))
   {
     this->subject.capture(std::move(item));
   }
 
   ListOwningContext(std::unique_ptr<T> item, T* predecessor)
-    : OwningContext<T, ListContext>(*item, predecessor)
+      : OwningContext<T, ListContext>(*item, predecessor)
   {
     this->subject.capture(std::move(item));
   }
-
 };
 
 class ObjectTreeOwningContext : public OwningContext<Object, TreeContext>
@@ -236,7 +248,7 @@ class ObjectTreeOwningContext : public OwningContext<Object, TreeContext>
 public:
   using OwningContext<Object, TreeContext>::OwningContext;
   ObjectTreeOwningContext(std::unique_ptr<Object> item, ObjectTree& structure)
-    : OwningContext<Object, TreeContext>(*item, structure.root(), last_sibling(structure))
+      : OwningContext<Object, TreeContext>(*item, structure.root(), last_sibling(structure))
   {
     this->subject.capture(std::move(item));
   };

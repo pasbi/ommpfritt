@@ -1,11 +1,10 @@
 #pragma once
 
-#include "propertywidgets/numericpropertywidget/numericpropertywidget.h"
 #include "properties/floatproperty.h"
+#include "propertywidgets/numericpropertywidget/numericpropertywidget.h"
 
 namespace omm
 {
-
 class FloatPropertyWidget : public NumericPropertyWidget<FloatProperty>
 {
 public:

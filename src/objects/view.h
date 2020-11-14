@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 class View : public Object
 {
 public:

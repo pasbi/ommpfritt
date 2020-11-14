@@ -1,11 +1,10 @@
 #pragma once
 
-#include <set>
 #include <memory>
+#include <set>
 
 namespace omm
 {
-
 class Scene;
 
 template<typename T> class Structure

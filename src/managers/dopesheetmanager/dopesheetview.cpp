@@ -1,21 +1,20 @@
 #include "managers/dopesheetmanager/dopesheetview.h"
+#include "animation/animator.h"
+#include "animation/track.h"
+#include "aspects/abstractpropertyowner.h"
+#include "logging.h"
+#include "managers/dopesheetmanager/dopesheetheader.h"
+#include "managers/dopesheetmanager/trackviewdelegate.h"
+#include "properties/property.h"
+#include "proxychain.h"
 #include <KF5/KItemModels/KExtraColumnsProxyModel>
-#include <QPainter>
 #include <QHeaderView>
 #include <QMouseEvent>
-#include "managers/dopesheetmanager/trackviewdelegate.h"
+#include <QPainter>
 #include <memory>
-#include "animation/animator.h"
-#include "logging.h"
-#include "animation/track.h"
-#include "properties/property.h"
-#include "managers/dopesheetmanager/dopesheetheader.h"
-#include "aspects/abstractpropertyowner.h"
-#include "proxychain.h"
 
 namespace
 {
-
 class ChopProxyModel : public QIdentityProxyModel
 {
 public:
@@ -44,7 +43,10 @@ public:
   }
 
 private:
-  omm::Animator* animator() const { return static_cast<omm::Animator*>(sourceModel()); }
+  omm::Animator* animator() const
+  {
+    return static_cast<omm::Animator*>(sourceModel());
+  }
 };
 
 class AddColumnProxy : public KExtraColumnsProxyModel
@@ -67,35 +69,39 @@ public:
   }
 };
 
-}  // namespace omm
+}  // namespace
 
 namespace omm
 {
-
 DopeSheetView::DopeSheetView(Animator& animator)
-  : ItemProxyView<QTreeView>(std::make_unique<ProxyChain>(
-      ProxyChain::concatenate<std::unique_ptr<QAbstractProxyModel>>(
-        std::make_unique<ChopProxyModel>(),
-        std::make_unique<AddColumnProxy>()
-    )))
-  , m_animator(animator)
-  , m_canvas(m_animator, *this)
+    : ItemProxyView<QTreeView>(
+        std::make_unique<ProxyChain>(ProxyChain::concatenate<std::unique_ptr<QAbstractProxyModel>>(
+            std::make_unique<ChopProxyModel>(),
+            std::make_unique<AddColumnProxy>()))),
+      m_animator(animator), m_canvas(m_animator, *this)
 {
   setModel(&animator);
   setHeader(std::make_unique<DopeSheetHeader>(m_canvas).release());
   auto track_view_delegate = std::make_unique<TrackViewDelegate>(*this, m_canvas);
   m_track_view_delegate = track_view_delegate.get();
   setItemDelegateForColumn(1, track_view_delegate.release());
-  connect(&m_animator, &Animator::start_changed,
-          this, qOverload<>(&DopeSheetView::update_second_column));
-  connect(&m_animator, &Animator::end_changed,
-          this, qOverload<>(&DopeSheetView::update_second_column));
-  connect(&m_animator, &Animator::current_changed,
-          this, qOverload<>(&DopeSheetView::update_second_column));
-  connect(&m_animator, &Animator::track_changed,
-          this, qOverload<>(&DopeSheetView::update_second_column));
-  connect(&m_canvas, &TimelineCanvasC::current_frame_changed,
-          &m_animator, &Animator::set_current);
+  connect(&m_animator,
+          &Animator::start_changed,
+          this,
+          qOverload<>(&DopeSheetView::update_second_column));
+  connect(&m_animator,
+          &Animator::end_changed,
+          this,
+          qOverload<>(&DopeSheetView::update_second_column));
+  connect(&m_animator,
+          &Animator::current_changed,
+          this,
+          qOverload<>(&DopeSheetView::update_second_column));
+  connect(&m_animator,
+          &Animator::track_changed,
+          this,
+          qOverload<>(&DopeSheetView::update_second_column));
+  connect(&m_canvas, &TimelineCanvasC::current_frame_changed, &m_animator, &Animator::set_current);
   setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 }
 
@@ -152,7 +158,7 @@ void DopeSheetView::keyPressEvent(QKeyEvent* event)
 }
 
 DopeSheetView::TimelineCanvasC::TimelineCanvasC(Animator& animator, DopeSheetView& self)
-  : TimelineCanvas(animator, self), m_self(self)
+    : TimelineCanvas(animator, self), m_self(self)
 {
 }
 
@@ -178,7 +184,8 @@ void DopeSheetView::TimelineCanvasC::disable_context_menu()
 
 QRect DopeSheetView::TimelineCanvasC::track_rect(Track& track)
 {
-  const QModelIndex index = m_self.model()->mapFromSource(m_self.m_animator.index(track.property()));
+  const QModelIndex index
+      = m_self.model()->mapFromSource(m_self.m_animator.index(track.property()));
   return m_self.visualRect(index.siblingAtColumn(1));
 }
 
@@ -188,4 +195,4 @@ QRect DopeSheetView::TimelineCanvasC::owner_rect(AbstractPropertyOwner& owner)
   return m_self.visualRect(index.siblingAtColumn(1));
 }
 
-}  // namespace
+}  // namespace omm
