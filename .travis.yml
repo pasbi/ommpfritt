@@ -18,6 +18,7 @@ jobs:
     dist: bionic
     name: Build on Ubuntu Bionic
     script:
+    - build-scripts/build-omm-ubuntu.sh
   - stage: build
     os: linux
     dist: focal
@@ -35,13 +36,13 @@ jobs:
     dist: focal
     name: Check Format
     before_install:
-      - sudo apt update -y
-      - sudo apt upgrade -y
-      - sudo apt install -y clang
-      - echo "clang-format version:"
-      - clang-format --version
+    - sudo apt update -y
+    - sudo apt upgrade -y
+    - sudo apt install -y clang
+    - echo "clang-format version:"
+    - clang-format --version
     script:
-      - build-scripts/format.sh check
+    - build-scripts/format.sh check
   - stage: build
     os: windows
     name: Build on Windows/MinGW64
