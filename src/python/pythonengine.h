@@ -1,9 +1,9 @@
 #pragma once
 
 #include "common.h"
+#include "external/pybind11/embed.h"
 #include "python/scopedinterpreterwrapper.h"
 #include <QObject>
-#include <pybind11/embed.h>
 #include <string>
 
 namespace omm

@@ -1,5 +1,5 @@
 #include "python/scopedinterpreterwrapper.h"
-#include <pybind11/embed.h>
+#include "external/pybind11/embed.h"
 
 namespace omm
 {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <pybind11/embed.h>
-#include <pybind11/stl.h>
+#include "external/pybind11/embed.h"
+#include "external/pybind11/stl.h"
 
 #include "aspects/propertyowner.h"
 #include "scene/scene.h"

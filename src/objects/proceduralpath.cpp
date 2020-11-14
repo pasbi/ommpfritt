@@ -1,4 +1,5 @@
 #include "objects/proceduralpath.h"
+#include "external/pybind11/stl.h"
 #include "objects/path.h"
 #include "properties/boolproperty.h"
 #include "properties/integerproperty.h"
@@ -9,7 +10,6 @@
 #include "python/scenewrapper.h"
 #include "scene/scene.h"
 #include <QObject>
-#include <pybind11/stl.h>
 
 namespace
 {

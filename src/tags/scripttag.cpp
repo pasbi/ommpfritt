@@ -1,7 +1,7 @@
 #include "tags/scripttag.h"
+#include "external/pybind11/embed.h"
 #include <QApplication>  // TODO only for icon testing
 #include <QStyle>  // TODO only for icon testing
-#include <pybind11/embed.h>
 
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
