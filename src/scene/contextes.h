@@ -14,8 +14,19 @@
 namespace omm
 {
 
+class AbstractContext
+{
+public:
+  // for some contextes, copy cto and assignment operator have to be defined.
+  // However, with an explicit destructor, these will not be generated automatically.
+  // We cannot explicitely define them, because some contextes will be non-copyable.
+  // We need the virtual destructor.
+  // Simplest solution: Have make the dtor of a base class virtual.
+  virtual ~AbstractContext() = default;
+};
+
 template<typename T, template<typename...> class Wrapper>
-class ListContext
+class ListContext : public AbstractContext
 {
 public:
   using item_type = T;
