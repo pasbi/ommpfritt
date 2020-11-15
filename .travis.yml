@@ -164,6 +164,7 @@ jobs:
       directories:
       - "$HOME/AppData/Local/Temp/chocolatey"
       - "/C/tools/msys64"
+    install:
     script:
       - $mingw64 build-scripts/build-omm-mingw.sh
 script:
