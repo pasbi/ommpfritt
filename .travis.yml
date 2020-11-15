@@ -25,12 +25,12 @@ jobs:
     - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
     - sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-xenial
     - sudo apt-get update -y -qq
-    - https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7-Linux-x86_64.sh
     - sudo apt-get install -y
         g++-8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7
         ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev libboost-all-dev
         libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev
         libkf5itemmodels-dev imagemagick
+    - wget https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7-Linux-x86_64.sh
     - sudo ./cmake-3.14.7-Linux-x86_64.sh --skip-license --prefix=/usr
     - export CXX_COMPILER=g++8
     - export C_COMPILER=gcc-8
@@ -50,12 +50,12 @@ jobs:
     - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
     - sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-bionic
     - sudo apt-get update -y -qq
-    - https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7-Linux-x86_64.sh
     - sudo apt-get install -y
         g++-8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7
         ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev libboost-all-dev
         libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev
         libkf5itemmodels-dev imagemagick
+    - wget https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7-Linux-x86_64.sh
     - sudo ./cmake-3.14.7-Linux-x86_64.sh --skip-license --prefix=/usr
     - export CXX_COMPILER=g++8
     - export C_COMPILER=gcc-8
