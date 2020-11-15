@@ -20,12 +20,12 @@ jobs:
     name: Build on Ubuntu Xenial
     before_install:
     - sudo apt-get clean
-    - sudo apt remove -y mysql-client-5.7 mysql-server-5.7
+    - sudo apt-get remove -y mysql-client-5.7 mysql-server-5.7
     - sudo apt-add-repository -y ppa:deadsnakes/ppa
     - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
     - sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-xenial
-    - sudo apt update -y -qq
-    - sudo apt install -y \
+    - sudo apt-get update -y -qq
+    - sudo apt-get install -y \
       g++8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7 \
       ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev libboost-all-dev \
       libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev \
@@ -45,12 +45,12 @@ jobs:
     name: Build on Ubuntu Bionic
     before_install:
     - sudo apt-get clean
-    - sudo apt remove -y mysql-client-5.7 mysql-server-5.7
+    - sudo apt-get remove -y mysql-client-5.7 mysql-server-5.7
     - sudo apt-add-repository -y ppa:deadsnakes/ppa
     - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
     - sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-bionic
-    - sudo apt update -y -qq
-    - sudo apt install -y \
+    - sudo apt-get update -y -qq
+    - sudo apt-get install -y \
       g++8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7 \
       ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev libboost-all-dev \
       libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev \
@@ -68,9 +68,9 @@ jobs:
     name: Build on Ubuntu Focal with GCC
     before_install:
     - sudo apt-get clean
-    - sudo apt remove mysql-client-5.7 mysql-server-5.7
-    - sudo apt update -y -qq
-    - sudo apt install -y \
+    - sudo apt-get remove mysql-client-5.7 mysql-server-5.7
+    - sudo apt-get update -y -qq
+    - sudo apt-get install -y \
         g++ gcc cmake qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qt5-default \
         libqt5svg5-dev qttools5-dev qttranslations5-l10n qttools5-dev ninja-build zlib1g-dev \
         libssl-dev libffi-dev libgl-dev python3-dev libboost-all-dev libdouble-conversion-dev \
@@ -86,9 +86,9 @@ jobs:
     name: Build on Ubuntu Focal with Clang
     before_install:
     - sudo apt-get clean
-    - sudo apt remove mysql-client-5.7 mysql-server-5.7
-    - sudo apt update -y -qq
-    - sudo apt install -y \
+    - sudo apt-get remove mysql-client-5.7 mysql-server-5.7
+    - sudo apt-get update -y -qq
+    - sudo apt-get install -y \
         clang cmake qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qt5-default \
         libqt5svg5-dev qttools5-dev qttranslations5-l10n qttools5-dev ninja-build zlib1g-dev \
         libssl-dev libffi-dev libgl-dev python3-dev libboost-all-dev libdouble-conversion-dev \
@@ -109,7 +109,7 @@ jobs:
         - clang
     before_install:
     install:
-    - sudo apt install -y clang-format-10
+    - sudo apt-get install -y clang-format-10
     script:
     - clang-format --version
     - echo $PATH
