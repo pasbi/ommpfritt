@@ -39,6 +39,12 @@ jobs:
     - export QT_QM_PATH="/opt/qt512/translations/"
     - export PATH="/opt/qt512/bin:$PATH"
     - export cmake="$(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake"
+    - echo $cmake
+    - ls /home/travis/build/pasbi/ommpfritt/
+    - ls /home/travis/build/pasbi/ommpfritt/cmake-3.14.5-Linux-x86_64/
+    - ls /home/travis/build/pasbi/ommpfritt/cmake-3.14.5-Linux-x86_64/bin
+    - ls /home/travis/build/pasbi/ommpfritt/cmake-3.14.5-Linux-x86_64/bin/cmake
+    - ls $cmake
     - $cmake --version
     after_success:
     - build-scripts/make-appimage.sh
@@ -82,6 +88,7 @@ jobs:
     - export C_COMPILER=gcc
     - export QT_PREFIX=""
     - export QT_QM_PATH="/usr/share/qt5/translations/"
+    - export cmake="cmake"
   - stage: build
     os: linux
     dist: focal
