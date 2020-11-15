@@ -9,7 +9,8 @@ install:
   - pushd lib2geom
   - git checkout 37876ed4
   - popd
-  - echo "configure lib2geom: $(cmake --version)"
+  - echo "configure lib2geom:"
+    cmake --version
   - cmake -B build-lib2geom -S lib2geom -GNinja -D2GEOM_TESTING=OFF
   - sudo cmake --build build-lib2geom --target install
 jobs:
@@ -30,16 +31,14 @@ jobs:
         ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev libboost-all-dev
         libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev
         libkf5itemmodels-dev imagemagick
-    - wget https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7-Linux-x86_64.sh
-    - chmod +x ./cmake-3.14.7-Linux-x86_64.sh
-    - ./cmake-3.14.7-Linux-x86_64.sh --skip-license --prefix=$(pwd)/cmake-3.14
-    - ls $(pwd)/cmake-3.14/bin
+    - wget https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.tar.gz
+    - tar xf cmake-3.14.5-Linux-x86_64.tar.gz
     - export CXX_COMPILER=g++8
     - export C_COMPILER=gcc-8
     - export QT_PREFIX="/opt/qt512"
     - export QT_QM_PATH="/opt/qt512/translations/"
     - echo "cmake version: $(cmake --version)"
-    - export PATH="$(pwd)/cmake-3.14/bin:/opt/qt512/bin:$PATH"
+    - export PATH="$(pwd)/cmake-3.14.5-Linux-x86_64/bin:/opt/qt512/bin:$PATH"
     - echo "cmake version: $(cmake --version)"
     after_success:
     - build-scripts/make-appimage.sh
@@ -59,14 +58,12 @@ jobs:
         ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev libboost-all-dev
         libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev
         libkf5itemmodels-dev imagemagick
-    - wget https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7-Linux-x86_64.sh
-    - chmod +x ./cmake-3.14.7-Linux-x86_64.sh
-    - ./cmake-3.14.7-Linux-x86_64.sh --skip-license --prefix=$(pwd)/cmake-3.14
+    - wget https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.tar.gz
     - export CXX_COMPILER=g++8
     - export C_COMPILER=gcc-8
     - export QT_PREFIX="/opt/qt512"
     - export QT_QM_PATH="/opt/qt512/translations/"
-    - export PATH="$(pwd)/cmake-3.14/bin:/opt/qt512/bin:$PATH"
+    - export PATH="$(pwd)/cmake-3.14.5-Linux-x86_64/bin:/opt/qt512/bin:$PATH"
   - stage: build
     os: linux
     dist: focal
