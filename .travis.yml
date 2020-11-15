@@ -38,8 +38,9 @@ jobs:
     - export QT_PREFIX="/opt/qt512"
     - export QT_QM_PATH="/opt/qt512/translations/"
     - export PATH="$(pwd)/cmake-3.14.5-Linux-x86_64/bin:/opt/qt512/bin:$PATH"
-    - echo $(pwd)
-    - find .
+    - ls $(pwd)/cmake-3.14.5-Linux-x86_64/bin/
+    - ls $(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake
+    - echo $PATH
     - cmake --version
     after_success:
     - build-scripts/make-appimage.sh
