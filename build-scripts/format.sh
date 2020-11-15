@@ -2,6 +2,9 @@
 
 cd "$(dirname $0)/.."
 
+echo "$0 $@ using clang-format:"
+clang-format --version
+
 files=$(find src -path src/external -prune -false -o -type f \( -iname \*.cpp -o -iname \*.h \))
 
 case "$1" in
