@@ -11,7 +11,7 @@ install:
   - popd
   - echo "configure lib2geom"
   - cmake -B build-lib2geom -S lib2geom -GNinja -D2GEOM_TESTING=OFF
-  - cmake --build build-lib2geom --target install
+  - sudo cmake --build build-lib2geom --target install
 jobs:
   include:
   - stage: build
