@@ -39,13 +39,6 @@ jobs:
     - export QT_QM_PATH="/opt/qt512/translations/"
     - export PATH="/opt/qt512/bin:$PATH"
     - export cmake="$(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake"
-    - echo $cmake
-    - ls /home/travis/build/pasbi/ommpfritt/
-    - ls /home/travis/build/pasbi/ommpfritt/cmake-3.14.5-Linux-x86_64/
-    - ls /home/travis/build/pasbi/ommpfritt/cmake-3.14.5-Linux-x86_64/bin
-    - ls /home/travis/build/pasbi/ommpfritt/cmake-3.14.5-Linux-x86_64/bin/cmake
-    - ls $cmake
-    - $cmake --version
     after_success:
     - build-scripts/make-appimage.sh
   - stage: build
@@ -65,6 +58,7 @@ jobs:
         libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev
         libkf5itemmodels-dev imagemagick
     - wget https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.tar.gz
+    - tar xf cmake-3.14.5-Linux-x86_64.tar.gz
     - export CXX_COMPILER=g++-8
     - export C_COMPILER=gcc-8
     - export QT_PREFIX="/opt/qt512"
