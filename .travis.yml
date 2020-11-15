@@ -19,7 +19,7 @@ jobs:
     dist: xenial
     name: Build on Ubuntu Xenial
     before_install:
-    - sudo apt-clean
+    - sudo apt-get clean
     - sudo apt remove mysql-client-5.7 mysql-server-5.7
     - sudo apt-add-repository ppa:deadsnakes/ppa
     - sudo apt-add-repository ppa:ubuntu-toolchain-r/test
@@ -44,7 +44,7 @@ jobs:
     dist: bionic
     name: Build on Ubuntu Bionic
     before_install:
-    - sudo apt-clean
+    - sudo apt-get clean
     - sudo apt remove mysql-client-5.7 mysql-server-5.7
     - sudo apt-add-repository ppa:deadsnakes/ppa
     - sudo apt-add-repository ppa:ubuntu-toolchain-r/test
@@ -67,7 +67,7 @@ jobs:
     dist: focal
     name: Build on Ubuntu Focal with GCC
     before_install:
-    - sudo apt-clean
+    - sudo apt-get clean
     - sudo apt remove mysql-client-5.7 mysql-server-5.7
     - sudo apt update -y -qq
     - sudo apt install -y \
@@ -85,7 +85,7 @@ jobs:
     dist: focal
     name: Build on Ubuntu Focal with Clang
     before_install:
-    - sudo apt-clean
+    - sudo apt-get clean
     - sudo apt remove mysql-client-5.7 mysql-server-5.7
     - sudo apt update -y -qq
     - sudo apt install -y \
