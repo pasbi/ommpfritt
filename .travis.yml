@@ -11,7 +11,7 @@ install:
   - popd
   - echo "configure lib2geom:"
   - $cmake --version
-  - $cmake -B build-lib2geom -S lib2geom -GNinja -D2GEOM_TESTING=OFF -DCMAKE_CXX_COMPILER=${CXX_COMPILER} -DCMAKE_C_COMPILER={C_COMPILER}
+  - $cmake -B build-lib2geom -S lib2geom -GNinja -D2GEOM_TESTING=OFF -DCMAKE_CXX_COMPILER=${CXX_COMPILER} -DCMAKE_C_COMPILER=${C_COMPILER}
   - sudo $cmake --build build-lib2geom --target install
 jobs:
   include:
