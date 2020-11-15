@@ -18,34 +18,18 @@ jobs:
     os: linux
     dist: xenial
     name: Build on Ubuntu Xenial
-    addons:
-      apt:
-        update: true
-        sources:
-        - deadsnakes
-        - sourceline: ppa:ubuntu-toolchain-r/test
-        - sourceline: ppa:beineri/opt-qt-5.12.3-xenial
-        packages:
-        - g++8
-        - qt512tools
-        - qt512translations
-        - qt512svg
-        - qt512base
-        - qt512imageformats
-        - python3.7
-        - ninja-build zlib1g-dev
-        - libssl-dev
-        - libffi-dev
-        - libgl-dev
-        - python3-dev
-        - libboost-all-dev
-        - libdouble-conversion-dev
-        - libgsl-dev
-        - libcairo2-dev
-        - libpoppler-qt5-dev
-        - libkf5itemmodels-dev
-        - imagemagick
     before_install:
+    - sudo apt-clean
+    - sudo apt remove mysql-client-5.7 mysql-server-5.7
+    - sudo apt-add-repository ppa:deadsnakes/ppa
+    - sudo apt-add-repository ppa:ubuntu-toolchain-r/test
+    - sudo apt-add-repository ppa:beineri/opt-qt-5.12.3-xenial
+    - sudo apt update -y -qq
+    - sudo apt install -y \
+      g++8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7 \
+      ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev libboost-all-dev \
+      libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev \
+      libkf5itemmodels-dev imagemagick
     - https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7-Linux-x86_64.sh
     - sudo ./cmake-3.14.7-Linux-x86_64.sh --skip-license --prefix=/usr
     - export CXX_COMPILER=g++8
@@ -59,34 +43,18 @@ jobs:
     os: linux
     dist: bionic
     name: Build on Ubuntu Bionic
-    addons:
-      apt:
-        update: true
-        sources:
-        - deadsnakes
-        - sourceline: ppa:ubuntu-toolchain-r/test
-        - sourceline: ppa:beineri/opt-qt-5.12.3-bionic
-        packages:
-        - g++8
-        - qt512tools
-        - qt512translations
-        - qt512svg
-        - qt512base
-        - qt512imageformats
-        - python3.7
-        - ninja-build zlib1g-dev
-        - libssl-dev
-        - libffi-dev
-        - libgl-dev
-        - python3-dev
-        - libboost-all-dev
-        - libdouble-conversion-dev
-        - libgsl-dev
-        - libcairo2-dev
-        - libpoppler-qt5-dev
-        - libkf5itemmodels-dev
-        - imagemagick
     before_install:
+    - sudo apt-clean
+    - sudo apt remove mysql-client-5.7 mysql-server-5.7
+    - sudo apt-add-repository ppa:deadsnakes/ppa
+    - sudo apt-add-repository ppa:ubuntu-toolchain-r/test
+    - sudo apt-add-repository ppa:beineri/opt-qt-5.12.3-bionic
+    - sudo apt update -y -qq
+    - sudo apt install -y \
+      g++8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7 \
+      ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev libboost-all-dev \
+      libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev \
+      libkf5itemmodels-dev imagemagick
     - https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7-Linux-x86_64.sh
     - sudo ./cmake-3.14.7-Linux-x86_64.sh --skip-license --prefix=/usr
     - export CXX_COMPILER=g++8
@@ -98,35 +66,15 @@ jobs:
     os: linux
     dist: focal
     name: Build on Ubuntu Focal with GCC
-    addons:
-      apt:
-        update: true
-        packages:
-        - g++
-        - gcc
-        - cmake
-        - qtbase5-dev
-        - qtchooser
-        - qt5-qmake
-        - qtbase5-dev-tools
-        - qt5-default
-        - libqt5svg5-dev
-        - qttools5-dev
-        - qttranslations5-l10n
-        - qttools5-dev
-        - ninja-build zlib1g-dev
-        - libssl-dev
-        - libffi-dev
-        - libgl-dev
-        - python3-dev
-        - libboost-all-dev
-        - libdouble-conversion-dev
-        - libgsl-dev
-        - libcairo2-dev
-        - libpoppler-qt5-dev
-        - libkf5itemmodels-dev
-        - imagemagick
     before_install:
+    - sudo apt-clean
+    - sudo apt remove mysql-client-5.7 mysql-server-5.7
+    - sudo apt update -y -qq
+    - sudo apt install -y \
+        g++ gcc cmake qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qt5-default \
+        libqt5svg5-dev qttools5-dev qttranslations5-l10n qttools5-dev ninja-build zlib1g-dev \
+        libssl-dev libffi-dev libgl-dev python3-dev libboost-all-dev libdouble-conversion-dev \
+        libgsl-dev libcairo2-dev libpoppler-qt5-dev libkf5itemmodels-dev imagemagick
     - export CXX_COMPILER=g++
     - export C_COMPILER=gcc
     - export QT_PREFIX=""
@@ -136,34 +84,15 @@ jobs:
     os: linux
     dist: focal
     name: Build on Ubuntu Focal with Clang
-    addons:
-      apt:
-        update: true
-        packages:
-        - clang
-        - cmake
-        - qtbase5-dev
-        - qtchooser
-        - qt5-qmake
-        - qtbase5-dev-tools
-        - qt5-default
-        - libqt5svg5-dev
-        - qttools5-dev
-        - qttranslations5-l10n
-        - qttools5-dev
-        - ninja-build zlib1g-dev
-        - libssl-dev
-        - libffi-dev
-        - libgl-dev
-        - python3-dev
-        - libboost-all-dev
-        - libdouble-conversion-dev
-        - libgsl-dev
-        - libcairo2-dev
-        - libpoppler-qt5-dev
-        - libkf5itemmodels-dev
-        - imagemagick
     before_install:
+    - sudo apt-clean
+    - sudo apt remove mysql-client-5.7 mysql-server-5.7
+    - sudo apt update -y -qq
+    - sudo apt install -y \
+        clang cmake qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qt5-default \
+        libqt5svg5-dev qttools5-dev qttranslations5-l10n qttools5-dev ninja-build zlib1g-dev \
+        libssl-dev libffi-dev libgl-dev python3-dev libboost-all-dev libdouble-conversion-dev \
+        libgsl-dev libcairo2-dev libpoppler-qt5-dev libkf5itemmodels-dev imagemagick
     - export CXX_COMPILER=clang++
     - export C_COMPILER=clang
     - export QT_PREFIX=""
@@ -180,10 +109,12 @@ jobs:
         - clang
     before_install:
     install:
+    - sudo apt install -y clang-format-10
     script:
     - clang-10 --version
     - clang --version
     - clang-format-10 --version
+    - clang-format --version
     - build-scripts/format.sh check
 script:
 - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DQT_QM_PATH="$QT_QM_PATH" -DCMAKE_PREFIX_PATH="$QT_PREFIX" -S . -B build
