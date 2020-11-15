@@ -79,7 +79,6 @@ jobs:
     - export C_COMPILER=gcc
     - export QT_PREFIX=""
     - export QT_QM_PATH="/usr/share/qt5/translations/"
-    - dpkg -S /usr/local/clang-7.0.0/bin/clang++
   - stage: build
     os: linux
     dist: focal
@@ -97,7 +96,6 @@ jobs:
     - export C_COMPILER=clang
     - export QT_PREFIX=""
     - export QT_QM_PATH="/usr/share/qt5/translations/"
-    - dpkg -S /usr/local/clang-7.0.0/bin/clang++
   - stage: build
     os: linux
     dist: focal
