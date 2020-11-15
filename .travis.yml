@@ -20,10 +20,10 @@ jobs:
     name: Build on Ubuntu Xenial
     before_install:
     - sudo apt-get clean
-    - sudo apt remove mysql-client-5.7 mysql-server-5.7
-    - sudo apt-add-repository ppa:deadsnakes/ppa
-    - sudo apt-add-repository ppa:ubuntu-toolchain-r/test
-    - sudo apt-add-repository ppa:beineri/opt-qt-5.12.3-xenial
+    - sudo apt remove -y mysql-client-5.7 mysql-server-5.7
+    - sudo apt-add-repository -y ppa:deadsnakes/ppa
+    - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
+    - sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-xenial
     - sudo apt update -y -qq
     - sudo apt install -y \
       g++8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7 \
@@ -45,10 +45,10 @@ jobs:
     name: Build on Ubuntu Bionic
     before_install:
     - sudo apt-get clean
-    - sudo apt remove mysql-client-5.7 mysql-server-5.7
-    - sudo apt-add-repository ppa:deadsnakes/ppa
-    - sudo apt-add-repository ppa:ubuntu-toolchain-r/test
-    - sudo apt-add-repository ppa:beineri/opt-qt-5.12.3-bionic
+    - sudo apt remove -y mysql-client-5.7 mysql-server-5.7
+    - sudo apt-add-repository -y ppa:deadsnakes/ppa
+    - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
+    - sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-bionic
     - sudo apt update -y -qq
     - sudo apt install -y \
       g++8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7 \
