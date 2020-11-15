@@ -27,7 +27,7 @@ jobs:
     - sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-xenial
     - sudo apt-get update -y -qq
     - sudo apt-get install -y
-        g++-8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7
+        g++-8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7-dev
         ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev libboost-all-dev
         libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev
         libkf5itemmodels-dev imagemagick
@@ -54,7 +54,7 @@ jobs:
     - sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-bionic
     - sudo apt-get update -y -qq
     - sudo apt-get install -y
-        g++-8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7
+        g++-8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7-dev
         ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev libboost-all-dev
         libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev
         libkf5itemmodels-dev imagemagick
