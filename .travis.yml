@@ -31,6 +31,7 @@ jobs:
         libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev
         libkf5itemmodels-dev imagemagick
     - wget https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7-Linux-x86_64.sh
+    - chmod +x ./cmake-3.14.7-Linux-x86_64.sh
     - sudo ./cmake-3.14.7-Linux-x86_64.sh --skip-license --prefix=/usr
     - export CXX_COMPILER=g++8
     - export C_COMPILER=gcc-8
@@ -56,6 +57,7 @@ jobs:
         libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev
         libkf5itemmodels-dev imagemagick
     - wget https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7-Linux-x86_64.sh
+    - chmod +x ./cmake-3.14.7-Linux-x86_64.sh
     - sudo ./cmake-3.14.7-Linux-x86_64.sh --skip-license --prefix=/usr
     - export CXX_COMPILER=g++8
     - export C_COMPILER=gcc-8
