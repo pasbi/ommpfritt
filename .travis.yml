@@ -37,9 +37,10 @@ jobs:
     - export C_COMPILER=gcc-8
     - export QT_PREFIX="/opt/qt512"
     - export QT_QM_PATH="/opt/qt512/translations/"
-    - echo "cmake version: $(cmake --version)"
     - export PATH="$(pwd)/cmake-3.14.5-Linux-x86_64/bin:/opt/qt512/bin:$PATH"
-    - echo "cmake version: $(cmake --version)"
+    - echo $(pwd)
+    - find .
+    - cmake --version
     after_success:
     - build-scripts/make-appimage.sh
   - stage: build
