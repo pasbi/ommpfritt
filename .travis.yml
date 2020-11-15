@@ -96,8 +96,8 @@ jobs:
         libqt5svg5-dev qttools5-dev qttranslations5-l10n qttools5-dev ninja-build zlib1g-dev
         libssl-dev libffi-dev libgl-dev python3-dev libboost-all-dev libdouble-conversion-dev
         libgsl-dev libcairo2-dev libpoppler-qt5-dev libkf5itemmodels-dev imagemagick
-    - export CXX_COMPILER=clang++
-    - export C_COMPILER=clang
+    - export CXX_COMPILER=clang++-10
+    - export C_COMPILER=clang-10
     - export QT_PREFIX=""
     - export QT_QM_PATH="/usr/share/qt5/translations/"
     - export cmake="cmake"
