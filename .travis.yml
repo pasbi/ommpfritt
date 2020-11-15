@@ -23,7 +23,6 @@ jobs:
         update: true
         sources:
         - deadsnakes
-        - kalakris-cmake
         - sourceline: ppa:ubuntu-toolchain-r/test
         - sourceline: ppa:beineri/opt-qt-5.12.3-xenial
         packages:
@@ -65,7 +64,6 @@ jobs:
         update: true
         sources:
         - deadsnakes
-        - kalakris-cmake
         - sourceline: ppa:ubuntu-toolchain-r/test
         - sourceline: ppa:beineri/opt-qt-5.12.3-xenial
         packages:
@@ -99,16 +97,49 @@ jobs:
   - stage: build
     os: linux
     dist: focal
-    name: Build on Ubuntu Focal
-    compiler:
-    - clang
-    - gcc
+    name: Build on Ubuntu Focal with GCC
     addons:
       apt:
         update: true
         packages:
         - g++
         - gcc
+        - cmake
+        - qtbase5-dev
+        - qtchooser
+        - qt5-qmake
+        - qtbase5-dev-tools
+        - qt5-default
+        - libqt5svg5-dev
+        - qttools5-dev
+        - qttranslations5-l10n
+        - qttools5-dev
+        - ninja-build zlib1g-dev
+        - libssl-dev
+        - libffi-dev
+        - libgl-dev
+        - python3-dev
+        - libboost-all-dev
+        - libdouble-conversion-dev
+        - libgsl-dev
+        - libcairo2-dev
+        - libpoppler-qt5-dev
+        - libkf5itemmodels-dev
+        - imagemagick
+    before_install:
+    - export CXX_COMPILER=g++
+    - export C_COMPILER=gcc
+    - export QT_PREFIX=""
+    - export QT_QM_PATH="/usr/share/qt5/translations/"
+    - dpkg -S /usr/local/clang-7.0.0/bin/clang++
+  - stage: build
+    os: linux
+    dist: focal
+    name: Build on Ubuntu Focal with Clang
+    addons:
+      apt:
+        update: true
+        packages:
         - clang
         - cmake
         - qtbase5-dev
@@ -133,9 +164,10 @@ jobs:
         - libkf5itemmodels-dev
         - imagemagick
     before_install:
+    - export CXX_COMPILER=clang++
+    - export C_COMPILER=clang
     - export QT_PREFIX=""
-    - export QT_QM_PATH="/opt/qt512/translations/"
-    - export PATH="/usr/share/qt5/translations/"
+    - export QT_QM_PATH="/usr/share/qt5/translations/"
     - dpkg -S /usr/local/clang-7.0.0/bin/clang++
   - stage: build
     os: linux
