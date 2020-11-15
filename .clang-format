@@ -141,9 +141,9 @@ StatementMacros:
 TabWidth:        2
 UseCRLF:         false
 UseTab:          Never
-WhitespaceSensitiveMacros:
-  - STRINGIZE
-  - PP_STRINGIZE
-  - BOOST_PP_STRINGIZE
+# WhitespaceSensitiveMacros:  # not available in clang-format 10 on ubuntu
+#   - STRINGIZE               # not available in clang-format 10 on ubuntu
+#   - PP_STRINGIZE            # not available in clang-format 10 on ubuntu
+#   - BOOST_PP_STRINGIZE      # not available in clang-format 10 on ubuntu
 ...
 
