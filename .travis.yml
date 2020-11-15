@@ -10,9 +10,9 @@ install:
   - git checkout 37876ed4
   - popd
   - echo "configure lib2geom:"
-    cmake --version
-  - cmake -B build-lib2geom -S lib2geom -GNinja -D2GEOM_TESTING=OFF
-  - sudo cmake --build build-lib2geom --target install
+  - $cmake --version
+  - $cmake -B build-lib2geom -S lib2geom -GNinja -D2GEOM_TESTING=OFF
+  - sudo $cmake --build build-lib2geom --target install
 jobs:
   include:
   - stage: build
@@ -37,11 +37,9 @@ jobs:
     - export C_COMPILER=gcc-8
     - export QT_PREFIX="/opt/qt512"
     - export QT_QM_PATH="/opt/qt512/translations/"
-    - export PATH="$(pwd)/cmake-3.14.5-Linux-x86_64/bin:/opt/qt512/bin:$PATH"
-    - ls $(pwd)/cmake-3.14.5-Linux-x86_64/bin/
-    - ls $(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake
-    - echo $PATH
-    - cmake --version
+    - export PATH="/opt/qt512/bin:$PATH"
+    - export cmake="$(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake"
+    - $cmake --version
     after_success:
     - build-scripts/make-appimage.sh
   - stage: build
@@ -65,7 +63,8 @@ jobs:
     - export C_COMPILER=gcc-8
     - export QT_PREFIX="/opt/qt512"
     - export QT_QM_PATH="/opt/qt512/translations/"
-    - export PATH="$(pwd)/cmake-3.14.5-Linux-x86_64/bin:/opt/qt512/bin:$PATH"
+    - export PATH="/opt/qt512/bin:$PATH"
+    - export cmake="$(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake"
   - stage: build
     os: linux
     dist: focal
@@ -100,6 +99,7 @@ jobs:
     - export C_COMPILER=clang
     - export QT_PREFIX=""
     - export QT_QM_PATH="/usr/share/qt5/translations/"
+    - export cmake="cmake"
   - stage: build
     os: linux
     dist: focal
@@ -117,8 +117,8 @@ jobs:
     - ln -s /usr/bin/clang-format-10 clang-format
     - PATH=$(pwd):$PATH build-scripts/format.sh check
 script:
-- cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DQT_QM_PATH="$QT_QM_PATH" -DCMAKE_PREFIX_PATH="$QT_PREFIX" -S . -B build
-- cmake --build build --target package
+- $cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DQT_QM_PATH="$QT_QM_PATH" -DCMAKE_PREFIX_PATH="$QT_PREFIX" -S . -B build
+- $cmake --build build --target package
 after_script:
 - build-scripts/notify-telegram.sh
 notifications:
