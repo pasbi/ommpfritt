@@ -27,7 +27,7 @@ jobs:
         - sourceline: ppa:beineri/opt-qt-5.12.3-xenial
         packages:
         - g++8
-        - t512tools
+        - qt512tools
         - qt512translations
         - qt512svg
         - qt512base
@@ -65,10 +65,10 @@ jobs:
         sources:
         - deadsnakes
         - sourceline: ppa:ubuntu-toolchain-r/test
-        - sourceline: ppa:beineri/opt-qt-5.12.3-xenial
+        - sourceline: ppa:beineri/opt-qt-5.12.3-bionic
         packages:
         - g++8
-        - t512tools
+        - qt512tools
         - qt512translations
         - qt512svg
         - qt512base
