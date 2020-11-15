@@ -112,11 +112,8 @@ jobs:
     - sudo apt-get install -y clang-format-10
     script:
     - clang-format --version
-    - echo $PATH
-    - export PATH='/usr/bin:$PATH'
-    - echo $PATH
-    - clang-format --version
-    - build-scripts/format.sh check
+    - ln -s /usr/bin/clang-format-10 clang-format
+    - PATH=$(pwd):$PATH build-scripts/format.sh check
 script:
 - cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DQT_QM_PATH="$QT_QM_PATH" -DCMAKE_PREFIX_PATH="$QT_PREFIX" -S . -B build
 - cmake --build build --target package
