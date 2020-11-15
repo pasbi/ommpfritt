@@ -36,11 +36,16 @@ jobs:
     dist: focal
     name: Check Format
     before_install:
+    - lsb_release -a
+    - which clang || echo "no clang"
+    - which clang-format || "no clang-format"
     - sudo apt update -y
     - sudo apt upgrade -y
     - sudo apt install -y clang-format
     - echo "clang-format version:"
     - clang-format --version
+    - which clang || echo "no clang"
+    - which clang-format || "no clang-format"
     script:
     - build-scripts/format.sh check
   - stage: build
