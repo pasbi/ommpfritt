@@ -178,6 +178,8 @@ jobs:
         update: true
         packages:
         - clang
+    before_install:
+    install:
     script:
     - clang-10 --version
     - clang --version
