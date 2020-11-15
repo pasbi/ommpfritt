@@ -9,7 +9,7 @@ install:
   - pushd lib2geom
   - git checkout 37876ed4
   - popd
-  - echo "configure lib2geom"
+  - echo "configure lib2geom: $(cmake --version)"
   - cmake -B build-lib2geom -S lib2geom -GNinja -D2GEOM_TESTING=OFF
   - sudo cmake --build build-lib2geom --target install
 jobs:
@@ -38,6 +38,9 @@ jobs:
     - export QT_PREFIX="/opt/qt512"
     - export QT_QM_PATH="/opt/qt512/translations/"
     - export PATH="/opt/qt512/bin:$PATH"
+    - echo "Installed cmake version: $(/usr/bin/cmake --version)"
+    - echo "System cmake version: $(cmake --version)"
+    - echo "System cmake path: $(which cmake)"
     after_success:
     - build-scripts/make-appimage.sh
   - stage: build
