@@ -111,9 +111,10 @@ jobs:
     install:
     - sudo apt install -y clang-format-10
     script:
-    - clang-10 --version
-    - clang --version
-    - clang-format-10 --version
+    - clang-format --version
+    - echo $PATH
+    - export PATH='/usr/bin:$PATH'
+    - echo $PATH
     - clang-format --version
     - build-scripts/format.sh check
 script:
