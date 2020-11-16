@@ -148,14 +148,24 @@ if (MINGW)
   list(TRANSFORM required_system_dlls PREPEND "${MinGWPath}/")
   set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS ${required_system_dlls})
   install(FILES ${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll DESTINATION bin/platforms)
-  install(DIRECTORY ${MinGWPath}/../lib/python3.8 DESTINATION lib/)
+
+  file(GLOB python_filefwefwrs ${MinGWPath}/../lib/python3.8/*.py)
+  foreach (fn IN LISTS python_filefwefwrs)
+    install(FILES ${fn} DESTINATION lib/python3.8/)
+  endforeach()
+
+  install(FILES ${MinGWPath}/../lib/python3.8/LICENSE.txt DESTINATION lib/)
+  list(APPEND python_dirsfwfrw collections ctypes encodings json multiprocessing)
+  foreach (dir IN LISTS python_dirsfwfrw)
+    install(DIRECTORY "${MinGWPath}/../lib/python3.8/${dir}" DESTINATION lib/python3.8/)
+  endforeach()
 
   add_custom_command(TARGET ommpfritt-cli POST_BUILD
           COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_BINARY_DIR}/platforms"
           COMMAND ${CMAKE_COMMAND} -E copy "${MinGWPath}/../share/qt5/plugins/platforms/qwindows.dll" "${PROJECT_BINARY_DIR}/platforms/"
           COMMAND ${CMAKE_COMMAND} -E copy ${required_system_dlls} ${PROJECT_BINARY_DIR}
           COMMAND_EXPAND_LISTS
-          COMMENT "Copying dependncies into build directory."
+          COMMENT "Copying dependencies into build directory."
           )
 endif()
 
