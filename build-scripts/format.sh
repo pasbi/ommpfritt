@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd "$(dirname $0)/.."
+cd "$(dirname "$0")/.."
 
 echo "$0 $@ using clang-format:"
 clang-format --version
@@ -29,6 +29,20 @@ case "$1" in
   for f in $files; do
     clang-format -i "$f"
   done
+;;
+*)
+  cat << END
+usage: $0 <command>
+  These are the commands:
+
+  check:  reports the diffs of well formated and the actual sources.
+          exits with 0 if no diffs were found or non-zero otherwise.
+
+  format: apply the formatting to the code.
+          Use this with care, it's good practice to commit before
+          using this.
+
+END
 ;;
 esac
 
