@@ -220,6 +220,7 @@ install(
     ARCHIVE DESTINATION lib/static
 )
 
+SET(CPACK_SYSTEM_NAME "${CMAKE_SYSTEM_NAME}${SYSTEM_SUFFIX}")
 include(CPack)
 include(InstallRequiredSystemLibraries)
 
