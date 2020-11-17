@@ -22,7 +22,7 @@ cmake -GNinja \
   -D2GEOM_TESTING=OFF
 
 echo "build lib2geom:"
-cmake --build build-lib2geom --target install
+cmake --build build-lib2geom --target install --parallel 4
 
 QT_QM_PATH=/mingw64/share/qt5/translations/
 
