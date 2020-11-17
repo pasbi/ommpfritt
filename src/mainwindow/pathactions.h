@@ -3,7 +3,6 @@
 
 namespace omm
 {
-
 class Scene;
 class Application;
 
@@ -11,8 +10,7 @@ class Application;
 
 namespace omm::path_actions
 {
-
 std::set<QString> available_actions();
 bool perform_action(const QString& name, Application& app);
 
-} // namespace omm::path_actions
+}  // namespace omm::path_actions

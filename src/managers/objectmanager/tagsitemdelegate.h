@@ -1,12 +1,11 @@
 #pragma once
 
+#include <QAbstractItemDelegate>
 #include <QItemSelectionModel>
 #include <set>
-#include <QAbstractItemDelegate>
 
 namespace omm
 {
-
 class Object;
 class ObjectTreeView;
 class Tag;
@@ -15,11 +14,17 @@ class ObjectTreeSelectionModel;
 class TagsItemDelegate : public QAbstractItemDelegate
 {
 public:
-  explicit TagsItemDelegate(ObjectTreeView& view, ObjectTreeSelectionModel& selection_model, const int column);
-  void paint( QPainter *painter, const QStyleOptionViewItem &option,
-              const QModelIndex &index ) const override;
-  QSize sizeHint(const QStyleOptionViewItem &, const QModelIndex &index) const override;
-  bool editorEvent(QEvent *event, QAbstractItemModel *, const QStyleOptionViewItem &, const QModelIndex &) override;
+  explicit TagsItemDelegate(ObjectTreeView& view,
+                            ObjectTreeSelectionModel& selection_model,
+                            const int column);
+  void paint(QPainter* painter,
+             const QStyleOptionViewItem& option,
+             const QModelIndex& index) const override;
+  QSize sizeHint(const QStyleOptionViewItem&, const QModelIndex& index) const override;
+  bool editorEvent(QEvent* event,
+                   QAbstractItemModel*,
+                   const QStyleOptionViewItem&,
+                   const QModelIndex&) override;
   Tag* tag_at(const QModelIndex& index, const QPoint& pos) const;
   Tag* tag_at(const QPoint& pos) const;
   Tag* tag_before(const QModelIndex& index, QPoint pos) const;

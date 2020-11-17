@@ -1,17 +1,15 @@
 #include "managers/nodemanager/nodemanagertitlebar.h"
+#include "managers/nodemanager/nodemanager.h"
+#include "menuhelper.h"
 #include <QHBoxLayout>
 #include <QMenu>
 #include <QMenuBar>
 #include <QPushButton>
 #include <memory>
-#include "menuhelper.h"
-#include "managers/nodemanager/nodemanager.h"
 
 namespace omm
 {
-
-NodeManagerTitleBar::NodeManagerTitleBar(NodeManager& parent)
-  : ManagerTitleBar(parent)
+NodeManagerTitleBar::NodeManagerTitleBar(NodeManager& parent) : ManagerTitleBar(parent)
 {
   auto lock_button = make_lock_button();
 

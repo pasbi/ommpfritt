@@ -1,27 +1,26 @@
 #include "widgets/animationbutton.h"
 
-#include "commands/setinterpolationcommand.h"
-#include "scene/scene.h"
-#include <QResizeEvent>
-#include <QPainter>
-#include <cmath>
-#include <QMenu>
-#include "logging.h"
 #include "animation/animator.h"
 #include "animation/track.h"
 #include "aspects/propertyowner.h"
-#include "commands/trackcommand.h"
 #include "commands/keyframecommand.h"
-#include "scene/history/historymodel.h"
+#include "commands/setinterpolationcommand.h"
+#include "commands/trackcommand.h"
+#include "logging.h"
 #include "preferences/uicolors.h"
+#include "scene/history/historymodel.h"
+#include "scene/scene.h"
+#include <QMenu>
+#include <QPainter>
+#include <QResizeEvent>
+#include <cmath>
 
 namespace
 {
-
 template<typename K, typename V> std::set<V> values(const std::map<K, V>& map)
 {
   std::set<V> vs;
-  for (auto&& [ k, v ] : map) {
+  for (auto&& [k, v] : map) {
     vs.insert(v);
   }
   return vs;
@@ -31,12 +30,10 @@ template<typename K, typename V> std::set<V> values(const std::map<K, V>& map)
 
 namespace omm
 {
-
-AnimationButton::AnimationButton(Animator& animator, const std::map<AbstractPropertyOwner *, Property *> &properties,
-                                 QWidget *parent)
-  : QWidget(parent)
-  , m_animator(animator)
-  , m_properties(properties)
+AnimationButton::AnimationButton(Animator& animator,
+                                 const std::map<AbstractPropertyOwner*, Property*>& properties,
+                                 QWidget* parent)
+    : QWidget(parent), m_animator(animator), m_properties(properties)
 {
   setContextMenuPolicy(Qt::DefaultContextMenu);
   setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -46,7 +43,7 @@ AnimationButton::AnimationButton(Animator& animator, const std::map<AbstractProp
     // since update never hurts, update even if this is track does not belong to the button.
     update();
   });
-  for (auto&& [ owner, property ] : m_properties) {
+  for (auto&& [owner, property] : m_properties) {
     Q_UNUSED(owner)
     connect(property, &Property::value_changed, this, qOverload<>(&AnimationButton::update));
   }
@@ -86,7 +83,7 @@ void AnimationButton::set_key()
   auto macro = m_animator.scene.history().start_macro(tr("Set keyframe"));
   {
     std::map<AbstractPropertyOwner*, std::unique_ptr<Track>> new_tracks;
-    for (auto&& [ owner, property ] : m_properties) {
+    for (auto&& [owner, property] : m_properties) {
       if (property->track() == nullptr) {
         new_tracks.insert(std::pair(owner, std::make_unique<Track>(*property)));
       }
@@ -99,7 +96,7 @@ void AnimationButton::set_key()
   const int current_time = m_animator.current();
   const std::set<Property*> p1 = values(m_properties);
   const std::set<Property*> p2 = ::filter_if(p1, [current_time](Property* p) {
-      return p->track() != nullptr && p->track()->has_keyframe(current_time);
+    return p->track() != nullptr && p->track()->has_keyframe(current_time);
   });
 
   m_animator.scene.submit<RemoveKeyFrameCommand>(m_animator, current_time, p2);
@@ -109,7 +106,8 @@ void AnimationButton::set_key()
 
 void AnimationButton::remove_key()
 {
-  m_animator.scene.submit<RemoveKeyFrameCommand>(m_animator, m_animator.current(),
+  m_animator.scene.submit<RemoveKeyFrameCommand>(m_animator,
+                                                 m_animator.current(),
                                                  values(m_properties));
   update();
 }
@@ -119,13 +117,13 @@ void AnimationButton::remove_track()
   m_animator.scene.submit(std::make_unique<RemoveTracksCommand>(m_animator, m_properties));
 }
 
-void AnimationButton::resizeEvent(QResizeEvent *event)
+void AnimationButton::resizeEvent(QResizeEvent* event)
 {
   setFixedWidth(event->size().height());
   QWidget::resizeEvent(event);
 }
 
-void AnimationButton::paintEvent(QPaintEvent *event)
+void AnimationButton::paintEvent(QPaintEvent* event)
 {
   QPainter painter(this);
   painter.setRenderHint(QPainter::Antialiasing);
@@ -135,7 +133,7 @@ void AnimationButton::paintEvent(QPaintEvent *event)
   auto centered = [rect](const double relative_radius) {
     const QSizeF absolute_radius = relative_radius * rect.size() / 3.0;
     const QPointF tl = rect.center() - QPointF(absolute_radius.width(), absolute_radius.height());
-    return QRectF(tl, 2*absolute_radius);
+    return QRectF(tl, 2 * absolute_radius);
   };
   const double pen_width_base = std::min(rect.width(), rect.height());
 
@@ -168,16 +166,16 @@ void AnimationButton::paintEvent(QPaintEvent *event)
   }
 }
 
-void AnimationButton::contextMenuEvent(QContextMenuEvent *event)
+void AnimationButton::contextMenuEvent(QContextMenuEvent* event)
 {
   auto context_menu = QMenu();
 
-  auto make_action = [&](const QString& label, void(AnimationButton::*on_triggered)(), bool enabled)
-  {
-    QAction* action = context_menu.addAction(label);
-    connect(action, &QAction::triggered, this, on_triggered);
-    action->setEnabled(enabled);
-  };
+  auto make_action
+      = [&](const QString& label, void (AnimationButton::*on_triggered)(), bool enabled) {
+          QAction* action = context_menu.addAction(label);
+          connect(action, &QAction::triggered, this, on_triggered);
+          action->setEnabled(enabled);
+        };
 
   make_action(tr("Remove Track"), &AnimationButton::remove_track, has_track());
   make_action(has_key() ? tr("Replace Key") : tr("Add Key"), &AnimationButton::set_key, true);
@@ -188,7 +186,7 @@ void AnimationButton::contextMenuEvent(QContextMenuEvent *event)
   context_menu.exec(mapToGlobal(event->pos()));
 }
 
-void AnimationButton::mousePressEvent(QMouseEvent *event)
+void AnimationButton::mousePressEvent(QMouseEvent* event)
 {
   if (event->button() == Qt::LeftButton) {
     set_key();
@@ -204,10 +202,10 @@ std::unique_ptr<QMenu> AnimationButton::make_interpolation_menu() const
     return property->track() != nullptr && property->n_channels() > 0;
   });
 
-  const std::map<Track::Interpolation, bool> options {
-    { Track::Interpolation::Step, true },
-    { Track::Interpolation::Bezier, is_numeric },
-    { Track::Interpolation::Linear, is_numeric },
+  const std::map<Track::Interpolation, bool> options{
+      {Track::Interpolation::Step, true},
+      {Track::Interpolation::Bezier, is_numeric},
+      {Track::Interpolation::Linear, is_numeric},
   };
 
   std::map<Track::Interpolation, QAction*> actions;
@@ -218,7 +216,7 @@ std::unique_ptr<QMenu> AnimationButton::make_interpolation_menu() const
     actions[interpolation] = action;
     action->setCheckable(true);
     if (enabled) {
-      connect(action, &QAction::triggered, this, [this, interpolation=interpolation]() {
+      connect(action, &QAction::triggered, this, [this, interpolation = interpolation]() {
         std::set<Property*> properties;
         for (auto [owner, property] : m_properties) {
           if (property->track() != nullptr) {
@@ -248,10 +246,8 @@ std::unique_ptr<QMenu> AnimationButton::make_interpolation_menu() const
     } else {
       actions[interpolation]->setChecked(false);
     }
-
   }
   return menu;
 }
-
 
 }  // namespace omm

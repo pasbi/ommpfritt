@@ -1,27 +1,27 @@
 #include "managers/objectmanager/objectmanager.h"
-#include "managers/objectmanager/objecttreeview.h"
-#include "scene/scene.h"
-#include <functional>
-#include "mainwindow/application.h"
-#include <QCoreApplication>
-#include "tags/tag.h"
 #include "commands/addcommand.h"
 #include "commands/movecommand.h"
+#include "mainwindow/application.h"
+#include "managers/objectmanager/objecttreeview.h"
 #include "objects/empty.h"
 #include "scene/mailbox.h"
+#include "scene/scene.h"
+#include "tags/tag.h"
 #include <QContextMenuEvent>
-#include "managers/objectmanager/objecttreeview.h"
+#include <QCoreApplication>
+#include <functional>
 
 namespace omm
 {
-
 ObjectManager::ObjectManager(Scene& scene)
-  : ItemManager( QCoreApplication::translate("any-context", "ObjectManager"),
-                 scene, scene.object_tree() )
+    : ItemManager(QCoreApplication::translate("any-context", "ObjectManager"),
+                  scene,
+                  scene.object_tree())
 {
   connect(&scene.mail_box(),
           qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          &item_view(), &ObjectTreeView::set_selection);
+          &item_view(),
+          &ObjectTreeView::set_selection);
 }
 
 bool ObjectManager::perform_action(const QString& name)
@@ -59,6 +59,9 @@ void ObjectManager::contextMenuEvent(QContextMenuEvent* event)
   menu.exec(event->globalPos());
 }
 
-QString ObjectManager::type() const { return TYPE; }
+QString ObjectManager::type() const
+{
+  return TYPE;
+}
 
 }  // namespace omm

@@ -2,7 +2,6 @@
 
 namespace omm
 {
-
 void ScriptTagWrapper::define_python_interface(py::object& module)
 {
   TagWrapper::register_wrapper<ScriptTagWrapper>();

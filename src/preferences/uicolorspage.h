@@ -1,15 +1,17 @@
 #pragma once
 
 #include "color/color.h"
+#include "preferences/preferencepage.h"
 #include "preferences/uicolors.h"
 #include <memory>
-#include "preferences/preferencepage.h"
 
-namespace Ui { class UiColorsPage; }
+namespace Ui
+{
+class UiColorsPage;
+}
 
 namespace omm
 {
-
 class UiColors;
 
 class UiColorsPage : public PreferencePage

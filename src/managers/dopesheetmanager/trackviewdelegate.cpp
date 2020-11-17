@@ -1,30 +1,28 @@
 #include "managers/dopesheetmanager/trackviewdelegate.h"
 #include "animation/animator.h"
-#include <QPainter>
-#include "logging.h"
 #include "animation/track.h"
+#include "commands/keyframecommand.h"
+#include "logging.h"
+#include "managers/dopesheetmanager/dopesheetview.h"
+#include "managers/timeline/slider.h"
 #include "properties/property.h"
+#include "scene/history/historymodel.h"
+#include "scene/mailbox.h"
+#include "scene/scene.h"
 #include <QEvent>
 #include <QMouseEvent>
+#include <QPainter>
 #include <algorithm>
-#include "managers/dopesheetmanager/dopesheetview.h"
-#include "scene/scene.h"
-#include "scene/history/historymodel.h"
-#include "commands/keyframecommand.h"
-#include "scene/mailbox.h"
-#include "managers/timeline/slider.h"
-#include "animation/track.h"
 
 namespace omm
 {
-
 TrackViewDelegate::TrackViewDelegate(DopeSheetView& view, TimelineCanvas& canvas)
-  : m_view(view)
-  , m_canvas(canvas)
+    : m_view(view), m_canvas(canvas)
 {
 }
 
-void TrackViewDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option,
+void TrackViewDelegate::paint(QPainter* painter,
+                              const QStyleOptionViewItem& option,
                               const QModelIndex& index) const
 {
   painter->save();
@@ -83,8 +81,9 @@ void TrackViewDelegate::activate_index(const QModelIndex& index) const
   if (index.isValid()) {
     m_canvas.rect = m_view.visualRect(index);
   } else {
-    m_canvas.rect = QRectF(QPointF(m_view.columnViewportPosition(1), 0),
-                           QSizeF(m_view.columnWidth(1), 0));;
+    m_canvas.rect
+        = QRectF(QPointF(m_view.columnViewportPosition(1), 0), QSizeF(m_view.columnWidth(1), 0));
+    ;
   }
   m_canvas.footer_height = 0;
   m_canvas.tracks = tracks;

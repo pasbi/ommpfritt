@@ -1,23 +1,23 @@
 #pragma once
 
-#include <QIcon>
-#include <QMenu>
 #include "aspects/propertyowner.h"
 #include "external/json_fwd.hpp"
-#include <Qt>
 #include "tools/handles/handle.h"
+#include <QIcon>
+#include <QMenu>
+#include <Qt>
 
 class QMouseEvent;
 
-namespace omm {
-
+namespace omm
+{
 class Object;
 class Scene;
 class Painter;
 
 class Tool
-  : public PropertyOwner<Kind::Tool>
-  , public AbstractFactory<QString, false, Tool, Scene&>
+    : public PropertyOwner<Kind::Tool>
+    , public AbstractFactory<QString, false, Tool, Scene&>
 {
   Q_OBJECT
 public:
@@ -28,8 +28,7 @@ public:
   /**
    * @brief returns true if any grabbable was moved
    */
-  virtual bool mouse_move( const Vec2f& delta, const Vec2f& pos,
-                           const QMouseEvent& event);
+  virtual bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& event);
 
   /**
    * @brief returns true if any grabbable was hit
@@ -38,20 +37,30 @@ public:
   virtual void mouse_release(const Vec2f& pos, const QMouseEvent& event);
   virtual bool key_press(const QKeyEvent& event);
   virtual void draw(Painter& painter) const;
-  virtual bool has_transformation() const { return false; }
+  virtual bool has_transformation() const
+  {
+    return false;
+  }
   virtual void cancel();
   virtual void end();
-  virtual void start() {}
+  virtual void start()
+  {
+  }
   virtual std::unique_ptr<QMenu> make_context_menu(QWidget* parent);
   virtual ObjectTransformation transformation() const;
-  Flag flags() const override { return Flag::None; }
+  Flag flags() const override
+  {
+    return Flag::None;
+  }
   ObjectTransformation viewport_transformation;
   bool integer_transformation() const;
   QString name() const override;
   virtual SceneMode scene_mode() const = 0;
 
 public Q_SLOTS:
-  virtual void reset() {}
+  virtual void reset()
+  {
+  }
 
 protected:
   std::vector<std::unique_ptr<Handle>> handles;

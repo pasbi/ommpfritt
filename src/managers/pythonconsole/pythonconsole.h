@@ -1,15 +1,14 @@
 #pragma once
 
-#include <stack>
+#include "common.h"
+#include "keybindings/commandinterface.h"
 #include "managers/manager.h"
 #include <memory>
+#include <stack>
 #include <string>
-#include "keybindings/commandinterface.h"
-#include "common.h"
 
 namespace omm
 {
-
 class CodeEdit;
 class ReferenceLineEdit;
 
@@ -22,7 +21,7 @@ public:
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PythonConsole");
   QString type() const override;
-  bool perform_action(const QString &name) override;
+  bool perform_action(const QString& name) override;
 
 protected:
   bool eventFilter(QObject* object, QEvent* event) override;
@@ -36,7 +35,6 @@ private:
   void eval();
   bool accept(const void* associated_item) const;
   void clear();
-
 
   void get_previous_command();
   void get_next_command();
@@ -53,7 +51,6 @@ private Q_SLOTS:
 private:
   // allocation on stack issues strange compiler warnings
   void* m_locals = nullptr;
-
 };
 
 }  // namespace omm

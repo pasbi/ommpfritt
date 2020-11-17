@@ -2,11 +2,8 @@
 
 namespace omm
 {
-
-const Property::PropertyDetail IntegerProperty::detail
-{
-  [](const Property&, std::size_t) { return ""; }
-};
+const Property::PropertyDetail IntegerProperty::detail{
+    [](const Property&, std::size_t) { return ""; }};
 
 void IntegerProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
@@ -14,17 +11,17 @@ void IntegerProperty::deserialize(AbstractDeserializer& deserializer, const Poin
   set(deserializer.get_int(make_pointer(root, TypedPropertyDetail::VALUE_POINTER)));
   if (is_user_property()) {
     set_default_value(
-      deserializer.get_int(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
+        deserializer.get_int(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
   }
 }
 
 void IntegerProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   NumericProperty::serialize(serializer, root);
-  serializer.set_value( value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
+  serializer.set_value(value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
   if (is_user_property()) {
-    serializer.set_value( default_value(),
-                          make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
+    serializer.set_value(default_value(),
+                         make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER));
   }
 }
 

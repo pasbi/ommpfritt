@@ -56,6 +56,5 @@ if __name__ == "__main__":
         f.write(generated_file_header.header())
         for line in lines:
             f.write(line + "\n")
-        f.write("\n")
         print("done.")
 

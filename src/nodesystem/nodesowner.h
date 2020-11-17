@@ -1,12 +1,11 @@
 #pragma once
 
-#include <memory>
 #include "cachedgetter.h"
 #include "nodesystem/nodecompiler.h"
+#include <memory>
 
 namespace omm
 {
-
 class Scene;
 class Property;
 class NodeModel;
@@ -28,4 +27,4 @@ private:
   std::unique_ptr<NodeModel> m_node_model;
 };
 
-}  // namespace
+}  // namespace omm

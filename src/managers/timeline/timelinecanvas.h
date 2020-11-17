@@ -1,19 +1,18 @@
 #pragma once
 
-#include <QRectF>
-#include <set>
-#include <QPainter>
+#include "animation/animator.h"
+#include "managers/range.h"
 #include <QFont>
 #include <QObject>
-#include "managers/range.h"
-#include "animation/animator.h"
+#include <QPainter>
+#include <QRectF>
+#include <set>
 
 class QMouseEvent;
 class QKeyEvent;
 
 namespace omm
 {
-
 class Animator;
 class Track;
 
@@ -72,14 +71,21 @@ Q_SIGNALS:
 
 public:
   struct PixelRange : Range {
-    PixelRange(TimelineCanvas& self) : Range(1, 100), m_self(self) {}
-    int pixel_range() const override { return m_self.rect.width(); }
+    PixelRange(TimelineCanvas& self) : Range(1, 100), m_self(self)
+    {
+    }
+    int pixel_range() const override
+    {
+      return m_self.rect.width();
+    }
+
   private:
     TimelineCanvas& m_self;
   } frame_range;
 
 protected:
   const QWidget& m_widget;
+
 private:
   std::map<Track*, std::set<int>> m_selection;
   std::map<Track*, std::set<int>> m_rubber_band_selection;

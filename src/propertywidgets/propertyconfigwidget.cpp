@@ -1,16 +1,15 @@
 #include "propertywidgets/propertyconfigwidget.h"
-#include <QVBoxLayout>
-#include <QComboBox>
-#include <QLineEdit>
 #include "properties/property.h"
-#include <QPushButton>
+#include <QComboBox>
 #include <QFormLayout>
 #include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 namespace omm
 {
-
-void AbstractPropertyConfigWidget::hideEvent(QHideEvent *event)
+void AbstractPropertyConfigWidget::hideEvent(QHideEvent* event)
 {
   QWidget::hideEvent(event);
   Q_EMIT hidden();

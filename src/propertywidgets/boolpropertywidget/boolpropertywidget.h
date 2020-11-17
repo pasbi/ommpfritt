@@ -1,19 +1,18 @@
 #pragma once
 
-#include "propertywidgets/propertywidget.h"
 #include "properties/boolproperty.h"
+#include "propertywidgets/propertywidget.h"
 
 class QLineEdit;
 
 namespace omm
 {
-
 class CheckBox;
 
 class BoolPropertyWidget : public PropertyWidget<BoolProperty>
 {
 public:
-  explicit BoolPropertyWidget(Scene& scene,const std::set<Property*>& properties);
+  explicit BoolPropertyWidget(Scene& scene, const std::set<Property*>& properties);
 
 protected:
   void update_edit() override;

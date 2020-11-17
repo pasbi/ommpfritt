@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 template<PortType> class OrdinaryPort;
 
 class ColorConvertNode : public Node
@@ -18,7 +17,10 @@ public:
 
   QString output_data_type(const OutputPort& port) const override;
   QString title() const override;
-  QString type() const override { return TYPE; }
+  QString type() const override
+  {
+    return TYPE;
+  }
   static const Detail detail;
 
 private:

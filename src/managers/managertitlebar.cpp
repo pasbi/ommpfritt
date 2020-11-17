@@ -1,16 +1,14 @@
 #include "managers/managertitlebar.h"
-#include <memory>
+#include "managers/manager.h"
+#include <QHBoxLayout>
 #include <QPushButton>
 #include <QStyle>
-#include <QHBoxLayout>
 #include <QVBoxLayout>
-#include "managers/manager.h"
+#include <memory>
 
 namespace omm
 {
-
-ManagerTitleBar::ManagerTitleBar(Manager& manager)
-  : m_manager(manager)
+ManagerTitleBar::ManagerTitleBar(Manager& manager) : m_manager(manager)
 {
   auto pb_normal = std::make_unique<QPushButton>();
   pb_normal->setMaximumSize(QSize(12, 12));
@@ -51,9 +49,9 @@ void ManagerTitleBar::add_widget(std::unique_ptr<QWidget> widget)
 std::unique_ptr<QPushButton> ManagerTitleBar::make_lock_button() const
 {
   auto lock_button = std::make_unique<QPushButton>();
-  const auto update_lock_button_icon = [&btn=*lock_button](bool checked) {
-    btn.setIcon(QPixmap::fromImage(QImage(checked ? ":/icons/lock-closed_128.png"
-                                                  : ":/icons/lock-open_128.png" )));
+  const auto update_lock_button_icon = [&btn = *lock_button](bool checked) {
+    btn.setIcon(QPixmap::fromImage(
+        QImage(checked ? ":/icons/lock-closed_128.png" : ":/icons/lock-open_128.png")));
   };
   update_lock_button_icon(lock_button->isChecked());
   lock_button->setFixedSize(24, 24);

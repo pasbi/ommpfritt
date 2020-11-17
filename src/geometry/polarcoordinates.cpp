@@ -2,20 +2,23 @@
 
 namespace omm
 {
-
 PolarCoordinates::PolarCoordinates(const double argument, const double magnitude)
-  : argument(argument), magnitude(magnitude) { }
-
-PolarCoordinates::PolarCoordinates(const Vec2f& cartesian)
-  : PolarCoordinates(cartesian.arg(), cartesian.euclidean_norm())
+    : argument(argument), magnitude(magnitude)
 {
 }
 
-PolarCoordinates::PolarCoordinates() : PolarCoordinates(0.0, 0.0) {}
+PolarCoordinates::PolarCoordinates(const Vec2f& cartesian)
+    : PolarCoordinates(cartesian.arg(), cartesian.euclidean_norm())
+{
+}
+
+PolarCoordinates::PolarCoordinates() : PolarCoordinates(0.0, 0.0)
+{
+}
 
 Vec2f PolarCoordinates::to_cartesian() const
 {
-  return Vec2f { magnitude * std::cos(argument), magnitude * std::sin(argument) };
+  return Vec2f{magnitude * std::cos(argument), magnitude * std::sin(argument)};
 }
 
 void PolarCoordinates::swap(PolarCoordinates& other)
@@ -39,7 +42,7 @@ bool PolarCoordinates::has_inf() const
   return std::isinf(argument) || std::isinf(magnitude);
 }
 
-bool PolarCoordinates::operator<(const PolarCoordinates &other) const
+bool PolarCoordinates::operator<(const PolarCoordinates& other) const
 {
   if (magnitude == other.magnitude) {
     return argument < other.argument;
@@ -60,8 +63,8 @@ PolarCoordinates PolarCoordinates::operator-() const
 
 double PolarCoordinates::normalize_angle(double rad)
 {
-  static constexpr auto pi2 = 2*M_PI;
+  static constexpr auto pi2 = 2 * M_PI;
   return fmod(fmod(rad + M_PI, pi2) + pi2, pi2) - M_PI;
 }
 
-}  // namespace om
+}  // namespace omm

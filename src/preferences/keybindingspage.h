@@ -1,17 +1,19 @@
 #pragma once
 
 #include "preferences/keybindingsproxymodel.h"
-#include <memory>
 #include "preferences/preferencepage.h"
+#include <memory>
 
-namespace Ui { class KeyBindingsPage; }
+namespace Ui
+{
+class KeyBindingsPage;
+}
 
 namespace omm
 {
-
 class KeyBindings;
 
-class KeyBindingsPage  : public PreferencePage
+class KeyBindingsPage : public PreferencePage
 {
   Q_OBJECT
 public:

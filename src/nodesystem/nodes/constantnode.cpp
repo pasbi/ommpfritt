@@ -1,24 +1,17 @@
 #include "nodesystem/nodes/constantnode.h"
-#include "nodesystem/nodemodel.h"
-#include "properties/stringproperty.h"
-#include "variant.h"
-#include "scene/scene.h"
-#include "properties/optionproperty.h"
 #include "managers/propertymanager/userpropertydialog.h"
+#include "nodesystem/nodemodel.h"
+#include "properties/optionproperty.h"
+#include "properties/stringproperty.h"
+#include "scene/scene.h"
+#include "variant.h"
 #include <QMenu>
 
 namespace omm
 {
-
-const Node::Detail ConstantNode::detail {
-  {
-    { AbstractNodeCompiler::Language::Python, "" },
-    { AbstractNodeCompiler::Language::GLSL, "" }
-  },
-  {
-    QT_TRANSLATE_NOOP("NodeMenuPath", "General")
-  }
-};
+const Node::Detail ConstantNode::detail{
+    {{AbstractNodeCompiler::Language::Python, ""}, {AbstractNodeCompiler::Language::GLSL, ""}},
+    {QT_TRANSLATE_NOOP("NodeMenuPath", "General")}};
 
 ConstantNode::ConstantNode(NodeModel& model) : Node(model)
 {
@@ -34,4 +27,4 @@ void ConstantNode::populate_menu(QMenu& menu)
   });
 }
 
-}  // namespace
+}  // namespace omm

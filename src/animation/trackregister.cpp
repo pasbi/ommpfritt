@@ -1,9 +1,9 @@
 //#include "animation/floattrack.h"
 
-//namespace omm
+// namespace omm
 //{
 
-//void register_tracks()
+// void register_tracks()
 //{
 //#define REGISTER_OBJECT(TYPE) AbstractTrack::register_type<TYPE>(#TYPE)
 //  REGISTER_OBJECT(FloatTrack);

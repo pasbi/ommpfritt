@@ -1,28 +1,29 @@
 #include "tools/selectobjectstool.h"
 #include "commands/objectstransformationcommand.h"
-#include "tools/handles/moveaxishandle.h"
-#include "tools/handles/rotatehandle.h"
-#include "tools/handles/scalebandhandle.h"
-#include "tools/handles/scaleaxishandle.h"
-#include "tools/handles/particlehandle.h"
-#include "scene/scene.h"
 #include "properties/optionproperty.h"
+#include "scene/scene.h"
 #include "tools/handles/boundingboxhandle.h"
+#include "tools/handles/moveaxishandle.h"
+#include "tools/handles/particlehandle.h"
+#include "tools/handles/rotatehandle.h"
+#include "tools/handles/scaleaxishandle.h"
+#include "tools/handles/scalebandhandle.h"
 
 namespace omm
 {
-
-SelectObjectsTool::SelectObjectsTool(Scene& scene)
-  : AbstractSelectTool(scene)
+SelectObjectsTool::SelectObjectsTool(Scene& scene) : AbstractSelectTool(scene)
 {
   create_property<OptionProperty>(TRANSFORMATION_MODE_KEY, 0)
-    .set_options({ QObject::tr("Object"), QObject::tr("Axis") })
-    .set_label(QObject::tr("Mode"))
-    .set_category(QObject::tr("tool"))
-    .set_animatable(false);
+      .set_options({QObject::tr("Object"), QObject::tr("Axis")})
+      .set_label(QObject::tr("Mode"))
+      .set_category(QObject::tr("tool"))
+      .set_animatable(false);
 }
 
-QString SelectObjectsTool::type() const { return TYPE; }
+QString SelectObjectsTool::type() const
+{
+  return TYPE;
+}
 
 void SelectObjectsTool::transform_objects(ObjectTransformation t)
 {
@@ -48,9 +49,8 @@ void SelectObjectsTool::reset()
   handles.push_back(std::make_unique<BoundingBoxHandle<SelectObjectsTool>>(*this));
 
   // ignore object selection. Return a handle for each visible object.
-  const auto objects = ::filter_if(scene()->object_tree().items(), [](Object* object) {
-    return object->is_visible(true);
-  });
+  const auto objects = ::filter_if(scene()->object_tree().items(),
+                                   [](Object* object) { return object->is_visible(true); });
 
   handles.reserve(objects.size());
   auto inserter = std::back_inserter(handles);
@@ -102,16 +102,16 @@ TransformObjectsHelper::TransformObjectsHelper()
 }
 
 std::unique_ptr<ObjectsTransformationCommand>
-TransformObjectsHelper::make_command(const Matrix &t, TransformationMode mode) const
+TransformObjectsHelper::make_command(const Matrix& t, TransformationMode mode) const
 {
   ObjectsTransformationCommand::Map map;
   for (auto&& [object, transformation] : m_initial_transformations) {
     map.insert(std::pair(object, ObjectTransformation(t * transformation.to_mat())));
   }
-  return std::make_unique<ObjectsTransformationCommand>( map, mode );
+  return std::make_unique<ObjectsTransformationCommand>(map, mode);
 }
 
-void TransformObjectsHelper::update(const std::set<Object *> &objects)
+void TransformObjectsHelper::update(const std::set<Object*>& objects)
 {
   m_objects = objects;
   update();

@@ -4,18 +4,17 @@
 
 namespace omm
 {
-
 class Object;
 
 class ObjectTree
-  : public ItemModelAdapter<ObjectTree, Object, QAbstractItemModel>
-  , public Structure<Object>
+    : public ItemModelAdapter<ObjectTree, Object, QAbstractItemModel>
+    , public Structure<Object>
 {
   Q_OBJECT
 public:
   constexpr static bool is_tree = true;
 
-  ObjectTree(std::unique_ptr<Object> root, Scene &scene);
+  ObjectTree(std::unique_ptr<Object> root, Scene& scene);
   virtual ~ObjectTree() = default;
 
 public:
@@ -25,7 +24,7 @@ public:
   bool can_move_object(const TreeMoveContext<Object>& new_context) const;
   std::unique_ptr<Object> replace_root(std::unique_ptr<Object> new_root);
   Object& root() const;
-  bool contains(const Object &t) const;
+  bool contains(const Object& t) const;
 
   size_t insert_position(const Object* predecessor) const override;
   std::set<Object*> items() const override;
@@ -34,7 +33,6 @@ public:
   using Structure<Object>::predecessor;
   std::unique_ptr<Object> remove(Object& t) override;
 
-
   QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
   QModelIndex parent(const QModelIndex& index) const override;
   int rowCount(const QModelIndex& parent) const override;
@@ -42,15 +40,21 @@ public:
   QVariant data(const QModelIndex& index, int role) const override;
   bool setData(const QModelIndex& index, const QVariant& value, int role) override;
   Object& item_at(const QModelIndex& index) const override;
-  QModelIndex index_of(Object &object) const override;
-  Qt::ItemFlags flags(const QModelIndex &index) const override;
+  QModelIndex index_of(Object& object) const override;
+  Qt::ItemFlags flags(const QModelIndex& index) const override;
   QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-  bool dropMimeData( const QMimeData *data, Qt::DropAction action,
-                      int row, int column, const QModelIndex &parent ) override;
+  bool dropMimeData(const QMimeData* data,
+                    Qt::DropAction action,
+                    int row,
+                    int column,
+                    const QModelIndex& parent) override;
 
-  bool canDropMimeData( const QMimeData *data, Qt::DropAction action,
-                        int row, int column, const QModelIndex &parent ) const override;
+  bool canDropMimeData(const QMimeData* data,
+                       Qt::DropAction action,
+                       int row,
+                       int column,
+                       const QModelIndex& parent) const override;
 
   constexpr static int TAGS_COLUMN = 2;
   constexpr static int VISIBILITY_COLUMN = 1;
@@ -71,7 +75,6 @@ private:
 
 Q_SIGNALS:
   void expand_item(const QModelIndex&);
-
 };
 
 }  // namespace omm

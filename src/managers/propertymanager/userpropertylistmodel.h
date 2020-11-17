@@ -1,12 +1,11 @@
 #pragma once
 
+#include "properties/property.h"
 #include <QAbstractListModel>
 #include <memory>
-#include "properties/property.h"
 
 namespace omm
 {
-
 class AbstractPropertyOwner;
 
 class UserPropertyListItem
@@ -17,7 +16,10 @@ public:
   QString type() const;
 
   Property::Configuration configuration;
-  Property* property() const { return m_property; }
+  Property* property() const
+  {
+    return m_property;
+  }
 
 private:
   Property* m_property = nullptr;
@@ -33,11 +35,11 @@ public:
   Qt::ItemFlags flags(const QModelIndex& parent) const override;
   UserPropertyListItem* item(const QModelIndex& index);
   bool setData(const QModelIndex& index, const QVariant& data, int role) override;
-  std::vector<const UserPropertyListItem *> items() const;
+  std::vector<const UserPropertyListItem*> items() const;
   bool contains(const Property* p) const;
 
 public Q_SLOTS:
-  void add_property(const QString &type);
+  void add_property(const QString& type);
   void del_property(const QModelIndex& index);
 
 private:

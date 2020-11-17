@@ -1,25 +1,23 @@
 #include "tools/brushselecttool.h"
 #include "objects/path.h"
-#include "scene/scene.h"
 #include "properties/floatproperty.h"
-#include "tools/selectpointstool.h"
-#include <list>
-#include <QMouseEvent>
 #include "scene/mailbox.h"
+#include "scene/scene.h"
+#include "tools/selectpointstool.h"
+#include <QMouseEvent>
+#include <list>
 
 namespace omm
 {
-
 BrushSelectTool::BrushSelectTool(Scene& scene) : SelectPointsBaseTool(scene)
 {
   create_property<FloatProperty>(RADIUS_PROPERTY_KEY, 20.0)
-    .set_label(QObject::tr("radius"))
-    .set_category(QObject::tr("tool"))
-    .set_animatable(false);
+      .set_label(QObject::tr("radius"))
+      .set_category(QObject::tr("tool"))
+      .set_animatable(false);
 }
 
-bool BrushSelectTool::mouse_move( const Vec2f& delta, const Vec2f& pos,
-                                  const QMouseEvent& event)
+bool BrushSelectTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& event)
 {
   if (SelectPointsBaseTool::mouse_move(delta, pos, event)) {
     return true;
@@ -65,8 +63,7 @@ void BrushSelectTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
   m_mouse_down = false;
 }
 
-void BrushSelectTool
-::modify_selection(const Vec2f& pos, const QMouseEvent& event)
+void BrushSelectTool ::modify_selection(const Vec2f& pos, const QMouseEvent& event)
 {
   const bool extend_selection = !(event.modifiers() & Qt::ControlModifier);
   const double radius = property(RADIUS_PROPERTY_KEY)->value<double>();
@@ -100,16 +97,19 @@ void BrushSelectTool::reset()
   SelectPointsTool::make_handles(*this, false);
 }
 
-QString BrushSelectTool::type() const { return TYPE; }
+QString BrushSelectTool::type() const
+{
+  return TYPE;
+}
 
-void BrushSelectTool::draw(Painter &renderer) const
+void BrushSelectTool::draw(Painter& renderer) const
 {
   SelectPointsBaseTool::draw(renderer);
   if (m_mouse_down) {
     const double r = property(RADIUS_PROPERTY_KEY)->value<double>();
     renderer.painter->setPen(ui_color(HandleStatus::Active, "Handle", "foreground"));
     renderer.painter->setBrush(ui_color(HandleStatus::Active, "Handle", "background"));
-    renderer.painter->drawEllipse(m_mouse_pos.x - r, m_mouse_pos.y - r, 2*r, 2*r);
+    renderer.painter->drawEllipse(m_mouse_pos.x - r, m_mouse_pos.y - r, 2 * r, 2 * r);
   }
 }
 

@@ -1,21 +1,23 @@
 #include "tools/tool.h"
 
-#include <memory>
-#include "renderers/painter.h"
 #include "objects/object.h"
 #include "properties/optionproperty.h"
+#include "renderers/painter.h"
 #include "scene/scene.h"
 #include <QApplication>
 #include <QKeyEvent>
+#include <memory>
 
 namespace omm
 {
-
 Tool::Tool(Scene& scene) : PropertyOwner(&scene)
 {
 }
 
-ObjectTransformation Tool::transformation() const { return ObjectTransformation(); }
+ObjectTransformation Tool::transformation() const
+{
+  return ObjectTransformation();
+}
 
 bool Tool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
@@ -80,7 +82,7 @@ bool Tool::integer_transformation() const
   return QApplication::keyboardModifiers() & Qt::ShiftModifier;
 }
 
-bool Tool::key_press(const QKeyEvent &event)
+bool Tool::key_press(const QKeyEvent& event)
 {
   if (event.key() == Qt::Key_Escape) {
     cancel();
@@ -97,7 +99,9 @@ void Tool::cancel()
   }
 }
 
-void Tool::end() {}
+void Tool::end()
+{
+}
 
 QString Tool::name() const
 {

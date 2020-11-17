@@ -5,9 +5,7 @@
 
 namespace omm
 {
-
-class FloatVectorPropertyConfigWidget
-    : public VectorPropertyConfigWidget<FloatVectorProperty>
+class FloatVectorPropertyConfigWidget : public VectorPropertyConfigWidget<FloatVectorProperty>
 {
   Q_OBJECT
 public:

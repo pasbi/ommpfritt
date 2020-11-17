@@ -1,17 +1,17 @@
 #include "managers/quickaccessdelegate.h"
+#include <QMouseEvent>
 #include <QPainter>
 #include <QTreeView>
-#include <QMouseEvent>
 
 namespace omm
 {
-
 QuickAccessDelegate::QuickAccessDelegate(QAbstractItemView& view) : m_view(view)
 {
 }
 
-void QuickAccessDelegate::
-paint(QPainter *painter, const QStyleOptionViewItem &, const QModelIndex &index) const
+void QuickAccessDelegate::paint(QPainter* painter,
+                                const QStyleOptionViewItem&,
+                                const QModelIndex& index) const
 {
   painter->save();
   painter->setRenderHint(QPainter::Antialiasing);
@@ -29,7 +29,7 @@ paint(QPainter *painter, const QStyleOptionViewItem &, const QModelIndex &index)
   painter->restore();
 }
 
-QSize QuickAccessDelegate::sizeHint(const QStyleOptionViewItem &, const QModelIndex &) const
+QSize QuickAccessDelegate::sizeHint(const QStyleOptionViewItem&, const QModelIndex&) const
 {
   return QSize(-1, -1);
 }
@@ -47,7 +47,7 @@ bool QuickAccessDelegate::on_mouse_button_press(QMouseEvent& event)
   return false;
 }
 
-void QuickAccessDelegate::on_mouse_move(QMouseEvent &event)
+void QuickAccessDelegate::on_mouse_move(QMouseEvent& event)
 {
   const auto index = m_view.indexAt(event.pos());
   const QPointF pos = to_local(event.pos(), index);
@@ -58,7 +58,7 @@ void QuickAccessDelegate::on_mouse_move(QMouseEvent &event)
   }
 }
 
-void QuickAccessDelegate::on_mouse_release(QMouseEvent &event)
+void QuickAccessDelegate::on_mouse_release(QMouseEvent& event)
 {
   Q_UNUSED(event)
   for (auto& area : m_areas) {
@@ -71,7 +71,7 @@ void QuickAccessDelegate::add_area(std::unique_ptr<QuickAccessDelegate::Area> ar
   m_areas.push_back(std::move(area));
 }
 
-QPointF QuickAccessDelegate::to_local(const QPoint &view_global, const QModelIndex& index) const
+QPointF QuickAccessDelegate::to_local(const QPoint& view_global, const QModelIndex& index) const
 {
   assert(m_view.indexAt(view_global) == index);
   const auto rect = m_view.visualRect(index);
@@ -83,7 +83,6 @@ QPointF QuickAccessDelegate::to_local(const QPoint &view_global, const QModelInd
 
 QuickAccessDelegate::Area::Area(const QRectF& area) : area(area)
 {
-
 }
 
 }  // namespace omm

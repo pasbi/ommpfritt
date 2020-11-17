@@ -1,15 +1,13 @@
 #pragma once
 
-#include <QPainter>
 #include "renderers/painter.h"
 #include "tools/handles/handle.h"
 #include "tools/tool.h"
+#include <QPainter>
 
 namespace omm
 {
-
-template<typename ToolT>
-class RotateHandle : public Handle
+template<typename ToolT> class RotateHandle : public Handle
 {
 public:
   RotateHandle(ToolT& tool) : Handle(tool)
@@ -21,7 +19,7 @@ public:
     painter.setTransform(tool.transformation().to_qtransform(), true);
     static const auto path = []() {
       QPainterPath path;
-      path.addEllipse(-RADIUS, -RADIUS, 2*RADIUS, 2*RADIUS);
+      path.addEllipse(-RADIUS, -RADIUS, 2 * RADIUS, 2 * RADIUS);
       return path;
     }();
 

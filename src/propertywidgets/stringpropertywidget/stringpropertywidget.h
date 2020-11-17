@@ -1,12 +1,11 @@
 #pragma once
 
-#include <string>
-#include "propertywidgets/propertywidget.h"
 #include "properties/stringproperty.h"
+#include "propertywidgets/propertywidget.h"
+#include <string>
 
 namespace omm
 {
-
 class AbstractTextEditAdapter;
 
 class StringPropertyWidget : public PropertyWidget<StringProperty>

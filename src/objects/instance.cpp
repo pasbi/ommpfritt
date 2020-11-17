@@ -1,34 +1,34 @@
 #include "objects/instance.h"
 
-#include "objects/empty.h"
-#include <QObject>
-#include "scene/scene.h"
-#include "properties/referenceproperty.h"
-#include "properties/boolproperty.h"
 #include "commands/propertycommand.h"
-#include "tags/tag.h"
+#include "objects/empty.h"
+#include "properties/boolproperty.h"
+#include "properties/referenceproperty.h"
+#include "scene/mailbox.h"
+#include "scene/scene.h"
 #include "tags/scripttag.h"
 #include "tags/styletag.h"
-#include "scene/mailbox.h"
+#include "tags/tag.h"
+#include <QObject>
 
 namespace omm
 {
-
 class Style;
 
-Instance::Instance(Scene* scene)
-  : Object(scene)
+Instance::Instance(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("Instance");
   create_property<ReferenceProperty>(REFERENCE_PROPERTY_KEY)
-    .set_filter(ReferenceProperty::Filter({ Kind::Object }, {{}}))
-    .set_label(QObject::tr("reference", "Instance")).set_category(category);
+      .set_filter(ReferenceProperty::Filter({Kind::Object}, {{}}))
+      .set_label(QObject::tr("reference", "Instance"))
+      .set_category(category);
   create_property<BoolProperty>(IDENTICAL_PROPERTY_KEY)
-    .set_label(QObject::tr("identical", "Instance")).set_category(category);
+      .set_label(QObject::tr("identical", "Instance"))
+      .set_category(category);
   polish();
 }
 
-Instance::Instance(const Instance &other) : Object(other)
+Instance::Instance(const Instance& other) : Object(other)
 {
   polish();
 }
@@ -52,7 +52,7 @@ void Instance::polish()
   });
 }
 
-void Instance::draw_object(Painter &renderer, const Style& style, Painter::Options options) const
+void Instance::draw_object(Painter& renderer, const Style& style, Painter::Options options) const
 {
   Q_UNUSED(style)
   auto cycle_guard = scene()->make_cycle_guard(this);
@@ -66,7 +66,7 @@ void Instance::draw_object(Painter &renderer, const Style& style, Painter::Optio
   }
 }
 
-BoundingBox Instance::bounding_box(const ObjectTransformation &transformation) const
+BoundingBox Instance::bounding_box(const ObjectTransformation& transformation) const
 {
   auto cycle_guard = scene()->make_cycle_guard(this);
   if (!cycle_guard->inside_cycle() && is_active()) {
@@ -81,7 +81,7 @@ BoundingBox Instance::bounding_box(const ObjectTransformation &transformation) c
   }
 }
 
-Object *Instance::illustrated_object() const
+Object* Instance::illustrated_object() const
 {
   // Note: If you implement a cache, keep in mind that it becomes dirty if
   //  - this instance's parent changes
@@ -111,8 +111,14 @@ Object::ConvertedObject Instance::convert() const
   return {std::move(clone), true};
 }
 
-QString Instance::type() const { return TYPE; }
-Flag Instance::flags() const { return Object::flags() | Flag::Convertible; }
+QString Instance::type() const
+{
+  return TYPE;
+}
+Flag Instance::flags() const
+{
+  return Object::flags() | Flag::Convertible;
+}
 
 void Instance::post_create_hook()
 {
@@ -120,7 +126,7 @@ void Instance::post_create_hook()
   if (selection.size() == 1) {
     auto* object = *selection.begin();
     using command = PropertiesCommand<ReferenceProperty>;
-    scene()->submit<command>(std::set { property(REFERENCE_PROPERTY_KEY) }, object);
+    scene()->submit<command>(std::set{property(REFERENCE_PROPERTY_KEY)}, object);
   }
 }
 
@@ -138,7 +144,8 @@ void Instance::update()
         m_reference = r->clone();
         m_reference->set_transformation(ObjectTransformation());
         m_reference->property(Object::VISIBILITY_PROPERTY_KEY)->set(Object::Visibility::Default);
-        m_reference->property(Object::VIEWPORT_VISIBILITY_PROPERTY_KEY)->set(Object::Visibility::Default);
+        m_reference->property(Object::VIEWPORT_VISIBILITY_PROPERTY_KEY)
+            ->set(Object::Visibility::Default);
       }
     }
 
@@ -156,10 +163,10 @@ Geom::PathVector Instance::paths() const
   }
 }
 
-void Instance::on_property_value_changed(Property *property)
+void Instance::on_property_value_changed(Property* property)
 {
-  if (    property == this->property(REFERENCE_PROPERTY_KEY)
-       || property == this->property(IDENTICAL_PROPERTY_KEY) ) {
+  if (property == this->property(REFERENCE_PROPERTY_KEY)
+      || property == this->property(IDENTICAL_PROPERTY_KEY)) {
     update();
   } else {
     Object::on_property_value_changed(property);

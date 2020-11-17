@@ -1,12 +1,11 @@
 #pragma once
 
-#include "properties/typedproperty.h"
 #include "color/color.h"
+#include "properties/typedproperty.h"
 #include <Qt>
 
 namespace omm
 {
-
 class ColorProperty : public TypedProperty<Color>
 {
 public:

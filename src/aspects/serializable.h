@@ -1,14 +1,14 @@
 #pragma once
 
-#include <sstream>
+#include "variant.h"
+#include <QString>
 #include <cassert>
 #include <memory>
+#include <sstream>
 #include <vector>
-#include <QString>
 
 namespace omm
 {
-
 class AbstractSerializer;
 class AbstractDeserializer;
 
@@ -19,8 +19,12 @@ public:
   using ByteArray = std::vector<char>;
   virtual ~Serializable() = default;
 
-  virtual void serialize(AbstractSerializer&, const Pointer&) const {}
-  virtual void deserialize(AbstractDeserializer&, const Pointer&) {}
+  virtual void serialize(AbstractSerializer&, const Pointer&) const
+  {
+  }
+  virtual void deserialize(AbstractDeserializer&, const Pointer&)
+  {
+  }
 
   template<typename PointerT> static QString make_pointer(const PointerT& pointer)
   {
@@ -45,4 +49,4 @@ public:
   }
 };
 
-}  // omm
+}  // namespace omm

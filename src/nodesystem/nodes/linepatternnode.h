@@ -4,14 +4,16 @@
 
 namespace omm
 {
-
 class LinePatternNode : public Node
 {
   Q_OBJECT
 public:
   explicit LinePatternNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "LinePatternNode");
-  QString type() const override { return TYPE; }
+  QString type() const override
+  {
+    return TYPE;
+  }
   QString output_data_type(const OutputPort& port) const override;
   QString input_data_type(const InputPort& port) const override;
   QString title() const override;

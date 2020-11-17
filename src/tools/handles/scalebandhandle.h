@@ -1,16 +1,14 @@
 #pragma once
 
-#include "geometry/vec2.h"
-#include "tools/handles/handle.h"
 #include "geometry/util.h"
+#include "geometry/vec2.h"
 #include "renderers/painter.h"
+#include "tools/handles/handle.h"
 #include "tools/tool.h"
 
 namespace omm
 {
-
-template<typename ToolT>
-class ScaleBandHandle : public Handle
+template<typename ToolT> class ScaleBandHandle : public Handle
 {
 public:
   ScaleBandHandle(ToolT& tool) : Handle(tool)
@@ -22,7 +20,7 @@ public:
     const Vec2f global_point = tool.transformation().inverted().apply_to_position(point);
     const double x = global_point.x;
     const double y = global_point.y;
-    return x+y < r + width/2.0 && x+y > r - width/2.0 && x > stop && y > stop;
+    return x + y < r + width / 2.0 && x + y > r - width / 2.0 && x > stop && y > stop;
   }
 
   void draw(QPainter& painter) const override
@@ -30,11 +28,11 @@ public:
     painter.setPen(ui_color("band"));
     painter.setBrush(ui_color("band fill"));
     painter.setTransform(tool.transformation().to_qtransform(), true);
-    const QPointF polyline[] = { QPointF(stop, r - width/2.0 - stop),
-                                 QPointF(stop, r + width/2.0 - stop),
-                                 QPointF(r + width/2.0 - stop, stop),
-                                 QPointF(r - width/2.0 - stop, stop),
-                                 QPointF(stop, r - width/2.0 - stop) };
+    const QPointF polyline[] = {QPointF(stop, r - width / 2.0 - stop),
+                                QPointF(stop, r + width / 2.0 - stop),
+                                QPointF(r + width / 2.0 - stop, stop),
+                                QPointF(r - width / 2.0 - stop, stop),
+                                QPointF(stop, r - width / 2.0 - stop)};
     painter.drawPolygon(polyline, 5);
   }
 

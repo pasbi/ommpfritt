@@ -1,12 +1,11 @@
 #pragma once
 
-#include <vector>
 #include "properties/typedproperty.h"
 #include <Qt>
+#include <vector>
 
 namespace omm
 {
-
 class OptionProperty : public TypedProperty<size_t>
 {
 public:

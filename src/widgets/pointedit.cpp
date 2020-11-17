@@ -1,15 +1,15 @@
 #include "widgets/pointedit.h"
+#include "commands/modifypointscommand.h"
+#include "scene/scene.h"
 #include "widgets/coordinateedit.h"
 #include <QHBoxLayout>
+#include <QPushButton>
 #include <QVBoxLayout>
 #include <memory>
-#include <QPushButton>
-#include "scene/scene.h"
-#include "commands/modifypointscommand.h"
 
-auto make_tangent_layout( omm::CoordinateEdit*& coordinate_edit_ref,
-                          QPushButton*& mirror_button_ref,
-                          QPushButton*& vanish_button_ref )
+auto make_tangent_layout(omm::CoordinateEdit*& coordinate_edit_ref,
+                         QPushButton*& mirror_button_ref,
+                         QPushButton*& vanish_button_ref)
 {
   auto coordinate_edit = std::make_unique<omm::CoordinateEdit>();
   coordinate_edit_ref = coordinate_edit.get();
@@ -32,9 +32,7 @@ auto make_tangent_layout( omm::CoordinateEdit*& coordinate_edit_ref,
 
 namespace omm
 {
-
-PointEdit::PointEdit(Point& point, QWidget* parent)
-  : QWidget(parent), m_point(point)
+PointEdit::PointEdit(Point& point, QWidget* parent) : QWidget(parent), m_point(point)
 {
   if (m_point.is_selected) {
     QPalette palette = this->palette();
@@ -85,18 +83,28 @@ PointEdit::PointEdit(Point& point, QWidget* parent)
   });
 
   using PC = PolarCoordinates;
-  connect(m_left_tangent_edit, qOverload<const PC&, const PC&>(&CoordinateEdit::value_changed),
-          this, &PointEdit::set_right_maybe);
-  connect(m_right_tangent_edit, qOverload<const PC&, const PC&>(&CoordinateEdit::value_changed),
-          this, &PointEdit::set_left_maybe);
+  connect(m_left_tangent_edit,
+          qOverload<const PC&, const PC&>(&CoordinateEdit::value_changed),
+          this,
+          &PointEdit::set_right_maybe);
+  connect(m_right_tangent_edit,
+          qOverload<const PC&, const PC&>(&CoordinateEdit::value_changed),
+          this,
+          &PointEdit::set_left_maybe);
 
   {
-    connect(m_left_tangent_edit, qOverload<>(&CoordinateEdit::value_changed),
-            this, &PointEdit::update_point);
-    connect(m_right_tangent_edit, qOverload<>(&CoordinateEdit::value_changed),
-            this, &PointEdit::update_point);
-    connect(m_position_edit, qOverload<>(&CoordinateEdit::value_changed),
-            this, &PointEdit::update_point);
+    connect(m_left_tangent_edit,
+            qOverload<>(&CoordinateEdit::value_changed),
+            this,
+            &PointEdit::update_point);
+    connect(m_right_tangent_edit,
+            qOverload<>(&CoordinateEdit::value_changed),
+            this,
+            &PointEdit::update_point);
+    connect(m_position_edit,
+            qOverload<>(&CoordinateEdit::value_changed),
+            this,
+            &PointEdit::update_point);
   }
 }
 
@@ -114,8 +122,7 @@ void PointEdit::mirror_from_left()
   update_point();
 }
 
-void
-PointEdit::set_left_maybe(const PolarCoordinates& old_right, const PolarCoordinates& new_right)
+void PointEdit::set_left_maybe(const PolarCoordinates& old_right, const PolarCoordinates& new_right)
 {
   if (m_coupled->isChecked()) {
     const auto old_pos = m_left_tangent_edit->to_polar();
@@ -125,8 +132,7 @@ PointEdit::set_left_maybe(const PolarCoordinates& old_right, const PolarCoordina
   }
 }
 
-void
-PointEdit::set_right_maybe(const PolarCoordinates& old_left, const PolarCoordinates& new_left)
+void PointEdit::set_right_maybe(const PolarCoordinates& old_left, const PolarCoordinates& new_left)
 {
   if (m_coupled->isChecked()) {
     const auto old_pos = m_right_tangent_edit->to_polar();
@@ -144,14 +150,14 @@ void PointEdit::update_point()
     m_point.right_tangent = m_right_tangent_edit->to_polar();
   } else {
     ModifyPointsCommand::map_type map;
-    m_point = Point( m_position_edit->to_cartesian(),
-                     m_left_tangent_edit->to_polar(),
-                     m_right_tangent_edit->to_polar() );
+    m_point = Point(m_position_edit->to_cartesian(),
+                    m_left_tangent_edit->to_polar(),
+                    m_right_tangent_edit->to_polar());
     m_path->scene()->submit<ModifyPointsCommand>(map);
   }
 }
 
-void PointEdit::set_display_mode(const DisplayMode &display_mode)
+void PointEdit::set_display_mode(const DisplayMode& display_mode)
 {
   m_left_tangent_edit->set_display_mode(display_mode);
   m_right_tangent_edit->set_display_mode(display_mode);

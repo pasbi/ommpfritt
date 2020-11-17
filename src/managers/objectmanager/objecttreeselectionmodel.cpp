@@ -4,9 +4,8 @@
 
 namespace omm
 {
-
 ObjectTreeSelectionModel::ObjectTreeSelectionModel(ObjectTree& adapter)
-  : QItemSelectionModel(&adapter)
+    : QItemSelectionModel(&adapter)
 {
 }
 
@@ -18,7 +17,9 @@ bool ObjectTreeSelectionModel::is_selected(Tag& tag) const
 void ObjectTreeSelectionModel::select(Tag& tag, QItemSelectionModel::SelectionFlags command)
 {
   m_current_tag = &tag;
-  if (command & QItemSelectionModel::Clear) { clear_selection(); }
+  if (command & QItemSelectionModel::Clear) {
+    clear_selection();
+  }
 
   if (command & QItemSelectionModel::Select) {
     m_selected_tags.insert(&tag);
@@ -35,8 +36,8 @@ void ObjectTreeSelectionModel::clear_selection()
   m_selected_tags.clear();
 }
 
-void ObjectTreeSelectionModel::select( const QModelIndex &index,
-                                       QItemSelectionModel::SelectionFlags command)
+void ObjectTreeSelectionModel::select(const QModelIndex& index,
+                                      QItemSelectionModel::SelectionFlags command)
 {
   const bool is_tag_index = index.column() == omm::ObjectTree::TAGS_COLUMN;
   if (command & QItemSelectionModel::Clear && !is_tag_index) {
@@ -45,13 +46,11 @@ void ObjectTreeSelectionModel::select( const QModelIndex &index,
   QItemSelectionModel::select(index, command);
 }
 
-void ObjectTreeSelectionModel::select( const QItemSelection &selection,
-                                       QItemSelectionModel::SelectionFlags command)
+void ObjectTreeSelectionModel::select(const QItemSelection& selection,
+                                      QItemSelectionModel::SelectionFlags command)
 {
-
   const auto has_tag_index = [](const QItemSelectionRange& range) {
-    return range.left() <= ObjectTree::TAGS_COLUMN
-        && range.right() >= ObjectTree::TAGS_COLUMN;
+    return range.left() <= ObjectTree::TAGS_COLUMN && range.right() >= ObjectTree::TAGS_COLUMN;
   };
   const bool selection_has_tags = std::any_of(selection.begin(), selection.end(), has_tag_index);
 
@@ -61,7 +60,10 @@ void ObjectTreeSelectionModel::select( const QItemSelection &selection,
   QItemSelectionModel::select(selection, command);
 }
 
-std::set<Tag*> ObjectTreeSelectionModel::selected_tags() const { return m_selected_tags; }
+std::set<Tag*> ObjectTreeSelectionModel::selected_tags() const
+{
+  return m_selected_tags;
+}
 
 std::vector<Tag*> ObjectTreeSelectionModel::selected_tags_ordered(Scene& scene) const
 {
@@ -73,10 +75,14 @@ std::vector<Tag*> ObjectTreeSelectionModel::selected_tags_ordered(Scene& scene) 
     stack.pop();
 
     for (Tag* tag : object->tags.ordered_items()) {
-      if (::contains(m_selected_tags, tag)) { selected_tags.push_back(tag); }
+      if (::contains(m_selected_tags, tag)) {
+        selected_tags.push_back(tag);
+      }
     }
 
-    for (Object* child : object->tree_children()) { stack.push(child); }
+    for (Object* child : object->tree_children()) {
+      stack.push(child);
+    }
   }
 
   return std::vector(selected_tags.begin(), selected_tags.end());
@@ -91,7 +97,9 @@ void ObjectTreeSelectionModel::extend_selection(Tag& tag)
     auto begin = std::find(tags.begin(), tags.end(), &tag);
     auto end = std::find(tags.begin(), tags.end(), m_current_tag);
     assert(begin != tags.end() && end != tags.end());
-    if (end < begin) { std::swap(begin, end); }
+    if (end < begin) {
+      std::swap(begin, end);
+    }
     std::advance(end, 1);
     for (auto it = begin; it != end; ++it) {
       select(**it, QItemSelectionModel::Select);
@@ -113,8 +121,6 @@ void ObjectTreeSelectionModel::set_selection(const std::set<AbstractPropertyOwne
     new_selection.merge(QItemSelection(index, index), QItemSelectionModel::Select);
   }
   QItemSelectionModel::select(new_selection, QItemSelectionModel::ClearAndSelect);
-
 }
-
 
 }  // namespace omm

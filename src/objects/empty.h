@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class Empty : public Object
 {
 public:

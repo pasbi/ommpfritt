@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 void ColorSlab::set_old_color(const Color& color)
 {
   m_old_color = color;

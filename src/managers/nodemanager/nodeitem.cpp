@@ -1,24 +1,23 @@
 #include "managers/nodemanager/nodeitem.h"
-#include <QAbstractItemView>
-#include "managers/nodemanager/nodeview.h"
-#include "propertywidgets/optionpropertywidget/optionsedit.h"
-#include "propertywidgets/optionpropertywidget/optionpropertywidget.h"
-#include "nodesystem/nodemodel.h"
-#include "preferences/uicolors.h"
-#include "propertywidgets/propertywidget.h"
-#include <QPainter>
-#include <QGraphicsScene>
-#include <QGraphicsProxyWidget>
-#include <QApplication>
-#include <QGraphicsSceneDragDropEvent>
-#include "nodesystem/node.h"
-#include "nodesystem/ordinaryport.h"
-#include "managers/nodemanager/portitem.h"
 #include "managers/nodemanager/nodescene.h"
+#include "managers/nodemanager/nodeview.h"
+#include "managers/nodemanager/portitem.h"
+#include "nodesystem/node.h"
+#include "nodesystem/nodemodel.h"
+#include "nodesystem/ordinaryport.h"
+#include "preferences/uicolors.h"
+#include "propertywidgets/optionpropertywidget/optionpropertywidget.h"
+#include "propertywidgets/optionpropertywidget/optionsedit.h"
+#include "propertywidgets/propertywidget.h"
+#include <QAbstractItemView>
+#include <QApplication>
+#include <QGraphicsProxyWidget>
+#include <QGraphicsScene>
+#include <QGraphicsSceneDragDropEvent>
+#include <QPainter>
 
 namespace
 {
-
 const double node_pen_width = 2.2;
 
 std::unique_ptr<QGraphicsItem> create_facade(const QGraphicsProxyWidget& widget_item)
@@ -57,14 +56,14 @@ protected:
     BaseItem::mouseReleaseEvent(event);
     event->accept();
   }
-
 };
 
 void stack_before_siblings(QGraphicsItem& item)
 {
   const auto is_top_level_item = [](const auto* item) { return item->parentItem() == nullptr; };
-  const auto siblings = is_top_level_item(&item) ? ::filter_if(item.scene()->items(), is_top_level_item)
-                                                 : item.parentItem()->childItems();
+  const auto siblings = is_top_level_item(&item)
+                            ? ::filter_if(item.scene()->items(), is_top_level_item)
+                            : item.parentItem()->childItems();
   for (QGraphicsItem* sibling : siblings) {
     sibling->stackBefore(&item);
   }
@@ -89,12 +88,11 @@ QWidget* leaf_widget(QWidget* widget, QPoint& pos)
 
 namespace omm
 {
-
 class PropertyWidgetItem : public DoubleClickableGraphicsItem<QGraphicsProxyWidget>
 {
 public:
   PropertyWidgetItem(QGraphicsItem* parent, std::unique_ptr<AbstractPropertyWidget> widget)
-    : DoubleClickableGraphicsItem(parent), widget(widget.get())
+      : DoubleClickableGraphicsItem(parent), widget(widget.get())
   {
     setWidget(widget.release());
   }
@@ -112,8 +110,11 @@ protected:
       QPoint pos = event->pos().toPoint();
       QWidget* leaf_widget = ::leaf_widget(widget, pos);
 
-      QMouseEvent mdbce(QEvent::MouseButtonDblClick, pos, event->button(),
-                        event->buttons(), event->modifiers());
+      QMouseEvent mdbce(QEvent::MouseButtonDblClick,
+                        pos,
+                        event->button(),
+                        event->buttons(),
+                        event->modifiers());
       qApp->sendEvent(leaf_widget, &mdbce);
     }
   }
@@ -122,8 +123,7 @@ public:
   AbstractPropertyWidget* const widget;
 };
 
-NodeItem::NodeItem(Node& node)
-  : node(node)
+NodeItem::NodeItem(Node& node) : node(node)
 {
   update_children();
   setFlags(ItemIsSelectable | ItemIsMovable | ItemSendsScenePositionChanges);
@@ -131,9 +131,7 @@ NodeItem::NodeItem(Node& node)
   QObject::connect(&node, &Node::pos_changed, &m_context, [this](const QPointF& pos) {
     setPos(pos);
   });
-  QObject::connect(&node, &Node::ports_changed, &m_context, [this]() {
-    update_children();
-  });
+  QObject::connect(&node, &Node::ports_changed, &m_context, [this]() { update_children(); });
   QTimer::singleShot(0, [this]() { update_children(); });
 }
 
@@ -143,7 +141,7 @@ NodeItem::~NodeItem()
 
 QRectF NodeItem::boundingRect() const
 {
-  const double hnpw = node_pen_width/2.0;
+  const double hnpw = node_pen_width / 2.0;
   return m_shape.adjusted(-hnpw, -hnpw, hnpw, hnpw);
 }
 
@@ -170,14 +168,14 @@ void NodeItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
 
   draw_outline(isSelected() ? Qt::yellow : Qt::black, node_pen_width);
   if (!node.is_valid()) {
-    draw_outline(ui_color(*widget, "NodeView", "node-outline-valid"), node_pen_width/2.0);
+    draw_outline(ui_color(*widget, "NodeView", "node-outline-valid"), node_pen_width / 2.0);
   }
 
   const double hmargin = PortItem::radius + 5;
   for (auto&& [pos_y, slot] : m_slots) {
     QRectF rect = boundingRect();
 
-    rect.setTop(pos_y - small_slot_height/2.0);
+    rect.setTop(pos_y - small_slot_height / 2.0);
     rect.setHeight(small_slot_height);
     rect.adjust(hmargin, 0, -hmargin, 0);
     slot.draw(*painter, rect);
@@ -186,7 +184,7 @@ void NodeItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
 
 PortItem* NodeItem::port_item(const AbstractPort& port) const
 {
-  for (PortType type : { PortType::Input, PortType::Output }) {
+  for (PortType type : {PortType::Input, PortType::Output}) {
     if (const auto it = m_port_items.find(type); it != m_port_items.end()) {
       for (auto& port_item : it->second) {
         if (&port == &port_item->port) {
@@ -242,8 +240,9 @@ void NodeItem::update_children()
   prepareGeometryChange();
   clear_ports();
   struct PropertyPorts {
-    explicit PropertyPorts(Property* property)
-      : property(property), i(nullptr), o(nullptr) {}
+    explicit PropertyPorts(Property* property) : property(property), i(nullptr), o(nullptr)
+    {
+    }
     Property* property;
     PropertyInputPort* i;
     PropertyOutputPort* o;
@@ -259,13 +258,12 @@ void NodeItem::update_children()
   for (AbstractPort* p : ports) {
     if (p->flavor == PortFlavor::Property) {
       Property* property = p->port_type == PortType::Input
-                        ? static_cast<PropertyInputPort&>(*p).property()
-                        : static_cast<PropertyOutputPort&>(*p).property();
-      const auto it = std::find_if(property_ports.begin(), property_ports.end(),
-                                   [property](const PropertyPorts& pp)
-      {
-        return property == pp.property;
-      });
+                               ? static_cast<PropertyInputPort&>(*p).property()
+                               : static_cast<PropertyOutputPort&>(*p).property();
+      const auto it
+          = std::find_if(property_ports.begin(),
+                         property_ports.end(),
+                         [property](const PropertyPorts& pp) { return property == pp.property; });
       PropertyPorts* current = nullptr;
       if (it == property_ports.end()) {
         property_ports.push_back(PropertyPorts(property));
@@ -325,7 +323,7 @@ void NodeItem::update_children()
 
   const double height = std::max(output_pos_y, input_pos_y) + footer_height;
   const double width = m_is_expanded ? 300 : 150;
-  m_shape = QRectF(-width/2, 0, width, height);
+  m_shape = QRectF(-width / 2, 0, width, height);
 
   align_ports();
 }
@@ -360,7 +358,7 @@ void NodeItem::align_ports()
   for (auto& item : m_property_items) {
     QWidget* w = item->widget;
     w->resize(m_shape.width() - 2 * margin, w->height());
-    item->setX(-w->width()/2.0);
+    item->setX(-w->width() / 2.0);
   }
 }
 
@@ -373,9 +371,8 @@ void NodeItem::add_port(AbstractPort& p, double pos_y)
 
 void NodeItem::add_property_widget(Property& property, double pos_y, double height)
 {
-  auto pw = AbstractPropertyWidget::make(property.widget_type(),
-                                         *node.scene(),
-                                         std::set { &property });
+  auto pw
+      = AbstractPropertyWidget::make(property.widget_type(), *node.scene(), std::set{&property});
   pw->resize(pw->width(), height);
   auto& ref = *pw;
   auto pw_item = std::make_unique<PropertyWidgetItem>(this, std::move(pw));
@@ -385,7 +382,7 @@ void NodeItem::add_property_widget(Property& property, double pos_y, double heig
   if (ref.type() == OptionPropertyWidget::TYPE()) {
     auto combobox = static_cast<OptionPropertyWidget*>(&ref)->combobox();
     combobox->prevent_popup = true;
-    QObject::connect(combobox, &OptionsEdit::popup_shown, [pw_item=pw_item.get(), combobox]() {
+    QObject::connect(combobox, &OptionsEdit::popup_shown, [pw_item = pw_item.get(), combobox]() {
       NodeView* view = []() {
         QWidget* w = QApplication::widgetAt(QCursor::pos());
         assert(w != nullptr);
@@ -399,19 +396,19 @@ void NodeItem::add_property_widget(Property& property, double pos_y, double heig
       combobox->QComboBox::showPopup();
       combobox->view()->parentWidget()->move(global_pos);
       auto connection_destroyer = new QObject();
-      QObject::connect(combobox, &OptionsEdit::popup_hidden, connection_destroyer,
-                       [pw_item, widget,
-                        facade=std::move(facade),
-                        connection_destroyer]() mutable
-      {
-        pw_item->setWidget(widget);
-        facade->scene()->removeItem(facade.get());
-        facade.reset();
-        delete connection_destroyer;
-      });
+      QObject::connect(
+          combobox,
+          &OptionsEdit::popup_hidden,
+          connection_destroyer,
+          [pw_item, widget, facade = std::move(facade), connection_destroyer]() mutable {
+            pw_item->setWidget(widget);
+            facade->scene()->removeItem(facade.get());
+            facade.reset();
+            delete connection_destroyer;
+          });
     });
   }
-  pw_item->setY(pos_y - height/2.0);
+  pw_item->setY(pos_y - height / 2.0);
   m_property_items.insert(std::move(pw_item));
 }
 
@@ -456,7 +453,7 @@ void NodeItem::Slot::draw(QPainter& painter, const QRectF& slot_rect) const
     painter.drawText(rect, Qt::AlignVCenter | Qt::AlignRight, get_right_text());
   }
   if (get_center_text) {
-    const auto draw_maybe = [&painter, y=slot_rect.center().y()](double x1, double x2) {
+    const auto draw_maybe = [&painter, y = slot_rect.center().y()](double x1, double x2) {
       if (x1 < x2) {
         painter.drawLine(x1, y, x2, y);
       }

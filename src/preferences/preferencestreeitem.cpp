@@ -1,21 +1,20 @@
 #include "preferences/preferencestreeitem.h"
+#include "logging.h"
 #include "mainwindow/application.h"
 #include <QCoreApplication>
-#include "logging.h"
 
 namespace omm
 {
-
 PreferencesTreeItem::PreferencesTreeItem(const QString& name, const QString& translation_context)
-  : name(name)
-  , translation_context(translation_context)
+    : name(name), translation_context(translation_context)
 {
 }
 
-PreferencesTreeValueItem::
-PreferencesTreeValueItem(const QString& group, const QString& name, const QString& value,
-                         const QString& translation_context)
-  : PreferencesTreeItem(name, translation_context), group(group), m_value(value), m_default(value)
+PreferencesTreeValueItem::PreferencesTreeValueItem(const QString& group,
+                                                   const QString& name,
+                                                   const QString& value,
+                                                   const QString& translation_context)
+    : PreferencesTreeItem(name, translation_context), group(group), m_value(value), m_default(value)
 {
 }
 
@@ -26,7 +25,7 @@ void PreferencesTreeValueItem::set_default(const QString& value)
 
 void PreferencesTreeValueItem::set_value(const QString& value)
 {
-  if (value!= m_value) {
+  if (value != m_value) {
     m_value = value;
     Q_EMIT(value_changed(m_value));
   }
@@ -76,9 +75,9 @@ QString PreferencesTreeValueItem::value(const QString& value, std::size_t column
   return value.split("/")[column];
 }
 
-PreferencesTreeGroupItem::
-PreferencesTreeGroupItem(const QString& group, const QString& translation_context)
-  : PreferencesTreeItem(group, translation_context)
+PreferencesTreeGroupItem::PreferencesTreeGroupItem(const QString& group,
+                                                   const QString& translation_context)
+    : PreferencesTreeItem(group, translation_context)
 {
 }
 
@@ -87,7 +86,5 @@ QString PreferencesTreeGroupItem::translated_name() const
   return QCoreApplication::translate((translation_context + "/" + name).toUtf8().constData(),
                                      name.toUtf8().constData());
 }
-
-
 
 }  // namespace omm

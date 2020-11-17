@@ -1,25 +1,24 @@
 #pragma once
 
-#include <QComboBox>
-#include "propertywidgets/multivalueedit.h"
 #include "aspects/propertyowner.h"
-#include "tags/tag.h"
 #include "properties/referenceproperty.h"
+#include "propertywidgets/multivalueedit.h"
+#include "tags/tag.h"
+#include <QComboBox>
 
 class QMimeData;
 
 namespace omm
 {
-
 class AbstractPropertyOwner;
 
 class ReferenceLineEdit
-  : public QComboBox
-  , public MultiValueEdit<AbstractPropertyOwner*>
+    : public QComboBox
+    , public MultiValueEdit<AbstractPropertyOwner*>
 {
   Q_OBJECT
 public:
-  explicit ReferenceLineEdit(QWidget *parent = nullptr);
+  explicit ReferenceLineEdit(QWidget* parent = nullptr);
   ~ReferenceLineEdit() = default;
   void set_value(const value_type& value) override;
   value_type value() const override;

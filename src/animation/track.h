@@ -1,16 +1,15 @@
 #pragma once
 
-#include "aspects/serializable.h"
-#include <map>
 #include "abstractfactory.h"
-#include <QObject>
-#include "serializers/abstractserializer.h"
+#include "aspects/serializable.h"
 #include "common.h"
+#include "serializers/abstractserializer.h"
 #include <QCoreApplication>
+#include <QObject>
+#include <map>
 
 namespace omm
 {
-
 class Property;
 
 /**
@@ -24,8 +23,7 @@ class Track : public Serializable
 {
   Q_DECLARE_TR_FUNCTIONS(Track)
 public:
-  struct Knot : public ReferencePolisher
-  {
+  struct Knot : public ReferencePolisher {
     Knot(AbstractDeserializer& deserializer, const Pointer& pointer, const QString& type);
     Knot(const variant_type& value);
     Knot& operator=(const Knot& other) = delete;
@@ -75,7 +73,10 @@ public:
   void serialize(AbstractSerializer& serializer, const Pointer& pointer) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& pointer) override;
 
-  bool has_keyframe(int frame) const { return m_knots.find(frame) != m_knots.end(); }
+  bool has_keyframe(int frame) const
+  {
+    return m_knots.find(frame) != m_knots.end();
+  }
 
   double interpolate(double frame, std::size_t channel) const;
   variant_type interpolate(double frame) const;
@@ -104,7 +105,10 @@ public:
   std::unique_ptr<Knot> remove_knot(int frame);
 
   QString type() const;
-  Property& property() const { return m_property; }
+  Property& property() const
+  {
+    return m_property;
+  }
 
   /**
    * @brief is_consistent returns whether the key value of the track at @code frame matches the

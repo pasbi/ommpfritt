@@ -1,25 +1,24 @@
 #include "managers/nodemanager/nodemanager.h"
-#include "managers/nodemanager/nodescene.h"
-#include "nodesystem/nodes/constantnode.h"
-#include "nodesystem/nodecompiler.h"
-#include <QMimeData>
-#include <QClipboard>
-#include "managers/nodemanager/nodemanagertitlebar.h"
-#include "nodesystem/nodesowner.h"
 #include "commands/nodecommand.h"
-#include "nodesystem/node.h"
 #include "logging.h"
-#include "nodesystem/nodemodel.h"
-#include "ui_nodemanager.h"
 #include "mainwindow/application.h"
-#include "scene/mailbox.h"
-#include <QContextMenuEvent>
+#include "managers/nodemanager/nodemanagertitlebar.h"
+#include "managers/nodemanager/nodescene.h"
+#include "nodesystem/node.h"
+#include "nodesystem/nodecompiler.h"
+#include "nodesystem/nodemodel.h"
+#include "nodesystem/nodes/constantnode.h"
 #include "nodesystem/nodes/fragmentnode.h"
+#include "nodesystem/nodesowner.h"
+#include "scene/mailbox.h"
+#include "ui_nodemanager.h"
+#include <QClipboard>
+#include <QContextMenuEvent>
 #include <QMenu>
+#include <QMimeData>
 
 namespace
 {
-
 using namespace omm;
 
 bool accept_node(const NodeModel& model, const QString& name)
@@ -31,10 +30,8 @@ bool accept_node(const NodeModel& model, const QString& name)
 
 namespace omm
 {
-
 NodeManager::NodeManager(Scene& scene)
-  : Manager(tr("Nodes"), scene)
-  , m_ui(std::make_unique<Ui::NodeManager>())
+    : Manager(tr("Nodes"), scene), m_ui(std::make_unique<Ui::NodeManager>())
 {
   auto widget = std::make_unique<QWidget>();
   m_ui->setupUi(widget.get());
@@ -50,17 +47,16 @@ NodeManager::NodeManager(Scene& scene)
 
   connect(&scene.mail_box(),
           qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this, &NodeManager::set_selection);
-  connect(&scene.mail_box(), &MailBox::abstract_property_owner_removed,
-          [this](const auto& apo)
-  {
+          this,
+          &NodeManager::set_selection);
+  connect(&scene.mail_box(), &MailBox::abstract_property_owner_removed, [this](const auto& apo) {
     const auto nodes_owner = dynamic_cast<const NodesOwner*>(&apo);
     const auto node_model = nodes_owner == nullptr ? nullptr : nodes_owner->node_model();
     if (node_model == m_ui->nodeview->model()) {
       set_model(nullptr);
     }
   });
-  connect(&scene.mail_box(), &MailBox::about_to_reset, this, [this]{ set_model(nullptr); });
+  connect(&scene.mail_box(), &MailBox::about_to_reset, this, [this] { set_model(nullptr); });
   setTitleBarWidget(std::make_unique<NodeManagerTitleBar>(*this).release());
 }
 
@@ -68,7 +64,10 @@ NodeManager::~NodeManager()
 {
 }
 
-QString NodeManager::type() const { return TYPE; }
+QString NodeManager::type() const
+{
+  return TYPE;
+}
 
 void NodeManager::set_model(NodeModel* model)
 {
@@ -161,7 +160,7 @@ std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
         const QString tr_menu_name = QApplication::translate("NodeMenuPath", token);
         auto menu = std::make_unique<QMenu>(tr_menu_name);
         QMenu& ref = *menu;
-        sub_menus.insert({ token, &ref });
+        sub_menus.insert({token, &ref});
         root->addMenu(menu.release());
         root = &ref;
       } else {

@@ -3,7 +3,6 @@
 
 namespace
 {
-
 void cut(const Geom::Curve& curve, std::list<double> cuts, Geom::Path& path)
 {
   assert(std::is_sorted(cuts.begin(), cuts.end()));
@@ -59,12 +58,11 @@ Geom::PathVector cut(const Geom::PathVector& paths, std::vector<Geom::PathVector
   return Geom::PathVector(cut_paths.begin(), cut_paths.end());
 }
 
-
 using namespace omm;
 
 auto cut_segments(const Path& path, const std::vector<Geom::PathVectorTime>& cuts)
 {
-  const auto path_vector = cut(path.paths(), cuts) ;
+  const auto path_vector = cut(path.paths(), cuts);
   ModifySegmentsCommand::Segments segments;
   segments.reserve(path_vector.size());
   for (std::size_t i = 0; i < path_vector.size(); ++i) {
@@ -82,17 +80,16 @@ auto cut_segments(const Path& path, const std::vector<Geom::PathVectorTime>& cut
 
 namespace omm
 {
-
 CutPathCommand::CutPathCommand(Path& path, const std::vector<Geom::PathVectorTime>& cuts)
-  : CutPathCommand(QObject::tr("CutPathCommand"), path, cuts)
+    : CutPathCommand(QObject::tr("CutPathCommand"), path, cuts)
 {
 }
 
-CutPathCommand::CutPathCommand(const QString& label, Path& path,
+CutPathCommand::CutPathCommand(const QString& label,
+                               Path& path,
                                const std::vector<Geom::PathVectorTime>& cuts)
-  : ModifySegmentsCommand(label, path, cut_segments(path, cuts))
+    : ModifySegmentsCommand(label, path, cut_segments(path, cuts))
 {
 }
-
 
 }  // namespace omm

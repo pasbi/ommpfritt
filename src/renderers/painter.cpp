@@ -1,12 +1,11 @@
 #include "renderers/painter.h"
 #include "geometry/util.h"
-#include "scene/scene.h"
 #include "renderers/style.h"
+#include "scene/scene.h"
 #include <QWidget>
 
 namespace
 {
-
 QRectF get_roi(const omm::ObjectTransformation& viewport_transform,
                const QRectF bounding_box,
                const omm::Painter::Options& options)
@@ -14,12 +13,11 @@ QRectF get_roi(const omm::ObjectTransformation& viewport_transform,
   static const auto get_relative_roi = [](const QRectF& rect, const QRectF& absolute_roi) {
     const double x = rect.center().x();
     const double y = rect.center().y();
-    const double left   = (x - absolute_roi.left())   / (rect.left()   - x);
-    const double top    = (y - absolute_roi.top())    / (rect.top()    - y);
-    const double right  = (x + absolute_roi.right())  / (rect.right()  - x);
+    const double left = (x - absolute_roi.left()) / (rect.left() - x);
+    const double top = (y - absolute_roi.top()) / (rect.top() - y);
+    const double right = (x + absolute_roi.right()) / (rect.right() - x);
     const double bottom = (y + absolute_roi.bottom()) / (rect.bottom() - y);
-    return QRectF(QPointF(left,  top),
-                  QPointF(right, bottom));
+    return QRectF(QPointF(left, top), QPointF(right, bottom));
   };
 
   const QRectF vp_outline(0, 0, options.device.width(), options.device.height());
@@ -32,20 +30,24 @@ QRectF get_roi(const omm::ObjectTransformation& viewport_transform,
 QTransform to_transformation(const omm::ObjectTransformation& transformation)
 {
   const auto& m = transformation.to_mat();
-  return QTransform( m.m[0][0], m.m[1][0], m.m[2][0],
-                     m.m[0][1], m.m[1][1], m.m[2][1],
-                     m.m[0][2], m.m[1][2], m.m[2][2] );
+  return QTransform(m.m[0][0],
+                    m.m[1][0],
+                    m.m[2][0],
+                    m.m[0][1],
+                    m.m[1][1],
+                    m.m[2][1],
+                    m.m[0][2],
+                    m.m[1][2],
+                    m.m[2][2]);
 }
 
 }  // namespace
 
 namespace omm
 {
-
-omm::Painter::Painter(omm::Scene &scene, omm::Painter::Category filter)
-  : scene(scene), category_filter(filter)
+omm::Painter::Painter(omm::Scene& scene, omm::Painter::Category filter)
+    : scene(scene), category_filter(filter)
 {
-
 }
 
 void Painter::render(Options options)
@@ -55,7 +57,7 @@ void Painter::render(Options options)
   assert(m_transformation_stack.empty());
 }
 
-void Painter::push_transformation(const ObjectTransformation &transformation)
+void Painter::push_transformation(const ObjectTransformation& transformation)
 {
   m_transformation_stack.push(current_transformation().apply(transformation));
   painter->setTransform(to_transformation(current_transformation()), false);
@@ -76,7 +78,7 @@ ObjectTransformation Painter::current_transformation() const
   }
 }
 
-void Painter::toast(const Vec2f &pos, const QString &text)
+void Painter::toast(const Vec2f& pos, const QString& text)
 {
   static const QFont toast_font("Helvetica", 12, 0, false);
   static const QPen pen(Qt::black, 1.0);
@@ -99,30 +101,29 @@ void Painter::toast(const Vec2f &pos, const QString &text)
   painter->restore();
 }
 
-QPainterPath Painter::path(const std::vector<Point> &points, bool closed)
+QPainterPath Painter::path(const std::vector<Point>& points, bool closed)
 {
   QPainterPath path;
   if (points.size() > 1) {
     path.moveTo(to_qpoint(points.front().position));
 
-    for (size_t i = 1; i < points.size(); ++i)
-    {
-      path.cubicTo( to_qpoint(points.at(i-1).right_position()),
-                    to_qpoint(points.at(i).left_position()),
-                    to_qpoint(points.at(i).position)  );
+    for (size_t i = 1; i < points.size(); ++i) {
+      path.cubicTo(to_qpoint(points.at(i - 1).right_position()),
+                   to_qpoint(points.at(i).left_position()),
+                   to_qpoint(points.at(i).position));
     }
 
     if (closed && points.size() > 2) {
       path.cubicTo(to_qpoint(points.back().right_position()),
                    to_qpoint(points.front().left_position()),
-                   to_qpoint(points.front().position) );
+                   to_qpoint(points.front().position));
     }
-
   }
   return path;
 }
 
-QBrush Painter::make_brush(const Style &style, const Object& object, const Painter::Options& options)
+QBrush
+Painter::make_brush(const Style& style, const Object& object, const Painter::Options& options)
 {
   if (style.property(omm::Style::BRUSH_IS_ACTIVE_KEY)->value<bool>()) {
     if (style.property("gl-brush")->value<bool>()) {
@@ -137,7 +138,7 @@ QBrush Painter::make_brush(const Style &style, const Object& object, const Paint
       QPixmap pixmap = QPixmap::fromImage(texture.image);
       QBrush brush(pixmap);
       QTransform t;
-      t.scale(1.0/f, 1.0/f);
+      t.scale(1.0 / f, 1.0 / f);
       t.translate(-size.width() / 2.0 + texture.offset.x(),
                   -size.height() / 2.0 + texture.offset.y());
       brush.setTransform(t);
@@ -150,7 +151,7 @@ QBrush Painter::make_brush(const Style &style, const Object& object, const Paint
   }
 }
 
-QBrush Painter::make_simple_brush(const Style &style)
+QBrush Painter::make_simple_brush(const Style& style)
 {
   if (style.property(omm::Style::BRUSH_IS_ACTIVE_KEY)->value<bool>()) {
     QBrush brush(Qt::SolidPattern);
@@ -162,13 +163,13 @@ QBrush Painter::make_simple_brush(const Style &style)
   }
 }
 
-QPen Painter::make_pen(const Style &style, const Object& object)
+QPen Painter::make_pen(const Style& style, const Object& object)
 {
   Q_UNUSED(object);
   return make_simple_pen(style);
 }
 
-QPen Painter::make_simple_pen(const Style &style)
+QPen Painter::make_simple_pen(const Style& style)
 {
   if (style.property(omm::Style::PEN_IS_ACTIVE_KEY)->value<bool>()) {
     QPen pen;
@@ -176,14 +177,26 @@ QPen Painter::make_simple_pen(const Style &style)
     pen.setColor(style.property(omm::Style::PEN_COLOR_KEY)->value<omm::Color>().to_qcolor());
     pen.setCosmetic(style.property(omm::Style::COSMETIC_KEY)->value<bool>());
     switch (style.property(omm::Style::CAP_STYLE_KEY)->value<std::size_t>()) {
-    case 0: pen.setCapStyle(Qt::SquareCap); break;
-    case 1: pen.setCapStyle(Qt::FlatCap); break;
-    case 2: pen.setCapStyle(Qt::RoundCap); break;
+    case 0:
+      pen.setCapStyle(Qt::SquareCap);
+      break;
+    case 1:
+      pen.setCapStyle(Qt::FlatCap);
+      break;
+    case 2:
+      pen.setCapStyle(Qt::RoundCap);
+      break;
     }
     switch (style.property(omm::Style::JOIN_STYLE_KEY)->value<std::size_t>()) {
-    case 0: pen.setJoinStyle(Qt::BevelJoin); break;
-    case 1: pen.setJoinStyle(Qt::MiterJoin); break;
-    case 2: pen.setJoinStyle(Qt::RoundJoin); break;
+    case 0:
+      pen.setJoinStyle(Qt::BevelJoin);
+      break;
+    case 1:
+      pen.setJoinStyle(Qt::MiterJoin);
+      break;
+    case 2:
+      pen.setJoinStyle(Qt::RoundJoin);
+      break;
     }
     const auto pen_style = style.property(omm::Style::STROKE_STYLE_KEY)->value<Qt::PenStyle>();
     pen.setStyle(static_cast<Qt::PenStyle>(pen_style + 1));
@@ -193,21 +206,17 @@ QPen Painter::make_simple_pen(const Style &style)
   }
 }
 
-void Painter::set_style(const Style &style, const Object& object, const Painter::Options& options)
+void Painter::set_style(const Style& style, const Object& object, const Painter::Options& options)
 {
   painter->setPen(make_pen(style, object));
   painter->setBrush(make_brush(style, object, options));
 }
 
-Painter::Options::Options(const QWidget& viewport)
-  : device_is_viewport(true)
-  , device(viewport)
+Painter::Options::Options(const QWidget& viewport) : device_is_viewport(true), device(viewport)
 {
 }
 
-Painter::Options::Options(const QPaintDevice& device)
-  : device_is_viewport(false)
-  , device(device)
+Painter::Options::Options(const QPaintDevice& device) : device_is_viewport(false), device(device)
 {
 }
 

@@ -1,11 +1,10 @@
 #pragma once
 
-#include <QIcon>
 #include "cachedgetter.h"
+#include <QIcon>
 
 namespace omm
 {
-
 class AbstractPropertyOwner;
 
 class IconProvider

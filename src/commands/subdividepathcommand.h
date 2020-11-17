@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 class SubdividePathCommand : public CutPathCommand
 {
 public:

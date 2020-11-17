@@ -1,19 +1,18 @@
 #include "widgets/pointdialog.h"
-#include <QTabWidget>
-#include "widgets/pointedit.h"
-#include <memory>
-#include <QVBoxLayout>
-#include <QDialogButtonBox>
 #include "objects/path.h"
+#include "widgets/coordinateedit.h"
+#include "widgets/pointedit.h"
 #include <QComboBox>
+#include <QDialogButtonBox>
 #include <QScrollArea>
 #include <QSettings>
+#include <QTabWidget>
 #include <QTimer>
-#include "widgets/coordinateedit.h"
+#include <QVBoxLayout>
+#include <memory>
 
 namespace
 {
-
 auto make_tab_widget_page(omm::Path& path, std::list<omm::PointEdit*>& point_edits)
 {
   auto scroll_area = std::make_unique<QScrollArea>();
@@ -39,23 +38,22 @@ auto make_tab_widget_page(omm::Path& path, std::list<omm::PointEdit*>& point_edi
 
 namespace omm
 {
-
 PointDialog::PointDialog(const std::set<Path*>& paths, QWidget* parent) : QDialog(parent)
 {
   assert(paths.size() > 0);
   auto tab_widget = std::make_unique<QTabWidget>();
   for (Path* path : paths) {
-    tab_widget->addTab( make_tab_widget_page(*path, m_point_edits).release(), path->name());
+    tab_widget->addTab(make_tab_widget_page(*path, m_point_edits).release(), path->name());
   }
   auto button_box = std::make_unique<QDialogButtonBox>(QDialogButtonBox::Ok);
   connect(button_box.get(), &QDialogButtonBox::accepted, this, &PointDialog::accept);
 
   auto mode_combobox = std::make_unique<QComboBox>();
   m_mode_combobox = mode_combobox.get();
-  m_mode_combobox->addItems({ tr("Polar"), tr("Cartesian"), tr("Both") });
+  m_mode_combobox->addItems({tr("Polar"), tr("Cartesian"), tr("Both")});
   connect(m_mode_combobox, qOverload<int>(&QComboBox::currentIndexChanged), [this](int i) {
     for (auto&& point_edit : m_point_edits) {
-      point_edit->set_display_mode(static_cast<DisplayMode>(i+1));
+      point_edit->set_display_mode(static_cast<DisplayMode>(i + 1));
     }
   });
   QSettings settings;

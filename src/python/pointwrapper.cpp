@@ -1,10 +1,9 @@
 #include "python/pointwrapper.h"
+#include "external/pybind11/stl.h"
 #include "geometry/vec2.h"
-#include <pybind11/stl.h>
 
 namespace omm
 {
-
 void PointWrapper::define_python_interface(py::object& module)
 {
   py::class_<PointWrapper>(module, wrapped_type::TYPE)
@@ -33,7 +32,7 @@ py::object PointWrapper::position() const
 
 void PointWrapper::set_left_tangent(const py::object& value)
 {
-   wrapped.left_tangent = PolarCoordinates(Vec2f(value.cast<std::vector<double>>()));
+  wrapped.left_tangent = PolarCoordinates(Vec2f(value.cast<std::vector<double>>()));
 }
 
 void PointWrapper::set_right_tangent(const py::object& value)
@@ -45,6 +44,5 @@ void PointWrapper::set_position(const py::object& value)
 {
   wrapped.position = Vec2f(value.cast<std::vector<double>>());
 }
-
 
 }  // namespace omm

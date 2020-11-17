@@ -1,17 +1,15 @@
 #include "managers/manager.h"
+#include "mainwindow/application.h"
+#include <QContextMenuEvent>
 #include <QGuiApplication>
 #include <QScreen>
 #include <QWindow>
-#include "mainwindow/application.h"
-#include <QContextMenuEvent>
 
 namespace omm
 {
-
 class MainWindow;
 
-Manager::Manager(const QString& title, Scene& scene)
-  : QDockWidget(title), m_scene(scene)
+Manager::Manager(const QString& title, Scene& scene) : QDockWidget(title), m_scene(scene)
 {
   setAttribute(Qt::WA_DeleteOnClose);
   Application::instance().register_manager(*this);
@@ -22,7 +20,10 @@ Manager::~Manager()
   Application::instance().unregister_manager(*this);
 }
 
-Scene& Manager::scene() const { return m_scene; }
+Scene& Manager::scene() const
+{
+  return m_scene;
+}
 
 bool Manager::is_visible() const
 {
@@ -33,9 +34,13 @@ bool Manager::is_visible() const
     if (isWindow()) {
       auto screen = [this]() -> const QScreen* {
         const QWidget* npw = nativeParentWidget();
-        if (npw == nullptr) { return nullptr; }
+        if (npw == nullptr) {
+          return nullptr;
+        }
         const QWindow* window = npw->windowHandle();
-        if (window == nullptr) { return nullptr; }
+        if (window == nullptr) {
+          return nullptr;
+        }
         return window->screen();
       }();
 

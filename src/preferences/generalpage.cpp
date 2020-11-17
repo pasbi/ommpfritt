@@ -1,15 +1,14 @@
 #include "preferences/generalpage.h"
 
-#include <QDirIterator>
 #include "logging.h"
-#include <QMessageBox>
-#include <qsettings.h>
 #include "mainwindow/mainwindow.h"
 #include "ui_generalpage.h"
+#include <QDirIterator>
+#include <QMessageBox>
+#include <qsettings.h>
 
 namespace
 {
-
 std::vector<QString> languages()
 {
   static constexpr auto base_path = ":/qm";
@@ -38,11 +37,8 @@ std::vector<QString> languages()
 
 namespace omm
 {
-
 GeneralPage::GeneralPage(Preferences& preferences)
-  : m_available_languages(languages())
-  , m_preferences(preferences)
-  , m_ui(new Ui::GeneralPage)
+    : m_available_languages(languages()), m_preferences(preferences), m_ui(new Ui::GeneralPage)
 {
   m_ui->setupUi(this);
   for (const QString& code : m_available_languages) {
@@ -50,11 +46,12 @@ GeneralPage::GeneralPage(Preferences& preferences)
     m_ui->cb_language->addItem(tr(QLocale::languageToString(language).toStdString().c_str()));
   }
   const auto locale = QSettings().value(MainWindow::LOCALE_SETTINGS_KEY).toLocale();
-  const auto it = std::find_if(m_available_languages.begin(), m_available_languages.end(),
-                               [&locale](const QString& code)
-  {
-    return QLocale(code.toUtf8().constData()).language() == locale.language();
-  });
+  const auto it
+      = std::find_if(m_available_languages.begin(),
+                     m_available_languages.end(),
+                     [&locale](const QString& code) {
+                       return QLocale(code.toUtf8().constData()).language() == locale.language();
+                     });
 
   m_ui->cb_language->setCurrentIndex([it, this]() -> int {
     if (it != m_available_languages.end()) {
@@ -64,8 +61,7 @@ GeneralPage::GeneralPage(Preferences& preferences)
     }
   }());
 
-  connect(m_ui->cb_language, qOverload<int>(&QComboBox::currentIndexChanged), this, [this]()
-  {
+  connect(m_ui->cb_language, qOverload<int>(&QComboBox::currentIndexChanged), this, [this]() {
     const auto msg = tr("Changing language takes effect after restarting the application.");
     QMessageBox::information(this, MainWindow::tr("information"), msg);
   });

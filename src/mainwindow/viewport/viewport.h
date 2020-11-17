@@ -1,26 +1,25 @@
 #pragma once
 
-#include <memory>
 #include <QTimer>
+#include <memory>
 
 #include "geometry/objecttransformation.h"
+#include "mainwindow/viewport/headupdisplay.h"
 #include "mainwindow/viewport/mousepancontroller.h"
+#include "preferences/preferences.h"
 #include "renderers/painter.h"
 #include "scene/scene.h"
-#include "mainwindow/viewport/headupdisplay.h"
-#include "preferences/preferences.h"
 
 #define USE_OPENGL 0
 
 #ifdef USE_OPENGL
-#include <QWidget>
+#  include <QWidget>
 #else
-#include <QOpenGLWidget>
+#  include <QOpenGLWidget>
 #endif
 
 namespace omm
 {
-
 class Scene;
 
 #if USE_OPENGL
@@ -70,7 +69,8 @@ private:
   QTimer m_fps_limiter;
   bool m_update_later = false;
 
-  void draw_grid(QPainter& painter, const std::pair<Vec2f, Vec2f>& bounds,
+  void draw_grid(QPainter& painter,
+                 const std::pair<Vec2f, Vec2f>& bounds,
                  Preferences::GridOption::ZOrder zorder) const;
   std::pair<Vec2f, Vec2f> compute_viewport_bounds() const;
 

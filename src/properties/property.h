@@ -1,43 +1,39 @@
 #pragma once
 
 #include <functional>
+#include <set>
 #include <string>
 #include <typeinfo>
-#include <set>
 #include <variant>
-#include <functional>
 
-#include "logging.h"
-#include "external/json.hpp"
 #include "abstractfactory.h"
-#include "aspects/serializable.h"
-#include "common.h"
-#include "color/color.h"
-#include "geometry/vec2.h"
-#include "variant.h"
 #include "animation/track.h"
+#include "aspects/serializable.h"
+#include "color/color.h"
+#include "common.h"
 #include "dnf.h"
+#include "external/json.hpp"
+#include "geometry/vec2.h"
+#include "logging.h"
+#include "variant.h"
 
 namespace omm
 {
-
 class Object;
 class Track;
 class Property;
 class OptionProperty;
 
 class Property
-  : public QObject
-  , public AbstractFactory<QString, true, Property>
-  , public virtual Serializable
+    : public QObject
+    , public AbstractFactory<QString, true, Property>
+    , public virtual Serializable
 {
   Q_OBJECT
 
-
 public:
   struct Filter : public Serializable {
-    explicit Filter(const Disjunction<Kind>& kind,
-                    const DNF<Flag>& flag);
+    explicit Filter(const Disjunction<Kind>& kind, const DNF<Flag>& flag);
     Filter();
     explicit Filter(const DNF<Flag>& flag);
     void serialize(AbstractSerializer& serializer, const Pointer& root) const override;
@@ -47,17 +43,26 @@ public:
     bool accepts(const AbstractPropertyOwner& apo) const;
     bool accepts(Kind kind, Flag flag) const;
     bool operator==(const Filter& other) const;
-    bool operator!=(const Filter& other) const { return !(*this == other); }
+    bool operator!=(const Filter& other) const
+    {
+      return !(*this == other);
+    }
     bool operator<(const Filter& other) const;
 
     static Filter accept_anything();
   };
 
-  struct Configuration : std::map<QString, std::variant<bool, int, double, Vec2i, Vec2f,
-                                                        std::size_t, QString,
-                                                        std::vector<QString>,
-                                                        Filter>>
-  {
+  struct Configuration
+      : std::map<QString,
+                 std::variant<bool,
+                              int,
+                              double,
+                              Vec2i,
+                              Vec2f,
+                              std::size_t,
+                              QString,
+                              std::vector<QString>,
+                              Filter>> {
     using variant_type = value_type::second_type;
     template<typename T> T get(const QString& key) const
     {
@@ -65,7 +70,7 @@ public:
         return static_cast<T>(get<std::size_t>(key));
       } else {
         const auto cit = find(key);
-        assert (cit != end());
+        assert(cit != end());
 
         const T* value = std::get_if<T>(&cit->second);
         assert(value != nullptr);
@@ -93,14 +98,14 @@ public:
     }
 
     template<typename T>
-    void deserialize_field(const QString& field, AbstractDeserializer& deserializer,
+    void deserialize_field(const QString& field,
+                           AbstractDeserializer& deserializer,
                            const Serializable::Pointer& root)
     {
       if (this->find(field) == this->end()) {
         (*this)[field] = deserializer.get<T>(Serializable::make_pointer(root, field));
       }
     }
-
   };
 
   Property() = default;
@@ -116,8 +121,8 @@ public:
   QString widget_type() const;
   QString data_type() const;
 
-  template<typename ResultT, typename PropertyT, typename MemFunc> static
-  ResultT get_value(const std::set<Property*>& properties, MemFunc&& f)
+  template<typename ResultT, typename PropertyT, typename MemFunc>
+  static ResultT get_value(const std::set<Property*>& properties, MemFunc&& f)
   {
     const auto values = ::transform<ResultT>(properties, [&f](const Property* property) {
       return f(static_cast<const PropertyT&>(*property));
@@ -130,15 +135,15 @@ public:
     return *values.begin();
   }
 
-  template<typename ResultT, typename MemFunc> static ResultT
-  get_value(const std::set<Property*>& properties, MemFunc&& f)
+  template<typename ResultT, typename MemFunc>
+  static ResultT get_value(const std::set<Property*>& properties, MemFunc&& f)
   {
     return Property::get_value<ResultT, Property, MemFunc>(properties, std::forward<MemFunc>(f));
   }
 
   virtual bool is_compatible(const Property& other) const;
-  static constexpr auto USER_PROPERTY_CATEGROY_NAME = QT_TRANSLATE_NOOP("Property",
-                                                                        "user properties");
+  static constexpr auto USER_PROPERTY_CATEGROY_NAME
+      = QT_TRANSLATE_NOOP("Property", "user properties");
 
   // user properties can be added/edited/removed dynamically
   bool is_user_property() const;
@@ -152,12 +157,18 @@ public:
 public:
   virtual variant_type variant_value() const = 0;
   virtual void set(const variant_type& value) = 0;
-  template<typename EnumT> std::enable_if_t<std::is_enum_v<EnumT>, void>
-  set(const EnumT& value) { set(static_cast<std::size_t>(value)); }
-  template<typename ValueT> std::enable_if_t<!std::is_enum_v<ValueT>, ValueT>
-  value() const { return std::get<ValueT>(variant_value()); }
-  template<typename ValueT> std::enable_if_t<std::is_enum_v<ValueT>, ValueT>
-  value() const { return static_cast<ValueT>(std::get<std::size_t>(variant_value())); }
+  template<typename EnumT> std::enable_if_t<std::is_enum_v<EnumT>, void> set(const EnumT& value)
+  {
+    set(static_cast<std::size_t>(value));
+  }
+  template<typename ValueT> std::enable_if_t<!std::is_enum_v<ValueT>, ValueT> value() const
+  {
+    return std::get<ValueT>(variant_value());
+  }
+  template<typename ValueT> std::enable_if_t<std::is_enum_v<ValueT>, ValueT> value() const
+  {
+    return static_cast<ValueT>(std::get<std::size_t>(variant_value()));
+  }
 
   // === Configuration ====
 public:
@@ -170,6 +181,7 @@ public:
   Property& set_category(const QString& category);
   Property& set_animatable(bool animatable);
   Configuration configuration;
+
 private:
   bool m_is_visible = true;
 
@@ -221,8 +233,7 @@ Q_SIGNALS:
 
 public:
   // === Channels
-  struct PropertyDetail
-  {
+  struct PropertyDetail {
     const std::function<QString(const Property&, std::size_t)> channel_name;
   };
 
@@ -235,8 +246,13 @@ Q_SIGNALS:
   void enabledness_changed(bool);
 public Q_SLOTS:
   void set_enabledness(bool enabled);
+
 public:
-  bool is_enabled() const { return m_is_enabled; }
+  bool is_enabled() const
+  {
+    return m_is_enabled;
+  }
+
 private:
   bool m_is_enabled = true;
 

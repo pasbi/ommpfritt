@@ -1,18 +1,16 @@
 #pragma once
 
-#include <memory>
-#include "common.h"
 #include "aspects/serializable.h"
-#include <QObject>
-#include <set>
-#include <memory>
-#include "nodesystem/port.h"
-#include "nodesystem/nodecompiler.h"
 #include "cachedgetter.h"
+#include "common.h"
+#include "nodesystem/nodecompiler.h"
+#include "nodesystem/port.h"
+#include <QObject>
+#include <memory>
+#include <set>
 
 namespace omm
 {
-
 class Node;
 class AbstractPort;
 class OutputPort;
@@ -20,7 +18,9 @@ class InputPort;
 class Scene;
 class FragmentNode;
 
-class NodeModel : public QObject, public Serializable
+class NodeModel
+    : public QObject
+    , public Serializable
 {
   Q_OBJECT
 public:
@@ -37,7 +37,7 @@ public:
   using QObject::connect;
 
   void serialize(AbstractSerializer&, const Pointer&) const override;
-  void deserialize(AbstractDeserializer&deserializer, const Pointer&ptr) override;
+  void deserialize(AbstractDeserializer& deserializer, const Pointer& ptr) override;
 
   static constexpr auto NODES_POINTER = "nodes";
   static constexpr auto TYPE_POINTER = "type";
@@ -55,10 +55,19 @@ public:
     return ::transform<PortT*>(::filter_if(ports(), pred), conv);
   }
 
-  AbstractNodeCompiler::Language language() const { return m_compiler->language; }
-  Scene& scene() const { return m_scene; }
+  AbstractNodeCompiler::Language language() const
+  {
+    return m_compiler->language;
+  }
+  Scene& scene() const
+  {
+    return m_scene;
+  }
   AbstractNodeCompiler& compiler() const;
-  QString error() const { return m_error; }
+  QString error() const
+  {
+    return m_error;
+  }
 
   friend class TopologyChangeSignalBlocker;
   class TopologyChangeSignalBlocker
@@ -66,6 +75,7 @@ public:
   public:
     explicit TopologyChangeSignalBlocker(NodeModel& model);
     ~TopologyChangeSignalBlocker();
+
   private:
     NodeModel& m_model;
   };

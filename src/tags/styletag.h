@@ -1,11 +1,11 @@
 #pragma once
 
-#include <memory>
 #include "tags/tag.h"
 #include <Qt>
+#include <memory>
 
-namespace omm {
-
+namespace omm
+{
 class StyleTag : public Tag
 {
 public:

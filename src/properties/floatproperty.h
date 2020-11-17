@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class FloatProperty : public NumericProperty<double>
 {
 public:

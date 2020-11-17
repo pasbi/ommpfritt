@@ -3,7 +3,6 @@
 
 namespace omm
 {
-
 template<> QString OrdinaryPort<PortType::Input>::data_type() const
 {
   return node.input_data_type(*this);

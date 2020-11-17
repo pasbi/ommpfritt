@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 class ToolBarItemModel;
 
 class ToolBarItemView : public QTreeView
@@ -14,8 +13,8 @@ public:
   void setModel(QAbstractItemModel* model) override;
 
 protected:
-//  void startDrag(Qt::DropActions supported_action) override;
+  //  void startDrag(Qt::DropActions supported_action) override;
   void dropEvent(QDropEvent* event) override;
 };
 
-}  // namespace
+}  // namespace omm

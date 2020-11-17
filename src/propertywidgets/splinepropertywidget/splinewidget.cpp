@@ -12,8 +12,7 @@ using namespace omm;
 static constexpr double closeness_threshold_px = 4;
 
 using Side = SplineType::Knot::Side;
-template<typename Iterator>
-QPointF knot_pos(Iterator&& it, Side side)
+template<typename Iterator> QPointF knot_pos(Iterator&& it, Side side)
 {
   auto&& other = [it, side]() {
     switch (side) {
@@ -29,16 +28,14 @@ QPointF knot_pos(Iterator&& it, Side side)
     }
   }();
 
-  return { (other->first + 2.0 * it->first) / 3.0, it->second.get_value(side) };
+  return {(other->first + 2.0 * it->first) / 3.0, it->second.get_value(side)};
 }
 
 }  // namespace
 
 namespace omm
 {
-
-SplineWidget::SplineWidget(QWidget* parent)
-  : QWidget(parent)
+SplineWidget::SplineWidget(QWidget* parent) : QWidget(parent)
 {
 }
 
@@ -94,7 +91,8 @@ void SplineWidget::mouseReleaseEvent(QMouseEvent*)
 void SplineWidget::mouseMoveEvent(QMouseEvent* event)
 {
   if (m_grabbed_knot.is_valid()) {
-    const auto p = transform().inverted().map(QPointF(event->pos()));;
+    const auto p = transform().inverted().map(QPointF(event->pos()));
+    ;
     m_grabbed_knot.knot().set_value(m_grabbed_knot.side(), std::clamp(p.y(), 0.0, 1.0));
     if (m_grabbed_knot.side() == Side::Middle) {
       const auto it = m_spline.move(m_grabbed_knot.iterator(), std::clamp(p.x(), 0.0, 1.0));
@@ -147,7 +145,7 @@ void SplineWidget::draw_spline(QPainter& painter)
 
   {
     QPainterPath path;
-    std::size_t n = width()/2;
+    std::size_t n = width() / 2;
     path.moveTo({0.0, m_spline.evaluate(0).value()});
     for (std::size_t i = 1; i <= n; ++i) {
       const double t = static_cast<double>(i) / static_cast<double>(n);

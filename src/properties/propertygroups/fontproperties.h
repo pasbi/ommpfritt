@@ -1,12 +1,11 @@
 #pragma once
 
 #include "propertygroup.h"
-#include <string>
 #include <QFont>
+#include <string>
 
 namespace omm
 {
-
 class FontProperties : public PropertyGroup
 {
 public:

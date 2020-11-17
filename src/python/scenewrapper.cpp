@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 void SceneWrapper::define_python_interface(py::object& module)
 {
   py::class_<SceneWrapper>(module, wrapped_type::TYPE)

@@ -1,14 +1,13 @@
 #pragma once
 
-#include <iterator>
-#include <array>
-#include <vector>
 #include <QColor>
+#include <array>
+#include <iterator>
 #include <map>
+#include <vector>
 
 namespace omm
 {
-
 /**
  * @brief The Color class r, g, b, h, s, v are in range [0, 1]
  */
@@ -26,7 +25,7 @@ public:
   explicit Color();
 
   QString to_html() const;
-  static Color from_html(const QString& html, bool *ok = nullptr);
+  static Color from_html(const QString& html, bool* ok = nullptr);
   static Color from_qcolor(const QColor& color);
   QColor to_qcolor() const;
 
@@ -44,7 +43,10 @@ public:
 
   std::array<double, 4> components(Model model) const;
   void set_components(Model model, const std::array<double, 4>& components);
-  Model model() const { return m_current_model; }
+  Model model() const
+  {
+    return m_current_model;
+  }
 
   static const std::map<Model, std::array<QString, 4>> component_names;
 
@@ -67,21 +69,19 @@ private:
 
 namespace Colors
 {
+static const Color RED(Color::Model::RGBA, {1.0, 0.0, 0.0, 1.0});
+static const Color GREEN(Color::Model::RGBA, {0.0, 1.0, 0.0, 1.0});
+static const Color BLUE(Color::Model::RGBA, {0.0, 0.0, 1.0, 1.0});
+static const Color YELLOW(Color::Model::RGBA, {1.0, 1.0, 0.0, 1.0});
+static const Color BLACK(Color::Model::RGBA, {0.0, 0.0, 0.0, 1.0});
+static const Color WHITE(Color::Model::RGBA, {1.0, 1.0, 1.0, 1.0});
+static const Color CERULEAN(Color::Model::RGBA, {0.1, 0.52, 0.82, 1.0});
 
-static const Color RED      (Color::Model::RGBA, { 1.0, 0.0, 0.0, 1.0 });
-static const Color GREEN    (Color::Model::RGBA, { 0.0, 1.0, 0.0, 1.0 });
-static const Color BLUE     (Color::Model::RGBA, { 0.0, 0.0, 1.0, 1.0 });
-static const Color YELLOW   (Color::Model::RGBA, { 1.0, 1.0, 0.0, 1.0 });
-static const Color BLACK    (Color::Model::RGBA, { 0.0, 0.0, 0.0, 1.0 });
-static const Color WHITE    (Color::Model::RGBA, { 1.0, 1.0, 1.0, 1.0 });
-static const Color CERULEAN (Color::Model::RGBA, { 0.1, 0.52, 0.82, 1.0 });
-
-}
+}  // namespace Colors
 
 bool operator==(const Color& a, const Color& b);
 bool operator!=(const Color& a, const Color& b);
 bool operator<(const Color& a, const Color& b);
 std::ostream& operator<<(std::ostream& ostream, const Color& color);
 
-
-}  // namespace
+}  // namespace omm

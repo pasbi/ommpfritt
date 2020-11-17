@@ -5,9 +5,7 @@
 
 namespace omm
 {
-
-struct IntegerVectorPropertyLimits
-{
+struct IntegerVectorPropertyLimits {
   static const Vec2i lower;
   static const Vec2i upper;
   static const Vec2i step;

@@ -11,6 +11,7 @@ target_sources(libommpfritt PRIVATE
   mainwindow.h
   options.cpp
   options.h
+  gpl3.h
 )
 
 add_subdirectory(viewport)

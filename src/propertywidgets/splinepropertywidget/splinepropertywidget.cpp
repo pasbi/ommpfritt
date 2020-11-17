@@ -3,9 +3,8 @@
 
 namespace omm
 {
-
 SplinePropertyWidget::SplinePropertyWidget(Scene& scene, const std::set<Property*>& properties)
-  : PropertyWidget<SplineProperty>(scene, properties)
+    : PropertyWidget<SplineProperty>(scene, properties)
 {
   auto spline_edit = std::make_unique<SplineWidget>();
   m_spline_edit = spline_edit.get();

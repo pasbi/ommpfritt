@@ -3,14 +3,16 @@
 #include <QDialog>
 #include <memory>
 
-namespace Ui { class NamedColorsDialog; }
+namespace Ui
+{
+class NamedColorsDialog;
+}
 
 class QStyledItemDelegate;
 class QListView;
 
 namespace omm
 {
-
 template<typename ViewT> class NamedColorsHighlighProxyModel;
 class NamedColors;
 
@@ -32,7 +34,6 @@ private:
   NamedColors& model() const;
   std::unique_ptr<NamedColorsHighlighProxyModel<QListView>> m_proxy;
   std::unique_ptr<QStyledItemDelegate> m_delegate;
-
 };
 
 }  // namespace omm

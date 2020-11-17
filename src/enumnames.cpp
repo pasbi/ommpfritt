@@ -3,7 +3,6 @@
 
 namespace omm
 {
-
 template<> const char* enum_name_impl<Kind>(Kind e)
 {
   switch (e) {
@@ -23,13 +22,15 @@ template<> const char* enum_name_impl<Kind>(Kind e)
   }
 }
 
-template<> std::set<Kind> enumerate_enum<Kind>() {
-  return {
-    Kind::Tag, Kind::Node, Kind::Object, Kind::Style, Kind::Tool
-  };
+template<> std::set<Kind> enumerate_enum<Kind>()
+{
+  return {Kind::Tag, Kind::Node, Kind::Object, Kind::Style, Kind::Tool};
 }
 
-template<> bool is_flag<Kind>() { return true; }
+template<> bool is_flag<Kind>()
+{
+  return true;
+}
 
 template<> const char* enum_name_impl<Flag>(Flag f)
 {
@@ -50,13 +51,19 @@ template<> const char* enum_name_impl<Flag>(Flag f)
   }
 }
 
-template<> std::set<Flag> enumerate_enum<Flag>() {
-  return {
-    Flag::Convertible, Flag::HasScript, Flag::IsView, Flag::HasPythonNodes, Flag::HasGLSLNodes
-  };
+template<> std::set<Flag> enumerate_enum<Flag>()
+{
+  return {Flag::Convertible,
+          Flag::HasScript,
+          Flag::IsView,
+          Flag::HasPythonNodes,
+          Flag::HasGLSLNodes};
 }
 
-template<> bool is_flag<Flag>() { return true; }
+template<> bool is_flag<Flag>()
+{
+  return true;
+}
 
 template<> const char* enum_name_impl<ExitStatus>(ExitStatus e)
 {
@@ -77,14 +84,18 @@ template<> const char* enum_name_impl<ExitStatus>(ExitStatus e)
   }
 }
 
-template<> std::set<ExitStatus> enumerate_enum<ExitStatus>() {
-  return {
-    ExitStatus::invalid_input_format, ExitStatus::object_name_not_found,
-    ExitStatus::object_type_not_found, ExitStatus::refuse_overwrite_file,
-    ExitStatus::non_unique_object_reference
-  };
+template<> std::set<ExitStatus> enumerate_enum<ExitStatus>()
+{
+  return {ExitStatus::invalid_input_format,
+          ExitStatus::object_name_not_found,
+          ExitStatus::object_type_not_found,
+          ExitStatus::refuse_overwrite_file,
+          ExitStatus::non_unique_object_reference};
 }
 
-template<> bool is_flag<ExitStatus>() { return false; }
+template<> bool is_flag<ExitStatus>()
+{
+  return false;
+}
 
 }  // namespace omm

@@ -1,24 +1,22 @@
 #pragma once
 
-#include <memory>
 #include "commands/command.h"
-#include "properties/stringproperty.h"
 #include "objects/object.h"
+#include "properties/stringproperty.h"
 #include "renderers/style.h"
 #include "scene/contextes.h"
+#include <memory>
 
 namespace omm
 {
-
-template<typename StructureT>
-class AddCommand : public Command
+template<typename StructureT> class AddCommand : public Command
 {
 public:
   using item_type = typename StructureT::item_type;
   using context_type = typename Contextes<item_type>::Owning;
 
   AddCommand(StructureT& structure, std::unique_ptr<item_type> item)
-    : AddCommand(structure, context_type(std::move(item), structure))
+      : AddCommand(structure, context_type(std::move(item), structure))
   {
     static int i = 0;
     const auto name = m_context.subject->type() + QString(" %1").arg(i++);
@@ -26,9 +24,7 @@ public:
   }
 
   AddCommand(StructureT& structure, context_type context)
-    : Command(QObject::tr("add"))
-    , m_context(std::move(context))
-    , m_structure(structure)
+      : Command(QObject::tr("add")), m_context(std::move(context)), m_structure(structure)
   {
   }
 

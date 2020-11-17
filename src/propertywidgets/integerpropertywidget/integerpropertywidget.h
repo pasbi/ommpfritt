@@ -1,11 +1,10 @@
 #pragma once
 
-#include "propertywidgets/numericpropertywidget/numericpropertywidget.h"
 #include "properties/integerproperty.h"
+#include "propertywidgets/numericpropertywidget/numericpropertywidget.h"
 
 namespace omm
 {
-
 class IntegerPropertyWidget : public NumericPropertyWidget<IntegerProperty>
 {
 public:

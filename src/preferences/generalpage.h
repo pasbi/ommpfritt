@@ -4,11 +4,13 @@
 #include "preferences/preferences.h"
 #include <memory>
 
-namespace Ui { class GeneralPage; }
+namespace Ui
+{
+class GeneralPage;
+}
 
 namespace omm
 {
-
 class GeneralPage : public PreferencePage
 {
   Q_OBJECT

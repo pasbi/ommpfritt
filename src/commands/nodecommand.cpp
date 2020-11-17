@@ -1,17 +1,16 @@
-#include "nodesystem/port.h"
-#include "common.h"
-#include "nodesystem/nodemodel.h"
-#include "nodesystem/node.h"
 #include "commands/nodecommand.h"
+#include "common.h"
+#include "nodesystem/node.h"
+#include "nodesystem/nodemodel.h"
+#include "nodesystem/port.h"
 
 namespace
 {
-
 std::map<omm::Node*, QPointF> collect_old_positions(const std::set<omm::Node*>& nodes)
 {
   std::map<omm::Node*, QPointF> map;
   for (omm::Node* node : nodes) {
-    map.insert({ node, node->pos() });
+    map.insert({node, node->pos()});
   }
   return map;
 }
@@ -20,22 +19,18 @@ std::map<omm::Node*, QPointF> collect_old_positions(const std::set<omm::Node*>& 
 
 namespace omm
 {
-
 ConnectionCommand::ConnectionCommand(const QString& label, AbstractPort& a, AbstractPort& b)
-  : ConnectionCommand(label,
-                      static_cast<OutputPort&>(b.port_type == PortType::Input ? a : b),
-                      static_cast<InputPort&>(a.port_type == PortType::Input ? a : b))
+    : ConnectionCommand(label,
+                        static_cast<OutputPort&>(b.port_type == PortType::Input ? a : b),
+                        static_cast<InputPort&>(a.port_type == PortType::Input ? a : b))
 {
   // require exactly one input and one output.
   assert(a.port_type != b.port_type);
 }
 
 ConnectionCommand::ConnectionCommand(const QString& label, OutputPort& out, InputPort& in)
-  : Command(label)
-  , m_source_node(out.node)
-  , m_output_index(out.index)
-  , m_target_node(in.node)
-  , m_input_index(in.index)
+    : Command(label), m_source_node(out.node), m_output_index(out.index), m_target_node(in.node),
+      m_input_index(in.index)
 {
 }
 
@@ -60,21 +55,20 @@ OutputPort& ConnectionCommand::output_port() const
 }
 
 ConnectPortsCommand::ConnectPortsCommand(AbstractPort& a, AbstractPort& b)
-  : ConnectionCommand(QObject::tr("Connect Ports"), a, b)
+    : ConnectionCommand(QObject::tr("Connect Ports"), a, b)
 {
 }
 
 DisconnectPortsCommand::DisconnectPortsCommand(InputPort& port)
-  : ConnectionCommand(QObject::tr("Disconnect Ports"), port, *port.connected_output())
+    : ConnectionCommand(QObject::tr("Disconnect Ports"), port, *port.connected_output())
 {
 }
 
-
-NodeCommand::NodeCommand(const QString& label, NodeModel& model,
-                         std::vector<Node*> refs, std::vector<std::unique_ptr<Node>> owns)
-  : Command(label)
-  , m_refs(refs), m_owns(std::move(owns))
-  , m_model(model)
+NodeCommand::NodeCommand(const QString& label,
+                         NodeModel& model,
+                         std::vector<Node*> refs,
+                         std::vector<std::unique_ptr<Node>> owns)
+    : Command(label), m_refs(refs), m_owns(std::move(owns)), m_model(model)
 {
   if (m_refs.empty()) {
     for (const auto& node : m_owns) {
@@ -139,32 +133,31 @@ void NodeCommand::add()
 }
 
 RemoveNodesCommand::RemoveNodesCommand(NodeModel& model, std::vector<Node*> nodes)
-  : NodeCommand(QObject::tr("Remove Nodes"), model, nodes, {})
+    : NodeCommand(QObject::tr("Remove Nodes"), model, nodes, {})
 {
 }
 
 AddNodesCommand::AddNodesCommand(NodeModel& model, std::vector<std::unique_ptr<Node>> nodes)
-  : NodeCommand(QObject::tr("Add Nodes"), model, {}, std::move(nodes))
+    : NodeCommand(QObject::tr("Add Nodes"), model, {}, std::move(nodes))
 {
 }
 
 MoveNodesCommand::MoveNodesCommand(std::set<Node*> nodes, const QPointF& direction)
-  : Command(QObject::tr("Move Nodes"))
-  , m_old_positions(collect_old_positions(nodes))
-  , m_direction(direction)
+    : Command(QObject::tr("Move Nodes")), m_old_positions(collect_old_positions(nodes)),
+      m_direction(direction)
 {
 }
 
 void MoveNodesCommand::undo()
 {
-  for (auto&& [ node, old_pos ] : m_old_positions) {
+  for (auto&& [node, old_pos] : m_old_positions) {
     node->set_pos(old_pos);
   }
 }
 
 void MoveNodesCommand::redo()
 {
-  for (auto&& [ node, old_pos ] : m_old_positions) {
+  for (auto&& [node, old_pos] : m_old_positions) {
     node->set_pos(old_pos + m_direction);
   }
 }

@@ -1,23 +1,27 @@
 #include "propertywidgets/propertywidget.h"
 
+#include "widgets/animationbutton.h"
 #include <QBoxLayout>
 #include <QLabel>
-#include "widgets/animationbutton.h"
 
 namespace omm
 {
-
 AbstractPropertyWidget::AbstractPropertyWidget(Scene& scene, const std::set<Property*>& properties)
-  : scene(scene)
-  , m_properties(properties)
+    : scene(scene), m_properties(properties)
 {
   for (Property* property : properties) {
-    connect(property, &Property::value_changed,
-            this, &AbstractPropertyWidget::on_property_value_changed);
-    connect(property, &Property::enabledness_changed,
-            this, &AbstractPropertyWidget::update_enabledness);
-    connect(property, &Property::configuration_changed,
-            this, &AbstractPropertyWidget::update_configuration);
+    connect(property,
+            &Property::value_changed,
+            this,
+            &AbstractPropertyWidget::on_property_value_changed);
+    connect(property,
+            &Property::enabledness_changed,
+            this,
+            &AbstractPropertyWidget::update_enabledness);
+    connect(property,
+            &Property::configuration_changed,
+            this,
+            &AbstractPropertyWidget::update_configuration);
   }
   update_enabledness();
 }
@@ -30,11 +34,10 @@ void AbstractPropertyWidget::on_property_value_changed(Property*)
 
 void AbstractPropertyWidget::update_enabledness()
 {
-  const bool is_enabled = std::all_of(m_properties.begin(), m_properties.end(),
-                                      [](const Property* property)
-  {
-    return property->is_enabled();
-  });
+  const bool is_enabled
+      = std::all_of(m_properties.begin(), m_properties.end(), [](const Property* property) {
+          return property->is_enabled();
+        });
 
   setEnabled(is_enabled);
 }

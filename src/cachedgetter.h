@@ -3,11 +3,12 @@
 #include <map>
 #include <tuple>
 
-template<typename T, typename Self, typename... Args>
-class ArgsCachedGetter
+template<typename T, typename Self, typename... Args> class ArgsCachedGetter
 {
 public:
-  explicit ArgsCachedGetter(const Self& self) : m_self(self) {}
+  explicit ArgsCachedGetter(const Self& self) : m_self(self)
+  {
+  }
   const T& operator()(Args... args) const
   {
     const auto key = std::tuple(args...);
@@ -17,7 +18,10 @@ public:
     return m_cache.at(key);
   }
 
-  void invalidate() { m_cache.clear(); }
+  void invalidate()
+  {
+    m_cache.clear();
+  }
 
 protected:
   virtual T compute(Args... args) const = 0;
@@ -27,12 +31,12 @@ private:
   mutable std::map<std::tuple<Args...>, T> m_cache;
 };
 
-
-template<typename T, typename Self>
-class CachedGetter
+template<typename T, typename Self> class CachedGetter
 {
 public:
-  explicit CachedGetter(const Self& self) : m_self(self) {}
+  explicit CachedGetter(const Self& self) : m_self(self)
+  {
+  }
   const T& operator()() const
   {
     if (m_is_dirty) {
@@ -42,7 +46,10 @@ public:
     return m_cache;
   }
 
-  void invalidate() { m_is_dirty = true; }
+  void invalidate()
+  {
+    m_is_dirty = true;
+  }
 
 protected:
   virtual T compute() const = 0;

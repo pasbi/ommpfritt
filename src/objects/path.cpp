@@ -1,18 +1,16 @@
 #include "objects/path.h"
 
-#include <QObject>
 #include "commands/modifypointscommand.h"
+#include "common.h"
 #include "properties/boolproperty.h"
 #include "properties/optionproperty.h"
-#include "scene/scene.h"
-#include "common.h"
 #include "renderers/style.h"
+#include "scene/scene.h"
+#include <QObject>
 
 namespace
 {
-
-template<typename Iterator>
-auto iterator_to_tuple(const Iterator& it)
+template<typename Iterator> auto iterator_to_tuple(const Iterator& it)
 {
   return std::tuple{it.path, it.segment, it.point};
 }
@@ -21,25 +19,27 @@ auto iterator_to_tuple(const Iterator& it)
 
 namespace omm
 {
-
 class Style;
 
-Path::Path(Scene* scene)
-  : Object(scene)
+Path::Path(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("path");
 
   create_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
-    .set_label(QObject::tr("closed")).set_category(category);
+      .set_label(QObject::tr("closed"))
+      .set_category(category);
 
   create_property<OptionProperty>(INTERPOLATION_PROPERTY_KEY)
-    .set_options({ QObject::tr("linear"), QObject::tr("smooth"),
-                   QObject::tr("bezier") })
-    .set_label(QObject::tr("interpolation")).set_category(category);
+      .set_options({QObject::tr("linear"), QObject::tr("smooth"), QObject::tr("bezier")})
+      .set_label(QObject::tr("interpolation"))
+      .set_category(category);
   update();
 }
 
-QString Path::type() const { return TYPE; }
+QString Path::type() const
+{
+  return TYPE;
+}
 
 void Path::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
@@ -102,7 +102,7 @@ bool Path::is_closed() const
 
 void Path::set(const Geom::PathVector& paths)
 {
-  const auto path_to_segment = [is_closed=this->is_closed()](const Geom::Path& path) {
+  const auto path_to_segment = [is_closed = this->is_closed()](const Geom::Path& path) {
     return Object::path_to_segment(path, is_closed);
   };
 
@@ -117,8 +117,14 @@ std::size_t Path::count() const
   });
 }
 
-Path::iterator Path::end() { return ::omm::end<Path&>(*this); }
-Path::iterator Path::begin() { return ::omm::begin<Path&>(*this); }
+Path::iterator Path::end()
+{
+  return ::omm::end<Path&>(*this);
+}
+Path::iterator Path::begin()
+{
+  return ::omm::begin<Path&>(*this);
+}
 
 void Path::on_property_value_changed(Property* property)
 {
@@ -136,7 +142,9 @@ Geom::PathVector Path::paths() const
 
 template<typename PathRef>
 Path::Iterator<PathRef>::Iterator(PathRef path, std::size_t segment, std::size_t point)
-  : path(&path), segment(segment), point(point) {}
+    : path(&path), segment(segment), point(point)
+{
+}
 
 template<typename PathRef>
 bool Path::Iterator<PathRef>::operator<(const Path::Iterator<PathRef>& other) const
@@ -155,7 +163,8 @@ bool Path::Iterator<PathRef>::operator==(const Path::Iterator<PathRef>& other) c
 {
   if (path != other.path) {
     return false;
-  } if (is_end() && other.is_end()) {
+  }
+  if (is_end() && other.is_end()) {
     return true;
   } else {
     return segment == other.segment && point == other.point;
@@ -168,8 +177,7 @@ bool Path::Iterator<PathRef>::operator!=(const Path::Iterator<PathRef>& other) c
   return !(*this == other);
 }
 
-template<typename PathRef>
-bool Path::Iterator<PathRef>::is_end() const
+template<typename PathRef> bool Path::Iterator<PathRef>::is_end() const
 {
   return segment >= path->segments.size();
 }
@@ -186,8 +194,7 @@ typename Path::Iterator<PathRef>::pointer Path::Iterator<PathRef>::operator->() 
   return &**this;
 }
 
-template<typename PathRef>
-Path::Iterator<PathRef>& Path::Iterator<PathRef>::operator++()
+template<typename PathRef> Path::Iterator<PathRef>& Path::Iterator<PathRef>::operator++()
 {
   point += 1;
   if (path->segments[segment].size() == point) {
@@ -202,19 +209,19 @@ Point Path::smoothen_point(const Path::Segment& segment, bool is_closed, std::si
   const std::size_t n = segment.size();
   Vec2f left, right;
   if (i == 0) {
-   left = is_closed ? segment[n-1].position : segment[0].position;
-   right = segment[1].position;
-  } else if (i == n-1) {
-   left = segment[n-2].position;
-   right = is_closed ? segment[0].position : segment[n-1].position;
+    left = is_closed ? segment[n - 1].position : segment[0].position;
+    right = segment[1].position;
+  } else if (i == n - 1) {
+    left = segment[n - 2].position;
+    right = is_closed ? segment[0].position : segment[n - 1].position;
   } else {
-   left = segment[i-1].position;
-   right = segment[i+1].position;
+    left = segment[i - 1].position;
+    right = segment[i + 1].position;
   }
   const Vec2f d = left - right;
   auto copy = segment[i];
-  copy.right_tangent = PolarCoordinates(-d/6.0);
-  copy.left_tangent = PolarCoordinates(d/6.0);
+  copy.right_tangent = PolarCoordinates(-d / 6.0);
+  copy.left_tangent = PolarCoordinates(d / 6.0);
   return copy;
 }
 

@@ -2,7 +2,6 @@
 
 namespace omm
 {
-
 AbstractNumericEdit::AbstractNumericEdit(QWidget* parent) : QLineEdit(parent)
 {
   setReadOnly(true);
@@ -35,7 +34,7 @@ void AbstractNumericEdit::focusOutEvent(QFocusEvent* e)
 
 void AbstractNumericEdit::focusInEvent(QFocusEvent* e)
 {
-  const auto areasons = { Qt::TabFocusReason, Qt::BacktabFocusReason };
+  const auto areasons = {Qt::TabFocusReason, Qt::BacktabFocusReason};
   if (::contains(areasons, e->reason())) {
     setReadOnly(false);
   }
@@ -49,4 +48,3 @@ void AbstractNumericEdit::mouseDoubleClickEvent(QMouseEvent*)
 }
 
 }  // namespace omm
-

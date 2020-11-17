@@ -1,17 +1,15 @@
 #pragma once
 
-#include <memory>
-#include <vector>
-#include <set>
-#include <algorithm>
 #include "common.h"
 #include <QtGlobal>
+#include <algorithm>
+#include <memory>
+#include <set>
+#include <vector>
 
 namespace omm
 {
-
-template<typename T>
-class TreeElement
+template<typename T> class TreeElement
 {
 public:
   TreeElement() = default;
@@ -32,19 +30,31 @@ public:
   size_t position() const;
 
   static void remove_internal_children(std::set<T*>& items);
-  static T* lowest_common_ancestor(T *a, T *b);
-  static const T* lowest_common_ancestor(const T *a, const T *b);
+  static T* lowest_common_ancestor(T* a, T* b);
+  static const T* lowest_common_ancestor(const T* a, const T* b);
   static std::vector<T*> sort(const std::set<T*>& items);
 
 protected:
-  virtual void on_child_added(T& child) { Q_UNUSED(child); }
-  virtual void on_child_removed(T& child) { Q_UNUSED(child); }
+  virtual void on_child_added(T& child)
+  {
+    Q_UNUSED(child);
+  }
+  virtual void on_child_removed(T& child)
+  {
+    Q_UNUSED(child);
+  }
 
 private:
   T* m_parent = nullptr;
   std::vector<std::unique_ptr<T>> m_children;
-  T& get() { return static_cast<T&>(*this); }
-  const T& get() const { return static_cast<const T&>(*this); }
+  T& get()
+  {
+    return static_cast<T&>(*this);
+  }
+  const T& get() const
+  {
+    return static_cast<const T&>(*this);
+  }
 };
 
 template<typename T> bool tree_lt(const T* a, const T* b)
@@ -60,7 +70,7 @@ template<typename T> bool tree_lt(const T* a, const T* b)
     return candidate;
   };
 
-  if  (a == b) {
+  if (a == b) {
     return false;
   }
 

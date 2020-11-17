@@ -1,13 +1,11 @@
 #include "preferences/preferencestreeviewdelegate.h"
-#include <QAbstractItemView>
 #include "logging.h"
+#include <QAbstractItemView>
 
 namespace omm
 {
-
-
 AbstractPreferencesTreeViewDelegate::AbstractPreferencesTreeViewDelegate(QAbstractItemView& view)
-  : m_view(view)
+    : m_view(view)
 {
 }
 

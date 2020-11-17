@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 class Project;
 class Scene;
 
@@ -14,7 +13,10 @@ protected:
   Command(const QString& label);
 
 public:
-  virtual bool is_noop() const { return false; }
+  virtual bool is_noop() const
+  {
+    return false;
+  }
 
 protected:
   static constexpr int PROPERTY_COMMAND_ID = 1;

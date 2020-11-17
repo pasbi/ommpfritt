@@ -1,11 +1,10 @@
 #pragma once
 
-#include "commands/command.h"
 #include "color/color.h"
+#include "commands/command.h"
 
 namespace omm
 {
-
 class NamedColorAddRemoveCommand : public Command
 {
 protected:
@@ -22,16 +21,28 @@ class AddNamedColorCommand : public NamedColorAddRemoveCommand
 {
 public:
   explicit AddNamedColorCommand(const QString& color_name, const Color& value);
-  void undo() override { remove(); }
-  void redo() override { add(); }
+  void undo() override
+  {
+    remove();
+  }
+  void redo() override
+  {
+    add();
+  }
 };
 
 class RemoveNamedColorCommand : public NamedColorAddRemoveCommand
 {
 public:
   explicit RemoveNamedColorCommand(const QString& color_name);
-  void undo() override { add(); }
-  void redo() override { remove(); }
+  void undo() override
+  {
+    add();
+  }
+  void redo() override
+  {
+    remove();
+  }
 };
 
 class ChangeNamedColorNameCommand : public Command
@@ -53,8 +64,12 @@ public:
   void undo() override;
   void redo() override;
 
-  int id() const override { return Command::CHANGE_NAMED_COLORS_COLOR_COMMAND_ID; }
+  int id() const override
+  {
+    return Command::CHANGE_NAMED_COLORS_COLOR_COMMAND_ID;
+  }
   bool mergeWith(const QUndoCommand* other) override;
+
 private:
   const QString m_name;
   const Color m_old_color;

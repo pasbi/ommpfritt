@@ -4,10 +4,9 @@
 
 namespace omm
 {
-
 class AbstractEdit : public QWidget
 {
-Q_OBJECT
+  Q_OBJECT
 public:
   using QWidget::QWidget;
 

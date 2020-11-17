@@ -2,7 +2,6 @@
 
 namespace omm
 {
-
 /**
  * @brief The ScopedInterpreterWrapper class
  * The pybind11::scoped_interpreter is a RAII guard for the python interpreter.
@@ -29,8 +28,6 @@ public:
 private:
   void* m_scoped_interpreter;
   static ScopedInterpreterWrapper* m_instance;
-
 };
 
-
-}  // namespace
+}  // namespace omm

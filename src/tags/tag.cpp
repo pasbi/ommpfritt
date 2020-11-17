@@ -1,24 +1,21 @@
 #include "tags/tag.h"
 
-#include <memory>
 #include <QObject>
+#include <memory>
 
-#include "objects/object.h"
 #include "external/json.hpp"
+#include "objects/object.h"
 #include "properties/stringproperty.h"
-#include "serializers/jsonserializer.h"
 #include "scene/scene.h"
+#include "serializers/jsonserializer.h"
 
 namespace omm
 {
-
-Tag::Tag(Object& owner)
-  : PropertyOwner(owner.scene())
-  , owner(&owner)
+Tag::Tag(Object& owner) : PropertyOwner(owner.scene()), owner(&owner)
 {
   create_property<StringProperty>(NAME_PROPERTY_KEY, QObject::tr("<unnamed object>"))
-    .set_label(QObject::tr("Name"))
-    .set_category(QObject::tr("basic"));
+      .set_label(QObject::tr("Name"))
+      .set_category(QObject::tr("basic"));
 }
 
 Tag::~Tag()
@@ -32,7 +29,10 @@ std::ostream& operator<<(std::ostream& ostream, const Tag& tag)
   return ostream;
 }
 
-Flag Tag::flags() const { return Flag::None; }
+Flag Tag::flags() const
+{
+  return Flag::None;
+}
 
 std::unique_ptr<Tag> Tag::clone(Object& owner) const
 {

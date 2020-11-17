@@ -4,12 +4,11 @@
 
 namespace omm
 {
-
 class PathProperties : public PropertyGroup
 {
 public:
   using PropertyGroup::PropertyGroup;
-  void make_properties(const QString &category) const override;
+  void make_properties(const QString& category) const override;
 
   static constexpr auto PATH_REFERENCE_PROPERTY_KEY = "path";
   static constexpr auto ALIGN_PROPERTY_KEY = "align";
@@ -20,4 +19,4 @@ public:
   void apply_transformation(Object& o, double t, const ObjectTransformation& transformation) const;
 };
 
-}  // namespace
+}  // namespace omm

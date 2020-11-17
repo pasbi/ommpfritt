@@ -1,22 +1,19 @@
 #include "managers/timeline/slider.h"
+#include "animation/animator.h"
 #include "logging.h"
+#include "managers/dopesheetmanager/trackviewdelegate.h"
+#include "scene/mailbox.h"
+#include "scene/scene.h"
 #include <QMouseEvent>
 #include <QPainter>
 #include <cmath>
-#include "animation/animator.h"
-#include "scene/scene.h"
-#include "scene/mailbox.h"
-#include "managers/dopesheetmanager/trackviewdelegate.h"
 
 namespace omm
 {
-
-Slider::Slider(Animator& animator)
-  : m_canvas(animator, *this)
-  , m_scene(animator.scene)
+Slider::Slider(Animator& animator) : m_canvas(animator, *this), m_scene(animator.scene)
 {
   connect(&m_canvas, &TimelineCanvasC::current_frame_changed, this, &Slider::value_changed);
-  connect(&animator, &Animator::current_changed, this, [this](){ update(); });
+  connect(&animator, &Animator::current_changed, this, [this]() { update(); });
 
   m_canvas.footer_height = QFontMetrics(font()).height();
 }
@@ -27,7 +24,7 @@ void Slider::set_range(double left, double right)
   m_canvas.frame_range.end = right;
 }
 
-void Slider::paintEvent(QPaintEvent *event)
+void Slider::paintEvent(QPaintEvent* event)
 {
   QPainter painter(this);
   painter.setRenderHint(QPainter::Antialiasing);
@@ -60,7 +57,7 @@ bool Slider::event(QEvent* event)
 }
 
 Slider::TimelineCanvasC::TimelineCanvasC(Animator& animator, Slider& self)
-  : TimelineCanvas(animator, self), m_self(self)
+    : TimelineCanvas(animator, self), m_self(self)
 {
   synchronize_track_selection_with_animator();
   update_tracks(animator.scene.selection());

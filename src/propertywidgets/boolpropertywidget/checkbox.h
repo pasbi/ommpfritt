@@ -1,12 +1,13 @@
 #pragma once
 
-#include <QCheckBox>
 #include "propertywidgets/multivalueedit.h"
+#include <QCheckBox>
 
 namespace omm
 {
-
-class CheckBox : public QCheckBox, public MultiValueEdit<bool>
+class CheckBox
+    : public QCheckBox
+    , public MultiValueEdit<bool>
 {
 public:
   explicit CheckBox(const QString& label = "");

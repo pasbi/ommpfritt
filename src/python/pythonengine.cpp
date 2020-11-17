@@ -1,18 +1,17 @@
-#include <pybind11/embed.h>
-#include <iostream>
-#include <pybind11/iostream.h>
-#include <functional>
 #include "python/pythonengine.h"
+#include "external/pybind11/embed.h"
+#include "external/pybind11/iostream.h"
+#include "python/scenewrapper.h"
+#include "python/tagwrapper.h"
 #include "scene/scene.h"
 #include "tags/scripttag.h"
-#include "python/tagwrapper.h"
-#include "python/scenewrapper.h"
+#include <functional>
+#include <iostream>
 
 namespace py = pybind11;
 
 namespace
 {
-
 class PythonStreamRedirect
 {
 public:
@@ -58,8 +57,10 @@ private:
 
 namespace omm
 {
-
-PYBIND11_EMBEDDED_MODULE(omm, m) { Q_UNUSED(m); }
+PYBIND11_EMBEDDED_MODULE(omm, m)
+{
+  Q_UNUSED(m);
+}
 
 PythonEngine::PythonEngine()
 {
@@ -73,10 +74,9 @@ PythonEngine::PythonEngine()
   register_wrappers(omm_module);
 }
 
-bool PythonEngine
-::exec(const QString& code, py::object& locals, const void* associated_item)
+bool PythonEngine ::exec(const QString& code, py::object& locals, const void* associated_item)
 {
-  PythonStreamRedirect py_output_redirect {};
+  PythonStreamRedirect py_output_redirect{};
   try {
     py::exec(code.toStdString(), py::globals(), locals);
     if (const auto stdout_ = py_output_redirect.stdout_(); !stdout_.isEmpty()) {
@@ -95,10 +95,10 @@ bool PythonEngine
   }
 }
 
-pybind11::object PythonEngine
-::eval(const QString& code, py::object& locals, const void* associated_item)
+pybind11::object
+PythonEngine ::eval(const QString& code, py::object& locals, const void* associated_item)
 {
-  PythonStreamRedirect py_output_redirect {};
+  PythonStreamRedirect py_output_redirect{};
   try {
     auto result = py::eval(code.toStdString(), py::globals(), locals);
     Q_EMIT output(associated_item, py_output_redirect.stdout_(), Stream::stdout_);

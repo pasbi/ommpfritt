@@ -1,12 +1,11 @@
 #pragma once
 
+#include "managers/timeline/timelinecanvas.h"
 #include <QAbstractItemDelegate>
 #include <set>
-#include "managers/timeline/timelinecanvas.h"
 
 namespace omm
 {
-
 class Track;
 class DopeSheetView;
 class Property;
@@ -16,8 +15,10 @@ class TrackViewDelegate : public QAbstractItemDelegate
   Q_OBJECT
 public:
   TrackViewDelegate(DopeSheetView& view, TimelineCanvas& canvas);
-  void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-  QSize sizeHint(const QStyleOptionViewItem&, const QModelIndex &index) const override;
+  void paint(QPainter* painter,
+             const QStyleOptionViewItem& option,
+             const QModelIndex& index) const override;
+  QSize sizeHint(const QStyleOptionViewItem&, const QModelIndex& index) const override;
 
   bool view_event(QEvent& event);
   void activate_index(const QModelIndex& index) const;

@@ -1,22 +1,18 @@
 #pragma once
 
-#include "geometry/vec2.h"
-#include "tools/handles/handle.h"
-#include "renderers/painter.h"
 #include "geometry/util.h"
-#include "tools/tool.h"
+#include "geometry/vec2.h"
 #include "preferences/uicolors.h"
+#include "renderers/painter.h"
+#include "tools/handles/handle.h"
+#include "tools/tool.h"
 
 namespace omm
 {
-
-template<typename ToolT, AxisHandleDirection direction>
-class MoveAxisHandle : public Handle
+template<typename ToolT, AxisHandleDirection direction> class MoveAxisHandle : public Handle
 {
 public:
-  MoveAxisHandle(ToolT& tool)
-    : Handle(tool)
-    , m_direction(axis_directions.at(direction))
+  MoveAxisHandle(ToolT& tool) : Handle(tool), m_direction(axis_directions.at(direction))
   {
   }
 
@@ -59,9 +55,9 @@ public:
     const QPainterPath path = [this]() {
       const double magnitude = 0.9 * m_direction.euclidean_norm();
       const double argument = m_direction.arg();
-      const auto right = to_qpoint(PolarCoordinates(argument-0.1, magnitude).to_cartesian());
-      const auto left  = to_qpoint(PolarCoordinates(argument+0.1, magnitude).to_cartesian());
-      const auto p = (left + right)/2.0;
+      const auto right = to_qpoint(PolarCoordinates(argument - 0.1, magnitude).to_cartesian());
+      const auto left = to_qpoint(PolarCoordinates(argument + 0.1, magnitude).to_cartesian());
+      const auto p = (left + right) / 2.0;
 
       QPainterPath path;
       path.moveTo({0.0, 0.0});

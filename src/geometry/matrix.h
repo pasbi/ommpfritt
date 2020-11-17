@@ -2,12 +2,11 @@
 
 #include "geometry/vec2.h"
 
-#include <QMatrix>
 #include <QGenericMatrix>
+#include <QMatrix>
 
 namespace omm
 {
-
 class Matrix
 {
 public:

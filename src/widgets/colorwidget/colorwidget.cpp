@@ -1,27 +1,25 @@
 #include "widgets/colorwidget/colorwidget.h"
-#include "mainwindow/application.h"
-#include "color/namedcolors.h"
-#include "widgets/colorwidget/colorcircle.h"
-#include "ui_colorwidget.h"
 #include "color/color.h"
+#include "color/namedcolors.h"
+#include "mainwindow/application.h"
 #include "namedcolorsdialog.h"
+#include "ui_colorwidget.h"
+#include "widgets/colorwidget/colorcircle.h"
 
 namespace omm
 {
-
-ColorWidget::ColorWidget(QWidget* parent)
-  : ColorPicker(parent), m_ui(new Ui::ColorWidget)
+ColorWidget::ColorWidget(QWidget* parent) : ColorPicker(parent), m_ui(new Ui::ColorWidget)
 {
   m_ui->setupUi(this);
 
   m_component_widgets = {
-    { Color::Role::Red,        { m_ui->sl_r, m_ui->sb_r } },
-    { Color::Role::Green,      { m_ui->sl_g, m_ui->sb_g } },
-    { Color::Role::Blue,       { m_ui->sl_b, m_ui->sb_b } },
-    { Color::Role::Hue,        { m_ui->sl_h, m_ui->sb_h } },
-    { Color::Role::Saturation, { m_ui->sl_s, m_ui->sb_s } },
-    { Color::Role::Value,      { m_ui->sl_v, m_ui->sb_v } },
-    { Color::Role::Alpha,      { m_ui->sl_a, m_ui->sb_a } },
+      {Color::Role::Red, {m_ui->sl_r, m_ui->sb_r}},
+      {Color::Role::Green, {m_ui->sl_g, m_ui->sb_g}},
+      {Color::Role::Blue, {m_ui->sl_b, m_ui->sb_b}},
+      {Color::Role::Hue, {m_ui->sl_h, m_ui->sb_h}},
+      {Color::Role::Saturation, {m_ui->sl_s, m_ui->sb_s}},
+      {Color::Role::Value, {m_ui->sl_v, m_ui->sb_v}},
+      {Color::Role::Alpha, {m_ui->sl_a, m_ui->sb_a}},
   };
 
   for (auto&& [role, cwidgets] : m_component_widgets) {
@@ -33,15 +31,17 @@ ColorWidget::ColorWidget(QWidget* parent)
   }
 
   add_color_picker(std::make_unique<ColorCircle>());
-  connect(m_ui->pb_named_colors, &QPushButton::clicked, this, &ColorWidget::show_named_colors_dialog);
+  connect(m_ui->pb_named_colors,
+          &QPushButton::clicked,
+          this,
+          &ColorWidget::show_named_colors_dialog);
 
   NamedColors& model = Application::instance().scene.named_colors();
   using ComboBoxNCHPM = NamedColorsHighlighProxyModel<QComboBox>;
   auto cb_proxy = std::make_unique<ComboBoxNCHPM>(model, *m_ui->cb_named_colors->view());
   m_ui->cb_named_colors->set_model(*cb_proxy);
   cb_proxy.release()->setParent(m_ui->cb_named_colors);
-  connect(m_ui->cb_named_colors, &ComboBox::current_index_changed, [this](int index)
-  {
+  connect(m_ui->cb_named_colors, &ComboBox::current_index_changed, [this](int index) {
     if (index >= 0) {
       const QString name = m_ui->cb_named_colors->view()->itemText(index);
       set_color(Color(name));
@@ -120,6 +120,5 @@ void ColorWidget::show_named_colors_dialog()
     }
   }
 }
-
 
 }  // namespace omm

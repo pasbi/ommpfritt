@@ -1,11 +1,10 @@
 #pragma once
 
-#include <QWidget>
 #include "color/color.h"
+#include <QWidget>
 
 namespace omm
 {
-
 class Color;
 
 class ColorPicker : public QWidget
@@ -24,7 +23,6 @@ Q_SIGNALS:
 
 private:
   Color m_color;
-
 };
 
-}  // namespace
+}  // namespace omm

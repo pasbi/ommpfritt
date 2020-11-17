@@ -4,21 +4,19 @@
 
 namespace omm
 {
-
-const Property::PropertyDetail ReferenceProperty::detail { nullptr };
+const Property::PropertyDetail ReferenceProperty::detail{nullptr};
 
 using Flag = Flag;
 using Kind = Kind;
 
-ReferenceProperty::ReferenceProperty()
-  : TypedProperty(nullptr)
+ReferenceProperty::ReferenceProperty() : TypedProperty(nullptr)
 {
   configuration[FILTER_POINTER] = Filter::accept_anything();
   set_default_value(nullptr);
 }
 
-ReferenceProperty::ReferenceProperty(const ReferenceProperty &other)
-  : TypedProperty<AbstractPropertyOwner *>(other)
+ReferenceProperty::ReferenceProperty(const ReferenceProperty& other)
+    : TypedProperty<AbstractPropertyOwner*>(other)
 {
   auto* value = this->value();
   if (value != nullptr) {
@@ -73,14 +71,15 @@ bool ReferenceProperty::is_compatible(const Property& other) const
 {
   if (Property::is_compatible(other)) {
     auto& other_reference_property = static_cast<const ReferenceProperty&>(other);
-    return other_reference_property.configuration.at(FILTER_POINTER) == configuration.at(FILTER_POINTER);
+    return other_reference_property.configuration.at(FILTER_POINTER)
+           == configuration.at(FILTER_POINTER);
   } else {
     return false;
   }
 }
 
-void ReferenceProperty
-::update_references(const std::map<std::size_t, AbstractPropertyOwner *> &references)
+void ReferenceProperty ::update_references(
+    const std::map<std::size_t, AbstractPropertyOwner*>& references)
 {
   if (m_reference_value_id != 0) {
     try {
@@ -96,9 +95,12 @@ Property::Filter ReferenceProperty::filter() const
   return configuration.get<Property::Filter>(ReferenceProperty::FILTER_POINTER);
 }
 
-void ReferenceProperty::revise() { set(nullptr); }
+void ReferenceProperty::revise()
+{
+  set(nullptr);
+}
 
-void ReferenceProperty::set(AbstractPropertyOwner * const &value)
+void ReferenceProperty::set(AbstractPropertyOwner* const& value)
 {
   AbstractPropertyOwner* const old_value = this->value();
   TypedProperty::set(value);
@@ -106,7 +108,7 @@ void ReferenceProperty::set(AbstractPropertyOwner * const &value)
 }
 
 ReferenceProperty::Filter::Filter(const Disjunction<Kind>& kind, const DNF<Flag>& flag)
-  : kind(kind), flag(flag)
+    : kind(kind), flag(flag)
 {
 }
 
@@ -115,8 +117,8 @@ Property::Filter::Filter()
 }
 
 ReferenceProperty::Filter::Filter(const DNF<Flag>& flag)
-  : Filter(Disjunction<Kind>(Kind::All, Kind::None), flag)
+    : Filter(Disjunction<Kind>(Kind::All, Kind::None), flag)
 {
 }
 
-}   // namespace omm
+}  // namespace omm

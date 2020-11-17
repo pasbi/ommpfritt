@@ -4,8 +4,6 @@
 
 namespace omm
 {
-
-
 class SceneWrapper : public PyWrapper<Scene>
 {
 public:

@@ -1,22 +1,30 @@
+#include "logging.h"
+#include <QTransform>
 #include <cassert>
 #include <cmath>
 #include <ostream>
-#include <QTransform>
-#include "logging.h"
 
 #include "geometry/objecttransformation.h"
 
 namespace omm
 {
-
 ObjectTransformation::ObjectTransformation()
-  : m_translation(0, 0), m_scaling(1, 1), m_shearing(0), m_rotation(0) { }
+    : m_translation(0, 0), m_scaling(1, 1), m_shearing(0), m_rotation(0)
+{
+}
 
-ObjectTransformation::ObjectTransformation( const Vec2f& translation, const Vec2f& scale,
-                                            const double rotation, const double shear )
-  : m_translation(translation), m_scaling(scale), m_shearing(shear), m_rotation(rotation) { }
+ObjectTransformation::ObjectTransformation(const Vec2f& translation,
+                                           const Vec2f& scale,
+                                           const double rotation,
+                                           const double shear)
+    : m_translation(translation), m_scaling(scale), m_shearing(shear), m_rotation(rotation)
+{
+}
 
-ObjectTransformation::ObjectTransformation(const Matrix& mat) { set_mat(mat); }
+ObjectTransformation::ObjectTransformation(const Matrix& mat)
+{
+  set_mat(mat);
+}
 
 void ObjectTransformation::set_translation(const Vec2f& translation_vector)
 {
@@ -28,7 +36,10 @@ void ObjectTransformation::set_rotation(const double& angle)
   m_rotation = angle;
 }
 
-void ObjectTransformation::set_shearing(const double& shear) { m_shearing = shear; }
+void ObjectTransformation::set_shearing(const double& shear)
+{
+  m_shearing = shear;
+}
 
 void ObjectTransformation::set_scaling(const Vec2f& scale_vector)
 {
@@ -40,8 +51,14 @@ void ObjectTransformation::translate(const Vec2f& translation_vector)
   m_translation += translation_vector;
 }
 
-void ObjectTransformation::rotate(const double& angle) { m_rotation += angle; }
-void ObjectTransformation::shear(const double& shear) { m_shearing += shear; }
+void ObjectTransformation::rotate(const double& angle)
+{
+  m_rotation += angle;
+}
+void ObjectTransformation::shear(const double& shear)
+{
+  m_shearing += shear;
+}
 
 void ObjectTransformation::scale(const Vec2f& scale_vector)
 {
@@ -79,18 +96,12 @@ ObjectTransformation ObjectTransformation::scaled(const Vec2f& scale_vector) con
 
 Matrix ObjectTransformation::to_mat() const
 {
-  const Matrix translation({ { 1, 0, m_translation.x },
-                             { 0, 1, m_translation.y },
-                             { 0, 0, 1                } });
-  const Matrix rotation({ { std::cos(m_rotation), -std::sin(m_rotation), 0 },
-                          { std::sin(m_rotation),  std::cos(m_rotation), 0 },
-                          { 0,                0,               1 } });
-  const Matrix scaling({ { m_scaling.x, 0,              0 },
-                         { 0,              m_scaling.y, 0 },
-                         { 0,              0,           1 } });
-  const Matrix shearing({ { 1,          0, 0 },
-                          { m_shearing, 1, 0 },
-                          { 0,          0, 1 } });
+  const Matrix translation({{1, 0, m_translation.x}, {0, 1, m_translation.y}, {0, 0, 1}});
+  const Matrix rotation({{std::cos(m_rotation), -std::sin(m_rotation), 0},
+                         {std::sin(m_rotation), std::cos(m_rotation), 0},
+                         {0, 0, 1}});
+  const Matrix scaling({{m_scaling.x, 0, 0}, {0, m_scaling.y, 0}, {0, 0, 1}});
+  const Matrix shearing({{1, 0, 0}, {m_shearing, 1, 0}, {0, 0, 1}});
 
   return translation * rotation * scaling * shearing;
 }
@@ -102,7 +113,7 @@ void ObjectTransformation::set_mat(const Matrix& mat)
   const double c = mat.m[1][0];
   const double d = mat.m[1][1];
 
-  m_translation = { mat.m[0][2], mat.m[1][2] };
+  m_translation = {mat.m[0][2], mat.m[1][2]};
 
   // TODO NaN can occur if scaling is 0.
   assert(std::abs(mat.m[2][0] - 0) < 0.0001 || std::isnan(mat.m[2][0]));
@@ -125,8 +136,8 @@ void ObjectTransformation::set_mat(const Matrix& mat)
   const auto sy = sqrt(std::pow(b, 2.0) + std::pow(d, 2.0));
   if (sy > eps) {
     m_rotation = -atan2(b, d);
-    m_scaling = Vec2f((a*d - b*c) / sy, sy);
-    m_shearing = (a*b + c*d) / std::pow(sy, 2.0);
+    m_scaling = Vec2f((a * d - b * c) / sy, sy);
+    m_shearing = (a * b + c * d) / std::pow(sy, 2.0);
   } else {
     // since sy is so small, there is no way to get the shearing. Let's assume it is zero.
     m_shearing = 0.0;
@@ -137,11 +148,26 @@ void ObjectTransformation::set_mat(const Matrix& mat)
   }
 }
 
-Vec2f ObjectTransformation::translation() const { return m_translation; }
-double ObjectTransformation::rotation() const { return m_rotation; }
-Vec2f ObjectTransformation::scaling() const { return m_scaling; }
-double ObjectTransformation::shearing() const { return m_shearing; }
-Vec2f ObjectTransformation::null() const { return apply_to_position(Vec2f::o()); }
+Vec2f ObjectTransformation::translation() const
+{
+  return m_translation;
+}
+double ObjectTransformation::rotation() const
+{
+  return m_rotation;
+}
+Vec2f ObjectTransformation::scaling() const
+{
+  return m_scaling;
+}
+double ObjectTransformation::shearing() const
+{
+  return m_shearing;
+}
+Vec2f ObjectTransformation::null() const
+{
+  return apply_to_position(Vec2f::o());
+}
 
 std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t)
 {
@@ -154,10 +180,8 @@ std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t)
 
 bool operator==(const ObjectTransformation& lhs, const ObjectTransformation& rhs)
 {
-  return lhs.translation() == rhs.translation()
-      && lhs.scaling() == rhs.scaling()
-      && lhs.rotation() == rhs.rotation()
-      && lhs.shearing() == rhs.shearing();
+  return lhs.translation() == rhs.translation() && lhs.scaling() == rhs.scaling()
+         && lhs.rotation() == rhs.rotation() && lhs.shearing() == rhs.shearing();
 }
 
 bool operator!=(const ObjectTransformation& lhs, const ObjectTransformation& rhs)
@@ -167,14 +191,12 @@ bool operator!=(const ObjectTransformation& lhs, const ObjectTransformation& rhs
 
 bool operator<(const ObjectTransformation& lhs, const ObjectTransformation& rhs)
 {
-  const std::vector<double> diffs = {
-    lhs.translation().x - rhs.translation().x,
-    lhs.translation().y - rhs.translation().y,
-    lhs.scaling().x - rhs.scaling().x,
-    lhs.scaling().y - rhs.scaling().y,
-    lhs.rotation() - rhs.rotation(),
-    lhs.shearing() - rhs.shearing()
-  };
+  const std::vector<double> diffs = {lhs.translation().x - rhs.translation().x,
+                                     lhs.translation().y - rhs.translation().y,
+                                     lhs.scaling().x - rhs.scaling().x,
+                                     lhs.scaling().y - rhs.scaling().y,
+                                     lhs.rotation() - rhs.rotation(),
+                                     lhs.shearing() - rhs.shearing()};
 
   for (auto d : diffs) {
     if (d < 0) {
@@ -231,7 +253,6 @@ PolarCoordinates ObjectTransformation::apply_to_direction(const PolarCoordinates
   return PolarCoordinates(apply_to_direction(point.to_cartesian()));
 }
 
-
 ObjectTransformation ObjectTransformation::inverted() const
 {
   // TODO caching the inverse might gain some speed
@@ -246,13 +267,23 @@ ObjectTransformation ObjectTransformation::normalized() const
     normalized.set_rotation(normalized.rotation() + M_PI);
   }
 
-  while (normalized.rotation() > M_PI) { normalized.rotate(-2*M_PI); }
-  while (normalized.rotation() < -M_PI) { normalized.rotate(2*M_PI); }
+  while (normalized.rotation() > M_PI) {
+    normalized.rotate(-2 * M_PI);
+  }
+  while (normalized.rotation() < -M_PI) {
+    normalized.rotate(2 * M_PI);
+  }
   return normalized;
 }
 
-bool ObjectTransformation::contains_nan() const { return to_mat().has_nan(); }
-bool ObjectTransformation::is_identity() const { return *this == ObjectTransformation(); }
+bool ObjectTransformation::contains_nan() const
+{
+  return to_mat().has_nan();
+}
+bool ObjectTransformation::is_identity() const
+{
+  return *this == ObjectTransformation();
+}
 
 QTransform ObjectTransformation::to_qtransform() const
 {
@@ -261,8 +292,8 @@ QTransform ObjectTransformation::to_qtransform() const
 
 bool ObjectTransformation::has_nan() const
 {
-  return   m_translation.has_nan() || m_scaling.has_nan()
-         || std::isnan(m_shearing) || std::isnan(m_rotation);
+  return m_translation.has_nan() || m_scaling.has_nan() || std::isnan(m_shearing)
+         || std::isnan(m_rotation);
 }
 
 ObjectTransformation::operator Geom::Affine() const
@@ -277,20 +308,17 @@ ObjectTransformation ObjectTransformation::transformed(const ObjectTransformatio
   return ObjectTransformation(o.inverted() * to_mat() * o);
 }
 
-Geom::PathVector
-ObjectTransformation::apply(const Geom::PathVector& pv) const
+Geom::PathVector ObjectTransformation::apply(const Geom::PathVector& pv) const
 {
   return transform(pv, *this);
 }
 
-Geom::Path
-ObjectTransformation::apply(const Geom::Path& path) const
+Geom::Path ObjectTransformation::apply(const Geom::Path& path) const
 {
   return transform(path, *this);
 }
 
-std::unique_ptr<Geom::Curve>
-ObjectTransformation::apply(const Geom::Curve& curve) const
+std::unique_ptr<Geom::Curve> ObjectTransformation::apply(const Geom::Curve& curve) const
 {
   return transform(curve, *this);
 }

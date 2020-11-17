@@ -1,15 +1,13 @@
 #include "managers/historymanager/historymanager.h"
 #include "scene/history/historymodel.h"
-#include <QListView>
-#include "widgets/itemproxyview.h"
 #include "scene/scene.h"
+#include "widgets/itemproxyview.h"
+#include <QListView>
 
 namespace omm
 {
-
-HistoryManager::HistoryManager(Scene &scene)
-  : Manager(tr("History"), scene)
-  , m_model(scene.history())
+HistoryManager::HistoryManager(Scene& scene)
+    : Manager(tr("History"), scene), m_model(scene.history())
 {
   auto view = std::make_unique<QListView>();
   m_view = view.get();
@@ -22,14 +20,16 @@ HistoryManager::HistoryManager(Scene &scene)
   connect(&m_model, &HistoryModel::rowsInserted, this, [this](const QModelIndex&, int row) {
     m_view->scrollTo(m_model.index(row));
   });
-  connect(&m_model, &HistoryModel::dataChanged, this,
-          [this](const QModelIndex& tl, const QModelIndex&)
-  {
-    m_view->scrollTo(tl);
-  });
+  connect(&m_model,
+          &HistoryModel::dataChanged,
+          this,
+          [this](const QModelIndex& tl, const QModelIndex&) { m_view->scrollTo(tl); });
 }
 
-QString HistoryManager::type() const { return TYPE; }
+QString HistoryManager::type() const
+{
+  return TYPE;
+}
 
 bool HistoryManager::perform_action(const QString& name)
 {

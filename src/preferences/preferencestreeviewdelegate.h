@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class AbstractPreferencesTreeViewDelegate : public QItemDelegate
 {
   Q_OBJECT
@@ -29,8 +28,11 @@ class PreferencesTreeViewDelegate : public AbstractPreferencesTreeViewDelegate
 {
 public:
   using AbstractPreferencesTreeViewDelegate::AbstractPreferencesTreeViewDelegate;
+
 protected:
-  QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem&, const QModelIndex& index) const override
+  QWidget* createEditor(QWidget* parent,
+                        const QStyleOptionViewItem&,
+                        const QModelIndex& index) const override
   {
     auto editor = std::make_unique<EditorT>(parent);
     m_current_editor = editor.get();
@@ -41,15 +43,17 @@ protected:
     return editor.release();
   };
 
-  virtual void set_editor_data(EditorT& editor, const QModelIndex &index) const = 0;
-  virtual bool set_model_data(EditorT& editor, QAbstractItemModel& model, const QModelIndex& index) const = 0;
+  virtual void set_editor_data(EditorT& editor, const QModelIndex& index) const = 0;
+  virtual bool
+  set_model_data(EditorT& editor, QAbstractItemModel& model, const QModelIndex& index) const = 0;
 
-  void setEditorData(QWidget *editor, const QModelIndex &index) const
+  void setEditorData(QWidget* editor, const QModelIndex& index) const override
   {
     set_editor_data(*static_cast<EditorT*>(editor), index);
   }
 
-  void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+  void
+  setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const override
   {
     const bool s = set_model_data(*static_cast<EditorT*>(editor), *model, index);
     Q_UNUSED(s)
@@ -57,5 +61,4 @@ protected:
   }
 };
 
-
-}  // namespace
+}  // namespace omm

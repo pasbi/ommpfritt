@@ -1,11 +1,10 @@
 #pragma once
 
-#include "python/pywrapper.h"
 #include "geometry/point.h"
+#include "python/pywrapper.h"
 
 namespace omm
 {
-
 class PointWrapper : public PyWrapper<Point>
 {
 public:

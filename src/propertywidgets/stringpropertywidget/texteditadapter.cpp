@@ -2,7 +2,6 @@
 
 namespace omm
 {
-
 // AbstractTextEditAdapter
 // TextEditAdapter<QLineEdit>
 
@@ -17,10 +16,18 @@ void TextEditAdapter<QLineEdit>::set_value(const QString& text)
   QLineEdit::setText(text);
 }
 
-void TextEditAdapter<QLineEdit>::clear() { QLineEdit::clear(); }
-QString TextEditAdapter<QLineEdit>::value() const { return QLineEdit::text(); }
-QWidget* TextEditAdapter<QLineEdit>::as_widget() { return this; }
-
+void TextEditAdapter<QLineEdit>::clear()
+{
+  QLineEdit::clear();
+}
+QString TextEditAdapter<QLineEdit>::value() const
+{
+  return QLineEdit::text();
+}
+QWidget* TextEditAdapter<QLineEdit>::as_widget()
+{
+  return this;
+}
 
 // TextEditAdapter<QTextEdit>
 
@@ -42,15 +49,20 @@ void TextEditAdapter<QTextEdit>::set_value(const QString& text)
   }
 }
 
-void TextEditAdapter<QTextEdit>::clear() { QTextEdit::clear(); }
+void TextEditAdapter<QTextEdit>::clear()
+{
+  QTextEdit::clear();
+}
 
 QString TextEditAdapter<QTextEdit>::value() const
 {
   return QTextEdit::toPlainText();
 }
 
-QWidget* TextEditAdapter<QTextEdit>::as_widget() { return this; }
-
+QWidget* TextEditAdapter<QTextEdit>::as_widget()
+{
+  return this;
+}
 
 // TextEditAdapter<FilePathEdit>
 
@@ -66,10 +78,18 @@ void TextEditAdapter<FilePathEdit>::set_value(const QString& text)
   FilePathEdit::set_path(text);
 }
 
-void TextEditAdapter<FilePathEdit>::clear() { FilePathEdit::clear(); }
-QString TextEditAdapter<FilePathEdit>::value() const { return FilePathEdit::path(); }
-QWidget* TextEditAdapter<FilePathEdit>::as_widget() { return this; }
-
+void TextEditAdapter<FilePathEdit>::clear()
+{
+  FilePathEdit::clear();
+}
+QString TextEditAdapter<FilePathEdit>::value() const
+{
+  return FilePathEdit::path();
+}
+QWidget* TextEditAdapter<FilePathEdit>::as_widget()
+{
+  return this;
+}
 
 // TextEditAdapter<CodeEdit>
 
@@ -79,11 +99,22 @@ void TextEditAdapter<CodeEdit>::set_inconsistent_value()
   CodeEdit::set_placeholder_text(placeholder_text);
 }
 
-void TextEditAdapter<CodeEdit>::set_value(const QString& text) { CodeEdit::set_code(text); }
-void TextEditAdapter<CodeEdit>::clear() { CodeEdit::clear(); }
-QString TextEditAdapter<CodeEdit>::value() const { return CodeEdit::code(); }
-QWidget* TextEditAdapter<CodeEdit>::as_widget() { return this; }
-
+void TextEditAdapter<CodeEdit>::set_value(const QString& text)
+{
+  CodeEdit::set_code(text);
+}
+void TextEditAdapter<CodeEdit>::clear()
+{
+  CodeEdit::clear();
+}
+QString TextEditAdapter<CodeEdit>::value() const
+{
+  return CodeEdit::code();
+}
+QWidget* TextEditAdapter<CodeEdit>::as_widget()
+{
+  return this;
+}
 
 // TextEditAdapter<QFontComboBox>
 
@@ -92,9 +123,21 @@ void TextEditAdapter<FontComboBox>::set_value(const QString& text)
   QFontComboBox::setCurrentFont(QFont(text));
 }
 
-void TextEditAdapter<FontComboBox>::set_inconsistent_value() { setCurrentIndex(-1); }
-void TextEditAdapter<FontComboBox>::clear() { FontComboBox::clear(); }
-QString TextEditAdapter<FontComboBox>::value() const { return currentText(); }
-QWidget* TextEditAdapter<FontComboBox>::as_widget() { return this; }
+void TextEditAdapter<FontComboBox>::set_inconsistent_value()
+{
+  setCurrentIndex(-1);
+}
+void TextEditAdapter<FontComboBox>::clear()
+{
+  FontComboBox::clear();
+}
+QString TextEditAdapter<FontComboBox>::value() const
+{
+  return currentText();
+}
+QWidget* TextEditAdapter<FontComboBox>::as_widget()
+{
+  return this;
+}
 
 }  // namespace omm

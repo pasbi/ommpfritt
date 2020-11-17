@@ -4,8 +4,7 @@
 
 namespace omm
 {
-
-UserPropertyListModel::UserPropertyListModel(AbstractPropertyOwner &owner)
+UserPropertyListModel::UserPropertyListModel(AbstractPropertyOwner& owner)
 {
   std::list<UserPropertyListItem> items;
   for (const QString& key : owner.properties().keys()) {
@@ -18,14 +17,14 @@ UserPropertyListModel::UserPropertyListModel(AbstractPropertyOwner &owner)
   m_items = std::vector(items.begin(), items.end());
 }
 
-int UserPropertyListModel::rowCount(const QModelIndex &parent) const
+int UserPropertyListModel::rowCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent)
   assert(!parent.isValid());
   return m_items.size();
 }
 
-QVariant UserPropertyListModel::data(const QModelIndex &index, int role) const
+QVariant UserPropertyListModel::data(const QModelIndex& index, int role) const
 {
   const auto get_label = [this, index]() { return m_items.at(index.row()).label(); };
 
@@ -43,14 +42,14 @@ QVariant UserPropertyListModel::data(const QModelIndex &index, int role) const
   }
 }
 
-Qt::ItemFlags UserPropertyListModel::flags(const QModelIndex &parent) const
+Qt::ItemFlags UserPropertyListModel::flags(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
-  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable
-      | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsDragEnabled
+         | Qt::ItemIsDropEnabled;
 }
 
-UserPropertyListItem *UserPropertyListModel::item(const QModelIndex &index)
+UserPropertyListItem* UserPropertyListModel::item(const QModelIndex& index)
 {
   if (index.row() < 0 || index.row() > static_cast<int>(m_items.size())) {
     return nullptr;
@@ -61,31 +60,32 @@ UserPropertyListItem *UserPropertyListModel::item(const QModelIndex &index)
   }
 }
 
-bool UserPropertyListModel::setData(const QModelIndex &index, const QVariant &data, int role)
+bool UserPropertyListModel::setData(const QModelIndex& index, const QVariant& data, int role)
 {
   assert(index.column() == 0);
   assert(!index.parent().isValid());
   if (role == Qt::EditRole) {
     m_items.at(index.row()).configuration["label"] = data.toString();
-    Q_EMIT dataChanged(index, index, { Qt::DisplayRole });
+    Q_EMIT dataChanged(index, index, {Qt::DisplayRole});
     return true;
   }
 
   return false;
 }
 
-std::vector<const UserPropertyListItem *> UserPropertyListModel::items() const
+std::vector<const UserPropertyListItem*> UserPropertyListModel::items() const
 {
   return ::transform<const UserPropertyListItem*>(m_items, [](const UserPropertyListItem& item) {
     return &item;
   });
 }
 
-bool UserPropertyListModel::contains(const Property *p) const
+bool UserPropertyListModel::contains(const Property* p) const
 {
-  return std::find_if(m_items.begin(), m_items.end(), [p](const UserPropertyListItem& i) {
-    return i.property() == p;
-  }) != m_items.end();
+  return std::find_if(m_items.begin(),
+                      m_items.end(),
+                      [p](const UserPropertyListItem& i) { return i.property() == p; })
+         != m_items.end();
 }
 
 void UserPropertyListModel::add_property(const QString& type)
@@ -98,7 +98,7 @@ void UserPropertyListModel::add_property(const QString& type)
   endInsertRows();
 }
 
-void UserPropertyListModel::del_property(const QModelIndex &index)
+void UserPropertyListModel::del_property(const QModelIndex& index)
 {
   const int row = index.row();
   beginRemoveRows(QModelIndex(), row, row);
@@ -106,7 +106,7 @@ void UserPropertyListModel::del_property(const QModelIndex &index)
   endRemoveRows();
 }
 
-UserPropertyListItem::UserPropertyListItem(Property *property) : m_property(property)
+UserPropertyListItem::UserPropertyListItem(Property* property) : m_property(property)
 {
   if (property != nullptr) {
     configuration = property->configuration;
@@ -116,8 +116,8 @@ UserPropertyListItem::UserPropertyListItem(Property *property) : m_property(prop
 QString UserPropertyListItem::label() const
 {
   const auto label_it = configuration.find("label");
-  const auto* label = label_it == configuration.end() ? nullptr
-                                                      : std::get_if<QString>(&label_it->second);
+  const auto* label
+      = label_it == configuration.end() ? nullptr : std::get_if<QString>(&label_it->second);
   if (label == nullptr || label->isEmpty()) {
     return property() == nullptr ? "" : property()->label();
   } else {
@@ -136,4 +136,3 @@ QString UserPropertyListItem::type() const
 }
 
 }  // namespace omm
-

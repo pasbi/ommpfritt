@@ -2,17 +2,16 @@
 
 #include <QObject>
 
-#include "external/json.hpp"
-#include "serializers/abstractserializer.h"
-#include "properties/referenceproperty.h"
-#include "scene/scene.h"
-#include "scene/mailbox.h"
 #include "animation/track.h"
+#include "external/json.hpp"
+#include "properties/referenceproperty.h"
+#include "scene/mailbox.h"
+#include "scene/scene.h"
+#include "serializers/abstractserializer.h"
 #include <random>
 
 namespace
 {
-
 constexpr auto PROPERTIES_POINTER = "properties";
 constexpr auto PROPERTY_TYPE_POINTER = "type";
 constexpr auto PROPERTY_KEY_POINTER = "key";
@@ -22,7 +21,6 @@ constexpr auto ID_POINTER = "id";
 
 namespace omm
 {
-
 const QString AbstractPropertyOwner::NAME_PROPERTY_KEY = "name";
 
 const OrderedMap<QString, Property>& AbstractPropertyOwner::properties() const
@@ -30,14 +28,14 @@ const OrderedMap<QString, Property>& AbstractPropertyOwner::properties() const
   return m_properties;
 }
 
-AbstractPropertyOwner::AbstractPropertyOwner(Kind kind, Scene *scene)
-  : kind(kind), m_scene(scene)
+AbstractPropertyOwner::AbstractPropertyOwner(Kind kind, Scene* scene) : kind(kind), m_scene(scene)
 {
 }
 
-AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner &other)
-  : QObject()  // from QObject's perspective, the copy is a new object.
-  , kind(other.kind), m_scene(other.m_scene)
+AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner& other)
+    : QObject()  // from QObject's perspective, the copy is a new object.
+      ,
+      kind(other.kind), m_scene(other.m_scene)
 {
   for (auto&& key : other.m_properties.keys()) {
     AbstractPropertyOwner::add_property(key, other.m_properties.at(key)->clone());
@@ -52,7 +50,7 @@ AbstractPropertyOwner::~AbstractPropertyOwner()
   }
 }
 
-Property *AbstractPropertyOwner::property(const QString& key) const
+Property* AbstractPropertyOwner::property(const QString& key) const
 {
   if (has_property(key)) {
     assert(m_properties.at(key) != nullptr);
@@ -99,10 +97,10 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
   for (size_t i = 0; i < n_properties; ++i) {
     const auto property_pointer = make_pointer(properties_pointer, i);
 
-    const auto property_key =
-      deserializer.get_string(make_pointer(property_pointer, PROPERTY_KEY_POINTER));
-    const auto property_type =
-      deserializer.get_string(make_pointer(property_pointer, PROPERTY_TYPE_POINTER));
+    const auto property_key
+        = deserializer.get_string(make_pointer(property_pointer, PROPERTY_KEY_POINTER));
+    const auto property_type
+        = deserializer.get_string(make_pointer(property_pointer, PROPERTY_TYPE_POINTER));
 
     if (properties().contains(property_key)) {
       assert(property_type == property(property_key)->type());
@@ -123,15 +121,14 @@ void AbstractPropertyOwner::deserialize(AbstractDeserializer& deserializer, cons
   }
 }
 
-Property
-&AbstractPropertyOwner::add_property(const QString &key, std::unique_ptr<Property> property)
+Property& AbstractPropertyOwner::add_property(const QString& key,
+                                              std::unique_ptr<Property> property)
 {
   Property& ref = *property;
   assert(!m_properties.contains(key));
   assert(property.get() != nullptr);
   m_properties.insert(key, std::move(property));
-  connect(&ref, &Property::value_changed,
-          this, &AbstractPropertyOwner::on_property_value_changed);
+  connect(&ref, &Property::value_changed, this, &AbstractPropertyOwner::on_property_value_changed);
   connect(&ref, &Property::value_changed, [this, key](Property* property) {
     assert(property != nullptr);
     if (Scene* scene = this->scene(); scene != nullptr) {
@@ -164,7 +161,8 @@ std::ostream& operator<<(std::ostream& ostream, const AbstractPropertyOwner* apo
   return ostream;
 }
 
-void AbstractPropertyOwner::copy_properties(AbstractPropertyOwner& target, CopiedProperties flags) const
+void AbstractPropertyOwner::copy_properties(AbstractPropertyOwner& target,
+                                            CopiedProperties flags) const
 {
   const auto keys = [](const AbstractPropertyOwner& o) {
     return ::transform<QString, std::set>(o.properties().keys(), ::identity);
@@ -204,7 +202,7 @@ std::size_t AbstractPropertyOwner::id() const
 void AbstractPropertyOwner::new_id() const
 {
   static std::random_device rd;
-  static std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+  static std::mt19937 gen(rd());  // Standard mersenne_twister_engine seeded with rd()
   static std::uniform_int_distribution<std::size_t> dis(1, std::numeric_limits<std::size_t>::max());
   m_id = dis(gen);
 }

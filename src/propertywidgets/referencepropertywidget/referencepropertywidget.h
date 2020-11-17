@@ -1,14 +1,13 @@
 #pragma once
 
-#include <string>
-#include "propertywidgets/propertywidget.h"
 #include "properties/referenceproperty.h"
+#include "propertywidgets/propertywidget.h"
+#include <string>
 
 class QLineEdit;
 
 namespace omm
 {
-
 class ReferenceLineEdit;
 
 class ReferencePropertyWidget : public PropertyWidget<ReferenceProperty>

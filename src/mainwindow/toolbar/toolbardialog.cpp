@@ -1,22 +1,20 @@
 #include "mainwindow/toolbar/toolbardialog.h"
-#include "mainwindow/toolbar/toolbaritemmodel.h"
-#include "mainwindow/toolbar/toolbar.h"
+#include "keybindings/modeselector.h"
 #include "mainwindow/application.h"
-#include "ui_toolbardialog.h"
-#include <QSortFilterProxyModel>
+#include "mainwindow/toolbar/toolbar.h"
+#include "mainwindow/toolbar/toolbaritemmodel.h"
 #include "preferences/keybindingsproxymodel.h"
+#include "ui_toolbardialog.h"
 #include <QIdentityProxyModel>
 #include <QMimeData>
-#include "keybindings/modeselector.h"
+#include <QSortFilterProxyModel>
 
 namespace
 {
-
 class DragDropProxy : public omm::KeyBindingsProxyModel
 {
 public:
-  explicit DragDropProxy(omm::KeyBindings& key_bindings)
-    : KeyBindingsProxyModel(key_bindings)
+  explicit DragDropProxy(omm::KeyBindings& key_bindings) : KeyBindingsProxyModel(key_bindings)
   {
   }
 
@@ -36,7 +34,10 @@ public:
     return Qt::IgnoreAction;
   }
 
-  int columnCount(const QModelIndex&) const override { return 1; }
+  int columnCount(const QModelIndex&) const override
+  {
+    return 1;
+  }
 
   QMimeData* mimeData(const QModelIndexList& indices) const override
   {
@@ -66,13 +67,10 @@ public:
 
 namespace omm
 {
-
 ToolBarDialog::ToolBarDialog(ToolBarItemModel& model, QWidget* parent)
-  : QDialog(parent)
-  , m_key_bindings(Application::instance().key_bindings)
-  , m_ui(std::make_unique<Ui::ToolBarDialog>())
-  , m_proxy(std::make_unique<DragDropProxy>(m_key_bindings))
-  , m_model(model)
+    : QDialog(parent), m_key_bindings(Application::instance().key_bindings),
+      m_ui(std::make_unique<Ui::ToolBarDialog>()),
+      m_proxy(std::make_unique<DragDropProxy>(m_key_bindings)), m_model(model)
 {
   m_ui->setupUi(this);
 
@@ -94,13 +92,19 @@ ToolBarDialog::ToolBarDialog(ToolBarItemModel& model, QWidget* parent)
     m_ui->le_sequence_filter->clear();
   });
 
-  connect(m_ui->le_name_filter, &QLineEdit::textChanged,
-          m_proxy.get(), &DragDropProxy::set_action_name_filter);
-  connect(m_ui->le_sequence_filter, &QKeySequenceEdit::keySequenceChanged,
-          m_proxy.get(), &DragDropProxy::set_action_sequence_filter);
+  connect(m_ui->le_name_filter,
+          &QLineEdit::textChanged,
+          m_proxy.get(),
+          &DragDropProxy::set_action_name_filter);
+  connect(m_ui->le_sequence_filter,
+          &QKeySequenceEdit::keySequenceChanged,
+          m_proxy.get(),
+          &DragDropProxy::set_action_sequence_filter);
   connect(m_ui->pb_add_button, &QPushButton::clicked, &m_model, &ToolBarItemModel::add_group);
-  connect(m_ui->pb_add_separator, &QPushButton::clicked,
-          &m_model, &ToolBarItemModel::add_separator);
+  connect(m_ui->pb_add_separator,
+          &QPushButton::clicked,
+          &m_model,
+          &ToolBarItemModel::add_separator);
   connect(m_ui->pb_remove_items, &QPushButton::clicked, [this]() {
     m_model.remove_selection(m_ui->tv_toolbar->selectionModel()->selection());
   });
@@ -109,7 +113,7 @@ ToolBarDialog::ToolBarDialog(ToolBarItemModel& model, QWidget* parent)
     for (auto&& [name, mode_selector] : Application::instance().mode_selectors) {
       const auto tr_name = mode_selector->translated_name();
       auto action = std::make_unique<QAction>(tr_name);
-      connect(action.get(), &QAction::triggered, [this, name=name]() {
+      connect(action.get(), &QAction::triggered, [this, name = name]() {
         m_model.add_mode_selector(name);
       });
       m_ui->tb_add_switch->addAction(action.release());
@@ -130,4 +134,4 @@ ToolBarDialog::~ToolBarDialog()
 {
 }
 
-}  // namespace
+}  // namespace omm

@@ -1,16 +1,16 @@
 #include "scene/objecttree.h"
-#include "mainwindow/application.h"
-#include "commands/propertycommand.h"
-#include "propertyownermimedata.h"
-#include "tags/styletag.h"
 #include "commands/addcommand.h"
 #include "commands/movetagscommand.h"
+#include "commands/propertycommand.h"
+#include "mainwindow/application.h"
 #include "properties/referenceproperty.h"
-#include "scene/mailbox.h"
+#include "propertyownermimedata.h"
 #include "scene/history/historymodel.h"
+#include "scene/mailbox.h"
+#include "tags/styletag.h"
 
-namespace {
-
+namespace
+{
 using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
 
 template<typename T> T* last(const std::vector<T*>& ts)
@@ -18,14 +18,17 @@ template<typename T> T* last(const std::vector<T*>& ts)
   return ts.size() == 0 ? nullptr : ts.back();
 }
 
-template<typename T> void drop_tags(omm::Scene& scene, omm::Object& object, omm::Tag* predecessor,
-                                    const std::vector<omm::Tag*>& tags, Qt::DropAction action,
-                                    T&& make_context )
+template<typename T>
+void drop_tags(omm::Scene& scene,
+               omm::Object& object,
+               omm::Tag* predecessor,
+               const std::vector<omm::Tag*>& tags,
+               Qt::DropAction action,
+               T&& make_context)
 {
   if (tags.size() > 0) {
     switch (action) {
-    case Qt::CopyAction:
-    {
+    case Qt::CopyAction: {
       auto macro = scene.history().start_macro(QObject::tr("copy tags", "ObjectTreeAdapter"));
       for (auto* tag : tags) {
         scene.submit<AddTagCommand>(object.tags, make_context(tag));
@@ -35,21 +38,26 @@ template<typename T> void drop_tags(omm::Scene& scene, omm::Object& object, omm:
     case Qt::MoveAction:
       scene.submit<omm::MoveTagsCommand>(tags, object, predecessor);
       break;
-    default: break;
+    default:
+      break;
     }
   }
 }
 
-void drop_tags_onto_object( omm::Scene& scene, omm::Object& object,
-                            const std::vector<omm::Tag*>& tags, Qt::DropAction action )
+void drop_tags_onto_object(omm::Scene& scene,
+                           omm::Object& object,
+                           const std::vector<omm::Tag*>& tags,
+                           Qt::DropAction action)
 {
-
   const auto make_context = [&object](const omm::Tag* tag) { return tag->clone(object); };
   drop_tags(scene, object, last(object.tags.ordered_items()), tags, action, make_context);
 }
 
-void drop_tags_behind( omm::Scene& scene, omm::Object& object, omm::Tag* current_tag_predecessor,
-                        const std::vector<omm::Tag*>& tags, Qt::DropAction action )
+void drop_tags_behind(omm::Scene& scene,
+                      omm::Object& object,
+                      omm::Tag* current_tag_predecessor,
+                      const std::vector<omm::Tag*>& tags,
+                      Qt::DropAction action)
 {
   if (current_tag_predecessor != nullptr && current_tag_predecessor->owner != &object) {
     current_tag_predecessor = last(object.tags.ordered_items());
@@ -60,8 +68,9 @@ void drop_tags_behind( omm::Scene& scene, omm::Object& object, omm::Tag* current
   drop_tags(scene, object, current_tag_predecessor, tags, action, make_context);
 }
 
-void drop_style_onto_object( omm::Scene& scene, omm::Object& object,
-                             const std::vector<omm::Style*>& styles )
+void drop_style_onto_object(omm::Scene& scene,
+                            omm::Object& object,
+                            const std::vector<omm::Style*>& styles)
 {
   if (styles.size() > 0) {
     const QString label = QObject::tr("set styles tags", "ObjectTreeAdapter");
@@ -78,12 +87,9 @@ void drop_style_onto_object( omm::Scene& scene, omm::Object& object,
 
 namespace omm
 {
-
-
-
 ObjectTree::ObjectTree(std::unique_ptr<Object> root, Scene& scene)
-  : ItemModelAdapter<ObjectTree, Object, QAbstractItemModel>(scene, *this)
-  , Structure<Object>(), m_root(std::move(root)), m_scene(scene)
+    : ItemModelAdapter<ObjectTree, Object, QAbstractItemModel>(scene, *this), Structure<Object>(),
+      m_root(std::move(root)), m_scene(scene)
 {
 }
 
@@ -132,7 +138,7 @@ void ObjectTree::insert(ObjectTreeOwningContext& context)
   Q_EMIT m_scene.mail_box().object_inserted(context.parent.get(), context.get_subject());
 }
 
-void ObjectTree::remove(ObjectTreeOwningContext &context)
+void ObjectTree::remove(ObjectTreeOwningContext& context)
 {
   assert(!context.subject.owns());
   const Object& subject = context.subject;
@@ -195,7 +201,7 @@ const Object* ObjectTree::predecessor(const Object& sibling) const
   }
 }
 
-QModelIndex ObjectTree::index(int row, int column, const QModelIndex &parent) const
+QModelIndex ObjectTree::index(int row, int column, const QModelIndex& parent) const
 {
   if (!hasIndex(row, column, parent)) {
     return QModelIndex();
@@ -204,7 +210,7 @@ QModelIndex ObjectTree::index(int row, int column, const QModelIndex &parent) co
   return createIndex(row, column, &item_at(parent).tree_child(row));
 }
 
-QModelIndex ObjectTree::parent(const QModelIndex &index) const
+QModelIndex ObjectTree::parent(const QModelIndex& index) const
 {
   if (!index.isValid()) {
     return QModelIndex();
@@ -218,18 +224,18 @@ QModelIndex ObjectTree::parent(const QModelIndex &index) const
   }
 }
 
-int ObjectTree::rowCount(const QModelIndex &parent) const
+int ObjectTree::rowCount(const QModelIndex& parent) const
 {
   return item_at(parent).n_children();
 }
 
-int ObjectTree::columnCount(const QModelIndex &parent) const
+int ObjectTree::columnCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent)
   return 3;
 }
 
-QVariant ObjectTree::data(const QModelIndex &index, int role) const
+QVariant ObjectTree::data(const QModelIndex& index, int role) const
 {
   if (!index.isValid()) {
     return QVariant();
@@ -248,16 +254,15 @@ QVariant ObjectTree::data(const QModelIndex &index, int role) const
   return QVariant();
 }
 
-bool ObjectTree::setData(const QModelIndex &index, const QVariant &value, int role)
+bool ObjectTree::setData(const QModelIndex& index, const QVariant& value, int role)
 {
   Q_UNUSED(role)
   switch (index.column()) {
-  case 0:
-  {
+  case 0: {
     Property* property = item_at(index).property(Object::NAME_PROPERTY_KEY);
     const auto svalue = value.toString();
     if (property->value<QString>() != svalue) {
-      scene.submit<PropertiesCommand<StringProperty>>(std::set { property }, svalue);
+      scene.submit<PropertiesCommand<StringProperty>>(std::set{property}, svalue);
       return true;
     } else {
       return false;
@@ -268,7 +273,7 @@ bool ObjectTree::setData(const QModelIndex &index, const QVariant &value, int ro
   return false;
 }
 
-Object &ObjectTree::item_at(const QModelIndex &index) const
+Object& ObjectTree::item_at(const QModelIndex& index) const
 {
   if (index.isValid()) {
     assert(index.internalPointer() != nullptr);
@@ -278,7 +283,7 @@ Object &ObjectTree::item_at(const QModelIndex &index) const
   }
 }
 
-QModelIndex ObjectTree::index_of(Object &object) const
+QModelIndex ObjectTree::index_of(Object& object) const
 {
   if (object.is_root()) {
     return QModelIndex();
@@ -287,7 +292,7 @@ QModelIndex ObjectTree::index_of(Object &object) const
   }
 }
 
-Qt::ItemFlags ObjectTree::flags(const QModelIndex &index) const
+Qt::ItemFlags ObjectTree::flags(const QModelIndex& index) const
 {
   if (!index.isValid()) {
     return Qt::ItemIsDropEnabled;
@@ -295,8 +300,8 @@ Qt::ItemFlags ObjectTree::flags(const QModelIndex &index) const
 
   switch (index.column()) {
   case 0:
-    return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled
-            | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+    return Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled
+           | Qt::ItemIsDropEnabled;
   case 2:
     return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
   default:
@@ -306,19 +311,25 @@ Qt::ItemFlags ObjectTree::flags(const QModelIndex &index) const
 
 QVariant ObjectTree::headerData(int section, Qt::Orientation orientation, int role) const
 {
-  if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-  {
+  if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
     switch (section) {
-    case 0: return QObject::tr("object", "ObjectTreeAdapter");
-    case 1: return QObject::tr("is visible", "ObjectTreeAdapter");
-    case 2: return QObject::tr("tags", "ObjectTreeAdapter");
+    case 0:
+      return QObject::tr("object", "ObjectTreeAdapter");
+    case 1:
+      return QObject::tr("is visible", "ObjectTreeAdapter");
+    case 2:
+      return QObject::tr("tags", "ObjectTreeAdapter");
     }
   }
 
- return QVariant();
+  return QVariant();
 }
 
-bool ObjectTree::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+bool ObjectTree::dropMimeData(const QMimeData* data,
+                              Qt::DropAction action,
+                              int row,
+                              int column,
+                              const QModelIndex& parent)
 {
   if (ItemModelAdapter::dropMimeData(data, action, row, column, parent)) {
     return true;
@@ -338,7 +349,7 @@ bool ObjectTree::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
       }
       if (const auto styles = pdata->styles(); styles.size() > 0) {
         if (parent.column() == OBJECT_COLUMN && column < 0) {
-          assert(parent.isValid()); // otherwise, column was < 0
+          assert(parent.isValid());  // otherwise, column was < 0
           drop_style_onto_object(scene, item_at(parent), styles);
         } else if (parent.column() == TAGS_COLUMN && column < 0) {
           assert(current_tag->type() == StyleTag::TYPE);
@@ -346,7 +357,7 @@ bool ObjectTree::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
           auto* style_tag = static_cast<StyleTag*>(current_tag);
           auto& property = *style_tag->property(StyleTag::STYLE_REFERENCE_PROPERTY_KEY);
           using ref_prop_cmd_t = PropertiesCommand<ReferenceProperty>;
-          scene.submit<ref_prop_cmd_t>(std::set { &property }, *styles.begin());
+          scene.submit<ref_prop_cmd_t>(std::set{&property}, *styles.begin());
         }
       }
     }
@@ -354,7 +365,11 @@ bool ObjectTree::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
   return false;
 }
 
-bool ObjectTree::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
+bool ObjectTree::canDropMimeData(const QMimeData* data,
+                                 Qt::DropAction action,
+                                 int row,
+                                 int column,
+                                 const QModelIndex& parent) const
 {
   const auto actual_column = column >= 0 ? column : parent.column();
   if (ItemModelAdapter::canDropMimeData(data, action, row, column, parent)) {
@@ -365,7 +380,8 @@ bool ObjectTree::canDropMimeData(const QMimeData *data, Qt::DropAction action, i
       const auto tags = pdata->tags();
       if (tags.size() > 0) {
         switch (actual_column) {
-        case OBJECT_COLUMN: return true;
+        case OBJECT_COLUMN:
+          return true;
         case TAGS_COLUMN:
           return tags.front() != current_tag_predecessor || action != Qt::MoveAction;
         }
@@ -388,9 +404,8 @@ bool ObjectTree::canDropMimeData(const QMimeData *data, Qt::DropAction action, i
 std::size_t ObjectTree::max_number_of_tags_on_object() const
 {
   const auto objects = scene.object_tree().items();
-  const auto cmp = [](const Object* lhs, const Object* rhs) {
-    return lhs->tags.size() < rhs->tags.size();
-  };
+  const auto cmp
+      = [](const Object* lhs, const Object* rhs) { return lhs->tags.size() < rhs->tags.size(); };
   const auto max = std::max_element(objects.begin(), objects.end(), cmp);
   if (max != objects.end()) {
     return (*max)->tags.size();
@@ -407,6 +422,5 @@ size_t ObjectTree::insert_position(const Object* predecessor) const
     return predecessor->position() + 1;
   }
 }
-
 
 }  // namespace omm

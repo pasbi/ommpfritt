@@ -2,5 +2,4 @@
 
 namespace omm
 {
-
 }  // namespace omm

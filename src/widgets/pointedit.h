@@ -1,14 +1,13 @@
 #pragma once
 
-#include <QWidget>
 #include "geometry/point.h"
 #include "objects/path.h"
+#include <QWidget>
 
 class QPushButton;
 
 namespace omm
 {
-
 class CoordinateEdit;
 class Point;
 enum class DisplayMode;

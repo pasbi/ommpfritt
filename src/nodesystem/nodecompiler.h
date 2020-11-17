@@ -9,7 +9,6 @@
 
 namespace omm
 {
-
 class OutputPort;
 class InputPort;
 class Node;
@@ -18,22 +17,22 @@ class NodeModel;
 
 namespace NodeCompilerTypes
 {
-  static constexpr auto INVALID_TYPE = "Invalid";
-  static constexpr auto FLOAT_TYPE = "Float";
-  static constexpr auto INTEGER_TYPE = "Integer";
-  static constexpr auto OPTION_TYPE = "Option";
-  static constexpr auto FLOATVECTOR_TYPE = "FloatVector";
-  static constexpr auto INTEGERVECTOR_TYPE = "IntegerVector";
-  static constexpr auto STRING_TYPE = "String";
-  static constexpr auto COLOR_TYPE = "Color";
-  static constexpr auto REFERENCE_TYPE = "Reference";
-  static constexpr auto BOOL_TYPE = "Bool";
-  static constexpr auto SPLINE_TYPE = "Spline";
+static constexpr auto INVALID_TYPE = "Invalid";
+static constexpr auto FLOAT_TYPE = "Float";
+static constexpr auto INTEGER_TYPE = "Integer";
+static constexpr auto OPTION_TYPE = "Option";
+static constexpr auto FLOATVECTOR_TYPE = "FloatVector";
+static constexpr auto INTEGERVECTOR_TYPE = "IntegerVector";
+static constexpr auto STRING_TYPE = "String";
+static constexpr auto COLOR_TYPE = "Color";
+static constexpr auto REFERENCE_TYPE = "Reference";
+static constexpr auto BOOL_TYPE = "Bool";
+static constexpr auto SPLINE_TYPE = "Spline";
 
-  bool is_numeric(const QString& type);
-  bool is_integral(const QString& type);
-  bool is_vector(const QString& type);
-}
+bool is_numeric(const QString& type);
+bool is_integral(const QString& type);
+bool is_vector(const QString& type);
+}  // namespace NodeCompilerTypes
 
 class AbstractNodeCompiler : public QObject
 {
@@ -41,13 +40,15 @@ class AbstractNodeCompiler : public QObject
 public:
   enum class Language { Python, GLSL };
   static const std::set<QString> supported_types(Language language);
-  QString last_error() const { return m_last_error; }
+  QString last_error() const
+  {
+    return m_last_error;
+  }
 
 protected:
   AbstractNodeCompiler(Language language, const NodeModel& model);
   std::set<Node*> nodes() const;
-  struct Statement
-  {
+  struct Statement {
     Statement(const OutputPort& source, const InputPort& target);
     Statement(const Node& node);
     const bool is_connection;
@@ -62,12 +63,17 @@ protected:
     std::set<const AbstractPort*> uses() const;
   };
 
-  friend std::ostream& operator<<(std::ostream& ostream, const omm::AbstractNodeCompiler::Statement& statement);
-  void generate_statements(std::set<QString>& used_node_types, std::list<Statement>& statements) const;
+  friend std::ostream& operator<<(std::ostream& ostream,
+                                  const omm::AbstractNodeCompiler::Statement& statement);
+  void generate_statements(std::set<QString>& used_node_types,
+                           std::list<Statement>& statements) const;
 
 public:
   const Language language;
-  const NodeModel& model() const { return m_model; }
+  const NodeModel& model() const
+  {
+    return m_model;
+  }
   QString code();
   QString error();
   virtual bool compile() = 0;
@@ -112,7 +118,10 @@ public:
       }
     };
 
-#define CHECK(statement) if (!check(statement)) { return false; }
+#define CHECK(statement) \
+  if (!check(statement)) { \
+    return false; \
+  }
 
     CHECK(self.generate_header(lines))
     for (const QString& type : used_node_types) {
@@ -139,8 +148,9 @@ public:
 
 protected:
   explicit NodeCompiler(const NodeModel& model)
-    : AbstractNodeCompiler(ConcreteCompiler::LANGUAGE, model)
-  {}
+      : AbstractNodeCompiler(ConcreteCompiler::LANGUAGE, model)
+  {
+  }
 
   void statements();
 };

@@ -1,14 +1,11 @@
 #include "nodesystem/nodes/linepatternnode.h"
-#include "properties/floatproperty.h"
 #include "nodesystem/ordinaryport.h"
+#include "properties/floatproperty.h"
 
 namespace omm
 {
-
-const Node::Detail LinePatternNode::detail {
-  {
-    {
-      AbstractNodeCompiler::Language::GLSL,
+const Node::Detail LinePatternNode::detail{
+    {{AbstractNodeCompiler::Language::GLSL,
       QString(R"(
 float %1_0(float frequency, float ratio, float left_ramp, float right_ramp, float v) {
   float lambda = 1.0 / frequency;
@@ -26,28 +23,34 @@ float %1_0(float frequency, float ratio, float left_ramp, float right_ramp, floa
     return 0.0;
   }
 }
-)").arg(LinePatternNode::TYPE)
-    }
-  },
-  {
-    QT_TRANSLATE_NOOP("NodeMenuPath", "Pattern"),
-  },
+)")
+          .arg(LinePatternNode::TYPE)}},
+    {
+        QT_TRANSLATE_NOOP("NodeMenuPath", "Pattern"),
+    },
 };
 
 LinePatternNode::LinePatternNode(NodeModel& model) : Node(model)
 {
   const auto category = tr("Lines");
   create_property<FloatProperty>(FREQUENCY_PROPERTY_KEY, PortType::Input, 1.0)
-      .set_label(tr("freq")).set_category(category);
+      .set_label(tr("freq"))
+      .set_category(category);
   create_property<FloatProperty>(RATIO_PROPERTY_KEY, PortType::Input, 0.5)
-      .set_range(0.0, 1.0).set_step(0.01)
-      .set_label(tr("ratio")).set_category(category);
+      .set_range(0.0, 1.0)
+      .set_step(0.01)
+      .set_label(tr("ratio"))
+      .set_category(category);
   create_property<FloatProperty>(LEFT_RAMP_PROPERTY_KEY, PortType::Input, 0.0)
-      .set_range(0.0, 1.0).set_step(0.01)
-      .set_label(tr("left ramp")).set_category(category);
+      .set_range(0.0, 1.0)
+      .set_step(0.01)
+      .set_label(tr("left ramp"))
+      .set_category(category);
   create_property<FloatProperty>(RIGHT_RAMP_PROPERTY_KEY, PortType::Input, 0.0)
-      .set_range(0.0, 1.0).set_step(0.01)
-      .set_label(tr("right ramp")).set_category(category);
+      .set_range(0.0, 1.0)
+      .set_step(0.01)
+      .set_label(tr("right ramp"))
+      .set_category(category);
   m_position_port = &add_port<OrdinaryPort<PortType::Input>>(tr("position"));
   m_output_port = &add_port<OrdinaryPort<PortType::Output>>(tr("lines"));
 }
@@ -77,6 +80,4 @@ QString LinePatternNode::title() const
   return tr("Line Pattern");
 }
 
-
-
-}  // namespace
+}  // namespace omm

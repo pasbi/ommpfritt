@@ -1,14 +1,13 @@
 #include "renderers/styleiconengine.h"
-#include <QPainter>
-#include <memory>
-#include <iostream>
+#include "preferences/uicolors.h"
 #include "renderers/painter.h"
 #include <QDebug>
-#include "preferences/uicolors.h"
+#include <QPainter>
+#include <iostream>
+#include <memory>
 
 namespace
 {
-
 double adjust_pen_width(double width, const QSize& size)
 {
   const double max_width = std::min(size.width(), size.height());
@@ -34,20 +33,20 @@ void draw_style(QPainter& painter, const QRect& rect, const omm::Style& style)
   painter.restore();
 }
 
-}
+}  // namespace
 
 namespace omm
 {
-
-StyleIconEngine::StyleIconEngine(const Style* style) : m_style(style) {}
+StyleIconEngine::StyleIconEngine(const Style* style) : m_style(style)
+{
+}
 
 QIconEngine* StyleIconEngine::clone() const
 {
   return std::make_unique<StyleIconEngine>(*this).release();
 }
 
-void
-StyleIconEngine::paint(QPainter* painter, const QRect& rect, QIcon::Mode, QIcon::State)
+void StyleIconEngine::paint(QPainter* painter, const QRect& rect, QIcon::Mode, QIcon::State)
 {
   painter->save();
   painter->setClipRect(rect);
@@ -70,4 +69,4 @@ StyleIconEngine::paint(QPainter* painter, const QRect& rect, QIcon::Mode, QIcon:
   painter->restore();
 }
 
-}
+}  // namespace omm

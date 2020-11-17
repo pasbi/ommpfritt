@@ -1,25 +1,121 @@
-compiler: gcc
 language: cpp
 services:
 - xvfb
 git:
-  # Shallowly cloning lib2geom may be a problem, since we want a particular commit.
   depth: false
+install:
+  - echo "clone lib2geom"
+  - git clone https://gitlab.com/inkscape/lib2geom.git
+  - pushd lib2geom
+  - git checkout 37876ed4
+  - popd
+  - echo "configure lib2geom:"
+  - $cmake --version
+  - $cmake -B build-lib2geom -S lib2geom -GNinja -D2GEOM_TESTING=OFF -DCMAKE_CXX_COMPILER=${CXX_COMPILER} -DCMAKE_C_COMPILER=${C_COMPILER}
+  - sudo $cmake --build build-lib2geom --target install
 jobs:
   include:
   - stage: build
     os: linux
     dist: xenial
     name: Build on Ubuntu Xenial
-    script:
-    - build-scripts/build-omm-ubuntu.sh
+    before_install:
+    - sudo apt-get clean
+    - sudo apt-get remove -y mysql-client-5.7 mysql-server-5.7
+    - sudo apt-add-repository -y ppa:deadsnakes/ppa
+    - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
+    - sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-xenial
+    - sudo apt-get update -y -qq
+    - sudo apt-get install -y
+        g++-8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7-dev
+        ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev libboost-all-dev
+        libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev
+        libkf5itemmodels-dev imagemagick
+    - wget https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.tar.gz
+    - tar xf cmake-3.14.5-Linux-x86_64.tar.gz
+    - export CXX_COMPILER=g++-8
+    - export C_COMPILER=gcc-8
+    - export QT_PREFIX="/opt/qt512"
+    - export QT_QM_PATH="/opt/qt512/translations/"
+    - export PATH="/opt/qt512/bin:$PATH"
+    - export cmake="$(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake"
+    after_success:
     - build-scripts/make-appimage.sh
   - stage: build
     os: linux
     dist: bionic
     name: Build on Ubuntu Bionic
+    before_install:
+    - sudo apt-get clean
+    - sudo apt-get remove -y mysql-client-5.7 mysql-server-5.7
+    - sudo apt-add-repository -y ppa:deadsnakes/ppa
+    - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
+    - sudo apt-add-repository -y ppa:beineri/opt-qt-5.12.3-bionic
+    - sudo apt-get update -y -qq
+    - sudo apt-get install -y
+        g++-8 qt512tools qt512translations qt512svg qt512base qt512imageformats python3.7-dev
+        ninja-build zlib1g-dev libssl-dev libffi-dev libgl-dev libboost-all-dev
+        libdouble-conversion-dev libgsl-dev libcairo2-dev libpoppler-qt5-dev
+        libkf5itemmodels-dev imagemagick
+    - wget https://github.com/Kitware/CMake/releases/download/v3.14.5/cmake-3.14.5-Linux-x86_64.tar.gz
+    - tar xf cmake-3.14.5-Linux-x86_64.tar.gz
+    - export CXX_COMPILER=g++-8
+    - export C_COMPILER=gcc-8
+    - export QT_PREFIX="/opt/qt512"
+    - export QT_QM_PATH="/opt/qt512/translations/"
+    - export PATH="/opt/qt512/bin:$PATH"
+    - export cmake="$(pwd)/cmake-3.14.5-Linux-x86_64/bin/cmake"
+  - stage: build
+    os: linux
+    dist: focal
+    name: Build on Ubuntu Focal with GCC
+    before_install:
+    - sudo apt-get clean
+    - sudo apt-get remove mysql-client-5.7 mysql-server-5.7
+    - sudo apt-get update -y -qq
+    - sudo apt-get install -y
+        g++ gcc cmake qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qt5-default
+        libqt5svg5-dev qttools5-dev qttranslations5-l10n qttools5-dev ninja-build zlib1g-dev
+        libssl-dev libffi-dev libgl-dev python3-dev libboost-all-dev libdouble-conversion-dev
+        libgsl-dev libcairo2-dev libpoppler-qt5-dev libkf5itemmodels-dev imagemagick
+    - export CXX_COMPILER=g++
+    - export C_COMPILER=gcc
+    - export QT_PREFIX=""
+    - export QT_QM_PATH="/usr/share/qt5/translations/"
+    - export cmake="cmake"
+  - stage: build
+    os: linux
+    dist: focal
+    name: Build on Ubuntu Focal with Clang
+    before_install:
+    - sudo apt-get clean
+    - sudo apt-get remove mysql-client-5.7 mysql-server-5.7
+    - sudo apt-get update -y -qq
+    - sudo apt-get install -y
+        clang cmake qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools qt5-default
+        libqt5svg5-dev qttools5-dev qttranslations5-l10n qttools5-dev ninja-build zlib1g-dev
+        libssl-dev libffi-dev libgl-dev python3-dev libboost-all-dev libdouble-conversion-dev
+        libgsl-dev libcairo2-dev libpoppler-qt5-dev libkf5itemmodels-dev imagemagick
+    - export CXX_COMPILER=clang++-10
+    - export C_COMPILER=clang-10
+    - export QT_PREFIX=""
+    - export QT_QM_PATH="/usr/share/qt5/translations/"
+    - export cmake="cmake"
+  - stage: build
+    os: linux
+    dist: focal
+    name: Check Format
+    addons:
+      apt:
+        update: true
+        packages:
+        - clang
+    install:
+    - sudo apt-get install -y clang-format-10
     script:
-    - build-scripts/build-omm-ubuntu.sh
+    - clang-format --version
+    - ln -s /usr/bin/clang-format-10 clang-format
+    - PATH=$(pwd):$PATH build-scripts/format.sh check
   - stage: build
     os: windows
     name: Build on Windows/MinGW64
@@ -68,14 +164,13 @@ jobs:
       directories:
       - "$HOME/AppData/Local/Temp/chocolatey"
       - "/C/tools/msys64"
+    install:
     script:
-    - $mingw64 build-scripts/build-omm-mingw.sh
-after_success:
-- if [ "$TRAVIS_OS_NAME" -ne "windows" ]; then build/test/unit/ommpfritt_unit_tests
-  fi
-- touch success
-- build-scripts/notify-telegram.sh
-after_failure:
+      - $mingw64 build-scripts/build-omm-mingw.sh
+script:
+- $cmake -GNinja -DCMAKE_BUILD_TYPE=Release -DQT_QM_PATH="$QT_QM_PATH" -DCMAKE_PREFIX_PATH="$QT_PREFIX" -S . -B build -DCMAKE_CXX_COMPILER=${CXX_COMPILER} -DCMAKE_C_COMPILER=${C_COMPILER}
+- $cmake --build build --target package
+after_script:
 - build-scripts/notify-telegram.sh
 notifications:
   webhooks:

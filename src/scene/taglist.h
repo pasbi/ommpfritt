@@ -5,19 +5,20 @@
 
 namespace omm
 {
-
 class Tag;
 class Object;
-class TagList : public QObject, public List<Tag>
+class TagList
+    : public QObject
+    , public List<Tag>
 {
   Q_OBJECT
 public:
   explicit TagList(Object& object);
   TagList(const TagList& other, Object& object);
-  void insert(ListOwningContext<Tag> &context) override;
-  void remove(ListOwningContext<Tag> &t) override;
+  void insert(ListOwningContext<Tag>& context) override;
+  void remove(ListOwningContext<Tag>& t) override;
   std::unique_ptr<Tag> remove(Tag& tag) override;
-  void move(ListMoveContext<Tag> &context) override;
+  void move(ListMoveContext<Tag>& context) override;
   Scene& scene();
 
 private:

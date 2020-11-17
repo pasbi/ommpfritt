@@ -1,30 +1,25 @@
 #include "managers/nodemanager/portitem.h"
 #include "managers/nodemanager/nodeitem.h"
-#include "preferences/uicolors.h"
 #include "nodesystem/port.h"
+#include "preferences/uicolors.h"
 #include <QPainter>
 
 namespace
 {
-
 constexpr double pen_width = 2.0;
 
 }  // namespace
 
 namespace omm
 {
-
 PortItem::PortItem(AbstractPort& port, NodeItem& parent)
-  : QGraphicsItem(&parent)
-  , node_item(parent)
-  , port(port)
+    : QGraphicsItem(&parent), node_item(parent), port(port)
 {
 }
 
 void PortItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* widget)
 {
-  static constexpr QRectF ellipse( -radius,  -radius,
-                                  2*radius, 2*radius);
+  static constexpr QRectF ellipse(-radius, -radius, 2 * radius, 2 * radius);
   static constexpr double big_number = 10000.0;
   static constexpr double margin = 5.0;
 
@@ -61,8 +56,7 @@ void PortItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget
 
 QRectF PortItem::boundingRect() const
 {
-  static constexpr QRectF ellipse( -radius,  -radius,
-                                  2*radius, 2*radius);
+  static constexpr QRectF ellipse(-radius, -radius, 2 * radius, 2 * radius);
   return ellipse.adjusted(-pen_width, -pen_width, pen_width, pen_width);
 }
 

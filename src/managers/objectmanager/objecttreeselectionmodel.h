@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class ObjectTree;
 class Tag;
 class Scene;
@@ -20,9 +19,9 @@ public:
   void clear_selection();
 
   void select(Tag& tag, QItemSelectionModel::SelectionFlags command);
-  void select(const QModelIndex &index, QItemSelectionModel::SelectionFlags command) override;
-  void select( const QItemSelection &selection,
-               QItemSelectionModel::SelectionFlags command) override;
+  void select(const QModelIndex& index, QItemSelectionModel::SelectionFlags command) override;
+  void select(const QItemSelection& selection,
+              QItemSelectionModel::SelectionFlags command) override;
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
   void extend_selection(Tag& tag);
   std::set<Tag*> selected_tags() const;

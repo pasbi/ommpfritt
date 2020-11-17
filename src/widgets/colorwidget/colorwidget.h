@@ -1,14 +1,16 @@
 #pragma once
 
-#include <memory>
-#include <QWidget>
 #include "colorpicker.h"
+#include <QWidget>
+#include <memory>
 
-namespace Ui { class ColorWidget; }
+namespace Ui
+{
+class ColorWidget;
+}
 
 namespace omm
 {
-
 class AbstractColorComponentWidget;
 class NamedColors;
 

@@ -1,14 +1,13 @@
 #pragma once
 
 #include "common.h"
+#include <QPoint>
+#include <QString>
 #include <memory>
 #include <set>
-#include <QString>
-#include <QPoint>
 
 namespace omm
 {
-
 class Node;
 
 enum class PortType { Input = 0x1, Output = 0x2, Both = 0x3 };
@@ -38,8 +37,13 @@ template<PortType port_type_> class Port : public AbstractPort
 {
 protected:
   explicit Port(PortFlavor flavor, Node& node, std::size_t index)
-    : AbstractPort(flavor, port_type_, node, index) {}
-  explicit Port(const Port& other, Node& node) : AbstractPort(other, node) {}
+      : AbstractPort(flavor, port_type_, node, index)
+  {
+  }
+  explicit Port(const Port& other, Node& node) : AbstractPort(other, node)
+  {
+  }
+
 public:
   static constexpr PortType PORT_TYPE = port_type_;
 };
@@ -48,10 +52,14 @@ class InputPort : public Port<PortType::Input>
 {
 protected:
   InputPort(PortFlavor flavor, Node& node, std::size_t index);
+
 public:
   InputPort(Node& node, std::size_t index);
   virtual void connect(OutputPort* port);
-  OutputPort* connected_output() const { return m_connected_output; }
+  OutputPort* connected_output() const
+  {
+    return m_connected_output;
+  }
   bool is_connected(const AbstractPort* other) const;
   bool is_connected() const;
   bool accepts_data_type(const QString& type) const;
@@ -71,15 +79,20 @@ class OutputPort : public Port<PortType::Output>
 {
 protected:
   OutputPort(PortFlavor flavor, Node& node, std::size_t index);
+
 public:
   OutputPort(Node& node, std::size_t index);
 
-  // the Tag is to protect you! Don't call OutputPort::disconnect unless you're in InputPort::connect
+  // the Tag is to protect you! Don't call OutputPort::disconnect unless you're in
+  // InputPort::connect
   void disconnect(InputPort* port, InputPort::Tag);
 
   // the Tag is to protect you! Don't call OutputPort::connect unless you're in InputPort::connect
   void connect(InputPort* port, InputPort::Tag);
-  std::set<InputPort*> connected_inputs() const { return m_connections; }
+  std::set<InputPort*> connected_inputs() const
+  {
+    return m_connections;
+  }
 
   bool is_connected(const AbstractPort* other) const;
   bool is_connected() const;
@@ -119,10 +132,14 @@ decltype(auto) visit(PortT&& port, F&& f)
 }
 
 template<PortType> struct ConcretePortSelector;
-template<> struct ConcretePortSelector<PortType::Input> { using T = InputPort; };
-template<> struct ConcretePortSelector<PortType::Output> { using T = OutputPort; };
+template<> struct ConcretePortSelector<PortType::Input> {
+  using T = InputPort;
+};
+template<> struct ConcretePortSelector<PortType::Output> {
+  using T = OutputPort;
+};
 
 }  // namespace omm
 
-template<> struct omm::EnableBitMaskOperators<omm::PortType> : std::true_type {};
-
+template<> struct omm::EnableBitMaskOperators<omm::PortType> : std::true_type {
+};

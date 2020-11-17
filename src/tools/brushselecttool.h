@@ -1,12 +1,11 @@
 #pragma once
 
-#include "tools/tool.h"
 #include "tools/selectpointstool.h"
+#include "tools/tool.h"
 #include <QCoreApplication>
 
 namespace omm
 {
-
 class BrushSelectTool : public SelectPointsBaseTool
 {
 public:
@@ -28,7 +27,10 @@ public:
   void draw(Painter& renderer) const override;
   static constexpr auto RADIUS_PROPERTY_KEY = "radius";
   QString name() const override;
-  SceneMode scene_mode() const override { return SceneMode::Vertex; }
+  SceneMode scene_mode() const override
+  {
+    return SceneMode::Vertex;
+  }
 
 private:
   bool m_mouse_down = false;

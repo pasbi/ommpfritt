@@ -1,38 +1,34 @@
 #include "nodesystem/nodes/decomposenode.h"
+#include "nodesystem/ordinaryport.h"
 #include "properties/floatproperty.h"
 #include "properties/floatvectorproperty.h"
-#include "nodesystem/ordinaryport.h"
 
 namespace omm
 {
-
-const Node::Detail DecomposeNode::detail {
-  {
-    {
-      AbstractNodeCompiler::Language::Python,
+const Node::Detail DecomposeNode::detail{
+    {{AbstractNodeCompiler::Language::Python,
       QString(R"(
 def %1(v):
   return v
-)").arg(DecomposeNode::TYPE)
-    },
-    {
-      AbstractNodeCompiler::Language::GLSL,
+)")
+          .arg(DecomposeNode::TYPE)},
+     {AbstractNodeCompiler::Language::GLSL,
       QString(R"(
 float %1_0(vec2 xy) { return xy.x; }
 float %1_1(vec2 xy) { return xy.y; }
-)").arg(DecomposeNode::TYPE)
-    }
-  },
-  {
-    QT_TRANSLATE_NOOP("NodeMenuPath", "Vector"),
-  },
+)")
+          .arg(DecomposeNode::TYPE)}},
+    {
+        QT_TRANSLATE_NOOP("NodeMenuPath", "Vector"),
+    },
 };
 
 DecomposeNode::DecomposeNode(NodeModel& model) : Node(model)
 {
   const QString category = tr("Node");
   create_property<FloatVectorProperty>(INPUT_PROPERTY_KEY, Vec2f(0.0, 0.0))
-      .set_label(tr("vector")).set_category(category);
+      .set_label(tr("vector"))
+      .set_category(category);
   m_output_x_port = &add_port<OrdinaryPort<PortType::Output>>(tr("x"));
   m_output_y_port = &add_port<OrdinaryPort<PortType::Output>>(tr("y"));
 }

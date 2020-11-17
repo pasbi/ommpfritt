@@ -5,13 +5,15 @@
 
 namespace omm
 {
-
 class ColorCircle : public ColorPicker
 {
   Q_OBJECT
 public:
   explicit ColorCircle(QWidget* parent = nullptr);
-  QString name() const override { return tr("ColorCircle"); }
+  QString name() const override
+  {
+    return tr("ColorCircle");
+  }
   void set_color(const Color& color) override;
   void accept();
 
@@ -34,4 +36,4 @@ private:
   void set_color(const QPoint& p);
 };
 
-}  // namespace
+}  // namespace omm

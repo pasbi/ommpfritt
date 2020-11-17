@@ -1,15 +1,14 @@
 #pragma once
 
 #include "geometry/boundingbox.h"
-#include "geometry/vec2.h"
 #include "geometry/rectangle.h"
+#include "geometry/vec2.h"
 #include <set>
 
 class QRectF;
 
 namespace omm
 {
-
 class Scene;
 class BoundingBox : public Rectangle
 {
@@ -23,8 +22,8 @@ public:
   bool contains(const BoundingBox& other) const;
   using Rectangle::contains;
 
-  BoundingBox& operator |=(const BoundingBox& other);
-  BoundingBox& operator |=(const Vec2f& point);
+  BoundingBox& operator|=(const BoundingBox& other);
+  BoundingBox& operator|=(const Vec2f& point);
 
   static BoundingBox around_selected_objects(const Scene& scene);
 };

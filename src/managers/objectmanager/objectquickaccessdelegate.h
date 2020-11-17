@@ -1,15 +1,14 @@
 #pragma once
 
-#include <QAbstractItemDelegate>
-#include "scene/history/macro.h"
-#include <memory>
-#include "objects/object.h"
-#include "managers/quickaccessdelegate.h"
 #include "commands/command.h"
+#include "managers/quickaccessdelegate.h"
+#include "objects/object.h"
+#include "scene/history/macro.h"
+#include <QAbstractItemDelegate>
+#include <memory>
 
 namespace omm
 {
-
 class ObjectTreeView;
 class Tag;
 class ObjectTreeSelectionModel;

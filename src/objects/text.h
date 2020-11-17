@@ -1,13 +1,12 @@
 #pragma once
 
 #include "objects/object.h"
-#include <Qt>
 #include "properties/propertygroups/fontproperties.h"
 #include "properties/propertygroups/textoptionproperties.h"
+#include <Qt>
 
 namespace omm
 {
-
 class Scene;
 
 class Text : public Object
@@ -27,7 +26,7 @@ public:
   Geom::PathVector paths() const override;
 
 protected:
-  void on_property_value_changed(Property *property) override;
+  void on_property_value_changed(Property* property) override;
 
 private:
   FontProperties m_font_properties;

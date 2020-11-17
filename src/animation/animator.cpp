@@ -1,43 +1,46 @@
 #include "animation/animator.h"
 #include "animation/channelproxy.h"
-#include "logging.h"
-#include "serializers/abstractserializer.h"
 #include "animation/track.h"
-#include "scene/scene.h"
 #include "aspects/propertyowner.h"
-#include "tags/tag.h"
-#include "renderers/style.h"
-#include "scene/stylelist.h"
-#include <list>
-#include <functional>
-#include "scene/mailbox.h"
+#include "logging.h"
 #include "mainwindow/application.h"
-#include "animation/channelproxy.h"
+#include "renderers/style.h"
+#include "scene/mailbox.h"
+#include "scene/scene.h"
+#include "scene/stylelist.h"
+#include "serializers/abstractserializer.h"
+#include "tags/tag.h"
+#include <functional>
+#include <list>
 
 namespace omm
 {
-
 Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
 {
-  m_timer.setInterval(1000.0/30.0);
+  m_timer.setInterval(1000.0 / 30.0);
   connect(&m_timer, &QTimer::timeout, this, qOverload<>(&Animator::advance));
   connect(this, &Animator::current_changed, this, &Animator::apply);
-  connect(&scene.mail_box(), &MailBox::property_value_changed, this,
-          [this](AbstractPropertyOwner& owner, const QString& key, Property&)
-  {
-    if (key == AbstractPropertyOwner::NAME_PROPERTY_KEY) {
-      const auto& owners = this->accelerator().owners();
-      if (std::find(owners.begin(), owners.end(), &owner) != owners.end()) {
-         const QModelIndex index = this->index(owner);
-         Q_EMIT dataChanged(index, index, { Qt::DisplayRole });
-      }
-    }
-  });
+  connect(&scene.mail_box(),
+          &MailBox::property_value_changed,
+          this,
+          [this](AbstractPropertyOwner& owner, const QString& key, Property&) {
+            if (key == AbstractPropertyOwner::NAME_PROPERTY_KEY) {
+              const auto& owners = this->accelerator().owners();
+              if (std::find(owners.begin(), owners.end(), &owner) != owners.end()) {
+                const QModelIndex index = this->index(owner);
+                Q_EMIT dataChanged(index, index, {Qt::DisplayRole});
+              }
+            }
+          });
 
-  connect(&scene.mail_box(), &MailBox::abstract_property_owner_inserted,
-          this, &Animator::invalidate);
-  connect(&scene.mail_box(), &MailBox::abstract_property_owner_removed,
-          this, &Animator::invalidate);
+  connect(&scene.mail_box(),
+          &MailBox::abstract_property_owner_inserted,
+          this,
+          &Animator::invalidate);
+  connect(&scene.mail_box(),
+          &MailBox::abstract_property_owner_removed,
+          this,
+          &Animator::invalidate);
   connect(this, &Animator::knot_moved, this, &Animator::track_changed);
   connect(this, &Animator::knot_removed, this, &Animator::track_changed);
   connect(this, &Animator::knot_inserted, this, &Animator::track_changed);
@@ -60,10 +63,9 @@ Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
 
 Animator::~Animator()
 {
-
 }
 
-void Animator::serialize(AbstractSerializer &serializer, const Serializable::Pointer &pointer) const
+void Animator::serialize(AbstractSerializer& serializer, const Serializable::Pointer& pointer) const
 {
   Serializable::serialize(serializer, pointer);
 
@@ -75,7 +77,7 @@ void Animator::serialize(AbstractSerializer &serializer, const Serializable::Poi
   serializer.set_value(static_cast<int>(m_play_mode), make_pointer(pointer, "play-mode"));
 }
 
-void Animator::deserialize(AbstractDeserializer &deserializer, const Pointer &pointer)
+void Animator::deserialize(AbstractDeserializer& deserializer, const Pointer& pointer)
 {
   Serializable::deserialize(deserializer, pointer);
 
@@ -189,7 +191,7 @@ Animator::Accelerator Animator::CachedAnimatedPropertiesGetter::compute() const
   return Accelerator(m_self.scene);
 }
 
-QModelIndex Animator::index(int row, int column, const QModelIndex &parent) const
+QModelIndex Animator::index(int row, int column, const QModelIndex& parent) const
 {
   switch (index_type(parent)) {
   case IndexType::None:
@@ -200,7 +202,7 @@ QModelIndex Animator::index(int row, int column, const QModelIndex &parent) cons
     return index(*accelerator().properties(*this->owner(parent)).at(row), column);
   case IndexType::Property:
     // child of property is channel
-    return index({ property(parent), row }, column);
+    return index({property(parent), row}, column);
   case IndexType::Channel:
     [[fallthrough]];
   default:
@@ -209,7 +211,7 @@ QModelIndex Animator::index(int row, int column, const QModelIndex &parent) cons
   }
 }
 
-QModelIndex Animator::parent(const QModelIndex &child) const
+QModelIndex Animator::parent(const QModelIndex& child) const
 {
   switch (index_type(child)) {
   case IndexType::None:
@@ -229,15 +231,14 @@ QModelIndex Animator::parent(const QModelIndex &child) const
   }
 }
 
-int Animator::rowCount(const QModelIndex &parent) const
+int Animator::rowCount(const QModelIndex& parent) const
 {
   switch (index_type(parent)) {
   case IndexType::None:
     return accelerator().owners().size();
   case IndexType::Owner:
     return accelerator().properties(*owner(parent)).size();
-  case IndexType::Property:
-  {
+  case IndexType::Property: {
     Property& pp = *property(parent);
     const auto n = n_channels(pp.variant_value());
     return n;
@@ -250,13 +251,13 @@ int Animator::rowCount(const QModelIndex &parent) const
   }
 }
 
-int Animator::columnCount(const QModelIndex &parent) const
+int Animator::columnCount(const QModelIndex& parent) const
 {
   Q_UNUSED(parent);
   return 1;
 }
 
-QVariant Animator::data(const QModelIndex &index, int role) const
+QVariant Animator::data(const QModelIndex& index, int role) const
 {
   if (!index.isValid()) {
     return QVariant();
@@ -282,8 +283,7 @@ QVariant Animator::data(const QModelIndex &index, int role) const
     }
   case IndexType::Channel:
     switch (role) {
-    case Qt::DisplayRole:
-    {
+    case Qt::DisplayRole: {
       const auto& c = this->channel(index);
       return c.track.property().channel_name(c.channel);
     }
@@ -370,7 +370,7 @@ void Animator::insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track>
   if (accelerator.contains(owner)) {
     const QModelIndex parent_index = this->index(owner);
     // the owner already has a track and is in the model. Just add the new track.
-    const QModelIndex preprocessor_index = [this, &owner, &property=track->property()]() {
+    const QModelIndex preprocessor_index = [this, &owner, &property = track->property()]() {
       Property* preprocessor = nullptr;
       for (Property* candidate : owner.properties().values()) {
         if (candidate == &property) {
@@ -481,6 +481,5 @@ std::list<AbstractPropertyOwner*> Animator::Accelerator::animatable_owners() con
   auto owners = m_scene->property_owners();
   return std::list<AbstractPropertyOwner*>(owners.begin(), owners.end());
 }
-
 
 }  // namespace omm

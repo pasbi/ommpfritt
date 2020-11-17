@@ -1,12 +1,11 @@
 #pragma once
 
 #include "commands/command.h"
-#include <2geom/pathvector.h>
 #include "objects/path.h"
+#include <2geom/pathvector.h>
 
 namespace omm
 {
-
 class Path;
 
 class ModifySegmentsCommand : public Command
@@ -25,4 +24,3 @@ private:
 };
 
 }  // namespace omm
-

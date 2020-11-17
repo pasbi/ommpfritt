@@ -13,9 +13,7 @@ class QFocusEvent;
 
 namespace omm
 {
-
-template<typename ItemViewT, typename ItemModelT>
-class ManagerItemView : public ItemViewT
+template<typename ItemViewT, typename ItemModelT> class ManagerItemView : public ItemViewT
 {
 public:
   using item_type = typename ItemModelT::structure_type::item_type;

@@ -1,19 +1,18 @@
 #include "widgets/colorwidget/colorcomponentspinbox.h"
 #include "widgets/numericedit.h"
-#include <memory>
 #include <QHBoxLayout>
+#include <memory>
 
 namespace omm
 {
-
-std::map<Color::Role, double> ColorComponentSpinBox::factor {
-  { Color::Role::Red,        255.0 },
-  { Color::Role::Green,      255.0 },
-  { Color::Role::Blue,       255.0 },
-  { Color::Role::Alpha,      100.0 },
-  { Color::Role::Hue,        360.0 },
-  { Color::Role::Saturation, 100.0 },
-  { Color::Role::Value,      100.0 },
+std::map<Color::Role, double> ColorComponentSpinBox::factor{
+    {Color::Role::Red, 255.0},
+    {Color::Role::Green, 255.0},
+    {Color::Role::Blue, 255.0},
+    {Color::Role::Alpha, 100.0},
+    {Color::Role::Hue, 360.0},
+    {Color::Role::Saturation, 100.0},
+    {Color::Role::Value, 100.0},
 };
 
 ColorComponentSpinBox::ColorComponentSpinBox(QWidget* parent) : AbstractColorComponentWidget(parent)
@@ -45,4 +44,4 @@ void ColorComponentSpinBox::set_role(Color::Role role)
   m_spin_box->set_range(0.0, m_factor);
 }
 
-}  // namespace
+}  // namespace omm

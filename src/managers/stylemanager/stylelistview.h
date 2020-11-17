@@ -1,15 +1,14 @@
 #pragma once
 
-#include <QListView>
 #include "common.h"
 #include "managers/manageritemview.h"
+#include "managers/stylemanager/stylelistviewitemdelegate.h"
 #include "scene/stylelist.h"
 #include "widgets/itemproxyview.h"
-#include "managers/stylemanager/stylelistviewitemdelegate.h"
+#include <QListView>
 
 namespace omm
 {
-
 class Object;
 class StyleList;
 
@@ -40,4 +39,4 @@ private Q_SLOTS:
   void update_layout();
 };
 
-}  // namespace
+}  // namespace omm

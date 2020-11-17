@@ -3,7 +3,6 @@
 
 namespace
 {
-
 auto get_old_points(const std::set<omm::Path::iterator>& keys)
 {
   omm::PointsTransformationCommand::Map map;
@@ -17,16 +16,20 @@ auto get_old_points(const std::set<omm::Path::iterator>& keys)
 
 namespace omm
 {
-
 PointsTransformationCommand::PointsTransformationCommand(const Map& new_points)
-  : Command(QObject::tr("PointsTransformationCommand"))
-  , m_old_points(get_old_points(::get_keys(new_points)))
-  , m_new_points(new_points)
+    : Command(QObject::tr("PointsTransformationCommand")),
+      m_old_points(get_old_points(::get_keys(new_points))), m_new_points(new_points)
 {
 }
 
-void PointsTransformationCommand::undo() { apply(m_old_points); }
-void PointsTransformationCommand::redo() { apply(m_new_points); }
+void PointsTransformationCommand::undo()
+{
+  apply(m_old_points);
+}
+void PointsTransformationCommand::redo()
+{
+  apply(m_new_points);
+}
 
 int PointsTransformationCommand::id() const
 {
@@ -56,7 +59,7 @@ bool PointsTransformationCommand::is_noop() const
   });
 }
 
-void PointsTransformationCommand::apply(const PointsTransformationCommand::Map &map)
+void PointsTransformationCommand::apply(const PointsTransformationCommand::Map& map)
 {
   Q_UNUSED(map)
   std::set<Path*> paths;

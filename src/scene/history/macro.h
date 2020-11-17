@@ -7,7 +7,6 @@ class QString;
 
 namespace omm
 {
-
 class AbstractPropertyOwner;
 class Scene;
 class Macro
@@ -15,6 +14,7 @@ class Macro
 public:
   explicit Macro(const QString& text, QUndoStack& stack);
   virtual ~Macro();
+
 private:
   QUndoStack& m_undo_stack;
 };

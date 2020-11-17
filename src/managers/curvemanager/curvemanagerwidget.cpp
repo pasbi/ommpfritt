@@ -1,23 +1,21 @@
 #include "managers/curvemanager/curvemanagerwidget.h"
-#include "properties/numericproperty.h"
-#include "managers/panzoomcontroller.h"
-#include "managers/curvemanager/curvetree.h"
-#include "properties/property.h"
-#include "scene/history/historymodel.h"
-#include "scene/scene.h"
+#include "animation/animator.h"
 #include "commands/keyframecommand.h"
 #include "mainwindow/application.h"
-#include <QMouseEvent>
-#include "scene/mailbox.h"
-#include <QPainter>
-#include <QEvent>
+#include "managers/curvemanager/curvetree.h"
 #include "managers/manager.h"
+#include "managers/panzoomcontroller.h"
+#include "properties/numericproperty.h"
+#include "properties/property.h"
+#include "scene/history/historymodel.h"
+#include "scene/mailbox.h"
 #include "scene/scene.h"
-#include "animation/animator.h"
+#include <QEvent>
+#include <QMouseEvent>
+#include <QPainter>
 
 namespace
 {
-
 double multiplier(const omm::Track& track)
 {
   const auto value = track.property().configuration[omm::NumericPropertyDetail::MULTIPLIER_POINTER];
@@ -42,14 +40,14 @@ void draw_rubberband(QPainter& painter, const QWidget& widget, const QRectF& rec
 
 namespace omm
 {
-
 CurveManagerWidget::CurveManagerWidget(Scene& scene, const CurveTree& curve_tree)
-  : range({1, -10}, {100, 10}, *this, Range::Options::Default, Range::Options::Mirror)
-  , m_scene(scene), m_curve_tree(curve_tree)
+    : range({1, -10}, {100, 10}, *this, Range::Options::Default, Range::Options::Mirror),
+      m_scene(scene), m_curve_tree(curve_tree)
 {
   connect(&scene.mail_box(),
           qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this, &CurveManagerWidget::set_selection);
+          this,
+          &CurveManagerWidget::set_selection);
   set_selection(scene.selection());
   connect(&scene.animator(), &Animator::track_inserted, this, &CurveManagerWidget::add_track);
   connect(&scene.animator(), &Animator::track_removed, this, &CurveManagerWidget::remove_track);
@@ -57,9 +55,13 @@ CurveManagerWidget::CurveManagerWidget(Scene& scene, const CurveTree& curve_tree
   connect(&scene.animator(), &Animator::knot_removed, this, &CurveManagerWidget::remove_knot);
   connect(&scene.animator(), &Animator::knot_moved, this, &CurveManagerWidget::move_knot);
   setFocusPolicy(Qt::StrongFocus);
-  connect(&curve_tree, &CurveTree::visibility_changed, this,
+  connect(&curve_tree,
+          &CurveTree::visibility_changed,
+          this,
           qOverload<>(&CurveManagerWidget::update));
-  connect(&scene.animator(), &Animator::current_changed, this,
+  connect(&scene.animator(),
+          &Animator::current_changed,
+          this,
           qOverload<>(&CurveManagerWidget::update));
 }
 
@@ -116,13 +118,14 @@ void CurveManagerWidget::mouseMoveEvent(QMouseEvent* event)
     set_channel_value(vv, key.channel, new_offset);
     m_scene.submit<ChangeKeyFrameCommand>(key.frame, key.track.property(), std::move(new_knot));
   } else if (m_key_being_dragged) {
-    m_frame_shift = std::round(  frame_range.pixel_to_unit(event->x())
+    m_frame_shift = std::round(frame_range.pixel_to_unit(event->x())
                                - frame_range.pixel_to_unit(m_mouse_down_pos.x()));
-    m_value_shift = value_range.pixel_to_unit(event->y())
-                  - value_range.pixel_to_unit(m_mouse_down_pos.y());
+    m_value_shift
+        = value_range.pixel_to_unit(event->y()) - value_range.pixel_to_unit(m_mouse_down_pos.y());
   } else if (m_rubberband_rect_visible) {
-    const QRectF rect = QRectF(range.pixel_to_unit(m_mouse_down_pos),
-                               range.pixel_to_unit(m_last_mouse_pos)).normalized();
+    const QRectF rect
+        = QRectF(range.pixel_to_unit(m_mouse_down_pos), range.pixel_to_unit(m_last_mouse_pos))
+              .normalized();
     for (auto&& [key, data] : m_keyframe_handles) {
       const QPointF p(key.frame, key.value());
       data.inside_rubberband = rect.contains(p);
@@ -182,19 +185,20 @@ void CurveManagerWidget::mousePressEvent(QMouseEvent* event)
 
 void CurveManagerWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-  static const auto is_selected_and_visible = [this](auto&& kd) {
-    return kd.second.is_selected && is_visible(kd.first);
-  };
+  static const auto is_selected_and_visible
+      = [this](auto&& kd) { return kd.second.is_selected && is_visible(kd.first); };
 
   m_pan_active = false;
   m_zoom_active = false;
   if (m_key_being_dragged && (m_frame_shift != 0 || m_value_shift != 0)) {
-    if (std::any_of(m_keyframe_handles.begin(), m_keyframe_handles.end(), is_selected_and_visible)) {
+    if (std::any_of(m_keyframe_handles.begin(),
+                    m_keyframe_handles.end(),
+                    is_selected_and_visible)) {
       auto& animator = m_scene.animator();
       auto macro = m_scene.history().start_macro("Move Keyframes");
       const auto keyframe_handles = m_keyframe_handles;
       for (auto&& [key, data] : keyframe_handles) {
-        if (is_selected_and_visible(std::pair{ key, data })) {
+        if (is_selected_and_visible(std::pair{key, data})) {
           auto& property = key.track.property();
           const double new_value = (key.value() + m_value_shift) / multiplier(key.track);
           auto new_knot = key.track.knot(key.frame).clone();
@@ -261,11 +265,12 @@ bool CurveManagerWidget::is_visible(const CurveManagerWidget::KeyFrameHandleKey&
 
 bool CurveManagerWidget::is_visible(const Track& track, std::size_t channel) const
 {
-  return m_curve_tree.is_visible({ &track.property(), channel }) == CurveTree::Visibility::Visible;
+  return m_curve_tree.is_visible({&track.property(), channel}) == CurveTree::Visibility::Visible;
 }
 
 const CurveManagerWidget::KeyFrameHandleKey*
-CurveManagerWidget::neighbor(const CurveManagerWidget::KeyFrameHandleKey& key, Track::Knot::Side side) const
+CurveManagerWidget::neighbor(const CurveManagerWidget::KeyFrameHandleKey& key,
+                             Track::Knot::Side side) const
 {
   const auto cmp = [side](int a, int b) {
     if (side == Track::Knot::Side::Left) {
@@ -277,15 +282,13 @@ CurveManagerWidget::neighbor(const CurveManagerWidget::KeyFrameHandleKey& key, T
   const KeyFrameHandleKey* candidate_key = nullptr;
   for (const auto& pair : m_keyframe_handles) {
     if (&key.track == &pair.first.track) {
-      if (  (candidate_key == nullptr || (cmp(pair.first.frame, candidate_key->frame)))
-         && (cmp(key.frame, pair.first.frame)) )
-      {
+      if ((candidate_key == nullptr || (cmp(pair.first.frame, candidate_key->frame)))
+          && (cmp(key.frame, pair.first.frame))) {
         candidate_key = &pair.first;
       }
     }
   }
   return candidate_key;
-
 }
 
 std::set<const CurveManagerWidget::KeyFrameHandleKey*>
@@ -337,10 +340,8 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
         {
           const int frame = std::floor(frame_range.begin - frame_advance);
           auto v0 = m * track->interpolate(frame, c);
-          for (int frame = frame_range.begin;
-               frame <= frame_range.end + frame_advance;
-               frame += frame_advance)
-          {
+          for (int frame = frame_range.begin; frame <= frame_range.end + frame_advance;
+               frame += frame_advance) {
             auto v1 = m * track->interpolate(frame, c);
             painter.drawLine(range.unit_to_pixel(QPointF(frame - frame_advance, v0)),
                              range.unit_to_pixel(QPointF(frame, v1)));
@@ -398,9 +399,9 @@ void CurveManagerWidget::draw_scale(QPainter& painter) const
     return pen;
   };
 
-  static const std::map<double, Config> layers {
-    { 100.0, { Qt::SolidLine, QColor(255, 255, 255, 80), 1.0, true } },
-    { 10.0,  { Qt::DashLine, QColor(255, 255, 255, 20), 1.0, false } },
+  static const std::map<double, Config> layers{
+      {100.0, {Qt::SolidLine, QColor(255, 255, 255, 80), 1.0, true}},
+      {10.0, {Qt::DashLine, QColor(255, 255, 255, 20), 1.0, false}},
   };
 
   painter.save();
@@ -410,7 +411,7 @@ void CurveManagerWidget::draw_scale(QPainter& painter) const
       const double py = range.v_range.unit_to_pixel(y);
       painter.drawLine(QPointF(0, py), QPointF(w, py));
       if (config.draw_text) {
-        painter.drawText(QPointF(0, py-2), QString("%1").arg(y));
+        painter.drawText(QPointF(0, py - 2), QString("%1").arg(y));
       }
     }
     for (double x : range.h_range.scale(distance)) {
@@ -427,11 +428,11 @@ void CurveManagerWidget::draw_scale(QPainter& painter) const
 void CurveManagerWidget::draw_knots(QPainter& painter) const
 {
   for (const auto& [key, data] : m_keyframe_handles) {
-    const double any_channel_selected = std::any_of(m_keyframe_handles.begin(), m_keyframe_handles.end(),
-                                                    [key=key](auto&& kd)
-    {
-      return &kd.first.track == &key.track && kd.first.frame == key.frame && kd.second.is_selected;
-    });
+    const double any_channel_selected
+        = std::any_of(m_keyframe_handles.begin(), m_keyframe_handles.end(), [key = key](auto&& kd) {
+            return &kd.first.track == &key.track && kd.first.frame == key.frame
+                   && kd.second.is_selected;
+          });
     const double frame_shift = any_channel_selected ? m_frame_shift : 0.0;
     const double value_shift = data.is_selected ? m_value_shift : 0.0;
     if (is_visible(key.track, key.channel)) {
@@ -442,8 +443,8 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
         painter.setBrush(ui_color(QPalette::Active, "TimeLine", "key selected"));
         painter.drawEllipse(center, radius, radius);
         if (m_key_being_dragged) {
-          const QPointF center = range.unit_to_pixel(QPointF(key.frame + m_frame_shift,
-                                                             value + m_value_shift));
+          const QPointF center
+              = range.unit_to_pixel(QPointF(key.frame + m_frame_shift, value + m_value_shift));
           painter.setBrush(ui_color(QPalette::Active, "TimeLine", "key dragged"));
           painter.drawEllipse(center, radius, radius);
         }
@@ -453,10 +454,8 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
       }
 
       if (key.track.interpolation() == Track::Interpolation::Bezier) {
-        const auto draw_tangent = [this, center, &painter, key=key]
-                                  (double value, double frame)
-        {
-          const QPointF other = range.unit_to_pixel({ frame, value });
+        const auto draw_tangent = [this, center, &painter, key = key](double value, double frame) {
+          const QPointF other = range.unit_to_pixel({frame, value});
           constexpr double r = 3;
 
           const QString color_name = QString("%1-%2-fcurve").arg(key.track.type()).arg(key.channel);
@@ -471,7 +470,7 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
         };
 
         if (data.is_selected) {
-          for (auto side : { Track::Knot::Side::Left, Track::Knot::Side::Right }) {
+          for (auto side : {Track::Knot::Side::Left, Track::Knot::Side::Right}) {
             const KeyFrameHandleKey* neighbor = this->neighbor(key, side);
             if (neighbor != nullptr) {
               const double value = key.value(side) + value_shift;
@@ -489,17 +488,17 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
 
 double CurveManagerWidget::interpolate_frame(int key_frame, int neighbor_frame)
 {
-  return 2.0/3.0 * key_frame + 1.0/3.0 * neighbor_frame;
+  return 2.0 / 3.0 * key_frame + 1.0 / 3.0 * neighbor_frame;
 }
 
 CurveManagerWidget::TangentHandle CurveManagerWidget::tangent_handle_at(const QPointF& point) const
 {
-  for (auto&& [key, data]: m_keyframe_handles) {
-    for (auto side : { Track::Knot::Side::Left, Track::Knot::Side::Right }) {
+  for (auto&& [key, data] : m_keyframe_handles) {
+    for (auto side : {Track::Knot::Side::Left, Track::Knot::Side::Right}) {
       const auto* neighbor = this->neighbor(key, side);
       if (neighbor != nullptr) {
-        const QPointF key_pos = range.unit_to_pixel({ interpolate_frame(key.frame, neighbor->frame),
-                                                      key.value(side) });
+        const QPointF key_pos
+            = range.unit_to_pixel({interpolate_frame(key.frame, neighbor->frame), key.value(side)});
         if ((key_pos - point).manhattanLength() < 3) {
           return TangentHandle(&key, side);
         }
@@ -565,7 +564,7 @@ void CurveManagerWidget::add_knot(Track& track, int frame)
 {
   for (std::size_t channel = 0; channel < n_channels(track.property().variant_value()); ++channel) {
     KeyFrameHandleKey key(track, frame, channel);
-    m_keyframe_handles.insert({ key, KeyFrameHandleData() });
+    m_keyframe_handles.insert({key, KeyFrameHandleData()});
   }
   update();
 }
@@ -591,7 +590,7 @@ void CurveManagerWidget::move_knot(Track& track, int old_frame, int new_frame)
       const auto old_data = node.mapped();
 
       KeyFrameHandleKey key(old_key.track, new_frame, old_key.channel);
-      m_keyframe_handles.insert({ key, old_data });
+      m_keyframe_handles.insert({key, old_data});
     }
   }
   update();
@@ -608,8 +607,8 @@ double CurveManagerWidget::KeyFrameHandleKey::value() const
   return multiplier(track) * get_channel_value(track.knot(frame).value, channel);
 }
 
-bool CurveManagerWidget::KeyFrameHandleKey::
-operator<(const CurveManagerWidget::KeyFrameHandleKey& other) const
+bool CurveManagerWidget::KeyFrameHandleKey::operator<(
+    const CurveManagerWidget::KeyFrameHandleKey& other) const
 {
   if (&track != &other.track) {
     return &track < &other.track;

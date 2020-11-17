@@ -1,13 +1,12 @@
 #pragma once
 
-#include <string>
+#include "aspects/propertyowner.h"
 #include <QFont>
 #include <QTextOption>
-#include "aspects/propertyowner.h"
+#include <string>
 
 namespace omm
 {
-
 class PropertyGroup
 {
 public:

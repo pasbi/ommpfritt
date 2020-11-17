@@ -1,26 +1,23 @@
 #include "preferences/keybindingspage.h"
-#include <QMessageBox>
-#include <QTableView>
-#include <QDialogButtonBox>
-#include <memory>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QTimer>
-#include <QHeaderView>
 #include "keybindings/keybindings.h"
 #include "preferences/keybindingstreeviewdelegate.h"
-#include <QSettings>
 #include "ui_keybindingspage.h"
+#include <QDialogButtonBox>
+#include <QHeaderView>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QSettings>
 #include <QStyle>
+#include <QTableView>
+#include <QTimer>
+#include <QVBoxLayout>
+#include <memory>
 
 namespace omm
 {
-
 KeyBindingsPage::KeyBindingsPage(KeyBindings& key_bindings, QWidget* parent)
-  : PreferencePage(parent)
-  , m_proxy_model(KeyBindingsProxyModel(key_bindings))
-  , m_ui(std::make_unique<Ui::KeyBindingsPage>())
-  , m_key_bindings(key_bindings)
+    : PreferencePage(parent), m_proxy_model(KeyBindingsProxyModel(key_bindings)),
+      m_ui(std::make_unique<Ui::KeyBindingsPage>()), m_key_bindings(key_bindings)
 {
   m_ui->setupUi(this);
   std::vector<std::unique_ptr<AbstractPreferencesTreeViewDelegate>> delegates(1);
@@ -29,10 +26,11 @@ KeyBindingsPage::KeyBindingsPage(KeyBindings& key_bindings, QWidget* parent)
   m_ui->treeView->header()->hide();
   connect(m_ui->pb_reset, &QPushButton::clicked, this, &KeyBindingsPage::reset);
   connect(m_ui->pb_reset_filter, &QPushButton::clicked, this, &KeyBindingsPage::reset_filter);
-  connect(m_ui->le_name_filter, &QLineEdit::textChanged,
-          this, &KeyBindingsPage::set_name_filter);
-  connect(m_ui->le_sequence_filter, &QKeySequenceEdit::keySequenceChanged,
-          this, &KeyBindingsPage::set_sequence_filter);
+  connect(m_ui->le_name_filter, &QLineEdit::textChanged, this, &KeyBindingsPage::set_name_filter);
+  connect(m_ui->le_sequence_filter,
+          &QKeySequenceEdit::keySequenceChanged,
+          this,
+          &KeyBindingsPage::set_sequence_filter);
   m_ui->pb_reset_filter->setIcon(style()->standardIcon(QStyle::SP_DialogCloseButton));
 
   QSettings settings;
@@ -73,10 +71,11 @@ void KeyBindingsPage::update_expand()
 
 void KeyBindingsPage::reset()
 {
-  if (QMessageBox::question(this, tr("Reset all key bindings"),
-      tr("Do you really want to reset all key bindings to the default value?\nThis cannot be undone."))
-      == QMessageBox::Yes)
-  {
+  if (QMessageBox::question(this,
+                            tr("Reset all key bindings"),
+                            tr("Do you really want to reset all key bindings to the default "
+                               "value?\nThis cannot be undone."))
+      == QMessageBox::Yes) {
     m_key_bindings.reset();
   }
 }

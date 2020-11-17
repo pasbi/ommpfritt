@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class IntegerProperty : public NumericProperty<int>
 {
 public:

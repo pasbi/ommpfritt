@@ -1,13 +1,12 @@
 #include "renderers/imagecache.h"
+#include "logging.h"
 #include <QPainter>
 #include <QSvgRenderer>
 #include <poppler/qt5/poppler-qt5.h>
-#include "logging.h"
 
 namespace omm
 {
-
-QPicture ImageCache::retrieve(const std::pair<QString, int> &key) const
+QPicture ImageCache::retrieve(const std::pair<QString, int>& key) const
 {
   QPicture picture;
   const QString& filename = key.first;
@@ -20,7 +19,7 @@ QPicture ImageCache::retrieve(const std::pair<QString, int> &key) const
     if (doc) {
       doc->setRenderBackend(Poppler::Document::ArthurBackend);
       int page_num = key.second;
-      page_num = std::clamp(page_num, 0, doc->numPages()-1);
+      page_num = std::clamp(page_num, 0, doc->numPages() - 1);
       const auto page = doc->page(page_num);
       if (page) {
         const auto success = page->renderToPainter(&painter);

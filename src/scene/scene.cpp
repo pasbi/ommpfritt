@@ -1,46 +1,46 @@
 #include "scene.h"
-#include <random>
-#include <cassert>
-#include <QDebug>
-#include <variant>
-#include <QTimer>
-#include <QMessageBox>
-#include <fstream>
 #include <QApplication>
+#include <QDebug>
+#include <QMessageBox>
+#include <QTimer>
+#include <cassert>
+#include <fstream>
+#include <random>
+#include <variant>
 
-#include "tags/nodestag.h"
-#include "objects/empty.h"
-#include "external/json.hpp"
-#include "properties/stringproperty.h"
-#include "properties/boolproperty.h"
-#include "serializers/jsonserializer.h"
 #include "commands/command.h"
-#include "properties/referenceproperty.h"
-#include "properties/colorproperty.h"
-#include "renderers/style.h"
-#include "tags/tag.h"
-#include "objects/object.h"
 #include "commands/propertycommand.h"
 #include "commands/removecommand.h"
-#include "tools/selecttool.h"
-#include "tools/selectobjectstool.h"
+#include "external/json.hpp"
 #include "logging.h"
+#include "objects/empty.h"
+#include "objects/object.h"
+#include "properties/boolproperty.h"
+#include "properties/colorproperty.h"
+#include "properties/referenceproperty.h"
+#include "properties/stringproperty.h"
+#include "renderers/style.h"
+#include "serializers/jsonserializer.h"
+#include "tags/nodestag.h"
+#include "tags/tag.h"
+#include "tools/selectobjectstool.h"
+#include "tools/selecttool.h"
 
-#include "scene/history/historymodel.h"
-#include "tools/toolbox.h"
-#include "scene/stylelist.h"
-#include "scene/objecttree.h"
-#include "scene/mailbox.h"
 #include "animation/animator.h"
 #include "color/namedcolors.h"
-#include "nodesystem/node.h"
-#include "mainwindow/application.h"
 #include "keybindings/modeselector.h"
+#include "mainwindow/application.h"
+#include "nodesystem/node.h"
+#include "scene/history/historymodel.h"
+#include "scene/mailbox.h"
+#include "scene/objecttree.h"
+#include "scene/stylelist.h"
+#include "tools/toolbox.h"
 
 namespace
 {
-
-template<typename PropertyT, typename PropertyOwners> std::set<PropertyT*>
+template<typename PropertyT, typename PropertyOwners>
+std::set<PropertyT*>
 find_properties(const PropertyOwners& property_owners,
                 const std::function<bool(const typename PropertyT::value_type&)>& predicate)
 {
@@ -54,7 +54,7 @@ find_properties(const PropertyOwners& property_owners,
         const auto* value = std::get_if<typename PropertyT::value_type>(&variant);
         assert(value != nullptr);
         if (predicate(*value)) {
-           properties.insert(static_cast<PropertyT*>(&property));
+          properties.insert(static_cast<PropertyT*>(&property));
         }
       }
     }
@@ -94,20 +94,14 @@ template<typename T> std::set<T*> filter_by_name(const std::set<T*>& set, const 
 
 namespace omm
 {
-
 Scene::Scene(PythonEngine& python_engine)
-  : python_engine(python_engine)
-  , point_selection(*this)
-  , m_mail_box(new MailBox())
-  , m_object_tree(new ObjectTree(make_root(), *this))
-  , m_styles(new StyleList(*this))
-  , m_history(new HistoryModel())
-  , m_tool_box(new ToolBox(*this))
-  , m_animator(new Animator(*this))
-  , m_named_colors(new NamedColors())
+    : python_engine(python_engine), point_selection(*this), m_mail_box(new MailBox()),
+      m_object_tree(new ObjectTree(make_root(), *this)), m_styles(new StyleList(*this)),
+      m_history(new HistoryModel()), m_tool_box(new ToolBox(*this)),
+      m_animator(new Animator(*this)), m_named_colors(new NamedColors())
 {
   object_tree().root().set_object_tree(object_tree());
-  for (auto kind : { Object::KIND, Tag::KIND, Style::KIND, Tool::KIND }) {
+  for (auto kind : {Object::KIND, Tag::KIND, Style::KIND, Tool::KIND}) {
     m_item_selection[kind] = {};
   }
   connect(&history(), &HistoryModel::index_changed, &mail_box(), &MailBox::filename_changed);
@@ -121,7 +115,8 @@ Scene::Scene(PythonEngine& python_engine)
   });
   connect(&mail_box(),
           qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this, &Scene::update_tool);
+          this,
+          &Scene::update_tool);
 }
 
 Scene::~Scene()
@@ -135,9 +130,9 @@ void Scene::polish()
   m_default_style = std::make_unique<Style>(this);
 
   connect(Application::instance().mode_selectors.at("scene_mode").get(),
-          &ModeSelector::mode_changed, this, [this](int mode) {
-    this->set_mode(static_cast<SceneMode>(mode));
-  });
+          &ModeSelector::mode_changed,
+          this,
+          [this](int mode) { this->set_mode(static_cast<SceneMode>(mode)); });
 }
 
 void Scene::prepare_reset()
@@ -158,11 +153,11 @@ void Scene::prepare_reset()
 
   auto root = make_root();
   object_tree().replace_root(std::move(root));
-  styles().set(std::vector<std::unique_ptr<Style>> {});
+  styles().set(std::vector<std::unique_ptr<Style>>{});
   tool_box().active_tool().reset();
 }
 
-std::unique_ptr<CycleGuard> Scene::make_cycle_guard(const Object *guarded)
+std::unique_ptr<CycleGuard> Scene::make_cycle_guard(const Object* guarded)
 {
   return std::make_unique<CycleGuard>(m_cycle_guarded_objects, guarded);
 }
@@ -195,11 +190,11 @@ std::set<ColorProperty*> Scene::find_named_color_holders(const QString& name) co
   });
 }
 
-bool Scene::save_as(const QString &filename)
+bool Scene::save_as(const QString& filename)
 {
   std::ofstream ofstream(filename.toStdString());
   if (!ofstream) {
-    LERROR <<  "Failed to open ofstream at '" << filename << "'.";
+    LERROR << "Failed to open ofstream at '" << filename << "'.";
     return false;
   }
 
@@ -222,7 +217,7 @@ bool Scene::save_as(const QString &filename)
   return true;
 }
 
-bool Scene::load_from(const QString &filename)
+bool Scene::load_from(const QString& filename)
 {
   reset();
 
@@ -285,7 +280,7 @@ void Scene::reset()
   history().reset();
   history().set_saved_index();
   object_tree().replace_root(make_root());
-  styles().set(std::vector<std::unique_ptr<Style>> {});
+  styles().set(std::vector<std::unique_ptr<Style>>{});
   m_filename.clear();
   animator().invalidate();
   m_named_colors->clear();
@@ -316,9 +311,8 @@ std::set<Tag*> Scene::tags() const
 
 std::set<AbstractPropertyOwner*> Scene::property_owners() const
 {
-  auto apos = merge(std::set<AbstractPropertyOwner*>(),
-                    object_tree().items(), styles().items(),
-                    tags());
+  auto apos
+      = merge(std::set<AbstractPropertyOwner*>(), object_tree().items(), styles().items(), tags());
   for (auto&& apo : apos) {
     if (!!(apo->flags() & Flag::HasNodes)) {
       const NodesOwner& nodes_owner = dynamic_cast<const NodesOwner&>(*apo);
@@ -364,16 +358,13 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
     }
   };
 
-  for (auto& kind : { Kind::Object, Kind::Style,
-                      Kind::Tag, Kind::Tool })
-  {
+  for (auto& kind : {Kind::Object, Kind::Style, Kind::Tag, Kind::Tool}) {
     if (selection.size() == 0) {
       m_item_selection.at(kind).clear();
       emit_selection_changed(m_selection, kind);
     } else {
-      const auto item_selection = ::filter_if(selection, [kind](const auto* apo) {
-        return apo->kind == kind;
-      });
+      const auto item_selection
+          = ::filter_if(selection, [kind](const auto* apo) { return apo->kind == kind; });
       if (item_selection.empty()) {
         // selection is not empty but does not contain objects. Do not touch the object selection.
       } else {
@@ -388,7 +379,10 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
   Q_EMIT mail_box().selection_changed(m_selection);
 }
 
-std::set<AbstractPropertyOwner*> Scene::selection() const { return m_selection; }
+std::set<AbstractPropertyOwner*> Scene::selection() const
+{
+  return m_selection;
+}
 
 std::unique_ptr<Object> Scene::make_root()
 {
@@ -419,26 +413,30 @@ void Scene::evaluate_tags()
   }
 }
 
-bool Scene::can_remove( QWidget* parent, std::set<AbstractPropertyOwner*> selection,
-                                         std::set<Property*>& properties ) const
+bool Scene::can_remove(QWidget* parent,
+                       std::set<AbstractPropertyOwner*> selection,
+                       std::set<Property*>& properties) const
 {
   selection = merge(selection, implicitely_selected_tags(selection));
   const auto reference_holder_map = find_reference_holders(selection);
   if (reference_holder_map.size() > 0) {
     const auto message = QObject::tr("There are %1 items being referenced by other items.\n"
                                      "Remove the referenced items anyway?")
-                                    .arg(reference_holder_map.size());
-    const auto decision = QMessageBox::warning( parent, QObject::tr("Warning"), message,
-                                                QMessageBox::YesToAll | QMessageBox::Cancel );
+                             .arg(reference_holder_map.size());
+    const auto decision = QMessageBox::warning(parent,
+                                               QObject::tr("Warning"),
+                                               message,
+                                               QMessageBox::YesToAll | QMessageBox::Cancel);
     switch (decision) {
-    case QMessageBox::YesToAll:
-    {
+    case QMessageBox::YesToAll: {
       const auto merge = [](std::set<Property*> accu, const auto& v) {
         accu.insert(v.second.begin(), v.second.end());
         return accu;
       };
-      properties = std::accumulate( reference_holder_map.begin(), reference_holder_map.end(),
-                                    std::set<Property*>(), merge );
+      properties = std::accumulate(reference_holder_map.begin(),
+                                   reference_holder_map.end(),
+                                   std::set<Property*>(),
+                                   merge);
       return true;
     }
     case QMessageBox::Cancel:
@@ -454,7 +452,7 @@ bool Scene::can_remove( QWidget* parent, std::set<AbstractPropertyOwner*> select
 
 bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& selection)
 {
-  std::set<Property *> properties;
+  std::set<Property*> properties;
   if (can_remove(parent, selection, properties)) {
     [[maybe_unused]] auto macro = history().start_macro(QObject::tr("Remove Selection"));
     if (properties.size() > 0) {
@@ -464,9 +462,13 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
 
     std::map<Object*, std::set<Tag*>> tag_map;
     for (Tag* tag : kind_cast<Tag>(selection)) {
-      if (!::contains(selection, tag->owner)) { tag_map[tag->owner].insert(tag); }
+      if (!::contains(selection, tag->owner)) {
+        tag_map[tag->owner].insert(tag);
+      }
     }
-    for (auto [ owner, tags ] : tag_map) { ::remove_items(*this, owner->tags, tags); }
+    for (auto [owner, tags] : tag_map) {
+      ::remove_items(*this, owner->tags, tags);
+    }
     ::remove_items(*this, styles(), kind_cast<Style>(selection));
     ::remove_items(*this, object_tree(), kind_cast<Object>(selection));
     set_selection({});
@@ -495,11 +497,10 @@ void Scene::set_mode(SceneMode mode)
   }
 }
 
-bool Scene::contains(const AbstractPropertyOwner *apo) const
+bool Scene::contains(const AbstractPropertyOwner* apo) const
 {
   switch (apo->kind) {
-  case Kind::Tag:
-  {
+  case Kind::Tag: {
     const auto tags = this->tags();
     return tags.end() != std::find(tags.begin(), tags.end(), static_cast<const Tag*>(apo));
   }
@@ -509,7 +510,8 @@ bool Scene::contains(const AbstractPropertyOwner *apo) const
     return styles().contains(static_cast<const Style&>(*apo));
   case Kind::Tool:
     return ::contains(m_tool_box->tools(), apo);
-  default: return false;
+  default:
+    return false;
   }
 }
 

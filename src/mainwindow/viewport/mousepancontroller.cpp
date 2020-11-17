@@ -3,14 +3,12 @@
 
 namespace omm
 {
-
 MousePanController::MousePanController(const set_cursor_pos_type& set_cursor_pos)
-  : m_set_cursor_pos(set_cursor_pos)
+    : m_set_cursor_pos(set_cursor_pos)
 {
 }
 
-void
-MousePanController::start_move(const Vec2f& global_pos, Action action)
+void MousePanController::start_move(const Vec2f& global_pos, Action action)
 {
   if (m_action == Action::None) {
     m_action = action;
@@ -25,7 +23,7 @@ bool MousePanController::end_move()
   return m_was_applied;
 }
 
-Vec2f MousePanController::apply(const Vec2f &delta, ObjectTransformation& t)
+Vec2f MousePanController::apply(const Vec2f& delta, ObjectTransformation& t)
 {
   m_was_applied = true;
   static constexpr double base_scale = 1.003;
@@ -36,7 +34,7 @@ Vec2f MousePanController::apply(const Vec2f &delta, ObjectTransformation& t)
   if (m_action == Action::Pan) {
     t.translate(delta);
   } else if (m_action == Action::Zoom) {
-    t = t.apply(ObjectTransformation().translated((1-scale) * m_global_start_position));
+    t = t.apply(ObjectTransformation().translated((1 - scale) * m_global_start_position));
     t.scale(Vec2f(scale, scale));
   }
   return delta;

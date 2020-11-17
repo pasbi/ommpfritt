@@ -1,21 +1,20 @@
 #pragma once
 
-#include <QWidget>
-#include <QTextEdit>
 #include "common.h"
+#include <QTextEdit>
+#include <QWidget>
 
 namespace omm
 {
-
 class TextEdit : public QTextEdit
 {
 public:
   using QTextEdit::QTextEdit;
   Qt::KeyboardModifiers caption_modifiers = Qt::NoModifier;
+
 protected:
   void keyPressEvent(QKeyEvent* event) override;
 };
-
 
 class CodeEdit : public QWidget
 {

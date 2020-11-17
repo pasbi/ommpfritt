@@ -1,21 +1,20 @@
 #include "managers/curvemanager/curvetree.h"
-#include <QMouseEvent>
-#include "mainwindow/application.h"
-#include "animation/channelproxy.h"
-#include "proxychain.h"
-#include "common.h"
-#include <QSortFilterProxyModel>
-#include <KF5/KItemModels/kextracolumnsproxymodel.h>
 #include "animation/animator.h"
-#include "properties/property.h"
-#include "scene/scene.h"
-#include "scene/mailbox.h"
+#include "animation/channelproxy.h"
+#include "common.h"
+#include "mainwindow/application.h"
 #include "managers/curvemanager/curvemanagerquickaccessdelegate.h"
+#include "properties/property.h"
+#include "proxychain.h"
+#include "scene/mailbox.h"
+#include "scene/scene.h"
+#include <KF5/KItemModels/kextracolumnsproxymodel.h>
 #include <QHeaderView>
+#include <QMouseEvent>
+#include <QSortFilterProxyModel>
 
 namespace
 {
-
 class FilterSelectedProxyModel : public QSortFilterProxyModel
 {
 public:
@@ -49,13 +48,14 @@ private:
   omm::Animator& m_animator;
 };
 
-class AddColumnProxy
-  : public QIdentityProxyModel
+class AddColumnProxy : public QIdentityProxyModel
 {
 public:
-  explicit AddColumnProxy() { }
+  explicit AddColumnProxy()
+  {
+  }
 
-  QModelIndex index(int row, int column, const QModelIndex &parent) const override
+  QModelIndex index(int row, int column, const QModelIndex& parent) const override
   {
     const auto index = QIdentityProxyModel::index(row, 0, parent);
     return createIndex(row, column, index.internalPointer());
@@ -79,27 +79,25 @@ public:
 
 }  // namespace
 
-
 namespace omm
 {
-
 CurveTree::CurveTree(Scene& scene)
-  : m_scene(scene)
-  , m_quick_access_delegate(std::make_unique<CurveManagerQuickAccessDelegate>(scene.animator(),
-                                                                              *this))
+    : m_scene(scene),
+      m_quick_access_delegate(
+          std::make_unique<CurveManagerQuickAccessDelegate>(scene.animator(), *this))
 {
   auto filter_proxy = std::make_unique<FilterSelectedProxyModel>(scene.animator());
   auto add_proxy = std::make_unique<AddColumnProxy>();
   connect(&scene.mail_box(),
           qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          filter_proxy.get(), &QSortFilterProxyModel::invalidate);
+          filter_proxy.get(),
+          &QSortFilterProxyModel::invalidate);
 
   m_add_column_proxy = add_proxy.get();
 
-  set_proxy(std::make_unique<ProxyChain>(ProxyChain::concatenate<std::unique_ptr<QAbstractProxyModel>>(
-    std::move(filter_proxy),
-    std::move(add_proxy)
-  )));
+  set_proxy(std::make_unique<ProxyChain>(
+      ProxyChain::concatenate<std::unique_ptr<QAbstractProxyModel>>(std::move(filter_proxy),
+                                                                    std::move(add_proxy))));
 
   setModel(&scene.animator());
   setItemDelegateForColumn(m_quick_access_delegate_column, m_quick_access_delegate.get());
@@ -110,7 +108,6 @@ CurveTree::CurveTree(Scene& scene)
 
 CurveTree::~CurveTree()
 {
-
 }
 
 CurveTree::Visibility CurveTree::is_visible(AbstractPropertyOwner& apo) const
@@ -120,7 +117,7 @@ CurveTree::Visibility CurveTree::is_visible(AbstractPropertyOwner& apo) const
   Animator& animator = Application::instance().scene.animator();
   for (Property* property : animator.accelerator().properties(apo)) {
     if (n_channels(property->variant_value()) > 0) {
-      switch(is_visible(*property)) {
+      switch (is_visible(*property)) {
       case Visibility::Hidden:
         invisible = true;
         break;
@@ -150,7 +147,7 @@ CurveTree::Visibility CurveTree::is_visible(Property& property) const
   const std::size_t n = n_channels(property.variant_value());
   assert(n > 0);
   for (std::size_t c = 0; c < n; ++c) {
-    switch (is_visible({ &property, c })) {
+    switch (is_visible({&property, c})) {
     case Visibility::Visible:
       visible = true;
       break;
@@ -187,7 +184,7 @@ CurveTree::Visibility CurveTree::is_visible(const std::pair<Property*, std::size
 
 CurveTree::Visibility CurveTree::is_visible(const ChannelProxy& channel) const
 {
-  return is_visible({ &channel.track.property(), channel.channel });
+  return is_visible({&channel.track.property(), channel.channel});
 }
 
 void CurveTree::set_visible(AbstractPropertyOwner& apo, bool visible)
@@ -206,7 +203,7 @@ void CurveTree::set_visible(Property& property, bool visible)
   {
     QSignalBlocker blocker(this);
     for (std::size_t c = 0; c < n_channels(property.variant_value()); ++c) {
-      set_visible({ &property, c }, visible);
+      set_visible({&property, c}, visible);
     }
   }
   notify_second_column_changed(m_scene.animator().index(property));
@@ -214,7 +211,7 @@ void CurveTree::set_visible(Property& property, bool visible)
 
 void CurveTree::set_visible(const ChannelProxy& channel, bool visible)
 {
-  set_visible({ &channel.track.property(), channel.channel }, visible);
+  set_visible({&channel.track.property(), channel.channel}, visible);
 }
 
 void CurveTree::hide_everything()
@@ -267,7 +264,8 @@ void CurveTree::mouseReleaseEvent(QMouseEvent* event)
 void CurveTree::notify_second_column_changed(const QModelIndex& sindex)
 {
   ProxyChain& proxy_chain = static_cast<ProxyChain&>(*ItemProxyView::model());
-  QModelIndex index = proxy_chain.mapFromChainSource(sindex).siblingAtColumn(m_quick_access_delegate_column);
+  QModelIndex index
+      = proxy_chain.mapFromChainSource(sindex).siblingAtColumn(m_quick_access_delegate_column);
   while (index.isValid()) {
     Q_EMIT m_add_column_proxy->dataChanged(index, index);
     index = index.parent().siblingAtColumn(m_quick_access_delegate_column);

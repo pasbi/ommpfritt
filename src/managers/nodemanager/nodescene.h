@@ -1,13 +1,12 @@
 #pragma once
 
 #include <QGraphicsScene>
-#include <memory>
 #include <map>
+#include <memory>
 #include <set>
 
 namespace omm
 {
-
 class Node;
 class NodeItem;
 class PortItem;
@@ -23,7 +22,10 @@ public:
   ~NodeScene();
   NodeItem& node_item(Node& node) const;
   void set_model(omm::NodeModel* model);
-  NodeModel* model() const { return m_model; }
+  NodeModel* model() const
+  {
+    return m_model;
+  }
   std::set<Node*> selected_nodes() const;
   Scene& scene;
 

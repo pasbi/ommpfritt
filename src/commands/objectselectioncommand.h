@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class Object;
 
 class ObjectSelectionCommand : public Command
@@ -21,4 +20,4 @@ private:
   const std::set<Object*> m_old_object_selection;
 };
 
-}  // namespace
+}  // namespace omm

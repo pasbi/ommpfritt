@@ -1,14 +1,13 @@
 #include "managers/timeline/timeline.h"
-#include "scene/scene.h"
 #include "animation/animator.h"
-#include "managers/timeline/timelinetitlebar.h"
-#include "managers/timeline/slider.h"
-#include "ui_timelinetitlebar.h"
 #include "mainwindow/application.h"
+#include "managers/timeline/slider.h"
+#include "managers/timeline/timelinetitlebar.h"
+#include "scene/scene.h"
+#include "ui_timelinetitlebar.h"
 
 namespace
 {
-
 QPixmap flip(const QString& fn)
 {
   return QPixmap::fromImage(QImage(fn).mirrored(true, false));
@@ -18,9 +17,8 @@ QPixmap flip(const QString& fn)
 
 namespace omm
 {
-
-TimeLine::TimeLine(Scene &scene)
-  : Manager(QCoreApplication::translate("any-context", "TimeLine"), scene)
+TimeLine::TimeLine(Scene& scene)
+    : Manager(QCoreApplication::translate("any-context", "TimeLine"), scene)
 {
   auto title_bar = std::make_unique<TimeLineTitleBar>(*this);
   m_title_bar = title_bar.get();
@@ -48,12 +46,18 @@ TimeLine::TimeLine(Scene &scene)
     m_title_bar->ui()->sp_max->setValue(std::max(start, m_title_bar->ui()->sp_max->value()));
   });
   connect(m_slider, &Slider::value_changed, &scene.animator(), &Animator::set_current);
-  connect(m_title_bar->ui()->sp_max, qOverload<int>(&QSpinBox::valueChanged),
-          &scene.animator(), &Animator::set_end);
-  connect(m_title_bar->ui()->sp_min, qOverload<int>(&QSpinBox::valueChanged),
-          &scene.animator(), &Animator::set_start);
-  connect(m_title_bar->ui()->sp_value, qOverload<int>(&QSpinBox::valueChanged),
-          &scene.animator(), &Animator::set_current);
+  connect(m_title_bar->ui()->sp_max,
+          qOverload<int>(&QSpinBox::valueChanged),
+          &scene.animator(),
+          &Animator::set_end);
+  connect(m_title_bar->ui()->sp_min,
+          qOverload<int>(&QSpinBox::valueChanged),
+          &scene.animator(),
+          &Animator::set_start);
+  connect(m_title_bar->ui()->sp_value,
+          qOverload<int>(&QSpinBox::valueChanged),
+          &scene.animator(),
+          &Animator::set_current);
 
   connect(&scene.animator(), &Animator::end_changed, this, [this](int start) {
     m_title_bar->ui()->sp_max->setValue(start);
@@ -91,31 +95,29 @@ TimeLine::TimeLine(Scene &scene)
   connect(m_title_bar->ui()->pb_step_right, &QPushButton::clicked, &scene.animator(), [&scene]() {
     scene.animator().advance(Animator::PlayDirection::Forward);
   });
-  connect(m_title_bar->ui()->cb_mode, qOverload<int>(&QComboBox::currentIndexChanged),
-          &scene.animator(), [&scene](int mode)
-  {
-    scene.animator().set_play_mode(static_cast<Animator::PlayMode>(mode));
-  });
-  connect(&scene.animator(), &Animator::play_direction_changed,
-          this, [this](Animator::PlayDirection d)
-  {
-    update_play_pause_button(d);
-  });
+  connect(m_title_bar->ui()->cb_mode,
+          qOverload<int>(&QComboBox::currentIndexChanged),
+          &scene.animator(),
+          [&scene](int mode) {
+            scene.animator().set_play_mode(static_cast<Animator::PlayMode>(mode));
+          });
+  connect(&scene.animator(),
+          &Animator::play_direction_changed,
+          this,
+          [this](Animator::PlayDirection d) { update_play_pause_button(d); });
   update_play_pause_button(scene.animator().play_direction());
   connect(&scene.animator(), &Animator::play_mode_changed, this, [this](Animator::PlayMode mode) {
     m_title_bar->ui()->cb_mode->setCurrentIndex(static_cast<int>(mode));
   });
   m_title_bar->ui()->cb_mode->setCurrentIndex(static_cast<int>(scene.animator().play_mode()));
-
 }
 
 void TimeLine::update_play_pause_button(Animator::PlayDirection direction)
 {
   const bool forward = direction == Animator::PlayDirection::Forward;
   const bool backward = direction == Animator::PlayDirection::Backward;
-  static const auto icon_fn = [](bool paused) {
-    return QString(":/icons/%1_128.png").arg(paused ? "play" : "pause");
-  };
+  static const auto icon_fn
+      = [](bool paused) { return QString(":/icons/%1_128.png").arg(paused ? "play" : "pause"); };
   m_title_bar->ui()->pb_play_left->setChecked(backward);
   m_title_bar->ui()->pb_play_right->setChecked(forward);
   m_title_bar->ui()->pb_play_left->setIcon(QIcon(flip(icon_fn(!backward))));

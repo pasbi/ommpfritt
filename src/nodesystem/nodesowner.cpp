@@ -1,20 +1,18 @@
 #include "nodesystem/nodesowner.h"
+#include "mainwindow/application.h"
+#include "managers/nodemanager/nodemanager.h"
 #include "nodesystem/nodemodel.h"
 #include "properties/triggerproperty.h"
-#include "managers/nodemanager/nodemanager.h"
-#include "mainwindow/application.h"
 
 namespace omm
 {
-
 NodesOwner::NodesOwner(AbstractNodeCompiler::Language language, Scene& scene)
-  : m_node_model(NodeModel::make(language, scene))
+    : m_node_model(NodeModel::make(language, scene))
 {
 }
 
 NodesOwner::NodesOwner(const NodesOwner& other)
-  : m_node_model(other.node_model() ? std::make_unique<NodeModel>(*other.node_model())
-                                    : nullptr)
+    : m_node_model(other.node_model() ? std::make_unique<NodeModel>(*other.node_model()) : nullptr)
 {
 }
 
@@ -40,4 +38,3 @@ NodeModel* NodesOwner::node_model() const
 }
 
 }  // namespace omm
-

@@ -3,7 +3,6 @@
 
 namespace omm
 {
-
 void PathWrapper::define_python_interface(py::object& module)
 {
   ObjectWrapper::register_wrapper<PathWrapper>();

@@ -2,8 +2,7 @@
 
 namespace omm
 {
-
-const Property::PropertyDetail TriggerProperty::detail { nullptr };
+const Property::PropertyDetail TriggerProperty::detail{nullptr};
 
 void TriggerProperty::trigger()
 {

@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class StyleWrapper : public AbstractPropertyOwnerWrapper<Style>
 {
 public:

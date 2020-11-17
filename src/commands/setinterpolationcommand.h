@@ -6,19 +6,25 @@
 
 namespace omm
 {
-
 class Property;
 
 class SetInterpolationCommand : public Command
 {
 public:
-  SetInterpolationCommand(const std::set<Property*>& properties, Track::Interpolation interpolation);
-  void undo() { swap(); }
-  void redo() { swap(); }
+  SetInterpolationCommand(const std::set<Property*>& properties,
+                          Track::Interpolation interpolation);
+  void undo()
+  {
+    swap();
+  }
+  void redo()
+  {
+    swap();
+  }
 
 private:
   void swap();
   std::map<Track*, Track::Interpolation> m_others;
 };
 
-}  // namespace
+}  // namespace omm

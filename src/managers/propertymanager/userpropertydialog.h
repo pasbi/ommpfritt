@@ -1,23 +1,26 @@
 #pragma once
 
-#include <QDialog>
 #include "commands/userpropertyconfigcommand.h"
-#include <memory>
-#include "ui_userpropertydialog.h"
 #include "managers/propertymanager/userpropertylistmodel.h"
+#include "ui_userpropertydialog.h"
+#include <QDialog>
+#include <memory>
 
-namespace Ui { class UserPropertyDialog; }
+namespace Ui
+{
+class UserPropertyDialog;
+}
 
 namespace omm
 {
-
 class AbstractPropertyConfigWidget;
 
-class UserPropertyDialog: public QDialog
+class UserPropertyDialog : public QDialog
 {
   Q_OBJECT
 public:
-  explicit UserPropertyDialog(AbstractPropertyOwner& owner, const std::set<QString>& disabled_types,
+  explicit UserPropertyDialog(AbstractPropertyOwner& owner,
+                              const std::set<QString>& disabled_types,
                               QWidget* parent = nullptr);
 public Q_SLOTS:
   void submit();
@@ -29,9 +32,7 @@ private:
   UserPropertyListModel m_user_property_list_model;
   UserPropertyListItem* m_current_item = nullptr;
   AbstractPropertyConfigWidget* m_current_config_widget = nullptr;
-  void update_property_config_page(UserPropertyListItem *item);
-
+  void update_property_config_page(UserPropertyListItem* item);
 };
-
 
 }  // namespace omm

@@ -1,25 +1,24 @@
 #include "widgets/colorwidget/colorslider.h"
 
+#include "preferences/uicolors.h"
 #include <QMouseEvent>
 #include <QPainter>
-#include "preferences/uicolors.h"
 #include <QPainterPath>
 
 namespace omm
 {
-
 void ColorSlider::set_color(const Color& color)
 {
   AbstractColorComponentWidget::set_color(color);
   update();
 }
 
-void ColorSlider::paintEvent(QPaintEvent *e)
+void ColorSlider::paintEvent(QPaintEvent* e)
 {
   Q_UNUSED(e)
 
-  static constexpr auto hue_steps = { 0.0, 1/6.0, 2/6.0, 3/6.0, 4/6.0, 5/6.0, 1.0 };
-  static constexpr auto simple_steps = { 0.0, 1.0 };
+  static constexpr auto hue_steps = {0.0, 1 / 6.0, 2 / 6.0, 3 / 6.0, 4 / 6.0, 5 / 6.0, 1.0};
+  static constexpr auto simple_steps = {0.0, 1.0};
   const auto steps = role() == Color::Role::Hue ? hue_steps : simple_steps;
 
   QLinearGradient gradient;

@@ -6,7 +6,6 @@ class QListView;
 
 namespace omm
 {
-
 class HistoryModel;
 
 class HistoryManager : public Manager
@@ -17,7 +16,7 @@ public:
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "HistoryManager");
   QString type() const override;
-  bool perform_action(const QString &name) override;
+  bool perform_action(const QString& name) override;
 
 private:
   QListView* m_view;

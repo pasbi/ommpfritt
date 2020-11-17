@@ -7,8 +7,9 @@
 
 namespace omm
 {
-
-class ColorEdit : public QWidget, public MultiValueEdit<Color>
+class ColorEdit
+    : public QWidget
+    , public MultiValueEdit<Color>
 {
   Q_OBJECT
 public:

@@ -1,13 +1,12 @@
 #pragma once
 
-#include <QPointF>
 #include "commands/command.h"
-#include <set>
+#include <QPointF>
 #include <memory>
+#include <set>
 
 namespace omm
 {
-
 class NodeModel;
 class Node;
 class InputPort;
@@ -36,23 +35,37 @@ class ConnectPortsCommand : public ConnectionCommand
 {
 public:
   ConnectPortsCommand(AbstractPort& a, AbstractPort& b);
-  void undo() override { disconnect(); }
-  void redo() override { connect(); }
+  void undo() override
+  {
+    disconnect();
+  }
+  void redo() override
+  {
+    connect();
+  }
 };
 
 class DisconnectPortsCommand : public ConnectionCommand
 {
 public:
   DisconnectPortsCommand(InputPort& port);
-  void undo() override { connect(); }
-  void redo() override { disconnect(); }
+  void undo() override
+  {
+    connect();
+  }
+  void redo() override
+  {
+    disconnect();
+  }
 };
 
 class NodeCommand : public Command
 {
 protected:
-  NodeCommand(const QString& label, NodeModel& model,
-              std::vector<Node*> refs, std::vector<std::unique_ptr<Node>> owns);
+  NodeCommand(const QString& label,
+              NodeModel& model,
+              std::vector<Node*> refs,
+              std::vector<std::unique_ptr<Node>> owns);
   void remove();
   void add();
 
@@ -67,16 +80,28 @@ class RemoveNodesCommand : public NodeCommand
 {
 public:
   RemoveNodesCommand(NodeModel& model, std::vector<Node*> nodes);
-  void undo() override { add(); }
-  void redo() override { remove(); }
+  void undo() override
+  {
+    add();
+  }
+  void redo() override
+  {
+    remove();
+  }
 };
 
 class AddNodesCommand : public NodeCommand
 {
 public:
   AddNodesCommand(NodeModel& model, std::vector<std::unique_ptr<Node>> nodes);
-  void undo() override { remove(); }
-  void redo() override { add(); }
+  void undo() override
+  {
+    remove();
+  }
+  void redo() override
+  {
+    add();
+  }
 };
 
 class MoveNodesCommand : public Command
@@ -85,7 +110,10 @@ public:
   MoveNodesCommand(std::set<Node*> nodes, const QPointF& direction);
   void undo() override;
   void redo() override;
-  int id() const override { return MOVE_NODES_COMMAND_ID; }
+  int id() const override
+  {
+    return MOVE_NODES_COMMAND_ID;
+  }
   bool mergeWith(const QUndoCommand* command) override;
 
 private:

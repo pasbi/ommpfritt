@@ -1,14 +1,13 @@
 #pragma once
 
-#include "propertywidgets/propertywidget.h"
+#include "properties/floatproperty.h"
+#include "properties/integerproperty.h"
 #include "propertywidgets/multivalueedit.h"
 #include "propertywidgets/numericpropertywidget/numericmultivalueedit.h"
-#include "properties/integerproperty.h"
-#include "properties/floatproperty.h"
+#include "propertywidgets/propertywidget.h"
 
 namespace omm
 {
-
 template<typename NumericPropertyT>
 class NumericPropertyWidget : public PropertyWidget<NumericPropertyT>
 {
@@ -19,7 +18,10 @@ public:
 protected:
   void update_edit() override;
   void update_configuration() override;
-  auto spinbox() const { return m_spinbox; }
+  auto spinbox() const
+  {
+    return m_spinbox;
+  }
 
 private:
   NumericMultiValueEdit<value_type>* m_spinbox;

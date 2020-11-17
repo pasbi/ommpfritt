@@ -1,15 +1,14 @@
 #pragma once
 
-#include <Qt>
-#include <QPalette>
-#include "geometry/objecttransformation.h"
 #include "common.h"
+#include "geometry/objecttransformation.h"
+#include <QPalette>
+#include <Qt>
 
 class QMouseEvent;
 
 namespace omm
 {
-
 class Painter;
 class Tool;
 
@@ -42,7 +41,6 @@ protected:
 
 private:
   HandleStatus m_status = HandleStatus::Inactive;
-  bool m_enabled = false;
   Vec2f m_press_pos;
 
 public:

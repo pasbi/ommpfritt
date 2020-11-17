@@ -1,14 +1,13 @@
 #include "propertywidgets/colorpropertywidget/coloredit.h"
 #include "logging.h"
+#include "preferences/uicolors.h"
+#include "widgets/colorwidget/colordialog.h"
 #include <QColorDialog>
 #include <QPaintEvent>
 #include <QPainter>
-#include "widgets/colorwidget/colordialog.h"
-#include "preferences/uicolors.h"
 
 namespace omm
 {
-
 void ColorEdit::paintEvent(QPaintEvent*)
 {
   QPainter painter(this);
@@ -28,8 +27,7 @@ void ColorEdit::paintEvent(QPaintEvent*)
   }
 }
 
-ColorEdit::ColorEdit()
-  : m_contrast_color(compute_contrast_color())
+ColorEdit::ColorEdit() : m_contrast_color(compute_contrast_color())
 {
 }
 
@@ -49,7 +47,10 @@ void ColorEdit::set_inconsistent_value()
   update();
 }
 
-ColorEdit::value_type ColorEdit::value() const { return m_current_color; }
+ColorEdit::value_type ColorEdit::value() const
+{
+  return m_current_color;
+}
 
 void ColorEdit::mouseDoubleClickEvent(QMouseEvent*)
 {

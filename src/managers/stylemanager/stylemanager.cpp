@@ -1,29 +1,31 @@
 #include "managers/stylemanager/stylemanager.h"
 
-#include "commands/removecommand.h"
-#include <QEvent>
-#include "renderers/style.h"
-#include "managers/stylemanager/stylelistview.h"
-#include "scene/scene.h"
 #include "commands/addcommand.h"
+#include "commands/removecommand.h"
 #include "mainwindow/application.h"
-#include <QCoreApplication>
+#include "managers/stylemanager/stylelistview.h"
+#include "renderers/style.h"
 #include "scene/mailbox.h"
+#include "scene/scene.h"
 #include <QContextMenuEvent>
+#include <QCoreApplication>
+#include <QEvent>
 
 namespace omm
 {
-
-
 StyleManager::StyleManager(Scene& scene)
-  : ItemManager( QCoreApplication::translate("any-context", "StyleManager"),
-                 scene, scene.styles())
+    : ItemManager(QCoreApplication::translate("any-context", "StyleManager"), scene, scene.styles())
 {
-  connect(&scene.mail_box(), qOverload<const std::set<Style*>&>(&MailBox::selection_changed),
-          &item_view(), &StyleListView::set_selection);
+  connect(&scene.mail_box(),
+          qOverload<const std::set<Style*>&>(&MailBox::selection_changed),
+          &item_view(),
+          &StyleListView::set_selection);
 }
 
-QString StyleManager::type() const { return TYPE; }
+QString StyleManager::type() const
+{
+  return TYPE;
+}
 
 bool StyleManager::perform_action(const QString& action_name)
 {

@@ -1,42 +1,41 @@
 #include "objects/mirror.h"
 
-#include <QObject>
-#include "objects/empty.h"
-#include "properties/optionproperty.h"
-#include "properties/floatproperty.h"
-#include "properties/boolproperty.h"
 #include "geometry/vec2.h"
+#include "objects/empty.h"
 #include "objects/path.h"
+#include "properties/boolproperty.h"
+#include "properties/floatproperty.h"
+#include "properties/optionproperty.h"
 #include "scene/scene.h"
+#include <QObject>
 
 namespace
 {
-
 using namespace omm;
 
 Geom::Point transform_point(const Geom::Point& point, const omm::ObjectTransformation& t)
 {
   const auto tp = t.apply_to_position(Vec2f{point.x(), point.y()});
-  return Geom::Point{ tp.x, tp.y };
+  return Geom::Point{tp.x, tp.y};
 }
 
 ObjectTransformation get_mirror_t(Mirror::Direction direction)
 {
   switch (direction) {
   case Mirror::Direction::Horizontal:
-    return ObjectTransformation().scaled(Vec2f(-1.0,  1.0));
+    return ObjectTransformation().scaled(Vec2f(-1.0, 1.0));
   case Mirror::Direction::Vertical:
-    return ObjectTransformation().scaled(Vec2f( 1.0, -1.0));
+    return ObjectTransformation().scaled(Vec2f(1.0, -1.0));
   case Mirror::Direction::Both:
-    return ObjectTransformation().scaled(Vec2f( -1.0, -1.0));
+    return ObjectTransformation().scaled(Vec2f(-1.0, -1.0));
   default:
     Q_UNREACHABLE();
     return ObjectTransformation();
   }
 }
 
-std::list<Geom::CubicBezier> transform_path(const ObjectTransformation& t,
-                                            const Geom::Path& path, bool reverse)
+std::list<Geom::CubicBezier>
+transform_path(const ObjectTransformation& t, const Geom::Path& path, bool reverse)
 {
   return ::transform<Geom::CubicBezier, std::list>(path, [t, reverse](const auto& curve) {
     const auto& cubic = dynamic_cast<const Geom::CubicBezier&>(curve);
@@ -54,27 +53,27 @@ std::list<Geom::CubicBezier> transform_path(const ObjectTransformation& t,
 
 namespace omm
 {
-
 Mirror::Mirror(Scene* scene) : Object(scene)
 {
   static const auto category = QObject::tr("Mirror");
   create_property<OptionProperty>(DIRECTION_PROPERTY_KEY)
-    .set_options({ QObject::tr("Horizontal"),
-                   QObject::tr("Vertical"),
-                   QObject::tr("Both") })
-    .set_label(QObject::tr("Direction")).set_category(category);
+      .set_options({QObject::tr("Horizontal"), QObject::tr("Vertical"), QObject::tr("Both")})
+      .set_label(QObject::tr("Direction"))
+      .set_category(category);
   auto& mode_property = create_property<OptionProperty>(AS_PATH_PROPERTY_KEY);
-  mode_property.set_options({ QObject::tr("Object"),
-                              QObject::tr("Path") })
-    .set_label(QObject::tr("Mode")).set_category(category);
+  mode_property.set_options({QObject::tr("Object"), QObject::tr("Path")})
+      .set_label(QObject::tr("Mode"))
+      .set_category(category);
   create_property<FloatProperty>(TOLERANCE_PROPERTY_KEY)
-      .set_range(0.0, std::numeric_limits<double>::max()).set_step(0.1)
-      .set_label(QObject::tr("Snap tolerance")).set_category(category);
+      .set_range(0.0, std::numeric_limits<double>::max())
+      .set_step(0.1)
+      .set_label(QObject::tr("Snap tolerance"))
+      .set_category(category);
   polish();
 }
 
-Mirror::Mirror(const Mirror &other)
-  : Object(other), m_reflection(other.m_reflection ? other.m_reflection->clone() : nullptr)
+Mirror::Mirror(const Mirror& other)
+    : Object(other), m_reflection(other.m_reflection ? other.m_reflection->clone() : nullptr)
 {
   polish();
 }
@@ -85,7 +84,7 @@ void Mirror::polish()
   update();
 }
 
-void Mirror::draw_object(Painter &renderer, const Style& style, Painter::Options options) const
+void Mirror::draw_object(Painter& renderer, const Style& style, Painter::Options options) const
 {
   assert(&renderer.scene == scene());
   if (is_active()) {
@@ -98,7 +97,7 @@ void Mirror::draw_object(Painter &renderer, const Style& style, Painter::Options
   }
 }
 
-BoundingBox Mirror::bounding_box(const ObjectTransformation &transformation) const
+BoundingBox Mirror::bounding_box(const ObjectTransformation& transformation) const
 {
   if (is_active() && m_reflection) {
     const ObjectTransformation t = transformation.apply(m_reflection->transformation());
@@ -115,7 +114,10 @@ BoundingBox Mirror::bounding_box(const ObjectTransformation &transformation) con
   }
 }
 
-QString Mirror::type() const { return TYPE; }
+QString Mirror::type() const
+{
+  return TYPE;
+}
 
 Object::ConvertedObject Mirror::convert() const
 {
@@ -178,47 +180,50 @@ void Mirror::perform_update_path_mode()
     const auto t = child.transformation();
     bool wants_to_be_closed = true;
 
-    const auto reflect = [child_is_closed, &wants_to_be_closed, eps, t]
-                         (const Geom::PathVector& pv, Mirror::Direction direction)
-    {
-      const auto mt = get_mirror_t(direction).apply(t);
-      const auto are_close = [eps](const Geom::Point& a, const Geom::Point& b) {
-        return (a - b).length() < eps;
-      };
-      std::vector<Geom::Path> paths;
-      paths.reserve(pv.size());
-      for (auto&& path : pv) {
-        if (!path.empty()) {
-          const std::list<Geom::CubicBezier> reflected_path = transform_path(mt, path, true);
-          std::list<Geom::CubicBezier> original_path = transform_path(t, path, false);
+    const auto reflect
+        = [child_is_closed, &wants_to_be_closed, eps, t](const Geom::PathVector& pv,
+                                                         Mirror::Direction direction) {
+            const auto mt = get_mirror_t(direction).apply(t);
+            const auto are_close = [eps](const Geom::Point& a, const Geom::Point& b) {
+              return (a - b).length() < eps;
+            };
+            std::vector<Geom::Path> paths;
+            paths.reserve(pv.size());
+            for (auto&& path : pv) {
+              if (!path.empty()) {
+                const std::list<Geom::CubicBezier> reflected_path = transform_path(mt, path, true);
+                std::list<Geom::CubicBezier> original_path = transform_path(t, path, false);
 
-          const bool close_ends = are_close(transform_point(path.finalPoint(), t),
-                                            transform_point(path.finalPoint(), mt));
-          const bool close_mids = are_close(transform_point(path.initialPoint(), t),
-                                            transform_point(path.initialPoint(), mt));
-          if (!child_is_closed && (!close_ends || !close_mids)) {
-            wants_to_be_closed = false;
-          }
+                const bool close_ends = are_close(transform_point(path.finalPoint(), t),
+                                                  transform_point(path.finalPoint(), mt));
+                const bool close_mids = are_close(transform_point(path.initialPoint(), t),
+                                                  transform_point(path.initialPoint(), mt));
+                if (!child_is_closed && (!close_ends || !close_mids)) {
+                  wants_to_be_closed = false;
+                }
 
-          if (close_mids && !child_is_closed) {
-            original_path.insert(original_path.begin(), reflected_path.rbegin(), reflected_path.rend());
-            paths.emplace_back(original_path.begin(), original_path.end());
-          } else if (close_ends && !child_is_closed) {
-            original_path.insert(original_path.end(), reflected_path.rbegin(), reflected_path.rend());
-            paths.emplace_back(original_path.begin(), original_path.end());
-          } else {
-            paths.emplace_back(original_path.begin(), original_path.end());
-            paths.emplace_back(reflected_path.rbegin(), reflected_path.rend());
-          }
-        }
-      }
-      return Geom::PathVector(paths.begin(), paths.end());
-    };
+                if (close_mids && !child_is_closed) {
+                  original_path.insert(original_path.begin(),
+                                       reflected_path.rbegin(),
+                                       reflected_path.rend());
+                  paths.emplace_back(original_path.begin(), original_path.end());
+                } else if (close_ends && !child_is_closed) {
+                  original_path.insert(original_path.end(),
+                                       reflected_path.rbegin(),
+                                       reflected_path.rend());
+                  paths.emplace_back(original_path.begin(), original_path.end());
+                } else {
+                  paths.emplace_back(original_path.begin(), original_path.end());
+                  paths.emplace_back(reflected_path.rbegin(), reflected_path.rend());
+                }
+              }
+            }
+            return Geom::PathVector(paths.begin(), paths.end());
+          };
 
     auto reflection = std::make_unique<Path>(scene());
     if (const auto direction = property(DIRECTION_PROPERTY_KEY)->value<Mirror::Direction>();
-        direction == Direction::Both)
-    {
+        direction == Direction::Both) {
       const auto r = reflect(pv, Direction::Horizontal);
       wants_to_be_closed = !wants_to_be_closed;
       reflection->set(reflect(r, Direction::Vertical));
@@ -227,9 +232,10 @@ void Mirror::perform_update_path_mode()
     }
 
     reflection->property(Path::IS_CLOSED_PROPERTY_KEY)->set(wants_to_be_closed);
-    const auto interpolation =  child.has_property(Path::INTERPOLATION_PROPERTY_KEY)
-        ? child.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>()
-        : InterpolationMode::Bezier;
+    const auto interpolation
+        = child.has_property(Path::INTERPOLATION_PROPERTY_KEY)
+              ? child.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>()
+              : InterpolationMode::Bezier;
     reflection->property(Path::INTERPOLATION_PROPERTY_KEY)->set(interpolation);
     m_reflection.reset(reflection.release());
   }
@@ -262,7 +268,7 @@ void Mirror::update()
   Object::update();
 }
 
-void Mirror::on_property_value_changed(Property *property)
+void Mirror::on_property_value_changed(Property* property)
 {
   if (pmatch(property, {DIRECTION_PROPERTY_KEY, TOLERANCE_PROPERTY_KEY})) {
     update();
@@ -274,13 +280,13 @@ void Mirror::on_property_value_changed(Property *property)
   }
 }
 
-void Mirror::on_child_added(Object &child)
+void Mirror::on_child_added(Object& child)
 {
   Object::on_child_added(child);
   update();
 }
 
-void Mirror::on_child_removed(Object &child)
+void Mirror::on_child_removed(Object& child)
 {
   Object::on_child_removed(child);
   update();

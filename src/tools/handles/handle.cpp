@@ -2,15 +2,16 @@
 #include "logging.h"
 #include "preferences/uicolors.h"
 #include "renderers/painter.h"
-#include <QMouseEvent>
-#include "tools/tool.h"
-#include "scene/scene.h"
 #include "scene/mailbox.h"
+#include "scene/scene.h"
+#include "tools/tool.h"
+#include <QMouseEvent>
 
 namespace omm
 {
-
-Handle::Handle(Tool& tool) : tool(tool) {}
+Handle::Handle(Tool& tool) : tool(tool)
+{
+}
 
 bool Handle::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
@@ -48,12 +49,27 @@ void Handle::mouse_release(const Vec2f& pos, const QMouseEvent&)
   m_status = HandleStatus::Inactive;
 }
 
-HandleStatus Handle::status() const { return m_status; }
-void Handle::deactivate() { m_status = HandleStatus::Inactive; }
+HandleStatus Handle::status() const
+{
+  return m_status;
+}
+void Handle::deactivate()
+{
+  m_status = HandleStatus::Inactive;
+}
 
-double Handle::draw_epsilon() const { return 4.0; }
-double Handle::interact_epsilon() const { return 4.0; }
-Vec2f Handle::press_pos() const { return m_press_pos; }
+double Handle::draw_epsilon() const
+{
+  return 4.0;
+}
+double Handle::interact_epsilon() const
+{
+  return 4.0;
+}
+Vec2f Handle::press_pos() const
+{
+  return m_press_pos;
+}
 
 double Handle::discretize(double s, double step) const
 {
@@ -72,7 +88,7 @@ Vec2f Handle::discretize(const Vec2f& vec, bool local, double step) const
     if (!local) {
       dvec = tool.viewport_transformation.inverted().apply_to_direction(vec);
     }
-    for (auto i : { 0u, 1u }) {
+    for (auto i : {0u, 1u}) {
       dvec[i] = discretize(dvec[i], step);
     }
     if (!local) {
@@ -94,15 +110,14 @@ QColor Handle::ui_color(const QString& name) const
   return ui_color(status(), name);
 }
 
-const std::map<AxisHandleDirection, Vec2f> Handle::axis_directions {
-  { AxisHandleDirection::X, Vec2f{100, 0} },
-  { AxisHandleDirection::Y, Vec2f{0, 100} },
+const std::map<AxisHandleDirection, Vec2f> Handle::axis_directions{
+    {AxisHandleDirection::X, Vec2f{100, 0}},
+    {AxisHandleDirection::Y, Vec2f{0, 100}},
 };
 
-const std::map<AxisHandleDirection, QString> Handle::axis_names {
-  { AxisHandleDirection::X, "x-axis" },
-  { AxisHandleDirection::Y, "y-axis" },
+const std::map<AxisHandleDirection, QString> Handle::axis_names{
+    {AxisHandleDirection::X, "x-axis"},
+    {AxisHandleDirection::Y, "y-axis"},
 };
-
 
 }  // namespace omm

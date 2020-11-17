@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 class SplineWrapper : public PyWrapper<SplineType>
 {
 public:

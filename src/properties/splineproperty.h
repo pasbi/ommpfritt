@@ -6,7 +6,6 @@
 
 namespace omm
 {
-
 class SplineProperty : public TypedProperty<SplineType>
 {
 public:

@@ -1,13 +1,12 @@
 #include "scene/list.h"
-#include <algorithm>
-#include "scene/contextes.h"
-#include "renderers/style.h"
-#include "tags/tag.h"
 #include "aspects/propertyowner.h"
+#include "renderers/style.h"
+#include "scene/contextes.h"
+#include "tags/tag.h"
+#include <algorithm>
 
 namespace
 {
-
 template<typename T>
 std::vector<std::unique_ptr<T>> copy_items(const std::vector<std::unique_ptr<T>>& items)
 {
@@ -18,10 +17,8 @@ std::vector<std::unique_ptr<T>> copy_items(const std::vector<std::unique_ptr<T>>
 
 namespace omm
 {
-
-template<typename T> List<T>::List(const List<T>& other)
-  : Structure<T>()
-  , m_items(copy_items(other.m_items))
+template<typename T>
+List<T>::List(const List<T>& other) : Structure<T>(), m_items(copy_items(other.m_items))
 {
 }
 
@@ -72,7 +69,7 @@ template<typename T> size_t List<T>::position(const T& item) const
   return static_cast<std::size_t>(i);
 }
 
-template<typename T> size_t List<T>::insert_position(const T *predecessor) const
+template<typename T> size_t List<T>::insert_position(const T* predecessor) const
 {
   if (predecessor == nullptr) {
     return 0;
@@ -119,11 +116,11 @@ template<typename T> size_t List<T>::size() const
   return m_items.size();
 }
 
-template<typename T> bool List<T>::contains(const T &item) const
+template<typename T> bool List<T>::contains(const T& item) const
 {
   return m_items.end() != std::find_if(m_items.begin(), m_items.end(), [&item](const auto& i) {
-    return i.get() == &item;
-  });
+           return i.get() == &item;
+         });
 }
 
 template class List<Style>;

@@ -1,13 +1,12 @@
 #pragma once
 
-#include <QTransform>
 #include <QPoint>
+#include <QTransform>
 
 class QMouseEvent;
 
 namespace omm
 {
-
 class NodeView;
 
 class PanZoomController
@@ -19,8 +18,14 @@ public:
   bool move(const QMouseEvent& event);
   void release();
 
-  QTransform transform() const { return m_transform; }
-  QPointF last_mouse_pos() const { return m_last_pos; }
+  QTransform transform() const
+  {
+    return m_transform;
+  }
+  QPointF last_mouse_pos() const
+  {
+    return m_last_pos;
+  }
   double current_scale() const;
 
 private:

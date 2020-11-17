@@ -1,23 +1,20 @@
 #pragma once
 
 #include "aspects/serializable.h"
+#include "geometry/polarcoordinates.h"
 #include "geometry/vec2.h"
 #include <Qt>
-#include "geometry/polarcoordinates.h"
 
 namespace omm
 {
-
 class Point : public Serializable
 {
 public:
-  explicit Point( const Vec2f& position,
-                  const PolarCoordinates& left_tangent,
-                  const PolarCoordinates& right_tangent );
-  explicit Point( const Vec2f& position,
-                  const double rotation,
-                  const double tangent_length = 1.0 );
-  explicit Point( const Vec2f& position );
+  explicit Point(const Vec2f& position,
+                 const PolarCoordinates& left_tangent,
+                 const PolarCoordinates& right_tangent);
+  explicit Point(const Vec2f& position, const double rotation, const double tangent_length = 1.0);
+  explicit Point(const Vec2f& position);
   Point();
   Vec2f position;
   Vec2f left_position() const;
@@ -58,7 +55,7 @@ public:
   bool operator!=(const Point& point) const;
   bool operator<(const Point& point) const;
 
-  Point offset(double t, const Point *left_neighbor, const Point *right_neighbor) const;
+  Point offset(double t, const Point* left_neighbor, const Point* right_neighbor) const;
 
   /**
    * @brief When a tangent is at `old_pos` and it is mirror-coupled with its sibling which moves
@@ -69,17 +66,16 @@ public:
    * @param new_other_pos new position of the other tangent (relative to its Point)
    * @return [description]
    */
-  static PolarCoordinates mirror_tangent( const PolarCoordinates& old_pos,
-                                          const PolarCoordinates& old_other_pos,
-                                          const PolarCoordinates& new_other_pos );
+  static PolarCoordinates mirror_tangent(const PolarCoordinates& old_pos,
+                                         const PolarCoordinates& old_other_pos,
+                                         const PolarCoordinates& new_other_pos);
 
 private:
   double get_direction(const Point* left_neighbor, const Point* right_neighbor) const;
 
 public:
-  static std::vector<Point> offset(const double t,
-                                   const std::vector<Point>& points, const bool is_closed);
-
+  static std::vector<Point>
+  offset(const double t, const std::vector<Point>& points, const bool is_closed);
 };
 
 constexpr PolarCoordinates to_polar(Vec2f cartesian);

@@ -1,34 +1,30 @@
 #include "tools/selectpointstool.h"
-#include "scene/scene.h"
-#include "scene/mailbox.h"
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
 #include "objects/path.h"
 #include "properties/optionproperty.h"
-#include "tools/handles/boundingboxhandle.h"
 #include "scene/mailbox.h"
+#include "scene/scene.h"
+#include "tools/handles/boundingboxhandle.h"
 
 namespace omm
 {
-
 SelectPointsBaseTool::SelectPointsBaseTool(Scene& scene)
-  : AbstractSelectTool(scene)
-  , m_transform_points_helper(scene, Space::Viewport)
+    : AbstractSelectTool(scene), m_transform_points_helper(scene, Space::Viewport)
 {
   const auto category = QObject::tr("tool");
   create_property<OptionProperty>(TANGENT_MODE_PROPERTY_KEY, 0)
-    .set_options({ QObject::tr("Mirror"), QObject::tr("Individual") })
-    .set_label(QObject::tr("tangent"))
-    .set_category(category)
-    .set_animatable(false);
+      .set_options({QObject::tr("Mirror"), QObject::tr("Individual")})
+      .set_label(QObject::tr("tangent"))
+      .set_category(category)
+      .set_animatable(false);
 
   create_property<OptionProperty>(BOUNDING_BOX_MODE_PROPERTY_KEY, 1)
-    .set_options( { QObject::tr("Include Tangents"),
-                    QObject::tr("Exclude Tangents"),
-                    QObject::tr("None") })
-    .set_label(QObject::tr("Bounding Box"))
-    .set_category(category)
-    .set_animatable(false);
+      .set_options(
+          {QObject::tr("Include Tangents"), QObject::tr("Exclude Tangents"), QObject::tr("None")})
+      .set_label(QObject::tr("Bounding Box"))
+      .set_category(category)
+      .set_animatable(false);
 }
 
 PointSelectHandle::TangentMode SelectPointsBaseTool::tangent_mode() const
@@ -47,7 +43,9 @@ std::unique_ptr<QMenu> SelectPointsBaseTool::make_context_menu(QWidget* parent)
     // TODO replace top-level-menu with custom key (i.e. 'path' in this case).
     // then, all entries will be in the same menu.
   }
-  if (menus.size() == 0) { return nullptr; }
+  if (menus.size() == 0) {
+    return nullptr;
+  }
   return std::move(menus.front());
 }
 
@@ -95,8 +93,8 @@ BoundingBox SelectPointsBaseTool::bounding_box() const
   case BoundingBoxMode::IncludeTangents:
     return BoundingBox(::transform<Point>(scene()->point_selection.points(Space::Viewport)));
   case BoundingBoxMode::ExcludeTangents:
-    return BoundingBox(::transform<Point>(scene()->point_selection.points(Space::Viewport),
-                                                       remove_tangents));
+    return BoundingBox(
+        ::transform<Point>(scene()->point_selection.points(Space::Viewport), remove_tangents));
   case BoundingBoxMode::None:
     [[fallthrough]];
   default:
@@ -104,7 +102,7 @@ BoundingBox SelectPointsBaseTool::bounding_box() const
   }
 }
 
-void SelectPointsBaseTool::on_property_value_changed(Property *property)
+void SelectPointsBaseTool::on_property_value_changed(Property* property)
 {
   if (property == this->property(BOUNDING_BOX_MODE_PROPERTY_KEY)) {
     Q_EMIT scene()->mail_box().appearance_changed(*this);
@@ -117,7 +115,10 @@ Vec2f SelectPointsBaseTool::selection_center() const
   return scene()->point_selection.center(Space::Viewport);
 }
 
-QString SelectPointsTool::type() const { return TYPE; }
+QString SelectPointsTool::type() const
+{
+  return TYPE;
+}
 
 void SelectPointsTool::reset()
 {
@@ -127,25 +128,30 @@ void SelectPointsTool::reset()
 }
 
 TransformPointsHelper::TransformPointsHelper(Scene& scene, Space space)
-  : m_scene(scene)
-  , m_space(space)
+    : m_scene(scene), m_space(space)
 {
   update();
-  connect(&m_scene.mail_box(), &MailBox::point_selection_changed,
-          this, qOverload<>(&TransformPointsHelper::update));
+  connect(&m_scene.mail_box(),
+          &MailBox::point_selection_changed,
+          this,
+          qOverload<>(&TransformPointsHelper::update));
 }
 
 std::unique_ptr<PointsTransformationCommand>
-TransformPointsHelper::make_command(const ObjectTransformation &t) const
+TransformPointsHelper::make_command(const ObjectTransformation& t) const
 {
   class TransformationCache : public Cache<Path*, ObjectTransformation>
   {
   public:
-    TransformationCache(const Matrix& mat, Space space) : m_mat(mat), m_space(space) {}
-    ObjectTransformation retrieve(Path* const& path) const {
+    TransformationCache(const Matrix& mat, Space space) : m_mat(mat), m_space(space)
+    {
+    }
+    ObjectTransformation retrieve(Path* const& path) const
+    {
       const Matrix gt = path->global_transformation(m_space).to_mat();
       return ObjectTransformation(gt.inverted() * m_mat * gt);
     }
+
   private:
     const Matrix m_mat;
     const Space m_space;

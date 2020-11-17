@@ -5,10 +5,9 @@
 
 namespace omm
 {
-
-template<typename T> TreeElement<T>::TreeElement(const TreeElement& other)
-  : m_parent(nullptr)
-  , m_children(::copy(other.m_children))
+template<typename T>
+TreeElement<T>::TreeElement(const TreeElement& other)
+    : m_parent(nullptr), m_children(::copy(other.m_children))
 {
   static_assert(std::is_base_of_v<TreeElement<T>, T>, "T must derive ElementType<T>");
   for (auto&& child : m_children) {
@@ -40,7 +39,7 @@ template<typename T> std::unique_ptr<T> TreeElement<T>::repudiate(T& object)
 
 template<typename T> void TreeElement<T>::reset_parent(T& new_parent)
 {
-  assert(!is_root()); // use Object::adopt for roots.
+  assert(!is_root());  // use Object::adopt for roots.
   new_parent.adopt(m_parent->repudiate(get()));
 }
 
@@ -49,9 +48,18 @@ template<typename T> std::vector<T*> TreeElement<T>::tree_children() const
   return ::transform<T*>(m_children, [](const auto& up) { return up.get(); });
 }
 
-template<typename T> size_t TreeElement<T>::n_children() const { return m_children.size(); }
-template<typename T> T& TreeElement<T>::tree_child(size_t i) const { return *m_children[i]; }
-template<typename T> bool TreeElement<T>::is_root() const { return m_parent == nullptr; }
+template<typename T> size_t TreeElement<T>::n_children() const
+{
+  return m_children.size();
+}
+template<typename T> T& TreeElement<T>::tree_child(size_t i) const
+{
+  return *m_children[i];
+}
+template<typename T> bool TreeElement<T>::is_root() const
+{
+  return m_parent == nullptr;
+}
 
 template<typename T> T& TreeElement<T>::tree_parent() const
 {
@@ -83,14 +91,14 @@ template<typename T> std::set<T*> TreeElement<T>::all_descendants() const
 
 template<typename T> size_t TreeElement<T>::position() const
 {
-  assert (!is_root());
+  assert(!is_root());
   const auto siblings = tree_parent().tree_children();
   const auto it = std::find(siblings.begin(), siblings.end(), this);
   assert(it != siblings.end());
   return std::distance(siblings.begin(), it);
 }
 
-template<typename T> void TreeElement<T>::remove_internal_children(std::set<T*> &items)
+template<typename T> void TreeElement<T>::remove_internal_children(std::set<T*>& items)
 {
   auto i = items.begin();
   while (i != items.end()) {
@@ -105,8 +113,7 @@ template<typename T> void TreeElement<T>::remove_internal_children(std::set<T*> 
   }
 }
 
-template<typename T>
-T* TreeElement<T>::lowest_common_ancestor(T *a, T *b)
+template<typename T> T* TreeElement<T>::lowest_common_ancestor(T* a, T* b)
 {
   // This is a rather inefficient implementation (O(n^2) where n is depth of the tree)
   // at O(1) with O(n) preparation is possible but apparently hard to implement.
@@ -123,13 +130,12 @@ T* TreeElement<T>::lowest_common_ancestor(T *a, T *b)
   return nullptr;
 }
 
-template<typename T>
-const T* TreeElement<T>::lowest_common_ancestor(const T *a, const T *b)
+template<typename T> const T* TreeElement<T>::lowest_common_ancestor(const T* a, const T* b)
 {
   return const_cast<const T*>(lowest_common_ancestor(const_cast<T*>(a), const_cast<T*>(b)));
 }
 
-template<typename T> std::vector<T*> TreeElement<T>::sort(const std::set<T*> &items)
+template<typename T> std::vector<T*> TreeElement<T>::sort(const std::set<T*>& items)
 {
   std::vector vs(items.begin(), items.end());
   std::sort(vs.begin(), vs.end(), tree_gt<T>);

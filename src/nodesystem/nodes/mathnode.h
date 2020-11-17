@@ -4,14 +4,16 @@
 
 namespace omm
 {
-
 class MathNode : public Node
 {
   Q_OBJECT
 public:
   explicit MathNode(NodeModel& model);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "MathNode");
-  QString type() const override { return TYPE; }
+  QString type() const override
+  {
+    return TYPE;
+  }
 
   static constexpr auto OPERATION_PROPERTY_KEY = "op";
   static constexpr auto A_VALUE_KEY = "a";
@@ -26,7 +28,6 @@ public:
 private:
   InputPort* m_operation_input;
   OutputPort* m_output;
-
 };
 
 }  // namespace omm

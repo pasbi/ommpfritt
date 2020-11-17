@@ -3,12 +3,10 @@
 
 namespace
 {
-
 auto make_old_contextes(std::vector<omm::Tag*> tags)
 {
-  return ::transform<omm::MoveTagContext>(tags, [](omm::Tag* tag) {
-    return omm::MoveTagContext(*tag);
-  });
+  return ::transform<omm::MoveTagContext>(tags,
+                                          [](omm::Tag* tag) { return omm::MoveTagContext(*tag); });
 }
 
 auto make_new_contextes(std::vector<omm::Tag*> tags, omm::Object& owner, omm::Tag* predecessor)
@@ -33,19 +31,24 @@ void move(const omm::MoveTagContext& old_context, const omm::MoveTagContext& new
 template<typename Contextes> void move(const Contextes& old_ctxs, const Contextes& new_ctxs)
 {
   assert(old_ctxs.size() == new_ctxs.size());
-  for (std::size_t i = 0; i < old_ctxs.size(); ++i) { move(old_ctxs[i], new_ctxs[i]); }
+  for (std::size_t i = 0; i < old_ctxs.size(); ++i) {
+    move(old_ctxs[i], new_ctxs[i]);
+  }
 }
 
 }  // namespace
 
 namespace omm
 {
-
 MoveTagContext::MoveTagContext(Tag& tag)
-  : MoveTagContext(tag, *tag.owner, tag.owner->tags.predecessor(tag)) {}
+    : MoveTagContext(tag, *tag.owner, tag.owner->tags.predecessor(tag))
+{
+}
 
 MoveTagContext::MoveTagContext(Tag& tag, Object& owner, Tag* predecessor)
-  : subject(&tag), predecessor(predecessor), owner(&owner) {}
+    : subject(&tag), predecessor(predecessor), owner(&owner)
+{
+}
 
 void MoveTagContext::assert_is_valid() const
 {
@@ -55,13 +58,21 @@ void MoveTagContext::assert_is_valid() const
   assert(subject->owner == owner);
 }
 
-MoveTagsCommand
-::MoveTagsCommand(const std::vector<Tag*> tags, Object& new_owner, Tag* new_predecessor)
-  : Command(QObject::tr("Move tags"))
-  , m_old_contextes(make_old_contextes(tags))
-  , m_new_contextes(make_new_contextes(tags, new_owner, new_predecessor)) { }
+MoveTagsCommand ::MoveTagsCommand(const std::vector<Tag*> tags,
+                                  Object& new_owner,
+                                  Tag* new_predecessor)
+    : Command(QObject::tr("Move tags")), m_old_contextes(make_old_contextes(tags)),
+      m_new_contextes(make_new_contextes(tags, new_owner, new_predecessor))
+{
+}
 
-void MoveTagsCommand::undo() { move(m_new_contextes, m_old_contextes); }
-void MoveTagsCommand::redo() { move(m_old_contextes, m_new_contextes); }
+void MoveTagsCommand::undo()
+{
+  move(m_new_contextes, m_old_contextes);
+}
+void MoveTagsCommand::redo()
+{
+  move(m_old_contextes, m_new_contextes);
+}
 
 }  // namespace omm

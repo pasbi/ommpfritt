@@ -1,18 +1,17 @@
 #pragma once
 
-#include <QWidget>
-#include <vector>
-#include <set>
 #include <QAbstractButton>
-#include <memory>
 #include <QBoxLayout>
 #include <QTimer>
+#include <QWidget>
+#include <memory>
+#include <set>
+#include <vector>
 
 class QAbstractButton;
 
 namespace omm
 {
-
 class MultiTabBar : public QWidget
 {
   Q_OBJECT

@@ -1,11 +1,10 @@
 #pragma once
 
-#include <string>
 #include "aspects/typed.h"
+#include <string>
 
 namespace omm
 {
-
 class CommandInterface : virtual public Typed
 {
 public:
@@ -13,4 +12,4 @@ public:
   virtual bool perform_action(const QString& action_name) = 0;
 };
 
-}  // namespace
+}  // namespace omm

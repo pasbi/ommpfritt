@@ -1,18 +1,16 @@
 #pragma once
 
-#include "serializers/abstractserializer.h"
 #include "properties/property.h"
+#include "serializers/abstractserializer.h"
 
 namespace omm
 {
-
 namespace TypedPropertyDetail
 {
-
 static constexpr auto VALUE_POINTER = "value";
 static constexpr auto DEFAULT_VALUE_POINTER = "default_value";
 
-} // namespace TypedPropertyDetail
+}  // namespace TypedPropertyDetail
 
 /**
  * @brief [brief description]
@@ -24,25 +22,38 @@ static constexpr auto DEFAULT_VALUE_POINTER = "default_value";
  *  bool operator<(const ValueT&, const ValueT&)
  *  or equivalent non-member functions.
  */
-template<typename ValueT>
-class TypedProperty : public Property
+template<typename ValueT> class TypedProperty : public Property
 {
 public:
   using value_type = ValueT;
   TypedProperty(ValueT defaultValue = ValueT())
-    : m_value(defaultValue), m_default_value(defaultValue) {}
+      : m_value(defaultValue), m_default_value(defaultValue)
+  {
+  }
 
   static QString TYPE()
   {
     return QString::fromStdString(std::string(variant_type_name<ValueT>())) + "Property";
   }
 
-  QString type() const override { return TYPE(); }
+  QString type() const override
+  {
+    return TYPE();
+  }
 
 public:
-  variant_type variant_value() const override { return m_value; }
-  ValueT value() const { return Property::value<ValueT>(); }
-  void set(const variant_type& variant) override { set(std::get<ValueT>(variant)); }
+  variant_type variant_value() const override
+  {
+    return m_value;
+  }
+  ValueT value() const
+  {
+    return Property::value<ValueT>();
+  }
+  void set(const variant_type& variant) override
+  {
+    set(std::get<ValueT>(variant));
+  }
 
   virtual void set(const ValueT& value)
   {
@@ -52,15 +63,24 @@ public:
     }
   }
 
-  virtual ValueT default_value() const { return m_default_value; }
-  virtual void set_default_value(const ValueT& value) { m_default_value = value; }
-  virtual void reset() { m_value = m_default_value; }
+  virtual ValueT default_value() const
+  {
+    return m_default_value;
+  }
+  virtual void set_default_value(const ValueT& value)
+  {
+    m_default_value = value;
+  }
+  virtual void reset()
+  {
+    m_value = m_default_value;
+  }
 
   bool is_numerical() const override
   {
-    return std::is_same_v<bool, ValueT> || std::is_same_v<double, ValueT>
-        || std::is_same_v<int, ValueT> || std::is_same_v<Vec2f, ValueT>
-        || std::is_same_v<Vec2i, ValueT>;
+    return std::is_same_v<
+               bool,
+               ValueT> || std::is_same_v<double, ValueT> || std::is_same_v<int, ValueT> || std::is_same_v<Vec2f, ValueT> || std::is_same_v<Vec2i, ValueT>;
   }
 
 private:
@@ -68,4 +88,4 @@ private:
   ValueT m_default_value;
 };
 
-}  // namespace
+}  // namespace omm

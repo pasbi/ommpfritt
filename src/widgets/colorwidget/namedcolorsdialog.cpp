@@ -1,24 +1,27 @@
 #include "widgets/colorwidget/namedcolorsdialog.h"
-#include "scene/history/historymodel.h"
-#include <QLineEdit>
-#include "commands/propertycommand.h"
-#include <QMessageBox>
-#include "mainwindow/application.h"
 #include "color/namedcolors.h"
-#include "widgets/colorwidget/ui_namedcolorsdialog.h"
-#include "properties/colorproperty.h"
 #include "commands/namedcolorscommand.h"
+#include "commands/propertycommand.h"
+#include "mainwindow/application.h"
+#include "properties/colorproperty.h"
+#include "scene/history/historymodel.h"
+#include "widgets/colorwidget/ui_namedcolorsdialog.h"
+#include <QLineEdit>
+#include <QMessageBox>
 #include <QStyledItemDelegate>
 
 namespace
 {
-
-omm::Scene& scene() { return omm::Application::instance().scene; }
+omm::Scene& scene()
+{
+  return omm::Application::instance().scene;
+}
 
 class NamedColorNameEditorDelegate : public QStyledItemDelegate
 {
 public:
-  QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,
+  QWidget* createEditor(QWidget* parent,
+                        const QStyleOptionViewItem& option,
                         const QModelIndex& index) const override
   {
     Q_UNUSED(option)
@@ -31,8 +34,8 @@ public:
     static_cast<QLineEdit*>(editor)->setText(index.data(Qt::EditRole).toString());
   }
 
-  void setModelData(QWidget* editor, QAbstractItemModel* model,
-                    const QModelIndex& index) const override
+  void
+  setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const override
   {
     Q_UNUSED(model);
     auto& proxy = static_cast<QAbstractProxyModel&>(*model);
@@ -40,8 +43,8 @@ public:
     const auto new_name = static_cast<QLineEdit&>(*editor).text();
     const auto old_name = named_colors.name(proxy.mapToSource(index));
     if (named_colors.has_color(new_name)) {
-      LWARNING << "Failed to rename '" << old_name << "' to '"
-               << new_name << "' to prevent name clash.";
+      LWARNING << "Failed to rename '" << old_name << "' to '" << new_name
+               << "' to prevent name clash.";
     } else {
       const auto cprops = omm::Application::instance().scene.find_named_color_holders(old_name);
       const auto props = ::transform<omm::Property*>(cprops);
@@ -56,13 +59,12 @@ public:
   }
 };
 
-}
+}  // namespace
 
 namespace omm
 {
-
 NamedColorsDialog::NamedColorsDialog(QWidget* parent)
-  : QDialog(parent), m_ui(new Ui::NamedColorsDialog), m_delegate(new NamedColorNameEditorDelegate)
+    : QDialog(parent), m_ui(new Ui::NamedColorsDialog), m_delegate(new NamedColorNameEditorDelegate)
 {
   m_ui->setupUi(this);
   connect(m_ui->pb_add, &QPushButton::clicked, this, &NamedColorsDialog::add);
@@ -75,7 +77,8 @@ NamedColorsDialog::NamedColorsDialog(QWidget* parent)
 
   connect(m_ui->listView->selectionModel(),
           &QItemSelectionModel::currentChanged,
-          this, &NamedColorsDialog::setCurrent);
+          this,
+          &NamedColorsDialog::setCurrent);
   connect(m_ui->w_colorwidget, &ColorWidget::color_changed, [this](const Color& color) {
     const QModelIndex index = m_ui->listView->currentIndex();
     if (index.isValid()) {
@@ -93,7 +96,7 @@ NamedColorsDialog::~NamedColorsDialog()
 
 void NamedColorsDialog::add()
 {
-  const Color color(Color::Model::RGBA, { 0.0, 0.0, 0.0, 0.0 });
+  const Color color(Color::Model::RGBA, {0.0, 0.0, 0.0, 0.0});
   scene().submit<AddNamedColorCommand>(model().generate_default_name(), color);
 }
 
@@ -112,7 +115,9 @@ void NamedColorsDialog::remove()
                              "Do you want to convert them into ordinary colors?",
                              "NamedColorsDialog",
                              n);
-      const auto result = QMessageBox::question(this, tr("Convert Named Colors"), msg,
+      const auto result = QMessageBox::question(this,
+                                                tr("Convert Named Colors"),
+                                                msg,
                                                 QMessageBox::Yes | QMessageBox::No);
       can_remove = result == QMessageBox::Yes;
     } else {
@@ -125,7 +130,7 @@ void NamedColorsDialog::remove()
         Color color = property->value();
         color.to_ordinary_color();
         using command_type = PropertiesCommand<ColorProperty>;
-        scene().submit<command_type>(std::set<Property*> { property }, color);
+        scene().submit<command_type>(std::set<Property*>{property}, color);
       }
       scene().submit(std::move(cmd));
     }

@@ -3,24 +3,25 @@
 
 namespace omm
 {
-
-RemoveForwardingPortCommand
-::RemoveForwardingPortCommand(ReferenceNode& node, PortType port_type, const QString& key)
-  : ForwardingPortCommand(QObject::tr("Remove Forwarding Port"), node, port_type, key)
+RemoveForwardingPortCommand ::RemoveForwardingPortCommand(ReferenceNode& node,
+                                                          PortType port_type,
+                                                          const QString& key)
+    : ForwardingPortCommand(QObject::tr("Remove Forwarding Port"), node, port_type, key)
 {
 }
 
-AddForwardingPortCommand
-::AddForwardingPortCommand(ReferenceNode& node, PortType port_type, const QString& key)
-  : ForwardingPortCommand(QObject::tr("Add Forwarding Port"), node, port_type, key)
+AddForwardingPortCommand ::AddForwardingPortCommand(ReferenceNode& node,
+                                                    PortType port_type,
+                                                    const QString& key)
+    : ForwardingPortCommand(QObject::tr("Add Forwarding Port"), node, port_type, key)
 {
 }
 
-ForwardingPortCommand
-::ForwardingPortCommand(const QString& label, ReferenceNode& node,
-                        PortType port_type, const QString& key)
-  : Command(label)
-  , m_node(node), m_port_type(port_type), m_key(key)
+ForwardingPortCommand ::ForwardingPortCommand(const QString& label,
+                                              ReferenceNode& node,
+                                              PortType port_type,
+                                              const QString& key)
+    : Command(label), m_node(node), m_port_type(port_type), m_key(key)
 {
 }
 

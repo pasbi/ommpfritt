@@ -1,21 +1,23 @@
 #pragma once
-#include <QWidget>
-#include "properties/typedproperty.h"
-#include "common.h"
-#include "scene/scene.h"
 #include "commands/propertycommand.h"
-#include <QTimer>
-#include <QBoxLayout>
+#include "common.h"
+#include "properties/typedproperty.h"
 #include "scene/history/macro.h"
+#include "scene/scene.h"
+#include <QBoxLayout>
 #include <QLabel>
+#include <QTimer>
+#include <QWidget>
 
 namespace omm
 {
-
 class AbstractPropertyWidget
-  : public QWidget
-  , public AbstractFactory< QString, false, AbstractPropertyWidget,
-                            Scene&, const std::set<Property*>& >
+    : public QWidget
+    , public AbstractFactory<QString,
+                             false,
+                             AbstractPropertyWidget,
+                             Scene&,
+                             const std::set<Property*>&>
 {
   Q_OBJECT
 public:
@@ -24,9 +26,8 @@ public:
 
   template<typename T> T configuration(const QString& key)
   {
-    return Property::get_value<T>(m_properties, [key](const Property& p) {
-      return p.configuration.get<T>(key);
-    });
+    return Property::get_value<T>(m_properties,
+                                  [key](const Property& p) { return p.configuration.get<T>(key); });
   }
 
 public Q_SLOTS:
@@ -61,8 +62,8 @@ protected:
     QLabel* m_label = nullptr;
 
     using QHBoxLayout::addItem;
-    using QHBoxLayout::addWidget;
     using QHBoxLayout::addLayout;
+    using QHBoxLayout::addWidget;
     using QHBoxLayout::removeItem;
     using QHBoxLayout::removeWidget;
     void remove_old_thing();
@@ -70,7 +71,9 @@ protected:
 
 protected Q_SLOTS:
   virtual void update_edit() = 0;
-  virtual void update_configuration() {}
+  virtual void update_configuration()
+  {
+  }
 
 private:
   std::set<Property*> m_properties;
@@ -78,21 +81,21 @@ private:
   QTimer m_update_timer;
 };
 
-template<typename PropertyT>
-class PropertyWidget : public AbstractPropertyWidget
+template<typename PropertyT> class PropertyWidget : public AbstractPropertyWidget
 {
 public:
   using AbstractPropertyWidget::AbstractPropertyWidget;
   using property_type = PropertyT;
   using value_type = typename property_type::value_type;
-  static QString TYPE() { return QString(PropertyT::TYPE()) + "Widget"; }
+  static QString TYPE()
+  {
+    return QString(PropertyT::TYPE()) + "Widget";
+  }
 
 protected:
   virtual void set_properties_value(const value_type& value)
   {
-    const auto is_noop = [&value](const Property* p) {
-      return p->value<value_type>() == value;
-    };
+    const auto is_noop = [&value](const Property* p) { return p->value<value_type>() == value; };
     if (!std::all_of(m_properties.begin(), m_properties.end(), is_noop)) {
       auto command = std::make_unique<PropertiesCommand<property_type>>(m_properties, value);
       scene.submit(std::move(command));
@@ -106,8 +109,14 @@ protected:
     });
   }
 
-  const std::set<Property*>& properties() const { return m_properties; }
-  QString type() const override { return TYPE(); }
+  const std::set<Property*>& properties() const
+  {
+    return m_properties;
+  }
+  QString type() const override
+  {
+    return TYPE();
+  }
 };
 
 }  // namespace omm

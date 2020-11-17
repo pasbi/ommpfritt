@@ -4,16 +4,15 @@
 
 namespace omm
 {
-
 StringPropertyConfigWidget::StringPropertyConfigWidget()
 {
   auto layout = std::make_unique<QVBoxLayout>();
   auto mode_selector = std::make_unique<QComboBox>(this);
-  mode_selector->addItems({ QObject::tr("single line", "StringPropertyConfigWidget"),
-                            QObject::tr("multi line", "StringPropertyConfigWidget"),
-                            QObject::tr("file path", "StringPropertyConfigWidget"),
-                            QObject::tr("code", "StringPropertyConfigWidget"),
-                            QObject::tr("font", "StringPropertyConfigWidget") });
+  mode_selector->addItems({QObject::tr("single line", "StringPropertyConfigWidget"),
+                           QObject::tr("multi line", "StringPropertyConfigWidget"),
+                           QObject::tr("file path", "StringPropertyConfigWidget"),
+                           QObject::tr("code", "StringPropertyConfigWidget"),
+                           QObject::tr("font", "StringPropertyConfigWidget")});
 
   m_mode_selector = mode_selector.get();
   layout->addWidget(mode_selector.release());
@@ -21,15 +20,14 @@ StringPropertyConfigWidget::StringPropertyConfigWidget()
   setLayout(layout.release());
 }
 
-void StringPropertyConfigWidget::init(const Property::Configuration &configuration)
+void StringPropertyConfigWidget::init(const Property::Configuration& configuration)
 {
   m_mode_selector->setCurrentIndex(configuration.get("mode", std::size_t(3)));
 }
 
-void StringPropertyConfigWidget::update(Property::Configuration &configuration) const
+void StringPropertyConfigWidget::update(Property::Configuration& configuration) const
 {
   configuration["mode"] = static_cast<std::size_t>(m_mode_selector->currentIndex());
 }
 
-}  // namespace pmm
-
+}  // namespace omm

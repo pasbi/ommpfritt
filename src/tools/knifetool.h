@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 class KnifeTool : public SelectPointsBaseTool
 {
 public:

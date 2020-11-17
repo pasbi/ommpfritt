@@ -4,7 +4,6 @@
 
 namespace omm
 {
-
 template<typename T> class NumericEdit;
 
 class ColorComponentSpinBox : public AbstractColorComponentWidget
@@ -22,4 +21,4 @@ private:
   double m_factor = 1.0;
 };
 
-}  // namespace
+}  // namespace omm

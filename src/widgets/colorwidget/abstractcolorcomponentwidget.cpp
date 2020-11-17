@@ -5,7 +5,6 @@
 
 namespace omm
 {
-
 void AbstractColorComponentWidget::set_role(Color::Role role)
 {
   m_role = role;

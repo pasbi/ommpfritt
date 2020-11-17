@@ -1,15 +1,13 @@
 #include "propertywidgets/triggerpropertywidget/triggerpropertywidget.h"
 
-#include "propertywidgets/multivalueedit.h"
 #include "properties/typedproperty.h"
+#include "propertywidgets/multivalueedit.h"
 #include <QPushButton>
-
 
 namespace omm
 {
-
 TriggerPropertyWidget::TriggerPropertyWidget(Scene& scene, const std::set<Property*>& properties)
-  : PropertyWidget(scene, properties)
+    : PropertyWidget(scene, properties)
 {
   auto button = std::make_unique<QPushButton>(label());
   connect(button.get(), &QPushButton::clicked, this, &TriggerPropertyWidget::trigger);
@@ -23,6 +21,8 @@ void TriggerPropertyWidget::trigger()
   }
 }
 
-void TriggerPropertyWidget::update_edit() {}
+void TriggerPropertyWidget::update_edit()
+{
+}
 
 }  // namespace omm

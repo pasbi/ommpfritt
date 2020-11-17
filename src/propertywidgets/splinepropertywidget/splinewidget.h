@@ -1,21 +1,25 @@
 #pragma once
 
-#include <QWidget>
 #include "cachedgetter.h"
-#include "splinetype.h"
 #include "propertywidgets/multivalueedit.h"
+#include "splinetype.h"
+#include <QWidget>
 
 namespace omm
 {
-
-class SplineWidget : public QWidget, public MultiValueEdit<SplineType>
+class SplineWidget
+    : public QWidget
+    , public MultiValueEdit<SplineType>
 {
   Q_OBJECT
 
 public:
   SplineWidget(QWidget* parent = nullptr);
   void set_value(const value_type& spline) override;
-  SplineType value() const override { return m_spline; }
+  SplineType value() const override
+  {
+    return m_spline;
+  }
 
 protected:
   void paintEvent(QPaintEvent* event) override;

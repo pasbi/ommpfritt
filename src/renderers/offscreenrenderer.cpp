@@ -1,46 +1,45 @@
 #include "offscreenrenderer.h"
+#include "geometry/objecttransformation.h"
 #include "mainwindow/application.h"
-#include <QOpenGLFramebufferObject>
-#include <QOpenGLFunctions>
-#include <QOffscreenSurface>
-#include <QOpenGLShaderProgram>
+#include "nodesystem/nodecompilerglsl.h"
+#include "objects/object.h"
+#include <QApplication>
 #include <QDebug>
 #include <QImage>
+#include <QOffscreenSurface>
+#include <QOpenGLFramebufferObject>
+#include <QOpenGLFunctions>
+#include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
-#include "nodesystem/nodecompilerglsl.h"
-#include "geometry/objecttransformation.h"
-#include <QApplication>
-#include "objects/object.h"
 
 namespace omm
 {
-
 const std::vector<OffscreenRenderer::ShaderInput> OffscreenRenderer::fragment_shader_inputs = {
-  {
-    NodeCompilerTypes::FLOATVECTOR_TYPE,
-    QT_TRANSLATE_NOOP("OffscreenRenderer", "local_pos"),
-    ShaderInput::Kind::Varying,
-  },
-  {
-    NodeCompilerTypes::FLOATVECTOR_TYPE,
-    QT_TRANSLATE_NOOP("OffscreenRenderer", "global_pos"),
-    ShaderInput::Kind::Varying,
-  },
-  {
-    NodeCompilerTypes::FLOATVECTOR_TYPE,
-    QT_TRANSLATE_NOOP("OffscreenRenderer", "local_normalized_pos"),
-    ShaderInput::Kind::Varying,
-  },
-  {
-    NodeCompilerTypes::FLOATVECTOR_TYPE,
-    QT_TRANSLATE_NOOP("OffscreenRenderer", "object_size"),
-    ShaderInput::Kind::Uniform,
-  },
-  {
-    NodeCompilerTypes::FLOATVECTOR_TYPE,
-    QT_TRANSLATE_NOOP("OffscreenRenderer", "view_pos"),
-    ShaderInput::Kind::Varying,
-  },
+    {
+        NodeCompilerTypes::FLOATVECTOR_TYPE,
+        QT_TRANSLATE_NOOP("OffscreenRenderer", "local_pos"),
+        ShaderInput::Kind::Varying,
+    },
+    {
+        NodeCompilerTypes::FLOATVECTOR_TYPE,
+        QT_TRANSLATE_NOOP("OffscreenRenderer", "global_pos"),
+        ShaderInput::Kind::Varying,
+    },
+    {
+        NodeCompilerTypes::FLOATVECTOR_TYPE,
+        QT_TRANSLATE_NOOP("OffscreenRenderer", "local_normalized_pos"),
+        ShaderInput::Kind::Varying,
+    },
+    {
+        NodeCompilerTypes::FLOATVECTOR_TYPE,
+        QT_TRANSLATE_NOOP("OffscreenRenderer", "object_size"),
+        ShaderInput::Kind::Uniform,
+    },
+    {
+        NodeCompilerTypes::FLOATVECTOR_TYPE,
+        QT_TRANSLATE_NOOP("OffscreenRenderer", "view_pos"),
+        ShaderInput::Kind::Varying,
+    },
 };
 
 QString OffscreenRenderer::ShaderInput::tr_name() const
@@ -52,7 +51,6 @@ QString OffscreenRenderer::ShaderInput::tr_name() const
 
 namespace
 {
-
 static constexpr auto vertex_position_attribute_name = "vertex_attr";
 
 using S = omm::OffscreenRenderer;
@@ -98,13 +96,25 @@ void main() {
 )";
 
 static constexpr std::array<float, 18> m_quad = {
-  -1.0, -1.0, 0.0,
-   1.0,  1.0, 0.0,
-  -1.0,  1.0, 0.0,
+    -1.0,
+    -1.0,
+    0.0,
+    1.0,
+    1.0,
+    0.0,
+    -1.0,
+    1.0,
+    0.0,
 
-  -1.0, -1.0, 0.0,
-   1.0, -1.0, 0.0,
-   1.0,  1.0, 0.0,
+    -1.0,
+    -1.0,
+    0.0,
+    1.0,
+    -1.0,
+    0.0,
+    1.0,
+    1.0,
+    0.0,
 };
 
 template<typename T> std::vector<T> sample(const omm::SplineType& spline, std::size_t n)
@@ -176,14 +186,13 @@ void set_uniform(omm::OffscreenRenderer& self, const QString& name, const T& val
 }  // namespace
 
 #ifdef NDEBUG
-# define assert_or_call(expr) (expr)
+#  define assert_or_call(expr) (expr)
 #else
-# define assert_or_call(expr) assert(expr)
+#  define assert_or_call(expr) assert(expr)
 #endif
 
 namespace omm
 {
-
 OffscreenRenderer::OffscreenRenderer()
 {
   assert_or_call(m_context.create());
@@ -219,13 +228,17 @@ bool OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
     m_program.reset();
     return false;
   } else {
-#define CHECK(X) if (!(X)) { LERROR << #X" failed."; return false; }
+#define CHECK(X) \
+  if (!(X)) { \
+    LERROR << #X " failed."; \
+    return false; \
+  }
 
-//    QStringList lines = fragment_code.split("\n");
-//    for (int i = 0; i < lines.size(); ++i) {
-//      lines[i] = QString("%1 %2").arg(i+1, log(lines.size()+1)/log(10) + 1).arg(lines[i]);
-//    }
-//    LINFO << "code:\n" << lines.join("\n");
+    //    QStringList lines = fragment_code.split("\n");
+    //    for (int i = 0; i < lines.size(); ++i) {
+    //      lines[i] = QString("%1 %2").arg(i+1, log(lines.size()+1)/log(10) + 1).arg(lines[i]);
+    //    }
+    //    LINFO << "code:\n" << lines.join("\n");
 
     m_program = std::make_unique<QOpenGLShaderProgram>();
     CHECK(m_context.makeCurrent(&m_surface));
@@ -237,7 +250,6 @@ bool OffscreenRenderer::set_fragment_shader(const QString& fragment_code)
     return true;
 #undef CHECK
   }
-
 }
 
 void OffscreenRenderer::make_current()
@@ -259,11 +271,13 @@ std::unique_ptr<OffscreenRenderer> OffscreenRenderer::make()
   }
 }
 
-Texture OffscreenRenderer::render(const Object& object, const QSize& size, const QRectF& roi,
+Texture OffscreenRenderer::render(const Object& object,
+                                  const QSize& size,
+                                  const QRectF& roi,
                                   const Painter::Options& options)
 {
-  const QSize adjusted_size = QSize(size.width()  * roi.width()  / 2.0,
-                                    size.height() * roi.height() / 2.0);
+  const QSize adjusted_size
+      = QSize(size.width() * roi.width() / 2.0, size.height() * roi.height() / 2.0);
   if (m_program == nullptr) {
     return Texture(adjusted_size);
   } else if (adjusted_size.isEmpty()) {
@@ -271,10 +285,7 @@ Texture OffscreenRenderer::render(const Object& object, const QSize& size, const
   }
   assert_or_call(m_context.makeCurrent(&m_surface));
   assert_or_call(m_context.isValid());
-  m_functions->glViewport(0,
-                          0,
-                          adjusted_size.width(),
-                          adjusted_size.height());
+  m_functions->glViewport(0, 0, adjusted_size.width(), adjusted_size.height());
   m_program->bind();
   const auto bb = object.bounding_box(ObjectTransformation());
   ::set_uniform(*this, "object_size", Vec2f(bb.width(), bb.height()));
@@ -296,8 +307,8 @@ Texture OffscreenRenderer::render(const Object& object, const QSize& size, const
   m_program->release();
   m_vertices.release();
   m_vao.release();
-  const QPoint offset( (1.0 + roi.left()) / 2.0 * size.width(),
-                       (1.0 + roi.top())  / 2.0 * size.height() );
+  const QPoint offset((1.0 + roi.left()) / 2.0 * size.width(),
+                      (1.0 + roi.top()) / 2.0 * size.height());
   return Texture(fbo.toImage(), offset);
 }
 

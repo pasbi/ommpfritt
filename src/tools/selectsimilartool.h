@@ -5,15 +5,20 @@
 
 namespace omm
 {
-
 class SelectSimilarTool : public SelectPointsBaseTool
 
 {
 public:
   explicit SelectSimilarTool(Scene& scene);
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "SelectSimilarTool");
-  QString type() const override { return TYPE; }
-  SceneMode scene_mode() const override { return SceneMode::Vertex; }
+  QString type() const override
+  {
+    return TYPE;
+  }
+  SceneMode scene_mode() const override
+  {
+    return SceneMode::Vertex;
+  }
   void reset() override;
 
 private:

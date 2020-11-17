@@ -1,16 +1,15 @@
 #include "managers/dopesheetmanager/dopesheetheader.h"
-#include "managers/timeline/timelinecanvas.h"
 #include "animation/animator.h"
 #include "logging.h"
+#include "managers/timeline/timelinecanvas.h"
 
 #include <QEvent>
 #include <QMouseEvent>
 
 namespace omm
 {
-
 DopeSheetHeader::DopeSheetHeader(TimelineCanvas& canvas)
-  : QHeaderView(Qt::Horizontal), m_canvas(canvas)
+    : QHeaderView(Qt::Horizontal), m_canvas(canvas)
 {
   setStretchLastSection(true);
 }
@@ -54,8 +53,7 @@ void DopeSheetHeader::mousePressEvent(QMouseEvent* e)
 
 void DopeSheetHeader::activate() const
 {
-  m_canvas.rect = QRectF(QPointF(sectionPosition(1), 0),
-                         QSizeF(sectionSize(1), height()));
+  m_canvas.rect = QRectF(QPointF(sectionPosition(1), 0), QSizeF(sectionSize(1), height()));
 }
 
 }  // namespace omm

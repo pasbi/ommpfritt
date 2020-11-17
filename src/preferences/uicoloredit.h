@@ -4,11 +4,13 @@
 #include <QWidget>
 #include <memory>
 
-namespace Ui { class UiColorEdit; }
+namespace Ui
+{
+class UiColorEdit;
+}
 
 namespace omm
 {
-
 class UiColorEdit : public QWidget
 {
 public:
@@ -19,14 +21,13 @@ public:
   Color color() const;
 
 protected:
-  void paintEvent(QPaintEvent *event) override;
-  void mouseDoubleClickEvent(QMouseEvent *) override;
+  void paintEvent(QPaintEvent* event) override;
+  void mouseDoubleClickEvent(QMouseEvent*) override;
 
 private:
   std::unique_ptr<Ui::UiColorEdit> m_ui;
   Color m_color;
   Color m_default_color;
-
 };
 
 }  // namespace omm

@@ -3,8 +3,7 @@
 
 namespace omm
 {
-
-const Property::PropertyDetail OptionProperty::detail { nullptr };
+const Property::PropertyDetail OptionProperty::detail{nullptr};
 
 void OptionProperty::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
 {
@@ -13,7 +12,7 @@ void OptionProperty::deserialize(AbstractDeserializer& deserializer, const Point
 
   if (is_user_property()) {
     set_default_value(
-      deserializer.get_size_t(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
+        deserializer.get_size_t(make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER)));
 
     auto options = this->options();
     if (options.empty()) {
@@ -33,10 +32,10 @@ void OptionProperty::deserialize(AbstractDeserializer& deserializer, const Point
 void OptionProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const
 {
   TypedProperty::serialize(serializer, root);
-  serializer.set_value( value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
+  serializer.set_value(value(), make_pointer(root, TypedPropertyDetail::VALUE_POINTER));
   if (is_user_property()) {
-    serializer.set_value( default_value(),
-                          make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER) );
+    serializer.set_value(default_value(),
+                         make_pointer(root, TypedPropertyDetail::DEFAULT_VALUE_POINTER));
     const auto options = this->options();
     serializer.start_array(options.size(), make_pointer(root, OPTIONS_POINTER));
     for (std::size_t i = 0; i < options.size(); ++i) {

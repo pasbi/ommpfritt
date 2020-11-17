@@ -3,10 +3,7 @@
 
 namespace omm
 {
-
-Options::Options(bool is_cli, bool have_opengl)
-  : is_cli(is_cli)
-  , have_opengl(have_opengl)
+Options::Options(bool is_cli, bool have_opengl) : is_cli(is_cli), have_opengl(have_opengl)
 {
 }
 

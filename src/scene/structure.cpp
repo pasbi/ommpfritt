@@ -2,12 +2,11 @@
 #include "common.h"
 #include "objects/object.h"
 #include "renderers/style.h"
-#include "tags/tag.h"
 #include "scene/scene.h"
+#include "tags/tag.h"
 
 namespace omm
 {
-
 template<typename T> T* Structure<T>::predecessor(T& sibling) const
 {
   return const_cast<T*>(predecessor(static_cast<const T&>(sibling)));

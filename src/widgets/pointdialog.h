@@ -8,7 +8,6 @@ class QComboBox;
 
 namespace omm
 {
-
 class Path;
 class PointEdit;
 

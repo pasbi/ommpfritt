@@ -1,11 +1,10 @@
 #pragma once
 
-#include "tools/selecttool.h"
 #include "commands/objectstransformationcommand.h"
+#include "tools/selecttool.h"
 
 namespace omm
 {
-
 class TransformObjectsHelper : public QObject
 {
   Q_OBJECT
@@ -20,12 +19,14 @@ public:
    * @return
    */
   std::unique_ptr<ObjectsTransformationCommand>
-  make_command(const Matrix &t,
-               TransformationMode mode = TransformationMode::Object) const;
+  make_command(const Matrix& t, TransformationMode mode = TransformationMode::Object) const;
 
   void update(const std::set<Object*>& objects);
   void update();
-  bool is_empty() const { return m_initial_transformations.size() == 0; }
+  bool is_empty() const
+  {
+    return m_initial_transformations.size() == 0;
+  }
 
 Q_SIGNALS:
   void initial_transformations_changed();
@@ -51,13 +52,15 @@ public:
   void reset() override;
   bool mouse_press(const Vec2f& pos, const QMouseEvent& event) override;
   BoundingBox bounding_box() const;
-  SceneMode scene_mode() const override { return SceneMode::Object; }
+  SceneMode scene_mode() const override
+  {
+    return SceneMode::Object;
+  }
 
 protected:
   bool has_transformation() const override;
   Vec2f selection_center() const override;
   TransformObjectsHelper m_transform_objects_helper;
-
 };
 
 }  // namespace omm

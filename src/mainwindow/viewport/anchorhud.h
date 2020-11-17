@@ -1,16 +1,17 @@
 #pragma once
 
-#include "mainwindow/viewport/headupdisplay.h"
-#include <QRectF>
-#include <QObject>
 #include "mainwindow/options.h"
+#include "mainwindow/viewport/headupdisplay.h"
+#include <QObject>
+#include <QRectF>
 
 class QWidget;
 
 namespace omm
 {
-
-class AnchorHUD : public QObject, public HeadUpDisplay
+class AnchorHUD
+    : public QObject
+    , public HeadUpDisplay
 {
   using Anchor = Options::Anchor;
   Q_OBJECT
@@ -21,7 +22,10 @@ public:
   bool mouse_press(QMouseEvent& event) override;
   void mouse_release(QMouseEvent& event) override;
   bool mouse_move(QMouseEvent& event) override;
-  Anchor anchor() const { return m_anchor; }
+  Anchor anchor() const
+  {
+    return m_anchor;
+  }
   constexpr static double ANCHOR_RADIUS = 5;
 
 Q_SIGNALS:
@@ -31,9 +35,11 @@ public Q_SLOTS:
   void set_anchor(const Anchor& anchor);
 
 private:
-  static constexpr std::array<Anchor, 5> PROPER_ANCHORS { Anchor::TopLeft, Anchor::BottomLeft,
-                                                          Anchor::TopRight, Anchor::BottomRight,
-                                                          Anchor::Center };
+  static constexpr std::array<Anchor, 5> PROPER_ANCHORS{Anchor::TopLeft,
+                                                        Anchor::BottomLeft,
+                                                        Anchor::TopRight,
+                                                        Anchor::BottomRight,
+                                                        Anchor::Center};
 
   QRectF anchor_grid() const;
   QWidget& m_widget;

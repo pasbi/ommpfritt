@@ -1,21 +1,20 @@
 #pragma once
 
-#include <vector>
-#include <functional>
-#include <QScrollArea>
 #include <QLabel>
+#include <QScrollArea>
+#include <functional>
+#include <vector>
 
-#include "widgets/multitabbar.h"
 #include "aspects/propertyowner.h"
 #include "managers/manager.h"
-#include "scene/scene.h"
 #include "managers/propertymanager/userpropertydialog.h"
+#include "scene/scene.h"
+#include "widgets/multitabbar.h"
 
 class QTabWidget;
 
 namespace omm
 {
-
 class PropertyView;
 class PropertyManagerTab;
 class PropertyManagerTitleBar;
@@ -31,7 +30,7 @@ public:
   void clear();
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PropertyManager");
   QString type() const override;
-  bool perform_action(const QString &name) override;
+  bool perform_action(const QString& name) override;
 
 private:
   OrderedMap<QString, PropertyManagerTab> m_tabs;

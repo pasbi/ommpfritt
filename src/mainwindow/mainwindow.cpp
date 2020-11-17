@@ -2,35 +2,34 @@
 
 #include <memory>
 
+#include <QCloseEvent>
+#include <QDirIterator>
+#include <QDockWidget>
+#include <QFileDialog>
+#include <QLocale>
 #include <QMenu>
 #include <QMenuBar>
-#include <QDockWidget>
-#include <QSettings>
-#include <QCloseEvent>
-#include <functional>
 #include <QMessageBox>
-#include <QDirIterator>
-#include <QLocale>
-#include <QFileDialog>
+#include <QSettings>
+#include <functional>
 
-#include "scene/mailbox.h"
-#include "tools/tool.h"
-#include "managers/timeline/timeline.h"
-#include "mainwindow/viewport/viewport.h"
-#include "mainwindow/application.h"
-#include "mainwindow/toolbar/toolbar.h"
-#include "managers/manager.h"
-#include "tags/tag.h"
-#include "logging.h"
-#include "ui_aboutdialog.h"
-#include "scene/history/historymodel.h"
 #include "keybindings/commandinterface.h"
+#include "logging.h"
 #include "mainwindow/application.h"
+#include "mainwindow/gpl3.h"
+#include "mainwindow/toolbar/toolbar.h"
+#include "mainwindow/viewport/viewport.h"
+#include "managers/manager.h"
+#include "managers/timeline/timeline.h"
+#include "scene/history/historymodel.h"
+#include "scene/mailbox.h"
+#include "tags/tag.h"
+#include "tools/tool.h"
+#include "ui_aboutdialog.h"
 #include "widgets/colorwidget/colorwidget.h"
 
 namespace
 {
-
 QMenu* find_menu(QMenu* menu, const QString& object_name)
 {
   if (menu == nullptr) {
@@ -78,12 +77,11 @@ QString get_object_name(const QObject* object)
 
 namespace omm
 {
-
 std::vector<QString> MainWindow::object_menu_entries()
 {
-  std::list<QString> entries {
-    "object/remove selected items",
-    "object/convert objects",
+  std::list<QString> entries{
+      "object/remove selected items",
+      "object/convert objects",
   };
 
   for (const QString& key : Object::keys()) {
@@ -99,60 +97,61 @@ std::vector<QString> MainWindow::object_menu_entries()
 
 std::vector<QString> MainWindow::path_menu_entries()
 {
-  return std::vector<QString> {
-    "path/make smooth",
-    "path/make linear",
-    "path/subdivide",
-    "path/select all",
-    "path/deselect all",
-    "path/invert selection",
-    "path/select connected points",
-    "path/fill selection",
-    "path/extend selection",
-    "path/shrink selection",
-    "path/show point dialog",
+  return std::vector<QString>{
+      "path/make smooth",
+      "path/make linear",
+      "path/subdivide",
+      "path/select all",
+      "path/deselect all",
+      "path/invert selection",
+      "path/select connected points",
+      "path/fill selection",
+      "path/extend selection",
+      "path/shrink selection",
+      "path/show point dialog",
   };
 }
 
 std::vector<QString> MainWindow::main_menu_entries()
 {
   std::list<QString> entries = {
-    QT_TRANSLATE_NOOP("menu_name", "file")"/new document",
-    "file/save document",
-    "file/save document as ...",
-    "file/load document ...",
-    "file/" QT_TRANSLATE_NOOP("menu_name", "load recent document") "/",
-    QStringLiteral("file/") + KeyBindings::SEPARATOR,
-    "file/export",
-    QT_TRANSLATE_NOOP("menu_name", "edit")"/undo",
-    "edit/redo",
-    "edit/preferences",
-    QT_TRANSLATE_NOOP("menu_name", "object")"/new style",
-    "object/" QT_TRANSLATE_NOOP("menu_name", "create")"/",
-    "object/" QT_TRANSLATE_NOOP("menu_name", "attach")"/",
-    QT_TRANSLATE_NOOP("menu_name", "path")"/",
-    QT_TRANSLATE_NOOP("menu_name", "tool")"/previous tool",
-    QStringLiteral("tool/") + KeyBindings::SEPARATOR,
-    QT_TRANSLATE_NOOP("menu_name", "scene")"/evaluate",
-    "scene/reset viewport",
-    QT_TRANSLATE_NOOP("menu_name", "window")"/" QT_TRANSLATE_NOOP("menu_name", "show")"/",
+      QT_TRANSLATE_NOOP("menu_name", "file") "/new document",
+      "file/save document",
+      "file/save document as ...",
+      "file/load document ...",
+      "file/" QT_TRANSLATE_NOOP("menu_name", "load recent document") "/",
+      QStringLiteral("file/") + KeyBindings::SEPARATOR,
+      "file/export",
+      QT_TRANSLATE_NOOP("menu_name", "edit") "/undo",
+      "edit/redo",
+      "edit/preferences",
+      QT_TRANSLATE_NOOP("menu_name", "object") "/new style",
+      "object/" QT_TRANSLATE_NOOP("menu_name", "create") "/",
+      "object/" QT_TRANSLATE_NOOP("menu_name", "attach") "/",
+      QT_TRANSLATE_NOOP("menu_name", "path") "/",
+      QT_TRANSLATE_NOOP("menu_name", "tool") "/previous tool",
+      QStringLiteral("tool/") + KeyBindings::SEPARATOR,
+      QT_TRANSLATE_NOOP("menu_name", "scene") "/evaluate",
+      "scene/reset viewport",
+      QT_TRANSLATE_NOOP("menu_name", "window") "/" QT_TRANSLATE_NOOP("menu_name", "show") "/",
   };
 
-  const auto merge = [&es=entries](auto&& ls) { es.insert(es.end(), ls.begin(), ls.end()); };
+  const auto merge = [&es = entries](auto&& ls) { es.insert(es.end(), ls.begin(), ls.end()); };
 
   for (const QString& key : Manager::keys()) {
     entries.push_back("window/show/" + key);
   }
-  entries.insert(entries.end(), {
-    QStringLiteral("window/") + KeyBindings::SEPARATOR,
-    "window/restore default layout",
-    "window/new toolbar",
+  entries.insert(entries.end(),
+                 {
+                     QStringLiteral("window/") + KeyBindings::SEPARATOR,
+                     "window/restore default layout",
+                     "window/new toolbar",
 #ifndef NDEBUG  // these functions facialiate the creation of profiles.
                 // they should not be used by the user since the file content is not validated.
-    "window/save layout ...",
-    "window/load layout ...",
+                     "window/save layout ...",
+                     "window/load layout ...",
 #endif  // NDEBUG
-  });
+                 });
   merge(object_menu_entries());
   merge(path_menu_entries());
   for (const QString& key : Tool::keys()) {
@@ -167,8 +166,8 @@ void MainWindow::update_window_title()
   QString filename = m_app.scene.filename();
   static const QString clean_indicator = tr("");
   static const QString dirty_indicator = tr("*");
-  QString indicator = m_app.scene.history().has_pending_changes()
-                      ? dirty_indicator : clean_indicator;
+  QString indicator
+      = m_app.scene.history().has_pending_changes() ? dirty_indicator : clean_indicator;
   if (filename.isEmpty()) {
     filename = tr("unnamed");
     indicator = clean_indicator;  // never show dirty indicator if no filename is set.
@@ -178,8 +177,7 @@ void MainWindow::update_window_title()
   setWindowTitle(QString("%1%2 - omm").arg(filename).arg(indicator));
 }
 
-MainWindow::MainWindow(Application& app)
-  : m_app(app)
+MainWindow::MainWindow(Application& app) : m_app(app)
 {
   setDockNestingEnabled(true);
   auto viewport = std::make_unique<Viewport>(app.scene);
@@ -227,6 +225,7 @@ std::unique_ptr<QMenu> MainWindow::make_about_menu()
     ::Ui::AboutDialog ui;
     ui.setupUi(&about_dialog);
     ui.te_gpl30->hide();
+    ui.te_gpl30->setText(QString::fromStdString(std::string(GPL3_TEXT)));
     ui.lb_splash->setPixmap(QPixmap::fromImage(QImage(":/icons/omm_2048.png")));
     about_dialog.exec();
   });
@@ -259,7 +258,7 @@ void MainWindow::save_state()
   save_layout(settings);
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent* event)
 {
   if (Application::instance().can_close()) {
     save_state();
@@ -286,9 +285,12 @@ void MainWindow::keyPressEvent(QKeyEvent* e)
   }
 }
 
-Viewport& MainWindow::viewport() const { return *m_viewport; }
+Viewport& MainWindow::viewport() const
+{
+  return *m_viewport;
+}
 
-void MainWindow::assign_unique_objectname(Manager &manager) const
+void MainWindow::assign_unique_objectname(Manager& manager) const
 {
   const auto blacklist = ::transform<QString, std::set>(dock_widgets(), get_object_name);
   manager.setObjectName(make_unique(manager.type(), blacklist));
@@ -313,8 +315,8 @@ QString MainWindow::get_last_layout_filename() const
 
 void MainWindow::load_layout()
 {
-  const QString fn = QFileDialog::getOpenFileName(this, tr("Restore Layout"),
-                                                  get_last_layout_filename());
+  const QString fn
+      = QFileDialog::getOpenFileName(this, tr("Restore Layout"), get_last_layout_filename());
   if (!fn.isEmpty()) {
     QSettings().setValue(LAST_LAYOUT_FILE_NAME, fn);
     QSettings settings(fn, QSettings::IniFormat);
@@ -324,8 +326,8 @@ void MainWindow::load_layout()
 
 void MainWindow::save_layout()
 {
-  const QString fn = QFileDialog::getSaveFileName(this, tr("Save Layout"),
-                                                  get_last_layout_filename());
+  const QString fn
+      = QFileDialog::getSaveFileName(this, tr("Save Layout"), get_last_layout_filename());
 
   if (!fn.isEmpty()) {
     QSettings settings(fn, QSettings::IniFormat);
@@ -440,8 +442,7 @@ void MainWindow::update_recent_files_menu()
     const QString abs_file_path = file_info.absoluteFilePath();
     if (file_info.exists() && file_info.isFile()
         && QFileInfo(scene.filename()).absoluteFilePath() != abs_file_path
-        && !::contains(filenames, abs_file_path))
-    {
+        && !::contains(filenames, abs_file_path)) {
       filenames.insert(abs_file_path);
       auto action = std::make_unique<QAction>(file_info.fileName());
       action->setToolTip(fn);

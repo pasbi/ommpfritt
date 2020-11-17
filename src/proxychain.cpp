@@ -4,9 +4,8 @@
 
 namespace omm
 {
-
 ProxyChain::ProxyChain(std::vector<std::unique_ptr<QAbstractProxyModel>> proxies)
-  : m_proxies(std::move(proxies))
+    : m_proxies(std::move(proxies))
 {
 }
 
@@ -37,7 +36,7 @@ QAbstractItemModel* ProxyChain::chainSourceModel() const
   }
 }
 
-QModelIndex ProxyChain::mapFromChainSource(const QModelIndex &index) const
+QModelIndex ProxyChain::mapFromChainSource(const QModelIndex& index) const
 {
   assert(!index.isValid() || index.model() == chainSourceModel());
   QModelIndex i = index;

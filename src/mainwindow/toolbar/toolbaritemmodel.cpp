@@ -1,17 +1,16 @@
 #include "mainwindow/toolbar/toolbaritemmodel.h"
 #include "common.h"
-#include "mainwindow/toolbar/toolbardialog.h"
+#include "keybindings/modeselector.h"
+#include "mainwindow/application.h"
 #include "mainwindow/toolbar/toolbar.h"
+#include "mainwindow/toolbar/toolbardialog.h"
 #include <QMimeData>
+#include <QToolButton>
 #include <QTreeWidgetItem>
 #include <QWidgetAction>
-#include "mainwindow/application.h"
-#include <QToolButton>
-#include "keybindings/modeselector.h"
 
 namespace
 {
-
 constexpr auto type_key = "type";
 constexpr auto action_item_id = QStandardItem::UserType + 1;
 constexpr auto group_item_id = QStandardItem::UserType + 2;
@@ -28,17 +27,21 @@ protected:
   {
     setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled);
   }
+
 public:
   virtual nlohmann::json encode() const = 0;
   virtual std::unique_ptr<QAction> make_action() const = 0;
 };
 
-template<int item_id>
-class Item : public AbstractItem
+template<int item_id> class Item : public AbstractItem
 {
 public:
   static constexpr auto TYPE = item_id;
-  int type() const override { return TYPE; }
+  int type() const override
+  {
+    return TYPE;
+  }
+
 protected:
   using AbstractItem::AbstractItem;
 };
@@ -70,8 +73,7 @@ private:
   const QString command_name;
 };
 
-template<int type>
-class HyperItem : public Item<type>
+template<int type> class HyperItem : public Item<type>
 {
 public:
   void set_label(const QString& label)
@@ -80,7 +82,10 @@ public:
   }
 
 protected:
-  nlohmann::json encode() const override { return {{type_key, type}}; }
+  nlohmann::json encode() const override
+  {
+    return {{type_key, type}};
+  }
 };
 
 class GroupItem : public HyperItem<group_item_id>
@@ -106,8 +111,10 @@ public:
   std::unique_ptr<QAction> make_action() const override
   {
     auto button = std::make_unique<QToolButton>();
-    QObject::connect(button.get(), &QToolButton::triggered,
-                     button.get(), &QToolButton::setDefaultAction);
+    QObject::connect(button.get(),
+                     &QToolButton::triggered,
+                     button.get(),
+                     &QToolButton::setDefaultAction);
     for (int row = 0; row < this->rowCount(); ++row) {
       const auto item = this->child(row);
       button->addAction(static_cast<const AbstractItem*>(item)->make_action().release());
@@ -128,8 +135,7 @@ class SwitchItem : public HyperItem<switch_item_id>
 {
 public:
   explicit SwitchItem(const nlohmann::json& item)
-    : HyperItem()
-    , m_mode_selector(QString::fromStdString(item["name"]))
+      : HyperItem(), m_mode_selector(QString::fromStdString(item["name"]))
   {
     const auto& mode_selector = *Application::instance().mode_selectors.at(m_mode_selector);
     set_label(mode_selector.translated_name());
@@ -147,8 +153,10 @@ public:
     const auto& mode_selector = *Application::instance().mode_selectors.at(m_mode_selector);
     auto button = std::make_unique<QToolButton>();
     button->setPopupMode(QToolButton::InstantPopup);
-    QObject::connect(button.get(), &QToolButton::triggered,
-                     button.get(), &QToolButton::setDefaultAction);
+    QObject::connect(button.get(),
+                     &QToolButton::triggered,
+                     button.get(),
+                     &QToolButton::setDefaultAction);
     auto& app = Application::instance();
     const auto& key_bindings = omm::Application::instance().key_bindings;
     for (auto&& command_name : mode_selector.activation_actions) {
@@ -156,8 +164,10 @@ public:
       button->addAction(action.release());
     }
     button->setDefaultAction(button->actions()[mode_selector.mode()]);
-    QObject::connect(&mode_selector, &ModeSelector::mode_changed, button.get(),
-                     [button=button.get()](int mode) { button->actions()[mode]->trigger(); });
+    QObject::connect(&mode_selector,
+                     &ModeSelector::mode_changed,
+                     button.get(),
+                     [button = button.get()](int mode) { button->actions()[mode]->trigger(); });
     auto action = std::make_unique<QWidgetAction>(nullptr);
     action->setDefaultWidget(button.release());
     return action;
@@ -187,7 +197,6 @@ public:
 
 namespace omm
 {
-
 nlohmann::json ToolBarItemModel::encode(const QModelIndexList& indices) const
 {
   const auto filter = [indices](const QModelIndex& index) {
@@ -214,9 +223,7 @@ nlohmann::json ToolBarItemModel::encode(const QModelIndexList& indices) const
     }
     items.push_back(static_cast<const AbstractItem*>(itemFromIndex(index))->encode());
   }
-  return {
-    {items_key, items}
-  };
+  return {{items_key, items}};
 }
 
 QString ToolBarItemModel::encode_str(const QModelIndexList& indices) const
@@ -234,24 +241,24 @@ nlohmann::json ToolBarItemModel::encode() const
   if (const std::size_t n = rowCount(); n == 0) {
     return {};
   } else {
-    return encode(QItemSelectionRange(index(0, 0), index(n-1, 0)).indexes());
+    return encode(QItemSelectionRange(index(0, 0), index(n - 1, 0)).indexes());
   }
 }
 
 void ToolBarItemModel::remove_selection(const QItemSelection& selection)
 {
   auto sorted_selection = selection;
-  std::sort(sorted_selection.begin(), sorted_selection.end(),
-            [](const QItemSelectionRange& a, const QItemSelectionRange& b)
-  {
-    if (a.top() < b.top()) {
-      assert(a.bottom() < b.top());  // no overlap
-      return false;
-    } else {
-      assert(a.top() > b.bottom());  // no overlap
-      return true;
-    }
-  });
+  std::sort(sorted_selection.begin(),
+            sorted_selection.end(),
+            [](const QItemSelectionRange& a, const QItemSelectionRange& b) {
+              if (a.top() < b.top()) {
+                assert(a.bottom() < b.top());  // no overlap
+                return false;
+              } else {
+                assert(a.top() > b.bottom());  // no overlap
+                return true;
+              }
+            });
   for (const auto& range : sorted_selection) {
     beginRemoveRows(range.parent(), range.top(), range.bottom());
     removeRows(range.top(), range.height(), range.parent());
@@ -261,10 +268,7 @@ void ToolBarItemModel::remove_selection(const QItemSelection& selection)
 
 void ToolBarItemModel::add_group()
 {
-  add_single_item({
-     {type_key, GroupItem::TYPE},
-     {items_key, nlohmann::json::array()}
-  });
+  add_single_item({{type_key, GroupItem::TYPE}, {items_key, nlohmann::json::array()}});
 }
 
 void ToolBarItemModel::add_separator()
@@ -274,10 +278,7 @@ void ToolBarItemModel::add_separator()
 
 void ToolBarItemModel::add_mode_selector(const QString& mode_selector_name)
 {
-  add_single_item({
-     {type_key, SwitchItem::TYPE},
-     {"name", mode_selector_name.toStdString()}
-  });
+  add_single_item({{type_key, SwitchItem::TYPE}, {"name", mode_selector_name.toStdString()}});
 }
 
 void ToolBarItemModel::add_items(const QString& code, int row, const QModelIndex& parent)
@@ -363,18 +364,24 @@ void ToolBarItemModel::reset(const QString& configuration)
   endResetModel();
 }
 
-bool ToolBarItemModel::canDropMimeData(const QMimeData* data, Qt::DropAction action,
-                                       int row, int column, const QModelIndex& parent) const
+bool ToolBarItemModel::canDropMimeData(const QMimeData* data,
+                                       Qt::DropAction action,
+                                       int row,
+                                       int column,
+                                       const QModelIndex& parent) const
 {
   Q_UNUSED(column)
   Q_UNUSED(row)
   Q_UNUSED(parent)
   return data->hasFormat(ToolBarDialog::mime_type)
-      && ::contains(std::set{ Qt::MoveAction, Qt::LinkAction}, action);
+         && ::contains(std::set{Qt::MoveAction, Qt::LinkAction}, action);
 }
 
-bool ToolBarItemModel::dropMimeData(const QMimeData* data, Qt::DropAction action,
-                                    int row, int column, const QModelIndex& parent)
+bool ToolBarItemModel::dropMimeData(const QMimeData* data,
+                                    Qt::DropAction action,
+                                    int row,
+                                    int column,
+                                    const QModelIndex& parent)
 {
   Q_UNUSED(action)
   Q_UNUSED(column)

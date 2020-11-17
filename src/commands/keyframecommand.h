@@ -1,24 +1,27 @@
 #pragma once
 
+#include "animation/track.h"
 #include "commands/command.h"
 #include "variant.h"
 #include <map>
 #include <set>
-#include "animation/track.h"
 
 namespace omm
 {
-
 class Animator;
 class Property;
 class KeyFrameCommand : public Command
 {
 protected:
-  KeyFrameCommand(Animator& animator, const QString& label, int frame,
+  KeyFrameCommand(Animator& animator,
+                  const QString& label,
+                  int frame,
                   const std::map<Property*, Track::Knot*>& refs,
                   std::map<Property*, std::unique_ptr<Track::Knot>> owns = {});
-  KeyFrameCommand(Animator& animator, const QString& label, int frame,
-                  std::map<Property*, std::unique_ptr<Track::Knot> > owns);
+  KeyFrameCommand(Animator& animator,
+                  const QString& label,
+                  int frame,
+                  std::map<Property*, std::unique_ptr<Track::Knot>> owns);
   void insert();
   void remove();
 
@@ -33,19 +36,29 @@ private:
 class RemoveKeyFrameCommand : public KeyFrameCommand
 {
 public:
-  RemoveKeyFrameCommand(Animator& animator, int frame,
-                        const std::set<Property*>& properties);
-  void undo() override { insert(); }
-  void redo() override { remove(); }
+  RemoveKeyFrameCommand(Animator& animator, int frame, const std::set<Property*>& properties);
+  void undo() override
+  {
+    insert();
+  }
+  void redo() override
+  {
+    remove();
+  }
 };
 
 class InsertKeyFrameCommand : public KeyFrameCommand
 {
 public:
-  InsertKeyFrameCommand(Animator& animator, int frame,
-                        const std::set<Property*>& properties);
-  void undo() override { remove(); }
-  void redo() override { insert(); }
+  InsertKeyFrameCommand(Animator& animator, int frame, const std::set<Property*>& properties);
+  void undo() override
+  {
+    remove();
+  }
+  void redo() override
+  {
+    insert();
+  }
 };
 
 class MoveKeyFrameCommand : public Command
@@ -57,7 +70,10 @@ public:
   void redo() override;
 
   bool mergeWith(const QUndoCommand* other) override;
-  int id() const override { return MOVE_KEYFRAMES_COMMAND_ID; }
+  int id() const override
+  {
+    return MOVE_KEYFRAMES_COMMAND_ID;
+  }
 
 private:
   mutable std::map<int, std::unique_ptr<Track::Knot>> m_removed_values;
@@ -72,10 +88,19 @@ class ChangeKeyFrameCommand : public Command
 {
 public:
   ChangeKeyFrameCommand(int frame, Property& property, std::unique_ptr<Track::Knot> new_value);
-  void undo() override { swap(); }
-  void redo() override { swap(); }
+  void undo() override
+  {
+    swap();
+  }
+  void redo() override
+  {
+    swap();
+  }
   bool mergeWith(const QUndoCommand* other) override;
-  int id() const override { return CHANGE_KEYFRAMES_COMMAND_ID; }
+  int id() const override
+  {
+    return CHANGE_KEYFRAMES_COMMAND_ID;
+  }
 
 private:
   const int m_frame;

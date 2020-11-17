@@ -1,27 +1,27 @@
 #include "managers/objectmanager/tagsitemdelegate.h"
 
-#include <QPainter>
 #include <QDebug>
 #include <QMouseEvent>
+#include <QPainter>
 
-#include "managers/objectmanager/objecttreeview.h"
-#include "tags/tag.h"
-#include "scene/scene.h"
-#include "managers/objectmanager/objecttreeselectionmodel.h"
 #include "mainwindow/application.h"
+#include "managers/objectmanager/objecttreeselectionmodel.h"
+#include "managers/objectmanager/objecttreeview.h"
+#include "scene/scene.h"
+#include "tags/tag.h"
 
 namespace omm
 {
-
-TagsItemDelegate::TagsItemDelegate(ObjectTreeView& view, ObjectTreeSelectionModel& selection_model, const int column)
-  : m_view(view)
-  , m_selection_model(selection_model)
-  , m_column(column)
+TagsItemDelegate::TagsItemDelegate(ObjectTreeView& view,
+                                   ObjectTreeSelectionModel& selection_model,
+                                   const int column)
+    : m_view(view), m_selection_model(selection_model), m_column(column)
 {
 }
 
-void TagsItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem& option,
-                              const QModelIndex &index ) const
+void TagsItemDelegate::paint(QPainter* painter,
+                             const QStyleOptionViewItem& option,
+                             const QModelIndex& index) const
 {
   painter->save();
   QPoint pos = cell_pos(index);
@@ -33,8 +33,7 @@ void TagsItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem& opt
 
   const auto& object = m_view.model()->item_at(index);
 
-  for (size_t i = 0; i < object.tags.size(); ++i)
-  {
+  for (size_t i = 0; i < object.tags.size(); ++i) {
     const QRect tag_rect = this->tag_rect(pos, i);
     auto& tag = object.tags.item(i);
     painter->setClipRect(tag_rect);
@@ -66,16 +65,17 @@ void TagsItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem& opt
   painter->restore();
 }
 
-QSize
-TagsItemDelegate::sizeHint(const QStyleOptionViewItem &, const QModelIndex &index) const
+QSize TagsItemDelegate::sizeHint(const QStyleOptionViewItem&, const QModelIndex& index) const
 {
   const int n_tags = static_cast<int>(m_view.model()->item_at(index).tags.size());
   const int width = n_tags * advance();
   return QSize(width, tag_icon_size().height());
 }
 
-bool TagsItemDelegate::editorEvent( QEvent *event, QAbstractItemModel *,
-                                    const QStyleOptionViewItem &, const QModelIndex & )
+bool TagsItemDelegate::editorEvent(QEvent* event,
+                                   QAbstractItemModel*,
+                                   const QStyleOptionViewItem&,
+                                   const QModelIndex&)
 {
   switch (event->type()) {
   case QEvent::MouseButtonPress:
@@ -90,7 +90,9 @@ bool TagsItemDelegate::editorEvent( QEvent *event, QAbstractItemModel *,
 bool TagsItemDelegate::on_mouse_button_press(QMouseEvent& event)
 {
   Tag* tag = tag_at(event.pos());
-  if (tag == nullptr) { return false; }
+  if (tag == nullptr) {
+    return false;
+  }
   const bool is_selected = m_selection_model.is_selected(*tag);
   switch (event.button()) {
   case Qt::LeftButton:
@@ -124,9 +126,13 @@ bool TagsItemDelegate::on_mouse_button_press(QMouseEvent& event)
 
 bool TagsItemDelegate::on_mouse_button_release(QMouseEvent& event)
 {
-  if (event.button() != Qt::LeftButton) { return false; }
+  if (event.button() != Qt::LeftButton) {
+    return false;
+  }
   Tag* tag = tag_at(event.pos());
-  if (tag == nullptr) { return false; }
+  if (tag == nullptr) {
+    return false;
+  }
   if (m_fragile_selection) {
     m_fragile_selection = false;
     return false;
@@ -146,11 +152,16 @@ QPoint TagsItemDelegate::cell_pos(const QModelIndex& index) const
   return m_view.visualRect(index).topLeft();
 }
 
-Tag* TagsItemDelegate::tag_at(const QPoint& pos) const { return tag_at(m_view.indexAt(pos), pos); }
+Tag* TagsItemDelegate::tag_at(const QPoint& pos) const
+{
+  return tag_at(m_view.indexAt(pos), pos);
+}
 
 Tag* TagsItemDelegate::tag_at(const QModelIndex& index, const QPoint& pos) const
 {
-  if (!index.isValid()) { return nullptr; }
+  if (!index.isValid()) {
+    return nullptr;
+  }
   const int x = (pos.x() - cell_pos(index).x()) / advance();
   Object& object = m_view.model()->item_at(index);
   if (x < 0 || x >= static_cast<int>(object.tags.size())) {
@@ -167,7 +178,9 @@ Tag* TagsItemDelegate::tag_before(const QPoint& pos) const
 
 Tag* TagsItemDelegate::tag_before(const QModelIndex& index, QPoint pos) const
 {
-  if (!index.isValid()) { return nullptr; }
+  if (!index.isValid()) {
+    return nullptr;
+  }
 
   pos -= QPoint(cell_pos(index).x(), 0);
 

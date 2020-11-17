@@ -1,17 +1,14 @@
 #include "preferences/uicolorspage.h"
-#include "ui_uicolorspage.h"
-#include "preferences/uicolorstreeviewdelegate.h"
+#include "logging.h"
 #include "preferences/uicolors.h"
+#include "preferences/uicolorstreeviewdelegate.h"
+#include "ui_uicolorspage.h"
 #include <QApplication>
 #include <QMessageBox>
-#include "logging.h"
 
 namespace omm
 {
-
-UiColorsPage::UiColorsPage(UiColors& colors)
-  : m_ui(new Ui::UiColorsPage)
-  , m_colors(colors)
+UiColorsPage::UiColorsPage(UiColors& colors) : m_ui(new Ui::UiColorsPage), m_colors(colors)
 {
   m_ui->setupUi(this);
 
@@ -32,10 +29,11 @@ UiColorsPage::UiColorsPage(UiColors& colors)
 #endif
 
   connect(m_ui->pb_reset, &QPushButton::clicked, this, [this]() {
-    if (QMessageBox::question(this, tr("Reset all colors"),
-        tr("Do you really want to reset all colors for in the current color schema?\nThis cannot be undone."))
-        == QMessageBox::Yes)
-    {
+    if (QMessageBox::question(this,
+                              tr("Reset all colors"),
+                              tr("Do you really want to reset all colors for in the current color "
+                                 "schema?\nThis cannot be undone."))
+        == QMessageBox::Yes) {
       m_colors.reset();
     }
   });
@@ -44,8 +42,10 @@ UiColorsPage::UiColorsPage(UiColors& colors)
   m_ui->comboBox->clear();
   m_ui->comboBox->addItems(m_colors.skin_names());
   m_ui->comboBox->setCurrentIndex(m_colors.skin_index());
-  connect(m_ui->comboBox, qOverload<int>(&QComboBox::currentIndexChanged),
-          this, &UiColorsPage::load_skin);
+  connect(m_ui->comboBox,
+          qOverload<int>(&QComboBox::currentIndexChanged),
+          this,
+          &UiColorsPage::load_skin);
 }
 
 UiColorsPage::~UiColorsPage()

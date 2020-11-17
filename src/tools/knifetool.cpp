@@ -1,17 +1,16 @@
 #include "tools/knifetool.h"
-#include "scene/history/historymodel.h"
-#include <QCoreApplication>
-#include "scene/scene.h"
-#include "common.h"
-#include "objects/path.h"
 #include "commands/cutpathcommand.h"
 #include "commands/modifypointscommand.h"
-#include <2geom/path-intersection.h>
+#include "common.h"
+#include "objects/path.h"
+#include "scene/history/historymodel.h"
+#include "scene/scene.h"
 #include <2geom/line.h>
+#include <2geom/path-intersection.h>
+#include <QCoreApplication>
 
 namespace
 {
-
 using namespace omm;
 
 template<typename ResultFormat>
@@ -19,18 +18,16 @@ std::vector<ResultFormat>
 compute_cut_points(const Geom::PathVector& path_vector, Vec2f start, Vec2f& end)
 {
   static const auto line = [](const Vec2f& start, const Vec2f& end) {
-    std::vector<Geom::CubicBezier> lines {
-      std::vector<Geom::Point>{{start.x, start.y},
-                               {start.x, start.y}, {end.x, end.y},
-                               {end.x, end.y}}
-    };
+    std::vector<Geom::CubicBezier> lines{std::vector<Geom::Point>{{start.x, start.y},
+                                                                  {start.x, start.y},
+                                                                  {end.x, end.y},
+                                                                  {end.x, end.y}}};
     return Geom::PathVector(Geom::Path(lines.begin(), lines.end()));
   };
   const auto intersections = path_vector.intersect(line(start, end), 0.0);
   if constexpr (std::is_same_v<ResultFormat, Geom::PathVectorTime>) {
-    return ::transform<Geom::PathVectorTime>(intersections, [](const auto& piv) {
-      return piv.first;
-    });
+    return ::transform<Geom::PathVectorTime>(intersections,
+                                             [](const auto& piv) { return piv.first; });
   } else {
     static_assert(std::is_same_v<ResultFormat, Vec2f>);
     return ::transform<Vec2f>(intersections, [](const auto& piv) {
@@ -44,10 +41,11 @@ compute_cut_points(const Geom::PathVector& path_vector, Vec2f start, Vec2f& end)
 
 namespace omm
 {
+KnifeTool::KnifeTool(Scene& scene) : SelectPointsBaseTool(scene)
+{
+}
 
-KnifeTool::KnifeTool(Scene& scene) : SelectPointsBaseTool(scene) { }
-
-bool KnifeTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEvent &e)
+bool KnifeTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e)
 {
   m_mouse_move_pos = pos;
   if (SelectPointsBaseTool::mouse_move(delta, pos, e)) {
@@ -55,9 +53,10 @@ bool KnifeTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEve
   } else if (m_is_cutting) {
     m_points.clear();
     for (auto&& path : ::type_cast<Path*>(scene()->item_selection<Object>())) {
-      const auto path_vector = path->global_transformation(Space::Viewport).apply(path->geom_paths());
-      const auto cut_points = compute_cut_points<Vec2f>(path_vector,
-                                                        m_mouse_press_pos, m_mouse_move_pos);
+      const auto path_vector
+          = path->global_transformation(Space::Viewport).apply(path->geom_paths());
+      const auto cut_points
+          = compute_cut_points<Vec2f>(path_vector, m_mouse_press_pos, m_mouse_move_pos);
       m_points.insert(m_points.end(), cut_points.begin(), cut_points.end());
     }
     return true;
@@ -66,9 +65,8 @@ bool KnifeTool::mouse_move(const Vec2f &delta, const Vec2f &pos, const QMouseEve
   }
 }
 
-bool KnifeTool::mouse_press(const Vec2f &pos, const QMouseEvent &event)
+bool KnifeTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
-
   reset();
   m_mouse_press_pos = pos;
   if (SelectPointsBaseTool::mouse_press(pos, event)) {
@@ -82,7 +80,7 @@ bool KnifeTool::mouse_press(const Vec2f &pos, const QMouseEvent &event)
   }
 }
 
-void KnifeTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
+void KnifeTool::mouse_release(const Vec2f& pos, const QMouseEvent& event)
 {
   Q_UNUSED(pos)
   Q_UNUSED(event)
@@ -90,7 +88,8 @@ void KnifeTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
     if (const auto paths = ::type_cast<Path*>(scene()->item_selection<Object>()); !paths.empty()) {
       std::unique_ptr<Macro> macro;
       for (auto&& path : paths) {
-        const auto path_vector = path->global_transformation(Space::Viewport).apply(path->geom_paths());
+        const auto path_vector
+            = path->global_transformation(Space::Viewport).apply(path->geom_paths());
         const auto cut_points = compute_cut_points<Geom::PathVectorTime>(path_vector,
                                                                          m_mouse_press_pos,
                                                                          m_mouse_move_pos);
@@ -108,20 +107,23 @@ void KnifeTool::mouse_release(const Vec2f &pos, const QMouseEvent &event)
   m_is_cutting = false;
 }
 
-void KnifeTool::draw(Painter &renderer) const
+void KnifeTool::draw(Painter& renderer) const
 {
   SelectPointsBaseTool::draw(renderer);
   if (m_is_cutting) {
     renderer.painter->setPen(ui_color(HandleStatus::Active, "Handle", "foreground"));
-    renderer.painter->drawLine(m_mouse_press_pos.x, m_mouse_press_pos.y,
-                               m_mouse_move_pos.x, m_mouse_move_pos.y);
+    renderer.painter->drawLine(m_mouse_press_pos.x,
+                               m_mouse_press_pos.y,
+                               m_mouse_move_pos.x,
+                               m_mouse_move_pos.y);
     for (const Point& p : m_points) {
       QPen pen;
-      pen.setColor(Qt::white);;
+      pen.setColor(Qt::white);
+      ;
       pen.setWidthF(3);
       renderer.painter->setPen(pen);
-      const auto r = 6.0/2.0;
-      renderer.painter->drawEllipse(p.position.x-r, p.position.y-r, 2*r, 2*r);
+      const auto r = 6.0 / 2.0;
+      renderer.painter->drawEllipse(p.position.x - r, p.position.y - r, 2 * r, 2 * r);
     }
   }
 }
@@ -131,8 +133,14 @@ QString KnifeTool::name() const
   return QCoreApplication::translate("any-context", TYPE);
 }
 
-QString KnifeTool::type() const { return TYPE; }
-void KnifeTool::cancel() { m_is_cutting = false; }
+QString KnifeTool::type() const
+{
+  return TYPE;
+}
+void KnifeTool::cancel()
+{
+  m_is_cutting = false;
+}
 
 SceneMode KnifeTool::scene_mode() const
 {

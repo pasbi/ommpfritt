@@ -1,24 +1,23 @@
 #pragma once
 
-#include <QIcon>
 #include "aspects/propertyowner.h"
 #include "color/color.h"
-#include "properties/propertygroups/markerproperties.h"
+#include "nodesystem/nodecompilerglsl.h"
 #include "nodesystem/nodemodel.h"
 #include "nodesystem/nodesowner.h"
-#include "nodesystem/nodecompilerglsl.h"
+#include "properties/propertygroups/markerproperties.h"
 #include "renderers/texture.h"
+#include <QIcon>
 
 namespace omm
 {
-
 class Scene;
 class OffscreenRenderer;
 class NodeModel;
 
 class Style
-  : public PropertyOwner<Kind::Style>
-  , public NodesOwner
+    : public PropertyOwner<Kind::Style>
+    , public NodesOwner
 {
   Q_OBJECT
 public:
@@ -29,7 +28,9 @@ public:
   static constexpr auto TYPE = "Style";
   std::unique_ptr<Style> clone() const;  // provided for interface consistency
   Flag flags() const override;
-  Texture render_texture(const Object& object, const QSize& size, const QRectF& roi,
+  Texture render_texture(const Object& object,
+                         const QSize& size,
+                         const QRectF& roi,
                          const Painter::Options& options) const;
 
   void serialize(AbstractSerializer& serializer, const Pointer& root) const override;

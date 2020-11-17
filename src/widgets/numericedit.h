@@ -1,21 +1,19 @@
 #pragma once
 
-#include <QApplication>
-#include <QLineEdit>
-#include <sstream>
-#include <numeric>
-#include <cmath>
-#include <QWheelEvent>
-#include <memory>
-#include <sstream>
-#include <iomanip>
-#include <QCoreApplication>
 #include "logging.h"
 #include "properties/numericproperty.h"
+#include <QApplication>
+#include <QCoreApplication>
+#include <QLineEdit>
+#include <QWheelEvent>
+#include <cmath>
+#include <iomanip>
+#include <memory>
+#include <numeric>
+#include <sstream>
 
 namespace omm
 {
-
 class AbstractNumericEdit : public QLineEdit
 {
   Q_OBJECT
@@ -25,8 +23,14 @@ public:
   QString label;
   void set_prefix(const QString& prefix);
   void set_suffix(const QString& suffix);
-  QString prefix() const { return m_prefix; }
-  QString suffix() const { return m_suffix; }
+  QString prefix() const
+  {
+    return m_prefix;
+  }
+  QString suffix() const
+  {
+    return m_suffix;
+  }
 
 protected:
   void paintEvent(QPaintEvent*) override;
@@ -43,8 +47,7 @@ private:
   QString m_suffix;
 };
 
-template<typename ValueType>
-class NumericEdit : public AbstractNumericEdit
+template<typename ValueType> class NumericEdit : public AbstractNumericEdit
 {
 public:
   const QString inf = "inf";
@@ -105,7 +108,10 @@ public:
     m_step = step;
   }
 
-  void set_multiplier(double multiplier) { m_multiplier = multiplier; }
+  void set_multiplier(double multiplier)
+  {
+    m_multiplier = multiplier;
+  }
 
   void set_value(value_type value)
   {
@@ -126,7 +132,10 @@ public:
     set_text(m_value);
   }
 
-  void set_invalid_value() { setText(QObject::tr("< invalid >", "property")); }
+  void set_invalid_value()
+  {
+    setText(QObject::tr("< invalid >", "property"));
+  }
   value_type value() const
   {
     return std::clamp(m_value, m_min, m_max);
@@ -203,8 +212,8 @@ protected:
   }
 
 private:
-  value_type m_min = NumericProperty<value_type>::lowest_possible_value;
-  value_type m_max = NumericProperty<value_type>::highest_possible_value;
+  value_type m_min = NumericProperty<value_type>::lowest_possible_value();
+  value_type m_max = NumericProperty<value_type>::highest_possible_value();
   value_type m_step = 1;
   double m_multiplier = 1.0;
   QPoint m_mouse_press_pos;
@@ -226,9 +235,9 @@ private:
   value_type parse(const QString& text) const
   {
     if (text == inf) {
-      return NumericProperty<value_type>::highest_possible_value;
+      return NumericProperty<value_type>::highest_possible_value();
     } else if (text == neg_inf) {
-      return NumericProperty<value_type>::lowest_possible_value;
+      return NumericProperty<value_type>::lowest_possible_value();
     } else {
       std::istringstream sstream(text.toStdString());
       value_type value;
@@ -271,11 +280,11 @@ public:
     auto max_edit = std::make_unique<NumericEdit<ValueType>>();
     auto& max_edit_ref = *max_edit;
     connect(min_edit.get(), &AbstractNumericEdit::value_changed, [&min_edit_ref, &max_edit_ref]() {
-      const auto high = NumericProperty<value_type>::highest_possible_value;
+      const auto high = NumericProperty<value_type>::highest_possible_value();
       max_edit_ref.set_range(min_edit_ref.value(), high);
     });
     connect(max_edit.get(), &AbstractNumericEdit::value_changed, [&min_edit_ref, &max_edit_ref]() {
-      const auto low = NumericProperty<value_type>::lowest_possible_value;
+      const auto low = NumericProperty<value_type>::lowest_possible_value();
       min_edit_ref.set_range(low, max_edit_ref.value());
     });
     return std::pair(std::move(min_edit), std::move(max_edit));
@@ -296,4 +305,4 @@ private:
 using IntNumericEdit = NumericEdit<int>;
 using DoubleNumericEdit = NumericEdit<double>;
 
-}  // namespace
+}  // namespace omm

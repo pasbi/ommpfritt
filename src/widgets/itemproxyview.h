@@ -1,21 +1,21 @@
 #pragma once
 
+#include "proxychain.h"
+#include <KF5/KItemModels/KLinkItemSelectionModel>
+#include <QAbstractItemView>
 #include <QAbstractProxyModel>
 #include <QIdentityProxyModel>
-#include <QAbstractItemView>
 #include <QWidget>
 #include <memory>
-#include <KF5/KItemModels/KLinkItemSelectionModel>
-#include "proxychain.h"
 
 namespace omm
 {
-
 class LinkItemSelectionModel : public KLinkItemSelectionModel
 {
 public:
   using KLinkItemSelectionModel::KLinkItemSelectionModel;
-  void setCurrentIndex(const QModelIndex& index, QItemSelectionModel::SelectionFlags command) override;
+  void setCurrentIndex(const QModelIndex& index,
+                       QItemSelectionModel::SelectionFlags command) override;
 };
 
 /**
@@ -28,9 +28,9 @@ public:
 template<typename ViewT> class ItemProxyView : public ViewT
 {
   static_assert(std::is_base_of_v<QAbstractItemView, ViewT>);
+
 public:
-  ItemProxyView(std::unique_ptr<ProxyChain> proxy, QWidget* parent = nullptr)
-    : ViewT(parent)
+  ItemProxyView(std::unique_ptr<ProxyChain> proxy, QWidget* parent = nullptr) : ViewT(parent)
   {
     set_proxy(std::move(proxy));
   }
@@ -40,7 +40,10 @@ public:
     set_proxy(std::make_unique<ProxyChain>());
   }
 
-  ProxyChain* model() const { return m_proxy.get(); }
+  ProxyChain* model() const
+  {
+    return m_proxy.get();
+  }
 
   void set_proxy(std::unique_ptr<ProxyChain> proxy)
   {

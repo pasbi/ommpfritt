@@ -1,27 +1,34 @@
 #include "propertywidgets/optionpropertywidget/optionsedit.h"
-#include "managers/nodemanager/nodeview.h"
-#include <QApplication>
-#include <QLineEdit>
 #include "common.h"
-#include <QPaintEvent>
-#include <QStylePainter>
+#include "logging.h"
+#include "managers/nodemanager/nodeview.h"
 #include <QAbstractItemView>
+#include <QApplication>
 #include <QGraphicsItem>
 #include <QGraphicsProxyWidget>
-#include "logging.h"
+#include <QLineEdit>
+#include <QPaintEvent>
+#include <QStylePainter>
 
 namespace omm
 {
-
-PrefixComboBox::PrefixComboBox(QWidget* parent)
-  : QComboBox(parent)
+PrefixComboBox::PrefixComboBox(QWidget* parent) : QComboBox(parent)
 {
   view()->installEventFilter(this);
 }
 
-void OptionsEdit::set_value(const value_type& value) { setCurrentIndex(value); }
-void OptionsEdit::set_inconsistent_value() { setCurrentIndex(-1); }
-OptionsEdit::value_type OptionsEdit::value() const { return currentIndex(); }
+void OptionsEdit::set_value(const value_type& value)
+{
+  setCurrentIndex(value);
+}
+void OptionsEdit::set_inconsistent_value()
+{
+  setCurrentIndex(-1);
+}
+OptionsEdit::value_type OptionsEdit::value() const
+{
+  return currentIndex();
+}
 
 void OptionsEdit::wheelEvent(QWheelEvent* event)
 {
@@ -47,8 +54,7 @@ void PrefixComboBox::showPopup()
   Q_EMIT popup_shown();
 }
 
-OptionsEdit::OptionsEdit(QWidget* parent)
-  : PrefixComboBox(parent)
+OptionsEdit::OptionsEdit(QWidget* parent) : PrefixComboBox(parent)
 {
   setFocusPolicy(Qt::StrongFocus);
 }

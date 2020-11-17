@@ -1,14 +1,13 @@
 #include "preferences/uicoloredit.h"
-#include "ui_uicoloredit.h"
-#include <QPainter>
-#include <QColorDialog>
-#include <QStyle>
 #include "logging.h"
 #include "mainwindow/application.h"
+#include "ui_uicoloredit.h"
+#include <QColorDialog>
+#include <QPainter>
+#include <QStyle>
 
 namespace omm
 {
-
 UiColorEdit::UiColorEdit(QWidget* parent) : QWidget(parent), m_ui(new Ui::UiColorEdit)
 {
   m_ui->setupUi(this);
@@ -21,7 +20,6 @@ UiColorEdit::UiColorEdit(QWidget* parent) : QWidget(parent), m_ui(new Ui::UiColo
   });
   Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset);
 }
-
 
 UiColorEdit::~UiColorEdit()
 {
@@ -52,8 +50,8 @@ void UiColorEdit::paintEvent(QPaintEvent*)
 
 void UiColorEdit::mouseDoubleClickEvent(QMouseEvent*)
 {
-  const QColor color = QColorDialog::getColor(m_color.to_qcolor(), this,
-                                              "", QColorDialog::ShowAlphaChannel);
+  const QColor color
+      = QColorDialog::getColor(m_color.to_qcolor(), this, "", QColorDialog::ShowAlphaChannel);
   if (color.isValid()) {
     set_color(Color(color));
   }

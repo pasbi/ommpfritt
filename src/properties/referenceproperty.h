@@ -1,17 +1,18 @@
 #pragma once
 
-#include "properties/typedproperty.h"
 #include "aspects/propertyowner.h"
-#include <Qt>
 #include "dnf.h"
+#include "properties/typedproperty.h"
+#include <Qt>
 
 namespace omm
 {
-
 class AbstractPropertyOwner;
 class ReferenceProperty;
 
-class ReferenceProperty : public TypedProperty<AbstractPropertyOwner*>, ReferencePolisher
+class ReferenceProperty
+    : public TypedProperty<AbstractPropertyOwner*>
+    , ReferencePolisher
 {
   Q_OBJECT
 public:
@@ -25,17 +26,16 @@ public:
 
   ReferenceProperty& set_filter(const Filter& filter);
   void revise() override;
-  void set(AbstractPropertyOwner *const &value) override;
+  void set(AbstractPropertyOwner* const& value) override;
 
   bool is_compatible(const Property& other) const override;
 
   static std::vector<omm::AbstractPropertyOwner*>
-  collect_candidates(const Scene& scene, const Kind kinds,
-                                         const Flag flags);
+  collect_candidates(const Scene& scene, const Kind kinds, const Flag flags);
 
   static const std::map<Kind, QString> KIND_KEYS;
   static const std::map<Flag, QString> FLAG_KEYS;
-  void update_references(const std::map<std::size_t, AbstractPropertyOwner *> &references) override;
+  void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& references) override;
 
   static const PropertyDetail detail;
   Filter filter() const;

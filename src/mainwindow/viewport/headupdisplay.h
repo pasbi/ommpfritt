@@ -8,7 +8,6 @@ class QMouseEvent;
 
 namespace omm
 {
-
 class HeadUpDisplay
 {
 public:

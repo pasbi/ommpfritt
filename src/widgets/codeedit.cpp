@@ -1,20 +1,22 @@
 #include "widgets/codeedit.h"
-#include <QHBoxLayout>
-#include <QTextEdit>
-#include <QKeyEvent>
-#include <memory>
-#include "common.h"
-#include <QScrollBar>
 #include "common.h"
 #include "logging.h"
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QScrollBar>
+#include <QTextEdit>
+#include <memory>
 
 namespace
 {
-
 QString trim_trailing_newline(const QString& s)
 {
-  if (s.size() == 0) { return s; }
-  if (s.back() == '\n') { return s.mid(0, s.size() - 1); }
+  if (s.size() == 0) {
+    return s;
+  }
+  if (s.back() == '\n') {
+    return s.mid(0, s.size() - 1);
+  }
   return s;
 }
 
@@ -22,10 +24,9 @@ QString trim_trailing_newline(const QString& s)
 
 namespace omm
 {
-
 void TextEdit::keyPressEvent(QKeyEvent* event)
 {
-  const auto captioned_keys = std::set { Qt::Key_Return, Qt::Key_Down, Qt::Key_Up };
+  const auto captioned_keys = std::set{Qt::Key_Return, Qt::Key_Down, Qt::Key_Up};
   if (::contains(captioned_keys, static_cast<Qt::Key>(event->key()))) {
     if (event->modifiers() == caption_modifiers) {
       event->setModifiers(Qt::NoModifier);
@@ -54,7 +55,7 @@ CodeEdit::CodeEdit(QWidget* parent) : QWidget(parent)
   const auto font_metrics = m_text_edit->fontMetrics();
   m_text_edit->setLineWrapMode(QTextEdit::NoWrap);
 
-  static constexpr int big_number = 1000; // arbitrary big number.
+  static constexpr int big_number = 1000;  // arbitrary big number.
   const QString test_string(" ");
 
   // compute the size of a char in double-precision
@@ -70,10 +71,19 @@ CodeEdit::CodeEdit(QWidget* parent) : QWidget(parent)
   });
 }
 
-QString CodeEdit::code() const { return m_text_edit->toPlainText(); }
-void CodeEdit::clear() { m_text_edit->clear(); }
-void CodeEdit::set_editable(bool editable) { m_text_edit->setReadOnly(!editable); }
-void CodeEdit::set_caption_modifiers(const Qt::KeyboardModifiers &modifiers)
+QString CodeEdit::code() const
+{
+  return m_text_edit->toPlainText();
+}
+void CodeEdit::clear()
+{
+  m_text_edit->clear();
+}
+void CodeEdit::set_editable(bool editable)
+{
+  m_text_edit->setReadOnly(!editable);
+}
+void CodeEdit::set_caption_modifiers(const Qt::KeyboardModifiers& modifiers)
 {
   m_text_edit->caption_modifiers = modifiers;
 }
@@ -130,7 +140,9 @@ void CodeEdit::put(const QString& text, Stream stream)
     break;
   }
   m_text_edit->append(trim_trailing_newline(text));
-  if (was_at_bottom) { scroll_to_bottom(); }
+  if (was_at_bottom) {
+    scroll_to_bottom();
+  }
 }
 
 }  // namespace omm

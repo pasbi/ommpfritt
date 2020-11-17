@@ -1,25 +1,24 @@
 #include "managers/boundingboxmanager/boundingboxmanager.h"
-#include <QComboBox>
-#include <QLabel>
-#include "scene/scene.h"
 #include "mainwindow/application.h"
 #include "mainwindow/mainwindow.h"
 #include "mainwindow/viewport/viewport.h"
-#include "ui_boundingboxmanager.h"
 #include "objects/path.h"
-#include "tools/toolbox.h"
 #include "scene/mailbox.h"
-#include "mainwindow/application.h"
+#include "scene/scene.h"
+#include "tools/toolbox.h"
+#include "ui_boundingboxmanager.h"
+#include <QComboBox>
+#include <QLabel>
 
-namespace {
-
+namespace
+{
 static constexpr auto eps = 0.00001;
 
 enum class AspectRatio { Ignore, FromWidth, FromHeight };
 
-omm::ObjectTransformation
-find_transformation(const omm::BoundingBox& old_bb, const omm::BoundingBox& new_bb,
-                    AspectRatio aspect_ratio)
+omm::ObjectTransformation find_transformation(const omm::BoundingBox& old_bb,
+                                              const omm::BoundingBox& new_bb,
+                                              AspectRatio aspect_ratio)
 {
   omm::Vec2f s(1.0, 1.0);
 
@@ -65,11 +64,9 @@ find_transformation(const omm::BoundingBox& old_bb, const omm::BoundingBox& new_
 
 namespace omm
 {
-
 BoundingBoxManager::BoundingBoxManager(Scene& scene)
-  : Manager(tr("Bounding Box Manager"), scene)
-  , m_ui(new ::Ui::BoundingBoxManager)
-  , m_transform_points_helper(scene, Space::Scene)
+    : Manager(tr("Bounding Box Manager"), scene), m_ui(new ::Ui::BoundingBoxManager),
+      m_transform_points_helper(scene, Space::Scene)
 {
   auto widget = std::make_unique<QWidget>();
   m_ui->setupUi(widget.get());
@@ -79,7 +76,7 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
     reset_transformation();
   });
 
-  const auto adjust_mode =  [this](const Tool& tool) {
+  const auto adjust_mode = [this](const Tool& tool) {
     if (tool.scene_mode() == SceneMode::Object) {
       m_current_mode = Mode::Objects;
     } else {
@@ -91,20 +88,20 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
   connect(&scene.tool_box(), &ToolBox::active_tool_changed, this, adjust_mode);
   adjust_mode(scene.tool_box().active_tool());
 
-  connect(&scene.mail_box(), qOverload<const std::set<Object*>&>(&MailBox::selection_changed),
-          this, [this](const std::set<Object*>&)
-  {
-    update_manager();
-  });
+  connect(&scene.mail_box(),
+          qOverload<const std::set<Object*>&>(&MailBox::selection_changed),
+          this,
+          [this](const std::set<Object*>&) { update_manager(); });
 
-  connect(&scene.mail_box(), qOverload<Object&>(&MailBox::appearance_changed), this,
-               [this](Object& o)
-  {
-    Path* path = type_cast<Path*>(&o);
-    if (path != nullptr) {
-      update_manager();
-    }
-  });
+  connect(&scene.mail_box(),
+          qOverload<Object&>(&MailBox::appearance_changed),
+          this,
+          [this](Object& o) {
+            Path* path = type_cast<Path*>(&o);
+            if (path != nullptr) {
+              update_manager();
+            }
+          });
 
   connect(&scene.mail_box(), &MailBox::point_selection_changed, this, [this]() {
     update_manager();
@@ -114,14 +111,22 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
     update_manager();
   });
 
-  connect(m_ui->sp_x, &DoubleNumericEdit::value_changed,
-          this, &BoundingBoxManager::update_bounding_box);
-  connect(m_ui->sp_y, &DoubleNumericEdit::value_changed,
-          this, &BoundingBoxManager::update_bounding_box);
-  connect(m_ui->sp_w, &DoubleNumericEdit::value_changed,
-          this, &BoundingBoxManager::update_bounding_box);
-  connect(m_ui->sp_h, &DoubleNumericEdit::value_changed,
-          this, &BoundingBoxManager::update_bounding_box);
+  connect(m_ui->sp_x,
+          &DoubleNumericEdit::value_changed,
+          this,
+          &BoundingBoxManager::update_bounding_box);
+  connect(m_ui->sp_y,
+          &DoubleNumericEdit::value_changed,
+          this,
+          &BoundingBoxManager::update_bounding_box);
+  connect(m_ui->sp_w,
+          &DoubleNumericEdit::value_changed,
+          this,
+          &BoundingBoxManager::update_bounding_box);
+  connect(m_ui->sp_h,
+          &DoubleNumericEdit::value_changed,
+          this,
+          &BoundingBoxManager::update_bounding_box);
 
   m_ui->sp_w->set_lower(0.0);
   m_ui->sp_h->set_lower(0.0);
@@ -139,15 +144,22 @@ BoundingBoxManager::BoundingBoxManager(Scene& scene)
     m_ui->sp_h->setEnabled(bb.height() > eps);
   };
 
-  connect(&m_transform_points_helper, &TransformPointsHelper::initial_transformations_changed,
-          this, update_spinbox_enabledness);
-  connect(&m_transform_objects_helper, &TransformObjectsHelper::initial_transformations_changed,
-          this, update_spinbox_enabledness);
+  connect(&m_transform_points_helper,
+          &TransformPointsHelper::initial_transformations_changed,
+          this,
+          update_spinbox_enabledness);
+  connect(&m_transform_objects_helper,
+          &TransformObjectsHelper::initial_transformations_changed,
+          this,
+          update_spinbox_enabledness);
 }
 
-QString BoundingBoxManager::type() const { return TYPE;  }
+QString BoundingBoxManager::type() const
+{
+  return TYPE;
+}
 
-void BoundingBoxManager::on_property_value_changed(Property &property)
+void BoundingBoxManager::on_property_value_changed(Property& property)
 {
   Q_UNUSED(property);
   reset_transformation();
@@ -160,11 +172,10 @@ BoundingBox BoundingBoxManager::update_manager()
     case Mode::Points:
       return BoundingBox(::transform<Point>(scene().point_selection.points(Space::Scene)));
     case Mode::Objects:
-      return BoundingBox(::transform<BoundingBox>(scene().item_selection<Object>(),
-                                                  [](const Object* o)
-      {
-        return o->recursive_bounding_box(o->global_transformation(Space::Scene));
-      }));
+      return BoundingBox(
+          ::transform<BoundingBox>(scene().item_selection<Object>(), [](const Object* o) {
+            return o->recursive_bounding_box(o->global_transformation(Space::Scene));
+          }));
     default:
       return BoundingBox();
     }
@@ -198,7 +209,7 @@ void BoundingBoxManager::update_bounding_box()
     return;
   }
 
-  const AspectRatio aspect_ratio = [&ui=m_ui]() {
+  const AspectRatio aspect_ratio = [&ui = m_ui]() {
     if (ui->cb_aspectratio->isChecked()) {
       if (ui->sp_h->hasFocus()) {
         return AspectRatio::FromHeight;
@@ -209,15 +220,14 @@ void BoundingBoxManager::update_bounding_box()
     return AspectRatio::Ignore;
   }();
 
-  const ObjectTransformation t = find_transformation(m_old_bounding_box, new_bounding_box,
-                                                     aspect_ratio );
+  const ObjectTransformation t
+      = find_transformation(m_old_bounding_box, new_bounding_box, aspect_ratio);
   switch (m_current_mode) {
   case Mode::Points:
     return scene().submit(m_transform_points_helper.make_command(t));
   case Mode::Objects:
     return scene().submit(m_transform_objects_helper.make_command(t.to_mat()));
   }
-
 }
 
 void BoundingBoxManager::reset_transformation()
@@ -233,7 +243,7 @@ void BoundingBoxManager::reset_transformation()
   }
 }
 
-std::vector<std::unique_ptr<QSignalBlocker> > BoundingBoxManager::acquire_signal_blockers()
+std::vector<std::unique_ptr<QSignalBlocker>> BoundingBoxManager::acquire_signal_blockers()
 {
   const auto os = {m_ui->sp_x, m_ui->sp_y, m_ui->sp_w, m_ui->sp_h};
   std::vector<std::unique_ptr<QSignalBlocker>> blockers;
@@ -251,11 +261,16 @@ BoundingBox BoundingBoxManager::bounding_box() const
 
   const Vec2f top_left = [size, anchor]() {
     switch (Application::instance().options().anchor()) {
-    case Options::Anchor::TopLeft: return anchor;
-    case Options::Anchor::TopRight: return anchor - Vec2f(size.x, 0.0);
-    case Options::Anchor::BottomLeft: return anchor - Vec2f(0.0, size.y);
-    case Options::Anchor::BottomRight: return anchor - size;
-    case Options::Anchor::Center: return anchor - size/2.0;
+    case Options::Anchor::TopLeft:
+      return anchor;
+    case Options::Anchor::TopRight:
+      return anchor - Vec2f(size.x, 0.0);
+    case Options::Anchor::BottomLeft:
+      return anchor - Vec2f(0.0, size.y);
+    case Options::Anchor::BottomRight:
+      return anchor - size;
+    case Options::Anchor::Center:
+      return anchor - size / 2.0;
     default:
       Q_UNREACHABLE();
       return Vec2f();
@@ -271,13 +286,13 @@ bool BoundingBoxManager::perform_action(const QString& name)
   return false;
 }
 
-void BoundingBoxManager::enterEvent(QEvent *e)
+void BoundingBoxManager::enterEvent(QEvent* e)
 {
   reset_transformation();
   Manager::enterEvent(e);
 }
 
-bool BoundingBoxManager::eventFilter(QObject *o, QEvent *e)
+bool BoundingBoxManager::eventFilter(QObject* o, QEvent* e)
 {
   if (o == m_ui->sp_h || o == m_ui->sp_w || o == m_ui->sp_x || o == m_ui->sp_y) {
     if (e->type() == QEvent::FocusOut) {

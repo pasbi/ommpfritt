@@ -1,18 +1,17 @@
 #pragma once
 
+#include "widgets/itemproxyview.h"
 #include <QItemDelegate>
 #include <QKeySequenceEdit>
-#include <memory>
-#include "widgets/itemproxyview.h"
 #include <QTreeView>
+#include <memory>
 
 namespace omm
 {
-
 class AbstractPreferencesTreeViewDelegate;
 class KeyBindings;
 
-class PreferencesTreeView: public QTreeView
+class PreferencesTreeView : public QTreeView
 {
   Q_OBJECT
 public:

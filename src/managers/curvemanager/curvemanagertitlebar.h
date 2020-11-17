@@ -1,14 +1,13 @@
 #pragma once
 
-#include <set>
-#include <QWidget>
 #include "managers/managertitlebar.h"
+#include <QWidget>
+#include <set>
 
 class QPushButton;
 
 namespace omm
 {
-
 class CurveManager;
 class AbstractPropertyOwner;
 

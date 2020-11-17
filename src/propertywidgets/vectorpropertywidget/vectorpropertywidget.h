@@ -1,13 +1,12 @@
 #pragma once
 
-#include "propertywidgets/propertywidget.h"
 #include "propertywidgets/numericpropertywidget/numericmultivalueedit.h"
+#include "propertywidgets/propertywidget.h"
 #include <QHBoxLayout>
 #include <QLabel>
 
 namespace omm
 {
-
 template<typename VectorPropertyT>
 class VectorPropertyWidget : public PropertyWidget<VectorPropertyT>
 {
@@ -15,7 +14,7 @@ public:
   using value_type = typename VectorPropertyT::value_type;
   using elem_type = typename value_type::element_type;
   explicit VectorPropertyWidget(Scene& scene, const std::set<Property*>& properties)
-    : PropertyWidget<VectorPropertyT>(scene, properties)
+      : PropertyWidget<VectorPropertyT>(scene, properties)
   {
     auto x_edit = std::make_unique<NumericMultiValueEdit<elem_type>>();
     m_x_edit = x_edit.get();
@@ -33,12 +32,15 @@ public:
     x_edit->set_step(step.x);
     y_edit->set_step(step.y);
 
-    const auto mult = this->template configuration<double>(NumericPropertyDetail::MULTIPLIER_POINTER);
+    const auto mult
+        = this->template configuration<double>(NumericPropertyDetail::MULTIPLIER_POINTER);
     x_edit->set_multiplier(mult);
     y_edit->set_multiplier(mult);
 
-    const auto lower = this->template configuration<value_type>(NumericPropertyDetail::LOWER_VALUE_POINTER);
-    const auto upper = this->template configuration<value_type>(NumericPropertyDetail::UPPER_VALUE_POINTER);
+    const auto lower
+        = this->template configuration<value_type>(NumericPropertyDetail::LOWER_VALUE_POINTER);
+    const auto upper
+        = this->template configuration<value_type>(NumericPropertyDetail::UPPER_VALUE_POINTER);
     x_edit->set_range(lower.x, upper.x);
     y_edit->set_range(lower.y, upper.y);
 
@@ -73,9 +75,8 @@ protected:
   {
     const auto properties = this->properties();
 
-    const auto is_noop = [&value](const Property* p) {
-      return p->value<value_type>()[dim] == value;
-    };
+    const auto is_noop
+        = [&value](const Property* p) { return p->value<value_type>()[dim] == value; };
 
     if (!std::all_of(properties.begin(), properties.end(), is_noop)) {
       using command_t = VectorPropertiesCommand<VectorPropertyT, dim>;

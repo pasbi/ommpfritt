@@ -1,18 +1,15 @@
 #include "preferences/keysequenceedit.h"
+#include "mainwindow/application.h"
+#include <QFocusEvent>
+#include <QHBoxLayout>
 #include <QKeySequenceEdit>
 #include <QPushButton>
-#include <QHBoxLayout>
-#include <memory>
-#include <QFocusEvent>
 #include <QStyle>
-#include "mainwindow/application.h"
+#include <memory>
 
 namespace omm
 {
-
-KeySequenceEdit::KeySequenceEdit(QWidget *parent)
-  : QWidget(parent)
-  , m_ui(new Ui::KeySequenceEdit)
+KeySequenceEdit::KeySequenceEdit(QWidget* parent) : QWidget(parent), m_ui(new Ui::KeySequenceEdit)
 
 {
   m_ui->setupUi(this);
@@ -31,12 +28,12 @@ KeySequenceEdit::KeySequenceEdit(QWidget *parent)
   Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset);
 }
 
-void KeySequenceEdit::set_key_sequence(const QKeySequence &key_sequence)
+void KeySequenceEdit::set_key_sequence(const QKeySequence& key_sequence)
 {
   m_ui->key_sequence_edit->setKeySequence(key_sequence);
 }
 
-void KeySequenceEdit::set_default_key_sequence(const QKeySequence &key_sequence)
+void KeySequenceEdit::set_default_key_sequence(const QKeySequence& key_sequence)
 {
   m_default_key_sequence = key_sequence;
 }
@@ -46,7 +43,7 @@ QKeySequence KeySequenceEdit::key_sequence() const
   return m_ui->key_sequence_edit->keySequence();
 }
 
-void KeySequenceEdit::focusInEvent(QFocusEvent *event)
+void KeySequenceEdit::focusInEvent(QFocusEvent* event)
 {
   m_ui->key_sequence_edit->setFocus(event->reason());
 }

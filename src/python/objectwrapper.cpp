@@ -3,7 +3,6 @@
 
 namespace omm
 {
-
 py::object ObjectWrapper::children() const
 {
   return wrap(wrapped.tree_children());

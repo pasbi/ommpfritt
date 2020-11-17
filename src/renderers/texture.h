@@ -5,9 +5,7 @@
 
 namespace omm
 {
-
-struct Texture
-{
+struct Texture {
   explicit Texture(const QSize& size);
   explicit Texture();
   explicit Texture(const QImage& image, const QPoint& offset);

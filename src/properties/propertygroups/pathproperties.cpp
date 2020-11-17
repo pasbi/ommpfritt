@@ -1,42 +1,40 @@
 #include "properties/propertygroups/pathproperties.h"
 #include "objects/object.h"
-#include "properties/referenceproperty.h"
-#include "properties/integerproperty.h"
-#include "properties/floatproperty.h"
 #include "properties/boolproperty.h"
+#include "properties/floatproperty.h"
+#include "properties/integerproperty.h"
 #include "properties/optionproperty.h"
+#include "properties/referenceproperty.h"
 
 namespace omm
 {
-
-const std::set<QString> PathProperties::keys {
-  PATH_REFERENCE_PROPERTY_KEY,
-  ALIGN_PROPERTY_KEY,
-  SEGMENT_PROPERTY_KEY,
-  INTERPOLATION_KEY
-};
+const std::set<QString> PathProperties::keys{PATH_REFERENCE_PROPERTY_KEY,
+                                             ALIGN_PROPERTY_KEY,
+                                             SEGMENT_PROPERTY_KEY,
+                                             INTERPOLATION_KEY};
 
 void PathProperties::make_properties(const QString& category) const
 {
   create_property<ReferenceProperty>(PATH_REFERENCE_PROPERTY_KEY)
-    .set_filter(ReferenceProperty::Filter({ Kind::Object }, {{{}}}))
-    .set_label(QObject::tr("path"))
-    .set_category(category);
+      .set_filter(ReferenceProperty::Filter({Kind::Object}, {{{}}}))
+      .set_label(QObject::tr("path"))
+      .set_category(category);
   create_property<IntegerProperty>(SEGMENT_PROPERTY_KEY)
-    .set_special_value("All Segments")
-    .set_range(-1, std::numeric_limits<int>::max())
-    .set_label(QObject::tr("segment"))
-    .set_category(category);
+      .set_special_value("All Segments")
+      .set_range(-1, std::numeric_limits<int>::max())
+      .set_label(QObject::tr("segment"))
+      .set_category(category);
   create_property<OptionProperty>(INTERPOLATION_KEY)
-    .set_options({QObject::tr("Natural"), QObject::tr("Distance")})
-    .set_label(QObject::tr("Interpolation"))
-    .set_category(category);
+      .set_options({QObject::tr("Natural"), QObject::tr("Distance")})
+      .set_label(QObject::tr("Interpolation"))
+      .set_category(category);
   create_property<BoolProperty>(ALIGN_PROPERTY_KEY)
-    .set_label(QObject::tr("align"))
-    .set_category(category);
+      .set_label(QObject::tr("align"))
+      .set_category(category);
 }
 
-void PathProperties::apply_transformation(Object& object, double t,
+void PathProperties::apply_transformation(Object& object,
+                                          double t,
                                           const ObjectTransformation& transformation) const
 {
   const auto* path_object = property_value<AbstractPropertyOwner*>(PATH_REFERENCE_PROPERTY_KEY);
