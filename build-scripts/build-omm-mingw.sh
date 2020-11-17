@@ -15,7 +15,7 @@ pushd lib2geom
 git checkout 37876ed4
 popd
 echo "configure lib2geom:"
-cmake -G"MSYS Makefiles" \
+cmake -GNinja \
   -B build-lib2geom \
   -S lib2geom \
   -DCMAKE_INSTALL_PREFIX=install-lib2geom \
@@ -27,7 +27,7 @@ cmake --build build-lib2geom --target install
 QT_QM_PATH=/mingw64/share/qt5/translations/
 
 echo "Configure omm"
-cmake -G"MSYS Makefiles" \
+cmake -GNinja \
        -DCMAKE_BUILD_TYPE=Release \
        -DQT_QM_PATH="$QT_QM_PATH" \
        -S . \
