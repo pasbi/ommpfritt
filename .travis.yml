@@ -224,3 +224,6 @@ deploy:
     repo: pasbi/ommpfritt
     tags: true
   cleanup: 'true'
+branches:
+  except:
+    - /^(?i:continuous)-.*$/
