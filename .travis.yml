@@ -201,9 +201,14 @@ before_deploy:
   - git config --local user.email travis@github.com
   - git config --local user.name travis
   - |
-    if ! git describe --exact-match --tags HEAD; then
-      git tag "continuous-$TRAVIS_COMMIT"
+    TAG_NAME="$(git describe --exact-match --tags HEAD)"
+    if [ "$?" -ne "0" ]; then
+      TAG_NAME="continuous-$(echo "$TRAVIS_COMMIT" | head -c20)"
+      git tag "$TAG_NAME"
     fi
+    export TAG_NAME="$TAG_NAME"
+    git checkout "$TAG_NAME"
+    export TRAVIS_TAG="$TAG_NAME"
 deploy:
   provider: releases
   api_key:
@@ -217,4 +222,5 @@ deploy:
   - build/ommpfritt-*-x86_64.AppImage
   on:
     repo: pasbi/ommpfritt
-  skip_cleanup: 'true'
+    tags: true
+  cleanup: 'true'
