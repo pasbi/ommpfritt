@@ -217,11 +217,11 @@ deploy:
     secure: LmZaJBVmy3lTvPO7bEBIf961wyaRI4y+A/3IpHnr9NmDtFg3crmvMsAxI1SEsBWsWHTjG/B4bCjQglfDryBd/7RJ5VAuQQJgnM/yYh5ft1ijzoh88HOUA/+gndwMSz6esaaUyt1y6I23dQzXdkHo0M1IrAqApbw42d4+u1kyRazz0PgzgVuMmosj2rpeGiIpXMRR452QyH6LkXosc5/rYjcAQGDRJxQeAYAeuf6JslqVidUqGNtHX1ZhZeAAx7L7H+Vc0bzxtNSCz7ogQlTr7/nS1O0AufAITBjt7uAiapJ5CEBlpUbwY5tI+NXmSDDHx4xqhuL2bL02rQevul3HL0mCwH2Vv8js2ktrVwq3QvNZAQkuTfRjI6pUG5ES89jezQcOejZilklL6YaGMT9ACPgMAexfFV02FRyZ61qDE9z6RXiJQbSHjL7t8lyoKIunw7FmJ4pgqo8UYUYJHjNmx9Kd+ttlHq6w6kZeXgMGOxVYb0SZa3AH0MDwQE74RnhJJ5N0jPMmyQMGKJ+ZfwdUq4hYu+simbiyL6RlvN9mjWsU4tE8V1rj0Xg0lbm1hnONjoJw9+kWDTM+vmvMB3Dkuuauv8OuI0TiBgrG0a+Cv2N4Tc5nFOBdVjZzviiX6If9NXPRSw3jWdXZZwqbxXnj5S7IPvCFKgTV4ML4Jpi9jKQ=
   file_glob: true
   file:
-  - build/ommpfritt-*-win64.exe
+  - build/ommpfritt-*-Windows.exe
   - build/ommpfritt-*-Linux-*.sh
   - build/ommpfritt-*-Linux-*.tar.gz
   - build/ommpfritt-*-Linux-*.tar.Z
-  - build/ommpfritt-*-x86_64.AppImage
+  - ommpfritt-*-x86_64.AppImage
   on:
     repo: pasbi/ommpfritt
   skip_cleanup: true
