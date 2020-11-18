@@ -224,7 +224,7 @@ deploy:
   - build/ommpfritt-*-x86_64.AppImage
   on:
     repo: pasbi/ommpfritt
-  cleanup: 'true'
+  skip_cleanup: true
 branches:
   except:
     - /^(?i:continuous)-.*$/
