@@ -209,6 +209,8 @@ before_deploy:
     export TAG_NAME="$TAG_NAME"
     git checkout "$TAG_NAME"
     export TRAVIS_TAG="$TAG_NAME"
+    git pull  # there shall be no merge conflicts!
+    git push -q --tags https://${GITHUB_TOKEN}@github.com/pasbi/ommpfritt.git
 deploy:
   provider: releases
   api_key:
