@@ -17,7 +17,8 @@ function(generate_translations translations_qrc ts_dir languages prefixes cfg_fi
 
     add_custom_command(
         OUTPUT "${translations_h}"
-        DEPENDS ${cfg_files} "${script}" ${TS_SOURCES}
+        DEPENDS ${cfg_files} "${script}"
+          # ${TS_SOURCES}  # enabling this would be proper, but slow.
         COMMAND_EXPAND_LISTS
         COMMAND Python3::Interpreter "${script}"
           --input "${cfg_files}"
@@ -32,7 +33,6 @@ function(generate_translations translations_qrc ts_dir languages prefixes cfg_fi
     set(qm_files ${languages})
     list(TRANSFORM qm_files APPEND ".qm")
     list(TRANSFORM qm_files PREPEND "${qm_dir}/omm_")
-    message("QM FILES: ${qm_files}")
 
     set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/generate-translations_qrc.py")
     add_custom_command(
@@ -60,7 +60,7 @@ function(generate_translations translations_qrc ts_dir languages prefixes cfg_fi
 
         add_custom_command(
             OUTPUT "${qm}" ${dst_qt_qm_files}
-            DEPENDS ${TS_SOURCES} ${ts_files}
+            DEPENDS ${ts_files}
             COMMAND Qt5::lrelease ${ts} -qm ${qm}
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
                     ${src_qt_qm_files} "${qm_dir}"

@@ -80,6 +80,9 @@ if __name__ == "__main__":
     parser.add_argument('--output',
             help="The output directory.",
             required=True)
+    parser.add_argument('--dont-regenerate', action='store_const', const=True,
+            help="If this option is set, the command will do nothing if there"
+                 " is one or more png files in the output directory.")
     parser.add_argument('--canned_icons',
             help="Filenames of additional icons that are not in the icons.omm spec file",
             nargs="+",
@@ -95,6 +98,13 @@ if __name__ == "__main__":
         print(f"qrc filename: {args.qrc}")
         print(f"output directory: {args.output}")
         sys.exit(1)
+
+    if args.dont_regenerate:
+        if any(f.endswith(".png") for f in os.listdir(args.output)):
+            print("Early exit because there are already png files in output"
+                  f" directory {args.output} and option '--dont-regenerate' is"
+                  " set.")
+            sys.exit(0)
 
     items = []
     decoders = {

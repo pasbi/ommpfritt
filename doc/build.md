@@ -26,132 +26,75 @@ Neither building nor running on Mac has ever been tested, but it should work in 
 We recommend using **g++8.x** or later. g++7.x or earlier will not work.
 Building with a recent **clang** is possible (tested with 8.0.0).
 A very recent Visual Studio might work, C++17 support is required.
-
-### cmake
 **cmake 3.14** or later is required.
 
-### Dependencies
+## Build from scratch
 
--   `Qt5.12` or later
--   `python3.7`
--   `poppler`
--   `opengl`
--   `pybind11`
+Once you've installed the dependencies, it's very straight forward to build omm
+using the common cmake-make build idiom.
+Detailed informations about the dependencies, how to get them and how to run
+the build commands on various platforms can be obtained from the [.travis.yml](.travis.yml) file.
 
-## Examples
+## Details
 
-### Arch
+The build process of omm is quite complex under the hood.
+If you make a clean build from scratch, you should not notice it, as all required files
+will be generated in the correct order automatically.
 
-1.   Install the dependencies using `pacman`.
-They should be available in the required version.
+However, there may be reasons that make you require to understand the build process, e.g. if
+you want to update the translation without re-building everything.
 
-```bash
-pacman -S gcc cmake python3 poppler-qt5 qt5-base qt5-imageformats qt5-svg qt5-translations qt5-tools
-```
+### Targets
 
-2.   Install [`lib2geom-git`](https://aur.archlinux.org/packages/lib2geom-git/) from AUR.
-3.   Clone and install [`pybind11`](https://github.com/pybind/pybind11).
-`pacman` also comes with `pybind11`-packages, however `pybind11` is developing
-quickly.
-Maybe you have luck with the packages but I recommend installing it from
-github.
-4.   get omm: `git clone https://github.com/pasbi/ommpfritt`
-5.   configure it:
+-   `ommpfritt`: the main target, this builds the executable that shows the GUI.
+-   `ommpfritt-cli`: a command line version of `ommpfritt`, with currently very limited interaction possibilities.
+-   `libommpfritt`: a library that contains the vast majority of the code, including the graphical user interface. Both `ommpfritt` and `ommpfritt-cli` use this library and only little individual code.
+-   `icons_png` uses `ommpfritt-cli` to build the icons that are used in `ommpfritt`
+-   `translations_qm` provides the translation files
+-   `resources_cli` generates a resource file that contains configuration files and translations. Is used by `ommpfritt-cli`.
+-   `resources` generates a resource file that contains all resources from `resources_cli` plus the icons. Is used by `ommpfritt`.
 
-```bash
-mkdir build
-cd build
-cmake -DCMAKE_BUILD_TYPE=Release \
-      -DQT_QM_PATH=/usr/share/qt/translations \
-      ..
-```
+As you see, the complexity is introduces because `omm` renders (most) icons it uses during the build by itself.
+That is, first a command line application `ommpfritt-cli` is built, which renders the icons and only then
+the actual application `ommpfritt` is built.
 
-6.   build it `make`, this may take a few minutes.
-7.   start it: `./ommpfritt`
+### Updating Translation
 
-### Ubuntu 16.04 Xenial
+Omm uses Qt's translator system.
+In a nutshell, Qt employs a pre-processor that scans the code for marker macros (`tr`), extracts them and builds
+a `ts`-file for each configured language.
+The `ts`-files are then compiled into `qm`-files, which are loaded into the application.
+The `ts`-files also contain all the full translation information and are checked into the repository.
 
-[There is a build script](../build-scripts/build-omm-ubuntu.sh) which supports
-Xenial.
-Use it with care, it requires root and might damage your system.
-You are responsible!
+If you want to update or add a translation, edit the `ts`-file of the respective language with the `linguist` tool provided by Qt.
+Then build the application (no re-build required).
 
-If your ubuntu is more recent, you might be able to skip some of the steps.
-E.g., if you already have python3.7, Qt5.12, g++8, etc. installed, you don't
-need to install it again! (see e.g. instructions below for 19.04 Disco)
+The `ts` files will *not* get updated automatically if you have changed, added or removed a macro in the source code (`*.cpp`-, `*.h`- or `*.ui`-file).
+The reason for this lies in a compromise between speed and correctness:
+In an ideally correct world, the `ts_target` would depend on all source files.
+That is, if any source file changes (i.e., a `tr`-macro changed potentially), the `ts`-files are re-generated.
+However, this is slow because if the `ts`-files are re-generated, the `qm`-files will be re-generated, too.
+That, renders the `resources_cli` and the `resources` target out of date and they must be re-generated as well.
+That procedure is slow (couple of seconds on a modern PC), and has to be done every time the source code changes (which is quite frequently).
 
-1.   install g++-8 and Qt:
-```bash
-sudo apt-add-repository ppa:ubuntu-toolchain-r/test
-sudo apt-add-repository ppa:beineri/opt-qt-5.12.3-xenial
-sudo apt update
-sudo apt install qt512tools qt512translations qt512svg qt512base qt512imageformats
-sudo apt install libgl-dev python3-dev libpoppler-qt5-dev g++-8
-```
+If you want the correct behaviour, simply add the `TS_SOURCES` list as a dependency in the `add_custom_command`-call that has the `lupdate`-executable as command, in the file `cmake/generate_translations.cmake`.
 
-2.  make the new Qt visible: `export PATH=/opt/qt512/bin/:$PATH`
+### Updating Icons
 
-3.  get recent [cmake binaries](cmake.org/download/) and unpack them to some
-directory.
+For icons, there is a similar problem as for translations:
+Generating the icons depends on the source code.
+Unlike the translation problem, this dependency is indirect.
+I.e., in order to generate the icons, the target `ommpritt-cli` must be there and that target depends on the source code.
+That means, that we cannot simply trade correctness and speed, as correctness is required here.
+If we would remove that dependency, the build system would not know that `ommpfritt-cli` is required to generate the icons and could possibly try to render the icons *before* `ommpfritt-cli` has been built.
+That would, of course not work and the build would fail.
 
-4.  get recent python:
-```bash
-wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tar.xz
-tar xvf Python-3.7.0.tar.xz
-cd Python-3.7.0
-./configure
-sudo make altinstall
-```
+As a workaround, the very time consuming rendering of all icons is skipped by passing the `dont-regenerate`-flag to the render script in `cmake/generate_icons.cmake`.
+If this flag is present and the script finds a single `PNG`-file in the icons directory, it exits early with SUCCESS-return code.
+That is, for CMake it looks like the script did it's job very quickly and everyone is happy.
+Note that the individual icon-files (PNG) are not known to CMake, i.e., they are not declared as `OUTPUT` or `BYPRODUCTS` in any command.
 
-5.   clone and install [pybind11](github.com/pybind/pybind11)
-
-6.   get [ommpfritt](github.com/pasbi/ommpfritt)
-
-7.   configure it:
-```bash
-cd ommpfritt
-mkdir build
-cd build
-/path/to/recent/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Release \
-                                -DCMAKE_CXX_COMPILER=g++-8 \
-                                -DQT_QM_PATH=/opt/qt512/translations \
-                                -DCMAKE_PREFIX_PATH=/opt/qt512 \
-                                ..
-```
-
-8.   build it: `make`
-
-9.   run it: `./ommpfritt`
-
-### Ubuntu 19.04 Disco Dingo
-
-[There is a build script](../build-scripts/build-omm-ubuntu.sh) which supports
-Disco.
-Use it with care, it requires root and might damage your system.
-You are responsible!
-
-#### Install dependencies
-
-```bash
-sudo apt install g++
-sudo apt install cmake
-sudo apt install pybind11-dev
-sudo apt install qtbase5-dev libqt5svg5-dev qttools5-dev  # Qt 5
-sudo apt install libpoppler-qt5-dev
-sudo apt install libkf5itemmodels-dev
-```
-
-#### Configure, build and run
-
-```bash
-cd ommpfritt
-mkdir build
-cd build
-cmake -DCMAKE_BUILD_TYPE=Debug \
-      -DCMAKE_CXX_COMPILER=g++-8 \
-      -DQT_QM_PATH=/usr/share/qt5/translations/ \
-      ..
-make
-./ommpfritt
-```
+This behavior is fine until one actually wants to re-generate the icons.
+To force re-generation of icons, it's recommended to delete the `icons`-directory in your build-directory.
+The icons will also be re-generated if, i.a., the scene file (`icons/icons.omm`) is touched.
 
