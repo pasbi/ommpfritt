@@ -28,12 +28,14 @@ Building with a recent **clang** is possible (tested with 8.0.0).
 A very recent Visual Studio might work, C++17 support is required.
 **cmake 3.14** or later is required.
 
+
 ## Build from scratch
 
 Once you've installed the dependencies, it's very straight forward to build omm
 using the common cmake-make build idiom.
 Detailed informations about the dependencies, how to get them and how to run
 the build commands on various platforms can be obtained from the [.travis.yml](.travis.yml) file.
+
 
 ## Details
 
@@ -43,6 +45,7 @@ will be generated in the correct order automatically.
 
 However, there may be reasons that make you require to understand the build process, e.g. if
 you want to update the translation without re-building everything.
+
 
 ### Targets
 
@@ -57,6 +60,7 @@ you want to update the translation without re-building everything.
 As you see, the complexity is introduces because `omm` renders (most) icons it uses during the build by itself.
 That is, first a command line application `ommpfritt-cli` is built, which renders the icons and only then
 the actual application `ommpfritt` is built.
+
 
 ### Updating Translation
 
@@ -78,6 +82,7 @@ That, renders the `resources_cli` and the `resources` target out of date and the
 That procedure is slow (couple of seconds on a modern PC), and has to be done every time the source code changes (which is quite frequently).
 
 If you want the correct behaviour, simply add the `TS_SOURCES` list as a dependency in the `add_custom_command`-call that has the `lupdate`-executable as command, in the file `cmake/generate_translations.cmake`.
+
 
 ### Updating Icons
 
