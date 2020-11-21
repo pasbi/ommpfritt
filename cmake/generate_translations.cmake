@@ -6,6 +6,7 @@ function(generate_translations translations_qrc ts_dir languages prefixes cfg_fi
     list(TRANSFORM ts_files PREPEND "${ts_dir}/omm_")
     set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/update-translations_h.py")
     set(translations_h "${CMAKE_CURRENT_SOURCE_DIR}/src/translations.h")
+
     file(GLOB_RECURSE TS_SOURCES
          CONFIGURE_DEPENDS
          "${CMAKE_SOURCE_DIR}/src/*.cpp"
@@ -45,6 +46,8 @@ function(generate_translations translations_qrc ts_dir languages prefixes cfg_fi
         COMMENT "generate translations.qrc"
     )
 
+    add_custom_target(translations_qm DEPENDS "${translations_qrc}" )
+
     set_source_files_properties("${translations_qrc}" PROPERTIES SKIP_AUTORCC ON)
 
     foreach (lang IN LISTS languages)
@@ -63,6 +66,7 @@ function(generate_translations translations_qrc ts_dir languages prefixes cfg_fi
                     ${src_qt_qm_files} "${qm_dir}"
             COMMENT "Prepare translation files '${lang}'"
         )
+        add_custom_target("qm_${lang}" DEPENDS ${qm} ${dst_qt_qm_files} )
         add_dependencies(translations_qm "qm_${lang}")
     endforeach()
 endfunction()
