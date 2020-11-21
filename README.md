@@ -23,7 +23,6 @@ still graphics, diagrams, icons and drawings.
 
 ![screenshot](sample-scenes/basic.png)
 
-
 ## How to Get It
 
 *omm* is [free](https://en.wikipedia.org/wiki/Free_software).
@@ -40,7 +39,6 @@ You can install [ommpfritt-git](https://aur.archlinux.org/packages/ommpfritt-git
 *omm* has been tested on various Linux Distributions and Windows.
 It has never been tested on **Mac**. It works in theory.
 
-
 ## How to use
 
 *omm* was designed to be very easy to use.
@@ -51,7 +49,6 @@ There is a (quite outdated)
 [screen cast on youtube](https://www.youtube.com/watch?v=6X5Lo7kq5eM)
 that shows some of the most important features and how they can be used.
 
-
 ## Contributing
 
 Although you can already use the app, it's still a long way until v1.0.
@@ -60,12 +57,10 @@ So we need your help!
 See [how to contribute](doc/contribute.md).
 Don't hesitate to get in contact with us!
 
-
 ## Related Software
 
 How does *omm* compare to other graphical applicatons?
 See [comparison](doc/comparison.md).
-
 
 ## Features
 
@@ -73,7 +68,6 @@ See [comparison](doc/comparison.md).
 -   general purpose: create any kind of graphics. No limits!
 -   interactive: you receive immediate feedback
 -   [wysiwyg](https://en.wikipedia.org/wiki/WYSIWYG)
-
 
 ### User Interface
 
@@ -91,7 +85,6 @@ See [comparison](doc/comparison.md).
 -   **rasterize** to `png` and `jpg`
 -   **export** to SVG
 
-
 ### Styling
 
 -   build complex reusable **style cascades**
@@ -99,7 +92,6 @@ See [comparison](doc/comparison.md).
 -   interactive OpenGL-Shaders
 
 ![styling](../sample-scenes/glshader.png)
-
 
 ### Objects
 
@@ -126,13 +118,11 @@ See [comparison](doc/comparison.md).
     -   switch between any number of self-defined views
     -   supports translation, scaling, rotation and shear
 
-
 ### Tags
 
 -   **path tag**: constrain position of any object to any path
 -   **style tag**: define the color of an object
 -   **script tag**: general purpose scripting without limits
-
 
 ### Tools
 
@@ -142,7 +132,6 @@ See [comparison](doc/comparison.md).
 -   brush-select: select points as if you were painting
 -   Bounding Box-Handle
 
-
 ### Animation
 
 -   Keyframe Animation
@@ -151,7 +140,6 @@ See [comparison](doc/comparison.md).
 -   Seamless integration into undo/redo and multi-property- and multi-object-selection
 
 ![animation](../sample-scenes/animation.png)
-
 
 ### Programmable
 
@@ -164,7 +152,6 @@ See [comparison](doc/comparison.md).
 ![nodes](../sample-scenes/nodes.png)
 
 -   user properties can be added at runtime to any object
-
 
 ### Optional Command Line Interface
 
