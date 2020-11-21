@@ -6,14 +6,19 @@ function(generate_translations translations_qrc ts_dir languages prefixes cfg_fi
     list(TRANSFORM ts_files PREPEND "${ts_dir}/omm_")
     set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/update-translations_h.py")
     set(translations_h "${CMAKE_CURRENT_SOURCE_DIR}/src/translations.h")
-    file(GLOB_RECURSE TS_SOURCES "*.cpp" "*.h" "*.ui")
+
+    file(GLOB_RECURSE TS_SOURCES
+         CONFIGURE_DEPENDS
+         "${CMAKE_SOURCE_DIR}/src/*.cpp"
+         "${CMAKE_SOURCE_DIR}/src/*.h"
+         "${CMAKE_SOURCE_DIR}/src/*.ui"
+    )
     list(REMOVE_ITEM TS_SOURCES "${translations_h}")
 
     add_custom_command(
         OUTPUT "${translations_h}"
         DEPENDS ${cfg_files} "${script}" ${TS_SOURCES}
         COMMAND_EXPAND_LISTS
-        COMMAND touch /tmp/x
         COMMAND Python3::Interpreter "${script}"
           --input "${cfg_files}"
           --output "${translations_h}"
@@ -24,11 +29,15 @@ function(generate_translations translations_qrc ts_dir languages prefixes cfg_fi
         COMMENT "Update ts files. Check the files with `linguist` manually!"
     )
     add_custom_target(ts_target DEPENDS "${translations_h}" "${ts_files}")
+    set(qm_files ${languages})
+    list(TRANSFORM qm_files APPEND ".qm")
+    list(TRANSFORM qm_files PREPEND "${qm_dir}/omm_")
+    message("QM FILES: ${qm_files}")
 
     set(script "${CMAKE_CURRENT_SOURCE_DIR}/build-scripts/generate-translations_qrc.py")
     add_custom_command(
         OUTPUT "${qm_dir}/translations.qrc"
-        DEPENDS ts_target
+        DEPENDS ts_target ${qm_files}
         COMMAND_EXPAND_LISTS
         COMMAND Python3::Interpreter "${script}"
           --languages "${languages}"
@@ -51,7 +60,7 @@ function(generate_translations translations_qrc ts_dir languages prefixes cfg_fi
 
         add_custom_command(
             OUTPUT "${qm}" ${dst_qt_qm_files}
-            DEPENDS ${TS_SOURCES}
+            DEPENDS ${TS_SOURCES} ${ts_files}
             COMMAND Qt5::lrelease ${ts} -qm ${qm}
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
                     ${src_qt_qm_files} "${qm_dir}"
