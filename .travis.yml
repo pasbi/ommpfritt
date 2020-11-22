@@ -127,6 +127,14 @@ jobs:
         echo "Use `build-scripts/format.sh apply` to auto-format the code."
         travis_terminate 1
       fi
+    - |
+      if grep '\b\(SIGNAL\|SLOT\)\w*(' -R src --include \*.cpp -n; then
+        echo "SIGNAL or SLOT macro detected."
+        echo "Don't use the error-prone old SIGNAL-SLOT syntax."
+        echo "See https://wiki.qt.io/New_Signal_Slot_Syntax"
+        echo "If you think this is a false positive, consider to rename your identifier."
+        travis_terminate 2
+      fi
     script:
     - cmake -GNinja
             -DCMAKE_BUILD_TYPE=Release
