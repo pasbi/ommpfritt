@@ -121,7 +121,12 @@ jobs:
     - echo "Peforming basic static tests that don't require a build."
     - clang-format --version
     - ln -s /usr/bin/clang-format-10 clang-format
-    - PATH=$(pwd):$PATH build-scripts/format.sh check
+    - |
+      if ! PATH=$(pwd):$PATH build-scripts/format.sh check; then
+        echo "Format check failed."
+        echo "Use `build-scripts/format.sh apply` to auto-format the code."
+        travis_terminate 1
+      fi
     script:
     - cmake -GNinja
             -DCMAKE_BUILD_TYPE=Release
