@@ -81,7 +81,7 @@ bool decode_hex(const QString& code, std::array<double, 4>& rgb)
   static const auto decode = [](const QString& code, int offset, double& v) {
     if (code.size() >= offset + 2) {
       bool ok;
-      v = code.mid(offset, 2).toInt(&ok, 16) / 255.0;
+      v = code.midRef(offset, 2).toInt(&ok, 16) / 255.0;
       return ok;
     } else {
       return false;

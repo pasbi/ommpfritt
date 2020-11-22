@@ -25,7 +25,7 @@ public:
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "BoundingBoxManager");
 
 public Q_SLOTS:
-  void on_property_value_changed(Property& property);
+  void on_property_value_changed(omm::Property& property);
 
 private:
   enum class Mode { Points = 0, Objects = 1 };
@@ -47,7 +47,7 @@ protected:
   bool eventFilter(QObject* o, QEvent* e) override;
 
 private Q_SLOTS:
-  BoundingBox update_manager();
+  omm::BoundingBox update_manager();
   void update_bounding_box();
   void reset_transformation();
 

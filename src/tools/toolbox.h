@@ -22,7 +22,7 @@ public:
   std::set<Tool*> tools() const;
 
 Q_SIGNALS:
-  void active_tool_changed(const Tool& active_tool);
+  void active_tool_changed(const omm::Tool& active_tool);
 
 private:
   Tool* m_active_tool = nullptr;

@@ -35,7 +35,7 @@ void ReferenceNode::populate_menu(QMenu& menu)
     forward_menu->addAction(tr("No properties."))->setEnabled(false);
   } else {
     const auto supported_types = AbstractNodeCompiler::supported_types(language());
-    for (auto key : apo->properties().keys()) {
+    for (auto&& key : apo->properties().keys()) {
       Property* property = apo->property(key);
       if (::contains(supported_types, property->type())) {
         if (language() == AbstractNodeCompiler::Language::Python) {
@@ -83,7 +83,7 @@ void ReferenceNode::serialize(AbstractSerializer& serializer,
                               const Serializable::Pointer& root) const
 {
   Node::serialize(serializer, root);
-  for (auto [type, map] : m_forwarded_ports) {
+  for (auto&& [type, map] : m_forwarded_ports) {
     auto pointer = make_pointer(root, type == PortType::Input ? "input" : "output");
     serializer.set_value(::get_keys(map), pointer);
   }
@@ -101,7 +101,7 @@ ReferenceNode::make_property_action(PortType port_type, const QString& key, cons
   action->setCheckable(true);
   auto map = m_forwarded_ports[port_type];
   action->setChecked(map.find(key) != map.end());
-  connect(action.get(), &QAction::triggered, [this, port_type, key](bool checked) {
+  connect(action.get(), &QAction::triggered, this, [this, port_type, key](bool checked) {
     if (checked) {
       scene()->submit<AddForwardingPortCommand>(*this, port_type, key);
     } else {

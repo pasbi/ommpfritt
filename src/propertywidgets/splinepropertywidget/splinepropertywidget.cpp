@@ -12,7 +12,7 @@ SplinePropertyWidget::SplinePropertyWidget(Scene& scene, const std::set<Property
     set_properties_value(spline);
   });
   set_widget(std::move(spline_edit));
-  update_edit();
+  SplinePropertyWidget::update_edit();
 }
 
 void SplinePropertyWidget::update_edit()

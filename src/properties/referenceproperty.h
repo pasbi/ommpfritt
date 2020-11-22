@@ -41,7 +41,7 @@ public:
   Filter filter() const;
 
 Q_SIGNALS:
-  void reference_changed(AbstractPropertyOwner* old_ref, AbstractPropertyOwner* new_ref);
+  void reference_changed(omm::AbstractPropertyOwner* old_ref, omm::AbstractPropertyOwner* new_ref);
 
 private:
   // default is always nullptr

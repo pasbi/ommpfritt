@@ -47,7 +47,7 @@ ProceduralPath::ProceduralPath(Scene* scene) : Object(scene)
   create_property<BoolProperty>(IS_CLOSED_PROPERTY_KEY)
       .set_label(QObject::tr("closed"))
       .set_category(category);
-  update();
+  ProceduralPath::update();
 }
 
 QString ProceduralPath::type() const

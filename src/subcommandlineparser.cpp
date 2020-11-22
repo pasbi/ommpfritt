@@ -137,7 +137,7 @@ template<> int SubcommandLineParser::get<int>(const QString& name) const
   const auto value = this->get<QString>(name);
   const auto ivalue = value.toInt(&ok);
   if (!ok) {
-    LERROR << QObject::tr("Expected integer argument for '%1', but got '%2'.").arg(name).arg(value);
+    LERROR << QObject::tr("Expected integer argument for '%1', but got '%2'.").arg(name, value);
     exit(EXIT_FAILURE);
   }
   return ivalue;

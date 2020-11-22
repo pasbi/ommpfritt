@@ -17,7 +17,7 @@ public:
   using ElementT = typename T::element_type;
   explicit VectorPropertyConfigWidget()
   {
-    for (QString d : {"x", "y"}) {
+    for (const QString& d : {"x", "y"}) {
       auto [min_edit, max_edit] = NumericEdit<ElementT>::make_range_edits();
       // ownership is only temporarily passed to this.
       m_edits[d + NumericPropertyDetail::LOWER_VALUE_POINTER] = min_edit.release();
@@ -39,9 +39,9 @@ public:
     static const std::vector keys = {NumericPropertyDetail::LOWER_VALUE_POINTER,
                                      NumericPropertyDetail::UPPER_VALUE_POINTER,
                                      NumericPropertyDetail::STEP_POINTER};
-    for (QString k : keys) {
+    for (const QString& k : keys) {
       auto pair_layout = std::make_unique<QHBoxLayout>();
-      for (QString d : {"x", "y"}) {
+      for (const QString& d : {"x", "y"}) {
         pair_layout->addWidget(m_edits[d + k]);  // pass ownership from this to layout
       }
       layout->addRow(QObject::tr(k.toUtf8().constData(), "NumericProperty"), pair_layout.release());

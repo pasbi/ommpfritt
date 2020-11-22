@@ -56,7 +56,7 @@ public:
   QString dump() const;
 
 Q_SIGNALS:
-  void data_changed(const PreferencesTreeGroupItem& group);
+  void data_changed(const omm::PreferencesTreeGroupItem& group);
 
 protected:
   virtual bool set_data(int column, PreferencesTreeValueItem& item, const QVariant& value) = 0;

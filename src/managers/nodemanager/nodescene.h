@@ -32,8 +32,8 @@ public:
   void clear();
 
 public Q_SLOTS:
-  void add_node(Node& node, bool select = true);
-  void remove_node(Node& node);
+  void add_node(omm::Node& node, bool select = true);
+  void remove_node(omm::Node& node);
 
 private:
   std::map<Node*, std::unique_ptr<NodeItem>> m_node_items;

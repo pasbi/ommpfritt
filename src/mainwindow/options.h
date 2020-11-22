@@ -26,10 +26,10 @@ public:
   bool require_gui() const;
 
 public Q_SLOTS:
-  void set_anchor(Anchor anchor);
+  void set_anchor(omm::Options::Anchor anchor);
 
 Q_SIGNALS:
-  void anchor_changed(Anchor);
+  void anchor_changed(omm::Options::Anchor);
 
 private:
   Anchor m_anchor = Anchor::Center;

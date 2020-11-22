@@ -84,7 +84,7 @@ public:
     }
 
     for (const QString& allowed_ending : allowed_endings) {
-      if (input.toLower().endsWith(allowed_ending)) {
+      if (input.endsWith(allowed_ending, Qt::CaseInsensitive)) {
         return QValidator::Acceptable;
       }
     }
@@ -291,7 +291,6 @@ void ExportDialog::save_as_svg()
     assert(filenames.size() == 1);
     const auto filename = filenames.front();
 
-    QByteArray buffer;
     QSvgGenerator generator;
     generator.setFileName(filename);
     const auto scale = m_ui->ne_scaling->value();

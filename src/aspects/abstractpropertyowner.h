@@ -95,7 +95,7 @@ public:
   void new_id() const;
 
 protected Q_SLOTS:
-  virtual void on_property_value_changed(Property* property)
+  virtual void on_property_value_changed(omm::Property* property)
   {
     Q_UNUSED(property);
   }

@@ -466,7 +466,7 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
         tag_map[tag->owner].insert(tag);
       }
     }
-    for (auto [owner, tags] : tag_map) {
+    for (auto&& [owner, tags] : tag_map) {
       ::remove_items(*this, owner->tags, tags);
     }
     ::remove_items(*this, styles(), kind_cast<Style>(selection));

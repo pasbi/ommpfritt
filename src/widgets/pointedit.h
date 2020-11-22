@@ -34,8 +34,10 @@ private:
 private Q_SLOTS:
   void mirror_from_right();
   void mirror_from_left();
-  void set_left_maybe(const PolarCoordinates& old_right, const PolarCoordinates& new_right);
-  void set_right_maybe(const PolarCoordinates& old_left, const PolarCoordinates& new_left);
+  void set_left_maybe(const omm::PolarCoordinates& old_right,
+                      const omm::PolarCoordinates& new_right);
+  void set_right_maybe(const omm::PolarCoordinates& old_left,
+                       const omm::PolarCoordinates& new_left);
   void update_point();
 };
 

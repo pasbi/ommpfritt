@@ -112,7 +112,7 @@ Cloner::Cloner(const Cloner& other) : Object(other), path_properties("", *this)
 void Cloner::polish()
 {
   update_property_visibility(property(MODE_PROPERTY_KEY)->value<Mode>());
-  update();
+  Cloner::update();
 }
 
 const Object* Cloner::path_object_reference() const

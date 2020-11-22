@@ -31,7 +31,7 @@ protected:
   void set_inconsistent_value() override;
 
 Q_SIGNALS:
-  void value_changed(const SplineType& spline);
+  void value_changed(const omm::SplineType& spline);
 
 private:
   SplineType m_spline;

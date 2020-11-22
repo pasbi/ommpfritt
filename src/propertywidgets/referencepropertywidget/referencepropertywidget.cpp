@@ -47,7 +47,7 @@ ReferencePropertyWidget ::ReferencePropertyWidget(Scene& scene,
   vlayout->set_thing(std::make_unique<QLabel>());
   set_widget(std::move(line_edit));
 
-  update_edit();
+  ReferencePropertyWidget::update_edit();
 }
 
 ReferencePropertyWidget::~ReferencePropertyWidget()

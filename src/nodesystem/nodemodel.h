@@ -85,8 +85,8 @@ public Q_SLOTS:
 
 Q_SIGNALS:
   void topology_changed();
-  void node_added(Node&);
-  void node_removed(Node&);
+  void node_added(omm::Node&);
+  void node_removed(omm::Node&);
 
 public Q_SLOTS:
   void emit_topology_changed();

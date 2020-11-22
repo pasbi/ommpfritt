@@ -25,7 +25,7 @@ public:
   void hide_named_colors();
 
 public Q_SLOTS:
-  void set_color(const Color& color) override;
+  void set_color(const omm::Color& color) override;
 
 private:
   std::unique_ptr<Ui::ColorWidget> m_ui;

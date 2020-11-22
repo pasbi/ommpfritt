@@ -75,11 +75,13 @@ private:
     TangentHandle(const KeyFrameHandleKey* key, Track::Knot::Side side) : key(key), side(side)
     {
     }
+
     TangentHandle() : key(nullptr)
     {
     }
+
     const KeyFrameHandleKey* key;
-    Track::Knot::Side side;
+    Track::Knot::Side side = Track::Knot::Side::Left;
     variant_type& offset();
   };
 
@@ -90,11 +92,11 @@ private:
 
 private Q_SLOTS:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
-  void add_track(Track& track);
-  void remove_track(Track& track);
-  void add_knot(Track& track, int frame);
-  void remove_knot(Track& track, int frame);
-  void move_knot(Track& track, int old_frame, int new_frame);
+  void add_track(omm::Track& track);
+  void remove_track(omm::Track& track);
+  void add_knot(omm::Track& track, int frame);
+  void remove_knot(omm::Track& track, int frame);
+  void move_knot(omm::Track& track, int old_frame, int new_frame);
 };
 
 }  // namespace omm

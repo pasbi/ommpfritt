@@ -167,7 +167,7 @@ public:
     QObject::connect(&mode_selector,
                      &ModeSelector::mode_changed,
                      button.get(),
-                     [button = button.get()](int mode) { button->actions()[mode]->trigger(); });
+                     [button = button.get()](int mode) { button->actions().at(mode)->trigger(); });
     auto action = std::make_unique<QWidgetAction>(nullptr);
     action->setDefaultWidget(button.release());
     return action;

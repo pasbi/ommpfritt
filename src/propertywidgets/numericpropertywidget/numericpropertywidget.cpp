@@ -28,7 +28,7 @@ NumericPropertyWidget<NumericPropertyT>::NumericPropertyWidget(
   label_layout->set_thing(std::move(spinbox));
   this->setLayout(label_layout.release());
 
-  update_configuration();
+  NumericPropertyWidget::update_configuration();
 }
 
 template<typename NumericPropertyT>
@@ -49,7 +49,7 @@ void NumericPropertyWidget<NumericPropertyT>::update_configuration()
   m_spinbox->set_prefix(pref);
   m_spinbox->set_suffix(suff);
 
-  update_edit();
+  NumericPropertyWidget::update_edit();
 }
 
 template<typename NumericPropertyT> void NumericPropertyWidget<NumericPropertyT>::update_edit()

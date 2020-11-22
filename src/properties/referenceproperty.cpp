@@ -12,7 +12,7 @@ using Kind = Kind;
 ReferenceProperty::ReferenceProperty() : TypedProperty(nullptr)
 {
   configuration[FILTER_POINTER] = Filter::accept_anything();
-  set_default_value(nullptr);
+  ReferenceProperty::set_default_value(nullptr);
 }
 
 ReferenceProperty::ReferenceProperty(const ReferenceProperty& other)
@@ -20,14 +20,14 @@ ReferenceProperty::ReferenceProperty(const ReferenceProperty& other)
 {
   auto* value = this->value();
   if (value != nullptr) {
-    set(value);
+    ReferenceProperty::set(value);
   }
 }
 
 ReferenceProperty::~ReferenceProperty()
 {
   QSignalBlocker blocker(this);
-  set(nullptr);
+  ReferenceProperty::set(nullptr);
 }
 
 void ReferenceProperty::serialize(AbstractSerializer& serializer, const Pointer& root) const

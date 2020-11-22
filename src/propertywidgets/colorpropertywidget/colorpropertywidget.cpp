@@ -15,7 +15,7 @@ ColorPropertyWidget::ColorPropertyWidget(Scene& scene, const std::set<Property*>
   color_edit->text = label();
   set_widget(std::move(color_edit));
 
-  update_edit();
+  ColorPropertyWidget::update_edit();
 }
 
 void ColorPropertyWidget::update_edit()

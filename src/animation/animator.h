@@ -73,10 +73,10 @@ public Q_SLOTS:
   void set_start(int start);
   void set_end(int end);
   void set_current(int current);
-  void set_play_direction(PlayDirection direction);
-  void set_play_mode(PlayMode mode);
+  void set_play_direction(omm::Animator::PlayDirection direction);
+  void set_play_mode(omm::Animator::PlayMode mode);
   void advance();
-  void advance(PlayDirection direction);
+  void advance(omm::Animator::PlayDirection direction);
   void apply();
 
   /**
@@ -90,14 +90,14 @@ Q_SIGNALS:
   void start_changed(int);
   void end_changed(int);
   void current_changed(int);
-  void play_direction_changed(PlayDirection direction);
-  void play_mode_changed(PlayMode mode);
-  void track_changed(Track&);
-  void track_inserted(Track&);
-  void track_removed(Track&);
-  void knot_inserted(Track&, int);
-  void knot_removed(Track&, int);
-  void knot_moved(Track&, int, int);
+  void play_direction_changed(omm::Animator::PlayDirection direction);
+  void play_mode_changed(omm::Animator::PlayMode mode);
+  void track_changed(omm::Track&);
+  void track_inserted(omm::Track&);
+  void track_removed(omm::Track&);
+  void knot_inserted(omm::Track&, int);
+  void knot_removed(omm::Track&, int);
+  void knot_moved(omm::Track&, int, int);
 
   // == ItemModel
 public:

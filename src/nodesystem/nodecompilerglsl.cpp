@@ -16,9 +16,7 @@ static constexpr auto output_variable_name = "out_color";
 QString format_connection(const omm::AbstractPort& lhs, const omm::AbstractPort& rhs)
 {
   return QString("%1 %2 = %3;")
-      .arg(omm::NodeCompilerGLSL::translate_type(lhs.data_type()))
-      .arg(lhs.uuid())
-      .arg(rhs.uuid());
+      .arg(omm::NodeCompilerGLSL::translate_type(lhs.data_type()), lhs.uuid(), rhs.uuid());
 }
 
 omm::AbstractPort* get_sibling(const omm::AbstractPort* port)
@@ -89,9 +87,9 @@ QString NodeCompilerGLSL::generate_header(QStringList& lines) const
   };
   for (const auto& shader_input : OffscreenRenderer::fragment_shader_inputs) {
     lines.append(QString("%1 %2 %3;")
-                     .arg(input_kind_identifier_map.at(shader_input.kind))
-                     .arg(translate_type(shader_input.type))
-                     .arg(shader_input.name));
+                     .arg(input_kind_identifier_map.at(shader_input.kind),
+                          translate_type(shader_input.type),
+                          shader_input.name));
   }
   lines.append(QString("out vec4 %1;").arg(output_variable_name));
 
@@ -116,8 +114,7 @@ QString NodeCompilerGLSL::generate_header(QStringList& lines) const
     }
   }
   for (AbstractPort* port : m_uniform_ports) {
-    lines.push_back(
-        QString("uniform %1 %2;").arg(translate_type(port->data_type())).arg(port->uuid()));
+    lines.push_back(QString("uniform %1 %2;").arg(translate_type(port->data_type()), port->uuid()));
   }
   return "";
 }
@@ -145,8 +142,7 @@ QString NodeCompilerGLSL::end_program(QStringList& lines) const
       if (port.is_connected()) {
         const QString alpha = QString("clamp(%1.a, 0.0, 1.0)").arg(port.uuid());
         const QString rgb = QString("clamp(%2.rgb, vec3(0.0), vec3(1.0))").arg(port.uuid());
-        lines.push_back(
-            QString("%1 = vec4(%2 * %3, %2);").arg(output_variable_name).arg(alpha).arg(rgb));
+        lines.push_back(QString("%1 = vec4(%2 * %3, %2);").arg(output_variable_name, alpha, rgb));
       }
     }
   }
@@ -190,16 +186,13 @@ QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines) con
         const auto ports = vertex_node.shader_inputs();
         const auto it = std::find(ports.begin(), ports.end(), port);
         if (it != ports.end()) {
-          lines.push_back(QString("%1 %2 = %3;")
-                              .arg(translate_type(port->data_type()))
-                              .arg(port->uuid())
-                              .arg(it->input_info.name));
+          lines.push_back(
+              QString("%1 %2 = %3;")
+                  .arg(translate_type(port->data_type()), port->uuid(), it->input_info.name));
         }
       } else {
         lines.push_back(QString("%1 %2 = %3_%4(%5);")
-                            .arg(translate_type(port->data_type()))
-                            .arg(port->uuid())
-                            .arg(node.type())
+                            .arg(translate_type(port->data_type()), port->uuid(), node.type())
                             .arg(i)
                             .arg(args.join(", ")));
       }

@@ -66,7 +66,7 @@ StringPropertyWidget ::StringPropertyWidget(Scene& scene, const std::set<Propert
   vlayout->set_thing(std::move(text_edit_widget));
   setLayout(vlayout.release());
 
-  update_edit();
+  StringPropertyWidget::update_edit();
 }
 
 void StringPropertyWidget::update_edit()

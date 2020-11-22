@@ -218,7 +218,7 @@ private:
   std::unique_ptr<Track> m_track;
 
 Q_SIGNALS:
-  void value_changed(Property*);
+  void value_changed(omm::Property*);
 
   /**
    * @brief configuration_changed is emitted when the configuration has changed.

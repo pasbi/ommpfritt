@@ -40,7 +40,7 @@ TEST(tree, lca)
   item_map items;
   auto root = make_tree(3, 3, items);
 
-  static const auto lca = [&items](const QString a, const QString& b) {
+  const auto lca = [&items](const QString a, const QString& b) {
     return omm::TreeTestItem::lowest_common_ancestor(items[a], items[b]);
   };
 

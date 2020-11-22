@@ -23,7 +23,7 @@ Q_SIGNALS:
    * @brief appearance_changed is emitted when the appearance of a tool has changed.
    * This signal forwards to @code appearance_changed().
    */
-  void appearance_changed(Tool&);
+  void appearance_changed(omm::Tool&);
 
   /**
    * @brief appearance_changed is emitted when the appearance of an object has changed.
@@ -34,14 +34,14 @@ Q_SIGNALS:
    * If the specified object has a parent, this signal will forward to that very parent's
    * child_appearance_change signal.
    */
-  void appearance_changed(Object&);
+  void appearance_changed(omm::Object&);
 
   /**
    * @brief transformation_changed similar to appearance_changed, however, this signal is only
    *  emitted when the transformation of an object changed.
    * This signal forwards to @code appearance_changed().
    */
-  void transformation_changed(Object&);
+  void transformation_changed(omm::Object&);
 
   /**
    * @brief appearance_changed is emitted when the appearance of the scene changed, i.e., if it
@@ -55,84 +55,84 @@ Q_SIGNALS:
    * @brief object_inserted is emitted when an object was inserted into the parent object
    * This signal forwards to @code appearance_changed().
    */
-  void object_inserted(Object& parent, Object& object);
+  void object_inserted(omm::Object& parent, omm::Object& object);
 
   /**
    * @brief object_inserted is emitted when an object was removed from the parent object.
    * This signal forwards to @code appearance_changed().
    */
-  void object_removed(Object& parent, Object& object);
+  void object_removed(omm::Object& parent, omm::Object& object);
 
   /**
    * @brief object_inserted is emitted when an object was moved from old_parent to new_parent.
    * This signal forwards to @code appearance_changed().
    */
-  void object_moved(Object& old_parent, Object& new_parent, Object& object);
+  void object_moved(omm::Object& old_parent, omm::Object& new_parent, omm::Object& object);
 
   /**
    * @brief object_inserted is emitted when a style was inserted into the scene.
    * This signal forwards to @code appearance_changed().
    */
-  void style_inserted(Style&);
+  void style_inserted(omm::Style&);
 
   /**
    * @brief object_inserted is emitted when a style was removed from the scene.
    * This signal forwards to @code appearance_changed().
    */
-  void style_removed(Style&);
+  void style_removed(omm::Style&);
 
   /**
    * @brief style_moved is emitted when a style was moved.
    */
-  void style_moved(Style&);
+  void style_moved(omm::Style&);
 
   /**
    * @brief object_inserted is emitted when a tag was attached to the object.
    * This signal forwards to @code appearance_changed().
    */
-  void tag_inserted(Object&, Tag&);
+  void tag_inserted(omm::Object&, omm::Tag&);
 
   /**
    * @brief object_inserted is emitted when a tag was removed from the object.
    * This signal forwards to @code appearance_changed().
    */
-  void tag_removed(Object&, Tag&);
+  void tag_removed(omm::Object&, omm::Tag&);
 
   /**
    * @brief selection_changed is emitted when the object selection changed.
    */
-  void selection_changed(const std::set<Object*>&);
+  void selection_changed(const std::set<omm::Object*>&);
 
   /**
    * @brief selection_changed is emitted when the style selection changed.
    */
-  void selection_changed(const std::set<Style*>&);
+  void selection_changed(const std::set<omm::Style*>&);
 
   /**
    * @brief selection_changed is emitted when the tag selection changed.
    */
-  void selection_changed(const std::set<Tag*>&);
+  void selection_changed(const std::set<omm::Tag*>&);
 
   /**
    * @brief selection_changed is emitted when the node selection changed.
    */
-  void selection_changed(const std::set<Node*>&);
+  void selection_changed(const std::set<omm::Node*>&);
 
   /**
    * @brief selection_changed is emitted when the tool selection changed.
    */
-  void selection_changed(const std::set<Tool*>&);
+  void selection_changed(const std::set<omm::Tool*>&);
 
   /**
    * @brief selection_changed is emitted when the selection changed.
    */
-  void selection_changed(const std::set<AbstractPropertyOwner*>&);
+  void selection_changed(const std::set<omm::AbstractPropertyOwner*>&);
 
   /**
    * @brief selection_changed is emitted when tag, style, object or tool selection changed.
    * The kind of selection is transferred via the second argument.
    */
-  void selection_changed(const std::set<AbstractPropertyOwner*>&, Kind);
+  void selection_changed(const std::set<omm::AbstractPropertyOwner*>&, omm::Kind);
 
   /**
    * @brief filename_changed is emitted when the filename of the scene changes.
@@ -159,7 +159,7 @@ Q_SIGNALS:
   /**
    * @brief appearance_changed is emitted when the style appearance changed.
    */
-  void appearance_changed(Style&);
+  void appearance_changed(omm::Style&);
 
   /**
    * @param owner the owner of the property
@@ -172,14 +172,15 @@ Q_SIGNALS:
    * @param key the key of the property. The following invariant applies:
    *    `owner.property(key) == &p`
    */
-  void property_value_changed(AbstractPropertyOwner& owner, const QString& key, Property& p);
+  void
+  property_value_changed(omm::AbstractPropertyOwner& owner, const QString& key, omm::Property& p);
 
   /**
    * @brief abstract_property_owner_inserted is emitted after any AbstractPropertyOwner is inserted.
    *  It is forwarded from object_inserted, style_inserted and tag_inserted.
    * @param owner the item that has been inserted.
    */
-  void abstract_property_owner_inserted(AbstractPropertyOwner& owner);
+  void abstract_property_owner_inserted(omm::AbstractPropertyOwner& owner);
 
   /**
    * @brief abstract_property_owner_removed is emitted after any AbstractPropertyOwner is removed.
@@ -188,7 +189,7 @@ Q_SIGNALS:
    * @note the ownership of the property_owner has been transferred before the signal is emitted.
    * I.e., if the new owner decides to delete the object, the reference is dangling.
    */
-  void abstract_property_owner_removed(AbstractPropertyOwner& property_owner);
+  void abstract_property_owner_removed(omm::AbstractPropertyOwner& property_owner);
 
   void about_to_reset();
 };

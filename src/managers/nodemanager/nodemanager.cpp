@@ -187,7 +187,7 @@ std::unique_ptr<QMenu> NodeManager::make_add_nodes_menu(KeyBindings& kb)
       for (const QString& type : types) {
         const QString label = QApplication::translate("Property", type.toStdString().c_str());
         auto action = std::make_unique<QAction>(label);
-        connect(action.get(), &QAction::triggered, [type, model, label, this]() {
+        connect(action.get(), &QAction::triggered, model, [type, model, label, this]() {
           auto node = std::make_unique<ConstantNode>(*model);
           auto property = Property::make(type);
           property->set_category(Property::USER_PROPERTY_CATEGROY_NAME);

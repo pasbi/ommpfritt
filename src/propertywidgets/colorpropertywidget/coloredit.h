@@ -24,7 +24,7 @@ protected:
   void mouseDoubleClickEvent(QMouseEvent* event) override;
 
 Q_SIGNALS:
-  void value_changed(value_type);
+  void value_changed(omm::MultiValueEdit<omm::Color, std::equal_to<omm::Color>>::value_type);
 
 private:
   bool m_is_consistent = false;

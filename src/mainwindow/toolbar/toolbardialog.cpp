@@ -113,7 +113,7 @@ ToolBarDialog::ToolBarDialog(ToolBarItemModel& model, QWidget* parent)
     for (auto&& [name, mode_selector] : Application::instance().mode_selectors) {
       const auto tr_name = mode_selector->translated_name();
       auto action = std::make_unique<QAction>(tr_name);
-      connect(action.get(), &QAction::triggered, [this, name = name]() {
+      connect(action.get(), &QAction::triggered, this, [this, name = name]() {
         m_model.add_mode_selector(name);
       });
       m_ui->tb_add_switch->addAction(action.release());

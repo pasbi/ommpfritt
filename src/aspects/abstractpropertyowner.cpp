@@ -129,7 +129,7 @@ Property& AbstractPropertyOwner::add_property(const QString& key,
   assert(property.get() != nullptr);
   m_properties.insert(key, std::move(property));
   connect(&ref, &Property::value_changed, this, &AbstractPropertyOwner::on_property_value_changed);
-  connect(&ref, &Property::value_changed, [this, key](Property* property) {
+  connect(&ref, &Property::value_changed, this, [this, key](Property* property) {
     assert(property != nullptr);
     if (Scene* scene = this->scene(); scene != nullptr) {
       Q_EMIT scene->mail_box().property_value_changed(*this, key, *property);

@@ -81,7 +81,7 @@ Mirror::Mirror(const Mirror& other)
 void Mirror::polish()
 {
   listen_to_children_changes();
-  update();
+  Mirror::update();
 }
 
 void Mirror::draw_object(Painter& renderer, const Style& style, Painter::Options options) const

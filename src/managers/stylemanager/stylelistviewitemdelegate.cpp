@@ -66,7 +66,6 @@ void StyleListViewItemDelegate::updateEditorGeometry(QWidget* editor,
                                                      const QModelIndex& index) const
 {
   Q_UNUSED(index);
-  const QString text = index.data(Qt::DisplayRole).toString();
   editor->resize(option.rect.width(), m_text_height);
   editor->move(option.rect.left(), option.rect.bottom() - m_text_height);
 }

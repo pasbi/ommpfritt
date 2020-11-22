@@ -31,7 +31,7 @@ public:
   }
 
 public Q_SLOTS:
-  void on_property_value_changed(Property* property);
+  void on_property_value_changed(omm::Property* property);
   void update_enabledness();
 
 protected:

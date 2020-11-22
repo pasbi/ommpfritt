@@ -18,7 +18,7 @@ public:
   explicit DopeSheetView(Animator& animator);
 
 public Q_SLOTS:
-  void update_second_column(Track& track);
+  void update_second_column(omm::Track& track);
   void update_second_column();
 
 protected:

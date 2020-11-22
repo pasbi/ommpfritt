@@ -68,9 +68,9 @@ std::ostream& operator<<(std::ostream& ostream, const AbstractNodeCompiler::Stat
     return ::transform<QString, QList>(set, [](const auto* port) { return port->uuid(); });
   };
   ostream << QString("%1[%2 <= %3]")
-                 .arg(statement.is_connection ? "connection" : "node")
-                 .arg(format(statement.defines()).join(", "))
-                 .arg(format(statement.uses()).join(", "))
+                 .arg(statement.is_connection ? "connection" : "node",
+                      format(statement.defines()).join(", "),
+                      format(statement.uses()).join(", "))
                  .toStdString();
   return ostream;
 }

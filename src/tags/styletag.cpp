@@ -39,7 +39,7 @@ Flag StyleTag::flags() const
 void StyleTag::on_property_value_changed(Property* property)
 {
   if (property == this->property(STYLE_REFERENCE_PROPERTY_KEY)) {
-    owner->scene()->mail_box().appearance_changed(*owner);
+    Q_EMIT owner->scene()->mail_box().appearance_changed(*owner);
   } else if (property == this->property(EDIT_STYLE_PROPERTY_KEY)) {
     auto* style = this->property(STYLE_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
     if (style != nullptr) {
@@ -47,7 +47,7 @@ void StyleTag::on_property_value_changed(Property* property)
 
       // if manager is the PropertyManager hosting the button which has been pressed, it must
       // not be changed now.
-      QTimer::singleShot(0, [&manager, style]() {
+      QTimer::singleShot(0, &manager, [&manager, style]() {
         static_cast<PropertyManager&>(manager).set_selection({style});
       });
     }

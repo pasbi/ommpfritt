@@ -54,8 +54,7 @@ QString NodeCompilerPython::compile_node(const Node& node, QStringList& lines) c
   if (ops.size() >= 1) {
     const QStringList uuids
         = ::transform<QString, QList>(ops, [](const OutputPort* op) { return op->uuid(); });
-    lines.append(
-        QString("%1 = %2(%3)").arg(uuids.join(", ")).arg(node.type()).arg(args.join(", ")));
+    lines.append(QString("%1 = %2(%3)").arg(uuids.join(", "), node.type(), args.join(", ")));
   }
   return "";
 }
@@ -64,7 +63,7 @@ QString NodeCompilerPython::compile_connection(const OutputPort& op,
                                                const InputPort& ip,
                                                QStringList& lines) const
 {
-  lines.append(QString("%1 = %2").arg(ip.uuid()).arg(op.uuid()));
+  lines.append(QString("%1 = %2").arg(ip.uuid(), op.uuid()));
   return "";
 }
 

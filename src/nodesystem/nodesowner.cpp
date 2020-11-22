@@ -25,7 +25,7 @@ void NodesOwner::connect_edit_property(TriggerProperty& property, QObject& self)
   self.connect(&property, &Property::value_changed, &self, [this]() {
     Manager& manager = Application::instance().get_active_manager(NodeManager::TYPE);
     if (m_node_model) {
-      QTimer::singleShot(1, [this, &manager]() {
+      QTimer::singleShot(1, &manager, [this, &manager]() {
         static_cast<NodeManager&>(manager).set_model(m_node_model.get());
       });
     }

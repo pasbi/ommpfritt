@@ -23,13 +23,13 @@ public:
   PolarCoordinates to_polar() const;
 
 Q_SIGNALS:
-  void value_changed(const PolarCoordinates& old_val, const PolarCoordinates& new_val);
+  void value_changed(const omm::PolarCoordinates& old_val, const omm::PolarCoordinates& new_val);
   void value_changed();
 
 public Q_SLOTS:
-  void set_coordinates(const PolarCoordinates& coordinates);
-  void set_coordinates(const Vec2f& coordinates);
-  void set_display_mode(const DisplayMode& display_mode);
+  void set_coordinates(const omm::PolarCoordinates& coordinates);
+  void set_coordinates(const omm::Vec2f& coordinates);
+  void set_display_mode(const omm::DisplayMode& display_mode);
   void set_magnitude(const double magnitude);
 
 private:

@@ -33,7 +33,7 @@ Path::Path(Scene* scene) : Object(scene)
       .set_options({QObject::tr("linear"), QObject::tr("smooth"), QObject::tr("bezier")})
       .set_label(QObject::tr("interpolation"))
       .set_category(category);
-  update();
+  Path::update();
 }
 
 QString Path::type() const

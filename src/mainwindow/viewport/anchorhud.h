@@ -29,10 +29,10 @@ public:
   constexpr static double ANCHOR_RADIUS = 5;
 
 Q_SIGNALS:
-  void anchor_changed(Anchor anchor);
+  void anchor_changed(omm::Options::Anchor anchor);
 
 public Q_SLOTS:
-  void set_anchor(const Anchor& anchor);
+  void set_anchor(const omm::Options::Anchor& anchor);
 
 private:
   static constexpr std::array<Anchor, 5> PROPER_ANCHORS{Anchor::TopLeft,

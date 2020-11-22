@@ -351,7 +351,7 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
 
         {
           const auto& property = track->property();
-          const QString text = QString("%1 %2").arg(property.label()).arg(property.channel_name(c));
+          const QString text = QString("%1 %2").arg(property.label(), property.channel_name(c));
           const double b = frame_range.pixel_to_unit(0.0);
           const double e = frame_range.pixel_to_unit(painter.fontMetrics().horizontalAdvance(text));
           const double v1 = m * track->interpolate(b, c);
@@ -405,7 +405,7 @@ void CurveManagerWidget::draw_scale(QPainter& painter) const
   };
 
   painter.save();
-  for (auto [distance, config] : layers) {
+  for (const auto& [distance, config] : layers) {
     painter.setPen(make_pen(config));
     for (double y : range.v_range.scale(distance)) {
       const double py = range.v_range.unit_to_pixel(y);

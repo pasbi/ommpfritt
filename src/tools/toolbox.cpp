@@ -61,6 +61,7 @@ void ToolBox::set_active_tool(const QString& key)
 
 void ToolBox::set_active_tool(Tool* tool)
 {
+  assert(tool != nullptr);
   if (m_active_tool != tool) {
     m_scene.set_mode(tool->scene_mode());
     if (m_active_tool) {

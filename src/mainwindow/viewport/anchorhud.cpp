@@ -70,7 +70,7 @@ bool AnchorHUD::mouse_press(QMouseEvent& event)
         set_anchor(anchor);
       }
       m_disable_hover_for = anchor;
-      QTimer::singleShot(1000, [this]() { m_disable_hover_for = Anchor::None; });
+      QTimer::singleShot(1000, this, [this]() { m_disable_hover_for = Anchor::None; });
       return true;
     }
   }
