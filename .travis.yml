@@ -116,7 +116,7 @@ jobs:
         packages:
         - clang
     install:
-    - sudo apt-get install -y clang-format-10 clazy
+    - sudo apt-get install -y clang-format-10 clazy clang-tidy-10
     before_script:
     - echo "Peforming basic static tests that don't require a build."
     - clang-format --version
@@ -155,6 +155,12 @@ jobs:
     - cmake --build build --target package
     after_success:
     - echo "Performing final static tests requiring a build."
+    - ln -s /usr/bin/clang-tidy-10 clang-tidy
+    - |
+      if ! PATH=$(pwd):$PATH build-scripts/check-clang-tidy.sh; then
+        echo "clang-tidy found one or more issues."
+        travis_terminate 4
+      fi
   - stage: build
     os: windows
     name: Build on Windows/MinGW64
