@@ -5,14 +5,25 @@ cd "$(dirname "$0")/.."
 tidy_checks=\
 -*,bugprone-*,\
 clang-*,\
-cppcoreguidelines-*,\
+cppcoreguidelines-avoid-*,\
+cppcoreguidelines-c-copy-assignment-signature,\
+cppcoreguidelines-explicit-virtual-functions,\
+cppcoreguidelines-init-variables,\
+cppcoreguidelines-interfaces-global-init,\
+cppcoreguidelines-macro-usage,\
+cppcoreguidelines-narrowing-conversions,\
+cppcoreguidelines-no-malloc,\
+cppcoreguidelines-non-private-member-variables-in-classes,\
+cppcoreguidelines-owning-memory,\
+cppcoreguidelines-pro-type-*,\
+cppcoreguidelines-slicing,\
+cppcoreguidelines-special-member-functions
 misc-*,\
 modernize-avoid-*,\
 modernize-concat-nested-namespaces,\
 modernize-deprecated-*,\
 modernize-loop-convert,\
 modernize-make-*,\
-modernize-pass-by-value,\
 modernize-raw-string-literal,\
 modernize-redundant-void-arg,\
 modernize-replace-*,\
@@ -63,6 +74,8 @@ readability-use-anyofallof
 # modernize-use-trailing-return-type
 # readability-else-after-return
 # readability-named-parameter
+# modernize-pass-by-value
+# cppcoreguidelines-pro-bounds-array-to-pointer
 
 # find . -name "*.cpp" \
 #   | xargs clang-tidy -p build/compile_commands.json -checks="$tidy_checks"
