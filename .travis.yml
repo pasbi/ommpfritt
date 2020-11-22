@@ -116,7 +116,7 @@ jobs:
         packages:
         - clang
     install:
-    - sudo apt-get install -y clang-format-10
+    - sudo apt-get install -y clang-format-10 clazy
     before_script:
     - echo "Peforming basic static tests that don't require a build."
     - clang-format --version
@@ -147,6 +147,11 @@ jobs:
             -S .
             -B build
     - echo "Performing advanced static tests requiring build_command.json, but no complete build."
+    - |
+      if ! build-scripts/check-clazy.sh; then
+        echo "Clazy found one or more issues."
+        travis_terminate 3
+      fi
     - cmake --build build --target package
     after_success:
     - echo "Performing final static tests requiring a build."
