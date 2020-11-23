@@ -74,7 +74,7 @@ void print_tree(const omm::Object& root, const QString& prefix = "")
   const auto tags = ::transform<QString, QList>(root.tags.items(), [](const omm::Tag* tag) {
                       return tag->type();
                     }).join(", ");
-  const auto label = QString("%1[%2] (%3)").arg(root.type()).arg(root.name()).arg(tags);
+  const auto label = QString("%1[%2] (%3)").arg(root.type(), root.name(), tags);
   std::cout << prefix.toStdString() << label.toStdString() << "\n";
 
   for (const omm::Object* c : root.tree_children()) {
