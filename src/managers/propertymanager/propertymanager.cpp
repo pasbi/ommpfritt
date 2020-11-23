@@ -153,19 +153,14 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
 {
   if (!is_locked()) {
     for (auto* apo : m_current_selection) {
-      disconnect(apo,
-                 &AbstractPropertyOwner::property_visibility_changed,
-                 this,
-                 &PropertyManager::update_property_widgets);
+      disconnect(apo, &AbstractPropertyOwner::property_visibility_changed,
+                 this, &PropertyManager::update_property_widgets);
     }
 
     m_current_selection = selection;
     for (auto* apo : m_current_selection) {
-      connect(apo,
-              &AbstractPropertyOwner::property_visibility_changed,
-              this,
-              &PropertyManager::update_property_widgets,
-              Qt::QueuedConnection);
+      connect(apo, &AbstractPropertyOwner::property_visibility_changed,
+              this, &PropertyManager::update_property_widgets, Qt::QueuedConnection);
     }
 
     update_property_widgets();
