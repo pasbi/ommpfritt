@@ -105,7 +105,7 @@ void CoordinateEdit::update_cartesian()
 void CoordinateEdit::emit_value_changed()
 {
   const auto new_polar_coordinates = to_polar();
-  Q_EMIT value_changed(m_old_polar_coordinates, new_polar_coordinates);
+  Q_EMIT value_changed_val(m_old_polar_coordinates, new_polar_coordinates);
   Q_EMIT value_changed();
   m_old_polar_coordinates = new_polar_coordinates;
 }
