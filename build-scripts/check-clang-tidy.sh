@@ -18,7 +18,16 @@ cppcoreguidelines-owning-memory,\
 cppcoreguidelines-pro-type-*,\
 cppcoreguidelines-slicing,\
 cppcoreguidelines-special-member-functions
-misc-*,\
+misc-definitions-in-headers,\
+misc-misplaced-const,\
+misc-new-delete-overloads,\
+misc-non-*,\
+misc-redundant-expression,\
+misc-static-assert,\
+misc-throw-by-value-catch-by-reference,\
+misc-unconventional-assign-operator,\
+misc-uniqueptr-reset-release,\
+misc-unused-*
 modernize-avoid-*,\
 modernize-concat-nested-namespaces,\
 modernize-deprecated-*,\
@@ -71,11 +80,12 @@ readability-uniqueptr-delete-release,\
 readability-uppercase-literal-suffix,\
 readability-use-anyofallof
 
+# cppcoreguidelines-pro-bounds-array-to-pointer
+# misc-no-recursion
 # modernize-use-trailing-return-type
+# modernize-pass-by-value
 # readability-else-after-return
 # readability-named-parameter
-# modernize-pass-by-value
-# cppcoreguidelines-pro-bounds-array-to-pointer
 
 # find . -name "*.cpp" \
 #   | xargs clang-tidy -p build/compile_commands.json -checks="$tidy_checks"
