@@ -21,7 +21,6 @@ target_sources(libommpfritt PRIVATE
   subcommandlineparser.cpp
   subcommandlineparser.h
   abstractfactory.h
-  translations.h
   registers.cpp
   registers.h
 )

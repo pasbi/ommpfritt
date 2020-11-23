@@ -13,6 +13,11 @@ function(generate_icons icons_qrc specs)
     ${CMAKE_CURRENT_SOURCE_DIR}/icons/SelectPointsTool.png
   )
 
+  # This command takes very long and mmpfritt-cli changes frequently during development, hence
+  # there is a short cut to skip generation of the icons if there is at least one icon in the output directory
+  # (assuming that if there is one icon, all relevant are there, too).
+  # If you want to force re-generating the icons, change the scene file, the script or the specs
+  # or remove the icons qrc file or all png files from the output directory.
   add_custom_command(
     OUTPUT "${icons_qrc}"
     DEPENDS ommpfritt-cli "${specs}" "${script}" "${scenefile}"
@@ -23,6 +28,7 @@ function(generate_icons icons_qrc specs)
       --scenefile "${scenefile}"
       --canned ${canned_icons}
       --output "${icons_dir}"
+      --dont-regenerate
       --qrc "${icons_qrc}"
     COMMENT "generate icons and qrc"
   )

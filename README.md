@@ -23,86 +23,145 @@ still graphics, diagrams, icons and drawings.
 
 ![screenshot](sample-scenes/basic.png)
 
-
 ## How to Get It
+
 *omm* is [free](https://en.wikipedia.org/wiki/Free_software).
 You can get its source from [github](https://github.com/pasbi/ommpfritt) and
 build it.
 You may find [build instructions](doc/build.md) helpful.
 
+For any **LINUX**, there is an [AppImage](https://github.com/pasbi/ommpfritt/releases),
+which requires no installation, make the [downloaded file executable and just run it](https://docs.appimage.org/introduction/quickstart.html#ref-quickstart).
+For **WINDOWS**, [there is an installer](https://github.com/pasbi/ommpfritt/releases).
 
-### Linux
+You can install [ommpfritt-git](https://aur.archlinux.org/packages/ommpfritt-git) from the AUR if you prefer a native package on Arch Linux.
 
-#### Any distro
-You can download the latest
-[AppImage](https://github.com/pasbi/ommpfritt/releases/tag/continuous),
-make the [downloaded file executable and just run it](https://docs.appimage.org/introduction/quickstart.html#ref-quickstart).
-
-#### Arch Linux
-You can install [ommpfritt-git](https://aur.archlinux.org/packages/ommpfritt-git) from the AUR if you prefer a native package on arch.
-
-### Windows
-The last [Windows release](https://github.com/pasbi/ommpfritt/releases/tag/v0.1.2)
-is quite outdated.
-I can make a more recent release on demand.
-Don't hesitate to ask me.
-
-
-### Mac
 *omm* has been tested on various Linux Distributions and Windows.
-It has never been tested on Mac. It works in theory.
-
+It has never been tested on **Mac**. It works in theory.
 
 ## How to use
+
 *omm* was designed to be very easy to use.
 So if you can handle a mouse and a keyboard, it should be no problem to get
 started without studying the manual.
-
-Maybe you find the [feature list](doc/features.md) helpful.
 
 There is a (quite outdated)
 [screen cast on youtube](https://www.youtube.com/watch?v=6X5Lo7kq5eM)
 that shows some of the most important features and how they can be used.
 
-
 ## Contributing
+
 Although you can already use the app, it's still a long way until v1.0.
 So we need your help!
 
 See [how to contribute](doc/contribute.md).
 Don't hesitate to get in contact with us!
 
-
 ## Related Software
 
-### Traditional 2D Vector Applications
-Applications like [Inkscape](https://inkscape.org/) and Illustrator offer huge flexibility and come with a plethora of tools.
-However, it is often hard to maintain a well-structured, semantically sensible document.
-For example, the Objects-Dialog is at least not intuitively to use and buggy.
-That might not even be a problem for the every-day artist, as many use-cases do not require a nice structured document.
-Typical examples are those chaotic but beautiful comic drawings, where the artist depicts even specular light with 2d-shapes.
-Inkscape (and the conceptually similar Illustrator) are perfect tools for such use cases and omm does not intend to be an alternative there.
+How does *omm* compare to other graphical applicatons?
+See [comparison](doc/comparison.md).
 
-omm excels when many similar objects have to be drawn in well-defined pattern.
+## Features
 
+*omm* is
+-   general purpose: create any kind of graphics. No limits!
+-   interactive: you receive immediate feedback
+-   [wysiwyg](https://en.wikipedia.org/wiki/WYSIWYG)
 
-### 3D Graphics
-The user interface of omm is strongly influenced by [Cinema 4D](), that is, the proximity to 3D-graphic tools is somehow obvious.
-It should be clear, that omm is inherently 2D (+ time).
-The concept of transparency (the user intuitively knows what's happening under the hood) and structuredness can be transfered
-from the 3D- into the 2D-world and is very useful for at least some use cases and workflows.
+### User Interface
 
+-   load and save scenes to/from human readable **json** format
+-   all modifications to a scene can be undone (**unlimited undo/redo-stack**)
+-   **simple concept** with few very concrete item classes (*Object*, *Tag*, *Style*, *Tool*)
+-   wide **drag'n'drop** support: move, copy or link Objects, Tags and Styles naturally
+-   **non-destructive**, **non-linear** editing: properties of Objects, Tags, Styles and Tools can be accessed and modified at any time.
+-   build complex, reusable **object hierarchies** and object groups
+-   **flexible GUI** using dockable widgets
+-   customizable **dark** and **light** skins
+-   **multi-selection** support for properties: compatible intersection of properties of all selected items (objects, tags, styles, tools) is shown and can be modified simultaneously
+-   **flexible, customizable key binding sequences** (aka short-cuts)
+-   **multi-language** (currently English, Spanish and German only)
+-   **rasterize** to `png` and `jpg`
+-   **export** to SVG
 
-### CAD
-omm is designed for artists, not for engineers.
-It is planned to incorporate concepts from CAD into omm, e.g., constraint-based design.
-However, this has low priority and will probably not happen very soon (contributions welcome).
+### Styling
 
-### NodeBox
-TODO: [NodeBox](https://www.nodebox.net/code/index.php/Home)
+-   build complex reusable **style cascades**
+-   dynamic **Named Colors**
+-   interactive OpenGL-Shaders
 
-### Programming Languages
-You can draw with almost any programming language.
-Often, one uses not the bare language itself but some kind of framework, such as Qt (`QPainter`),
-`matplotlib`, `OpenCV` or some other graphics or plotting library. TODO
+![styling](sample-scenes/glshader.png)
 
+### Objects
+
+-   path object: any number of points, closed/open
+    -   **bézier** mode: modify the tangents of any point individually
+    -   **smooth** mode: tangents are set automatically
+    -   **linear** mode: no tangents
+    -   subdivide/remove points
+
+-   **procedural** path: control the points and tangents using python
+
+-   **ellipse**, **rectangle**, **line**
+
+-   **empty**: no geometry, but useful as group parent
+
+-   **image**: load JPG, PNG, SVG, PDF as object
+
+-   **instance**: all changes of the reference are updated in the instance-object, too
+
+-   **cloner**: many instances in a regular arrangement
+    -   grid
+    -   linear
+    -   along any path
+    -   radial
+    -   by python script
+
+-   **mirror**
+
+-   **view**: define a view onto the scene for export
+    -   set the export region comfortably within the editor
+    -   adjust to viewport or vice versa
+    -   switch between any number of self-defined views
+    -   supports translation, scaling, rotation and shear
+
+### Tags
+
+-   **path tag**: constrain position of any object to any path
+-   **style tag**: define the color of an object
+-   **script tag**: general purpose scripting without limits
+
+### Tools
+
+-   object selection: select in viewport and rotate, move or scale* along common center of all selected objects
+-   point-level: select in viewport and rotate, move or scale* along common center of all selected points. Works fine even if many path-objects are selected.
+-   optinally transform axes only. Re-set the origin of the object without affecting its geometry.
+-   brush-select: select points as if you were painting
+-   Bounding Box-Handle
+
+### Animation
+
+-   Keyframe Animation
+-   Responsive Timeline
+-   Dope Sheet
+-   Seamless integration into undo/redo and multi-property- and multi-object-selection
+
+![animation](sample-scenes/animation.png)
+
+### Programmable
+
+-   **programmable**: every property can be controlled via embedded python scripting
+
+![python](sample-scenes/python.png)
+
+-   visual node-based scripting alternative
+
+![nodes](sample-scenes/nodes.png)
+
+-   user properties can be added at runtime to any object
+
+### Optional Command Line Interface
+
+-   Batch rendering from command line
+-   Get basic scene information from command line
