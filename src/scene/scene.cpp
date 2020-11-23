@@ -113,10 +113,7 @@ Scene::Scene(PythonEngine& python_engine)
       set_selection(new_selection);
     }
   });
-  connect(&mail_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this,
-          &Scene::update_tool);
+  connect(&mail_box(), &MailBox::selection_changed, this, &Scene::update_tool);
 }
 
 Scene::~Scene()
@@ -335,23 +332,23 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
   m_selection = selection;
 
   static const auto emit_selection_changed = [this](const auto& selection, const auto kind) {
-    Q_EMIT mail_box().selection_changed(selection, kind);
+    Q_EMIT mail_box().kind_selection_changed(selection, kind);
 
     switch (kind) {
     case Kind::Style:
-      Q_EMIT mail_box().selection_changed(kind_cast<Style>(selection));
+      Q_EMIT mail_box().style_selection_changed(kind_cast<Style>(selection));
       break;
     case Kind::Object:
-      Q_EMIT mail_box().selection_changed(kind_cast<Object>(selection));
+      Q_EMIT mail_box().object_selection_changed(kind_cast<Object>(selection));
       break;
     case Kind::Tag:
-      Q_EMIT mail_box().selection_changed(kind_cast<Tag>(selection));
+      Q_EMIT mail_box().tag_selection_changed(kind_cast<Tag>(selection));
       break;
     case Kind::Tool:
-      Q_EMIT mail_box().selection_changed(kind_cast<Tool>(selection));
+      Q_EMIT mail_box().tool_selection_changed(kind_cast<Tool>(selection));
       break;
     case Kind::Node:
-      Q_EMIT mail_box().selection_changed(kind_cast<Node>(selection));
+      Q_EMIT mail_box().node_selection_changed(kind_cast<Node>(selection));
       break;
     default:
       break;

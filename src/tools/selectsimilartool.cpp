@@ -117,7 +117,7 @@ void SelectSimilarTool::update_selection()
       }
     }
   }
-  Q_EMIT scene()->mail_box().appearance_changed(*this);
+  Q_EMIT scene()->mail_box().tool_appearance_changed(*this);
 }
 
 void SelectSimilarTool::update_base_selection()

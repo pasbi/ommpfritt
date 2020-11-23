@@ -58,12 +58,9 @@ Viewport::Viewport(Scene& scene)
   setFocusPolicy(Qt::StrongFocus);
 
   setMouseTracking(true);
-  connect(&scene.mail_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this,
-          &Viewport::update);
+  connect(&scene.mail_box(), &MailBox::selection_changed, this, &Viewport::update);
 
-  connect(&scene.mail_box(), qOverload<>(&MailBox::appearance_changed), this, &Viewport::update);
+  connect(&scene.mail_box(), &MailBox::scene_appearance_changed, this, &Viewport::update);
   connect(&m_fps_limiter, &QTimer::timeout, [this]() {
     m_fps_limiter.stop();
     if (m_update_later) {

@@ -39,7 +39,7 @@ Flag StyleTag::flags() const
 void StyleTag::on_property_value_changed(Property* property)
 {
   if (property == this->property(STYLE_REFERENCE_PROPERTY_KEY)) {
-    Q_EMIT owner->scene()->mail_box().appearance_changed(*owner);
+    Q_EMIT owner->scene()->mail_box().object_appearance_changed(*owner);
   } else if (property == this->property(EDIT_STYLE_PROPERTY_KEY)) {
     auto* style = this->property(STYLE_REFERENCE_PROPERTY_KEY)->value<AbstractPropertyOwner*>();
     if (style != nullptr) {

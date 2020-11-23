@@ -105,7 +105,7 @@ BoundingBox SelectPointsBaseTool::bounding_box() const
 void SelectPointsBaseTool::on_property_value_changed(Property* property)
 {
   if (property == this->property(BOUNDING_BOX_MODE_PROPERTY_KEY)) {
-    Q_EMIT scene()->mail_box().appearance_changed(*this);
+    Q_EMIT scene()->mail_box().tool_appearance_changed(*this);
   }
   AbstractSelectTool::on_property_value_changed(property);
 }

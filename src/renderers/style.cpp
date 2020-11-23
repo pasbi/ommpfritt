@@ -166,7 +166,7 @@ void Style::on_property_value_changed(Property* property)
       || property == this->property(COSMETIC_KEY) || property == this->property(BRUSH_IS_ACTIVE_KEY)
       || property == this->property(BRUSH_COLOR_KEY)) {
     if (Scene* scene = this->scene(); scene != nullptr) {
-      Q_EMIT scene->mail_box().appearance_changed(*this);
+      Q_EMIT scene->mail_box().style_appearance_changed(*this);
     }
   }
 }

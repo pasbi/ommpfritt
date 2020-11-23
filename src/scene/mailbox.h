@@ -20,10 +20,10 @@ public:
 
 Q_SIGNALS:
   /**
-   * @brief appearance_changed is emitted when the appearance of a tool has changed.
+   * @brief tool_appearance_changed is emitted when the appearance of a tool has changed.
    * This signal forwards to @code appearance_changed().
    */
-  void appearance_changed(omm::Tool&);
+  void tool_appearance_changed(omm::Tool&);
 
   /**
    * @brief appearance_changed is emitted when the appearance of an object has changed.
@@ -34,7 +34,7 @@ Q_SIGNALS:
    * If the specified object has a parent, this signal will forward to that very parent's
    * child_appearance_change signal.
    */
-  void appearance_changed(omm::Object&);
+  void object_appearance_changed(omm::Object&);
 
   /**
    * @brief transformation_changed similar to appearance_changed, however, this signal is only
@@ -44,12 +44,11 @@ Q_SIGNALS:
   void transformation_changed(omm::Object&);
 
   /**
-   * @brief appearance_changed is emitted when the appearance of the scene changed, i.e., if it
-   *  needs to be redrawn.
-   * Many signals of this class forward to this one.
-   * This is the weakest signal, it is emitted very frequently.
+   * @brief scene_appearance_changed is emitted when the appearance of the scene changed, i.e., if
+   * it needs to be redrawn. Many signals of this class forward to this one. This is the weakest
+   * signal, it is emitted very frequently.
    */
-  void appearance_changed();
+  void scene_appearance_changed();
 
   /**
    * @brief object_inserted is emitted when an object was inserted into the parent object
@@ -99,29 +98,29 @@ Q_SIGNALS:
   void tag_removed(omm::Object&, omm::Tag&);
 
   /**
-   * @brief selection_changed is emitted when the object selection changed.
+   * @brief object_selection_changed is emitted when the object selection changed.
    */
-  void selection_changed(const std::set<omm::Object*>&);
+  void object_selection_changed(const std::set<omm::Object*>&);
 
   /**
-   * @brief selection_changed is emitted when the style selection changed.
+   * @brief style_selection_changed is emitted when the style selection changed.
    */
-  void selection_changed(const std::set<omm::Style*>&);
+  void style_selection_changed(const std::set<omm::Style*>&);
 
   /**
-   * @brief selection_changed is emitted when the tag selection changed.
+   * @brief tag_selection_changed is emitted when the tag selection changed.
    */
-  void selection_changed(const std::set<omm::Tag*>&);
+  void tag_selection_changed(const std::set<omm::Tag*>&);
 
   /**
-   * @brief selection_changed is emitted when the node selection changed.
+   * @brief node_selection_changed is emitted when the node selection changed.
    */
-  void selection_changed(const std::set<omm::Node*>&);
+  void node_selection_changed(const std::set<omm::Node*>&);
 
   /**
-   * @brief selection_changed is emitted when the tool selection changed.
+   * @brief tool_selection_changed is emitted when the tool selection changed.
    */
-  void selection_changed(const std::set<omm::Tool*>&);
+  void tool_selection_changed(const std::set<omm::Tool*>&);
 
   /**
    * @brief selection_changed is emitted when the selection changed.
@@ -129,10 +128,10 @@ Q_SIGNALS:
   void selection_changed(const std::set<omm::AbstractPropertyOwner*>&);
 
   /**
-   * @brief selection_changed is emitted when tag, style, object or tool selection changed.
+   * @brief kind_selection_changed is emitted when tag, style, object or tool selection changed.
    * The kind of selection is transferred via the second argument.
    */
-  void selection_changed(const std::set<omm::AbstractPropertyOwner*>&, omm::Kind);
+  void kind_selection_changed(const std::set<omm::AbstractPropertyOwner*>&, omm::Kind);
 
   /**
    * @brief filename_changed is emitted when the filename of the scene changes.
@@ -159,7 +158,7 @@ Q_SIGNALS:
   /**
    * @brief appearance_changed is emitted when the style appearance changed.
    */
-  void appearance_changed(omm::Style&);
+  void style_appearance_changed(omm::Style&);
 
   /**
    * @param owner the owner of the property

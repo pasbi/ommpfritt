@@ -435,9 +435,9 @@ void Object::on_property_value_changed(Property* property)
   } else if (property == this->property(VIEWPORT_VISIBILITY_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
     if (is_root()) {
-      Q_EMIT scene()->mail_box().appearance_changed();
+      Q_EMIT scene()->mail_box().scene_appearance_changed();
     } else {
-      Q_EMIT scene()->mail_box().appearance_changed(tree_parent());
+      Q_EMIT scene()->mail_box().object_appearance_changed(tree_parent());
     }
   } else if (property == this->property(VISIBILITY_PROPERTY_KEY)) {
     object_tree_data_changed(ObjectTree::VISIBILITY_COLUMN);
@@ -453,7 +453,7 @@ void Object::update()
   painter_path.invalidate();
   geom_paths.invalidate();
   if (Scene* scene = this->scene(); scene != nullptr) {
-    Q_EMIT scene->mail_box().appearance_changed(*this);
+    Q_EMIT scene->mail_box().object_appearance_changed(*this);
   }
 }
 
@@ -685,19 +685,19 @@ void Object::set_object_tree(ObjectTree& object_tree)
 void Object::on_child_added(Object& child)
 {
   TreeElement::on_child_added(child);
-  Q_EMIT scene()->mail_box().appearance_changed(*this);
+  Q_EMIT scene()->mail_box().object_appearance_changed(*this);
 }
 
 void Object::on_child_removed(Object& child)
 {
   TreeElement::on_child_removed(child);
-  Q_EMIT scene()->mail_box().appearance_changed(*this);
+  Q_EMIT scene()->mail_box().object_appearance_changed(*this);
 }
 
 void Object::listen_to_changes(const std::function<Object*()>& get_watched)
 {
   connect(&scene()->mail_box(),
-          qOverload<Object&>(&MailBox::appearance_changed),
+          &MailBox::object_appearance_changed,
           this,
           [get_watched, this](Object& o) {
             Object* r = get_watched();
@@ -707,7 +707,7 @@ void Object::listen_to_changes(const std::function<Object*()>& get_watched)
                   QSignalBlocker blocker(&scene()->mail_box());
                   update();
                 }
-                Q_EMIT scene()->mail_box().appearance_changed();
+                Q_EMIT scene()->mail_box().scene_appearance_changed();
               } else if (r->is_ancestor_of(o)) {
                 update();
               }
@@ -723,7 +723,7 @@ void Object::listen_to_children_changes()
     }
   };
   connect(&scene()->mail_box(), &MailBox::transformation_changed, this, on_change);
-  connect(&scene()->mail_box(), qOverload<Object&>(&MailBox::appearance_changed), this, on_change);
+  connect(&scene()->mail_box(), &MailBox::object_appearance_changed, this, on_change);
 }
 
 Path::Segment Object::path_to_segment(const Geom::Path& path, bool is_closed)

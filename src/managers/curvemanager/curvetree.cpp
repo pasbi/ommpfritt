@@ -89,7 +89,7 @@ CurveTree::CurveTree(Scene& scene)
   auto filter_proxy = std::make_unique<FilterSelectedProxyModel>(scene.animator());
   auto add_proxy = std::make_unique<AddColumnProxy>();
   connect(&scene.mail_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
+          &MailBox::selection_changed,
           filter_proxy.get(),
           &QSortFilterProxyModel::invalidate);
 

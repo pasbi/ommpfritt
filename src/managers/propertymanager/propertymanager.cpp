@@ -140,10 +140,7 @@ PropertyManager::PropertyManager(Scene& scene)
           &MultiTabBar::current_indices_changed,
           this,
           &PropertyManager::activate_tabs);
-  connect(&scene.mail_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this,
-          &PropertyManager::set_selection);
+  connect(&scene.mail_box(), &MailBox::selection_changed, this, &PropertyManager::set_selection);
   m_scroll_area->setFrameShape(QFrame::NoFrame);
 }
 

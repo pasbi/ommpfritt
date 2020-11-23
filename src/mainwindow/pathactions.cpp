@@ -244,7 +244,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
          app.scene.set_selection(down_cast(app.scene.object_tree().items()));
          break;
        }
-       Q_EMIT app.mail_box().appearance_changed();
+       Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 
     {"deselect all",
@@ -262,7 +262,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
          app.scene.set_selection({});
          break;
        }
-       Q_EMIT app.mail_box().appearance_changed();
+       Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 
     {"invert selection",
@@ -286,7 +286,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
          break;
        }
        }
-       Q_EMIT app.mail_box().appearance_changed();
+       Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 
     {"convert objects",
@@ -324,7 +324,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
            std::for_each(segment.begin(), segment.end(), set_selected);
          }
        });
-       Q_EMIT app.mail_box().appearance_changed();
+       Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 
     {"fill selection",
@@ -337,7 +337,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
            std::for_each(first_it, last_it.base(), set_selected);
          }
        });
-       Q_EMIT app.mail_box().appearance_changed();
+       Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 
     {"extend selection",
@@ -347,7 +347,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
            segment[i].is_selected = true;
          }
        });
-       Q_EMIT app.mail_box().appearance_changed();
+       Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 
     {"shrink selection",
@@ -363,7 +363,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
            segment[i].is_selected = false;
          }
        });
-       Q_EMIT app.mail_box().appearance_changed();
+       Q_EMIT app.mail_box().scene_appearance_changed();
      }},
 };
 

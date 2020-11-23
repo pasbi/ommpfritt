@@ -373,7 +373,7 @@ void TimelineCanvas::zoom(const QPointF& d)
 void TimelineCanvas::synchronize_track_selection_with_animator()
 {
   connect(&animator.scene.mail_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
+          &MailBox::selection_changed,
           this,
           &TimelineCanvas::update_tracks);
   update_tracks(animator.scene.selection());
@@ -388,10 +388,7 @@ void TimelineCanvas::synchronize_track_selection_with_animator()
   connect(&animator, &Animator::start_changed, this, &TimelineCanvas::update);
   connect(&animator, &Animator::end_changed, this, &TimelineCanvas::update);
   connect(&animator, &Animator::track_changed, this, &TimelineCanvas::update);
-  connect(&animator.scene.mail_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this,
-          &TimelineCanvas::update);
+  connect(&animator.scene.mail_box(), &MailBox::selection_changed, this, &TimelineCanvas::update);
 }
 
 std::set<Track*> TimelineCanvas::tracks_at(double frame) const

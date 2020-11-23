@@ -45,10 +45,7 @@ NodeManager::NodeManager(Scene& scene)
   widget->setContextMenuPolicy(Qt::NoContextMenu);
   set_widget(std::move(widget));
 
-  connect(&scene.mail_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this,
-          &NodeManager::set_selection);
+  connect(&scene.mail_box(), &MailBox::selection_changed, this, &NodeManager::set_selection);
   connect(&scene.mail_box(), &MailBox::abstract_property_owner_removed, [this](const auto& apo) {
     const auto nodes_owner = dynamic_cast<const NodesOwner*>(&apo);
     const auto node_model = nodes_owner == nullptr ? nullptr : nodes_owner->node_model();

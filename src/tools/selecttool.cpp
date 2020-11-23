@@ -80,7 +80,7 @@ ObjectTransformation AbstractSelectTool::transformation() const
 void AbstractSelectTool::on_property_value_changed(Property* property)
 {
   if (pmatch(property, {ALIGNMENT_PROPERTY_KEY})) {
-    Q_EMIT scene()->mail_box().appearance_changed(*this);
+    Q_EMIT scene()->mail_box().tool_appearance_changed(*this);
   } else {
     Tool::on_property_value_changed(property);
   }

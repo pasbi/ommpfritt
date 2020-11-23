@@ -44,10 +44,7 @@ CurveManagerWidget::CurveManagerWidget(Scene& scene, const CurveTree& curve_tree
     : range({1, -10}, {100, 10}, *this, Range::Options::Default, Range::Options::Mirror),
       m_scene(scene), m_curve_tree(curve_tree)
 {
-  connect(&scene.mail_box(),
-          qOverload<const std::set<AbstractPropertyOwner*>&>(&MailBox::selection_changed),
-          this,
-          &CurveManagerWidget::set_selection);
+  connect(&scene.mail_box(), &MailBox::selection_changed, this, &CurveManagerWidget::set_selection);
   set_selection(scene.selection());
   connect(&scene.animator(), &Animator::track_inserted, this, &CurveManagerWidget::add_track);
   connect(&scene.animator(), &Animator::track_removed, this, &CurveManagerWidget::remove_track);

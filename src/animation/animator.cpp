@@ -111,7 +111,7 @@ void Animator::set_current(int current)
   if (m_current_frame != current) {
     m_current_frame = current;
     Q_EMIT current_changed(current);
-    Q_EMIT scene.mail_box().appearance_changed();
+    Q_EMIT scene.mail_box().scene_appearance_changed();
   }
 }
 
