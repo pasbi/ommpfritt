@@ -70,13 +70,13 @@ Q_SIGNALS:
   void object_moved(omm::Object& old_parent, omm::Object& new_parent, omm::Object& object);
 
   /**
-   * @brief object_inserted is emitted when a style was inserted into the scene.
+   * @brief style_inserted is emitted when a style was inserted into the scene.
    * This signal forwards to @code appearance_changed().
    */
   void style_inserted(omm::Style&);
 
   /**
-   * @brief object_inserted is emitted when a style was removed from the scene.
+   * @brief style_removed is emitted when a style was removed from the scene.
    * This signal forwards to @code appearance_changed().
    */
   void style_removed(omm::Style&);
@@ -87,13 +87,13 @@ Q_SIGNALS:
   void style_moved(omm::Style&);
 
   /**
-   * @brief object_inserted is emitted when a tag was attached to the object.
+   * @brief tag_inserted is emitted when a tag was attached to the object.
    * This signal forwards to @code appearance_changed().
    */
   void tag_inserted(omm::Object&, omm::Tag&);
 
   /**
-   * @brief object_inserted is emitted when a tag was removed from the object.
+   * @brief tag_removed is emitted when a tag was removed from the object.
    * This signal forwards to @code appearance_changed().
    */
   void tag_removed(omm::Object&, omm::Tag&);
