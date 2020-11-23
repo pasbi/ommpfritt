@@ -161,11 +161,11 @@ void ObjectTreeView::mouseReleaseEvent(QMouseEvent* e)
   if (m_rubberband_visible && !m_aborted) {
     m_rubberband_visible = false;
     const auto flag = get_selection_flag(*e);
-    for (const QModelIndex& index : indices(rubber_band())) {
+    for (const QModelIndex& index : as_const(indices(rubber_band()))) {
       selectionModel()->select(index, flag);
     }
     m_object_delegate->tmp_selection.clear();
-    for (const QModelIndex& index : indices(viewport()->rect())) {
+    for (const QModelIndex& index : as_const(indices(viewport()->rect()))) {
       for (Tag* tag : m_tags_item_delegate->tags(index, rubber_band())) {
         m_selection_model->select(*tag, flag);
       }

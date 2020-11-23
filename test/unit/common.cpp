@@ -202,3 +202,64 @@ TEST(common, tsort)
   }
   EXPECT_FALSE(has_cycle);
 }
+
+TEST(common, modern_cpp_for_loop_qt_cow_container)
+{
+  [[maybe_unused]] static bool begin_was_called = false;
+  [[maybe_unused]] static bool end_was_called = false;
+  [[maybe_unused]] static bool const_begin_was_called = false;
+  [[maybe_unused]] static bool const_end_was_called = false;
+  const auto reset = []() {
+    begin_was_called = true;
+    end_was_called = true;
+    const_begin_was_called = true;
+    const_end_was_called = true;
+  };
+
+  class TestContainer
+  {
+  private:
+    std::vector<int> dummy;
+
+  public:
+    decltype(auto) begin() {
+      begin_was_called = true;
+      return dummy.begin();
+    };
+
+    decltype(auto) end() {
+      end_was_called = true;
+      return dummy.end();
+    };
+
+    decltype(auto) begin() const {
+      const_begin_was_called = true;
+      return dummy.cbegin();
+    };
+
+    decltype(auto) end() const {
+      const_end_was_called = true;
+      return dummy.cend();
+    };
+  };
+
+  auto f = [](){ return TestContainer(); };
+
+  reset();
+  for (auto&& i : f()) {
+    Q_UNUSED(i)
+    EXPECT_TRUE(begin_was_called);
+    EXPECT_TRUE(end_was_called);
+    EXPECT_FALSE(const_begin_was_called);
+    EXPECT_FALSE(const_end_was_called);
+  }
+
+  reset();
+  for (auto&& i : omm::as_const(f())) {
+    Q_UNUSED(i)
+    EXPECT_FALSE(begin_was_called);
+    EXPECT_FALSE(end_was_called);
+    EXPECT_TRUE(const_begin_was_called);
+    EXPECT_TRUE(const_end_was_called);
+  }
+}

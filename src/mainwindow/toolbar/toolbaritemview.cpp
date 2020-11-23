@@ -20,7 +20,7 @@ void ToolBarItemView::dropEvent(QDropEvent* event)
 
   std::set<const QStandardItem*> items_to_remove;
   if (remove_selection) {
-    for (const QModelIndex& index : selectionModel()->selection().indexes()) {
+    for (const QModelIndex& index : as_const(selectionModel()->selection().indexes())) {
       items_to_remove.insert(model->itemFromIndex(index));
     }
   }

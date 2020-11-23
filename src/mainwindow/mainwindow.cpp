@@ -27,9 +27,11 @@
 #include "tools/tool.h"
 #include "ui_aboutdialog.h"
 #include "widgets/colorwidget/colorwidget.h"
+#include "common.h"
 
 namespace
 {
+
 QMenu* find_menu(QMenu* menu, const QString& object_name)
 {
   if (menu == nullptr) {
@@ -37,7 +39,7 @@ QMenu* find_menu(QMenu* menu, const QString& object_name)
   } else if (menu->objectName() == object_name) {
     return menu;
   } else {
-    for (const QAction* action : menu->actions()) {
+    for (const QAction* action : omm::as_const(menu->actions())) {
       QMenu* sub_menu = find_menu(action->menu(), object_name);
       if (sub_menu != nullptr) {
         return sub_menu;
@@ -340,10 +342,10 @@ void MainWindow::save_layout()
 
 void MainWindow::load_layout(QSettings& settings)
 {
-  for (const Manager* manager : findChildren<Manager*>()) {
+  for (const Manager* manager : as_const(findChildren<Manager*>())) {
     delete manager;
   }
-  for (const QToolBar* toolbar : findChildren<QToolBar*>()) {
+  for (const QToolBar* toolbar : as_const(findChildren<QToolBar*>())) {
     delete toolbar;
   }
 
@@ -400,7 +402,7 @@ void MainWindow::save_layout(QSettings& settings)
   {
     std::set<QString> names;
     settings.beginWriteArray(MANAGER_SETTINGS_KEY);
-    for (const Manager* manager : findChildren<Manager*>()) {
+    for (const Manager* manager : as_const(findChildren<Manager*>())) {
       if (const QString name = manager->objectName(); !::contains(names, name)) {
         settings.setArrayIndex(names.size());
         settings.setValue(MANAGER_TYPE_SETTINGS_KEY, manager->type());
@@ -414,7 +416,7 @@ void MainWindow::save_layout(QSettings& settings)
   {
     std::set<QString> names;
     settings.beginWriteArray(TOOLBAR_SETTINGS_KEY);
-    for (const ToolBar* toolbar : findChildren<ToolBar*>()) {
+    for (const ToolBar* toolbar : as_const(findChildren<ToolBar*>())) {
       if (const QString name = toolbar->objectName(); !::contains(names, name)) {
         settings.setArrayIndex(names.size());
         settings.setValue(TOOLBAR_TYPE_SETTINGS_KEY, toolbar->type());
