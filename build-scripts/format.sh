@@ -2,10 +2,15 @@
 
 cd "$(dirname "$0")/.."
 
-echo "$0 $@ using clang-format:"
+echo "using clang-format:"
 clang-format --version
 
-files=$(find src -path src/external -prune -false -o -type f \( -iname \*.cpp -o -iname \*.h \))
+if [ "$#" -eq "1" ]; then
+  echo "all"
+  files=$(find src -path src/external -prune -false -o -type f \( -iname \*.cpp -o -iname \*.h \))
+else
+  files="${@:2}"
+fi
 
 case "$1" in
 "check")
@@ -32,16 +37,20 @@ case "$1" in
 ;;
 *)
   cat << END
-usage: $0 <command>
+usage: $0 <command> [FILES [...]]
+
   These are the commands:
 
   check:  reports the diffs of well formated and the actual sources.
           exits with 0 if no diffs were found or non-zero otherwise.
 
-  format: apply the formatting to the code.
+  applt:  apply the formatting to the code.
           Use this with care, it's good practice to commit before
           using this.
 
+  If one or more FILES are given, only those files will be checked
+  or re-formatted.
+  If no FILES are given, all files in src are checked or re-formatted.
 END
 ;;
 esac
