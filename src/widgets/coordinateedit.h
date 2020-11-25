@@ -23,7 +23,8 @@ public:
   PolarCoordinates to_polar() const;
 
 Q_SIGNALS:
-  void value_changed_val(const omm::PolarCoordinates& old_val, const omm::PolarCoordinates& new_val);
+  void value_changed_val(const omm::PolarCoordinates& old_val,
+                         const omm::PolarCoordinates& new_val);
   void value_changed();
 
 public Q_SLOTS:

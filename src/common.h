@@ -501,7 +501,10 @@ enum class Space { Viewport, Scene };
  *
  *  also std::as_const does not work here.
  */
-template<typename T> const T as_const(const T& v) { return v; }
+template<typename T> const T as_const(const T& v)
+{
+  return v;
+}
 
 }  // namespace omm
 

@@ -82,18 +82,19 @@ PointEdit::PointEdit(Point& point, QWidget* parent) : QWidget(parent), m_point(p
     update_point();
   });
 
-  connect(m_left_tangent_edit, &CoordinateEdit::value_changed_val,
-          this, &PointEdit::set_right_maybe);
-  connect(m_right_tangent_edit, &CoordinateEdit::value_changed_val,
-          this, &PointEdit::set_left_maybe);
+  connect(m_left_tangent_edit,
+          &CoordinateEdit::value_changed_val,
+          this,
+          &PointEdit::set_right_maybe);
+  connect(m_right_tangent_edit,
+          &CoordinateEdit::value_changed_val,
+          this,
+          &PointEdit::set_left_maybe);
 
   {
-    connect(m_left_tangent_edit, &CoordinateEdit::value_changed,
-            this, &PointEdit::update_point);
-    connect(m_right_tangent_edit, &CoordinateEdit::value_changed,
-            this, &PointEdit::update_point);
-    connect(m_position_edit, &CoordinateEdit::value_changed,
-            this, &PointEdit::update_point);
+    connect(m_left_tangent_edit, &CoordinateEdit::value_changed, this, &PointEdit::update_point);
+    connect(m_right_tangent_edit, &CoordinateEdit::value_changed, this, &PointEdit::update_point);
+    connect(m_position_edit, &CoordinateEdit::value_changed, this, &PointEdit::update_point);
   }
 }
 

@@ -59,12 +59,18 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
     setExpanded(index, true);
   });
 
-  connect(&scene().mail_box(), &MailBox::tag_inserted,
-          this, &ObjectTreeView::update_tag_column_size);
-  connect(&scene().mail_box(), &MailBox::tag_removed,
-          this, &ObjectTreeView::update_tag_column_size);
-  connect(&scene().mail_box(), &MailBox::scene_reseted,
-          this, &ObjectTreeView::update_tag_column_size);
+  connect(&scene().mail_box(),
+          &MailBox::tag_inserted,
+          this,
+          &ObjectTreeView::update_tag_column_size);
+  connect(&scene().mail_box(),
+          &MailBox::tag_removed,
+          this,
+          &ObjectTreeView::update_tag_column_size);
+  connect(&scene().mail_box(),
+          &MailBox::scene_reseted,
+          this,
+          &ObjectTreeView::update_tag_column_size);
 
   update_tag_column_size();
 

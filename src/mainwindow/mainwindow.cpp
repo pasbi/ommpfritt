@@ -13,6 +13,7 @@
 #include <QSettings>
 #include <functional>
 
+#include "common.h"
 #include "keybindings/commandinterface.h"
 #include "logging.h"
 #include "mainwindow/application.h"
@@ -27,11 +28,9 @@
 #include "tools/tool.h"
 #include "ui_aboutdialog.h"
 #include "widgets/colorwidget/colorwidget.h"
-#include "common.h"
 
 namespace
 {
-
 QMenu* find_menu(QMenu* menu, const QString& object_name)
 {
   if (menu == nullptr) {
