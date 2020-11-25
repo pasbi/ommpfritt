@@ -196,8 +196,8 @@ def perform_checks(mode):
         print(f"All {mode} checks passed.")
         return True
     else:
-        failed = sum(return_codes)
         total = len(return_codes)
+        failed = total - sum(return_codes)
         print(f"{failed}/{total} {mode} checks failed.")
         return False
 
@@ -208,5 +208,7 @@ if all(results.values()):
     print("All checkers passed.")
     sys.exit(0)
 else:
-    print(f"{sum(results.values())}/{len(results)} checkers failed.")
+    total = len(results)
+    failed = total - sum(results.values())
+    print(f"{failed}/{total} checkers failed.")
     sys.exit(1)
