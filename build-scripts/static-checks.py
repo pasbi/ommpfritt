@@ -111,6 +111,13 @@ clang_tidy_checks = [
     "openmp-*",
     "performance-*",
     "portability-*",
+    "readability-redundant-control-flow",
+    "readability-redundant-declaration",
+    "readability-redundant-function-ptr-dereference",
+    "readability-redundant-member-init",
+    "readability-redundant-preprocessor",
+    "readability-redundant-smartptr-get",
+    "readability-redundant-string-*"
     "readability-avoid-const-params-in-decls",
     "readability-braces-around-statements",
     "readability-const-return-type",
@@ -136,6 +143,8 @@ clang_tidy_checks = [
     "readability-uniqueptr-delete-release",
     "readability-uppercase-literal-suffix",
     "readability-use-anyofallof",
+
+    # "readability-redundant-access-specifiers",
     # "cppcoreguidelines-pro-bounds-array-to-pointer",
     # "misc-no-recursion",
     # "modernize-use-trailing-return-type",
