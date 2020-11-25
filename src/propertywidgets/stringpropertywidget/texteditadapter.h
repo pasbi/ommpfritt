@@ -30,10 +30,10 @@ public:
   using edit_type = QLineEdit;
   using QLineEdit::QLineEdit;
   void set_inconsistent_value() override;
-  void set_value(const QString& ph) override;
+  void set_value(const QString& text) override;
   void clear() override;
-  QString value() const override;
-  QWidget* as_widget() override;
+  [[nodiscard]] QString value() const override;
+  [[nodiscard]] QWidget* as_widget() override;
 };
 
 template<>
@@ -48,8 +48,8 @@ public:
   void set_inconsistent_value() override;
   void set_value(const QString& ph) override;
   void clear() override;
-  QString value() const override;
-  QWidget* as_widget() override;
+  [[nodiscard]] QString value() const override;
+  [[nodiscard]] QWidget* as_widget() override;
 };
 
 template<>
@@ -63,8 +63,8 @@ public:
   void set_inconsistent_value() override;
   void set_value(const QString& ph) override;
   void clear() override;
-  QString value() const override;
-  QWidget* as_widget() override;
+  [[nodiscard]] QString value() const override;
+  [[nodiscard]] QWidget* as_widget() override;
 };
 
 template<>
@@ -76,10 +76,10 @@ public:
   using edit_type = CodeEdit;
   using CodeEdit::CodeEdit;
   void set_inconsistent_value() override;
-  void set_value(const QString& ph) override;
+  void set_value(const QString& text) override;
   void clear() override;
-  QString value() const override;
-  QWidget* as_widget() override;
+  [[nodiscard]] QString value() const override;
+  [[nodiscard]] QWidget* as_widget() override;
 };
 
 template<>
@@ -91,10 +91,10 @@ public:
   using edit_type = FontComboBox;
   using FontComboBox::FontComboBox;
   void set_inconsistent_value() override;
-  void set_value(const QString& ph) override;
+  void set_value(const QString& text) override;
   void clear() override;
-  QString value() const override;
-  QWidget* as_widget() override;
+  [[nodiscard]] QString value() const override;
+  [[nodiscard]] QWidget* as_widget() override;
 };
 
 }  // namespace omm

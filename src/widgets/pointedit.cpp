@@ -21,7 +21,6 @@ auto make_tangent_layout(omm::CoordinateEdit*& coordinate_edit_ref,
   auto hlayout = std::make_unique<QHBoxLayout>();
   hlayout->addWidget(vanish_button.release());
   hlayout->addWidget(mirror_button.release());
-  mirror_button.release();
 
   auto vlayout = std::make_unique<QVBoxLayout>();
   vlayout->addWidget(coordinate_edit.release());

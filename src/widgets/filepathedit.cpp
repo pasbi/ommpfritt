@@ -27,7 +27,7 @@ FilePathEdit::FilePathEdit(QWidget* parent) : QWidget(parent)
     }
     if (QDialog::Accepted == dialog.exec()) {
       const auto paths = dialog.selectedFiles();
-      if (paths.size() > 0) {
+      if (!paths.empty()) {
         set_path(paths.front());
       }
     }

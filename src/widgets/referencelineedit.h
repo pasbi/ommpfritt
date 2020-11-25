@@ -21,7 +21,7 @@ public:
   explicit ReferenceLineEdit(QWidget* parent = nullptr);
   ~ReferenceLineEdit() = default;
   void set_value(const value_type& value) override;
-  value_type value() const override;
+  [[nodiscard]] value_type value() const override;
   void set_filter(const ReferenceProperty::Filter& filter);
   void set_null_label(const QString& value);
   void set_scene(Scene& scene);
@@ -32,7 +32,7 @@ protected:
   bool eventFilter(QObject* o, QEvent* e) override;
 
 private:
-  bool can_drop(const QDropEvent& event) const;
+  [[nodiscard]] bool can_drop(const QDropEvent& event) const;
   AbstractPropertyOwner* m_value;
   Scene* m_scene = nullptr;
   ReferenceProperty::Filter m_filter;
