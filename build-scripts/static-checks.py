@@ -4,6 +4,7 @@ import sys
 import multiprocessing
 import subprocess
 import argparse
+import os
 
 clazy_checks=[
     "connect-by-name",
@@ -148,13 +149,9 @@ parser.add_argument("--compile-commands", required=True,
                     help="The compile_commands.json file.")
 parser.add_argument("--files", required=True, nargs='+',
                     help="The files to check")
-parser.add_argument("--mode", required=True, choices=["clang-tidy", "clazy"],
-                    help="The checker to use")
+parser.add_argument("--modes", required=True, choices=["clang-tidy", "clazy"],
+                    nargs='+', help="The checker(s) to use")
 args = parser.parse_args()
-
-if len(args.files) == 0:
-    print("No files given, nothing to do.")
-    sys.exit(0)
 
 clazy_checks = ','.join(clazy_checks)
 clang_tidy_checks = ','.join(clang_tidy_checks)
@@ -166,25 +163,50 @@ command_args = {
   "clang-tidy": ["clang-tidy", "-warnings-as-errors=*",
                  "-p", args.compile_commands,
                  f"-checks={clang_tidy_checks}"]
-}[args.mode]
+}
 
-def perform_clazy_check(fn):
+def file_filter(fn):
+    fn = os.path.normpath(fn).replace("\\", "/")
+    if "/external/" in fn:
+        return False
+    else:
+        return fn.endswith(".h") or fn.endswith(".cpp")
+
+files = [fn for fn in args.files if file_filter(fn)]
+
+if len(files) == 0:
+    print("No files given, nothing to do.")
+    sys.exit(0)
+
+def perform_checks_on_single_file(mode, fn):
     print(f"Checking {fn} ...")
-    if subprocess.run(command_args + [fn]).returncode == 0:
-        print(f"{args.mode} ok: {fn}")
+    command = command_args[mode] + [fn]
+    if subprocess.run(command).returncode == 0:
+        print(f"{mode} ok: {fn}")
         return True
     else:
-        print(f"{args.mode} not ok: {fn}")
+        print(f"{mode} not ok: {fn}")
         return False
 
-pool = multiprocessing.Pool(2)
-return_codes = pool.map(perform_clazy_check, args.files)
+def perform_checks(mode):
+    pool = multiprocessing.Pool(2)
+    zipped_args = zip([mode] * len(files), files)
+    return_codes = pool.starmap(perform_checks_on_single_file, zipped_args)
+    if all(return_codes):
+        print(f"All {mode} checks passed.")
+        return True
+    else:
+        failed = sum(return_codes)
+        total = len(return_codes)
+        print(f"{failed}/{total} {mode} checks failed.")
+        return False
 
-if all(return_codes):
-    print(f"{args.mode}: All checks passed.")
+results = {mode: perform_checks(mode) for mode in args.modes}
+for mode, result in results.items():
+    print(mode + ": " + "ok" if result else "fail")
+if all(results.values()):
+    print("All checkers passed.")
     sys.exit(0)
 else:
-    failed = sum(return_codes)
-    total = len(return_codes)
-    print(f"{args.mode}: {failed}/{total} checks failed.")
+    print(f"{sum(results.values())}/{len(results)} checkers failed.")
     sys.exit(1)
