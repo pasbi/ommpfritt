@@ -38,7 +38,7 @@ int PointsTransformationCommand::id() const
 
 bool PointsTransformationCommand::mergeWith(const QUndoCommand* command)
 {
-  const auto& pt_command = static_cast<const PointsTransformationCommand&>(*command);
+  const auto& pt_command = dynamic_cast<const PointsTransformationCommand&>(*command);
   const auto affected_points = this->affected_points();
   if (affected_points != pt_command.affected_points()) {
     return false;

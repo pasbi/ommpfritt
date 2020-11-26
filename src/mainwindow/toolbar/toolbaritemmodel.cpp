@@ -101,7 +101,7 @@ public:
   {
     nlohmann::json items;
     for (int i = 0; i < rowCount(); ++i) {
-      items.push_back(static_cast<const Item*>(child(i, 0))->encode());
+      items.push_back(dynamic_cast<const Item*>(child(i, 0))->encode());
     }
     auto j = HyperItem::encode();
     j[omm::ToolBarItemModel::items_key] = items;
@@ -117,7 +117,7 @@ public:
                      &QToolButton::setDefaultAction);
     for (int row = 0; row < this->rowCount(); ++row) {
       const auto item = this->child(row);
-      button->addAction(static_cast<const AbstractItem*>(item)->make_action().release());
+      button->addAction(dynamic_cast<const AbstractItem*>(item)->make_action().release());
     }
     if (button->actions().empty()) {
       LWARNING << "Skip empty group.";
@@ -221,7 +221,7 @@ nlohmann::json ToolBarItemModel::encode(const QModelIndexList& indices) const
     if (filter(index)) {
       continue;
     }
-    items.push_back(static_cast<const AbstractItem*>(itemFromIndex(index))->encode());
+    items.push_back(dynamic_cast<const AbstractItem*>(itemFromIndex(index))->encode());
   }
   return {{items_key, items}};
 }
@@ -349,7 +349,7 @@ void ToolBarItemModel::add_items(const nlohmann::json& code, int row, const QMod
 void ToolBarItemModel::populate(QToolBar& tool_bar) const
 {
   for (int row = 0; row < rowCount(); ++row) {
-    if (auto action = static_cast<const AbstractItem*>(item(row, 0))->make_action(); action) {
+    if (auto action = dynamic_cast<const AbstractItem*>(item(row, 0))->make_action(); action) {
       tool_bar.addAction(action.release());
     }
   }

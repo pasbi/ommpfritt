@@ -21,8 +21,8 @@ namespace omm
 {
 ConnectionCommand::ConnectionCommand(const QString& label, AbstractPort& a, AbstractPort& b)
     : ConnectionCommand(label,
-                        static_cast<OutputPort&>(b.port_type == PortType::Input ? a : b),
-                        static_cast<InputPort&>(a.port_type == PortType::Input ? a : b))
+                        dynamic_cast<OutputPort&>(b.port_type == PortType::Input ? a : b),
+                        dynamic_cast<InputPort&>(a.port_type == PortType::Input ? a : b))
 {
   // require exactly one input and one output.
   assert(a.port_type != b.port_type);
@@ -164,7 +164,7 @@ void MoveNodesCommand::redo()
 
 bool MoveNodesCommand::mergeWith(const QUndoCommand* command)
 {
-  const MoveNodesCommand& mn_command = static_cast<const MoveNodesCommand&>(*command);
+  const MoveNodesCommand& mn_command = dynamic_cast<const MoveNodesCommand&>(*command);
   if (::same_keys(mn_command.m_old_positions, m_old_positions)) {
     m_direction += mn_command.m_direction;
     return true;

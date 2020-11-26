@@ -59,7 +59,7 @@ bool ObjectsTransformationCommand::is_noop() const
 
 bool ObjectsTransformationCommand::mergeWith(const QUndoCommand* command)
 {
-  const auto& ot_command = static_cast<const ObjectsTransformationCommand&>(*command);
+  const auto& ot_command = dynamic_cast<const ObjectsTransformationCommand&>(*command);
   if (affected_objects() != ot_command.affected_objects()) {
     return false;
   }

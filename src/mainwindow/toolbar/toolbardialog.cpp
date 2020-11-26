@@ -46,7 +46,7 @@ public:
       if (const QModelIndex sindex = mapToSource(index); sindex.isValid() && sindex.column() == 0) {
         const auto* ptr = static_cast<const omm::PreferencesTreeItem*>(sindex.internalPointer());
         if (!ptr->is_group()) {
-          const auto* item = static_cast<const omm::PreferencesTreeValueItem*>(ptr);
+          const auto* item = dynamic_cast<const omm::PreferencesTreeValueItem*>(ptr);
           assert(item->group == omm::Application::TYPE);
           json[omm::ToolBarItemModel::items_key].push_back(item->name.toStdString());
         }

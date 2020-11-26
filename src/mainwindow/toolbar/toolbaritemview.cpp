@@ -16,7 +16,7 @@ void ToolBarItemView::dropEvent(QDropEvent* event)
   // the default implementation does remove the dragged items in a wrong way.
 
   const bool remove_selection = event->source() == this;
-  auto* model = static_cast<ToolBarItemModel*>(this->model());
+  auto* model = dynamic_cast<ToolBarItemModel*>(this->model());
 
   std::set<const QStandardItem*> items_to_remove;
   if (remove_selection) {

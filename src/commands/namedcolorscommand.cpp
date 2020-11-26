@@ -67,7 +67,7 @@ void ChangeNamedColorColorCommand::redo()
 
 bool ChangeNamedColorColorCommand::mergeWith(const QUndoCommand* other)
 {
-  return m_name == static_cast<const ChangeNamedColorColorCommand&>(*other).m_name;
+  return m_name == dynamic_cast<const ChangeNamedColorColorCommand&>(*other).m_name;
 }
 
 RemoveNamedColorCommand::RemoveNamedColorCommand(const QString& color_name)

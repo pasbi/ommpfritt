@@ -440,7 +440,7 @@ void NodeView::mouseReleaseEvent(QMouseEvent* event)
   std::list<std::unique_ptr<Command>> commands;
   const auto maybe_disconnect = [&commands](AbstractPort& port) {
     if (port.port_type == PortType::Input) {
-      auto& ip = static_cast<InputPort&>(port);
+      auto& ip = dynamic_cast<InputPort&>(port);
       if (ip.is_connected()) {
         commands.push_back(std::make_unique<DisconnectPortsCommand>(ip));
       }

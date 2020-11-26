@@ -156,7 +156,7 @@ void MoveKeyFrameCommand::redo()
 
 bool MoveKeyFrameCommand::mergeWith(const QUndoCommand* other)
 {
-  const MoveKeyFrameCommand& other_mkfc = static_cast<const MoveKeyFrameCommand&>(*other);
+  const MoveKeyFrameCommand& other_mkfc = dynamic_cast<const MoveKeyFrameCommand&>(*other);
   std::set<int> new_frames;
   for (int frame : m_old_frames) {
     new_frames.insert(frame + m_shift);
@@ -206,7 +206,7 @@ ChangeKeyFrameCommand ::ChangeKeyFrameCommand(int frame,
 
 bool ChangeKeyFrameCommand::mergeWith(const QUndoCommand* other)
 {
-  const ChangeKeyFrameCommand& other_ckfc = static_cast<const ChangeKeyFrameCommand&>(*other);
+  const ChangeKeyFrameCommand& other_ckfc = dynamic_cast<const ChangeKeyFrameCommand&>(*other);
   return &other_ckfc.m_property == &m_property;
 }
 

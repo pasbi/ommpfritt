@@ -38,7 +38,7 @@ void ModifyPointsCommand::swap()
 bool ModifyPointsCommand::mergeWith(const QUndoCommand* command)
 {
   // merging happens automatically!
-  const auto& mtc = static_cast<const ModifyPointsCommand&>(*command);
+  const auto& mtc = dynamic_cast<const ModifyPointsCommand&>(*command);
   return ::get_keys(m_data) == ::get_keys(mtc.m_data);
 }
 
