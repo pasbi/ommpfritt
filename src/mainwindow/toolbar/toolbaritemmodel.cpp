@@ -241,7 +241,7 @@ nlohmann::json ToolBarItemModel::encode() const
   if (const std::size_t n = rowCount(); n == 0) {
     return {};
   } else {
-    return encode(QItemSelectionRange(index(0, 0), index(n - 1, 0)).indexes());
+    return encode(QItemSelectionRange(index(0, 0), index(static_cast<int>(n) - 1, 0)).indexes());
   }
 }
 

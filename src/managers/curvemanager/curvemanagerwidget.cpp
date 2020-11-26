@@ -349,8 +349,9 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
         {
           const int frame = std::floor(frame_range.begin - frame_advance);
           auto v0 = m * track->interpolate(frame, c);
-          for (int frame = frame_range.begin; frame <= frame_range.end + frame_advance;
-               frame += frame_advance) {
+          for (int frame = static_cast<int>(frame_range.begin);
+               frame <= static_cast<int>(frame_range.end + frame_advance);
+               frame += static_cast<int>(frame_advance)) {
             auto v1 = m * track->interpolate(frame, c);
             painter.drawLine(range.unit_to_pixel(QPointF(frame - frame_advance, v0)),
                              range.unit_to_pixel(QPointF(frame, v1)));
@@ -437,7 +438,7 @@ void CurveManagerWidget::draw_scale(QPainter& painter) const
 void CurveManagerWidget::draw_knots(QPainter& painter) const
 {
   for (const auto& [key, data] : m_keyframe_handles) {
-    const double any_channel_selected
+    const bool any_channel_selected
         = std::any_of(m_keyframe_handles.begin(), m_keyframe_handles.end(), [key = key](auto&& kd) {
             return &kd.first.track == &key.track && kd.first.frame == key.frame
                    && kd.second.is_selected;
@@ -484,7 +485,8 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
             const KeyFrameHandleKey* neighbor = this->neighbor(key, side);
             if (neighbor != nullptr) {
               const double value = key.value(side) + value_shift;
-              const double frame = interpolate_frame(key.frame + frame_shift, neighbor->frame);
+              const double frame = interpolate_frame(key.frame + static_cast<int>(frame_shift),
+                                                     neighbor->frame);
               draw_tangent(value, frame);
             }
           }

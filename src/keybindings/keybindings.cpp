@@ -24,7 +24,7 @@ std::pair<QString, QString> split(const QString& path)
   } else {
     const auto i = std::distance(it, path.rend());
     assert(i > 1);
-    return {path.mid(0, i - 1), path.mid(i)};
+    return {path.mid(0, static_cast<int>(i - 1.0)), path.mid(i)};
   }
 }
 

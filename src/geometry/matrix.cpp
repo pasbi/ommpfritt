@@ -7,7 +7,7 @@ Matrix::Matrix(const std::array<std::array<double, 3>, 3>& ll) : m(ll)
 {
 }
 
-Matrix::Matrix(const std::initializer_list<std::initializer_list<double>>& ll)
+Matrix::Matrix(const std::initializer_list<std::initializer_list<double>>& ll) : m{}
 {
   for (std::size_t i = 0; i < 3; ++i) {
     for (std::size_t j = 0; j < 3; ++j) {
