@@ -177,7 +177,8 @@ std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t)
   ostream << "[ t(" << t.translation().x << ", " << t.translation().y;
   ostream << ") s(" << t.scaling().x << ", " << t.scaling().y;
   ostream << ") sh(" << t.shearing();
-  ostream << ") r(" << t.rotation() * 180 / M_PI << ") ]";
+  static constexpr double degree_radians_factor = 180 * M_1_PI;
+  ostream << ") r(" << t.rotation() * degree_radians_factor << ") ]";
   return ostream;
 }
 

@@ -10,6 +10,8 @@
 
 namespace
 {
+static constexpr double HUE_RANGE_0_6 = 6.0;
+
 std::array<double, 3> rgb_to_hsv(const std::array<double, 3>& rgb)
 {
   const double r = std::clamp(rgb[0], 0.0, 1.0);
@@ -20,56 +22,67 @@ std::array<double, 3> rgb_to_hsv(const std::array<double, 3>& rgb)
   const double cmin = std::min(r, std::min(g, b));
   const double delta = cmax - cmin;
 
-  double h;
-
-  if (delta == 0.0) {
-    h = 0.0;
-  } else if (cmax == r) {
-    h = std::fmod((g - b) / delta, 6.0);
-  } else if (cmax == g) {
-    h = ((b - r) / delta + 2.0);
-  } else if (cmax == b) {
-    h = ((r - g) / delta + 4.0);
-  } else {
-    Q_UNREACHABLE();
-  }
-  h *= M_PI / 3.0;
-  if (h < 0.0) {
-    h += 2 * M_PI;
-  }
+  // calculate hue in the range [0-6]
+  double hue_0_6 = [delta, cmax, r, g, b]() {
+    double hue = 0.0;
+    if (delta == 0.0) {
+      hue = 0.0;
+    } else if (cmax == r) {
+      hue = std::fmod((g - b) / delta, HUE_RANGE_0_6);
+    } else if (cmax == g) {
+      static constexpr double HUE_OFFSET = 2.0;
+      hue = ((b - r) / delta + HUE_OFFSET);
+    } else if (cmax == b) {
+      static constexpr double HUE_OFFSET = 4.0;
+      hue = ((r - g) / delta + HUE_OFFSET);
+    } else {
+      Q_UNREACHABLE();
+    }
+    if (hue < 0.0) {
+      hue += HUE_RANGE_0_6;
+    }
+    return hue;
+  }();
 
   const double s = cmax == 0.0 ? 0.0 : delta / cmax;
   const double v = cmax;
-  h /= 2 * M_PI;
+  const double h = hue_0_6 / HUE_RANGE_0_6;
 
   return {h, s, v};
 }
 
 std::array<double, 3> hsv_to_rgb(const std::array<double, 3>& hsv)
 {
-  double h = hsv[0] * 2.0 * M_PI;
-  h = std::fmod(h, 2 * M_PI);
-  if (h < 0.0) {
-    h += 2 * M_PI;
-  }
-  h = h * 3.0 / M_PI;
+  const double hue_0_6 = [h=hsv[0]]() mutable {
+    h = std::fmod(h, 2.0 * M_PI);
+    if (h < 0.0) {
+      h += 1.0;
+    }
+    return h;
+  }() * HUE_RANGE_0_6;
+
   const double c = hsv[2] * hsv[1];
-  const double x = c * (1.0 - std::abs(std::fmod(h, 2.0) - 1));
+  const double x = c * (1.0 - std::abs(std::fmod(hue_0_6, 2.0) - 1));
   const double m = hsv[2] - c;
-  switch (static_cast<int>(h)) {
-  case 0:
+  static constexpr int GREEN_RAISE = 0;
+  static constexpr int RED_FALL = 1;
+  static constexpr int BLUE_RAISE = 2;
+  static constexpr int GREEN_FALL = 3;
+  static constexpr int RED_RAISE = 4;
+  static constexpr int BLUE_FALL = 5;
+  switch (static_cast<int>(hue_0_6)) {
+  case GREEN_RAISE:
     return {c + m, x + m, m};
-  case 1:
+  case RED_FALL:
     return {x + m, c + m, m};
-  case 2:
+  case BLUE_RAISE:
     return {m, c + m, x + m};
-  case 3:
+  case GREEN_FALL:
     return {m, x + m, c + m};
-  case 4:
+  case RED_RAISE:
     return {x + m, m, c + m};
-  case 5:
+  case BLUE_FALL:
     return {c + m, m, x + m};
-  case 6:
   default:
     Q_UNREACHABLE();
     return {0.0, 0.0, 0.0};
@@ -80,24 +93,37 @@ bool decode_hex(const QString& code, std::array<double, 4>& rgb)
 {
   static const auto decode = [](const QString& code, int offset, double& v) {
     if (code.size() >= offset + 2) {
-      bool ok;
-      v = code.midRef(offset, 2).toInt(&ok, 16) / 255.0;
+      bool ok = false;
+      static constexpr int BASE_HEX = 16;
+      static constexpr double MAX_8_BIT = 255.0;
+      v = code.midRef(offset, 2).toInt(&ok, BASE_HEX) / MAX_8_BIT;
       return ok;
     } else {
       return false;
     }
   };
-  if (code.at(0) != '#' || (code.size() != 7 && code.size() != 9)) {
+
+  static constexpr std::size_t RRGGBBAA_LENGTH = 9;
+  static constexpr std::size_t RRGGBB_LENGTH = 9;
+  static constexpr double DEFAULT_ALPHA_VALUE = 1.0;
+  if (code.at(0) != '#' || (code.size() != RRGGBBAA_LENGTH && code.size() != RRGGBB_LENGTH)) {
     return false;
   } else {
-    if (code.size() == 7 || code.size() == 9) {
-      if (!decode(code, 1, rgb[0]) || !decode(code, 3, rgb[1]) || !decode(code, 5, rgb[2])) {
+    static constexpr std::size_t RR_OFFSET = 1;
+    static constexpr std::size_t GG_OFFSET = 3;
+    static constexpr std::size_t BB_OFFSET = 5;
+    static constexpr std::size_t AA_OFFSET = 7;
+    if (code.size() == RRGGBBAA_LENGTH || code.size() == RRGGBB_LENGTH) {
+      if (!decode(code, RR_OFFSET, rgb[0])
+          || !decode(code, GG_OFFSET, rgb[1])
+          || !decode(code, BB_OFFSET, rgb[2]))
+      {
         return false;
       }
-      if (code.size() == 9) {
-        return decode(code, 7, rgb[3]);
+      if (code.size() == RRGGBBAA_LENGTH) {
+        return decode(code, AA_OFFSET, rgb[3]);
       } else {
-        rgb[3] = 1.0;
+        rgb[3] = DEFAULT_ALPHA_VALUE;;
         return true;
       }
       return true;
@@ -141,7 +167,8 @@ Color::Color(Color::Model model, const std::array<double, 4> components)
 {
 }
 
-Color::Color(const QString& name) : m_current_model(Model::Named), m_name(name)
+Color::Color(const QString& name)
+  : m_components({0.0, 0.0, 0.0, 0.0}), m_current_model(Model::Named), m_name(name)
 {
 }
 

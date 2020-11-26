@@ -399,7 +399,8 @@ void NodeView::dropEvent(QDropEvent* event)
       auto reference_node = std::make_unique<ReferenceNode>(*model);
       reference_node->property(ReferenceNode::REFERENCE_PROPERTY_KEY)->set(apo);
       reference_node->set_pos(pos);
-      pos += QPointF(50, 50);
+      static constexpr int OFFSET = 50;
+      pos += QPointF(OFFSET, OFFSET);
       return reference_node;
     });
     model->scene().submit<AddNodesCommand>(*model, std::move(nodes));
@@ -532,7 +533,8 @@ void NodeView::draw_connection(QPainter& painter,
 
     painter.save();
     QPen pen;
-    pen.setWidth(2.0);
+    static constexpr double CONNECTION_PEN_WIDTH = 2.0;
+    pen.setWidthF(CONNECTION_PEN_WIDTH);
     pen.setColor(
         ui_color(*this, "NodeView", is_floating ? "floating-connection" : "fixed-connection"));
     painter.setPen(pen);

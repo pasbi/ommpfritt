@@ -10,10 +10,16 @@ using Interpolation = omm::Track::Interpolation;
 
 double interpolate(const std::array<double, 4>& segment, double t, Interpolation interpolation)
 {
-  std::array<double, 4> bernstein4{1.0 * (1 - t) * (1 - t) * (1 - t),
-                                   3.0 * t * (1 - t) * (1 - t),
-                                   3.0 * t * t * (1 - t),
-                                   1.0 * t * t * t};
+  static constexpr double bc41 = 1.0;
+  static constexpr double bc42 = 3.0;
+  static constexpr double bc43 = 3.0;
+  static constexpr double bc44 = 1.0;
+  std::array<double, 4> bernstein4{bc41 * (1 - t) * (1 - t) * (1 - t),
+                                   // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+                                   bc42 * t * (1 - t) * (1 - t),
+                                   // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
+                                   bc43 * t * t * (1 - t),
+                                   bc44 * t * t * t};
   switch (interpolation) {
   case Interpolation::Step:
     return segment[0];

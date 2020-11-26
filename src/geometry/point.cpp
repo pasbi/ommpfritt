@@ -91,7 +91,7 @@ void Point::deserialize(AbstractDeserializer& deserializer, const Serializable::
 Point Point::flattened(const double t) const
 {
   Point copy(*this);
-  auto center = 0.5 * (left_tangent.argument + right_tangent.argument);
+  double center = (left_tangent.argument + right_tangent.argument) / 2.0;
   if (center - left_tangent.argument < 0) {
     center += M_PI;
   }
@@ -188,7 +188,7 @@ double Point::get_direction(const Point* left_neighbor, const Point* right_neigh
   }
 
   if (has_left_direction && has_right_direction) {
-    auto a = 0.5 * (left_arg + right_arg);
+    double a = (left_arg + right_arg) / 2.0;
     if (a - right_arg < 0) {
       a -= M_PI;
     }
@@ -211,7 +211,7 @@ Point Point::offset(double t, const Point* left_neighbor, const Point* right_nei
   const Vec2f pdirection = direction;  // (direction.y, -direction.x);
 
   const auto f = [](const double t, const double mag) {
-    return mag + std::clamp(t, -mag, 0.0) + 0.5 * (std::max(0.0, t));
+    return mag + std::clamp(t, -mag, 0.0) + std::max(0.0, t) / 2.0;
   };
 
   auto left_tanget = this->left_tangent;

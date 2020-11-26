@@ -24,9 +24,10 @@ void set_cursor_position(QWidget& widget, const omm::Vec2f& pos)
 double discretize(double value)
 {
   static constexpr double eps = 0.00001;
+  static constexpr double BASE_DEC = 10.0;
   value = std::log10(std::max(eps, value));
   value -= std::fmod(value, 1.0);
-  return std::pow(10.0, value);
+  return std::pow(BASE_DEC, value);
 }
 
 template<typename VecT> VecT fold(const VecT& vec)
