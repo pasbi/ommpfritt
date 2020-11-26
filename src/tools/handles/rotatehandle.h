@@ -61,13 +61,13 @@ public:
 
       double angle = global_pos.arg() - origin.arg();
       if (tool.integer_transformation()) {
-        static constexpr double step = 15 * M_PI / 180.0;
+        static constexpr double step = 15 * M_PI_180;
         angle = step * static_cast<int>(angle / step);
       }
 
       const auto t = ObjectTransformation().rotated(angle).transformed(ti);
       static_cast<ToolT&>(tool).transform_objects(t);
-      static_cast<ToolT&>(tool).tool_info = QString("%1°").arg(angle / M_PI * 180.0);
+      static_cast<ToolT&>(tool).tool_info = QString("%1°").arg(angle * M_180_PI);
       return true;
     } else {
       return false;

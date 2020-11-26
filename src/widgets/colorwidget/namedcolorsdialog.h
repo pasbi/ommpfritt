@@ -22,7 +22,7 @@ class NamedColorsDialog : public QDialog
 
 public:
   explicit NamedColorsDialog(QWidget* parent = nullptr);
-  ~NamedColorsDialog();
+  ~NamedColorsDialog() override;
 
 public Q_SLOTS:
   void add();
@@ -31,7 +31,7 @@ public Q_SLOTS:
 
 private:
   std::unique_ptr<Ui::NamedColorsDialog> m_ui;
-  NamedColors& model() const;
+  [[nodiscard]] static NamedColors& model();
   std::unique_ptr<NamedColorsHighlighProxyModel<QListView>> m_proxy;
   std::unique_ptr<QStyledItemDelegate> m_delegate;
 };

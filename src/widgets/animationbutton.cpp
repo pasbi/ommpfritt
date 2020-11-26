@@ -137,27 +137,32 @@ void AnimationButton::paintEvent(QPaintEvent* event)
   };
   const double pen_width_base = std::min(rect.width(), rect.height());
 
+  static constexpr double PEN_WIDTH_MULTIPLIER = 0.1;
+  static constexpr double ELLIPSE_RADIUS_LARGE = 0.8;
+  static constexpr double ELLIPSE_RADIUS_MEDIUM = 0.4;
+  static constexpr double ELLIPSE_RADIUS_SMALL= 0.3;
+
   QPen pen;
   if (!has_track()) {
     // no track, hence no key
     pen.setColor(ui_color(*this, "Preferences", "record normal"));
-    pen.setWidthF(pen_width_base * 0.1);
+    pen.setWidthF(pen_width_base * PEN_WIDTH_MULTIPLIER);
     painter.setPen(pen);
-    painter.drawEllipse(centered(0.3));
+    painter.drawEllipse(centered(ELLIPSE_RADIUS_SMALL));
   } else if (!has_key()) {
     // track but no key
     pen.setColor(ui_color(*this, "Preferences", "record keyframe"));
-    pen.setWidthF(pen_width_base * 0.1);
+    pen.setWidthF(pen_width_base * PEN_WIDTH_MULTIPLIER);
     painter.setPen(pen);
-    painter.drawEllipse(centered(0.8));
+    painter.drawEllipse(centered(ELLIPSE_RADIUS_LARGE));
   } else {
     // has key
     pen.setColor(ui_color(*this, "Preferences", "record keyframe"));
-    pen.setWidthF(pen_width_base * 0.1);
+    pen.setWidthF(pen_width_base * PEN_WIDTH_MULTIPLIER);
     painter.setPen(pen);
-    painter.drawEllipse(centered(0.8));
+    painter.drawEllipse(centered(ELLIPSE_RADIUS_LARGE));
     QPainterPath ellipse;
-    ellipse.addEllipse(centered(0.4));
+    ellipse.addEllipse(centered(ELLIPSE_RADIUS_MEDIUM));
     if (value_is_inconsistent()) {
       painter.fillPath(ellipse, ui_color(*this, "Preferences", "record inconsistent"));
     } else {

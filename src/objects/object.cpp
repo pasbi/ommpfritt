@@ -123,7 +123,7 @@ Object::Object(Scene* scene)
       .set_category(category);
 
   create_property<FloatProperty>(ROTATION_PROPERTY_KEY, 0.0)
-      .set_multiplier(180.0 / M_PI)
+      .set_multiplier(M_180_PI)
       .set_label(QObject::tr("rotation"))
       .set_category(category);
 

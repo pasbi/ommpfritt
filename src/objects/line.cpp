@@ -14,7 +14,7 @@ Line::Line(Scene* scene) : Object(scene)
       .set_label(QObject::tr("length"))
       .set_category(category);
   create_property<FloatProperty>(ANGLE_PROPERTY_KEY, 0)
-      .set_multiplier(180.0 / M_PI)
+      .set_multiplier(M_180_PI)
       .set_label(QObject::tr("angle"))
       .set_category(category);
   create_property<BoolProperty>(CENTER_PROPERTY_KEY, true)

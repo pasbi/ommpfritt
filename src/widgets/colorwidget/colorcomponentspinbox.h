@@ -13,7 +13,7 @@ public:
   explicit ColorComponentSpinBox(QWidget* parent = nullptr);
   void set_color(const Color& color) override;
 
-  static std::map<Color::Role, double> factor;
+  [[nodiscard]] static std::map<Color::Role, double> factor;
   void set_role(Color::Role role) override;
 
 private:

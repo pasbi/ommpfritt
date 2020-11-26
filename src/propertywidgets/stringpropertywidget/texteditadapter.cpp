@@ -33,7 +33,8 @@ QWidget* TextEditAdapter<QLineEdit>::as_widget()
 
 TextEditAdapter<QTextEdit>::TextEditAdapter(QWidget* parent) : QTextEdit(parent)
 {
-  setTabStopDistance(20);
+  static constexpr int TAB_STOP_DISTANCE = 20;
+  setTabStopDistance(TAB_STOP_DISTANCE);
 }
 
 void TextEditAdapter<QTextEdit>::set_inconsistent_value()

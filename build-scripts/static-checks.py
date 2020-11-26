@@ -70,7 +70,6 @@ clang_tidy_checks = [
     "cppcoreguidelines-macro-usage",
     "cppcoreguidelines-narrowing-conversions",
     "cppcoreguidelines-no-malloc",
-    "cppcoreguidelines-non-private-member-variables-in-classes",
     "cppcoreguidelines-owning-memory",
     "cppcoreguidelines-pro-type-const-cast",
     "cppcoreguidelines-pro-type-cstyle-cast",
@@ -141,7 +140,6 @@ clang_tidy_checks = [
     "readability-misplaced-array-index",
     "readability-non-const-parameter",
     "readability-qualified-auto",
-    "readability-redundant-*",
     "readability-simplify-*",
     "readability-static-*",
     "readability-string-compare",
@@ -149,7 +147,8 @@ clang_tidy_checks = [
     "readability-uppercase-literal-suffix",
     "readability-use-anyofallof",
 
-    # "readability-redundant-access-specifiers",
+    # "cppcoreguidelines-non-private-member-variables-in-classes",
+    # "readability-redundant-access-specifiers", # Flags `public Q_SLOTS` after `public`
     # "cppcoreguidelines-pro-bounds-array-to-pointer-decay",  # https://github.com/isocpp/CppCoreGuidelines/issues/1589
     # "cppcoreguidelines-pro-type-vararg" # flaggs QFATAL
     # "misc-no-recursion",

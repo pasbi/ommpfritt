@@ -31,7 +31,7 @@ std::array<double, 2> polar(const QPointF& p)
   return {std::sqrt(std::pow(p.x(), 2.0) + std::pow(p.y(), 2.0)), std::atan2(p.y(), p.x())};
 }
 
-static constexpr double circle_width = 0.2;
+constexpr double circle_width = 0.2;
 
 QPainterPath make_circle()
 {
@@ -98,9 +98,9 @@ void ColorCircle::set_color(const QPoint& p)
   if (m_drag_circle) {
     const auto [r, arg] = polar(pos);
     Color color = this->color();
-    color.set(Color::Role::Hue, -fmodf(arg / (2 * M_PI) + 1.0, 1.0));
+    color.set(Color::Role::Hue, -fmod(arg / (2.0 * M_PI) + 1.0, 1.0));
     set_color(color);
-  } else if (true || m_drag_triangle) {
+  } else {
     const auto [a, b, c] = make_triangle(hue);
     auto [u, v] = barycentric(pos / 2.0, a, b, c);
     u = std::clamp(u, 0.0, 1.0);
@@ -206,7 +206,8 @@ void ColorCircle::paintEvent(QPaintEvent* e)
   }
 
   QPainterPath dot;
-  dot.addEllipse(QRectF(QPointF(-5, -5), QPointF(5, 5)));
+  static constexpr double RADIUS = 5;
+  dot.addEllipse(QRectF(QPointF(-RADIUS, -RADIUS), QPointF(RADIUS, RADIUS)));
   {
     const QPointF c = val * (sat * (p_c - p_w) + p_w - p_b) + p_b;
     painter.translate(c.x(), c.y());

@@ -7,7 +7,7 @@
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tools/handles/boundingboxhandle.h"
-#include <cmath>
+#include "common.h"
 
 namespace
 {
@@ -22,7 +22,7 @@ using It = omm::Path::iterator;
 double normal_distance(const It& a, const It& b)
 {
   const auto normalize = [](double a, double b) {
-    return M_1_PI * 180.0 * omm::PolarCoordinates::normalize_angle(std::abs(a - b)) - M_PI_2;
+    return omm::M_180_PI * omm::PolarCoordinates::normalize_angle(std::abs(a - b)) - M_PI_2;
   };
 
   return std::min(normalize(a->left_tangent.argument, b->left_tangent.argument),
@@ -46,7 +46,7 @@ omm::Vec2f distance(const It& a, const It& b, omm::SelectSimilarTool::Alignment 
 
 namespace omm
 {
-SelectSimilarTool::SelectSimilarTool(Scene& scene) : SelectPointsBaseTool(scene)
+SelectSimilarTool::SelectSimilarTool(Scene&omm:: scene) : SelectPointsBaseTool(scene)
 {
   const auto category = QObject::tr("tool");
   create_property<OptionProperty>(MODE_PROPERTY_KEY, 0)
@@ -169,7 +169,7 @@ void SelectSimilarTool::update_property_appearance()
   const auto mode = property(MODE_PROPERTY_KEY)->value<Mode>();
   auto* const threshold_property = static_cast<FloatProperty*>(property(THRESHOLD_PROPERTY_KEY));
   static const std::map<Mode, std::tuple<QString, double>> threshold_config{
-      {Mode::Normal, {"°", 180.0}},
+      {Mode::Normal, {"°", 180.0}},  // NOLINT(cppcoreguidelines-avoid-magic-numbers)
       {Mode::X, {"", std::numeric_limits<double>::max()}},
       {Mode::Y, {"", std::numeric_limits<double>::max()}},
       {Mode::Distance, {"", std::numeric_limits<double>::max()}},

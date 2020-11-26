@@ -5,14 +5,21 @@
 
 namespace omm
 {
+constexpr double R_FACTOR = 255.0;
+constexpr double G_FACTOR = 255.0;
+constexpr double B_FACTOR = 255.0;
+constexpr double H_FACTOR = 255.0;
+constexpr double S_FACTOR = 255.0;
+constexpr double V_FACTOR = 255.0;
+constexpr double A_FACTOR = 255.0;
 std::map<Color::Role, double> ColorComponentSpinBox::factor{
-    {Color::Role::Red, 255.0},
-    {Color::Role::Green, 255.0},
-    {Color::Role::Blue, 255.0},
-    {Color::Role::Alpha, 100.0},
-    {Color::Role::Hue, 360.0},
-    {Color::Role::Saturation, 100.0},
-    {Color::Role::Value, 100.0},
+    {Color::Role::Red, R_FACTOR},
+    {Color::Role::Green, G_FACTOR},
+    {Color::Role::Blue, B_FACTOR},
+    {Color::Role::Alpha, A_FACTOR},
+    {Color::Role::Hue, H_FACTOR},
+    {Color::Role::Saturation, S_FACTOR},
+    {Color::Role::Value, V_FACTOR},
 };
 
 ColorComponentSpinBox::ColorComponentSpinBox(QWidget* parent) : AbstractColorComponentWidget(parent)

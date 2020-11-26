@@ -40,7 +40,7 @@ public:
     set_proxy(std::make_unique<ProxyChain>());
   }
 
-  ProxyChain* model() const
+  [[nodiscard]] ProxyChain* model() const
   {
     return m_proxy.get();
   }

@@ -26,6 +26,8 @@ ReferenceLineEdit::ReferenceLineEdit(QWidget* parent)
     QTimer::singleShot(1, this, &ReferenceLineEdit::convert_text_to_placeholder_text);
   };
   connect(this, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), set_value);
+
+  // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
   QTimer::singleShot(1, this, &ReferenceLineEdit::convert_text_to_placeholder_text);
 
   lineEdit()->installEventFilter(this);

@@ -36,7 +36,7 @@ Q_SIGNALS:
   void current_index_changed(int index);
 
 private:
-  QAbstractItemModel* m_model;
+  QAbstractItemModel* m_model = nullptr;
   QComboBox* m_combo_box;
 
 private Q_SLOTS:

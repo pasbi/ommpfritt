@@ -48,9 +48,9 @@ void MarkerProperties ::draw_marker(Painter& painter,
   p.save();
   p.translate(to_qpoint(location.position));
   if (property_value<bool>(REVERSE_PROPERTY_KEY)) {
-    p.rotate(location.rotation() * 180.0 * M_1_PI + 90);
+    p.rotate(location.rotation() * M_180_PI + 90);
   } else {
-    p.rotate(location.rotation() * 180.0 * M_1_PI - 90);
+    p.rotate(location.rotation() * M_180_PI - 90);
   }
   p.setPen(Qt::NoPen);
   p.setBrush(color.to_qcolor());

@@ -19,7 +19,7 @@ class ReferenceLineEdit
   Q_OBJECT
 public:
   explicit ReferenceLineEdit(QWidget* parent = nullptr);
-  ~ReferenceLineEdit() = default;
+  ~ReferenceLineEdit() override = default;
   void set_value(const value_type& value) override;
   [[nodiscard]] value_type value() const override;
   void set_filter(const ReferenceProperty::Filter& filter);
@@ -33,7 +33,7 @@ protected:
 
 private:
   [[nodiscard]] bool can_drop(const QDropEvent& event) const;
-  AbstractPropertyOwner* m_value;
+  AbstractPropertyOwner* m_value = nullptr;
   Scene* m_scene = nullptr;
   ReferenceProperty::Filter m_filter;
   std::vector<AbstractPropertyOwner*> m_possible_references;

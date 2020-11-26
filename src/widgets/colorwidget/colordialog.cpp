@@ -22,7 +22,9 @@ ColorDialog::ColorDialog(QWidget* parent) : QDialog(parent)
   layout->addWidget(button_box.release());
 
   setLayout(layout.release());
-  resize(QSize(841, 439));
+  static constexpr int DEFAULT_WIDTH = 841;
+  static constexpr int DEFAULT_HEIGHT = 439;
+  resize(QSize(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 }
 
 ColorDialog::~ColorDialog()

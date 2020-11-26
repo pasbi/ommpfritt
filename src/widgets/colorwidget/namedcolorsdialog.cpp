@@ -31,16 +31,16 @@ public:
 
   void setEditorData(QWidget* editor, const QModelIndex& index) const override
   {
-    static_cast<QLineEdit*>(editor)->setText(index.data(Qt::EditRole).toString());
+    dynamic_cast<QLineEdit*>(editor)->setText(index.data(Qt::EditRole).toString());
   }
 
   void
   setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const override
   {
     Q_UNUSED(model);
-    auto& proxy = static_cast<QAbstractProxyModel&>(*model);
-    auto& named_colors = static_cast<omm::NamedColors&>(*proxy.sourceModel());
-    const auto new_name = static_cast<QLineEdit&>(*editor).text();
+    auto& proxy = dynamic_cast<QAbstractProxyModel&>(*model);
+    auto& named_colors = dynamic_cast<omm::NamedColors&>(*proxy.sourceModel());
+    const auto new_name = dynamic_cast<QLineEdit&>(*editor).text();
     const auto old_name = named_colors.name(proxy.mapToSource(index));
     if (named_colors.has_color(new_name)) {
       LWARNING << "Failed to rename '" << old_name << "' to '" << new_name
@@ -51,7 +51,7 @@ public:
 
       auto cmd = std::make_unique<omm::ChangeNamedColorNameCommand>(old_name, new_name);
       auto macro = scene().history().start_macro(cmd->actionText());
-      if (props.size() > 0) {
+      if (!props.empty()) {
         scene().submit<omm::PropertiesCommand<omm::ColorProperty>>(props, omm::Color(new_name));
       }
       scene().submit(std::move(cmd));
@@ -148,7 +148,7 @@ void NamedColorsDialog::setCurrent(const QModelIndex& index)
   }
 }
 
-NamedColors& NamedColorsDialog::model() const
+NamedColors& NamedColorsDialog::model()
 {
   return Application::instance().scene.named_colors();
 }

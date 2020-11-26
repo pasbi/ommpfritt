@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QString>
+#include <cmath>
 #include <algorithm>
 #include <cassert>
 #include <functional>
@@ -505,6 +506,9 @@ template<typename T> const T as_const(const T& v)
 {
   return v;
 }
+
+constexpr double M_180_PI = 180.0 * M_1_PI;
+constexpr double M_PI_180 = M_PI / 180.0;
 
 }  // namespace omm
 

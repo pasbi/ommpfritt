@@ -46,7 +46,7 @@ public:
   using QTextEdit::QTextEdit;
   explicit TextEditAdapter(QWidget* parent = nullptr);
   void set_inconsistent_value() override;
-  void set_value(const QString& ph) override;
+  void set_value(const QString& text) override;
   void clear() override;
   [[nodiscard]] QString value() const override;
   [[nodiscard]] QWidget* as_widget() override;
@@ -61,7 +61,7 @@ public:
   using edit_type = FilePathEdit;
   using FilePathEdit::FilePathEdit;
   void set_inconsistent_value() override;
-  void set_value(const QString& ph) override;
+  void set_value(const QString& text) override;
   void clear() override;
   [[nodiscard]] QString value() const override;
   [[nodiscard]] QWidget* as_widget() override;

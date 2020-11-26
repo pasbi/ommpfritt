@@ -36,7 +36,7 @@ public:
   {
     return QString(PropertyT::TYPE()) + "ConfigWidget";
   }
-  QString type() const override
+  [[nodiscard]] QString type() const override
   {
     return TYPE();
   }
