@@ -53,7 +53,7 @@ std::array<double, 3> rgb_to_hsv(const std::array<double, 3>& rgb)
 
 std::array<double, 3> hsv_to_rgb(const std::array<double, 3>& hsv)
 {
-  const double hue_0_6 = [h=hsv[0]]() mutable {
+  const double hue_0_6 = [h = hsv[0]]() mutable {
     h = std::fmod(h, 2.0 * M_PI);
     if (h < 0.0) {
       h += 1.0;
@@ -114,16 +114,14 @@ bool decode_hex(const QString& code, std::array<double, 4>& rgb)
     static constexpr std::size_t BB_OFFSET = 5;
     static constexpr std::size_t AA_OFFSET = 7;
     if (code.size() == RRGGBBAA_LENGTH || code.size() == RRGGBB_LENGTH) {
-      if (!decode(code, RR_OFFSET, rgb[0])
-          || !decode(code, GG_OFFSET, rgb[1])
-          || !decode(code, BB_OFFSET, rgb[2]))
-      {
+      if (!decode(code, RR_OFFSET, rgb[0]) || !decode(code, GG_OFFSET, rgb[1])
+          || !decode(code, BB_OFFSET, rgb[2])) {
         return false;
       }
       if (code.size() == RRGGBBAA_LENGTH) {
         return decode(code, AA_OFFSET, rgb[3]);
       } else {
-        rgb[3] = DEFAULT_ALPHA_VALUE;;
+        rgb[3] = DEFAULT_ALPHA_VALUE;
         return true;
       }
       return true;
@@ -168,7 +166,7 @@ Color::Color(Color::Model model, const std::array<double, 4> components)
 }
 
 Color::Color(const QString& name)
-  : m_components({0.0, 0.0, 0.0, 0.0}), m_current_model(Model::Named), m_name(name)
+    : m_components({0.0, 0.0, 0.0, 0.0}), m_current_model(Model::Named), m_name(name)
 {
 }
 

@@ -456,8 +456,10 @@ void NodeItem::Slot::draw(QPainter& painter, const QRectF& slot_rect) const
   if (get_center_text) {
     const auto draw_maybe = [&painter, y = slot_rect.center().y()](double x1, double x2) {
       if (x1 < x2) {
-        painter.drawLine(static_cast<int>(x1), static_cast<int>(y),
-                         static_cast<int>(x2), static_cast<int>(y));
+        painter.drawLine(static_cast<int>(x1),
+                         static_cast<int>(y),
+                         static_cast<int>(x2),
+                         static_cast<int>(y));
       }
     };
     QRectF actual;

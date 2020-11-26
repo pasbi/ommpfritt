@@ -48,7 +48,10 @@ namespace omm
 {
 CurveManagerWidget::CurveManagerWidget(Scene& scene, const CurveTree& curve_tree)
     : range({DEFAULT_MIN_H, DEFAULT_MIN_V},
-            {DEFAULT_MAX_H, DEFAULT_MAX_V}, *this, Range::Options::Default, Range::Options::Mirror),
+            {DEFAULT_MAX_H, DEFAULT_MAX_V},
+            *this,
+            Range::Options::Default,
+            Range::Options::Mirror),
       m_scene(scene), m_curve_tree(curve_tree)
 {
   connect(&scene.mail_box(), &MailBox::selection_changed, this, &CurveManagerWidget::set_selection);
@@ -127,7 +130,7 @@ void CurveManagerWidget::mouseMoveEvent(QMouseEvent* event)
     m_scene.submit<ChangeKeyFrameCommand>(key.frame, key.track.property(), std::move(new_knot));
   } else if (m_key_being_dragged) {
     m_frame_shift = static_cast<int>(std::round(frame_range.pixel_to_unit(event->x())
-                                     - frame_range.pixel_to_unit(m_mouse_down_pos.x())));
+                                                - frame_range.pixel_to_unit(m_mouse_down_pos.x())));
     m_value_shift
         = value_range.pixel_to_unit(event->y()) - value_range.pixel_to_unit(m_mouse_down_pos.y());
   } else if (m_rubberband_rect_visible) {
@@ -318,7 +321,8 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
   painter.save();
   const Range& frame_range = range.h_range;
   // drawing the lines with a resolution of more than one sample per frame makes no sense.
-  const double frames_per_pixel = static_cast<double>(frame_range.end - frame_range.begin) / width();
+  const double frames_per_pixel
+      = static_cast<double>(frame_range.end - frame_range.begin) / width();
   const int frame_advance = static_cast<int>(std::max(1.0, frames_per_pixel));
   for (Track* track_ : m_tracks) {
     for (std::size_t c = 0; c < n_channels(track_->property().variant_value()); ++c) {
@@ -485,8 +489,8 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
             const KeyFrameHandleKey* neighbor = this->neighbor(key, side);
             if (neighbor != nullptr) {
               const double value = key.value(side) + value_shift;
-              const double frame = interpolate_frame(key.frame + static_cast<int>(frame_shift),
-                                                     neighbor->frame);
+              const double frame
+                  = interpolate_frame(key.frame + static_cast<int>(frame_shift), neighbor->frame);
               draw_tangent(value, frame);
             }
           }
