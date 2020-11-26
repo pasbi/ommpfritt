@@ -57,6 +57,7 @@ auto load_translator(const QString& prefix, const QLocale& locale)
 
 int img_mean(const QImage& image)
 {
+  static constexpr double NUM_CHANNELS = 3.0;
   double w = 0.0;
   double sum = 0.0;
   for (int y = 0; y < image.height(); ++y) {
@@ -68,10 +69,10 @@ int img_mean(const QImage& image)
       sum += qRed(rgba) * alpha;
       sum += qGreen(rgba) * alpha;
       sum += qBlue(rgba) * alpha;
-      w += 3.0 * alpha;
+      w += NUM_CHANNELS * alpha;
     }
   }
-  return sum / w;
+  return static_cast<int>(sum / w);
 }
 
 QKeySequence push_back(const QKeySequence& s, int t)
@@ -139,11 +140,12 @@ Application::Application(QCoreApplication& app, std::unique_ptr<Options> options
     : first_member((init(this), nullptr)), mode_selectors(init_mode_selectors()),
       scene(python_engine), m_app(app), m_options(std::move(options)), m_locale(load_locale())
 {
+  static constexpr int RESET_KEYSEQUENCE_INTERVAL_MS = 1000;
   scene.set_selection({});
   if (!this->options().is_cli) {
     ui_colors.apply();
     m_reset_keysequence_timer.setSingleShot(true);
-    m_reset_keysequence_timer.setInterval(1000);
+    m_reset_keysequence_timer.setInterval(RESET_KEYSEQUENCE_INTERVAL_MS);
     connect(&m_reset_keysequence_timer, &QTimer::timeout, this, [this]() {
       m_pending_key_sequence = QKeySequence();
     });
@@ -531,8 +533,10 @@ void Application::register_auto_invert_icon_button(QAbstractButton& button)
 {
   const auto update_button_icon = [&button]() {
     const QColor text_color = qApp->palette().color(QPalette::Active, QPalette::ButtonText);
-    QImage img = button.icon().pixmap(QSize(1024, 1024)).toImage();
-    if (std::abs(img_mean(img) - text_color.value()) > 100) {
+    static constexpr int ICON_SIZE = 1024;
+    static constexpr int ICON_THRESHOLD = 100;
+    QImage img = button.icon().pixmap(QSize(ICON_SIZE, ICON_SIZE)).toImage();
+    if (std::abs(img_mean(img) - text_color.value()) > ICON_THRESHOLD) {
       img.invertPixels(QImage::InvertRgb);
       QSignalBlocker blocker(&button);
       button.setIcon(QIcon(QPixmap::fromImage(img)));

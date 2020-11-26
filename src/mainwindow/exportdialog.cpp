@@ -143,8 +143,10 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   m_ui->cb_format->setCurrentIndex(settings.value(FORMAT_SETTINGS_KEY, 0).toInt());
   update_active_view();
 
-  m_ui->ne_scaling->set_value(100.0);
-  m_ui->ne_scaling->set_step(0.01);
+  static constexpr double SCALING_DEFAULT = 100.0;
+  static constexpr double SCALING_STEP = 0.01;
+  m_ui->ne_scaling->set_value(SCALING_DEFAULT);
+  m_ui->ne_scaling->set_step(SCALING_STEP);
 
   m_ui->le_pattern->setText(scene.animator().filename_pattern);
   m_ui->cb_overwrite->setChecked(scene.animator().overwrite_file);
@@ -297,7 +299,8 @@ void ExportDialog::save_as_svg()
     auto view_box_size = view()->property(View::SIZE_PROPERTY_KEY)->value<Vec2f>();
     view_box_size *= scale / view_box_size.x;
     generator.setViewBox(QRectF(0.0, 0.0, view_box_size.x, view_box_size.y));
-    render(m_scene, view(), generator, -scale * 4.0 / 3.0);
+    static constexpr double SVG_SCALE_FACTOR = -4.0 / 3.0;
+    render(m_scene, view(), generator, SVG_SCALE_FACTOR * scale);
     m_filepath = filename;
   }
 }
@@ -317,7 +320,8 @@ QString ExportDialog::filename(QString pattern, int frame_number)
     qWarning() << "Pattern '" << pattern << "' is illegal: non-contiguous sequence of '"
                << frame_number_placeholder << "'.";
   }
-  pattern.replace(first_occurence, n, QString("%1").arg(frame_number, n, 10, QChar('0')));
+  static constexpr int base = 10;
+  pattern.replace(first_occurence, n, QString("%1").arg(frame_number, n, base, QChar('0')));
   return pattern;
 }
 

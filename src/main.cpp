@@ -35,6 +35,8 @@ int main(int argc, char* argv[])
   window.show();
 
   if (argc > 1) {
+    // https://stackoverflow.com/q/45718389/
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetics)
     app.scene.load_from(argv[1]);
   }
 

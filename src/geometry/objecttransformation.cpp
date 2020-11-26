@@ -116,9 +116,12 @@ void ObjectTransformation::set_mat(const Matrix& mat)
   m_translation = {mat.m[0][2], mat.m[1][2]};
 
   // TODO NaN can occur if scaling is 0.
-  assert(std::abs(mat.m[2][0] - 0) < 0.0001 || std::isnan(mat.m[2][0]));
-  assert(std::abs(mat.m[2][1] - 0) < 0.0001 || std::isnan(mat.m[2][1]));
-  assert(std::abs(mat.m[2][2] - 1) < 0.0001 || std::isnan(mat.m[2][2]));
+  {
+    static constexpr double eps = 0.0001;
+    assert(std::abs(mat.m[2][0] - 0) < eps || std::isnan(mat.m[2][0]));
+    assert(std::abs(mat.m[2][1] - 0) < eps || std::isnan(mat.m[2][1]));
+    assert(std::abs(mat.m[2][2] - 1) < eps || std::isnan(mat.m[2][2]));
+  }
 
   // https://math.stackexchange.com/a/78165/355947
   // translation * scaling * shearing * rotation
@@ -137,14 +140,14 @@ void ObjectTransformation::set_mat(const Matrix& mat)
   if (sy > eps) {
     m_rotation = -atan2(b, d);
     m_scaling = Vec2f((a * d - b * c) / sy, sy);
-    m_shearing = (a * b + c * d) / std::pow(sy, 2.0);
+    m_shearing = (a * b + c * d) / std::pow(sy, 2);
   } else {
     // since sy is so small, there is no way to get the shearing. Let's assume it is zero.
     m_shearing = 0.0;
 
     // since sy is so small, the unknown shearing does not affect the rotation:
     m_rotation = std::atan2(c, a);
-    m_scaling = Vec2f(std::sqrt(std::pow(c, 2.0) + std::pow(a, 2.0)), sy);
+    m_scaling = Vec2f(std::sqrt(std::pow(c, 2) + std::pow(a, 2)), sy);
   }
 }
 

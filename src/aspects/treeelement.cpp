@@ -132,6 +132,7 @@ template<typename T> T* TreeElement<T>::lowest_common_ancestor(T* a, T* b)
 
 template<typename T> const T* TreeElement<T>::lowest_common_ancestor(const T* a, const T* b)
 {
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
   return const_cast<const T*>(lowest_common_ancestor(const_cast<T*>(a), const_cast<T*>(b)));
 }
 

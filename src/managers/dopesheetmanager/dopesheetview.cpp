@@ -18,7 +18,7 @@ namespace
 class ChopProxyModel : public QIdentityProxyModel
 {
 public:
-  int rowCount(const QModelIndex& index) const
+  int rowCount(const QModelIndex& index) const override
   {
     const auto* const animator = this->animator();
     if (animator == nullptr) {
@@ -30,7 +30,7 @@ public:
     }
   }
 
-  bool hasChildren(const QModelIndex& index) const
+  bool hasChildren(const QModelIndex& index) const override
   {
     const auto* const animator = this->animator();
     if (animator == nullptr) {
@@ -45,7 +45,7 @@ public:
 private:
   omm::Animator* animator() const
   {
-    return static_cast<omm::Animator*>(sourceModel());
+    return dynamic_cast<omm::Animator*>(sourceModel());
   }
 };
 

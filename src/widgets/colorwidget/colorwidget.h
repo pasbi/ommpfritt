@@ -19,8 +19,8 @@ class ColorWidget : public ColorPicker
   Q_OBJECT
 public:
   explicit ColorWidget(QWidget* parent = nullptr);
-  ~ColorWidget();
-  QString name() const override;
+  ~ColorWidget() override;
+  [[nodiscard]] QString name() const override;
   void set_compact();
   void hide_named_colors();
 

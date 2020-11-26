@@ -38,7 +38,7 @@ private:
   int m_frame_shift = 0;
   double m_value_shift = 0.0;
   bool m_action_aborted = false;
-  bool m_rubberband_rect_visible;
+  bool m_rubberband_rect_visible = false;
   static constexpr double radius = 5.0;
 
   struct KeyFrameHandleKey {

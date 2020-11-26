@@ -12,8 +12,8 @@ class ColorPicker : public QWidget
   Q_OBJECT
 public:
   using QWidget::QWidget;
-  Color color() const;
-  virtual QString name() const = 0;
+  [[nodiscard]] Color color() const;
+  [[nodiscard]] virtual QString name() const = 0;
 
 public Q_SLOTS:
   virtual void set_color(const omm::Color& color);

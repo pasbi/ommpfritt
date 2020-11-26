@@ -301,7 +301,7 @@ bool BoundingBoxManager::eventFilter(QObject* o, QEvent* e)
 
 void BoundingBoxManager::UiBoundingBoxManagerDeleter::operator()(Ui::BoundingBoxManager* ui)
 {
-  delete ui;
+  delete ui;  // NOLINT(cppcoreguidelines-owning-memory)
 }
 
 }  // namespace omm

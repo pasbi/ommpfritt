@@ -13,11 +13,16 @@
 #include <functional>
 #include <list>
 
+namespace
+{
+const int ANIMATOR_INTERVAL_MS = static_cast<int>(1000.0 / 30.0);
+}
+
 namespace omm
 {
 Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
 {
-  m_timer.setInterval(1000.0 / 30.0);
+  m_timer.setInterval(ANIMATOR_INTERVAL_MS);
   connect(&m_timer, &QTimer::timeout, this, qOverload<>(&Animator::advance));
   connect(this, &Animator::current_changed, this, &Animator::apply);
   connect(&scene.mail_box(),

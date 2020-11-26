@@ -59,7 +59,7 @@ public:
   /**
    * @brief overwrite_file if true, the user prefers to overwrite existing files without notice.
    */
-  bool overwrite_file;
+  bool overwrite_file = false;
 
   /**
    * @brief filename_pattern the pattern to save many files.

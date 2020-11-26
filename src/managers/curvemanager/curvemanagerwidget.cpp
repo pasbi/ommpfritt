@@ -24,10 +24,11 @@ double multiplier(const omm::Track& track)
 
 void draw_rubberband(QPainter& painter, const QWidget& widget, const QRectF& rect)
 {
+  static constexpr double RUBBERBAND_WIDTH = 2.0;
   painter.save();
   painter.resetTransform();
   QPen pen;
-  pen.setWidth(2.0);
+  pen.setWidth(RUBBERBAND_WIDTH);
   pen.setCosmetic(true);
   pen.setColor(omm::ui_color(widget, "TimeLine", "rubberband outline"));
   painter.setPen(pen);
@@ -36,12 +37,18 @@ void draw_rubberband(QPainter& painter, const QWidget& widget, const QRectF& rec
   painter.restore();
 }
 
+static constexpr int DEFAULT_MIN_H = 1;
+static constexpr int DEFAULT_MAX_H = 100;
+static constexpr int DEFAULT_MIN_V = -10;
+static constexpr int DEFAULT_MAX_V = 10;
+
 }  // namespace
 
 namespace omm
 {
 CurveManagerWidget::CurveManagerWidget(Scene& scene, const CurveTree& curve_tree)
-    : range({1, -10}, {100, 10}, *this, Range::Options::Default, Range::Options::Mirror),
+    : range({DEFAULT_MIN_H, DEFAULT_MIN_V},
+            {DEFAULT_MAX_H, DEFAULT_MAX_V}, *this, Range::Options::Default, Range::Options::Mirror),
       m_scene(scene), m_curve_tree(curve_tree)
 {
   connect(&scene.mail_box(), &MailBox::selection_changed, this, &CurveManagerWidget::set_selection);
@@ -103,7 +110,11 @@ void CurveManagerWidget::mouseMoveEvent(QMouseEvent* event)
   if (m_pan_active) {
     range.pan(QPointF(d.x() / width(), d.y() / height()));
   } else if (m_zoom_active) {
-    range.zoom(m_mouse_down_pos, d, {0.01, 0.00001}, {100.00, 10000.0});
+    static constexpr double LOWER_H = 0.01;
+    static constexpr double LOWER_V = 0.00001;
+    static constexpr double UPPER_H = 100.0;
+    static constexpr double UPPER_V = 10000.0;
+    range.zoom(m_mouse_down_pos, d, {LOWER_H, LOWER_V}, {UPPER_H, UPPER_V});
   } else if (m_dragged_tangent.key != nullptr) {
     double old_y = value_range.pixel_to_unit(m_last_mouse_pos.y());
     double new_y = value_range.pixel_to_unit(event->y());
@@ -115,8 +126,8 @@ void CurveManagerWidget::mouseMoveEvent(QMouseEvent* event)
     set_channel_value(vv, key.channel, new_offset);
     m_scene.submit<ChangeKeyFrameCommand>(key.frame, key.track.property(), std::move(new_knot));
   } else if (m_key_being_dragged) {
-    m_frame_shift = std::round(frame_range.pixel_to_unit(event->x())
-                               - frame_range.pixel_to_unit(m_mouse_down_pos.x()));
+    m_frame_shift = static_cast<int>(std::round(frame_range.pixel_to_unit(event->x())
+                                     - frame_range.pixel_to_unit(m_mouse_down_pos.x())));
     m_value_shift
         = value_range.pixel_to_unit(event->y()) - value_range.pixel_to_unit(m_mouse_down_pos.y());
   } else if (m_rubberband_rect_visible) {
@@ -307,8 +318,8 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
   painter.save();
   const Range& frame_range = range.h_range;
   // drawing the lines with a resolution of more than one sample per frame makes no sense.
-  const int frames_per_pixel = static_cast<double>(frame_range.end - frame_range.begin) / width();
-  const int frame_advance = std::max(1, frames_per_pixel);
+  const double frames_per_pixel = static_cast<double>(frame_range.end - frame_range.begin) / width();
+  const int frame_advance = static_cast<int>(std::max(1.0, frames_per_pixel));
   for (Track* track_ : m_tracks) {
     for (std::size_t c = 0; c < n_channels(track_->property().variant_value()); ++c) {
       auto track = track_->clone();
@@ -329,7 +340,8 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
       if (is_visible(*track, c)) {
         const double m = multiplier(*track);
         QPen pen;
-        pen.setWidthF(1.5);
+        static constexpr double DEFAULT_PEN_WIDTH = 1.5;
+        pen.setWidthF(DEFAULT_PEN_WIDTH);
         const QString color_name = QString("%1-%2-fcurve").arg(track->type()).arg(c);
         pen.setColor(ui_color(QPalette::Active, "TimeLine", color_name));
         painter.setPen(pen);
@@ -353,7 +365,7 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
           const double e = frame_range.pixel_to_unit(painter.fontMetrics().horizontalAdvance(text));
           const double v1 = m * track->interpolate(b, c);
           const double v2 = m * track->interpolate(e, c);
-          int y = range.v_range.unit_to_pixel(v1);
+          int y = static_cast<int>(range.v_range.unit_to_pixel(v1));
           if (v1 < v2) {
             y += painter.fontMetrics().height();
           } else {
@@ -370,9 +382,9 @@ void CurveManagerWidget::draw_interpolation(QPainter& painter) const
 void CurveManagerWidget::draw_background(QPainter& painter) const
 {
   const QColor color = ui_color(*this, "TimeLine", "beyond");
-  const int left = range.h_range.unit_to_pixel(m_scene.animator().start() - 0.5);
+  const int left = static_cast<int>(range.h_range.unit_to_pixel(m_scene.animator().start() - 0.5));
   painter.fillRect(0, 0, left, height(), color);
-  const int right = range.h_range.unit_to_pixel(m_scene.animator().end() + 0.5);
+  const int right = static_cast<int>(range.h_range.unit_to_pixel(m_scene.animator().end() + 0.5));
   painter.fillRect(std::max(0, right), 0, width(), height(), color);
 }
 
@@ -430,7 +442,7 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
             return &kd.first.track == &key.track && kd.first.frame == key.frame
                    && kd.second.is_selected;
           });
-    const double frame_shift = any_channel_selected ? m_frame_shift : 0.0;
+    const double frame_shift = static_cast<int>(any_channel_selected ? m_frame_shift : 0.0);
     const double value_shift = data.is_selected ? m_value_shift : 0.0;
     if (is_visible(key.track, key.channel)) {
       const double value = key.value();
@@ -461,7 +473,8 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
           pen.setColor(color);
           painter.setPen(pen);
           painter.setBrush(color);
-          pen.setWidthF(1.2);
+          static constexpr double DEFAULT_PEN_WIDTH = 1.2;
+          pen.setWidthF(DEFAULT_PEN_WIDTH);
           painter.drawLine(center, other);
           painter.drawEllipse(other, r, r);
         };
@@ -485,6 +498,7 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
 
 double CurveManagerWidget::interpolate_frame(int key_frame, int neighbor_frame)
 {
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
   return 2.0 / 3.0 * key_frame + 1.0 / 3.0 * neighbor_frame;
 }
 

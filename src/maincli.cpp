@@ -130,7 +130,7 @@ void prepare_scene(omm::Scene& scene, const omm::SubcommandLineParser& args)
 QSize calculate_resolution(int width, const omm::View& view)
 {
   const auto size = view.property(omm::View::SIZE_PROPERTY_KEY)->value<omm::Vec2f>();
-  return QSize(width, width / size.x * size.y);
+  return QSize(width, static_cast<int>(width / size.x * size.y));
 }
 
 void render(omm::Application& app, const omm::SubcommandLineParser& args)

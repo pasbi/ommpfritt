@@ -72,10 +72,10 @@ public:
   operator Geom::Affine() const;
 
 private:
-  Vec2f m_translation;
-  Vec2f m_scaling;
-  double m_shearing;
-  double m_rotation;
+  Vec2f m_translation = {0.0, 0.0};
+  Vec2f m_scaling = {1.0, 1.0};
+  double m_shearing = 0.0;
+  double m_rotation = 0.0;
 
   static Geom::PathVector transform(const Geom::PathVector& pv, const Geom::Affine& affine);
   static Geom::Path transform(const Geom::Path& path, const Geom::Affine& affine);

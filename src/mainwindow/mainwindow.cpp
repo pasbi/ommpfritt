@@ -342,9 +342,11 @@ void MainWindow::save_layout()
 void MainWindow::load_layout(QSettings& settings)
 {
   for (const Manager* manager : as_const(findChildren<Manager*>())) {
+    // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
     delete manager;
   }
   for (const QToolBar* toolbar : as_const(findChildren<QToolBar*>())) {
+    // NOLINTNEXTLINE(cppcoreguidelines-owning-memory)
     delete toolbar;
   }
 
@@ -453,7 +455,8 @@ void MainWindow::update_recent_files_menu()
       recent_document_menu->addAction(action.release());
       count++;
     }
-    if (count > 10) {
+    static constexpr std::size_t RECENT_FILES_MENU_MAX_SIZE = 10;
+    if (count > RECENT_FILES_MENU_MAX_SIZE) {
       break;
     }
   }

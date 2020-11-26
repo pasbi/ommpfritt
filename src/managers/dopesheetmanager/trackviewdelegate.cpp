@@ -42,7 +42,11 @@ void TrackViewDelegate::paint(QPainter* painter,
     painter->setPen(pen);
     painter->drawLine(option.rect.topLeft(), option.rect.topRight());
     painter->restore();
-    painter->fillRect(option.rect, QColor(0, 0, 255, 80));
+    static constexpr int RED = 0;
+    static constexpr int GREEN = 0;
+    static constexpr int BLUE = 255;
+    static constexpr int ALPHA = 80;
+    painter->fillRect(option.rect, QColor(RED, GREEN, BLUE, ALPHA));
   }
 
   m_canvas.draw_lines(*painter);

@@ -44,6 +44,7 @@ Color* NamedColors::resolve(const QString& name)
 
 const Color* NamedColors::resolve(const QString& name) const
 {
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
   return const_cast<const Color*>(const_cast<NamedColors*>(this)->resolve(name));
 }
 
@@ -176,7 +177,9 @@ QString NamedColors::generate_default_name() const
   std::size_t i = 0;
   while (has_color(candidate)) {
     i += 1;
-    candidate = default_name + QString(".%1").arg(static_cast<int>(i), 3, 10, QChar('0'));
+    static const int base = 10;
+    static const int width = 3;
+    candidate = default_name + QString(".%1").arg(static_cast<int>(i), width, base, QChar('0'));
   }
   return candidate;
 }

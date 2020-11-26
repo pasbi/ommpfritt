@@ -10,15 +10,16 @@ namespace omm
 {
 ManagerTitleBar::ManagerTitleBar(Manager& manager) : m_manager(manager)
 {
+  static constexpr int MAX_BUTTON_SIZE = 12;
   auto pb_normal = std::make_unique<QPushButton>();
-  pb_normal->setMaximumSize(QSize(12, 12));
+  pb_normal->setMaximumSize(QSize(MAX_BUTTON_SIZE, MAX_BUTTON_SIZE));
   pb_normal->setIcon(style()->standardIcon(QStyle::SP_TitleBarNormalButton));
   connect(pb_normal.get(), &QPushButton::clicked, this, [&manager]() {
     manager.setFloating(!manager.isFloating());
   });
 
   auto pb_close = std::make_unique<QPushButton>();
-  pb_close->setMaximumSize(QSize(12, 12));
+  pb_close->setMaximumSize(QSize(MAX_BUTTON_SIZE, MAX_BUTTON_SIZE));
   pb_close->setIcon(style()->standardIcon(QStyle::SP_TitleBarCloseButton));
   connect(pb_close.get(), &QPushButton::clicked, &manager, &Manager::close);
 
@@ -54,7 +55,8 @@ std::unique_ptr<QPushButton> ManagerTitleBar::make_lock_button() const
         QImage(checked ? ":/icons/lock-closed_128.png" : ":/icons/lock-open_128.png")));
   };
   update_lock_button_icon(lock_button->isChecked());
-  lock_button->setFixedSize(24, 24);
+  static constexpr int MAX_BUTTON_SIZE = 24;
+  lock_button->setFixedSize(MAX_BUTTON_SIZE, MAX_BUTTON_SIZE);
   lock_button->setCheckable(true);
   connect(lock_button.get(), &QPushButton::toggled, [this, update_lock_button_icon](bool checked) {
     m_manager.set_locked(checked);
@@ -65,7 +67,8 @@ std::unique_ptr<QPushButton> ManagerTitleBar::make_lock_button() const
 
 QSize ManagerTitleBar::sizeHint() const
 {
-  return QSize(0, 24);
+  static constexpr int MAX_BUTTON_SIZE = 24;
+  return QSize(0, MAX_BUTTON_SIZE);
 }
 
 }  // namespace omm

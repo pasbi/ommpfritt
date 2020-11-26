@@ -22,7 +22,7 @@ public:
 private:
   omm::CurveTree& m_view;
   omm::Animator& m_animator;
-  bool m_visibility;
+  bool m_visibility = false;
 };
 
 }  // namespace

@@ -147,9 +147,10 @@ QRectF NodeItem::boundingRect() const
 
 void NodeItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* widget)
 {
+  static constexpr int CORNER_RADIUS = 10;
   painter->setRenderHint(QPainter::Antialiasing);
   QPainterPath path;
-  path.addRoundedRect(m_shape, 10, 10, Qt::AbsoluteSize);
+  path.addRoundedRect(m_shape, CORNER_RADIUS, CORNER_RADIUS, Qt::AbsoluteSize);
 
   painter->fillPath(path, Qt::gray);
 
@@ -258,8 +259,8 @@ void NodeItem::update_children()
   for (AbstractPort* p : ports) {
     if (p->flavor == PortFlavor::Property) {
       Property* property = p->port_type == PortType::Input
-                               ? static_cast<PropertyInputPort&>(*p).property()
-                               : static_cast<PropertyOutputPort&>(*p).property();
+                               ? dynamic_cast<PropertyInputPort&>(*p).property()
+                               : dynamic_cast<PropertyOutputPort&>(*p).property();
       const auto it
           = std::find_if(property_ports.begin(),
                          property_ports.end(),
@@ -273,15 +274,15 @@ void NodeItem::update_children()
       }
 
       if (p->port_type == PortType::Input) {
-        current->i = static_cast<PropertyInputPort*>(p);
+        current->i = dynamic_cast<PropertyInputPort*>(p);
       } else {
-        current->o = static_cast<PropertyOutputPort*>(p);
+        current->o = dynamic_cast<PropertyOutputPort*>(p);
       }
     } else {
       if (p->port_type == PortType::Input) {
-        ordinary_inputs.push_back(static_cast<OrdinaryPort<PortType::Input>*>(p));
+        ordinary_inputs.push_back(dynamic_cast<OrdinaryPort<PortType::Input>*>(p));
       } else {
-        ordinary_outputs.push_back(static_cast<OrdinaryPort<PortType::Output>*>(p));
+        ordinary_outputs.push_back(dynamic_cast<OrdinaryPort<PortType::Output>*>(p));
       }
     }
   }
@@ -373,14 +374,14 @@ void NodeItem::add_property_widget(Property& property, double pos_y, double heig
 {
   auto pw
       = AbstractPropertyWidget::make(property.widget_type(), *node.scene(), std::set{&property});
-  pw->resize(pw->width(), height);
+  pw->resize(pw->width(), static_cast<int>(height));
   auto& ref = *pw;
   auto pw_item = std::make_unique<PropertyWidgetItem>(this, std::move(pw));
   setAcceptDrops(true);
   pw_item->setAcceptDrops(true);
 
   if (ref.type() == OptionPropertyWidget::TYPE()) {
-    auto combobox = static_cast<OptionPropertyWidget*>(&ref)->combobox();
+    auto combobox = dynamic_cast<OptionPropertyWidget*>(&ref)->combobox();
     combobox->prevent_popup = true;
     QObject::connect(combobox, &OptionsEdit::popup_shown, [pw_item = pw_item.get(), combobox]() {
       NodeView* view = []() {
@@ -395,7 +396,7 @@ void NodeItem::add_property_widget(Property& property, double pos_y, double heig
       pw_item->setWidget(nullptr);
       combobox->QComboBox::showPopup();
       combobox->view()->parentWidget()->move(global_pos);
-      auto connection_destroyer = new QObject();
+      auto* connection_destroyer = new QObject();
       QObject::connect(
           combobox,
           &OptionsEdit::popup_hidden,
@@ -414,7 +415,7 @@ void NodeItem::add_property_widget(Property& property, double pos_y, double heig
 
 NodeScene* NodeItem::scene() const
 {
-  return static_cast<NodeScene*>(QGraphicsItem::scene());
+  return dynamic_cast<NodeScene*>(QGraphicsItem::scene());
 }
 
 bool NodeItem::can_expand() const
@@ -455,17 +456,20 @@ void NodeItem::Slot::draw(QPainter& painter, const QRectF& slot_rect) const
   if (get_center_text) {
     const auto draw_maybe = [&painter, y = slot_rect.center().y()](double x1, double x2) {
       if (x1 < x2) {
-        painter.drawLine(x1, y, x2, y);
+        painter.drawLine(static_cast<int>(x1), static_cast<int>(y),
+                         static_cast<int>(x2), static_cast<int>(y));
       }
     };
     QRectF actual;
     const QString center_text = get_center_text();
     painter.drawText(slot_rect, Qt::AlignVCenter | Qt::AlignCenter, center_text, &actual);
     painter.save();
-    painter.setPen(QColor(0, 0, 0, 50));
+    static constexpr int PEN_COLOR_ALPHA = 50;
+    painter.setPen(QColor(0, 0, 0, PEN_COLOR_ALPHA));
     if (!center_text.isEmpty()) {
-      draw_maybe(slot_rect.left(), actual.left() - 5);
-      draw_maybe(actual.right() + 5, slot_rect.right());
+      static constexpr int MARGIN = 5;
+      draw_maybe(slot_rect.left(), actual.left() - MARGIN);
+      draw_maybe(actual.right() + MARGIN, slot_rect.right());
     }
     painter.restore();
   }

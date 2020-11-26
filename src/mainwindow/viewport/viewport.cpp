@@ -23,7 +23,8 @@ void set_cursor_position(QWidget& widget, const omm::Vec2f& pos)
 
 double discretize(double value)
 {
-  value = std::log10(std::max(0.00001, value));
+  static constexpr double eps = 0.00001;
+  value = std::log10(std::max(eps, value));
   value -= std::fmod(value, 1.0);
   return std::pow(10.0, value);
 }
@@ -84,7 +85,7 @@ void Viewport::draw_grid(QPainter& painter,
     if (go.zorder == zorder) {
       QPen pen;
       pen.setCosmetic(true);
-      pen.setWidth(go.pen_width);
+      pen.setWidthF(go.pen_width);
       pen.setStyle(go.pen_style);
       pen.setColor(ui_color(*this, "Viewport", "grid " + key));
 
@@ -295,12 +296,13 @@ void Viewport::resizeEvent(QResizeEvent* event)
 void Viewport::update()
 {
   static constexpr double fps = 30.0;
+  static constexpr double SECOND_MS = 1000.0;
   if (m_fps_limiter.isActive()) {
     m_update_later = true;
   } else {
     ViewportBase::update();
     Q_EMIT updated();
-    m_fps_limiter.start(static_cast<int>(1000.0 / fps));
+    m_fps_limiter.start(static_cast<int>(SECOND_MS / fps));
   }
 }
 

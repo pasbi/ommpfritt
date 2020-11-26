@@ -90,7 +90,7 @@ public:
 private:
   QCoreApplication& m_app;
   static Application* m_instance;
-  MainWindow* m_main_window;
+  MainWindow* m_main_window = nullptr;
 
 public:
   Options& options()

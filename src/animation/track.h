@@ -49,7 +49,7 @@ public:
 
     // only required for deserialization.
     void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) override;
-    std::size_t m_reference_id;
+    std::size_t m_reference_id = 0;
   };
 
   enum class Interpolation { Step, Linear, Bezier };
