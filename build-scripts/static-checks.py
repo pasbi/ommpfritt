@@ -72,7 +72,12 @@ clang_tidy_checks = [
     "cppcoreguidelines-no-malloc",
     "cppcoreguidelines-non-private-member-variables-in-classes",
     "cppcoreguidelines-owning-memory",
-    "cppcoreguidelines-pro-type-*",
+    "cppcoreguidelines-pro-type-const-cast",
+    "cppcoreguidelines-pro-type-cstyle-cast",
+    "cppcoreguidelines-pro-type-member-init",
+    "cppcoreguidelines-pro-type-reinterpret-cast",
+    "cppcoreguidelines-pro-type-static-cast-downcast",
+    "cppcoreguidelines-pro-type-union-access",
     "cppcoreguidelines-slicing",
     "cppcoreguidelines-special-member-functions",
     "misc-definitions-in-headers",
@@ -145,7 +150,8 @@ clang_tidy_checks = [
     "readability-use-anyofallof",
 
     # "readability-redundant-access-specifiers",
-    # "cppcoreguidelines-pro-bounds-array-to-pointer",
+    # "cppcoreguidelines-pro-bounds-array-to-pointer-decay",  # https://github.com/isocpp/CppCoreGuidelines/issues/1589
+    # "cppcoreguidelines-pro-type-vararg" # flaggs QFATAL
     # "misc-no-recursion",
     # "modernize-use-trailing-return-type",
     # "modernize-pass-by-value",
