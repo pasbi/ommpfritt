@@ -221,7 +221,7 @@ QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines)
 
 QString NodeCompilerGLSL::compile_connection(const OutputPort& op,
                                              const InputPort& ip,
-                                             QStringList& lines) const
+                                             QStringList& lines)
 {
   lines.append(format_connection(ip, op));
   return "";
