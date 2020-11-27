@@ -17,11 +17,11 @@ protected:
                   const QString& label,
                   int frame,
                   const std::map<Property*, Track::Knot*>& refs,
-                  std::map<Property*, std::unique_ptr<Track::Knot>> owns = {});
+                  std::map<Property*, std::unique_ptr<Track::Knot>>&& owns = {});
   KeyFrameCommand(Animator& animator,
                   const QString& label,
                   int frame,
-                  std::map<Property*, std::unique_ptr<Track::Knot>> owns);
+                  std::map<Property*, std::unique_ptr<Track::Knot>>&& owns);
   void insert();
   void remove();
 
@@ -64,7 +64,10 @@ public:
 class MoveKeyFrameCommand : public Command
 {
 public:
-  MoveKeyFrameCommand(Animator& animator, Property& property, const std::set<int>& old_frames, int shift);
+  MoveKeyFrameCommand(Animator& animator,
+                      Property& property,
+                      const std::set<int>& old_frames,
+                      int shift);
 
   void undo() override;
   void redo() override;

@@ -94,7 +94,7 @@ public:
     }
 
     if (isotropic) {
-      double n = [s](){
+      double n = [s]() {
         if (s.x == 1.0) {
           return s.y;
         } else if (s.y == 1.0) {

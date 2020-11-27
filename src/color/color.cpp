@@ -261,13 +261,13 @@ double& Color::component(Color::Role role)
 Color::Model Color::model(Role role, Model tie)
 {
   switch (role) {
-  case Role::Red:
+  case Role::Red:  // NOLINT(bugprone-branch-clone)
     [[fallthrough]];
   case Role::Green:
     [[fallthrough]];
   case Role::Blue:
     return Model::RGBA;
-  case Role::Hue:
+  case Role::Hue:  // NOLINT(bugprone-branch-clone)
     [[fallthrough]];
   case Role::Saturation:
     [[fallthrough]];
@@ -289,7 +289,7 @@ QString Color::to_html() const
 {
   static const auto to_hex = [](float f) {
     const int i = std::clamp(static_cast<int>(std::round(f * 255)), 0, 255);
-    const QString str = QString("%1").arg(static_cast<int>(i), 2, 16, QChar('0'));
+    QString str = QString("%1").arg(static_cast<int>(i), 2, 16, QChar('0'));
     assert(str.size() == 2);
     return str;
   };

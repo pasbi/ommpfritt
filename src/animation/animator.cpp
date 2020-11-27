@@ -66,9 +66,7 @@ Animator::Animator(Scene& scene) : scene(scene), accelerator(*this)
   invalidate();
 }
 
-Animator::~Animator()
-{
-}
+Animator::~Animator() = default;
 
 void Animator::serialize(AbstractSerializer& serializer, const Serializable::Pointer& pointer) const
 {
@@ -330,7 +328,7 @@ QModelIndex Animator::index(const std::pair<Property*, std::size_t>& channel, in
   return createIndex(c, column, m_channel_proxies.at({property->track(), c}).get());
 }
 
-Animator::IndexType Animator::index_type(const QModelIndex& index) const
+Animator::IndexType Animator::index_type(const QModelIndex& index)
 {
   if (!index.isValid()) {
     return IndexType::None;
@@ -371,6 +369,7 @@ void Animator::insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track>
 {
   assert(track);
   Track& track_ref = *track;
+  auto& property = track->property();
   const auto accelerator = this->accelerator();
   if (accelerator.contains(owner)) {
     const QModelIndex parent_index = this->index(owner);
@@ -395,14 +394,14 @@ void Animator::insert_track(AbstractPropertyOwner& owner, std::unique_ptr<Track>
     assert(!preprocessor_index.isValid() || preprocessor_index.parent() == parent_index);
     const int row = preprocessor_index.row() + 1;
     beginInsertRows(parent_index, row, row);
-    track->property().set_track(std::move(track));
+    property.set_track(std::move(track));
     this->accelerator.invalidate();
     endInsertRows();
   } else {
     // the owner is not in the model. Add the owner.
     // it's too complicated to figure out where the owner is added.
     beginResetModel();
-    track->property().set_track(std::move(track));
+    property.set_track(std::move(track));
     this->accelerator.invalidate();
     endResetModel();
   }

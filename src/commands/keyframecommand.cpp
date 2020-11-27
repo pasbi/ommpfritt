@@ -54,7 +54,7 @@ KeyFrameCommand::KeyFrameCommand(Animator& animator,
                                  const QString& label,
                                  int frame,
                                  const std::map<Property*, Track::Knot*>& refs,
-                                 std::map<Property*, std::unique_ptr<Track::Knot>> owns)
+                                 std::map<Property*, std::unique_ptr<Track::Knot>>&& owns)
     : Command(label), m_animator(animator), m_frame(frame), m_refs(refs)
 {
   for (auto&& [property, knot] : owns) {
@@ -65,7 +65,7 @@ KeyFrameCommand::KeyFrameCommand(Animator& animator,
 KeyFrameCommand::KeyFrameCommand(Animator& animator,
                                  const QString& label,
                                  int frame,
-                                 std::map<Property*, std::unique_ptr<Track::Knot>> owns)
+                                 std::map<Property*, std::unique_ptr<Track::Knot>>&& owns)
     : KeyFrameCommand(animator, label, frame, collect_refs(owns))
 {
   for (auto&& [property, knot] : owns) {

@@ -113,7 +113,7 @@ public:
   QModelIndex index(Property& property, int column = 0) const;
   QModelIndex index(const std::pair<Property*, std::size_t>& channel, int column = 0) const;
   QModelIndex index(AbstractPropertyOwner& owner, int column = 0) const;
-  IndexType index_type(const QModelIndex& index) const;
+  static IndexType index_type(const QModelIndex& index);
   Property* property(const QModelIndex& index) const;
   ChannelProxy& channel(const QModelIndex& index) const;
   AbstractPropertyOwner* owner(const QModelIndex& index) const;
