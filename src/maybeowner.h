@@ -9,7 +9,7 @@ template<typename T> class MaybeOwner
 {
 public:
   MaybeOwner(const MaybeOwner<T>& other) = delete;
-  MaybeOwner(MaybeOwner<T>&& other) = default;
+  MaybeOwner(MaybeOwner<T>&& other) noexcept = default;
   MaybeOwner(std::unique_ptr<T> own) : m_owned(std::move(own)), m_ref(*m_owned)
   {
   }
@@ -33,7 +33,7 @@ public:
     assert(owns());
     return std::move(m_owned);
   }
-  MaybeOwner& operator=(MaybeOwner&& other) = default;
+  MaybeOwner& operator=(MaybeOwner&& other) noexcept = default;
   T* operator->()
   {
     return &m_ref.get();

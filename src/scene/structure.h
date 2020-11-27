@@ -12,7 +12,7 @@ template<typename T> class Structure
 public:
   using item_type = T;
   Structure() = default;
-  Structure(Structure&& other) = default;
+  Structure(Structure&& other) noexcept = default;
   virtual ~Structure() = default;
 
   virtual std::set<T*> items() const = 0;

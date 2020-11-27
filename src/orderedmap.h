@@ -31,7 +31,7 @@ public:
   }
 
   explicit OrderedMap() = default;
-  explicit OrderedMap(OrderedMap<KeyT, ValueT>&& other) = default;
+  explicit OrderedMap(OrderedMap<KeyT, ValueT>&& other) noexcept = default;
 
   auto values() const
   {
