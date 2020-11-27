@@ -70,7 +70,7 @@ void ReferenceProperty::set_default_value(const value_type& value)
 bool ReferenceProperty::is_compatible(const Property& other) const
 {
   if (Property::is_compatible(other)) {
-    auto& other_reference_property = static_cast<const ReferenceProperty&>(other);
+    const auto& other_reference_property = dynamic_cast<const ReferenceProperty&>(other);
     return other_reference_property.configuration.at(FILTER_POINTER)
            == configuration.at(FILTER_POINTER);
   } else {

@@ -499,12 +499,12 @@ bool Scene::contains(const AbstractPropertyOwner* apo) const
   switch (apo->kind) {
   case Kind::Tag: {
     const auto tags = this->tags();
-    return tags.end() != std::find(tags.begin(), tags.end(), static_cast<const Tag*>(apo));
+    return tags.end() != std::find(tags.begin(), tags.end(), dynamic_cast<const Tag*>(apo));
   }
   case Kind::Object:
-    return object_tree().contains(static_cast<const Object&>(*apo));
+    return object_tree().contains(dynamic_cast<const Object&>(*apo));
   case Kind::Style:
-    return styles().contains(static_cast<const Style&>(*apo));
+    return styles().contains(dynamic_cast<const Style&>(*apo));
   case Kind::Tool:
     return ::contains(m_tool_box->tools(), apo);
   default:

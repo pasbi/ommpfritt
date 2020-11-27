@@ -212,11 +212,11 @@ bool NodeModel::can_connect(const AbstractPort& a, const AbstractPort& b) const
   const OutputPort* out;
 
   if (a.port_type == PortType::Input && b.port_type == PortType::Output) {
-    in = static_cast<const InputPort*>(&a);
-    out = static_cast<const OutputPort*>(&b);
+    in = dynamic_cast<const InputPort*>(&a);
+    out = dynamic_cast<const OutputPort*>(&b);
   } else if (a.port_type == PortType::Output && b.port_type == PortType::Input) {
-    in = static_cast<const InputPort*>(&b);
-    out = static_cast<const OutputPort*>(&a);
+    in = dynamic_cast<const InputPort*>(&b);
+    out = dynamic_cast<const OutputPort*>(&a);
   } else {
     return false;
   }

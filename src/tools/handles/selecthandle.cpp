@@ -38,9 +38,9 @@ bool AbstractSelectHandle::mouse_move(const Vec2f& delta, const Vec2f& pos, cons
   if (status() == HandleStatus::Active) {
     Vec2f total_delta = discretize(pos - press_pos(), false, 10.0);
     const auto transformation = omm::ObjectTransformation().translated(total_delta);
-    static_cast<AbstractSelectTool&>(tool).transform_objects(transformation);
+    dynamic_cast<AbstractSelectTool&>(tool).transform_objects(transformation);
     const auto tool_info = QString("%1").arg(total_delta.euclidean_norm());
-    static_cast<AbstractSelectTool&>(tool).tool_info = tool_info;
+    dynamic_cast<AbstractSelectTool&>(tool).tool_info = tool_info;
     return true;
   } else {
     return false;
@@ -182,7 +182,7 @@ void PointSelectHandle::draw(QPainter& painter) const
 
 void PointSelectHandle::transform_tangent(const Vec2f& delta, TangentHandle::Tangent tangent)
 {
-  transform_tangent(delta, static_cast<SelectPointsTool&>(tool).tangent_mode(), tangent);
+  transform_tangent(delta, dynamic_cast<SelectPointsTool&>(tool).tangent_mode(), tangent);
 }
 
 void PointSelectHandle::transform_tangent(const Vec2f& delta,

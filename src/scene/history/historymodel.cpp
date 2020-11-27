@@ -85,7 +85,7 @@ Command* HistoryModel::last_command() const
       // macro
       return nullptr;
     } else {
-      return const_cast<Command*>(static_cast<const Command*>(cmd));
+      return const_cast<Command*>(dynamic_cast<const Command*>(cmd));
     }
   }
 }

@@ -89,11 +89,11 @@ py::object wrap(AbstractPropertyOwner* owner)
   } else {
     switch (owner->kind) {
     case Kind::Tag:
-      return wrap(static_cast<Tag&>(*owner));
+      return wrap(dynamic_cast<Tag&>(*owner));
     case Kind::Style:
-      return wrap(static_cast<Style&>(*owner));
+      return wrap(dynamic_cast<Style&>(*owner));
     case Kind::Object:
-      return wrap(static_cast<Object&>(*owner));
+      return wrap(dynamic_cast<Object&>(*owner));
     default:
       return py::none();
     }

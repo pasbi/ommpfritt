@@ -26,8 +26,8 @@ omm::AbstractPort* get_sibling(const omm::AbstractPort* port)
   }
   static const auto get_property = [](const omm::AbstractPort* port) {
     return port->port_type == omm::PortType::Input
-               ? static_cast<const omm::PropertyInputPort*>(port)->property()
-               : static_cast<const omm::PropertyOutputPort*>(port)->property();
+               ? dynamic_cast<const omm::PropertyInputPort*>(port)->property()
+               : dynamic_cast<const omm::PropertyOutputPort*>(port)->property();
   };
   const omm::Property* property = get_property(port);
   for (omm::AbstractPort* candidate : port->node.ports()) {
@@ -107,7 +107,7 @@ QString NodeCompilerGLSL::generate_header(QStringList& lines) const
   for (InputPort* port : model().ports<InputPort>()) {
     // only property ports can be uniform
     if (port->flavor == omm::PortFlavor::Property) {
-      PropertyInputPort* ip = static_cast<PropertyInputPort*>(port);
+      auto* ip = dynamic_cast<PropertyInputPort*>(port);
       if (!ip->is_connected() && get_sibling(port) == nullptr) {
         m_uniform_ports.insert(port);
       }
@@ -137,7 +137,7 @@ QString NodeCompilerGLSL::end_program(QStringList& lines) const
       LWARNING << msg;
       return msg;
     } else {
-      const auto* fragment_node = static_cast<const FragmentNode*>(*fragment_nodes.begin());
+      const auto* fragment_node = dynamic_cast<const FragmentNode*>(*fragment_nodes.begin());
       const auto& port = fragment_node->input_port();
       if (port.is_connected()) {
         const QString alpha = QString("clamp(%1.a, 0.0, 1.0)").arg(port.uuid());
@@ -182,7 +182,7 @@ QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines) con
     std::size_t i = 0;
     for (OutputPort* port : sort_ports(ordinary_output_ports)) {
       if (const Node& node = port->node; node.type() == VertexNode::TYPE) {
-        const auto& vertex_node = static_cast<const VertexNode&>(node);
+        const auto& vertex_node = dynamic_cast<const VertexNode&>(node);
         const auto ports = vertex_node.shader_inputs();
         const auto it = std::find(ports.begin(), ports.end(), port);
         if (it != ports.end()) {

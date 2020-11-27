@@ -67,7 +67,7 @@ QString LinePatternNode::output_data_type(const OutputPort& port) const
 QString LinePatternNode::input_data_type(const InputPort& port) const
 {
   if (port.flavor == PortFlavor::Property) {
-    return static_cast<const PropertyPort<PortType::Input>&>(port).data_type();
+    return dynamic_cast<const PropertyPort<PortType::Input>&>(port).data_type();
   } else if (&port == m_position_port) {
     return NodeCompilerTypes::FLOAT_TYPE;
   } else {

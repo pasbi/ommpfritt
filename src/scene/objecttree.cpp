@@ -354,7 +354,7 @@ bool ObjectTree::dropMimeData(const QMimeData* data,
         } else if (parent.column() == TAGS_COLUMN && column < 0) {
           assert(current_tag->type() == StyleTag::TYPE);
           assert(styles.size() == 1);
-          auto* style_tag = static_cast<StyleTag*>(current_tag);
+          auto* style_tag = dynamic_cast<StyleTag*>(current_tag);
           auto& property = *style_tag->property(StyleTag::STYLE_REFERENCE_PROPERTY_KEY);
           using ref_prop_cmd_t = PropertiesCommand<ReferenceProperty>;
           scene.submit<ref_prop_cmd_t>(std::set{&property}, *styles.begin());

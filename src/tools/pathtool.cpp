@@ -55,7 +55,7 @@ Path::iterator PathTool::add_point(const Vec2f& pos)
   Q_UNUSED(pos)
   if (m_path == nullptr) {
     const auto insert_mode = Application::InsertionMode::Default;
-    m_path = static_cast<Path*>(&Application::instance().insert_object(Path::TYPE, insert_mode));
+    m_path = dynamic_cast<Path*>(&Application::instance().insert_object(Path::TYPE, insert_mode));
     m_path->property(Path::INTERPOLATION_PROPERTY_KEY)->set(InterpolationMode::Bezier);
     scene()->set_selection({m_path});
   }

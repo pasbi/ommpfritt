@@ -109,7 +109,7 @@ void ObjectTreeSelectionModel::extend_selection(Tag& tag)
 
 const ObjectTree& ObjectTreeSelectionModel::model() const
 {
-  return static_cast<const ObjectTree&>(*QItemSelectionModel::model());
+  return dynamic_cast<const ObjectTree&>(*QItemSelectionModel::model());
 }
 
 void ObjectTreeSelectionModel::set_selection(const std::set<AbstractPropertyOwner*>& selection)

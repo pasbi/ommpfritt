@@ -12,7 +12,7 @@ void PathWrapper::define_python_interface(py::object& module)
 
 py::object PathWrapper::points()
 {
-  auto& path = static_cast<wrapped_type&>(wrapped);
+  auto& path = dynamic_cast<wrapped_type&>(wrapped);
   std::vector<PointWrapper> point_wrappers;
   point_wrappers.reserve(path.count());
   for (Point& point : path) {

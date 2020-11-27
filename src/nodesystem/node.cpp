@@ -29,8 +29,8 @@ void Node::serialize(AbstractSerializer& serializer, const Serializable::Pointer
   connection_inputs.reserve(m_ports.size());
   for (const auto& port : m_ports) {
     if (port->port_type == PortType::Input
-        && static_cast<InputPort&>(*port).connected_output() != nullptr) {
-      connection_inputs.push_back(static_cast<const InputPort*>(port.get()));
+        && dynamic_cast<InputPort&>(*port).connected_output() != nullptr) {
+      connection_inputs.push_back(dynamic_cast<const InputPort*>(port.get()));
     }
   }
   connection_inputs.shrink_to_fit();
@@ -103,7 +103,7 @@ std::set<Node*> Node::successors() const
   std::set<Node*> successors;
   for (const auto& port : m_ports) {
     if (port->port_type == PortType::Output) {
-      const OutputPort& op = static_cast<OutputPort&>(*port);
+      const OutputPort& op = dynamic_cast<OutputPort&>(*port);
       for (const InputPort* ip : op.connected_inputs()) {
         successors.insert(&ip->node);
       }
@@ -220,7 +220,7 @@ void Node::update_references(const std::map<std::size_t, AbstractPropertyOwner*>
 {
   QSignalBlocker blocker(model());
   for (const ConnectionIds& cids : m_connection_ids) {
-    Node& node = static_cast<Node&>(*map.at(cids.node_id));
+    Node& node = dynamic_cast<Node&>(*map.at(cids.node_id));
     assert(&node.model() == &model());
     InputPort* input = find_port<InputPort>(cids.input_port);
     OutputPort* output = node.find_port<OutputPort>(cids.output_port);

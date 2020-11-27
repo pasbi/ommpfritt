@@ -114,7 +114,7 @@ void Style::polish()
     AbstractNodeCompiler& compiler = model->compiler();
     connect(&compiler, &AbstractNodeCompiler::compilation_succeeded, this, &Style::set_code);
     connect(&compiler, &AbstractNodeCompiler::compilation_failed, this, &Style::set_error);
-    connect_edit_property(static_cast<TriggerProperty&>(*property(EDIT_NODES_PROPERTY_KEY)), *this);
+    connect_edit_property(dynamic_cast<TriggerProperty&>(*property(EDIT_NODES_PROPERTY_KEY)), *this);
   }
 }
 
@@ -174,12 +174,12 @@ void Style::on_property_value_changed(Property* property)
 void Style::update_uniform_values() const
 {
   if (const NodeModel* node_model = this->node_model(); node_model != nullptr) {
-    auto& compiler = static_cast<NodeCompilerGLSL&>(node_model->compiler());
+    auto& compiler = dynamic_cast<NodeCompilerGLSL&>(node_model->compiler());
     for (AbstractPort* port : compiler.uniform_ports()) {
       assert(port->flavor == omm::PortFlavor::Property);
       const Property* property = port->port_type == PortType::Input
-                                     ? static_cast<PropertyInputPort*>(port)->property()
-                                     : static_cast<PropertyOutputPort*>(port)->property();
+                                     ? dynamic_cast<PropertyInputPort*>(port)->property()
+                                     : dynamic_cast<PropertyOutputPort*>(port)->property();
       if (property != nullptr) {
         m_offscreen_renderer->set_uniform(port->uuid(), property->variant_value());
       }

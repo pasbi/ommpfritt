@@ -58,7 +58,7 @@ OutputPort::OutputPort(Node& node, std::size_t index)
 bool OutputPort::is_connected(const AbstractPort* other) const
 {
   if (other->port_type == PortType::Input) {
-    return static_cast<const InputPort*>(other)->is_connected(this);
+    return dynamic_cast<const InputPort*>(other)->is_connected(this);
   } else {
     return false;
   }
@@ -94,13 +94,13 @@ std::set<AbstractPort*> AbstractPort::connected_ports() const
 {
   switch (port_type) {
   case PortType::Input:
-    if (AbstractPort* op = static_cast<const InputPort*>(this)->connected_output(); op != nullptr) {
+    if (AbstractPort* op = dynamic_cast<const InputPort*>(this)->connected_output(); op != nullptr) {
       return {op};
     } else {
       return {};
     }
   case PortType::Output:
-    return ::transform<AbstractPort*>(static_cast<const OutputPort*>(this)->connected_inputs());
+    return ::transform<AbstractPort*>(dynamic_cast<const OutputPort*>(this)->connected_inputs());
   default:
     Q_UNREACHABLE();
     return {};

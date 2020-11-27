@@ -20,7 +20,7 @@ bool KeyBindingsProxyModel::filterAcceptsRow(int source_row, const QModelIndex& 
     if (ptr->is_group()) {
       return rowCount(mapFromSource(index)) > 0;
     } else {
-      const auto* value = static_cast<const PreferencesTreeValueItem*>(ptr);
+      const auto* value = dynamic_cast<const PreferencesTreeValueItem*>(ptr);
       const auto name = value->translated_name();
       const auto sequence = QKeySequence(value->value()).toString(QKeySequence::NativeText);
       const bool name_matches = name.contains(m_action_name_filter, Qt::CaseInsensitive);

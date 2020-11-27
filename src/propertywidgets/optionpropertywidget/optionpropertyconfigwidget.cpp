@@ -82,7 +82,7 @@ void OptionPropertyConfigWidget::remove_option(int index)
 bool OptionPropertyConfigWidget::eventFilter(QObject* watched, QEvent* event)
 {
   const auto get_item = [event, this]() {
-    const auto pos = static_cast<QMouseEvent*>(event)->pos();
+    const auto pos = dynamic_cast<QMouseEvent*>(event)->pos();
     return m_list_widget->itemAt(pos);
   };
 
@@ -109,12 +109,12 @@ bool OptionPropertyConfigWidget::eventFilter(QObject* watched, QEvent* event)
   if (watched == m_list_widget->viewport()) {
     switch (event->type()) {
     case QEvent::MouseButtonPress:
-      if (attempt_remove_item(static_cast<QMouseEvent*>(event))) {
+      if (attempt_remove_item(dynamic_cast<QMouseEvent*>(event))) {
         return true;
       }
       break;
     case QEvent::MouseButtonDblClick:
-      if (attempt_add_item(static_cast<QMouseEvent*>(event))) {
+      if (attempt_add_item(dynamic_cast<QMouseEvent*>(event))) {
         return true;
       }
       break;

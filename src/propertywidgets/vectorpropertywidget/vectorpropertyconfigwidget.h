@@ -77,7 +77,7 @@ public:
       static_cast<NumericEdit<ElementT>*>(m_edits[d + NumericPropertyDetail::STEP_POINTER])
           ->set_value(step[i]);
     }
-    static_cast<NumericEdit<double>*>(m_edits[NumericPropertyDetail::MULTIPLIER_POINTER])
+    dynamic_cast<NumericEdit<double>*>(m_edits[NumericPropertyDetail::MULTIPLIER_POINTER])
         ->set_value(mult);
   }
 
@@ -90,7 +90,7 @@ public:
       const auto* y_edit = static_cast<NumericEdit<ElementT>*>(m_edits.at("y" + key));
       configuration[key] = T(x_edit->value(), y_edit->value());
       configuration[NumericPropertyDetail::MULTIPLIER_POINTER]
-          = static_cast<NumericEdit<double>*>(m_edits.at(NumericPropertyDetail::MULTIPLIER_POINTER))
+          = dynamic_cast<NumericEdit<double>*>(m_edits.at(NumericPropertyDetail::MULTIPLIER_POINTER))
                 ->value();
     }
   }

@@ -76,7 +76,7 @@ OptionProperty& OptionProperty::set_options(const std::vector<QString>& options)
 bool OptionProperty::is_compatible(const Property& other) const
 {
   if (TypedProperty::is_compatible(other)) {
-    const auto& other_op = static_cast<const OptionProperty&>(other);
+    const auto& other_op = dynamic_cast<const OptionProperty&>(other);
     return options() == other_op.options();
   } else {
     return false;

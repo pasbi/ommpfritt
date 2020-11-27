@@ -279,7 +279,7 @@ QModelIndex PreferencesTree::index(int row, int column, const QModelIndex& paren
   } else {
     auto* ptr = static_cast<const PreferencesTreeItem*>(parent.internalPointer());
     assert(ptr->is_group());
-    const auto* group = static_cast<const PreferencesTreeGroupItem*>(ptr);
+    const auto* group = dynamic_cast<const PreferencesTreeGroupItem*>(ptr);
     internal_pointer = group->values.at(row).get();
   }
   return createIndex(row, column, internal_pointer);
@@ -292,7 +292,7 @@ QModelIndex PreferencesTree::parent(const QModelIndex& child) const
     return QModelIndex();
   } else {
     auto* const ptr = static_cast<PreferencesTreeItem*>(child.internalPointer());
-    auto* value_item = static_cast<PreferencesTreeValueItem*>(ptr);
+    auto* value_item = dynamic_cast<PreferencesTreeValueItem*>(ptr);
     const auto it = std::find_if(m_groups.begin(), m_groups.end(), [&](const auto& group) {
       return group->name == value_item->group;
     });
@@ -372,7 +372,7 @@ bool PreferencesTree::setData(const QModelIndex& index, const QVariant& value, i
     return false;
   }
 
-  auto* value_item = static_cast<PreferencesTreeValueItem*>(ptr);
+  auto* value_item = dynamic_cast<PreferencesTreeValueItem*>(ptr);
   if (set_data(index.column(), *value_item, value)) {
     Q_EMIT dataChanged(index, index);
     return true;
@@ -401,14 +401,14 @@ PreferencesTreeGroupItem& PreferencesTree::group(const QModelIndex& index) const
 {
   assert(is_group(index));
   auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());
-  return *static_cast<PreferencesTreeGroupItem*>(ptr);
+  return *dynamic_cast<PreferencesTreeGroupItem*>(ptr);
 }
 
 PreferencesTreeValueItem& PreferencesTree::value(const QModelIndex& index) const
 {
   assert(!is_group(index));
   auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());
-  return *static_cast<PreferencesTreeValueItem*>(ptr);
+  return *dynamic_cast<PreferencesTreeValueItem*>(ptr);
 }
 
 void PreferencesTree::apply()
