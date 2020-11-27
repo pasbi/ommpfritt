@@ -178,7 +178,7 @@ bool is_not_null(const void* p);
 template<typename SetA, typename SetB = SetA> decltype(auto) merge(SetA&& a, SetB&& b)
 {
   a.insert(b.begin(), b.end());
-  return std::move(a);
+  return std::forward<SetA>(a);
 }
 
 template<typename SetA, typename SetB = SetA> SetA merge(const SetA& a, SetB&& b)
