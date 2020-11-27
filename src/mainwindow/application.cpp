@@ -358,7 +358,7 @@ bool Application::perform_action(const QString& action_name)
   } else if (action_name == "reset viewport") {
     main_window()->viewport().reset();
   } else if (action_name == "show point dialog") {
-    if (const auto paths = scene.item_selection<Path>(); paths.size() > 0) {
+    if (const auto paths = scene.item_selection<Path>(); !paths.empty()) {
       PointDialog(paths, main_window()).exec();
     }
   } else if (action_name == "preferences") {
@@ -371,9 +371,9 @@ bool Application::perform_action(const QString& action_name)
     for (const auto& key : Object::keys()) {
       if (key == action_name) {
         const auto modifiers = QApplication::keyboardModifiers();
-        if (modifiers & Qt::ControlModifier) {
+        if (modifiers & (Qt::ControlModifier != 0u)) {
           insert_object(key, InsertionMode::AsChild);
-        } else if (modifiers & Qt::ShiftModifier) {
+        } else if (modifiers & (Qt::ShiftModifier != 0u)) {
           insert_object(key, InsertionMode::AsParent);
         } else {
           insert_object(key, InsertionMode::Default);

@@ -62,7 +62,7 @@ public:
     }
     ToolT& tool = static_cast<ToolT&>(this->tool);
     const bool discrete = tool.integer_transformation();
-    const bool isotropic = e.modifiers() & Qt::ControlModifier;
+    const bool isotropic = e.modifiers() & (Qt::ControlModifier != 0u);
 
     Vec2f anchor;
     if (m_symmetric) {

@@ -356,7 +356,7 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
   };
 
   for (auto& kind : {Kind::Object, Kind::Style, Kind::Tag, Kind::Tool}) {
-    if (selection.size() == 0) {
+    if (selection.empty()) {
       m_item_selection.at(kind).clear();
       emit_selection_changed(m_selection, kind);
     } else {

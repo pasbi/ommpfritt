@@ -79,7 +79,7 @@ std::unique_ptr<QMenu> Tool::make_context_menu(QWidget* parent)
 
 bool Tool::integer_transformation() const
 {
-  return QApplication::keyboardModifiers() & Qt::ShiftModifier;
+  return QApplication::keyboardModifiers() & (Qt::ShiftModifier != 0u);
 }
 
 bool Tool::key_press(const QKeyEvent& event)
