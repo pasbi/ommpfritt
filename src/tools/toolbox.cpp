@@ -44,7 +44,7 @@ namespace omm
 ToolBox::ToolBox(Scene& scene)
     : m_tools(make_tool_map(scene)), m_default_tools(collect_default_tools(m_tools)), m_scene(scene)
 {
-  if (m_tools.size() > 0) {
+  if (!m_tools.empty()) {
     m_active_tool = m_tools.begin()->second.get();
   }
 }
@@ -64,7 +64,7 @@ void ToolBox::set_active_tool(Tool* tool)
   assert(tool != nullptr);
   if (m_active_tool != tool) {
     m_scene.set_mode(tool->scene_mode());
-    if (m_active_tool) {
+    if (m_active_tool != nullptr) {
       m_history.push_front(m_active_tool);
       ::remove_duplicates(m_history);
       m_active_tool->end();
@@ -88,7 +88,7 @@ void ToolBox::set_previous_tool()
 
 void ToolBox::set_scene_mode(SceneMode mode)
 {
-  if (!m_active_tool || m_active_tool->scene_mode() != mode) {
+  if ((m_active_tool == nullptr) || m_active_tool->scene_mode() != mode) {
     set_active_tool(m_default_tools.at(mode));
   }
 }

@@ -21,7 +21,7 @@ public:
   void update();
   [[nodiscard]] bool is_empty() const
   {
-    return m_initial_points.size() == 0;
+    return m_initial_points.empty();
   }
 
 Q_SIGNALS:

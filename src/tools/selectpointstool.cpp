@@ -43,7 +43,7 @@ std::unique_ptr<QMenu> SelectPointsBaseTool::make_context_menu(QWidget* parent)
     // TODO replace top-level-menu with custom key (i.e. 'path' in this case).
     // then, all entries will be in the same menu.
   }
-  if (menus.size() == 0) {
+  if (menus.empty()) {
     return nullptr;
   }
   return std::move(menus.front());

@@ -15,7 +15,7 @@ using AddTagCommand = omm::AddCommand<omm::List<omm::Tag>>;
 
 template<typename T> T* last(const std::vector<T*>& ts)
 {
-  return ts.size() == 0 ? nullptr : ts.back();
+  return ts.empty() ? nullptr : ts.back();
 }
 
 template<typename T>
@@ -26,7 +26,7 @@ void drop_tags(omm::Scene& scene,
                Qt::DropAction action,
                T&& make_context)
 {
-  if (tags.size() > 0) {
+  if (!tags.empty()) {
     switch (action) {
     case Qt::CopyAction: {
       auto macro = scene.history().start_macro(QObject::tr("copy tags", "ObjectTreeAdapter"));
@@ -72,7 +72,7 @@ void drop_style_onto_object(omm::Scene& scene,
                             omm::Object& object,
                             const std::vector<omm::Style*>& styles)
 {
-  if (styles.size() > 0) {
+  if (!styles.empty()) {
     const QString label = QObject::tr("set styles tags", "ObjectTreeAdapter");
     [[maybe_unused]] auto macro = scene.history().start_macro(label);
     for (auto* style : styles) {
@@ -336,7 +336,7 @@ bool ObjectTree::dropMimeData(const QMimeData* data,
   } else {
     const auto* pdata = qobject_cast<const PropertyOwnerMimeData*>(data);
     if (pdata != nullptr) {
-      if (const auto tags = pdata->tags(); tags.size() > 0) {
+      if (const auto tags = pdata->tags(); !tags.empty()) {
         if (parent.column() == OBJECT_COLUMN) {
           assert(parent.isValid());  // otherwise, column was < 0.
           drop_tags_onto_object(scene, item_at(parent), tags, action);
@@ -347,7 +347,7 @@ bool ObjectTree::dropMimeData(const QMimeData* data,
           return true;
         }
       }
-      if (const auto styles = pdata->styles(); styles.size() > 0) {
+      if (const auto styles = pdata->styles(); !styles.empty()) {
         if (parent.column() == OBJECT_COLUMN && column < 0) {
           assert(parent.isValid());  // otherwise, column was < 0
           drop_style_onto_object(scene, item_at(parent), styles);
@@ -378,7 +378,7 @@ bool ObjectTree::canDropMimeData(const QMimeData* data,
     const auto* pdata = qobject_cast<const PropertyOwnerMimeData*>(data);
     if (pdata != nullptr) {
       const auto tags = pdata->tags();
-      if (tags.size() > 0) {
+      if (!tags.empty()) {
         switch (actual_column) {
         case OBJECT_COLUMN:
           return true;
@@ -387,7 +387,7 @@ bool ObjectTree::canDropMimeData(const QMimeData* data,
         }
         return false;
       }
-      if (const auto styles = pdata->styles(); styles.size() > 0) {
+      if (const auto styles = pdata->styles(); !styles.empty()) {
         if (parent.column() == OBJECT_COLUMN && column < 0) {
           return true;
         } else if (parent.column() == TAGS_COLUMN && column < 0 && styles.size() == 1) {

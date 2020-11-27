@@ -218,7 +218,7 @@ template<typename StructureT> const auto* last_sibling(const StructureT& s)
     }
   };
   const auto siblings = get_siblings();
-  return siblings.size() == 0 ? nullptr : siblings.back();
+  return siblings.empty() ? nullptr : siblings.back();
 }
 
 }  // namespace

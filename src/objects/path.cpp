@@ -48,7 +48,7 @@ void Path::serialize(AbstractSerializer& serializer, const Pointer& root) const
   const auto subpath_ptr = make_pointer(root, SUBPATH_POINTER);
   serializer.start_array(segments.size(), subpath_ptr);
   for (std::size_t i = 0; i < segments.size(); ++i) {
-    if (segments.size() == 0) {
+    if (segments.empty()) {
       LWARNING << "Ignoring empty sub-path.";
     } else {
       const auto pts_ptr = make_pointer(subpath_ptr, i);

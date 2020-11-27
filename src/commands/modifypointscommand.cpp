@@ -7,7 +7,7 @@ namespace omm
 ModifyPointsCommand ::ModifyPointsCommand(const std::map<Path::iterator, Point>& points)
     : Command(QObject::tr("ModifyPointsCommand")), m_data(points)
 {
-  assert(points.size() > 0);
+  assert(!points.empty());
 }
 
 void ModifyPointsCommand::undo()

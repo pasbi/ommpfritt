@@ -29,7 +29,7 @@ QString tab_display_name(const QString& tab_name)
 
 std::vector<QString> get_key_intersection(const std::set<omm::AbstractPropertyOwner*>& selection)
 {
-  if (selection.size() == 0) {
+  if (selection.empty()) {
     return std::vector<QString>();
   }
 
@@ -68,7 +68,7 @@ auto collect_properties(const QString& key, const std::set<omm::AbstractProperty
 
 QString get_tab_label(const std::map<omm::AbstractPropertyOwner*, omm::Property*>& properties)
 {
-  assert(properties.size() > 0);
+  assert(!properties.empty());
   const auto tab_label = (*properties.begin()).second->category();
 #ifndef NDEBUG
   for (auto&& [_, property] : properties) {
@@ -171,9 +171,9 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
     update_property_widgets();
     m_title_bar->set_selection(selection);
 
-    m_icon_label->setVisible(selection.size() > 0);
-    m_selection_label->setVisible(selection.size() > 0);
-    if (selection.size() > 0) {
+    m_icon_label->setVisible(!selection.empty());
+    m_selection_label->setVisible(!selection.empty());
+    if (!selection.empty()) {
       const auto types = ::transform<QString>(selection, [](AbstractPropertyOwner* owner) {
         return owner->type();
       });
@@ -212,7 +212,7 @@ void PropertyManager::update_property_widgets()
   clear();
   for (const auto& key : get_key_intersection(m_current_selection)) {
     const auto properties = collect_properties(key, m_current_selection);
-    assert(properties.size() > 0);
+    assert(!properties.empty());
     const auto tab_label = get_tab_label(properties);
     if (!m_tabs.contains(tab_label)) {
       m_tabs.insert(tab_label, std::make_unique<PropertyManagerTab>(tab_label));

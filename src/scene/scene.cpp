@@ -173,7 +173,7 @@ Scene::find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates
   std::map<const AbstractPropertyOwner*, std::set<ReferenceProperty*>> reference_holder_map;
   for (const auto* reference : candidates) {
     const auto reference_holders = find_reference_holders(*reference);
-    if (reference_holders.size() > 0) {
+    if (!reference_holders.empty()) {
       reference_holder_map.insert(std::make_pair(reference, reference_holders));
     }
   }
@@ -416,7 +416,7 @@ bool Scene::can_remove(QWidget* parent,
 {
   selection = merge(selection, implicitely_selected_tags(selection));
   const auto reference_holder_map = find_reference_holders(selection);
-  if (reference_holder_map.size() > 0) {
+  if (!reference_holder_map.empty()) {
     const auto message = QObject::tr("There are %1 items being referenced by other items.\n"
                                      "Remove the referenced items anyway?")
                              .arg(reference_holder_map.size());
@@ -452,7 +452,7 @@ bool Scene::remove(QWidget* parent, const std::set<AbstractPropertyOwner*>& sele
   std::set<Property*> properties;
   if (can_remove(parent, selection, properties)) {
     [[maybe_unused]] auto macro = history().start_macro(QObject::tr("Remove Selection"));
-    if (properties.size() > 0) {
+    if (!properties.empty()) {
       using command_type = PropertiesCommand<ReferenceProperty>;
       submit<command_type>(properties, nullptr);
     }

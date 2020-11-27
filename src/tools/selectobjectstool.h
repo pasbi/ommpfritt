@@ -25,7 +25,7 @@ public:
   void update();
   [[nodiscard]] bool is_empty() const
   {
-    return m_initial_transformations.size() == 0;
+    return m_initial_transformations.empty();
   }
 
 Q_SIGNALS:

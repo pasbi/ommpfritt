@@ -56,7 +56,7 @@ void PropertyManagerTab::add_properties(
     const QString& key,
     const std::map<AbstractPropertyOwner*, Property*>& property_map)
 {
-  assert(property_map.size() > 0);
+  assert(!property_map.empty());
   const auto properties = ::transform<Property*, std::set>(property_map, [](const auto& pair) {
     return pair.second;
   });

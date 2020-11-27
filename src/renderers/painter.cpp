@@ -71,7 +71,7 @@ void Painter::pop_transformation()
 
 ObjectTransformation Painter::current_transformation() const
 {
-  if (m_transformation_stack.size() == 0) {
+  if (m_transformation_stack.empty()) {
     return ObjectTransformation();
   } else {
     return m_transformation_stack.top();

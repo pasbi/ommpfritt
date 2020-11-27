@@ -84,7 +84,7 @@ void UserPropertyDialog::submit()
     }
   }
   additions.shrink_to_fit();
-  if (deletions.size() > 0 || additions.size() > 0 || changes.size() > 0) {
+  if (!deletions.empty() || !additions.empty() || !changes.empty()) {
     m_owner.scene()->submit<UserPropertyCommand>(std::vector(deletions.begin(), deletions.end()),
                                                  std::move(additions),
                                                  changes,

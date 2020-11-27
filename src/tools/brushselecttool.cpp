@@ -35,7 +35,7 @@ bool BrushSelectTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMo
 
 bool BrushSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
-  if (event.modifiers() & (Qt::ShiftModifier | Qt::ControlModifier)) {
+  if (event.modifiers() & (Qt::ShiftModifier | Qt::ControlModifier) != 0u) {
     // don't deselect
   } else {
     if (SelectPointsBaseTool::mouse_press(pos, event)) {
@@ -71,7 +71,7 @@ void BrushSelectTool ::modify_selection(const Vec2f& pos, const QMouseEvent& eve
   bool is_noop = true;
   for (Object* object : scene()->item_selection<Object>()) {
     Path* path = type_cast<Path*>(object);
-    if (path) {
+    if (path != nullptr) {
       for (auto&& point : *path) {
         // we can't transform `pos` with path's inverse transformation because if it scales,
         // `radius` will be wrong.

@@ -180,7 +180,7 @@ protected:
   {
     if (e->buttons() & slider_button && isReadOnly()) {
       QPoint distance = e->pos() - m_mouse_press_pos;
-      if (e->modifiers() & Qt::ControlModifier) {
+      if (e->modifiers() & Qt::ControlModifier != 0u) {
         increment(distance.x() / 100.0);
       } else {
         increment(distance.x());

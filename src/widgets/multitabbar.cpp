@@ -39,7 +39,7 @@ void MultiTabBar::add_tab(const QString& text)
   connect(tab.get(),
           &QAbstractButton::clicked,
           [tab = tab.get(), i = m_tabs.size(), this](bool checked) {
-            if (!checked && current_indices().size() == 0) {
+            if (!checked && current_indices().empty()) {
               set_current_indices({});
             } else if (!extend_selection()) {
               set_current_indices({static_cast<int>(i)});

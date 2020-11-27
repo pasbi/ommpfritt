@@ -69,7 +69,7 @@ void ProceduralPath::update()
     point_wrappers.emplace_back(point);
   }
 
-  if (m_points.size() > 0) {
+  if (!m_points.empty()) {
     auto locals = pybind11::dict("points"_a = point_wrappers,
                                  "this"_a = ObjectWrapper::make(*this),
                                  "scene"_a = SceneWrapper(*scene()));

@@ -40,7 +40,7 @@ void NodeScene::set_model(NodeModel* model)
   }
   m_scene_model_connections.clear();
   m_model = model;
-  if (m_model) {
+  if (m_model != nullptr) {
     m_scene_model_connections = {
         connect(m_model, &NodeModel::node_added, this, [this](Node& node) { add_node(node); }),
         connect(m_model, &NodeModel::node_added, this, [this](Node& node) { add_node(node); }),
