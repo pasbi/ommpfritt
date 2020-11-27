@@ -18,8 +18,8 @@ public:
   explicit ObjectTransformation(const Matrix& mat);
   explicit ObjectTransformation(const Vec2f& translation,
                                 const Vec2f& scale,
-                                const double rotation,
-                                const double shear);
+                                double rotation,
+                                double shear);
 
   void set_translation(const Vec2f& translation_vector);
   void translate(const Vec2f& translation_vector);
@@ -84,8 +84,8 @@ private:
 };
 
 std::ostream& operator<<(std::ostream& ostream, const ObjectTransformation& t);
-bool operator<(const ObjectTransformation& a, const ObjectTransformation& b);
-bool operator==(const ObjectTransformation& a, const ObjectTransformation& b);
-bool operator!=(const ObjectTransformation& a, const ObjectTransformation& b);
+bool operator<(const ObjectTransformation& lhs, const ObjectTransformation& rhs);
+bool operator==(const ObjectTransformation& lhs, const ObjectTransformation& rhs);
+bool operator!=(const ObjectTransformation& lhs, const ObjectTransformation& rhs);
 
 }  // namespace omm

@@ -96,7 +96,7 @@ public:
           return QColor(Qt::white);
         }
       } else {
-        QColor bg = data.template value<QColor>();
+        auto bg = data.template value<QColor>();
         if (role == Qt::ForegroundRole) {
           if (bg.valueF() < 0.5) {
             return QColor(Qt::white);

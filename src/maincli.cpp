@@ -31,7 +31,7 @@ template<typename T> const T& find(omm::Scene& scene, const QString& name)
   });
   const auto name_type_matches
       = ::filter_if(type_matches, [name](const auto* c) { return c->name() == name; });
-  if (name_type_matches.size() == 0) {
+  if (name_type_matches.empty()) {
     LERROR << QString("%1 '%2' not found.").arg(T::TYPE).arg(name);
     const QStringList view_names
         = ::transform<QString, QList>(type_matches, [](const auto* v) { return v->name(); });

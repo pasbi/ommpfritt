@@ -164,7 +164,7 @@ void MoveNodesCommand::redo()
 
 bool MoveNodesCommand::mergeWith(const QUndoCommand* command)
 {
-  const MoveNodesCommand& mn_command = dynamic_cast<const MoveNodesCommand&>(*command);
+  const auto& mn_command = dynamic_cast<const MoveNodesCommand&>(*command);
   if (::same_keys(mn_command.m_old_positions, m_old_positions)) {
     m_direction += mn_command.m_direction;
     return true;

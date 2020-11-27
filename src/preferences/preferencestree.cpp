@@ -56,7 +56,7 @@ void PreferencesTree::save_in_qsettings(const QString& q_settings_group) const
 
 void PreferencesTree::load_from_qsettings(const QString& q_settings_group)
 {
-  const auto settings_group = q_settings_group;
+  const auto& settings_group = q_settings_group;
   QSettings settings;
   if (settings.childGroups().contains(settings_group)) {
     settings.beginGroup(settings_group);

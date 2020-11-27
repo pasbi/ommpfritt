@@ -13,7 +13,7 @@ class AbstractPropertyOwner;
 class ObjectTreeSelectionModel : public QItemSelectionModel
 {
 public:
-  explicit ObjectTreeSelectionModel(ObjectTree& model);
+  explicit ObjectTreeSelectionModel(ObjectTree& adapter);
 
   bool is_selected(Tag& tag) const;
   void clear_selection();

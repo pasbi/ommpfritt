@@ -16,7 +16,7 @@ class AbstractPort;
 class ConnectionCommand : public Command
 {
 protected:
-  ConnectionCommand(const QString& label, AbstractPort& out, AbstractPort& in);
+  ConnectionCommand(const QString& label, AbstractPort& a, AbstractPort& b);
   ConnectionCommand(const QString& label, OutputPort& out, InputPort& in);
   void connect();
   void disconnect();

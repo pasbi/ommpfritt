@@ -209,7 +209,7 @@ OffscreenRenderer::OffscreenRenderer()
 
   m_functions->initializeOpenGLFunctions();
   m_functions->glEnableVertexAttribArray(0);
-  m_functions->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
+  m_functions->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
   m_vertices.release();
 
   glClearColor(1.0, 0.5, 0, 1.0);

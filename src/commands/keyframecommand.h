@@ -36,7 +36,7 @@ private:
 class RemoveKeyFrameCommand : public KeyFrameCommand
 {
 public:
-  RemoveKeyFrameCommand(Animator& animator, int frame, const std::set<Property*>& properties);
+  RemoveKeyFrameCommand(Animator& animator, int frame, const std::set<Property*>& values);
   void undo() override
   {
     insert();

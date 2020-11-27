@@ -127,7 +127,7 @@ QString NodeCompilerGLSL::start_program(QStringList& lines) const
 
 QString NodeCompilerGLSL::end_program(QStringList& lines) const
 {
-  if (const auto nodes = model().nodes(); nodes.size() > 0) {
+  if (const auto nodes = model().nodes(); !nodes.empty()) {
     const auto fragment_nodes
         = ::filter_if(nodes, [](const Node* node) { return node->type() == FragmentNode::TYPE; });
 

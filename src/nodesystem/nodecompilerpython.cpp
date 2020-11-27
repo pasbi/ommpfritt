@@ -51,7 +51,7 @@ QString NodeCompilerPython::compile_node(const Node& node, QStringList& lines) c
   const QStringList args
       = ::transform<QString, QList>(ips, [](InputPort* ip) { return ip->uuid(); });
 
-  if (ops.size() >= 1) {
+  if (!ops.empty()) {
     const QStringList uuids
         = ::transform<QString, QList>(ops, [](const OutputPort* op) { return op->uuid(); });
     lines.append(QString("%1 = %2(%3)").arg(uuids.join(", "), node.type(), args.join(", ")));
