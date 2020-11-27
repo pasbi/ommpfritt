@@ -9,7 +9,7 @@
 namespace omm
 {
 ObjectTransformation::ObjectTransformation()
-    : m_translation(0, 0), m_scaling(1, 1), m_shearing(0), m_rotation(0)
+    : m_translation(0, 0), m_scaling(1, 1)
 {
 }
 

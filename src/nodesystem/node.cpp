@@ -56,7 +56,7 @@ void Node::deserialize(AbstractDeserializer& deserializer, const Serializable::P
   const std::size_t n = deserializer.array_size(connections_ptr);
   for (std::size_t i = 0; i < n; ++i) {
     const auto iptr = make_pointer(connections_ptr, i);
-    ConnectionIds connection_ids;
+    ConnectionIds connection_ids{};
     connection_ids.input_port = deserializer.get_size_t(make_pointer(iptr, INPUT_PORT_PTR));
     connection_ids.output_port = deserializer.get_size_t(make_pointer(iptr, OUTPUT_PORT_PTR));
     connection_ids.node_id = deserializer.get_size_t(make_pointer(iptr, CONNECTED_NODE_PTR));

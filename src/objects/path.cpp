@@ -207,7 +207,8 @@ template<typename PathRef> Path::Iterator<PathRef>& Path::Iterator<PathRef>::ope
 Point Path::smoothen_point(const Path::Segment& segment, bool is_closed, std::size_t i)
 {
   const std::size_t n = segment.size();
-  Vec2f left, right;
+  Vec2f left;
+  Vec2f right;
   if (i == 0) {
     left = is_closed ? segment[n - 1].position : segment[0].position;
     right = segment[1].position;

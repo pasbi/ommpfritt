@@ -14,7 +14,7 @@ public:
   explicit Matrix(Initialization initialization = Initialization::Identity);
   explicit Matrix(const std::array<std::array<double, 3>, 3>& ll);
   explicit Matrix(const std::initializer_list<std::initializer_list<double>>& ll);
-  std::array<std::array<double, 3>, 3> m;
+  std::array<std::array<double, 3>, 3> m{};
   [[nodiscard]] Matrix inverted() const;
   Matrix operator*(const Matrix& other) const;
   [[nodiscard]] Vec2f apply_to_position(const Vec2f& p) const;

@@ -48,7 +48,7 @@ private:
   void set_default_value(const value_type& value) override;
 
   // this field is only required temporarily during deserialization
-  std::size_t m_reference_value_id;
+  std::size_t m_reference_value_id{};
 };
 
 }  // namespace omm

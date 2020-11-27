@@ -208,8 +208,8 @@ void NodeModel::set_error(const QString& error)
 
 bool NodeModel::can_connect(const AbstractPort& a, const AbstractPort& b) const
 {
-  const InputPort* in;
-  const OutputPort* out;
+  const InputPort* in = nullptr;
+  const OutputPort* out = nullptr;
 
   if (a.port_type == PortType::Input && b.port_type == PortType::Output) {
     in = dynamic_cast<const InputPort*>(&a);

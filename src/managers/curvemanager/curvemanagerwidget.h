@@ -77,11 +77,11 @@ private:
     {
     }
 
-    TangentHandle() : key(nullptr)
+    TangentHandle()
     {
     }
 
-    const KeyFrameHandleKey* key;
+    const KeyFrameHandleKey* key{nullptr};
     Track::Knot::Side side = Track::Knot::Side::Left;
     variant_type& offset();
   };

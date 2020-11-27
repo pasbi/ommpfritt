@@ -29,7 +29,7 @@ private:
   CoordinateEdit* m_right_tangent_edit = nullptr;
   CoordinateEdit* m_position_edit;
   Point& m_point;
-  Path* m_path;
+  Path* m_path{};
 
 private Q_SLOTS:
   void mirror_from_right();

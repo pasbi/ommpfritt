@@ -156,7 +156,7 @@ public:
     AbstractPropertyOwner* owner(Property& property) const;
 
   private:
-    Scene* m_scene;
+    Scene* m_scene{};
     [[nodiscard]] std::list<AbstractPropertyOwner*> animatable_owners() const;
     std::map<AbstractPropertyOwner*, std::vector<Property*>> m_by_owner;
     std::set<Property*> m_properties;

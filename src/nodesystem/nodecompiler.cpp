@@ -23,12 +23,12 @@ bool NodeCompilerTypes::is_vector(const QString& type)
 }
 
 AbstractNodeCompiler::Statement::Statement(const OutputPort& source, const InputPort& target)
-    : is_connection(true), source(&source), target(&target), node(nullptr)
+    : is_connection(true), source(&source), target(&target)
 {
 }
 
 AbstractNodeCompiler::Statement::Statement(const Node& node)
-    : is_connection(false), source(nullptr), target(nullptr), node(&node)
+    : is_connection(false),  node(&node)
 {
 }
 
@@ -93,7 +93,7 @@ std::set<const AbstractPort*> AbstractNodeCompiler::Statement::uses() const
   }
 }
 
-const std::set<QString>
+std::set<QString>
 AbstractNodeCompiler::supported_types(AbstractNodeCompiler::Language language)
 {
   switch (language) {

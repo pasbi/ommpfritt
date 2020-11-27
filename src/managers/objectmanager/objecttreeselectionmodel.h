@@ -30,7 +30,7 @@ public:
 
 private:
   std::set<Tag*> m_selected_tags;
-  Tag* m_current_tag;
+  Tag* m_current_tag{};
   using QItemSelectionModel::clearSelection;
 };
 

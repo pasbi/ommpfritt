@@ -23,7 +23,7 @@ namespace omm
 TracksCommand::TracksCommand(Animator& animator,
                              const QString& label,
                              const std::map<AbstractPropertyOwner*, Property*>& properties)
-    : Command(label), m_animator(animator), m_tracks(), m_properties(properties)
+    : Command(label), m_animator(animator),  m_properties(properties)
 {
 }
 

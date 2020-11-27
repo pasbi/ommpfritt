@@ -35,11 +35,11 @@ public Q_SLOTS:
 
 private:
   NumericEdit<double>* m_x_edit;
-  QLabel* m_cart_label;
+  QLabel* m_cart_label{};
   NumericEdit<double>* m_y_edit;
 
   NumericEdit<double>* m_arg_edit;
-  QLabel* m_polar_label;
+  QLabel* m_polar_label{};
   NumericEdit<double>* m_mag_edit;
 
   PolarCoordinates m_old_polar_coordinates;

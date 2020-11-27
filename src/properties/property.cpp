@@ -11,7 +11,7 @@ namespace omm
 {
 std::map<QString, const Property::PropertyDetail*> Property::m_details;
 
-Property::Property(const Property& other) : QObject(), configuration(other.configuration)
+Property::Property(const Property& other) :  configuration(other.configuration)
 {
 }
 

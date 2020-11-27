@@ -132,7 +132,7 @@ public:
   struct Interpolation {
     std::optional<std::pair<double, Knot>> right;
     std::optional<std::pair<double, Knot>> left;
-    double t;
+    double t{};
     [[nodiscard]] double local_t() const;
     [[nodiscard]] double value() const;
     [[nodiscard]] double derivative() const;

@@ -16,7 +16,7 @@ public:
   Vec2f position = Vec2f::o();
 
 protected:
-  bool transform_in_tool_space;
+  bool transform_in_tool_space{};
 };
 
 template<typename ToolT> class MoveParticleHandle : public ParticleHandle

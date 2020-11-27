@@ -88,7 +88,7 @@ void drop_style_onto_object(omm::Scene& scene,
 namespace omm
 {
 ObjectTree::ObjectTree(std::unique_ptr<Object> root, Scene& scene)
-    : ItemModelAdapter<ObjectTree, Object, QAbstractItemModel>(scene, *this), Structure<Object>(),
+    : ItemModelAdapter<ObjectTree, Object, QAbstractItemModel>(scene, *this),
       m_root(std::move(root)), m_scene(scene)
 {
 }
