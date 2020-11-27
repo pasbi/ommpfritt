@@ -17,6 +17,4 @@ public:
   Flag flags() const override;
 };
 
-std::ostream& operator<<(std::ostream& ostream, const Object& object);
-
 }  // namespace omm
