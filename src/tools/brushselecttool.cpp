@@ -35,7 +35,7 @@ bool BrushSelectTool::mouse_move(const Vec2f& delta, const Vec2f& pos, const QMo
 
 bool BrushSelectTool::mouse_press(const Vec2f& pos, const QMouseEvent& event)
 {
-  if (event.modifiers() & (Qt::ShiftModifier | Qt::ControlModifier) != 0u) {
+  if (event.modifiers() & ((Qt::ShiftModifier | Qt::ControlModifier) != 0u)) {
     // don't deselect
   } else {
     if (SelectPointsBaseTool::mouse_press(pos, event)) {
