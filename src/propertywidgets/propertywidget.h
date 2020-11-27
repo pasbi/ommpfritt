@@ -22,7 +22,7 @@ class AbstractPropertyWidget
   Q_OBJECT
 public:
   explicit AbstractPropertyWidget(Scene& scene, const std::set<Property*>& properties);
-  virtual ~AbstractPropertyWidget() override = default;
+  ~AbstractPropertyWidget() override = default;
 
   template<typename T> T configuration(const QString& key)
   {
@@ -31,7 +31,7 @@ public:
   }
 
 public Q_SLOTS:
-  void on_property_value_changed(omm::Property* property);
+  void on_property_value_changed(omm::Property* property) const;
   void update_enabledness();
 
 protected:

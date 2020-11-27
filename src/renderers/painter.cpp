@@ -78,7 +78,7 @@ ObjectTransformation Painter::current_transformation() const
   }
 }
 
-void Painter::toast(const Vec2f& pos, const QString& text)
+void Painter::toast(const Vec2f& pos, const QString& text) const
 {
   static const QFont toast_font("Helvetica", 12, 0, false);
   static const QPen pen(Qt::black, 1.0);

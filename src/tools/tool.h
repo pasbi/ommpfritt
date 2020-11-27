@@ -22,7 +22,7 @@ class Tool
   Q_OBJECT
 public:
   explicit Tool(Scene& scene);
-  virtual ~Tool() = default;
+  ~Tool() override = default;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Tool", "Tool");
 
   /**

@@ -27,8 +27,8 @@ private:
   Node& m_target_node;
   const std::size_t m_input_index;
 
-  InputPort& input_port() const;
-  omm::OutputPort& output_port() const;
+  [[nodiscard]] InputPort& input_port() const;
+  [[nodiscard]] omm::OutputPort& output_port() const;
 };
 
 class ConnectPortsCommand : public ConnectionCommand
@@ -110,7 +110,7 @@ public:
   MoveNodesCommand(std::set<Node*> nodes, const QPointF& direction);
   void undo() override;
   void redo() override;
-  int id() const override
+  [[nodiscard]] int id() const override
   {
     return MOVE_NODES_COMMAND_ID;
   }

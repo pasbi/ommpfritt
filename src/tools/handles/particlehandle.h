@@ -11,7 +11,7 @@ class ParticleHandle : public Handle
 {
 public:
   explicit ParticleHandle(Tool& tool);
-  bool contains_global(const Vec2f& point) const override;
+  [[nodiscard]] bool contains_global(const Vec2f& point) const override;
   void draw(QPainter& painter) const override;
   Vec2f position = Vec2f::o();
 

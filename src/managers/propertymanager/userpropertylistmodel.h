@@ -12,11 +12,11 @@ class UserPropertyListItem
 {
 public:
   explicit UserPropertyListItem(Property* property = nullptr);
-  QString label() const;
-  QString type() const;
+  [[nodiscard]] QString label() const;
+  [[nodiscard]] QString type() const;
 
   Property::Configuration configuration;
-  Property* property() const
+  [[nodiscard]] Property* property() const
   {
     return m_property;
   }
@@ -30,12 +30,12 @@ class UserPropertyListModel : public QAbstractListModel
   Q_OBJECT
 public:
   explicit UserPropertyListModel(AbstractPropertyOwner& owner);
-  int rowCount(const QModelIndex& index) const override;
-  QVariant data(const QModelIndex& index, int role) const override;
-  Qt::ItemFlags flags(const QModelIndex& parent) const override;
+  [[nodiscard]] int rowCount(const QModelIndex& parent) const override;
+  [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override;
+  [[nodiscard]] Qt::ItemFlags flags(const QModelIndex& parent) const override;
   UserPropertyListItem* item(const QModelIndex& index);
   bool setData(const QModelIndex& index, const QVariant& data, int role) override;
-  std::vector<const UserPropertyListItem*> items() const;
+  [[nodiscard]] std::vector<const UserPropertyListItem*> items() const;
   bool contains(const Property* p) const;
 
 public Q_SLOTS:

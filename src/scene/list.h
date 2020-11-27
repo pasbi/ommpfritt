@@ -19,7 +19,7 @@ public:
   ~List();
   virtual void insert(ListOwningContext<T>& context);
   virtual void remove(ListOwningContext<T>& t);
-  std::unique_ptr<T> remove(T& t) override;
+  std::unique_ptr<T> remove(T& item) override;
   virtual void move(ListMoveContext<T>& context);
   T& item(size_t i) const;
   virtual std::vector<std::unique_ptr<T>> set(std::vector<std::unique_ptr<T>> items);
@@ -30,7 +30,7 @@ public:
   using Structure<T>::predecessor;
   size_t position(const T& item) const override;
   size_t insert_position(const T* predecessor) const override;
-  size_t size() const;
+  [[nodiscard]] size_t size() const;
   bool contains(const T& item) const;
 
 private:

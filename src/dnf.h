@@ -60,7 +60,7 @@ public:
   {
   }
 
-  bool evaluate(const std::vector<bool>& value) const
+  [[nodiscard]] bool evaluate(const std::vector<bool>& value) const
   {
     return value[i] == this->value;
   }
@@ -97,7 +97,7 @@ public:
     }
   }
 
-  bool is_valid() const
+  [[nodiscard]] bool is_valid() const
   {
     return i != std::size_t(-1);
   }

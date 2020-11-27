@@ -16,10 +16,10 @@ class NodeManager : public Manager
   Q_OBJECT
 public:
   explicit NodeManager(Scene& scene);
-  ~NodeManager();
+  ~NodeManager() override;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "NodeManager");
-  QString type() const override;
+  [[nodiscard]] QString type() const override;
   bool perform_action(const QString& name) override;
 
   void set_model(NodeModel* model);

@@ -16,7 +16,7 @@ class PreferencesTreeView : public QTreeView
   Q_OBJECT
 public:
   explicit PreferencesTreeView(QWidget* parent = nullptr);
-  ~PreferencesTreeView();
+  ~PreferencesTreeView() override;
   void set_model(QAbstractItemModel& key_bindings,
                  std::vector<std::unique_ptr<AbstractPreferencesTreeViewDelegate>> delegates);
   void transfer_editor_data_to_model();

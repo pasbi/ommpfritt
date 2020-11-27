@@ -16,7 +16,7 @@ class PropertyManagerTab : public QWidget
 {
 public:
   explicit PropertyManagerTab(const QString& text);
-  ~PropertyManagerTab();
+  ~PropertyManagerTab() override;
   void add_properties(Scene& scene,
                       const QString& key,
                       const std::map<AbstractPropertyOwner*, Property*>& property_map);

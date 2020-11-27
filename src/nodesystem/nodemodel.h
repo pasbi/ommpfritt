@@ -27,13 +27,13 @@ public:
   explicit NodeModel(AbstractNodeCompiler::Language language, Scene& scene);
   static std::unique_ptr<NodeModel> make(AbstractNodeCompiler::Language language, Scene& scene);
   NodeModel(const NodeModel& other);
-  ~NodeModel();
+  ~NodeModel() override;
 
   Node& add_node(std::unique_ptr<Node> node);
   std::unique_ptr<Node> extract_node(Node& node);
-  std::set<Node*> nodes() const;
-  bool can_connect(const AbstractPort& a, const AbstractPort& b) const;
-  bool can_connect(const OutputPort& a, const InputPort& b) const;
+  [[nodiscard]] std::set<Node*> nodes() const;
+  [[nodiscard]] bool can_connect(const AbstractPort& a, const AbstractPort& b) const;
+  [[nodiscard]] bool can_connect(const OutputPort& a, const InputPort& b) const;
   using QObject::connect;
 
   void serialize(AbstractSerializer&, const Pointer&) const override;
@@ -44,10 +44,10 @@ public:
 
   bool find_path(const Node& start, const Node& end, std::list<const Node*>& path) const;
   bool find_path(std::list<const Node*>& path, const Node& end) const;
-  bool find_path(const Node& start, const Node& end) const;
-  bool types_compatible(const QString& from, const QString& to) const;
+  [[nodiscard]] bool find_path(const Node& start, const Node& end) const;
+  [[nodiscard]] bool types_compatible(const QString& from, const QString& to) const;
 
-  std::set<AbstractPort*> ports() const;
+  [[nodiscard]] std::set<AbstractPort*> ports() const;
   template<typename PortT> std::set<PortT*> ports() const
   {
     static const auto pred = [](AbstractPort* p) { return p->port_type == PortT::PORT_TYPE; };
@@ -55,16 +55,16 @@ public:
     return ::transform<PortT*>(::filter_if(ports(), pred), conv);
   }
 
-  AbstractNodeCompiler::Language language() const
+  [[nodiscard]] AbstractNodeCompiler::Language language() const
   {
     return m_compiler->language;
   }
-  Scene& scene() const
+  [[nodiscard]] Scene& scene() const
   {
     return m_scene;
   }
-  AbstractNodeCompiler& compiler() const;
-  QString error() const
+  [[nodiscard]] AbstractNodeCompiler& compiler() const;
+  [[nodiscard]] QString error() const
   {
     return m_error;
   }

@@ -23,7 +23,7 @@ class RememberSelectionMacro : public Macro
 {
 public:
   explicit RememberSelectionMacro(Scene& scene, const QString& text, QUndoStack& stack);
-  ~RememberSelectionMacro();
+  ~RememberSelectionMacro() override;
 
 private:
   Scene& m_scene;

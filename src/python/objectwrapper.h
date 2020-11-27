@@ -11,9 +11,9 @@ class ObjectWrapper
 {
 public:
   using AbstractPropertyOwnerWrapper<Object>::AbstractPropertyOwnerWrapper;
-  py::object children() const;
-  py::object parent() const;
-  py::object tags() const;
+  [[nodiscard]] py::object children() const;
+  [[nodiscard]] py::object parent() const;
+  [[nodiscard]] py::object tags() const;
   py::object update();
 
   static void define_python_interface(py::object& module);

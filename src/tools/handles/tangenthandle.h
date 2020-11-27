@@ -9,9 +9,9 @@ class TangentHandle : public Handle
 public:
   enum class Tangent { Left, Right };
   TangentHandle(Tool& tool, PointSelectHandle& master_handle, Tangent tangent);
-  double draw_epsilon() const override;
+  [[nodiscard]] double draw_epsilon() const override;
   void draw(QPainter& painter) const override;
-  bool contains_global(const Vec2f& point) const override;
+  [[nodiscard]] bool contains_global(const Vec2f& point) const override;
   bool mouse_move(const Vec2f& delta, const Vec2f& pos, const QMouseEvent& e) override;
 
 public:

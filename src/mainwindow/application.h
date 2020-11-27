@@ -38,7 +38,7 @@ private:
 
 public:
   Application(QCoreApplication& app, std::unique_ptr<Options> options);
-  ~Application();
+  ~Application() override;
   bool save();
   bool save_as();
   bool save(const QString& filename);
@@ -76,7 +76,7 @@ public:
   void register_auto_invert_icon_button(QAbstractButton& button);
 
   Manager& spawn_manager(const QString& type);
-  ToolBar& spawn_toolbar();
+  ToolBar& spawn_toolbar() const;
 
   /**
    * @brief get_active_manager returns a reference to an active manager.

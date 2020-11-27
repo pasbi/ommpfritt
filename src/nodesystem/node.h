@@ -22,7 +22,7 @@ class Node
   Q_OBJECT
 public:
   explicit Node(NodeModel& model);
-  ~Node();
+  ~Node() override;
 
   Flag flags() const override
   {

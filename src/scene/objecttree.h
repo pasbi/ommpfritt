@@ -15,7 +15,7 @@ public:
   constexpr static bool is_tree = true;
 
   ObjectTree(std::unique_ptr<Object> root, Scene& scene);
-  virtual ~ObjectTree() = default;
+  ~ObjectTree() override = default;
 
 public:
   virtual void insert(ObjectTreeOwningContext& context);

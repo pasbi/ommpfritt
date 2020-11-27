@@ -36,13 +36,13 @@ public:
     return QString::fromStdString(std::string(variant_type_name<ValueT>())) + "Property";
   }
 
-  QString type() const override
+  [[nodiscard]] QString type() const override
   {
     return TYPE();
   }
 
 public:
-  variant_type variant_value() const override
+  [[nodiscard]] variant_type variant_value() const override
   {
     return m_value;
   }
@@ -76,7 +76,7 @@ public:
     m_value = m_default_value;
   }
 
-  bool is_numerical() const override
+  [[nodiscard]] bool is_numerical() const override
   {
     return std::is_same_v<
                bool,

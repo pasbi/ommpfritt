@@ -15,7 +15,7 @@ public:
   {
   }
 
-  bool contains_global(const Vec2f& point) const override
+  [[nodiscard]] bool contains_global(const Vec2f& point) const override
   {
     const Vec2f global_point = tool.transformation().inverted().apply_to_position(point);
     const double x = global_point.x;

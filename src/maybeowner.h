@@ -24,7 +24,7 @@ public:
   {
     return *this;
   }
-  bool owns() const
+  [[nodiscard]] bool owns() const
   {
     return !!m_owned.get();
   }

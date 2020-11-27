@@ -17,12 +17,12 @@ class AnchorHUD
   Q_OBJECT
 public:
   explicit AnchorHUD(QWidget& widget);
-  QSize size() const override;
+  [[nodiscard]] QSize size() const override;
   void draw(QPainter& painter) const override;
   bool mouse_press(QMouseEvent& event) override;
   void mouse_release(QMouseEvent& event) override;
   bool mouse_move(QMouseEvent& event) override;
-  Anchor anchor() const
+  [[nodiscard]] Anchor anchor() const
   {
     return m_anchor;
   }
@@ -41,7 +41,7 @@ private:
                                                         Anchor::BottomRight,
                                                         Anchor::Center};
 
-  QRectF anchor_grid() const;
+  [[nodiscard]] QRectF anchor_grid() const;
   QWidget& m_widget;
   Anchor m_anchor;
   void draw_anchor(QPainter& painter, const QRectF& grid, Anchor anchor) const;

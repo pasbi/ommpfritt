@@ -15,11 +15,11 @@ class ManagerTitleBar : public QWidget
   Q_OBJECT
 public:
   explicit ManagerTitleBar(Manager& manager);
-  QSize sizeHint() const override;
+  [[nodiscard]] QSize sizeHint() const override;
   void add_widget(std::unique_ptr<QWidget> widget);
 
 protected:
-  std::unique_ptr<QPushButton> make_lock_button() const;
+  [[nodiscard]] std::unique_ptr<QPushButton> make_lock_button() const;
 
 private:
   QHBoxLayout* m_layout;

@@ -11,13 +11,13 @@ struct Range {
   Range(double begin, double end, Options options = Options::Default);
   double begin;
   double end;
-  virtual int pixel_range() const = 0;
-  double pixel_to_unit(double pixel) const;
-  double unit_to_pixel(double unit) const;
-  double unit_to_normalized(double unit) const;
-  double normalized_to_unit(double normalized) const;
-  std::vector<double> scale(double spacing) const;
-  double spacing(double distance) const;
+  [[nodiscard]] virtual int pixel_range() const = 0;
+  [[nodiscard]] double pixel_to_unit(double pixel) const;
+  [[nodiscard]] double unit_to_pixel(double unit) const;
+  [[nodiscard]] double unit_to_normalized(double unit) const;
+  [[nodiscard]] double normalized_to_unit(double normalized) const;
+  [[nodiscard]] std::vector<double> scale(double distance) const;
+  [[nodiscard]] double spacing(double distance) const;
   void pan(double d);
   void zoom(double origin, double amount, double min_upp, double max_upp);
 
@@ -30,7 +30,7 @@ template<Qt::Orientation orientation> struct WidgetRange : public Range {
       : Range(begin, end, options), m_widget(widget)
   {
   }
-  int pixel_range() const override
+  [[nodiscard]] int pixel_range() const override
   {
     if constexpr (orientation == Qt::Horizontal) {
       return m_widget.width();
@@ -49,15 +49,15 @@ struct WidgetRange2D {
                 QWidget& widget,
                 Range::Options h_options = Range::Options::Default,
                 Range::Options v_options = Range::Options::Default);
-  QPointF begin() const;
+  [[nodiscard]] QPointF begin() const;
   void set_begin(const QPointF& begin);
-  QPointF end() const;
+  [[nodiscard]] QPointF end() const;
   void set_end(const QPointF& end);
 
-  QPointF pixel_to_unit(const QPointF& pixel) const;
-  QPointF unit_to_pixel(const QPointF& unit) const;
-  QPointF unit_to_normalized(const QPointF& normalized) const;
-  QPointF normalized_to_unit(const QPointF& unit) const;
+  [[nodiscard]] QPointF pixel_to_unit(const QPointF& pixel) const;
+  [[nodiscard]] QPointF unit_to_pixel(const QPointF& unit) const;
+  [[nodiscard]] QPointF unit_to_normalized(const QPointF& unit) const;
+  [[nodiscard]] QPointF normalized_to_unit(const QPointF& normalized) const;
   void pan(const QPointF& d);
   void zoom(const QPointF& origin,
             const QPointF& amount,

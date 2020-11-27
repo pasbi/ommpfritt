@@ -20,11 +20,11 @@ class ObjectTreeView : public ManagerItemView<ItemProxyView<QTreeView>, ObjectTr
 public:
   using model_type = ObjectTree;
   explicit ObjectTreeView(ObjectTree& model);
-  std::set<AbstractPropertyOwner*> selected_items() const override;
-  std::set<AbstractPropertyOwner*> selected_objects() const;
-  std::set<AbstractPropertyOwner*> selected_tags() const;
+  [[nodiscard]] std::set<AbstractPropertyOwner*> selected_items() const override;
+  [[nodiscard]] std::set<AbstractPropertyOwner*> selected_objects() const;
+  [[nodiscard]] std::set<AbstractPropertyOwner*> selected_tags() const;
 
-  Scene& scene() const;
+  [[nodiscard]] Scene& scene() const;
   static constexpr int row_height = 20;
 
 public Q_SLOTS:
@@ -55,9 +55,9 @@ private:
 
   QPoint m_rubberband_origin;
   QPoint m_rubberband_corner;
-  QRect rubber_band() const;
+  [[nodiscard]] QRect rubber_band() const;
   bool m_rubberband_visible = false;
-  QModelIndexList indices(const QRect rect) const;
+  [[nodiscard]] QModelIndexList indices(QRect rect) const;
   ObjectDelegate* m_object_delegate;
   bool m_aborted = false;
 };

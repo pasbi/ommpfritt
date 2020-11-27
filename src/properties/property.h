@@ -40,8 +40,8 @@ public:
     void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
     Disjunction<Kind> kind;
     DNF<Flag> flag;
-    bool accepts(const AbstractPropertyOwner& apo) const;
-    bool accepts(Kind kind, Flag flag) const;
+    [[nodiscard]] bool accepts(const AbstractPropertyOwner& apo) const;
+    [[nodiscard]] bool accepts(Kind kind, Flag flag) const;
     bool operator==(const Filter& other) const;
     bool operator!=(const Filter& other) const
     {
@@ -64,7 +64,7 @@ public:
                               std::vector<QString>,
                               Filter>> {
     using variant_type = value_type::second_type;
-    template<typename T> T get(const QString& key) const
+    template<typename T> [[nodiscard]] T get(const QString& key) const
     {
       if constexpr (std::is_enum_v<T>) {
         return static_cast<T>(get<std::size_t>(key));
@@ -110,7 +110,7 @@ public:
 
   Property() = default;
   explicit Property(const Property& other);
-  virtual ~Property() = default;
+  ~Property() override = default;
 
   static constexpr auto LABEL_POINTER = "label";
   static constexpr auto CATEGORY_POINTER = "category";
@@ -118,8 +118,8 @@ public:
   static constexpr auto TRACK_POINTER = "track";
   static constexpr auto IS_ANIMATED_POINTER = "animated";
 
-  QString widget_type() const;
-  QString data_type() const;
+  [[nodiscard]] QString widget_type() const;
+  [[nodiscard]] QString data_type() const;
 
   template<typename ResultT, typename PropertyT, typename MemFunc>
   static ResultT get_value(const std::set<Property*>& properties, MemFunc&& f)
@@ -141,21 +141,21 @@ public:
     return Property::get_value<ResultT, Property, MemFunc>(properties, std::forward<MemFunc>(f));
   }
 
-  virtual bool is_compatible(const Property& other) const;
+  [[nodiscard]] virtual bool is_compatible(const Property& other) const;
   static constexpr auto USER_PROPERTY_CATEGROY_NAME
       = QT_TRANSLATE_NOOP("Property", "user properties");
 
   // user properties can be added/edited/removed dynamically
-  bool is_user_property() const;
+  [[nodiscard]] bool is_user_property() const;
 
   // tracks of numeric properties can be displayed as fcurve.
-  virtual bool is_numerical() const = 0;
+  [[nodiscard]] virtual bool is_numerical() const = 0;
 
   virtual void revise();
 
   // === set/get value
 public:
-  virtual variant_type variant_value() const = 0;
+  [[nodiscard]] virtual variant_type variant_value() const = 0;
   virtual void set(const variant_type& value) = 0;
   template<typename EnumT> std::enable_if_t<std::is_enum_v<EnumT>, void> set(const EnumT& value)
   {
@@ -172,11 +172,11 @@ public:
 
   // === Configuration ====
 public:
-  bool is_visible() const;
+  [[nodiscard]] bool is_visible() const;
   void set_visible(bool visible);
-  QString label() const;
-  QString category() const;
-  bool is_animatable() const;
+  [[nodiscard]] QString label() const;
+  [[nodiscard]] QString category() const;
+  [[nodiscard]] bool is_animatable() const;
   Property& set_label(const QString& label);
   Property& set_category(const QString& category);
   Property& set_animatable(bool animatable);
@@ -192,7 +192,7 @@ public:
 
   // === Animation
 public:
-  Track* track() const;
+  [[nodiscard]] Track* track() const;
 
   /**
    * @brief set_track sets the track, possibly overwriting the track set before (which is deleted).
@@ -237,10 +237,10 @@ public:
     const std::function<QString(const Property&, std::size_t)> channel_name;
   };
 
-  std::size_t n_channels() const;
-  double channel_value(std::size_t channel) const;
+  [[nodiscard]] std::size_t n_channels() const;
+  [[nodiscard]] double channel_value(std::size_t channel) const;
   void set_channel_value(std::size_t channel, double value);
-  QString channel_name(std::size_t channel) const;
+  [[nodiscard]] QString channel_name(std::size_t channel) const;
 
 Q_SIGNALS:
   void enabledness_changed(bool);
@@ -248,7 +248,7 @@ public Q_SLOTS:
   void set_enabledness(bool enabled);
 
 public:
-  bool is_enabled() const
+  [[nodiscard]] bool is_enabled() const
   {
     return m_is_enabled;
   }

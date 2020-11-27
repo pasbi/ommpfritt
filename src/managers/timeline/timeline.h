@@ -17,7 +17,7 @@ public:
   explicit TimeLine(Scene& scene);
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "TimeLine");
-  QString type() const override
+  [[nodiscard]] QString type() const override
   {
     return TYPE;
   }

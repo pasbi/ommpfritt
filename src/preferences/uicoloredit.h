@@ -15,10 +15,10 @@ class UiColorEdit : public QWidget
 {
 public:
   explicit UiColorEdit(QWidget* parent = nullptr);
-  ~UiColorEdit();
+  ~UiColorEdit() override;
   void set_default_color(const Color& color);
   void set_color(const Color& color);
-  Color color() const;
+  [[nodiscard]] Color color() const;
 
 protected:
   void paintEvent(QPaintEvent* event) override;

@@ -56,17 +56,17 @@ class AbstractPropertyOwnerWrapper : public PyWrapper<WrappedT>
 
 public:
   using PyWrapper<WrappedT>::PyWrapper;
-  py::object get(const std::string& key) const
+  [[nodiscard]] py::object get(const std::string& key) const
   {
     return detail::get_property_value(this->wrapped, QString::fromStdString(key));
   }
 
-  bool set(const std::string& key, const py::object& value) const
+  [[nodiscard]] bool set(const std::string& key, const py::object& value) const
   {
     return detail::set_property_value(this->wrapped, QString::fromStdString(key), value);
   }
 
-  py::str str() const
+  [[nodiscard]] py::str str() const
   {
     std::ostringstream ostream;
     const auto* apo = &this->wrapped;

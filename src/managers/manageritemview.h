@@ -20,7 +20,7 @@ public:
   explicit ManagerItemView(ItemModelT& model);
   virtual ~ManagerItemView() = default;
   ItemModelT* model() const;
-  virtual std::set<AbstractPropertyOwner*> selected_items() const;
+  [[nodiscard]] virtual std::set<AbstractPropertyOwner*> selected_items() const;
 
 protected:
   void mousePressEvent(QMouseEvent* e) override;

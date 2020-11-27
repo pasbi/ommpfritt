@@ -146,7 +146,7 @@ TransformPointsHelper::make_command(const ObjectTransformation& t) const
     TransformationCache(const Matrix& mat, Space space) : m_mat(mat), m_space(space)
     {
     }
-    ObjectTransformation retrieve(Path* const& path) const
+    ObjectTransformation retrieve(Path* const& path) const override
     {
       const Matrix gt = path->global_transformation(m_space).to_mat();
       return ObjectTransformation(gt.inverted() * m_mat * gt);

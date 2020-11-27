@@ -558,7 +558,7 @@ Manager& Application::spawn_manager(const QString& type)
   return ref;
 }
 
-ToolBar& Application::spawn_toolbar()
+ToolBar& Application::spawn_toolbar() const
 {
   auto toolbar = std::make_unique<ToolBar>();
   main_window()->assign_unique_objectname(*toolbar);

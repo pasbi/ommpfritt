@@ -22,7 +22,7 @@ class Style
   Q_OBJECT
 public:
   explicit Style(Scene* scene = nullptr);
-  virtual ~Style();
+  ~Style() override;
   Style(const Style& other);
   QString type() const override;
   static constexpr auto TYPE = "Style";

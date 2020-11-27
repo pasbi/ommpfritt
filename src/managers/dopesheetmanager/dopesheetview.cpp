@@ -18,7 +18,7 @@ namespace
 class ChopProxyModel : public QIdentityProxyModel
 {
 public:
-  int rowCount(const QModelIndex& index) const override
+  [[nodiscard]] int rowCount(const QModelIndex& index) const override
   {
     const auto* const animator = this->animator();
     if (animator == nullptr) {
@@ -30,7 +30,7 @@ public:
     }
   }
 
-  bool hasChildren(const QModelIndex& index) const override
+  [[nodiscard]] bool hasChildren(const QModelIndex& index) const override
   {
     const auto* const animator = this->animator();
     if (animator == nullptr) {
@@ -43,7 +43,7 @@ public:
   }
 
 private:
-  omm::Animator* animator() const
+  [[nodiscard]] omm::Animator* animator() const
   {
     return dynamic_cast<omm::Animator*>(sourceModel());
   }
@@ -57,7 +57,7 @@ public:
     appendColumn();
   }
 
-  QVariant
+  [[nodiscard]] QVariant
   extraColumnData(const QModelIndex& parent, int row, int extraColumn, int role) const override
   {
     Q_UNUSED(parent)

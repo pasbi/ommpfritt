@@ -37,7 +37,7 @@ public:
     painter.drawPath(path);
   }
 
-  bool contains_global(const Vec2f& point) const override
+  [[nodiscard]] bool contains_global(const Vec2f& point) const override
   {
     const auto transformation = tool.transformation();
     const auto global_point = transformation.inverted().apply_to_position(point);

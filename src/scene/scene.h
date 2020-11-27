@@ -42,7 +42,7 @@ class Scene : public QObject
   Q_OBJECT
 public:
   Scene(PythonEngine& python_engine);
-  ~Scene();
+  ~Scene() override;
 
   /**
    * @brief polish do some late initializations
@@ -69,7 +69,7 @@ private:
 public:
   bool save_as(const QString& filename);
   bool load_from(const QString& filename);
-  QString filename() const;
+  [[nodiscard]] QString filename() const;
 
   static constexpr auto TYPE = "Scene";
 
@@ -80,7 +80,7 @@ public:
   // === Objects, Tags and Styles and Selections ===
 public:
   void set_selection(const std::set<AbstractPropertyOwner*>& selection);
-  std::set<AbstractPropertyOwner*> selection() const;
+  [[nodiscard]] std::set<AbstractPropertyOwner*> selection() const;
 
   template<typename ItemT>
   std::enable_if_t<std::is_same_v<typename ItemT::factory_item_type, ItemT>, std::set<ItemT*>>
@@ -98,9 +98,9 @@ public:
     return type_cast<ItemT*>(::filter_if(items, type_matches));
   }
 
-  std::set<AbstractPropertyOwner*> property_owners() const;
-  std::set<ReferenceProperty*> find_reference_holders(const AbstractPropertyOwner& candidate) const;
-  std::map<const AbstractPropertyOwner*, std::set<ReferenceProperty*>>
+  [[nodiscard]] std::set<AbstractPropertyOwner*> property_owners() const;
+  [[nodiscard]] std::set<ReferenceProperty*> find_reference_holders(const AbstractPropertyOwner& candidate) const;
+  [[nodiscard]] std::map<const AbstractPropertyOwner*, std::set<ReferenceProperty*>>
   find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates) const;
   template<typename T> std::set<T*> find_items(const QString& name) const;
   bool can_remove(QWidget* parent,
@@ -127,7 +127,7 @@ private:
   std::unique_ptr<MailBox> m_mail_box;
 
 public:
-  MailBox& mail_box() const
+  [[nodiscard]] MailBox& mail_box() const
   {
     return *m_mail_box;
   }
@@ -137,20 +137,20 @@ private:
   std::unique_ptr<ObjectTree> m_object_tree;
 
 public:
-  ObjectTree& object_tree() const
+  [[nodiscard]] ObjectTree& object_tree() const
   {
     return *m_object_tree;
   }
 
   // === Tags ===
 public:
-  std::set<Tag*> tags() const;
-  void evaluate_tags();
+  [[nodiscard]] std::set<Tag*> tags() const;
+  void evaluate_tags() const;
 
   // === Styles ===
 public:
-  Style& default_style() const;
-  StyleList& styles() const
+  [[nodiscard]] Style& default_style() const;
+  [[nodiscard]] StyleList& styles() const
   {
     return *m_styles;
   }
@@ -164,7 +164,7 @@ private:
   std::unique_ptr<HistoryModel> m_history;
 
 public:
-  HistoryModel& history() const
+  [[nodiscard]] HistoryModel& history() const
   {
     return *m_history;
   }
@@ -172,7 +172,7 @@ public:
   {
     submit(std::make_unique<CommandT>(std::forward<Args>(args)...));
   }
-  void submit(std::unique_ptr<Command> command);
+  void submit(std::unique_ptr<Command> command) const;
 
   // === Tools ===
 private:
@@ -188,7 +188,7 @@ public Q_SLOTS:
 
   // === Mode ===
 public:
-  SceneMode current_mode() const;
+  [[nodiscard]] SceneMode current_mode() const;
   void set_mode(SceneMode mode);
 
 private:
@@ -213,7 +213,7 @@ public:
   {
     return *m_named_colors;
   }
-  std::set<ColorProperty*> find_named_color_holders(const QString& name) const;
+  [[nodiscard]] std::set<ColorProperty*> find_named_color_holders(const QString& name) const;
 };
 
 }  // namespace omm

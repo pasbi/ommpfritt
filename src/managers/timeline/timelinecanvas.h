@@ -35,7 +35,7 @@ public:
 
   bool view_event(QEvent& event);
 
-  virtual QPoint map_to_global(const QPoint& pos) const = 0;
+  [[nodiscard]] virtual QPoint map_to_global(const QPoint& pos) const = 0;
 
   /**
    * @brief disable_context_menu disable the context menu (right click) in the view
@@ -74,7 +74,7 @@ public:
     PixelRange(TimelineCanvas& self) : Range(1, 100), m_self(self)
     {
     }
-    int pixel_range() const override
+    [[nodiscard]] int pixel_range() const override
     {
       return m_self.rect.width();
     }
@@ -90,9 +90,9 @@ private:
   std::map<Track*, std::set<int>> m_selection;
   std::map<Track*, std::set<int>> m_rubber_band_selection;
 
-  double footer_y() const;
-  std::set<Track*> tracks_at(double frame) const;
-  bool is_selected(int frame) const;
+  [[nodiscard]] double footer_y() const;
+  [[nodiscard]] std::set<Track*> tracks_at(double frame) const;
+  [[nodiscard]] bool is_selected(int frame) const;
   void select(int frame);
   bool key_press(QKeyEvent& event);
 
@@ -112,7 +112,7 @@ protected:
   QPoint m_rubber_band_origin;
   QPoint m_rubber_band_corner;
   bool m_rubber_band_visible = false;
-  QRect rubber_band() const;
+  [[nodiscard]] QRect rubber_band() const;
 
 protected:
   QPoint m_mouse_down_pos;

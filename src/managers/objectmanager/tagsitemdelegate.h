@@ -20,19 +20,19 @@ public:
   void paint(QPainter* painter,
              const QStyleOptionViewItem& option,
              const QModelIndex& index) const override;
-  QSize sizeHint(const QStyleOptionViewItem&, const QModelIndex& index) const override;
+  [[nodiscard]] QSize sizeHint(const QStyleOptionViewItem&, const QModelIndex& index) const override;
   bool editorEvent(QEvent* event,
                    QAbstractItemModel*,
                    const QStyleOptionViewItem&,
                    const QModelIndex&) override;
-  Tag* tag_at(const QModelIndex& index, const QPoint& pos) const;
-  Tag* tag_at(const QPoint& pos) const;
-  Tag* tag_before(const QModelIndex& index, QPoint pos) const;
-  Tag* tag_before(const QPoint& pos) const;
-  QSize tag_icon_size() const;
-  int advance() const;
-  std::set<Tag*> tags(const QModelIndex& index, const QRect& rect) const;
-  QRect tag_rect(const QPoint& base, std::size_t i) const;
+  [[nodiscard]] Tag* tag_at(const QModelIndex& index, const QPoint& pos) const;
+  [[nodiscard]] Tag* tag_at(const QPoint& pos) const;
+  [[nodiscard]] Tag* tag_before(const QModelIndex& index, QPoint pos) const;
+  [[nodiscard]] Tag* tag_before(const QPoint& pos) const;
+  [[nodiscard]] QSize tag_icon_size() const;
+  [[nodiscard]] int advance() const;
+  [[nodiscard]] std::set<Tag*> tags(const QModelIndex& index, const QRect& rect) const;
+  [[nodiscard]] QRect tag_rect(const QPoint& base, std::size_t i) const;
 
   QRect rubberband;
   QItemSelectionModel::SelectionFlag selection_flag = QItemSelectionModel::Select;
@@ -40,7 +40,7 @@ public:
 private:
   ObjectTreeView& m_view;
   ObjectTreeSelectionModel& m_selection_model;
-  QPoint cell_pos(const QModelIndex& index) const;
+  [[nodiscard]] QPoint cell_pos(const QModelIndex& index) const;
 
   bool on_mouse_button_press(QMouseEvent& event);
   bool on_mouse_button_release(QMouseEvent& event);

@@ -18,7 +18,7 @@ class CurveManager : public Manager
 public:
   explicit CurveManager(Scene& scene);
   static constexpr auto TYPE = "CurveManager";
-  QString type() const override
+  [[nodiscard]] QString type() const override
   {
     return TYPE;
   }

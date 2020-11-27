@@ -14,7 +14,7 @@ protected:
   using creator_map_type = std::map<Key, creator_type>;
   using clone_type = std::unique_ptr<GeneralT> (*)(const GeneralT&);
   using clone_map_type = std::map<Key, clone_type>;
-  virtual ~AbstractFactory() = default;
+  ~AbstractFactory() override = default;
 
 private:
   template<typename SpecialT> static std::unique_ptr<GeneralT> make_(Args&&... args)

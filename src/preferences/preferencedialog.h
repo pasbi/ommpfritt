@@ -17,7 +17,7 @@ class PreferenceDialog : public QDialog
   Q_OBJECT
 public:
   explicit PreferenceDialog();
-  ~PreferenceDialog();
+  ~PreferenceDialog() override;
 
 public Q_SLOTS:
   void accept() override;

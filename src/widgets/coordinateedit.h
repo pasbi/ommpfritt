@@ -19,8 +19,8 @@ class CoordinateEdit : public QWidget
 public:
   explicit CoordinateEdit(QWidget* parent = nullptr);
 
-  Vec2f to_cartesian() const;
-  PolarCoordinates to_polar() const;
+  [[nodiscard]] Vec2f to_cartesian() const;
+  [[nodiscard]] PolarCoordinates to_polar() const;
 
 Q_SIGNALS:
   void value_changed_val(const omm::PolarCoordinates& old_val,

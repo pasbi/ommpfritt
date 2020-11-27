@@ -12,7 +12,7 @@ class TagWrapper
 {
 public:
   using AbstractPropertyOwnerWrapper<Tag>::AbstractPropertyOwnerWrapper;
-  py::object owner() const;
+  [[nodiscard]] py::object owner() const;
   static void define_python_interface(py::object& module);
 };
 

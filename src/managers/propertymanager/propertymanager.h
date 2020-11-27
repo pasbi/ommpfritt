@@ -24,18 +24,18 @@ class PropertyManager : public Manager
   Q_OBJECT
 public:
   explicit PropertyManager(Scene& scene);
-  ~PropertyManager();
+  ~PropertyManager() override;
 
   PropertyView property(const QString& key);
   void clear();
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PropertyManager");
-  QString type() const override;
+  [[nodiscard]] QString type() const override;
   bool perform_action(const QString& name) override;
 
 private:
   OrderedMap<QString, PropertyManagerTab> m_tabs;
   std::set<AbstractPropertyOwner*> m_current_selection;
-  QString make_window_title() const;
+  [[nodiscard]] QString make_window_title() const;
   QVBoxLayout* m_layout;
   std::unique_ptr<QScrollArea> m_scroll_area;
   std::unique_ptr<MultiTabBar> m_tab_bar;

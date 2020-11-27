@@ -289,7 +289,7 @@ QString Scene::filename() const
   return m_filename;
 }
 
-void Scene::submit(std::unique_ptr<Command> command)
+void Scene::submit(std::unique_ptr<Command> command) const
 {
   if (command != nullptr) {
     history().push(std::move(command));
@@ -403,7 +403,7 @@ template<> std::set<Style*> Scene::find_items<Style>(const QString& name) const
   return filter_by_name(styles().items(), name);
 }
 
-void Scene::evaluate_tags()
+void Scene::evaluate_tags() const
 {
   for (Tag* tag : tags()) {
     tag->evaluate();

@@ -12,15 +12,15 @@ class HistoryModel : public QAbstractListModel
   Q_OBJECT
 public:
   HistoryModel();
-  int rowCount(const QModelIndex& parent) const override;
-  QVariant data(const QModelIndex& index, int role) const override;
+  [[nodiscard]] int rowCount(const QModelIndex& parent) const override;
+  [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override;
 
   void push(std::unique_ptr<Command> command);
   void undo();
   void redo();
-  int count() const;
+  [[nodiscard]] int count() const;
   void set_index(const int index);
-  bool has_pending_changes() const;
+  [[nodiscard]] bool has_pending_changes() const;
   void reset();
 
   void make_last_command_obsolete();
@@ -42,7 +42,7 @@ Q_SIGNALS:
 private:
   QUndoStack m_undo_stack;
   int m_saved_index = 0;
-  Command* last_command() const;
+  [[nodiscard]] Command* last_command() const;
 };
 
 }  // namespace omm

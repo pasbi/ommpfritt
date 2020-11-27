@@ -22,7 +22,7 @@ public:
                       std::vector<std::pair<QString, std::unique_ptr<Property>>> additions,
                       const std::map<Property*, Property::Configuration>& changes,
                       AbstractPropertyOwner& owner);
-  ~UserPropertyCommand();
+  ~UserPropertyCommand() override;
   void undo() override;
   void redo() override;
 

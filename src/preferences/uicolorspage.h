@@ -19,7 +19,7 @@ class UiColorsPage : public PreferencePage
   Q_OBJECT
 public:
   explicit UiColorsPage(UiColors& colors);
-  ~UiColorsPage();
+  ~UiColorsPage() override;
 
   void about_to_accept() override;
   void about_to_reject() override;

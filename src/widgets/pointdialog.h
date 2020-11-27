@@ -16,7 +16,7 @@ class PointDialog : public QDialog
   Q_OBJECT
 public:
   explicit PointDialog(const std::set<Path*>& paths, QWidget* parent = nullptr);
-  ~PointDialog();
+  ~PointDialog() override;
 
 private:
   std::list<PointEdit*> m_point_edits;

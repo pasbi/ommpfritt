@@ -14,8 +14,8 @@ public:
   {
   }
 
-  QString data_type() const override;
-  QString label() const override
+  [[nodiscard]] QString data_type() const override;
+  [[nodiscard]] QString label() const override
   {
     return m_label;
   }

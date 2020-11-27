@@ -21,7 +21,7 @@ protected:
   void connect_edit_property(TriggerProperty& property, QObject& self);
 
 public:
-  NodeModel* node_model() const;
+  [[nodiscard]] NodeModel* node_model() const;
 
 private:
   std::unique_ptr<NodeModel> m_node_model;

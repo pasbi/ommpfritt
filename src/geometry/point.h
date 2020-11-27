@@ -17,20 +17,20 @@ public:
   explicit Point(const Vec2f& position);
   Point();
   Vec2f position;
-  Vec2f left_position() const;
-  Vec2f right_position() const;
-  double rotation() const;
+  [[nodiscard]] Vec2f left_position() const;
+  [[nodiscard]] Vec2f right_position() const;
+  [[nodiscard]] double rotation() const;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("Point", "Point");
   bool is_selected = false;
   void swap(Point& other);
-  bool has_nan() const;
-  bool has_inf() const;
+  [[nodiscard]] bool has_nan() const;
+  [[nodiscard]] bool has_inf() const;
 
   PolarCoordinates left_tangent;
   PolarCoordinates right_tangent;
 
-  Point rotated(const double rad) const;
-  Point nibbed() const;
+  [[nodiscard]] Point rotated(double rad) const;
+  [[nodiscard]] Point nibbed() const;
 
   static constexpr auto POSITION_POINTER = "position";
   static constexpr auto LEFT_TANGENT_POINTER = "left";
@@ -49,7 +49,7 @@ public:
    *  The magnitude of tangents is not modified. The angle bisector is an invariant.
    * @return the flattened point.
    */
-  Point flattened(const double t) const;
+  [[nodiscard]] Point flattened(double t) const;
 
   bool operator==(const Point& point) const;
   bool operator!=(const Point& point) const;

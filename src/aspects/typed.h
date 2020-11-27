@@ -11,7 +11,7 @@ protected:
 
 public:
   virtual ~Typed() = default;
-  virtual QString type() const = 0;
+  [[nodiscard]] virtual QString type() const = 0;
 };
 
 }  // namespace omm

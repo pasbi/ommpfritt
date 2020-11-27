@@ -36,7 +36,7 @@ public:
 
   enum class Mode { Linear, Grid, Radial, Path, Script, FillRandom };
   enum class Anchor { Path, This };
-  virtual Flag flags() const override;
+  Flag flags() const override;
   ConvertedObject convert() const override;
   Mode mode() const;
   bool contains(const Vec2f& pos) const override;

@@ -19,14 +19,14 @@ class NodeScene : public QGraphicsScene
   Q_OBJECT
 public:
   explicit NodeScene(Scene& scene);
-  ~NodeScene();
+  ~NodeScene() override;
   NodeItem& node_item(Node& node) const;
   void set_model(omm::NodeModel* model);
-  NodeModel* model() const
+  [[nodiscard]] NodeModel* model() const
   {
     return m_model;
   }
-  std::set<Node*> selected_nodes() const;
+  [[nodiscard]] std::set<Node*> selected_nodes() const;
   Scene& scene;
 
   void clear();

@@ -40,14 +40,14 @@ class AbstractNodeCompiler : public QObject
 public:
   enum class Language { Python, GLSL };
   static const std::set<QString> supported_types(Language language);
-  QString last_error() const
+  [[nodiscard]] QString last_error() const
   {
     return m_last_error;
   }
 
 protected:
   AbstractNodeCompiler(Language language, const NodeModel& model);
-  std::set<Node*> nodes() const;
+  [[nodiscard]] std::set<Node*> nodes() const;
   struct Statement {
     Statement(const OutputPort& source, const InputPort& target);
     Statement(const Node& node);
@@ -59,8 +59,8 @@ protected:
     friend std::ostream& operator<<(std::ostream& ostream, const Statement& statement);
 
   private:
-    std::set<const AbstractPort*> defines() const;
-    std::set<const AbstractPort*> uses() const;
+    [[nodiscard]] std::set<const AbstractPort*> defines() const;
+    [[nodiscard]] std::set<const AbstractPort*> uses() const;
   };
 
   friend std::ostream& operator<<(std::ostream& ostream,
@@ -70,7 +70,7 @@ protected:
 
 public:
   const Language language;
-  const NodeModel& model() const
+  [[nodiscard]] const NodeModel& model() const
   {
     return m_model;
   }

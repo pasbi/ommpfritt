@@ -24,10 +24,10 @@ class Manager
       : Manager(const Manager&)
         = delete;
   Manager(Manager&&) = delete;
-  virtual ~Manager();
-  Scene& scene() const;
-  bool is_visible() const;
-  bool is_locked() const
+  ~Manager() override;
+  [[nodiscard]] Scene& scene() const;
+  [[nodiscard]] bool is_visible() const;
+  [[nodiscard]] bool is_locked() const
   {
     return m_is_locked;
   }

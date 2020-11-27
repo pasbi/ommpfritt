@@ -19,8 +19,8 @@ public:
   using structure_type = StructureT;
   explicit ItemModelAdapter(Scene& scene, StructureT& structure);
   virtual ~ItemModelAdapter() = default;
-  Qt::DropActions supportedDragActions() const override;
-  Qt::DropActions supportedDropActions() const override;
+  [[nodiscard]] Qt::DropActions supportedDragActions() const override;
+  [[nodiscard]] Qt::DropActions supportedDropActions() const override;
   bool canDropMimeData(const QMimeData* data,
                        Qt::DropAction action,
                        int row,
@@ -31,8 +31,8 @@ public:
                     int row,
                     int column,
                     const QModelIndex& parent) override;
-  QStringList mimeTypes() const override;
-  QMimeData* mimeData(const QModelIndexList& indexes) const override;
+  [[nodiscard]] QStringList mimeTypes() const override;
+  [[nodiscard]] QMimeData* mimeData(const QModelIndexList& indexes) const override;
   virtual ItemT& item_at(const QModelIndex& index) const = 0;
   virtual QModelIndex index_of(ItemT& item) const = 0;
   Scene& scene;

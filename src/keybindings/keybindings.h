@@ -18,7 +18,7 @@ class KeyBindings : public PreferencesTree
 {
 public:
   KeyBindings();
-  ~KeyBindings();
+  ~KeyBindings() override;
 
   static constexpr auto TRANSLATION_CONTEXT = "keybindings";
   static constexpr auto SEPARATOR = "separator";

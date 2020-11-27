@@ -8,7 +8,7 @@ namespace omm
 class CommandInterface : virtual public Typed
 {
 public:
-  virtual ~CommandInterface() = default;
+  ~CommandInterface() override = default;
   virtual bool perform_action(const QString& action_name) = 0;
 };
 

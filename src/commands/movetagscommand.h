@@ -26,8 +26,8 @@ class MoveTagsCommand : public Command
 {
 public:
   MoveTagsCommand(const std::vector<Tag*> tags, Object& new_owner, Tag* new_predecessor);
-  void redo();
-  void undo();
+  void redo() override;
+  void undo() override;
 
 private:
   std::vector<MoveTagContext> m_old_contextes;

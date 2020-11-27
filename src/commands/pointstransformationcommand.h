@@ -17,15 +17,15 @@ public:
   PointsTransformationCommand(const Map& new_points);
   void undo() override;
   void redo() override;
-  int id() const override;
+  [[nodiscard]] int id() const override;
   bool mergeWith(const QUndoCommand* command) override;
-  bool is_noop() const override;
+  [[nodiscard]] bool is_noop() const override;
 
 private:
   Map m_old_points;
   Map m_new_points;
-  void apply(const Map& map);
-  std::set<Path::iterator> affected_points() const;
+  static void apply(const Map& map);
+  [[nodiscard]] std::set<Path::iterator> affected_points() const;
 };
 
 }  // namespace omm

@@ -38,7 +38,7 @@ public:
   explicit AbstractSerializer(std::ostream&)
   {
   }
-  virtual ~AbstractSerializer() = default;
+  ~AbstractSerializer() override = default;
 
   // there is no virtual template, unfortunately: https://stackoverflow.com/q/2354210/4248972
   virtual void start_array(size_t size, const Pointer& pointer) = 0;
@@ -62,7 +62,7 @@ public:
     set_value(static_cast<std::size_t>(t), ptr);
   }
 
-  std::set<AbstractPropertyOwner*> serialized_references() const;
+  [[nodiscard]] std::set<AbstractPropertyOwner*> serialized_references() const;
 
   template<typename A, typename B> void set_value(const std::pair<A, B>& pair, const Pointer& ptr)
   {
@@ -112,7 +112,7 @@ public:
   explicit AbstractDeserializer(std::istream&)
   {
   }
-  virtual ~AbstractDeserializer();
+  ~AbstractDeserializer() override;
 
   /**
    * @brief polish sets all registered references.

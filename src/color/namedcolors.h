@@ -16,32 +16,32 @@ class NamedColors
 {
   Q_OBJECT
 public:
-  int rowCount(const QModelIndex& parent) const override;
-  QVariant data(const QModelIndex& index, int role) const override;
+  [[nodiscard]] int rowCount(const QModelIndex& parent) const override;
+  [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override;
   bool resolve(const QString& name, Color& color) const;
-  Color color(const QModelIndex& index) const;
-  QString name(const QModelIndex& index) const;
+  [[nodiscard]] Color color(const QModelIndex& index) const;
+  [[nodiscard]] QString name(const QModelIndex& index) const;
   using QAbstractListModel::index;
-  QModelIndex index(const QString& name) const;
-  bool has_color(const QString& name) const;
-  Qt::ItemFlags flags(const QModelIndex& index) const override;
+  [[nodiscard]] QModelIndex index(const QString& name) const;
+  [[nodiscard]] bool has_color(const QString& name) const;
+  [[nodiscard]] Qt::ItemFlags flags(const QModelIndex& index) const override;
   void set_color(const QModelIndex& index, const Color& color);
 
   void change(const QString& name, const Color& color);
   void rename(const QString& old_name, const QString& new_name);
   QModelIndex add(const QString& name, const Color& color);
   void remove(const QString& name);
-  Color color(const QString& name) const;
+  [[nodiscard]] Color color(const QString& name) const;
   void clear();
 
   void serialize(AbstractSerializer& serializer, const Pointer& p) const override;
   void deserialize(AbstractDeserializer& deserializer, const Pointer& p) override;
 
-  QString generate_default_name() const;
+  [[nodiscard]] QString generate_default_name() const;
 
 private:
   Color* resolve(const QString& name);
-  const Color* resolve(const QString& name) const;
+  [[nodiscard]] const Color* resolve(const QString& name) const;
   std::vector<std::pair<QString, Color>> m_named_colors;
 };
 
@@ -61,7 +61,7 @@ public:
     }
   }
 
-  Qt::ItemFlags flags(const QModelIndex& index) const override
+  [[nodiscard]] Qt::ItemFlags flags(const QModelIndex& index) const override
   {
     if (!index.isValid()) {
       return {};
@@ -73,7 +73,7 @@ public:
     }
   }
 
-  QVariant data(const QModelIndex& index, int role) const override
+  [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override
   {
     bool is_highlighted = false;
     if constexpr (is_itemview) {

@@ -27,7 +27,7 @@ public:
   enum class PlayMode { Repeat = 0, PingPong = 1, Stop = 2 };
   enum class PlayDirection { Forward, Backward, Stopped };
   explicit Animator(Scene& scene);
-  ~Animator();
+  ~Animator() override;
   void serialize(AbstractSerializer&, const Pointer&) const override;
   void deserialize(AbstractDeserializer&, const Pointer&) override;
 
@@ -143,13 +143,13 @@ public:
   public:
     Accelerator() = default;
     explicit Accelerator(Scene& scene);
-    const std::vector<AbstractPropertyOwner*>& owners() const
+    [[nodiscard]] const std::vector<AbstractPropertyOwner*>& owners() const
     {
       return m_owner_order;
     }
     const std::vector<Property*>& properties(AbstractPropertyOwner& owner) const;
     bool contains(AbstractPropertyOwner& owner) const;
-    const std::set<Property*>& properties() const
+    [[nodiscard]] const std::set<Property*>& properties() const
     {
       return m_properties;
     }
@@ -157,7 +157,7 @@ public:
 
   private:
     Scene* m_scene;
-    std::list<AbstractPropertyOwner*> animatable_owners() const;
+    [[nodiscard]] std::list<AbstractPropertyOwner*> animatable_owners() const;
     std::map<AbstractPropertyOwner*, std::vector<Property*>> m_by_owner;
     std::set<Property*> m_properties;
     std::map<Property*, AbstractPropertyOwner*> m_by_property;

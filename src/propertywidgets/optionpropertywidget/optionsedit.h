@@ -33,7 +33,7 @@ public:
   explicit OptionsEdit(QWidget* parent = nullptr);
   void set_options(const std::vector<QString>& options);
   void set_value(const value_type& value) override;
-  value_type value() const override;
+  [[nodiscard]] value_type value() const override;
   void wheelEvent(QWheelEvent* event) override;
 
 protected:

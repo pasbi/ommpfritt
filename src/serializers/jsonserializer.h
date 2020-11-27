@@ -10,7 +10,7 @@ class JSONSerializer : public AbstractSerializer
 {
 public:
   explicit JSONSerializer(std::ostream& ostream);
-  ~JSONSerializer();
+  ~JSONSerializer() override;
 
   void start_array(size_t size, const Pointer& pointer) override;
   void end_array() override;

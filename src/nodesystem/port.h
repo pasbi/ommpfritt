@@ -22,15 +22,15 @@ public:
   AbstractPort(PortFlavor flavor, PortType port_type, Node& node, std::size_t index);
   virtual ~AbstractPort();
   bool is_connected(const AbstractPort* other) const;
-  bool is_connected() const;
+  [[nodiscard]] bool is_connected() const;
   const PortType port_type;
   const PortFlavor flavor;
   Node& node;
   const std::size_t index;
-  virtual QString label() const = 0;
-  virtual QString data_type() const = 0;
-  QString uuid() const;
-  std::set<AbstractPort*> connected_ports() const;
+  [[nodiscard]] virtual QString label() const = 0;
+  [[nodiscard]] virtual QString data_type() const = 0;
+  [[nodiscard]] QString uuid() const;
+  [[nodiscard]] std::set<AbstractPort*> connected_ports() const;
 };
 
 template<PortType port_type_> class Port : public AbstractPort
@@ -56,13 +56,13 @@ protected:
 public:
   InputPort(Node& node, std::size_t index);
   virtual void connect(OutputPort* port);
-  OutputPort* connected_output() const
+  [[nodiscard]] OutputPort* connected_output() const
   {
     return m_connected_output;
   }
   bool is_connected(const AbstractPort* other) const;
-  bool is_connected() const;
-  bool accepts_data_type(const QString& type) const;
+  [[nodiscard]] bool is_connected() const;
+  [[nodiscard]] bool accepts_data_type(const QString& type) const;
 
   class Tag
   {
@@ -89,13 +89,13 @@ public:
 
   // the Tag is to protect you! Don't call OutputPort::connect unless you're in InputPort::connect
   void connect(InputPort* port, InputPort::Tag);
-  std::set<InputPort*> connected_inputs() const
+  [[nodiscard]] std::set<InputPort*> connected_inputs() const
   {
     return m_connections;
   }
 
   bool is_connected(const AbstractPort* other) const;
-  bool is_connected() const;
+  [[nodiscard]] bool is_connected() const;
 
 private:
   std::set<InputPort*> m_connections;

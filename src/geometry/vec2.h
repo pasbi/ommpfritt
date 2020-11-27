@@ -40,11 +40,11 @@ public:
   {
   }
 
-  QPointF to_pointf() const
+  [[nodiscard]] QPointF to_pointf() const
   {
     return QPointF(static_cast<double>(x), static_cast<double>(y));
   }
-  QPoint to_point() const
+  [[nodiscard]] QPoint to_point() const
   {
     return QPoint(static_cast<int>(x), static_cast<int>(y));
   }
@@ -78,11 +78,11 @@ public:
   {
     return {x, y};
   }
-  double euclidean_norm2() const
+  [[nodiscard]] double euclidean_norm2() const
   {
     return x * x + y * y;
   }
-  double euclidean_norm() const
+  [[nodiscard]] double euclidean_norm() const
   {
     return std::sqrt(euclidean_norm2());
   }
@@ -165,15 +165,15 @@ public:
   {
     return (*this) *= 1.0 / e;
   }
-  double arg() const
+  [[nodiscard]] double arg() const
   {
     return std::atan2(y, x);
   }
-  bool has_nan() const
+  [[nodiscard]] bool has_nan() const
   {
     return std::isnan(x) || std::isnan(y);
   }
-  bool has_inf() const
+  [[nodiscard]] bool has_inf() const
   {
     return std::isinf(x) || std::isinf(y);
   }

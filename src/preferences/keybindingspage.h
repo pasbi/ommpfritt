@@ -18,7 +18,7 @@ class KeyBindingsPage : public PreferencePage
   Q_OBJECT
 public:
   explicit KeyBindingsPage(KeyBindings& key_bindings, QWidget* parent = nullptr);
-  ~KeyBindingsPage();
+  ~KeyBindingsPage() override;
 
   static constexpr auto KEYBINDINGS_DIALOG_SETTINGS_GROUP = "keybindingsdialog";
   static constexpr auto GEOMETRY_SETTINGS_KEY = "geometry";

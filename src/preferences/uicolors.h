@@ -12,7 +12,7 @@ class UiColors : public PreferencesTree
   Q_OBJECT
 public:
   explicit UiColors();
-  ~UiColors();
+  ~UiColors() override;
   QVariant data(int column, const PreferencesTreeValueItem& item, int role) const override;
   bool set_data(int column, PreferencesTreeValueItem& item, const QVariant& value) override;
   int columnCount(const QModelIndex& parent = QModelIndex()) const override;

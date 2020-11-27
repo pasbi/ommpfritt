@@ -16,14 +16,14 @@ class Options : public QObject
 public:
   explicit Options(bool is_cli, bool have_opengl);
   enum class Anchor { TopLeft, BottomLeft, TopRight, BottomRight, Center, None };
-  Anchor anchor() const;
+  [[nodiscard]] Anchor anchor() const;
   static QPointF anchor_position(const QRectF& grid, const Anchor& anchor);
-  QPointF anchor_position(const QRectF& grid) const;
+  [[nodiscard]] QPointF anchor_position(const QRectF& grid) const;
 
   const bool is_cli;
   const bool have_opengl;
 
-  bool require_gui() const;
+  [[nodiscard]] bool require_gui() const;
 
 public Q_SLOTS:
   void set_anchor(omm::Options::Anchor anchor);

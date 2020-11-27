@@ -16,7 +16,7 @@ class GeneralPage : public PreferencePage
   Q_OBJECT
 public:
   explicit GeneralPage(Preferences& preferences);
-  ~GeneralPage();
+  ~GeneralPage() override;
   void about_to_accept() override;
 
 private:

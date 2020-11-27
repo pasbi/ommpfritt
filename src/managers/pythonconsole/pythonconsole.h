@@ -17,10 +17,10 @@ class PythonConsole : public Manager
   Q_OBJECT
 public:
   explicit PythonConsole(Scene& scene);
-  ~PythonConsole();
+  ~PythonConsole() override;
 
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "PythonConsole");
-  QString type() const override;
+  [[nodiscard]] QString type() const override;
   bool perform_action(const QString& name) override;
 
 protected:

@@ -8,7 +8,7 @@ class PreferencePage : public QWidget
 {
 public:
   using QWidget::QWidget;
-  virtual ~PreferencePage() = default;
+  ~PreferencePage() override = default;
   virtual void about_to_accept(){};
   virtual void about_to_reject(){};
 };

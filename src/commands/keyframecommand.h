@@ -97,7 +97,7 @@ public:
     swap();
   }
   bool mergeWith(const QUndoCommand* other) override;
-  int id() const override
+  [[nodiscard]] int id() const override
   {
     return CHANGE_KEYFRAMES_COMMAND_ID;
   }

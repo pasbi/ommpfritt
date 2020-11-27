@@ -21,7 +21,7 @@ class PreferencesTree : public QAbstractItemModel
   Q_OBJECT
 public:
   PreferencesTree(const QString& translation_context, const QString filename);
-  ~PreferencesTree();
+  ~PreferencesTree() override;
   void reset();
 
   void save_in_qsettings(const QString& q_settings_group) const;
@@ -31,8 +31,8 @@ public:
 
   PreferencesTreeGroupItem* group(const QString& name) const;
   std::vector<PreferencesTreeGroupItem*> groups() const;
-  PreferencesTreeValueItem* value(const QString group_name, const QString& key) const;
-  const QString
+  PreferencesTreeValueItem* value(const QString& group_name, const QString& key) const;
+  QString
   stored_value(const QString& group_name, const QString& key, std::size_t column) const;
 
   void store();

@@ -17,7 +17,7 @@ public:
   {
   }
 
-  bool contains_global(const Vec2f& point) const override
+  [[nodiscard]] bool contains_global(const Vec2f& point) const override
   {
     const Vec2f global_point = this->tool.transformation().inverted().apply_to_position(point);
     Vec2f v = project_onto_axis(global_point);
@@ -90,7 +90,7 @@ private:
   const Vec2f m_direction;
   ObjectTransformation m_transformation;
 
-  Vec2f project_onto_axis(const Vec2f& vec) const
+  [[nodiscard]] Vec2f project_onto_axis(const Vec2f& vec) const
   {
     const Vec2f s = m_direction;
 

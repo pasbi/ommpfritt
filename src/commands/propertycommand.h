@@ -12,7 +12,7 @@ class AbstractPropertiesCommand : public Command
 public:
   AbstractPropertiesCommand(const std::set<Property*>& properties);
   bool mergeWith(const QUndoCommand* command) override = 0;
-  int id() const override;
+  [[nodiscard]] int id() const override;
 
 private:
   std::set<Property*> m_properties;

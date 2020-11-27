@@ -32,7 +32,7 @@ public:
   {
     return m_context;
   }
-  QOpenGLShaderProgram* program() const
+  [[nodiscard]] QOpenGLShaderProgram* program() const
   {
     return m_program.get();
   }
@@ -45,7 +45,7 @@ public:
     const QString type;
     const char* name;
     const Kind kind;
-    QString tr_name() const;
+    [[nodiscard]] QString tr_name() const;
   };
 
   static const std::vector<ShaderInput> fragment_shader_inputs;

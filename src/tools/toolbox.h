@@ -13,13 +13,13 @@ class ToolBox : public QObject
 public:
   ToolBox(Scene& scene);
 
-  Tool& active_tool() const;
-  Tool& tool(const QString& key) const;
+  [[nodiscard]] Tool& active_tool() const;
+  [[nodiscard]] Tool& tool(const QString& key) const;
   void set_active_tool(const QString& key);
   void set_active_tool(Tool* tool);
   void set_previous_tool();
   void set_scene_mode(SceneMode mode);
-  std::set<Tool*> tools() const;
+  [[nodiscard]] std::set<Tool*> tools() const;
 
 Q_SIGNALS:
   void active_tool_changed(const omm::Tool& active_tool);

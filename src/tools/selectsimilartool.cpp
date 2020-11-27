@@ -46,7 +46,7 @@ omm::Vec2f distance(const It& a, const It& b, omm::SelectSimilarTool::Alignment 
 
 namespace omm
 {
-SelectSimilarTool::SelectSimilarTool(Scene&omm:: scene) : SelectPointsBaseTool(scene)
+SelectSimilarTool::SelectSimilarTool(Scene& scene) : SelectPointsBaseTool(scene)
 {
   const auto category = QObject::tr("tool");
   create_property<OptionProperty>(MODE_PROPERTY_KEY, 0)

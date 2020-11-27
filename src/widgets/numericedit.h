@@ -23,11 +23,11 @@ public:
   QString label;
   void set_prefix(const QString& prefix);
   void set_suffix(const QString& suffix);
-  QString prefix() const
+  [[nodiscard]] QString prefix() const
   {
     return m_prefix;
   }
-  QString suffix() const
+  [[nodiscard]] QString suffix() const
   {
     return m_suffix;
   }

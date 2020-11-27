@@ -14,7 +14,7 @@ public:
   static constexpr auto COMMAND_RENDER = "render";
   explicit SubcommandLineParser(int argc, char* argv[]);
   explicit SubcommandLineParser();
-  QString command() const
+  [[nodiscard]] QString command() const
   {
     return m_command;
   }

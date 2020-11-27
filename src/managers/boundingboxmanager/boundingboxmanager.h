@@ -21,7 +21,7 @@ class BoundingBoxManager : public Manager
   Q_OBJECT
 public:
   BoundingBoxManager(Scene& scene);
-  QString type() const override;
+  [[nodiscard]] QString type() const override;
   static constexpr auto TYPE = QT_TRANSLATE_NOOP("any-context", "BoundingBoxManager");
 
 public Q_SLOTS:
@@ -29,7 +29,7 @@ public Q_SLOTS:
 
 private:
   enum class Mode { Points = 0, Objects = 1 };
-  BoundingBox bounding_box() const;
+  [[nodiscard]] BoundingBox bounding_box() const;
   BoundingBox m_old_bounding_box;
 
   struct UiBoundingBoxManagerDeleter {

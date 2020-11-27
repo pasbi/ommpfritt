@@ -19,14 +19,14 @@ class NodeItem : public QGraphicsItem
 {
 public:
   explicit NodeItem(Node& node);
-  ~NodeItem();
-  QRectF boundingRect() const override;
+  ~NodeItem() override;
+  [[nodiscard]] QRectF boundingRect() const override;
   void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget* widget) override;
-  PortItem* port_item(const AbstractPort& port) const;
+  [[nodiscard]] PortItem* port_item(const AbstractPort& port) const;
   static constexpr auto TYPE = QGraphicsItem::UserType + 2;
   static constexpr double small_slot_height = 13.0;
   static constexpr double large_slot_height = 30.0;
-  int type() const override
+  [[nodiscard]] int type() const override
   {
     return TYPE;
   }
@@ -60,8 +60,8 @@ private:
   void add_port(AbstractPort& p, double pos_y);
   void add_property_widget(Property& property, double pos_y, double height);
   void adjust_port_pos();
-  NodeScene* scene() const;
-  bool can_expand() const;
+  [[nodiscard]] NodeScene* scene() const;
+  [[nodiscard]] bool can_expand() const;
 
   std::map<PortType, std::set<std::unique_ptr<PortItem>>> m_port_items;
   std::set<std::unique_ptr<PropertyWidgetItem>> m_property_items;

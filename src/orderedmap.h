@@ -104,7 +104,7 @@ public:
   }
 #endif
 
-  size_t size() const
+  [[nodiscard]] size_t size() const
   {
     return m_keys.size();
   }

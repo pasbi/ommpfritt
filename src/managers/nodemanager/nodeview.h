@@ -27,7 +27,7 @@ class NodeView : public QGraphicsView
 
 public:
   explicit NodeView(QWidget* parent = nullptr);
-  ~NodeView();
+  ~NodeView() override;
   const QFont font;
   void abort();
   void remove_selection();

@@ -32,7 +32,7 @@ class Object
 public:
   explicit Object(Scene* scene);
   explicit Object(const Object& other);
-  ~Object();
+  ~Object() override;
 
   enum class Visibility { Default, Hidden, Visible };
 

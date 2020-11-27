@@ -33,7 +33,7 @@ class Viewport : public ViewportBase
   Q_OBJECT
 public:
   Viewport(Scene& scene);
-  ~Viewport() = default;
+  ~Viewport() override = default;
   Scene& scene() const;
   void reset();
   void set_transformation(const ObjectTransformation& transformation);

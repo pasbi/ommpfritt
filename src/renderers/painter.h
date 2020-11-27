@@ -49,7 +49,7 @@ public:
   void pop_transformation();
   ObjectTransformation current_transformation() const;
 
-  void toast(const Vec2f& pos, const QString& text);
+  void toast(const Vec2f& pos, const QString& text) const;
 
   static QPainterPath path(const std::vector<Point>& points, bool closed = false);
   QBrush make_brush(const Style& style, const Object& object, const Options& options);

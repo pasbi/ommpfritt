@@ -21,15 +21,15 @@ class CodeEdit : public QWidget
   Q_OBJECT
 public:
   explicit CodeEdit(QWidget* parent = nullptr);
-  QString code() const;
+  [[nodiscard]] QString code() const;
   void clear();
   void set_code(const QString& code);
   void set_placeholder_text(const QString& ph);
-  QSize sizeHint() const override;
+  [[nodiscard]] QSize sizeHint() const override;
   void set_editable(bool editable);
   void put(const QString& text, Stream stream);
   void scroll_to_bottom();
-  bool is_at_bottom() const;
+  [[nodiscard]] bool is_at_bottom() const;
   void set_caption_modifiers(const Qt::KeyboardModifiers& modifier);
 
 Q_SIGNALS:

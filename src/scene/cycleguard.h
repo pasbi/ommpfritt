@@ -11,7 +11,7 @@ class CycleGuard
 public:
   explicit CycleGuard(std::set<const Object*>& guarded_objects, const Object* guarded);
   ~CycleGuard();
-  bool inside_cycle() const
+  [[nodiscard]] bool inside_cycle() const
   {
     return m_inside_cycle;
   }
