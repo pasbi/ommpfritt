@@ -78,7 +78,7 @@ void Path::deserialize(AbstractDeserializer& deserializer, const Pointer& root)
     if (n_points == 0) {
       throw AbstractDeserializer::DeserializeError("Empty sub-paths are not allowed.");
     }
-    segments.push_back({});
+    segments.emplace_back();
     for (size_t j = 0; j < n_points; ++j) {
       Point p;
       p.deserialize(deserializer, make_pointer(pts_ptr, j));

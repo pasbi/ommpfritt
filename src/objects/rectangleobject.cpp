@@ -41,21 +41,21 @@ Geom::PathVector RectangleObject::paths() const
 
   const bool p = ar != Vec2f::o();
   if (p) {
-    points.push_back(Point(Vec2f(-size.x + ar.x, -size.y), null, -h));
+    points.emplace_back(Vec2f(-size.x + ar.x, -size.y), null, -h);
   }
-  points.push_back(Point(Vec2f(-size.x, -size.y + ar.y), v, null));
+  points.emplace_back(Vec2f(-size.x, -size.y + ar.y), v, null);
   if (p) {
-    points.push_back(Point(Vec2f(-size.x, size.y - ar.y), null, -v));
+    points.emplace_back(Vec2f(-size.x, size.y - ar.y), null, -v);
   }
-  points.push_back(Point(Vec2f(-size.x + ar.x, size.y), -h, null));
+  points.emplace_back(Vec2f(-size.x + ar.x, size.y), -h, null);
   if (p) {
-    points.push_back(Point(Vec2f(size.x - ar.x, size.y), null, h));
+    points.emplace_back(Vec2f(size.x - ar.x, size.y), null, h);
   }
-  points.push_back(Point(Vec2f(size.x, size.y - ar.y), -v, null));
+  points.emplace_back(Vec2f(size.x, size.y - ar.y), -v, null);
   if (p) {
-    points.push_back(Point(Vec2f(size.x, -size.y + ar.y), null, v));
+    points.emplace_back(Vec2f(size.x, -size.y + ar.y), null, v);
   }
-  points.push_back(Point(Vec2f(size.x - ar.x, -size.y), h, null));
+  points.emplace_back(Vec2f(size.x - ar.x, -size.y), h, null);
 
   const Segment segment(points.begin(), points.end());
   const auto path = segment_to_path(segment, is_closed());

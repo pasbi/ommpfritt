@@ -58,9 +58,9 @@ Geom::PathVector Ellipse::paths() const
     const double y = std::sin(theta) * r.y;
     if (smooth) {
       const Vec2f d(std::sin(theta) * r.x, -std::cos(theta) * r.y);
-      points.push_back(Point(Vec2f(x, y), d.arg(), 2.0 * d.euclidean_norm() / n));
+      points.emplace_back(Vec2f(x, y), d.arg(), 2.0 * d.euclidean_norm() / n);
     } else {
-      points.push_back(Point(Vec2f(x, y)));
+      points.emplace_back(Vec2f(x, y));
     }
   }
   const auto path = segment_to_path(points, true);

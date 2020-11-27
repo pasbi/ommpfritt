@@ -165,7 +165,7 @@ void NamedColors::deserialize(AbstractDeserializer& deserializer, const Serializ
   for (std::size_t i = 0; i < n; ++i) {
     const auto name = deserializer.get_string(make_pointer(p, i, "name"));
     const auto color = deserializer.get_color(make_pointer(p, i, "color"));
-    m_named_colors.push_back(std::pair(name, color));
+    m_named_colors.emplace_back(name, color);
   }
   endResetModel();
 }
@@ -188,7 +188,7 @@ QModelIndex NamedColors::add(const QString& name, const Color& color)
 {
   const std::size_t n = m_named_colors.size();
   beginInsertRows(QModelIndex(), n, n);
-  m_named_colors.push_back(std::pair(name, color));
+  m_named_colors.emplace_back(name, color);
   endInsertRows();
   return index(n, 0, QModelIndex());
 }

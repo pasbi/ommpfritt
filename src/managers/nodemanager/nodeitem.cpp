@@ -267,7 +267,7 @@ void NodeItem::update_children()
                          [property](const PropertyPorts& pp) { return property == pp.property; });
       PropertyPorts* current = nullptr;
       if (it == property_ports.end()) {
-        property_ports.push_back(PropertyPorts(property));
+        property_ports.emplace_back(property);
         current = &property_ports.back();
       } else {
         current = &*it;
