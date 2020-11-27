@@ -39,7 +39,7 @@ class AbstractNodeCompiler : public QObject
   Q_OBJECT
 public:
   enum class Language { Python, GLSL };
-  static const std::set<QString> supported_types(Language language);
+  static std::set<QString> supported_types(Language language);
   [[nodiscard]] QString last_error() const
   {
     return m_last_error;

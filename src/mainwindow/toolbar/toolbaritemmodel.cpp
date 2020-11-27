@@ -101,7 +101,7 @@ public:
   {
     nlohmann::json items;
     for (int i = 0; i < rowCount(); ++i) {
-      items.push_back(dynamic_cast<const Item*>(child(i, 0))->encode());
+      items.push_back(dynamic_cast<const AbstractItem*>(child(i, 0))->encode());
     }
     auto j = HyperItem::encode();
     j[omm::ToolBarItemModel::items_key] = items;
