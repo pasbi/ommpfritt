@@ -59,105 +59,6 @@ clazy_checks=[
     # "non-pod-global-static"  # open issue.
 ]
 
-clang_tidy_checks = [
-    "-*,bugprone-*",
-    "clang-*",
-    "cppcoreguidelines-avoid-*",
-    "cppcoreguidelines-c-copy-assignment-signature",
-    "cppcoreguidelines-explicit-virtual-functions",
-    "cppcoreguidelines-init-variables",
-    "cppcoreguidelines-interfaces-global-init",
-    "cppcoreguidelines-macro-usage",
-    "cppcoreguidelines-narrowing-conversions",
-    "cppcoreguidelines-no-malloc",
-    "cppcoreguidelines-owning-memory",
-    "cppcoreguidelines-pro-type-const-cast",
-    "cppcoreguidelines-pro-type-cstyle-cast",
-    "cppcoreguidelines-pro-type-member-init",
-    "cppcoreguidelines-pro-type-reinterpret-cast",
-    "cppcoreguidelines-pro-type-static-cast-downcast",
-    "cppcoreguidelines-pro-type-union-access",
-    "cppcoreguidelines-slicing",
-    "cppcoreguidelines-special-member-functions",
-    "misc-definitions-in-headers",
-    "misc-misplaced-const",
-    "misc-new-delete-overloads",
-    "misc-non-*",
-    "misc-redundant-expression",
-    "misc-static-assert",
-    "misc-throw-by-value-catch-by-reference",
-    "misc-unconventional-assign-operator",
-    "misc-uniqueptr-reset-release",
-    "misc-unused-*",
-    "modernize-avoid-*",
-    "modernize-concat-nested-namespaces",
-    "modernize-deprecated-*",
-    "modernize-loop-convert",
-    "modernize-make-*",
-    "modernize-raw-string-literal",
-    "modernize-redundant-void-arg",
-    "modernize-replace-*",
-    "modernize-return-braced-init-list",
-    "modernize-shrink-to-fit",
-    "modernize-unary-static-assert",
-    "modernize-use-auto",
-    "modernize-use-bool-literals",
-    "modernize-use-default-member-init",
-    "modernize-use-emplace",
-    "modernize-use-equals-*",
-    "modernize-use-nodiscard",
-    "modernize-use-noexcept",
-    "modernize-use-nullptr",
-    "modernize-use-override",
-    "modernize-use-transparent-functors",
-    "modernize-use-uncaught-exceptions",
-    "modernize-use-using",
-    "openmp-*",
-    "performance-*",
-    "portability-*",
-    "readability-redundant-control-flow",
-    "readability-redundant-declaration",
-    "readability-redundant-function-ptr-dereference",
-    "readability-redundant-member-init",
-    "readability-redundant-preprocessor",
-    "readability-redundant-smartptr-get",
-    "readability-redundant-string-*"
-    "readability-avoid-const-params-in-decls",
-    "readability-braces-around-statements",
-    "readability-const-return-type",
-    "readability-container-size-empty",
-    "readability-convert-member-functions-to-static",
-    "readability-delete-null-pointer",
-    "readability-deleted-default",
-    "readability-function-size",
-    "readability-identifier-naming",
-    "readability-implicit-bool-conversion",
-    "readability-inconsistent-declaration-parameter-name",
-    "readability-isolate-declaration",
-    "readability-magic-numbers",
-    "readability-make-member-function-const",
-    "readability-misleading-indentation",
-    "readability-misplaced-array-index",
-    "readability-non-const-parameter",
-    "readability-qualified-auto",
-    "readability-simplify-*",
-    "readability-static-*",
-    "readability-string-compare",
-    "readability-uniqueptr-delete-release",
-    "readability-uppercase-literal-suffix",
-    "readability-use-anyofallof",
-
-    # "cppcoreguidelines-non-private-member-variables-in-classes",
-    # "readability-redundant-access-specifiers", # Flags `public Q_SLOTS` after `public`
-    # "cppcoreguidelines-pro-bounds-array-to-pointer-decay",  # https://github.com/isocpp/CppCoreGuidelines/issues/1589
-    # "cppcoreguidelines-pro-type-vararg" # flaggs QFATAL
-    # "misc-no-recursion",
-    # "modernize-use-trailing-return-type",
-    # "modernize-pass-by-value",
-    # "readability-else-after-return",
-    # "readability-named-parameter",
-]
-
 parser = argparse.ArgumentParser("Perform Static Checks")
 parser.add_argument("--compile-commands", required=True,
                     help="The compile_commands.json file.")
@@ -168,16 +69,15 @@ parser.add_argument("--modes", required=True, choices=["clang-tidy", "clazy"],
 args = parser.parse_args()
 
 clazy_checks = ','.join(clazy_checks)
-clang_tidy_checks = ','.join(clang_tidy_checks)
 
 command_args = {
   "clazy":      ["clazy", "--standalone", "--ignore-included-files",
                  "-p", args.compile_commands,
                  f"-checks={clazy_checks}"],
   "clang-tidy": ["clang-tidy", "-warnings-as-errors=*",
-                 "-p", args.compile_commands,
-                 f"-checks={clang_tidy_checks}"]
+                 "-p", args.compile_commands]
 }
+
 
 def file_filter(fn):
     fn = os.path.normpath(fn).replace("\\", "/")
