@@ -10,14 +10,13 @@ ProxyChain::ProxyChain(std::vector<std::unique_ptr<QAbstractProxyModel>> proxies
 }
 
 ProxyChain::ProxyChain()
-{
-}
+= default;
 
 void ProxyChain::setSourceModel(QAbstractItemModel* source_model)
 {
-  for (auto it = m_proxies.begin(); it != m_proxies.end(); ++it) {
-    (*it)->setSourceModel(source_model);
-    source_model = it->get();
+  for (auto & m_proxie : m_proxies) {
+    m_proxie->setSourceModel(source_model);
+    source_model = m_proxie.get();
   }
   QIdentityProxyModel::setSourceModel(source_model);
 }

@@ -44,8 +44,7 @@ UserPropertyCommand ::UserPropertyCommand(
 }
 
 UserPropertyCommand::~UserPropertyCommand()
-{
-}
+= default;
 
 void UserPropertyCommand::undo()
 {

@@ -70,8 +70,7 @@ NodeModel::NodeModel(const NodeModel& other) : NodeModel(other.compiler().langua
 }
 
 NodeModel::~NodeModel()
-{
-}
+= default;
 
 void NodeModel::init()
 {

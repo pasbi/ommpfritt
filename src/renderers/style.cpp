@@ -95,8 +95,7 @@ Style::Style(Scene* scene)
 }
 
 Style::~Style()
-{
-}
+= default;
 
 Style::Style(const Style& other)
     : PropertyOwner(other), NodesOwner(other),

@@ -168,8 +168,7 @@ void Application::init(omm::Application* instance)
 }
 
 Application::~Application()
-{
-}
+= default;
 
 Application& Application::instance()
 {

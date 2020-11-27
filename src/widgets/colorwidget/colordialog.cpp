@@ -28,8 +28,7 @@ ColorDialog::ColorDialog(QWidget* parent) : QDialog(parent)
 }
 
 ColorDialog::~ColorDialog()
-{
-}
+= default;
 
 std::pair<Color, bool> ColorDialog::get_color(const Color& old, QWidget* parent)
 {

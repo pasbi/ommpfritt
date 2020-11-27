@@ -58,8 +58,7 @@ Track::Track(Property& property) : m_property(property)
 }
 
 Track::~Track()
-{
-}
+= default;
 
 std::unique_ptr<Track> Track::clone() const
 {

@@ -15,7 +15,6 @@ TimeLineTitleBar::TimeLineTitleBar(Manager& parent)
 }
 
 TimeLineTitleBar::~TimeLineTitleBar()
-{
-}
+= default;
 
 }  // namespace omm

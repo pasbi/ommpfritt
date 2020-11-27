@@ -51,8 +51,7 @@ ReferencePropertyWidget ::ReferencePropertyWidget(Scene& scene,
 }
 
 ReferencePropertyWidget::~ReferencePropertyWidget()
-{
-}
+= default;
 
 void ReferencePropertyWidget::update_edit()
 {

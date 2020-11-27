@@ -91,8 +91,7 @@ NamedColorsDialog::NamedColorsDialog(QWidget* parent)
 }
 
 NamedColorsDialog::~NamedColorsDialog()
-{
-}
+= default;
 
 void NamedColorsDialog::add()
 {

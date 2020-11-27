@@ -49,8 +49,7 @@ UiColorsPage::UiColorsPage(UiColors& colors) : m_ui(new Ui::UiColorsPage), m_col
 }
 
 UiColorsPage::~UiColorsPage()
-{
-}
+= default;
 
 void UiColorsPage::about_to_accept()
 {

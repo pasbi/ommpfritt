@@ -96,8 +96,7 @@ class ReferencePolisher
 {
 public:
   virtual ~ReferencePolisher()
-  {
-  }
+  = default;
 
 protected:
   virtual void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) = 0;

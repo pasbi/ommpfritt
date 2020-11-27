@@ -57,8 +57,7 @@ public:
   {
   }
   Literal()
-  {
-  }
+  = default;
 
   [[nodiscard]] bool evaluate(const std::vector<bool>& value) const
   {
@@ -140,8 +139,7 @@ public:
   {
   }
   Term()
-  {
-  }
+  = default;
   template<typename = typename std::enable_if<is_top_level>>
   Term(E positives, E negatives) : terms(convert_literals(positives, negatives))
   {

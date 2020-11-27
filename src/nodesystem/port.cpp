@@ -70,8 +70,7 @@ AbstractPort::AbstractPort(PortFlavor flavor, PortType port_type, Node& node, st
 }
 
 AbstractPort::~AbstractPort()
-{
-}
+= default;
 
 bool AbstractPort::is_connected(const AbstractPort* other) const
 {

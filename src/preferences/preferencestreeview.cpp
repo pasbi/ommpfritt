@@ -13,8 +13,7 @@ PreferencesTreeView::PreferencesTreeView(QWidget* parent) : QTreeView(parent)
 }
 
 PreferencesTreeView::~PreferencesTreeView()
-{
-}
+= default;
 
 void PreferencesTreeView::set_model(
     QAbstractItemModel& model,

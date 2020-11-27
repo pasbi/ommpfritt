@@ -18,12 +18,11 @@ NodesOwner::NodesOwner(const NodesOwner& other)
 }
 
 NodesOwner::~NodesOwner()
-{
-}
+= default;
 
 void NodesOwner::connect_edit_property(TriggerProperty& property, QObject& self)
 {
-  self.connect(&property, &Property::value_changed, &self, [this]() {
+  QObject::connect(&property, &Property::value_changed, &self, [this]() {
     Manager& manager = Application::instance().get_active_manager(NodeManager::TYPE);
     if (m_node_model) {
       QTimer::singleShot(1, &manager, [this, &manager]() {

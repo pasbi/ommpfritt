@@ -151,8 +151,7 @@ ViewportPage::ViewportPage(Preferences& preferences) : m_preferences(preferences
 }
 
 ViewportPage::~ViewportPage()
-{
-}
+= default;
 
 void ViewportPage::about_to_accept()
 {

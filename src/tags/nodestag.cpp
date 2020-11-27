@@ -66,8 +66,7 @@ NodesTag::NodesTag(const NodesTag& other) : Tag(other), NodesOwner(other)
 }
 
 NodesTag::~NodesTag()
-{
-}
+= default;
 
 QString NodesTag::type() const
 {

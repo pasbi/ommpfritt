@@ -136,8 +136,7 @@ NodeItem::NodeItem(Node& node) : node(node)
 }
 
 NodeItem::~NodeItem()
-{
-}
+= default;
 
 QRectF NodeItem::boundingRect() const
 {

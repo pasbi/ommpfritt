@@ -48,8 +48,7 @@ PropertyManagerTab::PropertyManagerTab(const QString& title)
 }
 
 PropertyManagerTab::~PropertyManagerTab()
-{
-}
+= default;
 
 void PropertyManagerTab::add_properties(
     Scene& scene,
