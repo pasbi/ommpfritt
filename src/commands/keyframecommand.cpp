@@ -188,8 +188,8 @@ void MoveKeyFrameCommand::shift_keyframes(bool invert)
       move_knot(*it);
     }
   } else if ((m_shift > 0) == invert) {
-    for (auto it = m_old_frames.begin(); it != m_old_frames.end(); ++it) {
-      move_knot(*it);
+    for (int m_old_frame : m_old_frames) {
+      move_knot(m_old_frame);
     }
   } else {
     Q_UNREACHABLE();
