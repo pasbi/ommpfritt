@@ -68,6 +68,8 @@ parser.add_argument("--modes", required=True, choices=["clang-tidy", "clazy"],
                     nargs='+', help="The checker(s) to use")
 parser.add_argument("-j", type=int, default=2,
                     help="Number of parallel jobs.")
+parser.add_argument("--fix", action='store_true', default=False,
+                    help="Apply fixes where possible.")
 args = parser.parse_args()
 
 clazy_checks = ','.join(clazy_checks)
@@ -80,6 +82,8 @@ command_args = {
                  "-p", args.compile_commands]
 }
 
+if args.fix:
+    command_args['clang-tidy'] += ['--fix']
 
 def file_filter(fn):
     fn = os.path.normpath(fn).replace("\\", "/")
