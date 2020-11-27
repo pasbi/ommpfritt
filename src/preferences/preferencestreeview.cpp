@@ -12,8 +12,7 @@ PreferencesTreeView::PreferencesTreeView(QWidget* parent) : QTreeView(parent)
   connect(this, &PreferencesTreeView::expanded, this, &PreferencesTreeView::update_column_width);
 }
 
-PreferencesTreeView::~PreferencesTreeView()
-= default;
+PreferencesTreeView::~PreferencesTreeView() = default;
 
 void PreferencesTreeView::set_model(
     QAbstractItemModel& model,

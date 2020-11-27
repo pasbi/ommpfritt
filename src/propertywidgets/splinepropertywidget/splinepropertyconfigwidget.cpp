@@ -2,8 +2,7 @@
 
 namespace omm
 {
-SplinePropertyConfigWidget::SplinePropertyConfigWidget()
-= default;
+SplinePropertyConfigWidget::SplinePropertyConfigWidget() = default;
 
 void SplinePropertyConfigWidget::init(const Property::Configuration&)
 {

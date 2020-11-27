@@ -116,8 +116,7 @@ SubcommandLineParser::SubcommandLineParser(int argc, char* argv[])
   process(args);
 }
 
-SubcommandLineParser::SubcommandLineParser()
-= default;
+SubcommandLineParser::SubcommandLineParser() = default;
 
 template<> QString SubcommandLineParser::get<QString>(const QString& name) const
 {

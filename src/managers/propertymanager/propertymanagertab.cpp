@@ -47,8 +47,7 @@ PropertyManagerTab::PropertyManagerTab(const QString& title)
   m_layout->addWidget(header.release());
 }
 
-PropertyManagerTab::~PropertyManagerTab()
-= default;
+PropertyManagerTab::~PropertyManagerTab() = default;
 
 void PropertyManagerTab::add_properties(
     Scene& scene,

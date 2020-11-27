@@ -17,8 +17,7 @@ NodesOwner::NodesOwner(const NodesOwner& other)
 {
 }
 
-NodesOwner::~NodesOwner()
-= default;
+NodesOwner::~NodesOwner() = default;
 
 void NodesOwner::connect_edit_property(TriggerProperty& property, QObject& self)
 {

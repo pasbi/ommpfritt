@@ -150,8 +150,7 @@ ViewportPage::ViewportPage(Preferences& preferences) : m_preferences(preferences
   setLayout(layout.release());
 }
 
-ViewportPage::~ViewportPage()
-= default;
+ViewportPage::~ViewportPage() = default;
 
 void ViewportPage::about_to_accept()
 {

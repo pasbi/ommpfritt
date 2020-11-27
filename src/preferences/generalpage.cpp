@@ -67,8 +67,7 @@ GeneralPage::GeneralPage(Preferences& preferences)
   });
 }
 
-GeneralPage::~GeneralPage()
-= default;
+GeneralPage::~GeneralPage() = default;
 
 void GeneralPage::about_to_accept()
 {

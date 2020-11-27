@@ -26,9 +26,7 @@ PreferencesTree::PreferencesTree(const QString& translation_context, const QStri
   });
 }
 
-PreferencesTree::~PreferencesTree()
-{
-}
+PreferencesTree::~PreferencesTree() = default;
 
 void PreferencesTree::reset()
 {

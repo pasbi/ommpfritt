@@ -112,8 +112,7 @@ ReferenceProperty::Filter::Filter(const Disjunction<Kind>& kind, const DNF<Flag>
 {
 }
 
-Property::Filter::Filter()
-= default;
+Property::Filter::Filter() = default;
 
 ReferenceProperty::Filter::Filter(const DNF<Flag>& flag)
     : Filter(Disjunction<Kind>(Kind::All, Kind::None), flag)

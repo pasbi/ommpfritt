@@ -95,8 +95,7 @@ template<class T> struct always_false : std::false_type {
 class ReferencePolisher
 {
 public:
-  virtual ~ReferencePolisher()
-  = default;
+  virtual ~ReferencePolisher() = default;
 
 protected:
   virtual void update_references(const std::map<std::size_t, AbstractPropertyOwner*>& map) = 0;

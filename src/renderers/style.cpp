@@ -94,8 +94,7 @@ Style::Style(Scene* scene)
   polish();
 }
 
-Style::~Style()
-= default;
+Style::~Style() = default;
 
 Style::Style(const Style& other)
     : PropertyOwner(other), NodesOwner(other),

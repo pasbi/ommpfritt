@@ -90,8 +90,7 @@ NamedColorsDialog::NamedColorsDialog(QWidget* parent)
   m_ui->w_colorwidget->set_compact();
 }
 
-NamedColorsDialog::~NamedColorsDialog()
-= default;
+NamedColorsDialog::~NamedColorsDialog() = default;
 
 void NamedColorsDialog::add()
 {

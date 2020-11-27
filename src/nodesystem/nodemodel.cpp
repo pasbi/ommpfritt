@@ -69,8 +69,7 @@ NodeModel::NodeModel(const NodeModel& other) : NodeModel(other.compiler().langua
   emit_topology_changed();
 }
 
-NodeModel::~NodeModel()
-= default;
+NodeModel::~NodeModel() = default;
 
 void NodeModel::init()
 {

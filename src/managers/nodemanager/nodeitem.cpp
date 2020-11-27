@@ -135,8 +135,7 @@ NodeItem::NodeItem(Node& node) : node(node)
   QTimer::singleShot(0, &node, [this]() { update_children(); });
 }
 
-NodeItem::~NodeItem()
-= default;
+NodeItem::~NodeItem() = default;
 
 QRectF NodeItem::boundingRect() const
 {

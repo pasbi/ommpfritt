@@ -10,8 +10,7 @@ Node::Node(NodeModel& model) : PropertyOwner(&model.scene()), m_model(model)
 {
 }
 
-Node::~Node()
-= default;
+Node::~Node() = default;
 
 std::set<AbstractPort*> Node::ports() const
 {

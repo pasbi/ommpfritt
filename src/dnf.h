@@ -56,8 +56,7 @@ public:
   Literal(E e, bool value = true) : i(from_enum(e)), value(value)
   {
   }
-  Literal()
-  = default;
+  Literal() = default;
 
   [[nodiscard]] bool evaluate(const std::vector<bool>& value) const
   {
@@ -138,8 +137,7 @@ public:
   Term(std::initializer_list<T> ts) : terms(ts)
   {
   }
-  Term()
-  = default;
+  Term() = default;
   template<typename = typename std::enable_if<is_top_level>>
   Term(E positives, E negatives) : terms(convert_literals(positives, negatives))
   {

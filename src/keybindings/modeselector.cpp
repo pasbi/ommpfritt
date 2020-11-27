@@ -14,8 +14,7 @@ ModeSelector::ModeSelector(CommandInterface& context,
 {
 }
 
-ModeSelector::~ModeSelector()
-= default;
+ModeSelector::~ModeSelector() = default;
 
 QString ModeSelector::translated_name() const
 {

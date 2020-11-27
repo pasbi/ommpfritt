@@ -9,12 +9,11 @@ ProxyChain::ProxyChain(std::vector<std::unique_ptr<QAbstractProxyModel>> proxies
 {
 }
 
-ProxyChain::ProxyChain()
-= default;
+ProxyChain::ProxyChain() = default;
 
 void ProxyChain::setSourceModel(QAbstractItemModel* source_model)
 {
-  for (auto & m_proxie : m_proxies) {
+  for (auto& m_proxie : m_proxies) {
     m_proxie->setSourceModel(source_model);
     source_model = m_proxie.get();
   }

@@ -27,8 +27,7 @@ ColorDialog::ColorDialog(QWidget* parent) : QDialog(parent)
   resize(QSize(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 }
 
-ColorDialog::~ColorDialog()
-= default;
+ColorDialog::~ColorDialog() = default;
 
 std::pair<Color, bool> ColorDialog::get_color(const Color& old, QWidget* parent)
 {

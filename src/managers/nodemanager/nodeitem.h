@@ -68,8 +68,7 @@ private:
 
   struct Slot {
     using get_text_f = std::function<QString()>;
-    Slot()
-    = default;
+    Slot() = default;
     get_text_f get_left_text;
     get_text_f get_right_text;
     get_text_f get_center_text;
