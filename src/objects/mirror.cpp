@@ -237,7 +237,7 @@ void Mirror::perform_update_path_mode()
               ? child.property(Path::INTERPOLATION_PROPERTY_KEY)->value<InterpolationMode>()
               : InterpolationMode::Bezier;
     reflection->property(Path::INTERPOLATION_PROPERTY_KEY)->set(interpolation);
-    m_reflection.reset(reflection.release());
+    m_reflection = std::move(reflection);
   }
 }
 
