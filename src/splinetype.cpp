@@ -44,7 +44,7 @@ double convolve(const std::array<double, 4>& coefficients,
 using Knot = omm::SplineType::Knot;
 using SpInit = omm::SplineType::Initialization;
 
-static const std::map<SpInit, omm::SplineType::knot_map_type> predefined{
+const std::map<SpInit, omm::SplineType::knot_map_type> predefined{
     {SpInit::Linear,
      {
          {0.0, Knot(0.0, -1.0 / 3.0, 1.0 / 3.0)},

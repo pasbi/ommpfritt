@@ -59,7 +59,7 @@ void MarkerProperties ::draw_marker(Painter& painter,
   p.restore();
 }
 
-std::vector<QString> MarkerProperties::shapes() const
+std::vector<QString> MarkerProperties::shapes()
 {
   return {QObject::tr("None"),
           QObject::tr("Arrow"),
@@ -90,7 +90,7 @@ std::vector<Point> MarkerProperties::shape(const double width) const
   Q_UNREACHABLE();
 }
 
-std::vector<Point> MarkerProperties::arrow(const Vec2f& size) const
+std::vector<Point> MarkerProperties::arrow(const Vec2f& size)
 {
   return {
       Point(Vec2f(size.x, 0.0)),
@@ -99,7 +99,7 @@ std::vector<Point> MarkerProperties::arrow(const Vec2f& size) const
   };
 }
 
-std::vector<Point> MarkerProperties::bar(const Vec2f& size) const
+std::vector<Point> MarkerProperties::bar(const Vec2f& size)
 {
   return {
       Point(Vec2f(-size.x, size.y)),
@@ -109,13 +109,13 @@ std::vector<Point> MarkerProperties::bar(const Vec2f& size) const
   };
 }
 
-std::vector<Point> MarkerProperties::circle(const Vec2f& size) const
+std::vector<Point> MarkerProperties::circle(const Vec2f& size)
 {
   Q_UNUSED(size);
   return {};
 }
 
-std::vector<Point> MarkerProperties::diamond(const Vec2f& size) const
+std::vector<Point> MarkerProperties::diamond(const Vec2f& size)
 {
   return {
       Point(Vec2f(-size.x, 0.0)),

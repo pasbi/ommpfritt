@@ -38,7 +38,7 @@ private:
 
   void extract(Properties& ps);
   void insert(Properties& ps);
-  void change(Configurations& configurations);
+  static void change(Configurations& configurations);
 
   void swap();
   NodeModel* m_node_model = nullptr;

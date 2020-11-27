@@ -391,7 +391,7 @@ Qt::ItemFlags PreferencesTree::flags(const QModelIndex& index) const
   return flags;
 }
 
-bool PreferencesTree::is_group(const QModelIndex& index) const
+bool PreferencesTree::is_group(const QModelIndex& index)
 {
   return static_cast<const PreferencesTreeItem*>(index.internalPointer())->is_group();
 }

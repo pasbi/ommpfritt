@@ -119,7 +119,7 @@ QString NodeCompilerGLSL::generate_header(QStringList& lines) const
   return "";
 }
 
-QString NodeCompilerGLSL::start_program(QStringList& lines) const
+QString NodeCompilerGLSL::start_program(QStringList& lines)
 {
   lines.append("void main() {");
   return "";
@@ -152,7 +152,7 @@ QString NodeCompilerGLSL::end_program(QStringList& lines) const
   return "";
 }
 
-QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines) const
+QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines)
 {
   static const auto sort_ports = [](const auto& ports) {
     using PortT = std::decay_t<typename std::decay_t<decltype(ports)>::value_type>;

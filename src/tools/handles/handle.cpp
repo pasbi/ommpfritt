@@ -73,7 +73,7 @@ Vec2f Handle::press_pos() const
 
 double Handle::discretize(double s, double step) const
 {
-  if (tool.integer_transformation()) {
+  if (Tool::integer_transformation()) {
     LINFO << s << " " << step;
     return step * static_cast<int>(s / step);
   } else {
@@ -83,7 +83,7 @@ double Handle::discretize(double s, double step) const
 
 Vec2f Handle::discretize(const Vec2f& vec, bool local, double step) const
 {
-  if (tool.integer_transformation()) {
+  if (Tool::integer_transformation()) {
     auto dvec = vec;
     if (!local) {
       dvec = tool.viewport_transformation.inverted().apply_to_direction(vec);
@@ -100,7 +100,7 @@ Vec2f Handle::discretize(const Vec2f& vec, bool local, double step) const
   }
 }
 
-QColor Handle::ui_color(HandleStatus status, const QString& name) const
+QColor Handle::ui_color(HandleStatus status, const QString& name)
 {
   return omm::ui_color(status, "Handle", name);
 }

@@ -141,7 +141,7 @@ template<> int SubcommandLineParser::get<int>(const QString& name) const
   return ivalue;
 }
 
-void SubcommandLineParser::print_help() const
+void SubcommandLineParser::print_help()
 {
   std::cout << "Following sub-commands are available:\n";
   for (auto&& [command, cmd_options_list] : options) {

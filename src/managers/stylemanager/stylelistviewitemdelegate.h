@@ -29,7 +29,7 @@ public:
   void set_text_height(int text_height);
 
 private:
-  QString display_text(const QModelIndex& index) const;
+  [[nodiscard]] static QString display_text(const QModelIndex& index);
 };
 
 }  // namespace omm

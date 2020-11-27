@@ -18,7 +18,7 @@ bool print_long_message = true;
 int main(int argc, char* argv[])
 {
   QApplication qt_app(argc, argv);
-  qt_app.setWindowIcon(QIcon(":/icons/omm_48.png"));
+  QApplication::setWindowIcon(QIcon(":/icons/omm_48.png"));
 
   omm::setup_logfile(logfile);
   qInstallMessageHandler([](QtMsgType type, const QMessageLogContext& ctx, const QString& msg) {
@@ -42,5 +42,5 @@ int main(int argc, char* argv[])
 
   app.scene.tool_box().set_active_tool(omm::SelectObjectsTool::TYPE);
 
-  return qt_app.exec();
+  return QApplication::exec();
 }

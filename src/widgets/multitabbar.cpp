@@ -27,7 +27,7 @@ MultiTabBar::MultiTabBar() : m_layout(std::make_unique<QHBoxLayout>())
   });
 }
 
-bool MultiTabBar::extend_selection() const
+bool MultiTabBar::extend_selection()
 {
   return qApp->queryKeyboardModifiers() & Qt::ShiftModifier;
 }

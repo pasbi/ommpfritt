@@ -34,7 +34,7 @@ public:
 private:
   const QString m_appname;
   const QString m_command;
-  void print_help() const;
+  static void print_help();
 };
 
 }  // namespace omm

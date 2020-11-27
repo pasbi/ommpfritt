@@ -196,7 +196,7 @@ void Application::quit()
 {
   if (can_close()) {
     LINFO << "Quit application.";
-    m_app.quit();
+    QCoreApplication::quit();
   } else {
     LINFO << "Aborted quit.";
   }
@@ -607,7 +607,7 @@ void Application::install_translators()
   for (const QString& qm : qms) {
     auto translator = load_translator(qm, m_locale);
     if (translator) {
-      m_app.installTranslator(translator.get());
+      QCoreApplication::installTranslator(translator.get());
       m_translators.insert(std::move(translator));
     };
   }

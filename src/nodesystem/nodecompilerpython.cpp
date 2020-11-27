@@ -9,7 +9,7 @@ NodeCompilerPython::NodeCompilerPython(const NodeModel& model) : NodeCompiler(mo
 {
 }
 
-QString NodeCompilerPython::generate_header(QStringList& lines) const
+QString NodeCompilerPython::generate_header(QStringList& lines)
 {
   lines.append(QString(R"(
 def listarithm_decorator(func):
@@ -25,19 +25,19 @@ def listarithm_decorator(func):
   return "";
 }
 
-QString NodeCompilerPython::start_program(QStringList& lines) const
+QString NodeCompilerPython::start_program(QStringList& lines)
 {
   Q_UNUSED(lines)
   return "";
 }
 
-QString NodeCompilerPython::end_program(QStringList& lines) const
+QString NodeCompilerPython::end_program(QStringList& lines)
 {
   Q_UNUSED(lines)
   return "";
 }
 
-QString NodeCompilerPython::compile_node(const Node& node, QStringList& lines) const
+QString NodeCompilerPython::compile_node(const Node& node, QStringList& lines)
 {
   auto ops = ::filter_if(node.ports<OutputPort>(),
                          [](OutputPort* op) { return op->flavor == PortFlavor::Ordinary; });
@@ -61,7 +61,7 @@ QString NodeCompilerPython::compile_node(const Node& node, QStringList& lines) c
 
 QString NodeCompilerPython::compile_connection(const OutputPort& op,
                                                const InputPort& ip,
-                                               QStringList& lines) const
+                                               QStringList& lines)
 {
   lines.append(QString("%1 = %2").arg(ip.uuid(), op.uuid()));
   return "";

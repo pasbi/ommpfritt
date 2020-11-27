@@ -25,7 +25,7 @@ public:
   ~NamedColorsDialog() override;
 
 public Q_SLOTS:
-  void add();
+  static void add();
   void remove();
   void setCurrent(const QModelIndex& index);
 

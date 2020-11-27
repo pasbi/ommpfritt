@@ -75,7 +75,7 @@ void StyleListViewItemDelegate::set_text_height(int text_height)
   m_text_height = text_height;
 }
 
-QString StyleListViewItemDelegate::display_text(const QModelIndex& index) const
+QString StyleListViewItemDelegate::display_text(const QModelIndex& index)
 {
   return index.data(Qt::DisplayRole).toString();
 }

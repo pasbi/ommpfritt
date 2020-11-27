@@ -53,7 +53,7 @@ public:
     return Flag::None;
   }
   ObjectTransformation viewport_transformation;
-  bool integer_transformation() const;
+  static bool integer_transformation();
   QString name() const override;
   virtual SceneMode scene_mode() const = 0;
 
