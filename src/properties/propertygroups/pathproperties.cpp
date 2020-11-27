@@ -38,7 +38,7 @@ void PathProperties::apply_transformation(Object& object,
                                           const ObjectTransformation& transformation) const
 {
   const auto* path_object = property_value<AbstractPropertyOwner*>(PATH_REFERENCE_PROPERTY_KEY);
-  if (const auto *const path = kind_cast<const Object*>(path_object); path != nullptr) {
+  if (const auto* const path = kind_cast<const Object*>(path_object); path != nullptr) {
     const auto interpolation = property_value<Object::Interpolation>(INTERPOLATION_KEY);
     const int path_index = property_value<int>(SEGMENT_PROPERTY_KEY);
     const auto time = path->compute_path_vector_time(path_index, t, interpolation);

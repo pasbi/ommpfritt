@@ -15,10 +15,7 @@ public:
                    double default_size);
   void make_properties(const QString& category) const override;
 
-  void draw_marker(Painter& painter,
-                   const Point& location,
-                   const Color& color,
-                   double width) const;
+  void draw_marker(Painter& painter, const Point& location, const Color& color, double width) const;
 
   static constexpr auto SHAPE_PROPERTY_KEY = "shape";
   static constexpr auto SIZE_PROPERTY_KEY = "size";

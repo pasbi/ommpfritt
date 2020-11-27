@@ -84,14 +84,14 @@ void print_tree(const omm::Object& root, const QString& prefix = "")
 
 void prepare_scene(omm::Scene& scene, const std::set<omm::Object*>& visible_objects)
 {
-  for (auto *other : scene.object_tree().items()) {
+  for (auto* other : scene.object_tree().items()) {
     const auto is_descendant_of
         = [&other](const auto* object) { return object->is_ancestor_of(*other); };
     if (std::none_of(visible_objects.begin(), visible_objects.end(), is_descendant_of)) {
       other->property(omm::Object::VISIBILITY_PROPERTY_KEY)->set(omm::Object::Visibility::Hidden);
     }
   }
-  for (auto *object : visible_objects) {
+  for (auto* object : visible_objects) {
     object->property(omm::Object::VISIBILITY_PROPERTY_KEY)->set(omm::Object::Visibility::Visible);
   }
 }

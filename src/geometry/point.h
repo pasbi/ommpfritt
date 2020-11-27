@@ -74,8 +74,7 @@ private:
   double get_direction(const Point* left_neighbor, const Point* right_neighbor) const;
 
 public:
-  static std::vector<Point>
-  offset(double t, const std::vector<Point>& points, bool is_closed);
+  static std::vector<Point> offset(double t, const std::vector<Point>& points, bool is_closed);
 };
 
 constexpr PolarCoordinates to_polar(Vec2f cartesian);

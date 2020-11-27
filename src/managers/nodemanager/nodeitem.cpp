@@ -381,7 +381,7 @@ void NodeItem::add_property_widget(Property& property, double pos_y, double heig
   pw_item->setAcceptDrops(true);
 
   if (ref.type() == OptionPropertyWidget::TYPE()) {
-    auto *combobox = dynamic_cast<OptionPropertyWidget*>(&ref)->combobox();
+    auto* combobox = dynamic_cast<OptionPropertyWidget*>(&ref)->combobox();
     combobox->prevent_popup = true;
     QObject::connect(combobox, &OptionsEdit::popup_shown, [pw_item = pw_item.get(), combobox]() {
       NodeView* view = []() {
