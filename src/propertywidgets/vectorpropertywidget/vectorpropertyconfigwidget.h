@@ -90,7 +90,8 @@ public:
       const auto* y_edit = static_cast<NumericEdit<ElementT>*>(m_edits.at("y" + key));
       configuration[key] = T(x_edit->value(), y_edit->value());
       configuration[NumericPropertyDetail::MULTIPLIER_POINTER]
-          = dynamic_cast<NumericEdit<double>*>(m_edits.at(NumericPropertyDetail::MULTIPLIER_POINTER))
+          = dynamic_cast<NumericEdit<double>*>(
+                m_edits.at(NumericPropertyDetail::MULTIPLIER_POINTER))
                 ->value();
     }
   }

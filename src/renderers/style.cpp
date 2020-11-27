@@ -114,7 +114,8 @@ void Style::polish()
     AbstractNodeCompiler& compiler = model->compiler();
     connect(&compiler, &AbstractNodeCompiler::compilation_succeeded, this, &Style::set_code);
     connect(&compiler, &AbstractNodeCompiler::compilation_failed, this, &Style::set_error);
-    connect_edit_property(dynamic_cast<TriggerProperty&>(*property(EDIT_NODES_PROPERTY_KEY)), *this);
+    connect_edit_property(dynamic_cast<TriggerProperty&>(*property(EDIT_NODES_PROPERTY_KEY)),
+                          *this);
   }
 }
 

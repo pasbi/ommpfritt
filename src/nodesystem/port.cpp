@@ -94,7 +94,8 @@ std::set<AbstractPort*> AbstractPort::connected_ports() const
 {
   switch (port_type) {
   case PortType::Input:
-    if (AbstractPort* op = dynamic_cast<const InputPort*>(this)->connected_output(); op != nullptr) {
+    if (AbstractPort* op = dynamic_cast<const InputPort*>(this)->connected_output();
+        op != nullptr) {
       return {op};
     } else {
       return {};
