@@ -8,7 +8,7 @@
 namespace
 {
 using F = std::function<Geom::PathVector(Geom::PathIntersectionGraph&)>;
-static const std::vector<std::pair<QString, F>> dispatcher = {
+const std::vector<std::pair<QString, F>> dispatcher = {
     {QObject::tr("Union"), [](auto& pig) { return pig.getUnion(); }},
     {QObject::tr("Intersection"), [](auto& pig) { return pig.getIntersection(); }},
     {QObject::tr("Exclusive Or"), [](auto& pig) { return pig.getXOR(); }},

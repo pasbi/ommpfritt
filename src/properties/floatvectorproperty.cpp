@@ -2,7 +2,7 @@
 
 namespace
 {
-static constexpr auto inf = std::numeric_limits<double>::infinity();
+constexpr auto inf = std::numeric_limits<double>::infinity();
 }
 
 namespace omm

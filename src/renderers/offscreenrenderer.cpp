@@ -51,10 +51,10 @@ QString OffscreenRenderer::ShaderInput::tr_name() const
 
 namespace
 {
-static constexpr auto vertex_position_attribute_name = "vertex_attr";
+constexpr auto vertex_position_attribute_name = "vertex_attr";
 
 using S = omm::OffscreenRenderer;
-static constexpr auto vertex_code = R"(
+constexpr auto vertex_code = R"(
 #version 330
 
 attribute vec4 vertex_attr;
@@ -95,7 +95,7 @@ void main() {
 }
 )";
 
-static constexpr std::array<float, 18> m_quad = {
+constexpr std::array<float, 18> m_quad = {
     -1.0,
     -1.0,
     0.0,

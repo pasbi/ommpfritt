@@ -10,7 +10,7 @@
 
 namespace
 {
-static constexpr double HUE_RANGE_0_6 = 6.0;
+constexpr double HUE_RANGE_0_6 = 6.0;
 
 std::array<double, 3> rgb_to_hsv(const std::array<double, 3>& rgb)
 {

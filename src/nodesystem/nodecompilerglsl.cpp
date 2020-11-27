@@ -11,7 +11,7 @@
 
 namespace
 {
-static constexpr auto output_variable_name = "out_color";
+constexpr auto output_variable_name = "out_color";
 
 QString format_connection(const omm::AbstractPort& lhs, const omm::AbstractPort& rhs)
 {

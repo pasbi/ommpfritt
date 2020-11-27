@@ -4,8 +4,8 @@
 
 namespace
 {
-static constexpr double default_marker_size = 100.0;
-static constexpr auto default_marker_shape = omm::MarkerProperties::Shape::Arrow;
+constexpr double default_marker_size = 100.0;
+constexpr auto default_marker_shape = omm::MarkerProperties::Shape::Arrow;
 
 }  // namespace
 

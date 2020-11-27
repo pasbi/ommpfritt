@@ -9,7 +9,7 @@
 
 namespace
 {
-static constexpr QSize animation_button_size(28, 28);
+constexpr QSize animation_button_size(28, 28);
 
 auto make_header(const QString& text)
 {

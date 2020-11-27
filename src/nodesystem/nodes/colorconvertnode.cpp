@@ -5,7 +5,7 @@
 
 namespace
 {
-static const std::vector<QString> conversion_options{
+const std::vector<QString> conversion_options{
     omm::ColorConvertNode::tr("Identity"),
     omm::ColorConvertNode::tr("RGBA -> HSVA"),
     omm::ColorConvertNode::tr("HSVA -> RGBA"),

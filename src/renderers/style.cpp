@@ -22,10 +22,10 @@
 
 namespace
 {
-static constexpr auto start_marker_prefix = "start";
-static constexpr auto end_marker_prefix = "end";
-static constexpr double default_marker_size = 2.0;
-static constexpr auto default_marker_shape = omm::MarkerProperties::Shape::None;
+constexpr auto start_marker_prefix = "start";
+constexpr auto end_marker_prefix = "end";
+constexpr double default_marker_size = 2.0;
+constexpr auto default_marker_shape = omm::MarkerProperties::Shape::None;
 
 }  // namespace
 

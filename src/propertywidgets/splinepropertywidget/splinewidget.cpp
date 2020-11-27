@@ -9,7 +9,7 @@ namespace
 {
 using namespace omm;
 
-static constexpr double closeness_threshold_px = 4;
+constexpr double closeness_threshold_px = 4;
 
 using Side = SplineType::Knot::Side;
 template<typename Iterator> QPointF knot_pos(Iterator&& it, Side side)
