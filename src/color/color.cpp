@@ -155,12 +155,12 @@ Color::Color() : Color(Model::RGBA, {0.0, 0.0, 0.0, 1.0})
 {
 }
 
-Color::Color(Color::Model model, const std::array<double, 3> components, double alpha)
+Color::Color(Color::Model model, const std::array<double, 3>& components, double alpha)
     : Color(model, {components[0], components[1], components[2], alpha})
 {
 }
 
-Color::Color(Color::Model model, const std::array<double, 4> components)
+Color::Color(Color::Model model, const std::array<double, 4>& components)
     : m_components(components), m_current_model(model)
 {
 }
@@ -175,7 +175,7 @@ Color::Color(const QColor& c) : Color(Color::RGBA, {c.redF(), c.greenF(), c.blue
 }
 
 std::array<double, 4>
-Color::convert(Color::Model from, Color::Model to, const std::array<double, 4> values)
+Color::convert(Color::Model from, Color::Model to, const std::array<double, 4>& values)
 {
   static const auto pack = [](const std::array<double, 3>& triple, double fourth) {
     return std::array<double, 4>{triple[0], triple[1], triple[2], fourth};

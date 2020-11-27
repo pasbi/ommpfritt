@@ -18,8 +18,8 @@ private:
 
 public:
   enum Model { RGBA, HSVA, Named };
-  Color(Model model, const std::array<double, 3> components, const double alpha);
-  Color(Model model, const std::array<double, 4> components);
+  Color(Model model, const std::array<double, 3>& components, double alpha);
+  Color(Model model, const std::array<double, 4>& components);
   explicit Color(const QString& name);
   explicit Color(const QColor& c);
   explicit Color();
@@ -37,7 +37,7 @@ public:
   void set(Role role, double value);
   [[nodiscard]] double get(Role role) const;
 
-  static std::array<double, 4> convert(Model from, Model to, const std::array<double, 4> values);
+  static std::array<double, 4> convert(Model from, Model to, const std::array<double, 4>& values);
   void convert(Model to);
   [[nodiscard]] Color convert(Model to) const;
 

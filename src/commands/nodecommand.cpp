@@ -1,8 +1,10 @@
 #include "commands/nodecommand.h"
+
 #include "common.h"
 #include "nodesystem/node.h"
 #include "nodesystem/nodemodel.h"
 #include "nodesystem/port.h"
+#include <utility>
 
 namespace
 {
@@ -66,7 +68,7 @@ DisconnectPortsCommand::DisconnectPortsCommand(InputPort& port)
 
 NodeCommand::NodeCommand(const QString& label,
                          NodeModel& model,
-                         std::vector<Node*> refs,
+                         const std::vector<Node*>& refs,
                          std::vector<std::unique_ptr<Node>> owns)
     : Command(label), m_refs(refs), m_owns(std::move(owns)), m_model(model)
 {
@@ -132,7 +134,7 @@ void NodeCommand::add()
   m_model.emit_topology_changed();
 }
 
-RemoveNodesCommand::RemoveNodesCommand(NodeModel& model, std::vector<Node*> nodes)
+RemoveNodesCommand::RemoveNodesCommand(NodeModel& model, const std::vector<Node*>& nodes)
     : NodeCommand(QObject::tr("Remove Nodes"), model, nodes, {})
 {
 }

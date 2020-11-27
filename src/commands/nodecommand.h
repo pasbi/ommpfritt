@@ -64,7 +64,7 @@ class NodeCommand : public Command
 protected:
   NodeCommand(const QString& label,
               NodeModel& model,
-              std::vector<Node*> refs,
+              const std::vector<Node*>& refs,
               std::vector<std::unique_ptr<Node>> owns);
   void remove();
   void add();
@@ -79,7 +79,7 @@ private:
 class RemoveNodesCommand : public NodeCommand
 {
 public:
-  RemoveNodesCommand(NodeModel& model, std::vector<Node*> nodes);
+  RemoveNodesCommand(NodeModel& model, const std::vector<Node*>& nodes);
   void undo() override
   {
     add();
