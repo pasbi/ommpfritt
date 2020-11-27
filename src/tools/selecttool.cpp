@@ -106,7 +106,7 @@ void AbstractSelectTool::cancel()
   Tool::cancel();
   if (auto&& h = scene()->history(); h.last_command_is_noop()) {
     h.make_last_command_obsolete();
-    QSignalBlocker(&scene()->history());
+    QSignalBlocker blocker(&scene()->history());
     scene()->history().undo();
   }
 }
