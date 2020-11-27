@@ -19,7 +19,7 @@ public:
   void undo();
   void redo();
   [[nodiscard]] int count() const;
-  void set_index(const int index);
+  void set_index(int index);
   [[nodiscard]] bool has_pending_changes() const;
   void reset();
 

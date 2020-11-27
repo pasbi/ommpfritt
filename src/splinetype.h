@@ -22,7 +22,7 @@ public:
     }
     bool operator<(const Knot& other) const;
     [[nodiscard]] double get_value(Side side) const;
-    void set_value(const Side side, double value);
+    void set_value(Side side, double value);
   };
 
   using knot_map_type = std::multimap<double, Knot>;

@@ -13,7 +13,7 @@ public:
   explicit Point(const Vec2f& position,
                  const PolarCoordinates& left_tangent,
                  const PolarCoordinates& right_tangent);
-  explicit Point(const Vec2f& position, const double rotation, const double tangent_length = 1.0);
+  explicit Point(const Vec2f& position, double rotation, double tangent_length = 1.0);
   explicit Point(const Vec2f& position);
   Point();
   Vec2f position;
@@ -75,7 +75,7 @@ private:
 
 public:
   static std::vector<Point>
-  offset(const double t, const std::vector<Point>& points, const bool is_closed);
+  offset(double t, const std::vector<Point>& points, bool is_closed);
 };
 
 constexpr PolarCoordinates to_polar(Vec2f cartesian);

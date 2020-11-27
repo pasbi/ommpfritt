@@ -56,7 +56,7 @@ void ObjectDelegate::paint(QPainter* painter,
   const int w = rect.height();
 
   {  // icon
-    const QIcon decoration = index.data(Qt::DecorationRole).value<QIcon>();
+    const auto decoration = index.data(Qt::DecorationRole).value<QIcon>();
     const QPixmap pixmap = decoration.pixmap(QSize(w, w), QIcon::Normal, QIcon::On);
     painter->drawPixmap(option.rect.topLeft() + QPointF(0, 0), pixmap, pixmap.rect());
   }

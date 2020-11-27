@@ -312,7 +312,7 @@ std::set<AbstractPropertyOwner*> Scene::property_owners() const
       = merge(std::set<AbstractPropertyOwner*>(), object_tree().items(), styles().items(), tags());
   for (auto&& apo : apos) {
     if (!!(apo->flags() & Flag::HasNodes)) {
-      const NodesOwner& nodes_owner = dynamic_cast<const NodesOwner&>(*apo);
+      const auto& nodes_owner = dynamic_cast<const NodesOwner&>(*apo);
       if (const auto* node_model = nodes_owner.node_model()) {
         const auto nodes = node_model->nodes();
         apos.insert(nodes.begin(), nodes.end());
@@ -355,7 +355,7 @@ void Scene::set_selection(const std::set<AbstractPropertyOwner*>& selection)
     }
   };
 
-  for (auto& kind : {Kind::Object, Kind::Style, Kind::Tag, Kind::Tool}) {
+  for (const auto& kind : {Kind::Object, Kind::Style, Kind::Tag, Kind::Tool}) {
     if (selection.empty()) {
       m_item_selection.at(kind).clear();
       emit_selection_changed(m_selection, kind);

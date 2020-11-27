@@ -51,7 +51,7 @@ public:
   virtual void set_value(const Vec2i& value, const Pointer& pointer) = 0;
   virtual void set_value(const PolarCoordinates& value, const Pointer& pointer) = 0;
   virtual void set_value(const Color& color, const Pointer& pointer) = 0;
-  virtual void set_value(const std::size_t, const Pointer& pointer) = 0;
+  virtual void set_value(std::size_t, const Pointer& pointer) = 0;
   virtual void set_value(const TriggerPropertyDummyValueType&, const Pointer& pointer) = 0;
   virtual void set_value(const SplineType&, const Pointer& pointer) = 0;
   void set_value(const AbstractPropertyOwner* id, const Pointer& pointer);
@@ -135,7 +135,7 @@ public:
   virtual TriggerPropertyDummyValueType get_trigger_dummy_value(const Pointer& pointer) = 0;
   virtual SplineType get_spline(const Pointer& pointer) = 0;
 
-  void register_reference(const std::size_t id, AbstractPropertyOwner& reference);
+  void register_reference(std::size_t id, AbstractPropertyOwner& reference);
   void register_reference_polisher(ReferencePolisher& polisher);
 
   template<typename T> std::enable_if_t<!std::is_enum_v<T>, T> get(const Pointer&);

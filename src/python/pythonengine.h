@@ -16,8 +16,8 @@ class PythonEngine : public QObject
   Q_OBJECT
 public:
   explicit PythonEngine();
-  bool exec(const QString& code, pybind11::object& locals, const void* association);
-  pybind11::object eval(const QString& code, pybind11::object& locals, const void* association);
+  bool exec(const QString& code, pybind11::object& locals, const void* associated_item);
+  pybind11::object eval(const QString& code, pybind11::object& locals, const void* associated_item);
 
 private:
   // the scoped_interpeter has same lifetime as the application.

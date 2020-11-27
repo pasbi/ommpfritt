@@ -43,6 +43,6 @@ private:
 QColor ui_color(const QWidget& widget, const QString& group, const QString& name);
 QColor ui_color(const QPalette::ColorGroup& status, const QString& group, const QString& name);
 QColor ui_color(const QWidget& widget, const QPalette::ColorRole& role);
-QColor ui_color(const HandleStatus status, const QString& group, const QString& name);
+QColor ui_color(HandleStatus status, const QString& group, const QString& name);
 
 }  // namespace omm

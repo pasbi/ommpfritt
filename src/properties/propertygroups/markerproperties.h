@@ -11,14 +11,14 @@ public:
   enum class Shape { None, Arrow, Bar, Circle, Diamond };
   MarkerProperties(const QString& prefix,
                    AbstractPropertyOwner& property_owner,
-                   const Shape default_shape,
-                   const double default_size);
+                   Shape default_shape,
+                   double default_size);
   void make_properties(const QString& category) const override;
 
   void draw_marker(Painter& painter,
                    const Point& location,
                    const Color& color,
-                   const double width) const;
+                   double width) const;
 
   static constexpr auto SHAPE_PROPERTY_KEY = "shape";
   static constexpr auto SIZE_PROPERTY_KEY = "size";

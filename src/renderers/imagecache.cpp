@@ -20,7 +20,7 @@ QPicture ImageCache::retrieve(const std::pair<QString, int>& key) const
       doc->setRenderBackend(Poppler::Document::ArthurBackend);
       int page_num = key.second;
       page_num = std::clamp(page_num, 0, doc->numPages() - 1);
-      const auto page = doc->page(page_num);
+      auto *const page = doc->page(page_num);
       if (page != nullptr) {
         const auto success = page->renderToPainter(&painter);
         if (!success) {

@@ -31,7 +31,7 @@ public Q_SLOTS:
   void set_coordinates(const omm::PolarCoordinates& coordinates);
   void set_coordinates(const omm::Vec2f& coordinates);
   void set_display_mode(const omm::DisplayMode& display_mode);
-  void set_magnitude(const double magnitude);
+  void set_magnitude(double magnitude);
 
 private:
   NumericEdit<double>* m_x_edit;

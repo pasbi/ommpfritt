@@ -36,7 +36,7 @@ void StyleListViewItemDelegate::paint(QPainter* painter,
     painter->fillRect(option.rect, option.palette.color(group, QPalette::Highlight));
   }
 
-  const QIcon icon = index.data(Qt::DecorationRole).value<QIcon>();
+  const auto icon = index.data(Qt::DecorationRole).value<QIcon>();
   painter->drawPixmap(option.rect.topLeft(), icon.pixmap(m_icon_size));
 
   const auto text = this->display_text(index);

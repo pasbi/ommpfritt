@@ -84,14 +84,14 @@ void print_tree(const omm::Object& root, const QString& prefix = "")
 
 void prepare_scene(omm::Scene& scene, const std::set<omm::Object*>& visible_objects)
 {
-  for (auto other : scene.object_tree().items()) {
+  for (auto *other : scene.object_tree().items()) {
     const auto is_descendant_of
         = [&other](const auto* object) { return object->is_ancestor_of(*other); };
     if (std::none_of(visible_objects.begin(), visible_objects.end(), is_descendant_of)) {
       other->property(omm::Object::VISIBILITY_PROPERTY_KEY)->set(omm::Object::Visibility::Hidden);
     }
   }
-  for (auto object : visible_objects) {
+  for (auto *object : visible_objects) {
     object->property(omm::Object::VISIBILITY_PROPERTY_KEY)->set(omm::Object::Visibility::Visible);
   }
 }
@@ -135,13 +135,13 @@ QSize calculate_resolution(int width, const omm::View& view)
 
 void render(omm::Application& app, const omm::SubcommandLineParser& args)
 {
-  const QString scene_filename = args.get<QString>("input");
-  const QString fn_template = args.get<QString>("output");
+  const auto scene_filename = args.get<QString>("input");
+  const auto fn_template = args.get<QString>("output");
   app.scene.load_from(scene_filename);
   prepare_scene(app.scene, args);
   const int start_frame = args.get<int>("start-frame", 1);
   const int n_frames = args.get<int>("sequence-length", 1);
-  const omm::View& view = find<omm::View>(app.scene, args.get<QString>("view"));
+  const auto& view = find<omm::View>(app.scene, args.get<QString>("view"));
   const bool force = args.isSet("overwrite");
   const auto resolution = calculate_resolution(args.get<int>("width"), view);
 
@@ -169,7 +169,7 @@ void render(omm::Application& app, const omm::SubcommandLineParser& args)
 
 void tree(omm::Application& app, const omm::SubcommandLineParser& args)
 {
-  const QString scene_filename = args.get<QString>("input");
+  const auto scene_filename = args.get<QString>("input");
   app.scene.load_from(scene_filename);
   print_tree(app.scene.object_tree().root());
 }

@@ -19,7 +19,7 @@ void QuickAccessDelegate::paint(QPainter* painter,
   painter->translate(rect.topLeft());
   painter->scale(rect.width(), rect.height());
   painter->save();
-  for (auto& area : m_areas) {
+  for (const auto& area : m_areas) {
     painter->setClipRect(QRectF(0.0, 0.0, 1.0, 1.0));
     area->draw(*painter, index);
   }

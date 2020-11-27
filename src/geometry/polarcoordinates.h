@@ -6,7 +6,7 @@
 namespace omm
 {
 struct PolarCoordinates {
-  explicit PolarCoordinates(const double argument, const double magnitude);
+  explicit PolarCoordinates(double argument, double magnitude);
   explicit PolarCoordinates(const Vec2f& cartesian);
   explicit PolarCoordinates();
   [[nodiscard]] Vec2f to_cartesian() const;

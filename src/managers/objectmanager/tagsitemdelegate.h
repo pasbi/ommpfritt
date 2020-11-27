@@ -16,7 +16,7 @@ class TagsItemDelegate : public QAbstractItemDelegate
 public:
   explicit TagsItemDelegate(ObjectTreeView& view,
                             ObjectTreeSelectionModel& selection_model,
-                            const int column);
+                            int column);
   void paint(QPainter* painter,
              const QStyleOptionViewItem& option,
              const QModelIndex& index) const override;

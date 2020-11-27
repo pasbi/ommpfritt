@@ -59,7 +59,7 @@ public:
   virtual BoundingBox bounding_box(const ObjectTransformation& transformation) const;
   virtual BoundingBox recursive_bounding_box(const ObjectTransformation& transformation) const;
   std::unique_ptr<Object> repudiate(Object& repudiatee) override;
-  Object& adopt(std::unique_ptr<Object> adoptee, const size_t pos) override;
+  Object& adopt(std::unique_ptr<Object> adoptee, size_t pos) override;
   using TreeElement::adopt;
 
   struct ConvertedObject {
@@ -169,8 +169,8 @@ private:
 
 public:
   void set_object_tree(ObjectTree& object_tree);
-  void set_position_on_path(const Object& path, const bool align, const Geom::PathVectorTime& t);
-  void set_oriented_position(const Point& op, const bool align);
+  void set_position_on_path(const Object& path, bool align, const Geom::PathVectorTime& t);
+  void set_oriented_position(const Point& op, bool align);
 
 private:
   ObjectTree* m_object_tree = nullptr;

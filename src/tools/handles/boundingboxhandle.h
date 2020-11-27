@@ -60,7 +60,7 @@ public:
     if (status() != HandleStatus::Active) {
       return false;
     }
-    ToolT& tool = static_cast<ToolT&>(this->tool);
+    auto& tool = static_cast<ToolT&>(this->tool);
     const bool discrete = tool.integer_transformation();
     const bool isotropic = e.modifiers() & (Qt::ControlModifier != 0u);
 

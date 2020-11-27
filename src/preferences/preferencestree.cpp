@@ -277,7 +277,7 @@ QModelIndex PreferencesTree::index(int row, int column, const QModelIndex& paren
   if (!parent.isValid()) {
     internal_pointer = m_groups.at(row).get();
   } else {
-    auto* ptr = static_cast<const PreferencesTreeItem*>(parent.internalPointer());
+    const auto* ptr = static_cast<const PreferencesTreeItem*>(parent.internalPointer());
     assert(ptr->is_group());
     const auto* group = dynamic_cast<const PreferencesTreeGroupItem*>(ptr);
     internal_pointer = group->values.at(row).get();
@@ -305,7 +305,7 @@ QModelIndex PreferencesTree::parent(const QModelIndex& child) const
 int PreferencesTree::rowCount(const QModelIndex& parent) const
 {
   if (parent.isValid()) {
-    PreferencesTreeItem* ptr = static_cast<PreferencesTreeItem*>(parent.internalPointer());
+    auto* ptr = static_cast<PreferencesTreeItem*>(parent.internalPointer());
     if (ptr->is_group()) {
       return group(ptr->name)->values.size();
     } else {

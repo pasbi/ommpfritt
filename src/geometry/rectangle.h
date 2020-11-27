@@ -12,7 +12,7 @@ public:
   explicit Rectangle();
   explicit Rectangle(const QRectF& rect);
   explicit Rectangle(const Vec2f& top_left, const Vec2f& bottom_right, bool empty = false);
-  explicit Rectangle(const Vec2f& center, const double radius);
+  explicit Rectangle(const Vec2f& center, double radius);
 
   operator QRectF() const;
 

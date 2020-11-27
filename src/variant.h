@@ -158,7 +158,7 @@ double get_channel_value(const variant_type& variant, std::size_t channel);
  *  variant. @code channel must not exceed the number of supported channels for the currently stored
  *  variant type.
  */
-void set_channel_value(variant_type& variant, std::size_t channel, const double value);
+void set_channel_value(variant_type& variant, std::size_t channel, double value);
 
 std::ostream& operator<<(std::ostream& ostream, const TriggerPropertyDummyValueType& v);
 std::ostream& operator<<(std::ostream& ostream, const variant_type& v);

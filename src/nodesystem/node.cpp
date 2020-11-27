@@ -207,10 +207,10 @@ Property& Node::add_property(const QString& key, std::unique_ptr<Property> prope
 std::unique_ptr<Property> Node::extract_property(const QString& key)
 {
   auto property = PropertyOwner::extract_property(key);
-  if (InputPort* ip = find_port<InputPort>(*property); ip) {
+  if (auto* ip = find_port<InputPort>(*property); ip) {
     remove_port(*ip);
   }
-  if (OutputPort* op = find_port<OutputPort>(*property); op) {
+  if (auto* op = find_port<OutputPort>(*property); op) {
     remove_port(*op);
   }
   return property;
@@ -222,8 +222,8 @@ void Node::update_references(const std::map<std::size_t, AbstractPropertyOwner*>
   for (const ConnectionIds& cids : m_connection_ids) {
     Node& node = dynamic_cast<Node&>(*map.at(cids.node_id));
     assert(&node.model() == &model());
-    InputPort* input = find_port<InputPort>(cids.input_port);
-    OutputPort* output = node.find_port<OutputPort>(cids.output_port);
+    auto* input = find_port<InputPort>(cids.input_port);
+    auto* output = node.find_port<OutputPort>(cids.output_port);
     if (input != nullptr && output != nullptr) {
       input->connect(output);
     }

@@ -187,7 +187,7 @@ PortItem* NodeItem::port_item(const AbstractPort& port) const
 {
   for (PortType type : {PortType::Input, PortType::Output}) {
     if (const auto it = m_port_items.find(type); it != m_port_items.end()) {
-      for (auto& port_item : it->second) {
+      for (const auto& port_item : it->second) {
         if (&port == &port_item->port) {
           return port_item.get();
         }
@@ -347,16 +347,16 @@ void NodeItem::clear_ports()
 
 void NodeItem::align_ports()
 {
-  for (auto& port_item : m_port_items[PortType::Input]) {
+  for (const auto& port_item : m_port_items[PortType::Input]) {
     port_item->setX(m_shape.left());
   }
 
-  for (auto& port_item : m_port_items[PortType::Output]) {
+  for (const auto& port_item : m_port_items[PortType::Output]) {
     port_item->setX(m_shape.right());
   }
 
   const double margin = PortItem::radius + 5;
-  for (auto& item : m_property_items) {
+  for (const auto& item : m_property_items) {
     QWidget* w = item->widget;
     w->resize(m_shape.width() - 2 * margin, w->height());
     item->setX(-w->width() / 2.0);
@@ -381,7 +381,7 @@ void NodeItem::add_property_widget(Property& property, double pos_y, double heig
   pw_item->setAcceptDrops(true);
 
   if (ref.type() == OptionPropertyWidget::TYPE()) {
-    auto combobox = dynamic_cast<OptionPropertyWidget*>(&ref)->combobox();
+    auto *combobox = dynamic_cast<OptionPropertyWidget*>(&ref)->combobox();
     combobox->prevent_popup = true;
     QObject::connect(combobox, &OptionsEdit::popup_shown, [pw_item = pw_item.get(), combobox]() {
       NodeView* view = []() {

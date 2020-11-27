@@ -81,7 +81,7 @@ void ToolBox::set_active_tool(Tool* tool)
 void ToolBox::set_previous_tool()
 {
   if (m_history.size() > 1) {
-    const auto name = *std::next(m_history.begin());
+    auto *const name = *std::next(m_history.begin());
     set_active_tool(name);
   }
 }

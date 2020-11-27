@@ -18,7 +18,7 @@ public:
   void set_value(bool value, const Pointer& pointer) override;
   void set_value(double value, const Pointer& pointer) override;
   void set_value(const QString& value, const Pointer& pointer) override;
-  void set_value(const std::size_t id, const Pointer& pointer) override;
+  void set_value(std::size_t id, const Pointer& pointer) override;
   void set_value(const Color& color, const Pointer& pointer) override;
   void set_value(const Vec2f& value, const Pointer& pointer) override;
   void set_value(const Vec2i& value, const Pointer& pointer) override;
