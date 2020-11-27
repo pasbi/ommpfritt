@@ -64,7 +64,7 @@ public:
 class MoveKeyFrameCommand : public Command
 {
 public:
-  MoveKeyFrameCommand(Animator& animator, Property& property, std::set<int> old_frames, int shift);
+  MoveKeyFrameCommand(Animator& animator, Property& property, const std::set<int>& old_frames, int shift);
 
   void undo() override;
   void redo() override;

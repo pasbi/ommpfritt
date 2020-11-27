@@ -1,4 +1,5 @@
 #include "commands/keyframecommand.h"
+
 #include "animation/animator.h"
 #include "animation/track.h"
 #include "properties/property.h"
@@ -115,7 +116,7 @@ RemoveKeyFrameCommand::RemoveKeyFrameCommand(Animator& animator,
 
 MoveKeyFrameCommand::MoveKeyFrameCommand(Animator& animator,
                                          Property& property,
-                                         std::set<int> old_frames,
+                                         const std::set<int>& old_frames,
                                          int shift)
     : Command(QObject::tr("Move Keyframes")), m_animator(animator), m_property(property),
       m_old_frames(old_frames), m_shift(shift)
