@@ -8,8 +8,7 @@
 
 namespace omm
 {
-ObjectTransformation::ObjectTransformation()
-    : m_translation(0, 0), m_scaling(1, 1)
+ObjectTransformation::ObjectTransformation() : m_translation(0, 0), m_scaling(1, 1)
 {
 }
 

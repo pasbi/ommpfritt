@@ -31,9 +31,8 @@ public:
 
   PreferencesTreeGroupItem* group(const QString& name) const;
   std::vector<PreferencesTreeGroupItem*> groups() const;
-  PreferencesTreeValueItem* value(const QString group_name, const QString& key) const;
-  const QString
-  stored_value(const QString& group_name, const QString& key, std::size_t column) const;
+  PreferencesTreeValueItem* value(const QString& group_name, const QString& key) const;
+  QString stored_value(const QString& group_name, const QString& key, std::size_t column) const;
 
   void store();
   void restore();

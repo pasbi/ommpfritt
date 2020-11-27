@@ -27,8 +27,7 @@ AbstractNodeCompiler::Statement::Statement(const OutputPort& source, const Input
 {
 }
 
-AbstractNodeCompiler::Statement::Statement(const Node& node)
-    : is_connection(false),  node(&node)
+AbstractNodeCompiler::Statement::Statement(const Node& node) : is_connection(false), node(&node)
 {
 }
 
@@ -93,8 +92,7 @@ std::set<const AbstractPort*> AbstractNodeCompiler::Statement::uses() const
   }
 }
 
-std::set<QString>
-AbstractNodeCompiler::supported_types(AbstractNodeCompiler::Language language)
+std::set<QString> AbstractNodeCompiler::supported_types(AbstractNodeCompiler::Language language)
 {
   switch (language) {
   case AbstractNodeCompiler::Language::Python:

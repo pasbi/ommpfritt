@@ -215,7 +215,8 @@ std::vector<PreferencesTreeGroupItem*> PreferencesTree::groups() const
   return ::transform<PreferencesTreeGroupItem*>(m_groups, [](const auto& g) { return g.get(); });
 }
 
-PreferencesTreeValueItem* PreferencesTree::value(const QString group_name, const QString& key) const
+PreferencesTreeValueItem* PreferencesTree::value(const QString& group_name,
+                                                 const QString& key) const
 {
   const auto* group = this->group(group_name);
   const auto vit = std::find_if(group->values.begin(),
@@ -224,9 +225,9 @@ PreferencesTreeValueItem* PreferencesTree::value(const QString group_name, const
   return vit->get();
 }
 
-const QString PreferencesTree::stored_value(const QString& group_name,
-                                            const QString& key,
-                                            std::size_t column) const
+QString PreferencesTree::stored_value(const QString& group_name,
+                                      const QString& key,
+                                      std::size_t column) const
 {
   return PreferencesTreeValueItem::value(m_stored_values.at(group_name).at(key), column);
 }

@@ -183,7 +183,7 @@ QString NodeCompilerGLSL::compile_node(const Node& node, QStringList& lines) con
     for (OutputPort* port : sort_ports(ordinary_output_ports)) {
       if (const Node& node = port->node; node.type() == VertexNode::TYPE) {
         const auto& vertex_node = dynamic_cast<const VertexNode&>(node);
-        const auto ports = vertex_node.shader_inputs();
+        const auto& ports = vertex_node.shader_inputs();
         const auto it = std::find(ports.begin(), ports.end(), port);
         if (it != ports.end()) {
           lines.push_back(

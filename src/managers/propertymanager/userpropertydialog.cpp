@@ -80,7 +80,7 @@ void UserPropertyDialog::submit()
       for (int i = 0; m_owner.has_property(key); ++i) {
         key = item->label() + QString(".%1").arg(i, 3, 10, QChar('0'));
       }
-      additions.push_back(std::pair(key, std::move(property)));
+      additions.emplace_back(key, std::move(property));
     }
   }
   additions.shrink_to_fit();

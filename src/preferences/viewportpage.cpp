@@ -52,7 +52,7 @@ ViewportPage::MouseModifiersGroup::MouseModifiersGroup(Preferences::MouseModifie
   hlayout->setContentsMargins(0, 0, 0, 0);
   set_size_policy(*cb);
   hlayout->addWidget(cb.release());
-  for (const auto & i : modifier_map) {
+  for (const auto& i : modifier_map) {
     auto cb = std::make_unique<QCheckBox>();
     m_modifier_cbs.insert({i.first, cb.get()});
     if (!!(model.modifiers & i.first)) {
@@ -133,7 +133,7 @@ ViewportPage::ViewportPage(Preferences& preferences) : m_preferences(preferences
   label->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
   set_size_policy(*label);
   mm_header_layout->addWidget(label.release());
-  for (const auto & i : modifier_map) {
+  for (const auto& i : modifier_map) {
     auto label = std::make_unique<QLabel>(tr(i.second.toUtf8().constData()));
     label->setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
     set_size_policy(*label);
