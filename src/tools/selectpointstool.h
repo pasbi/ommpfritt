@@ -15,7 +15,8 @@ class TransformPointsHelper : public QObject
   Q_OBJECT
 public:
   explicit TransformPointsHelper(Scene& scene, Space space);
-  [[nodiscard]] std::unique_ptr<PointsTransformationCommand> make_command(const ObjectTransformation& t) const;
+  [[nodiscard]] std::unique_ptr<PointsTransformationCommand>
+  make_command(const ObjectTransformation& t) const;
   void update(const std::set<Path*>& paths);
   void update();
   [[nodiscard]] bool is_empty() const

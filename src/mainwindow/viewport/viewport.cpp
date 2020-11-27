@@ -270,7 +270,7 @@ void Viewport::reset()
 void Viewport::set_transformation(const ObjectTransformation& transformation)
 {
   m_viewport_transformation = transformation;
-  m_viewport_transformation.normalized();
+  [[maybe_unused]] const auto dummy = m_viewport_transformation.normalized();
 }
 
 void Viewport::keyPressEvent(QKeyEvent* event)

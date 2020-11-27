@@ -140,7 +140,7 @@ void AnimationButton::paintEvent(QPaintEvent* event)
   static constexpr double PEN_WIDTH_MULTIPLIER = 0.1;
   static constexpr double ELLIPSE_RADIUS_LARGE = 0.8;
   static constexpr double ELLIPSE_RADIUS_MEDIUM = 0.4;
-  static constexpr double ELLIPSE_RADIUS_SMALL= 0.3;
+  static constexpr double ELLIPSE_RADIUS_SMALL = 0.3;
 
   QPen pen;
   if (!has_track()) {

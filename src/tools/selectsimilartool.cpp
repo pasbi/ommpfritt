@@ -1,4 +1,5 @@
 #include "tools/selectsimilartool.h"
+#include "common.h"
 #include "logging.h"
 #include "objects/path.h"
 #include "properties/floatproperty.h"
@@ -7,7 +8,6 @@
 #include "scene/mailbox.h"
 #include "scene/scene.h"
 #include "tools/handles/boundingboxhandle.h"
-#include "common.h"
 
 namespace
 {

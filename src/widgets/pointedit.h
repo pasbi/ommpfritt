@@ -24,7 +24,7 @@ private:
   QPushButton* m_mirror_from_right = nullptr;
   QPushButton* m_coupled;
   QPushButton* m_vanish_left = nullptr;
-  QPushButton* m_vanish_right= nullptr;
+  QPushButton* m_vanish_right = nullptr;
   CoordinateEdit* m_left_tangent_edit = nullptr;
   CoordinateEdit* m_right_tangent_edit = nullptr;
   CoordinateEdit* m_position_edit;

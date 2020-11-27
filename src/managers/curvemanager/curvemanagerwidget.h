@@ -62,7 +62,8 @@ private:
   std::map<KeyFrameHandleKey, KeyFrameHandleData> m_keyframe_handles;
   [[nodiscard]] bool is_visible(const KeyFrameHandleKey& key) const;
   [[nodiscard]] bool is_visible(const Track& track, std::size_t channel) const;
-  [[nodiscard]] const KeyFrameHandleKey* neighbor(const KeyFrameHandleKey& key, Track::Knot::Side side) const;
+  [[nodiscard]] const KeyFrameHandleKey* neighbor(const KeyFrameHandleKey& key,
+                                                  Track::Knot::Side side) const;
 
   [[nodiscard]] std::set<const KeyFrameHandleKey*> keyframe_handles_at(const QPointF& point) const;
 

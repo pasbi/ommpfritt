@@ -99,7 +99,8 @@ public:
   }
 
   [[nodiscard]] std::set<AbstractPropertyOwner*> property_owners() const;
-  [[nodiscard]] std::set<ReferenceProperty*> find_reference_holders(const AbstractPropertyOwner& candidate) const;
+  [[nodiscard]] std::set<ReferenceProperty*>
+  find_reference_holders(const AbstractPropertyOwner& candidate) const;
   [[nodiscard]] std::map<const AbstractPropertyOwner*, std::set<ReferenceProperty*>>
   find_reference_holders(const std::set<AbstractPropertyOwner*>& candidates) const;
   template<typename T> std::set<T*> find_items(const QString& name) const;

@@ -1,9 +1,9 @@
 #pragma once
 
 #include <QString>
-#include <cmath>
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 #include <functional>
 #include <list>
 #include <map>

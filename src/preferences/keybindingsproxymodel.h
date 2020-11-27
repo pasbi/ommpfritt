@@ -12,7 +12,8 @@ class KeyBindingsProxyModel : public QSortFilterProxyModel
   Q_OBJECT
 public:
   KeyBindingsProxyModel(KeyBindings& key_bindings);
-  [[nodiscard]] bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
+  [[nodiscard]] bool filterAcceptsRow(int source_row,
+                                      const QModelIndex& source_parent) const override;
 
 public Q_SLOTS:
   /**

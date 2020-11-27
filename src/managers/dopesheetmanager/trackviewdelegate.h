@@ -18,7 +18,8 @@ public:
   void paint(QPainter* painter,
              const QStyleOptionViewItem& option,
              const QModelIndex& index) const override;
-  [[nodiscard]] QSize sizeHint(const QStyleOptionViewItem&, const QModelIndex& index) const override;
+  [[nodiscard]] QSize sizeHint(const QStyleOptionViewItem&,
+                               const QModelIndex& index) const override;
 
   bool view_event(QEvent& event);
   void activate_index(const QModelIndex& index) const;

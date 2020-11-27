@@ -39,7 +39,8 @@ public:
   std::map<QString, MouseModifier> mouse_modifiers;
   std::map<QString, GridOption> grid_options;
 
-  [[nodiscard]] bool match(const QString& key, const QMouseEvent& event, bool check_modifiers) const;
+  [[nodiscard]] bool
+  match(const QString& key, const QMouseEvent& event, bool check_modifiers) const;
 };
 
 }  // namespace omm

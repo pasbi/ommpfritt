@@ -14,7 +14,8 @@ public:
   void paint(QPainter* painter,
              const QStyleOptionViewItem& option,
              const QModelIndex& index) const override;
-  [[nodiscard]] QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+  [[nodiscard]] QSize sizeHint(const QStyleOptionViewItem& option,
+                               const QModelIndex& index) const override;
 
   bool on_mouse_button_press(QMouseEvent& event);
   void on_mouse_move(QMouseEvent& event);
