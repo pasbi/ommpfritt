@@ -8,7 +8,7 @@
 
 namespace omm
 {
-PreferencesTree::PreferencesTree(const QString& translation_context, const QString filename)
+PreferencesTree::PreferencesTree(const QString& translation_context, const QString& filename)
     : m_translation_context(translation_context)
 {
   if (!load_from_file(filename)) {

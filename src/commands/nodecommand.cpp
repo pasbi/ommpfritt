@@ -142,7 +142,7 @@ AddNodesCommand::AddNodesCommand(NodeModel& model, std::vector<std::unique_ptr<N
 {
 }
 
-MoveNodesCommand::MoveNodesCommand(std::set<Node*> nodes, const QPointF& direction)
+MoveNodesCommand::MoveNodesCommand(const std::set<Node*>& nodes, const QPointF& direction)
     : Command(QObject::tr("Move Nodes")), m_old_positions(collect_old_positions(nodes)),
       m_direction(direction)
 {

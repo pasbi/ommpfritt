@@ -107,7 +107,7 @@ public:
 class MoveNodesCommand : public Command
 {
 public:
-  MoveNodesCommand(std::set<Node*> nodes, const QPointF& direction);
+  MoveNodesCommand(const std::set<Node*>& nodes, const QPointF& direction);
   void undo() override;
   void redo() override;
   [[nodiscard]] int id() const override

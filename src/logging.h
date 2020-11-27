@@ -70,7 +70,7 @@ std::enable_if_t<!std::is_enum_v<T>, QDebug> operator<<(QDebug ostream, const T&
 }
 
 template<template<typename> typename ContainerT, typename T>
-void stream_container(QDebug& ostream, const ContainerT<T>& vs, const std::string container_name)
+void stream_container(QDebug& ostream, const ContainerT<T>& vs, const std::string& container_name)
 {
   ostream << container_name << "(" << vs.size() << ")[";
   for (auto it = vs.cbegin(); it != vs.cend(); ++it) {

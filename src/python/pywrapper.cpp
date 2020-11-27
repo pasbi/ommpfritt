@@ -126,7 +126,7 @@ variant_type python_to_variant(const pybind11::object& object, const QString& ty
   }
 }
 
-pybind11::object variant_to_python(variant_type variant)
+pybind11::object variant_to_python(const variant_type& variant)
 {
   return std::visit(
       [](auto&& v) {

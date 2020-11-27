@@ -25,7 +25,7 @@ struct MoveTagContext {
 class MoveTagsCommand : public Command
 {
 public:
-  MoveTagsCommand(const std::vector<Tag*> tags, Object& new_owner, Tag* new_predecessor);
+  MoveTagsCommand(const std::vector<Tag*>& tags, Object& new_owner, Tag* new_predecessor);
   void redo() override;
   void undo() override;
 

@@ -2,6 +2,7 @@
 #include "animation/animator.h"
 #include "animation/track.h"
 #include "properties/property.h"
+#include <utility>
 
 namespace
 {
@@ -14,7 +15,7 @@ collect_knots(const std::set<omm::Property*>& properties, int frame)
       // don't add keyframes to non-existing tracks.
       // You must make sure that the track exists beforehand.
       omm::Track::Knot& knot = property->track()->knot(frame);
-      map.insert({property, &knot});
+      map.emplace(property, &knot);
     }
   }
   return map;
@@ -28,7 +29,7 @@ create_knots(const std::set<omm::Property*>& properties, int frame)
     if (property->track() != nullptr) {
       Q_UNUSED(frame)
       auto knot = std::make_unique<omm::Track::Knot>(property->variant_value());
-      map.insert({property, std::move(knot)});
+      map.emplace(property, std::move(knot));
     }
   }
   return map;
@@ -39,7 +40,7 @@ collect_refs(const std::map<omm::Property*, std::unique_ptr<omm::Track::Knot>>& 
 {
   std::map<omm::Property*, omm::Track::Knot*> refs;
   for (auto&& [property, own] : owns) {
-    refs.insert({property, own.get()});
+    refs.emplace(property, own.get());
   }
   return refs;
 }
@@ -56,7 +57,7 @@ KeyFrameCommand::KeyFrameCommand(Animator& animator,
     : Command(label), m_animator(animator), m_frame(frame), m_refs(refs)
 {
   for (auto&& [property, knot] : owns) {
-    m_owns.insert({property, std::move(knot)});
+    m_owns.emplace(property, std::move(knot));
   }
 }
 
@@ -67,7 +68,7 @@ KeyFrameCommand::KeyFrameCommand(Animator& animator,
     : KeyFrameCommand(animator, label, frame, collect_refs(owns))
 {
   for (auto&& [property, knot] : owns) {
-    m_owns.insert({property, std::move(knot)});
+    m_owns.emplace(property, std::move(knot));
   }
 }
 
@@ -87,7 +88,7 @@ void KeyFrameCommand::remove()
     Track* track = property->track();
     assert(track != nullptr);
     auto knot = m_animator.remove_knot(*track, m_frame);
-    m_owns.insert({property, std::move(knot)});
+    m_owns.emplace(property, std::move(knot));
   }
 }
 

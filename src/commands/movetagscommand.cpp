@@ -58,7 +58,7 @@ void MoveTagContext::assert_is_valid() const
   assert(subject->owner == owner);
 }
 
-MoveTagsCommand ::MoveTagsCommand(const std::vector<Tag*> tags,
+MoveTagsCommand ::MoveTagsCommand(const std::vector<Tag*>& tags,
                                   Object& new_owner,
                                   Tag* new_predecessor)
     : Command(QObject::tr("Move tags")), m_old_contextes(make_old_contextes(tags)),

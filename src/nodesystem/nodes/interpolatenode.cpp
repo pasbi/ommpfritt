@@ -48,7 +48,7 @@ def %1(x, y, balance, ramp):
         {AbstractNodeCompiler::Language::GLSL,
          ::transform<QString, QList>(supported_glsl_types,
                                      [](auto&& types) {
-                                       auto [return_type, arg_type] = types;
+                                       const auto& [return_type, arg_type] = types;
                                        return glsl_definition_template
                                            .arg(NodeCompilerGLSL::translate_type(return_type))
                                            .arg(NodeCompilerGLSL::translate_type(arg_type));

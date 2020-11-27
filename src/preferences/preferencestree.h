@@ -20,7 +20,7 @@ class PreferencesTree : public QAbstractItemModel
 {
   Q_OBJECT
 public:
-  PreferencesTree(const QString& translation_context, const QString filename);
+  PreferencesTree(const QString& translation_context, const QString& filename);
   ~PreferencesTree() override;
   void reset();
 
