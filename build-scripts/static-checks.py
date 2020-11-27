@@ -66,6 +66,8 @@ parser.add_argument("--files", required=True, nargs='+',
                     help="The files to check")
 parser.add_argument("--modes", required=True, choices=["clang-tidy", "clazy"],
                     nargs='+', help="The checker(s) to use")
+parser.add_argument("-j", type=int, default=2,
+                    help="Number of parallel jobs.")
 args = parser.parse_args()
 
 clazy_checks = ','.join(clazy_checks)
@@ -103,7 +105,7 @@ def perform_checks_on_single_file(mode, fn):
         return False
 
 def perform_checks(mode):
-    pool = multiprocessing.Pool(2)
+    pool = multiprocessing.Pool(args.j)
     zipped_args = zip([mode] * len(files), files)
     return_codes = pool.starmap(perform_checks_on_single_file, zipped_args)
     if all(return_codes):
