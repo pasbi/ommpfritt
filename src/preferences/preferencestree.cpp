@@ -118,7 +118,7 @@ bool PreferencesTree::load_from_file(const QString& filename)
                                                    [this]() { endResetModel(); })
                     : std::unique_ptr<ResetModel>(nullptr);
 
-  static const QRegExp context_regexp("\\[\\w+\\]");
+  static const QRegExp context_regexp(R"(\[\w+\])");
   QString group_name = "";
 
   QTextStream stream(&file);
