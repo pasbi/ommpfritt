@@ -12,7 +12,8 @@ NodesOwner::NodesOwner(AbstractNodeCompiler::Language language, Scene& scene)
 }
 
 NodesOwner::NodesOwner(const NodesOwner& other)
-    : m_node_model(other.node_model() == nullptr ? nullptr : std::make_unique<NodeModel>(*other.node_model()))
+    : m_node_model(other.node_model() == nullptr ? nullptr
+                                                 : std::make_unique<NodeModel>(*other.node_model()))
 {
 }
 
