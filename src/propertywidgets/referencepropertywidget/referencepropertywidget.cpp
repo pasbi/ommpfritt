@@ -50,8 +50,6 @@ ReferencePropertyWidget ::ReferencePropertyWidget(Scene& scene,
   ReferencePropertyWidget::update_edit();
 }
 
-ReferencePropertyWidget::~ReferencePropertyWidget() = default;
-
 void ReferencePropertyWidget::update_edit()
 {
   QSignalBlocker blocker(m_line_edit);

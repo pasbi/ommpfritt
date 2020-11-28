@@ -44,15 +44,16 @@ public:
   Scene(PythonEngine& python_engine);
   ~Scene() override;
 
+  Scene(Scene&&) = delete;
+  Scene(const Scene&) = delete;
+  Scene& operator=(Scene&&) = delete;
+  Scene& operator=(const Scene&) = delete;
+
   /**
    * @brief polish do some late initializations
    *  Call this function before using the scene but after the application was initialized.
    */
   void polish();
-
-private:
-  Scene(const Scene& other) = delete;
-  Scene(Scene&& other) = delete;
 
 private:
   void prepare_reset();

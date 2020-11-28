@@ -12,7 +12,7 @@ constexpr double H_FACTOR = 255.0;
 constexpr double S_FACTOR = 255.0;
 constexpr double V_FACTOR = 255.0;
 constexpr double A_FACTOR = 255.0;
-std::map<Color::Role, double> ColorComponentSpinBox::factor{
+const std::map<Color::Role, double> ColorComponentSpinBox::factor{
     {Color::Role::Red, R_FACTOR},
     {Color::Role::Green, G_FACTOR},
     {Color::Role::Blue, B_FACTOR},
@@ -47,7 +47,7 @@ void ColorComponentSpinBox::set_color(const Color& color)
 void ColorComponentSpinBox::set_role(Color::Role role)
 {
   AbstractColorComponentWidget::set_role(role);
-  m_factor = factor[role];
+  m_factor = factor.at(role);
   m_spin_box->set_range(0.0, m_factor);
 }
 

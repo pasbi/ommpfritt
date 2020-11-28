@@ -19,7 +19,6 @@ class ReferenceLineEdit
   Q_OBJECT
 public:
   explicit ReferenceLineEdit(QWidget* parent = nullptr);
-  ~ReferenceLineEdit() override = default;
   void set_value(const value_type& value) override;
   [[nodiscard]] value_type value() const override;
   void set_filter(const ReferenceProperty::Filter& filter);

@@ -23,6 +23,10 @@ class NamedColorsDialog : public QDialog
 public:
   explicit NamedColorsDialog(QWidget* parent = nullptr);
   ~NamedColorsDialog() override;
+  NamedColorsDialog(NamedColorsDialog&&) = delete;
+  NamedColorsDialog(const NamedColorsDialog&) = delete;
+  NamedColorsDialog& operator=(NamedColorsDialog&&) = delete;
+  NamedColorsDialog& operator=(const NamedColorsDialog&) = delete;
 
 public Q_SLOTS:
   static void add();

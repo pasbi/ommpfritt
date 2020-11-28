@@ -22,7 +22,6 @@ public:
   T* predecessor(T& sibling) const;
   virtual size_t insert_position(const T* predecessor) const = 0;
 
-private:
   // we don't want to assign copy or move
   const Structure<T>& operator=(const Structure<T>&) = delete;
   const Structure<T>& operator=(Structure<T>&&) = delete;

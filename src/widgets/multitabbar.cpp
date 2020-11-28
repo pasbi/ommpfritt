@@ -44,7 +44,7 @@ void MultiTabBar::add_tab(const QString& text)
             } else if (!extend_selection()) {
               set_current_indices({static_cast<int>(i)});
             }
-
+            // NOLINTNEXTLINE(readability-misleading-indentation)
             Q_EMIT current_indices_changed(current_indices());
           });
   tab->installEventFilter(this);

@@ -22,7 +22,6 @@ class AbstractPropertyWidget
   Q_OBJECT
 public:
   explicit AbstractPropertyWidget(Scene& scene, const std::set<Property*>& properties);
-  ~AbstractPropertyWidget() override = default;
 
   template<typename T> T configuration(const QString& key)
   {

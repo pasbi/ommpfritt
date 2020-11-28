@@ -124,11 +124,14 @@ private:
     double& h = hsva[0];
     hsva[3] = 1.0;
     if (highlight) {
-      h = std::fmod(h + 0.5, 1.0);
-      v = v < 0.75 ? 1.0 : 5.0;
+      static constexpr double VALUE_THRESHOLD = 0.75;
+      static constexpr double HALF_HUE_RANGE = 0.5;
+      h = std::fmod(h + HALF_HUE_RANGE, 1.0);
+      v = v < VALUE_THRESHOLD ? 1.0 : 5.0; // TODO this seems to be wrong.
       s = 1.0;
     } else {
-      v = v < 0.5 ? 1.0 : 0.0;
+      static constexpr double VALUE_THRESHOLD = 0.5;
+      v = v < VALUE_THRESHOLD ? 1.0 : 0.0;
       s = 0.0;
     }
     return Color(Color::Model::HSVA, hsva).to_qcolor();
@@ -138,10 +141,12 @@ private:
   {
     auto hsva = Color::from_qcolor(color).components(Color::Model::HSVA);
     double& v = hsva[2];
-    if (v > 0.5) {
-      v -= 0.2;
+    static constexpr double VALUE_THRESHOLD = 0.5;
+    static constexpr double VALUE_OFFSET = 0.2;
+    if (v > VALUE_THRESHOLD) {
+      v -= VALUE_OFFSET;
     } else {
-      v += 0.2;
+      v += VALUE_OFFSET;
     }
     return Color(Color::Model::HSVA, hsva).to_qcolor();
   }

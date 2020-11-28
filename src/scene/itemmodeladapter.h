@@ -19,6 +19,11 @@ public:
   using structure_type = StructureT;
   explicit ItemModelAdapter(Scene& scene, StructureT& structure);
   virtual ~ItemModelAdapter() = default;
+  ItemModelAdapter(const ItemModelAdapter&) = delete;
+  ItemModelAdapter(ItemModelAdapter&&) = delete;
+  ItemModelAdapter& operator=(const ItemModelAdapter&) = delete;
+  ItemModelAdapter& operator=(ItemModelAdapter&&) = delete;
+
   [[nodiscard]] Qt::DropActions supportedDragActions() const override;
   [[nodiscard]] Qt::DropActions supportedDropActions() const override;
   bool canDropMimeData(const QMimeData* data,

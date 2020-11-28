@@ -9,11 +9,16 @@ namespace omm
 {
 FilePathEdit::FilePathEdit(QWidget* parent) : QWidget(parent)
 {
-  m_line_edit = std::make_unique<QLineEdit>(this).release();
-  m_button = std::make_unique<QPushButton>(tr("..."), this).release();
-  std::make_unique<QHBoxLayout>(this).release();
-  layout()->addWidget(m_line_edit);
-  layout()->addWidget(m_button);
+  setLayout(std::make_unique<QHBoxLayout>().release());
+
+  auto line_edit = std::make_unique<QLineEdit>(this);
+  m_line_edit = line_edit.get();
+  layout()->addWidget(line_edit.release());
+
+  auto button = std::make_unique<QPushButton>(tr("..."), this);
+  m_button = button.get();
+  layout()->addWidget(button.release());
+
   connect(m_button, &QPushButton::clicked, [this]() {
     QFileDialog dialog(this);
     dialog.setFileMode(mode);

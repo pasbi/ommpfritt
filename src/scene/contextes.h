@@ -22,6 +22,12 @@ public:
   // We need the virtual destructor.
   // Simplest solution: Have make the dtor of a base class virtual.
   virtual ~AbstractContext() = default;
+
+  explicit AbstractContext() = default;
+  AbstractContext(AbstractContext&&) = default;
+  AbstractContext(const AbstractContext&) = default;
+  AbstractContext& operator=(AbstractContext&&) = default;
+  AbstractContext& operator=(const AbstractContext&) = default;
 };
 
 template<typename T, template<typename...> class Wrapper> class ListContext : public AbstractContext

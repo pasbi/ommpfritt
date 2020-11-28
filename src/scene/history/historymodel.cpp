@@ -85,6 +85,8 @@ Command* HistoryModel::last_command() const
       // macro
       return nullptr;
     } else {
+      // This is dangerous, I know. But there's no other way around that limitation from QUndoStack.
+      // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
       return const_cast<Command*>(dynamic_cast<const Command*>(cmd));
     }
   }

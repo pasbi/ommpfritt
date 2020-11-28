@@ -15,6 +15,11 @@ class AbstractTextEditAdapter : public MultiValueEdit<QString>
 {
 public:
   virtual ~AbstractTextEditAdapter() = default;
+  explicit AbstractTextEditAdapter() = default;
+  AbstractTextEditAdapter(const AbstractTextEditAdapter&) = delete;
+  AbstractTextEditAdapter(AbstractTextEditAdapter&&) = delete;
+  AbstractTextEditAdapter& operator=(const AbstractTextEditAdapter&) = delete;
+  AbstractTextEditAdapter& operator=(AbstractTextEditAdapter&&) = delete;
   virtual void clear() = 0;
   virtual QWidget* as_widget() = 0;
 };

@@ -20,6 +20,10 @@ class ColorWidget : public ColorPicker
 public:
   explicit ColorWidget(QWidget* parent = nullptr);
   ~ColorWidget() override;
+  ColorWidget(ColorWidget&&) = delete;
+  ColorWidget& operator=(ColorWidget&&) = delete;
+  ColorWidget(const ColorWidget&) = delete;
+  ColorWidget& operator=(const ColorWidget&) = delete;
   [[nodiscard]] QString name() const override;
   void set_compact();
   void hide_named_colors();

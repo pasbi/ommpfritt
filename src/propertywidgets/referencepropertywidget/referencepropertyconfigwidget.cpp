@@ -40,8 +40,8 @@ ReferencePropertyConfigWidget::ReferencePropertyConfigWidget()
     allowed_kind_layout->addWidget(checkbox);
   }
   allowed_kind_layout->addStretch();
-
-  required_flags_layout->addWidget(new QLabel(tr("Requirements:")));
+  auto label = std::make_unique<QLabel>(tr("Requirements:"));
+  required_flags_layout->addWidget(label.release());
   for (auto [_, checkbox] : m_required_flag_checkboxes) {
     required_flags_layout->addWidget(checkbox);
   }
