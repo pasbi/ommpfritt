@@ -12,7 +12,7 @@ struct Vertex
   explicit Vertex(int id) : id(id) {}
   std::set<Vertex*> successors;
   operator int() const { return id; }
-  bool operator==(const Vertex& other) { return other.id == id; }
+  bool operator==(const Vertex& other) const { return other.id == id; }
 private:
   int id;
 };

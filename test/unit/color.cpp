@@ -93,7 +93,7 @@ TEST(color, rgb_to_hex)
 
 TEST(color, hex_to_rgb)
 {
-  bool ok;
+  bool ok = false;
   for (auto&& [r, r_s] : hex_lut) {
     for (auto&& [g, g_s] : hex_lut) {
       for (auto&& [b, b_s] : hex_lut) {
