@@ -70,6 +70,10 @@ parser.add_argument("-j", type=int, default=2,
                     help="Number of parallel jobs.")
 parser.add_argument("--fix", action='store_true', default=False,
                     help="Apply fixes where possible.")
+parser.add_argument("--include-tests", action='store_true', default=False,
+                    help="Also check the unit tests. Expect many false positives.")
+parser.add_argument("--include-generated", action='store_true', default=False,
+                    help="Also check generated code. Expect many false positives.")
 args = parser.parse_args()
 
 clazy_checks = ','.join(clazy_checks)
@@ -85,9 +89,19 @@ command_args = {
 if args.fix:
     command_args['clang-tidy'] += ['--fix']
 
+def is_generated(fn):
+    return any(fn in path for path in ["/src/registers.cpp", "/src/translations.h"])
+
+def is_test(fn):
+    return any(fn in path for path in ["/test/unit/"])
+
 def file_filter(fn):
     fn = os.path.normpath(fn).replace("\\", "/")
     if "/external/" in fn:
+        return False
+    elif not args.include_generated and is_generated(fn):
+        return False
+    elif not args.include_tests and is_test(fn):
         return False
     else:
         return fn.endswith(".h") or fn.endswith(".cpp")
