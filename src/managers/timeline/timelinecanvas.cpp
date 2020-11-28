@@ -265,8 +265,12 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
                                     std::clamp<int>(pos.y(), rect.top(), rect.bottom()));
     }
 
-    const int left = std::lround(frame_range.pixel_to_unit(rubber_band().left() - rect.left()));
-    const int right = std::lround(frame_range.pixel_to_unit(rubber_band().right() - rect.left()));
+    const auto compute_x = [this, left=rect.left()](int pos) {
+      return static_cast<int>(std::lround(frame_range.pixel_to_unit(pos) - left));
+    };
+
+    const int left =  compute_x(rubber_band().left());
+    const int right = compute_x(rubber_band().right());
 
     for (Property* property : animator.accelerator().properties()) {
       Track& track = *property->track();
@@ -471,14 +475,21 @@ void TimelineCanvas ::draw_keyframe(QPainter& painter,
   QPen pen;
   pen.setCosmetic(true);
   pen.setColor(ui_color(m_widget, "TimeLine", "key outline"));
+  static constexpr double MIN_X_SCALE = 4.0;
+  static constexpr double MAX_X_SCALE = 4.0;
+  static constexpr double MIN_Y_SCALE = 20.0;
   const QPointF scale(
-      std::clamp(rect.width() / (frame_range.end - frame_range.begin) / 2.0, 4.0, 20.0),
-      std::min(footer_y() / 2.0, 20.0));
-  pen.setWidthF(std::max(0.0, std::min(scale.x(), scale.y()) / 5.0));
+      std::clamp(rect.width() / (frame_range.end - frame_range.begin) / 2.0,
+                 MIN_X_SCALE,
+                 MAX_X_SCALE),
+      std::min(footer_y() / 2.0, MIN_Y_SCALE));
+  static constexpr double PEN_WIDTH_SCALE = 0.2;
+  pen.setWidthF(std::max(0.0, std::min(scale.x(), scale.y()) * PEN_WIDTH_SCALE));
   painter.setPen(pen);
   painter.save();
   painter.translate(frame_range.unit_to_pixel(frame), y);
-  painter.scale(scale.x() * 0.8, scale.y() * 0.8);
+  static constexpr double PAINTER_SCALE = 0.8;
+  painter.scale(scale.x() * PAINTER_SCALE, scale.y() * PAINTER_SCALE);
   painter.fillPath(diamond, ui_color(m_widget, "TimeLine", status_name_map.at(status)));
   painter.drawPath(diamond);
   painter.restore();

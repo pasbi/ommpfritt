@@ -12,7 +12,7 @@
 
 namespace
 {
-static const std::map<QPalette::ColorRole, QString> role_map{
+const std::map<QPalette::ColorRole, QString> role_map{
     {QPalette::Window, "window"},
     {QPalette::WindowText, "window text"},
     {QPalette::Text, "text"},
@@ -33,14 +33,14 @@ static const std::map<QPalette::ColorRole, QString> role_map{
     {QPalette::LinkVisited, "link visited"},
 };
 
-static const std::map<std::size_t, QPalette::ColorGroup> group_map{{0, QPalette::Active},
+const std::map<std::size_t, QPalette::ColorGroup> group_map{{0, QPalette::Active},
                                                                    {1, QPalette::Inactive},
                                                                    {2, QPalette::Disabled}};
 
 omm::Color color_from_html(const QString& html)
 {
-  bool ok;
-  const auto color = omm::Color::from_html(html, &ok);
+  bool ok = false;
+  auto color = omm::Color::from_html(html, &ok);
   assert(ok);
   return color;
 }
@@ -182,7 +182,7 @@ void UiColors::draw_background(QPainter& painter, const QRectF& rect)
 {
   static const std::array<QColor, 2> bg_colors = {QColor(128, 128, 128), QColor(180, 180, 180)};
 
-  int size = 7;
+  static constexpr int size = 7;
 
   painter.save();
   int mx = rect.right();

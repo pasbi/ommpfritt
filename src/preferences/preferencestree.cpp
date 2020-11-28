@@ -363,11 +363,7 @@ QVariant PreferencesTree::data(const QModelIndex& index, int role) const
 bool PreferencesTree::setData(const QModelIndex& index, const QVariant& value, int role)
 {
   auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());
-  if (role != Qt::EditRole) {
-    return false;
-  } else if (index.column() == 0) {
-    return false;
-  } else if (ptr->is_group()) {
+  if (role != Qt::EditRole || index.column() == 0 || ptr->is_group()) {
     return false;
   }
 
@@ -396,14 +392,14 @@ bool PreferencesTree::is_group(const QModelIndex& index)
   return static_cast<const PreferencesTreeItem*>(index.internalPointer())->is_group();
 }
 
-PreferencesTreeGroupItem& PreferencesTree::group(const QModelIndex& index) const
+PreferencesTreeGroupItem& PreferencesTree::group(const QModelIndex& index)
 {
   assert(is_group(index));
   auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());
   return *dynamic_cast<PreferencesTreeGroupItem*>(ptr);
 }
 
-PreferencesTreeValueItem& PreferencesTree::value(const QModelIndex& index) const
+PreferencesTreeValueItem& PreferencesTree::value(const QModelIndex& index)
 {
   assert(!is_group(index));
   auto* ptr = static_cast<PreferencesTreeItem*>(index.internalPointer());

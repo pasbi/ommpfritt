@@ -19,8 +19,11 @@ auto init_grid_options()
 {
   using GridOption = omm::Preferences::GridOption;
   std::map<QString, GridOption> map;
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
   map.insert({"fine", GridOption(omm::Preferences::tr("&fine"), Qt::SolidLine, 0.5, 100.0)});
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
   map.insert({"mid", GridOption(omm::Preferences::tr("&mid"), Qt::SolidLine, 1.0, 1000.0)});
+  // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
   map.insert({"coarse", GridOption(omm::Preferences::tr("&coarse"), Qt::SolidLine, 2.0, 10000.0)});
   return map;
 }

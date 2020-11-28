@@ -20,9 +20,10 @@ class ChopProxyModel : public QIdentityProxyModel
 public:
   [[nodiscard]] int rowCount(const QModelIndex& index) const override
   {
+    using namespace omm;
     const auto* const animator = this->animator();
     if (animator == nullptr
-        || animator->index_type(mapToSource(index)) == omm::Animator::IndexType::Property) {
+        || Animator::index_type(mapToSource(index)) == Animator::IndexType::Property) {
       return 0;
     } else {
       return QIdentityProxyModel::rowCount(index);
@@ -31,9 +32,10 @@ public:
 
   [[nodiscard]] bool hasChildren(const QModelIndex& index) const override
   {
+    using namespace omm;
     const auto* const animator = this->animator();
     if (animator == nullptr
-        || animator->index_type(mapToSource(index)) == omm::Animator::IndexType::Property) {
+        || Animator::index_type(mapToSource(index)) == Animator::IndexType::Property) {
       return false;
     } else {
       return QIdentityProxyModel::hasChildren(index);

@@ -48,8 +48,8 @@ public:
   bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
   Qt::ItemFlags flags(const QModelIndex& index) const override;
   static bool is_group(const QModelIndex& index);
-  PreferencesTreeGroupItem& group(const QModelIndex& index) const;
-  PreferencesTreeValueItem& value(const QModelIndex& index) const;
+  static PreferencesTreeGroupItem& group(const QModelIndex& index);
+  static PreferencesTreeValueItem& value(const QModelIndex& index);
   static constexpr auto DEFAULT_VALUE_ROLE = Qt::UserRole + 1;
   virtual void apply();
   QString dump() const;

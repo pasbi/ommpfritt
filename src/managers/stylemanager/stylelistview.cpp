@@ -11,7 +11,7 @@
 
 namespace
 {
-static constexpr int ICON_SIZE = 50;
+constexpr int ICON_SIZE = 50;
 }
 
 namespace omm

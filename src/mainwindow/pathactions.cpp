@@ -221,7 +221,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
        }
 
        std::unique_ptr<Macro> macro;
-       if (cmds.size() > 0) {
+       if (!cmds.empty()) {
          macro = app.scene.history().start_macro(QObject::tr("Subdivide Paths"));
        }
        for (auto&& cmd : cmds) {

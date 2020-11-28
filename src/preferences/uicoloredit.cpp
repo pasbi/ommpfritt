@@ -21,9 +21,7 @@ UiColorEdit::UiColorEdit(QWidget* parent) : QWidget(parent), m_ui(new Ui::UiColo
   Application::instance().register_auto_invert_icon_button(*m_ui->pb_reset);
 }
 
-UiColorEdit::~UiColorEdit()
-{
-}
+UiColorEdit::~UiColorEdit() = default;
 
 void UiColorEdit::set_default_color(const Color& color)
 {

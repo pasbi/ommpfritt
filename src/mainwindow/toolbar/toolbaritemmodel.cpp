@@ -116,7 +116,7 @@ public:
                      button.get(),
                      &QToolButton::setDefaultAction);
     for (int row = 0; row < this->rowCount(); ++row) {
-      const auto item = this->child(row);
+      const auto* item = this->child(row);
       button->addAction(dynamic_cast<const AbstractItem*>(item)->make_action().release());
     }
     if (button->actions().empty()) {

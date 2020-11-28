@@ -31,7 +31,7 @@ public:
   [[nodiscard]] Tag* tag_before(const QModelIndex& index, QPoint pos) const;
   [[nodiscard]] Tag* tag_before(const QPoint& pos) const;
   [[nodiscard]] static QSize tag_icon_size();
-  [[nodiscard]] int advance() const;
+  [[nodiscard]] static int advance();
   [[nodiscard]] std::set<Tag*> tags(const QModelIndex& index, const QRect& rect) const;
   [[nodiscard]] QRect tag_rect(const QPoint& base, std::size_t i) const;
 

@@ -44,6 +44,7 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
       m_tags_item_delegate(std::make_unique<TagsItemDelegate>(*this, *m_selection_model, 2)),
       m_model(model)
 {
+  static constexpr int AUTO_EXPAND_DELAY_MS = 200;
   setItemDelegateForColumn(1, m_object_quick_access_delegate.get());
   header()->setSectionResizeMode(1, QHeaderView::Fixed);
   header()->resizeSection(1, row_height);
@@ -52,7 +53,7 @@ ObjectTreeView::ObjectTreeView(ObjectTree& model)
 
   setSelectionModel(m_selection_model.get());
   setSelectionBehavior(QAbstractItemView::SelectItems);
-  setAutoExpandDelay(200);
+  setAutoExpandDelay(AUTO_EXPAND_DELAY_MS);
 
   setIconSize(QSize(row_height, row_height));
   connect(&model, &ObjectTree::expand_item, [this](const QModelIndex& index) {

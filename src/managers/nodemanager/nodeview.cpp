@@ -295,9 +295,10 @@ void NodeView::drawBackground(QPainter* painter, const QRectF&)
     painter->fillRect(sceneRect(), ui_color(*this, "NodeView", "canvas-bg-valid"));
   }
 
+  static constexpr double GRID_LINE_WIDTH = 0.5;
   QPen pen;
   pen.setCosmetic(true);
-  pen.setWidthF(0.5);
+  pen.setWidthF(GRID_LINE_WIDTH);
   pen.setColor(ui_color(*this, "NodeView", "grid-color"));
   painter->setPen(pen);
 
@@ -328,7 +329,7 @@ void NodeView::mousePressEvent(QMouseEvent* event)
     viewport()->update();
     AbstractPort& port = port_item->port;
     if (port.port_type == PortType::Input) {
-      InputPort& ip = dynamic_cast<InputPort&>(port);
+      auto& ip = dynamic_cast<InputPort&>(port);
       if (OutputPort* op = ip.connected_output(); op == nullptr) {
         m_tmp_connection_origin = port_item;
       } else {

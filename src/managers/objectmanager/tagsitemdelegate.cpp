@@ -187,8 +187,8 @@ Tag* TagsItemDelegate::tag_before(const QModelIndex& index, QPoint pos) const
 
   Object& object = m_view.model()->item_at(index);
   auto tags = object.tags.ordered_items();
-  const int x = std::lround(pos.x() / advance()) - 1;
-  if (x < 0 || tags.size() == 0) {
+  const int x = static_cast<int>(std::lround(pos.x() / advance()) - 1);
+  if (x < 0 || tags.empty()) {
     return nullptr;
   } else {
     return tags.at(std::min(tags.size() - 1, static_cast<std::size_t>(x)));
@@ -200,7 +200,7 @@ QSize TagsItemDelegate::tag_icon_size()
   return QSize(ObjectTreeView::row_height, ObjectTreeView::row_height);
 }
 
-int TagsItemDelegate::advance() const
+int TagsItemDelegate::advance()
 {
   return tag_icon_size().width();
 }

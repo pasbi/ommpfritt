@@ -175,7 +175,7 @@ void CurveManagerWidget::mousePressEvent(QMouseEvent* event)
           data.is_selected = false;
         }
       }
-      for (auto& k : ks) {
+      for (const auto& k : ks) {
         if (is_visible(*k)) {
           m_keyframe_handles.at(*k).is_selected = true;
           break;  // select only the first one.

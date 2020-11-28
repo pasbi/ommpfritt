@@ -16,6 +16,11 @@ namespace
 {
 using namespace omm;
 
+static constexpr QSizeF half_size_hv{0.5, 0.5};
+static constexpr QSizeF half_size_v{0.5, 1.0};
+static constexpr QPointF pos_upper_visibility{0.5, 0.0};
+static constexpr QPointF pos_lower_visibility{0.5, 0.5};
+
 class PropertyArea : public ObjectQuickAccessDelegate::Area
 {
 public:
@@ -57,7 +62,7 @@ protected:
   std::unique_ptr<Command> make_command(const QModelIndex& index, bool update_cache) override;
 
 private:
-  bool m_new_value;
+  bool m_new_value = false;
 };
 
 Object::Visibility advance_visibility(Object::Visibility visibility)
@@ -174,7 +179,7 @@ std::unique_ptr<Command> VisibilityPropertyArea::make_command(const QModelIndex&
 }
 
 IsEnabledPropertyArea::IsEnabledPropertyArea(ObjectTreeView& view)
-    : PropertyArea(QRectF(QPointF(0.0, 0.0), QSizeF(0.5, 1.0)),
+    : PropertyArea(QRectF(QPointF(0.0, 0.0), half_size_v),
                    view,
                    Object::IS_ACTIVE_PROPERTY_KEY)
 {
@@ -229,10 +234,10 @@ ObjectQuickAccessDelegate::ObjectQuickAccessDelegate(QAbstractItemView& view)
   add_area(std::make_unique<IsEnabledPropertyArea>(otv));
   using VPA = VisibilityPropertyArea;
   add_area(std::make_unique<VPA>(otv,
-                                 QRectF(QPointF(0.5, 0.5), QSizeF(0.5, 0.5)),
+                                 QRectF(pos_upper_visibility, half_size_hv),
                                  Object::VISIBILITY_PROPERTY_KEY));
   add_area(std::make_unique<VPA>(otv,
-                                 QRectF(QPointF(0.5, 0.0), QSizeF(0.5, 0.5)),
+                                 QRectF(pos_lower_visibility, half_size_hv),
                                  Object::VIEWPORT_VISIBILITY_PROPERTY_KEY));
 }
 

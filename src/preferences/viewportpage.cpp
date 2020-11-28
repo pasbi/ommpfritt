@@ -71,8 +71,9 @@ ViewportPage::MouseModifiersGroup::MouseModifiersGroup(Preferences::MouseModifie
 ViewportPage::GridGroup::GridGroup(Preferences::GridOption& model, QFormLayout& layout)
     : m_model(model)
 {
+  static constexpr double MAX_PEN_WIDTH = 10;
   auto sp_penwidth = std::make_unique<QDoubleSpinBox>();
-  sp_penwidth->setRange(0, 10);
+  sp_penwidth->setRange(0.0, MAX_PEN_WIDTH);
   sp_penwidth->setSuffix(tr(" px"));
   sp_penwidth->setValue(model.pen_width);
   m_sp_penwidth = sp_penwidth.get();

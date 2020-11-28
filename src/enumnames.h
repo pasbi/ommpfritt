@@ -7,7 +7,7 @@
 
 namespace omm
 {
-template<typename E> const char* enum_name_impl(E e);
+template<typename E> const char* enum_name_impl(E);
 
 template<typename E> std::set<E> enumerate_enum();
 template<typename E> bool is_flag();

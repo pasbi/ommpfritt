@@ -11,6 +11,8 @@ namespace omm
 {
 void TextOptionProperties::make_properties(const QString& category) const
 {
+  static constexpr double DEFAULT_TAB_STOP_WIDTH = 10.0;
+  static constexpr double MAX_TAB_STOP_WIDTH = 100.0;
   create_property<OptionProperty>(ALIGNH_PROPERTY_KEY)
       .set_options({QObject::tr("Left"),
                     QObject::tr("Center"),
@@ -30,8 +32,8 @@ void TextOptionProperties::make_properties(const QString& category) const
       })
       .set_label(QObject::tr("V-Align"))
       .set_category(category);
-  create_property<FloatProperty>(TABSTOPDISTANCE_PROPERTY_KEY, 10)
-      .set_range(0, 100)
+  create_property<FloatProperty>(TABSTOPDISTANCE_PROPERTY_KEY, DEFAULT_TAB_STOP_WIDTH)
+      .set_range(0, MAX_TAB_STOP_WIDTH)
       .set_label(QObject::tr("Tab width"))
       .set_category(category);
   create_property<OptionProperty>(DIRECTION_PROPERTY_KEY)

@@ -287,7 +287,7 @@ QVariant Animator::data(const QModelIndex& index, int role) const
   case IndexType::Channel:
     switch (role) {
     case Qt::DisplayRole: {
-      const auto& c = this->channel(index);
+      const auto& c = channel(index);
       return c.track.property().channel_name(c.channel);
     }
     default:

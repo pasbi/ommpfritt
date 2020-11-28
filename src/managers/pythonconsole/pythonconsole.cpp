@@ -116,7 +116,7 @@ bool PythonConsole::eventFilter(QObject* object, QEvent* event)
 {
   if (object == m_commandline) {
     if (event->type() == QEvent::KeyPress) {
-      auto* key_event = static_cast<QKeyEvent*>(event);
+      auto* key_event = dynamic_cast<QKeyEvent*>(event);
       if (!(key_event->modifiers() & caption_modifiers)) {
         switch (key_event->key()) {
         case Qt::Key_Return:

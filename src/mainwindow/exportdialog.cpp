@@ -390,7 +390,7 @@ void ExportDialog::start_export_animation()
     const bool allow_overwrite = m_ui->cb_overwrite->isChecked();
     for (int frame = m_ui->sb_start->value(); frame <= m_ui->sb_end->value(); ++frame) {
       const QString filename = path + "/" + ExportDialog::filename(pattern, frame);
-      if (QFileInfo().exists(filename) && !allow_overwrite) {
+      if (QFileInfo::exists(filename) && !allow_overwrite) {
         LINFO << "Did not overwrite '" << filename << "'.";
       } else {
         m_scene.animator().set_current(frame);

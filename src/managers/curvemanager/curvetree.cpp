@@ -25,19 +25,20 @@ public:
   [[nodiscard]] bool filterAcceptsRow(int source_row,
                                       const QModelIndex& source_parent) const override
   {
+    using namespace omm;
     assert(!source_parent.isValid() || &m_animator == source_parent.model());
     const QModelIndex source_index = m_animator.index(source_row, 0, source_parent);
-    switch (omm::Animator::index_type(source_parent)) {
-    case omm::Animator::IndexType::None:
-      assert(omm::Animator::index_type(source_index) == omm::Animator::IndexType::Owner);
-      return ::contains(m_animator.scene.selection(), m_animator.owner(source_index));
-    case omm::Animator::IndexType::Owner:
-      assert(omm::Animator::index_type(source_index) == omm::Animator::IndexType::Property);
-      return omm::n_channels(m_animator.property(source_index)->variant_value()) > 0;
-    case omm::Animator::IndexType::Property:
-      assert(omm::Animator::index_type(source_index) == omm::Animator::IndexType::Channel);
+    switch (Animator::index_type(source_parent)) {
+    case Animator::IndexType::None:
+      assert(Animator::index_type(source_index) == Animator::IndexType::Owner);
+      return ::contains(m_animator.scene.selection(), Animator::owner(source_index));
+    case Animator::IndexType::Owner:
+      assert(Animator::index_type(source_index) == Animator::IndexType::Property);
+      return n_channels(Animator::property(source_index)->variant_value()) > 0;
+    case Animator::IndexType::Property:
+      assert(Animator::index_type(source_index) == Animator::IndexType::Channel);
       return sourceModel()->rowCount(source_parent) > 1;
-    case omm::Animator::IndexType::Channel:
+    case Animator::IndexType::Channel:
       [[fallthrough]];
     default:
       Q_UNREACHABLE();

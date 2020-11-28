@@ -28,9 +28,7 @@ PreferenceDialog::PreferenceDialog() : m_ui(new Ui::PreferenceDialog)
                            std::make_unique<KeyBindingsPage>(app.key_bindings));
 }
 
-PreferenceDialog::~PreferenceDialog()
-{
-}
+PreferenceDialog::~PreferenceDialog() = default;
 
 void PreferenceDialog::accept()
 {

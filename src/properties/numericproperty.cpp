@@ -14,7 +14,8 @@ template<> double NumericProperty<double>::lowest_possible_value()
 
 template<> double NumericProperty<double>::smallest_step()
 {
-  return 0.001;
+  static constexpr double SMALLEST_STEP = 0.001;
+  return SMALLEST_STEP;
 }
 
 template<> double NumericProperty<double>::default_step()
