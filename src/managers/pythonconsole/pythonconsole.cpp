@@ -76,7 +76,9 @@ PythonConsole::~PythonConsole()
   delete static_cast<pybind11::dict*>(m_locals);
 }
 
-void PythonConsole::on_output(const void* associated_item, const QString& text, const Stream& stream)
+void PythonConsole::on_output(const void* associated_item,
+                              const QString& text,
+                              const Stream& stream)
 {
   if (accept(associated_item)) {
     if (!text.isEmpty()) {

@@ -188,7 +188,8 @@ void Viewport::mousePressEvent(QMouseEvent* event)
 
   if (action != MousePanController::Action::None) {
     event->accept();
-  } else if (auto* hud = find_headup_display(event->pos()); hud != nullptr && hud->mouse_press(*event)) {
+  } else if (auto* hud = find_headup_display(event->pos());
+             hud != nullptr && hud->mouse_press(*event)) {
     event->accept();
   } else if (m_scene.tool_box().active_tool().mouse_press(cursor_pos, *event)) {
     event->accept();

@@ -315,7 +315,8 @@ std::vector<std::unique_ptr<Object>> Cloner::make_clones()
       return static_cast<std::size_t>(property(COUNT_PROPERTY_KEY)->value<int>());
     case Mode::Grid: {
       const auto c = property(COUNT_2D_PROPERTY_KEY)->value<Vec2i>();
-      return static_cast<std::size_t>(std::max(0, c.x)) * static_cast<std::size_t>(std::max(0, c.y));
+      return static_cast<std::size_t>(std::max(0, c.x))
+             * static_cast<std::size_t>(std::max(0, c.y));
     }
     }
     Q_UNREACHABLE();

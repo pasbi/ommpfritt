@@ -22,7 +22,8 @@ public:
   {
   }
 
-  [[nodiscard]] bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override
+  [[nodiscard]] bool filterAcceptsRow(int source_row,
+                                      const QModelIndex& source_parent) const override
   {
     assert(!source_parent.isValid() || &m_animator == source_parent.model());
     const QModelIndex source_index = m_animator.index(source_row, 0, source_parent);

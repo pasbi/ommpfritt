@@ -280,8 +280,8 @@ bool omm::MainWindow::eventFilter(QObject* o, QEvent* e)
 void MainWindow::keyPressEvent(QKeyEvent* e)
 {
   const bool is_modifier = ::contains(Application::keyboard_modifiers, e->key());
-  const bool is_dispatched = !is_modifier && !Application::instance().dispatch_key(e->key(),
-                                                                                   e->modifiers());
+  const bool is_dispatched
+      = !is_modifier && !Application::instance().dispatch_key(e->key(), e->modifiers());
   if (is_modifier || is_dispatched) {
     QMainWindow::keyPressEvent(e);
   }

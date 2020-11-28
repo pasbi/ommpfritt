@@ -504,7 +504,7 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
 
 double CurveManagerWidget::interpolate_frame(int key_frame, int neighbor_frame)
 {
-  static constexpr double t = 2.0/3.0;
+  static constexpr double t = 2.0 / 3.0;
   return t * key_frame + (1.0 - t) * neighbor_frame;
 }
 

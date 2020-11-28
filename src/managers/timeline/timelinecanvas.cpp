@@ -75,7 +75,8 @@ void TimelineCanvas::draw_lines(QPainter& painter) const
   const double ppfs = ppf * frame_range.pixel_range();
 
   for (int frame = static_cast<int>(frame_range.begin);
-       frame <= static_cast<int>(frame_range.end + 1.0); ++frame) {
+       frame <= static_cast<int>(frame_range.end + 1.0);
+       ++frame) {
     if (ppfs < 10 && (frame % 2 != 0)) {
       continue;
     } else if (ppfs < 2 && frame % 10 != 0) {

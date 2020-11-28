@@ -17,7 +17,8 @@ static constexpr int ICON_SIZE = 50;
 namespace omm
 {
 StyleListView::StyleListView(StyleList& model)
-    : ManagerItemView(model), m_icon_size(QSize(ICON_SIZE, ICON_SIZE)), m_item_delegate(*this, m_icon_size)
+    : ManagerItemView(model), m_icon_size(QSize(ICON_SIZE, ICON_SIZE)),
+      m_item_delegate(*this, m_icon_size)
 {
   setWrapping(true);
   setIconSize(m_icon_size);
