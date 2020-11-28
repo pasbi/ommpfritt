@@ -13,12 +13,13 @@ class Style;
 Text::Text(Scene* scene)
     : Object(scene), m_font_properties("", *this), m_text_option_properties("", *this)
 {
+  static constexpr double DEFAULT_WIDTH = 200.0;
   static const auto text_category = QObject::tr("Text");
   create_property<StringProperty>(TEXT_PROPERTY_KEY, "Text")
       .set_mode(StringProperty::Mode::MultiLine)
       .set_label(QObject::tr("Text"))
       .set_category(text_category);
-  create_property<FloatProperty>(WIDTH_PROPERTY_KEY, 200)
+  create_property<FloatProperty>(WIDTH_PROPERTY_KEY, DEFAULT_WIDTH)
       .set_label(QObject::tr("Width"))
       .set_category(text_category);
 
@@ -61,7 +62,7 @@ Flag Text::flags() const
   // Flag::IsPathLike   // Maybe this becomes feasible once the convert-trait is implemented.
 }
 
-void Text::draw_object(Painter& renderer, const Style& style, Painter::Options options) const
+void Text::draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const
 {
   Q_UNUSED(options)
   if (is_active()) {

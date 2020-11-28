@@ -40,6 +40,7 @@ Cloner::Cloner(Scene* scene) : Object(scene), path_properties("", *this)
   static constexpr double STEP_01 = 0.1;
   static constexpr double STEP_001 = 0.01;
   static constexpr int DEFAULT_SEED = 12345;
+  static constexpr double DEFAULT_DISTANCE = 100.0;
   static const auto category = QObject::tr("Cloner");
   auto& mode_property = create_property<OptionProperty>(MODE_PROPERTY_KEY);
   mode_property
@@ -62,12 +63,13 @@ Cloner::Cloner(Scene* scene) : Object(scene), path_properties("", *this)
       .set_label(QObject::tr("count"))
       .set_category(category);
 
-  create_property<FloatVectorProperty>(DISTANCE_2D_PROPERTY_KEY, Vec2f(100.0, 100.0))
+  create_property<FloatVectorProperty>(DISTANCE_2D_PROPERTY_KEY,
+                                       Vec2f(DEFAULT_DISTANCE, DEFAULT_DISTANCE))
       .set_step(Vec2f(STEP_01, STEP_01))
       .set_label(QObject::tr("distance"))
       .set_category(category);
 
-  create_property<FloatProperty>(RADIUS_PROPERTY_KEY, 200.0)
+  create_property<FloatProperty>(RADIUS_PROPERTY_KEY, DEFAULT_DISTANCE)
       .set_step(STEP_01)
       .set_label(QObject::tr("radius"))
       .set_category(category);
@@ -124,12 +126,13 @@ const Object* Cloner::path_object_reference() const
   return kind_cast<const Object*>(property->value<AbstractPropertyOwner*>());
 }
 
-void Cloner::draw_object(Painter& renderer, const Style& style, Painter::Options options) const
+void Cloner::draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const
 {
   assert(&renderer.scene == scene());
-  options.default_style = &style;
+  auto options_copy = options;
+  options_copy.default_style = &style;
   for (auto&& clone : m_clones) {
-    clone->draw_recursive(renderer, options);
+    clone->draw_recursive(renderer, options_copy);
   }
 }
 

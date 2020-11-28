@@ -35,12 +35,13 @@ class Style;
 
 ProceduralPath::ProceduralPath(Scene* scene) : Object(scene)
 {
+  static constexpr int DEFAULT_COUNT = 10;
   static const auto category = QObject::tr("ProceduralPath");
   create_property<StringProperty>(CODE_PROPERTY_KEY, default_script)
       .set_mode(StringProperty::Mode::Code)
       .set_label(QObject::tr("code"))
       .set_category(category);
-  create_property<IntegerProperty>(COUNT_PROPERTY_KEY, 10)
+  create_property<IntegerProperty>(COUNT_PROPERTY_KEY, DEFAULT_COUNT)
       .set_range(0, std::numeric_limits<int>::max())
       .set_label(QObject::tr("count"))
       .set_category(category);

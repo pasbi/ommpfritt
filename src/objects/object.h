@@ -27,7 +27,7 @@ class Object
     , public AbstractFactory<QString, true, Object, Scene*>
 {
   Q_OBJECT
-  Scene* m_scene;
+  Scene* m_scene = nullptr;
 
 public:
   explicit Object(Scene* scene);
@@ -50,7 +50,7 @@ public:
   void deserialize(AbstractDeserializer& deserializer, const Pointer& root) override;
   virtual void draw_handles(Painter& renderer) const;
 
-  virtual void draw_object(Painter& renderer, const Style& style, Painter::Options options) const;
+  virtual void draw_object(Painter& renderer, const Style& style, const Painter::Options& options) const;
   void draw_recursive(Painter& renderer, Painter::Options options) const;
 
   /**
@@ -75,7 +75,7 @@ public:
 
   virtual Point pos(const Geom::PathVectorTime& t) const;
   virtual bool is_closed() const;
-  virtual bool contains(const Vec2f& pos) const;
+  virtual bool contains(const Vec2f& point) const;
 
 private:
   /**
@@ -178,7 +178,7 @@ private:
 
 private:
   mutable bool m_visibility_cache_is_dirty = true;
-  mutable bool m_visibility_cache_value;
+  mutable bool m_visibility_cache_value = false;
   static QPen m_bounding_box_pen;
   static QBrush m_bounding_box_brush;
 
