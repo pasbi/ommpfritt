@@ -18,28 +18,28 @@ public:
   {
   }
 
-  Qt::ItemFlags flags(const QModelIndex& index) const override
+  [[nodiscard]] Qt::ItemFlags flags(const QModelIndex& index) const override
   {
     Q_UNUSED(index);
     return Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsSelectable;
   }
 
-  Qt::DropActions supportedDragActions() const override
+  [[nodiscard]] Qt::DropActions supportedDragActions() const override
   {
     return Qt::LinkAction;
   }
 
-  Qt::DropActions supportedDropActions() const override
+  [[nodiscard]] Qt::DropActions supportedDropActions() const override
   {
     return Qt::IgnoreAction;
   }
 
-  int columnCount(const QModelIndex&) const override
+  [[nodiscard]] int columnCount(const QModelIndex&) const override
   {
     return 1;
   }
 
-  QMimeData* mimeData(const QModelIndexList& indices) const override
+  [[nodiscard]] QMimeData* mimeData(const QModelIndexList& indices) const override
   {
     nlohmann::json json;
     for (const QModelIndex& index : indices) {
@@ -130,8 +130,6 @@ ToolBarDialog::ToolBarDialog(ToolBarItemModel& model, QWidget* parent)
   m_ui->tv_toolbar->setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
-ToolBarDialog::~ToolBarDialog()
-{
-}
+ToolBarDialog::~ToolBarDialog() = default;
 
 }  // namespace omm

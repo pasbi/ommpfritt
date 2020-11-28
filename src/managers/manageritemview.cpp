@@ -56,7 +56,7 @@ void ManagerItemView<ItemViewT, ItemModelT>::keyPressEvent(QKeyEvent* e)
     this->setDragEnabled(false);
   } else {
     switch (e->key()) {
-    case Qt::Key_Left:
+    case Qt::Key_Left:  // NOLINT(bugprone-branch-clone)
       [[fallthrough]];
     case Qt::Key_Right:
       [[fallthrough]];
@@ -69,6 +69,7 @@ void ManagerItemView<ItemViewT, ItemModelT>::keyPressEvent(QKeyEvent* e)
     default:
       // don't use the QAbstractItemView key press handler for all other keys.
       // They break many keybindings.
+      // NOLINT(bugprone-parent-virtual-call)
       QWidget::keyPressEvent(e);
       return;
     }

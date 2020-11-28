@@ -12,7 +12,7 @@
 
 namespace
 {
-static constexpr auto eps = 0.00001;
+constexpr auto eps = 0.00001;
 
 enum class AspectRatio { Ignore, FromWidth, FromHeight };
 

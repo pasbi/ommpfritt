@@ -22,7 +22,7 @@ public:
   PropertyArea(const QRectF& area, ObjectTreeView& view, const QString& property_key);
   bool draw_active = false;
   ObjectTreeView& view;
-  Property& property(const QModelIndex& index) const;
+  [[nodiscard]] Property& property(const QModelIndex& index) const;
   virtual std::unique_ptr<Command> make_command(const QModelIndex& index, bool update_cache) = 0;
   void begin(const QModelIndex& index, QMouseEvent& event) override;
   void end() override;
@@ -225,7 +225,7 @@ namespace omm
 ObjectQuickAccessDelegate::ObjectQuickAccessDelegate(QAbstractItemView& view)
     : QuickAccessDelegate(view)
 {
-  ObjectTreeView& otv = static_cast<ObjectTreeView&>(view);
+  auto& otv = dynamic_cast<ObjectTreeView&>(view);
   add_area(std::make_unique<IsEnabledPropertyArea>(otv));
   using VPA = VisibilityPropertyArea;
   add_area(std::make_unique<VPA>(otv,

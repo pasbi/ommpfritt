@@ -38,7 +38,8 @@ PropertyManagerTab::PropertyManagerTab(const QString& title)
 {
   auto layout = std::make_unique<QVBoxLayout>();
   m_layout = layout.get();
-  m_layout->setSpacing(6);
+  static constexpr int ITEM_SPACING = 6;
+  m_layout->setSpacing(ITEM_SPACING);
   m_layout->setContentsMargins(0, 0, 0, 0);
   setLayout(layout.release());
 

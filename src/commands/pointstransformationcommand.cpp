@@ -74,7 +74,7 @@ void PointsTransformationCommand::apply(const PointsTransformationCommand::Map& 
 
 std::set<Path::iterator> PointsTransformationCommand::affected_points() const
 {
-  const auto keys = ::get_keys(m_old_points);
+  auto keys = ::get_keys(m_old_points);
   assert(keys == ::get_keys(m_new_points));
   return keys;
 }

@@ -9,8 +9,9 @@ class Style;
 
 Line::Line(Scene* scene) : Object(scene)
 {
+  static constexpr double DEFAULT_LENGTH = 100.0;
   static const auto category = QObject::tr("Line");
-  create_property<FloatProperty>(LENGTH_PROPERTY_KEY, 100.0)
+  create_property<FloatProperty>(LENGTH_PROPERTY_KEY, DEFAULT_LENGTH)
       .set_label(QObject::tr("length"))
       .set_category(category);
   create_property<FloatProperty>(ANGLE_PROPERTY_KEY, 0)

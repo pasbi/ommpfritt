@@ -369,9 +369,9 @@ bool Application::perform_action(const QString& action_name)
     for (const auto& key : Object::keys()) {
       if (key == action_name) {
         const auto modifiers = QApplication::keyboardModifiers();
-        if (modifiers & (Qt::ControlModifier != 0u)) {
+        if ((modifiers & Qt::ControlModifier) != 0u) {
           insert_object(key, InsertionMode::AsChild);
-        } else if (modifiers & (Qt::ShiftModifier != 0u)) {
+        } else if ((modifiers & Qt::ShiftModifier) != 0u) {
           insert_object(key, InsertionMode::AsParent);
         } else {
           insert_object(key, InsertionMode::Default);
@@ -422,7 +422,7 @@ bool Application::dispatch_key(int key, Qt::KeyboardModifiers modifiers, Command
     }
   };
 
-  m_pending_key_sequence = push_back(m_pending_key_sequence, key | modifiers);
+  m_pending_key_sequence = push_back(m_pending_key_sequence, key | static_cast<int>(modifiers));
   m_reset_keysequence_timer.start();
   if (dispatch_sequence(ci)) {
     return true;
@@ -461,7 +461,7 @@ bool Application::handle_mode(const QString& action_name)
   return false;
 }
 
-MailBox& Application::mail_box()
+MailBox& Application::mail_box() const
 {
   return scene.mail_box();
 }

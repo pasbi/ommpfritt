@@ -32,7 +32,7 @@ bool Manager::is_visible() const
   } else {
     QPoint parent_top_left(0, 0);
     if (isWindow()) {
-      auto screen = [this]() -> const QScreen* {
+      const auto* screen = [this]() -> const QScreen* {
         const QWidget* npw = nativeParentWidget();
         if (npw == nullptr) {
           return nullptr;

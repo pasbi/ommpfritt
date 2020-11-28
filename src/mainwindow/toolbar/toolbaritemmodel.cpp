@@ -29,15 +29,15 @@ protected:
   }
 
 public:
-  virtual nlohmann::json encode() const = 0;
-  virtual std::unique_ptr<QAction> make_action() const = 0;
+  [[nodiscard]] virtual nlohmann::json encode() const = 0;
+  [[nodiscard]] virtual std::unique_ptr<QAction> make_action() const = 0;
 };
 
 template<int item_id> class Item : public AbstractItem
 {
 public:
   static constexpr auto TYPE = item_id;
-  int type() const override
+  [[nodiscard]] int type() const override
   {
     return TYPE;
   }
@@ -57,14 +57,14 @@ public:
     setData(item->icon(), Qt::DecorationRole);
   }
 
-  std::unique_ptr<QAction> make_action() const override
+  [[nodiscard]] std::unique_ptr<QAction> make_action() const override
   {
     auto& app = Application::instance();
     const auto& key_bindings = omm::Application::instance().key_bindings;
     return key_bindings.make_toolbar_action(app, command_name);
   }
 
-  nlohmann::json encode() const override
+  [[nodiscard]] nlohmann::json encode() const override
   {
     return command_name.toStdString();
   }
@@ -82,7 +82,7 @@ public:
   }
 
 protected:
-  nlohmann::json encode() const override
+  [[nodiscard]] nlohmann::json encode() const override
   {
     return {{type_key, type}};
   }
@@ -91,13 +91,13 @@ protected:
 class GroupItem : public HyperItem<group_item_id>
 {
 public:
-  explicit GroupItem() : HyperItem()
+  explicit GroupItem()
   {
     set_label(omm::ToolBarItemModel::tr("group"));
     this->setFlags(this->flags() | Qt::ItemIsDropEnabled);
   }
 
-  nlohmann::json encode() const override
+  [[nodiscard]] nlohmann::json encode() const override
   {
     nlohmann::json items;
     for (int i = 0; i < rowCount(); ++i) {
@@ -108,7 +108,7 @@ public:
     return j;
   }
 
-  std::unique_ptr<QAction> make_action() const override
+  [[nodiscard]] std::unique_ptr<QAction> make_action() const override
   {
     auto button = std::make_unique<QToolButton>();
     QObject::connect(button.get(),
@@ -135,20 +135,20 @@ class SwitchItem : public HyperItem<switch_item_id>
 {
 public:
   explicit SwitchItem(const nlohmann::json& item)
-      : HyperItem(), m_mode_selector(QString::fromStdString(item["name"]))
+      : m_mode_selector(QString::fromStdString(item["name"]))
   {
     const auto& mode_selector = *Application::instance().mode_selectors.at(m_mode_selector);
     set_label(mode_selector.translated_name());
   }
 
-  nlohmann::json encode() const override
+  [[nodiscard]] nlohmann::json encode() const override
   {
     auto j = HyperItem::encode();
     j["name"] = m_mode_selector.toStdString();
     return j;
   }
 
-  std::unique_ptr<QAction> make_action() const override
+  [[nodiscard]] std::unique_ptr<QAction> make_action() const override
   {
     const auto& mode_selector = *Application::instance().mode_selectors.at(m_mode_selector);
     auto button = std::make_unique<QToolButton>();
@@ -180,12 +180,12 @@ private:
 class SeparatorItem : public HyperItem<separator_item_id>
 {
 public:
-  explicit SeparatorItem() : HyperItem()
+  explicit SeparatorItem()
   {
     set_label(omm::ToolBarItemModel::tr("separator"));
   }
 
-  std::unique_ptr<QAction> make_action() const override
+  [[nodiscard]] std::unique_ptr<QAction> make_action() const override
   {
     auto action = std::make_unique<QAction>();
     action->setSeparator(true);

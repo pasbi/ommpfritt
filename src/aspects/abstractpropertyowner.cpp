@@ -33,8 +33,9 @@ AbstractPropertyOwner::AbstractPropertyOwner(Kind kind, Scene* scene) : kind(kin
 }
 
 AbstractPropertyOwner::AbstractPropertyOwner(const AbstractPropertyOwner& other)
-     : QObject()  // NOLINT(readability-redundant-member-init)
-     , kind(other.kind), m_scene(other.m_scene)
+    : QObject()  // NOLINT(readability-redundant-member-init)
+      ,
+      kind(other.kind), m_scene(other.m_scene)
 {
   for (auto&& key : other.m_properties.keys()) {
     AbstractPropertyOwner::add_property(key, other.m_properties.at(key)->clone());

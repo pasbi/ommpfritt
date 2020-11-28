@@ -23,7 +23,7 @@ void StyleListViewItemDelegate::paint(QPainter* painter,
 {
   if (!!(option.state & QStyle::State_Selected)) {
     const auto group = [widget = option.widget]() {
-      if (widget == nullptr) {
+      if (widget == nullptr) {  // NOLINT(bugprone-branch-clone)
         return QPalette::Active;
       } else if (!widget->isEnabled()) {
         return QPalette::Disabled;
@@ -39,7 +39,7 @@ void StyleListViewItemDelegate::paint(QPainter* painter,
   const auto icon = index.data(Qt::DecorationRole).value<QIcon>();
   painter->drawPixmap(option.rect.topLeft(), icon.pixmap(m_icon_size));
 
-  const auto text = this->display_text(index);
+  const auto text = display_text(index);
   const QRect text_rect(QPoint(option.rect.left(), option.rect.bottom() - m_text_height),
                         QSize(option.rect.width(), m_text_height));
 

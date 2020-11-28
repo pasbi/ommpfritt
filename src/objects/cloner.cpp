@@ -37,6 +37,9 @@ class Style;
 
 Cloner::Cloner(Scene* scene) : Object(scene), path_properties("", *this)
 {
+  static constexpr double STEP_01 = 0.1;
+  static constexpr double STEP_001 = 0.01;
+  static constexpr int DEFAULT_SEED = 12345;
   static const auto category = QObject::tr("Cloner");
   auto& mode_property = create_property<OptionProperty>(MODE_PROPERTY_KEY);
   mode_property
@@ -60,24 +63,24 @@ Cloner::Cloner(Scene* scene) : Object(scene), path_properties("", *this)
       .set_category(category);
 
   create_property<FloatVectorProperty>(DISTANCE_2D_PROPERTY_KEY, Vec2f(100.0, 100.0))
-      .set_step(Vec2f(0.1, 0.1))
+      .set_step(Vec2f(STEP_01, STEP_01))
       .set_label(QObject::tr("distance"))
       .set_category(category);
 
   create_property<FloatProperty>(RADIUS_PROPERTY_KEY, 200.0)
-      .set_step(0.1)
+      .set_step(STEP_01)
       .set_label(QObject::tr("radius"))
       .set_category(category);
 
   path_properties.make_properties(category);
 
   create_property<FloatProperty>(START_PROPERTY_KEY, 0.0)
-      .set_step(0.01)
+      .set_step(STEP_001)
       .set_label(QObject::tr("start"))
       .set_category(category);
 
   create_property<FloatProperty>(END_PROPERTY_KEY, 1.0)
-      .set_step(0.01)
+      .set_step(STEP_001)
       .set_label(QObject::tr("end"))
       .set_category(category);
 
@@ -92,7 +95,7 @@ Cloner::Cloner(Scene* scene) : Object(scene), path_properties("", *this)
       .set_label(QObject::tr("code"))
       .set_category(category);
 
-  create_property<IntegerProperty>(SEED_PROPERTY_KEY, 12345)
+  create_property<IntegerProperty>(SEED_PROPERTY_KEY, DEFAULT_SEED)
       .set_label(QObject::tr("seed"))
       .set_category(category);
 
@@ -117,7 +120,7 @@ void Cloner::polish()
 
 const Object* Cloner::path_object_reference() const
 {
-  const auto property = this->property(PathProperties::PATH_REFERENCE_PROPERTY_KEY);
+  const auto* property = this->property(PathProperties::PATH_REFERENCE_PROPERTY_KEY);
   return kind_cast<const Object*>(property->value<AbstractPropertyOwner*>());
 }
 
@@ -198,7 +201,7 @@ void Cloner::on_property_value_changed(Property* property)
                                            SEED_PROPERTY_KEY,
                                            ANCHOR_PROPERTY_KEY};
 
-  if (pmatch(property, ::merge(common, path_properties.keys))) {
+  if (pmatch(property, ::merge(common, PathProperties::keys))) {
     update();
   } else if (property == this->property(MODE_PROPERTY_KEY)) {
     update_property_visibility(property->value<Mode>());
@@ -300,7 +303,7 @@ std::vector<std::unique_ptr<Object>> Cloner::make_clones()
 {
   const auto count = [this]() -> std::size_t {
     switch (mode()) {
-    case Mode::Linear:
+    case Mode::Linear:  // NOLINT(bugprone-branch-clone)
       [[fallthrough]];
     case Mode::Radial:
       [[fallthrough]];
@@ -312,7 +315,7 @@ std::vector<std::unique_ptr<Object>> Cloner::make_clones()
       return static_cast<std::size_t>(property(COUNT_PROPERTY_KEY)->value<int>());
     case Mode::Grid: {
       const auto c = property(COUNT_2D_PROPERTY_KEY)->value<Vec2i>();
-      return static_cast<std::size_t>(c.x * c.y);
+      return static_cast<std::size_t>(std::max(0, c.x)) * static_cast<std::size_t>(std::max(0, c.y));
     }
     }
     Q_UNREACHABLE();
@@ -394,7 +397,8 @@ void Cloner::set_grid(Object& object, std::size_t i)
   const auto n = property(COUNT_2D_PROPERTY_KEY)->value<Vec2i>();
   const auto v = property(DISTANCE_2D_PROPERTY_KEY)->value<Vec2f>();
   auto t = object.transformation();
-  t.set_translation({v.x * (i % static_cast<ulong>(n.x)), v.y * (i / static_cast<ulong>(n.x))});
+  const auto [q, r] = std::div(i, static_cast<int>(n.x));
+  t.set_translation({v.x * r, v.y * q});
   object.set_transformation(t);
 }
 

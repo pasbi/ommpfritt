@@ -65,7 +65,7 @@ public:
 
   PythonEngine python_engine;
   Scene scene;
-  MailBox& mail_box();
+  MailBox& mail_box() const;
   MainWindow* main_window() const;
   const IconProvider icon_provider;
 

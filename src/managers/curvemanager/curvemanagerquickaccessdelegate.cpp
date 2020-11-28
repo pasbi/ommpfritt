@@ -79,7 +79,7 @@ void VisibilityArea::begin(const QModelIndex& index, QMouseEvent& event)
   const auto& proxy_chain = *static_cast<omm::ProxyChain*>(m_view.model());
   const QModelIndex sindex = proxy_chain.mapToChainSource(index.siblingAtColumn(0));
   if (sindex.isValid()) {
-    if (event.modifiers() & Qt::ControlModifier) {
+    if ((event.modifiers() & Qt::ControlModifier) != 0u) {
       is_active = false;
       m_view.hide_everything();
     }

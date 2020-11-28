@@ -12,6 +12,7 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QWidget>
+#include <cmath>
 
 namespace omm
 {
@@ -73,7 +74,8 @@ void TimelineCanvas::draw_lines(QPainter& painter) const
   const double ppf = 1.0 / (frame_range.end - frame_range.begin);
   const double ppfs = ppf * frame_range.pixel_range();
 
-  for (int frame = frame_range.begin; frame <= frame_range.end + 1; ++frame) {
+  for (int frame = static_cast<int>(frame_range.begin);
+       frame <= static_cast<int>(frame_range.end + 1.0); ++frame) {
     if (ppfs < 10 && (frame % 2 != 0)) {
       continue;
     } else if (ppfs < 2 && frame % 10 != 0) {
@@ -128,7 +130,7 @@ void TimelineCanvas::draw_keyframes(QPainter& painter) const
 {
   painter.save();
   painter.translate(rect.topLeft());
-  const int y = footer_y() / 2.0;
+  const auto y = static_cast<int>(footer_y() / 2.0);
 
   for (int frame = frame_range.begin; frame <= frame_range.end + 1; ++frame) {
     const bool draw = std::any_of(tracks.begin(), tracks.end(), [frame](const Track* track) {
@@ -183,13 +185,13 @@ bool TimelineCanvas::view_event(QEvent& event)
 {
   switch (event.type()) {
   case QEvent::MouseButtonPress:
-    return mouse_press(static_cast<QMouseEvent&>(event));
+    return mouse_press(dynamic_cast<QMouseEvent&>(event));
   case QEvent::MouseButtonRelease:
-    return mouse_release(static_cast<QMouseEvent&>(event));
+    return mouse_release(dynamic_cast<QMouseEvent&>(event));
   case QEvent::MouseMove:
-    return mouse_move(static_cast<QMouseEvent&>(event));
+    return mouse_move(dynamic_cast<QMouseEvent&>(event));
   case QEvent::KeyPress:
-    return key_press(static_cast<QKeyEvent&>(event));
+    return key_press(dynamic_cast<QKeyEvent&>(event));
   default:
     return false;
   }
@@ -262,8 +264,8 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
                                     std::clamp<int>(pos.y(), rect.top(), rect.bottom()));
     }
 
-    const int left = frame_range.pixel_to_unit(rubber_band().left() - rect.left()) + 0.5;
-    const int right = frame_range.pixel_to_unit(rubber_band().right() - rect.left()) + 0.5;
+    const int left = std::lround(frame_range.pixel_to_unit(rubber_band().left() - rect.left()));
+    const int right = std::lround(frame_range.pixel_to_unit(rubber_band().right() - rect.left()));
 
     for (Property* property : animator.accelerator().properties()) {
       Track& track = *property->track();
@@ -294,7 +296,7 @@ bool TimelineCanvas::mouse_move(QMouseEvent& event)
     update();
   } else if (m_dragging_time) {
     double x = frame_range.pixel_to_unit(event.pos().x() - rect.left());
-    Q_EMIT current_frame_changed(std::round(x));
+    Q_EMIT current_frame_changed(static_cast<int>(std::round(x)));
   } else {
     return false;
   }
@@ -416,15 +418,11 @@ bool TimelineCanvas::is_selected(int frame) const
   }
 
   return std::all_of(relevant_tracks.begin(), relevant_tracks.end(), [this, frame](Track* track) {
-    if (auto it = m_selection.find(track);
-        it != m_selection.end() && ::contains(it->second, frame)) {
-      return true;
-    } else if (auto it = m_rubber_band_selection.find(track);
-               it != m_rubber_band_selection.end() && ::contains(it->second, frame)) {
-      return true;
-    } else {
-      return false;
-    }
+    const auto is_selected = [frame, track](auto&& selection) {
+      const auto it = selection.find(track);
+      return it != selection.end() && ::contains(it->second, frame);
+    };
+    return is_selected(m_selection) || is_selected(m_rubber_band_selection);
   });
 }
 

@@ -63,7 +63,7 @@ bool AnchorHUD::mouse_press(QMouseEvent& event)
 {
   const QPointF pos = event.pos() - this->pos;
   const QRectF grid = anchor_grid();
-  for (const Anchor anchor : PROPER_ANCHORS) {
+  return std::any_of(PROPER_ANCHORS.begin(), PROPER_ANCHORS.end(), [this, pos, grid](auto&& anchor) {
     if (anchor_rect(Options::anchor_position(grid, anchor)).contains(pos)) {
       if (m_anchor == anchor) {
         set_anchor(Anchor::None);
@@ -76,9 +76,10 @@ bool AnchorHUD::mouse_press(QMouseEvent& event)
         m_disable_hover_for = Anchor::None;
       });
       return true;
+    } else {
+      return false;
     }
-  }
-  return false;
+  });
 }
 
 void AnchorHUD::mouse_release(QMouseEvent& event)

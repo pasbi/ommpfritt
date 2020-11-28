@@ -29,8 +29,8 @@ namespace
 {
 QItemSelectionModel::SelectionFlag get_selection_flag(const QMouseEvent& event)
 {
-  return (event.modifiers() & Qt::ControlModifier) ? QItemSelectionModel::Deselect
-                                                   : QItemSelectionModel::Select;
+  return ((event.modifiers() & Qt::ControlModifier) != 0u) ? QItemSelectionModel::Deselect
+                                                           : QItemSelectionModel::Select;
 }
 
 }  // namespace
@@ -246,10 +246,10 @@ void ObjectTreeView::mouseMoveEvent(QMouseEvent* e)
     case ObjectTree::TAGS_COLUMN:
       if ((e->pos() - m_mouse_press_pos).manhattanLength() > QApplication::startDragDistance()) {
         const auto left_button = e->buttons() & Qt::LeftButton;
-        if (left_button) {
+        if (left_button != 0u) {
           const auto selected_tags = m_selection_model->selected_tags_ordered(model()->scene);
           const auto st_apo = down_cast(selected_tags);
-          if (selected_tags.size() > 0) {
+          if (!selected_tags.empty()) {
             auto mime_data = std::make_unique<PropertyOwnerMimeData>(st_apo);
             auto drag = std::make_unique<QDrag>(this);
             drag->setMimeData(mime_data.release());
@@ -275,7 +275,7 @@ void ObjectTreeView::update_tag_column_size()
 {
   const auto n_tags = m_model.max_number_of_tags_on_object();
   const auto tags_width = m_tags_item_delegate->tag_icon_size().width();
-  setColumnWidth(ObjectTree::TAGS_COLUMN, n_tags * tags_width);
+  setColumnWidth(ObjectTree::TAGS_COLUMN, static_cast<int>(n_tags * tags_width));
 }
 
 Scene& ObjectTreeView::scene() const

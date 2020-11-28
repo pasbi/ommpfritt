@@ -22,19 +22,19 @@ public:
   {
   }
 
-  bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override
+  [[nodiscard]] bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override
   {
     assert(!source_parent.isValid() || &m_animator == source_parent.model());
     const QModelIndex source_index = m_animator.index(source_row, 0, source_parent);
-    switch (m_animator.index_type(source_parent)) {
+    switch (omm::Animator::index_type(source_parent)) {
     case omm::Animator::IndexType::None:
-      assert(m_animator.index_type(source_index) == omm::Animator::IndexType::Owner);
+      assert(omm::Animator::index_type(source_index) == omm::Animator::IndexType::Owner);
       return ::contains(m_animator.scene.selection(), m_animator.owner(source_index));
     case omm::Animator::IndexType::Owner:
-      assert(m_animator.index_type(source_index) == omm::Animator::IndexType::Property);
+      assert(omm::Animator::index_type(source_index) == omm::Animator::IndexType::Property);
       return omm::n_channels(m_animator.property(source_index)->variant_value()) > 0;
     case omm::Animator::IndexType::Property:
-      assert(m_animator.index_type(source_index) == omm::Animator::IndexType::Channel);
+      assert(omm::Animator::index_type(source_index) == omm::Animator::IndexType::Channel);
       return sourceModel()->rowCount(source_parent) > 1;
     case omm::Animator::IndexType::Channel:
       [[fallthrough]];
@@ -51,22 +51,20 @@ private:
 class AddColumnProxy : public QIdentityProxyModel
 {
 public:
-  explicit AddColumnProxy()
-  {
-  }
+  explicit AddColumnProxy() = default;
 
-  QModelIndex index(int row, int column, const QModelIndex& parent) const override
+  [[nodiscard]] QModelIndex index(int row, int column, const QModelIndex& parent) const override
   {
     const auto index = QIdentityProxyModel::index(row, 0, parent);
     return createIndex(row, column, index.internalPointer());
   }
 
-  int columnCount(const QModelIndex& index) const override
+  [[nodiscard]] int columnCount(const QModelIndex& index) const override
   {
     return sourceModel()->columnCount(mapToSource(index)) + 1;
   }
 
-  QVariant data(const QModelIndex& index, int role) const override
+  [[nodiscard]] QVariant data(const QModelIndex& index, int role) const override
   {
     if (index.column() < sourceModel()->columnCount(mapToSource(index))) {
       return mapToSource(index).data(role);
@@ -106,9 +104,7 @@ CurveTree::CurveTree(Scene& scene)
   header()->hide();
 }
 
-CurveTree::~CurveTree()
-{
-}
+CurveTree::~CurveTree() = default;
 
 CurveTree::Visibility CurveTree::is_visible(AbstractPropertyOwner& apo) const
 {
@@ -263,7 +259,7 @@ void CurveTree::mouseReleaseEvent(QMouseEvent* event)
 
 void CurveTree::notify_second_column_changed(const QModelIndex& sindex)
 {
-  ProxyChain& proxy_chain = static_cast<ProxyChain&>(*ItemProxyView::model());
+  auto& proxy_chain = static_cast<ProxyChain&>(*ItemProxyView::model());
   QModelIndex index
       = proxy_chain.mapFromChainSource(sindex).siblingAtColumn(m_quick_access_delegate_column);
   while (index.isValid()) {

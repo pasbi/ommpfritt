@@ -48,7 +48,7 @@ AbstractPointsCommand::AbstractPointsCommand(
     const std::vector<AbstractPointsCommand::LocatedSegment>& added_points)
     : Command(label), m_path(path), m_points_to_add(added_points)
 {
-  std::sort(m_points_to_add.begin(), m_points_to_add.end(), std::greater<LocatedSegment>());
+  std::sort(m_points_to_add.begin(), m_points_to_add.end(), std::greater<>());
 }
 
 AbstractPointsCommand::AbstractPointsCommand(const QString& label,
@@ -56,7 +56,7 @@ AbstractPointsCommand::AbstractPointsCommand(const QString& label,
                                              const std::vector<Range>& removed_points)
     : Command(label), m_path(path), m_points_to_remove(removed_points)
 {
-  std::sort(m_points_to_remove.begin(), m_points_to_remove.end(), std::greater<Range>());
+  std::sort(m_points_to_remove.begin(), m_points_to_remove.end(), std::greater<>());
 }
 
 void AbstractPointsCommand::add()

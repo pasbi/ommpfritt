@@ -73,7 +73,7 @@ void modify_tangents(omm::InterpolationMode mode, omm::Application& app)
     return path->property(omm::Path::INTERPOLATION_PROPERTY_KEY);
   });
 
-  if (map.size() > 0) {
+  if (!map.empty()) {
     auto macro = app.scene.history().start_macro(QObject::tr("modify tangents"));
     using OptionPropertyCommand = omm::PropertiesCommand<omm::OptionProperty>;
     app.scene.submit<OptionPropertyCommand>(interpolation_properties, bezier_mode);
@@ -113,7 +113,7 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
   }
 
   std::set<Object*> converted_objects;
-  if (convertibles.size() > 0) {
+  if (!convertibles.empty()) {
     std::list<ObjectTreeMoveContext> move_contextes;
     for (auto&& c : convertibles) {
       auto [converted, move_children] = c->convert();
@@ -122,7 +122,7 @@ std::set<omm::Object*> convert_objects(omm::Application& app, std::set<omm::Obje
       assert(!c->is_root());
       ObjectTreeOwningContext context(*converted, c->tree_parent(), c);
       const auto properties = ::transform<Property*>(app.scene.find_reference_holders(*c));
-      if (properties.size() > 0) {
+      if (!properties.empty()) {
         app.scene.submit<PropertiesCommand<ReferenceProperty>>(properties, converted.get());
       }
       auto& converted_ref = *converted;
@@ -294,7 +294,7 @@ const std::map<QString, std::function<void(Application& app)>> actions{
        const auto convertibles
            = ::filter_if(app.scene.item_selection<Object>(),
                          [](const Object* o) { return !!(o->flags() & Flag::Convertible); });
-       if (convertibles.size() > 0) {
+       if (!convertibles.empty()) {
          Scene& scene = app.scene;
          auto macro = scene.history().start_macro(QObject::tr("convert"));
          scene.submit<ObjectSelectionCommand>(app.scene, convertibles);

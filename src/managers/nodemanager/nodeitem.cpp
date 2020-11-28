@@ -356,7 +356,7 @@ void NodeItem::align_ports()
   const double margin = PortItem::radius + 5;
   for (const auto& item : m_property_items) {
     QWidget* w = item->widget;
-    w->resize(m_shape.width() - 2 * margin, w->height());
+    w->resize(static_cast<int>(m_shape.width() - 2.0 * margin), w->height());
     item->setX(-w->width() / 2.0);
   }
 }

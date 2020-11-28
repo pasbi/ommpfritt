@@ -47,8 +47,8 @@ NodeManager::NodeManager(Scene& scene)
 
   connect(&scene.mail_box(), &MailBox::selection_changed, this, &NodeManager::set_selection);
   connect(&scene.mail_box(), &MailBox::abstract_property_owner_removed, [this](const auto& apo) {
-    const auto nodes_owner = dynamic_cast<const NodesOwner*>(&apo);
-    const auto node_model = nodes_owner == nullptr ? nullptr : nodes_owner->node_model();
+    const auto* nodes_owner = dynamic_cast<const NodesOwner*>(&apo);
+    const auto* node_model = nodes_owner == nullptr ? nullptr : nodes_owner->node_model();
     if (node_model == m_ui->nodeview->model()) {
       set_model(nullptr);
     }
@@ -57,9 +57,7 @@ NodeManager::NodeManager(Scene& scene)
   setTitleBarWidget(std::make_unique<NodeManagerTitleBar>(*this).release());
 }
 
-NodeManager::~NodeManager()
-{
-}
+NodeManager::~NodeManager() = default;
 
 QString NodeManager::type() const
 {

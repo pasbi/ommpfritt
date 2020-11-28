@@ -186,7 +186,7 @@ MainWindow::MainWindow(Application& app) : m_app(app)
   setCentralWidget(viewport.release());
 
   QSettings settings;
-  if (settings.allKeys().size() == 0) {
+  if (settings.allKeys().empty()) {
     restore_default_layout();
   } else {
     restore_state();
@@ -279,9 +279,10 @@ bool omm::MainWindow::eventFilter(QObject* o, QEvent* e)
 
 void MainWindow::keyPressEvent(QKeyEvent* e)
 {
-  if (::contains(Application::keyboard_modifiers, e->key())) {
-    QMainWindow::keyPressEvent(e);
-  } else if (!Application::instance().dispatch_key(e->key(), e->modifiers())) {
+  const bool is_modifier = ::contains(Application::keyboard_modifiers, e->key());
+  const bool is_dispatched = !is_modifier && !Application::instance().dispatch_key(e->key(),
+                                                                                   e->modifiers());
+  if (is_modifier || is_dispatched) {
     QMainWindow::keyPressEvent(e);
   }
 }
@@ -303,10 +304,10 @@ void MainWindow::assign_unique_objectname(ToolBar& toolbar) const
   toolbar.setObjectName(make_unique(toolbar.type(), blacklist));
 }
 
-QString MainWindow::get_last_layout_filename() const
+QString MainWindow::get_last_layout_filename()
 {
   QSettings settings;
-  const QString fn = settings.value(LAST_LAYOUT_FILE_NAME, "").toString();
+  QString fn = settings.value(LAST_LAYOUT_FILE_NAME, "").toString();
   if (fn.isEmpty()) {
     return QDir::homePath();
   } else {

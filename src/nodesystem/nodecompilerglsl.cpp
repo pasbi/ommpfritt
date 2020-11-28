@@ -132,7 +132,7 @@ QString NodeCompilerGLSL::end_program(QStringList& lines) const
         = ::filter_if(nodes, [](const Node* node) { return node->type() == FragmentNode::TYPE; });
 
     if (fragment_nodes.size() != 1) {
-      const QString msg
+      QString msg
           = QString("expected exactly one fragment node but found %1.").arg(fragment_nodes.size());
       LWARNING << msg;
       return msg;

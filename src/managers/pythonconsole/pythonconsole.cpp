@@ -24,7 +24,7 @@ PythonConsole::PythonConsole(Scene& scene)
   m_layout = layout.get();
   layout.release();  // ownership is managed by Qt
 
-  auto header_layout = std::make_unique<QHBoxLayout>().release();
+  auto* header_layout = std::make_unique<QHBoxLayout>().release();
   m_layout->addLayout(header_layout);
 
   auto ref_filter_widget = std::make_unique<ReferenceLineEdit>();
@@ -76,7 +76,7 @@ PythonConsole::~PythonConsole()
   delete static_cast<pybind11::dict*>(m_locals);
 }
 
-void PythonConsole::on_output(const void* associated_item, QString text, Stream stream)
+void PythonConsole::on_output(const void* associated_item, const QString& text, const Stream& stream)
 {
   if (accept(associated_item)) {
     if (!text.isEmpty()) {

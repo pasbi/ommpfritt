@@ -202,7 +202,7 @@ QModelIndex Animator::index(int row, int column, const QModelIndex& parent) cons
     return index(*accelerator().owners()[row], column);
   case IndexType::Owner:
     // child of owner is property
-    return index(*accelerator().properties(*this->owner(parent)).at(row), column);
+    return index(*accelerator().properties(*owner(parent)).at(row), column);
   case IndexType::Property:
     // child of property is channel
     return index({property(parent), row}, column);
@@ -347,19 +347,19 @@ Animator::IndexType Animator::index_type(const QModelIndex& index)
   }
 }
 
-Property* Animator::property(const QModelIndex& index) const
+Property* Animator::property(const QModelIndex& index)
 {
   assert(index_type(index) == IndexType::Property);
   return static_cast<Property*>(index.internalPointer());
 }
 
-ChannelProxy& Animator::channel(const QModelIndex& index) const
+ChannelProxy& Animator::channel(const QModelIndex& index)
 {
   assert(index_type(index) == IndexType::Channel);
   return *static_cast<ChannelProxy*>(index.internalPointer());
 }
 
-AbstractPropertyOwner* Animator::owner(const QModelIndex& index) const
+AbstractPropertyOwner* Animator::owner(const QModelIndex& index)
 {
   assert(index_type(index) == IndexType::Owner);
   return static_cast<AbstractPropertyOwner*>(index.internalPointer());

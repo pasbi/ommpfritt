@@ -49,12 +49,10 @@ void ObjectsTransformationCommand::redo()
 bool ObjectsTransformationCommand::is_noop() const
 {
   assert(::get_keys(m_old_transformations) == ::get_keys(m_new_transformations));
-  for (auto&& [o, _] : m_old_transformations) {
-    if (m_old_transformations.at(o) != m_new_transformations.at(o)) {
-      return false;
-    }
-  }
-  return true;
+  return std::all_of(m_old_transformations.begin(), m_old_transformations.end(), [this](auto&& oo) {
+    const auto [i, _] = oo;
+    return m_old_transformations.at(i) == m_new_transformations.at(i);
+  });
 }
 
 bool ObjectsTransformationCommand::mergeWith(const QUndoCommand* command)
@@ -87,7 +85,7 @@ void ObjectsTransformationCommand::apply(const ObjectsTransformationCommand::Map
 
 std::set<Object*> ObjectsTransformationCommand::affected_objects() const
 {
-  const auto keys = ::get_keys(m_new_transformations);
+  auto keys = ::get_keys(m_new_transformations);
   assert(keys == ::get_keys(m_old_transformations));
   return keys;
 }

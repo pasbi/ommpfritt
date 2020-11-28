@@ -37,10 +37,10 @@ void draw_rubberband(QPainter& painter, const QWidget& widget, const QRectF& rec
   painter.restore();
 }
 
-static constexpr int DEFAULT_MIN_H = 1;
-static constexpr int DEFAULT_MAX_H = 100;
-static constexpr int DEFAULT_MIN_V = -10;
-static constexpr int DEFAULT_MAX_V = 10;
+constexpr int DEFAULT_MIN_H = 1;
+constexpr int DEFAULT_MAX_H = 100;
+constexpr int DEFAULT_MIN_V = -10;
+constexpr int DEFAULT_MAX_V = 10;
 
 }  // namespace
 
@@ -504,8 +504,8 @@ void CurveManagerWidget::draw_knots(QPainter& painter) const
 
 double CurveManagerWidget::interpolate_frame(int key_frame, int neighbor_frame)
 {
-  // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
-  return 2.0 / 3.0 * key_frame + 1.0 / 3.0 * neighbor_frame;
+  static constexpr double t = 2.0/3.0;
+  return t * key_frame + (1.0 - t) * neighbor_frame;
 }
 
 CurveManagerWidget::TangentHandle CurveManagerWidget::tangent_handle_at(const QPointF& point) const
@@ -636,7 +636,7 @@ bool CurveManagerWidget::KeyFrameHandleKey::operator<(
   }
 }
 
-variant_type& CurveManagerWidget::TangentHandle::offset()
+variant_type& CurveManagerWidget::TangentHandle::offset() const
 {
   return key->track.knot(key->frame).offset(side);
 }

@@ -289,7 +289,8 @@ QString Color::to_html() const
 {
   static const auto to_hex = [](float f) {
     const int i = std::clamp(static_cast<int>(std::round(f * 255)), 0, 255);
-    QString str = QString("%1").arg(static_cast<int>(i), 2, 16, QChar('0'));
+    static constexpr int base_hex = 16;
+    QString str = QString("%1").arg(static_cast<int>(i), 2, base_hex, QChar('0'));
     assert(str.size() == 2);
     return str;
   };
@@ -355,7 +356,7 @@ void Color::set(Color::Role role, double value)
 {
   to_ordinary_color();
   switch (role) {
-  case Role::Red:
+  case Role::Red:  // NOLINT(bugprone-branch-clone)
     [[fallthrough]];
   case Role::Green:
     [[fallthrough]];
@@ -363,7 +364,7 @@ void Color::set(Color::Role role, double value)
     convert(Model::RGBA);
     component(role) = value;
     return;
-  case Role::Hue:
+  case Role::Hue:  // NOLINT(bugprone-branch-clone)
     [[fallthrough]];
   case Role::Saturation:
     [[fallthrough]];

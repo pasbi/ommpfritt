@@ -64,7 +64,7 @@ private:
   Viewport* m_viewport;
   [[nodiscard]] std::vector<QDockWidget*> dock_widgets() const;
   void update_recent_files_menu();
-  [[nodiscard]] QString get_last_layout_filename() const;
+  [[nodiscard]] static QString get_last_layout_filename();
 
 private Q_SLOTS:
   void update_window_title();

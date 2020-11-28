@@ -85,7 +85,9 @@ void Range::zoom(double origin, double amount, double min_upp, double max_upp)
   const double left = center - begin;
   const double right = center - end;
 
-  double a = std::exp(amount / 300.0);
+  const double ZOOM_SPEED = 1.0 / 300.0;
+
+  double a = std::exp(amount * ZOOM_SPEED);
   const double upp = (left - right) * a / pixel_range();
   if (upp > max_upp) {
     a *= max_upp / upp;

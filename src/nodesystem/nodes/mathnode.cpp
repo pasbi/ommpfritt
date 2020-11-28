@@ -100,7 +100,7 @@ MathNode::MathNode(NodeModel& model) : Node(model)
 QString MathNode::output_data_type(const OutputPort& port) const
 {
   if (&port == m_output) {
-    const QString type_a = find_port<InputPort>(A_VALUE_KEY)->data_type();
+    QString type_a = find_port<InputPort>(A_VALUE_KEY)->data_type();
     const QString type_b = find_port<InputPort>(B_VALUE_KEY)->data_type();
     switch (language()) {
     case AbstractNodeCompiler::Language::GLSL:

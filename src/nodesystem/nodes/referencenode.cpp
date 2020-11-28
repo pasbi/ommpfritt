@@ -115,9 +115,7 @@ AbstractPort& ReferenceNode::add_forwarding_port(PortType port_type, const QStri
 {
   const auto get_property = [this, key]() -> Property* {
     AbstractPropertyOwner* reference = this->reference();
-    if (reference == nullptr) {
-      return nullptr;
-    } else if (reference->has_property(key)) {
+    if (reference != nullptr && reference->has_property(key)) {
       return reference->property(key);
     } else {
       return nullptr;

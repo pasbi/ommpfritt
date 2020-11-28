@@ -52,7 +52,7 @@ protected:
 
 private:
   std::vector<std::unique_ptr<Object>> make_clones();
-  std::vector<std::unique_ptr<Object>> copy_children(std::size_t n);
+  std::vector<std::unique_ptr<Object>> copy_children(std::size_t count);
 
   double get_t(std::size_t i, bool inclusive) const;
   void set_linear(Object& object, std::size_t i);

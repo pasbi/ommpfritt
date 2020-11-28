@@ -83,7 +83,7 @@ private:
 
     const KeyFrameHandleKey* key{nullptr};
     Track::Knot::Side side = Track::Knot::Side::Left;
-    variant_type& offset();
+    variant_type& offset() const;
   };
 
   static double interpolate_frame(int key, int neighbor);

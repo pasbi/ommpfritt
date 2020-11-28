@@ -62,6 +62,7 @@ def %1(x, y, balance, ramp):
 
 InterpolateNode::InterpolateNode(NodeModel& model) : Node(model)
 {
+  static constexpr double STEP = 0.01;
   const QString category = tr("Node");
   create_property<FloatProperty>(LEFT_VALUE_KEY, PortType::Input, 0)
       .set_label(QObject::tr("left"))
@@ -71,7 +72,7 @@ InterpolateNode::InterpolateNode(NodeModel& model) : Node(model)
       .set_category(category);
   create_property<FloatProperty>(BALANCE_PROPERTY_KEY, PortType::Input, 0)
       .set_range(0.0, 1.0)
-      .set_step(0.01)
+      .set_step(STEP)
       .set_label(QObject::tr("t"))
       .set_category(category);
   const auto linear_spline = SplineType::Initialization::Linear;
@@ -133,7 +134,7 @@ bool InterpolateNode::accepts_input_data_type(const QString& type, const InputPo
   } else {
     switch (language()) {
     case AbstractNodeCompiler::Language::Python:
-      return true;
+      [[fallthrough]];
     case AbstractNodeCompiler::Language::GLSL:
       return true;
     default:

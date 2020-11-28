@@ -32,23 +32,25 @@ float %1_0(float frequency, float ratio, float left_ramp, float right_ramp, floa
 
 LinePatternNode::LinePatternNode(NodeModel& model) : Node(model)
 {
+  static constexpr double STEP = 0.01;
+  static constexpr double HALF = 0.5;
   const auto category = tr("Lines");
   create_property<FloatProperty>(FREQUENCY_PROPERTY_KEY, PortType::Input, 1.0)
       .set_label(tr("freq"))
       .set_category(category);
-  create_property<FloatProperty>(RATIO_PROPERTY_KEY, PortType::Input, 0.5)
+  create_property<FloatProperty>(RATIO_PROPERTY_KEY, PortType::Input, HALF)
       .set_range(0.0, 1.0)
-      .set_step(0.01)
+      .set_step(STEP)
       .set_label(tr("ratio"))
       .set_category(category);
   create_property<FloatProperty>(LEFT_RAMP_PROPERTY_KEY, PortType::Input, 0.0)
       .set_range(0.0, 1.0)
-      .set_step(0.01)
+      .set_step(STEP)
       .set_label(tr("left ramp"))
       .set_category(category);
   create_property<FloatProperty>(RIGHT_RAMP_PROPERTY_KEY, PortType::Input, 0.0)
       .set_range(0.0, 1.0)
-      .set_step(0.01)
+      .set_step(STEP)
       .set_label(tr("right ramp"))
       .set_category(category);
   m_position_port = &add_port<OrdinaryPort<PortType::Input>>(tr("position"));

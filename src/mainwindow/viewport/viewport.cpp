@@ -17,7 +17,7 @@ namespace
 void set_cursor_position(QWidget& widget, const omm::Vec2f& pos)
 {
   auto cursor = widget.cursor();
-  cursor.setPos(widget.mapToGlobal(pos.to_point()));
+  QCursor::setPos(widget.mapToGlobal(pos.to_point()));
   widget.setCursor(cursor);
 }
 
@@ -188,7 +188,7 @@ void Viewport::mousePressEvent(QMouseEvent* event)
 
   if (action != MousePanController::Action::None) {
     event->accept();
-  } else if (auto* hud = find_headup_display(event->pos()); hud && hud->mouse_press(*event)) {
+  } else if (auto* hud = find_headup_display(event->pos()); hud != nullptr && hud->mouse_press(*event)) {
     event->accept();
   } else if (m_scene.tool_box().active_tool().mouse_press(cursor_pos, *event)) {
     event->accept();

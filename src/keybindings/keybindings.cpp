@@ -161,7 +161,7 @@ QVariant KeyBindings::data(int column, const PreferencesTreeValueItem& item, int
 
 bool KeyBindings::set_data(int column, PreferencesTreeValueItem& item, const QVariant& value)
 {
-  const QKeySequence sequence = value.value<QKeySequence>();
+  const auto sequence = value.value<QKeySequence>();
   item.set_value(sequence.toString(QKeySequence::PortableText), column - 1);
   return true;
 }
@@ -231,9 +231,9 @@ KeyBindings::make_menus(CommandInterface& context, const std::vector<QString>& a
 std::unique_ptr<QAction>
 KeyBindings::make_action(CommandInterface& context, const QString& action_name, Target target) const
 {
-  auto&& item = find_action(context.type(), action_name);
+  const auto* item = find_action(context.type(), action_name);
 #ifndef NDEBUG
-  if (!item) {
+  if (item == nullptr) {
     LERROR << "Failed to find keybinding for " << context.type() << "::" << action_name;
     LFATAL("Missing keybinding");
   }

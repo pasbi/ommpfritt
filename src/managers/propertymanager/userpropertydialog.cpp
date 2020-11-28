@@ -78,7 +78,9 @@ void UserPropertyDialog::submit()
         key = tr("unnamed");
       }
       for (int i = 0; m_owner.has_property(key); ++i) {
-        key = item->label() + QString(".%1").arg(i, 3, 10, QChar('0'));
+        static constexpr int BASE_DEC = 10;
+        static constexpr int WIDTH = 3;
+        key = item->label() + QString(".%1").arg(i, WIDTH, BASE_DEC, QChar('0'));
       }
       additions.emplace_back(key, std::move(property));
     }

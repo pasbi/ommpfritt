@@ -114,9 +114,9 @@ public:
   QModelIndex index(const std::pair<Property*, std::size_t>& channel, int column = 0) const;
   QModelIndex index(AbstractPropertyOwner& owner, int column = 0) const;
   static IndexType index_type(const QModelIndex& index);
-  Property* property(const QModelIndex& index) const;
-  ChannelProxy& channel(const QModelIndex& index) const;
-  AbstractPropertyOwner* owner(const QModelIndex& index) const;
+  static Property* property(const QModelIndex& index);
+  static ChannelProxy& channel(const QModelIndex& index);
+  static AbstractPropertyOwner* owner(const QModelIndex& index);
 
   template<typename F> auto visit_item(const QModelIndex& index, F&& f)
   {

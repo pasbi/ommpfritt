@@ -34,7 +34,7 @@ public:
 class Line : public QFrame
 {
 public:
-  explicit Line(QFrame::Shape shape) : QFrame()
+  explicit Line(QFrame::Shape shape)
   {
     setFrameShape(shape);
     setFrameShadow(QFrame::Sunken);
@@ -184,9 +184,7 @@ ExportDialog::ExportDialog(Scene& scene, QWidget* parent)
   connect(m_ui->pb_start, &QPushButton::clicked, this, &ExportDialog::start_export_animation);
 }
 
-ExportDialog::~ExportDialog()
-{
-}
+ExportDialog::~ExportDialog() = default;
 
 void ExportDialog::update_preview()
 {
@@ -262,7 +260,7 @@ void ExportDialog::save_as_raster()
   if (file_dialog.exec() == QDialog::Accepted) {
     const auto filenames = file_dialog.selectedFiles();
     assert(filenames.size() == 1);
-    const auto filename = filenames.front();
+    const auto& filename = filenames.front();
 
     QImage image(m_ui->ne_resolution_x->value(),
                  m_ui->ne_resolution_y->value(),
@@ -291,7 +289,7 @@ void ExportDialog::save_as_svg()
   if (file_dialog.exec() == QDialog::Accepted) {
     const auto filenames = file_dialog.selectedFiles();
     assert(filenames.size() == 1);
-    const auto filename = filenames.front();
+    const auto& filename = filenames.front();
 
     QSvgGenerator generator;
     generator.setFileName(filename);

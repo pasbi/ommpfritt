@@ -14,11 +14,13 @@ class Style;
 
 Ellipse::Ellipse(Scene* scene) : Object(scene)
 {
+  static constexpr double DEFAULT_RADIUS = 100.0;
+  static constexpr int DEFAULT_CORNER_COUNT = 12;
   static const auto category = QObject::tr("ellipse");
-  create_property<FloatVectorProperty>(RADIUS_PROPERTY_KEY, Vec2f(100.0, 100.0))
+  create_property<FloatVectorProperty>(RADIUS_PROPERTY_KEY, Vec2f(DEFAULT_RADIUS, DEFAULT_RADIUS))
       .set_label(QObject::tr("r"))
       .set_category(category);
-  create_property<IntegerProperty>(CORNER_COUNT_PROPERTY_KEY, 12)
+  create_property<IntegerProperty>(CORNER_COUNT_PROPERTY_KEY, DEFAULT_CORNER_COUNT)
       .set_range(3, IntegerProperty::highest_possible_value())
       .set_label(QObject::tr("n"))
       .set_category(category);

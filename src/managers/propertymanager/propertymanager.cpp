@@ -69,7 +69,7 @@ auto collect_properties(const QString& key, const std::set<omm::AbstractProperty
 QString get_tab_label(const std::map<omm::AbstractPropertyOwner*, omm::Property*>& properties)
 {
   assert(!properties.empty());
-  const auto tab_label = (*properties.begin()).second->category();
+  auto tab_label = (*properties.begin()).second->category();
 #ifndef NDEBUG
   for (auto&& [_, property] : properties) {
     Q_UNUSED(_)
@@ -115,7 +115,8 @@ PropertyManager::PropertyManager(Scene& scene)
   auto layout = std::make_unique<QVBoxLayout>();
   m_layout = layout.get();
   category_widget->setLayout(layout.release());
-  m_layout->setContentsMargins(0, 0, 6, 0);
+  static constexpr int TOP_MARGIN = 6;
+  m_layout->setContentsMargins(0, 0, TOP_MARGIN, 0);
   m_scroll_area->setWidget(category_widget.release());
 
   auto main_layout = std::make_unique<QVBoxLayout>();
@@ -200,8 +201,9 @@ void PropertyManager::set_selection(const std::set<AbstractPropertyOwner*>& sele
       if (image.isNull()) {
         m_icon_label->clear();
       } else {
+        static constexpr int ICON_SIZE = 24;
         m_icon_label->setPixmap(QPixmap::fromImage(
-            image.scaled(24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
+            image.scaled(ICON_SIZE, ICON_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation)));
       }
     }
   }

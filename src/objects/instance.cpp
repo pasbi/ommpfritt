@@ -175,8 +175,8 @@ void Instance::on_property_value_changed(Property* property)
 
 Object* Instance::referenced_object() const
 {
-  const auto reference = property(REFERENCE_PROPERTY_KEY)->value<ReferenceProperty::value_type>();
-  Object* object_reference = static_cast<Object*>(reference);
+  auto* reference = property(REFERENCE_PROPERTY_KEY)->value<ReferenceProperty::value_type>();
+  Object* object_reference = dynamic_cast<Object*>(reference);
   if (object_reference != nullptr && object_reference->is_ancestor_of(*this)) {
     LWARNING << "Instance cannot descend from referenced object.";
     return nullptr;

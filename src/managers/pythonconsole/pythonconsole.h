@@ -46,7 +46,7 @@ private:
   static constexpr Qt::KeyboardModifiers caption_modifiers = Qt::ControlModifier;
 
 private Q_SLOTS:
-  void on_output(const void* associated_item, QString content, Stream stream);
+  void on_output(const void* associated_item, const QString& text, const Stream& stream);
 
 private:
   // allocation on stack issues strange compiler warnings
